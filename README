@@ -3,6 +3,18 @@
 GNU PDF Library - README
 ------------------------
 
+The goal of the GNU PDF Suite project is to develop and provide a
+free, high-quality and fully functional set of libraries and programs
+that implement the PDF file format (and associated technologies).
+
+We want to implement support for the following technologies and
+specs:
+
+ - PDF 1.7
+ - PDF/A-1 (ISO 19005-1:2005)
+ - Extensible Metadata Platform (XMP)
+ - XML Forms Architecture v2.4 (XFA)
+
 The most recent version of this library may be obtained from GNU PDF's
 homepage at:
 
