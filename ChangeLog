@@ -1,5 +1,9 @@
 2007-07-05  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/pdf.c: New file.
+
+	* src/pdf.h: End of file comment added.
+
 	* src/Makefile.am (libgnupdf_la_SOURCES): `pdf.h' should be
 	installed.
 
