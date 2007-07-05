@@ -1,5 +1,7 @@
 2007-07-05  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* bootstrap: `libtoolize' added.
+
 	* .cvsignore: New file.
 
 	* src/Makefile.am (lib_LTLIBRARIES): add `lib_' prefix to
