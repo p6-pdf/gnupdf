@@ -1,5 +1,17 @@
 2007-07-05  Jose E. Marchesi  <jemarch@gnu.org>
 
-	* src/pdf.h: New file
-	* ChangeLog started
+	* .cvsignore: New file.
+
+	* src/Makefile.am (lib_LTLIBRARIES): add `lib_' prefix to
+	LTLIBRARIES primary.
+
+	* bootstrap: New file.
+
+	* AUTHORS: New file.
+
+	* NEWS: New file.
+
+	* src/pdf.h: New file.
+
+	* ChangeLog started.
 
