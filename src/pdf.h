@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/05 19:58:11 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/05 21:08:01 jemarch"
  *
  *       File:         pdf.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -32,3 +32,5 @@
 
 
 #endif /* pdf.h */
+
+/* End of pdf.h */
