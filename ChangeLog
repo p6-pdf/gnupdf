@@ -1,5 +1,8 @@
 2007-07-05  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/Makefile.am (libgnupdf_la_SOURCES): `pdf.h' should be
+	installed.
+
 	* bootstrap: `libtoolize' added.
 
 	* .cvsignore: New file.
