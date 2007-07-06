@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/06 20:44:32 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/06 22:04:30 jemarch"
  *
  *       File:         pdf_io.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -55,6 +55,8 @@ enum pdf_io_type_t
 struct pdf_io_file_s
 {
   FILE *stream;
+  char *filename;
+  int writable_p;
 };
 
 struct pdf_io_socket_s

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/06 20:23:26 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/06 22:05:06 jemarch"
  *
  *       File:         pdf_base.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -30,8 +30,11 @@
 #ifndef _PDF_BASE_H
 #define _PDF_BASE_H
 
-#define PDF_OK 0
-#define PDF_ERROR 1
+#define PDF_TRUE 1
+#define PDF_FALSE 0
+
+#define PDF_OK PDF_TRUE
+#define PDF_ERROR PDF_FALSE
 
 #endif /* pdf_base.h */
 
