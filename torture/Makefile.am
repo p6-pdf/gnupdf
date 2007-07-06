@@ -20,6 +20,8 @@ noinst_PROGRAMS = test-io_openclose \
                   test-io_seek \
                   test-io_readwrite
 
+LDADD = $(top_srcdir)/src/libgnupdf.la
+
 #test_io_openclose_SOURCES = test-io_openclose.c
 #test_io_seek_SOURCES = test-io_seek.c
 #test_io_readwrite_SOURCES = test-io_readwrite.c

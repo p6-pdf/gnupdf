@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/06 20:56:55 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/06 21:26:59 jemarch"
  *
  *       File:         pdf_io.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -34,15 +34,15 @@ pdf_io_open_file (char *filename)
 {
   pdf_io_t new_io;
 
-  if (!access (filename, R_OK))
-    {
-      return NULL;
-    }
-
   new_io = (pdf_io_t) xmalloc (sizeof(struct pdf_io_s));
   new_io->type = PDF_IO_FILE;
   new_io->data.file.stream = 
     fopen (filename, "rb");
+
+  if (new_io->data.file.stream == NULL)
+    {
+      return NULL;
+    }
 
   return new_io;
 }
