@@ -1,4 +1,4 @@
-# Top-level Makefile.am
+# Torture directory Makefile.am
 # GNU PDF Library
 
 # Copyright (C) 2007 Jose E. Marchesi
@@ -16,7 +16,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-SUBDIRS = lib src torture
+noinst_PROGRAMS = test-io_openclose \
+                  test-io_seek \
+                  test-io_readwrite
 
+#test_io_openclose_SOURCES = test-io_openclose.c
+#test_io_seek_SOURCES = test-io_seek.c
+#test_io_readwrite_SOURCES = test-io_readwrite.c
+
+TESTS = test-io_openclose \
+        test-io_seek \
+        test-io_readwrite
 
 # End of Makefile.am

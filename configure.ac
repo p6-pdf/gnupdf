@@ -35,6 +35,6 @@ gl_INIT
 dnl Search for required libraries
 
 dnl Generate output files
-AC_OUTPUT(Makefile lib/Makefile src/Makefile)
+AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile)
 
 dnl End of configure.ac
