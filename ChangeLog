@@ -1,5 +1,56 @@
 2007-07-06  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* m4/xalloc.m4: Imported from gnulib.
+
+	* m4/unistd_h.m4: Imported from gnulib.
+
+	* m4/stdlib_h.m4: Imported from gnulib.
+
+	* m4/onceonly_2_57.m4: Imported from gnulib.
+
+	* m4/inline.m4: Imported from gnulib.
+
+	* m4/include_next.m4: Imported from gnulib.
+
+	* m4/gnulib-tool.m4: Imported from gnulib.
+
+	* m4/gnulib-comp.m4: Imported from gnulib.
+
+	* m4/gnulib-common.m4: Imported from gnulib.
+
+	* m4/gnulib-cache.m4: Imported from gnulib.
+
+	* m4/exitfail.m4: Imported from gnulib.
+
+	* m4/error.m4: Imported from gnulib.
+
+	* lib/xmalloc.c: Imported from gnulib.
+
+	* lib/xalloc.h: Imported from gnulib.
+
+	* lib/xalloc-die.c: Imported from gnulib.
+
+	* lib/unistd_.h: Imported from gnulib.
+
+	* lib/stdlib_.h: Imported from gnulib.
+
+	* lib/Makefile.am: Imported from gnulib.
+
+	* lib/gettext.h: Imported from gnulib.
+
+	* lib/exitfail.h: Imported from gnulib.
+
+	* lib/exitfail.c: Imported from gnulib.
+
+	* lib/error.h: Imported from gnulib.
+
+	* lib/error.c: Imported from gnulib.
+
+	* Makefile.am (ACLOCAL_AMFLAGS): Mention "-I m4".
+	(SUBDIRS): Added "lib" subdirectory.
+
+	* configure.ac: New gnulib macros.
+
 	* src/pdf_io.c: New file.
 
 	* src/pdf_io.h: New file.

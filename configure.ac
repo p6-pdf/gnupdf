@@ -28,9 +28,13 @@ AC_PROG_LIBTOOL
 dnl Compiler issues
 AC_PROG_CC
 
+dnl gnulib macros
+gl_EARLY
+gl_INIT
+
 dnl Search for required libraries
 
 dnl Generate output files
-AC_OUTPUT(Makefile src/Makefile)
+AC_OUTPUT(Makefile lib/Makefile src/Makefile)
 
 dnl End of configure.ac
