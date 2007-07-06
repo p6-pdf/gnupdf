@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: bootstrap,v 1.3 2007/07/05 19:08:51 jemarch Exp $
+# $Id: bootstrap,v 1.4 2007/07/06 17:37:00 jemarch Exp $
 # Created 2003-08-29, Karl Berry.  Public domain.
 
 if test "x$1" = x-n; then
@@ -24,7 +24,7 @@ echo "Bootstrapping CVS GNU PDF Library with:"
 : ${AUTOCONF=autoconf}
 
 # So instead:
-cmd="$LIBTOOLIZE && $ACLOCAL && $AUTOHEADER && $AUTOMAKE && $AUTOCONF"
+cmd="$LIBTOOLIZE && $ACLOCAL -I m4 && $AUTOHEADER && $AUTOMAKE && $AUTOCONF"
 echo "  $cmd"
 $chicken eval $cmd || exit 1
 
