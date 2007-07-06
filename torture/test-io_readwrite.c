@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/06 22:10:03 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/06 22:29:02 jemarch"
  *
  *       File:         test-io_readwrite.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -35,7 +35,7 @@ main ()
   char buf[100];
 
   /* Reading features */
-  io = pdf_io_open_file ("torture-file-1");
+  io = pdf_io_open_file ("torture-file-1", PDF_IO_FILE_READ);
   if (io == NULL)
     {
       printf ("Error opening an existing file.\n");

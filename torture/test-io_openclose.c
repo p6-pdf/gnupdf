@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/06 21:24:25 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/06 22:28:38 jemarch"
  *
  *       File:         test-io_openclose.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -33,14 +33,14 @@ main ()
 {
   pdf_io_t io;
 
-  io = pdf_io_open_file ("non-existing-file\n");
+  io = pdf_io_open_file ("non-existing-file\n", PDF_IO_FILE_READ);
   if (io != NULL)
     {
       printf ("Error trying to open a non-existing file.\n");
       return 1;
     }
 
-  io = pdf_io_open_file ("torture-file-1");
+  io = pdf_io_open_file ("torture-file-1", PDF_IO_FILE_READ);
   if (io == NULL)
     {
       printf ("Error trying to open an existing file.\n");

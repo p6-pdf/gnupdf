@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/06 22:04:30 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/06 22:24:52 jemarch"
  *
  *       File:         pdf_io.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -52,11 +52,18 @@ enum pdf_io_type_t
 
 };
 
+enum pdf_io_file_mode
+{
+  PDF_IO_FILE_READ,
+  PDF_IO_FILE_WRITE,
+  PDF_IO_FILE_APPEND
+};
+
 struct pdf_io_file_s
 {
   FILE *stream;
   char *filename;
-  int writable_p;
+  enum pdf_io_file_mode mode;
 };
 
 struct pdf_io_socket_s
@@ -83,7 +90,7 @@ typedef struct pdf_io_s *pdf_io_t;
 
 /* Forward declarations */
 
-pdf_io_t pdf_io_open_file (char *filename);
+pdf_io_t pdf_io_open_file (char *filename, enum pdf_io_file_mode mode);
 int pdf_io_close (pdf_io_t io);
 int pdf_io_seek_beg (pdf_io_t io, pdf_io_pos_t pos);
 int pdf_io_seek_cur (pdf_io_t io, pdf_io_pos_t pos);

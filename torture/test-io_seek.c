@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/06 21:52:35 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/06 22:29:17 jemarch"
  *
  *       File:         test-io_seek.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -32,7 +32,7 @@ main ()
 {
   pdf_io_t io;
 
-  io = pdf_io_open_file ("torture-file-1");
+  io = pdf_io_open_file ("torture-file-1", PDF_IO_FILE_READ);
   if (io == NULL)
     {
       printf ("Error opening an existing file.\n");
