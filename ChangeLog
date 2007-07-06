@@ -1,3 +1,9 @@
+2007-07-06  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/pdf_io.c: New file.
+
+	* src/pdf_io.h: New file.
+
 2007-07-05  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/pdf.c: New file.
