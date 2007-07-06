@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/06 18:57:14 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/06 20:44:32 jemarch"
  *
  *       File:         pdf_io.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -31,9 +31,15 @@
 #define _PDF_IO_H
 
 #include <stdio.h>
+#include <pdf_base.h>
 
 /* A variable of type `pdf_io_pos_t' contain a byte-offset relative to
-   the beginning of a IO object. */
+   the beginning of a IO object.
+
+   `off_t' seems to be defined as long int in glibc, but since it is a
+   opaque type we cannot make assumptions about its size, nor about
+   the correlation to octects. */
+
 typedef long int pdf_io_pos_t;
 
 enum pdf_io_type_t
@@ -76,12 +82,13 @@ typedef struct pdf_io_s *pdf_io_t;
 /* Forward declarations */
 
 pdf_io_t pdf_io_open_file (char *filename);
-pdf_error_t pdf_io_close (pdf_io_t io);
-pdf_error_t  pdf_io_close (pdf_io_t io);
-pdf_error_t pdf_io_seek_abs (pdf_io_t io, pdf_io_pos_t pos);
-pdf_error_t pdf_io_seek_rel (pdf_io_t io, pdf_io_pos_t pos);
-pdf_error_t pdf_io_seek_end (pdf_io_t io, pdf_io_pos_t pos);
+int pdf_io_close (pdf_io_t io);
+int pdf_io_seek_beg (pdf_io_t io, pdf_io_pos_t pos);
+int pdf_io_seek_cur (pdf_io_t io, pdf_io_pos_t pos);
+int pdf_io_seek_end (pdf_io_t io, pdf_io_pos_t pos);
 pdf_io_pos_t pdf_io_tell (pdf_io_t io);
+size_t pdf_io_read (pdf_io_t io, char *buf, size_t bytes);
+size_t pdf_io_write (pdf_io_t io, char *buf, size_t bytes);
 
 #endif /* pdf_io.h */
 

@@ -1,5 +1,21 @@
 2007-07-06  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/pdf_io.c (pdf_io_tell): New function.
+	(pdf_io_write): New function.
+
+	* src/pdf_base.h: New file.
+
+	* src/pdf_io.c (pdf_io_close): New function.
+	(pdf_io_seek_beg): New function.
+	(pdf_io_seek_cur): New function.
+	(pdf_io_seek_end): New function.
+
+	* src/Makefile.am (libgnupdf_la_SOURCES): Added `pdf_io.c' and
+	`pdf_io.h'.
+	(AM_CPPFLAGS): Added the gnulib imported directory.
+
+	* src/pdf_io.c (pdf_io_open_file): New function.
+
 	* m4/xalloc.m4: Imported from gnulib.
 
 	* m4/unistd_h.m4: Imported from gnulib.
