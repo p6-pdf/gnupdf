@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/07 03:47:41 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/07 03:52:08 jemarch"
  *
  *       File:         pdf.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -27,18 +27,8 @@
 #ifndef _PDF_H
 #define _PDF_H
 
-/* This document opaque type contain all the information extracted
-   from the input stream used in the `pdf_doc_open' or
-   `pdf_doc_open_socket' functions. */
 
-typedef struct _pdf_doc_t
-{
-  pdf_io_t src; /* Source of the pdf data */
-  pdf_io_t trg; /* Target of the pdf data */
-  
 
-} *pdf_doc_t;
-  
 
 #endif /* pdf.h */
 

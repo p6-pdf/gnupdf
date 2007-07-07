@@ -1,5 +1,9 @@
 2007-07-07  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/Makefile.am (libgnupdf_la_SOURCES): `pdf_obj.c' added.
+
+	* src/pdf_obj.c: New file.
+
 	* src/Makefile.am (libgnupdf_la_SOURCES): `pdf_obj.h' added.
 
 	* src/pdf_obj.h: New file.
