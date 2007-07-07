@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/07 00:13:13 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/07 16:06:38 jemarch"
  *
  *       File:         test-io_openclose.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -25,6 +25,7 @@
  */
 
 
+#include <config.h>
 #include <stdio.h>
 #include <pdf_io.h>
 

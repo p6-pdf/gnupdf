@@ -1,5 +1,9 @@
 2007-07-07  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* torture/Makefile.am: New testsuite, `test-obj_createdestroy'.
+
+	* torture/test-obj_createdestroy.c: New file.
+
 	* src/pdf_obj.c (pdf_create_dict): Disallow duplicates in
 	dictionary.
 	(pdf_destroy_obj): New function.
