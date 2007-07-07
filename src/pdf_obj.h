@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/07 02:53:16 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/07 03:29:15 jemarch"
  *
  *       File:         pdf_obj.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -35,6 +35,7 @@
       - Name (pdf_name_t)
       - Array (pdf_array_t)
       - Dictionary (pdf_dict_t)
+      - Indirect object (pdf_indirect_t)
 
    A generic data type capable to contain any type of PDF object is
    also included (pdf_obj_t). */
@@ -66,7 +67,7 @@
 typedef int pdf_boolean_t;
 
 typedef int pdf_integer_t;
-typedef double pdf_real_t;
+typedef float pdf_real_t;
 
 /* According to the PDF reference, a PDF name object is an atomic
    symbol uniquely defined by a sequence of regular characters. It has
@@ -90,7 +91,7 @@ struct pdf_string_s
   int size;
 };
 
-typedef pdf_string_s *pdf_string_t;
+typedef struct pdf_string_s *pdf_string_t;
 
 /* A PDF array object is a one-dimensional collection of objects
    arranged sequentially. 
@@ -106,7 +107,7 @@ struct pdf_array_s
   gl_list_t *objs;
 };
 
-typedef pdf_array_s *pdf_array_t;
+typedef struct pdf_array_s *pdf_array_t;
 
 /* A PDF dictionary object is an associative table containing pairs of
    objects. The first of the pair is the `key' and the second element
@@ -121,8 +122,24 @@ struct pdf_dict_s
 
 };
 
-typedef pdf_dict_s *pdf_dict_t;
+typedef struct pdf_dict_s *pdf_dict_t;
 
+/* A PDF indirect object is composed by:
+
+   - Object number (positive integer)
+   - Generation number (non-negative integer) */
+
+struct pdf_indirect_s
+{
+  /* Object number (cannot be 0) */
+  unsigned int on;
+
+  /* Generation number */
+  unsigned int gn;
+};
+
+typedef struct pdf_indirect_s *pdf_indirect_t;
+   
 
 enum pdf_obj_type_t
 {
@@ -133,7 +150,8 @@ enum pdf_obj_type_t
   PDF_STRING_OBJ,
   PDF_NAME_OBJ,
   PDF_ARRAY_OBJ,
-  PDF_DICT_OBJ
+  PDF_DICT_OBJ,
+  PDF_INDIRECT_OBJ
 };
 
 /* A `pdf_obj_s' structure stores a PDf object. The object may be of
@@ -153,12 +171,12 @@ struct pdf_obj_s
     pdf_name_t name;
     pdf_array_t array;
     pdf_dict_t dict;
+    pdf_indirect_t indirect;
 
   } value;
-
 };
 
-typedef pdf_obj_s *pdf_obj_t;
+typedef struct pdf_obj_s *pdf_obj_t;
 
 
 #endif /* pdf_obj.h */
