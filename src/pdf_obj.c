@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/07 18:36:04 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/07 19:11:26 jemarch"
  *
  *       File:         pdf_obj.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -277,6 +277,125 @@ pdf_get_dict_size (pdf_obj_t obj)
 }
 
 int
+pdf_dict_key_p (pdf_obj_t obj,
+                pdf_obj_t key)
+{
+  int entry_p;
+  pdf_dict_entry_t entry;
+
+  if ((obj->type != PDF_DICT_OBJ) ||
+      (key->type != PDF_NAME_OBJ) ||
+      (gl_list_size (obj->value.dict.entries) == 0))
+    {
+      return PDF_FALSE;
+    }
+  
+  entry = pdf_alloc_dict_entry ();
+  entry->key = pdf_obj_dup (key);
+  entry->value = pdf_create_null ();
+
+  if (gl_list_search (obj->value.dict.entries,
+                      (const void *) entry) != NULL)
+    {
+      entry_p = PDF_TRUE;
+    }
+  else
+    {
+      entry_p = PDF_FALSE;
+    }
+
+  pdf_dealloc_dict_entry (entry);
+  return entry_p;
+}
+
+pdf_obj_t
+pdf_get_dict_entry (pdf_obj_t obj,
+                    pdf_obj_t key)
+{
+  pdf_dict_entry_t entry;
+  pdf_dict_entry_t result_entry;
+  gl_list_node_t list_node;
+
+  if ((obj->type != PDF_DICT_OBJ) ||
+      (key->type != PDF_NAME_OBJ) ||
+      (gl_list_size (obj->value.dict.entries) == 0))
+    {
+      return NULL;
+    }
+
+  entry = pdf_alloc_dict_entry ();
+  entry->key = pdf_obj_dup (key);
+  entry->value = pdf_create_null ();
+  
+  list_node = gl_list_search (obj->value.dict.entries,
+                              entry);
+  pdf_dealloc_dict_entry (entry);
+
+  if (list_node == NULL)
+    {
+      return NULL;
+    }
+  else
+    {
+      result_entry = (pdf_dict_entry_t) 
+        gl_list_node_value (obj->value.dict.entries, list_node);
+      
+      return result_entry->value;
+    }
+
+  /* Not reached */
+}
+
+int
+pdf_remove_dict_entry (pdf_obj_t obj,
+                       pdf_obj_t key)
+{
+  int status;
+  pdf_dict_entry_t entry;
+  gl_list_node_t node;
+
+  if (!pdf_dict_key_p (obj, key))
+    {
+      return PDF_ERROR;
+    }
+
+  entry = pdf_alloc_dict_entry ();
+  entry->key = pdf_obj_dup (key);
+  entry->value = pdf_create_null ();
+
+  if (gl_list_remove (obj->value.dict.entries,
+                      entry))
+    {
+      status = PDF_OK;
+    }
+  else 
+    {
+      status = PDF_ERROR;
+    }
+
+  pdf_dealloc_dict_entry (entry);
+
+  return status;
+}
+
+int
+pdf_create_dict_entry (pdf_obj_t obj,
+                       pdf_obj_t key,
+                       pdf_obj_t value)
+{
+  if ((obj->type != PDF_DICT_OBJ) ||
+      (key->type != PDF_NAME_OBJ) ||
+      (pdf_dict_key_p (obj, key)) ||
+      (gl_list_add_last (obj->value.dict.entries,
+                         value) == NULL))
+    {
+      return PDF_ERROR;
+    }
+  
+  return PDF_OK;
+}
+
+int
 pdf_obj_equal_p (pdf_obj_t obj1,
                  pdf_obj_t obj2)
 {
@@ -448,6 +567,27 @@ pdf_set_array_elt (pdf_obj_t obj,
   return PDF_OK;
 }
 
+int 
+pdf_add_array_elt (pdf_obj_t obj, 
+                   int index, 
+                   pdf_obj_t elt)
+{
+  if ((obj->type != PDF_ARRAY_OBJ) ||
+      (index < 0) ||
+      (index > gl_list_size (obj->value.array.objs)))
+    {
+      return PDF_ERROR;
+    }
+
+  gl_list_add_at (obj->value.array.objs,
+                  index,
+                  elt);
+
+  return PDF_OK;
+}
+
+
+
 /* Private functions */
 
 static pdf_obj_t
@@ -537,18 +677,7 @@ pdf_compare_dict_entry_list_elt (const void *elt1,
   entry1 = (pdf_dict_entry_t) elt1;
   entry2 = (pdf_dict_entry_t) elt2;
 
-  /* Note that the `key' object in the dictionary entry should be of
-     type `name' */
-
-  if (entry1->key->value.name.size !=
-      entry2->key->value.name.size)
-    {
-      return PDF_FALSE;
-    }
-
-  return (!memcmp (entry1->key->value.name.data,
-                   entry2->key->value.name.data,
-                   entry1->key->value.name.size));
+  return pdf_obj_equal_p (entry1->key, entry2->key);
 }
 
 static int
