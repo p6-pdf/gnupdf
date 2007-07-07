@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/07 15:56:01 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/07 17:20:25 jemarch"
  *
  *       File:         pdf_obj.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -40,7 +40,12 @@ static void pdf_dealloc_dict_entry (pdf_dict_entry_t entry);
 static void pdf_dealloc_dict_entry_list_elt (const void *elt);
 static bool pdf_compare_dict_entry_list_elt (const void *elt1, const void *elt2);
 
-/* Object creation */
+static int pdf_string_equal_p (pdf_obj_t obj1, pdf_obj_t obj2);
+static int pdf_name_equal_p (pdf_obj_t obj1, pdf_obj_t obj2);
+static int pdf_array_equal_p (pdf_obj_t obj1, pdf_obj_t obj2);
+static int pdf_dict_equal_p (pdf_obj_t obj1, pdf_obj_t obj2);
+
+/* Public functions */
 
 pdf_obj_t
 pdf_create_null (void)
@@ -66,7 +71,7 @@ pdf_create_boolean (int value)
 }
 
 pdf_obj_t
-pdf_create_int (int value)
+pdf_create_integer (int value)
 {
   pdf_obj_t int_obj;
 
@@ -179,6 +184,160 @@ pdf_destroy_obj (pdf_obj_t obj)
   pdf_dealloc_obj (obj);
 }
 
+inline int
+pdf_get_bool (pdf_obj_t obj)
+{
+  return obj->value.boolean;
+}
+
+inline void
+pdf_set_bool (pdf_obj_t obj,
+              int value)
+{
+  obj->value.boolean = value;
+}
+
+inline int
+pdf_get_int (pdf_obj_t obj)
+{
+  return obj->value.integer;
+}
+
+inline void
+pdf_set_int (pdf_obj_t obj, 
+             int value)
+{
+  obj->value.integer = value;
+}
+
+inline float
+pdf_get_real (pdf_obj_t obj)
+{
+  return obj->value.real;
+}
+
+inline void
+pdf_set_real (pdf_obj_t obj,
+              float value)
+{
+  obj->value.real = value;
+}
+
+inline int
+pdf_get_string_size (pdf_obj_t obj)
+{
+  return obj->value.string.size;
+}
+
+inline char *
+pdf_get_string_data (pdf_obj_t obj)
+{
+  char *data;
+
+  data = (char *) xmalloc (obj->value.string.size);
+  memcpy (data,
+          obj->value.string.data,
+          obj->value.string.size);
+
+  return data;
+}
+
+inline int
+pdf_get_name_size (pdf_obj_t obj)
+{
+  return obj->value.name.size;
+}
+
+inline char *
+pdf_get_name_data (pdf_obj_t obj)
+{
+  char *data;
+
+  data = (char *) xmalloc (obj->value.name.size);
+  memcpy (data,
+          obj->value.name.data,
+          obj->value.string.size);
+
+  return data;
+}
+
+inline int
+pdf_get_array_size (pdf_obj_t obj)
+{
+  return gl_list_size (obj->value.array.objs);
+}
+
+inline int
+pdf_get_dict_size (pdf_obj_t obj)
+{
+  return gl_list_size (obj->value.dict.entries);
+}
+
+int
+pdf_obj_equal_p (pdf_obj_t obj1,
+                 pdf_obj_t obj2)
+{
+  int equal_p;
+
+  if (obj1->type != obj2->type)
+    {
+      return PDF_FALSE;
+    }
+
+  switch (obj1->type)
+    {
+    case PDF_NULL_OBJ:
+      {
+        equal_p = PDF_TRUE;
+        break;
+      }
+    case PDF_BOOLEAN_OBJ:
+      {
+        equal_p = (obj1->value.boolean == obj2->value.boolean);
+        break;
+      }
+    case PDF_INT_OBJ:
+      {
+        equal_p = (obj1->value.integer == obj2->value.integer);
+        break;
+      }
+    case PDF_REAL_OBJ:
+      {
+        equal_p = (obj1->value.real == obj2->value.real);
+        break;
+      }
+    case PDF_STRING_OBJ:
+      {
+        equal_p = pdf_string_equal_p (obj1, obj2);
+        break;
+      }
+    case PDF_NAME_OBJ:
+      {
+        equal_p = pdf_name_equal_p (obj1, obj2);
+        break;
+      }
+    case PDF_ARRAY_OBJ:
+      {
+        equal_p = pdf_array_equal_p (obj1, obj2);
+        break;
+      }
+    case PDF_DICT_OBJ:
+      {
+        equal_p = pdf_dict_equal_p (obj1, obj2);
+        break;
+      }
+    case PDF_INDIRECT_OBJ:
+      {
+        equal_p = 
+          (obj1->value.indirect.on == obj2->value.indirect.on) &&
+          (obj1->value.indirect.gn == obj2->value.indirect.gn);
+        break;
+      }
+    }
+
+  return equal_p;
+}
+
 /* Private functions */
 
 static pdf_obj_t
@@ -230,8 +389,8 @@ static bool
 pdf_compare_obj_list_elt (const void *elt1,
                           const void *elt2)
 {
-  /* Any object in an array is a unique object */
-  return PDF_FALSE;
+  return pdf_obj_equal_p ((pdf_obj_t) elt1,
+                          (pdf_obj_t) elt2);
 }
 
 
@@ -280,5 +439,77 @@ pdf_compare_dict_entry_list_elt (const void *elt1,
                    entry1->key->value.name.size));
 }
 
+static int
+pdf_string_equal_p (pdf_obj_t obj1,
+                    pdf_obj_t obj2)
+{
+  return ((obj1->value.string.size == obj2->value.string.size) &&
+          (!memcmp (obj1->value.string.data,
+                    obj2->value.string.data,
+                    obj1->value.string.size)));
+}
+
+static int
+pdf_name_equal_p (pdf_obj_t obj1,
+                  pdf_obj_t obj2)
+{
+  return ((obj1->value.name.size == obj2->value.name.size) &&
+          (!memcmp (obj1->value.name.data,
+                    obj2->value.name.data,
+                    obj1->value.name.size)));
+}
+
+/* Two PDF arrays are considered equal if the equal-intersection
+   between the two sets of objects is empty and if the objects are
+   contained in the same order */
+static int
+pdf_array_equal_p (pdf_obj_t obj1,
+                   pdf_obj_t obj2)
+{
+  int equal_p;
+  pdf_obj_t obj_elt1;
+  pdf_obj_t obj_elt2;
+  gl_list_node_t list_node1;
+  gl_list_node_t list_node2;
+  gl_list_iterator_t iter1;
+  gl_list_iterator_t iter2;
+
+  if ((gl_list_size (obj1->value.array.objs) !=
+       gl_list_size (obj2->value.array.objs)) ||
+      (gl_list_size (obj1->value.array.objs) == 0))
+    {
+      return PDF_FALSE;
+    }
+
+  equal_p = PDF_TRUE;
+
+  iter1 = gl_list_iterator (obj1->value.array.objs);
+  iter2 = gl_list_iterator (obj2->value.array.objs);
+  
+  while (gl_list_iterator_next (&iter1, (const void **) &obj_elt1, &list_node1) &&
+         gl_list_iterator_next (&iter2, (const void **) &obj_elt2, &list_node2))
+    {
+      /* Note the indirect recursion there => avoid loops!!! */
+      if (!pdf_obj_equal_p (obj_elt1, obj_elt2))
+        {
+          break;
+        }
+    }
+  
+  gl_list_iterator_free (&iter1);
+  gl_list_iterator_free (&iter2);
+
+  return equal_p;
+}
+
+/* Two PDF dictionaries are considered equal if the equal-intersection
+   between the two sets of objects is empty. Internal ordering doesnt
+   matter. */
+static int
+pdf_dict_equal_p (pdf_obj_t obj1,
+                  pdf_obj_t obj2)
+{
+  return PDF_FALSE;
+}
 
 /* End of pdf_obj.c */

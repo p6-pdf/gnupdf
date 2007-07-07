@@ -1,5 +1,22 @@
 2007-07-07  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/pdf_obj.c (pdf_get_bool): New function.
+	(pdf_set_bool): New function.
+	(pdf_get_int): New function.
+	(pdf_set_real): New function.
+	(pdf_get_real): New function.
+	(pdf_set_int): New function.
+	(pdf_get_string_size): New function.
+	(pdf_get_string_data): New function.
+	(pdf_get_name_size): New function.
+	(pdf_get_name_data): New function.
+	(pdf_get_array_size): New function.
+	(pdf_get_dict_size): New function.
+	(pdf_obj_equal_p): New function.
+	(pdf_string_equal_p): New function.
+	(pdf_string_equal_p): New function.
+	(pdf_compare_obj_list_elt): Use `pdf_obj_equal_p'.
+
 	* torture/Makefile.am: New testsuite, `test-obj_createdestroy'.
 
 	* torture/test-obj_createdestroy.c: New file.

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/07 15:57:34 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/07 16:43:47 jemarch"
  *
  *       File:         pdf_obj.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -215,9 +215,32 @@ typedef struct pdf_obj_s *pdf_obj_t;
 #define IS_INDIRECT(obj) \
   ((obj)->type == PDF_INDIRECT_OBJ)
 
+/* The following macros references values */
+#define GET_BOOL(obj) \
+  ((obj)->value.boolean)
+#define GET_INT(obj) \
+  ((obj)->value.integer)
+#define GET_REAL(obj) \
+  ((obj)->value.real)
+#define GET_STRING(obj) \
+  ((obj)->value.string)
+#define GET_NAME(obj) \
+  ((obj)->value.name)
+#define GET_ARRAY(obj) \
+  ((obj)->value.array)
+#define GET_DICT(obj) \
+  ((obj)->value.dict)
+#define GET_INDIRECT(obj) \
+  ((obj)->value.indirect)
 
-/* Forward declarations */
 
+
+/* 
+ * Forward declarations
+ */
+
+
+/* Object creation */
 pdf_obj_t pdf_create_null (void);
 pdf_obj_t pdf_create_boolean (int value);
 pdf_obj_t pdf_create_integer (int value);
@@ -227,7 +250,35 @@ pdf_obj_t pdf_create_name (char *value, int size);
 pdf_obj_t pdf_create_array (void);
 pdf_obj_t pdf_create_dict (void);
 pdf_obj_t pdf_create_indirect (unsigned int on, unsigned int gn);
+
+/* Object destruction */
 int pdf_destroy_obj (pdf_obj_t obj);
+
+/* Testing for equality */
+int pdf_obj_equal_p (pdf_obj_t obj1, pdf_obj_t obj2);
+
+/* Managing objects of basic types */
+int pdf_get_bool (pdf_obj_t obj);
+void pdf_set_bool (pdf_obj_t obj, int value);
+int pdf_get_int (pdf_obj_t obj);
+void pdf_set_int (pdf_obj_t obj, int value);
+float pdf_get_real (pdf_obj_t obj);
+void pdf_set_real (pdf_obj_t obj, float value);
+
+/* Managing strings */
+int pdf_get_string_size (pdf_obj_t obj);
+char *pdf_get_string_data (pdf_obj_t obj);
+
+/* Managing names */
+int pdf_get_name_size (pdf_obj_t obj);
+char *pdf_get_name_data (pdf_obj_t obj);
+
+/* Managing arrays */
+int pdf_get_array_size (pdf_obj_t obj);
+
+/* Managing dictionaries */
+int pdf_get_dict_size (pdf_obj_t obj);
+
 
 #endif /* pdf_obj.h */
 
