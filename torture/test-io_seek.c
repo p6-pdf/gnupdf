@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/06 22:29:17 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/06 23:13:51 jemarch"
  *
  *       File:         test-io_seek.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -39,27 +39,27 @@ main ()
       return 1;
     }
 
-  if (pdf_io_tell (io) != 0L)
+  if (pdf_io_tell (io) != 0)
     {
       printf ("Error telling just after opening the file.\n");
       return 1;
     }
 
-  if (!pdf_io_seek_beg (io, 2L) ||
-      (pdf_io_tell (io) != 2L))
+  if (!pdf_io_seek_beg (io, 2) ||
+      (pdf_io_tell (io) != 2))
     {
       printf ("Error seeking relative to the beginning of the file.\n");
       return 1;
     }
 
-  if (!pdf_io_seek_cur (io, 2L) ||
-      (pdf_io_tell (io) != 4L))
+  if (!pdf_io_seek_cur (io, 2) ||
+      (pdf_io_tell (io) != 4))
     {
       printf ("Error seeking relative to the current position.\n");
       return 1;
     }
 
-  if (!pdf_io_seek_end (io, -2L) ||
+  if (!pdf_io_seek_end (io, -2) ||
       (pdf_io_tell (io) != 12))
     {
       printf ("%d\n", pdf_io_tell (io));

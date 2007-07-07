@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/06 22:28:02 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/06 23:54:21 jemarch"
  *
  *       File:         pdf_io.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -27,8 +27,13 @@
 
 #include <unistd.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <xalloc.h>
 #include <pdf_io.h>
+
+#ifdef HAVE_FSEEK
+   #define fseek fseeko
+#endif /* HAVE_FSEEK */
 
 pdf_io_t 
 pdf_io_open_file (char *filename, 
@@ -166,6 +171,19 @@ pdf_io_write (pdf_io_t io,
     }
 
   return fwrite (buf, 1, bytes, io->data.file.stream);
+}
+
+inline pdf_io_pos_t
+pdf_io_size (pdf_io_t io)
+{
+  struct stat file_stats;
+
+  if (fstat (fileno(io->data.file.stream), &file_stats) != 0)
+    {
+      return -1;
+    }
+
+  return file_stats.st_size;
 }
 
 /* End of pdf_io.h */

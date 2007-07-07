@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/06 22:29:02 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/06 22:39:30 jemarch"
  *
  *       File:         test-io_readwrite.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -49,6 +49,26 @@ main ()
       return 1;
     }
   
+  if (!pdf_io_close (io))
+    {
+      printf ("Error trying to close a file.\n");
+      return 1;
+    }
+
+  /* Writing features */
+  io = pdf_io_open_file ("temporary-file", PDF_IO_FILE_WRITE);
+  if (io == NULL)
+    {
+      printf ("Error creating an empty file.\n");
+      return 1;
+    }
+
+  if ((pdf_io_write (io, buf, 2) != 2))
+    {
+      printf ("Error writing to a file.\n");
+      return 1;
+    }
+
   if (!pdf_io_close (io))
     {
       printf ("Error trying to close a file.\n");
