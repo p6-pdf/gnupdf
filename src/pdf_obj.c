@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/07 15:00:44 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/07 15:22:54 jemarch"
  *
  *       File:         pdf_obj.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -154,7 +154,7 @@ pdf_create_dict (void)
                           pdf_compare_dict_entry_list_elt,
                           NULL,      /* hashcode_fn */
                           pdf_dealloc_dict_entry_list_elt,
-                          PDF_TRUE); /* allow duplicates */
+                          PDF_FALSE); /* disallow duplicates. */
 
   return new_dict;
 }
