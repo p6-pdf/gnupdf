@@ -16,6 +16,9 @@
 	(pdf_string_equal_p): New function.
 	(pdf_string_equal_p): New function.
 	(pdf_compare_obj_list_elt): Use `pdf_obj_equal_p'.
+	(pdf_obj_dup): New function.
+	(pdf_array_dup): New function.
+	(pdf_dict_dup): New function.
 
 	* torture/Makefile.am: New testsuite, `test-obj_createdestroy'.
 

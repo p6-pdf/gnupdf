@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/07 16:43:47 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/07 17:39:21 jemarch"
  *
  *       File:         pdf_obj.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -250,6 +250,7 @@ pdf_obj_t pdf_create_name (char *value, int size);
 pdf_obj_t pdf_create_array (void);
 pdf_obj_t pdf_create_dict (void);
 pdf_obj_t pdf_create_indirect (unsigned int on, unsigned int gn);
+pdf_obj_t pdf_obj_dup (pdf_obj_t obj);
 
 /* Object destruction */
 int pdf_destroy_obj (pdf_obj_t obj);
