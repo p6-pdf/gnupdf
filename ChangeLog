@@ -1,5 +1,7 @@
 2007-07-07  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/pdf_obj.h: New file.
+
 	* torture/test-io_openclose.c (main): Added file size retrieving
 	test.
 
