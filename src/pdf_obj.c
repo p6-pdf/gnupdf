@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/07 19:11:26 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/07 21:34:59 jemarch"
  *
  *       File:         pdf_obj.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -716,10 +716,14 @@ pdf_array_equal_p (pdf_obj_t obj1,
   gl_list_iterator_t iter2;
 
   if ((gl_list_size (obj1->value.array.objs) !=
-       gl_list_size (obj2->value.array.objs)) ||
-      (gl_list_size (obj1->value.array.objs) == 0))
+       gl_list_size (obj2->value.array.objs)))
     {
       return PDF_FALSE;
+    }
+
+  if (gl_list_size (obj1->value.array.objs) == 0)
+    {
+      return PDF_TRUE;
     }
 
   equal_p = PDF_TRUE;
@@ -759,11 +763,16 @@ pdf_dict_equal_p (pdf_obj_t obj1,
   gl_list_iterator_t iter;
   
   if ((gl_list_size (obj1->value.dict.entries) !=
-       gl_list_size (obj2->value.dict.entries)) ||
-      (gl_list_size (obj1->value.dict.entries) == 0))
+       gl_list_size (obj2->value.dict.entries)))
     {
       return PDF_FALSE;
     }
+  
+  if (gl_list_size (obj1->value.dict.entries) == 0)
+    {
+      return PDF_TRUE;
+    }
+  
 
   equal_p = PDF_TRUE;
 

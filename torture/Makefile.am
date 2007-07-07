@@ -19,7 +19,8 @@
 noinst_PROGRAMS = test-io_openclose \
                   test-io_seek \
                   test-io_readwrite \
-                  test-obj_createdestroy
+                  test-obj_createdestroy \
+                  test-obj_dupequality
 
 LDADD = $(top_srcdir)/src/libgnupdf.la
 
@@ -28,6 +29,7 @@ AM_CPPFLAGS = -I ../lib
 TESTS = test-io_openclose \
         test-io_seek \
         test-io_readwrite \
-        test-obj_createdestroy
+        test-obj_createdestroy \
+        test-obj_dupequality
 
 # End of Makefile.am
