@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/07 02:22:41 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/07 02:44:26 jemarch"
  *
  *       File:         pdf_obj.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -91,13 +91,17 @@ struct pdf_string_s
 typedef pdf_string_s *pdf_string_t;
 
 /* A PDF array object is a one-dimensional collection of objects
-   arranged sequentially. */
+   arranged sequentially. 
+   
+   Note that the list of objects is heterogeneous, so we must use
+   `pdf_obj_s'.
+*/
 
 struct pdf_obj_s; /* Forward reference */
 
 struct pdf_array_s
 {
-  
+  gl_list_t *objs;
 };
 
 typedef pdf_array_s *pdf_array_t;
