@@ -1,3 +1,8 @@
+2007-07-07  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/test-io_openclose.c (main): Added file size retrieving
+	test.
+
 2007-07-06  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* configure.ac: Check for `off_t'.

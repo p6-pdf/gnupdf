@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/06 22:28:38 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/07 00:13:13 jemarch"
  *
  *       File:         test-io_openclose.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -44,6 +44,12 @@ main ()
   if (io == NULL)
     {
       printf ("Error trying to open an existing file.\n");
+      return 1;
+    }
+
+  if (pdf_io_size (io) != 14)
+    {
+      printf ("Error getting the size of a file.\n");
       return 1;
     }
 
