@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/07 03:34:56 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/07 03:45:15 jemarch"
  *
  *       File:         pdf_obj.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -37,7 +37,7 @@
       - Dictionary (pdf_dict_t)
       - Indirect object (pdf_indirect_t)
 
-   A generic data type capable to contain any type of PDF object is
+   A generic data type capable to contain any kind of PDF object is
    also included (pdf_obj_t). */
 
 #ifndef PDF_OBJ_H
@@ -66,6 +66,8 @@
 
 typedef int pdf_boolean_t;
 
+/* PDF integers and reals are implemented using basic C types. */
+
 typedef int pdf_integer_t;
 typedef float pdf_real_t;
 
@@ -79,7 +81,13 @@ typedef float pdf_real_t;
    stupidity we should store the entire byte sequence that conform the
    name. */
 
-typedef char* pdf_name_t;
+struct pdf_name_s
+{
+  unsigned char *data;
+  int size;
+}; 
+
+typedef struct pdf_name_s *pdf_name_t;
 
 /* A PDF string is a sequence of bytes, in the range of 0-255. In
    particular it may contain NULL characters (code 0 in the ASCII
@@ -100,11 +108,9 @@ typedef struct pdf_string_s *pdf_string_t;
    `pdf_obj_s'.
 */
 
-struct pdf_obj_s; /* Forward reference */
-
 struct pdf_array_s
 {
-  gl_list_t *objs;
+  gl_list_t objs;
 };
 
 typedef struct pdf_array_s *pdf_array_t;
@@ -116,10 +122,17 @@ typedef struct pdf_array_s *pdf_array_t;
    Any `key' object should be a name pdf object. On the other hand,
    the values may have any pdf object type. */
 
+struct pdf_obj_s; /* Forward reference */
+
+struct pdf_dict_entry_s
+{
+  struct pdf_obj_s *key;
+  struct pdf_obj_s *value;
+};
+
 struct pdf_dict_s
 {
-
-
+  gl_list_t entries;
 };
 
 typedef struct pdf_dict_s *pdf_dict_t;
@@ -198,6 +211,19 @@ typedef struct pdf_obj_s *pdf_obj_t;
   ((obj)->type == PDF_DICT_OBJ)
 #define IS_INDIRECT(obj) \
   ((obj)->type == PDF_INDIRECT_OBJ)
+
+
+/* Forward declarations */
+
+pdf_obj_t pdf_create_null (void);
+pdf_obj_t pdf_create_boolean (int value);
+pdf_obj_t pdf_create_integer (int value);
+pdf_obj_t pdf_create_real (float value);
+pdf_obj_t pdf_create_string (char *value);
+pdf_obj_t pdf_create_name (char *value);
+pdf_obj_t pdf_create_array (void);
+pdf_obj_t pdf_create_dict (void);
+pdf_obj_t pdf_create_indirect (int on, int gn);
 
 #endif /* pdf_obj.h */
 
