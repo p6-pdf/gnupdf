@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/07 05:47:37 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/07 14:45:08 jemarch"
  *
  *       File:         pdf_obj.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -42,6 +42,10 @@
 
 #ifndef PDF_OBJ_H
 #define PDF_OBJ_H
+
+#include <config.h>
+#include <gl_array_list.h>
+#include <pdf_base.h>
 
 /* The PDF NULL object has a type and a value that are unequal to
    those of any other object. There is only one possible value for
@@ -107,7 +111,7 @@ typedef struct pdf_string_s *pdf_string_t;
 
 struct pdf_array_s
 {
-  /*  gl_list_t objs; */
+  gl_list_t objs;
 };
 
 typedef struct pdf_array_s *pdf_array_t;
@@ -131,7 +135,7 @@ typedef struct pdf_dict_entry_s *pdf_dict_entry_t;
 
 struct pdf_dict_s
 {
-  /*  gl_list_t entries; */
+  gl_list_t entries;
 };
 
 typedef struct pdf_dict_s *pdf_dict_t;

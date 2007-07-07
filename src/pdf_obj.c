@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/07 05:47:44 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/07 15:00:44 jemarch"
  *
  *       File:         pdf_obj.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -31,8 +31,14 @@
 
 static pdf_obj_t pdf_alloc_obj (void);
 static void pdf_dealloc_obj (pdf_obj_t obj);
+static void pdf_dealloc_obj_list_elt (const void *elt);
+static bool pdf_compare_obj_list_elt (const void *elt1, const void *elt2);
+
+
 static pdf_dict_entry_t pdf_alloc_dict_entry (void);
 static void pdf_dealloc_dict_entry (pdf_dict_entry_t entry);
+static void pdf_dealloc_dict_entry_list_elt (const void *elt);
+static bool pdf_compare_dict_entry_list_elt (const void *elt1, const void *elt2);
 
 /* Object creation */
 
@@ -126,7 +132,12 @@ pdf_create_array (void)
 
   new_array = pdf_alloc_obj ();
   new_array->type = PDF_ARRAY_OBJ;
-  /*  new_array->value.array.objs = */
+  new_array->value.array.objs = 
+    gl_list_create_empty (GL_ARRAY_LIST,
+                          pdf_compare_obj_list_elt,
+                          NULL,      /* hashcode_fn */
+                          pdf_dealloc_obj_list_elt,
+                          PDF_TRUE); /* allow duplicates */
 
   return new_array;
 }
@@ -138,7 +149,12 @@ pdf_create_dict (void)
 
   new_dict = pdf_alloc_obj ();
   new_dict->type = PDF_DICT_OBJ;
-  /*  new_dict->value.dict.entries = */
+  new_dict->value.dict.entries = 
+    gl_list_create_empty (GL_ARRAY_LIST,
+                          pdf_compare_dict_entry_list_elt,
+                          NULL,      /* hashcode_fn */
+                          pdf_dealloc_dict_entry_list_elt,
+                          PDF_TRUE); /* allow duplicates */
 
   return new_dict;
 }
@@ -185,17 +201,31 @@ pdf_dealloc_obj (pdf_obj_t obj)
       }
     case PDF_ARRAY_OBJ:
       {
-        /* obj->value.array.objs */
+        gl_list_free (obj->value.array.objs);
         break;
       }
     case PDF_DICT_OBJ:
       {
-        /* obj->value.dict.entries */
+        gl_list_free (obj->value.dict.entries);
         break;
       }
     }
 
   free (obj);
+}
+
+void
+pdf_dealloc_obj_list_elt (const void* elt)
+{
+  pdf_dealloc_obj ((pdf_obj_t) elt);
+}
+
+static bool 
+pdf_compare_obj_list_elt (const void *elt1,
+                          const void *elt2)
+{
+  /* Any object in an array is a unique object */
+  return PDF_FALSE;
 }
 
 
@@ -212,6 +242,36 @@ static void
 pdf_dealloc_dict_entry (pdf_dict_entry_t entry)
 {
   free (entry);
+}
+
+static void
+pdf_dealloc_dict_entry_list_elt (const void *elt)
+{
+  pdf_dealloc_dict_entry ((pdf_dict_entry_t) elt);
+}
+
+static bool
+pdf_compare_dict_entry_list_elt (const void *elt1,
+                                 const void *elt2)
+{
+  pdf_dict_entry_t entry1;
+  pdf_dict_entry_t entry2;
+
+  entry1 = (pdf_dict_entry_t) elt1;
+  entry2 = (pdf_dict_entry_t) elt2;
+
+  /* Note that the `key' object in the dictionary entry should be of
+     type `name' */
+
+  if (entry1->key->value.name.size !=
+      entry2->key->value.name.size)
+    {
+      return PDF_FALSE;
+    }
+
+  return (!memcmp (entry1->key->value.name.data,
+                   entry2->key->value.name.data,
+                   entry1->key->value.name.size));
 }
 
 

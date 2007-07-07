@@ -14,6 +14,7 @@
 	(pdf_alloc_dict_entry): New function.
 	(pdf_dealloc_dict_entry): New function.
 	(pdf_list_dealloc_dict_entry): New function.
+	(pdf_dealloc_dict_entry_list_elm): New function.
 
 	* src/Makefile.am (libgnupdf_la_SOURCES): `pdf_obj.c' added.
 
