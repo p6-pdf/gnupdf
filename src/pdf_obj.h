@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/07 22:07:18 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/07 23:07:01 jemarch"
  *
  *       File:         pdf_obj.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -232,7 +232,6 @@ typedef struct pdf_obj_s *pdf_obj_t;
   ((obj)->value.dict)
 #define GET_INDIRECT(obj) \
   ((obj)->value.indirect)
-
 
 
 /* 
