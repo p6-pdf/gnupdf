@@ -1,5 +1,12 @@
 2007-07-07  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/Makefile.am (libgnupdf_la_SOURCES): Added `pdf_xref.h' and
+	`pdf_xref.c'.
+
+	* src/pdf_xref.c: New file.
+
+	* src/pdf_xref.h: New file.
+
 	* src/pdf_obj.c (pdf_get_bool): New function.
 	(pdf_set_bool): New function.
 	(pdf_get_int): New function.

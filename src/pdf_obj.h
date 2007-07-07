@@ -1,10 +1,10 @@
-/* -*- mode: C -*- Time-stamp: "07/07/07 23:07:01 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/07 23:15:04 jemarch"
  *
  *       File:         pdf_obj.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
  *       Date:         Sat Jul  7 01:10:11 2007
  *
- *       GNU PDF Library - PDF objects header file
+ *       GNU PDF Library - PDF objects
  *
  */
 

@@ -30,4 +30,12 @@ distribution for distribution terms.
 
   It is used by the parser and other library modules.
   
+- pdf_xref.h, pdf_xref.c
+
+  The PDF xref table module. This module implement an abstraction to
+  store the information from an arbitrary number of PDF xref tables
+  and cross-reference streams.
+ 
+  It is used by the parser and other library modules.
+
 
