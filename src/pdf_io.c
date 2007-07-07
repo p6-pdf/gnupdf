@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/07 00:38:16 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/07 03:56:00 jemarch"
  *
  *       File:         pdf_io.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -105,7 +105,7 @@ pdf_io_seek (pdf_io_t io,
   return PDF_OK;
 }
 
-inline int
+INLINE int
 pdf_io_seek_beg (pdf_io_t io,
                  pdf_io_pos_t pos)
 {
@@ -117,7 +117,7 @@ pdf_io_seek_beg (pdf_io_t io,
   return PDF_OK;
 }
 
-inline int
+INLINE int
 pdf_io_seek_cur (pdf_io_t io,
                  pdf_io_pos_t pos)
 {
@@ -129,7 +129,7 @@ pdf_io_seek_cur (pdf_io_t io,
   return PDF_OK;
 }
 
-inline int
+INLINE int
 pdf_io_seek_end (pdf_io_t io,
                  pdf_io_pos_t pos)
 {
@@ -141,13 +141,13 @@ pdf_io_seek_end (pdf_io_t io,
   return PDF_OK;
 }
 
-inline pdf_io_pos_t
+INLINE pdf_io_pos_t
 pdf_io_tell (pdf_io_t io)
 {
   return ftell (io->data.file.stream);
 }
 
-inline size_t
+INLINE size_t
 pdf_io_read (pdf_io_t io,
              char *buf,
              size_t bytes)
@@ -160,7 +160,7 @@ pdf_io_read (pdf_io_t io,
   return fread (buf, 1, bytes, io->data.file.stream);
 }
 
-inline size_t
+INLINE size_t
 pdf_io_write (pdf_io_t io,
               char *buf,
               size_t bytes)
@@ -173,7 +173,7 @@ pdf_io_write (pdf_io_t io,
   return fwrite (buf, 1, bytes, io->data.file.stream);
 }
 
-inline pdf_io_pos_t
+INLINE pdf_io_pos_t
 pdf_io_size (pdf_io_t io)
 {
   struct stat file_stats;
