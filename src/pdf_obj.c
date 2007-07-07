@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/07 21:34:59 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/07 22:08:23 jemarch"
  *
  *       File:         pdf_obj.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -586,7 +586,14 @@ pdf_add_array_elt (pdf_obj_t obj,
   return PDF_OK;
 }
 
-
+inline int
+pdf_append_array_elt (pdf_obj_t obj,
+                      pdf_obj_t elt)
+{
+  return pdf_add_array_elt (obj, 
+                            pdf_get_array_size (obj),
+                            elt);
+}
 
 /* Private functions */
 

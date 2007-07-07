@@ -27,6 +27,7 @@
 	(pdf_get_dict_entry): New function.
 	(pdf_remove_dict_entry): New function.
 	(pdf_create_dict_entry): New function.
+	(pdf_append_array_elt): New function.
 
 	* torture/Makefile.am: New testsuite, `test-obj_createdestroy'.
 

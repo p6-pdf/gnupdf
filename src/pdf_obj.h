@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/07 18:58:49 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/07 22:07:18 jemarch"
  *
  *       File:         pdf_obj.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -280,6 +280,7 @@ int pdf_remove_array_elt (pdf_obj_t obj, int index);
 pdf_obj_t pdf_get_array_elt (pdf_obj_t obj, int index);
 int pdf_set_array_elt (pdf_obj_t obj, int index, pdf_obj_t elt);
 int pdf_add_array_elt (pdf_obj_t obj, int index, pdf_obj_t elt);
+int pdf_append_array_elt (pdf_obj_t obj, pdf_obj_t elt);
 
 /* Managing dictionaries */
 int pdf_get_dict_size (pdf_obj_t obj);
