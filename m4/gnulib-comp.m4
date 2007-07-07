@@ -43,10 +43,12 @@ AC_DEFUN([gl_INIT],
   AC_SUBST([LTLIBINTL])
   gl_INLINE
   gl_LIST
+  gl_SIZE_MAX
   AM_STDBOOL_H
   gl_STDLIB_H
   gl_UNISTD_H
   gl_XALLOC
+  gl_XSIZE
   m4_popdef([AC_LIBSOURCES])
   m4_popdef([AC_REPLACE_FUNCS])
   m4_popdef([AC_LIBOBJ])
@@ -90,14 +92,18 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/exitfail.c
   lib/exitfail.h
   lib/gettext.h
+  lib/gl_array_list.c
+  lib/gl_array_list.h
   lib/gl_list.c
   lib/gl_list.h
+  lib/size_max.h
   lib/stdbool_.h
   lib/stdlib_.h
   lib/unistd_.h
   lib/xalloc-die.c
   lib/xalloc.h
   lib/xmalloc.c
+  lib/xsize.h
   m4/absolute-header.m4
   m4/error.m4
   m4/exitfail.m4
@@ -106,8 +112,10 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/include_next.m4
   m4/inline.m4
   m4/onceonly_2_57.m4
+  m4/size_max.m4
   m4/stdbool.m4
   m4/stdlib_h.m4
   m4/unistd_h.m4
   m4/xalloc.m4
+  m4/xsize.m4
 ])
