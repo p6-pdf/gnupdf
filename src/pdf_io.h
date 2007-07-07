@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/06 23:14:11 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/07 00:38:21 jemarch"
  *
  *       File:         pdf_io.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
