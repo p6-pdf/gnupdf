@@ -1,0 +1,33 @@
+This directory contain the source files that compound the GNU PDF
+Library. Please see the COPYING file in the root directory of this
+distribution for distribution terms.
+
+
+- pdf.h, pdf.c
+  
+  These files implement the public entries to the library (both data
+  types and functions).
+
+  Client applications should #include <pdf.h>
+
+- pdf_base.h
+
+  Useful definitions (constants, data types, macros...) for any
+  library module.
+ 
+- pdf_io.h, pdf_io.c
+
+  The Input/Output library module. This module implement abstract
+  access (both read/write) to PDF streams.
+
+  It is used by the lexer and other library modules.
+
+- pdf_obj.h, pdf_obj.c
+
+  The PDF objects library module. This module implement opaque types
+  for the several PDF objects and provide a rich set of functions to
+  manipulate these objects.
+
+  It is used by the parser and other library modules.
+  
+
