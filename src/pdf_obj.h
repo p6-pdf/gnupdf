@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/07 03:45:15 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/07 05:39:54 jemarch"
  *
  *       File:         pdf_obj.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -42,9 +42,6 @@
 
 #ifndef PDF_OBJ_H
 #define PDF_OBJ_H
-
-#include <gl_list.h>
-
 
 /* The PDF NULL object has a type and a value that are unequal to
    those of any other object. There is only one possible value for
@@ -110,7 +107,7 @@ typedef struct pdf_string_s *pdf_string_t;
 
 struct pdf_array_s
 {
-  gl_list_t objs;
+  /*  gl_list_t objs; */
 };
 
 typedef struct pdf_array_s *pdf_array_t;
@@ -130,9 +127,11 @@ struct pdf_dict_entry_s
   struct pdf_obj_s *value;
 };
 
+typedef struct pdf_dict_entry_s *pdf_dict_entry_t;
+
 struct pdf_dict_s
 {
-  gl_list_t entries;
+  /*  gl_list_t entries; */
 };
 
 typedef struct pdf_dict_s *pdf_dict_t;
@@ -180,11 +179,11 @@ struct pdf_obj_s
     pdf_boolean_t boolean;
     pdf_integer_t integer;
     pdf_real_t real;
-    pdf_string_t string;
-    pdf_name_t name;
-    pdf_array_t array;
-    pdf_dict_t dict;
-    pdf_indirect_t indirect;
+    struct pdf_string_s string;
+    struct pdf_name_s name;
+    struct pdf_array_s array;
+    struct pdf_dict_s dict;
+    struct pdf_indirect_s indirect;
 
   } value;
 };
@@ -219,11 +218,11 @@ pdf_obj_t pdf_create_null (void);
 pdf_obj_t pdf_create_boolean (int value);
 pdf_obj_t pdf_create_integer (int value);
 pdf_obj_t pdf_create_real (float value);
-pdf_obj_t pdf_create_string (char *value);
-pdf_obj_t pdf_create_name (char *value);
+pdf_obj_t pdf_create_string (char *value, int size);
+pdf_obj_t pdf_create_name (char *value, int size);
 pdf_obj_t pdf_create_array (void);
 pdf_obj_t pdf_create_dict (void);
-pdf_obj_t pdf_create_indirect (int on, int gn);
+pdf_obj_t pdf_create_indirect (unsigned int on, unsigned int gn);
 
 #endif /* pdf_obj.h */
 

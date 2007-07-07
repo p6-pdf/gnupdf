@@ -1,5 +1,20 @@
 2007-07-07  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/pdf_obj.c (pdf_create_null): New function.
+	(pdf_alloc_obj): New function.
+	(pdf_create_boolean): New function.
+	(pdf_create_int): New function.
+	(pdf_create_real): New function.
+	(pdf_create_string): New function.
+	(pdf_create_array): New function.
+	(pdf_create_dict): New function.
+	(pdf_create_indirect): New function.
+	(pdf_dealloc_obj): New function.
+	(pdf_list_dealloc_obj): New function.
+	(pdf_alloc_dict_entry): New function.
+	(pdf_dealloc_dict_entry): New function.
+	(pdf_list_dealloc_dict_entry): New function.
+
 	* src/Makefile.am (libgnupdf_la_SOURCES): `pdf_obj.c' added.
 
 	* src/pdf_obj.c: New file.
