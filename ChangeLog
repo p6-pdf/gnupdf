@@ -1,5 +1,10 @@
 2007-07-07  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/pdf_obj.c (pdf_create_dict): Disallow duplicates in
+	dictionary.
+
+	* configure.ac: Added `doc/Makefile' to output files.
+
 	* src/pdf_obj.c (pdf_create_null): New function.
 	(pdf_alloc_obj): New function.
 	(pdf_create_boolean): New function.

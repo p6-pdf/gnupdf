@@ -1,4 +1,4 @@
-# Top-level Makefile.am
+# Documentation directory Makefile.am
 # GNU PDF Library
 
 # Copyright (C) 2007 Jose E. Marchesi
@@ -16,8 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = lib src torture doc
-
+info_TEXINFOS = gnupdf.texi
+gnupdf_TEXINFOS = fdl.texi
 
 # End of Makefile.am
