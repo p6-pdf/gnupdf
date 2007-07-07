@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/06 17:19:17 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/07 03:47:41 jemarch"
  *
  *       File:         pdf.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -37,7 +37,7 @@ typedef struct _pdf_doc_t
   pdf_io_t trg; /* Target of the pdf data */
   
 
-} *pdf_doc_t;;
+} *pdf_doc_t;
   
 
 #endif /* pdf.h */
