@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/06 22:05:06 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/07 02:59:49 jemarch"
  *
  *       File:         pdf_base.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -23,9 +23,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/* This library module implement the abstract input/output routines
-   used by the pdf lexical scanner */
 
 #ifndef _PDF_BASE_H
 #define _PDF_BASE_H
