@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/07 02:44:26 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/07 02:53:16 jemarch"
  *
  *       File:         pdf_obj.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -41,6 +41,8 @@
 
 #ifndef PDF_OBJ_H
 #define PDF_OBJ_H
+
+#include <gl_list.h>
 
 
 /* The PDF NULL object has a type and a value that are unequal to

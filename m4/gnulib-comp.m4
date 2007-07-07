@@ -42,6 +42,8 @@ AC_DEFUN([gl_INIT],
   AC_SUBST([LIBINTL])
   AC_SUBST([LTLIBINTL])
   gl_INLINE
+  gl_LIST
+  AM_STDBOOL_H
   gl_STDLIB_H
   gl_UNISTD_H
   gl_XALLOC
@@ -88,6 +90,9 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/exitfail.c
   lib/exitfail.h
   lib/gettext.h
+  lib/gl_list.c
+  lib/gl_list.h
+  lib/stdbool_.h
   lib/stdlib_.h
   lib/unistd_.h
   lib/xalloc-die.c
@@ -96,10 +101,12 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/absolute-header.m4
   m4/error.m4
   m4/exitfail.m4
+  m4/gl_list.m4
   m4/gnulib-common.m4
   m4/include_next.m4
   m4/inline.m4
   m4/onceonly_2_57.m4
+  m4/stdbool.m4
   m4/stdlib_h.m4
   m4/unistd_h.m4
   m4/xalloc.m4
