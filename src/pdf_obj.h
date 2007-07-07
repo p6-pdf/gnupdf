@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/07 03:29:15 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/07 03:34:56 jemarch"
  *
  *       File:         pdf_obj.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -178,6 +178,26 @@ struct pdf_obj_s
 
 typedef struct pdf_obj_s *pdf_obj_t;
 
+/* Accessing macros */
+
+#define IS_NULL(obj) \
+  (obj->type == PDF_NULL_OBJ)
+#define IS_BOOL(obj) \
+  (obj->type == PDF_BOOLEAN_OBJ)
+#define IS_INT(obj) \
+  (obj->type == PDF_INT_OBJ)
+#define IS_REAL(obj) \
+  (obj->type == PDF_REAL_OBJ)
+#define IS_STRING(obj) \
+  (obj->type == PDF_STRING_OBJ)
+#define IS_NAME(obj) \
+  (obj->type == PDF_NAME_OBJ)
+#define IS_ARRAY(obj) \
+  ((obj)->type == PDF_ARRAY_OBJ)
+#define IS_DICT(obj) \
+  ((obj)->type == PDF_DICT_OBJ)
+#define IS_INDIRECT(obj) \
+  ((obj)->type == PDF_INDIRECT_OBJ)
 
 #endif /* pdf_obj.h */
 
