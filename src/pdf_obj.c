@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/07 18:16:09 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/07 18:36:04 jemarch"
  *
  *       File:         pdf_obj.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -399,6 +399,53 @@ pdf_obj_dup (pdf_obj_t obj)
     }
 
   return new_obj;
+}
+
+int
+pdf_remove_array_elt (pdf_obj_t obj, 
+                      int index)
+{
+  if ((obj->type != PDF_ARRAY_OBJ) ||
+      (index < 0) ||
+      (index >= gl_list_size (obj->value.array.objs)))
+    {
+      return PDF_ERROR;
+    }
+
+  gl_list_remove_at (obj->value.array.objs, index);
+  return PDF_OK;
+}
+
+pdf_obj_t
+pdf_get_array_elt (pdf_obj_t obj,
+                   int index)
+{
+  if ((obj->type != PDF_ARRAY_OBJ) ||
+      (index < 0) ||
+      (index >= gl_list_size (obj->value.array.objs)))
+    {
+      return NULL;
+    }
+
+  return (pdf_obj_t) gl_list_get_at (obj->value.array.objs, index);
+}
+
+int
+pdf_set_array_elt (pdf_obj_t obj,
+                   int index,
+                   pdf_obj_t elt)
+{
+  if ((obj->type != PDF_ARRAY_OBJ) ||
+      (index < 0) ||
+      (index >= gl_list_size (obj->value.array.objs)))
+    {
+      return PDF_ERROR;
+    }
+
+  gl_list_set_at (obj->value.array.objs,
+                  index,
+                  elt);
+  return PDF_OK;
 }
 
 /* Private functions */
