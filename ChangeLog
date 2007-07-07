@@ -2,6 +2,7 @@
 
 	* src/pdf_obj.c (pdf_create_dict): Disallow duplicates in
 	dictionary.
+	(pdf_destroy_obj): New function.
 
 	* configure.ac: Added `doc/Makefile' to output files.
 

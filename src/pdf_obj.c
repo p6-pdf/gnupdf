@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/07 15:22:54 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/07 15:56:01 jemarch"
  *
  *       File:         pdf_obj.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -171,6 +171,12 @@ pdf_create_indirect (unsigned int on,
   new_indirect->value.indirect.gn = gn;
 
   return new_indirect;
+}
+
+inline int
+pdf_destroy_obj (pdf_obj_t obj)
+{
+  pdf_dealloc_obj (obj);
 }
 
 /* Private functions */
