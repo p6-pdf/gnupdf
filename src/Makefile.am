@@ -18,7 +18,9 @@
 
 lib_LTLIBRARIES = libgnupdf.la
 libgnupdf_la_SOURCES = pdf.c \
-                       pdf_io.c pdf_io.h
+                       pdf_io.c pdf_io.h \
+                       pdf_obj.h
+
 include_HEADERS = pdf.h
 libgnupdf_la_LIBADD = $(top_srcdir)/lib/libgnu.la
 
