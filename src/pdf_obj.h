@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/08 02:08:24 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/08 02:09:40 jemarch"
  *
  *       File:         pdf_obj.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -144,7 +144,7 @@ typedef struct pdf_dict_s *pdf_dict_t;
 
 /* A PDF indirect object is composed by:
 
-   - Object number (positive integjer)
+   - Object number (positive integer)
    - Generation number (non-negative integer) */
 
 struct pdf_indirect_s
@@ -157,7 +157,6 @@ struct pdf_indirect_s
 };
 
 typedef struct pdf_indirect_s *pdf_indirect_t;
-   
 
 enum pdf_obj_type_t
 {
@@ -235,11 +234,9 @@ typedef struct pdf_obj_s *pdf_obj_t;
 #define GET_INDIRECT(obj) \
   ((obj)->value.indirect)
 
-
 /* 
  * Forward declarations
  */
-
 
 /* Object creation */
 pdf_obj_t pdf_create_null (void);
