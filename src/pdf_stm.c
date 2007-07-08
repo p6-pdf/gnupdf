@@ -1,10 +1,10 @@
-/* -*- mode: C -*- Time-stamp: "07/07/08 18:11:04 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/08 21:14:14 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
  *       Date:         Fri Jul  6 18:43:15 2007
  *
- *       GNU PDF Library - streams
+ *       GNU PDF Library - Streams
  *
  */
 
@@ -26,179 +26,212 @@
 
 
 #include <unistd.h>
-#include <string.h>
-#include <sys/stat.h>
 #include <xalloc.h>
+#include <pdf_stm_file.h>
+/* #include <pdf_stm_buffer.h> */
 #include <pdf_stm.h>
 
-#ifdef HAVE_FSEEK
-#define fseek fseeko
-#endif /* HAVE_FSEEK */
 
-static int pdf_stm_file_close (pdf_stm_file_t file);
-static pdf_stm_size pdf_stm_file_size (pdf_stm_file_t file);
-static int pdf_stm_file_seek (pdf_stm_file_t file, pdf_stm_pos_t pos,enum pdf_stm_seek_mode mode);
-static pdf_stm_size pdf_stm_file_tell (pdf_stm_file_t file);
-static size_t pdf_stm_file_read (pdf_stm_file_t file, char *buf, size_t bytes);
-static size_t pdf_stm_file_write (pdf_stm_file_t file, char *buf, size_t bytes);
+/*
+ * Backend-specific initialization functions
+ */
 
-static int pdf_stm_buffer_close (pdf_stm_buffer_t buffer);
-static pdf_stm_size pdf_stm_buffer_size (pdf_stm_buffer_t buffer);
-static int pdf_stm_buffer_seek (pdf_stm_buffer_t buffer, pdf_stm_pos_t pos, enum pdf_stm_seek_mode mode);
-static pdf_stm_size pdf_stm_buffer_tell (pdf_stm_buffer_t buffer);
-static size_t pdf_stm_buffer_read (pdf_stm_buffer_t buffer, char *buf, size_t bytes);
-static size_t pdf_stm_buffer_write (pdf_stm_buffer_t buffer, char *buf, size_t bytes);
-
-
-pdf_stm_t 
-pdf_stm_open_file (char *filename, 
-                   enum pdf_stm_file_mode_t mode)
+pdf_stm_t
+pdf_create_file_stm (char *filename,
+                     int mode)
 {
   pdf_stm_t new_stm;
+  struct pdf_stm_file_conf_s conf;
 
-  new_stm = (pdf_stm_t) xmalloc (sizeof(struct pdf_stm_s));
-  new_stm->type = PDF_STM_FILE;
-  new_stm->data.file.mode = mode;
-  new_stm->data.file.filename = strdup (filename);
-  new_stm->data.file.stm = NULL;
+  new_stm = (pdf_stm_t) xmalloc (sizeof (struct pdf_stm_s));
+  
+  /* Install backend functions */
+  new_stm->backend.funcs.init = pdf_stm_file_init;
+  new_stm->backend.funcs.write_p = pdf_stm_file_write_p;
+  new_stm->backend.funcs.read_p = pdf_stm_file_read_p;
+  new_stm->backend.funcs.seek_p = pdf_stm_file_seek_p;
+  new_stm->backend.funcs.size_p = pdf_stm_file_size_p;
+  new_stm->backend.funcs.peek_p = pdf_stm_file_peek_p;
+  new_stm->backend.funcs.size = pdf_stm_file_size;
+  new_stm->backend.funcs.seek = pdf_stm_file_seek;
+  new_stm->backend.funcs.tell = pdf_stm_file_tell;
+  new_stm->backend.funcs.read = pdf_stm_file_read;
+  new_stm->backend.funcs.write = pdf_stm_file_write;
+  new_stm->backend.funcs.peek = pdf_stm_file_peek;
 
+  /* Configure the backend */
+  conf.filename = filename;
+  
   switch (mode)
     {
-    case PDF_STM_FILE_READ:
+    case PDF_STM_OPEN_MODE_READ:
       {
-        new_stm->data.file.stm = 
-          fopen (filename, "rb");
+        conf.mode = PDF_STM_FILE_OPEN_MODE_READ;
         break;
       }
-    case PDF_STM_FILE_WRITE:
+    case PDF_STM_OPEN_MODE_WRITE:
       {
-        new_stm->data.file.stm =
-          fopen (filename, "wb");
+        conf.mode = PDF_STM_FILE_OPEN_MODE_WRITE;
         break;
       }
-    case PDF_STM_FILE_APPEND:
+    case PDF_STM_OPEN_MODE_APPEND:
       {
-        new_stm->data.file.stm =
-          fopen (filename, "ab");
+        conf.mode = PDF_STM_FILE_OPEN_MODE_APPEND;
+        break;
+      }
+    default:
+      {
+        /* Make the compiler happy */
         break;
       }
     }
 
-  if (new_stm->data.file.stm == NULL)
-    {
-      free (new_stm);
-      return NULL;
-    }
-
+  /* Initialize the backend */
+  (new_stm->backend.funcs.init) (&new_stm->backend.data, &conf);
+                                
   return new_stm;
 }
+
+/**********************************************/
+/* pdf_stm_t                                  */
+/* pdf_create_buffer_stm (pdf_stm_pos_t size, */
+/*                        char init_p,        */
+/*                        char init)          */
+/* {                                          */
+/*   struct pdf_stm_file_conf_s conf;         */
+/*                                            */
+/*                                            */
+/* }                                          */
+/**********************************************/
+
+/* 
+ * Generic functions
+ */
 
 int
 pdf_stm_close (pdf_stm_t stm)
 {
-  if (fclose (stm->data.file.stm))
-    {
-      return PDF_ERROR;
-    }
+  int status;
 
+  status = stm->backend.funcs.close (BE_DATA(stm));
   free (stm);
-  return PDF_OK;
+
+  return status;
 }
 
-static int
+pdf_stm_pos_t
+pdf_stm_size (pdf_stm_t stm)
+{
+  pdf_stm_pos_t size;
+
+  if (stm->backend.funcs.size_p (BE_DATA(stm)))
+    {
+      size = stm->backend.funcs.size (BE_DATA(stm));
+    }
+  else
+    {
+      size = 0;
+    }
+  
+  return size;
+}
+
+int
 pdf_stm_seek (pdf_stm_t stm,
-              pdf_stm_pos_t pos,
-              int seek_mode)
+              pdf_stm_pos_t pos)
 {
-  if (!fseek (stm->data.file.stm,
-              pos,
-              seek_mode))
-    {
-      return PDF_ERROR;
-    }
-  
-  return PDF_OK;
-}
+  int status;
 
-INLINE int
-pdf_stm_seek_beg (pdf_stm_t stm,
-                  pdf_stm_pos_t pos)
-{
-  if (pdf_stm_seek (stm, pos, SEEK_SET) == -1)
+  if (stm->backend.funcs.seek_p (BE_DATA(stm)))
     {
-      return PDF_ERROR;
+      status = stm->backend.funcs.seek (BE_DATA(stm), pos);
     }
-  
-  return PDF_OK;
-}
-
-INLINE int
-pdf_stm_seek_cur (pdf_stm_t stm,
-                  pdf_stm_pos_t pos)
-{
-  if (pdf_stm_seek (stm, pos, SEEK_CUR) == -1)
+  else
     {
-      return PDF_ERROR;
+      status = PDF_ERROR;
     }
 
-  return PDF_OK;
+  return status;
 }
 
-INLINE int
-pdf_stm_seek_end (pdf_stm_t stm,
-                  pdf_stm_pos_t pos)
-{
-  if (pdf_stm_seek (stm, pos, SEEK_END) == -1)
-    {
-      return PDF_ERROR;
-    }
-
-  return PDF_OK;
-}
-
-INLINE pdf_stm_pos_t
+pdf_stm_pos_t
 pdf_stm_tell (pdf_stm_t stm)
 {
-  return ftell (stm->data.file.stm);
+  pdf_stm_pos_t result;
+
+  if (stm->backend.funcs.tell_p (BE_DATA(stm)))
+    {
+      result = stm->backend.funcs.tell (BE_DATA(stm));
+    }
+  else
+    {
+      result = 0;
+    }
+
+  return result;
 }
 
-INLINE size_t
+size_t
 pdf_stm_read (pdf_stm_t stm,
               char *buf,
               size_t bytes)
 {
-  if (stm->data.file.mode != PDF_STM_FILE_READ)
+  size_t result;
+
+  if (stm->backend.funcs.read_p (BE_DATA(stm)))
     {
-      return -1;
+      result = stm->backend.funcs.read (BE_DATA(stm),
+                                        buf,
+                                        bytes);
+    }
+  else
+    {
+      result = 0;
     }
 
-  return fread (buf, 1, bytes, stm->data.file.stm);
+  return result;
 }
 
-INLINE size_t
+size_t
 pdf_stm_write (pdf_stm_t stm,
                char *buf,
                size_t bytes)
 {
-  if (stm->data.file.mode == PDF_STM_FILE_READ)
+  size_t result;
+
+  if (stm->backend.funcs.write_p (BE_DATA(stm)))
     {
-      return -1;
+      result = stm->backend.funcs.write (BE_DATA(stm),
+                                         buf,
+                                         bytes);
+    }
+  else
+    {
+      result = 0;
     }
 
-  return fwrite (buf, 1, bytes, stm->data.file.stm);
+  return result;
 }
 
-INLINE pdf_stm_pos_t
-pdf_stm_size (pdf_stm_t stm)
+size_t
+pdf_stm_peek (pdf_stm_t stm,
+              char *buf,
+              size_t bytes)
 {
-  struct stat file_stats;
+  size_t result;
 
-  if (fstat (fileno(stm->data.file.stm), &file_stats) != 0)
+  if (stm->backend.funcs.peek_p (BE_DATA(stm)))
     {
-      return -1;
+      result = stm->backend.funcs.peek (BE_DATA(stm),
+                                        buf,
+                                        bytes);
+    }
+  else
+    {
+      result = 0;
     }
 
-  return file_stats.st_size;
+  return result;
 }
 
-/* End of pdf_stm.h */
+/* End of pdf_stm.c */

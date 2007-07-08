@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/07 03:55:39 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/08 20:17:40 jemarch"
  *
  *       File:         pdf_base.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -27,6 +27,7 @@
 #ifndef _PDF_BASE_H
 #define _PDF_BASE_H
 
+#include <sys/types.h> /* for off_t */
 #include <config.h>
 
 #ifdef HAVE_INLINE
@@ -40,6 +41,19 @@
 
 #define PDF_OK PDF_TRUE
 #define PDF_ERROR PDF_FALSE
+
+/* A variable of type `pdf_stm_pos_t' contain a byte-offset relative to
+   the beginning of a stream object. 
+
+   Please be careful manipulating `pdf_stm_pos_t' values. Its value is
+   assured to be a signed scalable one, but its size may be wider than
+   a long. 
+
+   Note that this is a ugly hack: we define `pdf_stm_pos_t' in
+   `pdf_base.h' just because the stream backends need to use it. Its
+   proper place would be `pdf_stm.h'. */
+
+typedef off_t pdf_stm_pos_t;
 
 #endif /* pdf_base.h */
 

@@ -16,10 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-noinst_PROGRAMS = test-io_openclose \
-                  test-io_seek \
-                  test-io_readwrite \
-                  test-obj_createdestroy \
+noinst_PROGRAMS = test-obj_createdestroy \
                   test-obj_dupequality \
                   test-obj_array
 
@@ -27,10 +24,7 @@ LDADD = $(top_srcdir)/src/libgnupdf.la
 
 AM_CPPFLAGS = -I ../lib
 
-TESTS = test-io_openclose \
-        test-io_seek \
-        test-io_readwrite \
-        test-obj_createdestroy \
+TESTS = test-obj_createdestroy \
         test-obj_dupequality \
         test-obj_array
 
