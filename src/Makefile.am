@@ -18,7 +18,7 @@
 
 lib_LTLIBRARIES = libgnupdf.la
 libgnupdf_la_SOURCES = pdf.c \
-                       pdf_io.c pdf_io.h \
+                       pdf_stm.c pdf_stm.h \
                        pdf_obj.c pdf_obj.h \
                        pdf_xref.c pdf_xref.h
 

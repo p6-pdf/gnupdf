@@ -15,10 +15,11 @@ distribution for distribution terms.
   Useful definitions (constants, data types, macros...) for any
   library module.
  
-- pdf_io.h, pdf_io.c
+- pdf_stm.h, pdf_stm.c
 
-  The Input/Output library module. This module implement abstract
-  access (both read/write) to PDF streams.
+  The Input/Output streams library module. This module implement
+  abstract access (both read/write) to files or memory buffers. It
+  support filtering.
 
   It is used by the lexer and other library modules.
 

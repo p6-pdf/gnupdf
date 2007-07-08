@@ -1,6 +1,7 @@
 2007-07-08  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/Makefile.am (AM_CFLAGS): `-Wall' added.
+	(libgnupdf_la_SOURCES): Changed io to stream.
 
 2007-07-07  Jose E. Marchesi  <jemarch@gnu.org>
 
