@@ -1,3 +1,7 @@
+2007-07-08  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/Makefile.am (AM_CFLAGS): `-Wall' added.
+
 2007-07-07  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/Makefile.am (libgnupdf_la_SOURCES): Added `pdf_xref.h' and

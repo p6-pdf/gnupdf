@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/08 02:09:40 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/08 16:13:29 jemarch"
  *
  *       File:         pdf_obj.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -243,8 +243,8 @@ pdf_obj_t pdf_create_null (void);
 pdf_obj_t pdf_create_boolean (int value);
 pdf_obj_t pdf_create_integer (int value);
 pdf_obj_t pdf_create_real (float value);
-pdf_obj_t pdf_create_string (char *value, int size);
-pdf_obj_t pdf_create_name (char *value, int size);
+pdf_obj_t pdf_create_string (unsigned char *value, int size);
+pdf_obj_t pdf_create_name (unsigned char *value, int size);
 pdf_obj_t pdf_create_array (void);
 pdf_obj_t pdf_create_dict (void);
 pdf_obj_t pdf_create_indirect (unsigned int on, unsigned int gn);

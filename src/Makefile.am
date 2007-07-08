@@ -25,6 +25,7 @@ libgnupdf_la_SOURCES = pdf.c \
 include_HEADERS = pdf.h
 libgnupdf_la_LIBADD = $(top_srcdir)/lib/libgnu.la
 
+AM_CFLAGS = -Wall -fno-strict-aliasing
 AM_CPPFLAGS = -I$(top_builddir)/lib
 
 

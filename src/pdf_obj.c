@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/07 22:08:23 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/08 16:13:56 jemarch"
  *
  *       File:         pdf_obj.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -25,6 +25,8 @@
  */
 
 #include <string.h>
+#include <malloc.h>
+#include <xalloc.h>
 #include <pdf_obj.h>
 
 /* Private functions prototypes */
@@ -98,7 +100,7 @@ pdf_create_real (float value)
 }
 
 pdf_obj_t
-pdf_create_string (char *value,
+pdf_create_string (unsigned char *value,
                    int size)
 {
   pdf_obj_t string_obj;
@@ -106,7 +108,7 @@ pdf_create_string (char *value,
   string_obj = pdf_alloc_obj ();
   string_obj->type = PDF_STRING_OBJ;
   string_obj->value.string.data = 
-    (char *) xmalloc (size);
+    (unsigned char *) xmalloc (size);
   memcpy (string_obj->value.string.data,
           value,
           size);
@@ -116,7 +118,7 @@ pdf_create_string (char *value,
 }
 
 pdf_obj_t
-pdf_create_name (char *value,
+pdf_create_name (unsigned char *value,
                  int size)
 {
   pdf_obj_t name_obj;
@@ -124,7 +126,7 @@ pdf_create_name (char *value,
   name_obj = pdf_alloc_obj ();
   name_obj->type = PDF_NAME_OBJ;
   name_obj->value.name.data =
-    (char *) xmalloc (size);
+    (unsigned char *) xmalloc (size);
   memcpy (name_obj->value.name.data,
           value,
           size);
@@ -185,6 +187,7 @@ inline int
 pdf_destroy_obj (pdf_obj_t obj)
 {
   pdf_dealloc_obj (obj);
+  return PDF_OK;
 }
 
 inline int
@@ -352,7 +355,6 @@ pdf_remove_dict_entry (pdf_obj_t obj,
 {
   int status;
   pdf_dict_entry_t entry;
-  gl_list_node_t node;
 
   if (!pdf_dict_key_p (obj, key))
     {
@@ -455,6 +457,11 @@ pdf_obj_equal_p (pdf_obj_t obj1,
           (obj1->value.indirect.gn == obj2->value.indirect.gn);
         break;
       }
+    default:
+      {
+        /* Should not be reached. Make the compiler happy */
+        equal_p = PDF_FALSE;
+      }
     }
 
   return equal_p;
@@ -513,6 +520,12 @@ pdf_obj_dup (pdf_obj_t obj)
       {
         new_obj = pdf_create_indirect (obj->value.indirect.on,
                                        obj->value.indirect.gn);
+        break;
+      }
+    default:
+      {
+        /* Should not be reached: make the compiler happy */
+        new_obj = NULL;
         break;
       }
     }
@@ -629,6 +642,11 @@ pdf_dealloc_obj (pdf_obj_t obj)
     case PDF_DICT_OBJ:
       {
         gl_list_free (obj->value.dict.entries);
+        break;
+      }
+    default:
+      {
+        /* NOP */
         break;
       }
     }
