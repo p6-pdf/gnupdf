@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/07 23:15:04 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/08 02:07:02 jemarch"
  *
  *       File:         pdf_obj.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -92,7 +92,10 @@ typedef struct pdf_name_s *pdf_name_t;
 
 /* A PDF string is a sequence of bytes, in the range of 0-255. In
    particular it may contain NULL characters (code 0 in the ASCII
-   CCS). */
+   CCS). 
+
+   Corollary: NEVER NEVER NEVER EVER use a PDF string as an input
+   expecting null-terminated strings. You have been warned. */
  
 struct pdf_string_s
 {
