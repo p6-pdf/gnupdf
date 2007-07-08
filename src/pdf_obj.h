@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/08 02:07:02 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/08 02:07:57 jemarch"
  *
  *       File:         pdf_obj.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -109,8 +109,7 @@ typedef struct pdf_string_s *pdf_string_t;
    arranged sequentially. 
    
    Note that the list of objects is heterogeneous, so we must use
-   `pdf_obj_s'.
-*/
+   `pdf_obj_s'. */
 
 struct pdf_array_s
 {
