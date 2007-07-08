@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/08 02:07:57 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/08 02:08:24 jemarch"
  *
  *       File:         pdf_obj.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -119,8 +119,8 @@ struct pdf_array_s
 typedef struct pdf_array_s *pdf_array_t;
 
 /* A PDF dictionary object is an associative table containing pairs of
-   objects. The first of the pair is the `key' and the second element
-   is the `value'.
+   objects. The first element of the pair is the `key' and the second
+   element is the `value'.
 
    Any `key' object should be a name pdf object. On the other hand,
    the values may have any pdf object type. */
