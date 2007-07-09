@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/08 21:23:43 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/09 01:10:14 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -51,6 +51,7 @@ pdf_stm_file_init (void **be_data, void *conf_data)
   /* Fill it with configuration values */
   (*data)->filename = strdup (conf->filename);
   (*data)->mode = conf->mode;
+  (*data)->peek_size = 0;
 
   switch ((*data)->mode)
     {
@@ -121,7 +122,7 @@ pdf_stm_file_size_p (void *be_data)
 inline int
 pdf_stm_file_peek_p (void *be_data)
 {
-  return PDF_FALSE;
+  return PDF_TRUE;
 }
 
 int
@@ -197,10 +198,51 @@ pdf_stm_file_read (void *be_data,
                    size_t bytes)
 {
   pdf_stm_file_data_t data;
+  size_t read_bytes;
+  size_t peek_bytes;
+  size_t readed;
 
   data = (pdf_stm_file_data_t) be_data;
+  read_bytes = bytes;
+  peek_bytes = 0;
+  readed = 0;
 
-  return fread (buf, 1, bytes, data->file_stm);
+  if (data->peek_size > 0)
+    {
+      if (bytes > data->peek_size)
+        {
+          peek_bytes = data->peek_size;
+          read_bytes = read_bytes - peek_bytes;
+        }
+      else
+        {
+          peek_bytes = bytes;
+          read_bytes = 0;
+        }
+
+      memcpy (buf, 
+              data->peek_buffer,
+              peek_bytes);
+
+      data->peek_size = data->peek_size - peek_bytes;
+      if (data->peek_size == 0)
+        {
+          free (data->peek_buffer);
+        }
+    }
+
+  readed = readed + peek_bytes;
+
+  if (read_bytes > 0)
+    {
+      readed = readed + 
+        fread (buf + peek_bytes,
+               1, 
+               read_bytes,
+               data->file_stm);
+    }
+
+  return readed;
 }
 
 size_t
@@ -221,7 +263,32 @@ pdf_stm_file_peek (void *be_data,
                    char *buf,
                    size_t bytes)
 {
-  return 0;
+  pdf_stm_file_data_t data;
+  size_t readed;
+
+  data = (pdf_stm_file_data_t) be_data;
+
+  readed = fread (buf,
+                  1,
+                  bytes,
+                  data->file_stm);
+
+  if (data->peek_size > 0)
+    {
+      data->peek_buffer = (char *) xrealloc (data->peek_buffer,
+                                             data->peek_size + readed);
+      data->peek_size = readed;
+    }
+  else
+    {
+      data->peek_buffer = (char *) xmalloc (readed);
+      memcpy (data->peek_buffer,
+              buf,
+              readed);
+      data->peek_size = readed;
+    }
+
+  return readed;
 }
 
 /* End of pdf_stm.h */

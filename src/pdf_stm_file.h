@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/08 21:46:40 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/09 00:49:10 jemarch"
  *
  *       File:         pdf_stm_file.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -58,6 +58,8 @@ struct pdf_stm_file_data_s
   char *filename;
   enum pdf_stm_file_open_mode_t mode;
   FILE *file_stm;
+  pdf_stm_pos_t peek_size;
+  char *peek_buffer;
 };
 
 typedef struct pdf_stm_file_data_s *pdf_stm_file_data_t;
