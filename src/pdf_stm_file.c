@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/09 01:10:14 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/09 01:14:58 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -24,7 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
+#include <config.h>
 #include <unistd.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -37,7 +37,8 @@
 #endif /* HAVE_FSEEK */
 
 int
-pdf_stm_file_init (void **be_data, void *conf_data)
+pdf_stm_file_init (void **be_data, 
+                   void *conf_data)
 {
   pdf_stm_file_data_t *data;
   pdf_stm_file_conf_t conf;

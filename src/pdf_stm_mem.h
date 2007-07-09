@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/08 21:48:15 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/09 01:24:44 jemarch"
  *
  *       File:         pdf_stm_mem.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -34,7 +34,9 @@
 
 struct pdf_stm_mem_conf_s
 {
-
+  pdf_stm_pos_t size;
+  int init_p;
+  char init_char;
 };
 
 typedef struct pdf_stm_mem_conf_s *pdf_stm_mem_conf_t;
@@ -43,7 +45,9 @@ typedef struct pdf_stm_mem_conf_s *pdf_stm_mem_conf_t;
 
 struct pdf_stm_mem_data_s
 {
-
+  char *data;
+  pdf_stm_pos_t size;
+  pdf_stm_pos_t current;
 };
 
 typedef struct pdf_stm_mem_data_s *pdf_stm_mem_data_t;
