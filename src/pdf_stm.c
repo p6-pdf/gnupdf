@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/09 22:34:08 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/09 22:45:35 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -294,6 +294,28 @@ pdf_stm_peek (pdf_stm_t stm,
     }
 
   return result;
+}
+
+int
+pdf_stm_uninstall_filters (pdf_stm_t stm)
+{
+  int count;
+
+  for (count = 0; 
+       count < gl_list_size (stm->read_filter_list); 
+       count++)
+    {
+      gl_list_remove_at (stm->read_filter_list, 0);
+    }
+
+  for (count = 0; 
+       count < gl_list_size (stm->write_filter_list); 
+       count++)
+    {
+      gl_list_remove_at (stm->write_filter_list, 0);
+    }
+
+  return PDF_OK;
 }
 
 /* Private functions */
