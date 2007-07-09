@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/09 00:33:53 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/09 21:49:33 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -31,6 +31,17 @@
 #include <pdf_stm_mem.h>
 #include <pdf_stm.h>
 
+static pdf_stm_t pdf_stm_alloc (void);
+static void pdf_stm_dealloc (pdf_stm_t stm);
+static int pdf_stm_install_filter (pdf_stm_t stm,
+                                   int direction,
+                                   pdf_stm_init_filter_fn_t init_fn,
+                                   pdf_stm_apply_filter_fn_t process_fn,
+                                   pdf_stm_dealloc_filter_fn_t dealloc_fn,
+                                   void *conf);
+static void pdf_stm_filter_dealloc_list (const void *elt);
+static int pdf_stm_apply_filters (gl_list_t filter_list, char **buf, size_t *buf_size);
+                                   
 
 /*
  * Backend-specific initialization functions
@@ -43,7 +54,7 @@ pdf_create_file_stm (char *filename,
   pdf_stm_t new_stm;
   struct pdf_stm_file_conf_s conf;
 
-  new_stm = (pdf_stm_t) xmalloc (sizeof (struct pdf_stm_s));
+  new_stm = pdf_stm_alloc ();
   
   /* Install backend functions */
   new_stm->backend.funcs.init = pdf_stm_file_init;
@@ -92,16 +103,30 @@ pdf_create_file_stm (char *filename,
   return new_stm;
 }
 
-/*
-pdf_stm_t                                  
+/* pdf_stm_t                                  
 pdf_create_mem_stm (pdf_stm_pos_t size,    
                     char init_p,        
                     char init)          
 {                                          
   struct pdf_stm_mem_conf_s conf;          
 
-}
-*/
+  } */
+
+/*
+ * Filter-specific installation functions
+ */
+
+/*int
+pdf_stm_install_null_filter (pdf_stm_t stm, 
+                             pdf_stm_fdir_t direction)
+{
+  return pdf_stm_install_filter (stm,
+                                 direction,
+                                 pdf_stm_filter_null_init,
+                                 pdf_stm_filter_null_apply,
+                                 pdf_stm_filter_null_dealloc,
+                                 NULL);
+                                 }*/
 
 /* 
  * Generic functions
@@ -113,7 +138,7 @@ pdf_stm_close (pdf_stm_t stm)
   int status;
 
   status = stm->backend.funcs.close (BE_DATA(stm));
-  free (stm);
+  pdf_stm_dealloc (stm);
 
   return status;
 }
@@ -175,20 +200,27 @@ pdf_stm_read (pdf_stm_t stm,
               char *buf,
               size_t bytes)
 {
-  size_t result;
+  size_t readed_bytes;
 
   if (stm->backend.funcs.read_p (BE_DATA(stm)))
     {
-      result = stm->backend.funcs.read (BE_DATA(stm),
-                                        buf,
-                                        bytes);
+      readed_bytes = stm->backend.funcs.read (BE_DATA(stm),
+                                              buf,
+                                              bytes);
     }
   else
     {
-      result = 0;
+      readed_bytes = 0;
     }
 
-  return result;
+  if (readed_bytes != 0)
+    {
+      pdf_stm_apply_filters (stm->read_filter_list,
+                             &buf, 
+                             &readed_bytes);
+    }
+
+  return readed_bytes;
 }
 
 size_t
@@ -196,20 +228,24 @@ pdf_stm_write (pdf_stm_t stm,
                char *buf,
                size_t bytes)
 {
-  size_t result;
+  size_t written_bytes;
+
+  pdf_stm_apply_filters (stm->write_filter_list,
+                         &buf,
+                         &bytes);
 
   if (stm->backend.funcs.write_p (BE_DATA(stm)))
     {
-      result = stm->backend.funcs.write (BE_DATA(stm),
-                                         buf,
-                                         bytes);
+      written_bytes = stm->backend.funcs.write (BE_DATA(stm),
+                                                buf,
+                                                bytes);
     }
   else
     {
-      result = 0;
+      written_bytes = 0;
     }
 
-  return result;
+  return written_bytes;
 }
 
 size_t
@@ -231,6 +267,140 @@ pdf_stm_peek (pdf_stm_t stm,
     }
 
   return result;
+}
+
+/* Private functions */
+
+static pdf_stm_t 
+pdf_stm_alloc (void)
+{
+  pdf_stm_t stm;
+
+  stm = (pdf_stm_t) xmalloc (sizeof (struct pdf_stm_s));
+  stm->read_filter_list =
+    gl_list_create_empty (GL_ARRAY_LIST,
+                          NULL,      /* compare_fn */
+                          NULL,      /* hashcode_fn */
+                          pdf_stm_filter_dealloc_list,
+                          PDF_TRUE); /* allow duplicates */
+  stm->write_filter_list =
+    gl_list_create_empty (GL_ARRAY_LIST,
+                          NULL,      /* compare_fn */
+                          NULL,      /* hashcode_fn */
+                          pdf_stm_filter_dealloc_list,
+                          PDF_TRUE); /* allow duplicates */
+
+  return stm;
+}
+
+static void
+pdf_stm_dealloc (pdf_stm_t stm)
+{
+  gl_list_free (stm->read_filter_list);
+  gl_list_free (stm->write_filter_list);
+  free (stm);
+}
+
+static int 
+pdf_stm_install_filter (pdf_stm_t stm,
+                        int direction,
+                        pdf_stm_init_filter_fn_t init_fn,
+                        pdf_stm_apply_filter_fn_t apply_fn,
+                        pdf_stm_dealloc_filter_fn_t dealloc_fn,
+                        void *conf)
+{
+  pdf_stm_filter_t filter;
+  
+  /* Create the new filter */
+  filter = (pdf_stm_filter_t) xmalloc (sizeof(struct pdf_stm_filter_s));
+  filter->funcs.init = init_fn;
+  filter->funcs.apply = apply_fn;
+  filter->funcs.dealloc = dealloc_fn;
+
+  /* Initialize it */
+  if (conf != NULL)
+    {
+      (filter->funcs.init) (&filter->data, &conf);
+    }
+  else
+    {
+      (filter->funcs.init) (&filter->data, NULL);
+    }
+
+  /* Queue it */
+  switch (direction)
+    {
+    case PDF_STM_FILTER_READ:
+      {
+        gl_list_add_last (stm->read_filter_list, 
+                          (const void *) filter);
+        break;
+      }
+    case PDF_STM_FILTER_WRITE:
+      {
+        gl_list_add_last (stm->write_filter_list, 
+                          (const void *) filter);
+        break;
+      }
+    default:
+      {
+        /* Make compiler happy */
+        break;
+      }
+    }
+
+  return PDF_OK;
+}
+
+static void
+pdf_stm_filter_dealloc_list (const void *elt)
+{
+  pdf_stm_filter_t filter;
+
+  filter = (pdf_stm_filter_t) elt;
+
+  (filter->funcs.dealloc) (&filter->data);
+  free (filter);
+}
+
+static int
+pdf_stm_apply_filters (gl_list_t filter_list,
+                       char **buf,
+                       size_t *buf_size)
+{
+  pdf_stm_filter_t filter;
+  gl_list_iterator_t iter;
+  gl_list_node_t node;
+  char *filtered_data;
+  pdf_stm_pos_t filtered_size;
+
+  if (gl_list_size (filter_list) == 0)
+    {
+      return PDF_TRUE;
+    }
+  
+  iter = gl_list_iterator (filter_list);
+  while (gl_list_iterator_next (&iter, (const void **) &filter, &node))
+    {
+      if (filter->funcs.apply (filter->data, 
+                               *buf, *buf_size,
+                               &filtered_data, &filtered_size))
+        {
+          /* This filter was applied successfully. Replace data with
+             the result */
+          free (*buf);
+          *buf = filtered_data;
+          *buf_size = filtered_size;
+        }
+      else
+        {
+          /* Filter application failed. Free any residual data */
+          free (filtered_data);
+        }
+    }
+  gl_list_iterator_free (&iter);
+
+  return PDF_OK;
 }
 
 /* End of pdf_stm.c */

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/09 00:34:07 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/09 21:47:51 jemarch"
  *
  *       File:         pdf_stm.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -161,10 +161,60 @@ struct pdf_stm_be_s
 
 #define BE_DATA(STM) ((STM)->backend.data)
 
-/*
- * Filters
- */
+/* Filters
 
+   This stream implementation support the concept of read/write
+   filters.
+
+   Each filter should provide the virtual functions depicted in the
+   `pdf_stm_filter_s' structure:
+
+   `init'
+
+       This call should initialize the internal state of the filter.
+
+   `apply'
+
+       This function apply an input buffer and writes the result of
+       the application of the filter into an output buffer.
+
+       If the contents of the input buffer doesnt conform valid data
+       for the given buffer, this call should return PDF_FALSE.
+
+   `dealloc'
+  
+       This function should dealloc all memory resources managed by the
+       filter, and perform any needed finalization tasks.
+
+*/
+
+typedef int (*pdf_stm_init_filter_fn_t) (void **filter_data, void *conf_data);
+typedef int (*pdf_stm_apply_filter_fn_t) (void *filter_data,
+                                          char *in, pdf_stm_pos_t in_size, 
+                                          char **out, pdf_stm_pos_t *out_size);
+typedef int (*pdf_stm_dealloc_filter_fn_t) (void **filter_data);
+
+struct pdf_stm_filter_s
+{
+  struct
+  {
+
+    pdf_stm_init_filter_fn_t init;
+    pdf_stm_apply_filter_fn_t apply;
+    pdf_stm_dealloc_filter_fn_t dealloc;
+
+  } funcs;
+
+  void *data;
+};
+
+typedef struct pdf_stm_filter_s *pdf_stm_filter_t;
+
+enum pdf_stm_fdir_t
+{
+  PDF_STM_FILTER_READ,
+  PDF_STM_FILTER_WRITE
+};
 
 /* 
  * Streams
@@ -174,8 +224,8 @@ struct pdf_stm_s
 {
   struct pdf_stm_be_s backend;
   
-  int filtering_p;
-  gl_list_t filter_list;
+  gl_list_t read_filter_list;
+  gl_list_t write_filter_list;
 };
 
 typedef struct pdf_stm_s *pdf_stm_t;
@@ -187,7 +237,7 @@ typedef struct pdf_stm_s *pdf_stm_t;
 
 /* Creation and destruction */
 pdf_stm_t pdf_create_file_stm (char *filename, int mode);
-/* pdf_stm_t pdf_create_mem_stm (pdf_stm_pos_t size, int init_p, char init); */
+pdf_stm_t pdf_create_mem_stm (pdf_stm_pos_t size, int init_p, char init);
 int pdf_stm_close (pdf_stm_t stm);
 
 /* Getting information about stream objects */
@@ -199,6 +249,15 @@ pdf_stm_pos_t pdf_stm_tell (pdf_stm_t stm);
 size_t pdf_stm_read (pdf_stm_t stm, char *buf, size_t bytes);
 size_t pdf_stm_write (pdf_stm_t stm, char *buf, size_t bytes);
 size_t pdf_stm_peek (pdf_stm_t stm, char *buf, size_t bytes);
+
+/* Managing filters */
+
+/* int pdf_stm_install_null_filter (pdf_stm_t stm, int direction); */
+/*int pdf_stm_install_asciihexdec_filter (pdf_stm_t stm, int direction);
+int pdf_stm_install_asciihexenc_filter (pdf_stm_t stm, int direction);
+int pdf_stm_install_ascii85dec_filter (pdf_stm_t stm, int direction);
+int pdf_stm_install_ascii85enc_filter (pdf_stm_t stm, int direction);*/
+int pdf_stm_uninstall_filters (pdf_stm_t stm); 
 
 #endif /* pdf_stm.h */
 
