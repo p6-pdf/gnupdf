@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/08 21:14:44 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/09 00:34:07 jemarch"
  *
  *       File:         pdf_stm.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -187,7 +187,7 @@ typedef struct pdf_stm_s *pdf_stm_t;
 
 /* Creation and destruction */
 pdf_stm_t pdf_create_file_stm (char *filename, int mode);
-pdf_stm_t pdf_create_buffer_stm (pdf_stm_pos_t size, int init_p, char init);
+/* pdf_stm_t pdf_create_mem_stm (pdf_stm_pos_t size, int init_p, char init); */
 int pdf_stm_close (pdf_stm_t stm);
 
 /* Getting information about stream objects */

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/08 21:14:14 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/09 00:33:53 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -28,7 +28,7 @@
 #include <unistd.h>
 #include <xalloc.h>
 #include <pdf_stm_file.h>
-/* #include <pdf_stm_buffer.h> */
+#include <pdf_stm_mem.h>
 #include <pdf_stm.h>
 
 
@@ -92,17 +92,16 @@ pdf_create_file_stm (char *filename,
   return new_stm;
 }
 
-/**********************************************/
-/* pdf_stm_t                                  */
-/* pdf_create_buffer_stm (pdf_stm_pos_t size, */
-/*                        char init_p,        */
-/*                        char init)          */
-/* {                                          */
-/*   struct pdf_stm_file_conf_s conf;         */
-/*                                            */
-/*                                            */
-/* }                                          */
-/**********************************************/
+/*
+pdf_stm_t                                  
+pdf_create_mem_stm (pdf_stm_pos_t size,    
+                    char init_p,        
+                    char init)          
+{                                          
+  struct pdf_stm_mem_conf_s conf;          
+
+}
+*/
 
 /* 
  * Generic functions

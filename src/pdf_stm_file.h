@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/08 21:10:15 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/08 21:46:40 jemarch"
  *
  *       File:         pdf_stm_file.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -30,7 +30,6 @@
 #define PDF_STM_FILE_H
 
 #include <config.h>
-
 #include <stdio.h>
 #include <pdf_base.h>
 
