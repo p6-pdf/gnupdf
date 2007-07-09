@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/09 01:38:05 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/09 22:32:48 jemarch"
  *
  *       File:         pdf_stm_mem.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -50,6 +50,13 @@ pdf_stm_mem_init (void **be_data,
   /* Initialize private data */
   (*data)->size = conf->size;
   (*data)->data = (char *) xmalloc (conf->size);
+
+
+  if  (conf->init_p)
+    {
+      /* FIXME: TODO */
+    }
+
   (*data)->current = 0;
 
   return PDF_OK;

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/09 22:21:06 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/09 22:34:08 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -104,14 +104,40 @@ pdf_create_file_stm (char *filename,
   return new_stm;
 }
 
-/* pdf_stm_t                                  
+pdf_stm_t                                  
 pdf_create_mem_stm (pdf_stm_pos_t size,    
-                    char init_p,        
+                    int init_p,        
                     char init)          
-{                                          
+{
+  pdf_stm_t new_stm;
   struct pdf_stm_mem_conf_s conf;          
 
-  } */
+  new_stm = pdf_stm_alloc ();
+
+  /* Install backend functions */
+  new_stm->backend.funcs.init = pdf_stm_mem_init;
+  new_stm->backend.funcs.write_p = pdf_stm_mem_write_p;
+  new_stm->backend.funcs.read_p = pdf_stm_mem_read_p;
+  new_stm->backend.funcs.seek_p = pdf_stm_mem_seek_p;
+  new_stm->backend.funcs.size_p = pdf_stm_mem_size_p;
+  new_stm->backend.funcs.peek_p = pdf_stm_mem_peek_p;
+  new_stm->backend.funcs.size = pdf_stm_mem_size;
+  new_stm->backend.funcs.seek = pdf_stm_mem_seek;
+  new_stm->backend.funcs.tell = pdf_stm_mem_tell;
+  new_stm->backend.funcs.read = pdf_stm_mem_read;
+  new_stm->backend.funcs.write = pdf_stm_mem_write;
+  new_stm->backend.funcs.peek = pdf_stm_mem_peek;
+
+  /* Configure the backend */
+  conf.size = size;
+  conf.init_p = init_p;
+  conf.init_char = init;
+
+  /* Initialize the backend */
+  (new_stm->backend.funcs.init) (&new_stm->backend.data, &conf);
+  
+  return new_stm;
+}
 
 /*
  * Filter-specific installation functions
