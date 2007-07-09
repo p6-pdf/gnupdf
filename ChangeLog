@@ -1,3 +1,23 @@
+2007-07-09  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/Makefile.am (libgnupdf_la_SOURCES): `pdf_stm_f_null.c' and
+	`pdf_stm_f_null.h' added.
+
+	* src/pdf_stm_f_null.c (pdf_stm_f_null_init): New function.
+	(pdf_stm_f_null_apply): New function.
+	(pdf_stm_f_null_dealloc): New function.
+
+	* src/pdf_stm.c (pdf_create_file_stm): New function.
+	(pdf_stm_alloc): New function.
+	(pdf_stm_dealloc): New function.
+	(pdf_stm_install_filter): New function.
+	(pdf_stm_filter_dealloc_list): New function.
+	(pdf_stm_apply_filters): New function.
+
+	* src/pdf_stm_f_null.c: New file.
+
+	* src/pdf_stm_f_null.h: New file.
+
 2007-07-08  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/Makefile.am (AM_CFLAGS): `-Wall' added.

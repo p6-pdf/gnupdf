@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/09 21:49:33 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/09 22:21:06 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -29,6 +29,7 @@
 #include <xalloc.h>
 #include <pdf_stm_file.h>
 #include <pdf_stm_mem.h>
+#include <pdf_stm_f_null.h>
 #include <pdf_stm.h>
 
 static pdf_stm_t pdf_stm_alloc (void);
@@ -116,17 +117,17 @@ pdf_create_mem_stm (pdf_stm_pos_t size,
  * Filter-specific installation functions
  */
 
-/*int
+int
 pdf_stm_install_null_filter (pdf_stm_t stm, 
-                             pdf_stm_fdir_t direction)
+                             int direction)
 {
   return pdf_stm_install_filter (stm,
                                  direction,
-                                 pdf_stm_filter_null_init,
-                                 pdf_stm_filter_null_apply,
-                                 pdf_stm_filter_null_dealloc,
+                                 pdf_stm_f_null_init,
+                                 pdf_stm_f_null_apply,
+                                 pdf_stm_f_null_dealloc,
                                  NULL);
-                                 }*/
+}
 
 /* 
  * Generic functions

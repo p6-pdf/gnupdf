@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/09 21:47:51 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/09 22:03:16 jemarch"
  *
  *       File:         pdf_stm.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -252,7 +252,7 @@ size_t pdf_stm_peek (pdf_stm_t stm, char *buf, size_t bytes);
 
 /* Managing filters */
 
-/* int pdf_stm_install_null_filter (pdf_stm_t stm, int direction); */
+int pdf_stm_install_null_filter (pdf_stm_t stm, int direction);
 /*int pdf_stm_install_asciihexdec_filter (pdf_stm_t stm, int direction);
 int pdf_stm_install_asciihexenc_filter (pdf_stm_t stm, int direction);
 int pdf_stm_install_ascii85dec_filter (pdf_stm_t stm, int direction);
