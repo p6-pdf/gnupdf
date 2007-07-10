@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/10 18:42:48 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/10 19:46:11 jemarch"
  *
  *       File:         pdf_filter.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -14,7 +14,24 @@
 
 #include <config.h>
 
+/* Command line arguments */
 
+enum
+{
+  HELP_ARG,
+  USAGE_ARG,
+  VERSION_ARG,
+  NULL_FILTER_ARG,
+  ASCIIHEXDEC_FILTER_ARG,
+  ASCII85DEC_FILTER_ARG,
+  LZWDEC_FILTER_ARG,
+  FLATEDEC_FILTER_ARG,
+  RUNLENGTHDEC_FILTER_ARG,
+  CCITTFAXDEC_FILTER_ARG,
+  JBIG2DEC_FILTER_ARG,
+  DCTDEC_FILTER_ARG,
+  JXPDEC_FILTER_ARG
+};
 
 #endif /* pdf_filter.h */
 

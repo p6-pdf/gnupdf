@@ -39,6 +39,7 @@ AC_DEFUN([gl_INIT],
   gl_source_base='lib'
   gl_ERROR
   gl_EXITFAIL
+  gl_GETOPT
   AC_SUBST([LIBINTL])
   AC_SUBST([LTLIBINTL])
   gl_INLINE
@@ -91,6 +92,10 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/error.h
   lib/exitfail.c
   lib/exitfail.h
+  lib/getopt.c
+  lib/getopt1.c
+  lib/getopt_.h
+  lib/getopt_int.h
   lib/gettext.h
   lib/gl_array_list.c
   lib/gl_array_list.h
@@ -107,6 +112,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/absolute-header.m4
   m4/error.m4
   m4/exitfail.m4
+  m4/getopt.m4
   m4/gl_list.m4
   m4/gnulib-common.m4
   m4/include_next.m4
