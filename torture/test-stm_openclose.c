@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/10 01:05:28 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/10 12:18:56 jemarch"
  *
  *       File:         test-stm_openclose.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -55,7 +55,7 @@ main ()
     }
   else
     {
-      /*      pdf_stm_close (stm); */
+      pdf_stm_close (stm);
     }
 
   stm = pdf_create_file_stm ("temporal-test-file", 

@@ -1,3 +1,7 @@
+2007-07-10  Jose E. Marchesi  <jose.marchesi@deimos-space.com>
+
+	* src/pdf_stm.c (pdf_stm_close): Fix argument.
+
 2007-07-09  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* torture/test-stm_openclose.c (main): New file.

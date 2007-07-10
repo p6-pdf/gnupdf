@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/10 00:17:23 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/10 12:31:41 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -101,7 +101,7 @@ pdf_create_file_stm (char *filename,
     }
 
   /* Initialize the backend */
-  if (!(new_stm->backend.funcs.init) (&new_stm->backend.data, &conf))
+  if (!((new_stm->backend.funcs.init) (&new_stm->backend.data, &conf)))
     {
       pdf_stm_dealloc (new_stm);
       return NULL;
@@ -178,7 +178,8 @@ pdf_stm_close (pdf_stm_t stm)
 {
   int status;
 
-  status = stm->backend.funcs.close (BE_DATA(stm));
+  status = 
+    stm->backend.funcs.close (&stm->backend.data);
   pdf_stm_dealloc (stm);
 
   return status;

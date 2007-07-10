@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/10 00:19:37 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/10 12:35:18 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -53,6 +53,7 @@ pdf_stm_file_init (void **be_data,
   (*data)->filename = strdup (conf->filename);
   (*data)->mode = conf->mode;
   (*data)->peek_size = 0;
+  (*data)->file_stm = NULL;
 
   switch ((*data)->mode)
     {
@@ -141,7 +142,7 @@ pdf_stm_file_close (void **be_data)
   pdf_stm_file_data_t *data;
   int status;
 
-  data = (pdf_stm_file_data_t *) *be_data;
+  data = (pdf_stm_file_data_t *) be_data;
 
   if (fclose ((*data)->file_stm))
     {
