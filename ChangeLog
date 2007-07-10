@@ -1,5 +1,7 @@
 2007-07-10  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/pdf_stm.c (pdf_create_mem_stm): Install the close hook.
+
 	* src/pdf_stm_mem.c (pdf_stm_mem_init): Manage `resize_p'.
 	(pdf_stm_mem_write): Manage `resize_p'.
 

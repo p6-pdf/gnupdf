@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/10 20:13:58 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/10 20:29:25 jemarch"
  *
  *       File:         pdf_filter.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -70,6 +70,7 @@ main (int argc, char *argv[])
   char c;
   pdf_stm_t input;
   size_t line_bytes;
+  size_t readed;
   char *line;
   char *output_buffer;
 
@@ -156,11 +157,12 @@ main (int argc, char *argv[])
   /* Read stdin into the pdf stream */
   line = NULL;
   line_bytes = 0;
-  while (getline (&line, &line_bytes, stdin) != EOF)
+  while ((readed = getline (&line, &line_bytes, stdin)) != EOF)
     {
       pdf_stm_write (input,
                      line,
-                     line_bytes -1); /* do not include the null character */
+                     readed - 1); /* do not include the null character */
+      free (line);
       line = NULL;
       line_bytes = 0;
     }

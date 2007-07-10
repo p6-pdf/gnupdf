@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/10 19:51:23 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/10 20:37:22 jemarch"
  *
  *       File:         pdf_stm_mem.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -160,13 +160,25 @@ pdf_stm_mem_write (void *be_data,
 {
   pdf_stm_mem_data_t data;
   size_t written;
+  size_t free_bytes;
 
   data = (pdf_stm_mem_data_t) be_data;
+  free_bytes = data->size - data->current;
 
-  if ((!data->resize_p) &&
-      ((data->current + bytes) >= data->size))
+  if (data->resize_p &&
+      (bytes > free_bytes))
     {
-      written = data->size - data->current;
+      /* Allocate space */
+      data->data = 
+        (char *) xrealloc (data->data,
+                           data->size + (bytes - free_bytes));
+      data->size = data->size + (bytes - free_bytes);
+      free_bytes = data->size - data->current;
+    }
+  
+  if (bytes > free_bytes)
+    {
+      written = free_bytes;
     }
   else
     {
@@ -175,14 +187,6 @@ pdf_stm_mem_write (void *be_data,
 
   if (written > 0)
     {
-      if (data->resize_p)
-        {
-          data->data = 
-            (char *) xrealloc (data->data,
-                               written - (data->size - data->current));
-          data->size = data->size + (data->size - data->current);
-        }
-
       memcpy (data->data,
               buf,
               written);

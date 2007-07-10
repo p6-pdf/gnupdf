@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/10 19:39:10 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/10 20:43:47 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -136,6 +136,7 @@ pdf_create_mem_stm (pdf_stm_pos_t size,
   new_stm->backend.funcs.read = pdf_stm_mem_read;
   new_stm->backend.funcs.write = pdf_stm_mem_write;
   new_stm->backend.funcs.peek = pdf_stm_mem_peek;
+  new_stm->backend.funcs.close = pdf_stm_mem_close;
 
   /* Configure the backend */
   conf.size = size;
@@ -334,6 +335,7 @@ pdf_stm_uninstall_filters (pdf_stm_t stm)
 
   return PDF_OK;
 }
+
 
 /* Private functions */
 
