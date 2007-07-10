@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/10 19:58:27 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/10 20:11:52 jemarch"
  *
  *       File:         pdf_filter.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -81,11 +81,11 @@ main (int argc, char *argv[])
   
 
   /* Manage command line arguments */
-  while ((c = getopt_long_only (argc,
-                                argv,
-                                "vhu",
-                                GNU_longOptions, 
-                                NULL)))
+  while ((c = getopt_long (argc,
+                           argv,
+                           "",
+                           GNU_longOptions, 
+                           NULL)) != -1)
     {
       switch (c)
         {
@@ -143,7 +143,7 @@ main (int argc, char *argv[])
           {
             break;
           }
-        default:
+        case '?':
           {
             /* Error, usage and exit */
             fprintf (stdout, "%s\n", pdf_filter_usage_msg);
