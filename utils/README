@@ -1,0 +1,8 @@
+This directory contain several utilities to manipulate PDF
+documents. These utilities makes use of the GNU PDF Library.
+
+
+  `pdf_filter'
+
+      A front-end for the standard PDF filters.
+
