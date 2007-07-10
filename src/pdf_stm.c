@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/10 12:31:41 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/10 19:39:10 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -113,9 +113,10 @@ pdf_create_file_stm (char *filename,
 }
 
 pdf_stm_t                                  
-pdf_create_mem_stm (pdf_stm_pos_t size,    
-                    int init_p,        
-                    char init)          
+pdf_create_mem_stm (pdf_stm_pos_t size,
+                    int init_p,      
+                    char init,
+                    int resize_p)
 {
   pdf_stm_t new_stm;
   struct pdf_stm_mem_conf_s conf;          
@@ -140,6 +141,7 @@ pdf_create_mem_stm (pdf_stm_pos_t size,
   conf.size = size;
   conf.init_p = init_p;
   conf.init_char = init;
+  conf.resize_p = resize_p;
 
   /* Initialize the backend */
   if (!(new_stm->backend.funcs.init) (&new_stm->backend.data, &conf))
