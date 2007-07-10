@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = lib src torture doc
+SUBDIRS = lib src utils torture doc
 
 
 # End of Makefile.am

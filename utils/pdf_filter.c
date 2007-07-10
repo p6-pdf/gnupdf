@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/10 18:43:00 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/10 18:48:18 jemarch"
  *
  *       File:         pdf_filter.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -13,6 +13,13 @@
 #include <pdf_filter.h>
 
 
+
+int
+main (int argc, char *argv[])
+{
+
+  return 0;
+}
 
 
 /* End of pdf_filter.c */

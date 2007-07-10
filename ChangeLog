@@ -1,5 +1,7 @@
 2007-07-10  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* utils/pdf_filter.c (main): Added dummy main function.
+
 	* configure.ac: `utils' added.
 
 	* Makefile.am (SUBDIRS): `utils' added.
@@ -9,6 +11,8 @@
 	* utils/pdf_filter.c: New file.
 
 	* utils/README: New file.
+
+2007-07-10  Jose E. Marchesi  <jose.marchesi@deimos-space.com>
 
 	* src/pdf_stm.c (pdf_stm_close): Fix argument.
 

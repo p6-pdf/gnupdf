@@ -42,6 +42,6 @@ AC_FUNC_FSEEKO
 dnl Search for required libraries
 
 dnl Generate output files
-AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile doc/Makefile)
+AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile doc/Makefile utils/Makefile)
 
 dnl End of configure.ac
