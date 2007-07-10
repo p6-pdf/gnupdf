@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/09 01:14:58 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/10 00:19:37 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -124,6 +124,15 @@ inline int
 pdf_stm_file_peek_p (void *be_data)
 {
   return PDF_TRUE;
+}
+
+inline int
+pdf_stm_file_tell_p (void *be_data)
+{
+  pdf_stm_file_data_t data;
+
+  data = (pdf_stm_file_data_t) be_data;
+  return (data->mode != PDF_STM_FILE_OPEN_MODE_APPEND);
 }
 
 int

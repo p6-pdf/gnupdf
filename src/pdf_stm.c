@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/10 00:06:37 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/10 00:17:23 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -64,12 +64,14 @@ pdf_create_file_stm (char *filename,
   new_stm->backend.funcs.seek_p = pdf_stm_file_seek_p;
   new_stm->backend.funcs.size_p = pdf_stm_file_size_p;
   new_stm->backend.funcs.peek_p = pdf_stm_file_peek_p;
+  new_stm->backend.funcs.tell_p = pdf_stm_file_tell_p;
   new_stm->backend.funcs.size = pdf_stm_file_size;
   new_stm->backend.funcs.seek = pdf_stm_file_seek;
   new_stm->backend.funcs.tell = pdf_stm_file_tell;
   new_stm->backend.funcs.read = pdf_stm_file_read;
   new_stm->backend.funcs.write = pdf_stm_file_write;
   new_stm->backend.funcs.peek = pdf_stm_file_peek;
+  new_stm->backend.funcs.close = pdf_stm_file_close;
 
   /* Configure the backend */
   conf.filename = filename;
