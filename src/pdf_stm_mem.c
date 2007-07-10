@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/10 19:37:03 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/10 19:51:23 jemarch"
  *
  *       File:         pdf_stm_mem.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -180,6 +180,7 @@ pdf_stm_mem_write (void *be_data,
           data->data = 
             (char *) xrealloc (data->data,
                                written - (data->size - data->current));
+          data->size = data->size + (data->size - data->current);
         }
 
       memcpy (data->data,
