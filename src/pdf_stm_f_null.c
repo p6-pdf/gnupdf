@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/09 22:25:07 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/10 22:26:58 jemarch"
  *
  *       File:         pdf_stm_f_null.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -27,6 +27,7 @@
 #include <config.h>
 #include <malloc.h>
 #include <xalloc.h>
+#include <string.h>
 #include <pdf_stm_f_null.h>
 
 int
@@ -53,7 +54,10 @@ pdf_stm_f_null_apply (void *filter_data,
   data = (pdf_stm_f_null_data_t) filter_data;
 
   /* Do nothing */
-  *out = in;
+  *out = (char *) xmalloc (in_size);
+  memcpy (*out,
+          in,
+          in_size);
   *out_size = in_size;
   
   return PDF_OK;
