@@ -18,6 +18,7 @@ distribution for distribution terms.
 - pdf_stm.h, pdf_stm.c
   pdf_stm_file.h, pdf_stm_file.c
   pdf_stm_mem.h, pdf_stm_mem.c
+  pdf_stm_f_null.h, pdf_stm_f_null.c
 
   The Input/Output streams library module. This module implement
   abstract access (both read/write) to files or memory buffers. It
