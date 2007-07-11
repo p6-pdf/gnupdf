@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/11 00:01:38 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/11 12:43:40 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -31,7 +31,11 @@
 #include <pdf_stm_file.h>
 #include <pdf_stm_mem.h>
 #include <pdf_stm_f_null.h>
-#include <pdf_stm_f_fdec.h>
+
+#ifdef HAVE_LIBZ
+ #include <pdf_stm_f_fdec.h>
+#endif /* HAVE_LIBZ */
+
 #include <pdf_stm.h>
 
 static pdf_stm_t pdf_stm_alloc (void);
@@ -174,6 +178,7 @@ pdf_stm_install_null_filter (pdf_stm_t stm,
                                  NULL);
 }
 
+#ifdef HAVE_LIBZ
 int
 pdf_stm_install_fdec_filter (pdf_stm_t stm,
                              int direction)
@@ -185,6 +190,7 @@ pdf_stm_install_fdec_filter (pdf_stm_t stm,
                                  pdf_stm_f_fdec_dealloc,
                                  NULL);
 }
+#endif /* HAVE_LIBZ */
 
 /* 
  * Generic functions

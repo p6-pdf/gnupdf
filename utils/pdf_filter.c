@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/11 01:10:56 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/11 12:45:55 jemarch"
  *
  *       File:         pdf_filter.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -31,7 +31,9 @@ static struct option GNU_longOptions[] =
   {"ahexdec", no_argument, NULL, ASCIIHEXDEC_FILTER_ARG},
   {"a85dec", no_argument, NULL, ASCII85DEC_FILTER_ARG},
   {"lzwdec", no_argument, NULL, LZWDEC_FILTER_ARG},
+#ifdef HAVE_LIBZ
   {"flatedec", no_argument, NULL, FLATEDEC_FILTER_ARG},
+#endif /* HAVE_LIBZ */
   {"rldec", no_argument, NULL, RUNLENGTHDEC_FILTER_ARG},
   {"cfaxdec", no_argument, NULL, CCITTFAXDEC_FILTER_ARG},
   {"jbig2dec", no_argument, NULL, JBIG2DEC_FILTER_ARG},
@@ -49,9 +51,11 @@ write the result in the standard output.\n\
   --null                              use the NULL filter\n\
   --ahexdec                           use the ASCII Hex decoder filter\n\
   --a85dec                            use the ASCII 85 decoder filter\n\
-  --lzwdec                            use the LZW decoder filter\n\
-  --flatedec                          use the Flate decoder filter\n\
-  --rldec                             use the Run Length decoder filter\n\
+  --lzwdec                            use the LZW decoder filter\n"
+#ifdef HAVE_LIBZ
+"  --flatedec                          use the Flate decoder filter\n"
+#endif /* HAVE_LIBZ */
+"  --rldec                             use the Run Length decoder filter\n\
   --cfaxdec                           use the CCITT Fax decoder filter\n\
   --jbig2dec                          use the JBIG2 decoder filter\n\
   --dctdec                            use the DCT decoder filter\n\
@@ -120,10 +124,12 @@ main (int argc, char *argv[])
           {
             break;
           }
+#ifdef HAVE_LIBZ
         case FLATEDEC_FILTER_ARG:
           {
             break;
           }
+#endif /* HAVE_LIBZ */
         case RUNLENGTHDEC_FILTER_ARG:
           {
             break;
