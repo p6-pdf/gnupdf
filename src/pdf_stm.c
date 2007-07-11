@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/11 12:43:40 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/11 17:19:03 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -47,7 +47,7 @@ static int pdf_stm_install_filter (pdf_stm_t stm,
                                    pdf_stm_dealloc_filter_fn_t dealloc_fn,
                                    void *conf);
 static void pdf_stm_filter_dealloc_list (const void *elt);
-static int pdf_stm_apply_filters (gl_list_t filter_list, char **buf, size_t *buf_size);
+static int pdf_stm_apply_filters (gl_list_t filter_list, pdf_char **buf, size_t *buf_size);
                                    
 
 /*
@@ -121,7 +121,7 @@ pdf_create_file_stm (char *filename,
 pdf_stm_t                                  
 pdf_create_mem_stm (pdf_stm_pos_t size,
                     int init_p,      
-                    char init,
+                    unsigned char init,
                     int resize_p)
 {
   pdf_stm_t new_stm;
@@ -262,7 +262,7 @@ pdf_stm_tell (pdf_stm_t stm)
 
 size_t
 pdf_stm_read (pdf_stm_t stm,
-              char **buf,
+              unsigned char **buf,
               size_t bytes)
 {
   size_t readed_bytes;
@@ -290,7 +290,7 @@ pdf_stm_read (pdf_stm_t stm,
 
 size_t
 pdf_stm_write (pdf_stm_t stm,
-               char *buf,
+               unsigned char *buf,
                size_t bytes)
 {
   size_t written_bytes;
@@ -315,7 +315,7 @@ pdf_stm_write (pdf_stm_t stm,
 
 size_t
 pdf_stm_peek (pdf_stm_t stm,
-              char *buf,
+              unsigned char *buf,
               size_t bytes)
 {
   size_t result;
@@ -453,13 +453,13 @@ pdf_stm_filter_dealloc_list (const void *elt)
 
 static int
 pdf_stm_apply_filters (gl_list_t filter_list,
-                       char **buf,
+                       pdf_char **buf,
                        size_t *buf_size)
 {
   pdf_stm_filter_t filter;
   gl_list_iterator_t iter;
   gl_list_node_t node;
-  char *filtered_data;
+  pdf_char *filtered_data;
   pdf_stm_pos_t filtered_size;
 
   if (gl_list_size (filter_list) == 0)

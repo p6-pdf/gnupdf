@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/10 20:37:22 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/11 17:15:51 jemarch"
  *
  *       File:         pdf_stm_mem.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -31,7 +31,7 @@
 #include <pdf_base.h>
 #include <pdf_stm_mem.h>
 
-static size_t pdf_stm_mem_readpeek (void *be_data, char *buf, size_t bytes, int peek);
+static size_t pdf_stm_mem_readpeek (void *be_data, pdf_char *buf, size_t bytes, int peek);
 
 
 int
@@ -50,7 +50,7 @@ pdf_stm_mem_init (void **be_data,
   /* Initialize private data */
   (*data)->size = conf->size;
   (*data)->resize_p = conf->resize_p;
-  (*data)->data = (char *) xmalloc (conf->size);
+  (*data)->data = (pdf_char *) xmalloc (conf->size);
 
 
   if  (conf->init_p)
@@ -144,7 +144,7 @@ pdf_stm_mem_tell (void *be_data)
 
 size_t
 pdf_stm_mem_read (void *be_data,
-                  char *buf,
+                  pdf_char *buf,
                   size_t bytes)
 {
   return pdf_stm_mem_readpeek (be_data,
@@ -155,7 +155,7 @@ pdf_stm_mem_read (void *be_data,
 
 size_t
 pdf_stm_mem_write (void *be_data,
-                   char *buf,
+                   pdf_char *buf,
                    size_t bytes)
 {
   pdf_stm_mem_data_t data;
@@ -170,7 +170,7 @@ pdf_stm_mem_write (void *be_data,
     {
       /* Allocate space */
       data->data = 
-        (char *) xrealloc (data->data,
+        (pdf_char *) xrealloc (data->data,
                            data->size + (bytes - free_bytes));
       data->size = data->size + (bytes - free_bytes);
       free_bytes = data->size - data->current;
@@ -198,7 +198,7 @@ pdf_stm_mem_write (void *be_data,
 
 inline size_t
 pdf_stm_mem_peek (void *be_data,
-                  char *buf,
+                  pdf_char *buf,
                   size_t bytes)
 {
   return pdf_stm_mem_readpeek (be_data,
@@ -211,7 +211,7 @@ pdf_stm_mem_peek (void *be_data,
 
 static size_t
 pdf_stm_mem_readpeek (void *be_data,
-                      char *buf,
+                      pdf_char *buf,
                       size_t bytes,
                       int peek)
 {

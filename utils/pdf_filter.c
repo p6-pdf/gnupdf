@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/11 12:45:55 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/11 17:18:11 jemarch"
  *
  *       File:         pdf_filter.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -76,7 +76,7 @@ main (int argc, char *argv[])
   size_t line_bytes;
   size_t readed;
   char *line;
-  char *output_buffer;
+  unsigned char *output_buffer;
 
   /* Initialization */
   input = pdf_create_mem_stm (0,         /* Initial 0 length */
@@ -127,6 +127,8 @@ main (int argc, char *argv[])
 #ifdef HAVE_LIBZ
         case FLATEDEC_FILTER_ARG:
           {
+            pdf_stm_install_fdec_filter (input,
+                                         PDF_STM_FILTER_READ);
             break;
           }
 #endif /* HAVE_LIBZ */
@@ -174,7 +176,7 @@ main (int argc, char *argv[])
     }
 
   /* Write the filtered pdf stream contents into stdout */
-  output_buffer = (char *) xmalloc (pdf_stm_size (input));
+  output_buffer = (unsigned char *) xmalloc (pdf_stm_size (input));
   pdf_stm_seek (input, 0);
   readed = pdf_stm_read (input, 
                          &output_buffer,

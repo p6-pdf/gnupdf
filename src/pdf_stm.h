@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/10 22:24:41 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/11 17:18:36 jemarch"
  *
  *       File:         pdf_stm.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -147,9 +147,9 @@ struct pdf_stm_be_s
     pdf_stm_pos_t (*tell) (void *data);
 
     /* Reading and writing data */
-    size_t (*read) (void *data, char *buf, size_t bytes);
-    size_t (*write) (void *data, char *buf, size_t bytes);
-    size_t (*peek) (void *data, char *buf, size_t bytes);
+    size_t (*read) (void *data, pdf_char *buf, size_t bytes);
+    size_t (*write) (void *data, pdf_char *buf, size_t bytes);
+    size_t (*peek) (void *data, pdf_char *buf, size_t bytes);
 
     /* Closing */
     int (*close) (void **data);
@@ -190,8 +190,8 @@ struct pdf_stm_be_s
 
 typedef int (*pdf_stm_init_filter_fn_t) (void **filter_data, void *conf_data);
 typedef int (*pdf_stm_apply_filter_fn_t) (void *filter_data,
-                                          char *in, pdf_stm_pos_t in_size, 
-                                          char **out, pdf_stm_pos_t *out_size);
+                                          pdf_char *in, pdf_stm_pos_t in_size, 
+                                          pdf_char **out, pdf_stm_pos_t *out_size);
 typedef int (*pdf_stm_dealloc_filter_fn_t) (void **filter_data);
 
 struct pdf_stm_filter_s
@@ -237,7 +237,7 @@ typedef struct pdf_stm_s *pdf_stm_t;
 
 /* Creation and destruction */
 pdf_stm_t pdf_create_file_stm (char *filename, int mode);
-pdf_stm_t pdf_create_mem_stm (pdf_stm_pos_t size, int init_p, char init, int resize_p);
+pdf_stm_t pdf_create_mem_stm (pdf_stm_pos_t size, int init_p, unsigned char init, int resize_p);
 int pdf_stm_close (pdf_stm_t stm);
 
 /* Getting information about stream objects */
@@ -246,9 +246,9 @@ pdf_stm_pos_t pdf_stm_size (pdf_stm_t stm);
 /* Positioning */
 int pdf_stm_seek (pdf_stm_t stm, pdf_stm_pos_t pos);
 pdf_stm_pos_t pdf_stm_tell (pdf_stm_t stm);
-size_t pdf_stm_read (pdf_stm_t stm, char **buf, size_t bytes);
-size_t pdf_stm_write (pdf_stm_t stm, char *buf, size_t bytes);
-size_t pdf_stm_peek (pdf_stm_t stm, char *buf, size_t bytes);
+size_t pdf_stm_read (pdf_stm_t stm, unsigned char **buf, size_t bytes);
+size_t pdf_stm_write (pdf_stm_t stm, unsigned char *buf, size_t bytes);
+size_t pdf_stm_peek (pdf_stm_t stm, unsigned char *buf, size_t bytes);
 
 /* Managing filters */
 

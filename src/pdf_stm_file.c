@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/10 12:35:18 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/11 17:16:12 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -205,7 +205,7 @@ pdf_stm_file_tell (void *be_data)
 
 size_t
 pdf_stm_file_read (void *be_data,
-                   char *buf,
+                   pdf_char *buf,
                    size_t bytes)
 {
   pdf_stm_file_data_t data;
@@ -258,7 +258,7 @@ pdf_stm_file_read (void *be_data,
 
 size_t
 pdf_stm_file_write (void *be_data,
-                    char *buf,
+                    pdf_char *buf,
                     size_t bytes)
 {
   pdf_stm_file_data_t data;
@@ -271,7 +271,7 @@ pdf_stm_file_write (void *be_data,
 
 size_t
 pdf_stm_file_peek (void *be_data,
-                   char *buf,
+                   pdf_char *buf,
                    size_t bytes)
 {
   pdf_stm_file_data_t data;
@@ -286,13 +286,13 @@ pdf_stm_file_peek (void *be_data,
 
   if (data->peek_size > 0)
     {
-      data->peek_buffer = (char *) xrealloc (data->peek_buffer,
+      data->peek_buffer = (pdf_char *) xrealloc (data->peek_buffer,
                                              data->peek_size + readed);
       data->peek_size = readed;
     }
   else
     {
-      data->peek_buffer = (char *) xmalloc (readed);
+      data->peek_buffer = (pdf_char *) xmalloc (readed);
       memcpy (data->peek_buffer,
               buf,
               readed);

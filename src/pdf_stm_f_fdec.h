@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/11 00:20:16 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/11 17:16:40 jemarch"
  *
  *       File:         pdf_stm_f_fdec.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -45,8 +45,8 @@ typedef struct pdf_stm_f_fdec_data_s *pdf_stm_f_fdec_data_t;
 
 int pdf_stm_f_fdec_init (void **filter_data, void *conf_data);
 int pdf_stm_f_fdec_apply (void *filter_data,
-                          char *in, pdf_stm_pos_t in_size,
-                          char **out, pdf_stm_pos_t *out_size);
+                          pdf_char *in, pdf_stm_pos_t in_size,
+                          pdf_char **out, pdf_stm_pos_t *out_size);
 int pdf_stm_f_fdec_dealloc (void **filter_data);
 
 
