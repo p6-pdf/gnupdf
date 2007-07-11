@@ -51,6 +51,8 @@ else
   AC_MSG_RESULT(no)
 fi])
 
+
+if test "x$with_zlib" != "xno"; then
 ZLIB_HOME=/usr/local
 if test ! -f "${ZLIB_HOME}/include/zlib.h"
 then
@@ -89,8 +91,11 @@ then
                 CPPFLAGS="$ZLIB_OLD_CPPFLAGS"
                 AC_MSG_RESULT(failed)
                 AC_MSG_ERROR(either specify a valid zlib installation with --with-zlib=DIR or disable zlib usage with --without-zlib)
+                have_zlib=no
         fi
 fi
-
+else
+    have_zlib=no
+fi
 ])
 
