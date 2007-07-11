@@ -79,6 +79,7 @@ then
                 AC_CHECK_LIB(z, inflateEnd)
                 AC_MSG_CHECKING(zlib in ${ZLIB_HOME})
                 AC_MSG_RESULT(ok)
+                have_zlib=yes
         else
                 #
                 # If either header or library was not found, revert and bomb

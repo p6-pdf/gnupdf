@@ -28,6 +28,10 @@ AC_PROG_LIBTOOL
 dnl Compiler issues
 AC_PROG_CC
 
+dnl System
+AC_CANONICAL_HOST
+canonical=$host
+
 dnl gnulib macros
 gl_EARLY
 gl_INIT
@@ -41,9 +45,26 @@ AC_FUNC_FSEEKO
 
 dnl Search for required libraries
 CHECK_ZLIB
-AM_CONDITIONAL([ZLIB], [test "x$zlib_cv_libz" = "xyes" -a "x$zlib_cv_zlib_h" = "xyes"])
+AM_CONDITIONAL([ZLIB], [test "x$have_zlib" = "xyes"])
 
 dnl Generate output files
 AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile doc/Makefile utils/Makefile)
+
+dnl Report configuration results
+
+echo "
+Configured for \`${canonical}'.
+
+  Using FlateDecode filter?                 ${have_zlib}
+
+"
+
+dnl Report warnings
+
+if test "x$have_zlib" = "xno" ; then
+echo "
+WARNING: you are going to build a library without FlateDecode support. 
+         That means you wont be able to process many PDF files."
+fi
 
 dnl End of configure.ac
