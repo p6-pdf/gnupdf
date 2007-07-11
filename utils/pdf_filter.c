@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/10 22:30:29 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/11 01:10:56 jemarch"
  *
  *       File:         pdf_filter.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -161,7 +161,7 @@ main (int argc, char *argv[])
     {
       pdf_stm_write (input,
                      line,
-                     readed - 1); /* do not include the null character */
+                     readed);
       free (line);
       line = NULL;
       line_bytes = 0;
