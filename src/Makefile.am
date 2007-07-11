@@ -22,6 +22,7 @@ libgnupdf_la_SOURCES = pdf.c \
                        pdf_stm_file.c pdf_stm_file.h \
                        pdf_stm_mem.c pdf_stm_mem.h \
                        pdf_stm_f_null.c pdf_stm_f_null.h \
+                       pdf_stm_f_fdec.c pdf_stm_f_fdec.h \
                        pdf_obj.c pdf_obj.h \
                        pdf_xref.c pdf_xref.h
 

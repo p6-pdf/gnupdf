@@ -40,6 +40,7 @@ dnl Search for functions
 AC_FUNC_FSEEKO
 
 dnl Search for required libraries
+CHECK_ZLIB
 
 dnl Generate output files
 AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile doc/Makefile utils/Makefile)
