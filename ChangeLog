@@ -1,3 +1,7 @@
+2007-07-11  Jose E. Marchesi  <jose.marchesi@deimos-space.com>
+
+	* m4/getopt.m4: Imported from gnulib.
+
 2007-07-10  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* m4/zlib.m4 (ZLIB_HOME): Imported from the autoconf macro
