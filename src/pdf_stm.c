@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/11 17:19:03 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/11 20:12:08 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -181,14 +181,25 @@ pdf_stm_install_null_filter (pdf_stm_t stm,
 #ifdef HAVE_LIBZ
 int
 pdf_stm_install_fdec_filter (pdf_stm_t stm,
-                             int direction)
+                             int direction,
+                             int predictor,
+                             int colors,
+                             int bits_per_component,
+                             int columns)
 {
+  struct pdf_stm_f_fdec_conf_s config;
+
+  config.predictor = predictor;
+  config.colors = colors;
+  config.bits_per_component = bits_per_component;
+  config.columns = columns;
+
   return pdf_stm_install_filter (stm,
                                  direction,
                                  pdf_stm_f_fdec_init,
                                  pdf_stm_f_fdec_apply,
                                  pdf_stm_f_fdec_dealloc,
-                                 NULL);
+                                 &config);
 }
 #endif /* HAVE_LIBZ */
 

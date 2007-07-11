@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/11 17:16:40 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/11 20:14:22 jemarch"
  *
  *       File:         pdf_stm_f_fdec.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -30,13 +30,54 @@
 #include <config.h>
 #include <pdf_base.h>
 
-/* This filter do not have a configuration structure */
+/* Configuration structure */
+
+enum pdf_stm_f_fdec_pred
+{
+  NO_PREDICTION = 1,
+  TIFF_PREDICTOR_2 = 2,
+  PNG_NONE_ALL_ROWS = 10,
+  PNG_SUB_ALL_ROWS = 11,
+  PNG_UP_ALL_ROWS = 12,
+  PNG_AVERAGE_ALL_ROWS = 13,
+  PNG_PAETH_ALL_ROWS = 14,
+  PNG_OPTIMUM = 15
+};
+
+
+struct pdf_stm_f_fdec_conf_s
+{
+  int predictor; /* A code that selects the predictor algorithm. If
+                    the value of this entry is 1, the filter assumes
+                    that the normal algorithm was used to encode the
+                    data, without prediction. If the value is greater
+                    than 1, the filter assumes that the data was
+                    differenced before being encoded, and `predictor'
+                    selects the predictor algorithm */
+
+
+  /* The following parameters are only useful when `predictor' > 1 */
+  int colors;              /* Number of interleaved color components
+                              per sample. Valid values are 1 or
+                              greater. Default value: 1 */
+  int bits_per_component;  /* The number of bits used to represent
+                              each color component in a sample. Valid
+                              values are 1, 2, 4, 8 and 16. Default
+                              value: 1 */
+  int columns;             /* The number of samples in each
+                              row. Default value: 1 */
+};
+
+typedef struct pdf_stm_f_fdec_conf_s *pdf_stm_f_fdec_conf_t;
 
 /* Private data */
 
 struct pdf_stm_f_fdec_data_s
 {
-  int dummy;
+  int predictor;
+  int colors;
+  int bits_per_component;
+  int columns;
 };
 
 typedef struct pdf_stm_f_fdec_data_s *pdf_stm_f_fdec_data_t;
