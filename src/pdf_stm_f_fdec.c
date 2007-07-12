@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/11 20:15:53 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/12 01:31:50 jemarch"
  *
  *       File:         pdf_stm_f_fdec.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -39,19 +39,13 @@ pdf_stm_f_fdec_init (void **filter_data,
                      void *conf_data)
 {
   pdf_stm_f_fdec_data_t *data;
-  pdf_stm_f_fdec_conf_t conf;
 
   data = (pdf_stm_f_fdec_data_t *) filter_data;
-  conf = (pdf_stm_f_fdec_conf_t) conf_data;
 
   /* Create the private data storage */
   *data =
     (pdf_stm_f_fdec_data_t) xmalloc (sizeof(struct pdf_stm_f_fdec_data_s));
-
-  (*data)->predictor = conf->predictor;
-  (*data)->colors = conf->colors;
-  (*data)->bits_per_component = conf->bits_per_component;
-  (*data)->columns = conf->columns;
+  (*data)->dummy = 0;
 
   return PDF_OK;
 }

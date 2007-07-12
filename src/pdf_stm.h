@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/11 20:13:27 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/12 01:36:26 jemarch"
  *
  *       File:         pdf_stm.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -52,6 +52,7 @@
 #include <pdf_base.h>
 #include <pdf_stm_f_null.h>
 #include <pdf_stm_f_fdec.h>
+#include <pdf_stm_f_pred.h>
 
 /* Please note that `pdf_stm_pos_t' is defined in `pdf_base.h' */
 
@@ -255,7 +256,8 @@ size_t pdf_stm_peek (pdf_stm_t stm, unsigned char *buf, size_t bytes);
 /* Managing filters */
 
 int pdf_stm_install_null_filter (pdf_stm_t stm, int direction);
-int pdf_stm_install_fdec_filter (pdf_stm_t stm,
+int pdf_stm_install_fdec_filter (pdf_stm_t stm, int direction);
+int pdf_stm_install_pred_filter (pdf_stm_t stm,
                                  int direction,
                                  int predictor,
                                  int colors,

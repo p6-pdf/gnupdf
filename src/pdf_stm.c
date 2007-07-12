@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/11 20:12:08 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/12 01:36:38 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -31,6 +31,7 @@
 #include <pdf_stm_file.h>
 #include <pdf_stm_mem.h>
 #include <pdf_stm_f_null.h>
+#include <pdf_stm_f_pred.h>
 
 #ifdef HAVE_LIBZ
  #include <pdf_stm_f_fdec.h>
@@ -181,13 +182,26 @@ pdf_stm_install_null_filter (pdf_stm_t stm,
 #ifdef HAVE_LIBZ
 int
 pdf_stm_install_fdec_filter (pdf_stm_t stm,
+                             int direction)
+{
+  return pdf_stm_install_filter (stm,
+                                 direction,
+                                 pdf_stm_f_fdec_init,
+                                 pdf_stm_f_fdec_apply,
+                                 pdf_stm_f_fdec_dealloc,
+                                 NULL);
+}
+#endif /* HAVE_LIBZ */
+
+int
+pdf_stm_install_pred_filter (pdf_stm_t stm,
                              int direction,
                              int predictor,
                              int colors,
                              int bits_per_component,
                              int columns)
 {
-  struct pdf_stm_f_fdec_conf_s config;
+  struct pdf_stm_f_pred_conf_s config;
 
   config.predictor = predictor;
   config.colors = colors;
@@ -196,12 +210,12 @@ pdf_stm_install_fdec_filter (pdf_stm_t stm,
 
   return pdf_stm_install_filter (stm,
                                  direction,
-                                 pdf_stm_f_fdec_init,
-                                 pdf_stm_f_fdec_apply,
-                                 pdf_stm_f_fdec_dealloc,
+                                 pdf_stm_f_pred_init,
+                                 pdf_stm_f_pred_apply,
+                                 pdf_stm_f_pred_dealloc,
                                  &config);
 }
-#endif /* HAVE_LIBZ */
+
 
 /* 
  * Generic functions

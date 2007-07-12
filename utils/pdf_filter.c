@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/11 20:12:47 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/12 01:33:10 jemarch"
  *
  *       File:         pdf_filter.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -128,11 +128,7 @@ main (int argc, char *argv[])
         case FLATEDEC_FILTER_ARG:
           {
             pdf_stm_install_fdec_filter (input,
-                                         PDF_STM_FILTER_READ,
-                                         NO_PREDICTION,
-                                         0,
-                                         0,
-                                         0);
+                                         PDF_STM_FILTER_READ);
             break;
           }
 #endif /* HAVE_LIBZ */
