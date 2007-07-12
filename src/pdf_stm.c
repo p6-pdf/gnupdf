@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/12 01:36:38 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/12 01:39:37 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -48,7 +48,7 @@ static int pdf_stm_install_filter (pdf_stm_t stm,
                                    pdf_stm_dealloc_filter_fn_t dealloc_fn,
                                    void *conf);
 static void pdf_stm_filter_dealloc_list (const void *elt);
-static int pdf_stm_apply_filters (gl_list_t filter_list, pdf_char **buf, size_t *buf_size);
+static int pdf_stm_apply_filters (gl_list_t filter_list, pdf_char_t **buf, size_t *buf_size);
                                    
 
 /*
@@ -478,13 +478,13 @@ pdf_stm_filter_dealloc_list (const void *elt)
 
 static int
 pdf_stm_apply_filters (gl_list_t filter_list,
-                       pdf_char **buf,
+                       pdf_char_t **buf,
                        size_t *buf_size)
 {
   pdf_stm_filter_t filter;
   gl_list_iterator_t iter;
   gl_list_node_t node;
-  pdf_char *filtered_data;
+  pdf_char_t *filtered_data;
   pdf_stm_pos_t filtered_size;
 
   if (gl_list_size (filter_list) == 0)

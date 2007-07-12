@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/11 17:14:06 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/12 01:39:23 jemarch"
  *
  *       File:         pdf_base.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -57,7 +57,7 @@ typedef off_t pdf_stm_pos_t;
 
 /* PDF manages bytes with values in the range 0-255 */
 
-typedef unsigned char pdf_char;
+typedef unsigned char pdf_char_t;
 
 #endif /* pdf_base.h */
 

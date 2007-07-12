@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/11 17:15:33 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/12 01:40:40 jemarch"
  *
  *       File:         pdf_stm_mem.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -37,7 +37,7 @@ struct pdf_stm_mem_conf_s
   pdf_stm_pos_t size;
   int init_p;
   int resize_p;
-  pdf_char init_char;
+  pdf_char_t init_char;
 };
 
 typedef struct pdf_stm_mem_conf_s *pdf_stm_mem_conf_t;
@@ -46,7 +46,7 @@ typedef struct pdf_stm_mem_conf_s *pdf_stm_mem_conf_t;
 
 struct pdf_stm_mem_data_s
 {
-  pdf_char *data;
+  pdf_char_t *data;
   pdf_stm_pos_t size;
   pdf_stm_pos_t current;
   int resize_p;
@@ -70,9 +70,9 @@ pdf_stm_pos_t pdf_stm_mem_size (void *be_data);
 int pdf_stm_mem_seek (void *be_data, pdf_stm_pos_t pos);
 pdf_stm_pos_t pdf_stm_mem_tell (void *be_data);
 
-size_t pdf_stm_mem_read (void *be_data, pdf_char *buf, size_t bytes);
-size_t pdf_stm_mem_write (void *be_data, pdf_char *buf, size_t bytes);
-size_t pdf_stm_mem_peek (void *be_data, pdf_char *buf, size_t bytes);
+size_t pdf_stm_mem_read (void *be_data, pdf_char_t *buf, size_t bytes);
+size_t pdf_stm_mem_write (void *be_data, pdf_char_t *buf, size_t bytes);
+size_t pdf_stm_mem_peek (void *be_data, pdf_char_t *buf, size_t bytes);
 
 #endif /* pdf_stm_mem.h */
 

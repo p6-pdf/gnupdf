@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/12 01:31:50 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/12 01:39:42 jemarch"
  *
  *       File:         pdf_stm_f_fdec.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -52,15 +52,15 @@ pdf_stm_f_fdec_init (void **filter_data,
 
 int
 pdf_stm_f_fdec_apply (void *filter_data,
-                      pdf_char *in, pdf_stm_pos_t in_size,
-                      pdf_char **out, pdf_stm_pos_t *out_size)
+                      pdf_char_t *in, pdf_stm_pos_t in_size,
+                      pdf_char_t **out, pdf_stm_pos_t *out_size)
 {
   pdf_stm_f_fdec_data_t data;
   z_stream zstm;
   int ret;
 
   data = (pdf_stm_f_fdec_data_t) filter_data;
-  *out = (pdf_char *) xmalloc (in_size);
+  *out = (pdf_char_t *) xmalloc (in_size);
 
   zstm.zalloc = Z_NULL;
   zstm.zfree = Z_NULL;
@@ -95,7 +95,7 @@ pdf_stm_f_fdec_apply (void *filter_data,
   
  error:
   /* Clone input buffer */
-  *out = (pdf_char *) xmalloc (in_size);
+  *out = (pdf_char_t *) xmalloc (in_size);
   memcpy (*out,
           in,
           in_size);

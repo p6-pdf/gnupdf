@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/12 01:37:54 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/12 01:40:16 jemarch"
  *
  *       File:         pdf_stm_f_pred.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -56,14 +56,14 @@ pdf_stm_f_pred_init (void **filter_data,
 
 int
 pdf_stm_f_pred_apply (void *filter_data,
-                      pdf_char *in, pdf_stm_pos_t in_size,
-                      pdf_char **out, pdf_stm_pos_t *out_size)
+                      pdf_char_t *in, pdf_stm_pos_t in_size,
+                      pdf_char_t **out, pdf_stm_pos_t *out_size)
 {
   pdf_stm_f_pred_data_t data;
 
   data = (pdf_stm_f_pred_data_t) filter_data;
 
-  *out = (pdf_char *) xmalloc (in_size);
+  *out = (pdf_char_t *) xmalloc (in_size);
   memcpy (*out,
           in,
           in_size);

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/11 17:16:33 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/12 01:40:05 jemarch"
  *
  *       File:         pdf_stm_f_null.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -47,14 +47,14 @@ pdf_stm_f_null_init (void **filter_data,
 
 int
 pdf_stm_f_null_apply (void *filter_data,
-                      pdf_char *in, pdf_stm_pos_t in_size,
-                      pdf_char **out, pdf_stm_pos_t *out_size)
+                      pdf_char_t *in, pdf_stm_pos_t in_size,
+                      pdf_char_t **out, pdf_stm_pos_t *out_size)
 {
   pdf_stm_f_null_data_t data;
   data = (pdf_stm_f_null_data_t) filter_data;
 
   /* Do nothing */
-  *out = (pdf_char *) xmalloc (in_size);
+  *out = (pdf_char_t *) xmalloc (in_size);
   memcpy (*out,
           in,
           in_size);

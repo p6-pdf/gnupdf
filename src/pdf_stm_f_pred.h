@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/12 01:37:07 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/12 01:40:22 jemarch"
  *
  *       File:         pdf_stm_f_pred.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -83,8 +83,8 @@ typedef struct pdf_stm_f_pred_data_s *pdf_stm_f_pred_data_t;
 
 int pdf_stm_f_pred_init (void **filter_data, void *conf_data);
 int pdf_stm_f_pred_apply (void *filter_data,
-                          pdf_char *in, pdf_stm_pos_t in_size,
-                          pdf_char **out, pdf_stm_pos_t *out_size);
+                          pdf_char_t *in, pdf_stm_pos_t in_size,
+                          pdf_char_t **out, pdf_stm_pos_t *out_size);
 int pdf_stm_f_pred_dealloc (void **filter_data);
 
 #endif /* pdf_stm_f_pred.h */
