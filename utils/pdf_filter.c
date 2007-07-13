@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/13 17:18:57 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/13 18:34:42 jemarch"
  *
  *       File:         pdf_filter.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -29,6 +29,7 @@ static struct option GNU_longOptions[] =
   {"version", no_argument, NULL, VERSION_ARG},
   {"null", no_argument, NULL, NULL_FILTER_ARG},
   {"ahexdec", no_argument, NULL, ASCIIHEXDEC_FILTER_ARG},
+  {"ahexenc", no_argument, NULL, ASCIIHEXENC_FILTER_ARG},
   {"a85dec", no_argument, NULL, ASCII85DEC_FILTER_ARG},
   {"lzwdec", no_argument, NULL, LZWDEC_FILTER_ARG},
 #ifdef HAVE_LIBZ
@@ -50,6 +51,7 @@ Filter the standard input with the specified PDF standard filters and \n\
 write the result in the standard output.\n\
   --null                              use the NULL filter\n\
   --ahexdec                           use the ASCII Hex decoder filter\n\
+  --ahexenc                           use the ASCII Hex encoder filter\n\
   --a85dec                            use the ASCII 85 decoder filter\n\
   --lzwdec                            use the LZW decoder filter\n"
 #ifdef HAVE_LIBZ
@@ -115,6 +117,12 @@ main (int argc, char *argv[])
         case ASCIIHEXDEC_FILTER_ARG:
           {
             pdf_stm_install_ahexdec_filter (input,
+                                            PDF_STM_FILTER_READ);
+            break;
+          }
+        case ASCIIHEXENC_FILTER_ARG:
+          {
+            pdf_stm_install_ahexenc_filter (input,
                                             PDF_STM_FILTER_READ);
             break;
           }

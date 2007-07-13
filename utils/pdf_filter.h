@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/10 19:46:11 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/13 18:35:15 jemarch"
  *
  *       File:         pdf_filter.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -23,6 +23,7 @@ enum
   VERSION_ARG,
   NULL_FILTER_ARG,
   ASCIIHEXDEC_FILTER_ARG,
+  ASCIIHEXENC_FILTER_ARG,
   ASCII85DEC_FILTER_ARG,
   LZWDEC_FILTER_ARG,
   FLATEDEC_FILTER_ARG,

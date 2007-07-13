@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/13 18:16:46 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/13 18:23:08 jemarch"
  *
  *       File:         pdf_stm_f_ahex.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -43,7 +43,7 @@ struct pdf_stm_f_ahex_conf_s
   int mode;
 };
 
-typedef struct pdf_stm_f_ahex_conf_s pdf_stm_f_ahex_conf_t;
+typedef struct pdf_stm_f_ahex_conf_s *pdf_stm_f_ahex_conf_t;
 
 /* Private data */
 
