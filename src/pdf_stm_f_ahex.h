@@ -1,6 +1,6 @@
-/* -*- mode: C -*- Time-stamp: "07/07/13 17:16:15 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/13 18:16:46 jemarch"
  *
- *       File:         pdf_stm_f_ahdec.h
+ *       File:         pdf_stm_f_ahex.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
  *       Date:         Fri Jul 13 17:04:29 2007
  *
@@ -24,31 +24,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PDF_STM_F_AHDEC_H
-#define PDF_STM_F_AHDEC_H
+#ifndef PDF_STM_F_AHEX_H
+#define PDF_STM_F_AHEX_H
 
 #include <config.h>
 #include <pdf_base.h>
 
-/* This filter do not have a configuration structure */
+/* Configuration data */
+
+enum pdf_stm_f_ahex_mode_t
+{
+  PDF_STM_F_AHEX_MODE_ENCODE,
+  PDF_STM_F_AHEX_MODE_DECODE
+};
+
+struct pdf_stm_f_ahex_conf_s
+{
+  int mode;
+};
+
+typedef struct pdf_stm_f_ahex_conf_s pdf_stm_f_ahex_conf_t;
 
 /* Private data */
 
-struct pdf_stm_f_ahdec_data_s
+struct pdf_stm_f_ahex_data_s
 {
-  int dummy;
+  int mode;
 };
 
-typedef struct pdf_stm_f_ahdec_data_s *pdf_stm_f_ahdec_data_t;
+typedef struct pdf_stm_f_ahex_data_s *pdf_stm_f_ahex_data_t;
 
 /* Filter API implementation */
 
-int pdf_stm_f_ahdec_init (void **filter_data, void *conf_data);
-int pdf_stm_f_ahdec_apply (void *filter_data,
+int pdf_stm_f_ahex_init (void **filter_data, void *conf_data);
+int pdf_stm_f_ahex_apply (void *filter_data,
                            pdf_char_t *in, pdf_stm_pos_t in_size,
                            pdf_char_t **out, pdf_stm_pos_t *out_size);
-int pdf_stm_f_ahdec_dealloc (void **filter_data);
+int pdf_stm_f_ahex_dealloc (void **filter_data);
 
-#endif /* pdf_stm_f_ahdec.h */
+#endif /* pdf_stm_f_ahex.h */
 
-/* End of pdf_stm_f_ahdec.h */
+/* End of pdf_stm_f_ahex.h */

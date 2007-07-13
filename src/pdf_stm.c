@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/13 17:14:48 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/13 18:15:59 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -220,14 +220,33 @@ int
 pdf_stm_install_ahexdec_filter (pdf_stm_t stm, 
                                 int direction)
 {
+  struct pdf_stm_f_ahex_conf_s conf;
+
+  conf.mode = PDF_STM_F_AHEX_MODE_DECODE;
+
   return pdf_stm_install_filter (stm,
                                  direction,
                                  pdf_stm_f_ahdec_init,
                                  pdf_stm_f_ahdec_apply,
                                  pdf_stm_f_ahdec_dealloc,
-                                 NULL);
+                                 &conf);
 }
 
+int
+pdf_stm_install_ahexenc_filter (pdf_stm_t stm, 
+                                int direction)
+{
+  struct pdf_stm_f_ahex_conf_s conf;
+
+  conf.mode = PDF_STM_F_AHEX_MODE_ENCODE;
+
+  return pdf_stm_install_filter (stm,
+                                 direction,
+                                 pdf_stm_f_ahdec_init,
+                                 pdf_stm_f_ahdec_apply,
+                                 pdf_stm_f_ahdec_dealloc,
+                                 &conf);
+}
 
 /* 
  * Generic functions

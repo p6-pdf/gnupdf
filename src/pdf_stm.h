@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/13 17:15:19 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/13 18:14:17 jemarch"
  *
  *       File:         pdf_stm.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -53,7 +53,7 @@
 #include <pdf_stm_f_null.h>
 #include <pdf_stm_f_fdec.h>
 #include <pdf_stm_f_pred.h>
-#include <pdf_stm_f_ahdec.h>
+#include <pdf_stm_f_ahex.h>
 
 /* Please note that `pdf_stm_pos_t' is defined in `pdf_base.h' */
 
@@ -265,6 +265,7 @@ int pdf_stm_install_pred_filter (pdf_stm_t stm,
                                  int bits_per_component,
                                  int columns);
 int pdf_stm_install_ahexdec_filter (pdf_stm_t stm, int direction);
+int pdf_stm_install_ahexenc_filter (pdf_stm_t stm, int direction);
 /*int pdf_stm_install_asciihexenc_filter (pdf_stm_t stm, int direction);
 int pdf_stm_install_ascii85dec_filter (pdf_stm_t stm, int direction);
 int pdf_stm_install_ascii85enc_filter (pdf_stm_t stm, int direction);*/
