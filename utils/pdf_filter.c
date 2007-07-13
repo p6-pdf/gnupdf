@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/13 16:35:13 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/13 17:18:06 jemarch"
  *
  *       File:         pdf_filter.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -114,6 +114,8 @@ main (int argc, char *argv[])
           }
         case ASCIIHEXDEC_FILTER_ARG:
           {
+            pdf_stm_install_ahdec_filter (input,
+                                          PDF_STM_FILTER_READ);
             break;
           }
         case ASCII85DEC_FILTER_ARG:

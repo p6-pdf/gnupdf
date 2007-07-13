@@ -1,5 +1,14 @@
 2007-07-13  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/pdf_stm.c (pdf_stm_install_ahexdec_filter): New function.
+
+	* src/Makefile.am (libgnupdf_la_SOURCES): `pdf_stm_f_ahdec.h' and
+	`pdf_stm_f_ahdec.c' added.
+
+	* src/pdf_stm_f_ahdec.c (pdf_stm_f_ahdec_apply): New file.
+
+	* src/pdf_stm_f_ahdec.h: New file.
+
 	* src/pdf_stm_file.c (pdf_stm_file_peek): Interface changed.
 
 	* src/pdf_stm_mem.c: Interface changed.
