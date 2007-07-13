@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/13 18:22:08 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/13 18:46:20 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -464,7 +464,7 @@ pdf_stm_install_filter (pdf_stm_t stm,
   /* Initialize it */
   if (conf != NULL)
     {
-      (filter->funcs.init) (&filter->data, &conf);
+      (filter->funcs.init) (&filter->data, conf);
     }
   else
     {

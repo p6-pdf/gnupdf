@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/13 18:33:37 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/13 18:54:43 jemarch"
  *
  *       File:         pdf_stm_f_ahex.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -12,6 +12,7 @@
 #include <malloc.h>
 #include <xalloc.h>
 #include <string.h>
+#include <stdio.h>
 #include <pdf_stm_f_ahex.h>
 
 static int pdf_stm_f_ahex_white_p (int hex);
