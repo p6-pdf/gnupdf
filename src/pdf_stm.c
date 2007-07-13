@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/13 16:33:05 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/13 17:14:48 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -214,6 +214,18 @@ pdf_stm_install_pred_filter (pdf_stm_t stm,
                                  pdf_stm_f_pred_apply,
                                  pdf_stm_f_pred_dealloc,
                                  &config);
+}
+
+int
+pdf_stm_install_ahexdec_filter (pdf_stm_t stm, 
+                                int direction)
+{
+  return pdf_stm_install_filter (stm,
+                                 direction,
+                                 pdf_stm_f_ahdec_init,
+                                 pdf_stm_f_ahdec_apply,
+                                 pdf_stm_f_ahdec_dealloc,
+                                 NULL);
 }
 
 
