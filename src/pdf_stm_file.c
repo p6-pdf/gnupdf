@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/12 01:39:54 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/13 16:33:22 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -205,7 +205,7 @@ pdf_stm_file_tell (void *be_data)
 
 size_t
 pdf_stm_file_read (void *be_data,
-                   pdf_char_t *buf,
+                   pdf_char_t **buf,
                    size_t bytes)
 {
   pdf_stm_file_data_t data;
@@ -217,6 +217,8 @@ pdf_stm_file_read (void *be_data,
   read_bytes = bytes;
   peek_bytes = 0;
   readed = 0;
+
+  *buf = (pdf_char_t *) xmalloc (bytes);
 
   if (data->peek_size > 0)
     {
@@ -231,7 +233,7 @@ pdf_stm_file_read (void *be_data,
           read_bytes = 0;
         }
 
-      memcpy (buf, 
+      memcpy (*buf, 
               data->peek_buffer,
               peek_bytes);
 
@@ -247,7 +249,7 @@ pdf_stm_file_read (void *be_data,
   if (read_bytes > 0)
     {
       readed = readed + 
-        fread (buf + peek_bytes,
+        fread (*buf + peek_bytes,
                1, 
                read_bytes,
                data->file_stm);
@@ -271,7 +273,7 @@ pdf_stm_file_write (void *be_data,
 
 size_t
 pdf_stm_file_peek (void *be_data,
-                   pdf_char_t *buf,
+                   pdf_char_t **buf,
                    size_t bytes)
 {
   pdf_stm_file_data_t data;
@@ -279,7 +281,9 @@ pdf_stm_file_peek (void *be_data,
 
   data = (pdf_stm_file_data_t) be_data;
 
-  readed = fread (buf,
+  *buf = (pdf_char_t *) xmalloc (bytes);
+
+  readed = fread (*buf,
                   1,
                   bytes,
                   data->file_stm);
@@ -294,7 +298,7 @@ pdf_stm_file_peek (void *be_data,
     {
       data->peek_buffer = (pdf_char_t *) xmalloc (readed);
       memcpy (data->peek_buffer,
-              buf,
+              *buf,
               readed);
       data->peek_size = readed;
     }

@@ -1,4 +1,12 @@
+2007-07-13  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/pdf_stm_file.c (pdf_stm_file_peek): Interface changed.
+
+	* src/pdf_stm_mem.c: Interface changed.
+
 2007-07-12  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/pdf_stm.h: Changed interface.
 
 	* src/Makefile.am (libgnupdf_la_SOURCES): `pdf_stm_f_pred.h' and
 	`pdf_stm_f_pred.c' added.

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/12 01:33:10 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/13 16:35:13 jemarch"
  *
  *       File:         pdf_filter.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -176,7 +176,6 @@ main (int argc, char *argv[])
     }
 
   /* Write the filtered pdf stream contents into stdout */
-  output_buffer = (unsigned char *) xmalloc (pdf_stm_size (input));
   pdf_stm_seek (input, 0);
   readed = pdf_stm_read (input, 
                          &output_buffer,

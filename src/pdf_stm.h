@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/12 01:40:31 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/12 20:25:38 jemarch"
  *
  *       File:         pdf_stm.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -150,9 +150,9 @@ struct pdf_stm_be_s
     pdf_stm_pos_t (*tell) (void *data);
 
     /* Reading and writing data */
-    size_t (*read) (void *data, pdf_char_t *buf, size_t bytes);
+    size_t (*read) (void *data, pdf_char_t **buf, size_t bytes);
     size_t (*write) (void *data, pdf_char_t *buf, size_t bytes);
-    size_t (*peek) (void *data, pdf_char_t *buf, size_t bytes);
+    size_t (*peek) (void *data, pdf_char_t **buf, size_t bytes);
 
     /* Closing */
     int (*close) (void **data);
@@ -251,7 +251,7 @@ int pdf_stm_seek (pdf_stm_t stm, pdf_stm_pos_t pos);
 pdf_stm_pos_t pdf_stm_tell (pdf_stm_t stm);
 size_t pdf_stm_read (pdf_stm_t stm, unsigned char **buf, size_t bytes);
 size_t pdf_stm_write (pdf_stm_t stm, unsigned char *buf, size_t bytes);
-size_t pdf_stm_peek (pdf_stm_t stm, unsigned char *buf, size_t bytes);
+size_t pdf_stm_peek (pdf_stm_t stm, unsigned char **buf, size_t bytes);
 
 /* Managing filters */
 

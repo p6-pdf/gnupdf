@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/12 01:40:36 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/13 16:33:40 jemarch"
  *
  *       File:         pdf_stm_mem.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -31,7 +31,7 @@
 #include <pdf_base.h>
 #include <pdf_stm_mem.h>
 
-static size_t pdf_stm_mem_readpeek (void *be_data, pdf_char_t *buf, size_t bytes, int peek);
+static size_t pdf_stm_mem_readpeek (void *be_data, pdf_char_t **buf, size_t bytes, int peek);
 
 
 int
@@ -144,7 +144,7 @@ pdf_stm_mem_tell (void *be_data)
 
 size_t
 pdf_stm_mem_read (void *be_data,
-                  pdf_char_t *buf,
+                  pdf_char_t **buf,
                   size_t bytes)
 {
   return pdf_stm_mem_readpeek (be_data,
@@ -198,7 +198,7 @@ pdf_stm_mem_write (void *be_data,
 
 inline size_t
 pdf_stm_mem_peek (void *be_data,
-                  pdf_char_t *buf,
+                  pdf_char_t **buf,
                   size_t bytes)
 {
   return pdf_stm_mem_readpeek (be_data,
@@ -211,7 +211,7 @@ pdf_stm_mem_peek (void *be_data,
 
 static size_t
 pdf_stm_mem_readpeek (void *be_data,
-                      pdf_char_t *buf,
+                      pdf_char_t **buf,
                       size_t bytes,
                       int peek)
 {
@@ -219,6 +219,8 @@ pdf_stm_mem_readpeek (void *be_data,
   size_t readed;
 
   data = (pdf_stm_mem_data_t) be_data;
+
+  *buf = (pdf_char_t *) xmalloc (bytes);
 
   if ((data->current + bytes) >= data->size)
     {
@@ -231,7 +233,7 @@ pdf_stm_mem_readpeek (void *be_data,
 
   if (readed > 0)
     {
-      memcpy (buf,
+      memcpy (*buf,
               data->data + data->current,
               readed);
 

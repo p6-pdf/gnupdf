@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/12 01:39:37 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/13 16:33:05 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -295,7 +295,7 @@ pdf_stm_read (pdf_stm_t stm,
   if (stm->backend.funcs.read_p (BE_DATA(stm)))
     {
       readed_bytes = stm->backend.funcs.read (BE_DATA(stm),
-                                              *buf,
+                                              buf,
                                               bytes);
     }
   else
@@ -340,7 +340,7 @@ pdf_stm_write (pdf_stm_t stm,
 
 size_t
 pdf_stm_peek (pdf_stm_t stm,
-              unsigned char *buf,
+              unsigned char **buf,
               size_t bytes)
 {
   size_t result;
