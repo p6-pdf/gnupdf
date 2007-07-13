@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/13 16:33:40 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/13 16:47:44 jemarch"
  *
  *       File:         pdf_stm_mem.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -187,7 +187,7 @@ pdf_stm_mem_write (void *be_data,
 
   if (written > 0)
     {
-      memcpy (data->data,
+      memcpy (data->data + data->current,
               buf,
               written);
       data->current = data->current + written;
