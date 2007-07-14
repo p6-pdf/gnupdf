@@ -1,3 +1,7 @@
+2007-07-14  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/pdf_stm_f_ahex.c (pdf_stm_f_ahex_encode): Fix indirection.
+
 2007-07-13  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* utils/pdf_filter.c (main): Added support for ascii hex decoder.

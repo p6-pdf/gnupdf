@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/13 18:54:43 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/14 16:43:20 jemarch"
  *
  *       File:         pdf_stm_f_ahex.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -18,7 +18,7 @@
 static int pdf_stm_f_ahex_white_p (int hex);
 static int pdf_stm_f_ahex_hex_p (int hex);
 static int pdf_stm_f_ahex_hex2int (int hex);
-static pdf_char_t pdf_stm_ahex_int2hex (int n);
+static pdf_char_t pdf_stm_f_ahex_int2hex (int n);
 static int pdf_stm_f_ahex_encode (pdf_char_t *in, pdf_stm_pos_t in_size,
                                   pdf_char_t **out, pdf_stm_pos_t *out_size);
 static int pdf_stm_f_ahex_decode (pdf_char_t *in, pdf_stm_pos_t in_size,
@@ -143,10 +143,10 @@ pdf_stm_f_ahex_encode (pdf_char_t *in,
        pos_out < (*out_size - 1);
        pos_out = pos_out + 2)
     {
-      *out[pos_out] = pdf_stm_f_ahex_int2hex (in[pos_out / 2] >> 4);
-      *out[pos_out + 1] = pdf_stm_f_ahex_int2hex (in[(pos_out / 2) + 1]);
+      (*out)[pos_out] = pdf_stm_f_ahex_int2hex (in[pos_out / 2] >> 4);
+      (*out)[pos_out + 1] = pdf_stm_f_ahex_int2hex (in[(pos_out / 2) + 1]);
     }
-  *out[pos_out] = '>';
+  (*out)[pos_out] = '>';
 
   return PDF_OK;
 }
