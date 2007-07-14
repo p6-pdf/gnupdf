@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/14 19:42:05 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/14 19:42:46 jemarch"
  *
  *       File:         pdf_stm_f_ahex.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -166,6 +166,7 @@ pdf_stm_f_ahex_encode (pdf_char_t *in,
           num_lines++;
         }
     }
+  /* Insert the EOD marker */
   (*out)[out_size - 1] = '>';
 
   return PDF_OK;
