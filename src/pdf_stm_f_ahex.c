@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/14 19:42:46 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/14 20:11:35 jemarch"
  *
  *       File:         pdf_stm_f_ahex.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -124,6 +124,8 @@ pdf_stm_f_ahex_hex2int (int hex)
     {
       return (hex - '0');
     }
+
+  return -1;
 }
 
 #define AHEX_ENC_LINE_LENGTH 80
@@ -167,7 +169,7 @@ pdf_stm_f_ahex_encode (pdf_char_t *in,
         }
     }
   /* Insert the EOD marker */
-  (*out)[out_size - 1] = '>';
+  (*out)[*out_size - 1] = '>';
 
   return PDF_OK;
 }
@@ -178,9 +180,61 @@ pdf_stm_f_ahex_decode (pdf_char_t *in,
                        pdf_char_t **out,
                        pdf_stm_pos_t *out_size)
 {
-  
+  pdf_stm_pos_t in_pos;
+  pdf_stm_pos_t out_pos;
+  int odd_p;
 
+  /* Decompression ratio is 2:1
+     but take care about whitespaces and the EOD marker */
+  *out = (pdf_char_t *) xmalloc (in_size);
+  
+  in_pos = 0;
+  out_pos = 0;
+  odd_p = PDF_TRUE;
+  while (in_pos < in_size)
+    {
+      if (pdf_stm_f_ahex_hex_p (in[in_pos]))
+        {
+          if (odd_p)
+            {
+              /* First nibble */
+              (*out)[out_pos] = 0;
+              (*out)[out_pos] = pdf_stm_f_ahex_hex2int (in[in_pos]) << 4;
+              odd_p = !odd_p;
+            }
+          else
+            {
+              /* Second nibble */
+              (*out)[out_pos] += pdf_stm_f_ahex_hex2int (in[in_pos]);
+              odd_p = !odd_p;
+              out_pos++;
+            }
+
+          in_pos++;
+        }
+      else if (pdf_stm_f_ahex_white_p (in[in_pos]))
+        {
+          in_pos++;
+        }
+      else if (in[in_pos] == '>')
+        {
+          break;
+        }
+      else
+        {
+          goto error;
+        }
+    }
+
+  /* Adjust output buffer size */
+  *out_size = out_pos;
+  *out = (pdf_char_t *) xrealloc (*out, *out_size);
+  
   return PDF_OK;
+
+ error:
+  
+  return PDF_ERROR;
 }
 
 
