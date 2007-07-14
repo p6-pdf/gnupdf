@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/14 16:43:20 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/14 16:51:02 jemarch"
  *
  *       File:         pdf_stm_f_ahex.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -135,7 +135,7 @@ pdf_stm_f_ahex_encode (pdf_char_t *in,
   pdf_stm_pos_t pos_out;
 
   /* There is an expansion of 1:2
-     but take care about the EOD marker */
+     but take care about the EOD marker and line splitting */
   *out_size = (in_size * 2) + 1;
   *out = (pdf_char_t *) xmalloc (*out_size);
 
@@ -147,6 +147,8 @@ pdf_stm_f_ahex_encode (pdf_char_t *in,
       (*out)[pos_out + 1] = pdf_stm_f_ahex_int2hex (in[(pos_out / 2) + 1]);
     }
   (*out)[pos_out] = '>';
+
+  printf("LENGTH: %d\n", *out_size);
 
   return PDF_OK;
 }
