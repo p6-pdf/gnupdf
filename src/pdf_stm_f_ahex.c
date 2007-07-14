@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/14 16:53:26 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/14 19:40:46 jemarch"
  *
  *       File:         pdf_stm_f_ahex.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -126,25 +126,53 @@ pdf_stm_f_ahex_hex2int (int hex)
     }
 }
 
+#define AHEX_ENC_LINE_LENGTH 80
+
 static int
 pdf_stm_f_ahex_encode (pdf_char_t *in, 
                        pdf_stm_pos_t in_size,
                        pdf_char_t **out,
                        pdf_stm_pos_t *out_size)
 {
+  pdf_stm_pos_t pos_in;
   pdf_stm_pos_t pos_out;
+  pdf_stm_pos_t num_lines;
+  pdf_stm_pos_t line_length;
 
-  /* There is an expansion of 1:2
-     but take care about the EOD marker and line splitting */
-  *out_size = (in_size * 2) + 1;
+  *out_size = 
+    (in_size * 2) +                         /* Expansion of 1:2 */
+    1 +                                     /* EOD marker */
+    ((in_size * 2) / AHEX_ENC_LINE_LENGTH); /* line splitting */
   *out = (pdf_char_t *) xmalloc (*out_size);
 
-  for (pos_out = 0;
-       pos_out < (*out_size - 1);
-       pos_out = pos_out + 2)
+  pos_out = 0;
+  num_lines = 0;
+  line_length = 0;
+  for (pos_in = 0;
+       pos_in < in_size;
+       pos_in++)
     {
-      (*out)[pos_out] = pdf_stm_f_ahex_int2hex (in[pos_out / 2] >> 4);
-      (*out)[pos_out + 1] = pdf_stm_f_ahex_int2hex (in[(pos_out / 2) + 1]);
+      pos_out = (pos_in * 2) + num_lines;
+      
+      (*out)[pos_out] = pdf_stm_f_ahex_int2hex (in[pos_in] >> 4);
+      (*out)[pos_out + 1] = pdf_stm_f_ahex_int2hex (in[pos_in]);
+
+      line_length = line_length + 2;
+
+      if (line_length >= AHEX_ENC_LINE_LENGTH)
+        {
+          (*out)[pos_out + 2] = '\n';
+          line_length = 0;
+          num_lines++;
+        }
+    }
+  if (line_length == 0)
+    {
+      pos_out = pos_out + 3;
+    }
+  else
+    {
+      pos_out = pos_out + 2;
     }
   (*out)[pos_out] = '>';
 
