@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/15 21:04:52 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/15 21:28:06 jemarch"
  *
  *       File:         pdf_stm_f_a85.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -24,6 +24,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* The code of this file is based in the work of Paul Haahr, put in
+   the public domain by the author.
+
+   Many thanks Paul! */
+
 #include <config.h>
 #include <malloc.h>
 #include <xalloc.h>
@@ -31,7 +36,7 @@
 #include <stdio.h>
 #include <pdf_stm_f_a85.h>
 
-static int pdf_stm_f_85_white_p (int hex);
+static int pdf_stm_f_a85_white_p (int hex);
 static int pdf_stm_f_a85_encode (pdf_char_t *in, pdf_stm_pos_t in_size,
                                  pdf_char_t **out, pdf_stm_pos_t *out_size);
 static int pdf_stm_f_a85_decode (pdf_char_t *in, pdf_stm_pos_t in_size,
@@ -96,7 +101,7 @@ pdf_stm_f_a85_dealloc (void **filter_data)
 /* Private functions */
 
 static int
-pdf_stm_f_85_white_p (int hex)
+pdf_stm_f_a85_white_p (int hex)
 {
   return ((hex == '\0') || /* Null */
           (hex == '\t') || /* Tab */
@@ -220,12 +225,90 @@ pdf_stm_f_a85_encode (pdf_char_t *in,
   return PDF_OK;
 }
 
+static unsigned long pdf_stm_f_a85_pow85[] =
+  {85*85*85*85, 85*85*85, 85*85, 85, 1};
+
 static int
 pdf_stm_f_a85_decode (pdf_char_t *in,
                       pdf_stm_pos_t in_size,
                       pdf_char_t **out,
                       pdf_stm_pos_t *out_size)
 {
+  pdf_stm_pos_t pos_in;
+  pdf_stm_pos_t pos_out;
+  int c;
+  int count;
+  unsigned long tuple;
+
+  *out = (pdf_char_t *) xmalloc (in_size);
+
+  tuple = 0;
+  count = 0;
+  pos_out = 0;
+  for (pos_in = 0;
+       pos_in < in_size;
+       pos_in++)
+    {
+      c = in[pos_in];
+
+      if (pdf_stm_f_a85_white_p (c))
+        {
+          /* Ignore whitespace characters */
+          continue;
+        }
+
+      if (c == 'z')
+        {
+          if (count != 0)
+            {
+              /* Error: z inside ascii85 5-tuple */
+              goto error;
+            }
+          (*out)[pos_out++] = 0;
+          (*out)[pos_out++] = 0;
+          (*out)[pos_out++] = 0;
+          (*out)[pos_out++] = 0;
+          
+          continue;
+        }
+
+      if (c == '~')
+        {
+          break;
+        }
+     
+      if ((c < '!' || c > 'u'))
+        {
+          /* Illegal character in ascii85 stream */
+          goto error;
+        }
+
+      /* Decode this character */
+      tuple =  tuple + (c - '!') * pdf_stm_f_a85_pow85[count];
+      count = count + 1;
+      
+      if (count == 5)
+        {
+          /* Decode this tuple to base-256 four bytes */
+          (*out)[pos_out++] = tuple >> 24;
+          (*out)[pos_out++] = tuple >> 16;
+          (*out)[pos_out++] = tuple >> 8;
+          (*out)[pos_out++] = tuple;
+    
+          count = 0;
+          tuple = 0;
+        }
+    }
+
+  /* Adjust memory */
+  *out_size = pos_out;
+  *out = (pdf_char_t *) xrealloc (*out, 
+                                  *out_size);
+
+  return PDF_OK;
+
+ error:
+  free (*out);
   return PDF_ERROR;
 }
 
