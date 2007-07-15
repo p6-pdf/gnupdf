@@ -25,6 +25,7 @@ libgnupdf_la_SOURCES = pdf.c \
                        pdf_stm_f_pred.c pdf_stm_f_pred.h \
                        pdf_stm_f_ahex.c pdf_stm_f_ahex.h \
                        pdf_stm_f_a85.c  pdf_stm_f_a85.h \
+                       pdf_stm_f_rl.c pdf_stm_f_rl.h \
                        pdf_obj.c pdf_obj.h \
                        pdf_xref.c pdf_xref.h
 

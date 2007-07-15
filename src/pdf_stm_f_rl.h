@@ -1,10 +1,10 @@
-/* -*- mode: C -*- Time-stamp: "07/07/15 21:59:11 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/15 22:01:05 jemarch"
  *
- *       File:         pdf_stm_f_a85.h
+ *       File:         pdf_stm_f_rl.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
- *       Date:         Sun Jul 15 05:57:38 2007
+ *       Date:         Sun Jul 15 21:57:35 2007
  *
- *       GNU PDF Library - ASCII85 encoder/decoder
+ *       GNU PDF Library - RunLength encoder/decoder
  *
  */
 
@@ -24,45 +24,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-#ifndef PDF_STM_F_A85_H
-#define PDF_STM_F_A85_H
+#ifndef PDF_STM_F_RL_H
+#define PDF_STM_F_RL_H
 
 #include <config.h>
 #include <pdf_base.h>
 
 /* Configuration data */
 
-enum pdf_stm_f_a85_mode_t
+enum pdf_stm_f_rl_mode_t
 {
-  PDF_STM_F_A85_MODE_ENCODE,
-  PDF_STM_F_A85_MODE_DECODE
+  PDF_STM_F_RL_MODE_ENCODE,
+  PDF_STM_F_RL_MODE_DECODE
 };
 
-struct pdf_stm_f_a85_conf_s
+struct pdf_stm_f_rl_conf_s
 {
   int mode;
 };
 
-typedef struct pdf_stm_f_a85_conf_s *pdf_stm_f_a85_conf_t;
+typedef struct pdf_stm_f_rl_conf_s *pdf_stm_f_rl_conf_t;
 
 /* Private data */
 
-struct pdf_stm_f_a85_data_s
+struct pdf_stm_f_rl_data_s
 {
   int mode;
 };
 
-typedef struct pdf_stm_f_a85_data_s *pdf_stm_f_a85_data_t;
+typedef struct pdf_stm_f_rl_data_s *pdf_stm_f_rl_data_t;
 
 /* Filter API implementation */
 
-int pdf_stm_f_a85_init (void **filter_data, void *conf_data);
-int pdf_stm_f_a85_apply (void *filter_data,
-                         pdf_char_t *in, pdf_stm_pos_t in_size,
-                         pdf_char_t **out, pdf_stm_pos_t *out_size);
-int pdf_stm_f_a85_dealloc (void **filter_data);
+int pdf_stm_f_rl_init (void **filter_data, void *conf_data);
+int pdf_stm_f_rl_apply (void *filter_data,
+                        pdf_char_t *in, pdf_stm_pos_t in_size,
+                        pdf_char_t **out, pdf_stm_pos_t *out_size);
+int pdf_stm_f_rl_dealloc (void **filter_data);
 
-#endif /* pdf_stm_f_a85.h */
+#endif /* pdf_stm_f_rl.h */
 
-/* End of pdf_stm_f_a85.h */
+/* End of pdf_stm_f_rl.h */

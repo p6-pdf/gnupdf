@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/15 06:11:12 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/15 22:14:05 jemarch"
  *
  *       File:         pdf_filter.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -38,6 +38,7 @@ static struct option GNU_longOptions[] =
   {"flateenc", no_argument, NULL, FLATEENC_FILTER_ARG},
 #endif /* HAVE_LIBZ */
   {"rldec", no_argument, NULL, RUNLENGTHDEC_FILTER_ARG},
+  {"rlenc", no_argument, NULL, RUNLENGTHENC_FILTER_ARG},
   {"cfaxdec", no_argument, NULL, CCITTFAXDEC_FILTER_ARG},
   {"jbig2dec", no_argument, NULL, JBIG2DEC_FILTER_ARG},
   {"dctdec", no_argument, NULL, DCTDEC_FILTER_ARG},
@@ -62,6 +63,7 @@ write the result in the standard output.\n\
 "  --flateenc                          use the Flate encoder filter\n"
 #endif /* HAVE_LIBZ */
 "  --rldec                             use the Run Length decoder filter\n\
+  --rlenc                             use the Run Length encoder filter\n\
   --cfaxdec                           use the CCITT Fax decoder filter\n\
   --jbig2dec                          use the JBIG2 decoder filter\n\
   --dctdec                            use the DCT decoder filter\n\
@@ -162,6 +164,14 @@ main (int argc, char *argv[])
 #endif /* HAVE_LIBZ */
         case RUNLENGTHDEC_FILTER_ARG:
           {
+            pdf_stm_install_rldec_filter (input,
+                                          PDF_STM_FILTER_READ);
+            break;
+          }
+        case RUNLENGTHENC_FILTER_ARG:
+          {
+            pdf_stm_install_rlenc_filter (input,
+                                          PDF_STM_FILTER_READ);
             break;
           }
         case CCITTFAXDEC_FILTER_ARG:

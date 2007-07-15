@@ -1,5 +1,15 @@
 2007-07-15  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/Makefile.am (libgnupdf_la_SOURCES): `pdf_stm_f_rl.h' and
+	`pdf_stm_f_rl.c' added.
+
+	* src/pdf_stm.c (pdf_stm_install_rldec_filter): New function.
+	(pdf_stm_install_rlenc_filter): New function.
+
+	* src/pdf_stm_f_rl.c: New file.
+
+	* src/pdf_stm_f_rl.h: New file.
+
 	* src/pdf_stm_f_a85.c: New file.
 
 	* src/pdf_stm_f_a85.h: New file.

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/15 21:04:28 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/15 22:10:16 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -292,6 +292,38 @@ pdf_stm_install_a85enc_filter (pdf_stm_t stm,
                                  pdf_stm_f_a85_init,
                                  pdf_stm_f_a85_apply,
                                  pdf_stm_f_a85_dealloc,
+                                 &conf);
+}
+
+int
+pdf_stm_install_rldec_filter (pdf_stm_t stm,
+                              int direction)
+{
+  struct pdf_stm_f_rl_conf_s conf;
+
+  conf.mode = PDF_STM_F_RL_MODE_DECODE;
+
+  return pdf_stm_install_filter (stm,
+                                 direction,
+                                 pdf_stm_f_rl_init,
+                                 pdf_stm_f_rl_apply,
+                                 pdf_stm_f_rl_dealloc,
+                                 &conf);
+}
+
+int
+pdf_stm_install_rlenc_filter (pdf_stm_t stm,
+                              int direction)
+{
+  struct pdf_stm_f_rl_conf_s conf;
+
+  conf.mode = PDF_STM_F_RL_MODE_ENCODE;
+
+  return pdf_stm_install_filter (stm,
+                                 direction,
+                                 pdf_stm_f_rl_init,
+                                 pdf_stm_f_rl_apply,
+                                 pdf_stm_f_rl_dealloc,
                                  &conf);
 }
 
