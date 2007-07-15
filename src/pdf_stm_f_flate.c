@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/15 02:13:32 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/15 05:52:18 jemarch"
  *
  *       File:         pdf_stm_f_flate.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -104,10 +104,38 @@ pdf_stm_f_flate_encode (pdf_char_t *in,
                         pdf_char_t **out,
                         pdf_stm_pos_t *out_size)
 {
-  *out = (pdf_char_t *) xmalloc (1);
+  unsigned long compressed_bound;
+  int ret;
 
-  return PDF_FALSE;
+  /* Allocate memory for destination buffer */
+  compressed_bound = compressBound (in_size);
+  *out_size = compressed_bound;
+  *out = (pdf_char_t *) xmalloc (*out_size);
+
+  /* Compress input */
+  ret = compress (*out, 
+                  (unsigned long *) out_size,
+                  in,
+                  in_size);
+
+  if (ret == Z_OK)
+    {
+      /* Adjust memory to really used  and return */
+      *out = (pdf_char_t *) xrealloc (*out,
+                                      *out_size);
+      return PDF_OK;
+    }
+  else
+    {
+      /* Z_MEM_ERROR or Z_BUF_ERROR happened.  In any case, return
+         reporting that the filter application failed. */
+      return PDF_FALSE;
+    }
+
+  /* Not reached */
 }
+
+#define CHUNK 16384
 
 static int
 pdf_stm_f_flate_decode (pdf_char_t *in,
@@ -115,9 +143,58 @@ pdf_stm_f_flate_decode (pdf_char_t *in,
                         pdf_char_t **out,
                         pdf_stm_pos_t *out_size)
 {
-  *out = (pdf_char_t *) xmalloc (1);
+  z_stream zstm;
+  int ret;
+  pdf_char_t out_aux[16384];
+  pdf_stm_pos_t nchunks;
 
-  return PDF_FALSE;
+  zstm.zalloc = Z_NULL;
+  zstm.zfree = Z_NULL;
+  zstm.opaque = Z_NULL;
+  zstm.avail_in = in_size;
+  zstm.next_in = in;
+
+  inflateInit (&zstm);
+
+  *out_size = 0;
+  *out = NULL;
+  nchunks = 0;
+  do
+    {
+      zstm.avail_out = CHUNK;
+      zstm.next_out = out_aux;
+      
+      ret = inflate (&zstm, Z_NO_FLUSH);
+
+      switch (ret)
+        {
+        case Z_NEED_DICT:
+        case Z_DATA_ERROR:
+        case Z_MEM_ERROR:
+          {
+            goto error;
+          }
+        }
+          
+      *out_size =  *out_size + (CHUNK - zstm.avail_out);
+      *out = (pdf_char_t *) xrealloc (*out,
+                                      *out_size);
+
+      memcpy (*out + (nchunks * CHUNK),
+              out_aux,
+              CHUNK - zstm.avail_out);
+
+      nchunks++;
+
+    } while (ret != Z_STREAM_END);
+
+  ret = inflateEnd (&zstm);
+  
+  return PDF_OK;
+
+ error:
+  (void) inflateEnd (&zstm);
+  return PDF_ERROR;
 }
 
 

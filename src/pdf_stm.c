@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/15 02:07:28 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/15 05:53:29 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -555,11 +555,6 @@ pdf_stm_apply_filters (gl_list_t filter_list,
           free (*buf);
           *buf = filtered_data;
           *buf_size = filtered_size;
-        }
-      else
-        {
-          /* Filter application failed. Free any residual data */
-          free (filtered_data);
         }
     }
   gl_list_iterator_free (&iter);
