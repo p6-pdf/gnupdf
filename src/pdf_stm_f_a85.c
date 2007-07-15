@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/15 21:28:06 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/15 21:33:49 jemarch"
  *
  *       File:         pdf_stm_f_a85.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -304,7 +304,6 @@ pdf_stm_f_a85_decode (pdf_char_t *in,
   *out_size = pos_out;
   *out = (pdf_char_t *) xrealloc (*out, 
                                   *out_size);
-
   return PDF_OK;
 
  error:
