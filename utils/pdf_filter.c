@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/13 18:34:42 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/15 02:16:09 jemarch"
  *
  *       File:         pdf_filter.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -34,6 +34,7 @@ static struct option GNU_longOptions[] =
   {"lzwdec", no_argument, NULL, LZWDEC_FILTER_ARG},
 #ifdef HAVE_LIBZ
   {"flatedec", no_argument, NULL, FLATEDEC_FILTER_ARG},
+  {"flateenc", no_argument, NULL, FLATEENC_FILTER_ARG},
 #endif /* HAVE_LIBZ */
   {"rldec", no_argument, NULL, RUNLENGTHDEC_FILTER_ARG},
   {"cfaxdec", no_argument, NULL, CCITTFAXDEC_FILTER_ARG},
@@ -56,6 +57,7 @@ write the result in the standard output.\n\
   --lzwdec                            use the LZW decoder filter\n"
 #ifdef HAVE_LIBZ
 "  --flatedec                          use the Flate decoder filter\n"
+"  --flateenc                          use the Flate encoder filter\n"
 #endif /* HAVE_LIBZ */
 "  --rldec                             use the Run Length decoder filter\n\
   --cfaxdec                           use the CCITT Fax decoder filter\n\
@@ -137,8 +139,14 @@ main (int argc, char *argv[])
 #ifdef HAVE_LIBZ
         case FLATEDEC_FILTER_ARG:
           {
-            pdf_stm_install_fdec_filter (input,
-                                         PDF_STM_FILTER_READ);
+            pdf_stm_install_flatedec_filter (input,
+                                             PDF_STM_FILTER_READ);
+            break;
+          }
+        case FLATEENC_FILTER_ARG:
+          {
+            pdf_stm_install_flateenc_filter (input,
+                                             PDF_STM_FILTER_READ);
             break;
           }
 #endif /* HAVE_LIBZ */

@@ -28,7 +28,7 @@ libgnupdf_la_SOURCES = pdf.c \
                        pdf_xref.c pdf_xref.h
 
 if ZLIB
-  libgnupdf_la_SOURCES += pdf_stm_f_fdec.c pdf_stm_f_fdec.h
+  libgnupdf_la_SOURCES += pdf_stm_f_flate.c pdf_stm_f_flate.h
 endif
 
 include_HEADERS = pdf.h

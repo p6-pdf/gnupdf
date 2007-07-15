@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/14 20:11:35 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/15 02:10:53 jemarch"
  *
  *       File:         pdf_stm_f_ahex.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -67,6 +67,8 @@ pdf_stm_f_ahex_apply (void *filter_data,
         return PDF_ERROR;
       }
     }
+
+  /* Not reached */
 }
 
 int

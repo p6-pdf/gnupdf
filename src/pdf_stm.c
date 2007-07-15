@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/13 18:46:20 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/15 02:07:28 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -34,7 +34,7 @@
 #include <pdf_stm_f_pred.h>
 
 #ifdef HAVE_LIBZ
- #include <pdf_stm_f_fdec.h>
+ #include <pdf_stm_f_flate.h>
 #endif /* HAVE_LIBZ */
 
 #include <pdf_stm.h>
@@ -181,15 +181,35 @@ pdf_stm_install_null_filter (pdf_stm_t stm,
 
 #ifdef HAVE_LIBZ
 int
-pdf_stm_install_fdec_filter (pdf_stm_t stm,
-                             int direction)
+pdf_stm_install_flatedec_filter (pdf_stm_t stm,
+                                 int direction)
 {
+  struct pdf_stm_f_flate_conf_s conf;
+
+  conf.mode = PDF_STM_F_FLATE_MODE_DECODE;
+
   return pdf_stm_install_filter (stm,
                                  direction,
-                                 pdf_stm_f_fdec_init,
-                                 pdf_stm_f_fdec_apply,
-                                 pdf_stm_f_fdec_dealloc,
-                                 NULL);
+                                 pdf_stm_f_flate_init,
+                                 pdf_stm_f_flate_apply,
+                                 pdf_stm_f_flate_dealloc,
+                                 &conf);
+}
+
+int
+pdf_stm_install_flateenc_filter (pdf_stm_t stm,
+                                 int direction)
+{
+  struct pdf_stm_f_flate_conf_s conf;
+
+  conf.mode = PDF_STM_F_FLATE_MODE_ENCODE;
+
+  return pdf_stm_install_filter (stm,
+                                 direction,
+                                 pdf_stm_f_flate_init,
+                                 pdf_stm_f_flate_apply,
+                                 pdf_stm_f_flate_dealloc,
+                                 &conf);
 }
 #endif /* HAVE_LIBZ */
 

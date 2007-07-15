@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/13 18:14:17 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/15 02:04:09 jemarch"
  *
  *       File:         pdf_stm.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -51,7 +51,7 @@
 #include <gl_array_list.h>
 #include <pdf_base.h>
 #include <pdf_stm_f_null.h>
-#include <pdf_stm_f_fdec.h>
+#include <pdf_stm_f_flate.h>
 #include <pdf_stm_f_pred.h>
 #include <pdf_stm_f_ahex.h>
 
@@ -257,7 +257,8 @@ size_t pdf_stm_peek (pdf_stm_t stm, unsigned char **buf, size_t bytes);
 /* Managing filters */
 
 int pdf_stm_install_null_filter (pdf_stm_t stm, int direction);
-int pdf_stm_install_fdec_filter (pdf_stm_t stm, int direction);
+int pdf_stm_install_flatedec_filter (pdf_stm_t stm, int direction);
+int pdf_stm_install_flateenc_filter (pdf_stm_t stm, int direction);
 int pdf_stm_install_pred_filter (pdf_stm_t stm,
                                  int direction,
                                  int predictor,

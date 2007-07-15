@@ -1,6 +1,6 @@
-/* -*- mode: C -*- Time-stamp: "07/07/12 01:39:49 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/15 02:06:24 jemarch"
  *
- *       File:         pdf_stm_f_fdec.h
+ *       File:         pdf_stm_f_flate.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
  *       Date:         Tue Jul 10 23:39:27 2007
  *
@@ -24,32 +24,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PDF_STM_F_FDEC_H
-#define PDF_STM_F_FDEC_H
+#ifndef PDF_STM_F_FLATE_H
+#define PDF_STM_F_FLATE_H
 
 #include <config.h>
 #include <pdf_base.h>
 
-/* This filter doesnt have a configuration structure */
+/* Filter configuration */
+
+enum pdf_stm_f_flate_mode_t
+{
+  PDF_STM_F_FLATE_MODE_ENCODE,
+  PDF_STM_F_FLATE_MODE_DECODE
+};
+
+struct pdf_stm_f_flate_conf_s
+{
+  int mode;
+};
+
+typedef struct pdf_stm_f_flate_conf_s *pdf_stm_f_flate_conf_t;
 
 /* Private data */
 
-struct pdf_stm_f_fdec_data_s
+struct pdf_stm_f_flate_data_s
 {
-  int dummy;
+  int mode;
 };
 
-typedef struct pdf_stm_f_fdec_data_s *pdf_stm_f_fdec_data_t;
+typedef struct pdf_stm_f_flate_data_s *pdf_stm_f_flate_data_t;
 
 /* Filter API implementation */
 
-int pdf_stm_f_fdec_init (void **filter_data, void *conf_data);
-int pdf_stm_f_fdec_apply (void *filter_data,
+int pdf_stm_f_flate_init (void **filter_data, void *conf_data);
+int pdf_stm_f_flate_apply (void *filter_data,
                           pdf_char_t *in, pdf_stm_pos_t in_size,
                           pdf_char_t **out, pdf_stm_pos_t *out_size);
-int pdf_stm_f_fdec_dealloc (void **filter_data);
+int pdf_stm_f_flate_dealloc (void **filter_data);
 
 
-#endif /* pdf_stm_f_fdec.h */
+#endif /* pdf_stm_f_flate.h */
 
-/* End of pdf_stm_f_fdec.h */
+/* End of pdf_stm_f_flate.h */
