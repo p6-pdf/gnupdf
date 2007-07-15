@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/13 16:33:22 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/15 21:04:45 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -28,6 +28,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <malloc.h>
 #include <xalloc.h>
 #include <pdf_base.h>
 #include <pdf_stm_file.h>

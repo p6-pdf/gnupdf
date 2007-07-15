@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/15 06:45:21 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/15 21:04:52 jemarch"
  *
  *       File:         pdf_stm_f_a85.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -114,30 +114,110 @@ pdf_stm_f_a85_encode (pdf_char_t *in,
                       pdf_char_t **out,
                       pdf_stm_pos_t *out_size)
 {
+  unsigned long tuple;
   pdf_stm_pos_t pos_in;
   pdf_stm_pos_t pos_out;
-  pdf_stm_pos_t num_lines;
   pdf_stm_pos_t line_length;
+  int avail;
+  char buf[5];
+  int i;
+  
+  /* ASCII base-85 encoding produces 5 ASCII characters for every 4
+     bytes in the input data.
 
+     But take care for the EOD marker (~>) and the newlines.
+
+     Note that since 0000 is coded with 'z', this is an upper bound
+     rather than the final length of the output buffer. 
+
+     Note also that A85_ENC_LINE_LENGTH should be an integral divisor of 4. */
+  if ((in_size % 4) == 0)
+    {
+      *out_size = (in_size / 4) * 5 +                /* Expansion of 4:5 */
+        2 +                                          /* EOD marker */
+        (((in_size / 4) * 5) / A85_ENC_LINE_LENGTH); /* line splitting */
+    }
+  else
+    {
+      *out_size = ((in_size / 4) + 1) * 5 +                /* Expansion of 4:5 */
+        2 +                                                /* EOD marker */
+        ((((in_size / 4) + 1) * 5) / A85_ENC_LINE_LENGTH); /* line splitting */
+    }
+  *out = (pdf_char_t *) xmalloc (*out_size);
+
+  pos_out = 0;
+  tuple = 0;
+  line_length = 0;
   for (pos_in = 0;
        pos_in < in_size;
-       pos_in++)
+       pos_in = pos_in + 4)
     {
+      tuple = 0;
+      avail = in_size - pos_in;
+
+      tuple = tuple | (in[pos_in] << 24);
+      tuple = tuple | 
+        ((avail >= 2) ? (in[pos_in + 1] << 16) : 0);
+      tuple = tuple | 
+        ((avail >= 3) ? (in[pos_in + 2] << 8) : 0);
+      tuple = tuple | 
+        ((avail >= 4) ? in[pos_in + 3] : 0);
       
-
-      if (line_length >= A85_ENC_LINE_LENGTH)
+      if ((tuple == 0) &&
+          (avail >= 4))
         {
-
-          line_length = 0;
-          num_lines++;
+          /* Four 0s in row */
+          (*out)[pos_out] = 'z';
+          pos_out++;
+          line_length++;
+          if (line_length > A85_ENC_LINE_LENGTH)
+            {
+              line_length = 0;
+              (*out)[pos_out] = '\n';
+            }
+        }
+      else
+        {
+          /* Encode this tuple in base-85 */
+          for (i = 0;
+               i < 5;
+               i++)
+            {
+              buf[i] = tuple % 85;
+              tuple = tuple / 85;
+            }
+          for (i = 4;
+               i >= 0;
+               i--)
+            {
+              (*out)[pos_out] = buf[i] + '!';
+              pos_out++;
+              line_length++;
+              if (line_length > A85_ENC_LINE_LENGTH)
+                {
+                  line_length = 0;
+                  (*out)[pos_out] = '\n';
+                  pos_out++;
+                }
+            }
         }
     }
 
   /* Insert the EOD marker */
-  /*  (*out)[*out_size - 2] = '~';
-      (*out)[*out_size - 1] = '>'; */
-  
-  return PDF_ERROR;
+  (*out)[pos_out] = '~';
+  pos_out++;
+  (*out)[pos_out] = '>'; 
+  pos_out++;
+
+  /* Adjust memory if needed */
+  if (*out_size > pos_out)
+    {
+      *out_size = pos_out;
+      *out = (pdf_char_t *) xrealloc (*out,
+                                      *out_size);
+    }
+
+  return PDF_OK;
 }
 
 static int
