@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/15 05:53:29 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/15 06:16:31 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -28,16 +28,10 @@
 #include <config.h>
 #include <unistd.h>
 #include <xalloc.h>
+#include <pdf_stm.h>
 #include <pdf_stm_file.h>
 #include <pdf_stm_mem.h>
-#include <pdf_stm_f_null.h>
-#include <pdf_stm_f_pred.h>
 
-#ifdef HAVE_LIBZ
- #include <pdf_stm_f_flate.h>
-#endif /* HAVE_LIBZ */
-
-#include <pdf_stm.h>
 
 static pdf_stm_t pdf_stm_alloc (void);
 static void pdf_stm_dealloc (pdf_stm_t stm);
@@ -265,6 +259,38 @@ pdf_stm_install_ahexenc_filter (pdf_stm_t stm,
                                  pdf_stm_f_ahex_init,
                                  pdf_stm_f_ahex_apply,
                                  pdf_stm_f_ahex_dealloc,
+                                 &conf);
+}
+
+int
+pdf_stm_install_a85dec_filter (pdf_stm_t stm,
+                               int direction)
+{
+  struct pdf_stm_f_a85_conf_s conf;
+
+  conf.mode = PDF_STM_F_A85_MODE_DECODE;
+
+  return pdf_stm_install_filter (stm,
+                                 direction,
+                                 pdf_stm_f_a85_init,
+                                 pdf_stm_f_a85_apply,
+                                 pdf_stm_f_a85_dealloc,
+                                 &conf);
+}
+
+int
+pdf_stm_install_a85enc_filter (pdf_stm_t stm,
+                               int direction)
+{
+  struct pdf_stm_f_a85_conf_s conf;
+
+  conf.mode = PDF_STM_F_A85_MODE_ENCODE;
+
+  return pdf_stm_install_filter (stm,
+                                 direction,
+                                 pdf_stm_f_a85_init,
+                                 pdf_stm_f_a85_apply,
+                                 pdf_stm_f_a85_dealloc,
                                  &conf);
 }
 

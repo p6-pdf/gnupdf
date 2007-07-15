@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/15 02:16:09 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/15 06:11:12 jemarch"
  *
  *       File:         pdf_filter.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -31,6 +31,7 @@ static struct option GNU_longOptions[] =
   {"ahexdec", no_argument, NULL, ASCIIHEXDEC_FILTER_ARG},
   {"ahexenc", no_argument, NULL, ASCIIHEXENC_FILTER_ARG},
   {"a85dec", no_argument, NULL, ASCII85DEC_FILTER_ARG},
+  {"a85enc", no_argument, NULL, ASCII85ENC_FILTER_ARG},
   {"lzwdec", no_argument, NULL, LZWDEC_FILTER_ARG},
 #ifdef HAVE_LIBZ
   {"flatedec", no_argument, NULL, FLATEDEC_FILTER_ARG},
@@ -54,6 +55,7 @@ write the result in the standard output.\n\
   --ahexdec                           use the ASCII Hex decoder filter\n\
   --ahexenc                           use the ASCII Hex encoder filter\n\
   --a85dec                            use the ASCII 85 decoder filter\n\
+  --a85enc                            use the ASCII 85 encoder filter\n\
   --lzwdec                            use the LZW decoder filter\n"
 #ifdef HAVE_LIBZ
 "  --flatedec                          use the Flate decoder filter\n"
@@ -130,6 +132,14 @@ main (int argc, char *argv[])
           }
         case ASCII85DEC_FILTER_ARG:
           {
+            pdf_stm_install_a85dec_filter (input,
+                                           PDF_STM_FILTER_READ);
+            break;
+          }
+        case ASCII85ENC_FILTER_ARG:
+          {
+            pdf_stm_install_a85enc_filter (input,
+                                           PDF_STM_FILTER_READ);
             break;
           }
         case LZWDEC_FILTER_ARG:

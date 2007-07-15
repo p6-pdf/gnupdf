@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/15 02:04:09 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/15 06:16:05 jemarch"
  *
  *       File:         pdf_stm.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -46,14 +46,19 @@
 #ifndef _PDF_STM_H
 #define _PDF_STM_H
 
-#include <stdio.h>
+
 #include <config.h>
+
+#include <stdio.h>
 #include <gl_array_list.h>
 #include <pdf_base.h>
 #include <pdf_stm_f_null.h>
-#include <pdf_stm_f_flate.h>
+#ifdef HAVE_LIBZ
+  #include <pdf_stm_f_flate.h>
+#endif /* HAVE_LIBZ */
 #include <pdf_stm_f_pred.h>
 #include <pdf_stm_f_ahex.h>
+#include <pdf_stm_f_a85.h>
 
 /* Please note that `pdf_stm_pos_t' is defined in `pdf_base.h' */
 
@@ -267,9 +272,8 @@ int pdf_stm_install_pred_filter (pdf_stm_t stm,
                                  int columns);
 int pdf_stm_install_ahexdec_filter (pdf_stm_t stm, int direction);
 int pdf_stm_install_ahexenc_filter (pdf_stm_t stm, int direction);
-/*int pdf_stm_install_asciihexenc_filter (pdf_stm_t stm, int direction);
-int pdf_stm_install_ascii85dec_filter (pdf_stm_t stm, int direction);
-int pdf_stm_install_ascii85enc_filter (pdf_stm_t stm, int direction);*/
+int pdf_stm_install_a85dec_filter (pdf_stm_t stm, int direction);
+int pdf_stm_install_a85enc_filter (pdf_stm_t stm, int direction);
 int pdf_stm_uninstall_filters (pdf_stm_t stm); 
 
 #endif /* pdf_stm.h */
