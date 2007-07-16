@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/16 03:39:47 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/16 03:49:41 jemarch"
  *
  *       File:         pdf_stm_f_rl.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -148,6 +148,10 @@ pdf_stm_f_rl_encode (pdf_char_t *in,
 
   /* Insert EOD marker */
   (*out)[out_pos++] = 128;
+
+  *out_size = out_pos;
+  *out = (pdf_char_t *) xrealloc (*out,
+                                  *out_size);
 
   return PDF_OK;
 }
