@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/15 22:07:16 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/16 03:23:06 jemarch"
  *
  *       File:         pdf_stm_f_rl.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -101,7 +101,55 @@ pdf_stm_f_rl_encode (pdf_char_t *in,
                      pdf_char_t **out,
                      pdf_stm_pos_t *out_size)
 {
-  return PDF_ERROR;
+  pdf_stm_pos_t in_pos;
+  pdf_stm_pos_t out_pos;
+  pdf_stm_pos_t run_length;
+  pdf_char_t run_char;
+  int run_p;
+  pdf_char_t c;
+
+  /* The compression achieved by run-length encoding depends on the
+     input data. The worst case (the hexadecimal sequence `00'
+     alternating with `FF') results in an expansion of 127:128 
+
+     But take care about the EOD marker (one octect). */
+  *out_size = in_size + (in_size / 127) + 1;
+  *out = (pdf_char_t *) xmalloc (*out_size);
+
+  out_pos = 0;
+  run_length = 0;
+  run_p = PDF_FALSE;
+  for (in_pos = 0;
+       in_pos < in_size;
+       in_pos++)
+    {
+      c = in[in_pos];
+
+      if (!run_p)
+        {
+          run_char = c;
+          run_p = PDF_TRUE;
+        }
+      else
+        {
+          if ((c == run_char) &&
+              (run_length < 128))
+            {
+              run_length++;
+            }
+          else
+            {
+              (*out)[out_pos++] = 287 + run_length;
+              (*out)[out_pos++] = run_char;
+              run_p = PDF_FALSE;
+            }
+        }
+    }
+
+  /* Insert EOD marker */
+  (*out)[out_pos++] = 128;
+
+  return PDF_OK;
 }
 
 static int
@@ -110,6 +158,71 @@ pdf_stm_f_rl_decode (pdf_char_t *in,
                      pdf_char_t **out,
                      pdf_stm_pos_t *out_size)
 {
+  pdf_stm_pos_t in_pos;
+  pdf_stm_pos_t out_pos;
+  pdf_stm_pos_t run_length;
+  pdf_stm_pos_t i;
+  pdf_char_t c;
+
+  /* In the best case (all zeros), a compression of approximately 64:1
+     is achieved for long files. */
+  *out_size = in_size * 64;
+  *out = (pdf_char_t *) xmalloc (*out_size);
+
+  out_pos = 0;
+  in_pos = 0;
+  while (in_pos < in_size)
+    {
+      c = in[in_pos];
+
+      if (c == 128)
+        {
+          /* EOD marker */
+          break;
+        }
+      if ((c >= 0) && (c <= 127))
+        {
+          run_length = c;
+          if ((in_pos + run_length) >= in_size)
+            {
+              /* Not enough input */
+              goto error;
+            }
+
+          for (i = 0;
+               i < c;
+               i++)
+            {
+              (*out)[out_pos++] = in[in_pos + run_length];
+            }
+          in_pos = in_pos + run_length;
+        }
+      if ((c >= 129) && (c <= 255))
+        {
+          run_length = c;
+          if ((in_pos + 1) >= in_size)
+            {
+              goto error;
+            }
+
+          for (i = 0;
+               i < (287 - run_length);
+               i++)
+            {
+              (*out)[out_pos++] = in[in_pos + 1];
+            }
+          in_pos = in_pos + 1;
+        }
+    }
+
+  /* Adjust output buffer */
+  *out_size = out_pos;
+  *out = (pdf_char_t *) xrealloc (*out, *out_size);
+
+  return PDF_OK;
+
+ error:
+  free (*out);
   return PDF_ERROR;
 }
 
