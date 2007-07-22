@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/16 04:00:49 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/22 18:20:16 jemarch"
  *
  *       File:         pdf_stm_f_rl.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -113,16 +113,15 @@ pdf_stm_f_rl_encode (pdf_char_t *in,
      alternating with `FF') results in an expansion of 127:128 
 
      But take care about the EOD marker (one octect). */
-  *out_size = in_size + (in_size / 127) + 1;
+  *out_size = (in_size * 2) + (in_size / 127) + 1;
   *out = (pdf_char_t *) xmalloc (*out_size);
 
   out_pos = 0;
   run_length = 0;
   run_char = 0;
   run_p = PDF_FALSE;
-  for (in_pos = 0;
-       in_pos < in_size;
-       in_pos++)
+  in_pos = 0;
+  while (in_pos < in_size)
     {
       c = in[in_pos];
 
@@ -136,6 +135,7 @@ pdf_stm_f_rl_encode (pdf_char_t *in,
           (run_length < 128))
         {
           run_length++;
+          in_pos++;
         }
       else
         {

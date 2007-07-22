@@ -1,3 +1,9 @@
+2007-07-22  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/pdf_stm_f_rl.c (pdf_stm_f_rl_encode): Fix input pointer
+	position in the loop.
+	(pdf_stm_f_rl_encode): Fix the upper bound of output size.
+
 2007-07-15  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/Makefile.am (libgnupdf_la_SOURCES): `pdf_stm_f_rl.h' and
