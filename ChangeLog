@@ -1,6 +1,7 @@
 2007-07-22  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/pdf_stm_f_ahex.c: Missing headers added.
+	(pdf_stm_f_ahex_white_p): Conform to GCS.
 
 	* src/pdf_stm_f_rl.c (pdf_stm_f_rl_encode): Fix input pointer
 	position in the loop.

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/22 21:11:06 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/22 21:18:20 jemarch"
  *
  *       File:         pdf_stm_f_ahex.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -104,12 +104,12 @@ pdf_stm_f_ahex_dealloc (void **filter_data)
 static int
 pdf_stm_f_ahex_white_p (int hex)
 {
-  return ((hex == '\0') || /* Null */
-          (hex == '\t') || /* Tab */
-          (hex == '\n') || /* Line feed */
-          (hex == '\f') || /* Form feed */
-          (hex == '\r') || /* Carriage return */
-          (hex == 32));    /* Space character */
+  return ((hex == '\0')    /* Null */
+          || (hex == '\t') /* Tab */
+          || (hex == '\n') /* Line feed */
+          || (hex == '\f') /* Form feed */
+          || (hex == '\r') /* Carriage return */
+          || (hex == 32)); /* Space character */
 }
 
 static int
