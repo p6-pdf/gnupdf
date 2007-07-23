@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/22 18:26:32 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/22 21:35:13 jemarch"
  *
  *       File:         pdf_stm_f_rl.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -130,7 +130,7 @@ pdf_stm_f_rl_encode (pdf_char_t *in,
           run_char = c;
           run_p = PDF_TRUE;
         }
-
+     
       if ((c == run_char) &&
           (run_length < 128))
         {
@@ -139,7 +139,7 @@ pdf_stm_f_rl_encode (pdf_char_t *in,
         }
       else
         {
-          (*out)[out_pos++] = 287 + run_length;
+          (*out)[out_pos++] = run_length;
           (*out)[out_pos++] = run_char;
           run_length = 0;
           run_p = PDF_FALSE;
