@@ -1,3 +1,9 @@
+2007-07-27  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* utils/pdf_filter.c (main): Use an integer to get the result of
+	getopt. That fixes problems with architectures with signed chars,
+	such as PPC.
+	
 2007-07-22  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/pdf_stm_f_ahex.c: Missing headers added.

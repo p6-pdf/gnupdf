@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/15 22:14:05 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/27 15:09:10 jemarch"
  *
  *       File:         pdf_filter.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -80,6 +80,7 @@ int
 main (int argc, char *argv[])
 {
   char c;
+  int ret;
   pdf_stm_t input;
   size_t line_bytes;
   size_t readed;
@@ -94,12 +95,13 @@ main (int argc, char *argv[])
   
 
   /* Manage command line arguments */
-  while ((c = getopt_long (argc,
-                           argv,
-                           "",
-                           GNU_longOptions, 
-                           NULL)) != -1)
+  while ((ret = getopt_long (argc,
+                             argv,
+                             "",
+                             GNU_longOptions, 
+                             NULL)) != -1)
     {
+      c = ret;
       switch (c)
         {
         case HELP_ARG:
