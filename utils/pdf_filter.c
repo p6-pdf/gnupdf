@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/27 15:09:10 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/28 19:15:18 jemarch"
  *
  *       File:         pdf_filter.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -43,6 +43,8 @@ static struct option GNU_longOptions[] =
   {"jbig2dec", no_argument, NULL, JBIG2DEC_FILTER_ARG},
   {"dctdec", no_argument, NULL, DCTDEC_FILTER_ARG},
   {"jxpdec", no_argument, NULL, JXPDEC_FILTER_ARG},
+  {"predenc", no_argument, NULL, PREDENC_FILTER_ARG},
+  {"preddec", no_argument, NULL, PREDDEC_FILTER_ARG},
   {NULL, 0, NULL, 0}
 };
 
@@ -68,6 +70,8 @@ write the result in the standard output.\n\
   --jbig2dec                          use the JBIG2 decoder filter\n\
   --dctdec                            use the DCT decoder filter\n\
   --jxpdec                            use the JXP decoder filter\n\
+  --predenc                           use the predictor encoder filter\n\
+  --preddec                           use the predictor encoder filter\n\
   --help                              print a help message and exit\n\
   --usage                             print a usage message and exit\n\
   --version                           show pdf_filter version and exit\n\
@@ -80,12 +84,12 @@ int
 main (int argc, char *argv[])
 {
   char c;
-  int ret;
   pdf_stm_t input;
   size_t line_bytes;
   size_t readed;
   char *line;
   unsigned char *output_buffer;
+  int ret;
 
   /* Initialization */
   input = pdf_create_mem_stm (0,         /* Initial 0 length */
@@ -96,10 +100,10 @@ main (int argc, char *argv[])
 
   /* Manage command line arguments */
   while ((ret = getopt_long (argc,
-                             argv,
-                             "",
-                             GNU_longOptions, 
-                             NULL)) != -1)
+                           argv,
+                           "",
+                           GNU_longOptions, 
+                           NULL)) != -1)
     {
       c = ret;
       switch (c)
@@ -190,6 +194,22 @@ main (int argc, char *argv[])
           }
         case JXPDEC_FILTER_ARG:
           {
+            break;
+          }
+        case PREDENC_FILTER_ARG:
+          {
+            pdf_stm_install_predenc_filter (input,
+                                            PDF_STM_FILTER_READ,
+                                            PDF_STM_F_PREDENC_TIFF_PREDICTOR_2,
+                                            1, 16, 2);
+            break;
+          }
+        case PREDDEC_FILTER_ARG:
+          {
+            pdf_stm_install_preddec_filter (input,
+                                            PDF_STM_FILTER_READ,
+                                            PDF_STM_F_PREDDEC_TIFF_PREDICTOR_2,
+                                            1, 16, 2);
             break;
           }
         case '?':

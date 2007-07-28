@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/15 22:10:16 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/28 18:06:35 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -209,26 +209,51 @@ pdf_stm_install_flateenc_filter (pdf_stm_t stm,
 #endif /* HAVE_LIBZ */
 
 int
-pdf_stm_install_pred_filter (pdf_stm_t stm,
-                             int direction,
-                             int predictor,
-                             int colors,
-                             int bits_per_component,
-                             int columns)
+pdf_stm_install_preddec_filter (pdf_stm_t stm,
+                                int direction,
+                                int predictor,
+                                int colors,
+                                int bits_per_component,
+                                int columns)
 {
-  struct pdf_stm_f_pred_conf_s config;
+  struct pdf_stm_f_pred_conf_s conf;
 
-  config.predictor = predictor;
-  config.colors = colors;
-  config.bits_per_component = bits_per_component;
-  config.columns = columns;
+  conf.mode = PDF_STM_F_PRED_MODE_DECODE;
+  conf.predictor = predictor;
+  conf.colors = colors;
+  conf.bits_per_component = bits_per_component;
+  conf.columns = columns;
 
   return pdf_stm_install_filter (stm,
                                  direction,
                                  pdf_stm_f_pred_init,
                                  pdf_stm_f_pred_apply,
                                  pdf_stm_f_pred_dealloc,
-                                 &config);
+                                 &conf);
+}
+
+int
+pdf_stm_install_predenc_filter (pdf_stm_t stm,
+                                int direction,
+                                int predictor,
+                                int colors,
+                                int bits_per_component,
+                                int columns)
+{
+  struct pdf_stm_f_pred_conf_s conf;
+
+  conf.mode = PDF_STM_F_PRED_MODE_ENCODE;
+  conf.predictor = predictor;
+  conf.colors = colors;
+  conf.bits_per_component = bits_per_component;
+  conf.columns = columns;
+
+  return pdf_stm_install_filter (stm,
+                                 direction,
+                                 pdf_stm_f_pred_init,
+                                 pdf_stm_f_pred_apply,
+                                 pdf_stm_f_pred_dealloc,
+                                 &conf);
 }
 
 int

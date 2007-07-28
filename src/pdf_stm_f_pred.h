@@ -27,23 +27,44 @@
 #ifndef PDF_STM_F_PRED_H
 #define PDF_STM_F_PRED_H
 
-enum pdf_stm_f_pred_type_t
+typedef enum
 {
-  NO_PREDICTION = 1,
-  TIFF_PREDICTOR_2 = 2,
-  PNG_NONE_ALL_ROWS = 10,
-  PNG_SUB_ALL_ROWS = 11,
-  PNG_UP_ALL_ROWS = 12,
-  PNG_AVERAGE_ALL_ROWS = 13,
-  PNG_PAETH_ALL_ROWS = 14,
-  PNG_OPTIMUM = 15
-};
+  PDF_STM_F_PREDENC_NO_PREDICTION = 1,
+  PDF_STM_F_PREDENC_TIFF_PREDICTOR_2 = 2,
+  PDF_STM_F_PREDENC_PNG_NONE_ALL_ROWS = 10,
+  PDF_STM_F_PREDENC_PNG_SUB_ALL_ROWS = 11,
+  PDF_STM_F_PREDENC_PNG_UP_ALL_ROWS = 12,
+  PDF_STM_F_PREDENC_PNG_AVERAGE_ALL_ROWS = 13,
+  PDF_STM_F_PREDENC_PNG_PAETH_ALL_ROWS = 14,
+  PDF_STM_F_PREDENC_PNG_OPTIMUM = 15
+} pdf_stm_f_predenc_method_t;
 
+typedef enum
+{
+  PDF_STM_F_PREDDEC_NO_PREDICTION = 1,
+  PDF_STM_F_PREDDEC_TIFF_PREDICTOR_2 = 2,
+  PDF_STM_F_PREDDEC_PNG = 3
+} pdf_stm_f_preddec_type_t;
+
+typedef enum
+{
+  PDF_STM_F_PREDDEC_PNG_NONE = 10,
+  PDF_STM_F_PREDDEC_PNG_SUB = 11,
+  PDF_STM_F_PREDDEC_PNG_UP = 12,
+  PDF_STM_F_PREDDEC_PNG_AVERAGE = 13,
+  PDF_STM_F_PREDDEC_PNG_PAETH = 14
+} pdf_stm_f_predec_png_type_t;
+
+typedef enum {
+  PDF_STM_F_PRED_MODE_ENCODE,
+  PDF_STM_F_PRED_MODE_DECODE
+} pdf_stm_f_pred_mode_t;
 
 /* Configuration structure */
 
 struct pdf_stm_f_pred_conf_s
 {
+  int mode;      /* It might be encode or decode. */
   int predictor; /* A code that selects the predictor algorithm. If
                     the value of this entry is 1, the filter assumes
                     that the normal algorithm was used to encode the
@@ -71,10 +92,12 @@ typedef struct pdf_stm_f_pred_conf_s *pdf_stm_f_pred_conf_t;
 
 struct pdf_stm_f_pred_data_s
 {
+  int mode;
   int predictor;
   int colors;
   int bits_per_component;
   int columns;
+  int scanline_len;
 };
 
 typedef struct pdf_stm_f_pred_data_s *pdf_stm_f_pred_data_t;

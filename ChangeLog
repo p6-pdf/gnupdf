@@ -1,9 +1,15 @@
-2007-07-27  Jose E. Marchesi  <jemarch@gnu.org>
+2007-07-21  Juan Pedro Bolívar Puente <raskolnikov@es.gnu.org>
 
-	* utils/pdf_filter.c (main): Use an integer to get the result of
-	getopt. That fixes problems with architectures with signed chars,
-	such as PPC.
-	
+	* src/pdf_stm_f_pred.c: PNG and TIFF predictor filters
+	implemented.
+
+	* src/pdf_stm_f_pred.h: Changed filter types, added filter
+	modes (encoding or decoding) and such things needed by the filter
+	implementation.
+
+	* util/pdf_filter.c: Added an entry with hardcoded params to test
+	the predictor filter.
+
 2007-07-22  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/pdf_stm_f_ahex.c: Missing headers added.
