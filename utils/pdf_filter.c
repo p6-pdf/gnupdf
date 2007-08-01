@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/28 19:15:18 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/31 22:31:22 jemarch"
  *
  *       File:         pdf_filter.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -45,15 +45,25 @@ static struct option GNU_longOptions[] =
   {"jxpdec", no_argument, NULL, JXPDEC_FILTER_ARG},
   {"predenc", no_argument, NULL, PREDENC_FILTER_ARG},
   {"preddec", no_argument, NULL, PREDDEC_FILTER_ARG},
+  {"tiff", no_argument, NULL, TIFF_ARG},
+  {"pngsub", no_argument, NULL, PNG_SUB_ARG},
+  {"pngup", no_argument, NULL, PNG_UP_ARG},
+  {"pngaverage", no_argument, NULL, PNG_AVERAGE_ARG},
+  {"pngpaeth", no_argument, NULL, PNG_PAETH_ARG},
+  {"colors", required_argument, NULL, COLORS_ARG},
+  {"bpc", required_argument, NULL, BPC_ARG},
+  {"columns", required_argument, NULL, COLUMNS_ARG},
   {NULL, 0, NULL, 0}
 };
 
 /* Messages */
 
 char *pdf_filter_usage_msg = "\
-Usage: pdf_filter [OPTIONS]\n\
+Usage: pdf_filter [[FILTER FILTER_ARGS]...]\n\
 Filter the standard input with the specified PDF standard filters and \n\
 write the result in the standard output.\n\
+\n\
+available filters\n\
   --null                              use the NULL filter\n\
   --ahexdec                           use the ASCII Hex decoder filter\n\
   --ahexenc                           use the ASCII Hex encoder filter\n\
@@ -75,7 +85,15 @@ write the result in the standard output.\n\
   --help                              print a help message and exit\n\
   --usage                             print a usage message and exit\n\
   --version                           show pdf_filter version and exit\n\
-For filter-specific documentation use --help\n\
+encoding/decoding predictor filter arguments\n\
+  --tiff                              use the TIFF predictor\n\
+  --pngsub                            use the PNG sub predictor\n\
+  --pngup                             use the PNG up predictor\n\
+  --pngaverage                        use the PNG average predictor\n\
+  --pngpaeth                          use the PNG paeth predictor\n\
+  --colors=NUM                        number of color components per sample\n\
+  --bpc=NUM                           bits per color component\n\
+  --columns=NUM                       number of samples per row\n\
 ";
 
 char *pdf_filter_help_msg = "";
@@ -90,13 +108,17 @@ main (int argc, char *argv[])
   char *line;
   unsigned char *output_buffer;
   int ret;
+  struct predictor_args_s pred_args;
 
   /* Initialization */
   input = pdf_create_mem_stm (0,         /* Initial 0 length */
                               PDF_FALSE, /* Dont initialize */
                               0,         /* Init character */
                               PDF_TRUE); /* Auto-resize when necessary */
-  
+
+  pred_args.colors_p = PDF_FALSE;
+  pred_args.bpc_p = PDF_FALSE;
+  pred_args.columns_p = PDF_FALSE;
 
   /* Manage command line arguments */
   while ((ret = getopt_long (argc,
@@ -110,7 +132,7 @@ main (int argc, char *argv[])
         {
         case HELP_ARG:
           {
-            fprintf (stdout, "%s\n", pdf_filter_help_msg);
+            fprintf (stdout, "%s\n", pdf_filter_usage_msg);
             exit (0);
             break;
           }

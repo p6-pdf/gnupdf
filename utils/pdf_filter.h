@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/28 18:02:59 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/07/31 21:39:39 jemarch"
  *
  *       File:         pdf_filter.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -36,7 +36,25 @@ enum
   DCTDEC_FILTER_ARG,
   JXPDEC_FILTER_ARG,
   PREDENC_FILTER_ARG,
-  PREDDEC_FILTER_ARG
+  PREDDEC_FILTER_ARG,
+  TIFF_ARG,
+  PNG_SUB_ARG,
+  PNG_UP_ARG,
+  PNG_AVERAGE_ARG,
+  PNG_PAETH_ARG,
+  COLORS_ARG,
+  BPC_ARG,
+  COLUMNS_ARG
+};
+
+struct predictor_args_s
+{
+  int colors;
+  int colors_p;
+  int bpc;
+  int bpc_p;
+  int columns;
+  int columns_p;
 };
 
 #endif /* pdf_filter.h */
