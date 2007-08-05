@@ -1,5 +1,7 @@
 2007-08-05  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/pdf_stm_f_fax.c (pdf_stm_f_fax_dealloc): New function.
+
 	* src/pdf_stm.c (pdf_stm_install_faxenc_filter): New function.
 	(pdf_stm_install_faxdec_filter): New function.
 

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/08/05 20:16:37 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/08/05 20:27:57 jemarch"
  *
  *       File:         pdf_stm_f_fax.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -88,6 +88,17 @@ pdf_stm_f_fax_apply (void *filter_data,
     }
 
   /* Not reached */
+}
+
+int
+pdf_stm_f_fax_dealloc (void **filter_data)
+{
+  pdf_stm_f_fax_data_t *data;
+
+  data = (pdf_stm_f_fax_data_t *) filter_data;
+  free (*data);
+
+  return PDF_OK;
 }
 
 /* Private functions */
