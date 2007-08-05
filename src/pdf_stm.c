@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/28 18:06:35 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/08/05 20:21:41 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -349,6 +349,70 @@ pdf_stm_install_rlenc_filter (pdf_stm_t stm,
                                  pdf_stm_f_rl_init,
                                  pdf_stm_f_rl_apply,
                                  pdf_stm_f_rl_dealloc,
+                                 &conf);
+}
+
+int 
+pdf_stm_install_faxenc_filter (pdf_stm_t stm, 
+                               int direction,
+                               int k,
+                               int end_of_line_p,
+                               int encoded_byte_align_p,
+                               int columns,
+                               int rows,
+                               int end_of_block_p,
+                               int blackls1_p,
+                               int damaged_rows_before_error)
+{
+  struct pdf_stm_f_fax_conf_s conf;
+
+  conf.mode = PDF_STM_F_FAX_MODE_ENCODE;
+  conf.k = k;
+  conf.end_of_line_p = end_of_line_p;
+  conf.encoded_byte_align_p = encoded_byte_align_p;
+  conf.columns = columns;
+  conf.rows = rows;
+  conf.end_of_block_p = end_of_block_p;
+  conf.blackls1_p = blackls1_p;
+  conf.damaged_rows_before_error = damaged_rows_before_error;
+
+  return pdf_stm_install_filter (stm,
+                                 direction,
+                                 pdf_stm_f_fax_init,
+                                 pdf_stm_f_fax_apply,
+                                 pdf_stm_f_fax_dealloc,
+                                 &conf);
+}
+
+int 
+pdf_stm_install_faxdec_filter (pdf_stm_t stm, 
+                               int direction,
+                               int k,
+                               int end_of_line_p,
+                               int encoded_byte_align_p,
+                               int columns,
+                               int rows,
+                               int end_of_block_p,
+                               int blackls1_p,
+                               int damaged_rows_before_error)
+{
+  struct pdf_stm_f_fax_conf_s conf;
+
+  conf.mode = PDF_STM_F_FAX_MODE_DECODE;
+  conf.k = k;
+  conf.end_of_line_p = end_of_line_p;
+  conf.encoded_byte_align_p = encoded_byte_align_p;
+  conf.columns = columns;
+  conf.rows = rows;
+  conf.end_of_block_p = end_of_block_p;
+  conf.blackls1_p = blackls1_p;
+  conf.damaged_rows_before_error = damaged_rows_before_error;
+
+  return pdf_stm_install_filter (stm,
+                                 direction,
+                                 pdf_stm_f_fax_init,
+                                 pdf_stm_f_fax_apply,
+                                 pdf_stm_f_fax_dealloc,
                                  &conf);
 }
 

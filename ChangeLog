@@ -1,3 +1,21 @@
+2007-08-05  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/pdf_stm.c (pdf_stm_install_faxenc_filter): New function.
+	(pdf_stm_install_faxdec_filter): New function.
+
+	* src/pdf_stm.h: New prototype for the fax filter.
+
+	* src/Makefile.am (libgnupdf_la_SOURCES): Added fax filter source
+	files.
+
+	* src/pdf_stm_f_fax.c: New file.
+	(pdf_stm_f_fax_init): New function.
+	(pdf_stm_f_fax_apply): New function.
+	(pdf_stm_f_fax_encode): New function.
+	(pdf_stm_f_fax_decode): New function.
+
+	* src/pdf_stm_f_fax.h: New file.
+
 2007-07-31  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* utils/pdf_filter.c (GNU_longOptions): Predictor command line

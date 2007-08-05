@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/15 22:07:58 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/08/05 20:21:23 jemarch"
  *
  *       File:         pdf_stm.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -60,6 +60,7 @@
 #include <pdf_stm_f_ahex.h>
 #include <pdf_stm_f_a85.h>
 #include <pdf_stm_f_rl.h>
+#include <pdf_stm_f_fax.h>
 
 /* Please note that `pdf_stm_pos_t' is defined in `pdf_base.h' */
 
@@ -277,6 +278,26 @@ int pdf_stm_install_a85dec_filter (pdf_stm_t stm, int direction);
 int pdf_stm_install_a85enc_filter (pdf_stm_t stm, int direction);
 int pdf_stm_install_rldec_filter (pdf_stm_t stm, int direction);
 int pdf_stm_install_rlenc_filter (pdf_stm_t stm, int direction);
+int pdf_stm_install_faxenc_filter (pdf_stm_t stm, 
+                                   int direction,
+                                   int k,
+                                   int end_of_line_p,
+                                   int encoded_byte_align_p,
+                                   int columns,
+                                   int rows,
+                                   int end_of_block_p,
+                                   int blackls1_p,
+                                   int damaged_rows_before_error);
+int pdf_stm_install_faxdec_filter (pdf_stm_t stm, 
+                                   int direction,
+                                   int k,
+                                   int end_of_line_p,
+                                   int encoded_byte_align_p,
+                                   int columns,
+                                   int rows,
+                                   int end_of_block_p,
+                                   int blackls1_p,
+                                   int damaged_rows_before_error);
 int pdf_stm_uninstall_filters (pdf_stm_t stm); 
 
 #endif /* pdf_stm.h */

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/15 05:58:14 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/08/05 19:59:58 jemarch"
  *
  *       File:         pdf_stm_f_ahex.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -58,8 +58,8 @@ typedef struct pdf_stm_f_ahex_data_s *pdf_stm_f_ahex_data_t;
 
 int pdf_stm_f_ahex_init (void **filter_data, void *conf_data);
 int pdf_stm_f_ahex_apply (void *filter_data,
-                           pdf_char_t *in, pdf_stm_pos_t in_size,
-                           pdf_char_t **out, pdf_stm_pos_t *out_size);
+                          pdf_char_t *in, pdf_stm_pos_t in_size,
+                          pdf_char_t **out, pdf_stm_pos_t *out_size);
 int pdf_stm_f_ahex_dealloc (void **filter_data);
 
 #endif /* pdf_stm_f_ahex.h */
