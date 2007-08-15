@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/08/05 20:21:41 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/08/15 14:58:37 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -413,6 +413,42 @@ pdf_stm_install_faxdec_filter (pdf_stm_t stm,
                                  pdf_stm_f_fax_init,
                                  pdf_stm_f_fax_apply,
                                  pdf_stm_f_fax_dealloc,
+                                 &conf);
+}
+
+int
+pdf_stm_install_lzwenc_filter (pdf_stm_t stm,
+                               int direction,
+                               int early_change)
+{
+  struct pdf_stm_f_lzw_conf_s conf;
+
+  conf.mode = PDF_STM_F_LZW_MODE_ENCODE;
+  conf.early_change = early_change;
+
+  return pdf_stm_install_filter (stm,
+                                 direction,
+                                 pdf_stm_f_lzw_init,
+                                 pdf_stm_f_lzw_apply,
+                                 pdf_stm_f_lzw_dealloc,
+                                 &conf);
+}
+
+int
+pdf_stm_install_lzwdec_filter (pdf_stm_t stm,
+                               int direction,
+                               int early_change)
+{
+  struct pdf_stm_f_lzw_conf_s conf;
+
+  conf.mode = PDF_STM_F_LZW_MODE_DECODE;
+  conf.early_change = early_change;
+
+  return pdf_stm_install_filter (stm,
+                                 direction,
+                                 pdf_stm_f_lzw_init,
+                                 pdf_stm_f_lzw_apply,
+                                 pdf_stm_f_lzw_dealloc,
                                  &conf);
 }
 
