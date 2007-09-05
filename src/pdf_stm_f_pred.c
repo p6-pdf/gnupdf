@@ -42,49 +42,52 @@
    (pred) == PDF_STM_F_PREDENC_PNG_PAETH_ALL_ROWS ||   \
    (pred) == PDF_STM_F_PREDENC_PNG_OPTIMUM)
 
-/* Dirty util */
-typedef struct bit_ptr_s 
+/*
+ * This is a bit level pointer object optimized for the needs in the
+ * predictor class optimized for its usage within the needs of the predictor
+ * coding and decoding clases.
+ *
+ * This adds a limitation: the block_size must be between 1 and 8 and must be
+ * a power of two.
+ *
+ * TODO: Check endianess.
+ */
+typedef struct pred_bit_ptr_s 
 {
   pdf_char_t* ptr;
   int offset;
   int mask;
-  int block_size; 
-} bit_ptr_t;
+  int block_size;
+} pred_bit_ptr_t;
 
 static void
-bit_ptr_init (bit_ptr_t* bp, 
+pred_bit_ptr_init (pred_bit_ptr_t* bp, 
               pdf_char_t* ptr, 
               int block_size)
 {
-  int i;
   bp->ptr = ptr;
-  bp->offset = 0;
+  bp->offset = 8 - block_size;
   bp->block_size = block_size;
-  bp->mask = 0;
-  for (i = 0; i < bp->block_size; i++) 
-    {
-      bp->mask <<= 1;
-      bp->mask |= 1;
-    }
+  bp->mask = (~0U << bp->block_size);
+  bp->mask = ~bp->mask;
 }
 
-#define BIT_PTR_ADV(bp)                  \
-  if ((bp).offset + (bp).block_size < 8) \
+#define PRED_BIT_PTR_ADV(bp)		 \
+  if ((bp).offset > 0)			 \
     {                                    \
-    (bp).offset += (bp).block_size;      \
+      (bp).offset -= (bp).block_size;	 \
     }                                    \
   else                                   \
     {                                    \
       (bp).ptr++;                        \
-      (bp).offset = 0;                   \
+      (bp).offset = 8 - (bp).block_size; \
     }
-    
-#define BIT_PTR_GET(bp)                                 \
-  ((*(bp).ptr & ((bp).mask << bp.offset)) >> bp.offset)
 
-#define BIT_PTR_SET(bp, e)                                              \
-  (*(bp).ptr = (*(bp).ptr & ~((bp).mask << (bp).offset)) | ((e) << (bp).offset))
+#define PRED_BIT_PTR_GET(bp)                                 \
+  ((*(bp).ptr >> (bp).offset) & (bp).mask)
 
+#define PRED_BIT_PTR_SET(bp, e)                                              \
+  (*(bp).ptr = (*(bp).ptr & ~((bp).mask << (bp).offset)) | (((e) & (bp).mask) << (bp).offset))
 
 int
 pdf_stm_f_pred_init (void **filter_data,
@@ -314,28 +317,28 @@ encode_row_sub_colorl8 (pdf_char_t *cur,
 {
   int i;
   int j;
-  bit_ptr_t this;
-  bit_ptr_t next;
-  bit_ptr_t sout;
+  pred_bit_ptr_t this;
+  pred_bit_ptr_t next;
+  pred_bit_ptr_t sout;
   
-  bit_ptr_init (&this, cur, data->bits_per_component);
-  bit_ptr_init (&next, cur, data->bits_per_component);
-  bit_ptr_init (&sout, out, data->bits_per_component);
+  pred_bit_ptr_init (&this, cur, data->bits_per_component);
+  pred_bit_ptr_init (&next, cur, data->bits_per_component);
+  pred_bit_ptr_init (&sout, out, data->bits_per_component);
   
   for (j = 0; j < data->colors; j++) 
     {
-      BIT_PTR_SET(sout, BIT_PTR_GET(next));
-      BIT_PTR_ADV(sout);
-      BIT_PTR_ADV(next);
+      PRED_BIT_PTR_SET(sout, PRED_BIT_PTR_GET(next));
+      PRED_BIT_PTR_ADV(sout);
+      PRED_BIT_PTR_ADV(next);
     }
   for (i = 1; i < data->columns; i++) 
     {
       for (j = 0; j < data->colors; j++) 
         {
-          BIT_PTR_SET(sout, BIT_PTR_GET(next) - BIT_PTR_GET(this));
-          BIT_PTR_ADV(sout);
-          BIT_PTR_ADV(next);
-          BIT_PTR_ADV(this);
+          PRED_BIT_PTR_SET(sout, PRED_BIT_PTR_GET(next) - PRED_BIT_PTR_GET(this));
+          PRED_BIT_PTR_ADV(sout);
+          PRED_BIT_PTR_ADV(next);
+          PRED_BIT_PTR_ADV(this);
         }
     }
 }
@@ -674,28 +677,28 @@ decode_row_sub_colorl8 (pdf_char_t* in,
 {
   int i;
   int j;
-  bit_ptr_t this;
-  bit_ptr_t next;
-  bit_ptr_t sin;
+  pred_bit_ptr_t this;
+  pred_bit_ptr_t next;
+  pred_bit_ptr_t sin;
   
-  bit_ptr_init (&this, cur, data->bits_per_component);
-  bit_ptr_init (&next, cur, data->bits_per_component);
-  bit_ptr_init (&sin,  in,  data->bits_per_component);
+  pred_bit_ptr_init (&this, cur, data->bits_per_component);
+  pred_bit_ptr_init (&next, cur, data->bits_per_component);
+  pred_bit_ptr_init (&sin,  in,  data->bits_per_component);
   
   for (j = 0; j < data->colors; j++) 
     {
-      BIT_PTR_SET(next, BIT_PTR_GET(sin));
-      BIT_PTR_ADV(next);
-      BIT_PTR_ADV(sin);
+      PRED_BIT_PTR_SET(next, PRED_BIT_PTR_GET(sin));
+      PRED_BIT_PTR_ADV(next);
+      PRED_BIT_PTR_ADV(sin);
     }
   for (i = 1; i < data->columns; i++) 
     {
       for (j = 0; j < data->colors; j++) 
         {
-          BIT_PTR_SET(next, BIT_PTR_GET(sin) + BIT_PTR_GET(this));
-          BIT_PTR_ADV(sin);
-          BIT_PTR_ADV(next);
-          BIT_PTR_ADV(this);
+          PRED_BIT_PTR_SET(next, PRED_BIT_PTR_GET(sin) + PRED_BIT_PTR_GET(this));
+          PRED_BIT_PTR_ADV(sin);
+          PRED_BIT_PTR_ADV(next);
+          PRED_BIT_PTR_ADV(this);
         }
     }
 }

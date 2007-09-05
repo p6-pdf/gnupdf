@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/31 22:31:22 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/05 21:39:46 jemarch"
  *
  *       File:         pdf_filter.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -19,6 +19,17 @@
 #include <pdf_stm.h>
 
 /*
+ * Some default values for filters with arguments
+ */
+
+#define DEF_LZW_EARLY_CHANGE PDF_FALSE
+#define DEF_PRED_ENC_TYPE PDF_STM_F_PREDENC_TIFF_PREDICTOR_2
+#define DEF_PRED_DEC_TYPE PDF_STM_F_PREDDEC_TIFF_PREDICTOR_2
+#define DEF_PRED_COLORS 3
+#define DEF_PRED_BPC 8
+#define DEF_PRED_COLUMS 32
+
+/*
  * Command line options management 
  */
 
@@ -32,6 +43,7 @@ static struct option GNU_longOptions[] =
   {"ahexenc", no_argument, NULL, ASCIIHEXENC_FILTER_ARG},
   {"a85dec", no_argument, NULL, ASCII85DEC_FILTER_ARG},
   {"a85enc", no_argument, NULL, ASCII85ENC_FILTER_ARG},
+  {"lzwenc", no_argument, NULL, LZWENC_FILTER_ARG},
   {"lzwdec", no_argument, NULL, LZWDEC_FILTER_ARG},
 #ifdef HAVE_LIBZ
   {"flatedec", no_argument, NULL, FLATEDEC_FILTER_ARG},
@@ -45,14 +57,12 @@ static struct option GNU_longOptions[] =
   {"jxpdec", no_argument, NULL, JXPDEC_FILTER_ARG},
   {"predenc", no_argument, NULL, PREDENC_FILTER_ARG},
   {"preddec", no_argument, NULL, PREDDEC_FILTER_ARG},
-  {"tiff", no_argument, NULL, TIFF_ARG},
-  {"pngsub", no_argument, NULL, PNG_SUB_ARG},
-  {"pngup", no_argument, NULL, PNG_UP_ARG},
-  {"pngaverage", no_argument, NULL, PNG_AVERAGE_ARG},
-  {"pngpaeth", no_argument, NULL, PNG_PAETH_ARG},
-  {"colors", required_argument, NULL, COLORS_ARG},
-  {"bpc", required_argument, NULL, BPC_ARG},
-  {"columns", required_argument, NULL, COLUMNS_ARG},
+  {"lzw-earlychange", no_argument, NULL, LZW_EARLY_CHANGE_ARG},
+  {"predenc-type", required_argument, NULL, PREDENC_TYPE_ARG},
+  {"preddec-type", required_argument, NULL, PREDDEC_TYPE_ARG},
+  {"pred-colors", required_argument, NULL, PRED_COLORS_ARG},
+  {"pred-bpc", required_argument, NULL, PRED_BPC_ARG},
+  {"pred-columns", required_argument, NULL, PRED_COLUMNS_ARG},
   {NULL, 0, NULL, 0}
 };
 
@@ -69,10 +79,11 @@ available filters\n\
   --ahexenc                           use the ASCII Hex encoder filter\n\
   --a85dec                            use the ASCII 85 decoder filter\n\
   --a85enc                            use the ASCII 85 encoder filter\n\
+  --lzwenc                            use the LZW encoder filter\n\
   --lzwdec                            use the LZW decoder filter\n"
 #ifdef HAVE_LIBZ
-"  --flatedec                          use the Flate decoder filter\n"
-"  --flateenc                          use the Flate encoder filter\n"
+"  --flatedec                          use the Flate decoder filter\n\
+  --flateenc                          use the Flate encoder filter\n"
 #endif /* HAVE_LIBZ */
 "  --rldec                             use the Run Length decoder filter\n\
   --rlenc                             use the Run Length encoder filter\n\
@@ -81,22 +92,41 @@ available filters\n\
   --dctdec                            use the DCT decoder filter\n\
   --jxpdec                            use the JXP decoder filter\n\
   --predenc                           use the predictor encoder filter\n\
-  --preddec                           use the predictor encoder filter\n\
+  --preddec                           use the predictor dncoder filter\n\
   --help                              print a help message and exit\n\
   --usage                             print a usage message and exit\n\
   --version                           show pdf_filter version and exit\n\
-encoding/decoding predictor filter arguments\n\
-  --tiff                              use the TIFF predictor\n\
-  --pngsub                            use the PNG sub predictor\n\
-  --pngup                             use the PNG up predictor\n\
-  --pngaverage                        use the PNG average predictor\n\
-  --pngpaeth                          use the PNG paeth predictor\n\
-  --colors=NUM                        number of color components per sample\n\
-  --bpc=NUM                           bits per color component\n\
-  --columns=NUM                       number of samples per row\n\
+\nfilter properties\n\
+  --lzw-earlychange                   toggles earlychange for next lzw filters\n\
+  --preddec-type=NUM                  code for next preddec filters type\n\
+  --predenc-type=NUM                  code for next predenc filters type\n\
+  --pred-colors=NUM                   next predictors colors per sample\n\
+  --pred-bpc=NUM                      next predictors bits per color component\n\
+  --pred-columns=NUM                  next predictors number of samples per row\n\
 ";
 
 char *pdf_filter_help_msg = "";
+
+typedef struct filter_args_s
+{
+  int lzw_early_change;
+  int pred_enc_type;
+  int pred_dec_type;
+  int pred_colors;
+  int pred_bpc;
+  int pred_columns;
+} filter_args_t;
+
+static void
+filter_args_init(filter_args_t* a)
+{
+  a->lzw_early_change = DEF_LZW_EARLY_CHANGE;
+  a->pred_enc_type = DEF_PRED_ENC_TYPE;
+  a->pred_dec_type = DEF_PRED_DEC_TYPE;
+  a->pred_colors = DEF_PRED_COLORS;
+  a->pred_bpc = DEF_PRED_BPC;
+  a->pred_columns = DEF_PRED_COLUMS;
+}
 
 int
 main (int argc, char *argv[])
@@ -108,7 +138,7 @@ main (int argc, char *argv[])
   char *line;
   unsigned char *output_buffer;
   int ret;
-  struct predictor_args_s pred_args;
+  filter_args_t args;
 
   /* Initialization */
   input = pdf_create_mem_stm (0,         /* Initial 0 length */
@@ -116,9 +146,7 @@ main (int argc, char *argv[])
                               0,         /* Init character */
                               PDF_TRUE); /* Auto-resize when necessary */
 
-  pred_args.colors_p = PDF_FALSE;
-  pred_args.bpc_p = PDF_FALSE;
-  pred_args.columns_p = PDF_FALSE;
+  filter_args_init(&args);
 
   /* Manage command line arguments */
   while ((ret = getopt_long (argc,
@@ -130,6 +158,7 @@ main (int argc, char *argv[])
       c = ret;
       switch (c)
         {
+	  /* COMMON ARGUMENTS */
         case HELP_ARG:
           {
             fprintf (stdout, "%s\n", pdf_filter_usage_msg);
@@ -142,6 +171,7 @@ main (int argc, char *argv[])
             exit (0);
             break;
           }
+	  /* FILTER INSTALLERS */
         case NULL_FILTER_ARG:
           {
             pdf_stm_install_null_filter (input, 
@@ -172,8 +202,18 @@ main (int argc, char *argv[])
                                            PDF_STM_FILTER_READ);
             break;
           }
+	case LZWENC_FILTER_ARG:
+          {
+	    pdf_stm_install_lzwenc_filter (input,
+                                           PDF_STM_FILTER_READ,
+					   args.lzw_early_change);
+            break;
+          }
         case LZWDEC_FILTER_ARG:
           {
+	    pdf_stm_install_lzwdec_filter (input,
+                                           PDF_STM_FILTER_READ,
+					   args.lzw_early_change);
             break;
           }
 #ifdef HAVE_LIBZ
@@ -222,19 +262,55 @@ main (int argc, char *argv[])
           {
             pdf_stm_install_predenc_filter (input,
                                             PDF_STM_FILTER_READ,
-                                            PDF_STM_F_PREDENC_TIFF_PREDICTOR_2,
-                                            1, 16, 2);
+                                            args.pred_enc_type,
+                                            args.pred_colors,
+					    args.pred_bpc,
+					    args.pred_columns);
             break;
           }
         case PREDDEC_FILTER_ARG:
           {
             pdf_stm_install_preddec_filter (input,
                                             PDF_STM_FILTER_READ,
-                                            PDF_STM_F_PREDDEC_TIFF_PREDICTOR_2,
-                                            1, 16, 2);
+                                            args.pred_dec_type,
+                                            args.pred_colors,
+					    args.pred_bpc,
+					    args.pred_columns);
             break;
           }
-        case '?':
+	  /* FILTER OPTIONS: */
+	case PREDDEC_TYPE_ARG:
+	  {
+	    args.pred_dec_type = atoi(optarg);
+	    break;
+	  }
+	case PREDENC_TYPE_ARG:
+	  {
+	    args.pred_enc_type = atoi(optarg);
+	    break;
+	  }
+	case PRED_COLORS_ARG:
+	  {
+	    args.pred_colors = atoi(optarg);
+	    break;
+	  }
+	case PRED_BPC_ARG:
+	  {
+	    args.pred_bpc = atoi(optarg);
+	    break;
+	  }
+	case PRED_COLUMNS_ARG:
+	  {
+	    args.pred_columns = atoi(optarg);
+	    break;
+	  }
+	case LZW_EARLY_CHANGE_ARG:
+	  {
+	    args.lzw_early_change = !args.lzw_early_change;
+	    break;
+	  }
+	  /* ERROR: */
+	case '?':
           {
             /* Error, usage and exit */
             fprintf (stdout, "%s\n", pdf_filter_usage_msg);

@@ -26,6 +26,7 @@ enum
   ASCIIHEXENC_FILTER_ARG,
   ASCII85DEC_FILTER_ARG,
   ASCII85ENC_FILTER_ARG,
+  LZWENC_FILTER_ARG,
   LZWDEC_FILTER_ARG,
   FLATEDEC_FILTER_ARG,
   FLATEENC_FILTER_ARG,
@@ -35,26 +36,14 @@ enum
   JBIG2DEC_FILTER_ARG,
   DCTDEC_FILTER_ARG,
   JXPDEC_FILTER_ARG,
+  LZW_EARLY_CHANGE_ARG,
   PREDENC_FILTER_ARG,
   PREDDEC_FILTER_ARG,
-  TIFF_ARG,
-  PNG_SUB_ARG,
-  PNG_UP_ARG,
-  PNG_AVERAGE_ARG,
-  PNG_PAETH_ARG,
-  COLORS_ARG,
-  BPC_ARG,
-  COLUMNS_ARG
-};
-
-struct predictor_args_s
-{
-  int colors;
-  int colors_p;
-  int bpc;
-  int bpc_p;
-  int columns;
-  int columns_p;
+  PREDENC_TYPE_ARG,
+  PREDDEC_TYPE_ARG,
+  PRED_COLORS_ARG,
+  PRED_BPC_ARG,
+  PRED_COLUMNS_ARG
 };
 
 #endif /* pdf_filter.h */

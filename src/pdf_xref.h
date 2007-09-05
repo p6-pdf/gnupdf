@@ -38,7 +38,6 @@
 #include <pdf_base.h>
 
 
-
 #endif /* pdf_xref.h */
 
 /* End of pdf_xref.h */
