@@ -1,3 +1,8 @@
+2007-09-07  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/pdf_date.c (pdf_date_second): `pdf_date_get_FOO'
+	functions shortened to `pdf_date_FOO'.
+
 2007-09-06  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/pdf_date.c (pdf_date_destroy): New function.

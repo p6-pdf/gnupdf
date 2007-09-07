@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/06 00:14:30 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/07 19:58:46 jemarch"
  *
  *       File:         pdf_date.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -91,7 +91,7 @@ pdf_date_destroy (pdf_date_t date)
 }
 
 inline int 
-pdf_date_get_year (pdf_date_t date)
+pdf_date_year (pdf_date_t date)
 {
   return date->year;
 }
@@ -104,7 +104,7 @@ pdf_date_set_year (pdf_date_t date,
 }
 
 inline int
-pdf_date_get_month (pdf_date_t date)
+pdf_date_month (pdf_date_t date)
 {
   return date->month;
 }
@@ -117,7 +117,7 @@ pdf_date_set_month (pdf_date_t date,
 }
 
 inline int
-pdf_date_get_day (pdf_date_t date)
+pdf_date_day (pdf_date_t date)
 {
   return date->day;
 }
@@ -130,7 +130,7 @@ pdf_date_set_day (pdf_date_t date,
 }
 
 inline int 
-pdf_date_get_hour (pdf_date_t date)
+pdf_date_hour (pdf_date_t date)
 {
   return date->hour;
 }
@@ -143,7 +143,7 @@ pdf_date_set_hour (pdf_date_t date,
 }
 
 inline int
-pdf_date_get_minute (pdf_date_t date)
+pdf_date_minute (pdf_date_t date)
 {
   return date->minute;
 }
@@ -156,7 +156,7 @@ pdf_date_set_minute (pdf_date_t date,
 }
 
 inline int 
-pdf_date_get_second (pdf_date_t date)
+pdf_date_second (pdf_date_t date)
 {
   return date->second;
 }

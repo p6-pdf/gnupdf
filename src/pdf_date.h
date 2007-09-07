@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/06 00:13:46 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/07 19:58:28 jemarch"
  *
  *       File:         pdf_date.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -76,22 +76,22 @@ void pdf_date_destroy (pdf_date_t date);
 
 pdf_obj_t pdf_date_string (pdf_date_t date);
 
-inline int pdf_date_get_year (pdf_date_t date);
+inline int pdf_date_year (pdf_date_t date);
 void pdf_date_set_year (pdf_date_t date, int year);
 
-int pdf_date_get_month (pdf_date_t date);
+int pdf_date_month (pdf_date_t date);
 void pdf_date_set_month (pdf_date_t date, int month);
 
-int pdf_date_get_day (pdf_date_t date);
+int pdf_date_day (pdf_date_t date);
 void pdf_date_set_day (pdf_date_t date, int day);
 
-int pdf_date_get_hour (pdf_date_t date);
+int pdf_date_hour (pdf_date_t date);
 void pdf_date_set_hour (pdf_date_t date, int hour);
 
-int pdf_date_get_minute (pdf_date_t date);
+int pdf_date_minute (pdf_date_t date);
 void pdf_date_set_minute (pdf_date_t date, int minute);
 
-int pdf_date_get_second (pdf_date_t date);
+int pdf_date_second (pdf_date_t date);
 void pdf_date_set_second (pdf_date_t date, int second);
 
 int pdf_date_cmp (pdf_date_t date1, pdf_date_t date2);
