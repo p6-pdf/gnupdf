@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/08 22:17:28 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/08 23:06:55 jemarch"
  *
  *       File:         pdf_date.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -121,6 +121,9 @@ void pdf_date_set_minute (pdf_date_t date, int minute);
 
 int pdf_date_second (pdf_date_t date);
 void pdf_date_set_second (pdf_date_t date, int second);
+
+int pdf_date_ut_offset_hour (pdf_date_t date);
+int pdf_date_ut_offset_minute (pdf_date_t date);
 
 int pdf_date_cmp (pdf_date_t date1, pdf_date_t date2);
 

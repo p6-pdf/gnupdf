@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/08 22:21:26 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/08 23:11:04 jemarch"
  *
  *       File:         pdf_date.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -189,6 +189,75 @@ pdf_date_set_second (pdf_date_t date,
                      int second)
 {
   date->second = second;
+}
+
+inline int
+pdf_date_ut_offset_hour (pdf_date_t date)
+{
+  int ut_offset_hour;
+
+  ut_offset_hour = date->ut_offset_hour;
+  switch (date->ut_rel)
+    {
+    case PDF_DATE_UT_UNKNOWN:
+      {
+        return -1;
+        break;
+      }
+    case PDF_DATE_UT_BEFORE:
+      {
+        return ut_offset_hour * -1;
+        break;
+      }
+    case PDF_DATE_UT_AFTER:
+      {
+        return ut_offset_hour;
+        break;
+      }
+    case PDF_DATE_UT_EQUAL:
+      {
+        return 0;
+        break;
+      }
+    }
+
+  /* Not reached */
+  return -2;
+}
+
+inline int
+pdf_date_ut_offset_minute (pdf_date_t date)
+{
+  int ut_offset_minute;
+
+  ut_offset_minute = date->ut_offset_minute;
+  switch (date->ut_rel)
+    {
+    case PDF_DATE_UT_UNKNOWN:
+      {
+        return -1;
+        break;
+      }
+    case PDF_DATE_UT_BEFORE:
+      {
+        return ut_offset_minute * -1;
+        break;
+      }
+    case PDF_DATE_UT_EQUAL:
+      {
+        return 0;
+        break;
+      }
+    case PDF_DATE_UT_AFTER:
+      {
+        return ut_offset_minute;
+        break;
+      }
+    }
+
+  /* Not reached */
+
+  return -2;
 }
 
 /* Private functions */
