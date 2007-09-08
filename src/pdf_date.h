@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/08 13:56:44 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/08 22:17:28 jemarch"
  *
  *       File:         pdf_date.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -84,8 +84,8 @@ struct pdf_date_s
 
   enum pdf_date_ut_rel ut_rel;
 
-  int ut_offset_hours;          /* Absolute offset from UT in hours */
-  int ut_offset_minutes;        /* Absolute offset from UT in minutes */
+  int ut_offset_hour;          /* Absolute offset from UT in hours */
+  int ut_offset_minute;        /* Absolute offset from UT in minutes */
 };
 
 typedef struct pdf_date_s *pdf_date_t;

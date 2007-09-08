@@ -1,5 +1,18 @@
 2007-09-08  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/pdf_date.c (pdf_date_parse): New function.
+
+	* src/pdf_base.c (pdf_str2double): New function.
+	(pdf_str2int): New function.
+
+	* src/Makefile.am (libgnupdf_la_SOURCES): Added `pdf_base.c' and
+	`pdf_base.h'.
+
+	* src/pdf_base.c (pdf_str2long): New function.
+
+	* src/pdf_base.h: Include `config.h' first.
+	String utilities prototypes added.
+
 	* AUTHORS (Contributors): Added raskolnikov@es.gnu.org
 
 	* src/pdf_date.h: Added an explanation about the date objects.

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/12 01:39:23 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/08 20:13:29 jemarch"
  *
  *       File:         pdf_base.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -27,8 +27,8 @@
 #ifndef _PDF_BASE_H
 #define _PDF_BASE_H
 
-#include <sys/types.h> /* for off_t */
 #include <config.h>
+#include <sys/types.h> /* for off_t */
 
 #ifdef HAVE_INLINE
 #define INLINE inline
@@ -58,6 +58,15 @@ typedef off_t pdf_stm_pos_t;
 /* PDF manages bytes with values in the range 0-255 */
 
 typedef unsigned char pdf_char_t;
+
+/* String utility functions */
+
+int pdf_str2int (char *string, 
+                 int *num);
+int pdf_str2long (char *string, 
+                  long *num);
+int pdf_str2double (char *string, 
+                    double *num);
 
 #endif /* pdf_base.h */
 
