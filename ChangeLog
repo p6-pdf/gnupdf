@@ -1,3 +1,9 @@
+2007-09-08  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/pdf_date.h: Added an explanation about the date objects.
+
+	* src/pdf_obj.h: Fixed a typo in comment.
+
 2007-09-07  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/pdf_date.c (pdf_date_second): `pdf_date_get_FOO'

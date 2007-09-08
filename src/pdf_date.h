@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/07 19:58:28 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/08 13:56:44 jemarch"
  *
  *       File:         pdf_date.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -24,6 +24,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* The date compound data type stores information about a local date
+   (local with respect to the Universal Time). Those dates are
+   specified in PDF documents in the form of PDF strings following a
+   concrete syntax: the one specified in ISO/IEC 8824.
+
+   The syntax of a string defining a date is:
+
+       D:YYYYMMDDHHmmSSOHH'mm'
+
+   where:
+
+   - YYYY Year(required)
+   - MM Month, 01-12 (optional, defaults to 01)
+   - DD Day, 01-31 (optional, defaults to 01)
+   - HH Hour, 00-23 (optional, defaults to 00)
+   - mm Minute, 00-59 (optional, defaults to 00)
+   - SS Second, 00-59 (optional, defaults to 00)
+   - O Relationship with UT (Universal Time) (optional, if not specified
+     the relation with UT is unknown)
+
+    - + after UT
+    - Z equal to UT
+    - - before UT
+
+   - HH' Absolute offset from UT in hours, 00-23 (defaults to 00) 
+   - mm' Absolute offset from UT in minutes, 00-59 (defaults to 00)
+
+   Note that the preceding "D:" is optional in the date string. */
 
 #ifndef PDF_DATE_H
 #define PDF_DATE_H

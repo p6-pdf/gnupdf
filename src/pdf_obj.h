@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/08 16:13:29 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/08 13:51:08 jemarch"
  *
  *       File:         pdf_obj.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -171,7 +171,7 @@ enum pdf_obj_type_t
   PDF_INDIRECT_OBJ
 };
 
-/* A `pdf_obj_s' structure stores a PDf object. The object may be of
+/* A `pdf_obj_s' structure stores a PDF object. The object may be of
    any type (including NULL). */
 
 struct pdf_obj_s
