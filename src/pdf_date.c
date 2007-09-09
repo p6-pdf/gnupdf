@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/08 23:11:04 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/09 01:20:12 jemarch"
  *
  *       File:         pdf_date.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -318,8 +318,9 @@ pdf_date_parse (char *string,
 
   /* Seek how much information is contained into the string based on
      its size */
-  if ((size < 4) ||
-      (size > 19))
+  if ((size < 4) || (size == 5) || (size == 7) || (size == 9) ||
+      (size == 11) || (size == 13) || (size == 16) || (size == 17) 
+      || (size == 19) || (size == 20) || (size > 21))
     {
       return NULL;
     }
@@ -351,24 +352,44 @@ pdf_date_parse (char *string,
   if (month_p)
     {
       DATE_EXTRACT_INT(2, &(date->month));
+      if ((date->month < 1) || (date->month > 12))
+        {
+          goto error;
+        }
     }
   if (day_p)
     {
       DATE_EXTRACT_INT(2, &(date->day));
+      if ((date->day < 1) || (date->day > 31))
+        {
+          goto error;
+        }
     }
   if (hour_p)
     {
       DATE_EXTRACT_INT(2, &(date->hour));
+      if ((date->hour < 0) || (date->hour > 23))
+        {
+          goto error;
+        }
     }
   if (minute_p)
     {
       /* Minutes: 2 digits, optional, integer */
       DATE_EXTRACT_INT(2, &(date->minute));
+      if ((date->minute < 0) || (date->minute > 59))
+        {
+          goto error;
+        }
     }
   if (second_p)
     {
       /* Seconds: 2 digits, optional, integer */
       DATE_EXTRACT_INT(2, &(date->second));
+      if ((date->second < 0) || (date->second > 59))
+        {
+          goto error;
+        }
     }
   if (ut_rel_p)
     {
@@ -377,12 +398,12 @@ pdf_date_parse (char *string,
         {
         case '+':
           {
-            date->ut_rel = PDF_DATE_UT_BEFORE;
+            date->ut_rel = PDF_DATE_UT_AFTER;
             break;
           }
         case '-':
           {
-            date->ut_rel = PDF_DATE_UT_AFTER;
+            date->ut_rel = PDF_DATE_UT_BEFORE;
             break;
           }
         case 'Z':
@@ -401,6 +422,10 @@ pdf_date_parse (char *string,
     {
       /* UT offset in hours, optional, 2 digits and a character */
       DATE_EXTRACT_INT(2, &(date->ut_offset_hour));
+      if ((date->ut_offset_hour < 0) || (date->ut_offset_hour > 23))
+        {
+          goto error;
+        }
       if (string[pos] != '\'')
         {
           goto error;
@@ -411,6 +436,10 @@ pdf_date_parse (char *string,
     {
       /* UT offset in minutes, optional, 2 digits and a character */
       DATE_EXTRACT_INT(2, &(date->ut_offset_minute));
+      if ((date->ut_offset_minute < 0) || (date->ut_offset_minute > 59))
+        {
+          goto error;
+        }
       if (string[pos] != '\'')
         {
           goto error;

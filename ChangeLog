@@ -1,5 +1,11 @@
 2007-09-08  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* torture/Makefile.am (TESTS): Added `test-date'.
+	(noinst_PROGRAMS): Added `test-date'.
+
+	* src/pdf_date.c (pdf_date_ut_offset_hour): New function.
+	(pdf_date_ut_offset_minute): New function.
+
 	* torture/test-base.c: New file.
 
 	* src/pdf_date.c (pdf_date_parse): New function.
