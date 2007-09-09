@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/09 03:06:16 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/09 03:28:08 jemarch"
  *
  *       File:         pdf_rectangle.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -47,7 +47,7 @@ pdf_create_rectangle (pdf_obj_t array)
   pdf_point_t ur;
 
   if ((!IS_ARRAY(array)) ||
-      (pdf_get_array_size (array) != 2))
+      (pdf_get_array_size (array) != 4))
     {
       return NULL;
     }
@@ -57,8 +57,9 @@ pdf_create_rectangle (pdf_obj_t array)
   elt3 = pdf_get_array_elt (array, 2);
   elt4 = pdf_get_array_elt (array, 3);
 
-  if ((!IS_REAL(elt1)) || (!IS_REAL(elt2)) ||
-      (!IS_REAL(elt3)) || (!IS_REAL(elt4)))
+  /* Elements can be both reals or integers */
+  if ((!IS_NUMBER(elt1)) || (!IS_NUMBER(elt2)) ||
+      (!IS_NUMBER(elt3)) || (!IS_NUMBER(elt4)))
     {
       return NULL;
     }
@@ -70,10 +71,10 @@ pdf_create_rectangle (pdf_obj_t array)
   p1 = pdf_create_point ();
   p2 = pdf_create_point ();
   
-  P_X(p1) = pdf_get_real (elt1);
-  P_Y(p1) = pdf_get_real (elt2);
-  P_X(p2) = pdf_get_real (elt3);
-  P_Y(p2) = pdf_get_real (elt4);
+  P_X(p1) = IS_INT(elt1) ? pdf_get_int (elt1) : pdf_get_real (elt1);
+  P_Y(p1) = IS_INT(elt2) ? pdf_get_int (elt2) : pdf_get_real (elt2);
+  P_X(p2) = IS_INT(elt3) ? pdf_get_int (elt3) : pdf_get_real (elt3);
+  P_Y(p2) = IS_INT(elt4) ? pdf_get_int (elt4) : pdf_get_real (elt4);
 
   /* Normalize the points to (ll_x, ll_y) - (ur_x, ur_y) */
   ll = pdf_create_point ();

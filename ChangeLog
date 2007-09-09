@@ -1,5 +1,10 @@
 2007-09-09  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* torture/Makefile.am (noinst_PROGRAMS): `test-rectangle' added.
+	(TESTS): `test-rectangle' added.
+
+	* torture/test-rectangle.c: New file.
+
 	* src/Makefile.am (libgnupdf_la_SOURCES): `pdf_rectangle.c' and
 	`pdf_rectangle.h' added.
 

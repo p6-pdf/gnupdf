@@ -1,10 +1,10 @@
-/* -*- mode: C -*- Time-stamp: "07/09/09 02:03:49 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/09 03:13:23 jemarch"
  *
  *       File:         test-date.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
  *       Date:         Sat Sep  8 22:56:54 2007
  *
- *       GNU PDF Library - Test suite for the date compound data type
+ *       GNU PDF Library - Test suite for the date common data type
  *
  */
 

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/09 02:49:06 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/09 03:26:47 jemarch"
  *
  *       File:         pdf_obj.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -195,17 +195,19 @@ typedef struct pdf_obj_s *pdf_obj_t;
 /* Accessing macros */
 
 #define IS_NULL(obj) \
-  (obj->type == PDF_NULL_OBJ)
+  ((obj)->type == PDF_NULL_OBJ)
 #define IS_BOOL(obj) \
-  (obj->type == PDF_BOOLEAN_OBJ)
+  ((obj)->type == PDF_BOOLEAN_OBJ)
 #define IS_INT(obj) \
-  (obj->type == PDF_INT_OBJ)
+  ((obj)->type == PDF_INT_OBJ)
 #define IS_REAL(obj) \
-  (obj->type == PDF_REAL_OBJ)
+  ((obj)->type == PDF_REAL_OBJ)
+#define IS_NUMBER(obj) \
+  (IS_REAL((obj)) || IS_INT((obj)))
 #define IS_STRING(obj) \
-  (obj->type == PDF_STRING_OBJ)
+  ((obj)->type == PDF_STRING_OBJ)
 #define IS_NAME(obj) \
-  (obj->type == PDF_NAME_OBJ)
+  ((obj)->type == PDF_NAME_OBJ)
 #define IS_ARRAY(obj) \
   ((obj)->type == PDF_ARRAY_OBJ)
 #define IS_DICT(obj) \
