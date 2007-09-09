@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/08 20:13:58 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/09 02:46:51 jemarch"
  *
  *       File:         pdf_base.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -88,6 +88,35 @@ pdf_str2double (char *string,
     {
       return PDF_OK;
     }
+}
+
+pdf_point_t
+pdf_create_point (void)
+{
+  pdf_point_t new_point;
+
+  new_point = (pdf_real_t *) xmalloc (sizeof(pdf_real_t) * 2);
+  P_X(new_point) = 0.0;
+  P_Y(new_point) = 0.0;
+  return new_point;
+}
+
+void
+pdf_destroy_point (pdf_point_t point)
+{
+  free (point);
+}
+
+pdf_point_t
+pdf_point_dup (pdf_point_t point)
+{
+  pdf_point_t new_point;
+
+  new_point = pdf_create_point ();
+  P_X(new_point) = P_X(point);
+  P_Y(new_point) = P_Y(point);
+
+  return new_point;
 }
 
 /* End of pdf_base.c */

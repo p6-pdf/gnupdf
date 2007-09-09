@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/09 01:20:12 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/09 02:02:32 jemarch"
  *
  *       File:         pdf_date.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -36,7 +36,7 @@ static inline void pdf_date_dealloc (pdf_date_t date);
 static pdf_date_t pdf_date_parse (char *string, int size);
 
 pdf_date_t
-pdf_date_new (pdf_obj_t date_string)
+pdf_create_date (pdf_obj_t date_string)
 {
   pdf_date_t new_date;
   char *str;
@@ -58,14 +58,14 @@ pdf_date_new (pdf_obj_t date_string)
 }
 
 pdf_date_t 
-pdf_date_new_value (int year,
-                    int month,
-                    int day,
-                    int hour,
-                    int minute,
-                    int second,
-                    int ut_offset_hour,
-                    int ut_offset_minute)
+pdf_create_date_value (int year,
+                       int month,
+                       int day,
+                       int hour,
+                       int minute,
+                       int second,
+                       int ut_offset_hour,
+                       int ut_offset_minute)
 {
   pdf_date_t new_date;
 
@@ -108,7 +108,7 @@ pdf_date_new_value (int year,
 }
 
 void
-pdf_date_destroy (pdf_date_t date)
+pdf_destroy_date (pdf_date_t date)
 {
   pdf_date_dealloc (date);
 }

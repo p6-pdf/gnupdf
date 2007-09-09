@@ -31,7 +31,8 @@ libgnupdf_la_SOURCES = pdf.c \
                        pdf_stm_f_lzw.c pdf_stm_f_lzw.h \
                        pdf_obj.c pdf_obj.h \
                        pdf_xref.c pdf_xref.h \
-                       pdf_date.c pdf_date.h
+                       pdf_date.c pdf_date.h \
+                       pdf_rectangle.c pdf_rectangle.h
 
 if ZLIB
   libgnupdf_la_SOURCES += pdf_stm_f_flate.c pdf_stm_f_flate.h

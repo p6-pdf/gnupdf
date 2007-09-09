@@ -1,3 +1,19 @@
+2007-09-09  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/Makefile.am (libgnupdf_la_SOURCES): `pdf_rectangle.c' and
+	`pdf_rectangle.h' added.
+
+	* src/pdf_base.c (pdf_create_point): New function.
+	(pdf_destroy_point): New function.
+
+	* src/pdf_base.h: New `pdf_point_t' type.
+
+	* src/pdf_rectangle.c: New file.
+
+	* src/pdf_rectangle.h: New file.
+
+	* torture/test-date.c (main): Initialize `success' to `PDF_TRUE'.
+
 2007-09-08  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* torture/Makefile.am (TESTS): Added `test-date'.

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/08 16:13:56 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/09 02:49:00 jemarch"
  *
  *       File:         pdf_obj.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -216,7 +216,7 @@ pdf_set_int (pdf_obj_t obj,
   obj->value.integer = value;
 }
 
-inline float
+inline pdf_real_t
 pdf_get_real (pdf_obj_t obj)
 {
   return obj->value.real;

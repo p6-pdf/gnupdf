@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/08 20:13:29 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/09 02:45:54 jemarch"
  *
  *       File:         pdf_base.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -59,6 +59,12 @@ typedef off_t pdf_stm_pos_t;
 
 typedef unsigned char pdf_char_t;
 
+
+/* PDF integers and reals are implemented using basic C types. */
+
+typedef int pdf_integer_t;
+typedef float pdf_real_t;
+
 /* String utility functions */
 
 int pdf_str2int (char *string, 
@@ -67,6 +73,17 @@ int pdf_str2long (char *string,
                   long *num);
 int pdf_str2double (char *string, 
                     double *num);
+
+/* Points */
+
+typedef pdf_real_t *pdf_point_t;
+
+#define P_X(point) (point)[0]
+#define P_Y(point) (point)[1]
+
+pdf_point_t pdf_create_point (void);
+void pdf_destroy_point (pdf_point_t point);
+pdf_point_t pdf_point_dup (pdf_point_t point);
 
 #endif /* pdf_base.h */
 

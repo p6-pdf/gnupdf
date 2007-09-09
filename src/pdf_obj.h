@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/08 13:51:08 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/09 02:49:06 jemarch"
  *
  *       File:         pdf_obj.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -67,10 +67,7 @@
 
 typedef int pdf_boolean_t;
 
-/* PDF integers and reals are implemented using basic C types. */
-
-typedef int pdf_integer_t;
-typedef float pdf_real_t;
+/* NOTE: PDF integers and reals are implemented in pdf_base.h */
 
 /* According to the PDF reference, a PDF name object is an atomic
    symbol uniquely defined by a sequence of regular characters. It has
@@ -261,8 +258,8 @@ int pdf_get_bool (pdf_obj_t obj);
 void pdf_set_bool (pdf_obj_t obj, int value);
 int pdf_get_int (pdf_obj_t obj);
 void pdf_set_int (pdf_obj_t obj, int value);
-float pdf_get_real (pdf_obj_t obj);
-void pdf_set_real (pdf_obj_t obj, float value);
+pdf_real_t pdf_get_real (pdf_obj_t obj);
+void pdf_set_real (pdf_obj_t obj, pdf_real_t value);
 
 /* Managing strings */
 int pdf_get_string_size (pdf_obj_t obj);

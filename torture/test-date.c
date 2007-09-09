@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/09 00:20:28 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/09 02:03:49 jemarch"
  *
  *       File:         test-date.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -53,9 +53,11 @@ main ()
   pdf_obj_t string;
   pdf_date_t date;
 
+  success = PDF_TRUE;
+
   /* Date creation */
   string = pdf_create_string ("D:19800813175500+01'03'", 23);
-  date = pdf_date_new (string);
+  date = pdf_create_date (string);
   if (date == NULL)
     {
       printf("Error parsing a date from a D:YYYYMMDDHHmmSS+HH'mm' string.\n");
@@ -77,12 +79,12 @@ main ()
           success = PDF_FALSE;
         }
 
-      pdf_date_destroy (date);
+      pdf_destroy_date (date);
     }
   pdf_destroy_obj (string);
 
   string = pdf_create_string ("D:19800813175500-01'03'", 23);
-  date = pdf_date_new (string);
+  date = pdf_create_date (string);
   if (date == NULL)
     {
       printf("Error parsing a date from a D:YYYYMMDDHHmmSS-HH'mm' string.\n");
@@ -104,12 +106,12 @@ main ()
           success = PDF_FALSE;
         }
 
-      pdf_date_destroy (date);
+      pdf_destroy_date (date);
     }
   pdf_destroy_obj (string);
 
   string = pdf_create_string ("D:19800813175500Z01'03'", 23);
-  date = pdf_date_new (string);
+  date = pdf_create_date (string);
   if (date == NULL)
     {
       printf("Error parsing a date from a D:YYYYMMDDHHmmSSZHH'mm' string.\n");
@@ -131,12 +133,12 @@ main ()
           success = PDF_FALSE;
         }
 
-      pdf_date_destroy (date);
+      pdf_destroy_date (date);
     }
   pdf_destroy_obj (string);
 
   string = pdf_create_string ("19800813175500+01'03'", 21);
-  date = pdf_date_new (string);
+  date = pdf_create_date (string);
   if (date == NULL)
     {
       printf("Error parsing a date from a YYYYMMDDHHmmSSOHH'mm' string.\n");
@@ -158,12 +160,12 @@ main ()
           success = PDF_FALSE;
         }
 
-      pdf_date_destroy (date);
+      pdf_destroy_date (date);
     }
   pdf_destroy_obj (string);
 
   string = pdf_create_string ("19800813175500+01'", 18);
-  date = pdf_date_new (string);
+  date = pdf_create_date (string);
   if (date == NULL)
     {
       printf("Error parsing a date from a YYYYMMDDHHmmSSOHH' string.\n");
@@ -185,12 +187,12 @@ main ()
           success = PDF_FALSE;
         }
 
-      pdf_date_destroy (date);
+      pdf_destroy_date (date);
     }
   pdf_destroy_obj (string);
 
   string = pdf_create_string ("19800813175500+", 15);
-  date = pdf_date_new (string);
+  date = pdf_create_date (string);
   if (date == NULL)
     {
       printf("Error parsing a date from a YYYYMMDDHHmmSSO string.\n");
@@ -212,12 +214,12 @@ main ()
           success = PDF_FALSE;
         }
 
-      pdf_date_destroy (date);
+      pdf_destroy_date (date);
     }
   pdf_destroy_obj (string);
 
   string = pdf_create_string ("19800813175500", 14);
-  date = pdf_date_new (string);
+  date = pdf_create_date (string);
   if (date == NULL)
     {
       printf("Error parsing a date from a YYYYMMDDHHmmSS string.\n");
@@ -239,12 +241,12 @@ main ()
           success = PDF_FALSE;
         }
 
-      pdf_date_destroy (date);
+      pdf_destroy_date (date);
     }
   pdf_destroy_obj (string);
 
   string = pdf_create_string ("198008131755", 12);
-  date = pdf_date_new (string);
+  date = pdf_create_date (string);
   if (date == NULL)
     {
       printf("Error parsing a date from a YYYYMMDDHHmm string.\n");
@@ -266,12 +268,12 @@ main ()
           success = PDF_FALSE;
         }
 
-      pdf_date_destroy (date);
+      pdf_destroy_date (date);
     }
   pdf_destroy_obj (string);
 
   string = pdf_create_string ("1980081317", 10);
-  date = pdf_date_new (string);
+  date = pdf_create_date (string);
   if (date == NULL)
     {
       printf("Error parsing a date from a YYYYMMDDHH string.\n");
@@ -293,12 +295,12 @@ main ()
           success = PDF_FALSE;
         }
 
-      pdf_date_destroy (date);
+      pdf_destroy_date (date);
     }
   pdf_destroy_obj (string);
 
   string = pdf_create_string ("19800813", 8);
-  date = pdf_date_new (string);
+  date = pdf_create_date (string);
   if (date == NULL)
     {
       printf("Error parsing a date from a YYYYMMDD string.\n");
@@ -320,12 +322,12 @@ main ()
           success = PDF_FALSE;
         }
 
-      pdf_date_destroy (date);
+      pdf_destroy_date (date);
     }
   pdf_destroy_obj (string);
 
   string = pdf_create_string ("198008", 6);
-  date = pdf_date_new (string);
+  date = pdf_create_date (string);
   if (date == NULL)
     {
       printf("Error parsing a date from a YYYYMM string.\n");
@@ -347,12 +349,12 @@ main ()
           success = PDF_FALSE;
         }
 
-      pdf_date_destroy (date);
+      pdf_destroy_date (date);
     }
   pdf_destroy_obj (string);
 
   string = pdf_create_string ("1980", 4);
-  date = pdf_date_new (string);
+  date = pdf_create_date (string);
   if (date == NULL)
     {
       printf("Error parsing a date from a YYYY string.\n");
@@ -374,51 +376,51 @@ main ()
           success = PDF_FALSE;
         }
 
-      pdf_date_destroy (date);
+      pdf_destroy_date (date);
     }
   pdf_destroy_obj (string);
 
 
   string = pdf_create_string ("D:19800813175500+01'03", 22);
-  date = pdf_date_new (string);
+  date = pdf_create_date (string);
   if (date != NULL)
     {
       printf("Invalid success parsing a incorrect date D:YYYYMMDDHHmmSS+HH'mm\n");
       PRINT_DATE(date);
-      pdf_date_destroy (date);
+      pdf_destroy_date (date);
       success = PDF_FALSE;
     }
   pdf_destroy_obj (string);
 
   string = pdf_create_string ("D:19800813175500+a1'", 20);
-  date = pdf_date_new (string);
+  date = pdf_create_date (string);
   if (date != NULL)
     {
       printf("Invalid success parsing a incorrect date D:YYYYMMDDHHmmSS+aH'\n");
       PRINT_DATE(date);
-      pdf_date_destroy (date);
+      pdf_destroy_date (date);
       success = PDF_FALSE;
     }
   pdf_destroy_obj (string);
 
   string = pdf_create_string ("D:19z0", 6);
-  date = pdf_date_new (string);
+  date = pdf_create_date (string);
   if (date != NULL)
     {
       printf("Invalid success parsing a incorrect date D:YYzY\n");
       PRINT_DATE(date);
-      pdf_date_destroy (date);
+      pdf_destroy_date (date);
       success = PDF_FALSE;
     }
   pdf_destroy_obj (string);
 
   string = pdf_create_string ("", 0);
-  date = pdf_date_new (string);
+  date = pdf_create_date (string);
   if (date != NULL)
     {
       printf("Invalid success parsing the empty string.\n");
       PRINT_DATE(date);
-      pdf_date_destroy (date);
+      pdf_destroy_date (date);
       success = PDF_FALSE;
     }
   pdf_destroy_obj (string);

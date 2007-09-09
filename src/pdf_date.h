@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/09 01:21:30 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/09 02:02:08 jemarch"
  *
  *       File:         pdf_date.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -24,7 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* The date compound data type stores information about a local date
+/* The date common data type stores information about a local date
    (local with respect to the Universal Time). Those dates are
    specified in PDF documents in the form of PDF strings following a
    concrete syntax: the one specified in ISO/IEC 8824.
@@ -91,16 +91,16 @@ struct pdf_date_s
 typedef struct pdf_date_s *pdf_date_t;
 
 
-pdf_date_t pdf_date_new (pdf_obj_t date_string);
-pdf_date_t pdf_date_new_value (int year,
-                               int month,
-                               int day,
-                               int hour,
-                               int minute,
-                               int second,
-                               int ut_offset_hours,
-                               int ut_offset_minutes);
-void pdf_date_destroy (pdf_date_t date);
+pdf_date_t pdf_create_date (pdf_obj_t date_string);
+pdf_date_t pdf_create_date_value (int year,
+                                  int month,
+                                  int day,
+                                  int hour,
+                                  int minute,
+                                  int second,
+                                  int ut_offset_hours,
+                                  int ut_offset_minutes);
+void pdf_destroy_date (pdf_date_t date);
 
 pdf_obj_t pdf_date_string (pdf_date_t date);
 
