@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/09 02:45:54 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/11 19:10:49 jemarch"
  *
  *       File:         pdf_base.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -74,7 +74,7 @@ int pdf_str2long (char *string,
 int pdf_str2double (char *string, 
                     double *num);
 
-/* Points */
+/* Geometry */
 
 typedef pdf_real_t *pdf_point_t;
 
@@ -84,6 +84,19 @@ typedef pdf_real_t *pdf_point_t;
 pdf_point_t pdf_create_point (void);
 void pdf_destroy_point (pdf_point_t point);
 pdf_point_t pdf_point_dup (pdf_point_t point);
+
+/* Interpolation functions */
+
+double pdf_interp_lineal (double x1, double y1,
+                          double x2, double y2,
+                          double x);
+
+double pdf_interp_exp_coef_m (double x1, double x2,
+                              double y1, double y2);
+double pdf_interp_exp_coef_k (double x1, double y1,
+                              double m);
+double pdf_interp_exp (double m, double k,
+                       double x);
 
 #endif /* pdf_base.h */
 

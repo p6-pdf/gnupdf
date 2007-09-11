@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/09 02:46:51 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/11 19:10:52 jemarch"
  *
  *       File:         pdf_base.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -31,6 +31,7 @@
 #include <string.h>
 #include <malloc.h>
 #include <xalloc.h>
+#include <math.h>
 
 #include <pdf_base.h>
 
@@ -117,6 +118,41 @@ pdf_point_dup (pdf_point_t point)
   P_Y(new_point) = P_Y(point);
 
   return new_point;
+}
+
+inline double
+pdf_interp_lineal (double x1,
+                   double y1,
+                   double x2,
+                   double y2,
+                   double x)
+{
+  return (y2 + ((y2 - y1) / (x2 - x1)) * (x - x1));
+}
+
+inline double
+pdf_interp_exp_coef_m (double x1, 
+                       double y1,
+                       double x2,
+                       double y2)
+{
+  return ((log (y2 / y1)) / (x2 - x1));
+}
+
+inline double
+pdf_interp_exp_coef_k (double x1,
+                       double y1,
+                       double m)
+{
+  return (y1 * exp (-1 * m * x1));
+}
+
+inline double
+pdf_interp_exp (double m,
+                double k,
+                double x)
+{
+  return (k * exp (m * x));
 }
 
 /* End of pdf_base.c */

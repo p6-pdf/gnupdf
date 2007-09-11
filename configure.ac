@@ -46,6 +46,7 @@ AC_FUNC_FSEEKO
 dnl Search for required libraries
 CHECK_ZLIB
 AM_CONDITIONAL([ZLIB], [test "x$have_zlib" = "xyes"])
+AC_CHECK_LIB(m,exp,,,)
 
 dnl Generate output files
 AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile doc/Makefile utils/Makefile)
