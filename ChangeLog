@@ -1,5 +1,12 @@
 2007-09-11  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/Makefile.am (libgnupdf_la_SOURCES): `pdf_function.h' and
+	`pdf_function.c' added.
+
+	* src/pdf_function.h: New file.
+
+	* src/pdf_function.c: New file.
+
 	* src/pdf_stm_file.c (pdf_stm_file_size): Use NO_POS.
 
 	* src/pdf_obj.c (pdf_create_stream): New function.
