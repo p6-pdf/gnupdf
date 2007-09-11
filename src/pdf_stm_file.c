@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/15 21:04:45 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/11 20:34:59 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -170,7 +170,7 @@ pdf_stm_file_size (void *be_data)
 
   if (fstat (fileno (data->file_stm), &file_stats) != 0)
     {
-      return -1;
+      return NO_POS;
     }
 
   return file_stats.st_size;

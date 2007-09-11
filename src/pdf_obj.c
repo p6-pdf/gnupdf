@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/09 02:49:00 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/11 20:33:27 jemarch"
  *
  *       File:         pdf_obj.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -46,9 +46,11 @@ static int pdf_string_equal_p (pdf_obj_t obj1, pdf_obj_t obj2);
 static int pdf_name_equal_p (pdf_obj_t obj1, pdf_obj_t obj2);
 static int pdf_array_equal_p (pdf_obj_t obj1, pdf_obj_t obj2);
 static int pdf_dict_equal_p (pdf_obj_t obj1, pdf_obj_t obj2);
+static int pdf_stream_equal_p (pdf_obj_t obj1, pdf_obj_t obj2);
 
 static pdf_obj_t pdf_array_dup (pdf_obj_t obj);
 static pdf_obj_t pdf_dict_dup (pdf_obj_t obj);
+static pdf_obj_t pdf_stream_dup (pdf_obj_t obj);
 
 /* Public functions */
 
@@ -181,6 +183,22 @@ pdf_create_indirect (unsigned int on,
   new_indirect->value.indirect.gn = gn;
 
   return new_indirect;
+}
+
+pdf_obj_t
+pdf_create_stream (pdf_obj_t dict,
+                   pdf_stm_t stm,
+                   pdf_stm_pos_t data)
+{
+  pdf_obj_t new_stream;
+
+  new_stream = pdf_alloc_obj ();
+  new_stream->type = PDF_STREAM_OBJ;
+  new_stream->value.stream.dict = pdf_obj_dup (dict);
+  new_stream->value.stream.stm = stm;
+  new_stream->value.stream.data = data;
+
+  return new_stream;
 }
 
 inline int
@@ -397,6 +415,39 @@ pdf_create_dict_entry (pdf_obj_t obj,
   return PDF_OK;
 }
 
+pdf_obj_t 
+pdf_get_stream_dict (pdf_obj_t stream)
+{
+  if (stream->type != PDF_STREAM_OBJ)
+    {
+      return NULL;
+    }
+
+  return pdf_obj_dup(stream->value.stream.dict);
+}
+
+pdf_stm_t
+pdf_get_stream_stm (pdf_obj_t stream)
+{
+  if (stream->type != PDF_STREAM_OBJ)
+    {
+      return NULL;
+    }
+
+  return stream->value.stream.stm;
+}
+
+pdf_stm_pos_t
+pdf_get_stream_data (pdf_obj_t stream)
+{
+  if (stream->type != PDF_STREAM_OBJ)
+    {
+      return NO_POS;
+    }
+
+  return stream->value.stream.data;
+}
+
 int
 pdf_obj_equal_p (pdf_obj_t obj1,
                  pdf_obj_t obj2)
@@ -455,6 +506,11 @@ pdf_obj_equal_p (pdf_obj_t obj1,
         equal_p = 
           (obj1->value.indirect.on == obj2->value.indirect.on) &&
           (obj1->value.indirect.gn == obj2->value.indirect.gn);
+        break;
+      }
+    case PDF_STREAM_OBJ:
+      {
+        equal_p = pdf_stream_equal_p (obj1, obj2);
         break;
       }
     default:
@@ -520,6 +576,11 @@ pdf_obj_dup (pdf_obj_t obj)
       {
         new_obj = pdf_create_indirect (obj->value.indirect.on,
                                        obj->value.indirect.gn);
+        break;
+      }
+    case PDF_STREAM_OBJ:
+      {
+        new_obj = pdf_stream_dup (obj);
         break;
       }
     default:
@@ -841,6 +902,18 @@ pdf_dict_equal_p (pdf_obj_t obj1,
   return equal_p;
 }
 
+/* Two PDF streams are considered equal if both uses the same stm
+   object, its dictionaries are equal and the data pointer points to
+   the same position into the stm */
+static int
+pdf_stream_equal_p (pdf_obj_t obj1,
+                    pdf_obj_t obj2)
+{
+  return ((obj1->value.stream.stm == obj2->value.stream.stm) &&
+          (obj1->value.stream.data == obj2->value.stream.data) &&
+          pdf_dict_equal_p (obj1->value.stream.dict, obj2->value.stream.dict));
+}
+
 static pdf_obj_t
 pdf_array_dup (pdf_obj_t obj)
 {
@@ -887,6 +960,19 @@ pdf_dict_dup (pdf_obj_t obj)
   gl_list_iterator_free (&iter);
 
   return new_dict;
+}
+
+/* Note that the new stream will use the same stm */
+static pdf_obj_t
+pdf_stream_dup (pdf_obj_t obj)
+{
+  pdf_obj_t new_stream;
+
+  new_stream = pdf_create_stream (pdf_obj_dup (obj->value.stream.dict),
+                                  obj->value.stream.stm,
+                                  obj->value.stream.data);
+
+  return new_stream;
 }
 
 /* End of pdf_obj.c */

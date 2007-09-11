@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/11 19:10:49 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/11 20:20:10 jemarch"
  *
  *       File:         pdf_base.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -53,6 +53,7 @@
    `pdf_base.h' just because the stream backends need to use it. Its
    proper place would be `pdf_stm.h'. */
 
+#define NO_POS -1
 typedef off_t pdf_stm_pos_t;
 
 /* PDF manages bytes with values in the range 0-255 */

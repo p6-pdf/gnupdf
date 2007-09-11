@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/09 03:26:47 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/11 20:32:58 jemarch"
  *
  *       File:         pdf_obj.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -36,6 +36,7 @@
       - Array (pdf_array_t)
       - Dictionary (pdf_dict_t)
       - Indirect object (pdf_indirect_t)
+      - Stream object
 
    A generic data type capable to contain any kind of PDF object is
    also included (pdf_obj_t). */
@@ -46,6 +47,7 @@
 #include <config.h>
 #include <gl_array_list.h>
 #include <pdf_base.h>
+#include <pdf_stm.h>
 
 /* The PDF NULL object has a type and a value that are unequal to
    those of any other object. There is only one possible value for
@@ -155,6 +157,25 @@ struct pdf_indirect_s
 
 typedef struct pdf_indirect_s *pdf_indirect_t;
 
+/* A PDF stream object is composed by a dictionary describing the
+   stream, a reference to a stm structure, and a pointer (octects
+   offset) that point to the beginning of the stream data in the stm
+   backend.
+
+   Note that the actual data of the stream may dont be stored in
+   memory. It depends on the backend type of the stm. */
+
+struct pdf_obj_s;
+
+struct pdf_stream_s 
+{
+  struct pdf_obj_s *dict;
+  pdf_stm_t stm;
+  pdf_stm_pos_t data;
+};
+
+typedef struct pdf_stream_s *pdf_stream_t;
+
 enum pdf_obj_type_t
 {
   PDF_NULL_OBJ = 0,
@@ -165,7 +186,8 @@ enum pdf_obj_type_t
   PDF_NAME_OBJ,
   PDF_ARRAY_OBJ,
   PDF_DICT_OBJ,
-  PDF_INDIRECT_OBJ
+  PDF_INDIRECT_OBJ,
+  PDF_STREAM_OBJ
 };
 
 /* A `pdf_obj_s' structure stores a PDF object. The object may be of
@@ -186,6 +208,7 @@ struct pdf_obj_s
     struct pdf_array_s array;
     struct pdf_dict_s dict;
     struct pdf_indirect_s indirect;
+    struct pdf_stream_s stream;
 
   } value;
 };
@@ -214,6 +237,8 @@ typedef struct pdf_obj_s *pdf_obj_t;
   ((obj)->type == PDF_DICT_OBJ)
 #define IS_INDIRECT(obj) \
   ((obj)->type == PDF_INDIRECT_OBJ)
+#define IS_STREAM(obj) \
+  ((obj)->type == PDF_STREAM_OBJ)
 
 /* The following macros references values */
 #define GET_BOOL(obj) \
@@ -222,16 +247,6 @@ typedef struct pdf_obj_s *pdf_obj_t;
   ((obj)->value.integer)
 #define GET_REAL(obj) \
   ((obj)->value.real)
-#define GET_STRING(obj) \
-  ((obj)->value.string)
-#define GET_NAME(obj) \
-  ((obj)->value.name)
-#define GET_ARRAY(obj) \
-  ((obj)->value.array)
-#define GET_DICT(obj) \
-  ((obj)->value.dict)
-#define GET_INDIRECT(obj) \
-  ((obj)->value.indirect)
 
 /* 
  * Forward declarations
@@ -247,6 +262,7 @@ pdf_obj_t pdf_create_name (unsigned char *value, int size);
 pdf_obj_t pdf_create_array (void);
 pdf_obj_t pdf_create_dict (void);
 pdf_obj_t pdf_create_indirect (unsigned int on, unsigned int gn);
+pdf_obj_t pdf_create_stream (pdf_obj_t dict, pdf_stm_t stm, pdf_stm_pos_t data);
 pdf_obj_t pdf_obj_dup (pdf_obj_t obj);
 
 /* Object destruction */
@@ -285,6 +301,11 @@ int pdf_dict_key_p (pdf_obj_t obj, pdf_obj_t key);
 pdf_obj_t pdf_get_dict_entry (pdf_obj_t obj, pdf_obj_t key);
 int pdf_remove_dict_entry (pdf_obj_t obj, pdf_obj_t key);
 int pdf_create_dict_entry (pdf_obj_t obj, pdf_obj_t key, pdf_obj_t value);
+
+/* Managing streams */
+pdf_obj_t pdf_get_stream_dict (pdf_obj_t stream);
+pdf_stm_t pdf_get_stream_stm (pdf_obj_t stream);
+pdf_stm_pos_t pdf_get_stream_data (pdf_obj_t stream);
 
 #endif /* pdf_obj.h */
 

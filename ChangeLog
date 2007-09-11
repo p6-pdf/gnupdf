@@ -1,5 +1,13 @@
 2007-09-11  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/pdf_stm_file.c (pdf_stm_file_size): Use NO_POS.
+
+	* src/pdf_obj.c (pdf_create_stream): New function.
+	(pdf_get_stream_stm): New function.
+	(pdf_get_stream_data): New function.
+	(pdf_stream_equal_p): New function.
+	(pdf_stream_dup): New function.
+
 	* configure.ac: Check for `-lm'.
 
 	* src/pdf_base.c (pdf_interp_lineal): New function.
