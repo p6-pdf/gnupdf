@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/09 03:28:08 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/12 20:34:55 jemarch"
  *
  *       File:         pdf_rectangle.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -115,13 +115,11 @@ pdf_create_rectangle (pdf_obj_t array)
         }
     }
 
-  pdf_rectangle_set_ll (new_rect, ll);
-  pdf_rectangle_set_ur (new_rect, ur);
+  new_rect->ll = ll;
+  new_rect->ur = ur;
 
   pdf_destroy_point (p1);
   pdf_destroy_point (p2);
-  pdf_destroy_point (ll);
-  pdf_destroy_point (ur);
 
   return new_rect;
 }
