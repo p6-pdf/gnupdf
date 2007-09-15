@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/08/15 14:58:37 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/15 16:38:23 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)

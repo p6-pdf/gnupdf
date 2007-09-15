@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/08/15 14:56:17 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/15 16:38:27 jemarch"
  *
  *       File:         pdf_stm.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -258,6 +258,8 @@ pdf_stm_pos_t pdf_stm_size (pdf_stm_t stm);
 /* Positioning */
 int pdf_stm_seek (pdf_stm_t stm, pdf_stm_pos_t pos);
 pdf_stm_pos_t pdf_stm_tell (pdf_stm_t stm);
+
+/* Reading and writing data */
 size_t pdf_stm_read (pdf_stm_t stm, unsigned char **buf, size_t bytes);
 size_t pdf_stm_write (pdf_stm_t stm, unsigned char *buf, size_t bytes);
 size_t pdf_stm_peek (pdf_stm_t stm, unsigned char **buf, size_t bytes);

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/14 23:22:36 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/15 16:53:50 jemarch"
  *
  *       File:         pdf_base.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -70,6 +70,9 @@ typedef float pdf_real_t;
 #define PDF_GLOBALS extern struct pdf_globals_s pdf_globals;
 
 #define PDF_NAMES 163 /* Number of preallocated PDF names */
+
+/* Limits in the size of PDF objects */
+#define PDF_NAME_MAX 127
 
 /* Macros to access preallocated PDF names. The `pdf_globals' variable
    is defined in `pdf.c' and its data type is defined in `pdf.h' */
@@ -370,7 +373,6 @@ typedef float pdf_real_t;
 #define PDF_S_NUMS                      "Nums"
 #define PDF_N_FS                        PDF_GNAME(146)
 #define PDF_S_FS                        "FS"
-#define PDF_S_F                         "F"
 #define PDF_N_UF                        PDF_GNAME(147)
 #define PDF_S_UF                        "UF"
 #define PDF_N_DOS                       PDF_GNAME(148)

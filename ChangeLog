@@ -1,5 +1,7 @@
 2007-09-15  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/pdf.c (pdf_alloc_names): Duplicated allocation fixed.
+
 	* src/pdf_obj.c (pdf_create_dict_entry): Insert a dictionary entry
 	in the entries list, not just the value.
 

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/14 23:03:18 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/15 16:55:23 jemarch"
  *
  *       File:         pdf.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -215,7 +215,6 @@ pdf_alloc_names (void)
   PDF_ALLOC_NAME(i++, PDF_S_LIMITS);                   
   PDF_ALLOC_NAME(i++, PDF_S_NUMS);                     
   PDF_ALLOC_NAME(i++, PDF_S_FS);                       
-  PDF_ALLOC_NAME(i++, PDF_S_F);                        
   PDF_ALLOC_NAME(i++, PDF_S_UF);                       
   PDF_ALLOC_NAME(i++, PDF_S_DOS);                      
   PDF_ALLOC_NAME(i++, PDF_S_MAC);                      
