@@ -1,7 +1,7 @@
-/* -*- mode: C -*- Time-stamp: "07/08/15 14:54:03 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/14 23:50:08 jemarch"
  *
  *       File:         pdf_stm_f_lzw.h
- *       Author:       Jose E. Marchesi (jemarch@gnu.org)
+ *       Author:       Juan Pedro Bolivar Puente (raskolnikov@es.gnu.org)
  *       Date:         Wed Aug 15 14:13:20 2007
  *
  *       GNU PDF Library - LZW encoder/decoder
@@ -9,6 +9,7 @@
  */
 
 /* Copyright (C) 2007 Jose E. Marchesi */
+/* Copyright (C) 2007 Juan Pedro Bolivar Puente */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

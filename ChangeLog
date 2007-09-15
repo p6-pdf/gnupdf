@@ -1,5 +1,13 @@
 2007-09-14  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/pdf_stm_f_pred.c: Update copyright and author notice.
+
+	* src/pdf_stm_f_pred.h: Update copyright and author notice.
+
+	* src/pdf_stm_f_lzw.c: Update copyright and author notice.
+
+	* src/pdf_stm_f_lzw.h: Update copyright and author notice.
+
 	* torture/Makefile.am (TESTS): Added `test-libinit'
 	(noinst_PROGRAMS): Added `test-libinit'
 
