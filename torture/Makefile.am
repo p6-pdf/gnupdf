@@ -22,7 +22,8 @@ noinst_PROGRAMS = test-base \
                   test-obj_array \
                   test-stm_openclose \
                   test-date \
-                  test-rectangle
+                  test-rectangle \
+                  test-libinit
 
 LDADD = $(top_srcdir)/src/libgnupdf.la
 
@@ -35,6 +36,7 @@ TESTS = test-base \
         test-obj_array \
         test-stm_openclose \
         test-date \
-        test-rectangle
+        test-rectangle \
+        test-libinit
 
 # End of Makefile.am

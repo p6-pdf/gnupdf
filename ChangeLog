@@ -1,3 +1,20 @@
+2007-09-14  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/Makefile.am (TESTS): Added `test-libinit'
+	(noinst_PROGRAMS): Added `test-libinit'
+
+	* torture/test-libinit.c: New file.
+
+	* src/pdf.c (pdf_dealloc_names): New function.
+	(pdf_alloc_names): New function.
+	(pdf_finish): New function.
+	(pdf_init): New function.
+
+	* src/pdf.h (struct pdf_globals_s): New globals data type to store
+	library global information.
+
+	* src/pdf_base.h: Added macros for PDF names preallocation.
+
 2007-09-12  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/pdf_rectangle.c (pdf_create_rectangle): Avoid to call

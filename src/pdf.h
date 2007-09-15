@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/07 03:52:08 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/14 22:34:22 jemarch"
  *
  *       File:         pdf.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -27,8 +27,31 @@
 #ifndef _PDF_H
 #define _PDF_H
 
+#include <config.h>
+
+#include <pdf_base.h>
+#include <pdf_obj.h>
+
+/* This structure contains global data used by the library. A variable
+   of this type, called `pdf_globals', is defined in pdf.c. The
+   contents of this structure are initialized in the `pdf_init'
+   function. */
 
 
+
+struct pdf_globals_s
+{
+  pdf_obj_t names[PDF_NAMES]; /* Array of PDF names used in the
+                                 standard dictionaries. Look in
+                                 pdf_base.h for a list of those
+                                 names */
+};
+
+
+/* API of the library */
+
+int pdf_init (void);
+int pdf_finish (void);
 
 #endif /* pdf.h */
 
