@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/11 20:33:27 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/15 12:58:42 jemarch"
  *
  *       File:         pdf_obj.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -403,16 +403,29 @@ pdf_create_dict_entry (pdf_obj_t obj,
                        pdf_obj_t key,
                        pdf_obj_t value)
 {
+  pdf_dict_entry_t entry;
+
   if ((obj->type != PDF_DICT_OBJ) ||
       (key->type != PDF_NAME_OBJ) ||
-      (pdf_dict_key_p (obj, key)) ||
-      (gl_list_add_last (obj->value.dict.entries,
-                         value) == NULL))
+      (pdf_dict_key_p (obj, key)))
     {
       return PDF_ERROR;
     }
-  
-  return PDF_OK;
+
+  /* Create a new dictionary entry */
+  entry = pdf_alloc_dict_entry ();
+  entry->key = key;
+  entry->value = value;
+  if (gl_list_add_last (obj->value.dict.entries,
+                        entry) == NULL)
+    {
+      pdf_dealloc_dict_entry (entry);
+      return PDF_ERROR;
+    }
+  else
+    {
+      return PDF_OK;
+    }
 }
 
 pdf_obj_t 

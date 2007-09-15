@@ -1,3 +1,13 @@
+2007-09-15  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/pdf_obj.c (pdf_create_dict_entry): Insert a dictionary entry
+	in the entries list, not just the value.
+
+	* torture/Makefile.am (noinst_PROGRAMS): Added `test-obj_dict'.
+	(TESTS): Added `test-obj_dict'.
+
+	* torture/test-obj_dict.c: New file.
+
 2007-09-14  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/pdf_stm_f_pred.c: Update copyright and author notice.

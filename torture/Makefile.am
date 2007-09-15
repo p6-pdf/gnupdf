@@ -20,6 +20,7 @@ noinst_PROGRAMS = test-base \
                   test-obj_createdestroy \
                   test-obj_dupequality \
                   test-obj_array \
+                  test-obj_dict \
                   test-stm_openclose \
                   test-date \
                   test-rectangle \
@@ -34,6 +35,7 @@ TESTS = test-base \
         test-obj_createdestroy \
         test-obj_dupequality \
         test-obj_array \
+        test-obj_dict \
         test-stm_openclose \
         test-date \
         test-rectangle \
