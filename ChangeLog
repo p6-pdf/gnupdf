@@ -1,4 +1,26 @@
+2007-09-20  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* AUTHORS: New format.
+
+2007-09-18  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/Makefile.am (noinst_PROGRAMS): Added
+	`test-stm_readwrite'.
+	(TESTS): Added `test-stm_readwrite'.
+
+	* torture/test-stm_readwrite.c (main): New file.
+
 2007-09-15  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/pdf_stm.c (pdf_stm_read_char): New function.
+	(pdf_stm_peek_char): New function.
+
+	* src/Makefile.am (libgnupdf_la_SOURCES): Added `pdf_lexer.h' and
+	`pdf_lexer.c'.
+
+	* src/pdf_lexer.c: New file.
+
+	* src/pdf_lexer.h: New file.
 
 	* src/pdf.c (pdf_alloc_names): Duplicated allocation fixed.
 
