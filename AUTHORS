@@ -5,27 +5,24 @@ GNU PDF Library - Authors
 
 GNU maintainer: Jose E. Marchesi <jemarch@gnu.org>
 
-Developers:
+People who contributed with code or documentation:
 
-Jose E. Marchesi <jemarch@gnu.org>
-wrote: configure.ac Makefile.am torture/test-base.c
-       torture/test-date.c torture/test-libinit.c
-       torture/test-obj_array.c torture/test-obj_createdestroy.c
-       torture/test-obj_dupequality.c torture/test-rectangle.c
-       torture/test-stm_openclose.c utils/pdf_filter.c
-       torture/test-obj_dict.c 
-       utils/pdf_filter.h src/pdf_base.h src/pdf_base.c src/pdf.c
-       src/pdf_date.c src/pdf_date.h src/pdf.h src/pdf_obj.c
-       src/pdf_obj.h src/pdf_rectangle.c src/pdf_rectangle.h
-       src/pdf_stm.c src/pdf_stm_f_a85.c src/pdf_stm_f_a85.h
-       src/pdf_stm_f_ahex.c src/pdf_stm_f_fax.c src/pdf_stm_f_fax.h
-       src/pdf_stm_f_flate.c src/pdf_stm_flate.h src/pdf_stm_file.c
-       src/pdf_stm_file.h src/pdf_stm_f_null.c src/pdf_stm_f_null.h
-       src/pdf_stm_f_rl.c src/pdf_stm.h src/pdf_stm_mem.c
-       src/pdf_stm_mem.h src/pdf_xref.c src/pdf_xref.h
-modified: src/pdf_stm_f_pred.c src/pdf_stm_f_pred.h
+Jose E. Marchesi: wrote configure.ac Makefile.am torture/test-base.c
+  torture/test-date.c torture/test-libinit.c torture/test-obj_array.c
+  torture/test-obj_createdestroy.c torture/test-obj_dupequality.c
+  torture/test-rectangle.c torture/test-stm_openclose.c
+  utils/pdf_filter.c torture/test-obj_dict.c utils/pdf_filter.h
+  src/pdf_base.h src/pdf_base.c src/pdf.c src/pdf_date.c
+  src/pdf_date.h src/pdf.h src/pdf_obj.c src/pdf_obj.h
+  src/pdf_rectangle.c src/pdf_rectangle.h src/pdf_stm.c
+  src/pdf_stm_f_a85.c src/pdf_stm_f_a85.h src/pdf_stm_f_ahex.c
+  src/pdf_stm_f_fax.c src/pdf_stm_f_fax.h src/pdf_stm_f_flate.c
+  src/pdf_stm_flate.h src/pdf_stm_file.c src/pdf_stm_file.h
+  src/pdf_stm_f_null.c src/pdf_stm_f_null.h src/pdf_stm_f_rl.c
+  src/pdf_stm.h src/pdf_stm_mem.c src/pdf_stm_mem.h src/pdf_xref.c
+  src/pdf_xref.h src/pdf_lexer.c src/pdf_lexer.h 
+and changed src/pdf_stm_f_pred.c src/pdf_stm_f_pred.h
 
-Juan Pedro Bolívar Puente <raskolnikov@es.gnu.org>
-wrote: src/pdf_stm_f_pred.c src/pdf_stm_f_pred.h src/pdf_stm_f_lzw.c
-       src/pdf_stm_f_lzw.h 
-modified: utils/pdf_filter.c utils/pdf_filter.h
+Juan Pedro Bolívar Puente: wrote src/pdf_stm_f_pred.c
+  src/pdf_stm_f_pred.h src/pdf_stm_f_lzw.c src/pdf_stm_f_lzw.h
+and changed utils/pdf_filter.c utils/pdf_filter.h
