@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/15 12:58:42 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/10/15 17:00:10 jemarch"
  *
  *       File:         pdf_obj.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -836,6 +836,7 @@ pdf_array_equal_p (pdf_obj_t obj1,
       /* Note the indirect recursion there => avoid loops!!! */
       if (!pdf_obj_equal_p (obj_elt1, obj_elt2))
         {
+          equal_p = PDF_FALSE;
           break;
         }
     }

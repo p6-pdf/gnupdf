@@ -1,3 +1,8 @@
+2007-10-15  Jose E. Marchesi  <jose.marchesi@deimos-space.com>
+
+	* src/pdf_obj.c (pdf_array_equal_p): Set `equal_p' to `PDF_FALSE'
+	in element inequality.
+
 2007-09-20  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* AUTHORS: New format.
