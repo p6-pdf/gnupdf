@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/15 16:53:50 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/18 04:59:46 jemarch"
  *
  *       File:         pdf_base.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -65,6 +65,9 @@ typedef unsigned char pdf_char_t;
 
 typedef int pdf_integer_t;
 typedef float pdf_real_t;
+
+/* PDF_EOF to store an EOF marker in integers */
+#define PDF_EOF -1
 
 /* Macro to access the global state of the library pdf_globals */
 #define PDF_GLOBALS extern struct pdf_globals_s pdf_globals;

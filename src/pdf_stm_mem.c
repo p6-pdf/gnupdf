@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/13 16:47:44 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/18 07:27:28 jemarch"
  *
  *       File:         pdf_stm_mem.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -25,14 +25,14 @@
  */
 
 #include <config.h>
+#include <unistd.h>
 #include <string.h>
 #include <malloc.h>
 #include <xalloc.h>
 #include <pdf_base.h>
 #include <pdf_stm_mem.h>
 
-static size_t pdf_stm_mem_readpeek (void *be_data, pdf_char_t **buf, size_t bytes, int peek);
-
+static int pdf_stm_mem_readpeek_char (void *be_data, int peek_p);
 
 int
 pdf_stm_mem_init (void **be_data,
@@ -147,10 +147,31 @@ pdf_stm_mem_read (void *be_data,
                   pdf_char_t **buf,
                   size_t bytes)
 {
-  return pdf_stm_mem_readpeek (be_data,
-                               buf,
-                               bytes,
-                               PDF_FALSE);
+  pdf_stm_mem_data_t data;
+  size_t readed;
+
+  data = (pdf_stm_mem_data_t) be_data;
+
+  *buf = (pdf_char_t *) xmalloc (bytes);
+
+  if ((data->current + bytes) >= data->size)
+    {
+      readed = data->size - data->current;
+    }
+  else
+    {
+      readed = bytes;
+    }
+
+  if (readed > 0)
+    {
+      memcpy (*buf,
+              data->data + data->current,
+              readed);
+      data->current = data->current + readed;
+    }
+
+  return readed;
 }
 
 size_t
@@ -196,54 +217,50 @@ pdf_stm_mem_write (void *be_data,
   return written;
 }
 
-inline size_t
-pdf_stm_mem_peek (void *be_data,
-                  pdf_char_t **buf,
-                  size_t bytes)
+int
+pdf_stm_mem_read_char (void *be_data)
 {
-  return pdf_stm_mem_readpeek (be_data,
-                               buf,
-                               bytes,
-                               PDF_TRUE);
+  return pdf_stm_mem_readpeek_char (be_data, PDF_FALSE);
+}
+
+int
+pdf_stm_mem_peek_char (void *be_data)
+{
+  return pdf_stm_mem_readpeek_char (be_data, PDF_TRUE);
+}
+
+size_t
+pdf_stm_mem_flush (void *be_data)
+{
+  /* Do nothing */
+  return 0;
 }
 
 /* Private functions */
 
-static size_t
-pdf_stm_mem_readpeek (void *be_data,
-                      pdf_char_t **buf,
-                      size_t bytes,
-                      int peek)
+int
+pdf_stm_mem_readpeek_char (void *be_data, 
+                           int peek_p)
 {
   pdf_stm_mem_data_t data;
-  size_t readed;
+  int c;
 
   data = (pdf_stm_mem_data_t) be_data;
 
-  *buf = (pdf_char_t *) xmalloc (bytes);
-
-  if ((data->current + bytes) >= data->size)
+  if (data->current < data->size)
     {
-      readed = data->size - data->current;
+      c = data->data[data->current];
+      if (peek_p)
+        {
+          data->current++;
+        }
+      return c;
     }
   else
     {
-      readed = bytes;
+      return PDF_EOF;      
     }
-
-  if (readed > 0)
-    {
-      memcpy (*buf,
-              data->data + data->current,
-              readed);
-
-      if (!peek)
-        {
-          data->current = data->current + readed;
-        }
-    }
-
-  return readed;
 }
+
 
 /* End of pdf_stm_mem.h */

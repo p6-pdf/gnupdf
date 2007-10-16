@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/10 12:18:56 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/17 21:42:42 jemarch"
  *
  *       File:         test-stm_openclose.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -93,11 +93,11 @@ main ()
     }
 
   stm = pdf_create_file_stm ("temporal-test-file",
-                             PDF_STM_OPEN_MODE_APPEND);
+                             PDF_STM_OPEN_MODE_RW);
 
   if (stm == NULL)
     {
-      printf ("Error trying to open a file in append mode.\n");
+      printf ("Error trying to open a file in read-write mode.\n");
       status = PDF_ERROR;
     }
   else

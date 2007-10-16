@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/09 03:41:24 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/18 06:49:24 jemarch"
  *
  *       File:         test-rectangle.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -94,26 +94,6 @@ main ()
     }
   else
     {
-      ll = pdf_rectangle_ll (rect);
-      lr = pdf_rectangle_lr (rect);
-      ur = pdf_rectangle_ur (rect);
-      ul = pdf_rectangle_ur (rect);
-
-      if ((P_X(ll) != -1.0) || (P_Y(ll) != 0.0) ||
-          (P_X(lr) != 0.0) || (P_Y(lr) != 0.0) ||
-          (P_X(ur) != 0.0) || (P_Y(ur) != -1.0) ||
-          (P_X(ul) != -1.0) || (P_Y(ul) != -1.0))
-        {
-          printf("Error in values of rectangle: (%f,%f) - (%f,%f)\n",
-                 P_X(ll), P_Y(ll), P_X(ur), P_Y(ur));
-
-          success = PDF_FALSE;
-        }
-
-      pdf_destroy_point (ll);
-      pdf_destroy_point (lr);
-      pdf_destroy_point (ur);
-      pdf_destroy_point (ul);
       pdf_destroy_rectangle (rect);
     }
   pdf_destroy_obj (array);

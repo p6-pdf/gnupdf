@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/15 16:38:23 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/18 07:16:47 jemarch"
  *
  *       File:         pdf_stm.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -72,7 +72,9 @@ pdf_create_file_stm (char *filename,
   new_stm->backend.funcs.tell = pdf_stm_file_tell;
   new_stm->backend.funcs.read = pdf_stm_file_read;
   new_stm->backend.funcs.write = pdf_stm_file_write;
-  new_stm->backend.funcs.peek = pdf_stm_file_peek;
+  new_stm->backend.funcs.flush = pdf_stm_file_flush;
+  new_stm->backend.funcs.read_char = pdf_stm_file_read_char;
+  new_stm->backend.funcs.peek_char = pdf_stm_file_peek_char;
   new_stm->backend.funcs.close = pdf_stm_file_close;
 
   /* Configure the backend */
@@ -90,9 +92,9 @@ pdf_create_file_stm (char *filename,
         conf.mode = PDF_STM_FILE_OPEN_MODE_WRITE;
         break;
       }
-    case PDF_STM_OPEN_MODE_APPEND:
+    case PDF_STM_OPEN_MODE_RW:
       {
-        conf.mode = PDF_STM_FILE_OPEN_MODE_APPEND;
+        conf.mode = PDF_STM_FILE_OPEN_MODE_RW;
         break;
       }
     default:
@@ -137,7 +139,9 @@ pdf_create_mem_stm (pdf_stm_pos_t size,
   new_stm->backend.funcs.tell = pdf_stm_mem_tell;
   new_stm->backend.funcs.read = pdf_stm_mem_read;
   new_stm->backend.funcs.write = pdf_stm_mem_write;
-  new_stm->backend.funcs.peek = pdf_stm_mem_peek;
+  new_stm->backend.funcs.flush = pdf_stm_mem_flush;
+  new_stm->backend.funcs.read_char = pdf_stm_mem_read_char;
+  new_stm->backend.funcs.peek_char = pdf_stm_mem_peek_char;
   new_stm->backend.funcs.close = pdf_stm_mem_close;
 
   /* Configure the backend */
@@ -574,24 +578,54 @@ pdf_stm_write (pdf_stm_t stm,
 }
 
 size_t
-pdf_stm_peek (pdf_stm_t stm,
-              unsigned char **buf,
-              size_t bytes)
+pdf_stm_flush (pdf_stm_t stm)
 {
-  size_t result;
+  size_t bytes;
 
-  if (stm->backend.funcs.peek_p (BE_DATA(stm)))
+  if (stm->backend.funcs.write_p (BE_DATA(stm)))
     {
-      result = stm->backend.funcs.peek (BE_DATA(stm),
-                                        buf,
-                                        bytes);
+      bytes = stm->backend.funcs.flush (BE_DATA(stm));
     }
   else
     {
-      result = 0;
+      bytes = 0;
     }
 
-  return result;
+  return bytes;
+}
+
+int
+pdf_stm_read_char (pdf_stm_t stm)
+{
+  int c;
+
+  if (stm->backend.funcs.read_p (BE_DATA(stm)))
+    {
+      c = stm->backend.funcs.read_char (BE_DATA(stm));
+    }
+  else
+    {
+      c = 0;
+    }
+
+  return c;
+}
+
+int
+pdf_stm_peek_char (pdf_stm_t stm)
+{
+  int c;
+
+  if (stm->backend.funcs.read_p (BE_DATA(stm)))
+    {
+      c = stm->backend.funcs.peek_char (BE_DATA(stm));
+    }
+  else
+    {
+      c = 0;
+    }
+
+  return c;
 }
 
 int

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/07/13 16:25:10 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/18 07:17:32 jemarch"
  *
  *       File:         pdf_stm_file.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -30,6 +30,7 @@
 #define PDF_STM_FILE_H
 
 #include <config.h>
+#include <unistd.h>
 #include <stdio.h>
 #include <pdf_base.h>
 
@@ -38,7 +39,7 @@ enum pdf_stm_file_open_mode_t
 {
   PDF_STM_FILE_OPEN_MODE_READ,
   PDF_STM_FILE_OPEN_MODE_WRITE,
-  PDF_STM_FILE_OPEN_MODE_APPEND
+  PDF_STM_FILE_OPEN_MODE_RW
 };
 
 /* Configuration structure */
@@ -53,13 +54,19 @@ typedef struct pdf_stm_file_conf_s *pdf_stm_file_conf_t;
 
 /* Private data */
 
+#define PDF_STM_FILE_BUFSIZ BUFSIZ
+
 struct pdf_stm_file_data_s
 {
   char *filename;
   enum pdf_stm_file_open_mode_t mode;
-  FILE *file_stm;
-  pdf_stm_pos_t peek_size;
-  pdf_char_t *peek_buffer;
+  int filedes;
+  pdf_stm_pos_t in_buffer_size;
+  pdf_stm_pos_t in_buffer_pointer;
+  pdf_char_t in_buffer[PDF_STM_FILE_BUFSIZ];
+  pdf_stm_pos_t out_buffer_size;
+  pdf_stm_pos_t out_buffer_pointer;
+  pdf_char_t out_buffer[PDF_STM_FILE_BUFSIZ];
 };
 
 typedef struct pdf_stm_file_data_s *pdf_stm_file_data_t;
@@ -83,7 +90,10 @@ pdf_stm_pos_t pdf_stm_file_tell (void *be_data);
 
 size_t pdf_stm_file_read (void *be_data, pdf_char_t **buf, size_t bytes);
 size_t pdf_stm_file_write (void *be_data, pdf_char_t *buf, size_t bytes);
-size_t pdf_stm_file_peek (void *be_data, pdf_char_t **buf, size_t bytes);
+size_t pdf_stm_file_flush (void *be_data);
+
+int pdf_stm_file_read_char (void *be_data);
+int pdf_stm_file_peek_char (void *be_data);
 
 #endif /* pdf_stm_file.h */
 

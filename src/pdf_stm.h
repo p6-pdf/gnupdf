@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/15 16:38:27 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/09/18 07:17:03 jemarch"
  *
  *       File:         pdf_stm.h
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -74,7 +74,7 @@ enum pdf_stm_open_mode_t
 {
   PDF_STM_OPEN_MODE_READ,
   PDF_STM_OPEN_MODE_WRITE,
-  PDF_STM_OPEN_MODE_APPEND
+  PDF_STM_OPEN_MODE_RW
 };
 
 /* Backends
@@ -114,6 +114,10 @@ enum pdf_stm_open_mode_t
        Return the current position of the read/write pointer in the
        backend storage. This function should only be called when
        `tell_p' returns true.
+
+   `eof'
+
+       Return PDF_TRUE if the read pointer is beyond the end of the backend storage.
  
    `read'
 
@@ -124,11 +128,28 @@ enum pdf_stm_open_mode_t
 
        Write data to the backend storage. This function should only be
        called when `write_p' returns true.
+  
+   `flush'
 
-   `peek'
+       Flush the output buffer of the stream. This call may be ignored
+       by some backends. The function return the number of bytes
+       actually flushed (a zero value may not be an error if the
+       storage backend doesnt implement flushing).
 
-       Peek some data from the backend storage. This function should
-       only be called when `peek_p' returns true.
+       This function should only be called when `write_p' returns
+       true.
+ 
+   `read_char'
+
+       Read a character from the backend storage and return it in an
+       integer (may be EOF). This function should only be called when
+       `read_p' returns true.
+
+   `peek_char'
+
+       Peek a character from the backend storage and return it in an
+       integer (may be EOF). This function should only be called when
+       `peek_p' returns true.
 
    `close'
 
@@ -161,7 +182,11 @@ struct pdf_stm_be_s
     /* Reading and writing data */
     size_t (*read) (void *data, pdf_char_t **buf, size_t bytes);
     size_t (*write) (void *data, pdf_char_t *buf, size_t bytes);
-    size_t (*peek) (void *data, pdf_char_t **buf, size_t bytes);
+    size_t (*flush) (void *data);
+
+    /* Reading and writing characters */
+    int (*read_char) (void *data);
+    int (*peek_char) (void *data);
 
     /* Closing */
     int (*close) (void **data);
@@ -262,7 +287,12 @@ pdf_stm_pos_t pdf_stm_tell (pdf_stm_t stm);
 /* Reading and writing data */
 size_t pdf_stm_read (pdf_stm_t stm, unsigned char **buf, size_t bytes);
 size_t pdf_stm_write (pdf_stm_t stm, unsigned char *buf, size_t bytes);
-size_t pdf_stm_peek (pdf_stm_t stm, unsigned char **buf, size_t bytes);
+size_t pdf_stm_flush (pdf_stm_t stm);
+
+/* Reading and writing single characters */
+
+int pdf_stm_read_char (pdf_stm_t stm);
+int pdf_stm_peek_char (pdf_stm_t stm);
 
 /* Managing filters */
 
