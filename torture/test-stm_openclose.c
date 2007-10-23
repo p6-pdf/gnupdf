@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/17 21:42:42 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/10/23 12:59:14 jemarch"
  *
  *       File:         test-stm_openclose.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -8,7 +8,7 @@
  *
  */
 
-/* Copyright (C) 2007 Jose E. Marchesi */
+/* Copyright (C) 2007 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

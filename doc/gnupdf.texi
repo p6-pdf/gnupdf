@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.1 2007/07/07 13:33:24 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.2 2007/10/23 12:22:09 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -12,7 +12,7 @@
 This is the @value{EDITION} edition of the @cite{GNU PDF Library
 Reference}, updated for libgnupdf version @value{VERSION}.
 
-Copyright @copyright{} 2007 Jos@'e E. Marchesi
+Copyright @copyright{} 2007 Free Software Foundation, Inc.
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document

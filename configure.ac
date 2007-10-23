@@ -3,7 +3,7 @@ dnl GNU PDF Library
 
 dnl Please process this file with autoconf to get a `configure' script
 
-dnl Copyright (C) 2007 Jose E. Marchesi
+dnl Copyright (C) 2007 Free Software Foundation, Inc.
 
 dnl This program is free software: you can redistribute it and/or modify
 dnl it under the terms of the GNU General Public License as published by

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/09/14 23:51:25 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/10/23 12:56:15 jemarch"
  *
  *       File:         pdf_stm_f_pred.h
  *       Author:       Juan Pedro Bolivar Puente (raskolnikov@es.gnu.org)
@@ -8,8 +8,7 @@
  *
  */
 
-/* Copyright (C) 2007 Jose E. Marchesi */
-/* Copyright (C) 2007 Juan Pedro Bolivar Puente */
+/* Copyright (C) 2007 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

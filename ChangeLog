@@ -1,3 +1,113 @@
+2007-10-23  Jose E. Marchesi  <jose.marchesi@deimos-space.com>
+
+	* utils/pdf_filter.h: New copyright holder: FSF.
+
+	* utils/pdf_filter.c: Idem.
+
+	* utils/Makefile.am: Idem.
+
+	* torture/test-stm_openclose.c: Idem.
+
+	* torture/test-rectangle.c: Idem.
+
+	* torture/test-obj_dupequality.c: Idem.
+
+	* torture/test-obj_dict.c: Idem.
+
+	* torture/test-obj_createdestroy.c: Idem.
+
+	* torture/test-obj_array.c: Idem.
+
+	* torture/test-libinit.c: Idem.
+
+	* torture/test-date.c: Idem.
+
+	* torture/test-base.c: Idem.
+
+	* torture/Makefile.am: Idem.
+
+	* src/pdf_xref.h: Idem.
+
+	* src/pdf_xref.c: Idem.
+
+	* src/pdf_stm_mem.h: Idem.
+
+	* src/pdf_stm_mem.c: Idem.
+
+	* src/pdf_stm.h: Idem.
+
+	* src/pdf_stm_f_rl.h: Idem.
+
+	* src/pdf_stm_f_rl.c: Idem.
+
+	* src/pdf_stm_f_pred.h: Idem.
+
+	* src/pdf_stm_f_pred.c: Idem.
+
+	* src/pdf_stm_f_null.h: Idem.
+
+	* src/pdf_stm_f_null.c: Idem.
+
+	* src/pdf_stm_f_lzw.h: Idem.
+
+	* src/pdf_stm_f_lzw.c: Idem.
+
+	* src/pdf_stm_file.h: Idem.
+
+	* src/pdf_stm_file.c: Idem.
+
+	* src/pdf_stm_f_flate.h: Idem.
+
+	* src/pdf_stm_f_flate.c: Idem.
+
+	* src/pdf_stm_f_fax.h: Idem.
+
+	* src/pdf_stm_f_fax.c: Idem.
+
+	* src/pdf_stm_f_ahex.h: Idem.
+
+	* src/pdf_stm_f_ahex.c: Idem.
+
+	* src/pdf_stm_f_a85.h: Idem.
+
+	* src/pdf_stm_f_a85.c: Idem.
+
+	* src/pdf_stm.c: Idem.
+
+	* src/pdf_rectangle.h: Idem.
+
+	* src/pdf_rectangle.c: Idem.
+
+	* src/pdf_obj.h: Idem.
+
+	* src/pdf_obj.c: Idem.
+
+	* src/pdf.h: Idem.
+
+	* src/pdf_function.h: Idem.
+
+	* src/pdf_function.c: Idem.
+
+	* src/pdf_date.h: Idem.
+
+	* src/pdf_date.c: Idem.
+
+	* src/pdf.c: Idem.
+
+	* src/pdf_base.h: Idem.
+
+	* src/pdf_base.c: Idem.
+
+	* src/Makefile.am: Idem.
+
+	* Makefile.am: Idem.
+
+	* doc/gnupdf.texi: Idem.
+
+	* doc/Makefile.am: Idem.
+
+	* configure.ac: Idem.
+
 2007-10-15  Jose E. Marchesi  <jose.marchesi@deimos-space.com>
 
 	* src/pdf_obj.c (pdf_array_equal_p): Set `equal_p' to `PDF_FALSE'
