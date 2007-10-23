@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/10/23 12:56:56 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/10/23 21:38:59 jemarch"
  *
  *       File:         pdf_stm_mem.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -250,7 +250,7 @@ pdf_stm_mem_readpeek_char (void *be_data,
   if (data->current < data->size)
     {
       c = data->data[data->current];
-      if (peek_p)
+      if (!peek_p)
         {
           data->current++;
         }
