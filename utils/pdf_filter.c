@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/10/23 12:59:38 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/10/31 18:01:24 jemarch"
  *
  *       File:         pdf_filter.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -83,6 +83,8 @@ static struct option GNU_longOptions[] =
 };
 
 /* Messages */
+
+char *pdf_filter_version_msg = "pdf_filter 0.1";
 
 char *pdf_filter_usage_msg = "\
 Usage: pdf_filter [[FILTER FILTER_ARGS]...]\n\
@@ -178,6 +180,12 @@ main (int argc, char *argv[])
         case HELP_ARG:
           {
             fprintf (stdout, "%s\n", pdf_filter_usage_msg);
+            exit (0);
+            break;
+          }
+        case VERSION_ARG:
+          {
+            fprintf (stdout, "%s\n", pdf_filter_version_msg);
             exit (0);
             break;
           }
