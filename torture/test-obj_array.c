@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/10/23 12:58:25 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/10/31 19:28:08 jemarch"
  *
  *       File:         test-obj_array.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -25,7 +25,15 @@
  */
 
 #include <config.h>
+
 #include <string.h>
+
+#ifdef HAVE_MALLOC_H
+ #include <malloc.h>
+#else
+ #include <stdlib.h>
+#endif /* HAVE_MALLOC_H */
+
 #include <xalloc.h>
 #include <stdio.h>
 #include <pdf_obj.h>

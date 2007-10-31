@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/10/31 18:01:24 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/10/31 19:29:23 jemarch"
  *
  *       File:         pdf_filter.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -29,7 +29,13 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <getopt.h>
-#include <malloc.h>
+
+#ifdef HAVE_MALLOC_H
+ #include <malloc.h>
+#else
+ #include <stdlib.h>
+#endif /* HAVE_MALLOC_H */
+
 #include <xalloc.h>
 #include <pdf_filter.h>
 #include <pdf_stm.h>

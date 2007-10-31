@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/10/23 12:59:01 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/10/31 19:28:58 jemarch"
  *
  *       File:         test-rectangle.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -25,7 +25,13 @@
  */
 
 #include <config.h>
-#include <malloc.h>
+
+#ifdef HAVE_MALLOC_H
+ #include <malloc.h>
+#else
+ #include <stdlib.h>
+#endif /* HAVE_MALLOC_H */
+
 #include <xalloc.h>
 #include <string.h>
 #include <stdio.h>
