@@ -44,6 +44,9 @@ AC_DEFUN([gl_INIT],
   AC_SUBST([LTLIBINTL])
   gl_INLINE
   gl_LIST
+  AC_FUNC_MALLOC
+  gl_FUNC_MALLOC_POSIX
+  gl_STDLIB_MODULE_INDICATOR([malloc-posix])
   gl_MATH_H
   gl_SIZE_MAX
   AM_STDBOOL_H
@@ -102,6 +105,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/gl_array_list.h
   lib/gl_list.c
   lib/gl_list.h
+  lib/malloc.c
   lib/math_.h
   lib/size_max.h
   lib/stdbool_.h
@@ -119,6 +123,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/gnulib-common.m4
   m4/include_next.m4
   m4/inline.m4
+  m4/malloc.m4
   m4/math_h.m4
   m4/onceonly_2_57.m4
   m4/size_max.m4
