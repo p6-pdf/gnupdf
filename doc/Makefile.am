@@ -18,7 +18,7 @@
 
 EXTRA_DIST = pdf_filter.1
 
-info_TEXINFOS = gnupdf.texi
+info_TEXINFOS = gnupdf.texi gnupdf_util.texi
 gnupdf_TEXINFOS = fdl.texi
 
 man_MANS = pdf_filter.1
