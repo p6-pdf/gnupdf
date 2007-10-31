@@ -25,6 +25,7 @@ AC_DEFUN([gl_EARLY],
   m4_pattern_allow([^gl_LIBOBJS$])dnl a variable
   m4_pattern_allow([^gl_LTLIBOBJS$])dnl a variable
   AC_REQUIRE([AC_PROG_RANLIB])
+  AC_REQUIRE([gl_USE_SYSTEM_EXTENSIONS])
 ])
 
 # This macro should be invoked from ./configure.ac, in the section
@@ -39,6 +40,10 @@ AC_DEFUN([gl_INIT],
   gl_source_base='lib'
   gl_ERROR
   gl_EXITFAIL
+  gl_FUNC_GETDELIM
+  gl_STDIO_MODULE_INDICATOR([getdelim])
+  gl_FUNC_GETLINE
+  gl_STDIO_MODULE_INDICATOR([getline])
   gl_GETOPT
   AC_SUBST([LIBINTL])
   AC_SUBST([LTLIBINTL])
@@ -48,8 +53,11 @@ AC_DEFUN([gl_INIT],
   gl_FUNC_MALLOC_POSIX
   gl_STDLIB_MODULE_INDICATOR([malloc-posix])
   gl_MATH_H
+  gl_FUNC_REALLOC_POSIX
+  gl_STDLIB_MODULE_INDICATOR([realloc-posix])
   gl_SIZE_MAX
   AM_STDBOOL_H
+  gl_STDIO_H
   gl_STDLIB_H
   gl_UNISTD_H
   gl_XALLOC
@@ -96,6 +104,8 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/error.h
   lib/exitfail.c
   lib/exitfail.h
+  lib/getdelim.c
+  lib/getline.c
   lib/getopt.c
   lib/getopt1.c
   lib/getopt_.h
@@ -107,8 +117,10 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/gl_list.h
   lib/malloc.c
   lib/math_.h
+  lib/realloc.c
   lib/size_max.h
   lib/stdbool_.h
+  lib/stdio_.h
   lib/stdlib_.h
   lib/unistd_.h
   lib/xalloc-die.c
@@ -118,6 +130,9 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/absolute-header.m4
   m4/error.m4
   m4/exitfail.m4
+  m4/extensions.m4
+  m4/getdelim.m4
+  m4/getline.m4
   m4/getopt.m4
   m4/gl_list.m4
   m4/gnulib-common.m4
@@ -126,8 +141,10 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/malloc.m4
   m4/math_h.m4
   m4/onceonly_2_57.m4
+  m4/realloc.m4
   m4/size_max.m4
   m4/stdbool.m4
+  m4/stdio_h.m4
   m4/stdlib_h.m4
   m4/unistd_h.m4
   m4/xalloc.m4
