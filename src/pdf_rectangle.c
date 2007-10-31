@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/10/23 12:53:23 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/10/31 17:37:43 jemarch"
  *
  *       File:         pdf_rectangle.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -26,7 +26,12 @@
 
 #include <config.h>
 
-#include <malloc.h>
+#ifdef HAVE_MALLOC_H
+ #include <malloc.h>
+#else
+ #include <stdlib.h>
+#endif /* HAVE_MALLOC_H */
+
 #include <xalloc.h>
 #include <pdf_rectangle.h>
 

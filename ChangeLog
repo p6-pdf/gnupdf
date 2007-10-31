@@ -1,5 +1,41 @@
 2007-10-31  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* bootstrap (cmd): Use autoreconf instead of the explicit chain.
+
+	* src/pdf_stm_mem.c: Include `malloc.h' only when available.
+
+	* src/pdf_stm_file.c: Idem.
+
+	* src/pdf_stm_f_rl.c: Idem.
+
+	* src/pdf_stm_f_pred.c: Idem.
+
+	* src/pdf_stm_f_null.c: Idem.
+
+	* src/pdf_stm_f_lzw.c: Idem.
+
+	* src/pdf_stm_f_flate.c: Idem.
+
+	* src/pdf_stm_f_fax.c: Idem.
+
+	* src/pdf_stm_f_ahex.c: Idem.
+
+	* src/pdf_stm_f_a85.c: Idem.
+
+	* src/pdf_stm.c: Idem.
+
+	* src/pdf_rectangle.c: Idem.
+
+	* src/pdf_obj.c: Idem.
+
+	* src/pdf_function.c: Idem.
+
+	* src/pdf_date.c: Idem.
+
+	* src/pdf_base.c: Idem.
+
+	* configure.ac: Check for `malloc.h'.
+
 	* `malloc' and `getline' modules imported from gnulib.
 
 2007-10-23  Jose E. Marchesi  <jemarch@gnu.org>

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/10/23 12:55:24 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/10/31 17:35:19 jemarch"
  *
  *       File:         pdf_stm_f_lzw.c
  *       Author:       Juan Pedro Bolivar Puente (raskolnikov@es.gnu.org)
@@ -25,7 +25,13 @@
  */
 
 #include <config.h>
-#include <malloc.h>
+
+#ifdef HAVE_MALLOC_H
+ #include <malloc.h>
+#else
+ #include <stdlib.h>
+#endif /* HAVE_MALLOC_H */
+
 #include <xalloc.h>
 #include <string.h>
 #include <pdf_stm_f_lzw.h>

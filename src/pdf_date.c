@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/10/23 12:52:18 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/10/31 17:31:48 jemarch"
  *
  *       File:         pdf_date.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -24,9 +24,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <config.h>
+
 #include <stdlib.h>
 #include <math.h>
-#include <malloc.h>
+
+#ifdef HAVE_MALLOC_H
+ #include <malloc.h>
+#endif /* HAVE_MALLOC_H */
+
 #include <xalloc.h>
 #include <string.h>
 #include <pdf_date.h>

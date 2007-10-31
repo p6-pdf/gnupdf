@@ -36,6 +36,9 @@ dnl gnulib macros
 gl_EARLY
 gl_INIT
 
+dnl Search for headers
+AC_CHECK_HEADERS(malloc.h)
+
 dnl Search for data types
 AC_CHECK_TYPE(size_t, unsigned)
 AC_CHECK_TYPE(off_t, long)

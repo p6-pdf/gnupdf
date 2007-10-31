@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/10/23 12:56:24 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/10/31 17:36:17 jemarch"
  *
  *       File:         pdf_stm_f_rl.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -25,7 +25,13 @@
  */
 
 #include <config.h>
-#include <malloc.h>
+
+#ifdef HAVE_MALLOC_H
+ #include <malloc.h>
+#else
+ #include <stdlib.h>
+#endif /* HAVE_MALLOC_H */
+
 #include <xalloc.h>
 #include <string.h>
 #include <stdio.h>

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/10/23 12:51:47 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/10/31 17:31:01 jemarch"
  *
  *       File:         pdf_base.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -29,7 +29,11 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>
-#include <malloc.h>
+
+#ifdef HAVE_MALLOC_H
+  #include <malloc.h>
+#endif /* HAVE_MALLOC_H */
+
 #include <xalloc.h>
 #include <math.h>
 

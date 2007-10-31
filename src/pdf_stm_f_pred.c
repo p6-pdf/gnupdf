@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/10/23 12:56:06 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/10/31 17:35:57 jemarch"
  *
  *       File:         pdf_stm_f_pred.c
  *       Author:       Juan Pedro Bolivar Puente (raskolnikov@es.gnu.org)
@@ -28,7 +28,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <malloc.h>
+
+#ifdef HAVE_MALLOC_H
+ #include <malloc.h>
+#endif /* HAVE_MALLOC_H */
+
 #include <xalloc.h>
 #include <string.h>
 #include <pdf_base.h>
