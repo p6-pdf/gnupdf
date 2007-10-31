@@ -1,5 +1,7 @@
 2007-10-31  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/Makefile.am (man_MANS): Added `pdf_filter.1'.
+
 	* utils/pdf_filter.c: --version option now works.
 
 	* bootstrap (cmd): Use autoreconf instead of the explicit chain.
