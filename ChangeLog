@@ -1,3 +1,7 @@
+2007-11-01  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* README.cvs: New file.
+
 2007-10-31  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf_util.texi: New file.
