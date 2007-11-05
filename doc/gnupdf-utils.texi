@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf_util.texi,v 1.1 2007/10/31 18:57:42 jemarch Exp $
+@comment $Id: gnupdf-utils.texi,v 1.1 2007/11/05 00:43:34 karl Exp $
 @comment %**start of header
 @setfilename gnupdf_util.info
 @settitle GNU PDF Utilities
@@ -24,8 +24,9 @@ Documentation License''.
 @end quotation
 @end copying
 
+@dircategory Printing Tools
 @direntry
-* gnupdf_utils: (gnupdf_utils).     The GNU PDF Utilities manual.
+* gnupdf-utils: (gnupdf-utils). The GNU PDF Utilities manual.
 @end direntry
 
 @titlepage
@@ -40,9 +41,10 @@ Documentation License''.
 @insertcopying
 @end titlepage
 
-@page
+@contents
+
 @ifnottex
-@node Top, Introduction, (dir), (dir)
+@node Top
 @top GNU PDF Utilities
 
 GNU PDF Utilities
@@ -50,28 +52,22 @@ GNU PDF Utilities
 @insertcopying
 @end ifnottex
 
-@contents
-
 @menu
 * Introduction::                
-* Copying This Manual::         
+* GNU Free Documentation License::         
 @end menu
 
-@node Introduction, Copying This Manual, Top, Top
+@node Introduction
 @chapter Introduction
+
 
 @c FDL
 @c ===
 
-@node Copying This Manual,  , Introduction, Top
-@appendix Copying This Manual
-
-@menu
-* GNU Free Documentation License:: License for copying this manual.
-@end menu
+@node GNU Free Documentation License
+@appendix GNU Free Documentation License
 
 @include fdl.texi
-
 
 
 @bye
