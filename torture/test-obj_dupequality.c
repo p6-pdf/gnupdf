@@ -27,6 +27,9 @@
 #include <config.h>
 #include <stdio.h>
 #include <pdf_obj.h>
+#include <check.h>
+
+static const int COMPARE_FAILURE = 1;
 
 #define TEST_DUP_EQUAL(type, crargs)                                \
   do                                                                \
@@ -36,7 +39,7 @@
       if (!pdf_obj_equal_p (obj1, obj2))                            \
         {                                                           \
           printf ("Error comparing two `" #type"' objects.\n");     \
-          success = PDF_FALSE;                                      \
+          fail_if(COMPARE_FAILURE);                                 \
         }                                                           \
       pdf_destroy_obj (obj1);                                       \
       pdf_destroy_obj (obj2);                                       \
@@ -44,14 +47,10 @@
   while (0)
 
 
-int
-main ()
+START_TEST(compares)
 {
-  int success;
   pdf_obj_t obj1;
   pdf_obj_t obj2;
-
-  success = PDF_TRUE;
 
   TEST_DUP_EQUAL(null,());
   TEST_DUP_EQUAL(boolean, (PDF_TRUE));
@@ -62,15 +61,16 @@ main ()
   TEST_DUP_EQUAL(array,());
   TEST_DUP_EQUAL(dict,());
   TEST_DUP_EQUAL(indirect, (0,0));
-
-  if (success)
-    {
-      return 0;
-    }
-  else
-    {
-      return 1;
-    }
 }
+END_TEST
+
+TCase* test_obj_dupequality_tests(void)
+{
+  TCase *tc = tcase_create("test-obj_dupequality");
+  tcase_add_test(tc, compares);
+  return tc;
+}
+
+
 
 /* End of test-obj_dupequality.c */

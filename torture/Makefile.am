@@ -16,29 +16,29 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-noinst_PROGRAMS = test-base \
-                  test-obj_createdestroy \
-                  test-obj_dupequality \
-                  test-obj_array \
-                  test-obj_dict \
-                  test-stm_openclose \
-                  test-date \
-                  test-rectangle \
-                  test-libinit
 
-LDADD = $(top_srcdir)/src/libgnupdf.la
+
+noinst_PROGRAMS = testall
+
+LDADD = @CHECK_LIBS@ $(top_srcdir)/src/libgnupdf.la
+CFLAGS= @CHECK_CFLAGS@
 
 AM_CPPFLAGS = -I ../lib
 AM_CFLAGS = -g
 
-TESTS = test-base \
-        test-obj_createdestroy \
-        test-obj_dupequality \
-        test-obj_array \
-        test-obj_dict \
-        test-stm_openclose \
-        test-date \
-        test-rectangle \
-        test-libinit
+TESTS = testall
+
+testall_SOURCES = testall.c \
+	test-base.c \
+	test-date.c \
+	test-libinit.c \
+	test-obj_array.c \
+	test-obj_createdestroy.c \
+	test-obj_dict.c \
+	test-obj_dupequality.c \
+	test-stm_openclose.c \
+	test-rectangle.c
+
+check_PROGRAMS = testall
 
 # End of Makefile.am

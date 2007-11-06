@@ -37,11 +37,11 @@
 #include <xalloc.h>
 #include <stdio.h>
 #include <pdf_obj.h>
+#include <check.h>
 
-int
-main ()
+
+START_TEST(various)
 {
-  int success;
   pdf_obj_t dict;
   pdf_obj_t key1;
   pdf_obj_t value1;
@@ -50,8 +50,6 @@ main ()
   pdf_obj_t entry1;
   pdf_obj_t entry2;
 
-  success = PDF_TRUE;
-
   key1 = pdf_create_name ("key1", 4);
   value1 = pdf_create_string ("value1", 6);
   key2 = pdf_create_name ("key2", 4);
@@ -59,68 +57,38 @@ main ()
 
   dict = pdf_create_dict ();
   
-  if (pdf_create_dict_entry (dict, key1, value1) == 
-      PDF_ERROR)
-    {
-      success = PDF_FALSE;
-      printf ("Error creating dictionary entry for key1 and value1\n");
-    }
+  fail_if (pdf_create_dict_entry (dict, key1, value1) == PDF_ERROR);
 
-  if (pdf_create_dict_entry (dict, key2, value2) ==
-      PDF_ERROR)
-    {
-      success = PDF_FALSE;
-      printf ("Error creating dictionary entry for key2 and value2\n");
-    }
+  fail_if (pdf_create_dict_entry (dict, key2, value2) == PDF_ERROR);
   
   entry1 = pdf_get_dict_entry (dict, key1);
-  if (entry1 == NULL)
-    {
-      success = PDF_FALSE;
-      printf ("Error getting dictionary entry\n");
-    }
-  else
-    {
-      if (strncmp (pdf_get_string_data (entry1), 
-                   "value1", 
-                   pdf_get_string_size (entry1)) != 0)
-        {
-          success = PDF_FALSE;
-          printf ("Invalid value in dictionary entry for key1");
-        }
-    }
+  fail_if (entry1 == NULL);
+
+  fail_if (strncmp (pdf_get_string_data (entry1), 
+                    "value1", 
+                    pdf_get_string_size (entry1)) != 0);
 
   entry2 = pdf_get_dict_entry (dict, key2);
-  if (entry2 == NULL)
-    {
-      success = PDF_FALSE;
-      printf ("Error getting dictionary entry\n");
-    }
-  else
-    {
-      if (strncmp (pdf_get_string_data (entry2), 
-                   "value2", 
-                   pdf_get_string_size (entry2)) != 0)
-        {
-          success = PDF_FALSE;
-          printf ("Invalid value in dictionary entry for key2");
-        }
-    }
+  fail_if (entry2 == NULL);
+  fail_if (strncmp (pdf_get_string_data (entry2), 
+                    "value2", 
+                    pdf_get_string_size (entry2)) != 0);
 
   pdf_destroy_obj (key1);
   pdf_destroy_obj (value1);
   pdf_destroy_obj (key2);
   pdf_destroy_obj (value2);
   pdf_destroy_obj (dict);
-
-  if (success)
-    {
-      return 0;
-    }
-  else
-    {
-      return 1;
-    }
 }
+END_TEST
+
+
+TCase* test_obj_dict_tests(void)
+{
+  TCase *tc = tcase_create("test-obj_dict");
+  tcase_add_test(tc, various);
+  return tc;
+}
+
 
 /* End of test-obj_dict.c */

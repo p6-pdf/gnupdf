@@ -1,3 +1,31 @@
+2007-11-06  Mathias Kolehmainen  <mathiask@computer.org>
+
+	* torture/Makefile.am: Adapt to use check.
+
+	* torture/test-base.c: Idem.
+
+	* torture/test-date.c: Idem.
+
+	* torture/test-libinit.c: Idem.
+
+	* torture/test-obj_array.c: Idem.
+
+	* torture/test-obj_createdestroy.c: Idem.
+
+	* torture/test-obj_dict.c: Idem.
+
+	* test-obj_dupequality.c: Idem.
+
+	* test-rectangle: Idem.
+
+	* test-stm_openclose.c: Idem.
+
+	* torture/testall.c: New file.
+
+2007-11-06  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* AUTHORS: Added Mathias Kolehmainen.
+
 2007-11-06  Jose E. Marchesi  <jose.marchesi@deimos-space.com>
 
 	* src/pdf.c: Add `program_name' global variable in order to

@@ -26,3 +26,10 @@ and changed src/pdf_stm_f_pred.c src/pdf_stm_f_pred.h
 Juan Pedro Bolívar Puente: wrote src/pdf_stm_f_pred.c
   src/pdf_stm_f_pred.h src/pdf_stm_f_lzw.c src/pdf_stm_f_lzw.h
 and changed utils/pdf_filter.c utils/pdf_filter.h
+
+Mathias Kolehmainen: wrote torture/testall.c
+and changed configure.ac torture/Makefile.am torture/test-date.c 
+  torture/test-libinit.c torture/test-obj_array.c
+  torture/test-obj_createdestroy.c torture/test-obj_dict.c
+  torture/test-obj_dupequality.c torture/test-rectangle.c
+  torture/test-stm_openclose.c

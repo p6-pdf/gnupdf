@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/10/23 12:59:14 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/11/06 22:44:04 jemarch"
  *
  *       File:         test-stm_openclose.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -28,91 +28,69 @@
 #include <config.h>
 #include <stdio.h>
 #include <pdf_stm.h>
+#include <check.h>
+  
 
-int 
-main ()
+START_TEST(noexist)
 {
-  int status;
   pdf_stm_t stm;
-
+  
   /* Test the file backend */
   stm = pdf_create_file_stm ("non-existing-file", 
                              PDF_STM_OPEN_MODE_READ);
-  if (stm != NULL)
-    {
-      printf ("Error trying to open a non-existing file.\n");
-      pdf_stm_close (stm);
-      status = PDF_ERROR;
-    }
-
+  fail_if(stm != NULL);
+}
+END_TEST
+ 
+ 
+START_TEST(readmode)
+{
+  pdf_stm_t stm;
+  
   stm = pdf_create_file_stm ("torture-file-1", 
                              PDF_STM_OPEN_MODE_READ);
-
-  if (stm == NULL)
-    {
-      printf ("Error trying to open a file in read mode.\n");
-      status = PDF_ERROR;
-    }
-  else
-    {
-      pdf_stm_close (stm);
-    }
-
-  stm = pdf_create_file_stm ("temporal-test-file", 
-                             PDF_STM_OPEN_MODE_WRITE);
-
-  if (stm == NULL)
-    {
-      printf ("Error trying to open a file in write mode.\n");
-      status = PDF_ERROR;
-    }
-  else
-    {
-      if (!pdf_stm_close (stm))
-        {
-          printf ("Error trying to close a file.\n");
-          status = PDF_ERROR;
-        }      
-    }
-
-  stm = pdf_create_file_stm ("temporal-test-file", 
-                             PDF_STM_OPEN_MODE_WRITE);
-
-  if (stm == NULL)
-    {
-      printf ("Error trying to open a file in write mode.\n");
-      status = PDF_ERROR;
-    }
-  else
-    {
-      if (!pdf_stm_close (stm))
-        {
-          printf ("Error trying to close a file.\n");
-          status = PDF_ERROR;
-        }      
-    }
-
-  stm = pdf_create_file_stm ("temporal-test-file",
-                             PDF_STM_OPEN_MODE_RW);
-
-  if (stm == NULL)
-    {
-      printf ("Error trying to open a file in read-write mode.\n");
-      status = PDF_ERROR;
-    }
-  else
-    {
-      if (!pdf_stm_close (stm))
-        {
-          printf ("Error trying to close a file.\n");
-          status = PDF_ERROR;
-        }      
-    }
-
-  /* Test the memory backend */
-
-
-  return status;
+  
+  fail_if (stm == NULL);
+  pdf_stm_close (stm);
 }
+END_TEST
+ 
+ 
+START_TEST(writemode)
+{
+  pdf_stm_t stm;
+  
+  stm = pdf_create_file_stm ("temporal-test-file", 
+                             PDF_STM_OPEN_MODE_WRITE);
+  
+  fail_if (stm == NULL);
+  fail_if (!pdf_stm_close (stm));
+}
+END_TEST
+
+START_TEST(writemode_again)
+{
+  pdf_stm_t stm;
+  
+  stm = pdf_create_file_stm ("temporal-test-file", 
+                             PDF_STM_OPEN_MODE_WRITE);
+  
+  fail_if (stm == NULL);
+  fail_if (!pdf_stm_close (stm));
+}
+END_TEST
+ 
+TCase *
+test_stm_openclose_tests (void)
+{
+  TCase *tc = tcase_create("test-stm_openclose");
+  tcase_add_test(tc, noexist);
+  tcase_add_test(tc, readmode);
+  tcase_add_test(tc, writemode);
+  tcase_add_test(tc, writemode_again);
+
+  return tc;
+}
+  
 
 /* End of test-stm_openclose.c */

@@ -37,31 +37,37 @@
 #include <xalloc.h>
 #include <stdio.h>
 #include <pdf_obj.h>
+#include <check.h>
 
 
-int
-main ()
+
+
+
+
+
+
+
+START_TEST(create_empty)
 {
-  int success;
+  pdf_obj_t obj;
+
+  obj = pdf_create_array ();
+  fail_unless(pdf_get_array_size (obj) == 0);
+}
+END_TEST
+
+
+
+START_TEST(manip)
+{
   pdf_obj_t obj;
   pdf_obj_t obj2;
   pdf_obj_t elt1;
   pdf_obj_t elt2;
   pdf_obj_t elt3;
-  pdf_obj_t elt4;
-  pdf_obj_t elt5;
-  pdf_obj_t elt6;
   char *string;
 
-  success = PDF_TRUE;
-
   obj = pdf_create_array ();
-  if (pdf_get_array_size (obj) != 0)
-    {
-      printf ("Error getting the size of an empty array; %d\n",
-              pdf_get_array_size (obj));
-      success = PDF_FALSE;
-    }
 
   elt1 = pdf_create_string ("one", 3);
   elt2 = pdf_create_array ();
@@ -76,62 +82,44 @@ main ()
                      -1,
                      elt2);
 
-  if (pdf_get_array_size (obj) != 2)
-    {
-      printf ("Error getting the size of a 2 sized array: %d\n",
-              pdf_get_array_size (obj));
-      success = PDF_FALSE;
-    }
+  fail_if (pdf_get_array_size (obj) != 2);
 
   string = (char *) xmalloc (pdf_get_string_size (pdf_get_array_elt (obj, 0)));
   memcpy (string,
           pdf_get_string_data (pdf_get_array_elt (obj, 0)),
           pdf_get_string_size (pdf_get_array_elt (obj, 0)));
-  
-  if (memcmp (string, "one", 3))
-    {
-      printf ("Error getting the string value of an element: %s\n", string);
-      success = PDF_FALSE;
-    }
+
+  /* Check string value of element. */
+  fail_unless(memcmp (string, "one", 3) == 0);
 
   obj2 = pdf_obj_dup (obj);
 
-  if (!pdf_obj_equal_p (obj, obj2))
-    {
-      printf ("Error comparing two equal arrays.\n");
-      success = PDF_FALSE;
-    }
+  /* Should compare equal. */
+  fail_if(!pdf_obj_equal_p (obj, obj2));
 
   elt3 = pdf_create_array ();
   pdf_append_array_elt (obj2, elt3);
 
-  if (pdf_obj_equal_p (obj, obj2))
-    {
-      printf ("Error comparing two distinct arrays.\n");
-      success = PDF_FALSE;
-    }
+  /* These should be different. */
+  fail_if (pdf_obj_equal_p (obj, obj2));
 
-  if (!pdf_remove_array_elt (obj, 1))
-    {
-      printf("Error removing an element of an array.\n");
-      success = PDF_FALSE;
-    }
+  /* Remove an element. */
+  fail_if (!pdf_remove_array_elt (obj, 1));
 
-  if (pdf_get_array_size (obj) != 1)
-    {
-      printf("Error getting the size of an array with previous element removal.");
-      success = PDF_FALSE;
-    }
-
-
-  if (success)
-    {
-      return 0;
-    }
-  else
-    {
-      return 1;
-    }
+  /* Should be one element left. */
+  fail_if (pdf_get_array_size (obj) != 1);
 }
+END_TEST
+
+
+TCase* test_obj_array_tests(void)
+{
+  TCase *tc = tcase_create("test-obj_array");
+  tcase_add_test(tc, create_empty);
+  tcase_add_test(tc, manip);
+  return tc;
+}
+
+
 
 /* End of test-obj_array.c */

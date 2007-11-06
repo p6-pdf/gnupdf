@@ -27,37 +27,33 @@
 #include <config.h>
 #include <string.h>
 #include <pdf.h>
+#include <check.h>
+
 
 PDF_GLOBALS
 
-int
-main ()
-{
-  int success;
-  pdf_obj_t name;
 
-  success = PDF_TRUE;
+
+START_TEST(names)
+{
+  pdf_obj_t name;
 
   pdf_init ();
 
   /* Test preallocated names */
   name = pdf_create_name ((unsigned char*) "PageLayout", 10);
-  if (!pdf_obj_equal_p (name, PDF_N_PAGE_LAYOUT))
-    {
-      success = PDF_FALSE;
-      printf("Invalid value in a preallocated name\n");
-    }
-
+  fail_if (!pdf_obj_equal_p (name, PDF_N_PAGE_LAYOUT));
   pdf_finish ();
-
-  if (success)
-    {
-      return 0;
-    }
-  else
-    {
-      return 1;
-    }
 }
+END_TEST
+
+
+TCase* test_libinit_tests(void)
+{
+  TCase *tc = tcase_create("test-libinit");
+  tcase_add_test(tc, names);
+  return tc;
+}
+
 
 /* End of test-libinit.c */

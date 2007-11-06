@@ -37,151 +37,185 @@
 #include <stdio.h>
 #include <pdf_base.h>
 
-int
-main ()
+#include <check.h>
+
+
+
+START_TEST(str2int)
 {
-  int success;
   char *str;
   int res_int;
-  long res_long;
-  double res_double;
-
-  success = PDF_TRUE;
 
   /* string to integer */
   str = (char *) xmalloc (4);
   strcpy (str, "100");
-  if (pdf_str2int (str, &res_int) == PDF_ERROR)
-    {
-      printf ("Error converting a correct string to integer: %s\n", str);
-      success = PDF_FALSE;
-    }
-  if (res_int != 100)
-    {
-      printf ("Incorrect result converting \"%s\" to integer\n", str);
-      success = PDF_FALSE;
-    }
+  fail_if(pdf_str2int (str, &res_int) == PDF_ERROR);
+  fail_unless(res_int == 100);
   free (str);
+}
+END_TEST
+
+
+START_TEST(str2int_badpost)
+{
+  char *str;
+  int res_int;
 
   str = (char *) xmalloc (4);
   strcpy (str, "20a");
-  if (pdf_str2int (str, &res_int) == PDF_OK)
-    {
-      printf ("Success converting an incorrect string to integer: %s\n", str);
-      success = PDF_FALSE;
-    }
-
+  fail_if(pdf_str2int (str, &res_int) == PDF_OK);
   free (str);
+}
+END_TEST
+
+
+START_TEST(str2int_badpre)
+{
+  char *str;
+  int res_int;
 
   str = (char *) xmalloc (4);
   strcpy (str, "a20");
-  if (pdf_str2int (str, &res_int) == PDF_OK)
-    {
-      printf ("Success converting an incorrect string to integer: %s\n", str);
-      success = PDF_FALSE;
-    }
+  fail_if(pdf_str2int (str, &res_int) == PDF_OK);
   free (str);
+}
+END_TEST
+
+
+START_TEST(str2int_empty)
+{
+  char *str;
+  int res_int;
 
   str = (char *) xmalloc (4);
   strcpy (str, "   ");
-  if (pdf_str2int (str, &res_int) == PDF_OK)
-    {
-      printf ("Success converting an empty string to integer\n", str);
-      success = PDF_FALSE;
-    }
+  fail_if (pdf_str2int (str, &res_int) == PDF_OK);
   free (str);
+}
+END_TEST
 
-  /* string to long */
+
+START_TEST(str2long) 
+{
+  char *str;
+  long res_long;
+
   str = (char *) xmalloc (4);
   strcpy (str, "100");
-  if (pdf_str2long (str, &res_long) == PDF_ERROR)
-    {
-      printf ("Error converting a correct string to long: %s\n", str);
-      success = PDF_FALSE;
-    }
-  if (res_long != 100)
-    {
-      printf ("Incorrect result converting \"%s\" to long\n", str);
-      success = PDF_FALSE;
-    }
+  fail_if (pdf_str2long (str, &res_long) == PDF_ERROR);
+  fail_unless (res_long == 100);
   free (str);
+}
+END_TEST
+
+
+START_TEST(str2long_badpost)
+{
+  char *str;
+  long res_long;
 
   str = (char *) xmalloc (4);
   strcpy (str, "20a");
-  if (pdf_str2long (str, &res_long) == PDF_OK)
-    {
-      printf ("Success converting an incorrect string to long: %s\n", str);
-      success = PDF_FALSE;
-    }
+  fail_if (pdf_str2long (str, &res_long) == PDF_OK);
   free (str);
+}
+END_TEST
+
+
+START_TEST(str2long_badpre)
+{
+  char *str;
+  long res_long;
 
   str = (char *) xmalloc (4);
   strcpy (str, "a20");
-  if (pdf_str2long (str, &res_long) == PDF_OK)
-    {
-      printf ("Success converting an incorrect string to long: %s\n", str);
-      success = PDF_FALSE;
-    }
+  fail_if (pdf_str2long (str, &res_long) == PDF_OK);
   free (str);
+}
+END_TEST
+
+
+START_TEST(str2long_empty)
+{
+  char *str;
+  long res_long;
 
   str = (char *) xmalloc (4);
   strcpy (str, "   ");
-  if (pdf_str2long (str, &res_long) == PDF_OK)
-    {
-      printf ("Success converting an empty string to long\n", str);
-      success = PDF_FALSE;
-    }
+  fail_if (pdf_str2long (str, &res_long) == PDF_OK);
   free (str);
+}
+END_TEST
 
 
-  /* string to double */
+START_TEST(str2double)
+{
+  char *str;
+  double res_double;
 
   str = (char *) xmalloc (4);
   strcpy (str, "1.2");
-  if (pdf_str2double (str, &res_double) == PDF_ERROR)
-    {
-      printf ("Error converting a correct string to double: %s\n", str);
-      success = PDF_FALSE;
-    }
+  fail_if (pdf_str2double (str, &res_double) == PDF_ERROR);
   free (str);
+}
+END_TEST
+
+
+START_TEST(str2double_badpost)
+{
+  char *str;
+  double res_double;
 
   str = (char *) xmalloc (4);
   strcpy (str, "2..");
-  if (pdf_str2double (str, &res_double) == PDF_OK)
-    {
-      printf ("Success converting an incorrect string to double: %s\n", str);
-      success = PDF_FALSE;
-    }
+  fail_if (pdf_str2double (str, &res_double) == PDF_OK);
   free (str);
+}
+END_TEST
+
+
+START_TEST(str2double_badpre)
+{
+  char *str;
+  double res_double;
 
   str = (char *) xmalloc (4);
   strcpy (str, "..2");
-  if (pdf_str2double (str, &res_double) == PDF_OK)
-    {
-      printf ("Success converting an incorrect string to double: %s\n", str);
-      success = PDF_FALSE;
-    }
+  fail_if (pdf_str2double (str, &res_double) == PDF_OK);
   free (str);
+}
+END_TEST
+
+
+START_TEST(str2double_empty)
+{
+  char *str;
+  double res_double;
 
   str = (char *) xmalloc (4);
   strcpy (str, "   ");
-  if (pdf_str2double (str, &res_double) == PDF_OK)
-    {
-      printf ("Success converting an empty string to double\n", str);
-      success = PDF_FALSE;
-    }
+  fail_if (pdf_str2double (str, &res_double) == PDF_OK);
   free (str);
+}
+END_TEST
 
 
-  
-  if (success)
-    {
-      return 0;
-    }
-  else
-    {
-      return 1;
-    }
+TCase* test_base_tests(void)
+{
+  TCase *tc = tcase_create("test-base");
+  tcase_add_test(tc, str2int);
+  tcase_add_test(tc, str2int_badpost);
+  tcase_add_test(tc, str2int_badpre);
+  tcase_add_test(tc, str2int_empty);
+  tcase_add_test(tc, str2long);
+  tcase_add_test(tc, str2long_badpost);
+  tcase_add_test(tc, str2long_badpre);
+  tcase_add_test(tc, str2long_empty);
+  tcase_add_test(tc, str2double);
+  tcase_add_test(tc, str2double_badpost);
+  tcase_add_test(tc, str2double_badpre);
+  tcase_add_test(tc, str2double_empty);
+  return tc;
 }
 
 /* End of test-base.c */

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/10/31 19:28:58 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/11/06 22:46:32 jemarch"
  *
  *       File:         test-rectangle.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -37,23 +37,20 @@
 #include <stdio.h>
 #include <pdf_obj.h>
 #include <pdf_rectangle.h>
+#include <check.h>
 
-int
-main ()
+
+static const int RECT_VALUE_ERR = 1;
+
+
+START_TEST(array_create)
 {
-  int success;
   pdf_rectangle_t rect;
   pdf_obj_t array;
   pdf_obj_t elt1;
   pdf_obj_t elt2;
   pdf_obj_t elt3;
   pdf_obj_t elt4;
-  pdf_point_t ll;
-  pdf_point_t lr;
-  pdf_point_t ur;
-  pdf_point_t ul;
-
-  success = PDF_TRUE;
 
   /* Note the mixing of integer and real objects in the tests: the
      rectangle common data type should support numbers of any type */
@@ -70,16 +67,27 @@ main ()
   pdf_append_array_elt (array, elt1);
 
   rect = pdf_create_rectangle (array);
-  if (rect == NULL)
-    {
-      printf("Error creating array.\n");
-      success = PDF_FALSE;
-    }
-  else
-    {
-      pdf_destroy_rectangle (rect);
-    }
+  fail_if (rect == NULL);
+  pdf_destroy_rectangle (rect);
   pdf_destroy_obj (array);
+}
+END_TEST
+
+
+
+START_TEST(pts)
+{
+
+  pdf_rectangle_t rect;
+  pdf_obj_t array;
+  pdf_obj_t elt1;
+  pdf_obj_t elt2;
+  pdf_obj_t elt3;
+  pdf_obj_t elt4;
+  pdf_point_t ll;
+  pdf_point_t lr;
+  pdf_point_t ur;
+  pdf_point_t ul;
 
   elt1 = pdf_create_real (0.0);
   elt2 = pdf_create_integer (0);
@@ -93,25 +101,39 @@ main ()
   pdf_append_array_elt (array, elt1);
 
   rect = pdf_create_rectangle (array);
-  if (rect == NULL)
+  fail_if (rect == NULL);
+  
+  ll = pdf_rectangle_ll (rect);
+  lr = pdf_rectangle_lr (rect);
+  ur = pdf_rectangle_ur (rect);
+  ul = pdf_rectangle_ur (rect);
+ 
+  if ((P_X(ll) != -1.0) || (P_Y(ll) != 0.0) ||
+      (P_X(lr) != 0.0) || (P_Y(lr) != 0.0) ||
+      (P_X(ur) != 0.0) || (P_Y(ur) != -1.0) ||
+      (P_X(ul) != -1.0) || (P_Y(ul) != -1.0))
     {
-      printf("Error creating array.\n");
-      success = PDF_FALSE;
+      printf("Error in values of rectangle: (%f,%f) - (%f,%f)\n",
+             P_X(ll), P_Y(ll), P_X(ur), P_Y(ur));
+      fail_if(RECT_VALUE_ERR); /* Bail! */
     }
-  else
-    {
-      pdf_destroy_rectangle (rect);
-    }
+  
+  pdf_destroy_point (ll);
+  pdf_destroy_point (lr);
+  pdf_destroy_point (ur);
+  pdf_destroy_point (ul);
+  pdf_destroy_rectangle (rect);
   pdf_destroy_obj (array);
+}
+END_TEST
+  
+  
+TCase * 
+test_rectangle_tests(void)
+{
+  TCase *tc = tcase_create("test-rectangle");
+  tcase_add_test(tc, array_create);
+  /*  tcase_add_test(tc, pts); */
 
-
-
-  if (success)
-    {
-      return 0;
-    }
-  else
-    {
-      return 1;
-    }
+  return tc;
 }

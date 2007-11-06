@@ -37,6 +37,8 @@
 #include <stdio.h>
 #include <pdf_obj.h>
 #include <pdf_date.h>
+#include <check.h>
+
 
 #define PRINT_DATE(date)                                                \
   do                                                                    \
@@ -52,394 +54,370 @@
     }                                                                   \
   while (0)
 
-int 
-main ()
+
+
+START_TEST(create_1)
 {
-  int success;
   pdf_obj_t string;
   pdf_date_t date;
 
-  success = PDF_TRUE;
 
   /* Date creation */
   string = pdf_create_string ("D:19800813175500+01'03'", 23);
   date = pdf_create_date (string);
-  if (date == NULL)
-    {
-      printf("Error parsing a date from a D:YYYYMMDDHHmmSS+HH'mm' string.\n");
-      success = PDF_FALSE;
-    }
-  else
-    {
-      if ((pdf_date_year (date) != 1980) ||
-          (pdf_date_month (date) != 8) ||
-          (pdf_date_day (date) != 13) ||
-          (pdf_date_hour (date) != 17) ||
-          (pdf_date_minute (date) != 55) ||
-          (pdf_date_second (date) != 0) ||
-          (pdf_date_ut_offset_hour (date) != 1) ||
-          (pdf_date_ut_offset_minute (date) != 3))
-        {
-          printf("Error values in a date created from a D:YYYYMMDDHHmmSS+HH'mm' string.\n");
-          PRINT_DATE(date);
-          success = PDF_FALSE;
-        }
-
-      pdf_destroy_date (date);
-    }
+  fail_if(date == NULL);
+  fail_if ((pdf_date_year (date) != 1980) ||
+           (pdf_date_month (date) != 8) ||
+           (pdf_date_day (date) != 13) ||
+           (pdf_date_hour (date) != 17) ||
+           (pdf_date_minute (date) != 55) ||
+           (pdf_date_second (date) != 0) ||
+           (pdf_date_ut_offset_hour (date) != 1) ||
+           (pdf_date_ut_offset_minute (date) != 3));
+  pdf_destroy_date (date);
   pdf_destroy_obj (string);
+}
+END_TEST
+
+
+
+
+START_TEST(create_2)
+{
+  pdf_obj_t string;
+  pdf_date_t date;
 
   string = pdf_create_string ("D:19800813175500-01'03'", 23);
   date = pdf_create_date (string);
-  if (date == NULL)
-    {
-      printf("Error parsing a date from a D:YYYYMMDDHHmmSS-HH'mm' string.\n");
-      success = PDF_FALSE;
-    }
-  else
-    {
-      if ((pdf_date_year (date) != 1980) ||
-          (pdf_date_month (date) != 8) ||
-          (pdf_date_day (date) != 13) ||
-          (pdf_date_hour (date) != 17) ||
-          (pdf_date_minute (date) != 55) ||
-          (pdf_date_second (date) != 0) ||
-          (pdf_date_ut_offset_hour (date) != -1) ||
-          (pdf_date_ut_offset_minute (date) != -3))
-        {
-          printf("Error values in a date created from a D:YYYYMMDDHHmmSS-HH'mm' string.\n");
-          PRINT_DATE(date);
-          success = PDF_FALSE;
-        }
-
-      pdf_destroy_date (date);
-    }
+  fail_if (date == NULL);
+  fail_if ((pdf_date_year (date) != 1980) ||
+           (pdf_date_month (date) != 8) ||
+           (pdf_date_day (date) != 13) ||
+           (pdf_date_hour (date) != 17) ||
+           (pdf_date_minute (date) != 55) ||
+           (pdf_date_second (date) != 0) ||
+           (pdf_date_ut_offset_hour (date) != -1) ||
+           (pdf_date_ut_offset_minute (date) != -3));
+  pdf_destroy_date (date);
   pdf_destroy_obj (string);
+}
+END_TEST
+
+
+START_TEST(create_3)
+{
+  pdf_obj_t string;
+  pdf_date_t date;
 
   string = pdf_create_string ("D:19800813175500Z01'03'", 23);
   date = pdf_create_date (string);
-  if (date == NULL)
-    {
-      printf("Error parsing a date from a D:YYYYMMDDHHmmSSZHH'mm' string.\n");
-      success = PDF_FALSE;
-    }
-  else
-    {
-      if ((pdf_date_year (date) != 1980) ||
-          (pdf_date_month (date) != 8) ||
-          (pdf_date_day (date) != 13) ||
-          (pdf_date_hour (date) != 17) ||
-          (pdf_date_minute (date) != 55) ||
-          (pdf_date_second (date) != 0) ||
-          (pdf_date_ut_offset_hour (date) != 0) ||
-          (pdf_date_ut_offset_minute (date) != 0))
-        {
-          printf("Error values in a date created from a D:YYYYMMDDHHmmSSZHH'mm' string.\n");
-          PRINT_DATE(date);
-          success = PDF_FALSE;
-        }
-
-      pdf_destroy_date (date);
-    }
+  fail_if (date == NULL);
+  fail_if ((pdf_date_year (date) != 1980) ||
+           (pdf_date_month (date) != 8) ||
+           (pdf_date_day (date) != 13) ||
+           (pdf_date_hour (date) != 17) ||
+           (pdf_date_minute (date) != 55) ||
+           (pdf_date_second (date) != 0) ||
+           (pdf_date_ut_offset_hour (date) != 0) ||
+           (pdf_date_ut_offset_minute (date) != 0));
+  pdf_destroy_date (date);
   pdf_destroy_obj (string);
+}
+END_TEST
+
+
+START_TEST(create_4)
+{
+  pdf_obj_t string;
+  pdf_date_t date;
 
   string = pdf_create_string ("19800813175500+01'03'", 21);
   date = pdf_create_date (string);
-  if (date == NULL)
-    {
-      printf("Error parsing a date from a YYYYMMDDHHmmSSOHH'mm' string.\n");
-      success = PDF_FALSE;
-    }
-  else
-    {
-      if ((pdf_date_year (date) != 1980) ||
-          (pdf_date_month (date) != 8) ||
-          (pdf_date_day (date) != 13) ||
-          (pdf_date_hour (date) != 17) ||
-          (pdf_date_minute (date) != 55) ||
-          (pdf_date_second (date) != 0) ||
-          (pdf_date_ut_offset_hour (date) != 1) ||
-          (pdf_date_ut_offset_minute (date) != 3))
-        {
-          printf("Error values in a date created from a YYYYMMDDHHmmSSOHH'mm' string.\n");
-          PRINT_DATE(date);
-          success = PDF_FALSE;
-        }
-
-      pdf_destroy_date (date);
-    }
+  fail_if (date == NULL);
+  fail_if ((pdf_date_year (date) != 1980) ||
+           (pdf_date_month (date) != 8) ||
+           (pdf_date_day (date) != 13) ||
+           (pdf_date_hour (date) != 17) ||
+           (pdf_date_minute (date) != 55) ||
+           (pdf_date_second (date) != 0) ||
+           (pdf_date_ut_offset_hour (date) != 1) ||
+           (pdf_date_ut_offset_minute (date) != 3));
+  pdf_destroy_date (date);
   pdf_destroy_obj (string);
+}
+END_TEST
+
+
+START_TEST(create_5)
+{
+  pdf_obj_t string;
+  pdf_date_t date;
 
   string = pdf_create_string ("19800813175500+01'", 18);
   date = pdf_create_date (string);
-  if (date == NULL)
-    {
-      printf("Error parsing a date from a YYYYMMDDHHmmSSOHH' string.\n");
-      success = PDF_FALSE;
-    }
-  else
-    {
-      if ((pdf_date_year (date) != 1980) ||
-          (pdf_date_month (date) != 8) ||
-          (pdf_date_day (date) != 13) ||
-          (pdf_date_hour (date) != 17) ||
-          (pdf_date_minute (date) != 55) ||
-          (pdf_date_second (date) != 0) ||
-          (pdf_date_ut_offset_hour (date) != 1) ||
-          (pdf_date_ut_offset_minute (date) != 0))
-        {
-          printf("Error values in a date created from a YYYYMMDDHHmmSSOHH' string.\n");
-          PRINT_DATE(date);
-          success = PDF_FALSE;
-        }
-
-      pdf_destroy_date (date);
-    }
+  fail_if (date == NULL);
+  fail_if ((pdf_date_year (date) != 1980) ||
+           (pdf_date_month (date) != 8) ||
+           (pdf_date_day (date) != 13) ||
+           (pdf_date_hour (date) != 17) ||
+           (pdf_date_minute (date) != 55) ||
+           (pdf_date_second (date) != 0) ||
+           (pdf_date_ut_offset_hour (date) != 1) ||
+           (pdf_date_ut_offset_minute (date) != 0));
+  pdf_destroy_date (date);
   pdf_destroy_obj (string);
+}
+END_TEST
+
+
+START_TEST(create_6)
+{
+  pdf_obj_t string;
+  pdf_date_t date;
 
   string = pdf_create_string ("19800813175500+", 15);
   date = pdf_create_date (string);
-  if (date == NULL)
-    {
-      printf("Error parsing a date from a YYYYMMDDHHmmSSO string.\n");
-      success = PDF_FALSE;
-    }
-  else
-    {
-      if ((pdf_date_year (date) != 1980) ||
-          (pdf_date_month (date) != 8) ||
-          (pdf_date_day (date) != 13) ||
-          (pdf_date_hour (date) != 17) ||
-          (pdf_date_minute (date) != 55) ||
-          (pdf_date_second (date) != 0) ||
-          (pdf_date_ut_offset_hour (date) != 0) ||
-          (pdf_date_ut_offset_minute (date) != 0))
-        {
-          printf("Error values in a date created from a YYYYMMDDHHmmSSO without marker.\n");
-          PRINT_DATE(date);
-          success = PDF_FALSE;
-        }
-
-      pdf_destroy_date (date);
-    }
+  fail_if (date == NULL);
+  fail_if ((pdf_date_year (date) != 1980) ||
+           (pdf_date_month (date) != 8) ||
+           (pdf_date_day (date) != 13) ||
+           (pdf_date_hour (date) != 17) ||
+           (pdf_date_minute (date) != 55) ||
+           (pdf_date_second (date) != 0) ||
+           (pdf_date_ut_offset_hour (date) != 0) ||
+           (pdf_date_ut_offset_minute (date) != 0));
+  pdf_destroy_date (date);
   pdf_destroy_obj (string);
+}
+END_TEST
+
+
+START_TEST(create_7)
+{
+  pdf_obj_t string;
+  pdf_date_t date;
 
   string = pdf_create_string ("19800813175500", 14);
   date = pdf_create_date (string);
-  if (date == NULL)
-    {
-      printf("Error parsing a date from a YYYYMMDDHHmmSS string.\n");
-      success = PDF_FALSE;
-    }
-  else
-    {
-      if ((pdf_date_year (date) != 1980) ||
-          (pdf_date_month (date) != 8) ||
-          (pdf_date_day (date) != 13) ||
-          (pdf_date_hour (date) != 17) ||
-          (pdf_date_minute (date) != 55) ||
-          (pdf_date_second (date) != 0) ||
-          (pdf_date_ut_offset_hour (date) != -1) ||
-          (pdf_date_ut_offset_minute (date) != -1))
-        {
-          printf("Error values in a date created from a YYYYMMDDHHmmSS without marker.\n");
-          PRINT_DATE(date);
-          success = PDF_FALSE;
-        }
-
-      pdf_destroy_date (date);
-    }
+  fail_if (date == NULL);
+  fail_if ((pdf_date_year (date) != 1980) ||
+           (pdf_date_month (date) != 8) ||
+           (pdf_date_day (date) != 13) ||
+           (pdf_date_hour (date) != 17) ||
+           (pdf_date_minute (date) != 55) ||
+           (pdf_date_second (date) != 0) ||
+           (pdf_date_ut_offset_hour (date) != -1) ||
+           (pdf_date_ut_offset_minute (date) != -1));
+  pdf_destroy_date (date);
   pdf_destroy_obj (string);
+}
+END_TEST
+
+
+
+
+START_TEST(create_8)
+{
+  pdf_obj_t string;
+  pdf_date_t date; 
 
   string = pdf_create_string ("198008131755", 12);
   date = pdf_create_date (string);
-  if (date == NULL)
-    {
-      printf("Error parsing a date from a YYYYMMDDHHmm string.\n");
-      success = PDF_FALSE;
-    }
-  else
-    {
-      if ((pdf_date_year (date) != 1980) ||
-          (pdf_date_month (date) != 8) ||
-          (pdf_date_day (date) != 13) ||
-          (pdf_date_hour (date) != 17) ||
-          (pdf_date_minute (date) != 55) ||
-          (pdf_date_second (date) != 0) ||
-          (pdf_date_ut_offset_hour (date) != -1) ||
-          (pdf_date_ut_offset_minute (date) != -1))
-        {
-          printf("Error values in a date created from a YYYYMMDDHHmm without marker.\n");
-          PRINT_DATE(date);
-          success = PDF_FALSE;
-        }
-
-      pdf_destroy_date (date);
-    }
+  fail_if (date == NULL);
+  fail_if ((pdf_date_year (date) != 1980) ||
+           (pdf_date_month (date) != 8) ||
+           (pdf_date_day (date) != 13) ||
+           (pdf_date_hour (date) != 17) ||
+           (pdf_date_minute (date) != 55) ||
+           (pdf_date_second (date) != 0) ||
+           (pdf_date_ut_offset_hour (date) != -1) ||
+           (pdf_date_ut_offset_minute (date) != -1));
+  pdf_destroy_date (date);
   pdf_destroy_obj (string);
+}
+END_TEST
+
+
+
+START_TEST(create_9)
+{
+  pdf_obj_t string;
+  pdf_date_t date;
 
   string = pdf_create_string ("1980081317", 10);
   date = pdf_create_date (string);
-  if (date == NULL)
-    {
-      printf("Error parsing a date from a YYYYMMDDHH string.\n");
-      success = PDF_FALSE;
-    }
-  else
-    {
-      if ((pdf_date_year (date) != 1980) ||
-          (pdf_date_month (date) != 8) ||
-          (pdf_date_day (date) != 13) ||
-          (pdf_date_hour (date) != 17) ||
-          (pdf_date_minute (date) != 0) ||
-          (pdf_date_second (date) != 0) ||
-          (pdf_date_ut_offset_hour (date) != -1) ||
-          (pdf_date_ut_offset_minute (date) != -1))
-        {
-          printf("Error values in a date created from a YYYYMMDDHH without marker.\n");
-          PRINT_DATE(date);
-          success = PDF_FALSE;
-        }
-
-      pdf_destroy_date (date);
-    }
+  fail_if (date == NULL);
+  fail_if ((pdf_date_year (date) != 1980) ||
+           (pdf_date_month (date) != 8) ||
+           (pdf_date_day (date) != 13) ||
+           (pdf_date_hour (date) != 17) ||
+           (pdf_date_minute (date) != 0) ||
+           (pdf_date_second (date) != 0) ||
+           (pdf_date_ut_offset_hour (date) != -1) ||
+           (pdf_date_ut_offset_minute (date) != -1));
+  pdf_destroy_date (date);
   pdf_destroy_obj (string);
+}
+END_TEST
+
+
+
+
+START_TEST(create_10)
+{
+  pdf_obj_t string;
+  pdf_date_t date;
 
   string = pdf_create_string ("19800813", 8);
   date = pdf_create_date (string);
-  if (date == NULL)
-    {
-      printf("Error parsing a date from a YYYYMMDD string.\n");
-      success = PDF_FALSE;
-    }
-  else
-    {
-      if ((pdf_date_year (date) != 1980) ||
-          (pdf_date_month (date) != 8) ||
-          (pdf_date_day (date) != 13) ||
-          (pdf_date_hour (date) != 0) ||
-          (pdf_date_minute (date) != 0) ||
-          (pdf_date_second (date) != 0) ||
-          (pdf_date_ut_offset_hour (date) != -1) ||
-          (pdf_date_ut_offset_minute (date) != -1))
-        {
-          printf("Error values in a date created from a YYYYMMDD without marker.\n");
-          PRINT_DATE(date);
-          success = PDF_FALSE;
-        }
-
-      pdf_destroy_date (date);
-    }
+  fail_if (date == NULL);
+  fail_if ((pdf_date_year (date) != 1980) ||
+           (pdf_date_month (date) != 8) ||
+           (pdf_date_day (date) != 13) ||
+           (pdf_date_hour (date) != 0) ||
+           (pdf_date_minute (date) != 0) ||
+           (pdf_date_second (date) != 0) ||
+           (pdf_date_ut_offset_hour (date) != -1) ||
+           (pdf_date_ut_offset_minute (date) != -1));
+  pdf_destroy_date (date);
   pdf_destroy_obj (string);
+}
+END_TEST
+
+
+
+START_TEST(create_11)
+{
+  pdf_obj_t string;
+  pdf_date_t date;
 
   string = pdf_create_string ("198008", 6);
   date = pdf_create_date (string);
-  if (date == NULL)
-    {
-      printf("Error parsing a date from a YYYYMM string.\n");
-      success = PDF_FALSE;
-    }
-  else
-    {
-      if ((pdf_date_year (date) != 1980) ||
-          (pdf_date_month (date) != 8) ||
-          (pdf_date_day (date) != 1) ||
-          (pdf_date_hour (date) != 0) ||
-          (pdf_date_minute (date) != 0) ||
-          (pdf_date_second (date) != 0) ||
-          (pdf_date_ut_offset_hour (date) != -1) ||
-          (pdf_date_ut_offset_minute (date) != -1))
-        {
-          printf("Error values in a date created from a YYYYMM without marker.\n");
-          PRINT_DATE(date);
-          success = PDF_FALSE;
-        }
-
-      pdf_destroy_date (date);
-    }
+  fail_if (date == NULL);
+  fail_if ((pdf_date_year (date) != 1980) ||
+           (pdf_date_month (date) != 8) ||
+           (pdf_date_day (date) != 1) ||
+           (pdf_date_hour (date) != 0) ||
+           (pdf_date_minute (date) != 0) ||
+           (pdf_date_second (date) != 0) ||
+           (pdf_date_ut_offset_hour (date) != -1) ||
+           (pdf_date_ut_offset_minute (date) != -1));
+  pdf_destroy_date (date);
   pdf_destroy_obj (string);
+}
+END_TEST
+
+
+
+START_TEST(create_12)
+{
+  pdf_obj_t string;
+  pdf_date_t date;
+
 
   string = pdf_create_string ("1980", 4);
   date = pdf_create_date (string);
-  if (date == NULL)
-    {
-      printf("Error parsing a date from a YYYY string.\n");
-      success = PDF_FALSE;
-    }
-  else
-    {
-      if ((pdf_date_year (date) != 1980) ||
-          (pdf_date_month (date) != 1) ||
-          (pdf_date_day (date) != 1) ||
-          (pdf_date_hour (date) != 0) ||
-          (pdf_date_minute (date) != 0) ||
-          (pdf_date_second (date) != 0) ||
-          (pdf_date_ut_offset_hour (date) != -1) ||
-          (pdf_date_ut_offset_minute (date) != -1))
-        {
-          printf("Error values in a date created from a YYYY without marker.\n");
-          PRINT_DATE(date);
-          success = PDF_FALSE;
-        }
-
-      pdf_destroy_date (date);
-    }
+  fail_if (date == NULL);
+  fail_if ((pdf_date_year (date) != 1980) ||
+           (pdf_date_month (date) != 1) ||
+           (pdf_date_day (date) != 1) ||
+           (pdf_date_hour (date) != 0) ||
+           (pdf_date_minute (date) != 0) ||
+           (pdf_date_second (date) != 0) ||
+           (pdf_date_ut_offset_hour (date) != -1) ||
+           (pdf_date_ut_offset_minute (date) != -1));
+  pdf_destroy_date (date);
   pdf_destroy_obj (string);
+}
+END_TEST
+
+
+
+
+START_TEST(create_13)
+{
+  pdf_obj_t string;
+  pdf_date_t date;
 
 
   string = pdf_create_string ("D:19800813175500+01'03", 22);
   date = pdf_create_date (string);
-  if (date != NULL)
-    {
-      printf("Invalid success parsing a incorrect date D:YYYYMMDDHHmmSS+HH'mm\n");
-      PRINT_DATE(date);
-      pdf_destroy_date (date);
-      success = PDF_FALSE;
-    }
+  fail_if (date != NULL);
+  pdf_destroy_date (date);
   pdf_destroy_obj (string);
+}
+END_TEST
+
+
+
+START_TEST(create_14)
+{
+  pdf_obj_t string;
+  pdf_date_t date;
+
 
   string = pdf_create_string ("D:19800813175500+a1'", 20);
   date = pdf_create_date (string);
-  if (date != NULL)
-    {
-      printf("Invalid success parsing a incorrect date D:YYYYMMDDHHmmSS+aH'\n");
-      PRINT_DATE(date);
-      pdf_destroy_date (date);
-      success = PDF_FALSE;
-    }
+  fail_if (date != NULL);
+  pdf_destroy_date (date);
   pdf_destroy_obj (string);
+}
+END_TEST
+
+
+
+START_TEST(create_15)
+{
+  pdf_obj_t string;
+  pdf_date_t date;
 
   string = pdf_create_string ("D:19z0", 6);
   date = pdf_create_date (string);
-  if (date != NULL)
-    {
-      printf("Invalid success parsing a incorrect date D:YYzY\n");
-      PRINT_DATE(date);
-      pdf_destroy_date (date);
-      success = PDF_FALSE;
-    }
+  fail_if (date != NULL);
+  pdf_destroy_date (date);
   pdf_destroy_obj (string);
+}
+END_TEST
+
+
+
+START_TEST(create_16)
+{
+  pdf_obj_t string;
+  pdf_date_t date;
 
   string = pdf_create_string ("", 0);
   date = pdf_create_date (string);
-  if (date != NULL)
-    {
-      printf("Invalid success parsing the empty string.\n");
-      PRINT_DATE(date);
-      pdf_destroy_date (date);
-      success = PDF_FALSE;
-    }
+  fail_if (date != NULL);
+  pdf_destroy_date (date);
   pdf_destroy_obj (string);
-
-
-  if (success)
-    {
-      return 0;
-    }
-  else
-    {
-      return 1;
-    }
 }
+END_TEST
+
+
+
+TCase* test_date_tests(void)
+{
+  TCase *tc = tcase_create("test-date");
+  tcase_add_test(tc, create_1);
+  tcase_add_test(tc, create_2);
+  tcase_add_test(tc, create_3);
+  tcase_add_test(tc, create_4);
+  tcase_add_test(tc, create_5);
+  tcase_add_test(tc, create_6);
+  tcase_add_test(tc, create_7);
+  tcase_add_test(tc, create_8);
+  tcase_add_test(tc, create_9);
+  tcase_add_test(tc, create_10);
+  tcase_add_test(tc, create_11);
+  tcase_add_test(tc, create_12);
+  tcase_add_test(tc, create_13);
+  tcase_add_test(tc, create_14);
+  tcase_add_test(tc, create_15);
+  tcase_add_test(tc, create_16);
+  return tc;
+}
+
+
 
 /* End of test-date.c */

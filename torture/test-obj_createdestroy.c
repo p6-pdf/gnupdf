@@ -27,58 +27,77 @@
 #include <config.h>
 #include <stdio.h>
 #include <pdf_obj.h>
+#include <check.h>
 
-int 
-main ()
+
+
+/*  This testsuite consist of the creation and destruction of all the
+    object types defined in the pdf_obj library module.
+ */
+START_TEST(createdestroy)
 {
-  pdf_obj_t obj;
-
-  /* This testsuite consist of the creation and destruction of all the
-     object types defined in the pdf_obj library module.
-     
-     After that, it return SUCCESS. */
+  pdf_obj_t obj;    
 
   obj = pdf_create_null ();
+  fail_if(obj == NULL);
   pdf_destroy_obj (obj);
 
   obj = pdf_create_boolean (PDF_TRUE);
+  fail_if(obj == NULL);
   pdf_destroy_obj (obj);
 
   obj = pdf_create_boolean (PDF_FALSE);
+  fail_if(obj == NULL);
   pdf_destroy_obj (obj);
 
   obj = pdf_create_integer (666);
+  fail_if(obj == NULL);
   pdf_destroy_obj (obj);
 
   obj = pdf_create_real (666.6);
+  fail_if(obj == NULL);
   pdf_destroy_obj (obj);
 
   /* Size cover all the string */
   obj = pdf_create_string ("foo", 3);
+  fail_if(obj == NULL);
   pdf_destroy_obj (obj);
 
   /* Size doesnt cover all the string */
   obj = pdf_create_string ("foo", 2);
+  fail_if(obj == NULL);
   pdf_destroy_obj (obj);
 
   /* Empty string */
   obj = pdf_create_string ("", 0);
+  fail_if(obj == NULL);
   pdf_destroy_obj (obj);
 
   /* Zero size */
   obj = pdf_create_string ("foo", 0);
+  fail_if(obj == NULL);
   pdf_destroy_obj (obj);
 
   obj = pdf_create_array ();
+  fail_if(obj == NULL);
   pdf_destroy_obj (obj);
 
   obj = pdf_create_dict ();
+  fail_if(obj == NULL);
   pdf_destroy_obj (obj);
 
   pdf_create_indirect (0, 0);
+  fail_if(obj == NULL);
   pdf_destroy_obj (obj);
+}
+END_TEST
 
-  return 0;
+
+TCase* test_obj_createdestroy_tests(void)
+{
+  TCase *tc = tcase_create("test-obj_createdestroy");
+  tcase_add_test(tc, createdestroy);
+  return tc;
 }
 
 
