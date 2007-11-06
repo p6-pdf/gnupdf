@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "07/10/23 12:52:08 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/11/06 14:29:10 jemarch"
  *
  *       File:         pdf.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -31,7 +31,8 @@
 
 /* Global variables */
 
-char* gnupdf_version = "1.3";
+char *program_name = "libgnupdf";
+char *gnupdf_version = "1.3";
 struct pdf_globals_s pdf_globals;
 
 static void pdf_alloc_names (void);
