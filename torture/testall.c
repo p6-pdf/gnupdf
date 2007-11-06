@@ -1,7 +1,7 @@
-/* -*- mode: C -*- Time-stamp: "07/11/06 22:51:30 jemarch"
+/* -*- mode: C -*- Time-stamp: "07/11/06 23:03:20 jemarch"
  *
  *       File:         testall.c
- *       Author:       Jose E. Marchesi (jemarch@gnu.org)
+ *       Author:       Mathias Kolehmainen (mathiask@computer.org)
  *       Date:         Tue Nov  6 22:50:53 2007
  *
  *       GNU PDF Library - Test driver for the libgnupdf suite
