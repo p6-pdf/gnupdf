@@ -40,7 +40,7 @@ dnl Search for headers
 AC_CHECK_HEADERS(malloc.h)
 
 dnl Get location of check unit test lib
-AM_PATH_CHECK
+PKG_CHECK_MODULES([CHECK], [check >= 0.9.4])
 
 dnl Search for data types
 AC_CHECK_TYPE(size_t, unsigned)

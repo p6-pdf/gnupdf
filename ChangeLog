@@ -1,3 +1,8 @@
+2007-11-07  Jose E. Marchesi  <jose.marchesi@deimos-space.com>
+
+	* configure.ac: Use `PKG_CHECK_MODULES' instead of `AM_CHECK' for
+	the `check' package.
+
 2007-11-06  Mathias Kolehmainen  <mathiask@computer.org>
 
 	* torture/Makefile.am: Adapt to use check.
