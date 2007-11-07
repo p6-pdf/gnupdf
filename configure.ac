@@ -39,9 +39,6 @@ gl_INIT
 dnl Search for headers
 AC_CHECK_HEADERS(malloc.h)
 
-dnl Get location of check unit test lib
-PKG_CHECK_MODULES([CHECK], [check >= 0.9.4])
-
 dnl Search for data types
 AC_CHECK_TYPE(size_t, unsigned)
 AC_CHECK_TYPE(off_t, long)
@@ -53,6 +50,8 @@ dnl Search for required libraries
 CHECK_ZLIB
 AM_CONDITIONAL([ZLIB], [test "x$have_zlib" = "xyes"])
 AC_CHECK_LIB(m,exp,,,)
+AC_CHECK_LIB([check],[suite_create],[have_check=yes],[have_check=no],)
+AM_CONDITIONAL([CHECK], [test "x$have_check" = "xyes"])
 
 dnl Generate output files
 AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile doc/Makefile utils/Makefile)
@@ -63,7 +62,7 @@ echo "
 Configured for \`${canonical}'.
 
   Using FlateDecode filter?                 ${have_zlib}
-
+  With unit tests support?                  ${have_check}
 "
 
 dnl Report warnings
@@ -72,6 +71,13 @@ if test "x$have_zlib" = "xno" ; then
 echo "
 WARNING: you are going to build a library without FlateDecode support. 
          That means you wont be able to process many PDF files."
+fi
+
+if test "x$have_check" = "xno" ; then
+echo "
+WARNING: you are going to build the library without unit testing support.
+         If you want to be able to perform the unit testing you should
+         install the 'check' library."
 fi
 
 dnl End of configure.ac

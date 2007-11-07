@@ -1,3 +1,11 @@
+2007-11-07  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/Makefile.am: Use the `CHECK' conditional to determine if
+	we should compile and run the test suite.
+
+	* configure.ac: `PKG_CHECK_MODULES' substitued with the checking
+	of the library. Define an Automake conditional `CHECK'.
+
 2007-11-07  Jose E. Marchesi  <jose.marchesi@deimos-space.com>
 
 	* configure.ac: Use `PKG_CHECK_MODULES' instead of `AM_CHECK' for

@@ -16,12 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
+if CHECK
 
 noinst_PROGRAMS = testall
 
-LDADD = @CHECK_LIBS@ $(top_srcdir)/src/libgnupdf.la
-CFLAGS= @CHECK_CFLAGS@
+LDADD = -lcheck $(top_srcdir)/src/libgnupdf.la
 
 AM_CPPFLAGS = -I ../lib
 AM_CFLAGS = -g
@@ -40,5 +39,7 @@ testall_SOURCES = testall.c \
 	test-rectangle.c
 
 check_PROGRAMS = testall
+
+endif # CHECK
 
 # End of Makefile.am
