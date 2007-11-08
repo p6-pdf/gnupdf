@@ -1,3 +1,7 @@
+2007-11-08  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* bootstrap (cmd): Make autoreconf to install missing files.
+
 2007-11-07  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* torture/Makefile.am: Use the `CHECK' conditional to determine if
