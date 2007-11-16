@@ -53,6 +53,15 @@ AC_CHECK_LIB(m,exp,,,)
 AC_CHECK_LIB([check],[suite_create],[have_check=yes],[have_check=no],)
 AM_CONDITIONAL([CHECK], [test "x$have_check" = "xyes"])
 
+dnl Search for programs
+AC_CHECK_PROG([have_texi2html], [texi2html], [yes], [no],,)
+AM_CONDITIONAL([TEXI2HTML], [test "x$have_texi2html" = "xyes"])
+if test "x$have_texi2html" = "xyes" ; then
+texihtmlprogram=texi2html
+else
+texihtmlprogram=makeinfo
+fi
+
 dnl Generate output files
 AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile doc/Makefile utils/Makefile)
 
@@ -63,6 +72,7 @@ Configured for \`${canonical}'.
 
   Using FlateDecode filter?                 ${have_zlib}
   With unit tests support?                  ${have_check}
+  Program to build html doc                 ${texihtmlprogram}
 "
 
 dnl Report warnings

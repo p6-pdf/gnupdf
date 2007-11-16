@@ -23,4 +23,10 @@ gnupdf_TEXINFOS = fdl.texi
 
 man_MANS = pdf_filter.1
 
+if TEXI2HTML
+
+MAKEINFOHTML = texi2html --init-file=gnupdf-manual.init --css-include=manuals.css
+
+endif # TEXI2HTML
+
 # End of Makefile.am

@@ -27,6 +27,9 @@ Juan Pedro Bolívar Puente: wrote src/pdf_stm_f_pred.c
   src/pdf_stm_f_pred.h src/pdf_stm_f_lzw.c src/pdf_stm_f_lzw.h
 and changed utils/pdf_filter.c utils/pdf_filter.h
 
+Karl Berry: changed doc/gnupdf.texi doc/gnupdf-utils.texi
+  doc/Makefile.am 
+
 Mathias Kolehmainen: wrote torture/testall.c
 and changed configure.ac torture/Makefile.am torture/test-date.c 
   torture/test-libinit.c torture/test-obj_array.c

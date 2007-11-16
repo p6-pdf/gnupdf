@@ -1,3 +1,16 @@
+2007-11-16  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* AUTHORS: Karl Berry added.
+
+	* configure.ac: Check for the `texi2html' program.
+
+	* doc/Makefile.am: Use texi2html if available for the html
+	target.
+
+	* doc/manuals.css: New file.
+
+	* doc/gnupdf-manual.init: New file.
+
 2007-11-08  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* bootstrap (cmd): Make autoreconf to install missing files.
