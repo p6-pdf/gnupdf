@@ -1,0 +1,112 @@
+/* CSS style for GNU PDF manuals
+ * 
+ *
+ * Copyright (C) 2007 Free Software Foundation, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
+
+body {
+    font-family: Helvetica, sans-serif;
+}
+
+defun {
+    background: grey;
+}
+
+blockquote {
+    font-size: 0.9em;
+    border: 1px black solid;
+    padding: 5px;
+
+}
+
+.menu {
+
+}
+
+
+.hrule_small {
+    color: black;
+    size: 1px;
+}
+
+.hrule_middle {
+    color: black;
+    size: 2px;
+}
+
+.hrule_big {
+    color: black;
+    size: 6px;
+}
+
+.hrule_default {
+    color: black;
+    size: 1px;
+}
+
+.example {
+    border: 1px black solid;
+    padding: 10px;
+}
+
+.manualtitle {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+
+.manualedition {
+    font-size: 1em;
+    color: darkred;
+    font-weight: bold;
+}
+
+.manualrevision {
+    font-size: 1em;
+    color: darkred;
+    font-weight: bold;
+}
+
+.libraryversion {
+    font-size: 1em;
+    color: darkred;
+    font-weight: bold;
+}
+
+.settitle {
+    color: darkred;
+    border-bottom: 2px solid darkred;
+}
+
+.chapter {
+    color: darkred;
+    border-bottom: 2px solid darkred;
+}
+
+.section {
+    color: darkred;
+    border-bottom: 2px solid darkred;
+}
+
+.subsection {
+    color: darkred;
+    border-bottom: 1px dashed darkred;
+}
+
+.node {
+    text-align: center;
+}
+
+/* end of manuals.css */

@@ -1,0 +1,59 @@
+# -*- mode: perl -*-
+# Initialization file for texi2html
+
+# Copyright (C) 2007 Free Software Foundation, Inc.
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+$SECTION_NAVIGATION=0;
+
+$SMALL_RULE = '';
+$DEFAULT_RULE = '';
+$MIDDLE_RULE = '';
+$BIG_RULE = '';
+
+$AFTER_BODY_OPEN='
+<table>
+ <tr>
+   <td width="20%" valign="top">
+    <table>
+     <tr>
+      <td>
+       <img src="http://gnupdf.org/images/gnupdf-wiki.png"/>
+      </td>
+     </tr>
+     <tr>
+      <td>
+        <!-- Menu -->
+
+      </td>
+     </tr>
+    </table>
+   </td>
+   <td valign="top">
+';
+
+$PRE_BODY_CLOSE='
+</td>
+</tr>
+</table>
+
+<hr color="black" size="2"/>
+Copyright (c) 2007 Free Software Foundation Inc.
+';
+
+$ICONS=true;
+
+# Return true to texi2html
+1;
