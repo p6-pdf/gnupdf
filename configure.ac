@@ -61,9 +61,11 @@ texihtmlprogram=texi2html
 else
 texihtmlprogram=makeinfo
 fi
+AC_CHECK_PROG([have_taskjuggler], [taskjuggler], [yes], [no],,)
+AM_CONDITIONAL([TASKJUGGLER], [test "x$have_taskjuggler" = "xyes"])
 
 dnl Generate output files
-AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile doc/Makefile utils/Makefile)
+AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile doc/Makefile utils/Makefile prmgt/Makefile)
 
 dnl Report configuration results
 
@@ -73,6 +75,7 @@ Configured for \`${canonical}'.
   Using FlateDecode filter?                 ${have_zlib}
   With unit tests support?                  ${have_check}
   Program to build html manuals             ${texihtmlprogram}
+  Build project management resources?       ${have_taskjuggler}
 "
 
 dnl Report warnings

@@ -1,0 +1,398 @@
+# TaskJuggler project definition for the GNU PDF Library project
+
+# Copyright (C) 2007 Free Software Foundation, Inc.
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+# Main project
+
+project gnu_pdf_library "GNU PDF Library" "0.1" 2007-11-01 - 2008-10-01 {
+
+   scenario plan "Planned Scenario" {
+      # Mark all paths as critical that have less than 10% slack time.
+      minslackrate 10.0
+   }
+}
+
+copyright "Free Software Foundation Inc."
+
+# Resources: people
+
+resource dev "Developers" {
+
+   resource jemarch "Jose E. Marchesi" {
+      limits {
+         dailymax 4h
+      }
+   }
+}
+
+# Tasks
+
+macro layer_tasks [
+
+   task analysis "Analysis" {
+
+      task api_specification "API specification" {
+         duration 5d
+
+      }
+      task environmental_model "Environmental Model" {
+         depends !api_specification
+
+         task statement_of_purpose "Statement of Purpose" {
+            duration 5d
+
+         }
+         task event_list "Event List" {
+            depends !statement_of_purpose
+            duration 5d
+         }
+         task data_dictionary "Data Dictionary" {
+            depends !event_list
+            duration 5d
+         }
+         task context_diagram "Context Diagram" {
+            depends !event_list
+            duration 5d
+         }
+
+      }
+      task behavioral_model "Behavioral Model" {
+         depends !environmental_model
+
+         task initial_dfd "Initial DFD" {
+            duration 5d
+         }
+         task dfd_refinement "DFD Refinement" {
+            depends !initial_dfd
+            duration 5d
+         }
+         task process_specification "Process Specification" {
+            depends !dfd_refinement
+            duration 5d
+         }
+      }
+   }
+   task design "Design" {
+      depends !analysis
+
+      task initial_structure_design "Initial Structure Design" {
+         duration 5d
+      }
+      task structure_design "Structure Design Refinement" {
+         depends !initial_structure_design
+         duration 5d
+      }
+   }
+   task implementation "Implementation" {
+      depends !design
+
+      task module_codification "Module Codification" {
+         duration 5d
+      }
+      task unit_test_codification "Unit test codification" {
+         depends !module_codification
+         duration 5d
+      }
+   }
+   task subsystem_tests "Subsystem Tests" {
+      depends !analysis.api_specification
+
+      task design "Design" {
+         duration 5d
+      }
+      task implementation "Implementation" {
+         depends !design
+      }
+   }
+]
+   
+task libgnupdf "GNU PDF Library Development" {
+
+   task library_base "Base Library" {
+      depends !milestones.start
+
+      task stream_module "Stream Module" {
+
+         task backends "Backends" {
+
+            task file_backend "File Backend" {
+               duration 5d
+            }
+            task memory_backend "Memory Backend" {
+               duration 5d
+            }
+         }
+         task filters "Filters" {
+            depends !backends
+
+            task ascii_hex_filter "ASCII Hex" {
+               
+               task encoder "Encoder" {
+                  duration 5d
+                  complete 100
+               }
+               task decoder "Decoder" {
+                  duration 5d
+                  complete 100
+               }
+            }
+            task ascii_base_85 "ASCII 85" {
+               
+               task encoder "Encoder" {
+                  duration 5d
+                  complete 100
+               }
+               task decoder "Decoder" {
+                  duration 5d
+                  complete 100
+               }
+            }
+            task png_tiff_predictors "PNG and TIFF Predictors" {
+               
+               task encoder "Encoder" {
+                  duration 5d
+                  complete 100
+               }
+               task decoder "Decoder" {
+                  duration 5d
+                  complete 100
+               }
+            }
+            task flate_compression "Flate Compression" {
+
+               task encoder "Encoder" {
+                  duration 5d
+                  complete 100
+               }
+               task decoder "Decoder" {
+                  duration 5d
+                  complete 100
+               }
+            }
+            task run_length "Run Length" {
+               
+               task encoder "Encoder" {
+                  duration 5d
+                  complete 100
+               }
+               task decoder "Decoder" {
+                  duration 5d
+                  complete 100
+               }
+            }
+            task lzw "LZW" {
+
+               task encoder "Encoder" {
+                  duration 5d
+                  complete 100
+               }
+               task decoder "Decoder" {
+                  duration 5d
+                  complete 100
+               }
+            }
+            task ccitt_fax "CCITT Fax" {
+
+               task encoder "Encoder" {
+                  duration 5d
+                  complete 0
+               }
+               task decoder "Decoder" {
+                  duration 5d
+                  complete 0
+               }
+            }
+            task jbig2 "JBIG2" {
+               
+               task encoder "Encoder" {
+                  duration 5d
+                  complete 0
+               }
+               task decoder "Encoder" {
+                  duration 5d
+                  complete 0
+               }
+            }
+            task dct "DCT" {
+
+               task encoder "Encoder" {
+                  duration 5d
+                  complete 0
+               }
+               task decoder "Decoder" {
+                  duration 5d
+                  complete 0
+               }
+            }
+            task jpx "JPX" {
+
+               task encoder "Encoder" {
+                  duration 5d
+                  complete 0
+               }
+               task decoder "Decoder" {
+                  duration 5d
+                  complete 0
+               }
+            }
+            task encryption "Encryption" {
+               note "TO DEFINE"
+            }
+         }
+      }
+      task lexer "Lexer" {
+
+         task api_specification "API specification" {
+            duration 5d
+         }
+         task grammar_specification "Grammar specification" {
+            duration 5d
+         }
+         task implementation "Implementation" {
+            depends !api_specification, !grammar_specification
+            duration 5d
+         }
+         task unit_test_design "Unit Test Design" {
+            depends !api_specification
+            duration 5d
+         }
+         task unit_test_codification "Unit Test Codification" {
+            depends !unit_test_design
+            duration 5d
+         }
+      }
+      task parser "Parser" {
+         depends !lexer
+
+         task api_specification "API specification" {
+            duration 5d
+         }
+         task grammar_specification "Grammar specification" {
+            duration 5d
+         }
+         task implementation "Implementation" {
+            depends !api_specification, !grammar_specification
+            duration 5d
+         }
+         task unit_test_design "Unit Test Design" {
+            depends !api_specification
+            duration 5d
+         }
+         task unit_test_codification "Unit Test Codification" {
+            depends !unit_test_design
+            duration 5d
+         }
+      }
+   }
+   task object_layer "Object Layer" {
+      depends !library_base
+
+      ${layer_tasks}
+   }
+   task document_layer "Document Layer" {
+      depends !object_layer
+
+      ${layer_tasks}
+   }
+   task page_layer "Page Layer" {
+      depends !document_layer
+
+      ${layer_tasks}
+   }
+   task milestones "Milestones" {
+      
+      task start "Project Start" {
+         milestone
+         start ${now}
+      }
+
+   }
+}
+
+# Reports
+
+taskreport "Gantt Chart" {
+
+   headline "GNU PDF Library Gantt Chart"
+   columns hierarchindex, name, start, end, effort, duration, chart
+   loadunit days
+}
+
+taskreport "Task Usage" {
+  headline "Task Usage Report"
+  columns hierarchindex, name, start, end, effort { title "Work" }, duration,
+          cost, revenue
+  timeformat "%Y-%m-%d"
+  loadunit days
+  hideresource 0
+}
+
+taskreport "Tracking Gantt" {
+  headline "Tracking Gantt Chart"
+  columns hierarchindex, name, start, end, effort { title "Work" }, duration,
+          completed, chart
+  timeformat "%a %Y-%m-%d"
+  loadunit days
+  hideresource 1
+}
+
+resourcereport "Resource Graph" {
+  headline "Resource Allocation Graph"
+  columns no, name, rate, utilization, freeload, chart
+  loadunit days
+  hidetask 1
+}
+
+resourcereport "Resource Sheet" {
+  headline "Resource Sheet"
+  columns no, name, efficiency, id, maxeffort, rate
+  loadunit days
+  hidetask 1
+}
+
+resourcereport "Resource Usage" {
+  headline "Resource Usage Report"
+  columns no, name, utilization, freeload, cost
+  loadunit days
+  hidetask 0
+}
+
+htmltaskreport "tasks.html" {
+   caption "libgnupdf Tasks Report"
+   headline "GNU PDF Library - Tasks Report"
+   columns name, start, end, daily
+   hideresource 0
+}
+
+htmlweeklycalendar "week-calendar.html" {
+}
+
+htmlmonthlycalendar "month-calendar.html" {
+}
+
+htmlresourcereport "resources.html" {
+}
+
+htmlstatusreport "status.html" {
+}
+
+# Local Variables:
+# default-tab-width: 3
+# compile-command: "taskjuggler libgnupdf.tjp"
+# End:
+
+# end of libgnupdf.tjp

@@ -1,4 +1,4 @@
-# Top-level Makefile.am
+# prmgt directory Makefile.am
 # GNU PDF Library
 
 # Copyright (C) 2007 Free Software Foundation, Inc.
@@ -16,8 +16,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = lib src utils torture doc prmgt
+if TASKJUGGLER
 
+REPORTS = month-calendar.html \
+	status.html \
+	week-calendar.html \
+	resources.html \
+	tasks.html
+
+all-local: libgnupdf.tjp
+	taskjuggler libgnupdf.tjp
+
+clean-local:
+	-rm -f ${REPORTS}
+
+endif # TASKJUGGLER
 
 # End of Makefile.am
