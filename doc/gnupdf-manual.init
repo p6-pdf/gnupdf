@@ -36,6 +36,24 @@ $AFTER_BODY_OPEN='
      <tr>
       <td>
         <!-- Menu -->
+        <div class="sidemenu">
+
+          <div class="sidemenuheader">Manuals</div>
+          <br/>
+          <div class="sidemenuentry">
+             <a href="gnupdf.html">Library Refence Manual</a>
+          </div>
+          <div class="sidemenuentry">
+             <a href="gnupdf-utils.html">PDF Utilities Manual</a>
+          </div>
+          <br/>
+          <div class="sidemenuheader">Project</div>
+          <br/>
+          <div class="sidemenuentry">
+             <a href="http://www.gnupdf.org">GNU PDF Homepage</a>
+          </div>
+        </div>
+        <br/>
 
       </td>
      </tr>

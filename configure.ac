@@ -72,7 +72,7 @@ Configured for \`${canonical}'.
 
   Using FlateDecode filter?                 ${have_zlib}
   With unit tests support?                  ${have_check}
-  Program to build html doc                 ${texihtmlprogram}
+  Program to build html manuals             ${texihtmlprogram}
 "
 
 dnl Report warnings

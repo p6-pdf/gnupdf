@@ -31,6 +31,26 @@ blockquote {
 
 }
 
+.sidemenu {
+    
+    border: 1px black solid;
+    padding: 5px;
+
+}
+
+.sidemenuheader {
+ 
+    color: darkred;
+    font-size: 1.1em;
+    font-weight: bold;
+    border-bottom: 1px dashed darkred;
+}
+
+.sidemenuentry {
+
+
+}
+
 .menu {
 
 }
@@ -91,6 +111,11 @@ blockquote {
 }
 
 .chapter {
+    color: darkred;
+    border-bottom: 2px solid darkred;
+}
+
+.appendix {
     color: darkred;
     border-bottom: 2px solid darkred;
 }
