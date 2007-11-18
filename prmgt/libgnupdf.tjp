@@ -422,6 +422,10 @@ htmlstatusreport "status.html" {
    rawstylesheet "<link rel=\"stylesheet\" href=\"reports.css\" type=\"text/css\" media=\"screen\"/>"
 }
 
+xmlreport "libgnupdf.tjx" {
+   version 2
+}
+
 # Local Variables:
 # default-tab-width: 3
 # compile-command: "taskjuggler libgnupdf.tjp"

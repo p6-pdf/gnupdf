@@ -19,16 +19,36 @@
 if TASKJUGGLER
 
 REPORTS = month-calendar.html \
-	status.html \
-	week-calendar.html \
-	resources.html \
-	tasks.html
+          status.html \
+          week-calendar.html \
+          resources.html \
+          tasks.html \
+          libgnupdf.tjx
 
-all-local: libgnupdf.tjp
+GRAPHVIZFIGURES = 
+if GRAPHVIZDOT
+GRAPHVIZFIGURES += libgnupdf-dot.png
+
+libgnupdf-dot.png :
+	zcat libgnupdf.tjx | xsltproc --novalid pertdot.xsl - | dot -T png > libgnupdf-dot.png
+
+endif # GRAPHVIZDOT
+
+if GRAPHVIZFDP
+GRAPHVIZFIGURES += libgnupdf-fdp.png
+
+libgnupdf-fdp.png :
+	zcat libgnupdf.tjx | xsltproc --novalid pertfdp.xsl - | fdp -T png > libgnupdf-fdp.png
+
+endif # GRAPHVIZFDP
+
+libgnupdf.tjx : libgnupdf.tjp
 	taskjuggler libgnupdf.tjp
 
+all-local: libgnupdf.tjx ${GRAPHVIZFIGURES}
+
 clean-local:
-	-rm -f ${REPORTS}
+	-rm -f ${REPORTS} ${GRAPHVIZFIGURES}
 
 endif # TASKJUGGLER
 

@@ -63,6 +63,10 @@ texihtmlprogram=makeinfo
 fi
 AC_CHECK_PROG([have_taskjuggler], [taskjuggler], [yes], [no],,)
 AM_CONDITIONAL([TASKJUGGLER], [test "x$have_taskjuggler" = "xyes"])
+AC_CHECK_PROG([have_dot], [dot], [yes], [no],,)
+AM_CONDITIONAL([GRAPHVIZDOT], [test "x$have_dot" = "xyes"])
+AC_CHECK_PROG([have_fdp], [fdp], [yes], [no],,)
+AM_CONDITIONAL([GRAPHVIZFDP], [test "x$have_fdp" = "xyes"])
 
 dnl Generate output files
 AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile doc/Makefile utils/Makefile prmgt/Makefile)
