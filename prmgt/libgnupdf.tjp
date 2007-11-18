@@ -18,7 +18,7 @@
 
 # Main project
 
-project gnu_pdf_library "GNU PDF Library" "0.1" 2007-11-01 - 2008-10-01 {
+project gnu_pdf_library "GNU PDF Library" "0.1" 2007-06-01 - 2010-10-01 {
 
    scenario plan "Planned Scenario" {
       # Mark all paths as critical that have less than 10% slack time.
@@ -26,7 +26,7 @@ project gnu_pdf_library "GNU PDF Library" "0.1" 2007-11-01 - 2008-10-01 {
    }
 }
 
-copyright "Free Software Foundation Inc."
+copyright "Copyright (C) 2007 Free Software Foundation Inc."
 
 # Resources: people
 
@@ -34,10 +34,32 @@ resource dev "Developers" {
 
    resource jemarch "Jose E. Marchesi" {
       limits {
-         dailymax 4h
+         dailymax 8h
       }
    }
+   resource dev2 "developer 2" {
+      limits {
+         dailymax 8h
+      }
+   }
+   resource dev3 "developer 3" {
+      limits {
+         dailymax 8h
+      }
+   }
+   resource dev4 "developer 4" {
+      limits {
+         dailymax 8h
+      }
+   }
+   resource nacho "Nacho Gonzalez Lopez"
 }
+
+macro allocate_developers [
+   allocate jemarch
+   allocate dev3
+   allocate dev4
+]
 
 # Tasks
 
@@ -46,27 +68,27 @@ macro layer_tasks [
    task analysis "Analysis" {
 
       task api_specification "API specification" {
-         duration 5d
+         effort 5d
 
       }
       task environmental_model "Environmental Model" {
          depends !api_specification
 
          task statement_of_purpose "Statement of Purpose" {
-            duration 5d
+            effort 0.2d
 
          }
          task event_list "Event List" {
             depends !statement_of_purpose
-            duration 5d
+            effort 2d
          }
          task data_dictionary "Data Dictionary" {
             depends !event_list
-            duration 5d
+            effort 1d
          }
          task context_diagram "Context Diagram" {
             depends !event_list
-            duration 5d
+            effort 1d
          }
 
       }
@@ -74,15 +96,15 @@ macro layer_tasks [
          depends !environmental_model
 
          task initial_dfd "Initial DFD" {
-            duration 5d
+            effort 1d
          }
          task dfd_refinement "DFD Refinement" {
             depends !initial_dfd
-            duration 5d
+            effort 3d
          }
          task process_specification "Process Specification" {
             depends !dfd_refinement
-            duration 5d
+            effort 2d
          }
       }
    }
@@ -90,50 +112,54 @@ macro layer_tasks [
       depends !analysis
 
       task initial_structure_design "Initial Structure Design" {
-         duration 5d
+         effort 3d
       }
       task structure_design "Structure Design Refinement" {
          depends !initial_structure_design
-         duration 5d
+         effort 2d
       }
    }
    task implementation "Implementation" {
       depends !design
 
       task module_codification "Module Codification" {
-         duration 5d
+         effort 10d
       }
       task unit_test_codification "Unit test codification" {
          depends !module_codification
-         duration 5d
+         effort 5d
       }
    }
    task subsystem_tests "Subsystem Tests" {
       depends !analysis.api_specification
 
       task design "Design" {
-         duration 5d
+         effort 3d
       }
       task implementation "Implementation" {
          depends !design
+         effort 3d
       }
    }
 ]
    
 task libgnupdf "GNU PDF Library Development" {
 
+   ${allocate_developers}
+
    task library_base "Base Library" {
       depends !milestones.start
+
 
       task stream_module "Stream Module" {
 
          task backends "Backends" {
 
             task file_backend "File Backend" {
-               duration 5d
+               effort 5d
             }
             task memory_backend "Memory Backend" {
-               duration 5d
+               effort 5d
             }
          }
          task filters "Filters" {
@@ -142,110 +168,110 @@ task libgnupdf "GNU PDF Library Development" {
             task ascii_hex_filter "ASCII Hex" {
                
                task encoder "Encoder" {
-                  duration 5d
+                  effort 3d
                   complete 100
                }
                task decoder "Decoder" {
-                  duration 5d
+                  effort 3d
                   complete 100
                }
             }
             task ascii_base_85 "ASCII 85" {
                
                task encoder "Encoder" {
-                  duration 5d
+                  effort 3d
                   complete 100
                }
                task decoder "Decoder" {
-                  duration 5d
+                  effort 3d
                   complete 100
                }
             }
             task png_tiff_predictors "PNG and TIFF Predictors" {
                
                task encoder "Encoder" {
-                  duration 5d
+                  effort 4d
                   complete 100
                }
                task decoder "Decoder" {
-                  duration 5d
+                  effort 4d
                   complete 100
                }
             }
             task flate_compression "Flate Compression" {
 
                task encoder "Encoder" {
-                  duration 5d
+                  effort 1d
                   complete 100
                }
                task decoder "Decoder" {
-                  duration 5d
+                  effort 1d
                   complete 100
                }
             }
             task run_length "Run Length" {
                
                task encoder "Encoder" {
-                  duration 5d
+                  effort 1d
                   complete 100
                }
                task decoder "Decoder" {
-                  duration 5d
+                  effort 1d
                   complete 100
                }
             }
             task lzw "LZW" {
 
                task encoder "Encoder" {
-                  duration 5d
+                  effort 4d
                   complete 100
                }
                task decoder "Decoder" {
-                  duration 5d
+                  effort 4d
                   complete 100
                }
             }
             task ccitt_fax "CCITT Fax" {
 
                task encoder "Encoder" {
-                  duration 5d
+                  effort 5d
                   complete 0
                }
                task decoder "Decoder" {
-                  duration 5d
+                  effort 5d
                   complete 0
                }
             }
             task jbig2 "JBIG2" {
                
                task encoder "Encoder" {
-                  duration 5d
+                  effort 3d
                   complete 0
                }
                task decoder "Encoder" {
-                  duration 5d
+                  effort 3d
                   complete 0
                }
             }
             task dct "DCT" {
 
                task encoder "Encoder" {
-                  duration 5d
+                  effort 5d
                   complete 0
                }
                task decoder "Decoder" {
-                  duration 5d
+                  effort 5d
                   complete 0
                }
             }
             task jpx "JPX" {
 
                task encoder "Encoder" {
-                  duration 5d
+                  effort 5d
                   complete 0
                }
                task decoder "Decoder" {
-                  duration 5d
+                  effort 5d
                   complete 0
                }
             }
@@ -257,44 +283,44 @@ task libgnupdf "GNU PDF Library Development" {
       task lexer "Lexer" {
 
          task api_specification "API specification" {
-            duration 5d
+            effort 1d
          }
          task grammar_specification "Grammar specification" {
-            duration 5d
+            effort 0.5d
          }
          task implementation "Implementation" {
             depends !api_specification, !grammar_specification
-            duration 5d
+            effort 2d
          }
          task unit_test_design "Unit Test Design" {
             depends !api_specification
-            duration 5d
+            effort 0.5d
          }
          task unit_test_codification "Unit Test Codification" {
             depends !unit_test_design
-            duration 5d
+            effort 1d
          }
       }
       task parser "Parser" {
          depends !lexer
 
          task api_specification "API specification" {
-            duration 5d
+            effort 1d
          }
          task grammar_specification "Grammar specification" {
-            duration 5d
+            effort 0.5d
          }
          task implementation "Implementation" {
             depends !api_specification, !grammar_specification
-            duration 5d
+            effort 2d
          }
          task unit_test_design "Unit Test Design" {
             depends !api_specification
-            duration 5d
+            effort 0.5d
          }
          task unit_test_codification "Unit Test Codification" {
             depends !unit_test_design
-            duration 5d
+            effort 1d
          }
       }
    }
@@ -310,6 +336,7 @@ task libgnupdf "GNU PDF Library Development" {
    }
    task page_layer "Page Layer" {
       depends !document_layer
+
 
       ${layer_tasks}
    }
@@ -372,6 +399,7 @@ resourcereport "Resource Usage" {
 }
 
 htmltaskreport "tasks.html" {
+   rawstylesheet "<link rel=\"stylesheet\" href=\"reports.css\" type=\"text/css\" media=\"screen\"/>"
    caption "libgnupdf Tasks Report"
    headline "GNU PDF Library - Tasks Report"
    columns name, start, end, daily
@@ -379,15 +407,19 @@ htmltaskreport "tasks.html" {
 }
 
 htmlweeklycalendar "week-calendar.html" {
+   rawstylesheet "<link rel=\"stylesheet\" href=\"reports.css\" type=\"text/css\" media=\"screen\"/>"
 }
 
 htmlmonthlycalendar "month-calendar.html" {
+   rawstylesheet "<link rel=\"stylesheet\" href=\"reports.css\" type=\"text/css\" media=\"screen\"/>"
 }
 
 htmlresourcereport "resources.html" {
+   rawstylesheet "<link rel=\"stylesheet\" href=\"reports.css\" type=\"text/css\" media=\"screen\"/>"
 }
 
 htmlstatusreport "status.html" {
+   rawstylesheet "<link rel=\"stylesheet\" href=\"reports.css\" type=\"text/css\" media=\"screen\"/>"
 }
 
 # Local Variables:
