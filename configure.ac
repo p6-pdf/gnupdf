@@ -70,6 +70,14 @@ AC_ARG_ENABLE([prmgt], AS_HELP_STRING([--enable-prmgt],
 
 AM_CONDITIONAL([PRMGT],[test "x$prmgt_mode" = "xyes"])
 if test "x$prmgt_mode" = "xyes" ; then 
+
+AC_PROG_AWK
+if test x$AWK = "xno"; then
+AC_MSG_ERROR([cannot find a suitable `awk' program. Please install it and rerun `configure'.])
+fi
+AC_PATH_PROG([PATH_TO_AWK],$AWK)
+AC_SUBST(PATH_TO_AWK)
+
 AC_CHECK_PROG([have_taskjuggler], [taskjuggler], [yes], 
               [AC_MSG_ERROR([cannot find the `taskjuggler' program. Please install it and rerun `configure'.])],,)
 AC_CHECK_PROG([have_dot], [dot], [yes], 
@@ -81,7 +89,7 @@ AC_CHECK_PROG([have_pmccabe], [pmccabe], [yes],
 fi # prmgt_mode
 
 dnl Generate output files
-AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile doc/Makefile utils/Makefile prmgt/Makefile)
+AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile doc/Makefile utils/Makefile prmgt/Makefile prmgt/pmccabe2html)
 
 dnl Report configuration results
 

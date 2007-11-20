@@ -1,4 +1,4 @@
-#!/usr/bin/awk -f
+#!@PATH_TO_AWK@ -f
 # pmccabe2html - pmccabe to html converter
 
 # Copyright (C) 2007 Free Software Foundation, Inc.

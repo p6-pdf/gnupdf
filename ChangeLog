@@ -1,3 +1,10 @@
+2007-11-20  Jose E. Marchesi  <jose.marchesi@deimos-space.com>
+
+	* configure.ac: Check for awk and set the output variable
+	`PATH_TO_AWK'.
+
+	* prmgt/pmccabe2html.in: Renamed from `pmccabe2html'.
+
 2007-11-19  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* prmgt/Makefile.am: Reorganization.
