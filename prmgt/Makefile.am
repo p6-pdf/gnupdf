@@ -16,40 +16,34 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-if TASKJUGGLER
+if PRMGT
 
-REPORTS = month-calendar.html \
-          status.html \
-          week-calendar.html \
-          resources.html \
-          tasks.html \
-          libgnupdf.tjx
+TARGETS = libgnupdf-dot.png \
+          libgnupdf-fdp.png  \
+          cyclo.html
 
-GRAPHVIZFIGURES = 
-if GRAPHVIZDOT
-GRAPHVIZFIGURES += libgnupdf-dot.png
-
-libgnupdf-dot.png :
+libgnupdf-dot.png: libgnupdf.tjx
 	zcat libgnupdf.tjx | xsltproc --novalid pertdot.xsl - | dot -T png > libgnupdf-dot.png
 
-endif # GRAPHVIZDOT
-
-if GRAPHVIZFDP
-GRAPHVIZFIGURES += libgnupdf-fdp.png
-
-libgnupdf-fdp.png :
+libgnupdf-fdp.png: libgnupdf.tjx
 	zcat libgnupdf.tjx | xsltproc --novalid pertfdp.xsl - | fdp -T png > libgnupdf-fdp.png
 
-endif # GRAPHVIZFDP
+cyclo.html:
+	pmccabe ${top_srcdir}/src/*.[ch] | sort -nr | ${srcdir}/pmccabe2html > cyclo.html
+
 
 libgnupdf.tjx : libgnupdf.tjp
 	taskjuggler libgnupdf.tjp
 
-all-local: libgnupdf.tjx ${GRAPHVIZFIGURES}
+all-local: ${TARGETS}
 
 clean-local:
-	-rm -f ${REPORTS} ${GRAPHVIZFIGURES}
+	-rm -f ${TARGETS}
+	-rm -f month-calendar.html status.html \
+               week-calendar.html resources.html tasks.html
+	-rm -f libgnupdf.tjx
+	-rm -f *_fn.txt
 
-endif # TASKJUGGLER
+endif # PRMGT
 
 # End of Makefile.am

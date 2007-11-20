@@ -61,12 +61,24 @@ texihtmlprogram=texi2html
 else
 texihtmlprogram=makeinfo
 fi
-AC_CHECK_PROG([have_taskjuggler], [taskjuggler], [yes], [no],,)
-AM_CONDITIONAL([TASKJUGGLER], [test "x$have_taskjuggler" = "xyes"])
-AC_CHECK_PROG([have_dot], [dot], [yes], [no],,)
-AM_CONDITIONAL([GRAPHVIZDOT], [test "x$have_dot" = "xyes"])
-AC_CHECK_PROG([have_fdp], [fdp], [yes], [no],,)
-AM_CONDITIONAL([GRAPHVIZFDP], [test "x$have_fdp" = "xyes"])
+
+dnl Project management resources
+prmgt_mode=no
+AC_ARG_ENABLE([prmgt], AS_HELP_STRING([--enable-prmgt],
+                                      [build project management resources (default is NO)]), 
+              [prmgt_mode=yes], [prmgt_mode=no])
+
+AM_CONDITIONAL([PRMGT],[test "x$prmgt_mode" = "xyes"])
+if test "x$prmgt_mode" = "xyes" ; then 
+AC_CHECK_PROG([have_taskjuggler], [taskjuggler], [yes], 
+              [AC_MSG_ERROR([cannot find the `taskjuggler' program. Please install it and rerun `configure'.])],,)
+AC_CHECK_PROG([have_dot], [dot], [yes], 
+              [AC_MSG_ERROR([cannot find the `dot' program. Please install the graphviz package and rerun `configure'.])],,)
+AC_CHECK_PROG([have_fdp], [fdp], [yes], 
+              [AC_MSG_ERROR([cannot find the `fdp' program. Please install the graphviz package and rerun `configure'.])],,)
+AC_CHECK_PROG([have_pmccabe], [pmccabe], [yes], 
+              [AC_MSG_ERROR([cannot find the `pmccabe' program. Please install it and rerun `configure'.])],,)
+fi # prmgt_mode
 
 dnl Generate output files
 AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile doc/Makefile utils/Makefile prmgt/Makefile)
@@ -79,7 +91,7 @@ Configured for \`${canonical}'.
   Using FlateDecode filter?                 ${have_zlib}
   With unit tests support?                  ${have_check}
   Program to build html manuals             ${texihtmlprogram}
-  Build project management resources?       ${have_taskjuggler}
+  Build project management resources?       ${prmgt_mode}
 "
 
 dnl Report warnings

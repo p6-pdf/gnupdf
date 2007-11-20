@@ -1,3 +1,16 @@
+2007-11-19  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* prmgt/Makefile.am: Reorganization.
+	Add rules for new target `cyclo.html'.
+
+	* prmgt/pertfdp.xsl: New file.
+
+	* prmgt/pertdot.xsl: New file.
+
+	* prmgt/pmccabe2html: New file.
+
+	* prmgt/pmccabe.css: New file.
+
 2007-11-18  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* configure.ac: Check for graphviz's `dot' and `fdp' programs.

@@ -1,16 +1,16 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.3 2007/11/05 00:43:34 karl Exp $
+@comment $Id: gnupdf.texi,v 1.4 2007/11/20 00:40:44 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
 @comment %**end of header
 
-@set EDITION 1
+@set EDITION first
 @set VERSION 0.1
 
 @copying 
-This is the @value{EDITION} edition of the @cite{GNU PDF Library
-Reference}, updated for libgnupdf version @value{VERSION}.
+This is the @strong{@value{EDITION}} edition of the @cite{GNU PDF Library
+Reference}, updated for @strong{libgnupdf} version @strong{@value{VERSION}}.
 
 Copyright @copyright{} 2007 Free Software Foundation, Inc.
 
@@ -53,8 +53,13 @@ GNU PDF Library Reference
 @end ifnottex
 
 @menu
-* Introduction::                
-* GNU Free Documentation License::         
+* Overview::            The GNU PDF library in brief.
+* Basic Layer::         Basic library facilities.
+* Object Layer::        Editing the object structure of a PDF file.
+* Document Layer::      Editing the document-level structure of a PDF
+                          file.
+* Page Contents Layer::  Editing the contents of pages.
+* GNU Free Documentation License::  Distribution terms of this manual.
 
 Indices
 
@@ -63,8 +68,214 @@ Indices
 * Function index::              
 @end menu
 
-@node Introduction
-@chapter Introduction
+@node Overview
+@chapter Overview
+
+@node Basic Layer
+@chapter Basic Layer
+
+@menu
+* Basic Layer Overview::
+* Memory Allocation::
+@end menu
+
+@node Basic Layer Overview
+@section Overview
+
+@node Memory Allocation
+@section Memory Allocation
+
+@deftypefun char* pdf_alloc (int size)
+@end deftypefun
+
+@deftypefun void pdf_dealloc (char *pointer)
+@end deftypefun
+
+@node Object Layer
+@chapter Object Layer
+
+@menu
+* Object Layer Overview::
+* PDF Objects::
+* Object Collections::
+* Memory Management::
+* Object Level Documents::
+* Real Objects::
+* Integer Objects::
+* Boolean Objects::
+* Name Objects::
+* String Objects::
+* Array Objects::
+* Dictionary Objects::
+* Stream Objects::
+* Indirect Objects::
+* Null Object::
+@end menu
+
+@node Object Layer Overview
+@section Overview
+
+The Object Layer of the library provides access to manipulate PDF
+documents as a collection of PDF objects (@pxref{PDF Objects}).
+
+Note that the use of this layer can lead to non-well conformed PDF
+documents: not every PDF object collection define a document. So the
+client should be careful when using this layer. In contrast the
+@ref{Document Layer} provides a convenient API to manipulate PDF files
+while maintaining its structural integrity.
+
+All the names for constants, data types and functions defined in this
+layer are prefixed with @code{pdfo_} or @code{PDFO_}.
+
+@node PDF Objects
+@section PDF Objects
+
+@node Object Collections
+@section Object Collections
+
+@node Memory Management
+@section Memory Management
+
+@node Object Level Documents
+@section Object Level Documents
+
+@node Real Objects
+@section Real Objects
+
+A real object represent a fixed-point real number.
+
+@menu
+* Real Object Creation::
+* Managing Real Object Attributes::
+@end menu
+
+@node Real Object Creation
+@subsection Real Object Creation
+
+@deftypefun pdfo_obj_t pdfo_create_real (pdfo_doc_t @var{doc}, pdf_bool_t @var{indirect}, pdf_real_t @var{value})
+
+Creates a new real object.
+
+@table @strong
+@item Parameters
+
+@table @var
+@item doc
+Document that contain this object.
+@item indirect
+Boolean value specifying if we want to create an indirect object.
+@item value
+Initialization value.
+@end table
+
+@item Returns
+
+The newly created object.
+
+@item Usage example
+
+@example
+pdfo_doc_t doc;
+pdfo_obj_t new_obj;
+
+/* Initialize `doc' ... */
+
+new_obj = pdfo_create_real (doc, PDF_FALSE, 2.12);
+@end example 
+@end table
+@end deftypefun 
+
+@node Managing Real Object Attributes
+@subsection Managing Real Object Attributes
+
+@deftypefun pdf_real_t pdfo_get_real (pdfo_obj_t @var{object})
+
+Gets the real value of a real object.
+
+@table @strong
+@item Parameters
+
+None.
+
+@item Returns
+
+The real value of the given object.
+
+@item Usage example
+
+@example
+pdfo_obj_t real_obj;
+pdf_real_t value;
+
+/* Initialize `real_obj' as a Real object ... */
+
+value = pdfo_get_real (new_obj);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun void pdfo_set_real (pdfo_obj_t @var{object}, pdf_real_t @var{value})
+
+Set a new real value in a real object.
+
+@table @strong
+@item Parameters
+@table @var
+@item object
+Real object.
+@item value
+New real value.
+@end table
+
+@item Returns
+
+None.
+
+@item Usage example
+@example
+pdfo_obj_t real_obj;
+pdf_real_t value;
+
+/* Initialize `real_obj' as a Real object ... */
+
+pdfo_set_real (new_obj, 3.14);
+@end example
+@end table
+@end deftypefun
+
+@node Integer Objects
+@section Integer Objects
+
+@node Boolean Objects
+@section Boolean Objects
+
+@node Name Objects
+@section Name Objects
+
+@node String Objects
+@section String Objects
+
+@node Array Objects
+@section Array Objects
+
+@node Dictionary Objects
+@section Dictionary Objects
+
+@node Stream Objects
+@section Stream Objects
+
+@node Indirect Objects
+@section Indirect Objects
+
+@node Null Object
+@section Null Object
+
+
+@node Document Layer
+@chapter Document Layer
+
+@node Page Contents Layer
+@chapter Page Contents Layer
 
 
 @c FDL
