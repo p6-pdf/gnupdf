@@ -6,16 +6,16 @@ body {
 
 .page_title {
 
-    font-size: 1.5em;
-    font-weight: bold;
+    font: 18pt Georgia, serif;
+/*    font-size: 1.5em;
+    font-weight: bold; */
     color: darkred;
     border-bottom: 2px solid darkred;
 }
 
 .section_title {
-    
-    font-size: 1.4em;
-    font-weight: bold;
+
+    font: 14pt Georgia, serif;
     color: darkred;
     border-bottom: 2px dashed darkred;
 }
