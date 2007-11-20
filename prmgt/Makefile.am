@@ -29,6 +29,7 @@ libgnupdf-fdp.png: libgnupdf.tjx
 	zcat libgnupdf.tjx | xsltproc --novalid pertfdp.xsl - | fdp -T png > libgnupdf-fdp.png
 
 cyclo.html:
+	chmod +x ${srcdir}/pmccabe2html
 	pmccabe ${top_srcdir}/src/*.[ch] | sort -nr | ${srcdir}/pmccabe2html > cyclo.html
 
 
@@ -43,6 +44,7 @@ clean-local:
                week-calendar.html resources.html tasks.html
 	-rm -f libgnupdf.tjx
 	-rm -f *_fn.txt
+	-rm -f pmccabe2html
 
 endif # PRMGT
 
