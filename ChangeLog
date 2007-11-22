@@ -1,3 +1,11 @@
+2007-11-22  Jose E. Marchesi  <jose.marchesi@deimos-space.com>
+
+	* doc/Makefile.am (wiki): New target.
+	(gnupdf.wiki): New target.
+	(gnupdf-utils.wiki): New target.
+
+	* doc/gnupdf-manual-wiki.init: New file.
+
 2007-11-20  Jose E. Marchesi  <jose.marchesi@deimos-space.com>
 
 	* configure.ac: Check for awk and set the output variable
