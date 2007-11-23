@@ -30,10 +30,10 @@ MAKEINFOHTML = texi2html --init-file=gnupdf-manual.init --css-include=manuals.cs
 wiki: gnupdf.wiki gnupdf-utils.wiki
 
 gnupdf.wiki: gnupdf.texi
-	texi2html --init-file=gnupdf-manual-wiki.init gnupdf.texi
+	texi2html --split chapter --init-file=gnupdf-manual-wiki.init gnupdf.texi
 
 gnupdf-utils.wiki: gnupdf-utils.texi
-	texi2html --init-file=gnupdf-manual-wiki.init gnupdf-utils.texi
+	texi2html --split chapter --init-file=gnupdf-manual-wiki.init gnupdf-utils.texi
 
 clean-local:
 	-rm -f gnupdf.wiki gnupdf-utils.wiki

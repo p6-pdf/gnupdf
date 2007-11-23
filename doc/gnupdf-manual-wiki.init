@@ -8,7 +8,7 @@
 # Load the file with command-line 
 # option -init-file mediawiki.init
 #
-# $Id: gnupdf-manual-wiki.init,v 1.1 2007/11/22 13:58:41 jemarch Exp $
+# $Id: gnupdf-manual-wiki.init,v 1.2 2007/11/23 00:43:06 jemarch Exp $
 
 ######################################################################
 # The following variables can also be set by command-line options
@@ -479,19 +479,19 @@ sub mediawiki_element_file_name
     {
 	if ($type =~ /^toc$/)
 	{
-	    $file = $docu_name . ": Table of Contents";
+	    $file = $docu_name . ":Table of Contents";
 	}
 	elsif ($type =~ /^stoc$/)
 	{
-	    $file = $docu_name . ": Short Table of Contents";
+	    $file = $docu_name . ":Short Table of Contents";
 	}
 	elsif ($type =~ /^foot$/)
 	{
-	    $file = $docu_name . ": Footnotes";
+	    $file = $docu_name . ":Footnotes";
 	}
 	elsif ($type =~ /^about$/)
 	{
-	    $file = $docu_name . ": About this Manual";
+	    $file = $docu_name . ":About this Manual";
 	}
 	elsif ($type =~ /^doc$/)
 	{
@@ -505,7 +505,7 @@ sub mediawiki_element_file_name
     }
     else
     {
-	$file = "$docu_name" . ($type ? "" : ": " . $element->{'texi'});
+	$file = "$docu_name" . ($type ? "" : ":" . $element->{'texi'});
 	$doc_nr_to_file{$element->{'doc_nr'}} = $file;
     }
     return $file;
