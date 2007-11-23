@@ -44,7 +44,6 @@ clean-local:
                week-calendar.html resources.html tasks.html
 	-rm -f libgnupdf.tjx
 	-rm -f *_fn.txt
-	-rm -f pmccabe2html
 
 endif # PRMGT
 
