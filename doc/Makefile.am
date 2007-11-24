@@ -23,9 +23,13 @@ gnupdf_TEXINFOS = fdl.texi
 
 man_MANS = pdf_filter.1
 
+AM_MAKEINFOHTMLFLAGS = --no-headers --no-split
+
 if TEXI2HTML
 
-MAKEINFOHTML = texi2html --init-file=gnupdf-manual.init --css-include=manuals.css
+html-local:
+	texi2html --init-file=gnupdf-manual.init --css-include=manuals.css gnupdf.texi
+	texi2html --init-file=gnupdf-manual.init --css-include=manuals.css gnupdf-utils.texi
 
 wiki: gnupdf.wiki gnupdf-utils.wiki
 
