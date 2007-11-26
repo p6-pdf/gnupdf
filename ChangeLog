@@ -1,3 +1,7 @@
+2007-11-26  Jose E. Marchesi  <jose.marchesi@deimos-space.com>
+
+	* doc/gnupdf.texi (Top): 'Basic Layer' -> 'Base Layer'.
+
 2007-11-22  Jose E. Marchesi  <jose.marchesi@deimos-space.com>
 
 	* doc/Makefile.am (wiki): New target.

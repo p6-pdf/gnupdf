@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.4 2007/11/20 00:40:44 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.5 2007/11/26 15:37:57 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -54,7 +54,7 @@ GNU PDF Library Reference
 
 @menu
 * Overview::            The GNU PDF library in brief.
-* Basic Layer::         Basic library facilities.
+* Base Layer::          Base library facilities.
 * Object Layer::        Editing the object structure of a PDF file.
 * Document Layer::      Editing the document-level structure of a PDF
                           file.
@@ -71,15 +71,15 @@ Indices
 @node Overview
 @chapter Overview
 
-@node Basic Layer
-@chapter Basic Layer
+@node Base Layer
+@chapter Base Layer
 
 @menu
-* Basic Layer Overview::
+* Base Layer Overview::
 * Memory Allocation::
 @end menu
 
-@node Basic Layer Overview
+@node Base Layer Overview
 @section Overview
 
 @node Memory Allocation
