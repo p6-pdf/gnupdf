@@ -1,3 +1,7 @@
+2007-11-26  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi: New function `pdf_realloc'.
+
 2007-11-26  Jose E. Marchesi  <jose.marchesi@deimos-space.com>
 
 	* doc/gnupdf.texi (Top): 'Basic Layer' -> 'Base Layer'.

@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.5 2007/11/26 15:37:57 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.6 2007/11/26 21:54:32 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -77,6 +77,15 @@ Indices
 @menu
 * Base Layer Overview::
 * Memory Allocation::
+* Basic Types::
+* Hash Tables::
+* Lists::
+* Filtered Streams::
+* Floating Point Arithmetic::
+* Text Encoding::
+* Time and Dates::
+* Accessing the File System::
+* Error Management::
 @end menu
 
 @node Base Layer Overview
@@ -90,6 +99,37 @@ Indices
 
 @deftypefun void pdf_dealloc (char *pointer)
 @end deftypefun
+
+@deftypefun char* pdf_realloc (char *pointer, int size)
+@end deftypefun
+
+@node Basic Types
+@section Basic Types
+
+@node Hash Tables
+@section Hash Tables
+
+@node Lists
+@section Lists
+
+@node Filtered Streams
+@section Filtered Streams
+
+@node Floating Point Arithmetic
+@section Floating Point Arithmetic
+
+@node Text Encoding
+@section Text Encoding
+
+@node Time and Dates
+@section Time and Dates
+
+@node Accessing the File System
+@section Accessing the File System
+
+@node Error Management
+@section Error Management
+
 
 @node Object Layer
 @chapter Object Layer
