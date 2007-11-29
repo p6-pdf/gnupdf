@@ -1,3 +1,7 @@
+2007-11-29  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/Makefile.am (libgnupdf_la_SOURCES): `pdf_xref.[ch]' removed.
+
 2007-11-26  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi: New function `pdf_realloc'.
