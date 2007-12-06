@@ -8,7 +8,7 @@
 # Load the file with command-line 
 # option -init-file mediawiki.init
 #
-# $Id: gnupdf-manual-wiki.init,v 1.2 2007/11/23 00:43:06 jemarch Exp $
+# $Id: gnupdf-manual-wiki.init,v 1.3 2007/12/06 15:16:42 jemarch Exp $
 
 ######################################################################
 # The following variables can also be set by command-line options
@@ -44,12 +44,14 @@ $NODE_FILE_EXTENSION = "wiki";
 # Use "title: section" name as the file name.
 $SECTION_AS_FILE_NAME = 1;
 
-$SECTION_NAVIGATION=0;
+$SECTION_NAVIGATION= 0;
 
 $SMALL_RULE = '';
 $DEFAULT_RULE = '';
 $MIDDLE_RULE = '';
 $BIG_RULE = '';
+
+$DEF_TABLE = 0;
 
 $AFTER_BODY_OPEN='{{Automatic Page|This page is automatically generated}}';
 
@@ -370,6 +372,9 @@ sub mediawiki_print_navigation
     my $buttons = shift;
     my $vertical = shift;
     my $spacing = 1;
+
+    return
+
     print $fh '<table cellpadding="', $spacing, '" cellspacing="', $spacing,
       "\" border=\"0\">\n";
 

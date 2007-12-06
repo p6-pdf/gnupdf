@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.6 2007/11/26 21:54:32 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.7 2007/12/06 15:16:43 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -76,6 +76,7 @@ Indices
 
 @menu
 * Base Layer Overview::
+* Error Management::
 * Memory Allocation::
 * Basic Types::
 * Hash Tables::
@@ -85,22 +86,141 @@ Indices
 * Text Encoding::
 * Time and Dates::
 * Accessing the File System::
-* Error Management::
 @end menu
 
 @node Base Layer Overview
 @section Overview
 
+The base layer of the GNU PDF Library provide system-independent
+access to several facilities.
+
+The implemented facilities are organized into modules. Each module
+export an API to be used by the client application or other layers of
+the library. Some modules make use of the facilities implemented in
+other modules (such as allocation or error functions).
+
+@node Error Management
+@section Error Management
+
+
+
 @node Memory Allocation
 @section Memory Allocation
 
+The memory allocation module provides system-independent heap memory
+allocation and deallocation. The usual malloc/free/realloc schema is
+used to provide this service.
+
 @deftypefun char* pdf_alloc (int size)
+
+Allocates heap memory.
+
+@table @strong
+@item Parameters
+
+@table @var
+@item size
+The requested number of octects to allocate.
+
+If there is not enough available memory to satisfy the petition a
+fatal error is signaled killing the current process. An error status
+is returned to the operating system.
+@end table
+
+@item Returns
+A pointer to the newly allocated memory. 
+
+@item Usage example
+@example
+int *p;
+
+p = (int *) pdf_alloc (sizeof(int));
+p = 666;
+@end example
+@end table
 @end deftypefun
 
 @deftypefun void pdf_dealloc (char *pointer)
+
+Deallocates heap memory.
+
+@table @strong
+@item Parameters
+
+@table @var
+@item pointer
+A pointer pointing to the memory we want to deallocate. The memory to
+deallocate should have been previously allocated using
+@code{pdf_alloc}.
+@end table
+
+@item Returns
+None.
+
+@item Usage Example
+
+@example
+char *p;
+
+p = (char *) pdf_alloc (21);
+pdf_dealloc (p);
+@end example
+@end table
 @end deftypefun
 
 @deftypefun char* pdf_realloc (char *pointer, int size)
+
+Reallocates memory.
+
+@table @strong
+@item Parameters
+
+@table @var
+@item pointer
+A pointer to previously allocated memory. 
+
+The memory to reallocate should have been allocated using
+@code{pdf_alloc} or @code{pdf_realloc}.
+@item size
+The new size of the allocated memory chunk. 
+
+If the requested size is shorter than the original size of the
+allocated memory then it is truncated. Any previous contents in the
+memory will be lost.
+
+If the requested size is larger or equal than the original size of the
+allocated memory then the previous contents of the allocated memory
+remains. The contents of newly allocated memory are undetermined.
+
+If there is not enough available memory to satisfy the petition a
+fatal error is signaled killing the current process. An error status
+is returned to the operating system.
+@end table
+
+@item Returns
+A pointer to the reallocated memory.
+
+@item Usage Example
+@example
+char *p;
+
+p = (char *) pdf_alloc (4);
+strncpy (p, "abcd", 4);
+
+/* p now points to "abcd" */
+
+p = (char *) pdf_realloc (5);
+p[4] = 'e';
+
+/* p now points to "abcde" */
+
+p = (char *) pdf_realloc (4);
+
+/* p now points to "abcd" */
+
+pdf_dealloc (p);
+@end example
+@end table
 @end deftypefun
 
 @node Basic Types
@@ -126,10 +246,6 @@ Indices
 
 @node Accessing the File System
 @section Accessing the File System
-
-@node Error Management
-@section Error Management
-
 
 @node Object Layer
 @chapter Object Layer
