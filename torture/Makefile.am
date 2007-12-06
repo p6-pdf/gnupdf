@@ -27,18 +27,14 @@ AM_CFLAGS = -g
 
 TESTS = testall
 
-testall_SOURCES = testall.c \
-	test-base.c \
-	test-date.c \
-	test-libinit.c \
-	test-obj_array.c \
-	test-obj_createdestroy.c \
-	test-obj_dict.c \
-	test-obj_dupequality.c \
-	test-stm_openclose.c \
-	test-rectangle.c
+TEST_FILES = test_stm_module.c
+
+testall_SOURCES = testall.c $(TEST_FILES)
 
 check_PROGRAMS = testall
+
+testall.c: $(TEST_FILES)
+	$(srcdir)/generate_testall $< > testall.c
 
 endif # CHECK
 

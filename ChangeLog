@@ -1,3 +1,9 @@
+2007-12-06  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/test_stm_module.c: New file.
+
+	* torture/generate_testall: New file.
+
 2007-11-29  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Memory Allocation): New section.
