@@ -36,6 +36,9 @@ check_PROGRAMS = testall
 testall.c: $(TEST_FILES)
 	$(srcdir)/generate_testall $< > testall.c
 
+clean-local:
+	-rm -f testall.c
+
 endif # CHECK
 
 # End of Makefile.am
