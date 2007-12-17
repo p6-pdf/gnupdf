@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.7 2007/12/06 15:16:43 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.8 2007/12/17 21:54:33 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -237,6 +237,120 @@ pdf_dealloc (p);
 
 @node Floating Point Arithmetic
 @section Floating Point Arithmetic
+
+@menu
+* Floating Point Types::
+* Point Manipulation Functions::
+* Rectangle Manipulation Functions::
+* Quadrilateral Manipulation Functions::
+* Matrix Manipulation Functions::
+* Interpolation Functions::
+@end menu
+
+@node Floating Point Types
+@subsection Floating Point Types
+
+@deftp {Data Type} pdf_real_t
+A floating-point number.
+@end deftp
+
+@deftp {Data Type} struct pdf_point_s
+
+This structure represents a single point. The coordinates of the point
+are made using floating point numbers.
+
+@table @code
+@item pdf_real_t h
+Horizontal coordinate.
+@item pdf_real_t v
+Vertical coordinate.
+@end table
+@end deftp
+
+@deftp {Data Type} struct pdf_rect_s
+
+This structure represents a rectangle. It is composed by the
+coordinates for its four sides.
+
+The rectangle sides should be horizontal and vertical and opposite
+sides should be parallel.
+
+@table @code
+@item pdf_real_t left
+@code{x} coordinate for the left points.
+@item pdf_real_t top
+@code{y} coordinate for the upper points.
+@item pdf_real_t right
+@code{x} coordinate for the right points.
+@item pdf_real_t bottom
+@code{y} coordinate for the bottom points.
+@end table
+@end deftp
+
+@deftp {Data Type} struct pdf_quad_s
+This structure represents a quadrilateral. It is composed by four
+corners (floating-point points).
+@table @code
+@item pdf_point_t tl
+Top-left point.
+@item pdf_point_t tr
+Top-right point.
+@item pdf_point_t bl
+Bottom-left point.
+@item pdf_point_t br
+Bottom-right point.
+@end table
+@end deftp
+
+@deftp {Data Type} struct pdf_matrix_s
+This structure represents a 3x3 matrix.
+
+@table @code
+@item pdf_real_t a11
+@item pdf_real_t a12
+@item pdf_real_t a13
+First row.
+@item pdf_real_t a21
+@item pdf_real_t a22
+@item pdf_real_t a23
+Second row.
+@item pdf_real_t a31
+@item pdf_real_t a32
+@item pdf_real_t a33
+Third row.
+@end table
+@end deftp
+
+@node Point Manipulation Functions
+@subsection Point Manipulation Functions
+
+@node Quadrilateral Manipulation Functions
+@subsection Quadrilateral Manipulation Functions
+
+@node Rectangle Manipulation Functions
+@subsection Rectangle Manipulation Functions
+
+@node Matrix Manipulation Functions
+@subsection Matrix Manipulation Functions
+
+@deftypefun pdf_status_t pdf_fp_matrix_concat (pdf_matrix_t result, pdf_matrix_t m1, pdf_matrix_t m2)
+
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_fp_matrix_invert (pdf_matrix_t result, pdf_matrix_t m)
+
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_fp_matrix_transform (pdf_point_t result, pdf_matrix_t m, pdf_point_t p)
+
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_fp_matrix_transform_rect (pdf_rect_t result, pdf_matrix_t m, pdf_rect_t rect)
+
+@end deftypefun
+
+@node Interpolation Functions
+@subsection Interpolation Functions
 
 @node Text Encoding
 @section Text Encoding
