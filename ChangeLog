@@ -1,3 +1,8 @@
+2007-12-20  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Time Related Data Types): New section.
+	(Time Management): New section.
+
 2007-12-17  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Floating Point Types): New section.

@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.8 2007/12/17 21:54:33 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.9 2007/12/20 22:38:55 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -84,7 +84,7 @@ Indices
 * Filtered Streams::
 * Floating Point Arithmetic::
 * Text Encoding::
-* Time and Dates::
+* Time::
 * Accessing the File System::
 @end menu
 
@@ -355,8 +355,814 @@ Third row.
 @node Text Encoding
 @section Text Encoding
 
-@node Time and Dates
-@section Time and Dates
+@node Time
+@section Time
+
+@menu
+* Time Related Data Types::
+* Time Management::
+* Time Spans Management::
+@end menu
+
+@node Time Related Data Types
+@subsection Time Related Data Types
+
+@deftp {Data Type} pdf_time_t
+A variable of type @code{pdf_time_t} contain information about a
+particular date and time.
+
+Note that leap seconds are not considered.
+@end deftp
+
+@deftp {Data Type} pdf_time_span_t
+A variable of type @code{pdf_time_span_t} represent a span of time.
+
+@end deftp
+
+@deftp {Data Type} struct pdf_time_cal_s
+This structure holds information about a specific time represented in
+calendar items: years, months, days, day of week, hours, minutes, seconds,
+milliseconds and the relative offset with GMT.
+
+@table @code
+@item pdf_i32_t year
+A year number. Negative values may be supported in some systems.
+@item pdf_u32_t month
+A month number. The valid range is @code{1..12}.
+@item pdf_u32_t day
+A day number. The valid range is @code{1..31}.
+@item pdf_u32_t dow
+Day of the week. The valid range is @code{1..7} (Monday to Sunday).
+@item pdf_u32_t hour
+An hour. The valid range is @code{0..23}.
+@item pdf_u32_t minute
+A minute. The valid range is @code{0..59}.
+@item pdf_u32_t sec
+A second. The valid range is @code{0..59}.
+@item pdf_u32_t usec
+A microsecond. The valid range is @code{0..999999}.
+@item pdf_i32_t gmt_offset
+A GMT offset.
+@end table
+@end deftp
+
+@deftp {Data Type} struct pdf_time_cal_span_s
+This structure holds information about a time span represented in
+calendar items: years, months, days, hours, minutes and seconds.
+
+@table @code
+@item pdf_u32_t year
+@item pdf_u32_t month
+@item pdf_u32_t day
+@item pdf_u32_t hour
+@item pdf_u32_t minute
+@item pdf_u32_t second
+@end table
+@end deftp
+
+@deftp {Data Type} enum pdf_time_format_e
+Enumeration containing the several supported time formats used to
+convert a time to a string representation or to parse a time from a
+string representation.
+
+@table @code
+@item PDF_TIME_FORMAT_PDF
+@item PDF_TIME_FORMAT_UNIVERSAL
+@item PDF_TIME_FORMAT_UNIVERSAL_H
+@item PDF_TIME_FORMAT_ASN1
+@item PDF_TIME_FORMAT_GENERALIZED_ASN1
+@end table
+@end deftp
+
+@node Time Management
+@subsection Time Management
+
+@deftypefun pdf_time_t pdf_time_new (void)
+Create a new time and set it to the Epoch: Jan 1 1970-01-01 00:00:00 UTC
+
+@table @strong
+@item Parameters
+None.
+
+@item Returns
+The newly created time object.
+If an error occurs then @code{NULL} is returned.
+
+@item Usage example
+@example
+pdf_time_t mytime;
+
+mytime = pdf_time_new ();
+if (mytime == NULL)
+@{
+  /* Error */
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_time_copy (pdf_time_t orig, pdf_time_t copy)
+Copies the data from @var{orig} to @var{copy}.
+
+@table @strong
+@item Parameters
+@table @var
+@item orig
+The time whose data is to be copied. Should be a properly created time variable.
+@item copy
+The time to receive the data from @var{orig}. Should be a properly
+created time variable.
+
+Note that any previous data is destroyed.
+@end table
+@item Returns
+@itemize @bullet
+@item
+@code{PDF_OK} if the copy succeeded.
+@end itemize
+@item Usage example
+@example
+pdf_time_t orig;
+pdf_time_t copy;
+
+orig = pdf_time_new ();
+copy = pdf_time_new ();
+
+if (!pdf_time_copy (orig, copy))
+@{
+  /* Error */
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_time_t pdf_time_dup (pdf_time_t orig)
+Dup a new time variable from a given one, allocating memory.
+
+@table @strong
+@item Parameters
+
+@table @var
+@item orig
+The time variable to be dupped. Should be a properly created time
+variable.
+@end table
+@item Returns
+@itemize @bullet
+@item
+A new time variable containing a copy of @var{orig} values.
+@item
+@code{NULL} if there is an error.
+@end itemize
+@item Usage example
+@example
+pdf_time_t orig;
+pdf_time_t new_time;
+
+orig = pdf_time_new ();
+new_time = pdf_time_dup (orig);
+
+if (new_time == NULL)
+@{
+  /* Error */
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_time_destroy (pdf_time_t time)
+Destroy @var{mytime} and free all used memory.
+
+@table @strong
+@item Parameters
+@table @var
+@item time
+The time variable to be destroyed. Should be a properly created time
+variable.
+@end table
+@item Returns
+@code{PDF_OK}.
+@item Usage example
+@example
+pdf_time_t mytime;
+
+mytime = pdf_time_new ();
+pdf_time_destroy (mytime);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_time_clear (pdf_time_t time)
+Reset @var{time} to the newly created state. After this call
+@var{time} will contain the same date as if returned by
+@code{pdf_time_new}.
+
+@table @strong
+@item Parameters
+@table @var
+@item time
+The time variable to clear. Should be a properly create time variable.
+@end table
+@item Returns
+@code{PDF_OK}.
+@item Usage example
+@example
+pdf_time_t mytime;
+
+mytime = pdf_time_new ();
+
+/* ...manipulate `mytime'... */
+
+pdf_time_clear (mytime);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_time_add_cal_span (pdf_time_t time, struct pdf_time_cal_span_s cal_span)
+Add the time span represented by @var{cal_span} to @var{time}.
+
+@table @strong
+@item Parameters
+
+@table @var
+@item time
+A properly created time variable.
+@item cal_span
+A calendar span with valid values.
+@end table
+
+@item Returns
+
+@table @code
+@item PDF_OK
+The operation successfully finished.
+@item PDF_E_BADDATA
+The data in @var{cal_span} is invalid.
+@end table
+
+@item Usage example
+@example
+pdf_time_t mytime;
+struct pdf_time_cal_span_s cal_span;
+
+mytime = pdf_time_new (); /* Initialized to Jan 1 1970-01-01 00:00:00 */
+
+cal_span.year = 30;
+cal_span.month = 7;
+cal_span.day = 20;
+cal_span.hour = 21;
+cal_span.minute = 0;
+cal_span.second = 0;
+
+if (pdf_time_add_cal_span (mytime, cal_span) == PDF_E_BADDATA)
+@{
+  /* Bad data in `cal_span' */
+@}
+else
+@{
+  /* `time' now contains Aug 21 2000-08-21 21:00:00 */
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_time_sub_cal_span (pdf_time_t time, struct pdf_time_cal_span_s cal_span)
+Subtract the time span represented by @var{cal_span} to @var{time}.
+
+@table @strong
+@item Parameters
+
+@table @var
+@item time
+A properly created time variable.
+@item cal_span
+A calendar span with valid values.
+@end table
+
+@item Returns
+
+@table @code
+@item PDF_OK
+The operation successfully finished.
+@item PDF_E_BADDATA
+The data in @var{cal_span} is invalid.
+@end table
+
+@item Usage example
+@example
+pdf_time_t mytime;
+struct pdf_time_cal_span_s cal_span;
+
+mytime = pdf_time_new (); /* Initialized to Jan 1 1970-01-01 00:00:00 */
+
+cal_span.year = 30;
+cal_span.month = 7;
+cal_span.day = 20;
+cal_span.hour = 21;
+cal_span.minute = 0;
+cal_span.second = 0;
+
+if (pdf_time_add_cal_span (mytime, cal_span) == PDF_E_BADDATA)
+@{
+  /* Bad data in `cal_span' */
+@}
+else
+@{
+  /* `time' now contains Aug 21 2000-08-21 21:00:00 */
+@}
+
+if (pdf_time_sub_cal_span (mytime, cal_span) == PDF_E_BADDATA)
+@{
+  /* Bad data in `cal_span' */
+@}
+else
+@{
+  /* `time' now contains Jan 1 1970-01-01 00:00:00 */
+@}
+@end example
+@end table
+@end deftypefun
+
+
+@deftypefun pdf_status_t pdf_time_add_span (pdf_time_t time, pdf_time_span_t time_span)
+Add the time span contained in @var{time_span} to @var{time}.
+
+@table @strong
+@item Parameters
+
+@table @var
+@item time
+A properly created time variable.
+@item time_span
+A properly created time span.
+@end table
+
+@item Returns
+
+@table @code
+@item PDF_OK
+The operation successfully finished.
+@end table
+
+@item Usage example
+@example
+pdf_time_t mytime;
+pdf_time_span_t myspan;
+
+mytime = pdf_time_new ();
+
+/* ...create and initialize `myspan'... */
+
+pdf_time_add_span (mytime, myspan);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_time_sub_span (pdf_time_t time, pdf_time_span_t time_span)
+Subtract the time span contained in @var{time_span} to @var{time}.
+
+@table @strong
+@item Parameters
+
+@table @var
+@item time
+A properly created time variable.
+@item time_span
+A properly created time span.
+@end table
+
+@item Returns
+
+@table @code
+@item PDF_OK
+The operation successfully finished.
+@end table
+
+@item Usage example
+@example
+pdf_time_t mytime;
+pdf_time_span_t myspan;
+
+mytime = pdf_time_new ();
+
+/* ...create and initialize `myspan'... */
+
+pdf_time_sub_span (mytime, myspan);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_time_diff (pdf_time_t time1, pdf_time_t time2, struct pdf_time_cal_span_s cal_span)
+Calculate the time span that goes from @var{time1} to @var{time2} and
+store it in @var{cal_span}.
+
+Note that the highest possible distribution inside @var{cal_span} is used.
+@table @strong
+@item Parameters
+
+@table @var
+@item time1
+The beginning of the time interval (inclusive).
+@item time2
+The end of the time interval (exclusive).
+@item cal_span
+The calendar time span structure that will hold the time span that
+goes between @var{time1} and @var{time2}.
+@end table
+
+@item Returns
+
+@table @code
+@item PDF_OK
+The operation successfully finished.
+@end table
+
+@item Usage example
+@example
+pdf_time_t time_begin;
+pdf_time_t time_end;
+struct pdf_time_cal_span_s cal_span;
+
+/* ...create and manipulate `time_begin' and `time_end' */
+
+pdf_time_diff (time_begin, time_end, cal_span);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_time_diff (pdf_time_t time1, pdf_time_t time2, pdf_time_span_t time_span)
+Calculate the time span between two dates.
+
+@table @strong
+@item Parameters
+
+@table @var
+@item time1
+The beginning time. Should be a properly created time.
+@item time2
+The ending time. Should be a properly created time.
+@item time_span
+The time span variable that will hold the difference between
+@var{time1} and @var{time2}. Should be a properly created time
+span. Any previous content of @var{time_span} will be destroyed.
+@end table
+
+@item Returns
+
+@table @code
+@item PDF_OK
+The operation successfully finished.
+@end table
+
+@item Usage example
+@example
+pdf_time_t time1;
+pdf_time_t time2;
+pdf_time_span_t time_span;
+
+/* ...create and manipulate `time1', `time2' and `time_span'... */
+
+pdf_time_diff (time1, time2, time_span);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_i32_t pdf_time_cmp (pdf_time_t time1, pdf_time_t time2)
+Compares two times.
+
+@table @strong
+@item Parameters
+
+@table @var
+@item time1
+The first time to compare.
+Should be a properly created time variable.
+@item time2
+The second time to compare.
+Should be a properly created time variable.
+@end table
+
+@item Returns
+
+@table @code
+@item -1
+If @var{time1} precedes @var{time2}.
+@item 0
+If @var{time1} and @var{time2} contain the same time.
+@item 1
+If @var{time2} precedes @var{time1}.
+@end table
+
+@item Usage example
+@example
+pdf_time_t time1;
+pdf_time_t time2;
+
+time1 = pdf_time_new ();
+time2 = pdf_time_new ();
+
+/* ...manipulate `time1' and `time2'... */
+
+switch (pdf_time_cmp (time1, time2))
+@{
+  case -1:
+  @{
+    /* `time1' precedes `time2' */
+    break;
+  @}
+  case 0:
+  @{
+    /* `time1' contain the same time than `time2' */
+    break;
+  @}
+  case 1:
+  @{
+    /* `time2' precedes `time1' */
+    break;
+  @}
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_time_get_local_cal (pdf_time_t time, struct pdf_time_cal_s local_cal)
+Fill @var{local_cal} with the local calendar time of @var{time}.
+
+@table @strong
+@item Parameters
+
+@table @var
+@item time
+A properly created time variable.
+@item local_cal
+A time calendar structure that will hold the local time of @var{time}.
+@end table
+
+@item Returns
+
+@table @code
+@item PDF_OK
+The operation successfully finished.
+@end table
+
+@item Usage example
+@example
+pdf_time_t mytime;
+struct pdf_time_cal_s cal;
+
+/* ...create and manipulate `mytime'... */
+
+pdf_time_get_local_cal (mytime, cal);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_time_get_utc_cal (pdf_time_t time, struct pdf_time_cal_s cal_time)
+Get the UTC calendar time of a given time variable.
+
+@table @strong
+@item Parameters
+
+@table @var
+@item time
+A properly created time variable.
+@item cal_time
+A calendar time structure that will hold the UTC time of @var{time}.
+@end table
+
+@item Returns
+
+@table @code
+@item PDF_OK
+The operation successfully finished.
+@end table
+
+@item Usage example
+@example
+pdf_time_t mytime;
+sruct pdf_time_cal_s cal_time;
+
+/* ...create and manipulate `mytime'... */
+
+pdf_time_get_utc_cal (mytime, cal_time);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun char* pdf_time_to_string (pdf_time_t time, enum pdf_time_format_e time_format)
+Create a string representation of a given time.
+
+@table @strong
+@item Parameters
+
+@table @var
+@item time
+A properly created time variable.
+@item time_format
+The format to use when creating the string representation of @var{time}. 
+@end table
+
+@item Returns
+The string representation of @var{time}.
+
+@table @code
+@item NULL
+If there is an error.
+@end table
+
+@item Usage example
+@example
+pdf_time_t mytime;
+char *mytime_str;
+
+/* ...create and manipulate `mytime'... */
+
+mytime_str = pdf_time_to_string (mytime, PDF_TIME_FORMAT_PDF);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_time_from_string (pdf_time_t mytime, char *time_str, enum pdf_time_format_e time_format)
+Get a string containing a time specification in some format and fill a
+time variable with the parsed values.
+
+@table @strong
+@item Parameters
+
+@table @var
+@item mytime
+A properly created time variable.
+
+@item time_str
+A null-terminated string representation of a time.
+@item time_format
+The format indicating how to parse @var{time_str}.
+@end table
+
+@item Returns
+
+@table @code
+@item PDF_OK
+
+@item PDF_E_BADDATA
+Error while parsing @var{time_str} according to @var{time_format}.
+@end table
+
+@item Usage example
+@example
+pdf_time_t mytime;
+char time_str[] = "FIXME: put a correct PDF time there";
+
+mytime = pdf_time_new ();
+if (pdf_time_from_string (mytime, 
+                          time_str,
+                          PDF_TIME_FORMAT_PDF) == PDF_E_BADDATA)
+@{
+  /* Error while parsing `time_str' according to `PDF_TIME_FORMAT_PDF' */
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_time_from_cal (pdf_time_t time, struct pdf_time_cal_s cal_time)
+Set the value of a time variable to a given calendar time.
+
+@table @strong
+@item Parameters
+
+@table @var
+@item time
+A properly created time variable.
+@item cal_time
+A calendar time structure.
+@end table
+
+@item Returns
+
+@table @code
+@item PDF_OK
+The operation successfully finished.
+@item PDF_E_BADDATA
+There is invalid data in the calendar structure @var{cal_time}.
+@end table
+
+@item Usage example
+@example
+pdf_time_t mytime;
+struct pdf_time_cal_s mycaltime;
+
+mytime = pdf_time_new ();
+
+mycaltime.year = 2000;
+mycaltime.month = 8;
+mycaltime.day = 10;
+mycaltime.dow = 0; /* This field is ignored by `pdf_time_from_cal' */
+mycaltime.hour = 0;
+mycaltime.minute = 0;
+mycaltime.sec = 0;
+mycaltime.usec = 0;
+mycaltime.gmt_offset = 1;
+
+if (pdf_time_from_cal (mytime, mycaltime) == PDF_E_BADDATA)
+@{
+  /* Bad data in `mycaltime' */
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_time_set_local_offset (pdf_time_t time)
+Set the local time offset of @var{time} to the one used by the
+operating system.
+
+@table @strong
+@item Parameters
+
+@table @var
+@item time
+A properly created time variable.
+@end table
+
+@item Returns
+
+@table @code
+@item PDF_OK
+The operation successfully finished.
+@end table
+
+@item Usage example
+@example
+pdf_time_t mytime;
+
+mytime = pdf_time_new ();
+pdf_time_set_local_offset (time);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_time_set_to_current_local_time (pdf_time_t time)
+Set the value of @var{time} to the current local time used by the
+operating system.
+
+@table @strong
+@item Parameters
+
+@table @var
+@item time
+A properly created time variable.
+@end table
+
+@item Returns
+
+@table @code
+@item PDF_OK
+The operation successfully finished.
+@end table
+
+@item Usage example
+@example
+pdf_time_t mytime;
+
+mytime = pdf_time_new ();
+
+pdf_time_set_to_current_local_time (mytime);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_time_set_to_current_utc_time (pdf_time_t time)
+Set the value of @var{time} to the current UTC time used by the operating system.
+
+@table @strong
+@item Parameters
+
+@table @var
+@item time
+A properly created time variable.
+@end table
+
+@item Returns
+
+@table @code
+@item PDF_OK
+The operation successfully finished.
+@end table
+
+@item Usage example
+@example
+pdf_time_t mytime;
+
+mytime = pdf_time_new ();
+
+pdf_time_set_to_current_utc_time (mytime);
+@end example
+@end table
+@end deftypefun
+
+
+
+@node Time Spans Management
+@subsection Time Spans Management
 
 @node Accessing the File System
 @section Accessing the File System
