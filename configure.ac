@@ -53,7 +53,12 @@ AC_CHECK_LIB(m,exp,,,)
 AC_CHECK_LIB([check],[suite_create],[have_check=yes],[have_check=no],)
 AM_CONDITIONAL([CHECK], [test "x$have_check" = "xyes"])
 
-dnl Search for programs
+dnl Search for programs for building documentation
+AC_CHECK_PROG([have_makeinfo], [makeinfo], [yes], [no],,)
+if test "x$have_makeinfo" = "xno"; then
+AC_MSG_ERROR([cannot find the `makeinfo' program. Please install the texinfo package and rerun `configure'.])
+fi
+
 AC_CHECK_PROG([have_texi2html], [texi2html], [yes], [no],,)
 AM_CONDITIONAL([TEXI2HTML], [test "x$have_texi2html" = "xyes"])
 if test "x$have_texi2html" = "xyes" ; then
@@ -78,14 +83,23 @@ fi
 AC_PATH_PROG([PATH_TO_AWK],$AWK)
 AC_SUBST(PATH_TO_AWK)
 
-AC_CHECK_PROG([have_taskjuggler], [taskjuggler], [yes], 
-              [AC_MSG_ERROR([cannot find the `taskjuggler' program. Please install it and rerun `configure'.])],,)
-AC_CHECK_PROG([have_dot], [dot], [yes], 
-              [AC_MSG_ERROR([cannot find the `dot' program. Please install the graphviz package and rerun `configure'.])],,)
-AC_CHECK_PROG([have_fdp], [fdp], [yes], 
-              [AC_MSG_ERROR([cannot find the `fdp' program. Please install the graphviz package and rerun `configure'.])],,)
-AC_CHECK_PROG([have_pmccabe], [pmccabe], [yes], 
-              [AC_MSG_ERROR([cannot find the `pmccabe' program. Please install it and rerun `configure'.])],,)
+AC_CHECK_PROG([have_taskjuggler], [taskjuggler], [yes], [no],,)
+if test "x$have_taskjuggler" = "xno"; then
+AC_MSG_ERROR([cannot find the `taskjuggler' program. Please install it and rerun `configure'.])
+fi
+AC_CHECK_PROG([have_dot], [dot], [yes], [no],,)
+if test "x$have_dot" = "xno"; then
+AC_MSG_ERROR([cannot find the `dot' program. Please install the graphviz package and rerun `configure'.])
+fi
+AC_CHECK_PROG([have_fdp], [fdp], [yes], [no],,)
+if test "x$have_fdp" = "xno"; then
+AC_MSG_ERROR([cannot find the `fdp' program. Please install the graphviz package and rerun `configure'.])
+fi
+AC_CHECK_PROG([have_pmccabe], [pmccabe], [yes], [no],,)
+if test "x$have_pmccabe" = "xno"; then
+AC_MSG_ERROR([cannot find the `pmccabe' program. Please install it and rerun `configure'.])
+fi
+
 fi # prmgt_mode
 
 dnl Generate output files

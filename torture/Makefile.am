@@ -34,7 +34,7 @@ testall_SOURCES = testall.c $(TEST_FILES)
 check_PROGRAMS = testall
 
 testall.c: $(TEST_FILES)
-	$(srcdir)/generate_testall $< > testall.c
+	$(srcdir)/generate_testall $(TEST_FILES) > testall.c
 
 clean-local:
 	-rm -f testall.c

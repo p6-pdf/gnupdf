@@ -1,5 +1,11 @@
 2007-12-20  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* configure.ac: Check for `makeinfo'.
+	Fix the checking of programs where they are missing.
+
+	* torture/Makefile.am (testall.c): Include all the files specified
+	in the TEST_FILES variable in the `generate_testall' call.
+
 	* doc/gnupdf.texi (Time Related Data Types): New section.
 	(Time Management): New section.
 
