@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.9 2007/12/20 22:38:55 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.10 2007/12/20 23:06:07 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -84,7 +84,7 @@ Indices
 * Filtered Streams::
 * Floating Point Arithmetic::
 * Text Encoding::
-* Time::
+* Time Management::
 * Accessing the File System::
 @end menu
 
@@ -355,13 +355,17 @@ Third row.
 @node Text Encoding
 @section Text Encoding
 
-@node Time
-@section Time
+@node Time Management
+@section Time Management
 
 @menu
 * Time Related Data Types::
-* Time Management::
-* Time Spans Management::
+* Time Creation and Destruction::
+* Managing Time Values::
+* Getting Time Intervals::
+* Time Comparison::
+* Time Printing and Parsing::
+* Getting the Current Time::
 @end menu
 
 @node Time Related Data Types
@@ -434,8 +438,8 @@ string representation.
 @end table
 @end deftp
 
-@node Time Management
-@subsection Time Management
+@node Time Creation and Destruction
+@subsection Time Creation and Destruction
 
 @deftypefun pdf_time_t pdf_time_new (void)
 Create a new time and set it to the Epoch: Jan 1 1970-01-01 00:00:00 UTC
@@ -454,41 +458,6 @@ pdf_time_t mytime;
 
 mytime = pdf_time_new ();
 if (mytime == NULL)
-@{
-  /* Error */
-@}
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_time_copy (pdf_time_t orig, pdf_time_t copy)
-Copies the data from @var{orig} to @var{copy}.
-
-@table @strong
-@item Parameters
-@table @var
-@item orig
-The time whose data is to be copied. Should be a properly created time variable.
-@item copy
-The time to receive the data from @var{orig}. Should be a properly
-created time variable.
-
-Note that any previous data is destroyed.
-@end table
-@item Returns
-@itemize @bullet
-@item
-@code{PDF_OK} if the copy succeeded.
-@end itemize
-@item Usage example
-@example
-pdf_time_t orig;
-pdf_time_t copy;
-
-orig = pdf_time_new ();
-copy = pdf_time_new ();
-
-if (!pdf_time_copy (orig, copy))
 @{
   /* Error */
 @}
@@ -548,6 +517,44 @@ pdf_time_t mytime;
 
 mytime = pdf_time_new ();
 pdf_time_destroy (mytime);
+@end example
+@end table
+@end deftypefun
+
+@node Managing Time Values
+@subsection Managing Time Values
+
+@deftypefun pdf_status_t pdf_time_copy (pdf_time_t orig, pdf_time_t copy)
+Copies the data from @var{orig} to @var{copy}.
+
+@table @strong
+@item Parameters
+@table @var
+@item orig
+The time whose data is to be copied. Should be a properly created time variable.
+@item copy
+The time to receive the data from @var{orig}. Should be a properly
+created time variable.
+
+Note that any previous data is destroyed.
+@end table
+@item Returns
+@itemize @bullet
+@item
+@code{PDF_OK} if the copy succeeded.
+@end itemize
+@item Usage example
+@example
+pdf_time_t orig;
+pdf_time_t copy;
+
+orig = pdf_time_new ();
+copy = pdf_time_new ();
+
+if (!pdf_time_copy (orig, copy))
+@{
+  /* Error */
+@}
 @end example
 @end table
 @end deftypefun
@@ -752,139 +759,6 @@ pdf_time_sub_span (mytime, myspan);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_diff (pdf_time_t time1, pdf_time_t time2, struct pdf_time_cal_span_s cal_span)
-Calculate the time span that goes from @var{time1} to @var{time2} and
-store it in @var{cal_span}.
-
-Note that the highest possible distribution inside @var{cal_span} is used.
-@table @strong
-@item Parameters
-
-@table @var
-@item time1
-The beginning of the time interval (inclusive).
-@item time2
-The end of the time interval (exclusive).
-@item cal_span
-The calendar time span structure that will hold the time span that
-goes between @var{time1} and @var{time2}.
-@end table
-
-@item Returns
-
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@end table
-
-@item Usage example
-@example
-pdf_time_t time_begin;
-pdf_time_t time_end;
-struct pdf_time_cal_span_s cal_span;
-
-/* ...create and manipulate `time_begin' and `time_end' */
-
-pdf_time_diff (time_begin, time_end, cal_span);
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_time_diff (pdf_time_t time1, pdf_time_t time2, pdf_time_span_t time_span)
-Calculate the time span between two dates.
-
-@table @strong
-@item Parameters
-
-@table @var
-@item time1
-The beginning time. Should be a properly created time.
-@item time2
-The ending time. Should be a properly created time.
-@item time_span
-The time span variable that will hold the difference between
-@var{time1} and @var{time2}. Should be a properly created time
-span. Any previous content of @var{time_span} will be destroyed.
-@end table
-
-@item Returns
-
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@end table
-
-@item Usage example
-@example
-pdf_time_t time1;
-pdf_time_t time2;
-pdf_time_span_t time_span;
-
-/* ...create and manipulate `time1', `time2' and `time_span'... */
-
-pdf_time_diff (time1, time2, time_span);
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_i32_t pdf_time_cmp (pdf_time_t time1, pdf_time_t time2)
-Compares two times.
-
-@table @strong
-@item Parameters
-
-@table @var
-@item time1
-The first time to compare.
-Should be a properly created time variable.
-@item time2
-The second time to compare.
-Should be a properly created time variable.
-@end table
-
-@item Returns
-
-@table @code
-@item -1
-If @var{time1} precedes @var{time2}.
-@item 0
-If @var{time1} and @var{time2} contain the same time.
-@item 1
-If @var{time2} precedes @var{time1}.
-@end table
-
-@item Usage example
-@example
-pdf_time_t time1;
-pdf_time_t time2;
-
-time1 = pdf_time_new ();
-time2 = pdf_time_new ();
-
-/* ...manipulate `time1' and `time2'... */
-
-switch (pdf_time_cmp (time1, time2))
-@{
-  case -1:
-  @{
-    /* `time1' precedes `time2' */
-    break;
-  @}
-  case 0:
-  @{
-    /* `time1' contain the same time than `time2' */
-    break;
-  @}
-  case 1:
-  @{
-    /* `time2' precedes `time1' */
-    break;
-  @}
-@}
-@end example
-@end table
-@end deftypefun
-
 @deftypefun pdf_status_t pdf_time_get_local_cal (pdf_time_t time, struct pdf_time_cal_s local_cal)
 Fill @var{local_cal} with the local calendar time of @var{time}.
 
@@ -945,81 +819,6 @@ sruct pdf_time_cal_s cal_time;
 /* ...create and manipulate `mytime'... */
 
 pdf_time_get_utc_cal (mytime, cal_time);
-@end example
-@end table
-@end deftypefun
-
-@deftypefun char* pdf_time_to_string (pdf_time_t time, enum pdf_time_format_e time_format)
-Create a string representation of a given time.
-
-@table @strong
-@item Parameters
-
-@table @var
-@item time
-A properly created time variable.
-@item time_format
-The format to use when creating the string representation of @var{time}. 
-@end table
-
-@item Returns
-The string representation of @var{time}.
-
-@table @code
-@item NULL
-If there is an error.
-@end table
-
-@item Usage example
-@example
-pdf_time_t mytime;
-char *mytime_str;
-
-/* ...create and manipulate `mytime'... */
-
-mytime_str = pdf_time_to_string (mytime, PDF_TIME_FORMAT_PDF);
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_time_from_string (pdf_time_t mytime, char *time_str, enum pdf_time_format_e time_format)
-Get a string containing a time specification in some format and fill a
-time variable with the parsed values.
-
-@table @strong
-@item Parameters
-
-@table @var
-@item mytime
-A properly created time variable.
-
-@item time_str
-A null-terminated string representation of a time.
-@item time_format
-The format indicating how to parse @var{time_str}.
-@end table
-
-@item Returns
-
-@table @code
-@item PDF_OK
-
-@item PDF_E_BADDATA
-Error while parsing @var{time_str} according to @var{time_format}.
-@end table
-
-@item Usage example
-@example
-pdf_time_t mytime;
-char time_str[] = "FIXME: put a correct PDF time there";
-
-mytime = pdf_time_new ();
-if (pdf_time_from_string (mytime, 
-                          time_str,
-                          PDF_TIME_FORMAT_PDF) == PDF_E_BADDATA)
-@{
-  /* Error while parsing `time_str' according to `PDF_TIME_FORMAT_PDF' */
-@}
 @end example
 @end table
 @end deftypefun
@@ -1100,6 +899,226 @@ pdf_time_set_local_offset (time);
 @end table
 @end deftypefun
 
+@node Getting Time Intervals
+@subsection Getting Time Intervals
+
+@deftypefun pdf_status_t pdf_time_diff (pdf_time_t time1, pdf_time_t time2, struct pdf_time_cal_span_s cal_span)
+Calculate the time span that goes from @var{time1} to @var{time2} and
+store it in @var{cal_span}.
+
+Note that the highest possible distribution inside @var{cal_span} is used.
+@table @strong
+@item Parameters
+
+@table @var
+@item time1
+The beginning of the time interval (inclusive).
+@item time2
+The end of the time interval (exclusive).
+@item cal_span
+The calendar time span structure that will hold the time span that
+goes between @var{time1} and @var{time2}.
+@end table
+
+@item Returns
+
+@table @code
+@item PDF_OK
+The operation successfully finished.
+@end table
+
+@item Usage example
+@example
+pdf_time_t time_begin;
+pdf_time_t time_end;
+struct pdf_time_cal_span_s cal_span;
+
+/* ...create and manipulate `time_begin' and `time_end' */
+
+pdf_time_diff (time_begin, time_end, cal_span);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_time_diff (pdf_time_t time1, pdf_time_t time2, pdf_time_span_t time_span)
+Calculate the time span between two dates.
+
+@table @strong
+@item Parameters
+
+@table @var
+@item time1
+The beginning time. Should be a properly created time.
+@item time2
+The ending time. Should be a properly created time.
+@item time_span
+The time span variable that will hold the difference between
+@var{time1} and @var{time2}. Should be a properly created time
+span. Any previous content of @var{time_span} will be destroyed.
+@end table
+
+@item Returns
+
+@table @code
+@item PDF_OK
+The operation successfully finished.
+@end table
+
+@item Usage example
+@example
+pdf_time_t time1;
+pdf_time_t time2;
+pdf_time_span_t time_span;
+
+/* ...create and manipulate `time1', `time2' and `time_span'... */
+
+pdf_time_diff (time1, time2, time_span);
+@end example
+@end table
+@end deftypefun
+
+@node Time Comparison
+@subsection Time Comparison
+
+@deftypefun pdf_i32_t pdf_time_cmp (pdf_time_t time1, pdf_time_t time2)
+Compares two times.
+
+@table @strong
+@item Parameters
+
+@table @var
+@item time1
+The first time to compare.
+Should be a properly created time variable.
+@item time2
+The second time to compare.
+Should be a properly created time variable.
+@end table
+
+@item Returns
+
+@table @code
+@item -1
+If @var{time1} precedes @var{time2}.
+@item 0
+If @var{time1} and @var{time2} contain the same time.
+@item 1
+If @var{time2} precedes @var{time1}.
+@end table
+
+@item Usage example
+@example
+pdf_time_t time1;
+pdf_time_t time2;
+
+time1 = pdf_time_new ();
+time2 = pdf_time_new ();
+
+/* ...manipulate `time1' and `time2'... */
+
+switch (pdf_time_cmp (time1, time2))
+@{
+  case -1:
+  @{
+    /* `time1' precedes `time2' */
+    break;
+  @}
+  case 0:
+  @{
+    /* `time1' contain the same time than `time2' */
+    break;
+  @}
+  case 1:
+  @{
+    /* `time2' precedes `time1' */
+    break;
+  @}
+@}
+@end example
+@end table
+@end deftypefun
+
+@node Time Printing and Parsing
+@subsection Time Printing and Parsing
+
+@deftypefun char* pdf_time_to_string (pdf_time_t time, enum pdf_time_format_e time_format)
+Create a string representation of a given time.
+
+@table @strong
+@item Parameters
+
+@table @var
+@item time
+A properly created time variable.
+@item time_format
+The format to use when creating the string representation of @var{time}. 
+@end table
+
+@item Returns
+The string representation of @var{time}.
+
+@table @code
+@item NULL
+If there is an error.
+@end table
+
+@item Usage example
+@example
+pdf_time_t mytime;
+char *mytime_str;
+
+/* ...create and manipulate `mytime'... */
+
+mytime_str = pdf_time_to_string (mytime, PDF_TIME_FORMAT_PDF);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_time_from_string (pdf_time_t mytime, char *time_str, enum pdf_time_format_e time_format)
+Get a string containing a time specification in some format and fill a
+time variable with the parsed values.
+
+@table @strong
+@item Parameters
+
+@table @var
+@item mytime
+A properly created time variable.
+
+@item time_str
+A null-terminated string representation of a time.
+@item time_format
+The format indicating how to parse @var{time_str}.
+@end table
+
+@item Returns
+
+@table @code
+@item PDF_OK
+
+@item PDF_E_BADDATA
+Error while parsing @var{time_str} according to @var{time_format}.
+@end table
+
+@item Usage example
+@example
+pdf_time_t mytime;
+char time_str[] = "FIXME: put a correct PDF time there";
+
+mytime = pdf_time_new ();
+if (pdf_time_from_string (mytime, 
+                          time_str,
+                          PDF_TIME_FORMAT_PDF) == PDF_E_BADDATA)
+@{
+  /* Error while parsing `time_str' according to `PDF_TIME_FORMAT_PDF' */
+@}
+@end example
+@end table
+@end deftypefun
+
+@node Getting the Current Time
+@subsection Getting the Current Time
+
 @deftypefun pdf_status_t pdf_time_set_to_current_local_time (pdf_time_t time)
 Set the value of @var{time} to the current local time used by the
 operating system.
@@ -1158,11 +1177,6 @@ pdf_time_set_to_current_utc_time (mytime);
 @end example
 @end table
 @end deftypefun
-
-
-
-@node Time Spans Management
-@subsection Time Spans Management
 
 @node Accessing the File System
 @section Accessing the File System
