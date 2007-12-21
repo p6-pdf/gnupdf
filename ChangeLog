@@ -1,3 +1,10 @@
+2007-12-21  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Time Span Creation and Destruction): New section.
+	(Managing Time Span Values): New section.
+	(Time Span Comparison): New section.
+	(Calendar Spans Management): New section.
+
 2007-12-20  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* configure.ac: Check for `makeinfo'.
