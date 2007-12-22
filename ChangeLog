@@ -1,3 +1,7 @@
+2007-12-22  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* prmgt/libgnupdf.tjp: New version.
+
 2007-12-21  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Time Span Creation and Destruction): New section.

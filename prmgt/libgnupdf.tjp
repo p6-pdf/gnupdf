@@ -18,7 +18,7 @@
 
 # Main project
 
-project gnu_pdf_library "GNU PDF Library" "0.1" 2007-06-01 - 2010-10-01 {
+project gnu_pdf_library "GNU PDF Library" "0.1" 2007-06-01 - 2012-12-31 {
 
    scenario plan "Planned Scenario" {
       # Mark all paths as critical that have less than 10% slack time.
@@ -26,69 +26,72 @@ project gnu_pdf_library "GNU PDF Library" "0.1" 2007-06-01 - 2010-10-01 {
    }
 }
 
-copyright "Copyright (C) 2007 Free Software Foundation Inc."
+copyright "Free Software Foundation Inc."
 
 # Resources: people
 
 resource dev "Developers" {
 
-   resource jemarch "Jose E. Marchesi" {
-      limits {
-         dailymax 8h
-      }
-   }
-   resource dev2 "developer 2" {
-      limits {
-         dailymax 8h
-      }
-   }
-   resource dev3 "developer 3" {
-      limits {
-         dailymax 8h
-      }
-   }
-   resource dev4 "developer 4" {
-      limits {
-         dailymax 8h
-      }
-   }
-   resource nacho "Nacho Gonzalez Lopez"
-}
+  resource jemarch "Jose E. Marchesi" {
+     # Modelo colaborativo
+     limits { dailymax 4h }
+     efficiency 0.8
 
-macro allocate_developers [
-   allocate jemarch
-   allocate dev3
-   allocate dev4
-]
+     # Modelo mixto
+     #limits { dailymax 10h }
+     #efficiency 0.8
+
+     # Modelo financiado
+     #limits { dailymax 10h }
+     #efficiency 1
+    }
+   resource devteam "Developerteam" {
+     # Modelo colaborativo
+     limits { dailymax 3h }
+     efficiency 1.8
+
+     # Modelo mixto
+     #limits { dailymax 3h }
+     #efficiency 1.8
+
+     # Modelo financiado
+     #limits { dailymax 8h }
+     #efficiency 2
+   }
+}
 
 # Tasks
 
-macro layer_tasks [
-
+macro libgnupdf_layer_tasks [
    task analysis "Analysis" {
 
       task api_specification "API specification" {
-         effort 5d
+        effort 15d
+        allocate jemarch, devteam
 
       }
       task environmental_model "Environmental Model" {
          depends !api_specification
 
          task statement_of_purpose "Statement of Purpose" {
-            effort 0.2d
+           effort 10d
+           allocate jemarch, devteam
 
          }
          task event_list "Event List" {
             depends !statement_of_purpose
-            effort 2d
+            effort 10d
+            allocate jemarch, devteam
          }
          task data_dictionary "Data Dictionary" {
             depends !event_list
-            effort 1d
+            effort 10d
+            allocate jemarch, devteam
          }
          task context_diagram "Context Diagram" {
             depends !event_list
-            effort 1d
+            effort 10d
+            allocate jemarch, devteam
          }
 
       }
@@ -96,15 +99,18 @@ macro layer_tasks [
          depends !environmental_model
 
          task initial_dfd "Initial DFD" {
-            effort 1d
+           effort 15d
+           allocate jemarch, devteam
          }
          task dfd_refinement "DFD Refinement" {
             depends !initial_dfd
-            effort 3d
+            effort 5d
+            allocate jemarch, devteam
          }
          task process_specification "Process Specification" {
             depends !dfd_refinement
-            effort 2d
+            effort 10d
+            allocate jemarch, devteam
          }
       }
    }
@@ -112,242 +118,684 @@ macro layer_tasks [
       depends !analysis
 
       task initial_structure_design "Initial Structure Design" {
-         effort 3d
+        effort 10d
+        allocate jemarch, devteam
       }
       task structure_design "Structure Design Refinement" {
          depends !initial_structure_design
-         effort 2d
+         effort 10d
+         allocate jemarch, devteam
       }
    }
    task implementation "Implementation" {
       depends !design
 
       task module_codification "Module Codification" {
-         effort 10d
+        effort 30d
+        allocate jemarch, devteam
       }
       task unit_test_codification "Unit test codification" {
          depends !module_codification
-         effort 5d
+         effort 15d
+         allocate jemarch, devteam
       }
    }
    task subsystem_tests "Subsystem Tests" {
       depends !analysis.api_specification
 
       task design "Design" {
-         effort 3d
+        effort 15d
+        allocate jemarch, devteam
       }
       task implementation "Implementation" {
-         depends !design
-         effort 3d
+        depends !design
+        effort 10d
+        allocate jemarch, devteam
       }
    }
 ]
-   
+
+
 task libgnupdf "GNU PDF Library Development" {
 
-   ${allocate_developers}
+   task study "PDF Standart study phase" {
+       depends milestones.start
+       duration 60d
+       allocate jemarch
+       complete 100
+     }
 
-   task library_base "Base Library" {
-      depends !milestones.start
+   task library_design "Library Architecture Design" {
+      depends !study
+      allocate jemarch
+      effort 8h
+      complete 100
+   }
+   task library_layers_development "Library Layers Development" {
+      depends !library_design
+      allocate jemarch
 
+        task base_layer "Base Layer" {
+            allocate jemarch
 
-      task stream_module "Stream Module" {
+        task bl_layer_design "Layer Architecture Design" {
+            allocate jemarch
+            duration 1d
+            complete 100
+          }
+        task bl_layer_modules_develop "Layer Modules Development" {
+          depends !bl_layer_design
+          allocate jemarch
+            task bl_layer_module_mem "Memory Allocation Module" {
+              depends !bl_layer_module_error
+              allocate jemarch
 
-         task backends "Backends" {
+              task api_design "API Design" {
+                allocate jemarch
+                #effort 4h
+                duration 1d
+                complete 100
+              }
+              task architecture_design "Architecture Design" {
+                depends !api_design
+                allocate jemarch
+                #effort 4h
+                duration 1d
+                complete 100
+              }
 
-            task file_backend "File Backend" {
-               effort 5d
+              task task_design "Task Design and documentation" {
+                depends !architecture_design
+                allocate jemarch
+                #effort 4h
+                duration 1d
+                complete 100
+              }
+              task module_implementation "Module Implementation" {
+                depends !task_design
+                allocate jemarch
+                effort 4h
+              }
+
+              task unit_test_design "Unit Test Design" {
+                depends !architecture_design
+                allocate jemarch
+                effort 2h
+              }
+              task unit_test_implementation "Unit Test Implementation" {
+                depends !unit_test_design
+                allocate jemarch
+                effort 4h
+              }
+
             }
-            task memory_backend "Memory Backend" {
-               effort 5d
+            task bl_layer_module_btypes "Basic Types Module" {
+              allocate jemarch
+
+              task api_design "API Design" {
+                allocate jemarch
+                effort 2h
+              }
+              task architecture_design "Architecture Design" {
+                depends !api_design
+                allocate jemarch
+                effort 1h
+              }
+
+              task task_design "Task Design and documentation" {
+                depends !architecture_design
+                allocate jemarch
+                effort 1h
+              }
+              task module_implementation "Module Implementation" {
+                depends !task_design
+                allocate jemarch
+                effort 2h
+              }
+
+              task unit_test_design "Unit Test Design" {
+                depends !architecture_design
+                allocate jemarch
+                effort 1h
+              }
+              task unit_test_implementation "Unit Test Implementation" {
+                depends !unit_test_design
+                allocate jemarch
+                effort 2h
+              }
+
             }
+            task bl_layer_module_hash "Hash Module" {
+              depends !bl_layer_module_btypes,!bl_layer_module_mem
+              allocate jemarch
+
+              task api_design "API Design" {
+                allocate jemarch
+                effort 8h
+              }
+              task architecture_design "Architecture Design" {
+                depends !api_design
+                allocate jemarch
+                effort 8h
+              }
+
+              task task_design "Task Design and documentation" {
+                depends !architecture_design
+                allocate jemarch
+                effort 4h
+              }
+              task module_implementation "Module Implementation" {
+                depends !task_design
+                allocate jemarch
+                effort 16h
+              }
+
+              task unit_test_design "Unit Test Design" {
+                depends !architecture_design
+                allocate jemarch
+                effort 4h
+              }
+              task unit_test_implementation "Unit Test Implementation" {
+                depends !unit_test_design
+                allocate jemarch
+                effort 8h
+              }
+
+            }
+            task bl_layer_module_list "List Module" {
+              depends !bl_layer_module_btypes,!bl_layer_module_mem
+              allocate jemarch
+
+              task api_design "API Design" {
+                allocate jemarch
+                effort 2h
+              }
+              task architecture_design "Architecture Design" {
+                depends !api_design
+                allocate jemarch
+                effort 2h
+              }
+
+              task task_design "Task Design and documentation" {
+                depends !architecture_design
+                allocate jemarch
+                effort 2h
+              }
+              task module_implementation "Module Implementation" {
+                depends !task_design
+                allocate jemarch
+                effort 8h
+              }
+
+              task unit_test_design "Unit Test Design" {
+                depends !architecture_design
+                allocate jemarch
+                effort 4h
+              }
+              task unit_test_implementation "Unit Test Implementation" {
+                depends !unit_test_design
+                allocate jemarch
+                effort 8h
+              }
+
+            }
+            task bl_layer_module_stream "Stream Module" {
+              depends !bl_layer_module_list
+              allocate jemarch
+
+              task api_design "API Design" {
+                allocate jemarch
+                effort 8h
+                complete 95
+              }
+              task architecture_design "Architecture Design" {
+                depends !api_design
+                allocate jemarch
+                effort 8h
+                complete 95
+              }
+              task task_design "Task Design and documentation" {
+                depends !architecture_design
+                allocate jemarch
+                effort 4h
+              }
+              task module_implementation "Module Implementation" {
+                depends !task_design
+                allocate jemarch
+
+                task ascii85_filter "ascii85 Filter"{
+                  allocate jemarch
+                  effort 6h
+                  #duration 2d
+                  complete 75
+                }
+                task asciihex_filter "asciiHEX Filter"{
+                  allocate jemarch
+                  effort 6h
+                  #duration 2d
+                  complete 75
+                }
+                task ccitt_fax_filter "CCITT Fax Filter" {
+                  allocate jemarch
+                  effort 12h
+                }
+                task cript_filter "Cript Filter" {
+                  allocate jemarch
+                  effort 16h
+                }
+                task dct_filger "DCT Filter" {
+                  allocate jemarch
+                  effort 4h
+                }
+                task flate_compresion_filter "Flate compresion Filter" {
+                  allocate jemarch
+                  effort 6h
+                  #duration 2d
+                  complete 75
+                }
+                task JBIG2_filter "JBIG2 Filter" {
+                  allocate jemarch
+                  effort 8h
+                }
+                task JPX_filter "JPX Filter" {
+                  allocate jemarch
+                  effort 8h
+                }
+                task LWZ_filter "LWZ Filter" {
+                  allocate jemarch
+                  effort 12h
+                  #duration 2d
+                  complete 75
+                }
+                task png_tiff_filter "PNG and TIFF prediction Filter" {
+                  allocate jemarch
+                  effort 16h
+                  #duration 2d
+                  complete 50
+                }
+                task run_filter "Run Lenght Filter" {
+                  allocate jemarch
+                  effort 6h
+                  #duration 2d
+                  complete 75
+                }
+                task file_backend_implementation "File Backend Implementation" {
+                  allocate jemarch
+                  effort 14h
+                  #duration 3d
+                  complete 92
+                }
+                task memory_backend_implementation "Memory Backend Implementation" {
+                  allocate jemarch
+                  effort 14h
+                  #duration 0.5d
+                  complete 92
+                }
+
+              }
+              task unit_test_design "Unit Test Design" {
+                depends !architecture_design
+                allocate jemarch
+                effort 12h
+                #duration 0.5d
+                complete 6
+              }
+              task unit_test_implementation "Unit Test Implementation" {
+                depends !unit_test_design
+                allocate jemarch
+                effort 12h
+                #duration 0.5d
+                complete 6
+              }
+
+            }
+            task bl_layer_module_fpoint "Floating Point Aritmetical Module" {
+              depends !bl_layer_module_btypes,!bl_layer_module_mem
+              allocate jemarch
+
+              task api_design "API Design" {
+                allocate jemarch
+                effort 8h
+                #duration 1d
+                complete 50
+              }
+              task architecture_design "Architecture Design" {
+                depends !api_design
+                allocate jemarch
+                effort 4h
+              }
+
+              task task_design "Task Design and documentation" {
+                depends !architecture_design
+                allocate jemarch
+                effort 4h
+              }
+              task module_implementation "Module Implementation" {
+                depends !task_design
+                allocate jemarch
+                effort 20h
+                #duration 8h
+                complete 40
+              }
+
+              task unit_test_design "Unit Test Design" {
+                depends !architecture_design
+                allocate jemarch
+                effort 8h
+              }
+              task unit_test_implementation "Unit Test Implementation" {
+                depends !unit_test_design
+                allocate jemarch
+                effort 8h
+              }
+
+            }
+            task bl_layer_module_text "Text Module" {
+              depends !bl_layer_module_btypes,!bl_layer_module_mem
+              allocate jemarch
+
+
+              task api_design "API Design" {
+                allocate jemarch
+                effort 8h
+              }
+              task architecture_design "Architecture Design" {
+                depends !api_design
+                allocate jemarch
+                effort 8h
+              }
+
+              task task_design "Task Design and documentation" {
+                depends !architecture_design
+                allocate jemarch
+                effort 2h
+              }
+              task module_implementation "Module Implementation" {
+                depends !task_design
+                allocate jemarch
+                effort 20h
+                complete 95
+              }
+
+              task unit_test_design "Unit Test Design" {
+                depends !architecture_design
+                allocate jemarch
+                effort 4h
+              }
+              task unit_test_implementation "Unit Test Implementation" {
+                depends !unit_test_design
+                allocate jemarch
+                effort 8h
+              }
+
+            }
+            task bl_layer_module_time "Time Module" {
+              depends !bl_layer_module_btypes,!bl_layer_module_mem
+              allocate jemarch
+
+              task api_design "API Design" {
+                allocate jemarch
+                effort 8h
+                #duration 2d
+                complete 100
+              }
+              task architecture_design "Architecture Design" {
+                depends !api_design
+                allocate jemarch
+                effort 4h
+                #duration 1d
+                complete 50
+              }
+
+              task task_design "Task Design and documentation" {
+                depends !architecture_design
+                allocate jemarch
+                effort 1h
+              }
+              task module_implementation "Module Implementation" {
+                depends !task_design
+                allocate jemarch
+                effort 16h
+              }
+
+              task unit_test_design "Unit Test Design" {
+                depends !architecture_design
+                allocate jemarch
+                effort 4h
+              }
+              task unit_test_implementation "Unit Test Implementation" {
+                depends !unit_test_design
+                allocate jemarch
+                effort 8h
+              }
+
+            }
+            task bl_layer_module_fs "File System Module" {
+              depends !bl_layer_module_list,!bl_layer_module_time,!bl_layer_module_text
+              allocate jemarch
+
+              task api_design "API Design" {
+                allocate jemarch
+                effort 8h
+              }
+              task architecture_design "Architecture Design" {
+                depends !api_design
+                allocate jemarch
+                effort 8h
+              }
+
+              task task_design "Task Design and documentation" {
+                depends !architecture_design
+                allocate jemarch
+                effort 4h
+              }
+              task module_implementation "Module Implementation" {
+                depends !task_design
+                allocate jemarch
+                effort 16h
+              }
+
+              task unit_test_design "Unit Test Design" {
+                depends !architecture_design
+                allocate jemarch
+                effort 4h
+              }
+              task unit_test_implementation "Unit Test Implementation" {
+                depends !unit_test_design
+                allocate jemarch
+                effort 8h
+              }
+
+            }
+            task bl_layer_module_error "Error Module" {
+              allocate jemarch
+
+              task api_design "API Design" {
+                allocate jemarch
+                effort 8h
+                #duration 1d
+                complete 50
+              }
+              task architecture_design "Architecture Design" {
+                depends !api_design
+                allocate jemarch
+                effort 4h
+              }
+
+              task task_design "Task Design and documentation" {
+                depends !architecture_design
+                allocate jemarch
+                effort 2h
+              }
+              task module_implementation "Module Implementation" {
+                depends !task_design
+                allocate jemarch
+                effort 8h
+              }
+
+              task unit_test_design "Unit Test Design" {
+                depends !architecture_design
+                allocate jemarch
+                effort 4h
+              }
+              task unit_test_implementation "Unit Test Implementation" {
+                depends !unit_test_design
+                allocate jemarch
+                effort 4h
+              }
+
+            }
+
+          }
+
+        task bl_layer_subsystem_test_design "Layer Subsystem Tests Design" {
+            depends !bl_layer_modules_develop
+            allocate jemarch
+            effort 20h # FIX IT!
+          }
+        task bl_layer_subsystem_test_implementation "Layer Subsystem Tests Implementation" {
+            depends !bl_layer_subsystem_test_design
+            allocate jemarch
+            effort 20h # FIX IT!
+          }
+        }
+
+        task object_layer "Object Layer" {
+            depends !base_layer
+
+            ${libgnupdf_layer_tasks}
+          }
+        task document_layer "Document Layer" {
+            depends !object_layer
+
+            ${libgnupdf_layer_tasks}
+        }
+        task page_layer "Page Layer" {
+            depends !document_layer
+
+            ${libgnupdf_layer_tasks}
+          }
+    }
+
+   task library_system_test_design "Library System Tests Design" {
+      depends !library_layers_development
+      allocate jemarch
+      effort 20h #FIX IT!
+    }
+   task libarary_system_test_implementation "Library System Tests Implementation" {
+      depends !library_system_test_design
+      allocate jemarch
+      effort 20h # FIX IT!
+    }
+}
+
+task jaggler "GNU Juggler PDF editor" {
+  depends !libgnupdf
+
+   task jg_analysis "Analysis" {
+      task jg_GUI_functional_analisis "GUI Analysis for the  specification" {
+        effort 45d
+        allocate jemarch, devteam
+
+      }
+      task jg_environmental_model "Environmental Model" {
+         depends !jg_GUI_functional_analisis
+
+         task jg_statement_of_purpose "Statement of Purpose" {
+           effort 30d
+           allocate jemarch, devteam
+
          }
-         task filters "Filters" {
-            depends !backends
+         task jg_event_list "Event List" {
+            depends !jg_statement_of_purpose
+            effort 30d
+            allocate jemarch, devteam
+         }
+         task jg_data_dictionary "Data Dictionary" {
+            depends !jg_event_list
+            effort 30d
+            allocate jemarch, devteam
+         }
+         task jg_context_diagram "Context Diagram" {
+            depends !jg_event_list
+            effort 30d
+            allocate jemarch, devteam
+         }
 
-            task ascii_hex_filter "ASCII Hex" {
-               
-               task encoder "Encoder" {
-                  effort 3d
-                  complete 100
-               }
-               task decoder "Decoder" {
-                  effort 3d
-                  complete 100
-               }
-            }
-            task ascii_base_85 "ASCII 85" {
-               
-               task encoder "Encoder" {
-                  effort 3d
-                  complete 100
-               }
-               task decoder "Decoder" {
-                  effort 3d
-                  complete 100
-               }
-            }
-            task png_tiff_predictors "PNG and TIFF Predictors" {
-               
-               task encoder "Encoder" {
-                  effort 4d
-                  complete 100
-               }
-               task decoder "Decoder" {
-                  effort 4d
-                  complete 100
-               }
-            }
-            task flate_compression "Flate Compression" {
+      }
+      task jg_behavioral_model "Behavioral Model" {
+         depends !jg_environmental_model
 
-               task encoder "Encoder" {
-                  effort 1d
-                  complete 100
-               }
-               task decoder "Decoder" {
-                  effort 1d
-                  complete 100
-               }
-            }
-            task run_length "Run Length" {
-               
-               task encoder "Encoder" {
-                  effort 1d
-                  complete 100
-               }
-               task decoder "Decoder" {
-                  effort 1d
-                  complete 100
-               }
-            }
-            task lzw "LZW" {
-
-               task encoder "Encoder" {
-                  effort 4d
-                  complete 100
-               }
-               task decoder "Decoder" {
-                  effort 4d
-                  complete 100
-               }
-            }
-            task ccitt_fax "CCITT Fax" {
-
-               task encoder "Encoder" {
-                  effort 5d
-                  complete 0
-               }
-               task decoder "Decoder" {
-                  effort 5d
-                  complete 0
-               }
-            }
-            task jbig2 "JBIG2" {
-               
-               task encoder "Encoder" {
-                  effort 3d
-                  complete 0
-               }
-               task decoder "Encoder" {
-                  effort 3d
-                  complete 0
-               }
-            }
-            task dct "DCT" {
-
-               task encoder "Encoder" {
-                  effort 5d
-                  complete 0
-               }
-               task decoder "Decoder" {
-                  effort 5d
-                  complete 0
-               }
-            }
-            task jpx "JPX" {
-
-               task encoder "Encoder" {
-                  effort 5d
-                  complete 0
-               }
-               task decoder "Decoder" {
-                  effort 5d
-                  complete 0
-               }
-            }
-            task encryption "Encryption" {
-               note "TO DEFINE"
-            }
+         task jg_initial_dfd "Initial DFD" {
+           effort 30d
+           allocate jemarch, devteam
+         }
+         task jg_dfd_refinement "DFD Refinement" {
+            depends !jg_initial_dfd
+            effort 20d
+            allocate jemarch, devteam
+         }
+         task jg_process_specification "Process Specification" {
+            depends !jg_dfd_refinement
+            effort 20d
+            allocate jemarch, devteam
          }
       }
-      task lexer "Lexer" {
+   }
+   task jg_design "Design" {
+      depends !jg_analysis
 
-         task api_specification "API specification" {
-            effort 1d
-         }
-         task grammar_specification "Grammar specification" {
-            effort 0.5d
-         }
-         task implementation "Implementation" {
-            depends !api_specification, !grammar_specification
-            effort 2d
-         }
-         task unit_test_design "Unit Test Design" {
-            depends !api_specification
-            effort 0.5d
-         }
-         task unit_test_codification "Unit Test Codification" {
-            depends !unit_test_design
-            effort 1d
-         }
+      task jg_initial_structure_design "Initial Structure Design" {
+        effort 40d
+        allocate jemarch, devteam
       }
-      task parser "Parser" {
-         depends !lexer
-
-         task api_specification "API specification" {
-            effort 1d
-         }
-         task grammar_specification "Grammar specification" {
-            effort 0.5d
-         }
-         task implementation "Implementation" {
-            depends !api_specification, !grammar_specification
-            effort 2d
-         }
-         task unit_test_design "Unit Test Design" {
-            depends !api_specification
-            effort 0.5d
-         }
-         task unit_test_codification "Unit Test Codification" {
-            depends !unit_test_design
-            effort 1d
-         }
+      task jg_structure_design "Structure Design Refinement" {
+         depends !jg_initial_structure_design
+         effort 20d
+         allocate jemarch, devteam
       }
    }
-   task object_layer "Object Layer" {
-      depends !library_base
+   task jg_implementation "Implementation" {
+      depends !jg_design
 
-      ${layer_tasks}
+      task jg_core_codification "Core Codification" {
+        effort 75d
+        allocate jemarch, devteam
+      }
+      task jg_GUI_codification "GUI Codification" {
+        effort 75d
+        allocate jemarch, devteam
+      }
+      task jg_unit_test_codification "Unit test codification" {
+         depends !jg_GUI_codification
+         effort 30d
+         allocate jemarch, devteam
+      }
    }
-   task document_layer "Document Layer" {
-      depends !object_layer
+   task jg_subsystem_tests "Subsystem Tests" {
+      depends !jg_analysis.jg_GUI_functional_analisis
 
-      ${layer_tasks}
+      task jg_design "Design" {
+        effort 40d
+        allocate jemarch, devteam
+      }
+      task jg_implementation "Implementation" {
+        depends !jg_design
+        effort 20d
+        allocate jemarch, devteam
+      }
    }
-   task page_layer "Page Layer" {
-      depends !document_layer
+ }
 
-
-      ${layer_tasks}
-   }
-   task milestones "Milestones" {
-      
-      task start "Project Start" {
+task milestones "Milestones" {
+   task start "Project Start" {
          milestone
-         start ${now}
-      }
-
-   }
+         start 2007-06-01
+       }
+   task financemeeting_1 "Fund recruitment meeting Caceres" {
+         milestone
+         start 2007-12-15
+       }
 }
 
 # Reports
@@ -399,7 +847,6 @@ resourcereport "Resource Usage" {
 }
 
 htmltaskreport "tasks.html" {
-   rawstylesheet "<link rel=\"stylesheet\" href=\"reports.css\" type=\"text/css\" media=\"screen\"/>"
    caption "libgnupdf Tasks Report"
    headline "GNU PDF Library - Tasks Report"
    columns name, start, end, daily
@@ -407,23 +854,15 @@ htmltaskreport "tasks.html" {
 }
 
 htmlweeklycalendar "week-calendar.html" {
-   rawstylesheet "<link rel=\"stylesheet\" href=\"reports.css\" type=\"text/css\" media=\"screen\"/>"
 }
 
 htmlmonthlycalendar "month-calendar.html" {
-   rawstylesheet "<link rel=\"stylesheet\" href=\"reports.css\" type=\"text/css\" media=\"screen\"/>"
 }
 
 htmlresourcereport "resources.html" {
-   rawstylesheet "<link rel=\"stylesheet\" href=\"reports.css\" type=\"text/css\" media=\"screen\"/>"
 }
 
 htmlstatusreport "status.html" {
-   rawstylesheet "<link rel=\"stylesheet\" href=\"reports.css\" type=\"text/css\" media=\"screen\"/>"
-}
-
-xmlreport "libgnupdf.tjx" {
-   version 2
 }
 
 # Local Variables:
