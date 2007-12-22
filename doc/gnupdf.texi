@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.11 2007/12/21 19:23:28 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.12 2007/12/22 00:58:42 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -407,8 +407,6 @@ An hour. The valid range is @code{0..23}.
 A minute. The valid range is @code{0..59}.
 @item pdf_u32_t sec
 A second. The valid range is @code{0..59}.
-@item pdf_u32_t usec
-A microsecond. The valid range is @code{0..999999}.
 @item pdf_i32_t gmt_offset
 A GMT offset.
 @end table
@@ -863,7 +861,6 @@ mycaltime.dow = 0; /* This field is ignored by `pdf_time_from_cal' */
 mycaltime.hour = 0;
 mycaltime.minute = 0;
 mycaltime.sec = 0;
-mycaltime.usec = 0;
 mycaltime.gmt_offset = 1;
 
 if (pdf_time_from_cal (mytime, mycaltime) == PDF_E_BADDATA)
