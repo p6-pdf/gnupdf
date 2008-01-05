@@ -1,3 +1,9 @@
+2007-12-27  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Encoded Text): New section.
+	(Text Data Types): New section.
+	(Creating and Destroying Text): New section.
+
 2007-12-22  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* prmgt/libgnupdf.tjp: New version.

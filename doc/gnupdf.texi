@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.12 2007/12/22 00:58:42 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.13 2008/01/05 20:59:33 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -83,7 +83,7 @@ Indices
 * Lists::
 * Filtered Streams::
 * Floating Point Arithmetic::
-* Text Encoding::
+* Encoded Text::
 * Time Management::
 * Accessing the File System::
 @end menu
@@ -352,8 +352,222 @@ Third row.
 @node Interpolation Functions
 @subsection Interpolation Functions
 
-@node Text Encoding
-@section Text Encoding
+@node Encoded Text
+@section Encoded Text
+
+@menu
+* Text Data Types::
+* Creating and Destroying Text::
+@end menu
+
+@node Text Data Types
+@subsection Text Data Types
+
+@deftp {Data Type} enum pdf_text_unicode_encoding_e
+
+Enumeration of supported Unicode encodings.
+
+@table @code
+@item PDF_TEXT_UTF16_BE
+Big Endian UTF16.
+@item PDF_TEXT_UTF16_HE
+Host Endian UTF16.
+@item PDF_TEXT_UTF8
+UTF8.
+@item PDF_TEXT_UTF32_BE
+Big Endian UTF32.
+@item PDF_TEXT_UTF32_HE
+Host Endian UTF32.
+@end table
+@end deftp
+
+@deftp {Data Type} pdf_text_filter_type_e
+
+Enumeration of supported filters in encoded text objects.
+
+@table @code
+@item PDF_TEXT_FILTER_UNKNOWN (= -1)
+Invalid filter type.
+@item PDF_TEXT_FILTER_IDENTITY
+Do not perform any transformation in the encoded text. It is a no-op.
+@item PDF_TEXT_FILTER_LINE_ENDINGS
+Normalize line endings.
+@item PDF_TEXT_FILTER_UPPER_CASE
+Makes all text upper case.
+@item PDF_TEXT_FILTER_LOWER_CASE
+Makes all text lower case.
+@item PDF_TEXT_FILTER_REMOVE_AMP
+Remove all single ampersands. This filter transform @code{&&} into
+@code{&}.
+@item PDF_TEXT_FILTER_NORM_WITH_FULL_WIDTH
+Normalize with full width ASCII variants filter.
+@item PDF_TEXT_FILTER_REMOVE_LINE_ENDINGS
+Replace line endings with space characters.
+@end table
+@end deftp
+
+@deftp {Data Type} pdf_text_country_code_t
+
+A country code.
+
+@end deftp
+
+@deftp {Data Type} pdf_text_lang_code_t
+
+A language code.
+
+@end deftp
+
+@deftp {Data Type} pdf_text_utf16_val_t
+
+A UTF16 value.
+
+@end deftp
+
+@deftp {Data Type} pdf_text_utf32_val_t
+
+A UTF32 value.
+
+@end deftp
+
+@deftp {Data Type} pdf_text_utf8_val_t
+
+A UTF8 value.
+
+@end deftp
+
+@deftp {Data Type} pdf_text_unicode_char_t
+
+This data type is large enough to contain any Unicode character code.
+
+@end deftp
+
+@deftp {Data Type} pdf_text_t
+
+A Unicode string.
+
+@end deftp
+
+@node Creating and Destroying Text
+@subsection Creating and Destroying Text
+
+@deftypefun pdf_text_t pdf_text_new (void)
+
+Create a new text object containing no text.
+
+@table @strong
+@item Parameters
+None.
+@item Returns
+A pointer to the newly created text object.
+@item Usage Example
+@example
+pdf_text_t mytext;
+
+mytext = pdf_text_new ();
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_text_t pdf_text_dup (pdf_text_t text)
+
+Dup a new text object from a existing one.
+
+@table @strong
+@item Parameters
+@table @var
+@item text
+A properly created text object.
+@end table
+@item Returns
+A pointer to the newly created text object.
+@item Usage Example
+@example
+pdf_text_t text1;
+pdf_text_t text2;
+
+text1 = pdf_text_new ();
+text2 = pdf_text_dup (text1);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_text_t pdf_text_new_from_host (const char *str, pdf_size_t length, pdf_text_host_encoding_t enc) 
+
+Create a new text object and initialize it with a given host encoded
+string.
+
+@table @strong
+@item Parameters
+@table @var
+@item str
+A multybyte string in some host encoding.
+@item length
+The length of @var{str}.
+@item enc
+The host encoding with which @var{str} is encoded.
+@end table
+@item Returns
+A pointer to the newly created text object.
+@item Usage Example
+@example
+
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_text_t pdf_text_new_from_pdf (const char *str, pdf_size_t length)
+
+Create a new text object and initialize it with a given PDF string
+text representation.
+
+@table @strong
+@item Parameters
+@table @var
+@item str
+A text representation of a PDF string. It is either a UTF-16 string
+(prepended with @code{0xFEFF}) or a @code{PDFDocEncoding} string.
+
+If it is a UTF-16 string then it may have language and country
+embedded information.
+
+@var{str} should not contain embedded @code{NULL} characters.
+@item length
+The length of @var{str} in bytes.
+@end table
+@item Returns
+A pointer to the newly created text object.
+@item Usage Example
+@example
+
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_text_t pdf_text_new_from_unicode (const pdf_text_utf16_val_t *ucs, enum pdf_text_unicode_encoding_e enc)
+
+Create a new text object from a string of Unicode characters in a
+given unicode encoding.
+
+@table @strong
+@item Parameters
+@table @var
+@item ucs
+A Unicode string. It do not have the @code{0xFEFF} prefix and do not
+contain language or country information.
+
+Should not contain any @code{NULL} character.
+@item enc
+The Unicode encoding used by @var{ucs}.
+@end table
+@item Returns
+A pointer to the newly created text object.
+@item Usage example
+@example
+
+@end example
+@end table
+@end deftypefun
 
 @node Time Management
 @section Time Management
