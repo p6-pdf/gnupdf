@@ -1,3 +1,9 @@
+2008-01-06  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* prmgt/libgnupdf.tjp: Project plan updated.
+
+	* prmgt/pmccabe2html.in: HTML prolog and footer changed.
+
 2007-12-27  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Encoded Text): New section.

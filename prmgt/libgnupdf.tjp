@@ -647,7 +647,6 @@ task libgnupdf "GNU PDF Library Development" {
             }
 
           }
-
         task bl_layer_subsystem_test_design "Layer Subsystem Tests Design" {
             depends !bl_layer_modules_develop
             allocate jemarch
@@ -661,10 +660,191 @@ task libgnupdf "GNU PDF Library Development" {
         }
 
         task object_layer "Object Layer" {
-            depends !base_layer
+          depends !base_layer
 
-            ${libgnupdf_layer_tasks}
+        task ol_layer_design "Layer Architecture Design" {
+            allocate jemarch, devteam
+            effort 20h # FIX IT!
+
           }
+        task ol_layer_modules_develop "Layer Modules Development" {
+          depends !ol_layer_design
+          allocate jemarch, devteam
+
+            task ol_layer_module_doc "Document Module" {
+              allocate jemarch, devteam
+
+              task api_design "API Design" {
+                allocate jemarch, devteam
+                effort 4h # FIX IT!
+
+              }
+              task architecture_design "Architecture Design" {
+                depends !api_design
+                allocate jemarch, devteam
+                effort 4h # FIX IT!
+
+              }
+              task task_design "Task Design and documentation" {
+                depends !architecture_design
+                allocate jemarch, devteam
+                effort 4h # FIX IT!
+
+              }
+              task module_implementation "Module Implementation" {
+                depends !task_design
+                allocate jemarch, devteam
+                effort 4h # FIX IT!
+
+              }
+              task unit_test_design "Unit Test Design" {
+                depends !architecture_design
+                allocate jemarch, devteam
+                effort 4h # FIX IT!
+
+              }
+              task unit_test_implementation "Unit Test Implementation" {
+                depends !unit_test_design
+                allocate jemarch, devteam
+                effort 4h # FIX IT!
+
+              }
+
+            }
+            task ol_layer_module_object "Object Module" {
+                allocate jemarch, devteam
+
+              task api_design "API Design" {
+                allocate jemarch, devteam
+                effort 4h # FIX IT!
+
+              }
+              task architecture_design "Architecture Design" {
+                depends !api_design
+                allocate jemarch, devteam
+                effort 4h # FIX IT!
+
+              }
+              task task_design "Task Design and documentation" {
+                depends !architecture_design
+                allocate jemarch, devteam
+                effort 4h # FIX IT!
+
+              }
+              task module_implementation "Module Implementation" {
+                depends !task_design
+                allocate jemarch, devteam
+                effort 4h # FIX IT!
+
+              }
+              task unit_test_design "Unit Test Design" {
+                depends !architecture_design
+                allocate jemarch, devteam
+                effort 4h # FIX IT!
+
+              }
+              task unit_test_implementation "Unit Test Implementation" {
+                depends !unit_test_design
+                allocate jemarch, devteam
+                effort 4h # FIX IT!
+
+              }
+
+            }
+            task ol_layer_module_reader "Reader Module" {
+                allocate jemarch, devteam
+
+              task api_design "API Design" {
+                allocate jemarch, devteam
+                effort 4h # FIX IT!
+
+              }
+              task architecture_design "Architecture Design" {
+                depends !api_design
+                allocate jemarch, devteam
+                effort 4h # FIX IT!
+
+              }
+              task task_design "Task Design and documentation" {
+                depends !architecture_design
+                allocate jemarch, devteam
+                effort 4h # FIX IT!
+
+              }
+              task module_implementation "Module Implementation" {
+                depends !task_design
+                allocate jemarch, devteam
+                effort 4h # FIX IT!
+
+              }
+              task unit_test_design "Unit Test Design" {
+                depends !architecture_design
+                allocate jemarch, devteam
+                effort 4h # FIX IT!
+
+              }
+              task unit_test_implementation "Unit Test Implementation" {
+                depends !unit_test_design
+                allocate jemarch, devteam
+                effort 4h # FIX IT!
+
+              }
+
+            }
+            task ol_layer_module_writer "Writer Module" {
+                allocate jemarch, devteam
+
+              task api_design "API Design" {
+                allocate jemarch, devteam
+                effort 4h # FIX IT!
+
+              }
+              task architecture_design "Architecture Design" {
+                depends !api_design
+                allocate jemarch, devteam
+                effort 4h # FIX IT!
+
+              }
+              task task_design "Task Design and documentation" {
+                depends !architecture_design
+                allocate jemarch, devteam
+                effort 4h # FIX IT!
+
+              }
+              task module_implementation "Module Implementation" {
+                depends !task_design
+                allocate jemarch, devteam
+                effort 4h # FIX IT!
+
+              }
+              task unit_test_design "Unit Test Design" {
+                depends !architecture_design
+                allocate jemarch, devteam
+                effort 4h # FIX IT!
+
+              }
+              task unit_test_implementation "Unit Test Implementation" {
+                depends !unit_test_design
+                allocate jemarch, devteam
+                effort 4h # FIX IT!
+
+              }
+
+          }
+
+        }
+
+        task ol_layer_subsystem_test_design "Layer Subsystem Tests Design" {
+            depends !ol_layer_modules_develop
+            allocate jemarch, devteam
+            effort 20h # FIX IT!
+        }
+        task ol_layer_subsystem_test_implementation "Layer Subsystem Tests Implementation" {
+            depends !ol_layer_subsystem_test_design
+            allocate jemarch, devteam
+            effort 20h # FIX IT!
+          }
+        }
         task document_layer "Document Layer" {
             depends !object_layer
 
