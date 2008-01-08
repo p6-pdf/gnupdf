@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.13 2008/01/05 20:59:33 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.14 2008/01/08 20:47:37 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -603,8 +603,8 @@ A variable of type @code{pdf_time_span_t} represent a span of time.
 
 @deftp {Data Type} struct pdf_time_cal_s
 This structure holds information about a specific time represented in
-calendar items: years, months, days, day of week, hours, minutes, seconds,
-milliseconds and the relative offset with GMT.
+calendar items: years, months, days, day of week, hours, minutes,
+seconds and the relative offset with GMT.
 
 @table @code
 @item pdf_i32_t year
@@ -631,12 +631,13 @@ This structure holds information about a time span represented in
 calendar items: years, months, days, hours, minutes and seconds.
 
 @table @code
-@item pdf_u32_t year
-@item pdf_u32_t month
-@item pdf_u32_t day
-@item pdf_u32_t hour
-@item pdf_u32_t minute
-@item pdf_u32_t second
+@item pdf_u32_t sign
+@item pdf_u32_t years
+@item pdf_u32_t months
+@item pdf_u32_t days
+@item pdf_u32_t hours
+@item pdf_u32_t minutes
+@item pdf_u32_t seconds
 @end table
 @end deftp
 
@@ -647,10 +648,13 @@ string representation.
 
 @table @code
 @item PDF_TIME_FORMAT_PDF
-@item PDF_TIME_FORMAT_UNIVERSAL
-@item PDF_TIME_FORMAT_UNIVERSAL_H
+PDF date strings.
+@item PDF_TIME_FORMAT_ISO_8601
+ISO 8601 date and time strings.
 @item PDF_TIME_FORMAT_ASN1
+UTC ASN1 date.
 @item PDF_TIME_FORMAT_GENERALIZED_ASN1
+ASN1 date.
 @end table
 @end deftp
 
@@ -1117,7 +1121,7 @@ pdf_time_set_local_offset (time);
 @node Getting Time Intervals
 @subsection Getting Time Intervals
 
-@deftypefun pdf_status_t pdf_time_diff (pdf_time_t time1, pdf_time_t time2, struct pdf_time_cal_span_s cal_span)
+@deftypefun pdf_status_t pdf_time_diff_cal (pdf_time_t time1, pdf_time_t time2, struct pdf_time_cal_span_s cal_span)
 Calculate the time span that goes from @var{time1} to @var{time2} and
 store it in @var{cal_span}.
 
