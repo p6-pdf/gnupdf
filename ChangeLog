@@ -1,3 +1,9 @@
+2008-01-11  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Managing Text Properties): New section.
+	(Managing Text Contents): New section.
+	(Comparing Text Variables): New section.
+
 2008-01-08  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Time Management): minor fixes.

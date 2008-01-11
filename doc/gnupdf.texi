@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.14 2008/01/08 20:47:37 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.15 2008/01/11 18:12:21 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -358,6 +358,9 @@ Third row.
 @menu
 * Text Data Types::
 * Creating and Destroying Text::
+* Managing Text Properties::
+* Managing Text Contents::
+* Comparing Text Variables::
 @end menu
 
 @node Text Data Types
@@ -369,15 +372,15 @@ Enumeration of supported Unicode encodings.
 
 @table @code
 @item PDF_TEXT_UTF16_BE
-Big Endian UTF16.
+Big Endian UTF16 encoding.
 @item PDF_TEXT_UTF16_HE
-Host Endian UTF16.
+Host Endian UTF16 encoding (may be little-endian or big-endian).
 @item PDF_TEXT_UTF8
-UTF8.
+UTF8 encoding.
 @item PDF_TEXT_UTF32_BE
-Big Endian UTF32.
+Big Endian UTF32 encoding.
 @item PDF_TEXT_UTF32_HE
-Host Endian UTF32.
+Host Endian UTF32 encoding (may be little-endian or big-endian).
 @end table
 @end deftp
 
@@ -387,7 +390,7 @@ Enumeration of supported filters in encoded text objects.
 
 @table @code
 @item PDF_TEXT_FILTER_UNKNOWN (= -1)
-Invalid filter type.
+Invalid filter.
 @item PDF_TEXT_FILTER_IDENTITY
 Do not perform any transformation in the encoded text. It is a no-op.
 @item PDF_TEXT_FILTER_LINE_ENDINGS
@@ -445,6 +448,15 @@ This data type is large enough to contain any Unicode character code.
 @deftp {Data Type} pdf_text_t
 
 A Unicode string.
+
+@end deftp
+
+@deftp {Data Type} pdf_text_host_encoding_t
+
+This data type identifies an encoding used in a host. The value of
+host encodings depends on the specific hosts.
+
+XXX Determine values for GNU, Unix, Windows and Macintosh hosts. 
 
 @end deftp
 
@@ -562,9 +574,606 @@ The Unicode encoding used by @var{ucs}.
 @end table
 @item Returns
 A pointer to the newly created text object.
-@item Usage example
+@item Usage Example
 @example
 
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_text_t pdf_text_new_from_u32 (pdf_u32_t @var{number})
+
+Create a new text variable containing the textual representation of a
+given integer. Leading zeroes are not included.
+
+@table @strong
+@item Parameters
+@table @var
+@item number
+An unsigned 32 bit number.
+@end table
+@item Returns
+A pointer to the newly created text object.
+@item Usage Example
+@example
+pdf_text_t text;
+pdf_u32_t number;
+
+number = 024;
+text = pdf_text_new_from_u32 (number);
+
+/* The content of text is now "24" */
+@end example
+@end table
+@end deftypefun
+
+@node Managing Text Properties
+@subsection Managing Text Properties
+
+@deftypefun pdf_text_country_code_t  pdf_text_get_country (pdf_text_t @var{text})
+
+Return the country associated with a text variable.
+
+@table @strong
+@item Parameters
+@table @var
+@item text
+A text variable.
+@end table
+@item Returns
+The code of the country associated with @var{text}.
+@item Usage Example
+@example
+pdf_text_t text;
+pdf_text_country_code_t code;
+
+/* ...create and manipulate `text' */
+
+code = pdf_text_get_country (text);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_text_lang_code_t pdf_text_get_language (pdf_text_t @var{text})
+
+Return the language associated with a text variable.
+
+@table @strong
+@item Parameters
+@table @var
+@item text
+A text variable.
+@end table
+@item Returns
+The code of the language associated with @var{text}.
+@item Usage Example
+@example
+pdf_text_t text;
+pdf_text_lang_code_t code;
+
+/* ...create and manipulate `text' */
+
+code = pdf_text_get_language (text);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_text_set_country (pdf_text_t @var{text}, pdf_text_country_code_t @var{code})
+
+Associate a text variable with a country.
+
+@table @strong
+@item Parameters
+@table @var
+@item text
+A text variable.
+@item code
+A country code.
+@end table
+@item Returns
+A status code:
+@table @code
+@item PDF_OK
+The operation succedded.
+@end table
+@item Usage Example
+@example
+pdf_text_t text;
+pdf_text_country_code_t code;
+
+/* ...create and manipulate `text' */
+
+code = 27;
+code = pdf_text_set_country (text, code);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_text_lang_code_t pdf_text_set_language (pdf_text_t @var{text}, pdf_text_lang_code_t @var{code})
+
+Associate a text variable with a language.
+
+@table @strong
+@item Parameters
+@table @var
+@item text
+A text variable.
+@item code
+A language code.
+@end table
+@item Returns
+A status code:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@end table
+@item Usage Example
+@example
+pdf_text_t text;
+pdf_text_lang_code_t code;
+
+/* ...create and manipulate `text' */
+
+code = 10;
+code = pdf_text_set_language (text, 10);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_text_empty_p (pdf_text_t @var{text})
+
+Determine if a given text variable is empty (contain no text).
+
+@table @strong
+@item Parameters
+@table @var
+@item text
+A text variable.
+@end table
+@item Returns
+A boolean value:
+@table @code
+@item PDF_TRUE
+The text variable contain no text.
+@item PDF_FALSE
+The text variable contain some text.
+@end table
+@item Usage Example
+@example
+pdf_text_t text;
+
+/* ...initialize and manipulate `text'... */
+
+if (pdf_text_empty_p (text))
+@{
+  /* `text' contain no text */
+@}
+@end example
+@end table
+@end deftypefun
+
+@node Managing Text Contents
+@subsection Managing Text Contents
+
+@deftypefun pdf_text_host_encoding_t pdf_text_get_best_encoding (pdf_text_t @var{text}, pdf_text_host_encoding_t @var{preferred_encoding})
+
+Return the best available host encoding to encode the contents of a
+given text variable. A specified preferred encoding is selected if
+available. 
+
+The ``best'' encoding is an encoding able to encode the bigger number
+of characters of the unicode content of the given text variable.
+@table @strong
+@item Parameters
+@table @var
+@item text
+A text variable.
+@item preferred_encoding
+A text encoding supported by the host.
+@end table
+@item Returns
+The best host encoding available to encode the contents of @var{text}.
+@item Usage Example
+@example
+pdf_text_t text;
+pdf_text_host_encoding pref;
+pdf_text_host_encoding enc;
+
+/* ...create and manipulate `text'... */
+
+pref = 10;
+enc = pdf_text_get_best_encoding (text, pref);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun char* pdf_text_get_host (pdf_text_t @var{text}, pdf_text_host_encoding_t @var{enc})
+
+Get the contents of a text variable encoded in a given host encoding.
+
+@table @strong
+@item Parameters
+@table @var
+@item text
+A text variable.
+@item enc
+A host encoding.
+@end table
+@item Returns
+A pointer to a string containing the encoded representation
+of the text variable. The caller should not modify that string: it is
+managed by the text variable.
+@item Usage Example
+@example
+pdf_text_t text;
+pdf_text_host_encoding_t encoding;
+char *str;
+
+/* ...initialize and manipulate `text'... */
+
+encoding = 10;
+str = pdf_text_get_host (text, encoding);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun char* pdf_text_get_pdf (pdf_text_t @var{text})
+
+Get the contents of a text variable encoded in PDFDocEncoding.
+
+@table @strong
+@item Parameters
+@table @var
+@item text
+A text variable.
+@end table
+@item Returns
+A pointer to a string containing the encoded representation of the
+text variable. The caller should not modify that string: it is managed
+by the text variable.
+@item Usage Example
+@example
+pdf_text_t text;
+char *str;
+
+/* ...initialize and manipulate `text'... */
+
+str = pdf_text_get_pdf (text);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun char* pdf_text_get_unicode (pdf_text_t @var{text})
+
+Get hte contents of a text variable encoded in UTF16 using
+host-endian. 
+
+@table @strong
+@item Parameters
+@table @var
+@item text
+A text variable.
+@end table
+@item Returns
+A pointer to a string containing the encoded representation of the
+text variable. The caller should not modify that string: it is managed
+by the text variable.
+@item Usage Example
+@example
+pdf_text_t text;
+char *str;
+
+/* ...initialize and manipulate `text'... */
+
+str = pdf_text_get_unicode (text);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_text_set_host (pdf_text_t @var{text}, char *@var{str}, pdf_text_host_encoding_t @var{enc})
+
+Set a string encoded with some host encoding as the value of a text
+variable. 
+
+@table @strong
+@item Parameters
+@table @var
+@item text
+A text variable.
+@item str
+A string encoded with some host encoding.
+@item enc
+The host encoding used to encode @var{str}.
+@end table
+@item Returns
+A status code:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_E_BADDATA
+The string @var{str} contain invalid data.
+@end table
+@item Usage Example
+@example
+pdf_text_t text;
+pdf_text_host_encoding_t encoding;
+char *str;
+
+/* ...initialize and manipulate `text', `encoding' and `str'... */
+if (pdf_text_set_host (text, str, enc) != PDF_OK)
+@{
+  /* `str' contains bad data */
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_text_set_pdf (pdf_text_t @var{text}, char *@var{str})
+
+Set a PDFDocEncoding encoded string as the value of a text variable.
+
+@table @strong
+@item Parameters
+@table @var
+@item text
+A text variable.
+@item str
+A string encoded with PDFDocEncoding.
+@end table
+@item Returns
+A status code:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_E_BADDATA
+The string @var{str} contain invalid data.
+@end table
+@item Usage Example
+@example
+pdf_text_t text;
+char *str;
+
+/* ...initialize and manipulate `text' and `str'... */
+if (pdf_text_set_pdf (text, str) != PDF_OK)
+@{
+  /* `str' contains bad data */
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_text_set_unicode (pdf_text_t @var{text}, pdf_text_utf16_val_t *@var{str}, enum pdf_text_unicode_encoding_e @var{enc})
+
+Set a Unicode encoded string as the value of a text variable.
+
+@table @strong
+@item Parameters
+@table @var
+@item text
+A text variable.
+@item str
+A unicode string without prefix and country/language data embedded.
+@item enc
+The used Unicode encoding.
+@end table
+@item Returns
+A status code:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_E_BADDATA
+The string @var{str} contain invalid data.
+@end table
+@item Usage Example
+@example
+pdf_text_t text;
+pdf_text_utf16_val_t *str;
+enum pdf_text_unicode_encoding_e enc;
+
+/* ...initialize and manipulate `text', `str' and `enc'... */
+if (pdf_text_set_unicode (text, str, enc) != PDF_OK)
+@{
+  /* `str' contains bad data */
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_text_concat (pdf_text_t @var{to}, pdf_text_t @var{from})
+
+Concatenate the contents two text variables and store the result in
+the second text variable.
+
+@table @strong
+@item Parameters
+@table @var
+@item to
+The second text variable to concatenate. The contents of this variable
+are modified to hold the result of the operation.
+@item from
+The first text variable to concatenate. The contents of this variable
+are left unchanged.
+@end table
+@item Returns
+A status code:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@end table
+@item Usage Example
+@example
+pdf_text_t text1;
+pdf_text_t text2;
+
+/* ...initialize `text1' and `text2'... */
+if (pdf_text_concat (text1, text2) != PDF_OK)
+@{
+   /* Manage the error */
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_text_replace (pdf_text_t @var{text}, pdf_text_t @var{to}, pdf_text_t @var{from})
+
+Replace a fixed pattern in the content of a given text variable.
+
+@table @strong
+@item Parameters
+@table @var
+@item text
+A text variable.
+@item to
+The replacement text.
+@item from
+The text to be replaced. Any occurrence of this text is replaced with
+@var{to}.
+@end table
+@item Returns
+A status code:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@end table
+@item Usage Example
+@example
+pdf_text_t text;
+pdf_text_t from;
+pdf_text_t to;
+
+/* ...initialize `text', `from' and `to'... */
+if (pdf_text_replace (text, to, from) != PDF_OK)
+@{
+  /* Manage the error */
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_text_replace_ascii (pdf_text_t @var{text}, char *@var{to}, char *@var{from})
+
+Replace a fixed ASCII pattern in the content of a given text variable.
+
+@table @strong
+@item Parameters
+@table @var
+@item text
+A text variable.
+@item to
+The replacement ASCII string.
+@item from
+The text to be replaced. Any occurrence of this text is replaced with
+@var{to}.
+@end table
+@item Returns
+A status code:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@end table
+@item Usage Example
+@example
+pdf_text_t text;
+char *from;
+char *to;
+
+/* ...initialize `text', `from' and `to'... */
+if (pdf_text_replace_ascii (text, to, from) != PDF_OK)
+@{
+  /* Manage the error */
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_text_filter (pdf_text_t @var{text}, enum pdf_text_filter_type_e @var{filter})
+
+Filter the contents of a text variable.
+
+@table @strong
+@item Parameters
+@table @var
+@item text
+A text variable.
+@item filter
+A filter to run in @var{text} contents.
+@end table
+@item Returns
+A status code:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@end table
+@item Usage Example
+@example
+pdf_text_t text;
+
+/* ...initialize `text'... */
+
+if (pdf_text_filter (text, PDF_TEXT_FILTER_LOWER_CASE) != PDF_OK)
+@{
+  /* Manage error */
+@}
+@end example
+@end table
+@end deftypefun
+
+
+@node Comparing Text Variables
+@subsection Comparing Text Variables
+
+@deftypefun pdf_i32_t pdf_text_cmp (pdf_text_t @var{text1}, pdf_text_t @var{text2}, pdf_bool_t @var{case_sensitive})
+
+Compare the contents of two text variables.
+
+@table @strong
+@item Parameters
+@table @var
+@item text1
+A text variable.
+@item text2
+A text variable.
+@item case_sensitive
+A boolean value indicating if the comparison is case-sensitive:
+@table @code
+@item PDF_TRUE
+Case sensitive.
+@item PDF_FALSE
+Case insensitive.
+@end table
+@end table
+@item Returns
+An integer:
+@table @code
+@item -1
+@item 0
+@item +1
+@end table
+@item Usage Example
+@example
+pdf_text_t text1;
+pdf_text_t text2;
+
+/* ...initialize `text1' and `text2'... */
+
+switch (pdf_text_cmp (text1, text2, PDF_FALSE))
+@{
+ case -1:
+ @{
+   /* XXX */
+   break;
+ @}
+ case 0:
+ @{
+   /* XXX */
+   break;
+ @}
+ case +1:
+ @{
+   /* XXX */
+   break;
+ @}
+@}
 @end example
 @end table
 @end deftypefun
