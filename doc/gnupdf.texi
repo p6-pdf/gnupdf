@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.15 2008/01/11 18:12:21 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.16 2008/01/12 16:54:27 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -111,7 +111,7 @@ The memory allocation module provides system-independent heap memory
 allocation and deallocation. The usual malloc/free/realloc schema is
 used to provide this service.
 
-@deftypefun char* pdf_alloc (int size)
+@deftypefun char* pdf_alloc (int @var{size})
 
 Allocates heap memory.
 
@@ -140,7 +140,7 @@ p = 666;
 @end table
 @end deftypefun
 
-@deftypefun void pdf_dealloc (char *pointer)
+@deftypefun void pdf_dealloc (char *@var{pointer})
 
 Deallocates heap memory.
 
@@ -168,7 +168,7 @@ pdf_dealloc (p);
 @end table
 @end deftypefun
 
-@deftypefun char* pdf_realloc (char *pointer, int size)
+@deftypefun char* pdf_realloc (char *@var{pointer}, int @var{size})
 
 Reallocates memory.
 
@@ -333,19 +333,19 @@ Third row.
 @node Matrix Manipulation Functions
 @subsection Matrix Manipulation Functions
 
-@deftypefun pdf_status_t pdf_fp_matrix_concat (pdf_matrix_t result, pdf_matrix_t m1, pdf_matrix_t m2)
+@deftypefun pdf_status_t pdf_fp_matrix_concat (pdf_matrix_t @var{result}, pdf_matrix_t @var{m1}, pdf_matrix_t @var{m2})
 
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fp_matrix_invert (pdf_matrix_t result, pdf_matrix_t m)
+@deftypefun pdf_status_t pdf_fp_matrix_invert (pdf_matrix_t @var{result}, pdf_matrix_t @var{m})
 
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fp_matrix_transform (pdf_point_t result, pdf_matrix_t m, pdf_point_t p)
+@deftypefun pdf_status_t pdf_fp_matrix_transform (pdf_point_t @var{result}, pdf_matrix_t @var{m}, pdf_point_t @var{p})
 
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fp_matrix_transform_rect (pdf_rect_t result, pdf_matrix_t m, pdf_rect_t rect)
+@deftypefun pdf_status_t pdf_fp_matrix_transform_rect (pdf_rect_t @var{result}, pdf_matrix_t @var{m}, pdf_rect_t @var{rect})
 
 @end deftypefun
 
@@ -481,7 +481,7 @@ mytext = pdf_text_new ();
 @end table
 @end deftypefun
 
-@deftypefun pdf_text_t pdf_text_dup (pdf_text_t text)
+@deftypefun pdf_text_t pdf_text_dup (pdf_text_t @var{text})
 
 Dup a new text object from a existing one.
 
@@ -504,7 +504,7 @@ text2 = pdf_text_dup (text1);
 @end table
 @end deftypefun
 
-@deftypefun pdf_text_t pdf_text_new_from_host (const char *str, pdf_size_t length, pdf_text_host_encoding_t enc) 
+@deftypefun pdf_text_t pdf_text_new_from_host (const char *@var{str}, pdf_size_t @var{length}, pdf_text_host_encoding_t @var{enc}) 
 
 Create a new text object and initialize it with a given host encoded
 string.
@@ -528,7 +528,7 @@ A pointer to the newly created text object.
 @end table
 @end deftypefun
 
-@deftypefun pdf_text_t pdf_text_new_from_pdf (const char *str, pdf_size_t length)
+@deftypefun pdf_text_t pdf_text_new_from_pdf (const char *@var{str}, pdf_size_t @var{length})
 
 Create a new text object and initialize it with a given PDF string
 text representation.
@@ -556,7 +556,7 @@ A pointer to the newly created text object.
 @end table
 @end deftypefun
 
-@deftypefun pdf_text_t pdf_text_new_from_unicode (const pdf_text_utf16_val_t *ucs, enum pdf_text_unicode_encoding_e enc)
+@deftypefun pdf_text_t pdf_text_new_from_unicode (const pdf_text_utf16_val_t *@var{ucs}, enum pdf_text_unicode_encoding_e @var{enc})
 
 Create a new text object from a string of Unicode characters in a
 given unicode encoding.
@@ -1294,7 +1294,7 @@ if (mytime == NULL)
 @end table
 @end deftypefun
 
-@deftypefun pdf_time_t pdf_time_dup (pdf_time_t orig)
+@deftypefun pdf_time_t pdf_time_dup (pdf_time_t @var{orig})
 Dup a new time variable from a given one, allocating memory.
 
 @table @strong
@@ -1328,7 +1328,7 @@ if (new_time == NULL)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_destroy (pdf_time_t time)
+@deftypefun pdf_status_t pdf_time_destroy (pdf_time_t @var{time})
 Destroy @var{mytime} and free all used memory.
 
 @table @strong
@@ -1353,7 +1353,7 @@ pdf_time_destroy (mytime);
 @node Managing Time Values
 @subsection Managing Time Values
 
-@deftypefun pdf_status_t pdf_time_copy (pdf_time_t orig, pdf_time_t copy)
+@deftypefun pdf_status_t pdf_time_copy (pdf_time_t orig, pdf_time_t @var{copy})
 Copies the data from @var{orig} to @var{copy}.
 
 @table @strong
@@ -1388,7 +1388,7 @@ if (!pdf_time_copy (orig, copy))
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_clear (pdf_time_t time)
+@deftypefun pdf_status_t pdf_time_clear (pdf_time_t @var{time})
 Reset @var{time} to the newly created state. After this call
 @var{time} will contain the same date as if returned by
 @code{pdf_time_new}.
@@ -1414,7 +1414,7 @@ pdf_time_clear (mytime);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_add_cal_span (pdf_time_t time, struct pdf_time_cal_span_s cal_span)
+@deftypefun pdf_status_t pdf_time_add_cal_span (pdf_time_t @var{time}, struct pdf_time_cal_span_s @var{cal_span})
 Add the time span represented by @var{cal_span} to @var{time}.
 
 @table @strong
@@ -1462,7 +1462,7 @@ else
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_sub_cal_span (pdf_time_t time, struct pdf_time_cal_span_s cal_span)
+@deftypefun pdf_status_t pdf_time_sub_cal_span (pdf_time_t @var{time}, struct pdf_time_cal_span_s @var{cal_span})
 Subtract the time span represented by @var{cal_span} to @var{time}.
 
 @table @strong
@@ -1520,7 +1520,7 @@ else
 @end deftypefun
 
 
-@deftypefun pdf_status_t pdf_time_add_span (pdf_time_t time, pdf_time_span_t time_span)
+@deftypefun pdf_status_t pdf_time_add_span (pdf_time_t @var{time}, pdf_time_span_t @var{time_span})
 Add the time span contained in @var{time_span} to @var{time}.
 
 @table @strong
@@ -1554,7 +1554,7 @@ pdf_time_add_span (mytime, myspan);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_sub_span (pdf_time_t time, pdf_time_span_t time_span)
+@deftypefun pdf_status_t pdf_time_sub_span (pdf_time_t @var{time}, pdf_time_span_t @var{time_span})
 Subtract the time span contained in @var{time_span} to @var{time}.
 
 @table @strong
@@ -1588,7 +1588,7 @@ pdf_time_sub_span (mytime, myspan);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_get_local_cal (pdf_time_t time, struct pdf_time_cal_s local_cal)
+@deftypefun pdf_status_t pdf_time_get_local_cal (pdf_time_t @var{time}, struct pdf_time_cal_s @var{local_cal})
 Fill @var{local_cal} with the local calendar time of @var{time}.
 
 @table @strong
@@ -1620,7 +1620,7 @@ pdf_time_get_local_cal (mytime, cal);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_get_utc_cal (pdf_time_t time, struct pdf_time_cal_s cal_time)
+@deftypefun pdf_status_t pdf_time_get_utc_cal (pdf_time_t @var{time}, struct pdf_time_cal_s @var{cal_time})
 Get the UTC calendar time of a given time variable.
 
 @table @strong
@@ -1652,7 +1652,7 @@ pdf_time_get_utc_cal (mytime, cal_time);
 @end table
 @end deftypefun
 
-@deftypefun pdf_time_from_cal (pdf_time_t time, struct pdf_time_cal_s cal_time)
+@deftypefun pdf_time_from_cal (pdf_time_t @var{time}, struct pdf_time_cal_s @var{cal_time})
 Set the value of a time variable to a given calendar time.
 
 @table @strong
@@ -1698,7 +1698,7 @@ if (pdf_time_from_cal (mytime, mycaltime) == PDF_E_BADDATA)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_set_local_offset (pdf_time_t time)
+@deftypefun pdf_status_t pdf_time_set_local_offset (pdf_time_t @var{time})
 Set the local time offset of @var{time} to the one used by the
 operating system.
 
@@ -1730,7 +1730,7 @@ pdf_time_set_local_offset (time);
 @node Getting Time Intervals
 @subsection Getting Time Intervals
 
-@deftypefun pdf_status_t pdf_time_diff_cal (pdf_time_t time1, pdf_time_t time2, struct pdf_time_cal_span_s cal_span)
+@deftypefun pdf_status_t pdf_time_diff_cal (pdf_time_t @var{time1}, pdf_time_t @var{time2}, struct pdf_time_cal_span_s @var{cal_span})
 Calculate the time span that goes from @var{time1} to @var{time2} and
 store it in @var{cal_span}.
 
@@ -1768,7 +1768,7 @@ pdf_time_diff (time_begin, time_end, cal_span);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_diff (pdf_time_t time1, pdf_time_t time2, pdf_time_span_t time_span)
+@deftypefun pdf_status_t pdf_time_diff (pdf_time_t @var{time1}, pdf_time_t @var{time2}, pdf_time_span_t @var{time_span})
 Calculate the time span between two dates.
 
 @table @strong
@@ -1808,7 +1808,7 @@ pdf_time_diff (time1, time2, time_span);
 @node Time Comparison
 @subsection Time Comparison
 
-@deftypefun pdf_i32_t pdf_time_cmp (pdf_time_t time1, pdf_time_t time2)
+@deftypefun pdf_i32_t pdf_time_cmp (pdf_time_t @var{time1}, pdf_time_t @var{time2})
 Compares two times.
 
 @table @strong
@@ -1869,7 +1869,7 @@ switch (pdf_time_cmp (time1, time2))
 @node Time Printing and Parsing
 @subsection Time Printing and Parsing
 
-@deftypefun char* pdf_time_to_string (pdf_time_t time, enum pdf_time_format_e time_format)
+@deftypefun char* pdf_time_to_string (pdf_time_t @var{time}, enum pdf_time_format_e @var{time_format})
 Create a string representation of a given time.
 
 @table @strong
@@ -1902,7 +1902,7 @@ mytime_str = pdf_time_to_string (mytime, PDF_TIME_FORMAT_PDF);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_from_string (pdf_time_t mytime, char *time_str, enum pdf_time_format_e time_format)
+@deftypefun pdf_status_t pdf_time_from_string (pdf_time_t mytime, char *@var{time_str}, enum pdf_time_format_e @var{time_format})
 Get a string containing a time specification in some format and fill a
 time variable with the parsed values.
 
@@ -1947,7 +1947,7 @@ if (pdf_time_from_string (mytime,
 @node Getting the Current Time
 @subsection Getting the Current Time
 
-@deftypefun pdf_status_t pdf_time_set_to_current_local_time (pdf_time_t time)
+@deftypefun pdf_status_t pdf_time_set_to_current_local_time (pdf_time_t @var{time})
 Set the value of @var{time} to the current local time used by the
 operating system.
 
@@ -1977,7 +1977,7 @@ pdf_time_set_to_current_local_time (mytime);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_set_to_current_utc_time (pdf_time_t time)
+@deftypefun pdf_status_t pdf_time_set_to_current_utc_time (pdf_time_t @var{time})
 Set the value of @var{time} to the current UTC time used by the operating system.
 
 @table @strong
@@ -2033,7 +2033,7 @@ span = pdf_time_span_new ();
 @end table
 @end deftypefun
 
-@deftypefun pdf_time_span_t pdf_time_span_dup (pdf_time_span_t span)
+@deftypefun pdf_time_span_t pdf_time_span_dup (pdf_time_span_t @var{span})
 
 Allocate and dup a new time span from an existing one. The new time
 span has the same value as the base time span.
@@ -2063,7 +2063,7 @@ new_span = pdf_time_span_dup (span);
 @end deftypefun
 
 
-@deftypefun pdf_status_t pdf_time_span_destroy (pdf_time_span_t span)
+@deftypefun pdf_status_t pdf_time_span_destroy (pdf_time_span_t @var{span})
 
 Destroy a time span variable freeing all used memory.
 
@@ -2096,7 +2096,7 @@ pdf_time_span_destroy (span);
 @node Managing Time Span Values
 @subsection Managing Time Span Values
 
-@deftypefun pdf_status_t pdf_time_span_set (pdf_time_span_t span, pdf_i32_t high_value, pdf_u32_t low_value)
+@deftypefun pdf_status_t pdf_time_span_set (pdf_time_span_t @var{span}, pdf_i32_t @var{high_value}, pdf_u32_t @var{low_value})
 
 Set the value of a time span. The internal representation of the time
 span is 64 bits long (signed).
@@ -2132,7 +2132,7 @@ pdf_time_span_set (span, (32 << 1), 10); /* The span is -10 seconds long */
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_span_set_from_i32 (pdf_time_span_t span, pdf_i32_t seconds)
+@deftypefun pdf_status_t pdf_time_span_set_from_i32 (pdf_time_span_t @var{span}, pdf_i32_t @var{seconds})
 
 Set the value of a time span from a 32 bits signed number.
 
@@ -2165,7 +2165,7 @@ pdf_time_span_set_from_i32 (span, -10); /* The span is -10 seconds long */
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_span_negate (pdf_time_span_t span)
+@deftypefun pdf_status_t pdf_time_span_negate (pdf_time_span_t @var{span})
 
 Make a positive time span into a negative one or make a negative time
 span into a positive one.
@@ -2198,7 +2198,7 @@ pdf_time_span_negate (span);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_span_add (pdf_time_span_t span1, pdf_time_span_t span2, pdf_time_span_t result)
+@deftypefun pdf_status_t pdf_time_span_add (pdf_time_span_t @var{span1}, pdf_time_span_t @var{span2}, pdf_time_span_t @var{result})
 
 Add two time spans and store the result in another time span.
 
@@ -2234,7 +2234,7 @@ pdf_time_span_add (span1, span2, result);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_span_copy (pdf_time_span_t orig, pdf_time_span_t dest)
+@deftypefun pdf_status_t pdf_time_span_copy (pdf_time_span_t @var{orig}, pdf_time_span_t @var{dest})
 
 Copy the value of a time span into another time span.
 
@@ -2268,7 +2268,7 @@ pdf_time_span_copy (span_orig, span_dest);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_span_diff (pdf_time_span_t span1, pdf_time_span_t span2, pdf_time_span_t result)
+@deftypefun pdf_status_t pdf_time_span_diff (pdf_time_span_t @var{span1}, pdf_time_span_t @var{span2}, pdf_time_span_t @var{result})
 
 Difference two time spans and store the result (maybe negative) into
 another time span.
@@ -2306,7 +2306,7 @@ pdf_time_span_diff (span1, span2, span_diff);
 @end table
 @end deftypefun
 
-@deftypefun pdf_i32_t pdf_time_span_to_secs (pdf_time_span_t span)
+@deftypefun pdf_i32_t pdf_time_span_to_secs (pdf_time_span_t @var{span})
 
 Get the value of a time span in seconds. 
 
@@ -2338,7 +2338,7 @@ num_seconds = pdf_time_span_to_secs (span);
 @node Time Span Comparison
 @subsection Time Span Comparison
 
-@deftypefun pdf_i32_t pdf_time_span_cmp (pdf_time_span_t span1, pdf_time_span_t span2)
+@deftypefun pdf_i32_t pdf_time_span_cmp (pdf_time_span_t @var{span1}, pdf_time_span_t @var{span2})
 
 Compare the length two time spans.
 
@@ -2394,7 +2394,7 @@ switch (pdf_time_span_cmp (span1, span2))
 @node Calendar Spans Management
 @subsection  Calendar Spans Management
 
-@deftypefun pdf_status_t pdf_time_add_cal_span_with_base (struct pdf_time_cal_span_s span1, struct pdf_time_cal_span_s span2, pdf_time_t base_time, struct pdf_time_cal_span_s result)
+@deftypefun pdf_status_t pdf_time_add_cal_span_with_base (struct pdf_time_cal_span_s @var{span1}, struct pdf_time_cal_span_s @var{span2}, pdf_time_t @var{base_time}, struct pdf_time_cal_span_s @var{result})
 
 Add two calendar spans. Since the calendar spans are relative (some
 years has more days than another) the calendar spans are first
@@ -2446,7 +2446,7 @@ if (pdf_time_add_cal_span_with_base (cal_span1,
 @end deftypefun
 
 
-@deftypefun pdf_i32_t pdf_time_cal_span_cmp (struct pdf_time_cal_span_s span1, struct pdf_time_cal_span_s span2, pdf_time_t base_time)
+@deftypefun pdf_i32_t pdf_time_cal_span_cmp (struct pdf_time_cal_span_s @var{span1}, struct pdf_time_cal_span_s @var{span2}, pdf_time_t @var{base_time})
 
 Compare two calendar spans previously resolved with a given base time.
 
@@ -2506,7 +2506,7 @@ switch (pdf_time_cal_span_cmp (span1, span2, mytime))
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_cal_span_diff (struct pdf_time_cal_span_s span1, struct pdf_time_cal_span_s span2, pdf_time_t base_time, struct pdf_time_cal_span_s result)
+@deftypefun pdf_status_t pdf_time_cal_span_diff (struct pdf_time_cal_span_s @var{span1}, struct pdf_time_cal_span_s @var{span2}, pdf_time_t @var{base_time}, struct pdf_time_cal_span_s @var{result})
 
 Compute the difference between two calendar spans relative to a given
 base time and store it in a given calendar span.
