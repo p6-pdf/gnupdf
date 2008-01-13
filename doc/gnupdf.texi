@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.17 2008/01/13 17:55:01 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.18 2008/01/13 22:56:40 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -226,6 +226,40 @@ pdf_dealloc (p);
 
 @node Hash Tables
 @section Hash Tables
+
+@menu
+* Hash Table Types::
+* Creating and Destroying Hash Tables::
+@end menu
+
+@node Hash Table Types
+@subsection Hash Table Types
+
+@deftp {Data Type} enum pdf_hash_value_type_e
+
+Enumeration of supported value types in a hash variable:
+
+@table @code
+@item PDF_HASH_VAL_BOOL
+@item PDF_HASH_VAL_U32
+@item PDF_HASH_VAL_I32
+@item PDF_HASH_VAL_REAL
+@item PDF_HASH_VAL_STR
+@item PDF_HASH_VAL_TEXT
+@item PDF_HASH_VAL_HASH
+@item PDF_HASH_VAL_LIST
+@end table
+@end deftp
+
+@deftp {Data Type} pdf_hash_t
+
+A Hash Table able to store key/value pairs. A key may be any
+NULL-terminated string.
+@end deftp
+
+@node Creating and Destroying Hash Tables
+@subsection Creating and Destroying Hash Tables
+
 
 @node Lists
 @section Lists
@@ -843,7 +877,7 @@ str = pdf_text_get_pdf (text);
 
 @deftypefun char* pdf_text_get_unicode (pdf_text_t @var{text})
 
-Get hte contents of a text variable encoded in UTF16 using
+Get the contents of a text variable encoded in UTF16 using
 host-endian. 
 
 @table @strong
@@ -979,7 +1013,7 @@ if (pdf_text_set_unicode (text, str, enc) != PDF_OK)
 
 @deftypefun pdf_status_t pdf_text_concat (pdf_text_t @var{to}, pdf_text_t @var{from})
 
-Concatenate the contents two text variables and store the result in
+Concatenate the contents of two text variables and store the result in
 the second text variable.
 
 @table @strong

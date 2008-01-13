@@ -1,6 +1,7 @@
 2008-01-13  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi: Returns sections fixed.
+	(Creating and Destroying Hash Tables): New section.
 
 2008-01-12  Jose E. Marchesi  <jemarch@gnu.org>
 
