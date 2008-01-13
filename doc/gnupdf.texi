@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.16 2008/01/12 16:54:27 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.17 2008/01/13 17:55:01 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -156,7 +156,6 @@ deallocate should have been previously allocated using
 
 @item Returns
 None.
-
 @item Usage Example
 
 @example
@@ -199,7 +198,6 @@ is returned to the operating system.
 
 @item Returns
 A pointer to the reallocated memory.
-
 @item Usage Example
 @example
 char *p;
@@ -1280,7 +1278,6 @@ None.
 @item Returns
 The newly created time object.
 If an error occurs then @code{NULL} is returned.
-
 @item Usage example
 @example
 pdf_time_t mytime;
@@ -1306,12 +1303,8 @@ The time variable to be dupped. Should be a properly created time
 variable.
 @end table
 @item Returns
-@itemize @bullet
-@item
 A new time variable containing a copy of @var{orig} values.
-@item
 @code{NULL} if there is an error.
-@end itemize
 @item Usage example
 @example
 pdf_time_t orig;
@@ -1339,7 +1332,11 @@ The time variable to be destroyed. Should be a properly created time
 variable.
 @end table
 @item Returns
-@code{PDF_OK}.
+A status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@end table
 @item Usage example
 @example
 pdf_time_t mytime;
@@ -1368,10 +1365,11 @@ created time variable.
 Note that any previous data is destroyed.
 @end table
 @item Returns
-@itemize @bullet
-@item
-@code{PDF_OK} if the copy succeeded.
-@end itemize
+A status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@end table
 @item Usage example
 @example
 pdf_time_t orig;
@@ -1400,7 +1398,11 @@ Reset @var{time} to the newly created state. After this call
 The time variable to clear. Should be a properly create time variable.
 @end table
 @item Returns
-@code{PDF_OK}.
+A status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@end table
 @item Usage example
 @example
 pdf_time_t mytime;
@@ -1428,7 +1430,7 @@ A calendar span with valid values.
 @end table
 
 @item Returns
-
+A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
@@ -1476,7 +1478,7 @@ A calendar span with valid values.
 @end table
 
 @item Returns
-
+A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
@@ -1534,7 +1536,7 @@ A properly created time span.
 @end table
 
 @item Returns
-
+A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
@@ -1568,7 +1570,7 @@ A properly created time span.
 @end table
 
 @item Returns
-
+A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
@@ -1602,7 +1604,7 @@ A time calendar structure that will hold the local time of @var{time}.
 @end table
 
 @item Returns
-
+A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
@@ -1634,7 +1636,7 @@ A calendar time structure that will hold the UTC time of @var{time}.
 @end table
 
 @item Returns
-
+A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
@@ -1666,7 +1668,7 @@ A calendar time structure.
 @end table
 
 @item Returns
-
+A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
@@ -1711,7 +1713,7 @@ A properly created time variable.
 @end table
 
 @item Returns
-
+A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
@@ -1749,7 +1751,7 @@ goes between @var{time1} and @var{time2}.
 @end table
 
 @item Returns
-
+A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
@@ -1786,7 +1788,7 @@ span. Any previous content of @var{time_span} will be destroyed.
 @end table
 
 @item Returns
-
+A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
@@ -1824,7 +1826,7 @@ Should be a properly created time variable.
 @end table
 
 @item Returns
-
+A status value:
 @table @code
 @item -1
 If @var{time1} precedes @var{time2}.
@@ -1884,11 +1886,7 @@ The format to use when creating the string representation of @var{time}.
 
 @item Returns
 The string representation of @var{time}.
-
-@table @code
-@item NULL
-If there is an error.
-@end table
+@code{NULL} if there is an error.
 
 @item Usage example
 @example
@@ -1920,10 +1918,10 @@ The format indicating how to parse @var{time_str}.
 @end table
 
 @item Returns
-
+A status value:
 @table @code
 @item PDF_OK
-
+The operation succeeded.
 @item PDF_E_BADDATA
 Error while parsing @var{time_str} according to @var{time_format}.
 @end table
@@ -1960,7 +1958,7 @@ A properly created time variable.
 @end table
 
 @item Returns
-
+A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
@@ -1989,7 +1987,7 @@ A properly created time variable.
 @end table
 
 @item Returns
-
+A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
@@ -2020,10 +2018,8 @@ initialized with a zero value (zero seconds).
 None.
 
 @item Returns
-
 The newly created time span variable or @code{NULL} if there is an
 error. 
-
 @item Usage example
 @example
 pdf_time_span_t span;
@@ -2047,9 +2043,7 @@ A properly created time span variable.
 @end table
 
 @item Returns
-
 The newly created time span variable.
-
 @item Usage example
 @example
 pdf_time_span_t span;
@@ -2076,12 +2070,11 @@ The time span variable to be destroyed.
 @end table
 
 @item Returns
-
+A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
 @end table
-
 @item Usage example
 @example
 pdf_time_span_t span;
@@ -2114,9 +2107,7 @@ The low (unsigned) part of the time span value.
 @end table
 
 @item Returns
-
-A pdf status value.
-
+A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
@@ -2147,9 +2138,7 @@ A signed 32 bits number.
 @end table
 
 @item Returns
-
-A pdf status value.
-
+A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
@@ -2179,9 +2168,7 @@ A properly created time span variable.
 @end table
 
 @item Returns
-
-A pdf status value.
-
+A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
@@ -2216,7 +2203,7 @@ content is lost.
 @end table
 
 @item Returns
-
+A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
@@ -2250,7 +2237,7 @@ previous value is lost.
 @end table
 
 @item Returns
-
+A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
@@ -2287,7 +2274,7 @@ is lost.
 @end table
 
 @item Returns
-
+A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
@@ -2319,10 +2306,8 @@ A properly created time span variable.
 @end table
 
 @item Returns
-
 The value of the time span in seconds.
 A negative value is returned if the time span is negative.
-
 @item Usage example
 @example
 pdf_time_span_t span;
@@ -2353,7 +2338,7 @@ The second time span to compare.
 @end table
 
 @item Returns
-
+A status value:
 @table @code
 @item -1
 The length of @var{span1} is shorter than the length of @var{span2}.
@@ -2415,7 +2400,7 @@ The calendar span to store the result of the add operation.
 @end table
 
 @item Returns
-
+A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
@@ -2526,7 +2511,7 @@ The calendar structure holding the result of the difference.
 @end table
 
 @item Returns
-
+A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
@@ -2638,9 +2623,7 @@ Initialization value.
 @end table
 
 @item Returns
-
 The newly created object.
-
 @item Usage example
 
 @example
@@ -2667,9 +2650,7 @@ Gets the real value of a real object.
 None.
 
 @item Returns
-
 The real value of the given object.
-
 @item Usage example
 
 @example
@@ -2697,9 +2678,7 @@ New real value.
 @end table
 
 @item Returns
-
 None.
-
 @item Usage example
 @example
 pdfo_obj_t real_obj;

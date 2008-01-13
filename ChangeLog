@@ -1,3 +1,7 @@
+2008-01-13  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi: Returns sections fixed.
+
 2008-01-12  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi: Use @var for all actual parameters in function
