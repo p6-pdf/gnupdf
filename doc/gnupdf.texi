@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.19 2008/01/20 18:38:44 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.20 2008/01/20 18:45:00 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -688,7 +688,7 @@ A pointer to the newly created text object.
 @deftypefun pdf_text_t pdf_text_new_from_u32 (pdf_u32_t @var{number})
 
 Create a new text variable containing the textual representation of a
-given integer. Leading zeroes are not included.
+given integer.
 
 @table @strong
 @item Parameters
@@ -703,7 +703,7 @@ A pointer to the newly created text object.
 pdf_text_t text;
 pdf_u32_t number;
 
-number = 024;
+number = 24;
 text = pdf_text_new_from_u32 (number);
 
 /* The content of text is now "24" */

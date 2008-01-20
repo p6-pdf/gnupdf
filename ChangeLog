@@ -3,6 +3,8 @@
 	* doc/gnupdf.texi (Boolean Types): New section.
 	(Status Types): New section.
 	(Numeric Types): New section.
+	(Creating and Destroying Text): Removed the reference to leading
+	zeroes in the arguments to `pdf_text_new_from_u32'.
 
 2008-01-13  Jose E. Marchesi  <jemarch@gnu.org>
 
