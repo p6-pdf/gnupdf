@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.20 2008/01/20 18:45:00 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.21 2008/01/20 18:51:14 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -307,7 +307,7 @@ Minimum value able to be stored in a @code{pdf_u32_t} variable.
 @node Hash Table Types
 @subsection Hash Table Types
 
-@deftp {Data Type} enum pdf_hash_value_type_e
+@deftp {Data Type} {enum pdf_hash_value_type_e}
 
 Enumeration of supported value types in a hash variable:
 
@@ -470,7 +470,7 @@ Third row.
 @node Text Data Types
 @subsection Text Data Types
 
-@deftp {Data Type} enum pdf_text_unicode_encoding_e
+@deftp {Data Type} {enum pdf_text_unicode_encoding_e}
 
 Enumeration of supported Unicode encodings.
 
@@ -1354,7 +1354,7 @@ calendar items: years, months, days, hours, minutes and seconds.
 @end table
 @end deftp
 
-@deftp {Data Type} enum pdf_time_format_e
+@deftp {Data Type} {enum pdf_time_format_e}
 Enumeration containing the several supported time formats used to
 convert a time to a string representation or to parse a time from a
 string representation.
