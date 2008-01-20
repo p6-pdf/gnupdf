@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.18 2008/01/13 22:56:40 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.19 2008/01/20 18:38:44 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -223,6 +223,78 @@ pdf_dealloc (p);
 
 @node Basic Types
 @section Basic Types
+
+@menu
+* Boolean Types::
+* Status Types::
+* Numeric Types::
+@end menu
+
+@node Boolean Types
+@subsection Boolean Types
+
+@deftp {Data Type} pdf_bool_t
+A boolean value.
+@end deftp
+
+The following constants defines the valid values to be hold in a
+@code{pdf_status_t} variable:
+
+@deftp {Constant} PDF_TRUE
+Logical true.
+@end deftp
+
+@deftp {Constant} PDF_FALSE
+Logical false.
+@end deftp
+
+@node Status Types
+@subsection Status Types
+
+@deftp {Data Type} pdf_status_t
+A status value.
+@end deftp
+
+The following constants defines the valid values to be hold in a
+@code{pdf_status_t} variable:
+
+@deftp {Constant} PDF_OK
+A success status.
+@end deftp
+
+@deftp {Constant} PDF_ERROR
+An error status.
+@end deftp
+
+@node Numeric Types
+@subsection Numeric Types
+
+@deftp {Data Type} pdf_i32_t
+Signed 32 bits integer.
+@end deftp
+
+@deftp {Data Type} pdf_u32_t
+Unsigned 32 bits integer.
+@end deftp
+
+The following constants are defined in order to define the valid value
+ranges for these data types:
+
+@deftp {Constant} PDF_I32_MAX
+Maximum value able to be stored in a @code{pdf_i32_t} variable.
+@end deftp
+
+@deftp {Constant} PDF_I32_MIN
+Minimum value able to be stored in a @code{pdf_i32_t} variable.
+@end deftp
+
+@deftp {Constant} PDF_U32_MAX
+Maximum value able to be stored in a @code{pdf_u32_t} variable.
+@end deftp
+
+@deftp {Constant} PDF_U32_MIN
+Minimum value able to be stored in a @code{pdf_u32_t} variable.
+@end deftp
 
 @node Hash Tables
 @section Hash Tables
