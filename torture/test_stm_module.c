@@ -1,7 +1,6 @@
-/* -*- mode: C -*- Time-stamp: "07/12/06 20:03:57 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/01/20 20:04:49 jemarch"
  *
  *       File:         test_stm_module.c
- *       Author:       Jose E. Marchesi (jemarch@gnu.org)
  *       Date:         Thu Dec  6 19:21:01 2007
  *
  *       GNU PDF Library - Stream Module Testsuite

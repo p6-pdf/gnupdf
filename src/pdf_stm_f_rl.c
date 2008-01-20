@@ -1,7 +1,6 @@
-/* -*- mode: C -*- Time-stamp: "07/10/31 17:36:17 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/01/20 20:04:14 jemarch"
  *
  *       File:         pdf_stm_f_rl.c
- *       Author:       Jose E. Marchesi (jemarch@gnu.org)
  *       Date:         Sun Jul 15 22:01:18 2007
  *
  *       GNU PDF Library - RunLength encoder/decoder

@@ -1,7 +1,6 @@
-/* -*- mode: C -*- Time-stamp: "07/10/23 12:52:55 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/01/20 20:03:08 jemarch"
  *
  *       File:         pdf.h
- *       Author:       Jose E. Marchesi (jemarch@gnu.org)
  *       Date:         Thu Jul  5 19:52:48 2007
  *
  *       GNU PDF Library - Main header file

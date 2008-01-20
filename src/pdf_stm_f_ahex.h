@@ -1,7 +1,6 @@
-/* -*- mode: C -*- Time-stamp: "07/10/23 12:54:21 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/01/20 20:03:36 jemarch"
  *
  *       File:         pdf_stm_f_ahex.h
- *       Author:       Jose E. Marchesi (jemarch@gnu.org)
  *       Date:         Fri Jul 13 17:04:29 2007
  *
  *       GNU PDF Library - ASCIIHex encoder/decoder

@@ -1,7 +1,6 @@
-/* -*- mode: C -*- Time-stamp: "07/10/23 12:53:32 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/01/20 20:03:21 jemarch"
  *
  *       File:         pdf_rectangle.h
- *       Author:       Jose E. Marchesi (jemarch@gnu.org)
  *       Date:         Sun Sep  9 01:30:37 2007
  *
  *       GNU PDF Library - Rectangle common data type

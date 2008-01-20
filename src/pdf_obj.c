@@ -1,7 +1,6 @@
-/* -*- mode: C -*- Time-stamp: "07/10/31 17:37:36 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/01/20 20:03:11 jemarch"
  *
  *       File:         pdf_obj.c
- *       Author:       Jose E. Marchesi (jemarch@gnu.org)
  *       Date:         Sat Jul  7 03:04:30 2007
  *
  *       GNU PDF Library - PDF objects implementation

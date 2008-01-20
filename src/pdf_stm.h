@@ -1,7 +1,6 @@
-/* -*- mode: C -*- Time-stamp: "07/10/23 12:56:44 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/01/20 20:04:20 jemarch"
  *
  *       File:         pdf_stm.h
- *       Author:       Jose E. Marchesi (jemarch@gnu.org)
  *       Date:         Fri Jul  6 18:37:57 2007
  *
  *       GNU PDF Library - Streams

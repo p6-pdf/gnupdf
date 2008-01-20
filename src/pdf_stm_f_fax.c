@@ -1,7 +1,6 @@
-/* -*- mode: C -*- Time-stamp: "07/10/31 17:34:37 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/01/20 20:03:40 jemarch"
  *
  *       File:         pdf_stm_f_fax.c
- *       Author:       Jose E. Marchesi (jemarch@gnu.org)
  *       Date:         Sun Aug  5 19:50:33 2007
  *
  *       GNU PDF Library - CCITT Fax encoder/decoder filter

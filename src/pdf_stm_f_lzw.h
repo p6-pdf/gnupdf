@@ -1,7 +1,6 @@
-/* -*- mode: C -*- Time-stamp: "07/10/23 12:55:37 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/01/20 20:04:00 jemarch"
  *
  *       File:         pdf_stm_f_lzw.h
- *       Author:       Juan Pedro Bolivar Puente (raskolnikov@es.gnu.org)
  *       Date:         Wed Aug 15 14:13:20 2007
  *
  *       GNU PDF Library - LZW encoder/decoder

@@ -1,7 +1,6 @@
-/* -*- mode: C -*- Time-stamp: "07/10/31 17:33:50 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/01/20 20:03:27 jemarch"
  *
  *       File:         pdf_stm_f_a85.c
- *       Author:       Jose E. Marchesi (jemarch@gnu.org)
  *       Date:         Sun Jul 15 06:01:42 2007
  *
  *       GNU PDF Library - ASCII85 encoder/decoder

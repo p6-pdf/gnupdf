@@ -1,7 +1,6 @@
-/* -*- mode: C -*- Time-stamp: "07/10/31 17:34:14 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/01/20 20:03:32 jemarch"
  *
  *       File:         pdf_stm_f_ahex.c
- *       Author:       Jose E. Marchesi (jemarch@gnu.org)
  *       Date:         Fri Jul 13 17:08:41 2007
  *
  *       GNU PDF Library - ASCII Hex decoder filter

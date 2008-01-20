@@ -1,7 +1,6 @@
-/* -*- mode: C -*- Time-stamp: "07/10/31 17:35:57 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/01/20 20:04:08 jemarch"
  *
  *       File:         pdf_stm_f_pred.c
- *       Author:       Juan Pedro Bolivar Puente (raskolnikov@es.gnu.org)
  *       Date:         Thu Jul 12 01:21:33 2007
  *
  *       GNU PDF Library - Predictor stream filter

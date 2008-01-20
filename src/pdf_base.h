@@ -1,7 +1,6 @@
-/* -*- mode: C -*- Time-stamp: "07/10/23 12:51:58 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/01/20 20:02:49 jemarch"
  *
  *       File:         pdf_base.h
- *       Author:       Jose E. Marchesi (jemarch@gnu.org)
  *       Date:         Fri Jul  6 20:22:05 2007
  *
  *       GNU PDF Library - Common resources for the library modules

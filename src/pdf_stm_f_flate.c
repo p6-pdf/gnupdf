@@ -1,7 +1,6 @@
-/* -*- mode: C -*- Time-stamp: "07/10/31 17:34:59 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/01/20 20:03:45 jemarch"
  *
  *       File:         pdf_stm_f_flate.c
- *       Author:       Jose E. Marchesi (jemarch@gnu.org)
  *       Date:         Tue Jul 10 23:44:00 2007
  *
  *       GNU PDF Library - FlateDecode stream filter

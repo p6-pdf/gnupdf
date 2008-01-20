@@ -1,7 +1,6 @@
-/* -*- mode: C -*- Time-stamp: "07/10/31 17:35:41 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/01/20 20:04:03 jemarch"
  *
  *       File:         pdf_stm_f_null.c
- *       Author:       Jose E. Marchesi (jemarch@gnu.org)
  *       Date:         Mon Jul  9 22:01:41 2007
  *
  *       GNU PDF Library - NULL stream filter

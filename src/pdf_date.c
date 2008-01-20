@@ -1,7 +1,6 @@
-/* -*- mode: C -*- Time-stamp: "07/10/31 17:31:48 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/01/20 20:02:55 jemarch"
  *
  *       File:         pdf_date.c
- *       Author:       Jose E. Marchesi (jemarch@gnu.org)
  *       Date:         Wed Sep  5 23:38:45 2007
  *
  *       GNU PDF Library - Date common data type

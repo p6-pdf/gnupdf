@@ -1,7 +1,6 @@
-/* -*- mode: C -*- Time-stamp: "07/10/31 19:29:23 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/01/20 20:04:33 jemarch"
  *
  *       File:         pdf_filter.c
- *       Author:       Jose E. Marchesi (jemarch@gnu.org)
  *       Date:         Tue Jul 10 18:42:07 2007
  *
  *       GNU PDF Library - Process input/output with the

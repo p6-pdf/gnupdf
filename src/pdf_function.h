@@ -1,7 +1,6 @@
-/* -*- mode: C -*- Time-stamp: "07/10/23 12:52:47 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/01/20 20:03:05 jemarch"
  *
  *       File:         pdf_function.h
- *       Author:       Jose E. Marchesi (jemarch@gnu.org)
  *       Date:         Sun Sep  9 21:02:24 2007
  *
  *       GNU PDF Library - Function common data type
