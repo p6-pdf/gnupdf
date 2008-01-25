@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.21 2008/01/20 18:51:14 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.22 2008/01/25 21:40:18 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -335,6 +335,633 @@ NULL-terminated string.
 
 @node Lists
 @section Lists
+
+@menu
+* List Data Types::
+* Creating and Destroying Lists::
+* Managing List Properties::
+* Searching for List Elements::
+* Setting and Getting List Elements::
+* Adding and Removing List Elements::
+* Working with Iterators::
+@end menu
+
+@node List Data Types
+@subsection List Data Types
+
+@deftp {Data Type} pdf_list_t
+A list composed by zero or more nodes.
+@end deftp
+
+@deftp {Data Type} pdf_list_node_t
+A list node. Each node is able to contain a data structure via a void
+npointer.
+@end deftp
+
+@deftp {Data Type} pdf_list_iterator_t
+A list iterator.
+@end deftp
+
+@deftp {Data Type} pdf_list_element_equals_fn_t
+A function for comparing list elements.
+@end deftp
+
+@deftp {Data Type} pdf_list_element_dispose_fn_t
+A function for disposing list elements.
+@end deftp
+
+@node Creating and Destroying Lists
+@subsection Creating and Destroying Lists
+
+@deftypefun pdf_list_t pdf_list_create (pdf_list_element_equals_fn_t @var{equals_fn}, pdf_list_element_dipose_fn_t @var{dispose_fn}, pdf_bool_t @var{allow_duplicates})
+
+Create a new list containing no elements.
+
+@table @strong
+@item Parameters
+@table @var
+@item equals_fn
+A function to compare list elements. 
+It is used in sort operations.
+@item dispose_fn
+A function to dispose list elements.
+It is used when destroying list elements.
+@item allow_duplicates
+This parameter indicate if the list is allowed to contain duplicate
+elements (elements for which @var{equals_fn} evaluate to
+@code{PDF_TRUE}). 
+@end table
+@item Returns
+The newly created list.
+@item Usage example
+@example
+pdf_list_t mylist;
+
+mylist = pdf_list_create (list_element_equal_p, list_element_destroy, PDF_FALSE);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_list_destroy (pdf_list_t @var{list})
+
+Destroy a list freeing all used resources. 
+The elements of the list are disposed first.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+The list to be destroyed.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@end table
+@item Usage example
+@example
+pdf_list_t mylist;
+
+/* ...create `mylist'... */
+
+pdf_list_destroy (mylist);
+@end example
+@end table
+@end deftypefun
+
+@node Managing List Properties
+@subsection Managing List Properties
+
+@deftypefun pdf_size_t pdf_list_size (pdf_list_t @var{list})
+
+Get the number of elements contained into a given list.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@end table
+@item Returns
+The number of elements inside @var{list}.
+@item Usage example
+@example
+pdf_list_t mylist;
+pdf_size_t num_elm;
+
+/* ...insert some elements into `mylist'... */
+num_elm = pdf_list_size (mylist);
+@end example
+@end table
+@end deftypefun
+
+@node Searching for List Elements
+@subsection Searching for List Elements
+
+@deftypefun pdf_list_node_t pdf_list_search (pdf_list_t @var{list}, const void* @var{element})
+
+Search whether an element is already in the list.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item element
+The element to search for.
+@end table
+@item Returns
+The searched node if found, or @code{NULL} if not present in the
+list.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_list_node_t pdf_list_search_from (pdf_list_t @var{list}, pdf_size_t @var{start_index}, const void* @var{element})
+
+Search whether an element is already in the list, at a position >= @var{start_index}.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item start_index
+Index indicating the begin of the search.
+@end table
+@item Returns
+The searched node if found, or NULL if not present in the list.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_list_node_t pdf_list_search_from_to (pdf_list_t @var{list}, pdf_size_t @var{start_index}, pdf_size_t @var{end_index}, const void* @var{element})
+
+Search whether an element is already in the list, at a position >=
+@var{start_index} and < @var{end_index}.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item start_index
+Index to the first list position to be searched.
+@item end_index
+Index to the last list position to be searched.
+@item element
+The element to search for.
+@end table
+@item Returns
+The node if found, or @code{NULL} if not present in the list.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_list_node_t pdf_list_next_node (pdf_list_t @var{list}, pdf_list_node_t @var{node})
+
+Return the node immediately after the given node in the list.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item node
+A node contained in @var{list}.
+@end table
+@item Returns
+The node immediately after the given node in the list, or @code{NULL}
+if the given node is the last (rightmost) one in the list.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_list_node_t pdf_list_previous_node (pdf_list_t @var{list}, pdf_list_node_t @var{node})
+
+Return the node immediately before the given node in the list.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item node
+A node contained in @var{list}.
+@end table
+@item Returns 
+The node immediately before the given node in the list, or @code{NULL}
+if the given node is the first (leftmost) one in the list.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_size_t pdf_list_indexof (pdf_list_t @var{list}, const void* @var{element})
+
+Search whether an element is already in the list.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item element
+A pointer to user data.
+@end table
+@item Returns
+The position of @var{element} if found, or @code{(pdf_size_t)(-1)} if
+not present in the list.
+@item Usage Example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_size_t pdf_list_indexof_from (pdf_list_t @var{list}, pdf_size_t @var{start_index}, const void* @var{element})
+
+Search whether an element is already in the list, at a position >= @var{start_index}.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item start_index
+An index to a position in @var{list}.
+@item element
+The element to search for.
+@end table
+@item Returns
+The position of the element containing @var{element} if found, or
+@code{(size_t)(-1)} if not present in the list.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_size_t pdf_list_indexof_from_to (pdf_list_t @var{list}, pdf_size_t @var{start_index}, pdf_size_t @var{end_index}, const void* @var{element})
+
+Search whether an element is already in the list, at a position >= @var{start_index} and < @var{end_index}.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item start_index
+A position in @var{list}.
+@item end_index
+A position in @var{list}.
+@item element
+A pointer to some user data.
+@end table
+@item Returns
+The position of the node containin @var{element} if found, or
+@code{(size_t)(-1)} if not present in the list.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@node Setting and Getting List Elements
+@subsection Setting and Getting List Elements
+
+@deftypefun void * pdf_list_node_value (pdf_list_t @var{list}, pdf_list_node_t @var{node})
+
+Get the element value represented by a list node.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item node
+A node of @var{list}.
+@end table
+@item Returns
+The element value represented by @var{node}.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun {void *} pdf_list_get_at (pdf_list_t @var{list}, pdf_size_t @var{position})
+
+Get the element at a given position in the list.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item position
+A position in @var{list}. 
+Must be @code{>= 0} and @code{< pdf_list_size (list)}.
+@end table
+@item Returns
+The element 
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_list_node_t pdf_list_set_at (pdf_list_t @var{list}, pdf_size_t @var{position}, const void* @var{element})
+
+Replace the element at a given position in a list.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item position
+A position in @var{list}.
+Must be @code{>= 0} and @code{< pdf_list_size (list)}.
+@end table
+@item Returns
+The node containing the replaced element.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@node Adding and Removing List Elements
+@subsection Adding and Removing List Elements
+
+@deftypefun pdf_list_node_t pdf_list_add_first (pdf_list_t @var{list}, const void* @var{element})
+
+Add an element as the first element of the list.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item element
+A pointer to the user data to be stored as a list element.
+@end table
+@item Returns
+The node containing the added elemetn.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_list_node_t pdf_list_add_last (pdf_list_t @var{list}, const void* @var{element})
+
+Add an element as the last element of the list.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item element
+A pointer to the user data to be stored as a list element.
+@end table
+@item Returns
+The node containing the given @var{element}.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_list_node_t pdf_list_add_at (pdf_list_t @var{list}, pdf_size_t @var{position}, const void* @var{element})
+
+Add an element at a given position in the list.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item position
+A position in the list.
+Should be @code{>= 0} and @code{<= pdf_list_size (list)}.
+@item element
+A pointer to the user data to be stored as a list element.
+@end table
+@item Returns
+The node containing the given @var{element}.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_list_remove_node (pdf_list_t @var{list}, pdf_list_node_t @var{node})
+
+Remove an element from the list.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item node
+The node to be removed.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_list_remove_at (pdf_list_t @var{list}, pdf_size_t @var{position})
+
+Remove an element at a given position from the list.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item position
+A position in @var{list}.
+Must be @code{>= 0} and @code{< pdf_list_size (list)}.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_list_remove (pdf_list_t @var{list}, const void * @var{element})
+
+Search and remove an element from the lsit.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item element
+The element to be removed.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+@var{element} was found in the list and was removed.
+@item PDF_BADDATA
+@var{element} was not found in the list.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@node Working with Iterators
+@subsection Working with Iterators
+
+@deftypefun pdf_list_iterator_t pdf_list_iterator (pdf_list_t @var{list})
+
+Create an iterator traversing a list.
+
+The list contents must not be modified while the iterator is in use,
+except for replacing or removing the last returned element.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@end table
+@item Returns
+An iterator pointing to the head of @var{list}.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_list_iterator_t pdf_list_iterator_from_to (pdf_list_t @var{list}, pdf_size_t @var{start_index}, pdf_size_t @var{end_index})
+
+Create an iterator traversing the element with indices @code{i},
+@code{start_index <= i < end_index}, of a list.
+
+The list contents must not be modified while the iterator is in use,
+except for replacing or removing the last returned element.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item start_index
+A position in @var{list}.
+@item end_index
+A position in @var{list}.
+@end table
+@item Returns
+An iterator pointing to @var{start_index}.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_list_iterator_next (pdf_list_iterator_t *@var{iterator}, const void **@var{element_pointer}, pdf_list_node_t *@var{node_pointer})
+
+If there is a next element, store the next element in
+@var{*element_pointer}, store its node in @var{*node_pointer} if it is
+non-@code{NULL}, and advance the iterator.
+
+@table @strong
+@item Parameters
+@table @var
+@item iterator
+A list iterator.
+@item element_pointer
+A pointer to a pointer to user data.
+@item node_pointer
+A pointer to a list node.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+There is a next element.
+@item PDF_ERROR
+There is not a next element.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_list_iterator_free (pdf_list_iterator_t *@var{iterator})
+
+Free an iterator releasing any used resource.
+
+@table @strong
+@item Parameters
+@table @var
+@item iterator
+A list iterator.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
 
 @node Filtered Streams
 @section Filtered Streams

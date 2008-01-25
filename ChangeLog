@@ -1,3 +1,13 @@
+2008-01-25  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (List Data Types): New section.
+	(Creating and Destroying Lists): New section.
+	(Managing List Properties): New section.
+	(Searching for List Elements): New section.
+	(Setting and Getting List Elements): New section.
+	(Adding and Removing List Elements): New section.
+	(Working with Iterators): New section.
+
 2008-01-20  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/*.[ch]: Author field removed from header.
