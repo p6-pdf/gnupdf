@@ -1,3 +1,18 @@
+2008-01-28  Aleksander Morgado  <aleksander@es.gnu.org>
+
+	* doc/gnupdf.texi (Initializing Text Module): New section.
+	(Managing Host Encodings): New section
+	(Text Data Types): New `pdf_text_unicode_options_e' type.
+	Removed specific data types for unicode encodings.
+	Updated information on `pdf_text_unicode_encoding_e',
+	`pdf_text_t', `pdf_text_host_encoding_t' data types.
+	(Creating and Destroying Text): Added `pdf_text_destroy' function.
+	Updated function prototypes and information.
+	(Managing Text Properties): Updated function prototypes and
+	information.
+	(Managing Text Contents): Updated function prototypes and
+	information.
+
 2008-01-25  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (List Data Types): New section.
