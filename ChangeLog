@@ -1,3 +1,7 @@
+2008-01-30  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Big Numbers): New section.
+
 2008-01-28  Aleksander Morgado  <aleksander@es.gnu.org>
 
 	* doc/gnupdf.texi (Initializing Text Module): New section.
