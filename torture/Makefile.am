@@ -40,6 +40,7 @@ testall.c: $(TEST_FILES)
 
 clean-local:
 	-rm -f testall.c
+	-rm -f temporal-test-file
 
 endif # CHECK
 

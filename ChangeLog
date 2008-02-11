@@ -1,5 +1,14 @@
 2008-02-11  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* torture/Makefile.am (clean-local): Remove `temporal-test-file'
+	upon `make clean'.
+
+	* prmgt/Makefile.am (clean-local): Remove `pmccabe2html' upon
+	`make clean'.
+
+	* src/Makefile.am (clean-local): Remove `extract-public-hdr' upon
+	`make clean'.
+
 	* Update copyright notices.
 	* Sources reorganization.
 
