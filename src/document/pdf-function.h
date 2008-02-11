@@ -1,13 +1,13 @@
-/* -*- mode: C -*- Time-stamp: "08/01/20 20:03:05 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/11 01:05:46 jemarch"
  *
- *       File:         pdf_function.h
+ *       File:         pdf-function.h
  *       Date:         Sun Sep  9 21:02:24 2007
  *
  *       GNU PDF Library - Function common data type
  *
  */
 
-/* Copyright (C) 2007 Free Software Foundation, Inc. */
+/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

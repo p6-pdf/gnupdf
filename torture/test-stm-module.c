@@ -1,13 +1,13 @@
-/* -*- mode: C -*- Time-stamp: "08/02/10 21:56:23 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/11 01:07:07 jemarch"
  *
- *       File:         test_stm_module.c
+ *       File:         test-stm-module.c
  *       Date:         Thu Dec  6 19:21:01 2007
  *
  *       GNU PDF Library - Stream Module Testsuite
  *
  */
 
-/* Copyright (C) 2007 Free Software Foundation, Inc. */
+/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

@@ -1,13 +1,13 @@
-/* -*- mode: C -*- Time-stamp: "08/02/10 21:53:51 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/11 01:03:18 jemarch"
  *
- *       File:         pdf_base.h
+ *       File:         pdf-base.h
  *       Date:         Fri Jul  6 20:22:05 2007
  *
  *       GNU PDF Library - Header file for the Base Layer
  *
  */
 
-/* Copyright (C) 2007 Free Software Foundation, Inc. */
+/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

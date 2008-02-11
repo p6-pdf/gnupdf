@@ -1,13 +1,13 @@
-/* -*- mode: C -*- Time-stamp: "08/02/10 20:22:45 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/11 01:04:26 jemarch"
  *
- *       File:         pdf_stm_f_null.c
+ *       File:         pdf-stm-f-null.c
  *       Date:         Mon Jul  9 22:01:41 2007
  *
  *       GNU PDF Library - NULL stream filter
  *
  */
 
-/* Copyright (C) 2007 Free Software Foundation, Inc. */
+/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

@@ -1,13 +1,13 @@
-/* -*- mode: C -*- Time-stamp: "08/02/10 21:42:51 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/11 01:03:14 jemarch"
  *
- *       File:         pdf_base.c
+ *       File:         pdf-base.c
  *       Date:         Sat Sep  8 15:11:30 2007
  *
  *       GNU PDF Library - Common routines for the Base Layer
  *
  */
 
-/* Copyright (C) 2007 Free Software Foundation, Inc. */
+/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

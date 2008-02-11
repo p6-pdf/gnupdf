@@ -1,13 +1,13 @@
-/* -*- mode: C -*- Time-stamp: "08/02/10 23:22:44 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/11 01:03:50 jemarch"
  *
- *       File:         pdf_stm_f_ahex.h
+ *       File:         pdf-stm-f-ahex.h
  *       Date:         Fri Jul 13 17:04:29 2007
  *
  *       GNU PDF Library - ASCIIHex encoder/decoder
  *
  */
 
-/* Copyright (C) 2007 Free Software Foundation, Inc. */
+/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

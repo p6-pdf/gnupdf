@@ -1,13 +1,13 @@
-/* -*- mode: C -*- Time-stamp: "08/02/10 23:29:04 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/11 01:03:37 jemarch"
  *
- *       File:         pdf_stm_f_a85.h
+ *       File:         pdf-stm-f-a85.h
  *       Date:         Sun Jul 15 05:57:38 2007
  *
  *       GNU PDF Library - ASCII85 encoder/decoder
  *
  */
 
-/* Copyright (C) 2007 Free Software Foundation, Inc. */
+/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

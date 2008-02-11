@@ -1,13 +1,13 @@
-/* -*- mode: C -*- Time-stamp: "08/02/10 20:22:09 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/11 01:03:56 jemarch"
  *
- *       File:         pdf_stm_f_fax.c
+ *       File:         pdf-stm-f-fax.c
  *       Date:         Sun Aug  5 19:50:33 2007
  *
  *       GNU PDF Library - CCITT Fax encoder/decoder filter
  *
  */
 
-/* Copyright (C) 2007 Free Software Foundation, Inc. */
+/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

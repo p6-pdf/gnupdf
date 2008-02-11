@@ -1,13 +1,13 @@
-/* -*- mode: C -*- Time-stamp: "08/01/20 20:02:58 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/11 01:05:41 jemarch"
  *
- *       File:         pdf_date.h
+ *       File:         pdf-date.h
  *       Date:         Wed Sep  5 22:39:10 2007
  *
  *       GNU PDF Library - Date common data type
  *
  */
 
-/* Copyright (C) 2007 Free Software Foundation, Inc. */
+/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

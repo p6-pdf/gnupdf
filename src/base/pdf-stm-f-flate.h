@@ -1,13 +1,13 @@
-/* -*- mode: C -*- Time-stamp: "08/02/10 23:23:29 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/11 01:04:11 jemarch"
  *
- *       File:         pdf_stm_f_flate.h
+ *       File:         pdf-stm-f-flate.h
  *       Date:         Tue Jul 10 23:39:27 2007
  *
  *       GNU PDF Library - FlateDecode stream filter
  *
  */
 
-/* Copyright (C) 2007 Free Software Foundation, Inc. */
+/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

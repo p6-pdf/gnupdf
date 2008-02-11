@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/10 21:39:55 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/11 00:59:49 jemarch"
  *
  *       File:         pdf-fp.c
  *       Date:         Sun Feb 10 21:38:34 2008
@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2007 Free Software Foundation, Inc. */
+/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

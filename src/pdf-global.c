@@ -1,9 +1,9 @@
-/* -*- mode: C -*- Time-stamp: "08/02/10 22:54:31 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/11 01:03:05 jemarch"
  *
- *       File:         pdf.c
+ *       File:         pdf-global.c
  *       Date:         Thu Jul  5 21:07:10 2007
  *
- *       GNU PDF Library - Main implementation file
+ *       GNU PDF Library - Global code
  *
  */
 

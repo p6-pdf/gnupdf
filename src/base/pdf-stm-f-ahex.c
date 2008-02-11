@@ -1,13 +1,13 @@
-/* -*- mode: C -*- Time-stamp: "08/02/10 20:21:56 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/11 01:03:45 jemarch"
  *
- *       File:         pdf_stm_f_ahex.c
+ *       File:         pdf-stm-f-ahex.c
  *       Date:         Fri Jul 13 17:08:41 2007
  *
  *       GNU PDF Library - ASCII Hex decoder filter
  *
  */
 
-/* Copyright (C) 2007 Free Software Foundation, Inc. */
+/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

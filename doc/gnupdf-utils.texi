@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf-utils.texi,v 1.1 2007/11/05 00:43:34 karl Exp $
+@comment $Id: gnupdf-utils.texi,v 1.2 2008/02/11 00:11:25 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf_util.info
 @settitle GNU PDF Utilities
@@ -12,7 +12,7 @@
 This is the @value{EDITION} edition of the @cite{GNU PDF Utilities},
 updated for libgnupdf version @value{VERSION}.
 
-Copyright @copyright{} 2007 Free Software Foundation, Inc.
+Copyright @copyright{} 2007, 2008 Free Software Foundation, Inc.
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document

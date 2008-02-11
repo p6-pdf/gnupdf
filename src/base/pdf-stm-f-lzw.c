@@ -1,13 +1,13 @@
-/* -*- mode: C -*- Time-stamp: "08/02/10 20:22:34 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/11 01:04:16 jemarch"
  *
- *       File:         pdf_stm_f_lzw.c
+ *       File:         pdf-stm-f-lzw.c
  *       Date:         Wed Aug 15 14:41:18 2007
  *
  *       GNU PDF Library - LWZ encoder/decoder filter
  *
  */
 
-/* Copyright (C) 2007 Free Software Foundation, Inc. */
+/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

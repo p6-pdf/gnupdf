@@ -1,13 +1,13 @@
-/* -*- mode: C -*- Time-stamp: "08/02/10 23:25:26 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/11 01:04:56 jemarch"
  *
- *       File:         pdf_stm_f_rl.h
+ *       File:         pdf-stm-f-rl.h
  *       Date:         Sun Jul 15 21:57:35 2007
  *
  *       GNU PDF Library - RunLength encoder/decoder
  *
  */
 
-/* Copyright (C) 2007 Free Software Foundation, Inc. */
+/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

@@ -1,5 +1,5 @@
 #!@PATH_TO_AWK@ -f
-# generate-public-header - generate the main header for the library
+# extract-public-hdr - extract public definitions from header files
 
 # Copyright (C) 2007 Free Software Foundation, Inc.
 

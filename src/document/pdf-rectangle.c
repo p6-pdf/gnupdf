@@ -1,13 +1,13 @@
-/* -*- mode: C -*- Time-stamp: "08/01/20 20:03:18 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/11 01:05:49 jemarch"
  *
- *       File:         pdf_rectangle.c
+ *       File:         pdf-rectangle.c
  *       Date:         Sun Sep  9 01:33:26 2007
  *
  *       GNU PDF Library - Rectangle common data type
  *
  */
 
-/* Copyright (C) 2007 Free Software Foundation, Inc. */
+/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

@@ -1,13 +1,13 @@
-/* -*- mode: C -*- Time-stamp: "08/01/20 20:03:11 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/11 01:05:57 jemarch"
  *
- *       File:         pdf_obj.c
+ *       File:         pdf-obj.c
  *       Date:         Sat Jul  7 03:04:30 2007
  *
  *       GNU PDF Library - PDF objects implementation
  *
  */
 
-/* Copyright (C) 2007 Free Software Foundation, Inc. */
+/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

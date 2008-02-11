@@ -1,13 +1,13 @@
-/* -*- mode: C -*- Time-stamp: "08/02/10 20:23:41 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/11 01:05:17 jemarch"
  *
- *       File:         pdf_stm_mem.h
+ *       File:         pdf-stm-mem.h
  *       Date:         Sun Jul  8 21:45:09 2007
  *
  *       GNU PDF Library - Memory stream backend
  *
  */
 
-/* Copyright (C) 2007 Free Software Foundation, Inc. */
+/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

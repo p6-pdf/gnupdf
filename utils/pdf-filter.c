@@ -1,6 +1,6 @@
-/* -*- mode: C -*- Time-stamp: "08/02/10 21:48:48 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/11 01:07:20 jemarch"
  *
- *       File:         pdf_filter.c
+ *       File:         pdf-filter.c
  *       Date:         Tue Jul 10 18:42:07 2007
  *
  *       GNU PDF Library - Process input/output with the
@@ -8,7 +8,7 @@
  *
  */
 
-/* Copyright (C) 2007 Free Software Foundation, Inc. */
+/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
