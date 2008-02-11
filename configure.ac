@@ -18,7 +18,7 @@ dnl
 dnl You should have received a copy of the GNU General Public License
 dnl along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-AC_INIT(src/pdf.h)
+AC_INIT(src/pdf-global.h)
 AM_INIT_AUTOMAKE(gnupdf, 0.1)
 AM_CONFIG_HEADER(src/config.h)
 
@@ -53,6 +53,14 @@ AC_CHECK_LIB(m,exp,,,)
 AC_CHECK_LIB([check],[suite_create],[have_check=yes],[have_check=no],)
 AM_CONDITIONAL([CHECK], [test "x$have_check" = "xyes"])
 
+dnl Search for required programs for building the sources
+AC_PROG_AWK
+if test x$AWK = "xno"; then
+AC_MSG_ERROR([cannot find a suitable `awk' program. Please install it and rerun `configure'.])
+fi
+AC_PATH_PROG([PATH_TO_AWK],$AWK)
+AC_SUBST(PATH_TO_AWK)
+
 dnl Search for programs for building documentation
 AC_CHECK_PROG([have_makeinfo], [makeinfo], [yes], [no],,)
 if test "x$have_makeinfo" = "xno"; then
@@ -67,6 +75,36 @@ else
 texihtmlprogram=makeinfo
 fi
 
+dnl Manage the compilation level
+dnl The GNU PDF library is composed by several layers. The following
+dnl `compilation levels' are defined allowing the user to compile a
+dnl library composed by a specified subset of these layers.
+dnl
+dnl level\layer | base | object | document | page |
+dnl ------------+------+--------+----------+------+
+dnl      0      |  *   |        |          |      |
+dnl      1      |  *   |    *   |          |      | 
+dnl      2      |  *   |    *   |    *     |      |
+dnl      3      |  *   |    *   |    *     |   *  |
+dnl 
+dnl Note that the base layer is always included in the library
+dnl regardless the compilation level.
+
+AC_ARG_VAR(PDFLIB_LEVEL,[A level code specifying the library layers to be compiled (default is 3=all layers)])
+dnl The default compilation level is 3.
+if test "x$PDFLIB_LEVEL" = "x" ; then
+PDFLIB_LEVEL=3
+fi
+
+AM_CONDITIONAL([COMPILE_BASE_LAYER], [test "true" = "true"])
+AM_CONDITIONAL([COMPILE_OBJECT_LAYER], [test "x$PDFLIB_LEVEL" = "x1" -o \
+                                             "x$PDFLIB_LEVEL" = "x2" -o \
+                                             "x$PDFLIB_LEVEL" = "x3"])
+AM_CONDITIONAL([COMPILE_DOCUMENT_LAYER], [test "x$PDFLIB_LEVEL" = "x2" -o \
+                                               "x$PDFLIB_LEVEL" = "x3"])
+AM_CONDITIONAL([COMPILE_PAGE_LAYER], [test x$PDFLIB_LEVEL = "x3"])
+
+
 dnl Project management resources
 prmgt_mode=no
 AC_ARG_ENABLE([prmgt], AS_HELP_STRING([--enable-prmgt],
@@ -75,13 +113,6 @@ AC_ARG_ENABLE([prmgt], AS_HELP_STRING([--enable-prmgt],
 
 AM_CONDITIONAL([PRMGT],[test "x$prmgt_mode" = "xyes"])
 if test "x$prmgt_mode" = "xyes" ; then 
-
-AC_PROG_AWK
-if test x$AWK = "xno"; then
-AC_MSG_ERROR([cannot find a suitable `awk' program. Please install it and rerun `configure'.])
-fi
-AC_PATH_PROG([PATH_TO_AWK],$AWK)
-AC_SUBST(PATH_TO_AWK)
 
 AC_CHECK_PROG([have_taskjuggler], [taskjuggler], [yes], [no],,)
 if test "x$have_taskjuggler" = "xno"; then
@@ -103,13 +134,14 @@ fi
 fi # prmgt_mode
 
 dnl Generate output files
-AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile doc/Makefile utils/Makefile prmgt/Makefile prmgt/pmccabe2html)
+AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile doc/Makefile utils/Makefile prmgt/Makefile prmgt/pmccabe2html src/extract-public-hdr)
 
 dnl Report configuration results
 
 echo "
 Configured for \`${canonical}'.
 
+  Compilation level:                        ${PDFLIB_LEVEL}
   Using FlateDecode filter?                 ${have_zlib}
   With unit tests support?                  ${have_check}
   Program to build html manuals             ${texihtmlprogram}

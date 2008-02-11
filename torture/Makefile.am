@@ -22,19 +22,21 @@ noinst_PROGRAMS = testall
 
 LDADD = -lcheck $(top_srcdir)/src/libgnupdf.la
 
-AM_CPPFLAGS = -I ../lib
+AM_CPPFLAGS = -I$(top_srcdir)/lib \
+              -I$(top_srcdir)/src -I$(top_srcdir)/src/base \
+              -I$(top_srcdir)/src/object
 AM_CFLAGS = -g
 
 TESTS = testall
 
-TEST_FILES = test_stm_module.c
+TEST_FILES = test-stm-module.c
 
 testall_SOURCES = testall.c $(TEST_FILES)
 
 check_PROGRAMS = testall
 
 testall.c: $(TEST_FILES)
-	$(srcdir)/generate_testall $(TEST_FILES) > testall.c
+	$(srcdir)/generate-testall $(TEST_FILES) > testall.c
 
 clean-local:
 	-rm -f testall.c
