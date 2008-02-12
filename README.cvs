@@ -11,7 +11,14 @@ CVS version of the GNU PDF library:
    automake 1.9
    autoconf >=2.60
    libtool 1.5
+   awk
+
+   Additionally you may need to install some software:
    
+   zlib (optional)
+   texi2html (optional)
+   graphviz (optional)
+   taskjuggler (optional)
 
 2- Regenerate the configure script:
 
