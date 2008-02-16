@@ -138,10 +138,23 @@ AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile doc/Makefile utils
 
 dnl Report configuration results
 
+if test "x$PDFLIB_LEVEL" = "x3"; then
+   PDFLIB_LEVEL_DESCR="build all layers"
+fi
+if test "x$PDFLIB_LEVEL" = "x2"; then
+   PDFLIB_LEVEL_DESCR="build base, object and page layers"
+fi
+if test "x$PDFLIB_LEVEL" = "x1"; then
+   PDFLIB_LEVEL_DESCR="build base and object layers"
+fi
+if test "x$PDFLIB_LEVEL" = "x0"; then
+   PDFLIB_LEVEL_DESCR="build base layer"
+fi
+
 echo "
 Configured for \`${canonical}'.
 
-  Compilation level:                        ${PDFLIB_LEVEL}
+  Compilation level:                        ${PDFLIB_LEVEL} (${PDFLIB_LEVEL_DESCR})
   Using FlateDecode filter?                 ${have_zlib}
   With unit tests support?                  ${have_check}
   Program to build html manuals             ${texihtmlprogram}
