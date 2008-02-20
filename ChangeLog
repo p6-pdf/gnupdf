@@ -1,3 +1,8 @@
+2008-02-20  Jose E. Marchesi  <jose.marchesi@deimos-space.com>
+
+	* doc/gnupdf.texi (Memory Allocation): `pdf_alloc' API changed in
+	order to return NULL if an out of memory condition is met.
+
 2008-02-16  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* configure.ac: Print out an explanation about the selected

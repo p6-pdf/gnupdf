@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.25 2008/02/11 00:11:25 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.26 2008/02/20 10:49:55 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -121,15 +121,13 @@ Allocates heap memory.
 @table @var
 @item size
 The requested number of octects to allocate.
-
-If there is not enough available memory to satisfy the petition a
-fatal error is signaled killing the current process. An error status
-is returned to the operating system.
 @end table
 
 @item Returns
 A pointer to the newly allocated memory. 
 
+If there is not enough available memory to satisfy the petition then
+@code{NULL} is returned.
 @item Usage example
 @example
 int *p;
