@@ -80,7 +80,5 @@ pdf.h : $(PUBLIC_HDRS)
 	echo $(PUBLIC_HDR_HDR) > $@
 	cat $(PUBLIC_HDRS) | $(top_srcdir)/src/extract-public-hdr >> $@
 
-clean-local:
-	-rm -f pdf.h extract-public-hdr
 
 # End of Makefile.am

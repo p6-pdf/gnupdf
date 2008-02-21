@@ -1,5 +1,8 @@
 2008-02-21  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/Makefile.am: Do not remove `src/extract-public-hdr' upon
+	`make clean'.
+
 	* prmgt/Makefile.am: Enable the building of project management
 	resources even without having a working taskjuggler program.
 
