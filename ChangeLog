@@ -1,5 +1,7 @@
 2008-02-21  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* prmgt/Makefile.am (cyclo.html): Use sources from `src/base'.
+
 	* src/Makefile.am: Do not remove `src/extract-public-hdr' upon
 	`make clean'.
 

@@ -24,7 +24,7 @@ BEGIN {
 
     html_prolog = "<a href=\"http://www.gnupdf.org\">Back to GNU PDF Homepage</a><br/><br/>"
     html_epilog = "<hr color=\"black\" size=\"2\"/> \
-Copyright (c) 2007 Free Software Foundation Inc."
+Copyright (c) 2007, 2008 Free Software Foundation Inc."
 
     cyclo_simple_max = 10
     cyclo_moderate_max = 20

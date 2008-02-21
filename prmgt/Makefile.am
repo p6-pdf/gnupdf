@@ -22,7 +22,7 @@ TARGETS = cyclo.html
 
 cyclo.html:
 	chmod +x ${srcdir}/pmccabe2html
-	pmccabe ${top_srcdir}/src/*.[ch] | sort -nr | ${srcdir}/pmccabe2html > cyclo.html
+	pmccabe ${top_srcdir}/src/base/*.[ch] | sort -nr | ${srcdir}/pmccabe2html > cyclo.html
 
 if TASKJUGGLER
 
