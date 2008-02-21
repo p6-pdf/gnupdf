@@ -1,3 +1,13 @@
+2008-02-21  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* prmgt/Makefile.am: Enable the building of project management
+	resources even without having a working taskjuggler program.
+
+	* configure.ac: Use an automake conditional `TASKJUGGLER'.
+
+	* prmgt/Makefile.am (clean-local): Do not remove
+	autoconf-generated `pmccabe2html' upon `make clean'.
+
 2008-02-20  Jose E. Marchesi  <jose.marchesi@deimos-space.com>
 
 	* doc/gnupdf.texi (Memory Allocation): `pdf_alloc' API changed in

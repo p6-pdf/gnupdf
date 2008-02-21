@@ -18,9 +18,19 @@
 
 if PRMGT
 
-TARGETS = libgnupdf-dot.png \
-          libgnupdf-fdp.png  \
-          cyclo.html
+TARGETS = cyclo.html
+
+cyclo.html:
+	chmod +x ${srcdir}/pmccabe2html
+	pmccabe ${top_srcdir}/src/*.[ch] | sort -nr | ${srcdir}/pmccabe2html > cyclo.html
+
+if TASKJUGGLER
+
+TARGETS += libgnupdf-dot.png \
+           libgnupdf-fdp.png
+
+libgnupdf.tjx : libgnupdf.tjp
+	taskjuggler libgnupdf.tjp
 
 libgnupdf-dot.png: libgnupdf.tjx
 	zcat libgnupdf.tjx | xsltproc --novalid pertdot.xsl - | dot -T png > libgnupdf-dot.png
@@ -28,13 +38,8 @@ libgnupdf-dot.png: libgnupdf.tjx
 libgnupdf-fdp.png: libgnupdf.tjx
 	zcat libgnupdf.tjx | xsltproc --novalid pertfdp.xsl - | fdp -T png > libgnupdf-fdp.png
 
-cyclo.html:
-	chmod +x ${srcdir}/pmccabe2html
-	pmccabe ${top_srcdir}/src/*.[ch] | sort -nr | ${srcdir}/pmccabe2html > cyclo.html
+endif # TASKJUGGLER
 
-
-libgnupdf.tjx : libgnupdf.tjp
-	taskjuggler libgnupdf.tjp
 
 all-local: ${TARGETS}
 
@@ -44,7 +49,6 @@ clean-local:
                week-calendar.html resources.html tasks.html
 	-rm -f libgnupdf.tjx
 	-rm -f *_fn.txt
-	-rm -f pmccabe2html
 
 endif # PRMGT
 

@@ -75,6 +75,9 @@ else
 texihtmlprogram=makeinfo
 fi
 
+AC_CHECK_PROG([have_taskjuggler], [taskjuggler], [yes], [no],,)
+AM_CONDITIONAL([TASKJUGGLER], [test "x$have_taskjuggler" = "xyes"])
+
 dnl Manage the compilation level
 dnl The GNU PDF library is composed by several layers. The following
 dnl `compilation levels' are defined allowing the user to compile a
@@ -114,18 +117,17 @@ AC_ARG_ENABLE([prmgt], AS_HELP_STRING([--enable-prmgt],
 AM_CONDITIONAL([PRMGT],[test "x$prmgt_mode" = "xyes"])
 if test "x$prmgt_mode" = "xyes" ; then 
 
-AC_CHECK_PROG([have_taskjuggler], [taskjuggler], [yes], [no],,)
-if test "x$have_taskjuggler" = "xno"; then
-AC_MSG_ERROR([cannot find the `taskjuggler' program. Please install it and rerun `configure'.])
+if test "x$have_taskjuggler" = "xyes" ; then
+   AC_CHECK_PROG([have_dot], [dot], [yes], [no],,)
+   if test "x$have_dot" = "xno"; then
+   AC_MSG_ERROR([cannot find the `dot' program. Please install the graphviz package and rerun `configure'.])
+   fi
+   AC_CHECK_PROG([have_fdp], [fdp], [yes], [no],,)
+   if test "x$have_fdp" = "xno"; then
+   AC_MSG_ERROR([cannot find the `fdp' program. Please install the graphviz package and rerun `configure'.])
+   fi
 fi
-AC_CHECK_PROG([have_dot], [dot], [yes], [no],,)
-if test "x$have_dot" = "xno"; then
-AC_MSG_ERROR([cannot find the `dot' program. Please install the graphviz package and rerun `configure'.])
-fi
-AC_CHECK_PROG([have_fdp], [fdp], [yes], [no],,)
-if test "x$have_fdp" = "xno"; then
-AC_MSG_ERROR([cannot find the `fdp' program. Please install the graphviz package and rerun `configure'.])
-fi
+
 AC_CHECK_PROG([have_pmccabe], [pmccabe], [yes], [no],,)
 if test "x$have_pmccabe" = "xno"; then
 AC_MSG_ERROR([cannot find the `pmccabe' program. Please install it and rerun `configure'.])
