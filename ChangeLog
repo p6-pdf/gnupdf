@@ -1,5 +1,8 @@
 2008-02-21  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf-manual-wiki.init (mediawiki_preformatted): Do not
+	emit preformatted code for navigation menus.
+
 	* doc/Makefile.am: Do not split wiki output.
 
 	* prmgt/pmccabe2html.in: Copyright notice of the generated html

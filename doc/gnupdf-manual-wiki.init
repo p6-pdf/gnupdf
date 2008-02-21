@@ -8,7 +8,7 @@
 # Load the file with command-line 
 # option -init-file mediawiki.init
 #
-# $Id: gnupdf-manual-wiki.init,v 1.3 2007/12/06 15:16:42 jemarch Exp $
+# $Id: gnupdf-manual-wiki.init,v 1.4 2008/02/21 21:52:26 jemarch Exp $
 
 ######################################################################
 # The following variables can also be set by command-line options
@@ -547,7 +547,14 @@ sub mediawiki_preformatted($$$$$$$$$$)
     {
         $$preformatted_number++;
     }
-    return "<pre class=\"$class\"><nowiki>$text</nowiki></pre>";
+    if ($class == "menu-preformatted")
+    {
+        return "";
+    }
+    else
+    {
+        return "<pre class=\"$class\"><nowiki>$text</nowiki></pre>";
+    }
 }
 
 
