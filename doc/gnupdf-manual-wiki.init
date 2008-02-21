@@ -8,7 +8,7 @@
 # Load the file with command-line 
 # option -init-file mediawiki.init
 #
-# $Id: gnupdf-manual-wiki.init,v 1.4 2008/02/21 21:52:26 jemarch Exp $
+# $Id: gnupdf-manual-wiki.init,v 1.5 2008/02/21 22:15:11 jemarch Exp $
 
 ######################################################################
 # The following variables can also be set by command-line options
@@ -53,7 +53,7 @@ $BIG_RULE = '';
 
 $DEF_TABLE = 0;
 
-$AFTER_BODY_OPEN='{{Automatic Page|This page is automatically generated}}';
+$AFTER_BODY_OPEN='{{Note|This page is automatically generated}}';
 
 # if set and $SPLIT is set, then split index pages at the next letter
 # after they have more than that many entries

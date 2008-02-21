@@ -2,6 +2,8 @@
 
 	* doc/gnupdf-manual-wiki.init (mediawiki_preformatted): Do not
 	emit preformatted code for navigation menus.
+	Use the `Template:Note' mediawiki template to advertise that the
+	page is automatically generated.
 
 	* doc/Makefile.am: Do not split wiki output.
 
