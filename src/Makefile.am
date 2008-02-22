@@ -23,6 +23,8 @@ lib_LTLIBRARIES = libgnupdf.la
 
 # Base Layer sources
 
+ALLOC_MODULE_SOURCES = base/pdf-alloc.c base/pdf-alloc.h
+
 TYPES_MODULE_SOURCES = base/pdf-types.c base/pdf-types.h
 
 STM_MODULE_SOURCES = base/pdf-stm-f-a85.c base/pdf-stm-f-a85.h \
@@ -40,6 +42,7 @@ if ZLIB
 endif
 
 BASE_LAYER_SOURCES = base/pdf-base.c base/pdf-base.h \
+                     $(ALLOC_MODULE_SOURCES) \
                      $(TYPES_MODULE_SOURCES) \
                      $(STM_MODULE_SOURCES)
 
@@ -64,6 +67,7 @@ AM_CPPFLAGS = -I$(top_builddir)/lib -I$(srcdir)/base \
 PUBLIC_HDR_HDR = "/* This file has been automatically generated */"
 
 PUBLIC_HDRS = pdf-global.h \
+              base/pdf-alloc.h \
               base/pdf-types.h \
               base/pdf-stm-f-a85.h \
               base/pdf-stm-f-ahex.h \

@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.27 2008/02/22 19:37:56 gerel Exp $
+@comment $Id: gnupdf.texi,v 1.28 2008/02/22 21:57:52 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -281,7 +281,7 @@ The memory allocation module provides system-independent heap memory
 allocation and deallocation. The usual malloc/free/realloc schema is
 used to provide this service.
 
-@deftypefun char* pdf_alloc (int @var{size})
+@deftypefun void* pdf_alloc (size_t @var{size})
 
 Allocates heap memory.
 
@@ -308,7 +308,7 @@ p = 666;
 @end table
 @end deftypefun
 
-@deftypefun void pdf_dealloc (char *@var{pointer})
+@deftypefun void pdf_dealloc (void *@var{pointer})
 
 Deallocates heap memory.
 
@@ -335,7 +335,7 @@ pdf_dealloc (p);
 @end table
 @end deftypefun
 
-@deftypefun char* pdf_realloc (char *@var{pointer}, int @var{size})
+@deftypefun void* pdf_realloc (void *@var{pointer}, int @var{size})
 
 Reallocates memory.
 

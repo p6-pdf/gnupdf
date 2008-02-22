@@ -1,3 +1,16 @@
+2008-02-22  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Memory Allocation): Use `void*' as the pointer
+	types.
+
+	* src/base/pdf-alloc.c (pdf_alloc): New function.
+	(pdf_dealloc): New function.
+	(pdf_realloc): New function.
+
+	* src/base/pdf-alloc.h: New file.
+
+	* src/base/pdf-alloc.c: New file.
+
 2008-02-21  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/Makefile.am: Do not generate menus in wiki output.
