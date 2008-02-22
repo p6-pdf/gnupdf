@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.26 2008/02/20 10:49:55 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.27 2008/02/22 19:37:56 gerel Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -103,6 +103,176 @@ other modules (such as allocation or error functions).
 @section Error Management
 
 
+The Error module provides procedures for error reporting to the
+client as well as for error tracing (via debug messages) to
+developers. Here we also define status types returned by most
+procedures (there are exceptions though).
+
+@menu
+* Status types::
+* Error Reporting procedures::
+* Debugging procedures::
+@end menu
+
+@node Status types
+@subsection Status types
+
+@deftp {Data Type} pdf_status_t
+A status variable. This type of variable is returned by many library
+functions in order to communicate the status of the performed
+operation.
+@end deftp
+
+The following constants defines the valid values to be hold in a
+@code{pdf_status_t} variable:
+
+@deftp {Constant} PDF_OK
+Success
+@end deftp
+
+@deftp {Constant} PDF_ERROR
+A serious error
+@end deftp
+
+@deftp {Constant} PDF_EBADDATA
+Invalid or bad arguments
+@end deftp
+
+@deftp {Constant} PDF_ENOMEM
+Insufficient memory
+@end deftp
+
+@deftp {Constant} PDF_EEOF
+End of file
+@end deftp
+
+@deftp {Constant} PDF_EDIVBYZERO
+Divison by zero
+@end deftp
+
+@deftp {Constant} PDF_ENONODE
+No node found
+@end deftp
+
+@deftp {Constant} PDF_EINVRANGE
+Invalid range
+@end deftp
+
+@deftp {Constant} PDF_ETEXTENC
+Error in text encoding
+@end deftp
+
+@deftp {Constant} PDF_ENOMATCH 
+No matching found
+@end deftp
+
+This list will grow as we get closer to a mature state of development.
+
+
+@node Error Reporting procedures
+@subsection Error Reporting procedures
+
+@deftypefun void pdf_perror (pdf_status_t @var{status}, const char *@var{str})
+
+Prints the message corresponding to @var{status} to stderr followed by @var{str}.
+
+@table @strong
+@item Parameters
+@table @var
+@item status
+status code
+@item str
+a user-defined message
+@end table
+@item Returns
+nothing
+@item Usage example
+@example
+pdf_status_t st;
+
+st = pdf_i64_add (dest, addend_1, addend_2);
+
+if (st != PDF_OK)
+@{
+        pdf_perror (st, "Couldn't do i64 addition");
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun void pdf_error (pdf_status_t @var{status}, FILE *@var{fd}, const char *@var{format}, @var{...})
+
+Prints a message with `fprintf (@var{fd}, @var{format}, ...)'; 
+if @var{status} is nonzero, also prints the corresponding message.
+
+@table @strong
+@item Parameters
+@table @var
+@item status
+status code
+@item fd
+file descriptor open for writing
+@item format
+string format for the message
+@item ...
+format's arguments
+@end table
+@item Returns
+nothing
+@item Usage example
+@example
+pdf_status_t st;
+
+st = pdf_i64_add (dest, addend_1, addend_2);
+
+if (st != PDF_OK)
+@{
+        pdf_error (st, logfd, "Couldn't do i64 addition");
+@}
+@end example
+@end table
+@end deftypefun
+
+@node Debugging procedures
+@subsection Debugging procedures
+
+For each layer there is a macro procedure defined. The file name and
+the line number at which the error ocurred is printed to stderr
+followed by @var{message}.
+
+@defmac PDF_DEBUG_BASE (message, ...)
+@end defmac
+@defmac PDF_DEBUG_OBJECT (message, ...)
+@end defmac
+@defmac PDF_DEBUG_DOCUMENT (message, ...)
+@end defmac
+@defmac PDF_DEBUG_PAGE (message, ...)
+@end defmac
+
+@table @strong
+@item Parameters
+@table @var
+@item message
+a 'const char*' string
+@item ...
+message's arguments
+@end table
+@item Returns
+nothing
+@item Usage example
+@example
+PDF_DEBUG_BASE("Testing macro '%s' '%d' '%lf'", "string", 7, 10.1);
+@end example
+@end table
+
+@heading Output format
+The output format for these macros is,
+
+GNU PDF:***DEBUG <layer>***:<file-name>:<line-number>: <message>.
+
+For example,
+
+GNU PDF:***DEBUG BASE***:pdf-memory.c:344: insufficient memory.
 
 @node Memory Allocation
 @section Memory Allocation
@@ -224,7 +394,6 @@ pdf_dealloc (p);
 
 @menu
 * Boolean Types::
-* Status Types::
 * Numeric Types::
 * Big Numbers::
 @end menu
@@ -237,7 +406,7 @@ A boolean value.
 @end deftp
 
 The following constants defines the valid values to be hold in a
-@code{pdf_status_t} variable:
+@code{pdf_bool_t} variable:
 
 @deftp {Constant} PDF_TRUE
 Logical true.
@@ -245,24 +414,6 @@ Logical true.
 
 @deftp {Constant} PDF_FALSE
 Logical false.
-@end deftp
-
-@node Status Types
-@subsection Status Types
-
-@deftp {Data Type} pdf_status_t
-A status value.
-@end deftp
-
-The following constants defines the valid values to be hold in a
-@code{pdf_status_t} variable:
-
-@deftp {Constant} PDF_OK
-A success status.
-@end deftp
-
-@deftp {Constant} PDF_ERROR
-An error status.
 @end deftp
 
 @node Numeric Types
