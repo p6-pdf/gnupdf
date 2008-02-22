@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 01:04:38 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/22 22:52:29 jemarch"
  *
  *       File:         pdf-stm-f-pred.c
  *       Date:         Thu Jul 12 01:21:33 2007
@@ -23,17 +23,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
 
 #include <stdio.h>
 #include <stdlib.h>
-
-#ifdef HAVE_MALLOC_H
- #include <malloc.h>
-#endif /* HAVE_MALLOC_H */
-
-#include <xalloc.h>
 #include <string.h>
+#include <pdf-alloc.h>
 #include <pdf-base.h>
 #include <pdf-stm-f-pred.h>
 
@@ -106,7 +100,7 @@ pdf_stm_f_pred_init (void **filter_data,
 
   /* Create the private data storage */
   *data =
-    (pdf_stm_f_pred_data_t) xmalloc (sizeof(struct pdf_stm_f_pred_data_s));
+    (pdf_stm_f_pred_data_t) pdf_alloc (sizeof(struct pdf_stm_f_pred_data_s));
   
   (*data)->mode = conf->mode;
   (*data)->predictor = conf->predictor;
@@ -447,7 +441,7 @@ pdf_stm_f_pred_encode (pdf_stm_f_pred_data_t data,
   
   *out_size = is_png_predictor ? in_size + in_size/data->scanline_len : in_size;
     
-  *out = (pdf_char_t *) xmalloc (*out_size);
+  *out = (pdf_char_t *) pdf_alloc (*out_size);
   if (*out == NULL) 
     {
       *out_size = 0;
@@ -465,7 +459,7 @@ pdf_stm_f_pred_encode (pdf_stm_f_pred_data_t data,
     
       if (encode_row(curr, prev, buf, data) == PDF_ERROR) 
         {
-          free(*out);
+          pdf_dealloc (*out);
           *out = NULL;
           *out_size = 0;
           return PDF_ERROR;
@@ -808,7 +802,7 @@ pdf_stm_f_pred_decode (pdf_stm_f_pred_data_t data,
   
   *out_size = is_png_predictor ? in_size * data->scanline_len / (data->scanline_len + 1) : in_size;
     
-  if ((*out = (pdf_char_t *) xmalloc (*out_size)) == NULL) 
+  if ((*out = (pdf_char_t *) pdf_alloc (*out_size)) == NULL) 
     {
       *out_size = 0;
       return PDF_ERROR;
@@ -824,7 +818,7 @@ pdf_stm_f_pred_decode (pdf_stm_f_pred_data_t data,
 
       if (decode_row(in, curr, prev, data, predictor) == PDF_ERROR) 
         {
-          free(*out);
+          pdf_dealloc (*out);
           *out = NULL;
           *out_size = 0;
           return PDF_ERROR;
@@ -866,7 +860,7 @@ pdf_stm_f_pred_dealloc (void **filter_data)
   pdf_stm_f_pred_data_t *data;
 
   data = (pdf_stm_f_pred_data_t *) filter_data;
-  free (*data);
+  pdf_dealloc (*data);
   
   return PDF_OK;
 }

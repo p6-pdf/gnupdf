@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 01:05:13 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/22 22:54:12 jemarch"
  *
  *       File:         pdf-stm-mem.c
  *       Date:         Mon Jul  9 01:13:41 2007
@@ -23,18 +23,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
 
 #include <unistd.h>
 #include <string.h>
 
-#ifdef HAVE_MALLOC_H
- #include <malloc.h>
-#else
- #include <stdlib.h>
-#endif /* HAVE_MALLOC_H */
-
-#include <xalloc.h>
+#include <pdf-alloc.h>
 #include <pdf-base.h>
 #include <pdf-stm-mem.h>
 
@@ -51,12 +44,12 @@ pdf_stm_mem_init (void **be_data,
   conf = (pdf_stm_mem_conf_t) conf_data;
 
   /* Create the private data storage */
-  *data = (pdf_stm_mem_data_t) xmalloc (sizeof(struct pdf_stm_mem_data_s));
+  *data = (pdf_stm_mem_data_t) pdf_alloc (sizeof(struct pdf_stm_mem_data_s));
 
   /* Initialize private data */
   (*data)->size = conf->size;
   (*data)->resize_p = conf->resize_p;
-  (*data)->data = (pdf_char_t *) xmalloc (conf->size);
+  (*data)->data = (pdf_char_t *) pdf_alloc (conf->size);
 
 
   if  (conf->init_p)
@@ -107,8 +100,8 @@ pdf_stm_mem_close (void **be_data)
   pdf_stm_mem_data_t *data;
 
   data = (pdf_stm_mem_data_t *) be_data;
-  free ((*data)->data);
-  free (*data);
+  pdf_dealloc ((*data)->data);
+  pdf_dealloc (*data);
 
   return PDF_OK;
 }
@@ -158,7 +151,7 @@ pdf_stm_mem_read (void *be_data,
 
   data = (pdf_stm_mem_data_t) be_data;
 
-  *buf = (pdf_char_t *) xmalloc (bytes);
+  *buf = (pdf_char_t *) pdf_alloc (bytes);
 
   if ((data->current + bytes) >= data->size)
     {

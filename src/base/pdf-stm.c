@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 01:05:21 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/22 22:54:52 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -24,17 +24,10 @@
  */
 
 
-#include <config.h>
 
 #include <unistd.h>
 
-#ifdef HAVE_MALLOC_H
- #include <malloc.h>
-#else
- #include <stdlib.h>
-#endif /* HAVE_MALLOC_H */
-
-#include <xalloc.h>
+#include <pdf-alloc.h>
 #include <pdf-stm.h>
 #include <pdf-stm-file.h>
 #include <pdf-stm-mem.h>
@@ -664,7 +657,7 @@ pdf_stm_alloc (void)
 {
   pdf_stm_t stm;
 
-  stm = (pdf_stm_t) xmalloc (sizeof (struct pdf_stm_s));
+  stm = (pdf_stm_t) pdf_alloc (sizeof (struct pdf_stm_s));
   stm->read_filter_list =
     gl_list_create_empty (GL_ARRAY_LIST,
                           NULL,      /* compare_fn */
@@ -686,7 +679,7 @@ pdf_stm_dealloc (pdf_stm_t stm)
 {
   gl_list_free (stm->read_filter_list);
   gl_list_free (stm->write_filter_list);
-  free (stm);
+  pdf_dealloc (stm);
 }
 
 static int 
@@ -700,7 +693,7 @@ pdf_stm_install_filter (pdf_stm_t stm,
   pdf_stm_filter_t filter;
   
   /* Create the new filter */
-  filter = (pdf_stm_filter_t) xmalloc (sizeof(struct pdf_stm_filter_s));
+  filter = (pdf_stm_filter_t) pdf_alloc (sizeof(struct pdf_stm_filter_s));
   filter->funcs.init = init_fn;
   filter->funcs.apply = apply_fn;
   filter->funcs.dealloc = dealloc_fn;
@@ -748,7 +741,7 @@ pdf_stm_filter_dealloc_list (const void *elt)
   filter = (pdf_stm_filter_t) elt;
 
   (filter->funcs.dealloc) (&filter->data);
-  free (filter);
+  pdf_dealloc (filter);
 }
 
 static int
@@ -776,7 +769,7 @@ pdf_stm_apply_filters (gl_list_t filter_list,
         {
           /* This filter was applied successfully. Replace data with
              the result */
-          free (*buf);
+          pdf_dealloc (*buf);
           *buf = filtered_data;
           *buf_size = filtered_size;
         }

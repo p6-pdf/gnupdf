@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 01:04:06 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/22 22:50:31 jemarch"
  *
  *       File:         pdf-stm-f-flate.c
  *       Date:         Tue Jul 10 23:44:00 2007
@@ -23,19 +23,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
 
 #include <stdio.h>
-
-#ifdef HAVE_MALLOC_H
- #include <malloc.h>
-#else
- #include <stdlib.h>
-#endif /* HAVE_MALLOC_H */
-
-#include <xalloc.h>
 #include <string.h>
 #include <zlib.h>
+#include <pdf-alloc.h>
 #include <pdf-base.h>
 #include <pdf-stm-f-flate.h>
 
@@ -57,7 +49,7 @@ pdf_stm_f_flate_init (void **filter_data,
 
   /* Create the private data storage */
   *data =
-    (pdf_stm_f_flate_data_t) xmalloc (sizeof(struct pdf_stm_f_flate_data_s));
+    (pdf_stm_f_flate_data_t) pdf_alloc (sizeof(struct pdf_stm_f_flate_data_s));
   (*data)->mode = conf->mode;
 
   return PDF_OK;
@@ -96,7 +88,7 @@ pdf_stm_f_flate_dealloc (void **filter_data)
   pdf_stm_f_flate_data_t *data;
 
   data = (pdf_stm_f_flate_data_t *) filter_data;
-  free (*data);
+  pdf_dealloc (*data);
 
   return PDF_OK;
 }
@@ -115,7 +107,7 @@ pdf_stm_f_flate_encode (pdf_char_t *in,
   /* Allocate memory for destination buffer */
   compressed_bound = compressBound (in_size);
   *out_size = compressed_bound;
-  *out = (pdf_char_t *) xmalloc (*out_size);
+  *out = (pdf_char_t *) pdf_alloc (*out_size);
 
   /* Compress input */
   ret = compress (*out, 

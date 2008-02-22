@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 01:04:49 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/22 22:53:12 jemarch"
  *
  *       File:         pdf-stm-f-rl.c
  *       Date:         Sun Jul 15 22:01:18 2007
@@ -23,17 +23,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
 
-#ifdef HAVE_MALLOC_H
- #include <malloc.h>
-#else
- #include <stdlib.h>
-#endif /* HAVE_MALLOC_H */
-
-#include <xalloc.h>
 #include <string.h>
 #include <stdio.h>
+#include <pdf-alloc.h>
 #include <pdf-stm-f-rl.h>
 
 static int pdf_stm_f_rl_encode (pdf_char_t *in, pdf_stm_pos_t in_size,
@@ -53,7 +46,7 @@ pdf_stm_f_rl_init (void **filter_data,
 
   /* Create the private data storage */
   *data =
-    (pdf_stm_f_rl_data_t) xmalloc (sizeof(struct pdf_stm_f_rl_data_s));
+    (pdf_stm_f_rl_data_t) pdf_alloc (sizeof(struct pdf_stm_f_rl_data_s));
   (*data)->mode = conf->mode;
 
   return PDF_OK;
@@ -93,7 +86,7 @@ pdf_stm_f_rl_dealloc (void **filter_data)
   pdf_stm_f_rl_data_t *data;
 
   data = (pdf_stm_f_rl_data_t *) filter_data;
-  free (*data);
+  pdf_dealloc (*data);
 
   return PDF_OK;
 }
@@ -119,7 +112,7 @@ pdf_stm_f_rl_encode (pdf_char_t *in,
 
      But take care about the EOD marker (one octect). */
   *out_size = (in_size * 2) + (in_size / 127) + 1;
-  *out = (pdf_char_t *) xmalloc (*out_size);
+  *out = (pdf_char_t *) pdf_alloc (*out_size);
 
   out_pos = 0;
   run_length = 0;
@@ -176,7 +169,7 @@ pdf_stm_f_rl_decode (pdf_char_t *in,
   /* In the best case (all zeros), a compression of approximately 64:1
      is achieved for long files. */
   *out_size = in_size * 64;
-  *out = (pdf_char_t *) xmalloc (*out_size);
+  *out = (pdf_char_t *) pdf_alloc (*out_size);
 
   out_pos = 0;
   in_pos = 0;
@@ -231,7 +224,7 @@ pdf_stm_f_rl_decode (pdf_char_t *in,
   return PDF_OK;
 
  error:
-  free (*out);
+  pdf_dealloc (*out);
   return PDF_ERROR;
 }
 

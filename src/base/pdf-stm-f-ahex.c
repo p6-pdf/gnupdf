@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 01:03:45 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/22 22:49:24 jemarch"
  *
  *       File:         pdf-stm-f-ahex.c
  *       Date:         Fri Jul 13 17:08:41 2007
@@ -24,17 +24,9 @@
  */
 
 
-#include <config.h>
-
-#ifdef HAVE_MALLOC_H
- #include <malloc.h>
-#else
- #include <stdlib.h>
-#endif /* HAVE_MALLOC_H */
-
-#include <xalloc.h>
 #include <string.h>
 #include <stdio.h>
+#include <pdf-alloc.h>
 #include <pdf-stm-f-ahex.h>
 
 static int pdf_stm_f_ahex_white_p (int hex);
@@ -60,7 +52,7 @@ pdf_stm_f_ahex_init (void **filter_data,
 
   /* Create the private data storage */
   *data =
-    (pdf_stm_f_ahex_data_t) xmalloc (sizeof(struct pdf_stm_f_ahex_data_s));
+    (pdf_stm_f_ahex_data_t) pdf_alloc (sizeof(struct pdf_stm_f_ahex_data_s));
   (*data)->mode = conf->mode;
 
   return PDF_OK;
@@ -99,7 +91,7 @@ pdf_stm_f_ahex_dealloc (void **filter_data)
   pdf_stm_f_ahex_data_t *data;
   
   data = (pdf_stm_f_ahex_data_t *) filter_data;
-  free (*data);
+  pdf_dealloc (*data);
 
   return PDF_OK;
 }
@@ -169,7 +161,7 @@ pdf_stm_f_ahex_encode (pdf_char_t *in,
     (in_size * 2) +                         /* Expansion of 1:2 */
     1 +                                     /* EOD marker */
     ((in_size * 2) / AHEX_ENC_LINE_LENGTH); /* line splitting */
-  *out = (pdf_char_t *) xmalloc (*out_size);
+  *out = (pdf_char_t *) pdf_alloc (*out_size);
 
   pos_out = 0;
   num_lines = 0;
@@ -211,7 +203,7 @@ pdf_stm_f_ahex_decode (pdf_char_t *in,
 
   /* Decompression ratio is 2:1
      but take care about whitespaces and the EOD marker */
-  *out = (pdf_char_t *) xmalloc (in_size);
+  *out = (pdf_char_t *) pdf_alloc (in_size);
   
   in_pos = 0;
   out_pos = 0;

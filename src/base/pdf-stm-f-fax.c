@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 01:03:56 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/22 22:49:56 jemarch"
  *
  *       File:         pdf-stm-f-fax.c
  *       Date:         Sun Aug  5 19:50:33 2007
@@ -23,16 +23,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
-
-#ifdef HAVE_MALLOC_H
- #include <malloc.h>
-#else
- #include <stdlib.h>
-#endif /* HAVE_MALLOC_H */
-
-#include <xalloc.h>
 #include <string.h>
+#include <pdf-alloc.h>
 #include <pdf-stm-f-fax.h>
 
 static int pdf_stm_f_fax_encode (pdf_stm_f_fax_data_t data,
@@ -54,7 +46,7 @@ pdf_stm_f_fax_init (void **filter_data,
 
   /* Create the private data storage */
   *data =
-    (pdf_stm_f_fax_data_t) xmalloc (sizeof(struct pdf_stm_f_fax_data_s));
+    (pdf_stm_f_fax_data_t) pdf_alloc (sizeof(struct pdf_stm_f_fax_data_s));
   (*data)->mode = conf->mode;
   (*data)->k = conf->k;
   (*data)->end_of_line_p = conf->end_of_line_p;
@@ -101,7 +93,7 @@ pdf_stm_f_fax_dealloc (void **filter_data)
   pdf_stm_f_fax_data_t *data;
 
   data = (pdf_stm_f_fax_data_t *) filter_data;
-  free (*data);
+  pdf_dealloc (*data);
 
   return PDF_OK;
 }
@@ -115,7 +107,7 @@ pdf_stm_f_fax_encode (pdf_stm_f_fax_data_t data,
                       pdf_char_t **out,
                       pdf_stm_pos_t *out_size)
 {
-  *out = (pdf_char_t *) xmalloc (in_size);
+  *out = (pdf_char_t *) pdf_alloc (in_size);
   memcpy (*out,
           in,
           in_size);
@@ -131,7 +123,7 @@ pdf_stm_f_fax_decode (pdf_stm_f_fax_data_t data,
                       pdf_char_t **out,
                       pdf_stm_pos_t *out_size)
 {
-  *out = (pdf_char_t *) xmalloc (in_size);
+  *out = (pdf_char_t *) pdf_alloc (in_size);
   memcpy (*out,
           in,
           in_size);

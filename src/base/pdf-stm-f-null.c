@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 01:04:26 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/22 22:51:39 jemarch"
  *
  *       File:         pdf-stm-f-null.c
  *       Date:         Mon Jul  9 22:01:41 2007
@@ -23,16 +23,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
-
-#ifdef HAVE_MALLOC_H
- #include <malloc.h>
-#else
- #include <stdlib.h>
-#endif /* HAVE_MALLOC_H */
-
-#include <xalloc.h>
 #include <string.h>
+#include <pdf-alloc.h>
 #include <pdf-stm-f-null.h>
 
 int
@@ -44,7 +36,7 @@ pdf_stm_f_null_init (void **filter_data,
 
   /* Create the private data storage */
   *data = 
-    (pdf_stm_f_null_data_t) xmalloc (sizeof(struct pdf_stm_f_null_data_s));
+    (pdf_stm_f_null_data_t) pdf_alloc (sizeof(struct pdf_stm_f_null_data_s));
   (*data)->dummy = 0;
 
   return PDF_OK;
@@ -59,7 +51,7 @@ pdf_stm_f_null_apply (void *filter_data,
   data = (pdf_stm_f_null_data_t) filter_data;
 
   /* Do nothing */
-  *out = (pdf_char_t *) xmalloc (in_size);
+  *out = (pdf_char_t *) pdf_alloc (in_size);
   memcpy (*out,
           in,
           in_size);
@@ -74,7 +66,7 @@ pdf_stm_f_null_dealloc (void **filter_data)
   pdf_stm_f_null_data_t *data;
 
   data = (pdf_stm_f_null_data_t *) filter_data;
-  free (*data);
+  pdf_dealloc (*data);
 
   return PDF_OK;
 }                    

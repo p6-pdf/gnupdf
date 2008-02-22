@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 01:04:16 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/22 22:51:09 jemarch"
  *
  *       File:         pdf-stm-f-lzw.c
  *       Date:         Wed Aug 15 14:41:18 2007
@@ -23,16 +23,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
-
-#ifdef HAVE_MALLOC_H
- #include <malloc.h>
-#else
- #include <stdlib.h>
-#endif /* HAVE_MALLOC_H */
-
-#include <xalloc.h>
 #include <string.h>
+#include <pdf-alloc.h>
 #include <pdf-stm-f-lzw.h>
 
 #define MIN_BITSIZE 9
@@ -287,7 +279,7 @@ pdf_stm_f_lzw_encode (pdf_stm_f_lzw_data_t data,
   
   /* Allocate buffer with enough space. */
   *out_size = in_size * MAX_COMPRESSION_FACTOR;
-  if ((*out = (pdf_char_t *) xmalloc (*out_size)) == NULL)
+  if ((*out = (pdf_char_t *) pdf_alloc (*out_size)) == NULL)
     {
       *out_size = 0;
       return PDF_ERROR;
@@ -354,7 +346,7 @@ static int
 lzw_writer_init (lzw_writer_t* s,
 		 int size)
 {
-  if ((s->buf = xmalloc(size)) == NULL)
+  if ((s->buf = pdf_alloc(size)) == NULL)
     {
       return PDF_ERROR;
     }
@@ -405,7 +397,7 @@ lzw_writer_put (lzw_writer_t* s,
 static void
 lzw_writer_destroy (lzw_writer_t* s)
 {
-  free(s->buf);
+  pdf_dealloc (s->buf);
 }
 
 static int
@@ -517,7 +509,7 @@ pdf_stm_f_lzw_init (void **filter_data,
 
   /* Create the private data storage */
   *data =
-    (pdf_stm_f_lzw_data_t) xmalloc (sizeof(struct pdf_stm_f_lzw_data_s));
+    (pdf_stm_f_lzw_data_t) pdf_alloc (sizeof(struct pdf_stm_f_lzw_data_s));
   (*data)->mode = conf->mode;
   (*data)->early_change = conf->early_change;
 
@@ -557,7 +549,7 @@ pdf_stm_f_lzw_dealloc (void **filter_data)
   pdf_stm_f_lzw_data_t *data;
 
   data = (pdf_stm_f_lzw_data_t *) filter_data;
-  free (*data);
+  pdf_dealloc (*data);
 
   return PDF_OK;
 }

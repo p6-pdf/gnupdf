@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 01:03:30 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/22 22:48:55 jemarch"
  *
  *       File:         pdf-stm-f-a85.c
  *       Date:         Sun Jul 15 06:01:42 2007
@@ -28,17 +28,9 @@
 
    Many thanks Paul! */
 
-#include <config.h>
-
-#ifdef HAVE_MALLOC_H
- #include <malloc.h>
-#else
- #include <stdlib.h>
-#endif /* HAVE_MALLOC_H */
-
-#include <xalloc.h>
 #include <string.h>
 #include <stdio.h>
+#include <pdf-alloc.h>
 #include <pdf-stm-f-a85.h>
 
 static int pdf_stm_f_a85_white_p (int hex);
@@ -59,7 +51,7 @@ pdf_stm_f_a85_init (void **filter_data,
 
   /* Create the private data storage */
   *data =
-    (pdf_stm_f_a85_data_t) xmalloc (sizeof(struct pdf_stm_f_a85_data_s));
+    (pdf_stm_f_a85_data_t) pdf_alloc (sizeof(struct pdf_stm_f_a85_data_s));
   (*data)->mode = conf->mode;
 
   return PDF_OK;
@@ -98,7 +90,7 @@ pdf_stm_f_a85_dealloc (void **filter_data)
   pdf_stm_f_a85_data_t *data;
 
   data = (pdf_stm_f_a85_data_t *) filter_data;
-  free (*data);
+  pdf_dealloc (*data);
 
   return PDF_OK;
 }
@@ -153,7 +145,7 @@ pdf_stm_f_a85_encode (pdf_char_t *in,
         2 +                                                /* EOD marker */
         ((((in_size / 4) + 1) * 5) / A85_ENC_LINE_LENGTH); /* line splitting */
     }
-  *out = (pdf_char_t *) xmalloc (*out_size);
+  *out = (pdf_char_t *) pdf_alloc (*out_size);
 
   pos_out = 0;
   tuple = 0;
@@ -245,7 +237,7 @@ pdf_stm_f_a85_decode (pdf_char_t *in,
   int count;
   unsigned long tuple;
 
-  *out = (pdf_char_t *) xmalloc (in_size);
+  *out = (pdf_char_t *) pdf_alloc (in_size);
 
   tuple = 0;
   count = 0;
@@ -312,7 +304,7 @@ pdf_stm_f_a85_decode (pdf_char_t *in,
   return PDF_OK;
 
  error:
-  free (*out);
+  pdf_dealloc (*out);
   return PDF_ERROR;
 }
 

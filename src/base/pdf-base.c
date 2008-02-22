@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 01:03:14 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/22 22:46:08 jemarch"
  *
  *       File:         pdf-base.c
  *       Date:         Sat Sep  8 15:11:30 2007
@@ -24,18 +24,6 @@
  */
 
 #include <config.h>
-
-#include <limits.h>
-#include <stdlib.h>
-#include <string.h>
-
-#ifdef HAVE_MALLOC_H
-  #include <malloc.h>
-#endif /* HAVE_MALLOC_H */
-
-#include <xalloc.h>
-#include <math.h>
-
 #include <pdf-base.h>
 
 
