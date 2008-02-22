@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/10 23:33:33 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/22 23:08:05 jemarch"
  *
  *       File:         pdf-types.h
  *       Date:         Sun Feb 10 21:30:00 2008
@@ -50,11 +50,7 @@
 
    Please be careful manipulating `pdf_stm_pos_t' values. Its value is
    assured to be a signed scalable one, but its size may be wider than
-   a long. 
-
-   Note that this is a ugly hack: we define `pdf_stm_pos_t' in
-   `pdf_base.h' just because the stream backends need to use it. Its
-   proper place would be `pdf_stm.h'. */
+   a long. */
 
 #define NO_POS -1
 typedef off_t pdf_stm_pos_t;
@@ -62,10 +58,6 @@ typedef off_t pdf_stm_pos_t;
 /* PDF manages bytes with values in the range 0-255 */
 
 typedef unsigned char pdf_char_t;
-
-
-/* PDF integers are implemented using basic C types. */
-typedef int pdf_integer_t;
 
 /* PDF_EOF to store an EOF marker in integers */
 #define PDF_EOF -1

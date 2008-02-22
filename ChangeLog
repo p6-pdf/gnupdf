@@ -1,5 +1,7 @@
 2008-02-22  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-types.h: Remove obsolete contents.
+
 	* src/base/pdf-base.h: Include pdf-alloc headers.
 
 	* src/base/pdf-base.c: Unused headers removed.
