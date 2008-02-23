@@ -1,3 +1,7 @@
+2008-02-22  Gerardo E. Gidoni <gerel@gnu.org>
+
+	* doc/gnupdf.texi (Error management): Initial API definition.
+
 2008-02-22  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-types.h: Remove obsolete contents.
