@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/23 22:01:24 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/23 23:03:48 jemarch"
  *
  *       File:         runtests.c
  *       Date:         Sat Feb 23 21:40:43 2008
@@ -21,6 +21,8 @@ main (int argc, char **argv)
   s = tsuite_stm ();
 
   sr = srunner_create (s);
+
+  srunner_set_log (sr, "ut.log");
   srunner_run_all (sr, CK_VERBOSE);
   failures = srunner_ntests_failed (sr);
   srunner_free (sr);

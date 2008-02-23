@@ -38,6 +38,7 @@ check_PROGRAMS = runtests
 
 clean-local:
 	-rm -f temporal-test-file
+	-rm -f ut.log
 
 endif # CHECK
 

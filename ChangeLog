@@ -1,7 +1,13 @@
 2008-02-23  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* torture/unit/Makefile.am (clean-local): Remove `ut.log' upon
+	`make clean'.
+
+	* torture/unit/runtests.c (main): Dump a test execution log to
+	`ut.log'.
+
 	* doc/Makefile.am (noinst_TEXINFOS): New primary for
-	gnupdf-tsd.texi. 
+	gnupdf-tsd.texi.
 
 	* doc/gnupdf-tsd.texi: New file.
 
