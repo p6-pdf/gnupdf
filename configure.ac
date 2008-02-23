@@ -136,7 +136,7 @@ fi
 fi # prmgt_mode
 
 dnl Generate output files
-AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile doc/Makefile utils/Makefile prmgt/Makefile prmgt/pmccabe2html src/extract-public-hdr)
+AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile torture/unit/Makefile doc/Makefile utils/Makefile prmgt/Makefile prmgt/pmccabe2html src/extract-public-hdr)
 
 dnl Report configuration results
 
