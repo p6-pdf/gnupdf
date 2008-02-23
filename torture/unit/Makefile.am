@@ -30,7 +30,7 @@ AM_CFLAGS = -g
 TESTS = runtests
 
 TEST_FILES = base/stm/pdf-create-file-stm.c
-TSUITE_FILES = base/stm/tsuite-stm.c
+TSUITE_FILES = base/alloc/tsuite-alloc.c base/stm/tsuite-stm.c
 
 runtests_SOURCES = runtests.c $(TSUITE_FILES) $(TEST_FILES)
 
