@@ -1,0 +1,79 @@
+\input texinfo
+@comment $Id: gnupdf-tsd.texi,v 1.1 2008/02/23 21:56:52 jemarch Exp $
+@comment %**start of header
+@setfilename gnupdf-tsd.info
+@settitle GNU PDF Library Test Specification Document
+@comment %**end of header
+
+@set VERSION 0.1
+
+@copying
+This is the @cite{GNU PDF Library Test Specification Document},
+updated for @strong{libgnupdf} version @strong{@value{VERSION}}.
+
+Copyright @copyright{} 2007, 2008 Free Software Foundation, Inc.
+
+@quotation
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A
+copy of the license is included in the section entitled ``GNU Free
+Documentation License''.
+@end quotation
+@end copying
+
+@titlepage
+@sp 6
+@center @titlefont{GNU PDF Library Test Specification Document}
+@sp 4
+@center Updated for version @value{VERSION}.
+@sp 5
+@page Free Software Foundation
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+
+@contents
+
+@ifnottex
+@node Top
+@top GNU PDF Library Test Specification Document
+
+GNU PDF Library Test Specification Document
+
+@insertcopying
+@end ifnottex
+
+@menu
+* Unit Testing::
+* Subsystem Testing::
+* System Testing::
+* GNU Free Documentation License:: Distribution terms of this document.
+
+Indices
+
+* Function index::
+@end menu
+
+@node Unit Testing
+@chapter Unit Testing
+
+@node Subsystem Testing
+@chapter Subsystem Testing
+
+@node System Testing
+@chapter System Testing
+
+@node GNU Free Documentation License
+@appendix GNU Free Documentation License
+
+@include fdl.texi
+
+@node Function index
+@unnumbered Function index
+
+@printindex fn
+
+@bye
