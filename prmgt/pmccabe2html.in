@@ -737,7 +737,6 @@ function wiki_fnc (fname,
         # Source file
         print "| class=\"cyclo_function_entry_filename\" |" \
             (href != "") ? "[" href " " file[fname] "]" : "[" file[fname] "]"
-        }
     }
 }
 
