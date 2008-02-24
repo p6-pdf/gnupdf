@@ -697,16 +697,6 @@ function wiki_fnc (fname,
     if (fname_p)
     {
         print "| class=\"cyclo_function_entry_filename\" |"
-        if (mcyclo[fname] > cyclo_simple_max)
-        {
-            # FIXME: javascript
-            print " "
-        }
-        else
-        {
-            print " "
-        }
-
         print "| class=\"cyclo_function_entry_name\" |" fname
     }
     if (mcyclo_p)
@@ -745,14 +735,8 @@ function wiki_fnc (fname,
         }
         
         # Source file
-        print "| class=\"cyclo_function_entry_filename\" |"
-        if (href != "")
-        {
-            print "[" href " " file[fname] "]"
-        }
-        else
-        {
-            print "[" file[fname] "]"
+        print "| class=\"cyclo_function_entry_filename\" |" \
+            (href != "") ? "[" href " " file[fname] "]" : "[" file[fname] "]"
         }
     }
 }
