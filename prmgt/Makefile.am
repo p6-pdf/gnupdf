@@ -18,11 +18,15 @@
 
 if PRMGT
 
-TARGETS = cyclo.html
+TARGETS = cyclo.html cyclo.wiki
 
 cyclo.html:
 	chmod +x ${srcdir}/pmccabe2html
-	pmccabe ${top_srcdir}/src/base/*.[ch] | sort -nr | ${srcdir}/pmccabe2html > cyclo.html
+	pmccabe ${top_srcdir}/src/base/*.[ch] | sort -nr | ${srcdir}/pmccabe2html -v lang=html > cyclo.html
+
+cyclo.wiki:
+	chmod +x ${srcdir}/pmccabe2html
+	pmccabe ${top_srcdir}/src/base/*.[ch] | sort -nr | ${srcdir}/pmccabe2html -v lang=wiki > cyclo.wiki
 
 if TASKJUGGLER
 
