@@ -521,35 +521,24 @@ function wiki_global_stats ()
     print "{| class=\"cyclo_resume_table\""
     # Total number of functions
     print "|-"
-    print "| class=\"cyclo_resume_header_entry\" |"
-    print "Total number of functions"
-    print "| class=\"cyclo_resume_number_entry\" |"
-    print num_of_functions
+    print "| class=\"cyclo_resume_header_entry\" | Total number of functions"
+    print "| class=\"cyclo_resume_number_entry\" |" num_of_functions
     # Number of simple functions
     print "|-"
-    print "| class=\"cyclo_resume_header_entry\" |"
-    print "Number of low risk functions"
-    print "| class=\"cyclo_resume_number_entry\" |"
-    print num_of_simple_functions
+    print "| class=\"cyclo_resume_header_entry\" | Number of low risk functions"
+    print "| class=\"cyclo_resume_number_entry\" |" num_of_simple_functions
     # Number of moderate functions
     print "|-"
-    print "| class=\"cyclo_resume_header_entry\" |"
-    print "Number of moderate risk functions"
-    print "| class=\"cyclo_resume_number_entry\" |"
-    print num_of_moderate_functions
+    print "| class=\"cyclo_resume_header_entry\" | Number of moderate risk functions"
+    print "| class=\"cyclo_resume_number_entry\" |" num_of_moderate_functions
     # Number of high functions
     print "|-"
-    print "| class=\"cyclo_resume_header_entry\" |"
-    print "Number of high risk functions"
-    print "| class=\"cyclo_resume_number_entry\" |"
-    print num_of_high_functions
+    print "| class=\"cyclo_resume_header_entry\" | Number of high risk functions"
+    print "| class=\"cyclo_resume_number_entry\" |" num_of_high_functions
     # Number of untestable functions
     print "|-"
-    print "| class=\"cyclo_resume_header_entry\" |"
-    print "Number of untestable functions"
-    print "| class=\"cyclo_resume_number_entry\" |"
-    print num_of_untestable_functions
-
+    print "| class=\"cyclo_resume_header_entry\" | Number of untestable functions"
+    print "| class=\"cyclo_resume_number_entry\" |" num_of_untestable_functions
     print "|}"
 }
 
@@ -562,44 +551,29 @@ function wiki_function_cyclo ()
     
     print "{| class =\"cyclo_ranges_table\""
     print "|-"
-    print "| class=\"cyclo_ranges_header_entry\" |"
-    print " "
-    print "| class=\"cyclo_ranges_header_entry\" |"
-    print "Cyclomatic Complexity"
-    print "| class=\"cyclo_ranges_header_entry\" |"
-    print "Risk Evaluation"
+    print "| class=\"cyclo_ranges_header_entry\" | "
+    print "| class=\"cyclo_ranges_header_entry\" | Cyclomatic Complexity"
+    print "| class=\"cyclo_ranges_header_entry\" | Risk Evaluation"
     # Simple
     print "|-"
-    print "| class=\"cyclo_ranges_entry_simple\" |"
-    print " "
-    print "| class=\"cyclo_ranges_entry\" |"
-    print "0 - " cyclo_simple_max
-    print "| class=\"cyclo_ranges_entry\" |"
-    print "Simple module, without much risk"
+    print "| class=\"cyclo_ranges_entry_simple\" | "
+    print "| class=\"cyclo_ranges_entry\" | 0 - " cyclo_simple_max
+    print "| class=\"cyclo_ranges_entry\" | Simple module, without much risk"
     # Moderate
     print "|-"
-    print "| class=\"cyclo_ranges_entry_moderate\" |"
-    print " "
-    print "| class=\"cyclo_ranges_entry\" |"
-    print cyclo_simple_max + 1 " - " cyclo_moderate_max
-    print "| class=\"cyclo_ranges_entry\" |"
-    print "More complex module, moderate risk"
+    print "| class=\"cyclo_ranges_entry_moderate\" | "
+    print "| class=\"cyclo_ranges_entry\" |" cyclo_simple_max + 1 " - " cyclo_moderate_max
+    print "| class=\"cyclo_ranges_entry\" | More complex module, moderate risk"
     # High
     print "|-"
-    print "| class=\"cyclo_ranges_entry_high\" |"
-    print " "
-    print "| class=\"cyclo_ranges_entry\" |"
-    print cyclo_moderate_max + 1 " - " cyclo_high_max
-    print "| class=\"cyclo_ranges_entry\" |"
-    print "Complex module, high risk"
+    print "| class=\"cyclo_ranges_entry_high\" | "
+    print "| class=\"cyclo_ranges_entry\" |" cyclo_moderate_max + 1 " - " cyclo_high_max
+    print "| class=\"cyclo_ranges_entry\" | Complex module, high risk"
     # Untestable
     print "|-"
-    print "| class=\"cyclo_ranges_entry_untestable\" |"
-    print " "
-    print "| class=\"cyclo_ranges_entry\" |"
-    print "greater than " cyclo_high_max
-    print "| class=\"cyclo_ranges_entry\" |"
-    print "Untestable module, very high risk"
+    print "| class=\"cyclo_ranges_entry_untestable\" | "
+    print "| class=\"cyclo_ranges_entry\" | greater than " cyclo_high_max
+    print "| class=\"cyclo_ranges_entry\" | Untestable module, very high risk"
     print "|}"
     
     wiki_fnc_table_complete("")
@@ -663,7 +637,6 @@ function wiki_fnc_header (fname_p,
     {
         # Function name
         print "! class=\"cyclo_function_table_header_entry\" |"
-        print ""
         print "! class=\"cyclo_function_table_header_entry\" | Function Name"
     }
     if (mcyclo_p)
@@ -732,38 +705,32 @@ function wiki_fnc (fname,
             print " "
         }
 
-        print "| class=\"cyclo_function_entry_name\" |"
-        print fname
+        print "| class=\"cyclo_function_entry_name\" |" fname
     }
     if (mcyclo_p)
     {
         # Modified cyclo
-        print "| class=\"cyclo_function_entry_cyclo\" |"
-        print mcyclo[fname]
+        print "| class=\"cyclo_function_entry_cyclo\" |" mcyclo[fname]
     }
     if (cyclo_p)
     {
         # Cyclo
-        print "| class=\"cyclo_function_entry_cyclo\" |"
-        print cyclo[fname]
+        print "| class=\"cyclo_function_entry_cyclo\" |" cyclo[fname]
     }
     if (num_statements_p)
     {
         # Number of statements
-        print "| class=\"cyclo_function_entry_number\" |"
-        print num_statements[fname]
+        print "| class=\"cyclo_function_entry_number\" |" num_statements[fname]
     }
     if (num_lines_p)
     {
         # Number of lines
-        print "| class=\"cyclo_function_entry_number\" |"
-        print num_lines[fname]
+        print "| class=\"cyclo_function_entry_number\" |" num_lines[fname]
     }
     if (first_line_p)
     {
         # First line
-        print "| class=\"cyclo_function_entry_number\" |"
-        print first_line[fname]
+        print "| class=\"cyclo_function_entry_number\" |" first_line[fname]
     }
     if (file_p)
     {
@@ -862,7 +829,7 @@ END {
     }
     if (output_lang == "wiki")
     {
-        print "==" project_name " Cyclomatic Complexity Report"
+        print "==" project_name " Cyclomatic Complexity Report=="
         print "Report generated at: '''" strftime() "'''"
     }
 
