@@ -575,7 +575,9 @@ function wiki_function_cyclo ()
     print "| class=\"cyclo_ranges_entry\" | greater than " cyclo_high_max
     print "| class=\"cyclo_ranges_entry\" | Untestable module, very high risk"
     print "|}"
-    
+
+    print ""
+    print ""
     wiki_fnc_table_complete("")
 }
 
