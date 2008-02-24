@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf-tsd.texi,v 1.2 2008/02/24 17:22:04 jemarch Exp $
+@comment $Id: gnupdf-tsd.texi,v 1.3 2008/02/24 17:26:00 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf-tsd.info
 @settitle GNU PDF Library Test Specification Document
@@ -89,7 +89,7 @@ Allocate some bytes.
 @table @strong
 @item Success condition
 The call should not produce an error.
-@table
+@end table
 @end deffn
 
 @node pdf_realloc
@@ -100,7 +100,7 @@ Reallocate some bytes.
 @table @strong
 @item Success condition
 The call should not produce an error.
-@table
+@end table
 @end deffn
 
 
@@ -112,7 +112,7 @@ Deallocate memory.
 @table @strong
 @item Success condition
 The call should not produce an error.
-@table
+@end table
 @end deffn
 
 @node Stream Module
