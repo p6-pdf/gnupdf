@@ -1,3 +1,7 @@
+2008-02-24  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-tsd.texi: New file.
+
 2008-02-23  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* torture/unit/Makefile.am (clean-local): Remove `ut.log' upon
@@ -658,7 +662,7 @@
 	* utils/pdf_filter.c: Fix incorrect help entry for the predictor
 	decoder option.
 
-2007-09-05  Juan Pedro Bolívar Puente <raskolnikov@es.gnu.org>
+2007-09-05  Juan Pedro BolÃ­var Puente <raskolnikov@es.gnu.org>
 
 	* src/pdf_stm_f_lzw.c: Fully implemented the LZW filter for both
 	encoding and decoding.
@@ -710,7 +714,7 @@
 	* utils/pdf_filter.c (GNU_longOptions): Predictor command line
 	arguments.
 
-2007-07-28  Juan Pedro Bolívar Puente <raskolnikov@es.gnu.org>
+2007-07-28  Juan Pedro BolÃ­var Puente <raskolnikov@es.gnu.org>
 
 	* src/pdf_stm_f_pred.c: PNG and TIFF predictor filters
 	implemented.

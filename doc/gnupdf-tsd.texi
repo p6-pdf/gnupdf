@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf-tsd.texi,v 1.1 2008/02/23 21:56:52 jemarch Exp $
+@comment $Id: gnupdf-tsd.texi,v 1.2 2008/02/24 17:22:04 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf-tsd.info
 @settitle GNU PDF Library Test Specification Document
@@ -59,6 +59,103 @@ Indices
 
 @node Unit Testing
 @chapter Unit Testing
+
+@menu
+* Base Layer Modules::
+@end menu
+
+@node Base Layer Modules
+@section Base Layer Modules
+
+@menu
+* Memory Allocation Module::
+* Stream Module::
+@end menu
+
+@node Memory Allocation Module
+@subsection Memory Allocation Module
+
+@menu
+* pdf_alloc::
+* pdf_realloc::
+* pdf_dealloc::
+@end menu
+
+@node pdf_alloc
+@subsubsection pdf_alloc
+
+@deffn Test pdf_alloc_001
+Allocate some bytes.
+@table @strong
+@item Success condition
+The call should not produce an error.
+@table
+@end deffn
+
+@node pdf_realloc
+@subsubsection pdf_realloc
+
+@deffn Test pdf_realloc_001
+Reallocate some bytes.
+@table @strong
+@item Success condition
+The call should not produce an error.
+@table
+@end deffn
+
+
+@node pdf_dealloc
+@subsubsection pdf_dealloc
+
+@deffn Test pdf_dealloc_001
+Deallocate memory.
+@table @strong
+@item Success condition
+The call should not produce an error.
+@table
+@end deffn
+
+@node Stream Module
+@subsection Stream Module
+
+@menu
+* pdf_create_file_stm::
+@end menu
+
+@node pdf_create_file_stm
+@subsubsection pdf_create_file_stm
+
+@deffn Test pdf_create_file_stm_001
+Try to open a file stream to a non-existing file.
+@table @strong
+@item Success condition
+@code{pdf_create_file_stm} should return a @code{NULL} pointer.
+@end table
+@end deffn
+
+@deffn Test pdf_create_file_stm_002
+Open a file stream to an existing file in read-only mode.
+@table @strong
+@item Success condition
+@code{pdf_create_file_stm} should return a correct stream object.
+@end table
+@end deffn
+
+@deffn Test pdf_create_file_stm_003
+Open a file stream to a non existing file in write-only mode.
+@table @strong
+@item Success condition
+@code{pdf_create_file_stm} should return a correct stream object.
+@end table
+@end deffn
+
+@deffn Test pdf_create_file_stm_004
+Open a file stream to an existing file in write-only mode.
+@table @strong
+@item Success condition
+@code{pdf_create_file_stm} should return a correct stream object.
+@end table
+@end deffn
 
 @node Subsystem Testing
 @chapter Subsystem Testing
