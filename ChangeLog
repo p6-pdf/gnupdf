@@ -1,3 +1,7 @@
+2008-02-24  gerel  <gerel@gnu.org>
+
+	* src/base/pdf-error.[ch] (Error management): added first implementation.
+
 2008-02-24  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf-tsd.texi: New file.

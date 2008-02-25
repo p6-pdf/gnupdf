@@ -36,3 +36,5 @@ and changed configure.ac torture/Makefile.am torture/test-date.c
   torture/test-obj_createdestroy.c torture/test-obj_dict.c
   torture/test-obj_dupequality.c torture/test-rectangle.c
   torture/test-stm_openclose.c
+
+Gerdardo E. Gidoni: wrote src/base/pdf-error.c src/base/pdf-error.h

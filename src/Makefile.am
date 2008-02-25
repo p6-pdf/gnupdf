@@ -27,6 +27,8 @@ ALLOC_MODULE_SOURCES = base/pdf-alloc.c base/pdf-alloc.h
 
 TYPES_MODULE_SOURCES = base/pdf-types.c base/pdf-types.h
 
+ERROR_MODULE_SOURCES = base/pdf-error.c base/pdf-error.h
+
 STM_MODULE_SOURCES = base/pdf-stm-f-a85.c base/pdf-stm-f-a85.h \
                      base/pdf-stm-f-ahex.c base/pdf-stm-f-ahex.h \
                      base/pdf-stm-f-fax.c base/pdf-stm-f-fax.h \
@@ -44,8 +46,8 @@ endif
 BASE_LAYER_SOURCES = base/pdf-base.c base/pdf-base.h \
                      $(ALLOC_MODULE_SOURCES) \
                      $(TYPES_MODULE_SOURCES) \
-                     $(STM_MODULE_SOURCES)
-
+                     $(STM_MODULE_SOURCES) \
+                     $(ERROR_MODULE_SOURCES)
 # Library sources
 
 libgnupdf_la_SOURCES = pdf-global.c pdf-global.h
@@ -77,7 +79,8 @@ PUBLIC_HDRS = pdf-global.h \
               base/pdf-stm-f-pred.h \
               base/pdf-stm-f-rl.h \
               base/pdf-stm-file.h \
-              base/pdf-stm.h
+              base/pdf-stm.h \
+              base/pdf-error.h
 
 pdf.h : $(PUBLIC_HDRS)
 	chmod +x $(top_srcdir)/src/extract-public-hdr
