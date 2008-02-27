@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/27 10:28:42 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-02-27 16:28:57 gerel"
  *
  *       File:         pdf-error.h
  *       Date:         Sun Feb  24 20:22:05 2008
@@ -33,7 +33,7 @@
   pdf_error (0, stderr, "***DEBUG BASE***:%s:%d: " message, \
   __FILE__, __LINE__, __VA_ARGS__)
 #else
-#define PDF_DEBUG_BASE ""
+#define PDF_DEBUG_BASE(...)
 #endif /* HAVE_DEBUG_BASE */
 
 #ifdef HAVE_DEBUG_OBJECT
@@ -41,7 +41,7 @@
   pdf_error (0, stderr, "***DEBUG OBJECT***:%s:%d: " message, \
   __FILE__, __LINE__, __VA_ARGS__)
 #else
-#define PDF_DEBUG_OBJECT ""
+#define PDF_DEBUG_OBJECT(...)
 #endif /* HAVE_DEBUG_OBJECT */
 
 #ifdef HAVE_DEBUG_DOCUMENT
@@ -49,7 +49,7 @@
   pdf_error (0, stderr, "***DEBUG DOCUMENT***:%s:%d: " message, \
   __FILE__, __LINE__, __VA_ARGS__)
 #else
-#define PDF_DEBUG_DOCUMENT ""
+#define PDF_DEBUG_DOCUMENT(...)
 #endif /* HAVE_DEBUG_DOCUMENT */
 
 #ifdef HAVE_DEBUG_PAGE
@@ -57,7 +57,7 @@
   pdf_error (0, stderr, "***DEBUG PAGE***:%s:%d: " message, \
   __FILE__, __LINE__, __VA_ARGS__)
 #else
-#define PDF_DEBUG_PAGE ""
+#define PDF_DEBUG_PAGE(...)
 #endif /* HAVE_DEBUG_PAGE */
 
 /* BEGIN PUBLIC */
