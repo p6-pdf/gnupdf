@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-02-24 23:09:30 gerel"
+/* -*- mode: C -*- Time-stamp: "08/02/27 10:25:39 jemarch"
  *
  *       File:         pdf-error.c
  *       Date:         Sun Feb  24 20:22:05 2008
@@ -31,6 +31,8 @@
 
 #include <pdf-global.h>
 #include <pdf-error.h>
+
+extern char *program_name;
 
 /* Update this list according to pdf_status_t. */
 const char * pdf_error_stlist [] =

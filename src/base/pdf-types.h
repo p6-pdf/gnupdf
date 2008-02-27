@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/22 23:08:05 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/02/27 10:26:32 jemarch"
  *
  *       File:         pdf-types.h
  *       Date:         Sun Feb 10 21:30:00 2008
@@ -41,9 +41,6 @@
 
 #define PDF_TRUE 1
 #define PDF_FALSE 0
-
-#define PDF_OK PDF_TRUE
-#define PDF_ERROR PDF_FALSE
 
 /* A variable of type `pdf_stm_pos_t' contain a byte-offset relative to
    the beginning of a stream object. 

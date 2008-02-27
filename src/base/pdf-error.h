@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-02-24 23:20:41 gerel"
+/* -*- mode: C -*- Time-stamp: "08/02/27 10:28:42 jemarch"
  *
  *       File:         pdf-error.h
  *       Date:         Sun Feb  24 20:22:05 2008
@@ -25,6 +25,8 @@
 
 #ifndef PDF_ERROR_H
 #define PDF_ERROR_H
+
+#include <stdio.h>
 
 #ifdef HAVE_DEBUG_BASE
 #define PDF_DEBUG_BASE(message, ...) \
