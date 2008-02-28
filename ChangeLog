@@ -1,3 +1,7 @@
+2008-02-28  gerel  <gerel@gnu.org>
+
+	* src/base/pdf-error.h: PDF_DEBUG_* fix (##__VA_ARGS__)
+
 2008-02-27  gerel  <gerel@gnu.org>
 
 	* src/base/pdf-error.h: fixed PDF_DEBUG_* empty macros
