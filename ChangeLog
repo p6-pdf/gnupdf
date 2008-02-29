@@ -1,3 +1,7 @@
+2008-02-29  gerel  <gerel@gnu.org>
+
+	* configure.ac: added debug mode options.
+
 2008-02-28  gerel  <gerel@gnu.org>
 
 	* src/base/pdf-error.h: PDF_DEBUG_* fix (##__VA_ARGS__)

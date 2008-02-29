@@ -135,6 +135,51 @@ fi
 
 fi # prmgt_mode
 
+# debug_*_mode
+debug_base_mode=no
+debug_object_mode=no
+debug_document_mode=no
+debug_page_mode=no
+PDFLIB_DEBUG_DESCR=""
+AC_ARG_ENABLE([debug-base], AS_HELP_STRING([--enable-debug-base],
+                                      [debug mode at the base layer (default is NO)]), 
+              [debug_base_mode=yes], [debug_base_mode=no])
+
+AC_ARG_ENABLE([debug-object], AS_HELP_STRING([--enable-debug-object],
+                                      [debug mode at the object layer (default is NO)]), 
+              [debug_object_mode=yes], [debug_object_mode=no])
+
+AC_ARG_ENABLE([debug-document], AS_HELP_STRING([--enable-debug-document],
+                                      [debug mode at the document layer (default is NO)]), 
+              [debug_document_mode=yes], [debug_document_mode=no])
+
+AC_ARG_ENABLE([debug-page], AS_HELP_STRING([--enable-debug-page],
+                                      [debug mode at the page layer (default is NO)]), 
+              [debug_page_mode=yes], [debug_page_mode=no])
+
+if test "x$debug_base_mode" = "xyes"; then
+  AC_DEFINE([HAVE_DEBUG_BASE], [1], [Debugging Base Layer])
+  PDFLIB_DEBUG_DESCR="base, "
+fi 
+if test "x$debug_object_mode" = "xyes"; then
+  AC_DEFINE([HAVE_DEBUG_OBJECT], [1], [Debugging Object Layer])
+  PDFLIB_DEBUG_DESCR="${PDFLIB_DEBUG_DESCR}object, "
+fi
+if test "x$debug_document_mode" = "xyes"; then
+  AC_DEFINE([HAVE_DEBUG_DOCUMENT], [1], [Debugging Document Layer])
+  PDFLIB_DEBUG_DESCR="${PDFLIB_DEBUG_DESCR}document, "
+fi
+if test "x$debug_page_mode" = "xyes"; then
+  AC_DEFINE([HAVE_DEBUG_PAGE], [1], [Debugging Page Layer])
+  PDFLIB_DEBUG_DESCR="${PDFLIB_DEBUG_DESCR}page"
+fi
+
+if test "x$PDFLIB_DEBUG_DESCR" = "x"; then
+  PDFLIB_DEBUG_DESCR="all disabled"
+fi
+
+# end debug_*_mode
+
 dnl Generate output files
 AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile torture/unit/Makefile doc/Makefile utils/Makefile prmgt/Makefile prmgt/pmccabe2html src/extract-public-hdr)
 
@@ -161,6 +206,7 @@ Configured for \`${canonical}'.
   With unit tests support?                  ${have_check}
   Program to build html manuals             ${texihtmlprogram}
   Build project management resources?       ${prmgt_mode}
+  Layers with debug mode enabled            ${PDFLIB_DEBUG_DESCR}
 "
 
 dnl Report warnings
