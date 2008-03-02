@@ -1,3 +1,7 @@
+2008-03-02  gerel  <gerel@gnu.org>
+
+	* doc/gnupdf.texi: small error management fix.
+
 2008-02-29  gerel  <gerel@gnu.org>
 
 	* configure.ac: added debug mode options.

@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.29 2008/02/23 21:56:52 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.30 2008/03/02 09:37:59 gerel Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -265,7 +265,7 @@ PDF_DEBUG_BASE("Testing macro '%s' '%d' '%lf'", "string", 7, 10.1);
 @end example
 @end table
 
-@heading Output format
+@subheading Output format
 The output format for these macros is,
 
 GNU PDF:***DEBUG <layer>***:<file-name>:<line-number>: <message>.
