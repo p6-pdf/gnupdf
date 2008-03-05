@@ -49,6 +49,8 @@ AC_DEFUN([gl_INIT],
   AC_SUBST([LTLIBINTL])
   gl_INLINE
   gl_LIST
+  gl_LOCALCHARSET
+  gl_LOCALENAME
   AC_FUNC_MALLOC
   gl_FUNC_MALLOC_POSIX
   gl_STDLIB_MODULE_INDICATOR([malloc-posix])
@@ -100,6 +102,7 @@ AC_DEFUN([gl_LIBSOURCES],
 # gnulib-tool and may be removed by future gnulib-tool invocations.
 AC_DEFUN([gl_FILE_LIST], [
   build-aux/link-warning.h
+  lib/config.charset
   lib/error.c
   lib/error.h
   lib/exitfail.c
@@ -115,9 +118,15 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/gl_array_list.h
   lib/gl_list.c
   lib/gl_list.h
+  lib/localcharset.c
+  lib/localcharset.h
+  lib/localename.c
+  lib/localename.h
   lib/malloc.c
   lib/math_.h
   lib/realloc.c
+  lib/ref-add.sin
+  lib/ref-del.sin
   lib/size_max.h
   lib/stdbool_.h
   lib/stdio_.h
@@ -128,6 +137,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/xmalloc.c
   lib/xsize.h
   m4/absolute-header.m4
+  m4/codeset.m4
   m4/error.m4
   m4/exitfail.m4
   m4/extensions.m4
@@ -135,9 +145,14 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/getline.m4
   m4/getopt.m4
   m4/gl_list.m4
+  m4/glibc21.m4
   m4/gnulib-common.m4
   m4/include_next.m4
   m4/inline.m4
+  m4/intlmacosx.m4
+  m4/lcmessage.m4
+  m4/localcharset.m4
+  m4/localename.m4
   m4/malloc.m4
   m4/math_h.m4
   m4/onceonly_2_57.m4
