@@ -69,8 +69,8 @@ AM_CPPFLAGS = -I$(top_builddir)/lib -I$(srcdir)/base \
 PUBLIC_HDR_HDR = "/* This file has been automatically generated */"
 
 PUBLIC_HDRS = pdf-global.h \
-              base/pdf-alloc.h \
               base/pdf-types.h \
+              base/pdf-alloc.h \
               base/pdf-stm-f-a85.h \
               base/pdf-stm-f-ahex.h \
               base/pdf-stm-f-fax.h \

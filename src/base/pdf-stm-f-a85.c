@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/22 22:48:55 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/03/05 12:24:22 jemarch"
  *
  *       File:         pdf-stm-f-a85.c
  *       Date:         Sun Jul 15 06:01:42 2007
@@ -215,8 +215,8 @@ pdf_stm_f_a85_encode (pdf_char_t *in,
   if (*out_size > pos_out)
     {
       *out_size = pos_out;
-      *out = (pdf_char_t *) xrealloc (*out,
-                                      *out_size);
+      *out = (pdf_char_t *) pdf_realloc (*out,
+                                         *out_size);
     }
 
   return PDF_OK;
@@ -299,8 +299,8 @@ pdf_stm_f_a85_decode (pdf_char_t *in,
 
   /* Adjust memory */
   *out_size = pos_out;
-  *out = (pdf_char_t *) xrealloc (*out, 
-                                  *out_size);
+  *out = (pdf_char_t *) pdf_realloc (*out, 
+                                     *out_size);
   return PDF_OK;
 
  error:

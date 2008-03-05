@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/22 22:38:10 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/03/05 12:29:00 jemarch"
  *
  *       File:         pdf-alloc.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -23,10 +23,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <config.h>
+
+#ifdef HAVE_MALLOC_H
+#include <malloc.h>
+#else
+#include <stdlib.h>
+#endif /* HAVE_MALLOC_H */
+
 #include <pdf-alloc.h>
 
 inline void *
-pdf_alloc (size_t size)
+pdf_alloc (pdf_size_t size)
 {
   void *pointer;
 
@@ -45,7 +53,7 @@ pdf_dealloc (void *pointer)
 }
 
 inline void *
-pdf_realloc (void *pointer, size_t size)
+pdf_realloc (void *pointer, pdf_size_t size)
 {
   pointer = realloc (pointer, size);
   if (!pointer && size != 0)

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/22 22:51:09 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/03/05 12:24:51 jemarch"
  *
  *       File:         pdf-stm-f-lzw.c
  *       Date:         Wed Aug 15 14:41:18 2007
@@ -321,7 +321,7 @@ pdf_stm_f_lzw_encode (pdf_stm_f_lzw_data_t data,
 
   /* Resize buffer to fit the data. */
   *out_size = (buffer.curp - *out);
-  if ((*out = xrealloc(*out, *out_size)) == NULL)
+  if ((*out = pdf_realloc(*out, *out_size)) == NULL)
     {
       *out_size = 0;
       return PDF_ERROR;
@@ -361,7 +361,7 @@ lzw_writer_init (lzw_writer_t* s,
 static int
 lzw_writer_fit (lzw_writer_t* s)
 {
-  if ((s->buf = xrealloc(s->buf, s->writen)) == NULL)
+  if ((s->buf = pdf_realloc(s->buf, s->writen)) == NULL)
     {
       return PDF_ERROR;
     }
@@ -380,7 +380,7 @@ lzw_writer_put (lzw_writer_t* s,
   if (s->allocated < s->writen + size)
     {
       s->allocated = s->allocated * 2 + 1;
-      if ((s->buf = xrealloc(s->buf, s->allocated)) == NULL)
+      if ((s->buf = pdf_realloc(s->buf, s->allocated)) == NULL)
 	{
 	  return PDF_ERROR;
 	}

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 01:05:24 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/03/05 12:31:09 jemarch"
  *
  *       File:         pdf-stm.h
  *       Date:         Fri Jul  6 18:37:57 2007
@@ -183,9 +183,9 @@ struct pdf_stm_be_s
     pdf_stm_pos_t (*tell) (void *data);
 
     /* Reading and writing data */
-    size_t (*read) (void *data, pdf_char_t **buf, size_t bytes);
-    size_t (*write) (void *data, pdf_char_t *buf, size_t bytes);
-    size_t (*flush) (void *data);
+    pdf_size_t (*read) (void *data, pdf_char_t **buf, pdf_size_t bytes);
+    pdf_size_t (*write) (void *data, pdf_char_t *buf, pdf_size_t bytes);
+    pdf_size_t (*flush) (void *data);
 
     /* Reading and writing characters */
     int (*read_char) (void *data);
@@ -288,9 +288,9 @@ int pdf_stm_seek (pdf_stm_t stm, pdf_stm_pos_t pos);
 pdf_stm_pos_t pdf_stm_tell (pdf_stm_t stm);
 
 /* Reading and writing data */
-size_t pdf_stm_read (pdf_stm_t stm, unsigned char **buf, size_t bytes);
-size_t pdf_stm_write (pdf_stm_t stm, unsigned char *buf, size_t bytes);
-size_t pdf_stm_flush (pdf_stm_t stm);
+pdf_size_t pdf_stm_read (pdf_stm_t stm, unsigned char **buf, pdf_size_t bytes);
+pdf_size_t pdf_stm_write (pdf_stm_t stm, unsigned char *buf, pdf_size_t bytes);
+pdf_size_t pdf_stm_flush (pdf_stm_t stm);
 
 /* Reading and writing single characters */
 

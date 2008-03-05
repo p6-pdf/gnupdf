@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 01:05:17 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/03/05 12:31:58 jemarch"
  *
  *       File:         pdf-stm-mem.h
  *       Date:         Sun Jul  8 21:45:09 2007
@@ -69,9 +69,9 @@ pdf_stm_pos_t pdf_stm_mem_size (void *be_data);
 int pdf_stm_mem_seek (void *be_data, pdf_stm_pos_t pos);
 pdf_stm_pos_t pdf_stm_mem_tell (void *be_data);
 
-size_t pdf_stm_mem_read (void *be_data, pdf_char_t **buf, size_t bytes);
-size_t pdf_stm_mem_write (void *be_data, pdf_char_t *buf, size_t bytes);
-size_t pdf_stm_mem_flush (void *be_data);
+pdf_size_t pdf_stm_mem_read (void *be_data, pdf_char_t **buf, pdf_size_t bytes);
+pdf_size_t pdf_stm_mem_write (void *be_data, pdf_char_t *buf, pdf_size_t bytes);
+pdf_size_t pdf_stm_mem_flush (void *be_data);
 
 int pdf_stm_mem_read_char (void *be_data);
 int pdf_stm_mem_peek_char (void *be_data);

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 01:05:09 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/03/05 12:30:54 jemarch"
  *
  *       File:         pdf-stm-file.h
  *       Date:         Sun Jul  8 19:56:45 2007
@@ -90,9 +90,9 @@ pdf_stm_pos_t pdf_stm_file_size (void *be_data);
 int pdf_stm_file_seek (void *be_data, pdf_stm_pos_t pos);
 pdf_stm_pos_t pdf_stm_file_tell (void *be_data);
 
-size_t pdf_stm_file_read (void *be_data, pdf_char_t **buf, size_t bytes);
-size_t pdf_stm_file_write (void *be_data, pdf_char_t *buf, size_t bytes);
-size_t pdf_stm_file_flush (void *be_data);
+pdf_size_t pdf_stm_file_read (void *be_data, pdf_char_t **buf, pdf_size_t bytes);
+pdf_size_t pdf_stm_file_write (void *be_data, pdf_char_t *buf, pdf_size_t bytes);
+pdf_size_t pdf_stm_file_flush (void *be_data);
 
 int pdf_stm_file_read_char (void *be_data);
 int pdf_stm_file_peek_char (void *be_data);

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/22 22:54:12 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/03/05 12:31:41 jemarch"
  *
  *       File:         pdf-stm-mem.c
  *       Date:         Mon Jul  9 01:13:41 2007
@@ -141,13 +141,13 @@ pdf_stm_mem_tell (void *be_data)
   return data->current;
 }
 
-size_t
+pdf_size_t
 pdf_stm_mem_read (void *be_data,
                   pdf_char_t **buf,
-                  size_t bytes)
+                  pdf_size_t bytes)
 {
   pdf_stm_mem_data_t data;
-  size_t readed;
+  pdf_size_t readed;
 
   data = (pdf_stm_mem_data_t) be_data;
 
@@ -173,14 +173,14 @@ pdf_stm_mem_read (void *be_data,
   return readed;
 }
 
-size_t
+pdf_size_t
 pdf_stm_mem_write (void *be_data,
                    pdf_char_t *buf,
-                   size_t bytes)
+                   pdf_size_t bytes)
 {
   pdf_stm_mem_data_t data;
-  size_t written;
-  size_t free_bytes;
+  pdf_size_t written;
+  pdf_size_t free_bytes;
 
   data = (pdf_stm_mem_data_t) be_data;
   free_bytes = data->size - data->current;
@@ -190,8 +190,8 @@ pdf_stm_mem_write (void *be_data,
     {
       /* Allocate space */
       data->data = 
-        (pdf_char_t *) xrealloc (data->data,
-                           data->size + (bytes - free_bytes));
+        (pdf_char_t *) pdf_realloc (data->data,
+                                    data->size + (bytes - free_bytes));
       data->size = data->size + (bytes - free_bytes);
       free_bytes = data->size - data->current;
     }
@@ -228,7 +228,7 @@ pdf_stm_mem_peek_char (void *be_data)
   return pdf_stm_mem_readpeek_char (be_data, PDF_TRUE);
 }
 
-size_t
+pdf_size_t
 pdf_stm_mem_flush (void *be_data)
 {
   /* Do nothing */

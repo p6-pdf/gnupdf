@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/22 22:53:12 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/03/05 12:24:57 jemarch"
  *
  *       File:         pdf-stm-f-rl.c
  *       Date:         Sun Jul 15 22:01:18 2007
@@ -148,7 +148,7 @@ pdf_stm_f_rl_encode (pdf_char_t *in,
   (*out)[out_pos++] = 128;
 
   *out_size = out_pos;
-  *out = (pdf_char_t *) xrealloc (*out,
+  *out = (pdf_char_t *) pdf_realloc (*out,
                                   *out_size);
 
   return PDF_OK;
@@ -219,7 +219,7 @@ pdf_stm_f_rl_decode (pdf_char_t *in,
 
   /* Adjust output buffer */
   *out_size = out_pos;
-  *out = (pdf_char_t *) xrealloc (*out, *out_size);
+  *out = (pdf_char_t *) pdf_realloc (*out, *out_size);
 
   return PDF_OK;
 

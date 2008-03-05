@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/22 22:49:24 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/03/05 12:24:27 jemarch"
  *
  *       File:         pdf-stm-f-ahex.c
  *       Date:         Fri Jul 13 17:08:41 2007
@@ -245,7 +245,7 @@ pdf_stm_f_ahex_decode (pdf_char_t *in,
 
   /* Adjust output buffer size */
   *out_size = out_pos;
-  *out = (pdf_char_t *) xrealloc (*out, *out_size);
+  *out = (pdf_char_t *) pdf_realloc (*out, *out_size);
   
   return PDF_OK;
 

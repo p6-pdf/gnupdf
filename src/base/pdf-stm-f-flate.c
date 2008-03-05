@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/22 22:50:31 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/03/05 12:24:36 jemarch"
  *
  *       File:         pdf-stm-f-flate.c
  *       Date:         Tue Jul 10 23:44:00 2007
@@ -118,8 +118,8 @@ pdf_stm_f_flate_encode (pdf_char_t *in,
   if (ret == Z_OK)
     {
       /* Adjust memory to really used  and return */
-      *out = (pdf_char_t *) xrealloc (*out,
-                                      *out_size);
+      *out = (pdf_char_t *) pdf_realloc (*out,
+                                         *out_size);
       return PDF_OK;
     }
   else
@@ -174,8 +174,8 @@ pdf_stm_f_flate_decode (pdf_char_t *in,
         }
           
       *out_size =  *out_size + (CHUNK - zstm.avail_out);
-      *out = (pdf_char_t *) xrealloc (*out,
-                                      *out_size);
+      *out = (pdf_char_t *) pdf_realloc (*out,
+                                         *out_size);
 
       memcpy (*out + (nchunks * CHUNK),
               out_aux,

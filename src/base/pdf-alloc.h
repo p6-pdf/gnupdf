@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/22 21:15:15 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/03/05 12:18:07 jemarch"
  *
  *       File:         pdf-alloc.h
  *       Date:         Fri Feb 22 20:54:18 2008
@@ -26,16 +26,7 @@
 #ifndef PDF_ALLOC_H
 #define PDF_ALLOC_H
 
-#include <config.h>
-
-#ifdef HAVE_MALLOC_H
-#include <malloc.h>
-#else
-#include <stdlib.h>
-#endif /* HAVE_MALLOC_H */
-
-#include <xalloc.h>
-
+#include <pdf-types.h>
 
 /*
  * Functions
@@ -43,9 +34,9 @@
 
 /* BEGIN PUBLIC */
 
-void *pdf_alloc (size_t size);
+void *pdf_alloc (pdf_size_t size);
 void pdf_dealloc (void *pointer);
-void *pdf_realloc (void *pointer, size_t size);
+void *pdf_realloc (void *pointer, pdf_size_t size);
 
 /* END PUBLIC */
 

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/22 22:53:46 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/03/05 12:30:29 jemarch"
  *
  *       File:         pdf-stm-file.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -150,7 +150,7 @@ pdf_stm_file_close (void **be_data)
 {
   pdf_stm_file_data_t *data;
   int status;
-  size_t res;
+  pdf_size_t res;
 
   data = (pdf_stm_file_data_t *) be_data;
 
@@ -234,15 +234,15 @@ pdf_stm_file_tell (void *be_data)
                 SEEK_CUR);
 }
 
-size_t
+pdf_size_t
 pdf_stm_file_read (void *be_data,
                    pdf_char_t **buf,
-                   size_t bytes)
+                   pdf_size_t bytes)
 {
   pdf_stm_file_data_t data;
-  size_t readed;
-  size_t to_read;
-  size_t available;
+  pdf_size_t readed;
+  pdf_size_t to_read;
+  pdf_size_t available;
   int eof;
 
   data = (pdf_stm_file_data_t) be_data;
@@ -279,21 +279,21 @@ pdf_stm_file_read (void *be_data,
     }
 
   /* Adjust output buffer */
-  *buf = (pdf_char_t *) xrealloc (*buf, readed);
+  *buf = (pdf_char_t *) pdf_realloc (*buf, readed);
 
   return readed;
 }
 
-size_t
+pdf_size_t
 pdf_stm_file_write (void *be_data,
                     pdf_char_t *buf,
-                    size_t bytes)
+                    pdf_size_t bytes)
 {
   pdf_stm_file_data_t data;
-  size_t written;
-  size_t res;
-  size_t to_write;
-  size_t available;
+  pdf_size_t written;
+  pdf_size_t res;
+  pdf_size_t to_write;
+  pdf_size_t available;
   int disk_full;
 
   data = (pdf_stm_file_data_t) be_data;
@@ -345,10 +345,10 @@ pdf_stm_file_peek_char (void *be_data)
   return pdf_stm_file_readpeek_char (be_data, PDF_TRUE);
 }
 
-size_t
+pdf_size_t
 pdf_stm_file_flush (void *be_data)
 {
-  size_t res;
+  pdf_size_t res;
   pdf_stm_file_data_t data;
 
   data = (pdf_stm_file_data_t) be_data;

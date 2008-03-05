@@ -1,3 +1,36 @@
+2008-03-05  Jose E. Marchesi  <jose.marchesi@deimos-space.com>
+
+	* src/base/pdf-stm-mem.h: Use `pdf_size_t' instead of `size_t'.
+
+	* src/base/pdf-stm-mem.c: Idem.
+
+	* src/base/pdf-stm.h: Idem.
+
+	* src/base/pdf-stm-file.c: Idem.
+
+	* src/base/pdf-stm.c: Idem.
+
+	* src/base/pdf-alloc.c: Idem.
+
+	* src/base/pdf-stm-f-rl.c: Use `pdf_realloc' instead of
+	`xrealloc'.
+
+	* src/base/pdf-stm-f-lzw.c: Idem.
+
+	* src/base/pdf-stm-f-flate.c: Idem.
+
+	* src/base/pdf-stm-f-ahex.c: Idem.
+
+	* src/base/pdf-stm-f-a85.c (pdf_stm_f_a85_decode): Idem.
+
+	* src/Makefile.am (PUBLIC_HDRS): Public contents in `pdf-types.h'
+	should be extracted before the public contents of `pdf-alloc.h'.
+
+	* src/base/pdf-alloc.h: Some included header files moved to
+	`pdf-alloc.c'.
+
+	* src/base/pdf-types.h: Define `pdf_size_t'
+
 2008-03-02  gerel  <gerel@gnu.org>
 
 	* doc/gnupdf.texi: small error management fix.

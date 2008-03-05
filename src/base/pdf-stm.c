@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/22 22:54:52 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/03/05 12:30:03 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -42,7 +42,7 @@ static int pdf_stm_install_filter (pdf_stm_t stm,
                                    pdf_stm_dealloc_filter_fn_t dealloc_fn,
                                    void *conf);
 static void pdf_stm_filter_dealloc_list (const void *elt);
-static int pdf_stm_apply_filters (gl_list_t filter_list, pdf_char_t **buf, size_t *buf_size);
+static int pdf_stm_apply_filters (gl_list_t filter_list, pdf_char_t **buf, pdf_size_t *buf_size);
                                    
 
 /*
@@ -523,12 +523,12 @@ pdf_stm_tell (pdf_stm_t stm)
   return result;
 }
 
-size_t
+pdf_size_t
 pdf_stm_read (pdf_stm_t stm,
               unsigned char **buf,
-              size_t bytes)
+              pdf_size_t bytes)
 {
-  size_t readed_bytes;
+  pdf_size_t readed_bytes;
 
   if (stm->backend.funcs.read_p (BE_DATA(stm)))
     {
@@ -551,12 +551,12 @@ pdf_stm_read (pdf_stm_t stm,
   return readed_bytes;
 }
 
-size_t
+pdf_size_t
 pdf_stm_write (pdf_stm_t stm,
                unsigned char *buf,
-               size_t bytes)
+               pdf_size_t bytes)
 {
-  size_t written_bytes;
+  pdf_size_t written_bytes;
 
   pdf_stm_apply_filters (stm->write_filter_list,
                          &buf,
@@ -576,10 +576,10 @@ pdf_stm_write (pdf_stm_t stm,
   return written_bytes;
 }
 
-size_t
+pdf_size_t
 pdf_stm_flush (pdf_stm_t stm)
 {
-  size_t bytes;
+  pdf_size_t bytes;
 
   if (stm->backend.funcs.write_p (BE_DATA(stm)))
     {
@@ -747,7 +747,7 @@ pdf_stm_filter_dealloc_list (const void *elt)
 static int
 pdf_stm_apply_filters (gl_list_t filter_list,
                        pdf_char_t **buf,
-                       size_t *buf_size)
+                       pdf_size_t *buf_size)
 {
   pdf_stm_filter_t filter;
   gl_list_iterator_t iter;
