@@ -22,6 +22,8 @@ AC_INIT(src/pdf-global.h)
 AM_INIT_AUTOMAKE(gnupdf, 0.1)
 AM_CONFIG_HEADER(src/config.h)
 
+gl_EARLY
+
 dnl Libtool
 AC_PROG_LIBTOOL
 
@@ -32,8 +34,6 @@ dnl System
 AC_CANONICAL_HOST
 canonical=$host
 
-dnl gnulib macros
-gl_EARLY
 gl_INIT
 
 dnl Search for headers
