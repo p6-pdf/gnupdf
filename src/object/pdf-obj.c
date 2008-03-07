@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 01:05:57 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-03-06 20:11:28 gerel"
  *
  *       File:         pdf-obj.c
  *       Date:         Sat Jul  7 03:04:30 2007
@@ -152,11 +152,9 @@ pdf_create_array (void)
   new_array = pdf_alloc_obj ();
   new_array->type = PDF_ARRAY_OBJ;
   new_array->value.array.objs = 
-    gl_list_create_empty (GL_ARRAY_LIST,
-                          pdf_compare_obj_list_elt,
-                          NULL,      /* hashcode_fn */
-                          pdf_dealloc_obj_list_elt,
-                          PDF_TRUE); /* allow duplicates */
+    pdf_list_create (pdf_compare_obj_list_elt,
+                     pdf_dealloc_obj_list_elt,
+                     PDF_TRUE); /* allow duplicates */
 
   return new_array;
 }
@@ -169,11 +167,9 @@ pdf_create_dict (void)
   new_dict = pdf_alloc_obj ();
   new_dict->type = PDF_DICT_OBJ;
   new_dict->value.dict.entries = 
-    gl_list_create_empty (GL_ARRAY_LIST,
-                          pdf_compare_dict_entry_list_elt,
-                          NULL,      /* hashcode_fn */
-                          pdf_dealloc_dict_entry_list_elt,
-                          PDF_FALSE); /* disallow duplicates. */
+    pdf_list_create (pdf_compare_dict_entry_list_elt,
+                     pdf_dealloc_dict_entry_list_elt,
+                     PDF_FALSE); /* disallow duplicates. */
 
   return new_dict;
 }
@@ -295,13 +291,13 @@ pdf_get_name_data (pdf_obj_t obj)
 inline int
 pdf_get_array_size (pdf_obj_t obj)
 {
-  return gl_list_size (obj->value.array.objs);
+  return pdf_list_size (obj->value.array.objs);
 }
 
 inline int
 pdf_get_dict_size (pdf_obj_t obj)
 {
-  return gl_list_size (obj->value.dict.entries);
+  return pdf_list_size (obj->value.dict.entries);
 }
 
 int
@@ -313,7 +309,7 @@ pdf_dict_key_p (pdf_obj_t obj,
 
   if ((obj->type != PDF_DICT_OBJ) ||
       (key->type != PDF_NAME_OBJ) ||
-      (gl_list_size (obj->value.dict.entries) == 0))
+      (pdf_list_size (obj->value.dict.entries) == 0))
     {
       return PDF_FALSE;
     }
@@ -322,7 +318,7 @@ pdf_dict_key_p (pdf_obj_t obj,
   entry->key = pdf_obj_dup (key);
   entry->value = pdf_create_null ();
 
-  if (gl_list_search (obj->value.dict.entries,
+  if (pdf_list_search (obj->value.dict.entries,
                       (const void *) entry) != NULL)
     {
       entry_p = PDF_TRUE;
@@ -342,11 +338,11 @@ pdf_get_dict_entry (pdf_obj_t obj,
 {
   pdf_dict_entry_t entry;
   pdf_dict_entry_t result_entry;
-  gl_list_node_t list_node;
+  pdf_list_node_t list_node;
 
   if ((obj->type != PDF_DICT_OBJ) ||
       (key->type != PDF_NAME_OBJ) ||
-      (gl_list_size (obj->value.dict.entries) == 0))
+      (pdf_list_size (obj->value.dict.entries) == 0))
     {
       return NULL;
     }
@@ -355,7 +351,7 @@ pdf_get_dict_entry (pdf_obj_t obj,
   entry->key = pdf_obj_dup (key);
   entry->value = pdf_create_null ();
   
-  list_node = gl_list_search (obj->value.dict.entries,
+  list_node = pdf_list_search (obj->value.dict.entries,
                               entry);
   pdf_dealloc_dict_entry (entry);
 
@@ -366,7 +362,7 @@ pdf_get_dict_entry (pdf_obj_t obj,
   else
     {
       result_entry = (pdf_dict_entry_t) 
-        gl_list_node_value (obj->value.dict.entries, list_node);
+        pdf_list_node_value (obj->value.dict.entries, list_node);
       
       return result_entry->value;
     }
@@ -390,7 +386,7 @@ pdf_remove_dict_entry (pdf_obj_t obj,
   entry->key = pdf_obj_dup (key);
   entry->value = pdf_create_null ();
 
-  if (gl_list_remove (obj->value.dict.entries,
+  if (pdf_list_remove (obj->value.dict.entries,
                       entry))
     {
       status = PDF_OK;
@@ -423,7 +419,7 @@ pdf_create_dict_entry (pdf_obj_t obj,
   entry = pdf_alloc_dict_entry ();
   entry->key = key;
   entry->value = value;
-  if (gl_list_add_last (obj->value.dict.entries,
+  if (pdf_list_add_last (obj->value.dict.entries,
                         entry) == NULL)
     {
       pdf_dealloc_dict_entry (entry);
@@ -620,12 +616,12 @@ pdf_remove_array_elt (pdf_obj_t obj,
 {
   if ((obj->type != PDF_ARRAY_OBJ) ||
       (index < 0) ||
-      (index >= gl_list_size (obj->value.array.objs)))
+      (index >= pdf_list_size (obj->value.array.objs)))
     {
       return PDF_ERROR;
     }
 
-  gl_list_remove_at (obj->value.array.objs, index);
+  pdf_list_remove_at (obj->value.array.objs, index);
   return PDF_OK;
 }
 
@@ -635,12 +631,12 @@ pdf_get_array_elt (pdf_obj_t obj,
 {
   if ((obj->type != PDF_ARRAY_OBJ) ||
       (index < 0) ||
-      (index >= gl_list_size (obj->value.array.objs)))
+      (index >= pdf_list_size (obj->value.array.objs)))
     {
       return NULL;
     }
 
-  return (pdf_obj_t) gl_list_get_at (obj->value.array.objs, index);
+  return (pdf_obj_t) pdf_list_get_at (obj->value.array.objs, index);
 }
 
 int
@@ -650,12 +646,12 @@ pdf_set_array_elt (pdf_obj_t obj,
 {
   if ((obj->type != PDF_ARRAY_OBJ) ||
       (index < 0) ||
-      (index >= gl_list_size (obj->value.array.objs)))
+      (index >= pdf_list_size (obj->value.array.objs)))
     {
       return PDF_ERROR;
     }
 
-  gl_list_set_at (obj->value.array.objs,
+  pdf_list_set_at (obj->value.array.objs,
                   index,
                   elt);
   return PDF_OK;
@@ -668,12 +664,12 @@ pdf_add_array_elt (pdf_obj_t obj,
 {
   if ((obj->type != PDF_ARRAY_OBJ) ||
       (index < 0) ||
-      (index > gl_list_size (obj->value.array.objs)))
+      (index > pdf_list_size (obj->value.array.objs)))
     {
       return PDF_ERROR;
     }
 
-  gl_list_add_at (obj->value.array.objs,
+  pdf_list_add_at (obj->value.array.objs,
                   index,
                   elt);
 
@@ -717,12 +713,12 @@ pdf_dealloc_obj (pdf_obj_t obj)
       }
     case PDF_ARRAY_OBJ:
       {
-        gl_list_free (obj->value.array.objs);
+        pdf_list_destroy (obj->value.array.objs);
         break;
       }
     case PDF_DICT_OBJ:
       {
-        gl_list_free (obj->value.dict.entries);
+        pdf_list_destroy (obj->value.dict.entries);
         break;
       }
     default:
@@ -816,29 +812,29 @@ pdf_array_equal_p (pdf_obj_t obj1,
   int equal_p;
   pdf_obj_t obj_elt1;
   pdf_obj_t obj_elt2;
-  gl_list_node_t list_node1;
-  gl_list_node_t list_node2;
-  gl_list_iterator_t iter1;
-  gl_list_iterator_t iter2;
+  pdf_list_node_t list_node1;
+  pdf_list_node_t list_node2;
+  pdf_list_iterator_t iter1;
+  pdf_list_iterator_t iter2;
 
-  if ((gl_list_size (obj1->value.array.objs) !=
-       gl_list_size (obj2->value.array.objs)))
+  if ((pdf_list_size (obj1->value.array.objs) !=
+       pdf_list_size (obj2->value.array.objs)))
     {
       return PDF_FALSE;
     }
 
-  if (gl_list_size (obj1->value.array.objs) == 0)
+  if (pdf_list_size (obj1->value.array.objs) == 0)
     {
       return PDF_TRUE;
     }
 
   equal_p = PDF_TRUE;
 
-  iter1 = gl_list_iterator (obj1->value.array.objs);
-  iter2 = gl_list_iterator (obj2->value.array.objs);
+  iter1 = pdf_list_iterator (obj1->value.array.objs);
+  iter2 = pdf_list_iterator (obj2->value.array.objs);
   
-  while (gl_list_iterator_next (&iter1, (const void **) &obj_elt1, &list_node1) &&
-         gl_list_iterator_next (&iter2, (const void **) &obj_elt2, &list_node2))
+  while (pdf_list_iterator_next (&iter1, (const void **) &obj_elt1, &list_node1) &&
+         pdf_list_iterator_next (&iter2, (const void **) &obj_elt2, &list_node2))
     {
       /* Note the indirect recursion there => avoid loops!!! */
       if (!pdf_obj_equal_p (obj_elt1, obj_elt2))
@@ -848,8 +844,8 @@ pdf_array_equal_p (pdf_obj_t obj1,
         }
     }
   
-  gl_list_iterator_free (&iter1);
-  gl_list_iterator_free (&iter2);
+  pdf_list_iterator_free (&iter1);
+  pdf_list_iterator_free (&iter2);
 
   return equal_p;
 }
@@ -862,20 +858,20 @@ pdf_dict_equal_p (pdf_obj_t obj1,
                   pdf_obj_t obj2)
 {
   int equal_p;
-  gl_list_t int_list;
-  gl_list_node_t list_node1;
-  gl_list_node_t list_node2;
+  pdf_list_t int_list;
+  pdf_list_node_t list_node1;
+  pdf_list_node_t list_node2;
   pdf_dict_entry_t entry_elt1;
   pdf_dict_entry_t entry_elt2;
-  gl_list_iterator_t iter;
+  pdf_list_iterator_t iter;
   
-  if ((gl_list_size (obj1->value.dict.entries) !=
-       gl_list_size (obj2->value.dict.entries)))
+  if ((pdf_list_size (obj1->value.dict.entries) !=
+       pdf_list_size (obj2->value.dict.entries)))
     {
       return PDF_FALSE;
     }
   
-  if (gl_list_size (obj1->value.dict.entries) == 0)
+  if (pdf_list_size (obj1->value.dict.entries) == 0)
     {
       return PDF_TRUE;
     }
@@ -885,39 +881,37 @@ pdf_dict_equal_p (pdf_obj_t obj1,
 
   /* Create the int_list intersection list */
   int_list =
-    gl_list_create_empty (GL_ARRAY_LIST,
-                          pdf_compare_dict_entry_list_elt,
-                          NULL,       /* hashcode_fn */
-                          pdf_dealloc_dict_entry_list_elt,
-                          PDF_FALSE); /* disallow duplicates */
-  iter = gl_list_iterator (obj1->value.dict.entries);
-  while (gl_list_iterator_next (&iter, (const void**) &entry_elt1, &list_node1))
+    pdf_list_create (pdf_compare_dict_entry_list_elt,
+                           pdf_dealloc_dict_entry_list_elt,
+                           PDF_FALSE); /* disallow duplicates */
+  iter = pdf_list_iterator (obj1->value.dict.entries);
+  while (pdf_list_iterator_next (&iter, (const void**) &entry_elt1, &list_node1))
     {
       entry_elt2 = (pdf_dict_entry_t) xmalloc (sizeof(struct pdf_dict_entry_s));
       entry_elt2->key = pdf_obj_dup (entry_elt1->key);
       entry_elt2->value = pdf_obj_dup (entry_elt1->value);
      
-      gl_list_add_last (int_list, entry_elt2);
+      pdf_list_add_last (int_list, entry_elt2);
     }
-  gl_list_iterator_free (&iter);
+  pdf_list_iterator_free (&iter);
 
   /* Calculate the equal-intersection between the dictionaries */
-  iter = gl_list_iterator (obj2->value.dict.entries);
-  while (gl_list_iterator_next (&iter, (const void**) &entry_elt1, &list_node1))
+  iter = pdf_list_iterator (obj2->value.dict.entries);
+  while (pdf_list_iterator_next (&iter, (const void**) &entry_elt1, &list_node1))
     {
-      list_node2 = gl_list_search (int_list, (const void *) entry_elt1);
+      list_node2 = pdf_list_search (int_list, (const void *) entry_elt1);
       if (list_node2 != NULL)
         {
-          gl_list_remove_node (int_list, list_node2);
+          pdf_list_remove_node (int_list, list_node2);
         } 
     }
-  gl_list_iterator_free (&iter);
+  pdf_list_iterator_free (&iter);
 
   /* Is the intersection empty? */
-  equal_p = (gl_list_size (int_list) == 0);
+  equal_p = (pdf_list_size (int_list) == 0);
 
   /* Clean the kitchen */
-  gl_list_free (int_list);
+  pdf_list_destroy (int_list);
 
   /* Bye bye */
   return equal_p;
@@ -940,19 +934,19 @@ pdf_array_dup (pdf_obj_t obj)
 {
   pdf_obj_t new_array;
   pdf_obj_t obj_elt;
-  gl_list_iterator_t iter;
-  gl_list_node_t list_node;
+  pdf_list_iterator_t iter;
+  pdf_list_node_t list_node;
   
 
   new_array = pdf_create_array ();
 
-  iter = gl_list_iterator (obj->value.array.objs);
-  while (gl_list_iterator_next (&iter, (const void**) &obj_elt, &list_node))
+  iter = pdf_list_iterator (obj->value.array.objs);
+  while (pdf_list_iterator_next (&iter, (const void**) &obj_elt, &list_node))
     {
-      gl_list_add_last (new_array->value.array.objs, 
+      pdf_list_add_last (new_array->value.array.objs, 
                         pdf_obj_dup (obj_elt));
     }
-  gl_list_iterator_free (&iter);
+  pdf_list_iterator_free (&iter);
 
   return new_array;
 }
@@ -963,22 +957,22 @@ pdf_dict_dup (pdf_obj_t obj)
   pdf_obj_t new_dict;
   pdf_dict_entry_t entry_elt;
   pdf_dict_entry_t new_entry_elt;
-  gl_list_iterator_t iter;
-  gl_list_node_t list_node;
+  pdf_list_iterator_t iter;
+  pdf_list_node_t list_node;
   
   new_dict = pdf_create_dict ();
 
-  iter = gl_list_iterator (obj->value.dict.entries);
-  while (gl_list_iterator_next (&iter, (const void**) &entry_elt, &list_node))
+  iter = pdf_list_iterator (obj->value.dict.entries);
+  while (pdf_list_iterator_next (&iter, (const void**) &entry_elt, &list_node))
     {
       new_entry_elt = pdf_alloc_dict_entry ();
       new_entry_elt->key = pdf_obj_dup (entry_elt->key);
       new_entry_elt->value = pdf_obj_dup (entry_elt->value);
 
-      gl_list_add_last (new_dict->value.dict.entries, 
+      pdf_list_add_last (new_dict->value.dict.entries, 
                         new_entry_elt);
     }
-  gl_list_iterator_free (&iter);
+  pdf_list_iterator_free (&iter);
 
   return new_dict;
 }

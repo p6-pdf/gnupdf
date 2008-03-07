@@ -23,6 +23,8 @@ lib_LTLIBRARIES = libgnupdf.la
 
 # Base Layer sources
 
+LIST_MODULE_SOURCES = base/pdf-list.c base/pdf-list.h
+
 ALLOC_MODULE_SOURCES = base/pdf-alloc.c base/pdf-alloc.h
 
 TYPES_MODULE_SOURCES = base/pdf-types.c base/pdf-types.h
@@ -47,7 +49,11 @@ BASE_LAYER_SOURCES = base/pdf-base.c base/pdf-base.h \
                      $(ALLOC_MODULE_SOURCES) \
                      $(TYPES_MODULE_SOURCES) \
                      $(STM_MODULE_SOURCES) \
-                     $(ERROR_MODULE_SOURCES)
+                     $(ERROR_MODULE_SOURCES) \
+		     $(LIST_MODULE_SOURCES)
+
+
+
 # Library sources
 
 libgnupdf_la_SOURCES = pdf-global.c pdf-global.h
@@ -70,7 +76,9 @@ PUBLIC_HDR_HDR = "/* This file has been automatically generated */"
 
 PUBLIC_HDRS = pdf-global.h \
               base/pdf-types.h \
+              base/pdf-error.h \
               base/pdf-alloc.h \
+              base/pdf-list.h \
               base/pdf-stm-f-a85.h \
               base/pdf-stm-f-ahex.h \
               base/pdf-stm-f-fax.h \
@@ -79,8 +87,9 @@ PUBLIC_HDRS = pdf-global.h \
               base/pdf-stm-f-pred.h \
               base/pdf-stm-f-rl.h \
               base/pdf-stm-file.h \
-              base/pdf-stm.h \
-              base/pdf-error.h
+              base/pdf-stm.h
+
+
 
 pdf.h : $(PUBLIC_HDRS)
 	chmod +x $(top_srcdir)/src/extract-public-hdr

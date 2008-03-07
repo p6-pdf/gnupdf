@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/03/05 12:31:09 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-03-06 21:23:34 gerel"
  *
  *       File:         pdf-stm.h
  *       Date:         Fri Jul  6 18:37:57 2007
@@ -49,9 +49,8 @@
 #include <config.h>
 
 #include <stdio.h>
-/* BEGIN PUBLIC */
-#include <gl_array_list.h>
-/* END PUBLIC */
+
+#include <pdf-list.h>
 #include <pdf-types.h>
 #include <pdf-stm-f-null.h>
 #ifdef HAVE_LIBZ
@@ -264,8 +263,8 @@ struct pdf_stm_s
 {
   struct pdf_stm_be_s backend;
   
-  gl_list_t read_filter_list;
-  gl_list_t write_filter_list;
+  pdf_list_t read_filter_list;
+  pdf_list_t write_filter_list;
 };
 
 typedef struct pdf_stm_s *pdf_stm_t;

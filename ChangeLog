@@ -1,3 +1,11 @@
+2008-03-07  gerel  <gerel@gnu.org>
+
+	* src/base/pdf-list.[ch]: added first implementation.
+	* src/base/pdf-stm.[ch]: adapted to use the List module.
+	* src/object/pdf-obj.[ch]: Idem.
+	* src/base/pdf-types.h: added pdf_bool_t.
+	* src/Makefile.am: added the List module.
+
 2008-03-06  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* configure.ac: Move `gl_EARLY' up to the beginning of the file in

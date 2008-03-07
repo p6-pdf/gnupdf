@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 01:06:02 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-03-06 20:09:02 gerel"
  *
  *       File:         pdf-obj.h
  *       Date:         Sat Jul  7 01:10:11 2007
@@ -44,7 +44,7 @@
 #define PDF_OBJ_H
 
 #include <config.h>
-#include <gl_array_list.h>
+#include <pdf-list.h>
 #include <pdf-base.h>
 #include <pdf-stm.h>
 
@@ -111,7 +111,7 @@ typedef struct pdf_string_s *pdf_string_t;
 
 struct pdf_array_s
 {
-  gl_list_t objs;
+  pdf_list_t objs;
 };
 
 typedef struct pdf_array_s *pdf_array_t;
@@ -135,7 +135,7 @@ typedef struct pdf_dict_entry_s *pdf_dict_entry_t;
 
 struct pdf_dict_s
 {
-  gl_list_t entries;
+  pdf_list_t entries;
 };
 
 typedef struct pdf_dict_s *pdf_dict_t;

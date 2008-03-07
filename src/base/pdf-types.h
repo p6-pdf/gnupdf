@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/03/05 12:18:52 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-03-06 00:07:40 gerel"
  *
  *       File:         pdf-types.h
  *       Date:         Sun Feb 10 21:30:00 2008
@@ -54,6 +54,8 @@ typedef off_t pdf_stm_pos_t;
 
 /* Memory indexes (size_t) */
 typedef size_t pdf_size_t;
+
+typedef unsigned char pdf_bool_t;
 
 /* PDF manages bytes with values in the range 0-255 */
 
