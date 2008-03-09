@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.30 2008/03/02 09:37:59 gerel Exp $
+@comment $Id: gnupdf.texi,v 1.31 2008/03/08 23:49:31 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -4007,6 +4007,61 @@ if (pdf_time_cal_span_diff (span1,
 
 @node Accessing the File System
 @section Accessing the File System
+
+@menu
+* File System Data Types::
+@end menu
+
+@node File System Data Types
+@subsection File System Data Types
+
+@deftp {Data Type} {pdf_file_path_name_t}
+
+@end deftp
+
+@deftp {Data Type} {pdf_file_t}
+
+@end deftp
+
+@deftp {Data Type} {pdf_file_mode_t}
+
+@end deftp
+
+@deftp {Data Type} {enum pdf_file_errors_e}
+
+@table @code
+@item PDF_FILE_ERROR_NOERROR
+@item PDF_FILE_ERROR_GENERAL
+@item PDF_FILE_ERROR_OBSOLETE
+@item PDF_FILE_ERROR_DIRFULL
+@item PDF_FILE_ERROR_DISKFULL
+@item PDF_FILE_ERROR_NSV
+@item PDF_FILE_ERROR_IO
+@item PDF_FILE_ERROR_READ
+@item PDF_FILE_ERROR_WRITE
+@item PDF_FILE_ERROR_EOF
+@item PDF_FILE_ERROR_LOCKED
+@item PDF_FILE_ERROR_VLOCKED
+@item PDF_FILE_ERROR_BUSY
+@item PDF_FILE_ERROR_EXISTS
+@item PDF_FILE_ERROR_ALREADY_OPEN
+@item PDF_FILE_ERROR_PERM
+@item PDF_FILE_ERROR_WR_PERM
+@item PDF_FILE_ERROR_FNF
+@item PDF_FILE_ERROR_OPEN_FAILED
+@item PDF_FILE_ERROR_BYTES_NOT_READY
+@item PDF_FILE_ERROR_USRREQSTOP
+@item PDF_FILE_ERROR_IO_TIMEOUT
+@item PDF_FILE_ERROR_READ_BLOCKED
+@item PDF_FILE_ERROR_NOT_A_DIR
+@item PDF_FILE_ERROR_TEMP_CREATE
+@item PDF_FILE_ERROR_TOO_BIG
+@end table
+@end deftp
+
+@deftp {Data Type} {pdf_file_sys_t}
+
+@end deftp
 
 @node Object Layer
 @chapter Object Layer

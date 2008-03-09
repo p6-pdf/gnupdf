@@ -1,3 +1,8 @@
+2008-03-09  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-stm.c (pdf_stm_apply_filters): Check for PDF_OK
+	when calling `pdf_list_iterator_next'.
+	
 2008-03-07  gerel  <gerel@gnu.org>
 
 	* src/base/pdf-list.[ch]: added first implementation.

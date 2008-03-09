@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-03-06 21:33:01 gerel"
+/* -*- mode: C -*- Time-stamp: "08/03/09 00:28:34 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -757,7 +757,7 @@ pdf_stm_apply_filters (pdf_list_t filter_list,
     }
   
   iter = pdf_list_iterator (filter_list);
-  while (pdf_list_iterator_next (&iter, (const void **) &filter, &node))
+  while (pdf_list_iterator_next (&iter, (const void **) &filter, &node) == PDF_OK)
     {
       if (filter->funcs.apply (filter->data, 
                                *buf, *buf_size,
