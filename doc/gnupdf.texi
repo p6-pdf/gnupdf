@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.31 2008/03/08 23:49:31 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.32 2008/03/10 17:50:19 aleksander_m Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -1708,7 +1708,7 @@ Host Endian UTF-32 encoding (may be little-endian or big-endian).
 @end deftp
 
 
-@deftp {Data Type} pdf_text_unicode_options_e
+@deftp {Data Type} {pdf_text_unicode_options_e}
 
 Enumeration of extra options to get the contents of a pdf_text_t in a given
 UNICODE encoding (see function `pdf_text_get_unicode').
@@ -1728,13 +1728,12 @@ encoding, it will be ignored.
 
 
 
-@deftp {Data Type} pdf_text_filter_type_e
+@deftp {Data Type} {enum pdf_text_filter_type_e}
 
-Enumeration of supported filters in encoded text objects.
+Enumeration of supported filters in encoded text objects
+(see function `pdf_text_filter').
 
 @table @code
-@item PDF_TEXT_FILTER_UNKNOWN (= -1)
-Invalid filter.
 @item PDF_TEXT_FILTER_IDENTITY
 Do not perform any transformation in the encoded text. It is a no-op.
 @item PDF_TEXT_FILTER_LINE_ENDINGS
@@ -1743,6 +1742,8 @@ Normalize line endings.
 Makes all text upper case.
 @item PDF_TEXT_FILTER_LOWER_CASE
 Makes all text lower case.
+@item PDF_TEXT_FILTER_TITLE_CASE
+Makes all text title case.
 @item PDF_TEXT_FILTER_REMOVE_AMP
 Remove all single ampersands. This filter transform @code{&&} into
 @code{&}.
@@ -1758,7 +1759,7 @@ Replace line endings with space characters.
 
 A Unicode string, which must be considered as an opaque type. It contains the data
 in UTF-32BE encoding, as well as any `ISO-639-1' country code and/or `ISO-3166-1 alpha-2'
-language code applied.
+language code applied. It also contains an internal list of word boundaries.
 
 This data type must be initialized before being used, and destroyed afterwards.
 
@@ -2216,7 +2217,7 @@ pdf_status_t ret_code;
 
 ret_code = pdf_text_get_host (&str, &str_length, text, encoding);
 
-pdf_free(str);
+pdf_dealloc(str);
 
 @end example
 @end table
@@ -2247,14 +2248,14 @@ pdf_status_t ret_code;
 
 ret_code = pdf_text_get_pdfdocenc (&str, text);
 
-pdf_free(str);
+pdf_dealloc(str);
 
 @end example
 @end table
 @end deftypefun
 
 
-@deftypefun pdf_status_t pdf_text_get_unicode (pdf_char_t **@var{contents}, pdf_size_t *@var{length}, const pdf_text_t @var{text}, const enum pdf_text_unicode_encoding_e @var{enc}, const int @var{options})
+@deftypefun pdf_status_t pdf_text_get_unicode (pdf_char_t **@var{contents}, pdf_size_t *@var{length}, const pdf_text_t @var{text}, const enum pdf_text_unicode_encoding_e @var{enc}, const pdf_u32_t @var{options})
 
 Get the contents of a text variable encoded in the specified
 Unicode encoding. Additional options can be set in the request.
@@ -2288,9 +2289,44 @@ pdf_status_t ret_code;
 ret_code = pdf_text_get_unicode (&str, &str_length,
                                  text,
                                  PDF_TEXT_UTF16_BE,
-                                 PDF_TEXT_UNICODE_WITH_BOM | PDF_TEXT_UTF16BE_WITH_LANGCODE);
+                                 (PDF_TEXT_UNICODE_WITH_BOM | PDF_TEXT_UTF16BE_WITH_LANGCODE));
 
-pdf_free(str);
+pdf_dealloc(str);
+
+@end example
+@end table
+@end deftypefun
+
+
+
+
+@deftypefun {pdf_char_t *} pdf_text_get_hex (const pdf_text_t @var{text}, const pdf_char_t @var{delimiter})
+
+Get the contents of a text variable encoded in ASCII format and represented in Hexadecimal format, separated by the character given in @var{delimiter} (usually ':').
+
+@table @strong
+@item Parameters
+@table @var
+@item text
+A text variable
+@item delimiter
+A single ASCII char used as delimiter
+@end table
+@item Returns
+A NUL-terminated string with the contents of the text object in hexadecimal representation. The string must be deallocated by the caller.
+@item Usage Example
+@example
+pdf_text_t text;
+pdf_char_t *str;
+pdf_status_t ret_code;
+
+/* ...initialize and manipulate `text'... */
+
+str = pdf_text_get_hex (text, ':');
+
+PDF_DEBUG_BASE("Internal representation of the string is: '%s'",str);
+
+pdf_dealloc(str);
 
 @end example
 @end table
@@ -2393,26 +2429,28 @@ if (pdf_text_set_unicode (text, str, length, enc) != PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_text_concat (pdf_text_t @var{text}, const pdf_text_t @var{text1}, const pdf_text_t @var{text2})
+@deftypefun pdf_status_t pdf_text_concat (pdf_text_t @var{text1}, const pdf_text_t @var{text2}, const pdf_bool_t @var{override_langinfo})
 
 Concatenate the contents of two text variables (@var{text1} first,
-then @var{text2}) and store the result in the output text variable (@var{text}).
+then @var{text2}) and store the result in @var{text}.
 
-Warning! If different country/language codes are found within
-the text variables an error will be returned (concatenation not
-possible)
+Warning! @var{override_langinfo} is not set and different country/language 
+codes are found within the text variables an error will be returned 
+(concatenation not possible). If @var{override_langinfo} is set, the country
+ and language information is not checked.
 
 @table @strong
 @item Parameters
 @table @var
-@item text
-The output text variable.
 @item text1
 The first text variable to concatenate. The contents of this variable
-are left unchanged.
+are modified with the output of the concatenation.
 @item text2
 The second text variable to concatenate. The contents of this variable
 are left unchanged.
+@item override_langinfo
+Flag to indicate if the language and country information must be checked
+before performing the concatenation.
 @end table
 @item Returns
 The status of the operation.
@@ -2422,7 +2460,7 @@ pdf_text_t text1;
 pdf_text_t text2;
 
 /* ...initialize `text1' and `text2'... */
-if (pdf_text_concat (text1, text1, text2) != PDF_OK)
+if (pdf_text_concat (text1, text2, PDF_FALSE) != PDF_OK)
 @{
    /* Manage the error */
 @}
@@ -2492,7 +2530,7 @@ if (pdf_text_replace_ascii (text, new_pattern, old_pattern) != PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_text_filter (pdf_text_t @var{text}, const enum pdf_text_filter_type_e @var{filter})
+@deftypefun pdf_status_t pdf_text_filter (pdf_text_t @var{text}, const pdf_u32_t @var{filter})
 
 Filter the contents of a text variable.
 
@@ -2502,7 +2540,10 @@ Filter the contents of a text variable.
 @item text
 A text variable.
 @item filter
-A filter to run in @var{text} contents.
+Filter to be run in @var{text}, in the way: FILTER_1 | FILTER_2 | FILTER_3.
+(see @code{pdf_text_filter_type_e} data type).
+
+Warning!! At most one case-related filter can be applied at a time.
 @end table
 @item Returns
 The status of the operation
@@ -2512,7 +2553,7 @@ pdf_text_t text;
 
 /* ...initialize `text'... */
 
-if (pdf_text_filter (text, PDF_TEXT_FILTER_LOWER_CASE) != PDF_OK)
+if (pdf_text_filter (text, (PDF_TEXT_FILTER_LOWER_CASE | PDF_TEXT_FILTER_REMOVE_AMP)) != PDF_OK)
 @{
   /* Manage error */
 @}
@@ -2524,7 +2565,7 @@ if (pdf_text_filter (text, PDF_TEXT_FILTER_LOWER_CASE) != PDF_OK)
 @node Comparing Text Variables
 @subsection Comparing Text Variables
 
-@deftypefun pdf_i32_t pdf_text_cmp (pdf_text_t @var{text1}, pdf_text_t @var{text2}, pdf_bool_t @var{case_sensitive})
+@deftypefun pdf_i32_t pdf_text_cmp (pdf_text_t @var{text1}, pdf_text_t @var{text2}, pdf_bool_t @var{case_sensitive}, pdf_status_t *@var{p_ret_code})
 
 Compare the contents of two text variables.
 
@@ -2543,6 +2584,9 @@ Case sensitive.
 @item PDF_FALSE
 Case insensitive.
 @end table
+@item p_ret_code
+Pointer to store the status of the comparison (an internal error could happen).
+NULL can be passed, so that the return status is not considered.
 @end table
 @item Returns
 An integer:
@@ -2606,14 +2650,43 @@ enc = pdf_text_get_host_encoding();
 @end deftypefun
 
 
+@deftypefun pdf_status_t pdf_text_check_host_encoding (const pdf_char_t *@var{encoding_name}, pdf_text_host_encoding_t *@var{p_encoding})
+
+Check if a given encoding is available in the system as a host-encoding. If available, it will return PDF_OK and will fill in the pdf_text_host_encoding_t variable passed by reference.
+
+@table @strong
+@item Parameters
+@table @var
+@item encoding_name
+Name of the encoding to check for.
+@item p_encoding
+Pointer to a pdf_text_host_encoding_t variable.
+@end table
+@item Returns
+Returns PDF_OK if the encoding is available in the system as a host-encoding.
+@item Usage Example
+@example
+pdf_text_host_encoding enc;
+
+if(pdf_text_check_host_encoding((pdf_char_t *)"ascii-us",&enc) == PDF_OK)
+  @{
+    /* XXX */
+  @}
+
+@end example
+@end table
+@end deftypefun
+
+
 @deftypefun pdf_text_host_encoding_t pdf_text_get_best_encoding (const pdf_text_t @var{text}, const pdf_text_host_encoding_t @var{preferred_encoding})
 
 Return the best available host encoding to encode the contents of a
 given text variable. A specified preferred encoding is selected if
-available. 
+there is no clear best encoding.
 
 The ``best'' encoding is an encoding able to encode the bigger number
-of characters of the unicode content of the given text variable.
+of characters of the unicode content of the given text variable, so the
+function will check for Unicode encodings supported in the system.
 @table @strong
 @item Parameters
 @table @var

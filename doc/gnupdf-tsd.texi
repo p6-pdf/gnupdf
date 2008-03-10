@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf-tsd.texi,v 1.3 2008/02/24 17:26:00 jemarch Exp $
+@comment $Id: gnupdf-tsd.texi,v 1.4 2008/03/10 17:50:19 aleksander_m Exp $
 @comment %**start of header
 @setfilename gnupdf-tsd.info
 @settitle GNU PDF Library Test Specification Document
@@ -70,6 +70,7 @@ Indices
 @menu
 * Memory Allocation Module::
 * Stream Module::
+* Text Module::
 @end menu
 
 @node Memory Allocation Module
@@ -156,6 +157,2897 @@ Open a file stream to an existing file in write-only mode.
 @code{pdf_create_file_stm} should return a correct stream object.
 @end table
 @end deffn
+
+
+@node Text Module
+@subsection Text Module
+
+@menu
+* pdf_text_init::
+* pdf_text_new_destroy::
+* pdf_text_dup::
+* pdf_text_new_from_host::
+* pdf_text_new_from_pdf_string::
+* pdf_text_new_from_unicode::
+* pdf_text_new_from_u32::
+* pdf_text_get_country::
+* pdf_text_get_language::
+* pdf_text_set_country::
+* pdf_text_set_language::
+* pdf_text_empty_p::
+* pdf_text_get_host_encoding::
+* pdf_text_check_host_encoding::
+* pdf_text_get_best_encoding::
+* pdf_text_get_host::
+* pdf_text_get_pdfdocenc::
+* pdf_text_get_unicode::
+* pdf_text_get_hex::
+* pdf_text_set_host::
+* pdf_text_set_pdfdocenc::
+* pdf_text_set_unicode::
+* pdf_text_concat::
+* pdf_text_replace::
+* pdf_text_replace_ascii::
+* pdf_text_filter::
+* pdf_text_cmp::
+
+
+@end menu
+
+@node pdf_text_init
+@subsubsection pdf_text_init
+
+@deffn Test pdf_text_init_001
+Initialize text module
+@table @strong
+@item Success conditions
+1. The call should not produce an error.
+
+2. A valid (non-empty) host encoding should be detected.
+
+3. A valid host endianness should be detected (either LE or BE).
+
+4. A valid (non-empty) host EOL marker should be detected.
+
+5. A valid (non-empty) language ID should be detected.
+@end table
+@end deffn
+
+
+@node pdf_text_new_destroy
+@subsubsection pdf_text_new_destroy
+
+@deffn Test pdf_text_new_destroy_001
+Create/Destroy text object
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new} should not return a  @code{NULL} pointer.
+
+2. The call to @code{pdf_text_destroy} should return PDF_OK;
+@end table
+@end deffn
+
+
+@node pdf_text_dup
+@subsubsection pdf_text_dup
+
+@deffn Test pdf_text_dup_001
+Duplicate an empty text object
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_dup} should not return a  @code{NULL} pointer.
+
+2. The text data of the created object should be empty.
+
+3. The language code of the output object should be empty
+
+4. The country code of the output object should be empty
+
+@end table
+@end deffn
+
+@deffn Test pdf_text_dup_002
+Duplicate a text object with data contents but no language/country code
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_dup} should not return a  @code{NULL} pointer.
+
+2. The text data of the output object should be equal to the text data of the input object.
+
+3. The language code of the output object should be empty
+
+4. The country code of the output object should be empty
+
+@end table
+@end deffn
+
+@deffn Test pdf_text_dup_003
+Duplicate a text object with data contents and language code
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_dup} should not return a  @code{NULL} pointer.
+
+2. The text data of the output object should be equal to the text data of the input object.
+
+3. The language code of the output object should be equal to the language code of the input object.
+
+4. The country code of the output object should be empty.
+
+@end table
+@end deffn
+
+@deffn Test pdf_text_dup_004
+Duplicate a text object with data contents, language code and country code
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_dup} should not return a  @code{NULL} pointer.
+
+2. The text data of the output object should be equal to the text data of the input object.
+
+3. The language code of the output object should be equal to the language code of the input object.
+
+4. The country code of the output object should be equal to the country code of the input object.
+
+@end table
+@end deffn
+
+
+@node pdf_text_new_from_host
+@subsubsection pdf_text_new_from_host
+
+@deffn Test pdf_text_new_from_host_001
+Create a text object with an input valid host-encoded string
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_new_from_host} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_host_002
+Create a text object with an input invalid host-encoded string
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_new_from_host} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_host_003
+Create a text object with an input string encoded in an invalid host encoding
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_new_from_host} should NOT return PDF_OK.
+@end table
+@end deffn
+
+
+@node pdf_text_new_from_pdf_string
+@subsubsection pdf_text_new_from_pdf_string
+
+@deffn Test pdf_text_new_from_pdf_string_001
+Create a text object with an input valid PDF-Doc-Encoded string
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_pdf_string} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones.
+
+3. The language code within the text object must be empty.
+
+4. The country code within the text object must be empty.
+
+5. The call should return a NULL @code{remaining_str} pointer and a zero @code{remaining_length}
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_pdf_string_002
+Create a text object with an input invalid PDF-Doc-Encoded string
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_pdf_string} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_pdf_string_003
+Create a text object with an input valid UTF-16BE encoded string with BOM (containing both 16-bit and 32-bit UTF-16 code points!) and without lang/country information.
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_pdf_string} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones.
+
+3. The language code within the text object must be empty.
+
+4. The country code within the text object must be empty.
+
+5. The call should return a NULL @code{remaining_str} pointer and a zero @code{remaining_length}
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_pdf_string_004
+Create a text object with an input valid UTF-16BE encoded string without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_pdf_string} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_pdf_string_005
+Create a text object with an input invalid UTF-16BE encoded string with BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_pdf_string} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_pdf_string_006
+Create a text object with an input valid UTF-16BE encoded string with BOM (containing both 16-bit and 32-bit UTF-16 code points!) which also contains a valid language code embedded.
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_pdf_string} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones.
+
+3. The languange code within the text object must be the expected one.
+
+4. The country code within the text object must be empty.
+
+5. The call should return a NULL @code{remaining_str} pointer and a zero @code{remaining_length}
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_pdf_string_007
+Create a text object with an input valid UTF-16BE encoded string with BOM (containing both 16-bit and 32-bit UTF-16 code points!) which also contains a valid language code and a valid country code embedded.
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_pdf_string} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones.
+
+3. The languange code within the text object must be the expected one.
+
+4. The country code within the text object must be the expected one.
+
+5. The call should return a NULL @code{remaining_str} pointer and a zero @code{remaining_length}
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_pdf_string_008
+Create a text object with an input valid UTF-16BE encoded string with BOM (containing both 16-bit and 32-bit UTF-16 code points!) which also contains more than one valid language code embedded (the string contains more than one string in more than one different language).
+@table @strong
+@item Success conditions
+1. The first call to @code{pdf_text_new_from_pdf_string} should return PDF_OK.
+
+2. The contents of the first text object must be the expected ones.
+
+3. The languange code within the first text object must be the expected one.
+
+4. The country code within the first text object must be empty.
+
+5. The first call should return a valid @code{remaining_str} pointer and a non-zero @code{remaining_length}
+
+6. The second call to @code{pdf_text_new_from_pdf_string} should return PDF_OK.
+
+7. The contents of the second text object must be the expected ones.
+
+8. The languange code within the second text object must be the expected one.
+
+9. The country code within the second text object must be empty.
+
+10. The second call should return a NULL @code{remaining_str} pointer and a zero @code{remaining_length}
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_pdf_string_009
+Create a text object with an input valid UTF-16BE encoded string with BOM (containing both 16-bit and 32-bit UTF-16 code points!) which also contains more than one valid language code and a valid country code embedded (the string contains more than one string in more than one different language/country).
+@table @strong
+@item Success conditions
+1. The first call to @code{pdf_text_new_from_pdf_string} should return PDF_OK.
+
+2. The contents of the first text object must be the expected ones.
+
+3. The languange code within the first text object must be the expected one.
+
+4. The country code within the first text object must be the expected one.
+
+5. The first call should return a valid @code{remaining_str} pointer and a non-zero @code{remaining_length}
+
+6. The second call to @code{pdf_text_new_from_pdf_string} should return PDF_OK.
+
+7. The contents of the second text object must be the expected ones.
+
+8. The languange code within the second text object must be the expected one.
+
+9. The country code within the second text object must be the expected one.
+
+10. The second call should return a NULL @code{remaining_str} pointer and a zero @code{remaining_length}
+@end table
+@end deffn
+
+
+@node pdf_text_new_from_unicode
+@subsubsection pdf_text_new_from_unicode
+
+@deffn Test pdf_text_new_from_unicode_001
+Create a text object with an input valid UTF-8 encoded string (containing 8-bit, 16-bit, 24-bit and 32-bit code points!) without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones (without BOM).
+
+3. The function should return a valid pointer to the new text object
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_unicode_002
+Create a text object with an input valid UTF-16BE encoded string (16-bit and 32-bit code points!) without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones (without BOM).
+
+3. The function should return a valid pointer to the new text object
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_unicode_003
+Create a text object with an input valid UTF-16LE encoded string (16-bit and 32-bit code points!) without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones (without BOM).
+
+3. The function should return a valid pointer to the new text object
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_unicode_004
+Create a text object with an input valid UTF-16HE encoded string (16-bit and 32-bit code points!) without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones (without BOM).
+
+3a. If endianness is BigEndian, the output must be equal to the one obtained with UTF-16BE
+
+3b. If endianness is LittleEndian, the output must be equal to the one obtained with UTF-16LE
+
+4. The function should return a valid pointer to the new text object
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_unicode_005
+Create a text object with an input valid UTF-32BE encoded string without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones (without BOM).
+
+3. The function should return a valid pointer to the new text object
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_unicode_006
+Create a text object with an input valid UTF-32LE encoded string without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones (without BOM).
+
+3. The function should return a valid pointer to the new text object
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_unicode_007
+Create a text object with an input valid UTF-32HE encoded string without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones (without BOM).
+
+3a. If endianness is BigEndian, the output must be equal to the one obtained with UTF-32BE
+
+3b. If endianness is LittleEndian, the output must be equal to the one obtained with UTF-32LE
+
+4. The data of the output object must be completely equal to the input data
+
+5. The function should return a valid pointer to the new text object
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_unicode_008
+Create a text object with an input valid UTF-8 encoded string (containing 8-bit, 16-bit, 24-bit and 32-bit code points!) with BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones (without BOM).
+
+3. The function should return a valid pointer to the new text object
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_unicode_009
+Create a text object with an input valid UTF-16BE encoded string (16-bit and 32-bit code points!) with BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones (without BOM).
+
+3. The function should return a valid pointer to the new text object
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_unicode_010
+Create a text object with an input valid UTF-16LE encoded string (16-bit and 32-bit code points!) with BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones (without BOM).
+
+3. The function should return a valid pointer to the new text object
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_unicode_011
+Create a text object with an input valid UTF-16HE encoded string (16-bit and 32-bit code points!) with BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones (without BOM).
+
+3a. If endianness is BigEndian, the output must be equal to the one obtained with UTF-16BE
+
+3b. If endianness is LittleEndian, the output must be equal to the one obtained with UTF-16LE
+
+4. The function should return a valid pointer to the new text object
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_unicode_012
+Create a text object with an input valid UTF-32BE encoded string with BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones (without BOM).
+
+3. The function should return a valid pointer to the new text object
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_unicode_013
+Create a text object with an input valid UTF-32LE encoded string with BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones (without BOM).
+
+3. The function should return a valid pointer to the new text object
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_unicode_014
+Create a text object with an input valid UTF-32HE encoded string with BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones (without BOM).
+
+3a. If endianness is BigEndian, the output must be equal to the one obtained with UTF-32BE
+
+3b. If endianness is LittleEndian, the output must be equal to the one obtained with UTF-32LE
+
+4. The data of the output object must be completely equal to the input data
+
+5. The function should return a valid pointer to the new text object
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_new_from_unicode_015
+Create a text object with an input invalid UTF-8 encoded string without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_unicode} should NOT return PDF_OK.
+
+2. Pointer to the text object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_unicode_016
+Create a text object with an input invalid UTF-16BE encoded string without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_unicode} should NOT return PDF_OK.
+
+2. Pointer to the text object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_unicode_017
+Create a text object with an input invalid UTF-16LE encoded string without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_unicode} should NOT return PDF_OK.
+
+2. Pointer to the text object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_unicode_018
+Create a text object with an input invalid UTF-16HE encoded string without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_unicode} should NOT return PDF_OK.
+
+2. Pointer to the text object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_unicode_019
+Create a text object with an input invalid UTF-32BE encoded string without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_unicode} should NOT return PDF_OK.
+
+2. Pointer to the text object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_unicode_020
+Create a text object with an input invalid UTF-32LE encoded string without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_unicode} should NOT return PDF_OK.
+
+2. Pointer to the text object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_unicode_021
+Create a text object with an input invalid UTF-32HE encoded string without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_unicode} should NOT return PDF_OK.
+
+2. Pointer to the text object must remain unchanged.
+@end table
+@end deffn
+
+
+@node pdf_text_new_from_u32
+@subsubsection pdf_text_new_from_u32
+
+@deffn Test pdf_text_new_from_u32_001
+Create a text object given '0' as input number
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_u32} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_new_from_u32_001
+Create a text object given a non-zero positive number
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_u32} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones.
+@end table
+@end deffn
+
+@node pdf_text_get_country
+@subsubsection pdf_text_get_country
+
+@deffn Test pdf_text_get_country_001
+Get country ID when the stored country ID is valid
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_get_country} should return a valid pointer.
+
+2. The length of the returned string should be 2.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_country_002
+Get country ID when the stored country ID is invalid
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_get_country} should return a valid pointer.
+
+2. The length of the returned string should be 0.
+@end table
+@end deffn
+
+@node pdf_text_get_language
+@subsubsection pdf_text_get_language
+
+@deffn Test pdf_text_get_language_001
+Get language ID when the stored language ID is valid
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_get_language} should return a valid pointer.
+
+2. The length of the returned string should be 2.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_language_002
+Get language ID when the stored language ID is invalid
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_get_language} should return a valid pointer.
+
+2. The length of the returned string should be 0.
+@end table
+@end deffn
+
+
+@node pdf_text_set_country
+@subsubsection pdf_text_set_country
+
+@deffn Test pdf_text_set_country_001
+Set a valid two-character country ID
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_country} should return PDF_OK.
+
+2. The contents of the internal country ID representation should be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_country_002
+Set an invalid one-character country ID
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_country} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_country_003
+Set an invalid empty country ID
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_country} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@node pdf_text_set_language
+@subsubsection pdf_text_set_language
+
+@deffn Test pdf_text_set_language_001
+Set a valid two-character language ID
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_language} should return PDF_OK.
+
+2. The contents of the internal language ID representation should be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_language_002
+Set an invalid one-character language ID
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_language} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_language_003
+Set an invalid empty language ID
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_language} should NOT return PDF_OK.
+@end table
+@end deffn
+
+
+@node pdf_text_empty_p
+@subsubsection pdf_text_empty_p
+
+@deffn Test pdf_text_empty_p_001
+Check if a given empty text object is empty
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_empty_p} should return PDF_TRUE.
+@end table
+@end deffn
+
+@deffn Test pdf_text_empty_p_002
+Check if a given non-empty text object is empty
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_empty_p} should return PDF_FALSE.
+@end table
+@end deffn
+
+
+@node pdf_text_get_host_encoding
+@subsubsection pdf_text_get_host_encoding
+
+@deffn Test pdf_text_get_host_encoding_001
+Get the host encoding configured by the user. As this test really depends on what the user has configured in the system, the unit test will only check that a non-empty host encoding is returned.
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_get_host_encoding} should return a non-empty @code{pdf_text_host_encoding_t} variable.
+@end table
+@end deffn
+
+
+@node pdf_text_check_host_encoding
+@subsubsection pdf_text_get_check_host_encoding
+
+@deffn Test pdf_text_check_host_encoding_001
+Check if a given valid host encoding is available in the system. ASCII-7 is considered as the host encoding that every system should at least have, so the test will check for it.
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_check_host_encoding} should return PDF_OK.
+
+2. A non-empty @code{pdf_text_host_encoding_t} variable should be returned as well.
+@end table
+@end deffn
+
+@deffn Test pdf_text_check_host_encoding_002
+Check if a given invalid host encoding is available in the system. An inexistent host encoding will be requested.
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_check_host_encoding} should NOT return PDF_OK.
+
+2. The @code{pdf_text_host_encoding_t} variable should remain unchanged.
+@end table
+@end deffn
+
+@node pdf_text_get_best_encoding
+@subsubsection pdf_text_get_best_encoding
+
+@deffn Test pdf_text_get_best_encoding_001
+Check if a best encoding is returned. If available, it must return a valid Unicode-based host encoding. If no Unicode encoding is available, it should return the preferred encoding. As this test really depends on what the user has configured in the system, the unit test will only check that a non-empty host encoding is returned.
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_get_best_encoding} should return a non-empty @code{pdf_text_host_encoding_t} variable.
+@end table
+@end deffn
+
+
+@node pdf_text_get_host
+@subsubsection pdf_text_get_host
+
+@deffn Test pdf_text_get_host_001
+Get the contents of a text object in a valid host encoding
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_host} should return PDF_OK.
+
+2. The returned string must be the expected one.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_host_002
+Get the contents of a text object in an invalid host encoding
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_host} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@node pdf_text_get_pdfdocenc
+@subsubsection pdf_text_get_pdfdocenc
+
+@deffn Test pdf_text_get_pdfdocenc_001
+Get the contents of a text object in PDF Doc Encoding. The contents of the text object can all be transformed to PDF Doc Encoding without loss of information.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_pdfdocenc} should return PDF_OK.
+
+2. The returned string must be the expected one, and NUL terminated
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_pdfdocenc_002
+Get the contents of a text object in PDF Doc Encoding. The contents of the text object cannot be transformed to PDF Doc Encoding without loss of information. A default character must be used for those characters that cannot be represented in PDF Doc Encoding.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_pdfdocenc} should return PDF_OK.
+
+2. The returned string must be the expected one, and NUL terminated
+@end table
+@end deffn
+
+@node pdf_text_get_unicode
+@subsubsection pdf_text_get_unicode
+
+@deffn Test pdf_text_get_unicode_001
+Get the contents of a non-empty text object in UTF-8 without BOM. The contents of the text object include characters that are encoded in UTF-8 using 8-bit, 16-bit, 24-bit and 32-bit.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be the expected one, not NUL terminated.
+
+3. The returned length must be the expected one.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_002
+Get the contents of a non-empty text object in UTF-8 with BOM. The contents of the text object include characters that are encoded in UTF-8 using 8-bit, 16-bit, 24-bit and 32-bit.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be the expected one, not NUL terminated.
+
+3. The returned length must be the expected one, including the length of the BOM in UTF-8.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_003
+Get the contents of an empty text object in UTF-8 without BOM.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be NULL.
+
+3. The returned length must be zero.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_004
+Get the contents of an empty text object in UTF-8 with BOM.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must only contain the BOM in UTF-8, not NUL terminated.
+
+3. The returned length must be equal to the length of the BOM in UTF-8.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_005
+Get the contents of a non-empty text object with lang/country info, in UTF-8 without BOM and with lang/country information embedded (which should not be supported in UTF-8).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_006
+Get the contents of a non-empty text object with lang/country info, in UTF-8 with BOM and with lang/country information embedded (which should not be supported in UTF-8).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_get_unicode_007
+Get the contents of a non-empty text object in UTF-16BE without BOM. The contents of the text object include characters that are encoded in UTF-16 using 16-bit and 32-bit.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be the expected one, not NUL terminated.
+
+3. The returned length must be the expected one.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_008
+Get the contents of a non-empty text object in UTF-16BE with BOM. The contents of the text object include characters that are encoded in UTF-16 using 16-bit and 32-bit.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be the expected one, not NUL terminated.
+
+3. The returned length must be the expected one, including the length of the BOM in UTF-16.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_009
+Get the contents of an empty text object in UTF-16BE without BOM.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be NULL.
+
+3. The returned length must be zero.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_010
+Get the contents of an empty text object in UTF-16BE with BOM.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must only contain the BOM in UTF-16BE, not NUL terminated.
+
+3. The returned length must be equal to the length of the BOM in UTF-16.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_011
+Get the contents of a non-empty text object with lang/country info, in UTF-16BE without BOM and with lang/country information embedded (which IS supported in UTF-16BE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be the expected one, including the lang/country information embedded, not NUL terminated.
+
+3. The returned length must be the expected one, including the length of the lang/country info.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_012
+Get the contents of a non-empty text object with language info (no country info), in UTF-16BE without BOM and with lang/country information embedded (which IS supported in UTF-16BE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be the expected one, including the language information embedded, not NUL terminated.
+
+3. The returned length must be the expected one, including the length of the language info.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_013
+Get the contents of an empty text object with lang/country info, in UTF-16BE without BOM and with lang/country information embedded (which IS supported in UTF-16BE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must only include the lang/country information embedded, not NUL terminated.
+
+3. The returned length must be equal to the length of the lang/country info.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_014
+Get the contents of an empty text object with language info (no country info), in UTF-16BE without BOM and with lang/country information embedded (which IS supported in UTF-16BE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must only contain the language information embedded, not NUL terminated.
+
+3. The returned length must be equal to the length of the language info.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_015
+Get the contents of a non-empty text object with lang/country info, in UTF-16BE with BOM and with lang/country information embedded (which IS supported in UTF-16BE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be the expected one, including the BOM and the lang/country information embedded, not NUL terminated.
+
+3. The returned length must be the expected one, including the length of the lang/country info and the BOM.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_016
+Get the contents of a non-empty text object with language info (no country info), in UTF-16BE with BOM and with lang/country information embedded (which IS supported in UTF-16BE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be the expected one, including the BOM and the language information embedded, not NUL terminated.
+
+3. The returned length must be the expected one, including the length of the language info and the BOM.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_017
+Get the contents of an empty text object with lang/country info, in UTF-16BE with BOM and with lang/country information embedded (which IS supported in UTF-16BE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must only include the BOM and lang/country information embedded, not NUL terminated.
+
+3. The returned length must be equal to the length of the lang/country info plus the length of the BOM.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_018
+Get the contents of an empty text object with language info (no country info), in UTF-16BE with BOM and with lang/country information embedded (which IS supported in UTF-16BE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must only contain the BOM and the language information embedded, not NUL terminated.
+
+3. The returned length must be equal to the length of the language info plus the length of the BOM.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_019
+Get the contents of a non-empty text object in UTF-16LE without BOM. The contents of the text object include characters that are encoded in UTF-16 using 16-bit and 32-bit.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be the expected one, not NUL terminated.
+
+3. The returned length must be the expected one.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_020
+Get the contents of a non-empty text object in UTF-16LE with BOM. The contents of the text object include characters that are encoded in UTF-16 using 16-bit and 32-bit.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be the expected one, not NUL terminated.
+
+3. The returned length must be the expected one, including the length of the BOM in UTF-16.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_021
+Get the contents of an empty text object in UTF-16LE without BOM.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be NULL.
+
+3. The returned length must be zero.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_022
+Get the contents of an empty text object in UTF-16LE with BOM.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must only contain the BOM in UTF-16LE, not NUL terminated.
+
+3. The returned length must be equal to the length of the BOM in UTF-16.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_023
+Get the contents of a non-empty text object with lang/country info, in UTF-16LE without BOM and with lang/country information embedded (which is NOT supported in UTF-16LE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_024
+Get the contents of a non-empty text object with language info (no country info), in UTF-16LE without BOM and with lang/country information embedded (which is NOT supported in UTF-16LE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_025
+Get the contents of an empty text object with lang/country info, in UTF-16LE without BOM and with lang/country information embedded (which is NOT supported in UTF-16LE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_026
+Get the contents of an empty text object with language info (no country info), in UTF-16LE without BOM and with lang/country information embedded (which is NOT supported in UTF-16LE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_027
+Get the contents of a non-empty text object with lang/country info, in UTF-16LE with BOM and with lang/country information embedded (which is NOT supported in UTF-16LE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_028
+Get the contents of a non-empty text object with language info (no country info), in UTF-16LE with BOM and with lang/country information embedded (which is NOT supported in UTF-16LE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_029
+Get the contents of an empty text object with lang/country info, in UTF-16LE with BOM and with lang/country information embedded (which is NOT supported in UTF-16LE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_030
+Get the contents of an empty text object with language info (no country info), in UTF-16LE with BOM and with lang/country information embedded (which is NOT supported in UTF-16LE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_031
+Get the contents of a non-empty text object in UTF-32BE without BOM.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be the expected one, not NUL terminated.
+
+3. The returned length must be the expected one.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_032
+Get the contents of a non-empty text object in UTF-32BE with BOM.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be the expected one, not NUL terminated.
+
+3. The returned length must be the expected one, including the length of the BOM in UTF-32.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_033
+Get the contents of an empty text object in UTF-32BE without BOM.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be NULL.
+
+3. The returned length must be zero.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_034
+Get the contents of an empty text object in UTF-32BE with BOM.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must only contain the BOM in UTF-32BE, not NUL terminated.
+
+3. The returned length must be equal to the length of the BOM in UTF-32.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_035
+Get the contents of a non-empty text object with lang/country info, in UTF-32BE without BOM and with lang/country information embedded (which is NOT supported in UTF-32BE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_036
+Get the contents of a non-empty text object with language info (no country info), in UTF-32BE without BOM and with lang/country information embedded (which is NOT supported in UTF-32BE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_037
+Get the contents of an empty text object with lang/country info, in UTF-32BE without BOM and with lang/country information embedded (which is NOT supported in UTF-32BE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_038
+Get the contents of an empty text object with language info (no country info), in UTF-32BE without BOM and with lang/country information embedded (which is NOT supported in UTF-32BE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_039
+Get the contents of a non-empty text object with lang/country info, in UTF-32BE with BOM and with lang/country information embedded (which is NOT supported in UTF-32BE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_040
+Get the contents of a non-empty text object with language info (no country info), in UTF-32BE with BOM and with lang/country information embedded (which is NOT supported in UTF-32BE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_041
+Get the contents of an empty text object with lang/country info, in UTF-32BE with BOM and with lang/country information embedded (which is NOT supported in UTF-32BE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_042
+Get the contents of an empty text object with language info (no country info), in UTF-32BE with BOM and with lang/country information embedded (which is NOT supported in UTF-32BE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_043
+Get the contents of a non-empty text object in UTF-32LE without BOM.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be the expected one, not NUL terminated.
+
+3. The returned length must be the expected one.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_044
+Get the contents of a non-empty text object in UTF-32LE with BOM.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be the expected one, not NUL terminated.
+
+3. The returned length must be the expected one, including the length of the BOM in UTF-32.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_045
+Get the contents of an empty text object in UTF-32LE without BOM.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be NULL.
+
+3. The returned length must be zero.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_046
+Get the contents of an empty text object in UTF-32LE with BOM.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must only contain the BOM in UTF-32LE, not NUL terminated.
+
+3. The returned length must be equal to the length of the BOM in UTF-32.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_047
+Get the contents of a non-empty text object with lang/country info, in UTF-32LE without BOM and with lang/country information embedded (which is NOT supported in UTF-32LE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_048
+Get the contents of a non-empty text object with language info (no country info), in UTF-32LE without BOM and with lang/country information embedded (which is NOT supported in UTF-32LE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_049
+Get the contents of an empty text object with lang/country info, in UTF-32LE without BOM and with lang/country information embedded (which is NOT supported in UTF-32LE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_050
+Get the contents of an empty text object with language info (no country info), in UTF-32LE without BOM and with lang/country information embedded (which is NOT supported in UTF-32LE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_051
+Get the contents of a non-empty text object with lang/country info, in UTF-32LE with BOM and with lang/country information embedded (which is NOT supported in UTF-32LE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_052
+Get the contents of a non-empty text object with language info (no country info), in UTF-32LE with BOM and with lang/country information embedded (which is NOT supported in UTF-32LE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_053
+Get the contents of an empty text object with lang/country info, in UTF-32LE with BOM and with lang/country information embedded (which is NOT supported in UTF-32LE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_054
+Get the contents of an empty text object with language info (no country info), in UTF-32LE with BOM and with lang/country information embedded (which is NOT supported in UTF-32LE).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+
+@node pdf_text_get_hex
+@subsubsection pdf_text_get_hex
+
+@deffn Test pdf_text_get_hex_001
+Get the contents of a non-empty text object in Hexadecimal representation in ASCII
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_hex} should return a valid string, NULL terminated.
+
+2. The contents of the returned string must be the expected ones.
+
+3. The length of the string must be non-zero.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_hex_002
+Get the contents of an empty text object in Hexadecimal representation in ASCII
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_hex} should return a valid string, NULL terminated.
+
+2. The lenght of the string must be zero.
+@end table
+@end deffn
+
+
+@node pdf_text_set_host
+@subsubsection pdf_text_set_host
+
+@deffn Test pdf_text_set_host_001
+Set the contents of a text object with an input valid host-encoded string
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_set_host} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_host_002
+Set the contents of a text object with an input invalid host-encoded string
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_set_host} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_host_003
+Set the contents of a text object with an input string encoded in an invalid host encoding
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_set_host} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@node pdf_text_set_pdfdocenc
+@subsubsection pdf_text_set_pdfdocenc
+
+@deffn Test pdf_text_set_pdfdocenc_001
+Set the contents of a text object with an input valid PDF Doc Encoded string
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_set_pdfdocenc} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_pdfdocenc_002
+Set the contents of a text object with an input empty PDF Doc Encoded string
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_set_pdfdocenc} should return PDF_OK.
+
+2. The contents of the text object must be empty.
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_pdfdocenc_003
+Set the contents of a text object with an input invalid PDF Doc Encoded string
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_set_pdfdocenc} should NOT return PDF_OK.
+@end table
+@end deffn
+
+
+@node pdf_text_set_unicode
+@subsubsection pdf_text_set_unicode
+
+@deffn Test pdf_text_set_unicode_001
+Set the contents of a text object with an input valid UTF-8 encoded string (containing 8-bit, 16-bit, 24-bit and 32-bit code points!) without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones (without BOM).
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_unicode_002
+Set the contents of a text object with an input valid UTF-16BE encoded string (16-bit and 32-bit code points!) without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones (without BOM).
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_unicode_003
+Set the contents of a text object with an input valid UTF-16LE encoded string (16-bit and 32-bit code points!) without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones (without BOM).
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_unicode_004
+Set the contents of a text object with an input valid UTF-16HE encoded string (16-bit and 32-bit code points!) without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones (without BOM).
+
+3a. If endianness is BigEndian, the output must be equal to the one obtained with UTF-16BE
+
+3b. If endianness is LittleEndian, the output must be equal to the one obtained with UTF-16LE
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_unicode_005
+Set the contents of a text object with an input valid UTF-32BE encoded string without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones (without BOM).
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_unicode_006
+Set the contents of a text object with an input valid UTF-32LE encoded string without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones (without BOM).
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_unicode_007
+Set the contents of a text object with an input valid UTF-32HE encoded string without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones (without BOM).
+
+3a. If endianness is BigEndian, the output must be equal to the one obtained with UTF-32BE
+
+3b. If endianness is LittleEndian, the output must be equal to the one obtained with UTF-32LE
+
+4. The data of the output object must be completely equal to the input data
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_unicode_008
+Set the contents of a text object with an input valid UTF-8 encoded string (containing 8-bit, 16-bit, 24-bit and 32-bit code points!) with BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones (without BOM).
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_unicode_009
+Set the contents of a text object with an input valid UTF-16BE encoded string (16-bit and 32-bit code points!) with BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones (without BOM).
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_unicode_010
+Set the contents of a text object with an input valid UTF-16LE encoded string (16-bit and 32-bit code points!) with BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones (without BOM).
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_unicode_011
+Set the contents of a text object with an input valid UTF-16HE encoded string (16-bit and 32-bit code points!) with BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones (without BOM).
+
+3a. If endianness is BigEndian, the output must be equal to the one obtained with UTF-16BE
+
+3b. If endianness is LittleEndian, the output must be equal to the one obtained with UTF-16LE
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_unicode_012
+Set the contents of a text object with an input valid UTF-32BE encoded string with BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones (without BOM).
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_unicode_013
+Set the contents of a text object with an input valid UTF-32LE encoded string with BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones (without BOM).
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_unicode_014
+Set the contents of a text object with an input valid UTF-32HE encoded string with BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should return PDF_OK.
+
+2. The contents of the text object must be the expected ones (without BOM).
+
+3a. If endianness is BigEndian, the output must be equal to the one obtained with UTF-32BE
+
+3b. If endianness is LittleEndian, the output must be equal to the one obtained with UTF-32LE
+
+4. The data of the output object must be completely equal to the input data
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_set_unicode_015
+Set the contents of a text object with an input invalid UTF-8 encoded string without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should NOT return PDF_OK.
+
+2. The contents of the text object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_unicode_016
+Set the contents of a text object with an input invalid UTF-16BE encoded string without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should NOT return PDF_OK.
+
+2. The contents of the text object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_unicode_017
+Set the contents of a text object with an input invalid UTF-16LE encoded string without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should NOT return PDF_OK.
+
+2. The contents of the text object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_unicode_018
+Set the contents of a text object with an input invalid UTF-16HE encoded string without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should NOT return PDF_OK.
+
+2. The contents of the text object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_unicode_019
+Set the contents of a text object with an input invalid UTF-32BE encoded string without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should NOT return PDF_OK.
+
+2. The contents of the text object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_unicode_020
+Set the contents of a text object with an input invalid UTF-32LE encoded string without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should NOT return PDF_OK.
+
+2. The contents of the text object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_unicode_021
+Set the contents of a text object with an input invalid UTF-32HE encoded string without BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should NOT return PDF_OK.
+
+2. The contents of the text object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_unicode_022
+Set the contents of a text object with an input invalid UTF-8 encoded string with BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should NOT return PDF_OK.
+
+2. The contents of the text object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_unicode_023
+Set the contents of a text object with an input invalid UTF-16BE encoded string with BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should NOT return PDF_OK.
+
+2. The contents of the text object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_unicode_024
+Set the contents of a text object with an input invalid UTF-16LE encoded string with BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should NOT return PDF_OK.
+
+2. The contents of the text object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_unicode_025
+Set the contents of a text object with an input invalid UTF-16HE encoded string with BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should NOT return PDF_OK.
+
+2. The contents of the text object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_unicode_026
+Set the contents of a text object with an input invalid UTF-32BE encoded string with BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should NOT return PDF_OK.
+
+2. The contents of the text object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_unicode_027
+Set the contents of a text object with an input invalid UTF-32LE encoded string with BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should NOT return PDF_OK.
+
+2. The contents of the text object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_unicode_028
+Set the contents of a text object with an input invalid UTF-32HE encoded string with BOM
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should NOT return PDF_OK.
+
+2. The contents of the text object must remain unchanged.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_set_unicode_029
+Set the contents of a text object with an input valid UTF-16BE encoded string with BOM and embedded language/country information (this function does not allow this kind of input!)
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should NOT return PDF_OK.
+
+2. The contents of the text object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_set_unicode_030
+Set the contents of a text object with an input valid UTF-16BE encoded string without BOM and embedded language/country information (this function does not allow this kind of input!)
+@table @strong
+@item Success conditions
+1. The call to @code{pdf_text_set_unicode} should NOT return PDF_OK.
+
+2. The contents of the text object must remain unchanged.
+@end table
+@end deffn
+
+
+@node pdf_text_concat
+@subsubsection pdf_text_concat
+
+@deffn Test pdf_text_concat_001
+Concatenate two non-empty text objects with the same lang/country information. Don't override langinfo.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_concat} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+
+3. The lang/country information in the output object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_concat_002
+Concatenate two non-empty text objects without lang/country information. Don't override langinfo.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_concat} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+
+3. The lang/country information in the output object must be empty.
+@end table
+@end deffn
+
+@deffn Test pdf_text_concat_003
+Concatenate two non-empty text objects with different lang/country information. Don't override langinfo.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_concat} should NOT return PDF_OK.
+
+2. The contents of the output text object must remain unchanged.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_concat_004
+Concatenate two empty text objects with the same lang/country information. Don't override langinfo.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_concat} should return PDF_OK.
+
+2. The contents of the output text object should be empty.
+
+3. The lang/country information in the output object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_concat_005
+Concatenate two empty text objects without lang/country information. Don't override langinfo.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_concat} should return PDF_OK.
+
+2. The contents of the output text object should be empty.
+
+3. The lang/country information in the output object must be empty.
+@end table
+@end deffn
+
+@deffn Test pdf_text_concat_006
+Concatenate two empty text objects with different lang/country information. Don't override langinfo.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_concat} should NOT return PDF_OK.
+
+2. The contents of the output text object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_concat_007
+Concatenate two non-empty text objects with the same lang/country information. Override langinfo.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_concat} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+
+3. The lang/country information in the output object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_concat_008
+Concatenate two non-empty text objects without lang/country information. Override langinfo.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_concat} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+
+3. The lang/country information in the output object must be empty.
+@end table
+@end deffn
+
+@deffn Test pdf_text_concat_009
+Concatenate two non-empty text objects with different lang/country information. Override langinfo.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_concat} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+
+3. The lang/country information in the output object must remain unchanged.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_concat_010
+Concatenate two empty text objects with the same lang/country information. Override langinfo.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_concat} should return PDF_OK.
+
+2. The contents of the output text object should be empty.
+
+3. The lang/country information in the output object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_concat_011
+Concatenate two empty text objects without lang/country information. Override langinfo.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_concat} should return PDF_OK.
+
+2. The contents of the output text object should be empty.
+
+3. The lang/country information in the output object must be empty.
+@end table
+@end deffn
+
+@deffn Test pdf_text_concat_012
+Concatenate two empty text objects with different lang/country information. Override langinfo.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_concat} should return PDF_OK.
+
+2. The contents of the output text object should be empty.
+
+3. The lang/country information in the output object must be empty.
+@end table
+@end deffn
+
+
+@node pdf_text_replace
+@subsubsection pdf_text_replace
+
+@deffn Test pdf_text_replace_001
+Replace an old non-empty pattern with a new non-empty pattern of different sizes (old > new). At least one replacement is done.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_replace} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_replace_002
+Replace an old non-empty pattern with a new non-empty pattern of different sizes (old < new). At least one replacement is done.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_replace} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_replace_003
+Replace an old non-empty pattern with a new non-empty pattern of same sizes. At least one replacement is done.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_replace} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_replace_004
+Replace an old non-empty pattern with a new empty pattern (remove old pattern from text). At least one replacement is done.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_replace} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_replace_005
+Replace an old non-empty pattern with a new non-empty pattern of different sizes (old > new). No replacement is done.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_replace} should return PDF_OK.
+
+2. The contents of the output text object remain unchanged.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_replace_006
+Replace an old non-empty pattern with a new non-empty pattern of different sizes (old < new). No replacement is done.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_replace} should return PDF_OK.
+
+2. The contents of the output text object remain unchanged.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_replace_007
+Replace an old non-empty pattern with a new non-empty pattern of same sizes. No replacement is done.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_replace} should return PDF_OK.
+
+2. The contents of the output text object remain unchanged.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_replace_008
+Replace an old non-empty pattern with a new empty pattern (remove old pattern from text). No replacement is done.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_replace} should return PDF_OK.
+
+2. The contents of the output text object remain unchanged.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_replace_009
+Replace an old empty pattern with a new non-empty pattern (old pattern can't be empty!)
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_replace} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_replace_010
+Replace an old non-empty pattern with a new non-empty pattern in an empty text object.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_replace} should return PDF_OK.
+
+2. The contents of the output text object remain empty.
+@end table
+@end deffn
+
+@node pdf_text_replace_ascii
+@subsubsection pdf_text_replace_ascii
+
+@deffn Test pdf_text_replace_ascii_001
+Replace an old non-empty ASCII pattern with a new ASCII non-empty pattern of different sizes (old > new). At least one replacement is done.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_replace_ascii} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_replace_ascii_002
+Replace an old non-empty ASCII pattern with a new non-empty ASCII pattern of different sizes (old < new). At least one replacement is done.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_replace_ascii} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_replace_ascii_003
+Replace an old non-empty ASCII pattern with a new non-empty ASCII pattern of same sizes. At least one replacement is done.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_replace_ascii} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_replace_ascii_004
+Replace an old non-empty ASCII pattern with a new empty ASCII pattern (remove old pattern from text). At least one replacement is done.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_replace_ascii} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_replace_ascii_005
+Replace an old non-empty ASCII pattern with a new non-empty ASCII pattern of different sizes (old > new). No replacement is done.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_replace_ascii} should return PDF_OK.
+
+2. The contents of the output text object remain unchanged.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_replace_ascii_006
+Replace an old non-empty ASCII pattern with a new non-empty ASCII pattern of different sizes (old < new). No replacement is done.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_replace_ascii} should return PDF_OK.
+
+2. The contents of the output text object remain unchanged.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_replace_ascii_007
+Replace an old non-empty ASCII pattern with a new non-empty ASCII pattern of same sizes. No replacement is done.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_replace_ascii} should return PDF_OK.
+
+2. The contents of the output text object remain unchanged.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_replace_ascii_008
+Replace an old non-empty ASCII pattern with a new empty ASCII pattern (remove old pattern from text). No replacement is done.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_replace_ascii} should return PDF_OK.
+
+2. The contents of the output text object remain unchanged.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_replace_ascii_009
+Replace an old empty ASCII pattern with a new non-empty ASCII pattern (old pattern can't be empty!)
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_replace_ascii} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_replace_ascii_010
+Replace an old non-empty ASCII pattern with a new non-empty ASCII pattern in an empty text object.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_replace_ascii} should return PDF_OK.
+
+2. The contents of the output text object remain empty.
+@end table
+@end deffn
+
+@deffn Test pdf_text_replace_ascii_011
+Replace an old non-valid ASCII pattern with a new valid ASCII pattern.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_replace_ascii} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_replace_ascii_012
+Replace an old valid ASCII pattern with a new non-valid ASCII pattern.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_replace_ascii} should NOT return PDF_OK.
+@end table
+@end deffn
+
+
+@node pdf_text_filter
+@subsubsection pdf_text_filter
+
+@deffn Test pdf_text_filter_001
+Apply the `Normalize line endings' filter to a text object which contains different types of line endings.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_002
+Apply the `Normalize line endings' filter to an empty text object.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_003
+Apply the `Remove line endings' filter to a text object which contains different types of line endings.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_004
+Apply the `Remove line endings' filter to an empty text object.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_005
+Apply the `Remove ampersands' filter to a text object which contains single and double ampersands.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_006
+Apply the `Remove ampersands' filter to an empty text object.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_007
+Apply the `Normalize with full width' filter to a text object that contains code points that have a valid full width representation.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_008
+Apply the `Normalize with full width' filter to a text object that does not contain code points that have a valid full width representation.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_009
+Apply the `Normalize with full width' filter to an empty text object.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must remain unchanged.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_010
+Apply the `Upper case' filter to a text object that contains simple-case-conversion characters.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+
+3. The length of the output text must be equal to the length of the input text.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_010
+Apply the `Upper case' filter to a text object that contains special-case-conversion characters with no context condition.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_011
+Apply the `Upper case' filter to a text object that contains special-case-conversion characters with Final_Sigma context condition.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_012
+Apply the `Upper case' filter to a text object that contains special-case-conversion characters with After_Soft_Dotted context condition.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_013
+Apply the `Upper case' filter to a text object that contains special-case-conversion characters with More_Above context condition.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_filter_014
+Apply the `Upper case' filter to a text object that contains special-case-conversion characters with Before_Dot context condition.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_015
+Apply the `Upper case' filter to a text object that contains special-case-conversion characters with After_I context condition.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_016
+Apply the `Upper case' filter to a text object that contains special-case-conversion characters with language-dependent context condition.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_017
+Apply the `Upper case' filter to a text object that contains special-case-conversion characters with language-dependent and After_I context condition (to check two context conditions at the same time).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_018
+Apply the `Upper case' filter to a text object that contains special-case-conversion characters with language-dependent and Not_Before_Dot context condition (to check two context conditions at the same time, where one of them is negated with Not_).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_filter_019
+Apply the `Upper case' filter to a text object that contains one special-case-conversion character with Final_Sigma context condition, where the condition is not fulfilled.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_020
+Apply the `Upper case' filter to a text object that contains one special-case-conversion characters with After_Soft_Dotted context condition, where the condition is not fulfilled.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_021
+Apply the `Upper case' filter to a text object that contains one special-case-conversion character with More_Above context condition, where the condition is not fulfilled.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_filter_022
+Apply the `Upper case' filter to a text object that contains one special-case-conversion character with Before_Dot context condition, where the condition is not fulfilled.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_023
+Apply the `Upper case' filter to a text object that contains one special-case-conversion character with After_I context condition, where the condition is not fulfilled.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_024
+Apply the `Upper case' filter to a text object that contains one special-case-conversion character with language-dependent context condition, where the condition is not fulfilled.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_025
+Apply the `Upper case' filter to a text object that contains one special-case-conversion character with language-dependent and After_I context condition (to check two context conditions at the same time), where the condition is not fulfilled.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_026
+Apply the `Upper case' filter to a text object that contains one special-case-conversion character with language-dependent and Not_Before_Dot context condition (to check two context conditions at the same time, where one of them is negated with Not_), where the condition is not fulfilled.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_filter_027
+Apply the `Small case' filter to a text object that contains simple-case-conversion characters.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+
+3. The length of the output text must be equal to the length of the input text.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_028
+Apply the `Small case' filter to a text object that contains special-case-conversion characters with no context condition.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_029
+Apply the `Small case' filter to a text object that contains special-case-conversion characters with Final_Sigma context condition.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_030
+Apply the `Small case' filter to a text object that contains special-case-conversion characters with After_Soft_Dotted context condition.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_031
+Apply the `Small case' filter to a text object that contains special-case-conversion characters with More_Above context condition.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_filter_032
+Apply the `Small case' filter to a text object that contains special-case-conversion characters with Before_Dot context condition.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_033
+Apply the `Small case' filter to a text object that contains special-case-conversion characters with After_I context condition.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_034
+Apply the `Small case' filter to a text object that contains special-case-conversion characters with language-dependent context condition.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_035
+Apply the `Small case' filter to a text object that contains special-case-conversion characters with language-dependent and After_I context condition (to check two context conditions at the same time).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_036
+Apply the `Small case' filter to a text object that contains special-case-conversion characters with language-dependent and Not_Before_Dot context condition (to check two context conditions at the same time, where one of them is negated with Not_).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_filter_037
+Apply the `Small case' filter to a text object that contains one special-case-conversion character with Final_Sigma context condition, where the condition is not fulfilled.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_038
+Apply the `Small case' filter to a text object that contains one special-case-conversion characters with After_Soft_Dotted context condition, where the condition is not fulfilled.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_039
+Apply the `Small case' filter to a text object that contains one special-case-conversion character with More_Above context condition, where the condition is not fulfilled.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_filter_040
+Apply the `Small case' filter to a text object that contains one special-case-conversion character with Before_Dot context condition, where the condition is not fulfilled.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_041
+Apply the `Small case' filter to a text object that contains one special-case-conversion character with After_I context condition, where the condition is not fulfilled.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_042
+Apply the `Small case' filter to a text object that contains one special-case-conversion character with language-dependent context condition, where the condition is not fulfilled.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_043
+Apply the `Small case' filter to a text object that contains one special-case-conversion character with language-dependent and After_I context condition (to check two context conditions at the same time), where the condition is not fulfilled.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_044
+Apply the `Small case' filter to a text object that contains one special-case-conversion character with language-dependent and Not_Before_Dot context condition (to check two context conditions at the same time, where one of them is negated with Not_), where the condition is not fulfilled.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_filter_045
+Apply the `Title case' filter to a text object that contains simple-case-conversion characters.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+
+3. The length of the output text must be equal to the length of the input text.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_046
+Apply the `Title case' filter to a text object that contains special-case-conversion characters with no context condition.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_047
+Apply the `Title case' filter to a text object that contains special-case-conversion characters with Final_Sigma context condition.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_048
+Apply the `Title case' filter to a text object that contains special-case-conversion characters with After_Soft_Dotted context condition.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_049
+Apply the `Title case' filter to a text object that contains special-case-conversion characters with More_Above context condition.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_filter_050
+Apply the `Title case' filter to a text object that contains special-case-conversion characters with Before_Dot context condition.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_051
+Apply the `Title case' filter to a text object that contains special-case-conversion characters with After_I context condition.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_052
+Apply the `Title case' filter to a text object that contains special-case-conversion characters with language-dependent context condition.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_053
+Apply the `Title case' filter to a text object that contains special-case-conversion characters with language-dependent and After_I context condition (to check two context conditions at the same time).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_054
+Apply the `Title case' filter to a text object that contains special-case-conversion characters with language-dependent and Not_Before_Dot context condition (to check two context conditions at the same time, where one of them is negated with Not_).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_filter_055
+Apply the `Title case' filter to a text object that contains one special-case-conversion character with Final_Sigma context condition, where the condition is not fulfilled.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_056
+Apply the `Title case' filter to a text object that contains one special-case-conversion characters with After_Soft_Dotted context condition, where the condition is not fulfilled.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_057
+Apply the `Title case' filter to a text object that contains one special-case-conversion character with More_Above context condition, where the condition is not fulfilled.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_filter_058
+Apply the `Title case' filter to a text object that contains one special-case-conversion character with Before_Dot context condition, where the condition is not fulfilled.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_059
+Apply the `Title case' filter to a text object that contains one special-case-conversion character with After_I context condition, where the condition is not fulfilled.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_060
+Apply the `Title case' filter to a text object that contains one special-case-conversion character with language-dependent context condition, where the condition is not fulfilled.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_061
+Apply the `Title case' filter to a text object that contains one special-case-conversion character with language-dependent and After_I context condition (to check two context conditions at the same time), where the condition is not fulfilled.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_062
+Apply the `Title case' filter to a text object that contains one special-case-conversion character with language-dependent and Not_Before_Dot context condition (to check two context conditions at the same time, where one of them is negated with Not_), where the condition is not fulfilled.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_filter_063
+Apply the `Title case', `Small case' and `Upper case' filters to a text object. (At most one case conversion must be applied in a filter operation).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should NOT return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+@deffn Test pdf_text_filter_064
+Apply the `Small case' , `Remove ampersands' and  `Normalize with full width' filters to a text object (Applying more than one filter at a time).
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_filter} should return PDF_OK.
+
+2. The contents of the output text object must be the expected ones.
+@end table
+@end deffn
+
+
+@node pdf_text_cmp
+@subsubsection pdf_text_cmp
+
+@deffn Test pdf_text_cmp_001
+Compare two equal text objects, case-sensitive.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_cmp} should return 0.
+
+2. The returned status in @code{ p_ret_code} should be PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_cmp_002
+Compare two equal text objects, non-case-sensitive.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_cmp} should return 0.
+
+2. The returned status in @code{ p_ret_code} should be PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_cmp_003
+Compare two equal text objects (one in uppercase, the other one in lowercase), case-sensitive.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_cmp} should NOT return 0.
+
+2. The returned status in @code{ p_ret_code} should be PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_cmp_004
+Compare two equal text objects (one in uppercase, the other one in lowercase), non-case-sensitive.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_cmp} should return 0.
+
+2. The returned status in @code{ p_ret_code} should be PDF_OK.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_cmp_005
+Compare two different text objects, case-sensitive.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_cmp} should return 0.
+
+2. The returned status in @code{ p_ret_code} should be PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_cmp_006
+Compare two different text objects, non-case-sensitive.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_cmp} should return 0.
+
+2. The returned status in @code{ p_ret_code} should be PDF_OK.
+@end table
+@end deffn
+
 
 @node Subsystem Testing
 @chapter Subsystem Testing

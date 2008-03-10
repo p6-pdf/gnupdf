@@ -1,3 +1,10 @@
+2008-03-10  Aleksander Morgado  <aleksander@es.gnu.org>
+
+	* doc/gnupdf.texi: Small changes in the Encoded Text module API.
+
+	* doc/gnupdf-tsd.texi (Text Module): New section. First list of unit tests
+	for the Encoded Text module.
+
 2008-03-09  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-stm.c (pdf_stm_apply_filters): Check for PDF_OK
