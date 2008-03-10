@@ -41,3 +41,6 @@ Gerdardo E. Gidoni: wrote src/base/pdf-error.c src/base/pdf-error.h
   src/base/pdf-list.c src/base/pdf-list.h
 and changed src/base/pdf-stm.c src/base/pdf-stm.h src/base/pdf-types.h
   src/object/pdf-obj.c src/object/pdf-obj.h src/Makefile.am
+
+Aleksander Morgado: changed doc/gnupdf.texi doc/gnupdf-tsd.texi
+
