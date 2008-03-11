@@ -1,3 +1,8 @@
+2008-03-11  gerel  <gerel@gnu.org>
+
+	* src/base/pdf-list.[ch]: cleaned the API so pdf.h doesn't
+	depend on gl_list.
+
 2008-03-10  Aleksander Morgado  <aleksander@es.gnu.org>
 
 	* doc/gnupdf.texi: Small changes in the Encoded Text module API.

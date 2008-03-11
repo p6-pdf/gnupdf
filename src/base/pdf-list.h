@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-03-06 21:35:03 gerel"
+/* -*- mode: C -*- Time-stamp: "2008-03-11 15:21:56 gerel"
  *
  *       File:         pdf-list.h
  *       Date:         Sat Mar 1 02:14:35 2008
@@ -28,21 +28,36 @@
 
 #include <pdf-types.h>
 #include <pdf-error.h>
-
+#include <pdf-alloc.h>
 
 /* BEGIN PUBLIC */
-
-#include <gl_array_list.h>
 
 /* List module API implementation */
 
 /* Data types */
 
-typedef gl_list_t pdf_list_t;
-typedef gl_list_node_t pdf_list_node_t;
-typedef gl_list_iterator_t pdf_list_iterator_t;
-typedef gl_listelement_equals_fn pdf_list_element_equals_fn_t;
-typedef gl_listelement_dispose_fn pdf_list_element_dispose_fn_t;
+struct pdf_list_s
+{
+  void *gl_list;
+};
+ 
+struct pdf_list_iterator_s
+{
+  void *gl_iterator;
+};
+
+struct pdf_list_node_s
+{
+  void *gl_node;
+};
+
+typedef struct pdf_list_s pdf_list_t;
+typedef struct pdf_list_node_s pdf_list_node_t;
+typedef struct pdf_list_iterator_s pdf_list_iterator_t;
+
+typedef pdf_bool_t (*pdf_list_element_equals_fn_t) (const void *elt1, const void *elt2);
+typedef pdf_size_t (*pdf_list_element_hashcode_fn_t) (const void *elt);
+typedef void (*pdf_list_element_dispose_fn_t) (const void *elt);
 
 /* Creation and destruction functions */
 
