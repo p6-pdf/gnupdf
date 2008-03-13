@@ -1,3 +1,8 @@
+2008-03-13  Aleksander Morgado  <aleksander@es.gnu.org>
+
+	* src/Makefile.am: Include standard file header, GPL license header and
+	definition of PDF_H in the generation of the public header
+
 2008-03-11  gerel  <gerel@gnu.org>
 
 	* src/base/pdf-list.[ch]: cleaned the API so pdf.h doesn't

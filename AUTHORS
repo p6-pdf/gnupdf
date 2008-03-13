@@ -43,4 +43,5 @@ and changed src/base/pdf-stm.c src/base/pdf-stm.h src/base/pdf-types.h
   src/object/pdf-obj.c src/object/pdf-obj.h src/Makefile.am
 
 Aleksander Morgado: changed doc/gnupdf.texi doc/gnupdf-tsd.texi
+  src/Makefile.am
 
