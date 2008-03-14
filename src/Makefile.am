@@ -71,38 +71,6 @@ AM_CPPFLAGS = -I$(top_builddir)/lib -I$(srcdir)/base \
 
 
 # Public header generation
-PUBLIC_HDR_DATE = `date +%c`
-PUBLIC_HDR_HDR = \
-"/* This file has been automatically generated */ \n\
-\n/* \n\
- * \n\
- *       File:         pdf.h \n\
- *       Date:         $(PUBLIC_HDR_DATE) \n\
- * \n\
- *       GNU PDF Library - Public header \n\
- * \n\
- */ \n\
-\n/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */ \n\
-\n/* This program is free software: you can redistribute it and/or modify \n\
- * it under the terms of the GNU General Public License as published by \n\
- * the Free Software Foundation, either version 3 of the License, or \n\
- * (at your option) any later version. \n\
- * \n\
- * This program is distributed in the hope that it will be useful, \n\
- * but WITHOUT ANY WARRANTY; without even the implied warranty of \n\
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the \n\
- * GNU General Public License for more details. \n\
- *\n\
- * You should have received a copy of the GNU General Public License \n\
- * along with this program.  If not, see <http://www.gnu.org/licenses/>. \n\
- */ \n\
-\n\#ifndef PDF_H \
-\n\#define PDF_H \n\n"
-
-PUBLIC_HDR_TLR = \
-"\n\#endif /* !PDF_H */ \
-\n\n/* End of pdf.h */\n"
-
 
 PUBLIC_HDRS = pdf-global.h \
               base/pdf-types.h \
@@ -122,8 +90,11 @@ PUBLIC_HDRS = pdf-global.h \
 
 pdf.h : $(PUBLIC_HDRS)
 	chmod +x $(top_srcdir)/src/extract-public-hdr
-	echo $(PUBLIC_HDR_HDR) > $@
+	cat header-autogen > $@
+	echo "#ifndef PDF_H" >> $@
+	echo "#define PDF_H" >> $@
 	cat $(PUBLIC_HDRS) | $(top_srcdir)/src/extract-public-hdr >> $@
-	echo $(PUBLIC_HDR_TLR) >> $@
+	echo "#endif /* !PDF_H */" >> $@
+	echo "/* end of pdf.h */" >> $@
 
 # End of Makefile.am

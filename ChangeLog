@@ -1,3 +1,10 @@
+2008-03-14  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/Makefile.am (pdf.h): Get the text of the `header-autogen'
+	file to be used as the header of `pdf.h'.
+
+	* src/header-autogen: New file.
+
 2008-03-13  Aleksander Morgado  <aleksander@es.gnu.org>
 
 	* src/Makefile.am: Include standard file header, GPL license header and
