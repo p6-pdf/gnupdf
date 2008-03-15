@@ -1,5 +1,8 @@
 2008-03-15  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* README (specs): ISO 32000 added to the list of PDF
+	specifications to be supported by the library.
+
 	* src/base/pdf-list.c: New inlined version.
 
 	* src/base/pdf-list.h: New inlined version.
