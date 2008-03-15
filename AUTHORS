@@ -22,6 +22,7 @@ Jose E. Marchesi: wrote configure.ac Makefile.am torture/test-base.c
   src/pdf_stm.h src/pdf_stm_mem.c src/pdf_stm_mem.h src/pdf_xref.c
   src/pdf_xref.h src/pdf_lexer.c src/pdf_lexer.h 
 and changed src/pdf_stm_f_pred.c src/pdf_stm_f_pred.h
+  src/base/pdf-list.h src/base/pdf-list.c
 
 Juan Pedro Bolívar Puente: wrote src/pdf_stm_f_pred.c
   src/pdf_stm_f_pred.h src/pdf_stm_f_lzw.c src/pdf_stm_f_lzw.h
