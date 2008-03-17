@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.33 2008/03/17 12:58:02 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.34 2008/03/17 13:48:11 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -986,6 +986,8 @@ A status variable:
 @var{list} contains a new empty list.
 @item PDF_EBADDATA
 @var{list} points to NULL.
+@item PDF_ERROR
+An unexpected error or no memory available.
 @end table
 @item Usage example
 @example
@@ -1057,7 +1059,7 @@ num_elm = pdf_list_size (mylist);
 @node Searching for List Elements
 @subsection Searching for List Elements
 
-@deftypefun pdf_list_node_t pdf_list_search (pdf_list_t @var{list}, const void* @var{element})
+@deftypefun pdf_status_t pdf_list_search (pdf_list_t @var{list}, const void* @var{element}, pdf_list_node_t @var{*node})
 
 Search whether an element is already in the list.
 
@@ -1068,10 +1070,19 @@ Search whether an element is already in the list.
 A list.
 @item element
 The element to search for.
+@item node
+The searched node if it was found.
 @end table
 @item Returns
-The searched node if found, or @code{NULL} if not present in the
-list.
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENONODE
+@var{element} not found.
+@item PDF_EBADDATA
+Invalid @var{node} pointer.
+@end table
 @item Usage example
 @example
 XXX
@@ -1079,7 +1090,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_list_node_t pdf_list_search_from (pdf_list_t @var{list}, pdf_size_t @var{start_index}, const void* @var{element})
+@deftypefun pdf_status_t pdf_list_search_from (pdf_list_t @var{list}, pdf_size_t @var{start_index}, const void* @var{element}, pdf_list_node_t @var{*node})
 
 Search whether an element is already in the list, at a position >= @var{start_index}.
 
@@ -1090,9 +1101,21 @@ Search whether an element is already in the list, at a position >= @var{start_in
 A list.
 @item start_index
 Index indicating the begin of the search.
+@item node
+The searched node if it was found.
 @end table
 @item Returns
-The searched node if found, or NULL if not present in the list.
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENONODE
+@var{element} not found.
+@item PDF_EBADDATA
+Invalid @var{node} pointer.
+@item PDF_EINVRANGE
+@var{start_index} is greater than the list size or less than 0.
+@end table
 @item Usage example
 @example
 XXX
@@ -1100,7 +1123,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_list_node_t pdf_list_search_from_to (pdf_list_t @var{list}, pdf_size_t @var{start_index}, pdf_size_t @var{end_index}, const void* @var{element})
+@deftypefun pdf_status_t pdf_list_search_from_to (pdf_list_t @var{list}, pdf_size_t @var{start_index}, pdf_size_t @var{end_index}, const void* @var{element}, pdf_list_node_t @var{*node})
 
 Search whether an element is already in the list, at a position >=
 @var{start_index} and < @var{end_index}.
@@ -1116,9 +1139,21 @@ Index to the first list position to be searched.
 Index to the last list position to be searched.
 @item element
 The element to search for.
+@item node
+The seached node if it was found.
 @end table
 @item Returns
-The node if found, or @code{NULL} if not present in the list.
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENONODE
+@var{element} not found.
+@item PDF_EBADDATA
+Invalid @var{node} pointer.
+@item PDF_EINVRANGE
+@var{start_index} or @var{end_index} is greater than the list size or less than 0.
+@end table
 @item Usage example
 @example
 XXX
@@ -1126,7 +1161,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_list_node_t pdf_list_next_node (pdf_list_t @var{list}, pdf_list_node_t @var{node})
+@deftypefun pdf_status_t pdf_list_next_node (pdf_list_t @var{list}, pdf_list_node_t @var{node}, pdf_list_node_t @var{*next})
 
 Return the node immediately after the given node in the list.
 
@@ -1137,10 +1172,19 @@ Return the node immediately after the given node in the list.
 A list.
 @item node
 A node contained in @var{list}.
+@item prev
+A pointer where the next node will be saved.
 @end table
 @item Returns
-The node immediately after the given node in the list, or @code{NULL}
-if the given node is the last (rightmost) one in the list.
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENONODE
+Next node not found.
+@item PDF_EBADDATA
+Invalid @var{next} pointer.
+@end table
 @item Usage example
 @example
 XXX
@@ -1148,7 +1192,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_list_node_t pdf_list_previous_node (pdf_list_t @var{list}, pdf_list_node_t @var{node})
+@deftypefun pdf_status_t pdf_list_previous_node (pdf_list_t @var{list}, pdf_list_node_t @var{node}, pdf_list_node_t @var{*prev})
 
 Return the node immediately before the given node in the list.
 
@@ -1159,10 +1203,19 @@ Return the node immediately before the given node in the list.
 A list.
 @item node
 A node contained in @var{list}.
+@item prev
+A pointer where the previous node will be saved.
 @end table
-@item Returns 
-The node immediately before the given node in the list, or @code{NULL}
-if the given node is the first (leftmost) one in the list.
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENONODE
+Previous node not found.
+@item PDF_EBADDATA
+Invalid @var{prev} pointer.
+@end table
 @item Usage example
 @example
 XXX
@@ -1170,7 +1223,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_list_indexof (pdf_list_t @var{list}, const void* @var{element})
+@deftypefun pdf_status_t pdf_list_indexof (pdf_list_t @var{list}, const void* @var{element}, pdf_size_t @var{*position})
 
 Search whether an element is already in the list.
 
@@ -1181,10 +1234,21 @@ Search whether an element is already in the list.
 A list.
 @item element
 A pointer to user data.
+@item position
+A pointer where the element position will be saved.
 @end table
 @item Returns
-The position of @var{element} if found, or @code{(pdf_size_t)(-1)} if
-not present in the list.
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENONODE
+@var{element} not found.
+@item PDF_EBADDATA
+Invalid or NULL pointers.
+@item PDF_EINVRANGE
+@var{start_index} or @var{end_index} is greater than the list size or less than 0.
+@end table
 @item Usage Example
 @example
 XXX
@@ -1192,7 +1256,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_list_indexof_from (pdf_list_t @var{list}, pdf_size_t @var{start_index}, const void* @var{element})
+@deftypefun pdf_status_t pdf_list_indexof_from (pdf_list_t @var{list}, pdf_size_t @var{start_index}, const void* @var{element}, pdf_size_t @var{*position})
 
 Search whether an element is already in the list, at a position >= @var{start_index}.
 
@@ -1205,10 +1269,21 @@ A list.
 An index to a position in @var{list}.
 @item element
 The element to search for.
+@item position
+A pointer where the element position will be saved.
 @end table
 @item Returns
-The position of the element containing @var{element} if found, or
-@code{(size_t)(-1)} if not present in the list.
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENONODE
+@var{element} not found.
+@item PDF_EBADDATA
+Invalid or NULL pointers.
+@item PDF_EINVRANGE
+@var{start_index} or @var{end_index} is greater than the list size or less than 0.
+@end table
 @item Usage example
 @example
 XXX
@@ -1216,7 +1291,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_list_indexof_from_to (pdf_list_t @var{list}, pdf_size_t @var{start_index}, pdf_size_t @var{end_index}, const void* @var{element})
+@deftypefun pdf_status_t pdf_list_indexof_from_to (pdf_list_t @var{list}, pdf_size_t @var{start_index}, pdf_size_t @var{end_index}, const void* @var{element}, pdf_size_t @var{*position})
 
 Search whether an element is already in the list, at a position >= @var{start_index} and < @var{end_index}.
 
@@ -1231,10 +1306,21 @@ A position in @var{list}.
 A position in @var{list}.
 @item element
 A pointer to some user data.
+@item position
+A pointer where the element position will be saved.
 @end table
 @item Returns
-The position of the node containin @var{element} if found, or
-@code{(size_t)(-1)} if not present in the list.
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENONODE
+@var{element} not found.
+@item PDF_EBADDATA
+Invalid or NULL pointers.
+@item PDF_EINVRANGE
+@var{start_index} or @var{end_index} is greater than the list size or less than 0.
+@end table
 @item Usage example
 @example
 XXX
@@ -1266,7 +1352,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun {void *} pdf_list_get_at (pdf_list_t @var{list}, pdf_size_t @var{position})
+@deftypefun pdf_status_t pdf_list_get_at (pdf_list_t @var{list}, pdf_size_t @var{position}, const void @var{**value})
 
 Get the element at a given position in the list.
 
@@ -1278,9 +1364,19 @@ A list.
 @item position
 A position in @var{list}. 
 Must be @code{>= 0} and @code{< pdf_list_size (list)}.
+@item value
+A pointer to which the element will be saved.
 @end table
 @item Returns
-The element 
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_EINVRANGE
+Invalid @var{position}
+@item PDF_EBADDATA
+Invalid @var{value} pointer.
+@end table
 @item Usage example
 @example
 XXX
@@ -1288,7 +1384,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_list_node_t pdf_list_set_at (pdf_list_t @var{list}, pdf_size_t @var{position}, const void* @var{element})
+@deftypefun pdf_status_t pdf_list_set_at (pdf_list_t @var{list}, pdf_size_t @var{position}, const void* @var{element}, pdf_list_node_t @var{*node})
 
 Replace the element at a given position in a list.
 
@@ -1300,9 +1396,19 @@ A list.
 @item position
 A position in @var{list}.
 Must be @code{>= 0} and @code{< pdf_list_size (list)}.
+@item element
+The new element.
+@item node
+A pointer to save the node containing the replaced element or NULL.
 @end table
 @item Returns
-The node containing the replaced element.
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_EINVRANGE
+Invalid @var{position} range.
+@end table
 @item Usage example
 @example
 XXX
@@ -1355,7 +1461,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_list_node_t pdf_list_add_at (pdf_list_t @var{list}, pdf_size_t @var{position}, const void* @var{element})
+@deftypefun pdf_status_t pdf_list_add_at (pdf_list_t @var{list}, pdf_size_t @var{position}, const void* @var{element}, pdf_list_node_t @var{*node})
 
 Add an element at a given position in the list.
 
@@ -1369,9 +1475,17 @@ A position in the list.
 Should be @code{>= 0} and @code{<= pdf_list_size (list)}.
 @item element
 A pointer to the user data to be stored as a list element.
+@item node
+A pointer to the node where the given element was stored or NULL.
 @end table
 @item Returns
-The node containing the given @var{element}.
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_EINVRANGE
+Invalid range of given @var{position}.
+@end table
 @item Usage example
 @example
 XXX
@@ -1420,6 +1534,9 @@ Must be @code{>= 0} and @code{< pdf_list_size (list)}.
 A pdf status value:
 @table @code
 @item PDF_OK
+The operation succeeded.
+@item PDF_EINVRANGE
+Invalid @var{position} range.
 @end table
 @item Usage example
 @example
