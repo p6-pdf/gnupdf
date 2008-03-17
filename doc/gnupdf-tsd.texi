@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf-tsd.texi,v 1.4 2008/03/10 17:50:19 aleksander_m Exp $
+@comment $Id: gnupdf-tsd.texi,v 1.5 2008/03/17 19:37:35 gerel Exp $
 @comment %**start of header
 @setfilename gnupdf-tsd.info
 @settitle GNU PDF Library Test Specification Document
@@ -71,6 +71,7 @@ Indices
 * Memory Allocation Module::
 * Stream Module::
 * Text Module::
+* List Module::
 @end menu
 
 @node Memory Allocation Module
@@ -3048,6 +3049,554 @@ Compare two different text objects, non-case-sensitive.
 @end table
 @end deffn
 
+
+@node List Module
+@subsection List Module
+
+@menu
+* pdf_list_add_at::
+* pdf_list_add_first::
+* pdf_list_add_last::
+* pdf_list_create::
+* pdf_list_get_at::
+* pdf_list_indexof_from_to::
+* pdf_list_indexof_from::
+* pdf_list_indexof::
+* pdf_list_iterator_from_to::
+* pdf_list_iterator_next::
+* pdf_list_iterator::
+* pdf_list_next_node::
+* pdf_list_node_value::
+* pdf_list_previous_node::
+* pdf_list_remove_at::
+* pdf_list_remove_node::
+* pdf_list_remove::
+* pdf_list_search_from_to::
+* pdf_list_search_from::
+* pdf_list_search::
+* pdf_list_set_at::
+* pdf_list_size::
+@end menu
+
+@node pdf_list_add_at
+@subsubsection pdf_list_add_at
+
+@deffn Test pdf_list_add_at_001
+Try to add a new element at the 0 position.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@deffn Test pdf_list_add_at_002
+Try to add a new element at an invalid position.
+@table @strong
+@item Success condition
+Returns PDF_EINVRANGE
+@end table
+@end deffn
+
+@node pdf_list_add_first
+@subsubsection pdf_list_add_first
+
+@deffn Test pdf_list_add_first_001
+Try to add an element at the beginning of the list.
+@table @strong
+@item Success condition
+We get the right pdf_list_size().
+@end table
+@end deffn
+
+@deffn Test pdf_list_add_first_002
+Try to add an element at the beginning of the list allowing duplicates.
+@table @strong
+@item Success condition
+We get the right pdf_list_size().
+@end table
+@end deffn
+
+@node pdf_list_add_last
+@subsubsection pdf_list_add_last
+
+@deffn Test pdf_list_add_last_001
+Try to add some elements.
+@table @strong
+@item Success condition
+We get the right pdf_list_size().
+@end table
+@end deffn
+
+@node pdf_list_create
+@subsubsection pdf_list_create
+
+@deffn Test pdf_list_create_001
+Try to create an empty list.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@deffn Test pdf_list_create_002
+Try to create an empty list given a NULL list pointer.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+@deffn Test pdf_list_create_003
+Try to create an empty list allowing duplicates.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@node pdf_list_get_at
+@subsubsection pdf_list_get_at
+
+@deffn Test pdf_list_get_at_001
+Try to get a node value.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@deffn Test pdf_list_get_at_002
+Try to get a node value given a NULL value pointer.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+@deffn Test pdf_list_get_at_003
+Try to get a node value at an invalid position.
+@table @strong
+@item Success condition
+Returns EINVRANGE
+@end table
+@end deffn
+
+@node pdf_list_indexof_from_to
+@subsubsection pdf_list_indexof_from_to
+
+@deffn Test pdf_list_indexof_from_to_001
+Try to get the index of a existent element from position '0'.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@deffn Test pdf_list_indexof_from_to_002
+Try to get the index of a existent element from invalid position.
+@table @strong
+@item Success condition
+Returns PDF_EINVRANGE
+@end table
+@end deffn
+
+@deffn Test pdf_list_indexof_from_to_003
+Try to get the index of a existent element given a NULL position pointer.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+@deffn Test pdf_list_indexof_from_to_004
+Try to get the index of a non-existent element.
+@table @strong
+@item Success condition
+Returns PDF_ENONODE
+@end table
+@end deffn
+
+@node pdf_list_indexof_from
+@subsubsection pdf_list_indexof_from
+
+
+@deffn Test pdf_list_indexof_from_001
+Try to get the index of a existent element from position '0'.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@deffn Test pdf_list_indexof_from_002
+Try to get the index of a existent element from invalid position.
+@table @strong
+@item Success condition
+Returns PDF_EINVRANGE
+@end table
+@end deffn
+
+@deffn Test pdf_list_indexof_from_003
+Try to get the index of a existent element given a NULL position pointer.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+@deffn Test pdf_list_indexof_from_004
+Try to get the index of a non-existent element.
+@table @strong
+@item Success condition
+Returns PDF_ENONODE
+@end table
+@end deffn
+
+
+@node pdf_list_indexof
+@subsubsection pdf_list_indexof
+
+@deffn Test pdf_list_indexof_001
+Try to get the index of an existent element.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@deffn Test pdf_list_indexof_002
+Try to get the index of a non-existent element.
+@table @strong
+@item Success condition
+Returns PDF_ENONODE
+@end table
+@end deffn
+
+@deffn Test pdf_list_indexof_003
+Try to get the index of an element given a NULL position pointer.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+
+@node pdf_list_iterator_from_to
+@subsubsection pdf_list_iterator_from_to
+
+@deffn Test pdf_list_iterator_from_to_001
+Try to get an iterator in a given range.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@deffn Test pdf_list_iterator_from_to_002
+Try to get an iterator in an invalid range.
+@table @strong
+@item Success condition
+Returns PDF_EINVRANGE
+@end table
+@end deffn
+
+@deffn Test pdf_list_iterator_from_to_003
+Try to get an iterator given a NULL iterator pointer.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+
+@node pdf_list_iterator_next
+@subsubsection pdf_list_iterator_next
+
+@deffn Test pdf_list_iterator_next_001
+Try to get the next element using an iterator.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@deffn Test pdf_list_iterator_next_002
+Try to get the next element using an iterator from an empty list.
+@table @strong
+@item Success condition
+Returns PDF_ENONODE
+@end table
+@end deffn
+
+
+@node pdf_list_iterator
+@subsubsection pdf_list_iterator
+
+@deffn Test pdf_list_iterator_001
+Try to create an iterator from list.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@deffn Test pdf_list_iterator_002
+Try to create an iterator given a NULL iterator pointer.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+
+@node pdf_list_next_node
+@subsubsection pdf_list_next_node
+
+@deffn Test pdf_list_next_node_001
+Try to get the next node given another node.
+@table @strong
+@item Success condition
+Returns PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_list_next_node_002
+Try to get the next node given the last node in the list.
+@table @strong
+@item Success condition
+Returns PDF_ENONODE
+@end table
+@end deffn
+
+@deffn Test pdf_list_next_node_003
+Try to get the next node given a NULL next pointer.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA.
+@end table
+@end deffn
+
+
+@node pdf_list_node_value
+@subsubsection pdf_list_node_value
+
+@deffn Test pdf_list_node_value_001
+Try to get a node value.
+@table @strong
+@item Success condition
+The returned value is the expected.
+@end table
+@end deffn
+
+
+@node pdf_list_previous_node
+@subsubsection pdf_list_previous_node
+
+@deffn Test pdf_list_previous_node_001
+Try to get the previous node given another node.
+@table @strong
+@item Success condition
+Returns PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_list_previous_node_002
+Try to get the previous node given the first node.
+@table @strong
+@item Success condition
+Returns PDF_ENONODE.
+@end table
+@end deffn
+
+@deffn Test pdf_list_previous_node_003
+Try to get the previous node given a NULL prev pointer.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA.
+@end table
+@end deffn
+
+
+@node pdf_list_remove_at
+@subsubsection pdf_list_remove_at
+
+@deffn Test pdf_list_remove_at_001
+Try to remove a node at some position
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@deffn Test pdf_list_remove_at_002
+Try to remove a node at an invalid position
+@table @strong
+@item Success condition
+Returns PDF_EINVRANGE
+@end table
+@end deffn
+
+
+@node pdf_list_remove_node
+@subsubsection pdf_list_remove_node
+
+@deffn Test pdf_list_remove_node_001
+Try to remove a given node from a list.
+@table @strong
+@item Success condition
+The size is the expected.
+@end table
+@end deffn
+
+@node pdf_list_remove
+@subsubsection pdf_list_remove
+
+@deffn Test pdf_list_remove_001
+Try to remove an existing element in a list.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@deffn Test pdf_list_remove_002
+Try to remove an non-existent element.
+@table @strong
+@item Success condition
+Returns PDF_ENONODE
+@end table
+@end deffn
+
+
+@node pdf_list_search_from_to
+@subsubsection pdf_list_search_from_to
+
+@deffn Test pdf_list_search_from_to_001
+Try to search an existent element in the correct range.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@deffn Test pdf_list_search_from_to_002
+Try to seach an element in an invalid range.
+@table @strong
+@item Success condition
+Returns PDF_EINVRANGE.
+@end table
+@end deffn
+
+@deffn Test pdf_list_search_from_to_003
+Try to search a non-existent element in a list.
+@table @strong
+@item Success condition
+Returns PDF_ENONODE.
+@end table
+@end deffn
+
+@deffn Test pdf_list_search_from_to_004
+Try search an element given a NULL node pointer.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+
+@node pdf_list_search_from
+@subsubsection pdf_list_search_from
+
+@deffn Test pdf_list_search_from_001
+Try to search an existent element in the correct range.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@deffn Test pdf_list_search_from_002
+Try to seach an element in an invalid range.
+@table @strong
+@item Success condition
+Returns PDF_EINVRANGE.
+@end table
+@end deffn
+
+@deffn Test pdf_list_search_from_003
+Try to search a non-existent element in a list.
+@table @strong
+@item Success condition
+Returns PDF_ENONODE.
+@end table
+@end deffn
+
+@deffn Test pdf_list_search_from_004
+Try search an element given a NULL node pointer.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+
+@node pdf_list_search
+@subsubsection pdf_list_search
+
+@deffn Test pdf_list_search_001
+Try to search for an existing element in a list.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@deffn Test pdf_list_search_002
+Try to search an existent element given a NULL node pointer.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+@deffn Test pdf_list_search_003
+Try to search for a non-existent element in a list.
+@table @strong
+@item Success condition
+Returns PDF_ENONODE
+@end table
+@end deffn
+
+
+@node pdf_list_set_at
+@subsubsection pdf_list_set_at
+
+@deffn Test pdf_list_set_at_001
+Try to replace a node value in a list.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@deffn Test pdf_list_set_at_002
+Try to replace a node value at an invalid position.
+@table @strong
+@item Success condition
+Returns PDF_INVRANGE
+@end table
+@end deffn
+
+@node pdf_list_size
+@subsubsection pdf_list_size
+
+@deffn Test pdf_list_size_001
+Try to get an empty list size.
+@table @strong
+@item Success condition
+Returns 0.
+@end table
+@end deffn
 
 @node Subsystem Testing
 @chapter Subsystem Testing

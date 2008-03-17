@@ -1,3 +1,7 @@
+2008-03-17  gerel  <gerel@gnu.org>
+
+	* doc/gnupdf-tsd.texi: added List module unit tests.
+
 2008-03-17  Gerardo E. Gidoni <gerel@gnu.org>
 
 	* src/base/pdf-stm.c: Adapt code to the new list API.
