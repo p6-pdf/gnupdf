@@ -29,8 +29,32 @@ AM_CFLAGS = -g
 
 TESTS = runtests
 
-TEST_FILES = base/stm/pdf-create-file-stm.c
-TSUITE_FILES = base/alloc/tsuite-alloc.c base/stm/tsuite-stm.c
+TEST_FILES = base/stm/pdf-create-file-stm.c \
+	     base/list/pdf-list-add-first.c \
+	     base/list/pdf-list-add-at.c \
+	     base/list/pdf-list-add-last.c \
+	     base/list/pdf-list-create.c \
+	     base/list/pdf-list-get-at.c \
+             base/list/pdf-list-indexof.c \
+             base/list/pdf-list-indexof-from.c \
+             base/list/pdf-list-indexof-from-to.c \
+	     base/list/pdf-list-iterator.c \
+	     base/list/pdf-list-iterator-from-to.c \
+	     base/list/pdf-list-iterator-next.c \
+             base/list/pdf-list-next-node.c \
+             base/list/pdf-list-node-value.c \
+             base/list/pdf-list-previous-node.c \
+             base/list/pdf-list-remove-at.c \
+             base/list/pdf-list-remove.c \
+             base/list/pdf-list-remove-node.c \
+             base/list/pdf-list-search.c \
+             base/list/pdf-list-search-from.c \
+             base/list/pdf-list-search-from-to.c \
+             base/list/pdf-list-set-at.c \
+             base/list/pdf-list-size.c 
+
+TSUITE_FILES = base/alloc/tsuite-alloc.c base/stm/tsuite-stm.c \
+               base/list/tsuite-list.c
 
 runtests_SOURCES = runtests.c $(TSUITE_FILES) $(TEST_FILES)
 
