@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/03/09 00:28:34 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-03-13 17:05:59 gerel"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -658,14 +658,14 @@ pdf_stm_alloc (void)
   pdf_stm_t stm;
 
   stm = (pdf_stm_t) pdf_alloc (sizeof (struct pdf_stm_s));
-  stm->read_filter_list =
-    pdf_list_create (NULL,      /* compare_fn */
-                     pdf_stm_filter_dealloc_list,
-                     PDF_TRUE); /* allow duplicates */
-  stm->write_filter_list =
-    pdf_list_create (NULL,      /* compare_fn */
-                     pdf_stm_filter_dealloc_list,
-                     PDF_TRUE); /* allow duplicates */
+  pdf_list_create (NULL,      /* compare_fn */
+                   pdf_stm_filter_dealloc_list,
+                   PDF_TRUE,
+                   &stm->read_filter_list); /* allow duplicates */
+  pdf_list_create (NULL,      /* compare_fn */
+                   pdf_stm_filter_dealloc_list,
+                   PDF_TRUE,
+                   &stm->write_filter_list); /* allow duplicates */
 
   return stm;
 }
@@ -756,7 +756,7 @@ pdf_stm_apply_filters (pdf_list_t filter_list,
       return PDF_TRUE;
     }
   
-  iter = pdf_list_iterator (filter_list);
+  pdf_list_iterator (filter_list, &iter);
   while (pdf_list_iterator_next (&iter, (const void **) &filter, &node) == PDF_OK)
     {
       if (filter->funcs.apply (filter->data, 

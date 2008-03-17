@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.32 2008/03/10 17:50:19 aleksander_m Exp $
+@comment $Id: gnupdf.texi,v 1.33 2008/03/17 12:58:02 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -959,7 +959,7 @@ A function for disposing list elements.
 @node Creating and Destroying Lists
 @subsection Creating and Destroying Lists
 
-@deftypefun pdf_list_t pdf_list_create (pdf_list_element_equals_fn_t @var{equals_fn}, pdf_list_element_dipose_fn_t @var{dispose_fn}, pdf_bool_t @var{allow_duplicates})
+@deftypefun pdf_status_t pdf_list_create (pdf_list_element_equals_fn_t @var{equals_fn}, pdf_list_element_dipose_fn_t @var{dispose_fn}, pdf_bool_t @var{allow_duplicates}, pdf_list_t @var{*list})
 
 Create a new list containing no elements.
 
@@ -976,14 +976,26 @@ It is used when destroying list elements.
 This parameter indicate if the list is allowed to contain duplicate
 elements (elements for which @var{equals_fn} evaluate to
 @code{PDF_TRUE}). 
+@item list
+A pointer to a list where the new one will be saved.
 @end table
 @item Returns
-The newly created list.
+A status variable:
+@table @code
+@item PDF_OK
+@var{list} contains a new empty list.
+@item PDF_EBADDATA
+@var{list} points to NULL.
+@end table
 @item Usage example
 @example
 pdf_list_t mylist;
 
-mylist = pdf_list_create (list_element_equal_p, list_element_destroy, PDF_FALSE);
+if (pdf_list_create (list_element_equal_p, list_element_destroy,  PDF_FALSE,
+    &mylist) != PDF_OK)
+  @{
+    /* manage the error... */
+  @}
 @end example
 @end table
 @end deftypefun
@@ -1446,7 +1458,7 @@ XXX
 @node Working with Iterators
 @subsection Working with Iterators
 
-@deftypefun pdf_list_iterator_t pdf_list_iterator (pdf_list_t @var{list})
+@deftypefun pdf_status_t pdf_list_iterator (pdf_list_t @var{list}, pdf_list_iterator_t @var{*itr})
 
 Create an iterator traversing a list.
 
@@ -1458,9 +1470,19 @@ except for replacing or removing the last returned element.
 @table @var
 @item list
 A list.
+@item itr
+A pointer to where the new iterator will be saved.
 @end table
 @item Returns
-An iterator pointing to the head of @var{list}.
+A status variable:
+@table @code
+@item PDF_OK
+@var{itr} contains a new iterator for @var{list}.
+@item PDF_ENOMEM
+There is no memory available for a new iterator.
+@item PDF_EBADDATA
+@var{itr} points to NULL.
+@end table
 @item Usage example
 @example
 XXX
@@ -1468,7 +1490,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_list_iterator_t pdf_list_iterator_from_to (pdf_list_t @var{list}, pdf_size_t @var{start_index}, pdf_size_t @var{end_index})
+@deftypefun pdf_status_t pdf_list_iterator_from_to (pdf_list_t @var{list}, pdf_size_t @var{start_index}, pdf_size_t @var{end_index}, pdf_list_iterator_t @var{*itr})
 
 Create an iterator traversing the element with indices @code{i},
 @code{start_index <= i < end_index}, of a list.
@@ -1485,9 +1507,19 @@ A list.
 A position in @var{list}.
 @item end_index
 A position in @var{list}.
+@item itr
+A pointer to an iterator where the new one will be saved.
 @end table
 @item Returns
-An iterator pointing to @var{start_index}.
+A status variable:
+@table @code
+@item PDF_OK
+@var{itr} contains a new iterator for @var{list} pointing to @var{start_index}.
+@item PDF_ENOMEM
+There is no memory available for a new iterator.
+@item PDF_EBADDATA
+@var{itr} points to NULL.
+@end table
 @item Usage example
 @example
 XXX

@@ -1,3 +1,13 @@
+2008-03-17  Gerardo E. Gidoni <gerel@gnu.org>
+
+	* src/base/pdf-stm.c: Adapt code to the new list API.
+
+	* src/base/pdf-list.h: Adapt code to the new API defined in
+	`gnupdf.texi'.
+
+	* doc/gnupdf.texi (Creating and Destroying Lists): New prototype
+	for `pdf_list_create'.
+
 2008-03-15  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* README (specs): ISO 32000 added to the list of PDF

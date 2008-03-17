@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/03/15 02:29:06 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/03/17 13:53:49 jemarch"
  *
  *       File:         pdf-list.h
  *       Date:         Sat Mar 1 02:14:35 2008
@@ -73,9 +73,9 @@ typedef void (*pdf_list_element_dispose_fn_t) (const void *elt);
 
 /* Creation and destruction functions */
 
-pdf_list_t pdf_list_create (pdf_list_element_equals_fn_t
-                            equals_fn, pdf_list_element_dispose_fn_t dispose_fn,
-                            pdf_bool_t allow_duplicates);
+pdf_status_t pdf_list_create (pdf_list_element_equals_fn_t
+                              equals_fn, pdf_list_element_dispose_fn_t dispose_fn,
+                              pdf_bool_t allow_duplicates, pdf_list_t *list);
 pdf_status_t pdf_list_destroy (pdf_list_t list);
 
 /* Property management functions */
@@ -118,10 +118,11 @@ pdf_status_t pdf_list_remove (pdf_list_t list, const void * element);
 
 /* Element iterator functions */
 
-pdf_list_iterator_t pdf_list_iterator (pdf_list_t list);
-pdf_list_iterator_t pdf_list_iterator_from_to (pdf_list_t list,
-                                               pdf_size_t start_index,
-                                               pdf_size_t end_index);
+pdf_status_t pdf_list_iterator (pdf_list_t list, pdf_list_iterator_t *itr);
+pdf_status_t pdf_list_iterator_from_to (pdf_list_t list,
+                                        pdf_size_t start_index,
+                                        pdf_size_t end_index,
+                                        pdf_list_iterator_t *itr);
 pdf_status_t pdf_list_iterator_next (pdf_list_iterator_t *iterator,
                                      const void **element_pointer,
                                      pdf_list_node_t *node_pointer);
@@ -142,15 +143,30 @@ pdf_status_t pdf_list_iterator_free (pdf_list_iterator_t *iterator);
 
 /* Creation and destruction functions */
 
-EXTERN_INLINE pdf_list_t
+EXTERN_INLINE pdf_status_t
 pdf_list_create (pdf_list_element_equals_fn_t equals_fn,
                  pdf_list_element_dispose_fn_t dispose_fn,
-                 pdf_bool_t allow_duplicates)
+                 pdf_bool_t allow_duplicates, pdf_list_t *list)
 {
-  pdf_list_t list;
-  list.gl_list = gl_list_create_empty(GL_ARRAY_LIST, equals_fn, NULL,
-                                      dispose_fn, allow_duplicates);
-  return (list);
+  pdf_status_t st;
+
+  st = PDF_OK;
+
+  if (list != NULL)
+    {
+      list->gl_list = gl_list_create_empty(GL_ARRAY_LIST, equals_fn, NULL,
+                                           dispose_fn, allow_duplicates);
+      if (list->gl_list == NULL)
+        {
+          st = PDF_ERROR;
+        }
+    }
+  else
+    {
+      st = PDF_EBADDATA;
+    }
+  
+  return (st);
 }
 
 EXTERN_INLINE pdf_status_t
@@ -359,47 +375,67 @@ pdf_list_remove (pdf_list_t list, const void * element)
 
 /* Element iterator functions */
 
-EXTERN_INLINE pdf_list_iterator_t
-pdf_list_iterator (pdf_list_t list)
+EXTERN_INLINE pdf_status_t
+pdf_list_iterator (pdf_list_t list,
+                   pdf_list_iterator_t *itr)
 {
-  pdf_list_iterator_t itr;
+  pdf_status_t st;
 
-  itr.gl_iterator = pdf_alloc (sizeof(gl_list_iterator_t));
+  st = PDF_OK;
 
-  if (itr.gl_iterator != NULL)
+  if (itr != NULL)
     {
-      *((gl_list_iterator_t*)itr.gl_iterator) =
-        gl_list_iterator ((gl_list_t)list.gl_list);
+      itr->gl_iterator = pdf_alloc (sizeof(gl_list_iterator_t));
+
+      if (itr->gl_iterator != NULL)
+        {
+          *((gl_list_iterator_t*)itr->gl_iterator) =
+            gl_list_iterator ((gl_list_t)list.gl_list);
+        }
+      else
+        {
+          st = PDF_ENOMEM;
+        }
     }
   else
     {
-      pdf_perror (PDF_ENOMEM, "pdf_list_iterator()");
+      st = PDF_EBADDATA;
     }
   
-  return (itr);
+  return (st);
 }
 
 
-EXTERN_INLINE pdf_list_iterator_t
+EXTERN_INLINE pdf_status_t
 pdf_list_iterator_from_to (pdf_list_t list, pdf_size_t start_index,
-                           pdf_size_t end_index)
+                           pdf_size_t end_index,
+                           pdf_list_iterator_t *itr)
 {
-  pdf_list_iterator_t itr;
+  pdf_status_t st;
 
-  itr.gl_iterator = pdf_alloc (sizeof(gl_list_iterator_t));
+  st = PDF_OK;
 
-  if (itr.gl_iterator != NULL)
+  if (itr != NULL)
     {
-      *((gl_list_iterator_t*)itr.gl_iterator) =
-        gl_list_iterator_from_to ((gl_list_t)list.gl_list, start_index,
-                                  end_index);
+      itr->gl_iterator = pdf_alloc (sizeof(gl_list_iterator_t));
+      
+      if (itr->gl_iterator != NULL)
+        {
+          *((gl_list_iterator_t*)itr->gl_iterator) =
+            gl_list_iterator_from_to ((gl_list_t)list.gl_list, start_index,
+                                      end_index);
+        }
+      else
+        {
+          st = PDF_ENOMEM;
+        }
     }
   else
     {
-      pdf_perror (PDF_ENOMEM, "pdf_list_iterator_from_to()");
+      st = PDF_EBADDATA;
     }
 
-  return (itr);
+  return st;
 }
 
 EXTERN_INLINE pdf_status_t
