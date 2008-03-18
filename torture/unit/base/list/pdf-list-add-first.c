@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/03/17 14:34:03 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-03-17 22:56:14 gerel"
  *
  *       File:         pdf-list-add-first.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -92,6 +92,7 @@ test_pdf_list_add_first (void)
 {
   TCase *tc = tcase_create("pdf_list_add_first");
   tcase_add_test(tc, pdf_list_add_first_001);
+  tcase_add_test(tc, pdf_list_add_first_002);
 
   return tc;
 }

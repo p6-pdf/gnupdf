@@ -1,5 +1,7 @@
 2008-03-17  gerel  <gerel@gnu.org>
 
+	* torture/unit/base/list/pdf-list-add-first.c: added missing tcase.
+
 	* doc/gnupdf-tsd.texi: added List module unit tests.
 
 2008-03-17  Gerardo E. Gidoni <gerel@gnu.org>
