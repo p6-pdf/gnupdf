@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.34 2008/03/17 13:48:11 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.35 2008/03/24 21:28:27 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -3339,7 +3339,7 @@ pdf_time_get_utc_cal (mytime, cal_time);
 @end table
 @end deftypefun
 
-@deftypefun pdf_time_from_cal (pdf_time_t @var{time}, struct pdf_time_cal_s @var{cal_time})
+@deftypefun pdf_status_t pdf_time_from_cal (pdf_time_t @var{time}, struct pdf_time_cal_s @var{cal_time})
 Set the value of a time variable to a given calendar time.
 
 @table @strong
