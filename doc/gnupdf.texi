@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.35 2008/03/24 21:28:27 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.36 2008/03/24 22:08:30 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -1331,7 +1331,7 @@ XXX
 @node Setting and Getting List Elements
 @subsection Setting and Getting List Elements
 
-@deftypefun void * pdf_list_node_value (pdf_list_t @var{list}, pdf_list_node_t @var{node})
+@deftypefun {void *} pdf_list_node_value (pdf_list_t @var{list}, pdf_list_node_t @var{node})
 
 Get the element value represented by a list node.
 
@@ -2195,7 +2195,7 @@ if(ret_code != PDF_OK)
 @node Managing Text Properties
 @subsection Managing Text Properties
 
-@deftypefun {const pdf_char_t *}pdf_text_get_country (pdf_text_t @var{text})
+@deftypefun {const pdf_char_t *} pdf_text_get_country (pdf_text_t @var{text})
 
 Return the `ISO-3166-1 alpha-2' country code associated with a text variable, as a
 NUL-terminated string. The returned string should not be modified, as it is
@@ -2221,7 +2221,7 @@ code = pdf_text_get_country (text);
 @end table
 @end deftypefun
 
-@deftypefun {const pdf_char_t *}pdf_text_get_language (pdf_text_t @var{text})
+@deftypefun {const pdf_char_t *} pdf_text_get_language (pdf_text_t @var{text})
 
 Return the `ISO-639-1' language code associated with a text variable, as a
 NUL-terminated string. The returned string should not be modified, as it is
