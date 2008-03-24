@@ -59,9 +59,11 @@ AC_DEFUN([gl_INIT],
   gl_STDLIB_MODULE_INDICATOR([realloc-posix])
   gl_SIZE_MAX
   AM_STDBOOL_H
+  gl_STDINT_H
   gl_STDIO_H
   gl_STDLIB_H
   gl_UNISTD_H
+  gl_WCHAR_H
   gl_XALLOC
   gl_XSIZE
   m4_popdef([AC_LIBSOURCES])
@@ -129,9 +131,11 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/ref-del.sin
   lib/size_max.h
   lib/stdbool_.h
+  lib/stdint_.h
   lib/stdio_.h
   lib/stdlib_.h
   lib/unistd_.h
+  lib/wchar_.h
   lib/xalloc-die.c
   lib/xalloc.h
   lib/xmalloc.c
@@ -153,15 +157,19 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/lcmessage.m4
   m4/localcharset.m4
   m4/localename.m4
+  m4/longlong.m4
   m4/malloc.m4
   m4/math_h.m4
   m4/onceonly_2_57.m4
   m4/realloc.m4
   m4/size_max.m4
   m4/stdbool.m4
+  m4/stdint.m4
   m4/stdio_h.m4
   m4/stdlib_h.m4
+  m4/ulonglong.m4
   m4/unistd_h.m4
+  m4/wchar.m4
   m4/xalloc.m4
   m4/xsize.m4
 ])

@@ -1,3 +1,17 @@
+2008-03-24  Jose E. Marchesi  <jose.marchesi@deimos-space.com>
+
+	* lib/wchar_.h: Imported from gnulib.
+
+	* lib/stdint_.h: Imported from gnulib.
+
+	* m4/wchar.m4: Imported from gnulib.
+
+	* m4/ulonglong.m4: Imported from gnulib.
+
+	* m4/stdint.m4: Imported from gnulib.
+
+	* m4/longlong.m4: Imported from gnulib.
+
 2008-03-17  gerel  <gerel@gnu.org>
 
 	* torture/unit/base/list/pdf-list-add-first.c: added missing tcase.
