@@ -959,24 +959,14 @@ pdf_text_concat (pdf_text_t text1,
 {
   if(!override_langinfo)
     {
-      /* An error will be returned if 1) one of the lang pointers is NULL and the
-       *  other one is not NULL, or 2) if both pointers are valid but the lang
-       *  code is different */
-      if(((text1->lang != NULL) && (text2->lang == NULL)) || \
-         ((text1->lang == NULL) && (text2->lang != NULL)) || \
-         ((text1->lang != NULL) && (text2->lang != NULL) && \
-          (strcmp((char *)text1->lang, (char *)text2->lang) != 0)))
+      /* An error will be returned if lang code is different */
+      if(strcmp((char *)text1->lang, (char *)text2->lang) != 0)
         {
           return PDF_ETEXTENC;
         }
       
-      /* An error will be returned if 1) one of the country pointers is NULL and the
-       *  other one is not NULL, or 2) if both pointers are valid but the country
-       *  code is different */
-      if(((text1->country != NULL) && (text2->country == NULL)) || \
-         ((text1->country == NULL) && (text2->country != NULL)) || \
-         ((text1->country != NULL) && (text2->country != NULL) && \
-          (strcmp((char *)text1->country, (char *)text2->country) != 0)))
+      /* An error will be returned if country code is different */
+      if(strcmp((char *)text1->country, (char *)text2->country) != 0)
         {
           return PDF_ETEXTENC;
         }

@@ -1,5 +1,10 @@
 2008-03-25  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
+	* src/base/pdf-text.c (pdf_text_concat): No need to check for pointers
+	being not NULL, as lang/country codes are not dynamically allocated.
+
+2008-03-25  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
 	* torture/unit/base/text/tsuite-text.c: New file.
 
 	* torture/unit/base/text/pdf-text-test-data.c: New file.
