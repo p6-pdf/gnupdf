@@ -1,5 +1,14 @@
 2008-03-25  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
+	* utils/pdf-text-generate-ucd.c: New file. Unicode Character Database 
+	source generator.
+
+	* utils/Makefile.am: Added compilation of `pdf-text-generate-ucd'.
+
+	* utils/README: Added description of `pdf-text-generate-ucd'.
+
+2008-03-25  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
 	* src/base/pdf-text.h: New file.
 
 	* src/base/pdf-text.c: New file.

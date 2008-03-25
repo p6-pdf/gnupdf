@@ -52,8 +52,9 @@ Aleksander Morgado: wrote src/base/pdf-text.h src/base/pdf-text.c
   src/base/pdf-text-ucd-wordbreak.c src/base/pdf-text-ucd-gencat.h
   src/base/pdf-text-ucd-gencat.c src/base/pdf-text-ucd-combclass.h
   src/base/pdf-text-ucd-combclass.c src/base/pdf-text-ucd-case.h
-  src/base/pdf-text-case.c
+  src/base/pdf-text-case.c utils/pdf-text-generate-ucd.c
 and changed doc/gnupdf.texi doc/gnupdf-tsd.texi configure.ac src/Makefile.am
   src/base/pdf-base.h src/base/pdf-error.c src/base/pdf-types.h
+  utils/Makefile.am
   
 
