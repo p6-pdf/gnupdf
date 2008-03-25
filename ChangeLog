@@ -1,3 +1,8 @@
+2008-03-25  gerel  <gerel@gnu.org>
+
+	* src/base/pdf-list.h: added missing range check on
+	pdf_iterator_from_to().
+
 2008-03-25  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
 	* src/base/pdf-text.c (pdf_text_concat): No need to check for pointers

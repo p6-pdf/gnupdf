@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/03/17 14:17:02 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-03-25 12:33:59 gerel"
  *
  *       File:         pdf-list.h
  *       Date:         Sat Mar 1 02:14:35 2008
@@ -659,17 +659,27 @@ pdf_list_iterator_from_to (pdf_list_t list, pdf_size_t start_index,
 
   if (itr != NULL)
     {
-      itr->gl_iterator = pdf_alloc (sizeof(gl_list_iterator_t));
-      
-      if (itr->gl_iterator != NULL)
+      if (((start_index > 0 && start_index < pdf_list_size (list)) ||
+           start_index == 0) &&
+          (end_index > 0 && end_index <= pdf_list_size (list)) &&
+          (start_index < end_index))
         {
-          *((gl_list_iterator_t*)itr->gl_iterator) =
-            gl_list_iterator_from_to ((gl_list_t)list.gl_list, start_index,
-                                      end_index);
+          itr->gl_iterator = pdf_alloc (sizeof(gl_list_iterator_t));
+      
+          if (itr->gl_iterator != NULL)
+            {
+              *((gl_list_iterator_t*)itr->gl_iterator) =
+                gl_list_iterator_from_to ((gl_list_t)list.gl_list, start_index,
+                                          end_index);
+            }
+          else
+            {
+              st = PDF_ENOMEM;
+            }
         }
       else
         {
-          st = PDF_ENOMEM;
+          st = PDF_EINVRANGE;
         }
     }
   else

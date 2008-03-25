@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.37 2008/03/24 23:11:41 aleksander_m Exp $
+@comment $Id: gnupdf.texi,v 1.38 2008/03/25 15:53:32 gerel Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -1634,6 +1634,8 @@ A status variable:
 @var{itr} contains a new iterator for @var{list} pointing to @var{start_index}.
 @item PDF_ENOMEM
 There is no memory available for a new iterator.
+@item PDF_EINVRANGE
+@var{start_index} or @var{end_index} is greater than the list size or less than 0.
 @item PDF_EBADDATA
 @var{itr} points to NULL.
 @end table

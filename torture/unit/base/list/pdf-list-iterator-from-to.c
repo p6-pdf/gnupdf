@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/03/17 14:22:02 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-03-18 15:19:40 gerel"
  *
  *       File:         pdf-list-iterator-from-to.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -79,7 +79,7 @@ START_TEST (pdf_list_iterator_from_to_002)
   pdf_list_add_last (list, &elem);
   pdf_list_add_last (list, &elem2);
   
-  st = pdf_list_iterator_from_to (list, 0, 2, &itr);
+  st = pdf_list_iterator_from_to (list, 0, 3, &itr);
   fail_if (st != PDF_EINVRANGE);
 
   st = pdf_list_iterator_from_to (list, 0, -2, &itr);
