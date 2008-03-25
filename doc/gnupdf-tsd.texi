@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf-tsd.texi,v 1.5 2008/03/17 19:37:35 gerel Exp $
+@comment $Id: gnupdf-tsd.texi,v 1.6 2008/03/24 23:11:41 aleksander_m Exp $
 @comment %**start of header
 @setfilename gnupdf-tsd.info
 @settitle GNU PDF Library Test Specification Document
@@ -219,12 +219,18 @@ Initialize text module
 @subsubsection pdf_text_new_destroy
 
 @deffn Test pdf_text_new_destroy_001
-Create/Destroy text object
+Create an empty text object and destroy it
 @table @strong
 @item Success conditions
 1. The call to @code{pdf_text_new} should not return a  @code{NULL} pointer.
 
-2. The call to @code{pdf_text_destroy} should return PDF_OK;
+2. The text data of the created object should be empty.
+
+3. The language code of the output object should be empty
+
+4. The country code of the output object should be empty
+
+5. The call to @code{pdf_text_destroy} should return PDF_OK;
 @end table
 @end deffn
 
@@ -347,6 +353,8 @@ Create a text object with an input invalid PDF-Doc-Encoded string
 @table @strong
 @item Success conditions
 1. The call to @code{pdf_text_new_from_pdf_string} should NOT return PDF_OK.
+
+2. Pointer to the text object must remain unchanged.
 @end table
 @end deffn
 
@@ -356,11 +364,13 @@ Create a text object with an input valid UTF-16BE encoded string with BOM (conta
 @item Success conditions
 1. The call to @code{pdf_text_new_from_pdf_string} should return PDF_OK.
 
-2. The contents of the text object must be the expected ones.
+2. The function should return a valid pointer to the new text object.
 
-3. The language code within the text object must be empty.
+3. The contents of the text object must be the expected ones.
 
-4. The country code within the text object must be empty.
+4. The language code within the text object must be empty.
+
+5. The country code within the text object must be empty.
 
 5. The call should return a NULL @code{remaining_str} pointer and a zero @code{remaining_length}
 @end table
@@ -371,6 +381,8 @@ Create a text object with an input valid UTF-16BE encoded string without BOM
 @table @strong
 @item Success conditions
 1. The call to @code{pdf_text_new_from_pdf_string} should NOT return PDF_OK.
+
+2. Pointer to the text object must remain unchanged.
 @end table
 @end deffn
 
@@ -379,6 +391,8 @@ Create a text object with an input invalid UTF-16BE encoded string with BOM
 @table @strong
 @item Success conditions
 1. The call to @code{pdf_text_new_from_pdf_string} should NOT return PDF_OK.
+
+2. Pointer to the text object must remain unchanged.
 @end table
 @end deffn
 
@@ -388,13 +402,15 @@ Create a text object with an input valid UTF-16BE encoded string with BOM (conta
 @item Success conditions
 1. The call to @code{pdf_text_new_from_pdf_string} should return PDF_OK.
 
-2. The contents of the text object must be the expected ones.
+2. The function should return a valid pointer to the new text object
 
-3. The languange code within the text object must be the expected one.
+3. The contents of the text object must be the expected ones.
 
-4. The country code within the text object must be empty.
+4. The languange code within the text object must be the expected one.
 
-5. The call should return a NULL @code{remaining_str} pointer and a zero @code{remaining_length}
+5. The country code within the text object must be empty.
+
+6. The call should return a NULL @code{remaining_str} pointer and a zero @code{remaining_length}
 @end table
 @end deffn
 
@@ -404,65 +420,99 @@ Create a text object with an input valid UTF-16BE encoded string with BOM (conta
 @item Success conditions
 1. The call to @code{pdf_text_new_from_pdf_string} should return PDF_OK.
 
-2. The contents of the text object must be the expected ones.
+2. The function should return a valid pointer to the new text object
 
-3. The languange code within the text object must be the expected one.
+3. The contents of the text object must be the expected ones.
 
-4. The country code within the text object must be the expected one.
+4. The languange code within the text object must be the expected one.
 
-5. The call should return a NULL @code{remaining_str} pointer and a zero @code{remaining_length}
+5. The country code within the text object must be the expected one.
+
+6. The call should return a NULL @code{remaining_str} pointer and a zero @code{remaining_length}
 @end table
 @end deffn
 
 @deffn Test pdf_text_new_from_pdf_string_008
-Create a text object with an input valid UTF-16BE encoded string with BOM (containing both 16-bit and 32-bit UTF-16 code points!) which also contains more than one valid language code embedded (the string contains more than one string in more than one different language).
+Create a text object with an input valid UTF-16BE encoded string with BOM (containing both 16-bit and 32-bit UTF-16 code points!) which also contains more than one (three) valid language code embedded (the string contains more than one string in more than one different language).
 @table @strong
 @item Success conditions
 1. The first call to @code{pdf_text_new_from_pdf_string} should return PDF_OK.
 
-2. The contents of the first text object must be the expected ones.
+2. The first call should return a valid pointer to the new text object
 
-3. The languange code within the first text object must be the expected one.
+3. The contents of the first text object must be the expected ones.
 
-4. The country code within the first text object must be empty.
+4. The languange code within the first text object must be the expected one.
 
-5. The first call should return a valid @code{remaining_str} pointer and a non-zero @code{remaining_length}
+5. The country code within the first text object must be empty.
 
-6. The second call to @code{pdf_text_new_from_pdf_string} should return PDF_OK.
+6. The first call should return a valid @code{remaining_str} pointer and a non-zero @code{remaining_length}
 
-7. The contents of the second text object must be the expected ones.
+7. The second call to @code{pdf_text_new_from_pdf_string} should return PDF_OK.
 
-8. The languange code within the second text object must be the expected one.
+8. The second call should return a valid pointer to the new text object
 
-9. The country code within the second text object must be empty.
+9. The contents of the second text object must be the expected ones.
 
-10. The second call should return a NULL @code{remaining_str} pointer and a zero @code{remaining_length}
+10. The languange code within the second text object must be the expected one.
+
+11. The country code within the second text object must be empty.
+
+12. The second call should return a valid @code{remaining_str} pointer and a non-zero @code{remaining_length}
+
+13. The third call to @code{pdf_text_new_from_pdf_string} should return PDF_OK.
+
+14. The third call should return a valid pointer to the new text object
+
+15. The contents of the third text object must be the expected ones.
+
+16. The languange code within the third text object must be the expected one.
+
+17. The country code within the third text object must be empty.
+
+18. The second call should return a NULL @code{remaining_str} pointer and a zero @code{remaining_length}
 @end table
 @end deffn
 
 @deffn Test pdf_text_new_from_pdf_string_009
-Create a text object with an input valid UTF-16BE encoded string with BOM (containing both 16-bit and 32-bit UTF-16 code points!) which also contains more than one valid language code and a valid country code embedded (the string contains more than one string in more than one different language/country).
+Create a text object with an input valid UTF-16BE encoded string with BOM (containing both 16-bit and 32-bit UTF-16 code points!) which also contains more than one (three) valid language code and a valid country code embedded (the string contains more than one string in more than one different language/country).
 @table @strong
 @item Success conditions
 1. The first call to @code{pdf_text_new_from_pdf_string} should return PDF_OK.
 
-2. The contents of the first text object must be the expected ones.
+2. The first call should return a valid pointer to the new text object
 
-3. The languange code within the first text object must be the expected one.
+3. The contents of the first text object must be the expected ones.
 
-4. The country code within the first text object must be the expected one.
+4. The languange code within the first text object must be the expected one.
 
-5. The first call should return a valid @code{remaining_str} pointer and a non-zero @code{remaining_length}
+5. The country code within the first text object must be the expected one.
 
-6. The second call to @code{pdf_text_new_from_pdf_string} should return PDF_OK.
+6. The first call should return a valid @code{remaining_str} pointer and a non-zero @code{remaining_length}
 
-7. The contents of the second text object must be the expected ones.
+7. The second call to @code{pdf_text_new_from_pdf_string} should return PDF_OK.
 
-8. The languange code within the second text object must be the expected one.
+8. The second call should return a valid pointer to the new text object
 
-9. The country code within the second text object must be the expected one.
+9. The contents of the second text object must be the expected ones.
 
-10. The second call should return a NULL @code{remaining_str} pointer and a zero @code{remaining_length}
+10. The languange code within the second text object must be the expected one.
+
+11. The country code within the second text object must be the expected one.
+
+12. The second call should return a valid @code{remaining_str} pointer and a non-zero @code{remaining_length}
+
+13. The third call to @code{pdf_text_new_from_pdf_string} should return PDF_OK.
+
+14. The third call should return a valid pointer to the new text object
+
+15. The contents of the third text object must be the expected ones.
+
+16. The languange code within the third text object must be the expected one.
+
+17. The country code within the third text object must be the expected one.
+
+18. The second call should return a NULL @code{remaining_str} pointer and a zero @code{remaining_length}
 @end table
 @end deffn
 
@@ -476,9 +526,13 @@ Create a text object with an input valid UTF-8 encoded string (containing 8-bit,
 @item Success conditions
 1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
 
-2. The contents of the text object must be the expected ones (without BOM).
+2. The function should return a valid pointer to the new text object
 
-3. The function should return a valid pointer to the new text object
+3. The contents of the text object must be the expected ones (without BOM).
+
+4. The language code within the text object must be empty.
+
+5. The country code within the text object must be empty.
 @end table
 @end deffn
 
@@ -488,9 +542,13 @@ Create a text object with an input valid UTF-16BE encoded string (16-bit and 32-
 @item Success conditions
 1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
 
-2. The contents of the text object must be the expected ones (without BOM).
+2. The function should return a valid pointer to the new text object
 
-3. The function should return a valid pointer to the new text object
+3. The contents of the text object must be the expected ones (without BOM).
+
+4. The language code within the text object must be empty.
+
+5. The country code within the text object must be empty.
 @end table
 @end deffn
 
@@ -500,9 +558,13 @@ Create a text object with an input valid UTF-16LE encoded string (16-bit and 32-
 @item Success conditions
 1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
 
-2. The contents of the text object must be the expected ones (without BOM).
+2. The function should return a valid pointer to the new text object
 
-3. The function should return a valid pointer to the new text object
+3. The contents of the text object must be the expected ones (without BOM).
+
+4. The language code within the text object must be empty.
+
+5. The country code within the text object must be empty.
 @end table
 @end deffn
 
@@ -512,13 +574,13 @@ Create a text object with an input valid UTF-16HE encoded string (16-bit and 32-
 @item Success conditions
 1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
 
-2. The contents of the text object must be the expected ones (without BOM).
+2. The function should return a valid pointer to the new text object
 
-3a. If endianness is BigEndian, the output must be equal to the one obtained with UTF-16BE
+3. The contents of the text object must be the expected ones (without BOM).
 
-3b. If endianness is LittleEndian, the output must be equal to the one obtained with UTF-16LE
+4. The language code within the text object must be empty.
 
-4. The function should return a valid pointer to the new text object
+5. The country code within the text object must be empty.
 @end table
 @end deffn
 
@@ -528,9 +590,13 @@ Create a text object with an input valid UTF-32BE encoded string without BOM
 @item Success conditions
 1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
 
-2. The contents of the text object must be the expected ones (without BOM).
+2. The function should return a valid pointer to the new text object
 
-3. The function should return a valid pointer to the new text object
+3. The contents of the text object must be the expected ones (without BOM).
+
+4. The language code within the text object must be empty.
+
+5. The country code within the text object must be empty.
 @end table
 @end deffn
 
@@ -540,9 +606,13 @@ Create a text object with an input valid UTF-32LE encoded string without BOM
 @item Success conditions
 1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
 
-2. The contents of the text object must be the expected ones (without BOM).
+2. The function should return a valid pointer to the new text object
 
-3. The function should return a valid pointer to the new text object
+3. The contents of the text object must be the expected ones (without BOM).
+
+4. The language code within the text object must be empty.
+
+5. The country code within the text object must be empty.
 @end table
 @end deffn
 
@@ -552,15 +622,13 @@ Create a text object with an input valid UTF-32HE encoded string without BOM
 @item Success conditions
 1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
 
-2. The contents of the text object must be the expected ones (without BOM).
+2. The function should return a valid pointer to the new text object
 
-3a. If endianness is BigEndian, the output must be equal to the one obtained with UTF-32BE
+3. The contents of the object must be completely equal to the input data
 
-3b. If endianness is LittleEndian, the output must be equal to the one obtained with UTF-32LE
+4. The language code within the text object must be empty.
 
-4. The data of the output object must be completely equal to the input data
-
-5. The function should return a valid pointer to the new text object
+5. The country code within the text object must be empty.
 @end table
 @end deffn
 
@@ -570,9 +638,13 @@ Create a text object with an input valid UTF-8 encoded string (containing 8-bit,
 @item Success conditions
 1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
 
-2. The contents of the text object must be the expected ones (without BOM).
+2. The function should return a valid pointer to the new text object
 
-3. The function should return a valid pointer to the new text object
+3. The contents of the text object must be the expected ones (without BOM).
+
+4. The language code within the text object must be empty.
+
+5. The country code within the text object must be empty.
 @end table
 @end deffn
 
@@ -582,9 +654,13 @@ Create a text object with an input valid UTF-16BE encoded string (16-bit and 32-
 @item Success conditions
 1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
 
-2. The contents of the text object must be the expected ones (without BOM).
+2. The function should return a valid pointer to the new text object
 
-3. The function should return a valid pointer to the new text object
+3. The contents of the text object must be the expected ones (without BOM).
+
+4. The language code within the text object must be empty.
+
+5. The country code within the text object must be empty.
 @end table
 @end deffn
 
@@ -594,9 +670,13 @@ Create a text object with an input valid UTF-16LE encoded string (16-bit and 32-
 @item Success conditions
 1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
 
-2. The contents of the text object must be the expected ones (without BOM).
+2. The function should return a valid pointer to the new text object
 
-3. The function should return a valid pointer to the new text object
+3. The contents of the text object must be the expected ones (without BOM).
+
+4. The language code within the text object must be empty.
+
+5. The country code within the text object must be empty.
 @end table
 @end deffn
 
@@ -606,13 +686,13 @@ Create a text object with an input valid UTF-16HE encoded string (16-bit and 32-
 @item Success conditions
 1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
 
-2. The contents of the text object must be the expected ones (without BOM).
+2. The function should return a valid pointer to the new text object
 
-3a. If endianness is BigEndian, the output must be equal to the one obtained with UTF-16BE
+3. The contents of the text object must be the expected ones (without BOM).
 
-3b. If endianness is LittleEndian, the output must be equal to the one obtained with UTF-16LE
+4. The language code within the text object must be empty.
 
-4. The function should return a valid pointer to the new text object
+5. The country code within the text object must be empty.
 @end table
 @end deffn
 
@@ -622,9 +702,13 @@ Create a text object with an input valid UTF-32BE encoded string with BOM
 @item Success conditions
 1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
 
-2. The contents of the text object must be the expected ones (without BOM).
+2. The function should return a valid pointer to the new text object
 
-3. The function should return a valid pointer to the new text object
+3. The contents of the text object must be the expected ones (without BOM).
+
+4. The language code within the text object must be empty.
+
+5. The country code within the text object must be empty.
 @end table
 @end deffn
 
@@ -634,9 +718,13 @@ Create a text object with an input valid UTF-32LE encoded string with BOM
 @item Success conditions
 1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
 
-2. The contents of the text object must be the expected ones (without BOM).
+2. The function should return a valid pointer to the new text object
 
-3. The function should return a valid pointer to the new text object
+3. The contents of the text object must be the expected ones (without BOM).
+
+4. The language code within the text object must be empty.
+
+5. The country code within the text object must be empty.
 @end table
 @end deffn
 
@@ -646,15 +734,13 @@ Create a text object with an input valid UTF-32HE encoded string with BOM
 @item Success conditions
 1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
 
-2. The contents of the text object must be the expected ones (without BOM).
+2. The function should return a valid pointer to the new text object
 
-3a. If endianness is BigEndian, the output must be equal to the one obtained with UTF-32BE
+3. The contents of the object must be completely equal to the input data
 
-3b. If endianness is LittleEndian, the output must be equal to the one obtained with UTF-32LE
+4. The language code within the text object must be empty.
 
-4. The data of the output object must be completely equal to the input data
-
-5. The function should return a valid pointer to the new text object
+5. The country code within the text object must be empty.
 @end table
 @end deffn
 
@@ -892,7 +978,7 @@ Get the host encoding configured by the user. As this test really depends on wha
 
 
 @node pdf_text_check_host_encoding
-@subsubsection pdf_text_get_check_host_encoding
+@subsubsection pdf_text_check_host_encoding
 
 @deffn Test pdf_text_check_host_encoding_001
 Check if a given valid host encoding is available in the system. ASCII-7 is considered as the host encoding that every system should at least have, so the test will check for it.
@@ -1526,7 +1612,7 @@ Get the contents of an empty text object with language info (no country info), i
 Get the contents of a non-empty text object in Hexadecimal representation in ASCII
 @table @strong
 @item Success conditions
-1. The call to @code{ pdf_text_get_hex} should return a valid string, NULL terminated.
+1. The call to @code{ pdf_text_get_hex} should return a valid string, NUL terminated.
 
 2. The contents of the returned string must be the expected ones.
 
@@ -1538,9 +1624,9 @@ Get the contents of a non-empty text object in Hexadecimal representation in ASC
 Get the contents of an empty text object in Hexadecimal representation in ASCII
 @table @strong
 @item Success conditions
-1. The call to @code{ pdf_text_get_hex} should return a valid string, NULL terminated.
+1. The call to @code{ pdf_text_get_hex} should return a valid string, NUL terminated.
 
-2. The lenght of the string must be zero.
+2. The length of the string must be zero.
 @end table
 @end deffn
 
@@ -1646,10 +1732,6 @@ Set the contents of a text object with an input valid UTF-16HE encoded string (1
 1. The call to @code{pdf_text_set_unicode} should return PDF_OK.
 
 2. The contents of the text object must be the expected ones (without BOM).
-
-3a. If endianness is BigEndian, the output must be equal to the one obtained with UTF-16BE
-
-3b. If endianness is LittleEndian, the output must be equal to the one obtained with UTF-16LE
 @end table
 @end deffn
 
@@ -1680,12 +1762,6 @@ Set the contents of a text object with an input valid UTF-32HE encoded string wi
 1. The call to @code{pdf_text_new_from_unicode} should return PDF_OK.
 
 2. The contents of the text object must be the expected ones (without BOM).
-
-3a. If endianness is BigEndian, the output must be equal to the one obtained with UTF-32BE
-
-3b. If endianness is LittleEndian, the output must be equal to the one obtained with UTF-32LE
-
-4. The data of the output object must be completely equal to the input data
 @end table
 @end deffn
 
@@ -1726,10 +1802,6 @@ Set the contents of a text object with an input valid UTF-16HE encoded string (1
 1. The call to @code{pdf_text_set_unicode} should return PDF_OK.
 
 2. The contents of the text object must be the expected ones (without BOM).
-
-3a. If endianness is BigEndian, the output must be equal to the one obtained with UTF-16BE
-
-3b. If endianness is LittleEndian, the output must be equal to the one obtained with UTF-16LE
 @end table
 @end deffn
 
@@ -1760,12 +1832,6 @@ Set the contents of a text object with an input valid UTF-32HE encoded string wi
 1. The call to @code{pdf_text_set_unicode} should return PDF_OK.
 
 2. The contents of the text object must be the expected ones (without BOM).
-
-3a. If endianness is BigEndian, the output must be equal to the one obtained with UTF-32BE
-
-3b. If endianness is LittleEndian, the output must be equal to the one obtained with UTF-32LE
-
-4. The data of the output object must be completely equal to the input data
 @end table
 @end deffn
 
@@ -1912,22 +1978,30 @@ Set the contents of a text object with an input invalid UTF-32HE encoded string 
 
 
 @deffn Test pdf_text_set_unicode_029
-Set the contents of a text object with an input valid UTF-16BE encoded string with BOM and embedded language/country information (this function does not allow this kind of input!)
+Set the contents of a text object with an input valid UTF-16BE encoded string with BOM and embedded language/country information (it should treat that information as standard UTF-16BE)
 @table @strong
 @item Success conditions
-1. The call to @code{pdf_text_set_unicode} should NOT return PDF_OK.
+1. The call to @code{pdf_text_set_unicode} should return PDF_OK.
 
-2. The contents of the text object must remain unchanged.
+2. The contents of the text object must be the expected ones.
+
+3. The language code must be empty.
+
+4. The country code must be empty.
 @end table
 @end deffn
 
 @deffn Test pdf_text_set_unicode_030
-Set the contents of a text object with an input valid UTF-16BE encoded string without BOM and embedded language/country information (this function does not allow this kind of input!)
+Set the contents of a text object with an input valid UTF-16BE encoded string without BOM and embedded language/country information (it should treat that information as standard UTF-16BE)
 @table @strong
 @item Success conditions
-1. The call to @code{pdf_text_set_unicode} should NOT return PDF_OK.
+1. The call to @code{pdf_text_set_unicode} should return PDF_OK.
 
-2. The contents of the text object must remain unchanged.
+2. The contents of the text object must be the expected ones.
+
+3. The language code must be empty.
+
+4. The country code must be empty.
 @end table
 @end deffn
 

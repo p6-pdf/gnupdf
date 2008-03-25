@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.36 2008/03/24 22:08:30 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.37 2008/03/24 23:11:41 aleksander_m Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -1961,7 +1961,7 @@ mytext = pdf_text_new ();
 @end deftypefun
 
 
-@deftypefun void pdf_text_destroy (pdf_text_t text)
+@deftypefun pdf_status_t pdf_text_destroy (pdf_text_t text)
 
 Destroy a text object and its contents.
 
@@ -1972,7 +1972,7 @@ Destroy a text object and its contents.
 A properly created text object.
 @end table
 @item Returns
-None
+The status of the destruction
 @item Usage Example
 @example
 pdf_text_t mytext;

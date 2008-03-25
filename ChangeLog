@@ -1,3 +1,9 @@
+2008-03-25  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
+	* doc/gnupdf-tsd.texi: Updated text module tests implementation.
+
+	* doc/gnupdf.texi: Updated definition of `pdf_text_destroy'.
+
 2008-03-24  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* prmgt/tsdfuncs.in: New file.
