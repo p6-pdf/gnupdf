@@ -1,13 +1,13 @@
-/* -*- mode: C -*- Time-stamp: "08/02/27 10:28:07 jemarch"
+/* -*- mode: C -*- Time-stamp: ""
  *
- *       File:         pdf-base.h
- *       Date:         Fri Jul  6 20:22:05 2007
+ *       File:         pdf-text-ucd.h
+ *       Date:         Fri Jan 11 21:09:23 2008
  *
- *       GNU PDF Library - Header file for the Base Layer
+ *       GNU PDF Library - Unicode Character Database General Header
  *
  */
 
-/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,16 +23,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PDF_BASE_H
-#define PDF_BASE_H
+#ifndef _PDF_TEXT_UCD_H
+#define _PDF_TEXT_UCD_H
 
-#include <pdf-alloc.h>
-#include <pdf-types.h>
-#include <pdf-error.h>
-#include <pdf-stm.h>
-#include <pdf-fp.h>
-#include <pdf-text.h>
+/* Include case related algorithms */
+#include <pdf-text-ucd-case.h>
 
-#endif /* !PDF_BASE_H */
+/* Include word-break related algorithms */
+#include <pdf-text-ucd-wordbreak.h>
 
-/* End of pdf_base.h */
+/* Include combining-class related algorithms */
+#include <pdf-text-ucd-combclass.h>
+
+/* Include general-category related algorithms */
+#include <pdf-text-ucd-gencat.h>
+
+
+#endif
+
+/* End of pdf-text-ucd.h */
+

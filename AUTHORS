@@ -24,7 +24,7 @@ Jose E. Marchesi: wrote configure.ac Makefile.am torture/test-base.c
 and changed src/pdf_stm_f_pred.c src/pdf_stm_f_pred.h
   src/base/pdf-list.h src/base/pdf-list.c
 
-Juan Pedro Bolívar Puente: wrote src/pdf_stm_f_pred.c
+Juan Pedro BolÃ­var Puente: wrote src/pdf_stm_f_pred.c
   src/pdf_stm_f_pred.h src/pdf_stm_f_lzw.c src/pdf_stm_f_lzw.h
 and changed utils/pdf_filter.c utils/pdf_filter.h
 
@@ -38,11 +38,22 @@ and changed configure.ac torture/Makefile.am torture/test-date.c
   torture/test-obj_dupequality.c torture/test-rectangle.c
   torture/test-stm_openclose.c
 
-Gerdardo E. Gidoni: wrote src/base/pdf-error.c src/base/pdf-error.h
+Gerardo E. Gidoni: wrote src/base/pdf-error.c src/base/pdf-error.h
   src/base/pdf-list.c src/base/pdf-list.h
 and changed src/base/pdf-stm.c src/base/pdf-stm.h src/base/pdf-types.h
   src/object/pdf-obj.c src/object/pdf-obj.h src/Makefile.am
 
-Aleksander Morgado: changed doc/gnupdf.texi doc/gnupdf-tsd.texi
-  src/Makefile.am
+Aleksander Morgado: wrote src/base/pdf-text.h src/base/pdf-text.c
+  src/base/pdf-text-context.h src/base/pdf-text-context.c
+  src/base/pdf-text-encoding.h src/base/pdf-text-encoding.c
+  src/base/pdf-text-host-encoding.h src/base/pdf-text-host-encoding.c
+  src/base/pdf-text-filter.h src/base/pdf-text-filter.c
+  src/base/pdf-text-ucd.h src/base/pdf-text-ucd-wordbreak.h
+  src/base/pdf-text-ucd-wordbreak.c src/base/pdf-text-ucd-gencat.h
+  src/base/pdf-text-ucd-gencat.c src/base/pdf-text-ucd-combclass.h
+  src/base/pdf-text-ucd-combclass.c src/base/pdf-text-ucd-case.h
+  src/base/pdf-text-case.c
+and changed doc/gnupdf.texi doc/gnupdf-tsd.texi configure.ac src/Makefile.am
+  src/base/pdf-base.h src/base/pdf-error.c src/base/pdf-types.h
+  
 

@@ -74,6 +74,7 @@ typedef enum
         PDF_EINVRANGE,
         PDF_ETEXTENC,
         PDF_ENOMATCH,
+        PDF_EINVAL,
         PDF_STATUS_ITEMS
 } pdf_status_t;
 

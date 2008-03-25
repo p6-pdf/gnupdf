@@ -1,5 +1,56 @@
 2008-03-25  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
+	* src/base/pdf-text.h: New file.
+
+	* src/base/pdf-text.c: New file.
+
+	* src/base/pdf-text-context.h: New file.
+
+	* src/base/pdf-text-context.c: New file.
+
+	* src/base/pdf-text-encoding.h: New file.
+
+	* src/base/pdf-text-encoding.c: New file.
+
+	* src/base/pdf-text-host-encoding.h: New file.
+
+	* src/base/pdf-text-host-encoding.c: New file.
+
+	* src/base/pdf-text-filter.h: New file.
+
+	* src/base/pdf-text-filter.c: New file.
+
+	* src/base/pdf-text-ucd.h: New file.
+
+	* src/base/pdf-text-ucd-wordbreak.h: New file.
+
+	* src/base/pdf-text-ucd-wordbreak.c: New file.
+
+	* src/base/pdf-text-ucd-gencat.h: New file.
+
+	* src/base/pdf-text-ucd-gencat.c: New file.
+
+	* src/base/pdf-text-ucd-combclass.h: New file.
+
+	* src/base/pdf-text-ucd-combclass.c: New file.
+
+	* src/base/pdf-text-ucd-case.h: New file.
+
+	* src/base/pdf-text-ucd-case.c: New file.
+
+	* configure.ac: Check for external GNU iconv library.
+
+	* src/Makefile.am: Included compilation of text module, and modified
+	public header creation to include `pdf-text.h'.
+
+	* src/base/pdf-base.h: Included `pdf-text.h' header.
+
+	* src/base/pdf-error.c: Included `PDF_EINVAL' error type.
+
+	* src/base/pdf-types.h: Included 16-bit type definitions and others.
+
+2008-03-25  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
 	* doc/gnupdf-tsd.texi: Updated text module tests implementation.
 
 	* doc/gnupdf.texi: Updated definition of `pdf_text_destroy'.

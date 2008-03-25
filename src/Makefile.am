@@ -41,18 +41,29 @@ STM_MODULE_SOURCES = base/pdf-stm-f-a85.c base/pdf-stm-f-a85.h \
                      base/pdf-stm-file.c base/pdf-stm-file.h \
                      base/pdf-stm-mem.c base/pdf-stm-mem.h \
                      base/pdf-stm.c base/pdf-stm.h
+
 if ZLIB
   STM_MODULE_SOURCES += base/pdf-stm-f-flate.c base/pdf-stm-f-flate.h
 endif
+
+TEXT_MODULE_SOURCES = base/pdf-text-context.c base/pdf-text-context.h \
+                      base/pdf-text-encoding.c base/pdf-text-encoding.h \
+                      base/pdf-text-host-encoding.c base/pdf-text-host-encoding.h \
+                      base/pdf-text-filter.c base/pdf-text-filter.h \
+                      base/pdf-text-ucd-case.c base/pdf-text-ucd-case.h \
+                      base/pdf-text-ucd-combclass.c base/pdf-text-ucd-combclass.h \
+                      base/pdf-text-ucd-wordbreak.c base/pdf-text-ucd-wordbreak.h \
+                      base/pdf-text-ucd-gencat.c base/pdf-text-ucd-gencat.h \
+                      base/pdf-text-ucd.h \
+                      base/pdf-text.c base/pdf-text.h
 
 BASE_LAYER_SOURCES = base/pdf-base.c base/pdf-base.h \
                      $(ALLOC_MODULE_SOURCES) \
                      $(TYPES_MODULE_SOURCES) \
                      $(STM_MODULE_SOURCES) \
                      $(ERROR_MODULE_SOURCES) \
-                     $(LIST_MODULE_SOURCES)
-
-
+                     $(LIST_MODULE_SOURCES) \
+                     $(TEXT_MODULE_SOURCES)
 
 # Library sources
 
@@ -85,8 +96,8 @@ PUBLIC_HDRS = pdf-global.h \
               base/pdf-stm-f-pred.h \
               base/pdf-stm-f-rl.h \
               base/pdf-stm-file.h \
-              base/pdf-stm.h
-
+              base/pdf-stm.h \
+              base/pdf-text.h
 
 pdf.h : $(PUBLIC_HDRS)
 	chmod +x $(top_srcdir)/src/extract-public-hdr

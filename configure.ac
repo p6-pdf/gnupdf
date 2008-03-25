@@ -53,6 +53,9 @@ AC_CHECK_LIB(m,exp,,,)
 AC_CHECK_LIB([check],[suite_create],[have_check=yes],[have_check=no],)
 AM_CONDITIONAL([CHECK], [test "x$have_check" = "xyes"])
 
+AC_CHECK_LIB([iconv],[iconv_open],[have_iconv=yes],[have_iconv=no],)
+AM_CONDITIONAL([ICONV], [test "x$have_iconv" = "xyes"])
+
 dnl Search for required programs for building the sources
 AC_PROG_AWK
 if test x$AWK = "xno"; then

@@ -1,13 +1,13 @@
-/* -*- mode: C -*- Time-stamp: "08/02/27 10:28:07 jemarch"
+/* -*- mode: C -*- Time-stamp: ""
  *
- *       File:         pdf-base.h
- *       Date:         Fri Jul  6 20:22:05 2007
+ *       File:         pdf-text-ucd-combclass.h
+ *       Date:         Sun Mar 09 12:59:01 2008
  *
- *       GNU PDF Library - Header file for the Base Layer
+ *       GNU PDF Library - Unicode Character Database - Combining Class
  *
  */
 
-/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,16 +23,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PDF_BASE_H
-#define PDF_BASE_H
+#ifndef _PDF_TEXT_UCD_COMBCLASS_H
+#define _PDF_TEXT_UCD_COMBCLASS_H
 
-#include <pdf-alloc.h>
-#include <pdf-types.h>
-#include <pdf-error.h>
-#include <pdf-stm.h>
-#include <pdf-fp.h>
+#include <config.h>
+#include <limits.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdint.h>
+#ifdef HAVE_MALLOC_H
+#include <malloc.h>
+#endif /* HAVE_MALLOC_H */
+
+
 #include <pdf-text.h>
 
-#endif /* !PDF_BASE_H */
 
-/* End of pdf_base.h */
+/* Get Combining Class of a given UTF-32HE unicode point */
+pdf_u8_t
+pdf_text_ucd_get_combining_class(const pdf_u32_t character);
+
+
+#endif
+
+/* End of pdf-text-ucd-combclass.h */
