@@ -657,6 +657,153 @@ pdf_text_ucd_wb_get_property(pdf_u32_t character)
 /* Maximum number of code points needed for a word break check */
 #define PDF_TEXT_UCD_MWBCP  4
 
+/* Word break property information */
+typedef struct pdf_text_ucd_wb_s {
+  pdf_char_t *walker;
+  pdf_u32_t  utf32val;
+  enum pdf_text_ucd_wb_property_e wbp;
+} pdf_text_ucd_wb_t;
+
+
+/* RULE WB3: Do not break within CRLF (CR x LF) */
+static pdf_bool_t
+pdf_text_ucd_wb_rule_3(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
+{
+  return (((buffer[1].utf32val == PDF_TEXT_DEF_CR) && \
+          (buffer[2].utf32val == PDF_TEXT_DEF_LF)) ? PDF_TRUE : PDF_FALSE);
+}
+
+/* RULE WB5: Do not break between most letters (ALetter X ALetter) */
+static pdf_bool_t
+pdf_text_ucd_wb_rule_5(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
+{
+  return (((buffer[1].wbp == PDF_TEXT_UCD_WBP_ALetter) && \
+           (buffer[2].wbp == PDF_TEXT_UCD_WBP_ALetter)) ? PDF_TRUE : PDF_FALSE);
+}
+    
+/* RULE WB6: Do not break letters across certain puntuation 
+ *  (ALetter X MidLetter ALetter) */
+static pdf_bool_t
+pdf_text_ucd_wb_rule_6(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
+{
+  return (((buffer[1].wbp == PDF_TEXT_UCD_WBP_ALetter) && \
+           (buffer[2].wbp == PDF_TEXT_UCD_WBP_MidLetter) && \
+           (buffer[3].wbp == PDF_TEXT_UCD_WBP_ALetter)) ? PDF_TRUE : PDF_FALSE);
+}
+
+
+/* RULE WB7: Do not break letters across certain punctuation
+ *  (ALetter MidLetter X ALetter) */
+static pdf_bool_t
+pdf_text_ucd_wb_rule_7(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
+{
+  return (((buffer[0].wbp == PDF_TEXT_UCD_WBP_ALetter) && \
+           (buffer[1].wbp == PDF_TEXT_UCD_WBP_MidLetter) && \
+           (buffer[2].wbp == PDF_TEXT_UCD_WBP_ALetter)) ? PDF_TRUE : PDF_FALSE);
+}
+
+
+/* RULE WB8: Do not break within sequences of digits, or digits adjacent
+ *  to letters (Numeric X Numeric) */
+static pdf_bool_t
+pdf_text_ucd_wb_rule_8(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
+{
+  return (((buffer[1].wbp == PDF_TEXT_UCD_WBP_Numeric) && \
+           (buffer[2].wbp == PDF_TEXT_UCD_WBP_Numeric)) ? PDF_TRUE : PDF_FALSE);
+}
+
+/* RULE WB9: Do not break within sequences of digits, or digits adjacent
+ *  to letters (ALetter X Numeric) */
+static pdf_bool_t
+pdf_text_ucd_wb_rule_9(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
+{
+  return (((buffer[1].wbp == PDF_TEXT_UCD_WBP_ALetter) && \
+           (buffer[2].wbp == PDF_TEXT_UCD_WBP_Numeric)) ? PDF_TRUE : PDF_FALSE);
+}
+
+
+/* RULE WB10: Do not break within sequences of digits, or digits adjacent
+ *  to letters (Numeric X ALetter) */
+static pdf_bool_t
+pdf_text_ucd_wb_rule_10(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
+{
+  return (((buffer[0].wbp == PDF_TEXT_UCD_WBP_Numeric) && \
+           (buffer[1].wbp == PDF_TEXT_UCD_WBP_ALetter)) ? PDF_TRUE : PDF_FALSE);
+}
+
+
+/* RULE WB11: Do not break within sequences such as "3.2"
+ *  (Numeric MidNum X Numeric) */
+static pdf_bool_t
+pdf_text_ucd_wb_rule_11(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
+{
+  return (((buffer[0].wbp == PDF_TEXT_UCD_WBP_Numeric) && \
+           (buffer[1].wbp == PDF_TEXT_UCD_WBP_MidNum) && \
+           (buffer[2].wbp == PDF_TEXT_UCD_WBP_Numeric)) ? PDF_TRUE : PDF_FALSE);
+}
+
+/* RULE WB12: Do not break within sequences such as "3.2"
+ *  (Numeric X MidNum Numeric) */
+static pdf_bool_t
+pdf_text_ucd_wb_rule_12(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
+{
+  return (((buffer[1].wbp == PDF_TEXT_UCD_WBP_Numeric) && \
+           (buffer[2].wbp == PDF_TEXT_UCD_WBP_MidNum) && \
+           (buffer[3].wbp == PDF_TEXT_UCD_WBP_Numeric)) ? PDF_TRUE : PDF_FALSE);
+}
+
+/* RULE WB13: Do not break between Katakana */
+static pdf_bool_t
+pdf_text_ucd_wb_rule_13(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
+{
+  return (((buffer[1].wbp == PDF_TEXT_UCD_WBP_Katakana) && \
+           (buffer[2].wbp == PDF_TEXT_UCD_WBP_Katakana)) ? PDF_TRUE :PDF_FALSE);
+}
+
+/* RULE WB13a: Do not break from extenders
+ *  ((ALetter | Numeric | Katakana | ExtendNumLet) X ExtendNumLet) */
+static pdf_bool_t
+pdf_text_ucd_wb_rule_13a(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
+{
+  return ((((buffer[1].wbp == PDF_TEXT_UCD_WBP_ALetter) || \
+            (buffer[1].wbp == PDF_TEXT_UCD_WBP_Numeric) || \
+            (buffer[1].wbp == PDF_TEXT_UCD_WBP_Katakana) || \
+            (buffer[1].wbp == PDF_TEXT_UCD_WBP_ExtendNumLet)) && \
+           (buffer[2].wbp == PDF_TEXT_UCD_WBP_ExtendNumLet)) ? \
+          PDF_TRUE : PDF_FALSE);
+}
+
+/* RULE WB13b: Do not break from extenders
+ *  (ExtendNumLet) X (ALetter | Numeric | Katakana ) */
+static pdf_bool_t
+pdf_text_ucd_wb_rule_13b(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
+{
+  return (((buffer[1].wbp == PDF_TEXT_UCD_WBP_ExtendNumLet) && \
+           ((buffer[2].wbp == PDF_TEXT_UCD_WBP_ALetter) || \
+            (buffer[2].wbp == PDF_TEXT_UCD_WBP_Numeric) || \
+            (buffer[2].wbp == PDF_TEXT_UCD_WBP_Katakana))) ? \
+          PDF_TRUE : PDF_FALSE);
+}
+
+/* Check rules and stop if any of them is true (meaning that shouldn't be a
+ *  word break) */
+static pdf_bool_t
+pdf_text_ucd_wb_check_rules(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
+{
+  return (((pdf_text_ucd_wb_rule_3(buffer)) || \
+           (pdf_text_ucd_wb_rule_5(buffer)) || \
+           (pdf_text_ucd_wb_rule_6(buffer)) || \
+           (pdf_text_ucd_wb_rule_7(buffer)) || \
+           (pdf_text_ucd_wb_rule_8(buffer)) || \
+           (pdf_text_ucd_wb_rule_9(buffer)) || \
+           (pdf_text_ucd_wb_rule_10(buffer)) || \
+           (pdf_text_ucd_wb_rule_11(buffer)) || \
+           (pdf_text_ucd_wb_rule_12(buffer)) || \
+           (pdf_text_ucd_wb_rule_13(buffer)) || \
+           (pdf_text_ucd_wb_rule_13a(buffer)) || \
+           (pdf_text_ucd_wb_rule_13b(buffer))) ? PDF_TRUE : PDF_FALSE);
+}
+
 
 /* Word boundary search algorithm, based on Unicode Standard Annex #29
  *  "Text Boundaries".
@@ -681,11 +828,7 @@ pdf_text_ucd_wb_detect_next(const pdf_char_t *current,
    *   the left, so that code point in [0] disappears and a new code point
    *   enters in [3], and the word break is again checked between [1] and [2].
    */
-  struct pdf_text_ucd_wb_s {
-    pdf_char_t *walker;
-    pdf_u32_t  utf32val;
-    enum pdf_text_ucd_wb_property_e wbp;
-  } buffer [PDF_TEXT_UCD_MWBCP];
+  pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP];
 
   pdf_u32_t i;
   pdf_size_t n_bytes;
@@ -734,105 +877,10 @@ pdf_text_ucd_wb_detect_next(const pdf_char_t *current,
   while((!found) && \
         (n_bytes >= 8))
     {
-      /* RULE WB3: Do not break within CRLF (CR x LF) */
-      if((buffer[1].utf32val == PDF_TEXT_DEF_CR) && \
-         (buffer[2].utf32val == PDF_TEXT_DEF_LF))
+      /* If any of the rules returns true, don't break word */
+      if(pdf_text_ucd_wb_check_rules(buffer))
         {
-          found = 0; /* Not a wb */
-        }
-      /* RULE WB5: Do not break between most letters (ALetter X ALetter) */
-      else if((buffer[1].wbp == PDF_TEXT_UCD_WBP_ALetter) && \
-              (buffer[2].wbp == PDF_TEXT_UCD_WBP_ALetter))
-        {
-          found = 0; /* Not a wb! */
-        }
-      /* RULE WB6: Do not break letters across certain puntuation 
-       *  (ALetter X MidLetter ALetter) */
-      else if((buffer[1].wbp == PDF_TEXT_UCD_WBP_ALetter) && \
-              (buffer[2].wbp == PDF_TEXT_UCD_WBP_MidLetter) && \
-              (buffer[3].wbp == PDF_TEXT_UCD_WBP_ALetter))
-        {
-          found = 0; /* Not a wb! */
-        }
-      /* RULE WB7: Do not break letters across certain punctuation
-       *  (ALetter MidLetter X ALetter) */
-      else if((buffer[0].wbp == PDF_TEXT_UCD_WBP_ALetter) && \
-              (buffer[1].wbp == PDF_TEXT_UCD_WBP_MidLetter) && \
-              (buffer[2].wbp == PDF_TEXT_UCD_WBP_ALetter))
-        {
-          found = 0; /* Not a wb! */
-        }
-      /* RULE WB8: Do not break within sequences of digits, or digits adjacent
-       *  to letters (Numeric X Numeric) */
-      else if((buffer[1].wbp == PDF_TEXT_UCD_WBP_Numeric) && \
-              (buffer[2].wbp == PDF_TEXT_UCD_WBP_Numeric))
-        {
-          found = 0; /* Not a wb! */
-        }
-      /* RULE WB9: Do not break within sequences of digits, or digits adjacent
-       *  to letters (ALetter X Numeric) */
-      else if((buffer[1].wbp == PDF_TEXT_UCD_WBP_ALetter) && \
-              (buffer[2].wbp == PDF_TEXT_UCD_WBP_Numeric))
-        {
-          found = 0; /* Not a wb! */
-        }
-      /* RULE WB10: Do not break within sequences of digits, or digits adjacent
-       *  to letters (Numeric X ALetter) */
-      else if((buffer[0].wbp == PDF_TEXT_UCD_WBP_Numeric) && \
-              (buffer[1].wbp == PDF_TEXT_UCD_WBP_ALetter))
-        {
-          found = 0; /* Not a wb! */
-        }
-      /* RULE WB11: Do not break within sequences such as "3.2"
-       *  (Numeric MidNum X Numeric) */
-      else if((buffer[0].wbp == PDF_TEXT_UCD_WBP_Numeric) && \
-              (buffer[1].wbp == PDF_TEXT_UCD_WBP_MidNum) && \
-              (buffer[2].wbp == PDF_TEXT_UCD_WBP_Numeric))
-        {
-          found = 0; /* Not a wb! */
-        }
-      /* RULE WB12: Do not break within sequences such as "3.2"
-       *  (Numeric X MidNum Numeric) */
-      else if((buffer[1].wbp == PDF_TEXT_UCD_WBP_Numeric) && \
-              (buffer[2].wbp == PDF_TEXT_UCD_WBP_MidNum) && \
-              (buffer[3].wbp == PDF_TEXT_UCD_WBP_Numeric))
-        {
-          found = 0; /* Not a wb! */
-        }
-      /* RULE WB13: Do not break between Katakana */
-      else if((buffer[1].wbp == PDF_TEXT_UCD_WBP_Katakana) && \
-              (buffer[2].wbp == PDF_TEXT_UCD_WBP_Katakana))
-        {
-          found = 0; /* Not a wb! */
-        }
-      /* RULE WB13a: Do not break from extenders
-       *  ((ALetter | Numeric | Katakana | ExtendNumLet) X ExtendNumLet) */
-      else if(((buffer[1].wbp == PDF_TEXT_UCD_WBP_ALetter) || \
-               (buffer[1].wbp == PDF_TEXT_UCD_WBP_Numeric) || \
-               (buffer[1].wbp == PDF_TEXT_UCD_WBP_Katakana) || \
-               (buffer[1].wbp == PDF_TEXT_UCD_WBP_ExtendNumLet)) && \
-              (buffer[2].wbp == PDF_TEXT_UCD_WBP_ExtendNumLet))
-        {
-          found = 0; /* Not a wb! */
-        }
-      /* RULE WB13b: Do not break from extenders
-       *  (ExtendNumLet) X (ALetter | Numeric | Katakana ) */
-      else if((buffer[1].wbp == PDF_TEXT_UCD_WBP_ExtendNumLet) && \
-              ((buffer[2].wbp == PDF_TEXT_UCD_WBP_ALetter) || \
-               (buffer[2].wbp == PDF_TEXT_UCD_WBP_Numeric) || \
-               (buffer[2].wbp == PDF_TEXT_UCD_WBP_Katakana)))
-        {
-          found = 0; /* Not a wb! */
-        }
-      /* RULE WB14: Otherwise, break everywhere (including around ideographs) */
-      else
-        {
-          found = 1; /* wb found!!! */
-        }
-      
-      /* If word break is not found, continue with next UTF-32 point */
-      if(!found)
-        {
+          /* If word break is not found, continue with next UTF-32 point */
           /* Update number of bytes pending */
           n_bytes -= 4;
 
@@ -851,6 +899,12 @@ pdf_text_ucd_wb_detect_next(const pdf_char_t *current,
               /* Get Word-Break property value from character */
               buffer[3].wbp =pdf_text_ucd_wb_get_property(buffer[3].utf32val);
             }
+        }
+      else
+        {
+          /* RULE WB14: Otherwise, break everywhere (including around
+           * ideographs) */
+          found = 1;
         }
     }
  
