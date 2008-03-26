@@ -3309,109 +3309,170 @@ static const pdf_text_ucd_condition_t ucd_condition_list[UCD_SC_COND_N] = {
 };
 
 
+/* Get pointers to next condition start. It also creates a NUL terminated 
+ * string by putting a '\0' at the end of the condition. Returns PDF_TRUE if
+ * last condition. */
+static pdf_bool_t
+pdf_text_ucd_special_case_get_next_condition(pdf_char_t **condition_start,
+                                             pdf_char_t **condition_stop)
+{
+  pdf_char_t *field_start;
+  pdf_char_t *field_stop;
+  
+  if((condition_start == NULL) || \
+     (condition_stop == NULL))
+    {
+      return PDF_FALSE;
+    }
+
+  /* Initiate field start */
+  field_start = *condition_start;
+
+  /* Skip leading white chars, if any */
+  while(*field_start == ' ')
+    {
+      field_start++;
+    }
+  
+  /* Look for field stop */
+  field_stop = field_start;
+  while((*field_stop != ' ') && (*field_stop != '\0'))
+    {
+      field_stop++;
+    }
+  
+  /* Set output pointers */
+  *condition_start = field_start;
+  *condition_stop = field_stop;
+  
+  /* Reset field end and create NUL-terminated string (if not already) */
+  if(*field_stop == ' ')
+    {
+      *field_stop = '\0';
+      return PDF_FALSE;
+    }
+  else
+    {
+      /* Last condition found */
+      return PDF_TRUE;
+    }
+}
+
+
+/* Check a single given condition (NUL-terminate string) against the casing
+ * context */
+static pdf_status_t
+pdf_text_ucd_special_case_check_single(const pdf_text_ucd_context_t *context,
+                                       const pdf_char_t *condition,
+                                       pdf_bool_t *p_fulfilled)
+{
+  extern const pdf_text_ucd_condition_t ucd_condition_list[UCD_SC_COND_N];
+  pdf_bool_t negate_condition = PDF_FALSE;
+  pdf_char_t *walker = (pdf_char_t *)condition;
+  
+  /* Check if it is a Negative condition (Preceded by 'Not_') */
+  if((strlen((char *)walker) > 4) && \
+     (strncmp((char *)walker, "Not_", 4) == 0))
+    {
+      negate_condition = PDF_TRUE;
+      walker += 4;
+    }
+  
+  /* Check if what we have is a LANGUAGE ID (2 characters) */
+  if(strlen((char *)walker) == 2)
+    {
+      pdf_bool_t condition_ok;
+      condition_ok = pdf_text_ucd_check_lang(walker, context);
+      /* Condition fulfilled if only one of condition_ok and negate_condition
+       *  is true (XOR). */
+      *p_fulfilled = condition_ok ^ negate_condition;
+      return PDF_OK;
+    }
+  else
+    {
+      /* Check conditions depending on CONTEXT */
+      short i = 0;
+      while(i < UCD_SC_COND_N)
+        {
+          if(strcmp((char *)walker,(char *)ucd_condition_list[i].cond_name)==0)
+            {
+              pdf_bool_t condition_ok;
+              /* Condition found! */
+              condition_ok = ucd_condition_list[i].cond_func(context);
+              /* Condition fulfilled if only one of condition_ok and 
+               *  negate_condition is true (XOR). */
+              *p_fulfilled = condition_ok ^ negate_condition;
+              return PDF_OK;
+            }
+          /* Update condition walker to check the next one... */
+          ++i;
+        }
+    }
+
+  /* Received condition is not valid */
+  return PDF_EBADDATA;
+}
+
+
+/* Function to parse the condition list from the UCD, and check the found
+ * conditions against the given casing context */
 static pdf_bool_t
 pdf_text_ucd_special_case_conditions(const pdf_text_ucd_context_t *context,
                                      const pdf_char_t *condition_list)
 {
-  extern const pdf_text_ucd_condition_t ucd_condition_list[UCD_SC_COND_N];
-  
-  
-  /* Check all possible conditions */
-  pdf_char_t *walker = (pdf_char_t *)condition_list;
-  pdf_char_t *field_end;
+  pdf_char_t *walker;
+  pdf_char_t *internal_condition_list;
   pdf_bool_t is_last;
-  pdf_bool_t negate_condition = PDF_FALSE;
-  pdf_bool_t condition_ok = PDF_FALSE;
-  
+
   if((condition_list == NULL) || \
      (context == NULL) || \
-     (context->unicode_point == NULL))
+     (context->unicode_point == NULL) || \
+     (strlen((char *)condition_list) == 0))
     {
       return PDF_FALSE; /* Default is the condition not being fulfilled */ 
     }
+  
+  /* Copy condition list, as this function will modify it to create NUL
+   * terminated strings per condition */
+  internal_condition_list = (pdf_char_t *) \
+                            pdf_alloc(strlen((char *)condition_list));
+  if(internal_condition_list == NULL)
+    {
+      PDF_DEBUG_BASE("Problem dupping condition list");
+      return PDF_FALSE;
+    }
+  memcpy(internal_condition_list,condition_list,strlen((char *)condition_list));
+
+  /* Initiate walker */
+  walker = internal_condition_list;
 
   /* Walk the whole character string, until last NUL char */
   is_last = 0;
   while((!is_last) && \
-        (*walker != 0))
+        (*walker != '\0'))
     {
-      /* Reset flags */
-      condition_ok = PDF_FALSE;
-      negate_condition = PDF_FALSE;
-
-      /* Skip leading white chars, if any */
-      while(*walker == ' ') walker++;
+      pdf_char_t *field_end;
+      pdf_bool_t fulfilled;
       
-      /* Look for field end */
-      field_end = walker;
-      while((*field_end != ' ') && (*field_end != 0)) field_end++;
-
-      /* Reset field end and create NUL-terminated string */
-      if(*field_end == ' ')
+      /* Get NUL-terminated string to next condition */
+      is_last = pdf_text_ucd_special_case_get_next_condition(&walker, \
+                                                             &field_end);
+      /* Check single condition */
+      if(pdf_text_ucd_special_case_check_single(context, \
+                                                walker, \
+                                                &fulfilled) != PDF_OK)
         {
-          *field_end = 0;
+          /* Invalid condition!!! */
+          PDF_DEBUG_BASE("Invalid condition in Special Case check: '%s'",
+                         (char *)walker);
+          return PDF_FALSE;
         }
-      else
+      
+      /* Check if single condition was fulfilled */
+      if(!fulfilled)
         {
-          is_last = PDF_TRUE;
-        }
-
-      /* Check if it is a Negative condition (Preceded by 'Not_') */
-      if((strlen((char *)walker) > 4) && \
-         (strncmp((char *)walker, "Not_", 4) == 0))
-        {
-          negate_condition = PDF_TRUE;
-          walker += 4;
-        }
-
-      /* Check if what we have is a LANGUAGE ID (2 characters) */
-      if(strlen((char *)walker) == 2)
-        {
-          condition_ok = pdf_text_ucd_check_lang(walker, context);
-          if((condition_ok && negate_condition) || \
-             (!condition_ok && !negate_condition))
-            {
-              return PDF_FALSE;
-            }
-        }
-      /* Check conditions depending on CONTEXT */
-      else
-        {
-          short i = 0;
-          condition_ok = PDF_FALSE;
-          while(i < UCD_SC_COND_N)
-            {
-               if(strcmp((char *)walker, \
-                         (char *)ucd_condition_list[i].cond_name) == 0)
-                 {
-                   /* Condition found! */
-                   condition_ok = ucd_condition_list[i].cond_func(context);
-                   if((condition_ok && negate_condition) || \
-                      (!condition_ok && !negate_condition))
-                     {
-                       /* Condition requirements not fulfilled, return FALSE */
-                       return PDF_FALSE;
-                     }
-                   /* Stop the loop, and reset the condition_ok flag to identify
-                    *  that the condition was found and it was fulfilled */
-                   i = UCD_SC_COND_N;
-                   condition_ok = PDF_TRUE;
-                 }
-              else
-                {
-                  /* Update condition walker to check the next one... */
-                  ++i;
-                }
-            }
-          
-          /* Check if condition was found and it was fulfilled. If not, this
-           *   means that an invalid condition was received */
-          if(!condition_ok)
-            {
-              /* Invalid condition!!! */
-              fprintf(stderr,"Invalid condition in Special Case check\n");
-              return PDF_FALSE;
-            }
+          pdf_dealloc(internal_condition_list);
+          return PDF_FALSE;
         }
 
       /* Update walker if not last */
@@ -3422,6 +3483,7 @@ pdf_text_ucd_special_case_conditions(const pdf_text_ucd_context_t *context,
     }
 
   /* If arrived here, this means that all the conditions were fulfilled */
+  pdf_dealloc(internal_condition_list);
   return PDF_TRUE;
 }
 
