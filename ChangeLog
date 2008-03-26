@@ -1,3 +1,8 @@
+2008-03-26  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
+	* src/base/pdf-text.c (pdf_text_get_unicode): Create header for unicode
+	strings in a different function, to avoid a high cyclomatic complexity.
+
 2008-03-25  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
 	* src/base/pdf-text-ucd-wordbreak.c (pdf_text_ucd_wb_detect_next): Check

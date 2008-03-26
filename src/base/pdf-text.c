@@ -52,6 +52,11 @@
 #define PDF_TEXT_LCMAXL     8
 
 
+/* Longest header length when requesting a unicode string with options is that
+ * of UTF-16BE with BOM and lang/country information: 2bytes-BOM + 
+ * 8bytes-lang/country = 10 bytes (+ 1 NUL byte) */
+#define PDF_TEXT_USHMAXL    11
+
 /* ---------------- Static (private) functions prototypes ------------------- */
 
 
@@ -73,6 +78,27 @@ pdf_text_get_lang_from_utf16be(pdf_text_t element,
                                const pdf_char_t *str_in,
                                const pdf_size_t str_in_length);
 
+/* Function to get the header of a unicode string as requested in the
+ * `options' field when calling `pdf_text_get_unicode'. The header can be:
+ *  - BOM
+ *  - BOM + Lang/Country info (only if UTF-16BE requested)
+ *  - Lang/Country info (only if UTF-16BE requested)
+ */
+static pdf_status_t
+pdf_text_get_unicode_string_header(pdf_char_t header[PDF_TEXT_USHMAXL],
+                                   pdf_size_t *header_length,
+                                   const enum pdf_text_unicode_encoding_e enc,
+                                   const pdf_u32_t options,
+                                   const pdf_char_t *language,
+                                   const pdf_char_t *country);
+
+/* Function to convert a given Unicode Host Endian enumeration to the `real'
+ *  endianness (BE or LE). If a non-HE enumeration is passed to the function,
+ *  it will return the same enumeration value unchanged */
+static enum pdf_text_unicode_encoding_e
+pdf_text_transform_he_to_unicode_encoding(enum pdf_text_unicode_encoding_e enc);
+
+/* Function to compare two given words */
 static pdf_32_t
 pdf_text_compare_words(const pdf_char_t *word1,
                        const pdf_size_t size1,
@@ -606,22 +632,7 @@ pdf_text_get_unicode (pdf_char_t **contents,
     }
 
   /* If host endianness required, check it and convert input encoding */
-  new_enc = enc;
-  if((new_enc == PDF_TEXT_UTF16_HE) || \
-     (new_enc == PDF_TEXT_UTF32_HE))
-    {
-      switch(pdf_text_context_get_host_endianness())
-      {
-        case PDF_TEXT_BIG_ENDIAN:
-          new_enc += PDF_TEXT_HE_TO_BE;
-          break;
-        case PDF_TEXT_LITTLE_ENDIAN:
-          new_enc += PDF_TEXT_HE_TO_LE;
-          break;
-        default:
-          return PDF_EINVAL;
-      }
-    }
+  new_enc = pdf_text_transform_he_to_unicode_encoding(enc);
 
   /* If text is empty, set empty string */
   if((text->data == NULL) || \
@@ -664,89 +675,45 @@ pdf_text_get_unicode (pdf_char_t **contents,
   /* Check if specific options were requested */
   if(options != PDF_TEXT_UNICODE_NO_OPTION)
     {
-      short bom_bytes;
-      short lang_bytes;
-      pdf_text_bom_t bom  = pdf_text_get_unicode_bom(new_enc);
+      pdf_char_t header[PDF_TEXT_USHMAXL];
+      pdf_size_t header_size = 0;
+      /* Clear header array */
+      memset(&(header[0]), 0, PDF_TEXT_USHMAXL);
+      /* Get requested header (BOM and/or lang/country info) */
+      pdf_text_get_unicode_string_header(header,
+                                         &header_size,
+                                         new_enc,
+                                         options,
+                                         pdf_text_get_language(text),
+                                         pdf_text_get_country(text));
       
-      /* Check if BOM really requested */
-      bom_bytes = 0;
-      if(options & PDF_TEXT_UNICODE_WITH_BOM)
+      if(header_size > 0)
         {
-          bom_bytes = bom.bom_bytes;
-        }
-      
-      /* Check if Lang/Country code really requested (only for UTF16BE!!) */
-      lang_bytes = 0;
-      if((enc == PDF_TEXT_UTF16_BE) && \
-         (options & PDF_TEXT_UTF16BE_WITH_LANGCODE) && \
-         (strlen((char *)text->lang) == 2))
-        {
-          /* At least language is available, but country may also be
-           *  available */
-          lang_bytes = (strlen((char *)text->country) == 2) ? PDF_TEXT_LCMAXL: \
-                                                              PDF_TEXT_LCMINL;
-        }
-      
-      /* Modify data array, if needed, to add Language/Country info and/or
-       *  BOM */
-      if((lang_bytes + bom_bytes) != 0)
-        {
-          pdf_char_t *new_out_data;
-          pdf_char_t *walker;
+          pdf_char_t *new_out_data = NULL;
           
-          new_out_data = (pdf_char_t *)pdf_alloc(out_length + lang_bytes + \
-                                                 bom_bytes);
+          /* Allocate memory for new string */
+          new_out_data = (pdf_char_t *)pdf_alloc(out_length + header_size);
           if(new_out_data == NULL)
             {
               return PDF_ENOMEM;
             }
-          walker = new_out_data;
-          
-          /* Add BOM */
-          if(bom_bytes > 0)
-            {
-              memcpy(walker, bom.bom_data, bom_bytes);       
-              /* Update walker */
-              walker += bom_bytes;
-            }
-          
-          /* Add Lang/Country */
-          if(lang_bytes > 0)
-            {
-              /* Language and Country */
-              if(lang_bytes == PDF_TEXT_LCMAXL)
-                {
-                  sprintf((char *)walker, "%c%c%2s%2s%c%c",
-                          PDF_TEXT_LCI_0,PDF_TEXT_LCI_1,
-                          text->lang, text->country,
-                          PDF_TEXT_LCI_0,PDF_TEXT_LCI_1);
-                }
-              /* Language only */
-              else
-                {
-                  sprintf((char *)walker, "%c%c%2s%c%c",
-                          PDF_TEXT_LCI_0,PDF_TEXT_LCI_1,
-                          text->lang,
-                          PDF_TEXT_LCI_0,PDF_TEXT_LCI_1);
-                }
-              walker += lang_bytes;
-            }
-          
-          /* And copy the contents to the output array */
-          if((out_length > 0) && \
-             (out_data != NULL))
-            {
-              memcpy(walker, out_data, out_length);
-            }
-          
-          /* Reset output data array */
+          /* Store header */
+          memcpy(new_out_data, &header[0], header_size);
+          /* Store unicode data */
+          memcpy(&new_out_data[header_size], out_data, out_length);
+          /* Reset output data array, if any */
           if(out_data != NULL)
             {
               pdf_dealloc(out_data);
             }
           out_data = new_out_data;
-          out_length += (lang_bytes + bom_bytes);
-        }      
+          out_length += (header_size);
+        }  
+      else
+        {
+          PDF_DEBUG_BASE("Invalid unicode option requested (%u)",
+                         (unsigned int)options);
+        }
     }
   
   /* Only store in the output element if and only if everything went ok */
@@ -886,7 +853,7 @@ pdf_text_set_unicode (pdf_text_t text,
   pdf_status_t ret_code = PDF_ETEXTENC;
   pdf_char_t *temp_data;
   pdf_size_t temp_size;
-  enum pdf_text_unicode_encoding_e new_enc = enc;
+  enum pdf_text_unicode_encoding_e new_enc;
   
   if((str == NULL) || \
      (size == 0))
@@ -895,21 +862,7 @@ pdf_text_set_unicode (pdf_text_t text,
     }
   
   /* If host endianness required, check it and convert input encoding */
-  if((new_enc == PDF_TEXT_UTF16_HE) || \
-     (new_enc == PDF_TEXT_UTF32_HE))
-    {
-      switch(pdf_text_context_get_host_endianness())
-      {
-        case PDF_TEXT_BIG_ENDIAN:
-          new_enc += PDF_TEXT_HE_TO_BE;
-          break;
-        case PDF_TEXT_LITTLE_ENDIAN:
-          new_enc += PDF_TEXT_HE_TO_LE;
-          break;
-        default:
-          return PDF_ETEXTENC;
-      }
-    }
+  new_enc = pdf_text_transform_he_to_unicode_encoding(enc);
   
   switch(new_enc)
   {
@@ -1532,6 +1485,101 @@ pdf_text_get_lang_from_utf16be(pdf_text_t element,
         }
     }
   
+  return PDF_OK;
+}
+
+static enum pdf_text_unicode_encoding_e
+pdf_text_transform_he_to_unicode_encoding(enum pdf_text_unicode_encoding_e enc)
+{
+  if((enc == PDF_TEXT_UTF16_HE) || \
+     (enc == PDF_TEXT_UTF32_HE))
+    {
+      switch(pdf_text_context_get_host_endianness())
+      {
+        case PDF_TEXT_BIG_ENDIAN:
+          enc += PDF_TEXT_HE_TO_BE;
+          break;
+        case PDF_TEXT_LITTLE_ENDIAN:
+          enc += PDF_TEXT_HE_TO_LE;
+          break;
+        default:
+          return PDF_EINVAL;
+      }
+    }
+  return enc;
+}
+
+
+static pdf_status_t
+pdf_text_get_unicode_string_header(pdf_char_t header[PDF_TEXT_USHMAXL],
+                                   pdf_size_t *header_length,
+                                   const enum pdf_text_unicode_encoding_e enc,
+                                   const pdf_u32_t options,
+                                   const pdf_char_t *language,
+                                   const pdf_char_t *country)
+{
+  short bom_bytes;
+  short lang_bytes;
+  pdf_text_bom_t bom  = pdf_text_get_unicode_bom(enc);
+  
+  /* Check if BOM really requested */
+  bom_bytes = 0;
+  if(options & PDF_TEXT_UNICODE_WITH_BOM)
+    {
+      bom_bytes = bom.bom_bytes;
+    }
+  
+  /* Check if Lang/Country code really requested (only for UTF16BE!!) */
+  lang_bytes = 0;
+  if((enc == PDF_TEXT_UTF16_BE) && \
+     (options & PDF_TEXT_UTF16BE_WITH_LANGCODE) && \
+     (strlen((char *)language) == 2))
+    {
+      /* At least language is available, but country may also be
+       *  available */
+      lang_bytes = (strlen((char *)country) == 2) ? PDF_TEXT_LCMAXL: \
+      PDF_TEXT_LCMINL;
+    }
+  
+  /* Modify header array, if needed, to add Language/Country info and/or
+   *  BOM */
+  *header_length = lang_bytes + bom_bytes;
+  if((*header_length > 0) && \
+     (*header_length < PDF_TEXT_USHMAXL)) /* (just in case) */
+    {
+      pdf_char_t *walker;
+      walker = &header[0];
+      
+      /* Add BOM */
+      if(bom_bytes > 0)
+        {
+          memcpy(walker, bom.bom_data, bom_bytes);       
+          /* Update walker */
+          walker += bom_bytes;
+        }
+      
+      /* Add Lang/Country */
+      if(lang_bytes > 0)
+        {
+          /* Language and Country */
+          if(lang_bytes == PDF_TEXT_LCMAXL)
+            {
+              sprintf((char *)walker, "%c%c%2s%2s%c%c",
+                      PDF_TEXT_LCI_0,PDF_TEXT_LCI_1,
+                      language, country,
+                      PDF_TEXT_LCI_0,PDF_TEXT_LCI_1);
+            }
+          /* Language only */
+          else
+            {
+              sprintf((char *)walker, "%c%c%2s%c%c",
+                      PDF_TEXT_LCI_0,PDF_TEXT_LCI_1,
+                      language,
+                      PDF_TEXT_LCI_0,PDF_TEXT_LCI_1);
+            }
+          walker += lang_bytes;
+        }
+    }
   return PDF_OK;
 }
 
