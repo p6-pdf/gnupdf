@@ -183,6 +183,15 @@ fi
 
 # end debug_*_mode
 
+dnl Get system endianness information
+AC_C_BIGENDIAN()
+if test "x$ac_cv_c_bigendian" = "xno"; then
+  AC_DEFINE([PDF_IS_BIG_ENDIAN], [0], [Big endian?])
+else
+  AC_DEFINE([PDF_IS_BIG_ENDIAN], [1], [Big endian?])
+fi
+
+
 dnl Generate output files
 AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile torture/unit/Makefile doc/Makefile utils/Makefile prmgt/Makefile prmgt/pmccabe2html src/extract-public-hdr)
 

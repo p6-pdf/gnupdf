@@ -75,35 +75,19 @@ static const struct pdf_text_eol_s pdf_text_eol_types [PDF_TEXT_EOLMAX] = {
 
 
 /* Function to detect the endianness of the system. Can be either Big Endian
- *  (like PPC systems) or Little Endian (like Intel systems) */
+ *  (like PPC systems) or Little Endian (like Intel systems). PDF_IS_BIG_ENDIAN
+ *  is filled in config.h at configure level. */
 static pdf_status_t
 pdf_text_detect_host_endianness(void)
 {
-  extern pdf_text_context_t text_context;
-  union {
-    pdf_u16_t  i;
-    char c[2];
-  } test;
-  
-  test.i = 0x6162;
-  if(strncmp((char *)(&test.c[0]),"ab",2)==0)
-    {
-      PDF_DEBUG_BASE("TextContext: Host Endianness is 'Big Endian'");
-      text_context.host_endianness = PDF_TEXT_BIG_ENDIAN;
-      return PDF_OK;
-    }
-  else if(strncmp((char *)(&test.c[0]),"ba",2)==0)
-    {
-      PDF_DEBUG_BASE("TextContext: Host Endianness is 'Little Endian'");
-      text_context.host_endianness =  PDF_TEXT_LITTLE_ENDIAN;
-      return PDF_OK;
-    }
-  else
-    {
-      PDF_DEBUG_BASE("TextContext: Unknown Host Endianness");
-      text_context.host_endianness =  PDF_TEXT_UNKNOWN_ENDIAN;
-      return PDF_ETEXTENC;
-    }
+#if PDF_IS_BIG_ENDIAN
+  PDF_DEBUG_BASE("TextContext: Host Endianness is 'Big Endian'");
+  text_context.host_endianness = PDF_TEXT_BIG_ENDIAN;
+#else
+  PDF_DEBUG_BASE("TextContext: Host Endianness is 'Little Endian'");
+  text_context.host_endianness =  PDF_TEXT_LITTLE_ENDIAN;
+#endif
+  return PDF_OK;
 }
 
 
@@ -250,14 +234,6 @@ pdf_text_context_init(void)
     }
 
   return PDF_OK;
-}
-
-pdf_bool_t
-pdf_text_context_big_endian_host(void)
-{
-  extern pdf_text_context_t text_context;
-  return ((text_context.host_endianness == PDF_TEXT_BIG_ENDIAN) ? \
-          PDF_TRUE : PDF_FALSE);
 }
 
 enum pdf_endianness_e

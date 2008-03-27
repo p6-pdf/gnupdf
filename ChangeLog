@@ -1,3 +1,53 @@
+2008-03-27  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
+	* src/base/pdf-text.c (pdf_text_transform_he_to_unicode_encoding): Use
+	`PDF_TEXT_BIG_ENDIAN' from`config.h' to check host endianness.
+
+	* src/base/pdf-text-host-encoding.c (pdf_text_host_encoding_is_available):
+	Use `PDF_TEXT_BIG_ENDIAN' from`config.h' to check host endianness.
+	(pdf_text_utf32he_to_host): Use `PDF_TEXT_BIG_ENDIAN' from`config.h'
+	to check host endianness.
+	(pdf_text_host_to_utf32he): Use `PDF_TEXT_BIG_ENDIAN' from`config.h'
+	to check host endianness.
+
+	* src/base/pdf-text-encoding.h (pdf_text_utf32he_to_utf16le): Function
+	changed to macro.
+	(pdf_text_utf32he_to_utf16be): Function changed to macro.
+	(pdf_text_utf16le_to_utf32he): Function changed to macro.
+	(pdf_text_utf16be_to_utf32he): Function changed to macro.
+	(pdf_text_utf32be_to_utf32he): Function changed to macro.
+	(pdf_text_utf32le_to_utf32he): Function changed to macro.
+	(pdf_text_utf32he_to_utf32be): Function changed to macro.
+	(pdf_text_utf32he_to_utf32le): Function changed to macro.
+	(pdf_text_utf32he_to_utf32he): Function added.
+	(pdf_text_utf16he_to_utf32he): Function added.
+	(pdf_text_utf32he_to_utf16he): Function added.
+	
+	* src/base/pdf-text-encoding.c (pdf_text_check_unicode_bom): Use
+	`AC_C_BIGENDIAN' macro.
+	(pdf_text_utf32he_to_utf16le): Function removed.
+	(pdf_text_utf32he_to_utf16be): Function removed.
+	(pdf_text_utf16le_to_utf32he): Function removed.
+	(pdf_text_utf16be_to_utf32he): Function removed.
+	(pdf_text_utf32be_to_utf32he): Function removed.
+	(pdf_text_utf32le_to_utf32he): Function removed.
+	(pdf_text_utf32he_to_utf32be): Function removed.
+	(pdf_text_utf32he_to_utf32le): Function removed.
+	(pdf_text_utf32he_to_utf32he): Function not static.
+	(pdf_text_utf16he_to_utf32he): Function not static.
+	(pdf_text_utf32he_to_utf16he): Function not static.
+
+	* src/base/pdf-text-context.h (pdf_text_context_big_endian_host): Function
+	removed.
+
+	* src/base/pdf-text-context.c (pdf_text_context_big_endian_host): Function
+	removed.
+	(pdf_text_detect_host_endianness): Use `PDF_TEXT_BIG_ENDIAN' from
+	`config.h' to set the text context endianness.
+
+	* configure.ac: Use `AC_C_BIGENDIAN' macro to check for system 
+	endianness and create `PDF_TEXT_BIG_ENDIAN' definition in `config.h'.
+
 2008-03-26  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
 	* src/base/pdf-text-ucd-case.c (pdf_text_ucd_special_case_conditions): 

@@ -66,8 +66,7 @@ pdf_text_host_encoding_is_available(const pdf_char_t *encoding_name)
 
     /* Check conversion from Host Encoding to UTF-32HE */
     check = iconv_open((char *)encoding_name, \
-                       (pdf_text_context_big_endian_host() ? \
-                        "UTF-32BE" : "UTF-32LE"));
+                       (PDF_IS_BIG_ENDIAN ? "UTF-32BE" : "UTF-32LE"));
     if(check == (iconv_t)-1)
       {
         PDF_DEBUG_BASE("Conversion from '%s' to UTF-32HE not available",
@@ -77,8 +76,7 @@ pdf_text_host_encoding_is_available(const pdf_char_t *encoding_name)
     iconv_close(check);
 
     /* Check conversion from UTF-32HE to Host Encoding */
-    check = iconv_open((pdf_text_context_big_endian_host() ? \
-                        "UTF-32BE" : "UTF-32LE"), \
+    check = iconv_open((PDF_IS_BIG_ENDIAN ? "UTF-32BE" : "UTF-32LE"), \
                        (char *)encoding_name);
     if(check == (iconv_t)-1)
       {
@@ -123,8 +121,7 @@ pdf_text_utf32he_to_host(const pdf_char_t      *input_data,
      *  we don't want it, so we specify directly the endianness required in the
      *  name of the encoding, depending on the host endianness */
     to_host = iconv_open((char *)enc.name, \
-                         (pdf_text_context_big_endian_host() ? \
-                          "UTF-32BE" : "UTF-32LE"));
+                         (PDF_IS_BIG_ENDIAN ? "UTF-32BE" : "UTF-32LE"));
     if(to_host == (iconv_t)-1)
       {
         PDF_DEBUG_BASE("Conversion from UTF-32 to '%s' not available: '%s'",
@@ -253,8 +250,8 @@ pdf_text_host_to_utf32he(const pdf_char_t      *input_data,
      *  output encoding requested, iconv will insert the BOM by default, and
      *  we don't want it, so we specify directly the endianness required in the
      *  name of the encoding, depending on the host endianness */
-    from_host = iconv_open((pdf_text_context_big_endian_host() ? \
-                            "UTF-32BE" : "UTF-32LE"), (char *)enc.name);
+    from_host = iconv_open((PDF_IS_BIG_ENDIAN ? "UTF-32BE" : "UTF-32LE"),
+                           (char *)enc.name);
     if(from_host == (iconv_t)-1)
       {
         PDF_DEBUG_BASE("Conversion from '%s' to UTF-32 not available",

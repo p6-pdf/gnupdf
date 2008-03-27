@@ -316,8 +316,8 @@ pdf_text_utf32he_to_pdfdocenc(const pdf_char_t    *input_data,
 
 /*********************** UTF-32 to UTF-32 conversions *************************/
 
-/* Static function to convert from UTF32-HE to UTF32-HE, lossless */
-static pdf_status_t
+/* Function to convert from UTF32-HE to UTF32-HE, lossless */
+pdf_status_t
 pdf_text_utf32he_to_utf32he(const pdf_char_t    *input_data,
                             const pdf_size_t    input_length,
                             const pdf_bool_t    swap,
@@ -419,103 +419,6 @@ pdf_text_utf32he_to_utf32he(const pdf_char_t    *input_data,
   return PDF_OK;
 }
 
-/* Function to convert from UTF-32HE to UTF-32LE, lossless */
-pdf_status_t
-pdf_text_utf32he_to_utf32le(const pdf_char_t *input_data,
-                            const pdf_size_t input_length,
-                            pdf_char_t       **p_output_data,
-                            pdf_size_t       *p_output_length)
-
-{
-  if(pdf_text_context_big_endian_host())
-    {
-      /* host endian is big endian, so words must be swapped */
-      return pdf_text_utf32he_to_utf32he(input_data, input_length, PDF_TRUE,
-                                         PDF_TRUE, PDF_FALSE,
-                                         p_output_data, p_output_length);
-    }
-  else
-    {
-      /* No need to swap words, host endian is already little endian */
-      return pdf_text_utf32he_to_utf32he(input_data, input_length, PDF_FALSE,
-                                         PDF_TRUE, PDF_FALSE,
-                                         p_output_data, p_output_length);
-    }
-}
-
-/* Function to convert from UTF-32HE to UTF-32BE, lossless */
-pdf_status_t
-pdf_text_utf32he_to_utf32be(const pdf_char_t *input_data,
-                            const pdf_size_t input_length,
-                            pdf_char_t       **p_output_data,
-                            pdf_size_t       *p_output_length)
-
-{
-  if(pdf_text_context_big_endian_host())
-    {
-      /* No need to swap words, host endian is already big endian */
-      return pdf_text_utf32he_to_utf32he(input_data, input_length, PDF_FALSE,
-                                         PDF_TRUE, PDF_FALSE,
-                                         p_output_data, p_output_length);
-    }
-  else
-    {
-      /* host endian is little endian, so words must be swapped */
-      return pdf_text_utf32he_to_utf32he(input_data, input_length, PDF_TRUE,
-                                         PDF_TRUE, PDF_FALSE,
-                                         p_output_data, p_output_length);
-    }
-}
-
-
-/* Function to convert from UTF-32LE to UTF-32HE, lossless */
-pdf_status_t
-pdf_text_utf32le_to_utf32he(const pdf_char_t *input_data,
-                            const pdf_size_t input_length,
-                            pdf_char_t       **p_output_data,
-                            pdf_size_t       *p_output_length)
-
-{
-  if(pdf_text_context_big_endian_host())
-    {
-      /* host endian is big endian, so words must be swapped */
-      return pdf_text_utf32he_to_utf32he(input_data, input_length, PDF_TRUE,
-                                         PDF_FALSE, PDF_TRUE,
-                                         p_output_data, p_output_length);
-    }
-  else
-    {
-      /* No need to swap words, host endian is already little endian */
-      return pdf_text_utf32he_to_utf32he(input_data, input_length, PDF_FALSE,
-                                         PDF_FALSE, PDF_TRUE,
-                                         p_output_data, p_output_length);
-    }
-}
-
-/* Function to convert from UTF-32BE to UTF-32HE, lossless */
-pdf_status_t
-pdf_text_utf32be_to_utf32he(const pdf_char_t *input_data,
-                            const pdf_size_t input_length,
-                            pdf_char_t       **p_output_data,
-                            pdf_size_t       *p_output_length)
-
-{
-  if(pdf_text_context_big_endian_host())
-    {
-      /* No need to swap words, host endian is already big endian */
-      return pdf_text_utf32he_to_utf32he(input_data, input_length, PDF_FALSE,
-                                         PDF_FALSE, PDF_TRUE,
-                                         p_output_data, p_output_length);
-    }
-  else
-    {
-      /* host endian is little endian, so words must be swapped */
-      return pdf_text_utf32he_to_utf32he(input_data, input_length, PDF_TRUE,
-                                         PDF_FALSE, PDF_TRUE,
-                                         p_output_data, p_output_length);
-    }
-}
-
 
 /*********************** UTF-16 to UTF-32 conversions *************************/
 
@@ -580,8 +483,8 @@ pdf_text_utf16he_point_to_utf32he_point(pdf_text_utf16_char_t utf16val[2],
 }
 
 
-/* Static function to convert from UTF16-HE to UTF32-HE, lossless */
-static pdf_status_t
+/* Function to convert from UTF16-HE to UTF32-HE, lossless */
+pdf_status_t
 pdf_text_utf16he_to_utf32he(const pdf_char_t    *input_data,
                             const pdf_size_t    input_length,
                             const pdf_bool_t    swap,
@@ -751,54 +654,6 @@ pdf_text_utf16he_to_utf32he(const pdf_char_t    *input_data,
 }
 
 
-/* Static function to convert from UTF16-BE to UTF32-HE, lossless */
-pdf_status_t
-pdf_text_utf16be_to_utf32he(const pdf_char_t    *input_data,
-                            const pdf_size_t    input_length,
-                            pdf_char_t          **p_output_data,
-                            pdf_size_t          *p_output_length,
-                            pdf_char_t          **p_remaining_data,
-                            pdf_size_t          *p_remaining_length)
-{
-  if(pdf_text_context_big_endian_host())
-    {
-      /* No need to swap words, host endian is already big endian */
-      return pdf_text_utf16he_to_utf32he(input_data, input_length, PDF_FALSE,
-                                         p_output_data, p_output_length,
-                                         p_remaining_data, p_remaining_length);
-    }
-  else
-    {
-      /* host endian is little endian, so words must be swapped */
-      return pdf_text_utf16he_to_utf32he(input_data, input_length, PDF_TRUE,
-                                         p_output_data, p_output_length,
-                                         p_remaining_data, p_remaining_length);
-    }
-}
-
-/* Static function to convert from UTF16-LE to UTF32-HE, lossless */
-pdf_status_t
-pdf_text_utf16le_to_utf32he(const pdf_char_t    *input_data,
-                            const pdf_size_t    input_length,
-                            pdf_char_t          **p_output_data,
-                            pdf_size_t          *p_output_length)
-{
-  if(pdf_text_context_big_endian_host())
-    {
-      /* host endian is big endian, so words must be swapped */
-      return pdf_text_utf16he_to_utf32he(input_data, input_length, PDF_TRUE,
-                                         p_output_data, p_output_length,
-                                         NULL, NULL);
-    }
-  else
-    {
-      /* No need to swap words, host endian is already little endian */
-      return pdf_text_utf16he_to_utf32he(input_data, input_length, PDF_FALSE,
-                                         p_output_data, p_output_length,
-                                         NULL, NULL);
-    }
-}
-
 
 /*********************** UTF-32 to UTF-16 conversions *************************/
 
@@ -859,8 +714,8 @@ pdf_text_utf32he_point_to_utf16he_point(pdf_text_utf32_char_t utf32val,
 }
 
 
-/* Static function to convert from UTF-32HE to UTF-16, lossless */
-static pdf_status_t
+/*  Function to convert from UTF-32HE to UTF-16, lossless */
+pdf_status_t
 pdf_text_utf32he_to_utf16he(const pdf_char_t *input_data,
                             const pdf_size_t input_length,
                             pdf_char_t       **p_output_data,
@@ -943,54 +798,6 @@ pdf_text_utf32he_to_utf16he(const pdf_char_t *input_data,
     }
   
   return PDF_OK;
-}
-
-
-/* Function to convert from UTF-32HE to UTF-16BE, lossless */
-pdf_status_t
-pdf_text_utf32he_to_utf16be(const pdf_char_t      *input_data,
-                            const pdf_size_t      input_length,
-                            pdf_char_t            **p_output_data,
-                            pdf_size_t            *p_output_length)
-{
-  if(pdf_text_context_big_endian_host())
-    {
-      /* No need to swap words, host endian is already big endian */
-      return pdf_text_utf32he_to_utf16he(input_data, input_length,
-                                         p_output_data, p_output_length,
-                                         PDF_FALSE);
-    }
-  else
-    {
-      /* host endian is little endian, so words must be swapped */
-      return pdf_text_utf32he_to_utf16he(input_data, input_length,
-                                         p_output_data, p_output_length,
-                                         PDF_TRUE);
-    }
-}
-
-
-/* Function to convert from UTF-32HE to UTF-16LE, lossless */
-pdf_status_t
-pdf_text_utf32he_to_utf16le(const pdf_char_t      *input_data,
-                            const pdf_size_t      input_length,
-                            pdf_char_t            **p_output_data,
-                            pdf_size_t            *p_output_length)
-{
-  if(pdf_text_context_big_endian_host())
-    {
-      /* host endian is big endian, so words must be swapped */
-      return pdf_text_utf32he_to_utf16he(input_data, input_length,
-                                         p_output_data, p_output_length,
-                                         PDF_TRUE);
-    }
-  else
-    {
-      /* No need to swap words, host endian is already little endian */
-      return pdf_text_utf32he_to_utf16he(input_data, input_length,
-                                         p_output_data, p_output_length,
-                                         PDF_FALSE);
-    }
 }
 
 
@@ -1315,16 +1122,7 @@ pdf_text_check_unicode_bom (const pdf_char_t *data,
     case PDF_TEXT_UTF16_HE:
     case PDF_TEXT_UTF32_HE:
     {
-      if(!swap)
-        {
-          enc += ((pdf_text_context_big_endian_host()) ? \
-                  PDF_TEXT_HE_TO_BE : PDF_TEXT_HE_TO_LE);
-        }
-      else
-        {
-          enc += ((pdf_text_context_big_endian_host()) ? \
-                  PDF_TEXT_HE_TO_LE : PDF_TEXT_HE_TO_BE);
-        }
+      enc += ((PDF_IS_BIG_ENDIAN ^ swap) ? PDF_TEXT_HE_TO_BE:PDF_TEXT_HE_TO_LE);
     }
     case PDF_TEXT_UTF8:
     case PDF_TEXT_UTF16_BE:

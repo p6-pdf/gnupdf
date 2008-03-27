@@ -36,9 +36,8 @@
 
 /* Enumeration defining the types of system endianness */ 
 enum pdf_endianness_e {
-  PDF_TEXT_UNKNOWN_ENDIAN  =  0,
-  PDF_TEXT_BIG_ENDIAN      =  1,
-  PDF_TEXT_LITTLE_ENDIAN   =  2
+  PDF_TEXT_BIG_ENDIAN      =  0,
+  PDF_TEXT_LITTLE_ENDIAN   =  1
 };
 
 /* Specific type for EOL sequences */
@@ -64,12 +63,6 @@ enum pdf_text_eol_types {
  *  Not thread-safe! */
 pdf_status_t
 pdf_text_context_init(void);
-
-
-/* Returns PDF_TRUE if system is Big Endian, and PDF_FALSE if system is Little
- *  endian */
-pdf_bool_t
-pdf_text_context_big_endian_host(void);
 
 
 /* Returns the host endianess */

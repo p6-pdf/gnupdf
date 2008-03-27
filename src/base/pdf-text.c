@@ -1494,17 +1494,7 @@ pdf_text_transform_he_to_unicode_encoding(enum pdf_text_unicode_encoding_e enc)
   if((enc == PDF_TEXT_UTF16_HE) || \
      (enc == PDF_TEXT_UTF32_HE))
     {
-      switch(pdf_text_context_get_host_endianness())
-      {
-        case PDF_TEXT_BIG_ENDIAN:
-          enc += PDF_TEXT_HE_TO_BE;
-          break;
-        case PDF_TEXT_LITTLE_ENDIAN:
-          enc += PDF_TEXT_HE_TO_LE;
-          break;
-        default:
-          return PDF_EINVAL;
-      }
+      enc += (PDF_IS_BIG_ENDIAN ? PDF_TEXT_HE_TO_BE : PDF_TEXT_HE_TO_LE);
     }
   return enc;
 }

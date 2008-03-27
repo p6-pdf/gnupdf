@@ -76,70 +76,88 @@ pdf_text_utf32he_to_pdfdocenc(const pdf_char_t    *input_data,
                               pdf_size_t          *p_output_length);
 
 
-/* Function to convert from UTF-32HE to UTF-32BE, lossless */
+/* Function to convert from UTF32-HE to UTF32-HE, lossless */
 pdf_status_t
-pdf_text_utf32he_to_utf32be(const pdf_char_t *input_data,
-                            const pdf_size_t input_length,
-                            pdf_char_t       **p_output_data,
-                            pdf_size_t       *p_output_length);
-
-
-/* Function to convert from UTF-32BE to UTF-32HE, lossless */
-pdf_status_t
-pdf_text_utf32be_to_utf32he(const pdf_char_t *input_data,
-                            const pdf_size_t input_length,
-                            pdf_char_t       **p_output_data,
-                            pdf_size_t       *p_output_length);
-
-
-/* Function to convert from UTF-32HE to UTF-32LE, lossless */
-pdf_status_t
-pdf_text_utf32he_to_utf32le(const pdf_char_t *input_data,
-                            const pdf_size_t input_length,
-                            pdf_char_t       **p_output_data,
-                            pdf_size_t       *p_output_length);
-
-
-/* Function to convert from UTF-32LE to UTF-32HE, lossless */
-pdf_status_t
-pdf_text_utf32le_to_utf32he(const pdf_char_t *input_data,
-                            const pdf_size_t input_length,
-                            pdf_char_t       **p_output_data,
-                            pdf_size_t       *p_output_length);
-
-
-/* Function to convert from UTF-16BE to UTF-32HE, lossless */
-pdf_status_t
-pdf_text_utf16be_to_utf32he(const pdf_char_t      *input_data,
-                            const pdf_size_t      input_length,
-                            pdf_char_t            **p_output_data,
-                            pdf_size_t            *p_output_length,
-                            pdf_char_t            **p_remaining_data,
-                            pdf_size_t            *p_remaining_length);
-
-
-/* Function to convert from UTF-32HE to UTF-16BE, lossless */
-pdf_status_t
-pdf_text_utf32he_to_utf16be(const pdf_char_t      *input_data,
-                            const pdf_size_t      input_length,
-                            pdf_char_t            **p_output_data,
-                            pdf_size_t            *p_output_length);
-
-
-/* Function to convert from UTF-16LE to UTF-32HE, lossless */
-pdf_status_t
-pdf_text_utf16le_to_utf32he(const pdf_char_t    *input_data,
+pdf_text_utf32he_to_utf32he(const pdf_char_t    *input_data,
                             const pdf_size_t    input_length,
+                            const pdf_bool_t    swap,
+                            const pdf_bool_t    check_input_he,
+                            const pdf_bool_t    check_output_he,
                             pdf_char_t          **p_output_data,
                             pdf_size_t          *p_output_length);
 
 
-/* Function to convert from UTF-32HE to UTF-16LE, lossless */
+/* Function to convert from UTF-32HE to UTF-32BE, lossless */
+#define pdf_text_utf32he_to_utf32be(ind, inl, outd, outl) \
+  pdf_text_utf32he_to_utf32he(ind, inl, \
+                              !PDF_IS_BIG_ENDIAN, PDF_TRUE, PDF_FALSE, \
+                              outd, outl)
+
+
+/* Function to convert from UTF-32BE to UTF-32HE, lossless */
+#define pdf_text_utf32be_to_utf32he(ind, inl, outd, outl) \
+  pdf_text_utf32he_to_utf32he(ind, inl, \
+                              !PDF_IS_BIG_ENDIAN, PDF_FALSE, PDF_TRUE, \
+                              outd, outl)
+
+
+/* Function to convert from UTF-32HE to UTF-32LE, lossless */
+#define pdf_text_utf32he_to_utf32le(ind, inl, outd, outl) \
+  pdf_text_utf32he_to_utf32he(ind, inl, \
+                              PDF_IS_BIG_ENDIAN, PDF_TRUE, PDF_FALSE, \
+                              outd, outl)
+
+
+/* Function to convert from UTF-32LE to UTF-32HE, lossless */
+#define pdf_text_utf32le_to_utf32he(ind, inl, outd, outl) \
+  pdf_text_utf32he_to_utf32he(ind, inl, \
+                              PDF_IS_BIG_ENDIAN, PDF_FALSE, PDF_TRUE, \
+                              outd, outl)
+
+/* Static function to convert from UTF16-HE to UTF32-HE, lossless */
 pdf_status_t
-pdf_text_utf32he_to_utf16le(const pdf_char_t      *input_data,
-                            const pdf_size_t      input_length,
-                            pdf_char_t            **p_output_data,
-                            pdf_size_t            *p_output_length);
+pdf_text_utf16he_to_utf32he(const pdf_char_t    *input_data,
+                            const pdf_size_t    input_length,
+                            const pdf_bool_t    swap,
+                            pdf_char_t          **p_output_data,
+                            pdf_size_t          *p_output_length,
+                            pdf_char_t          **p_remaining_data,
+                            pdf_size_t          *p_remaining_length);
+
+/* Function to convert from UTF-16BE to UTF-32HE, lossless */
+#define pdf_text_utf16be_to_utf32he(ind, inl, outd, outl, remd, reml) \
+  pdf_text_utf16he_to_utf32he(ind, inl, \
+                              !PDF_IS_BIG_ENDIAN, \
+                              outd, outl, \
+                              remd, reml)
+
+/* Function to convert from UTF-16LE to UTF-32HE, lossless */
+#define pdf_text_utf16le_to_utf32he(ind, inl, outd, outl) \
+  pdf_text_utf16he_to_utf32he(ind, inl, \
+                              PDF_IS_BIG_ENDIAN, \
+                              outd, outl, \
+                              NULL, NULL)
+
+/* Function to convert from UTF-32HE to UTF-16HE, lossless */
+pdf_status_t
+pdf_text_utf32he_to_utf16he(const pdf_char_t *input_data,
+                            const pdf_size_t input_length,
+                            pdf_char_t       **p_output_data,
+                            pdf_size_t       *p_output_length,
+                            pdf_bool_t       swap);
+
+
+/* Function to convert from UTF-32HE to UTF-16BE, lossless */
+#define pdf_text_utf32he_to_utf16be(ind, inl, outd, outl) \
+  pdf_text_utf32he_to_utf16he(ind, inl, \
+                              outd, outl, \
+                              !PDF_IS_BIG_ENDIAN)
+
+/* Function to convert from UTF-32HE to UTF-16LE, lossless */
+#define pdf_text_utf32he_to_utf16le(ind, inl, outd, outl) \
+  pdf_text_utf32he_to_utf16he(ind, inl, \
+                              outd, outl, \
+                              PDF_IS_BIG_ENDIAN)
 
 
 /* Function to convert from UTF-8 to UTF-32HE, lossless */
