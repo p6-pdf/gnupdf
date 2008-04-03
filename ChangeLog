@@ -1,4 +1,10 @@
-2008-04-03  Jose Eugenio Marchesi Corcostegui  <jco@terma.com>
+2008-04-03  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/unit/base/text/pdf-text-get-unicode.c (START_TEST):
+	Initialize counter variable 'i' to 0 before the loop (in several
+	tests).
+
+2008-04-03  Jose E. Marchesi  <jco@terma.com>
 
 	* Clean the ChangeLog file.
 

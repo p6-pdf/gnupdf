@@ -627,6 +627,7 @@ START_TEST(pdf_text_get_unicode_011)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
 
+  i = 0;
   while(utf16be_strings[i].data != NULL)
     {
       pdf_text_t text;
@@ -720,6 +721,7 @@ START_TEST(pdf_text_get_unicode_012)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
+  i = 0;
   while(utf16be_strings[i].data != NULL)
     {
       pdf_text_t text;
@@ -928,6 +930,7 @@ START_TEST(pdf_text_get_unicode_015)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
+  i = 0;
   while(utf16be_strings[i].data != NULL)
     {
       pdf_text_t text;
@@ -1001,6 +1004,7 @@ START_TEST(pdf_text_get_unicode_016)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
+  i = 0;
   while(utf16be_strings[i].data != NULL)
     {
       pdf_text_t text;
@@ -2822,6 +2826,7 @@ TCase *
 test_pdf_text_get_unicode (void)
 {
   TCase *tc = tcase_create("pdf_text_get_unicode");
+  
   tcase_add_test(tc, pdf_text_get_unicode_001);
   tcase_add_test(tc, pdf_text_get_unicode_002);
   tcase_add_test(tc, pdf_text_get_unicode_003);
@@ -2876,6 +2881,7 @@ test_pdf_text_get_unicode (void)
   tcase_add_test(tc, pdf_text_get_unicode_052);
   tcase_add_test(tc, pdf_text_get_unicode_053);
   tcase_add_test(tc, pdf_text_get_unicode_054);
+  
   
   return tc;
 }
