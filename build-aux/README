@@ -1,0 +1,9 @@
+This directory contain several programs and utilities used in the
+building of the library. All the programs contained in this directory
+are not intended to be installed in the target machine.
+
+  `pdf-text-generate-ucd'
+
+      A C source generator for the the Unicode Character Database. This library
+      does not really use the GNU PDF library.
+

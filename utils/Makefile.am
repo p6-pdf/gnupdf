@@ -16,14 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-bin_PROGRAMS = pdf-filter pdf-text-generate-ucd
+bin_PROGRAMS = pdf-filter
 
 LDADD = $(top_srcdir)/src/libgnupdf.la
 AM_CPPFLAGS = -I$(top_srcdir)/lib -I$(top_srcdir)/src/ \
               -I$(top_srcdir)/src/base -I $(top_srcdir)/src/object
 
 pdf_filter_SOURCES = pdf-filter.h pdf-filter.c
-
-pdf_text_generate_ucd_SOURCES = pdf-text-generate-ucd.c
 
 # End of Makefile.am

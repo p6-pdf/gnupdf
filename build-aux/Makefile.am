@@ -1,7 +1,7 @@
-# Top-level Makefile.am
+# build-aux directory Makefile.am
 # GNU PDF Library
 
-# Copyright (C) 2007, 2008 Free Software Foundation, Inc.
+# Copyright (C) 2008 Free Software Foundation, Inc.
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,8 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = lib build-aux src utils torture doc prmgt
-
+noinst_PROGRAMS = pdf-text-generate-ucd
+pdf_text_generate_ucd_SOURCES = pdf-text-generate-ucd.c
 
 # End of Makefile.am
