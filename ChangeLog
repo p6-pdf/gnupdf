@@ -1,5 +1,8 @@
 2008-04-06  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* torture/unit/base/list/pdf-list-iterator-next.c (START_TEST):
+	Cast the second argument of `pdf_list_iterator_next' to (void**).
+
 	* Makefile.am (SUBDIRS): Descend into `build-aux/Makefile'.
 
 	* configure.ac: Output `build-aux/Makefile'.

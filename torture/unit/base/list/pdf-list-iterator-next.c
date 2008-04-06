@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/03/17 14:24:02 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/04/06 22:53:28 jemarch"
  *
  *       File:         pdf-list-iterator-next.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -49,7 +49,7 @@ START_TEST (pdf_list_iterator_next_001)
   pdf_list_add_last (list, &elem);
   pdf_list_iterator (list, &itr);
 
-  st = pdf_list_iterator_next (&itr, &next, NULL);
+  st = pdf_list_iterator_next (&itr, (const void **) &next, NULL);
 
   fail_if (st != PDF_OK);
 
@@ -75,7 +75,7 @@ START_TEST (pdf_list_iterator_next_002)
   pdf_list_create (NULL, NULL, 0, &list);
   pdf_list_iterator (list, &itr);
 
-  st = pdf_list_iterator_next (&itr, &next, NULL);
+  st = pdf_list_iterator_next (&itr, (const void **) &next, NULL);
 
   fail_if (st != PDF_ENONODE);
 
