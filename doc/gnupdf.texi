@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.38 2008/03/25 15:53:32 gerel Exp $
+@comment $Id: gnupdf.texi,v 1.39 2008/04/07 16:37:10 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -2925,7 +2925,6 @@ This structure holds information about a time span represented in
 calendar items: years, months, days, hours, minutes and seconds.
 
 @table @code
-@item pdf_u32_t sign
 @item pdf_u32_t years
 @item pdf_u32_t months
 @item pdf_u32_t days

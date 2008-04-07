@@ -1,3 +1,8 @@
+2008-04-07  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Time Related Data Types): Attribute `sign'
+	removed from the `pdf_time_cal_span_s' structure.
+
 2008-04-06  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* torture/unit/base/list/pdf-list-iterator-next.c (START_TEST):
