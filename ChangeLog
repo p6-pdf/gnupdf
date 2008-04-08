@@ -1,5 +1,14 @@
 2008-04-08  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
+	* doc/gnupdf.texi (Text Data Types): If requested lang/country info in
+	a Unicode encoding different than UTF-16BE, the function
+	`pdf_text_get_unicode' will fail. PDF_TEXT_UNICODE_WITH_BOM option
+	is also allowed in UTF-8.
+
+	* doc/gnupdf-tsd.texi: Test ID `pdf_text_filter_010' was duplicated.
+
+2008-04-08  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
 	* src/base/pdf-text-ucd-proplist.c: New file.
 
 	* src/base/pdf-text-ucd-proplist.h: New file.

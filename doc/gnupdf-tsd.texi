@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf-tsd.texi,v 1.6 2008/03/24 23:11:41 aleksander_m Exp $
+@comment $Id: gnupdf-tsd.texi,v 1.7 2008/04/08 10:21:29 aleksander_m Exp $
 @comment %**start of header
 @setfilename gnupdf-tsd.info
 @settitle GNU PDF Library Test Specification Document
@@ -2492,7 +2492,7 @@ Apply the `Upper case' filter to a text object that contains simple-case-convers
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_010
+@deffn Test pdf_text_filter_011
 Apply the `Upper case' filter to a text object that contains special-case-conversion characters with no context condition.
 @table @strong
 @item Success conditions
@@ -2502,7 +2502,7 @@ Apply the `Upper case' filter to a text object that contains special-case-conver
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_011
+@deffn Test pdf_text_filter_012
 Apply the `Upper case' filter to a text object that contains special-case-conversion characters with Final_Sigma context condition.
 @table @strong
 @item Success conditions
@@ -2512,7 +2512,7 @@ Apply the `Upper case' filter to a text object that contains special-case-conver
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_012
+@deffn Test pdf_text_filter_013
 Apply the `Upper case' filter to a text object that contains special-case-conversion characters with After_Soft_Dotted context condition.
 @table @strong
 @item Success conditions
@@ -2522,7 +2522,7 @@ Apply the `Upper case' filter to a text object that contains special-case-conver
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_013
+@deffn Test pdf_text_filter_014
 Apply the `Upper case' filter to a text object that contains special-case-conversion characters with More_Above context condition.
 @table @strong
 @item Success conditions
@@ -2533,7 +2533,7 @@ Apply the `Upper case' filter to a text object that contains special-case-conver
 @end deffn
 
 
-@deffn Test pdf_text_filter_014
+@deffn Test pdf_text_filter_015
 Apply the `Upper case' filter to a text object that contains special-case-conversion characters with Before_Dot context condition.
 @table @strong
 @item Success conditions
@@ -2543,7 +2543,7 @@ Apply the `Upper case' filter to a text object that contains special-case-conver
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_015
+@deffn Test pdf_text_filter_016
 Apply the `Upper case' filter to a text object that contains special-case-conversion characters with After_I context condition.
 @table @strong
 @item Success conditions
@@ -2553,7 +2553,7 @@ Apply the `Upper case' filter to a text object that contains special-case-conver
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_016
+@deffn Test pdf_text_filter_017
 Apply the `Upper case' filter to a text object that contains special-case-conversion characters with language-dependent context condition.
 @table @strong
 @item Success conditions
@@ -2563,7 +2563,7 @@ Apply the `Upper case' filter to a text object that contains special-case-conver
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_017
+@deffn Test pdf_text_filter_018
 Apply the `Upper case' filter to a text object that contains special-case-conversion characters with language-dependent and After_I context condition (to check two context conditions at the same time).
 @table @strong
 @item Success conditions
@@ -2573,7 +2573,7 @@ Apply the `Upper case' filter to a text object that contains special-case-conver
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_018
+@deffn Test pdf_text_filter_019
 Apply the `Upper case' filter to a text object that contains special-case-conversion characters with language-dependent and Not_Before_Dot context condition (to check two context conditions at the same time, where one of them is negated with Not_).
 @table @strong
 @item Success conditions
@@ -2584,7 +2584,7 @@ Apply the `Upper case' filter to a text object that contains special-case-conver
 @end deffn
 
 
-@deffn Test pdf_text_filter_019
+@deffn Test pdf_text_filter_020
 Apply the `Upper case' filter to a text object that contains one special-case-conversion character with Final_Sigma context condition, where the condition is not fulfilled.
 @table @strong
 @item Success conditions
@@ -2594,7 +2594,7 @@ Apply the `Upper case' filter to a text object that contains one special-case-co
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_020
+@deffn Test pdf_text_filter_021
 Apply the `Upper case' filter to a text object that contains one special-case-conversion characters with After_Soft_Dotted context condition, where the condition is not fulfilled.
 @table @strong
 @item Success conditions
@@ -2604,7 +2604,7 @@ Apply the `Upper case' filter to a text object that contains one special-case-co
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_021
+@deffn Test pdf_text_filter_022
 Apply the `Upper case' filter to a text object that contains one special-case-conversion character with More_Above context condition, where the condition is not fulfilled.
 @table @strong
 @item Success conditions
@@ -2615,7 +2615,7 @@ Apply the `Upper case' filter to a text object that contains one special-case-co
 @end deffn
 
 
-@deffn Test pdf_text_filter_022
+@deffn Test pdf_text_filter_023
 Apply the `Upper case' filter to a text object that contains one special-case-conversion character with Before_Dot context condition, where the condition is not fulfilled.
 @table @strong
 @item Success conditions
@@ -2625,7 +2625,7 @@ Apply the `Upper case' filter to a text object that contains one special-case-co
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_023
+@deffn Test pdf_text_filter_024
 Apply the `Upper case' filter to a text object that contains one special-case-conversion character with After_I context condition, where the condition is not fulfilled.
 @table @strong
 @item Success conditions
@@ -2635,7 +2635,7 @@ Apply the `Upper case' filter to a text object that contains one special-case-co
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_024
+@deffn Test pdf_text_filter_025
 Apply the `Upper case' filter to a text object that contains one special-case-conversion character with language-dependent context condition, where the condition is not fulfilled.
 @table @strong
 @item Success conditions
@@ -2645,7 +2645,7 @@ Apply the `Upper case' filter to a text object that contains one special-case-co
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_025
+@deffn Test pdf_text_filter_026
 Apply the `Upper case' filter to a text object that contains one special-case-conversion character with language-dependent and After_I context condition (to check two context conditions at the same time), where the condition is not fulfilled.
 @table @strong
 @item Success conditions
@@ -2655,7 +2655,7 @@ Apply the `Upper case' filter to a text object that contains one special-case-co
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_026
+@deffn Test pdf_text_filter_027
 Apply the `Upper case' filter to a text object that contains one special-case-conversion character with language-dependent and Not_Before_Dot context condition (to check two context conditions at the same time, where one of them is negated with Not_), where the condition is not fulfilled.
 @table @strong
 @item Success conditions
@@ -2666,7 +2666,7 @@ Apply the `Upper case' filter to a text object that contains one special-case-co
 @end deffn
 
 
-@deffn Test pdf_text_filter_027
+@deffn Test pdf_text_filter_028
 Apply the `Small case' filter to a text object that contains simple-case-conversion characters.
 @table @strong
 @item Success conditions
@@ -2678,7 +2678,7 @@ Apply the `Small case' filter to a text object that contains simple-case-convers
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_028
+@deffn Test pdf_text_filter_029
 Apply the `Small case' filter to a text object that contains special-case-conversion characters with no context condition.
 @table @strong
 @item Success conditions
@@ -2688,7 +2688,7 @@ Apply the `Small case' filter to a text object that contains special-case-conver
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_029
+@deffn Test pdf_text_filter_030
 Apply the `Small case' filter to a text object that contains special-case-conversion characters with Final_Sigma context condition.
 @table @strong
 @item Success conditions
@@ -2698,7 +2698,7 @@ Apply the `Small case' filter to a text object that contains special-case-conver
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_030
+@deffn Test pdf_text_filter_031
 Apply the `Small case' filter to a text object that contains special-case-conversion characters with After_Soft_Dotted context condition.
 @table @strong
 @item Success conditions
@@ -2708,7 +2708,7 @@ Apply the `Small case' filter to a text object that contains special-case-conver
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_031
+@deffn Test pdf_text_filter_032
 Apply the `Small case' filter to a text object that contains special-case-conversion characters with More_Above context condition.
 @table @strong
 @item Success conditions
@@ -2719,7 +2719,7 @@ Apply the `Small case' filter to a text object that contains special-case-conver
 @end deffn
 
 
-@deffn Test pdf_text_filter_032
+@deffn Test pdf_text_filter_033
 Apply the `Small case' filter to a text object that contains special-case-conversion characters with Before_Dot context condition.
 @table @strong
 @item Success conditions
@@ -2729,7 +2729,7 @@ Apply the `Small case' filter to a text object that contains special-case-conver
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_033
+@deffn Test pdf_text_filter_034
 Apply the `Small case' filter to a text object that contains special-case-conversion characters with After_I context condition.
 @table @strong
 @item Success conditions
@@ -2739,7 +2739,7 @@ Apply the `Small case' filter to a text object that contains special-case-conver
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_034
+@deffn Test pdf_text_filter_035
 Apply the `Small case' filter to a text object that contains special-case-conversion characters with language-dependent context condition.
 @table @strong
 @item Success conditions
@@ -2749,7 +2749,7 @@ Apply the `Small case' filter to a text object that contains special-case-conver
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_035
+@deffn Test pdf_text_filter_036
 Apply the `Small case' filter to a text object that contains special-case-conversion characters with language-dependent and After_I context condition (to check two context conditions at the same time).
 @table @strong
 @item Success conditions
@@ -2759,7 +2759,7 @@ Apply the `Small case' filter to a text object that contains special-case-conver
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_036
+@deffn Test pdf_text_filter_037
 Apply the `Small case' filter to a text object that contains special-case-conversion characters with language-dependent and Not_Before_Dot context condition (to check two context conditions at the same time, where one of them is negated with Not_).
 @table @strong
 @item Success conditions
@@ -2770,7 +2770,7 @@ Apply the `Small case' filter to a text object that contains special-case-conver
 @end deffn
 
 
-@deffn Test pdf_text_filter_037
+@deffn Test pdf_text_filter_038
 Apply the `Small case' filter to a text object that contains one special-case-conversion character with Final_Sigma context condition, where the condition is not fulfilled.
 @table @strong
 @item Success conditions
@@ -2780,7 +2780,7 @@ Apply the `Small case' filter to a text object that contains one special-case-co
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_038
+@deffn Test pdf_text_filter_039
 Apply the `Small case' filter to a text object that contains one special-case-conversion characters with After_Soft_Dotted context condition, where the condition is not fulfilled.
 @table @strong
 @item Success conditions
@@ -2790,7 +2790,7 @@ Apply the `Small case' filter to a text object that contains one special-case-co
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_039
+@deffn Test pdf_text_filter_040
 Apply the `Small case' filter to a text object that contains one special-case-conversion character with More_Above context condition, where the condition is not fulfilled.
 @table @strong
 @item Success conditions
@@ -2801,7 +2801,7 @@ Apply the `Small case' filter to a text object that contains one special-case-co
 @end deffn
 
 
-@deffn Test pdf_text_filter_040
+@deffn Test pdf_text_filter_041
 Apply the `Small case' filter to a text object that contains one special-case-conversion character with Before_Dot context condition, where the condition is not fulfilled.
 @table @strong
 @item Success conditions
@@ -2811,7 +2811,7 @@ Apply the `Small case' filter to a text object that contains one special-case-co
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_041
+@deffn Test pdf_text_filter_042
 Apply the `Small case' filter to a text object that contains one special-case-conversion character with After_I context condition, where the condition is not fulfilled.
 @table @strong
 @item Success conditions
@@ -2821,7 +2821,7 @@ Apply the `Small case' filter to a text object that contains one special-case-co
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_042
+@deffn Test pdf_text_filter_043
 Apply the `Small case' filter to a text object that contains one special-case-conversion character with language-dependent context condition, where the condition is not fulfilled.
 @table @strong
 @item Success conditions
@@ -2831,7 +2831,7 @@ Apply the `Small case' filter to a text object that contains one special-case-co
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_043
+@deffn Test pdf_text_filter_044
 Apply the `Small case' filter to a text object that contains one special-case-conversion character with language-dependent and After_I context condition (to check two context conditions at the same time), where the condition is not fulfilled.
 @table @strong
 @item Success conditions
@@ -2841,7 +2841,7 @@ Apply the `Small case' filter to a text object that contains one special-case-co
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_044
+@deffn Test pdf_text_filter_045
 Apply the `Small case' filter to a text object that contains one special-case-conversion character with language-dependent and Not_Before_Dot context condition (to check two context conditions at the same time, where one of them is negated with Not_), where the condition is not fulfilled.
 @table @strong
 @item Success conditions
@@ -2852,7 +2852,7 @@ Apply the `Small case' filter to a text object that contains one special-case-co
 @end deffn
 
 
-@deffn Test pdf_text_filter_045
+@deffn Test pdf_text_filter_046
 Apply the `Title case' filter to a text object that contains simple-case-conversion characters.
 @table @strong
 @item Success conditions
@@ -2864,7 +2864,7 @@ Apply the `Title case' filter to a text object that contains simple-case-convers
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_046
+@deffn Test pdf_text_filter_047
 Apply the `Title case' filter to a text object that contains special-case-conversion characters with no context condition.
 @table @strong
 @item Success conditions
@@ -2874,7 +2874,7 @@ Apply the `Title case' filter to a text object that contains special-case-conver
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_047
+@deffn Test pdf_text_filter_048
 Apply the `Title case' filter to a text object that contains special-case-conversion characters with Final_Sigma context condition.
 @table @strong
 @item Success conditions
@@ -2884,7 +2884,7 @@ Apply the `Title case' filter to a text object that contains special-case-conver
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_048
+@deffn Test pdf_text_filter_049
 Apply the `Title case' filter to a text object that contains special-case-conversion characters with After_Soft_Dotted context condition.
 @table @strong
 @item Success conditions
@@ -2894,7 +2894,7 @@ Apply the `Title case' filter to a text object that contains special-case-conver
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_049
+@deffn Test pdf_text_filter_050
 Apply the `Title case' filter to a text object that contains special-case-conversion characters with More_Above context condition.
 @table @strong
 @item Success conditions
@@ -2905,7 +2905,7 @@ Apply the `Title case' filter to a text object that contains special-case-conver
 @end deffn
 
 
-@deffn Test pdf_text_filter_050
+@deffn Test pdf_text_filter_051
 Apply the `Title case' filter to a text object that contains special-case-conversion characters with Before_Dot context condition.
 @table @strong
 @item Success conditions
@@ -2915,7 +2915,7 @@ Apply the `Title case' filter to a text object that contains special-case-conver
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_051
+@deffn Test pdf_text_filter_052
 Apply the `Title case' filter to a text object that contains special-case-conversion characters with After_I context condition.
 @table @strong
 @item Success conditions
@@ -2925,7 +2925,7 @@ Apply the `Title case' filter to a text object that contains special-case-conver
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_052
+@deffn Test pdf_text_filter_053
 Apply the `Title case' filter to a text object that contains special-case-conversion characters with language-dependent context condition.
 @table @strong
 @item Success conditions
@@ -2935,7 +2935,7 @@ Apply the `Title case' filter to a text object that contains special-case-conver
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_053
+@deffn Test pdf_text_filter_054
 Apply the `Title case' filter to a text object that contains special-case-conversion characters with language-dependent and After_I context condition (to check two context conditions at the same time).
 @table @strong
 @item Success conditions
@@ -2945,7 +2945,7 @@ Apply the `Title case' filter to a text object that contains special-case-conver
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_054
+@deffn Test pdf_text_filter_055
 Apply the `Title case' filter to a text object that contains special-case-conversion characters with language-dependent and Not_Before_Dot context condition (to check two context conditions at the same time, where one of them is negated with Not_).
 @table @strong
 @item Success conditions
@@ -2956,7 +2956,7 @@ Apply the `Title case' filter to a text object that contains special-case-conver
 @end deffn
 
 
-@deffn Test pdf_text_filter_055
+@deffn Test pdf_text_filter_056
 Apply the `Title case' filter to a text object that contains one special-case-conversion character with Final_Sigma context condition, where the condition is not fulfilled.
 @table @strong
 @item Success conditions
@@ -2966,7 +2966,7 @@ Apply the `Title case' filter to a text object that contains one special-case-co
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_056
+@deffn Test pdf_text_filter_057
 Apply the `Title case' filter to a text object that contains one special-case-conversion characters with After_Soft_Dotted context condition, where the condition is not fulfilled.
 @table @strong
 @item Success conditions
@@ -2976,7 +2976,7 @@ Apply the `Title case' filter to a text object that contains one special-case-co
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_057
+@deffn Test pdf_text_filter_058
 Apply the `Title case' filter to a text object that contains one special-case-conversion character with More_Above context condition, where the condition is not fulfilled.
 @table @strong
 @item Success conditions
@@ -2987,7 +2987,7 @@ Apply the `Title case' filter to a text object that contains one special-case-co
 @end deffn
 
 
-@deffn Test pdf_text_filter_058
+@deffn Test pdf_text_filter_059
 Apply the `Title case' filter to a text object that contains one special-case-conversion character with Before_Dot context condition, where the condition is not fulfilled.
 @table @strong
 @item Success conditions
@@ -2997,7 +2997,7 @@ Apply the `Title case' filter to a text object that contains one special-case-co
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_059
+@deffn Test pdf_text_filter_060
 Apply the `Title case' filter to a text object that contains one special-case-conversion character with After_I context condition, where the condition is not fulfilled.
 @table @strong
 @item Success conditions
@@ -3007,7 +3007,7 @@ Apply the `Title case' filter to a text object that contains one special-case-co
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_060
+@deffn Test pdf_text_filter_061
 Apply the `Title case' filter to a text object that contains one special-case-conversion character with language-dependent context condition, where the condition is not fulfilled.
 @table @strong
 @item Success conditions
@@ -3017,7 +3017,7 @@ Apply the `Title case' filter to a text object that contains one special-case-co
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_061
+@deffn Test pdf_text_filter_062
 Apply the `Title case' filter to a text object that contains one special-case-conversion character with language-dependent and After_I context condition (to check two context conditions at the same time), where the condition is not fulfilled.
 @table @strong
 @item Success conditions
@@ -3027,7 +3027,7 @@ Apply the `Title case' filter to a text object that contains one special-case-co
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_062
+@deffn Test pdf_text_filter_063
 Apply the `Title case' filter to a text object that contains one special-case-conversion character with language-dependent and Not_Before_Dot context condition (to check two context conditions at the same time, where one of them is negated with Not_), where the condition is not fulfilled.
 @table @strong
 @item Success conditions
@@ -3038,7 +3038,7 @@ Apply the `Title case' filter to a text object that contains one special-case-co
 @end deffn
 
 
-@deffn Test pdf_text_filter_063
+@deffn Test pdf_text_filter_064
 Apply the `Title case', `Small case' and `Upper case' filters to a text object. (At most one case conversion must be applied in a filter operation).
 @table @strong
 @item Success conditions
@@ -3048,7 +3048,7 @@ Apply the `Title case', `Small case' and `Upper case' filters to a text object. 
 @end table
 @end deffn
 
-@deffn Test pdf_text_filter_064
+@deffn Test pdf_text_filter_065
 Apply the `Small case' , `Remove ampersands' and  `Normalize with full width' filters to a text object (Applying more than one filter at a time).
 @table @strong
 @item Success conditions

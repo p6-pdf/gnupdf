@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.39 2008/04/07 16:37:10 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.40 2008/04/08 10:21:29 aleksander_m Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -1868,12 +1868,11 @@ UNICODE encoding (see function `pdf_text_get_unicode').
 @item PDF_TEXT_UNICODE_NO_OPTION (= 0)
 No specific option
 @item PDF_TEXT_UNICODE_WITH_BOM
-Prepend Byte Order Marker to the UNICODE string. This option is NOT applicable
-to UTF-8. If specified in UTF-8, it will be ignored.
+Prepend Byte Order Marker to the UNICODE string.
 @item PDF_TEXT_UTF16BE_WITH_LANGCODE
 Insert language/country code information between the BOM (if required) and the
 data. This option is ONLY applicable to UTF16BE. If specified in any other
-encoding, it will be ignored. 
+encoding, the function will fail. 
 @end table
 @end deftp
 
