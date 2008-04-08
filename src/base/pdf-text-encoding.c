@@ -141,10 +141,10 @@ static const pdf_text_bom_t unicode_bom [PDF_TEXT_MAX_UNICODE_ENC] = {
   { {239,187,191,  0}, 3 },    /* PDF_TEXT_UTF8 */
   { {254,255,  0,  0}, 2 },    /* PDF_TEXT_UTF16_BE */
   { {255,254,  0,  0}, 2 },    /* PDF_TEXT_UTF16_LE */
-  { {  0,  0,  0,  0}, 0 },
+  { {  0,  0,  0,  0}, 0 },    /* N/A (UTF-16 HE) */
   { {  0,  0,254,255}, 4 },    /* PDF_TEXT_UTF32_BE */
   { {255,254,  0,  0}, 4 },    /* PDF_TEXT_UTF32_LE */
-  { {  0,  0,  0,  0}, 0 }
+  { {  0,  0,  0,  0}, 0 }     /* N/A (UTF-32HE)  */
 };
 
 

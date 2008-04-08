@@ -1,3 +1,48 @@
+2008-04-08  Aleksander Morgado Juez  <aleksande@es.gnu.org>
+
+	* src/base/pdf-text.c (pdf_text_get_unicode): Only store output data if
+	it is available.
+	(pdf_text_replace): Improved the way replacements are done. If size of
+	replacement is not equal, a list of pointers to the patterns is stored
+	in the first loop, and then replacements are done in the second loop.
+	(pdf_text_get_unicode_string_header): Check for pointers being not NULL.
+	(pdf_text_fill_word_boundaries_list): Correct way to store word
+	boundaries in the `pdf_list_t'. Elements of the list must be allocated with
+	pdf_alloc, as the list module doesn't make a copy of the element, it
+	just adds the reference in the list.
+
+	* src/base/pdf-text-ucd.h: Include `pdf-text-ucd-proplist.h'.
+
+	* src/base/pdf-text-ucd-wordbreak.c (pdf_text_ucd_wb_in_interval): Bug
+	in interval limits corrected.
+
+	* src/base/pdf-text-ucd-case.c: Added `After_I' and `After_Soft_Dotted'
+	context conditions. Also minor bugfixes in casing context creation.
+
+	* src/base/pdf-text-filter.c (pdf_text_filter_change_case): Use 
+	`UCD_SC_MAX_EXPAND'. Also minor bugfix setting correct final data size.
+	(pdf_text_filter_remove_amp): Include whitespaces in the remove
+	ampersands filter when looking for `&' and `&&'.
+	(pdf_text_substitute_line_ending): Use new line ending type, in UTF-8
+	and NUL-terminated.
+	(pdf_text_filter_normalize_line_endings): Use new  line ending type, in
+	UTF-8 and NUL-terminated.
+	(pdf_text_filter_remove_line_endings): Use new  line ending type, in
+	UTF-8 and NUL-terminated.
+
+	* src/base/pdf-text-encoding.h: Added comment on the Lang/Country
+	initializer for PDF strings stating that it is a valid UTF-16BE point.
+
+	* src/base/pdf-text-encoding.c (unicode_bom): Added comments for HE
+	related BOMs.
+
+	* src/base/pdf-text-context.h (struct pdf_text_eol_s): Redefinition of
+	`pdf_text_eol_s' as a NUL-terminated string in UTF-8.
+
+	* src/base/pdf-text-context.c (pdf_text_eol_types): System dependent 
+	EOL types stored in UTF-8 and as a NUL-terminated string.
+	(pdf_text_context_init): Check for return status of first call to `setlocale'.
+
 2008-04-08  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
 	* doc/gnupdf.texi (Text Data Types): If requested lang/country info in

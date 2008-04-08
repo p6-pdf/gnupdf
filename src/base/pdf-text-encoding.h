@@ -54,7 +54,10 @@ typedef struct {
 } pdf_text_bom_t;
 
 
-/* Define Language/Country code Initializer for UTF16BE PDF strings (U+001B) */
+/* Define Language/Country code Initializer for UTF16BE PDF strings (U+001B).
+ * Warning!!! This is a valid UTF-16BE code point!!! So it must only be
+ * considered as language/country code initializer if coming from a PDF
+ * String! */
 #define PDF_TEXT_LCI_0  0x00
 #define PDF_TEXT_LCI_1  0x1B
 

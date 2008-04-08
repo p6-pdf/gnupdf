@@ -52,7 +52,7 @@ typedef struct _unicode_wordbreak_info_s {
   enum pdf_text_ucd_wb_property_e wb_property;
 } unicode_wordbreak_info_t;
 
-static unicode_wordbreak_info_t unicode_wordbreak_info[] = {
+static unicode_wordbreak_info_t unicode_wordbreak_info[UCD_WB_INFO_N] = {
   { 0x00AD, 0x00AD, PDF_TEXT_UCD_WBP_Format  }, /* 0 */
   { 0x0600, 0x0603, PDF_TEXT_UCD_WBP_Format  }, /* 1 */
   { 0x06DD, 0x06DD, PDF_TEXT_UCD_WBP_Format  }, /* 2 */
@@ -533,7 +533,7 @@ pdf_text_ucd_wb_in_interval(pdf_u32_t character,
   extern unicode_wordbreak_info_t unicode_wordbreak_info[UCD_WB_INFO_N];
   int i;
   
-  for(i=first_interval; i<=UCD_WB_FORMAT_L; ++i)
+  for(i=first_interval; i<=last_interval; ++i)
     {
       if((character >= unicode_wordbreak_info[i].interval_start) && \
          (character <= unicode_wordbreak_info[i].interval_stop))

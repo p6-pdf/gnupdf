@@ -699,11 +699,13 @@ pdf_text_get_unicode (pdf_char_t **contents,
             }
           /* Store header */
           memcpy(new_out_data, &header[0], header_size);
-          /* Store unicode data */
-          memcpy(&new_out_data[header_size], out_data, out_length);
-          /* Reset output data array, if any */
-          if(out_data != NULL)
+
+          if((out_data != NULL) && \
+             (out_length != 0))
             {
+              /* Store unicode data, if any */
+              memcpy(&new_out_data[header_size], out_data, out_length);
+              /* Reset output data array, if any */
               pdf_dealloc(out_data);
             }
           out_data = new_out_data;
@@ -944,8 +946,11 @@ pdf_text_concat (pdf_text_t text1,
 }
 
 
+
+/* Default initial size of the list of replacements */
+#define PDF_TEXT_ISLR   32
+
 /* Replace a given pattern in a text object */
-/* TODO: Store pointers to found patterns in a pdf_list_t */
 pdf_status_t
 pdf_text_replace (pdf_text_t text,
                   const pdf_text_t new_pattern,
@@ -954,6 +959,8 @@ pdf_text_replace (pdf_text_t text,
   int delta_size;
   long i;
   long n_replacements;
+  pdf_char_t **rep_ptrs = NULL;
+  long rep_ptrs_size = PDF_TEXT_ISLR/2;
   
   /* Empty old pattern is not allowed */
   if(pdf_text_empty_p(old_pattern))
@@ -961,7 +968,8 @@ pdf_text_replace (pdf_text_t text,
       return PDF_ETEXTENC;
     }
 
-  /* Well, if text is shorter than the old pattern, just return */
+  /* Well, if text is shorter than the old pattern, just return (it's not
+   *  possible to find the old pattern)*/
   if(text->size < old_pattern->size)
     {
       return PDF_OK;
@@ -970,30 +978,46 @@ pdf_text_replace (pdf_text_t text,
   /* Compute the delta in bytes required for each conversion */
   delta_size = (int)(new_pattern->size - old_pattern->size);
   
-  /* First, count number of replacements to be done... */
+  /* First, count number of replacements to be done... If the size of the 
+   * old pattern and the size of the new pattern are equal, direct conversion
+   * will be done. If not, a replacement pointer will be stored */
   n_replacements = 0;
   i = 0;
-  while(i<= (text->size - old_pattern->size)/4)
+  while(i <= (text->size - old_pattern->size))
     {
-      if(memcmp(&(text->data[i*4]), old_pattern->data, old_pattern->size)==0)
+      /* If old pattern found... */
+      if(memcmp(&(text->data[i]), old_pattern->data, old_pattern->size)==0)
         {
-          /* Old pattern found! */
           if(delta_size == 0)
             {
               /* If length of old pattern and length of new pattern are equal,
                *  the direct replacement can be done */
-              memcpy(&(text->data[i*4]), new_pattern->data, new_pattern->size);
+              memcpy(&(text->data[i]), new_pattern->data, new_pattern->size);
             }
           else
             {
+              /* Duplicate size of replacement pointers list, if needed */
+              if((rep_ptrs == NULL) || \
+                 (rep_ptrs_size == n_replacements))
+                {
+                  rep_ptrs = (pdf_char_t **)pdf_realloc(rep_ptrs,
+                                                        2 * rep_ptrs_size * \
+                                                        sizeof(pdf_char_t *));
+                  if(rep_ptrs == NULL)
+                    {
+                      return PDF_ENOMEM;
+                    }
+                }
+              /* Store pointer to old pattern */
+              rep_ptrs[n_replacements] = &(text->data[i]);
               n_replacements++;
             }
           /* The index must be updated to skip the replacement */
-          i += (old_pattern->size/4);
+          i += old_pattern->size;
         }
       else
         {
-          i++;
+          i+=4;
         }
     }
     
@@ -1005,54 +1029,40 @@ pdf_text_replace (pdf_text_t text,
     }
   else
     {
+      int k;
       pdf_size_t new_size;
       pdf_char_t *new_data;
-      long first_char;
-      long j;
+      pdf_char_t *new_walker;
+      pdf_char_t *old_walker;
       
       /* Compute new size and allocate new memory chunk */
       new_size = text->size + (delta_size * n_replacements);
       new_data = (pdf_char_t *)pdf_alloc(new_size);
-
-      i = 0;
-      j = 0;
-      first_char = 0;
-      while(i<= (text->size - old_pattern->size)/4)
+      
+      /* Walk the list of replacements */
+      new_walker = new_data;
+      old_walker = text->data;
+      for(k = 0; k < n_replacements; ++k)
         {
-          if(memcmp(&(text->data[i*4]), old_pattern->data, old_pattern->size)==0)
+          /* Store the data previous to the pointer */
+          if((rep_ptrs[k] - old_walker) > 0)
             {
-              /* Pattern found, so copy all the contents previous to the pattern
-               *  that are equal in both arrays. Doing it this way, we will
-               *  do it more efficiently */
-              if(i>0)
-                {
-                  memcpy(&(new_data[j*4]), &(text->data[first_char*4]), \
-                         (i-first_char)*4);
-                  j += (i-first_char);
-                }
+              memcpy(new_walker, old_walker, (rep_ptrs[k] - old_walker));
+              new_walker += (rep_ptrs[k] - old_walker);
+              old_walker += (rep_ptrs[k] - old_walker);
+            }
 
-              /* New pattern could be empty! */
-              if(new_pattern->size > 0)
-                {
-                  /* Now copy new pattern in output string */
-                  memcpy(&(new_data[j*4]), new_pattern->data, \
-                         new_pattern->size);
-                  j += new_pattern->size/4;
-                }
-              /* Update indexes */
-              i += old_pattern->size/4;
-              first_char = i;
-            }
-          else
-            {
-              i++;
-            }
+          /* Perform the unicode point replacement */
+          memcpy(new_walker, new_pattern->data, new_pattern->size);
+          new_walker += (new_pattern->size);
+          old_walker += (old_pattern->size);
         }
-      /* And finally, copy last contents */
-      if(first_char != (text->size/4))
+
+      /* Add final data */
+      if(((&(text->data[text->size])) - old_walker) > 0)
         {
-          memcpy(&(new_data[j*4]), &(text->data[first_char*4]), \
-                 (i-first_char)*4);
+          memcpy(new_walker, old_walker, \
+                 ((&(text->data[text->size])) - old_walker));
         }
 
       /* Set correct final size and final content */
@@ -1478,6 +1488,7 @@ pdf_text_get_lang_from_utf16be(pdf_text_t element,
   if(country_available)
     {
       memcpy(&aux[0], &str_in[4], PDF_TEXT_CCL-1);
+      /* Last NUL byte is already set */
       /* Store 2-bytes ISO 3166 country code */
       if(pdf_text_set_country(element, (pdf_char_t *)aux) != PDF_OK)
         {
@@ -1512,6 +1523,16 @@ pdf_text_get_unicode_string_header(pdf_char_t header[PDF_TEXT_USHMAXL],
   short lang_bytes;
   pdf_text_bom_t bom  = pdf_text_get_unicode_bom(enc);
   
+  /* We know that these pointers will never be null if the function is only
+   * called by pdf_text_get_unicode, but just in case */
+  if((language == NULL) || \
+     (country == NULL) || \
+     (header_length == NULL))
+    {
+      PDF_DEBUG_BASE("Invalid pointers received");
+      return PDF_EINVAL;
+    }
+  
   /* Check if BOM really requested */
   bom_bytes = 0;
   if(options & PDF_TEXT_UNICODE_WITH_BOM)
@@ -1528,7 +1549,7 @@ pdf_text_get_unicode_string_header(pdf_char_t header[PDF_TEXT_USHMAXL],
       /* At least language is available, but country may also be
        *  available */
       lang_bytes = (strlen((char *)country) == 2) ? PDF_TEXT_LCMAXL: \
-      PDF_TEXT_LCMINL;
+                                                    PDF_TEXT_LCMINL;
     }
   
   /* Modify header array, if needed, to add Language/Country info and/or
@@ -1658,8 +1679,6 @@ pdf_text_fill_word_boundaries_list(pdf_list_t word_boundaries,
                                    const pdf_char_t *data,
                                    const pdf_size_t size)
 {
-  struct pdf_text_wb_s word;
-  
   /* Perform a basic check of data length */
   if(size % 4 != 0)
     {
@@ -1675,25 +1694,37 @@ pdf_text_fill_word_boundaries_list(pdf_list_t word_boundaries,
       /* Initialize walker and number of bytes left */
       walker = (pdf_char_t *)data;
       n_bytes_left = size;
-      
-      /* RULE WB1: Break at the start of text ( SOT % ) */
-      word.word_start = walker;
-      
+
       while(n_bytes_left > 0)
         {
+          struct pdf_text_wb_s *p_word = NULL;
+
+          /* Allocate new word */
+          p_word = (struct pdf_text_wb_s *)pdf_alloc(sizeof(struct pdf_text_wb_s));
+          if(p_word == NULL)
+            {
+              return PDF_ENOMEM;
+            }
+          
+          /* RULE WB1: Break at the start of text ( SOT % ) */
+          p_word->word_start = walker;
+
           if(pdf_text_ucd_wb_detect_next(walker,
                                          n_bytes_left,
-                                         &(word.word_stop),
+                                         &(p_word->word_stop),
                                          &n_bytes_left)!= PDF_OK)
             {
               return PDF_ETEXTENC;
             }
           
           /* Compute word size in bytes */
-          word.word_size = (word.word_start - word.word_stop) + 4;
+          p_word->word_size = (p_word->word_stop - p_word->word_start) + 4;
           
           /* Add new word boundary to list */
-          pdf_list_add_last(word_boundaries, &word);
+          pdf_list_add_last(word_boundaries, p_word);
+          
+          /* Update walker */
+          walker = p_word->word_stop + 4;
         }
     }
   

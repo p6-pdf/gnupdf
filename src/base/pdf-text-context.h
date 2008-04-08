@@ -28,23 +28,21 @@
 
 #include <pdf-text.h>
 
-
-/* Defines specifying some UTF-32 values for typical characters */
-#define PDF_TEXT_DEF_CR    0x000D /* Carriage Return */
-#define PDF_TEXT_DEF_LF    0x000A /* Line Feed */
-#define PDF_TEXT_DEF_NEL   0x0085 /* New Line */
-
 /* Enumeration defining the types of system endianness */ 
 enum pdf_endianness_e {
   PDF_TEXT_BIG_ENDIAN      =  0,
   PDF_TEXT_LITTLE_ENDIAN   =  1
 };
 
+/* Defines specifying some UTF-32 values for typical characters */
+#define PDF_TEXT_DEF_CR    0x000D /* Carriage Return */
+#define PDF_TEXT_DEF_LF    0x000A /* Line Feed */
+#define PDF_TEXT_DEF_NEL   0x0085 /* New Line (In UTF-8: C2 85) */
+
 /* Specific type for EOL sequences */
-#define PDF_TEXT_EOLMAXL  2
+#define PDF_TEXT_EOLMAXL  3
 struct pdf_text_eol_s {
-  pdf_u32_t sequence [PDF_TEXT_EOLMAXL];
-  short length;
+  pdf_char_t sequence [PDF_TEXT_EOLMAXL]; /* In UTF-8 */
 };
 typedef struct pdf_text_eol_s * pdf_text_eol_t;
 

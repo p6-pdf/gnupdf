@@ -31,6 +31,7 @@
 #include <pdf-text-ucd-combclass.h>
 #include <pdf-text-ucd-wordbreak.h>
 #include <pdf-text-ucd-gencat.h>
+#include <pdf-text-ucd-proplist.h>
 
 /* Constant length of arrays */
 #define UCD_C_INFO_N    1849
@@ -83,6 +84,18 @@ typedef struct _unicode_special_case_interval_s {
   pdf_u32_t interval_stop;
   long deltaToIndex;
 } unicode_special_case_interval_t;
+
+
+/* Specific type for the Casing Context used in casing algorithms */
+typedef struct _pdf_text_ucd_context_s {
+  pdf_char_t *context_start;    /* Pointer to the first byte of the first point
+                                 *  in the context */
+  pdf_char_t *context_stop;     /* Pointer to the first byte of the last point
+                                 *  in the context */
+  pdf_char_t *unicode_point;    /* Pointer to the first byte of the point within
+                                 *  the context */
+  pdf_char_t locale[2];         /* Specific language ID for special casing */
+} pdf_text_ucd_context_t;
 
 
 /* Array containing the case information for each unicode point (really only for
@@ -2942,16 +2955,6 @@ static unicode_special_case_interval_t unicode_special_case_int[UCD_SC_INT_N] = 
 
 
 
-/* Specific type for the Casing Context used in casing algorithms */
-typedef struct _pdf_text_ucd_context_s {
-  pdf_char_t *context_start;    /* Pointer to the first point in the context */
-  pdf_char_t *context_stop;     /* Pointer to the last point in the context */
-  pdf_char_t *unicode_point;    /* Pointer to the point within the context */
-  pdf_char_t locale[2];         /* Specific language ID for special casing */
-} pdf_text_ucd_context_t;
-
-
-
 static pdf_bool_t
 pdf_text_ucd_simple_case(pdf_u32_t *to_he,
                          const pdf_u32_t from_he,
@@ -3041,10 +3044,11 @@ pdf_text_ucd_Final_Sigma(const pdf_text_ucd_context_t *context)
     
   int n_case_ignorable;
   int cased_found;
-  
+
   if((context->unicode_point < context->context_start) || \
      (context->unicode_point > context->context_stop))
     {
+      PDF_DEBUG_BASE("Unicode point outside context interval");
       /* The unicode point must not be outside the context interval */
       return PDF_FALSE;
     }
@@ -3091,7 +3095,7 @@ pdf_text_ucd_Final_Sigma(const pdf_text_ucd_context_t *context)
 
   /* Check status of previous characters */ 
   if((cased_found == 1) && \
-     (n_case_ignorable > 0))
+     (n_case_ignorable >= 0))
     {
       /*----- Check forward -----*/
       
@@ -3138,13 +3142,87 @@ pdf_text_ucd_Final_Sigma(const pdf_text_ucd_context_t *context)
 }
 
 
-/* TODO: After_Soft_Dotted condition in Special Case algorithms
+/* After_Soft_Dotted condition in Special Case algorithms
  *  There is a character with the Soft_Dotted property before the character to
  *  convert, with no intervening character of combining class 0 or 230.
  */
 static pdf_bool_t
 pdf_text_ucd_After_Soft_Dotted(const pdf_text_ucd_context_t *context)
 {
+  pdf_char_t *walker;
+  short stop;
+  int n_combclass230;
+  int n_combclass0;
+  int soft_dotted_found;
+  
+  if((context->unicode_point < context->context_start) || \
+     (context->unicode_point > context->context_stop))
+    {
+      PDF_DEBUG_BASE("Unicode point outside context interval");
+      /* The unicode point must not be outside the context interval */
+      return PDF_FALSE;
+    }
+  
+  if(context->unicode_point == context->context_start)
+    {
+      PDF_DEBUG_BASE("Unicode point is context start");
+      /* If the unicode point is the start of the context, then it is impossible
+       *  to have a sequence before it */
+      return PDF_FALSE;
+    }
+  
+  /*----- Check backward -----*/
+  
+  n_combclass0 = 0;
+  n_combclass230 = 0;
+  soft_dotted_found = 0;
+  walker = (pdf_char_t *)(context->unicode_point - 4);
+  stop = 0;
+  while(!stop)
+    {
+      if(walker < context->context_start)
+        {
+          /* Arrived to context start, stop loop */
+          stop = 1;
+        }
+      else
+        {
+          pdf_u32_t aux_point;
+          pdf_u8_t comb_class;
+          memcpy(&aux_point, walker, 4);
+          comb_class = pdf_text_ucd_get_combining_class(aux_point);
+          switch(comb_class)
+            {
+              case 0:
+                n_combclass0++;
+                break;
+              case 230:
+                n_combclass230++;
+                break;
+              default:
+                if(pdf_text_ucd_pl_is_Soft_Dotted(aux_point))
+                  {
+                    soft_dotted_found = 1;
+                    stop = 1;
+                  }
+                break;
+            }
+
+          if(!stop)
+            {
+              walker -= 4; /* Point to previous UTF-32 char */
+            }
+        }
+    }
+  
+  /* Check status of previous characters */ 
+  if((soft_dotted_found) && \
+     (n_combclass0 == 0) && \
+     (n_combclass230 == 0))
+    {
+      return PDF_TRUE;
+    }
+  
   return PDF_FALSE;
 }
 
@@ -3159,6 +3237,21 @@ pdf_text_ucd_More_Above(const pdf_text_ucd_context_t *context)
   short stop;
   int combclass230found;
   int n_combclass0;
+  
+  if((context->unicode_point < context->context_start) || \
+     (context->unicode_point > context->context_stop))
+    {
+      PDF_DEBUG_BASE("Unicode point outside context interval");
+      /* The unicode point must not be outside the context interval */
+      return PDF_FALSE;
+    }
+  
+  if(context->unicode_point == context->context_stop)
+    {
+      /* If the unicode point is the start of the context, then it is impossible
+       *  to have a sequence before it */
+      return PDF_FALSE;
+    }
   
   /*----- Check forward -----*/
   
@@ -3219,6 +3312,21 @@ pdf_text_ucd_Before_Dot(const pdf_text_ucd_context_t *context)
   int dotAbovefound;
   int n_combclass0or230;
   
+  if((context->unicode_point < context->context_start) || \
+     (context->unicode_point > context->context_stop))
+    {
+      PDF_DEBUG_BASE("Unicode point outside context interval");
+      /* The unicode point must not be outside the context interval */
+      return PDF_FALSE;
+    }
+  
+  if(context->unicode_point == context->context_stop)
+    {
+      /* If the unicode point is the start of the context, then it is impossible
+       *  to have a sequence before it */
+      return PDF_FALSE;
+    }
+  
   /*----- Check forward -----*/
   
   walker = (pdf_char_t *)(context->unicode_point + 4); 
@@ -3267,15 +3375,89 @@ pdf_text_ucd_Before_Dot(const pdf_text_ucd_context_t *context)
   return PDF_FALSE;
 }
 
-/* TODO: After_I condition in Special Case algorithms
+/* After_I condition in Special Case algorithms
  *  There is an uppercase I before the character, and there is no intervening
  *  combining character class 230 (Above) or 0.
  */
 static pdf_bool_t
 pdf_text_ucd_After_I(const pdf_text_ucd_context_t *context)
 {
+  pdf_char_t *walker;
+  short stop;
+  int n_combclass230;
+  int n_combclass0;
+  int upper_i_found;
+  
+  if((context->unicode_point < context->context_start) || \
+     (context->unicode_point > context->context_stop))
+    {
+      PDF_DEBUG_BASE("Unicode point outside context interval");
+      /* The unicode point must not be outside the context interval */
+      return PDF_FALSE;
+    }
+  
+  if(context->unicode_point == context->context_start)
+    {
+      /* If the unicode point is the start of the context, then it is impossible
+       *  to have a sequence before it */
+      return PDF_FALSE;
+    }
+  
+  /*----- Check backward -----*/
+  
+  n_combclass0 = 0;
+  n_combclass230 = 0;
+  upper_i_found = 0;
+  walker = (pdf_char_t *)(context->unicode_point - 4);
+  stop = 0;
+  while(!stop)
+    {
+      if(walker < context->context_start)
+        {
+          /* Arrived to context start, stop loop */
+          stop = 1;
+        }
+      else
+        {
+          pdf_u32_t aux_point;
+          pdf_u8_t comb_class;
+          memcpy(&aux_point, walker, 4);
+          comb_class = pdf_text_ucd_get_combining_class(aux_point);
+          switch(comb_class)
+          {
+            case 0:
+              n_combclass0++;
+              break;
+            case 230:
+              n_combclass230++;
+              break;
+            default:
+              if(aux_point == 0x49) /* 0x49 == 'I' */
+                {
+                  upper_i_found = 1;
+                  stop = 1;
+                }
+              break;
+          }
+          
+          if(!stop)
+            {
+              walker -= 4; /* Point to previous UTF-32 char */
+            }
+        }
+    }
+  
+  /* Check status of previous characters */ 
+  if((upper_i_found) && \
+     (n_combclass0 == 0) && \
+     (n_combclass230 == 0))
+    {
+      return PDF_TRUE;
+    }
+  
   return PDF_FALSE;
 }
+
 
 static pdf_bool_t
 pdf_text_ucd_check_lang(const pdf_char_t *text,
@@ -3344,6 +3526,7 @@ pdf_text_ucd_special_case_get_next_condition(pdf_char_t **condition_start,
   /* Set output pointers */
   *condition_start = field_start;
   *condition_stop = field_stop;
+
   
   /* Reset field end and create NUL-terminated string (if not already) */
   if(*field_stop == ' ')
@@ -3423,6 +3606,7 @@ pdf_text_ucd_special_case_conditions(const pdf_text_ucd_context_t *context,
   pdf_char_t *walker;
   pdf_char_t *internal_condition_list;
   pdf_bool_t is_last;
+  pdf_size_t condition_list_size;
 
   if((condition_list == NULL) || \
      (context == NULL) || \
@@ -3434,14 +3618,15 @@ pdf_text_ucd_special_case_conditions(const pdf_text_ucd_context_t *context,
   
   /* Copy condition list, as this function will modify it to create NUL
    * terminated strings per condition */
-  internal_condition_list = (pdf_char_t *) \
-                            pdf_alloc(strlen((char *)condition_list));
+  condition_list_size = strlen((char *)condition_list);
+  internal_condition_list = (pdf_char_t *)pdf_alloc(condition_list_size);
   if(internal_condition_list == NULL)
     {
       PDF_DEBUG_BASE("Problem dupping condition list");
       return PDF_FALSE;
     }
-  memcpy(internal_condition_list,condition_list,strlen((char *)condition_list));
+  memcpy(internal_condition_list,condition_list,condition_list_size);
+  internal_condition_list[condition_list_size] = '\0';
 
   /* Initiate walker */
   walker = internal_condition_list;
@@ -3457,6 +3642,8 @@ pdf_text_ucd_special_case_conditions(const pdf_text_ucd_context_t *context,
       /* Get NUL-terminated string to next condition */
       is_last = pdf_text_ucd_special_case_get_next_condition(&walker, \
                                                              &field_end);
+      
+      
       /* Check single condition */
       if(pdf_text_ucd_special_case_check_single(context, \
                                                 walker, \
@@ -3467,7 +3654,6 @@ pdf_text_ucd_special_case_conditions(const pdf_text_ucd_context_t *context,
                          (char *)walker);
           return PDF_FALSE;
         }
-      
       /* Check if single condition was fulfilled */
       if(!fulfilled)
         {
@@ -3496,12 +3682,11 @@ pdf_text_ucd_special_case(pdf_u32_t to_he[UCD_SC_MAX_EXPAND],
 {
   extern unicode_special_case_info_t unicode_special_case_info[UCD_SC_INFO_N];
   extern unicode_special_case_interval_t unicode_special_case_int[UCD_SC_INT_N];
-  
+
   pdf_bool_t found;
   int index;
   long delta = 0;
   pdf_char_t *condition_list = NULL;
-  
   /* Look for input unicode point in intervals */
   index = 0;
   found = PDF_FALSE;
@@ -3515,6 +3700,8 @@ pdf_text_ucd_special_case(pdf_u32_t to_he[UCD_SC_MAX_EXPAND],
           /* Found!! Set deltaToIndex */
           found = PDF_TRUE;
           delta = unicode_special_case_int[index].deltaToIndex;
+          /* Get conditions list in Special Case, if any */
+          condition_list = (pdf_char_t *) unicode_special_case_info[from_he-delta].condition_list;
         }
       else
         {
@@ -3522,10 +3709,6 @@ pdf_text_ucd_special_case(pdf_u32_t to_he[UCD_SC_MAX_EXPAND],
         }
     }
   
-  
-  /* Check conditions list in Special Case, if any */
-  condition_list = (pdf_char_t *) \
-                   unicode_special_case_info[from_he - delta].condition_list;
   if((found) && \
      (strlen((char *)condition_list)>0) && \
      (!pdf_text_ucd_special_case_conditions(context, condition_list)))
@@ -3592,41 +3775,32 @@ pdf_text_ucd_to_case(pdf_u32_t dest[UCD_SC_MAX_EXPAND], pdf_u32_t origin,
                      const pdf_text_ucd_context_t *context,
                      const enum unicode_case_type to_case)
 {
-  pdf_bool_t ret_code;
-  pdf_u32_t to;
+  pdf_size_t n_points = 0;
   
-  /* Test if simple case is the one needed */
-  ret_code = pdf_text_ucd_simple_case(&to, origin, to_case);
-  if(ret_code)
+  /* Try special cases */
+  if(pdf_text_ucd_special_case(dest,
+                               &n_points,
+                               origin,
+                               context,
+                               to_case))
     {
-      /* Yess, the correct case conversion was done using simple cases */
-      dest[0] = to;
-      return 1; /* Returns the number of Unicode points */
+      /* Special case correctly processed */
+      return n_points;
     }
   else
     {
-      /* No simple case conversion found, try special cases */
-      pdf_size_t n_points = 0;
-      ret_code = pdf_text_ucd_special_case(dest,
-                                           &n_points,
-                                           origin,
-                                           context,
-                                           to_case);
-      if(ret_code)
-        {
-          /* Special case correctly processed */
-          return n_points;
-        }
-      else
-        {
-          /* Return the code point returned in the simple case */
-          dest[2] = 0;
-          dest[1] = 0;
-          dest[0] = to;
-          return (pdf_size_t)1; /* Returns the number of Unicode points */
-        }
+      pdf_u32_t to = 0;
+    
+      /* Single UTF-32 point will be returned */
+      dest[2] = 0;
+      dest[1] = 0;
+
+      /* Test if simple case is the one needed. If not available, return the
+       * original point */
+      dest[0] = (pdf_text_ucd_simple_case(&to, origin, to_case)) ? to : origin;
+
+      return 1;
     }
-  return (pdf_size_t)0;
 }
 
 
@@ -3654,7 +3828,7 @@ pdf_text_ucd_create_case_context(pdf_text_ucd_context_t *context,
   context->context_start = (pdf_char_t *)word;
   /* Set context stop as the last character in the word. Length is coming in 
    *  bytes! */
-  context->context_stop = (pdf_char_t *)&(word[(length/4) -1]);
+  context->context_stop = (pdf_char_t *)&(word[length -4]);
   /* Set language code */
   strncpy((char *)&(context->locale[2]), (char *)language, 2);
   
@@ -3684,6 +3858,7 @@ pdf_text_ucd_word_change_case(pdf_char_t *destination_word,
      (origin_lang == NULL) || \
      (p_destination_length == NULL))
     {
+      PDF_DEBUG_BASE("Invalid inputs");
       return PDF_EINVAL;
     }
 
@@ -3693,6 +3868,7 @@ pdf_text_ucd_word_change_case(pdf_char_t *destination_word,
                                       origin_length,
                                       origin_lang) != PDF_OK)
     {
+      PDF_DEBUG_BASE("Error creating casing context");
       return PDF_EINVAL;
     }
   
@@ -3708,6 +3884,18 @@ pdf_text_ucd_word_change_case(pdf_char_t *destination_word,
        *  the others */
       new_case = ((destination_case==UNICODE_CASE_INFO_TITLE_CASE)&&(i>0)) ? \
                   UNICODE_CASE_INFO_LOWER_CASE : destination_case;
+      
+      /* Store pointer to character within the context */
+      context.unicode_point = (pdf_char_t *)(&origin_word[i]);
+      /* Store language info in context */
+      if(strlen((char *)origin_lang) == 2)
+        {
+          memcpy(&context.locale[0],origin_lang,2);
+        }
+      else
+        {
+          memset(&context.locale[0],0,2);
+        }
       
       /* Store character */
       memcpy(&character, &origin_word[i], 4);

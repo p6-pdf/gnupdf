@@ -64,13 +64,13 @@ typedef struct pdf_text_context_s {
 static pdf_text_context_t text_context;
 
 
-/* Definition of the different platform-dependent EOL types. This array is based
- *  on the `enum pdf_text_eol_types' enumeration. */
+/* Definition of the different platform-dependent EOL types, in UTF-8. This
+ *  array is based on the `enum pdf_text_eol_types' enumeration. */
 static const struct pdf_text_eol_s pdf_text_eol_types [PDF_TEXT_EOLMAX] = {
-  { { PDF_TEXT_DEF_CR,  PDF_TEXT_DEF_LF } , 2 },  /* PDF_TEXT_EOL_WINDOWS */
-  { { PDF_TEXT_DEF_LF,  0x0             } , 1 },  /* PDF_TEXT_EOL_UNIX    */
-  { { PDF_TEXT_DEF_NEL, 0x0             } , 1 },  /* PDF_TEXT_EOL_EBCDIC  */
-  { { PDF_TEXT_DEF_CR,  0x0             } , 1 }   /* PDF_TEXT_EOL_MACOS   */
+  { { PDF_TEXT_DEF_CR, PDF_TEXT_DEF_LF,  0x00 } },  /* PDF_TEXT_EOL_WINDOWS */
+  { { PDF_TEXT_DEF_LF, 0x00,             0x00 } },  /* PDF_TEXT_EOL_UNIX    */
+  { { 0xC2,            PDF_TEXT_DEF_NEL, 0x00 } },  /* PDF_TEXT_EOL_EBCDIC  */
+  { { PDF_TEXT_DEF_CR, 0x00,             0x00 } }   /* PDF_TEXT_EOL_MACOS   */
 };
 
 
@@ -168,10 +168,10 @@ pdf_text_detect_host_eol(void)
   /* The EOL sequence (a.k.a Newline function) may be represented by different
    *  characters, depending on the platform
    *
-   *  Mac OS 9.x and earlier ---> CR (Carriage Return), U+000D
+   *  Mac OS 9.x and earlier ---> CR (Carriage Return), U+000D (Not supported)
    *  Mac OS X, Unix, GNU/Linux ---> LF (Line Feed), U+000A
    *  Windows ---> CRLF (Carriage Return + Line Feed), <U+000D,U+000A>
-   *  EBCDIC-based OS --> NEL (Next Line), U+0085
+   *  EBCDIC-based OS --> NEL (Next Line), U+0085 (Not supported)
    */
   extern pdf_text_context_t text_context;
   extern const struct pdf_text_eol_s pdf_text_eol_types [PDF_TEXT_EOLMAX];
@@ -198,7 +198,11 @@ pdf_text_context_init(void)
   
 #if defined HAVE_SETLOCALE
   /* Set all categories of the locale */
-  setlocale(LC_ALL, "");
+  if(setlocale(LC_ALL, "") == NULL)
+    {
+      PDF_DEBUG_BASE("Error setting locale information in the process");
+      return PDF_ETEXTENC;
+    }
 #endif
   
   /* Get system endianness */

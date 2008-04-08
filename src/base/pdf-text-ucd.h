@@ -38,6 +38,9 @@
 /* Include general-category related algorithms */
 #include <pdf-text-ucd-gencat.h>
 
+/* Include propertly-list related algorithms */
+#include <pdf-text-ucd-proplist.h>
+
 
 #endif
 

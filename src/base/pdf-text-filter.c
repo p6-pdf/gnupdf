@@ -65,7 +65,7 @@ pdf_text_filter_change_case(pdf_text_t text,
   
   /* Worst length will be having 3 output UTF-32 characters per each input
    *  UTF-32 character. First of all, allocate memory for the worst length */
-  worst_length = text->size * 3;
+  worst_length = text->size * UCD_SC_MAX_EXPAND;
   new_data = (pdf_char_t *)pdf_alloc(worst_length);
   if(new_data == NULL)
     {
@@ -141,6 +141,7 @@ pdf_text_filter_change_case(pdf_text_t text,
   /* Replace contents (data and word boundary list) */
   pdf_dealloc(text->data);
   text->data = new_data;
+  text->size = new_length;
   pdf_text_destroy_word_boundaries_list(&(text->word_boundaries));
   text->word_boundaries = new_wb_list;
   
@@ -170,21 +171,17 @@ pdf_text_filter_title_case(pdf_text_t text)
 }
 
 
-/* Remove all single ampersands, and turn '&&' into '&' */
+/* Remove all single ampersands, and turn ' && ' into ' & ' */
 pdf_status_t
 pdf_text_filter_remove_amp(pdf_text_t text)
 {
   pdf_status_t ret_code;
-  ret_code = pdf_text_replace_ascii(text,
-                                    (pdf_char_t *)" & ",
-                                    (pdf_char_t *)" ");
+  ret_code = pdf_text_replace_ascii(text,(pdf_char_t *)" ",(pdf_char_t *)" & ");
   if(ret_code != PDF_OK)
     {
       return ret_code;
     }
-  return pdf_text_replace_ascii(text,
-                                (pdf_char_t *)" && ",
-                                (pdf_char_t *)" & ");
+  return pdf_text_replace_ascii(text,(pdf_char_t *)" & ",(pdf_char_t *)" && ");
 }
 
 
@@ -226,38 +223,52 @@ pdf_text_filter_normalize_full_width_ascii(pdf_text_t text)
 }
 
 
-/* Substitute line endings with a given ASCII pattern */
+/* Substitute line endings with a given UTF-8 pattern */
 static pdf_status_t
-pdf_text_substitute_line_ending(pdf_text_t text, const pdf_char_t *new_pattern)
+pdf_text_substitute_line_ending(pdf_text_t text, const pdf_text_eol_t new_eol)
 {
   int i;
   /* For each possible EOL type, perform the substitution */
   for(i = PDF_TEXT_EOL_WINDOWS; i < PDF_TEXT_EOLMAX; i++)
     {
-      int j;
       pdf_status_t ret_code = PDF_OK;
-      pdf_char_t *eol_pattern;
       pdf_text_eol_t requested_eol;
 
+      /* Get Host EOL */
       requested_eol = pdf_text_context_get_host_eol((enum pdf_text_eol_types)i);
-      
-      /* Create EOL pattern in ASCII */
-      eol_pattern = (pdf_char_t *)pdf_alloc(requested_eol->length+1);
-      for(j = 0; j < requested_eol->length; ++j)
-        {
-          eol_pattern[j] = (pdf_char_t)requested_eol->sequence[j];
-        }
-      eol_pattern[requested_eol->length] = 0;
 
-      /* Only perform the replacement if ASCII paterns are different! */
-      if(strcmp((char *)eol_pattern, (char *)new_pattern) != 0)
+      /* Only perform the replacement if UTF-8 patterns are different! */
+      if(strcmp((char *)requested_eol->sequence,
+                (char *)new_eol->sequence) != 0)
         {
+          pdf_text_t old_text_pattern;
+          pdf_text_t new_text_pattern;
+
+          /* Create text old pattern */
+          if(pdf_text_new_from_unicode(&old_text_pattern,
+                                       requested_eol->sequence,
+                                       strlen((char *)requested_eol->sequence),
+                                       PDF_TEXT_UTF8) != PDF_OK)
+            {
+              PDF_DEBUG_BASE("Old EOL is not UTF-8");
+              return PDF_EBADDATA;
+            }
+          /* Create text new pattern */
+          if(pdf_text_new_from_unicode(&new_text_pattern,
+                                       new_eol->sequence,
+                                       strlen((char *)new_eol->sequence),
+                                       PDF_TEXT_UTF8) != PDF_OK)
+            {
+              PDF_DEBUG_BASE("New EOL is not UTF-8");
+              return PDF_EBADDATA;
+            }
+
           /* Perform the replacement */
-          ret_code = pdf_text_replace_ascii(text, eol_pattern, new_pattern);
+          ret_code = pdf_text_replace(text, new_text_pattern, old_text_pattern);
+          
+          pdf_text_destroy(new_text_pattern);
+          pdf_text_destroy(old_text_pattern);
         }
-      
-      /* Destroy EOL pattern */
-      pdf_dealloc(eol_pattern);
 
       if(ret_code != PDF_OK)
         {
@@ -275,28 +286,10 @@ pdf_status_t
 pdf_text_filter_normalize_line_endings(pdf_text_t text)
 {
   pdf_text_eol_t host_eol;
-  pdf_char_t *host_eol_pattern_ascii;
-  int j;
-  pdf_status_t ret_code;
-
   /* Get this host EOL */
   host_eol = pdf_text_context_get_host_eol(PDF_TEXT_EOL_HOST);
-  
-  /* Create EOL pattern in ASCII */
-  host_eol_pattern_ascii = (pdf_char_t *)pdf_alloc(host_eol->length+1);
-  for(j = 0; j < host_eol->length; ++j)
-    {
-      host_eol_pattern_ascii[j] = (pdf_char_t)host_eol->sequence[j];
-    }
-  host_eol_pattern_ascii[host_eol->length] = 0;
-  
   /* Finally, substitute line endings */
-  ret_code = pdf_text_substitute_line_ending(text, host_eol_pattern_ascii);
-  
-  /* Destroy EOL patterns */
-  pdf_dealloc(host_eol_pattern_ascii);
-  
-  return ret_code;
+  return pdf_text_substitute_line_ending(text, host_eol);
 }
 
 
@@ -304,8 +297,9 @@ pdf_text_filter_normalize_line_endings(pdf_text_t text)
 pdf_status_t
 pdf_text_filter_remove_line_endings(pdf_text_t text)
 {
+  const struct pdf_text_eol_s empty_eol =  { { 0x00, 0x00, 0x00 } };
   /* Substitute line endings */
-  return pdf_text_substitute_line_ending(text, (const pdf_char_t *)" ");
+  return pdf_text_substitute_line_ending(text, (pdf_text_eol_t)(&empty_eol));
 }
 
 
