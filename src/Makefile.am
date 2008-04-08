@@ -54,6 +54,7 @@ TEXT_MODULE_SOURCES = base/pdf-text-context.c base/pdf-text-context.h \
                       base/pdf-text-ucd-combclass.c base/pdf-text-ucd-combclass.h \
                       base/pdf-text-ucd-wordbreak.c base/pdf-text-ucd-wordbreak.h \
                       base/pdf-text-ucd-gencat.c base/pdf-text-ucd-gencat.h \
+                      base/pdf-text-ucd-proplist.c base/pdf-text-ucd-proplist.h \
                       base/pdf-text-ucd.h \
                       base/pdf-text.c base/pdf-text.h
 

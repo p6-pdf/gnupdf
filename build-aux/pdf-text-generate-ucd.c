@@ -1859,6 +1859,309 @@ int compute_SpecialCasing(const char *SpecialCasingFile)
 
 
 
+/* ------------------- CREATING PropList.c --------------------------*/
+
+#define OUTPUT_UNICODEDATA_PROPLIST "PropList.c"
+
+#define MAX_PROPLIST_ENTRIES 2000 /* Much more than required in Unicode 5.0,
+                                   *  should be enough for future updates of 
+                                   *  the standard */
+
+#ifndef UNICODE_POINT_LENGTH
+#define UNICODE_POINT_LENGTH 10
+#endif
+#define PROPLIST_PROPERTY_LENGTH  40
+#define PROPLIST_COMMENT_LENGTH  100
+typedef struct _ucd_proplist_entry {
+  char unicode_point_start   [UNICODE_POINT_LENGTH];
+  char unicode_point_stop    [UNICODE_POINT_LENGTH];
+  char property   [PROPLIST_PROPERTY_LENGTH];
+  char comment   [PROPLIST_COMMENT_LENGTH];
+} ucd_proplist_entry;
+
+
+short should_line_be_parsed_PropList(const char *line)
+{
+  if(line == NULL)
+    {
+      return 0;
+    }
+  
+  /* Check if line is commented */
+  if(*line == '#')
+    {
+      return 0;
+    }
+  /* Check if line is empty */
+  else
+    {
+      char *walker = (char *)line;
+      int count = 0;
+      while((walker != NULL) && \
+            (*walker != '\r') && \
+            (*walker != '\n'))
+        {
+          if(*walker == ';')
+            {
+              count++;
+            }
+          walker++;
+        }
+      /* Check number of fields available in the line */
+      if(count < 1)
+        {
+          return 0;
+        }
+    }
+  return 1;
+}
+
+
+/*
+ <code1>..<code2>    ; format   # <comment>
+ <code1>             ; format   # <comment>
+ */
+int parse_PropList_line_field(char *place_to_store, int max_field_length,
+                               const char *fieldstart, char **field_end)
+{
+  char *walker;
+  int length;
+  
+  /* Look for field separator (can be either ';'  or end of line) */
+  walker = (char *)fieldstart;
+  while((walker != NULL) && \
+        (*walker != ';') && \
+        (*walker != '#') && \
+        (*walker != '\n') && \
+        (*walker != '\r'))
+    {
+      walker ++;
+    }
+  
+  if(walker == NULL)
+    {
+      return -1;
+    }
+  
+  /* Compute field length */
+  length = walker - fieldstart;
+  
+  if(length > max_field_length)
+    {
+      printf("[Error] '%d' bytes are required for the field, "
+             "but only '%d' are available\n", length, max_field_length);
+      return -1;
+    }
+  
+  /* Copy line contents */
+  memcpy(place_to_store, fieldstart, length);
+  
+  /* Set last NUL char */
+  place_to_store[length] = '\0';
+  
+  /* If stopped due to ';' delimiters, then look for next field start
+   *  point */
+  if((*walker == ';') || (*walker == '#'))
+    {
+      /* Skip ';' */
+      walker++;
+      while((walker != NULL) && \
+            (*walker == ' '))
+        {
+          walker++;
+        }
+      *field_end = walker;
+    }
+  else
+    {
+      /* End of line reached, set null as output field end */
+      *field_end = NULL;
+    }
+  
+  return 0;
+}
+
+/*
+ <code1>..<code2>    ; format   # <comment>
+ <code1>             ; format   # <comment>
+ */
+int parse_PropList_line(ucd_proplist_entry *p_entry, const char *line)
+{
+  char temporal [20];
+  char *stop;
+  char *start;
+  char *aux;
+  start = (char *)line;
+  
+  memset(&temporal[0], 0, sizeof(char)*20);
+  memset(&p_entry->unicode_point_start,0,UNICODE_POINT_LENGTH);
+  memset(&p_entry->unicode_point_stop,0,UNICODE_POINT_LENGTH);
+  
+  /* Get entry fields! */
+  if(parse_PropList_line_field(temporal, 19, start, &stop)!=0)
+    return -1;
+  /* Store interval start */
+  aux = strstr(temporal,"..");
+  if(aux == NULL)
+    {
+      aux = strstr(temporal,"   ");
+      strncpy(p_entry->unicode_point_start, temporal, (aux - temporal));
+      strncpy(p_entry->unicode_point_stop, temporal, (aux - temporal));
+    }
+  else /* Both interval start and stop are available */
+    {
+      int i;
+      strncpy(p_entry->unicode_point_start, temporal, (aux - temporal));
+      strncpy(p_entry->unicode_point_stop, aux+2, (&temporal[19]-(aux+2)));
+      /* Skip trailing white spaces in stop point */
+      i = 0;
+      while(p_entry->unicode_point_stop[i] != ' ')
+        {
+          i++;
+        }
+      if(p_entry->unicode_point_stop[i] == ' ')
+        {
+          p_entry->unicode_point_stop[i] = '\0';
+        }
+    }
+  
+  start = stop;
+  if(parse_PropList_line_field(p_entry->property, \
+                                PROPLIST_PROPERTY_LENGTH-1, start, &stop)!=0)
+    return -1;
+  start = stop;
+  if(parse_PropList_line_field(p_entry->comment, \
+                                PROPLIST_COMMENT_LENGTH-1, start, &stop)!=0)
+    return -1;
+  
+  return 0;
+}
+
+int print_PropList_info(const ucd_proplist_entry *p_entry)
+{
+  printf("interval_start:'%s' interval_stop:'%s' property:'%s' "
+         "comments:'%s'\n",
+         p_entry->unicode_point_start,
+         (strlen(p_entry->unicode_point_stop)>0) ? \
+         p_entry->unicode_point_stop:"<None>", 
+         p_entry->property,
+         (strlen(p_entry->comment)>0) ? p_entry->comment:"<None>");
+  return 0;
+}
+
+int create_PropList_header(FILE *pf)
+{
+  if(pf != NULL)
+    {
+      fprintf(pf, "\n\n\n"
+              "typedef struct _unicode_proplist_info_s {\n"
+              "  pdf_u32_t interval_start;\n"
+              "  pdf_u32_t interval_stop;\n"
+              "  enum pdf_text_ucd_proplist_e proplist;\n"
+              "} unicode_proplist_info_t;\n\n"
+              "static unicode_proplist_info_t "
+              "unicode_proplist_info[] = {\n");
+    }
+  return 0;
+}
+
+int create_PropList_trailer(FILE *pf)
+{
+  if(pf != NULL)
+    {
+      fprintf(pf, "};\n\n\n");
+    }
+  return 0;
+}
+
+
+
+int add_entry_to_PropList(FILE *pf, const ucd_proplist_entry *p_entry,
+                           int index)
+{
+  if(pf != NULL)
+    {
+      const char *start = p_entry->unicode_point_start;
+      const char *stop = p_entry->unicode_point_stop;
+      const char *property = p_entry->property;
+      
+      fprintf(pf, "  { 0x%s, 0x%s, PDF_TEXT_UCD_PL_%s }, /* %d */\n",
+              p_entry->unicode_point_start,
+              p_entry->unicode_point_stop,
+              p_entry->property,
+              index);
+    }
+  return 0;
+}
+
+
+int compute_PropList(const char *PropListFile)
+{
+  FILE *pf;
+  FILE *pf_out;
+  ucd_proplist_entry entry;
+  long count;
+  char line [MAX_LINE_LENGTH];
+  
+  /* Create PropList source file */
+  
+  pf = fopen(PropListFile, "r");
+  if(pf == NULL)
+    {
+      fprintf(stderr,"\nFile '%s' can't be opened for reading\n", \
+              PropListFile);
+      return -2;
+    }
+  
+  pf_out = fopen(OUTPUT_UNICODEDATA_PROPLIST, "w");
+  if(pf_out == NULL)
+    {
+      fprintf(stderr,"\nFile '%s' can't be opened for writting\n", \
+              OUTPUT_UNICODEDATA_PROPLIST);
+      return -3;
+    }
+  
+  
+  /* Set header */
+  create_PropList_header(pf_out);
+  
+  memset(&entry, 0, sizeof(entry));
+  memset(&line[0], 0, MAX_LINE_LENGTH);
+  count = 0;
+  while(fgets(line, MAX_LINE_LENGTH-1, pf)!=NULL)
+    {
+      if(should_line_be_parsed_PropList(line))
+        {
+          /* Parse line */
+          parse_PropList_line(&entry, line);
+          
+          /* Print in screen */
+          print_PropList_info(&entry);
+          
+          /* Add to output file */
+          if(add_entry_to_PropList(pf_out, &entry,count) >=0)
+            {
+              count++;
+            }
+        }      
+      /* Clear structure  and line contents */
+      memset(&entry, 0, sizeof(entry));
+      memset(&line[0], 0, MAX_LINE_LENGTH);
+    }
+  
+  /* Set trailer for the case changes list */
+  create_PropList_trailer(pf_out);
+  
+  /* Input file can be closed now */
+  fclose(pf);
+  
+  printf("A total of '%ld' entries added in the PropList info array\n",
+         count);
+  
+  return 0;
+}
+
+
 
 /* ---------------------------------- MAIN -----------------------------------*/
 
@@ -1918,6 +2221,13 @@ int main (int argc, char **argv)
       /* Compute Special CASE source file from SpecialCasing.txt */
       compute_WordBreak(argv[1]);
       printf("WordBreakProperty parsed and WORDBREAK file created\n"); 
+    }
+  else if ((argc == 2) && \
+           (strstr(argv[1], "PropList.txt")!=NULL))
+    {
+      /* Compute Special CASE source file from SpecialCasing.txt */
+      compute_PropList(argv[1]);
+      printf("PropList parsed and PROPLIST file created\n"); 
     }
   else
     {

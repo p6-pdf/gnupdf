@@ -1,3 +1,18 @@
+2008-04-08  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
+	* src/base/pdf-text-ucd-proplist.c: New file.
+
+	* src/base/pdf-text-ucd-proplist.h: New file.
+
+	* src/Makefile.am (TEXT_MODULE_SOURCES): Added compilation of new
+	`pdf-text-ucd-proplist.c' and `pdf-text-ucd-proplist.h'.
+
+	* utils/README: Removed information about pdf-text-generate-ucd, as it
+	is now in the new build-aux directory.
+
+	* build-aux/pdf-text-generate-ucd.c: Added generation of contents in
+	`pdf-text-ucd-proplist.c' and `pdf-text-ucd-proplist.h'.
+
 2008-04-07  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Time Related Data Types): Attribute `sign'

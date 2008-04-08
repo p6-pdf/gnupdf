@@ -7,8 +7,3 @@ documents. These utilities makes use of the GNU PDF Library.
       A front-end for the standard PDF filters.
 
 
-  `pdf-text-generate-ucd'
-
-      A C source generator for the the Unicode Character Database. This library
-      does not really use the GNU PDF library.
-
