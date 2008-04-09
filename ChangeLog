@@ -1,3 +1,12 @@
+2008-04-09  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Filesystem Concepts): New section.
+	(Filesystem Interfaces): New section.
+	(The Filesystem Implementation Interface): New section.
+	(The Filesystem Definition Interface): New section.
+	(The Filesystem Interface): New section.
+	(The File Interface): New section.
+
 2008-04-09  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
 	* torture/unit/base/text/pdf-text-set-language.c: Avoid memory leaks in

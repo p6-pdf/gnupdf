@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.40 2008/04/08 10:21:29 aleksander_m Exp $
+@comment $Id: gnupdf.texi,v 1.41 2008/04/09 20:15:29 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -85,7 +85,7 @@ Indices
 * Floating Point Arithmetic::
 * Encoded Text::
 * Time Management::
-* Accessing the File System::
+* Accessing File Systems::
 @end menu
 
 @node Base Layer Overview
@@ -4227,63 +4227,204 @@ if (pdf_time_cal_span_diff (span1,
 @end deftypefun
 
 
-@node Accessing the File System
-@section Accessing the File System
+@node Accessing File Systems
+@section Accessing File Systems
 
 @menu
-* File System Data Types::
+* Filesystem Concepts::
+* Filesystem Interfaces::
+* The Filesystem Implementation Interface::
+* The Filesystem Definition Interface::
+* The Filesystem Interface::
+* The File Interface::
 @end menu
 
-@node File System Data Types
-@subsection File System Data Types
+@node Filesystem Concepts
+@subsection Filesystem Concepts
 
-@deftp {Data Type} {pdf_file_path_name_t}
+Filesystem objects provides access to file system services in an
+abstract way, letting the library client to define filesystems for
+other classes of devices. Open files are readable or writeable file
+items in a filesystem. Path names are named locations identifying
+files or folders.
 
-@end deftp
+In the GNU PDF Library a filesystem object (of type @code{pdf_fsys_t}) is
+an implementation of the file system services for a specific class of
+devices. The filesystem object provides the functionality to open
+files, read and write data from/to open files, create and delete
+folders, rename files, manage file and folder permissions, etc.
 
-@deftp {Data Type} {pdf_file_t}
+By implementing the functions defined in the Filesystem Implementation
+Interface the client can define and use its own filesystems. In this
+way a high level of abstraction is achieved in the library code that
+uses the filesystem services: the library is able to read the contents
+of a PDF file from a file stored in the local filesystem, from a
+network webdav based filesystem, an http server or a compressed image.
 
-@end deftp
+The GNU PDF Library provides the default @emph{disk} filesystem
+implementation for each supported plattform.
 
-@deftp {Data Type} {pdf_file_mode_t}
+Conceptually speaking a filesystem contain a tree (or several
+trees in some filesystem implementations supporting several
+volumes) of @emph{filesystem items}. 
 
-@end deftp
+Each time has a type and several properties. The client can ask the
+filesystem for the properties of a given item identified by a path
+name.
 
-@deftp {Data Type} {enum pdf_file_errors_e}
+An open file object (of type @code{pdf_fsys_file_t}) represent a readable
+and/or writable file in a filesystem. Open files are associated with a
+given filesystem and any filesystem can maintain an arbitrary number
+of open files (this may depend on the specific filesystem
+implementation).
 
-@table @code
-@item PDF_FILE_ERROR_NOERROR
-@item PDF_FILE_ERROR_GENERAL
-@item PDF_FILE_ERROR_OBSOLETE
-@item PDF_FILE_ERROR_DIRFULL
-@item PDF_FILE_ERROR_DISKFULL
-@item PDF_FILE_ERROR_NSV
-@item PDF_FILE_ERROR_IO
-@item PDF_FILE_ERROR_READ
-@item PDF_FILE_ERROR_WRITE
-@item PDF_FILE_ERROR_EOF
-@item PDF_FILE_ERROR_LOCKED
-@item PDF_FILE_ERROR_VLOCKED
-@item PDF_FILE_ERROR_BUSY
-@item PDF_FILE_ERROR_EXISTS
-@item PDF_FILE_ERROR_ALREADY_OPEN
-@item PDF_FILE_ERROR_PERM
-@item PDF_FILE_ERROR_WR_PERM
-@item PDF_FILE_ERROR_FNF
-@item PDF_FILE_ERROR_OPEN_FAILED
-@item PDF_FILE_ERROR_BYTES_NOT_READY
-@item PDF_FILE_ERROR_USRREQSTOP
-@item PDF_FILE_ERROR_IO_TIMEOUT
-@item PDF_FILE_ERROR_READ_BLOCKED
-@item PDF_FILE_ERROR_NOT_A_DIR
-@item PDF_FILE_ERROR_TEMP_CREATE
-@item PDF_FILE_ERROR_TOO_BIG
-@end table
-@end deftp
+The client can read and write data from/to an open file using the
+@code{pdf_fsys_file_*} functions. The implementation of the open files
+then call to the appropriate functionality of the filesystem managing
+the file.
 
-@deftp {Data Type} {pdf_file_sys_t}
+The client should close any opened file calling the appropriate
+function on the underlying filesystem.
 
-@end deftp
+There is not an explicit data type for an @emph{open folder} in the GNU
+PDF Library. Instead, folders are referred using @emph{path names}.
+
+The Filesystem Interface provides functions to create, delete and
+rename folders.
+
+Both files and folders in a filesystem can be referred using a string
+locator: a @emph{path name}. Path names are implemented using PDF
+strings. Several path names can refer to the same file or folder.
+
+Both the encoding and the format of the contents of a path name
+depends on the specific filesystem implementation. The default disk
+filesystem provided by the GNU PDF Library uses the textual device
+idependent file specifications described in the PDF Reference (section
+3.10). The interpretation of those path names depend in the specific
+plattform where the library is running. See XXX for more information
+about the disk filesystem path names.
+
+@node Filesystem Interfaces
+@subsection Filesystem Interfaces
+
+This section describes several interfaces that can be found in the
+Filesystem module. There is an internal interface filesystem
+implementors can implement to define a new filesystem. It is called
+the @emph{Filesystem Implementation Interface}. A @emph{Filesystem Definition
+Interface} allow users to register the implementation functions into a
+filesystem variable. There are also two interfaces implemented by the
+Filesystem module allowing clients to access the module functionality:
+the @emph{Filesystem Interface}, used to manage several filesystem
+aspects, and the @emph{File Interface}, that provides functionalities
+related to open files, such as reading and writing information.
+
+The following interface diagram show the relation between the
+filesystem interface, the filesystem definition interface, the
+filesystem implementation interface and the file interface:
+
+@node The Filesystem Implementation Interface
+@subsection The Filesystem Implementation Interface
+
+The filesystem implementation interface is a set of functions that are
+installed in a @code{pdf_fsys_t} variable in order to provide its
+functionality. By implementing those functions the client can provide
+a filesystem for some (physical or logical) storage device: a webdav
+directory, a read-only http filesystem, etc.
+
+Note that the functions conforming the Implementation Interface are
+not intended to be directly invoked by clients. Clients can access to
+the functionality of the filesystem using indirect ways:
+
+@itemize @bullet
+@item
+Making calls to the Filesystem Interface.
+@item
+Making calls to the File Interface.
+@end itemize
+
+The implementation of both interfaces then makes use of the Filesystem
+Implementation Interface in order to honour the petition.
+
+
+@node The Filesystem Definition Interface
+@subsection The Filesystem Definition Interface
+
+The Filesystem Definition Interface is implemented by the Filesystem
+module and provides functionality to provide an implementation to a
+filesystem. A @code{pdf_fsys_t} should be properly defined before to
+use it.
+
+The Filesystem Definition Interface defines the following elements:
+
+@itemize @bullet
+@item
+The function types conforming the Filesystem Implementation Interface.
+@item
+Installation functions to register implementation functions into a
+filesystem variable.
+@end itemize
+
+@node The Filesystem Interface
+@subsection The Filesystem Interface
+
+The Filesystem Interface is implemented by the Filesystem module and
+provides access to some filesystem functionalities in a filesystem
+implementation independent way.
+
+The functionality covered by the Filesystem Interface includes:
+
+@itemize @bullet
+@item
+Folder management.
+@item
+Folder contents management. 
+@item
+Volume-level flush operations.
+@item
+Read In Advance (RIA) capabilities.
+@item
+Storage properties management (free space, etc).
+@item
+Management of filesystem items (rename, remove, flags, etc).
+@item
+Utility functions (get a path name for a temporal file, etc).
+@end itemize
+
+Note that not all the filesystem implementations support these
+operations. Read In Advance capabilities, for example, are usually
+implemented in slow file system devices such as network
+filesystems. When a specific filesystem implementation do not support
+a functionality in the Filesystem Interface then the specific call
+becomes a no-op.
+
+@node The File Interface
+@subsection The File Interface
+
+The File Interface is implemented by the filesystem module and
+provides access to filesystem functionality related with open files,
+such as writing and reading data to/from a specific file.
+
+Note that open file variables (@code{pdf_fsys_file_t}) contain a
+reference to its underlying filesystem implementation, so the client
+should only provide a correctly initialized (opened) file variable to
+the @code{pdf_fsys_file_*} functions.
+
+The functionality covered by the File Interface includes:
+
+@itemize @bullet
+@item
+Synchronous Input/Output.
+@item
+Asynchronoous Input/Output (not to be confused with RIA. See above).
+@item
+File-level flush operations.
+@item
+File positioning management.
+@item
+File size management.
+@item
+File flags (status) management.
+@end itemize
 
 @node Object Layer
 @chapter Object Layer
