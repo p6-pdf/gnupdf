@@ -60,6 +60,8 @@ START_TEST(pdf_text_get_language_001)
   
   /* 2. The length of the returned string should be 2. */
   fail_unless(strlen((char *)language) == 2);
+  
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -91,6 +93,8 @@ START_TEST(pdf_text_get_language_002)
   
   /* 2. The length of the returned string should be 2. */
   fail_unless(strlen((char *)language) == 0);
+  
+  pdf_text_destroy(text);
 }
 END_TEST
 

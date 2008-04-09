@@ -1,3 +1,43 @@
+2008-04-09  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
+	* torture/unit/base/text/pdf-text-set-language.c: Avoid memory leaks in
+	tests.
+
+	* torture/unit/base/text/pdf-text-set-country.c: Avoid memory leaks in
+	tests.
+
+	* torture/unit/base/text/pdf-text-replace-ascii.c: Avoid memory leaks in
+	tests.
+
+	* torture/unit/base/text/pdf-text-new-from-u32.c: Avoid memory leaks in
+	tests.
+
+	* torture/unit/base/text/pdf-text-new-from-pdf-string.c: Avoid memory
+	leaks in tests.
+
+	* torture/unit/base/text/pdf-text-new-from-host.c: Avoid memory leaks in
+	tests.
+
+	* torture/unit/base/text/pdf-text-get-unicode.c: Avoid memory leaks in
+	tests.
+
+	* torture/unit/base/text/pdf-text-get-language.c: Avoid memory leaks in
+	tests.
+
+	* torture/unit/base/text/pdf-text-get-hex.c: Avoid memory leaks in
+	tests.
+
+	* torture/unit/base/text/pdf-text-get-country.c: Avoid memory leaks in
+	tests.
+
+	* torture/unit/base/text/pdf-text-empty-p.c: Avoid memory leaks in
+	tests.
+
+	* src/base/pdf-text.c (pdf_text_replace): Avoid memory leak.
+
+	* src/base/pdf-text-host-encoding.c (pdf_text_host_to_utf32he): Avoid
+	memory leak.
+
 2008-04-08  Aleksander Morgado Juez  <aleksande@es.gnu.org>
 
 	* src/base/pdf-text.c (pdf_text_get_unicode): Only store output data if

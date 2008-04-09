@@ -90,7 +90,7 @@ START_TEST(pdf_text_new_from_host_001)
       fail_unless(text->size == expected_size);
       fail_unless(memcmp(text->data, expected_data, expected_size)==0);
   
-      fail_if(pdf_text_destroy(text) != PDF_OK);
+      pdf_text_destroy(text);
       
       if(expected_free)
         {
@@ -127,6 +127,7 @@ START_TEST(pdf_text_new_from_host_002)
   fail_unless(pdf_text_new_from_host(&text, sample_utf8,
                                      strlen((char*)sample_utf8),
                                      host_enc) != PDF_OK);
+
 }
 END_TEST
 

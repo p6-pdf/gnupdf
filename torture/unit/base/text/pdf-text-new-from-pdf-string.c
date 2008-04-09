@@ -484,6 +484,7 @@ START_TEST(pdf_text_new_from_pdf_string_006)
         {
           pdf_dealloc(expected_data);
         }
+      pdf_dealloc(input_data);
       ++i;
     }
 }
@@ -615,6 +616,7 @@ START_TEST(pdf_text_new_from_pdf_string_007)
         {
           pdf_dealloc(expected_data);
         }
+      pdf_dealloc(input_data);
       ++i;
     }
 }
@@ -942,6 +944,7 @@ START_TEST(pdf_text_new_from_pdf_string_008)
           pdf_dealloc(expected_data2);
           pdf_dealloc(expected_data3);
         }
+      pdf_dealloc(input_data);
       ++i;
     }
 }
@@ -1283,6 +1286,7 @@ START_TEST(pdf_text_new_from_pdf_string_009)
           pdf_dealloc(expected_data2);
           pdf_dealloc(expected_data3);
         }
+      pdf_dealloc(input_data);
       ++i;
     }
 }

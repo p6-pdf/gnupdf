@@ -60,6 +60,8 @@ START_TEST(pdf_text_get_country_001)
   
   /* 2. The length of the returned string should be 2. */
   fail_unless(strlen((char *)country) == 2);
+
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -91,6 +93,8 @@ START_TEST(pdf_text_get_country_002)
   
   /* 2. The length of the returned string should be 2. */
   fail_unless(strlen((char *)country) == 0);
+  
+  pdf_text_destroy(text);
 }
 END_TEST
 

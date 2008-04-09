@@ -1069,6 +1069,11 @@ pdf_text_replace (pdf_text_t text,
       pdf_dealloc(text->data);
       text->data = new_data;
       text->size = new_size;
+      /* Dealloc list of pointers to replacements */
+      if(rep_ptrs != NULL)
+        {
+          pdf_dealloc(rep_ptrs);
+        }
     }
   
   return PDF_OK;

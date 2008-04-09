@@ -277,7 +277,8 @@ START_TEST(pdf_text_get_unicode_004)
   /* 3. The returned length must be equal to the length of the BOM in UTF-8. */
   fail_unless(size == 3);
   
-  pdf_text_destroy(text);  
+  pdf_text_destroy(text);
+  pdf_dealloc(data);
 }
 END_TEST
 
@@ -318,6 +319,7 @@ START_TEST(pdf_text_get_unicode_005)
                                    text,
                                    PDF_TEXT_UTF8,
                                    PDF_TEXT_UTF16BE_WITH_LANGCODE) != PDF_OK);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -357,6 +359,7 @@ START_TEST(pdf_text_get_unicode_006)
                                    PDF_TEXT_UTF8,
                                    (PDF_TEXT_UNICODE_WITH_BOM | \
                                     PDF_TEXT_UTF16BE_WITH_LANGCODE)) != PDF_OK);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -1353,6 +1356,7 @@ START_TEST(pdf_text_get_unicode_020)
       
       pdf_text_destroy(text);
       pdf_dealloc(data);
+      pdf_dealloc(expected_data);
       
       ++i;
     }
@@ -1479,6 +1483,7 @@ START_TEST(pdf_text_get_unicode_023)
                                    text,
                                    PDF_TEXT_UTF16_LE,
                                    PDF_TEXT_UTF16BE_WITH_LANGCODE) != PDF_OK);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -1516,6 +1521,7 @@ START_TEST(pdf_text_get_unicode_024)
                                    text,
                                    PDF_TEXT_UTF16_LE,
                                    PDF_TEXT_UTF16BE_WITH_LANGCODE) != PDF_OK);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -1553,6 +1559,7 @@ START_TEST(pdf_text_get_unicode_025)
                                    text,
                                    PDF_TEXT_UTF16_LE,
                                    PDF_TEXT_UTF16BE_WITH_LANGCODE) != PDF_OK);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -1585,6 +1592,7 @@ START_TEST(pdf_text_get_unicode_026)
                                    text,
                                    PDF_TEXT_UTF16_LE,
                                    PDF_TEXT_UTF16BE_WITH_LANGCODE) != PDF_OK);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -1625,6 +1633,7 @@ START_TEST(pdf_text_get_unicode_027)
                                    PDF_TEXT_UTF16_LE,
                                    (PDF_TEXT_UTF16BE_WITH_LANGCODE | \
                                     PDF_TEXT_UNICODE_WITH_BOM)) != PDF_OK);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -1663,6 +1672,7 @@ START_TEST(pdf_text_get_unicode_028)
                                    PDF_TEXT_UTF16_LE,
                                    (PDF_TEXT_UTF16BE_WITH_LANGCODE | \
                                     PDF_TEXT_UNICODE_WITH_BOM)) != PDF_OK);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -1701,6 +1711,7 @@ START_TEST(pdf_text_get_unicode_029)
                                    PDF_TEXT_UTF16_LE,
                                    (PDF_TEXT_UTF16BE_WITH_LANGCODE | \
                                     PDF_TEXT_UNICODE_WITH_BOM)) != PDF_OK);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -1734,6 +1745,7 @@ START_TEST(pdf_text_get_unicode_030)
                                    PDF_TEXT_UTF16_LE,
                                    (PDF_TEXT_UTF16BE_WITH_LANGCODE | \
                                     PDF_TEXT_UNICODE_WITH_BOM)) != PDF_OK);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -2026,6 +2038,7 @@ START_TEST(pdf_text_get_unicode_035)
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UTF16BE_WITH_LANGCODE) != PDF_OK);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -2063,6 +2076,7 @@ START_TEST(pdf_text_get_unicode_036)
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UTF16BE_WITH_LANGCODE) != PDF_OK);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -2098,6 +2112,7 @@ START_TEST(pdf_text_get_unicode_037)
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UTF16BE_WITH_LANGCODE) != PDF_OK);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -2130,6 +2145,7 @@ START_TEST(pdf_text_get_unicode_038)
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UTF16BE_WITH_LANGCODE) != PDF_OK);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -2170,6 +2186,7 @@ START_TEST(pdf_text_get_unicode_039)
                                    PDF_TEXT_UTF32_BE,
                                    (PDF_TEXT_UTF16BE_WITH_LANGCODE | \
                                     PDF_TEXT_UNICODE_WITH_BOM)) != PDF_OK);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -2206,6 +2223,7 @@ START_TEST(pdf_text_get_unicode_040)
                                    PDF_TEXT_UTF32_BE,
                                    (PDF_TEXT_UTF16BE_WITH_LANGCODE | \
                                     PDF_TEXT_UNICODE_WITH_BOM)) != PDF_OK);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -2242,6 +2260,7 @@ START_TEST(pdf_text_get_unicode_041)
                                    PDF_TEXT_UTF32_BE,
                                    (PDF_TEXT_UTF16BE_WITH_LANGCODE | \
                                     PDF_TEXT_UNICODE_WITH_BOM)) != PDF_OK);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -2275,6 +2294,7 @@ START_TEST(pdf_text_get_unicode_042)
                                    PDF_TEXT_UTF32_BE,
                                    (PDF_TEXT_UTF16BE_WITH_LANGCODE | \
                                     PDF_TEXT_UNICODE_WITH_BOM)) != PDF_OK);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -2566,6 +2586,7 @@ START_TEST(pdf_text_get_unicode_047)
                                    text,
                                    PDF_TEXT_UTF32_LE,
                                    PDF_TEXT_UTF16BE_WITH_LANGCODE) != PDF_OK);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -2603,6 +2624,7 @@ START_TEST(pdf_text_get_unicode_048)
                                    text,
                                    PDF_TEXT_UTF32_LE,
                                    PDF_TEXT_UTF16BE_WITH_LANGCODE) != PDF_OK);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -2638,6 +2660,7 @@ START_TEST(pdf_text_get_unicode_049)
                                    text,
                                    PDF_TEXT_UTF32_LE,
                                    PDF_TEXT_UTF16BE_WITH_LANGCODE) != PDF_OK);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -2670,6 +2693,7 @@ START_TEST(pdf_text_get_unicode_050)
                                    text,
                                    PDF_TEXT_UTF32_LE,
                                    PDF_TEXT_UTF16BE_WITH_LANGCODE) != PDF_OK);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -2710,6 +2734,7 @@ START_TEST(pdf_text_get_unicode_051)
                                    PDF_TEXT_UTF32_LE,
                                    (PDF_TEXT_UTF16BE_WITH_LANGCODE | \
                                     PDF_TEXT_UNICODE_WITH_BOM)) != PDF_OK);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -2746,6 +2771,7 @@ START_TEST(pdf_text_get_unicode_052)
                                    PDF_TEXT_UTF32_LE,
                                    (PDF_TEXT_UTF16BE_WITH_LANGCODE | \
                                     PDF_TEXT_UNICODE_WITH_BOM)) != PDF_OK);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -2782,6 +2808,7 @@ START_TEST(pdf_text_get_unicode_053)
                                    PDF_TEXT_UTF32_LE,
                                    (PDF_TEXT_UTF16BE_WITH_LANGCODE | \
                                     PDF_TEXT_UNICODE_WITH_BOM)) != PDF_OK);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -2815,6 +2842,7 @@ START_TEST(pdf_text_get_unicode_054)
                                    PDF_TEXT_UTF32_LE,
                                    (PDF_TEXT_UTF16BE_WITH_LANGCODE | \
                                     PDF_TEXT_UNICODE_WITH_BOM)) != PDF_OK);
+  pdf_text_destroy(text);
 }
 END_TEST
 

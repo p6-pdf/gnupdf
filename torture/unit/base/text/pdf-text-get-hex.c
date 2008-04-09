@@ -80,6 +80,7 @@ START_TEST(pdf_text_get_hex_001)
   fail_unless(strlen((char *)output_data) == strlen((char *)expected));
   
   pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -114,6 +115,7 @@ START_TEST(pdf_text_get_hex_002)
   fail_unless(strlen((char *)output_data) == 0);
 
   pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 

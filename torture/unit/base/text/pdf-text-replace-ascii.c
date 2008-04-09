@@ -29,6 +29,8 @@
 #include <pdf.h>
 #include <check.h>
 
+#define INTERACTIVE_DEBUG   0
+
 /*
  * Test: pdf_text_replace_ascii_001
  * Description:
@@ -58,14 +60,37 @@ START_TEST(pdf_text_replace_ascii_001)
                                        strlen((char *)input_string),
                                        NULL, NULL) != PDF_OK);
   
+  
+  if(INTERACTIVE_DEBUG)
+    {
+      pdf_char_t *internal_hex = NULL;
+      internal_hex = pdf_text_get_hex(text,':');          
+      fail_if(internal_hex == NULL);
+      printf("pdf_text_replace_ascii_001:Internal_Before> '%s'\n",
+             internal_hex);
+      printf("pdf_text_replace_ascii_001:ASCII_Before> '%s'\n",input_string);
+      pdf_dealloc(internal_hex);
+    }
+  
   /* 1. The call to  pdf_text_replace_ascii should return PDF_OK. */
   fail_unless(pdf_text_replace_ascii(text,
                                      new_pattern_ascii,
                                      old_pattern_ascii) == PDF_OK);
+
   
   /* 2. The contents of the output text object must be the expected ones. */
   fail_if(pdf_text_get_pdfdocenc(&output_string, text) != PDF_OK);
   fail_if(output_string == NULL);
+  if(INTERACTIVE_DEBUG)
+    {
+      pdf_char_t *internal_hex = NULL;
+      internal_hex = pdf_text_get_hex(text,':');          
+      fail_if(internal_hex == NULL);
+      printf("pdf_text_replace_ascii_001:Internal_After> '%s'\n",
+             internal_hex);
+      printf("pdf_text_replace_ascii_001:ASCII_After> '%s'\n",output_string);
+      pdf_dealloc(internal_hex);
+    }
   fail_if(strlen((char *)output_string) != strlen((char *)expected_string));
   fail_if(strcmp((char *)output_string, (char *)expected_string) != 0);
   

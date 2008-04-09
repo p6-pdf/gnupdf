@@ -61,7 +61,9 @@ START_TEST(pdf_text_new_from_u32_001)
   fail_unless(pdf_text_new_from_u32(&text, number) == PDF_OK);
 
   /* 2. The contents of the text object must be the expected ones. */
-  fail_if(memcmp(text->data, expected_data, expected_size) != 0); 
+  fail_if(memcmp(text->data, expected_data, expected_size) != 0);
+  
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -109,7 +111,9 @@ START_TEST(pdf_text_new_from_u32_002)
   fail_unless(pdf_text_new_from_u32(&text, number) == PDF_OK);
   
   /* 2. The contents of the text object must be the expected ones. */
-  fail_if(memcmp(text->data, expected_data, expected_size) != 0); 
+  fail_if(memcmp(text->data, expected_data, expected_size) != 0);
+  
+  pdf_text_destroy(text);
 }
 END_TEST
 

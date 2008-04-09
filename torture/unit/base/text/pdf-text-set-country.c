@@ -55,6 +55,8 @@ START_TEST(pdf_text_set_country_001)
   /* 2. The contents of the internal country ID representation should be the
    *      expected ones. */
   fail_unless(strcmp((char *)text->country, (char *)country)==0);
+  
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -79,6 +81,8 @@ START_TEST(pdf_text_set_country_002)
   
   /* 1. The call to pdf_text_set_country should NOT return PDF_OK. */
   fail_if(pdf_text_set_country(text, country) == PDF_OK);
+  
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -103,6 +107,8 @@ START_TEST(pdf_text_set_country_003)
   
   /* 1. The call to pdf_text_set_country should NOT return PDF_OK. */
   fail_if(pdf_text_set_country(text, country) == PDF_OK);
+  
+  pdf_text_destroy(text);
 }
 END_TEST
 

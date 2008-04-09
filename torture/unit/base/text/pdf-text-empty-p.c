@@ -48,6 +48,8 @@ START_TEST(pdf_text_empty_p_001)
 
   /* 1. The call to pdf_text_empty_p should return PDF_TRUE. */
   fail_unless(pdf_text_empty_p(text) == PDF_TRUE);
+  
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -73,6 +75,8 @@ START_TEST(pdf_text_empty_p_002)
   
   /* 1. The call to pdf_text_empty_p should return PDF_FALSE. */
   fail_unless(pdf_text_empty_p(text) == PDF_FALSE);
+  
+  pdf_text_destroy(text);
 }
 END_TEST
 

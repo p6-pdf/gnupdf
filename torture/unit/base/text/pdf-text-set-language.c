@@ -55,6 +55,8 @@ START_TEST(pdf_text_set_language_001)
   /* 2. The contents of the internal language ID representation should be the
    *      expected ones. */
   fail_unless(strcmp((char *)text->lang, (char *)language)==0);
+  
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -79,6 +81,8 @@ START_TEST(pdf_text_set_language_002)
   
   /* 1. The call to pdf_text_set_language should NOT return PDF_OK. */
   fail_if(pdf_text_set_language(text, language) == PDF_OK);
+  
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -103,6 +107,8 @@ START_TEST(pdf_text_set_language_003)
   
   /* 1. The call to pdf_text_set_language should NOT return PDF_OK. */
   fail_if(pdf_text_set_language(text, language) == PDF_OK);
+  
+  pdf_text_destroy(text);
 }
 END_TEST
 

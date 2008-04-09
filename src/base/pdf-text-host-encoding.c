@@ -324,6 +324,7 @@ pdf_text_host_to_utf32he(const pdf_char_t      *input_data,
             else
               {
                 iconv_close(from_host);
+                pdf_dealloc(new_data);
                 PDF_DEBUG_BASE("Invalid data to convert from Host Encoding:"
                                "'%s'",strerror(errno));
                 return PDF_EBADDATA;
