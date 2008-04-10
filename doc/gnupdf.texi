@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.41 2008/04/09 20:15:29 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.42 2008/04/10 19:40:28 gerel Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -888,26 +888,15 @@ if (pdf_i64_neg (dest, number) != PDF_OK) /* now dest stores -10 */
 @menu
 * Hash Table Types::
 * Creating and Destroying Hash Tables::
+* Hash Table properties::
+* Working with keys::
+* Adding and removing elements::
+* Searching elements::
+* Working with iterators::
 @end menu
 
 @node Hash Table Types
 @subsection Hash Table Types
-
-@deftp {Data Type} {enum pdf_hash_value_type_e}
-
-Enumeration of supported value types in a hash variable:
-
-@table @code
-@item PDF_HASH_VAL_BOOL
-@item PDF_HASH_VAL_U32
-@item PDF_HASH_VAL_I32
-@item PDF_HASH_VAL_REAL
-@item PDF_HASH_VAL_STR
-@item PDF_HASH_VAL_TEXT
-@item PDF_HASH_VAL_HASH
-@item PDF_HASH_VAL_LIST
-@end table
-@end deftp
 
 @deftp {Data Type} pdf_hash_t
 
@@ -915,8 +904,332 @@ A Hash Table able to store key/value pairs. A key may be any
 NULL-terminated string.
 @end deftp
 
+@deftp {Data Type} pdf_hash_iterator_t
+
+An iterator over the keys of a Hash Table.
+@end deftp
+
+
 @node Creating and Destroying Hash Tables
 @subsection Creating and Destroying Hash Tables
+
+@deftypefun pdf_status_t pdf_hash_create (pdf_hash_dispose_fn_t @var{dispose_fn}, pdf_hash_t @var{*table})
+
+Create a new empty hash table. When some element is removed @var{dispose_fn} is called. Can be NULL.
+
+@table @strong
+@item Parameters
+@table @var
+@item dispose_fn
+A pointer to a hash table dispose function.
+@item table
+A pointer to a hash table.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@item PDF_EBADDATA
+Invalid @var{table} pointer.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_hash_destroy (pdf_hash_t @var{table})
+
+Destroy a hash table. The elements of the table are disposed first.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+
+
+@node Hash Table properties
+@subsection Hash Table properties
+
+@deftypefun pdf_size_t pdf_hash_size (pdf_hash_t @var{table})
+
+Returns the number of entries in @var{table}.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@end table
+@item Returns
+The number of entries.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@node Working with keys
+@subsection Working with keys
+
+@deftypefun pdf_bool_t pdf_hash_key_p (pdf_hash_t @var{table}, const char *@var{key})
+
+Returns a boolean value indicating whether an element with key @var{key} exists in @var{table}.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid key string.
+@end table
+@item Returns
+A pdf boolean value:
+@table @code
+@item PDF_TRUE
+An element associated with @var{key} exists.
+@item PDF_FALSE
+There is no element associated with @var{key}.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_hash_rename (pdf_hash_t @var{table}, const char @var{*key}, const char @var{*new_key})
+
+Renames the key @var{key} to @var{new_key} in @var{table}.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid key string.
+@item new_key
+A valid key string.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeded.
+@item PDF_ENOMEM
+Not enough memory.
+@item PDF_ERROR
+The @var{key} is not associated with any element in @var{table}.
+@item PDF_EBADDATA
+Either @var{table} or a key string is invalid or NULL.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@node Adding and removing elements
+@subsection Adding and removing elements
+
+@deftypefun pdf_status_t pdf_hash_add (pdf_hash_t @var{table}, const char @var{*key}, void @var{*element}) 
+
+Adds the element @var{element} with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid key string.
+@item element
+A pointer to the element being added.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@item PDF_EBADDATA
+Either @var{table}, @var{key} or @var{element} is invalid.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_hash_remove (pdf_hash_t @var{table}, const char @var{*key})
+
+Removes the element associated with @var{key} from @var{table}. The element is disposed first.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid key string.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_EBADDATA
+Invalid @var{table} or @var{key}.
+@item PDF_ERROR
+The @var{key} wasn't found.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@node Searching elements
+@subsection Searching elements
+
+@deftypefun pdf_status_t pdf_hash_search (pdf_hash_t @var{table}, const char @var{*key}, void **@var{elem_pointer})
+
+Searches for the element associated with the given @var{key} in @var{table} and store it in @var{elem_pointer}.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid null-terminated string key.
+@item elem_pointer
+A pointer where to store the element.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_EBADDATA
+Either @var{elem_pointer} is NULL, @var{key} or the @var{table} is invalid.
+@item PDF_ERROR
+The @var{key} wasn't found.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@node Working with iterators
+@subsection Working with iterators
+
+@deftypefun pdf_status_t pdf_hash_iterator (pdf_hash_t @var{table}, pdf_hash_iterator_t @var{*iterator})
+
+Creates an iterator over the keys of @var{table} and saves it in @var{iterator}. Keys composed only by numbers are returned first followed by keys in the order imposed by the ``strcmp()'' function.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item iterator
+A pointer to an iterator.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_EBADDATA
+Either @var{iterator} is NULL or @var{table} is invalid.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_hash_iterator_next (pdf_hash_iterator_t @var{iterator}, const char **@var{key})
+
+Retrieves the next key from @var{iterator}.
+
+@table @strong
+@item Parameters
+@table @var
+@item iterator
+A Hash Table iterator.
+@item key
+A pointer where to save the key.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_EBADDATA
+Either @var{iterator} is invalid or @var{key} is NULL.
+@item PDF_ERROR
+There are no more keys to traverse over.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_hash_iterator_free (pdf_hash_iterator_t @var{iterator})
+
+Free all resources used by @var{iterator}. 
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A Hash Table iterator.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
 
 
 @node Lists
