@@ -1,3 +1,15 @@
+2008-04-12  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
+	* build-aux/pdf-text-download-and-generate-ucd.sh: New script to
+	download with `wget' the needed UCD files and generate all source files
+	from latest Unicode Character Database.
+
+	* build-aux/pdf-text-generate-ucd.c: Improved the information generated
+	by the tool, and prepared for new official version of Unicode (5.1).
+
+	* build-aux/README: Added information about new script
+	pdf-text-download-and-generate-ucd.sh
+
 2008-04-10  gerel  <gerel@gnu.org>
 
 	* doc/gnupdf.texi: added Hash Module API.
@@ -51,7 +63,7 @@
 	* src/base/pdf-text-host-encoding.c (pdf_text_host_to_utf32he): Avoid
 	memory leak.
 
-2008-04-08  Aleksander Morgado Juez  <aleksande@es.gnu.org>
+2008-04-08  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
 	* src/base/pdf-text.c (pdf_text_get_unicode): Only store output data if
 	it is available.

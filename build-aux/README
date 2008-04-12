@@ -7,3 +7,9 @@ are not intended to be installed in the target machine.
       A C source generator for the the Unicode Character Database. This library
       does not really use the GNU PDF library.
 
+  `pdf-text-download-and-generate-ucd.sh'
+
+      A simple script that uses `wget' and `pdf-text-generate-ucd' to generate
+      all the sources related to the Unicode Character Database. It always
+      points to the latest repository of the Unicode Standard.
+

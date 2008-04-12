@@ -1,0 +1,14 @@
+.deps
+.libs
+Makefile
+Makefile.in
+PropList.c
+PropList.txt
+SpecialCasing.txt
+UnicodeData.txt
+UnicodeDataCaseInfo.c
+UnicodeDataCombClassInfo.c
+UnicodeDataGenCatInfo.c
+WordBreakProperty.c
+WordBreakProperty.txt
+pdf-text-generate-ucd
