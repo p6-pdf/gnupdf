@@ -1,5 +1,11 @@
 2008-04-12  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
+	* src/base/pdf-text-ucd-case.c (pdf_text_ucd_is_case_ignorable): New
+	Unicode 5.1 standard updates the definition of `Case ignorable' code
+	points.
+
+2008-04-12  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
 	* src/base/pdf-text-ucd-wordbreak.h: Updated to Unicode 5.1.
 
 	* src/base/pdf-text-ucd-wordbreak.c: Updated to Unicode 5.1.

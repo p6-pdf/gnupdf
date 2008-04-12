@@ -4140,10 +4140,11 @@ pdf_text_ucd_word_change_case(pdf_char_t *destination_word,
 pdf_bool_t
 pdf_text_ucd_is_case_ignorable(const pdf_u32_t character)
 {
-  /* If character has the MidLetter property value in Word_Break...
+  /* If character has the MidLetter or MidNumLet property value in Word_Break...
    *   (List of chars obtained from WordBreakProperty.txt UCD file */
   
-  if(pdf_text_ucd_wb_is_midletter(character))
+  if(pdf_text_ucd_wb_is_midletter(character) || \
+     pdf_text_ucd_wb_is_midnumlet(character))
     {
       return PDF_TRUE;
     }
