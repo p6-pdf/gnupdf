@@ -38,14 +38,18 @@
 
 #include <pdf-text.h>
 
-
 enum pdf_text_ucd_wb_property_e {
   PDF_TEXT_UCD_WBP_None,
+  PDF_TEXT_UCD_WBP_CR,
+  PDF_TEXT_UCD_WBP_LF,
+  PDF_TEXT_UCD_WBP_Newline,
+  PDF_TEXT_UCD_WBP_Extend,
   PDF_TEXT_UCD_WBP_Format,
   PDF_TEXT_UCD_WBP_Katakana,
   PDF_TEXT_UCD_WBP_ALetter,
   PDF_TEXT_UCD_WBP_MidLetter,
   PDF_TEXT_UCD_WBP_MidNum,
+  PDF_TEXT_UCD_WBP_MidNumLet,
   PDF_TEXT_UCD_WBP_Numeric,
   PDF_TEXT_UCD_WBP_ExtendNumLet
 };
@@ -53,6 +57,30 @@ enum pdf_text_ucd_wb_property_e {
 /* Return the WordBreak Property of the given UTF-32HE unicode point */
 enum pdf_text_ucd_wb_property_e
 pdf_text_ucd_wb_get_property(pdf_u32_t character);
+
+
+/* Returns true if the given UTF-32HE unicode point has the CR value
+ *  in the WordBreak property */
+pdf_bool_t
+pdf_text_ucd_wb_is_cr(pdf_u32_t character);
+
+
+/* Returns true if the given UTF-32HE unicode point has the LF value
+ *  in the WordBreak property */
+pdf_bool_t
+pdf_text_ucd_wb_is_lf(pdf_u32_t character);
+
+
+/* Returns true if the given UTF-32HE unicode point has the Newline value
+ *  in the WordBreak property */
+pdf_bool_t
+pdf_text_ucd_wb_is_newline(pdf_u32_t character);
+
+
+/* Returns true if the given UTF-32HE unicode point has the Extend value
+ *  in the WordBreak property */
+pdf_bool_t
+pdf_text_ucd_wb_is_extend(pdf_u32_t character);
 
 
 /* Returns true if the given UTF-32HE unicode point has the Format value
@@ -89,6 +117,12 @@ pdf_text_ucd_wb_is_numeric(pdf_u32_t character);
  *  in the WordBreak property */
 pdf_bool_t
 pdf_text_ucd_wb_is_midnum(pdf_u32_t character);
+
+
+/* Returns true if the given UTF-32HE unicode point has the MidNumLet value
+ *  in the WordBreak property */
+pdf_bool_t
+pdf_text_ucd_wb_is_midnumlet(pdf_u32_t character);
 
 
 /* Returns true if the given UTF-32HE unicode point has the ExtendNumLet value

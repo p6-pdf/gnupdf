@@ -1,5 +1,21 @@
 2008-04-12  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
+	* src/base/pdf-text-ucd-wordbreak.h: Updated to Unicode 5.1.
+
+	* src/base/pdf-text-ucd-wordbreak.c: Updated to Unicode 5.1.
+
+	* src/base/pdf-text-ucd-proplist.c: Updated to Unicode 5.1.
+
+	* src/base/pdf-text-ucd-gencat.c: Updated to Unicode 5.1.
+
+	* src/base/pdf-text-ucd-combclass.c: Updated to Unicode 5.1.
+
+	* src/base/pdf-text-ucd-case.c: Updated to Unicode 5.1. Also modified
+	the way special case conditions are found (new direct access to special
+	casing info in the simple casing info array).
+
+2008-04-12  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
 	* build-aux/pdf-text-download-and-generate-ucd.sh: New script to
 	download with `wget' the needed UCD files and generate all source files
 	from latest Unicode Character Database.
