@@ -4712,7 +4712,7 @@ START_TEST(pdf_text_filter_061)
                                                 "\x00\x00\x00\xCC";
   
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
-                                                   "\x00\x00\x00""A" \ 
+                                                   "\x00\x00\x00""A" \
                                                    "\x00\x00\x00\xEC";
   pdf_size_t input_size = 12;
   pdf_size_t expected_size = 12;

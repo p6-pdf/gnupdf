@@ -4014,20 +4014,21 @@ pdf_text_ucd_create_case_context(pdf_text_ucd_context_t *context,
       PDF_DEBUG_BASE("Invalid word length");
       return PDF_EINVAL;
     }
-  /* Check language code length. Must be 2 */
-  if(strlen((char *)language) != 2)
-    {
-      PDF_DEBUG_BASE("Invalid language code length");
-      return PDF_EINVAL;
-    }
   
   /* Set context start as the first character in the word */
   context->context_start = (pdf_char_t *)word;
   /* Set context stop as the last character in the word. Length is coming in 
    *  bytes! */
   context->context_stop = (pdf_char_t *)&(word[length -4]);
-  /* Set language code */
-  strncpy((char *)&(context->locale[2]), (char *)language, 2);
+  /* Set language code, if any */
+  if(strlen((char *)language) == 2)
+    {
+      strncpy((char *)&(context->locale[2]), (char *)language, 2);
+    }
+  else
+    {
+      strncpy((char *)&(context->locale[2]), "  ", 2);
+    }
   
   return PDF_OK;
 }

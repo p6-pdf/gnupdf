@@ -1,3 +1,23 @@
+2008-04-13  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
+	* torture/unit/base/text/pdf-text-filter.c: Remove compilation warning.
+
+	* torture/unit/base/text/pdf-text-cmp.c: New file. Tests for
+	`pdf_text_cmp'.
+
+	* torture/unit/base/text/tsuite-text.c (tsuite_text): Added execution of
+	tests for `pdf_text_cmp'.
+
+	* torture/unit/Makefile.am (TEST_SUITE_TEXT): Added compilation of tests
+	for `pdf_text_cmp'.
+
+	* src/base/pdf-text-ucd-case.c (pdf_text_ucd_create_case_context): Bug
+	corrected. Set default language code as an empty string in the case
+	context when no specific language code is stored in the pdf_text_t.
+
+	* src/base/pdf-text.c (pdf_text_cmp): Function splitted into a new
+	static one when non case sensitive.
+
 2008-04-13  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* lib/gl_linkedhash_list.h: Imported from gnulib.

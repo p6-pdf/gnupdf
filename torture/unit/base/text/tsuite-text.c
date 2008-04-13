@@ -51,6 +51,7 @@ extern TCase *test_pdf_text_concat (void);
 extern TCase *test_pdf_text_replace (void);
 extern TCase *test_pdf_text_replace_ascii (void);
 extern TCase *test_pdf_text_filter (void);
+extern TCase *test_pdf_text_cmp (void);
 
 Suite *
 tsuite_text ()
@@ -85,6 +86,7 @@ tsuite_text ()
   suite_add_tcase (s, test_pdf_text_replace());
   suite_add_tcase (s, test_pdf_text_replace_ascii());
   suite_add_tcase (s, test_pdf_text_filter());
+  suite_add_tcase (s, test_pdf_text_cmp());
 
   return s;
 }

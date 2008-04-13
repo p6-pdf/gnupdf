@@ -108,6 +108,12 @@ pdf_text_compare_words(const pdf_char_t *word1,
                        const pdf_char_t *language2,
                        pdf_status_t *p_ret_code);
 
+/* Non-Case sensitive comparison of text objects */
+static pdf_32_t
+pdf_text_cmp_non_case_sensitive(pdf_text_t text1,
+                                pdf_text_t text2,
+                                pdf_status_t *p_ret_code);
+
 /* Clean (destroy and create empty) Word Boundaries list */
 static pdf_status_t
 pdf_text_clean_word_boundaries_list(pdf_list_t *p_word_boundaries);
@@ -1207,6 +1213,7 @@ pdf_text_filter (pdf_text_t text,
 }
 
 
+
 pdf_32_t
 pdf_text_cmp (pdf_text_t text1,
               pdf_text_t text2,
@@ -1230,92 +1237,101 @@ pdf_text_cmp (pdf_text_t text1,
     }
   else
     {
-      /* Generate word boundaries list, if not already done */
-      if((pdf_text_fill_word_boundaries_list(text1->word_boundaries, \
-                                             text1->data, \
-                                             text1->size) == PDF_OK) && \
-         (pdf_text_fill_word_boundaries_list(text2->word_boundaries, \
-                                             text2->data, \
-                                             text2->size) == PDF_OK))
-        {
-          pdf_size_t size1;
-          pdf_size_t size2;
-          
-          size1 = pdf_list_size(text1->word_boundaries);
-          size2 = pdf_list_size(text2->word_boundaries);
-          /* First, compare number of words in each text */
-          if(size1 != size2)
-            {
-              return ((size1 > size2) ? 1 : -1);
-            }
-          else
-            {
-              /* Perform a word-per-word lower case comparison! */
-              int n;
-              
-              /* Get word from both texts */
-              n = 0;
-              while(n < size1)
-                {
-                  struct pdf_text_wb_s *p_word1;
-                  struct pdf_text_wb_s *p_word2;
-                  pdf_32_t ret_num;
-
-                  if(pdf_list_get_at(text1->word_boundaries, \
-                                     n, \
-                                     (const void **)&p_word1) != PDF_OK)
-                    {
-                      *p_ret_code = PDF_ETEXTENC;
-                      PDF_DEBUG_BASE("Error getting word '%d' from text1", n);
-                      /* An error happened computing word boundaries! */
-                      return -1; 
-                    }
-
-                  if(pdf_list_get_at(text2->word_boundaries,
-                                     n,
-                                     (const void **)&p_word2) != PDF_OK)
-                    {
-                      *p_ret_code = PDF_ETEXTENC;
-                      PDF_DEBUG_BASE("Error getting word '%d' from text2", n);
-                      /* An error happened computing word boundaries! */
-                      return -1; 
-                    }
-                  
-                  ret_num = pdf_text_compare_words(p_word1->word_start,
-                                                   p_word1->word_size,
-                                                   p_word2->word_start,
-                                                   p_word2->word_size,
-                                                   pdf_text_get_language(text1),
-                                                   pdf_text_get_language(text2),
-                                                   p_ret_code);
-                  /* If words are not equal, return the code */
-                  if(ret_num != 0)
-                    {
-                      return ret_num;
-                    }
-                  ++n; 
-                }
-              /* If arrived here, the strings are completely equal */
-              return 0;
-            }
-        }
-      else
-        {
-          if(p_ret_code != NULL)
-            {
-              *p_ret_code = PDF_ETEXTENC;
-            }
-          PDF_DEBUG_BASE("Problem computing word boundaries. Comparison is not"
-                         " valid");
-          return -1; /* An error happened computing word boundaries! */
-        }
+      return pdf_text_cmp_non_case_sensitive(text1, text2, p_ret_code);
     }
-  return 0;
 }
 
 
 /* -------------------------- Private functions ----------------------------- */
 
+static pdf_32_t
+pdf_text_cmp_non_case_sensitive(pdf_text_t text1,
+                                pdf_text_t text2,
+                                pdf_status_t *p_ret_code)
+{
+  /* Generate word boundaries list, if not already done */
+  if((pdf_text_fill_word_boundaries_list(text1->word_boundaries, \
+                                         text1->data, \
+                                         text1->size) == PDF_OK) && \
+     (pdf_text_fill_word_boundaries_list(text2->word_boundaries, \
+                                         text2->data, \
+                                         text2->size) == PDF_OK))
+    {
+      pdf_size_t size1;
+      pdf_size_t size2;
+      
+      size1 = pdf_list_size(text1->word_boundaries);
+      size2 = pdf_list_size(text2->word_boundaries);
+      /* First, compare number of words in each text */
+      if(size1 != size2)
+        {
+          PDF_DEBUG_BASE("Different sizes...");
+          return ((size1 > size2) ? 1 : -1);
+        }
+      else
+        {
+          /* Perform a word-per-word lower case comparison! */
+          int n;
+          
+          /* Get word from both texts */
+          n = 0;
+          while(n < size1)
+            {
+              struct pdf_text_wb_s *p_word1;
+              struct pdf_text_wb_s *p_word2;
+              pdf_32_t ret_num;
+              
+              if(pdf_list_get_at(text1->word_boundaries, \
+                                 n, \
+                                 (const void **)&p_word1) != PDF_OK)
+                {
+                  *p_ret_code = PDF_ETEXTENC;
+                  PDF_DEBUG_BASE("Error getting word '%d' from text1", n);
+                  /* An error happened computing word boundaries! */
+                  return -1; 
+                }
+              
+              if(pdf_list_get_at(text2->word_boundaries,
+                                 n,
+                                 (const void **)&p_word2) != PDF_OK)
+                {
+                  *p_ret_code = PDF_ETEXTENC;
+                  PDF_DEBUG_BASE("Error getting word '%d' from text2", n);
+                  /* An error happened computing word boundaries! */
+                  return -1; 
+                }
+              
+              ret_num = pdf_text_compare_words(p_word1->word_start,
+                                               p_word1->word_size,
+                                               p_word2->word_start,
+                                               p_word2->word_size,
+                                               pdf_text_get_language(text1),
+                                               pdf_text_get_language(text2),
+                                               p_ret_code);
+              /* If words are not equal, return the code */
+              if(ret_num != 0)
+                {
+                  PDF_DEBUG_BASE("Words are not equal...");
+                  return ret_num;
+                }
+              ++n; 
+            }
+          /* If arrived here, the strings are completely equal */
+          return 0;
+        }
+    }
+  else
+    {
+      if(p_ret_code != NULL)
+        {
+          *p_ret_code = PDF_ETEXTENC;
+        }
+      PDF_DEBUG_BASE("Problem computing word boundaries. Comparison is not"
+                     " valid");
+      return -1; /* An error happened computing word boundaries! */
+    }
+  return 0;
+}
 
 
 static pdf_32_t

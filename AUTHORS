@@ -69,6 +69,7 @@ Aleksander Morgado: wrote src/base/pdf-text.h src/base/pdf-text.c
   src/base/pdf-text-case.c build-aux/pdf-text-generate-ucd.c
   build-aux/pdf-text-download-and-generate-ucd.sh
   torture/unit/base/text/pdf-text-check-host-encoding.c
+  torture/unit/base/text/pdf-text-cmp.c
   torture/unit/base/text/pdf-text-concat.c
   torture/unit/base/text/pdf-text-dup.c
   torture/unit/base/text/pdf-text-empty-p.c
