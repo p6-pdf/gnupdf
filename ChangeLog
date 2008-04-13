@@ -1,3 +1,11 @@
+2008-04-13  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Opening and Closing Files): New section.
+	(Filesystem Data Types): New section.
+	(Folder Management): New section.
+	(Opening and Closing Files Implementation): New section.
+	(Folder Management Implementation): New section.
+
 2008-04-13  gerel  <gerel@gnu.org>
 
 	* doc/gnupdf.texi: updated List Module types and added missing

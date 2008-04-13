@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.44 2008/04/13 15:16:37 gerel Exp $
+@comment $Id: gnupdf.texi,v 1.45 2008/04/13 18:00:36 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -85,7 +85,7 @@ Indices
 * Floating Point Arithmetic::
 * Encoded Text::
 * Time Management::
-* Accessing File Systems::
+* The Filesystem Module::
 @end menu
 
 @node Base Layer Overview
@@ -4762,16 +4762,16 @@ if (pdf_time_cal_span_diff (span1,
 @end deftypefun
 
 
-@node Accessing File Systems
-@section Accessing File Systems
+@node The Filesystem Module
+@section The Filesystem Module
 
 @menu
 * Filesystem Concepts::
 * Filesystem Interfaces::
-* The Filesystem Implementation Interface::
-* The Filesystem Definition Interface::
 * The Filesystem Interface::
 * The File Interface::
+* The Filesystem Implementation Interface::
+* The Filesystem Definition Interface::
 @end menu
 
 @node Filesystem Concepts
@@ -4857,48 +4857,6 @@ The following interface diagram show the relation between the
 filesystem interface, the filesystem definition interface, the
 filesystem implementation interface and the file interface:
 
-@node The Filesystem Implementation Interface
-@subsection The Filesystem Implementation Interface
-
-The filesystem implementation interface is a set of functions that are
-installed in a @code{pdf_fsys_t} variable in order to provide its
-functionality. By implementing those functions the client can provide
-a filesystem for some (physical or logical) storage device: a webdav
-directory, a read-only http filesystem, etc.
-
-Note that the functions conforming the Implementation Interface are
-not intended to be directly invoked by clients. Clients can access to
-the functionality of the filesystem using indirect ways:
-
-@itemize @bullet
-@item
-Making calls to the Filesystem Interface.
-@item
-Making calls to the File Interface.
-@end itemize
-
-The implementation of both interfaces then makes use of the Filesystem
-Implementation Interface in order to honour the petition.
-
-
-@node The Filesystem Definition Interface
-@subsection The Filesystem Definition Interface
-
-The Filesystem Definition Interface is implemented by the Filesystem
-module and provides functionality to provide an implementation to a
-filesystem. A @code{pdf_fsys_t} should be properly defined before to
-use it.
-
-The Filesystem Definition Interface defines the following elements:
-
-@itemize @bullet
-@item
-The function types conforming the Filesystem Implementation Interface.
-@item
-Installation functions to register implementation functions into a
-filesystem variable.
-@end itemize
-
 @node The Filesystem Interface
 @subsection The Filesystem Interface
 
@@ -4932,6 +4890,240 @@ filesystems. When a specific filesystem implementation do not support
 a functionality in the Filesystem Interface then the specific call
 becomes a no-op.
 
+@menu
+* Filesystem Data Types::
+* Opening and Closing Files::
+* Folder Management::
+@end menu
+
+@node Filesystem Data Types
+@subsubsection Filesystem Data Types
+
+The following data types are defined and provided to the client by the
+Filesystem Module.
+
+@deftp {Data Type} pdf_fsys_t
+An opaque type representing a filesystem.
+@end deftp
+
+@deftp {Data Type} {enum pdf_fsys_file_mode_e}
+
+The mode used when opening a file in a filesystem. The available modes
+are described in the following list.
+
+@table @code
+@item PDF_FSYS_OPEN_MODE_READ
+The file is opened in read-only mode. The file should exist in the
+filesystem.
+@item PDF_FSYS_OPEN_MODE_WRITE
+The file is opened in write-only mode. The file is truncated to 0
+size (any previous contents are lost) if the file exist and it is
+created if it do not exist.
+@item PDF_FSYS_OPEN_MODE_RW
+The file is opened in read/write mode. The file should exist in the
+filesystem.
+@item 
+@end table
+@end deftp
+
+@node Opening and Closing Files
+@subsubsection Opening and Closing Files
+
+@deftypefun pdf_status_t pdf_fsys_open (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name}, enum pdf_fsys_file_mode_e @var{mode}, pdf_fsys_file_t @var{file})
+
+Open a file in @var{filesystem} identified by @var{path_name} using
+the specified @var{mode} and store a new open file variable in
+@var{file}.
+
+@table @strong
+@item Parameters
+@table @var
+@item filesystem
+A filesystem. If @code{NULL} the default filesystem is used.
+@item path_name
+A path name that identifies the file to be opened. The format and
+encoding of this text variable depends on the underlying filesystem
+implementation. 
+@item mode
+The open mode to use to open the file.
+@item file
+The output file variable.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK 
+The file was successfully opened and stored in the @var{file}
+variable.
+@item PDF_EBADNAME
+The path name specified in @var{path_name} do not identify an existing
+file in the filesystem.
+@item PDF_EBADPERMS
+The client do not have permission to open the specified file using the
+specified mode. 
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun               
+
+@deftypefun pdf_status_t pdf_fsys_close (pdf_fsys_t @var{filesystem}, pdf_fsys_file_t @var{file})
+
+Close @var{file} releasing any used resource.
+
+@table @strong
+@item Parameters
+@table @var
+@item filesystem
+A filesystem. If @code{NULL} the default filesystem is used.
+@item file
+The open file to close.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The file was successfully closed.
+@item PDF_ERROR
+There was some error closing the file.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@node Folder Management
+@subsubsection Folder Management
+
+@deftypefun pdf_status_t pdf_fsys_create_folder (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name})
+
+Create a folder named @var{path_name}.
+
+@table @strong
+@item Parameters
+@table @var
+@item filesystem
+A filesystem. If @code{NULL} the default filesystem is used.
+@item path_name
+The path name of the folder to be created.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The folder was successfully created.
+@item PDF_EBADNAME
+The specified @var{path_name} is incorrect.
+@item PDF_EBADPERMS
+The client do not have permissions to create the folder.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_fsys_get_folder_contents (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name}, pdf_list_t @var{item_list})
+
+Get a list with the path names of the items contained in a given folder.
+
+@table @strong
+@item Parameters
+@table @var
+@item filesystem
+A filesystem. If @code{NULL} the default filesystem is used.
+@item path_name
+The path name of a folder.
+@item item_list
+An output list variable to hold the path names of the items contained
+in the folder.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation was successfully performed.
+@item PDF_EBADNAME
+@var{path_name} do not name a folder in the filesystem.
+@item PDF_EBADPERMS
+The client do not have permissions to read the contents of the folder.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_fsys_get_parent (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name}, pdf_text_t @var{parent_path})
+
+Get the path name of the father of a given item in the filesystem.
+
+@table @strong
+@item Parameters
+@table @var
+@item filesystem
+A filesystem. If @code{NULL} the default filesystem is used.
+@item path_name
+The path name of an item in the filesystem.
+@item parent_path 
+Output text variable to hold the path of the parent of the item
+identified by @var{path_name}. If @var{path_name} is the root
+directory then @code{NULL} is returned in @var{parent_path}.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The path name of the parent of the item was successfully stored in
+@var{parent_path}.
+@item PDF_EBADNAME
+@var{path_name} do not name a valid item in the filesystem.
+@item PDF_EBADPERMS
+The client do not have permissions to get the parent of the specified
+item.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_fsys_remove_folder (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name})
+
+Remove an empty folder from the filesystem.
+
+@table @strong
+@item Parameters
+@table @var
+@item filesystem
+A filesystem. If @code{NULL} the default filesystem is used.
+@item path_name
+A path name of an empty folder in the filesystem.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The folder was successfully removed.
+@item PDF_EBADNAME
+@var{path_name} do not name a folder in the filesystem.
+@item PDF_EBADPERMS
+The client do not have permissions to remove the folder.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
 @node The File Interface
 @subsection The File Interface
 
@@ -4959,6 +5151,191 @@ File positioning management.
 File size management.
 @item
 File flags (status) management.
+@end itemize
+
+@node The Filesystem Implementation Interface
+@subsection The Filesystem Implementation Interface
+
+The filesystem implementation interface is a set of functions that are
+installed in a @code{pdf_fsys_t} variable in order to provide its
+functionality. By implementing those functions the client can provide
+a filesystem for some (physical or logical) storage device: a webdav
+directory, a read-only http filesystem, etc.
+
+Note that the functions conforming the Implementation Interface are
+not intended to be directly invoked by clients. Clients can access to
+the functionality of the filesystem using indirect ways:
+
+@itemize @bullet
+@item
+Making calls to the Filesystem Interface.
+@item
+Making calls to the File Interface.
+@end itemize
+
+The implementation of both interfaces then makes use of the Filesystem
+Implementation Interface in order to honour the petition.
+
+@menu
+* Opening and Closing Files Implementation::
+* Folder Management Implementation::
+@end menu
+
+
+@node Opening and Closing Files Implementation
+@subsubsection Opening and Closing Files
+
+The following callbacks provides the functionality to open files
+(obtaining a @code{pdf_fsys_file_t}) and close files.
+
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_open_fn) (pdf_text_t @var{path_name}, enum pdf_fsys_file_mode_e @var{mode}, pdf_fsys_file_t @var{file})}
+
+Filesystem callback called to open a file identified by the path
+@var{path_name} in the mode specified by @var{mode}. A new
+@code{pdf_fsys_file_t} is created and stored in @var{file}.
+
+The callback should return a PDF status value:
+
+@table @code
+@item PDF_OK
+The file was successfully opened and stored in the @var{file}
+variable.
+@item PDF_EBADNAME
+The path name specified in @var{path_name} do not identify an existing
+file in the filesystem.
+@item PDF_EBADPERMS
+The client do not have permission to open the specified file using the
+specified mode. 
+@end table
+
+This callback is called by the @code{pdf_fsys_open} filesystem
+interface function.
+@end deftp
+
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_close_fn) (pdf_fsys_file_t @var{file})}
+
+Filesystem callback used to close a given file identified by the
+open file variable @var{file}. The output buffers of the file are
+flushed before to close it.
+
+The callback should return a PDF status value:
+
+@table @code
+@item PDF_OK
+The file was successfully closed.
+@item PDF_ERROR
+There was some error closing the file.
+@end table
+
+This callback is called by the @code{pdf_fsys_close} filesystem
+interface function.
+@end deftp
+
+@node Folder Management Implementation
+@subsubsection Folder Management
+
+The following callbacks are defined to provide folder management:
+creation, deletion and modification of folders in the filesystem and
+retrieval of folder contents.
+
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_create_folder_fn) (pdf_text_t @var{path_name})}
+
+Filesystem callback used to create a folder identified by the
+@var{path_name} path name.
+
+The callback should return a PDF status value:
+
+@table @code
+@item PDF_OK
+The folder was successfully created.
+@item PDF_EBADNAME
+The specified @var{path_name} is incorrect.
+@item PDF_EBADPERMS
+The client do not have permissions to create the folder.
+@end table
+
+This callback is called by the @code{pdf_fsys_create_folder}
+filesystem interface function.
+@end deftp
+
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_get_folder_contents_fn) (pdf_text_t @var{path_name}, pdf_list_t @var{item_list})}
+
+Filesystem callback used to get the contents of a specified folder as
+a list of path names.
+
+The callback should return a PDF status value:
+
+@table @code
+@item PDF_OK
+The operation was successfully performed.
+@item PDF_EBADNAME
+@var{path_name} is not a valid folder path name.
+@item PDF_EBADPERMS
+The client do not have permissions to read the contents of the folder.
+@end table
+
+This callback is called by the @code{pdf_fsys_get_folder_contents}
+filesystem interface function.
+@end deftp
+
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_get_parent) (pdf_text_t @var{path_name}, pdf_text_t @var{parent_path})}
+
+Filesystem callback used to get the path name of the father of a given
+item in a filesystem. If @var{path_name} is the root directory then
+NULL is returned in @var{parent_path}.
+
+The callback should return a PDF status value:
+
+@table @code
+@item PDF_OK
+The operation was successfully performed.
+@item PDF_EBADNAME
+@var{path_name} do not identify a filesystem item.
+@item PDF_EBADPERMS
+The client do not have permissions to get the parent of the specified
+item.
+@end table
+
+This callback is called by the @code{pdf_fsys_get_parent} filesystem
+interface function.
+@end deftp
+
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_remove_folder_fn) (pdf_text_t @var{path_name})}
+
+Filesystem callback used to remove an empty folder identified by
+@var{path_name}. 
+
+The callback should return a PDF status value:
+
+@table @code
+@item PDF_OK
+The folder was successfully removed.
+@item PDF_EBADNAME
+@var{path_name} do not name a folder in the filesystem.
+@item PDF_EBADPERMS
+The client do not have permissions to remove the folder.
+@end table
+
+This callback is called by the @code{pdf_fsys_remove_folder}
+filesystem interface function.
+@end deftp
+
+@node The Filesystem Definition Interface
+@subsection The Filesystem Definition Interface
+
+The Filesystem Definition Interface is implemented by the Filesystem
+module and provides functionality to provide an implementation to a
+filesystem. A @code{pdf_fsys_t} should be properly defined before to
+use it.
+
+The Filesystem Definition Interface defines the following elements:
+
+@itemize @bullet
+@item
+The function types conforming the Filesystem Implementation Interface.
+@item
+Installation functions to register implementation functions into a
+filesystem variable.
 @end itemize
 
 @node Object Layer
