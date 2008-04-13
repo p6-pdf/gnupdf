@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.45 2008/04/13 18:00:36 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.46 2008/04/13 18:23:35 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -5153,6 +5153,106 @@ File size management.
 File flags (status) management.
 @end itemize
 
+@menu
+* File Data Types::
+* Synchronous Input/Output::
+@end menu
+
+@node File Data Types
+@subsubsection File Data Types
+
+The following file-related data types are defined and provided to the
+client by the Filesystem Module.
+
+@deftp {Data Type} pdf_fsys_file_t
+An opaque type representing an open file. The client can perform
+several operations in the file using the @code{pdf_fsys_file_t} as a
+reference.
+@end deftp
+
+@node Synchronous Input/Output
+@subsubsection Synchronous Input/Output
+
+The following functions provides synchronous input/output for open
+files.
+
+@deftypefun pdf_size_t pdf_fsys_file_read (pdf_fsys_file_t @var{file}, pdf_size_t @var{elem_size}, pdf_size_t @var{elem_count}, void *@var{data})
+
+Synchronously read data from an open file item.
+
+@table @strong
+@item Parameters
+@table @var
+@item file
+An open file variable.
+@item elem_size
+The size of the data chunks to read from the file.
+@item elem_count
+The number of data chunks to read from the file.
+@item data
+A pointer to memory used to store the readed elements.
+@end table
+@item Returns
+A PDF size value indicating the number of readed octects or @code{0} if there
+was an error.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_size_t pdf_fsys_file_write (pdf_fsys_file_t @var{file}, pdf_size_t @var{elem_size}, pdf_size_t @var{elem_count}, void *@var{data})
+
+Synchronously write data to an open file item.
+
+@table @strong
+@item Parameters
+@table @var
+@item file
+An open file variable.
+@item elem_size
+The size of the data chunks to write into the file.
+@item elem_count
+The number of data chunks to be write into the file.
+@item data
+A pointer to memory containing the data to write into the file.
+@end table
+@item Returns
+A PDF size value indicating the number of octects written into the
+file or @code{0} if there was an error.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_fsys_file_flush (pdf_fsys_file_t @var{file})
+
+Flush all the written data for the specified file.
+
+@table @strong
+@item Parameters
+@table @var
+@item file
+An open file variable.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The open file was flushed successfully.
+@item PDF_ERROR
+There was an error flushing the open file.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
 @node The Filesystem Implementation Interface
 @subsection The Filesystem Implementation Interface
 
@@ -5179,6 +5279,7 @@ Implementation Interface in order to honour the petition.
 @menu
 * Opening and Closing Files Implementation::
 * Folder Management Implementation::
+* Synchronous Input/Output Implementation::
 @end menu
 
 
@@ -5318,6 +5419,54 @@ The client do not have permissions to remove the folder.
 
 This callback is called by the @code{pdf_fsys_remove_folder}
 filesystem interface function.
+@end deftp
+
+@node Synchronous Input/Output Implementation
+@subsubsection Synchronous Input/Output Implementation
+
+The following callbacks are defined to provide synchronous
+input/output in open files.
+
+@deftp {Data Type} {pdf_size_t (*pdf_fsys_file_read_fn) (pdf_fsys_file_t @var{file}, pdf_size_t @var{elem_size}, pdf_size_t @var{elem_count}, void *@var{data})}
+
+Filesystem callback used to synchronously read data from an open file
+item.
+
+The callback should return a PDF size value: the number of readed
+octects or @code{0} in the presence of an error.
+
+This callback is called by the @code{pdf_fsys_file_read} file
+interface function.
+@end deftp
+
+@deftp {Data Type} {pdf_size_t (*pdf_fsys_file_write_fn) (pdf_fsys_file_t @var{file}, pdf_size_t @var{elem_size}, pdf_size_t @var{elem_count}, void *@var{data})}
+
+Filesystem callback used to synchronously write data to an open file
+item.
+
+The callback should return a PDF size value: the number of written
+octects or 0 in the presence of an error.
+
+This callback is called by the @code{pdf_fsys_file_write} file
+interface function.
+@end deftp
+
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_flush_fn) (pdf_fsys_file_t @var{file})}
+
+Filesystem callback used to flush all the written data for the
+specified file.
+
+The callback should return a PDF status value:
+
+@table @code
+@item PDF_OK
+The open file was flushed successfully.
+@item PDF_ERROR
+There was an error flushing the open file.
+@end table
+
+This callback is called by the @code{pdf_fsys_file_flush} file
+interface function.
 @end deftp
 
 @node The Filesystem Definition Interface

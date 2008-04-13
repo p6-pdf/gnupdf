@@ -5,6 +5,9 @@
 	(Folder Management): New section.
 	(Opening and Closing Files Implementation): New section.
 	(Folder Management Implementation): New section.
+	(File Data Types): New section.
+	(Synchronous Input/Output Implementation): New section.
+	(Synchronous Input/Output): New section.
 
 2008-04-13  gerel  <gerel@gnu.org>
 
