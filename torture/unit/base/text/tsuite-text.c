@@ -50,6 +50,7 @@ extern TCase *test_pdf_text_set_unicode (void);
 extern TCase *test_pdf_text_concat (void);
 extern TCase *test_pdf_text_replace (void);
 extern TCase *test_pdf_text_replace_ascii (void);
+extern TCase *test_pdf_text_filter (void);
 
 Suite *
 tsuite_text ()
@@ -57,7 +58,7 @@ tsuite_text ()
   Suite *s;
   
   s = suite_create("text");
-  
+
   suite_add_tcase (s, test_pdf_text_init());
   suite_add_tcase (s, test_pdf_text_new_destroy());
   suite_add_tcase (s, test_pdf_text_dup());
@@ -83,6 +84,7 @@ tsuite_text ()
   suite_add_tcase (s, test_pdf_text_concat());
   suite_add_tcase (s, test_pdf_text_replace());
   suite_add_tcase (s, test_pdf_text_replace_ascii());
+  suite_add_tcase (s, test_pdf_text_filter());
 
   return s;
 }
