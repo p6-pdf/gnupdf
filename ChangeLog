@@ -1,3 +1,7 @@
+2008-04-13  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* AUTHORS: Clean up.
+
 2008-04-13  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
 	* src/base/pdf-text-ucd-case.c (pdf_text_ucd_After_Soft_Dotted): Check
