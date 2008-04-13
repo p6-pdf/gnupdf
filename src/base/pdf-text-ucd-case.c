@@ -3151,7 +3151,6 @@ pdf_text_ucd_Final_Sigma(const pdf_text_ucd_context_t *context)
 {
   pdf_char_t *walker;
   short stop;
-    
   int n_case_ignorable;
   int cased_found;
 
@@ -3202,7 +3201,7 @@ pdf_text_ucd_Final_Sigma(const pdf_text_ucd_context_t *context)
             }
         }
     }
-
+  
   /* Check status of previous characters */ 
   if((cased_found == 1) && \
      (n_case_ignorable >= 0))
@@ -3298,24 +3297,30 @@ pdf_text_ucd_After_Soft_Dotted(const pdf_text_ucd_context_t *context)
       else
         {
           pdf_u32_t aux_point;
-          pdf_u8_t comb_class;
           memcpy(&aux_point, walker, 4);
-          comb_class = pdf_text_ucd_get_combining_class(aux_point);
-          switch(comb_class)
+          
+          /* Check for point being Soft_Dotted before checking combining class,
+           * as the Soft_Dotted character can also be of combining class 0 */
+          if(pdf_text_ucd_pl_is_Soft_Dotted(aux_point))
             {
-              case 0:
-                n_combclass0++;
-                break;
-              case 230:
-                n_combclass230++;
-                break;
-              default:
-                if(pdf_text_ucd_pl_is_Soft_Dotted(aux_point))
-                  {
-                    soft_dotted_found = 1;
-                    stop = 1;
-                  }
-                break;
+              soft_dotted_found = 1;
+              stop = 1;
+            }
+          else
+            {
+              pdf_u8_t comb_class;
+              comb_class = pdf_text_ucd_get_combining_class(aux_point);
+              switch(comb_class)
+              {
+                case 0:
+                  n_combclass0++;
+                  break;
+                case 230:
+                  n_combclass230++;
+                  break;
+                default:
+                  break;
+              }
             }
 
           if(!stop)
@@ -3324,16 +3329,10 @@ pdf_text_ucd_After_Soft_Dotted(const pdf_text_ucd_context_t *context)
             }
         }
     }
-  
-  /* Check status of previous characters */ 
-  if((soft_dotted_found) && \
-     (n_combclass0 == 0) && \
-     (n_combclass230 == 0))
-    {
-      return PDF_TRUE;
-    }
-  
-  return PDF_FALSE;
+
+  return (((soft_dotted_found) && \
+           (n_combclass0 == 0) && \
+           (n_combclass230 == 0)) ? PDF_TRUE : PDF_FALSE);
 }
 
 /* More_Above condition in Special Case algorithms
@@ -3398,15 +3397,9 @@ pdf_text_ucd_More_Above(const pdf_text_ucd_context_t *context)
             }
         }
     }
-  
-  /* Check status of next characters */ 
-  if((combclass230found) && \
-     (n_combclass0 == 0))
-    {
-      return PDF_TRUE;
-    }
-  
-  return PDF_FALSE;
+
+  return (((combclass230found) && \
+           (n_combclass0 == 0)) ? PDF_TRUE : PDF_FALSE);
 }
 
 /* Before_Dot condition in Special Case algorithms
@@ -3463,7 +3456,8 @@ pdf_text_ucd_Before_Dot(const pdf_text_ucd_context_t *context)
             {
               pdf_u8_t combining_class;
               combining_class = pdf_text_ucd_get_combining_class(aux_point);
-              if((combining_class == 0) || (combining_class == 230))
+              if((combining_class == 0) || \
+                 (combining_class == 230))
                 {
                   n_combclass0or230++;
                 }
@@ -3474,15 +3468,9 @@ pdf_text_ucd_Before_Dot(const pdf_text_ucd_context_t *context)
             }
         }
     }
-  
-  /* Check status of next characters */ 
-  if((dotAbovefound) && \
-     (n_combclass0or230 == 0))
-    {
-      return PDF_TRUE;
-    }
-  
-  return PDF_FALSE;
+
+  return (((dotAbovefound) && \
+           (n_combclass0or230 == 0)) ? PDF_TRUE : PDF_FALSE);
 }
 
 /* After_I condition in Special Case algorithms
@@ -3530,25 +3518,29 @@ pdf_text_ucd_After_I(const pdf_text_ucd_context_t *context)
       else
         {
           pdf_u32_t aux_point;
-          pdf_u8_t comb_class;
           memcpy(&aux_point, walker, 4);
-          comb_class = pdf_text_ucd_get_combining_class(aux_point);
-          switch(comb_class)
-          {
-            case 0:
-              n_combclass0++;
-              break;
-            case 230:
-              n_combclass230++;
-              break;
-            default:
-              if(aux_point == 0x49) /* 0x49 == 'I' */
-                {
-                  upper_i_found = 1;
-                  stop = 1;
-                }
-              break;
-          }
+          
+          /* Check for character being I before checking combining class, as
+           * code point I has a 0 value combining class... */
+          if(aux_point == 0x49) /* 0x49 == 'I' */
+            {
+              upper_i_found = 1;
+              stop = 1;
+            }
+          else
+            {
+              switch(pdf_text_ucd_get_combining_class(aux_point))
+              {
+                case 0:
+                  n_combclass0++;
+                  break;
+                case 230:
+                  n_combclass230++;
+                  break;
+                default:
+                  break;
+              }
+            }
           
           if(!stop)
             {
@@ -3556,16 +3548,10 @@ pdf_text_ucd_After_I(const pdf_text_ucd_context_t *context)
             }
         }
     }
-  
-  /* Check status of previous characters */ 
-  if((upper_i_found) && \
-     (n_combclass0 == 0) && \
-     (n_combclass230 == 0))
-    {
-      return PDF_TRUE;
-    }
-  
-  return PDF_FALSE;
+
+  return (((upper_i_found) && \
+           (n_combclass0 == 0) && \
+           (n_combclass230 == 0)) ? PDF_TRUE : PDF_FALSE);
 }
 
 
@@ -4115,19 +4101,23 @@ pdf_text_ucd_word_change_case(pdf_char_t *destination_word,
                                            character,
                                            &context,
                                            new_case);
-      if((new_char_size < 1) || \
-         (new_char_size > UCD_SC_MAX_EXPAND))
+      /* Remember that after casing, a given character can even disappear, so
+       * new_char_size could also be 0 */
+      if(new_char_size > UCD_SC_MAX_EXPAND)
         {
           PDF_DEBUG_BASE("Invalid length for case converted char: %u\n",
                          (unsigned int) new_char_size);
           return PDF_ETEXTENC;
         }
-      /* Convert new char size to bytes */
-      new_char_size*=4;
-      /* Update length of new word (in bytes!) */
-      new_length += new_char_size;
-      /* Store case-converted character */
-      memcpy(&destination_word[j], &dest_character[0], new_char_size);
+      else if(new_char_size > 0)
+        {
+          /* Convert new char size to bytes */
+          new_char_size*=4;
+          /* Update length of new word (in bytes!) */
+          new_length += new_char_size;
+          /* Store case-converted character */
+          memcpy(&destination_word[j], &dest_character[0], new_char_size);
+        }
     }
   
   /* Set output data length of word, in bytes! */
