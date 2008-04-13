@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf-tsd.texi,v 1.8 2008/04/13 20:05:22 gerel Exp $
+@comment $Id: gnupdf-tsd.texi,v 1.9 2008/04/13 20:10:47 aleksander_m Exp $
 @comment %**start of header
 @setfilename gnupdf-tsd.info
 @settitle GNU PDF Library Test Specification Document
@@ -3107,7 +3107,7 @@ Compare two equal text objects (one in uppercase, the other one in lowercase), n
 Compare two different text objects, case-sensitive.
 @table @strong
 @item Success conditions
-1. The call to @code{ pdf_text_cmp} should return 0.
+1. The call to @code{ pdf_text_cmp} should NOT return 0.
 
 2. The returned status in @code{ p_ret_code} should be PDF_OK.
 @end table
@@ -3117,7 +3117,7 @@ Compare two different text objects, case-sensitive.
 Compare two different text objects, non-case-sensitive.
 @table @strong
 @item Success conditions
-1. The call to @code{ pdf_text_cmp} should return 0.
+1. The call to @code{ pdf_text_cmp} should NOT return 0.
 
 2. The returned status in @code{ p_ret_code} should be PDF_OK.
 @end table

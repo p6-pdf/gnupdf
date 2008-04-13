@@ -1,3 +1,8 @@
+2008-04-13  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
+	* doc/gnupdf-tsd.texi (pdf_text_cmp): Updated success conditions in
+	`pdf_text_cmp_005' and `pdf_text_cmp_006'.
+
 2008-04-13  gerel  <gerel@gnu.org>
 
 	* doc/gnupdf-tsd.texi: added missing List module tests.
