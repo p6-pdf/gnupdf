@@ -1,3 +1,8 @@
+2008-04-13  gerel  <gerel@gnu.org>
+
+	* doc/gnupdf.texi: updated List Module types and added missing
+	functions.
+
 2008-04-12  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
 	* src/base/pdf-text-ucd-case.c (pdf_text_ucd_is_case_ignorable): New

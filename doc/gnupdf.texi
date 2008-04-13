@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.42 2008/04/10 19:40:28 gerel Exp $
+@comment $Id: gnupdf.texi,v 1.43 2008/04/13 14:55:33 gerel Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -1235,6 +1235,8 @@ XXX
 @node Lists
 @section Lists
 
+This section describes how to work with unsorted and sorted lists. In case you're going to work with a sorted list, you should use the sorted version of each function if it's available. @xref{Working with sorted lists}.
+
 @menu
 * List Data Types::
 * Creating and Destroying Lists::
@@ -1242,6 +1244,7 @@ XXX
 * Searching for List Elements::
 * Setting and Getting List Elements::
 * Adding and Removing List Elements::
+* Working with sorted lists::
 * Working with Iterators::
 @end menu
 
@@ -1261,13 +1264,22 @@ npointer.
 A list iterator.
 @end deftp
 
-@deftp {Data Type} pdf_list_element_equals_fn_t
-A function for comparing list elements.
+@deftp {Data Type} bool pdf_list_element_equals_fn_t (const void *elt1, const void *elt2)
+A function type for comparing list elements equality. Should return PDF_TRUE in case they are equal and PDF_FALSE otherwise.
 @end deftp
 
-@deftp {Data Type} pdf_list_element_dispose_fn_t
-A function for disposing list elements.
+@deftp {Data Type} void pdf_list_element_dispose_fn_t (const void *elt)
+A function type for disposing list elements.
 @end deftp
+
+@deftp {Data Type} int pdf_list_element_compar_fn_t (const void *elt1, const void *elt2)
+A function type for comparing list elements. Should return an integer less than, equal to, or greater than zero corresponding to whether the first element is considered less than, equal to, or greater than the second element.
+@end deftp
+
+@deftp {Data Type} pdf_size_t pdf_list_element_hashcode_fn_t (const void *elt)
+A function type for calculating a Hash code given a list element. Should return the corresponding hash code.
+@end deftp
+
 
 @node Creating and Destroying Lists
 @subsection Creating and Destroying Lists
@@ -1559,8 +1571,6 @@ The operation succeeded.
 @var{element} not found.
 @item PDF_EBADDATA
 Invalid or NULL pointers.
-@item PDF_EINVRANGE
-@var{start_index} or @var{end_index} is greater than the list size or less than 0.
 @end table
 @item Usage Example
 @example
@@ -1875,7 +1885,7 @@ A pdf status value:
 @table @code
 @item PDF_OK
 @var{element} was found in the list and was removed.
-@item PDF_BADDATA
+@item PDF_EBADDATA
 @var{element} was not found in the list.
 @end table
 @item Usage example
@@ -1884,6 +1894,218 @@ XXX
 @end example
 @end table
 @end deftypefun
+
+
+@node Working with sorted lists
+@subsection Working with sorted lists
+
+@deftypefun pdf_status_t pdf_list_sorted_add (pdf_list_t @var{list}, pdf_list_element_compar_fn_t @var{compar_fn}, const void* @var{element}, pdf_list_node_t @var{* element_node})
+
+Add an element to the list.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item compar_fn
+A comparision function.
+@item element
+A pointer to the user data to be stored as a list element.
+@item element_node
+A pointer where the added element node will be saved.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_EBADDATA
+Invalid @var{compar_fn} or @var{element_node} pointer.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_list_sorted_remove (pdf_list_t @var{list}, pdf_list_element_compar_fn_t @var{compar_fn}, const void * @var{element})
+
+Search and remove an element from the list.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item compar_fn
+A comparision function.
+@item element
+The element to be removed.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+@var{element} was found in the list and was removed.
+@item PDF_ENONODE
+@var{element} was not found in the list.
+@item PDF_EBADDATA
+Invalid @var{compar_fn}.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_list_sorted_search (pdf_list_t @var{list}, pdf_list_element_compar_fn_t @var{compar_fn}, const void* @var{element}, pdf_list_node_t @var{*node})
+
+Search whether an element is already in the list.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item compar_fn
+A comparision function.
+@item element
+The element to search for.
+@item node
+The searched node if it was found.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENONODE
+@var{element} not found.
+@item PDF_EBADDATA
+Invalid @var{node} pointer or @var{compar_fn}.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_list_sorted_search_from_to (pdf_list_t @var{list}, pdf_list_element_compar_fn_t @var{compar_fn}, pdf_size_t @var{start_index}, pdf_size_t @var{end_index}, const void* @var{element}, pdf_list_node_t @var{*node})
+
+Search whether an element is already in the list, at a position >=
+@var{start_index} and < @var{end_index}.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item compar_fn
+A comparision function.
+@item start_index
+Index to the first list position to be searched.
+@item end_index
+Index to the last list position to be searched.
+@item element
+The element to search for.
+@item node
+The seached node if it was found.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENONODE
+@var{element} not found.
+@item PDF_EBADDATA
+Invalid @var{node} pointer or @var{compar_fn}.
+@item PDF_EINVRANGE
+@var{start_index} or @var{end_index} is greater than the list size or less than 0.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_list_sorted_indexof (pdf_list_t @var{list}, pdf_list_element_compar_fn_t @var{compar_fn}, const void* @var{element}, pdf_size_t @var{*position})
+
+Search whether an element is already in the list.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item compar_fn
+A comparision function.
+@item element
+A pointer to user data.
+@item position
+A pointer where the element position will be saved.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENONODE
+@var{element} not found.
+@item PDF_EBADDATA
+Invalid or NULL pointers.
+@end table
+@item Usage Example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_list_sorted_indexof_from_to (pdf_list_t @var{list}, pdf_list_element_compar_fn_t @var{compar_fn}, pdf_size_t @var{start_index}, pdf_size_t @var{end_index}, const void* @var{element}, pdf_size_t @var{*position})
+
+Search whether an element is already in the list, at a position >= @var{start_index} and < @var{end_index}.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item compar_fn
+A comparision function.
+@item start_index
+A position in @var{list}.
+@item end_index
+A position in @var{list}.
+@item element
+A pointer to some user data.
+@item position
+A pointer where the element position will be saved.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENONODE
+@var{element} not found.
+@item PDF_EBADDATA
+Invalid or NULL pointers.
+@item PDF_EINVRANGE
+@var{start_index} or @var{end_index} is greater than the list size or less than 0.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
 
 @node Working with Iterators
 @subsection Working with Iterators
@@ -3432,7 +3654,7 @@ A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
-@item PDF_E_BADDATA
+@item PDF_EBADDATA
 The data in @var{cal_span} is invalid.
 @end table
 
@@ -3450,7 +3672,7 @@ cal_span.hour = 21;
 cal_span.minute = 0;
 cal_span.second = 0;
 
-if (pdf_time_add_cal_span (mytime, cal_span) == PDF_E_BADDATA)
+if (pdf_time_add_cal_span (mytime, cal_span) == PDF_EBADDATA)
 @{
   /* Bad data in `cal_span' */
 @}
@@ -3480,7 +3702,7 @@ A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
-@item PDF_E_BADDATA
+@item PDF_EBADDATA
 The data in @var{cal_span} is invalid.
 @end table
 
@@ -3498,7 +3720,7 @@ cal_span.hour = 21;
 cal_span.minute = 0;
 cal_span.second = 0;
 
-if (pdf_time_add_cal_span (mytime, cal_span) == PDF_E_BADDATA)
+if (pdf_time_add_cal_span (mytime, cal_span) == PDF_EBADDATA)
 @{
   /* Bad data in `cal_span' */
 @}
@@ -3507,7 +3729,7 @@ else
   /* `time' now contains Aug 21 2000-08-21 21:00:00 */
 @}
 
-if (pdf_time_sub_cal_span (mytime, cal_span) == PDF_E_BADDATA)
+if (pdf_time_sub_cal_span (mytime, cal_span) == PDF_EBADDATA)
 @{
   /* Bad data in `cal_span' */
 @}
@@ -3670,7 +3892,7 @@ A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
-@item PDF_E_BADDATA
+@item PDF_EBADDATA
 There is invalid data in the calendar structure @var{cal_time}.
 @end table
 
@@ -3690,7 +3912,7 @@ mycaltime.minute = 0;
 mycaltime.sec = 0;
 mycaltime.gmt_offset = 1;
 
-if (pdf_time_from_cal (mytime, mycaltime) == PDF_E_BADDATA)
+if (pdf_time_from_cal (mytime, mycaltime) == PDF_EBADDATA)
 @{
   /* Bad data in `mycaltime' */
 @}
@@ -3920,7 +4142,7 @@ A status value:
 @table @code
 @item PDF_OK
 The operation succeeded.
-@item PDF_E_BADDATA
+@item PDF_EBADDATA
 Error while parsing @var{time_str} according to @var{time_format}.
 @end table
 
@@ -3932,7 +4154,7 @@ char time_str[] = "FIXME: put a correct PDF time there";
 mytime = pdf_time_new ();
 if (pdf_time_from_string (mytime, 
                           time_str,
-                          PDF_TIME_FORMAT_PDF) == PDF_E_BADDATA)
+                          PDF_TIME_FORMAT_PDF) == PDF_EBADDATA)
 @{
   /* Error while parsing `time_str' according to `PDF_TIME_FORMAT_PDF' */
 @}
@@ -4402,7 +4624,7 @@ A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
-@item PDF_E_BADDATA
+@item PDF_EBADDATA
 There is invalid data in @var{span1} or @var{span2}.
 @end table
 
@@ -4420,7 +4642,7 @@ struct pdf_time_cal_span_s cal_result;
 if (pdf_time_add_cal_span_with_base (cal_span1,
                                      cal_span2,
                                      mytime,
-                                     cal_result) == PDF_E_BADDATA)
+                                     cal_result) == PDF_EBADDATA)
 @{
   /* Invalid data in `cal_span1' or `cal_span2' */
 @}      
@@ -4513,7 +4735,7 @@ A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
-@item PDF_E_BADDATA
+@item PDF_EBADDATA
 There is invalid data in @var{span1} or @var{span2}.
 @end table
 
@@ -4531,7 +4753,7 @@ struct pdf_time_cal_span_s result;
 if (pdf_time_cal_span_diff (span1,
                             span2,
                             mytime,
-                            result) == PDF_E_BADDATA)
+                            result) == PDF_EBADDATA)
 @{
   /* Invalid data in `span1' or `span2' */
 @}
