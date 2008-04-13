@@ -116,8 +116,14 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/getopt_.h
   lib/getopt_int.h
   lib/gettext.h
+  lib/gl_anyhash_list1.h
+  lib/gl_anyhash_list2.h
+  lib/gl_anylinked_list1.h
+  lib/gl_anylinked_list2.h
   lib/gl_array_list.c
   lib/gl_array_list.h
+  lib/gl_linkedhash_list.c
+  lib/gl_linkedhash_list.h
   lib/gl_list.c
   lib/gl_list.h
   lib/localcharset.c

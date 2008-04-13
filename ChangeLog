@@ -1,3 +1,17 @@
+2008-04-13  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* lib/gl_linkedhash_list.h: Imported from gnulib.
+
+	* lib/gl_linkedhash_list.c: Imported from gnulib.
+
+	* lib/gl_anylinked_list2.h: Imported from gnulib.
+
+	* lib/gl_anylinked_list1.h: Imported from gnulib.
+
+	* lib/gl_anyhash_list2.h: Imported from gnulib.
+
+	* lib/gl_anyhash_list1.h: Imported from gnulib.
+
 2008-04-13  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
 	* torture/unit/base/text/pdf-text-filter.c: New file. Tests for
