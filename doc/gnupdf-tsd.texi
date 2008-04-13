@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf-tsd.texi,v 1.7 2008/04/08 10:21:29 aleksander_m Exp $
+@comment $Id: gnupdf-tsd.texi,v 1.8 2008/04/13 20:05:22 gerel Exp $
 @comment %**start of header
 @setfilename gnupdf-tsd.info
 @settitle GNU PDF Library Test Specification Document
@@ -3150,6 +3150,12 @@ Compare two different text objects, non-case-sensitive.
 * pdf_list_search::
 * pdf_list_set_at::
 * pdf_list_size::
+* pdf_list_sorted_add::
+* pdf_list_sorted_remove::
+* pdf_list_sorted_indexof::
+* pdf_list_sorted_indexof_from_to::
+* pdf_list_sorted_search::
+* pdf_list_sorted_search_from_to::
 @end menu
 
 @node pdf_list_add_at
@@ -3671,6 +3677,216 @@ Try to get an empty list size.
 Returns 0.
 @end table
 @end deffn
+
+
+@node pdf_list_sorted_add
+@subsubsection pdf_list_sorted_add
+
+@deffn Test pdf_list_sorted_add_001
+Try to add an element at the beginning of the list.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@deffn Test pdf_list_sorted_add_002
+Try to add an element at the beginning of the list with NULL compar_fn.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+@node pdf_list_sorted_remove
+@subsubsection pdf_list_sorted_remove
+
+@deffn Test pdf_list_sorted_remove_001
+Try to remove an existing element in a list.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@deffn Test pdf_list_sorted_remove_002
+Try to remove an non-existent element.
+@table @strong
+@item Success condition
+Returns PDF_ENONODE
+@end table
+@end deffn
+
+@deffn Test pdf_list_sorted_remove_003
+Try to remove an element with a NULL compar_fn.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+
+@node pdf_list_sorted_indexof
+@subsubsection pdf_list_sorted_indexof
+
+@deffn Test pdf_list_sorted_indexof_001
+Try to get the index of an existent element.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@deffn Test pdf_list_sorted_indexof_002
+Try to get the index of a non-existent element.
+@table @strong
+@item Success condition
+Returns PDF_ENONODE
+@end table
+@end deffn
+
+@deffn Test pdf_list_sorted_indexof_003
+Try to get the index of an element given a NULL position pointer.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+@deffn Test pdf_list_sorted_indexof_004
+Try to get the index of an element given a NULL compar_fn.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+
+@node pdf_list_sorted_indexof_from_to
+@subsubsection pdf_list_sorted_indexof_from_to
+
+@deffn Test pdf_list_sorted_indexof_from_to_001
+Try to get the index of a existent element from position '0'.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@deffn Test pdf_list_sorted_indexof_from_to_002
+Try to get the index of a existent element from invalid position.
+@table @strong
+@item Success condition
+Returns PDF_EINVRANGE
+@end table
+@end deffn
+
+@deffn Test pdf_list_sorted_indexof_from_to_003
+Try to get the index of a existent element given a NULL position pointer.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+@deffn Test pdf_list_sorted_indexof_from_to_004
+Try to get the index of a non-existent element.
+@table @strong
+@item Success condition
+Returns PDF_ENONODE
+@end table
+@end deffn
+
+@deffn Test pdf_list_sorted_indexof_from_to_005
+Try to get the index of a existent element given a NULL compar_fn.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+
+@node pdf_list_sorted_search
+@subsubsection pdf_list_sorted_search
+
+
+@deffn Test pdf_list_sorted_search_001
+Try to search for an existing element in a list.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@deffn Test pdf_list_sorted_search_002
+Try to search an existent element given a NULL node pointer.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+@deffn Test pdf_list_sorted_search_003
+Try to search for a non-existent element in a list.
+@table @strong
+@item Success condition
+Returns PDF_ENONODE
+@end table
+@end deffn
+
+@deffn Test pdf_list_sorted_search_004
+Try to search an existent element given a NULL compar_fn.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+
+@node pdf_list_sorted_search_from_to
+@subsubsection pdf_list_sorted_search_from_to
+
+
+@deffn Test pdf_list_sorted_search_from_to_001
+Try to search an existent element in the correct range.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@deffn Test pdf_list_sorted_search_from_to_002
+Try to seach an element in an invalid range.
+@table @strong
+@item Success condition
+Returns PDF_EINVRANGE.
+@end table
+@end deffn
+
+@deffn Test pdf_list_sorted_search_from_to_003
+Try to search a non-existent element in a list.
+@table @strong
+@item Success condition
+Returns PDF_ENONODE.
+@end table
+@end deffn
+
+@deffn Test pdf_list_sorted_search_from_to_004
+Try search an element given a NULL node pointer.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+@deffn Test pdf_list_sorted_search_from_to_005
+Try search an element given a NULL compar_fn.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
 
 @node Subsystem Testing
 @chapter Subsystem Testing

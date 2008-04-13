@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-03-25 12:33:59 gerel"
+/* -*- mode: C -*- Time-stamp: "2008-04-13 12:09:09 gerel"
  *
  *       File:         pdf-list.h
  *       Date:         Sat Mar 1 02:14:35 2008
@@ -64,6 +64,8 @@ typedef struct pdf_list_iterator_s pdf_list_iterator_t;
 typedef bool (*pdf_list_element_equals_fn_t) (const void *elt1, const void *elt2);
 typedef pdf_size_t (*pdf_list_element_hashcode_fn_t) (const void *elt);
 typedef void (*pdf_list_element_dispose_fn_t) (const void *elt);
+typedef int (*pdf_list_element_compar_fn_t) (const void *elt1, const void *elt2);
+
 
 /* END PUBLIC */
 
@@ -117,6 +119,37 @@ pdf_status_t pdf_list_add_at (pdf_list_t list, pdf_size_t position,
 pdf_status_t pdf_list_remove_node (pdf_list_t list, pdf_list_node_t node);
 pdf_status_t pdf_list_remove_at (pdf_list_t list, pdf_size_t position);
 pdf_status_t pdf_list_remove (pdf_list_t list, const void * element);
+
+/* Sorted list functions */
+
+pdf_status_t
+pdf_list_sorted_add (pdf_list_t list, pdf_list_element_compar_fn_t compar_fn,
+                     const void* element, pdf_list_node_t * element_node);
+
+pdf_status_t
+pdf_list_sorted_remove (pdf_list_t list, pdf_list_element_compar_fn_t compar_fn,
+                        const void * element);
+
+pdf_status_t
+pdf_list_sorted_search (pdf_list_t list, pdf_list_element_compar_fn_t compar_fn,
+                        const void* element, pdf_list_node_t *node);
+
+pdf_status_t
+pdf_list_sorted_search_from_to (pdf_list_t list,
+                                pdf_list_element_compar_fn_t compar_fn,
+                                pdf_size_t start_index, pdf_size_t end_index,
+                                const void* element, pdf_list_node_t *node);
+
+pdf_status_t
+pdf_list_sorted_indexof (pdf_list_t list,
+                         pdf_list_element_compar_fn_t compar_fn,
+                         const void* element, pdf_size_t *position);
+
+pdf_status_t
+pdf_list_sorted_indexof_from_to (pdf_list_t list,
+                                 pdf_list_element_compar_fn_t compar_fn,
+                                 pdf_size_t start_index, pdf_size_t end_index,
+                                 const void* element, pdf_size_t *position);
 
 /* Element iterator functions */
 
@@ -716,6 +749,190 @@ pdf_list_iterator_free (pdf_list_iterator_t *iterator)
 
   return PDF_OK;
 }
+
+
+EXTERN_INLINE pdf_status_t
+pdf_list_sorted_add (pdf_list_t list, pdf_list_element_compar_fn_t compar_fn,
+                     const void* element, pdf_list_node_t * element_node)
+{
+  pdf_list_node_t node;
+  pdf_status_t st;
+
+  st = PDF_OK;
+  
+  if (compar_fn != NULL)
+    {
+      node.gl_node = gl_sortedlist_add ((gl_list_t)list.gl_list, compar_fn,
+                                        element);
+      if (element_node != NULL)
+        {
+          *element_node = node;
+        }
+    }
+  else
+    {
+      st = PDF_EBADDATA;
+    }
+  
+  return (st);
+
+}
+
+EXTERN_INLINE pdf_status_t
+pdf_list_sorted_remove (pdf_list_t list, pdf_list_element_compar_fn_t compar_fn,
+                        const void * element)
+{
+  pdf_status_t st;
+
+  st = PDF_OK;
+
+  if (compar_fn != NULL)
+    {
+      if (!gl_sortedlist_remove ((gl_list_t)list.gl_list, compar_fn, element))
+        st = PDF_ENONODE;
+    }
+  else
+    {
+      st = PDF_EBADDATA;
+    }
+
+  return (st);
+
+}
+
+EXTERN_INLINE pdf_status_t
+pdf_list_sorted_search (pdf_list_t list, pdf_list_element_compar_fn_t compar_fn,
+                        const void* element, pdf_list_node_t *node)
+{
+
+  pdf_status_t st;
+
+  st = PDF_OK;
+
+  if (compar_fn != NULL && node != NULL && element != NULL)
+    {
+      node->gl_node = gl_sortedlist_search ((gl_list_t)list.gl_list,
+                                            compar_fn, element);
+      if (node->gl_node == NULL)
+        {
+          st = PDF_ENONODE;
+        }
+    }
+  else
+    {
+      st = PDF_EBADDATA;
+    }
+
+  return (st);
+}
+
+EXTERN_INLINE pdf_status_t
+pdf_list_sorted_search_from_to (pdf_list_t list,
+                                pdf_list_element_compar_fn_t compar_fn,
+                                pdf_size_t start_index, pdf_size_t end_index,
+                                const void* element, pdf_list_node_t *node)
+{
+  pdf_status_t st;
+
+  st = PDF_OK;
+
+  if (compar_fn != NULL && node != NULL && element != NULL)
+    {
+      if (((start_index < pdf_list_size (list) && start_index > 0) ||
+           (start_index == 0)) &&
+          ((end_index <= pdf_list_size (list) && end_index > 0) ||
+           (end_index == 0)) &&
+          (start_index < end_index))
+        {
+          node->gl_node = gl_sortedlist_search_from_to((gl_list_t)list.gl_list,
+                                                       compar_fn, start_index,
+                                                       end_index, element);
+          if (node->gl_node == NULL)
+            {
+              st = PDF_ENONODE;
+            }
+        }
+      else
+        {
+          st = PDF_EINVRANGE;
+        }
+    }
+  else
+    {
+      st = PDF_EBADDATA;
+    }
+
+  return (st);
+}
+
+EXTERN_INLINE pdf_status_t
+pdf_list_sorted_indexof (pdf_list_t list,
+                         pdf_list_element_compar_fn_t compar_fn,
+                         const void* element, pdf_size_t *position)
+{
+
+  pdf_status_t st;
+
+  st = PDF_OK;
+
+  if (compar_fn != NULL && position != NULL && element != NULL )
+    {
+      *position = (pdf_size_t) gl_sortedlist_indexof ((gl_list_t)list.gl_list,
+                                                      compar_fn, element);
+      if (*position == -1)
+        {
+          st = PDF_ENONODE;
+        }
+    }
+  else
+    {
+      st = PDF_EBADDATA;
+    }
+
+  return (st);
+}
+
+EXTERN_INLINE pdf_status_t
+pdf_list_sorted_indexof_from_to (pdf_list_t list,
+                                 pdf_list_element_compar_fn_t compar_fn,
+                                 pdf_size_t start_index, pdf_size_t end_index,
+                                 const void* element, pdf_size_t *position)
+{
+  pdf_status_t st;
+
+  st = PDF_OK;
+
+  if (compar_fn != NULL && position != NULL && element != NULL)
+    {
+      if (((start_index > 0 && start_index < pdf_list_size (list)) ||
+           start_index == 0) &&
+          (end_index > 0 && end_index <= pdf_list_size (list)) &&
+          (start_index < end_index))
+        {
+          *position = (pdf_size_t)
+            gl_sortedlist_indexof_from_to ((gl_list_t)list.gl_list, compar_fn,
+                                           start_index, end_index,
+                                           element);
+          if (*position == -1)
+            {
+              st = PDF_ENONODE;
+            }
+        }
+      else
+        {
+          st = PDF_EINVRANGE;
+        }
+    }
+  else
+    {
+      st = PDF_EBADDATA;
+    }
+
+
+  return (st);
+}
+
+
 
 #endif /* HAVE_INLINE */
 

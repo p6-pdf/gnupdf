@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/03/17 14:34:28 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-04-13 11:54:34 gerel"
  *
  *       File:         pdf-list-create.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -33,11 +33,11 @@
 
 bool l_comp (const void * elemb, const void * elema)
 {
-  int *elem, *elem2;
-  elem = (int*) elemb;
-  elem2 = (int*) elema;
+  int *elem1, *elem2;
+  elem1 = (int*) elema;
+  elem2 = (int*) elemb;
         
-  if (*elem == *elem2)
+  if (*elem1 == *elem2)
     {
       return 1;
     }
@@ -46,6 +46,47 @@ bool l_comp (const void * elemb, const void * elema)
 
 void l_disp (const void * elema)
 {
+}
+
+
+int l_comp_desc (const void *elema, const void * elemb)
+{
+  int *elem1, *elem2;
+  elem1 = (int*) elema;
+  elem2 = (int*) elemb;
+        
+  if (*elem1 > *elem2)
+    {
+      return -1;
+    }
+  else if (*elem1 < *elem2)
+    {
+      return 1;
+    }
+  else
+    {
+      return 0;
+    }
+}
+
+int l_comp_asc (const void *elema, const void * elemb)
+{
+  int *elem1, *elem2;
+  elem1 = (int*) elema;
+  elem2 = (int*) elemb;
+           
+  if (*elem1 > *elem2)
+    {
+      return 1;
+    }
+  else if (*elem1 < *elem2)
+    {
+      return -1;
+    }
+  else
+    {
+      return 0;
+    }       
 }
 
 

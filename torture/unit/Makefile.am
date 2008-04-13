@@ -40,6 +40,7 @@ TEST_SUITE_STM = base/stm/pdf-create-file-stm.c
 TEST_SUITE_LIST = base/list/pdf-list-add-first.c \
                   base/list/pdf-list-add-at.c \
                   base/list/pdf-list-add-last.c \
+                  base/list/pdf-list-size.c \
                   base/list/pdf-list-create.c \
                   base/list/pdf-list-get-at.c \
                   base/list/pdf-list-indexof.c \
@@ -58,7 +59,12 @@ TEST_SUITE_LIST = base/list/pdf-list-add-first.c \
                   base/list/pdf-list-search-from.c \
                   base/list/pdf-list-search-from-to.c \
                   base/list/pdf-list-set-at.c \
-                  base/list/pdf-list-size.c 
+                  base/list/pdf-list-sorted-add.c \
+                  base/list/pdf-list-sorted-remove.c \
+                  base/list/pdf-list-sorted-search.c \
+                  base/list/pdf-list-sorted-search-from-to.c \
+                  base/list/pdf-list-sorted-indexof.c \
+                  base/list/pdf-list-sorted-indexof-from-to.c
 
 # Unit tests for the Encoded Text Module test suite
 TEST_SUITE_TEXT = base/text/pdf-text-test-common.h \

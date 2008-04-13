@@ -1,3 +1,27 @@
+2008-04-13  gerel  <gerel@gnu.org>
+
+	* doc/gnupdf-tsd.texi: added missing List module tests.
+
+	* torture/unit/Makefile.am: Idem.
+
+	* torture/unit/base/list/tsuite-list.c: Idem.
+
+	* src/base/pdf-list.h: added sorted list functions.
+
+	* torture/unit/base/list/pdf-list-create.c: added comparision funcs.
+
+	* torture/unit/base/list/pdf-list-sorted-add.c: initial add
+
+	* torture/unit/base/list/pdf-list-sorted-remove.c: initial add
+
+	* torture/unit/base/list/pdf-list-sorted-indexof-from-to.c: initial add
+
+	* torture/unit/base/list/pdf-list-sorted-indexof.c: initial add
+
+	* torture/unit/base/list/pdf-list-sorted-search-from-to.c: initial add
+
+	* torture/unit/base/list/pdf-list-sorted-search.c: initial add
+
 2008-04-13  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
 	* torture/unit/base/text/pdf-text-filter.c: Remove compilation warning.

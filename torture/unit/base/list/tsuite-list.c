@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/03/17 14:32:31 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-04-13 15:32:48 gerel"
  *
  *       File:         tsuite-list.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -47,6 +47,13 @@ extern TCase *test_pdf_list_next_node (void);
 extern TCase *test_pdf_list_iterator (void);
 extern TCase *test_pdf_list_iterator_from_to (void);
 extern TCase *test_pdf_list_iterator_next (void);
+extern TCase *test_pdf_list_sorted_add (void);
+extern TCase *test_pdf_list_sorted_remove (void);
+extern TCase *test_pdf_list_sorted_search_from_to (void);
+extern TCase *test_pdf_list_sorted_search (void);
+extern TCase *test_pdf_list_sorted_indexof (void);
+extern TCase *test_pdf_list_sorted_indexof_from_to (void);
+
 
 
 Suite *
@@ -78,6 +85,13 @@ tsuite_list ()
   suite_add_tcase (s, test_pdf_list_iterator ());
   suite_add_tcase (s, test_pdf_list_iterator_from_to ());
   suite_add_tcase (s, test_pdf_list_iterator_next ());
+  suite_add_tcase (s, test_pdf_list_sorted_add ());
+  suite_add_tcase (s, test_pdf_list_sorted_remove ());
+  suite_add_tcase (s, test_pdf_list_sorted_search ());
+  suite_add_tcase (s, test_pdf_list_sorted_search_from_to ());
+  suite_add_tcase (s, test_pdf_list_sorted_indexof ());
+  suite_add_tcase (s, test_pdf_list_sorted_indexof_from_to ());
+
 
   return s;
 }
