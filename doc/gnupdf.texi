@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.43 2008/04/13 14:55:33 gerel Exp $
+@comment $Id: gnupdf.texi,v 1.44 2008/04/13 15:16:37 gerel Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -1913,7 +1913,7 @@ A comparision function.
 @item element
 A pointer to the user data to be stored as a list element.
 @item element_node
-A pointer where the added element node will be saved.
+A pointer where the added element node will be saved. Can be NULL.
 @end table
 @item Returns
 A pdf status value:
@@ -1921,7 +1921,7 @@ A pdf status value:
 @item PDF_OK
 The operation succeeded.
 @item PDF_EBADDATA
-Invalid @var{compar_fn} or @var{element_node} pointer.
+Invalid @var{compar_fn} pointer.
 @end table
 @item Usage example
 @example
