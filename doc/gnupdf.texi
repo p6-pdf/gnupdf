@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.47 2008/04/14 20:30:42 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.48 2008/04/15 13:48:32 gerel Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -909,6 +909,10 @@ NULL-terminated string.
 An iterator over the keys of a Hash Table.
 @end deftp
 
+@deftp {Data Type} void (*pdf_hash_element_dispose_fn_t) (const void *elt)
+A function type for disposing hash elements.
+@end deftp
+
 
 @node Creating and Destroying Hash Tables
 @subsection Creating and Destroying Hash Tables
@@ -1264,19 +1268,19 @@ npointer.
 A list iterator.
 @end deftp
 
-@deftp {Data Type} bool pdf_list_element_equals_fn_t (const void *elt1, const void *elt2)
+@deftp {Data Type} bool (*pdf_list_element_equals_fn_t) (const void *elt1, const void *elt2)
 A function type for comparing list elements equality. Should return PDF_TRUE in case they are equal and PDF_FALSE otherwise.
 @end deftp
 
-@deftp {Data Type} void pdf_list_element_dispose_fn_t (const void *elt)
+@deftp {Data Type} void (*pdf_list_element_dispose_fn_t) (const void *elt)
 A function type for disposing list elements.
 @end deftp
 
-@deftp {Data Type} int pdf_list_element_compar_fn_t (const void *elt1, const void *elt2)
+@deftp {Data Type} int (*pdf_list_element_compar_fn_t) (const void *elt1, const void *elt2)
 A function type for comparing list elements. Should return an integer less than, equal to, or greater than zero corresponding to whether the first element is considered less than, equal to, or greater than the second element.
 @end deftp
 
-@deftp {Data Type} pdf_size_t pdf_list_element_hashcode_fn_t (const void *elt)
+@deftp {Data Type} pdf_size_t (*pdf_list_element_hashcode_fn_t) (const void *elt)
 A function type for calculating a Hash code given a list element. Should return the corresponding hash code.
 @end deftp
 
