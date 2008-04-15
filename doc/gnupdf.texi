@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.48 2008/04/15 13:48:32 gerel Exp $
+@comment $Id: gnupdf.texi,v 1.49 2008/04/15 19:51:31 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -5348,6 +5348,7 @@ Implementation Interface in order to honour the petition.
 * Opening and Closing Files Implementation::
 * Folder Management Implementation::
 * Synchronous Input/Output Implementation::
+* Managing File System Item Properties Implementation::
 * Managing File Properties Implementation::
 @end menu
 
@@ -5538,6 +5539,35 @@ This callback is called by the @code{pdf_fsys_file_flush} file
 interface function.
 @end deftp
 
+@node Managing File System Item Properties Implementation
+@subsubsection Managing File System Item Properties Implementation
+
+The following callbacks are defined to provide access to several
+filesystem item properties. The file system items are addressed using
+path names.
+
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_get_item_props_fn) (pdf_text_t @var{path_name}, pdf_fsys_item_props_t @var{props})}
+
+Filesystem callback used to get the properties of a named filesystem
+item.
+
+The callback should return a PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded and the item properties were stored in
+@var{props}
+@item PDF_EBADNAME
+There is not a filesystem item after @var{path_name}.
+@item PDF_EBADPERMS
+The client do not have permissions to get the properties of the named
+filesystem item.
+@end table
+
+This callback is called by the @code{pdf_fsys_get_item_props}
+filesystem interface function.
+@end deftp
+
+
 @node Managing File Properties Implementation
 @subsubsection Managing File Properties Implementation
 
@@ -5585,7 +5615,7 @@ The client do not have enough permissions to set the logical size of
 @end table
 @end deftp
 
-@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_get_pos_fn) (pdf_fsys_file_t @var{file}, pdf_off_t @var{pos})}
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_get_pos_fn) (pdf_fsys_file_t @var{file}, pdf_off_t *@var{pos})}
 
 Filesystem callback used to get the current position in a given file.
 
@@ -5599,6 +5629,22 @@ The operation was successfully performed and the current position in
 This callback is called by the @code{pdf_fsys_file_get_pos} file
 interface function.
 @end deftp
+
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_set_pos_fn) (pdf_fsys_file_t @var{file}, pdf_off_t @var{pos})}
+
+Filesystem callback used to set the current position in a given file.
+
+The callback should return a PDF status variable:
+@table @code
+@item PDF_OK
+The operation was successfully performed and the current position in
+@var{file} was set to @var{pos}.
+@end table
+
+This callback is called by the @code{pdf_fsys_file_set_pos} file
+interface function.
+@end deftp
+
 
 @node The Filesystem Definition Interface
 @subsection The Filesystem Definition Interface

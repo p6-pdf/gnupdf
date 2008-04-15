@@ -1,7 +1,12 @@
+2008-04-15  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Managing File System Item Properties
+	Implementation): New section.
+
 2008-04-15  gerel  <gerel@gnu.org>
 
 	* doc/gnupdf.texi: added missing Hash types.
-	
+
 2008-04-14  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Filesystem Utility Functions): New section.
