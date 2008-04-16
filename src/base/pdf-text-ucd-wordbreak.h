@@ -38,6 +38,8 @@
 
 #include <pdf-text.h>
 
+/*************** START OF SELF-GENERATED DATA *********************************/
+
 enum pdf_text_ucd_wb_property_e {
   PDF_TEXT_UCD_WBP_None,
   PDF_TEXT_UCD_WBP_CR,
@@ -53,6 +55,8 @@ enum pdf_text_ucd_wb_property_e {
   PDF_TEXT_UCD_WBP_Numeric,
   PDF_TEXT_UCD_WBP_ExtendNumLet
 };
+
+/***************** END OF SELF-GENERATED DATA *********************************/
 
 /* Return the WordBreak Property of the given UTF-32HE unicode point */
 enum pdf_text_ucd_wb_property_e

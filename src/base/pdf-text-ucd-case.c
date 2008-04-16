@@ -33,15 +33,10 @@
 #include <pdf-text-ucd-gencat.h>
 #include <pdf-text-ucd-proplist.h>
 
-/* Constant length of arrays */
-#define UCD_C_INFO_N    2099
-#define UCD_C_INT_N     99
-#define UCD_SC_INFO_N   119
-
 
 /* Structure to contain the case information of each unicode point.
  */
-#define PDF_TEXT_MNSC  3
+#define PDF_TEXT_MNSC 3
 typedef struct _unicode_case_info_s {
   pdf_u32_t unicode_point;
   pdf_u32_t uppercase_point;
@@ -87,6 +82,11 @@ typedef struct _pdf_text_ucd_context_s {
 
 
 /*************** START OF SELF-GENERATED DATA *********************************/
+
+/* Constant length of arrays */
+#define UCD_C_INFO_N    2099
+#define UCD_C_INT_N     99
+#define UCD_SC_INFO_N   119
 
 /* Array containing the case information for each unicode point (really only for
  *  those which actually have some case information) */

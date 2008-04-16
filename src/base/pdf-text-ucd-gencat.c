@@ -29,12 +29,6 @@
 
 #include <pdf-text-ucd-gencat.h>
 
-
-/* Constant length of arrays */
-#define UCD_GENCAT_INFO_N    19336
-#define UCD_GENCAT_INT_N     455
-
-
 typedef struct _unicode_gencat_info_s {
   pdf_u32_t unicode_point;
   enum unicode_gencat_info_enum gencat;
@@ -48,6 +42,10 @@ typedef struct _unicode_gencat_interval_s {
 } unicode_gencat_interval_t;
 
 /*************** START OF SELF-GENERATED DATA *********************************/
+
+/* Constant length of arrays */
+#define UCD_GENCAT_INFO_N    19336
+#define UCD_GENCAT_INT_N     455
 
 static unicode_gencat_info_t unicode_gencat_info[UCD_GENCAT_INFO_N] = {
 	{ 0x0000, UNICODE_GENCAT_Cc},

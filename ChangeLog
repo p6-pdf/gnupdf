@@ -1,3 +1,29 @@
+2008-04-16  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
+	* src/base/pdf-text-ucd-wordbreak.h: Create new block of self-generated
+	data.
+
+	* src/base/pdf-text-ucd-proplist.h: Create new block of self-generated
+	data.
+
+	* src/base/pdf-text-ucd-gencat.h: Create new block of self-generated
+	data.
+
+	* src/base/pdf-text-ucd-gencat.c: Move the length of arrays to the
+	block of self-generated data.
+
+	* src/base/pdf-text-ucd-combclass.c: Move the length of arrays to the
+	block of self-generated data.
+
+	* src/base/pdf-text-ucd-case.c: Move the length of arrays to the block
+	of self-generated data.
+
+	* build-aux/README.regenerateUCD: New file. How to update the contents
+	of the Unicode Character Database.
+
+	* build-aux/pdf-text-generate-ucd.c: Also print in the generated source
+	files the lengths of the arrays.
+
 2008-04-15  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Managing File System Item Properties

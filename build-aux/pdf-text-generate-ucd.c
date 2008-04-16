@@ -468,7 +468,7 @@ create_SpecialCasing_header(FILE *pf)
               "  const char *condition_list;\n"
               "} unicode_special_case_info_t;\n\n"
               "static unicode_special_case_info_t "
-              "unicode_special_case_info[] = {\n");
+              "unicode_special_case_info[UCD_SC_INFO_N] = {\n");
     }
   return 0;
 }
@@ -663,9 +663,9 @@ compute_SpecialCasing(const char *SpecialCasingFile,
   
   /* Set trailer for the case changes list */
   create_SpecialCasing_trailer(pf_out);
-  
-  printf("A total of '%ld' entries added in the special case info array. This "
-         " means that UCD_SC_INFO_N must be defined to that value\n", count);
+
+  /* Print defines... */
+  fprintf(pf_out, "\n\n#define UCD_SC_INFO_N %ld\n\n", count);
   
   *p_count = count;
   return 0;
@@ -708,7 +708,7 @@ create_UnicodeData_CASE_header(FILE *pf)
               "  pdf_u32_t case_info[4];\n"
               "  pdf_16_t special_case_indexes[PDF_TEXT_MNSC];\n"
               "} unicode_case_info_t;\n\n"
-              "static unicode_case_info_t unicode_case_info[] = {\n");
+              "static unicode_case_info_t unicode_case_info[UCD_C_INFO_N] = {\n");
     }
   return 0;
 }
@@ -724,7 +724,7 @@ create_UnicodeData_CASE_INTERVAL_header(FILE *pf)
               "  pdf_u32_t interval_stop;\n"
               "  long delta;\n"
               "} unicode_case_interval_t;\n\n"
-              "static unicode_case_interval_t unicode_case_int[] = {\n");
+              "static unicode_case_interval_t unicode_case_int[UCD_C_INT_N] = {\n");
     }
   return 0;
 }
@@ -964,10 +964,6 @@ compute_UnicodeData_CASE(const char *UnicodeDataFile,
         }
     }
   
-  printf("Maximum number of deltas is: %d. This means that PDF_TEXT_MNSC "
-         "must be defined to that value.\n", maximum_number_of_deltas);
-  
-  
   /*------ Compute intervals array ----------*/
   
   create_UnicodeData_CASE_INTERVAL_header(pf_out);
@@ -1019,13 +1015,14 @@ compute_UnicodeData_CASE(const char *UnicodeDataFile,
   
   create_UnicodeData_CASE_INTERVAL_trailer(pf_out);
   
+  
+  /* Print defines... */
+  fprintf(pf_out, "\n\n#define UCD_C_INFO_N %ld", count);
+  fprintf(pf_out, "\n#define UCD_C_INT_N %ld\n\n", count_intervals);
+
   /* Close output file and exit */
   fclose(pf_out);
-  
-  printf("A total of '%ld' entries added in the case info array. This means"
-         " that UCD_C_INFO_N must be defined to that value\n", count);
-  printf("A total of '%ld' intervals added. This means"
-         " that UCD_C_INT_N must be defined to that value\n", count_intervals);
+
   
   return 0;
 }
@@ -1103,7 +1100,7 @@ create_UnicodeData_GENCAT_header(FILE *pf)
                   "  pdf_u32_t unicode_point;\n"
                   "  unicode_gencat_info_enum gencat;\n"
                   "} unicode_gencat_info_t;\n\n"
-                  "static unicode_gencat_info_t unicode_gencat_info[] = {\n");
+                  "static unicode_gencat_info_t unicode_gencat_info[UCD_GENCAT_INFO_N] = {\n");
     }
   return 0;
 }
@@ -1119,7 +1116,7 @@ create_UnicodeData_GENCAT_INTERVAL_header(FILE *pf)
               "  pdf_u32_t interval_stop;\n"
               "  long delta;\n"
               "} unicode_gencat_interval_t;\n\n"
-              "static unicode_gencat_interval_t unicode_gencat_interval[] = {\n");
+              "static unicode_gencat_interval_t unicode_gencat_interval[UCD_GENCAT_INT_N] = {\n");
     }
   return 0;
 }
@@ -1300,11 +1297,13 @@ compute_UnicodeData_GENCAT(const char *UnicodeDataFile)
 
   create_UnicodeData_GENCAT_INTERVAL_trailer(pf_out);
 
+  
+  /* Print defines... */
+  fprintf(pf_out, "\n\n#define UCD_GENCAT_INFO_N %ld", count);
+  fprintf(pf_out, "\n#define UCD_GENCAT_INT_N %ld\n\n", count_intervals);
+
   /* Close output file and exit */
   fclose(pf_out);
-  
-  printf("A total of '%ld' entries added in the GENCAT array\n", count);
-  printf("A total of '%ld' intervals added\n", count_intervals);
   
   return 0;
 }
@@ -1345,7 +1344,7 @@ create_UnicodeData_COMBCLASS_header(FILE *pf)
               "  pdf_u32_t unicode_point;\n"
               "  pdf_u8_t combining_class;\n"
               "} unicode_combclass_info_t;\n\n"
-              "static unicode_combclass_info_t unicode_combclass_info[] = {\n");
+              "static unicode_combclass_info_t unicode_combclass_info[UCD_COMBCLASS_INFO_N] = {\n");
     }
   return 0;
 }
@@ -1362,7 +1361,7 @@ create_UnicodeData_COMBCLASS_INTERVAL_header(FILE *pf)
               "  long delta;\n"
               "} unicode_combclass_interval_t;\n\n"
               "static unicode_combclass_interval_t "
-              "unicode_combclass_interval[] = {\n");
+              "unicode_combclass_interval[UCD_COMBCLASS_INT_N] = {\n");
     }
   return 0;
 }
@@ -1543,11 +1542,12 @@ compute_UnicodeData_COMBCLASS(const char *UnicodeDataFile)
   
   create_UnicodeData_COMBCLASS_INTERVAL_trailer(pf_out);
   
+  /* Print defines... */
+  fprintf(pf_out, "\n\n#define UCD_COMBCLASS_INFO_N %ld", count);
+  fprintf(pf_out, "\n#define UCD_COMBCLASS_INT_N %ld\n\n", count_intervals);
+  
   /* Close output file and exit */
   fclose(pf_out);
-  
-  printf("A total of '%ld' entries added in the COMBCLASS array\n", count);
-  printf("A total of '%ld' intervals added\n", count_intervals);
   
   return 0;
 }
@@ -1772,7 +1772,7 @@ create_WordBreak_header(FILE *pf)
               "  enum pdf_text_ucd_wb_property_e wb_property;\n"
               "} unicode_wordbreak_info_t;\n\n"
               "static unicode_wordbreak_info_t "
-              "unicode_wordbreak_info[] = {\n");
+              "unicode_wordbreak_info[UCD_WB_INFO_N] = {\n");
     }
   return 0;
 }
@@ -1880,10 +1880,6 @@ compute_WordBreak(const char *WordBreakFile)
     
   /* Set trailer for the case changes list */
   create_WordBreak_trailer(pf_out);
-
-  
-  printf("A total of '%ld' entries added in the WordBreak info array\n",
-         count);
   
   /* Set last interval stop index */
   intervals[interval_count].index_stop = count -1;
@@ -2152,7 +2148,7 @@ create_PropList_header(FILE *pf)
               "  enum pdf_text_ucd_proplist_e proplist;\n"
               "} unicode_proplist_info_t;\n\n"
               "static unicode_proplist_info_t "
-              "unicode_proplist_info[] = {\n");
+              "unicode_proplist_info[UCD_PL_INFO_N] = {\n");
     }
   return 0;
 }
@@ -2259,9 +2255,7 @@ compute_PropList(const char *PropListFile)
   
   /* Set trailer for the case changes list */
   create_PropList_trailer(pf_out);
-  
-  printf("A total of '%ld' entries added in the PropList info array\n",
-         count);
+
         
   /* Set last interval stop index */
   intervals[interval_count].index_stop = count -1;

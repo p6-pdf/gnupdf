@@ -38,6 +38,8 @@
 
 #include <pdf-text.h>
 
+/*************** START OF SELF-GENERATED DATA *********************************/
+
 enum pdf_text_ucd_proplist_e {
   PDF_TEXT_UCD_PL_None,
   PDF_TEXT_UCD_PL_White_Space,
@@ -73,6 +75,9 @@ enum pdf_text_ucd_proplist_e {
   PDF_TEXT_UCD_PL_Pattern_White_Space,
   PDF_TEXT_UCD_PL_Pattern_Syntax
 };
+
+/***************** END OF SELF-GENERATED DATA *********************************/
+
 
 
 /* Returns true if the given UTF-32HE unicode point has the Soft_Dotted

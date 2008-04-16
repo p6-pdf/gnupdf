@@ -29,10 +29,6 @@
 
 #include <pdf-text-ucd-combclass.h>
 
-/* Constant length of arrays */
-#define UCD_COMBCLASS_INFO_N   501
-#define UCD_COMBCLASS_INT_N     94
-
 
 typedef struct _unicode_combclass_info_s {
   pdf_u32_t unicode_point;
@@ -47,6 +43,10 @@ typedef struct _unicode_combclass_interval_s {
 
 
 /*************** START OF SELF-GENERATED DATA *********************************/
+
+/* Constant length of arrays */
+#define UCD_COMBCLASS_INFO_N   501
+#define UCD_COMBCLASS_INT_N     94
 
 static unicode_combclass_info_t unicode_combclass_info[UCD_COMBCLASS_INFO_N] = {
 	{ 0x0300, 230},

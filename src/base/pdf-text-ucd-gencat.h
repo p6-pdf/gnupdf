@@ -40,6 +40,8 @@
 #include <pdf-text.h>
 
 
+/*************** START OF SELF-GENERATED DATA *********************************/
+
 /* Enumeration of general categories of each Unicode point */
 enum unicode_gencat_info_enum {
   UNICODE_GENCAT_Unknown = -1,
@@ -74,6 +76,8 @@ enum unicode_gencat_info_enum {
   UNICODE_GENCAT_Co, /* Other, Private use */
   UNICODE_GENCAT_Cn  /* Other, Not assigned */
 };
+
+/***************** END OF SELF-GENERATED DATA *********************************/
 
 
 /* Get General Category of a given UTF-32HE unicode point */
