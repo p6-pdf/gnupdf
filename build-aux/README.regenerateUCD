@@ -1,0 +1,116 @@
+********************************************************************************
+*                                                                              *
+*         How to update the Unicode Character Database contents                *
+*                                                                              *
+*               Aleksander Morgado (aleksander@es.gnu.org)                     *
+*           GNU PDF development mailing list (pdf-devel@gnu.org)               *
+*                                                                              *
+********************************************************************************
+
+This is a small manual which describes the process to update the data coming
+from Unicode Character Database (UCD).
+
+
+The `pdf-text-download-and-generate-ucd.sh' file allows a quite fast update of
+the internal Unicode Character Database data arrays used in the Encoded Text
+Module. The script is run as follows:
+
+$>./pdf-text-download-and-generate-ucd.sh
+
+That's it. :-)
+
+The script needs `wget' to get the latest relase of the files from the online
+UCD repository. The files currently used are:
+ - UnicodeData.txt
+ - WordBreakProperty.txt
+ - SpecialCasing.txt
+ - PropList.txt
+ 
+ 
+ 
+
+Upon a correct download of all the files, `pdf-text-generate-ucd' is executed
+several times by the script, with different arguments. If you want to know
+which are the allowed arguments for this tool, execute it with no argument and
+it will display the basic help.
+
+When the script finishes, it will have created a set of [.c] files:
+ - PropList.c                   [ From PropList.txt ]
+ - WordBreakProperty.c          [ From WordBreakProperty.txt ]
+ - UnicodeDataCombClassInfo.c   [ From UnicodeData.txt ]
+ - UnicodeDataGenCatInfo.c      [ From UnicodeData.txt ]
+ - UnicodeDataCaseInfo.c        [ From UnicodeData.txt and SpecialCasing.txt]
+
+These files contain C source code for:
+ 1. Static arrays
+ 2. C preprocessor macros (#define)
+ 3. Enumerations
+
+
+
+
+The last thing to do in order to have the UCD contents fully updated, is
+updating the correct source files within the libgnupdf sources (stored in
+src/base/). The segments of the source files to be modified are enclosed
+between two lines of comments:
+
+/*************** START OF SELF-GENERATED DATA *********************************/
+    Code to be changed here
+/***************** END OF SELF-GENERATED DATA *********************************/
+
+
+In order to have a correct compilation, keep the order of the #defines and the
+arrays in the final source file (the defines must always be before than the
+arrays).
+
+
+
+
+The following list shows where to put each content:
+--------------------------------------------------------------------------------
+PropList.c ----> pdf-text-ucd-proplist.c
+ * All the #defines
+ * static unicode_proplist_info_t unicode_proplist_info[UCD_PL_INFO_N]
+
+PropList.c ----> pdf-text-ucd-proplist.h
+ * enum pdf_text_ucd_proplist_e
+
+--------------------------------------------------------------------------------
+WordBreakProperty.c ----> pdf-text-ucd-wordbreak.c
+ * All the #defines
+ * static unicode_wordbreak_info_t unicode_wordbreak_info[UCD_WB_INFO_N]
+
+WordBreakProperty.c ----> pdf-text-ucd-wordbreak.h
+ * enum pdf_text_ucd_wb_property_e
+
+--------------------------------------------------------------------------------
+UnicodeDataCombClassInfo.c ----> pdf-text-ucd-combclass.c
+ * #define UCD_COMBCLASS_INFO_N
+ * #define UCD_COMBCLASS_INT_N
+ * static unicode_combclass_info_t unicode_combclass_info[UCD_COMBCLASS_INFO_N]
+ * static unicode_combclass_interval_t unicode_combclass_interval[UCD_COMBCLASS_INT_N]
+
+--------------------------------------------------------------------------------
+UnicodeDataGenCatInfo.c ----> pdf-text-ucd-gencat.c
+ * #define UCD_GENCAT_INFO_N
+ * #define UCD_GENCAT_INT_N
+ * static unicode_gencat_info_t unicode_gencat_info[UCD_GENCAT_INFO_N]
+ * static unicode_gencat_interval_t unicode_gencat_interval[UCD_GENCAT_INT_N]
+
+UnicodeDataGenCatInfo.c ----> pdf-text-ucd-gencat.h
+ * enum unicode_gencat_info_enum
+
+--------------------------------------------------------------------------------
+UnicodeDataCaseInfo.c ----> pdf-text-ucd-case.c
+* #define UCD_SC_INFO_N
+* #define UCD_C_INFO_N
+* #define UCD_C_INT_N
+* static unicode_special_case_info_t unicode_special_case_info[UCD_SC_INFO_N]
+* static unicode_case_info_t unicode_case_info[UCD_C_INFO_N]
+* static unicode_case_interval_t unicode_case_int[UCD_C_INT_N]
+
+--------------------------------------------------------------------------------
+
+
+That's it. Enjoy.
+ 
