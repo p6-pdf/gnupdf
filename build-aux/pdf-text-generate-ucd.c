@@ -37,6 +37,9 @@
  http://www.unicode.org/Public/UNIDATA/UCD.html#UCD_File_Format
  */
 
+#ifndef int32_t
+ #define int32_t int
+#endif
 #ifndef pdf_u32_t
  #define pdf_u32_t int32_t
 #endif

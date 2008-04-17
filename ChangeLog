@@ -1,3 +1,8 @@
+2008-04-17  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
+	* build-aux/pdf-text-generate-ucd.c (int32_t): Define to `int' if not
+	available in the system (like in windows).
+
 2008-04-16  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
 	* src/base/pdf-text-ucd-wordbreak.h: Create new block of self-generated
