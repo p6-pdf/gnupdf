@@ -36,6 +36,7 @@ Jose E. Marchesi: wrote AUTHORS configure.ac doc/gnupdf-manual.init
 and changed src/base/pdf-stm-f-pred.c src/base/pdf-stm-f-pred.h
   src/base/pdf-list.h src/base/pdf-list.c
   torture/unit/base/text/pdf-text-get-unicode.c src/base/pdf-error.h
+  src/base/pdf-hash.c torture/unit/base/hash/pdf-hash-iterator-next.c
 
 Juan Pedro Bolívar Puente: wrote src/base/pdf-stm-f-pred.c
   src/base/pdf-stm-f-pred.h src/base/pdf-stm-f-lzw.c

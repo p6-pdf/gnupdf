@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-04-16 20:30:23 gerel"
+/* -*- mode: C -*- Time-stamp: "08/04/18 21:22:47 jemarch"
  *
  *       File:         pdf-hash-iterator-next.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -48,7 +48,7 @@ START_TEST (pdf_hash_iterator_next_001)
   pdf_hash_add (table, "key", "val");
   pdf_hash_iterator (table, &itr);
 
-  fail_if (pdf_hash_iterator_next (&itr, &key) != PDF_OK);
+  fail_if (pdf_hash_iterator_next (&itr, (void *) &key) != PDF_OK);
 
   pdf_hash_destroy (&table);
 
@@ -70,7 +70,7 @@ START_TEST (pdf_hash_iterator_next_002)
   pdf_hash_create (NULL, NULL, &table);
   pdf_hash_add (table, "key", "val");
 
-  fail_if (pdf_hash_iterator_next (NULL, &key) != PDF_EBADDATA);
+  fail_if (pdf_hash_iterator_next (NULL, (void *) &key) != PDF_EBADDATA);
 
   pdf_hash_destroy (&table);
 

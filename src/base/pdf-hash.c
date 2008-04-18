@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-04-16 20:32:34 gerel"
+/* -*- mode: C -*- Time-stamp: "08/04/18 21:19:46 jemarch"
  *
  *       File:         pdf-hash.c
  *       Date:         Sat Apr  12 12:22:05 2008
@@ -25,6 +25,7 @@
 
 #include <config.h>
 
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -1,3 +1,11 @@
+2008-04-18  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/unit/base/hash/pdf-hash-iterator-next.c (START_TEST):
+	Cast (void *) pointers to avoid compilation warnings.
+
+	* src/base/pdf-hash.c: Include <limits.h> that provides
+	`CHAR_BIT'.
+
 2008-04-17  gerel  <gerel@gnu.org>
 
 	* doc/gnupdf-tsd.texi: added missing List and new Hash Module tests.
