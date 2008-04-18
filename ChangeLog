@@ -1,3 +1,49 @@
+2008-04-17  gerel  <gerel@gnu.org>
+
+	* doc/gnupdf-tsd.texi: added missing List and new Hash Module tests.
+
+	* doc/gnupdf.texi: modified Hash Module API.
+
+	* src/Makefile.am: added Hash Module sources.
+
+	* torture/unit/Makefile.am: added Hash Module test sources
+
+	* torture/unit/runtests.c: added Hash Module case suite.
+
+	* torture/unit/base/list/tsuite-list.c: added missing tests.
+
+	* src/base/pdf-hash.c: initial add
+
+	* src/base/pdf-hash.h: initial add
+
+	* torture/unit/base/list/pdf-list-destroy.c: initial add.
+
+	* torture/unit/base/list/pdf-list-iterator-free.c: initial add.
+
+	* torture/unit/base/hash/pdf-hash-add.c: initial add.
+
+	* torture/unit/base/hash/pdf-hash-create.c: initial add.
+
+	* torture/unit/base/hash/pdf-hash-destroy.c: initial add.
+
+	* torture/unit/base/hash/pdf-hash-iterator-free.c: initial add.
+
+	* torture/unit/base/hash/pdf-hash-iterator-next.c: initial add.
+
+	* torture/unit/base/hash/pdf-hash-iterator.c: initial add.
+
+	* torture/unit/base/hash/pdf-hash-key-p.c: initial add.
+
+	* torture/unit/base/hash/pdf-hash-remove.c: initial add.
+
+	* torture/unit/base/hash/pdf-hash-rename.c: initial add.
+
+	* torture/unit/base/hash/pdf-hash-search.c: initial add.
+
+	* torture/unit/base/hash/pdf-hash-size.c: initial add.
+
+	* torture/unit/base/hash/tsuite-hash.c: initial add.
+
 2008-04-17  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
 	* build-aux/pdf-text-generate-ucd.c (int32_t): Define to `int' if not

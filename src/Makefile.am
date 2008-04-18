@@ -25,6 +25,8 @@ lib_LTLIBRARIES = libgnupdf.la
 
 LIST_MODULE_SOURCES = base/pdf-list.c base/pdf-list.h
 
+HASH_MODULE_SOURCES = base/pdf-hash.c base/pdf-hash.h
+
 ALLOC_MODULE_SOURCES = base/pdf-alloc.c base/pdf-alloc.h
 
 TYPES_MODULE_SOURCES = base/pdf-types.c base/pdf-types.h
@@ -64,7 +66,8 @@ BASE_LAYER_SOURCES = base/pdf-base.c base/pdf-base.h \
                      $(STM_MODULE_SOURCES) \
                      $(ERROR_MODULE_SOURCES) \
                      $(LIST_MODULE_SOURCES) \
-                     $(TEXT_MODULE_SOURCES)
+                     $(TEXT_MODULE_SOURCES) \
+                     $(HASH_MODULE_SOURCES)
 
 # Library sources
 
@@ -89,6 +92,7 @@ PUBLIC_HDRS = pdf-global.h \
               base/pdf-error.h \
               base/pdf-alloc.h \
               base/pdf-list.h \
+              base/pdf-hash.h \
               base/pdf-stm-f-a85.h \
               base/pdf-stm-f-ahex.h \
               base/pdf-stm-f-fax.h \

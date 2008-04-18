@@ -13,6 +13,7 @@ extern Suite *tsuite_alloc (void);
 extern Suite *tsuite_stm (void);
 extern Suite *tsuite_list (void);
 extern Suite *tsuite_text (void);
+extern Suite *tsuite_hash (void);
 
 int
 main (int argc, char **argv)
@@ -27,6 +28,7 @@ main (int argc, char **argv)
   srunner_add_suite (sr, tsuite_stm ());
   srunner_add_suite (sr, tsuite_list ());
   srunner_add_suite (sr, tsuite_text ());
+  srunner_add_suite (sr, tsuite_hash ());
   /* Set log file */
   srunner_set_log (sr, "ut.log");
   /* Run all test suites */

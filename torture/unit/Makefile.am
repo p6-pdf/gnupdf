@@ -37,11 +37,24 @@ TESTS = runtests
 # Unit tests for the Stream Module test suite
 TEST_SUITE_STM = base/stm/pdf-create-file-stm.c
 
+TEST_SUITE_HASH = base/hash/pdf-hash-create.c \
+		  base/hash/pdf-hash-destroy.c \
+		  base/hash/pdf-hash-add.c \
+		  base/hash/pdf-hash-remove.c \
+		  base/hash/pdf-hash-size.c \
+		  base/hash/pdf-hash-search.c \
+		  base/hash/pdf-hash-key-p.c \
+		  base/hash/pdf-hash-rename.c \
+		  base/hash/pdf-hash-iterator.c \
+		  base/hash/pdf-hash-iterator-next.c \
+		  base/hash/pdf-hash-iterator-free.c
+
 TEST_SUITE_LIST = base/list/pdf-list-add-first.c \
                   base/list/pdf-list-add-at.c \
                   base/list/pdf-list-add-last.c \
                   base/list/pdf-list-size.c \
                   base/list/pdf-list-create.c \
+                  base/list/pdf-list-destroy.c \
                   base/list/pdf-list-get-at.c \
                   base/list/pdf-list-indexof.c \
                   base/list/pdf-list-indexof-from.c \
@@ -49,6 +62,7 @@ TEST_SUITE_LIST = base/list/pdf-list-add-first.c \
                   base/list/pdf-list-iterator.c \
                   base/list/pdf-list-iterator-from-to.c \
                   base/list/pdf-list-iterator-next.c \
+                  base/list/pdf-list-iterator-free.c \
                   base/list/pdf-list-next-node.c \
                   base/list/pdf-list-node-value.c \
                   base/list/pdf-list-previous-node.c \
@@ -102,13 +116,14 @@ TEST_ENVIRONMENT = CHARSETALIASDIR=$(top_srcdir)/lib
 
 TEST_FILES = $(TEST_SUITE_STM) \
              $(TEST_SUITE_LIST) \
-             $(TEST_SUITE_TEXT)
+             $(TEST_SUITE_TEXT) \
+             $(TEST_SUITE_HASH)
 
 TSUITE_FILES = base/alloc/tsuite-alloc.c \
                base/stm/tsuite-stm.c \
                base/list/tsuite-list.c \
-               base/text/tsuite-text.c
-
+               base/text/tsuite-text.c \
+               base/hash/tsuite-hash.c
 
 runtests_SOURCES = runtests.c $(TSUITE_FILES) $(TEST_FILES)
 

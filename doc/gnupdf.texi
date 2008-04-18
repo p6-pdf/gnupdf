@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.49 2008/04/15 19:51:31 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.50 2008/04/18 01:49:09 gerel Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -913,19 +913,24 @@ An iterator over the keys of a Hash Table.
 A function type for disposing hash elements.
 @end deftp
 
+@deftp {Data Type} void (*pdf_hash_key_dispose_fn_t) (const void *key)
+A function type for disposing hash keys.
+@end deftp
 
 @node Creating and Destroying Hash Tables
 @subsection Creating and Destroying Hash Tables
 
-@deftypefun pdf_status_t pdf_hash_create (pdf_hash_dispose_fn_t @var{dispose_fn}, pdf_hash_t @var{*table})
+@deftypefun pdf_status_t pdf_hash_create (pdf_hash_key_dispose_fn_t @var{dispose_key_fn}, pdf_hash_element_dispose_fn_t @var{dispose_fn}, pdf_hash_t @var{*table})
 
-Create a new empty hash table. When some element is removed @var{dispose_fn} is called. Can be NULL.
+Create a new empty hash table. When some element is removed @var{dispose_fn} and @var{dispose_key_fn} are called, can be NULL.
 
 @table @strong
 @item Parameters
 @table @var
+@item dispose_key_fn
+A pointer to a hash table element key dispose function or NULL.
 @item dispose_fn
-A pointer to a hash table dispose function.
+A pointer to a hash table element dispose function or NULL.
 @item table
 A pointer to a hash table.
 @end table
@@ -946,7 +951,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_hash_destroy (pdf_hash_t @var{table})
+@deftypefun pdf_status_t pdf_hash_destroy (pdf_hash_t *@var{table})
 
 Destroy a hash table. The elements of the table are disposed first.
 
@@ -954,7 +959,7 @@ Destroy a hash table. The elements of the table are disposed first.
 @item Parameters
 @table @var
 @item table
-A hash table.
+A hash table pointer.
 @end table
 @item Returns
 A pdf status value:
@@ -1042,8 +1047,6 @@ A pdf status value:
 @table @code
 @item PDF_OK
 The operation succeded.
-@item PDF_ENOMEM
-Not enough memory.
 @item PDF_ERROR
 The @var{key} is not associated with any element in @var{table}.
 @item PDF_EBADDATA
@@ -1059,7 +1062,7 @@ XXX
 @node Adding and removing elements
 @subsection Adding and removing elements
 
-@deftypefun pdf_status_t pdf_hash_add (pdf_hash_t @var{table}, const char @var{*key}, void @var{*element}) 
+@deftypefun pdf_status_t pdf_hash_add (pdf_hash_t @var{table}, const char @var{*key}, const void @var{*element}) 
 
 Adds the element @var{element} with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done.
 
@@ -1122,7 +1125,7 @@ XXX
 @node Searching elements
 @subsection Searching elements
 
-@deftypefun pdf_status_t pdf_hash_search (pdf_hash_t @var{table}, const char @var{*key}, void **@var{elem_pointer})
+@deftypefun pdf_status_t pdf_hash_search (pdf_hash_t @var{table}, const char @var{*key}, const void **@var{elem_pointer})
 
 Searches for the element associated with the given @var{key} in @var{table} and store it in @var{elem_pointer}.
 
@@ -1173,6 +1176,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
 @item PDF_EBADDATA
 Either @var{iterator} is NULL or @var{table} is invalid.
 @end table
@@ -1183,7 +1188,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_hash_iterator_next (pdf_hash_iterator_t @var{iterator}, const char **@var{key})
+@deftypefun pdf_status_t pdf_hash_iterator_next (pdf_hash_iterator_t *@var{iterator}, const char **@var{key})
 
 Retrieves the next key from @var{iterator}.
 
@@ -1191,7 +1196,7 @@ Retrieves the next key from @var{iterator}.
 @item Parameters
 @table @var
 @item iterator
-A Hash Table iterator.
+A Hash Table iterator pointer.
 @item key
 A pointer where to save the key.
 @end table
@@ -1212,15 +1217,15 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_hash_iterator_free (pdf_hash_iterator_t @var{iterator})
+@deftypefun pdf_status_t pdf_hash_iterator_free (pdf_hash_iterator_t *@var{iterator})
 
 Free all resources used by @var{iterator}. 
 
 @table @strong
 @item Parameters
 @table @var
-@item table
-A Hash Table iterator.
+@item iterator
+A Hash Table iterator pointer.
 @end table
 @item Returns
 A pdf status value:

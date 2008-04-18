@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf-tsd.texi,v 1.9 2008/04/13 20:10:47 aleksander_m Exp $
+@comment $Id: gnupdf-tsd.texi,v 1.10 2008/04/18 01:49:09 gerel Exp $
 @comment %**start of header
 @setfilename gnupdf-tsd.info
 @settitle GNU PDF Library Test Specification Document
@@ -72,6 +72,7 @@ Indices
 * Stream Module::
 * Text Module::
 * List Module::
+* Hash Module::
 @end menu
 
 @node Memory Allocation Module
@@ -3132,6 +3133,7 @@ Compare two different text objects, non-case-sensitive.
 * pdf_list_add_first::
 * pdf_list_add_last::
 * pdf_list_create::
+* pdf_list_destroy::
 * pdf_list_get_at::
 * pdf_list_indexof_from_to::
 * pdf_list_indexof_from::
@@ -3139,6 +3141,7 @@ Compare two different text objects, non-case-sensitive.
 * pdf_list_iterator_from_to::
 * pdf_list_iterator_next::
 * pdf_list_iterator::
+* pdf_list_iterator_free::
 * pdf_list_next_node::
 * pdf_list_node_value::
 * pdf_list_previous_node::
@@ -3228,6 +3231,17 @@ Returns PDF_EBADDATA
 
 @deffn Test pdf_list_create_003
 Try to create an empty list allowing duplicates.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@node pdf_list_destroy
+@subsubsection pdf_list_destroy
+
+@deffn Test pdf_list_destroy_001
+Try to destroy an empty list.
 @table @strong
 @item Success condition
 Returns PDF_OK
@@ -3428,6 +3442,16 @@ Returns PDF_EBADDATA
 @end table
 @end deffn
 
+@node pdf_list_iterator_free
+@subsubsection pdf_list_iterator_free
+
+@deffn Test pdf_list_iterator_free_001
+Try to destroy an iterator.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
 
 @node pdf_list_next_node
 @subsubsection pdf_list_next_node
@@ -3884,6 +3908,290 @@ Try search an element given a NULL compar_fn.
 @table @strong
 @item Success condition
 Returns PDF_EBADDATA
+@end table
+@end deffn
+
+
+@node Hash Module
+@subsection Hash Module
+
+@menu
+* pdf_hash_create::
+* pdf_hash_detroy::
+* pdf_hash_size::
+* pdf_hash_key_p::
+* pdf_hash_rename::
+* pdf_hash_add::
+* pdf_hash_remove::
+* pdf_hash_search::
+* pdf_hash_iterator::
+* pdf_hash_iterator_next::
+* pdf_hash_iterator_free::
+@end menu
+
+@node pdf_hash_create
+@subsubsection pdf_hash_create
+
+@deffn Test pdf_hash_create_001
+Try to create an empty hash.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+
+@deffn Test pdf_hash_create_002
+Try to create an empty hash with a NULL pointer.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+@node pdf_hash_detroy
+@subsubsection pdf_hash_detroy
+
+@deffn Test pdf_hash_detroy_001
+Try to destroy an empty hash.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@node pdf_hash_size
+@subsubsection pdf_hash_size
+
+@deffn Test pdf_hash_size_001
+Try to get the size of an empty hash.
+@table @strong
+@item Success condition
+Returns 0
+@end table
+@end deffn
+
+
+@node pdf_hash_key_p
+@subsubsection pdf_hash_key_p
+
+
+@deffn Test pdf_hash_key_p_001
+Try to prove that a given key exist.
+@table @strong
+@item Success condition
+Returns PDF_TRUE
+@end table
+@end deffn
+
+
+@deffn Test pdf_hash_key_p_002
+Try to prove that a given key doesn't exist.
+@table @strong
+@item Success condition
+Returns PDF_FALSE
+@end table
+@end deffn
+
+@node pdf_hash_rename
+@subsubsection pdf_hash_rename
+
+
+@deffn Test pdf_hash_rename_001
+Try to rename an existent key and prove it was renamed.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+
+@deffn Test pdf_hash_rename_002
+Try to rename a non-existent key.
+@table @strong
+@item Success condition
+Returns PDF_ERROR
+@end table
+@end deffn
+
+
+
+@deffn Test pdf_hash_rename_003
+Try to rename a key given a NULL key.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+
+@deffn Test pdf_hash_rename_004
+Try to rename a key given a NULL new_key.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+
+@node pdf_hash_add
+@subsubsection pdf_hash_add
+
+@deffn Test pdf_hash_add_001
+Try to add key/value pair to an empty hash.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+
+@deffn Test pdf_hash_add_002
+Try to add NULL/value pair to an empty hash.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+
+@deffn Test pdf_hash_add_003
+Try to add key/NULL pair to an empty hash.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+
+@node pdf_hash_remove
+@subsubsection pdf_hash_remove
+
+
+@deffn Test pdf_hash_remove_001
+Try to remove an existent element.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+
+@deffn Test pdf_hash_remove_002
+Try to remove a non-existent element.
+@table @strong
+@item Success condition
+Returns PDF_ERROR
+@end table
+@end deffn
+
+
+@deffn Test pdf_hash_remove_003
+Try to remove a element givn a NULL key.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+
+@node pdf_hash_search
+@subsubsection pdf_hash_search
+
+
+@deffn Test pdf_hash_search_001
+Try to search an existent element.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+
+@deffn Test pdf_hash_search_002
+Try to search a non-existent element.
+@table @strong
+@item Success condition
+Returns PDF_ERROR
+@end table
+@end deffn
+
+
+@deffn Test pdf_hash_search_003
+Try to search an element given a NULL elem_pointer.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+
+@deffn Test pdf_hash_search_004
+Try to search an element given a NULL key.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+
+@node pdf_hash_iterator
+@subsubsection pdf_hash_iterator
+
+@deffn Test pdf_hash_iterator_001
+Try to create an iterator.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@deffn Test pdf_hash_iterator_002
+Try to create an iterator given a NULL iterator pointer.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+@node pdf_hash_iterator_next
+@subsubsection pdf_hash_iterator_next
+
+
+@deffn Test pdf_hash_iterator_next_001
+Try to iterate over an iterator.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+
+@deffn Test pdf_hash_iterator_next_002
+Try to iterate over a NULL iterator.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+
+@deffn Test pdf_hash_iterator_next_003
+Try to iterate over an iterator given a NULL key pointer.
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+@node pdf_hash_iterator_free
+@subsubsection pdf_hash_iterator_free
+
+@deffn Test pdf_hash_iterator_free_001
+Try to free an iterator.
+@table @strong
+@item Success condition
+Returns PDF_OK
 @end table
 @end deffn
 
