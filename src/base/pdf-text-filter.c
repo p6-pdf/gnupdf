@@ -120,7 +120,7 @@ pdf_text_filter_change_case(pdf_text_t text,
       new_word.word_stop = &new_data[new_length + new_word_length -4];
 
       /* Add word to new list */
-      pdf_list_add_last(new_wb_list, &new_word);
+      pdf_list_add_last(new_wb_list, &new_word, NULL);
 
       /* Update new length */
       new_length += new_word_length;

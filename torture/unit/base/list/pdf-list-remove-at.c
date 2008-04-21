@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/03/17 14:23:12 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/04/21 19:43:43 jemarch"
  *
  *       File:         pdf-list-remove-at.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -45,7 +45,7 @@ START_TEST (pdf_list_remove_at_001)
 
   pdf_list_create (NULL, NULL, 0, &list);
 
-  pdf_list_add_last (list, &elem);
+  pdf_list_add_last (list, &elem, NULL);
   st = pdf_list_remove_at (list, 0);
 
   fail_if (st != PDF_OK);
@@ -71,7 +71,7 @@ START_TEST (pdf_list_remove_at_002)
 
   pdf_list_create (NULL, NULL, 0, &list);
 
-  pdf_list_add_last (list, &elem);
+  pdf_list_add_last (list, &elem, NULL);
   st = pdf_list_remove_at (list, 3);
 
   fail_if (st != PDF_EINVRANGE);

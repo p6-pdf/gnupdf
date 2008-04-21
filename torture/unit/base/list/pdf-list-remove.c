@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/03/17 14:34:45 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/04/21 19:43:59 jemarch"
  *
  *       File:         pdf-list-remove.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -48,7 +48,7 @@ START_TEST (pdf_list_remove_001)
   elem = 1212;
 
   pdf_list_create (NULL, NULL, 0, &list);
-  pdf_list_add_first (list, &elem);
+  pdf_list_add_first (list, &elem, NULL);
   st = pdf_list_remove (list, &elem);
 
   fail_if (st != PDF_OK);
@@ -75,7 +75,7 @@ START_TEST (pdf_list_remove_002)
   elem2 = 3333;
   
   pdf_list_create (l_comp, NULL, 0, &list);
-  pdf_list_add_first (list, &elem);
+  pdf_list_add_first (list, &elem, NULL);
   st = pdf_list_remove (list, &elem2);
 
   fail_if (st != PDF_ENONODE);

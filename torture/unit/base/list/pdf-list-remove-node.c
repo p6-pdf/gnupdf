@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/03/17 14:22:34 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/04/21 19:44:20 jemarch"
  *
  *       File:         pdf-list-remove-node.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -45,7 +45,7 @@ START_TEST (pdf_list_remove_node_001)
 
   pdf_list_create (NULL, NULL, 0, &list);
 
-  node = pdf_list_add_last (list, &elem);
+  pdf_list_add_last (list, &elem, &node);
   pdf_list_remove_node (list, node);
 
   fail_if (pdf_list_size (list) != 0);

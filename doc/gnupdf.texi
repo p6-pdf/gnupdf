@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.50 2008/04/18 01:49:09 gerel Exp $
+@comment $Id: gnupdf.texi,v 1.51 2008/04/21 20:12:37 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -1740,6 +1740,9 @@ A pdf status value:
 The operation succeeded.
 @item PDF_EINVRANGE
 Invalid @var{position} range.
+@item PDF_BADDATA
+The list do not allow duplicated values and already contain
+@var{element}.
 @end table
 @item Usage example
 @example
@@ -1751,9 +1754,10 @@ XXX
 @node Adding and Removing List Elements
 @subsection Adding and Removing List Elements
 
-@deftypefun pdf_list_node_t pdf_list_add_first (pdf_list_t @var{list}, const void* @var{element})
+@deftypefun pdf_status_t pdf_list_add_first (pdf_list_t @var{list}, const void* @var{element}, pdf_list_node_t *@var{node})
 
-Add an element as the first element of the list.
+Add an element as the first element of the list. If @var{node} is not
+NULL then a reference to the newly created node is copied to it.
 
 @table @strong
 @item Parameters
@@ -1762,9 +1766,18 @@ Add an element as the first element of the list.
 A list.
 @item element
 A pointer to the user data to be stored as a list element.
+@item node
+If non NULL, a list node variable used to contain the added element.
 @end table
 @item Returns
-The node containing the added elemetn.
+A PDF status value:
+@table @code
+@item PDF_OK
+The element was inserted successfully.
+@item PDF_EBADDATA
+The list do not allow duplicated values and already contain
+@var{element}.
+@end table
 @item Usage example
 @example
 XXX
@@ -1772,9 +1785,10 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_list_node_t pdf_list_add_last (pdf_list_t @var{list}, const void* @var{element})
+@deftypefun pdf_status_t pdf_list_add_last (pdf_list_t @var{list}, const void* @var{element}, pdf_list_node_t *@var{node})
 
-Add an element as the last element of the list.
+Add an element as the last element of the list. If @var{node} is not
+NULL then a reference to the newly created node is copied to it.
 
 @table @strong
 @item Parameters
@@ -1783,9 +1797,18 @@ Add an element as the last element of the list.
 A list.
 @item element
 A pointer to the user data to be stored as a list element.
+@item node
+If non NULL, a list node variable used to contain the added element.
 @end table
 @item Returns
-The node containing the given @var{element}.
+A PDF status value:
+@table @code
+@item PDF_OK
+The element was inserted successfully.
+@item PDF_EBADDATA
+The list do not allow duplicated values and already contain
+@var{element}.
+@end table
 @item Usage example
 @example
 XXX
@@ -1817,6 +1840,9 @@ A pdf status value:
 The operation succeeded.
 @item PDF_EINVRANGE
 Invalid range of given @var{position}.
+@item PDF_BADDATA
+The list do not allow duplicated values and already contain
+@var{element}.
 @end table
 @item Usage example
 @example

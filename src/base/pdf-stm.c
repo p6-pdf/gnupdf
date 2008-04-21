@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-03-13 17:05:59 gerel"
+/* -*- mode: C -*- Time-stamp: "08/04/21 19:31:35 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -710,13 +710,15 @@ pdf_stm_install_filter (pdf_stm_t stm,
     case PDF_STM_FILTER_READ:
       {
         pdf_list_add_last (stm->read_filter_list, 
-                          (const void *) filter);
+                           (const void *) filter,
+                           NULL);
         break;
       }
     case PDF_STM_FILTER_WRITE:
       {
         pdf_list_add_last (stm->write_filter_list, 
-                          (const void *) filter);
+                           (const void *) filter,
+                           NULL);
         break;
       }
     default:

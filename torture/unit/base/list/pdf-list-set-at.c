@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/03/17 14:24:24 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/04/21 19:47:35 jemarch"
  *
  *       File:         pdf-list-set-at.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -47,7 +47,7 @@ START_TEST (pdf_list_set_at_001)
   
   pdf_list_create (NULL, NULL, 0, &list);
 
-  pdf_list_add_last (list, &elem);
+  pdf_list_add_last (list, &elem, NULL);
   st = pdf_list_set_at (list, 0, &elem2, &node);
 
   fail_if (st != PDF_OK);
@@ -76,7 +76,7 @@ START_TEST (pdf_list_set_at_002)
   
   pdf_list_create (NULL, NULL, 0, &list);
 
-  pdf_list_add_last (list, &elem);
+  pdf_list_add_last (list, &elem, NULL);
   st = pdf_list_set_at (list, 6, &elem2, &node);
 
   fail_if (st != PDF_EINVRANGE);

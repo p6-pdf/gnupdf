@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-04-13 12:09:09 gerel"
+/* -*- mode: C -*- Time-stamp: "08/04/21 19:33:56 jemarch"
  *
  *       File:         pdf-list.h
  *       Date:         Sat Mar 1 02:14:35 2008
@@ -45,6 +45,7 @@
 struct pdf_list_s
 {
   void *gl_list;
+  pdf_bool_t allow_duplicates;
 };
  
 struct pdf_list_iterator_s
@@ -112,8 +113,8 @@ pdf_status_t pdf_list_set_at (pdf_list_t list, pdf_size_t position,
 
 /* Element addition and removal functions */
 
-pdf_list_node_t pdf_list_add_first (pdf_list_t list, const void* element);
-pdf_list_node_t pdf_list_add_last (pdf_list_t list, const void* element);
+pdf_status_t pdf_list_add_first (pdf_list_t list, const void* element, pdf_list_node_t *node);
+pdf_status_t pdf_list_add_last (pdf_list_t list, const void* element, pdf_list_node_t *node);
 pdf_status_t pdf_list_add_at (pdf_list_t list, pdf_size_t position,
                               const void* element, pdf_list_node_t *node);
 pdf_status_t pdf_list_remove_node (pdf_list_t list, pdf_list_node_t node);
@@ -191,6 +192,8 @@ pdf_list_create (pdf_list_element_equals_fn_t equals_fn,
     {
       list->gl_list = gl_list_create_empty(GL_ARRAY_LIST, equals_fn, NULL,
                                            dispose_fn, allow_duplicates);
+      list->allow_duplicates = allow_duplicates;
+
       if (list->gl_list == NULL)
         {
           st = PDF_ERROR;
@@ -525,23 +528,32 @@ pdf_list_set_at (pdf_list_t list,
   
   st = PDF_OK;
   
-  if ((position > 0 && position < pdf_list_size (list)) ||
-      (position == 0))
+  if (list.allow_duplicates ||
+      (gl_list_search ((gl_list_t)list.gl_list, element) == NULL))
     {
-      if (node != NULL)
+      if (((position > 0 && position < pdf_list_size (list)) ||
+           (position == 0)))
         {
-          node->gl_node = gl_list_set_at ((gl_list_t)list.gl_list, position,
-                                          element);
+          if (node != NULL)
+            {
+              node->gl_node = gl_list_set_at ((gl_list_t)list.gl_list, position,
+                                              element);
+            }
+          else
+            {
+              gl_list_set_at ((gl_list_t)list.gl_list, position, element);
+            }
         }
       else
         {
-          gl_list_set_at ((gl_list_t)list.gl_list, position, element);
-        }
+          st = PDF_EINVRANGE;
+        }  
     }
   else
-    {
-      st = PDF_EINVRANGE;
-    }  
+    {      
+      /* Duplicated list values are not allowed */
+      st = PDF_EBADDATA;
+    }
   
   return (st); 
 }
@@ -550,25 +562,59 @@ pdf_list_set_at (pdf_list_t list,
 /* Element addition and removal functions */
 
 
-EXTERN_INLINE pdf_list_node_t
-pdf_list_add_first (pdf_list_t list, const void* element)
+EXTERN_INLINE pdf_status_t
+pdf_list_add_first (pdf_list_t list,
+                    const void* element,
+                    pdf_list_node_t *node)
 {
-  pdf_list_node_t node;
+  pdf_status_t st;
+  gl_list_node_t gl_node;
 
-  node.gl_node = gl_list_add_first ((gl_list_t)list.gl_list, element);
+  st = PDF_OK;
+  if (list.allow_duplicates ||
+      (gl_list_search ((gl_list_t)list.gl_list, element) == NULL))
+    {
+      gl_node = gl_list_add_first ((gl_list_t)list.gl_list, element);
+      if (node != NULL)
+        {
+          node->gl_node = gl_node;
+        }
+    }
+  else
+    {
+      /* Duplicated list elements are not allowed */
+      st = PDF_EBADDATA;
+    }
   
-  return (node);
+  return (st);
 }
 
 
-EXTERN_INLINE pdf_list_node_t
-pdf_list_add_last (pdf_list_t list, const void* element)
+EXTERN_INLINE pdf_status_t
+pdf_list_add_last (pdf_list_t list,
+                   const void* element,
+                   pdf_list_node_t *node)
 {
-  pdf_list_node_t node;
+  pdf_status_t st;
+  gl_list_node_t gl_node;
 
-  node.gl_node = gl_list_add_last ((gl_list_t)list.gl_list, element);
+  st = PDF_OK;
+  if (list.allow_duplicates ||
+      (gl_list_search ((gl_list_t)list.gl_list, element) == NULL))
+    {
+      gl_node = gl_list_add_last ((gl_list_t)list.gl_list, element);
+      if (node != NULL)
+        {
+          node->gl_node = gl_node;
+        }
+    }
+  else
+    {
+      /* Duplicated list elements are not allowed */
+      st = PDF_EBADDATA;
+    }
   
-  return (node);
+  return (st);
 }
 
 
@@ -582,22 +628,31 @@ pdf_list_add_at (pdf_list_t list,
   
   st = PDF_OK;
 
-  if ((position > 0 && position < pdf_list_size (list)) ||
-      (position == 0))
+  if (list.allow_duplicates ||
+      (gl_list_search ((gl_list_t)list.gl_list, element) == NULL))
     {
-      if (node != NULL)
+      if ((position > 0 && position < pdf_list_size (list)) ||
+          (position == 0))
         {
-          node->gl_node = gl_list_add_at ((gl_list_t)list.gl_list,
-                                          position, element);
+          if (node != NULL)
+            {
+              node->gl_node = gl_list_add_at ((gl_list_t)list.gl_list,
+                                              position, element);
+            }
+          else
+            {
+              gl_list_add_at ((gl_list_t)list.gl_list, position, element);
+            }
         }
       else
         {
-          gl_list_add_at ((gl_list_t)list.gl_list, position, element);
+          st = PDF_EINVRANGE;
         }
     }
   else
     {
-      st = PDF_EINVRANGE;
+      /* Duplicated list values are not allowed */
+      st = PDF_EBADDATA;
     }
 
   return st;

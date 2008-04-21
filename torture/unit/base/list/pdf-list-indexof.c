@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/03/17 14:24:53 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/04/21 19:39:14 jemarch"
  *
  *       File:         pdf-list-indexof.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -47,7 +47,7 @@ START_TEST (pdf_list_indexof_001)
 
   pdf_list_create (NULL, NULL, 0, &list);
   
-  pdf_list_add_last (list, &elem);
+  pdf_list_add_last (list, &elem, NULL);
 
   st = pdf_list_indexof (list, &elem, &pos);
 

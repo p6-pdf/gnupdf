@@ -1,3 +1,65 @@
+2008-04-21  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/unit/base/list/pdf-list-set-at.c (START_TEST): Idem.
+
+	* torture/unit/base/list/pdf-list-search-from-to.c (START_TEST): Idem.
+
+	* torture/unit/base/list/pdf-list-search-from.c (START_TEST): Idem.
+
+	* torture/unit/base/list/pdf-list-search.c (START_TEST): Idem.
+
+	* torture/unit/base/list/pdf-list-remove.c (START_TEST): Idem.
+
+	* torture/unit/base/list/pdf-list-remove-node.c (START_TEST): Idem.
+
+	* torture/unit/base/list/pdf-list-remove-at.c (START_TEST): Idem.
+
+	* torture/unit/base/list/pdf-list-previous-node.c (START_TEST): Idem.
+
+	* torture/unit/base/list/pdf-list-node-value.c (START_TEST): Idem.
+
+	* torture/unit/base/list/pdf-list-next-node.c (START_TEST): Idem.
+
+	* torture/unit/base/list/pdf-list-iterator-next.c (START_TEST): Idem.
+
+	* torture/unit/base/list/pdf-list-iterator-from-to.c (START_TEST): Idem.
+
+	* torture/unit/base/list/pdf-list-indexof-from.c (START_TEST): Idem.
+
+	* torture/unit/base/list/pdf-list-indexof-from-to.c (START_TEST): Idem.
+
+	* torture/unit/base/list/pdf-list-get-at.c (START_TEST): Idem.
+
+	* torture/unit/base/list/pdf-list-add-last.c: Idem.
+
+	* torture/unit/base/list/pdf-list-add-first.c (START_TEST): Use
+	new prototype of `pdf_list_add_first' and `pdf_list_add_last'.
+
+	* src/base/pdf-text.c (pdf_text_fill_word_boundaries_list): Use
+	new prototype of `pdf_list_add_first' and `pdf_list_add_last'.
+
+	* src/base/pdf-stm.c (pdf_stm_install_filter): Use new prototype
+	of `pdf_list_add_first' and `pdf_list_add_last'.
+
+	* src/base/pdf-list.h (pdf_list_add_first): Return a pdf status
+	value and get the list node structure as a parameter.
+	(pdf_list_add_last): Idem.
+	(pdf_list_add_at): Check for existing elements if the list doesnt
+	allow duplicates.
+	(pdf_list_set_at): Idem.
+	(struct pdf_list_s): New boolean field `allow_duplicates'.
+
+	* doc/gnupdf.texi (Adding and Removing List Elements): New
+	attribute `node' in `pdf_list_add_first' and new pdf status return
+	value.
+	(Adding and Removing List Elements): New
+	attribute `node' in `pdf_list_add_last' and new pdf status return
+	value.
+	(Adding and Removing List Elements): New pdf status return value
+	in `pdf_list_add_at'.
+	(Setting and Getting List Elements): New pdf status return value
+	in `pdf_list_set_at'.
+
 2008-04-18  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* torture/unit/base/hash/pdf-hash-iterator-next.c (START_TEST):

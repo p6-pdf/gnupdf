@@ -1742,7 +1742,7 @@ pdf_text_fill_word_boundaries_list(pdf_list_t word_boundaries,
           p_word->word_size = (p_word->word_stop - p_word->word_start) + 4;
           
           /* Add new word boundary to list */
-          pdf_list_add_last(word_boundaries, p_word);
+          pdf_list_add_last(word_boundaries, p_word, NULL);
           
           /* Update walker */
           walker = p_word->word_stop + 4;

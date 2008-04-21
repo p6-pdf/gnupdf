@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-03-18 15:19:40 gerel"
+/* -*- mode: C -*- Time-stamp: "08/04/21 19:40:53 jemarch"
  *
  *       File:         pdf-list-iterator-from-to.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -46,8 +46,8 @@ START_TEST (pdf_list_iterator_from_to_001)
   elem2 = 321;
 
   pdf_list_create (NULL, NULL, 0, &list);
-  pdf_list_add_last (list, &elem);
-  pdf_list_add_last (list, &elem2);
+  pdf_list_add_last (list, &elem, NULL);
+  pdf_list_add_last (list, &elem2, NULL);
   
   st = pdf_list_iterator_from_to (list, 0, 1, &itr);
   fail_if (st != PDF_OK);
@@ -76,8 +76,8 @@ START_TEST (pdf_list_iterator_from_to_002)
   elem2 = 321;
 
   pdf_list_create (NULL, NULL, 0, &list);
-  pdf_list_add_last (list, &elem);
-  pdf_list_add_last (list, &elem2);
+  pdf_list_add_last (list, &elem, NULL);
+  pdf_list_add_last (list, &elem2, NULL);
   
   st = pdf_list_iterator_from_to (list, 0, 3, &itr);
   fail_if (st != PDF_EINVRANGE);
@@ -115,7 +115,7 @@ START_TEST (pdf_list_iterator_from_to_003)
   elem = 123;
   
   pdf_list_create (NULL, NULL, 0, &list);
-  pdf_list_add_last (list, &elem);
+  pdf_list_add_last (list, &elem, NULL);
   
   st = pdf_list_iterator_from_to (list, 0, 0, NULL);
   fail_if (st != PDF_EBADDATA);

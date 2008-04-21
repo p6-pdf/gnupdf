@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/03/17 14:35:26 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/04/21 19:44:59 jemarch"
  *
  *       File:         pdf-list-search.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -49,7 +49,7 @@ START_TEST (pdf_list_search_001)
   elem = 2232;
   
   pdf_list_create (l_comp, NULL, 0, &list);
-  pdf_list_add_last (list, &elem);
+  pdf_list_add_last (list, &elem, NULL);
 
   st = pdf_list_search (list, &elem, &node);
 
@@ -77,7 +77,7 @@ START_TEST (pdf_list_search_002)
   elem = 2232;
   
   pdf_list_create (l_comp, NULL, 0, &list);
-  pdf_list_add_last (list, &elem);
+  pdf_list_add_last (list, &elem, NULL);
 
   st = pdf_list_search (list, &elem, NULL);
 
@@ -106,7 +106,7 @@ START_TEST (pdf_list_search_003)
   elem2 = 1223;
   
   pdf_list_create (l_comp, NULL, 0, &list);
-  pdf_list_add_last (list, &elem);
+  pdf_list_add_last (list, &elem, NULL);
 
   st = pdf_list_search (list, &elem2, &node);
 

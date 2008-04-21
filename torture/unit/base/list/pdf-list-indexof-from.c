@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/03/17 14:25:04 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/04/21 19:39:49 jemarch"
  *
  *       File:         pdf-list-indexof-from.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -46,7 +46,7 @@ START_TEST (pdf_list_indexof_from_001)
 
   pdf_list_create (NULL, NULL, 0, &list);
   
-  pdf_list_add_first (list, &elem);
+  pdf_list_add_first (list, &elem, NULL);
 
   st = pdf_list_indexof_from (list, 0, &elem, &pos);
 
@@ -76,7 +76,7 @@ START_TEST (pdf_list_indexof_from_002)
 
   pdf_list_create (NULL, NULL, 0, &list);
   
-  pdf_list_add_first (list, &elem);
+  pdf_list_add_first (list, &elem, NULL);
 
   st = pdf_list_indexof_from (list, 2, &elem, &pos);
   fail_if (st != PDF_EINVRANGE);
@@ -106,7 +106,7 @@ START_TEST (pdf_list_indexof_from_003)
 
   pdf_list_create (NULL, NULL, 0, &list);
   
-  pdf_list_add_first (list, &elem);
+  pdf_list_add_first (list, &elem, NULL);
 
   st = pdf_list_indexof_from (list, 0, &elem, NULL);
   fail_if (st != PDF_EBADDATA);
