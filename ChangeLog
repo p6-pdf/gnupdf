@@ -1,3 +1,13 @@
+2008-04-22  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
+	* configure.ac: Update message when no UT framework is selected.
+
+	* src/base/pdf-text-ucd-case.c (pdf_text_ucd_special_case_conditions):
+	Bugfix invalid write.
+
+	* torture/unit/base/text/pdf-text-filter.c: Free allocated memory in
+	the unit tests to easily check memory leaks within the library.
+
 2008-04-22  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* torture/unit/base/hash/pdf-hash-search.c (START_TEST): Cast

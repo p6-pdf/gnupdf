@@ -104,6 +104,8 @@ START_TEST(pdf_text_filter_001)
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
 
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -168,6 +170,8 @@ START_TEST(pdf_text_filter_002)
   fail_unless(output_size == expected_size);
   fail_unless(output_data == NULL);
   
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -243,7 +247,9 @@ START_TEST(pdf_text_filter_003)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -308,7 +314,9 @@ START_TEST(pdf_text_filter_004)
   /* 2. The contents of the output text object must remain unchanged. */
   fail_unless(output_size == expected_size);
   fail_unless(output_data == NULL);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -376,7 +384,9 @@ START_TEST(pdf_text_filter_005)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -440,7 +450,9 @@ START_TEST(pdf_text_filter_006)
   /* 2. The contents of the output text object must remain unchanged. */
   fail_unless(output_size == expected_size);
   fail_unless(output_data == NULL);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -515,7 +527,9 @@ START_TEST(pdf_text_filter_007)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -583,7 +597,9 @@ START_TEST(pdf_text_filter_008)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -648,7 +664,9 @@ START_TEST(pdf_text_filter_009)
   /* 2. The contents of the output text object must remain unchanged. */
   fail_unless(output_size == expected_size);
   fail_unless(output_data == NULL);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -726,7 +744,9 @@ START_TEST(pdf_text_filter_010)
   
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -799,7 +819,9 @@ START_TEST(pdf_text_filter_011)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -879,6 +901,9 @@ START_TEST(pdf_text_filter_012)
     /* 2. The contents of the output text object must be the expected ones. */
     fail_unless(output_size == input_size);
     fail_unless(memcmp(output_data, expected_data, input_size) == 0);
+
+    pdf_dealloc(output_data);
+    pdf_text_destroy(text);
   }
   
   /* 2nd check, the sequence of previous case-ignorable points is NOT empty */
@@ -925,6 +950,9 @@ START_TEST(pdf_text_filter_012)
       /* 2. The contents of the output text object must be the expected ones. */
       fail_unless(output_size == input_size);
       fail_unless(memcmp(output_data, expected_data, input_size) == 0);
+
+      pdf_dealloc(output_data);
+      pdf_text_destroy(text);
     }
 }
 END_TEST
@@ -999,7 +1027,9 @@ START_TEST(pdf_text_filter_013)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -1075,7 +1105,9 @@ START_TEST(pdf_text_filter_014)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -1173,7 +1205,9 @@ START_TEST(pdf_text_filter_016)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -1249,7 +1283,9 @@ START_TEST(pdf_text_filter_017)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -1329,7 +1365,9 @@ START_TEST(pdf_text_filter_018)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -1410,6 +1448,9 @@ START_TEST(pdf_text_filter_019)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -1494,6 +1535,9 @@ START_TEST(pdf_text_filter_020)
       /* 2. The contents of the output text object must be the expected ones. */
       fail_unless(output_size == input_size);
       fail_unless(memcmp(output_data, expected_data, input_size) == 0);
+
+      pdf_dealloc(output_data);
+      pdf_text_destroy(text);
     }
   
   /* 2nd check, the sequence of previous case-ignorable points is NOT empty */
@@ -1541,6 +1585,9 @@ START_TEST(pdf_text_filter_020)
       /* 2. The contents of the output text object must be the expected ones. */
       fail_unless(output_size == input_size);
       fail_unless(memcmp(output_data, expected_data, input_size) == 0);
+
+      pdf_dealloc(output_data);
+      pdf_text_destroy(text);
     }
 }
 END_TEST
@@ -1619,7 +1666,9 @@ START_TEST(pdf_text_filter_021)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -1699,7 +1748,9 @@ START_TEST(pdf_text_filter_022)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -1802,7 +1853,9 @@ START_TEST(pdf_text_filter_024)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -1878,7 +1931,9 @@ START_TEST(pdf_text_filter_025)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -1962,7 +2017,9 @@ START_TEST(pdf_text_filter_026)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -2047,6 +2104,9 @@ START_TEST(pdf_text_filter_027)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -2125,7 +2185,9 @@ START_TEST(pdf_text_filter_028)
   
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -2192,7 +2254,9 @@ START_TEST(pdf_text_filter_029)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -2288,6 +2352,9 @@ START_TEST(pdf_text_filter_030)
       /* 2. The contents of the output text object must be the expected ones. */
       fail_unless(output_size == input_size);
       fail_unless(memcmp(output_data, expected_data, input_size) == 0);
+
+      pdf_dealloc(output_data);
+      pdf_text_destroy(text);
     }
   
   /* 2nd check, the sequence of previous case-ignorable points is NOT empty */
@@ -2348,6 +2415,9 @@ START_TEST(pdf_text_filter_030)
       /* 2. The contents of the output text object must be the expected ones. */
       fail_unless(output_size == input_size);
       fail_unless(memcmp(output_data, expected_data, input_size) == 0);
+
+      pdf_dealloc(output_data);
+      pdf_text_destroy(text);
     }
 }
 END_TEST
@@ -2423,7 +2493,9 @@ START_TEST(pdf_text_filter_031)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -2499,7 +2571,9 @@ START_TEST(pdf_text_filter_032)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -2596,7 +2670,9 @@ START_TEST(pdf_text_filter_034)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -2671,7 +2747,9 @@ START_TEST(pdf_text_filter_035)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -2750,7 +2828,9 @@ START_TEST(pdf_text_filter_036)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -2831,6 +2911,9 @@ START_TEST(pdf_text_filter_037)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -2922,6 +3005,9 @@ START_TEST(pdf_text_filter_038)
       /* 2. The contents of the output text object must be the expected ones. */
       fail_unless(output_size == input_size);
       fail_unless(memcmp(output_data, expected_data, input_size) == 0);
+
+      pdf_dealloc(output_data);
+      pdf_text_destroy(text);
     }
   
   /* 2nd check, a next cased point is available */
@@ -2976,6 +3062,9 @@ START_TEST(pdf_text_filter_038)
       /* 2. The contents of the output text object must be the expected ones. */
       fail_unless(output_size == input_size);
       fail_unless(memcmp(output_data, expected_data, input_size) == 0);
+
+      pdf_dealloc(output_data);
+      pdf_text_destroy(text);
     }
 }
 END_TEST
@@ -3055,7 +3144,9 @@ START_TEST(pdf_text_filter_039)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -3136,7 +3227,9 @@ START_TEST(pdf_text_filter_040)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -3239,7 +3332,9 @@ START_TEST(pdf_text_filter_042)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -3315,7 +3410,9 @@ START_TEST(pdf_text_filter_043)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -3399,6 +3496,9 @@ START_TEST(pdf_text_filter_044)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -3482,6 +3582,9 @@ START_TEST(pdf_text_filter_045)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -3560,7 +3663,9 @@ START_TEST(pdf_text_filter_046)
   
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -3629,7 +3734,9 @@ START_TEST(pdf_text_filter_047)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -3720,6 +3827,9 @@ START_TEST(pdf_text_filter_048)
       /* 2. The contents of the output text object must be the expected ones. */
       fail_unless(output_size == input_size);
       fail_unless(memcmp(output_data, expected_data, input_size) == 0);
+
+      pdf_dealloc(output_data);
+      pdf_text_destroy(text);
     }
   
   /* 2nd check, the sequence of previous case-ignorable points is NOT empty */
@@ -3773,6 +3883,9 @@ START_TEST(pdf_text_filter_048)
       /* 2. The contents of the output text object must be the expected ones. */
       fail_unless(output_size == input_size);
       fail_unless(memcmp(output_data, expected_data, input_size) == 0);
+
+      pdf_dealloc(output_data);
+      pdf_text_destroy(text);
     }
 }
 END_TEST
@@ -3848,7 +3961,9 @@ START_TEST(pdf_text_filter_049)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -3926,7 +4041,9 @@ START_TEST(pdf_text_filter_050)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -4025,7 +4142,9 @@ START_TEST(pdf_text_filter_052)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -4102,7 +4221,9 @@ START_TEST(pdf_text_filter_053)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -4183,7 +4304,9 @@ START_TEST(pdf_text_filter_054)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -4266,6 +4389,9 @@ START_TEST(pdf_text_filter_055)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -4362,6 +4488,9 @@ START_TEST(pdf_text_filter_056)
       /* 2. The contents of the output text object must be the expected ones. */
       fail_unless(output_size == input_size);
       fail_unless(memcmp(output_data, expected_data, input_size) == 0);
+
+      pdf_dealloc(output_data);
+      pdf_text_destroy(text);
     }
   
   /* 2nd check, the sequence of previous case-ignorable points is NOT empty, but
@@ -4418,6 +4547,9 @@ START_TEST(pdf_text_filter_056)
       /* 2. The contents of the output text object must be the expected ones. */
       fail_unless(output_size == input_size);
       fail_unless(memcmp(output_data, expected_data, input_size) == 0);
+
+      pdf_dealloc(output_data);
+      pdf_text_destroy(text);
     }
 }
 END_TEST
@@ -4498,7 +4630,9 @@ START_TEST(pdf_text_filter_057)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -4581,7 +4715,9 @@ START_TEST(pdf_text_filter_058)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -4686,7 +4822,9 @@ START_TEST(pdf_text_filter_060)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -4764,7 +4902,9 @@ START_TEST(pdf_text_filter_061)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
-  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -4850,6 +4990,9 @@ START_TEST(pdf_text_filter_062)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 
@@ -4933,6 +5076,9 @@ START_TEST(pdf_text_filter_063)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);  
+
+  pdf_dealloc(output_data);
+  pdf_text_destroy(text);
 }
 END_TEST
 

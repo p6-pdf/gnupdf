@@ -3715,7 +3715,7 @@ pdf_text_ucd_special_case_conditions(const pdf_text_ucd_context_t *context,
   /* Copy condition list, as this function will modify it to create NUL
    * terminated strings per condition */
   condition_list_size = strlen((char *)condition_list);
-  internal_condition_list = (pdf_char_t *)pdf_alloc(condition_list_size);
+  internal_condition_list = (pdf_char_t *)pdf_alloc(condition_list_size+1);
   if(internal_condition_list == NULL)
     {
       PDF_DEBUG_BASE("Problem dupping condition list");

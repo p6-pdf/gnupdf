@@ -259,11 +259,12 @@ WARNING: you are going to build a library without FlateDecode support.
          That means you wont be able to process many PDF files."
 fi
 
-if test "x$have_check" = "xno" ; then
+if test "ut_support" = "xno" ; then
 echo "
 WARNING: you are going to build the library without unit testing support.
          If you want to be able to perform the unit testing you should
-         install the 'check' library."
+         either install the 'check' library or run the configure with
+         the --enable-nocheck option."
 fi
 
 dnl End of configure.ac
