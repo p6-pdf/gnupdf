@@ -56,6 +56,7 @@ and changed src/base/pdf-stm-f-pred.c src/base/pdf-stm-f-pred.h
   torture/unit/base/list/pdf-list-search-from.c
   torture/unit/base/list/pdf-list-search.c
   torture/unit/base/list/pdf-list-set-at.c 
+  torture/unit/base/hash/pdf-hash-search.c
 
 Juan Pedro Bolívar Puente: wrote src/base/pdf-stm-f-pred.c
   src/base/pdf-stm-f-pred.h src/base/pdf-stm-f-lzw.c

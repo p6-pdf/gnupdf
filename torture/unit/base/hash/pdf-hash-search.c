@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-04-16 20:30:54 gerel"
+/* -*- mode: C -*- Time-stamp: "08/04/22 22:13:38 jemarch"
  *
  *       File:         pdf-hash-search.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -45,7 +45,7 @@ START_TEST (pdf_hash_search_001)
   pdf_hash_create (NULL, NULL, &table);
   pdf_hash_add (table, "key", "val");
   
-  fail_if (pdf_hash_search (table, "key", &s) != PDF_OK);
+  fail_if (pdf_hash_search (table, "key", (void *) &s) != PDF_OK);
 
   pdf_hash_destroy (&table);
 
@@ -67,7 +67,7 @@ START_TEST (pdf_hash_search_002)
   pdf_hash_create (NULL, NULL, &table);
   pdf_hash_add (table, "key", "val");
   
-  fail_if (pdf_hash_search (table, "ke", &s) != PDF_ERROR);
+  fail_if (pdf_hash_search (table, "ke", (void *) &s) != PDF_ERROR);
 
   pdf_hash_destroy (&table);
 
@@ -111,7 +111,7 @@ START_TEST (pdf_hash_search_004)
   pdf_hash_create (NULL, NULL, &table);
   pdf_hash_add (table, "key", "val");
   
-  fail_if (pdf_hash_search (table, NULL, &s) != PDF_EBADDATA);
+  fail_if (pdf_hash_search (table, NULL, (void *) &s) != PDF_EBADDATA);
 
   pdf_hash_destroy (&table);
 
