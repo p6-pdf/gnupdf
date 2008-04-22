@@ -52,6 +52,9 @@ AM_CONDITIONAL([ZLIB], [test "x$have_zlib" = "xyes"])
 AC_CHECK_LIB(m,exp,,,)
 AC_CHECK_LIB([check],[suite_create],[have_check=yes],[have_check=no],)
 AM_CONDITIONAL([CHECK], [test "x$have_check" = "xyes"])
+if test "x$have_check" = "xno"; then
+  AC_DEFINE([HAVE_CHECK], [1], [Check Unit Test Framework])
+fi
 
 AC_CHECK_LIB([iconv],[iconv_open],[have_iconv=yes],[have_iconv=no],)
 AM_CONDITIONAL([ICONV], [test "x$have_iconv" = "xyes"])
@@ -183,6 +186,33 @@ fi
 
 # end debug_*_mode
 
+
+
+dnl nocheck (simple replacement of Check framework when this is not available)
+use_nocheck=no
+AC_ARG_ENABLE([nocheck], AS_HELP_STRING([--enable-nocheck],
+                                      [Use built-in nocheck instead of Check (default is NO)]), 
+              [use_nocheck=yes], [use_nocheck=no])
+if test "x$use_nocheck" = "xyes"; then
+  AC_DEFINE([HAVE_NOCHECK], [1], [Use No-Check instead of Check])
+fi
+AM_CONDITIONAL([NOCHECK], [test "x$use_nocheck" = "xyes"])
+
+
+
+dnl Check if Unit testing support is available with Check or No-Check
+ut_support=no
+AM_CONDITIONAL([COMPILE_UT], [test "x$use_nocheck" = "xyes" -o "x$have_check" = "xyes"])
+if test "x$use_nocheck" = "xyes"; then
+  ut_framework="(builtin No-Check)"
+  ut_support=yes
+else
+  if test "x$have_check" = "xyes"; then
+    ut_framework="(Check)"
+    ut_support=yes
+  fi
+fi
+
 dnl Get system endianness information
 AC_C_BIGENDIAN()
 if test "x$ac_cv_c_bigendian" = "xno"; then
@@ -215,7 +245,7 @@ Configured for \`${canonical}'.
 
   Compilation level:                        ${PDFLIB_LEVEL} (${PDFLIB_LEVEL_DESCR})
   Using FlateDecode filter?                 ${have_zlib}
-  With unit tests support?                  ${have_check}
+  With unit tests support?                  ${ut_support} ${ut_framework}
   Program to build html manuals             ${texihtmlprogram}
   Build project management resources?       ${prmgt_mode}
   Layers with debug mode enabled            ${PDFLIB_DEBUG_DESCR}

@@ -6,7 +6,7 @@
  *       GNU PDF Library - Unit testing driver
  *
  */
-
+#include <stdio.h>
 #include <check.h>
 
 extern Suite *tsuite_alloc (void);

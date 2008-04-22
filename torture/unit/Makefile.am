@@ -16,7 +16,24 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-if CHECK
+
+
+
+#Only generate unit tests if Check framework is available or No-Check utility
+# is requested...
+if COMPILE_UT
+
+
+#Check for Check and No-Check :-)
+if NOCHECK
+  NOCHECK_SRC = nocheck/check.h \
+                nocheck/check.c
+  NOCHECK_CPPFLAGS = -Inocheck/
+else
+  CHECK_LIBS = -lcheck
+endif #NOCHECK
+
+
 
 # Check for external GNU libiconv library
 if ICONV
@@ -25,11 +42,16 @@ endif #ICONV
 
 noinst_PROGRAMS = runtests
 
-LDADD = -lcheck $(top_srcdir)/src/libgnupdf.la $(INTL_MACOSX_LIBS) $(ICONV_LIBS)
+LDADD = $(CHECK_LIBS) \
+        $(top_srcdir)/src/libgnupdf.la \
+        $(INTL_MACOSX_LIBS) \
+        $(ICONV_LIBS)
 
 AM_CPPFLAGS = -I$(top_srcdir)/lib \
-              -I$(top_srcdir)/src -I$(top_srcdir)/src/base \
-              -I$(top_srcdir)/src/object
+              -I$(top_srcdir)/src \
+              -I$(top_srcdir)/src/base \
+              -I$(top_srcdir)/src/object \
+              $(NOCHECK_CPPFLAGS)
 AM_CFLAGS = -g
 
 TESTS = runtests
@@ -125,7 +147,10 @@ TSUITE_FILES = base/alloc/tsuite-alloc.c \
                base/text/tsuite-text.c \
                base/hash/tsuite-hash.c
 
-runtests_SOURCES = runtests.c $(TSUITE_FILES) $(TEST_FILES)
+runtests_SOURCES = runtests.c \
+                   $(NOCHECK_SRC) \
+                   $(TSUITE_FILES) \
+                   $(TEST_FILES)
 
 check_PROGRAMS = runtests
 
@@ -133,6 +158,6 @@ clean-local:
 	-rm -f temporal-test-file
 	-rm -f ut.log
 
-endif # CHECK
+endif # COMPILE_UT
 
 # End of Makefile.am

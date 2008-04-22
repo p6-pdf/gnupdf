@@ -120,6 +120,8 @@ Aleksander Morgado: wrote src/base/pdf-text.h src/base/pdf-text.c
   torture/unit/base/text/pdf-text-test-common.h
   torture/unit/base/text/pdf-text-test-data.c
   torture/unit/base/text/pdf-text-tsuite-text.c
+  torture/unit/nocheck/check.h torture/unit/nocheck/check.c
+  torture/unit/nocheck/README
 and changed doc/gnupdf.texi doc/gnupdf-tsd.texi configure.ac src/Makefile.am
   src/base/pdf-base.h src/base/pdf-error.c src/base/pdf-types.h
   utils/Makefile.am torture/unit/runtests.c torture/unit/Makefile.am

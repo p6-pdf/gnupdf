@@ -1,3 +1,19 @@
+2008-04-22  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
+	* torture/unit/nocheck/README: New file.
+
+	* torture/unit/nocheck/check.h: New file. No-Check ut framework API,
+	compatible with real Check API.
+
+	* torture/unit/nocheck/check.c: New file. No-Check ut framework.
+
+	* torture/unit/runtests.c: Include also `stdio.h'.
+
+	* torture/unit/Makefile.am: Added compilation of No-Check unit testing
+	framework depending on specific configure options.
+
+	* configure.ac: Support built-in No-Check unit testing framework.
+
 2008-04-21  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* torture/unit/base/list/pdf-list-set-at.c (START_TEST): Idem.
