@@ -1,5 +1,13 @@
 2008-04-23  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
+	* src/base/pdf-text-filter.c (pdf_text_filter_change_case): New list
+	of words must be dynamically allocated.
+
+	* src/base/pdf-text.c (pdf_text_destroy_word_boundaries_list):
+	Correctly deallocate contents of list elements.
+
+2008-04-23  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
 	* torture/unit/runtests.c (main): Deactivate stm unit tests until the
 	new implementation based on the filesystem module is done.
 

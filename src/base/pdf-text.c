@@ -1652,6 +1652,24 @@ pdf_text_generate_word_boundaries(pdf_text_t text)
 pdf_status_t
 pdf_text_destroy_word_boundaries_list(pdf_list_t *p_word_boundaries)
 {
+  pdf_size_t n_words;
+  pdf_size_t i;
+  /* Walk list of words */
+  n_words = pdf_list_size(*p_word_boundaries);
+  for(i = 0; i < n_words; ++i)
+    {
+      struct pdf_text_wb_s *p_word = NULL;
+
+      /* Get word to process from list of words */
+      if(pdf_list_get_at(*p_word_boundaries, \
+                         i, \
+                         (const void **)&p_word) != PDF_OK)
+        {
+          return PDF_ETEXTENC;
+        }
+      /* Dealloc word (pointed by the list element) */
+      pdf_dealloc(p_word);
+    }
   /* Destroy list */
   pdf_list_destroy(*p_word_boundaries);
   return PDF_OK;
@@ -1681,7 +1699,7 @@ pdf_text_clean_word_boundaries_list(pdf_list_t *p_word_boundaries)
   /* Only destroy+create if list is not empty! */
   if(pdf_list_size(*p_word_boundaries) != 0)
     {
-      /* Destroy list */
+      /* Destroy element contents */
       pdf_text_destroy_word_boundaries_list(p_word_boundaries);
       /* Create empty list */
       return pdf_text_create_word_boundaries_list(p_word_boundaries);

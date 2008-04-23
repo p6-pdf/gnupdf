@@ -85,11 +85,18 @@ pdf_text_filter_change_case(pdf_text_t text,
   new_length = 0;
   for(i = 0; i < n_words; ++i)
     {
-      struct pdf_text_wb_s new_word;
+      struct pdf_text_wb_s *p_new_word;
       struct pdf_text_wb_s *p_word;
       pdf_size_t new_word_length = 0;
       pdf_status_t ret_code;
-  
+
+      /* Allocate new word */
+      p_new_word = (struct pdf_text_wb_s *)pdf_alloc(sizeof(struct pdf_text_wb_s));
+      if(p_new_word == NULL)
+        {
+          return PDF_ENOMEM;
+        }
+
       /* Get word to process from list of words */
       if(pdf_list_get_at(text->word_boundaries, \
                          i, \
@@ -111,16 +118,17 @@ pdf_text_filter_change_case(pdf_text_t text,
           PDF_DEBUG_BASE("Problem x-casing full word");
           pdf_list_destroy(new_wb_list);
           pdf_dealloc(new_data);
+          pdf_dealloc(p_new_word);
           return ret_code;
         }
-      
+
       /* Create new word info */
-      new_word.word_start = &new_data[new_length];
-      new_word.word_size = new_word_length;
-      new_word.word_stop = &new_data[new_length + new_word_length -4];
+      p_new_word->word_start = &new_data[new_length];
+      p_new_word->word_size = new_word_length;
+      p_new_word->word_stop = &new_data[new_length + new_word_length -4];
 
       /* Add word to new list */
-      pdf_list_add_last(new_wb_list, &new_word, NULL);
+      pdf_list_add_last(new_wb_list, p_new_word, NULL);
 
       /* Update new length */
       new_length += new_word_length;
