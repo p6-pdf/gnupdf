@@ -16,9 +16,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
+# Check for external GNU libiconv library
+if ICONV
+ ICONV_LIBS = -liconv
+endif #ICONV
+
 bin_PROGRAMS = pdf-filter
 
-LDADD = $(top_srcdir)/src/libgnupdf.la
+LDADD = $(top_srcdir)/src/libgnupdf.la \
+        $(ICONV_LIBS)
+
 AM_CPPFLAGS = -I$(top_srcdir)/lib -I$(top_srcdir)/src/ \
               -I$(top_srcdir)/src/base -I $(top_srcdir)/src/object
 

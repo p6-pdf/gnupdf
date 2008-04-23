@@ -550,7 +550,7 @@ START_TEST(pdf_text_filter_008)
                                                 "\x00\x00\x00"" " \
                                                 "\x00\x01\xD1\x1E";
   const pdf_char_t *expected_data = input_data;
-  pdf_size_t input_size = 16;
+  pdf_size_t input_size = 12;
   pdf_size_t expected_size = input_size;
   pdf_char_t *output_data;
   pdf_size_t output_size;

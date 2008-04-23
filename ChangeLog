@@ -1,5 +1,13 @@
 2008-04-23  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
+	* torture/unit/base/text/pdf-text-filter.c (START_TEST): Correct size
+	of input string in test pdf_text_filter_008.
+
+	* utils/Makefile.am (LDADD): If available, link to GNU libiconv for
+	iconv() instead of libc.
+
+2008-04-23  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
 	* src/base/pdf-text-context.c (pdf_text_detect_host_language_and_country): 
 	Category name should also be added in case setlocale is not supported.
 
