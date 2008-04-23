@@ -25,7 +25,10 @@ main (int argc, char **argv)
   sr = srunner_create (NULL);
   /* Start adding suites */
   srunner_add_suite (sr, tsuite_alloc ());
+  /* Stream module unit tests are deactivated until the new
+     implementation based on the Filesystem module is done.
   srunner_add_suite (sr, tsuite_stm ());
+  */
   srunner_add_suite (sr, tsuite_list ());
   srunner_add_suite (sr, tsuite_text ());
   srunner_add_suite (sr, tsuite_hash ());

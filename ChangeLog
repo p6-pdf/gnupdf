@@ -1,3 +1,8 @@
+2008-04-23  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
+	* torture/unit/runtests.c (main): Deactivate stm unit tests until the
+	new implementation based on the filesystem module is done.
+
 2008-04-22  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
 	* configure.ac: Update message when no UT framework is selected.
