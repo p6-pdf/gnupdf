@@ -1,5 +1,35 @@
 2008-04-23  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
+	* torture/unit/base/stm/pdf-create-file-stm.c: Function `pdf_stm_close'
+	returns PDF_OK if succeeded.
+
+	* torture/unit/base/list/pdf-list-iterator.c: Deallocate iterators before
+	exit.
+
+	* torture/unit/base/list/pdf-list-iterator-next.c: Deallocate iterators
+	before exit.
+
+	* torture/unit/base/list/pdf-list-iterator-from-to.c: Deallocate
+	iterators before exit.
+
+	* torture/unit/base/hash/pdf-hash-iterator.c: Deallocate iterators
+	before exit.
+
+	* torture/unit/base/hash/pdf-hash-iterator-next.c: Deallocate iterators
+	before exit.
+
+	* src/base/pdf-stm.c (pdf_create_file_stm): The initialization function
+	from the backend returns PDK_OK if succeeded.
+
+	* src/base/pdf-stm-file.c (pdf_stm_file_init): Correctly deallocate
+	filename if open function didn't succeed.
+
+	* src/base/pdf-hash.c (pdf_hash_destroy): Correctly deallocate list
+	elements.
+	(pdf_hash_remove): Correctly deallocate list element.
+
+2008-04-23  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
 	* torture/unit/base/text/pdf-text-filter.c (START_TEST): Correct size
 	of input string in test pdf_text_filter_008.
 

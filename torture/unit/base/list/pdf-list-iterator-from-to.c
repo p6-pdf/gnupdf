@@ -53,6 +53,7 @@ START_TEST (pdf_list_iterator_from_to_001)
   fail_if (st != PDF_OK);
 
   pdf_list_destroy (list);
+  pdf_list_iterator_free(&itr);
 }
 END_TEST
 

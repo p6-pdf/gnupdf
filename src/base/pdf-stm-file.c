@@ -92,6 +92,7 @@ pdf_stm_file_init (void **be_data,
 
   if ((*data)->filedes == -1)
     {
+      pdf_dealloc((*data)->filename);
       return PDF_ERROR;
     }
   else

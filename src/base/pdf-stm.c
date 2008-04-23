@@ -104,7 +104,7 @@ pdf_create_file_stm (char *filename,
     }
 
   /* Initialize the backend */
-  if (!((new_stm->backend.funcs.init) (&new_stm->backend.data, &conf)))
+  if (((new_stm->backend.funcs.init) (&new_stm->backend.data, &conf)) != PDF_OK)
     {
       pdf_stm_dealloc (new_stm);
       return NULL;

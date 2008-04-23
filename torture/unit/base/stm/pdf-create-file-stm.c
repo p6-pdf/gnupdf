@@ -84,7 +84,7 @@ START_TEST(pdf_create_file_stm_003)
                              PDF_STM_OPEN_MODE_WRITE);
   
   fail_if (stm == NULL);
-  fail_if (!pdf_stm_close (stm));
+  fail_if (pdf_stm_close (stm) != PDF_OK);
 }
 END_TEST
 
@@ -105,7 +105,7 @@ START_TEST(pdf_create_file_stm_004)
                              PDF_STM_OPEN_MODE_WRITE);
   
   fail_if (stm == NULL);
-  fail_if (!pdf_stm_close (stm));
+  fail_if (pdf_stm_close (stm) != PDF_OK);
 }
 END_TEST
 

@@ -54,6 +54,7 @@ START_TEST (pdf_list_iterator_next_001)
   fail_if (st != PDF_OK);
 
   pdf_list_destroy (list);
+  pdf_list_iterator_free(&itr);
 }
 END_TEST
 
@@ -80,6 +81,7 @@ START_TEST (pdf_list_iterator_next_002)
   fail_if (st != PDF_ENONODE);
 
   pdf_list_destroy (list);
+  pdf_list_iterator_free(&itr);
 }
 END_TEST
 

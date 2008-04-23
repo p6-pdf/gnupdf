@@ -47,6 +47,7 @@ START_TEST (pdf_hash_iterator_001)
   fail_if (pdf_hash_iterator (table, &itr) != PDF_OK);
 
   pdf_hash_destroy (&table);
+  pdf_hash_iterator_free(&itr);
 
 }
 END_TEST

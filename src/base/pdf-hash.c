@@ -107,6 +107,7 @@ pdf_hash_destroy (pdf_hash_t *table)
             {
               table->dispose_fn ((void*) ((pdf_hash_element_t*)elt)->value);
             }
+          pdf_dealloc((pdf_hash_element_t*)elt);
         }
       gl_list_iterator_free (&itr);
   
@@ -217,7 +218,7 @@ pdf_status_t
 pdf_hash_remove (pdf_hash_t table, const char *key)
 {
   pdf_status_t st;
-  pdf_hash_element_t elt, *removed;
+  pdf_hash_element_t elt;
   gl_list_node_t node;
   
   st = PDF_OK;
@@ -228,12 +229,14 @@ pdf_hash_remove (pdf_hash_t table, const char *key)
       node = gl_list_search ((gl_list_t)table.elements, &elt);
       if (node != NULL)
         {
+          pdf_hash_element_t *removed;
+          removed = (pdf_hash_element_t*)
+                    gl_list_node_value((gl_list_t)table.elements, node);
           if (table.dispose_fn != NULL)
             {
-              removed = (pdf_hash_element_t*)
-                gl_list_node_value((gl_list_t)table.elements, node);
               table.dispose_fn (removed->value);
             }
+          pdf_dealloc(removed);
           gl_list_remove_node ((gl_list_t)table.elements, node);
           gl_sortedlist_remove ((gl_list_t)table.keys, key_compare, key);
         }
