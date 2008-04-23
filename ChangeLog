@@ -1,5 +1,10 @@
 2008-04-23  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
+	* src/base/pdf-text-context.c (pdf_text_detect_host_language_and_country): 
+	Category name should also be added in case setlocale is not supported.
+
+2008-04-23  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
 	* src/base/pdf-text-filter.c (pdf_text_filter_change_case): New list
 	of words must be dynamically allocated.
 

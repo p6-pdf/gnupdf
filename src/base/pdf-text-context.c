@@ -133,7 +133,7 @@ pdf_text_detect_host_language_and_country(void)
   memset(&text_context.host_country_id[0], 0, PDF_TEXT_HLL);
   
   /* Get system default locale name and check it */
-  locale_name = gl_locale_name(LC_CTYPE, NULL);
+  locale_name = gl_locale_name(LC_CTYPE, "LC_CTYPE");
   if((locale_name == NULL) || \
      (strlen(locale_name) < 2))
     {
