@@ -74,7 +74,8 @@ and changed configure.ac torture/Makefile.am torture/test-date.c
   torture/test-stm_openclose.c
 
 Gerardo E. Gidoni: wrote src/base/pdf-error.c src/base/pdf-error.h
-  src/base/pdf-list.c src/base/pdf-list.h
+  src/base/pdf-list.c src/base/pdf-list.h src/base/pdf-hash.c
+  src/base/pdf-hash.h
 and changed src/base/pdf-stm.c src/base/pdf-stm.h src/base/pdf-types.h
   src/object/pdf-obj.c src/object/pdf-obj.h src/Makefile.am
 
