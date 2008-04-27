@@ -126,7 +126,9 @@ Aleksander Morgado: wrote src/base/pdf-text.h src/base/pdf-text.c
 and changed doc/gnupdf.texi doc/gnupdf-tsd.texi configure.ac src/Makefile.am
   src/base/pdf-base.h src/base/pdf-error.c src/base/pdf-types.h
   src/base/pdf-hash.c src/base/pdf-stm-file.c src/base/pdf-stm.c
-  utils/Makefile.am torture/unit/runtests.c torture/unit/Makefile.am
+  src/base/pdf-stm-file.c
+  utils/Makefile.am
+  torture/unit/runtests.c torture/unit/Makefile.am
   torture/unit/base/hash/pdf-hash-iterator-next.c
   torture/unit/base/hash/pdf-hash-iterator.c
   torture/unit/base/list/pdf-list-iterator-from-to.c

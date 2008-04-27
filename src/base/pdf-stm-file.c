@@ -71,16 +71,30 @@ pdf_stm_file_init (void **be_data,
       }
     case PDF_STM_FILE_OPEN_MODE_WRITE:
       {
+#ifdef PDF_HOST_WIN32
+        int mode;
+        mode = S_IRUSR | S_IWUSR;
+#else
+        mode_t mode;
+        mode = S_IRUSR | S_IWUSR;
+#endif
         (*data)->filedes = open ((*data)->filename, 
                                  O_WRONLY | O_CREAT | O_TRUNC,
-                                 S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+                                 mode);
         break;
       }
     case PDF_STM_FILE_OPEN_MODE_RW:
       {
+#ifdef PDF_HOST_WIN32
+        int mode;
+        mode = S_IRUSR | S_IWUSR;
+#else
+        mode_t mode;
+        mode = S_IRUSR | S_IWUSR;
+#endif
         (*data)->filedes = open ((*data)->filename, 
                                  O_RDWR | O_CREAT,
-                                 S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+                                 mode);
         break;
       }
     default:

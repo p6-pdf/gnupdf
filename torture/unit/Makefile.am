@@ -147,10 +147,11 @@ TSUITE_FILES = base/alloc/tsuite-alloc.c \
                base/text/tsuite-text.c \
                base/hash/tsuite-hash.c
 
-runtests_SOURCES = runtests.c \
-                   $(NOCHECK_SRC) \
+runtests_SOURCES = $(NOCHECK_SRC) \
                    $(TSUITE_FILES) \
-                   $(TEST_FILES)
+                   $(TEST_FILES) \
+                   runtests.c
+
 
 check_PROGRAMS = runtests
 

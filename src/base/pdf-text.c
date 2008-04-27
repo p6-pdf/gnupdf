@@ -123,6 +123,7 @@ pdf_text_fill_word_boundaries_list(pdf_list_t word_boundaries,
                                    const pdf_char_t *data,
                                    const pdf_size_t size);
 
+
 /* ----------------------------- Public functions ----------------------------*/
 
 
@@ -544,11 +545,20 @@ pdf_text_get_best_encoding (pdf_text_t text,
                             const pdf_text_host_encoding_t preferred_encoding)
 {
   pdf_text_host_encoding_t ret_encoding;
+#ifdef PDF_HOST_WIN32
+  static const pdf_char_t *to_check [3] = {
+    (pdf_char_t *) "CP65001", /* UTF-8 */
+    (pdf_char_t *) "CP1200",  /* UTF-16LE */
+    (pdf_char_t *) "CP12000"   /* UTF-32LE */
+  };
+#else
   static const pdf_char_t *to_check [3] = {
     (pdf_char_t *) "UTF-8",
     (pdf_char_t *) "UTF-16",
     (pdf_char_t *) "UTF-32"
   };
+
+#endif
   int i = 0;
   /* Check for Unicode support as host encoding */
   for(i = 0; i<3; i++)
@@ -957,92 +967,126 @@ pdf_text_concat (pdf_text_t text1,
 #define PDF_TEXT_ISLR   32
 
 /* Replace a given pattern in a text object */
+
 pdf_status_t
 pdf_text_replace (pdf_text_t text,
                   const pdf_text_t new_pattern,
                   const pdf_text_t old_pattern)
 {
-  int delta_size;
+  return pdf_text_replace_multiple(text, new_pattern, &old_pattern, 1);
+}
+
+typedef struct pdf_text_repl_s {
+  pdf_char_t *data_ptr;
+  int old_pattern_i;
+} pdf_text_repl_t;
+
+pdf_status_t
+pdf_text_replace_multiple (pdf_text_t text,
+                           const pdf_text_t new_pattern,
+                           const pdf_text_t *p_old_patterns,
+                           const int n_old_patterns)
+{
+  pdf_size_t new_size;
+  pdf_size_t minimum_old_pattern_size = -1;
+  int i_pattern;
   long i;
   long n_replacements;
-  pdf_char_t **rep_ptrs = NULL;
+  pdf_text_repl_t *rep_ptrs = NULL;
   long rep_ptrs_size = PDF_TEXT_ISLR/2;
-  
-  /* Empty old pattern is not allowed */
-  if(pdf_text_empty_p(old_pattern))
+
+  if((p_old_patterns == NULL) || \
+     (n_old_patterns == 0))
     {
-      return PDF_ETEXTENC;
+      return PDF_EINVAL;
     }
 
-  /* Well, if text is shorter than the old pattern, just return (it's not
-   *  possible to find the old pattern)*/
-  if(text->size < old_pattern->size)
+  for(i_pattern = 0; i_pattern < n_old_patterns; ++i_pattern)
+    {
+      /* Get minimum old pattern size */
+      if((i_pattern == 0) || \
+         ((p_old_patterns[i_pattern])->size < minimum_old_pattern_size))
+        {
+          minimum_old_pattern_size = (p_old_patterns[i_pattern])->size;
+        }
+      /* Empty old pattern is not allowed */
+      if(pdf_text_empty_p(p_old_patterns[i_pattern]))
+        {
+          return PDF_ETEXTENC;
+        }
+    }
+
+  /* If input text is shorter than the smallest old pattern, there is no
+   *  replacement to be done */
+  if(minimum_old_pattern_size > text->size)
     {
       return PDF_OK;
     }
 
-  /* Compute the delta in bytes required for each conversion */
-  delta_size = (int)(new_pattern->size - old_pattern->size);
-  
-  /* First, count number of replacements to be done... If the size of the 
-   * old pattern and the size of the new pattern are equal, direct conversion
-   * will be done. If not, a replacement pointer will be stored */
+  /* First, count number of replacements to be done... a replacement pointer
+   * will be stored for each replacement needed */
   n_replacements = 0;
   i = 0;
-  while(i <= (text->size - old_pattern->size))
+  new_size = 0;
+  while(i <= (text->size - minimum_old_pattern_size))
     {
       /* If old pattern found... */
-      if(memcmp(&(text->data[i]), old_pattern->data, old_pattern->size)==0)
+      int old_pattern_found = 0;
+      i_pattern = 0;
+      while((!old_pattern_found) && \
+            (i_pattern < n_old_patterns))
         {
-          if(delta_size == 0)
+          if(((text->size - i) >= ((p_old_patterns[i_pattern])->size)) && \
+             (memcmp(&(text->data[i]), \
+                     (p_old_patterns[i_pattern])->data,
+                     (p_old_patterns[i_pattern])->size)==0))
             {
-              /* If length of old pattern and length of new pattern are equal,
-               *  the direct replacement can be done */
-              memcpy(&(text->data[i]), new_pattern->data, new_pattern->size);
-            }
-          else
-            {
+              old_pattern_found = 1;
               /* Duplicate size of replacement pointers list, if needed */
               if((rep_ptrs == NULL) || \
                  (rep_ptrs_size == n_replacements))
                 {
-                  rep_ptrs = (pdf_char_t **)pdf_realloc(rep_ptrs,
-                                                        2 * rep_ptrs_size * \
-                                                        sizeof(pdf_char_t *));
+                  rep_ptrs = (pdf_text_repl_t *)pdf_realloc(rep_ptrs,
+                                                            2 * rep_ptrs_size * \
+                                                            sizeof(pdf_text_repl_t));
                   if(rep_ptrs == NULL)
                     {
                       return PDF_ENOMEM;
                     }
                 }
               /* Store pointer to old pattern */
-              rep_ptrs[n_replacements] = &(text->data[i]);
+              rep_ptrs[n_replacements].data_ptr = &(text->data[i]);
+              rep_ptrs[n_replacements].old_pattern_i = i_pattern;
               n_replacements++;
+              /* The index must be updated to skip the replacement */
+              i += (p_old_patterns[i_pattern])->size;
+              /* Update new size */
+              new_size += new_pattern->size;
             }
-          /* The index must be updated to skip the replacement */
-          i += old_pattern->size;
+          else
+            {
+              i_pattern++;
+            }
         }
-      else
+      if(!old_pattern_found)
         {
           i+=4;
+          new_size +=4;
         }
     }
-    
-  /* If delta is equal to zero, replacement has been already done */
-  if((delta_size == 0) || \
-     (n_replacements == 0))
-    {
-      return PDF_OK;
-    }
-  else
+
+    /* Udpate new size with remaining data in old array */
+    new_size += (text->size - i);
+
+  /* Now, really perform replacements */
+  if(n_replacements > 0)
     {
       int k;
-      pdf_size_t new_size;
       pdf_char_t *new_data;
       pdf_char_t *new_walker;
       pdf_char_t *old_walker;
       
-      /* Compute new size and allocate new memory chunk */
-      new_size = text->size + (delta_size * n_replacements);
+      /* Allocate new memory chunk */
       new_data = (pdf_char_t *)pdf_alloc(new_size);
       
       /* Walk the list of replacements */
@@ -1050,18 +1094,19 @@ pdf_text_replace (pdf_text_t text,
       old_walker = text->data;
       for(k = 0; k < n_replacements; ++k)
         {
+          pdf_size_t prev_size;
           /* Store the data previous to the pointer */
-          if((rep_ptrs[k] - old_walker) > 0)
+          prev_size = (rep_ptrs[k].data_ptr - old_walker);
+          if(prev_size > 0)
             {
-              memcpy(new_walker, old_walker, (rep_ptrs[k] - old_walker));
-              new_walker += (rep_ptrs[k] - old_walker);
-              old_walker += (rep_ptrs[k] - old_walker);
+              memcpy(new_walker, old_walker, prev_size);
+              new_walker += prev_size;
+              old_walker += prev_size;
             }
-
-          /* Perform the unicode point replacement */
+          /* Perform the replacement */
           memcpy(new_walker, new_pattern->data, new_pattern->size);
           new_walker += (new_pattern->size);
-          old_walker += (old_pattern->size);
+          old_walker += (p_old_patterns[rep_ptrs[k].old_pattern_i]->size);
         }
 
       /* Add final data */
@@ -1076,12 +1121,9 @@ pdf_text_replace (pdf_text_t text,
       text->data = new_data;
       text->size = new_size;
       /* Dealloc list of pointers to replacements */
-      if(rep_ptrs != NULL)
-        {
-          pdf_dealloc(rep_ptrs);
-        }
+      pdf_dealloc(rep_ptrs);
     }
-  
+
   return PDF_OK;
 }
 

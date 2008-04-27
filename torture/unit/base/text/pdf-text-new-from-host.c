@@ -31,6 +31,8 @@
 #include <base/text/pdf-text-test-common.h>
 
 
+#define INTERACTIVE_DEBUG   0
+
 /*
  * Test: pdf_text_new_from_host_001
  * Description:
@@ -58,11 +60,11 @@ START_TEST(pdf_text_new_from_host_001)
       pdf_char_t *expected_data;
       pdf_size_t expected_size;
       pdf_bool_t expected_free = PDF_FALSE;
-      
+
       /* Set input data */
       input_data = (pdf_char_t *)ascii_strings[i].data;
       input_size = (pdf_size_t)ascii_strings[i].size;
-      
+
       /* Set expected data */
       expected_data = (pdf_char_t *)ascii_strings[i].utf32be_data;
       expected_size = ascii_strings[i].utf32be_size;
@@ -78,7 +80,11 @@ START_TEST(pdf_text_new_from_host_001)
   
 
       /* Create, without using the API, a valid pdf_text_host_encoding_t */
+#ifdef PDF_HOST_WIN32
+      strcpy((char *)(&(host_enc.name[0])), "CP20127"); /* us-ascii */
+#else
       strcpy((char *)(&(host_enc.name[0])), "us-ascii");
+#endif
   
       /* 1. The call to  pdf_text_new_from_host should return PDF_OK. */
       fail_unless(pdf_text_new_from_host(&text,
@@ -121,12 +127,16 @@ START_TEST(pdf_text_new_from_host_002)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create, without using the API, a valid pdf_text_host_encoding_t */
-  strcpy((char *)(&(host_enc.name[0])), "us-ascii");
-  
+#ifdef PDF_HOST_WIN32
+      strcpy((char *)(&(host_enc.name[0])), "CP20127"); /* us-ascii */
+#else
+      strcpy((char *)(&(host_enc.name[0])), "us-ascii");
+#endif
+
   /* 1. The call to  pdf_text_new_from_host should NOT return PDF_OK. */
-  fail_unless(pdf_text_new_from_host(&text, sample_utf8,
+  fail_if(pdf_text_new_from_host(&text, sample_utf8,
                                      strlen((char*)sample_utf8),
-                                     host_enc) != PDF_OK);
+                                     host_enc) == PDF_OK);
 
 }
 END_TEST
@@ -150,12 +160,19 @@ START_TEST(pdf_text_new_from_host_003)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create, without using the API, an invalid pdf_text_host_encoding_t */
+#ifdef PDF_HOST_WIN32
+  strcpy((char *)(&(host_enc.name[0])), "CP17"); /* us-ascii */
+#else
   strcpy((char *)(&(host_enc.name[0])), "invalid_host_enc");
+#endif
+
+
   
   /* 1. The call to  pdf_text_new_from_host should NOT return PDF_OK. */
   fail_unless(pdf_text_new_from_host(&text, sample_usascii,
                                      strlen((char*)sample_usascii),
                                      host_enc) != PDF_OK);
+
 }
 END_TEST
 

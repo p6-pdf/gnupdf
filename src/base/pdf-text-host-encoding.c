@@ -23,42 +23,143 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if defined _WIN32 || defined __WIN32__
- #define WIN32_NATIVE
-#endif
+#include <pdf-types.h>
+#include <pdf-text.h>
+#include <pdf-text-context.h>
+#include <pdf-text-encoding.h>
+#include <pdf-text-host-encoding.h>
 
-
-#ifdef WIN32_NATIVE
+ #include <string.h>
+#ifdef PDF_HOST_WIN32
  #include <windows.h>
 #else
  #include <iconv.h>
  #include <errno.h>
- #include <string.h>
 #endif
 
-
-#include <pdf-text.h>
-#include <pdf-text-context.h>
-#include <pdf-text-host-encoding.h>
 
 /*
  * ICONV API
  * -----------
  * iconv_t iconv_open (const char* tocode, const char* fromcode)
+ *
  * size_t iconv (iconv_t cd,
  *               const char **inbuf, size_t *inbytesleft,
- *               char **outbuf, size_t *outbytesleft); 
+ *               char **outbuf, size_t *outbytesleft);
+ *
  * int iconv_close (iconv_t cd);
  */
 
 
-/* TODO: Windows host encoding support */
+/* 
+ * WINDOWS API
+ * -------------
+ * int MultiByteToWideChar(UINT CodePage, 
+ *                         DWORD dwFlags,         
+ *                         LPCSTR lpMultiByteStr, 
+ *                         int cbMultiByte,       
+ *                         LPWSTR lpWideCharStr,  
+ *                         int cchWideChar);
+ *
+ * int WideCharToMultiByte(UINT CodePage, 
+ *                         DWORD dwFlags, 
+ *                         LPCWSTR lpWideCharStr,
+ *                         int cchWideChar, 
+ *                         LPSTR lpMultiByteStr, 
+ *                         int cbMultiByte,
+ *                         LPCSTR lpDefaultChar,    
+ *                         LPBOOL lpUsedDefaultChar);
+ * 
+ * UINT GetACP(void);
+ *
+ */
+
+#ifdef PDF_HOST_WIN32
+static DWORD
+pdf_text_get_dwflags_for_cp(UINT CodePage, DWORD def_dwflags)
+{
+  /* dwFlags has some restrictions */
+  switch(CodePage)
+  {
+    case 50220:
+    case 50221:
+    case 50222:
+    case 50225:
+    case 50227:
+    case 50229:
+    case 52936:
+    case 54936:
+    case 57002:
+    case 57003:
+    case 57004:
+    case 57005:
+    case 57006:
+    case 57007:
+    case 57008:
+    case 57009:
+    case 57010:
+    case 57011:
+    case 65000:
+    case 42:
+      return 0;
+    default:
+      return def_dwflags;
+  }
+}
+
+
+pdf_status_t
+pdf_text_convert_encoding_name_to_CP(const pdf_char_t *encoding_name,
+                                     UINT *pCP)
+{
+  UINT CodePage;
+
+  /* In windows, the charset name stored in the pdf_text_host_encoding_t
+   *  element will be in the following format: "CPn", where 'n' is the
+   *  code page number (unsigned integer) obtained with GetACP() */
+    
+  /* So first of all, check windows host encoding */
+  if((strlen((char *)encoding_name) < 3) || \
+     (strncmp((char *)encoding_name,"CP",2) != 0))
+    {
+      PDF_DEBUG_BASE("Host encoding received seems not valid");
+      return PDF_ETEXTENC;
+    }
+
+  /* Get codepage as unsigned integer. `atol' will return 0 if it was not
+   *  able to correctly parse the string. BTW, 0 is not a valid code page. */
+  CodePage = (UINT)atol((char *)&encoding_name[2]);
+  if(CodePage == 0)
+    {
+      PDF_DEBUG_BASE("Problem converting input CP value '%s'",
+                     encoding_name);
+      return PDF_ETEXTENC;
+    }
+  else
+    {
+      *pCP = CodePage;
+      return PDF_OK;
+    }
+}
+
+#endif
+
+
 pdf_status_t
 pdf_text_host_encoding_is_available(const pdf_char_t *encoding_name)
 {
-#ifdef WIN32_NATIVE
+#ifdef PDF_HOST_WIN32
   {
-    
+    UINT CodePage;
+
+    if(pdf_text_convert_encoding_name_to_CP(encoding_name, &CodePage) != PDF_OK)
+      {
+        PDF_DEBUG_BASE("Invalid windows encoding name received...");
+        return PDF_ETEXTENC;
+      }
+
+    /* Check given code page in the system */
+    return ((IsValidCodePage(CodePage)) ? PDF_OK : PDF_ETEXTENC);
   }
 #else
   {
@@ -92,7 +193,6 @@ pdf_text_host_encoding_is_available(const pdf_char_t *encoding_name)
 }
 
 
-/* TODO: Windows host encoding support */
 pdf_status_t
 pdf_text_utf32he_to_host(const pdf_char_t      *input_data,
                          const pdf_size_t      input_length,
@@ -100,9 +200,117 @@ pdf_text_utf32he_to_host(const pdf_char_t      *input_data,
                          pdf_char_t            **p_output_data,
                          pdf_size_t            *p_output_length)
 {  
-#ifdef WIN32_NATIVE
+#ifdef PDF_HOST_WIN32
   {
-    
+     pdf_status_t ret_code;
+     pdf_char_t *temp_data;
+     pdf_size_t  temp_size;
+     UINT CodePage;
+     /* Firstly, convert from UTF-32HE to UTF-16LE */
+     ret_code = pdf_text_utf32he_to_utf16le(input_data,
+                                            input_length,
+                                            &temp_data,
+                                            &temp_size);
+     if(ret_code != PDF_OK)
+       {
+         PDF_DEBUG_BASE("Couldn't convert from UTF-32HE to UTF-16LE");
+         return PDF_ETEXTENC;
+       }
+
+    /* In windows, the charset name stored in the pdf_text_host_encoding_t
+     *  element will be in the following format: "CPn", where 'n' is the
+     *  code page number (unsigned integer) obtained with GetACP() */
+
+    /* So check windows host encoding */
+   if(pdf_text_convert_encoding_name_to_CP(enc.name, &CodePage) != PDF_OK)
+     {
+       PDF_DEBUG_BASE("Invalid windows encoding name received...");
+       pdf_dealloc(temp_data);
+       return PDF_ETEXTENC;
+     }
+   else
+     {
+       DWORD dwFlags;
+       int output_nmbyte;
+       BOOL default_used = 0;
+
+        /* Get dwFlags value */
+        dwFlags = 0;
+
+        /* First of all, query the length of the output string */
+        SetLastError(0);
+        output_nmbyte =  WideCharToMultiByte(CodePage,     /* CodePage */
+                                             dwFlags,      /* dwFlags */
+                                             (LPCWSTR)temp_data, /* lpWideCharStr */
+                                             (temp_size/sizeof(WCHAR)), /* cbWideChar */
+                                             NULL,         /* lpMultiByteStr */
+                                             0,            /* ccMultiByte */
+                                             NULL,            /* lpDefaultChar */
+                                             &default_used); /* lpUsedDefaultChar */
+
+        /* Check if we got an error with the call to WideCharToMultiByte */
+        if(output_nmbyte == 0 || default_used)
+          {
+#ifdef HAVE_DEBUG_BASE
+            switch(GetLastError())
+            {
+              case ERROR_INVALID_FLAGS:
+                PDF_DEBUG_BASE("Invalid data to convert to Host Encoding:"
+                               " 'Invalid flags'");
+                break;
+              default:
+                PDF_DEBUG_BASE("Invalid data to convert to Host Encoding");
+                break;
+            }
+#endif
+            pdf_dealloc(temp_data);
+            return PDF_EBADDATA;
+          }
+
+        /* Allocate memory for output buffer */
+        *p_output_length = output_nmbyte;
+        *p_output_data = (pdf_char_t *)pdf_alloc(*p_output_length);
+        if(*p_output_data == NULL)
+          {
+            pdf_dealloc(temp_data);
+            return PDF_ENOMEM;
+          }
+
+        /* Launch the conversion to host encoding */
+        SetLastError(0);
+        default_used = 0;
+        if((WideCharToMultiByte(CodePage,     /* CodePage */
+                                dwFlags,      /* dwFlags */
+                                (LPCWSTR)temp_data, /* lpWideCharStr */
+                                (temp_size/sizeof(WCHAR)), /* cbWideChar */
+                                *p_output_data, /* lpMultiByteStr */
+                                *p_output_length, /* ccMultiByte */
+                                NULL,            /* lpDefaultChar */
+                                &default_used) != output_nmbyte) || \
+           (default_used))
+          {
+            PDF_DEBUG_BASE("Problem performing the host encoding conversion");
+            pdf_dealloc(*p_output_data);
+            pdf_dealloc(temp_data);
+            return PDF_ETEXTENC;
+          }
+        else
+         {
+           /* Check last byte... could be NUL and we don't want it */
+           if((*p_output_data)[*p_output_length -1] == '\0')
+             {
+               pdf_char_t *temp;
+               temp = pdf_realloc((*p_output_data), (*p_output_length -1));
+               if(temp != NULL)
+                 {
+                   *p_output_data = temp;
+                   *p_output_length = *p_output_length -1;
+                 }
+             }
+           pdf_dealloc(temp_data);
+           return PDF_OK;
+         }
+      }
   }
 #else
   {
@@ -222,7 +430,6 @@ pdf_text_utf32he_to_host(const pdf_char_t      *input_data,
 }
 
 
-/* TODO: Windows host encoding support */
 pdf_status_t
 pdf_text_host_to_utf32he(const pdf_char_t      *input_data,
                          const pdf_size_t      input_length,
@@ -230,9 +437,106 @@ pdf_text_host_to_utf32he(const pdf_char_t      *input_data,
                          pdf_char_t            **p_output_data,
                          pdf_size_t            *p_output_length)
 {
-#ifdef WIN32_NATIVE
+#ifdef PDF_HOST_WIN32
   {
-    /* TODO */
+    UINT CodePage;
+
+    /* In windows, the charset name stored in the pdf_text_host_encoding_t
+     *  element will be in the following format: "CPn", where 'n' is the
+     *  code page number (unsigned integer) obtained with GetACP() */
+
+    /* So first of all, check windows host encoding */
+   if(pdf_text_convert_encoding_name_to_CP(enc.name, &CodePage) != PDF_OK)
+     {
+       PDF_DEBUG_BASE("Invalid windows encoding name received...");
+       return PDF_ETEXTENC;
+     }
+    else
+      {
+        DWORD dwFlags;
+        int output_nwchars;
+        pdf_char_t *temp_data;
+        pdf_size_t temp_size;
+
+        /* Get dwFlags value */
+        dwFlags = pdf_text_get_dwflags_for_cp(CodePage, MB_ERR_INVALID_CHARS);
+
+        /* For ASCII-7, check MSB... MultiByteToWideChar doesn't do it */
+        if(CodePage == 20127) /* ASCII-7 code point */
+          {
+            if(pdf_text_is_ascii7(input_data, input_length) == PDF_FALSE)
+              {
+                PDF_DEBUG_BASE("Invalid data to convert from Host Encoding:"
+                               " Not ASCII-7");
+                return PDF_EBADDATA;
+              }
+          }
+
+        /* First of all, query the length of the output string */
+        SetLastError(0);
+        output_nwchars =  MultiByteToWideChar(CodePage,     /* CodePage */
+                                              dwFlags,      /* dwFlags */
+                                              (char *)input_data, /* lpMultiByteStr */
+                                              input_length, /* cbMultiByte */
+                                              NULL,         /* lpWideCharStr */
+                                              0);           /* cchWideChar */
+
+        /* Check if we got an error with the call to MultiByteToWideChar*/
+        if(output_nwchars == 0)
+          {
+#ifdef HAVE_DEBUG_BASE
+            switch(GetLastError())
+            {
+              case ERROR_INVALID_FLAGS:
+                PDF_DEBUG_BASE("Invalid data to convert from Host Encoding:"
+                               " 'Invalid flags'");
+                break;
+              case ERROR_NO_UNICODE_TRANSLATION:
+                PDF_DEBUG_BASE("Invalid data to convert from Host Encoding:"
+                               " 'No Unicode Translation'");
+                break;
+              default:
+                PDF_DEBUG_BASE("Invalid data to convert from Host Encoding");
+                break;
+            }
+#endif
+            return PDF_EBADDATA;
+          }
+
+        /* Allocate memory for output buffer */
+        temp_size = output_nwchars * sizeof(WCHAR);
+        temp_data = (pdf_char_t *)pdf_alloc(temp_size);
+        if(temp_data == NULL)
+          {
+            return PDF_ENOMEM;
+          }
+
+        /* Launch the conversion to UTF-16LE */
+        SetLastError(0);
+        if(MultiByteToWideChar(CodePage,           /* CodePage */
+                               dwFlags,            /* dwFlags */
+                               (char *)input_data, /* lpMultiByteStr */
+                               input_length,       /* cbMultiByte */
+                               (LPWSTR)temp_data,  /* lpWideCharStr */
+                               output_nwchars) != output_nwchars) /* cchWideChar */
+          {
+            PDF_DEBUG_BASE("Problem performing the host encoding conversion");
+            return PDF_ETEXTENC;
+          }
+        else
+          {
+            pdf_status_t ret_code;
+            
+            /* Finally, convert to UTF-32HE */
+            ret_code = pdf_text_utf16le_to_utf32he(temp_data,
+                                                   temp_size,
+                                                   p_output_data,
+                                                   p_output_length);
+
+            pdf_dealloc(temp_data);
+            return ret_code;
+          }
+      }
   }
 #else
   {

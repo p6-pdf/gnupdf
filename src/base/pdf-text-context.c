@@ -30,12 +30,9 @@
 
 #include <localename.h>    /* From gnulib sources */
 #include <localcharset.h>  /* From gnulib sources */
+#include <pdf-types.h>
 #include <pdf-text.h>
 #include <pdf-text-context.h>
-
-#if defined _WIN32 || defined __WIN32__
-# define WIN32_NATIVE
-#endif
 
 
 /* Host Language code Length */
@@ -175,7 +172,7 @@ pdf_text_detect_host_eol(void)
    */
   extern pdf_text_context_t text_context;
   extern const struct pdf_text_eol_s pdf_text_eol_types [PDF_TEXT_EOLMAX];
-#ifdef WIN32_NATIVE
+#ifdef PDF_HOST_WIN32
   {
     text_context.host_eol = (pdf_text_eol_t) \
                             &pdf_text_eol_types[PDF_TEXT_EOL_WINDOWS];

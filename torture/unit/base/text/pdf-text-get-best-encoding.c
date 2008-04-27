@@ -50,9 +50,14 @@ START_TEST(pdf_text_get_best_encoding_001)
   fail_if(pdf_text_init() != PDF_OK);
   
   text = pdf_text_new();
-  
+
+#ifdef PDF_HOST_WIN32
+  fail_unless(pdf_text_check_host_encoding((pdf_char_t *)"CP20127",
+                                           &host_enc) == PDF_OK);
+#else
   fail_unless(pdf_text_check_host_encoding((pdf_char_t *)"ascii",
                                            &host_enc) == PDF_OK);
+#endif
 
   /* 1. The call to pdf_text_get_best_encoding should return a non-empty 
    *      pdf_text_host_encoding_t variable.*/

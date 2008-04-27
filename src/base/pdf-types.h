@@ -81,6 +81,15 @@ typedef unsigned char pdf_bool_t;
 /* PDF_EOF to store an EOF marker in integers */
 #define PDF_EOF -1
 
+
+/* Host dependent definitions to be used */
+
+#if defined _WIN32 || defined __WIN32__
+ #define PDF_HOST_WIN32
+#endif
+
+
+
 /* END PUBLIC */
 
 #endif /* !PDF_TYPES_H */

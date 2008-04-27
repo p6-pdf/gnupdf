@@ -49,10 +49,17 @@ START_TEST(pdf_text_filter_001)
                                                 "GNU's Not Unix" "\r" \
                                                 "GNU's Not Unix" "\n" \
                                                 "GNU's Not Unix" "\xC2\x85";
+#ifdef PDF_HOST_WIN32
+  const pdf_char_t *expected_data = (pdf_char_t *) "GNU's Not Unix" "\r""\n" \
+                                                   "GNU's Not Unix" "\r""\n" \
+                                                   "GNU's Not Unix" "\r""\n" \
+                                                   "GNU's Not Unix" "\r""\n";
+#else
   const pdf_char_t *expected_data = (pdf_char_t *) "GNU's Not Unix" "\n" \
                                                    "GNU's Not Unix" "\n" \
                                                    "GNU's Not Unix" "\n" \
                                                    "GNU's Not Unix" "\n";
+#endif
   pdf_size_t input_size;
   pdf_size_t expected_size;
   pdf_char_t *output_data;
@@ -99,7 +106,7 @@ START_TEST(pdf_text_filter_001)
                                    text,
                                    PDF_TEXT_UTF8,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -363,7 +370,7 @@ START_TEST(pdf_text_filter_005)
   
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_REMOVE_AMP) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;

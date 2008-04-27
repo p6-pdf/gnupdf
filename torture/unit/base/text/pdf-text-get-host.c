@@ -48,7 +48,11 @@ START_TEST(pdf_text_get_host_001)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create, without using the API, a valid pdf_text_host_encoding_t */
+#ifdef PDF_HOST_WIN32
+  strcpy((char *)(&(host_enc.name[0])), "CP20127"); /* us-ascii */
+#else
   strcpy((char *)(&(host_enc.name[0])), "us-ascii");
+#endif
   
   i = 0;
   while(ascii_strings[i].data != NULL)
@@ -108,7 +112,11 @@ START_TEST(pdf_text_get_host_002)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create, without using the API, an invalid pdf_text_host_encoding_t */
-  strcpy((char *)(&(host_enc.name[0])), "invalid_host_encoding");
+#ifdef PDF_HOST_WIN32
+  strcpy((char *)(&(host_enc.name[0])), "CP17"); /* us-ascii */
+#else
+  strcpy((char *)(&(host_enc.name[0])), "invalid_host_enc");
+#endif
   
   i = 0;
   while(ascii_strings[i].data != NULL)

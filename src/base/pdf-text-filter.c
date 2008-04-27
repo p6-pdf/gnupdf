@@ -231,60 +231,70 @@ pdf_text_filter_normalize_full_width_ascii(pdf_text_t text)
 }
 
 
-/* Substitute line endings with a given UTF-8 pattern */
+/* Substitute line endings with a given UTF-8 pattern. */
 static pdf_status_t
 pdf_text_substitute_line_ending(pdf_text_t text, const pdf_text_eol_t new_eol)
 {
+  pdf_status_t ret_code = PDF_OK;
   int i;
-  /* For each possible EOL type, perform the substitution */
-  for(i = PDF_TEXT_EOL_WINDOWS; i < PDF_TEXT_EOLMAX; i++)
+  pdf_text_t new_text_pattern;
+  pdf_text_t *eols;
+
+  /* Allocate memory for pdf_text_t old eols */
+  eols = (pdf_text_t *)pdf_alloc(PDF_TEXT_EOLMAX * sizeof(pdf_text_t));
+  if(eols == NULL)
     {
-      pdf_status_t ret_code = PDF_OK;
+      return PDF_ENOMEM;
+    }
+
+  /* Create text new pattern */
+  if(pdf_text_new_from_unicode(&new_text_pattern,
+                               new_eol->sequence,
+                               strlen((char *)new_eol->sequence),
+                               PDF_TEXT_UTF8) != PDF_OK)
+    {
+      pdf_dealloc(eols);
+      PDF_DEBUG_BASE("New EOL is not UTF-8");
+      return PDF_EBADDATA;
+    }
+
+  /* For each possible EOL type, create a pdf_text_t */
+  for(i = PDF_TEXT_EOL_WINDOWS; i < PDF_TEXT_EOLMAX; ++i)
+    {
       pdf_text_eol_t requested_eol;
 
       /* Get Host EOL */
       requested_eol = pdf_text_context_get_host_eol((enum pdf_text_eol_types)i);
 
-      /* Only perform the replacement if UTF-8 patterns are different! */
-      if(strcmp((char *)requested_eol->sequence,
-                (char *)new_eol->sequence) != 0)
+
+      /* Create text old pattern */
+      if(pdf_text_new_from_unicode(&eols[i],
+                                   requested_eol->sequence,
+                                   strlen((char *)requested_eol->sequence),
+                                   PDF_TEXT_UTF8) != PDF_OK)
         {
-          pdf_text_t old_text_pattern;
-          pdf_text_t new_text_pattern;
-
-          /* Create text old pattern */
-          if(pdf_text_new_from_unicode(&old_text_pattern,
-                                       requested_eol->sequence,
-                                       strlen((char *)requested_eol->sequence),
-                                       PDF_TEXT_UTF8) != PDF_OK)
-            {
-              PDF_DEBUG_BASE("Old EOL is not UTF-8");
-              return PDF_EBADDATA;
-            }
-          /* Create text new pattern */
-          if(pdf_text_new_from_unicode(&new_text_pattern,
-                                       new_eol->sequence,
-                                       strlen((char *)new_eol->sequence),
-                                       PDF_TEXT_UTF8) != PDF_OK)
-            {
-              PDF_DEBUG_BASE("New EOL is not UTF-8");
-              return PDF_EBADDATA;
-            }
-
-          /* Perform the replacement */
-          ret_code = pdf_text_replace(text, new_text_pattern, old_text_pattern);
-          
           pdf_text_destroy(new_text_pattern);
-          pdf_text_destroy(old_text_pattern);
-        }
-
-      if(ret_code != PDF_OK)
-        {
-          return PDF_ETEXTENC;
+          pdf_dealloc(eols);
+          PDF_DEBUG_BASE("Old EOL is not UTF-8");
+          return PDF_EBADDATA;
         }
     }
-  
-  return PDF_OK;
+
+  /* Perform the replacement */
+  ret_code = pdf_text_replace_multiple(text,
+                                       new_text_pattern,
+                                       eols,
+                                       PDF_TEXT_EOLMAX);
+
+  /* Destroy used patterns */
+  for(i = PDF_TEXT_EOL_WINDOWS; i < PDF_TEXT_EOLMAX; i++)
+    {
+      pdf_text_destroy(eols[i]);
+    }
+  pdf_dealloc(eols);
+  pdf_text_destroy(new_text_pattern);
+
+  return ret_code;
 }
 
 

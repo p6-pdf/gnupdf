@@ -1,3 +1,43 @@
+2008-04-27  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
+	* torture/unit/base/text/pdf-text-set-host.c: Add Win32 support.
+
+	* torture/unit/base/text/pdf-text-new-from-host.c: Add Win32 support.
+
+	* torture/unit/base/text/pdf-text-get-host.c: Add Win32 support.
+
+	* torture/unit/base/text/pdf-text-get-best-encoding.c: Add Win32
+	support.
+
+	* torture/unit/base/text/pdf-text-filter.c: Add Win32 support.
+
+	* torture/unit/base/text/pdf-text-check-host-encoding.c: Add Win32
+	support.
+
+	* src/base/pdf-types.h (PDF_HOST_WIN32): New definition for Win32
+	environments.
+
+	* src/base/pdf-text.h: New function: `pdf_text_replace_multiple', which
+	is not in the public API of the module.
+
+	* src/base/pdf-text.c (pdf_text_get_best_encoding): Add best encodings
+	in Win32 environment.
+	(pdf_text_replace_multiple): New function. Replace a set of old patterns
+	with a single new pattern.
+	(pdf_text_replace): Use `pdf_text_replace_multiple'.
+
+	* src/base/pdf-text-host-encoding.c: Add Win32 host encoding conversion
+	support.
+
+	* src/base/pdf-text-filter.c (pdf_text_substitute_line_ending): Replace
+	all possible line endings in a single replacement loop.
+
+	* src/base/pdf-text-context.c: Depend on new PDF_HOST_WIN32 instead
+	of WIN32_NATIVE.
+
+	* src/base/pdf-stm-file.c (pdf_stm_file_init): Add dependency of host
+	type in the open mode flags.
+
 2008-04-24  Jose E. Marchesi  <jco@terma.com>
 
 	* README (specs): Use the canonical URL http://www.gnupdf.org

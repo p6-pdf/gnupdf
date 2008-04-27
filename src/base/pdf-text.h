@@ -197,6 +197,13 @@ pdf_text_set_language (pdf_text_t text,
 pdf_bool_t
 pdf_text_empty_p (pdf_text_t text);
 
+/* Replace a given set of old patterns with a single new pattern */
+pdf_status_t
+pdf_text_replace_multiple (pdf_text_t text,
+                           const pdf_text_t new_pattern,
+                           const pdf_text_t *p_old_patterns,
+                           const int n_old_patterns);
+
 
 
 /* ------------------------ Host Encoding Management ------------------------ */
