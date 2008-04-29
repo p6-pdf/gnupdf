@@ -981,25 +981,15 @@ typedef struct pdf_text_repl_s {
   int old_pattern_i;
 } pdf_text_repl_t;
 
-pdf_status_t
-pdf_text_replace_multiple (pdf_text_t text,
-                           const pdf_text_t new_pattern,
-                           const pdf_text_t *p_old_patterns,
-                           const int n_old_patterns)
+
+/* Check replacement patterns and get minimum size */
+static pdf_status_t
+pdf_text_check_replacement_patterns(const pdf_text_t *p_old_patterns,
+                                    const int n_old_patterns,
+                                    pdf_size_t *p_min_old_pattern_size)
 {
-  pdf_size_t new_size;
   pdf_size_t minimum_old_pattern_size = -1;
   int i_pattern;
-  long i;
-  long n_replacements;
-  pdf_text_repl_t *rep_ptrs = NULL;
-  long rep_ptrs_size = PDF_TEXT_ISLR/2;
-
-  if((p_old_patterns == NULL) || \
-     (n_old_patterns == 0))
-    {
-      return PDF_EINVAL;
-    }
 
   for(i_pattern = 0; i_pattern < n_old_patterns; ++i_pattern)
     {
@@ -1016,15 +1006,28 @@ pdf_text_replace_multiple (pdf_text_t text,
         }
     }
 
-  /* If input text is shorter than the smallest old pattern, there is no
-   *  replacement to be done */
-  if(minimum_old_pattern_size > text->size)
-    {
-      return PDF_OK;
-    }
+  /* Set output var and exit correctly */
+  *p_min_old_pattern_size = minimum_old_pattern_size;
+  return PDF_OK;
+}
 
-  /* First, count number of replacements to be done... a replacement pointer
-   * will be stored for each replacement needed */
+pdf_status_t
+pdf_text_get_replacement_pointers(pdf_text_repl_t **p_rep_ptrs, \
+                                  long *p_n_replacements, \
+                                  pdf_size_t *p_new_size, \
+                                  const pdf_text_t text, \
+                                  const pdf_size_t minimum_old_pattern_size, \
+                                  const pdf_text_t new_pattern, \
+                                  const pdf_text_t *p_old_patterns, \
+                                  const int n_old_patterns)
+{
+  pdf_size_t new_size;
+  int i_pattern;
+  long i;
+  long n_replacements;
+  pdf_text_repl_t *rep_ptrs = NULL;
+  long rep_ptrs_size = PDF_TEXT_ISLR/2;
+
   n_replacements = 0;
   i = 0;
   new_size = 0;
@@ -1075,53 +1078,133 @@ pdf_text_replace_multiple (pdf_text_t text,
         }
     }
 
-    /* Udpate new size with remaining data in old array */
-    new_size += (text->size - i);
+  /* Udpate new size with remaining data in old array */
+  new_size += (text->size - i);
 
-  /* Now, really perform replacements */
+  /* Set output data and exit correctly */
+  *p_new_size = new_size;
+  *p_rep_ptrs = rep_ptrs;
+  *p_n_replacements = n_replacements;
+
+  return PDF_OK;
+}
+
+static pdf_status_t
+pdf_text_perform_replacements(pdf_text_t text, \
+                              const pdf_size_t new_size, \
+                              const pdf_text_t new_pattern, \
+                              const pdf_text_t *p_old_patterns, \
+                              const int n_old_patterns, \
+                              const pdf_text_repl_t *rep_ptrs, \
+                              const long n_replacements)
+{
+  int k;
+  pdf_char_t *new_data;
+  pdf_char_t *new_walker;
+  pdf_char_t *old_walker;
+
+  /* Allocate new memory chunk */
+  new_data = (pdf_char_t *)pdf_alloc(new_size);
+
+  /* Walk the list of replacements */
+  new_walker = new_data;
+  old_walker = text->data;
+  for(k = 0; k < n_replacements; ++k)
+    {
+      pdf_size_t prev_size;
+      /* Store the data previous to the pointer */
+      prev_size = (rep_ptrs[k].data_ptr - old_walker);
+      if(prev_size > 0)
+        {
+          memcpy(new_walker, old_walker, prev_size);
+          new_walker += prev_size;
+          old_walker += prev_size;
+        }
+      /* Perform the replacement */
+      memcpy(new_walker, new_pattern->data, new_pattern->size);
+      new_walker += (new_pattern->size);
+      old_walker += (p_old_patterns[rep_ptrs[k].old_pattern_i]->size);
+    }
+
+  /* Add final data */
+  if(((&(text->data[text->size])) - old_walker) > 0)
+    {
+      memcpy(new_walker, old_walker, \
+             ((&(text->data[text->size])) - old_walker));
+    }
+
+  /* Set correct final size and final content */
+  pdf_dealloc(text->data);
+  text->data = new_data;
+  text->size = new_size;
+
+  return PDF_OK;
+}
+
+
+pdf_status_t
+pdf_text_replace_multiple (pdf_text_t text,
+                           const pdf_text_t new_pattern,
+                           const pdf_text_t *p_old_patterns,
+                           const int n_old_patterns)
+{
+  pdf_size_t new_size = 0;
+  pdf_size_t minimum_old_pattern_size = -1;
+  long n_replacements;
+  pdf_text_repl_t *rep_ptrs = NULL;
+
+  if((p_old_patterns == NULL) || \
+     (n_old_patterns == 0))
+    {
+      return PDF_EINVAL;
+    }
+
+  if(pdf_text_check_replacement_patterns(p_old_patterns, \
+                                         n_old_patterns, \
+                                         &minimum_old_pattern_size) != PDF_OK)
+    {
+      PDF_DEBUG_BASE("At least one old pattern is not valid");
+      /* At least one old pattern is not valid */
+      return PDF_ETEXTENC;
+    }
+
+  /* If input text is shorter than the smallest old pattern, there is no
+   *  replacement to be done */
+  if(minimum_old_pattern_size > text->size)
+    {
+      return PDF_OK;
+    }
+
+  /* First, count number of replacements to be done... a replacement pointer
+   * will be stored for each replacement needed */
+  if(pdf_text_get_replacement_pointers(&rep_ptrs, \
+                                       &n_replacements, \
+                                       &new_size, \
+                                       text, \
+                                       minimum_old_pattern_size, \
+                                       new_pattern, \
+                                       p_old_patterns, \
+                                       n_old_patterns) != PDF_OK)
+    {
+      PDF_DEBUG_BASE("Error getting replacement pointers");
+      return PDF_ETEXTENC;
+    }
+
+  /* Now, really perform replacements, if required */
   if(n_replacements > 0)
     {
-      int k;
-      pdf_char_t *new_data;
-      pdf_char_t *new_walker;
-      pdf_char_t *old_walker;
-      
-      /* Allocate new memory chunk */
-      new_data = (pdf_char_t *)pdf_alloc(new_size);
-      
-      /* Walk the list of replacements */
-      new_walker = new_data;
-      old_walker = text->data;
-      for(k = 0; k < n_replacements; ++k)
+      pdf_text_perform_replacements(text, \
+                                    new_size, \
+                                    new_pattern, \
+                                    p_old_patterns, \
+                                    n_old_patterns, \
+                                    rep_ptrs, \
+                                    n_replacements);
+      if(rep_ptrs != NULL)
         {
-          pdf_size_t prev_size;
-          /* Store the data previous to the pointer */
-          prev_size = (rep_ptrs[k].data_ptr - old_walker);
-          if(prev_size > 0)
-            {
-              memcpy(new_walker, old_walker, prev_size);
-              new_walker += prev_size;
-              old_walker += prev_size;
-            }
-          /* Perform the replacement */
-          memcpy(new_walker, new_pattern->data, new_pattern->size);
-          new_walker += (new_pattern->size);
-          old_walker += (p_old_patterns[rep_ptrs[k].old_pattern_i]->size);
+          /* Dealloc list of pointers to replacements */
+          pdf_dealloc(rep_ptrs);
         }
-
-      /* Add final data */
-      if(((&(text->data[text->size])) - old_walker) > 0)
-        {
-          memcpy(new_walker, old_walker, \
-                 ((&(text->data[text->size])) - old_walker));
-        }
-
-      /* Set correct final size and final content */
-      pdf_dealloc(text->data);
-      text->data = new_data;
-      text->size = new_size;
-      /* Dealloc list of pointers to replacements */
-      pdf_dealloc(rep_ptrs);
     }
 
   return PDF_OK;

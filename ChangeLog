@@ -1,3 +1,12 @@
+2008-04-29  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
+	* src/base/pdf-text.c (pdf_text_replace_multiple): Split function to
+	make pmccabe happy.
+
+	* src/base/pdf-text-host-encoding.c (pdf_text_utf32he_to_host): Split
+	function to make pmccabe happy.
+	(pdf_text_host_to_utf32he): Split function to make pmccabe happy.
+
 2008-04-27  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
 	* torture/unit/base/text/pdf-text-set-host.c: Add Win32 support.
