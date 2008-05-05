@@ -27,9 +27,12 @@
 #define PDF_TYPES_H
 
 #include <config.h>
+#include <pdf-error.h>
+
 /* BEGIN PUBLIC */
 #include <sys/types.h> /* for off_t */
 #include <stdint.h> /* for uint32_t and others, from gnulib */
+
 
 #ifdef HAVE_INLINE
 #define INLINE inline
@@ -39,6 +42,16 @@
 
 #define PDF_TRUE 1
 #define PDF_FALSE 0
+
+/* Definitions used in the operations of the  pdf_i64_t type*/
+#define PDF_I32_MAX 2147483647;
+#define PDF_I32_DIV 2147483648;
+#define PDF_U32_MAX 4294967295;
+#define PDF_U16_MAX 65535;
+#define PDF_U16_DIV 65536;
+#define PDF_U8_MAX 255;
+#define PDF_U8_DIV 256;
+
 
 /* A variable of type `pdf_stm_pos_t' contain a byte-offset relative to
    the beginning of a stream object. 
@@ -75,6 +88,67 @@ typedef char pdf_i8_t;
 
 /* Boolean type */
 typedef unsigned char pdf_bool_t;
+
+
+/*Definition of internal structure of the pdf_i64_t type*/
+struct pdf_i64_s
+{
+  signed   high;
+  unsigned low;
+};
+
+/*Definition of the pdf_i64_t type*/
+typedef struct pdf_i64_s pdf_i64_t;
+
+/*Create and initialise a new pdf_i64_t variable*/
+pdf_i64_t pdf_i64_new(signed high, unsigned low);
+
+/*Assign values to a pdf_i64_t pointer*/
+pdf_status_t 
+pdf_i64_assign (pdf_i64_t *bignum, signed high, unsigned low);
+
+/*Quick version of assignment in which only the lowest siginificant
+  part is taken into account*/
+pdf_status_t 
+pdf_i64_assign_quick(pdf_i64_t *bignum, signed value);
+
+/*Copy one pdf_i64_t variable into another*/
+pdf_status_t 
+pdf_i64_copy(pdf_i64_t orig, pdf_i64_t *copy);
+
+/*Add two pdf_i64_t variables*/
+pdf_status_t 
+pdf_i64_add(pdf_i64_t *dest, pdf_i64_t addend1, pdf_i64_t addend2);
+
+/*Compare two pdf_i64_t variables*/
+int pdf_i64_cmp(pdf_i64_t number_1, pdf_i64_t number_2);
+
+/*Calculate the absolute value of a pdf_i64_t variable*/
+pdf_status_t 
+pdf_i64_abs(pdf_i64_t *dest, pdf_i64_t number);
+
+/*Negate a pdf_i64_t type variable*/
+pdf_status_t 
+pdf_i64_neg(pdf_i64_t *dest, pdf_i64_t number);
+
+/*Subtract two pdf_i64_t variables*/
+pdf_status_t 
+pdf_i64_subtraction(pdf_i64_t *dest, pdf_i64_t minuend, pdf_i64_t subtrahend);
+
+/*Multiply two pdf_i64_t variables*/
+pdf_status_t 
+pdf_i64_mult(pdf_i64_t *dest, pdf_i64_t factor_1, pdf_i64_t factor_2);
+
+/*Division between two pdf_i64_t type variables*/
+pdf_status_t 
+pdf_i64_div(pdf_i64_t *dest, pdf_i64_t dividend, pdf_i64_t divisor);
+
+/*Modulus division between two pdf_i64_t variables*/
+pdf_status_t 
+pdf_i64_mod(pdf_i64_t *dest, pdf_i64_t dividend, pdf_i64_t divisor);
+
+
+
 
 
 /* PDF_EOF to store an EOF marker in integers */

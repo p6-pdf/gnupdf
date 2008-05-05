@@ -88,8 +88,8 @@ AM_CPPFLAGS = -I$(top_builddir)/lib -I$(srcdir)/base \
 # Public header generation
 
 PUBLIC_HDRS = pdf-global.h \
-              base/pdf-types.h \
               base/pdf-error.h \
+              base/pdf-types.h \
               base/pdf-alloc.h \
               base/pdf-list.h \
               base/pdf-hash.h \

@@ -134,18 +134,27 @@ TEST_SUITE_TEXT = base/text/pdf-text-test-common.h \
                   base/text/pdf-text-filter.c \
                   base/text/pdf-text-cmp.c
 
+# Unit tests for the Types Module test suite
+TEST_SUITE_TYPES = base/types/pdf-i64-new.c \
+		   base/types/pdf-i64-assign.c \
+		   base/types/pdf-i64-assign-quick.c \
+		   base/types/pdf-i64-copy.c \
+		   base/types/pdf-i64-add.c
+
 TEST_ENVIRONMENT = CHARSETALIASDIR=$(top_srcdir)/lib
 
 TEST_FILES = $(TEST_SUITE_STM) \
              $(TEST_SUITE_LIST) \
              $(TEST_SUITE_TEXT) \
-             $(TEST_SUITE_HASH)
+             $(TEST_SUITE_HASH) \
+	     $(TEST_SUITE_TYPES)
 
 TSUITE_FILES = base/alloc/tsuite-alloc.c \
                base/stm/tsuite-stm.c \
                base/list/tsuite-list.c \
                base/text/tsuite-text.c \
-               base/hash/tsuite-hash.c
+               base/hash/tsuite-hash.c \
+	       base/types/tsuite-types.c
 
 runtests_SOURCES = $(NOCHECK_SRC) \
                    $(TSUITE_FILES) \
