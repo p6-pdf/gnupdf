@@ -42,7 +42,7 @@ typedef struct _unicode_case_info_s {
   pdf_u32_t uppercase_point;
   pdf_u32_t lowercase_point;
   pdf_u32_t titlecase_point;
-  pdf_16_t special_case_indexes[PDF_TEXT_MNSC];
+  pdf_i16_t special_case_indexes[PDF_TEXT_MNSC];
 } unicode_case_info_t;
 
 
@@ -3773,7 +3773,7 @@ static pdf_bool_t
 pdf_text_ucd_special_case(pdf_u32_t to_he[UCD_SC_MAX_EXPAND],
                           pdf_size_t *p_n_points,
                           const pdf_u32_t from_he,
-                          const pdf_32_t index_in_array,
+                          const pdf_i32_t index_in_array,
                           const pdf_text_ucd_context_t *context,
                           const enum unicode_case_type to_case)
 {
@@ -3793,7 +3793,7 @@ pdf_text_ucd_special_case(pdf_u32_t to_he[UCD_SC_MAX_EXPAND],
         }
       else
         {
-          pdf_32_t index_in_sc_array = unicode_case_info[index_in_array].special_case_indexes[index];
+          pdf_i32_t index_in_sc_array = unicode_case_info[index_in_array].special_case_indexes[index];
           /* Sanity check to see if we really found the correct unicode point */
           if(from_he != unicode_special_case_info[index_in_sc_array].unicode_point)
             {
@@ -3875,7 +3875,7 @@ pdf_text_ucd_special_case(pdf_u32_t to_he[UCD_SC_MAX_EXPAND],
 static pdf_bool_t
 pdf_text_ucd_simple_case(pdf_u32_t *to_he,
                          const pdf_u32_t from_he,
-                         const pdf_32_t index_in_array,
+                         const pdf_i32_t index_in_array,
                          const enum unicode_case_type to_case)
 {
   extern unicode_case_info_t unicode_case_info[UCD_C_INFO_N];
@@ -3917,7 +3917,7 @@ pdf_text_ucd_simple_case(pdf_u32_t *to_he,
 }
 
 
-static pdf_32_t
+static pdf_i32_t
 pdf_text_ucd_find_case_index(const pdf_u32_t from_he)
 {
   extern unicode_case_interval_t unicode_case_int[UCD_C_INT_N];
@@ -3963,7 +3963,7 @@ pdf_text_ucd_to_case(pdf_u32_t dest[UCD_SC_MAX_EXPAND], pdf_u32_t origin,
                      const pdf_text_ucd_context_t *context,
                      const enum unicode_case_type to_case)
 {
-  pdf_32_t unicode_point_index = -1;
+  pdf_i32_t unicode_point_index = -1;
   pdf_size_t n_points = 0;
   
   /* Completely clear output array */

@@ -46,7 +46,6 @@
    Please be careful manipulating `pdf_stm_pos_t' values. Its value is
    assured to be a signed scalable one, but its size may be wider than
    a long. */
-
 #define NO_POS -1
 typedef off_t pdf_stm_pos_t;
 
@@ -59,20 +58,20 @@ typedef unsigned char pdf_char_t;
 /* 32-bit unsigned integer */
 typedef uint32_t pdf_u32_t;
 
+/* 32-bit signed integer */
+typedef int32_t pdf_i32_t;
+
 /* 16-bit unsigned integer */
 typedef uint16_t pdf_u16_t;
 
-/* 32-bit signed integer */
-typedef int32_t pdf_32_t;
-
 /* 16-bit signed integer */
-typedef int16_t pdf_16_t;
+typedef int16_t pdf_i16_t;
 
 /* 8-bit unsigned integer */
 typedef unsigned char pdf_u8_t;
 
 /* 8-bit signed integer */
-typedef char pdf_8_t;
+typedef char pdf_i8_t;
 
 /* Boolean type */
 typedef unsigned char pdf_bool_t;

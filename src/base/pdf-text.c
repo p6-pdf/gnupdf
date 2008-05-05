@@ -99,7 +99,7 @@ static enum pdf_text_unicode_encoding_e
 pdf_text_transform_he_to_unicode_encoding(enum pdf_text_unicode_encoding_e enc);
 
 /* Function to compare two given words */
-static pdf_32_t
+static pdf_i32_t
 pdf_text_compare_words(const pdf_char_t *word1,
                        const pdf_size_t size1,
                        const pdf_char_t *word2,
@@ -109,7 +109,7 @@ pdf_text_compare_words(const pdf_char_t *word1,
                        pdf_status_t *p_ret_code);
 
 /* Non-Case sensitive comparison of text objects */
-static pdf_32_t
+static pdf_i32_t
 pdf_text_cmp_non_case_sensitive(pdf_text_t text1,
                                 pdf_text_t text2,
                                 pdf_status_t *p_ret_code);
@@ -1339,7 +1339,7 @@ pdf_text_filter (pdf_text_t text,
 
 
 
-pdf_32_t
+pdf_i32_t
 pdf_text_cmp (pdf_text_t text1,
               pdf_text_t text2,
               pdf_bool_t case_sensitive,
@@ -1369,7 +1369,7 @@ pdf_text_cmp (pdf_text_t text1,
 
 /* -------------------------- Private functions ----------------------------- */
 
-static pdf_32_t
+static pdf_i32_t
 pdf_text_cmp_non_case_sensitive(pdf_text_t text1,
                                 pdf_text_t text2,
                                 pdf_status_t *p_ret_code)
@@ -1404,7 +1404,7 @@ pdf_text_cmp_non_case_sensitive(pdf_text_t text1,
             {
               struct pdf_text_wb_s *p_word1;
               struct pdf_text_wb_s *p_word2;
-              pdf_32_t ret_num;
+              pdf_i32_t ret_num;
               
               if(pdf_list_get_at(text1->word_boundaries, \
                                  n, \
@@ -1459,7 +1459,7 @@ pdf_text_cmp_non_case_sensitive(pdf_text_t text1,
 }
 
 
-static pdf_32_t
+static pdf_i32_t
 pdf_text_compare_words(const pdf_char_t *word1,
                        const pdf_size_t size1,
                        const pdf_char_t *word2,
@@ -1542,7 +1542,7 @@ pdf_text_compare_words(const pdf_char_t *word1,
   else
     {
       /* Compare contents of words */
-      pdf_32_t ret_val;
+      pdf_i32_t ret_val;
       ret_val = memcmp(lower1, lower2, new_size1);
       pdf_dealloc(lower1);
       pdf_dealloc(lower2);

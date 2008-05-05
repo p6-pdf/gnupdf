@@ -1,3 +1,20 @@
+2008-05-05  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
+	* src/base/pdf-types.h: Change signed integer pdf_XX_t types to
+	pdf_iXX_t.
+
+	* src/base/pdf-text.h: Change signed integer pdf_XX_t types to
+	pdf_iXX_t.
+
+	* src/base/pdf-text.c: Change signed integer pdf_XX_t types to
+	pdf_iXX_t.
+
+	* src/base/pdf-text-ucd-case.c: Change signed integer pdf_XX_t types
+	to pdf_iXX_t.
+
+	* build-aux/pdf-text-generate-ucd.c: Change signed integer pdf_XX_t
+	types to pdf_iXX_t.
+
 2008-04-29  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
 	* src/base/pdf-text.c (pdf_text_replace_multiple): Split function to

@@ -321,7 +321,7 @@ pdf_text_filter (pdf_text_t text,
  *  Returns  1 if text1 != text2
  *  Returns  0 if text1 = text2
  */
-pdf_32_t
+pdf_i32_t
 pdf_text_cmp (pdf_text_t text1,
               pdf_text_t text2,
               pdf_bool_t case_sensitive,

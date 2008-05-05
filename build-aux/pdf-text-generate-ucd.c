@@ -709,7 +709,7 @@ create_UnicodeData_CASE_header(FILE *pf)
               "#define PDF_TEXT_MNSC  3\n"
               "typedef struct _unicode_case_info_s {\n"
               "  pdf_u32_t case_info[4];\n"
-              "  pdf_16_t special_case_indexes[PDF_TEXT_MNSC];\n"
+              "  pdf_i16_t special_case_indexes[PDF_TEXT_MNSC];\n"
               "} unicode_case_info_t;\n\n"
               "static unicode_case_info_t unicode_case_info[UCD_C_INFO_N] = {\n");
     }
