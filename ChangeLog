@@ -1,3 +1,35 @@
+2008-05-05  Daniel Vidal  <davr@pc_davr.deimos-space.com>
+
+	* torture/unit/base/types/tsuite-types.c (tsuite_types): Tests for the
+	pdf_i64_t type
+
+	* torture/unit/base/types/pdf-i64-copy.c: New test file for pdf_i64_t
+	type
+
+	* torture/unit/base/types/pdf-i64-new.c: New test file for pdf_i64_t
+	type
+
+	* torture/unit/base/types/pdf-i64-assign.c: New test file for pdf_i64_t
+	type
+
+	* torture/unit/base/types/pdf-i64-assign-quick.c: New test file for pdf_i64_t
+	type
+
+	* torture/unit/base/types/pdf-i64-add.c: New test file for pdf_i64_t
+	type
+
+	* torture/unit/runtests.c: Included tests for type pdf_i64_t
+
+	* torture/unit/Makefile.am (TEST_SUITE_TEXT): Included tests for type
+	pdf_i64_t
+
+	* src/Makefile.am (PUBLIC_HDRS): Changed order of declaration of public
+	headers pdf-types.h and pdf-error.h
+
+	* src/base/pdf-types.c: Included pdf_i64_t type
+
+	* src/base/pdf-types.h: Included pdf_i64_t type
+
 2008-05-05  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
 	* src/base/pdf-types.h: Change signed integer pdf_XX_t types to

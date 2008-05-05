@@ -135,4 +135,15 @@ and changed doc/gnupdf.texi doc/gnupdf-tsd.texi configure.ac src/Makefile.am
   torture/unit/base/list/pdf-list-iterator-from-to.c
   torture/unit/base/list/pdf-list-iterator-next.c
   
-
+Daniel Vidal: wrote /torture/unit/base/types/pdf-i64-add.c
+  /torture/unit/base/types/pdf-i64-assign.c
+  /torture/unit/base/types/pdf-i64-assign-quick.c
+  /torture/unit/base/types/pdf-i64-copy.c
+  /torture/unit/base/types/pdf-i64-new.c
+  /torture/unit/base/types/tsuite-types.c
+and changed src/Makefile.am
+    src/base/pdf-types.h
+    src/base/pdf-types.c
+    torture/unit/Makefile.am
+    torture/unit/runtests.c
+    
