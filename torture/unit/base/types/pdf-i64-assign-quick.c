@@ -66,7 +66,7 @@ END_TEST
 START_TEST(pdf_i64_assign_quick_002)
 {
 
-  pdf_i64_t* k;
+  pdf_i64_t* k = NULL;
 
   fail_if(pdf_i64_assign_quick(k,5) != PDF_ERROR);
   

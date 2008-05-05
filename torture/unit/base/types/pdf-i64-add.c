@@ -72,7 +72,7 @@ START_TEST(pdf_i64_add_002)
 {
   
   pdf_i64_t add1,add2;
-  pdf_i64_t *dest;
+  pdf_i64_t *dest = NULL;
   add1 = pdf_i64_new(0,4);
   add2 = pdf_i64_new(5,0);
 
