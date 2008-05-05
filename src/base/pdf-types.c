@@ -26,7 +26,7 @@
 #include <pdf-types.h>
 
 
-pdf_i64_t  pdf_i64_new(signed high, unsigned low)
+pdf_i64_t  pdf_i64_new(pdf_i32_t high, pdf_u32_t low)
 {
   pdf_i64_t pdfint;
   pdfint.high = high;
@@ -36,7 +36,7 @@ pdf_i64_t  pdf_i64_new(signed high, unsigned low)
 
 
 
-pdf_status_t pdf_i64_assign(pdf_i64_t *bignum, signed high, unsigned low)
+pdf_status_t pdf_i64_assign(pdf_i64_t *bignum, pdf_i32_t high, pdf_u32_t low)
 {
 
   if (bignum == NULL)
@@ -51,7 +51,7 @@ pdf_status_t pdf_i64_assign(pdf_i64_t *bignum, signed high, unsigned low)
 
 
 
-pdf_status_t pdf_i64_assign_quick(pdf_i64_t *bignum, signed value)
+pdf_status_t pdf_i64_assign_quick(pdf_i64_t *bignum, pdf_i32_t value)
 {
   if (bignum == NULL)
     {
@@ -86,8 +86,8 @@ pdf_status_t	pdf_i64_copy(pdf_i64_t orig, pdf_i64_t *copy)
 pdf_status_t pdf_i64_add(pdf_i64_t *dest, pdf_i64_t addend1, pdf_i64_t addend2)
 {
 
-  unsigned carry = 0; /*carry*/
-  unsigned low1, low2, high1, high2;
+  pdf_u32_t carry = 0; /*carry*/
+  pdf_u32_t low1, low2, high1, high2;
   
   if (dest == NULL)
     {
@@ -286,15 +286,15 @@ pdf_status_t      pdf_i64_mult(pdf_i64_t *dest, pdf_i64_t factor_1, pdf_i64_t fa
     to save partial results, the mask is used to tranfer data
     from arrays to pdf_i64_t types, and cont is a simple
     counter*/
-  unsigned mask, t , k;
+  pdf_u32_t mask, t , k;
   pdf_i64_t multiplier, multiplicand;
   pdf_i64_abs(&multiplicand, factor_1);
   pdf_i64_abs(&multiplier, factor_2);
   /*the result is stored in w*/
-  unsigned w[] ={0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  pdf_u32_t w[] ={0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
   /*v is an array where the multiplier is stored, and u is where the
     multiplicand is stored*/
-  unsigned v[8], u[8];
+  pdf_u32_t v[8], u[8];
   int result_sign = 1;/*used to carry the sign of the result till the end*/
   pdf_i64_t zero; /*used to store zero value in pdf_i64_t format*/
   pdf_i64_t temp; /*variable used to save partial results*/
@@ -394,18 +394,18 @@ pdf_status_t      pdf_i64_mult(pdf_i64_t *dest, pdf_i64_t factor_1, pdf_i64_t fa
 
 }//end of pdf_i64_mult
 
-void mult_long(unsigned *w, pdf_i64_t factor_1, pdf_i64_t factor_2)
+void mult_long(pdf_u32_t *w, pdf_i64_t factor_1, pdf_i64_t factor_2)
 {
 
   
   /*Knuth vol 2 method*/
   
   int i, j;
-  unsigned mask, t , k;
+  pdf_u32_t mask, t , k;
   pdf_i64_t multiplier, multiplicand;
   pdf_i64_abs(&multiplicand, factor_1);
   pdf_i64_abs(&multiplier, factor_2);
-  unsigned v[8], u[8];
+  pdf_u32_t v[8], u[8];
   
   for (i = 0;i < 16;i++)
     {
@@ -463,20 +463,20 @@ pdf_status_t     pdf_i64_div(pdf_i64_t *dest, pdf_i64_t dividend, pdf_i64_t divi
    is where the partial result of the division is stored, z is used to find
    the highest non-zero digit in the dividend*/
   /*See Knuth for definitions of m and n*/
-  unsigned k, q_bar, m , n, z;
+  pdf_u32_t k, q_bar, m , n, z;
   /*divisor_nor stores normalised divisor, d_pdf is used to 
    normalise divisor and dividend, v_pdf is the internal pdf_i64_t 
    version of divisor, q_bar_pdf is the pdf_i64_t version of the
    partial division result, temp is a temporary variable used int 
    the procedures*/
   pdf_i64_t divisor_nor, d_pdf,v_pdf, q_bar_pdf, temp;
-  unsigned v[8]; /*where divisor is stored*/
+  pdf_u32_t v[8]; /*where divisor is stored*/
   /*q is where result is stored, u is where the dividend is stored,
     and temporal is a temporal vector used in the different procedures*/
-  unsigned q[8] = {0, 0, 0, 0, 0, 0, 0, 0}, u[16], temporal[8];
-  unsigned d; /*used to normalise divisor and dividend*/
-  unsigned b = PDF_U8_DIV; /*base of the division*/
-  unsigned mask = 0xFF000000; /*mask used to pass info from pdf_i64_t types and arrays*/
+  pdf_u32_t q[8] = {0, 0, 0, 0, 0, 0, 0, 0}, u[16], temporal[8];
+  pdf_u32_t d; /*used to normalise divisor and dividend*/
+  pdf_u32_t b = PDF_U8_DIV; /*base of the division*/
+  pdf_u32_t mask = 0xFF000000; /*mask used to pass info from pdf_i64_t types and arrays*/
   pdf_i64_t zero = pdf_i64_new(0 , 0); /*zero in pdf_i64_t format*/
   int result_sign = 1; /*used to carry the sign of the result till the end*/
 
@@ -732,20 +732,20 @@ pdf_status_t pdf_i64_mod(pdf_i64_t *dest, pdf_i64_t dividend, pdf_i64_t divisor)
    is where the partial result of the division is stored, z is used to find
    the highest non-zero digit in the dividend*/
   /*See Knuth for definitions of m and n*/
-  unsigned k, q_bar, m , n, z;
+  pdf_u32_t k, q_bar, m , n, z;
   /*divisor_nor stores normalised divisor, d_pdf is used to 
    normalise divisor and dividend, v_pdf is the internal pdf_i64_t 
    version of divisor, q_bar_pdf is the pdf_i64_t version of the
    partial division result, temp is a temporary variable used int 
    the procedures*/
   pdf_i64_t divisor_nor, d_pdf,v_pdf, q_bar_pdf, temp;
-  unsigned v[8]; /*where divisor is stored*/
+  pdf_u32_t v[8]; /*where divisor is stored*/
   /*q is where result is stored, u is where the dividend is stored,
     and temporal is a temporal vector used in the different procedures*/
-  unsigned q[8] = {0, 0, 0, 0, 0, 0, 0, 0}, u[16], temporal[8];
-  unsigned d; /*used to normalise divisor and dividend*/
-  unsigned b = PDF_U8_DIV; /*base of the division*/
-  unsigned mask = 0xFF000000; /*mask used to pass info from pdf_i64_t types and arrays*/
+  pdf_u32_t q[8] = {0, 0, 0, 0, 0, 0, 0, 0}, u[16], temporal[8];
+  pdf_u32_t d; /*used to normalise divisor and dividend*/
+  pdf_u32_t b = PDF_U8_DIV; /*base of the division*/
+  pdf_u32_t mask = 0xFF000000; /*mask used to pass info from pdf_i64_t types and arrays*/
   pdf_i64_t zero = pdf_i64_new(0 , 0); /*zero in pdf_i64_t format*/
   int result_sign = 1; /*used to carry the sign of the result till the end*/
 

@@ -93,24 +93,24 @@ typedef unsigned char pdf_bool_t;
 /*Definition of internal structure of the pdf_i64_t type*/
 struct pdf_i64_s
 {
-  signed   high;
-  unsigned low;
+  pdf_i32_t   high;
+  pdf_u32_t low;
 };
 
 /*Definition of the pdf_i64_t type*/
 typedef struct pdf_i64_s pdf_i64_t;
 
 /*Create and initialise a new pdf_i64_t variable*/
-pdf_i64_t pdf_i64_new(signed high, unsigned low);
+pdf_i64_t pdf_i64_new(pdf_i32_t high, pdf_u32_t low);
 
 /*Assign values to a pdf_i64_t pointer*/
 pdf_status_t 
-pdf_i64_assign (pdf_i64_t *bignum, signed high, unsigned low);
+pdf_i64_assign (pdf_i64_t *bignum, pdf_i32_t high, pdf_u32_t low);
 
 /*Quick version of assignment in which only the lowest siginificant
   part is taken into account*/
 pdf_status_t 
-pdf_i64_assign_quick(pdf_i64_t *bignum, signed value);
+pdf_i64_assign_quick(pdf_i64_t *bignum, pdf_i32_t value);
 
 /*Copy one pdf_i64_t variable into another*/
 pdf_status_t 
