@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-04-16 14:20:33 gerel"
+/* -*- mode: C -*- Time-stamp: "2008-05-06 14:44:21 gerel"
  *
  *       File:         pdf-hash.h
  *       Date:         Sat Apr  12 12:22:05 2008
@@ -71,13 +71,13 @@ pdf_hash_destroy (pdf_hash_t *table);
 /* Hash Table properties */
 
 pdf_size_t
-pdf_hash_size (pdf_hash_t table);
+pdf_hash_size (const pdf_hash_t table);
 
 
 /* Working with keys */
 
 pdf_bool_t
-pdf_hash_key_p (pdf_hash_t table, const char *key);
+pdf_hash_key_p (const pdf_hash_t table, const char *key);
 
 pdf_status_t
 pdf_hash_rename (pdf_hash_t table, const char *key, const char *new_key);
@@ -95,13 +95,13 @@ pdf_hash_remove (pdf_hash_t table, const char *key);
 /* Searching elements */
 
 pdf_status_t
-pdf_hash_search (pdf_hash_t table, const char *key, const void **elem_pointer);
+pdf_hash_search (const pdf_hash_t table, const char *key, const void **elem_pointer);
 
 
 /* Working with iterators  */
 
 pdf_status_t
-pdf_hash_iterator (pdf_hash_t table, pdf_hash_iterator_t *iterator);
+pdf_hash_iterator (const pdf_hash_t table, pdf_hash_iterator_t *iterator);
 
 pdf_status_t
 pdf_hash_iterator_next (pdf_hash_iterator_t *iterator, const char **key);

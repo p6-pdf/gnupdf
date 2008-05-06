@@ -177,11 +177,11 @@ pdf_text_new_from_u32 (pdf_text_t *text,
 
 /* Return the country associated with a text variable */
 extern INLINE const pdf_char_t *
-pdf_text_get_country (pdf_text_t text);
+pdf_text_get_country (const pdf_text_t text);
 
 /* Return the language associated with a text variable */
 extern INLINE const pdf_char_t *
-pdf_text_get_language (pdf_text_t text);
+pdf_text_get_language (const pdf_text_t text);
 
 /* Associate a text variable (full text) with a country code */
 pdf_status_t
@@ -195,7 +195,7 @@ pdf_text_set_language (pdf_text_t text,
 
 /* Determine if a given text variable is empty (contains no text) */
 pdf_bool_t
-pdf_text_empty_p (pdf_text_t text);
+pdf_text_empty_p (const pdf_text_t text);
 
 /* Replace a given set of old patterns with a single new pattern */
 pdf_status_t
@@ -322,9 +322,9 @@ pdf_text_filter (pdf_text_t text,
  *  Returns  0 if text1 = text2
  */
 pdf_i32_t
-pdf_text_cmp (pdf_text_t text1,
-              pdf_text_t text2,
-              pdf_bool_t case_sensitive,
+pdf_text_cmp (const pdf_text_t text1,
+              const pdf_text_t text2,
+              const pdf_bool_t case_sensitive,
               pdf_status_t *p_ret_code);
 
 /* END PUBLIC */

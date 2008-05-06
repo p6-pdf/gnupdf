@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.51 2008/04/21 20:12:37 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.52 2008/05/06 18:53:43 gerel Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -172,7 +172,7 @@ This list will grow as we get closer to a mature state of development.
 @node Error Reporting procedures
 @subsection Error Reporting procedures
 
-@deftypefun void pdf_perror (pdf_status_t @var{status}, const char *@var{str})
+@deftypefun void pdf_perror (const pdf_status_t @var{status}, const char *@var{str})
 
 Prints the message corresponding to @var{status} to stderr followed by @var{str}.
 
@@ -200,7 +200,7 @@ if (st != PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun void pdf_error (pdf_status_t @var{status}, FILE *@var{fd}, const char *@var{format}, @var{...})
+@deftypefun void pdf_error (const pdf_status_t @var{status}, FILE *@var{fd}, const char *@var{format}, @var{...})
 
 Prints a message with `fprintf (@var{fd}, @var{format}, ...)'; 
 if @var{status} is nonzero, also prints the corresponding message.
@@ -281,7 +281,7 @@ The memory allocation module provides system-independent heap memory
 allocation and deallocation. The usual malloc/free/realloc schema is
 used to provide this service.
 
-@deftypefun void* pdf_alloc (size_t @var{size})
+@deftypefun void* pdf_alloc (const size_t @var{size})
 
 Allocates heap memory.
 
@@ -335,7 +335,7 @@ pdf_dealloc (p);
 @end table
 @end deftypefun
 
-@deftypefun void* pdf_realloc (void *@var{pointer}, int @var{size})
+@deftypefun void* pdf_realloc (void *@var{pointer}, const int @var{size})
 
 Reallocates memory.
 
@@ -456,7 +456,7 @@ bignums can be used in machines not providing true 64 bit integers.
 A variable of type pdf_i64_t is capabable of representing 64 bit signed integers.
 @end deftp
 
-@deftypefun pdf_i64_t  pdf_i64_new (pdf_i32_t @var{high}, pdf_u32_t @var{low})
+@deftypefun pdf_i64_t  pdf_i64_new (const pdf_i32_t @var{high}, const pdf_u32_t @var{low})
 
 Create a new i64 variable from one 32 bit signed integer and a 32 bit unsigned integer.
 
@@ -479,7 +479,7 @@ bignum = pdf_i64_new((32 << 1),10); /*bignum is now -10*/
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_i64_assign (pdf_i64_t *@var{bignum}, pdf_i32_t @var{high}, pdf_u32_t @var{low})
+@deftypefun pdf_status_t pdf_i64_assign (pdf_i64_t *@var{bignum}, const pdf_i32_t @var{high}, const pdf_u32_t @var{low})
 
 Assign a value coming from one 32 bit signed integer and a 32 bit unsigned integer to a  i64 integer.
 
@@ -515,7 +515,7 @@ if (pdf_i64_assign(bignum, (32 << 1), 10) != PDF_OK) /*bignum is now -10*/
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_i64_assign_quick (pdf_i64_t *@var{bignum}, pdf_i32_t @var{value})
+@deftypefun pdf_status_t pdf_i64_assign_quick (pdf_i64_t *@var{bignum}, const pdf_i32_t @var{value})
 
 Assign a value coming from one 32 bit signed integer to a  i64 integer.
 
@@ -548,7 +548,7 @@ if (pdf_i64_assign_quick(bignum, -10) != PDF_OK) /*bignum is now -10*/
 @end table
 @end deftypefun	
 
-@deftypefun pdf_status_t pdf_i64_copy (pdf_i64_t @var{orig}, pdf_i64_t *@var{copy})
+@deftypefun pdf_status_t pdf_i64_copy (const pdf_i64_t @var{orig}, pdf_i64_t *@var{copy})
 
 Copies the data from orig to copy.
 
@@ -580,7 +580,7 @@ if (pdf_i64_copy(orig, copy) != PDF_OK) /*Now copy is also 10*/
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_i64_add (pdf_i64_t *@var{dest}, pdf_i64_t @var{addend_1}, pdf_i64_t @var{addend_2})
+@deftypefun pdf_status_t pdf_i64_add (pdf_i64_t *@var{dest}, const pdf_i64_t @var{addend_1}, const pdf_i64_t @var{addend_2})
 
 Adds two 64 bit numbers
 
@@ -620,7 +620,7 @@ if (pdf_i64_add (dest, addend_1, addend_2) != PDF_OK) /* Now dest is 60 */
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_i64_subtraction (pdf_i64_t *@var{dest}, pdf_i64_t @var{minuend}, pdf_i64_t @var{subtrahend})
+@deftypefun pdf_status_t pdf_i64_subtraction (pdf_i64_t *@var{dest}, const pdf_i64_t @var{minuend}, const pdf_i64_t @var{subtrahend})
 
 Finds the difference between two 64 bit numbers
 
@@ -660,7 +660,7 @@ if (pdf_i64_subtraction (dest, minuend, subtrahend) != PDF_OK) /* Now dest is -1
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_i64_mult (pdf_i64_t *@var{dest}, pdf_i64_t @var{factor_1}, pdf_i64_t @var{factor_2})
+@deftypefun pdf_status_t pdf_i64_mult (pdf_i64_t *@var{dest}, const pdf_i64_t @var{factor_1}, const pdf_i64_t @var{factor_2})
 
 Multiplication of two 64 bit numbers
 
@@ -700,7 +700,7 @@ if (pdf_i64_mult (dest, factor_1, factor_2) != PDF_OK) /* Now dest is 1000 */
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_i64_div (pdf_i64_t *@var{dest}, pdf_i64_t @var{dividend}, pdf_i64_t @var{divisor})
+@deftypefun pdf_status_t pdf_i64_div (pdf_i64_t *@var{dest}, const pdf_i64_t @var{dividend}, const pdf_i64_t @var{divisor})
 
 Division of two 64 bit numbers
 
@@ -737,7 +737,7 @@ if (pdf_i64_div (dest, dividend, divisor) != PDF_OK) /* Now dest is 20 */
 @end deftypefun
 
 
-@deftypefun pdf_status_t pdf_i64_mod (pdf_i64_t *@var{dest}, pdf_i64_t @var{dividend}, pdf_i64_t @var{divisor})
+@deftypefun pdf_status_t pdf_i64_mod (pdf_i64_t *@var{dest}, const pdf_i64_t @var{dividend}, const pdf_i64_t @var{divisor})
 
 Returns the remainder of the division between two 64 bit numbers
 
@@ -777,7 +777,7 @@ if (pdf_i64_mod (dest, dividend, divisor) != PDF_OK) /* Now dest is 5 */
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_i64_abs (pdf_i64_t *@var{dest}, pdf_i64_t @var{number})
+@deftypefun pdf_status_t pdf_i64_abs (pdf_i64_t *@var{dest}, const pdf_i64_t @var{number})
 
 Returns the absolute value
 
@@ -813,7 +813,7 @@ if (pdf_i64_abs (dest, number) != PDF_OK) /* now dest stores 105 */
 @end table
 @end deftypefun
 
-@deftypefun int pdf_i64_cmp (pdf_i64_t @var{number_1}, pdf_i64_t @var{number_2})
+@deftypefun int pdf_i64_cmp (const pdf_i64_t @var{number_1}, const pdf_i64_t @var{number_2})
 
 Compares two 64 bit integers
 
@@ -848,7 +848,7 @@ result = pdf_i64_cmp (number_1, number_2); /* Now result is -1 */
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_i64_neg (pdf_i64_t *@var{dest}, pdf_i64_t @var{number})
+@deftypefun pdf_status_t pdf_i64_neg (pdf_i64_t *@var{dest}, const pdf_i64_t @var{number})
 
 Changes sign of 64 bit integer
 
@@ -979,7 +979,7 @@ XXX
 @node Hash Table properties
 @subsection Hash Table properties
 
-@deftypefun pdf_size_t pdf_hash_size (pdf_hash_t @var{table})
+@deftypefun pdf_size_t pdf_hash_size (const pdf_hash_t @var{table})
 
 Returns the number of entries in @var{table}.
 
@@ -1001,7 +1001,7 @@ XXX
 @node Working with keys
 @subsection Working with keys
 
-@deftypefun pdf_bool_t pdf_hash_key_p (pdf_hash_t @var{table}, const char *@var{key})
+@deftypefun pdf_bool_t pdf_hash_key_p (const pdf_hash_t @var{table}, const char *@var{key})
 
 Returns a boolean value indicating whether an element with key @var{key} exists in @var{table}.
 
@@ -1125,7 +1125,7 @@ XXX
 @node Searching elements
 @subsection Searching elements
 
-@deftypefun pdf_status_t pdf_hash_search (pdf_hash_t @var{table}, const char @var{*key}, const void **@var{elem_pointer})
+@deftypefun pdf_status_t pdf_hash_search (const pdf_hash_t @var{table}, const char @var{*key}, const void **@var{elem_pointer})
 
 Searches for the element associated with the given @var{key} in @var{table} and store it in @var{elem_pointer}.
 
@@ -1159,7 +1159,7 @@ XXX
 @node Working with iterators
 @subsection Working with iterators
 
-@deftypefun pdf_status_t pdf_hash_iterator (pdf_hash_t @var{table}, pdf_hash_iterator_t @var{*iterator})
+@deftypefun pdf_status_t pdf_hash_iterator (const pdf_hash_t @var{table}, pdf_hash_iterator_t @var{*iterator})
 
 Creates an iterator over the keys of @var{table} and saves it in @var{iterator}. Keys composed only by numbers are returned first followed by keys in the order imposed by the ``strcmp()'' function.
 
@@ -1293,7 +1293,7 @@ A function type for calculating a Hash code given a list element. Should return 
 @node Creating and Destroying Lists
 @subsection Creating and Destroying Lists
 
-@deftypefun pdf_status_t pdf_list_create (pdf_list_element_equals_fn_t @var{equals_fn}, pdf_list_element_dipose_fn_t @var{dispose_fn}, pdf_bool_t @var{allow_duplicates}, pdf_list_t @var{*list})
+@deftypefun pdf_status_t pdf_list_create (pdf_list_element_equals_fn_t @var{equals_fn}, pdf_list_element_dipose_fn_t @var{dispose_fn}, const pdf_bool_t @var{allow_duplicates}, pdf_list_t @var{*list})
 
 Create a new list containing no elements.
 
@@ -1367,7 +1367,7 @@ pdf_list_destroy (mylist);
 @node Managing List Properties
 @subsection Managing List Properties
 
-@deftypefun pdf_size_t pdf_list_size (pdf_list_t @var{list})
+@deftypefun pdf_size_t pdf_list_size (const pdf_list_t @var{list})
 
 Get the number of elements contained into a given list.
 
@@ -1393,7 +1393,7 @@ num_elm = pdf_list_size (mylist);
 @node Searching for List Elements
 @subsection Searching for List Elements
 
-@deftypefun pdf_status_t pdf_list_search (pdf_list_t @var{list}, const void* @var{element}, pdf_list_node_t @var{*node})
+@deftypefun pdf_status_t pdf_list_search (const pdf_list_t @var{list}, const void* @var{element}, pdf_list_node_t @var{*node})
 
 Search whether an element is already in the list.
 
@@ -1424,7 +1424,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_search_from (pdf_list_t @var{list}, pdf_size_t @var{start_index}, const void* @var{element}, pdf_list_node_t @var{*node})
+@deftypefun pdf_status_t pdf_list_search_from (const pdf_list_t @var{list}, const pdf_size_t @var{start_index}, const void* @var{element}, pdf_list_node_t @var{*node})
 
 Search whether an element is already in the list, at a position >= @var{start_index}.
 
@@ -1457,7 +1457,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_search_from_to (pdf_list_t @var{list}, pdf_size_t @var{start_index}, pdf_size_t @var{end_index}, const void* @var{element}, pdf_list_node_t @var{*node})
+@deftypefun pdf_status_t pdf_list_search_from_to (const pdf_list_t @var{list}, const pdf_size_t @var{start_index}, const pdf_size_t @var{end_index}, const void* @var{element}, pdf_list_node_t @var{*node})
 
 Search whether an element is already in the list, at a position >=
 @var{start_index} and < @var{end_index}.
@@ -1495,7 +1495,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_next_node (pdf_list_t @var{list}, pdf_list_node_t @var{node}, pdf_list_node_t @var{*next})
+@deftypefun pdf_status_t pdf_list_next_node (const pdf_list_t @var{list}, const pdf_list_node_t @var{node}, pdf_list_node_t @var{*next})
 
 Return the node immediately after the given node in the list.
 
@@ -1526,7 +1526,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_previous_node (pdf_list_t @var{list}, pdf_list_node_t @var{node}, pdf_list_node_t @var{*prev})
+@deftypefun pdf_status_t pdf_list_previous_node (const pdf_list_t @var{list}, const pdf_list_node_t @var{node}, pdf_list_node_t @var{*prev})
 
 Return the node immediately before the given node in the list.
 
@@ -1557,7 +1557,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_indexof (pdf_list_t @var{list}, const void* @var{element}, pdf_size_t @var{*position})
+@deftypefun pdf_status_t pdf_list_indexof (const pdf_list_t @var{list}, const void* @var{element}, pdf_size_t @var{*position})
 
 Search whether an element is already in the list.
 
@@ -1588,7 +1588,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_indexof_from (pdf_list_t @var{list}, pdf_size_t @var{start_index}, const void* @var{element}, pdf_size_t @var{*position})
+@deftypefun pdf_status_t pdf_list_indexof_from (const pdf_list_t @var{list}, const pdf_size_t @var{start_index}, const void* @var{element}, pdf_size_t @var{*position})
 
 Search whether an element is already in the list, at a position >= @var{start_index}.
 
@@ -1623,7 +1623,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_indexof_from_to (pdf_list_t @var{list}, pdf_size_t @var{start_index}, pdf_size_t @var{end_index}, const void* @var{element}, pdf_size_t @var{*position})
+@deftypefun pdf_status_t pdf_list_indexof_from_to (const pdf_list_t @var{list}, const pdf_size_t @var{start_index}, const pdf_size_t @var{end_index}, const void* @var{element}, pdf_size_t @var{*position})
 
 Search whether an element is already in the list, at a position >= @var{start_index} and < @var{end_index}.
 
@@ -1663,7 +1663,7 @@ XXX
 @node Setting and Getting List Elements
 @subsection Setting and Getting List Elements
 
-@deftypefun {void *} pdf_list_node_value (pdf_list_t @var{list}, pdf_list_node_t @var{node})
+@deftypefun {void *} pdf_list_node_value (const pdf_list_t @var{list}, const pdf_list_node_t @var{node})
 
 Get the element value represented by a list node.
 
@@ -1684,7 +1684,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_get_at (pdf_list_t @var{list}, pdf_size_t @var{position}, const void @var{**value})
+@deftypefun pdf_status_t pdf_list_get_at (const pdf_list_t @var{list}, const pdf_size_t @var{position}, const void @var{**value})
 
 Get the element at a given position in the list.
 
@@ -1716,7 +1716,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_set_at (pdf_list_t @var{list}, pdf_size_t @var{position}, const void* @var{element}, pdf_list_node_t @var{*node})
+@deftypefun pdf_status_t pdf_list_set_at (pdf_list_t @var{list}, const pdf_size_t @var{position}, const void* @var{element}, pdf_list_node_t @var{*node})
 
 Replace the element at a given position in a list.
 
@@ -1816,7 +1816,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_add_at (pdf_list_t @var{list}, pdf_size_t @var{position}, const void* @var{element}, pdf_list_node_t @var{*node})
+@deftypefun pdf_status_t pdf_list_add_at (pdf_list_t @var{list}, const pdf_size_t @var{position}, const void* @var{element}, pdf_list_node_t @var{*node})
 
 Add an element at a given position in the list.
 
@@ -1851,7 +1851,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_remove_node (pdf_list_t @var{list}, pdf_list_node_t @var{node})
+@deftypefun pdf_status_t pdf_list_remove_node (pdf_list_t @var{list}, const pdf_list_node_t @var{node})
 
 Remove an element from the list.
 
@@ -1875,7 +1875,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_remove_at (pdf_list_t @var{list}, pdf_size_t @var{position})
+@deftypefun pdf_status_t pdf_list_remove_at (pdf_list_t @var{list}, const pdf_size_t @var{position})
 
 Remove an element at a given position from the list.
 
@@ -1996,7 +1996,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_sorted_search (pdf_list_t @var{list}, pdf_list_element_compar_fn_t @var{compar_fn}, const void* @var{element}, pdf_list_node_t @var{*node})
+@deftypefun pdf_status_t pdf_list_sorted_search (const pdf_list_t @var{list}, pdf_list_element_compar_fn_t @var{compar_fn}, const void* @var{element}, pdf_list_node_t @var{*node})
 
 Search whether an element is already in the list.
 
@@ -2029,7 +2029,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_sorted_search_from_to (pdf_list_t @var{list}, pdf_list_element_compar_fn_t @var{compar_fn}, pdf_size_t @var{start_index}, pdf_size_t @var{end_index}, const void* @var{element}, pdf_list_node_t @var{*node})
+@deftypefun pdf_status_t pdf_list_sorted_search_from_to (const pdf_list_t @var{list}, pdf_list_element_compar_fn_t @var{compar_fn}, const pdf_size_t @var{start_index}, const pdf_size_t @var{end_index}, const void* @var{element}, pdf_list_node_t @var{*node})
 
 Search whether an element is already in the list, at a position >=
 @var{start_index} and < @var{end_index}.
@@ -2069,7 +2069,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_sorted_indexof (pdf_list_t @var{list}, pdf_list_element_compar_fn_t @var{compar_fn}, const void* @var{element}, pdf_size_t @var{*position})
+@deftypefun pdf_status_t pdf_list_sorted_indexof (const pdf_list_t @var{list}, pdf_list_element_compar_fn_t @var{compar_fn}, const void* @var{element}, pdf_size_t @var{*position})
 
 Search whether an element is already in the list.
 
@@ -2102,7 +2102,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_sorted_indexof_from_to (pdf_list_t @var{list}, pdf_list_element_compar_fn_t @var{compar_fn}, pdf_size_t @var{start_index}, pdf_size_t @var{end_index}, const void* @var{element}, pdf_size_t @var{*position})
+@deftypefun pdf_status_t pdf_list_sorted_indexof_from_to (const pdf_list_t @var{list}, pdf_list_element_compar_fn_t @var{compar_fn}, const pdf_size_t @var{start_index}, const pdf_size_t @var{end_index}, const void* @var{element}, pdf_size_t @var{*position})
 
 Search whether an element is already in the list, at a position >= @var{start_index} and < @var{end_index}.
 
@@ -2145,7 +2145,7 @@ XXX
 @node Working with Iterators
 @subsection Working with Iterators
 
-@deftypefun pdf_status_t pdf_list_iterator (pdf_list_t @var{list}, pdf_list_iterator_t @var{*itr})
+@deftypefun pdf_status_t pdf_list_iterator (const pdf_list_t @var{list}, pdf_list_iterator_t @var{*itr})
 
 Create an iterator traversing a list.
 
@@ -2177,7 +2177,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_iterator_from_to (pdf_list_t @var{list}, pdf_size_t @var{start_index}, pdf_size_t @var{end_index}, pdf_list_iterator_t @var{*itr})
+@deftypefun pdf_status_t pdf_list_iterator_from_to (const pdf_list_t @var{list}, const pdf_size_t @var{start_index}, const pdf_size_t @var{end_index}, pdf_list_iterator_t @var{*itr})
 
 Create an iterator traversing the element with indices @code{i},
 @code{start_index <= i < end_index}, of a list.
@@ -2371,19 +2371,19 @@ Third row.
 @node Matrix Manipulation Functions
 @subsection Matrix Manipulation Functions
 
-@deftypefun pdf_status_t pdf_fp_matrix_concat (pdf_matrix_t @var{result}, pdf_matrix_t @var{m1}, pdf_matrix_t @var{m2})
+@deftypefun pdf_status_t pdf_fp_matrix_concat (pdf_matrix_t @var{result}, const pdf_matrix_t @var{m1}, const pdf_matrix_t @var{m2})
 
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fp_matrix_invert (pdf_matrix_t @var{result}, pdf_matrix_t @var{m})
+@deftypefun pdf_status_t pdf_fp_matrix_invert (pdf_matrix_t @var{result}, const pdf_matrix_t @var{m})
 
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fp_matrix_transform (pdf_point_t @var{result}, pdf_matrix_t @var{m}, pdf_point_t @var{p})
+@deftypefun pdf_status_t pdf_fp_matrix_transform (pdf_point_t @var{result}, const pdf_matrix_t @var{m}, const pdf_point_t @var{p})
 
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fp_matrix_transform_rect (pdf_rect_t @var{result}, pdf_matrix_t @var{m}, pdf_rect_t @var{rect})
+@deftypefun pdf_status_t pdf_fp_matrix_transform_rect (pdf_rect_t @var{result}, const pdf_matrix_t @var{m}, const pdf_rect_t @var{rect})
 
 @end deftypefun
 
@@ -2555,7 +2555,7 @@ pdf_text_destroy(mytext);
 @end table
 @end deftypefun
 
-@deftypefun pdf_text_t pdf_text_dup (pdf_text_t @var{text})
+@deftypefun pdf_text_t pdf_text_dup (const pdf_text_t @var{text})
 
 Dup a new text object from a existing one.
 
@@ -2621,7 +2621,7 @@ if(ret_code != PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_text_new_from_pdf_string (pdf_text_t *@var{text}, const pdf_char_t *@var{str}, pdf_size_t @var{size}, pdf_char_t *@var{remaining_str}, pdf_size_t *@var{remaining_length})
+@deftypefun pdf_status_t pdf_text_new_from_pdf_string (pdf_text_t *@var{text}, const pdf_char_t *@var{str}, const pdf_size_t @var{size}, pdf_char_t *@var{remaining_str}, pdf_size_t *@var{remaining_length})
 
 Create a new text object and initialize it with a given `PDF string'
 text representation. This `PDF string' can be either encoded in UTF-16BE, with
@@ -2682,7 +2682,7 @@ while((ret_code == PDF_OK) && (remaining_length > 0));
 @end table
 @end deftypefun
 
-@deftypefun pdf_text_t pdf_text_new_from_unicode (pdf_text_t *@var{text}, const pdf_char_t *@var{ucs}, const pdf_size_t @var{size}, const enum pdf_text_unicode_encoding_e @var{enc})
+@deftypefun pdf_status_t pdf_text_new_from_unicode (pdf_text_t *@var{text}, const pdf_char_t *@var{ucs}, const pdf_size_t @var{size}, const enum pdf_text_unicode_encoding_e @var{enc})
 
 Create a new text object from a string of Unicode characters in a
 given unicode encoding. The Unicode string can be given with or without BOM,
@@ -2766,7 +2766,7 @@ if(ret_code != PDF_OK)
 @node Managing Text Properties
 @subsection Managing Text Properties
 
-@deftypefun {const pdf_char_t *} pdf_text_get_country (pdf_text_t @var{text})
+@deftypefun {const pdf_char_t *} pdf_text_get_country (const pdf_text_t @var{text})
 
 Return the `ISO-3166-1 alpha-2' country code associated with a text variable, as a
 NUL-terminated string. The returned string should not be modified, as it is
@@ -2792,7 +2792,7 @@ code = pdf_text_get_country (text);
 @end table
 @end deftypefun
 
-@deftypefun {const pdf_char_t *} pdf_text_get_language (pdf_text_t @var{text})
+@deftypefun {const pdf_char_t *} pdf_text_get_language (const pdf_text_t @var{text})
 
 Return the `ISO-639-1' language code associated with a text variable, as a
 NUL-terminated string. The returned string should not be modified, as it is
@@ -2871,7 +2871,7 @@ ret_code = pdf_text_set_language (text, "10");
 @end table
 @end deftypefun
 
-@deftypefun {inline pdf_bool_t} pdf_text_empty_p (pdf_text_t @var{text})
+@deftypefun {inline pdf_bool_t} pdf_text_empty_p (const pdf_text_t @var{text})
 
 Determine if a given text variable is empty (contains no text).
 
@@ -3285,7 +3285,7 @@ if (pdf_text_filter (text, (PDF_TEXT_FILTER_LOWER_CASE | PDF_TEXT_FILTER_REMOVE_
 @node Comparing Text Variables
 @subsection Comparing Text Variables
 
-@deftypefun pdf_i32_t pdf_text_cmp (pdf_text_t @var{text1}, pdf_text_t @var{text2}, pdf_bool_t @var{case_sensitive}, pdf_status_t *@var{p_ret_code})
+@deftypefun pdf_i32_t pdf_text_cmp (const pdf_text_t @var{text1}, const pdf_text_t @var{text2}, const pdf_bool_t @var{case_sensitive}, pdf_status_t *@var{p_ret_code})
 
 Compare the contents of two text variables.
 
@@ -3546,7 +3546,7 @@ if (mytime == NULL)
 @end table
 @end deftypefun
 
-@deftypefun pdf_time_t pdf_time_dup (pdf_time_t @var{orig})
+@deftypefun pdf_time_t pdf_time_dup (const pdf_time_t @var{orig})
 Dup a new time variable from a given one, allocating memory.
 
 @table @strong
@@ -3605,7 +3605,7 @@ pdf_time_destroy (mytime);
 @node Managing Time Values
 @subsection Managing Time Values
 
-@deftypefun pdf_status_t pdf_time_copy (pdf_time_t orig, pdf_time_t @var{copy})
+@deftypefun pdf_status_t pdf_time_copy (const pdf_time_t orig, pdf_time_t @var{copy})
 Copies the data from @var{orig} to @var{copy}.
 
 @table @strong
@@ -3671,7 +3671,7 @@ pdf_time_clear (mytime);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_add_cal_span (pdf_time_t @var{time}, struct pdf_time_cal_span_s @var{cal_span})
+@deftypefun pdf_status_t pdf_time_add_cal_span (pdf_time_t @var{time}, const struct pdf_time_cal_span_s @var{cal_span})
 Add the time span represented by @var{cal_span} to @var{time}.
 
 @table @strong
@@ -3719,7 +3719,7 @@ else
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_sub_cal_span (pdf_time_t @var{time}, struct pdf_time_cal_span_s @var{cal_span})
+@deftypefun pdf_status_t pdf_time_sub_cal_span (pdf_time_t @var{time}, const struct pdf_time_cal_span_s @var{cal_span})
 Subtract the time span represented by @var{cal_span} to @var{time}.
 
 @table @strong
@@ -3777,7 +3777,7 @@ else
 @end deftypefun
 
 
-@deftypefun pdf_status_t pdf_time_add_span (pdf_time_t @var{time}, pdf_time_span_t @var{time_span})
+@deftypefun pdf_status_t pdf_time_add_span (pdf_time_t @var{time}, const pdf_time_span_t @var{time_span})
 Add the time span contained in @var{time_span} to @var{time}.
 
 @table @strong
@@ -3811,7 +3811,7 @@ pdf_time_add_span (mytime, myspan);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_sub_span (pdf_time_t @var{time}, pdf_time_span_t @var{time_span})
+@deftypefun pdf_status_t pdf_time_sub_span (pdf_time_t @var{time}, const pdf_time_span_t @var{time_span})
 Subtract the time span contained in @var{time_span} to @var{time}.
 
 @table @strong
@@ -3845,7 +3845,7 @@ pdf_time_sub_span (mytime, myspan);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_get_local_cal (pdf_time_t @var{time}, struct pdf_time_cal_s @var{local_cal})
+@deftypefun pdf_status_t pdf_time_get_local_cal (const pdf_time_t @var{time}, struct pdf_time_cal_s @var{local_cal})
 Fill @var{local_cal} with the local calendar time of @var{time}.
 
 @table @strong
@@ -3877,7 +3877,7 @@ pdf_time_get_local_cal (mytime, cal);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_get_utc_cal (pdf_time_t @var{time}, struct pdf_time_cal_s @var{cal_time})
+@deftypefun pdf_status_t pdf_time_get_utc_cal (const pdf_time_t @var{time}, struct pdf_time_cal_s @var{cal_time})
 Get the UTC calendar time of a given time variable.
 
 @table @strong
@@ -3909,7 +3909,7 @@ pdf_time_get_utc_cal (mytime, cal_time);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_from_cal (pdf_time_t @var{time}, struct pdf_time_cal_s @var{cal_time})
+@deftypefun pdf_status_t pdf_time_from_cal (const pdf_time_t @var{time}, struct pdf_time_cal_s @var{cal_time})
 Set the value of a time variable to a given calendar time.
 
 @table @strong
@@ -3987,7 +3987,7 @@ pdf_time_set_local_offset (time);
 @node Getting Time Intervals
 @subsection Getting Time Intervals
 
-@deftypefun pdf_status_t pdf_time_diff_cal (pdf_time_t @var{time1}, pdf_time_t @var{time2}, struct pdf_time_cal_span_s @var{cal_span})
+@deftypefun pdf_status_t pdf_time_diff_cal (const pdf_time_t @var{time1}, const pdf_time_t @var{time2}, struct pdf_time_cal_span_s @var{cal_span})
 Calculate the time span that goes from @var{time1} to @var{time2} and
 store it in @var{cal_span}.
 
@@ -4025,7 +4025,7 @@ pdf_time_diff (time_begin, time_end, cal_span);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_diff (pdf_time_t @var{time1}, pdf_time_t @var{time2}, pdf_time_span_t @var{time_span})
+@deftypefun pdf_status_t pdf_time_diff (const pdf_time_t @var{time1}, const pdf_time_t @var{time2}, pdf_time_span_t @var{time_span})
 Calculate the time span between two dates.
 
 @table @strong
@@ -4065,7 +4065,7 @@ pdf_time_diff (time1, time2, time_span);
 @node Time Comparison
 @subsection Time Comparison
 
-@deftypefun pdf_i32_t pdf_time_cmp (pdf_time_t @var{time1}, pdf_time_t @var{time2})
+@deftypefun pdf_i32_t pdf_time_cmp (const pdf_time_t @var{time1}, const pdf_time_t @var{time2})
 Compares two times.
 
 @table @strong
@@ -4126,7 +4126,7 @@ switch (pdf_time_cmp (time1, time2))
 @node Time Printing and Parsing
 @subsection Time Printing and Parsing
 
-@deftypefun char* pdf_time_to_string (pdf_time_t @var{time}, enum pdf_time_format_e @var{time_format})
+@deftypefun char* pdf_time_to_string (const pdf_time_t @var{time}, const enum pdf_time_format_e @var{time_format})
 Create a string representation of a given time.
 
 @table @strong
@@ -4155,7 +4155,7 @@ mytime_str = pdf_time_to_string (mytime, PDF_TIME_FORMAT_PDF);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_from_string (pdf_time_t mytime, char *@var{time_str}, enum pdf_time_format_e @var{time_format})
+@deftypefun pdf_status_t pdf_time_from_string (pdf_time_t mytime, const char *@var{time_str}, const enum pdf_time_format_e @var{time_format})
 Get a string containing a time specification in some format and fill a
 time variable with the parsed values.
 
@@ -4284,7 +4284,7 @@ span = pdf_time_span_new ();
 @end table
 @end deftypefun
 
-@deftypefun pdf_time_span_t pdf_time_span_dup (pdf_time_span_t @var{span})
+@deftypefun pdf_time_span_t pdf_time_span_dup (const pdf_time_span_t @var{span})
 
 Allocate and dup a new time span from an existing one. The new time
 span has the same value as the base time span.
@@ -4344,7 +4344,7 @@ pdf_time_span_destroy (span);
 @node Managing Time Span Values
 @subsection Managing Time Span Values
 
-@deftypefun pdf_status_t pdf_time_span_set (pdf_time_span_t @var{span}, pdf_i32_t @var{high_value}, pdf_u32_t @var{low_value})
+@deftypefun pdf_status_t pdf_time_span_set (pdf_time_span_t @var{span}, const pdf_i32_t @var{high_value}, const pdf_u32_t @var{low_value})
 
 Set the value of a time span. The internal representation of the time
 span is 64 bits long (signed).
@@ -4378,7 +4378,7 @@ pdf_time_span_set (span, (32 << 1), 10); /* The span is -10 seconds long */
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_span_set_from_i32 (pdf_time_span_t @var{span}, pdf_i32_t @var{seconds})
+@deftypefun pdf_status_t pdf_time_span_set_from_i32 (pdf_time_span_t @var{span}, const pdf_i32_t @var{seconds})
 
 Set the value of a time span from a 32 bits signed number.
 
@@ -4440,7 +4440,7 @@ pdf_time_span_negate (span);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_span_add (pdf_time_span_t @var{span1}, pdf_time_span_t @var{span2}, pdf_time_span_t @var{result})
+@deftypefun pdf_status_t pdf_time_span_add (const pdf_time_span_t @var{span1}, const pdf_time_span_t @var{span2}, pdf_time_span_t @var{result})
 
 Add two time spans and store the result in another time span.
 
@@ -4476,7 +4476,7 @@ pdf_time_span_add (span1, span2, result);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_span_copy (pdf_time_span_t @var{orig}, pdf_time_span_t @var{dest})
+@deftypefun pdf_status_t pdf_time_span_copy (const pdf_time_span_t @var{orig}, pdf_time_span_t @var{dest})
 
 Copy the value of a time span into another time span.
 
@@ -4510,7 +4510,7 @@ pdf_time_span_copy (span_orig, span_dest);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_span_diff (pdf_time_span_t @var{span1}, pdf_time_span_t @var{span2}, pdf_time_span_t @var{result})
+@deftypefun pdf_status_t pdf_time_span_diff (const pdf_time_span_t @var{span1}, const pdf_time_span_t @var{span2}, pdf_time_span_t @var{result})
 
 Difference two time spans and store the result (maybe negative) into
 another time span.
@@ -4548,7 +4548,7 @@ pdf_time_span_diff (span1, span2, span_diff);
 @end table
 @end deftypefun
 
-@deftypefun pdf_i32_t pdf_time_span_to_secs (pdf_time_span_t @var{span})
+@deftypefun pdf_i32_t pdf_time_span_to_secs (const pdf_time_span_t @var{span})
 
 Get the value of a time span in seconds. 
 
@@ -4578,7 +4578,7 @@ num_seconds = pdf_time_span_to_secs (span);
 @node Time Span Comparison
 @subsection Time Span Comparison
 
-@deftypefun pdf_i32_t pdf_time_span_cmp (pdf_time_span_t @var{span1}, pdf_time_span_t @var{span2})
+@deftypefun pdf_i32_t pdf_time_span_cmp (const pdf_time_span_t @var{span1}, const pdf_time_span_t @var{span2})
 
 Compare the length two time spans.
 
@@ -4634,7 +4634,7 @@ switch (pdf_time_span_cmp (span1, span2))
 @node Calendar Spans Management
 @subsection  Calendar Spans Management
 
-@deftypefun pdf_status_t pdf_time_add_cal_span_with_base (struct pdf_time_cal_span_s @var{span1}, struct pdf_time_cal_span_s @var{span2}, pdf_time_t @var{base_time}, struct pdf_time_cal_span_s @var{result})
+@deftypefun pdf_status_t pdf_time_add_cal_span_with_base (const struct pdf_time_cal_span_s @var{span1}, const struct pdf_time_cal_span_s @var{span2}, const pdf_time_t @var{base_time}, struct pdf_time_cal_span_s @var{result})
 
 Add two calendar spans. Since the calendar spans are relative (some
 years has more days than another) the calendar spans are first
@@ -4686,7 +4686,7 @@ if (pdf_time_add_cal_span_with_base (cal_span1,
 @end deftypefun
 
 
-@deftypefun pdf_i32_t pdf_time_cal_span_cmp (struct pdf_time_cal_span_s @var{span1}, struct pdf_time_cal_span_s @var{span2}, pdf_time_t @var{base_time})
+@deftypefun pdf_i32_t pdf_time_cal_span_cmp (const struct pdf_time_cal_span_s @var{span1}, const struct pdf_time_cal_span_s @var{span2}, const pdf_time_t @var{base_time})
 
 Compare two calendar spans previously resolved with a given base time.
 
@@ -4746,7 +4746,7 @@ switch (pdf_time_cal_span_cmp (span1, span2, mytime))
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_cal_span_diff (struct pdf_time_cal_span_s @var{span1}, struct pdf_time_cal_span_s @var{span2}, pdf_time_t @var{base_time}, struct pdf_time_cal_span_s @var{result})
+@deftypefun pdf_status_t pdf_time_cal_span_diff (const struct pdf_time_cal_span_s @var{span1}, const struct pdf_time_cal_span_s @var{span2}, const pdf_time_t @var{base_time}, struct pdf_time_cal_span_s @var{result})
 
 Compute the difference between two calendar spans relative to a given
 base time and store it in a given calendar span.
@@ -4965,7 +4965,7 @@ filesystem.
 @node Opening and Closing Files
 @subsubsection Opening and Closing Files
 
-@deftypefun pdf_status_t pdf_fsys_open (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name}, enum pdf_fsys_file_mode_e @var{mode}, pdf_fsys_file_t @var{file})
+@deftypefun pdf_status_t pdf_fsys_open (const pdf_fsys_t @var{filesystem}, const pdf_text_t @var{path_name}, const enum pdf_fsys_file_mode_e @var{mode}, pdf_fsys_file_t @var{file})
 
 Open a file in @var{filesystem} identified by @var{path_name} using
 the specified @var{mode} and store a new open file variable in
@@ -5005,7 +5005,7 @@ XXX
 @end table
 @end deftypefun               
 
-@deftypefun pdf_status_t pdf_fsys_close (pdf_fsys_t @var{filesystem}, pdf_fsys_file_t @var{file})
+@deftypefun pdf_status_t pdf_fsys_close (const pdf_fsys_t @var{filesystem}, pdf_fsys_file_t @var{file})
 
 Close @var{file} releasing any used resource.
 
@@ -5035,7 +5035,7 @@ XXX
 @node Folder Management
 @subsubsection Folder Management
 
-@deftypefun pdf_status_t pdf_fsys_create_folder (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name})
+@deftypefun pdf_status_t pdf_fsys_create_folder (const pdf_fsys_t @var{filesystem}, const pdf_text_t @var{path_name})
 
 Create a folder named @var{path_name}.
 
@@ -5064,7 +5064,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fsys_get_folder_contents (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name}, pdf_list_t @var{item_list})
+@deftypefun pdf_status_t pdf_fsys_get_folder_contents (const pdf_fsys_t @var{filesystem}, const pdf_text_t @var{path_name}, pdf_list_t @var{item_list})
 
 Get a list with the path names of the items contained in a given folder.
 
@@ -5096,7 +5096,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fsys_get_parent (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name}, pdf_text_t @var{parent_path})
+@deftypefun pdf_status_t pdf_fsys_get_parent (const pdf_fsys_t @var{filesystem}, const pdf_text_t @var{path_name}, pdf_text_t @var{parent_path})
 
 Get the path name of the father of a given item in the filesystem.
 
@@ -5131,7 +5131,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fsys_remove_folder (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name})
+@deftypefun pdf_status_t pdf_fsys_remove_folder (const pdf_fsys_t @var{filesystem}, const pdf_text_t @var{path_name})
 
 Remove an empty folder from the filesystem.
 
@@ -5164,7 +5164,7 @@ XXX
 @subsubsection Filesystem Utility Functions
 
 
-@deftypefun pdf_status_t pdf_fsys_item_props_to_hash (struct pdf_fsys_item_props_s @var{item_props}, pdf_hash_t @var{props_hash}
+@deftypefun pdf_status_t pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s @var{item_props}, pdf_hash_t @var{props_hash}
 
 Get a PDF hash variable containing the properties of a filesystem
 item.
@@ -5275,7 +5275,7 @@ reference.
 The following functions provides synchronous input/output for open
 files.
 
-@deftypefun pdf_size_t pdf_fsys_file_read (pdf_fsys_file_t @var{file}, pdf_size_t @var{elem_size}, pdf_size_t @var{elem_count}, void *@var{data})
+@deftypefun pdf_size_t pdf_fsys_file_read (pdf_fsys_file_t @var{file}, const pdf_size_t @var{elem_size}, const pdf_size_t @var{elem_count}, void *@var{data})
 
 Synchronously read data from an open file item.
 
@@ -5301,7 +5301,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_fsys_file_write (pdf_fsys_file_t @var{file}, pdf_size_t @var{elem_size}, pdf_size_t @var{elem_count}, void *@var{data})
+@deftypefun pdf_size_t pdf_fsys_file_write (pdf_fsys_file_t @var{file}, const pdf_size_t @var{elem_size}, const pdf_size_t @var{elem_count}, void *@var{data})
 
 Synchronously write data to an open file item.
 
@@ -5756,7 +5756,7 @@ A real object represent a fixed-point real number.
 @node Real Object Creation
 @subsection Real Object Creation
 
-@deftypefun pdfo_obj_t pdfo_create_real (pdfo_doc_t @var{doc}, pdf_bool_t @var{indirect}, pdf_real_t @var{value})
+@deftypefun pdfo_obj_t pdfo_create_real (const pdfo_doc_t @var{doc}, const pdf_bool_t @var{indirect}, const pdf_real_t @var{value})
 
 Creates a new real object.
 
@@ -5790,7 +5790,7 @@ new_obj = pdfo_create_real (doc, PDF_FALSE, 2.12);
 @node Managing Real Object Attributes
 @subsection Managing Real Object Attributes
 
-@deftypefun pdf_real_t pdfo_get_real (pdfo_obj_t @var{object})
+@deftypefun pdf_real_t pdfo_get_real (const pdfo_obj_t @var{object})
 
 Gets the real value of a real object.
 
@@ -5814,7 +5814,7 @@ value = pdfo_get_real (new_obj);
 @end table
 @end deftypefun
 
-@deftypefun void pdfo_set_real (pdfo_obj_t @var{object}, pdf_real_t @var{value})
+@deftypefun void pdfo_set_real (pdfo_obj_t @var{object}, const pdf_real_t @var{value})
 
 Set a new real value in a real object.
 

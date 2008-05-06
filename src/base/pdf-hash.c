@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/04/18 21:19:46 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-05-06 14:44:35 gerel"
  *
  *       File:         pdf-hash.c
  *       Date:         Sat Apr  12 12:22:05 2008
@@ -120,14 +120,14 @@ pdf_hash_destroy (pdf_hash_t *table)
 
 
 pdf_size_t
-pdf_hash_size (pdf_hash_t table)
+pdf_hash_size (const pdf_hash_t table)
 {
   return (gl_list_size ((gl_list_t) table.keys));
 }
 
 
 pdf_bool_t
-pdf_hash_key_p (pdf_hash_t table, const char *key)
+pdf_hash_key_p (const pdf_hash_t table, const char *key)
 {
   if (gl_sortedlist_search ((gl_list_t) table.keys, key_compare,
                       (const void*) key) != NULL)
@@ -257,7 +257,7 @@ pdf_hash_remove (pdf_hash_t table, const char *key)
 
 
 pdf_status_t
-pdf_hash_search (pdf_hash_t table, const char *key, const void **elem_pointer)
+pdf_hash_search (const pdf_hash_t table, const char *key, const void **elem_pointer)
 {
   pdf_status_t st;
   gl_list_node_t node;
@@ -291,7 +291,7 @@ pdf_hash_search (pdf_hash_t table, const char *key, const void **elem_pointer)
 
 
 pdf_status_t
-pdf_hash_iterator (pdf_hash_t table, pdf_hash_iterator_t *iterator)
+pdf_hash_iterator (const pdf_hash_t table, pdf_hash_iterator_t *iterator)
 {
   pdf_status_t st;
 

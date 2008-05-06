@@ -451,14 +451,14 @@ pdf_text_new_from_u32 (pdf_text_t *text,
 
 /* Return the country associated with a text variable */
 const pdf_char_t *
-pdf_text_get_country (pdf_text_t text)
+pdf_text_get_country (const pdf_text_t text)
 {
   return (const pdf_char_t *)text->country;
 }
 
 /* Return the language associated with a text variable */
 const pdf_char_t *
-pdf_text_get_language (pdf_text_t text)
+pdf_text_get_language (const pdf_text_t text)
 {
   return (const pdf_char_t *)text->lang;
 }
@@ -501,7 +501,7 @@ pdf_text_set_language (pdf_text_t text,
 
 /* Determine if a given text variable is empty (contains no text) */
 inline pdf_bool_t
-pdf_text_empty_p (pdf_text_t text)
+pdf_text_empty_p (const pdf_text_t text)
 {
   return ((text->size != 0) ? PDF_FALSE : PDF_TRUE);
 }
@@ -1340,9 +1340,9 @@ pdf_text_filter (pdf_text_t text,
 
 
 pdf_i32_t
-pdf_text_cmp (pdf_text_t text1,
-              pdf_text_t text2,
-              pdf_bool_t case_sensitive,
+pdf_text_cmp (const pdf_text_t text1,
+              const pdf_text_t text2,
+              const pdf_bool_t case_sensitive,
               pdf_status_t *p_ret_code)
 {
   if(p_ret_code != NULL)

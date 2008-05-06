@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/03/05 12:29:00 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-05-06 14:25:15 gerel"
  *
  *       File:         pdf-alloc.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -34,7 +34,7 @@
 #include <pdf-alloc.h>
 
 inline void *
-pdf_alloc (pdf_size_t size)
+pdf_alloc (const pdf_size_t size)
 {
   void *pointer;
 

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/10 21:34:21 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-05-06 14:21:44 gerel"
  *
  *       File:         pdf-types.c
  *       Date:         Sun Feb 10 21:33:44 2008
@@ -26,7 +26,7 @@
 #include <pdf-types.h>
 
 
-pdf_i64_t  pdf_i64_new(pdf_i32_t high, pdf_u32_t low)
+pdf_i64_t  pdf_i64_new(const pdf_i32_t high, const pdf_u32_t low)
 {
   pdf_i64_t pdfint;
   pdfint.high = high;
@@ -36,7 +36,7 @@ pdf_i64_t  pdf_i64_new(pdf_i32_t high, pdf_u32_t low)
 
 
 
-pdf_status_t pdf_i64_assign(pdf_i64_t *bignum, pdf_i32_t high, pdf_u32_t low)
+pdf_status_t pdf_i64_assign(pdf_i64_t *bignum, const pdf_i32_t high, const pdf_u32_t low)
 {
 
   if (bignum == NULL)
@@ -51,7 +51,7 @@ pdf_status_t pdf_i64_assign(pdf_i64_t *bignum, pdf_i32_t high, pdf_u32_t low)
 
 
 
-pdf_status_t pdf_i64_assign_quick(pdf_i64_t *bignum, pdf_i32_t value)
+pdf_status_t pdf_i64_assign_quick(pdf_i64_t *bignum, const pdf_i32_t value)
 {
   if (bignum == NULL)
     {
@@ -70,7 +70,7 @@ pdf_status_t pdf_i64_assign_quick(pdf_i64_t *bignum, pdf_i32_t value)
 }/*end pdf_i64_assign_quick*/
 
 
-pdf_status_t	pdf_i64_copy(pdf_i64_t orig, pdf_i64_t *copy)
+pdf_status_t	pdf_i64_copy(const pdf_i64_t orig, pdf_i64_t *copy)
 {
   if (copy == NULL)
     {
@@ -83,7 +83,7 @@ pdf_status_t	pdf_i64_copy(pdf_i64_t orig, pdf_i64_t *copy)
 }/*end pdf_i64_copy*/
 
 
-pdf_status_t pdf_i64_add(pdf_i64_t *dest, pdf_i64_t addend1, pdf_i64_t addend2)
+pdf_status_t pdf_i64_add(pdf_i64_t *dest, const pdf_i64_t addend1, const pdf_i64_t addend2)
 {
 
   pdf_u32_t carry = 0; /*carry*/
@@ -128,7 +128,7 @@ pdf_status_t pdf_i64_add(pdf_i64_t *dest, pdf_i64_t addend1, pdf_i64_t addend2)
   return PDF_OK;
 }/*end pdf_i64_add*/
 
-int      pdf_i64_cmp(pdf_i64_t number_1, pdf_i64_t number_2)
+int      pdf_i64_cmp(const pdf_i64_t number_1, const pdf_i64_t number_2)
 {
   if (number_1.high > number_2.high)
     {
@@ -155,7 +155,7 @@ int      pdf_i64_cmp(pdf_i64_t number_1, pdf_i64_t number_2)
     }
 }/*end pdf_i64_cmp*/
 
-pdf_status_t      pdf_i64_abs(pdf_i64_t *dest, pdf_i64_t number)
+pdf_status_t      pdf_i64_abs(pdf_i64_t *dest, const pdf_i64_t number)
 {
  
   pdf_i64_t temp, one;
@@ -181,7 +181,7 @@ pdf_status_t      pdf_i64_abs(pdf_i64_t *dest, pdf_i64_t number)
   return PDF_OK;
 }/*end pdf_i64_abs*/
 
-pdf_status_t      pdf_i64_neg(pdf_i64_t *dest, pdf_i64_t number)
+pdf_status_t      pdf_i64_neg(pdf_i64_t *dest, const pdf_i64_t number)
 {
 
   if (dest == NULL)
@@ -198,7 +198,7 @@ pdf_status_t      pdf_i64_neg(pdf_i64_t *dest, pdf_i64_t number)
   return PDF_OK;
 }/*end pdf_i64_neg*/
 
-pdf_status_t      pdf_i64_subtraction(pdf_i64_t *dest, pdf_i64_t minuend, pdf_i64_t subtrahend)
+pdf_status_t      pdf_i64_subtraction(pdf_i64_t *dest, const pdf_i64_t minuend, const pdf_i64_t subtrahend)
 {
  
   if (dest == NULL)
@@ -273,7 +273,7 @@ void add_long(pdf_i64_t *P1, pdf_i64_t *P2, pdf_i64_t *P3, pdf_i64_t A1, pdf_i64
     pdf_i64_add(P3, *P3, A3);
 }//end add_long
 
-pdf_status_t      pdf_i64_mult(pdf_i64_t *dest, pdf_i64_t factor_1, pdf_i64_t factor_2)
+pdf_status_t      pdf_i64_mult(pdf_i64_t *dest, const pdf_i64_t factor_1, const pdf_i64_t factor_2)
 { 
   
   
@@ -454,7 +454,7 @@ void mult_long(pdf_u32_t *w, pdf_i64_t factor_1, pdf_i64_t factor_2)
 }//end of mult_long
 
 
-pdf_status_t     pdf_i64_div(pdf_i64_t *dest, pdf_i64_t dividend, pdf_i64_t divisor)
+pdf_status_t     pdf_i64_div(pdf_i64_t *dest, const pdf_i64_t dividend, const pdf_i64_t divisor)
 {
   /*Knuth method*/
   
@@ -723,7 +723,7 @@ pdf_status_t     pdf_i64_div(pdf_i64_t *dest, pdf_i64_t dividend, pdf_i64_t divi
     }
 }
 
-pdf_status_t pdf_i64_mod(pdf_i64_t *dest, pdf_i64_t dividend, pdf_i64_t divisor)
+pdf_status_t pdf_i64_mod(pdf_i64_t *dest, const pdf_i64_t dividend, const pdf_i64_t divisor)
 {
   /*Knuth method*/
  

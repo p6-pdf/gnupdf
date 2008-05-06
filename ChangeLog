@@ -1,3 +1,30 @@
+2008-05-06  gerel  <gerel@gnu.org>
+
+	* doc/gnupdf.texi: updated API to conform the "const" convention.
+
+	* src/base/pdf-alloc.c: updated API to conform the "const" convention.
+
+	* src/base/pdf-alloc.h: updated API to conform the "const" convention.
+
+	* src/base/pdf-error.c: updated API to conform the "const" convention.
+
+	* src/base/pdf-error.h: updated API to conform the "const" convention.
+
+	* src/base/pdf-hash.c: updated API to conform the "const" convention.
+
+	* src/base/pdf-hash.h: updated API to conform the "const" convention.
+
+	* src/base/pdf-list.h: updated API to conform the "const" convention.
+
+	* src/base/pdf-text.c: updated API to conform the "const" convention.
+
+	* src/base/pdf-text.h: updated API to conform the "const" convention.
+
+	* src/base/pdf-types.c: updated API to conform the "const" convention.
+
+	* src/base/pdf-types.h: updated API to conform the "const" convention.
+
+
 2008-05-05  Daniel Vidal  <davr@pc_davr.deimos-space.com>
 
 	* torture/unit/base/types/tsuite-types.c (tsuite_types): Tests for the

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/27 10:25:39 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-05-06 14:30:50 gerel"
  *
  *       File:         pdf-error.c
  *       Date:         Sun Feb  24 20:22:05 2008
@@ -50,14 +50,14 @@ const char * pdf_error_stlist [] =
 
 
 void
-pdf_perror (pdf_status_t status, const char *str)
+pdf_perror (const pdf_status_t status, const char *str)
 { 
   pdf_error ((int) status, stderr, str);
 }
 
 
 void
-pdf_error (pdf_status_t status, FILE * fd, const char *format, ...)
+pdf_error (const pdf_status_t status, FILE * fd, const char *format, ...)
 {
   va_list args;
   int errnum;

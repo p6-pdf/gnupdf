@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-02-28 11:43:01 gerel"
+/* -*- mode: C -*- Time-stamp: "2008-05-06 14:31:45 gerel"
  *
  *       File:         pdf-error.h
  *       Date:         Sun Feb  24 20:22:05 2008
@@ -82,12 +82,12 @@ extern const char * pdf_error_stlist [];
 
 /* Print a message with `fprintf (fd, FORMAT, ...)';
    if status is nonzero, print the corresponding message. */
-extern void pdf_error (pdf_status_t status, FILE * fd, const char *format, ...);
+extern void pdf_error (const pdf_status_t status, FILE * fd, const char *format, ...);
 
 /* Print the message corresponding to 'status' to stderr
  * followed by 'str'.
  */
-extern void pdf_perror (pdf_status_t status, const char *str);
+extern void pdf_perror (const pdf_status_t status, const char *str);
 
 
 /* END PUBLIC */
