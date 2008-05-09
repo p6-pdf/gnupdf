@@ -1,3 +1,7 @@
+2008-05-08  gerel  <gerel@gnu.org>
+
+	* doc/gnupdf.texi: corrected some API funcs.
+
 2008-05-08  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* prmgt/check-api-doc-consistency.pl: moved from `build-aux'.

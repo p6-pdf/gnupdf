@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-05-06 14:25:15 gerel"
+/* -*- mode: C -*- Time-stamp: "2008-05-08 13:49:00 gerel"
  *
  *       File:         pdf-alloc.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -53,7 +53,7 @@ pdf_dealloc (void *pointer)
 }
 
 inline void *
-pdf_realloc (void *pointer, pdf_size_t size)
+pdf_realloc (void *pointer, const pdf_size_t size)
 {
   pointer = realloc (pointer, size);
   if (!pointer && size != 0)

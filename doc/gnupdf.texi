@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.52 2008/05/06 18:53:43 gerel Exp $
+@comment $Id: gnupdf.texi,v 1.53 2008/05/09 01:44:17 gerel Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -281,7 +281,7 @@ The memory allocation module provides system-independent heap memory
 allocation and deallocation. The usual malloc/free/realloc schema is
 used to provide this service.
 
-@deftypefun void* pdf_alloc (const size_t @var{size})
+@deftypefun void* pdf_alloc (const pdf_size_t @var{size})
 
 Allocates heap memory.
 
@@ -335,7 +335,7 @@ pdf_dealloc (p);
 @end table
 @end deftypefun
 
-@deftypefun void* pdf_realloc (void *@var{pointer}, const int @var{size})
+@deftypefun void* pdf_realloc (void *@var{pointer}, const pdf_size_t @var{size})
 
 Reallocates memory.
 
@@ -580,16 +580,16 @@ if (pdf_i64_copy(orig, copy) != PDF_OK) /*Now copy is also 10*/
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_i64_add (pdf_i64_t *@var{dest}, const pdf_i64_t @var{addend_1}, const pdf_i64_t @var{addend_2})
+@deftypefun pdf_status_t pdf_i64_add (pdf_i64_t *@var{dest}, const pdf_i64_t @var{addend1}, const pdf_i64_t @var{addend2})
 
 Adds two 64 bit numbers
 
 @table @strong
 @item Parameters
 @table @var
-@item addend_1
+@item addend1
 First addend of the sum
-@item addend_2
+@item addend2
 Second addend of the sum
 @item dest
 Where 64 bit result is stored
@@ -1293,7 +1293,7 @@ A function type for calculating a Hash code given a list element. Should return 
 @node Creating and Destroying Lists
 @subsection Creating and Destroying Lists
 
-@deftypefun pdf_status_t pdf_list_create (pdf_list_element_equals_fn_t @var{equals_fn}, pdf_list_element_dipose_fn_t @var{dispose_fn}, const pdf_bool_t @var{allow_duplicates}, pdf_list_t @var{*list})
+@deftypefun pdf_status_t pdf_list_create (pdf_list_element_equals_fn_t @var{equals_fn}, pdf_list_element_dispose_fn_t @var{dispose_fn}, const pdf_bool_t @var{allow_duplicates}, pdf_list_t @var{*list})
 
 Create a new list containing no elements.
 
@@ -2621,7 +2621,7 @@ if(ret_code != PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_text_new_from_pdf_string (pdf_text_t *@var{text}, const pdf_char_t *@var{str}, const pdf_size_t @var{size}, pdf_char_t *@var{remaining_str}, pdf_size_t *@var{remaining_length})
+@deftypefun pdf_status_t pdf_text_new_from_pdf_string (pdf_text_t *@var{text}, const pdf_char_t *@var{str}, const pdf_size_t @var{size}, pdf_char_t **@var{remaining_str}, pdf_size_t *@var{remaining_length})
 
 Create a new text object and initialize it with a given `PDF string'
 text representation. This `PDF string' can be either encoded in UTF-16BE, with
@@ -2682,7 +2682,7 @@ while((ret_code == PDF_OK) && (remaining_length > 0));
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_text_new_from_unicode (pdf_text_t *@var{text}, const pdf_char_t *@var{ucs}, const pdf_size_t @var{size}, const enum pdf_text_unicode_encoding_e @var{enc})
+@deftypefun pdf_status_t pdf_text_new_from_unicode (pdf_text_t *@var{text}, const pdf_char_t *@var{str}, const pdf_size_t @var{size}, const enum pdf_text_unicode_encoding_e @var{enc})
 
 Create a new text object from a string of Unicode characters in a
 given unicode encoding. The Unicode string can be given with or without BOM,
@@ -2698,7 +2698,7 @@ string (so BOM is optional and Language/Country code is not allowed).
 @table @var
 @item text
 A pointer to the newly created text object.
-@item ucs
+@item str
 A Unicode string.
 @item size
 The length of @var{ucs} in bytes.
@@ -2871,7 +2871,7 @@ ret_code = pdf_text_set_language (text, "10");
 @end table
 @end deftypefun
 
-@deftypefun {inline pdf_bool_t} pdf_text_empty_p (const pdf_text_t @var{text})
+@deftypefun pdf_bool_t pdf_text_empty_p (const pdf_text_t @var{text})
 
 Determine if a given text variable is empty (contains no text).
 

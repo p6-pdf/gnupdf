@@ -170,7 +170,7 @@ pdf_text_new_from_unicode (pdf_text_t *text,
  *  given integer. Status of the conversion is returned. */
 pdf_status_t
 pdf_text_new_from_u32 (pdf_text_t *text,
-                       pdf_u32_t number);
+                       const pdf_u32_t number);
 
 
 /* ------------------------ Text Property Management ------------------------ */
