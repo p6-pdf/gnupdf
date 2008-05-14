@@ -4,6 +4,12 @@
 	`pdf_fsys_item_props_s'.
 	(Getting File System Item Properties): New function
 	`pdf_fsys_get_item_props'.
+	(Getting File System Item Properties): New function
+	`pdf_fsys_item_p'.
+	(Getting File System Item Properties): New function
+	`pdf_fsys_readable_p'.
+	(Getting File System Item Properties): New function
+	`pdf_fsys_writable_p'.
 
 2008-05-11  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 

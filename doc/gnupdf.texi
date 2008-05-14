@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.55 2008/05/14 17:58:28 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.56 2008/05/14 18:15:42 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -5271,6 +5271,89 @@ A PDF status value:
 @item PDF_OK
 The operation succeeded and the properties were stored in the hash
 variable.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_fsys_item_p (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name})
+
+Determinate if a given item, identified by a path name, exist in a given
+filesystem.
+
+@table @strong
+@item Parameters
+@item filesystem
+A filesystem. If @code{NULL} the default filesystem is used.
+@item path_name
+A path name.
+@item Returns
+A PDF boolean value:
+@table @code
+@item PDF_TRUE
+The specified item exist in the filesystem.
+@item PDF_FALSE
+The specified item do not exist in the filesystem or the client do not
+have enough permissions to be able to read it.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_fsys_item_readable_p (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name})
+
+Determinate if a given filesystem item, identified by a path name, is
+readable.
+
+@table @strong
+@item Parameters
+@table @var
+@item filesystem
+A filesystem. If @code{NULL} the default filesystem is used.
+@item path_name
+A valid path name of an existing filesytem item.
+@end table
+@item Returns
+A PDF boolean value:
+@table @code
+@item PDF_TRUE
+The filesystem item is readable.
+@item PDF_FALSE
+The filesystem item is not readable.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_fsys_item_writable_p (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name})
+
+Determinate if a given filesystem item, identified by a path name, is
+writable. 
+
+@table @strong
+@item Parameters
+@table @var
+@item filesystem
+A filesystem. If @code{NULL} the default filesystem is used.
+@item path_name
+A valid path name of an existing filesystem item.
+@end table
+@item Returns
+A PDF boolean value:
+@table @code
+@item PDF_TRUE
+The filesystem item is writable.
+@item PDF_FALSE
+The filesystem item is not writable.
 @end table
 @item Usage example
 @example
