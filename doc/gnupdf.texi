@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.54 2008/05/11 12:14:27 aleksander_m Exp $
+@comment $Id: gnupdf.texi,v 1.55 2008/05/14 17:58:28 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -4930,7 +4930,7 @@ becomes a no-op.
 * Filesystem Data Types::
 * Opening and Closing Files::
 * Folder Management::
-* Filesystem Utility Functions::
+* Getting File System Item Properties::
 @end menu
 
 @node Filesystem Data Types
@@ -4960,6 +4960,27 @@ created if it do not exist.
 The file is opened in read/write mode. The file should exist in the
 filesystem.
 @item 
+@end table
+@end deftp
+
+@deftp {Data Type} struct pdf_fsys_item_props_s
+This structure holds information about a filesystem item (a file or a
+directory).
+
+@table @code
+@item pdf_bool_t is_hidden
+@item pdf_bool_t is_read_only
+@item pdf_time_t creation_date
+@item pdf_time_t modification_date
+@item pdf_u32_t file_size_high
+@item pdf_u32_t file_size_low
+@item pdf_u32_t folder_size
+@item pdf_u32_t creator_code
+@item pdf_u32_t type_code
+@item pdf_u32_t version_major
+@item pdf_u32_t version_minor
+@item pdf_bool_t is_checked_out
+@item pdf_bool_t is_published
 @end table
 @end deftp
 
@@ -5161,9 +5182,43 @@ XXX
 @end table
 @end deftypefun
 
-@node Filesystem Utility Functions
-@subsubsection Filesystem Utility Functions
+@node Getting File System Item Properties
+@subsubsection Getting File System Item Properties
 
+The following functions provides access to generic properties of
+filesystem items (both files and directories).
+
+@deftypefun pdf_status_t pdf_fsys_get_item_props (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name}, struct pdf_fsys_item_props_s *@var{item_props})
+
+Get the properties of a filesystem item identified by a path name.
+
+@table @strong
+@item Parameters
+@table @var
+@item filesystem
+A filesystem. If @code{NULL} the default filesystem is used.
+@item path_name
+A pdf string containing the path name of the filesystem item.
+@item item_props
+The address of a structure to hold the properties of the filesystem
+item.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_EBADDATA
+Invalid path name.
+@item PDF_EBADPERMS
+The client do not have enough permissions to read the requested item.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
 
 @deftypefun pdf_status_t pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s @var{item_props}, pdf_hash_t @var{props_hash}
 
