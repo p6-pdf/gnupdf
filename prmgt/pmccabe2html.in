@@ -43,7 +43,7 @@ Copyright (c) 2007, 2008 Free Software Foundation Inc."
     html_title = "Cyclomatic Complexity report for libgnupdf"
 
     # Wiki options
-    wiki_prolog = "{{Note|This page is automatically generated}}"
+    wiki_prolog = "{{Note|This page has been automatically generated}}"
     wiki_epilog = ""
 
     # Internal variables
@@ -546,7 +546,6 @@ function wiki_function_cyclo ()
 {
     print "==Details for all functions=="
 
-    # TODO: put the legend
     print "Used ranges:"
     
     print "{| class =\"cyclo_ranges_table\""
@@ -864,4 +863,4 @@ END {
 # mode: awk
 # End:
 
-# End of pmccabe2html.awk
+# End of pmccabe2html.in

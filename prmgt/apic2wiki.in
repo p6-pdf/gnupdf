@@ -1,0 +1,145 @@
+#!@PATH_TO_AWK@ -f
+# apic2wiki - API consistency report generator
+
+# Copyright (C) 2008 Free Software Foundation, Inc.
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Prologue & configuration
+BEGIN {
+    # Wiki data
+    wiki_prolog = "{{Note|This page has been automatically generated}}"
+    wiki_epilog = ""
+
+    # Internal variables
+    nfuncs = 0;
+    nok = 0;
+    nfail = 0;
+}
+
+# Functions
+
+function wiki_global_stats ()
+{
+    print "{| class=\"cyclo_resume_table\""
+    # Documented functions
+    print "|-"
+    print "| class=\"cyclo_resume_header_entry\" | Documented functions"
+    print "| class=\"cyclo_resume_number_entry\" |" nfuncs
+    # Implemented functions
+    print "|-"
+    print "| class=\"cyclo_resume_header_entry\" | Implemented functions"
+    print "| class=\"cyclo_resume_number_entry\" |" nok 
+    # Non Implemented functions
+    print "|-"
+    print "| class=\"cyclo_resume_header_entry\" | Non implemented functions"
+    print "| class=\"cyclo_resume_number_entry\" |" nfail
+    print "|}"
+}
+
+function wiki_function_data ()
+{
+    print "==Details for all functions==\n"
+
+    print "{| width=\"90%\" class=\"cyclo_function_table\" cellpadding=\"0\" cellspacing=\"0\">"
+
+    # Table header
+    print "! class=\"cyclo_function_table_header_entry\" | Function Name"
+    print "! class=\"cyclo_function_table_header_entry\" | Documented"
+    print "! class=\"cyclo_function_table_header_entry\" | Implemented"
+
+    # Table data
+
+    # Non-implemented functions
+    for (nfnc = 1; nfnc < nfuncs; nfnc++)
+    {
+        if (fstatus[nfnc] == "failed")
+        {
+            trclass="cyclo_function_entry_high"
+        
+            print "|- class=\"" trclass "\""
+            # Function name
+            print "| class=\"cyclo_function_entry_name\" |" fnames[nfnc]
+            # Documented
+            print "| class=\"cyclo_function_entry_name\" |" "yes"
+            # Implemented
+            print "| class=\"cyclo_function_entry_name\" |"     \
+                ((fstatus[nfnc] == "ok") ? "yes" : "no")
+        }
+    }
+
+    # Implemented functions
+    for (nfnc = 1; nfnc < nfuncs; nfnc++)
+    {
+        if (fstatus[nfnc] == "ok")
+        {
+            trclass="cyclo_function_entry_simple"
+
+            print "|- class=\"" trclass "\""
+            # Function name
+            print "| class=\"cyclo_function_entry_name\" |" fnames[nfnc]
+            # Documented
+            print "| class=\"cyclo_function_entry_name\" |" "yes"
+            # Implemented
+            print "| class=\"cyclo_function_entry_name\" |" "yes"
+        }
+    }
+
+    print "|}"
+}
+
+# Process input data
+{
+    fname = $1;
+    status = $3;
+
+    nfuncs++;
+    if (status == "ok") 
+    {
+        nok++
+    }
+    if (status == "failed") 
+    {
+        nfail++
+    }
+
+    fnames[nfuncs] = fname
+    fstatus[nfuncs] = status
+}
+
+
+# Epilogue
+END {
+    # Print prolog
+    print wiki_prolog
+
+    # Title and date
+    print "==libgnupdf API Consistency Report==\n"
+    print "Report generated at: '''" strftime() "'''"
+
+    # Print global stats
+    wiki_global_stats()
+
+    # Print function data
+    wiki_function_data()
+
+    # Print epilog
+    print wiki_epilog
+}
+
+# Local Variables:
+# mode: awk
+# End:
+
+# End of apic2wiki.in

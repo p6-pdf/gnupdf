@@ -1,3 +1,19 @@
+2008-05-18  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* configure.ac: Output `apic2wiki' from `apic2wiki.in'.
+
+	* prmgt/Makefile.am (apic.wiki): New rule to build `apic.wiki'.
+
+	* prmgt/pmccabe2html.in: Obsolete TODO mark removed.
+
+	* prmgt/check-api-doc-consistency.pl: New plain-mode '-p' to ease
+	the automatic process of the script output.
+	New distribution terms under the GPLv3 license.
+
+	* prmgt/apic2wiki.in: New file.
+
+	* prmgt/pmccabe2html.in: Fix end of file comment.
+
 2008-05-14  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Filesystem Data Types): New data type

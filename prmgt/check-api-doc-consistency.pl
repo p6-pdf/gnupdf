@@ -1,4 +1,20 @@
 #!/usr/bin/env perl
+
+# Copyright (C) 2008 Free Software Foundation, Inc.
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 use warnings;
 use strict;
 
@@ -166,22 +182,26 @@ sub show_help
     print "\nUusage: $0 [OPT]\n";
     print "OPT is one of:\n";
     print "\t -h:\tprint this help.\n";
-    print "\t -f:\tshow failing checks only.\n\n";
+    print "\t -f:\tshow failing checks only.\n";
+    print "\t -p:\tplain mode: do not print a resume.\n\n";
 }
 
 ##
 # MAIN PROGRAM
 ###
-my ($reg, $matched, $fails, $total, $showok);
+my ($reg, $matched, $fails, $total, $showok,$plainmode);
 
 
 $showok = 1;
+$plainmode = 0;
 if (@ARGV == 1){
     if ($ARGV[0] eq '-h'){
         show_help ();
         exit(0);
     }elsif ($ARGV[0] eq '-f'){
         $showok = 0;
+    }elsif ($ARGV[0] eq '-p') {
+        $plainmode = 1;
     }
 }
 
@@ -220,6 +240,9 @@ foreach my $docsig (@DOCSIGS)
     $total++;
 }
 
-print "\n--- Failed $fails of $total function signatures ---\n";
+if ($plainmode == 0)
+{
+    print "\n--- Failed $fails of $total function signatures ---\n";
+}
 
 0;
