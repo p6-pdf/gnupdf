@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-05-06 14:21:44 gerel"
+/* -*- mode: C -*- Time-stamp: "08/05/19 00:14:52 jemarch"
  *
  *       File:         pdf-types.c
  *       Date:         Sun Feb 10 21:33:44 2008
@@ -26,7 +26,9 @@
 #include <pdf-types.h>
 
 
-pdf_i64_t  pdf_i64_new(const pdf_i32_t high, const pdf_u32_t low)
+pdf_i64_t
+pdf_i64_new (const pdf_i32_t high,
+             const pdf_u32_t low)
 {
   pdf_i64_t pdfint;
   pdfint.high = high;
@@ -34,9 +36,10 @@ pdf_i64_t  pdf_i64_new(const pdf_i32_t high, const pdf_u32_t low)
   return pdfint;
 }/*end pdf_i64_new*/
 
-
-
-pdf_status_t pdf_i64_assign(pdf_i64_t *bignum, const pdf_i32_t high, const pdf_u32_t low)
+pdf_status_t
+pdf_i64_assign (pdf_i64_t *bignum,
+                const pdf_i32_t high,
+                const pdf_u32_t low)
 {
 
   if (bignum == NULL)
@@ -51,7 +54,9 @@ pdf_status_t pdf_i64_assign(pdf_i64_t *bignum, const pdf_i32_t high, const pdf_u
 
 
 
-pdf_status_t pdf_i64_assign_quick(pdf_i64_t *bignum, const pdf_i32_t value)
+pdf_status_t
+pdf_i64_assign_quick (pdf_i64_t *bignum,
+                      const pdf_i32_t value)
 {
   if (bignum == NULL)
     {
@@ -70,7 +75,9 @@ pdf_status_t pdf_i64_assign_quick(pdf_i64_t *bignum, const pdf_i32_t value)
 }/*end pdf_i64_assign_quick*/
 
 
-pdf_status_t	pdf_i64_copy(const pdf_i64_t orig, pdf_i64_t *copy)
+pdf_status_t
+pdf_i64_copy (const pdf_i64_t orig,
+              pdf_i64_t *copy)
 {
   if (copy == NULL)
     {
@@ -83,7 +90,10 @@ pdf_status_t	pdf_i64_copy(const pdf_i64_t orig, pdf_i64_t *copy)
 }/*end pdf_i64_copy*/
 
 
-pdf_status_t pdf_i64_add(pdf_i64_t *dest, const pdf_i64_t addend1, const pdf_i64_t addend2)
+pdf_status_t
+pdf_i64_add (pdf_i64_t *dest,
+             const pdf_i64_t addend1,
+             const pdf_i64_t addend2)
 {
 
   pdf_u32_t carry = 0; /*carry*/
@@ -128,7 +138,9 @@ pdf_status_t pdf_i64_add(pdf_i64_t *dest, const pdf_i64_t addend1, const pdf_i64
   return PDF_OK;
 }/*end pdf_i64_add*/
 
-int      pdf_i64_cmp(const pdf_i64_t number_1, const pdf_i64_t number_2)
+int
+pdf_i64_cmp (const pdf_i64_t number_1,
+             const pdf_i64_t number_2)
 {
   if (number_1.high > number_2.high)
     {
@@ -155,7 +167,9 @@ int      pdf_i64_cmp(const pdf_i64_t number_1, const pdf_i64_t number_2)
     }
 }/*end pdf_i64_cmp*/
 
-pdf_status_t      pdf_i64_abs(pdf_i64_t *dest, const pdf_i64_t number)
+pdf_status_t
+pdf_i64_abs (pdf_i64_t *dest,
+             const pdf_i64_t number)
 {
  
   pdf_i64_t temp, one;
@@ -181,7 +195,9 @@ pdf_status_t      pdf_i64_abs(pdf_i64_t *dest, const pdf_i64_t number)
   return PDF_OK;
 }/*end pdf_i64_abs*/
 
-pdf_status_t      pdf_i64_neg(pdf_i64_t *dest, const pdf_i64_t number)
+pdf_status_t
+pdf_i64_neg (pdf_i64_t *dest,
+             const pdf_i64_t number)
 {
 
   if (dest == NULL)
@@ -198,7 +214,10 @@ pdf_status_t      pdf_i64_neg(pdf_i64_t *dest, const pdf_i64_t number)
   return PDF_OK;
 }/*end pdf_i64_neg*/
 
-pdf_status_t      pdf_i64_subtraction(pdf_i64_t *dest, const pdf_i64_t minuend, const pdf_i64_t subtrahend)
+pdf_status_t
+pdf_i64_subtraction (pdf_i64_t *dest,
+                     const pdf_i64_t minuend,
+                     const pdf_i64_t subtrahend)
 {
  
   if (dest == NULL)
@@ -212,9 +231,8 @@ pdf_status_t      pdf_i64_subtraction(pdf_i64_t *dest, const pdf_i64_t minuend, 
   return PDF_OK;
 }/*end pdf_i64_subtraction*/
 
-
-
-void shift_right(pdf_i64_t *dest)
+void
+shift_right (pdf_i64_t *dest)
 {
   dest->low >>= 1;
     if( (0x00000001 & dest->high) == 1)
@@ -234,7 +252,9 @@ void shift_right(pdf_i64_t *dest)
   dest->high >>= 1;
 }/*end shift_right*/
 
-void shift_right_long(pdf_i64_t *dest_high, pdf_i64_t *dest_low)
+void
+shift_right_long(pdf_i64_t *dest_high,
+                 pdf_i64_t *dest_low)
 {
   shift_right(dest_low);
   if( (0x00000001 & dest_high->low) == 1)
@@ -254,7 +274,13 @@ void shift_right_long(pdf_i64_t *dest_high, pdf_i64_t *dest_low)
   shift_right(dest_high);
 }/*end shift_right_long*/
   
-void add_long(pdf_i64_t *P1, pdf_i64_t *P2, pdf_i64_t *P3, pdf_i64_t A1, pdf_i64_t A2, pdf_i64_t A3)
+void 
+add_long (pdf_i64_t *P1,
+          pdf_i64_t *P2,
+          pdf_i64_t *P3,
+          pdf_i64_t A1,
+          pdf_i64_t A2,
+          pdf_i64_t A3)
 {
   pdf_i64_t carry;
   pdf_i64_add(P3, *P3, A3);
@@ -273,7 +299,10 @@ void add_long(pdf_i64_t *P1, pdf_i64_t *P2, pdf_i64_t *P3, pdf_i64_t A1, pdf_i64
     pdf_i64_add(P3, *P3, A3);
 }//end add_long
 
-pdf_status_t      pdf_i64_mult(pdf_i64_t *dest, const pdf_i64_t factor_1, const pdf_i64_t factor_2)
+pdf_status_t
+pdf_i64_mult (pdf_i64_t *dest,
+              const pdf_i64_t factor_1,
+              const pdf_i64_t factor_2)
 { 
   
   
@@ -394,10 +423,11 @@ pdf_status_t      pdf_i64_mult(pdf_i64_t *dest, const pdf_i64_t factor_1, const 
 
 }//end of pdf_i64_mult
 
-void mult_long(pdf_u32_t *w, pdf_i64_t factor_1, pdf_i64_t factor_2)
+void 
+mult_long (pdf_u32_t *w,
+           pdf_i64_t factor_1,
+           pdf_i64_t factor_2)
 {
-
-  
   /*Knuth vol 2 method*/
   
   int i, j;
@@ -454,7 +484,10 @@ void mult_long(pdf_u32_t *w, pdf_i64_t factor_1, pdf_i64_t factor_2)
 }//end of mult_long
 
 
-pdf_status_t     pdf_i64_div(pdf_i64_t *dest, const pdf_i64_t dividend, const pdf_i64_t divisor)
+pdf_status_t
+pdf_i64_div (pdf_i64_t *dest,
+             const pdf_i64_t const_dividend,
+             const pdf_i64_t const_divisor)
 {
   /*Knuth method*/
   
@@ -470,6 +503,8 @@ pdf_status_t     pdf_i64_div(pdf_i64_t *dest, const pdf_i64_t dividend, const pd
    partial division result, temp is a temporary variable used int 
    the procedures*/
   pdf_i64_t divisor_nor, d_pdf,v_pdf, q_bar_pdf, temp;
+  pdf_i64_t divisor;
+  pdf_i64_t dividend;
   pdf_u32_t v[8]; /*where divisor is stored*/
   /*q is where result is stored, u is where the dividend is stored,
     and temporal is a temporal vector used in the different procedures*/
@@ -482,6 +517,13 @@ pdf_status_t     pdf_i64_div(pdf_i64_t *dest, const pdf_i64_t dividend, const pd
 
   z = 0;
   k = 0;
+
+  /* Make a non-const divisor */
+  divisor = pdf_i64_new (0, 0);
+  pdf_i64_copy (const_divisor, &divisor);
+  /* Make a non-const dividend */
+  dividend = pdf_i64_new (0, 0);
+  pdf_i64_copy (const_dividend, &dividend);
 
   if (dest == NULL)
     {
@@ -723,7 +765,10 @@ pdf_status_t     pdf_i64_div(pdf_i64_t *dest, const pdf_i64_t dividend, const pd
     }
 }
 
-pdf_status_t pdf_i64_mod(pdf_i64_t *dest, const pdf_i64_t dividend, const pdf_i64_t divisor)
+pdf_status_t
+pdf_i64_mod(pdf_i64_t *dest,
+            const pdf_i64_t const_dividend,
+            const pdf_i64_t const_divisor)
 {
   /*Knuth method*/
  
@@ -739,6 +784,8 @@ pdf_status_t pdf_i64_mod(pdf_i64_t *dest, const pdf_i64_t dividend, const pdf_i6
    partial division result, temp is a temporary variable used int 
    the procedures*/
   pdf_i64_t divisor_nor, d_pdf,v_pdf, q_bar_pdf, temp;
+  pdf_i64_t divisor;
+  pdf_i64_t dividend;
   pdf_u32_t v[8]; /*where divisor is stored*/
   /*q is where result is stored, u is where the dividend is stored,
     and temporal is a temporal vector used in the different procedures*/
@@ -751,6 +798,13 @@ pdf_status_t pdf_i64_mod(pdf_i64_t *dest, const pdf_i64_t dividend, const pdf_i6
 
   z = 0;
   k = 0;
+  
+  /* Make a non-const divisor */
+  divisor = pdf_i64_new (0, 0);
+  pdf_i64_copy (const_divisor, &divisor);
+  /* Make a non-const dividend */
+  dividend = pdf_i64_new (0, 0);
+  pdf_i64_copy (const_dividend, &dividend);
 
   if (dest == NULL)
     {
@@ -975,7 +1029,5 @@ pdf_status_t pdf_i64_mod(pdf_i64_t *dest, const pdf_i64_t dividend, const pdf_i6
 
 
 }/*end of pdf_i64_mod*/
-
-
 
 /* End of pdf-types.c */
