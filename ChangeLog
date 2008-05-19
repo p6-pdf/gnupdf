@@ -1,5 +1,16 @@
 2008-05-19  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf.texi (File Properties Management): New section.
+	(File Properties Management): New function
+	`pdf_fsys_file_sizeable_p'.
+	(File Properties Management): New function
+	`pdf_fsys_file_get_size'.
+	(File Properties Management): New function
+	`pdf_fsys_file_get_filesystem'.
+	(File Data Types): New data type `pdf_fsys_file_mode_t'.
+	(File Properties Management): New function
+	`pdf_fsys_file_get_open_mode'.
+
 	* src/base/pdf-types.c (pdf_i64_mod): Make and use non-const
 	versions of const arguments for internal operation.
 	(pdf_i64_div): idem.

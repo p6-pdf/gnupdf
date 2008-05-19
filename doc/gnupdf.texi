@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.56 2008/05/14 18:15:42 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.57 2008/05/19 20:31:39 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -5393,6 +5393,7 @@ File flags (status) management.
 
 @menu
 * File Data Types::
+* File Properties Management::
 * Synchronous Input/Output::
 @end menu
 
@@ -5407,6 +5408,113 @@ An opaque type representing an open file. The client can perform
 several operations in the file using the @code{pdf_fsys_file_t} as a
 reference.
 @end deftp
+
+@deftp {Data Type} pdf_fsys_file_mode_t
+Scalar data type able to contain any ORed combination of the following
+values:
+
+@table @code
+@item PDF_FSYS_FILE_MODE_READ
+Open the file in read mode.
+@item PDF_FSYS_FILE_MODE_WRITE
+Open the file in write mode.
+@item PDF_FSYS_FILE_MODE_CREATE
+Create the file if it doesnt exist.
+@item PDF_FSYS_FILE_MODE_SERIAL
+The file only admits sequential access.
+@end table
+@end deftp
+
+@node File Properties Management
+@subsubsection File Properties Management
+
+The following functions provides access to several properties of open
+files. 
+
+@deftypefun pdf_bool_t pdf_fsys_file_sizeable_p (pdf_fsys_file_t @var{file}, pdf_size_t @var{size})
+
+Determine if a given open file is resizeable to a given size.
+
+@table @strong
+@item Parameters
+@table @var
+@item file
+An open file.
+@item size
+The new size for the file in octects.
+@end table
+@item Returns
+A PDF boolean value:
+@table @code
+@item PDF_TRUE
+The file can be resized to the given size.
+@item PDF_FALSE
+The file cannot be resized to the given size.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_size_t pdf_fsys_file_get_size (pdf_fsys_file_t @var{file})
+
+Get the size (in number of octects) of a given open file.
+
+@table @strong
+@item Parameters
+@table @var
+@item file
+An open file.
+@end table
+@item Returns
+The current size of the file in number of octects.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_fsys_t pdf_fsys_file_get_filesystem (pdf_fsys_file_t @var{file})
+
+Get the filesystem associated with a given open file.
+
+@table @strong
+@item Parameters
+@table @var
+@item file
+An open fiile.
+@end table
+@item Returns
+The filesystem associated with @var{file}.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_fsys_file_mode_t pdf_fsys_file_get_open_mode (pdf_fsys_file_t @var{file})
+
+Return the access mode used to open a given file.
+
+@table @strong
+@item Parameters
+@table @var
+@item file
+An open file.
+@end table
+@item Returns
+An ORed set of file mode values.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
 
 @node Synchronous Input/Output
 @subsubsection Synchronous Input/Output
