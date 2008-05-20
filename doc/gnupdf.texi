@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.57 2008/05/19 20:31:39 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.58 2008/05/20 19:49:59 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -5394,6 +5394,8 @@ File flags (status) management.
 @menu
 * File Data Types::
 * File Properties Management::
+* Changing the Current Position of a File::
+* Changing the Size of a File::
 * Synchronous Input/Output::
 @end menu
 
@@ -5430,33 +5432,6 @@ The file only admits sequential access.
 
 The following functions provides access to several properties of open
 files. 
-
-@deftypefun pdf_bool_t pdf_fsys_file_sizeable_p (pdf_fsys_file_t @var{file}, pdf_size_t @var{size})
-
-Determine if a given open file is resizeable to a given size.
-
-@table @strong
-@item Parameters
-@table @var
-@item file
-An open file.
-@item size
-The new size for the file in octects.
-@end table
-@item Returns
-A PDF boolean value:
-@table @code
-@item PDF_TRUE
-The file can be resized to the given size.
-@item PDF_FALSE
-The file cannot be resized to the given size.
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
 
 @deftypefun pdf_size_t pdf_fsys_file_get_size (pdf_fsys_file_t @var{file})
 
@@ -5508,6 +5483,166 @@ An open file.
 @end table
 @item Returns
 An ORed set of file mode values.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_text_t pdf_fsys_file_get_url (pdf_fsys_file_t @var{file})
+
+Get a text variable containing a valid URL to refer to a given open
+file. Note that for some filesystems could be not possible to build a
+valid URL.
+
+@table @strong
+@item Parameters
+@table @var
+@item file
+An open file.
+@end table
+@item Returns
+A PDF text variable containing a valid URL that can be used to refer
+to the open file.
+
+If the filesystem do not support URLs then an empty string is
+returned.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_fsys_file_mode_t pdf_fsys_file_set_mode (pdf_fsys_file_t @var{file}, pdf_fsys_file_mode_t @var{new_mode}, pdf_fsys_file_mode_t @var{mode_mask})
+
+Update the mode of a given open file with a given set of file modes.
+
+@table @strong
+@item Parameters
+@table @var
+@item file
+An open file.
+@item new_mode
+The new mode to set for the file.
+@item mode_mask
+A mask to apply to @var{new_mode} before to apply it.
+@end table
+@item Returns
+The previous mode of the file or 0 if there is an error setting the
+new mode.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@node Changing the Current Position of a File
+@subsubsection Changing the Current Position of a File
+
+The following functions allow to move the input/output pointer of a
+buffer file (its ``current position'').
+
+@deftypefun pdf_size_t pdf_fsys_file_get_pos (pdf_fsys_file_t @var{file})
+
+Get the current position in a given open file.
+
+@table @strong
+@item Parameters
+@table @var
+@item file
+An open file.
+@end table
+@item Returns
+A PDF size value indicating the offset (in octects) of the current
+position respecting the beginning of the file.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_fsys_file_set_pos (pdf_fsys_file_t @var{file}, pdf_size_t @var{new_pos})
+
+Set the current position in a given open file.
+
+@table @strong
+@item Parameters
+@table @var
+@item file
+An open file.
+@item new_pos
+The new position of the file.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_EBADDATA
+Invalid new position.
+@item PDF_EBADPERMS
+The client do not have enough permissions to change the current file
+position.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@node Changing the Size of a File
+@subsubsection Changing the Size of a File
+
+
+@deftypefun pdf_bool_t pdf_fsys_file_sizeable_p (pdf_fsys_file_t @var{file}, pdf_size_t @var{size})
+
+Determine if a given open file is resizeable to a given size.
+
+@table @strong
+@item Parameters
+@table @var
+@item file
+An open file.
+@item size
+The new size for the file in octects.
+@end table
+@item Returns
+A PDF boolean value:
+@table @code
+@item PDF_TRUE
+The file can be resized to the given size.
+@item PDF_FALSE
+The file cannot be resized to the given size.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_size_t pdf_fsys_file_resize (pdf_file_t @var{file}, pdf_size_t @var{new_size})
+
+Resize a given file to a given new size measured in octects.
+
+@table @strong
+@item Parameters
+@table @var
+@item file
+An open file.
+@item new_size
+The new size for the file. If it is bigger than the previous size then
+the file is augmented to that size. If it is shorter than the previous
+size then the file gets truncated.
+@end table
+@item Returns
+A PDF size value indicating the new size of the file. It should match
+the requested new size, or is @code{0} if there is an error.
 @item Usage example
 @example
 XXX

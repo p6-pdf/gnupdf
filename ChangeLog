@@ -1,3 +1,17 @@
+2008-05-20  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (File Properties Management): New function
+	`pdf_fsys_file_get_pos'.
+	(File Properties Management): New function
+	`pdf_fsys_file_get_url'.
+	(File Properties Management): New function
+	`pdf_fsys_file_set_mode'.
+	(Seeking Into an Open File): New section.
+	(Seeking Into an Open File): New function
+	`pdf_fsys_file_set_pos'.
+	(Changing the Size of a File): New function
+	`pdf_fsys_file_resize'.
+
 2008-05-19  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (File Properties Management): New section.
