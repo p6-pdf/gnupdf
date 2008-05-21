@@ -69,52 +69,54 @@ function print_suites ()
 
 function print_suite_functions (sname)
 {
+    last_func = ""
     for (ntest = 1; ntest <= numtests; ntest++)
     {
         if (test_suite[ntest] == sname)
         {
-            if (!(test_func[ntest] in aux_func))
+            tf = test_func[ntest]
+            if (tf != last_func)
             {
-                print "====Function " test_func[ntest] "===="
+                print "====Function " tf "===="
                 print "{| width=\"90%\" class=\"cyclo_function_table\" cellpadding=\"0\" cellspacing=\"0\">"
                 # Table header
                 print "! class=\"cyclo_function_table_header_entry\" | Test Name"
                 print "! class=\"cyclo_function_table_header_entry\" | File"
                 print "! class=\"cyclo_function_table_header_entry\" | Line"
                 print "! class=\"cyclo_function_table_header_entry\" | Result"
-                print_tcase(test_func[ntest])
+                print_tcase(tf)
                 print "|}"
-            }
 
-            aux_func[test_func[ntest]] = 1
+                last_func = tf
+            }
         }
     }
 }
 
 function print_tcase (fname)
 {
-    for (ntest = 1; ntest <= numtests; ntest++)
+    for (nt = 1; nt <= numtests; nt++)
     {
-        if (test_func[ntest] == fname)
+        if (test_func[nt] == fname)
         {
-            if (test_result[ntest] == "P")
+            if (test_result[nt] == "P")
             {
                 trclass="cyclo_function_entry_simple"
             }
-            if (test_result[ntest] == "F")
+            if (test_result[nt] == "F")
             {
                 trclass="cyclo_function_entry_high"
             }
 
             print "|- class=\"" trclass "\""
             # Test Name
-            print "| class=\"cyclo_function_entry_name\" |" test_name[ntest]
+            print "| class=\"cyclo_function_entry_name\" |" test_name[nt]
             # Test File
-            print "| class=\"cyclo_function_entry_filename\" |" test_file[ntest]
+            print "| class=\"cyclo_function_entry_filename\" |" test_file[nt]
             # Test Line
-            print "| class=\"cyclo_function_entry_cyclo\" |" test_line[ntest]
+            print "| class=\"cyclo_function_entry_cyclo\" |" test_line[nt]
             # Test Result
-            print "| class=\"cyclo_function_entry_cyclo\" |" test_result[ntest]
+            print "| class=\"cyclo_function_entry_cyclo\" |" test_result[nt]
         }
     }
 
