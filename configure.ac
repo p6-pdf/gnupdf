@@ -223,7 +223,7 @@ fi
 
 
 dnl Generate output files
-AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile torture/unit/Makefile doc/Makefile utils/Makefile prmgt/Makefile prmgt/pmccabe2html prmgt/apic2wiki prmgt/docfuncs prmgt/tsdfuncs src/extract-public-hdr build-aux/Makefile)
+AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile torture/unit/Makefile doc/Makefile utils/Makefile prmgt/Makefile prmgt/pmccabe2html prmgt/apic2wiki prmgt/testlog2wiki prmgt/docfuncs prmgt/tsdfuncs src/extract-public-hdr build-aux/Makefile)
 
 dnl Report configuration results
 

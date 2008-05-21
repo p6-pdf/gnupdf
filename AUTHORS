@@ -33,7 +33,7 @@ Jose E. Marchesi: wrote AUTHORS configure.ac doc/gnupdf-manual.init
   torture/unit/base/stm/pdf-create-file-stm.c
   torture/unit/base/stm/tsuite-stm.c utils/Makefile.am
   utils/pdf-filter.h utils/pdf-filter.c utils/README
-  prmgt/apic2wiki.in
+  prmgt/apic2wiki.in prmgt/testlog2wiki.in
 and changed src/base/pdf-stm-f-pred.c src/base/pdf-stm-f-pred.h
   src/base/pdf-list.h src/base/pdf-list.c
   torture/unit/base/text/pdf-text-get-unicode.c src/base/pdf-error.h
@@ -58,7 +58,7 @@ and changed src/base/pdf-stm-f-pred.c src/base/pdf-stm-f-pred.h
   torture/unit/base/list/pdf-list-search.c
   torture/unit/base/list/pdf-list-set-at.c 
   torture/unit/base/hash/pdf-hash-search.c
-  prmgt/check-api-doc-consistency.pl
+  prmgt/check-api-doc-consistency.pl torture/unit/nocheck/README
 
 Juan Pedro Bolívar Puente: wrote src/base/pdf-stm-f-pred.c
   src/base/pdf-stm-f-pred.h src/base/pdf-stm-f-lzw.c

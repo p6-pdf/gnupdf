@@ -1,19 +1,26 @@
 
 No-Check built-in unit testing framework
---------------------------------------------------------------------------------
+----------------------------------------
 
 The files in this directory (check.h and check.c) provide a built-in
 implementation of the Check unit testing framework (called No-Check).
 
 Some of the features provided are:
+
 * May be enabled at configure time: ./configure --enable-nocheck
-* This framework should run without problem in any OS (including Windows OS).
+
+* This framework should run without problem in any OS (including
+  Windows OS).
+
 * No fork is done for each test, as in the default behaviour of Check.
-* A ut.log is provided with the same format & contents as the one provided when
-  running with the real Check.
-* The given API in check.h is compatible with the real API provided by Check, so
-  no modification should be done to the unit test source files in order to run
-  with this built-in implementation.
+
+* A ut.log is provided with the same format & contents as the one
+  provided when running with the real Check.
+
+* The given API in check.h is compatible with the real API provided by
+  Check, so no modification should be done to the unit test source
+  files in order to run with this built-in implementation.
+
 * The dumps to stdout are completely equivalent to the ones dumped by the real
   Check framework.
 
