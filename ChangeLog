@@ -1,5 +1,16 @@
 2008-05-22  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf.texi (Read in Advance): New section.
+	(Read in Advance): New function `pdf_fsys_file_request_rad'.
+	(Read in Advance): New function `pdf_fsys_file_has_rad'.
+	(Read in Advance): New function `pdf_fsys_file_cancel_rad'.
+	(Closing and Reopening Files): New section.
+	(Closing and Reopening Files): New function `pdf_fsys_file_close'.
+	(Closing and Reopening Files): New function
+	`pdf_fsys_file_reopen'.
+	(Comparing Files): New section.
+	(Comparing Files): New function `pdf_fsys_file_same_p'.
+
 	* prmgt/Makefile.am (ut.wiki): Rule to generate `ut.wiki' added.
 
 	* prmgt/testlog2wiki.in: Implementation finished.
