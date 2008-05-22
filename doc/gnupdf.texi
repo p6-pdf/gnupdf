@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.59 2008/05/22 12:24:12 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.60 2008/05/22 12:46:51 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -4928,9 +4928,11 @@ becomes a no-op.
 
 @menu
 * Filesystem Data Types::
-* Opening and Closing Files::
+* Getting File System Properties::
+* Opening Files::
 * Folder Management::
 * Getting File System Item Properties::
+* File System Utility Functions::
 @end menu
 
 @node Filesystem Data Types
@@ -4984,8 +4986,33 @@ directory).
 @end table
 @end deftp
 
-@node Opening and Closing Files
-@subsubsection Opening and Closing Files
+@node Getting File System Properties
+@subsubsection Getting File System Properties
+
+@deftypefun pdf_size_t pdf_fsys_get_free_space (pdf_fsys_t @var{file_system}, pdf_text_t @var{path_name})
+
+Get the free storage space in the volume containing @var{path_name}.
+
+@table @strong
+@item Parameters
+@table @var
+@item file_system
+A filesystem. If @code{NULL} then the default filesystem is used.
+@item path_name
+A path name.
+@end table
+@item Returns
+A PDF size value containing the remaining free space in the volume
+containing @var{path_name}.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@node Opening Files
+@subsubsection Opening Files
 
 @deftypefun pdf_status_t pdf_fsys_open (const pdf_fsys_t @var{filesystem}, const pdf_text_t @var{path_name}, const enum pdf_fsys_file_mode_e @var{mode}, pdf_fsys_file_t @var{file})
 
@@ -5026,33 +5053,6 @@ XXX
 @end example
 @end table
 @end deftypefun               
-
-@deftypefun pdf_status_t pdf_fsys_close (const pdf_fsys_t @var{filesystem}, pdf_fsys_file_t @var{file})
-
-Close @var{file} releasing any used resource.
-
-@table @strong
-@item Parameters
-@table @var
-@item filesystem
-A filesystem. If @code{NULL} the default filesystem is used.
-@item file
-The open file to close.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The file was successfully closed.
-@item PDF_ERROR
-There was some error closing the file.
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
 
 @node Folder Management
 @subsubsection Folder Management
@@ -5355,6 +5355,28 @@ The filesystem item is writable.
 @item PDF_FALSE
 The filesystem item is not writable.
 @end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@node File System Utility Functions
+@subsubsection File System Utility Functions
+
+@deftypefun pdf_text_t pdf_fsys_get_temp_path_name (pdf_fsys_t @var{file_system})
+
+Return a path name for a new temporary file in the specified filesystem.
+
+@table @strong
+@item Parameters
+@table @var
+@item file_system
+A filesystem.
+@end table
+@item Returns
+A PDF text variable containing a path name.
 @item Usage example
 @example
 XXX
@@ -5777,12 +5799,12 @@ XXX
 When working with slow filesystems (such as network filesystems) it is
 useful to be able to request parts of the file in advance.
 
-@deftypefun pdf_status_t pdf_fsys_file_request_rad (pdf_fsys_file_t @var{file}, pdf_size_t @var{offset}, pdf_size_t @var{count})
+@deftypefun pdf_status_t pdf_fsys_file_request_ria (pdf_fsys_file_t @var{file}, pdf_size_t @var{offset}, pdf_size_t @var{count})
 
 Request a Read-In-Advance operation in a given open file.
 
 Note that it is up to the underlying filesystem to honour the
-operation. If the filesystem do not implement RAD capabilities then
+operation. If the filesystem do not implement RIA capabilities then
 this function is a no-op.
 
 @table @strong
@@ -5810,13 +5832,13 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_bool_t pdf_fsys_file_has_rad (pdf_fsys_file_t @var{file})
+@deftypefun pdf_bool_t pdf_fsys_file_has_ria (pdf_fsys_file_t @var{file})
 
-Determine whether the filesystem is performing some RAD operation for
+Determine whether the filesystem is performing some RIA operation for
 the given open file.
 
 Note that it is up to the underlying filesystem to honour the
-operation. If the filesystem do not implement RAD capabilities then
+operation. If the filesystem do not implement RIA capabilities then
 this function always return @code{PDF_FALSE}.
 
 @table @strong
@@ -5829,9 +5851,9 @@ An open file.
 A PDF boolean value:
 @table @code
 @item PDF_TRUE
-The filesystem is performing some RAD operation in the given file.
+The filesystem is performing some RIA operation in the given file.
 @item PDF_FALSE
-There is not an outstanding RAD operation in the given file.
+There is not an outstanding RIA operation in the given file.
 @end table
 @item Usage example
 @example
@@ -5840,12 +5862,12 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fsys_file_cancel_rad (pdf_fsys_file_t @var{file})
+@deftypefun pdf_status_t pdf_fsys_file_cancel_ria (pdf_fsys_file_t @var{file})
 
-Cancel any pending RAD operation in a given open file.
+Cancel any pending RIA operation in a given open file.
 
 Note that it is up to the underlying filesystem to honour the
-operation. If the filesystem do not implement RAD capabilities then
+operation. If the filesystem do not implement RIA capabilities then
 this function is a no-op.
 
 @table @strong
@@ -5858,7 +5880,7 @@ An open file.
 A PDF status value:
 @table @code
 @item PDF_OK
-Any pending RAD operation was cancelled.
+Any pending RIA operation was cancelled.
 @end table
 @item Usage example
 @example
@@ -6255,7 +6277,7 @@ interface function.
 @subsection The Filesystem Definition Interface
 
 The Filesystem Definition Interface is implemented by the Filesystem
-module and provides functionality to provide an implementation to a
+module and provides functionality to provide an implementation of a
 filesystem. A @code{pdf_fsys_t} should be properly defined before to
 use it.
 

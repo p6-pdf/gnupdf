@@ -10,6 +10,12 @@
 	`pdf_fsys_file_reopen'.
 	(Comparing Files): New section.
 	(Comparing Files): New function `pdf_fsys_file_same_p'.
+	(Getting File System Properties): New section.
+	(Getting File System Properties): New function
+	`pdf_fsys_get_free_space'.
+	(File System Utility Functions): New section.
+	(File System Utility Functions): New function
+	`pdf_fsys_get_temp_path_name'.
 
 	* prmgt/Makefile.am (ut.wiki): Rule to generate `ut.wiki' added.
 
