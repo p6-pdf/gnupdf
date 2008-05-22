@@ -18,7 +18,7 @@
 
 if PRMGT
 
-TARGETS = cyclo.html cyclo.wiki apic.wiki
+TARGETS = cyclo.html cyclo.wiki apic.wiki ut.wiki
 
 cyclo.html:
 	chmod +x ${srcdir}/pmccabe2html
@@ -31,6 +31,10 @@ cyclo.wiki:
 apic.wiki:
 	chmod +x ${srcdir}/apic2wiki
 	${srcdir}/check-api-doc-consistency.pl -p | ${srcdir}/apic2wiki > apic.wiki
+
+ut.wiki:
+	chmod +x ${srcdir}/testlog2wiki
+	if test -f ${top_srcdir}/torture/unit/ut.log ; then cat ${top_srcdir}/torture/unit/ut.log | ${srcdir}/testlog2wiki > ut.wiki; fi
 
 if TASKJUGGLER
 

@@ -1,3 +1,9 @@
+2008-05-22  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* prmgt/Makefile.am (ut.wiki): Rule to generate `ut.wiki' added.
+
+	* prmgt/testlog2wiki.in: Implementation finished.
+
 2008-05-20  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* prmgt/testlog2wiki.in: Fix a bug so we can output information

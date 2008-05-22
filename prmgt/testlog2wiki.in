@@ -19,7 +19,7 @@
 # Prologue & configuration
 BEGIN {
     # Wiki data
-    wiki_prolog = "{{Note|This page has been automatically generated}}\n__NOTOC__"
+    wiki_prolog = "{{Note|This page has been automatically generated}}"
     wiki_epilog = ""
 
     # Internal variables
@@ -35,9 +35,10 @@ BEGIN {
 
 function print_resume ()
 {
-    print "==Execution Resume=="
+    print "=Resume="
     print ""
-    
+    print "Report generated at: '''" strftime() "'''"
+    print ""
     print "{| class=\"cyclo_resume_table\""
     # Tests executed
     print "|-"
@@ -54,20 +55,23 @@ function print_resume ()
     print "|}"
 }
 
-function print_suites ()
+function print_passing_suites ()
 {
-    print "==Test Execution Details=="
+    print "=Passing Tests="
 
     for (ntsuite = 1; ntsuite <= numsuites; ntsuite++)
     {
-        suite_name = suites[ntsuite]
-
-        print "===Test Suite " suite_name "==="
-        print_suite_functions(suite_name)
+        if (suite_has_passing_tests[ntsuite] == "yes")
+        {
+            suite_name = suites[ntsuite]
+            
+            print "==Test Suite " suite_name "=="
+            print_passing_suite_functions(suite_name)
+        }
     }
 }
 
-function print_suite_functions (sname)
+function print_passing_suite_functions (sname)
 {
     last_func = ""
     for (ntest = 1; ntest <= numtests; ntest++)
@@ -75,16 +79,21 @@ function print_suite_functions (sname)
         if (test_suite[ntest] == sname)
         {
             tf = test_func[ntest]
-            if (tf != last_func)
+            if ((tf != last_func) &&
+                (function_has_passing_tests[tf] == "yes"))
             {
-                print "====Function " tf "===="
+                print ""
+                print ""
+                print "<center>'''" tf "'''</center>"
+                print ""
                 print "{| width=\"90%\" class=\"cyclo_function_table\" cellpadding=\"0\" cellspacing=\"0\">"
                 # Table header
+                print "|-"
                 print "! class=\"cyclo_function_table_header_entry\" | Test Name"
                 print "! class=\"cyclo_function_table_header_entry\" | File"
                 print "! class=\"cyclo_function_table_header_entry\" | Line"
                 print "! class=\"cyclo_function_table_header_entry\" | Result"
-                print_tcase(tf)
+                print_passing_tcase(tf)
                 print "|}"
 
                 last_func = tf
@@ -93,7 +102,7 @@ function print_suite_functions (sname)
     }
 }
 
-function print_tcase (fname)
+function print_passing_tcase (fname)
 {
     for (nt = 1; nt <= numtests; nt++)
     {
@@ -102,25 +111,95 @@ function print_tcase (fname)
             if (test_result[nt] == "P")
             {
                 trclass="cyclo_function_entry_simple"
+
+                print "|- class=\"" trclass "\""
+                # Test Name
+                print "| class=\"cyclo_function_entry_name\" |" test_name[nt]
+                # Test File
+                print "| class=\"cyclo_function_entry_filename\" |" test_file[nt]
+                # Test Line
+                print "| class=\"cyclo_function_entry_cyclo\" |" test_line[nt]
+                # Test Result
+                print "| class=\"cyclo_function_entry_cyclo\" |" test_result[nt]
             }
+        }
+    }
+}
+
+function print_failing_suites ()
+{
+    print "=Failing Tests="
+
+    for (ntsuite = 1; ntsuite <= numsuites; ntsuite++)
+    {
+        if (suite_has_failing_tests[ntsuite])
+        {
+            suite_name = suites[ntsuite]
+            
+            print "==Test Suite " suite_name "=="
+            print_failing_suite_functions(suite_name)
+        }
+    }
+}
+
+function print_failing_suite_functions (sname)
+{
+    last_func = ""
+    for (ntest = 1; ntest <= numtests; ntest++)
+    {
+        if (test_suite[ntest] == sname)
+        {
+            tf = test_func[ntest]
+            if ((tf != last_func) &&
+                (function_has_failing_tests[tf] == "yes"))
+            {
+                print ""
+                print ""
+                print "<center>'''" tf "'''</center>"
+                print ""
+                print "{| width=\"90%\" class=\"cyclo_function_table\" cellpadding=\"0\" cellspacing=\"0\">"
+                # Table header
+                print "|-"
+                print "! class=\"cyclo_function_table_header_entry\" | Test Name"
+                print "! class=\"cyclo_function_table_header_entry\" | File"
+                print "! class=\"cyclo_function_table_header_entry\" | Line"
+                print "! class=\"cyclo_function_table_header_entry\" | Result"
+                print "! class=\"cyclo_function_table_header_entry\" | Fail Cause"
+                print_failing_tcase(tf)
+                print "|}"
+
+                last_func = tf
+            }
+        }
+    }
+}
+
+function print_failing_tcase (fname)
+{
+    for (nt = 1; nt <= numtests; nt++)
+    {
+        if (test_func[nt] == fname)
+        {
             if (test_result[nt] == "F")
             {
                 trclass="cyclo_function_entry_high"
+                
+                print "|- class=\"" trclass "\""
+                # Test Name
+                print "| class=\"cyclo_function_entry_name\" |" test_name[nt]
+                # Test File
+                print "| class=\"cyclo_function_entry_filename\" |" test_file[nt]
+                # Test Line
+                print "| class=\"cyclo_function_entry_cyclo\" |" test_line[nt]
+                # Test Result
+                print "| class=\"cyclo_function_entry_cyclo\" |" test_result[nt]
+                # Fail Cause
+                print "| class=\"cyclo_function_entry_name\" |" test_failreason[nt]
             }
-
-            print "|- class=\"" trclass "\""
-            # Test Name
-            print "| class=\"cyclo_function_entry_name\" |" test_name[nt]
-            # Test File
-            print "| class=\"cyclo_function_entry_filename\" |" test_file[nt]
-            # Test Line
-            print "| class=\"cyclo_function_entry_cyclo\" |" test_line[nt]
-            # Test Result
-            print "| class=\"cyclo_function_entry_cyclo\" |" test_result[nt]
         }
     }
-
 }
+
 
 # Process input data
 
@@ -142,6 +221,7 @@ function print_tcase (fname)
     result = line_data[3]
     tfunc = line_data[4]
     name = line_data[5]
+    ext_result = line_data[7]
 
     test_suite[numtests] = suites[current_suite]
     test_file[numtests] = file
@@ -153,10 +233,16 @@ function print_tcase (fname)
     if (result == "P")
     {
         numpassedtests++
+        test_failreason[numtests] = ""
+        suite_has_passing_tests[current_suite] = "yes"
+        function_has_passing_tests[tfunc] = "yes"
     }
     if (result == "F")
     {
         numfailingtests++
+        test_failreason[numtests] = ext_result
+        suite_has_failing_tests[current_suite] = "yes"
+        function_has_failing_tests[tfunc] = "yes"
     }
 }
 
@@ -165,15 +251,18 @@ END {
     # Print prolog
     print wiki_prolog
 
-    # Title and date
-    print "=libgnupdf Unit Testing Report="
-    print "Report generated at: '''" strftime() "'''"
-
     # Print test execution resume
     print_resume()
 
     # Print detailed information
-    print_suites()
+    if (numfailingtests > 0)
+    {
+        print_failing_suites()
+    }
+    if (numpassedtests > 0)
+    {
+        print_passing_suites()
+    }
 
     # Print epilog
     print wiki_epilog
