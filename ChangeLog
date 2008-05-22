@@ -16,6 +16,7 @@
 	(File System Utility Functions): New section.
 	(File System Utility Functions): New function
 	`pdf_fsys_get_temp_path_name'.
+	Fix callback types and remove redundant callbacks.
 
 	* prmgt/Makefile.am (ut.wiki): Rule to generate `ut.wiki' added.
 
