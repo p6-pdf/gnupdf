@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/05/22 19:29:51 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/05/22 20:38:02 jemarch"
  *
  *       File:         pdf-fsys.c
  *       Date:         Thu May 22 15:51:13 2008
@@ -167,7 +167,105 @@ pdf_status_t
 pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s item_props,
                              pdf_hash_t props_hash)
 {
-  /* FIXME */
+  pdf_bool_t *is_hidden; 
+  pdf_bool_t *is_read_only;
+  pdf_bool_t *is_checked_out;
+  pdf_bool_t *is_published;
+  /* FIXME: */
+  /*  pdf_time_t creation_date; */
+  /*  pdf_time_t mod_date; */
+  pdf_u32_t *file_size_high;
+  pdf_u32_t *file_size_low;
+  pdf_u32_t *folder_size;
+  pdf_u32_t *creator_code;
+  pdf_u32_t *type_code;
+  pdf_u32_t *version_major;
+  pdf_u32_t *version_minor;
+
+  /* Allocate memory for the hash values */
+  is_hidden = (pdf_bool_t *) pdf_alloc (sizeof(pdf_bool_t));
+  is_read_only = (pdf_bool_t *) pdf_alloc (sizeof(pdf_bool_t));
+  is_checked_out = (pdf_bool_t *) pdf_alloc (sizeof(pdf_bool_t));
+  is_published = (pdf_bool_t *) pdf_alloc (sizeof(pdf_bool_t));
+  file_size_high = (pdf_u32_t*) pdf_alloc (sizeof(pdf_u32_t));
+  file_size_low = (pdf_u32_t*) pdf_alloc (sizeof(pdf_u32_t));
+  folder_size = (pdf_u32_t*) pdf_alloc (sizeof(pdf_u32_t));
+  creator_code = (pdf_u32_t*) pdf_alloc (sizeof(pdf_u32_t));
+  type_code = (pdf_u32_t*) pdf_alloc (sizeof(pdf_u32_t));
+  version_major = (pdf_u32_t*) pdf_alloc (sizeof(pdf_u32_t));
+  version_minor = (pdf_u32_t*) pdf_alloc (sizeof(pdf_u32_t));
+  
+  /* Get the values from the props structure */
+  *is_hidden = item_props.is_hidden;
+  *is_read_only = item_props.is_read_only;
+  *is_checked_out = item_props.is_checked_out;
+  *is_published = item_props.is_published;
+  *file_size_high = item_props.file_size_high;
+  *file_size_low = item_props.file_size_low;
+  *folder_size = item_props.folder_size;
+  *creator_code = item_props.creator_code;
+  *type_code = item_props.type_code;
+  *version_major = item_props.version_major;
+  *version_minor = item_props.version_minor;
+
+  /* Associate values with hash keys */
+  if (pdf_hash_add (props_hash, "isHidden", (void *) is_hidden) !=
+      PDF_OK)
+    {
+      return PDF_ERROR;
+    }
+  if (pdf_hash_add (props_hash, "isReadOnly", (void *) is_read_only) !=
+      PDF_OK)
+    {
+      return PDF_ERROR;
+    }
+  if (pdf_hash_add (props_hash, "isCheckedOut", (void *) is_checked_out) !=
+      PDF_OK)
+    {
+      return PDF_ERROR;
+    }
+  if (pdf_hash_add (props_hash, "isPublished", (void *) is_published) !=
+      PDF_OK)
+    {
+      return PDF_ERROR;
+    }
+  if (pdf_hash_add (props_hash, "fileSizeHigh", (void *) file_size_high) !=
+      PDF_OK)
+    {
+      return PDF_ERROR;
+    }
+  if (pdf_hash_add (props_hash, "fileSizeLow", (void *) file_size_low) !=
+      PDF_OK)
+    {
+      return PDF_ERROR;
+    }
+  if (pdf_hash_add (props_hash, "folderSize", (void *) folder_size) !=
+      PDF_OK)
+    {
+      return PDF_ERROR;
+    }
+  if (pdf_hash_add (props_hash, "creatorCode", (void *) creator_code) !=
+      PDF_OK)
+    {
+      return PDF_ERROR;
+    }
+  if (pdf_hash_add (props_hash, "typeCode", (void *) type_code) !=
+      PDF_OK)
+    {
+      return PDF_ERROR;
+    }
+  if (pdf_hash_add (props_hash, "versionMajor", (void *) version_major) !=
+      PDF_OK)
+    {
+      return PDF_ERROR;
+    }
+  if (pdf_hash_add (props_hash, "versionMinor", (void *) version_minor) !=
+      PDF_OK)
+    {
+      return PDF_ERROR;
+    }
+
+  /* Done */
   return PDF_OK;
 }
 

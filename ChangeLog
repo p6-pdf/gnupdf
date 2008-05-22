@@ -1,5 +1,7 @@
 2008-05-22  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-fsys.c (pdf_fsys_item_props_to_hash): Implemented.
+
 	* src/Makefile.am (FILESYSTEM_MODULE_SOURCES): New variable
 	holding filesystem module sources.
 

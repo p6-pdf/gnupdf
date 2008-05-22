@@ -34,6 +34,8 @@ Jose E. Marchesi: wrote AUTHORS configure.ac doc/gnupdf-manual.init
   torture/unit/base/stm/tsuite-stm.c utils/Makefile.am
   utils/pdf-filter.h utils/pdf-filter.c utils/README
   prmgt/apic2wiki.in prmgt/testlog2wiki.in
+  src/base/pdf-fsys.h src/base/pdf-fsys.c src/base/pdf-fsys-def.h
+  src/base/pdf-fsys-disk.h src/base/pdf-fsys-disk.c
 and changed src/base/pdf-stm-f-pred.c src/base/pdf-stm-f-pred.h
   src/base/pdf-list.h src/base/pdf-list.c
   torture/unit/base/text/pdf-text-get-unicode.c src/base/pdf-error.h
