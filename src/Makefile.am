@@ -98,6 +98,8 @@ PUBLIC_HDRS = pdf-global.h \
               base/pdf-alloc.h \
               base/pdf-list.h \
               base/pdf-hash.h \
+              base/pdf-text.h \
+              base/pdf-fsys.h \
               base/pdf-stm-f-a85.h \
               base/pdf-stm-f-ahex.h \
               base/pdf-stm-f-fax.h \
@@ -106,8 +108,8 @@ PUBLIC_HDRS = pdf-global.h \
               base/pdf-stm-f-pred.h \
               base/pdf-stm-f-rl.h \
               base/pdf-stm-file.h \
-              base/pdf-stm.h \
-              base/pdf-text.h
+              base/pdf-stm.h
+
 
 pdf.h : $(PUBLIC_HDRS)
 	chmod +x $(top_srcdir)/src/extract-public-hdr

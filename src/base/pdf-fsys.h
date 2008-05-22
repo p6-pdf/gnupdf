@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/05/22 19:27:13 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/05/22 19:47:28 jemarch"
  *
  *       File:         pdf-fsys.h
  *       Date:         Thu May 22 15:49:59 2008
@@ -33,13 +33,15 @@
 #include <pdf-hash.h>
 #include <pdf-text.h>
 /* #include <pdf-time.h> */
-#define pdf_time_t int
 
 /*
  * Data Types
  */
 
 /* BEGIN PUBLIC */
+
+/* FIXME */
+#define pdf_time_t int
 
 /* Filesystem item properties */
 struct pdf_fsys_item_props_s
