@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.60 2008/05/22 12:46:51 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.61 2008/05/22 13:46:51 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -5417,7 +5417,7 @@ File flags (status) management.
 * File Data Types::
 * File Properties Management::
 * Comparing Files::
-* Changing the Current Position of a File::
+* Managing File Positions::
 * Changing the Size of a File::
 * Synchronous Input/Output::
 * Read in Advance::
@@ -5598,8 +5598,8 @@ XXX
 @end table
 @end deftypefun
 
-@node Changing the Current Position of a File
-@subsubsection Changing the Current Position of a File
+@node Managing File Positions
+@subsubsection Managing File Positions
 
 The following functions allow to move the input/output pointer of a
 buffer file (its ``current position'').
@@ -5685,7 +5685,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_fsys_file_resize (pdf_file_t @var{file}, pdf_size_t @var{new_size})
+@deftypefun pdf_size_t pdf_fsys_file_resize (pdf_fsys_file_t @var{file}, pdf_size_t @var{new_size})
 
 Resize a given file to a given new size measured in octects.
 
@@ -5921,7 +5921,7 @@ XXX
 
 @deftypefun pdf_status_t pdf_fsys_file_reopen (pdf_fsys_file_t @var{file}, pdf_fsys_file_mode_t @var{mode})
 
-Reopen a given open file with an specified mode.
+Reopen a given open file with a given mode.
 
 @table @strong
 @item Parameters
@@ -5972,39 +5972,18 @@ The implementation of both interfaces then makes use of the Filesystem
 Implementation Interface in order to honour the petition.
 
 @menu
-* Opening and Closing Files Implementation::
-* Folder Management Implementation::
-* Synchronous Input/Output Implementation::
-* Managing File System Item Properties Implementation::
-* Managing File Properties Implementation::
+* File System Interface Implementation::
+* File Interface Implementation::
 @end menu
 
-
-@node Opening and Closing Files Implementation
-@subsubsection Opening and Closing Files
-
-The following callbacks provides the functionality to open files
-(obtaining a @code{pdf_fsys_file_t}) and close files.
+@node File System Interface Implementation
+@subsubsection File System Interface Implementation
 
 @deftp {Data Type} {pdf_status_t (*pdf_fsys_open_fn) (pdf_text_t @var{path_name}, enum pdf_fsys_file_mode_e @var{mode}, pdf_fsys_file_t @var{file})}
 
 Filesystem callback called to open a file identified by the path
 @var{path_name} in the mode specified by @var{mode}. A new
 @code{pdf_fsys_file_t} is created and stored in @var{file}.
-
-The callback should return a PDF status value:
-
-@table @code
-@item PDF_OK
-The file was successfully opened and stored in the @var{file}
-variable.
-@item PDF_EBADNAME
-The path name specified in @var{path_name} do not identify an existing
-file in the filesystem.
-@item PDF_EBADPERMS
-The client do not have permission to open the specified file using the
-specified mode. 
-@end table
 
 This callback is called by the @code{pdf_fsys_open} filesystem
 interface function.
@@ -6016,21 +5995,9 @@ Filesystem callback used to close a given file identified by the
 open file variable @var{file}. The output buffers of the file are
 flushed before to close it.
 
-The callback should return a PDF status value:
-
-@table @code
-@item PDF_OK
-The file was successfully closed.
-@item PDF_ERROR
-There was some error closing the file.
-@end table
-
 This callback is called by the @code{pdf_fsys_close} filesystem
 interface function.
 @end deftp
-
-@node Folder Management Implementation
-@subsubsection Folder Management
 
 The following callbacks are defined to provide folder management:
 creation, deletion and modification of folders in the filesystem and
@@ -6041,17 +6008,6 @@ retrieval of folder contents.
 Filesystem callback used to create a folder identified by the
 @var{path_name} path name.
 
-The callback should return a PDF status value:
-
-@table @code
-@item PDF_OK
-The folder was successfully created.
-@item PDF_EBADNAME
-The specified @var{path_name} is incorrect.
-@item PDF_EBADPERMS
-The client do not have permissions to create the folder.
-@end table
-
 This callback is called by the @code{pdf_fsys_create_folder}
 filesystem interface function.
 @end deftp
@@ -6061,38 +6017,15 @@ filesystem interface function.
 Filesystem callback used to get the contents of a specified folder as
 a list of path names.
 
-The callback should return a PDF status value:
-
-@table @code
-@item PDF_OK
-The operation was successfully performed.
-@item PDF_EBADNAME
-@var{path_name} is not a valid folder path name.
-@item PDF_EBADPERMS
-The client do not have permissions to read the contents of the folder.
-@end table
-
 This callback is called by the @code{pdf_fsys_get_folder_contents}
 filesystem interface function.
 @end deftp
 
-@deftp {Data Type} {pdf_status_t (*pdf_fsys_get_parent) (pdf_text_t @var{path_name}, pdf_text_t @var{parent_path})}
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_get_parent_fn) (pdf_text_t @var{path_name}, pdf_text_t @var{parent_path})}
 
 Filesystem callback used to get the path name of the father of a given
 item in a filesystem. If @var{path_name} is the root directory then
 NULL is returned in @var{parent_path}.
-
-The callback should return a PDF status value:
-
-@table @code
-@item PDF_OK
-The operation was successfully performed.
-@item PDF_EBADNAME
-@var{path_name} do not identify a filesystem item.
-@item PDF_EBADPERMS
-The client do not have permissions to get the parent of the specified
-item.
-@end table
 
 This callback is called by the @code{pdf_fsys_get_parent} filesystem
 interface function.
@@ -6103,23 +6036,9 @@ interface function.
 Filesystem callback used to remove an empty folder identified by
 @var{path_name}. 
 
-The callback should return a PDF status value:
-
-@table @code
-@item PDF_OK
-The folder was successfully removed.
-@item PDF_EBADNAME
-@var{path_name} do not name a folder in the filesystem.
-@item PDF_EBADPERMS
-The client do not have permissions to remove the folder.
-@end table
-
 This callback is called by the @code{pdf_fsys_remove_folder}
 filesystem interface function.
 @end deftp
-
-@node Synchronous Input/Output Implementation
-@subsubsection Synchronous Input/Output Implementation
 
 The following callbacks are defined to provide synchronous
 input/output in open files.
@@ -6128,9 +6047,6 @@ input/output in open files.
 
 Filesystem callback used to synchronously read data from an open file
 item.
-
-The callback should return a PDF size value: the number of readed
-octects or @code{0} in the presence of an error.
 
 This callback is called by the @code{pdf_fsys_file_read} file
 interface function.
@@ -6141,9 +6057,6 @@ interface function.
 Filesystem callback used to synchronously write data to an open file
 item.
 
-The callback should return a PDF size value: the number of written
-octects or 0 in the presence of an error.
-
 This callback is called by the @code{pdf_fsys_file_write} file
 interface function.
 @end deftp
@@ -6153,21 +6066,9 @@ interface function.
 Filesystem callback used to flush all the written data for the
 specified file.
 
-The callback should return a PDF status value:
-
-@table @code
-@item PDF_OK
-The open file was flushed successfully.
-@item PDF_ERROR
-There was an error flushing the open file.
-@end table
-
 This callback is called by the @code{pdf_fsys_file_flush} file
 interface function.
 @end deftp
-
-@node Managing File System Item Properties Implementation
-@subsubsection Managing File System Item Properties Implementation
 
 The following callbacks are defined to provide access to several
 filesystem item properties. The file system items are addressed using
@@ -6178,25 +6079,57 @@ path names.
 Filesystem callback used to get the properties of a named filesystem
 item.
 
-The callback should return a PDF status value:
-@table @code
-@item PDF_OK
-The operation succeeded and the item properties were stored in
-@var{props}
-@item PDF_EBADNAME
-There is not a filesystem item after @var{path_name}.
-@item PDF_EBADPERMS
-The client do not have permissions to get the properties of the named
-filesystem item.
-@end table
-
 This callback is called by the @code{pdf_fsys_get_item_props}
 filesystem interface function.
 @end deftp
 
+@deftp {Data Type} {pdf_size_t (*pdf_fsys_get_free_space_fn) (pdf_fsys_t @var{file_system}, pdf_text_t @var{path_name})}
 
-@node Managing File Properties Implementation
-@subsubsection Managing File Properties Implementation
+Filesystem callback used to get the free storage space in the volume
+containing @var{path_name}.
+
+This callback is called by the @code{pdf_fsys_get_free_space} file
+system interface function.
+@end deftp
+
+@deftp {Data Type} {pdf_bool_t (*pdf_fsys_item_p_fn) (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name})}
+
+Filesystem callback used to determinate whether a given item,
+identified by a path name, exist in a given filesystem.
+
+This callback is called by the @code{pdf_fsys_item_p} file system
+interface function.
+@end deftp
+
+@deftp {Data Type} {pdf_bool_t (*pdf_fsys_item_readable_p_fn) (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name})}
+
+Filesystem callback used to determinate whether a given filesystem
+item, identified by a path name, is readable.
+
+This callback is called by the @code{pdf_fsys_item_readable_p}
+file system interface function.
+@end deftp
+
+@deftp {Data Type} {pdf_bool_t (*pdf_fsys_item_writable_p_fn) (pdf_fsys_t @var{filename}, pdf_text_t @var{path_name})}
+
+Filesystem callback used to determinate whether a given filesystem
+item, identified by a path name, is writeable.
+
+This callback is called by the @code{pdf_fsys_item_writeable_p} file
+system interface function.
+@end deftp
+
+@deftp {Data Type} {pdf_text_t (*pdf_fsys_get_temp_path_name_fn) (pdf_fsys_t @var{file_system})}
+
+Filesystem callback used to get a path name for a new temporary file
+in teh specified filesystem.
+
+This callback is called by the @code{pdf_fsys_get_temp_path_name} file
+system interface function.
+@end deftp
+
+@node File Interface Implementation
+@subsubsection File Interface Implementation
 
 The following callbacks are defined to provide access to several file
 properties.
@@ -6272,6 +6205,119 @@ This callback is called by the @code{pdf_fsys_file_set_pos} file
 interface function.
 @end deftp
 
+@deftp {Data Type} {pdf_fsys_file_mode_t (*pdf_fsys_file_get_open_mode_fn) (pdf_fsys_file_t @var{file})}
+
+Filesystem callback used to get the open mode of a given open file.
+
+This callback is called by the @code{pdf_fsys_file_get_open_mode} file
+interface function.
+@end deftp
+
+@deftp {Data Type} {pdf_fsys_file_mode_t (*pdf_fsys_file_set_mode_fn) (pdf_fsys_file_t @var{file}, pdf_fsys_file_mode_t @var{new_mode}, pdf_fsys_file_mode_t @var{mode_mask})}
+
+Filesystem callback used to update the mode of a given open file with
+a given set of file modes.
+
+This callback is called by the @code{pdf_fsys_file_set_mode} file
+interface function.
+@end deftp
+
+@deftp {Data Type} {pdf_text_t (*pdf_fsys_file_get_url_fn) (pdf_fsys_file_t @var{file})}
+
+Filesystem callback used to get a URL pointing to a given open file.
+
+This callback is called by the @code{pdf_fsys_file_get_url} file
+interface function.
+@end deftp
+
+@deftp {Data Type} {pdf_bool_t (*pdf_fsys_file_same_p_fn) (pdf_fsys_file_t @var{file}, pdf_text_t @var{path})}
+
+Filesystem callback used to determine whether a given open file is the
+same file as a given file identified by a file path.
+
+This callback is called by the @code{pdf_fsys_file_same_p} file
+interface function.
+@end deftp
+
+@deftp {Data Type} {pdf_size_t (*pdf_fsys_file_get_pos_fn) (pdf_fsys_file_t @var{file})}
+
+Filesystem callback used to get the current position in a given open
+file.
+
+This callback is called by the @code{pdf_fsys_file_get_pos} file
+interface function.
+@end deftp
+
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_set_pos_fn) (pdf_fsys_file_t @var{file}, pdf_size_t @var{new_pos})}
+
+Filesystem callback used to set the current position for a given open
+file.
+
+This callback is called by the @code{pdf_fsys_file_set_pos} file
+interface function.
+@end deftp
+
+@deftp {Data Type} {pdf_bool_t (*pdf_fsys_file_sizeable_p_fn) (pdf_fsys_file_t @var{file}, pdf_size_t @var{size})}
+
+Filesystem callback used to determine if a given open file is
+resizeable to a given size.
+
+This callback is called by the @code{pdf_fsys_file_sizeable_p} file
+interface function.
+@end deftp
+
+@deftp {Data Type} {pdf_size_t (*pdf_fsys_file_resize_fn) (pdf_fsys_file_t @var{file}, pdf_size_t @var{new_size})}
+
+Filesystem callback used to resize a given file to a given new size
+measured in octects.
+
+This callback is called by the @code{pdf_fsys_file_resize} file
+interface function.
+@end deftp
+
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_request_ria_fn) (pdf_fsys_file_t @var{file}, pdf_size_t @var{offset}, pdf_size_t @var{count})}
+
+Filesystem callback used to request a Read-In-Advance operation in a
+given open file.
+
+This callback is called by the @code{pdf_fsys_file_request_ria} file
+interface function.
+@end deftp
+
+@deftp {Data Type} {pdf_bool_t (*pdf_fsys_file_has_ria_fn) (pdf_fsys_file_t @var{file})}
+
+Filesystem callback used to determine whether the filesystem is
+performing some RIA operation for the given open file.
+
+This callback is called by the @code{pdf_fsys_file_has_ria} file
+interface function.
+@end deftp
+
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_cancel_ria_fn) (pdf_fsys_file_t @var{file})}
+
+Filesystem callback used to cancel any pending RIA operation in a
+given open file.
+
+This callback is called by the @code{pdf_fsys_file_cancel_ria} file
+interface function.
+@end deftp
+
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_close_fn) (pdf_fsys_file_t @var{file})}
+
+Filesystem callback used to close a given open file.
+
+This callback is called by the @code{pdf_fsys_file_close} file
+interface function.
+@end deftp
+
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_reopen_fn) (pdf_fsys_file_t @var{file}, pdf_fsys_file_mode_t @var{mode})}
+
+Filesystem callback used to reopen a given open file with a
+given mode.
+
+This callback is called by the @code{pdf_fsys_file_reopen} file
+interface function.
+@end deftp
 
 @node The Filesystem Definition Interface
 @subsection The Filesystem Definition Interface
@@ -6290,6 +6336,81 @@ The function types conforming the Filesystem Implementation Interface.
 Installation functions to register implementation functions into a
 filesystem variable.
 @end itemize
+
+@menu
+* File System Definition Data Types::
+* File System Definition Functions::
+@end menu
+
+@node File System Definition Data Types
+@subsubsection File System Definition Data Types
+
+@deftp {Data Type} struct pdf_fsys_impl_s
+
+Structure containing the callbacks to a concrete file system
+implementation.
+
+The members of the structure are the following:
+
+@table @code
+@item pdf_fsys_open_fn open
+@item pdf_fsys_close_fn c close
+@item pdf_fsys_create_folder_fn create_folder
+@item pdf_fsys_get_folder_contents_fn get_folder_contents
+@item pdf_fsys_get_parent_fn get_parent
+@item pdf_fsys_remove_folder_fn remove_folder
+@item pdf_fsys_file_read_fn file_read
+@item pdf_fsys_file_write_fn file_write
+@item pdf_fsys_file_flush_fn fiile_flush
+@item pdf_fsys_get_item_props_fn get_item_props
+@item pdf_fsys_get_free_space_fn get_free_space
+@item pdf_fsys_item_p_fn item_p
+@item pdf_fsys_item_readable_p_fn item_readable_p
+@item pdf_fsys_item_writable_p_fn item_writable_p
+@item pdf_fsys_get_temp_path_name_fn get_temp_path_name
+@item pdf_fsys_file_can_set_size_fn file_can_set_size
+@item pdf_fsys_file_get_size_fn file_get_size
+@item pdf_fsys_file_set_size_fn file_set_size
+@item pdf_fsys_file_get_pos_fn file_get_pos
+@item pdf_fsys_file_set_pos_fn file_set_pos
+@item pdf_fsys_file_get_open_mode_fn file_get_open_mode
+@item pdf_fsys_file_set_mode_fn file_set_mode
+@item pdf_fsys_file_get_url_fn file_get_url
+@item pdf_fsys_file_same_p_fn file_same_p
+@item pdf_fsys_file_get_pos_fn file_get_pos
+@item pdf_fsys_file_set_pos_fn file_set_pos
+@item pdf_fsys_file_sizeable_p_fn file_sizeable_p
+@item pdf_fsys_file_resize_fn file_resize
+@item pdf_fsys_file_request_ria_fn file_request_ria
+@item pdf_fsys_file_has_ria_fn file_has_ria
+@item pdf_fsys_file_cancel_ria_fn file_cancel_ria
+@item pdf_fsys_file_close_fn file_close
+@item pdf_fsys_file_reopen_fn file_reopen
+@end table
+@end deftp
+
+@node File System Definition Functions
+@subsubsection File System Definition Functions
+
+@deftypefun pdf_fsys_t pdf_fsys_create (struct pdf_fsys_impl_s @var{implementation})
+
+Create and return a new filesystem variable that will use a given
+implementation.
+
+@table @strong
+@item Parameters
+@table @var
+@item implementation
+A filesystem implementation.
+@end table
+@item Returns
+A fileystem variable.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
 
 @node Object Layer
 @chapter Object Layer
