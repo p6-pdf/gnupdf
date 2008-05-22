@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.64 2008/05/22 17:31:52 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.65 2008/05/22 17:40:14 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -6356,6 +6356,29 @@ A filesystem implementation.
 @end table
 @item Returns
 A fileystem variable.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_fsys_destroy (pdf_fsys_t @var{filesystem})
+
+Destroy a filesystem freein all used resources.
+
+@table @strong
+@item Parameters
+@table @var
+@item filesystem
+A filesystem variable.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The filesystem was successfully destroyed.
+@end table
 @item Usage example
 @example
 XXX
