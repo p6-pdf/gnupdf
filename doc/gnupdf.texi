@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.63 2008/05/22 16:45:03 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.64 2008/05/22 17:31:52 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -4945,25 +4945,6 @@ Filesystem Module.
 An opaque type representing a filesystem.
 @end deftp
 
-@deftp {Data Type} {enum pdf_fsys_file_mode_e}
-
-The mode used when opening a file in a filesystem. The available modes
-are described in the following list.
-
-@table @code
-@item PDF_FSYS_OPEN_MODE_READ
-The file is opened in read-only mode. The file should exist in the
-filesystem.
-@item PDF_FSYS_OPEN_MODE_WRITE
-The file is opened in write-only mode. The file is truncated to 0
-size (any previous contents are lost) if the file exist and it is
-created if it do not exist.
-@item PDF_FSYS_OPEN_MODE_RW
-The file is opened in read/write mode. The file should exist in the
-filesystem.
-@item 
-@end table
-@end deftp
 
 @deftp {Data Type} struct pdf_fsys_item_props_s
 This structure holds information about a filesystem item (a file or a
@@ -5436,19 +5417,23 @@ several operations in the file using the @code{pdf_fsys_file_t} as a
 reference.
 @end deftp
 
-@deftp {Data Type} pdf_fsys_file_mode_t
-Scalar data type able to contain any ORed combination of the following
-values:
+@deftp {Data Type} {enum pdf_fsys_file_mode_e}
+
+The mode used when opening a file in a filesystem. The available modes
+are described in the following list.
 
 @table @code
-@item PDF_FSYS_FILE_MODE_READ
-Open the file in read mode.
-@item PDF_FSYS_FILE_MODE_WRITE
-Open the file in write mode.
-@item PDF_FSYS_FILE_MODE_CREATE
-Create the file if it doesnt exist.
-@item PDF_FSYS_FILE_MODE_SERIAL
-The file only admits sequential access.
+@item PDF_FSYS_OPEN_MODE_READ
+The file is opened in read-only mode. The file should exist in the
+filesystem.
+@item PDF_FSYS_OPEN_MODE_WRITE
+The file is opened in write-only mode. The file is truncated to 0
+size (any previous contents are lost) if the file exist and it is
+created if it do not exist.
+@item PDF_FSYS_OPEN_MODE_RW
+The file is opened in read/write mode. The file should exist in the
+filesystem.
+@item 
 @end table
 @end deftp
 
@@ -5458,7 +5443,7 @@ The file only admits sequential access.
 The following functions provides access to several properties of open
 files. 
 
-@deftypefun pdf_size_t pdf_fsys_file_get_size (pdf_fsys_file_t @var{file})
+@deftypefun pdf_status_t pdf_fsys_file_get_size (pdf_fsys_file_t @var{file}, pdf_size_t *@var{size})
 
 Get the size (in number of octects) of a given open file.
 
@@ -5467,9 +5452,15 @@ Get the size (in number of octects) of a given open file.
 @table @var
 @item file
 An open file.
+@item size
+PDF size variable to hold the size of the file.
 @end table
 @item Returns
-The current size of the file in number of octects.
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@end table
 @item Usage example
 @example
 XXX
@@ -5496,7 +5487,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_fsys_file_mode_t pdf_fsys_file_get_open_mode (pdf_fsys_file_t @var{file})
+@deftypefun enum pdf_fsys_file_mode_e pdf_fsys_file_get_mode (pdf_fsys_file_t @var{file})
 
 Return the access mode used to open a given file.
 
@@ -5507,7 +5498,7 @@ Return the access mode used to open a given file.
 An open file.
 @end table
 @item Returns
-An ORed set of file mode values.
+A mode value.
 @item Usage example
 @example
 XXX
@@ -5540,7 +5531,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_fsys_file_mode_t pdf_fsys_file_set_mode (pdf_fsys_file_t @var{file}, pdf_fsys_file_mode_t @var{new_mode}, pdf_fsys_file_mode_t @var{mode_mask})
+@deftypefun enum pdf_fsys_file_mode_e pdf_fsys_file_set_mode (pdf_fsys_file_t @var{file}, enum pdf_fsys_file_mode_e @var{new_mode}, enum pdf_fsys_file_mode_e @var{mode_mask})
 
 Update the mode of a given open file with a given set of file modes.
 
@@ -5658,7 +5649,7 @@ XXX
 @subsubsection Changing the Size of a File
 
 
-@deftypefun pdf_bool_t pdf_fsys_file_sizeable_p (pdf_fsys_file_t @var{file}, pdf_size_t @var{size})
+@deftypefun pdf_bool_t pdf_fsys_file_can_set_size_p (pdf_fsys_file_t @var{file}, pdf_size_t @var{size})
 
 Determine if a given open file is resizeable to a given size.
 
@@ -5685,7 +5676,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_fsys_file_resize (pdf_fsys_file_t @var{file}, pdf_size_t @var{new_size})
+@deftypefun pdf_size_t pdf_fsys_file_set_size (pdf_fsys_file_t @var{file}, pdf_size_t @var{new_size})
 
 Resize a given file to a given new size measured in octects.
 
@@ -5919,7 +5910,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fsys_file_reopen (pdf_fsys_file_t @var{file}, pdf_fsys_file_mode_t @var{mode})
+@deftypefun pdf_status_t pdf_fsys_file_reopen (pdf_fsys_file_t @var{file}, enum pdf_fsys_file_mode_e @var{mode})
 
 Reopen a given open file with a given mode.
 
@@ -6074,7 +6065,7 @@ The following callbacks are defined to provide access to several
 filesystem item properties. The file system items are addressed using
 path names.
 
-@deftp {Data Type} {pdf_status_t (*pdf_fsys_get_item_props_fn_t) (pdf_text_t @var{path_name}, pdf_fsys_item_props_t @var{props})}
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_get_item_props_fn_t) (pdf_text_t @var{path_name}, struct pdf_fsys_item_props_s *@var{props})}
 
 Filesystem callback used to get the properties of a named filesystem
 item.
@@ -6205,15 +6196,15 @@ This callback is called by the @code{pdf_fsys_file_set_pos} file
 interface function.
 @end deftp
 
-@deftp {Data Type} {pdf_fsys_file_mode_t (*pdf_fsys_file_get_open_mode_fn_t) (pdf_fsys_file_t @var{file})}
+@deftp {Data Type} {enum pdf_fsys_file_mode_e (*pdf_fsys_file_get_mode_fn_t) (pdf_fsys_file_t @var{file})}
 
 Filesystem callback used to get the open mode of a given open file.
 
-This callback is called by the @code{pdf_fsys_file_get_open_mode} file
+This callback is called by the @code{pdf_fsys_file_get_mode} file
 interface function.
 @end deftp
 
-@deftp {Data Type} {pdf_fsys_file_mode_t (*pdf_fsys_file_set_mode_fn_t) (pdf_fsys_file_t @var{file}, pdf_fsys_file_mode_t @var{new_mode}, pdf_fsys_file_mode_t @var{mode_mask})}
+@deftp {Data Type} {enum pdf_fsys_file_mode_e (*pdf_fsys_file_set_mode_fn_t) (pdf_fsys_file_t @var{file}, enum pdf_fsys_file_mode_e @var{new_mode}, enum pdf_fsys_file_mode_e @var{mode_mask})}
 
 Filesystem callback used to update the mode of a given open file with
 a given set of file modes.
@@ -6274,7 +6265,7 @@ This callback is called by the @code{pdf_fsys_file_close} file
 interface function.
 @end deftp
 
-@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_reopen_fn_t) (pdf_fsys_file_t @var{file}, pdf_fsys_file_mode_t @var{mode})}
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_reopen_fn_t) (pdf_fsys_file_t @var{file}, enum pdf_fsys_file_mode_e @var{mode})}
 
 Filesystem callback used to reopen a given open file with a
 given mode.
@@ -6317,35 +6308,35 @@ implementation.
 The members of the structure are the following:
 
 @table @code
-@item pdf_fsys_open_fn_t open
-@item pdf_fsys_close_fn_t c close
-@item pdf_fsys_create_folder_fn_t create_folder
-@item pdf_fsys_get_folder_contents_fn_t get_folder_contents
-@item pdf_fsys_get_parent_fn_t get_parent
-@item pdf_fsys_remove_folder_fn_t remove_folder
-@item pdf_fsys_file_read_fn_t file_read
-@item pdf_fsys_file_write_fn_t file_write
-@item pdf_fsys_file_flush_fn_t fiile_flush
-@item pdf_fsys_get_item_props_fn_t get_item_props
-@item pdf_fsys_get_free_space_fn_t get_free_space
-@item pdf_fsys_item_p_fn_t item_p
-@item pdf_fsys_item_readable_p_fn_t item_readable_p
-@item pdf_fsys_item_writable_p_fn_t item_writable_p
-@item pdf_fsys_get_temp_path_name_fn_t get_temp_path_name
-@item pdf_fsys_file_can_set_size_fn_t file_can_set_size
-@item pdf_fsys_file_get_size_fn_t file_get_size
-@item pdf_fsys_file_set_size_fn_t file_set_size
-@item pdf_fsys_file_get_pos_fn_t file_get_pos
-@item pdf_fsys_file_set_pos_fn_t file_set_pos
-@item pdf_fsys_file_get_open_mode_fn_t file_get_open_mode
-@item pdf_fsys_file_set_mode_fn_t file_set_mode
-@item pdf_fsys_file_get_url_fn_t file_get_url
-@item pdf_fsys_file_same_p_fn_t file_same_p
-@item pdf_fsys_file_request_ria_fn_t file_request_ria
-@item pdf_fsys_file_has_ria_fn_t file_has_ria
-@item pdf_fsys_file_cancel_ria_fn_t file_cancel_ria
-@item pdf_fsys_file_close_fn_t file_close
-@item pdf_fsys_file_reopen_fn_t file_reopen
+@item pdf_fsys_open_fn_t open_fn
+@item pdf_fsys_close_fn_t c close_fn
+@item pdf_fsys_create_folder_fn_t create_folder_fn
+@item pdf_fsys_get_folder_contents_fn_t get_folder_contents_fn
+@item pdf_fsys_get_parent_fn_t get_parent_fn
+@item pdf_fsys_remove_folder_fn_t remove_folder_fn
+@item pdf_fsys_file_read_fn_t file_read_fn
+@item pdf_fsys_file_write_fn_t file_write_fn
+@item pdf_fsys_file_flush_fn_t fiile_flush_fn
+@item pdf_fsys_get_item_props_fn_t get_item_props_fn
+@item pdf_fsys_get_free_space_fn_t get_free_space_fn
+@item pdf_fsys_item_p_fn_t item_p_fn
+@item pdf_fsys_item_readable_p_fn_t item_readable_p_fn
+@item pdf_fsys_item_writable_p_fn_t item_writable_p_fn
+@item pdf_fsys_get_temp_path_name_fn_t get_temp_path_name_fn
+@item pdf_fsys_file_can_set_size_fn_t file_can_set_size_fn
+@item pdf_fsys_file_get_size_fn_t file_get_size_fn
+@item pdf_fsys_file_set_size_fn_t file_set_size_fn
+@item pdf_fsys_file_get_pos_fn_t file_get_pos_fn
+@item pdf_fsys_file_set_pos_fn_t file_set_pos_fn
+@item pdf_fsys_file_get_mode_fn_t file_get_mode_fn
+@item pdf_fsys_file_set_mode_fn_t file_set_mode_fn
+@item pdf_fsys_file_get_url_fn_t file_get_url_fn
+@item pdf_fsys_file_same_p_fn_t file_same_p_fn
+@item pdf_fsys_file_request_ria_fn_t file_request_ria_fn
+@item pdf_fsys_file_has_ria_fn_t file_has_ria_fn
+@item pdf_fsys_file_cancel_ria_fn_t file_cancel_ria_fn
+@item pdf_fsys_file_close_fn_t file_close_fn
+@item pdf_fsys_file_reopen_fn_t file_reopen_fn
 @end table
 @end deftp
 
