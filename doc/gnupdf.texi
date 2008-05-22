@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.65 2008/05/22 17:40:14 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.66 2008/05/22 20:22:21 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -5531,9 +5531,9 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun enum pdf_fsys_file_mode_e pdf_fsys_file_set_mode (pdf_fsys_file_t @var{file}, enum pdf_fsys_file_mode_e @var{new_mode}, enum pdf_fsys_file_mode_e @var{mode_mask})
+@deftypefun enum pdf_fsys_file_mode_e pdf_fsys_file_set_mode (pdf_fsys_file_t @var{file}, enum pdf_fsys_file_mode_e @var{new_mode})
 
-Update the mode of a given open file with a given set of file modes.
+Update the mode of a given open file.
 
 @table @strong
 @item Parameters
@@ -5542,8 +5542,6 @@ Update the mode of a given open file with a given set of file modes.
 An open file.
 @item new_mode
 The new mode to set for the file.
-@item mode_mask
-A mask to apply to @var{new_mode} before to apply it.
 @end table
 @item Returns
 The previous mode of the file or 0 if there is an error setting the
@@ -6074,7 +6072,7 @@ This callback is called by the @code{pdf_fsys_get_item_props}
 filesystem interface function.
 @end deftp
 
-@deftp {Data Type} {pdf_size_t (*pdf_fsys_get_free_space_fn_t) (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name})}
+@deftp {Data Type} {pdf_size_t (*pdf_fsys_get_free_space_fn_t) (pdf_text_t @var{path_name})}
 
 Filesystem callback used to get the free storage space in the volume
 containing @var{path_name}.
@@ -6083,7 +6081,7 @@ This callback is called by the @code{pdf_fsys_get_free_space} file
 system interface function.
 @end deftp
 
-@deftp {Data Type} {pdf_bool_t (*pdf_fsys_item_p_fn_t) (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name})}
+@deftp {Data Type} {pdf_bool_t (*pdf_fsys_item_p_fn_t) (pdf_text_t @var{path_name})}
 
 Filesystem callback used to determinate whether a given item,
 identified by a path name, exist in a given filesystem.
@@ -6092,7 +6090,7 @@ This callback is called by the @code{pdf_fsys_item_p} file system
 interface function.
 @end deftp
 
-@deftp {Data Type} {pdf_bool_t (*pdf_fsys_item_readable_p_fn_t) (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name})}
+@deftp {Data Type} {pdf_bool_t (*pdf_fsys_item_readable_p_fn_t) (pdf_text_t @var{path_name})}
 
 Filesystem callback used to determinate whether a given filesystem
 item, identified by a path name, is readable.
@@ -6110,7 +6108,7 @@ This callback is called by the @code{pdf_fsys_item_writeable_p} file
 system interface function.
 @end deftp
 
-@deftp {Data Type} {pdf_text_t (*pdf_fsys_get_temp_path_name_fn_t) (pdf_fsys_t @var{filesystem})}
+@deftp {Data Type} {pdf_text_t (*pdf_fsys_get_temp_path_name_fn_t) (void)}
 
 Filesystem callback used to get a path name for a new temporary file
 in teh specified filesystem.
@@ -6204,7 +6202,7 @@ This callback is called by the @code{pdf_fsys_file_get_mode} file
 interface function.
 @end deftp
 
-@deftp {Data Type} {enum pdf_fsys_file_mode_e (*pdf_fsys_file_set_mode_fn_t) (pdf_fsys_file_t @var{file}, enum pdf_fsys_file_mode_e @var{new_mode}, enum pdf_fsys_file_mode_e @var{mode_mask})}
+@deftp {Data Type} {enum pdf_fsys_file_mode_e (*pdf_fsys_file_set_mode_fn_t) (pdf_fsys_file_t @var{file}, enum pdf_fsys_file_mode_e @var{new_mode})}
 
 Filesystem callback used to update the mode of a given open file with
 a given set of file modes.

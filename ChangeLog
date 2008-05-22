@@ -1,5 +1,18 @@
 2008-05-22  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/Makefile.am (FILESYSTEM_MODULE_SOURCES): New variable
+	holding filesystem module sources.
+
+	* src/base/pdf-fsys.h: New file.
+
+	* src/base/pdf-fsys-disk.h: New file.
+
+	* src/base/pdf-fsys-disk.c: New file.
+
+	* src/base/pdf-fsys-def.h: New file.
+
+	* src/base/pdf-fsys.c: New file.
+
 	* doc/gnupdf.texi (Read in Advance): New section.
 	(Read in Advance): New function `pdf_fsys_file_request_rad'.
 	(Read in Advance): New function `pdf_fsys_file_has_rad'.

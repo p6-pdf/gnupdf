@@ -33,6 +33,10 @@ TYPES_MODULE_SOURCES = base/pdf-types.c base/pdf-types.h
 
 ERROR_MODULE_SOURCES = base/pdf-error.c base/pdf-error.h
 
+FILESYSTEM_MODULE_SOURCES = base/pdf-fsys.c base/pdf-fsys.h \
+                            base/pdf-fsys-def.h \
+                            base/pdf-fsys-disk.c base/pdf-fsys-disk.h
+
 STM_MODULE_SOURCES = base/pdf-stm-f-a85.c base/pdf-stm-f-a85.h \
                      base/pdf-stm-f-ahex.c base/pdf-stm-f-ahex.h \
                      base/pdf-stm-f-fax.c base/pdf-stm-f-fax.h \
@@ -63,6 +67,7 @@ TEXT_MODULE_SOURCES = base/pdf-text-context.c base/pdf-text-context.h \
 BASE_LAYER_SOURCES = base/pdf-base.c base/pdf-base.h \
                      $(ALLOC_MODULE_SOURCES) \
                      $(TYPES_MODULE_SOURCES) \
+                     $(FILESYSTEM_MODULE_SOURCES) \
                      $(STM_MODULE_SOURCES) \
                      $(ERROR_MODULE_SOURCES) \
                      $(LIST_MODULE_SOURCES) \
