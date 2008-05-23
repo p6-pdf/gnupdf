@@ -1,5 +1,7 @@
 2008-05-22  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* AUTHORS: Indentation fixed.
+
 	* src/base/pdf-error.h (enum): `PDF_EBADPERMS' and `PDF_EBADNAME'
 	added to `pdf_status_t'.
 	(enum pdf_status_e): Define `enum pdf_status_e' and then typedef
