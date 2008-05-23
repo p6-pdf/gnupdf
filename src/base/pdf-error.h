@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-05-06 14:31:45 gerel"
+/* -*- mode: C -*- Time-stamp: "08/05/22 22:45:23 jemarch"
  *
  *       File:         pdf-error.h
  *       Date:         Sun Feb  24 20:22:05 2008
@@ -62,7 +62,7 @@
 
 /* BEGIN PUBLIC */
 
-typedef enum 
+enum pdf_status_e
 {
         PDF_OK = 0,
         PDF_ERROR,
@@ -75,8 +75,12 @@ typedef enum
         PDF_ETEXTENC,
         PDF_ENOMATCH,
         PDF_EINVAL,
-        PDF_STATUS_ITEMS
-} pdf_status_t;
+        PDF_STATUS_ITEMS,
+        PDF_EBADPERMS,
+        PDF_EBADNAME
+};
+
+typedef enum pdf_status_e pdf_status_t;
 
 extern const char * pdf_error_stlist [];
 

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/05/22 21:18:05 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/05/22 22:07:49 jemarch"
  *
  *       File:         pdf-fsys-disk.h
  *       Date:         Thu May 22 18:22:59 2008
@@ -31,7 +31,13 @@
 /* Filesystem internal data associated with open files */
 struct pdf_fsys_disk_file_s
 {
-  pdf_text_t path; /* Path name used to open the file */
+  pdf_text_t unicode_path;    /* Path name used to open the file,
+                                 Unicode version */
+  pdf_char_t *host_path;      /* Path name used to open the file, host
+                                 encoded version */
+  pdf_size_t host_path_size;  /* Size of the host encoded path */
+
+  FILE *file_descriptor;      /* The descriptor of the open file */
 };
 
 typedef struct pdf_fsys_disk_file_s *pdf_fsys_disk_file_t;

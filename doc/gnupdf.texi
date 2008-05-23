@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.66 2008/05/22 20:22:21 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.67 2008/05/23 00:13:42 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -5027,6 +5027,8 @@ file in the filesystem.
 @item PDF_EBADPERMS
 The client do not have permission to open the specified file using the
 specified mode. 
+@item PDF_ENOMEM
+Not enough memory.
 @end table
 @item Usage example
 @example

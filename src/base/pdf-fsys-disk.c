@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/05/22 21:12:45 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/05/22 23:05:30 jemarch"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -23,7 +23,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <config.h>
+
+#include <errno.h>
+#include <stdio.h>
+
+#include <pdf-types.h>
+#include <pdf-error.h>
 #include <pdf-fsys-disk.h>
+
+/* Private function declarations */
+
+static pdf_status_t
+pdf_fsys_disk_build_mode_string (const enum pdf_fsys_file_mode_e mode,
+                                 pdf_char_t *mode_str);
 
 /*
  * Filesystem Interface Implementation
@@ -42,7 +55,86 @@ pdf_fsys_disk_open (const pdf_text_t path_name,
                     const enum pdf_fsys_file_mode_e mode,
                     pdf_fsys_file_t file)
 {
-  /* FIXME: Please implement me :D */
+  pdf_fsys_disk_file_t file_data;
+  pdf_char_t mode_str[4];
+  pdf_status_t ret_status;
+
+  /* Allocate private data storage for the file */
+  file_data = 
+    (pdf_fsys_disk_file_t) pdf_alloc (sizeof(struct pdf_fsys_disk_file_s));
+  file->data = (void *) file_data;
+  
+
+  /* Make and store a copy of the unicode file path and get the host
+     encoded path */
+  file_data->unicode_path = pdf_text_dup (path_name);
+  if (pdf_text_get_host (&file_data->host_path,
+                         &file_data->host_path_size,
+                         file_data->unicode_path,
+                         pdf_text_get_host_encoding ()) != PDF_OK)
+    {
+      /* Cleanup and report error */
+      pdf_text_destroy (file_data->unicode_path);
+      pdf_dealloc (file_data);
+
+      return PDF_ERROR;
+    }
+
+  /* Build the mode string for fopen */
+  pdf_fsys_disk_build_mode_string (mode, mode_str);
+
+  /* Open the file */
+  file_data->file_descriptor =
+    fopen ((char *) file_data->host_path,
+           (char *) mode_str);
+
+  if (file_data->file_descriptor == NULL)
+    {
+      /* Cleanup and report error */
+      pdf_text_destroy (file_data->unicode_path);
+      pdf_dealloc (file_data->host_path);
+      pdf_dealloc (file_data);
+      pdf_dealloc (mode_str);
+
+      switch (errno)
+        {
+        case EACCES:
+        case EPERM:
+        case EROFS:
+#ifndef PDF_HOST_WIN32
+        case ETXTBSY:
+#endif /* !PDF_HOST_WIN32 */
+          {
+            /* Not enough permissions */
+            ret_status = PDF_EBADPERMS;
+            break;
+          }
+        case EISDIR:
+        case ENAMETOOLONG:
+        case ENOTDIR:
+          {
+            /* Invalid path name */
+            ret_status = PDF_EBADNAME;
+            break;
+          }
+        case ENOMEM:
+          {
+            /* Not enough memory */
+            ret_status = PDF_ENOMEM;
+            break;
+          }
+        default:
+          {
+            /* Other error */
+            ret_status = PDF_ERROR;
+            break;
+          }
+        }
+
+      return ret_status;
+    }
+
+  /* All was ok */
   return PDF_OK;
 }
 
@@ -263,6 +355,62 @@ pdf_fsys_disk_file_reopen (pdf_fsys_file_t file,
                            enum pdf_fsys_file_mode_e mode)
 {
   /* FIXME: Impress your cat by implementing me! O_o */
+  return PDF_OK;
+}
+
+/*
+ * Private functions
+ */
+
+pdf_status_t
+pdf_fsys_disk_build_mode_string (const enum pdf_fsys_file_mode_e mode,
+                                 pdf_char_t *mode_str)
+{
+  int mode_str_size;
+
+  switch (mode)
+    {
+    case PDF_FSYS_OPEN_MODE_READ:
+      {
+        mode_str[0] = 'r';
+        mode_str[1] = 0;
+
+        mode_str_size = 1;
+        break;
+      }
+    case PDF_FSYS_OPEN_MODE_WRITE:
+      {
+        mode_str[0] = 'w';
+        mode_str[1] = 0;
+
+        mode_str_size = 1;
+        break;
+      }
+    case PDF_FSYS_OPEN_MODE_RW:
+      {
+        mode_str[0] = 'r';
+        mode_str[1] = '+';
+        mode_str[2] = 0;
+
+        mode_str_size = 2;
+        break;
+      }
+    }
+
+#if defined PDF_HOST_WIN32
+  /* Windoze portability note:
+   *
+   * Files are opened in "text mode" (with crlf translation) by
+   * default.
+   *
+   * Although the "b" fopen option is supported by POSIX some old Unix
+   * systems may not implement it, so we should use that option to
+   * open files only while running in Windows.
+   */
+  mode_str[mode_str_size] = 'b';
+  mode_str[mode_str_size + 1] = 0;
+#endif /* PDF_HOST_WIN32 */
+
   return PDF_OK;
 }
 

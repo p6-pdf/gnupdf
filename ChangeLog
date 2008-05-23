@@ -1,5 +1,17 @@
 2008-05-22  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-error.h (enum): `PDF_EBADPERMS' and `PDF_EBADNAME'
+	added to `pdf_status_t'.
+	(enum pdf_status_e): Define `enum pdf_status_e' and then typedef
+	to `pdf_status_t' to avoid the anonym data type (and the horrid
+	Emacs changelog effect you can see in the previous entry).
+
+	* doc/gnupdf.texi (Opening Files): `pdf_fsys_file_open' may return
+	`PDF_ENOMEM'.
+
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_build_mode_string): New
+	private function.
+
 	* src/base/pdf-fsys-disk.h (struct pdf_fsys_disk_file_s): New
 	structure.
 
