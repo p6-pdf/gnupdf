@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/05/22 19:23:58 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/05/22 21:18:05 jemarch"
  *
  *       File:         pdf-fsys-disk.h
  *       Date:         Thu May 22 18:22:59 2008
@@ -28,7 +28,13 @@
 
 #include <pdf-fsys.h>
 
-/* FIXME: specific data types, definitions, ... */
+/* Filesystem internal data associated with open files */
+struct pdf_fsys_disk_file_s
+{
+  pdf_text_t path; /* Path name used to open the file */
+};
+
+typedef struct pdf_fsys_disk_file_s *pdf_fsys_disk_file_t;
 
 /* Filesystem Interface */
 pdf_size_t pdf_fsys_disk_get_free_space (pdf_text_t path_name);

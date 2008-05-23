@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/05/22 19:24:10 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/05/22 21:12:45 jemarch"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -227,21 +227,27 @@ pdf_fsys_disk_file_request_ria (pdf_fsys_file_t file,
                                 pdf_size_t offset,
                                 pdf_size_t count)
 {
-  /* FIXME: Implement me :D */
+  /* This filesystem implementation do not provide Read-In-Advance
+   * capabilities, so this function is a no-op */
+
   return PDF_OK;
 }
 
 pdf_bool_t
 pdf_fsys_disk_file_has_ria (pdf_fsys_file_t file)
 {
-  /* FIXME: Implement me :D */
-  return PDF_TRUE;
+  /* This filesystem implementation do not provide Read-In-Advance
+   * capabilities */
+
+  return PDF_FALSE;
 }
 
 pdf_status_t
 pdf_fsys_disk_file_cancel_ria (pdf_fsys_file_t file)
 {
-  /* FIXME: Have you RTFM? Then lets write some code! :O) */
+  /* This filesystem implementation do not provide Read-In-Advance
+   * capabilities, so this function is a no-op */
+
   return PDF_OK;
 }
 
