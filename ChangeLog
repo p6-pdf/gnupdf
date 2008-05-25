@@ -1,3 +1,13 @@
+2008-05-25  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_build_mode_string): Add
+	missing `static' qualifier.
+	(pdf_fsys_disk_win32_device_p): New function.
+
+	* src/Makefile.am (libgnupdf_la_LDFLAGS): Call ld with
+	`-no-undefined' to be able to generate a DLL library when
+	compiling for Windozes.
+
 2008-05-22  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* AUTHORS: Indentation fixed.

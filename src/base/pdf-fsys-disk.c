@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/05/22 23:05:30 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/05/25 14:41:15 jemarch"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -27,6 +27,7 @@
 
 #include <errno.h>
 #include <stdio.h>
+#include <string.h>
 
 #include <pdf-types.h>
 #include <pdf-error.h>
@@ -37,6 +38,8 @@
 static pdf_status_t
 pdf_fsys_disk_build_mode_string (const enum pdf_fsys_file_mode_e mode,
                                  pdf_char_t *mode_str);
+static pdf_bool_t
+pdf_fsys_disk_win32_device_p (pdf_text_t path);
 
 /*
  * Filesystem Interface Implementation
@@ -133,6 +136,9 @@ pdf_fsys_disk_open (const pdf_text_t path_name,
 
       return ret_status;
     }
+
+  /* Set the filesystem for the file */
+  file->fs = NULL; /* This is the default filesystem */
 
   /* All was ok */
   return PDF_OK;
@@ -362,7 +368,7 @@ pdf_fsys_disk_file_reopen (pdf_fsys_file_t file,
  * Private functions
  */
 
-pdf_status_t
+static pdf_status_t
 pdf_fsys_disk_build_mode_string (const enum pdf_fsys_file_mode_e mode,
                                  pdf_char_t *mode_str)
 {
@@ -412,6 +418,44 @@ pdf_fsys_disk_build_mode_string (const enum pdf_fsys_file_mode_e mode,
 #endif /* PDF_HOST_WIN32 */
 
   return PDF_OK;
+}
+
+static pdf_bool_t
+pdf_fsys_disk_win32_device_p (pdf_text_t path)
+{
+  /* The following special "files", which access devices, exist in all
+     directories, case-insensitively, and with all possible endings
+     after a period or colon, excpets in pathnames that start with
+     \\?\: */
+  char *device_names[] = 
+    {"NUL", "CON", "PRN", "AUX", "COM1", "COM2", "COM3", "COM4",
+     "COM5", "COM6", "COM7", "COM8", "COM9", "LPT1", "LPT2", "LPT3",
+     "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"};
+  int num_device_names = 22;
+  int i;
+  pdf_bool_t device_p;
+  pdf_text_t device_name;
+  pdf_status_t ret_code;
+
+  device_p = PDF_FALSE;
+  for (i = 0; i < num_device_names; i++)
+    {
+      device_name = pdf_text_new ();
+      pdf_text_new_from_unicode (&device_name,
+                                 (pdf_char_t *) device_names[i],
+                                 strlen (device_names[i]),
+                                 PDF_TEXT_UTF8);
+      
+      if (pdf_text_cmp (path, device_name, PDF_FALSE, &ret_code) == 0)
+        {
+          device_p = PDF_TRUE;
+          break;
+        }
+
+      pdf_text_destroy (device_name);
+    }
+
+  return device_p;
 }
 
 /* End of pdf-fsys-disk.c */
