@@ -1,5 +1,7 @@
 2008-05-26  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* fflush module (and dependencies) imported from gnulib.
+
 	* src/base/pdf-error.h (enum pdf_status_e): New `PDF_EAGAIN' and
 	`PDF_ENOSPC' values.
 
