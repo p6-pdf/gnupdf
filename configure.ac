@@ -139,6 +139,11 @@ if test "x$have_pmccabe" = "xno"; then
 AC_MSG_ERROR([cannot find the `pmccabe' program. Please install it and rerun `configure'.])
 fi
 
+AC_PATH_PROG([TCLSH], [tclsh], [no],)
+if test "x$TCLSH" = "xno"; then
+AC_MSG_ERROR([cannot find a suitable tcl interpreter. Please install it and rerun `configure'.])
+fi
+
 fi # prmgt_mode
 
 # debug_*_mode

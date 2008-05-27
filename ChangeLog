@@ -1,3 +1,14 @@
+2008-05-26  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-error.h (enum pdf_status_e): New `PDF_EAGAIN' and
+	`PDF_ENOSPC' values.
+
+	* doc/gnupdf.texi (Synchronous Input/Output): New error conditions
+	for `pdf_fsys_disk_file_flush'.
+
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_file_flush):
+	Implementation.
+
 2008-05-25  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_build_mode_string): Add

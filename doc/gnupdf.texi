@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.67 2008/05/23 00:13:42 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.68 2008/05/26 22:52:19 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -5774,6 +5774,10 @@ A PDF status value:
 @table @code
 @item PDF_OK
 The open file was flushed successfully.
+@item PDF_EBADDATA
+Bad function parameters to underlying @code{write()}.
+@item PDF_EAGAIN
+Try again.
 @item PDF_ERROR
 There was an error flushing the open file.
 @end table

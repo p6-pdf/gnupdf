@@ -26,6 +26,9 @@ AC_DEFUN([gl_EARLY],
   m4_pattern_allow([^gl_LTLIBOBJS$])dnl a variable
   AC_REQUIRE([AC_PROG_RANLIB])
   AC_REQUIRE([gl_USE_SYSTEM_EXTENSIONS])
+  AC_REQUIRE([AC_FUNC_FSEEKO])
+  AC_REQUIRE([AC_FUNC_FSEEKO])
+  AC_REQUIRE([AC_FUNC_FSEEKO])
 ])
 
 # This macro should be invoked from ./configure.ac, in the section
@@ -40,6 +43,14 @@ AC_DEFUN([gl_INIT],
   gl_source_base='lib'
   gl_ERROR
   gl_EXITFAIL
+  gl_FUNC_FFLUSH
+  gl_STDIO_MODULE_INDICATOR([fflush])
+  gl_FUNC_FPURGE
+  gl_FUNC_FREADING
+  gl_FUNC_FSEEKO
+  gl_STDIO_MODULE_INDICATOR([fseeko])
+  gl_FUNC_FTELLO
+  gl_STDIO_MODULE_INDICATOR([ftello])
   gl_FUNC_GETDELIM
   gl_STDIO_MODULE_INDICATOR([getdelim])
   gl_FUNC_GETLINE
@@ -51,6 +62,8 @@ AC_DEFUN([gl_INIT],
   gl_LIST
   gl_LOCALCHARSET
   gl_LOCALENAME
+  gl_FUNC_LSEEK
+  gl_UNISTD_MODULE_INDICATOR([lseek])
   AC_FUNC_MALLOC
   gl_FUNC_MALLOC_POSIX
   gl_STDLIB_MODULE_INDICATOR([malloc-posix])
@@ -109,6 +122,13 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/error.h
   lib/exitfail.c
   lib/exitfail.h
+  lib/fflush.c
+  lib/fpurge.c
+  lib/fpurge.h
+  lib/freading.c
+  lib/freading.h
+  lib/fseeko.c
+  lib/ftello.c
   lib/getdelim.c
   lib/getline.c
   lib/getopt.c
@@ -130,6 +150,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/localcharset.h
   lib/localename.c
   lib/localename.h
+  lib/lseek.c
   lib/malloc.c
   lib/math_.h
   lib/realloc.c
@@ -151,6 +172,11 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/error.m4
   m4/exitfail.m4
   m4/extensions.m4
+  m4/fflush.m4
+  m4/fpurge.m4
+  m4/freading.m4
+  m4/fseeko.m4
+  m4/ftello.m4
   m4/getdelim.m4
   m4/getline.m4
   m4/getopt.m4
@@ -164,6 +190,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/localcharset.m4
   m4/localename.m4
   m4/longlong.m4
+  m4/lseek.m4
   m4/malloc.m4
   m4/math_h.m4
   m4/onceonly_2_57.m4

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/05/25 14:41:15 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/05/26 20:37:51 jemarch"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -316,8 +316,56 @@ pdf_fsys_disk_file_write (pdf_fsys_file_t file,
 pdf_status_t
 pdf_fsys_disk_file_flush (pdf_fsys_file_t file)
 {
-  /* FIXME: Implement me, but dont tell to Adobe :S */
-  return PDF_OK;
+  pdf_fsys_disk_file_t file_data;
+  pdf_status_t result_status;
+
+  file_data = (pdf_fsys_disk_file_t) file->data;
+
+  if (fflush (file_data->file_descriptor) != 0)
+    {
+      switch (errno)
+        {
+#ifndef PDF_HOST_WIN32
+          /* On Windows platforms (excluding Cygwin), this function
+             does not set errno upon failure. */
+
+        case EBADF:
+        case EFAULT:
+        case EFBIG:
+        case EINVAL:
+          {
+            /* Bad function parameters to underlying write() */
+            result_status = PDF_EBADDATA;
+            break;
+          }
+        case EAGAIN:
+          {
+            /* non-blocking descriptor and blocking writing
+               requested */
+            result_status = PDF_EAGAIN;
+            break;
+          }
+        case ENOSPC:
+          {
+            /* Not room in the disk for the data */
+            result_status = PDF_ENOSPC;
+            break;
+          }
+#endif /* !PDF_HOST_WIN32 */
+        default:
+          {
+            /* Other error conditions */
+            result_status = PDF_ERROR;
+            break;
+          }
+        }
+    }
+  else
+    {
+      result_status = PDF_TRUE;
+    }
+
+  return result_status;
 }
 
 pdf_status_t
