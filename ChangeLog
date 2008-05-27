@@ -1,5 +1,8 @@
 2008-05-26  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_open): `fopen' do not
+	set `errno' in mingw.
+
 	* fflush module (and dependencies) imported from gnulib.
 
 	* src/base/pdf-error.h (enum pdf_status_e): New `PDF_EAGAIN' and

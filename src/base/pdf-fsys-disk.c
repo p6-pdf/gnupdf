@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/05/26 20:37:51 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/05/26 20:59:48 jemarch"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -101,12 +101,14 @@ pdf_fsys_disk_open (const pdf_text_t path_name,
 
       switch (errno)
         {
+#ifndef PDF_HOST_WIN32
+          /* On Windows platforms (excluding Cygwin), fopen does not
+             set errno upon failure. */
+
         case EACCES:
         case EPERM:
         case EROFS:
-#ifndef PDF_HOST_WIN32
         case ETXTBSY:
-#endif /* !PDF_HOST_WIN32 */
           {
             /* Not enough permissions */
             ret_status = PDF_EBADPERMS;
@@ -126,6 +128,7 @@ pdf_fsys_disk_open (const pdf_text_t path_name,
             ret_status = PDF_ENOMEM;
             break;
           }
+#endif /* !PDF_HOST_WIN32 */
         default:
           {
             /* Other error */
@@ -326,8 +329,8 @@ pdf_fsys_disk_file_flush (pdf_fsys_file_t file)
       switch (errno)
         {
 #ifndef PDF_HOST_WIN32
-          /* On Windows platforms (excluding Cygwin), this function
-             does not set errno upon failure. */
+          /* On Windows platforms (excluding Cygwin), fflush does not
+             set errno upon failure. */
 
         case EBADF:
         case EFAULT:
