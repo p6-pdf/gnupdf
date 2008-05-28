@@ -1,5 +1,8 @@
 2008-05-28  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_get_free_space):
+	Implemented.
+
 	* rmdir module imported from gnulib.
 
 	* src/base/pdf-error.h (enum pdf_status_e): New value

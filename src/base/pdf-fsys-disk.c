@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/05/28 17:37:41 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/05/28 18:18:51 jemarch"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <sys/statvfs.h>
 #include <dirent.h>
 #include <unistd.h>
 
@@ -56,8 +57,29 @@ pdf_fsys_disk_win32_device_p (pdf_text_t path);
 pdf_size_t
 pdf_fsys_disk_get_free_space (pdf_text_t path_name)
 {
-  /* FIXME: Please implement me :D */
-  return 0;
+  struct statvfs fs_stats;
+  pdf_char_t *host_path;
+  pdf_u32_t host_path_size;
+
+  /* Get the pathname in the host encoding */
+  if (pdf_fsys_disk_get_host_path (path_name,
+                                   &host_path,
+                                   &host_path_size) != PDF_OK)
+    {
+      return 0;
+    }
+
+  if (statvfs ((const char *) host_path, &fs_stats) != 0)
+    {
+      /* Cleanup */
+      pdf_dealloc (host_path);
+
+      /* Return an error */
+      return 0;
+    }
+
+  /* Return the free space in octects */
+  return (fs_stats.f_bfree * fs_stats.f_bsize);
 }
 
 
