@@ -1,11 +1,11 @@
 /* A GNU-like <math.h>.
 
-   Copyright (C) 2002-2003, 2007 Free Software Foundation, Inc.
+   Copyright (C) 2002-2003, 2007-2008 Free Software Foundation, Inc.
 
-   This program is free software; you can redistribute it and/or modify
+   This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
-   any later version.
+   the Free Software Foundation; either version 3 of the License, or
+   (at your option) any later version.
 
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,8 +13,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software Foundation,
-   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 #ifndef _GL_MATH_H
 
@@ -33,17 +32,45 @@ extern "C" {
 #endif
 
 
+/* POSIX allows platforms that don't support NAN.  But all major
+   machines in the past 15 years have supported something close to
+   IEEE NaN, so we define this unconditionally.  We also must define
+   it on platforms like Solaris 10, where NAN is present but defined
+   as a function pointer rather than a floating point constant.  */
+#if !defined NAN || @REPLACE_NAN@
+# undef NAN
+  /* The Compaq (ex-DEC) C 6.4 compiler chokes on the expression 0.0 / 0.0.  */
+# ifdef __DECC
+static float
+_NaN ()
+{
+  static float zero = 0.0f;
+  return zero / zero;
+}
+#  define NAN (_NaN())
+# else
+#  define NAN (0.0f / 0.0f)
+# endif
+#endif
+
+/* Solaris 10 defines HUGE_VAL, but as a function pointer rather
+   than a floating point constant.  */
+#if @REPLACE_HUGE_VAL@
+# undef HUGE_VAL
+# define HUGE_VAL (1.0 / 0.0)
+#endif
+
 /* Write x as
      x = mantissa * 2^exp
    where
      If x finite and nonzero: 0.5 <= |mantissa| < 1.0.
      If x is zero: mantissa = x, exp = 0.
      If x is infinite or NaN: mantissa = x, exp unspecified.
-   Store exp and return mantissa.  */
+   Store exp in *EXPPTR and return mantissa.  */
 #if @GNULIB_FREXP@
 # if @REPLACE_FREXP@
 #  define frexp rpl_frexp
-extern double frexp (double x, int *exp);
+extern double frexp (double x, int *expptr);
 # endif
 #elif defined GNULIB_POSIXCHECK
 # undef frexp
@@ -65,6 +92,7 @@ extern long double acosl (long double x);
      acosl (x))
 #endif
 
+
 #if @GNULIB_MATHL@ || !@HAVE_DECL_ASINL@
 extern long double asinl (long double x);
 #endif
@@ -75,6 +103,7 @@ extern long double asinl (long double x);
                       "use gnulib module mathl for portability"), \
      asinl (x))
 #endif
+
 
 #if @GNULIB_MATHL@ || !@HAVE_DECL_ATANL@
 extern long double atanl (long double x);
@@ -87,16 +116,33 @@ extern long double atanl (long double x);
      atanl (x))
 #endif
 
-#if @GNULIB_MATHL@ || !@HAVE_DECL_CEILL@
-extern long double ceill (long double x);
+
+#if @GNULIB_CEILF@
+# if @REPLACE_CEILF@
+#  define ceilf rpl_ceilf
+extern float ceilf (float x);
+# endif
+#elif defined GNULIB_POSIXCHECK
+# undef ceilf
+# define ceilf(x) \
+    (GL_LINK_WARNING ("ceilf is unportable - " \
+                      "use gnulib module ceilf for portability"), \
+     ceilf (x))
 #endif
-#if !@GNULIB_MATHL@ && defined GNULIB_POSIXCHECK
+
+#if @GNULIB_CEILL@
+# if @REPLACE_CEILL@
+#  define ceill rpl_ceill
+extern long double ceill (long double x);
+# endif
+#elif defined GNULIB_POSIXCHECK
 # undef ceill
 # define ceill(x) \
     (GL_LINK_WARNING ("ceill is unportable - " \
-                      "use gnulib module mathl for portability"), \
+                      "use gnulib module ceill for portability"), \
      ceill (x))
 #endif
+
 
 #if @GNULIB_MATHL@ || !@HAVE_DECL_COSL@
 extern long double cosl (long double x);
@@ -109,6 +155,7 @@ extern long double cosl (long double x);
      cosl (x))
 #endif
 
+
 #if @GNULIB_MATHL@ || !@HAVE_DECL_EXPL@
 extern long double expl (long double x);
 #endif
@@ -120,16 +167,33 @@ extern long double expl (long double x);
      expl (x))
 #endif
 
-#if @GNULIB_MATHL@ || !@HAVE_DECL_FLOORL@
-extern long double floorl (long double x);
+
+#if @GNULIB_FLOORF@
+# if @REPLACE_FLOORF@
+#  define floorf rpl_floorf
+extern float floorf (float x);
+# endif
+#elif defined GNULIB_POSIXCHECK
+# undef floorf
+# define floorf(x) \
+    (GL_LINK_WARNING ("floorf is unportable - " \
+                      "use gnulib module floorf for portability"), \
+     floorf (x))
 #endif
-#if !@GNULIB_MATHL@ && defined GNULIB_POSIXCHECK
+
+#if @GNULIB_FLOORL@
+# if @REPLACE_FLOORL@
+#  define floorl rpl_floorl
+extern long double floorl (long double x);
+# endif
+#elif defined GNULIB_POSIXCHECK
 # undef floorl
 # define floorl(x) \
     (GL_LINK_WARNING ("floorl is unportable - " \
-                      "use gnulib module mathl for portability"), \
+                      "use gnulib module floorl for portability"), \
      floorl (x))
 #endif
+
 
 /* Write x as
      x = mantissa * 2^exp
@@ -137,12 +201,12 @@ extern long double floorl (long double x);
      If x finite and nonzero: 0.5 <= |mantissa| < 1.0.
      If x is zero: mantissa = x, exp = 0.
      If x is infinite or NaN: mantissa = x, exp unspecified.
-   Store exp and return mantissa.  */
+   Store exp in *EXPPTR and return mantissa.  */
 #if @GNULIB_FREXPL@ && @REPLACE_FREXPL@
 # define frexpl rpl_frexpl
 #endif
 #if (@GNULIB_FREXPL@ && @REPLACE_FREXPL@) || !@HAVE_DECL_FREXPL@
-extern long double frexpl (long double x, int *exp);
+extern long double frexpl (long double x, int *expptr);
 #endif
 #if !@GNULIB_FREXPL@ && defined GNULIB_POSIXCHECK
 # undef frexpl
@@ -151,6 +215,7 @@ extern long double frexpl (long double x, int *exp);
                       "use gnulib module frexpl for portability"), \
      frexpl (x, e))
 #endif
+
 
 /* Return x * 2^exp.  */
 #if @GNULIB_LDEXPL@ && @REPLACE_LDEXPL@
@@ -167,6 +232,7 @@ extern long double ldexpl (long double x, int exp);
      ldexpl (x, e))
 #endif
 
+
 #if @GNULIB_MATHL@ || !@HAVE_DECL_LOGL@
 extern long double logl (long double x);
 #endif
@@ -177,6 +243,50 @@ extern long double logl (long double x);
                       "use gnulib module mathl for portability"), \
      logl (x))
 #endif
+
+
+#if @GNULIB_ROUNDF@
+# if @REPLACE_ROUNDF@
+#  undef roundf
+#  define roundf rpl_roundf
+extern float roundf (float x);
+# endif
+#elif defined GNULIB_POSIXCHECK
+# undef roundf
+# define roundf(x) \
+    (GL_LINK_WARNING ("roundf is unportable - " \
+                      "use gnulib module roundf for portability"), \
+     roundf (x))
+#endif
+
+#if @GNULIB_ROUND@
+# if @REPLACE_ROUND@
+#  undef round
+#  define round rpl_round
+extern double round (double x);
+# endif
+#elif defined GNULIB_POSIXCHECK
+# undef round
+# define round(x) \
+    (GL_LINK_WARNING ("round is unportable - " \
+                      "use gnulib module round for portability"), \
+     round (x))
+#endif
+
+#if @GNULIB_ROUNDL@
+# if @REPLACE_ROUNDL@
+#  undef roundl
+#  define roundl rpl_roundl
+extern long double roundl (long double x);
+# endif
+#elif defined GNULIB_POSIXCHECK
+# undef roundl
+# define roundl(x) \
+    (GL_LINK_WARNING ("roundl is unportable - " \
+                      "use gnulib module roundl for portability"), \
+     roundl (x))
+#endif
+
 
 #if @GNULIB_MATHL@ || !@HAVE_DECL_SINL@
 extern long double sinl (long double x);
@@ -189,6 +299,7 @@ extern long double sinl (long double x);
      sinl (x))
 #endif
 
+
 #if @GNULIB_MATHL@ || !@HAVE_DECL_SQRTL@
 extern long double sqrtl (long double x);
 #endif
@@ -199,6 +310,7 @@ extern long double sqrtl (long double x);
                       "use gnulib module mathl for portability"), \
      sqrtl (x))
 #endif
+
 
 #if @GNULIB_MATHL@ || !@HAVE_DECL_TANL@
 extern long double tanl (long double x);
@@ -212,7 +324,72 @@ extern long double tanl (long double x);
 #endif
 
 
+#if @GNULIB_TRUNCF@
+# if !@HAVE_DECL_TRUNCF@
+#  define truncf rpl_truncf
+extern float truncf (float x);
+# endif
+#elif defined GNULIB_POSIXCHECK
+# undef truncf
+# define truncf(x) \
+    (GL_LINK_WARNING ("truncf is unportable - " \
+                      "use gnulib module truncf for portability"), \
+     truncf (x))
+#endif
+
+#if @GNULIB_TRUNC@
+# if !@HAVE_DECL_TRUNC@
+#  define trunc rpl_trunc
+extern double trunc (double x);
+# endif
+#elif defined GNULIB_POSIXCHECK
+# undef trunc
+# define trunc(x) \
+    (GL_LINK_WARNING ("trunc is unportable - " \
+                      "use gnulib module trunc for portability"), \
+     trunc (x))
+#endif
+
+#if @GNULIB_TRUNCL@
+# if @REPLACE_TRUNCL@
+#  undef truncl
+#  define truncl rpl_truncl
+extern long double truncl (long double x);
+# endif
+#elif defined GNULIB_POSIXCHECK
+# undef truncl
+# define truncl(x) \
+    (GL_LINK_WARNING ("truncl is unportable - " \
+                      "use gnulib module truncl for portability"), \
+     truncl (x))
+#endif
+
+
+#if @GNULIB_ISFINITE@
+# if @REPLACE_ISFINITE@
+extern int gl_isfinitef (float x);
+extern int gl_isfinited (double x);
+extern int gl_isfinitel (long double x);
+#  undef isfinite
+#  define isfinite(x) \
+   (sizeof (x) == sizeof (long double) ? gl_isfinitel (x) : \
+    sizeof (x) == sizeof (double) ? gl_isfinited (x) : \
+    gl_isfinitef (x))
+# endif
+#elif defined GNULIB_POSIXCHECK
+  /* How to override a macro?  */
+#endif
+
+
 #if @GNULIB_SIGNBIT@
+# if @REPLACE_SIGNBIT_USING_GCC@
+#  undef signbit
+   /* GCC 4.0 and newer provides three built-ins for signbit.  */
+#  define signbit(x) \
+   (sizeof (x) == sizeof (long double) ? __builtin_signbitl (x) : \
+    sizeof (x) == sizeof (double) ? __builtin_signbit (x) : \
+    __builtin_signbitf (x))
+# endif
 # if @REPLACE_SIGNBIT@
 #  undef signbit
 extern int gl_signbitf (float arg);

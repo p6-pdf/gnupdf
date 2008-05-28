@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/05/26 20:59:48 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/05/27 16:59:22 jemarch"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -28,12 +28,18 @@
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/stat.h>
 
 #include <pdf-types.h>
 #include <pdf-error.h>
 #include <pdf-fsys-disk.h>
 
 /* Private function declarations */
+
+static pdf_status_t
+pdf_fsys_disk_get_host_path (pdf_text_t path,
+                             pdf_char_t **host_path,
+                             pdf_u32_t *host_path_size);
 
 static pdf_status_t
 pdf_fsys_disk_build_mode_string (const enum pdf_fsys_file_mode_e mode,
@@ -71,10 +77,9 @@ pdf_fsys_disk_open (const pdf_text_t path_name,
   /* Make and store a copy of the unicode file path and get the host
      encoded path */
   file_data->unicode_path = pdf_text_dup (path_name);
-  if (pdf_text_get_host (&file_data->host_path,
-                         &file_data->host_path_size,
-                         file_data->unicode_path,
-                         pdf_text_get_host_encoding ()) != PDF_OK)
+  if (pdf_fsys_disk_get_host_path (file_data->unicode_path,
+                                   &file_data->host_path,
+                                   &file_data->host_path_size))
     {
       /* Cleanup and report error */
       pdf_text_destroy (file_data->unicode_path);
@@ -150,7 +155,62 @@ pdf_fsys_disk_open (const pdf_text_t path_name,
 pdf_status_t
 pdf_fsys_disk_create_folder (const pdf_text_t path_name)
 {
-  /* FIXME: Bored? Implement me! :D */
+  pdf_char_t *host_path;
+  pdf_u32_t host_path_size;
+  mode_t dir_mode;
+
+  /* Get a host-encoded version of the path name */
+  if (pdf_fsys_disk_get_host_path (path_name, 
+                                   &host_path, 
+                                   &host_path_size) != PDF_OK)
+    {
+      return PDF_ERROR;
+    }
+
+  /* Set the permissions of the new directory:
+     
+     rwxr_xr_x
+
+  */
+  dir_mode = S_IRUSR | S_IWUSR | S_IXUSR
+    | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH;
+
+  /* Open the file */
+  if (mkdir ((const char *) host_path, dir_mode) != 0)
+    {
+      switch (errno)
+        {
+          /* File name syntax errors */
+        case ENAMETOOLONG:
+        case ENOENT:
+        case ENOTDIR:
+#ifndef PDF_HOST_WIN32
+        case ELOOP:
+#endif /* !PDF_HOST_WIN32 */
+          {
+            return PDF_EBADNAME;
+            break;
+          }
+          /* Other specific errors */
+        case EACCES:
+          {
+            return PDF_EBADPERMS;
+            break;
+          }
+        case EEXIST:
+        case EMLINK:
+        case ENOSPC:
+        case EROFS:
+          /* Any other error */
+        default:
+          {
+            return PDF_ERROR;
+            break;
+          }
+        }
+    }
+
+  /* The directory was successfully created */
   return PDF_OK;
 }
 
@@ -420,6 +480,19 @@ pdf_fsys_disk_file_reopen (pdf_fsys_file_t file,
  */
 
 static pdf_status_t
+pdf_fsys_disk_get_host_path (pdf_text_t path,
+                             pdf_char_t **host_path,
+                             pdf_u32_t *host_path_size)
+{
+  /* Call the pdf_text module to get a host-encoded version of the
+     given path */
+  return pdf_text_get_host (host_path,
+                            host_path_size,
+                            path,
+                            pdf_text_get_host_encoding ());
+}
+
+static pdf_status_t
 pdf_fsys_disk_build_mode_string (const enum pdf_fsys_file_mode_e mode,
                                  pdf_char_t *mode_str)
 {
@@ -447,6 +520,16 @@ pdf_fsys_disk_build_mode_string (const enum pdf_fsys_file_mode_e mode,
       {
         mode_str[0] = 'r';
         mode_str[1] = '+';
+        mode_str[2] = 0;
+
+        mode_str_size = 2;
+        break;
+      }
+    default:
+      {
+        /* Dummy case to make the compiler happy */
+        mode_str[0] = ':';
+        mode_str[1] = 'D';
         mode_str[2] = 0;
 
         mode_str_size = 2;

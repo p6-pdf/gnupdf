@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.68 2008/05/26 22:52:19 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.69 2008/05/27 23:00:32 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -5061,6 +5061,8 @@ The folder was successfully created.
 The specified @var{path_name} is incorrect.
 @item PDF_EBADPERMS
 The client do not have permissions to create the folder.
+@item PDF_ERROR
+Any other error condition.
 @end table
 @item Usage example
 @example

@@ -1,3 +1,18 @@
+2008-05-27  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* gnulib updated from git.
+
+	* mkdir module (and dependencies) imported from gnulib.
+
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_create_folder): New
+	function.
+
+	* doc/gnupdf.texi (Folder Management): Added `PDF_ERROR' as a
+	possible return value of `pdf_fsys_create_folder'.
+
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_get_host_path): New
+	function.
+
 2008-05-26  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_open): `fopen' do not

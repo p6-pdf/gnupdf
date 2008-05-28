@@ -1,9 +1,9 @@
 /* Determine name of the currently selected locale.
-   Copyright (C) 1995-1999, 2000-2007 Free Software Foundation, Inc.
+   Copyright (C) 1995-1999, 2000-2008 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify it
-   under the terms of the GNU Library General Public License as published
-   by the Free Software Foundation; either version 2, or (at your option)
+   under the terms of the GNU General Public License as published
+   by the Free Software Foundation; either version 3, or (at your option)
    any later version.
 
    This program is distributed in the hope that it will be useful,
@@ -11,7 +11,7 @@
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    Library General Public License for more details.
 
-   You should have received a copy of the GNU Library General Public
+   You should have received a copy of the GNU General Public
    License along with this program; if not, write to the Free Software
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
    USA.  */
@@ -315,6 +315,9 @@
 # ifndef LANG_MANIPURI
 # define LANG_MANIPURI 0x58
 # endif
+# ifndef LANG_MAORI
+# define LANG_MAORI 0x81
+# endif
 # ifndef LANG_MARATHI
 # define LANG_MARATHI 0x4e
 # endif
@@ -338,6 +341,9 @@
 # endif
 # ifndef LANG_PUNJABI
 # define LANG_PUNJABI 0x46
+# endif
+# ifndef LANG_QUECHUA
+# define LANG_QUECHUA 0x6b
 # endif
 # ifndef LANG_RHAETO_ROMANCE
 # define LANG_RHAETO_ROMANCE 0x17
@@ -365,6 +371,9 @@
 # endif
 # ifndef LANG_SORBIAN
 # define LANG_SORBIAN 0x2e
+# endif
+# ifndef LANG_SOTHO
+# define LANG_SOTHO 0x6c
 # endif
 # ifndef LANG_SUTU
 # define LANG_SUTU 0x30
@@ -410,6 +419,9 @@
 # endif
 # ifndef LANG_TURKMEN
 # define LANG_TURKMEN 0x42
+# endif
+# ifndef LANG_UIGHUR
+# define LANG_UIGHUR 0x80
 # endif
 # ifndef LANG_UKRAINIAN
 # define LANG_UKRAINIAN 0x22
@@ -504,6 +516,18 @@
 # ifndef SUBLANG_BENGALI_BANGLADESH
 # define SUBLANG_BENGALI_BANGLADESH 0x02
 # endif
+# ifndef SUBLANG_BOSNIAN_BOSNIA_HERZEGOVINA_LATIN
+# define SUBLANG_BOSNIAN_BOSNIA_HERZEGOVINA_LATIN 0x05
+# endif
+# ifndef SUBLANG_BOSNIAN_BOSNIA_HERZEGOVINA_CYRILLIC
+# define SUBLANG_BOSNIAN_BOSNIA_HERZEGOVINA_CYRILLIC 0x08
+# endif
+# ifndef SUBLANG_CROATIAN_CROATIA
+# define SUBLANG_CROATIAN_CROATIA 0x01
+# endif
+# ifndef SUBLANG_CROATIAN_BOSNIA_HERZEGOVINA_LATIN
+# define SUBLANG_CROATIAN_BOSNIA_HERZEGOVINA_LATIN 0x04
+# endif
 # ifndef SUBLANG_CHINESE_MACAU
 # define SUBLANG_CHINESE_MACAU 0x05
 # endif
@@ -591,6 +615,12 @@
 # ifndef SUBLANG_MALAY_BRUNEI_DARUSSALAM
 # define SUBLANG_MALAY_BRUNEI_DARUSSALAM 0x02
 # endif
+# ifndef SUBLANG_MONGOLIAN_CYRILLIC_MONGOLIA
+# define SUBLANG_MONGOLIAN_CYRILLIC_MONGOLIA 0x01
+# endif
+# ifndef SUBLANG_MONGOLIAN_PRC
+# define SUBLANG_MONGOLIAN_PRC 0x02
+# endif
 # ifndef SUBLANG_NEPALI_INDIA
 # define SUBLANG_NEPALI_INDIA 0x02
 # endif
@@ -600,11 +630,26 @@
 # ifndef SUBLANG_PUNJABI_PAKISTAN
 # define SUBLANG_PUNJABI_PAKISTAN 0x02
 # endif
+# ifndef SUBLANG_QUECHUA_BOLIVIA
+# define SUBLANG_QUECHUA_BOLIVIA 0x01
+# endif
+# ifndef SUBLANG_QUECHUA_ECUADOR
+# define SUBLANG_QUECHUA_ECUADOR 0x02
+# endif
+# ifndef SUBLANG_QUECHUA_PERU
+# define SUBLANG_QUECHUA_PERU 0x03
+# endif
 # ifndef SUBLANG_ROMANIAN_ROMANIA
 # define SUBLANG_ROMANIAN_ROMANIA 0x01
 # endif
 # ifndef SUBLANG_ROMANIAN_MOLDOVA
 # define SUBLANG_ROMANIAN_MOLDOVA 0x02
+# endif
+# ifndef SUBLANG_RUSSIAN_RUSSIA
+# define SUBLANG_RUSSIAN_RUSSIA 0x01
+# endif
+# ifndef SUBLANG_RUSSIAN_MOLDAVIA
+# define SUBLANG_RUSSIAN_MOLDAVIA 0x02
 # endif
 # ifndef SUBLANG_SERBIAN_LATIN
 # define SUBLANG_SERBIAN_LATIN 0x02
@@ -612,9 +657,11 @@
 # ifndef SUBLANG_SERBIAN_CYRILLIC
 # define SUBLANG_SERBIAN_CYRILLIC 0x03
 # endif
-# ifndef SUBLANG_SINDHI_PAKISTAN
-# define SUBLANG_SINDHI_PAKISTAN 0x01
+# ifndef SUBLANG_SINDHI_INDIA
+# define SUBLANG_SINDHI_INDIA 0x01
 # endif
+# undef SUBLANG_SINDHI_PAKISTAN
+# define SUBLANG_SINDHI_PAKISTAN 0x02
 # ifndef SUBLANG_SINDHI_AFGHANISTAN
 # define SUBLANG_SINDHI_AFGHANISTAN 0x02
 # endif
@@ -669,6 +716,9 @@
 # ifndef SUBLANG_SPANISH_PUERTO_RICO
 # define SUBLANG_SPANISH_PUERTO_RICO 0x14
 # endif
+# ifndef SUBLANG_SPANISH_US
+# define SUBLANG_SPANISH_US 0x15
+# endif
 # ifndef SUBLANG_SWEDISH_FINLAND
 # define SUBLANG_SWEDISH_FINLAND 0x02
 # endif
@@ -678,11 +728,20 @@
 # ifndef SUBLANG_TAMAZIGHT_ALGERIA_LATIN
 # define SUBLANG_TAMAZIGHT_ALGERIA_LATIN 0x02
 # endif
+# ifndef SUBLANG_TIBETAN_PRC
+# define SUBLANG_TIBETAN_PRC 0x01
+# endif
+# ifndef SUBLANG_TIBETAN_BHUTAN
+# define SUBLANG_TIBETAN_BHUTAN 0x02
+# endif
 # ifndef SUBLANG_TIGRINYA_ETHIOPIA
 # define SUBLANG_TIGRINYA_ETHIOPIA 0x01
 # endif
 # ifndef SUBLANG_TIGRINYA_ERITREA
 # define SUBLANG_TIGRINYA_ERITREA 0x02
+# endif
+# ifndef SUBLANG_UIGHUR_PRC
+# define SUBLANG_UIGHUR_PRC 0x01
 # endif
 # ifndef SUBLANG_URDU_PAKISTAN
 # define SUBLANG_URDU_PAKISTAN 0x01
@@ -696,18 +755,23 @@
 # ifndef SUBLANG_UZBEK_CYRILLIC
 # define SUBLANG_UZBEK_CYRILLIC 0x02
 # endif
+/* GetLocaleInfoA operations.  */
+# ifndef LOCALE_SNAME
+# define LOCALE_SNAME 0x5c
+# endif
 #endif
 
-# if HAVE_CFLOCALECOPYCURRENT || HAVE_CFPREFERENCESCOPYAPPVALUE
+
+#if HAVE_CFLOCALECOPYCURRENT || HAVE_CFPREFERENCESCOPYAPPVALUE
 /* MacOS X 10.2 or newer */
 
 /* Canonicalize a MacOS X locale name to a Unix locale name.
    NAME is a sufficiently large buffer.
    On input, it contains the MacOS X locale name.
    On output, it contains the Unix locale name.  */
-#  if !defined IN_LIBINTL
+# if !defined IN_LIBINTL
 static
-#  endif
+# endif
 void
 gl_locale_name_canonicalize (char *name)
 {
@@ -975,126 +1039,73 @@ gl_locale_name_canonicalize (char *name)
 
 #endif
 
-/* XPG3 defines the result of 'setlocale (category, NULL)' as:
-   "Directs 'setlocale()' to query 'category' and return the current
-    setting of 'local'."
-   However it does not specify the exact format.  Neither do SUSV2 and
-   ISO C 99.  So we can use this feature only on selected systems (e.g.
-   those using GNU C Library).  */
-#if defined _LIBC || (defined __GLIBC__ && __GLIBC__ >= 2)
-# define HAVE_LOCALE_NULL
-#endif
 
-/* Determine the current locale's name, and canonicalize it into XPG syntax
-     language[_territory][.codeset][@modifier]
-   The codeset part in the result is not reliable; the locale_charset()
-   should be used for codeset information instead.
-   The result must not be freed; it is statically allocated.  */
+#ifdef WIN32_NATIVE
 
-const char *
-gl_locale_name_posix (int category, const char *categoryname)
+/* Canonicalize a Win32 native locale name to a Unix locale name.
+   NAME is a sufficiently large buffer.
+   On input, it contains the Win32 locale name.
+   On output, it contains the Unix locale name.  */
+# if !defined IN_LIBINTL
+static
+# endif
+void
+gl_locale_name_canonicalize (char *name)
 {
-  /* Use the POSIX methods of looking to 'LC_ALL', 'LC_xxx', and 'LANG'.
-     On some systems this can be done by the 'setlocale' function itself.  */
-#if defined HAVE_SETLOCALE && defined HAVE_LC_MESSAGES && defined HAVE_LOCALE_NULL
-  return setlocale (category, NULL);
-#else
-  const char *retval;
+  /* FIXME: This is probably incomplete: it does not handle "zh-Hans" and
+     "zh-Hant".  */
+  char *p;
 
-  /* Setting of LC_ALL overrides all other.  */
-  retval = getenv ("LC_ALL");
-  if (retval != NULL && retval[0] != '\0')
-    return retval;
-  /* Next comes the name of the desired category.  */
-  retval = getenv (categoryname);
-  if (retval != NULL && retval[0] != '\0')
-    return retval;
-  /* Last possibility is the LANG environment variable.  */
-  retval = getenv ("LANG");
-  if (retval != NULL && retval[0] != '\0')
-    return retval;
-
-  return NULL;
-#endif
+  for (p = name; *p != '\0'; p++)
+    if (*p == '-')
+      {
+	*p = '_';
+	p++;
+	for (; *p != '\0'; p++)
+	  {
+	    if (*p >= 'a' && *p <= 'z')
+	      *p += 'A' - 'a';
+	    if (*p == '-')
+	      {
+		*p = '\0';
+		return;
+	      }
+	  }
+	return;
+      }
 }
 
-const char *
-gl_locale_name_default (void)
-{
-  /* POSIX:2001 says:
-     "All implementations shall define a locale as the default locale, to be
-      invoked when no environment variables are set, or set to the empty
-      string.  This default locale can be the POSIX locale or any other
-      implementation-defined locale.  Some implementations may provide
-      facilities for local installation administrators to set the default
-      locale, customizing it for each location.  POSIX:2001 does not require
-      such a facility.  */
-
-#if !(HAVE_CFLOCALECOPYCURRENT || HAVE_CFPREFERENCESCOPYAPPVALUE || defined(WIN32_NATIVE))
-
-  /* The system does not have a way of setting the locale, other than the
-     POSIX specified environment variables.  We use C as default locale.  */
-  return "C";
-
-#else
-
-  /* Return an XPG style locale name language[_territory][@modifier].
-     Don't even bother determining the codeset; it's not useful in this
-     context, because message catalogs are not specific to a single
-     codeset.  */
-
-# if HAVE_CFLOCALECOPYCURRENT || HAVE_CFPREFERENCESCOPYAPPVALUE
-  /* MacOS X 10.2 or newer */
-  {
-    /* Cache the locale name, since CoreFoundation calls are expensive.  */
-    static const char *cached_localename;
-
-    if (cached_localename == NULL)
-      {
-	char namebuf[256];
-#  if HAVE_CFLOCALECOPYCURRENT /* MacOS X 10.3 or newer */
-	CFLocaleRef locale = CFLocaleCopyCurrent ();
-	CFStringRef name = CFLocaleGetIdentifier (locale);
-
-	if (CFStringGetCString (name, namebuf, sizeof(namebuf),
-				kCFStringEncodingASCII))
-	  {
-	    gl_locale_name_canonicalize (namebuf);
-	    cached_localename = strdup (namebuf);
-	  }
-	CFRelease (locale);
-#  elif HAVE_CFPREFERENCESCOPYAPPVALUE /* MacOS X 10.2 or newer */
-	CFTypeRef value =
-	  CFPreferencesCopyAppValue (CFSTR ("AppleLocale"),
-				     kCFPreferencesCurrentApplication);
-	if (value != NULL
-	    && CFGetTypeID (value) == CFStringGetTypeID ()
-	    && CFStringGetCString ((CFStringRef)value, namebuf, sizeof(namebuf),
-				   kCFStringEncodingASCII))
-	  {
-	    gl_locale_name_canonicalize (namebuf);
-	    cached_localename = strdup (namebuf);
-	  }
-#  endif
-	if (cached_localename == NULL)
-	  cached_localename = "C";
-      }
-    return cached_localename;
-  }
-
+# if !defined IN_LIBINTL
+static
 # endif
+const char *
+gl_locale_name_from_win32_LANGID (LANGID langid)
+{
+  /* Activate the new code only when the GETTEXT_MUI environment variable is
+     set, for the time being, since the new code is not well tested.  */
+  if (getenv ("GETTEXT_MUI") != NULL)
+    {
+      static char namebuf[256];
 
-# if defined(WIN32_NATIVE) /* WIN32, not Cygwin */
+      /* Query the system's notion of locale name.
+	 On Windows95/98/ME, GetLocaleInfoA returns some incorrect results.
+	 But we don't need to support systems that are so old.  */
+      if (GetLocaleInfoA (MAKELCID (langid, SORT_DEFAULT), LOCALE_SNAME,
+			  namebuf, sizeof (namebuf) - 1))
+	{
+	  /* Convert it to a Unix locale name.  */
+	  gl_locale_name_canonicalize (namebuf);
+	  return namebuf;
+	}
+    }
+  /* Internet Explorer has an LCID to RFC3066 name mapping stored in
+     HKEY_CLASSES_ROOT\Mime\Database\Rfc1766.  But we better don't use that
+     since IE's i18n subsystem is known to be inconsistent with the Win32 base
+     (e.g. they have different character conversion facilities that produce
+     different results).  */
+  /* Use our own table.  */
   {
-    LCID lcid;
-    LANGID langid;
     int primary, sub;
-
-    /* Use native Win32 API locale ID.  */
-    lcid = GetThreadLocale ();
-
-    /* Strip off the sorting rules, keep only the language part.  */
-    langid = LANGIDFROMLCID (lcid);
 
     /* Split into language and territory part.  */
     primary = PRIMARYLANGID (langid);
@@ -1178,9 +1189,12 @@ gl_locale_name_default (void)
 				 */
 	switch (sub)
 	  {
-	  case SUBLANG_DEFAULT: return "hr_HR";
+	  case SUBLANG_CROATIAN_CROATIA: return "hr_HR";
 	  case SUBLANG_SERBIAN_LATIN: return "sr_CS";
 	  case SUBLANG_SERBIAN_CYRILLIC: return "sr_CS@cyrillic";
+	  case SUBLANG_CROATIAN_BOSNIA_HERZEGOVINA_LATIN: return "hr_BA";
+	  case SUBLANG_BOSNIAN_BOSNIA_HERZEGOVINA_LATIN: return "bs_BA";
+	  case SUBLANG_BOSNIAN_BOSNIA_HERZEGOVINA_CYRILLIC: return "bs_BA@cyrillic";
 	  }
 	return "hr";
       case LANG_CZECH: return "cs_CZ";
@@ -1324,11 +1338,13 @@ gl_locale_name_default (void)
       case LANG_MANIPURI:
 	/* FIXME: Adjust this when such locales appear on Unix.  */
 	return "mni_IN";
+      case LANG_MAORI: return "mi_NZ";
       case LANG_MARATHI: return "mr_IN";
       case LANG_MONGOLIAN:
 	switch (sub)
 	  {
-	  case SUBLANG_DEFAULT: return "mn_MN";
+	  case SUBLANG_MONGOLIAN_CYRILLIC_MONGOLIA: return "mn_MN";
+	  case SUBLANG_MONGOLIAN_PRC: return "mn_CN";
 	  }
 	return "mn"; /* Ambiguous: could be "mn_CN" or "mn_MN".  */
       case LANG_NEPALI:
@@ -1367,6 +1383,14 @@ gl_locale_name_default (void)
 	  case SUBLANG_PUNJABI_PAKISTAN: return "pa_PK"; /* Arabic script */
 	  }
 	return "pa";
+      case LANG_QUECHUA:
+	switch (sub)
+	  {
+	  case SUBLANG_QUECHUA_BOLIVIA: return "qu_BO";
+	  case SUBLANG_QUECHUA_ECUADOR: return "qu_EC";
+	  case SUBLANG_QUECHUA_PERU: return "qu_PE";
+	  }
+	return "qu";
       case LANG_RHAETO_ROMANCE: return "rm_CH";
       case LANG_ROMANIAN:
 	switch (sub)
@@ -1378,7 +1402,8 @@ gl_locale_name_default (void)
       case LANG_RUSSIAN:
 	switch (sub)
 	  {
-	  case SUBLANG_DEFAULT: return "ru_RU";
+	  case SUBLANG_RUSSIAN_RUSSIA: return "ru_RU";
+	  case SUBLANG_RUSSIAN_MOLDAVIA: return "ru_MD";
 	  }
 	return "ru"; /* Ambiguous: could be "ru_RU" or "ru_UA" or "ru_MD".  */
       case LANG_SAAMI: /* actually Northern Sami */ return "se_NO";
@@ -1386,8 +1411,9 @@ gl_locale_name_default (void)
       case LANG_SINDHI:
 	switch (sub)
 	  {
+	  case SUBLANG_SINDHI_INDIA: return "sd_IN";
 	  case SUBLANG_SINDHI_PAKISTAN: return "sd_PK";
-	  case SUBLANG_SINDHI_AFGHANISTAN: return "sd_AF";
+	  /*case SUBLANG_SINDHI_AFGHANISTAN: return "sd_AF";*/
 	  }
 	return "sd";
       case LANG_SINHALESE: return "si_LK";
@@ -1397,6 +1423,13 @@ gl_locale_name_default (void)
       case LANG_SORBIAN:
 	/* FIXME: Adjust this when such locales appear on Unix.  */
 	return "wen_DE";
+      case LANG_SOTHO:
+	/* <http://www.microsoft.com/globaldev/reference/lcid-all.mspx> calls
+	   it "Sepedi"; according to
+	   <http://www.ethnologue.com/show_language.asp?code=nso>
+	   <http://www.ethnologue.com/show_language.asp?code=sot>
+	   it's the same as Northern Sotho.  */
+	return "nso_ZA";
       case LANG_SPANISH:
 	switch (sub)
 	  {
@@ -1421,6 +1454,7 @@ gl_locale_name_default (void)
 	  case SUBLANG_SPANISH_HONDURAS: return "es_HN";
 	  case SUBLANG_SPANISH_NICARAGUA: return "es_NI";
 	  case SUBLANG_SPANISH_PUERTO_RICO: return "es_PR";
+	  case SUBLANG_SPANISH_US: return "es_US";
 	  }
 	return "es";
       case LANG_SUTU: return "bnt_TZ"; /* or "st_LS" or "nso_ZA"? */
@@ -1452,7 +1486,16 @@ gl_locale_name_default (void)
       case LANG_TATAR: return "tt_RU";
       case LANG_TELUGU: return "te_IN";
       case LANG_THAI: return "th_TH";
-      case LANG_TIBETAN: return "bo_CN";
+      case LANG_TIBETAN:
+	switch (sub)
+	  {
+	  case SUBLANG_TIBETAN_PRC:
+	    /* Most Tibetans would not like "bo_CN".  But Tibet does not yet
+	       have a country code of its own.  */
+	    return "bo";
+	  case SUBLANG_TIBETAN_BHUTAN: return "bo_BT";
+	  }
+	return "bo";
       case LANG_TIGRINYA:
 	switch (sub)
 	  {
@@ -1464,6 +1507,12 @@ gl_locale_name_default (void)
       case LANG_TSWANA: return "tn_BW";
       case LANG_TURKISH: return "tr_TR";
       case LANG_TURKMEN: return "tk_TM";
+      case LANG_UIGHUR:
+	switch (sub)
+	  {
+	  case SUBLANG_UIGHUR_PRC: return "ug_CN";
+	  }
+	return "ug";
       case LANG_UKRAINIAN: return "uk_UA";
       case LANG_URDU:
 	switch (sub)
@@ -1489,6 +1538,143 @@ gl_locale_name_default (void)
       case LANG_ZULU: return "zu_ZA";
       default: return "C";
       }
+  }
+}
+
+# if !defined IN_LIBINTL
+static
+# endif
+const char *
+gl_locale_name_from_win32_LCID (LCID lcid)
+{
+  LANGID langid;
+
+  /* Strip off the sorting rules, keep only the language part.  */
+  langid = LANGIDFROMLCID (lcid);
+
+  return gl_locale_name_from_win32_LANGID (langid);
+}
+
+#endif
+
+
+/* XPG3 defines the result of 'setlocale (category, NULL)' as:
+   "Directs 'setlocale()' to query 'category' and return the current
+    setting of 'local'."
+   However it does not specify the exact format.  Neither do SUSV2 and
+   ISO C 99.  So we can use this feature only on selected systems (e.g.
+   those using GNU C Library).  */
+#if defined _LIBC || (defined __GLIBC__ && __GLIBC__ >= 2)
+# define HAVE_LOCALE_NULL
+#endif
+
+/* Determine the current locale's name, and canonicalize it into XPG syntax
+     language[_territory][.codeset][@modifier]
+   The codeset part in the result is not reliable; the locale_charset()
+   should be used for codeset information instead.
+   The result must not be freed; it is statically allocated.  */
+
+const char *
+gl_locale_name_posix (int category, const char *categoryname)
+{
+  /* Use the POSIX methods of looking to 'LC_ALL', 'LC_xxx', and 'LANG'.
+     On some systems this can be done by the 'setlocale' function itself.  */
+#if defined HAVE_SETLOCALE && defined HAVE_LC_MESSAGES && defined HAVE_LOCALE_NULL
+  return setlocale (category, NULL);
+#else
+  const char *retval;
+
+  /* Setting of LC_ALL overrides all other.  */
+  retval = getenv ("LC_ALL");
+  if (retval != NULL && retval[0] != '\0')
+    return retval;
+  /* Next comes the name of the desired category.  */
+  retval = getenv (categoryname);
+  if (retval != NULL && retval[0] != '\0')
+    return retval;
+  /* Last possibility is the LANG environment variable.  */
+  retval = getenv ("LANG");
+  if (retval != NULL && retval[0] != '\0')
+    return retval;
+
+  return NULL;
+#endif
+}
+
+const char *
+gl_locale_name_default (void)
+{
+  /* POSIX:2001 says:
+     "All implementations shall define a locale as the default locale, to be
+      invoked when no environment variables are set, or set to the empty
+      string.  This default locale can be the POSIX locale or any other
+      implementation-defined locale.  Some implementations may provide
+      facilities for local installation administrators to set the default
+      locale, customizing it for each location.  POSIX:2001 does not require
+      such a facility.  */
+
+#if !(HAVE_CFLOCALECOPYCURRENT || HAVE_CFPREFERENCESCOPYAPPVALUE || defined(WIN32_NATIVE))
+
+  /* The system does not have a way of setting the locale, other than the
+     POSIX specified environment variables.  We use C as default locale.  */
+  return "C";
+
+#else
+
+  /* Return an XPG style locale name language[_territory][@modifier].
+     Don't even bother determining the codeset; it's not useful in this
+     context, because message catalogs are not specific to a single
+     codeset.  */
+
+# if HAVE_CFLOCALECOPYCURRENT || HAVE_CFPREFERENCESCOPYAPPVALUE
+  /* MacOS X 10.2 or newer */
+  {
+    /* Cache the locale name, since CoreFoundation calls are expensive.  */
+    static const char *cached_localename;
+
+    if (cached_localename == NULL)
+      {
+	char namebuf[256];
+#  if HAVE_CFLOCALECOPYCURRENT /* MacOS X 10.3 or newer */
+	CFLocaleRef locale = CFLocaleCopyCurrent ();
+	CFStringRef name = CFLocaleGetIdentifier (locale);
+
+	if (CFStringGetCString (name, namebuf, sizeof(namebuf),
+				kCFStringEncodingASCII))
+	  {
+	    gl_locale_name_canonicalize (namebuf);
+	    cached_localename = strdup (namebuf);
+	  }
+	CFRelease (locale);
+#  elif HAVE_CFPREFERENCESCOPYAPPVALUE /* MacOS X 10.2 or newer */
+	CFTypeRef value =
+	  CFPreferencesCopyAppValue (CFSTR ("AppleLocale"),
+				     kCFPreferencesCurrentApplication);
+	if (value != NULL
+	    && CFGetTypeID (value) == CFStringGetTypeID ()
+	    && CFStringGetCString ((CFStringRef)value, namebuf, sizeof(namebuf),
+				   kCFStringEncodingASCII))
+	  {
+	    gl_locale_name_canonicalize (namebuf);
+	    cached_localename = strdup (namebuf);
+	  }
+#  endif
+	if (cached_localename == NULL)
+	  cached_localename = "C";
+      }
+    return cached_localename;
+  }
+
+# endif
+
+# if defined(WIN32_NATIVE) /* WIN32, not Cygwin */
+  {
+    LCID lcid;
+
+    /* Use native Win32 API locale ID.  */
+    lcid = GetThreadLocale ();
+
+    return gl_locale_name_from_win32_LCID (lcid);
   }
 # endif
 #endif
