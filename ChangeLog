@@ -1,5 +1,8 @@
 2008-05-27  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* lib/localename.c: Update by Bruno Haible to fix a bug in mingw32
+	sublanguage codes.
+
 	* gnulib updated from git.
 
 	* mkdir module (and dependencies) imported from gnulib.
