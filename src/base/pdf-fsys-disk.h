@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/05/22 22:07:49 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/05/28 17:37:31 jemarch"
  *
  *       File:         pdf-fsys-disk.h
  *       Date:         Thu May 22 18:22:59 2008
@@ -55,8 +55,6 @@ pdf_status_t pdf_fsys_disk_get_parent (const pdf_text_t path_name,
 pdf_status_t pdf_fsys_disk_remove_folder (const pdf_text_t path_name);
 pdf_status_t pdf_fsys_disk_get_item_props (pdf_text_t path_name,
                                            struct pdf_fsys_item_props_s *item_props);
-pdf_status_t pdf_fsys_disk_item_props_to_hash (const struct pdf_fsys_item_props_s item_props,
-                                               pdf_hash_t props_hash);
 pdf_bool_t pdf_fsys_disk_item_p (pdf_text_t path_name);
 pdf_bool_t pdf_fsys_disk_item_readable_p (pdf_text_t path_name);
 pdf_bool_t pdf_fsys_disk_item_writable_p (pdf_text_t path_name);
