@@ -1,3 +1,11 @@
+2008-05-28  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_get_folder_contents):
+	Implemented.
+
+	* doc/gnupdf.texi (Folder Management): Added `PDF_ERROR' as a
+	possible return value for `pdf_fsys_get_folder_contents'.
+
 2008-05-27  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* lib/localename.c: Update by Bruno Haible to fix a bug in mingw32

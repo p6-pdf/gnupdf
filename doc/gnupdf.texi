@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.69 2008/05/27 23:00:32 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.70 2008/05/28 18:54:18 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -5095,6 +5095,8 @@ The operation was successfully performed.
 @var{path_name} do not name a folder in the filesystem.
 @item PDF_EBADPERMS
 The client do not have permissions to read the contents of the folder.
+@item PDF_ERROR
+Any other error condition.
 @end table
 @item Usage example
 @example

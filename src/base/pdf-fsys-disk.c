@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/05/27 16:59:22 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/05/28 16:21:38 jemarch"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <dirent.h>
 
 #include <pdf-types.h>
 #include <pdf-error.h>
@@ -73,7 +74,6 @@ pdf_fsys_disk_open (const pdf_text_t path_name,
     (pdf_fsys_disk_file_t) pdf_alloc (sizeof(struct pdf_fsys_disk_file_s));
   file->data = (void *) file_data;
   
-
   /* Make and store a copy of the unicode file path and get the host
      encoded path */
   file_data->unicode_path = pdf_text_dup (path_name);
@@ -218,7 +218,91 @@ pdf_status_t
 pdf_fsys_disk_get_folder_contents (const pdf_text_t path_name,
                                    pdf_list_t item_list)
 {
-  /* FIXME: Please implement me :D */
+  DIR *dir_stream;
+  struct dirent *dir_entry;
+  pdf_char_t *host_path;
+  pdf_u32_t host_path_size;
+  pdf_text_t entry_text;
+  pdf_u32_t name_length;
+  
+
+  /* Get the pathname in the host encoding */
+  if (pdf_fsys_disk_get_host_path (path_name,
+                                   &host_path,
+                                   &host_path_size) != PDF_OK)
+    {
+      return PDF_ERROR;
+    }
+
+  /* Open the directory stream */
+  dir_stream = opendir ((const char*) host_path);
+  if (dir_stream == NULL)
+    {
+      switch (errno)
+        {
+          /* File name syntax errors */
+        case ENAMETOOLONG:
+        case ENOENT:
+        case ENOTDIR:
+#ifndef PDF_HOST_WIN32
+        case ELOOP:
+#endif /* !PDF_HOST_WIN32 */
+          {
+            return PDF_EBADNAME;
+            break;
+          }
+          /* Other specific errors */
+        case EACCES:
+          {
+            return PDF_EBADPERMS;
+            break;
+          }
+        case EMFILE:
+        case ENFILE:
+        case ENOMEM:
+          /* Any other error */
+        default:
+          {
+            return PDF_ERROR;
+            break;
+          }
+        }
+    }
+
+  /* Scan directory contents */
+  while ((dir_entry = readdir (dir_stream)) != NULL)
+    {
+      /* Note that dir_entry is statically allocated and can be
+         rewritten by a subsequent call. Also, there is not need to
+         free that structure */
+
+      /* Get the length of the entry name */
+#if defined PDF_HOST_WIN32
+      /* In mingw dir_entry->d_namlen is an array of FILENAME_MAX
+         octects long. The dir_entry->d_namlen contain the length of
+         the name stored in d_name */
+      name_length = dir_entry->d_namlen;
+#else
+      /* In POSIX systems dir_entry->d_name is a NULL-terminated
+         string */
+      name_length = strlen (dir_entry->d_name);
+#endif /* PDF_HOST_WIN32 */
+
+      /* Create the text object containing the entry name */
+      if ((pdf_text_new_from_host (&entry_text,
+                                   (pdf_char_t *) dir_entry->d_name,
+                                   name_length,
+                                   pdf_text_get_host_encoding()) != PDF_OK) ||
+          (pdf_list_add_last (item_list, 
+                              (void *) entry_text, NULL) != PDF_OK))
+        {
+          /* Cleanup and report an error */
+          closedir (dir_stream);
+          return PDF_ERROR;
+        }
+    }
+
+  /* All was ok, so return with a beautiful OK */
   return PDF_OK;
 }
 
