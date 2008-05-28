@@ -83,6 +83,7 @@ AC_DEFUN([gl_INIT],
   gl_FUNC_MKDIR_TRAILING_SLASH
   gl_FUNC_REALLOC_POSIX
   gl_STDLIB_MODULE_INDICATOR([realloc-posix])
+  gl_FUNC_RMDIR
   gl_SIZE_MAX
   AM_STDBOOL_H
   gl_STDINT_H
@@ -275,6 +276,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/realloc.c
   lib/ref-add.sin
   lib/ref-del.sin
+  lib/rmdir.c
   lib/size_max.h
   lib/stdbool.in.h
   lib/stdint.in.h
@@ -327,6 +329,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/mkdir-slash.m4
   m4/onceonly.m4
   m4/realloc.m4
+  m4/rmdir.m4
   m4/size_max.m4
   m4/stdbool.m4
   m4/stdint.m4

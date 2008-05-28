@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/05/26 19:50:21 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/05/28 16:39:00 jemarch"
  *
  *       File:         pdf-error.h
  *       Date:         Sun Feb  24 20:22:05 2008
@@ -79,7 +79,8 @@ enum pdf_status_e
         PDF_EBADPERMS,
         PDF_EBADNAME,
         PDF_EAGAIN,
-        PDF_ENOSPC
+        PDF_ENOSPC,
+        PDF_ENOTEMPTY
 };
 
 typedef enum pdf_status_e pdf_status_t;

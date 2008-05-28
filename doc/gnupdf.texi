@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.70 2008/05/28 18:54:18 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.71 2008/05/28 19:43:01 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -5161,6 +5161,8 @@ The folder was successfully removed.
 @var{path_name} do not name a folder in the filesystem.
 @item PDF_EBADPERMS
 The client do not have permissions to remove the folder.
+@item PDF_ERROR
+Any other error.
 @end table
 @item Usage example
 @example

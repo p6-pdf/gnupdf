@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/05/28 16:21:38 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/05/28 17:09:24 jemarch"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -30,6 +30,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <dirent.h>
+#include <unistd.h>
 
 #include <pdf-types.h>
 #include <pdf-error.h>
@@ -318,7 +319,62 @@ pdf_fsys_disk_get_parent (const pdf_text_t path_name,
 pdf_status_t
 pdf_fsys_disk_remove_folder (const pdf_text_t path_name)
 {
-  /* FIXME: Please implement me :D */
+  pdf_char_t *host_path;
+  pdf_u32_t host_path_size;
+
+  /* Get the pathname in the host encoding */
+  if (pdf_fsys_disk_get_host_path (path_name,
+                                   &host_path,
+                                   &host_path_size) != PDF_OK)
+    {
+      return PDF_ERROR;
+    }
+
+  /* Try to remove the directory */
+#ifndef ENOTEMPTY
+#define ENOTEMPTY EEXIST
+#endif /* !ENOTEMPTY */
+  if (rmdir ((const char *) host_path) != 0)
+    {
+      /* Cleanup */
+      pdf_dealloc (host_path);
+
+      /* Manage the error condition */
+      switch (errno)
+        {
+          /* File name syntax errors */
+        case ENAMETOOLONG:
+        case ENOENT:
+        case ENOTDIR:
+#ifndef PDF_HOST_WIN32
+        case ELOOP:
+#endif /* !PDF_HOST_WIN32 */
+          {
+            return PDF_EBADNAME;
+            break;
+          }
+          /* Specific error conditions */
+        case EACCES:
+          {
+            return PDF_EBADPERMS;
+            break;
+          }
+        case ENOTEMPTY:
+          {
+            return PDF_ENOTEMPTY;
+            break;
+          }
+          /* Any other error condition */
+        default:
+          {
+            return PDF_ERROR;
+            break;
+          }
+        }
+    }
+
+  /* Cleanup and return a success status */
+  pdf_dealloc (host_path);
   return PDF_OK;
 }
 

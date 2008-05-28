@@ -1,5 +1,13 @@
 2008-05-28  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* rmdir module imported from gnulib.
+
+	* src/base/pdf-error.h (enum pdf_status_e): New value
+	`PDF_ENOTEMPTY'.
+
+	* doc/gnupdf.texi (Folder Management): Added `PDF_ERROR' as a
+	possible return value for `pdf_fsys_remove_folder'.
+
 	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_get_folder_contents):
 	Implemented.
 
