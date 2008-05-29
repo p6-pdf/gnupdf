@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/05/29 17:20:41 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/05/29 17:29:52 jemarch"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -67,7 +67,9 @@ pdf_fsys_disk_get_free_space (pdf_text_t path_name)
   pdf_u32_t host_path_size;
 #if defined PDF_HOST_WIN32
   pdf_char_t drive_letter[4];
-  DWORD num_blocks;
+  DWORD free_clusters;
+  DWORD sectors_per_cluster;
+  DWORD bytes_per_sector;
   DWORD dummy;
 #else
   struct statvfs fs_stats;
@@ -97,7 +99,7 @@ pdf_fsys_disk_get_free_space (pdf_text_t path_name)
                          host_path_size) == 0)
     {
       /* Cleanup */
-
+      pdf_dealloc (host_path);
       /* Report error */
       return 0;
     }
@@ -110,16 +112,18 @@ pdf_fsys_disk_get_free_space (pdf_text_t path_name)
 
   /* Get the information from the filesystem */
   if (! GetDiskFreeSpace ((char *) drive_letter,
-                          &dummy, &dummy,
-                          &num_blocks, &dummy))
+                          &sectors_per_cluster, 
+                          &bytes_per_sector,
+                          &free_clusters, &dummy))
     {
       /* Cleanup */
-      
+      pdf_dealloc (host_path);
       /* Report error */
       return 0;
     }
- 
-  result = num_blocks;
+
+  result = (bytes_per_sector * sectors_per_cluster
+            * free_clusters); 
  
 #else /* Non-windows plattform */
   if (statvfs ((const char *) host_path, &fs_stats) != 0)
