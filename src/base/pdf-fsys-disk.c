@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/05/28 18:18:51 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/05/29 17:20:41 jemarch"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -29,13 +29,19 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <sys/statvfs.h>
+
 #include <dirent.h>
 #include <unistd.h>
 
 #include <pdf-types.h>
 #include <pdf-error.h>
 #include <pdf-fsys-disk.h>
+
+#ifndef PDF_HOST_WIN32
+#include <sys/statvfs.h>
+#else
+#include <windows.h>
+#endif /* !PDF_HOST_WIN32 */
 
 /* Private function declarations */
 
@@ -57,9 +63,16 @@ pdf_fsys_disk_win32_device_p (pdf_text_t path);
 pdf_size_t
 pdf_fsys_disk_get_free_space (pdf_text_t path_name)
 {
-  struct statvfs fs_stats;
   pdf_char_t *host_path;
   pdf_u32_t host_path_size;
+#if defined PDF_HOST_WIN32
+  pdf_char_t drive_letter[4];
+  DWORD num_blocks;
+  DWORD dummy;
+#else
+  struct statvfs fs_stats;
+#endif /* !PDF_HOST_WIN32 */
+  pdf_size_t result;
 
   /* Get the pathname in the host encoding */
   if (pdf_fsys_disk_get_host_path (path_name,
@@ -69,6 +82,46 @@ pdf_fsys_disk_get_free_space (pdf_text_t path_name)
       return 0;
     }
 
+#if defined PDF_HOST_WIN32
+  /* Get the drive letter of the specified path */
+
+#if 0
+  /* GetVolumePathName is declared but seems to not be implemented in
+     mingw -jemarch */
+
+  /* Microplof dixit: "If you specify a relative directory or file
+     name without a volume qualifier, GetVolumePathName returns the
+     drive letter of the boot volume." */
+  if (GetVolumePathName ((char *) host_path,
+                         &drive_letter,
+                         host_path_size) == 0)
+    {
+      /* Cleanup */
+
+      /* Report error */
+      return 0;
+    }
+#else
+  /* So lets do the piggy hack that wont work with relative paths nor
+     with multi-byte encodings */
+  memcpy (drive_letter, host_path, 3);
+  host_path[3] = 0;
+#endif /* !0 */
+
+  /* Get the information from the filesystem */
+  if (! GetDiskFreeSpace ((char *) drive_letter,
+                          &dummy, &dummy,
+                          &num_blocks, &dummy))
+    {
+      /* Cleanup */
+      
+      /* Report error */
+      return 0;
+    }
+ 
+  result = num_blocks;
+ 
+#else /* Non-windows plattform */
   if (statvfs ((const char *) host_path, &fs_stats) != 0)
     {
       /* Cleanup */
@@ -78,8 +131,12 @@ pdf_fsys_disk_get_free_space (pdf_text_t path_name)
       return 0;
     }
 
+  result = (fs_stats.f_bfree * fs_stats.f_bsize);
+
+#endif /* !PDF_HOST_WIN32 */
+
   /* Return the free space in octects */
-  return (fs_stats.f_bfree * fs_stats.f_bsize);
+  return result;
 }
 
 
