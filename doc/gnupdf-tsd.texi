@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf-tsd.texi,v 1.10 2008/04/18 01:49:09 gerel Exp $
+@comment $Id: gnupdf-tsd.texi,v 1.11 2008/05/29 20:56:28 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf-tsd.info
 @settitle GNU PDF Library Test Specification Document
@@ -69,6 +69,7 @@ Indices
 
 @menu
 * Memory Allocation Module::
+* Filesystem Module::
 * Stream Module::
 * Text Module::
 * List Module::
@@ -117,6 +118,49 @@ Deallocate memory.
 The call should not produce an error.
 @end table
 @end deffn
+
+@node Filesystem Module
+@subsection Filesystem Module
+
+@menu
+* pdf_fsys_open::
+@end menu
+
+@node pdf_fsys_open
+@subsubsection pdf_fsys_open
+
+@deffn Test pdf_fsys_open_001
+Open an existent and readable file for reading.
+@table @strong
+@item Success condition
+@code{pdf_fsys_open} should return @code{PDF_OK}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_open_002
+Open a non-existent and writable file for writing.
+@table @strong
+@item Success condition
+@code{pdf_fsys_open} should return @code{PDF_OK}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_open_003
+Open an existing and writable file for writing.
+@table @strong
+@item Success condition
+@code{pdf_fsys_open} should return @code{PDF_OK}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_open_004
+Open an existing, readable and writable file for reading and writing.
+@table @strong
+@item Success condition
+@code{pdf_fsys_open} should return @code{PDF_OK}.
+@end table
+@end deffn
+
 
 @node Stream Module
 @subsection Stream Module

@@ -1,5 +1,11 @@
 2008-05-29  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf-tsd.texi (pdf_fsys_open): New section.
+	(pdf_fsys_open): New test 001.
+	(pdf_fsys_open): New test 002.
+	(pdf_fsys_open): New test 003.
+	(pdf_fsys_open): New test 004.
+
 	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_get_free_space): Added
 	support for mingw32.
 
