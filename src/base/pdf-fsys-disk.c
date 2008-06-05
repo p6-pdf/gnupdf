@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/05/29 17:29:52 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/06/05 20:43:15 jemarch"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -678,7 +678,17 @@ pdf_fsys_disk_file_cancel_ria (pdf_fsys_file_t file)
 pdf_status_t
 pdf_fsys_disk_file_close (pdf_fsys_file_t file)
 {
-  /* FIXME: Please implement me :D */
+  pdf_fsys_disk_file_t file_data;
+
+  file_data = (pdf_fsys_disk_file_t) file->data;
+
+  /* Close the I/O stream */
+  if (fclose (file_data->file_descriptor) == EOF)
+    {
+      /* An error was detected closing the I/O stream */
+      return PDF_ERROR;
+    }
+  
   return PDF_OK;
 }
 

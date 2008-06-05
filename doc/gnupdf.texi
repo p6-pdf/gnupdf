@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.71 2008/05/28 19:43:01 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.72 2008/06/05 18:42:15 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -5912,6 +5912,8 @@ A PDF status value:
 @table @code
 @item PDF_OK
 The file was successfully closed.
+@item PDF_ERROR
+There was an error closing the file.
 @end table
 @item Usage example
 @example

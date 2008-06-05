@@ -1,3 +1,10 @@
+2008-06-05  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Closing and Reopening Files): Add `PDF_ERROR'
+	as a possible return value for `pdf_fsys_disk_file_close'.
+
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_file_close): New function.
+
 2008-05-29  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf-tsd.texi (pdf_fsys_open): New section.
