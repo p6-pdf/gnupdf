@@ -1,3 +1,23 @@
+2008-06-10  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Filtered Streams): New section.
+	(Creating and Destroying Streams): New section.
+	(Managing the Filter Chain): New section.
+	(Reading and Writing Data): New section.
+	(Creating and Destroying Streams): New function
+	`pdf_stm_file_new'.
+	(Stream Types): New section.
+	(Stream Types): New data type `pdf_stm_t'.
+	(Stream Types): New data type `enum pdf_stm_mode_e'.
+	(Creating and Destroying Streams): New function
+	`pdf_stm_mem_new'.
+	(Creating and Destroying Streams): New function
+	`pdf_stm_destroy'.
+	(Stream Positioning): New section.
+	(Managing the Filter Chain): New several functions.
+	(Reading and Writing Data): New several functions.
+	(Stream Positioning): New several functions.
+
 2008-06-05  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Closing and Reopening Files): Add `PDF_ERROR'

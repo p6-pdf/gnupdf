@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.72 2008/06/05 18:42:15 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.73 2008/06/10 21:33:14 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -2272,6 +2272,748 @@ XXX
 
 @node Filtered Streams
 @section Filtered Streams
+
+This module provides read/write streams of data to memory buffers and
+open files adding the following functionality:
+
+@itemize @minus
+@item Filtering.
+@item Buffering.
+@end itemize
+
+Several streams can be created to operate in the same open file. This
+provides a convenient access to files with several parts requiring
+different filters to read or write its contents.
+
+Filters (such as the PDF standard ones) are supported for both reading
+and writing. Many filters may be used in a single stream (those
+filters are applied in an order when writing and in the inverse order
+when reading).
+
+The file streams maintain a buffer for both reading and writing. The
+size of the buffer is specified by the client in creation time. This
+is used, for example, to provide efficient character-based I/O.
+
+Note that the streams operating in memory buffers do not provide
+buffering.
+
+@menu
+* Stream Types::
+* Creating and Destroying Streams::
+* Managing the Filter Chain::
+* Reading and Writing Data::
+* Stream Positioning::
+@end menu
+
+@node Stream Types
+@subsection Stream Types
+
+@deftp {Data Type} pdf_stm_t
+A stm variable.
+@end deftp
+
+@deftp {Data Type} {enum pdf_stm_mode_e}
+The operation mode of a stm object.
+
+@table @code
+@item PDF_STM_READ
+The stm will be used to read data from the open file or memory buffer.
+@item PDF_STM_WRITE
+The stm will be used to write data into the open file or memory buffer.
+@end table
+@end deftp
+
+@node Creating and Destroying Streams
+@subsection Creating and Destroying Streams
+
+@deftypefun pdf_status_t pdf_stm_file_new (pdf_fsys_file_t @var{file}, enum pdf_stm_mode_e @var{mode}, pdf_size_t @var{buffer_size})
+
+Create a new stream operating in a given open file. 
+
+@table @strong
+@item Parameters
+@table @var
+@item file
+An open file.
+@item mode
+The operation mode for the stream.
+@item buffer_size
+The desired size for the stream buffer, measured in octects. If it is
+@code{0} then the default size (4kb) is used.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The stream object was successfully created.
+@item PDF_ERROR
+There was an error and the stream was not created.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_stm_mem_new (enum pdf_stm_mode_e @var{mode}, pdf_size_t @var{size})
+
+Create a new stream operating in a memory buffer.
+
+@table @strong
+@item Parameters
+@table @var
+@item mode
+The operation mode for the stream.
+@item size
+The desired size for the memory buffer, measured in octects.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The stream was successfully created.
+@item PDF_ERROR
+There was an error and the stream was not created.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_stm_destroy (pdf_stm_t @var{stm})
+
+Destroy a stream freeing all the used resources.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The stream was successfully destroyed.
+@item PDF_ERROR
+There was an error destroying the stream.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@node Managing the Filter Chain
+@subsection Managing the Filter Chain
+
+@deftypefun pdf_status_t pdf_stm_uninstall_filters (pdf_stm_t @var{stm})
+
+Uninstall any installed filter in a given stream. 
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+
+The following functions can be used to build the filter chain of a
+given stream.
+
+@deftypefun pdf_status_t pdf_stm_install_null_filter (pdf_stm_t @var{stm})
+
+Add a NULL filter to a stream filter chain.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The filter was successfully installed in the stream.
+@item PDF_ERROR
+There was an error and the filter was not installed in the stream.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_stm_install_flatedec_filter (pdf_stm_t @var{stm})
+
+Add a flate decode filter to a stream filter chain.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The filter was successfully installed in the stream.
+@item PDF_ERROR
+There was an error and the filter was not installed in the stream.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_stm_install_flateenc_filter (pdf_stm_t @var{stm})
+
+Add a flate encode filter to a stream filter chain.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The filter was successfully installed in the stream.
+@item PDF_ERROR
+There was an error and the filter was not installed in the stream.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_stm_install_pred_filter (pdf_stm_t @var{stm}, pdf_u32_t @var{predictor}, pdf_u32_t @var{colors}, pdf_u32_t @var{bits_per_component}, pdf_u32_t @var{columns})
+
+Add a PDF or TIFF predictor filter to a stream filter chain.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@item predictor
+The predictor function to use.
+
+Valid values are:
+@table @code
+@item 1
+The filter assumes that the normal algorithm was used to encode the
+data, without prediction.
+@item 2
+Use the TIFF 2 predictor function.
+@item 10
+Use the PNG NONE ALL ROWS predictor function.
+@item 11
+Use the PNG SUB ALL ROWS predictor function.
+@item 12
+Use the PNG UP ALL ROWS predictor function.
+@item 13
+Use the PNG AVERAGE ALL ROWS predictor function.
+@item 14
+Use the PNG Paeth predictor function.
+@item 15
+Use the PNG optimum predictor function.
+@end table
+@item colors
+The number of colors.
+@item bits_per_component
+The number of bits per component (pixel).
+@item columns
+The number of columns in each row.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The filter was successfully installed in the stream.
+@item PDF_ERROR
+There was an error and the filter was not installed in the stream.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_stm_install_ahexdec_filter (pdf_stm_t @var{stm})
+
+Add an ASCII Hex decoder filter to a stream filter chain.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The filter was successfully installed in the stream.
+@item PDF_ERROR
+There was an error and the filter was not installed in the stream.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_stm_install_ahexenc_filter (pdf_stm_t @var{stm})
+
+Add an ASCII Hex encoder filter to a stream filter chain.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The filter was successfully installed in the stream.
+@item PDF_ERROR
+There was an error and the filter was not installed in the stream.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_stm_install_a85dec_filter (pdf_stm_t @var{stm})
+
+Add an ASCII 85 decoder filter to a stream filter chain.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The filter was successfully installed in the stream.
+@item PDF_ERROR
+There was an error and the filter was not installed in the stream.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_stm_install_a85enc_filter (pdf_stm_t @var{stm})
+
+Add an ASCII 85 encoder filter to a stream filter chain.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The filter was successfully installed in the stream.
+@item PDF_ERROR
+There was an error and the filter was not installed in the stream.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_stm_install_rldec_filter (pdf_stm_t @var{stm})
+
+Add a RL decoder filter to a stream filter chain.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The filter was successfully installed in the stream.
+@item PDF_ERROR
+There was an error and the filter was not installed in the stream.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_stm_install_rlenc_filter (pdf_stm_t @var{stm})
+
+Add a RL encoder filter to a stream filter chain.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The filter was successfully installed in the stream.
+@item PDF_ERROR
+There was an error and the filter was not installed in the stream.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_stm_install_faxdec_filter (pdf_stm_t @var{stm}, pdf_u32_t @var{k}, pdf_bool_t @var{end_of_line_p}, pdf_bool_t @var{encoded_byte_align_p}, pdf_u32_t @var{columns}, pdf_u32_t @var{rows}, pdf_bool_t @var{end_of_block_p}, pdf_bool_t @var{blackls1_p}, pdf_u32_t @var{damaged_rows_before_error})
+
+Add a CCITT (FAX) decoder filter to a stream filter chain.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@item k
+XXX
+@item end_on_line_P
+XXX
+@item encoded_byte_align_p
+XXX
+@item columns
+XXX
+@item rows
+XXX
+@item end_of_block_p
+XXX
+@item blackls1_p
+XXX
+@item damaged_rows_before_error
+XXX
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The filter was successfully installed in the stream.
+@item PDF_ERROR
+There was an error and the filter was not installed in the stream.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_stm_install_faxenc_filter (pdf_stm_t @var{stm}, pdf_u32_t @var{k}, pdf_bool_t @var{end_of_line_p}, pdf_bool_t @var{encoded_byte_align_p}, pdf_u32_t @var{columns}, pdf_u32_t @var{rows}, pdf_bool_t @var{end_of_block_p}, pdf_bool_t @var{blackls1_p}, pdf_u32_t @var{damaged_rows_before_error})
+
+Add a CCITT (FAX) encoder filter to a stream filter chain.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@item k
+XXX
+@item end_on_line_P
+XXX
+@item encoded_byte_align_p
+XXX
+@item columns
+XXX
+@item rows
+XXX
+@item end_of_block_p
+XXX
+@item blackls1_p
+XXX
+@item damaged_rows_before_error
+XXX
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The filter was successfully installed in the stream.
+@item PDF_ERROR
+There was an error and the filter was not installed in the stream.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_stm_install_lzwdec_filter (pdf_stm_t @var{stm}, pdf_u32_t @var{early_change})
+
+Add a LZW decoder filter to a stream filter chain.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@item early_change
+XXX
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The filter was successfully installed in the stream.
+@item PDF_ERROR
+There was an error and the filter was not installed in the stream.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_stm_install_lzwenc_filter (pdf_stm_t @var{stm}, pdf_u32_t @var{early_change})
+
+Add a LZW encoder filter to a stream filter chain.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@item early_change
+XXX
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The filter was successfully installed in the stream.
+@item PDF_ERROR
+There was an error and the filter was not installed in the stream.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@node Reading and Writing Data
+@subsection Reading and Writing Data
+
+@deftypefun pdf_size_t pdf_stm_read (pdf_stm_t @var{stm}, pdf_char_t **@var{buf}, pdf_size_t @var{bytes})
+
+Read a chunk of data from a given stream.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@item buf
+The buffer to hold the readed data.
+@item bytes
+The number of octects to read.
+@end table
+@item Returns
+A PDF size value containing the number of octects actually readed. If
+the returned value is less than @var{bytes} then an end of file
+condition occurred.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_size_t pdf_stm_write (pdf_stm_t @var{stm}, const pdf_size_t @var{elem_size}, const pdf_size_t @var{elem_count}, pdf_char_t *@var{buf})
+
+Write a chunk of data into a given stream.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@item elem_size
+Size (in octects) of the elements to write.
+@item elem_count
+Number of elements to write.
+@item buf
+The buffer containing the written information.
+@end table
+@item Returns
+A PDF size value containing the number of octects actually readed. If
+the returned value is less than @code{elem_count * elem_size} then a
+disk full condition has occured.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_u32_t pdf_stm_read_char (pdf_stm_t stm)
+
+Read a character from a given stream.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@end table
+@item Returns
+An unsigned integer containing @code{PDF_EOF} or the readed character
+code.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_u32_t pdf_stm_peek_char (pdf_stm_t stm)
+
+Peek a character from a given stream.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@end table
+@item Returns
+An unsigned integer containing @code{PDF_EOF} or the peeked character
+code.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_size_t pdf_stm_flush (pdf_stm_t @var{stm})
+
+Flush any pending writing data in a given stream. It is a no-op in a
+memory stream.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@end table
+@item Returns
+A PDF size value containing the number of octects that has been
+flushed. May be @code{0}.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@node Stream Positioning
+@subsection Stream Positioning
+
+@deftypefun pdf_off_t pdf_stm_seek (pdf_stm_t @var{stm}, pdf_off_t @var{pos})
+
+Seek into a given stream.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@item pos
+The position to seek, measured in octects from the beginning of the
+stream.
+@end table
+@item Returns
+The new position of the stream read/write pointer. If it is equal to
+the current position then there was an error.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_off_t pdf_stm_tell (pdf_stm_t @var{stm})
+
+Get the current position of the read/write pointer of a stream.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@end table
+@item Returns
+The current position (measured in octets from the beginning of the
+stream) of the read/write pointer.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
 
 @node Floating Point Arithmetic
 @section Floating Point Arithmetic
