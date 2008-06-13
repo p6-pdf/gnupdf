@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/06/05 20:43:15 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/06/13 11:55:13 jco"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -395,7 +395,7 @@ pdf_status_t
 pdf_fsys_disk_get_parent (const pdf_text_t path_name,
                           pdf_text_t parent_path)
 {
-  /* FIXME: Please implement me :D */
+  /* FIXME: Implement me :D */
   return PDF_OK;
 }
 
@@ -535,7 +535,7 @@ pdf_status_t
 pdf_fsys_disk_file_get_pos (pdf_fsys_file_t file,
                             pdf_size_t *pos)
 {
-  /* FIXME: Wanna be my friend? :D then please implement me :'D */
+  /* FIXME: Please implement me XD */
   return 0;
 }
 
@@ -543,7 +543,7 @@ pdf_status_t
 pdf_fsys_disk_file_set_pos (pdf_fsys_file_t file,
                             pdf_size_t new_pos)
 {
-  /* FIXME: Please implement me and I will give you a kiss :* */
+  /* FIXME: Please implement me XD */
   return PDF_OK;
 }
 
@@ -551,7 +551,7 @@ pdf_bool_t
 pdf_fsys_disk_file_can_set_size_p (pdf_fsys_file_t file,
                                    pdf_size_t size)
 {
-  /* FIXME: I am quite simple! Prove it by implementing me! :D! */
+  /* FIXME: Please implement me XD */
   return PDF_TRUE;
 }
 
@@ -587,7 +587,7 @@ pdf_fsys_disk_file_write (pdf_fsys_file_t file,
                           const pdf_size_t elem_count,
                           void *data)
 {
-  /* FIXME: Wanna increase your penis? Implement me! ;) */
+  /* FIXME: Please implement me XD */
   return 0;
 }
 
@@ -696,7 +696,7 @@ pdf_status_t
 pdf_fsys_disk_file_reopen (pdf_fsys_file_t file,
                            enum pdf_fsys_file_mode_e mode)
 {
-  /* FIXME: Impress your cat by implementing me! O_o */
+  /* FIXME: Please implement me XD */
   return PDF_OK;
 }
 
