@@ -3689,7 +3689,7 @@ pdf_text_ucd_special_case_check_single(const pdf_text_ucd_context_t *context,
     }
 
   /* Received condition is not valid */
-  return PDF_EBADDATA;
+  return PDF_EBADTEXT;
 }
 
 
@@ -4012,7 +4012,7 @@ pdf_text_ucd_create_case_context(pdf_text_ucd_context_t *context,
   if(length % 4 != 0)
     {
       PDF_DEBUG_BASE("Invalid word length");
-      return PDF_EINVAL;
+      return PDF_EBADDATA;
     }
   
   /* Set context start as the first character in the word */
@@ -4057,7 +4057,7 @@ pdf_text_ucd_word_change_case(pdf_char_t *destination_word,
      (p_destination_length == NULL))
     {
       PDF_DEBUG_BASE("Invalid inputs");
-      return PDF_EINVAL;
+      return PDF_EBADDATA;
     }
 
   /* Create context for this word */
@@ -4067,7 +4067,7 @@ pdf_text_ucd_word_change_case(pdf_char_t *destination_word,
                                       origin_lang) != PDF_OK)
     {
       PDF_DEBUG_BASE("Error creating casing context");
-      return PDF_EINVAL;
+      return PDF_EBADDATA;
     }
   
   new_length = 0;

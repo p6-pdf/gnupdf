@@ -74,7 +74,7 @@ enum pdf_status_e
         PDF_EINVRANGE,
         PDF_ETEXTENC,
         PDF_ENOMATCH,
-        PDF_EINVAL,
+        PDF_EBADTEXT,
         PDF_STATUS_ITEMS,
         PDF_EBADPERMS,
         PDF_EBADNAME,

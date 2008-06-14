@@ -194,7 +194,7 @@ pdf_text_pdfdocenc_to_utf32he(const pdf_char_t    *input_data,
         {
           /* Oops, the given input byte is UNDEFINED in PDF Doc Encoding */
           pdf_dealloc(data);
-          return PDF_EINVAL;
+          return PDF_EBADDATA;
         }
       /* Copy converted value to output */
       memcpy(&(data[j]), &(utf32val), 4);
@@ -288,7 +288,7 @@ pdf_text_utf32he_to_pdfdocenc(const pdf_char_t    *input_data,
     {
       PDF_DEBUG_BASE("Input length must be multiple of 4! Invalid UTF-32 data."
                      "(Length: %d)", (int)input_length);
-      return PDF_EINVAL;
+      return PDF_EBADDATA;
     }
   
   /* Get new string length... */
@@ -336,7 +336,7 @@ pdf_text_utf32he_to_utf32he(const pdf_char_t    *input_data,
       /* Invalid number of bytes! */
       PDF_DEBUG_BASE("Input length must be multiple of 4! Invalid UTF-32 data."
                      " (Length: %d)", (int)input_length);
-      return PDF_EINVAL;
+      return PDF_EBADDATA;
     }
   
   /* Check if BOM is present... and skip it if so */
@@ -378,7 +378,7 @@ pdf_text_utf32he_to_utf32he(const pdf_char_t    *input_data,
                              utf32val.c[1],
                              utf32val.c[2],
                              utf32val.c[3]);
-              return PDF_EBADDATA;
+              return PDF_EBADTEXT;
             }
         }
       
@@ -404,7 +404,7 @@ pdf_text_utf32he_to_utf32he(const pdf_char_t    *input_data,
                              utf32val.c[1],
                              utf32val.c[2],
                              utf32val.c[3]);
-              return PDF_EBADDATA;
+              return PDF_EBADTEXT;
             }
         }
 
@@ -518,7 +518,7 @@ pdf_text_utf16he_to_utf32he(const pdf_char_t    *input_data,
     {
       PDF_DEBUG_BASE("Input length must be multiple of 2 and greater than 2!"
                      " Invalid UTF-16 data. (Length: %d)", (int)input_length);
-      return PDF_EINVAL;
+      return PDF_EBADDATA;
     }
   
   /* Check if BOM is present... and skip it if so */
@@ -602,7 +602,7 @@ pdf_text_utf16he_to_utf32he(const pdf_char_t    *input_data,
               /* Oops, invalid UTF-16HE point found! */
               pdf_dealloc(data);
               PDF_DEBUG_BASE("Conversion from UTF-16 to UTF-32HE stopped");
-              return PDF_EBADDATA;
+              return PDF_EBADTEXT;
             }
           
           /* Finally, store the UTF-32 representation of the char in the output
@@ -761,7 +761,7 @@ pdf_text_utf32he_to_utf16he(const pdf_char_t *input_data,
           /* Oops, invalid UTF-16HE point found! */
           pdf_dealloc(data);
           PDF_DEBUG_BASE("Conversion from UTF-32HE to UTF-16 stopped");
-          return PDF_EBADDATA;
+          return PDF_EBADTEXT;
         }
       
       /* Change endianness of each output word if required */
@@ -917,7 +917,7 @@ pdf_text_utf8_to_utf32he(const pdf_char_t    *input_data,
                          "Remaining length: %d", delta_in_utf8,
                          (input_length - i));
           pdf_dealloc(data);
-          return PDF_EINVAL;
+          return PDF_EBADDATA;
         }
       
       /* Store data in intermediate UTF-8 variable */
@@ -929,7 +929,7 @@ pdf_text_utf8_to_utf32he(const pdf_char_t    *input_data,
         {
           PDF_DEBUG_BASE("Problem decoding UTF-8 string");
           pdf_dealloc(data);
-          return PDF_EINVAL;
+          return PDF_EBADDATA;
         }
 
       /* Copy converted value (in UTF-32HE) to output */
@@ -1065,7 +1065,7 @@ pdf_text_utf32he_to_utf8(const pdf_char_t      *input_data,
         {
           PDF_DEBUG_BASE("Problem encoding UTF-8 string");
           pdf_dealloc(data);
-          return PDF_EBADDATA;
+          return PDF_EBADTEXT;
         }
       
       /* Store UTF-8 val in output array */

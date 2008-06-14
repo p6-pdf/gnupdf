@@ -1,3 +1,21 @@
+2008-06-14  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
+	* src/base/pdf-error.h (enum pdf_status_e): Removed PDF_EINVAL and added
+	PDF_EBADTEXT.
+
+	* src/base/pdf-text-encoding.c: Changed PDF_EBADDATA with PDF_EBADTEXT and
+	PDF_EINVAL with PDF_EBADDATA.
+
+	* src/base/pdf-text-filter.c: Idem
+
+	* src/base/pdf-text-host-encoding.c: Idem
+
+	* src/base/pdf-text-ucd-case.c: Idem
+
+	* src/base/pdf-text-ucd-wordbreak.c: Idem
+
+	* src/base/pdf-text.c: Idem
+
 2008-06-10  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Filtered Streams): New section.

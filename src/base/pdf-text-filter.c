@@ -255,7 +255,7 @@ pdf_text_substitute_line_ending(pdf_text_t text, const pdf_text_eol_t new_eol)
     {
       pdf_dealloc(eols);
       PDF_DEBUG_BASE("New EOL is not UTF-8");
-      return PDF_EBADDATA;
+      return PDF_EBADTEXT;
     }
 
   /* For each possible EOL type, create a pdf_text_t */
@@ -276,7 +276,7 @@ pdf_text_substitute_line_ending(pdf_text_t text, const pdf_text_eol_t new_eol)
           pdf_text_destroy(new_text_pattern);
           pdf_dealloc(eols);
           PDF_DEBUG_BASE("Old EOL is not UTF-8");
-          return PDF_EBADDATA;
+          return PDF_EBADTEXT;
         }
     }
 

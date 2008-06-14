@@ -230,7 +230,7 @@ pdf_text_new_from_host (pdf_text_t *text,
   if((str == NULL) || \
      (size == 0))
     {
-      return PDF_EINVAL;
+      return PDF_EBADDATA;
     }
   
   /* Allocate and initialize element */
@@ -275,7 +275,7 @@ pdf_text_new_from_pdf_string (pdf_text_t *text,
 
   if(str == NULL)
     {
-      return PDF_EINVAL;
+      return PDF_EBADDATA;
     }
   
   /* Allocate and initialize element */
@@ -391,7 +391,7 @@ pdf_text_new_from_unicode (pdf_text_t *text,
 
   if(str == NULL)
     {
-      return PDF_EINVAL;
+      return PDF_EBADDATA;
     }
   
   /* Allocate and initialize element */
@@ -444,7 +444,7 @@ pdf_text_new_from_u32 (pdf_text_t *text,
   else
     {
       PDF_DEBUG_BASE("Invalid u32 received: %u", (unsigned int)number);
-      return PDF_EBADDATA;
+      return PDF_EBADTEXT;
     }
 }
 
@@ -471,7 +471,7 @@ pdf_text_set_country (pdf_text_t text,
   if((code == NULL) || \
      (strlen((char *)code) != (PDF_TEXT_CCL-1)))
     {
-      return PDF_EINVAL;
+      return PDF_EBADDATA;
     }
   
   memcpy(&(text->country[0]), code, PDF_TEXT_CCL-1);
@@ -489,7 +489,7 @@ pdf_text_set_language (pdf_text_t text,
   if((code == NULL) || \
      (strlen((char *)code) != (PDF_TEXT_CCL-1)))
     {
-      return PDF_EINVAL;
+      return PDF_EBADDATA;
     }
 
   memcpy(&(text->lang[0]), code, PDF_TEXT_CCL-1);
@@ -524,7 +524,7 @@ pdf_text_check_host_encoding(const pdf_char_t *encoding_name,
   if(strlen((char *)encoding_name) >= PDF_TEXT_HENMAXL)
     {
       PDF_DEBUG_BASE("Encoding name too long!");
-      return PDF_EINVAL;
+      return PDF_EBADDATA;
     }
   
   if(pdf_text_host_encoding_is_available(encoding_name) == PDF_OK)
@@ -644,7 +644,7 @@ pdf_text_get_unicode (pdf_char_t **contents,
     {
       PDF_DEBUG_BASE("Lang/Country info only available for UTF-16BE");
       /* Not allowed!!! */
-      return PDF_EINVAL;
+      return PDF_EBADDATA;
     }
 
   /* If host endianness required, check it and convert input encoding */
@@ -815,7 +815,7 @@ pdf_text_set_host (pdf_text_t text,
 
   if(str == NULL)
     {
-      return PDF_EINVAL;
+      return PDF_EBADDATA;
     }
 
   ret_code = pdf_text_host_to_utf32he (str, size, enc,
@@ -844,7 +844,7 @@ pdf_text_set_pdfdocenc (pdf_text_t text,
   
   if(str == NULL)
     {
-      return PDF_EINVAL;
+      return PDF_EBADDATA;
     }
   
   ret_code = pdf_text_pdfdocenc_to_utf32he (str, strlen((char *)str),
@@ -876,7 +876,7 @@ pdf_text_set_unicode (pdf_text_t text,
   if((str == NULL) || \
      (size == 0))
     {
-      return PDF_EINVAL;
+      return PDF_EBADDATA;
     }
   
   /* If host endianness required, check it and convert input encoding */
@@ -906,7 +906,7 @@ pdf_text_set_unicode (pdf_text_t text,
                                              &temp_data, &temp_size);
       break;
     default:
-      ret_code = PDF_EINVAL;
+      ret_code = PDF_EBADDATA;
   }
   
   if(ret_code == PDF_OK)
@@ -1156,7 +1156,7 @@ pdf_text_replace_multiple (pdf_text_t text,
   if((p_old_patterns == NULL) || \
      (n_old_patterns == 0))
     {
-      return PDF_EINVAL;
+      return PDF_EBADDATA;
     }
 
   if(pdf_text_check_replacement_patterns(p_old_patterns, \
@@ -1225,7 +1225,7 @@ pdf_text_replace_ascii (pdf_text_t text,
     {
       PDF_DEBUG_BASE("At least one of the requested patterns is not "
                      "7-bit ASCII");
-      return PDF_EINVAL;
+      return PDF_EBADDATA;
     }
   else
     {
@@ -1241,7 +1241,7 @@ pdf_text_replace_ascii (pdf_text_t text,
                                    PDF_TEXT_UTF8)!=PDF_OK)
         {
           PDF_DEBUG_BASE("Error creating pdf_text_t from ASCII new pattern");
-          return PDF_EBADDATA;
+          return PDF_EBADTEXT;
         }
       if(pdf_text_new_from_unicode(&old_pattern_text,
                                    old_pattern,
@@ -1249,7 +1249,7 @@ pdf_text_replace_ascii (pdf_text_t text,
                                    PDF_TEXT_UTF8)!=PDF_OK)
         {
           PDF_DEBUG_BASE("Error creating pdf_text_t from ASCII old pattern");
-          return PDF_EBADDATA;
+          return PDF_EBADTEXT;
         }
 
       /* Perform replacement */
@@ -1277,7 +1277,7 @@ pdf_text_filter (pdf_text_t text,
       ((filter & PDF_TEXT_FILTER_TITLE_CASE) ? 1 : 0)) > 1)
     {
       PDF_DEBUG_BASE("At most only one case conversion filter can be applied");
-      return PDF_EINVAL;
+      return PDF_EBADDATA;
     }
 
   /* 0x00000001 */
@@ -1590,7 +1590,7 @@ pdf_text_get_lang_from_utf16be(pdf_text_t element,
      (str_in[1] != PDF_TEXT_LCI_1) || \
      (str_in[0] != PDF_TEXT_LCI_0))
     {
-      return PDF_EINVAL;
+      return PDF_EBADDATA;
     }
   
   /* Check last code marker position and MAXIMUM length of array. 
@@ -1611,7 +1611,7 @@ pdf_text_get_lang_from_utf16be(pdf_text_t element,
         {
           /* Either size is too short or last marker not found. This is a
            *  problem in the input data string */
-          return PDF_EINVAL;
+          return PDF_EBADDATA;
         }
     }
   else
@@ -1676,7 +1676,7 @@ pdf_text_get_unicode_string_header(pdf_char_t header[PDF_TEXT_USHMAXL],
      (header_length == NULL))
     {
       PDF_DEBUG_BASE("Invalid pointers received");
-      return PDF_EINVAL;
+      return PDF_EBADDATA;
     }
   
   /* Check if BOM really requested */
@@ -1846,7 +1846,7 @@ pdf_text_fill_word_boundaries_list(pdf_list_t word_boundaries,
   /* Perform a basic check of data length */
   if(size % 4 != 0)
     {
-      return PDF_EINVAL;
+      return PDF_EBADDATA;
     }
   
   /* Only try to find word boundaries if length is greater than 0! */

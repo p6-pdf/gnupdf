@@ -1244,7 +1244,7 @@ pdf_text_ucd_wb_detect_next(const pdf_char_t *current,
   /* Check validity of input number of bytes */
   if(n_bytes_left_in % 4 != 0)
     {
-      return PDF_EINVAL;
+      return PDF_EBADDATA;
     }
   
   /* Check if the string is just one character long */

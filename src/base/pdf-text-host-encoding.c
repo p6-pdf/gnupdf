@@ -264,7 +264,7 @@ pdf_text_utf32he_to_host_win32(const pdf_char_t      *input_data,
             }
 #endif
           pdf_dealloc(temp_data);
-          return PDF_EBADDATA;
+          return PDF_EBADTEXT;
         }
 
       /* Allocate memory for output buffer */
@@ -407,7 +407,7 @@ pdf_text_utf32he_to_host_iconv(const pdf_char_t      *input_data,
               iconv_close(to_host);
               PDF_DEBUG_BASE("Invalid data to convert to Host Encoding: '%s'",
                              strerror(errno));
-              return PDF_EBADDATA;
+              return PDF_EBADTEXT;
             }
         }
     }
@@ -497,7 +497,7 @@ pdf_text_host_to_utf32he_win32(const pdf_char_t      *input_data,
             {
               PDF_DEBUG_BASE("Invalid data to convert from Host Encoding:"
                              " Not ASCII-7");
-              return PDF_EBADDATA;
+              return PDF_EBADTEXT;
             }
         }
 
@@ -529,7 +529,7 @@ pdf_text_host_to_utf32he_win32(const pdf_char_t      *input_data,
                 break;
             }
 #endif
-          return PDF_EBADDATA;
+          return PDF_EBADTEXT;
         }
 
       /* Allocate memory for output buffer */
@@ -667,7 +667,7 @@ pdf_text_host_to_utf32he_iconv(const pdf_char_t      *input_data,
               pdf_dealloc(new_data);
               PDF_DEBUG_BASE("Invalid data to convert from Host Encoding:"
                              "'%s'",strerror(errno));
-              return PDF_EBADDATA;
+              return PDF_EBADTEXT;
             }
         }
     }
