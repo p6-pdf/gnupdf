@@ -1,5 +1,22 @@
 2008-06-15  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
+	* doc/gnupdf.texi: Added new functions allowing 32bit values as input
+	in the built-in 64bit support.
+	(pdf_i64_add_i32): New function.
+	(pdf_i64_subtract_i32_min): New function.
+	(pdf_i64_subtract_i32_sub): New function.
+	(pdf_i64_mult_i32): New function.
+	(pdf_i64_div_i32_divisor): New function.
+	(pdf_i64_div_i32_dividend): New function.
+	(pdf_i64_mod_i32_divisor): New function.
+	(pdf_i64_mod_i32_dividend): New function.
+	(pdf_i64_cmp_i32): New function.
+	(pdf_i64_to_i32): New function.
+
+	* src/base/pdf-types.[c|h]: Idem.
+
+2008-06-15  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
 	* src/Makefile.am (libgnupdf_la_LDFLAGS): Only use --no-undefined if
 	compiling for W32 with mingw32 (to create a DLL). This option breaks
 	compilation in Mac OS X.

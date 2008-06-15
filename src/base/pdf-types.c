@@ -1030,4 +1030,115 @@ pdf_i64_mod(pdf_i64_t *dest,
 
 }/*end of pdf_i64_mod*/
 
+
+
+
+/* NOTE for all those functions receiving pdf_i32_t as input, where internal
+ * conversion to pdf_i64_t is done: We know that pdf_i64_new function doesn't 
+ * really do memory allocation, so we could directly call pdf_i64_assign_quick.
+ * This is not allowed outside the basic types module, where pdf_i64_new must
+ * always be called. */
+
+/* Add a pdf_i64_t and a pdf_i32_t */
+pdf_status_t 
+pdf_i64_add_i32(pdf_i64_t *dest, const pdf_i64_t addend1, const pdf_i32_t addend2)
+{
+  pdf_i64_t aux;
+  pdf_i64_assign_quick(&aux, addend2);
+  return pdf_i64_add(dest, addend1, aux);
+}
+
+/* Compare a pdf_i64_t and a pdf_i32_t */
+int pdf_i64_cmp_i32(const pdf_i64_t number_1, const pdf_i32_t number_2)
+{
+  pdf_i64_t aux;
+  pdf_i64_assign_quick(&aux, number_2);
+  return pdf_i64_cmp(number_1, aux);
+}
+
+
+/* Subtract a pdf_i64_t and a pdf_i32_t variable */
+pdf_status_t 
+pdf_i64_subtraction_i32_min(pdf_i64_t *dest, \
+                            const pdf_i32_t minuend, \
+                            const pdf_i64_t subtrahend)
+{
+  pdf_i64_t aux;
+  pdf_i64_assign_quick(&aux, minuend);
+  return pdf_i64_subtraction(dest, aux, subtrahend);
+}
+pdf_status_t 
+pdf_i64_subtraction_i32_sub(pdf_i64_t *dest, \
+                            const pdf_i64_t minuend, \
+                            const pdf_i32_t subtrahend)
+{
+  pdf_i64_t aux;
+  pdf_i64_assign_quick(&aux, subtrahend);
+  return pdf_i64_mult(dest, minuend, aux);
+}
+
+
+/* Multiply a pdf_i64_t and a pdf_i32_t */
+pdf_status_t 
+pdf_i64_mult_i32(pdf_i64_t *dest, \
+                 const pdf_i64_t factor_1, \
+                 const pdf_i32_t factor_2)
+{
+  pdf_i64_t aux;
+  pdf_i64_assign_quick(&aux, factor_2);
+  return pdf_i64_mult(dest, factor_1, aux);
+}
+
+
+/* Division between a pdf_i64_t and a pdf_i32_t */
+pdf_status_t 
+pdf_i64_div_i32_dividend(pdf_i64_t *dest, \
+                         const pdf_i32_t dividend, \
+                         const pdf_i64_t divisor)
+{
+  pdf_i64_t aux;
+  pdf_i64_assign_quick(&aux, dividend);
+  return pdf_i64_div(dest, aux, divisor);
+}
+pdf_status_t 
+pdf_i64_div_i32_divisor(pdf_i64_t *dest, \
+                        const pdf_i64_t dividend, \
+                        const pdf_i32_t divisor)
+{
+  pdf_i64_t aux;
+  pdf_i64_assign_quick(&aux, divisor);
+  return pdf_i64_div(dest, dividend, aux);
+}
+
+
+/* Modulus between a pdf_i64_t and a pdf_i32_t */
+pdf_status_t 
+pdf_i64_mod_i32_dividend(pdf_i64_t *dest, \
+                         const pdf_i32_t dividend, \
+                         const pdf_i64_t divisor)
+{
+  pdf_i64_t aux;
+  pdf_i64_assign_quick(&aux, dividend);
+  return pdf_i64_mod(dest, aux, divisor);
+}
+pdf_status_t 
+pdf_i64_mod_i32_divisor(pdf_i64_t *dest, \
+                        const pdf_i64_t dividend, \
+                        const pdf_i32_t divisor)
+{
+  pdf_i64_t aux;
+  pdf_i64_assign_quick(&aux, divisor);
+  return pdf_i64_mod(dest, dividend, aux);
+}
+
+
+
+/* Get number as pdf_i32_t */
+pdf_i32_t
+pdf_i64_get_i32(const pdf_i64_t bignum)
+{
+  /* From the highest 32bits, take the sign only */
+  return ((bignum.high >= 0) ? bignum.low : (-1 * bignum.low));
+}
+
 /* End of pdf-types.c */

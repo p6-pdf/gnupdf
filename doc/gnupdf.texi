@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.73 2008/06/10 21:33:14 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.74 2008/06/15 18:04:47 aleksander_m Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -620,6 +620,45 @@ if (pdf_i64_add (dest, addend_1, addend_2) != PDF_OK) /* Now dest is 60 */
 @end table
 @end deftypefun
 
+@deftypefun pdf_status_t pdf_i64_add_i32 (pdf_i64_t *@var{dest}, const pdf_i64_t @var{addend1}, const pdf_i32_t @var{addend2})
+
+Adds a 64bit number and a 32bit number.
+
+@table @strong
+@item Parameters
+@table @var
+@item addend1
+First addend of the sum (64bit type)
+@item addend2
+Second addend of the sum (32 bit)
+@item dest
+Where 64 bit result is stored
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+Operation successful
+@end table
+@item Usage example
+@example
+pdf_i64_t *dest;
+pdf_i64_t result;
+pdf_i64_t addend_1;
+
+addend_1 = pdf_i64_new(0, 25);
+result = pdf_i64_new(0, 0);
+dest = &result;
+
+if (pdf_i64_add (dest, addend_1, 35) != PDF_OK) /* Now dest is 60 */
+@{
+   /* Error code */
+@}
+@end example
+@end table
+@end deftypefun
+
+
 @deftypefun pdf_status_t pdf_i64_subtraction (pdf_i64_t *@var{dest}, const pdf_i64_t @var{minuend}, const pdf_i64_t @var{subtrahend})
 
 Finds the difference between two 64 bit numbers
@@ -660,6 +699,84 @@ if (pdf_i64_subtraction (dest, minuend, subtrahend) != PDF_OK) /* Now dest is -1
 @end table
 @end deftypefun
 
+@deftypefun pdf_status_t pdf_i64_subtraction_i32_min (pdf_i64_t *@var{dest}, const pdf_i32_t @var{minuend}, const pdf_i64_t @var{subtrahend})
+
+Finds the difference between a 32bit number and a 64bit number
+
+@table @strong
+@item Parameters
+@table @var
+@item minuend
+The minuend of the subtraction (32 bits)
+@item subtrahend
+The subtrahend of the subtraction (64 bits type)
+@item dest
+Where 64 bit result is stored
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+Operation successful
+@end table
+@item Usage example
+@example
+pdf_i64_t *dest;
+pdf_i64_t result;
+pdf_i64_t subtrahend;
+
+subtrahend = pdf_i64_new(0, 35);
+result = pdf_i64_new(0, 0);
+dest = &result;
+
+if (pdf_i64_subtraction (dest, 25, subtrahend) != PDF_OK) /* Now dest is -10 */
+@{
+  /* Error code */
+@}
+@end example
+@end table
+@end deftypefun
+
+
+@deftypefun pdf_status_t pdf_i64_subtraction_i32_sub (pdf_i64_t *@var{dest}, const pdf_i64_t @var{minuend}, const pdf_i32_t @var{subtrahend})
+
+Finds the difference between a 64bit number and a 32bit number
+
+@table @strong
+@item Parameters
+@table @var
+@item minuend
+The minuend of the subtraction (64 bits type)
+@item subtrahend
+The subtrahend of the subtraction (32 bits)
+@item dest
+Where 64 bit result is stored
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+Operation successful
+@end table
+@item Usage example
+@example
+pdf_i64_t *dest;
+pdf_i64_t result;
+pdf_i64_t minuend;
+
+minuend = pdf_i64_new(0, 25);
+result = pdf_i64_new(0, 0);
+dest = &result;
+
+if (pdf_i64_subtraction (dest, minuend, 35) != PDF_OK) /* Now dest is -10 */
+@{
+  /* Error code */
+@}
+@end example
+@end table
+@end deftypefun
+
+
 @deftypefun pdf_status_t pdf_i64_mult (pdf_i64_t *@var{dest}, const pdf_i64_t @var{factor_1}, const pdf_i64_t @var{factor_2})
 
 Multiplication of two 64 bit numbers
@@ -693,6 +810,44 @@ result = pdf_i64_new (0, 0);
 dest = &result;
 
 if (pdf_i64_mult (dest, factor_1, factor_2) != PDF_OK) /* Now dest is 1000 */
+@{
+   /* Error code */
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_i64_mult_i32 (pdf_i64_t *@var{dest}, const pdf_i64_t @var{factor_1}, const pdf_i32_t @var{factor_2})
+
+Multiplication of a 64bit number and a 32bit number
+
+@table @strong
+@item Parameters
+@table @var
+@item factor_1
+First factor in the multiplication (64 bits)
+@item factor_2
+Second factor in the multiplication (32bits)
+@item dest
+Where 64 bit result is stored
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+Operation successful
+@end table
+@item Usage example
+@example
+pdf_i64_t *dest;
+pdf_i64_t result;
+pdf_i64_t factor_1;
+
+factor_1 = pdf_i64_new (0, 10);
+result = pdf_i64_new (0, 0);
+dest = &result;
+
+if (pdf_i64_mult (dest, factor_1, 100) != PDF_OK) /* Now dest is 1000 */
 @{
    /* Error code */
 @}
@@ -736,6 +891,74 @@ if (pdf_i64_div (dest, dividend, divisor) != PDF_OK) /* Now dest is 20 */
 @end table
 @end deftypefun
 
+@deftypefun pdf_status_t pdf_i64_div_i32_dividend (pdf_i64_t *@var{dest}, const pdf_i32_t @var{dividend}, const pdf_i64_t @var{divisor})
+
+Division of a 32bit number and a 64bit number
+
+@table @strong
+@item Parameters
+@table @var
+@item dividend
+The dividend in the division (64 bits)
+@item divisor
+The divisor in the division (32 bits)
+@item dest
+Where 64 bit result is stored
+@end table
+@item Returns
+PDF_OK	Operation successful
+@item Usage example
+@example
+pdf_i64_t *dest;
+pdf_i64_t result;
+pdf_i64_t divisor;
+
+divisor = pdf_i64_new(0, 10);
+result = pdf_i64_new(0, 0);
+dest = &result;
+
+if (pdf_i64_div (dest, 200, divisor) != PDF_OK) /* Now dest is 20 */
+@{
+   /* Error code */
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_i64_div_i32_divisor (pdf_i64_t *@var{dest}, const pdf_i64_t @var{dividend}, const pdf_i32_t @var{divisor})
+
+Division of a 64bit number and a 32bit number
+
+@table @strong
+@item Parameters
+@table @var
+@item dividend
+The dividend in the division (64 bits)
+@item divisor
+The divisor in the division (32 bits)
+@item dest
+Where 64 bit result is stored
+@end table
+@item Returns
+PDF_OK	Operation successful
+@item Usage example
+@example
+pdf_i64_t *dest;
+pdf_i64_t result;
+pdf_i64_t dividend;
+
+dividend = pdf_i64_new(0, 200);
+result = pdf_i64_new(0, 0);
+dest = &result;
+
+if (pdf_i64_div (dest, dividend, 10) != PDF_OK) /* Now dest is 20 */
+@{
+   /* Error code */
+@}
+@end example
+@end table
+@end deftypefun
+
 
 @deftypefun pdf_status_t pdf_i64_mod (pdf_i64_t *@var{dest}, const pdf_i64_t @var{dividend}, const pdf_i64_t @var{divisor})
 
@@ -770,6 +993,82 @@ result = pdf_i64_new(0, 0);
 dest = &result;
 
 if (pdf_i64_mod (dest, dividend, divisor) != PDF_OK) /* Now dest is 5 */
+@{
+   /* Error code */
+@}	
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_i64_mod_i32_dividend (pdf_i64_t *@var{dest}, const pdf_i32_t @var{dividend}, const pdf_i64_t @var{divisor})
+
+Returns the remainder of the division between a 32bit number and a 64bit number
+
+@table @strong
+@item Parameters
+@table @var
+@item dividend
+The dividend in the division (32bits)
+@item divisor
+The divisor in the division (64bits)
+@item dest
+Where 64 bit result is stored
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+Operation successful
+@end table
+@item Usage example
+@example
+pdf_i64_t *dest;
+pdf_i64_t result;
+pdf_i64_t divisor;
+
+divisor = pdf_i64_new(0, 10);
+result = pdf_i64_new(0, 0);
+dest = &result;
+
+if (pdf_i64_mod (dest, 105, divisor) != PDF_OK) /* Now dest is 5 */
+@{
+   /* Error code */
+@}	
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_i64_mod_i32_divisor (pdf_i64_t *@var{dest}, const pdf_i64_t @var{dividend}, const pdf_i32_t @var{divisor})
+
+Returns the remainder of the division between a 64bit number and a 32bit number
+
+@table @strong
+@item Parameters
+@table @var
+@item dividend
+The dividend in the division (64 bits)
+@item divisor
+The divisor in the division (32 bits)
+@item dest
+Where 64 bit result is stored
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+Operation successful
+@end table
+@item Usage example
+@example
+pdf_i64_t *dest;
+pdf_i64_t result;
+pdf_i64_t dividend;
+
+dividend = pdf_i64_new(0, 105);
+result = pdf_i64_new(0, 0);
+dest = &result;
+
+if (pdf_i64_mod (dest, dividend, 10) != PDF_OK) /* Now dest is 5 */
 @{
    /* Error code */
 @}	
@@ -848,6 +1147,39 @@ result = pdf_i64_cmp (number_1, number_2); /* Now result is -1 */
 @end table
 @end deftypefun
 
+@deftypefun int pdf_i64_cmp_i32 (const pdf_i64_t @var{number_1}, const pdf_i32_t @var{number_2})
+
+Compares a 64bit number and a 32bit number
+
+@table @strong
+@item Parameters
+@table @var
+@item number_1
+pdf_i64_t type variable
+@item number_2
+pdf_i32_t type variable
+@end table
+@item Returns
+An integer:
+@table @code
+@item 0
+If numbers are equal
+@item 1
+If @var{number_1} is greater than @var{number_2}
+@item -1
+If @var{number_2} is greater than @var{number_1}
+@end table
+@item Usage example
+@example
+pdf_i65_t number_1;
+int result;
+
+number_1 = pdf_i64_new ((32 << 1), 10); /* number_1 is -10 */
+result = pdf_i64_cmp (number_1, 10); /* Now result is -1 */
+@end example
+@end table
+@end deftypefun
+
 @deftypefun pdf_status_t pdf_i64_neg (pdf_i64_t *@var{dest}, const pdf_i64_t @var{number})
 
 Changes sign of 64 bit integer
@@ -878,6 +1210,36 @@ if (pdf_i64_neg (dest, number) != PDF_OK) /* now dest stores -10 */
 @{
    /* Error code */
 @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_i32_t pdf_i64_to_i32 (const pdf_i64_t @var{bignum})
+
+Converts a pdf_i64_t to a 32bit value. If number can't be represented in 32 bits
+the result is undefined, so should be used with caution.
+
+@table @strong
+@item Parameters
+@table @var
+@item bignum
+pdf_i64_t type variable
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+Operation successful
+@end table
+@item Usage example
+@example
+pdf_i32_t num;
+pdf_i64_t bignum;
+
+bignum = pdf_i64_new (0, 10);
+
+num = pdf_i64_to_i32(bignum);
+
 @end example
 @end table
 @end deftypefun

@@ -90,6 +90,10 @@ typedef char pdf_i8_t;
 typedef unsigned char pdf_bool_t;
 
 
+
+/********************** 64-bit type built-in support **************************/
+
+
 /*Definition of internal structure of the pdf_i64_t type*/
 struct pdf_i64_s
 {
@@ -101,7 +105,8 @@ struct pdf_i64_s
 typedef struct pdf_i64_s pdf_i64_t;
 
 /*Create and initialise a new pdf_i64_t variable*/
-pdf_i64_t pdf_i64_new(const pdf_i32_t high, const pdf_u32_t low);
+pdf_i64_t pdf_i64_new(const pdf_i32_t high, \
+                      const pdf_u32_t low);
 
 /*Assign values to a pdf_i64_t pointer*/
 pdf_status_t 
@@ -119,9 +124,14 @@ pdf_i64_copy(const pdf_i64_t orig, pdf_i64_t *copy);
 /*Add two pdf_i64_t variables*/
 pdf_status_t 
 pdf_i64_add(pdf_i64_t *dest, const pdf_i64_t addend1, const pdf_i64_t addend2);
+/* Add a pdf_i64_t and a pdf_i32_t */
+pdf_status_t 
+pdf_i64_add_i32(pdf_i64_t *dest, const pdf_i64_t addend1, const pdf_i32_t addend2);
 
 /*Compare two pdf_i64_t variables*/
 int pdf_i64_cmp(const pdf_i64_t number_1, const pdf_i64_t number_2);
+/* Compare a pdf_i64_t and a pdf_i32_t */
+int pdf_i64_cmp_i32(const pdf_i64_t number_1, const pdf_i32_t number_2);
 
 /*Calculate the absolute value of a pdf_i64_t variable*/
 pdf_status_t 
@@ -134,18 +144,43 @@ pdf_i64_neg(pdf_i64_t *dest, const pdf_i64_t number);
 /*Subtract two pdf_i64_t variables*/
 pdf_status_t 
 pdf_i64_subtraction(pdf_i64_t *dest, const pdf_i64_t minuend, const pdf_i64_t subtrahend);
+/* Subtract a pdf_i64_t and a pdf_i32_t variable */
+pdf_status_t 
+pdf_i64_subtraction_i32_min(pdf_i64_t *dest, const pdf_i32_t minuend, const pdf_i64_t subtrahend);
+pdf_status_t 
+pdf_i64_subtraction_i32_sub(pdf_i64_t *dest, const pdf_i64_t minuend, const pdf_i32_t subtrahend);
 
 /*Multiply two pdf_i64_t variables*/
 pdf_status_t 
 pdf_i64_mult(pdf_i64_t *dest, const pdf_i64_t factor_1, const pdf_i64_t factor_2);
+/* Multiply a pdf_i64_t and a pdf_i32_t */
+pdf_status_t 
+pdf_i64_mult_i32(pdf_i64_t *dest, const pdf_i64_t factor_1, const pdf_i32_t factor_2);
 
 /*Division between two pdf_i64_t type variables*/
 pdf_status_t 
 pdf_i64_div(pdf_i64_t *dest, const pdf_i64_t dividend, const pdf_i64_t divisor);
+/* Divide a pdf_i64_t and a pdf_i32_t */
+pdf_status_t 
+pdf_i64_div_i32_dividend(pdf_i64_t *dest, const pdf_i32_t dividend, const pdf_i64_t divisor);
+pdf_status_t 
+pdf_i64_div_i32_divisor(pdf_i64_t *dest, const pdf_i64_t dividend, const pdf_i32_t divisor);
 
 /*Modulus division between two pdf_i64_t variables*/
 pdf_status_t 
 pdf_i64_mod(pdf_i64_t *dest, const pdf_i64_t dividend, const pdf_i64_t divisor);
+/* Modulus between a pdf_i64_t and a pdf_i32_t */
+pdf_status_t 
+pdf_i64_mod_i32_dividend(pdf_i64_t *dest, const pdf_i32_t dividend, const pdf_i64_t divisor);
+pdf_status_t 
+pdf_i64_mod_i32_divisor(pdf_i64_t *dest, const pdf_i64_t dividend, const pdf_i32_t divisor);
+
+
+/* Get number as pdf_i32_t. Note that if the pdf_i64_t variable is holding a 
+ * number which can't be represented in 32bits, the result is undefined... so
+ * use it with caution. */
+pdf_i32_t
+pdf_i64_get_i32(const pdf_i64_t bignum);
 
 
 
