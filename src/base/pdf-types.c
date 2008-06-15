@@ -1135,7 +1135,7 @@ pdf_i64_mod_i32_divisor(pdf_i64_t *dest, \
 
 /* Get number as pdf_i32_t */
 pdf_i32_t
-pdf_i64_get_i32(const pdf_i64_t bignum)
+pdf_i64_to_i32(const pdf_i64_t bignum)
 {
   /* From the highest 32bits, take the sign only */
   return ((bignum.high >= 0) ? bignum.low : (-1 * bignum.low));

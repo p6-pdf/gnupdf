@@ -180,7 +180,7 @@ pdf_i64_mod_i32_divisor(pdf_i64_t *dest, const pdf_i64_t dividend, const pdf_i32
  * number which can't be represented in 32bits, the result is undefined... so
  * use it with caution. */
 pdf_i32_t
-pdf_i64_get_i32(const pdf_i64_t bignum);
+pdf_i64_to_i32(const pdf_i64_t bignum);
 
 
 
