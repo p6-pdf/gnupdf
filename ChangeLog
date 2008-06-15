@@ -1,3 +1,11 @@
+2008-06-15  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
+	* src/Makefile.am (libgnupdf_la_LDFLAGS): Only use --no-undefined if
+	compiling for W32 with mingw32 (to create a DLL). This option breaks
+	compilation in Mac OS X.
+
+	* configure.ac: Set COMPILER_W32_SYSTEM if mingw32 host detected.
+
 2008-06-14  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
 	* src/base/pdf-error.h (enum pdf_status_e): Removed PDF_EINVAL and added

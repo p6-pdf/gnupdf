@@ -85,7 +85,9 @@ endif
 include_HEADERS = pdf.h
 libgnupdf_la_LIBADD = $(top_srcdir)/lib/libgnu.la
 # We want a DLL if compiling for Windows
-libgnupdf_la_LDFLAGS = -no-undefined
+if COMPILE_W32_SYSTEM
+  libgnupdf_la_LDFLAGS = -no-undefined
+endif
 
 AM_CFLAGS = -Wall -fno-strict-aliasing
 AM_CPPFLAGS = -I$(top_builddir)/lib -I$(srcdir)/base \
