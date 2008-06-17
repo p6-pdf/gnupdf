@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf-tsd.texi,v 1.11 2008/05/29 20:56:28 jemarch Exp $
+@comment $Id: gnupdf-tsd.texi,v 1.12 2008/06/17 13:49:45 gerel Exp $
 @comment %**start of header
 @setfilename gnupdf-tsd.info
 @settitle GNU PDF Library Test Specification Document
@@ -74,6 +74,7 @@ Indices
 * Text Module::
 * List Module::
 * Hash Module::
+* Error Module::
 @end menu
 
 @node Memory Allocation Module
@@ -4236,6 +4237,62 @@ Try to free an iterator.
 @table @strong
 @item Success condition
 Returns PDF_OK
+@end table
+@end deffn
+
+
+@node Error Module
+@subsection Error Module
+
+@menu
+* pdf_error::
+* pdf_perror::
+@end menu
+
+@node pdf_error
+@subsubsection pdf_error
+
+
+@deffn Test pdf_error_001
+Try to trigger an error code with NULL fd.
+@table @strong
+@item Success condition
+The program doesn't crash.
+@end table
+@end deffn
+
+@deffn Test pdf_error_002
+Try to trigger an error code with NULL format.
+@table @strong
+@item Success condition
+The program doesn't crash.
+@end table
+@end deffn
+
+@deffn Test pdf_error_003-018
+Try to trigger an error code with valid format and fd.
+@table @strong
+@item Success condition
+The program doesn't crash.
+@end table
+@end deffn
+
+@node pdf_perror
+@subsubsection pdf_perror
+
+@deffn Test pdf_perror_001
+Try to trigger an error code with NULL string.
+@table @strong
+@item Success condition
+The program doesn't crash.
+@end table
+@end deffn
+
+@deffn Test pdf_perror_002
+Try to trigger an error code with valid string.
+@table @strong
+@item Success condition
+The program doesn't crash.
 @end table
 @end deffn
 
