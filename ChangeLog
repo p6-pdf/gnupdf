@@ -1,5 +1,9 @@
 2008-06-17  gerel  <gerel@gnu.org>
 
+	* src/base/pdf-fsys.c: small fix in pdf_fsys_create().
+
+2008-06-17  gerel  <gerel@gnu.org>
+
 	* doc/gnupdf-tsd.texi: added error module tests.
 
 2008-06-16  gerel  <gerel@gnu.org>

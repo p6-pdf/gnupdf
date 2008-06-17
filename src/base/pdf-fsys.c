@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/05/22 20:38:02 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-06-17 13:06:06 gerel"
  *
  *       File:         pdf-fsys.c
  *       Date:         Thu May 22 15:51:13 2008
@@ -645,9 +645,11 @@ pdf_fsys_create (struct pdf_fsys_impl_s implementation)
   /* Allocate a new filesystem */
   filesystem = pdf_fsys_alloc ();
 
-  /* Allocate a new implementation structure */
+  /* Allocate a new implementation structure and assign the FS */
   own_implementation = (struct pdf_fsys_impl_s *) 
     pdf_alloc (sizeof(struct pdf_fsys_impl_s));
+
+  filesystem->implementation = (struct pdf_fsys_impl_s *) own_implementation;
 
   /* Set its properties */
   *(filesystem->implementation) = implementation;
