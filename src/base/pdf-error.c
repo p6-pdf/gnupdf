@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-05-06 14:30:50 gerel"
+/* -*- mode: C -*- Time-stamp: "2008-06-15 18:48:36 gerel"
  *
  *       File:         pdf-error.c
  *       Date:         Sun Feb  24 20:22:05 2008
@@ -45,7 +45,13 @@ const char * pdf_error_stlist [] =
           "no node found",
           "invalid range",
           "error in text encoding",
-          "no matching found"
+          "no matching found",
+          "invalid text format",
+          "not enough permissions",
+          "invalid path name",
+          "operation can't be performed now, maybe later",
+          "no space left on device",
+          "operation requires some entity be empty"
   };
 
 
@@ -63,6 +69,11 @@ pdf_error (const pdf_status_t status, FILE * fd, const char *format, ...)
   int errnum;
 
   errnum = (int) status;
+
+  if (fd == NULL)
+    {
+      fd = stderr;
+    }
   
   fprintf (fd, "%s", program_name);
 

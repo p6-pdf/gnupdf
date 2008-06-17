@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/05/28 16:39:00 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-06-15 18:48:33 gerel"
  *
  *       File:         pdf-error.h
  *       Date:         Sun Feb  24 20:22:05 2008
@@ -62,6 +62,10 @@
 
 /* BEGIN PUBLIC */
 
+/* If you add a status code don't forget to add the corresponding string
+ * to pdf_error_stlist[] defined in pdf-error.c.
+ * Also PDF_STATUS_ITEMS must be the last entry.
+ */
 enum pdf_status_e
 {
         PDF_OK = 0,
@@ -75,12 +79,12 @@ enum pdf_status_e
         PDF_ETEXTENC,
         PDF_ENOMATCH,
         PDF_EBADTEXT,
-        PDF_STATUS_ITEMS,
         PDF_EBADPERMS,
         PDF_EBADNAME,
         PDF_EAGAIN,
         PDF_ENOSPC,
-        PDF_ENOTEMPTY
+        PDF_ENOTEMPTY,
+        PDF_STATUS_ITEMS
 };
 
 typedef enum pdf_status_e pdf_status_t;

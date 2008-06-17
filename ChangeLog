@@ -1,3 +1,17 @@
+2008-06-16  gerel  <gerel@gnu.org>
+
+	* torture/unit/Makefile.am: added error module tests.
+
+	* torture/unit/runtests.c: added error module tests.
+
+	* torture/unit/base/error/pdf-error.c: test first commit.
+
+	* torture/unit/base/error/tsuite-error.c: test first commit.
+
+	* torture/unit/base/error/pdf-perror.c: test first commit.
+
+	* src/base/pdf-error.[ch]: added new types and messages.
+
 2008-06-15  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
 	* doc/gnupdf.texi: Added new functions allowing 32bit values as input

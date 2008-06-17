@@ -56,6 +56,9 @@ AM_CFLAGS = -g
 
 TESTS = runtests
 
+TEST_SUITE_ERROR = base/error/pdf-error.c \
+		   base/error/pdf-perror.c
+
 # Unit tests for the Stream Module test suite
 TEST_SUITE_STM = base/stm/pdf-create-file-stm.c
 
@@ -147,6 +150,7 @@ TEST_FILES = $(TEST_SUITE_STM) \
              $(TEST_SUITE_LIST) \
              $(TEST_SUITE_TEXT) \
              $(TEST_SUITE_HASH) \
+             $(TEST_SUITE_ERROR) \
 	     $(TEST_SUITE_TYPES)
 
 TSUITE_FILES = base/alloc/tsuite-alloc.c \
@@ -154,6 +158,7 @@ TSUITE_FILES = base/alloc/tsuite-alloc.c \
                base/list/tsuite-list.c \
                base/text/tsuite-text.c \
                base/hash/tsuite-hash.c \
+               base/error/tsuite-error.c \
 	       base/types/tsuite-types.c
 
 runtests_SOURCES = $(NOCHECK_SRC) \
