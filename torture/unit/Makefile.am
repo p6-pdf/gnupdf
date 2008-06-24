@@ -142,7 +142,10 @@ TEST_SUITE_TYPES = base/types/pdf-i64-new.c \
 		   base/types/pdf-i64-assign.c \
 		   base/types/pdf-i64-assign-quick.c \
 		   base/types/pdf-i64-copy.c \
-		   base/types/pdf-i64-add.c
+		   base/types/pdf-i64-add.c \
+		   base/types/pdf-i64-abs.c \
+		   base/types/pdf-i64-neg.c \
+		   base/types/pdf-i64-cmp.c
 
 TEST_ENVIRONMENT = CHARSETALIASDIR=$(top_srcdir)/lib
 
