@@ -1,3 +1,31 @@
+2008-06-24  Daniel Vidal  <davr@pc_davr.deimos-space.com>
+
+	* torture/unit/base/types/pdf-i64-neg.c: new pdf_i64 test
+
+	* torture/unit/base/types/pdf-i64-cmp.c: new pdf_i64 test
+
+	* torture/unit/base/types/pdf-i64-abs.c: new pdf_i64 test
+
+	* torture/unit/base/types/tsuite-types.c: new tests
+
+	* torture/unit/base/types/pdf-i64-new.c: added support for new macros
+
+	* torture/unit/base/types/pdf-i64-copy.c: added support for new macros
+
+	* torture/unit/base/types/pdf-i64-assign.c: added support for new macros
+
+	* torture/unit/base/types/pdf-i64-assign-quick.c: added support for new macros
+
+	* torture/unit/base/types/pdf-i64-new.c: added support for new macros
+
+	* torture/unit/base/types/pdf-i64-add.c: added support for new macros
+
+	* torture/unit/Makefile.am: added new tests for types module
+
+	* src/base/pdf-types.h: added macros for 64 bit systems
+
+	* src/base/pdf-types.c: added macros for 64 bit systems
+
 2008-06-17  gerel  <gerel@gnu.org>
 
 	* src/base/pdf-fsys.c: small fix in pdf_fsys_create().

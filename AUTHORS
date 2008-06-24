@@ -145,6 +145,9 @@ Daniel Vidal: wrote /torture/unit/base/types/pdf-i64-add.c
   /torture/unit/base/types/pdf-i64-copy.c
   /torture/unit/base/types/pdf-i64-new.c
   /torture/unit/base/types/tsuite-types.c
+  /torture/unit/base/types/pdf-i64-neg.c
+  /torture/unit/base/types/pdf-i64-abs.c
+  /torture/unit/base/types/pdf-i64-cmp.c
 and changed src/Makefile.am
   src/base/pdf-types.h
   src/base/pdf-types.c
