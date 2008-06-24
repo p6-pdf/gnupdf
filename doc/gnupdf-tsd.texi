@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf-tsd.texi,v 1.12 2008/06/17 13:49:45 gerel Exp $
+@comment $Id: gnupdf-tsd.texi,v 1.13 2008/06/24 14:13:30 danividal Exp $
 @comment %**start of header
 @setfilename gnupdf-tsd.info
 @settitle GNU PDF Library Test Specification Document
@@ -4296,6 +4296,192 @@ The program doesn't crash.
 @end table
 @end deffn
 
+@node Types Module
+@subsection Types Module
+
+@menu
+* pdf_i64_add::
+* pdf_i64_abs::
+@end menu
+
+@node pdf_i64_add
+@subsubsection pdf_i64_add
+
+
+@deffn Test pdf_i64_add_001
+Checks if the carry number is properly carried.
+@table @strong
+@item Success condition
+The call should not produce an error.
+@end table
+@end deffn
+
+@deffn Test pdf_i64_add_002
+Checks if function checks the proper initialisation of target
+@table @strong
+@item Success condition
+The call should produce an error
+@end table
+@end deffn
+
+@deffn Test pdf_i64_add_003
+ Adds a positive and negative number
+@table @strong
+@item Success condition
+The call should not produce an error
+@end table
+@end deffn
+
+@deffn Test pdf_i64_add_004
+ Adds two negative numbers
+@table @strong
+@item Success condition
+The call should not produce an error
+@end table
+@end deffn
+
+@node pdf_i64_abs
+@subsubsection pdf_i64_abs
+
+@deffn Test pdf_i64_abs_001
+Checks if the result is the absolute of the number
+@table @strong
+@item Success condition
+The call should produce a positive number from a negative
+@end table
+@end deffn
+
+@deffn Test pdf_i64_abs_002
+Checks if the result is the absolute of the input value
+@table @strong
+@item Success condition
+The call should produce a positive number from a positive
+@end table
+@end deffn
+
+@node pdf_i64_assign
+@subsubsection pdf_i64_assign
+
+@deffn Test pdf_i64_assign_001
+Checks if the the pdf_i64_assign function properly assigns
+@table @strong
+@item Success condition
+The call should not produce an error
+@end table
+@end deffn
+
+@deffn Test pdf_i64_assign_002
+Checks if the the pdf_i64_assign function properly assigns 
+the high and low values to a NULL pdf_i64_t pointer type
+@table @strong
+@item Success condition
+The call should not produce an error
+@end table
+@end deffn
+
+@node pdf_i64_assign_quick
+@subsubsection pdf_i64_assign_quick
+
+@deffn Test pdf_i64_assign_quick_001
+Checks if the the pdf_i64_assign function properly assigns
+the high and low values to a pdf_i64_t type
+@table @strong
+@item Success condition
+The call should not produce an error
+@end table
+@end deffn
+
+@deffn Test pdf_i64_assign_quick_002
+Checks if the the pdf_i64_assign function properly assigns
+the high and low values to a pdf_i64_t type
+@table @strong
+@item Success condition
+The call should not produce an error
+@end table
+@end deffn
+
+@node pdf_i64_cmp
+@subsubsection pdf_i64_cmp
+
+@deffn Test pdf_i64_cmp_001
+Checks if the comparison between a negative and positive
+number is carried out properly
+@table @strong
+@item Success condition
+The call should produce a -1
+@end table
+@end deffn
+
+@deffn Test pdf_i64_cmp_002
+Checks if the comparison between a positive and negative
+number is carried out properly
+@table @strong
+@item Success condition
+The call should produce a 1
+@end table
+@end deffn
+
+@deffn Test pdf_i64_cmp_003
+Checks if the comparison between two equal numbers
+number is carried out properly
+@table @strong
+@item Success condition
+The call should produce a 0
+@end table
+@end deffn
+
+@node pdf_i64_copy
+@subsubsection pdf_i64_copy
+
+@deffn Test pdf_i64_copy_001
+Checks if the the pdf_i64_copy copies the values of one 
+pdf_i64_t variable into another
+@table @strong
+@item Success condition
+No error is produced
+@end table
+@end deffn
+
+@deffn Test pdf_i64_copy_002
+Checks if the the pdf_i64_copy function gets an error if
+the target pointer is not properly initialised
+@table @strong
+@item Success condition
+Error is produced
+@end table
+@end deffn
+
+
+@node pdf_i64_neg
+@subsubsection pdf_i64_neg
+
+@deffn Test pdf_i64_neg_001
+Checks if the result is the negation of the number
+@table @strong
+@item Success condition
+The call should produce a negative number from a positive
+@end table
+@end deffn
+
+@deffn Test pdf_i64_neg_002
+Checks if the result is the negation of the number
+@table @strong
+@item Success condition
+The call should produce a positive number from a negative
+@end table
+@end deffn
+
+@node pdf_i64_new
+@subsubsection pdf_i64_new
+
+@deffn Test pdf_i64_new_001
+Checks if the the pdf_i64_new function properly assigns
+the high and low values to a pdf_i64_t type
+@table @strong
+@item Success condition
+Function carried out with no errors
+@end table
+@end deffn
 
 @node Subsystem Testing
 @chapter Subsystem Testing
