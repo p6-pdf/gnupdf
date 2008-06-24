@@ -48,10 +48,16 @@ START_TEST(pdf_i64_copy_001)
   orig = pdf_i64_new(4,5);
 
 
-  fail_if(pdf_i64_copy(orig,&copy) != PDF_OK);
   
+
+#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
+  fail_if(pdf_i64_copy(orig,&copy) != PDF_OK);
   fail_if(copy.low != 5);
   fail_if(copy.high != 4);
+#else
+  pdf_i64_copy(orig,&copy);
+  fail_if(copy != 0x0000000400000005);
+#endif
   
 
 }
@@ -73,9 +79,9 @@ START_TEST(pdf_i64_copy_002)
   
   orig = pdf_i64_new(4,5);
   
-
+#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
   fail_if(pdf_i64_copy(orig,copy) != PDF_ERROR);
-  
+#endif
   
 }
 END_TEST

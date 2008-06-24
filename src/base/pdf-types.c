@@ -26,6 +26,7 @@
 #include <pdf-types.h>
 
 
+#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
 pdf_i64_t
 pdf_i64_new (const pdf_i32_t high,
              const pdf_u32_t low)
@@ -35,6 +36,8 @@ pdf_i64_new (const pdf_i32_t high,
   pdfint.low = low;
   return pdfint;
 }/*end pdf_i64_new*/
+
+
 
 pdf_status_t
 pdf_i64_assign (pdf_i64_t *bignum,
@@ -1142,3 +1145,5 @@ pdf_i64_to_i32(const pdf_i64_t bignum)
 }
 
 /* End of pdf-types.c */
+
+#endif
