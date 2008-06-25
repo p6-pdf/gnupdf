@@ -95,6 +95,10 @@ if COMPILE_W32_SYSTEM
 endif
 
 AM_CFLAGS = -Wall -fno-strict-aliasing
+if USE_COVERAGE
+  AM_CFLAGS += -fprofile-arcs -ftest-coverage
+endif
+
 AM_CPPFLAGS = -I$(top_builddir)/lib -I$(srcdir)/base \
               -I$(srcdir)/object -I$(srcdir)/document
 
@@ -129,5 +133,8 @@ pdf.h : $(PUBLIC_HDRS)
 	cat $(PUBLIC_HDRS) | $(top_srcdir)/src/extract-public-hdr >> $@
 	echo "#endif /* !PDF_H */" >> $@
 	echo "/* end of pdf.h */" >> $@
+
+clean-local:
+	rm -f $(srcdir)/*.gcno
 
 # End of Makefile.am

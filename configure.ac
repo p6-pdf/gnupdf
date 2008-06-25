@@ -191,6 +191,12 @@ fi
 
 # end debug_*_mode
 
+dnl gcov compilation
+use_gcov=no
+AC_ARG_ENABLE([coverage], AS_HELP_STRING([--enable-coverage],
+                                        [Compile the library with code coverage support (default is NO)]),
+                                        [use_gcov=yes], [use_gcov=no])
+AM_CONDITIONAL([USE_COVERAGE], [test "x$use_gcov" = "xyes"])
 
 
 dnl nocheck (simple replacement of Check framework when this is not available)
@@ -269,6 +275,7 @@ Configured for \`${canonical}'.
   Program to build html manuals             ${texihtmlprogram}
   Build project management resources?       ${prmgt_mode}
   Layers with debug mode enabled            ${PDFLIB_DEBUG_DESCR}
+  Generate code coverage information        ${use_gcov}
 "
 
 dnl Report warnings

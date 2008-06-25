@@ -1,3 +1,12 @@
+2008-06-25  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* prmgt/generate-coverage-report: New script to generate an html
+	coverage report using lcov.
+
+	* src/Makefile.am (clean-local): Remove code coverage information.
+
+	* configure.ac: Add support for compilation with code coverage.
+
 2008-06-25  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
 	* src/base/pdf-time-context.h: New file
