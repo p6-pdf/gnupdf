@@ -1,3 +1,8 @@
+2008-06-25  Aleksander Morgado  <aleksander@es.gnu.org>
+
+	* src/base/pdf-types.h: Added macros for the new pdf_i64_* functions. Also
+  new implementation for pdf_i64_cmp macro.
+
 2008-06-24  Daniel Vidal  <davr@pc_davr.deimos-space.com>
 
 	* torture/unit/base/types/pdf-i64-neg.c: new pdf_i64 test
