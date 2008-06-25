@@ -1,7 +1,26 @@
+2008-06-25  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
+	* src/base/pdf-time-context.h: New file
+
+	* src/base/pdf-time-context.c: New file
+
+	* src/base/pdf-time-string.h: New file
+
+	* src/base/pdf-time-string.c: New file
+
+	* src/base/pdf-time.h: New file
+
+	* src/base/pdf-time.c: New file.
+
+	* src/base/pdf-fsys.h: Remove temporary typedef of pdf_time_t.
+
+	* src/Makefile.am (TIME_MODULE_SOURCES): Added compilation of the time module.
+	(PUBLIC_HDRS): Add pdf-time.h in the public library header.
+
 2008-06-25  Aleksander Morgado  <aleksander@es.gnu.org>
 
 	* src/base/pdf-types.h: Added macros for the new pdf_i64_* functions. Also
-  new implementation for pdf_i64_cmp macro.
+	new implementation for pdf_i64_cmp macro.
 
 2008-06-24  Daniel Vidal  <davr@pc_davr.deimos-space.com>
 

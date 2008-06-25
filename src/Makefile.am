@@ -64,6 +64,10 @@ TEXT_MODULE_SOURCES = base/pdf-text-context.c base/pdf-text-context.h \
                       base/pdf-text-ucd.h \
                       base/pdf-text.c base/pdf-text.h
 
+TIME_MODULE_SOURCES = base/pdf-time-context.c base/pdf-time-context.h \
+                      base/pdf-time-string.c base/pdf-time-string.h \
+                      base/pdf-time.c base/pdf-time.h
+
 BASE_LAYER_SOURCES = base/pdf-base.c base/pdf-base.h \
                      $(ALLOC_MODULE_SOURCES) \
                      $(TYPES_MODULE_SOURCES) \
@@ -72,7 +76,8 @@ BASE_LAYER_SOURCES = base/pdf-base.c base/pdf-base.h \
                      $(ERROR_MODULE_SOURCES) \
                      $(LIST_MODULE_SOURCES) \
                      $(TEXT_MODULE_SOURCES) \
-                     $(HASH_MODULE_SOURCES)
+                     $(HASH_MODULE_SOURCES) \
+                     $(TIME_MODULE_SOURCES)
 
 # Library sources
 
@@ -102,6 +107,7 @@ PUBLIC_HDRS = pdf-global.h \
               base/pdf-alloc.h \
               base/pdf-list.h \
               base/pdf-hash.h \
+              base/pdf-time.h \
               base/pdf-text.h \
               base/pdf-fsys.h \
               base/pdf-stm-f-a85.h \

@@ -32,6 +32,7 @@
 #include <pdf-list.h>
 #include <pdf-hash.h>
 #include <pdf-text.h>
+#include <pdf-time.h>
 /* #include <pdf-time.h> */
 
 /*
@@ -39,9 +40,6 @@
  */
 
 /* BEGIN PUBLIC */
-
-/* FIXME */
-#define pdf_time_t int
 
 /* Filesystem item properties */
 struct pdf_fsys_item_props_s
