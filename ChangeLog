@@ -1,3 +1,16 @@
+2008-06-27  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
+	* src/base/pdf-time.[c|h]: When passing a struct to a function, do
+	it by the means of its address, not a copy of the whole structure.
+
+	* doc/gnupdf.texi (Time Module API): Idem.
+
+	* src/base/pdf-time-string.c (pdf_time_from_string_iso8601): Changed
+	to use new time module API.
+
+	* src/base/pdf-time-context.c (pdf_time_context_init): Store gmt
+	offset in seconds, not in minutes.
+
 2008-06-25  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* prmgt/generate-coverage-report: New script to generate an html

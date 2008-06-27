@@ -135,12 +135,12 @@ pdf_time_clear (pdf_time_t time_var);
 /* Add the time span represented by cal_span to the text object */
 pdf_status_t
 pdf_time_add_cal_span (pdf_time_t time_var,
-                       const struct pdf_time_cal_span_s cal_span);
+                       const struct pdf_time_cal_span_s *p_cal_span);
 
 /* Substract the time span represented by cal_span from the text object */
 pdf_status_t
 pdf_time_sub_cal_span (pdf_time_t time_var,
-                       const struct pdf_time_cal_span_s cal_span);
+                       const struct pdf_time_cal_span_s *p_cal_span);
 
 /* Add the time span contained in time_span to time. */
 pdf_status_t
@@ -165,7 +165,7 @@ pdf_time_get_utc_cal (const pdf_time_t time_var,
 /* Set the value of a time variable to a given calendar time. */
 pdf_status_t
 pdf_time_from_cal (pdf_time_t time_var,
-                   const struct pdf_time_cal_s cal_time);
+                   const struct pdf_time_cal_s *p_cal_time);
 
 /* Set the local time offset of time to the one used by the operating system. */
 pdf_status_t
@@ -299,23 +299,23 @@ pdf_time_span_cmp (const pdf_time_span_t span1,
  *  has more days than another) the calendar spans are first resolved from a
  *  base time. */
 pdf_status_t
-pdf_time_add_cal_span_with_base (const struct pdf_time_cal_span_s span1,
-                                 const struct pdf_time_cal_span_s span2,
+pdf_time_add_cal_span_with_base (const struct pdf_time_cal_span_s *p_span1,
+                                 const struct pdf_time_cal_span_s *p_span2,
                                  const pdf_time_t base_time,
                                  struct pdf_time_cal_span_s *p_result);
 
 /* Compare two calendar spans previously resolved with a given base time. */
 pdf_i32_t
-pdf_time_cal_span_cmp (const struct pdf_time_cal_span_s span1,
-                       const struct pdf_time_cal_span_s span2,
+pdf_time_cal_span_cmp (const struct pdf_time_cal_span_s *p_span1,
+                       const struct pdf_time_cal_span_s *p_span2,
                        const pdf_time_t base_time,
                        pdf_status_t *p_ret_code);
 
 /* Compute the difference between two calendar spans relative to a given base
  *  time and store it in a given calendar span. */
 pdf_status_t
-pdf_time_cal_span_diff (const struct pdf_time_cal_span_s span1,
-                        const struct pdf_time_cal_span_s span2,
+pdf_time_cal_span_diff (const struct pdf_time_cal_span_s *p_span1,
+                        const struct pdf_time_cal_span_s *p_span2,
                         const pdf_time_t base_time,
                         struct pdf_time_cal_span_s *p_result);
 

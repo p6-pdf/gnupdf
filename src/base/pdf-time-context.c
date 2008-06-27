@@ -52,13 +52,14 @@ pdf_time_context_init(void)
   tzset();
   
   /* Set GMT offset */
-  time_context.local_time_gmt_offset = 60*timezone;
+  time_context.local_time_gmt_offset = timezone;
+
   /* Set flag to indicate if Daylight saving times are applied in the system
    * if needed */
   time_context.local_time_daylight_save = (daylight == 0) ? PDF_FALSE : PDF_TRUE;
   
   PDF_DEBUG_BASE("Initializing Time module...");
-  PDF_DEBUG_BASE("GMT offset: %d min", time_context.local_time_gmt_offset);
+  PDF_DEBUG_BASE("GMT offset: %d secs", time_context.local_time_gmt_offset);
   PDF_DEBUG_BASE("Daylight saving? %s",time_context.local_time_daylight_save ? \
                  "yes":"no");
     

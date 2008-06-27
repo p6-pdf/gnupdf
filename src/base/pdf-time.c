@@ -39,6 +39,7 @@
 #define PDF_MINS_PER_DAY       1440
 #define PDF_DAYS_IN_YEAR        365
 #define PDF_DAYS_IN_LEAP_YEAR   366
+#define PDF_MINIMUM_YEAR       1970
 
 enum pdf_time_cal_type_e {
   PDF_TIME_CAL_LOCAL,
@@ -116,6 +117,22 @@ pdf_time_get_days_before_month(const pdf_u32_t year,
   return sum;
 }
 
+static pdf_bool_t
+pdf_time_is_valid_cal_p(const struct pdf_time_cal_s *p_cal_time)
+{
+  return ( ( (p_cal_time == NULL) || \
+             (p_cal_time->year < PDF_MINIMUM_YEAR) || \
+             (p_cal_time->month < PDF_TIME_JANUARY) || \
+             (p_cal_time->month > PDF_TIME_DECEMBER) || \
+             (p_cal_time->day == 0) || \
+             (p_cal_time->day > pdf_time_get_days_in_month(p_cal_time->year,
+                                                           p_cal_time->month)) || \
+             (p_cal_time->hour >= PDF_HOURS_PER_DAY) || \
+             (p_cal_time->minute >= PDF_MINS_PER_HOUR) || \
+             (p_cal_time->second >= PDF_SECS_PER_MIN) ) ? PDF_FALSE : PDF_TRUE);
+  
+}
+
 
 /* Get Break-Down calendar from pdf_time_t */
 static pdf_status_t
@@ -124,13 +141,29 @@ pdf_time_get_cal (const pdf_time_t time_var,
                   struct pdf_time_cal_s *p_cal_time)
 {
   /* Based on glibc's __offtime function */
- /* http://www.google.com/codesearch?hl=en&q=__offtime+package:http://ftp.gnu.org/gnu/glibc/glibc-2.0.6.tar.gz+show:4uegyBj4-9E:ODNa8i3UKHE:ukTdqrHC4hw&sa=N&cd=1&ct=rc&cs_p=http://ftp.gnu.org/gnu/glibc/glibc-2.0.6.tar.gz&cs_f=glibc-2.0.6/time/offtime.c */
-  
+
   pdf_i64_t days;
   pdf_i64_t aux64;
   pdf_i64_t remaining;
   pdf_i32_t years;
   pdf_i32_t months;
+  pdf_time_t new_time_var;
+  
+  /* Duplicate time var */
+  new_time_var = pdf_time_dup(time_var);
+
+  /* If requested local calendar, and we have utc time, remove gmt offset */
+  if( (cal_type == PDF_TIME_CAL_LOCAL) && \
+      (time_var->gmt_offset == 0) )
+    {
+      pdf_time_set_to_current_local_time(new_time_var);
+    }
+  /* If requested utc calendar, and we have local time, add gmt offset */
+  else if( (cal_type == PDF_TIME_CAL_UTC) && \
+          (time_var->gmt_offset != 0) )
+    {
+      pdf_time_set_to_current_utc_time(new_time_var);
+    }
 
   
   days = pdf_i64_new(0,0);
@@ -139,9 +172,9 @@ pdf_time_get_cal (const pdf_time_t time_var,
 
 
   /* Get date as days */
-  pdf_i64_div_i32_divisor(&days, time_var->seconds, PDF_SECS_PER_DAY);
+  pdf_i64_div_i32_divisor(&days, new_time_var->seconds, PDF_SECS_PER_DAY);
   /* Get time in seconds */
-  pdf_i64_mod_i32_divisor(&remaining, time_var->seconds, PDF_SECS_PER_DAY);
+  pdf_i64_mod_i32_divisor(&remaining, new_time_var->seconds, PDF_SECS_PER_DAY);
 
   /* Get hours */
   pdf_i64_div_i32_divisor(&aux64, remaining, PDF_SECS_PER_HOUR);
@@ -203,8 +236,13 @@ pdf_time_get_cal (const pdf_time_t time_var,
   /* Set month and day of month */
   p_cal_time->month = months;
   p_cal_time->day = pdf_i64_to_i32(days) + 1;
-
-  return PDF_OK;
+  
+  /* Finally, set gmt offset */
+  p_cal_time->gmt_offset = new_time_var->gmt_offset;
+  
+  pdf_time_destroy(new_time_var);
+  
+  return (pdf_time_is_valid_cal_p(p_cal_time) ? PDF_OK : PDF_ERROR);
 }
 
 
@@ -520,13 +558,13 @@ pdf_time_clear (pdf_time_t time_var)
 */
 static pdf_status_t
 pdf_time_add_cal_span_with_sign (pdf_time_t time_var,
-                                 const struct pdf_time_cal_span_s cal_span,
+                                 const struct pdf_time_cal_span_s *p_cal_span,
                                  int sign)
 {
   pdf_status_t status = PDF_ERROR;
 
   /* Check allowed sign values */
-  if( (sign == -1) && \
+  if( (sign == -1) || \
       (sign == 1) )
     {
       struct pdf_time_cal_s calendar;
@@ -534,14 +572,14 @@ pdf_time_add_cal_span_with_sign (pdf_time_t time_var,
       /* Create Calendar type from the time object */
       if(pdf_time_get_utc_cal (time_var, &calendar) == PDF_OK)
         {
-          pdf_time_calendar_add_days(&calendar,     sign * cal_span.days);
-          pdf_time_calendar_add_months(&calendar,   sign * cal_span.months);
-          pdf_time_calendar_add_years(&calendar,    sign * cal_span.years);
-          pdf_time_calendar_add_hours(&calendar,    sign * cal_span.hours);
-          pdf_time_calendar_add_minutes(&calendar,  sign * cal_span.minutes);
-          pdf_time_calendar_add_seconds(&calendar,  sign * cal_span.seconds);
+          pdf_time_calendar_add_days(&calendar,     sign * p_cal_span->days);
+          pdf_time_calendar_add_months(&calendar,   sign * p_cal_span->months);
+          pdf_time_calendar_add_years(&calendar,    sign * p_cal_span->years);
+          pdf_time_calendar_add_hours(&calendar,    sign * p_cal_span->hours);
+          pdf_time_calendar_add_minutes(&calendar,  sign * p_cal_span->minutes);
+          pdf_time_calendar_add_seconds(&calendar,  sign * p_cal_span->seconds);
           
-          status = pdf_time_from_cal(time_var, calendar);
+          status = pdf_time_from_cal(time_var, &calendar);
         }
     }
   
@@ -551,17 +589,17 @@ pdf_time_add_cal_span_with_sign (pdf_time_t time_var,
 /* Add the time span represented by cal_span to the text object. */
 pdf_status_t
 pdf_time_add_cal_span (pdf_time_t time_var,
-                       const struct pdf_time_cal_span_s cal_span)
+                       const struct pdf_time_cal_span_s *p_cal_span)
 {
-  return pdf_time_add_cal_span_with_sign(time_var, cal_span, 1);
+  return pdf_time_add_cal_span_with_sign(time_var, p_cal_span, 1);
 }
 
 /* Substract the time span represented by cal_span from the text object */
 pdf_status_t
 pdf_time_sub_cal_span (pdf_time_t time_var,
-                       const struct pdf_time_cal_span_s cal_span)
+                       const struct pdf_time_cal_span_s *p_cal_span)
 {
-  return pdf_time_add_cal_span_with_sign(time_var, cal_span, -1);
+  return pdf_time_add_cal_span_with_sign(time_var, p_cal_span, -1);
 }
 
 /* Add the time span contained in time_span to time. As the time span is stored
@@ -611,13 +649,13 @@ pdf_time_get_utc_cal (const pdf_time_t time_var,
 /* Set the value of a time variable to a given calendar time. */
 pdf_status_t
 pdf_time_from_cal (pdf_time_t time_var,
-                   const struct pdf_time_cal_s cal_time)
+                   const struct pdf_time_cal_s *p_cal_time)
 {
   pdf_i64_t aux;
   pdf_i32_t walker;
 
-  if((time_var == NULL) || \
-     (cal_time.year < 1970))
+  if( (time_var == NULL) || \
+      (! pdf_time_is_valid_cal_p(p_cal_time)) )
     {
       PDF_DEBUG_BASE("Invalid arguments received");
       return PDF_EBADDATA;
@@ -628,7 +666,7 @@ pdf_time_from_cal (pdf_time_t time_var,
 
   /* Add days per year until the current year in the calendar */
   walker = 1970;
-  while(walker < cal_time.year)
+  while(walker < p_cal_time->year)
     {
       pdf_i64_add_i32(&aux, aux, \
                       (pdf_time_is_leap_year_p(walker) ? \
@@ -637,11 +675,11 @@ pdf_time_from_cal (pdf_time_t time_var,
     }
 
   /* Add days per month until the current month in the calendar */
-  pdf_i64_add_i32(&aux, aux, pdf_time_get_days_before_month(cal_time.year,
-                                                            cal_time.month));
+  pdf_i64_add_i32(&aux, aux, pdf_time_get_days_before_month(p_cal_time->year,
+                                                            p_cal_time->month));
 
   /* Add days in current month */
-  pdf_i64_add_i32(&aux, aux, cal_time.day);
+  pdf_i64_add_i32(&aux, aux, p_cal_time->day);
 
   /* Set date as seconds in the output variable */
   pdf_i64_mult_i32(&(time_var->seconds), aux, PDF_SECS_PER_DAY);
@@ -649,15 +687,15 @@ pdf_time_from_cal (pdf_time_t time_var,
   /* Add hours as seconds */
   pdf_i64_add_i32(&(time_var->seconds), \
                   (time_var->seconds), \
-                  cal_time.hour * PDF_SECS_PER_HOUR);
+                  p_cal_time->hour * PDF_SECS_PER_HOUR);
   /* Add minutes as seconds */
   pdf_i64_add_i32(&(time_var->seconds), \
                   (time_var->seconds), \
-                  cal_time.minute * PDF_SECS_PER_MIN);
+                  p_cal_time->minute * PDF_SECS_PER_MIN);
   /* Finally, add seconds */
   pdf_i64_add_i32(&(time_var->seconds), \
                   (time_var->seconds), \
-                  cal_time.second);
+                  p_cal_time->second);
 
   return PDF_OK;
 }
@@ -666,12 +704,26 @@ pdf_time_from_cal (pdf_time_t time_var,
 pdf_status_t
 pdf_time_set_local_offset (pdf_time_t time_var)
 {
+  /* Set local offset and correct the actual time */
   if(time_var->gmt_offset != 0)
     {
       PDF_DEBUG_BASE("Time object already in local timescale");
       return PDF_EBADDATA;
     }
-  time_var->gmt_offset = pdf_time_context_get_gmt_offset();
+  else
+    {
+      pdf_time_span_t delta;
+
+      /* Set GMT offset */
+      time_var->gmt_offset = pdf_time_context_get_gmt_offset();
+
+      /* Modify time in the time object */
+      delta = pdf_time_span_new();
+      pdf_time_span_set_from_i32(&delta, time_var->gmt_offset);
+      pdf_time_add_span(time_var, delta);
+      pdf_time_span_destroy(&delta);
+    }
+
   return PDF_OK;
 }
 
@@ -786,9 +838,10 @@ pdf_time_set_to_current_local_time (pdf_time_t time_var)
   if(pdf_time_set_to_current_utc_time(time_var) == PDF_OK)
     {
       /* And correct time with GMT offset */
-      pdf_i64_add_i32(&(time_var->seconds),
-                      time_var->seconds,
-                      pdf_time_context_get_gmt_offset());
+      pdf_i64_subtraction_i32_sub(&(time_var->seconds),
+                                  time_var->seconds,
+                                  pdf_time_context_get_gmt_offset());
+
       /* And store applied offset in the gmt_offset */
       time_var->gmt_offset = pdf_time_context_get_gmt_offset();
       return PDF_OK;
@@ -808,7 +861,8 @@ pdf_time_set_to_current_utc_time (pdf_time_t time_var)
   time_t time_now = time(NULL);
   if(time_now != -1)
     {
-      /* At least until 2038 this call will work correctly... */
+      /* At least until 2038 this call will work correctly, even in systems with
+       *  a 32bit time_t */
       pdf_i64_assign_quick(&(time_var->seconds), (pdf_i32_t)time_now);
       time_var->gmt_offset = 0;
     }
@@ -937,23 +991,24 @@ pdf_time_span_cmp (const pdf_time_span_t span1,
  *  base time to get the number of seconds, and then that number is stored in
  *  the resulting calendar span */
 pdf_status_t
-pdf_time_add_cal_span_with_base (const struct pdf_time_cal_span_s span1,
-                                 const struct pdf_time_cal_span_s span2,
+pdf_time_add_cal_span_with_base (const struct pdf_time_cal_span_s *p_span1,
+                                 const struct pdf_time_cal_span_s *p_span2,
                                  const pdf_time_t base_time,
                                  struct pdf_time_cal_span_s *p_result)
 {
   pdf_time_t time1;
   pdf_time_t time2;
-  pdf_i32_t cmp_ret = 0;
   pdf_status_t  ret_code = PDF_ERROR;
   
   time1 = pdf_time_dup(base_time);
   time2 = pdf_time_dup(base_time);
   
   if( (time1 != NULL) && \
-     (time2 != NULL) && \
-     (pdf_time_add_cal_span(time1, span1) == PDF_OK) && \
-     (pdf_time_add_cal_span(time2, span2) == PDF_OK) )
+      (time2 != NULL) && \
+      (p_span1 != NULL) && \
+      (p_span2 != NULL) && \
+      (pdf_time_add_cal_span(time1, p_span1) == PDF_OK) && \
+      (pdf_time_add_cal_span(time2, p_span2) == PDF_OK) )
     {
       pdf_time_span_t span_time1;
       pdf_time_span_t span_time2;
@@ -1005,8 +1060,8 @@ pdf_time_add_cal_span_with_base (const struct pdf_time_cal_span_s span1,
 
 /* Compare two calendar spans previously resolved with a given base time. */
 pdf_i32_t
-pdf_time_cal_span_cmp (const struct pdf_time_cal_span_s span1,
-                       const struct pdf_time_cal_span_s span2,
+pdf_time_cal_span_cmp (const struct pdf_time_cal_span_s *p_span1,
+                       const struct pdf_time_cal_span_s *p_span2,
                        const pdf_time_t base_time,
                        pdf_status_t *p_ret_code)
 {
@@ -1022,8 +1077,10 @@ pdf_time_cal_span_cmp (const struct pdf_time_cal_span_s span1,
   
   if( (time1 != NULL) && \
       (time2 != NULL) && \
-      (pdf_time_add_cal_span(time1, span1) == PDF_OK) && \
-      (pdf_time_add_cal_span(time2, span2) == PDF_OK) )
+      (p_span1 != NULL) && \
+      (p_span2 != NULL) && \
+      (pdf_time_add_cal_span(time1, p_span1) == PDF_OK) && \
+      (pdf_time_add_cal_span(time2, p_span2) == PDF_OK) )
     {
       cmp_ret = pdf_time_cmp(time1, time2);
       ret_code = PDF_OK;
@@ -1042,8 +1099,8 @@ pdf_time_cal_span_cmp (const struct pdf_time_cal_span_s span1,
 /* Compute the difference between two calendar spans relative to a given base
  *  time and store it in a given calendar span. */
 pdf_status_t
-pdf_time_cal_span_diff (const struct pdf_time_cal_span_s span1,
-                        const struct pdf_time_cal_span_s span2,
+pdf_time_cal_span_diff (const struct pdf_time_cal_span_s *p_span1,
+                        const struct pdf_time_cal_span_s *p_span2,
                         const pdf_time_t base_time,
                         struct pdf_time_cal_span_s *p_result)
 {

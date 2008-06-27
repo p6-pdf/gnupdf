@@ -179,7 +179,7 @@ pdf_time_from_string_iso8601(pdf_time_t time_var,
     }
   
   /* Get time value from break-down calendar */
-  return pdf_time_from_cal(time_var, calendar);
+  return pdf_time_from_cal(time_var, &calendar);
 }
 
 
