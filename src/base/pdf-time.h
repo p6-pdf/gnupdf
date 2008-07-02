@@ -42,7 +42,6 @@ struct pdf_time_s {
   /* A GMT offset, seconds WEST of GMT */
   pdf_i32_t  gmt_offset;
 };
-typedef int intaleks;
 typedef struct pdf_time_s *pdf_time_t;
 
 

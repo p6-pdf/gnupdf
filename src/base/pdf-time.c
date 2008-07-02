@@ -120,6 +120,16 @@ pdf_time_get_days_before_month(const pdf_u32_t year,
 static pdf_bool_t
 pdf_time_is_valid_cal_p(const struct pdf_time_cal_s *p_cal_time)
 {
+/*
+  PDF_DEBUG_BASE("Calendar: %d/%d/%d %d:%d:%d off:%d",
+                 p_cal_time->year,
+                 p_cal_time->month,
+                 p_cal_time->day,
+                 p_cal_time->hour,
+                 p_cal_time->minute,
+                 p_cal_time->second,
+                 p_cal_time->gmt_offset);
+*/  
   return ( ( (p_cal_time == NULL) || \
              (p_cal_time->year < PDF_MINIMUM_YEAR) || \
              (p_cal_time->month < PDF_TIME_JANUARY) || \
@@ -678,8 +688,8 @@ pdf_time_from_cal (pdf_time_t time_var,
   pdf_i64_add_i32(&aux, aux, pdf_time_get_days_before_month(p_cal_time->year,
                                                             p_cal_time->month));
 
-  /* Add days in current month */
-  pdf_i64_add_i32(&aux, aux, p_cal_time->day);
+  /* Add days in current month until the current required day */
+  pdf_i64_add_i32(&aux, aux, p_cal_time->day -1);
 
   /* Set date as seconds in the output variable */
   pdf_i64_mult_i32(&(time_var->seconds), aux, PDF_SECS_PER_DAY);
@@ -696,6 +706,19 @@ pdf_time_from_cal (pdf_time_t time_var,
   pdf_i64_add_i32(&(time_var->seconds), \
                   (time_var->seconds), \
                   p_cal_time->second);
+  
+  /* Set specific GMT offset if any */
+  if(p_cal_time->gmt_offset != 0)
+    {
+      /* Add it to the time value */
+      pdf_time_span_t delta = pdf_time_span_new();
+      pdf_time_span_set_from_i32(&delta, p_cal_time->gmt_offset);
+      pdf_time_add_span(time_var, delta);
+      pdf_time_span_destroy(&delta);
+
+      /* Store the applied offset */
+      time_var->gmt_offset = p_cal_time->gmt_offset;
+    }
 
   return PDF_OK;
 }

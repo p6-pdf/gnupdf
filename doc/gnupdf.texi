@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.76 2008/07/01 22:11:56 aleksander_m Exp $
+@comment $Id: gnupdf.texi,v 1.77 2008/07/01 22:41:20 aleksander_m Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -5245,17 +5245,19 @@ The format to use when creating the string representation of @var{time}.
 @end table
 
 @item Returns
-The string representation of @var{time}.
+The string representation of @var{time}. Must be deallocated by the caller of the function explicitly with pdf_dealloc().
 @code{NULL} if there is an error.
 
 @item Usage example
 @example
 pdf_time_t mytime;
-char *mytime_str;
+pdf_char_t *mytime_str;
 
 /* ...create and manipulate `mytime'... */
 
 mytime_str = pdf_time_to_string (mytime, PDF_TIME_FORMAT_PDF);
+
+pdf_dealloc(mytime_str);
 @end example
 @end table
 @end deftypefun

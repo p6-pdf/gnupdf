@@ -31,7 +31,7 @@
 #include <pdf-time-string.h>
 
 
-
+#define PDF_MAX_ISO8601_STR_LENGTH  30
 
 
 
@@ -75,7 +75,7 @@ pdf_time_from_string_iso8601(pdf_time_t time_var,
    *  Complete date plus hours, minutes and seconds:
    *    YYYY-MM-DDThh:mm:ssTZD (eg 1997-07-16T19:20:30+01:00)
    *  Complete date plus hours, minutes, seconds and a decimal fraction of a
-   *  secondca
+   *  second
    *    YYYY-MM-DDThh:mm:ss.sTZD (eg 1997-07-16T19:20:30.45+01:00)
    *
    *  where:
@@ -209,7 +209,36 @@ pdf_time_to_string_generalized_asn1(const pdf_time_t time_var)
 pdf_char_t *
 pdf_time_to_string_iso8601(const pdf_time_t time_var)
 {
-  return NULL;
+  pdf_char_t *str;
+  struct pdf_time_cal_s calendar;
+
+  str = (pdf_char_t *)pdf_alloc(PDF_MAX_ISO8601_STR_LENGTH*sizeof(pdf_char_t));
+  if(str != NULL)
+    {
+      /* YYYY-MM-DDThh:mm:ss.sTZD (eg 1997-07-16T19:20:30.45+01:00) */
+      if(pdf_time_get_local_cal(time_var, &calendar) == PDF_OK)
+        {
+          pdf_i32_t offset_hours = calendar.gmt_offset / 3600;
+          pdf_i32_t offset_minutes = calendar.gmt_offset % 3600;
+          sprintf((char *)str, "%4d-%s%d-%s%dT%s%d:%s%d:%s%d.00+%s%d:%s%d", \
+                  calendar.year,
+                  (calendar.month < 10 ? "0" : ""), calendar.month,
+                  (calendar.day < 10 ? "0" : ""), calendar.day,
+                  (calendar.hour < 10 ? "0" : ""), calendar.hour,
+                  (calendar.minute < 10 ? "0" : ""), calendar.minute,
+                  (calendar.second < 10 ? "0" : ""), calendar.second,
+                  (offset_hours < 10 ? "0" : ""), offset_hours,
+                  (offset_minutes < 10 ? "0" : ""), offset_minutes);
+        }
+      else
+        {
+          PDF_DEBUG_BASE("Could not get local calendar from pdf_time_t...");
+          pdf_dealloc(str);
+          str = NULL;
+        }
+    }
+
+  return str;
 }
 
 

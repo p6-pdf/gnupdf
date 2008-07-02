@@ -1,5 +1,19 @@
 2008-07-02  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
+	* src/base/pdf-time-string.c (pdf_time_to_string_iso8601): Function
+	implemented. Remember to pdf_dealloc-ate the returned string.
+
+	* src/base/pdf-time.c (pdf_time_from_cal): Bugfix (one day less)
+	and gmt offset included.
+
+	* src/base/pdf-time.h: Remove not needed typedef.
+
+	* doc/gnupdf.texi (Time Printing and Parsing): Clarification.
+	The string returned by `pdf_time_to_string' must be deallocated
+	by the caller.
+
+2008-07-02  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
 	* src/base/pdf-time.h (struct pdf_time_s): Clarification. GMT
 	offset must be stored in seconds west of GMT.
 
