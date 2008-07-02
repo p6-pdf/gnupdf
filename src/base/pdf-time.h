@@ -39,7 +39,7 @@
  *  the local time. */
 struct pdf_time_s {
   pdf_i64_t seconds;
-  /* A GMT offset, seconds west of GMT */
+  /* A GMT offset, seconds WEST of GMT */
   pdf_i32_t  gmt_offset;
 };
 typedef int intaleks;
@@ -67,7 +67,7 @@ struct pdf_time_cal_s {
   pdf_u32_t minute;
   /* A second. The valid range is 0..59. */
   pdf_u32_t second;
-  /* A GMT offset. */
+  /* A GMT offset, in seconds WEST of GMT */
   pdf_i32_t  gmt_offset;
 };
 

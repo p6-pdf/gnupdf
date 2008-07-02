@@ -1,3 +1,10 @@
+2008-07-02  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
+	* src/base/pdf-time.h (struct pdf_time_s): Clarification. GMT
+	offset must be stored in seconds west of GMT.
+
+	* doc/gnupdf.texi (Time Related Data Types): Idem.
+
 2008-06-27  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
 	* src/base/pdf-time.[c|h]: When passing a struct to a function, do

@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.75 2008/06/27 21:23:50 aleksander_m Exp $
+@comment $Id: gnupdf.texi,v 1.76 2008/07/01 22:11:56 aleksander_m Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -4589,7 +4589,7 @@ A minute. The valid range is @code{0..59}.
 @item pdf_u32_t sec
 A second. The valid range is @code{0..59}.
 @item pdf_i32_t gmt_offset
-A GMT offset.
+A GMT offset, in seconds west of GMT.
 @end table
 @end deftp
 
