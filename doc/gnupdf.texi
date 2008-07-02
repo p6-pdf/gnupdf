@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.77 2008/07/01 22:41:20 aleksander_m Exp $
+@comment $Id: gnupdf.texi,v 1.78 2008/07/02 20:28:41 aleksander_m Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -4572,6 +4572,10 @@ A variable of type @code{pdf_time_span_t} represents a span of time.
 This structure holds information about a specific time represented in
 calendar items: years, months, days, day of week, hours, minutes,
 seconds and the relative offset with GMT.
+
+The calendar can be represented in both UTC and local time. If the given GMT
+offset is zero, the calendar fields come in UTC; if not zero, the calendar
+fields come in a given local time.
 
 @table @code
 @item pdf_i32_t year

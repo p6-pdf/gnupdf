@@ -93,6 +93,8 @@ pdf_time_from_string_iso8601(pdf_time_t time_var,
   struct pdf_time_cal_s calendar;
   pdf_char_t *duplicate;
   pdf_char_t *walker;
+  pdf_status_t ret_code;
+  pdf_i32_t    gmt_offset;
   pdf_size_t time_str_length = strlen((char *)time_str);
   
   /* Check minimum length */
@@ -142,7 +144,7 @@ pdf_time_from_string_iso8601(pdf_time_t time_var,
               calendar.hour = atoi((char *)(&duplicate[11]));
               /* Get minutes */
               duplicate[16] = '\0';
-              calendar.hour = atoi((char *)(&duplicate[14]));
+              calendar.minute = atoi((char *)(&duplicate[14]));
               
               /* Get Time Zone information */
               if(duplicate[time_str_length-1] == 'Z')
@@ -159,10 +161,10 @@ pdf_time_from_string_iso8601(pdf_time_t time_var,
                   duplicate[time_str_length-3] = '\0';
                   hours_tz = atoi((char *)(&duplicate[time_str_length-5]));
                   
-                  calendar.gmt_offset = 60*(minutes_tz + 60*hours_tz);
+                  gmt_offset = 60*(minutes_tz + 60*hours_tz);
                   if(duplicate[time_str_length-6] == '-')
                     {
-                      calendar.gmt_offset *= (-1);
+                      gmt_offset *= (-1);
                     } 
                 }
               
@@ -177,9 +179,35 @@ pdf_time_from_string_iso8601(pdf_time_t time_var,
             }
         }
     }
+
+  /* Set calendar as if it were UTC */
+  calendar.gmt_offset = 0;
+
+/*
+   pdf_char_t *str = (pdf_char_t *)pdf_alloc(PDF_MAX_ISO8601_STR_LENGTH*sizeof(pdf_char_t));
+   pdf_i32_t offset_hours = calendar.gmt_offset / 3600;
+   pdf_i32_t offset_minutes = calendar.gmt_offset % 3600;
+   sprintf((char *)str, "%4d-%s%d-%s%dT%s%d:%s%d:%s%d.00+%s%d:%s%d", \
+   calendar.year,
+   (calendar.month < 10 ? "0" : ""), calendar.month,
+   (calendar.day < 10 ? "0" : ""), calendar.day,
+   (calendar.hour < 10 ? "0" : ""), calendar.hour,
+   (calendar.minute < 10 ? "0" : ""), calendar.minute,
+   (calendar.second < 10 ? "0" : ""), calendar.second,
+   (offset_hours < 10 ? "0" : ""), offset_hours,
+   (offset_minutes < 10 ? "0" : ""), offset_minutes);
+   PDF_DEBUG_BASE("Intermediate calendar: %s", str);
+*/
   
-  /* Get time value from break-down calendar */
-  return pdf_time_from_cal(time_var, &calendar);
+  /* Get time value from break-down UTC calendar !*/
+  ret_code = pdf_time_from_cal(time_var, &calendar);
+  if(ret_code == PDF_OK)
+    {
+      /* Now set GMT offset in pdf_time_t */
+      time_var->gmt_offset = gmt_offset;
+    }
+
+  return ret_code;
 }
 
 

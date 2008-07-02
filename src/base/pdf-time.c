@@ -162,19 +162,19 @@ pdf_time_get_cal (const pdf_time_t time_var,
   /* Duplicate time var */
   new_time_var = pdf_time_dup(time_var);
 
-  /* If requested local calendar, and we have utc time, remove gmt offset */
+  /* pdf_time_t always stores the date & time in UTC timescale, so we only need
+   *  to modify the time_var IF gmt_offset is not zero, in order to move the
+   *  date & time from UTC to local time specified by the offset */
   if( (cal_type == PDF_TIME_CAL_LOCAL) && \
-      (time_var->gmt_offset == 0) )
+      (time_var->gmt_offset != 0) )
     {
-      pdf_time_set_to_current_local_time(new_time_var);
+      pdf_time_span_t delta;
+      /* Modify time in the time object */
+      delta = pdf_time_span_new();
+      pdf_time_span_set_from_i32(&delta, time_var->gmt_offset);
+      pdf_time_add_span(time_var, delta);
+      pdf_time_span_destroy(&delta);
     }
-  /* If requested utc calendar, and we have local time, add gmt offset */
-  else if( (cal_type == PDF_TIME_CAL_UTC) && \
-          (time_var->gmt_offset != 0) )
-    {
-      pdf_time_set_to_current_utc_time(new_time_var);
-    }
-
   
   days = pdf_i64_new(0,0);
   aux64 = pdf_i64_new(0,0);
@@ -710,15 +710,18 @@ pdf_time_from_cal (pdf_time_t time_var,
   /* Set specific GMT offset if any */
   if(p_cal_time->gmt_offset != 0)
     {
-      /* Add it to the time value */
+      /* Remove it from the time value (calendar comes in local time, so
+       *  we must remove the offset to get the pdf_time_t->seconds in UTC. */
       pdf_time_span_t delta = pdf_time_span_new();
       pdf_time_span_set_from_i32(&delta, p_cal_time->gmt_offset);
-      pdf_time_add_span(time_var, delta);
+      printf("Before sub: %d\n", pdf_i64_to_i32(time_var->seconds));
+      pdf_time_sub_span(time_var, delta);
+      printf("After sub: %d\n", pdf_i64_to_i32(time_var->seconds));
       pdf_time_span_destroy(&delta);
-
-      /* Store the applied offset */
-      time_var->gmt_offset = p_cal_time->gmt_offset;
     }
+
+  /* Store the offset */
+  time_var->gmt_offset = p_cal_time->gmt_offset;
 
   return PDF_OK;
 }
@@ -727,26 +730,8 @@ pdf_time_from_cal (pdf_time_t time_var,
 pdf_status_t
 pdf_time_set_local_offset (pdf_time_t time_var)
 {
-  /* Set local offset and correct the actual time */
-  if(time_var->gmt_offset != 0)
-    {
-      PDF_DEBUG_BASE("Time object already in local timescale");
-      return PDF_EBADDATA;
-    }
-  else
-    {
-      pdf_time_span_t delta;
-
-      /* Set GMT offset */
-      time_var->gmt_offset = pdf_time_context_get_gmt_offset();
-
-      /* Modify time in the time object */
-      delta = pdf_time_span_new();
-      pdf_time_span_set_from_i32(&delta, time_var->gmt_offset);
-      pdf_time_add_span(time_var, delta);
-      pdf_time_span_destroy(&delta);
-    }
-
+  /* Set local GMT offset */
+  time_var->gmt_offset = pdf_time_context_get_gmt_offset();
   return PDF_OK;
 }
 
@@ -860,12 +845,7 @@ pdf_time_set_to_current_local_time (pdf_time_t time_var)
 {
   if(pdf_time_set_to_current_utc_time(time_var) == PDF_OK)
     {
-      /* And correct time with GMT offset */
-      pdf_i64_subtraction_i32_sub(&(time_var->seconds),
-                                  time_var->seconds,
-                                  pdf_time_context_get_gmt_offset());
-
-      /* And store applied offset in the gmt_offset */
+      /* And store offset in the gmt_offset */
       time_var->gmt_offset = pdf_time_context_get_gmt_offset();
       return PDF_OK;
     }

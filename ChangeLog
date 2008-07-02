@@ -1,5 +1,17 @@
 2008-07-02  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
+	* src/base/pdf-time.c: Basic bugfixes to always store the epoch
+	in UTC within the `pdf_time_t'. GMT offset is stored separately.
+
+	* src/base/pdf-time-string.c (pdf_time_from_string_iso8601): Get
+	`pdf_time_cal_s' from string in UTC, then convert it to a
+	`pdf_time_t'.
+
+	* doc/gnupdf.texi (Time Related Data Types): Clarification on the
+	use of `struct pdf_time_cal_s'.
+
+2008-07-02  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
 	* src/base/pdf-time-string.c (pdf_time_to_string_iso8601): Function
 	implemented. Remember to pdf_dealloc-ate the returned string.
 
