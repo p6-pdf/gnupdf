@@ -754,26 +754,51 @@ pdf_time_diff_cal (const pdf_time_t time1,
                         PDF_TIME_CAL_UTC,
                         &calendar2) == PDF_OK) )
     {
-      /* Now, directly get calendar diff */
-      p_cal_span->years   = calendar2.year    - calendar1.year;
-      p_cal_span->months  = calendar2.month   - calendar1.month;
-      p_cal_span->days    = calendar2.day     - calendar1.day;
-      p_cal_span->hours   = calendar2.hour    - calendar1.hour;
-      p_cal_span->minutes = calendar2.minute  - calendar1.minute;
-      p_cal_span->seconds = calendar2.second  - calendar1.second;
-      p_cal_span->sign    = PDF_FALSE;
-      
-      /* Maybe time1 was greater than time2... */
+      struct pdf_time_cal_s *p_big;
+      struct pdf_time_cal_s *p_small;
+      pdf_i32_t aux;
+
+      /* Check which of the dates is bigger */
       if(pdf_time_cmp(time1, time2) > 0)
         {
-          p_cal_span->years   *= (-1);
-          p_cal_span->months  *= (-1);
-          p_cal_span->days    *= (-1);
-          p_cal_span->hours   *= (-1);
-          p_cal_span->minutes *= (-1);
-          p_cal_span->seconds *= (-1);
-          p_cal_span->sign    = PDF_TRUE;
+          p_cal_span->sign = PDF_TRUE;
+          p_big = &calendar1;
+          p_small = &calendar2;
         }
+      else
+        {
+          p_cal_span->sign = PDF_FALSE;
+          p_big = &calendar2;
+          p_small = &calendar1;          
+        }
+      
+      /* Get diff of years directly (always + or 0) */
+      p_cal_span->years = p_big->year - p_small->year;
+
+#define DIFF_AND_CORRECT(field,spanfield,spanupperfield) \
+  do { \
+      aux = p_big->field - p_small->field; \
+      if(aux < 0) { \
+          p_cal_span->spanupperfield--; \
+          p_cal_span->spanfield = (-1)*aux; \
+      } else { \
+        p_cal_span->spanfield = aux; \
+      } \
+  } while(0)
+
+      /* Get diff of months (could be -) */
+      DIFF_AND_CORRECT(month,   months,   years);
+      /* Get diff of days (could be -) */
+      DIFF_AND_CORRECT(day,     days,     months);
+      /* Get diff of hours (could be -) */
+      DIFF_AND_CORRECT(hour,    hours,    days);
+      /* Get diff of minutes (could be -) */
+      DIFF_AND_CORRECT(minute,  minutes,  hours);
+      /* Get diff of seconds (could be -) */
+      DIFF_AND_CORRECT(second,  seconds,  minutes);
+
+#undef DIFF_AND_CORRECT
+
       ret_code = PDF_OK;
     }
 

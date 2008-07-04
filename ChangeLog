@@ -1,5 +1,10 @@
 2008-07-04  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
+	* src/base/pdf-time.c (pdf_time_diff_cal): Take into account that
+	structure members inside `pdf_time_cal_span_s' are all unsigned.
+
+2008-07-04  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
 	* src/base/pdf-time.c (pdf_time_cal_span_diff): Function implemented
 	and some other bugfixes related to calendar spans, which are not
 	funny any more.
