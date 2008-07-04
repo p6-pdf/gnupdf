@@ -714,9 +714,7 @@ pdf_time_from_cal (pdf_time_t time_var,
        *  we must remove the offset to get the pdf_time_t->seconds in UTC. */
       pdf_time_span_t delta = pdf_time_span_new();
       pdf_time_span_set_from_i32(&delta, p_cal_time->gmt_offset);
-      printf("Before sub: %d\n", pdf_i64_to_i32(time_var->seconds));
       pdf_time_sub_span(time_var, delta);
-      printf("After sub: %d\n", pdf_i64_to_i32(time_var->seconds));
       pdf_time_span_destroy(&delta);
     }
 
@@ -744,7 +742,7 @@ pdf_time_diff_cal (const pdf_time_t time1,
                    const pdf_time_t time2,
                    struct pdf_time_cal_span_s *p_cal_span)
 {
-
+  pdf_status_t ret_code = PDF_ERROR;
   struct pdf_time_cal_s calendar1;
   struct pdf_time_cal_s calendar2;
 
@@ -756,15 +754,30 @@ pdf_time_diff_cal (const pdf_time_t time1,
                         PDF_TIME_CAL_UTC,
                         &calendar2) == PDF_OK) )
     {
-      p_cal_span->years = calendar2.year - calendar1.year;
-      p_cal_span->months = calendar2.month - calendar1.month;
-      p_cal_span->days = calendar2.day - calendar1.day;
-      p_cal_span->hours = calendar2.hour - calendar1.hour;
-      p_cal_span->minutes = calendar2.minute - calendar1.minute;
-      p_cal_span->seconds = calendar2.second - calendar1.second;
-      return PDF_OK;
+      /* Now, directly get calendar diff */
+      p_cal_span->years   = calendar2.year    - calendar1.year;
+      p_cal_span->months  = calendar2.month   - calendar1.month;
+      p_cal_span->days    = calendar2.day     - calendar1.day;
+      p_cal_span->hours   = calendar2.hour    - calendar1.hour;
+      p_cal_span->minutes = calendar2.minute  - calendar1.minute;
+      p_cal_span->seconds = calendar2.second  - calendar1.second;
+      p_cal_span->sign    = PDF_FALSE;
+      
+      /* Maybe time1 was greater than time2... */
+      if(pdf_time_cmp(time1, time2) > 0)
+        {
+          p_cal_span->years   *= (-1);
+          p_cal_span->months  *= (-1);
+          p_cal_span->days    *= (-1);
+          p_cal_span->hours   *= (-1);
+          p_cal_span->minutes *= (-1);
+          p_cal_span->seconds *= (-1);
+          p_cal_span->sign    = PDF_TRUE;
+        }
+      ret_code = PDF_OK;
     }
-  return PDF_ERROR;
+
+  return ret_code;
 }
 
 /* Get time interval as Span */
@@ -989,6 +1002,61 @@ pdf_time_span_cmp (const pdf_time_span_t span1,
 /* ---------------------- Calendar Spans Management ------------------------- */
 
 
+
+static pdf_status_t
+pdf_time_span_from_cal_span(pdf_time_span_t *p_span,
+                            const struct pdf_time_cal_span_s *p_cal_span,
+                            const pdf_time_t base_time)
+{
+  pdf_status_t ret_code = PDF_ERROR;
+  pdf_time_t new_time = NULL;
+
+  /* Duplicate base object and add calendar span */
+  new_time = pdf_time_dup(base_time);
+  if( (new_time != NULL) &&
+      (pdf_time_add_cal_span(new_time,p_cal_span) == PDF_OK) )
+    {
+      /* Get the difference in seconds */
+      ret_code = pdf_time_diff(new_time, base_time, p_span);
+      pdf_time_destroy(base_time);
+    }
+
+  /* Destroy allocated object, if any */
+  if(new_time != NULL)
+    {
+      pdf_time_destroy(base_time);
+    }
+  return ret_code;
+}
+
+
+static pdf_status_t
+pdf_time_span_to_cal_span(struct pdf_time_cal_span_s *p_cal_span,
+                          const pdf_time_span_t span,
+                          const pdf_time_t base_time)
+{
+  pdf_status_t ret_code = PDF_ERROR;
+  pdf_time_t new_time = NULL;
+  
+  /* Duplicate base object and add calendar span,
+   *  and get both initial and new times as calendars
+   */
+  new_time = pdf_time_dup(base_time);
+  if((new_time != NULL) && \
+     (pdf_time_add_span(new_time,span) == PDF_OK))
+    {
+      /* Now, directly get calendar diff */
+      ret_code = pdf_time_diff_cal(base_time, new_time, p_cal_span);
+    }
+
+  /* Destroy allocated object, if any */
+  if(new_time != NULL)
+    {
+      pdf_time_destroy(new_time);
+    }
+  return ret_code; 
+}
+
 /* Add two calendar spans. Since the calendar spans are relative (some years
  *  has more days than another) the calendar spans are first resolved from a
  *  base time to get the number of seconds, and then that number is stored in
@@ -999,65 +1067,33 @@ pdf_time_add_cal_span_with_base (const struct pdf_time_cal_span_s *p_span1,
                                  const pdf_time_t base_time,
                                  struct pdf_time_cal_span_s *p_result)
 {
-  pdf_time_t time1;
-  pdf_time_t time2;
   pdf_status_t  ret_code = PDF_ERROR;
+  pdf_time_span_t span_time_1;
+  pdf_time_span_t span_time_2;
   
-  time1 = pdf_time_dup(base_time);
-  time2 = pdf_time_dup(base_time);
+  span_time_1 = pdf_time_span_new();
+  span_time_2 = pdf_time_span_new();
   
-  if( (time1 != NULL) && \
-      (time2 != NULL) && \
-      (p_span1 != NULL) && \
+  if( (p_span1 != NULL) && \
       (p_span2 != NULL) && \
-      (pdf_time_add_cal_span(time1, p_span1) == PDF_OK) && \
-      (pdf_time_add_cal_span(time2, p_span2) == PDF_OK) )
+      (pdf_time_span_from_cal_span(&span_time_2,
+                                   p_span2,
+                                   base_time) == PDF_OK) && \
+      (pdf_time_span_from_cal_span(&span_time_2,
+                                  p_span2,
+                                  base_time) == PDF_OK) )
     {
-      pdf_time_span_t span_time1;
-      pdf_time_span_t span_time2;
-      pdf_i64_t       span_seconds;
-      pdf_i64_t       result;
-
-      span_time1 = pdf_time_span_new();
-      span_time2 = pdf_time_span_new();
-
-      /* Get spans in seconds */
-      pdf_time_diff(time1, base_time, &span_time1);
-      pdf_time_diff(time2, base_time, &span_time2);
-
       /* Now add two time spans */
-      pdf_time_span_add(span_time1, span_time2, &span_time1);
+      pdf_time_span_add(span_time_1, span_time_2, &span_time_1);
 
-      /* Get span in seconds */
-      span_seconds = pdf_time_span_to_secs(span_time1);
-
-      /* We will store the values in the calendar in days as the maximum value,
-       * in the way that no months/years will be stored */
-      p_result->years = 0;
-      p_result->months = 0;
-
-      pdf_i64_div_i32_divisor(&result, span_seconds, PDF_SECS_PER_DAY);
-      p_result->days = pdf_i64_to_i32(result);
-      pdf_i64_mod_i32_divisor(&span_seconds, span_seconds, PDF_SECS_PER_DAY);
-  
-      pdf_i64_div_i32_divisor(&result, span_seconds, PDF_SECS_PER_HOUR);
-      p_result->hours = pdf_i64_to_i32(result);
-      pdf_i64_mod_i32_divisor(&span_seconds, span_seconds, PDF_SECS_PER_HOUR);
-
-      pdf_i64_div_i32_divisor(&result, span_seconds, PDF_SECS_PER_MIN);
-      p_result->minutes = pdf_i64_to_i32(result);
-      pdf_i64_mod_i32_divisor(&span_seconds, span_seconds, PDF_SECS_PER_MIN);
-
-      p_result->seconds = pdf_i64_to_i32(span_seconds);
-
-      pdf_time_span_destroy(&span_time1);
-      pdf_time_span_destroy(&span_time2);
-
-      ret_code = PDF_OK;
+      /* Get calendar span from the new result */
+      ret_code = pdf_time_span_to_cal_span(p_result,
+                                           span_time_1,
+                                           base_time);
     }
 
-  pdf_time_destroy(time1);
-  pdf_time_destroy(time2);
+  pdf_time_span_destroy(&span_time_1);
+  pdf_time_span_destroy(&span_time_2);
   return ret_code;
 }
 
@@ -1107,8 +1143,34 @@ pdf_time_cal_span_diff (const struct pdf_time_cal_span_s *p_span1,
                         const pdf_time_t base_time,
                         struct pdf_time_cal_span_s *p_result)
 {
-  /* TODO */
-  return PDF_ERROR;
+  pdf_status_t  ret_code = PDF_ERROR;
+  pdf_time_span_t span_time_1;
+  pdf_time_span_t span_time_2;
+  
+  span_time_1 = pdf_time_span_new();
+  span_time_2 = pdf_time_span_new();
+  
+  if((p_span1 != NULL) && \
+     (p_span2 != NULL) && \
+     (pdf_time_span_from_cal_span(&span_time_2,
+                                  p_span2,
+                                  base_time) == PDF_OK) && \
+     (pdf_time_span_from_cal_span(&span_time_2,
+                                  p_span2,
+                                  base_time) == PDF_OK) )
+    {
+      /* Now substract the two time spans */
+      pdf_time_span_diff(span_time_1, span_time_2, &span_time_1);
+      
+      /* Get calendar span from the new result */
+      ret_code = pdf_time_span_to_cal_span(p_result,
+                                           span_time_1,
+                                           base_time);
+    }
+  
+  pdf_time_span_destroy(&span_time_1);
+  pdf_time_span_destroy(&span_time_2);
+  return ret_code;
 }
 
 

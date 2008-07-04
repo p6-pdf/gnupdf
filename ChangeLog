@@ -1,3 +1,9 @@
+2008-07-04  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
+	* src/base/pdf-time.c (pdf_time_cal_span_diff): Function implemented
+	and some other bugfixes related to calendar spans, which are not
+	funny any more.
+
 2008-07-02  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
 	* src/base/pdf-time.c: Basic bugfixes to always store the epoch
