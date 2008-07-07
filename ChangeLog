@@ -1,3 +1,7 @@
+2008-07-07  gerel  <gerel@gnu.org>
+
+	* prmgt/srcinfo-extractor.pl: FS#52, first add.
+
 2008-07-08  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi: Grammatical fixes and new example. Patch by Zac
