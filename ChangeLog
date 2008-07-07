@@ -1,3 +1,8 @@
+2008-07-08  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi: Grammatical fixes and new example. Patch by Zac
+	Brown.
+
 2008-07-04  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
 	* src/base/pdf-time.c (pdf_time_diff_cal): Take into account that

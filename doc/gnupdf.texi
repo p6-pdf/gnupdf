@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.78 2008/07/02 20:28:41 aleksander_m Exp $
+@comment $Id: gnupdf.texi,v 1.79 2008/07/07 20:22:31 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -2103,7 +2103,7 @@ The operation succeeded.
 @item PDF_EINVRANGE
 Invalid @var{position} range.
 @item PDF_BADDATA
-The list do not allow duplicated values and already contain
+The list does not allow duplicated values and already contain
 @var{element}.
 @end table
 @item Usage example
@@ -2137,7 +2137,7 @@ A PDF status value:
 @item PDF_OK
 The element was inserted successfully.
 @item PDF_EBADDATA
-The list do not allow duplicated values and already contain
+The list does not allow duplicated values and already contain
 @var{element}.
 @end table
 @item Usage example
@@ -2168,7 +2168,7 @@ A PDF status value:
 @item PDF_OK
 The element was inserted successfully.
 @item PDF_EBADDATA
-The list do not allow duplicated values and already contain
+The list does not allow duplicated values and already contain
 @var{element}.
 @end table
 @item Usage example
@@ -2203,7 +2203,7 @@ The operation succeeded.
 @item PDF_EINVRANGE
 Invalid range of given @var{position}.
 @item PDF_BADDATA
-The list do not allow duplicated values and already contain
+The list does not allow duplicated values and already contain
 @var{element}.
 @end table
 @item Usage example
@@ -6034,7 +6034,7 @@ Utility functions (get a path name for a temporal file, etc).
 Note that not all the filesystem implementations support these
 operations. Read In Advance capabilities, for example, are usually
 implemented in slow file system devices such as network
-filesystems. When a specific filesystem implementation do not support
+filesystems. When a specific filesystem implementation does not support
 a functionality in the Filesystem Interface then the specific call
 becomes a no-op.
 
@@ -6134,10 +6134,10 @@ A PDF status value:
 The file was successfully opened and stored in the @var{file}
 variable.
 @item PDF_EBADNAME
-The path name specified in @var{path_name} do not identify an existing
+The path name specified in @var{path_name} does not identify an existing
 file in the filesystem.
 @item PDF_EBADPERMS
-The client do not have permission to open the specified file using the
+The client does not have permission to open the specified file using the
 specified mode. 
 @item PDF_ENOMEM
 Not enough memory.
@@ -6172,7 +6172,7 @@ The folder was successfully created.
 @item PDF_EBADNAME
 The specified @var{path_name} is incorrect.
 @item PDF_EBADPERMS
-The client do not have permissions to create the folder.
+The client does not have permissions to create the folder.
 @item PDF_ERROR
 Any other error condition.
 @end table
@@ -6204,9 +6204,9 @@ A PDF status value:
 @item PDF_OK
 The operation was successfully performed.
 @item PDF_EBADNAME
-@var{path_name} do not name a folder in the filesystem.
+@var{path_name} does not name a folder in the filesystem.
 @item PDF_EBADPERMS
-The client do not have permissions to read the contents of the folder.
+The client does not have permissions to read the contents of the folder.
 @item PDF_ERROR
 Any other error condition.
 @end table
@@ -6240,9 +6240,9 @@ A PDF status value:
 The path name of the parent of the item was successfully stored in
 @var{parent_path}.
 @item PDF_EBADNAME
-@var{path_name} do not name a valid item in the filesystem.
+@var{path_name} does not name a valid item in the filesystem.
 @item PDF_EBADPERMS
-The client do not have permissions to get the parent of the specified
+The client does not have permissions to get the parent of the specified
 item.
 @end table
 @item Usage example
@@ -6270,9 +6270,9 @@ A PDF status value:
 @item PDF_OK
 The folder was successfully removed.
 @item PDF_EBADNAME
-@var{path_name} do not name a folder in the filesystem.
+@var{path_name} does not name a folder in the filesystem.
 @item PDF_EBADPERMS
-The client do not have permissions to remove the folder.
+The client does not have permissions to remove the folder.
 @item PDF_ERROR
 Any other error.
 @end table
@@ -6312,7 +6312,7 @@ The operation succeeded.
 @item PDF_EBADDATA
 Invalid path name.
 @item PDF_EBADPERMS
-The client do not have enough permissions to read the requested item.
+The client does not have enough permissions to read the requested item.
 @end table
 @item Usage example
 @example
@@ -6382,7 +6382,7 @@ XXX
 
 @deftypefun pdf_bool_t pdf_fsys_item_p (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name})
 
-Determinate if a given item, identified by a path name, exist in a given
+Determine if a given item, identified by a path name, exists in a given
 filesystem.
 
 @table @strong
@@ -6395,21 +6395,26 @@ A path name.
 A PDF boolean value:
 @table @code
 @item PDF_TRUE
-The specified item exist in the filesystem.
+The specified item exists in the filesystem.
 @item PDF_FALSE
-The specified item do not exist in the filesystem or the client do not
+The specified item does not exist in the filesystem or the client does not
 have enough permissions to be able to read it.
 @end table
 @item Usage example
 @example
-XXX
+pdf_bool_t ret;
+pdf_text_t path = pdf_text_new_from_unicode (&text,
+                                             "/path/to/foo",
+                                             12, PDF_TEXT_UTF8);
+/* Test whether the path to /path/to/foo is a valid path to foo */
+pdf_bool_t ret = pdf_fsys_item_p (NULL, path);
 @end example
 @end table
 @end deftypefun
 
 @deftypefun pdf_bool_t pdf_fsys_item_readable_p (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name})
 
-Determinate if a given filesystem item, identified by a path name, is
+Determine if a given filesystem item, identified by a path name, is
 readable.
 
 @table @strong
@@ -6437,7 +6442,7 @@ XXX
 
 @deftypefun pdf_bool_t pdf_fsys_item_writable_p (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name})
 
-Determinate if a given filesystem item, identified by a path name, is
+Determine if a given filesystem item, identified by a path name, is
 writable. 
 
 @table @strong
@@ -6548,8 +6553,8 @@ The file is opened in read-only mode. The file should exist in the
 filesystem.
 @item PDF_FSYS_OPEN_MODE_WRITE
 The file is opened in write-only mode. The file is truncated to 0
-size (any previous contents are lost) if the file exist and it is
-created if it do not exist.
+size (any previous contents are lost) if the file exists and it is
+created if it does not exist.
 @item PDF_FSYS_OPEN_MODE_RW
 The file is opened in read/write mode. The file should exist in the
 filesystem.
@@ -6642,7 +6647,7 @@ An open file.
 A PDF text variable containing a valid URL that can be used to refer
 to the open file.
 
-If the filesystem do not support URLs then an empty string is
+If the filesystem does not support URLs then an empty string is
 returned.
 @item Usage example
 @example
@@ -6697,7 +6702,7 @@ A PDF boolean value:
 @item PDF_TRUE
 Both files are the same file.
 @item PDF_FALSE
-The files are not the same file, or the given pathname do not identify
+The files are not the same file, or the given pathname does not identify
 a file in the underlying filesystem.
 @end table
 @item Usage example
@@ -6753,7 +6758,7 @@ The operation succeeded.
 @item PDF_EBADDATA
 Invalid new position.
 @item PDF_EBADPERMS
-The client do not have enough permissions to change the current file
+The client does not have enough permissions to change the current file
 position.
 @end table
 @item Usage example
@@ -6917,7 +6922,7 @@ useful to be able to request parts of the file in advance.
 Request a Read-In-Advance operation in a given open file.
 
 Note that it is up to the underlying filesystem to honour the
-operation. If the filesystem do not implement RIA capabilities then
+operation. If the filesystem does not implement RIA capabilities then
 this function is a no-op.
 
 @table @strong
@@ -6951,7 +6956,7 @@ Determine whether the filesystem is performing some RIA operation for
 the given open file.
 
 Note that it is up to the underlying filesystem to honour the
-operation. If the filesystem do not implement RIA capabilities then
+operation. If the filesystem does not implement RIA capabilities then
 this function always return @code{PDF_FALSE}.
 
 @table @strong
@@ -6980,7 +6985,7 @@ XXX
 Cancel any pending RIA operation in a given open file.
 
 Note that it is up to the underlying filesystem to honour the
-operation. If the filesystem do not implement RIA capabilities then
+operation. If the filesystem does not implement RIA capabilities then
 this function is a no-op.
 
 @table @strong
@@ -7052,7 +7057,7 @@ A PDF status value:
 @item PDF_OK
 The file was successfully reopened using the new mode.
 @item PDF_EBADPERMS
-The client do not have enough permissions to open the file using the
+The client does not have enough permissions to open the file using the
 specified mode. The open file is now closed.
 @end table
 @item Usage example
@@ -7209,8 +7214,8 @@ system interface function.
 
 @deftp {Data Type} {pdf_bool_t (*pdf_fsys_item_p_fn_t) (pdf_text_t @var{path_name})}
 
-Filesystem callback used to determinate whether a given item,
-identified by a path name, exist in a given filesystem.
+Filesystem callback used to determine whether a given item,
+identified by a path name, exists in a given filesystem.
 
 This callback is called by the @code{pdf_fsys_item_p} file system
 interface function.
@@ -7218,7 +7223,7 @@ interface function.
 
 @deftp {Data Type} {pdf_bool_t (*pdf_fsys_item_readable_p_fn_t) (pdf_text_t @var{path_name})}
 
-Filesystem callback used to determinate whether a given filesystem
+Filesystem callback used to determine whether a given filesystem
 item, identified by a path name, is readable.
 
 This callback is called by the @code{pdf_fsys_item_readable_p}
@@ -7227,7 +7232,7 @@ file system interface function.
 
 @deftp {Data Type} {pdf_bool_t (*pdf_fsys_item_writable_p_fn_t) (pdf_fsys_t @var{filename}, pdf_text_t @var{path_name})}
 
-Filesystem callback used to determinate whether a given filesystem
+Filesystem callback used to determine whether a given filesystem
 item, identified by a path name, is writeable.
 
 This callback is called by the @code{pdf_fsys_item_writeable_p} file
@@ -7269,7 +7274,7 @@ The callback should return a PDF status value:
 The operation was successfully performed and the logical size of the
 file was stored in @var{pos}.
 @item PDF_BADPERMS
-The client do not have enough permissions to get the logical size of
+The client does not have enough permissions to get the logical size of
 @var{file}.
 @end table
 @end deftp
@@ -7285,7 +7290,7 @@ The callback should return a PDF status value:
 The operation was successfully performed and the logical size of the
 file was changed.
 @item PDF_BADPERMS
-The client do not have enough permissions to set the logical size of
+The client does not have enough permissions to set the logical size of
 @var{file}. 
 @end table
 @end deftp
