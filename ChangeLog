@@ -1,3 +1,29 @@
+2008-07-09  Daniel Vidal  <davr@pc_davr.deimos-space.com>
+
+	* torture/unit/base/types/pdf-i64-neg.c: Changed pdf_i64 functions to conform to new API
+
+	* torture/unit/base/types/pdf-i64-copy.c: Changed pdf_i64 functions to conform to new API
+
+	* torture/unit/base/types/pdf-i64-cmp.c: Changed pdf_i64 functions to conform to new API
+
+	* torture/unit/base/types/pdf-i64-assign.c: Changed pdf_i64 functions to 
+	conform to new API
+
+	* torture/unit/base/types/pdf-i64-assign-quick.c: Changed pdf_i64 functions to 
+	conform to new API
+
+	* torture/unit/base/types/pdf-i64-add.c: Changed pdf_i64 functions to conform to new API
+
+	* torture/unit/base/types/pdf-i64-abs.c: Changed pdf_i64 functions to conform to new API
+
+	* src/base/pdf-time.c: Changed pdf_i64 functions to conform to new API
+
+	* src/base/pdf-types.c: Changed API to return void in all functions 
+	but keeping error control
+
+	* src/base/pdf-types.h: Changed API to return void in all functions 
+	but keeping error control
+
 2008-07-07  gerel  <gerel@gnu.org>
 
 	* prmgt/srcinfo-extractor.pl: FS#52, first add.
