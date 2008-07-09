@@ -43,11 +43,11 @@
  */
 START_TEST(pdf_i64_cmp_001)
 {
-
+  pdf_status_t p_status = PDF_OK;
   int cmp_res;
   pdf_i64_t k,j;
-  pdf_i64_assign(&k,0xFFFFFFFF,0xFFFFFFFE); /*-2*/
-  pdf_i64_assign(&j,0,2); /*2*/
+  pdf_i64_assign(&k,0xFFFFFFFF,0xFFFFFFFE,&p_status); /*-2*/
+  pdf_i64_assign(&j,0,2,&p_status); /*2*/
 
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
   cmp_res = pdf_i64_cmp( k, j );
@@ -71,11 +71,11 @@ END_TEST
 
 START_TEST(pdf_i64_cmp_002)
 {
-  
+  pdf_status_t p_status = PDF_OK;
   int cmp_res;
   pdf_i64_t k,j;
-  pdf_i64_assign(&k,0xFFFFFFFF,0xFFFFFFFE); /*-2*/
-  pdf_i64_assign(&j,0,2); /*2*/
+  pdf_i64_assign(&k,0xFFFFFFFF,0xFFFFFFFE,&p_status); /*-2*/
+  pdf_i64_assign(&j,0,2,&p_status); /*2*/
 
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
   cmp_res = pdf_i64_cmp( j, k );
@@ -95,11 +95,11 @@ END_TEST
  */
 START_TEST(pdf_i64_cmp_003)
 {
-  
+  pdf_status_t p_status = PDF_OK;
   int cmp_res;
   pdf_i64_t k,j;
-  pdf_i64_assign(&k,0,2); /*2*/
-  pdf_i64_assign(&j,0,2); /*2*/
+  pdf_i64_assign(&k,0,2,&p_status); /*2*/
+  pdf_i64_assign(&j,0,2,&p_status); /*2*/
 
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
   cmp_res = pdf_i64_cmp( j, k );

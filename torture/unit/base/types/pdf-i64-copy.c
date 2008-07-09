@@ -41,7 +41,7 @@
  */
 START_TEST(pdf_i64_copy_001)
 {
-
+  pdf_status_t p_status = PDF_OK;
   pdf_i64_t orig;
   pdf_i64_t copy;
   
@@ -51,11 +51,12 @@ START_TEST(pdf_i64_copy_001)
   
 
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
-  fail_if(pdf_i64_copy(orig,&copy) != PDF_OK);
+  pdf_i64_copy(orig,&copy,&p_status);
+  fail_if( p_status != PDF_OK);
   fail_if(copy.low != 5);
   fail_if(copy.high != 4);
 #else
-  pdf_i64_copy(orig,&copy);
+  pdf_i64_copy(orig,&copy,&p_status);
   fail_if(copy != 0x0000000400000005);
 #endif
   
@@ -73,14 +74,16 @@ END_TEST
 
 START_TEST(pdf_i64_copy_002)
 {
-  
+  pdf_status_t p_status = PDF_OK;
   pdf_i64_t orig;
-  pdf_i64_t *copy = NULL;
+  
   
   orig = pdf_i64_new(4,5);
   
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
-  fail_if(pdf_i64_copy(orig,copy) != PDF_ERROR);
+  pdf_i64_t *copy = NULL;
+  pdf_i64_copy(orig,copy,&p_status);
+  fail_if( p_status != PDF_ERROR);
 #endif
   
 }

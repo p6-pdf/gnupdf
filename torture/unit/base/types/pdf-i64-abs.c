@@ -42,18 +42,19 @@
  */
 START_TEST(pdf_i64_abs_001)
 {
-
+  pdf_status_t p_status = PDF_OK;
   int cmp_res;
   pdf_i64_t k,j;
 
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
-  pdf_i64_assign(&k,0xFFFFFFFF,0xFFFFFFFE); /*-2*/
-  fail_if(pdf_i64_abs( &j, k ) != PDF_OK);
+  pdf_i64_assign(&k,0xFFFFFFFF,0xFFFFFFFE, &p_status); /*-2*/
+  pdf_i64_abs( &j, k , &p_status);
+  fail_if(p_status != PDF_OK);
   fail_if(j.high != 0);
   fail_if(j.low != 2);
 #else
   k = -2;
-  pdf_i64_abs( &j, k );
+  pdf_i64_abs( &j, k , &p_status);
   fail_if(j != 2);
 #endif
 
@@ -76,18 +77,19 @@ END_TEST
 
 START_TEST(pdf_i64_abs_002)
 {
-  
+  pdf_status_t p_status = PDF_OK;
   int cmp_res;
   pdf_i64_t k,j;
 
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
-  pdf_i64_assign(&k,0,2); /*2*/
-  fail_if(pdf_i64_abs( &j, k ) != PDF_OK);
+  pdf_i64_assign(&k,0,2, &p_status); /*2*/
+  pdf_i64_abs( &j, k , &p_status);
+  fail_if(p_status != PDF_OK);
   fail_if(j.high != 0);
   fail_if(j.low != 2);
 #else
   k = 2;
-  pdf_i64_abs( &j, k );
+  pdf_i64_abs( &j, k , &p_status);
   fail_if(j != 2);
 #endif
 

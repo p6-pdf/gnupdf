@@ -42,7 +42,7 @@
  */
 START_TEST(pdf_i64_add_001)
 {
-
+  pdf_status_t p_status = PDF_OK;
   pdf_i64_t add1,add2,dest;
   add1 = pdf_i64_new(0,0xFFFFFFFF);
   add2 = pdf_i64_new(2147483646,1);
@@ -53,11 +53,12 @@ START_TEST(pdf_i64_add_001)
  
 
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT  
-  fail_if(pdf_i64_add(&dest,add1,add2) != PDF_OK);
+  pdf_i64_add(&dest,add1,add2, &p_status);
+  fail_if(p_status != PDF_OK);
   fail_if(dest.low != 0);
   fail_if(dest.high != 2147483647);
 #else
-  pdf_i64_add(&dest,add1,add2);
+  pdf_i64_add(&dest,add1,add2, &p_status);
   fail_if(dest != 0x7FFFFFFF00000000);
 #endif
 
@@ -75,16 +76,18 @@ END_TEST
 
 START_TEST(pdf_i64_add_002)
 {
-  
+  pdf_status_t p_status = PDF_OK;
   pdf_i64_t add1,add2;
-  pdf_i64_t *dest = NULL;
+  
   add1 = pdf_i64_new(0,4);
   add2 = pdf_i64_new(5,0);
 
   
 
-#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT  
-  fail_if(pdf_i64_add(dest,add1,add2) != PDF_ERROR);
+#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
+  pdf_i64_t *dest = NULL;
+  pdf_i64_add(dest,add1,add2, &p_status); 
+  fail_if(p_status != PDF_ERROR);
 #endif
   
   
@@ -100,22 +103,22 @@ END_TEST
  */
 START_TEST(pdf_i64_add_003)
 {
-
+  pdf_status_t p_status = PDF_OK;
   pdf_i64_t add1, add2, dest;
 
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
   add1 = pdf_i64_new(0xFFFFFFFF,0xFFFFFFFE); /*-2*/
   add2 = pdf_i64_new(0,3);
-
+  pdf_i64_add(&dest, add1, add2, &p_status);
   
-  fail_if(pdf_i64_add(&dest, add1, add2) != PDF_OK);
+  fail_if(p_status != PDF_OK);
   
   fail_if(dest.low != 1);
   fail_if(dest.high != 0);
 #else
   add1 = -2;
   add2 = 3;
-  pdf_i64_add(&dest, add1, add2);
+  pdf_i64_add(&dest, add1, add2, &p_status);
   fail_if(dest != 1);
 #endif
  
@@ -136,20 +139,21 @@ START_TEST(pdf_i64_add_004)
 {
 
   pdf_i64_t add1, add2, dest;
-
+  pdf_status_t p_status = PDF_OK;
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
   add1 = pdf_i64_new(0xFFFFFFFF,0xFFFFFFFE); /*-2*/
   add2 = pdf_i64_new(0xFFFFFFFF,0xFFFFFFFE); /*-2*/
 
+  pdf_i64_add(&dest, add1, add2, &p_status);
   
-  fail_if(pdf_i64_add(&dest, add1, add2) != PDF_OK);
+  fail_if(p_status != PDF_OK);
   
   fail_if(dest.low !=  0xFFFFFFFC); /*-4*/
   fail_if(dest.high != 0xFFFFFFFF);
 #else
   add1 = -2;
   add2 = -2;
-  pdf_i64_add(&dest, add1, add2);
+  pdf_i64_add(&dest, add1, add2, &p_status);
   fail_if(dest != -4);
 #endif
 

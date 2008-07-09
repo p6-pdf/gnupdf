@@ -45,14 +45,15 @@ START_TEST(pdf_i64_assign_001)
 {
 
   pdf_i64_t k;
-
+  pdf_status_t p_status = PDF_OK;
   
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
-  fail_if( (pdf_i64_assign(&k,4,5)) != PDF_OK);
+  pdf_i64_assign(&k,4,5,&p_status);
+  fail_if( p_status != PDF_OK);
   fail_if(k.low != 5);
   fail_if(k.high != 4);
 #else
-  pdf_i64_assign(&k,4,5);
+  pdf_i64_assign(&k,4,5,&p_status);
   fail_if(k != 0x400000005);
 #endif
 
@@ -70,10 +71,12 @@ END_TEST
  */
 START_TEST(pdf_i64_assign_002)
 {
-
-  pdf_i64_t* k = NULL;
+  pdf_status_t p_status = PDF_OK;
+  
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
-  fail_if(pdf_i64_assign(k,4,5) != PDF_ERROR);
+  pdf_i64_t* k = NULL;
+  pdf_i64_assign(k,4,5,&p_status);
+  fail_if( p_status != PDF_ERROR);
 #endif
   
 }
