@@ -39,31 +39,35 @@ pdf_i64_new (const pdf_i32_t high,
 
 
 
-pdf_status_t
+void
 pdf_i64_assign (pdf_i64_t *bignum,
                 const pdf_i32_t high,
-                const pdf_u32_t low)
+                const pdf_u32_t low,
+		pdf_status_t *p_status)
 {
 
   if (bignum == NULL)
     {
-      return PDF_ERROR;
+      *p_status =  PDF_ERROR;
+      return;
     }
   bignum->high = high;
   bignum->low = low;
-  return PDF_OK;
+  *p_status = PDF_OK;
     
 }/*end pdf_i64_assign*/
 
 
 
-pdf_status_t
+void
 pdf_i64_assign_quick (pdf_i64_t *bignum,
-                      const pdf_i32_t value)
+                      const pdf_i32_t value,
+		      pdf_status_t *p_status)
 {
   if (bignum == NULL)
     {
-      return PDF_ERROR;
+      *p_status = PDF_ERROR;
+      return;
     }
   if (value < 0)
     {
@@ -74,29 +78,32 @@ pdf_i64_assign_quick (pdf_i64_t *bignum,
       bignum->high = 0;
     }
   bignum->low = value;
-  return PDF_OK;
+  *p_status =  PDF_OK;
 }/*end pdf_i64_assign_quick*/
 
 
-pdf_status_t
+void
 pdf_i64_copy (const pdf_i64_t orig,
-              pdf_i64_t *copy)
+              pdf_i64_t *copy,
+	      pdf_status_t *p_status)
 {
   if (copy == NULL)
     {
-      return PDF_ERROR;
+      *p_status = PDF_ERROR;
+      return;
     }
   copy->high = orig.high;
   copy->low = orig.low;
-  return PDF_OK;
+  *p_status = PDF_OK;
    
 }/*end pdf_i64_copy*/
 
 
-pdf_status_t
+void
 pdf_i64_add (pdf_i64_t *dest,
              const pdf_i64_t addend1,
-             const pdf_i64_t addend2)
+             const pdf_i64_t addend2,
+	     pdf_status_t *p_status)
 {
 
   pdf_u32_t carry = 0; /*carry*/
@@ -104,7 +111,8 @@ pdf_i64_add (pdf_i64_t *dest,
   
   if (dest == NULL)
     {
-      return PDF_ERROR;
+      *p_status = PDF_ERROR;
+      return;
     }
 
   /*We divide the unsigned 32 bit number and the signed 32 bit numbers in two 16 bit ones each 
@@ -132,13 +140,13 @@ pdf_i64_add (pdf_i64_t *dest,
   /*
   if (carry != 0)
     {
-      return PDF_ERROR;
+      *p_status = PDF_ERROR;
     }
   else
     {
-      return PDF_OK;
+      *p_status = PDF_OK;
       }*/
-  return PDF_OK;
+  *p_status = PDF_OK;
 }/*end pdf_i64_add*/
 
 int
@@ -170,68 +178,71 @@ pdf_i64_cmp (const pdf_i64_t number_1,
     }
 }/*end pdf_i64_cmp*/
 
-pdf_status_t
+void
 pdf_i64_abs (pdf_i64_t *dest,
-             const pdf_i64_t number)
+             const pdf_i64_t number,
+	     pdf_status_t *p_status)
 {
  
   pdf_i64_t temp, one;
 
   if (dest == NULL)
     {
-      return PDF_ERROR;
+      *p_status = PDF_ERROR;
     }
 
   if (number.high < 0)
     {
-      pdf_i64_assign(&temp,number.high,number.low);
-      pdf_i64_assign(&one,0,1);
-      pdf_i64_assign(dest,0,0);
+      pdf_i64_assign(&temp,number.high,number.low, p_status);
+      pdf_i64_assign(&one,0,1, p_status);
+      pdf_i64_assign(dest,0,0, p_status);
       temp.high = ~temp.high;
       temp.low  = ~temp.low;
-      pdf_i64_add(dest, temp, one);
+      pdf_i64_add(dest, temp, one, p_status);
     }
   else
     {
-      pdf_i64_assign(dest, number.high, number.low);
+      pdf_i64_assign(dest, number.high, number.low, p_status);
     }
-  return PDF_OK;
+  *p_status = PDF_OK;
 }/*end pdf_i64_abs*/
 
-pdf_status_t
+void
 pdf_i64_neg (pdf_i64_t *dest,
-             const pdf_i64_t number)
+             const pdf_i64_t number,
+	     pdf_status_t *p_status)
 {
 
   if (dest == NULL)
     {
-      return PDF_ERROR;
+      *p_status = PDF_ERROR;
     }
 
   pdf_i64_t tempo, one;
-  pdf_i64_assign(&tempo,0,0);
-  pdf_i64_assign(&one,0,1);
+  pdf_i64_assign(&tempo,0,0, p_status);
+  pdf_i64_assign(&one,0,1, p_status);
   tempo.high = ~number.high;
   tempo.low  = ~number.low;
-  pdf_i64_add(dest, tempo, one);
-  return PDF_OK;
+  pdf_i64_add(dest, tempo, one, p_status);
+  *p_status = PDF_OK;
 }/*end pdf_i64_neg*/
 
-pdf_status_t
+void
 pdf_i64_subtraction (pdf_i64_t *dest,
                      const pdf_i64_t minuend,
-                     const pdf_i64_t subtrahend)
+                     const pdf_i64_t subtrahend,
+		     pdf_status_t *p_status)
 {
  
   if (dest == NULL)
     {
-      return PDF_ERROR;
+      *p_status = PDF_ERROR;
     }
 
   pdf_i64_t neg_subtrahend;
-  pdf_i64_neg(&neg_subtrahend, subtrahend);
-  pdf_i64_add(dest, minuend, neg_subtrahend);
-  return PDF_OK;
+  pdf_i64_neg(&neg_subtrahend, subtrahend, p_status);
+  pdf_i64_add(dest, minuend, neg_subtrahend, p_status);
+  *p_status = PDF_OK;
 }/*end pdf_i64_subtraction*/
 
 void
@@ -286,26 +297,29 @@ add_long (pdf_i64_t *P1,
           pdf_i64_t A3)
 {
   pdf_i64_t carry;
-  pdf_i64_add(P3, *P3, A3);
+  pdf_status_t p_status = PDF_OK;
+  pdf_i64_add(P3, *P3, A3, &p_status);
   if (P3->low == 2)
     {
       pdf_i64_t one;
-      pdf_i64_assign(&one, 0, 1);
+      pdf_i64_assign(&one, 0, 1, &p_status);
       P3->low = 1;
-      pdf_i64_add(P2, *P2, one);
+      pdf_i64_add(P2, *P2, one, &p_status);
     }
-    if (pdf_i64_add(P2, *P2, A2) == PDF_ERROR)
-      {
-	pdf_i64_assign(&carry, 0 , 1);
-      }
-    pdf_i64_add(P3, *P3, carry);
-    pdf_i64_add(P3, *P3, A3);
+  pdf_i64_add(P2, *P2, A2, &p_status);
+  if (p_status == PDF_ERROR)
+    {
+      pdf_i64_assign(&carry, 0 , 1, &p_status);
+    }
+  pdf_i64_add(P3, *P3, carry, &p_status);
+  pdf_i64_add(P3, *P3, A3, &p_status);
 }//end add_long
 
-pdf_status_t
+void
 pdf_i64_mult (pdf_i64_t *dest,
               const pdf_i64_t factor_1,
-              const pdf_i64_t factor_2)
+              const pdf_i64_t factor_2,
+	      pdf_status_t *p_status)
 { 
   
   
@@ -320,8 +334,8 @@ pdf_i64_mult (pdf_i64_t *dest,
     counter*/
   pdf_u32_t mask, t , k;
   pdf_i64_t multiplier, multiplicand;
-  pdf_i64_abs(&multiplicand, factor_1);
-  pdf_i64_abs(&multiplier, factor_2);
+  pdf_i64_abs(&multiplicand, factor_1, p_status);
+  pdf_i64_abs(&multiplier, factor_2, p_status);
   /*the result is stored in w*/
   pdf_u32_t w[] ={0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
   /*v is an array where the multiplier is stored, and u is where the
@@ -334,20 +348,20 @@ pdf_i64_mult (pdf_i64_t *dest,
 
   if (dest == NULL)
     {
-      return PDF_ERROR;
+      *p_status = PDF_ERROR;
     }
 
 
   /*Now check the signs of multiplier and multiplicand*/
-  pdf_i64_assign(&zero,0,0);
+  pdf_i64_assign(&zero,0,0, p_status);
   if (pdf_i64_cmp(multiplier,zero) < 0)
     {
       result_sign = -1;
-      pdf_i64_abs(&multiplier,multiplier);
+      pdf_i64_abs(&multiplier,multiplier, p_status);
     }
   if (pdf_i64_cmp(multiplicand,zero) < 0)
     {
-      pdf_i64_abs(&multiplicand,multiplicand);
+      pdf_i64_abs(&multiplicand,multiplicand, p_status);
       if (result_sign == -1)
 	{
 	  result_sign = 1;
@@ -398,7 +412,7 @@ pdf_i64_mult (pdf_i64_t *dest,
     }
 
   
-  pdf_i64_assign(&temp, 0, 0);
+  pdf_i64_assign(&temp, 0, 0, p_status);
   for (i = 0; i < 8;i++)
     {
       if (i <=3)
@@ -415,14 +429,14 @@ pdf_i64_mult (pdf_i64_t *dest,
     multiplier*/
   if (result_sign == -1)
     {
-      pdf_i64_neg(dest, temp);
+      pdf_i64_neg(dest, temp, p_status);
     }
   else
     {
-      pdf_i64_assign(dest, temp.high, temp.low);
+      pdf_i64_assign(dest, temp.high, temp.low, p_status);
     }
 
-  return PDF_OK;
+  *p_status = PDF_OK;
 
 }//end of pdf_i64_mult
 
@@ -436,8 +450,9 @@ mult_long (pdf_u32_t *w,
   int i, j;
   pdf_u32_t mask, t , k;
   pdf_i64_t multiplier, multiplicand;
-  pdf_i64_abs(&multiplicand, factor_1);
-  pdf_i64_abs(&multiplier, factor_2);
+  pdf_status_t p_status;
+  pdf_i64_abs(&multiplicand, factor_1, &p_status);
+  pdf_i64_abs(&multiplier, factor_2, &p_status);
   pdf_u32_t v[8], u[8];
   
   for (i = 0;i < 16;i++)
@@ -487,10 +502,11 @@ mult_long (pdf_u32_t *w,
 }//end of mult_long
 
 
-pdf_status_t
+void
 pdf_i64_div (pdf_i64_t *dest,
              const pdf_i64_t const_dividend,
-             const pdf_i64_t const_divisor)
+             const pdf_i64_t const_divisor,
+	     pdf_status_t *p_status)
 {
   /*Knuth method*/
   
@@ -523,30 +539,30 @@ pdf_i64_div (pdf_i64_t *dest,
 
   /* Make a non-const divisor */
   divisor = pdf_i64_new (0, 0);
-  pdf_i64_copy (const_divisor, &divisor);
+  pdf_i64_copy (const_divisor, &divisor, p_status);
   /* Make a non-const dividend */
   dividend = pdf_i64_new (0, 0);
-  pdf_i64_copy (const_dividend, &dividend);
+  pdf_i64_copy (const_dividend, &dividend, p_status);
 
   if (dest == NULL)
     {
-      return PDF_ERROR;
+      *p_status = PDF_ERROR;
     }
 
   /*Check first if divisor != 0*/
   if (pdf_i64_cmp(zero,divisor) == 0)
     {
-      return PDF_ERROR;
+      *p_status = PDF_ERROR;
     }
   /*Now check the signs fo divisor and dividend*/
   if (pdf_i64_cmp(divisor,zero) < 0)
     {
       result_sign = -1;
-      pdf_i64_abs(&divisor,divisor);
+      pdf_i64_abs(&divisor,divisor, p_status);
     }
   if (pdf_i64_cmp(dividend,zero) < 0)
     {
-      pdf_i64_abs(&dividend,dividend);
+      pdf_i64_abs(&dividend,dividend, p_status);
       if (result_sign == -1)
 	{
 	  result_sign = 1;
@@ -560,8 +576,8 @@ pdf_i64_div (pdf_i64_t *dest,
   /*We check if abs(divisor) > abs(dividend)*/
   if (pdf_i64_cmp(divisor, dividend) == 1)
     {
-      pdf_i64_assign(dest,0,0);
-      return PDF_OK;
+      pdf_i64_assign(dest,0,0, p_status);
+      *p_status = PDF_OK;
     }
 
 
@@ -630,7 +646,7 @@ pdf_i64_div (pdf_i64_t *dest,
   /*normalised dividend is stored in variable u*/
   mult_long(u, dividend, d_pdf);
   /*normalised divisor is stored in varialbe divisor_d*/
-  pdf_i64_mult(&divisor_nor, divisor, d_pdf);
+  pdf_i64_mult(&divisor_nor, divisor, d_pdf, p_status);
 
   /*We add up 8 to z to adapt it to the new 16 bit array, but 
     1 is subtracted due to the inclusion of Uo. See Knuth vol2
@@ -681,7 +697,7 @@ pdf_i64_div (pdf_i64_t *dest,
       /*Step D4*/
       /*We put q_bar into a i64 type to be able to multiply it by the normalised divisor*/
       q_bar_pdf = pdf_i64_new(0, q_bar);
-      pdf_i64_mult(&v_pdf, divisor_nor, q_bar_pdf);
+      pdf_i64_mult(&v_pdf, divisor_nor, q_bar_pdf, p_status);
       /*put u[j]...u[j + n] into a pdf_i64_t type and subtract v_pdf*/
       temp = pdf_i64_new(0,0);
       for (i = j + n; i >= j; i--)
@@ -697,7 +713,7 @@ pdf_i64_div (pdf_i64_t *dest,
 	    }
 	}
      
-      pdf_i64_subtraction(&temp, temp, v_pdf);
+      pdf_i64_subtraction(&temp, temp, v_pdf, p_status);
     
       /*We finally put q_bar in the results array*/
       q[j] = q_bar;
@@ -706,7 +722,7 @@ pdf_i64_div (pdf_i64_t *dest,
       if (pdf_i64_cmp(temp, zero) < 0)
 	{
 	  q[j] = q[j] - 1;
-	  pdf_i64_add(&temp, divisor_nor, temp);
+	  pdf_i64_add(&temp, divisor_nor, temp, p_status);
 	}
       /*Step D5; uj...uj+n is substituted with the uj...uj+n obtained above*/
 
@@ -729,7 +745,7 @@ pdf_i64_div (pdf_i64_t *dest,
     }/*end of for in j*/
   
   
-  pdf_i64_assign(&temp,0,0);
+  pdf_i64_assign(&temp,0,0, p_status);
 
   for (i = m; i >= 0; i--)
     {
@@ -752,26 +768,27 @@ pdf_i64_div (pdf_i64_t *dest,
 
   if (result_sign == -1)
     {
-      pdf_i64_neg(dest, temp);
+      pdf_i64_neg(dest, temp, p_status);
     }
   else
     {
-      pdf_i64_assign(dest, temp.high, temp.low);
+      pdf_i64_assign(dest, temp.high, temp.low, p_status);
     }
   if (dest == NULL)
     {
-      return PDF_ERROR;
+      *p_status = PDF_ERROR;
     }
   else
     {
-      return PDF_OK;
+      *p_status = PDF_OK;
     }
 }
 
-pdf_status_t
+void
 pdf_i64_mod(pdf_i64_t *dest,
             const pdf_i64_t const_dividend,
-            const pdf_i64_t const_divisor)
+            const pdf_i64_t const_divisor,
+	    pdf_status_t *p_status)
 {
   /*Knuth method*/
  
@@ -804,30 +821,30 @@ pdf_i64_mod(pdf_i64_t *dest,
   
   /* Make a non-const divisor */
   divisor = pdf_i64_new (0, 0);
-  pdf_i64_copy (const_divisor, &divisor);
+  pdf_i64_copy (const_divisor, &divisor, p_status);
   /* Make a non-const dividend */
   dividend = pdf_i64_new (0, 0);
-  pdf_i64_copy (const_dividend, &dividend);
+  pdf_i64_copy (const_dividend, &dividend, p_status);
 
   if (dest == NULL)
     {
-      return PDF_ERROR;
+      *p_status = PDF_ERROR;
     }
 
   /*Check first if divisor != 0*/
   if (pdf_i64_cmp(zero,divisor) == 0)
     {
-      return PDF_ERROR;
+      *p_status = PDF_ERROR;
     }
   /*Now check the signs fo divisor and dividend*/
   if (pdf_i64_cmp(divisor,zero) < 0)
     {
       result_sign = -1;
-      pdf_i64_abs(&divisor,divisor);
+      pdf_i64_abs(&divisor,divisor, p_status);
     }
   if (pdf_i64_cmp(dividend,zero) < 0)
     {
-      pdf_i64_abs(&dividend,dividend);
+      pdf_i64_abs(&dividend,dividend, p_status);
       if (result_sign == -1)
 	{
 	  result_sign = 1;
@@ -841,8 +858,8 @@ pdf_i64_mod(pdf_i64_t *dest,
   /*We check if abs(divisor) > abs(dividend)*/
   if (pdf_i64_cmp(divisor, dividend) == 1)
     {
-      pdf_i64_assign(dest,0,0);
-      return PDF_OK;
+      pdf_i64_assign(dest,0,0, p_status);
+      *p_status = PDF_OK;
     }
 
 
@@ -911,7 +928,7 @@ pdf_i64_mod(pdf_i64_t *dest,
   /*normalised dividend is stored in variable u*/
   mult_long(u, dividend, d_pdf);
   /*normalised divisor is stored in varialbe divisor_d*/
-  pdf_i64_mult(&divisor_nor, divisor, d_pdf);
+  pdf_i64_mult(&divisor_nor, divisor, d_pdf, p_status);
 
   /*We add up 8 to z to adapt it to the new 16 bit array, but 
     1 is subtracted due to the inclusion of Uo. See Knuth vol2
@@ -956,7 +973,7 @@ pdf_i64_mod(pdf_i64_t *dest,
       /*Step D4*/
       /*We put q_bar into a i64 type to be able to multiply it by the normalised divisor*/
       q_bar_pdf = pdf_i64_new(0, q_bar);
-      pdf_i64_mult(&v_pdf, divisor_nor, q_bar_pdf);
+      pdf_i64_mult(&v_pdf, divisor_nor, q_bar_pdf, p_status);
       /*put u[j]...u[j + n] into a pdf_i64_t type and subtract v_pdf*/
       temp = pdf_i64_new(0,0);
       for (i = j + n; i >= j; i--)
@@ -972,7 +989,7 @@ pdf_i64_mod(pdf_i64_t *dest,
 	    }
 	}
      
-      pdf_i64_subtraction(&temp, temp, v_pdf);
+      pdf_i64_subtraction(&temp, temp, v_pdf, p_status);
       /*We finally put q_bar in the results array*/
       q[j] = q_bar;
       /*If the remainder is less than zero then we re-add the divisor and subtract one from q
@@ -980,7 +997,7 @@ pdf_i64_mod(pdf_i64_t *dest,
       if (pdf_i64_cmp(temp, zero) < 0)
 	{
 	  q[j] = q[j] - 1;
-	  pdf_i64_add(&temp, divisor_nor, temp);
+	  pdf_i64_add(&temp, divisor_nor, temp, p_status);
 	}
       /*Step D5; uj...uj+n is substituted with the uj...uj+n obtained above*/
 
@@ -1002,7 +1019,7 @@ pdf_i64_mod(pdf_i64_t *dest,
 	}
     }/*end of for in j*/
   
-  pdf_i64_assign(&temp,0,0);
+  pdf_i64_assign(&temp,0,0, p_status);
 
   for (i = 0; i < 8;i++)
     {
@@ -1017,17 +1034,17 @@ pdf_i64_mod(pdf_i64_t *dest,
     }
   
 
-  pdf_i64_assign(dest,0,0);
-  pdf_i64_div(dest,temp,d_pdf);
+  pdf_i64_assign(dest,0,0, p_status);
+  pdf_i64_div(dest,temp,d_pdf, p_status);
   
   
   if (dest == NULL)
     {
-      return PDF_ERROR;
+      *p_status = PDF_ERROR;
     }
   else
     {
-      return PDF_OK;
+      *p_status = PDF_OK;
     }
 
 
@@ -1043,95 +1060,104 @@ pdf_i64_mod(pdf_i64_t *dest,
  * always be called. */
 
 /* Add a pdf_i64_t and a pdf_i32_t */
-pdf_status_t 
-pdf_i64_add_i32(pdf_i64_t *dest, const pdf_i64_t addend1, const pdf_i32_t addend2)
+void
+pdf_i64_add_i32(pdf_i64_t *dest, const pdf_i64_t addend1, const pdf_i32_t addend2,
+		pdf_status_t *p_status)
 {
   pdf_i64_t aux;
-  pdf_i64_assign_quick(&aux, addend2);
-  return pdf_i64_add(dest, addend1, aux);
+  pdf_i64_assign_quick(&aux, addend2, p_status);
+  pdf_i64_add(dest, addend1, aux, p_status);
 }
 
 /* Compare a pdf_i64_t and a pdf_i32_t */
 int pdf_i64_cmp_i32(const pdf_i64_t number_1, const pdf_i32_t number_2)
 {
   pdf_i64_t aux;
-  pdf_i64_assign_quick(&aux, number_2);
+  pdf_status_t p_status = PDF_OK;
+  pdf_i64_assign_quick(&aux, number_2, &p_status);
   return pdf_i64_cmp(number_1, aux);
 }
 
 
 /* Subtract a pdf_i64_t and a pdf_i32_t variable */
-pdf_status_t 
+void 
 pdf_i64_subtraction_i32_min(pdf_i64_t *dest, \
                             const pdf_i32_t minuend, \
-                            const pdf_i64_t subtrahend)
+                            const pdf_i64_t subtrahend,
+			    pdf_status_t *p_status)
 {
   pdf_i64_t aux;
-  pdf_i64_assign_quick(&aux, minuend);
-  return pdf_i64_subtraction(dest, aux, subtrahend);
+  pdf_i64_assign_quick(&aux, minuend, p_status);
+  pdf_i64_subtraction(dest, aux, subtrahend, p_status);
 }
-pdf_status_t 
+void 
 pdf_i64_subtraction_i32_sub(pdf_i64_t *dest, \
                             const pdf_i64_t minuend, \
-                            const pdf_i32_t subtrahend)
+                            const pdf_i32_t subtrahend,
+			    pdf_status_t *p_status)
 {
   pdf_i64_t aux;
-  pdf_i64_assign_quick(&aux, subtrahend);
-  return pdf_i64_mult(dest, minuend, aux);
+  pdf_i64_assign_quick(&aux, subtrahend, p_status);
+  pdf_i64_mult(dest, minuend, aux, p_status);
 }
 
 
 /* Multiply a pdf_i64_t and a pdf_i32_t */
-pdf_status_t 
+void 
 pdf_i64_mult_i32(pdf_i64_t *dest, \
                  const pdf_i64_t factor_1, \
-                 const pdf_i32_t factor_2)
+                 const pdf_i32_t factor_2,
+		 pdf_status_t *p_status)
 {
   pdf_i64_t aux;
-  pdf_i64_assign_quick(&aux, factor_2);
-  return pdf_i64_mult(dest, factor_1, aux);
+  pdf_i64_assign_quick(&aux, factor_2, p_status);
+  pdf_i64_mult(dest, factor_1, aux, p_status);
 }
 
 
 /* Division between a pdf_i64_t and a pdf_i32_t */
-pdf_status_t 
+void 
 pdf_i64_div_i32_dividend(pdf_i64_t *dest, \
                          const pdf_i32_t dividend, \
-                         const pdf_i64_t divisor)
+                         const pdf_i64_t divisor,
+			 pdf_status_t *p_status)
 {
   pdf_i64_t aux;
-  pdf_i64_assign_quick(&aux, dividend);
-  return pdf_i64_div(dest, aux, divisor);
+  pdf_i64_assign_quick(&aux, dividend, p_status);
+  pdf_i64_div(dest, aux, divisor, p_status);
 }
-pdf_status_t 
+void 
 pdf_i64_div_i32_divisor(pdf_i64_t *dest, \
                         const pdf_i64_t dividend, \
-                        const pdf_i32_t divisor)
+                        const pdf_i32_t divisor,
+			pdf_status_t *p_status)
 {
   pdf_i64_t aux;
-  pdf_i64_assign_quick(&aux, divisor);
-  return pdf_i64_div(dest, dividend, aux);
+  pdf_i64_assign_quick(&aux, divisor, p_status);
+  pdf_i64_div(dest, dividend, aux, p_status);
 }
 
 
 /* Modulus between a pdf_i64_t and a pdf_i32_t */
-pdf_status_t 
+void 
 pdf_i64_mod_i32_dividend(pdf_i64_t *dest, \
                          const pdf_i32_t dividend, \
-                         const pdf_i64_t divisor)
+                         const pdf_i64_t divisor,
+			 pdf_status_t *p_status)
 {
   pdf_i64_t aux;
-  pdf_i64_assign_quick(&aux, dividend);
-  return pdf_i64_mod(dest, aux, divisor);
+  pdf_i64_assign_quick(&aux, dividend, p_status);
+  pdf_i64_mod(dest, aux, divisor, p_status);
 }
-pdf_status_t 
+void 
 pdf_i64_mod_i32_divisor(pdf_i64_t *dest, \
                         const pdf_i64_t dividend, \
-                        const pdf_i32_t divisor)
+                        const pdf_i32_t divisor,
+			pdf_status_t *p_status)
 {
   pdf_i64_t aux;
-  pdf_i64_assign_quick(&aux, divisor);
-  return pdf_i64_mod(dest, dividend, aux);
+  pdf_i64_assign_quick(&aux, divisor, p_status);
+  pdf_i64_mod(dest, dividend, aux, p_status);
 }
 
 
