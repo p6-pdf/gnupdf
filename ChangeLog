@@ -1,3 +1,9 @@
+2008-07-10  Aleksander Morgado  <aleksander@es.gnu.org>
+
+	* doc/gnupdf.texi: Parameter names for `pdf_time_get_utc_cal',
+	`pdf_time_span_negate' and `pdf_time_span_to_secs' changed so that they
+	are the same as in `pdf-time.h'.
+
 2008-07-09  Daniel Vidal  <davr@pc_davr.deimos-space.com>
 
 	* torture/unit/base/types/pdf-i64-neg.c: Changed pdf_i64 functions to conform to new API

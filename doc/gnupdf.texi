@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.79 2008/07/07 20:22:31 jemarch Exp $
+@comment $Id: gnupdf.texi,v 1.80 2008/07/10 14:17:19 aleksander_m Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -4986,7 +4986,7 @@ pdf_time_get_local_cal (mytime, &cal);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_get_utc_cal (const pdf_time_t @var{time_var}, struct pdf_time_cal_s *@var{p_cal_time})
+@deftypefun pdf_status_t pdf_time_get_utc_cal (const pdf_time_t @var{time_var}, struct pdf_time_cal_s *@var{p_utc_cal})
 Get the UTC calendar time of a given time variable.
 
 @table @strong
@@ -4995,7 +4995,7 @@ Get the UTC calendar time of a given time variable.
 @table @var
 @item time_var
 A properly created time variable.
-@item p_cal_time
+@item p_utc_time
 A pointer to the calendar time structure that will hold the UTC time of @var{time_var}.
 @end table
 
@@ -5520,7 +5520,7 @@ pdf_time_span_set_from_i32 (&span, -10); /* The span is -10 seconds long */
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_span_negate (pdf_time_span_t @var{span})
+@deftypefun pdf_status_t pdf_time_span_negate (pdf_time_span_t *@var{p_span})
 
 Make a positive time span into a negative one or make a negative time
 span into a positive one.
@@ -5529,8 +5529,8 @@ span into a positive one.
 @item Parameters
 
 @table @var
-@item span
-A properly created time span variable.
+@item p_span
+Pointer to a properly created time span variable.
 @end table
 
 @item Returns
@@ -5659,7 +5659,7 @@ pdf_time_span_diff (span1, span2, span_diff);
 @end table
 @end deftypefun
 
-@deftypefun pdf_64_t pdf_time_span_to_secs (const pdf_time_span_t @var{span})
+@deftypefun pdf_i64_t pdf_time_span_to_secs (const pdf_time_span_t @var{span})
 
 Get the value of a time span in seconds. 
 
