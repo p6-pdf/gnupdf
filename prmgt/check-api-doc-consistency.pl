@@ -211,17 +211,16 @@ my ($reg, $matched, $fails, $total, $showok,$plainmode, $ignorevars);
 $showok = 1;
 $plainmode = 0;
 $ignorevars = 0;
-if (@ARGV == 1){
-    if ($ARGV[0] eq '-h'){
-        show_help ();
-        exit(0);
-    }elsif ($ARGV[0] eq '-f'){
-        $showok = 0;
-    }elsif ($ARGV[0] eq '-p') {
-        $plainmode = 1;
-    }
+if (grep ($_ eq '-h', @ARGV)){
+    show_help ();
+    exit(0);
 }
-
+if (grep ($_ eq '-f', @ARGV)){
+    $showok = 0;
+}
+if (grep ($_ eq '-p', @ARGV)) {
+    $plainmode = 1;
+}
 if (grep ($_ eq '-i', @ARGV)) {
     $ignorevars = 1;
 }
