@@ -1,3 +1,7 @@
+2008-07-11  gerel  <gerel@gnu.org>
+
+	* prmgt/check-api-doc-consistency.pl: added '-i' feature.
+
 2008-07-10  Aleksander Morgado  <aleksander@es.gnu.org>
 
 	* doc/gnupdf.texi: Parameter names for `pdf_time_get_utc_cal',

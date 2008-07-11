@@ -38,6 +38,8 @@ my (@IMPLSIGS, @DOCSIGS);
 sub clean_docsigs
 {
     my $str = shift;
+    my $novars = shift;
+
     # remove newlines
     $str =~ tr/\n/ /;
     # remove info syntax
@@ -53,6 +55,11 @@ sub clean_docsigs
     # remove word spaces
     $str =~ s/ *(\w+) +/$1 /g;
 
+    if ($novars == 1){
+        # remove variable names
+        $str =~ s/(\w+)(,|\))/$2/g;
+    }
+
     return $str;
 }
 
@@ -60,6 +67,7 @@ sub clean_docsigs
 sub clean_implsigs
 {
     my $fd = shift;
+    my $novars = shift;
     my ($nextchar, $char, $lines);
 
     # remove comments
@@ -101,6 +109,11 @@ sub clean_implsigs
     # remove word spaces
     $lines =~ s/ *(\w+) +/$1 /g;
 
+    if ($novars == 1){
+        # remove variable names
+        $lines =~ s/(\w+)(,|\))/$2/g;
+    }
+
     return ($lines);
 }
 
@@ -108,11 +121,12 @@ sub clean_implsigs
 sub read_implsigs
 {
     my $file = shift; 
+    my $novars = shift;
     my $fd;
 
     if (open ($fd, $file))
     {
-        push (@IMPLSIGS, clean_implsigs ($fd));
+        push (@IMPLSIGS, clean_implsigs ($fd,$novars));
         close($fd);
     }else{
         print "Couldn't open $file\n";
@@ -123,13 +137,14 @@ sub read_implsigs
 sub read_docsigs
 {
     my $file = shift;
+    my $novars = shift;
 
     open (FILE, $file); 
     while (<FILE>)
     {
         if (m/^\@deftypefun/)
         {
-            push (@DOCSIGS, clean_docsigs($_));
+            push (@DOCSIGS, clean_docsigs($_,$novars));
         }
     }
     close (FILE);
@@ -183,17 +198,19 @@ sub show_help
     print "OPT is one of:\n";
     print "\t -h:\tprint this help.\n";
     print "\t -f:\tshow failing checks only.\n";
+    print "\t -i:\tignore variable names.\n";
     print "\t -p:\tplain mode: do not print a resume.\n\n";
 }
 
 ##
 # MAIN PROGRAM
 ###
-my ($reg, $matched, $fails, $total, $showok,$plainmode);
+my ($reg, $matched, $fails, $total, $showok,$plainmode, $ignorevars);
 
 
 $showok = 1;
 $plainmode = 0;
+$ignorevars = 0;
 if (@ARGV == 1){
     if ($ARGV[0] eq '-h'){
         show_help ();
@@ -205,12 +222,20 @@ if (@ARGV == 1){
     }
 }
 
+if (grep ($_ eq '-i', @ARGV)) {
+    $ignorevars = 1;
+}
+
+
+# fill @ALLSRCS
 read_filenames ($MAKEFILE);
-read_docsigs($INFODOC);
+# fill @DOCSIGS
+read_docsigs($INFODOC, $ignorevars);
 
 foreach my $file (@ALLSRCS)
 {
-    read_implsigs (join('/',$SRCDIR,$file));
+    # fill @IMPLSIGS
+    read_implsigs (join('/',$SRCDIR,$file), $ignorevars);
 }
 
 
