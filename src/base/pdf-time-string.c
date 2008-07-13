@@ -31,7 +31,12 @@
 #include <pdf-time-string.h>
 
 
+/* Maximum length of strings, including trailing NUL */
 #define PDF_MAX_ISO8601_STR_LENGTH  30
+#define PDF_MAX_PDFDATE_STR_LENGTH  24
+
+
+/* Mask to check if a given expected character is actually a digit or not */
 
 
 
@@ -39,8 +44,171 @@ pdf_status_t
 pdf_time_from_string_pdf(pdf_time_t time_var,
                          const pdf_char_t *time_str)
 {
-  /* TODO */
-  return PDF_ERROR;
+  /*
+   * From PDF Reference 1.7: ( D:YYYYMMDDHHmmSSOHH'mm' )
+   * From ISO 32000:         ( D:YYYYMMDDHHmmSSOHH'mm  )
+   *
+   * Notes: Year is mandatory, all the other fields may appear if the preceding
+   *        also appear.
+   *
+   *  D:   = string "D:"
+   *  YYYY = four-digit year
+   *  MM   = two-digit month (01=January, etc.)
+   *  DD   = two-digit day of month (01 through 31)
+   *  HH   = two digits of hour (00 through 23)
+   *  mm   = two digits of minute (00 through 59)
+   *  SS   = two digits of second (00 through 59)
+   *  O    = either '+', '-' or 'Z'
+   *  HH   = two digits of hour (00 through 23) for the GMT offset
+   *  '    = string "'"
+   *  MM   = two digits of minute (00 through 59) for the GMT offset
+   *  '    = string "'"  (NOTE: Mandatory in 1.7, optional in ISO32000)
+   */
+  struct pdf_time_cal_s calendar;
+  pdf_char_t   duplicate_field[5];
+  pdf_status_t ret_code;
+  pdf_i32_t    gmt_offset = 0;
+  pdf_i32_t    i;
+  pdf_size_t   time_str_length = strlen((char *)time_str);
+  
+  /* Check minimum length      D:YYYY */
+  if(time_str_length < 6)
+    {
+      PDF_DEBUG_BASE("Invalid PDF time string (too short): '%s'",
+                     time_str);
+      return PDF_EBADDATA;
+    }
+  /* Check prefix */
+  if(strncmp((char *)time_str,"D:",2) != 0)
+    {
+      PDF_DEBUG_BASE("Invalid PDF time string (no prefix): '%s'",
+		     time_str);
+      return PDF_EBADDATA;
+    }
+
+  /* We need to check the input characters are digits when we expect digits and
+   *  the opposite as well. Remember that for unconvertable bytes, atoi returns
+   *  zero, so we must really be sure we pass digits to atoi */
+
+#define PDF_STRING_DIGIT_MASK  0x36FFFC /* 0011 0110 1111 1111 1111 1100 */
+
+  /* Don't really need to check again two first bytes, as already done before */
+  i = 2;
+  while(i < time_str_length)
+    {
+      if(PDF_STRING_DIGIT_MASK & (1 << i))
+        {
+          /* Expected a digit at position 'i' */
+          if((time_str[i] < '0') || \
+              (time_str[i] > '9'))
+            {
+              PDF_DEBUG_BASE("Expected digit and found '%c' in '%s'",
+                              time_str[i], time_str);
+              return PDF_EBADDATA;
+            }
+        }
+      /* Update index */
+      i++;
+    }
+
+  /* Check time zone definer */
+  if((time_str_length >=16) && \
+     (time_str[16] != 'Z') && \
+     (time_str[16] != '+') && \
+     (time_str[16] != '-'))
+    {
+      PDF_DEBUG_BASE("Invalid time zone definer '%c' found in '%s'",
+		     time_str[16], time_str);
+      return PDF_EBADDATA;
+    }
+
+  /* Check additional ' characters. Remember that the last ' character is
+   * mandatory in PDF Ref 1.7 but optional in ISO32000*/
+  if(((time_str_length >= 19) && \
+      (time_str[19] != '\'')) || \
+     ((time_str_length >= 22) && \
+      (time_str[22] != '\'')))
+    {
+      PDF_DEBUG_BASE("Invalid separator found ('%c' or '%c') in '%s'",
+		     time_str[19], time_str[22], time_str);
+      return PDF_EBADDATA;
+    }
+
+
+  /* Reset calendar (all integers to zero) */
+  memset(&calendar, 0, sizeof(calendar));
+
+
+#define __GET_FIELD(str,start,length,dest) do { \
+  memcpy(&duplicate_field[0], &str[start], length); \
+  duplicate_field[length]=0; \
+  dest += atoi((char *)&duplicate_field[0]); \
+} while(0)
+
+  
+  /* Get year */
+  __GET_FIELD(time_str, 2, 4, calendar.year);
+  /* Get month */
+  if(time_str_length >= 8) /* D:YYYYMM */
+    {
+      __GET_FIELD(time_str, 6, 2, calendar.month);
+      /* Get day */
+      if(time_str_length >= 10) /* D:YYYYMMDD */
+        {
+          __GET_FIELD(time_str, 8, 2, calendar.day);
+          /* Get hour */
+          if(time_str_length >= 12) /* D:YYYYMMDDHH */
+            {
+              __GET_FIELD(time_str, 10, 2, calendar.hour);
+              /* Get minutes */
+              if(time_str_length >= 14) /* D:YYYYMMDDHHmm */
+                {
+                  __GET_FIELD(time_str, 12, 2, calendar.minute);
+                  /* Get seconds */
+                  if(time_str_length >= 16) /* D:YYYYMMDDHHmmSS */
+                    {
+                      __GET_FIELD(time_str, 14, 2, calendar.second);
+                      /* Get time zone offset hours */
+                      if(time_str_length >= 19) /* D:YYYYMMDDHHmmSS0HH */
+                        {
+                          __GET_FIELD(time_str, 17, 2, calendar.gmt_offset);
+                          /* And convert it in minutes */
+                          calendar.gmt_offset *= 60;
+
+                          /* Get time zone offset minutes */
+                          if(time_str_length >= 22) /* D:YYYYMMDDHHmmSS0HH'MM */
+                            {
+                              __GET_FIELD(time_str, 20, 2, calendar.gmt_offset);
+                              /* And convert it in minutes */
+                              calendar.gmt_offset *= 60;
+                            }
+
+                          /* Convert from minutes to seconds */
+                          calendar.gmt_offset *= 60;
+
+                          /* Set proper sign */
+                          if(time_str[16]=='-')
+                            {
+                              calendar.gmt_offset *= (-1);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+#undef __GET_FIELD
+  
+  /* Get time value from break-down UTC calendar !*/
+  ret_code = pdf_time_from_cal(time_var, &calendar);
+  if(ret_code == PDF_OK)
+    {
+      /* Now set GMT offset in pdf_time_t */
+      time_var->gmt_offset = gmt_offset;
+    }
+
+  return ret_code;
 }
 
 pdf_status_t
@@ -94,7 +262,7 @@ pdf_time_from_string_iso8601(pdf_time_t time_var,
   pdf_char_t *duplicate;
   pdf_char_t *walker;
   pdf_status_t ret_code;
-  pdf_i32_t    gmt_offset;
+  pdf_i32_t    gmt_offset = 0;
   pdf_size_t time_str_length = strlen((char *)time_str);
   
   /* Check minimum length */
@@ -182,22 +350,6 @@ pdf_time_from_string_iso8601(pdf_time_t time_var,
 
   /* Set calendar as if it were UTC */
   calendar.gmt_offset = 0;
-
-/*
-   pdf_char_t *str = (pdf_char_t *)pdf_alloc(PDF_MAX_ISO8601_STR_LENGTH*sizeof(pdf_char_t));
-   pdf_i32_t offset_hours = calendar.gmt_offset / 3600;
-   pdf_i32_t offset_minutes = calendar.gmt_offset % 3600;
-   sprintf((char *)str, "%4d-%s%d-%s%dT%s%d:%s%d:%s%d.00+%s%d:%s%d", \
-   calendar.year,
-   (calendar.month < 10 ? "0" : ""), calendar.month,
-   (calendar.day < 10 ? "0" : ""), calendar.day,
-   (calendar.hour < 10 ? "0" : ""), calendar.hour,
-   (calendar.minute < 10 ? "0" : ""), calendar.minute,
-   (calendar.second < 10 ? "0" : ""), calendar.second,
-   (offset_hours < 10 ? "0" : ""), offset_hours,
-   (offset_minutes < 10 ? "0" : ""), offset_minutes);
-   PDF_DEBUG_BASE("Intermediate calendar: %s", str);
-*/
   
   /* Get time value from break-down UTC calendar !*/
   ret_code = pdf_time_from_cal(time_var, &calendar);
@@ -215,7 +367,53 @@ pdf_time_from_string_iso8601(pdf_time_t time_var,
 pdf_char_t *
 pdf_time_to_string_pdf(const pdf_time_t time_var)
 {
-  return NULL;
+  pdf_char_t *str;
+  struct pdf_time_cal_s calendar;
+  
+  str = (pdf_char_t *)pdf_alloc(PDF_MAX_PDFDATE_STR_LENGTH*sizeof(pdf_char_t));
+  if(str != NULL)
+    {
+      /* D:YYYYMMDDHHmmSSOHH'mm' */
+      if(pdf_time_get_local_cal(time_var, &calendar) == PDF_OK)
+        {
+          if(calendar.gmt_offset != 0)
+            {
+              pdf_i32_t offset_hours;
+              pdf_i32_t offset_minutes;
+
+              offset_hours = (((calendar.gmt_offset < 0) ? (-1) : (1)) * calendar.gmt_offset) / 3600;
+              offset_minutes = (((calendar.gmt_offset < 0) ? (-1) : (1)) * calendar.gmt_offset) % 3600;
+              sprintf((char *)str, "D:%4d%s%d%s%d%s%d%s%d%s%d%c%s%d'%s%d'", \
+                      calendar.year,
+                      (calendar.month < 10 ? "0" : ""), calendar.month,
+                      (calendar.day < 10 ? "0" : ""), calendar.day,
+                      (calendar.hour < 10 ? "0" : ""), calendar.hour,
+                      (calendar.minute < 10 ? "0" : ""), calendar.minute,
+                      (calendar.second < 10 ? "0" : ""), calendar.second,
+                      ((calendar.gmt_offset < 0) ? '-' : '+'),
+                      (offset_hours < 10 ? "0" : ""), offset_hours,
+                      (offset_minutes < 10 ? "0" : ""), offset_minutes);
+            }
+          else
+            {
+              sprintf((char *)str, "D:%4d%s%d%s%d%s%d%s%d%s%dZ", \
+                      calendar.year,
+                      (calendar.month < 10 ? "0" : ""), calendar.month,
+                      (calendar.day < 10 ? "0" : ""), calendar.day,
+                      (calendar.hour < 10 ? "0" : ""), calendar.hour,
+                      (calendar.minute < 10 ? "0" : ""), calendar.minute,
+                      (calendar.second < 10 ? "0" : ""), calendar.second);
+            }
+        }
+      else
+        {
+          PDF_DEBUG_BASE("Could not get local calendar from pdf_time_t...");
+          pdf_dealloc(str);
+          str = NULL;
+        }
+    }
+  
+  return str;
 }
 
 
@@ -246,17 +444,34 @@ pdf_time_to_string_iso8601(const pdf_time_t time_var)
       /* YYYY-MM-DDThh:mm:ss.sTZD (eg 1997-07-16T19:20:30.45+01:00) */
       if(pdf_time_get_local_cal(time_var, &calendar) == PDF_OK)
         {
-          pdf_i32_t offset_hours = calendar.gmt_offset / 3600;
-          pdf_i32_t offset_minutes = calendar.gmt_offset % 3600;
-          sprintf((char *)str, "%4d-%s%d-%s%dT%s%d:%s%d:%s%d.00+%s%d:%s%d", \
-                  calendar.year,
-                  (calendar.month < 10 ? "0" : ""), calendar.month,
-                  (calendar.day < 10 ? "0" : ""), calendar.day,
-                  (calendar.hour < 10 ? "0" : ""), calendar.hour,
-                  (calendar.minute < 10 ? "0" : ""), calendar.minute,
-                  (calendar.second < 10 ? "0" : ""), calendar.second,
-                  (offset_hours < 10 ? "0" : ""), offset_hours,
-                  (offset_minutes < 10 ? "0" : ""), offset_minutes);
+          if(calendar.gmt_offset != 0)
+            {
+              pdf_i32_t offset_hours;
+              pdf_i32_t offset_minutes;
+
+              offset_hours = (((calendar.gmt_offset < 0) ? (-1) : (1)) * calendar.gmt_offset) / 3600;
+              offset_minutes = (((calendar.gmt_offset < 0) ? (-1) : (1)) * calendar.gmt_offset) % 3600;
+              sprintf((char *)str, "%4d-%s%d-%s%dT%s%d:%s%d:%s%d.00%c%s%d:%s%d", \
+                      calendar.year,
+                      (calendar.month < 10 ? "0" : ""), calendar.month,
+                      (calendar.day < 10 ? "0" : ""), calendar.day,
+                      (calendar.hour < 10 ? "0" : ""), calendar.hour,
+                      (calendar.minute < 10 ? "0" : ""), calendar.minute,
+                      (calendar.second < 10 ? "0" : ""), calendar.second,
+                      ((calendar.gmt_offset < 0) ? '-' : '+'),
+                      (offset_hours < 10 ? "0" : ""), offset_hours,
+                      (offset_minutes < 10 ? "0" : ""), offset_minutes);
+            }
+          else
+            {
+              sprintf((char *)str, "%4d-%s%d-%s%dT%s%d:%s%d:%s%d.00Z", \
+                      calendar.year,
+                      (calendar.month < 10 ? "0" : ""), calendar.month,
+                      (calendar.day < 10 ? "0" : ""), calendar.day,
+                      (calendar.hour < 10 ? "0" : ""), calendar.hour,
+                      (calendar.minute < 10 ? "0" : ""), calendar.minute,
+                      (calendar.second < 10 ? "0" : ""), calendar.second);
+            }
         }
       else
         {

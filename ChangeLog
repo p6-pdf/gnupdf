@@ -1,3 +1,10 @@
+2008-07-13  Aleksander Morgado Juez  <aleksander@es.gnu.org>
+
+	* src/base/pdf-time-string.c (pdf_time_from_string_pdf): Function
+	implemented.
+	(pdf_time_to_string_pdf): Function implemented.
+	(pdf_time_to_string_iso8601): Bugfix to handle negative GMT offsets.
+
 2008-07-11  gerel  <gerel@gnu.org>
 
 	* prmgt/check-api-doc-consistency.pl: added '-i' feature.
