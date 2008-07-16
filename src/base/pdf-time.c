@@ -846,7 +846,7 @@ pdf_time_to_string (const pdf_time_t time_var,
       return pdf_time_to_string_pdf(time_var);
     case PDF_TIME_FORMAT_ISO_8601:
       return pdf_time_to_string_iso8601(time_var);
-    case PDF_TIME_FORMAT_ASN1:
+    case PDF_TIME_FORMAT_UTC_ASN1:
       return pdf_time_to_string_asn1(time_var);
     case PDF_TIME_FORMAT_GENERALIZED_ASN1:
       return pdf_time_to_string_generalized_asn1(time_var);
@@ -870,8 +870,8 @@ pdf_time_from_string (pdf_time_t time_var,
         return pdf_time_from_string_pdf(time_var, time_str);
       case PDF_TIME_FORMAT_ISO_8601:
         return pdf_time_from_string_iso8601(time_var, time_str);
-      case PDF_TIME_FORMAT_ASN1:
-        return pdf_time_from_string_asn1(time_var, time_str);
+      case PDF_TIME_FORMAT_UTC_ASN1:
+        return pdf_time_from_string_utc_asn1(time_var, time_str);
       case PDF_TIME_FORMAT_GENERALIZED_ASN1:
         return pdf_time_from_string_generalized_asn1(time_var, time_str);
       default:
