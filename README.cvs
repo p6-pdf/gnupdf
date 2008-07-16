@@ -1,40 +1,6 @@
 -*- mode: text -*-
 
-You should perform the following steps in order to build the
-CVS version of the GNU PDF library:
-
-1- Check dependencies
-
-   The building system requires the following software to be 
-   installed:
-
-   automake 1.9
-   autoconf >=2.60
-   libtool 1.5
-   awk
-
-   Additionally you may need to install some software:
-   
-   zlib (optional)
-   texi2html (optional)
-   graphviz (optional)
-   taskjuggler (optional)
-
-2- Regenerate the configure script:
-
-   $ ./bootstrap
-
-   Or, alternatively:
-
-   $ autoreconf
-
-3- Follow the instructions included in the INSTALL file to build
-   the system:
-
-   Quick guide:
-
-   $ ./configure && make && make install
-
-
-Happy GNU PDF Hacking!
+NOTE: if you have obtained this source tree from the CVS repository
+then you are using an obsolete version. Please get the appropriate
+branch from http://bzr.savannah.gnu.org/r/pdf/libgnupdf/
 

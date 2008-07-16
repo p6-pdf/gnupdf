@@ -1,3 +1,9 @@
+2008-07-16  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* README.cvs (NOTE): This file is now obsolete.
+
+	* README.bzr: New file.
+
 2008-07-13  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
 	* src/base/pdf-time-string.c (pdf_time_from_string_pdf): Function
