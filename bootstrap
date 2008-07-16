@@ -9,7 +9,7 @@ else
   chicken=
 fi
 
-echo "Bootstrapping CVS GNU PDF Library with:"
+echo "Bootstrapping Bazaar GNU PDF Library with:"
 
 # This overwrites lots of files with older versions.
 # I keep the newest versions of files common between distributions up to

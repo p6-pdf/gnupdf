@@ -1,5 +1,7 @@
 2008-07-16  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* bootstrap: Output changed to mention Bazaar.
+
 	* README.cvs (NOTE): This file is now obsolete.
 
 	* README.bzr: New file.
