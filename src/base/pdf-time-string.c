@@ -464,15 +464,19 @@ pdf_time_from_string_iso8601(pdf_time_t time_var,
   while(1)
     {
       pdf_bool_t has_seconds = PDF_FALSE;
-
+printf("YEAR0: %d\n",calendar.year);
       /* Get century */
       __GET_FIELD2(time_str, 0, calendar.year);
+printf("YEAR1: %d\n",calendar.year);
       calendar.year *= 100;
+printf("YEAR2: %d\n",calendar.year);
       /* Get year in century */
       __GET_FIELD2(time_str, 2, calendar.year);
       /* more than year ? */
       if(time_str_length == 4)
         break;
+
+      printf("YEAR3: %d\n",calendar.year);
       
       /* Get month */
       __GET_FIELD2(time_str, 5, calendar.month);
@@ -610,6 +614,7 @@ pdf_time_to_string_iso8601(const pdf_time_t time_var)
       /* YYYY-MM-DDThh:mm:ss.sTZD (eg 1997-07-16T19:20:30.45+01:00) */
       if(pdf_time_get_local_cal(time_var, &calendar) == PDF_OK)
         {
+          printf("Here year is: %d\n",calendar.year);
           if(calendar.gmt_offset != 0)
             {
               pdf_i32_t offset_hours;
