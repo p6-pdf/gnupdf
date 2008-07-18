@@ -4483,6 +4483,116 @@ Function carried out with no errors
 @end table
 @end deffn
 
+@node pdf_i64_mult
+@subsubsection pdf_i64_mult
+
+
+@deffn Test pdf_i64_mult_001
+Multiplies two positive numbers
+@table @strong
+@item Success condition
+The call should not produce an error.
+@end table
+@end deffn
+
+@deffn Test pdf_i64_mult_002
+Checks if function checks the proper initialisation of target
+@table @strong
+@item Success condition
+The call should produce an error
+@end table
+@end deffn
+
+@deffn Test pdf_i64_mult_003
+ Mults a positive and negative number
+@table @strong
+@item Success condition
+The call should not produce an error
+@end table
+@end deffn
+
+@deffn Test pdf_i64_mult_004
+ Mults two negative numbers
+@table @strong
+@item Success condition
+The call should not produce an error
+@end table
+@end deffn
+
+
+@node pdf_i64_div
+@subsubsection pdf_i64_div
+
+
+@deffn Test pdf_i64_div_001
+Divides two positive numbers
+@table @strong
+@item Success condition
+The call should not produce an error.
+@end table
+@end deffn
+
+@deffn Test pdf_i64_div_002
+Checks if function checks the proper initialisation of target
+@table @strong
+@item Success condition
+The call should produce an error
+@end table
+@end deffn
+
+@deffn Test pdf_i64_div_003
+ Divs a positive and negative number
+@table @strong
+@item Success condition
+The call should not produce an error
+@end table
+@end deffn
+
+@deffn Test pdf_i64_div_004
+ Divs two negative numbers
+@table @strong
+@item Success condition
+The call should not produce an error
+@end table
+@end deffn
+
+
+@node pdf_i64_mod
+@subsubsection pdf_i64_mod
+
+@deffn Test pdf_i64_mod_001
+Mods two positive numbers
+@table @strong
+@item Success condition
+The call should not produce an error.
+@end table
+@end deffn
+
+@deffn Test pdf_i64_mod_002
+Checks if function checks the proper initialisation of target
+@table @strong
+@item Success condition
+The call should produce an error
+@end table
+@end deffn
+
+@deffn Test pdf_i64_mod_003
+ Mods a positive and negative number
+@table @strong
+@item Success condition
+The call should not produce an error
+@end table
+@end deffn
+
+@deffn Test pdf_i64_mod_004
+ Mods two negative numbers
+@table @strong
+@item Success condition
+The call should not produce an error
+@end table
+@end deffn
+
+
 @node Subsystem Testing
 @chapter Subsystem Testing
 
