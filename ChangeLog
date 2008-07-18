@@ -1,3 +1,9 @@
+2008-07-18  Daniel Vidal  <davr@pc_davr.deimos-space.com>
+
+	* doc/gnupdf-tsd.texi: Added new i64 tests
+
+	* doc/gnupdf.texi: Added new i64 interfaces
+
 2008-07-14  Daniel Vidal  <davr@pc_davr.deimos-space.com>
 
 	* torture/unit/Makefile.am: Added types tests
