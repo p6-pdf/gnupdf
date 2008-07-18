@@ -1,10 +1,19 @@
-2008-07-16  Jose E. Marchesi  <jemarch@gnu.org>
+2008-07-14  Daniel Vidal  <davr@pc_davr.deimos-space.com>
 
-	* bootstrap: Output changed to mention Bazaar.
+	* torture/unit/Makefile.am: Added types tests
 
-	* README.cvs (NOTE): This file is now obsolete.
+	* torture/unit/base/types/tsuite-types.c: Added tests
 
-	* README.bzr: New file.
+	* torture/unit/base/types/pdf-i64-mult.c: Test for pdf_i64_mult function
+
+	* torture/unit/base/types/pdf-i64-mod.c: Test for pdf_i64_mod function
+
+	* torture/unit/base/types/pdf-i64-div.c: Test for pdf_i64_div function
+
+	* torture/unit/base/types/pdf-i64-subtraction.c: Test for pdf_i64_subtraction function
+
+	* src/base/pdf-types.c : Fixed negative number handling in some functions. 
+	Also error handling issues fixed.
 
 2008-07-13  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
