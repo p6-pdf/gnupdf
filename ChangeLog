@@ -1,3 +1,8 @@
+2008-07-21  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-manual-wiki.init (mediawiki_preformatted): Fix a bug
+	preventing the @example sections to appear in mediawiki output.
+
 2008-07-20  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/Makefile.am (gnudpf-hg.wiki): New fule for the Hackers
