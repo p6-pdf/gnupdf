@@ -1,5 +1,8 @@
 2008-07-20  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/Makefile.am (gnudpf-hg.wiki): New fule for the Hackers
+	Guide.
+
 	* doc/gnupdf-hg.texi: New manual.
 
 	* doc/Makefile.am (noinst_TEXINFOS): Build the new Hackers Guide
