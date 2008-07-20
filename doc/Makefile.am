@@ -18,7 +18,7 @@
 
 EXTRA_DIST = pdf_filter.1
 
-noinst_TEXINFOS = gnupdf-tsd.texi
+noinst_TEXINFOS = gnupdf-tsd.texi gnupdf-hg.texi
 info_TEXINFOS = gnupdf.texi gnupdf-utils.texi
 gnupdf_TEXINFOS = fdl.texi
 
