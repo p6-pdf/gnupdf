@@ -1,3 +1,9 @@
+2008-07-20  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-hg.texi: New manual.
+
+	* doc/Makefile.am (noinst_TEXINFOS): Build the new Hackers Guide
+
 2008-07-16  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* bootstrap: Output changed to mention Bazaar.
