@@ -1,3 +1,17 @@
+2008-07-21  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-manual-wiki.init (mediawiki_preformatted): Fix a bug
+	preventing the @example sections to appear in mediawiki output.
+
+2008-07-20  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/Makefile.am (gnudpf-hg.wiki): New fule for the Hackers
+	Guide.
+
+	* doc/gnupdf-hg.texi: New manual.
+
+	* doc/Makefile.am (noinst_TEXINFOS): Build the new Hackers Guide
+
 2008-07-16  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* bootstrap: Output changed to mention Bazaar.

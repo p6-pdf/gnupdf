@@ -1,0 +1,112 @@
+\input texinfo
+@comment $Id: $
+@comment %**start of header
+@setfilename gnupdf-hg.info
+@settitle GNU PDF Library Hackers Guide
+@comment %**end of header
+
+@set VERSION 0.1
+
+@copying
+This is the @cite{GNU PDF Library Hackers Guide},
+updated for @strong{libgnupdf} version @strong{@value{VERSION}}.
+
+Copyright @copyright{} 2008 Free Software Foundation, Inc.
+
+@quotation
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A
+copy of the license is included in the section entitled ``GNU Free
+Documentation License''.
+@end quotation
+@end copying
+
+@titlepage
+@sp 6
+@center @titlefont{GNU PDF Library Hackers Guide}
+@sp 4
+@center Updated for version @value{VERSION}.
+@sp 5
+@page Free Software Foundation
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+
+@contents
+
+@ifnottex
+@node Top
+@top GNU PDF Library Hackers Guide
+
+GNU PDF Library Hackers Guide
+
+@insertcopying
+@end ifnottex
+
+@menu
+* Coding Conventions::
+@end menu
+
+@node Coding Conventions
+@chapter Coding Conventions
+
+Like in any other GNU package, the code in the GNU PDF Library follows
+the coding conventions documented in the GNU Coding Standards. 
+
+In this section we complement the guidelines of the GHM with some
+specific conventions that we follow in the development of the
+library. It is quite important to follow these guidelines to maintain
+a good level of coherence in the codebase.
+
+@menu
+* File Headers::
+@end menu
+
+@node File Headers
+@section File Headers
+
+The standard file header to be used in any source file in the library
+is the following:
+
+@example
+/* -*- mode: C -*- Time-stamp: TIME_STAMP
+ *
+ *       File:         FILE_NAME
+ *       Date:         CREATION_TIME
+ *
+ *       GNU PDF Project - SHORT_DESCRIPTION
+ *
+ */
+@end example
+
+The entries in the template are:
+
+@table @var
+@item TIME_STAMP
+This is a time stamp with the format: 
+@example
+YYYY-MM-DD hh:mm:ss nickname
+@end example
+Note that if you are writing your code using Emacs then you will get
+the timestamp automatically updated each time you save the file.
+@item FILE_NAME
+The basename of the file.
+@item CREATION_TIME
+A time stamp string in the format:
+@example
+Fri Feb 22 21:05:05 2008
+@end example
+Note that if you are writing your code using Emacs then you will get
+the appropriate creation date running the @code{current-time-string}
+elisp command. If you are using the @code{gnupdf-c-file-header}
+skeleton template then you will get the creation date in
+template-expansion time.
+@item SHORT_DESCRIPTION
+A one-sentence brief description of the contents of the file. This
+description should not exceed one physical line of text.
+@end table
+
+@bye
