@@ -1,25 +1,44 @@
-2008-07-18  Daniel Vidal  <davr@pc_davr.deimos-space.com>
+2008-07-22  Daniel Vidal  <davr@pc_davr.deimos-space.com>
 
-	* doc/gnupdf-tsd.texi: Added new i64 tests
+	* src/base/pdf-types.c:  Fixed negative number handling in some functions. Also error handling issues fixed.
 
-	* doc/gnupdf.texi: Added new i64 interfaces
-
-2008-07-14  Daniel Vidal  <davr@pc_davr.deimos-space.com>
-
-	* torture/unit/Makefile.am: Added types tests
-
-	* torture/unit/base/types/tsuite-types.c: Added tests
-
-	* torture/unit/base/types/pdf-i64-mult.c: Test for pdf_i64_mult function
+	* torture/unit/base/types/pdf-i64-subtraction.c: Test for pdf_i64_subtraction function
 
 	* torture/unit/base/types/pdf-i64-mod.c: Test for pdf_i64_mod function
 
 	* torture/unit/base/types/pdf-i64-div.c: Test for pdf_i64_div function
 
-	* torture/unit/base/types/pdf-i64-subtraction.c: Test for pdf_i64_subtraction function
+	* torture/unit/base/types/pdf-i64-mult.c: Test for pdf_i64_mult function
 
-	* src/base/pdf-types.c : Fixed negative number handling in some functions. 
-	Also error handling issues fixed.
+	* torture/unit/base/types/tsuite-types.c: Added new tests
+
+	* torture/unit/Makefile.am: Added new types tests
+
+	* doc/gnupdf.texi: Changed i64 interfaces
+
+	* doc/gnupdf-tsd.texi: Added new i64 tests
+
+2008-07-21  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-manual-wiki.init (mediawiki_preformatted): Fix a bug
+	preventing the @example sections to appear in mediawiki output.
+
+2008-07-20  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/Makefile.am (gnudpf-hg.wiki): New fule for the Hackers
+	Guide.
+
+	* doc/gnupdf-hg.texi: New manual.
+
+	* doc/Makefile.am (noinst_TEXINFOS): Build the new Hackers Guide
+
+2008-07-16  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* bootstrap: Output changed to mention Bazaar.
+
+	* README.cvs (NOTE): This file is now obsolete.
+
+	* README.bzr: New file.
 
 2008-07-13  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 

@@ -547,7 +547,7 @@ sub mediawiki_preformatted($$$$$$$$$$)
     {
         $$preformatted_number++;
     }
-    if ($class == "menu-preformatted")
+    if ($class eq "menu-preformatted")
     {
         return "";
     }
