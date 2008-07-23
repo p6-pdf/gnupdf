@@ -1,3 +1,23 @@
+2008-07-22  Daniel Vidal  <davr@pc_davr.deimos-space.com>
+
+	* src/base/pdf-types.c:  Fixed negative number handling in some functions. Also error handling issues fixed.
+
+	* torture/unit/base/types/pdf-i64-subtraction.c: Test for pdf_i64_subtraction function
+
+	* torture/unit/base/types/pdf-i64-mod.c: Test for pdf_i64_mod function
+
+	* torture/unit/base/types/pdf-i64-div.c: Test for pdf_i64_div function
+
+	* torture/unit/base/types/pdf-i64-mult.c: Test for pdf_i64_mult function
+
+	* torture/unit/base/types/tsuite-types.c: Added new tests
+
+	* torture/unit/Makefile.am: Added new types tests
+
+	* doc/gnupdf.texi: Changed i64 interfaces
+
+	* doc/gnupdf-tsd.texi: Added new i64 tests
+
 2008-07-21  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf-manual-wiki.init (mediawiki_preformatted): Fix a bug
