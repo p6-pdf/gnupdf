@@ -1,26 +1,56 @@
-2008-07-21  gerel  <gerel@gnu.org>
+2008-07-23  gerel  <gerel@gnu.org>
 
 	* src/base/pdf-hash.c: changed API to allow the specification of
-	memory disposal functions in entry insertion time.
+	memory disposal functions in entry insertion time and removed
+	table-wide disposal function.
 	
 	* src/base/pdf-hash.h: same.
 
 	* src/base/pdf-fsys.c: fixed to conform API modifications.
 	
 	* torture/unit/base/hash/pdf-hash-add.c: same.
-	
+
+	* torture/unit/base/hash/pdf-hash-create.c: same.
+
+	* torture/unit/base/hash/pdf-hash-destroy.c: same.
+
+	* torture/unit/base/hash/pdf-hash-iterator-free.c: same.
+
 	* torture/unit/base/hash/pdf-hash-iterator-next.c: same.
-	
+
+	* torture/unit/base/hash/pdf-hash-iterator.c: same.
+
 	* torture/unit/base/hash/pdf-hash-key-p.c: same.
-	
+
 	* torture/unit/base/hash/pdf-hash-remove.c: same.
-	
+
 	* torture/unit/base/hash/pdf-hash-rename.c: same.
-	
+
 	* torture/unit/base/hash/pdf-hash-search.c: same.
+
+	* torture/unit/base/hash/pdf-hash-size.c: same.
 
 	* doc/gnupdf.texi: same.
 
+2008-07-22  Daniel Vidal  <davr@pc_davr.deimos-space.com>
+
+	* src/base/pdf-types.c:  Fixed negative number handling in some functions. Also error handling issues fixed.
+
+	* torture/unit/base/types/pdf-i64-subtraction.c: Test for pdf_i64_subtraction function
+
+	* torture/unit/base/types/pdf-i64-mod.c: Test for pdf_i64_mod function
+
+	* torture/unit/base/types/pdf-i64-div.c: Test for pdf_i64_div function
+
+	* torture/unit/base/types/pdf-i64-mult.c: Test for pdf_i64_mult function
+
+	* torture/unit/base/types/tsuite-types.c: Added new tests
+
+	* torture/unit/Makefile.am: Added new types tests
+
+	* doc/gnupdf.texi: Changed i64 interfaces
+
+	* doc/gnupdf-tsd.texi: Added new i64 tests
 
 2008-07-21  Jose E. Marchesi  <jemarch@gnu.org>
 

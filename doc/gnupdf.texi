@@ -1,5 +1,5 @@
 \input texinfo
-@comment $Id: gnupdf.texi,v 1.80 2008/07/10 14:17:19 aleksander_m Exp $
+@comment $Id: gnupdf.texi,v 1.79 2008/07/07 20:22:31 jemarch Exp $
 @comment %**start of header
 @setfilename gnupdf.info
 @settitle GNU PDF Library Reference
@@ -479,7 +479,7 @@ bignum = pdf_i64_new((32 << 1),10); /*bignum is now -10*/
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_i64_assign (pdf_i64_t *@var{bignum}, const pdf_i32_t @var{high}, const pdf_u32_t @var{low})
+@deftypefun void pdf_i64_assign (pdf_i64_t *@var{bignum}, const pdf_i32_t @var{high}, const pdf_u32_t @var{low}, pdf_status_t *@var{p_status})
 
 Assign a value coming from one 32 bit signed integer and a 32 bit unsigned integer to a  i64 integer.
 
@@ -503,11 +503,12 @@ Operation successful
 @example
 pdf_i64_t *bignum;
 pdf_i64_t result;
-
+pdf_status_t *p_status;
 result = pdf_i64_new(0, 0);
 bignum = &result;
 
-if (pdf_i64_assign(bignum, (32 << 1), 10) != PDF_OK) /*bignum is now -10*/
+pdf_i64_assign(bignum, (32 << 1), 10, p_status);
+if (*p_status != PDF_OK) /*bignum is now -10*/
 @{
    /* Error code */
 @}
@@ -515,7 +516,7 @@ if (pdf_i64_assign(bignum, (32 << 1), 10) != PDF_OK) /*bignum is now -10*/
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_i64_assign_quick (pdf_i64_t *@var{bignum}, const pdf_i32_t @var{value})
+@deftypefun void pdf_i64_assign_quick (pdf_i64_t *@var{bignum}, const pdf_i32_t @var{value}, pdf_status_t *@var{p_status})
 
 Assign a value coming from one 32 bit signed integer to a  i64 integer.
 
@@ -537,10 +538,11 @@ Operation successful
 @example
 pdf_i64_t *bignum;
 pdf_i64_t result;
-
+pdf_status_t *p_status;
 result = pdf_i64_new(0, 0);
 bignum = &result;
-if (pdf_i64_assign_quick(bignum, -10) != PDF_OK) /*bignum is now -10*/
+pdf_i64_assign_quick(bignum, -10, p_status);
+if (*p_status != PDF_OK) /*bignum is now -10*/
 @{
    /* Error code */
 @}
@@ -548,7 +550,7 @@ if (pdf_i64_assign_quick(bignum, -10) != PDF_OK) /*bignum is now -10*/
 @end table
 @end deftypefun	
 
-@deftypefun pdf_status_t pdf_i64_copy (const pdf_i64_t @var{orig}, pdf_i64_t *@var{copy})
+@deftypefun void pdf_i64_copy (const pdf_i64_t @var{orig}, pdf_i64_t *@var{copy}, pdf_status_t *@var{p_status})
 
 Copies the data from orig to copy.
 
@@ -570,9 +572,10 @@ Operation successful
 @example
 pdf_i64_t orig;
 pdf_i64_t *copy;
-
+pdf_status_t *p_status;
 orig = pdf_i64_new(0, 10);
-if (pdf_i64_copy(orig, copy) != PDF_OK) /*Now copy is also 10*/
+pdf_i64_copy(orig, copy,p_status)
+if ( *p_status != PDF_OK) /*Now copy is also 10*/
 @{
    /* Error code */
 @}
@@ -580,7 +583,7 @@ if (pdf_i64_copy(orig, copy) != PDF_OK) /*Now copy is also 10*/
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_i64_add (pdf_i64_t *@var{dest}, const pdf_i64_t @var{addend1}, const pdf_i64_t @var{addend2})
+@deftypefun void pdf_i64_add (pdf_i64_t *@var{dest}, const pdf_i64_t @var{addend1}, const pdf_i64_t @var{addend2}, pdf_status_t *@var{p_status})
 
 Adds two 64 bit numbers
 
@@ -606,13 +609,13 @@ pdf_i64_t *dest;
 pdf_i64_t result;
 pdf_i64_t addend_1;
 pdf_i64_t addend_2;
-
+pdf_status_t *p_status;
 addend_1 = pdf_i64_new(0, 25);
 addend_2 = pdf_i64_new(0, 35);
 result = pdf_i64_new(0, 0);
 dest = &result;
-
-if (pdf_i64_add (dest, addend_1, addend_2) != PDF_OK) /* Now dest is 60 */
+pdf_i64_add (dest, addend_1, addend_2,p_status);
+if (*p_status != PDF_OK) /* Now dest is 60 */
 @{
    /* Error code */
 @}
@@ -620,7 +623,7 @@ if (pdf_i64_add (dest, addend_1, addend_2) != PDF_OK) /* Now dest is 60 */
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_i64_add_i32 (pdf_i64_t *@var{dest}, const pdf_i64_t @var{addend1}, const pdf_i32_t @var{addend2})
+@deftypefun void pdf_i64_add_i32 (pdf_i64_t *@var{dest}, const pdf_i64_t @var{addend1}, const pdf_i32_t @var{addend2}, pdf_status_t *@var{p_status})
 
 Adds a 64bit number and a 32bit number.
 
@@ -645,12 +648,12 @@ Operation successful
 pdf_i64_t *dest;
 pdf_i64_t result;
 pdf_i64_t addend_1;
-
+pdf_status_t *p_status;
 addend_1 = pdf_i64_new(0, 25);
 result = pdf_i64_new(0, 0);
 dest = &result;
-
-if (pdf_i64_add (dest, addend_1, 35) != PDF_OK) /* Now dest is 60 */
+pdf_i64_add (dest, addend_1, 35,p_status)
+if (*p_status != PDF_OK) /* Now dest is 60 */
 @{
    /* Error code */
 @}
@@ -659,7 +662,7 @@ if (pdf_i64_add (dest, addend_1, 35) != PDF_OK) /* Now dest is 60 */
 @end deftypefun
 
 
-@deftypefun pdf_status_t pdf_i64_subtraction (pdf_i64_t *@var{dest}, const pdf_i64_t @var{minuend}, const pdf_i64_t @var{subtrahend})
+@deftypefun void pdf_i64_subtraction (pdf_i64_t *@var{dest}, const pdf_i64_t @var{minuend}, const pdf_i64_t @var{subtrahend}, pdf_status_t *@var{p_status})
 
 Finds the difference between two 64 bit numbers
 
@@ -685,13 +688,13 @@ pdf_i64_t *dest;
 pdf_i64_t result;
 pdf_i64_t minuend;
 pdf_i64_t subtrahend;
-
+pdf_status_t *p_status;
 minuend = pdf_i64_new(0, 25);
 subtrahend = pdf_i64_new(0, 35);
 result = pdf_i64_new(0, 0);
 dest = &result;
-
-if (pdf_i64_subtraction (dest, minuend, subtrahend) != PDF_OK) /* Now dest is -10 */
+pdf_i64_subtraction (dest, minuend, subtrahend,p_status)
+if (*p_status != PDF_OK) /* Now dest is -10 */
 @{
   /* Error code */
 @}
@@ -699,7 +702,7 @@ if (pdf_i64_subtraction (dest, minuend, subtrahend) != PDF_OK) /* Now dest is -1
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_i64_subtraction_i32_min (pdf_i64_t *@var{dest}, const pdf_i32_t @var{minuend}, const pdf_i64_t @var{subtrahend})
+@deftypefun void pdf_i64_subtraction_i32_min (pdf_i64_t *@var{dest}, const pdf_i32_t @var{minuend}, const pdf_i64_t @var{subtrahend}, pdf_status_t *@var{p_status})
 
 Finds the difference between a 32bit number and a 64bit number
 
@@ -724,12 +727,12 @@ Operation successful
 pdf_i64_t *dest;
 pdf_i64_t result;
 pdf_i64_t subtrahend;
-
+pdf_status_t *p_status;
 subtrahend = pdf_i64_new(0, 35);
 result = pdf_i64_new(0, 0);
 dest = &result;
-
-if (pdf_i64_subtraction (dest, 25, subtrahend) != PDF_OK) /* Now dest is -10 */
+pdf_i64_subtraction (dest, 25, subtrahend,p_status)
+if (*p_status != PDF_OK) /* Now dest is -10 */
 @{
   /* Error code */
 @}
@@ -738,7 +741,7 @@ if (pdf_i64_subtraction (dest, 25, subtrahend) != PDF_OK) /* Now dest is -10 */
 @end deftypefun
 
 
-@deftypefun pdf_status_t pdf_i64_subtraction_i32_sub (pdf_i64_t *@var{dest}, const pdf_i64_t @var{minuend}, const pdf_i32_t @var{subtrahend})
+@deftypefun void pdf_i64_subtraction_i32_sub (pdf_i64_t *@var{dest}, const pdf_i64_t @var{minuend}, const pdf_i32_t @var{subtrahend}, pdf_status_t *@var{p_status})
 
 Finds the difference between a 64bit number and a 32bit number
 
@@ -763,12 +766,12 @@ Operation successful
 pdf_i64_t *dest;
 pdf_i64_t result;
 pdf_i64_t minuend;
-
+pdf_status_t *p_status;
 minuend = pdf_i64_new(0, 25);
 result = pdf_i64_new(0, 0);
 dest = &result;
-
-if (pdf_i64_subtraction (dest, minuend, 35) != PDF_OK) /* Now dest is -10 */
+pdf_i64_subtraction (dest, minuend, 35,p_status);
+if ( != PDF_OK) /* Now dest is -10 */
 @{
   /* Error code */
 @}
@@ -777,7 +780,7 @@ if (pdf_i64_subtraction (dest, minuend, 35) != PDF_OK) /* Now dest is -10 */
 @end deftypefun
 
 
-@deftypefun pdf_status_t pdf_i64_mult (pdf_i64_t *@var{dest}, const pdf_i64_t @var{factor_1}, const pdf_i64_t @var{factor_2})
+@deftypefun void pdf_i64_mult (pdf_i64_t *@var{dest}, const pdf_i64_t @var{factor_1}, const pdf_i64_t @var{factor_2}, pdf_status_t *@var{p_status})
 
 Multiplication of two 64 bit numbers
 
@@ -803,13 +806,13 @@ pdf_i64_t *dest;
 pdf_i64_t result;
 pdf_i64_t factor_1;
 pdf_i64_t factor_2;
-
+pdf_status_t *p_status;
 factor_1 = pdf_i64_new (0, 10);
 factor_2 = pdf_i64_new (0, 100);
 result = pdf_i64_new (0, 0);
 dest = &result;
-
-if (pdf_i64_mult (dest, factor_1, factor_2) != PDF_OK) /* Now dest is 1000 */
+pdf_i64_mult (dest, factor_1, factor_2,p_status);
+if ( *p_status != PDF_OK) /* Now dest is 1000 */
 @{
    /* Error code */
 @}
@@ -817,7 +820,7 @@ if (pdf_i64_mult (dest, factor_1, factor_2) != PDF_OK) /* Now dest is 1000 */
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_i64_mult_i32 (pdf_i64_t *@var{dest}, const pdf_i64_t @var{factor_1}, const pdf_i32_t @var{factor_2})
+@deftypefun void pdf_i64_mult_i32 (pdf_i64_t *@var{dest}, const pdf_i64_t @var{factor_1}, const pdf_i32_t @var{factor_2}, pdf_status_t *@var{p_status})
 
 Multiplication of a 64bit number and a 32bit number
 
@@ -846,8 +849,8 @@ pdf_i64_t factor_1;
 factor_1 = pdf_i64_new (0, 10);
 result = pdf_i64_new (0, 0);
 dest = &result;
-
-if (pdf_i64_mult (dest, factor_1, 100) != PDF_OK) /* Now dest is 1000 */
+pdf_i64_mult (dest, factor_1, 100,p_status)
+if (*p_status != PDF_OK) /* Now dest is 1000 */
 @{
    /* Error code */
 @}
@@ -855,7 +858,7 @@ if (pdf_i64_mult (dest, factor_1, 100) != PDF_OK) /* Now dest is 1000 */
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_i64_div (pdf_i64_t *@var{dest}, const pdf_i64_t @var{dividend}, const pdf_i64_t @var{divisor})
+@deftypefun void pdf_i64_div (pdf_i64_t *@var{dest}, const pdf_i64_t @var{dividend}, const pdf_i64_t @var{divisor}, pdf_status_t *@var{p_status})
 
 Division of two 64 bit numbers
 
@@ -882,8 +885,8 @@ dividend = pdf_i64_new(0, 200);
 divisor = pdf_i64_new(0, 10);
 result = pdf_i64_new(0, 0);
 dest = &result;
-
-if (pdf_i64_div (dest, dividend, divisor) != PDF_OK) /* Now dest is 20 */
+pdf_i64_div (dest, dividend, divisor,p_status);
+if(*p_status  != PDF_OK) /* Now dest is 20 */
 @{
    /* Error code */
 @}
@@ -891,7 +894,7 @@ if (pdf_i64_div (dest, dividend, divisor) != PDF_OK) /* Now dest is 20 */
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_i64_div_i32_dividend (pdf_i64_t *@var{dest}, const pdf_i32_t @var{dividend}, const pdf_i64_t @var{divisor})
+@deftypefun void pdf_i64_div_i32_dividend (pdf_i64_t *@var{dest}, const pdf_i32_t @var{dividend}, const pdf_i64_t @var{divisor}, pdf_status_t *@var{p_status})
 
 Division of a 32bit number and a 64bit number
 
@@ -925,7 +928,7 @@ if (pdf_i64_div (dest, 200, divisor) != PDF_OK) /* Now dest is 20 */
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_i64_div_i32_divisor (pdf_i64_t *@var{dest}, const pdf_i64_t @var{dividend}, const pdf_i32_t @var{divisor})
+@deftypefun void pdf_i64_div_i32_divisor (pdf_i64_t *@var{dest}, const pdf_i64_t @var{dividend}, const pdf_i32_t @var{divisor}, pdf_status_t *@var{p_status})
 
 Division of a 64bit number and a 32bit number
 
@@ -960,7 +963,7 @@ if (pdf_i64_div (dest, dividend, 10) != PDF_OK) /* Now dest is 20 */
 @end deftypefun
 
 
-@deftypefun pdf_status_t pdf_i64_mod (pdf_i64_t *@var{dest}, const pdf_i64_t @var{dividend}, const pdf_i64_t @var{divisor})
+@deftypefun void pdf_i64_mod (pdf_i64_t *@var{dest}, const pdf_i64_t @var{dividend}, const pdf_i64_t @var{divisor}, pdf_status_t *@var{p_status})
 
 Returns the remainder of the division between two 64 bit numbers
 
@@ -986,13 +989,13 @@ pdf_i64_t *dest;
 pdf_i64_t result;
 pdf_i64_t dividend;
 pdf_i64_t divisor;
-
+pdf_status_t *p_status;
 dividend = pdf_i64_new(0, 105);
 divisor = pdf_i64_new(0, 10);
 result = pdf_i64_new(0, 0);
 dest = &result;
-
-if (pdf_i64_mod (dest, dividend, divisor) != PDF_OK) /* Now dest is 5 */
+pdf_i64_mod (dest, dividend, divisor,p_status);
+if ( *p_status != PDF_OK) /* Now dest is 5 */
 @{
    /* Error code */
 @}	
@@ -1000,7 +1003,7 @@ if (pdf_i64_mod (dest, dividend, divisor) != PDF_OK) /* Now dest is 5 */
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_i64_mod_i32_dividend (pdf_i64_t *@var{dest}, const pdf_i32_t @var{dividend}, const pdf_i64_t @var{divisor})
+@deftypefun void pdf_i64_mod_i32_dividend (pdf_i64_t *@var{dest}, const pdf_i32_t @var{dividend}, const pdf_i64_t @var{divisor}, pdf_status_t *@var{p_status})
 
 Returns the remainder of the division between a 32bit number and a 64bit number
 
@@ -1038,7 +1041,7 @@ if (pdf_i64_mod (dest, 105, divisor) != PDF_OK) /* Now dest is 5 */
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_i64_mod_i32_divisor (pdf_i64_t *@var{dest}, const pdf_i64_t @var{dividend}, const pdf_i32_t @var{divisor})
+@deftypefun void pdf_i64_mod_i32_divisor (pdf_i64_t *@var{dest}, const pdf_i64_t @var{dividend}, const pdf_i32_t @var{divisor}, pdf_status_t *@var{p_status})
 
 Returns the remainder of the division between a 64bit number and a 32bit number
 
@@ -1076,7 +1079,7 @@ if (pdf_i64_mod (dest, dividend, 10) != PDF_OK) /* Now dest is 5 */
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_i64_abs (pdf_i64_t *@var{dest}, const pdf_i64_t @var{number})
+@deftypefun void pdf_i64_abs (pdf_i64_t *@var{dest}, const pdf_i64_t @var{number}, pdf_status_t *@var{p_status})
 
 Returns the absolute value
 
@@ -1099,12 +1102,12 @@ Operation successful
 pdf_i64_t *dest;
 pdf_i65_t result;
 pdf_i64_t number;
-
+pdf_status_t *p_status;
 number = pdf_i64_new ((32 << 1), 105); /*number is -105*/
 result = pdf_i64_new (0, 0);
 dest = &result;
-
-if (pdf_i64_abs (dest, number) != PDF_OK) /* now dest stores 105 */
+pdf_i64_abs (dest, number,p_status)
+if ( *p_status != PDF_OK) /* now dest stores 105 */
 @{
    /* Error code */
 @}
@@ -1180,7 +1183,7 @@ result = pdf_i64_cmp (number_1, 10); /* Now result is -1 */
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_i64_neg (pdf_i64_t *@var{dest}, const pdf_i64_t @var{number})
+@deftypefun void pdf_i64_neg (pdf_i64_t *@var{dest}, const pdf_i64_t @var{number}, pdf_status_t *@var{p_status})
 
 Changes sign of 64 bit integer
 
@@ -1201,12 +1204,12 @@ Operation successful
 pdf_i64_t *dest;
 pdf_i65_t result;
 pdf_i64_t number;
-
+pdf_status_t *p_status;
 number = pdf_i64_new (0, 10);
 result = pdf_i64_new (0, 0);
 dest = &result;
-
-if (pdf_i64_neg (dest, number) != PDF_OK) /* now dest stores -10 */
+pdf_i64_neg (dest, number,p_status)
+if ( *p_status != PDF_OK) /* now dest stores -10 */
 @{
    /* Error code */
 @}
@@ -5033,7 +5036,7 @@ pdf_time_get_local_cal (mytime, &cal);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_get_utc_cal (const pdf_time_t @var{time_var}, struct pdf_time_cal_s *@var{p_utc_cal})
+@deftypefun pdf_status_t pdf_time_get_utc_cal (const pdf_time_t @var{time_var}, struct pdf_time_cal_s *@var{p_cal_time})
 Get the UTC calendar time of a given time variable.
 
 @table @strong
@@ -5042,7 +5045,7 @@ Get the UTC calendar time of a given time variable.
 @table @var
 @item time_var
 A properly created time variable.
-@item p_utc_time
+@item p_cal_time
 A pointer to the calendar time structure that will hold the UTC time of @var{time_var}.
 @end table
 
@@ -5567,7 +5570,7 @@ pdf_time_span_set_from_i32 (&span, -10); /* The span is -10 seconds long */
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_span_negate (pdf_time_span_t *@var{p_span})
+@deftypefun pdf_status_t pdf_time_span_negate (pdf_time_span_t @var{span})
 
 Make a positive time span into a negative one or make a negative time
 span into a positive one.
@@ -5576,8 +5579,8 @@ span into a positive one.
 @item Parameters
 
 @table @var
-@item p_span
-Pointer to a properly created time span variable.
+@item span
+A properly created time span variable.
 @end table
 
 @item Returns
@@ -5706,7 +5709,7 @@ pdf_time_span_diff (span1, span2, span_diff);
 @end table
 @end deftypefun
 
-@deftypefun pdf_i64_t pdf_time_span_to_secs (const pdf_time_span_t @var{span})
+@deftypefun pdf_64_t pdf_time_span_to_secs (const pdf_time_span_t @var{span})
 
 Get the value of a time span in seconds. 
 
