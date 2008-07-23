@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-05-06 14:44:21 gerel"
+/* -*- mode: C -*- Time-stamp: "2008-07-23 08:36:28 gerel"
  *
  *       File:         pdf-hash.h
  *       Date:         Sat Apr  12 12:22:05 2008
@@ -29,24 +29,28 @@
 #include <stdio.h>
 #include <pdf-list.h>
 
+
+/* BEGIN PUBLIC */
+typedef void (*pdf_hash_element_dispose_fn_t) (const void *elt);
+/* END PUBLIC */
+
 struct pdf_hash_element_s
 {
   const char * key;
   const void * value;
+  pdf_hash_element_dispose_fn_t disp_fn;
 };
 
 typedef struct pdf_hash_element_s pdf_hash_element_t;
 
 /* BEGIN PUBLIC */
 
-typedef void (*pdf_hash_element_dispose_fn_t) (const void *elt);
 typedef void (*pdf_hash_key_dispose_fn_t) (const void *key);
 
 struct pdf_hash_s
 {
   /* Both are gl_lists */
   void *elements, *keys;
-  pdf_hash_element_dispose_fn_t dispose_fn;
 };
 
 struct pdf_hash_iterator_s
@@ -61,8 +65,7 @@ typedef struct pdf_hash_iterator_s pdf_hash_iterator_t;
 /* Creating and Destroying Hash Tables */
 
 pdf_status_t
-pdf_hash_create (pdf_hash_key_dispose_fn_t dispose_key_fn,
-                 pdf_hash_element_dispose_fn_t dispose_fn, pdf_hash_t *table);
+pdf_hash_create (pdf_hash_key_dispose_fn_t dispose_key_fn, pdf_hash_t *table);
 
 pdf_status_t
 pdf_hash_destroy (pdf_hash_t *table);
@@ -86,7 +89,8 @@ pdf_hash_rename (pdf_hash_t table, const char *key, const char *new_key);
  /* Adding and removing elements */
 
 pdf_status_t
-pdf_hash_add (pdf_hash_t table, const char *key, const void *element);
+pdf_hash_add (pdf_hash_t table, const char *key, const void *element,
+              pdf_hash_element_dispose_fn_t disp_fn);
 
 pdf_status_t
 pdf_hash_remove (pdf_hash_t table, const char *key);
@@ -108,6 +112,14 @@ pdf_hash_iterator_next (pdf_hash_iterator_t *iterator, const char **key);
 
 pdf_status_t
 pdf_hash_iterator_free (pdf_hash_iterator_t *iterator);
+
+/* Basic dispose functions */
+
+void
+pdf_hash_element_dealloc_fn (const void * elt);
+
+void
+pdf_hash_key_dealloc_fn (const void * elt);
 
 
 

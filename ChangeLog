@@ -1,3 +1,27 @@
+2008-07-21  gerel  <gerel@gnu.org>
+
+	* src/base/pdf-hash.c: changed API to allow the specification of
+	memory disposal functions in entry insertion time.
+	
+	* src/base/pdf-hash.h: same.
+
+	* src/base/pdf-fsys.c: fixed to conform API modifications.
+	
+	* torture/unit/base/hash/pdf-hash-add.c: same.
+	
+	* torture/unit/base/hash/pdf-hash-iterator-next.c: same.
+	
+	* torture/unit/base/hash/pdf-hash-key-p.c: same.
+	
+	* torture/unit/base/hash/pdf-hash-remove.c: same.
+	
+	* torture/unit/base/hash/pdf-hash-rename.c: same.
+	
+	* torture/unit/base/hash/pdf-hash-search.c: same.
+
+	* doc/gnupdf.texi: same.
+
+
 2008-07-21  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf-manual-wiki.init (mediawiki_preformatted): Fix a bug

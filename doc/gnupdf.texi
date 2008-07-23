@@ -1255,6 +1255,7 @@ num = pdf_i64_to_i32(bignum);
 * Adding and removing elements::
 * Searching elements::
 * Working with iterators::
+* Basic dispose functions::
 @end menu
 
 @node Hash Table Types
@@ -1282,17 +1283,15 @@ A function type for disposing hash keys.
 @node Creating and Destroying Hash Tables
 @subsection Creating and Destroying Hash Tables
 
-@deftypefun pdf_status_t pdf_hash_create (pdf_hash_key_dispose_fn_t @var{dispose_key_fn}, pdf_hash_element_dispose_fn_t @var{dispose_fn}, pdf_hash_t @var{*table})
+@deftypefun pdf_status_t pdf_hash_create (pdf_hash_key_dispose_fn_t @var{dispose_key_fn}, pdf_hash_t @var{*table})
 
-Create a new empty hash table. When some element is removed @var{dispose_fn} and @var{dispose_key_fn} are called, can be NULL.
+Create a new empty hash table. When some element is removed @var{dispose_key_fn} are called, can be NULL.
 
 @table @strong
 @item Parameters
 @table @var
 @item dispose_key_fn
 A pointer to a hash table element key dispose function or NULL.
-@item dispose_fn
-A pointer to a hash table element dispose function or NULL.
 @item table
 A pointer to a hash table.
 @end table
@@ -1424,7 +1423,7 @@ XXX
 @node Adding and removing elements
 @subsection Adding and removing elements
 
-@deftypefun pdf_status_t pdf_hash_add (pdf_hash_t @var{table}, const char @var{*key}, const void @var{*element}) 
+@deftypefun pdf_status_t pdf_hash_add (pdf_hash_t @var{table}, const char @var{*key}, const void @var{*element}, pdf_hash_element_dispose_fn_t @var{disp_fn} ) 
 
 Adds the element @var{element} with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done.
 
@@ -1437,6 +1436,8 @@ A hash table.
 A valid key string.
 @item element
 A pointer to the element being added.
+@item disp_fn
+A function called when @var{element} is removed. If NULL is given nothing is done.
 @end table
 @item Returns
 A pdf status value:
@@ -1595,6 +1596,52 @@ A pdf status value:
 @item PDF_OK
 The operation succeeded.
 @end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+
+@node Basic dispose functions
+@subsection Basic dispose functions
+
+These are the basic function implementations to free elements and
+keys. They should only be used if you allocated elements/keys with
+pdf_alloc() and don't need to free any other resource.
+
+@deftypefun void pdf_hash_element_dealloc_fn (const void * @var{elt})
+
+Deallocates @var{elt} with pdf_dealloc(). 
+
+@table @strong
+@item Parameters
+@table @var
+@item elt
+A pointer to the element being freed.
+@end table
+@item Returns
+Nothing.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun void pdf_hash_key_dealloc_fn (const void * @var{elt})
+
+Deallocates @var{elt} with pdf_dealloc(). 
+
+@table @strong
+@item Parameters
+@table @var
+@item elt
+A pointer to the element being freed.
+@end table
+@item Returns
+Nothing.
 @item Usage example
 @example
 XXX

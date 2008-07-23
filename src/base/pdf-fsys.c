@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-06-17 13:12:16 gerel"
+/* -*- mode: C -*- Time-stamp: "2008-07-23 08:35:40 gerel"
  *
  *       File:         pdf-fsys.c
  *       Date:         Thu May 22 15:51:13 2008
@@ -209,57 +209,68 @@ pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s item_props,
   *version_minor = item_props.version_minor;
 
   /* Associate values with hash keys */
-  if (pdf_hash_add (props_hash, "isHidden", (void *) is_hidden) !=
+  if (pdf_hash_add (props_hash, "isHidden", (void *) is_hidden,
+                    pdf_hash_element_dealloc_fn) !=
       PDF_OK)
     {
       return PDF_ERROR;
     }
-  if (pdf_hash_add (props_hash, "isReadOnly", (void *) is_read_only) !=
+  if (pdf_hash_add (props_hash, "isReadOnly", (void *) is_read_only,
+                    pdf_hash_element_dealloc_fn) !=
       PDF_OK)
     {
       return PDF_ERROR;
     }
-  if (pdf_hash_add (props_hash, "isCheckedOut", (void *) is_checked_out) !=
+  if (pdf_hash_add (props_hash, "isCheckedOut", (void *) is_checked_out,
+                    pdf_hash_element_dealloc_fn) !=
       PDF_OK)
     {
       return PDF_ERROR;
     }
-  if (pdf_hash_add (props_hash, "isPublished", (void *) is_published) !=
+  if (pdf_hash_add (props_hash, "isPublished", (void *) is_published,
+                    pdf_hash_element_dealloc_fn) !=
       PDF_OK)
     {
       return PDF_ERROR;
     }
-  if (pdf_hash_add (props_hash, "fileSizeHigh", (void *) file_size_high) !=
+  if (pdf_hash_add (props_hash, "fileSizeHigh", (void *) file_size_high,
+                    pdf_hash_element_dealloc_fn) !=
       PDF_OK)
     {
       return PDF_ERROR;
     }
-  if (pdf_hash_add (props_hash, "fileSizeLow", (void *) file_size_low) !=
+  if (pdf_hash_add (props_hash, "fileSizeLow", (void *) file_size_low,
+                    pdf_hash_element_dealloc_fn) !=
       PDF_OK)
     {
       return PDF_ERROR;
     }
-  if (pdf_hash_add (props_hash, "folderSize", (void *) folder_size) !=
+  if (pdf_hash_add (props_hash, "folderSize", (void *) folder_size,
+                    pdf_hash_element_dealloc_fn) !=
       PDF_OK)
     {
       return PDF_ERROR;
     }
-  if (pdf_hash_add (props_hash, "creatorCode", (void *) creator_code) !=
+  if (pdf_hash_add (props_hash, "creatorCode", (void *) creator_code,
+                    pdf_hash_element_dealloc_fn) !=
       PDF_OK)
     {
       return PDF_ERROR;
     }
-  if (pdf_hash_add (props_hash, "typeCode", (void *) type_code) !=
+  if (pdf_hash_add (props_hash, "typeCode", (void *) type_code,
+                    pdf_hash_element_dealloc_fn) !=
       PDF_OK)
     {
       return PDF_ERROR;
     }
-  if (pdf_hash_add (props_hash, "versionMajor", (void *) version_major) !=
+  if (pdf_hash_add (props_hash, "versionMajor", (void *) version_major,
+                    pdf_hash_element_dealloc_fn) !=
       PDF_OK)
     {
       return PDF_ERROR;
     }
-  if (pdf_hash_add (props_hash, "versionMinor", (void *) version_minor) !=
+  if (pdf_hash_add (props_hash, "versionMinor", (void *) version_minor,
+                    pdf_hash_element_dealloc_fn) !=
       PDF_OK)
     {
       return PDF_ERROR;

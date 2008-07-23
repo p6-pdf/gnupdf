@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-05-06 14:44:35 gerel"
+/* -*- mode: C -*- Time-stamp: "2008-07-23 08:36:37 gerel"
  *
  *       File:         pdf-hash.c
  *       Date:         Sat Apr  12 12:22:05 2008
@@ -62,8 +62,7 @@ static int key_numeric_cmp (const char *key1, const char *key2);
 static int key_compare (const void *key1, const void *key2);
 
 pdf_status_t
-pdf_hash_create (pdf_hash_key_dispose_fn_t dispose_key_fn,
-                 pdf_hash_element_dispose_fn_t dispose_fn, pdf_hash_t *table)
+pdf_hash_create (pdf_hash_key_dispose_fn_t dispose_key_fn, pdf_hash_t *table)
 {
   pdf_status_t st;
 
@@ -71,7 +70,6 @@ pdf_hash_create (pdf_hash_key_dispose_fn_t dispose_key_fn,
 
   if (table != NULL)
     {
-      table->dispose_fn = dispose_fn;
       table->elements = gl_list_create_empty (GL_LINKEDHASH_LIST,
                                               elem_key_equal, hash_pjw,
                                               NULL, 0);
@@ -103,9 +101,10 @@ pdf_hash_destroy (pdf_hash_t *table)
       itr = gl_list_iterator ((gl_list_t)table->elements);
       while (gl_list_iterator_next (&itr, &elt, NULL))
         {
-          if (table->dispose_fn != NULL)
+          if (((pdf_hash_element_t*)elt)->disp_fn != NULL)
             {
-              table->dispose_fn ((void*) ((pdf_hash_element_t*)elt)->value);
+              ((pdf_hash_element_t*)elt)->
+                disp_fn ((void*) ((pdf_hash_element_t*)elt)->value);
             }
           pdf_dealloc((pdf_hash_element_t*)elt);
         }
@@ -182,7 +181,8 @@ pdf_hash_rename (pdf_hash_t table, const char *key, const char *new_key)
 
 
 pdf_status_t
-pdf_hash_add (pdf_hash_t table, const char *key, const void *element)
+pdf_hash_add (pdf_hash_t table, const char *key, const void *element,
+              pdf_hash_element_dispose_fn_t disp_fn)
 {
   pdf_status_t st;
   pdf_hash_element_t *newelt;
@@ -195,6 +195,7 @@ pdf_hash_add (pdf_hash_t table, const char *key, const void *element)
         {
           newelt->key = key;
           newelt->value = element;
+          newelt->disp_fn = disp_fn;
           gl_list_add_first ((gl_list_t)table.elements, newelt);
           gl_sortedlist_add ((gl_list_t)table.keys, key_compare, key);
         }
@@ -232,10 +233,12 @@ pdf_hash_remove (pdf_hash_t table, const char *key)
           pdf_hash_element_t *removed;
           removed = (pdf_hash_element_t*)
                     gl_list_node_value((gl_list_t)table.elements, node);
-          if (table.dispose_fn != NULL)
+
+          if (removed->disp_fn != NULL)
             {
-              table.dispose_fn (removed->value);
+              removed->disp_fn (removed->value);
             }
+
           pdf_dealloc(removed);
           gl_list_remove_node ((gl_list_t)table.elements, node);
           gl_sortedlist_remove ((gl_list_t)table.keys, key_compare, key);
@@ -357,6 +360,10 @@ pdf_hash_iterator_free (pdf_hash_iterator_t *iterator)
   return PDF_OK;
 }
 
+
+
+
+
 static size_t
 hash_pjw (const void *elt)
 {
@@ -370,6 +377,20 @@ hash_pjw (const void *elt)
     h = *s + ((h << 9) | (h >> (SIZE_BITS - 9)));
 
   return h;
+}
+
+
+void
+pdf_hash_element_dealloc_fn (const void * elt)
+{
+  pdf_dealloc(elt);
+}
+
+
+void
+pdf_hash_key_dealloc_fn (const void * elt)
+{
+  pdf_dealloc(elt);
 }
 
 
