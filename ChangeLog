@@ -1,3 +1,9 @@
+2008-07-24  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-alloc.c (pdf_dealloc): Add the 'const' qualifier to
+	the pointer argument.
+	(pdf_realloc): Idem.
+
 2008-07-22  Daniel Vidal  <davr@pc_davr.deimos-space.com>
 
 	* src/base/pdf-types.c:  Fixed negative number handling in some functions. Also error handling issues fixed.
