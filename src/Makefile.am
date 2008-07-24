@@ -25,7 +25,8 @@ lib_LTLIBRARIES = libgnupdf.la
 
 LIST_MODULE_SOURCES = base/pdf-list.c base/pdf-list.h
 
-HASH_MODULE_SOURCES = base/pdf-hash.c base/pdf-hash.h
+HASH_MODULE_SOURCES = base/pdf-hash.c base/pdf-hash.h \
+                      base/pdf-hash-helper.c base/pdf-hash-helper.h
 
 ALLOC_MODULE_SOURCES = base/pdf-alloc.c base/pdf-alloc.h
 
@@ -122,8 +123,8 @@ PUBLIC_HDRS = pdf-global.h \
               base/pdf-stm-f-pred.h \
               base/pdf-stm-f-rl.h \
               base/pdf-stm-file.h \
-              base/pdf-stm.h
-
+              base/pdf-stm.h \
+              base/pdf-hash-helper.h 
 
 pdf.h : $(PUBLIC_HDRS)
 	chmod +x $(top_srcdir)/src/extract-public-hdr
