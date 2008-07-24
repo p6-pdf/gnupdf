@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-07-24 16:38:34 gerel"
+/* -*- mode: C -*- Time-stamp: "2008-07-24 19:19:09 gerel"
  *
  *       File:         pdf-hash-helper.c
  *       Date:         Thu Jul 24 21:05:05 2008
@@ -27,54 +27,11 @@
 #include <pdf-hash-helper.h>
 
 
-static void
-data_dispose_fn (const void *elt)
-{
-  return;
-}
-
-static void
-text_dispose_fn (const void *elt)
-{
-  return;
-}
-
-static void
-time_dispose_fn (const void *elt)
-{
-  return;
-}
-
-static void
-list_dispose_fn (const void *elt)
-{
-  return;
-}
-
-static void
-hash_dispose_fn (const void *elt)
-{
-  return;
-}
-
-static void
-stm_dispose_fn (const void *elt)
-{
-  return;
-}
-
-static void
-stm_filter_dispose_fn (const void *elt)
-{
-  return;
-}
-
-
-pdf_status_t
-pdf_hash_add_data (pdf_hash_t table, const char *key, const void *elt)
-{
-  return (pdf_hash_add(table,key,elt,data_dispose_fn));
-}
+static void text_dispose_fn (const void *elt);
+static void time_dispose_fn (const void *elt);
+static void list_dispose_fn (const void *elt);
+static void hash_dispose_fn (const void *elt);
+static void stm_dispose_fn (const void *elt);
 
 
 pdf_status_t
@@ -82,7 +39,6 @@ pdf_hash_add_text (pdf_hash_t table, const char *key, const pdf_text_t *elt)
 {
   return (pdf_hash_add(table,key,elt,text_dispose_fn));
 }
-
 
 pdf_status_t
 pdf_hash_add_time (pdf_hash_t table, const char *key, const pdf_time_t *elt)
@@ -112,11 +68,39 @@ pdf_hash_add_stm (pdf_hash_t table, const char *key, const pdf_stm_t *elt)
 }
 
 
-pdf_status_t
-pdf_hash_add_stm_filter (pdf_hash_t table, const char *key,
-                         const pdf_stm_filter_t *elt)
+static void
+text_dispose_fn (const void *elt)
 {
-  return (pdf_hash_add(table,key,elt,stm_filter_dispose_fn));
+  pdf_text_t *destroyed = (pdf_text_t*) elt;
+  pdf_text_destroy(*destroyed);
+}
+
+static void
+time_dispose_fn (const void *elt)
+{
+  pdf_time_t * destroyed = (pdf_time_t*) elt;
+  pdf_time_destroy(*destroyed);
+}
+
+static void
+list_dispose_fn (const void *elt)
+{
+  pdf_list_t * destroyed = (pdf_list_t*) elt;
+  pdf_list_destroy(*destroyed);
+}
+
+static void
+hash_dispose_fn (const void *elt)
+{
+  pdf_hash_destroy ((pdf_hash_t*)elt);
+}
+
+static void
+stm_dispose_fn (const void *elt)
+{
+  pdf_stm_t * stm = (pdf_stm_t*) elt;
+  pdf_stm_flush(*stm);
+  pdf_stm_close(*stm);
 }
 
 

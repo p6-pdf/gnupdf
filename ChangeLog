@@ -1,3 +1,9 @@
+2008-07-24  gerel  <gerel@gnu.org>
+
+	* src/base/pdf-hash-helper.[ch]: added helper functions.
+
+	* doc/gnupdf.texi: same.
+
 2008-07-23  gerel  <gerel@gnu.org>
 
 	* src/base/pdf-hash.c: changed API to allow the specification of

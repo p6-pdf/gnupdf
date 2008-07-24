@@ -1259,6 +1259,7 @@ num = pdf_i64_to_i32(bignum);
 * Searching elements::
 * Working with iterators::
 * Basic dispose functions::
+* Hash helper functions::
 @end menu
 
 @node Hash Table Types
@@ -1651,6 +1652,174 @@ XXX
 @end example
 @end table
 @end deftypefun
+
+
+@node Hash helper functions
+@subsection Hash helper functions
+
+These are specific functions for adding different types of elements (types defined by the library). They guarantee that when an element of one of these types is removed from a hash table the correct disposal function is called.
+
+NOTE: If you are going to use the element after the table containing the element is destroyed, in that case don't use these functions.
+
+@deftypefun pdf_status_t pdf_hash_add_text (pdf_hash_t @var{table}, const char @var{*key}, const pdf_text_t @var{*elt})
+
+Adds the text @var{elt} with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid key string.
+@item elt
+A pointer to the element being added.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@item PDF_EBADDATA
+Either @var{table}, @var{key} or @var{elt} is invalid.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+
+@deftypefun pdf_status_t pdf_hash_add_time (pdf_hash_t @var{table}, const char @var{*key}, const pdf_time_t @var{*elt})
+
+Adds the time @var{elt} with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid key string.
+@item elt
+A pointer to the element being added.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@item PDF_EBADDATA
+Either @var{table}, @var{key} or @var{elt} is invalid.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+
+
+@deftypefun pdf_status_t pdf_hash_add_list (pdf_hash_t @var{table}, const char @var{*key}, const pdf_list_t @var{*elt})
+
+Adds the list @var{elt} with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid key string.
+@item elt
+A pointer to the element being added.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@item PDF_EBADDATA
+Either @var{table}, @var{key} or @var{elt} is invalid.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+
+@deftypefun pdf_status_t pdf_hash_add_hash (pdf_hash_t @var{table}, const char @var{*key}, const pdf_hash_t @var{*elt})
+
+Adds the hash table @var{elt} with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid key string.
+@item elt
+A pointer to the element being added.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@item PDF_EBADDATA
+Either @var{table}, @var{key} or @var{elt} is invalid.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_hash_add_stm (pdf_hash_t @var{table}, const char @var{*key}, const pdf_stm_t @var{*elt})
+
+Adds the stream @var{elt} with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid key string.
+@item elt
+A pointer to the element being added.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@item PDF_EBADDATA
+Either @var{table}, @var{key} or @var{elt} is invalid.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
 
 
 @node Lists

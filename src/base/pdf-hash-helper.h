@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-07-24 16:38:35 gerel"
+/* -*- mode: C -*- Time-stamp: "2008-07-24 19:30:24 gerel"
  *
  *       File:         pdf-hash-helper.h
  *       Date:         Thu Jul 24 21:05:05 2008
@@ -36,9 +36,6 @@
 /* BEGIN PUBLIC */
 
 pdf_status_t
-pdf_hash_add_data (pdf_hash_t table, const char *key, const void *elt);
-
-pdf_status_t
 pdf_hash_add_text (pdf_hash_t table, const char *key, const pdf_text_t *elt);
 
 pdf_status_t
@@ -52,10 +49,6 @@ pdf_hash_add_hash (pdf_hash_t table, const char *key, const pdf_hash_t *elt);
 
 pdf_status_t
 pdf_hash_add_stm (pdf_hash_t table, const char *key, const pdf_stm_t *elt);
-
-pdf_status_t
-pdf_hash_add_stm_filter (pdf_hash_t table, const char *key,
-                         const pdf_stm_filter_t *elt);
 
 
 /* END PUBLIC */
