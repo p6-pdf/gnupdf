@@ -1,5 +1,10 @@
 2008-07-26  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf-hg.texi (Naming Functions): New section.
+	(Public functions in a module): New subsection.
+	(Private functions in a module): New subsection.
+	(Platform specific functions): New subsection.
+
 	* src/base/pdf-time-string.c: Include 'pdf-alloc.h'.
 
 	* src/base/pdf-time.c: Include 'pdf-alloc.h'.
