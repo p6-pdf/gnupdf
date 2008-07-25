@@ -25,7 +25,6 @@
 
 #include <config.h>
 #include <time.h>
-#include <pdf-base.h>
 #include <pdf-time.h>
 #include <pdf-time-context.h>
 #include <pdf-time-string.h>
