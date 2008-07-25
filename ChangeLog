@@ -9,6 +9,8 @@
 
 2008-07-25  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-list.h: Inline semantics in MacosX.
+
 	* src/Makefile.am (clean-local): Remove pdf.h
 
 	* doc/Makefile.am (clean-local): Remove generated info files.
