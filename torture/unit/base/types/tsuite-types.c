@@ -33,6 +33,10 @@ extern TCase *test_pdf_i64_add (void);
 extern TCase *test_pdf_i64_abs (void);
 extern TCase *test_pdf_i64_neg (void);
 extern TCase *test_pdf_i64_cmp (void);
+extern TCase *test_pdf_i64_mult (void);
+extern TCase *test_pdf_i64_div (void);
+extern TCase *test_pdf_i64_mod (void);
+extern TCase *test_pdf_i64_subtraction (void);
 
 Suite *
 tsuite_types ()
@@ -49,6 +53,10 @@ tsuite_types ()
   suite_add_tcase (s, test_pdf_i64_abs());
   suite_add_tcase (s, test_pdf_i64_neg());
   suite_add_tcase (s, test_pdf_i64_cmp());
+  suite_add_tcase (s, test_pdf_i64_mult());
+  suite_add_tcase (s, test_pdf_i64_div());
+  suite_add_tcase (s, test_pdf_i64_mod());
+  suite_add_tcase (s, test_pdf_i64_subtraction());
 
   return s;
 }

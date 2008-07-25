@@ -189,6 +189,7 @@ pdf_i64_abs (pdf_i64_t *dest,
   if (dest == NULL)
     {
       *p_status = PDF_ERROR;
+      return;
     }
 
   if (number.high < 0)
@@ -216,6 +217,7 @@ pdf_i64_neg (pdf_i64_t *dest,
   if (dest == NULL)
     {
       *p_status = PDF_ERROR;
+      return;
     }
 
   pdf_i64_t tempo, one;
@@ -237,6 +239,7 @@ pdf_i64_subtraction (pdf_i64_t *dest,
   if (dest == NULL)
     {
       *p_status = PDF_ERROR;
+      return;
     }
 
   pdf_i64_t neg_subtrahend;
@@ -349,17 +352,18 @@ pdf_i64_mult (pdf_i64_t *dest,
   if (dest == NULL)
     {
       *p_status = PDF_ERROR;
+      return;
     }
 
 
   /*Now check the signs of multiplier and multiplicand*/
   pdf_i64_assign(&zero,0,0, p_status);
-  if (pdf_i64_cmp(multiplier,zero) < 0)
+  if (pdf_i64_cmp(factor_1,zero) < 0)
     {
       result_sign = -1;
       pdf_i64_abs(&multiplier,multiplier, p_status);
     }
-  if (pdf_i64_cmp(multiplicand,zero) < 0)
+  if (pdf_i64_cmp(factor_2,zero) < 0)
     {
       pdf_i64_abs(&multiplicand,multiplicand, p_status);
       if (result_sign == -1)
@@ -547,12 +551,14 @@ pdf_i64_div (pdf_i64_t *dest,
   if (dest == NULL)
     {
       *p_status = PDF_ERROR;
+      return;
     }
 
   /*Check first if divisor != 0*/
   if (pdf_i64_cmp(zero,divisor) == 0)
     {
       *p_status = PDF_ERROR;
+      return;
     }
   /*Now check the signs fo divisor and dividend*/
   if (pdf_i64_cmp(divisor,zero) < 0)
@@ -777,6 +783,7 @@ pdf_i64_div (pdf_i64_t *dest,
   if (dest == NULL)
     {
       *p_status = PDF_ERROR;
+      return;
     }
   else
     {
@@ -829,12 +836,14 @@ pdf_i64_mod(pdf_i64_t *dest,
   if (dest == NULL)
     {
       *p_status = PDF_ERROR;
+      return;
     }
 
   /*Check first if divisor != 0*/
   if (pdf_i64_cmp(zero,divisor) == 0)
     {
       *p_status = PDF_ERROR;
+      return;
     }
   /*Now check the signs fo divisor and dividend*/
   if (pdf_i64_cmp(divisor,zero) < 0)
@@ -847,7 +856,7 @@ pdf_i64_mod(pdf_i64_t *dest,
       pdf_i64_abs(&dividend,dividend, p_status);
       if (result_sign == -1)
 	{
-	  result_sign = 1;
+	  result_sign = -1;
 	}
       else
 	{
@@ -1034,13 +1043,24 @@ pdf_i64_mod(pdf_i64_t *dest,
     }
   
 
-  pdf_i64_assign(dest,0,0, p_status);
-  pdf_i64_div(dest,temp,d_pdf, p_status);
   
   
+  if (result_sign == -1)
+    {
+      pdf_i64_t temp_sign;
+      pdf_i64_assign(&temp_sign,0,0, p_status);
+      pdf_i64_div(&temp_sign,temp,d_pdf, p_status);
+      pdf_i64_neg(dest, temp_sign, p_status);
+    }
+  else
+    {
+      pdf_i64_assign(dest,0,0, p_status);
+      pdf_i64_div(dest,temp,d_pdf, p_status);
+    }
   if (dest == NULL)
     {
       *p_status = PDF_ERROR;
+      return;
     }
   else
     {

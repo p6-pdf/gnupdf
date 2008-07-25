@@ -18,7 +18,7 @@
 
 EXTRA_DIST = pdf_filter.1
 
-noinst_TEXINFOS = gnupdf-tsd.texi
+noinst_TEXINFOS = gnupdf-tsd.texi gnupdf-hg.texi
 info_TEXINFOS = gnupdf.texi gnupdf-utils.texi
 gnupdf_TEXINFOS = fdl.texi
 
@@ -32,8 +32,9 @@ html-local:
 	texi2html --init-file=gnupdf-manual.init --css-include=manuals.css gnupdf.texi
 	texi2html --init-file=gnupdf-manual.init --css-include=manuals.css gnupdf-utils.texi
 	texi2html --init-file=gnupdf-manual.init --css-include=manuals.css gnupdf-tsd.texi
+	texi2html --init-file=gnupdf-hg.init --css-include=manuals.css gnupdf-hg.texi
 
-wiki: gnupdf.wiki gnupdf-utils.wiki gnupdf-tsd.wiki
+wiki: gnupdf.wiki gnupdf-utils.wiki gnupdf-tsd.wiki gnupdf-hg.wiki
 
 gnupdf.wiki: gnupdf.texi
 	texi2html --no-menu --init-file=gnupdf-manual-wiki.init gnupdf.texi
@@ -44,8 +45,12 @@ gnupdf-utils.wiki: gnupdf-utils.texi
 gnupdf-tsd.wiki: gnupdf-tsd.texi
 	texi2html --no-menu --init-file=gnupdf-manual-wiki.init gnupdf-tsd.texi
 
+gnupdf-hg.wiki: gnupdf-hg.texi
+	texi2html --no-menu --init-file=gnupdf-manual-wiki.init gnupdf-hg.texi
+
 clean-local:
-	-rm -f gnupdf.wiki gnupdf-utils.wiki
+	-rm -f gnupdf.info gnupdf-utils.info gnupdf-hg.info gnupdf-tsd.info
+	-rm -f gnupdf.wiki gnupdf-utils.wiki gnupdf-hg.wiki gnupdf-tsd.wiki
 	-rm -f gnupdf.html gnupdf-utils.html
 
 endif # TEXI2HTML
