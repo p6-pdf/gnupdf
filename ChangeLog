@@ -1,3 +1,12 @@
+2008-07-25  Aleksander Morgado  <aleksander@es.gnu.org>
+
+	* doc/gnupdf.texi (Platform-specific functions): New section including
+	the w32-specific `pdf_time_w32_set_from_filetime' function, to fastly
+	set the pdf_time_t to a given filetime-timescale epoch.
+	(Managing Time Values): New functions `pdf_time_set_from_i32' and
+	`pdf_time_set' in order to fastly set the pdf_time_t variable to a given
+	unix-timescale epoch.
+
 2008-07-25  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-list.h: Inline semantics in MacosX.
