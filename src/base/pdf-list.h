@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-05-06 15:10:40 gerel"
+/* -*- mode: C -*- Time-stamp: "08/07/25 02:58:39 jemarch"
  *
  *       File:         pdf-list.h
  *       Date:         Sat Mar 1 02:14:35 2008
@@ -70,7 +70,7 @@ typedef int (*pdf_list_element_compar_fn_t) (const void *elt1, const void *elt2)
 
 /* END PUBLIC */
 
-#if ! defined HAVE_INLINE && ! defined EXTERN_INLINE
+#if ! defined(HAVE_INLINE) && ! defined(COMPILING_PDF_LIST)
 
 /* BEGIN PUBLIC */
 
@@ -170,12 +170,35 @@ pdf_status_t pdf_list_iterator_free (pdf_list_iterator_t *iterator);
 /* END PUBLIC */
 
 #else
-
 /* Inlined versions of the functions */
 
-#ifndef EXTERN_INLINE
-#define EXTERN_INLINE extern inline
-#endif /* EXTERN_INLINE */
+#if __GNUC__ == 4 && __GNUC_MINOR__ >= 3 && defined(__GNUC_STDC_INLINE__)
+#  define FUCKING_C99_SEMANTICS
+#endif
+
+#if defined(COMPILING_PDF_LIST)
+#  if defined(FUCKING_C99_SEMANTICS)
+/* force exported copy */
+#    define EXTERN_INLINE extern inline
+#  else
+#    define EXTERN_INLINE
+#  endif
+#else
+/* For gcc >= 4.1 not working in C99 inline semantics by default
+   (including the annoying 4.2 warnings about the extern inline
+   hack) */
+#  if defined(__GNUC_STDC_INLINE__) || defined(__GNUC_GNU_INLINE__)
+#    define EXTERN_INLINE  static inline
+#  else
+#    define EXTERN_INLINE extern inline
+#  endif
+/* For gcc >= 4.3 with C99 semantics */
+#  if defined(FUCKING_C99_SEMANTICS)
+/* either inline or link to extern version at compiler's choice */
+#    undef EXTERN_INLINE
+#    define EXTERN_INLINE inline
+#  endif
+#endif /* COMPILING_PDF_LIST */
 
 #include <gl_array_list.h>
 
@@ -990,10 +1013,7 @@ pdf_list_sorted_indexof_from_to (const pdf_list_t list,
   return (st);
 }
 
-
-
-#endif /* HAVE_INLINE */
-
+#endif /* COMPILING_PDF_LIST */
 #endif /* PDF_LIST_H */
 
 /* End of pdf-list.h */

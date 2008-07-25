@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/03/14 19:29:12 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/07/25 00:32:31 jemarch"
  *
  *       File:         pdf-list.c
  *       Date:         Sat Mar 1 02:14:35 2008
@@ -23,7 +23,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#define EXTERN_INLINE
+#define COMPILING_PDF_LIST
 #include <pdf-list.h>
 
 /* End of pdf-list.c */
