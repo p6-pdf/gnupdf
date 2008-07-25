@@ -50,6 +50,8 @@
 
 /* Maximum length of strings, including trailing NUL */
 #define PDF_MAX_ISO8601_STR_LENGTH  30
+#define PDF_MAX_UTCASN1_STR_LENGTH  19
+#define PDF_MAX_GENASN1_STR_LENGTH  21
 #define PDF_MAX_PDFDATE_STR_LENGTH  24
 
 static pdf_status_t
@@ -412,8 +414,112 @@ pdf_status_t
 pdf_time_from_string_generalized_asn1(pdf_time_t time_var,
                                       const pdf_char_t *time_str)
 {
-  /* TODO */
-  return PDF_ERROR;
+  /*
+   *  Year:
+   *    YYYY (eg 1997)
+   *  Year and month:
+   *    YYYYMM (eg 199707)
+   *  Complete date:
+   *    YYYYMMDD (eg 19970716)
+   *  Complete date plus hours and minutes:
+   *    YYYYMMDDhhmmTZD (eg 199707161920+01:00)
+   *  Complete date plus hours, minutes and seconds:
+   *    YYYYMMDDhhmmssTZD (eg 19970716192030+01:00)
+   *  Complete date plus hours, minutes, seconds and a decimal fraction of a
+   *  second
+   *    YYYYMMDDThhmmss.sTZD (eg 1997071619:20:30.45+01:00)
+   *
+   *  where:
+   *  
+   *  YYYY = four-digit year
+   *  MM   = two-digit month (01=January, etc.)
+   *  DD   = two-digit day of month (01 through 31)
+   *  hh   = two digits of hour (00 through 23) (am/pm NOT allowed)
+   *  mm   = two digits of minute (00 through 59)
+   *  ss   = two digits of second (00 through 59)
+   *  s    = one or more digits representing a decimal fraction of a second
+   *  TZD  = time zone designator (Z or +hh:mm or -hh:mm)
+   *  
+   */
+  struct pdf_time_cal_s calendar;
+  pdf_size_t time_str_length = strlen((char *)time_str);
+  
+  /* Check minimum length */
+  if(time_str_length < 4)
+    {
+      PDF_DEBUG_BASE("Invalid Generalized ASN1 time string (too short): '%s'",
+                     time_str);
+      return PDF_EBADDATA;
+    }
+  
+  /* Reset calendar */
+  memset(&calendar, 0, sizeof(calendar));
+
+  while(1)
+    {
+      pdf_bool_t has_seconds = PDF_FALSE;
+      /* Get century */
+      __GET_FIELD2(time_str, 0, calendar.year);
+      calendar.year *= 100;
+      /* Get year in century */
+      __GET_FIELD2(time_str, 2, calendar.year);
+      /* more than year ? */
+      if(time_str_length == 4)
+        break;
+
+      
+      /* Get month */
+      __GET_FIELD2(time_str, 4, calendar.month);
+      /* more than month ? */
+      if(time_str_length == 6)
+        break;
+      
+      /* Get day */
+      __GET_FIELD2(time_str, 6, calendar.day);
+      /* more than day ? */
+      if(time_str_length == 8)
+        break;
+      
+      /* Get hour and minutes */
+      __GET_FIELD2(time_str, 8, calendar.hour);
+      __GET_FIELD2(time_str, 10, calendar.minute);
+      
+      /* Get second if available */
+      if((time_str[17] >= '0') && \
+         (time_str[17] <= '9'))
+        {
+          has_seconds = PDF_TRUE;
+          __GET_FIELD2(time_str, 12, calendar.second);
+        }
+      
+      /* Note: Fractional part of seconds not considered */
+
+      if(time_str[time_str_length-1] == 'Z')
+        {
+          break;
+        }      
+      
+      /* Get timezone offset hours */
+      __GET_FIELD2(time_str, (time_str_length-4), calendar.gmt_offset);
+      /* And convert it in minutes */
+      calendar.gmt_offset *= 60;
+      /* Get timezone offset minutes */
+      __GET_FIELD2(time_str, (time_str_length-2), calendar.gmt_offset);
+      /* Convert from minutes to seconds */
+      calendar.gmt_offset *= 60;
+      
+      /* Set proper sign */
+      if(time_str[(time_str_length-5)]=='-')
+        {
+          calendar.gmt_offset *= (-1);
+        }
+      
+      /* Stop loop :-) */
+      break;
+    }
+
+  /* Get time value from break-down calendar !*/
+  return pdf_time_from_cal(time_var, &calendar);
 }
 
 pdf_status_t
@@ -464,19 +570,15 @@ pdf_time_from_string_iso8601(pdf_time_t time_var,
   while(1)
     {
       pdf_bool_t has_seconds = PDF_FALSE;
-printf("YEAR0: %d\n",calendar.year);
       /* Get century */
       __GET_FIELD2(time_str, 0, calendar.year);
-printf("YEAR1: %d\n",calendar.year);
       calendar.year *= 100;
-printf("YEAR2: %d\n",calendar.year);
       /* Get year in century */
       __GET_FIELD2(time_str, 2, calendar.year);
       /* more than year ? */
       if(time_str_length == 4)
         break;
 
-      printf("YEAR3: %d\n",calendar.year);
       
       /* Get month */
       __GET_FIELD2(time_str, 5, calendar.month);
@@ -587,18 +689,123 @@ pdf_time_to_string_pdf(const pdf_time_t time_var)
 }
 
 
-/* Get Date as a string in ASN1 format */
+/* Get Date as a string in UTC-ASN1 format */
 pdf_char_t *
-pdf_time_to_string_asn1(const pdf_time_t time_var)
+pdf_time_to_string_utc_asn1(const pdf_time_t time_var)
 {
-  return NULL;
+  pdf_char_t *str;
+  struct pdf_time_cal_s calendar;
+
+  str = (pdf_char_t *)pdf_alloc(PDF_MAX_UTCASN1_STR_LENGTH*sizeof(pdf_char_t));
+  if(str != NULL)
+    {
+      if(pdf_time_get_local_cal(time_var, &calendar) == PDF_OK)
+        {
+          pdf_i32_t smallyear;
+          /* Convert 4-digit year to 2-digit year */
+          smallyear = calendar.year -1900;
+          while(smallyear > 99)
+            {
+              smallyear -= 100;
+            }
+
+	  if(calendar.gmt_offset != 0)
+            {
+              pdf_i32_t offset_hours;
+              pdf_i32_t offset_minutes;
+
+              offset_hours = (((calendar.gmt_offset < 0) ? (-1) : (1)) * calendar.gmt_offset) / 3600;
+              offset_minutes = (((calendar.gmt_offset < 0) ? (-1) : (1)) * calendar.gmt_offset) % 3600;
+              /* yymmddhhmmss+hhmm
+               * yymmddhhmmss-hhmm
+               */
+              sprintf((char *)str, "%s%d%s%d%s%d%s%d%s%d%s%d%c%s%d%s%d", \
+                      (smallyear < 10 ? "0" : ""), smallyear,                      
+                      (calendar.month < 10 ? "0" : ""), calendar.month,
+                      (calendar.day < 10 ? "0" : ""), calendar.day,
+                      (calendar.hour < 10 ? "0" : ""), calendar.hour,
+                      (calendar.minute < 10 ? "0" : ""), calendar.minute,
+                      (calendar.second < 10 ? "0" : ""), calendar.second,
+                      ((calendar.gmt_offset < 0) ? '-' : '+'),
+                      (offset_hours < 10 ? "0" : ""), offset_hours,
+                      (offset_minutes < 10 ? "0" : ""), offset_minutes);
+            }
+          else
+            {
+              /*
+               * yymmddhhmmssZ
+               */
+              sprintf((char *)str, "%s%d%s%d%s%d%s%d%s%d%s%dZ", \
+                      (smallyear < 10 ? "0" : ""), smallyear,
+                      (calendar.month < 10 ? "0" : ""), calendar.month,
+                      (calendar.day < 10 ? "0" : ""), calendar.day,
+                      (calendar.hour < 10 ? "0" : ""), calendar.hour,
+                      (calendar.minute < 10 ? "0" : ""), calendar.minute,
+                      (calendar.second < 10 ? "0" : ""), calendar.second);
+            }
+        }
+      else
+        {
+          PDF_DEBUG_BASE("Could not get local calendar from pdf_time_t...");
+          pdf_dealloc(str);
+          str = NULL;
+        }
+    }
+
+  return str;
 }
 
 /* Get Date as a string in Generalized ASN1 format */
 pdf_char_t *
 pdf_time_to_string_generalized_asn1(const pdf_time_t time_var)
 {
-  return NULL;
+  pdf_char_t *str;
+  struct pdf_time_cal_s calendar;
+
+  str = (pdf_char_t *)pdf_alloc(PDF_MAX_ISO8601_STR_LENGTH*sizeof(pdf_char_t));
+  if(str != NULL)
+    {
+      /* YYYYMMDDhhmmssTZD (eg 19970716192030+01:00) */
+      if(pdf_time_get_local_cal(time_var, &calendar) == PDF_OK)
+        {
+	  if(calendar.gmt_offset != 0)
+            {
+              pdf_i32_t offset_hours;
+              pdf_i32_t offset_minutes;
+
+              offset_hours = (((calendar.gmt_offset < 0) ? (-1) : (1)) * calendar.gmt_offset) / 3600;
+              offset_minutes = (((calendar.gmt_offset < 0) ? (-1) : (1)) * calendar.gmt_offset) % 3600;
+              sprintf((char *)str, "%4d%s%d%s%d%s%d%s%d%s%d%c%s%d%s%d", \
+                      calendar.year,
+                      (calendar.month < 10 ? "0" : ""), calendar.month,
+                      (calendar.day < 10 ? "0" : ""), calendar.day,
+                      (calendar.hour < 10 ? "0" : ""), calendar.hour,
+                      (calendar.minute < 10 ? "0" : ""), calendar.minute,
+                      (calendar.second < 10 ? "0" : ""), calendar.second,
+                      ((calendar.gmt_offset < 0) ? '-' : '+'),
+                      (offset_hours < 10 ? "0" : ""), offset_hours,
+                      (offset_minutes < 10 ? "0" : ""), offset_minutes);
+            }
+          else
+            {
+              sprintf((char *)str, "%4d%s%d%s%d%s%d%s%d%s%dZ", \
+                      calendar.year,
+                      (calendar.month < 10 ? "0" : ""), calendar.month,
+                      (calendar.day < 10 ? "0" : ""), calendar.day,
+                      (calendar.hour < 10 ? "0" : ""), calendar.hour,
+                      (calendar.minute < 10 ? "0" : ""), calendar.minute,
+                      (calendar.second < 10 ? "0" : ""), calendar.second);
+            }
+        }
+      else
+        {
+          PDF_DEBUG_BASE("Could not get local calendar from pdf_time_t...");
+          pdf_dealloc(str);
+          str = NULL;
+        }
+    }
+
+  return str;
 }
 
 /* Get Date as a string in ISO8601 format */
@@ -614,15 +821,14 @@ pdf_time_to_string_iso8601(const pdf_time_t time_var)
       /* YYYY-MM-DDThh:mm:ss.sTZD (eg 1997-07-16T19:20:30.45+01:00) */
       if(pdf_time_get_local_cal(time_var, &calendar) == PDF_OK)
         {
-          printf("Here year is: %d\n",calendar.year);
-          if(calendar.gmt_offset != 0)
+	  if(calendar.gmt_offset != 0)
             {
               pdf_i32_t offset_hours;
               pdf_i32_t offset_minutes;
 
               offset_hours = (((calendar.gmt_offset < 0) ? (-1) : (1)) * calendar.gmt_offset) / 3600;
               offset_minutes = (((calendar.gmt_offset < 0) ? (-1) : (1)) * calendar.gmt_offset) % 3600;
-              sprintf((char *)str, "%4d-%s%d-%s%dT%s%d:%s%d:%s%d.00%c%s%d:%s%d", \
+              sprintf((char *)str, "%4d-%s%d-%s%dT%s%d:%s%d:%s%d%c%s%d:%s%d", \
                       calendar.year,
                       (calendar.month < 10 ? "0" : ""), calendar.month,
                       (calendar.day < 10 ? "0" : ""), calendar.day,
@@ -635,7 +841,7 @@ pdf_time_to_string_iso8601(const pdf_time_t time_var)
             }
           else
             {
-              sprintf((char *)str, "%4d-%s%d-%s%dT%s%d:%s%d:%s%d.00Z", \
+              sprintf((char *)str, "%4d-%s%d-%s%dT%s%d:%s%d:%s%dZ", \
                       calendar.year,
                       (calendar.month < 10 ? "0" : ""), calendar.month,
                       (calendar.day < 10 ? "0" : ""), calendar.day,

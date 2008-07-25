@@ -58,9 +58,9 @@ pdf_char_t *
 pdf_time_to_string_pdf(const pdf_time_t time_var);
 
 
-/* Get Date as a string in ASN1 format */
+/* Get Date as a string in UTC-ASN1 format */
 pdf_char_t *
-pdf_time_to_string_asn1(const pdf_time_t time_var);
+pdf_time_to_string_utc_asn1(const pdf_time_t time_var);
 
 /* Get Date as a string in Generalized ASN1 format */
 pdf_char_t *
