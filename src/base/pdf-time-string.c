@@ -327,7 +327,7 @@ pdf_time_get_century_in_sliding_window(pdf_i32_t year_in_century)
 
 pdf_status_t
 pdf_time_from_string_utc_asn1(pdf_time_t time_var,
-                          const pdf_char_t *time_str)
+                              const pdf_char_t *time_str)
 {
   /*
    * yymmddhhmmZ

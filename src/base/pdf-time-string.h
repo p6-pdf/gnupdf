@@ -39,7 +39,7 @@ pdf_time_from_string_pdf(pdf_time_t time_var,
 /* Set time object contents based on Date in ASN1 format */
 pdf_status_t
 pdf_time_from_string_utc_asn1(pdf_time_t time_var,
-                         const pdf_char_t *time_str);
+                              const pdf_char_t *time_str);
 
 /* Set time object contents based on Date in Generalized ASN1 format */
 pdf_status_t
