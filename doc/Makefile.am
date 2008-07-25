@@ -49,6 +49,7 @@ gnupdf-hg.wiki: gnupdf-hg.texi
 	texi2html --no-menu --init-file=gnupdf-manual-wiki.init gnupdf-hg.texi
 
 clean-local:
+	-rm -f gnupdf.info gnupdf-utils.info gnupdf-hg.info gnupdf-tsd.info
 	-rm -f gnupdf.wiki gnupdf-utils.wiki gnupdf-hg.wiki gnupdf-tsd.wiki
 	-rm -f gnupdf.html gnupdf-utils.html
 

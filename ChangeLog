@@ -1,5 +1,9 @@
 2008-07-25  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/Makefile.am (clean-local): Remove pdf.h
+
+	* doc/Makefile.am (clean-local): Remove generated info files.
+
 	* src/base/pdf-list.h: Add support for c99 inline semantics.
 
 2008-07-24  Jose E. Marchesi  <jemarch@gnu.org>

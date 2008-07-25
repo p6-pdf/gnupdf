@@ -135,6 +135,7 @@ pdf.h : $(PUBLIC_HDRS)
 	echo "/* end of pdf.h */" >> $@
 
 clean-local:
+	rm -f $(srcdir)/pdf.h
 	rm -f $(srcdir)/*.gcno
 
 # End of Makefile.am
