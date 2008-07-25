@@ -90,7 +90,7 @@ struct pdf_time_cal_span_s {
 enum pdf_time_format_e {
   PDF_TIME_FORMAT_PDF,
   PDF_TIME_FORMAT_ISO_8601,
-  PDF_TIME_FORMAT_ASN1,
+  PDF_TIME_FORMAT_UTC_ASN1,
   PDF_TIME_FORMAT_GENERALIZED_ASN1
 };
 
