@@ -1,3 +1,26 @@
+2008-07-25  Aleksander Morgado  <aleksander@es.gnu.org>
+
+	* src/base/pdf-time.c (pdf_time_get_cal): Function simplified to avoid
+	using pdf_i64_t when not really needed. Also small bugfix in that
+	function to correctly move the time value to local time depending on
+	the gmt_offset.
+
+	* src/base/pdf-time-string.h (pdf_time_to_string_utc_asn1): Function
+	renamed from `pdf_time_to_string_asn1'.
+	(pdf_time_from_string_utc_asn1): Function renamed from
+	`pdf_time_from_string_asn1'.
+
+	* src/base/pdf-time-string.c: Implemented to/from routines for
+	UTC ASN1 and Generalized ASN1 date formats, as specified in the ASN1
+	reference.
+	(pdf_time_from_string_pdf): Function simplified.
+	(pdf_time_from_string_iso8601): Function simplified.
+
+	* doc/gnupdf.texi: Renamed enumeration  `PDF_TIME_FORMAT_ASN1' to
+	`PDF_TIME_FORMAT_UTC_ASN1'.
+
+	* src/base/pdf-time.h: Idem.
+
 2008-07-16  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* bootstrap: Output changed to mention Bazaar.
