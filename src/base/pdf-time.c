@@ -559,8 +559,8 @@ pdf_time_w32_set_from_filetime (pdf_time_t time_var,
 
     typedef struct _SYSTEMTIME {
       WORD wYear;
-      WORD wMonth;
-      WORD wDayOfWeek;
+      WORD wMonth;        (1: january, 2: february...)
+      WORD wDayOfWeek;    (0:sunday, 1: monday...)
       WORD wDay;
       WORD wHour;
       WORD wMinute;
@@ -593,7 +593,8 @@ pdf_time_w32_set_from_filetime (pdf_time_t time_var,
           calendar.second++;
         }
       calendar.gmt_offset = 0;
-      calendar.dow = 0; /* We don't really need to have a correct value here */
+      /* For us, sunday is 7 */
+      calendar.dow = (systemtime.wDayOfWeek == 0) ? 7: systemtime.wDayOfWeek;
       
       return pdf_time_from_cal(time_var,&calendar);
     }
