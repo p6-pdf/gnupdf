@@ -147,7 +147,7 @@ pdf_time_set_from_i64 (pdf_time_t time_var,
   /* Windows-specific function to set the time with a pdf_i64_t */
   pdf_status_t
   pdf_time_w32_set_from_filetime (pdf_time_t time_var,
-                                  pdf_i64_t  filetime);
+                                  const FILETIME *p_filetime);
 #endif
 
 

@@ -27,9 +27,11 @@
 #include <time.h>
 
 #include <pdf-alloc.h>
+#include <pdf-types.h>
 #include <pdf-time-context.h>
 #include <pdf-time-string.h>
 #include <pdf-time.h>
+
 
 #define PDF_SECS_PER_DAY      86400
 #define PDF_SECS_PER_HOUR      3600
