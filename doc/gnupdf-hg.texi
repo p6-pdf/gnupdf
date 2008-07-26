@@ -63,6 +63,7 @@ a good level of coherence in the codebase.
 
 @menu
 * File Headers::
+* Naming Functions::
 @end menu
 
 @node File Headers
@@ -107,6 +108,69 @@ template-expansion time.
 @item SHORT_DESCRIPTION
 A one-sentence brief description of the contents of the file. This
 description should not exceed one physical line of text.
+@end table
+
+@node Naming Functions
+@section Naming Functions
+
+@menu
+* Public functions in a module::
+* Private functions in a module::
+* Platform specific functions::
+@end menu
+
+@node Public functions in a module
+@subsection Public functions in a module
+
+All the public functions inside a module should use the following name
+convention:
+
+@example
+pdf_MODULE-NAME_...
+@end example
+
+where @var{module-name} is the canonical name of the module
+(e.g. @code{alloc} or @code{text}).
+
+Some modules are composed by more than one compilation unit. In that
+case the public functions should follow the following name convention:
+
+@example
+pdf_MODULE-NAME_PART-NAME_...
+@end example
+
+where @var{part-name} is the canonical name of that part of the module
+implementation (e.g. @code{pdf_stm_filter_...} where @code{filter} is
+the part name.
+
+@node Private functions in a module
+@subsection Private functions in a module
+
+The private (``static'') functions used in a module implementation
+should follow the same naming conventions as the public ones.
+
+@node Platform specific functions
+@subsection Platform specific functions
+
+The names for functions (both public and private) intended to be used
+if compiling for a specific platform should use the following name
+convention:
+
+@example
+pdf_MDULE-NAME[_PART-NAME]_PLATFORM_...
+@end example
+
+where @code{platform} is the canonical name for the target platform:
+
+@table @code
+@item gnu
+For GNU systems.
+@item posix
+For POSIX systems.
+@item win32
+For Windows systems.
+@item macos
+For Macos X systems.
 @end table
 
 @bye

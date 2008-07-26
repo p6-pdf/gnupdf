@@ -29,7 +29,6 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include <pdf-base.h>
 #include <pdf-alloc.h>
 #include <pdf-error.h>
 #include <pdf-list.h>

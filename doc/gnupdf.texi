@@ -4625,10 +4625,10 @@ string representation.
 PDF date strings.
 @item PDF_TIME_FORMAT_ISO_8601
 ISO 8601 date and time strings.
-@item PDF_TIME_FORMAT_ASN1
+@item PDF_TIME_FORMAT_UTC_ASN1
 UTC ASN1 date.
 @item PDF_TIME_FORMAT_GENERALIZED_ASN1
-ASN1 date.
+Generalized ASN1 date.
 @end table
 @end deftp
 

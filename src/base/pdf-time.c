@@ -25,11 +25,11 @@
 
 #include <config.h>
 #include <time.h>
-#include <pdf-base.h>
-#include <pdf-time.h>
+
+#include <pdf-alloc.h>
 #include <pdf-time-context.h>
 #include <pdf-time-string.h>
-
+#include <pdf-time.h>
 
 #define PDF_SECS_PER_DAY      86400
 #define PDF_SECS_PER_HOUR      3600
@@ -152,9 +152,9 @@ pdf_time_get_cal (const pdf_time_t time_var,
 {
   /* Based on glibc's __offtime function */
 
-  pdf_i64_t days;
+  pdf_i32_t days;
   pdf_i64_t aux64;
-  pdf_i64_t remaining;
+  pdf_i32_t remaining;
   pdf_i32_t years;
   pdf_i32_t months;
   pdf_time_t new_time_var;
@@ -173,62 +173,55 @@ pdf_time_get_cal (const pdf_time_t time_var,
       /* Modify time in the time object */
       delta = pdf_time_span_new();
       pdf_time_span_set_from_i32(&delta, time_var->gmt_offset);
-      pdf_time_add_span(time_var, delta);
+      pdf_time_add_span(new_time_var, delta);
       pdf_time_span_destroy(&delta);
     }
   
-  days = pdf_i64_new(0,0);
   aux64 = pdf_i64_new(0,0);
-  remaining = pdf_i64_new(0,0);
 
 
   /* Get date as days */
-  pdf_i64_div_i32_divisor(&days, new_time_var->seconds, PDF_SECS_PER_DAY, &p_status);
+  pdf_i64_div_i32_divisor(&aux64, new_time_var->seconds, PDF_SECS_PER_DAY, &p_status);
+  days = pdf_i64_to_i32(aux64);
   /* Get time in seconds */
-  pdf_i64_mod_i32_divisor(&remaining, new_time_var->seconds, PDF_SECS_PER_DAY, &p_status);
-
+  pdf_i64_mod_i32_divisor(&aux64, new_time_var->seconds, PDF_SECS_PER_DAY, &p_status);
+  remaining = pdf_i64_to_i32(aux64);
   /* Get hours */
-  pdf_i64_div_i32_divisor(&aux64, remaining, PDF_SECS_PER_HOUR, &p_status);
-  p_cal_time->hour = pdf_i64_to_i32(aux64);
-
+  p_cal_time->hour = remaining / PDF_SECS_PER_HOUR;
   /* Get remaining */
-  pdf_i64_mod_i32_divisor(&remaining, remaining, PDF_SECS_PER_HOUR, &p_status);
-  
+  remaining = remaining % PDF_SECS_PER_HOUR;
   /* Get minutes */
-  pdf_i64_div_i32_divisor(&aux64, remaining, PDF_MINS_PER_HOUR, &p_status);
-  p_cal_time->minute = pdf_i64_to_i32(aux64);
+  p_cal_time->minute = remaining / PDF_MINS_PER_HOUR;
   /* Get seconds */
-  pdf_i64_mod_i32_divisor(&aux64, remaining, PDF_MINS_PER_HOUR, &p_status);
-  p_cal_time->second = pdf_i64_to_i32(aux64);
-  
+  p_cal_time->second = remaining % PDF_MINS_PER_HOUR;
   
   /* Seems that Unix origin time was thursday */
-  pdf_i64_add_i32(&aux64, days, 4, &p_status);
-  pdf_i64_mod_i32_divisor(&aux64, aux64, 7, &p_status);
-  p_cal_time->dow = pdf_i64_to_i32(aux64);
+  p_cal_time->dow = ((days+4)%7);
     
-  
   years = 1970;
-  /* while (days < 0 || days >= (__isleap (y) ? 366 : 365)) */
-  while((pdf_i64_cmp_i32(days, 0) < 0) || \
-        (pdf_i64_cmp_i32(days, \
-                         (pdf_time_is_leap_year_p(years) ? \
-                          PDF_DAYS_IN_YEAR+1 : \
-                          PDF_DAYS_IN_YEAR)) >= 0))
+
+
+  while((days < 0) || \
+        (days >= (pdf_time_is_leap_year_p(years) ? \
+                  (PDF_DAYS_IN_YEAR+1) :  \
+                  (PDF_DAYS_IN_YEAR))))
     {
       pdf_i32_t yg;
       yg = years;
 
-      pdf_i64_div_i32_divisor(&aux64, days, PDF_DAYS_IN_YEAR, &p_status);
-      yg += pdf_i64_to_i32(aux64);
-      pdf_i64_mod_i32_divisor(&aux64, days, PDF_DAYS_IN_YEAR, &p_status);
-      yg -= (pdf_i64_cmp_i32(aux64, 0) < 0);
+      /* Compute number of years (assuming all years of 365 days) between the
+       *  origin and our date */
+      yg += (days / PDF_DAYS_IN_YEAR);
+      /* Get number of remaining days after having added the fixed-size years
+         If the number of remaining days is less than zero, go down 1 year */
+      yg -= ((days % PDF_DAYS_IN_YEAR) < 0);
+
 
 #define LEAPS_THRU_END_OF(y) ((y) / 4 - (y) / 100 + (y) / 400)
-  
-      pdf_i64_subtraction_i32_sub(&days, days, ((yg - years)*PDF_DAYS_IN_YEAR + \
-                                                LEAPS_THRU_END_OF (yg - 1) - \
-                                                LEAPS_THRU_END_OF (years - 1) ), &p_status);
+      /* Remove number of days due to the leap years */
+      days -= (((yg - years)*PDF_DAYS_IN_YEAR) +	\
+               (LEAPS_THRU_END_OF (yg - 1)) - \
+	       (LEAPS_THRU_END_OF (years - 1)));
       years = yg;
     }
 
@@ -236,17 +229,15 @@ pdf_time_get_cal (const pdf_time_t time_var,
   p_cal_time->year = years;// - 1900;
   
   for (months = 11; \
-       pdf_i64_to_i32(days) < pdf_time_get_days_before_month(p_cal_time->year,months); \
+       days < pdf_time_get_days_before_month(p_cal_time->year,months); \
        --months)
     continue;
 
-  pdf_i64_subtraction_i32_sub(&days, \
-                              days, \
-                              pdf_time_get_days_before_month(p_cal_time->year,months), &p_status);
+  days -= pdf_time_get_days_before_month(p_cal_time->year,months);
 
   /* Set month and day of month */
   p_cal_time->month = months;
-  p_cal_time->day = pdf_i64_to_i32(days) + 1;
+  p_cal_time->day = days + 1;
   
   /* Finally, set gmt offset */
   p_cal_time->gmt_offset = new_time_var->gmt_offset;
@@ -846,8 +837,8 @@ pdf_time_to_string (const pdf_time_t time_var,
       return pdf_time_to_string_pdf(time_var);
     case PDF_TIME_FORMAT_ISO_8601:
       return pdf_time_to_string_iso8601(time_var);
-    case PDF_TIME_FORMAT_ASN1:
-      return pdf_time_to_string_asn1(time_var);
+    case PDF_TIME_FORMAT_UTC_ASN1:
+      return pdf_time_to_string_utc_asn1(time_var);
     case PDF_TIME_FORMAT_GENERALIZED_ASN1:
       return pdf_time_to_string_generalized_asn1(time_var);
     default:
@@ -870,8 +861,8 @@ pdf_time_from_string (pdf_time_t time_var,
         return pdf_time_from_string_pdf(time_var, time_str);
       case PDF_TIME_FORMAT_ISO_8601:
         return pdf_time_from_string_iso8601(time_var, time_str);
-      case PDF_TIME_FORMAT_ASN1:
-        return pdf_time_from_string_asn1(time_var, time_str);
+      case PDF_TIME_FORMAT_UTC_ASN1:
+        return pdf_time_from_string_utc_asn1(time_var, time_str);
       case PDF_TIME_FORMAT_GENERALIZED_ASN1:
         return pdf_time_from_string_generalized_asn1(time_var, time_str);
       default:
