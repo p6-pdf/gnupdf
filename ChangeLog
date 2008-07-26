@@ -1,4 +1,7 @@
-2008-07-25  Aleksander Morgado  <aleksander@es.gnu.org>
+2008-07-26  Aleksander Morgado  <aleksander@es.gnu.org>
+
+	* doc/gnupdf-tsd.texi (Types Module): Added missing menu entries for a
+	correct compilation.
 
 	* doc/gnupdf.texi (Platform-specific functions): New section including
 	the w32-specific `pdf_time_w32_set_from_filetime' function, to fastly

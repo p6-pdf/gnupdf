@@ -75,6 +75,7 @@ Indices
 * List Module::
 * Hash Module::
 * Error Module::
+* Types Module::
 @end menu
 
 @node Memory Allocation Module
@@ -4302,6 +4303,15 @@ The program doesn't crash.
 @menu
 * pdf_i64_add::
 * pdf_i64_abs::
+* pdf_i64_assign::
+* pdf_i64_assign_quick::
+* pdf_i64_cmp::
+* pdf_i64_copy::
+* pdf_i64_neg::
+* pdf_i64_new::
+* pdf_i64_div::
+* pdf_i64_mult::
+* pdf_i64_mod::
 @end menu
 
 @node pdf_i64_add

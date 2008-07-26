@@ -4785,7 +4785,7 @@ pdf_time_clear (mytime);
 
 
 @deftypefun pdf_status_t pdf_time_set_from_u32 (pdf_time_t @var{time_var}, pdf_u32_t @var{seconds})
-This function will initialize @var{time_var} to the given Unix time (seconds since January 1st 1970).
+This function will initialize @var{time_var} to the given Unix time (seconds since January 1st 1970) in UTC timescale.
 The time is represented as a 32-bit unsigned integer.
 
 @table @strong
@@ -4815,7 +4815,7 @@ pdf_time_set_from_i32(mytime, 1217009657);
 @end deftypefun
 
 @deftypefun pdf_status_t pdf_time_set_from_i64 (pdf_time_t @var{time_var}, pdf_i64_t @var{seconds})
-This function will initialize @var{time_var} to the given Unix time (seconds since January 1st 1970).
+This function will initialize @var{time_var} to the given Unix time (seconds since January 1st 1970) in UTC timescale.
 The time is represented as a pdf_i64_t integer.
 
 @table @strong
@@ -5980,7 +5980,7 @@ if (pdf_time_cal_span_diff (&span1,
 @subsection Platform-specific functions
 
 @deftypefun pdf_status_t pdf_time_w32_set_from_filetime (pdf_time_t @var{time_var}, FILETIME *@var{p_filetime})
-This function will initialize @var{time_var} to the given Filetime.
+This function will initialize @var{time_var} to the given Filetime epoch in UTC timescale.
 
 This function is only available in Windows OS.
 
