@@ -131,6 +131,26 @@ pdf_status_t
 pdf_time_clear (pdf_time_t time_var);
 
 
+/* Set time value with a 32-bit unsigned integer */
+pdf_status_t
+pdf_time_set_from_u32 (pdf_time_t time_var,
+                       pdf_u32_t seconds);
+
+
+/* Set time value with a pdf_i64_t variable */
+pdf_status_t
+pdf_time_set_from_i64 (pdf_time_t time_var,
+                       pdf_i64_t  seconds);
+
+
+#ifdef PDF_HOST_WIN32
+  /* Windows-specific function to set the time with a pdf_i64_t */
+  pdf_status_t
+  pdf_time_w32_set_from_filetime (pdf_time_t time_var,
+                                  pdf_i64_t  filetime);
+#endif
+
+
 /* Add the time span represented by cal_span to the text object */
 pdf_status_t
 pdf_time_add_cal_span (pdf_time_t time_var,

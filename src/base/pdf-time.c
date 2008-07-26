@@ -517,6 +517,91 @@ pdf_time_destroy (pdf_time_t time_var)
   return PDF_OK;
 }
 
+
+/* Set time value with a 32-bit unsigned integer */
+pdf_status_t
+pdf_time_set_from_u32 (pdf_time_t time_var,
+                       pdf_u32_t seconds)
+{
+  pdf_status_t ret_code;
+  pdf_i64_assign(&(time_var->seconds), 0, seconds, &ret_code);
+  return ret_code;  
+}
+
+
+/* Set time value with a pdf_i64_t variable */
+pdf_status_t
+pdf_time_set_from_i64 (pdf_time_t time_var,
+                       pdf_i64_t  seconds)
+{
+  pdf_status_t ret_code;
+  pdf_i64_copy(seconds, &(time_var->seconds), &ret_code);
+  return ret_code;
+}
+
+#ifdef PDF_HOST_WIN32
+/* Windows-specific function to set the time with a FILETIME structure */
+pdf_status_t
+pdf_time_w32_set_from_filetime (pdf_time_t time_var,
+                                const FILETIME *p_filetime)
+{
+  SYSTEMTIME systemtime;
+
+  
+  /*
+    BOOL WINAPI
+    FileTimeToSystemTime(const FILETIME *lpFileTime,
+                         LPSYSTEMTIME lpSystemTime);
+
+    If the function succeeds, the return value is nonzero.
+
+    typedef struct _SYSTEMTIME {
+      WORD wYear;
+      WORD wMonth;
+      WORD wDayOfWeek;
+      WORD wDay;
+      WORD wHour;
+      WORD wMinute;
+      WORD wSecond;
+      WORD wMilliseconds;
+    } SYSTEMTIME;
+
+   */
+
+  /* Convert filetime to systemtime calendar */
+  if(FileTimeToSystemTime(p_filetime,&systemtime)==0)
+    {
+      PDF_DEBUG_BASE("FileTimeToSystemTime failed...");
+      return PDF_ERROR;
+    }
+  else
+    {
+      /* Convert from systemtime calendar to our pdf_time_cal_s */
+      struct pdf_time_cal_s calendar;
+
+      calendar.year = systemtime.wYear;
+      calendar.month = systemtime.wMonth;
+      calendar.day = systemtime.wDay;
+      calendar.hour = systemtime.wHour;
+      calendar.minute = systemtime.wMinute;
+      calendar.second = systemtime.wSecond;
+      /* Round seconds if milliseconds available */
+      if(systemtime.wMilliseconds >= 500)
+        {
+          calendar.second++;
+        }
+      calendar.gmt_offset = 0;
+      calendar.dow = 0; /* We don't really need to have a correct value here */
+      
+      return pdf_time_from_cal(time_var,&calendar);
+    }
+}
+#endif
+
+
+
+
+
 /* ------------------------- Managing Time Values --------------------------- */
 
 /* Copy the contents of a given pdf_time_t object */
