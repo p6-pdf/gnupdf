@@ -25,11 +25,11 @@
 
 #include <config.h>
 #include <time.h>
-#include <pdf-base.h>
-#include <pdf-time.h>
+
+#include <pdf-alloc.h>
 #include <pdf-time-context.h>
 #include <pdf-time-string.h>
-
+#include <pdf-time.h>
 
 #define PDF_SECS_PER_DAY      86400
 #define PDF_SECS_PER_HOUR      3600
@@ -213,7 +213,7 @@ pdf_time_get_cal (const pdf_time_t time_var,
        *  origin and our date */
       yg += (days / PDF_DAYS_IN_YEAR);
       /* Get number of remaining days after having added the fixed-size years
-      /* If the number of remaining days is less than zero, go down 1 year */
+         If the number of remaining days is less than zero, go down 1 year */
       yg -= ((days % PDF_DAYS_IN_YEAR) < 0);
 
 

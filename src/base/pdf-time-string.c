@@ -27,7 +27,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include <pdf-base.h>
+#include <pdf-alloc.h>
 #include <pdf-time-string.h>
 
 
