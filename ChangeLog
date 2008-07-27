@@ -3,6 +3,17 @@
 	* doc/Makefile.am (html-local): Use 'gnupdf-manual.init' to
 	generate the html version of the hackers guide.
 
+2008-07-26  Aleksander Morgado  <aleksander@es.gnu.org>
+
+	* src/base/pdf-types.h: Include windows.h if compiling for w32.
+
+	* src/base/pdf-time.[c|h] (pdf_time_set_from_u32): New function to
+	initialize a pdf_time_t with the Unix time given as a pdf_u32_t.
+	(pdf_time_set_from_i64): New function to initialize a pdf_time_t with
+	the Unix time given as a pdf_i64_t.
+	(pdf_time_w32_set_from_filetime): New w32-specific function to
+	initialize a pdf_time_t with a FILETIME structure.
+
 2008-07-26  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf-hg.texi (Naming Functions): New section.
