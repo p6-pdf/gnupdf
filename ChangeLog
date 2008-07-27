@@ -1,3 +1,8 @@
+2008-07-27  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/Makefile.am (html-local): Use 'gnupdf-manual.init' to
+	generate the html version of the hackers guide.
+
 2008-07-26  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf-hg.texi (Naming Functions): New section.

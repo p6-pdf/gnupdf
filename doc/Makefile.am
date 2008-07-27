@@ -32,7 +32,7 @@ html-local:
 	texi2html --init-file=gnupdf-manual.init --css-include=manuals.css gnupdf.texi
 	texi2html --init-file=gnupdf-manual.init --css-include=manuals.css gnupdf-utils.texi
 	texi2html --init-file=gnupdf-manual.init --css-include=manuals.css gnupdf-tsd.texi
-	texi2html --init-file=gnupdf-hg.init --css-include=manuals.css gnupdf-hg.texi
+	texi2html --init-file=gnupdf-manual.init --css-include=manuals.css gnupdf-hg.texi
 
 wiki: gnupdf.wiki gnupdf-utils.wiki gnupdf-tsd.wiki gnupdf-hg.wiki
 
