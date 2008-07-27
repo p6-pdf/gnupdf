@@ -4554,6 +4554,7 @@ enc = pdf_text_get_best_encoding (text, pref);
 * Managing Time Span Values::
 * Time Span Comparison::
 * Calendar Spans Management::
+* Platform-specific functions::
 @end menu
 
 @node Time Related Data Types
@@ -4781,6 +4782,69 @@ pdf_time_clear (mytime);
 @end example
 @end table
 @end deftypefun
+
+
+@deftypefun pdf_status_t pdf_time_set_from_u32 (pdf_time_t @var{time_var}, pdf_u32_t @var{seconds})
+This function will initialize @var{time_var} to the given Unix time (seconds since January 1st 1970) in UTC timescale.
+The time is represented as a 32-bit unsigned integer.
+
+@table @strong
+@item Parameters
+@table @var
+@item time_var 
+The time variable to set. Should be a properly create time variable.
+@item seconds
+Seconds since January 1st 1970, 32-bit unsigned value.
+@end table
+@item Returns
+A status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@end table
+@item Usage example
+@example
+pdf_time_t mytime;
+
+mytime = pdf_time_new ();
+
+pdf_time_set_from_i32(mytime, 1217009657);
+
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_time_set_from_i64 (pdf_time_t @var{time_var}, pdf_i64_t @var{seconds})
+This function will initialize @var{time_var} to the given Unix time (seconds since January 1st 1970) in UTC timescale.
+The time is represented as a pdf_i64_t integer.
+
+@table @strong
+@item Parameters
+@table @var
+@item time_var 
+The time variable to set. Should be a properly create time variable.
+@item seconds
+Seconds since January 1st 1970, pdf_i64_t variable.
+@end table
+@item Returns
+A status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@end table
+@item Usage example
+@example
+pdf_time_t mytime;
+pdf_i64_t  epoch = pdf_i64_new(0,1217009657);
+mytime = pdf_time_new ();
+
+pdf_time_set_from_i64(mytime, epoch);
+
+@end example
+@end table
+@end deftypefun
+
+
 
 @deftypefun pdf_status_t pdf_time_add_cal_span (pdf_time_t @var{time_var}, const struct pdf_time_cal_span_s *@var{p_cal_span})
 Add the time span represented by the calendar span under the address in @var{p_cal_span} to @var{time_var}.
@@ -5911,6 +5975,43 @@ if (pdf_time_cal_span_diff (&span1,
 @end example
 @end table
 @end deftypefun
+
+@node Platform-specific functions
+@subsection Platform-specific functions
+
+@deftypefun pdf_status_t pdf_time_w32_set_from_filetime (pdf_time_t @var{time_var}, FILETIME *@var{p_filetime})
+This function will initialize @var{time_var} to the given Filetime epoch in UTC timescale.
+
+This function is only available in Windows OS.
+
+@table @strong
+@item Parameters
+@table @var
+@item time_var 
+The time variable to set. Should be a properly create time variable.
+@item p_filetime
+Pointer to a valid FILETIME structure, containing 100-nanosecond intervals since 1 January 1601.
+@end table
+@item Returns
+A status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@end table
+@item Usage example
+@example
+pdf_time_t mytime;
+FILETIME filetime;
+mytime = pdf_time_new ();
+
+/* do stuff to get the FILETIME */
+
+pdf_time_w32_set_from_filetime(mytime, &filetime);
+
+@end example
+@end table
+@end deftypefun
+
 
 
 @node The Filesystem Module
