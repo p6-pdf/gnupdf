@@ -1,3 +1,7 @@
+2008-07-28  Jose E. Marchesi  <jemarch@gnu.org>
+
+	*  Fix timestamps.
+
 2008-07-27  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/Makefile.am (html-local): Use 'gnupdf-manual.init' to

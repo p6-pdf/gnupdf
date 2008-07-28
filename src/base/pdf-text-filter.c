@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: ""
+/* -*- mode: C -*- Time-stamp: "08/07/28 22:26:23 jemarch"
  *
  *       File:         pdf-text-filter.c
  *       Date:         Fri Feb 25 23:58:56 2008
