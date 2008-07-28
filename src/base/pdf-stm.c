@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/21 01:40:27 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/07/29 01:07:05 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -27,5 +27,52 @@
 
 #include <pdf-alloc.h>
 #include <pdf-stm.h>
+
+/*
+ * Public functions
+ */
+
+pdf_status_t
+pdf_stm_file_new (pdf_fsys_file_t file,
+                  pdf_off_t offset,
+                  pdf_size_t buffer_size,
+                  enum pdf_stm_mode_e mode,
+                  pdf_stm_t *stm)
+{
+  pdf_stm_t new;
+  pdf_hash_t null_filter_params;
+  pdf_hash_t null_filter_state;
+
+  /* Allocate memory for the new stream */
+  new = pdf_alloc (sizeof(struct pdf_stm_s));
+  
+  /* Initialize the stream attributes */
+  new->type = PDF_STM_FILE;
+  new->mode = mode;
+
+  /* Initialize the null filter */
+  pdf_hash_create (NULL, NULL, &null_filter_params);
+  pdf_hash_create (NULL, NULL, &null_filter_state);
+  new->filter = pdf_stm_filter_new (PDF_STM_FILTER_NULL,
+                                    null_filter_params,
+                                    buffer_size);
+
+  /* Initialize the filter backend */
+  new->backend = pdf_stm_be_new_file (file,
+                                      offset);
+  pdf_stm_filter_set_be (new->filter,
+                         new->backend);
+
+  /* Initialize the filter cache */
+  new->cache = pdf_stm_buffer_new (buffer_size);
+
+  /* Set the result */
+  *stm = new;
+
+  return PDF_OK;
+}
+
+
+
 
 /* End of pdf_stm.c */

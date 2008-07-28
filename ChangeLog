@@ -1,3 +1,12 @@
+2008-07-29  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-stm.c (pdf_stm_file_new): New function.
+
+	* src/base/pdf-stm.h: Offset parameter to 'pdf_stm_file_new'.
+
+	* doc/gnupdf.texi (Creating and Destroying Streams): Add an offset
+	parameter.
+
 2008-07-28  Jose E. Marchesi  <jemarch@gnu.org>
 
 	*  Fix timestamps.

@@ -2691,7 +2691,7 @@ The stm will be used to write data into the open file or memory buffer.
 @node Creating and Destroying Streams
 @subsection Creating and Destroying Streams
 
-@deftypefun pdf_status_t pdf_stm_file_new (pdf_fsys_file_t @var{file}, enum pdf_stm_mode_e @var{mode}, pdf_size_t @var{buffer_size})
+@deftypefun pdf_status_t pdf_stm_file_new (pdf_fsys_file_t @var{file}, pdf_off_t @var{offset}, enum pdf_stm_mode_e @var{mode}, pdf_size_t @var{buffer_size})
 
 Create a new stream operating in a given open file. 
 
@@ -2700,6 +2700,8 @@ Create a new stream operating in a given open file.
 @table @var
 @item file
 An open file.
+@item offset
+Position into the file.
 @item mode
 The operation mode for the stream.
 @item buffer_size
