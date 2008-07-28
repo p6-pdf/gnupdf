@@ -414,6 +414,7 @@ pdf_i64_to_i32(const pdf_i64_t bignum);
 
 #if defined _WIN32 || defined __WIN32__
  #define PDF_HOST_WIN32
+ #include <windows.h>
 #endif
 
 

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: ""
+/* -*- mode: C -*- Time-stamp: "08/07/28 22:27:29 jemarch"
  *
  *       File:         pdf-time.h
  *       Date:         Mon Apr 28 23:23:04 2008
@@ -90,7 +90,7 @@ struct pdf_time_cal_span_s {
 enum pdf_time_format_e {
   PDF_TIME_FORMAT_PDF,
   PDF_TIME_FORMAT_ISO_8601,
-  PDF_TIME_FORMAT_ASN1,
+  PDF_TIME_FORMAT_UTC_ASN1,
   PDF_TIME_FORMAT_GENERALIZED_ASN1
 };
 
@@ -129,6 +129,26 @@ pdf_time_copy (const pdf_time_t orig,
 /* Clear contents of the pdf_time_t object */
 pdf_status_t
 pdf_time_clear (pdf_time_t time_var);
+
+
+/* Set time value with a 32-bit unsigned integer */
+pdf_status_t
+pdf_time_set_from_u32 (pdf_time_t time_var,
+                       pdf_u32_t seconds);
+
+
+/* Set time value with a pdf_i64_t variable */
+pdf_status_t
+pdf_time_set_from_i64 (pdf_time_t time_var,
+                       pdf_i64_t  seconds);
+
+
+#ifdef PDF_HOST_WIN32
+  /* Windows-specific function to set the time with a pdf_i64_t */
+  pdf_status_t
+  pdf_time_w32_set_from_filetime (pdf_time_t time_var,
+                                  const FILETIME *p_filetime);
+#endif
 
 
 /* Add the time span represented by cal_span to the text object */

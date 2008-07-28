@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/25 02:58:39 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/07/25 15:28:17 jemarch"
  *
  *       File:         pdf-list.h
  *       Date:         Sat Mar 1 02:14:35 2008
@@ -173,6 +173,12 @@ pdf_status_t pdf_list_iterator_free (pdf_list_iterator_t *iterator);
 /* Inlined versions of the functions */
 
 #if __GNUC__ == 4 && __GNUC_MINOR__ >= 3 && defined(__GNUC_STDC_INLINE__)
+#  define FUCKING_C99_SEMANTICS
+#endif
+
+/* Apple's gcc build > 5400 (since Xcode 3.0) doesn't support GNU
+   inline in C99 mode */
+#if __APPLE_CC__ > 5400 && ! defined(FUCKING_C99_SEMANTICS) && __STDC_VERSION__ >= 199901L
 #  define FUCKING_C99_SEMANTICS
 #endif
 

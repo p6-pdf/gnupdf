@@ -1,4 +1,77 @@
+2008-07-28  Jose E. Marchesi  <jemarch@gnu.org>
+
+	*  Fix timestamps.
+
+2008-07-27  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/Makefile.am (html-local): Use 'gnupdf-manual.init' to
+	generate the html version of the hackers guide.
+
+2008-07-26  Aleksander Morgado  <aleksander@es.gnu.org>
+
+	* src/base/pdf-types.h: Include windows.h if compiling for w32.
+
+	* src/base/pdf-time.[c|h] (pdf_time_set_from_u32): New function to
+	initialize a pdf_time_t with the Unix time given as a pdf_u32_t.
+	(pdf_time_set_from_i64): New function to initialize a pdf_time_t with
+	the Unix time given as a pdf_i64_t.
+	(pdf_time_w32_set_from_filetime): New w32-specific function to
+	initialize a pdf_time_t with a FILETIME structure.
+
+	* doc/gnupdf-tsd.texi (Types Module): Added missing menu entries for a
+	correct compilation.
+
+	* doc/gnupdf.texi (Platform-specific functions): New section including
+	the w32-specific `pdf_time_w32_set_from_filetime' function, to fastly
+	set the pdf_time_t to a given filetime-timescale epoch.
+	(Managing Time Values): New functions `pdf_time_set_from_i32' and
+	`pdf_time_set' in order to fastly set the pdf_time_t variable to a given
+	unix-timescale epoch.
+
+2008-07-26  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-hg.texi (Naming Functions): New section.
+	(Public functions in a module): New subsection.
+	(Private functions in a module): New subsection.
+	(Platform specific functions): New subsection.
+
+	* src/base/pdf-time-string.c: Include 'pdf-alloc.h'.
+
+	* src/base/pdf-time.c: Include 'pdf-alloc.h'.
+
+2008-07-25  Aleksander Morgado  <aleksander@es.gnu.org>
+
+	* src/base/pdf-time.c (pdf_time_get_cal): Function simplified to avoid
+	using pdf_i64_t when not really needed. Also small bugfix in that
+	function to correctly move the time value to local time depending on
+	the gmt_offset.
+
+	* src/base/pdf-time-string.h (pdf_time_to_string_utc_asn1): Function
+	renamed from `pdf_time_to_string_asn1'.
+	(pdf_time_from_string_utc_asn1): Function renamed from
+	`pdf_time_from_string_asn1'.
+
+	* src/base/pdf-time-string.c: Implemented to/from routines for
+	UTC ASN1 and Generalized ASN1 date formats, as specified in the ASN1
+	reference.
+	(pdf_time_from_string_pdf): Function simplified.
+	(pdf_time_from_string_iso8601): Function simplified.
+
+	* doc/gnupdf.texi: Renamed enumeration  `PDF_TIME_FORMAT_ASN1' to
+	`PDF_TIME_FORMAT_UTC_ASN1'.
+
+	* src/base/pdf-time.h: Idem.
+
+	* src/base/pdf-time.c: Removed `pdf-base.h' header, as it should
+	not be included by any file in the base layer.
+
+	* src/base/pdf-time-string.c: Idem.
+
+	* src/base/pdf-text.h: Idem.
+
 2008-07-25  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-list.h: Inline semantics in MacosX.
 
 	* src/Makefile.am (clean-local): Remove pdf.h
 

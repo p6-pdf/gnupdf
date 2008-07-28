@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: ""
+/* -*- mode: C -*- Time-stamp: "08/07/28 22:26:57 jemarch"
  *
  *       File:         pdf-text-ucd-proplist.c
  *       Date:         Mon Mar 31 19:58:17 2008
