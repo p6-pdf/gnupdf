@@ -34,6 +34,10 @@
 
 2008-07-21  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-types.h: pdf_stm_pos_t is not pdf_off_t
+
+2008-07-21  Jose E. Marchesi  <jemarch@gnu.org>
+
 	* doc/gnupdf-manual-wiki.init (mediawiki_preformatted): Fix a bug
 	preventing the @example sections to appear in mediawiki output.
 

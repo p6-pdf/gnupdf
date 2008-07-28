@@ -20,10 +20,12 @@ Jose E. Marchesi: wrote AUTHORS configure.ac doc/gnupdf-manual.init
   src/base/pdf-stm-f-ahex.h src/base/pdf-stm-ahex.c
   src/base/pdf-stm-fax.h src/base/pdf-stm-fax.c
   src/base/pdf-stm-flate.h src/base/pdf-stm-flate.c
-  src/base/pdf-stm-file.h src/base/pdf-stm-file.c
   src/base/pdf-stm-f-null.h src/base/pdf-stm-f-null.c
   src/base/pdf-stm-f-rl.h src/base/pdf-stm-f-rl.c
-  src/base/pdf-stm-mem.h src/base/pdf-stm-mem.c src/base/pdf-types.h
+  src/base/pdf-stm-buffer.h src/base/pdf-stm-buffer.c
+  src/base/pdf-stm-filter.h src/base/pdf-stm-filter.c
+  src/base/pdf-stm-be.h src/base/pdf-stm-be.c
+  src/base/pdf-types.h
   src/base/pdf-types.c src/object/pdf-obj.h src/object/pdf-obj.c
   src/document/pdf-date.h src/document/pdf-date.c
   src/document/pdf-function.h src/document/pdf-function.c

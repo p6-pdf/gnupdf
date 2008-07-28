@@ -22,7 +22,7 @@ if ICONV
  ICONV_LIBS = -liconv
 endif #ICONV
 
-bin_PROGRAMS = pdf-filter
+#bin_PROGRAMS = pdf-filter
 
 LDADD = $(top_srcdir)/src/libgnupdf.la \
         $(ICONV_LIBS)

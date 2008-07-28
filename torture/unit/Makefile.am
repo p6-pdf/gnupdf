@@ -149,19 +149,17 @@ TEST_SUITE_TYPES = base/types/pdf-i64-new.c \
 		   base/types/pdf-i64-mult.c \
 		   base/types/pdf-i64-div.c \
 		   base/types/pdf-i64-mod.c \
- 		   base/types/pdf-i64-subtraction.c 
+		   base/types/pdf-i64-subtraction.c 
 
 TEST_ENVIRONMENT = CHARSETALIASDIR=$(top_srcdir)/lib
 
-TEST_FILES = $(TEST_SUITE_STM) \
-             $(TEST_SUITE_LIST) \
+TEST_FILES = $(TEST_SUITE_LIST) \
              $(TEST_SUITE_TEXT) \
              $(TEST_SUITE_HASH) \
              $(TEST_SUITE_ERROR) \
 	     $(TEST_SUITE_TYPES)
 
 TSUITE_FILES = base/alloc/tsuite-alloc.c \
-               base/stm/tsuite-stm.c \
                base/list/tsuite-list.c \
                base/text/tsuite-text.c \
                base/hash/tsuite-hash.c \

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/05/22 23:05:13 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/07/21 00:53:59 jemarch"
  *
  *       File:         pdf-types.h
  *       Date:         Sun Feb 10 21:30:00 2008
@@ -53,14 +53,14 @@
 #define PDF_U8_DIV 256;
 
 
-/* A variable of type `pdf_stm_pos_t' contain a byte-offset relative to
+/* A variable of type `pdf_off_t' contain a byte-offset relative to
    the beginning of a stream object. 
 
-   Please be careful manipulating `pdf_stm_pos_t' values. Its value is
+   Please be careful manipulating `pdf_off_t' values. Its value is
    assured to be a signed scalable one, but its size may be wider than
    a long. */
 #define NO_POS -1
-typedef off_t pdf_stm_pos_t;
+typedef off_t pdf_off_t;
 
 /* Memory indexes (size_t) */
 typedef size_t pdf_size_t;
