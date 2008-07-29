@@ -2691,7 +2691,7 @@ The stm will be used to write data into the open file or memory buffer.
 @node Creating and Destroying Streams
 @subsection Creating and Destroying Streams
 
-@deftypefun pdf_status_t pdf_stm_file_new (pdf_fsys_file_t @var{file}, pdf_off_t @var{offset}, enum pdf_stm_mode_e @var{mode}, pdf_size_t @var{buffer_size})
+@deftypefun pdf_status_t pdf_stm_file_new (pdf_fsys_file_t @var{file}, pdf_off_t @var{offset}, pdf_size_t @var{cache_size}, enum pdf_stm_mode_e @var{mode}, pdf_stm_t *@var{stm})
 
 Create a new stream operating in a given open file. 
 
@@ -2702,11 +2702,13 @@ Create a new stream operating in a given open file.
 An open file.
 @item offset
 Position into the file.
+@item cache_size
+The desired size for the stream cache, measured in octects. If it is
+@code{0} then the default size (4kb) is used.
 @item mode
 The operation mode for the stream.
-@item buffer_size
-The desired size for the stream buffer, measured in octects. If it is
-@code{0} then the default size (4kb) is used.
+@item stm
+A pointer to the stm to be created.
 @end table
 @item Returns
 A PDF status value:
@@ -2723,17 +2725,24 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_stm_mem_new (enum pdf_stm_mode_e @var{mode}, pdf_size_t @var{size})
+@deftypefun pdf_status_t pdf_stm_mem_new (pdf_char_t *@var{buffer}, pdf_size_t @var{size}, pdf_size_t @var{cache_size}, enum pdf_stm_mode_e @var{mode}, pdf_stm_t *@var{stm})
 
 Create a new stream operating in a memory buffer.
 
 @table @strong
 @item Parameters
 @table @var
-@item mode
-The operation mode for the stream.
+@item buffer
+Memory buffer where the information will be written-to or readed-from.
 @item size
 The desired size for the memory buffer, measured in octects.
+@item cache_size
+The desired size for the stream cache, measured in octects. If it is
+@code{0} then the default size (4kb) is used.
+@item mode
+The operation mode for the stream.
+@item stm
+A pointer to the stm to be created.
 @end table
 @item Returns
 A PDF status value:

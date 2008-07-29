@@ -1,3 +1,11 @@
+2008-07-30  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Creating and Destroying Streams): API updated.
+
+	* src/base/pdf-stm.c (pdf_stm_mem_new): New function.
+	(pdf_stm_alloc): New function.
+	(pdf_stm_init): New function.
+
 2008-07-29  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-stm.c (pdf_stm_file_new): New function.

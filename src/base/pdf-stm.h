@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/29 00:36:43 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/07/30 00:44:36 jemarch"
  *
  *       File:         pdf-stm.h
  *       Date:         Fri Jul  6 18:37:57 2007
@@ -59,6 +59,9 @@
 
 /* BEGIN PUBLIC */
 
+/* Default size for the stream caches */
+#define PDF_STM_DEFAULT_CACHE_SIZE 4096
+
 /* Mode to use when opening a stream */
 enum pdf_stm_mode_e
 {
@@ -95,11 +98,12 @@ typedef struct pdf_stm_s *pdf_stm_t;
 /* Creation and destruction */
 pdf_status_t pdf_stm_file_new (pdf_fsys_file_t file,
                                pdf_off_t offset,
-                               pdf_size_t buffer_size,
+                               pdf_size_t cache_size,
                                enum pdf_stm_mode_e mode,
                                pdf_stm_t *stm);
 pdf_status_t pdf_stm_mem_new (pdf_char_t *buffer,
                               pdf_size_t size,
+                              pdf_size_t cache_size,
                               enum pdf_stm_mode_e mode,
                               pdf_stm_t *stm);
 pdf_status_t pdf_stm_destroy (pdf_stm_t stm);
