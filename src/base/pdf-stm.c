@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/30 00:51:09 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/07/31 00:09:42 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -134,7 +134,8 @@ pdf_stm_init (pdf_size_t cache_size,
        * <null-filter> --> <cache> --> <backend>
        */
 
-      /* TODO */
+      pdf_stm_filter_set_out (stm->filter,
+                              stm->cache);
     }
 
   return PDF_OK;

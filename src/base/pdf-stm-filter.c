@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/29 01:05:04 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/08/01 21:16:35 jemarch"
  *
  *       File:         pdf-stm-filter.c
  *       Date:         Thu Jun 12 22:13:31 2008
@@ -122,6 +122,39 @@ pdf_stm_filter_set_out (pdf_stm_filter_t filter,
   return PDF_OK;
 }
 
+inline pdf_stm_buffer_t
+pdf_stm_filter_get_in (pdf_stm_filter_t filter)
+{
+  return filter->in;
+}
+
+inline pdf_size_t
+pdf_stm_filter_get_in_begin (pdf_stm_filter_t filter)
+{
+  return filter->in_begin;
+}
+
+inline void
+pdf_stm_filter_set_in_begin (pdf_stm_filter_t filter,
+                             pdf_size_t in_begin)
+{
+  filter->in_begin = in_begin;
+}
+
+inline pdf_size_t
+pdf_stm_filter_get_in_end (pdf_stm_filter_t filter)
+{
+  return filter->in_end;
+}
+
+inline void
+pdf_stm_filter_set_in_end (pdf_stm_filter_t filter,
+                           pdf_size_t in_end)
+{
+  filter->in_end = in_end;
+}
+
+
 pdf_size_t
 pdf_stm_filter_apply (pdf_stm_filter_t filter)
 {
@@ -136,10 +169,11 @@ pdf_stm_filter_apply (pdf_stm_filter_t filter)
   /* Note that at this point the output buffer should be empty => any
      previous contents of the buffer can be safely overwritten */
 
-  bytes_read = 0;
+  bytes_read = filter->out->size;
   bytes_produced = 0;
 
-  while (bytes_produced < filter->out->size)
+  while ((bytes_produced < filter->out->size) &&
+         (bytes_read == filter->out->size))
     {
       if (filter->in_begin == filter->in_end)
         {

@@ -1,3 +1,11 @@
+2008-08-01  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-stm-filter.c (pdf_stm_filter_get_in): New function.
+	(pdf_stm_filter_set_in_end): New function.
+	(pdf_stm_filter_get_in_end): New function.
+	(pdf_stm_filter_set_in_begin): New function.
+	(pdf_stm_filter_get_in_begin): New function.
+
 2008-07-30  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Creating and Destroying Streams): API updated.

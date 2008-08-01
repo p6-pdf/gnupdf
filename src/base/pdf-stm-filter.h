@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/28 23:04:45 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/08/01 21:17:57 jemarch"
    *
    *       File:         pdf-stm-filter.h
    *       Date:         Thu Jun 12 22:05:06 2008
@@ -99,6 +99,14 @@ inline pdf_status_t pdf_stm_filter_set_be (pdf_stm_filter_t filter,
                                            pdf_stm_be_t be);
 inline pdf_status_t pdf_stm_filter_set_out (pdf_stm_filter_t filter,
                                             pdf_stm_buffer_t buffer);
+inline pdf_stm_buffer_t pdf_stm_filter_get_in (pdf_stm_filter_t filter);
+inline pdf_size_t pdf_stm_filter_get_in_begin (pdf_stm_filter_t filter);
+inline void pdf_stm_filter_set_in_begin (pdf_stm_filter_t filter,
+                                         pdf_size_t in_size);
+inline pdf_size_t pdf_stm_filter_get_in_end (pdf_stm_filter_t filter);
+inline void pdf_stm_filter_set_in_end (pdf_stm_filter_t filter,
+                                       pdf_size_t out_size);
+
 pdf_size_t pdf_stm_filter_apply (pdf_stm_filter_t filter);
 pdf_status_t pdf_stm_filter_close (pdf_stm_filter_t filter);
 pdf_status_t pdf_stm_filter_reset (pdf_stm_filter_t filter);
