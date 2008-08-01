@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/31 00:09:42 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/08/01 21:28:43 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -34,6 +34,7 @@ static pdf_status_t pdf_stm_init (pdf_size_t buffer_size,
                                   enum pdf_stm_mode_e mode,
                                   pdf_stm_t stm);
 static inline pdf_stm_t pdf_stm_alloc (void);
+static inline void pdf_stm_dealloc (pdf_stm_t stm);
 
 /*
  * Public functions
@@ -141,6 +142,35 @@ pdf_stm_init (pdf_size_t cache_size,
   return PDF_OK;
 }
 
+pdf_status_t
+pdf_stm_destroy (pdf_stm_t stm)
+{
+  pdf_stm_filter_t filter;
+  pdf_stm_filter_t filter_to_delete;
+
+  /* FIXME: Make a flush? */
+
+  /* Destroy the backend */
+  pdf_stm_be_destroy (stm->backend);
+
+  /* Destroy the cache */
+  pdf_stm_buffer_destroy (stm->cache);
+
+  /* Destroy the filter chain */
+  filter = stm->filter;
+  while (filter != NULL)
+    {
+      filter_to_delete = filter;
+      filter = filter->next;
+      pdf_stm_filter_destroy (filter);
+    }
+
+  /* Deallocate the stm structure */
+  pdf_stm_dealloc (stm);
+
+  return PDF_OK;
+}
+
 static inline pdf_stm_t
 pdf_stm_alloc (void)
 {
@@ -148,6 +178,12 @@ pdf_stm_alloc (void)
 
   new =  pdf_alloc (sizeof(struct pdf_stm_s));
   return new;
+}
+
+static inline void
+pdf_stm_dealloc (pdf_stm_t stm)
+{
+  pdf_dealloc (stm);
 }
 
 /* End of pdf_stm.c */

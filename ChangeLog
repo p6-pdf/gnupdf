@@ -1,5 +1,8 @@
 2008-08-01  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-stm.c (pdf_stm_dealloc): New function.
+	(pdf_stm_destroy): New function.
+
 	* src/base/pdf-stm-filter.c (pdf_stm_filter_get_in): New function.
 	(pdf_stm_filter_set_in_end): New function.
 	(pdf_stm_filter_get_in_end): New function.
