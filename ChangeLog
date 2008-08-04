@@ -1,3 +1,19 @@
+2008-08-03  Zac Brown  <zac@zacbrown.org>
+	* src/base/pdf-fsys.h:
+	(struct pdf_fsys_item_props_s):	Remove the following unnecessary
+	fields: is_hidden, is_read_only, is_checked_out, is_published,
+	creator_code, type_code, version_major, version_minor. Added following fields: is_readable,
+	is_writable.
+
+	* src/base/pdf-fsys-disk.c: Implemented
+	pdf_fsys_disk_get_item_props, pdf_fsys_disk_readable_p,
+	pdf_fsys_disk_writable_p and pdf_fsys_disk_readable_p.
+
+	* doc/gnupdf.texi: Update documentation for
+	`struct pdf_fsys_item_props_s'. Added examples for `pdf_fsys_item_p',
+	`pdf_fsys_get_item_props', `pdf_fsys_item_readable_p' and
+	`pdf_fsys_item_writable_p'
+
 2008-07-28  Jose E. Marchesi  <jemarch@gnu.org>
 
 	*  Fix timestamps.

@@ -45,18 +45,13 @@
 struct pdf_fsys_item_props_s
 {
   pdf_bool_t is_hidden;
-  pdf_bool_t is_read_only;
-  pdf_bool_t is_checked_out;
-  pdf_bool_t is_published;
+  pdf_bool_t is_readable;
+  pdf_bool_t is_writable;
   pdf_time_t creation_date;
   pdf_time_t modification_date;
   pdf_u32_t file_size_high;
   pdf_u32_t file_size_low;
   pdf_u32_t folder_size;
-  pdf_u32_t creator_code;
-  pdf_u32_t type_code;
-  pdf_u32_t version_major;
-  pdf_u32_t version_minor;
 };
 
 /* Filesystem */
