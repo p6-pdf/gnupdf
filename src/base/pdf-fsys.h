@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/05/22 19:47:28 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/08/04 22:48:47 jemarch"
  *
  *       File:         pdf-fsys.h
  *       Date:         Thu May 22 15:49:59 2008
@@ -225,7 +225,7 @@ enum pdf_fsys_file_mode_e pdf_fsys_file_set_mode (pdf_fsys_file_t file,
 pdf_bool_t pdf_fsys_file_same_p (pdf_fsys_file_t file,
                                  pdf_text_t path);
 pdf_status_t pdf_fsys_file_get_pos (pdf_fsys_file_t file,
-                                  pdf_size_t *pos);
+                                    pdf_size_t *pos);
 pdf_status_t pdf_fsys_file_set_pos (pdf_fsys_file_t file,
                                     pdf_size_t new_pos);
 pdf_bool_t pdf_fsys_file_can_set_size_p (pdf_fsys_file_t file,

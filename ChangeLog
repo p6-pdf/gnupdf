@@ -1,5 +1,8 @@
 2008-08-04  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf.texi (Managing File Positions): Fix the entry for
+	'pdf_fsys_file_get_pos' to reflect the implementation.
+
 	* src/base/pdf-fsys.c (pdf_fsys_item_props_to_hash): Removed
 	unused variable 'type_code'.
 	(pdf_fsys_item_props_to_hash): Insert entries for 'creationDate'

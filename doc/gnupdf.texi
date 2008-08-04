@@ -6830,19 +6830,26 @@ XXX
 The following functions allow to move the input/output pointer of a
 buffer file (its ``current position'').
 
-@deftypefun pdf_size_t pdf_fsys_file_get_pos (pdf_fsys_file_t @var{file})
+@deftypefun pdf_status_t pdf_fsys_file_get_pos (pdf_fsys_file_t @var{file}, pdf_size_t *@var{pos})
 
-Get the current position in a given open file.
+Get the current position (in octects) in a given open file.
 
 @table @strong
 @item Parameters
 @table @var
 @item file
 An open file.
+@item pos
+The address of a @code{pdf_size_t} variable.
 @end table
 @item Returns
-A PDF size value indicating the offset (in octects) of the current
-position respecting the beginning of the file.
+A PDF status variable:
+@table @code
+@item PDF_OK
+The operation was successfully performed.
+@item PDF_ERROR
+The function call failed due to an error.
+@end table
 @item Usage example
 @example
 XXX
