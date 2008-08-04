@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-06-17 13:12:16 gerel"
+/* -*- mode: C -*- Time-stamp: "08/08/04 22:15:05 jemarch"
  *
  *       File:         pdf-fsys.c
  *       Date:         Thu May 22 15:51:13 2008
@@ -167,46 +167,34 @@ pdf_status_t
 pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s item_props,
                              pdf_hash_t props_hash)
 {
-  pdf_bool_t *is_hidden; 
-  pdf_bool_t *is_read_only;
-  pdf_bool_t *is_checked_out;
-  pdf_bool_t *is_published;
-  /* FIXME: */
-  /*  pdf_time_t creation_date; */
-  /*  pdf_time_t mod_date; */
+  pdf_bool_t *is_hidden;
+  pdf_bool_t *is_readable;
+  pdf_bool_t *is_writable;
   pdf_u32_t *file_size_high;
   pdf_u32_t *file_size_low;
   pdf_u32_t *folder_size;
-  pdf_u32_t *creator_code;
-  pdf_u32_t *type_code;
-  pdf_u32_t *version_major;
-  pdf_u32_t *version_minor;
+  pdf_char_t *creation_date_str;
+  pdf_char_t *mod_date_str;
 
   /* Allocate memory for the hash values */
   is_hidden = (pdf_bool_t *) pdf_alloc (sizeof(pdf_bool_t));
-  is_read_only = (pdf_bool_t *) pdf_alloc (sizeof(pdf_bool_t));
-  is_checked_out = (pdf_bool_t *) pdf_alloc (sizeof(pdf_bool_t));
-  is_published = (pdf_bool_t *) pdf_alloc (sizeof(pdf_bool_t));
+  is_readable = (pdf_bool_t *) pdf_alloc (sizeof(pdf_bool_t));
+  is_writable = (pdf_bool_t *) pdf_alloc (sizeof(pdf_bool_t));
   file_size_high = (pdf_u32_t*) pdf_alloc (sizeof(pdf_u32_t));
   file_size_low = (pdf_u32_t*) pdf_alloc (sizeof(pdf_u32_t));
   folder_size = (pdf_u32_t*) pdf_alloc (sizeof(pdf_u32_t));
-  creator_code = (pdf_u32_t*) pdf_alloc (sizeof(pdf_u32_t));
-  type_code = (pdf_u32_t*) pdf_alloc (sizeof(pdf_u32_t));
-  version_major = (pdf_u32_t*) pdf_alloc (sizeof(pdf_u32_t));
-  version_minor = (pdf_u32_t*) pdf_alloc (sizeof(pdf_u32_t));
-  
+
   /* Get the values from the props structure */
   *is_hidden = item_props.is_hidden;
-  *is_read_only = item_props.is_read_only;
-  *is_checked_out = item_props.is_checked_out;
-  *is_published = item_props.is_published;
+  *is_readable = item_props.is_readable;
+  *is_writable = item_props.is_writable;
   *file_size_high = item_props.file_size_high;
   *file_size_low = item_props.file_size_low;
   *folder_size = item_props.folder_size;
-  *creator_code = item_props.creator_code;
-  *type_code = item_props.type_code;
-  *version_major = item_props.version_major;
-  *version_minor = item_props.version_minor;
+  creation_date_str = pdf_time_to_string (item_props.creation_date,
+                                          PDF_TIME_FORMAT_PDF);
+  mod_date_str = pdf_time_to_string (item_props.modification_date,
+                                     PDF_TIME_FORMAT_PDF);
 
   /* Associate values with hash keys */
   if (pdf_hash_add (props_hash, "isHidden", (void *) is_hidden) !=
@@ -214,17 +202,22 @@ pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s item_props,
     {
       return PDF_ERROR;
     }
-  if (pdf_hash_add (props_hash, "isReadOnly", (void *) is_read_only) !=
+  if (pdf_hash_add (props_hash, "isReadable", (void *) is_readable) !=
       PDF_OK)
     {
       return PDF_ERROR;
     }
-  if (pdf_hash_add (props_hash, "isCheckedOut", (void *) is_checked_out) !=
+  if (pdf_hash_add (props_hash, "isWritable", (void *) is_writable) !=
       PDF_OK)
     {
       return PDF_ERROR;
     }
-  if (pdf_hash_add (props_hash, "isPublished", (void *) is_published) !=
+  if (pdf_hash_add (props_hash, "creationDate", (void *) creation_date_str) !=
+      PDF_OK)
+    {
+      return PDF_ERROR;
+    }
+  if (pdf_hash_add (props_hash, "modDate", (void *) mod_date_str) !=
       PDF_OK)
     {
       return PDF_ERROR;
@@ -244,27 +237,6 @@ pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s item_props,
     {
       return PDF_ERROR;
     }
-  if (pdf_hash_add (props_hash, "creatorCode", (void *) creator_code) !=
-      PDF_OK)
-    {
-      return PDF_ERROR;
-    }
-  if (pdf_hash_add (props_hash, "typeCode", (void *) type_code) !=
-      PDF_OK)
-    {
-      return PDF_ERROR;
-    }
-  if (pdf_hash_add (props_hash, "versionMajor", (void *) version_major) !=
-      PDF_OK)
-    {
-      return PDF_ERROR;
-    }
-  if (pdf_hash_add (props_hash, "versionMinor", (void *) version_minor) !=
-      PDF_OK)
-    {
-      return PDF_ERROR;
-    }
-
   /* Done */
   return PDF_OK;
 }

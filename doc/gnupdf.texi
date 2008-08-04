@@ -6168,18 +6168,13 @@ directory).
 
 @table @code
 @item pdf_bool_t is_hidden
-@item pdf_bool_t is_read_only
+@item pdf_bool_t is_readable
+@item pdf_bool_t is_writable
 @item pdf_time_t creation_date
 @item pdf_time_t modification_date
 @item pdf_u32_t file_size_high
 @item pdf_u32_t file_size_low
 @item pdf_u32_t folder_size
-@item pdf_u32_t creator_code
-@item pdf_u32_t type_code
-@item pdf_u32_t version_major
-@item pdf_u32_t version_minor
-@item pdf_bool_t is_checked_out
-@item pdf_bool_t is_published
 @end table
 @end deftp
 
@@ -6420,7 +6415,12 @@ The client does not have enough permissions to read the requested item.
 @end table
 @item Usage example
 @example
-XXX
+struct pdf_fsys_item_props_s item_props;
+pdf_text_t path = pdf_text_new_from_unicode (&text,
+                                             "/path/to/foo",
+                                             12, PDF_TEXT_UTF8);
+/* Get the properties for the item */
+pdf_status_t ret = pdf_fsys_get_item_props (NULL, path, &item_props);
 @end example
 @end table
 @end deftypefun
@@ -6435,7 +6435,9 @@ The key-value pairs returned in the hash variable are the following:
 @table @code
 @item isHidden
 Boolean value.
-@item isReadOnly
+@item isReadable
+Boolean value.
+@item isWritable
 Boolean value.
 @item creationDate
 Text value containing a PDF style date string.
@@ -6448,8 +6450,6 @@ Text value containing a PDF style date string.
 @item folderSize
 32bit unsigned integer value.
 @item creatorCode
-32bit unsigned integer value.
-@item typeCode
 32bit unsigned integer value.
 @item versionMajor
 32bit unsigned integer value.
@@ -6539,7 +6539,11 @@ The filesystem item is not readable.
 @end table
 @item Usage example
 @example
-XXX
+pdf_text_t path = pdf_text_new_from_unicode (&text,
+                                             "/path/to/foo",
+                                             12, PDF_TEXT_UTF8);
+/* Determine if the item is readable */
+pdf_bool_t ret = pdf_fsys_item_readable_p (NULL, path);
 @end example
 @end table
 @end deftypefun
@@ -6567,7 +6571,11 @@ The filesystem item is not writable.
 @end table
 @item Usage example
 @example
-XXX
+pdf_text_t path = pdf_text_new_from_unicode (&text,
+                                             "/path/to/foo",
+                                             12, PDF_TEXT_UTF8);
+/* Determine if the item is writable */
+pdf_bool_t ret = pdf_fsys_item_writable_p (NULL, path);
 @end example
 @end table
 @end deftypefun
