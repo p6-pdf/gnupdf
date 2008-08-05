@@ -1,3 +1,7 @@
+2008-08-05  Zac Brown  <zac@zacbrown.org>
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_get_item_props): Move variable
+	declaration outside #ifndef block to fix compilation on Win32.
+
 2008-08-04  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Managing File Positions): Fix the entry for

@@ -468,9 +468,9 @@ pdf_fsys_disk_get_item_props (pdf_text_t path_name,
   pdf_char_t* ascii_path;
   pdf_u32_t ascii_path_len;
   pdf_status_t ret_code;
+  unsigned int access_mode;
 #ifndef PDF_HOST_WIN32
   struct stat file_info;
-  unsigned int access_mode;
 #else
   WIN32_FIND_DATA file_info;
   HANDLE file_handle;
