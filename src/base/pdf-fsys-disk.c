@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/06/13 11:55:13 jco"
+/* -*- mode: C -*- Time-stamp: "08/08/05 23:02:42 jemarch"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -468,9 +468,9 @@ pdf_fsys_disk_get_item_props (pdf_text_t path_name,
   pdf_char_t* ascii_path;
   pdf_u32_t ascii_path_len;
   pdf_status_t ret_code;
+  unsigned int access_mode;
 #ifndef PDF_HOST_WIN32
   struct stat file_info;
-  unsigned int access_mode;
 #else
   WIN32_FIND_DATA file_info;
   HANDLE file_handle;
@@ -514,7 +514,7 @@ pdf_fsys_disk_get_item_props (pdf_text_t path_name,
   item_props->file_size_high = 0;
   item_props->file_size_low = file_info.st_size;
 #else /* !PDF_HOST_WIN32 */
-  file_handle = FindFirstFile(ascii_path, &file_info);
+  file_handle = FindFirstFile((char *) ascii_path, &file_info);
   if (file_handle == INVALID_HANDLE_VALUE)
     {
       goto set_error;
