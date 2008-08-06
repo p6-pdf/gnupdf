@@ -129,6 +129,46 @@
 	the pointer argument.
 	(pdf_realloc): Idem.
 
+2008-07-24  gerel  <gerel@gnu.org>
+
+	* src/base/pdf-hash-helper.[ch]: added helper functions.
+
+	* doc/gnupdf.texi: same.
+
+2008-07-23  gerel  <gerel@gnu.org>
+
+	* src/base/pdf-hash.c: changed API to allow the specification of
+	memory disposal functions in entry insertion time and removed
+	table-wide disposal function.
+
+	* src/base/pdf-hash.h: same.
+
+	* src/base/pdf-fsys.c: fixed to conform API modifications.
+
+	* torture/unit/base/hash/pdf-hash-add.c: same.
+
+	* torture/unit/base/hash/pdf-hash-create.c: same.
+
+	* torture/unit/base/hash/pdf-hash-destroy.c: same.
+
+	* torture/unit/base/hash/pdf-hash-iterator-free.c: same.
+
+	* torture/unit/base/hash/pdf-hash-iterator-next.c: same.
+
+	* torture/unit/base/hash/pdf-hash-iterator.c: same.
+
+	* torture/unit/base/hash/pdf-hash-key-p.c: same.
+
+	* torture/unit/base/hash/pdf-hash-remove.c: same.
+
+	* torture/unit/base/hash/pdf-hash-rename.c: same.
+
+	* torture/unit/base/hash/pdf-hash-search.c: same.
+
+	* torture/unit/base/hash/pdf-hash-size.c: same.
+
+	* doc/gnupdf.texi: same.
+
 2008-07-22  Daniel Vidal  <davr@pc_davr.deimos-space.com>
 
 	* src/base/pdf-types.c:  Fixed negative number handling in some functions. Also error handling issues fixed.

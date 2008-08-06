@@ -1258,6 +1258,8 @@ num = pdf_i64_to_i32(bignum);
 * Adding and removing elements::
 * Searching elements::
 * Working with iterators::
+* Basic dispose functions::
+* Hash helper functions::
 @end menu
 
 @node Hash Table Types
@@ -1285,17 +1287,15 @@ A function type for disposing hash keys.
 @node Creating and Destroying Hash Tables
 @subsection Creating and Destroying Hash Tables
 
-@deftypefun pdf_status_t pdf_hash_create (pdf_hash_key_dispose_fn_t @var{dispose_key_fn}, pdf_hash_element_dispose_fn_t @var{dispose_fn}, pdf_hash_t @var{*table})
+@deftypefun pdf_status_t pdf_hash_create (pdf_hash_key_dispose_fn_t @var{dispose_key_fn}, pdf_hash_t @var{*table})
 
-Create a new empty hash table. When some element is removed @var{dispose_fn} and @var{dispose_key_fn} are called, can be NULL.
+Create a new empty hash table. When some element is removed @var{dispose_key_fn} are called, can be NULL.
 
 @table @strong
 @item Parameters
 @table @var
 @item dispose_key_fn
 A pointer to a hash table element key dispose function or NULL.
-@item dispose_fn
-A pointer to a hash table element dispose function or NULL.
 @item table
 A pointer to a hash table.
 @end table
@@ -1427,7 +1427,7 @@ XXX
 @node Adding and removing elements
 @subsection Adding and removing elements
 
-@deftypefun pdf_status_t pdf_hash_add (pdf_hash_t @var{table}, const char @var{*key}, const void @var{*element}) 
+@deftypefun pdf_status_t pdf_hash_add (pdf_hash_t @var{table}, const char @var{*key}, const void @var{*element}, pdf_hash_element_dispose_fn_t @var{disp_fn} ) 
 
 Adds the element @var{element} with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done.
 
@@ -1440,6 +1440,8 @@ A hash table.
 A valid key string.
 @item element
 A pointer to the element being added.
+@item disp_fn
+A function called when @var{element} is removed. If NULL is given nothing is done.
 @end table
 @item Returns
 A pdf status value:
@@ -1604,6 +1606,220 @@ XXX
 @end example
 @end table
 @end deftypefun
+
+
+@node Basic dispose functions
+@subsection Basic dispose functions
+
+These are the basic function implementations to free elements and
+keys. They should only be used if you allocated elements/keys with
+pdf_alloc() and don't need to free any other resource.
+
+@deftypefun void pdf_hash_element_dealloc_fn (const void * @var{elt})
+
+Deallocates @var{elt} with pdf_dealloc(). 
+
+@table @strong
+@item Parameters
+@table @var
+@item elt
+A pointer to the element being freed.
+@end table
+@item Returns
+Nothing.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun void pdf_hash_key_dealloc_fn (const void * @var{elt})
+
+Deallocates @var{elt} with pdf_dealloc(). 
+
+@table @strong
+@item Parameters
+@table @var
+@item elt
+A pointer to the element being freed.
+@end table
+@item Returns
+Nothing.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+
+@node Hash helper functions
+@subsection Hash helper functions
+
+These are specific functions for adding different types of elements (types defined by the library). They guarantee that when an element of one of these types is removed from a hash table the correct disposal function is called.
+
+NOTE: If you are going to use the element after the table containing the element is destroyed, in that case don't use these functions.
+
+@deftypefun pdf_status_t pdf_hash_add_text (pdf_hash_t @var{table}, const char @var{*key}, const pdf_text_t @var{*elt})
+
+Adds the text @var{elt} with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid key string.
+@item elt
+A pointer to the element being added.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@item PDF_EBADDATA
+Either @var{table}, @var{key} or @var{elt} is invalid.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+
+@deftypefun pdf_status_t pdf_hash_add_time (pdf_hash_t @var{table}, const char @var{*key}, const pdf_time_t @var{*elt})
+
+Adds the time @var{elt} with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid key string.
+@item elt
+A pointer to the element being added.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@item PDF_EBADDATA
+Either @var{table}, @var{key} or @var{elt} is invalid.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+
+
+@deftypefun pdf_status_t pdf_hash_add_list (pdf_hash_t @var{table}, const char @var{*key}, const pdf_list_t @var{*elt})
+
+Adds the list @var{elt} with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid key string.
+@item elt
+A pointer to the element being added.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@item PDF_EBADDATA
+Either @var{table}, @var{key} or @var{elt} is invalid.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+
+@deftypefun pdf_status_t pdf_hash_add_hash (pdf_hash_t @var{table}, const char @var{*key}, const pdf_hash_t @var{*elt})
+
+Adds the hash table @var{elt} with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid key string.
+@item elt
+A pointer to the element being added.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@item PDF_EBADDATA
+Either @var{table}, @var{key} or @var{elt} is invalid.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_hash_add_stm (pdf_hash_t @var{table}, const char @var{*key}, const pdf_stm_t @var{*elt})
+
+Adds the stream @var{elt} with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid key string.
+@item elt
+A pointer to the element being added.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@item PDF_EBADDATA
+Either @var{table}, @var{key} or @var{elt} is invalid.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
 
 
 @node Lists

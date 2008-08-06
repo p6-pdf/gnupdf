@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-04-16 20:16:29 gerel"
+/* -*- mode: C -*- Time-stamp: "2008-07-23 08:11:50 gerel"
  *
  *       File:         pdf-hash-create.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -42,7 +42,7 @@ START_TEST (pdf_hash_create_001)
 {
   pdf_hash_t table;
 
-  fail_if (pdf_hash_create (NULL, NULL, &table) != PDF_OK);
+  fail_if (pdf_hash_create (NULL, &table) != PDF_OK);
 
   pdf_hash_destroy (&table);
 }
@@ -57,7 +57,7 @@ END_TEST
  */
 START_TEST (pdf_hash_create_002)
 {
-  fail_if (pdf_hash_create (NULL, NULL, NULL) != PDF_EBADDATA);
+  fail_if (pdf_hash_create (NULL, NULL) != PDF_EBADDATA);
 }
 END_TEST
 

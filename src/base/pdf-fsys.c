@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/08/04 22:15:05 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/08/06 23:44:05 jemarch"
  *
  *       File:         pdf-fsys.c
  *       Date:         Thu May 22 15:51:13 2008
@@ -197,46 +197,55 @@ pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s item_props,
                                      PDF_TIME_FORMAT_PDF);
 
   /* Associate values with hash keys */
-  if (pdf_hash_add (props_hash, "isHidden", (void *) is_hidden) !=
+  if (pdf_hash_add (props_hash, "isHidden", (void *) is_hidden,
+                    pdf_hash_element_dealloc_fn) !=
       PDF_OK)
     {
       return PDF_ERROR;
     }
-  if (pdf_hash_add (props_hash, "isReadable", (void *) is_readable) !=
+  if (pdf_hash_add (props_hash, "isReadable", (void *) is_readable,
+                    pdf_hash_element_dealloc_fn) !=
       PDF_OK)
     {
       return PDF_ERROR;
     }
-  if (pdf_hash_add (props_hash, "isWritable", (void *) is_writable) !=
+  if (pdf_hash_add (props_hash, "isWritable", (void *) is_writable,
+                    pdf_hash_element_dealloc_fn) !=
       PDF_OK)
     {
       return PDF_ERROR;
     }
-  if (pdf_hash_add (props_hash, "creationDate", (void *) creation_date_str) !=
+  if (pdf_hash_add (props_hash, "creationDate", (void *) creation_date_str,
+                    pdf_hash_element_dealloc_fn) !=
       PDF_OK)
     {
       return PDF_ERROR;
     }
-  if (pdf_hash_add (props_hash, "modDate", (void *) mod_date_str) !=
+  if (pdf_hash_add (props_hash, "modDate", (void *) mod_date_str,
+                    pdf_hash_element_dealloc_fn) !=
       PDF_OK)
     {
       return PDF_ERROR;
     }
-  if (pdf_hash_add (props_hash, "fileSizeHigh", (void *) file_size_high) !=
+  if (pdf_hash_add (props_hash, "fileSizeHigh", (void *) file_size_high,
+                    pdf_hash_element_dealloc_fn) !=
       PDF_OK)
     {
       return PDF_ERROR;
     }
-  if (pdf_hash_add (props_hash, "fileSizeLow", (void *) file_size_low) !=
+  if (pdf_hash_add (props_hash, "fileSizeLow", (void *) file_size_low,
+                    pdf_hash_element_dealloc_fn) !=
       PDF_OK)
     {
       return PDF_ERROR;
     }
-  if (pdf_hash_add (props_hash, "folderSize", (void *) folder_size) !=
+  if (pdf_hash_add (props_hash, "folderSize", (void *) folder_size,
+                    pdf_hash_element_dealloc_fn) !=
       PDF_OK)
     {
       return PDF_ERROR;
     }
+
   /* Done */
   return PDF_OK;
 }
