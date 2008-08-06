@@ -695,12 +695,11 @@ pdf_fsys_disk_file_can_set_size_p (pdf_fsys_file_t file,
   return PDF_TRUE;
 }
 
-pdf_status_t
-pdf_fsys_disk_file_get_size (pdf_fsys_file_t file, 
-                             pdf_size_t *size)
+pdf_size_t
+pdf_fsys_disk_file_get_size (pdf_fsys_file_t file)
 {
   /* FIXME: Please implement me :) */
-  return PDF_OK;
+  return 0;
 }
 
 pdf_status_t

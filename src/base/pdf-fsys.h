@@ -120,8 +120,7 @@ typedef pdf_bool_t (*pdf_fsys_item_writable_p_fn_t) (pdf_text_t path_name);
 typedef pdf_text_t (*pdf_fsys_get_temp_path_name_fn_t) (void);
 typedef pdf_bool_t (*pdf_fsys_file_can_set_size_p_fn_t) (pdf_fsys_file_t file,
                                                        pdf_size_t pos);
-typedef pdf_status_t (*pdf_fsys_file_get_size_fn_t) (pdf_fsys_file_t file,
-                                                     pdf_size_t *pos);
+typedef pdf_size_t (*pdf_fsys_file_get_size_fn_t) (pdf_fsys_file_t file);
 typedef pdf_status_t (*pdf_fsys_file_set_size_fn_t) (pdf_fsys_file_t file,
                                                      pdf_size_t pos);
 typedef pdf_status_t (*pdf_fsys_file_get_pos_fn_t) (pdf_fsys_file_t file,
@@ -230,8 +229,7 @@ pdf_status_t pdf_fsys_file_set_pos (pdf_fsys_file_t file,
                                     pdf_size_t new_pos);
 pdf_bool_t pdf_fsys_file_can_set_size_p (pdf_fsys_file_t file,
                                          pdf_size_t size);
-pdf_status_t pdf_fsys_file_get_size (pdf_fsys_file_t file, 
-                                     pdf_size_t *size);
+pdf_size_t pdf_fsys_file_get_size (pdf_fsys_file_t file);
 pdf_status_t pdf_fsys_file_set_size (pdf_fsys_file_t file,
                                      pdf_size_t size);
 pdf_size_t pdf_fsys_file_read (pdf_fsys_file_t file,

@@ -1,3 +1,8 @@
+2008-08-06  Jose E. Marchesi  <jemarch@gnu.org>
+
+	*  Patch by Hans Hohenfeld changing the interface of
+	'pdf_fsys_get_size'.
+
 2008-08-05  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_get_item_props): Cast

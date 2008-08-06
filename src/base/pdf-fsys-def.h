@@ -65,8 +65,8 @@
   pdf_fsys_disk_file_set_pos ((file), (new_pos))
 #define pdf_fsys_def_file_can_set_size_p(file, size) \
   pdf_fsys_disk_file_can_set_size_p ((file), (size))
-#define pdf_fsys_def_file_get_size(file, size) \
-  pdf_fsys_disk_file_get_size ((file), (size))
+#define pdf_fsys_def_file_get_size(file) \
+  pdf_fsys_disk_file_get_size ((file))
 #define pdf_fsys_def_file_set_size(file, size) \
   pdf_fsys_disk_file_set_size ((file), (size))
 #define pdf_fsys_def_file_read(file, elem_size, elem_count, data) \
