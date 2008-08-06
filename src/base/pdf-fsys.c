@@ -432,20 +432,18 @@ pdf_fsys_file_can_set_size_p (pdf_fsys_file_t file,
     }
 }
 
-pdf_status_t
-pdf_fsys_file_get_size (pdf_fsys_file_t file, 
-                        pdf_size_t *size)
+pdf_size_t
+pdf_fsys_file_get_size (pdf_fsys_file_t file)
 {
   if (file->fs == NULL)
     {
       /* Use the default filesystem */
-      return pdf_fsys_def_file_get_size(file, size);
+      return pdf_fsys_def_file_get_size(file);
     }
   else
     {
       return
-        (file->fs->implementation->file_get_size_fn) (file,
-                                                      size);
+        (file->fs->implementation->file_get_size_fn) (file);
     }
 }
 
