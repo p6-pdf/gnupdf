@@ -1,3 +1,11 @@
+2008-08-15  David Vazquez  <davazp@gmail.com>
+
+	* doc/gnupdf.texi (Encryption): New section.
+	(Initializating the module): New subsection.
+	(Encryption and decryption): New subsection.
+	(Creating and destroying Ciphers): New subsection.
+	(Utils functions): New subsection.
+
 2008-08-06  Jose E. Marchesi  <jemarch@gnu.org>
 
 	*  Patch by Hans Hohenfeld changing the interface of

@@ -86,6 +86,7 @@ Indices
 * Encoded Text::
 * Time Management::
 * The Filesystem Module::
+* Encryption::
 @end menu
 
 @node Base Layer Overview
@@ -7849,6 +7850,309 @@ XXX
 @end example
 @end table
 @end deftypefun
+
+
+
+@node Encryption
+@section Encryption
+
+This section describes related to encryption functions.
+
+@menu
+* Initializating the module::   
+* Creating and destroying Ciphers::  
+* Encryption and decryption::   
+* Utils functions::  
+@end menu
+
+@node Initializating the module
+@subsection Initializating the module
+
+The encryption module must be initialized when Libgnupdf library was
+loaded It is *NOT* safe-thread.
+
+@deftypefun pdf_status_t pdf_crypt_init (void)
+
+Initialize the encryption module.
+
+@table @strong
+@item Parameters
+None.
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+Operation successful
+@item PDF_ERROR
+A error ocurred.
+@end table
+@item Usage example
+@example
+xxx
+@end example
+@end table
+@end deftypefun
+
+@node Creating and destroying Ciphers
+@subsection Creating and destroying Ciphers
+
+@deftp {Data Type} {pdf_crypt_algo_e}
+Enumeration of encryption algorithms provided.
+
+@table @code
+@item PDF_CRYPT_CIPHER_ALGO_AESV2
+Use AES algorithm with a key of 128 bits to encrypt the data.
+@item PDF_CRYPT_CIPHER_ALGO_V2
+Use ARC4 algorithm.
+@end table
+@end deftp
+
+@deftp {Data Type} {pdf_crypt_cipher_t}
+A cipher. It contains data which is required between several calls to
+functions.
+@end deftp
+
+@deftypefun pdf_status_t pdf_crypt_cipher_new (pdf_crypt_algo_t @var{algorithm}, pdf_crypt_cipher_t *@var{cipher})
+
+Create a new cipher.
+
+@table @strong
+@item Parameters
+@table @var
+@item algorithm
+The algorithm the cipher will use in order to encrypt or decrypt
+data.
+@item cipher
+A pointer to @code{pdf_crypt_cipher_t} variable where it will put the cipher.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+Operation successful
+@item PDF_ERROR
+A error ocurred when trying to create the cipher.
+@end table
+@item Usage example
+@example
+xxx
+@end example
+@end table
+@end deftypefun
+
+
+@deftypefun pdf_status_t pdf_crypt_cipher_destroy (pdf_crypt_cipher_t @var{cipher})
+
+Destroy a cipher.
+
+@table @strong
+@item Parameters
+@table @var
+@item cipher
+The cipher you want destroy. It must have been created with
+@code{pdf_crypt_cipher_new} functions previously.
+@end table
+@item Returns
+@table @code
+A PDF status value:
+@item PDF_OK
+Operation successful
+@item PDF_ERROR
+A error ocurred when trying to destroy the cipher.
+@end table
+@item Usage example
+@example
+xxx
+@end example
+@end table
+@end deftypefun
+
+
+@node Encryption and decryption
+@subsection Encryption and decryption
+
+@deftypefun pdf_status_t pdf_crypt_cipher_setkey (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{key}, pdf_size_t @var{size})
+
+Set the key which will be used to encrypt and decrypt data.
+
+@table @strong
+@item Parameters
+@table @var
+@item cipher
+A cipher created previously.
+@item key
+A pointer to memory where the key is stored.
+@item size
+The length of the key in bytes. Note that some algorithms could require
+a fixed length of key.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+Operation successful
+@item PDF_EBADDATA
+Invalid argument. The @var{size} parameter is not supported by the
+cipher.
+@item PDF_ERROR
+A error ocurred while trying to set the key.
+@end table
+@end table
+@end deftypefun
+
+@deftypefun pdf_size_t pdf_crypt_cipher_encrypt_size (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size})
+
+Compute the size for the output buffer in
+@code{pdf_crypt_cipher_encrypt} function for the given parameters.
+
+@table @strong
+@item Parameters
+@table @var
+@item cipher
+A cipher.
+@item in
+A pointer to the buffer which will be encrypted.
+@item in_size
+The length of the buffer in bytes.
+@end table
+@item Returns
+The size of a valid output buffer in @code{pdf_crypt_cipher_encrypt}
+function for this parameters.
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_crypt_cipher_decrypt_size (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size})
+
+Compute the size for the output buffer in
+@code{pdf_crypt_cipher_decrypt} function for the given parameters.
+
+@table @strong
+@item Parameters
+@table @var
+@item cipher
+A cipher.
+@item in
+A pointer to the buffer which will be decrypted.
+@item in_size
+The length of the buffer in bytes.
+@end table
+@item Returns
+The size of a valid output buffer in @code{pdf_crypt_cipher_encrypt}
+function for this parameters.
+@end table
+@end deftypefun
+
+
+@deftypefun pdf_status_t pdf_crypt_cipher_encrypt (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{out}, pdf_size_t  @var{out_size}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size}) 
+
+Encrypt a buffer. The ciphered text will be put in @var{out}.
+
+@table @strong
+@item Parameters
+@table @var
+@item cipher
+A cipher.
+@item out
+A pointer to the output buffer.
+@item out_size
+Size of the output buffer in bytes. The function will fail if it is not
+too large to contain the output.
+@item in
+A pointer to input buffer.
+@item in_size
+The length of the input buffer in bytes.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+Operation successful
+@item PDF_EBADDATA
+Invalid argument. The @var{out} buffer is not too large to contain the
+ciphered text.
+@item PDF_ERROR
+A error ocurred.
+@end table
+@item Usage example
+@example
+xxx
+@end example
+@end table
+@end deftypefun
+
+
+@deftypefun pdf_status_t pdf_crypt_cipher_decrypt (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{out}, pdf_size_t  @var{out_size}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size})
+
+Decrypt a buffer. The plain text will be put in @var{out}.
+
+@table @strong
+@item Parameters
+@table @var
+@item cipher
+A cipher.
+@item out
+A pointer to the output buffer.
+@item out_size
+Size of the output buffer in bytes. The function will fail if it is not
+too large to contain the output.
+@item in
+A pointer to input buffer.
+@item in_size
+The length of the input buffer in bytes.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+Operation successful
+@item PDF_EBADDATA
+Invalid argument. The @var{out} buffer is not too large to contain the plain text.
+@item PDF_ERROR
+A error ocurred.
+@end table
+@item Usage example
+@example
+xxx
+@end example
+@end table
+@end deftypefun
+
+@node Utils functions
+@subsection Utils functions
+
+@deftypefun pdf_status_t pdf_crypt_md_md5 (pdf_char_t  *@var{out}, pdf_size_t  @var{out_size}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size})
+
+Compute the message-digest md5 function of a buffer in memory.
+
+@table @strong
+@item Parameters
+@table @var
+@item out
+A pointer to output buffer.
+@item out_size
+The size of output buffer in bytes. This parameter is provided in order
+to avoid a possible overflow. The size must be 16 bytes.
+@item in
+A pointer to the input buffer which md5 will compute on.
+@item in_size
+Size of the input buffer in bytes.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+Operation successful
+@item PDF_EBADDATA
+Bad parameter. The size of the output buffer is not too large.
+@end table
+@item Usage example
+@example
+xxx
+@end example
+@end table
+@end deftypefun
+
+
 
 @node Object Layer
 @chapter Object Layer
