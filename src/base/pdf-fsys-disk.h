@@ -75,8 +75,7 @@ pdf_status_t pdf_fsys_disk_file_set_pos (pdf_fsys_file_t file,
                                          pdf_size_t new_pos);
 pdf_bool_t pdf_fsys_disk_file_can_set_size_p (pdf_fsys_file_t file,
                                               pdf_size_t size);
-pdf_status_t pdf_fsys_disk_file_get_size (pdf_fsys_file_t file, 
-                                          pdf_size_t *size);
+pdf_size_t pdf_fsys_disk_file_get_size (pdf_fsys_file_t file);
 pdf_status_t pdf_fsys_disk_file_set_size (pdf_fsys_file_t file,
                                           pdf_size_t size);
 pdf_size_t pdf_fsys_disk_file_read (pdf_fsys_file_t file,

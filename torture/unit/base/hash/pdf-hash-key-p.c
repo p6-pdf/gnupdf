@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-04-16 20:30:36 gerel"
+/* -*- mode: C -*- Time-stamp: "2008-07-23 08:13:40 gerel"
  *
  *       File:         pdf-hash-key-p.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -41,8 +41,8 @@ START_TEST (pdf_hash_key_p_001)
 {
   pdf_hash_t table;
 
-  pdf_hash_create (NULL, NULL, &table);
-  pdf_hash_add (table, "key", "val");
+  pdf_hash_create (NULL, &table);
+  pdf_hash_add (table, "key", "val", NULL);
  
   fail_if (pdf_hash_key_p (table, "key") != PDF_TRUE);
 
@@ -62,8 +62,8 @@ START_TEST (pdf_hash_key_p_002)
 {
   pdf_hash_t table;
 
-  pdf_hash_create (NULL, NULL, &table);
-  pdf_hash_add (table, "key", "val");
+  pdf_hash_create (NULL, &table);
+  pdf_hash_add (table, "key", "val", NULL);
  
   fail_if (pdf_hash_key_p (table, "ke") != PDF_FALSE);
 

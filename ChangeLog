@@ -1,3 +1,47 @@
+2008-08-06  Jose E. Marchesi  <jemarch@gnu.org>
+
+	*  Patch by Hans Hohenfeld changing the interface of
+	'pdf_fsys_get_size'.
+
+2008-08-05  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_get_item_props): Cast
+	pdf_char_t argument to 'FindFirstFile'.
+
+2008-08-05  Zac Brown  <zac@zacbrown.org>
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_get_item_props): Move variable
+	declaration outside #ifndef block to fix compilation on Win32.
+
+2008-08-04  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Managing File Positions): Fix the entry for
+	'pdf_fsys_file_get_pos' to reflect the implementation.
+
+	* src/base/pdf-fsys.c (pdf_fsys_item_props_to_hash): Removed
+	unused variable 'type_code'.
+	(pdf_fsys_item_props_to_hash): Insert entries for 'creationDate'
+	and 'modDate' in the file properties hash.
+
+	* doc/gnupdf.texi (Getting File System Item Properties): Add
+	"isReadable" and "isWritable" entries to the hash containing the
+	filesystem item properties.
+
+2008-08-03  Zac Brown  <zac@zacbrown.org>
+	* src/base/pdf-fsys.h:
+	(struct pdf_fsys_item_props_s):	Remove the following unnecessary
+	fields: is_hidden, is_read_only, is_checked_out, is_published,
+	creator_code, type_code, version_major, version_minor. Added following fields: is_readable,
+	is_writable.
+
+	* src/base/pdf-fsys-disk.c: Implemented
+	pdf_fsys_disk_get_item_props, pdf_fsys_disk_readable_p,
+	pdf_fsys_disk_writable_p and pdf_fsys_disk_readable_p.
+
+	* doc/gnupdf.texi: Update documentation for
+	`struct pdf_fsys_item_props_s'. Added examples for `pdf_fsys_item_p',
+	`pdf_fsys_get_item_props', `pdf_fsys_item_readable_p' and
+	`pdf_fsys_item_writable_p'
+
 2008-08-01  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-stm.c (pdf_stm_dealloc): New function.
@@ -112,6 +156,46 @@
 	* src/base/pdf-alloc.c (pdf_dealloc): Add the 'const' qualifier to
 	the pointer argument.
 	(pdf_realloc): Idem.
+
+2008-07-24  gerel  <gerel@gnu.org>
+
+	* src/base/pdf-hash-helper.[ch]: added helper functions.
+
+	* doc/gnupdf.texi: same.
+
+2008-07-23  gerel  <gerel@gnu.org>
+
+	* src/base/pdf-hash.c: changed API to allow the specification of
+	memory disposal functions in entry insertion time and removed
+	table-wide disposal function.
+
+	* src/base/pdf-hash.h: same.
+
+	* src/base/pdf-fsys.c: fixed to conform API modifications.
+
+	* torture/unit/base/hash/pdf-hash-add.c: same.
+
+	* torture/unit/base/hash/pdf-hash-create.c: same.
+
+	* torture/unit/base/hash/pdf-hash-destroy.c: same.
+
+	* torture/unit/base/hash/pdf-hash-iterator-free.c: same.
+
+	* torture/unit/base/hash/pdf-hash-iterator-next.c: same.
+
+	* torture/unit/base/hash/pdf-hash-iterator.c: same.
+
+	* torture/unit/base/hash/pdf-hash-key-p.c: same.
+
+	* torture/unit/base/hash/pdf-hash-remove.c: same.
+
+	* torture/unit/base/hash/pdf-hash-rename.c: same.
+
+	* torture/unit/base/hash/pdf-hash-search.c: same.
+
+	* torture/unit/base/hash/pdf-hash-size.c: same.
+
+	* doc/gnupdf.texi: same.
 
 2008-07-22  Daniel Vidal  <davr@pc_davr.deimos-space.com>
 

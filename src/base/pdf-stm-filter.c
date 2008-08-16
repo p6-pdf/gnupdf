@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/08/01 21:16:35 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/08/16 13:15:11 jemarch"
  *
  *       File:         pdf-stm-filter.c
  *       Date:         Thu Jun 12 22:13:31 2008
@@ -77,7 +77,7 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
 
   /* Initialization of the implementation */
   new->params = params;
-  pdf_hash_create (NULL, NULL,
+  pdf_hash_create (NULL,
                    &(new->state));
   new->impl.init_fn (new->params,
                      new->state);

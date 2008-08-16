@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/08/01 21:28:43 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/08/16 13:27:11 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -85,10 +85,17 @@ pdf_stm_mem_new (pdf_char_t *buffer,
                        *stm);
 }
 
+pdf_size_t
+pdf_stm_flush (pdf_stm_t stm)
+{
+  /* FIXME: TODO */
+
+  return 0;
+}
+
 /*
  * Private functions
  */
-
 
 static pdf_status_t
 pdf_stm_init (pdf_size_t cache_size,
@@ -105,8 +112,8 @@ pdf_stm_init (pdf_size_t cache_size,
     } 
 
   /* Initialize the null filter */
-  pdf_hash_create (NULL, NULL, &null_filter_params);
-  pdf_hash_create (NULL, NULL, &null_filter_state);
+  pdf_hash_create (NULL, &null_filter_params);
+  pdf_hash_create (NULL, &null_filter_state);
   stm->filter = pdf_stm_filter_new (PDF_STM_FILTER_NULL,
                                     null_filter_params,
                                     cache_size);

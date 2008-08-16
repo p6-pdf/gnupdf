@@ -164,4 +164,5 @@ and changed src/Makefile.am
   torture/unit/Makefile.am
   torture/unit/runtests.c
   src/base/pdf-time.c
-    
+
+Zac Brown: changed doc/gnupdf.texi src/base/pdf-fsys-disk.c

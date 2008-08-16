@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/06/13 11:55:13 jco"
+/* -*- mode: C -*- Time-stamp: "08/08/05 23:02:42 jemarch"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -465,29 +465,169 @@ pdf_status_t
 pdf_fsys_disk_get_item_props (pdf_text_t path_name,
                               struct pdf_fsys_item_props_s *item_props)
 {
-  /* FIXME: Please implement me :D */
+  pdf_char_t* ascii_path;
+  pdf_u32_t ascii_path_len;
+  pdf_status_t ret_code;
+  unsigned int access_mode;
+#ifndef PDF_HOST_WIN32
+  struct stat file_info;
+#else
+  WIN32_FIND_DATA file_info;
+  HANDLE file_handle;
+#endif
+
+  if (path_name == NULL)
+    {
+      return PDF_EBADDATA;
+    }
+
+  ret_code = pdf_fsys_disk_get_host_path (path_name, &ascii_path, &ascii_path_len);
+
+  if (ret_code != PDF_OK)
+    {
+      goto set_error;
+    }
+
+  if ((access_mode = access((char*)ascii_path, R_OK)))
+    {
+      goto set_error;
+    }
+  else
+    {
+      item_props->is_readable = PDF_TRUE;
+    }
+
+  if ((access_mode = access((char*)ascii_path, W_OK)))
+    {
+      goto set_error;
+    }
+  else
+    {
+      item_props->is_writable = PDF_TRUE;
+    }
+
+#ifndef PDF_HOST_WIN32
+  if (stat((char*)ascii_path, &file_info))
+    {
+      goto set_error;
+    }
+  item_props->file_size_high = 0;
+  item_props->file_size_low = file_info.st_size;
+#else /* !PDF_HOST_WIN32 */
+  file_handle = FindFirstFile((char *) ascii_path, &file_info);
+  if (file_handle == INVALID_HANDLE_VALUE)
+    {
+      goto set_error;
+    }
+  else
+    {
+      if(CloseHandle(file_handle) == FALSE)
+        {
+          goto set_error;
+        }
+    }
+  item_props->file_size_high = file_info.nFileSizeHigh;
+  item_props->file_size_low = file_info.nFileSizeLow;
+#endif
+
+  if (ascii_path)
+    {
+      pdf_dealloc (ascii_path);
+    }
   return PDF_OK;
+
+ set_error:
+  switch(errno)
+    {
+      /* File name syntax errors */
+    case ENAMETOOLONG:
+    case ENOENT:
+    case ENOTDIR:
+#ifndef PDF_HOST_WIN32
+    case ELOOP:
+#endif /* !PDF_HOST_WIN32 */
+      {
+        ret_code = PDF_EBADNAME;
+        break;
+      }
+      /* Specific error conditions */
+    case EACCES:
+      {
+        ret_code = PDF_EBADPERMS;
+        break;
+      }
+    case ENOTEMPTY:
+      {
+        ret_code = PDF_ENOTEMPTY;
+        break;
+      }
+      /* Any other error condition */
+    default:
+      {
+        ret_code = PDF_ERROR;
+        break;
+      }
+    }
+
+  if (ascii_path)
+    {
+      pdf_dealloc (ascii_path);
+    }
+  return ret_code;
 }
 
 pdf_bool_t
 pdf_fsys_disk_item_p (pdf_text_t path_name)
 {
-  /* FIXME: Please implement me :D */
+  struct pdf_fsys_item_props_s item_props;
+  pdf_status_t status;
+
+
+  if (pdf_fsys_disk_win32_device_p(path_name) == PDF_TRUE)
+    {
+      return PDF_TRUE;
+    }
+
+  status = pdf_fsys_disk_get_item_props(path_name, &item_props);
+
+  if (status != PDF_OK)
+    {
+      return PDF_FALSE;
+    }
+
   return PDF_TRUE;
 }
 
 pdf_bool_t 
 pdf_fsys_disk_item_readable_p (pdf_text_t path_name)
 {
-  /* FIXME: Please implement me :D */
-  return PDF_TRUE;
+  struct pdf_fsys_item_props_s item_props;
+  pdf_status_t status;
+
+  status = pdf_fsys_disk_get_item_props(path_name, &item_props);
+
+  if (status != PDF_OK)
+    {
+      return PDF_FALSE;
+    }
+
+  return item_props.is_readable;
 }
 
 pdf_bool_t
 pdf_fsys_disk_item_writable_p (pdf_text_t path_name)
 {
-  /* FIXME: Please implement me :D */
-  return PDF_TRUE;
+  struct pdf_fsys_item_props_s item_props;
+  pdf_status_t status;
+
+  status = pdf_fsys_disk_get_item_props(path_name, &item_props);
+
+  if (status != PDF_OK)
+    {
+      return PDF_FALSE;
+    }
+
+  return item_props.is_writable;
 }
 
 pdf_text_t
@@ -555,12 +695,11 @@ pdf_fsys_disk_file_can_set_size_p (pdf_fsys_file_t file,
   return PDF_TRUE;
 }
 
-pdf_status_t
-pdf_fsys_disk_file_get_size (pdf_fsys_file_t file, 
-                             pdf_size_t *size)
+pdf_size_t
+pdf_fsys_disk_file_get_size (pdf_fsys_file_t file)
 {
   /* FIXME: Please implement me :) */
-  return PDF_OK;
+  return 0;
 }
 
 pdf_status_t
