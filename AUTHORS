@@ -166,3 +166,6 @@ and changed src/Makefile.am
   src/base/pdf-time.c
 
 Zac Brown: changed doc/gnupdf.texi src/base/pdf-fsys-disk.c
+
+David Vazquez: changed doc/gnupdf.texi
+
