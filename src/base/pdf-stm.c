@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/08/16 13:27:11 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/08/16 13:47:55 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -85,6 +85,53 @@ pdf_stm_mem_new (pdf_char_t *buffer,
                        *stm);
 }
 
+pdf_status_t
+pdf_stm_destroy (pdf_stm_t stm)
+{
+  pdf_stm_filter_t filter;
+  pdf_stm_filter_t filter_to_delete;
+
+  /* FIXME: Make a flush? */
+
+  /* Destroy the backend */
+  pdf_stm_be_destroy (stm->backend);
+
+  /* Destroy the cache */
+  pdf_stm_buffer_destroy (stm->cache);
+
+  /* Destroy the filter chain */
+  filter = stm->filter;
+  while (filter != NULL)
+    {
+      filter_to_delete = filter;
+      filter = filter->next;
+      pdf_stm_filter_destroy (filter);
+    }
+
+  /* Deallocate the stm structure */
+  pdf_stm_dealloc (stm);
+
+  return PDF_OK;
+}
+
+pdf_size_t
+pdf_stm_read (pdf_stm_t stm,
+              pdf_char_t *buf,
+              pdf_size_t bytes)
+{
+  pdf_size_t read_bytes;
+
+  read_bytes = 0;
+  while (read_bytes < bytes)
+    {
+      /* Fill the filter cache */
+      
+      /* Read the requested amount of data into the user buffer */
+    }
+
+  return read_bytes;
+}
+
 pdf_size_t
 pdf_stm_flush (pdf_stm_t stm)
 {
@@ -120,6 +167,7 @@ pdf_stm_init (pdf_size_t cache_size,
 
   /* Initialize the filter cache */
   stm->cache = pdf_stm_buffer_new (cache_size);
+  stm->cache_used = 0;
 
   /* Configure the filter */
   stm->mode = mode;
@@ -145,35 +193,6 @@ pdf_stm_init (pdf_size_t cache_size,
       pdf_stm_filter_set_out (stm->filter,
                               stm->cache);
     }
-
-  return PDF_OK;
-}
-
-pdf_status_t
-pdf_stm_destroy (pdf_stm_t stm)
-{
-  pdf_stm_filter_t filter;
-  pdf_stm_filter_t filter_to_delete;
-
-  /* FIXME: Make a flush? */
-
-  /* Destroy the backend */
-  pdf_stm_be_destroy (stm->backend);
-
-  /* Destroy the cache */
-  pdf_stm_buffer_destroy (stm->cache);
-
-  /* Destroy the filter chain */
-  filter = stm->filter;
-  while (filter != NULL)
-    {
-      filter_to_delete = filter;
-      filter = filter->next;
-      pdf_stm_filter_destroy (filter);
-    }
-
-  /* Deallocate the stm structure */
-  pdf_stm_dealloc (stm);
 
   return PDF_OK;
 }
