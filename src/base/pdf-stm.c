@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/08/16 13:47:55 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/08/18 23:55:21 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -23,7 +23,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <config.h>
 #include <unistd.h>
+#include <string.h>
 
 #include <pdf-alloc.h>
 #include <pdf-stm.h>
@@ -120,16 +122,77 @@ pdf_stm_read (pdf_stm_t stm,
               pdf_size_t bytes)
 {
   pdf_size_t read_bytes;
+  pdf_size_t pending_bytes;
+  pdf_size_t used_cache;
+  pdf_size_t to_copy_bytes;
 
   read_bytes = 0;
-  while (read_bytes < bytes)
+  used_cache = 0;
+  to_copy_bytes = 0;
+
+  while (read_bytes < bytes) 
     {
-      /* Fill the filter cache */
-      
-      /* Read the requested amount of data into the user buffer */
+      pending_bytes = bytes - read_bytes;
+
+      /* If the cache is empty, refill it with filtered data */
+      if (stm->cache_begin == stm->cache_end)
+        {
+          stm->cache_begin = 0;
+          stm->cache_end = pdf_stm_filter_apply (stm->filter);
+          
+          if (stm->cache_end == 0)
+            {
+              /* EOF condition from the filter. Exit the read loop */
+              break;
+            }
+        }
+      used_cache = stm->cache_end - stm->cache_begin;
+
+      /* Read data from the cache */
+      to_copy_bytes = (pending_bytes <= used_cache) ?
+        pending_bytes : used_cache;
+      strncpy ((char *) (buf + read_bytes),
+               (char *) stm->cache->data + stm->cache_begin,
+               to_copy_bytes);
+
+      read_bytes = read_bytes + to_copy_bytes;
+      stm->cache_begin = stm->cache_begin + to_copy_bytes;
     }
 
   return read_bytes;
+}
+
+pdf_size_t
+pdf_stm_write (pdf_stm_t stm,
+               const pdf_size_t elem_size,
+               const pdf_size_t elem_count,
+               pdf_char_t *buf)
+{
+  pdf_size_t written_bytes;
+  pdf_size_t pending_bytes;
+  pdf_size_t to_write_bytes;
+
+  written_bytes = 0;
+
+  while (written_bytes < (elem_size * elem_count))
+    {
+      pending_bytes = (elem_size * elem_count) - written_bytes;
+
+      /* If the input buffer of the top filter is full, apply the last
+         one */
+      if (pdf_stm_filter_get_in_end (stm->filter) == NULL)
+        {
+          if (pdf_stm_filter_apply (stm->filter) == 0)
+            {
+              /* Backend full condition from the filter, give up */
+              break;
+            }
+        }
+
+      /* Write the data into the filter input buffer */
+    }
+
+  return written_bytes;
 }
 
 pdf_size_t
@@ -167,7 +230,8 @@ pdf_stm_init (pdf_size_t cache_size,
 
   /* Initialize the filter cache */
   stm->cache = pdf_stm_buffer_new (cache_size);
-  stm->cache_used = 0;
+  stm->cache_begin = 0;
+  stm->cache_end = 0;
 
   /* Configure the filter */
   stm->mode = mode;
