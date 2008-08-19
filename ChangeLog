@@ -1,3 +1,20 @@
+2008-08-18  Zac Brwon  <zac@zacbrown.org>
+	* doc/gnupdf.texi (pdf_fsys_file_get_mode): Updated example.
+	(pdf_fsys_file_set_mode): Updated example and updated return type.
+
+	* src/base/pdf-fsys-disk.c
+	(pdf_fsys_disk_file_get_mode): Implemented function.
+	(pdf_fsys_disk_file_set_mode): Implemented function and updated
+	return type to give better information in instances of failure.
+	(pdf_fsys_disk_file_flush): Fix return value for success from
+	PDF_TRUE to PDF_OK.
+
+	* src/base/pdf-fsys-disk.h (pdf_fsys_disk_file_t): Add file_mode field.
+	(pdf_fsys_disk_file_set_mode): Update return type to pdf_status_t.
+
+	* src/base/pdf-fsys.{ch} (pdf_fsys_file_set_mode): Update return type
+	to pdf_status_t.
+
 2008-08-18  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* AUTHORS: Added David Vazquez.

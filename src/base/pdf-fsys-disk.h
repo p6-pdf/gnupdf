@@ -37,6 +37,8 @@ struct pdf_fsys_disk_file_s
                                  encoded version */
   pdf_size_t host_path_size;  /* Size of the host encoded path */
 
+  enum pdf_fsys_file_mode_e file_mode; /* file mode set when file
+                                          was opened */
   FILE *file_descriptor;      /* The descriptor of the open file */
 };
 
@@ -65,8 +67,8 @@ pdf_text_t pdf_fsys_disk_get_temp_path_name (void);
 pdf_fsys_t pdf_fsys_disk_file_get_filesystem (pdf_fsys_file_t file);
 enum pdf_fsys_file_mode_e pdf_fsys_disk_file_get_mode (pdf_fsys_file_t file);
 pdf_text_t pdf_fsys_disk_file_get_url (pdf_fsys_file_t file);
-enum pdf_fsys_file_mode_e pdf_fsys_disk_file_set_mode (pdf_fsys_file_t file,
-                                                       enum pdf_fsys_file_mode_e new_mode);
+pdf_status_t pdf_fsys_disk_file_set_mode (pdf_fsys_file_t file,
+                                          enum pdf_fsys_file_mode_e new_mode);
 pdf_bool_t pdf_fsys_disk_file_same_p (pdf_fsys_file_t file,
                                       pdf_text_t path);
 pdf_status_t pdf_fsys_disk_file_get_pos (pdf_fsys_file_t file,

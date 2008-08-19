@@ -226,6 +226,8 @@ pdf_fsys_disk_open (const pdf_text_t path_name,
           }
         }
 
+      file_data->file_mode = mode;
+
       return ret_status;
     }
 
@@ -644,8 +646,7 @@ pdf_fsys_disk_get_temp_path_name (void)
 enum pdf_fsys_file_mode_e
 pdf_fsys_disk_file_get_mode (pdf_fsys_file_t file)
 {
-  /* FIXME: Please implement me :o) */
-  return 0;
+  return ((pdf_fsys_disk_file_t)file->data)->file_mode;
 }
 
 pdf_text_t 
@@ -655,12 +656,62 @@ pdf_fsys_disk_file_get_url (pdf_fsys_file_t file)
   return NULL;
 }
 
-enum pdf_fsys_file_mode_e
+pdf_status_t
 pdf_fsys_disk_file_set_mode (pdf_fsys_file_t file,
                              enum pdf_fsys_file_mode_e new_mode)
 {
-  /* FIXME: Please implement me :D */
-  return 0;
+  pdf_char_t mode_str[4];
+  pdf_status_t result_status;
+  pdf_fsys_disk_file_t work_file = (pdf_fsys_disk_file_t)file->data;
+
+  pdf_fsys_disk_build_mode_string(new_mode, mode_str);
+
+  work_file->file_descriptor = freopen(work_file->host_path, mode_str,
+                                       work_file->file_descriptor);
+
+  work_file->file_mode = new_mode;
+
+  if (work_file->file_descriptor == NULL)
+    {
+            switch (errno)
+        {
+#ifndef PDF_HOST_WIN32
+          /* On Windows platforms (excluding Cygwin), freopen does not
+             set errno upon failure. */
+
+        case EBADF:
+        case EFAULT:
+        case EFBIG:
+        case EINVAL:
+          {
+            /* Bad function parameters to underlying write() */
+            result_status = PDF_EBADDATA;
+            break;
+          }
+        case EAGAIN:
+          {
+            /* non-blocking descriptor and blocking writing
+               requested */
+            result_status = PDF_EAGAIN;
+            break;
+          }
+        case ENOSPC:
+          {
+            /* Not room in the disk for the data */
+            result_status = PDF_ENOSPC;
+            break;
+          }
+#endif /* !PDF_HOST_WIN32 */
+        default:
+          {
+            /* Other error conditions */
+            result_status = PDF_ERROR;
+            break;
+          }
+        }
+    }
+
+  return result_status;
 }
 
 pdf_bool_t
@@ -779,7 +830,7 @@ pdf_fsys_disk_file_flush (pdf_fsys_file_t file)
     }
   else
     {
-      result_status = PDF_TRUE;
+      result_status = PDF_OK;
     }
 
   return result_status;

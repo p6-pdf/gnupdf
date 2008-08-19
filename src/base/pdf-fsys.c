@@ -358,7 +358,7 @@ pdf_fsys_file_get_url (pdf_fsys_file_t file)
     }
 }
 
-enum pdf_fsys_file_mode_e
+pdf_status_t
 pdf_fsys_file_set_mode (pdf_fsys_file_t file,
                         enum pdf_fsys_file_mode_e new_mode)
 {
