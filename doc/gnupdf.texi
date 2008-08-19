@@ -6941,7 +6941,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun enum pdf_fsys_file_mode_e pdf_fsys_file_get_mode (pdf_fsys_file_t @var{file})
+@deftypefun {enum pdf_fsys_file_mode_e} pdf_fsys_file_get_mode (pdf_fsys_file_t @var{file})
 
 Return the access mode used to open a given file.
 
@@ -6952,10 +6952,18 @@ Return the access mode used to open a given file.
 An open file.
 @end table
 @item Returns
-A mode value.
+A mode value if successful, otherwise returns -1.
 @item Usage example
 @example
-XXX
+pdf_status_t ret;
+pdf_fsys_file_t file = pdf_alloc(sizeof(pdf_fsys_file_s));
+pdf_text_t path = pdf_text_new_from_unicode (&text,
+                                             "/path/to/foo",
+                                             12, PDF_TEXT_UTF8);
+ret = pdf_fsys_open (path, PDF_FSYS_OPEN_MODE_READ, file);
+
+enum pdf_fsys_file_mode_e mode;
+mode = pdf_fsys_file_get_mode(file);
 @end example
 @end table
 @end deftypefun
@@ -6985,7 +6993,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun enum pdf_fsys_file_mode_e pdf_fsys_file_set_mode (pdf_fsys_file_t @var{file}, enum pdf_fsys_file_mode_e @var{new_mode})
+@deftypefun pdf_status_t pdf_fsys_file_set_mode (pdf_fsys_file_t @var{file}, enum pdf_fsys_file_mode_e @var{new_mode})
 
 Update the mode of a given open file.
 
@@ -6998,11 +7006,28 @@ An open file.
 The new mode to set for the file.
 @end table
 @item Returns
-The previous mode of the file or 0 if there is an error setting the
-new mode.
+Returns PDF_OK if the mode is set to the new mode, otherwise returns
+an appropriate pdf_status_t error.
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_EINVAL
+The mode provided was invalid.
+@item PDF_ERROR
+General failure, most applicable to Win32.
+@end table
 @item Usage example
 @example
-XXX
+pdf_status_t ret;
+pdf_fsys_file_t file = pdf_alloc(sizeof(pdf_fsys_file_s));
+pdf_text_t path = pdf_text_new_from_unicode (&text,
+                                             "/path/to/foo",
+                                             12, PDF_TEXT_UTF8);
+ret = pdf_fsys_open (path, PDF_FSYS_OPEN_MODE_WRITE, file);
+
+enum pdf_fsys_file_mode_e mode = PDF_FSYS_OPEN_MODE_READ;
+ret = pdf_fsys_file_set_mode(file, mode);
 @end example
 @end table
 @end deftypefun
