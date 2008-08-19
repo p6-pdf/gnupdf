@@ -219,7 +219,7 @@ pdf_text_t pdf_fsys_get_temp_path_name (pdf_fsys_t filesystem);
 pdf_fsys_t pdf_fsys_file_get_filesystem (pdf_fsys_file_t file);
 enum pdf_fsys_file_mode_e pdf_fsys_file_get_mode (pdf_fsys_file_t file);
 pdf_text_t pdf_fsys_file_get_url (pdf_fsys_file_t file);
-enum pdf_fsys_file_mode_e pdf_fsys_file_set_mode (pdf_fsys_file_t file,
+pdf_status_t pdf_fsys_file_set_mode (pdf_fsys_file_t file,
                                                   enum pdf_fsys_file_mode_e new_mode);
 pdf_bool_t pdf_fsys_file_same_p (pdf_fsys_file_t file,
                                  pdf_text_t path);
