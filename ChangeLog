@@ -1,5 +1,7 @@
 2008-08-29  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* cfg.mk: New file.
+
 	* src/base/pdf-list.h: __STDC_VERSION__ is not defined in MacosX.
 
 	* src/base/pdf-alloc.c (pdf_dealloc): Avoid a cast to the free
