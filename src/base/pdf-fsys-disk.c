@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/08/05 23:02:42 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/08/28 22:42:18 jemarch"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -225,6 +225,8 @@ pdf_fsys_disk_open (const pdf_text_t path_name,
             break;
           }
         }
+
+      file_data->file_mode = mode;
 
       return ret_status;
     }
@@ -644,8 +646,7 @@ pdf_fsys_disk_get_temp_path_name (void)
 enum pdf_fsys_file_mode_e
 pdf_fsys_disk_file_get_mode (pdf_fsys_file_t file)
 {
-  /* FIXME: Please implement me :o) */
-  return 0;
+  return ((pdf_fsys_disk_file_t)file->data)->file_mode;
 }
 
 pdf_text_t 
@@ -655,36 +656,150 @@ pdf_fsys_disk_file_get_url (pdf_fsys_file_t file)
   return NULL;
 }
 
-enum pdf_fsys_file_mode_e
+pdf_status_t
 pdf_fsys_disk_file_set_mode (pdf_fsys_file_t file,
                              enum pdf_fsys_file_mode_e new_mode)
 {
-  /* FIXME: Please implement me :D */
-  return 0;
+  pdf_char_t mode_str[4];
+  pdf_status_t result_status;
+  pdf_fsys_disk_file_t work_file = (pdf_fsys_disk_file_t)file->data;
+
+  pdf_fsys_disk_build_mode_string(new_mode, mode_str);
+
+  work_file->file_descriptor = freopen((char *) work_file->host_path,
+                                       (char *) mode_str,
+                                       work_file->file_descriptor);
+
+  work_file->file_mode = new_mode;
+
+  if (work_file->file_descriptor == NULL)
+    {
+      switch (errno)
+        {
+#ifndef PDF_HOST_WIN32
+          /* On Windows platforms (excluding Cygwin), freopen does not
+             set errno upon failure. */
+
+        case EBADF:
+        case EFAULT:
+        case EFBIG:
+        case EINVAL:
+          {
+            result_status = PDF_EBADDATA;
+            break;
+          }
+        case EAGAIN:
+        case ENOSPC:
+#endif /* !PDF_HOST_WIN32 */
+        default:
+          {
+            /* Other error conditions */
+            result_status = PDF_ERROR;
+            break;
+          }
+        }
+    }
+  else
+    {
+      result_status = PDF_OK;
+    }
+
+  return result_status;
 }
 
 pdf_bool_t
 pdf_fsys_disk_file_same_p (pdf_fsys_file_t file,
                            pdf_text_t path)
 {
-  /* FIXME: Please implement me XD */
-  return PDF_TRUE;
+  pdf_status_t stat;
+  pdf_i32_t ret;
+  pdf_bool_t case_sensitive;
+  pdf_fsys_disk_file_t work_file = (pdf_fsys_disk_file_t)file->data;
+
+  /* Unix-like systems have case sensitive paths, Windows doesn't. */
+#ifndef PDF_HOST_WIN32
+  case_sensitive = PDF_TRUE;
+#else
+  case_sensitive = PDF_FALSE;
+#endif
+
+  ret = pdf_text_cmp(work_file->unicode_path, path, case_sensitive, &stat);
+
+  if (ret == 0 && stat == PDF_OK)
+    {
+      return PDF_TRUE;
+    }
+
+  return PDF_FALSE;
 }
 
 pdf_status_t
 pdf_fsys_disk_file_get_pos (pdf_fsys_file_t file,
                             pdf_size_t *pos)
 {
-  /* FIXME: Please implement me XD */
-  return 0;
+  pdf_status_t result_status;
+  pdf_fsys_disk_file_t work_file = (pdf_fsys_disk_file_t)file->data;
+
+  if (fgetpos(work_file->file_descriptor, (fpos_t*)pos) == 0)
+    {
+      result_status = PDF_OK;
+    }
+  else
+    {
+      switch (errno)
+        {
+        case EINVAL:
+        case ESPIPE:
+        case EOVERFLOW:
+        case EBADF:
+          {
+            result_status = PDF_EBADDATA;
+            break;
+          }
+        default:
+          {
+            /* Other error conditions */
+            result_status = PDF_ERROR;
+            break;
+          }
+        }
+    }
+
+  return result_status;
 }
 
 pdf_status_t
 pdf_fsys_disk_file_set_pos (pdf_fsys_file_t file,
                             pdf_size_t new_pos)
 {
-  /* FIXME: Please implement me XD */
-  return PDF_OK;
+  pdf_status_t result_status;
+  pdf_fsys_disk_file_t work_file = (pdf_fsys_disk_file_t)file->data;
+
+  if (fsetpos(work_file->file_descriptor, (fpos_t*)&new_pos) == 0)
+    {
+      result_status = PDF_OK;
+    }
+  else
+    {
+      switch (errno)
+        {
+        case EINVAL:
+        case ESPIPE:
+        case EBADF:
+          {
+            result_status = PDF_EBADDATA;
+            break;
+          }
+        default:
+          {
+            /* Other error conditions */
+            result_status = PDF_ERROR;
+            break;
+          }
+        }
+    }
+
+  return result_status;
 }
 
 pdf_bool_t
@@ -779,7 +894,7 @@ pdf_fsys_disk_file_flush (pdf_fsys_file_t file)
     }
   else
     {
-      result_status = PDF_TRUE;
+      result_status = PDF_OK;
     }
 
   return result_status;
