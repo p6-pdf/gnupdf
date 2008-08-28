@@ -1,3 +1,9 @@
+2008-08-29  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* maint.mk: Imported from gnulib.
+
+	* GNUmakefile: Imported from gnulib.
+
 2008-08-22  Zac Brown  <zac@zacbrown.org>
 
 	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_file_set_mode): Make
