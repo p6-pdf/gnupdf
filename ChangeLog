@@ -1,5 +1,11 @@
 2008-08-29  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-hash.c (key_numeric_cmp): User 'strtol' instead of
+	'atoi'.
+
+	* src/base/pdf-text-host-encoding.c
+	(pdf_text_convert_encoding_name_to_CP): Use 'strtol' instead of 'atol'.
+
 	* cfg.mk: New file.
 
 	* src/base/pdf-list.h: __STDC_VERSION__ is not defined in MacosX.

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/28 22:26:28 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/08/29 01:39:33 jemarch"
  *
  *       File:         pdf-text-host-encoding.c
  *       Date:         Fri Jan 11 21:09:23 2008
@@ -114,6 +114,7 @@ pdf_text_convert_encoding_name_to_CP(const pdf_char_t *encoding_name,
                                      UINT *pCP)
 {
   UINT CodePage;
+  char end_char;
 
   /* In windows, the charset name stored in the pdf_text_host_encoding_t
    *  element will be in the following format: "CPn", where 'n' is the
@@ -127,9 +128,11 @@ pdf_text_convert_encoding_name_to_CP(const pdf_char_t *encoding_name,
       return PDF_ETEXTENC;
     }
 
-  /* Get codepage as unsigned integer. `atol' will return 0 if it was not
+  /* Get codepage as unsigned integer. `strtol' will return 0 if it was not
    *  able to correctly parse the string. BTW, 0 is not a valid code page. */
-  CodePage = (UINT)atol((char *)&encoding_name[2]);
+  CodePage = (UINT) strtol ((char *)&encoding_name[2],
+                            &end_char,
+                            10);
   if(CodePage == 0)
     {
       PDF_DEBUG_BASE("Problem converting input CP value '%s'",
