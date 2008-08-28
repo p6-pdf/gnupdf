@@ -48,6 +48,7 @@ GNU PDF Library Hackers Guide
 
 @menu
 * Coding Conventions::
+* Sending Patches::
 @end menu
 
 @node Coding Conventions
@@ -172,5 +173,26 @@ For Windows systems.
 @item macos
 For Macos X systems.
 @end table
+
+@node Sending Patches
+@chapter Sending Patches
+
+This chapter contains some useful information to send patches to be
+integrated in the trunk.
+
+@menu
+* Syntax Check::
+@end menu
+
+@node Syntax Check
+@section Syntax Check
+
+The maintainer-makefile gnulib module provides some more make targets,
+useful for the maintainership of the package.
+
+One of the targets is 'syntax-check'. It performs a check of common
+pitfalls on the source code and GCS conformance.
+
+Please do a make syntax-check before to send a patch.
 
 @bye
