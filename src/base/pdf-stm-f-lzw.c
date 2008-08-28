@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/03/05 12:24:51 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/08/29 00:32:31 jemarch"
  *
  *       File:         pdf-stm-f-lzw.c
  *       Date:         Wed Aug 15 14:41:18 2007
@@ -473,7 +473,7 @@ pdf_stm_f_lzw_decode (pdf_stm_f_lzw_data_t data,
 	if (dict.size == buffer.maxval - 1 - data->early_change)
 	  if (!lzw_buffer_inc_bitsize(&buffer));
 	    /* break; We must wait for the reset code, don't reset yet. */
-	  	
+	
 	old_code = new_code;
 	new_code = lzw_buffer_get_code(&buffer);
 	
