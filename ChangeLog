@@ -1,3 +1,15 @@
+2008-08-22  Zac Brown  <zac@zacbrown.org>
+
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_file_set_mode): Make
+	sure a variable is initialized in all cases and fix indentation.
+	(pdf_fsys_disk_file_same_p): Implemented function.
+	(pdf_fsys_disk_file_get_pos): Implemented function.
+	(pdf_fsys_disk_file_set_pos): Implemented function.
+
+	* doc/gnupdf.texi (pdf_fsys_file_same_p): Add example.
+	(pdf_fsys_file_set_pos): Add example.
+	(pdf_fsys_file_get_pos): Add example.
+
 2008-08-19  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_file_set_mode): Return
