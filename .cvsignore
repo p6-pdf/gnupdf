@@ -6,3 +6,5 @@ config.log
 config.status
 configurelink-warning.h
 link-warning.h
+GNUmakefile
+maint.mk

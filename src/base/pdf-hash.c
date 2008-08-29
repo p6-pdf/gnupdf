@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-07-24 12:00:22 gerel"
+/* -*- mode: C -*- Time-stamp: "08/08/29 01:43:24 jemarch"
  *
  *       File:         pdf-hash.c
  *       Date:         Sat Apr  12 12:22:05 2008
@@ -432,9 +432,11 @@ static int
 key_numeric_cmp (const char *key1, const char *key2)
 {
   unsigned int num1, num2;
+  char *end_char;
 
-  num1 = atoi (key1);
-  num2 = atoi (key2);
+  /* Note that no error checking is made here */
+  num1 = (int) strtol (key1, &end_char, 10);
+  num2 = (int) strtol (key2, &end_char, 10);
 
   if (num1 > num2)
     {

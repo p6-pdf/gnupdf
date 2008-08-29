@@ -1,3 +1,26 @@
+2008-08-29  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-hg.texi (Syntax Check): New section.
+
+	* src/base/pdf-hash.c (key_numeric_cmp): User 'strtol' instead of
+	'atoi'.
+
+	* src/base/pdf-text-host-encoding.c
+	(pdf_text_convert_encoding_name_to_CP): Use 'strtol' instead of 'atol'.
+
+	* cfg.mk: New file.
+
+	* src/base/pdf-list.h: __STDC_VERSION__ is not defined in MacosX.
+
+	* src/base/pdf-alloc.c (pdf_dealloc): Avoid a cast to the free
+	argument so maint.mk doesnt complain.
+
+	* README.cvs (NOTE): Fix the location of the trunk branch.
+
+	* maint.mk: Imported from gnulib.
+
+	* GNUmakefile: Imported from gnulib.
+
 2008-08-22  Zac Brown  <zac@zacbrown.org>
 
 	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_file_set_mode): Make

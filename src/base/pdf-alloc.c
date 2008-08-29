@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/24 23:01:06 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/08/29 00:24:51 jemarch"
  *
  *       File:         pdf-alloc.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -49,7 +49,12 @@ pdf_alloc (const pdf_size_t size)
 inline void
 pdf_dealloc (const void *pointer)
 {
-  free ((void *) pointer);
+  void *p;
+  
+  /* Avoid a cast to the free argument, so maint.mk doesnt
+     complaint */
+  p = (void *) pointer;
+  free (p);
 }
 
 inline void *

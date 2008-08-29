@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-03-06 20:11:28 gerel"
+/* -*- mode: C -*- Time-stamp: "08/08/29 00:26:09 jemarch"
  *
  *       File:         pdf-obj.c
  *       Date:         Sat Jul  7 03:04:30 2007
@@ -117,7 +117,7 @@ pdf_create_string (unsigned char *value,
   string_obj = pdf_alloc_obj ();
   string_obj->type = PDF_STRING_OBJ;
   string_obj->value.string.data = 
-    (unsigned char *) xmalloc (size);
+    xmalloc (size);
   memcpy (string_obj->value.string.data,
           value,
           size);
@@ -135,7 +135,7 @@ pdf_create_name (unsigned char *value,
   name_obj = pdf_alloc_obj ();
   name_obj->type = PDF_NAME_OBJ;
   name_obj->value.name.data =
-    (unsigned char *) xmalloc (size);
+    xmalloc (size);
   memcpy (name_obj->value.name.data,
           value,
           size);
@@ -261,7 +261,7 @@ pdf_get_string_data (pdf_obj_t obj)
 {
   char *data;
 
-  data = (char *) xmalloc (obj->value.string.size);
+  data = xmalloc (obj->value.string.size);
   memcpy (data,
           obj->value.string.data,
           obj->value.string.size);
@@ -280,7 +280,7 @@ pdf_get_name_data (pdf_obj_t obj)
 {
   char *data;
 
-  data = (char *) xmalloc (obj->value.name.size);
+  data = xmalloc (obj->value.name.size);
   memcpy (data,
           obj->value.name.data,
           obj->value.string.size);

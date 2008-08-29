@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 01:05:38 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/08/29 00:26:45 jemarch"
  *
  *       File:         pdf-date.c
  *       Date:         Wed Sep  5 23:38:45 2007
@@ -270,7 +270,7 @@ pdf_date_ut_offset_minute (pdf_date_t date)
 #define DATE_EXTRACT_INT(NUM_DIGITS,VAR)                 \
   do                                                     \
     {                                                    \
-      aux_str = (char *) xmalloc (NUM_DIGITS);           \
+      aux_str = xmalloc (NUM_DIGITS);                    \
       strncpy (aux_str, (string + pos), NUM_DIGITS);     \
       aux_str[NUM_DIGITS] = '\0';                        \
       if (pdf_str2int (aux_str, VAR) == PDF_ERROR)       \

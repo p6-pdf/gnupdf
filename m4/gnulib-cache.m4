@@ -15,11 +15,27 @@
 
 
 # Specification in the form of a command-line invocation:
-#   gnulib-tool --import --dir=. --lib=libgnu --source-base=lib --m4-base=m4 --doc-base=doc --aux-dir=. --libtool --macro-prefix=gl array-list fflush getline getopt linkedhash-list list localcharset localename malloc math mkdir rmdir stdint xalloc
+#   gnulib-tool --import --dir=. --lib=libgnu --source-base=lib --m4-base=m4 --doc-base=doc --aux-dir=. --libtool --macro-prefix=gl array-list fflush getline getopt linkedhash-list list localcharset localename maintainer-makefile malloc math mkdir rmdir stdint xalloc
 
 # Specification in the form of a few gnulib-tool.m4 macro invocations:
 gl_LOCAL_DIR([])
-gl_MODULES([array-list fflush getline getopt linkedhash-list list localcharset localename malloc math mkdir rmdir stdint xalloc])
+gl_MODULES([
+  array-list
+  fflush
+  getline
+  getopt
+  linkedhash-list
+  list
+  localcharset
+  localename
+  maintainer-makefile
+  malloc
+  math
+  mkdir
+  rmdir
+  stdint
+  xalloc
+])
 gl_AVOID([])
 gl_SOURCE_BASE([lib])
 gl_M4_BASE([m4])
