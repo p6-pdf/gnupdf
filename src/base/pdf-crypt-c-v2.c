@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-08-30 17:10:19 davazp"
+/* -*- mode: C -*- Time-stamp: "2008-08-30 19:14:17 davazp"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -32,6 +32,8 @@
 #include <pdf-crypt-c-v2.h>
 
 
+/* Creation and destruction of a v2 cipher */
+
 static pdf_status_t
 pdf_crypt_cipher_v2_new (void ** cipher)
 {
@@ -51,6 +53,18 @@ pdf_crypt_cipher_v2_new (void ** cipher)
   return status;
 }
 
+
+static pdf_status_t
+pdf_crypt_cipher_v2_destroy (void * cipher)
+{
+  gcry_cipher_close (cipher);
+  pdf_dealloc (cipher);
+  return PDF_OK;
+}
+
+
+
+/* Encryption and decryption functions */
 
 static pdf_status_t
 pdf_crypt_cipher_v2_setkey (void * cipher,
@@ -80,13 +94,15 @@ pdf_crypt_cipher_v2_decrypt_size (void * cipher,
 
 
 
-static pdf_size_t
+static pdf_status_t
 pdf_crypt_cipher_v2_encrypt (void * cipher,
 			     pdf_char_t *out, pdf_size_t out_size,
-			     pdf_char_t *in,  pdf_size_t in_size)
+			     pdf_char_t *in,  pdf_size_t in_size,
+			     pdf_size_t *result_size)
 {
   gcry_cipher_encrypt (cipher, out, out_size, in, in_size);
-  return in_size;
+  *result_size = in_size;
+  return PDF_OK;
 }
 
 
@@ -94,21 +110,14 @@ pdf_crypt_cipher_v2_encrypt (void * cipher,
 static pdf_size_t
 pdf_crypt_cipher_v2_decrypt (void * cipher,
 			     pdf_char_t *out, pdf_size_t out_size,
-			     pdf_char_t *in,  pdf_size_t in_size)
+			     pdf_char_t *in,  pdf_size_t in_size,
+			     pdf_size_t *result_size)
 {
   gcry_cipher_decrypt (cipher, out, out_size, in, in_size);
-  return in_size;
-}
-
-
-
-static pdf_status_t
-pdf_crypt_cipher_v2_destroy (void * cipher)
-{
-  gcry_cipher_close (cipher);
-  pdf_dealloc (cipher);
+  *result_size = in_size;
   return PDF_OK;
 }
+
 
 
 struct pdf_crypt_cipher_algo_s pdf_crypt_cipher_v2 = 

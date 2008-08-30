@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-08-30 15:54:35 davazp"
+/* -*- mode: C -*- Time-stamp: "2008-08-30 19:17:42 davazp"
  *
  *       File:         pdf-crypt-cipher-encrypt-size.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -32,17 +32,36 @@
 
 
 /*
- * Test: pdf_crypt_init_001
+ * Test: pdf_crypt_cipher_encrypt_size_001
  * Description:
- *   Try to initialize the module.
+ *   Compute the ouput buffer size for a empty input buffer in a AESV2 cipher.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns 32
  */
 START_TEST (pdf_crypt_cipher_encrypt_size_001)
 {
-  fail_if (pdf_crypt_init () != PDF_OK);
+  pdf_crypt_cipher_t cipher;
+  pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
+  fail_if (pdf_crypt_cipher_encrypt_size (cipher, NULL, 0) != 32);
 }
 END_TEST
+
+
+/*
+ * Test: pdf_crypt_cipher_encrypt_size_002
+ * Description:
+ *   Compute the ouput buffer size for a 15 bytes buffer in a AESV2 cipher.
+ * Success condition:
+ *   Returns 32
+ */
+START_TEST (pdf_crypt_cipher_encrypt_size_002)
+{
+  pdf_crypt_cipher_t cipher;
+  pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
+  fail_if (pdf_crypt_cipher_encrypt_size (cipher, NULL, 15) != 32);
+}
+END_TEST
+
 
 
 /*

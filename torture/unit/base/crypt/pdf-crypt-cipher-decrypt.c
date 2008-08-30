@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-08-30 15:54:20 davazp"
+/* -*- mode: C -*- Time-stamp: "2008-08-30 17:44:30 davazp"
  *
  *       File:         pdf-crypt-cipher-decrypt.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -31,18 +31,7 @@
 #include <check.h>
 
 
-/*
- * Test: pdf_crypt_init_001
- * Description:
- *   Try to initialize the module.
- * Success condition:
- *   Returns PDF_OK
- */
-START_TEST (pdf_crypt_cipher_decrypt_001)
-{
-  fail_if (pdf_crypt_init () != PDF_OK);
-}
-END_TEST
+
 
 
 /*
@@ -52,7 +41,7 @@ TCase *
 test_pdf_crypt_cipher_decrypt (void)
 {
   TCase *tc = tcase_create("pdf_crypt_cipher_decrypt");
-  tcase_add_test(tc, pdf_crypt_cipher_decrypt_001);
+  /* tcase_add_test(tc, pdf_crypt_cipher_decrypt_001); */
   return tc;
 }
 

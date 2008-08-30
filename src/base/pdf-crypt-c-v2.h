@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-08-25 04:49:56 davazp"
+/* -*- mode: C -*- Time-stamp: "2008-08-30 17:35:37 davazp"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -29,7 +29,7 @@
 
 #include <pdf-crypt.h>
 
-/* BEGIN PUBLIC  */
+/* BEGIN PUBLIC */
 
 #define PDF_CRYPT_CIPHER_ALGO_V2 &pdf_crypt_cipher_v2
 extern struct pdf_crypt_cipher_algo_s pdf_crypt_cipher_v2;

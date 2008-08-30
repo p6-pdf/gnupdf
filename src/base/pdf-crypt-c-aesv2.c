@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-08-30 17:02:24 davazp"
+/* -*- mode: C -*- Time-stamp: "2008-08-30 19:12:59 davazp"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -24,18 +24,6 @@
  */
 
 
-
-/*
- *
- * AESV2 encryption buffer:
- *
- *
- * +----+---------+ - - +
- * | iv | content | pad |
- * +----+---------+ - - +
- *
- */
-
 #include <stdlib.h>
 #include <string.h>
 #include <gcrypt.h>
@@ -44,9 +32,10 @@
 #include <pdf-error.h>
 #include <pdf-crypt-c-aesv2.h>
 
-#define AESV2_BLKSIZE 16
+#define AESV2_BLKSIZE 16	/* Size of a block in AES128 */
 
 
+/* Creation and destruction of aesv2 ciphers */
 
 static pdf_status_t
 pdf_crypt_cipher_aesv2_new (void ** cipher)
@@ -68,6 +57,19 @@ pdf_crypt_cipher_aesv2_new (void ** cipher)
 }
 
 
+
+static pdf_status_t
+pdf_crypt_cipher_aesv2_destroy (void * cipher)
+{
+  gcry_cipher_close (cipher);
+  pdf_dealloc (cipher);
+  return PDF_OK;
+}
+
+
+
+/* Encryption and decryption functions */
+
 static pdf_status_t
 pdf_crypt_cipher_aesv2_setkey (void * cipher,
 			       pdf_char_t *key, pdf_size_t size)
@@ -80,27 +82,30 @@ pdf_crypt_cipher_aesv2_setkey (void * cipher,
 }
 
 
+
 static pdf_size_t
 pdf_crypt_cipher_aesv2_encrypt_size (void * cipher,
 				     pdf_char_t *in, pdf_size_t in_size)
 {
-  return in_size + 2*AESV2_BLKSIZE - (in_size % AESV2_BLKSIZE);
+  return in_size == 0? 0: in_size + 2*AESV2_BLKSIZE - (in_size % AESV2_BLKSIZE);
 }
+
 
 
 static pdf_size_t
 pdf_crypt_cipher_aesv2_decrypt_size (void * cipher,
 				     pdf_char_t *in, pdf_size_t in_size)
 {
-  return in_size - AESV2_BLKSIZE;
+  return in_size <= 2*AESV2_BLKSIZE ? 0: in_size - AESV2_BLKSIZE;
 }
 
 
 
-static pdf_size_t
+static pdf_status_t
 pdf_crypt_cipher_aesv2_encrypt (void * cipher,
 				pdf_char_t *out, pdf_size_t out_size,
-				pdf_char_t *in,  pdf_size_t in_size)
+				pdf_char_t *in,  pdf_size_t in_size,
+				pdf_size_t *result_size)
 {
   pdf_size_t   buffer_size;
   pdf_size_t   iv_size	     = AESV2_BLKSIZE;
@@ -114,7 +119,7 @@ pdf_crypt_cipher_aesv2_encrypt (void * cipher,
   buffer_size  = pdf_crypt_cipher_aesv2_encrypt_size (cipher, in, in_size);
 
   if (out_size < buffer_size)
-    return -1;
+    return PDF_ERROR;
 
   padding_size = buffer_size - iv_size - content_size;
 
@@ -125,15 +130,18 @@ pdf_crypt_cipher_aesv2_encrypt (void * cipher,
   gcry_cipher_setiv (cipher, iv, iv_size);
   gcry_cipher_encrypt (cipher, content, content_size + padding_size, NULL, 0);
 
-  return buffer_size;
+  *result_size = buffer_size;
+
+  return PDF_OK;
 }
 
 
 
-static pdf_size_t
+static pdf_status_t
 pdf_crypt_cipher_aesv2_decrypt (void * cipher,
 				pdf_char_t *out, pdf_size_t out_size,
-				pdf_char_t *in,  pdf_size_t in_size)
+				pdf_char_t *in,  pdf_size_t in_size,
+				pdf_size_t *result_size)
 {
   pdf_size_t   buffer_size   = in_size;
   pdf_size_t   iv_size	     = AESV2_BLKSIZE;
@@ -151,21 +159,13 @@ pdf_crypt_cipher_aesv2_decrypt (void * cipher,
 
   memcpy (out, content, content_size);
 
-  return content_size;
-}
-
-
-
-static pdf_status_t
-pdf_crypt_cipher_aesv2_destroy (void * cipher)
-{
-  gcry_cipher_close (cipher);
-  pdf_dealloc (cipher);
+  *result_size = content_size;
+  
   return PDF_OK;
 }
 
 
-
+/* Structure for crypt module */
 struct pdf_crypt_cipher_algo_s pdf_crypt_cipher_aesv2 = 
 {
     pdf_crypt_cipher_aesv2_new,
@@ -179,4 +179,3 @@ struct pdf_crypt_cipher_algo_s pdf_crypt_cipher_aesv2 =
 
 
 /* End of pdf-crypt-c-aesv2.c */
-

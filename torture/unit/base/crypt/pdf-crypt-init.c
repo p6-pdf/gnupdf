@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-08-25 15:59:00 davazp"
+/* -*- mode: C -*- Time-stamp: "2008-08-30 17:12:35 davazp"
  *
  *       File:         pdf-crypt-init.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -34,7 +34,7 @@
 /*
  * Test: pdf_crypt_init_001
  * Description:
- *   Try to initialize the module.
+ *   Initialize the module.
  * Success condition:
  *   Returns PDF_OK
  */

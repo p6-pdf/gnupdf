@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-08-25 17:03:00 davazp"
+/* -*- mode: C -*- Time-stamp: "2008-08-30 19:11:26 davazp"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -47,11 +47,13 @@ struct pdf_crypt_cipher_algo_s
 
   pdf_size_t (*encrypt) (void * cipher,
 			 pdf_char_t *out, pdf_size_t out_size,
-			 pdf_char_t *in,  pdf_size_t in_size);
+			 pdf_char_t *in,  pdf_size_t in_size,
+			 pdf_size_t *result_size);
 
   pdf_size_t (*decrypt) (void * cipher,
 			 pdf_char_t *out, pdf_size_t out_size,
-			 pdf_char_t *in,  pdf_size_t in_size);
+			 pdf_char_t *in,  pdf_size_t in_sizem,
+			 pdf_size_t *result_size);
 
   pdf_status_t (*destroy) (void * cipher);
 };
@@ -93,17 +95,19 @@ pdf_size_t pdf_crypt_cipher_encrypt_size (pdf_crypt_cipher_t cipher,
 pdf_size_t pdf_crypt_cipher_decrypt_size (pdf_crypt_cipher_t cipher,
 					  pdf_char_t *in, pdf_size_t in_size);
 
-pdf_size_t pdf_crypt_cipher_encrypt (pdf_crypt_cipher_t cipher,
-				     pdf_char_t *out,
-				     pdf_size_t out_size,
-				     pdf_char_t *in,
-				     pdf_size_t in_size);
+pdf_status_t pdf_crypt_cipher_encrypt (pdf_crypt_cipher_t cipher,
+				       pdf_char_t *out,
+				       pdf_size_t out_size,
+				       pdf_char_t *in,
+				       pdf_size_t in_size,
+				       pdf_size_t *result_size);
 
-pdf_size_t pdf_crypt_cipher_decrypt (pdf_crypt_cipher_t cipher,
-				     pdf_char_t *out,
-				     pdf_size_t out_size,
-				     pdf_char_t *in,
-				     pdf_size_t in_size);
+pdf_status_t pdf_crypt_cipher_decrypt (pdf_crypt_cipher_t cipher,
+				       pdf_char_t *out,
+				       pdf_size_t out_size,
+				       pdf_char_t *in,
+				       pdf_size_t in_size,
+				       pdf_size_t *result_size);
 
 pdf_status_t pdf_crypt_cipher_destroy (pdf_crypt_cipher_t cipher);
 
@@ -214,23 +218,25 @@ pdf_crypt_cipher_decrypt_size (pdf_crypt_cipher_t cipher,
 }
 
 
-EXTERN_INLINE pdf_size_t
+EXTERN_INLINE pdf_status_t
 pdf_crypt_cipher_encrypt (pdf_crypt_cipher_t cipher,
 			  pdf_char_t *out, pdf_size_t out_size,
-			  pdf_char_t *in,  pdf_size_t in_size)
+			  pdf_char_t *in,  pdf_size_t in_size,
+			  pdf_size_t *result_size)
 {
   cipher.algo->setkey (cipher.raw, cipher.key, cipher.key_size);
-  return cipher.algo->encrypt (cipher.raw, out, out_size, in, in_size);
+  return cipher.algo->encrypt (cipher.raw, out, out_size, in, in_size, result_size);
 }
 
 
-EXTERN_INLINE pdf_size_t
+EXTERN_INLINE pdf_status_t
 pdf_crypt_cipher_decrypt (pdf_crypt_cipher_t cipher,
 			  pdf_char_t *out, pdf_size_t out_size,
-			  pdf_char_t *in,  pdf_size_t in_size)
+			  pdf_char_t *in,  pdf_size_t in_size,
+			  pdf_size_t *result_size)
 {
   cipher.algo->setkey (cipher.raw, cipher.key, cipher.key_size);
-  return cipher.algo->decrypt (cipher.raw, out, out_size, in, in_size);
+  return cipher.algo->decrypt (cipher.raw, out, out_size, in, in_size, result_size);
 }
 
 

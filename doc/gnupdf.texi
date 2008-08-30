@@ -8089,7 +8089,7 @@ function for this parameters.
 @end deftypefun
 
 
-@deftypefun pdf_size_t pdf_crypt_cipher_encrypt (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{out}, pdf_size_t  @var{out_size}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size}) 
+@deftypefun pdf_status_t pdf_crypt_cipher_encrypt (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{out}, pdf_size_t  @var{out_size}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size}, pdf_size_t *@var{result_size})
 
 Encrypt a buffer. The ciphered text will be put in @var{out}.
 
@@ -8101,15 +8101,23 @@ A cipher.
 @item out
 A pointer to the output buffer.
 @item out_size
-Size of the output buffer in bytes. The function will fail if it is not
-too large to contain the output.
+Size reserved for the output buffer in bytes. The function will fail if
+it is not too large to contain the output.
 @item in
 A pointer to input buffer.
 @item in_size
-The length of the input buffer in bytes.
+The length of the input buffer in bytes. I must be greater than zero.
+@item result_size
+A pointer where it will put the real size of the output buffer. This
+size will be lesser or equal than out_size.
 @end table
 @item Returns
-The size of the output buffer. It could be lesser than out_size. On error zero is returned.
+@table @code
+@item PDF_OK
+Operation successful
+@item PDF_ERROR
+An error ocurred.
+@end table
 @item Usage example
 @example
 xxx
@@ -8118,7 +8126,7 @@ xxx
 @end deftypefun
 
 
-@deftypefun pdf_status_t pdf_crypt_cipher_decrypt (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{out}, pdf_size_t  @var{out_size}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size})
+@deftypefun pdf_status_t pdf_crypt_cipher_decrypt (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{out}, pdf_size_t  @var{out_size}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size}, pdf_size_t )
 
 Decrypt a buffer. The plain text will be put in @var{out}.
 
@@ -8130,16 +8138,23 @@ A cipher.
 @item out
 A pointer to the output buffer.
 @item out_size
-Size of the output buffer in bytes. The function will fail if it is not
-too large to contain the output.
+Size reserved for the output buffer in bytes. The function will fail if
+it is not too large to contain the output.
 @item in
 A pointer to input buffer.
 @item in_size
-The length of the input buffer in bytes.
+The length of the input buffer in bytes. It must be greater than zero.
+@item result_size
+A pointer where it will put the real size of the output buffer. This size
+will be lesser or equal than out_size.
 @end table
 @item Returns
-The size of the output buffer. It could be lesser than out_size. On
-error zero is returned.
+@table @code
+@item PDF_OK
+Operation successful
+@item PDF_ERROR
+An error ocurred.
+@end table
 @item Usage example
 @example
 xxx

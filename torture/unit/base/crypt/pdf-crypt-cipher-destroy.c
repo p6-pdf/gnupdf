@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-08-30 15:54:31 davazp"
+/* -*- mode: C -*- Time-stamp: "2008-08-30 17:45:15 davazp"
  *
  *       File:         pdf-crypt-cipher-destroy.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -32,17 +32,36 @@
 
 
 /*
- * Test: pdf_crypt_init_001
+ * Test: pdf_crypt_cipher_destroy_001
  * Description:
- *   Try to initialize the module.
+ *   Destroy a AESV2 cipher.
  * Success condition:
  *   Returns PDF_OK
  */
 START_TEST (pdf_crypt_cipher_destroy_001)
 {
-  fail_if (pdf_crypt_init () != PDF_OK);
+  pdf_crypt_cipher_t cipher;
+  pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
+  fail_if (pdf_crypt_cipher_destroy (cipher) != PDF_OK);
 }
 END_TEST
+
+
+/*
+ * Test: pdf_crypt_cipher_destroy_002
+ * Description:
+ *   Destroy a V2 cipher.
+ * Success condition:
+ *   Returns PDF_OK
+ */
+START_TEST (pdf_crypt_cipher_destroy_002)
+{
+  pdf_crypt_cipher_t cipher;
+  pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &cipher);
+  fail_if (pdf_crypt_cipher_destroy (cipher) != PDF_OK);
+}
+END_TEST
+
 
 
 /*
@@ -53,9 +72,9 @@ test_pdf_crypt_cipher_destroy (void)
 {
   TCase *tc = tcase_create("pdf_crypt_cipher_destroy");
   tcase_add_test(tc, pdf_crypt_cipher_destroy_001);
+  tcase_add_test(tc, pdf_crypt_cipher_destroy_002);
   return tc;
 }
 
 
 /* End of pdf-crypt-cipher-destroy.c */
-

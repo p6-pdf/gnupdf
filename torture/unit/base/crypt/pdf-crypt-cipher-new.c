@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-08-30 15:56:09 davazp"
+/* -*- mode: C -*- Time-stamp: "2008-08-30 17:42:30 davazp"
  *
  *       File:         pdf-crypt-init.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -32,17 +32,36 @@
 
 
 /*
- * Test: pdf_crypt_init_001
+ * Test: pdf_crypt_cipher_new_001
  * Description:
- *   Try to initialize the module.
+ *   Create a AESV2 cipher.
  * Success condition:
  *   Returns PDF_OK
  */
 START_TEST (pdf_crypt_cipher_new_001)
 {
-  fail_if (pdf_crypt_init () != PDF_OK);
+  pdf_crypt_cipher_t cipher;
+  fail_if (pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher) != PDF_OK);
+  pdf_crypt_cipher_destroy (cipher);
 }
 END_TEST
+
+
+/*
+ * Test: pdf_crypt_cipher_new_002
+ * Description:
+ *   Create a V2 cipher.
+ * Success condition:
+ *   Returns PDF_OK
+ */
+START_TEST (pdf_crypt_cipher_new_002)
+{
+  pdf_crypt_cipher_t cipher;
+  fail_if (pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &cipher) != PDF_OK);
+  pdf_crypt_cipher_destroy (cipher);
+}
+END_TEST
+
 
 
 /*
@@ -53,6 +72,7 @@ test_pdf_crypt_cipher_new (void)
 {
   TCase *tc = tcase_create("pdf_crypt_cipher_new");
   tcase_add_test(tc, pdf_crypt_cipher_new_001);
+  tcase_add_test(tc, pdf_crypt_cipher_new_002);
   return tc;
 }
 
