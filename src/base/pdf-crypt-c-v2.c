@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-08-25 17:09:59 davazp"
+/* -*- mode: C -*- Time-stamp: "2008-08-30 17:10:19 davazp"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -23,8 +23,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <pdf-crypt-c-v2.h>
-
+#include <stdlib.h>
+#include <string.h>
+#include <gcrypt.h>
+#include <pdf-alloc.h>
 #include <pdf-types.h>
 #include <pdf-error.h>
 #include <pdf-crypt-c-v2.h>
@@ -33,7 +35,20 @@
 static pdf_status_t
 pdf_crypt_cipher_v2_new (void ** cipher)
 {
-  return PDF_OK;
+  pdf_status_t status;
+  gcry_cipher_hd_t * hd;
+
+  hd = pdf_alloc (sizeof (gcry_cipher_hd_t));
+
+  if (hd == NULL)
+    {
+      gcry_cipher_open (hd, GCRY_CIPHER_ARCFOUR, GCRY_CIPHER_MODE_STREAM, 0);
+      status = PDF_OK;
+    }
+  else
+    status = PDF_ERROR;
+
+  return status;
 }
 
 
@@ -41,7 +56,10 @@ static pdf_status_t
 pdf_crypt_cipher_v2_setkey (void * cipher,
 			    pdf_char_t *key, pdf_size_t size)
 {
-  return PDF_OK;
+  if (gcry_cipher_setkey (cipher, key, size) != GPG_ERR_NO_ERROR)
+    return PDF_EBADDATA;
+  else
+    return PDF_OK;
 }
 
 
@@ -49,7 +67,7 @@ static pdf_size_t
 pdf_crypt_cipher_v2_encrypt_size (void * cipher,
 				  pdf_char_t *in, pdf_size_t in_size)
 {
-  return PDF_OK;
+  return in_size;
 }
 
 
@@ -57,8 +75,9 @@ static pdf_size_t
 pdf_crypt_cipher_v2_decrypt_size (void * cipher,
 				  pdf_char_t *in, pdf_size_t in_size)
 {
-  return PDF_OK;
+  return in_size;
 }
+
 
 
 static pdf_size_t
@@ -66,8 +85,10 @@ pdf_crypt_cipher_v2_encrypt (void * cipher,
 			     pdf_char_t *out, pdf_size_t out_size,
 			     pdf_char_t *in,  pdf_size_t in_size)
 {
-  return PDF_OK;
+  gcry_cipher_encrypt (cipher, out, out_size, in, in_size);
+  return in_size;
 }
+
 
 
 static pdf_size_t
@@ -75,16 +96,19 @@ pdf_crypt_cipher_v2_decrypt (void * cipher,
 			     pdf_char_t *out, pdf_size_t out_size,
 			     pdf_char_t *in,  pdf_size_t in_size)
 {
-  return PDF_OK;
+  gcry_cipher_decrypt (cipher, out, out_size, in, in_size);
+  return in_size;
 }
+
 
 
 static pdf_status_t
 pdf_crypt_cipher_v2_destroy (void * cipher)
 {
+  gcry_cipher_close (cipher);
+  pdf_dealloc (cipher);
   return PDF_OK;
 }
-
 
 
 struct pdf_crypt_cipher_algo_s pdf_crypt_cipher_v2 = 
@@ -93,12 +117,10 @@ struct pdf_crypt_cipher_algo_s pdf_crypt_cipher_v2 =
     pdf_crypt_cipher_v2_setkey,
     pdf_crypt_cipher_v2_encrypt_size,
     pdf_crypt_cipher_v2_decrypt_size,
-    pdf_crypt_cipher_v2_encrypt,
+    pdf_crypt_cipher_v2_encrypt,  
     pdf_crypt_cipher_v2_decrypt,
     pdf_crypt_cipher_v2_destroy
 };
-  
-
 
 
 /* End of pdf-crypt-c-v2.c */

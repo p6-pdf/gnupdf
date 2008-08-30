@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-08-25 17:48:42 davazp"
+/* -*- mode: C -*- Time-stamp: "2008-08-30 17:02:24 davazp"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -23,6 +23,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
+
+/*
+ *
+ * AESV2 encryption buffer:
+ *
+ *
+ * +----+---------+ - - +
+ * | iv | content | pad |
+ * +----+---------+ - - +
+ *
+ */
+
 #include <stdlib.h>
 #include <string.h>
 #include <gcrypt.h>
@@ -32,6 +45,7 @@
 #include <pdf-crypt-c-aesv2.h>
 
 #define AESV2_BLKSIZE 16
+
 
 
 static pdf_status_t
@@ -82,46 +96,64 @@ pdf_crypt_cipher_aesv2_decrypt_size (void * cipher,
 }
 
 
-static pdf_status_t
+
+static pdf_size_t
 pdf_crypt_cipher_aesv2_encrypt (void * cipher,
 				pdf_char_t *out, pdf_size_t out_size,
 				pdf_char_t *in,  pdf_size_t in_size)
 {
-  pdf_char_t * padded;
-  pdf_size_t padded_size;
-  pdf_char_t iv[AESV2_BLKSIZE];
-  pdf_size_t iv_size = sizeof(iv);
+  pdf_size_t   buffer_size;
+  pdf_size_t   iv_size	     = AESV2_BLKSIZE;
+  pdf_size_t   content_size  = in_size;
+  pdf_size_t   padding_size;
+  pdf_char_t * buffer	     = out;
+  pdf_char_t * iv	     = &buffer[0];
+  pdf_char_t * content	     = &buffer[iv_size];
+  pdf_char_t * padding	     = &buffer[iv_size + content_size];
 
-  padded_size  = pdf_crypt_cipher_aesv2_encrypt_size (cipher, in, in_size);
-  padded_size -= iv_size;
+  buffer_size  = pdf_crypt_cipher_aesv2_encrypt_size (cipher, in, in_size);
 
-  padded = pdf_alloc (padded_size);
-  
-  memcpy (padded, in, in_size);
-  memset (padded, padded_size - in_size, padded_size - in_size);
-  
+  if (out_size < buffer_size)
+    return -1;
+
+  padding_size = buffer_size - iv_size - content_size;
+
   gcry_create_nonce (iv, iv_size);
+  memcpy (content, in, in_size);
+  memset (padding, padding_size, padding_size);
+  
   gcry_cipher_setiv (cipher, iv, iv_size);
+  gcry_cipher_encrypt (cipher, content, content_size + padding_size, NULL, 0);
 
-  memcpy (out, iv, iv_size);
-  gcry_cipher_encrypt (cipher,
-		       out + iv_size,
-		       out_size - iv_size,
-		       in,
-		       in_size);
-
-  pdf_dealloc (padded);
-  return PDF_OK;
+  return buffer_size;
 }
 
 
-static pdf_status_t
+
+static pdf_size_t
 pdf_crypt_cipher_aesv2_decrypt (void * cipher,
 				pdf_char_t *out, pdf_size_t out_size,
 				pdf_char_t *in,  pdf_size_t in_size)
 {
-  return PDF_OK;
+  pdf_size_t   buffer_size   = in_size;
+  pdf_size_t   iv_size	     = AESV2_BLKSIZE;
+  pdf_size_t   content_size;
+  pdf_size_t   padding_size;
+  pdf_char_t * buffer	     = in;
+  pdf_char_t * iv	     = &buffer[0];
+  pdf_char_t * content	     = &buffer[iv_size];
+  
+  gcry_cipher_setiv (cipher, iv, iv_size);
+  gcry_cipher_decrypt (cipher, content, buffer_size - iv_size, NULL, 0);
+
+  padding_size = content[buffer_size - iv_size - 1];
+  content_size = buffer_size - iv_size - padding_size;
+
+  memcpy (out, content, content_size);
+
+  return content_size;
 }
+
 
 
 static pdf_status_t
@@ -144,7 +176,6 @@ struct pdf_crypt_cipher_algo_s pdf_crypt_cipher_aesv2 =
     pdf_crypt_cipher_aesv2_decrypt,
     pdf_crypt_cipher_aesv2_destroy
 };
-
 
 
 /* End of pdf-crypt-c-aesv2.c */

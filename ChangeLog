@@ -1,7 +1,3 @@
-2008-08-30  David Vazquez  <davazp@gmail.com>
-
-	* 
-
 2008-08-29  David Vazquez  <davazp@gmail.com>
 
 	* torture/unit/runtests.c: Add test suite crypt.
