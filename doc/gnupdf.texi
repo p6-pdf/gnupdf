@@ -7061,7 +7061,12 @@ a file in the underlying filesystem.
 @end table
 @item Usage example
 @example
-XXX
+pdf_bool_t ret;
+pdf_fsys_file_t file; /* some pre-initialized file variable */
+pdf_text_t other_path = pdf_text_new_from_unicode (&text,
+                                                   "/path/to/baz",
+                                                   12, PDF_TEXT_UTF8);
+ret = pdf_fsys_file_same_p (file, other_path);
 @end example
 @end table
 @end deftypefun
@@ -7094,7 +7099,15 @@ The function call failed due to an error.
 @end table
 @item Usage example
 @example
-XXX
+pdf_status_t ret;
+pdf_fsys_file_t file = pdf_alloc(sizeof(pdf_fsys_file_s));
+pdf_text_t path = pdf_text_new_from_unicode (&text,
+                                             "/path/to/foo",
+                                             12, PDF_TEXT_UTF8);
+ret = pdf_fsys_open (path, PDF_FSYS_OPEN_MODE_WRITE, file);
+
+pdf_size_t pos = 20;
+ret = pdf_fsys_file_get_pos(file, pos);
 @end example
 @end table
 @end deftypefun
@@ -7124,7 +7137,15 @@ position.
 @end table
 @item Usage example
 @example
-XXX
+pdf_status_t ret;
+pdf_fsys_file_t file = pdf_alloc(sizeof(pdf_fsys_file_s));
+pdf_text_t path = pdf_text_new_from_unicode (&text,
+                                             "/path/to/foo",
+                                             12, PDF_TEXT_UTF8);
+ret = pdf_fsys_open (path, PDF_FSYS_OPEN_MODE_WRITE, file);
+
+pdf_size_t pos = 20;
+ret = pdf_fsys_file_set_pos(file, pos);
 @end example
 @end table
 @end deftypefun
