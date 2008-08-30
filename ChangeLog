@@ -1,3 +1,44 @@
+2008-08-30  David Vazquez  <davazp@gmail.com>
+
+	* 
+
+2008-08-29  David Vazquez  <davazp@gmail.com>
+
+	* torture/unit/runtests.c: Add test suite crypt.
+
+	* torture/unit/base/crypt/tsuite-crypt.c: New file.
+
+	* src/base/pdf-crypt-c-v2.h: New file.
+
+	* src/base/pdf-crypt-c-v2.c: New file.
+
+	* src/base/pdf-crypt-c-aesv2.h: New file.
+
+	* src/base/pdf-crypt-c-aesv2.c: New file.
+
+	* doc/gnupdf.texi (Creating and destroying Ciphers): Rename
+	pdf_crypt_algo_e by pdf_crypt_cipher_algo_t.
+	pdf_crypt_cipher_encrypt and pdf_crypt_cipher_decrypt functions
+	return pdf_size_t.
+
+	* src/Makefile.am (AM_CFLAGS): Flags for libgcrypt added.
+	(libgnupdf_la_LIBADD): Libgcrypt library added.
+
+	* configure.ac: Check for libgcrypt library added.
+
+	* src/base/pdf-crypt.c: New file.
+
+	* src/base/pdf-crypt.h: New file.
+	(pdf_crypt_init): Implemented function	
+	(pdf_crypt_cipher_new): Implemented function.
+	(pdf_crypt_cipher_setkey): Implemented function.
+	(pdf_crypt_cipher_encrypt_size): Implemented function.
+	(pdf_crypt_cipher_decrypt_size): Implemented function.
+	(pdf_crypt_cipher_encrypt): Implemented function.
+	(pdf_crypt_cipher_decrypt): Implemented function.
+	(pdf_crypt_cipher_destroy): Implemented function.
+	(pdf_crypt_md_md5): Implemented function.
+
 2008-08-19  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_file_set_mode): Return

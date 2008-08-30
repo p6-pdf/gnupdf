@@ -50,6 +50,12 @@ dnl Search for required libraries
 CHECK_ZLIB
 AM_CONDITIONAL([ZLIB], [test "x$have_zlib" = "xyes"])
 AC_CHECK_LIB(m,exp,,,)
+
+AM_PATH_LIBGCRYPT([1.4.1], have_libgcrypt="yes", have_libgcrypt="no")
+if test x$have_libgcrypt == "xno"; then
+AC_MSG_ERROR([cannot find libgcrypt library. Please install it and rerun `configure'.])
+fi
+
 AC_CHECK_LIB([check],[suite_create],[have_check=yes],[have_check=no],)
 AM_CONDITIONAL([CHECK], [test "x$have_check" = "xyes"])
 if test "x$have_check" = "xno"; then
