@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-08-30 15:54:29 davazp"
+/* -*- mode: C -*- Time-stamp: "2008-08-31 02:54:14 davazp"
  *
  *       File:         pdf-crypt-cipher-decrypt-size.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -32,17 +32,74 @@
 
 
 /*
- * Test: pdf_crypt_init_001
+ * Test: pdf_crypt_cipher_decrypt_size_001
  * Description:
- *   Try to initialize the module.
+ *   Compute the ouput buffer size for a empty input buffer in a AESV2 cipher.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns 0
  */
 START_TEST (pdf_crypt_cipher_decrypt_size_001)
 {
-  fail_if (pdf_crypt_init () != PDF_OK);
+  pdf_crypt_cipher_t cipher;
+  pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
+  fail_if (pdf_crypt_cipher_decrypt_size (cipher, NULL, 0) != 0);
+  pdf_crypt_cipher_destroy (cipher);
 }
 END_TEST
+
+
+/*
+ * Test: pdf_crypt_cipher_decrypt_size_002
+ * Description:
+ *   Compute the ouput buffer size for a 32 bytes buffer in a AESV2 cipher.
+ * Success condition:
+ *   Returns 0
+ */
+START_TEST (pdf_crypt_cipher_decrypt_size_002)
+{
+  pdf_crypt_cipher_t cipher;
+  pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
+  fail_if (pdf_crypt_cipher_decrypt_size (cipher, NULL, 32) != 0);
+  pdf_crypt_cipher_destroy (cipher);
+}
+END_TEST
+
+
+
+/*
+ * Test: pdf_crypt_cipher_decrypt_size_002
+ * Description:
+ *   Compute the ouput buffer size for a 32 bytes buffer in a AESV2 cipher.
+ * Success condition:
+ *   Returns 0
+ */
+START_TEST (pdf_crypt_cipher_decrypt_size_003)
+{
+  pdf_crypt_cipher_t cipher;
+  pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
+  fail_if (pdf_crypt_cipher_decrypt_size (cipher, NULL, 31) != 0);
+  pdf_crypt_cipher_destroy (cipher);
+}
+END_TEST
+
+
+
+/*
+ * Test: pdf_crypt_cipher_decrypt_size_003
+ * Description:
+ *   Compute the ouput buffer size for a 0 bytes buffer in a V2 cipher.
+ * Success condition:
+ *   Returns 0
+ */
+START_TEST (pdf_crypt_cipher_decrypt_size_004)
+{
+  pdf_crypt_cipher_t cipher;
+  pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &cipher);
+  fail_if (pdf_crypt_cipher_decrypt_size (cipher, NULL, 15) != 15);
+  pdf_crypt_cipher_destroy (cipher);
+}
+END_TEST
+
 
 
 /*
@@ -53,6 +110,9 @@ test_pdf_crypt_cipher_decrypt_size (void)
 {
   TCase *tc = tcase_create("pdf_crypt_cipher_decrypt_size");
   tcase_add_test(tc, pdf_crypt_cipher_decrypt_size_001);
+  tcase_add_test(tc, pdf_crypt_cipher_decrypt_size_002);
+  tcase_add_test(tc, pdf_crypt_cipher_decrypt_size_003);
+  tcase_add_test(tc, pdf_crypt_cipher_decrypt_size_004);
   return tc;
 }
 

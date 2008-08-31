@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-08-30 19:12:59 davazp"
+/* -*- mode: C -*- Time-stamp: "2008-08-31 02:50:43 davazp"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -40,20 +40,34 @@
 static pdf_status_t
 pdf_crypt_cipher_aesv2_new (void ** cipher)
 {
-  pdf_status_t status;
   gcry_cipher_hd_t * hd;
 
   hd = pdf_alloc (sizeof (gcry_cipher_hd_t));
 
-  if (hd == NULL)
+  if (hd != NULL)
     {
-      gcry_cipher_open (hd, GCRY_CIPHER_AES128, GCRY_CIPHER_MODE_CBC, 0);
-      status = PDF_OK;
+      gcry_error_t err;
+
+      err = gcry_cipher_open (hd, GCRY_CIPHER_AES128, GCRY_CIPHER_MODE_CBC, 0);
+
+      if (err == GPG_ERR_NO_ERROR)
+	{
+	  *cipher = hd;
+	  return PDF_OK;
+	}
+      else
+	{
+	  pdf_dealloc (hd);
+	  return PDF_ERROR;
+	}
     }
   else
-    status = PDF_ERROR;
+    {
+      pdf_dealloc (hd);
+      return PDF_ENOMEM;
+    }
 
-  return status;
+  return PDF_OK;
 }
 
 
@@ -61,7 +75,8 @@ pdf_crypt_cipher_aesv2_new (void ** cipher)
 static pdf_status_t
 pdf_crypt_cipher_aesv2_destroy (void * cipher)
 {
-  gcry_cipher_close (cipher);
+  gcry_cipher_hd_t * hd = cipher;
+  gcry_cipher_close (*hd);
   pdf_dealloc (cipher);
   return PDF_OK;
 }
@@ -87,7 +102,7 @@ static pdf_size_t
 pdf_crypt_cipher_aesv2_encrypt_size (void * cipher,
 				     pdf_char_t *in, pdf_size_t in_size)
 {
-  return in_size == 0? 0: in_size + 2*AESV2_BLKSIZE - (in_size % AESV2_BLKSIZE);
+  return in_size + 2*AESV2_BLKSIZE - (in_size % AESV2_BLKSIZE);
 }
 
 
@@ -96,7 +111,15 @@ static pdf_size_t
 pdf_crypt_cipher_aesv2_decrypt_size (void * cipher,
 				     pdf_char_t *in, pdf_size_t in_size)
 {
-  return in_size <= 2*AESV2_BLKSIZE ? 0: in_size - AESV2_BLKSIZE;
+  if (in_size < 2*AESV2_BLKSIZE)
+    {
+      PDF_DEBUG_BASE ("Invalid input buffer size");
+      return 0;
+    }
+  else
+    {
+      return in_size <= 2*AESV2_BLKSIZE ? 0: in_size - 2*AESV2_BLKSIZE;
+    }
 }
 
 

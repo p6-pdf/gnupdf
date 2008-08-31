@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-08-30 19:14:17 davazp"
+/* -*- mode: C -*- Time-stamp: "2008-08-31 02:44:31 davazp"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -37,27 +37,42 @@
 static pdf_status_t
 pdf_crypt_cipher_v2_new (void ** cipher)
 {
-  pdf_status_t status;
   gcry_cipher_hd_t * hd;
 
   hd = pdf_alloc (sizeof (gcry_cipher_hd_t));
 
-  if (hd == NULL)
+  if (hd != NULL)
     {
-      gcry_cipher_open (hd, GCRY_CIPHER_ARCFOUR, GCRY_CIPHER_MODE_STREAM, 0);
-      status = PDF_OK;
+      gcry_error_t err;
+
+      err = gcry_cipher_open (hd, GCRY_CIPHER_ARCFOUR, GCRY_CIPHER_MODE_STREAM, 0);
+
+      if (err == GPG_ERR_NO_ERROR)
+	{
+	  *cipher = hd;
+	  return PDF_OK;
+	}
+      else
+	{
+	  pdf_dealloc (hd);
+	  return PDF_ERROR;
+	}
     }
   else
-    status = PDF_ERROR;
+    {
+      pdf_dealloc (hd);
+      return PDF_ENOMEM;
+    }
 
-  return status;
+  return PDF_OK;
 }
 
 
 static pdf_status_t
 pdf_crypt_cipher_v2_destroy (void * cipher)
 {
-  gcry_cipher_close (cipher);
+  gcry_cipher_hd_t * hd = cipher;
+  gcry_cipher_close (*hd);
   pdf_dealloc (cipher);
   return PDF_OK;
 }
