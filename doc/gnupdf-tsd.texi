@@ -126,6 +126,23 @@ The call should not produce an error.
 
 @menu
 * pdf_fsys_open::
+* pdf_fsys_open
+* pdf_fsys_create_folder
+* pdf_fsys_get_folder_contents
+* pdf_fsys_get_parent
+* pdf_fsys_remove_folder
+* pdf_fsys_get_item_props
+* pdf_fsys_item_props_to_hash
+* pdf_fsys_item_p
+* pdf_fsys_item_readable_p
+* pdf_fsys_item_writeable_p
+* pdf_fsys_get_temp_path_name
+* pdf_fsys_file_get_mode
+* pdf_fsys_file_get_url
+* pdf_fsys_file_set_mode
+* pdf_fsys_file_get_mode
+* pdf_fsys_file_get_size
+* pdf_fsys_same_p
 @end menu
 
 @node pdf_fsys_open
@@ -162,6 +179,395 @@ Open an existing, readable and writable file for reading and writing.
 @code{pdf_fsys_open} should return @code{PDF_OK}.
 @end table
 @end deffn
+
+@deffn Test pdf_fsys_open_005
+Open a non-existent file for reading.
+@table @strong
+@item Success condition
+@code{pdf_fsys_open} should return @code{PDF_EBADNAME}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_open_006
+Open an only readable file for writing.
+@table @strong
+@item Success condition
+@code{pdf_fsys_open} should return @code{PDF_EBADPERMS}.
+@end table
+@end deffn
+
+@node pdf_fsys_create_folder
+@subsubsection pdf_fsys_create_folder
+
+@deffn Test pdf_fsys_create_folder_001
+Create a folder with correct pathname and permission
+@table @strong
+@item Success condition
+@code{pdf_fsys_create_folder} should return @code{PDF_OK}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_create_folder_002
+Create a folder with incorrect pathname
+@table @strong
+@item Success condition
+@code{pdf_fsys_create_folder} should return @code{PDF_EBADNAME}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_create_folder_003
+Create a folder without permission
+@table @strong
+@item Success condition
+@code{pdf_fsys_create_folder} should return @code{PDF_EBADPERMS}.
+@end table
+@end deffn
+
+@node pdf_fsys_get_folder_contents
+@subsubsection pdf_fsys_get_folder_contents
+
+@deffn Test pdf_fsys_get_folder_contents_001
+Get content of an existing an readable folder
+@table @strong
+@item Success condition
+@code{pdf_fsys_get_folder_contents} should return @code{PDF_OK}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_get_folder_contents_002
+Get content of an existing an non-readable folder
+@table @strong
+@item Success condition
+@code{pdf_fsys_get_folder_contents} should return @code{PDF_EBADPERMS}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_get_folder_contents_003
+Get content of a non-existing folder
+@table @strong
+@item Success condition
+@code{pdf_fsys_get_folder_contents} should return @code{PDF_EBADNAME}.
+@end table
+@end deffn
+
+@node pdf_fsys_get_parent
+@subsubsection pdf_fsys_get_parent
+
+@deffn Test pdf_fsys_get_parent_001
+Get the name of an existing an readable folder's father
+@table @strong
+@item Success condition
+@code{pdf_fsys_get_parent} should return @code{PDF_OK}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_get_parent_002
+Get the name of a non-existing an folder's father
+@table @strong
+@item Success condition
+@code{pdf_fsys_get_parent} should return @code{PDF_EBADNAME}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_get_parent_003
+Get the name of an existing folder's father without permission
+@table @strong
+@item Success condition
+@code{pdf_fsys_get_parent} should return @code{PDF_EBADPERMS}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_get_parent_001
+Get the parent name of an existing an readable folder
+@table @strong
+@item Success condition
+@code{pdf_fsys_get_parent} should return @code{PDF_OK}.
+@end table
+@end deffn
+
+@node pdf_fsys_remove_folder
+@subsubsection pdf_fsys_remove_folder
+
+@deffn Test pdf_fsys_remove_folder_001
+Remove an existing folder with permission
+@table @strong
+@item Success condition
+@code{pdf_fsys_remove_folder} should return @code{PDF_OK}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_remove_folder_002
+Remove an existing folder without permission
+@table @strong
+@item Success condition
+@code{pdf_fsys_remove_folder} should return @code{PDF_EBADPERMS}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_remove_folder_003
+Remove a non-existing folder
+@table @strong
+@item Success condition
+@code{pdf_fsys_remove_folder} should return @code{PDF_EBADNAME}.
+@end table
+@end deffn
+
+@node pdf_fsys_get_item_props
+@subsubsection pdf_fsys_get_item_props
+
+@deffn Test pdf_fsys_get_item_props_001
+Get properties of an existing and readable filesystem item
+@table @strong
+@item Success condition
+@code{pdf_fsys_get_item_props} should return @code{PDF_OK}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_get_item_props_002
+Get properties of an existing and non-readable filesystem item
+@table @strong
+@item Success condition
+@code{pdf_fsys_get_item_props} should return @code{PDF_EBADPERMS}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_get_item_props_003
+Get properties of a non-existing filesystem item
+@table @strong
+@item Success condition
+@code{pdf_fsys_get_item_props} should return @code{PDF_BADNAME}.
+@end table
+@end deffn
+
+@node pdf_fsys_item_props_to_hash
+@subsubsection pdf_fsys_item_props_to_hash
+
+@deffn Test pdf_fsys_item_props_to_hash_001
+Convert a filesystem item's properties into a PDF hash
+@table @strong
+@item Success condition
+@code{pdf_fsys_item_props_to_hash} should return @code{PDF_OK} and
+the values in the returned hash should equal the item's properties.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_item_props_to_hash_002
+Convert a filesystem item's properties with missing data into a PDF hash
+@table @strong
+@item Success condition
+@code{pdf_fsys_item_props_to_hash} should return @code{PDF_ERROR}.
+@end table
+@end deffn
+
+@node pdf_fsys_item_p
+@subsubsection pdf_fsys_item_p
+
+@deffn Test pdf_fsys_item_p_001
+Determine if an existing file exists
+@table @strong
+@item Success condition
+@code{pdf_fsys_item_p} should return @code{PDF_TRUE}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_item_p_002
+Determine if a non-existing file exists
+@table @strong
+@item Success condition
+@code{pdf_fsys_item_p} should return @code{PDF_FALSE}.
+@end table
+@end deffn
+
+@node pdf_fsys_item_readable_p
+@subsubsection pdf_fsys_item_readable_p
+
+@deffn Test pdf_fsys_item_readable_p_001
+Determine if an existing an readable file is readable
+@table @strong
+@item Success condition
+@code{pdf_fsys_item_readable_p} should return @code{PDF_TRUE}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_item_readable_p_002
+Determine if an existing an non-readable file is readable
+@table @strong
+@item Success condition
+@code{pdf_fsys_item_readable_p} should return @code{PDF_FALSE}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_item_readable_p_003
+Determine if a non-existing file is readable
+@table @strong
+@item Success condition
+@code{pdf_fsys_item_readable_p} should return @code{PDF_FALSE}.
+@end table
+@end deffn
+
+@node pdf_fsys_item_writeable_p
+@subsubsection pdf_fsys_item_writeable_p
+
+@deffn Test pdf_fsys_item_writeable_p_001
+Determine if an existing an writeable file is writeable
+@table @strong
+@item Success condition
+@code{pdf_fsys_item_writeable_p} should return @code{PDF_TRUE}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_item_writeable_p_002
+Determine if an existing an non-writeable file is writeable
+@table @strong
+@item Success condition
+@code{pdf_fsys_item_writeable_p} should return @code{PDF_FALSE}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_item_writeable_p_003
+Determine if a non-existing file with a valid path is writeable
+@table @strong
+@item Success condition
+@code{pdf_fsys_item_writeable_p} should return @code{PDF_TRUE}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_item_writeable_p_004
+Determine if a file with an invaild path is writeable
+@table @strong
+@item Success condition
+@code{pdf_fsys_item_writeable_p} should return @code{PDF_FALSE}.
+@end table
+@end deffn
+
+@node pdf_fsys_get_temp_path_name
+@subsubsection pdf_fsys_get_temp_path_name
+
+@deffn Test pdf_fsys_get_temp_path_name_001
+Get the path name for a new temporary file
+@table @strong
+@item Success condition
+@code{pdf_fsys_get_temp_path_name} should return a non-empty string.
+@end table
+@end deffn
+
+@node pdf_fsys_file_get_mode
+@subsubsection pdf_fsys_file_get_mode
+
+@deffn Test pdf_fsys_file_get_mode_001
+Get the file mode of a file, opened in read mode
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_get_mode} should return @code{PDF_FSYS_OPEN_MODE_READ}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_file_get_mode_002
+Get the file mode of a file. opened in write mode
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_get_mode} should return @code{PDF_FSYS_OPEN_MODE_WRITE}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_file_get_mode_003
+Get the file mode of a file, opened in read and write mode
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_get_mode} should return @code{PDF_FSYS_OPEN_MODE_RW}.
+@end table
+@end deffn
+
+@node pdf_fsys_file_get_url
+@subsubsection pdf_fsys_file_get_url
+
+@deffn Test pdf_fsys_file_get_url_001
+Get the url of an open file
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_get_irl} should return a non-empty string on a filesystem that 
+supports valid URLs, otherwise it should return an empty string.
+@end table
+@end deffn
+
+@node pdf_fsys_file_set_mode
+@subsubsection pdf_fsys_file_set_mode
+
+@deffn Test pdf_fsys_file_set_mode_001
+Set a new access mode for an open file
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_set_mode} should return the old access mode of the file.
+@end table
+@end deffn
+
+@node pdf_fsys_file_get_mode
+@subsubsection pdf_fsys_file_get_mode
+
+@deffn Test pdf_fsys_file_get_mode_001
+Get the file mode of a file opened in read mode
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_get_mode} should return @code{PDF_FSYS_OPEN_MODE_READ}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_file_get_mode_002
+Get the file mode of a file opened in write mode
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_get_mode} should return @code{PDF_FSYS_OPEN_MODE_WRITE}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_file_get_mode_001
+Get the file mode of file opened in read and write mode
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_get_mode} should return @code{PDF_FSYS_OPEN_MODE_RW}.
+@end table
+@end deffn
+
+@node pdf_fsys_file_get_size
+@subsubsection pdf_fsys_file_get_size
+
+@deffn Test pdf_fsys_file_get_size_001
+Get the size of an open file
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_get_size} should return the size of the file.
+@end table
+@end deffn
+
+@node pdf_fsys_same_p
+@subsubsection pdf_fsys_same_p
+
+@deffn Test pdf_fsys_same_p_001
+Compare an open file with its own path
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_same_p} should return @code{PDF_TRUE}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_same_p_002
+Compare an open file with another file's path
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_same_p} should return @code{PDF_FALSE}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_same_p_003
+Compare an open file with a non-existing path
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_same_p} should return @code{PDF_FALSE}.
+@end table
+@end deffn
+
+
+
 
 
 @node Stream Module
