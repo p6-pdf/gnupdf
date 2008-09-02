@@ -125,25 +125,54 @@ The call should not produce an error.
 @subsection Filesystem Module
 
 @menu
+* pdf_fsys_get_free_space::
 * pdf_fsys_open::
-* pdf_fsys_open
-* pdf_fsys_create_folder
-* pdf_fsys_get_folder_contents
-* pdf_fsys_get_parent
-* pdf_fsys_remove_folder
-* pdf_fsys_get_item_props
-* pdf_fsys_item_props_to_hash
-* pdf_fsys_item_p
-* pdf_fsys_item_readable_p
-* pdf_fsys_item_writeable_p
-* pdf_fsys_get_temp_path_name
-* pdf_fsys_file_get_mode
-* pdf_fsys_file_get_url
-* pdf_fsys_file_set_mode
-* pdf_fsys_file_get_mode
-* pdf_fsys_file_get_size
-* pdf_fsys_same_p
+* pdf_fsys_create_folder::
+* pdf_fsys_get_folder_contents::
+* pdf_fsys_get_parent::
+* pdf_fsys_remove_folder::
+* pdf_fsys_get_item_props::
+* pdf_fsys_item_props_to_hash::
+* pdf_fsys_item_p::
+* pdf_fsys_item_readable_p::
+* pdf_fsys_item_writeable_p::
+* pdf_fsys_get_temp_path_name::
+* pdf_fsys_file_get_filesystem::
+* pdf_fsys_file_get_mode::
+* pdf_fsys_file_get_url::
+* pdf_fsys_file_set_mode::
+* pdf_fsys_file_get_size::
+* pdf_fsys_file_same_p::
+* pdf_fsys_file_get_size::
+* pdf_fsys_file_set_size::
+* pdf_fsys_file_read::
+* pdf_fsys_file_write::
+* pdf_fsys_file_flush::
+* pdf_fsys_file_request_ria::
+* pdf_fsys_file_has_ria::
+* pdf_fsys_file_cancle_ria::
+* pdf_fsys_file_close::
+* pdf_fsys_file_reopen::
 @end menu
+
+@node pdf_fsys_get_free_space
+@subsubsection pdf_fsys_file_get_size
+
+@deffn Test pdf_fsys_get_free_space_001
+Get the free space left on the filesystem for an existing path
+@table @strong
+@item Success condition
+@code{pdf_fsys_get_free_space} should return the free space left on the filesystem.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_get_free_space_002
+Get the free space left on the filesystem for a non-existing path
+@table @strong
+@item Success condition
+@code{pdf_fsys_get_free_space} should return @code{0}
+@end table
+@end deffn
 
 @node pdf_fsys_open
 @subsubsection pdf_fsys_open
@@ -451,6 +480,25 @@ Get the path name for a new temporary file
 @end table
 @end deffn
 
+@node pdf_fsys_file_get_filesystem
+@subsubsection pdf_fsys_file_get_filesystem
+
+@deffn Test pdf_fsys_file_get_filesystem_001
+Get the filesystem of a file opened from the default filesystem
+@table @strong
+@item Success condition
+@code{pdf_fsys_get_temp_path_name} should return @code{NULL}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_file_get_filesystem_002
+Get the filesystem of a file opened from a filesystem
+@table @strong
+@item Success condition
+@code{pdf_fsys_get_temp_path_name} should return the filesystem, the file was opened from.
+@end table
+@end deffn
+
 @node pdf_fsys_file_get_mode
 @subsubsection pdf_fsys_file_get_mode
 
@@ -501,32 +549,6 @@ Set a new access mode for an open file
 @end table
 @end deffn
 
-@node pdf_fsys_file_get_mode
-@subsubsection pdf_fsys_file_get_mode
-
-@deffn Test pdf_fsys_file_get_mode_001
-Get the file mode of a file opened in read mode
-@table @strong
-@item Success condition
-@code{pdf_fsys_file_get_mode} should return @code{PDF_FSYS_OPEN_MODE_READ}.
-@end table
-@end deffn
-
-@deffn Test pdf_fsys_file_get_mode_002
-Get the file mode of a file opened in write mode
-@table @strong
-@item Success condition
-@code{pdf_fsys_file_get_mode} should return @code{PDF_FSYS_OPEN_MODE_WRITE}.
-@end table
-@end deffn
-
-@deffn Test pdf_fsys_file_get_mode_001
-Get the file mode of file opened in read and write mode
-@table @strong
-@item Success condition
-@code{pdf_fsys_file_get_mode} should return @code{PDF_FSYS_OPEN_MODE_RW}.
-@end table
-@end deffn
 
 @node pdf_fsys_file_get_size
 @subsubsection pdf_fsys_file_get_size
@@ -542,7 +564,7 @@ Get the size of an open file
 @node pdf_fsys_same_p
 @subsubsection pdf_fsys_same_p
 
-@deffn Test pdf_fsys_same_p_001
+@deffn Test pdf_fsys_file_same_p_001
 Compare an open file with its own path
 @table @strong
 @item Success condition
@@ -550,7 +572,7 @@ Compare an open file with its own path
 @end table
 @end deffn
 
-@deffn Test pdf_fsys_same_p_002
+@deffn Test pdf_fsys_file_same_p_002
 Compare an open file with another file's path
 @table @strong
 @item Success condition
@@ -558,13 +580,59 @@ Compare an open file with another file's path
 @end table
 @end deffn
 
-@deffn Test pdf_fsys_same_p_003
+@deffn Test pdf_fsys_file_same_p_003
 Compare an open file with a non-existing path
 @table @strong
 @item Success condition
 @code{pdf_fsys_file_same_p} should return @code{PDF_FALSE}.
 @end table
 @end deffn
+
+@node pdf_fsys_file_get_size
+@subsection pdf_fsys_file_get_size
+
+@deffn Test pdf_fsys_file_get_size_001
+Get size of an opened file
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_get_size} should return the file's size.
+@end table
+@end deffn
+
+@node pdf_fsys_file_set_size
+@subsection pdf_fsys_file_set_size
+
+@node pdf_fsys_file_read
+@subsection pdf_fsys_file_write
+
+@node pdf_fsys_file_write
+@subsection pdf_fsys_file_flush
+
+@node pdf_fsys_file_flush
+@subsection pdf_fsys_file_flush
+
+@node pdf_fsys_file_request_ria
+@subsection pdf_fsys_file_request_ria
+
+@node pdf_fsys_file_has_ria
+@subsection pdf_fsys_file_has_ria
+
+@node pdf_fsys_file_cancle_ria
+@subsection pdf_fsys_file_cancle_ria
+
+@node pdf_fsys_file_close
+@subsection pdf_fsys_file_close
+
+@node pdf_fsys_file_reopen
+@subsection pdf_fsys_file_reopen
+
+
+
+
+
+
+
+
 
 
 
