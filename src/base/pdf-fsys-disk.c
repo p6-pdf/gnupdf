@@ -38,7 +38,12 @@
 #include <pdf-fsys-disk.h>
 
 #ifndef PDF_HOST_WIN32
-#include <sys/statvfs.h>
+ #ifndef PDF_HOST_BSD
+  #include <sys/statfs.h>
+ #else
+  #include <sys/param.h>
+  #include <sys/mount.h>
+ #endif
 #else
 #include <windows.h>
 #endif /* !PDF_HOST_WIN32 */
@@ -72,7 +77,7 @@ pdf_fsys_disk_get_free_space (pdf_text_t path_name)
   DWORD bytes_per_sector;
   DWORD dummy;
 #else
-  struct statvfs fs_stats;
+  struct statfs fs_stats;
 #endif /* !PDF_HOST_WIN32 */
   pdf_size_t result;
 
@@ -126,7 +131,7 @@ pdf_fsys_disk_get_free_space (pdf_text_t path_name)
             * free_clusters); 
  
 #else /* Non-windows plattform */
-  if (statvfs ((const char *) host_path, &fs_stats) != 0)
+  if (statfs ((const char *) host_path, &fs_stats) != 0)
     {
       /* Cleanup */
       pdf_dealloc (host_path);

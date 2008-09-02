@@ -1,3 +1,15 @@
+2008-09-02  Zac Brown  <zac@zacbrown.org>
+	* src/base/pdf-fsys-disk.c: Change statvfs to statfs to facilitate
+	portability across unixes.
+
+	* src/base/pdf-time-context.c (pdf_time_context_init): Change
+	pdf_time_context_init to use struct tm for getting GMT offset and
+	DST settings.
+
+	* src/base/pdf-types.h: Add PDF host type for BSD operating
+	systems and include sys/param.h to get specific OS details to
+	determine whether to set PDF_HOST_BSD.
+
 2008-08-29  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf-hg.texi (Syntax Check): New section.

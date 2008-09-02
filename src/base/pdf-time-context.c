@@ -48,21 +48,25 @@ pdf_status_t
 pdf_time_context_init(void)
 {
   extern pdf_time_context_t time_context;
-  
-  tzset();
-  
+  time_t tloc;
+  struct tm* time_struct;
+
+  time(&tloc);
+  time_struct = localtime(&tloc);
+
   /* Set GMT offset */
-  time_context.local_time_gmt_offset = timezone;
+  time_context.local_time_gmt_offset = time_struct->tm_gmtoff;
 
   /* Set flag to indicate if Daylight saving times are applied in the system
    * if needed */
-  time_context.local_time_daylight_save = (daylight == 0) ? PDF_FALSE : PDF_TRUE;
+  time_context.local_time_daylight_save = (time_struct->tm_isdst == 0) ? PDF_FALSE : PDF_TRUE;
   
   PDF_DEBUG_BASE("Initializing Time module...");
   PDF_DEBUG_BASE("GMT offset: %d secs", time_context.local_time_gmt_offset);
   PDF_DEBUG_BASE("Daylight saving? %s",time_context.local_time_daylight_save ? \
                  "yes":"no");
-    
+
+  free(time_struct);
   return PDF_OK;
 }
 
