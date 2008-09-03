@@ -181,8 +181,42 @@ This chapter contains some useful information to send patches to be
 integrated in the trunk.
 
 @menu
+* Patch Safety Dispatcher::
 * Syntax Check::
 @end menu
+
+@node Patch Safety Dispatcher
+@section Patch Safety Dispatcher
+
+Before sending a patch to the list to be included in the trunk you should run
+the patch safety dispatcher, which is a script that runs a few more scripts,
+like the syntax check mentioned in this chapter.
+
+In fact, the Patch Safety Dispatcher is a bzr plugin that is run before a
+commit is applied to your working copy.
+In order to execute it you need to tell bzr where the plugin is
+located. There are two ways to do it:
+
+1. Copy the script located in ``prmgt/patch-safety-dispatcher.py'' at
+the projects root directory to your bazaar plugins directory
+``~/.bazaar/plugins''.
+
+2. Add the ``prmgt'' directory to the BZR_PLUGIN_PATH variable. For
+example, doing ``export BZR_PLUGIN_PATH=/your/path/to/libgnupdf/prmgt''
+(alternatively you can add it to your ~/.bashrc).
+
+After telling bzr where your plugins are, you can test it doing: ``bzr
+hooks'' (from the projects root directory) . You should find it in the
+list as ``Patch safety scripts hook'' in the pre_commit section.
+
+That's all. Now when you do a ``bzr commit'' a small report will tell if
+your patch is correct in terms of the QA scripts we run daily.
+If it is the commit will be applied, otherwise it won't.
+
+NOTE: Make sure you run ``bzr commit'' from your working copy root
+directory.  Bazaar will fail with some error or don't even run the
+script otherwise. Until now we have no solution for this problem.
+
 
 @node Syntax Check
 @section Syntax Check
