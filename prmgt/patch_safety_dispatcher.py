@@ -41,7 +41,7 @@ def pre_commit_hook(local, master, old_revno, old_revid,
        print ">>> " + s + ": Succeeded"
    for f in fails:
        print ">>> " + f + ": Failed !!"
-   if len(f) > 0:
+   if len(fails) > 0:
        raise errors.BzrError("One or more scripts failed, fix the patch,"
                              " lazy!!\nNote: commit is not applied.")
    else:
@@ -49,3 +49,5 @@ def pre_commit_hook(local, master, old_revno, old_revid,
 
 branch.Branch.hooks.install_named_hook('pre_commit', pre_commit_hook,
                                 'Patch safety scripts hook')
+
+# End of patch_safety_dispatcher.py
