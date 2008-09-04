@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-08-31 02:44:31 davazp"
+/* -*- mode: C -*- Time-stamp: "2008-09-04 03:02:35 david"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -132,7 +132,6 @@ pdf_crypt_cipher_v2_decrypt (void * cipher,
   *result_size = in_size;
   return PDF_OK;
 }
-
 
 
 struct pdf_crypt_cipher_algo_s pdf_crypt_cipher_v2 = 

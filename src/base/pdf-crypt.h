@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-08-30 19:11:26 davazp"
+/* -*- mode: C -*- Time-stamp: "2008-09-04 02:30:32 david"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -85,7 +85,7 @@ pdf_status_t pdf_crypt_init (void);
 pdf_status_t pdf_crypt_cipher_new (pdf_crypt_cipher_algo_t * algorithm,
 				   pdf_crypt_cipher_t *cipher);
 
-pdf_status_t pdf_crypt_cipher_setkey (pdf_crypt_cipher_t cipher,
+pdf_status_t pdf_crypt_cipher_setkey (pdf_crypt_cipher_t *cipher,
 				      pdf_char_t *key,
 				      pdf_size_t size);
 
@@ -185,17 +185,17 @@ pdf_crypt_cipher_new (pdf_crypt_cipher_algo_t * algorithm,
 
 
 EXTERN_INLINE pdf_status_t
-pdf_crypt_cipher_setkey (pdf_crypt_cipher_t cipher,
+pdf_crypt_cipher_setkey (pdf_crypt_cipher_t * cipher,
 			 pdf_char_t *key, pdf_size_t size)
 {
   pdf_status_t status;
 
-  status = cipher.algo->setkey (cipher.raw, key, size);
+  status = cipher->algo->setkey (cipher->raw, key, size);
 
   if (status == PDF_OK)
     {
-      cipher.key = key;
-      cipher.key_size = size;
+      cipher->key      = key;
+      cipher->key_size = size;
     }
 
   return status;

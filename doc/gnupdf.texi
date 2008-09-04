@@ -8017,7 +8017,7 @@ xxx
 @node Encryption and decryption
 @subsection Encryption and decryption
 
-@deftypefun pdf_status_t pdf_crypt_cipher_setkey (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{key}, pdf_size_t @var{size})
+@deftypefun pdf_status_t pdf_crypt_cipher_setkey (pdf_crypt_cipher_t *@var{cipher}, pdf_char_t  *@var{key}, pdf_size_t @var{size})
 
 Set the key which will be used to encrypt and decrypt data.
 
@@ -8025,7 +8025,7 @@ Set the key which will be used to encrypt and decrypt data.
 @item Parameters
 @table @var
 @item cipher
-A cipher created previously.
+A pointer to a cipher created previously.
 @item key
 A pointer to memory where the key is stored.
 @item size

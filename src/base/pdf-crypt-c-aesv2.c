@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-08-31 02:50:43 davazp"
+/* -*- mode: C -*- Time-stamp: "2008-09-04 03:02:58 david"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -89,11 +89,12 @@ static pdf_status_t
 pdf_crypt_cipher_aesv2_setkey (void * cipher,
 			       pdf_char_t *key, pdf_size_t size)
 {
-  if (size == AESV2_BLKSIZE
-      && gcry_cipher_setkey (cipher, key, size) != GPG_ERR_NO_ERROR)
-    return PDF_EBADDATA;
-  else
+  gcry_cipher_hd_t * hd = cipher;
+  
+  if (gcry_cipher_setkey (*hd, key, size) == GPG_ERR_NO_ERROR)
     return PDF_OK;
+  else
+    return PDF_EBADDATA;
 }
 
 
@@ -130,6 +131,7 @@ pdf_crypt_cipher_aesv2_encrypt (void * cipher,
 				pdf_char_t *in,  pdf_size_t in_size,
 				pdf_size_t *result_size)
 {
+  gcry_cipher_hd_t * hd = cipher;
   pdf_size_t   buffer_size;
   pdf_size_t   iv_size	     = AESV2_BLKSIZE;
   pdf_size_t   content_size  = in_size;
@@ -150,8 +152,8 @@ pdf_crypt_cipher_aesv2_encrypt (void * cipher,
   memcpy (content, in, in_size);
   memset (padding, padding_size, padding_size);
   
-  gcry_cipher_setiv (cipher, iv, iv_size);
-  gcry_cipher_encrypt (cipher, content, content_size + padding_size, NULL, 0);
+  gcry_cipher_setiv (*hd, iv, iv_size);
+  gcry_cipher_encrypt (*hd, content, content_size + padding_size, NULL, 0);
 
   *result_size = buffer_size;
 
@@ -166,6 +168,7 @@ pdf_crypt_cipher_aesv2_decrypt (void * cipher,
 				pdf_char_t *in,  pdf_size_t in_size,
 				pdf_size_t *result_size)
 {
+  gcry_cipher_hd_t * hd = cipher;
   pdf_size_t   buffer_size   = in_size;
   pdf_size_t   iv_size	     = AESV2_BLKSIZE;
   pdf_size_t   content_size;
@@ -174,8 +177,8 @@ pdf_crypt_cipher_aesv2_decrypt (void * cipher,
   pdf_char_t * iv	     = &buffer[0];
   pdf_char_t * content	     = &buffer[iv_size];
   
-  gcry_cipher_setiv (cipher, iv, iv_size);
-  gcry_cipher_decrypt (cipher, content, buffer_size - iv_size, NULL, 0);
+  gcry_cipher_setiv (*hd, iv, iv_size);
+  gcry_cipher_decrypt (*hd, content, buffer_size - iv_size, NULL, 0);
 
   padding_size = content[buffer_size - iv_size - 1];
   content_size = buffer_size - iv_size - padding_size;
