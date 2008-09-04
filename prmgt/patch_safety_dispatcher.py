@@ -49,3 +49,5 @@ def pre_commit_hook(local, master, old_revno, old_revid,
 
 branch.Branch.hooks.install_named_hook('pre_commit', pre_commit_hook,
                                 'Patch safety scripts hook')
+
+# End of patch_safety_dispatcher.py
