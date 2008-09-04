@@ -7,6 +7,10 @@
 
 2008-09-03  Gerardo E. Gidoni  <gerel@gnu.org>
 
+	* prmgt/patch_safety_dispatcher.py: small typo fix.
+
+2008-09-03  Gerardo E. Gidoni  <gerel@gnu.org>
+
 	* doc/gnupdf-hg.texi: added section for the patch-safety-dispatcher.
 
 	* prmgt/patch_safety_dispatcher.py: first commit.

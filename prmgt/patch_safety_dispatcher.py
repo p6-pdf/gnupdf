@@ -41,7 +41,7 @@ def pre_commit_hook(local, master, old_revno, old_revid,
        print ">>> " + s + ": Succeeded"
    for f in fails:
        print ">>> " + f + ": Failed !!"
-   if len(f) > 0:
+   if len(fails) > 0:
        raise errors.BzrError("One or more scripts failed, fix the patch,"
                              " lazy!!\nNote: commit is not applied.")
    else:
