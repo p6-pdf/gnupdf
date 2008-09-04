@@ -1,3 +1,8 @@
+2008-09-04  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* AUTHORS: Gerardo E. Gidoni wrote
+	prmgt/patch_safety_dispatcher.py
+
 2008-09-03  Gerardo E. Gidoni  <gerel@gnu.org>
 
 	* doc/gnupdf-hg.texi: added section for the patch-safety-dispatcher.
