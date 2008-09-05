@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-04 02:39:49 david"
+/* -*- mode: C -*- Time-stamp: "2008-09-05 03:54:20 david"
  *
  *       File:         pdf-crypt-cipher-encrypt.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -32,9 +32,9 @@
 
 
 /*
- * Test: pdf_crypt_init_001
+ * Test: pdf_crypt_cipher_encrypt_001
  * Description:
- *   Try to initialize the module.
+ *   Encrypt a empty buffer for an AESV2 cipher.
  * Success condition:
  *   Returns PDF_OK
  */
@@ -42,22 +42,60 @@ START_TEST (pdf_crypt_cipher_encrypt_001)
 {
   pdf_crypt_cipher_t cipher;
   pdf_char_t *out;
+  pdf_char_t *in;
   pdf_size_t out_size;
-  pdf_char_t in[0];
-  pdf_char_t key[16];
+  pdf_size_t in_size;
+  pdf_char_t key[16];		/* unintialized data */
+  
+  in_size = 0;
   
   pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
-  pdf_crypt_cipher_setkey (&cipher, key, sizeof(key));
-  out_size = pdf_crypt_cipher_encrypt_size (cipher, in, sizeof(in));
+  pdf_crypt_cipher_setkey (&cipher, key, in_size);
+  out_size = pdf_crypt_cipher_encrypt_size (cipher, in, in_size);
 
   out = pdf_alloc (out_size);
 
-  fail_if (pdf_crypt_cipher_encrypt (cipher, out, out_size, in, sizeof(in), &out_size) != PDF_OK);
+  fail_if (pdf_crypt_cipher_encrypt (cipher, out, out_size, in, in_size, &out_size) != PDF_OK);
 
   pdf_dealloc (out);
   pdf_crypt_cipher_destroy (cipher);
 }
 END_TEST
+
+
+
+/*
+ * Test: pdf_crypt_cipher_encrypt_002
+ * Description:
+ *   Encrypt a empty buffer for a V2 cipher.
+ * Success condition:
+ *   Returns PDF_OK
+ */
+START_TEST (pdf_crypt_cipher_encrypt_002)
+{
+  pdf_crypt_cipher_t cipher;
+  pdf_char_t *out;
+  pdf_char_t *in;
+  pdf_size_t out_size;
+  pdf_size_t in_size;
+  pdf_char_t key[16];		/* uninitialized data */
+
+  in_size = 0;
+
+  pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &cipher);
+  pdf_crypt_cipher_setkey (&cipher, key, sizeof(key));
+  out_size = pdf_crypt_cipher_encrypt_size (cipher, in, in_size);
+
+  out = pdf_alloc (out_size);
+
+  fail_if (pdf_crypt_cipher_encrypt (cipher, out, out_size, in, in_size, &out_size) != PDF_OK);
+
+  pdf_dealloc (out);
+  pdf_crypt_cipher_destroy (cipher);
+}
+END_TEST
+
+
 
 
 /*
@@ -68,6 +106,7 @@ test_pdf_crypt_cipher_encrypt (void)
 {
   TCase *tc = tcase_create("pdf_crypt_cipher_encrypt");
   tcase_add_test(tc, pdf_crypt_cipher_encrypt_001);
+  tcase_add_test(tc, pdf_crypt_cipher_encrypt_002);
   return tc;
 }
 

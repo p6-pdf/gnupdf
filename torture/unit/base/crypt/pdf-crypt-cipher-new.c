@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-08-31 02:34:53 davazp"
+/* -*- mode: C -*- Time-stamp: "2008-09-05 03:40:21 david"
  *
  *       File:         pdf-crypt-init.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -34,7 +34,7 @@
 /*
  * Test: pdf_crypt_cipher_new_001
  * Description:
- *   Create a AESV2 cipher.
+ *   Create an AESV2 cipher.
  * Success condition:
  *   Returns PDF_OK
  */

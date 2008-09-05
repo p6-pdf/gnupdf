@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-04 03:02:35 david"
+/* -*- mode: C -*- Time-stamp: "2008-09-05 04:39:13 david"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -85,10 +85,16 @@ static pdf_status_t
 pdf_crypt_cipher_v2_setkey (void * cipher,
 			    pdf_char_t *key, pdf_size_t size)
 {
-  if (gcry_cipher_setkey (cipher, key, size) != GPG_ERR_NO_ERROR)
-    return PDF_EBADDATA;
+  gcry_cipher_hd_t * hd = cipher;
+  if (gcry_cipher_setkey (*hd, key, size) != GPG_ERR_NO_ERROR)
+    {
+      return PDF_EBADDATA;
+    }
   else
-    return PDF_OK;
+    {
+      return PDF_OK;
+    }
+  
 }
 
 
@@ -115,9 +121,17 @@ pdf_crypt_cipher_v2_encrypt (void * cipher,
 			     pdf_char_t *in,  pdf_size_t in_size,
 			     pdf_size_t *result_size)
 {
-  gcry_cipher_encrypt (cipher, out, out_size, in, in_size);
-  *result_size = in_size;
-  return PDF_OK;
+  gcry_cipher_hd_t * hd = cipher;
+
+  if (gcry_cipher_encrypt (*hd, out, out_size, in, in_size) == GPG_ERR_NO_ERROR)
+    {
+      *result_size = in_size;
+      return PDF_OK;
+    }
+  else
+    {
+      return PDF_ERROR;
+    }
 }
 
 
@@ -128,9 +142,17 @@ pdf_crypt_cipher_v2_decrypt (void * cipher,
 			     pdf_char_t *in,  pdf_size_t in_size,
 			     pdf_size_t *result_size)
 {
-  gcry_cipher_decrypt (cipher, out, out_size, in, in_size);
-  *result_size = in_size;
-  return PDF_OK;
+  gcry_cipher_hd_t * hd = cipher;
+
+  if (gcry_cipher_decrypt (*hd, out, out_size, in, in_size) == GPG_ERR_NO_ERROR)
+    {
+      *result_size = in_size;
+      return PDF_OK;
+    }
+  else
+    {
+      return PDF_ERROR;
+    }
 }
 
 

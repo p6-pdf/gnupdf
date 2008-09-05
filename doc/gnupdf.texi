@@ -8165,7 +8165,7 @@ xxx
 @node Utils functions
 @subsection Utils functions
 
-@deftypefun pdf_status_t pdf_crypt_md_md5 (pdf_char_t  *@var{out}, pdf_size_t  @var{out_size}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size})
+@deftypefun pdf_status_t pdf_crypt_md_new (pdf_crypt_md_t  *@var{md})
 
 Compute the message-digest md5 function of a buffer in memory.
 
@@ -8197,6 +8197,72 @@ xxx
 @end table
 @end deftypefun
 
+
+@deftypefun pdf_status_t pdf_crypt_md_hash (pdf_char_t  *@var{out}, pdf_size_t  @var{out_size}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size})
+
+Compute the message-digest md5 function of a buffer in memory.
+
+@table @strong
+@item Parameters
+@table @var
+@item out
+A pointer to output buffer.
+@item out_size
+The size of output buffer in bytes. This parameter is provided in order
+to avoid a possible overflow. The size must be 16 bytes.
+@item in
+A pointer to the input buffer which md5 will compute on.
+@item in_size
+Size of the input buffer in bytes.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+Operation successful
+@item PDF_EBADDATA
+Bad parameter. The size of the output buffer is not too large.
+@end table
+@item Usage example
+@example
+xxx
+@end example
+@end table
+@end deftypefun
+
+
+
+@deftypefun pdf_status_t pdf_crypt_md_new (pdf_crypt_md_t  *@var{md})
+
+Compute the message-digest md5 function of a buffer in memory.
+
+@table @strong
+@item Parameters
+@table @var
+@item out
+A pointer to output buffer.
+@item out_size
+The size of output buffer in bytes. This parameter is provided in order
+to avoid a possible overflow. The size must be 16 bytes.
+@item in
+A pointer to the input buffer which md5 will compute on.
+@item in_size
+Size of the input buffer in bytes.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+Operation successful
+@item PDF_EBADDATA
+Bad parameter. The size of the output buffer is not too large.
+@end table
+@item Usage example
+@example
+xxx
+@end example
+@end table
+@end deftypefun
 
 
 @node Object Layer

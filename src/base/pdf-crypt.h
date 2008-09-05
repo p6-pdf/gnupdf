@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-04 02:30:32 david"
+/* -*- mode: C -*- Time-stamp: "2008-09-05 05:40:23 david"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -29,6 +29,7 @@
 #include <config.h>
 #include <pdf-types.h>
 #include <pdf-error.h>
+#include <pdf-alloc.h>
 #include <pdf-crypt-c-aesv2.h>
 #include <pdf-crypt-c-v2.h>
 
@@ -71,11 +72,30 @@ struct pdf_crypt_cipher_s
 
 typedef struct pdf_crypt_cipher_s pdf_crypt_cipher_t;
 
+
+enum pdf_crypt_md_algo_e
+{
+    PDF_CRYPT_MD_MD5
+};
+
+typedef enum pdf_crypt_md_algo_e pdf_crypt_md_algo_t;
+
+
+
+struct pdf_crypt_md_s
+{
+  void * raw;
+};
+
+typedef struct pdf_crypt_md_s pdf_crypt_md_t;
+
+
+
 /* END PUBLIC */
 
 
 
-#if !defined (HAVE_INLINE) && !defined (COMPILING_CRYPT_MODULE)
+#if !defined (HAVE_INLINE) && !defined (COMPILING_PDF_CRYPT)
 
 
 /* BEGIN PUBLIC */
@@ -112,8 +132,15 @@ pdf_status_t pdf_crypt_cipher_decrypt (pdf_crypt_cipher_t cipher,
 pdf_status_t pdf_crypt_cipher_destroy (pdf_crypt_cipher_t cipher);
 
 
-pdf_status_t pdf_crypt_md_md5 (pdf_char_t *out, pdf_size_t out_size,
-			       pdf_char_t *in,  pdf_size_t in_size);
+pdf_status_t pdf_crypt_md_new (pdf_crypt_md_t *md, pdf_crypt_md_algo_t algo);
+
+pdf_status_t pdf_crypt_md_hash (pdf_crypt_md_t md,
+				pdf_char_t *out, pdf_size_t out_size,
+				pdf_char_t *in,  pdf_size_t in_size);
+
+pdf_status_t pdf_crypt_md_destroy (pdf_crypt_md_t hd);
+
+
 
 /* END PUBLIC */
 
@@ -194,8 +221,9 @@ pdf_crypt_cipher_setkey (pdf_crypt_cipher_t * cipher,
 
   if (status == PDF_OK)
     {
-      cipher->key      = key;
+      cipher->key = pdf_alloc (size);
       cipher->key_size = size;
+      memcpy (cipher->key, key, size);
     }
 
   return status;
@@ -243,22 +271,72 @@ pdf_crypt_cipher_decrypt (pdf_crypt_cipher_t cipher,
 EXTERN_INLINE pdf_status_t
 pdf_crypt_cipher_destroy (pdf_crypt_cipher_t cipher)
 {
+  pdf_dealloc (cipher.key);
   return cipher.algo->destroy (cipher.raw);
 }
 
 
 
-/* Util functions */
+/* Hashing functions */
+
 
 EXTERN_INLINE pdf_status_t
-pdf_crypt_md_md5 (pdf_char_t *out, pdf_size_t out_size,
-		  pdf_char_t *in,  pdf_size_t in_size)
+pdf_crypt_md_new (pdf_crypt_md_t *md, pdf_crypt_md_algo_t algo)
 {
-  gcry_md_hd_t md;
-  gcry_md_open (&md, GCRY_MD_MD5, 0);
-  gcry_md_close (md);
+  if (algo == PDF_CRYPT_MD_MD5)
+    {
+      md->raw = pdf_alloc (sizeof(gcry_md_hd_t));
+
+      if (gcry_md_open (md->raw, GCRY_MD_MD5, 0) == GPG_ERR_NO_ERROR)
+	{
+	  return PDF_OK;
+	}
+      else
+	{
+	  return PDF_ERROR;
+	}
+    }
+  else
+    {
+      return PDF_EBADDATA;
+    }
+}
+
+
+
+EXTERN_INLINE pdf_status_t
+pdf_crypt_md_hash (pdf_crypt_md_t md,
+		   pdf_char_t *out, pdf_size_t out_size,
+		   pdf_char_t *in,  pdf_size_t in_size)
+{
+  gcry_md_hd_t * gcry_md = md.raw;
+  pdf_size_t i;
+  
+  for (i = 0; i < in_size; i++)
+    {
+      gcry_md_putc (*gcry_md, in[i]);
+    }
+
+  if (gcry_md_final (*gcry_md) != GPG_ERR_NO_ERROR)
+    {
+      return PDF_ERROR;
+    }
+  else
+    {
+      gcry_md_read  (*gcry_md, GCRY_MD_MD5);
+      gcry_md_close (*gcry_md);
+      return PDF_OK;
+    }
+}
+
+
+EXTERN_INLINE pdf_status_t
+pdf_crypt_md_destroy (pdf_crypt_md_t hd)
+{
+  pdf_dealloc (hd.raw);
   return PDF_OK;
 }
+
 
 
 #endif /* COMPILING_PDF_CRYPT */

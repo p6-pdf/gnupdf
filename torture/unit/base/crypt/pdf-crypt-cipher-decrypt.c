@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-04 02:59:45 david"
+/* -*- mode: C -*- Time-stamp: "2008-09-05 04:12:56 david"
  *
  *       File:         pdf-crypt-cipher-decrypt.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -32,9 +32,9 @@
 
 
 /*
- * Test: pdf_crypt_init_001
+ * Test: pdf_crypt_cipher_decrypt_001
  * Description:
- *   Try decrypt a ciphered empty buffer.
+ *   Try decrypt an empty buffer for an AESV2 cipher.
  * Success condition:
  *   Returns 0.
  */
@@ -83,6 +83,44 @@ END_TEST
 
 
 
+/*
+ * Test: pdf_crypt_cipher_decrypt_002
+ * Description:
+ *   Try decrypt an empty buffer for a V2 cipher.
+ * Success condition:
+ *   Returns 0.
+ */
+
+START_TEST (pdf_crypt_cipher_decrypt_002)
+{
+  pdf_crypt_cipher_t cipher;
+  pdf_char_t *plain;
+  pdf_size_t plain_size;
+
+  pdf_char_t * ciphered;
+  pdf_size_t   ciphered_size;
+			     
+  ciphered_size = 0;
+
+  pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &cipher);
+  pdf_crypt_cipher_setkey (&cipher, NULL, 0);
+
+  plain_size = pdf_crypt_cipher_decrypt_size (cipher, ciphered, ciphered_size);
+  plain = pdf_alloc (plain_size);
+  
+  fail_if (pdf_crypt_cipher_decrypt (cipher,
+				     plain, plain_size,
+				     ciphered, ciphered_size,
+				     &plain_size) != PDF_OK);
+  fail_if (plain_size != 0);
+
+  pdf_dealloc (plain);
+  pdf_crypt_cipher_destroy (cipher);
+}
+END_TEST
+
+
+
 
 /*
  * Test case creation function
@@ -92,6 +130,7 @@ test_pdf_crypt_cipher_decrypt (void)
 {
   TCase *tc = tcase_create("pdf_crypt_cipher_decrypt");
   tcase_add_test(tc, pdf_crypt_cipher_decrypt_001);
+  tcase_add_test(tc, pdf_crypt_cipher_decrypt_002);
   return tc;
 }
 

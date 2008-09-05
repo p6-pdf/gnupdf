@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-04 03:02:58 david"
+/* -*- mode: C -*- Time-stamp: "2008-09-05 04:37:42 david"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -153,7 +153,10 @@ pdf_crypt_cipher_aesv2_encrypt (void * cipher,
   memset (padding, padding_size, padding_size);
   
   gcry_cipher_setiv (*hd, iv, iv_size);
-  gcry_cipher_encrypt (*hd, content, content_size + padding_size, NULL, 0);
+  if (gcry_cipher_encrypt (*hd, content, content_size + padding_size, NULL, 0) != GPG_ERR_NO_ERROR)
+    {
+      return PDF_ERROR;
+    }
 
   *result_size = buffer_size;
 
@@ -178,7 +181,10 @@ pdf_crypt_cipher_aesv2_decrypt (void * cipher,
   pdf_char_t * content	     = &buffer[iv_size];
   
   gcry_cipher_setiv (*hd, iv, iv_size);
-  gcry_cipher_decrypt (*hd, content, buffer_size - iv_size, NULL, 0);
+  if (gcry_cipher_decrypt (*hd, content, buffer_size - iv_size, NULL, 0) != GPG_ERR_NO_ERROR)
+    {
+      return PDF_ERROR;
+    }
 
   padding_size = content[buffer_size - iv_size - 1];
   content_size = buffer_size - iv_size - padding_size;

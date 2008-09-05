@@ -159,7 +159,9 @@ TEST_SUITE_CRYPT = base/crypt/pdf-crypt-init.c \
 		   base/crypt/pdf-crypt-cipher-decrypt-size.c \
 		   base/crypt/pdf-crypt-cipher-encrypt.c \
 		   base/crypt/pdf-crypt-cipher-decrypt.c \
-		   base/crypt/pdf-crypt-md-md5.c
+		   base/crypt/pdf-crypt-md-new.c \
+		   base/crypt/pdf-crypt-md-hash.c \
+		   base/crypt/pdf-crypt-md-destroy.c
 
 
 TEST_ENVIRONMENT = CHARSETALIASDIR=$(top_srcdir)/lib

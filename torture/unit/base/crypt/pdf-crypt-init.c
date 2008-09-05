@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-08-30 17:12:35 davazp"
+/* -*- mode: C -*- Time-stamp: "2008-09-05 05:29:38 david"
  *
  *       File:         pdf-crypt-init.c
  *       Date:         Wed Mar  12 12:43:00 2008
