@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/04/21 19:40:53 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/08 22:51:52 jemarch"
  *
  *       File:         pdf-list-iterator-from-to.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -45,7 +45,7 @@ START_TEST (pdf_list_iterator_from_to_001)
   elem = 123;
   elem2 = 321;
 
-  pdf_list_create (NULL, NULL, 0, &list);
+  pdf_list_new (NULL, NULL, 0, &list);
   pdf_list_add_last (list, &elem, NULL);
   pdf_list_add_last (list, &elem2, NULL);
   
@@ -76,7 +76,7 @@ START_TEST (pdf_list_iterator_from_to_002)
   elem = 123;
   elem2 = 321;
 
-  pdf_list_create (NULL, NULL, 0, &list);
+  pdf_list_new (NULL, NULL, 0, &list);
   pdf_list_add_last (list, &elem, NULL);
   pdf_list_add_last (list, &elem2, NULL);
   
@@ -115,7 +115,7 @@ START_TEST (pdf_list_iterator_from_to_003)
 
   elem = 123;
   
-  pdf_list_create (NULL, NULL, 0, &list);
+  pdf_list_new (NULL, NULL, 0, &list);
   pdf_list_add_last (list, &elem, NULL);
   
   st = pdf_list_iterator_from_to (list, 0, 0, NULL);

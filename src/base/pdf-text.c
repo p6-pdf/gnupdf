@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/28 22:25:26 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/08 22:43:18 jemarch"
  *
  *       File:         pdf-text.c
  *       Date:         Fri Jan 11 21:09:56 2008
@@ -1807,7 +1807,7 @@ pdf_text_create_word_boundaries_list(pdf_list_t *p_word_boundaries)
 {
   pdf_list_t temp_list;
   /* Initialize word boundaries list */
-  if(pdf_list_create (NULL, NULL, PDF_TRUE, &temp_list) != PDF_OK)
+  if(pdf_list_new (NULL, NULL, PDF_TRUE, &temp_list) != PDF_OK)
     {
       return PDF_ETEXTENC;
     }

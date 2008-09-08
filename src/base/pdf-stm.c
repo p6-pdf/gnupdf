@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/04/21 19:31:35 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/08 22:41:54 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -658,14 +658,14 @@ pdf_stm_alloc (void)
   pdf_stm_t stm;
 
   stm = (pdf_stm_t) pdf_alloc (sizeof (struct pdf_stm_s));
-  pdf_list_create (NULL,      /* compare_fn */
-                   pdf_stm_filter_dealloc_list,
-                   PDF_TRUE,
-                   &stm->read_filter_list); /* allow duplicates */
-  pdf_list_create (NULL,      /* compare_fn */
-                   pdf_stm_filter_dealloc_list,
-                   PDF_TRUE,
-                   &stm->write_filter_list); /* allow duplicates */
+  pdf_list_new (NULL,      /* compare_fn */
+                pdf_stm_filter_dealloc_list,
+                PDF_TRUE,
+                &stm->read_filter_list); /* allow duplicates */
+  pdf_list_new (NULL,      /* compare_fn */
+                pdf_stm_filter_dealloc_list,
+                PDF_TRUE,
+                &stm->write_filter_list); /* allow duplicates */
 
   return stm;
 }

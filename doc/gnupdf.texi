@@ -1875,7 +1875,7 @@ A function type for calculating a Hash code given a list element. Should return 
 @node Creating and Destroying Lists
 @subsection Creating and Destroying Lists
 
-@deftypefun pdf_status_t pdf_list_create (pdf_list_element_equals_fn_t @var{equals_fn}, pdf_list_element_dispose_fn_t @var{dispose_fn}, const pdf_bool_t @var{allow_duplicates}, pdf_list_t @var{*list})
+@deftypefun pdf_status_t pdf_list_new (pdf_list_element_equals_fn_t @var{equals_fn}, pdf_list_element_dispose_fn_t @var{dispose_fn}, const pdf_bool_t @var{allow_duplicates}, pdf_list_t @var{*list})
 
 Create a new list containing no elements.
 
@@ -1909,7 +1909,7 @@ An unexpected error or no memory available.
 @example
 pdf_list_t mylist;
 
-if (pdf_list_create (list_element_equal_p, list_element_destroy,  PDF_FALSE,
+if (pdf_list_new (list_element_equal_p, list_element_destroy,  PDF_FALSE,
     &mylist) != PDF_OK)
   @{
     /* manage the error... */

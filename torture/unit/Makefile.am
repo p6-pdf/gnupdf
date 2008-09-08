@@ -78,7 +78,7 @@ TEST_SUITE_LIST = base/list/pdf-list-add-first.c \
                   base/list/pdf-list-add-at.c \
                   base/list/pdf-list-add-last.c \
                   base/list/pdf-list-size.c \
-                  base/list/pdf-list-create.c \
+                  base/list/pdf-list-new.c \
                   base/list/pdf-list-destroy.c \
                   base/list/pdf-list-get-at.c \
                   base/list/pdf-list-indexof.c \
@@ -149,7 +149,7 @@ TEST_SUITE_TYPES = base/types/pdf-i64-new.c \
 		   base/types/pdf-i64-mult.c \
 		   base/types/pdf-i64-div.c \
 		   base/types/pdf-i64-mod.c \
- 		   base/types/pdf-i64-subtraction.c 
+		   base/types/pdf-i64-subtraction.c 
 
 TEST_ENVIRONMENT = CHARSETALIASDIR=$(top_srcdir)/lib
 
