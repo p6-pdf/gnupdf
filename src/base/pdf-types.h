@@ -33,6 +33,7 @@
 #include <sys/types.h> /* for off_t */
 #include <stdint.h> /* for uint32_t and others, from gnulib */
 
+#include <sys/param.h> /* for determining system types (mostly BSD) */
 
 #ifdef HAVE_INLINE
 #define INLINE inline
@@ -417,6 +418,9 @@ pdf_i64_to_i32(const pdf_i64_t bignum);
  #include <windows.h>
 #endif
 
+#if defined(BSD)
+ #define PDF_HOST_BSD
+#endif
 
 
 /* END PUBLIC */
