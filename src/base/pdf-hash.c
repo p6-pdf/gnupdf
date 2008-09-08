@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/08/29 01:43:24 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/08 23:56:58 jemarch"
  *
  *       File:         pdf-hash.c
  *       Date:         Sat Apr  12 12:22:05 2008
@@ -62,7 +62,7 @@ static int key_numeric_cmp (const char *key1, const char *key2);
 static int key_compare (const void *key1, const void *key2);
 
 pdf_status_t
-pdf_hash_create (pdf_hash_key_dispose_fn_t dispose_key_fn, pdf_hash_t *table)
+pdf_hash_new (pdf_hash_key_dispose_fn_t dispose_key_fn, pdf_hash_t *table)
 {
   pdf_status_t st;
 

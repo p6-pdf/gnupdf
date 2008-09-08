@@ -62,6 +62,7 @@ and changed src/base/pdf-stm-f-pred.c src/base/pdf-stm-f-pred.h
   torture/unit/base/list/pdf-list-set-at.c 
   torture/unit/base/hash/pdf-hash-search.c
   prmgt/check-api-doc-consistency.pl torture/unit/nocheck/README
+  src/base/pdf-hash.h src/base/pdf-hash.c
 
 Juan Pedro Bolívar Puente: wrote src/base/pdf-stm-f-pred.c
   src/base/pdf-stm-f-pred.h src/base/pdf-stm-f-lzw.c

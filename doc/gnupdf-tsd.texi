@@ -3962,7 +3962,7 @@ Returns PDF_EBADDATA
 @subsection Hash Module
 
 @menu
-* pdf_hash_create::
+* pdf_hash_new::
 * pdf_hash_detroy::
 * pdf_hash_size::
 * pdf_hash_key_p::
@@ -3975,10 +3975,10 @@ Returns PDF_EBADDATA
 * pdf_hash_iterator_free::
 @end menu
 
-@node pdf_hash_create
-@subsubsection pdf_hash_create
+@node pdf_hash_new
+@subsubsection pdf_hash_new
 
-@deffn Test pdf_hash_create_001
+@deffn Test pdf_hash_new_001
 Try to create an empty hash.
 @table @strong
 @item Success condition
@@ -3987,7 +3987,7 @@ Returns PDF_OK
 @end deffn
 
 
-@deffn Test pdf_hash_create_002
+@deffn Test pdf_hash_new_002
 Try to create an empty hash with a NULL pointer.
 @table @strong
 @item Success condition

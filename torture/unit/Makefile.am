@@ -62,7 +62,7 @@ TEST_SUITE_ERROR = base/error/pdf-error.c \
 # Unit tests for the Stream Module test suite
 TEST_SUITE_STM = base/stm/pdf-create-file-stm.c
 
-TEST_SUITE_HASH = base/hash/pdf-hash-create.c \
+TEST_SUITE_HASH = base/hash/pdf-hash-new.c \
 		  base/hash/pdf-hash-destroy.c \
 		  base/hash/pdf-hash-add.c \
 		  base/hash/pdf-hash-remove.c \

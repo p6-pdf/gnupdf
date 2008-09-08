@@ -1288,7 +1288,7 @@ A function type for disposing hash keys.
 @node Creating and Destroying Hash Tables
 @subsection Creating and Destroying Hash Tables
 
-@deftypefun pdf_status_t pdf_hash_create (pdf_hash_key_dispose_fn_t @var{dispose_key_fn}, pdf_hash_t @var{*table})
+@deftypefun pdf_status_t pdf_hash_new (pdf_hash_key_dispose_fn_t @var{dispose_key_fn}, pdf_hash_t @var{*table})
 
 Create a new empty hash table. When some element is removed @var{dispose_key_fn} are called, can be NULL.
 

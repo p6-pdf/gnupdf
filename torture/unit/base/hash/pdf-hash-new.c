@@ -1,9 +1,9 @@
-/* -*- mode: C -*- Time-stamp: "2008-07-23 08:11:50 gerel"
+/* -*- mode: C -*- Time-stamp: "08/09/09 00:02:46 jemarch"
  *
  *       File:         pdf-hash-create.c
  *       Date:         Wed Mar  12 12:43:00 2008
  *
- *       GNU PDF Library - Unit tests for pdf_hash_create
+ *       GNU PDF Library - Unit tests for pdf_hash_new
  *
  */
 
@@ -32,32 +32,32 @@
 
 
 /*
- * Test: pdf_hash_create_001
+ * Test: pdf_hash_new_001
  * Description:
  *   Try to create an empty hash.
  * Success condition:
  *   Returns PDF_OK
  */
-START_TEST (pdf_hash_create_001)
+START_TEST (pdf_hash_new_001)
 {
   pdf_hash_t table;
 
-  fail_if (pdf_hash_create (NULL, &table) != PDF_OK);
+  fail_if (pdf_hash_new (NULL, &table) != PDF_OK);
 
   pdf_hash_destroy (&table);
 }
 END_TEST
 
 /*
- * Test: pdf_hash_create_002
+ * Test: pdf_hash_new_002
  * Description:
  *   Try to create an empty hash with a NULL pointer.
  * Success condition:
  *   Returns PDF_EBADDATA
  */
-START_TEST (pdf_hash_create_002)
+START_TEST (pdf_hash_new_002)
 {
-  fail_if (pdf_hash_create (NULL, NULL) != PDF_EBADDATA);
+  fail_if (pdf_hash_new (NULL, NULL) != PDF_EBADDATA);
 }
 END_TEST
 
@@ -66,11 +66,11 @@ END_TEST
  * Test case creation function
  */
 TCase *
-test_pdf_hash_create (void)
+test_pdf_hash_new (void)
 {
-  TCase *tc = tcase_create("pdf_hash_create");
-  tcase_add_test(tc, pdf_hash_create_001);
-  tcase_add_test(tc, pdf_hash_create_002);
+  TCase *tc = tcase_create("pdf_hash_new");
+  tcase_add_test(tc, pdf_hash_new_001);
+  tcase_add_test(tc, pdf_hash_new_002);
   return tc;
 }
 

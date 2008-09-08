@@ -1,4 +1,40 @@
+2008-09-09  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/unit/Makefile.am: Likewise.
+
+	* doc/gnupdf.texi: Likewise.
+
+	* doc/gnupdf-tsd.texi: Likewise.
+
+	* torture/unit/base/hash/tsuite-hash.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-size.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-search.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-rename.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-remove.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-key-p.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-iterator.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-iterator-next.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-iterator-free.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-destroy.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-add.c: Rename 'pdf_hash_create'
+	to 'pdf_hash_new'.
+
 2008-09-08  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-hash.h (pdf_hash_new): Rename from
+	'pdf_hash_create'.
+
+	* src/base/pdf-hash.c (pdf_hash_new): Likewise.
 
 	* doc/gnupdf-hg.texi (Abstract Data Types): New chapter.
 
