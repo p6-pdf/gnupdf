@@ -1,5 +1,7 @@
 2008-09-08  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf-hg.texi (Abstract Data Types): New chapter.
+
 	* torture/unit/Makefile.am (TEST_SUITE_LIST): Rename
 	'pdf-list-create.c' to 'pdf-list-new.c'.
 
