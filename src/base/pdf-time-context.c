@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/08 16:20:37 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/09 01:09:10 jemarch"
  *
  *       File:         pdf-time-context.c
  *       Date:         Sun May 18 13:08:37 2008
@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <time.h>
 
+#include <pdf-alloc.h>
 #include <pdf-time-context.h>
 
 

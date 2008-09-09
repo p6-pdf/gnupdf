@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-06-15 18:48:36 gerel"
+/* -*- mode: C -*- Time-stamp: "08/09/09 00:37:53 jemarch"
  *
  *       File:         pdf-error.c
  *       Date:         Sun Feb  24 20:22:05 2008
@@ -51,6 +51,7 @@ const char * pdf_error_stlist [] =
           "invalid path name",
           "operation can't be performed now, maybe later",
           "no space left on device",
+          "text module global context not initialized",
           "operation requires some entity be empty"
   };
 

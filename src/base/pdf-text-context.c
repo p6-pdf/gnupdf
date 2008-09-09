@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/28 22:26:10 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/09 03:26:05 jemarch"
  *
  *       File:         pdf-text-context.c
  *       Date:         Fri Feb 25 23:58:56 2008
@@ -59,7 +59,7 @@ typedef struct pdf_text_context_s {
  *  be treated as constant from then on, so there shouldn't be any problem
  *  with multiple threading and reentrancy */
 static pdf_text_context_t text_context;
-
+static pdf_bool_t text_context_initialized = PDF_FALSE;
 
 /* Definition of the different platform-dependent EOL types, in UTF-8. This
  *  array is based on the `enum pdf_text_eol_types' enumeration. */
@@ -188,9 +188,11 @@ pdf_text_detect_host_eol(void)
 
 
 pdf_status_t
-pdf_text_context_init(void)
+pdf_text_context_init (void)
 {
   extern pdf_text_context_t text_context;
+  extern pdf_bool_t text_context_initialized;
+
   pdf_status_t ret_code = PDF_OK;
   
 #if defined HAVE_SETLOCALE
@@ -234,7 +236,17 @@ pdf_text_context_init(void)
       return ret_code;
     }
 
+  /* Mark the context as initialized */
+  text_context_initialized = PDF_TRUE;
+
   return PDF_OK;
+}
+
+pdf_bool_t
+pdf_text_context_initialized (void)
+{
+  extern pdf_bool_t text_context_initialized;
+  return text_context_initialized;
 }
 
 enum pdf_endianness_e

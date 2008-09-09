@@ -45,8 +45,7 @@ START_TEST(pdf_text_get_language_001)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
-  text = pdf_text_new();
-  fail_if(text == NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   
   /* Store language ID without using the API */
   strncpy((char *)(&(text->lang[0])), "en", 2);
@@ -82,8 +81,7 @@ START_TEST(pdf_text_get_language_002)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
-  text = pdf_text_new();
-  fail_if(text == NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   
   /* Get language ID */
   language = pdf_text_get_language(text);

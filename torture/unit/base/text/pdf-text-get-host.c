@@ -67,12 +67,12 @@ START_TEST(pdf_text_get_host_001)
       expected_data = (pdf_char_t *)ascii_strings[i].data;
       expected_size = ascii_strings[i].size;
 
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        (pdf_char_t *) \
+      fail_if(pdf_text_new_from_unicode((pdf_char_t *) \
                                         ascii_strings[i].utf32be_data,
                                         (pdf_size_t) \
                                         ascii_strings[i].utf32be_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE,
+                                        &text) != PDF_OK);
       
       
       /* 1. The call to  pdf_text_get_host should return PDF_OK. */
@@ -131,12 +131,12 @@ START_TEST(pdf_text_get_host_002)
       expected_data = (pdf_char_t *)ascii_strings[i].data;
       expected_size = ascii_strings[i].size;
       
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        (pdf_char_t *) \
+      fail_if(pdf_text_new_from_unicode((pdf_char_t *) \
                                         ascii_strings[i].utf32be_data,
                                         (pdf_size_t) \
                                         ascii_strings[i].utf32be_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE,
+                                        &text) != PDF_OK);
       
       
       /* 1. The call to  pdf_text_get_host should NOT return PDF_OK. */
