@@ -64,9 +64,9 @@ START_TEST(pdf_text_get_hex_001)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    utf8data, strlen((char *)utf8data),
-                                    PDF_TEXT_UTF8) != PDF_OK);
+  fail_if(pdf_text_new_from_unicode(utf8data, strlen((char *)utf8data),
+                                    PDF_TEXT_UTF8,
+                                    &text) != PDF_OK);
   
   /* 1. The call to  pdf_text_get_hex should return a valid string, NUL 
    *      terminated. */
@@ -103,8 +103,7 @@ START_TEST(pdf_text_get_hex_002)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
-  text = pdf_text_new();
-  fail_if(text == NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   
   /* 1. The call to  pdf_text_get_hex should return a valid string, NUL 
    *      terminated. */

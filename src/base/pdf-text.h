@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/28 22:27:13 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/09 00:41:56 jemarch"
  *
  *       File:         pdf-text.h
  *       Date:         Fri Jan 11 21:09:23 2008
@@ -96,7 +96,7 @@ struct pdf_text_s {
 };
 
 /* And reference to the structure (basic type to be used) */
-typedef struct pdf_text_s * pdf_text_t;
+typedef struct pdf_text_s *pdf_text_t;
 
 
 /* Host Encoding Name Maximum Length */
@@ -122,8 +122,8 @@ pdf_text_init(void);
 /* --------------------- Text Creation and Destruction ---------------------- */
 
 /* Create new empty text object. Returned type must be checked against NULL. */
-pdf_text_t
-pdf_text_new (void);
+pdf_status_t
+pdf_text_new (pdf_text_t *text);
 
 
 /* Destroy (freeing contents) a given text object */
@@ -139,37 +139,37 @@ pdf_text_dup (const pdf_text_t text);
 /* Create new text object from a Host-Encoded string. Status of the conversion
  *  is returned. */
 pdf_status_t
-pdf_text_new_from_host (pdf_text_t *text,
-                        const pdf_char_t *str,
+pdf_text_new_from_host (const pdf_char_t *str,
                         const pdf_size_t size,
-                        const pdf_text_host_encoding_t enc);
+                        const pdf_text_host_encoding_t enc,
+                        pdf_text_t *text);
 
 
 /* Create new text object from a PDF string: either PDFDoc-Encoded string or
  *  UTF-16BE encoded string (BOM mandatory). Status of the conversion is
  *  returned. */
 pdf_status_t
-pdf_text_new_from_pdf_string (pdf_text_t *text,
-                              const pdf_char_t *str,
+pdf_text_new_from_pdf_string (const pdf_char_t *str,
                               const pdf_size_t size,
                               pdf_char_t **remaining_str,
-                              pdf_size_t *remaining_length);
+                              pdf_size_t *remaining_length,
+                              pdf_text_t *text);
 
 
 /* Create a new text object from a string of Unicode characters in a given
  *  unicode encoding. Status of the conversion is returned. */
 pdf_status_t
-pdf_text_new_from_unicode (pdf_text_t *text,
-                           const pdf_char_t *str,
+pdf_text_new_from_unicode (const pdf_char_t *str,
                            const pdf_size_t size,
-                           const enum pdf_text_unicode_encoding_e enc);
+                           const enum pdf_text_unicode_encoding_e enc,
+                           pdf_text_t *text);
 
 
 /* Create a new text variable containing the textual representation of a
  *  given integer. Status of the conversion is returned. */
 pdf_status_t
-pdf_text_new_from_u32 (pdf_text_t *text,
-                       const pdf_u32_t number);
+pdf_text_new_from_u32 (const pdf_u32_t number,
+                       pdf_text_t *text);
 
 
 /* ------------------------ Text Property Management ------------------------ */

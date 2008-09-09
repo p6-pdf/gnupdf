@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-07-24 11:58:07 gerel"
+/* -*- mode: C -*- Time-stamp: "08/09/08 23:56:00 jemarch"
  *
  *       File:         pdf-hash.h
  *       Date:         Sat Apr  12 12:22:05 2008
@@ -65,7 +65,7 @@ typedef struct pdf_hash_iterator_s pdf_hash_iterator_t;
 /* Creating and Destroying Hash Tables */
 
 pdf_status_t
-pdf_hash_create (pdf_hash_key_dispose_fn_t dispose_key_fn, pdf_hash_t *table);
+pdf_hash_new (pdf_hash_key_dispose_fn_t dispose_key_fn, pdf_hash_t *table);
 
 pdf_status_t
 pdf_hash_destroy (pdf_hash_t *table);

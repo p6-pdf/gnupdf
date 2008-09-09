@@ -58,7 +58,7 @@ START_TEST(pdf_text_new_from_u32_001)
   fail_if(pdf_text_init() != PDF_OK);
 
   /* 1. The call to pdf_text_new_from_u32 should return PDF_OK. */
-  fail_unless(pdf_text_new_from_u32(&text, number) == PDF_OK);
+  fail_unless(pdf_text_new_from_u32(number, &text) == PDF_OK);
 
   /* 2. The contents of the text object must be the expected ones. */
   fail_if(memcmp(text->data, expected_data, expected_size) != 0);
@@ -108,7 +108,7 @@ START_TEST(pdf_text_new_from_u32_002)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* 1. The call to pdf_text_new_from_u32 should return PDF_OK. */
-  fail_unless(pdf_text_new_from_u32(&text, number) == PDF_OK);
+  fail_unless(pdf_text_new_from_u32(number, &text) == PDF_OK);
   
   /* 2. The contents of the text object must be the expected ones. */
   fail_if(memcmp(text->data, expected_data, expected_size) != 0);

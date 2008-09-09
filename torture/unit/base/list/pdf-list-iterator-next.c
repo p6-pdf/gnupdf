@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/04/21 19:41:07 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/08 22:52:08 jemarch"
  *
  *       File:         pdf-list-iterator-next.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -45,7 +45,7 @@ START_TEST (pdf_list_iterator_next_001)
   elem = 222;
 
   
-  pdf_list_create (NULL, NULL, 0, &list);
+  pdf_list_new (NULL, NULL, 0, &list);
   pdf_list_add_last (list, &elem, NULL);
   pdf_list_iterator (list, &itr);
 
@@ -73,7 +73,7 @@ START_TEST (pdf_list_iterator_next_002)
   pdf_status_t st;
   int *next;
 
-  pdf_list_create (NULL, NULL, 0, &list);
+  pdf_list_new (NULL, NULL, 0, &list);
   pdf_list_iterator (list, &itr);
 
   st = pdf_list_iterator_next (&itr, (const void **) &next, NULL);

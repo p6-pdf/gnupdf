@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/28 22:26:23 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/09 00:57:35 jemarch"
  *
  *       File:         pdf-text-filter.c
  *       Date:         Fri Feb 25 23:58:56 2008
@@ -248,10 +248,10 @@ pdf_text_substitute_line_ending(pdf_text_t text, const pdf_text_eol_t new_eol)
     }
 
   /* Create text new pattern */
-  if(pdf_text_new_from_unicode(&new_text_pattern,
-                               new_eol->sequence,
+  if(pdf_text_new_from_unicode(new_eol->sequence,
                                strlen((char *)new_eol->sequence),
-                               PDF_TEXT_UTF8) != PDF_OK)
+                               PDF_TEXT_UTF8,
+                               &new_text_pattern) != PDF_OK)
     {
       pdf_dealloc(eols);
       PDF_DEBUG_BASE("New EOL is not UTF-8");
@@ -268,10 +268,10 @@ pdf_text_substitute_line_ending(pdf_text_t text, const pdf_text_eol_t new_eol)
 
 
       /* Create text old pattern */
-      if(pdf_text_new_from_unicode(&eols[i],
-                                   requested_eol->sequence,
+      if(pdf_text_new_from_unicode(requested_eol->sequence,
                                    strlen((char *)requested_eol->sequence),
-                                   PDF_TEXT_UTF8) != PDF_OK)
+                                   PDF_TEXT_UTF8,
+                                   &eols[i]) != PDF_OK)
         {
           pdf_text_destroy(new_text_pattern);
           pdf_dealloc(eols);

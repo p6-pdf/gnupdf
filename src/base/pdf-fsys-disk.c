@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/08/28 22:42:18 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/09 00:59:14 jemarch"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -380,10 +380,10 @@ pdf_fsys_disk_get_folder_contents (const pdf_text_t path_name,
 #endif /* PDF_HOST_WIN32 */
 
       /* Create the text object containing the entry name */
-      if ((pdf_text_new_from_host (&entry_text,
-                                   (pdf_char_t *) dir_entry->d_name,
+      if ((pdf_text_new_from_host ((pdf_char_t *) dir_entry->d_name,
                                    name_length,
-                                   pdf_text_get_host_encoding()) != PDF_OK) ||
+                                   pdf_text_get_host_encoding(),
+                                   &entry_text) != PDF_OK) ||
           (pdf_list_add_last (item_list, 
                               (void *) entry_text, NULL) != PDF_OK))
         {
@@ -1058,11 +1058,10 @@ pdf_fsys_disk_win32_device_p (pdf_text_t path)
   device_p = PDF_FALSE;
   for (i = 0; i < num_device_names; i++)
     {
-      device_name = pdf_text_new ();
-      pdf_text_new_from_unicode (&device_name,
-                                 (pdf_char_t *) device_names[i],
+      pdf_text_new_from_unicode ((pdf_char_t *) device_names[i],
                                  strlen (device_names[i]),
-                                 PDF_TEXT_UTF8);
+                                 PDF_TEXT_UTF8,
+                                 &device_name);
       
       if (pdf_text_cmp (path, device_name, PDF_FALSE, &ret_code) == 0)
         {

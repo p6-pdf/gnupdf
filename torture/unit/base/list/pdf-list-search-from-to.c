@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/04/21 19:45:55 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/08 22:54:16 jemarch"
  *
  *       File:         pdf-list-search-from-to.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -48,7 +48,7 @@ START_TEST (pdf_list_search_from_to_001)
 
   elem = 2232;
   
-  pdf_list_create (l_comp, NULL, 0, &list);
+  pdf_list_new (l_comp, NULL, 0, &list);
   pdf_list_add_last (list, &elem, NULL);
 
   st = pdf_list_search_from_to (list, 0, 1, &elem, &node);
@@ -75,7 +75,7 @@ START_TEST (pdf_list_search_from_to_002)
 
   elem = 2232;
   
-  pdf_list_create (l_comp, NULL, 0, &list);
+  pdf_list_new (l_comp, NULL, 0, &list);
   pdf_list_add_last (list, &elem, NULL);
 
   st = pdf_list_search_from_to (list, 0, 5, &elem, &node);
@@ -103,7 +103,7 @@ START_TEST (pdf_list_search_from_to_003)
   elem = 2232;
   elem2 = 232323;
 
-  pdf_list_create (l_comp, NULL, 0, &list);
+  pdf_list_new (l_comp, NULL, 0, &list);
   pdf_list_add_last (list, &elem, NULL);
 
   st = pdf_list_search_from_to (list, 0, 1, &elem2, &node);
@@ -129,7 +129,7 @@ START_TEST (pdf_list_search_from_to_004)
 
   elem = 2232;
   
-  pdf_list_create (l_comp, NULL, 0, &list);
+  pdf_list_new (l_comp, NULL, 0, &list);
   pdf_list_add_last (list, &elem, NULL);
 
   st = pdf_list_search_from_to (list, 0, 1, &elem, NULL);

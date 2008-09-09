@@ -59,8 +59,7 @@ START_TEST(pdf_text_set_unicode_001)
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set input data */
       input_data = (pdf_char_t *)&(utf8_strings[i].data[3]);
@@ -129,8 +128,7 @@ START_TEST(pdf_text_set_unicode_002)
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set input data */
       input_data = (pdf_char_t *)&(utf16be_strings[i].data[2]);
@@ -198,8 +196,7 @@ START_TEST(pdf_text_set_unicode_003)
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set input data (change endiannes to input UTF-16BE string) */
       input_size = (pdf_size_t)utf16be_strings[i].size -2;
@@ -270,8 +267,7 @@ START_TEST(pdf_text_set_unicode_004)
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set input data (change endiannes to input UTF-16BE string if required)
        */
@@ -356,8 +352,7 @@ START_TEST(pdf_text_set_unicode_005)
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set input data */
       input_size = (pdf_size_t)utf32be_strings[i].size -4;
@@ -425,8 +420,7 @@ START_TEST(pdf_text_set_unicode_006)
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set input data */
       input_size = (pdf_size_t)utf32be_strings[i].size -4;
@@ -498,8 +492,7 @@ START_TEST(pdf_text_set_unicode_007)
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set input data (UTF-32HE) */
       input_size = (pdf_size_t)utf32be_strings[i].size -4;
@@ -582,8 +575,7 @@ START_TEST(pdf_text_set_unicode_008)
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set input data */
       input_data = (pdf_char_t *)&(utf8_strings[i].data[0]);
@@ -651,8 +643,7 @@ START_TEST(pdf_text_set_unicode_009)
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set input data */
       input_data = (pdf_char_t *)&(utf16be_strings[i].data[0]);
@@ -720,8 +711,7 @@ START_TEST(pdf_text_set_unicode_010)
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set input data (change endiannes to input UTF-16BE string) */
       input_size = (pdf_size_t)utf16be_strings[i].size;
@@ -792,8 +782,7 @@ START_TEST(pdf_text_set_unicode_011)
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set input data (change endiannes to input UTF-16BE string if required)
        */
@@ -878,8 +867,7 @@ START_TEST(pdf_text_set_unicode_012)
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set input data */
       input_size = (pdf_size_t)utf32be_strings[i].size;
@@ -969,8 +957,7 @@ START_TEST(pdf_text_set_unicode_013)
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set input data */
       input_size = (pdf_size_t)utf32be_strings[i].size;
@@ -1042,8 +1029,7 @@ START_TEST(pdf_text_set_unicode_014)
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set input data (UTF-32HE) */
       input_size = (pdf_size_t)utf32be_strings[i].size;
@@ -1129,8 +1115,7 @@ START_TEST(pdf_text_set_unicode_015)
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set previous string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
@@ -1163,8 +1148,7 @@ START_TEST(pdf_text_set_unicode_015)
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set previous string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
@@ -1220,8 +1204,7 @@ START_TEST(pdf_text_set_unicode_016)
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set previous string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
@@ -1257,7 +1240,7 @@ END_TEST
  * Success conditions:
  *   1. The call to pdf_text_set_unicode should NOT return PDF_OK.
  *   2. The contents of the text object must remain unchanged.
-*/
+ */
 START_TEST(pdf_text_set_unicode_017)
 {
   extern const test_string_t utf8_strings[];
@@ -1277,8 +1260,7 @@ START_TEST(pdf_text_set_unicode_017)
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set previous string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
@@ -1333,8 +1315,7 @@ START_TEST(pdf_text_set_unicode_018)
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set previous string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
@@ -1389,8 +1370,7 @@ START_TEST(pdf_text_set_unicode_019)
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set previous string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
@@ -1445,8 +1425,7 @@ START_TEST(pdf_text_set_unicode_020)
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set previous string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
@@ -1501,8 +1480,7 @@ START_TEST(pdf_text_set_unicode_021)
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set previous string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
@@ -1560,8 +1538,7 @@ START_TEST(pdf_text_set_unicode_022)
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set previous string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
@@ -1599,8 +1576,7 @@ START_TEST(pdf_text_set_unicode_022)
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set previous string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
@@ -1662,8 +1638,7 @@ START_TEST(pdf_text_set_unicode_023)
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set previous string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
@@ -1725,8 +1700,7 @@ START_TEST(pdf_text_set_unicode_024)
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set empty string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
@@ -1796,8 +1770,7 @@ START_TEST(pdf_text_set_unicode_025)
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set empty string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
@@ -1858,8 +1831,7 @@ START_TEST(pdf_text_set_unicode_026)
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set empty string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
@@ -1920,8 +1892,7 @@ START_TEST(pdf_text_set_unicode_027)
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set empty string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
@@ -1991,8 +1962,7 @@ START_TEST(pdf_text_set_unicode_028)
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set previous string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
@@ -2057,8 +2027,7 @@ START_TEST(pdf_text_set_unicode_029)
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set input data with LANGUAGE code and BOM */
       input_size = (pdf_size_t)utf16be_strings[i].size + 8;
@@ -2180,8 +2149,7 @@ START_TEST(pdf_text_set_unicode_030)
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* Set input data with LANGUAGE code WITHOUT BOM */
       input_size = (pdf_size_t)utf16be_strings[i].size + 8 - 2;

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-07-23 08:12:36 gerel"
+/* -*- mode: C -*- Time-stamp: "08/09/09 00:00:10 jemarch"
  *
  *       File:         pdf-hash-add.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -41,7 +41,7 @@ START_TEST (pdf_hash_add_001)
 {
   pdf_hash_t table;
 
-  pdf_hash_create ( NULL, &table);
+  pdf_hash_new ( NULL, &table);
 
   fail_if (pdf_hash_add (table, "key", "val", NULL) != PDF_OK);
 
@@ -61,7 +61,7 @@ START_TEST (pdf_hash_add_002)
 {
   pdf_hash_t table;
 
-  pdf_hash_create (NULL, &table);
+  pdf_hash_new (NULL, &table);
 
   fail_if (pdf_hash_add (table, NULL, "val",NULL) != PDF_EBADDATA);
 
@@ -81,7 +81,7 @@ START_TEST (pdf_hash_add_003)
 {
   pdf_hash_t table;
 
-  pdf_hash_create (NULL, &table);
+  pdf_hash_new (NULL, &table);
 
   fail_if (pdf_hash_add (table, "key", NULL,NULL) != PDF_EBADDATA);
 

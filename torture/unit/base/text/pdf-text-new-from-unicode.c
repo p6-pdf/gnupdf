@@ -80,10 +80,10 @@ START_TEST(pdf_text_new_from_unicode_001)
         }
       
       /* 1. The call to pdf_text_new_from_unicode should return PDF_OK. */
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        input_data,
+      fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
-                                        PDF_TEXT_UTF8) != PDF_OK);
+                                        PDF_TEXT_UTF8,
+                                        &text) != PDF_OK);
       
       /* 2. The function should return a valid pointer to the new text object */
       fail_if(text == NULL);
@@ -159,10 +159,10 @@ START_TEST(pdf_text_new_from_unicode_002)
         }
       
       /* 1. The call to pdf_text_new_from_unicode should return PDF_OK. */
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        input_data,
+      fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
-                                        PDF_TEXT_UTF16_BE) != PDF_OK);
+                                        PDF_TEXT_UTF16_BE,
+                                        &text) != PDF_OK);
       
       /* 2. The function should return a valid pointer to the new text object */
       fail_if(text == NULL);
@@ -239,10 +239,10 @@ START_TEST(pdf_text_new_from_unicode_003)
         }
       
       /* 1. The call to pdf_text_new_from_unicode should return PDF_OK. */
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        input_data,
+      fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
-                                        PDF_TEXT_UTF16_LE) != PDF_OK);
+                                        PDF_TEXT_UTF16_LE,
+                                        &text) != PDF_OK);
       
       /* 2. The function should return a valid pointer to the new text object */
       fail_if(text == NULL);
@@ -331,10 +331,10 @@ START_TEST(pdf_text_new_from_unicode_004)
         }
       
       /* 1. The call to pdf_text_new_from_unicode should return PDF_OK. */
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        input_data,
+      fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
-                                        PDF_TEXT_UTF16_HE) != PDF_OK);
+                                        PDF_TEXT_UTF16_HE,
+                                        &text) != PDF_OK);
       
       /* 2. The function should return a valid pointer to the new text object */
       fail_if(text == NULL);
@@ -413,10 +413,10 @@ START_TEST(pdf_text_new_from_unicode_005)
         }
       
       /* 1. The call to pdf_text_new_from_unicode should return PDF_OK. */
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        input_data,
+      fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE,
+                                        &text) != PDF_OK);
       
       /* 2. The function should return a valid pointer to the new text object */
       fail_if(text == NULL);
@@ -493,10 +493,10 @@ START_TEST(pdf_text_new_from_unicode_006)
         }
       
       /* 1. The call to pdf_text_new_from_unicode should return PDF_OK. */
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        input_data,
+      fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
-                                        PDF_TEXT_UTF32_LE) != PDF_OK);
+                                        PDF_TEXT_UTF32_LE,
+                                        &text) != PDF_OK);
       
       /* 2. The function should return a valid pointer to the new text object */
       fail_if(text == NULL);
@@ -585,10 +585,10 @@ START_TEST(pdf_text_new_from_unicode_007)
         }
       
       /* 1. The call to pdf_text_new_from_unicode should return PDF_OK. */
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        input_data,
+      fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
-                                        PDF_TEXT_UTF32_HE) != PDF_OK);
+                                        PDF_TEXT_UTF32_HE,
+                                        &text) != PDF_OK);
       
       /* 2. The function should return a valid pointer to the new text object */
       fail_if(text == NULL);
@@ -666,10 +666,10 @@ START_TEST(pdf_text_new_from_unicode_008)
         }
       
       /* 1. The call to pdf_text_new_from_unicode should return PDF_OK. */
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        input_data,
+      fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
-                                        PDF_TEXT_UTF8) != PDF_OK);
+                                        PDF_TEXT_UTF8,
+                                        &text) != PDF_OK);
       
       /* 2. The function should return a valid pointer to the new text object */
       fail_if(text == NULL);
@@ -745,10 +745,10 @@ START_TEST(pdf_text_new_from_unicode_009)
         }
       
       /* 1. The call to pdf_text_new_from_unicode should return PDF_OK. */
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        input_data,
+      fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
-                                        PDF_TEXT_UTF16_BE) != PDF_OK);
+                                        PDF_TEXT_UTF16_BE,
+                                        &text) != PDF_OK);
       
       /* 2. The function should return a valid pointer to the new text object */
       fail_if(text == NULL);
@@ -825,10 +825,10 @@ START_TEST(pdf_text_new_from_unicode_010)
         }
       
       /* 1. The call to pdf_text_new_from_unicode should return PDF_OK. */
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        input_data,
+      fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
-                                        PDF_TEXT_UTF16_LE) != PDF_OK);
+                                        PDF_TEXT_UTF16_LE,
+                                        &text) != PDF_OK);
       
       /* 2. The function should return a valid pointer to the new text object */
       fail_if(text == NULL);
@@ -917,10 +917,10 @@ START_TEST(pdf_text_new_from_unicode_011)
         }
       
       /* 1. The call to pdf_text_new_from_unicode should return PDF_OK. */
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        input_data,
+      fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
-                                        PDF_TEXT_UTF16_HE) != PDF_OK);
+                                        PDF_TEXT_UTF16_HE,
+                                        &text) != PDF_OK);
       
       /* 2. The function should return a valid pointer to the new text object */
       fail_if(text == NULL);
@@ -999,10 +999,10 @@ START_TEST(pdf_text_new_from_unicode_012)
         }
       
       /* 1. The call to pdf_text_new_from_unicode should return PDF_OK. */
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        input_data,
+      fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE,
+                                        &text) != PDF_OK);
       
       if(INTERACTIVE_DEBUG)
         {
@@ -1101,10 +1101,10 @@ START_TEST(pdf_text_new_from_unicode_013)
         }
       
       /* 1. The call to pdf_text_new_from_unicode should return PDF_OK. */
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        input_data,
+      fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
-                                        PDF_TEXT_UTF32_LE) != PDF_OK);
+                                        PDF_TEXT_UTF32_LE,
+                                        &text) != PDF_OK);
       
       /* 2. The function should return a valid pointer to the new text object */
       fail_if(text == NULL);
@@ -1193,10 +1193,10 @@ START_TEST(pdf_text_new_from_unicode_014)
         }
       
       /* 1. The call to pdf_text_new_from_unicode should return PDF_OK. */
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        input_data,
+      fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
-                                        PDF_TEXT_UTF32_HE) != PDF_OK);
+                                        PDF_TEXT_UTF32_HE,
+                                        &text) != PDF_OK);
       
       /* 2. The function should return a valid pointer to the new text object */
       fail_if(text == NULL);
@@ -1256,10 +1256,10 @@ START_TEST(pdf_text_new_from_unicode_015)
       input_size = (pdf_size_t)utf16be_strings[i].size;
 
       /* 1. The call to  pdf_text_new_from_host should NOT return PDF_OK. */
-      fail_unless(pdf_text_new_from_unicode(&text,
-                                            input_data,
+      fail_unless(pdf_text_new_from_unicode(input_data,
                                             input_size,
-                                            PDF_TEXT_UTF8) != PDF_OK);
+                                            PDF_TEXT_UTF8,
+                                            &text) != PDF_OK);
       
       /* 2. Pointer to the text object must remain unchanged. */
       fail_if(text != NULL);
@@ -1274,10 +1274,10 @@ START_TEST(pdf_text_new_from_unicode_015)
       input_size = (pdf_size_t)utf32be_strings[i].size;
 
       /* 1. The call to  pdf_text_new_from_host should NOT return PDF_OK. */
-      fail_unless(pdf_text_new_from_unicode(&text,
-                                            input_data,
+      fail_unless(pdf_text_new_from_unicode(input_data,
                                             input_size,
-                                            PDF_TEXT_UTF8) != PDF_OK);
+                                            PDF_TEXT_UTF8,
+                                            &text) != PDF_OK);
       
       /* 2. Pointer to the text object must remain unchanged. */
       fail_if(text != NULL);
@@ -1317,10 +1317,10 @@ START_TEST(pdf_text_new_from_unicode_016)
       input_size = (pdf_size_t)utf8_strings[i].size;
       
       /* 1. The call to  pdf_text_new_from_host should NOT return PDF_OK. */
-      fail_unless(pdf_text_new_from_unicode(&text,
-                                            input_data,
+      fail_unless(pdf_text_new_from_unicode(input_data,
                                             input_size,
-                                            PDF_TEXT_UTF16_BE) != PDF_OK);
+                                            PDF_TEXT_UTF16_BE,
+                                            &text) != PDF_OK);
       
       /* 2. Pointer to the text object must remain unchanged. */
       fail_if(text != NULL);
@@ -1360,10 +1360,10 @@ START_TEST(pdf_text_new_from_unicode_017)
       input_size = (pdf_size_t)utf8_strings[i].size;
       
       /* 1. The call to  pdf_text_new_from_host should NOT return PDF_OK. */
-      fail_unless(pdf_text_new_from_unicode(&text,
-                                            input_data,
+      fail_unless(pdf_text_new_from_unicode(input_data,
                                             input_size,
-                                            PDF_TEXT_UTF16_LE) != PDF_OK);
+                                            PDF_TEXT_UTF16_LE,
+                                            &text) != PDF_OK);
       
       /* 2. Pointer to the text object must remain unchanged. */
       fail_if(text != NULL);
@@ -1402,10 +1402,10 @@ START_TEST(pdf_text_new_from_unicode_018)
       input_size = (pdf_size_t)utf8_strings[i].size;
       
       /* 1. The call to  pdf_text_new_from_host should NOT return PDF_OK. */
-      fail_unless(pdf_text_new_from_unicode(&text,
-                                            input_data,
+      fail_unless(pdf_text_new_from_unicode(input_data,
                                             input_size,
-                                            PDF_TEXT_UTF16_HE) != PDF_OK);
+                                            PDF_TEXT_UTF16_HE,
+                                            &text) != PDF_OK);
       
       /* 2. Pointer to the text object must remain unchanged. */
       fail_if(text != NULL);
@@ -1444,10 +1444,10 @@ START_TEST(pdf_text_new_from_unicode_019)
       input_size = (pdf_size_t)utf8_strings[i].size;
       
       /* 1. The call to  pdf_text_new_from_host should NOT return PDF_OK. */
-      fail_unless(pdf_text_new_from_unicode(&text,
-                                            input_data,
+      fail_unless(pdf_text_new_from_unicode(input_data,
                                             input_size,
-                                            PDF_TEXT_UTF32_BE) != PDF_OK);
+                                            PDF_TEXT_UTF32_BE,
+                                            &text) != PDF_OK);
       
       /* 2. Pointer to the text object must remain unchanged. */
       fail_if(text != NULL);
@@ -1486,10 +1486,10 @@ START_TEST(pdf_text_new_from_unicode_020)
       input_size = (pdf_size_t)utf8_strings[i].size;
       
       /* 1. The call to  pdf_text_new_from_host should NOT return PDF_OK. */
-      fail_unless(pdf_text_new_from_unicode(&text,
-                                            input_data,
+      fail_unless(pdf_text_new_from_unicode(input_data,
                                             input_size,
-                                            PDF_TEXT_UTF32_LE) != PDF_OK);
+                                            PDF_TEXT_UTF32_LE,
+                                            &text) != PDF_OK);
       
       /* 2. Pointer to the text object must remain unchanged. */
       fail_if(text != NULL);
@@ -1528,10 +1528,10 @@ START_TEST(pdf_text_new_from_unicode_021)
       input_size = (pdf_size_t)utf8_strings[i].size;
       
       /* 1. The call to  pdf_text_new_from_host should NOT return PDF_OK. */
-      fail_unless(pdf_text_new_from_unicode(&text,
-                                            input_data,
+      fail_unless(pdf_text_new_from_unicode(input_data,
                                             input_size,
-                                            PDF_TEXT_UTF32_HE) != PDF_OK);
+                                            PDF_TEXT_UTF32_HE,
+                                            &text) != PDF_OK);
       
       /* 2. Pointer to the text object must remain unchanged. */
       fail_if(text != NULL);

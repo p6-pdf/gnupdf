@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/28 22:25:26 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/09 01:09:32 jemarch"
  *
  *       File:         pdf-text.c
  *       Date:         Fri Jan 11 21:09:56 2008
@@ -136,28 +136,39 @@ pdf_text_init(void)
 }
 
 
-pdf_text_t
-pdf_text_new (void)
+pdf_status_t
+pdf_text_new (pdf_text_t *text)
 {
-  /* Initialize all contents */
-  pdf_text_t element = (pdf_text_t) pdf_alloc (sizeof(struct pdf_text_s));
-  if(element != NULL)
+  /* The text global state should be initialized! */
+  if (pdf_text_context_initialized () == PDF_FALSE)
     {
-      element->data = NULL;
-      element->size = 0;
-      memset(&(element->lang[0]), 0, PDF_TEXT_CCL);
-      memset(&(element->country[0]), 0, PDF_TEXT_CCL);
-      /* Create empty word boundaries list */
-      if(pdf_text_create_word_boundaries_list(&(element->word_boundaries)) != \
-         PDF_OK)
-        {
-          pdf_dealloc(element);
-          element = NULL;
-        }
+      return PDF_EBADCONTEXT;
     }
 
-  /* Set output element...*/
-  return element;
+  /* Allocate memory for the new text structure */
+  *text = (pdf_text_t) pdf_alloc (sizeof(struct pdf_text_s));
+  if (*text == NULL)
+    {
+      /* Out of memory condition */
+      return PDF_ENOMEM;
+    }
+
+  /* Initialize all contents */
+  (*text)->data = NULL;
+  (*text)->size = 0;
+  memset(&((*text)->lang[0]), 0, PDF_TEXT_CCL);
+  memset(&((*text)->country[0]), 0, PDF_TEXT_CCL);
+
+  /* Create empty word boundaries list */
+  if(pdf_text_create_word_boundaries_list(&((*text)->word_boundaries)) != \
+     PDF_OK)
+    {
+      pdf_dealloc(*text);
+      *text = NULL;
+    }
+
+  /* Success! */
+  return PDF_OK;
 }
 
 
@@ -184,12 +195,10 @@ pdf_text_destroy (pdf_text_t text)
 pdf_text_t
 pdf_text_dup (const pdf_text_t text)
 {
-  pdf_text_t element = NULL;
+  pdf_text_t element;
 
   /* Allocate and initialize element */
-  element = pdf_text_new();
-
-  if(element != NULL)
+  if (pdf_text_new (&element) == PDF_OK)
     {
       /* Duplicate size */
       element->size = text->size;
@@ -210,22 +219,28 @@ pdf_text_dup (const pdf_text_t text)
       
       /* We don't really need to duplicate the contents of the word
        *  boundaries list, as it is a side product */
-    }
 
-  /* Set output element...*/
-  return element;
+      /* Set output element...*/
+      return element;
+    }
+  else
+    {
+      /* Dup failed */
+      return NULL;
+    }
 }
 
 
 
 pdf_status_t
-pdf_text_new_from_host (pdf_text_t *text,
-                        const pdf_char_t *str,
+pdf_text_new_from_host (const pdf_char_t *str,
                         const pdf_size_t size,
-                        const pdf_text_host_encoding_t enc)
+                        const pdf_text_host_encoding_t enc,
+                        pdf_text_t *text)
 {
   pdf_text_t element = NULL;
   pdf_status_t ret_code = PDF_ETEXTENC;
+  pdf_status_t ret_code_new;
   
   if((str == NULL) || \
      (size == 0))
@@ -234,11 +249,11 @@ pdf_text_new_from_host (pdf_text_t *text,
     }
   
   /* Allocate and initialize element */
-  element = pdf_text_new();
-  if(element == NULL)
+  ret_code_new = pdf_text_new (&element);
+  if (ret_code_new != PDF_OK)
     {
-      /* Oops, element creation failed due to memory allocation error... */
-      return PDF_ENOMEM;
+      /* Oops, element creation failed due to an error... */
+      return ret_code_new;
     }
   
   /* Set Host Encoding contents */
@@ -262,13 +277,14 @@ pdf_text_new_from_host (pdf_text_t *text,
 
 
 pdf_status_t
-pdf_text_new_from_pdf_string (pdf_text_t *text,
-                              const pdf_char_t *str,
+pdf_text_new_from_pdf_string (const pdf_char_t *str,
                               const pdf_size_t size,
                               pdf_char_t **remaining_str,
-                              pdf_size_t *remaining_length)
+                              pdf_size_t *remaining_length,
+                              pdf_text_t *text)
 {
   pdf_status_t ret_code = PDF_ETEXTENC;
+  pdf_status_t ret_code_new;
   pdf_text_t element = NULL;
   short bom_found = 0;
   short lang_found = 0;
@@ -279,12 +295,11 @@ pdf_text_new_from_pdf_string (pdf_text_t *text,
     }
   
   /* Allocate and initialize element */
-  element = pdf_text_new();
-  
-  if(element == NULL)
+  ret_code_new = pdf_text_new (&element);
+  if (ret_code_new != PDF_OK)
     {
-      /* Oops, element creation failed due to memory allocation error... */
-      return PDF_ENOMEM;
+      /* Oops, element creation failed due to some error... */
+      return ret_code_new;
     }
   
   /* First of all, check first two bytes to detect UTF-16BE BOM or lang/country
@@ -381,13 +396,14 @@ pdf_text_new_from_pdf_string (pdf_text_t *text,
 
 
 pdf_status_t
-pdf_text_new_from_unicode (pdf_text_t *text,
-                           const pdf_char_t *str,
+pdf_text_new_from_unicode (const pdf_char_t *str,
                            const pdf_size_t size,
-                           const enum pdf_text_unicode_encoding_e enc)
+                           const enum pdf_text_unicode_encoding_e enc,
+                           pdf_text_t *text)
 {
   pdf_text_t element = NULL;
   pdf_status_t ret_code = PDF_OK;
+  pdf_status_t ret_code_new;
 
   if(str == NULL)
     {
@@ -395,11 +411,11 @@ pdf_text_new_from_unicode (pdf_text_t *text,
     }
   
   /* Allocate and initialize element */
-  element = pdf_text_new();
-  if(element == NULL)
+  ret_code_new = pdf_text_new (&element);
+  if (ret_code_new != PDF_OK)
     {
-      /* Oops, element creation failed due to memory allocation error... */
-      return PDF_ENOMEM;
+      /* Oops, element creation failed due to some error... */
+      return ret_code_new;
     }
   
   /* Set Unicode contents */
@@ -425,8 +441,8 @@ pdf_text_new_from_unicode (pdf_text_t *text,
 
 
 pdf_status_t
-pdf_text_new_from_u32 (pdf_text_t *text,
-                       const pdf_u32_t number)
+pdf_text_new_from_u32 (const pdf_u32_t number,
+                       pdf_text_t *text)
 {
   /* Longest number to hold in 32bit: 2^32 = 4294967296 (10 chars) */
   pdf_char_t temp[10];
@@ -439,7 +455,7 @@ pdf_text_new_from_u32 (pdf_text_t *text,
   if(n > 0)
     {
       /* Treat the generated string as UTF-8 encoded (just numbers in ASCII) */
-      return pdf_text_new_from_unicode (text, &temp[0], n, PDF_TEXT_UTF8);
+      return pdf_text_new_from_unicode (&temp[0], n, PDF_TEXT_UTF8, text);
     }
   else
     {
@@ -1235,18 +1251,18 @@ pdf_text_replace_ascii (pdf_text_t text,
       pdf_status_t ret_code;
 
       /* Create intermediate pdf_text_t variables */
-      if(pdf_text_new_from_unicode(&new_pattern_text,
-                                   new_pattern,
-                                   (pdf_size_t)strlen((char *)new_pattern),
-                                   PDF_TEXT_UTF8)!=PDF_OK)
+      if(pdf_text_new_from_unicode(new_pattern,
+                                   (pdf_size_t) strlen ((char *) new_pattern),
+                                   PDF_TEXT_UTF8,
+                                   &new_pattern_text) != PDF_OK)
         {
           PDF_DEBUG_BASE("Error creating pdf_text_t from ASCII new pattern");
           return PDF_EBADTEXT;
         }
-      if(pdf_text_new_from_unicode(&old_pattern_text,
-                                   old_pattern,
-                                   (pdf_size_t)strlen((char *)old_pattern),
-                                   PDF_TEXT_UTF8)!=PDF_OK)
+      if(pdf_text_new_from_unicode(old_pattern,
+                                   (pdf_size_t) strlen ((char *)old_pattern),
+                                   PDF_TEXT_UTF8,
+                                   &old_pattern_text) != PDF_OK)
         {
           PDF_DEBUG_BASE("Error creating pdf_text_t from ASCII old pattern");
           return PDF_EBADTEXT;
@@ -1807,7 +1823,7 @@ pdf_text_create_word_boundaries_list(pdf_list_t *p_word_boundaries)
 {
   pdf_list_t temp_list;
   /* Initialize word boundaries list */
-  if(pdf_list_create (NULL, NULL, PDF_TRUE, &temp_list) != PDF_OK)
+  if(pdf_list_new (NULL, NULL, PDF_TRUE, &temp_list) != PDF_OK)
     {
       return PDF_ETEXTENC;
     }

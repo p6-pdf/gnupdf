@@ -1,3 +1,198 @@
+2008-09-09  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-hg.texi (Generating a Bazaar Merge Directive): New
+	section.
+
+	* src/base/pdf-text-context.c: New static variable
+	'text_context_initialized'.
+
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_win32_device_p): The
+	text object 'device_name' was being initialized twice.
+	Make 'pdf_text_new' to conform to the
+	coding conventions.
+
+	* src/base/pdf-text-context.c (pdf_text_context_initialize): New
+	function.
+
+	* src/base/pdf-error.c: Error message for PDF_EBADCONTEXT.
+
+	* src/base/pdf-error.h (enum pdf_status_e): PDF_EBADCONTEXT added.
+
+	* src/base/pdf-text.c (pdf_text_new): Check for a valid global
+	context.
+
+	* src/base/pdf-text.h: Make 'pdf_text_new' to conform to the
+	coding conventions.
+
+	* torture/unit/base/text/pdf-text-set-unicode.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-set-pdfdocenc.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-set-language.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-set-host.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-set-country.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-replace.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-replace-ascii.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-new-from-unicode.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-new-from-u32.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-new-from-pdf-string.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-new-from-host.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-new-destroy.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-get-unicode.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-get-pdfdocenc.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-get-language.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-get-host.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-get-hex.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-get-country.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-get-best-encoding.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-filter.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-empty-p.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-dup.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-concat.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-cmp.c: Likewise.
+
+	* doc/gnupdf.texi (Creating and Destroying Text): Likewise.
+
+	* torture/unit/Makefile.am: Likewise.
+
+	* doc/gnupdf.texi: Likewise.
+
+	* doc/gnupdf-tsd.texi: Likewise.
+
+	* src/base/pdf-text-filter.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-add.c: Rename 'pdf_hash_create'
+	to 'pdf_hash_new'.
+
+	* torture/unit/base/hash/tsuite-hash.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-size.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-search.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-rename.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-remove.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-key-p.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-iterator.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-iterator-next.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-iterator-free.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-destroy.c: Likewise.
+
+2008-09-08  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-hash.h (pdf_hash_new): Rename from
+	'pdf_hash_create'.
+
+	* src/base/pdf-hash.c (pdf_hash_new): Likewise.
+
+	* doc/gnupdf-hg.texi (Abstract Data Types): New chapter.
+
+	* torture/unit/Makefile.am (TEST_SUITE_LIST): Rename
+	'pdf-list-create.c' to 'pdf-list-new.c'.
+
+	* torture/unit/base/list/pdf-list-new.c: File rename from
+	'pdf-list-create.c'.
+
+	* src/base/pdf-stm.c: Rename 'pdf_list_create' to 'pdf_list_new'.
+
+	* doc/gnupdf.texi: Likewise.
+
+	* torture/unit/base/list/pdf-list-add-last.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-add-first.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-add-at.c: Likewise.
+
+	* src/object/pdf-obj.c: Likewise.
+
+	* src/base/pdf-text.c: Likewise.
+
+	* torture/unit/base/list/tsuite-list.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-sorted-search.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-sorted-search-from-to.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-sorted-remove.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-sorted-indexof.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-sorted-indexof-from-to.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-sorted-add.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-size.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-set-at.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-search.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-search-from.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-search-from-to.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-remove.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-remove-node.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-remove-at.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-previous-node.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-node-value.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-next-node.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-iterator.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-iterator-next.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-iterator-from-to.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-iterator-free.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-indexof.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-indexof-from.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-indexof-from-to.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-get-at.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-destroy.c: Likewise.
+
+	* doc/gnupdf-tsd.texi: Likewise.
+
+	* src/base/pdf-list.h (pdf_list_new): Rename from
+	'pdf_list_create'.
+
 2008-09-04  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* prmgt/patch_safety_dispatcher.py: End of file comment added.

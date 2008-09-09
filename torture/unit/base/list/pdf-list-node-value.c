@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/04/21 19:42:46 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/08 22:53:00 jemarch"
  *
  *       File:         pdf-list-node-value.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -43,7 +43,7 @@ START_TEST (pdf_list_node_value_001)
 
   elem = 2212;
   
-  pdf_list_create (NULL, NULL, 0, &list);
+  pdf_list_new (NULL, NULL, 0, &list);
 
   pdf_list_add_last (list, &elem, &node);
 

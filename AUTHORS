@@ -63,7 +63,50 @@ and changed src/base/pdf-stm-f-pred.c src/base/pdf-stm-f-pred.h
   torture/unit/base/list/pdf-list-search.c
   torture/unit/base/list/pdf-list-set-at.c 
   torture/unit/base/hash/pdf-hash-search.c
+  torture/unit/base/hash/pdf-hash-add.c
+  torture/unit/base/hash/pdf-hash-destroy.c
+  torture/unit/base/hash/pdf-hash-iterator-free.c
+  torture/unit/base/hash/pdf-hash-iterator-next.c
+  torture/unit/base/hash/pdf-hash-iterator.c
+  torture/unit/base/hash/pdf-hash-key-p.c
+  torture/unit/base/hash/pdf-hash-new.c
+  torture/unit/base/hash/pdf-hash-remove.c
+  torture/unit/base/hash/pdf-hash-rename.c
+  torture/unit/base/hash/pdf-hash-size.c
+  torture/unit/base/hash/suite-hash.c
+  torture/unit/base/text/pdf-text-check-hsot-encoding.c
+  torture/unit/base/text/pdf-text-cmp.c
+  torture/unit/base/text/pdf-text-concat.c
+  torture/unit/base/text/pdf-text-dup.c
+  torture/unit/base/text/pdf-text-empty-p.c
+  torture/unit/base/text/pdf-text-filter.c
+  torture/unit/base/text/pdf-text-get-best-encoding.c
+  torture/unit/base/text/pdf-text-get-country.c
+  torture/unit/base/text/pdf-text-get-hex.c
+  torture/unit/base/text/pdf-text-get-host-encoding.c
+  torture/unit/base/text/pdf-text-get-host.c
+  torture/unit/base/text/pdf-text-get-language.c
+  torture/unit/base/text/pdf-text-get-pdfdocenc.c
+  torture/unit/base/text/pdf-text-get-unicode.c
+  torture/unit/base/text/pdf-text-init.c
+  torture/unit/base/text/pdf-text-new-destroy.c
+  torture/unit/base/text/pdf-text-new-from-host.c
+  torture/unit/base/text/pdf-text-new-from-pdf-string.c
+  torture/unit/base/text/pdf-text-new-from-u32.c
+  torture/unit/base/text/pdf-text-new-from-unicode.c
+  torture/unit/base/text/pdf-text-replace-ascii.c
+  torture/unit/base/text/pdf-text-replace.c
+  torture/unit/base/text/pdf-text-set-country.c
+  torture/unit/base/text/pdf-text-set-host.c
+  torture/unit/base/text/pdf-text-set-language.c
+  torture/unit/base/text/pdf-text-set-pdfdocenc.c
+  torture/unit/base/text/pdf-text-set-unicode.c
+  torture/unit/base/text/pdf-text-test-common.c
+  torture/unit/base/text/pdf-text-test-common.h
+  torture/unit/base/text/pdf-text-test-data.c
+  torture/unit/base/text/tsuite-text.c
   prmgt/check-api-doc-consistency.pl torture/unit/nocheck/README
+  src/base/pdf-hash.h src/base/pdf-hash.c
 
 Juan Pedro Bolívar Puente: wrote src/base/pdf-stm-f-pred.c
   src/base/pdf-stm-f-pred.h src/base/pdf-stm-f-lzw.c

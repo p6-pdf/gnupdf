@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/08/29 00:26:09 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/08 22:44:16 jemarch"
  *
  *       File:         pdf-obj.c
  *       Date:         Sat Jul  7 03:04:30 2007
@@ -152,9 +152,9 @@ pdf_create_array (void)
   new_array = pdf_alloc_obj ();
   new_array->type = PDF_ARRAY_OBJ;
   new_array->value.array.objs = 
-    pdf_list_create (pdf_compare_obj_list_elt,
-                     pdf_dealloc_obj_list_elt,
-                     PDF_TRUE); /* allow duplicates */
+    pdf_list_new (pdf_compare_obj_list_elt,
+                  pdf_dealloc_obj_list_elt,
+                  PDF_TRUE); /* allow duplicates */
 
   return new_array;
 }
@@ -167,9 +167,9 @@ pdf_create_dict (void)
   new_dict = pdf_alloc_obj ();
   new_dict->type = PDF_DICT_OBJ;
   new_dict->value.dict.entries = 
-    pdf_list_create (pdf_compare_dict_entry_list_elt,
-                     pdf_dealloc_dict_entry_list_elt,
-                     PDF_FALSE); /* disallow duplicates. */
+    pdf_list_new (pdf_compare_dict_entry_list_elt,
+                  pdf_dealloc_dict_entry_list_elt,
+                  PDF_FALSE); /* disallow duplicates. */
 
   return new_dict;
 }
@@ -881,9 +881,9 @@ pdf_dict_equal_p (pdf_obj_t obj1,
 
   /* Create the int_list intersection list */
   int_list =
-    pdf_list_create (pdf_compare_dict_entry_list_elt,
-                           pdf_dealloc_dict_entry_list_elt,
-                           PDF_FALSE); /* disallow duplicates */
+    pdf_list_new (pdf_compare_dict_entry_list_elt,
+                  pdf_dealloc_dict_entry_list_elt,
+                  PDF_FALSE); /* disallow duplicates */
   iter = pdf_list_iterator (obj1->value.dict.entries);
   while (pdf_list_iterator_next (&iter, (const void**) &entry_elt1, &list_node1))
     {

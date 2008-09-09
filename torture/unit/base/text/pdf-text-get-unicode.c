@@ -64,12 +64,12 @@ START_TEST(pdf_text_get_unicode_001)
       expected_data = (pdf_char_t *)&(utf8_strings[i].data[3]);
       expected_size = utf8_strings[i].size -3;
       
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        (pdf_char_t *) \
+      fail_if(pdf_text_new_from_unicode((pdf_char_t *) \
                                         utf8_strings[i].utf32be_data,
                                         (pdf_size_t) \
                                         utf8_strings[i].utf32be_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE,
+                                        &text) != PDF_OK);
       
       
       /* 1. The call to  pdf_text_get_unicode should return PDF_OK. */
@@ -146,12 +146,12 @@ START_TEST(pdf_text_get_unicode_002)
       expected_data = (pdf_char_t *)&(utf8_strings[i].data[0]);
       expected_size = utf8_strings[i].size;
       
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        (pdf_char_t *) \
+      fail_if(pdf_text_new_from_unicode((pdf_char_t *) \
                                         utf8_strings[i].utf32be_data,
                                         (pdf_size_t) \
                                         utf8_strings[i].utf32be_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE,
+                                        &text) != PDF_OK);
       
       
       /* 1. The call to  pdf_text_get_unicode should return PDF_OK. */
@@ -220,8 +220,7 @@ START_TEST(pdf_text_get_unicode_003)
   pdf_char_t *data = NULL;
   pdf_size_t size = 0;
   
-  text = pdf_text_new();
-  fail_unless(text != NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   
   /* 1. The call to  pdf_text_get_unicode should return PDF_OK. */
   fail_unless(pdf_text_get_unicode(&data,
@@ -259,8 +258,7 @@ START_TEST(pdf_text_get_unicode_004)
   pdf_char_t *data = NULL;
   pdf_size_t size = 0;
   
-  text = pdf_text_new();
-  fail_unless(text != NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   
   /* 1. The call to  pdf_text_get_unicode should return PDF_OK. */
   fail_unless(pdf_text_get_unicode(&data,
@@ -305,9 +303,9 @@ START_TEST(pdf_text_get_unicode_005)
   const pdf_char_t *language = (pdf_char_t *)"en";
   const pdf_char_t *country = (pdf_char_t *)"GB";
   
-  fail_if(pdf_text_new_from_unicode(&text,
-                                        utf8data, utf8size,
-                                        PDF_TEXT_UTF8) != PDF_OK);
+  fail_if(pdf_text_new_from_unicode(utf8data, utf8size,
+                                    PDF_TEXT_UTF8,
+                                    &text) != PDF_OK);
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   fail_if(pdf_text_set_country(text, country) != PDF_OK);
   
@@ -346,9 +344,9 @@ START_TEST(pdf_text_get_unicode_006)
   const pdf_char_t *language = (pdf_char_t *)"en";
   const pdf_char_t *country = (pdf_char_t *)"GB";
   
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    utf8data, utf8size,
-                                    PDF_TEXT_UTF8) != PDF_OK);
+  fail_if(pdf_text_new_from_unicode(utf8data, utf8size,
+                                    PDF_TEXT_UTF8,
+                                    &text) != PDF_OK);
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   fail_if(pdf_text_set_country(text, country) != PDF_OK);
 
@@ -396,12 +394,12 @@ START_TEST(pdf_text_get_unicode_007)
       expected_data = (pdf_char_t *)&(utf16be_strings[i].data[2]);
       expected_size = utf16be_strings[i].size -2;
       
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        (pdf_char_t *) \
+      fail_if(pdf_text_new_from_unicode((pdf_char_t *) \
                                         utf16be_strings[i].utf32be_data,
                                         (pdf_size_t) \
                                         utf16be_strings[i].utf32be_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE,
+                                        &text) != PDF_OK);
       
       
       /* 1. The call to  pdf_text_get_unicode should return PDF_OK. */
@@ -477,12 +475,12 @@ START_TEST(pdf_text_get_unicode_008)
       expected_data = (pdf_char_t *)&(utf16be_strings[i].data[0]);
       expected_size = utf16be_strings[i].size;
       
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        (pdf_char_t *) \
+      fail_if(pdf_text_new_from_unicode((pdf_char_t *) \
                                         utf16be_strings[i].utf32be_data,
                                         (pdf_size_t) \
                                         utf16be_strings[i].utf32be_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE,
+                                        &text) != PDF_OK);
       
       
       /* 1. The call to  pdf_text_get_unicode should return PDF_OK. */
@@ -544,8 +542,7 @@ START_TEST(pdf_text_get_unicode_009)
   pdf_char_t *data = NULL;
   pdf_size_t size = 0;
   
-  text = pdf_text_new();
-  fail_unless(text != NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   
   /* 1. The call to  pdf_text_get_unicode should return PDF_OK. */
   fail_unless(pdf_text_get_unicode(&data,
@@ -583,8 +580,7 @@ START_TEST(pdf_text_get_unicode_010)
   pdf_char_t *data = NULL;
   pdf_size_t size = 0;
   
-  text = pdf_text_new();
-  fail_unless(text != NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   
   /* 1. The call to  pdf_text_get_unicode should return PDF_OK. */
   fail_unless(pdf_text_get_unicode(&data,
@@ -645,11 +641,11 @@ START_TEST(pdf_text_get_unicode_011)
                                         &utf16be_strings[i].data[2];
       pdf_size_t expected_size = utf16be_strings[i].size -2;
       
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        (pdf_char_t *) \
+      fail_if(pdf_text_new_from_unicode((pdf_char_t *) \
                                         utf16be_strings[i].utf32be_data,
                                         utf16be_strings[i].utf32be_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE,
+                                        &text) != PDF_OK);
       fail_if(pdf_text_set_language(text, language) != PDF_OK);
       fail_if(pdf_text_set_country(text, country) != PDF_OK);
       
@@ -738,11 +734,11 @@ START_TEST(pdf_text_get_unicode_012)
                                         &utf16be_strings[i].data[2];
       pdf_size_t expected_size = utf16be_strings[i].size -2;
       
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        (pdf_char_t *) \
+      fail_if(pdf_text_new_from_unicode((pdf_char_t *) \
                                         utf16be_strings[i].utf32be_data,
                                         utf16be_strings[i].utf32be_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE,
+                                        &text) != PDF_OK);
       fail_if(pdf_text_set_language(text, language) != PDF_OK);      
       
       
@@ -823,8 +819,7 @@ START_TEST(pdf_text_get_unicode_013)
                                         "\x00\x1B" "enGB" "\x00\x1B";
   pdf_size_t expected_langcode_size = 8;
   
-  text = pdf_text_new();
-  fail_unless(text != NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   fail_if(pdf_text_set_country(text, country) != PDF_OK);
@@ -886,8 +881,7 @@ START_TEST(pdf_text_get_unicode_014)
                                         "\x00\x1B" "en" "\x00\x1B";
   pdf_size_t expected_langcode_size = 6;
   
-  text = pdf_text_new();
-  fail_unless(text != NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   
@@ -948,11 +942,11 @@ START_TEST(pdf_text_get_unicode_015)
                                         &utf16be_strings[i].data[2];
       pdf_size_t expected_size = utf16be_strings[i].size-2;
       
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        (pdf_char_t *) \
+      fail_if(pdf_text_new_from_unicode((pdf_char_t *) \
                                         utf16be_strings[i].utf32be_data,
                                         utf16be_strings[i].utf32be_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE,
+                                        &text) != PDF_OK);
       fail_if(pdf_text_set_language(text, language) != PDF_OK);
       fail_if(pdf_text_set_country(text, country) != PDF_OK);
       
@@ -1021,11 +1015,11 @@ START_TEST(pdf_text_get_unicode_016)
                                         &utf16be_strings[i].data[2];
       pdf_size_t expected_size = utf16be_strings[i].size -2;
       
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        (pdf_char_t *) \
+      fail_if(pdf_text_new_from_unicode((pdf_char_t *) \
                                         utf16be_strings[i].utf32be_data,
                                         utf16be_strings[i].utf32be_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE,
+                                        &text) != PDF_OK);
       fail_if(pdf_text_set_language(text, language) != PDF_OK);      
       
       
@@ -1096,8 +1090,7 @@ START_TEST(pdf_text_get_unicode_017)
                                         "\x00\x1B" "enGB" "\x00\x1B";
   pdf_size_t expected_langcode_size = 8;
   
-  text = pdf_text_new();
-  fail_unless(text != NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   fail_if(pdf_text_set_country(text, country) != PDF_OK);
@@ -1162,8 +1155,7 @@ START_TEST(pdf_text_get_unicode_018)
                                         "\x00\x1B" "en" "\x00\x1B";
   pdf_size_t expected_langcode_size = 6;
   
-  text = pdf_text_new();
-  fail_unless(text != NULL);
+  fail_if(pdf_text_new(&text) != PDF_OK);
   
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   
@@ -1228,12 +1220,12 @@ START_TEST(pdf_text_get_unicode_019)
       /* Just in case... */
       fail_if(expected_data == NULL);
       
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        (pdf_char_t *) \
+      fail_if(pdf_text_new_from_unicode((pdf_char_t *) \
                                         utf16be_strings[i].utf32be_data,
                                         (pdf_size_t) \
                                         utf16be_strings[i].utf32be_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE,
+                                        &text) != PDF_OK);
       
       
       /* 1. The call to  pdf_text_get_unicode should return PDF_OK. */
@@ -1314,12 +1306,12 @@ START_TEST(pdf_text_get_unicode_020)
       /* Just in case... */
       fail_if(expected_data == NULL);
       
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        (pdf_char_t *) \
+      fail_if(pdf_text_new_from_unicode((pdf_char_t *) \
                                         utf16be_strings[i].utf32be_data,
                                         (pdf_size_t) \
                                         utf16be_strings[i].utf32be_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE,
+                                        &text) != PDF_OK);
       
       
       /* 1. The call to  pdf_text_get_unicode should return PDF_OK. */
@@ -1383,8 +1375,7 @@ START_TEST(pdf_text_get_unicode_021)
   pdf_char_t *data = NULL;
   pdf_size_t size = 0;
   
-  text = pdf_text_new();
-  fail_unless(text != NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   
   /* 1. The call to  pdf_text_get_unicode should return PDF_OK. */
   fail_unless(pdf_text_get_unicode(&data,
@@ -1422,8 +1413,7 @@ START_TEST(pdf_text_get_unicode_022)
   pdf_char_t *data = NULL;
   pdf_size_t size = 0;
   
-  text = pdf_text_new();
-  fail_unless(text != NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   
   /* 1. The call to  pdf_text_get_unicode should return PDF_OK. */
   fail_unless(pdf_text_get_unicode(&data,
@@ -1469,9 +1459,10 @@ START_TEST(pdf_text_get_unicode_023)
   const pdf_char_t *language = (pdf_char_t *)"en";
   const pdf_char_t *country = (pdf_char_t *)"GB";
   
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    utf8data, utf8size,
-                                    PDF_TEXT_UTF8) != PDF_OK);
+  fail_if(pdf_text_new_from_unicode(utf8data,
+                                    utf8size,
+                                    PDF_TEXT_UTF8,
+                                    &text) != PDF_OK);
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   fail_if(pdf_text_set_country(text, country) != PDF_OK);
   
@@ -1508,9 +1499,10 @@ START_TEST(pdf_text_get_unicode_024)
   pdf_size_t utf8size = strlen((char *)utf8data);
   const pdf_char_t *language = (pdf_char_t *)"en";
   
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    utf8data, utf8size,
-                                    PDF_TEXT_UTF8) != PDF_OK);
+  fail_if(pdf_text_new_from_unicode(utf8data,
+                                    utf8size,
+                                    PDF_TEXT_UTF8,
+                                    &text) != PDF_OK);
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   
   
@@ -1546,8 +1538,7 @@ START_TEST(pdf_text_get_unicode_025)
   const pdf_char_t *language = (pdf_char_t *)"en";
   const pdf_char_t *country = (pdf_char_t *)"GB";
   
-  text = pdf_text_new();
-  fail_if(text == NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   fail_if(pdf_text_set_country(text, country) != PDF_OK);
   
@@ -1582,8 +1573,7 @@ START_TEST(pdf_text_get_unicode_026)
   pdf_size_t size = 0;
   const pdf_char_t *language = (pdf_char_t *)"en";
 
-  text = pdf_text_new();
-  fail_if(text == NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   
   /* 1. The call to  pdf_text_get_unicode should NOT return PDF_OK. */
@@ -1618,9 +1608,10 @@ START_TEST(pdf_text_get_unicode_027)
   const pdf_char_t *language = (pdf_char_t *)"en";
   const pdf_char_t *country = (pdf_char_t *)"GB";
   
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    utf8data, utf8size,
-                                    PDF_TEXT_UTF8) != PDF_OK);
+  fail_if(pdf_text_new_from_unicode(utf8data,
+                                    utf8size,
+                                    PDF_TEXT_UTF8,
+                                    &text) != PDF_OK);
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   fail_if(pdf_text_set_country(text, country) != PDF_OK);
   
@@ -1658,9 +1649,10 @@ START_TEST(pdf_text_get_unicode_028)
   pdf_size_t utf8size = strlen((char *)utf8data);
   const pdf_char_t *language = (pdf_char_t *)"en";
   
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    utf8data, utf8size,
-                                    PDF_TEXT_UTF8) != PDF_OK);
+  fail_if(pdf_text_new_from_unicode(utf8data,
+                                    utf8size,
+                                    PDF_TEXT_UTF8,
+                                    &text) != PDF_OK);
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   
   
@@ -1697,8 +1689,7 @@ START_TEST(pdf_text_get_unicode_029)
   const pdf_char_t *language = (pdf_char_t *)"en";
   const pdf_char_t *country = (pdf_char_t *)"GB";
   
-  text = pdf_text_new();
-  fail_if(text == NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   fail_if(pdf_text_set_country(text, country) != PDF_OK);
   
@@ -1734,8 +1725,7 @@ START_TEST(pdf_text_get_unicode_030)
   pdf_size_t size = 0;
   const pdf_char_t *language = (pdf_char_t *)"en";
   
-  text = pdf_text_new();
-  fail_if(text == NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   
   /* 1. The call to  pdf_text_get_unicode should NOT return PDF_OK. */
@@ -1781,12 +1771,12 @@ START_TEST(pdf_text_get_unicode_031)
       expected_data = (pdf_char_t *)&(utf32be_strings[i].data[4]);
       expected_size = utf32be_strings[i].size -4;
       
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        (pdf_char_t *) \
+      fail_if(pdf_text_new_from_unicode((pdf_char_t *) \
                                         utf32be_strings[i].utf32be_data,
                                         (pdf_size_t) \
                                         utf32be_strings[i].utf32be_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE,
+                                         &text) != PDF_OK);
       
       if(INTERACTIVE_DEBUG)
         {
@@ -1870,12 +1860,12 @@ START_TEST(pdf_text_get_unicode_032)
       expected_data = (pdf_char_t *)&(utf32be_strings[i].data[0]);
       expected_size = utf32be_strings[i].size;
       
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        (pdf_char_t *) \
+      fail_if(pdf_text_new_from_unicode((pdf_char_t *) \
                                         utf32be_strings[i].utf32be_data,
                                         (pdf_size_t) \
                                         utf32be_strings[i].utf32be_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE,
+                                        &text) != PDF_OK);
       
       
       /* 1. The call to  pdf_text_get_unicode should return PDF_OK. */
@@ -1938,8 +1928,7 @@ START_TEST(pdf_text_get_unicode_033)
   pdf_char_t *data = NULL;
   pdf_size_t size = 0;
   
-  text = pdf_text_new();
-  fail_unless(text != NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   
   /* 1. The call to  pdf_text_get_unicode should return PDF_OK. */
   fail_unless(pdf_text_get_unicode(&data,
@@ -1977,8 +1966,7 @@ START_TEST(pdf_text_get_unicode_034)
   pdf_char_t *data = NULL;
   pdf_size_t size = 0;
   
-  text = pdf_text_new();
-  fail_unless(text != NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   
   /* 1. The call to  pdf_text_get_unicode should return PDF_OK. */
   fail_unless(pdf_text_get_unicode(&data,
@@ -2024,9 +2012,10 @@ START_TEST(pdf_text_get_unicode_035)
   const pdf_char_t *language = (pdf_char_t *)"en";
   const pdf_char_t *country = (pdf_char_t *)"GB";
   
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    utf8data, utf8size,
-                                    PDF_TEXT_UTF8) != PDF_OK);
+  fail_if(pdf_text_new_from_unicode(utf8data,
+                                    utf8size,
+                                    PDF_TEXT_UTF8,
+                                    &text) != PDF_OK);
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   fail_if(pdf_text_set_country(text, country) != PDF_OK);
   
@@ -2063,9 +2052,10 @@ START_TEST(pdf_text_get_unicode_036)
   pdf_size_t utf8size = strlen((char *)utf8data);
   const pdf_char_t *language = (pdf_char_t *)"en";
   
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    utf8data, utf8size,
-                                    PDF_TEXT_UTF8) != PDF_OK);
+  fail_if(pdf_text_new_from_unicode(utf8data,
+                                    utf8size,
+                                    PDF_TEXT_UTF8,
+                                    &text) != PDF_OK);
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   
   
@@ -2101,8 +2091,7 @@ START_TEST(pdf_text_get_unicode_037)
   const pdf_char_t *language = (pdf_char_t *)"en";
   const pdf_char_t *country = (pdf_char_t *)"GB";
   
-  text = pdf_text_new();
-  fail_if(text == NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   fail_if(pdf_text_set_country(text, country) != PDF_OK);
   
@@ -2135,8 +2124,7 @@ START_TEST(pdf_text_get_unicode_038)
   pdf_size_t size = 0;
   const pdf_char_t *language = (pdf_char_t *)"en";
   
-  text = pdf_text_new();
-  fail_if(text == NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   
   /* 1. The call to  pdf_text_get_unicode should NOT return PDF_OK. */
@@ -2171,9 +2159,10 @@ START_TEST(pdf_text_get_unicode_039)
   const pdf_char_t *language = (pdf_char_t *)"en";
   const pdf_char_t *country = (pdf_char_t *)"GB";
   
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    utf8data, utf8size,
-                                    PDF_TEXT_UTF8) != PDF_OK);
+  fail_if(pdf_text_new_from_unicode(utf8data,
+                                    utf8size,
+                                    PDF_TEXT_UTF8,
+                                    &text) != PDF_OK);
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   fail_if(pdf_text_set_country(text, country) != PDF_OK);
   
@@ -2211,9 +2200,10 @@ START_TEST(pdf_text_get_unicode_040)
   pdf_size_t utf8size = strlen((char *)utf8data);
   const pdf_char_t *language = (pdf_char_t *)"en";
   
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    utf8data, utf8size,
-                                    PDF_TEXT_UTF8) != PDF_OK);
+  fail_if(pdf_text_new_from_unicode(utf8data,
+                                    utf8size,
+                                    PDF_TEXT_UTF8,
+                                    &text) != PDF_OK);
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
 
   /* 1. The call to  pdf_text_get_unicode should NOT return PDF_OK. */
@@ -2248,8 +2238,7 @@ START_TEST(pdf_text_get_unicode_041)
   const pdf_char_t *language = (pdf_char_t *)"en";
   const pdf_char_t *country = (pdf_char_t *)"GB";
   
-  text = pdf_text_new();
-  fail_if(text == NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   fail_if(pdf_text_set_country(text, country) != PDF_OK);
   
@@ -2283,8 +2272,7 @@ START_TEST(pdf_text_get_unicode_042)
   pdf_size_t size = 0;
   const pdf_char_t *language = (pdf_char_t *)"en";
   
-  text = pdf_text_new();
-  fail_if(text == NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   
   /* 1. The call to  pdf_text_get_unicode should NOT return PDF_OK. */
@@ -2333,12 +2321,12 @@ START_TEST(pdf_text_get_unicode_043)
       /* Just in case... */
       fail_if(expected_data == NULL);
       
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        (pdf_char_t *) \
+      fail_if(pdf_text_new_from_unicode((pdf_char_t *) \
                                         utf32be_strings[i].utf32be_data,
                                         (pdf_size_t) \
                                         utf32be_strings[i].utf32be_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE,
+                                        &text) != PDF_OK);
       
       
       /* 1. The call to  pdf_text_get_unicode should return PDF_OK. */
@@ -2417,12 +2405,12 @@ START_TEST(pdf_text_get_unicode_044)
       /* Just in case... */
       fail_if(expected_data == NULL);
       
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        (pdf_char_t *) \
+      fail_if(pdf_text_new_from_unicode((pdf_char_t *) \
                                         utf32be_strings[i].utf32be_data,
                                         (pdf_size_t) \
                                         utf32be_strings[i].utf32be_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE,
+                                        &text) != PDF_OK);
       
       
       /* 1. The call to  pdf_text_get_unicode should return PDF_OK. */
@@ -2486,8 +2474,7 @@ START_TEST(pdf_text_get_unicode_045)
   pdf_char_t *data = NULL;
   pdf_size_t size = 0;
   
-  text = pdf_text_new();
-  fail_unless(text != NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   
   /* 1. The call to  pdf_text_get_unicode should return PDF_OK. */
   fail_unless(pdf_text_get_unicode(&data,
@@ -2525,8 +2512,7 @@ START_TEST(pdf_text_get_unicode_046)
   pdf_char_t *data = NULL;
   pdf_size_t size = 0;
   
-  text = pdf_text_new();
-  fail_unless(text != NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   
   /* 1. The call to  pdf_text_get_unicode should return PDF_OK. */
   fail_unless(pdf_text_get_unicode(&data,
@@ -2572,9 +2558,10 @@ START_TEST(pdf_text_get_unicode_047)
   const pdf_char_t *language = (pdf_char_t *)"en";
   const pdf_char_t *country = (pdf_char_t *)"GB";
   
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    utf8data, utf8size,
-                                    PDF_TEXT_UTF8) != PDF_OK);
+  fail_if(pdf_text_new_from_unicode(utf8data,
+                                    utf8size,
+                                    PDF_TEXT_UTF8,
+                                    &text) != PDF_OK);
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   fail_if(pdf_text_set_country(text, country) != PDF_OK);
   
@@ -2611,9 +2598,10 @@ START_TEST(pdf_text_get_unicode_048)
   pdf_size_t utf8size = strlen((char *)utf8data);
   const pdf_char_t *language = (pdf_char_t *)"en";
   
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    utf8data, utf8size,
-                                    PDF_TEXT_UTF8) != PDF_OK);
+  fail_if(pdf_text_new_from_unicode(utf8data,
+                                    utf8size,
+                                    PDF_TEXT_UTF8,
+                                    &text) != PDF_OK);
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   
   
@@ -2649,8 +2637,7 @@ START_TEST(pdf_text_get_unicode_049)
   const pdf_char_t *language = (pdf_char_t *)"en";
   const pdf_char_t *country = (pdf_char_t *)"GB";
   
-  text = pdf_text_new();
-  fail_if(text == NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   fail_if(pdf_text_set_country(text, country) != PDF_OK);
   
@@ -2683,8 +2670,7 @@ START_TEST(pdf_text_get_unicode_050)
   pdf_size_t size = 0;
   const pdf_char_t *language = (pdf_char_t *)"en";
   
-  text = pdf_text_new();
-  fail_if(text == NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   
   /* 1. The call to  pdf_text_get_unicode should NOT return PDF_OK. */
@@ -2719,9 +2705,10 @@ START_TEST(pdf_text_get_unicode_051)
   const pdf_char_t *language = (pdf_char_t *)"en";
   const pdf_char_t *country = (pdf_char_t *)"GB";
   
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    utf8data, utf8size,
-                                    PDF_TEXT_UTF8) != PDF_OK);
+  fail_if(pdf_text_new_from_unicode(utf8data,
+                                    utf8size,
+                                    PDF_TEXT_UTF8,
+                                    &text) != PDF_OK);
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   fail_if(pdf_text_set_country(text, country) != PDF_OK);
   
@@ -2759,9 +2746,10 @@ START_TEST(pdf_text_get_unicode_052)
   pdf_size_t utf8size = strlen((char *)utf8data);
   const pdf_char_t *language = (pdf_char_t *)"en";
   
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    utf8data, utf8size,
-                                    PDF_TEXT_UTF8) != PDF_OK);
+  fail_if(pdf_text_new_from_unicode(utf8data,
+                                    utf8size,
+                                    PDF_TEXT_UTF8,
+                                    &text) != PDF_OK);
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   
   /* 1. The call to  pdf_text_get_unicode should NOT return PDF_OK. */
@@ -2796,8 +2784,7 @@ START_TEST(pdf_text_get_unicode_053)
   const pdf_char_t *language = (pdf_char_t *)"en";
   const pdf_char_t *country = (pdf_char_t *)"GB";
   
-  text = pdf_text_new();
-  fail_if(text == NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   fail_if(pdf_text_set_country(text, country) != PDF_OK);
   
@@ -2831,8 +2818,7 @@ START_TEST(pdf_text_get_unicode_054)
   pdf_size_t size = 0;
   const pdf_char_t *language = (pdf_char_t *)"en";
   
-  text = pdf_text_new();
-  fail_if(text == NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   fail_if(pdf_text_set_language(text, language) != PDF_OK);
   
   /* 1. The call to  pdf_text_get_unicode should NOT return PDF_OK. */

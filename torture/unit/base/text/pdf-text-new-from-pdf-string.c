@@ -84,11 +84,11 @@ START_TEST(pdf_text_new_from_pdf_string_001)
         }
       
       /* 1. The call to pdf_text_new_from_pdf_string should return PDF_OK. */
-      fail_if(pdf_text_new_from_pdf_string(&text,
-                                           input_data,
+      fail_if(pdf_text_new_from_pdf_string(input_data,
                                            input_size,
                                            &remaining_str,
-                                           &remaining_length) != PDF_OK);
+                                           &remaining_length,
+                                           &text) != PDF_OK);
       
       /* 2. The function should return a valid pointer to the new text object */
       fail_if(text == NULL);
@@ -140,11 +140,11 @@ START_TEST(pdf_text_new_from_pdf_string_002)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* 1. The call to  pdf_text_new_from_host should NOT return PDF_OK. */
-  fail_unless(pdf_text_new_from_pdf_string(&text,
-                                           invalid_pdfdocenc,
+  fail_unless(pdf_text_new_from_pdf_string(invalid_pdfdocenc,
                                            strlen((char*)invalid_pdfdocenc),
                                            &remaining_str,
-                                           &remaining_length) != PDF_OK);
+                                           &remaining_length,
+                                           &text) != PDF_OK);
   
   /* 2. Pointer to the text object must remain unchanged. */
   fail_if(text != NULL);
@@ -205,11 +205,11 @@ START_TEST(pdf_text_new_from_pdf_string_003)
         }
       
       /* 1. The call to pdf_text_new_from_pdf_string should return PDF_OK. */
-      fail_if(pdf_text_new_from_pdf_string(&text,
-                                           input_data,
+      fail_if(pdf_text_new_from_pdf_string(input_data,
                                            input_size,
                                            &remaining_str,
-                                           &remaining_length) != PDF_OK);
+                                           &remaining_length,
+                                           &text) != PDF_OK);
       
       /* 2. The function should return a valid pointer to the new text object */
       fail_if(text == NULL);
@@ -290,11 +290,11 @@ START_TEST(pdf_text_new_from_pdf_string_004)
       
       /* 1. The call to pdf_text_new_from_pdf_string should NOT return
        *  PDF_OK. */
-      fail_unless(pdf_text_new_from_pdf_string(&text,
-                                               input_data,
+      fail_unless(pdf_text_new_from_pdf_string(input_data,
                                                input_size,
                                                &remaining_str,
-                                               &remaining_length) != PDF_OK);
+                                               &remaining_length,
+                                               &text) != PDF_OK);
       
       /* 2. Pointer to the text object must remain unchanged. */
       fail_if(text != NULL);
@@ -346,11 +346,11 @@ START_TEST(pdf_text_new_from_pdf_string_005)
             
       /* 1. The call to pdf_text_new_from_pdf_string should NOT return
        *  PDF_OK. */
-      fail_unless(pdf_text_new_from_pdf_string(&text,
-                                               input_data,
+      fail_unless(pdf_text_new_from_pdf_string(input_data,
                                                input_size,
                                                &remaining_str,
-                                               &remaining_length) != PDF_OK);
+                                               &remaining_length,
+                                               &text) != PDF_OK);
       
       /* 2. Pointer to the text object must remain unchanged. */
       fail_if(text != NULL);
@@ -430,11 +430,11 @@ START_TEST(pdf_text_new_from_pdf_string_006)
         }
       
       /* 1. The call to pdf_text_new_from_pdf_string should return PDF_OK. */
-      fail_if(pdf_text_new_from_pdf_string(&text,
-                                           input_data,
+      fail_if(pdf_text_new_from_pdf_string(input_data,
                                            input_size,
                                            &remaining_str,
-                                           &remaining_length) != PDF_OK);
+                                           &remaining_length,
+                                           &text) != PDF_OK);
       
       /* 2. The function should return a valid pointer to the new text object */
       fail_if(text == NULL);
@@ -559,11 +559,11 @@ START_TEST(pdf_text_new_from_pdf_string_007)
         }
       
       /* 1. The call to pdf_text_new_from_pdf_string should return PDF_OK. */
-      fail_if(pdf_text_new_from_pdf_string(&text,
-                                           input_data,
+      fail_if(pdf_text_new_from_pdf_string(input_data,
                                            input_size,
                                            &remaining_str,
-                                           &remaining_length) != PDF_OK);
+                                           &remaining_length,
+                                           &text) != PDF_OK);
       
       /* 2. The function should return a valid pointer to the new text object */
       fail_if(text == NULL);
@@ -768,11 +768,11 @@ START_TEST(pdf_text_new_from_pdf_string_008)
       
       /* 1. The call to pdf_text_new_from_pdf_string should return PDF_OK.
        */
-      fail_if(pdf_text_new_from_pdf_string(&text1,
-                                           input_data,
+      fail_if(pdf_text_new_from_pdf_string(input_data,
                                            input_size,
                                            &remaining_str,
-                                           &remaining_length) != PDF_OK);
+                                           &remaining_length,
+                                           &text1) != PDF_OK);
       
       /* 2. The function should return a valid pointer to the new text object */
       fail_if(text1 == NULL);
@@ -824,11 +824,11 @@ START_TEST(pdf_text_new_from_pdf_string_008)
 
       /* 7. The second call to @code{pdf_text_new_from_pdf_string} should return
        *      PDF_OK. */
-      fail_if(pdf_text_new_from_pdf_string(&text2,
-                                           remaining_str,
+      fail_if(pdf_text_new_from_pdf_string(remaining_str,
                                            remaining_length,
                                            &remaining_str,
-                                           &remaining_length) != PDF_OK);
+                                           &remaining_length,
+                                           &text2) != PDF_OK);
       
       /* 8. The function should return a valid pointer to the new text object */
       fail_if(text2 == NULL);
@@ -880,11 +880,11 @@ START_TEST(pdf_text_new_from_pdf_string_008)
       
       /* 13. The third call to @code{pdf_text_new_from_pdf_string} should 
        *      return PDF_OK. */
-      fail_if(pdf_text_new_from_pdf_string(&text3,
-                                           remaining_str,
+      fail_if(pdf_text_new_from_pdf_string(remaining_str,
                                            remaining_length,
                                            &remaining_str,
-                                           &remaining_length) != PDF_OK);
+                                           &remaining_length,
+                                           &text3) != PDF_OK);
       
       /* 14. The function should return a valid pointer to the new text object */
       fail_if(text3 == NULL);
@@ -1104,11 +1104,11 @@ START_TEST(pdf_text_new_from_pdf_string_009)
       
       /* 1. The call to pdf_text_new_from_pdf_string should return PDF_OK.
        */
-      fail_if(pdf_text_new_from_pdf_string(&text1,
-                                           input_data,
+      fail_if(pdf_text_new_from_pdf_string(input_data,
                                            input_size,
                                            &remaining_str,
-                                           &remaining_length) != PDF_OK);
+                                           &remaining_length,
+                                           &text1) != PDF_OK);
       
       /* 2. The function should return a valid pointer to the new text object */
       fail_if(text1 == NULL);
@@ -1162,11 +1162,11 @@ START_TEST(pdf_text_new_from_pdf_string_009)
       
       /* 7. The second call to @code{pdf_text_new_from_pdf_string} should return
        *      PDF_OK. */
-      fail_if(pdf_text_new_from_pdf_string(&text2,
-                                           remaining_str,
+      fail_if(pdf_text_new_from_pdf_string(remaining_str,
                                            remaining_length,
                                            &remaining_str,
-                                           &remaining_length) != PDF_OK);
+                                           &remaining_length,
+                                           &text2) != PDF_OK);
       
       /* 8. The function should return a valid pointer to the new text object */
       fail_if(text2 == NULL);
@@ -1220,11 +1220,11 @@ START_TEST(pdf_text_new_from_pdf_string_009)
       
       /* 13. The third call to @code{pdf_text_new_from_pdf_string} should 
        *      return PDF_OK. */
-      fail_if(pdf_text_new_from_pdf_string(&text3,
-                                           remaining_str,
+      fail_if(pdf_text_new_from_pdf_string(remaining_str,
                                            remaining_length,
                                            &remaining_str,
-                                           &remaining_length) != PDF_OK);
+                                           &remaining_length,
+                                           &text3) != PDF_OK);
       
       /* 14. The function should return a valid pointer to the new text object */
       fail_if(text3 == NULL);

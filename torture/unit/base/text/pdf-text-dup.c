@@ -47,8 +47,7 @@ START_TEST(pdf_text_dup_001)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
 
-  text = pdf_text_new();
-  fail_if(text == NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   
   /* 1. The call to pdf_text_dup should not return a NULL pointer.*/
   duplicate = pdf_text_dup(text);
@@ -89,8 +88,7 @@ START_TEST(pdf_text_dup_002)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
-  text = pdf_text_new();
-  fail_if(text == NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   
   /* Set some data contents */
   fail_unless(pdf_text_set_unicode(text,
@@ -140,8 +138,7 @@ START_TEST(pdf_text_dup_003)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
-  text = pdf_text_new();
-  fail_if(text == NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   
   /* Set some data contents */
   fail_unless(pdf_text_set_unicode(text,
@@ -198,8 +195,7 @@ START_TEST(pdf_text_dup_004)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
 
-  text = pdf_text_new();
-  fail_if(text == NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   
   /* Set some data contents */
   fail_unless(pdf_text_set_unicode(text,

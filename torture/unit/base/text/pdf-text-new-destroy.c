@@ -47,11 +47,9 @@ START_TEST(pdf_text_new_destroy_001)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
 
-  /* 1. The call to @code{pdf_text_new} should not return a @code{NULL}
-   * pointer.  Well, this could happen due to a lack of memory anywhere... 
-   * Maybe this test is not that useful, but... :-) */
-  newtext = pdf_text_new();
-  fail_if(newtext == NULL);
+  /* 1. The call to @code{pdf_text_new} should not return an error
+     code. */
+  fail_if(pdf_text_new (&newtext) != PDF_OK);
 
   /* 2. The text data of the created object should be empty. */
   fail_unless(pdf_text_empty_p(newtext) == PDF_TRUE);
