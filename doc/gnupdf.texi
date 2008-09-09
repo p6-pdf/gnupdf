@@ -7908,7 +7908,7 @@ This section describes related to encryption functions.
 * Initializating the module::   
 * Creating and destroying Ciphers::  
 * Encryption and decryption::   
-* Utils functions::  
+* Message digest functions::  
 @end menu
 
 @node Initializating the module
@@ -8162,66 +8162,44 @@ xxx
 @end table
 @end deftypefun
 
-@node Utils functions
-@subsection Utils functions
+@node Message digest functions
+@subsection Message digest functions
 
-@deftypefun pdf_status_t pdf_crypt_md_new (pdf_crypt_md_t  *@var{md})
+@deftp {Data Type} {pdf_crypt_md_algo_t}
+An algorithm provided. It contains low level functions of the algorithm
+implementation.
 
-Compute the message-digest md5 function of a buffer in memory.
+@table @code
+@item PDF_CRYPT_MD_MD5
+Use the md5 algorithm.
+@end table
+@end deftp
+
+@deftp {Data Type} {pdf_crypt_md_t}
+A message-digest descriptor.
+@end deftp
+
+
+
+@deftypefun pdf_status_t pdf_crypt_md_new (pdf_crypt_md_t  *@var{md}, pdf_crypt_md_algo_t @var{algo})
+
+Create a message-digest descriptor for an algorithm.
 
 @table @strong
 @item Parameters
 @table @var
-@item out
-A pointer to output buffer.
-@item out_size
-The size of output buffer in bytes. This parameter is provided in order
-to avoid a possible overflow. The size must be 16 bytes.
-@item in
-A pointer to the input buffer which md5 will compute on.
-@item in_size
-Size of the input buffer in bytes.
+@item md
+A pointer to the pdf_crypt_md_t.
+@item algo
+Algorithm which be used to hashing.
 @end table
 @item Returns
 A PDF status value:
 @table @code
 @item PDF_OK
 Operation successful
-@item PDF_EBADDATA
-Bad parameter. The size of the output buffer is not too large.
-@end table
-@item Usage example
-@example
-xxx
-@end example
-@end table
-@end deftypefun
-
-
-@deftypefun pdf_status_t pdf_crypt_md_hash (pdf_char_t  *@var{out}, pdf_size_t  @var{out_size}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size})
-
-Compute the message-digest md5 function of a buffer in memory.
-
-@table @strong
-@item Parameters
-@table @var
-@item out
-A pointer to output buffer.
-@item out_size
-The size of output buffer in bytes. This parameter is provided in order
-to avoid a possible overflow. The size must be 16 bytes.
-@item in
-A pointer to the input buffer which md5 will compute on.
-@item in_size
-Size of the input buffer in bytes.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-Operation successful
-@item PDF_EBADDATA
-Bad parameter. The size of the output buffer is not too large.
+@item PDF_ERROR
+An error ocurred.
 @end table
 @item Usage example
 @example
@@ -8232,20 +8210,21 @@ xxx
 
 
 
-@deftypefun pdf_status_t pdf_crypt_md_new (pdf_crypt_md_t  *@var{md})
+@deftypefun pdf_status_t pdf_crypt_md_hash (pdf_crypt_md_t *@var{md}, pdf_char_t  *@var{out}, pdf_size_t  @var{out_size}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size})
 
-Compute the message-digest md5 function of a buffer in memory.
+Compute the message-digest for a given buffer.
 
 @table @strong
 @item Parameters
 @table @var
+@item md
+A message-digest descriptor.
 @item out
 A pointer to output buffer.
 @item out_size
-The size of output buffer in bytes. This parameter is provided in order
-to avoid a possible overflow. The size must be 16 bytes.
+The size of output buffer in bytes.
 @item in
-A pointer to the input buffer which md5 will compute on.
+A pointer to the input buffer.
 @item in_size
 Size of the input buffer in bytes.
 @end table
@@ -8255,7 +8234,7 @@ A PDF status value:
 @item PDF_OK
 Operation successful
 @item PDF_EBADDATA
-Bad parameter. The size of the output buffer is not too large.
+Bad parameter. The size of the output buffer is wrong.
 @end table
 @item Usage example
 @example
@@ -8263,6 +8242,34 @@ xxx
 @end example
 @end table
 @end deftypefun
+
+
+@deftypefun pdf_status_t pdf_crypt_md_destroy (pdf_crypt_md_t  @var{md})
+
+Destroy a message-digest descriptor.
+
+@table @strong
+@item Parameters
+@table @var
+@item md
+An message-digest descriptor.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+Operation successful
+@item PDF_ERROR
+An error ocurred.
+@end table
+@item Usage example
+@example
+xxx
+@end example
+@end table
+@end deftypefun
+
+
 
 
 @node Object Layer

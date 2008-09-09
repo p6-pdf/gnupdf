@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-05 05:40:23 david"
+/* -*- mode: C -*- Time-stamp: "2008-09-07 03:44:18 david"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -201,8 +201,10 @@ pdf_crypt_cipher_new (pdf_crypt_cipher_algo_t * algorithm,
   
   if (algorithm->new (&cipher->raw) == PDF_OK)
     {
-      cipher->algo = algorithm;
-      status = PDF_OK;
+      cipher->algo     = algorithm;
+      cipher->key      = NULL;
+      cipher->key_size = 0;
+      status	       = PDF_OK;
     }
   else
     status = PDF_ERROR;
@@ -293,6 +295,7 @@ pdf_crypt_md_new (pdf_crypt_md_t *md, pdf_crypt_md_algo_t algo)
 	}
       else
 	{
+	  pdf_dealloc (md->raw);
 	  return PDF_ERROR;
 	}
     }
@@ -310,7 +313,7 @@ pdf_crypt_md_hash (pdf_crypt_md_t md,
 		   pdf_char_t *in,  pdf_size_t in_size)
 {
   gcry_md_hd_t * gcry_md = md.raw;
-  pdf_size_t i;
+  register pdf_size_t i;
   
   for (i = 0; i < in_size; i++)
     {

@@ -4603,6 +4603,33 @@ The call should not produce an error
 @end deffn
 
 
+
+@node Crypt Module
+@subsection Crypt Module
+
+@menu
+* pdf_crypt_init::
+* pdf_crypt_cipher_new::
+* pdf_crypt_cipher_destroy::
+* pdf_crypt_cipher_encrypt_size::
+* pdf_crypt_cipher_decrypt_size::
+* pdf_crypt_cipher_encrypt::
+* pdf_crypt_cipher_decrypt::
+* pdf_crypt_cipher_setkey::
+* pdf_crypt_md_new::
+* pdf_crypt_md_hash::
+* pdf_crypt_md_destroy::
+@end menu
+
+@node pdf_crypt_init_01
+@subsubsection pdf_crypt_init_001
+
+
+
+
+
+
+
 @node Subsystem Testing
 @chapter Subsystem Testing
 
