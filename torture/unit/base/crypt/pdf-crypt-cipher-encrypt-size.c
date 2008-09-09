@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-05 03:40:43 david"
+/* -*- mode: C -*- Time-stamp: "2008-09-09 04:07:52 david"
  *
  *       File:         pdf-crypt-cipher-encrypt-size.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -34,7 +34,7 @@
 /*
  * Test: pdf_crypt_cipher_encrypt_size_001
  * Description:
- *   Get the output buffer size for an input buffer in an AESV2 cipher.
+ *   Get the ciphered buffer size for an empty input buffer (AESV2).
  * Success condition:
  *   Returns 32
  */
@@ -51,7 +51,7 @@ END_TEST
 /*
  * Test: pdf_crypt_cipher_encrypt_size_002
  * Description:
- *   Get the output buffer size for a 15 bytes buffer in an AESV2 cipher.
+ *   Get the ciphered buffer size for a 15 bytes buffer (AESV2).
  * Success condition:
  *   Returns 32
  */
@@ -69,7 +69,7 @@ END_TEST
 /*
  * Test: pdf_crypt_cipher_encrypt_size_003
  * Description:
- *   Get the output buffer size for a empty buffer in a V2 cipher.
+ *   Get the ciphered buffer size for a empty buffer (V2).
  * Success condition:
  *   Returns 0
  */
@@ -87,7 +87,7 @@ END_TEST
 /*
  * Test: pdf_crypt_cipher_encrypt_size_004
  * Description:
- *   Get the output buffer size for a 15 bytes buffer in a V2 cipher.
+ *   Get the ciphered buffer size for a 15 bytes buffer (V2).
  * Success condition:
  *   Returns 15
  */

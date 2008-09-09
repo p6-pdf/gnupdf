@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-09 03:34:52 david"
+/* -*- mode: C -*- Time-stamp: "2008-09-09 04:18:49 david"
  *
  *       File:         pdf-crypt-md-destroy.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -34,7 +34,7 @@
 /*
  * Test: pdf_crypt_md_destroy_001
  * Description:
- *   Compute the md5 of an empty buffer.
+ *   Destroy a message-digest descriptor.
  * Success condition:
  *   Returns PDF_OK
  */

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-05 03:41:36 david"
+/* -*- mode: C -*- Time-stamp: "2008-09-09 04:07:01 david"
  *
  *       File:         pdf-crypt-cipher-decrypt-size.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -34,7 +34,7 @@
 /*
  * Test: pdf_crypt_cipher_decrypt_size_001
  * Description:
- *   Compute the ouput buffer size for a 32 bytes buffer in an AESV2 cipher.
+ *   Get the plain buffer size for a 32 bytes ciphered buffer (AESV2).
  * Success condition:
  *   Returns 0
  */
@@ -48,33 +48,14 @@ START_TEST (pdf_crypt_cipher_decrypt_size_001)
 END_TEST
 
 
-
-/*
- * Test: pdf_crypt_cipher_decrypt_size_002
- * Description:
- *   Compute the ouput buffer size for a 32 bytes buffer in an AESV2 cipher.
- * Success condition:
- *   Returns 0
- */
-START_TEST (pdf_crypt_cipher_decrypt_size_002)
-{
-  pdf_crypt_cipher_t cipher;
-  pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
-  fail_if (pdf_crypt_cipher_decrypt_size (cipher, NULL, 32) != 0);
-  pdf_crypt_cipher_destroy (cipher);
-}
-END_TEST
-
-
-
 /*
  * Test: pdf_crypt_cipher_decrypt_size_003
  * Description:
- *   Compute the ouput buffer size for a 15 bytes buffer in a V2 cipher.
+ *   Get the plain buffer size for a 15 bytes ciphered buffer (V2).
  * Success condition:
- *   Returns 0
+ *   Returns 15
  */
-START_TEST (pdf_crypt_cipher_decrypt_size_003)
+START_TEST (pdf_crypt_cipher_decrypt_size_002)
 {
   pdf_crypt_cipher_t cipher;
   pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &cipher);
@@ -94,7 +75,6 @@ test_pdf_crypt_cipher_decrypt_size (void)
   TCase *tc = tcase_create("pdf_crypt_cipher_decrypt_size");
   tcase_add_test(tc, pdf_crypt_cipher_decrypt_size_001);
   tcase_add_test(tc, pdf_crypt_cipher_decrypt_size_002);
-  tcase_add_test(tc, pdf_crypt_cipher_decrypt_size_003);
   return tc;
 }
 

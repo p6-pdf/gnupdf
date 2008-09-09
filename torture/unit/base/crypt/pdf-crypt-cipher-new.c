@@ -1,6 +1,6 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-05 03:40:21 david"
+/* -*- mode: C -*- Time-stamp: "2008-09-09 03:51:22 david"
  *
- *       File:         pdf-crypt-init.c
+ *       File:         pdf-crypt-cipher-new.c
  *       Date:         Wed Mar  12 12:43:00 2008
  *
  *       GNU PDF Library - Unit tests for pdf_crypt_cipher_new

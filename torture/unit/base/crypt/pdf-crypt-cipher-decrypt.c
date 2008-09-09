@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-05 04:12:56 david"
+/* -*- mode: C -*- Time-stamp: "2008-09-09 04:13:42 david"
  *
  *       File:         pdf-crypt-cipher-decrypt.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -34,7 +34,7 @@
 /*
  * Test: pdf_crypt_cipher_decrypt_001
  * Description:
- *   Try decrypt an empty buffer for an AESV2 cipher.
+ *   Decrypt an ciphered empty buffer (AESV2).
  * Success condition:
  *   Returns 0.
  */
@@ -86,7 +86,7 @@ END_TEST
 /*
  * Test: pdf_crypt_cipher_decrypt_002
  * Description:
- *   Try decrypt an empty buffer for a V2 cipher.
+ *   Decrypt an ciphered empty buffer (V2).
  * Success condition:
  *   Returns 0.
  */

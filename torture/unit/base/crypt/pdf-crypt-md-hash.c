@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-09 03:40:09 david"
+/* -*- mode: C -*- Time-stamp: "2008-09-09 04:18:07 david"
  *
  *       File:         pdf-crypt-md-hash.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -36,7 +36,7 @@
  * Description:
  *   Compute the md5 of an empty buffer.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns PDF_OK and output buffer matches.
  */
 START_TEST (pdf_crypt_md_hash_001)
 {
@@ -57,8 +57,6 @@ START_TEST (pdf_crypt_md_hash_001)
   pdf_crypt_md_destroy (md);
 }
 END_TEST
-
-
 
 
 
