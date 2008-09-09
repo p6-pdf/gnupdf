@@ -1,5 +1,8 @@
 2008-09-09  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf-hg.texi (Generating a Bazaar Merge Directive): New
+	section.
+
 	* src/base/pdf-text-context.c: New static variable
 	'text_context_initialized'.
 

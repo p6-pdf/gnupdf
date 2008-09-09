@@ -301,9 +301,37 @@ This chapter contains some useful information to send patches to be
 integrated in the trunk.
 
 @menu
+* Generating a Bazaar Merge Directive::
 * Syntax Check::
 * Patch Safety Dispatcher::
 @end menu
+
+@node Generating a Bazaar Merge Directive
+@section Generating a Bazaar Merge Directive
+
+The Bazaar version control system supports the notion of @emph{merge
+directives}. A merge directive is a kind of ``superpatch'' that contain
+an ascii-encoded binary block describing the patch (changes to file
+contents, addition of new files, etc) and a preview that is much like
+a regular diff.
+
+A merge directive can be merged into a given branch much like any
+other branch.
+
+To create a merge directive out of your bazaar branch just type the
+following command:
+
+@example
+$ bzr send -o my-patch
+@end example
+
+Then send the file @file{my-patch} in an email to
+@email{pdf-devel@@gnu.org} in order to be reviewed by the development
+team.
+
+Note that you dont need to specify extra parameters to the @code{bzr
+send} command: it will use the appropriate format for the patch by
+default (unidiff).
 
 @node Syntax Check
 @section Syntax Check
