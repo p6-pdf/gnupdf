@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-07-23 08:12:52 gerel"
+/* -*- mode: C -*- Time-stamp: "08/09/09 00:01:10 jemarch"
  *
  *       File:         pdf-hash-destroy.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -41,7 +41,7 @@ START_TEST (pdf_hash_destroy_001)
 {
   pdf_hash_t table;
 
-  pdf_hash_create (NULL, &table);
+  pdf_hash_new (NULL, &table);
 
   fail_if (pdf_hash_destroy (&table) != PDF_OK);
 }

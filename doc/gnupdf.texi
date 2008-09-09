@@ -1288,7 +1288,7 @@ A function type for disposing hash keys.
 @node Creating and Destroying Hash Tables
 @subsection Creating and Destroying Hash Tables
 
-@deftypefun pdf_status_t pdf_hash_create (pdf_hash_key_dispose_fn_t @var{dispose_key_fn}, pdf_hash_t @var{*table})
+@deftypefun pdf_status_t pdf_hash_new (pdf_hash_key_dispose_fn_t @var{dispose_key_fn}, pdf_hash_t @var{*table})
 
 Create a new empty hash table. When some element is removed @var{dispose_key_fn} are called, can be NULL.
 
@@ -1875,7 +1875,7 @@ A function type for calculating a Hash code given a list element. Should return 
 @node Creating and Destroying Lists
 @subsection Creating and Destroying Lists
 
-@deftypefun pdf_status_t pdf_list_create (pdf_list_element_equals_fn_t @var{equals_fn}, pdf_list_element_dispose_fn_t @var{dispose_fn}, const pdf_bool_t @var{allow_duplicates}, pdf_list_t @var{*list})
+@deftypefun pdf_status_t pdf_list_new (pdf_list_element_equals_fn_t @var{equals_fn}, pdf_list_element_dispose_fn_t @var{dispose_fn}, const pdf_bool_t @var{allow_duplicates}, pdf_list_t @var{*list})
 
 Create a new list containing no elements.
 
@@ -1909,7 +1909,7 @@ An unexpected error or no memory available.
 @example
 pdf_list_t mylist;
 
-if (pdf_list_create (list_element_equal_p, list_element_destroy,  PDF_FALSE,
+if (pdf_list_new (list_element_equal_p, list_element_destroy,  PDF_FALSE,
     &mylist) != PDF_OK)
   @{
     /* manage the error... */
@@ -3837,20 +3837,33 @@ Status of the initialization.
 @node Creating and Destroying Text
 @subsection Creating and Destroying Text
 
-@deftypefun pdf_text_t pdf_text_new (void)
+@deftypefun pdf_status_t pdf_text_new (pdf_text_t *text)
 
 Create a new text object containing no text.
 
 @table @strong
 @item Parameters
-None.
+@table @var
+@item text
+A pointer to the new instance of text object.
+@end table
 @item Returns
-A pointer to the newly created text object.
+A pdf status value:
+@table @code
+@item PDF_OK
+The text object was successfully created.
+@item PDF_ENOMEM
+Not enough memory to create the text object.
+@item PDF_EBADCONTEXT
+The global context of the text module was not initialized.
+@item PDF_ERROR
+Other error.
+@end table
 @item Usage Example
 @example
 pdf_text_t mytext;
 
-mytext = pdf_text_new ();
+pdf_text_new (&mytext);
 @end example
 @end table
 @end deftypefun
@@ -3902,7 +3915,7 @@ text2 = pdf_text_dup (text1);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_text_new_from_host (pdf_text_t *@var{text}, const pdf_char_t *@var{str}, const pdf_size_t @var{size}, const pdf_text_host_encoding_t @var{enc})
+@deftypefun pdf_status_t pdf_text_new_from_host (const pdf_char_t *@var{str}, const pdf_size_t @var{size}, const pdf_text_host_encoding_t @var{enc}, pdf_text_t *@var{text})
 
 Create a new text object and initialize it with a given host encoded
 string.
@@ -3910,17 +3923,29 @@ string.
 @table @strong
 @item Parameters
 @table @var
-@item text
-A pointer to the output text object
 @item str
 A multybyte string in some host encoding.
 @item size
 The length of @var{str}, in bytes.
 @item enc
 The host encoding with which @var{str} is encoded.
+@item text
+A pointer to the output text object
 @end table
 @item Returns
-The status of the conversion
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Out of memory condition.
+@item PDF_EBADCONTEXT
+The global context for the text module is not initialized.
+@item PDF_ETEXTENC
+Invalid data in the input string (encoding error).
+@item PDF_EBADDATA
+Invalid parameters.
+@end table
 @item Usage Example
 @example
 
@@ -3933,9 +3958,9 @@ pdf_status_t ret_code;
 /* Obtain host encoding and text... */
 
 /* And create text object with those contents */
-ret_code = pdf_text_new_from_host(&text,
-                                  he_string, he_string_size,
-                                  encoding);
+ret_code = pdf_text_new_from_host(he_string, he_string_size,
+                                  encoding,
+                                  &text);
 if(ret_code != PDF_OK)
   @{
     /* Something bad happened */
@@ -3945,7 +3970,7 @@ if(ret_code != PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_text_new_from_pdf_string (pdf_text_t *@var{text}, const pdf_char_t *@var{str}, const pdf_size_t @var{size}, pdf_char_t **@var{remaining_str}, pdf_size_t *@var{remaining_length})
+@deftypefun pdf_status_t pdf_text_new_from_pdf_string (const pdf_char_t *@var{str}, const pdf_size_t @var{size}, pdf_char_t **@var{remaining_str}, pdf_size_t *@var{remaining_length}, pdf_text_t *@var{text})
 
 Create a new text object and initialize it with a given `PDF string'
 text representation. This `PDF string' can be either encoded in UTF-16BE, with
@@ -3960,8 +3985,6 @@ UTF-16BE).
 @table @strong
 @item Parameters
 @table @var
-@item text
-A pointer to the newly created text object.
 @item str
 A text representation of a PDF string.
 @item size
@@ -3970,10 +3993,23 @@ The length of @var{str} in bytes
 Returned pointer to the next chunk of data to process, if any.
 @item remaining_length
 Length of @var{remaining_str} in bytes
-@item Returns
-The status of the conversion
+@item text
+A pointer to the newly created text object.
 @end table
-
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Out of memory condition.
+@item PDF_EBADCONTEXT
+The global context for the text module is not initialized.
+@item PDF_ETEXTENC
+Invalid data in the input string (encoding error).
+@item PDF_EBADDATA
+Invalid parameters.
+@end table
 @item Usage Example
 @example
 
@@ -3991,9 +4027,9 @@ remaining_str = pdf_string;
 remaining_length = pdf_string_size;
 do
 @{
-  ret_code = pdf_text_new_from_host(&text,
-                                    remaining_str, remaining_length,
-                                    &remaining_str, &remaining_length);
+  ret_code = pdf_text_new_from_host(remaining_str, remaining_length,
+                                    &remaining_str, &remaining_length,
+                                    &text);
 
   /* Do something with the chunk of string */
 
@@ -4006,7 +4042,7 @@ while((ret_code == PDF_OK) && (remaining_length > 0));
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_text_new_from_unicode (pdf_text_t *@var{text}, const pdf_char_t *@var{str}, const pdf_size_t @var{size}, const enum pdf_text_unicode_encoding_e @var{enc})
+@deftypefun pdf_status_t pdf_text_new_from_unicode (const pdf_char_t *@var{str}, const pdf_size_t @var{size}, const enum pdf_text_unicode_encoding_e @var{enc}, pdf_text_t *@var{text})
 
 Create a new text object from a string of Unicode characters in a
 given unicode encoding. The Unicode string can be given with or without BOM,
@@ -4020,17 +4056,27 @@ string (so BOM is optional and Language/Country code is not allowed).
 @table @strong
 @item Parameters
 @table @var
-@item text
-A pointer to the newly created text object.
 @item str
 A Unicode string.
 @item size
 The length of @var{ucs} in bytes.
 @item enc
 The Unicode encoding used by @var{ucs}.
+@item text
+A pointer to the newly created text object.
 @end table
 @item Returns
-The status of the conversion
+A pdf status value:
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Out of memory condition.
+@item PDF_EBADCONTEXT
+The global context for the text module is not initialized.
+@item PDF_ETEXTENC
+Invalid data in the input string (encoding error).
+@item PDF_EBADDATA
+Invalid parameters.
 @item Usage Example
 @example
 
@@ -4042,9 +4088,9 @@ pdf_status_t ret_code;
 /* Obtain unicode text... */
 
 /* And create text object with those contents */
-ret_code = pdf_text_new_from_unicode(&text,
-                                     unicode_string, unicode_string_size,
-                                     PDF_TEXT_UTF16_BE);
+ret_code = pdf_text_new_from_unicode(unicode_string, unicode_string_size,
+                                     PDF_TEXT_UTF16_BE,
+                                     &text);
 if(ret_code != PDF_OK)
   @{
     /* Something bad happened */
@@ -4054,7 +4100,7 @@ if(ret_code != PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_text_new_from_u32 (pdf_text_t *text, const pdf_u32_t @var{number})
+@deftypefun pdf_status_t pdf_text_new_from_u32 (const pdf_u32_t @var{number}, pdf_text_t *text)
 
 Create a new text variable containing the textual representation of a
 given integer.
@@ -4062,13 +4108,25 @@ given integer.
 @table @strong
 @item Parameters
 @table @var
-@item text
-A pointer to the newly created text object.
 @item number
 An unsigned 32 bit number.
+@item text
+A pointer to the newly created text object.
 @end table
 @item Returns
-The status of the conversion
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Out of memory condition.
+@item PDF_EBADCONTEXT
+The global context for the text module is not initialized.
+@item PDF_ETEXTENC
+Invalid data in the input string (encoding error).
+@item PDF_EBADDATA
+Invalid parameters.
+@end table
 @item Usage Example
 @example
 pdf_text_t text;
@@ -4076,7 +4134,7 @@ pdf_u32_t number;
 pdf_status_t ret_code;
 
 number = 24;
-ret_code = pdf_text_new_from_u32 (&text, number);
+ret_code = pdf_text_new_from_u32 (number, &text);
 
 if(ret_code != PDF_OK)
   @{
@@ -6633,9 +6691,9 @@ The client does not have enough permissions to read the requested item.
 @item Usage example
 @example
 struct pdf_fsys_item_props_s item_props;
-pdf_text_t path = pdf_text_new_from_unicode (&text,
-                                             "/path/to/foo",
-                                             12, PDF_TEXT_UTF8);
+pdf_text_t path = pdf_text_new_from_unicode ("/path/to/foo",
+                                             12, PDF_TEXT_UTF8,
+                                             &text);
 /* Get the properties for the item */
 pdf_status_t ret = pdf_fsys_get_item_props (NULL, path, &item_props);
 @end example
@@ -6724,9 +6782,9 @@ have enough permissions to be able to read it.
 @item Usage example
 @example
 pdf_bool_t ret;
-pdf_text_t path = pdf_text_new_from_unicode (&text,
-                                             "/path/to/foo",
-                                             12, PDF_TEXT_UTF8);
+pdf_text_t path = pdf_text_new_from_unicode ("/path/to/foo",
+                                             12, PDF_TEXT_UTF8,
+                                             &text);
 /* Test whether the path to /path/to/foo is a valid path to foo */
 pdf_bool_t ret = pdf_fsys_item_p (NULL, path);
 @end example
@@ -6756,9 +6814,9 @@ The filesystem item is not readable.
 @end table
 @item Usage example
 @example
-pdf_text_t path = pdf_text_new_from_unicode (&text,
-                                             "/path/to/foo",
-                                             12, PDF_TEXT_UTF8);
+pdf_text_t path = pdf_text_new_from_unicode ("/path/to/foo",
+                                             12, PDF_TEXT_UTF8,
+                                             &text);
 /* Determine if the item is readable */
 pdf_bool_t ret = pdf_fsys_item_readable_p (NULL, path);
 @end example
@@ -6788,9 +6846,9 @@ The filesystem item is not writable.
 @end table
 @item Usage example
 @example
-pdf_text_t path = pdf_text_new_from_unicode (&text,
-                                             "/path/to/foo",
-                                             12, PDF_TEXT_UTF8);
+pdf_text_t path = pdf_text_new_from_unicode ("/path/to/foo",
+                                             12, PDF_TEXT_UTF8,
+                                             &text);
 /* Determine if the item is writable */
 pdf_bool_t ret = pdf_fsys_item_writable_p (NULL, path);
 @end example
@@ -6957,9 +7015,9 @@ A mode value if successful, otherwise returns -1.
 @example
 pdf_status_t ret;
 pdf_fsys_file_t file = pdf_alloc(sizeof(pdf_fsys_file_s));
-pdf_text_t path = pdf_text_new_from_unicode (&text,
-                                             "/path/to/foo",
-                                             12, PDF_TEXT_UTF8);
+pdf_text_t path = pdf_text_new_from_unicode ("/path/to/foo",
+                                             12, PDF_TEXT_UTF8,
+                                             &text);
 ret = pdf_fsys_open (path, PDF_FSYS_OPEN_MODE_READ, file);
 
 enum pdf_fsys_file_mode_e mode;
@@ -7021,9 +7079,9 @@ General failure, most applicable to Win32.
 @example
 pdf_status_t ret;
 pdf_fsys_file_t file = pdf_alloc(sizeof(pdf_fsys_file_s));
-pdf_text_t path = pdf_text_new_from_unicode (&text,
-                                             "/path/to/foo",
-                                             12, PDF_TEXT_UTF8);
+pdf_text_t path = pdf_text_new_from_unicode ("/path/to/foo",
+                                             12, PDF_TEXT_UTF8,
+                                             &text);
 ret = pdf_fsys_open (path, PDF_FSYS_OPEN_MODE_WRITE, file);
 
 enum pdf_fsys_file_mode_e mode = PDF_FSYS_OPEN_MODE_READ;
@@ -7063,9 +7121,9 @@ a file in the underlying filesystem.
 @example
 pdf_bool_t ret;
 pdf_fsys_file_t file; /* some pre-initialized file variable */
-pdf_text_t other_path = pdf_text_new_from_unicode (&text,
-                                                   "/path/to/baz",
-                                                   12, PDF_TEXT_UTF8);
+pdf_text_t other_path = pdf_text_new_from_unicode ("/path/to/baz",
+                                                   12, PDF_TEXT_UTF8,
+                                                   &text);
 ret = pdf_fsys_file_same_p (file, other_path);
 @end example
 @end table
@@ -7101,9 +7159,9 @@ The function call failed due to an error.
 @example
 pdf_status_t ret;
 pdf_fsys_file_t file = pdf_alloc(sizeof(pdf_fsys_file_s));
-pdf_text_t path = pdf_text_new_from_unicode (&text,
-                                             "/path/to/foo",
-                                             12, PDF_TEXT_UTF8);
+pdf_text_t path = pdf_text_new_from_unicode ("/path/to/foo",
+                                             12, PDF_TEXT_UTF8,
+                                             &text);
 ret = pdf_fsys_open (path, PDF_FSYS_OPEN_MODE_WRITE, file);
 
 pdf_size_t pos = 20;
@@ -7139,9 +7197,9 @@ position.
 @example
 pdf_status_t ret;
 pdf_fsys_file_t file = pdf_alloc(sizeof(pdf_fsys_file_s));
-pdf_text_t path = pdf_text_new_from_unicode (&text,
-                                             "/path/to/foo",
-                                             12, PDF_TEXT_UTF8);
+pdf_text_t path = pdf_text_new_from_unicode ("/path/to/foo",
+                                             12, PDF_TEXT_UTF8,
+                                             &text);
 ret = pdf_fsys_open (path, PDF_FSYS_OPEN_MODE_WRITE, file);
 
 pdf_size_t pos = 20;

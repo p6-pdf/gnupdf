@@ -46,8 +46,7 @@ START_TEST(pdf_text_set_country_001)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
-  text = pdf_text_new();
-  fail_if(text == NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   
   /* 1. The call to pdf_text_set_country should return PDF_OK. */
   fail_if(pdf_text_set_country(text, country) != PDF_OK);
@@ -76,8 +75,7 @@ START_TEST(pdf_text_set_country_002)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
-  text = pdf_text_new();
-  fail_if(text == NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   
   /* 1. The call to pdf_text_set_country should NOT return PDF_OK. */
   fail_if(pdf_text_set_country(text, country) == PDF_OK);
@@ -102,8 +100,7 @@ START_TEST(pdf_text_set_country_003)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
-  text = pdf_text_new();
-  fail_if(text == NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   
   /* 1. The call to pdf_text_set_country should NOT return PDF_OK. */
   fail_if(pdf_text_set_country(text, country) == PDF_OK);

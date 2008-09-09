@@ -78,8 +78,7 @@ START_TEST(pdf_text_set_pdfdocenc_001)
           fail_if(expected_data == NULL);
         }
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* 1. The call to pdf_text_set_pdfdocenc should return PDF_OK. */
       fail_if(pdf_text_set_pdfdocenc(text,
@@ -119,8 +118,7 @@ START_TEST(pdf_text_set_pdfdocenc_002)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
-  text = pdf_text_new();
-  fail_if(text == NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   
   /* 1. The call to  pdf_text_new_from_host should return PDF_OK. */
   fail_unless(pdf_text_set_pdfdocenc(text, (pdf_char_t *)"") == PDF_OK);
@@ -153,8 +151,7 @@ START_TEST(pdf_text_set_pdfdocenc_003)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
-  text = pdf_text_new();
-  fail_if(text == NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   
   /* 1. The call to  pdf_text_set_pdfdocenc should NOT return PDF_OK. */
   fail_unless(pdf_text_set_pdfdocenc(text, invalid_pdfdocenc)!=PDF_OK);

@@ -55,10 +55,10 @@ START_TEST(pdf_text_replace_ascii_001)
   fail_if(pdf_text_init() != PDF_OK);
   
   
-  fail_if(pdf_text_new_from_pdf_string(&text,
-                                       input_string,
+  fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen((char *)input_string),
-                                       NULL, NULL) != PDF_OK);
+                                       NULL, NULL,
+                                       &text) != PDF_OK);
   
   
   if(INTERACTIVE_DEBUG)
@@ -124,10 +124,10 @@ START_TEST(pdf_text_replace_ascii_002)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
-  fail_if(pdf_text_new_from_pdf_string(&text,
-                                       input_string,
+  fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen((char *)input_string),
-                                       NULL, NULL) != PDF_OK);
+                                       NULL, NULL,
+                                       &text) != PDF_OK);
   
   /* 1. The call to  pdf_text_replace_ascii should return PDF_OK. */
   fail_unless(pdf_text_replace_ascii(text,
@@ -169,10 +169,10 @@ START_TEST(pdf_text_replace_ascii_003)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
 
-  fail_if(pdf_text_new_from_pdf_string(&text,
-                                       input_string,
+  fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen((char *)input_string),
-                                       NULL, NULL) != PDF_OK);
+                                       NULL, NULL,
+                                       &text) != PDF_OK);
   
   /* 1. The call to  pdf_text_replace_ascii should return PDF_OK. */
   fail_unless(pdf_text_replace_ascii(text,
@@ -212,10 +212,10 @@ START_TEST(pdf_text_replace_ascii_004)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
-  fail_if(pdf_text_new_from_pdf_string(&text,
-                                       input_string,
+  fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen((char *)input_string),
-                                       NULL, NULL) != PDF_OK);
+                                       NULL, NULL,
+                                       &text) != PDF_OK);
   
   /* 1. The call to  pdf_text_replace_ascii should return PDF_OK. */
   fail_unless(pdf_text_replace_ascii(text,
@@ -258,10 +258,10 @@ START_TEST(pdf_text_replace_ascii_005)
   fail_if(pdf_text_init() != PDF_OK);
   
   
-  fail_if(pdf_text_new_from_pdf_string(&text,
-                                       input_string,
+  fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen((char *)input_string),
-                                       NULL, NULL) != PDF_OK);
+                                       NULL, NULL,
+                                       &text) != PDF_OK);
   
   /* 1. The call to  pdf_text_replace_ascii should return PDF_OK. */
   fail_unless(pdf_text_replace_ascii(text,
@@ -304,10 +304,10 @@ START_TEST(pdf_text_replace_ascii_006)
   fail_if(pdf_text_init() != PDF_OK);
   
   
-  fail_if(pdf_text_new_from_pdf_string(&text,
-                                       input_string,
+  fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen((char *)input_string),
-                                       NULL, NULL) != PDF_OK);
+                                       NULL, NULL,
+                                       &text) != PDF_OK);
   
   /* 1. The call to  pdf_text_replace_ascii should return PDF_OK. */
   fail_unless(pdf_text_replace_ascii(text,
@@ -350,10 +350,10 @@ START_TEST(pdf_text_replace_ascii_007)
   fail_if(pdf_text_init() != PDF_OK);
   
   
-  fail_if(pdf_text_new_from_pdf_string(&text,
-                                       input_string,
+  fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen((char *)input_string),
-                                       NULL, NULL) != PDF_OK);
+                                       NULL, NULL,
+                                       &text) != PDF_OK);
   
   /* 1. The call to  pdf_text_replace_ascii should return PDF_OK. */
   fail_unless(pdf_text_replace_ascii(text,
@@ -396,10 +396,10 @@ START_TEST(pdf_text_replace_ascii_008)
   fail_if(pdf_text_init() != PDF_OK);
   
   
-  fail_if(pdf_text_new_from_pdf_string(&text,
-                                       input_string,
+  fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen((char *)input_string),
-                                       NULL, NULL) != PDF_OK);
+                                       NULL, NULL,
+                                       &text) != PDF_OK);
   
   /* 1. The call to  pdf_text_replace_ascii should return PDF_OK. */
   fail_unless(pdf_text_replace_ascii(text,
@@ -438,10 +438,10 @@ START_TEST(pdf_text_replace_ascii_009)
   fail_if(pdf_text_init() != PDF_OK);
   
   
-  fail_if(pdf_text_new_from_pdf_string(&text,
-                                       input_string,
+  fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen((char *)input_string),
-                                       NULL, NULL) != PDF_OK);
+                                       NULL, NULL,
+                                       &text) != PDF_OK);
   
   /* 1. The call to  pdf_text_replace_ascii should NOT return PDF_OK. */
   fail_unless(pdf_text_replace_ascii(text,
@@ -473,10 +473,10 @@ START_TEST(pdf_text_replace_ascii_010)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
-  fail_if(pdf_text_new_from_pdf_string(&text,
-                                       input_string,
+  fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen((char *)input_string),
-                                       NULL, NULL) != PDF_OK);
+                                       NULL, NULL,
+                                       &text) != PDF_OK);
   
   /* 1. The call to  pdf_text_replace_ascii should return PDF_OK. */
   fail_unless(pdf_text_replace_ascii(text,

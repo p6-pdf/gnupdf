@@ -45,8 +45,7 @@ START_TEST(pdf_text_get_country_001)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
-  text = pdf_text_new();
-  fail_if(text == NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   
   /* Store country ID without using the API */
   strncpy((char *)(&(text->country[0])), "FR", 2);
@@ -82,8 +81,7 @@ START_TEST(pdf_text_get_country_002)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
 
-  text = pdf_text_new();
-  fail_if(text == NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
 
   /* Get country ID */
   country = pdf_text_get_country(text);

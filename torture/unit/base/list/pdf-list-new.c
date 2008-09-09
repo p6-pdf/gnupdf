@@ -1,9 +1,9 @@
-/* -*- mode: C -*- Time-stamp: "2008-04-13 11:54:34 gerel"
+/* -*- mode: C -*- Time-stamp: "08/09/08 22:49:03 jemarch"
  *
  *       File:         pdf-list-create.c
  *       Date:         Wed Mar  12 12:43:00 2008
  *
- *       GNU PDF Library - Unit tests for pdf_list_create
+ *       GNU PDF Library - Unit tests for pdf_list_new
  *
  */
 
@@ -91,17 +91,17 @@ int l_comp_asc (const void *elema, const void * elemb)
 
 
 /*
- * Test: pdf_list_create_001
+ * Test: pdf_list_new_001
  * Description:
  *   Try to create an empty list.
  * Success condition:
  *   Returns PDF_OK
  */
-START_TEST (pdf_list_create_001)
+START_TEST (pdf_list_new_001)
 {
   pdf_list_t list;
   
-  fail_if (pdf_list_create (l_comp, l_disp, 0, &list) != PDF_OK);
+  fail_if (pdf_list_new (l_comp, l_disp, 0, &list) != PDF_OK);
 
   pdf_list_destroy (list);
 }
@@ -109,31 +109,31 @@ END_TEST
 
 
 /*
- * Test: pdf_list_create_002
+ * Test: pdf_list_new_002
  * Description:
  *   Try to create an empty list given a NULL list pointer.
  * Success condition:
  *   Returns PDF_EBADDATA
  */
-START_TEST (pdf_list_create_002)
+START_TEST (pdf_list_new_002)
 {
-  fail_if (pdf_list_create (l_comp, l_disp, 0, NULL) != PDF_EBADDATA);
+  fail_if (pdf_list_new (l_comp, l_disp, 0, NULL) != PDF_EBADDATA);
 }
 END_TEST
 
 
 /*
- * Test: pdf_list_create_003
+ * Test: pdf_list_new_003
  * Description:
  *   Try to create an empty list allowing duplicates.
  * Success condition:
  *   Returns PDF_OK
  */
-START_TEST (pdf_list_create_003)
+START_TEST (pdf_list_new_003)
 {
   pdf_list_t list;
   
-  fail_if (pdf_list_create (l_comp, l_disp, 1, &list) != PDF_OK);
+  fail_if (pdf_list_new (l_comp, l_disp, 1, &list) != PDF_OK);
 
   pdf_list_destroy (list);
 }
@@ -144,12 +144,12 @@ END_TEST
  * Test case creation function
  */
 TCase *
-test_pdf_list_create (void)
+test_pdf_list_new (void)
 {
-  TCase *tc = tcase_create("pdf_list_create");
-  tcase_add_test(tc, pdf_list_create_001);
-  tcase_add_test(tc, pdf_list_create_002);
-  tcase_add_test(tc, pdf_list_create_003);
+  TCase *tc = tcase_create("pdf_list_new");
+  tcase_add_test(tc, pdf_list_new_001);
+  tcase_add_test(tc, pdf_list_new_002);
+  tcase_add_test(tc, pdf_list_new_003);
 
   return tc;
 }

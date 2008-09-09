@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-06-15 18:48:33 gerel"
+/* -*- mode: C -*- Time-stamp: "08/09/09 00:37:08 jemarch"
  *
  *       File:         pdf-error.h
  *       Date:         Sun Feb  24 20:22:05 2008
@@ -84,6 +84,7 @@ enum pdf_status_e
         PDF_EAGAIN,
         PDF_ENOSPC,
         PDF_ENOTEMPTY,
+        PDF_EBADCONTEXT,
         PDF_STATUS_ITEMS
 };
 

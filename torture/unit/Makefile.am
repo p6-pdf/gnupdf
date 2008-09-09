@@ -62,7 +62,7 @@ TEST_SUITE_ERROR = base/error/pdf-error.c \
 # Unit tests for the Stream Module test suite
 TEST_SUITE_STM = base/stm/pdf-create-file-stm.c
 
-TEST_SUITE_HASH = base/hash/pdf-hash-create.c \
+TEST_SUITE_HASH = base/hash/pdf-hash-new.c \
 		  base/hash/pdf-hash-destroy.c \
 		  base/hash/pdf-hash-add.c \
 		  base/hash/pdf-hash-remove.c \
@@ -78,7 +78,7 @@ TEST_SUITE_LIST = base/list/pdf-list-add-first.c \
                   base/list/pdf-list-add-at.c \
                   base/list/pdf-list-add-last.c \
                   base/list/pdf-list-size.c \
-                  base/list/pdf-list-create.c \
+                  base/list/pdf-list-new.c \
                   base/list/pdf-list-destroy.c \
                   base/list/pdf-list-get-at.c \
                   base/list/pdf-list-indexof.c \
@@ -162,7 +162,6 @@ TEST_SUITE_CRYPT = base/crypt/pdf-crypt-init.c \
 		   base/crypt/pdf-crypt-md-new.c \
 		   base/crypt/pdf-crypt-md-hash.c \
 		   base/crypt/pdf-crypt-md-destroy.c
-
 
 TEST_ENVIRONMENT = CHARSETALIASDIR=$(top_srcdir)/lib
 

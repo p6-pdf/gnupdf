@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-07-23 08:14:08 gerel"
+/* -*- mode: C -*- Time-stamp: "08/09/09 00:03:10 jemarch"
  *
  *       File:         pdf-hash-rename.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -41,7 +41,7 @@ START_TEST (pdf_hash_rename_001)
 {
   pdf_hash_t table;
 
-  pdf_hash_create (NULL, &table);
+  pdf_hash_new (NULL, &table);
   pdf_hash_add (table, "key", "val",NULL);
 
   fail_if (pdf_hash_rename (table, "key", "ke") != PDF_OK);
@@ -62,7 +62,7 @@ START_TEST (pdf_hash_rename_002)
 {
   pdf_hash_t table;
 
-  pdf_hash_create (NULL, &table);
+  pdf_hash_new (NULL, &table);
   pdf_hash_add (table, "key", "val",NULL);
 
   fail_if (pdf_hash_rename (table, "ke", "key") != PDF_ERROR);
@@ -82,7 +82,7 @@ START_TEST (pdf_hash_rename_003)
 {
   pdf_hash_t table;
 
-  pdf_hash_create (NULL, &table);
+  pdf_hash_new (NULL, &table);
 
   fail_if (pdf_hash_rename (table, NULL, "ke") != PDF_EBADDATA);
 
@@ -101,7 +101,7 @@ START_TEST (pdf_hash_rename_004)
 {
   pdf_hash_t table;
 
-  pdf_hash_create (NULL, &table);
+  pdf_hash_new (NULL, &table);
 
   fail_if (pdf_hash_rename (table, "key", NULL) != PDF_EBADDATA);
 

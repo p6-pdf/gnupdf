@@ -83,8 +83,7 @@ START_TEST(pdf_text_set_host_001)
       strcpy((char *)(&(host_enc.name[0])), "us-ascii");
 #endif
       
-      text = pdf_text_new();
-      fail_if(text == NULL);
+      fail_if(pdf_text_new (&text) != PDF_OK);
       
       /* 1. The call to  pdf_text_set_host should return PDF_OK. */
       fail_unless(pdf_text_set_host(text,
@@ -132,8 +131,7 @@ START_TEST(pdf_text_set_host_002)
   strcpy((char *)(&(host_enc.name[0])), "us-ascii");
 #endif
   
-  text = pdf_text_new();
-  fail_if(text == NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   
   /* 1. The call to  pdf_text_set_host should NOT return PDF_OK. */
   fail_unless(pdf_text_set_host(text, sample_utf8,
@@ -169,8 +167,7 @@ START_TEST(pdf_text_set_host_003)
   strcpy((char *)(&(host_enc.name[0])), "invalid_host_enc");
 #endif
   
-  text = pdf_text_new();
-  fail_if(text == NULL);
+  fail_if(pdf_text_new (&text) != PDF_OK);
   
   /* 1. The call to  pdf_text_set_host should NOT return PDF_OK. */
   fail_unless(pdf_text_set_host(text, sample_usascii,

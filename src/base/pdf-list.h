@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/08/29 00:44:38 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/08 22:40:22 jemarch"
  *
  *       File:         pdf-list.h
  *       Date:         Sat Mar 1 02:14:35 2008
@@ -76,7 +76,7 @@ typedef int (*pdf_list_element_compar_fn_t) (const void *elt1, const void *elt2)
 
 /* Creation and destruction functions */
 
-pdf_status_t pdf_list_create (pdf_list_element_equals_fn_t equals_fn,
+pdf_status_t pdf_list_new (pdf_list_element_equals_fn_t equals_fn,
                               pdf_list_element_dispose_fn_t dispose_fn,
                               const pdf_bool_t allow_duplicates,
                               pdf_list_t *list);
@@ -211,10 +211,10 @@ pdf_status_t pdf_list_iterator_free (pdf_list_iterator_t *iterator);
 /* Creation and destruction functions */
 
 EXTERN_INLINE pdf_status_t
-pdf_list_create (pdf_list_element_equals_fn_t equals_fn,
-                 pdf_list_element_dispose_fn_t dispose_fn,
-                 const pdf_bool_t allow_duplicates,
-                 pdf_list_t *list)
+pdf_list_new (pdf_list_element_equals_fn_t equals_fn,
+              pdf_list_element_dispose_fn_t dispose_fn,
+              const pdf_bool_t allow_duplicates,
+              pdf_list_t *list)
 {
   pdf_status_t st;
 

@@ -55,18 +55,18 @@ START_TEST(pdf_text_replace_001)
   fail_if(pdf_text_init() != PDF_OK);
 
   
-  fail_if(pdf_text_new_from_pdf_string(&text,
-                                       input_string,
+  fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen((char *)input_string),
-                                       NULL, NULL) != PDF_OK);
-  fail_if(pdf_text_new_from_pdf_string(&old_pattern,
-                                       old_pattern_ascii,
+                                       NULL, NULL,
+                                       &text) != PDF_OK);
+  fail_if(pdf_text_new_from_pdf_string(old_pattern_ascii,
                                        strlen((char *)old_pattern_ascii),
-                                       NULL, NULL) != PDF_OK);
-  fail_if(pdf_text_new_from_pdf_string(&new_pattern,
-                                       new_pattern_ascii,
+                                       NULL, NULL,
+                                       &old_pattern) != PDF_OK);
+  fail_if(pdf_text_new_from_pdf_string(new_pattern_ascii,
                                        strlen((char *)new_pattern_ascii),
-                                       NULL, NULL) != PDF_OK);
+                                       NULL, NULL,
+                                       &new_pattern) != PDF_OK);
 
   /* 1. The call to  pdf_text_replace should return PDF_OK. */
   fail_unless(pdf_text_replace(text, new_pattern, old_pattern) == PDF_OK);
@@ -112,18 +112,18 @@ START_TEST(pdf_text_replace_002)
   fail_if(pdf_text_init() != PDF_OK);
   
   
-  fail_if(pdf_text_new_from_pdf_string(&text,
-                                       input_string,
+  fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen((char *)input_string),
-                                       NULL, NULL) != PDF_OK);
-  fail_if(pdf_text_new_from_pdf_string(&old_pattern,
-                                       old_pattern_ascii,
+                                       NULL, NULL,
+                                       &text) != PDF_OK);
+  fail_if(pdf_text_new_from_pdf_string(old_pattern_ascii,
                                        strlen((char *)old_pattern_ascii),
-                                       NULL, NULL) != PDF_OK);
-  fail_if(pdf_text_new_from_pdf_string(&new_pattern,
-                                       new_pattern_ascii,
+                                       NULL, NULL,
+                                       &old_pattern) != PDF_OK);
+  fail_if(pdf_text_new_from_pdf_string(new_pattern_ascii,
                                        strlen((char *)new_pattern_ascii),
-                                       NULL, NULL) != PDF_OK);
+                                       NULL, NULL,
+                                       &new_pattern) != PDF_OK);
   
   /* 1. The call to  pdf_text_replace should return PDF_OK. */
   fail_unless(pdf_text_replace(text, new_pattern, old_pattern) == PDF_OK);
@@ -168,18 +168,18 @@ START_TEST(pdf_text_replace_003)
   fail_if(pdf_text_init() != PDF_OK);
   
   
-  fail_if(pdf_text_new_from_pdf_string(&text,
-                                       input_string,
+  fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen((char *)input_string),
-                                       NULL, NULL) != PDF_OK);
-  fail_if(pdf_text_new_from_pdf_string(&old_pattern,
-                                       old_pattern_ascii,
+                                       NULL, NULL,
+                                       &text) != PDF_OK);
+  fail_if(pdf_text_new_from_pdf_string(old_pattern_ascii,
                                        strlen((char *)old_pattern_ascii),
-                                       NULL, NULL) != PDF_OK);
-  fail_if(pdf_text_new_from_pdf_string(&new_pattern,
-                                       new_pattern_ascii,
+                                       NULL, NULL,
+                                       &old_pattern) != PDF_OK);
+  fail_if(pdf_text_new_from_pdf_string(new_pattern_ascii,
                                        strlen((char *)new_pattern_ascii),
-                                       NULL, NULL) != PDF_OK);
+                                       NULL, NULL,
+                                       &new_pattern) != PDF_OK);
   
   /* 1. The call to  pdf_text_replace should return PDF_OK. */
   fail_unless(pdf_text_replace(text, new_pattern, old_pattern) == PDF_OK);
@@ -222,18 +222,18 @@ START_TEST(pdf_text_replace_004)
   fail_if(pdf_text_init() != PDF_OK);
   
   
-  fail_if(pdf_text_new_from_pdf_string(&text,
-                                       input_string,
+  fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen((char *)input_string),
-                                       NULL, NULL) != PDF_OK);
-  fail_if(pdf_text_new_from_pdf_string(&old_pattern,
-                                       old_pattern_ascii,
+                                       NULL, NULL,
+                                       &text) != PDF_OK);
+  fail_if(pdf_text_new_from_pdf_string(old_pattern_ascii,
                                        strlen((char *)old_pattern_ascii),
-                                       NULL, NULL) != PDF_OK);
-  fail_if(pdf_text_new_from_pdf_string(&new_pattern,
-                                       new_pattern_ascii,
+                                       NULL, NULL,
+                                       &old_pattern) != PDF_OK);
+  fail_if(pdf_text_new_from_pdf_string(new_pattern_ascii,
                                        strlen((char *)new_pattern_ascii),
-                                       NULL, NULL) != PDF_OK);
+                                       NULL, NULL,
+                                       &new_pattern) != PDF_OK);
   
   /* 1. The call to  pdf_text_replace should return PDF_OK. */
   fail_unless(pdf_text_replace(text, new_pattern, old_pattern) == PDF_OK);
@@ -278,18 +278,18 @@ START_TEST(pdf_text_replace_005)
   fail_if(pdf_text_init() != PDF_OK);
   
   
-  fail_if(pdf_text_new_from_pdf_string(&text,
-                                       input_string,
+  fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen((char *)input_string),
-                                       NULL, NULL) != PDF_OK);
-  fail_if(pdf_text_new_from_pdf_string(&old_pattern,
-                                       old_pattern_ascii,
+                                       NULL, NULL,
+                                       &text) != PDF_OK);
+  fail_if(pdf_text_new_from_pdf_string(old_pattern_ascii,
                                        strlen((char *)old_pattern_ascii),
-                                       NULL, NULL) != PDF_OK);
-  fail_if(pdf_text_new_from_pdf_string(&new_pattern,
-                                       new_pattern_ascii,
+                                       NULL, NULL,
+                                       &old_pattern) != PDF_OK);
+  fail_if(pdf_text_new_from_pdf_string(new_pattern_ascii,
                                        strlen((char *)new_pattern_ascii),
-                                       NULL, NULL) != PDF_OK);
+                                       NULL, NULL,
+                                       &new_pattern) != PDF_OK);
   
   /* 1. The call to  pdf_text_replace should return PDF_OK. */
   fail_unless(pdf_text_replace(text, new_pattern, old_pattern) == PDF_OK);
@@ -334,18 +334,18 @@ START_TEST(pdf_text_replace_006)
   fail_if(pdf_text_init() != PDF_OK);
   
   
-  fail_if(pdf_text_new_from_pdf_string(&text,
-                                       input_string,
+  fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen((char *)input_string),
-                                       NULL, NULL) != PDF_OK);
-  fail_if(pdf_text_new_from_pdf_string(&old_pattern,
-                                       old_pattern_ascii,
+                                       NULL, NULL,
+                                       &text) != PDF_OK);
+  fail_if(pdf_text_new_from_pdf_string(old_pattern_ascii,
                                        strlen((char *)old_pattern_ascii),
-                                       NULL, NULL) != PDF_OK);
-  fail_if(pdf_text_new_from_pdf_string(&new_pattern,
-                                       new_pattern_ascii,
+                                       NULL, NULL,
+                                       &old_pattern) != PDF_OK);
+  fail_if(pdf_text_new_from_pdf_string(new_pattern_ascii,
                                        strlen((char *)new_pattern_ascii),
-                                       NULL, NULL) != PDF_OK);
+                                       NULL, NULL,
+                                       &new_pattern) != PDF_OK);
   
   /* 1. The call to  pdf_text_replace should return PDF_OK. */
   fail_unless(pdf_text_replace(text, new_pattern, old_pattern) == PDF_OK);
@@ -390,18 +390,18 @@ START_TEST(pdf_text_replace_007)
   fail_if(pdf_text_init() != PDF_OK);
   
   
-  fail_if(pdf_text_new_from_pdf_string(&text,
-                                       input_string,
+  fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen((char *)input_string),
-                                       NULL, NULL) != PDF_OK);
-  fail_if(pdf_text_new_from_pdf_string(&old_pattern,
-                                       old_pattern_ascii,
+                                       NULL, NULL,
+                                       &text) != PDF_OK);
+  fail_if(pdf_text_new_from_pdf_string(old_pattern_ascii,
                                        strlen((char *)old_pattern_ascii),
-                                       NULL, NULL) != PDF_OK);
-  fail_if(pdf_text_new_from_pdf_string(&new_pattern,
-                                       new_pattern_ascii,
+                                       NULL, NULL,
+                                       &old_pattern) != PDF_OK);
+  fail_if(pdf_text_new_from_pdf_string(new_pattern_ascii,
                                        strlen((char *)new_pattern_ascii),
-                                       NULL, NULL) != PDF_OK);
+                                       NULL, NULL,
+                                       &new_pattern) != PDF_OK);
   
   /* 1. The call to  pdf_text_replace should return PDF_OK. */
   fail_unless(pdf_text_replace(text, new_pattern, old_pattern) == PDF_OK);
@@ -446,18 +446,18 @@ START_TEST(pdf_text_replace_008)
   fail_if(pdf_text_init() != PDF_OK);
   
   
-  fail_if(pdf_text_new_from_pdf_string(&text,
-                                       input_string,
+  fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen((char *)input_string),
-                                       NULL, NULL) != PDF_OK);
-  fail_if(pdf_text_new_from_pdf_string(&old_pattern,
-                                       old_pattern_ascii,
+                                       NULL, NULL,
+                                       &text) != PDF_OK);
+  fail_if(pdf_text_new_from_pdf_string(old_pattern_ascii,
                                        strlen((char *)old_pattern_ascii),
-                                       NULL, NULL) != PDF_OK);
-  fail_if(pdf_text_new_from_pdf_string(&new_pattern,
-                                       new_pattern_ascii,
+                                       NULL, NULL,
+                                       &old_pattern) != PDF_OK);
+  fail_if(pdf_text_new_from_pdf_string(new_pattern_ascii,
                                        strlen((char *)new_pattern_ascii),
-                                       NULL, NULL) != PDF_OK);
+                                       NULL, NULL,
+                                       &new_pattern) != PDF_OK);
   
   /* 1. The call to  pdf_text_replace should return PDF_OK. */
   fail_unless(pdf_text_replace(text, new_pattern, old_pattern) == PDF_OK);
@@ -498,18 +498,18 @@ START_TEST(pdf_text_replace_009)
   fail_if(pdf_text_init() != PDF_OK);
   
   
-  fail_if(pdf_text_new_from_pdf_string(&text,
-                                       input_string,
+  fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen((char *)input_string),
-                                       NULL, NULL) != PDF_OK);
-  fail_if(pdf_text_new_from_pdf_string(&old_pattern,
-                                       old_pattern_ascii,
+                                       NULL, NULL,
+                                       &text) != PDF_OK);
+  fail_if(pdf_text_new_from_pdf_string(old_pattern_ascii,
                                        strlen((char *)old_pattern_ascii),
-                                       NULL, NULL) != PDF_OK);
-  fail_if(pdf_text_new_from_pdf_string(&new_pattern,
-                                       new_pattern_ascii,
+                                       NULL, NULL,
+                                       &old_pattern) != PDF_OK);
+  fail_if(pdf_text_new_from_pdf_string(new_pattern_ascii,
                                        strlen((char *)new_pattern_ascii),
-                                       NULL, NULL) != PDF_OK);
+                                       NULL, NULL,
+                                       &new_pattern) != PDF_OK);
   
   /* 1. The call to  pdf_text_replace should NOT return PDF_OK. */
   fail_unless(pdf_text_replace(text, new_pattern, old_pattern) != PDF_OK);
@@ -544,18 +544,18 @@ START_TEST(pdf_text_replace_010)
   fail_if(pdf_text_init() != PDF_OK);
   
   
-  fail_if(pdf_text_new_from_pdf_string(&text,
-                                       input_string,
+  fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen((char *)input_string),
-                                       NULL, NULL) != PDF_OK);
-  fail_if(pdf_text_new_from_pdf_string(&old_pattern,
-                                       old_pattern_ascii,
+                                       NULL, NULL,
+                                       &text) != PDF_OK);
+  fail_if(pdf_text_new_from_pdf_string(old_pattern_ascii,
                                        strlen((char *)old_pattern_ascii),
-                                       NULL, NULL) != PDF_OK);
-  fail_if(pdf_text_new_from_pdf_string(&new_pattern,
-                                       new_pattern_ascii,
+                                       NULL, NULL,
+                                       &old_pattern) != PDF_OK);
+  fail_if(pdf_text_new_from_pdf_string(new_pattern_ascii,
                                        strlen((char *)new_pattern_ascii),
-                                       NULL, NULL) != PDF_OK);
+                                       NULL, NULL,
+                                       &new_pattern) != PDF_OK);
   
   /* 1. The call to  pdf_text_replace should return PDF_OK. */
   fail_unless(pdf_text_replace(text, new_pattern, old_pattern) == PDF_OK);

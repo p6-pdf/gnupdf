@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-04-13 15:27:58 gerel"
+/* -*- mode: C -*- Time-stamp: "08/09/08 22:55:52 jemarch"
  *
  *       File:         pdf-list-sorted-indexof-from-to.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -49,7 +49,7 @@ START_TEST (pdf_list_sorted_indexof_from_to_001)
   
   elem = 2121;
 
-  pdf_list_create (NULL, NULL, 0, &list);
+  pdf_list_new (NULL, NULL, 0, &list);
   
   pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
 
@@ -79,7 +79,7 @@ START_TEST (pdf_list_sorted_indexof_from_to_002)
   
   elem = 2121;
 
-  pdf_list_create (NULL, NULL, 0, &list);
+  pdf_list_new (NULL, NULL, 0, &list);
   
   pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
 
@@ -112,7 +112,7 @@ START_TEST (pdf_list_sorted_indexof_from_to_003)
   
   elem = 2121;
 
-  pdf_list_create (NULL, NULL, 0, &list);
+  pdf_list_new (NULL, NULL, 0, &list);
   
   pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
 
@@ -141,7 +141,7 @@ START_TEST (pdf_list_sorted_indexof_from_to_004)
   elem = 2121;
   elem2 = 2222;
   
-  pdf_list_create (NULL, NULL, 0, &list);
+  pdf_list_new (NULL, NULL, 0, &list);
   
   pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
 
@@ -170,7 +170,7 @@ START_TEST (pdf_list_sorted_indexof_from_to_005)
   
   elem = 2121;
 
-  pdf_list_create (NULL, NULL, 0, &list);
+  pdf_list_new (NULL, NULL, 0, &list);
   
   pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
 

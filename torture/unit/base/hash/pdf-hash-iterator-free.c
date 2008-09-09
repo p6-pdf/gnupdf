@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-07-23 08:13:00 gerel"
+/* -*- mode: C -*- Time-stamp: "08/09/09 00:01:24 jemarch"
  *
  *       File:         pdf-hash-iterator-free.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -42,7 +42,7 @@ START_TEST (pdf_hash_iterator_free_001)
   pdf_hash_t table;
   pdf_hash_iterator_t itr;
 
-  pdf_hash_create (NULL, &table);
+  pdf_hash_new (NULL, &table);
   pdf_hash_iterator (table, &itr);
 
   fail_if (pdf_hash_iterator_free (&itr) != PDF_OK);

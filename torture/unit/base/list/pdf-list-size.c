@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/03/17 14:22:53 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/08 22:55:22 jemarch"
  *
  *       File:         pdf-list-size.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -40,7 +40,7 @@ START_TEST (pdf_list_size_001)
   pdf_list_t list;
   pdf_size_t size;
   
-  pdf_list_create (NULL, NULL, 0, &list);
+  pdf_list_new (NULL, NULL, 0, &list);
   size = pdf_list_size (list);
 
   fail_if (size != 0);

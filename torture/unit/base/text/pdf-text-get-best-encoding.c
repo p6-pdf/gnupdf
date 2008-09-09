@@ -49,7 +49,7 @@ START_TEST(pdf_text_get_best_encoding_001)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
-  text = pdf_text_new();
+  fail_if(pdf_text_new (&text) != PDF_OK);
 
 #ifdef PDF_HOST_WIN32
   fail_unless(pdf_text_check_host_encoding((pdf_char_t *)"CP20127",

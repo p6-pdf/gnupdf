@@ -73,10 +73,9 @@ START_TEST(pdf_text_filter_001)
 
       
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF8) != PDF_OK);
+                                    PDF_TEXT_UTF8, &text) != PDF_OK);
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -139,10 +138,9 @@ START_TEST(pdf_text_filter_002)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF8) != PDF_OK);
+                                    PDF_TEXT_UTF8, &text) != PDF_OK);
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -216,10 +214,9 @@ START_TEST(pdf_text_filter_003)
   
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF8) != PDF_OK);
+                                    PDF_TEXT_UTF8, &text) != PDF_OK);
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -283,10 +280,9 @@ START_TEST(pdf_text_filter_004)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF8) != PDF_OK);
+                                    PDF_TEXT_UTF8, &text) != PDF_OK);
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -354,10 +350,9 @@ START_TEST(pdf_text_filter_005)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF8) != PDF_OK);
+                                    PDF_TEXT_UTF8, &text) != PDF_OK);
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -420,10 +415,9 @@ START_TEST(pdf_text_filter_006)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF8) != PDF_OK);
+                                    PDF_TEXT_UTF8, &text) != PDF_OK);
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -496,10 +490,9 @@ START_TEST(pdf_text_filter_007)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -566,10 +559,9 @@ START_TEST(pdf_text_filter_008)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -633,10 +625,9 @@ START_TEST(pdf_text_filter_009)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF8) != PDF_OK);
+                                    PDF_TEXT_UTF8, &text) != PDF_OK);
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -711,10 +702,9 @@ START_TEST(pdf_text_filter_010)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -789,10 +779,9 @@ START_TEST(pdf_text_filter_011)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -881,10 +870,9 @@ START_TEST(pdf_text_filter_012)
     pdf_text_t text;
 
     /* Create text object with given contents */
-    fail_if(pdf_text_new_from_unicode(&text,
-                                      input_data,
+    fail_if(pdf_text_new_from_unicode(input_data,
                                       input_size,
-                                      PDF_TEXT_UTF32_BE) != PDF_OK);
+                                      PDF_TEXT_UTF32_BE, &text) != PDF_OK);
     
     /* 1. The call to  pdf_text_filter should return PDF_OK. */
     fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_UPPER_CASE) == PDF_OK);
@@ -930,10 +918,9 @@ START_TEST(pdf_text_filter_012)
       pdf_text_t text;
       
       /* Create text object with given contents */
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        input_data,
+      fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE, &text) != PDF_OK);
       
       /* 1. The call to  pdf_text_filter should return PDF_OK. */
       fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_UPPER_CASE) == PDF_OK);
@@ -993,10 +980,9 @@ START_TEST(pdf_text_filter_013)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'lt' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"lt") != PDF_OK);
   
@@ -1071,10 +1057,9 @@ START_TEST(pdf_text_filter_014)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'lt' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"lt") != PDF_OK);
   
@@ -1171,10 +1156,9 @@ START_TEST(pdf_text_filter_016)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
   
@@ -1249,10 +1233,9 @@ START_TEST(pdf_text_filter_017)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
   
@@ -1331,10 +1314,9 @@ START_TEST(pdf_text_filter_018)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
   
@@ -1414,10 +1396,9 @@ START_TEST(pdf_text_filter_019)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
   
@@ -1515,10 +1496,9 @@ START_TEST(pdf_text_filter_020)
       pdf_text_t text;
       
       /* Create text object with given contents */
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        input_data,
+      fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE, &text) != PDF_OK);
       
       /* 1. The call to  pdf_text_filter should return PDF_OK. */
       fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_UPPER_CASE) == PDF_OK);
@@ -1565,10 +1545,9 @@ START_TEST(pdf_text_filter_020)
       pdf_text_t text;
       
       /* Create text object with given contents */
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        input_data,
+      fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE, &text) != PDF_OK);
       
       /* 1. The call to  pdf_text_filter should return PDF_OK. */
       fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_UPPER_CASE) == PDF_OK);
@@ -1632,10 +1611,9 @@ START_TEST(pdf_text_filter_021)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'lt' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"lt") != PDF_OK);
   
@@ -1714,10 +1692,9 @@ START_TEST(pdf_text_filter_022)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'lt' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"lt") != PDF_OK);
   
@@ -1819,10 +1796,9 @@ START_TEST(pdf_text_filter_024)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
   
@@ -1897,10 +1873,9 @@ START_TEST(pdf_text_filter_025)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'en' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"en") != PDF_OK);
   
@@ -1983,10 +1958,9 @@ START_TEST(pdf_text_filter_026)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
   
@@ -2070,10 +2044,9 @@ START_TEST(pdf_text_filter_027)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
   
@@ -2152,10 +2125,9 @@ START_TEST(pdf_text_filter_028)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -2224,10 +2196,9 @@ START_TEST(pdf_text_filter_029)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -2323,10 +2294,9 @@ START_TEST(pdf_text_filter_030)
       pdf_text_t text;
       
       /* Create text object with given contents */
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        input_data,
+      fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE, &text) != PDF_OK);
       
       if(INTERACTIVE_DEBUG)
         {
@@ -2387,10 +2357,9 @@ START_TEST(pdf_text_filter_030)
       pdf_text_t text;
       
       /* Create text object with given contents */
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        input_data,
+      fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE, &text) != PDF_OK);
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
@@ -2459,10 +2428,9 @@ START_TEST(pdf_text_filter_031)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'lt' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"lt") != PDF_OK);
   
@@ -2537,10 +2505,9 @@ START_TEST(pdf_text_filter_032)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'lt' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"lt") != PDF_OK);
   
@@ -2636,10 +2603,9 @@ START_TEST(pdf_text_filter_034)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
   
@@ -2713,10 +2679,9 @@ START_TEST(pdf_text_filter_035)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'lt' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"lt") != PDF_OK);
   
@@ -2794,10 +2759,9 @@ START_TEST(pdf_text_filter_036)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
   
@@ -2877,10 +2841,9 @@ START_TEST(pdf_text_filter_037)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
   
@@ -2985,10 +2948,9 @@ START_TEST(pdf_text_filter_038)
       pdf_text_t text;
       
       /* Create text object with given contents */
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        input_data,
+      fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE, &text) != PDF_OK);
       
       /* 1. The call to  pdf_text_filter should return PDF_OK. */
       fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_LOWER_CASE) == PDF_OK);
@@ -3042,10 +3004,9 @@ START_TEST(pdf_text_filter_038)
       pdf_text_t text;
       
       /* Create text object with given contents */
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        input_data,
+      fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE, &text) != PDF_OK);
       
       /* 1. The call to  pdf_text_filter should return PDF_OK. */
       fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_LOWER_CASE) == PDF_OK);
@@ -3110,10 +3071,9 @@ START_TEST(pdf_text_filter_039)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'lt' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"lt") != PDF_OK);
   
@@ -3193,10 +3153,9 @@ START_TEST(pdf_text_filter_040)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'lt' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"lt") != PDF_OK);
   
@@ -3298,10 +3257,9 @@ START_TEST(pdf_text_filter_042)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
   
@@ -3376,10 +3334,9 @@ START_TEST(pdf_text_filter_043)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'en' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"en") != PDF_OK);
   
@@ -3462,10 +3419,9 @@ START_TEST(pdf_text_filter_044)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
   
@@ -3548,10 +3504,9 @@ START_TEST(pdf_text_filter_045)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
   
@@ -3630,10 +3585,9 @@ START_TEST(pdf_text_filter_046)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -3704,10 +3658,9 @@ START_TEST(pdf_text_filter_047)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -3807,10 +3760,9 @@ START_TEST(pdf_text_filter_048)
       pdf_text_t text;
       
       /* Create text object with given contents */
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        input_data,
+      fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE, &text) != PDF_OK);
       
       /* 1. The call to  pdf_text_filter should return PDF_OK. */
       fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_TITLE_CASE) == PDF_OK);
@@ -3863,10 +3815,9 @@ START_TEST(pdf_text_filter_048)
       pdf_text_t text;
       
       /* Create text object with given contents */
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        input_data,
+      fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE, &text) != PDF_OK);
       
       /* 1. The call to  pdf_text_filter should return PDF_OK. */
       fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_TITLE_CASE) == PDF_OK);
@@ -3927,10 +3878,9 @@ START_TEST(pdf_text_filter_049)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'lt' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"lt") != PDF_OK);
   
@@ -4007,10 +3957,9 @@ START_TEST(pdf_text_filter_050)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'lt' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"lt") != PDF_OK);
   
@@ -4108,10 +4057,9 @@ START_TEST(pdf_text_filter_052)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
   
@@ -4187,10 +4135,9 @@ START_TEST(pdf_text_filter_053)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'lt' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"lt") != PDF_OK);
   
@@ -4270,10 +4217,9 @@ START_TEST(pdf_text_filter_054)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
   
@@ -4355,10 +4301,9 @@ START_TEST(pdf_text_filter_055)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
   
@@ -4468,10 +4413,9 @@ START_TEST(pdf_text_filter_056)
       pdf_text_t text;
       
       /* Create text object with given contents */
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        input_data,
+      fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE, &text) != PDF_OK);
       
       /* 1. The call to  pdf_text_filter should return PDF_OK. */
       fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_TITLE_CASE) == PDF_OK);
@@ -4527,10 +4471,9 @@ START_TEST(pdf_text_filter_056)
       pdf_text_t text;
       
       /* Create text object with given contents */
-      fail_if(pdf_text_new_from_unicode(&text,
-                                        input_data,
+      fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
-                                        PDF_TEXT_UTF32_BE) != PDF_OK);
+                                        PDF_TEXT_UTF32_BE, &text) != PDF_OK);
       
       /* 1. The call to  pdf_text_filter should return PDF_OK. */
       fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_TITLE_CASE) == PDF_OK);
@@ -4596,10 +4539,9 @@ START_TEST(pdf_text_filter_057)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'lt' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"lt") != PDF_OK);
   
@@ -4681,10 +4623,9 @@ START_TEST(pdf_text_filter_058)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'lt' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"lt") != PDF_OK);
   
@@ -4788,10 +4729,9 @@ START_TEST(pdf_text_filter_060)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
   
@@ -4868,10 +4808,9 @@ START_TEST(pdf_text_filter_061)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'en' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"en") != PDF_OK);
   
@@ -4956,10 +4895,9 @@ START_TEST(pdf_text_filter_062)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
   
@@ -5042,10 +4980,9 @@ START_TEST(pdf_text_filter_063)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(&text,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF32_BE) != PDF_OK);
+                                    PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
   

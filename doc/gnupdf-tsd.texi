@@ -3178,7 +3178,7 @@ Compare two different text objects, non-case-sensitive.
 * pdf_list_add_at::
 * pdf_list_add_first::
 * pdf_list_add_last::
-* pdf_list_create::
+* pdf_list_new::
 * pdf_list_destroy::
 * pdf_list_get_at::
 * pdf_list_indexof_from_to::
@@ -3256,10 +3256,10 @@ We get the right pdf_list_size().
 @end table
 @end deffn
 
-@node pdf_list_create
-@subsubsection pdf_list_create
+@node pdf_list_new
+@subsubsection pdf_list_new
 
-@deffn Test pdf_list_create_001
+@deffn Test pdf_list_new_001
 Try to create an empty list.
 @table @strong
 @item Success condition
@@ -3267,7 +3267,7 @@ Returns PDF_OK
 @end table
 @end deffn
 
-@deffn Test pdf_list_create_002
+@deffn Test pdf_list_new_002
 Try to create an empty list given a NULL list pointer.
 @table @strong
 @item Success condition
@@ -3275,7 +3275,7 @@ Returns PDF_EBADDATA
 @end table
 @end deffn
 
-@deffn Test pdf_list_create_003
+@deffn Test pdf_list_new_003
 Try to create an empty list allowing duplicates.
 @table @strong
 @item Success condition
@@ -3962,7 +3962,7 @@ Returns PDF_EBADDATA
 @subsection Hash Module
 
 @menu
-* pdf_hash_create::
+* pdf_hash_new::
 * pdf_hash_detroy::
 * pdf_hash_size::
 * pdf_hash_key_p::
@@ -3975,10 +3975,10 @@ Returns PDF_EBADDATA
 * pdf_hash_iterator_free::
 @end menu
 
-@node pdf_hash_create
-@subsubsection pdf_hash_create
+@node pdf_hash_new
+@subsubsection pdf_hash_new
 
-@deffn Test pdf_hash_create_001
+@deffn Test pdf_hash_new_001
 Try to create an empty hash.
 @table @strong
 @item Success condition
@@ -3987,7 +3987,7 @@ Returns PDF_OK
 @end deffn
 
 
-@deffn Test pdf_hash_create_002
+@deffn Test pdf_hash_new_002
 Try to create an empty hash with a NULL pointer.
 @table @strong
 @item Success condition
