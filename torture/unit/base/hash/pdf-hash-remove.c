@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/09 00:02:54 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/10 20:11:19 jemarch"
  *
  *       File:         pdf-hash-remove.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -46,7 +46,7 @@ START_TEST (pdf_hash_remove_001)
 
   fail_if (pdf_hash_remove (table, "key") != PDF_OK);
 
-  pdf_hash_destroy (&table);
+  pdf_hash_destroy (table);
 
 }
 END_TEST
@@ -68,7 +68,7 @@ START_TEST (pdf_hash_remove_002)
 
   fail_if (pdf_hash_remove (table, "ke") != PDF_ERROR);
 
-  pdf_hash_destroy (&table);
+  pdf_hash_destroy (table);
 
 }
 END_TEST
@@ -89,7 +89,7 @@ START_TEST (pdf_hash_remove_003)
 
   fail_if (pdf_hash_remove (table, NULL) != PDF_EBADDATA);
 
-  pdf_hash_destroy (&table);
+  pdf_hash_destroy (table);
 
 }
 END_TEST

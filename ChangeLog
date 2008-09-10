@@ -1,5 +1,90 @@
 2008-09-10  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf.texi (Working with iterators): Example for
+	'pdf_hash_iterator_destroy'.
+	(Basic dispose functions): Example for
+	'pdf_hash_element_dealloc_fn'.
+	(Basic dispose functions): Example for 'pdf_hash_key_dealloc_fn'.
+	(Hash helper functions): Example for 'pdf_hash_add_text'.
+	(Hash helper functions): Example for 'pdf_hash_add_time'.
+	(Hash helper functions): Example for 'pdf_hash_add_list'.
+	(Hash helper functions): Example for 'pdf_hash_add_hash'.
+
+	* torture/unit/Makefile.am (TEST_SUITE_HASH): Rename
+	'pdf_hash_iterator' to 'pdf_hash_iterator_new' and
+	'pdf_hash_iterator_free' to 'pdf_hash_iterator_destroy'.
+
+	* torture/unit/base/hash/pdf-hash-iterator-new.c: File renamed
+	from 'pdf-hash-iterator.c'.
+
+	* torture/unit/base/hash/pdf-hash-iterator.c: Adapt to changes in
+	pdf_hash.
+
+	* torture/unit/base/hash/tsuite-hash.c (tsuite_hash): Likewise.
+
+	* torture/unit/base/hash/pdf-hash-iterator-next.c: Test
+	'pdf_hash_iterator_next_002' removed.
+
+	* doc/gnupdf-tsd.texi (pdf_hash_iterator_next): Removed entry for
+	test 'pdf_hash_iterator_next_002' because it doesnt has sense
+	anymore.
+
+	* torture/unit/base/hash/pdf-hash-iterator-destroy.c: File renamed
+	from 'pdf-hash-iterator-free.c'.
+
+	* src/base/pdf-hash.c (pdf_hash_iterator_new): Renamed from
+	'pdf_hash_iterator'.
+	(pdf_hash_iterator_destroy): Renamed from 'pdf_hash_iterator_free'.
+
+	* src/base/pdf-hash.h: 'pdf_hash_iterator_next' should receive a
+	'pdf_hash_iterator_t' value, not a pointer to it.
+	'pdf_hash_iterator_free' should receive a 'pdf_hash_iterator_t',
+	not a pointer to it.
+	Function 'pdf_hash_iterator' renamed to 'pdf_hash_iterator_new'.
+
+	* doc/gnupdf.texi (Creating and Destroying Hash Tables): Example
+	for 'pdf_hash_destroy'.
+	(Hash Table properties): Example for 'pdf_hash_size'.
+	(Working with keys): Example for 'pdf_hash_key_p'.
+	(Working with keys): Example for 'pdf_hash_rename'.
+	(Adding and removing elements): Example for 'pdf_hash_add'.
+	(Adding and removing elements): Example for 'pdf_hash_remove'.
+	(Searching elements): Example for 'pdf_hash_search'.
+	(Working with iterators): Example for 'pdf_hash_iterator'.
+
+	* src/base/pdf-hash-helper.c (hash_dispose_fn): Use the new
+	version of 'pdf_hash_destroy'.
+
+	* torture/unit/base/hash/pdf-hash-iterator.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-size.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-search.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-rename.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-remove.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-new.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-key-p.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-iterator-next.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-iterator-free.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-destroy.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-add.c: Likewise.
+
+	* src/base/pdf-hash.h: 'pdf_hash_destroy' should not receive a
+	pointer to a 'pdf_hash_t' but a 'pdf_hash_t' value.
+
+	* src/base/pdf-hash.c (pdf_hash_destroy): Likewise.
+
+	* doc/gnupdf.texi (Creating and Destroying Hash Tables): Example
+	for 'pdf_hash_new'.
+
 	* src/base/pdf-time.c (pdf_time_dup): Likewise.
 
 	* src/base/pdf-time-string.c (pdf_time_get_century_in_sliding_window): Likewise.

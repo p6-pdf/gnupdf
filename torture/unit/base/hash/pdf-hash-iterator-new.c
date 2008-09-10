@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/09 00:02:16 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/10 20:49:54 jemarch"
  *
  *       File:         pdf-hash-iterator.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -44,11 +44,10 @@ START_TEST (pdf_hash_iterator_001)
   
   pdf_hash_new (NULL, &table);
 
-  fail_if (pdf_hash_iterator (table, &itr) != PDF_OK);
+  fail_if (pdf_hash_iterator_new (table, &itr) != PDF_OK);
 
-  pdf_hash_destroy (&table);
-  pdf_hash_iterator_free(&itr);
-
+  pdf_hash_iterator_destroy (itr);
+  pdf_hash_destroy (table);
 }
 END_TEST
 
@@ -66,9 +65,9 @@ START_TEST (pdf_hash_iterator_002)
   
   pdf_hash_new (NULL, &table);
 
-  fail_if (pdf_hash_iterator (table, NULL) != PDF_EBADDATA);
+  fail_if (pdf_hash_iterator_new (table, NULL) != PDF_EBADDATA);
 
-  pdf_hash_destroy (&table);
+  pdf_hash_destroy (table);
 
 }
 END_TEST
@@ -78,7 +77,7 @@ END_TEST
  * Test case creation function
  */
 TCase *
-test_pdf_hash_iterator (void)
+test_pdf_hash_iterator_new (void)
 {
   TCase *tc = tcase_create("pdf_hash_iterator");
   tcase_add_test(tc, pdf_hash_iterator_001);

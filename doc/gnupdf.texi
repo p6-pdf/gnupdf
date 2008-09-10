@@ -1312,12 +1312,18 @@ Invalid @var{table} pointer.
 @end table
 @item Usage example
 @example
-XXX
+pdf_hash_t hash;
+
+/* Create an instance of a hash without a disposal function */
+if (pdf_hash_new (NULL, &hash) != PDF_OK)
+   @{
+      /* Error creating the hash table */
+   @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_hash_destroy (pdf_hash_t *@var{table})
+@deftypefun pdf_status_t pdf_hash_destroy (pdf_hash_t @var{table})
 
 Destroy a hash table. The elements of the table are disposed first.
 
@@ -1325,7 +1331,7 @@ Destroy a hash table. The elements of the table are disposed first.
 @item Parameters
 @table @var
 @item table
-A hash table pointer.
+A hash table.
 @end table
 @item Returns
 A pdf status value:
@@ -1335,12 +1341,20 @@ The operation succeeded.
 @end table
 @item Usage example
 @example
-XXX
+pdf_hash_t hash;
+
+if (pdf_hash_new (NULL, &hash) == PDF_OK)
+   @{
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+   @}
+else
+   @{
+      /* Error creating the hash table */
+   @}
 @end example
 @end table
 @end deftypefun
-
-
 
 @node Hash Table properties
 @subsection Hash Table properties
@@ -1359,7 +1373,19 @@ A hash table.
 The number of entries.
 @item Usage example
 @example
-XXX
+pdf_hash_t hash;
+
+/* Create a new hash */
+if (pdf_hash_new (NULL, &hash) == PDF_OK)
+   @{
+      /* Add some elements to the hash */
+      pdf_hash_add (hash, "first-key", "first-value", NULL);
+      pdf_hash_add (hash, "second-key", "second-value", NULL);
+      pdf_hash_add (hash, "third-key", "third-key", NULL);
+
+      /* This call should return 3 */
+      pdf_hash_size (hash);
+   @}
 @end example
 @end table
 @end deftypefun
@@ -1389,7 +1415,23 @@ There is no element associated with @var{key}.
 @end table
 @item Usage example
 @example
-XXX
+pdf_hash_t hash;
+
+/* Create a new hash */
+if (pdf_hash_new (NULL, &hash) == PDF_OK)
+   @{
+      /* Add some elements to the hash */
+      pdf_hash_add (hash, "a-key", "a-value", NULL);
+
+      if (pdf_hash_key_p (hash, "a-key"))
+         @{
+            /* The program enters here */
+         @}
+      if (pdf_hash_key_p (hash, "x-key"))
+         @{
+            /* The program doesnt reach this */
+         @}
+   @}
 @end example
 @end table
 @end deftypefun
@@ -1420,7 +1462,32 @@ Either @var{table} or a key string is invalid or NULL.
 @end table
 @item Usage example
 @example
-XXX
+pdf_hash_t hash;
+
+/* Create a new hash */
+if (pdf_hash_new (NULL, &hash) == PDF_OK)
+   @{
+      /* Add an element to the hash */
+      pdf_hash_add (hash, "a-key", "a-value", NULL);
+
+      if (pdf_hash_key_p (hash, "a-key"))
+         @{
+            /* The program enters here */
+         @}
+
+      /* Rename the key */
+      pdf_hash_rename (hash, "a-key", "b-key");
+
+      if (pdf_hash_key_p (hash, "a-key"))
+         @{
+            /* The program doesnt enter here */
+         @}
+
+      if (pdf_hash_key_p (hash, "b-key"))
+         @{
+            /* The program enters here */
+         @}
+   @}
 @end example
 @end table
 @end deftypefun
@@ -1456,7 +1523,16 @@ Either @var{table}, @var{key} or @var{element} is invalid.
 @end table
 @item Usage example
 @example
-XXX
+pdf_hash_t hash;
+
+/* Create a new hash */
+if (pdf_hash_new (NULL, &hash) == PDF_OK)
+   @{
+      /* Add some elements to the hash */
+      pdf_hash_add (hash, "first-key", "first-value", NULL);
+      pdf_hash_add (hash, "second-key", "second-value", NULL);
+      pdf_hash_add (hash, "third-key", "third-key", NULL);
+   @}
 @end example
 @end table
 @end deftypefun
@@ -1485,7 +1561,17 @@ The @var{key} wasn't found.
 @end table
 @item Usage example
 @example
-XXX
+pdf_hash_t hash;
+
+/* Create a new hash */
+if (pdf_hash_new (NULL, &hash) == PDF_OK)
+   @{
+      /* Add an element to the hash... */
+      pdf_hash_add (hash, "a-key", "a-value", NULL);
+
+      /* And remove it */
+      pdf_hash_remove (hash, "a-key");
+   @}
 @end example
 @end table
 @end deftypefun
@@ -1519,7 +1605,18 @@ The @var{key} wasn't found.
 @end table
 @item Usage example
 @example
-XXX
+pdf_hash_t hash;
+char *elem;
+
+/* Create a new hash */
+if (pdf_hash_new (NULL, &hash) == PDF_OK)
+   @{
+      /* Add an element to the hash... */
+      pdf_hash_add (hash, "a-key", "a-value", NULL);
+
+      /* Get the element from the hash */
+      pdf_hash_search (hash, "a-key", (void **) &elem);
+   @}
 @end example
 @end table
 @end deftypefun
@@ -1527,7 +1624,7 @@ XXX
 @node Working with iterators
 @subsection Working with iterators
 
-@deftypefun pdf_status_t pdf_hash_iterator (const pdf_hash_t @var{table}, pdf_hash_iterator_t @var{*iterator})
+@deftypefun pdf_status_t pdf_hash_iterator_new (const pdf_hash_t @var{table}, pdf_hash_iterator_t @var{*iterator})
 
 Creates an iterator over the keys of @var{table} and saves it in @var{iterator}. Keys composed only by numbers are returned first followed by keys in the order imposed by the ``strcmp()'' function.
 
@@ -1551,7 +1648,20 @@ Either @var{iterator} is NULL or @var{table} is invalid.
 @end table
 @item Usage example
 @example
-XXX
+pdf_hash_t hash;
+pdf_hash_iterator_t hash_iter;
+
+/* Create a new hash */
+if (pdf_hash_new (NULL, &hash) == PDF_OK)
+   @{
+      /* Add some elements to the hash */
+      pdf_hash_add (hash, "first-key", "first-value", NULL);
+      pdf_hash_add (hash, "second-key", "second-value", NULL);
+      pdf_hash_add (hash, "third-key", "third-key", NULL);
+
+      /* Get an iterator to the first element of the hash */
+      pdf_hash_iterator_new (hash, &hash_iter);
+   @}
 @end example
 @end table
 @end deftypefun
@@ -1580,12 +1690,30 @@ There are no more keys to traverse over.
 @end table
 @item Usage example
 @example
-XXX
+pdf_hash_t hash;
+pdf_hash_iterator_t hash_iter;
+pdf_char_t *key;
+
+/* Create a new hash */
+if (pdf_hash_new (NULL, &hash) == PDF_OK)
+   @{
+      /* Add some elements to the hash */
+      pdf_hash_add (hash, "first-key", "first-value", NULL);
+      pdf_hash_add (hash, "second-key", "second-value", NULL);
+      pdf_hash_add (hash, "third-key", "third-key", NULL);
+
+     /* Traverse all the values of the hash with an iterator */
+     pdf_hash_iterator_new (hash, &hash_iter);
+     while (pdf_hash_iterator_next (hash_iter, &key) != PDF_ERROR)
+      @{
+         /* key contains the next key */
+      @}
+   @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_hash_iterator_free (pdf_hash_iterator_t *@var{iterator})
+@deftypefun pdf_status_t pdf_hash_iterator_destroy (pdf_hash_iterator_t *@var{iterator})
 
 Free all resources used by @var{iterator}. 
 
@@ -1603,11 +1731,26 @@ The operation succeeded.
 @end table
 @item Usage example
 @example
-XXX
+pdf_hash_t hash;
+pdf_hash_iterator_t hash_iter;
+
+/* Create a new hash */
+if (pdf_hash_new (NULL, &hash) == PDF_OK)
+   @{
+      /* Add some elements to the hash */
+      pdf_hash_add (hash, "first-key", "first-value", NULL);
+      pdf_hash_add (hash, "second-key", "second-value", NULL);
+      pdf_hash_add (hash, "third-key", "third-key", NULL);
+
+      /* Get an iterator to the first element of the hash */
+      pdf_hash_iterator_new (hash, &hash_iter);
+
+      /* Destroy the iterator */
+      pdf_hash_iterator_destroy (hash_iter);
+   @}
 @end example
 @end table
 @end deftypefun
-
 
 @node Basic dispose functions
 @subsection Basic dispose functions
@@ -1630,7 +1773,28 @@ A pointer to the element being freed.
 Nothing.
 @item Usage example
 @example
-XXX
+pdf_hash_t hash;
+pdf_char_t *elem;
+
+/* Create a new hash */
+if (pdf_hash_new (NULL, &hash) == PDF_OK)
+   @{
+      /* Allocate memory for a value to be inserted into the hash */
+      elem = pdf_alloc (sizeof(pdf_char_t) * 4);
+      strcpy ((char *) elem, "abc");
+
+      /* Add an element to the hash, specifying
+         pdf_hash_element_dealloc_fn as its disposal 
+         function */
+      pdf_hash_add (hash,
+                    "a-key",
+                    (void *) elem,
+                    pdf_hash_element_dealloc_fn);
+
+      /* Destroy the hash (the disposal function invokes pdf_dealloc
+         in the allocated string */
+      pdf_hash_destroy (hash);
+   @}
 @end example
 @end table
 @end deftypefun
@@ -1649,18 +1813,37 @@ A pointer to the element being freed.
 Nothing.
 @item Usage example
 @example
-XXX
+pdf_hash_t hash;
+pdf_char_t *key;
+
+/* Create a new hash */
+if (pdf_hash_new (pdf_hash_key_dealloc_fn, &hash) == PDF_OK)
+   @{
+      /* Allocate memory for a key to be used into the hash */
+      key = pdf_alloc (sizeof(pdf_char_t) * 4);
+      strcpy ((char *) elem, "abc");
+
+      /* Add an element to the hash, using the key */
+      pdf_hash_add (hash, key, "abc", NULL); 
+
+      /* Destroy the hash (the key disposal function invokes pdf_dealloc
+         in the allocated string */
+      pdf_hash_destroy (hash);
+   @}
 @end example
 @end table
 @end deftypefun
 
-
 @node Hash helper functions
 @subsection Hash helper functions
 
-These are specific functions for adding different types of elements (types defined by the library). They guarantee that when an element of one of these types is removed from a hash table the correct disposal function is called.
+These are specific functions for adding different types of elements
+(types defined by the library). They guarantee that when an element of
+one of these types is removed from a hash table the correct disposal
+function is called.
 
-NOTE: If you are going to use the element after the table containing the element is destroyed, in that case don't use these functions.
+NOTE: If you are going to use the element after the table containing
+the element is destroyed, in that case don't use these functions.
 
 @deftypefun pdf_status_t pdf_hash_add_text (pdf_hash_t @var{table}, const char @var{*key}, const pdf_text_t @var{*elt})
 
@@ -1688,7 +1871,25 @@ Either @var{table}, @var{key} or @var{elt} is invalid.
 @end table
 @item Usage example
 @example
-XXX
+pdf_hash_t hash;
+pdf_text_t elem;
+
+/* Create a new hash */
+if (pdf_hash_new (NULL, &hash) == PDF_OK)
+   @{
+      /* Create the element for the hash */
+      pdf_text_new_from_unicode ("abc", 3,
+                                 PDF_TEXT_UTF8,
+                                 &hash);
+      
+      /* Add an element to the hash, specifying
+         pdf_hash_element_dealloc_fn as its disposal 
+         function */
+      pdf_hash_add_text (hash, "a-key", &elem);
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+   @}
 @end example
 @end table
 @end deftypefun
@@ -1720,7 +1921,21 @@ Either @var{table}, @var{key} or @var{elt} is invalid.
 @end table
 @item Usage example
 @example
-XXX
+pdf_hash_t hash;
+pdf_time_t elem;
+
+/* Create a new hash */
+if (pdf_hash_new (NULL, &hash) == PDF_OK)
+   @{
+      /* Create the element for the hash */
+      pdf_time_new (&elem);
+      
+      /* Add an element to the hash */
+      pdf_hash_add_time (hash, "a-key", &elem);
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+   @}
 @end example
 @end table
 @end deftypefun
@@ -1753,7 +1968,21 @@ Either @var{table}, @var{key} or @var{elt} is invalid.
 @end table
 @item Usage example
 @example
-XXX
+pdf_hash_t hash;
+pdf_list_t elem;
+
+/* Create a new hash */
+if (pdf_hash_new (NULL, &hash) == PDF_OK)
+   @{
+      /* Create the element for the hash */
+      pdf_list_new (&elem);
+      
+      /* Add an element to the hash */
+      pdf_hash_add_list (hash, "a-key", &elem);
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+   @}
 @end example
 @end table
 @end deftypefun
@@ -1785,7 +2014,21 @@ Either @var{table}, @var{key} or @var{elt} is invalid.
 @end table
 @item Usage example
 @example
-XXX
+pdf_hash_t hash;
+pdf_hash_t elem;
+
+/* Create a new hash */
+if (pdf_hash_new (NULL, &hash) == PDF_OK)
+   @{
+      /* Create the element for the hash */
+      pdf_hash_new (&elem);
+      
+      /* Add an element to the hash */
+      pdf_hash_add_hash (hash, "a-key", &elem);
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+   @}
 @end example
 @end table
 @end deftypefun

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/09 00:01:49 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/10 20:44:20 jemarch"
  *
  *       File:         pdf-hash-iterator-next.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -46,38 +46,15 @@ START_TEST (pdf_hash_iterator_next_001)
   
   pdf_hash_new (NULL, &table);
   pdf_hash_add (table, "key", "val",NULL);
-  pdf_hash_iterator (table, &itr);
+  pdf_hash_iterator_new (table, &itr);
 
-  fail_if (pdf_hash_iterator_next (&itr, (void *) &key) != PDF_OK);
+  fail_if (pdf_hash_iterator_next (itr, (void *) &key) != PDF_OK);
 
-  pdf_hash_destroy (&table);
-  pdf_hash_iterator_free(&itr);
-
-}
-END_TEST
-
-/*
- * Test: pdf_hash_iterator_next_002
- * Description:
- *   Try to iterate over a NULL iterator.
- * Success condition:
- *   Returns PDF_EBADDATA
- */
-START_TEST (pdf_hash_iterator_next_002)
-{
-  pdf_hash_t table;
-  char *key;
-  
-  pdf_hash_new (NULL, &table);
-  pdf_hash_add (table, "key", "val",NULL);
-
-  fail_if (pdf_hash_iterator_next (NULL, (void *) &key) != PDF_EBADDATA);
-
-  pdf_hash_destroy (&table);
+  pdf_hash_destroy (table);
+  pdf_hash_iterator_destroy (itr);
 
 }
 END_TEST
-
 
 /*
  * Test: pdf_hash_iterator_next_003
@@ -93,13 +70,12 @@ START_TEST (pdf_hash_iterator_next_003)
  
   pdf_hash_new (NULL, &table);
   pdf_hash_add (table, "key", "val",NULL);
-  pdf_hash_iterator (table, &itr);
+  pdf_hash_iterator_new (table, &itr);
 
-  fail_if (pdf_hash_iterator_next (&itr, NULL) != PDF_EBADDATA);
+  fail_if (pdf_hash_iterator_next (itr, NULL) != PDF_EBADDATA);
 
-  pdf_hash_destroy (&table);
-  pdf_hash_iterator_free(&itr);
-
+  pdf_hash_iterator_destroy (itr);
+  pdf_hash_destroy (table);
 }
 END_TEST
 
@@ -112,7 +88,6 @@ test_pdf_hash_iterator_next (void)
 {
   TCase *tc = tcase_create("pdf_hash_iterator_next");
   tcase_add_test(tc, pdf_hash_iterator_next_001);
-  tcase_add_test(tc, pdf_hash_iterator_next_002);
   tcase_add_test(tc, pdf_hash_iterator_next_003);
   return tc;
 }

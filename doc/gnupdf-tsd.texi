@@ -4213,16 +4213,6 @@ Returns PDF_OK
 @end table
 @end deffn
 
-
-@deffn Test pdf_hash_iterator_next_002
-Try to iterate over a NULL iterator.
-@table @strong
-@item Success condition
-Returns PDF_EBADDATA
-@end table
-@end deffn
-
-
 @deffn Test pdf_hash_iterator_next_003
 Try to iterate over an iterator given a NULL key pointer.
 @table @strong
