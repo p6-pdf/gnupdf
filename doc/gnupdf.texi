@@ -4910,25 +4910,31 @@ Generalized ASN1 date.
 @node Time Creation and Destruction
 @subsection Time Creation and Destruction
 
-@deftypefun pdf_time_t pdf_time_new (void)
+@deftypefun pdf_status_t pdf_time_new (pdf_time_t *@var{time})
 Create a new time and set it to the Epoch: Jan 1 1970-01-01 00:00:00 UTC
 
 @table @strong
 @item Parameters
-None.
-
+@table @var
+@item time
+The time object that will contain the newly created instance.
+@end table
 @item Returns
-The newly created time object.
-If an error occurs then @code{NULL} is returned.
+A pdf status value:
+@table @code
+@item PDF_OK
+The time object was successfully instantiated.
+@item PDF_ENOMEM
+Not enough memory to perform the requested operation.
+@end table
 @item Usage example
 @example
 pdf_time_t mytime;
 
-mytime = pdf_time_new ();
-if (mytime == NULL)
-@{
-  /* Error */
-@}
+if (pdf_time_new (&mytime) != PDF_OK)
+   @{
+     /* Error */
+   @}
 @end example
 @end table
 @end deftypefun

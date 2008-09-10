@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/28 22:27:26 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/10 15:47:49 jemarch"
  *
  *       File:         pdf-time.c
  *       Date:         Mon Apr 28 23:23:04 2008
@@ -479,33 +479,38 @@ pdf_time_init(void)
 /* --------------------- Time Creation and Destruction ---------------------- */
 
 /* Create new pdf_time_t object */
-pdf_time_t
-pdf_time_new (void)
+pdf_status_t
+pdf_time_new (pdf_time_t *element)
 {
   /* Allocate object & Initialize all contents */
-  pdf_time_t element = (pdf_time_t) pdf_alloc (sizeof(struct pdf_time_s));
-  if(element != NULL)
+  *element = (pdf_time_t) pdf_alloc (sizeof(struct pdf_time_s));
+  if (*element == NULL)
     {
-      /* Create pdf_i64_t */
-      element->seconds = pdf_i64_new(0,0);
-      pdf_time_clear(element);  
+      /* Not enough memory condition */
+      return PDF_ENOMEM;
     }
 
-  /* Set output element...*/
-  return element;
+  /* Create pdf_i64_t */
+  (*element)->seconds = pdf_i64_new(0,0);
+  pdf_time_clear(*element);
+
+  /* Success */
+  return PDF_OK;
 }
 
 /* Duplicate pdf_time_t object */
 pdf_time_t
 pdf_time_dup (const pdf_time_t orig)
 {
-  pdf_time_t element = pdf_time_new();
-  if((element != NULL) && \
-     (pdf_time_copy(orig, element)!=PDF_OK))
+  pdf_time_t element;
+
+  if((pdf_time_new (&element) == PDF_OK) &&
+     (pdf_time_copy(orig, element) != PDF_OK))
     {
       pdf_time_destroy(element);
       element = NULL;
     }
+
   return element;
 }
 

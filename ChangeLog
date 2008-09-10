@@ -1,5 +1,15 @@
 2008-09-10  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-time.c (pdf_time_dup): Likewise.
+
+	* src/base/pdf-time-string.c (pdf_time_get_century_in_sliding_window): Likewise.
+
+	* doc/gnupdf.texi (Time Creation and Destruction): Likewise.
+
+	* src/base/pdf-time.c (pdf_time_new): Likewise.
+
+	* src/base/pdf-time.h: Changed to follow the ADT conventions.
+
 	* doc/gnupdf-hg.texi (Spaces vs. Tabs): New section.
 	(Third-party m4 macros): New section.
 
