@@ -210,5 +210,21 @@ and changed src/Makefile.am
 
 Zac Brown: changed doc/gnupdf.texi src/base/pdf-fsys-disk.c
 
-David Vazquez: changed doc/gnupdf.texi
-
+David Vazquez: wrote /torture/unit/base/crypt/
+  /torture/unit/base/crypt/pdf-crypt-cipher-decrypt.c
+  /torture/unit/base/crypt/pdf-crypt-cipher-decrypt-size.c
+  /torture/unit/base/crypt/pdf-crypt-cipher-destroy.c
+  /torture/unit/base/crypt/pdf-crypt-cipher-encrypt.c
+  /torture/unit/base/crypt/pdf-crypt-cipher-encrypt-size.c
+  /torture/unit/base/crypt/pdf-crypt-cipher-new.c
+  /torture/unit/base/crypt/pdf-crypt-cipher-setkey.c
+  /torture/unit/base/crypt/pdf-crypt-init.c
+  /torture/unit/base/crypt/pdf-crypt-md-md5.c
+  /torture/unit/base/crypt/tsuite-crypt.c
+  /src/base/pdf-crypt.c
+  /src/base/pdf-crypt-c-aesv2.c
+  /src/base/pdf-crypt-c-aesv2.h
+  /src/base/pdf-crypt-c-v2.c
+  /src/base/pdf-crypt-c-v2.h
+  /src/base/pdf-crypt.h
+changed doc/gnupdf.texi

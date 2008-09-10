@@ -76,6 +76,7 @@ Indices
 * Hash Module::
 * Error Module::
 * Types Module::
+* Crypt Module::
 @end menu
 
 @node Memory Allocation Module
@@ -3178,7 +3179,7 @@ Compare two different text objects, non-case-sensitive.
 * pdf_list_add_at::
 * pdf_list_add_first::
 * pdf_list_add_last::
-* pdf_list_new::
+* pdf_list_create::
 * pdf_list_destroy::
 * pdf_list_get_at::
 * pdf_list_indexof_from_to::
@@ -3256,10 +3257,10 @@ We get the right pdf_list_size().
 @end table
 @end deffn
 
-@node pdf_list_new
-@subsubsection pdf_list_new
+@node pdf_list_create
+@subsubsection pdf_list_create
 
-@deffn Test pdf_list_new_001
+@deffn Test pdf_list_create_001
 Try to create an empty list.
 @table @strong
 @item Success condition
@@ -3267,7 +3268,7 @@ Returns PDF_OK
 @end table
 @end deffn
 
-@deffn Test pdf_list_new_002
+@deffn Test pdf_list_create_002
 Try to create an empty list given a NULL list pointer.
 @table @strong
 @item Success condition
@@ -3275,7 +3276,7 @@ Returns PDF_EBADDATA
 @end table
 @end deffn
 
-@deffn Test pdf_list_new_003
+@deffn Test pdf_list_create_003
 Try to create an empty list allowing duplicates.
 @table @strong
 @item Success condition
@@ -3962,7 +3963,7 @@ Returns PDF_EBADDATA
 @subsection Hash Module
 
 @menu
-* pdf_hash_new::
+* pdf_hash_create::
 * pdf_hash_detroy::
 * pdf_hash_size::
 * pdf_hash_key_p::
@@ -3975,10 +3976,10 @@ Returns PDF_EBADDATA
 * pdf_hash_iterator_free::
 @end menu
 
-@node pdf_hash_new
-@subsubsection pdf_hash_new
+@node pdf_hash_create
+@subsubsection pdf_hash_create
 
-@deffn Test pdf_hash_new_001
+@deffn Test pdf_hash_create_001
 Try to create an empty hash.
 @table @strong
 @item Success condition
@@ -3987,7 +3988,7 @@ Returns PDF_OK
 @end deffn
 
 
-@deffn Test pdf_hash_new_002
+@deffn Test pdf_hash_create_002
 Try to create an empty hash with a NULL pointer.
 @table @strong
 @item Success condition
@@ -4601,6 +4602,224 @@ The call should not produce an error
 The call should not produce an error
 @end table
 @end deffn
+
+
+
+@node Crypt Module
+@subsection Crypt Module
+
+@menu
+* pdf_crypt_init::
+* pdf_crypt_cipher_new::
+* pdf_crypt_cipher_destroy::
+* pdf_crypt_cipher_setkey::
+* pdf_crypt_cipher_encrypt_size::
+* pdf_crypt_cipher_decrypt_size::
+* pdf_crypt_cipher_encrypt::
+* pdf_crypt_cipher_decrypt::
+* pdf_crypt_md_new::
+* pdf_crypt_md_hash::
+* pdf_crypt_md_destroy::
+@end menu
+
+@node pdf_crypt_init
+@subsubsection pdf_crypt_init
+
+@deffn Test pdf_crypt_init_001
+Initialize the module.
+@table @strong
+@item Success condition
+Returns PDF_OK.
+@end table
+@end deffn
+
+
+@node pdf_crypt_cipher_new
+@subsubsection pdf_crypt_cipher_new
+
+@deffn Test pdf_crypt_cipher_new_001
+Create an AESV2 cipher.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@deffn Test pdf_crypt_cipher_new_002
+Create a V2 cipher.
+@table @strong
+@item Success condition
+Returns PDF_OK.
+@end table
+@end deffn
+
+
+@node pdf_crypt_cipher_destroy
+@subsubsection pdf_crypt_cipher_destroy
+
+@deffn Test pdf_crypt_cipher_destroy_001
+Destroy a cipher.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+
+@node pdf_crypt_cipher_encrypt_size
+@subsubsection pdf_crypt_cipher_encrypt_size
+
+@deffn Test pdf_crypt_cipher_encrypt_size_001
+Get the ciphered buffer size for an empty input buffer (AESV2).
+@table @strong
+@item Success condition
+Returns 32
+@end table
+@end deffn
+
+@deffn Test pdf_crypt_cipher_encrypt_size_002
+Get the ciphered buffer size for a 15 bytes buffer (AESV2).
+@table @strong
+@item Success condition
+Returns 32
+@end table
+@end deffn
+
+@deffn Test pdf_crypt_cipher_encrypt_size_003
+Get the ciphered buffer size for an empty buffer (V2).
+@table @strong
+@item Success condition
+Returns 0
+@end table
+@end deffn
+
+@deffn Test pdf_crypt_cipher_encrypt_size_004
+Get the ciphered buffer size for a 15 bytes buffer in a (V2).
+@table @strong
+@item Success condition
+Returns 15
+@end table
+@end deffn
+
+
+@node pdf_crypt_cipher_setkey
+@subsubsection pdf_crypt_cipher_setkey
+
+@deffn Test pdf_crypt_cipher_setkey_001
+Try set a empty key for a cipher (AESV2).
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+
+@deffn Test pdf_crypt_cipher_setkey_001
+Set a key for a cipher (AESV2).
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+
+
+
+@node pdf_crypt_cipher_decrypt_size
+@subsubsection pdf_crypt_cipher_decrypt_size
+
+@deffn Test pdf_crypt_cipher_decrypt_size_001
+@table @strong
+Get the plain buffer size for a 32 bytes ciphered buffer (AESV2).
+@item Success condition
+Returns 0
+@end table
+@end deffn
+
+@deffn Test pdf_crypt_cipher_decrypt_size_002
+@table @strong
+Get the plain buffer size for a 15 bytes ciphered buffer (V2).
+@item Success condition
+Returns 15
+@end table
+@end deffn
+
+
+@node pdf_crypt_cipher_encrypt
+@subsubsection pdf_crypt_cipher_encrypt
+
+@deffn Test pdf_crypt_cipher_encrypt_001
+@table @strong
+Encrypt an empty buffer (AESV2).
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@deffn Test pdf_crypt_cipher_encrypt_002
+@table @strong
+Encrypt an empty buffer (V2).
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+
+@node pdf_crypt_cipher_decrypt
+@subsubsection pdf_crypt_cipher_decrypt
+
+@deffn Test pdf_crypt_cipher_decrypt_001
+@table @strong
+Decrypt an ciphered empty buffer (AESV2).
+@item Success condition
+Returns PDF_OK and the length of output buffer is zero.
+@end table
+@end deffn
+
+@deffn Test pdf_crypt_cipher_decrypt_002
+@table @strong
+Decrypt an ciphered empty buffer (V2).
+@item Success condition
+Returns PDF_OK and the length of output buffer is zero.
+@end table
+@end deffn
+
+
+@node pdf_crypt_md_new
+@subsubsection pdf_crypt_md_new
+
+@deffn Test pdf_crypt_md_new_001
+@table @strong
+Create a new message-digester.
+@item Success condition
+Returns PDF_OK.
+@end table
+@end deffn
+
+
+@node pdf_crypt_md_hash
+@subsubsection pdf_crypt_md_hash
+
+@deffn Test pdf_crypt_md_hash_001
+@table @strong
+Compute the md5 of an empty buffer.
+@item Success condition
+Returns PDF_OK and output buffer matches.
+@end table
+@end deffn
+
+
+@node pdf_crypt_md_destroy
+@subsubsection pdf_crypt_md_destroy
+
+@deffn Test pdf_crypt_md_destroy_001
+@table @strong
+Destroy a message-digest descriptor.
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
 
 
 @node Subsystem Testing

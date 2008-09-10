@@ -1,3 +1,18 @@
+2008-09-10  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-hg.texi (Spaces vs. Tabs): New section.
+	(Third-party m4 macros): New section.
+
+	* m4/libgcrypt.m4: Added from the libgcrypt distribution.
+
+2008-09-09  David Vazquez  <davazp@gmail.com>
+
+	* src/base/pdf-crypt.h (pdf_crypt_md_new): New function.
+	(pdf_crypt_md_hash): New function.
+	(pdf_crypt_md_destroy): New function.
+
+	* doc/gnupdf-tsd.texi (Crypt Module): New section.
+
 2008-09-09  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf-hg.texi (Generating a Bazaar Merge Directive): New
@@ -219,6 +234,43 @@
 	* src/base/pdf-types.h: Add PDF host type for BSD operating
 	systems and include sys/param.h to get specific OS details to
 	determine whether to set PDF_HOST_BSD.
+
+2008-08-29  David Vazquez  <davazp@gmail.com>
+
+	* torture/unit/runtests.c: Add test suite crypt.
+
+	* torture/unit/base/crypt/tsuite-crypt.c: New file.
+
+	* src/base/pdf-crypt-c-v2.h: New file.
+
+	* src/base/pdf-crypt-c-v2.c: New file.
+
+	* src/base/pdf-crypt-c-aesv2.h: New file.
+
+	* src/base/pdf-crypt-c-aesv2.c: New file.
+
+	* doc/gnupdf.texi (Creating and destroying Ciphers): Rename
+	pdf_crypt_algo_e by pdf_crypt_cipher_algo_t.
+	pdf_crypt_cipher_encrypt and pdf_crypt_cipher_decrypt functions
+	return pdf_size_t.
+
+	* src/Makefile.am (AM_CFLAGS): Flags for libgcrypt added.
+	(libgnupdf_la_LIBADD): Libgcrypt library added.
+
+	* configure.ac: Check for libgcrypt library added.
+
+	* src/base/pdf-crypt.c: New file.
+
+	* src/base/pdf-crypt.h: New file.
+	(pdf_crypt_init): Implemented function.
+	(pdf_crypt_cipher_new): Implemented function.
+	(pdf_crypt_cipher_setkey): Implemented function.
+	(pdf_crypt_cipher_encrypt_size): Implemented function.
+	(pdf_crypt_cipher_decrypt_size): Implemented function.
+	(pdf_crypt_cipher_encrypt): Implemented function.
+	(pdf_crypt_cipher_decrypt): Implemented function.
+	(pdf_crypt_cipher_destroy): Implemented function.
+	(pdf_crypt_md_md5): Implemented function.
 
 2008-08-29  Jose E. Marchesi  <jemarch@gnu.org>
 
