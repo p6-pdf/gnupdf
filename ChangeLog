@@ -1,5 +1,7 @@
 2008-09-10  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf-hg.texi (Spaces vs. Tabs): New section.
+
 	* m4/libgcrypt.m4: Added from the libgcrypt distribution.
 
 2008-09-09  David Vazquez  <davazp@gmail.com>

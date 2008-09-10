@@ -64,6 +64,7 @@ a good level of coherence in the codebase.
 
 @menu
 * File Headers::
+* Spaces vs. Tabs::
 * Naming Functions::
 * Abstract Data Types::
 @end menu
@@ -111,6 +112,32 @@ template-expansion time.
 A one-sentence brief description of the contents of the file. This
 description should not exceed one physical line of text.
 @end table
+
+@node Spaces vs. Tabs
+@section Spaces vs. Tabs
+
+It is preferable to use blank characters instead of tabs to indent the
+source code: the interpretation of the actual width of a tab is up to
+the viewer program.
+
+Please use blank characters when writing code to be included in GNU
+PDF software. 
+
+If you use Emacs you can tell it to insert spaces instead of tabs
+including:
+
+@example
+(setq-default indent-tabs-mode nil)
+@end example
+
+in your @file{.emacs}.
+
+If you use GNU indent to indent your sources you can use the
+@code{--nut} option:
+
+@example
+$ indent --nut [rest-of-parameters] [source-files]
+@end example
 
 @node Naming Functions
 @section Naming Functions
