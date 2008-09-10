@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/23 23:10:18 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/10 21:45:12 jemarch"
  *
  *       File:         tsuite-alloc.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -26,6 +26,9 @@
 
 #include <check.h>
 
+extern TCase *test_pdf_alloc (void);
+extern TCase *test_pdf_realloc (void);
+extern TCase *test_pdf_dealloc (void);
 
 Suite *
 tsuite_alloc ()
@@ -33,6 +36,9 @@ tsuite_alloc ()
   Suite *s;
 
   s = suite_create("alloc");
+  suite_add_tcase (s, test_pdf_alloc());
+  suite_add_tcase (s, test_pdf_realloc());
+  suite_add_tcase (s, test_pdf_dealloc());
 
   return s;
 }

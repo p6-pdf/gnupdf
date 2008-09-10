@@ -162,6 +162,10 @@ TEST_SUITE_CRYPT = base/crypt/pdf-crypt-init.c \
 		   base/crypt/pdf-crypt-md-hash.c \
 		   base/crypt/pdf-crypt-md-destroy.c
 
+TEST_SUITE_ALLOC = base/alloc/pdf-alloc.c \
+                   base/alloc/pdf-realloc.c \
+                   base/alloc/pdf-dealloc.c
+
 TEST_ENVIRONMENT = CHARSETALIASDIR=$(top_srcdir)/lib
 
 TEST_FILES = $(TEST_SUITE_LIST) \
@@ -169,7 +173,8 @@ TEST_FILES = $(TEST_SUITE_LIST) \
              $(TEST_SUITE_HASH) \
              $(TEST_SUITE_ERROR) \
 	     $(TEST_SUITE_TYPES) \
-             $(TEST_SUITE_CRYPT)
+             $(TEST_SUITE_CRYPT) \
+             $(TEST_SUITE_ALLOC)
 
 TSUITE_FILES = base/alloc/tsuite-alloc.c \
                base/list/tsuite-list.c \

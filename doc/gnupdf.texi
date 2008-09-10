@@ -2244,7 +2244,25 @@ Invalid @var{node} pointer.
 @end table
 @item Usage example
 @example
-XXX
+pdf_list_t list;
+pdf_list_node_t node;
+int elem;
+
+/* Create the list */
+if (pdf_list_new (list_element_equal_p,
+                  list_element_destroy,
+                  PDF_FALSE,  /* Allow duplicates */
+                  &list) == PDF_OK)
+   @{
+      /* Insert an element into the list */
+      pdf_list_add_first (list, (void *) &elem, NULL);
+
+      /* Search for that element into the list */
+      if (pdf_list_search (list, (void *) &elem, &node) == PDF_OK)
+         @{
+            /* The program should reach this place */
+         @}
+   @}
 @end example
 @end table
 @end deftypefun
