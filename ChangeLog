@@ -1,3 +1,7 @@
+2008-09-10  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* m4/libgcrypt.m4: Added from the libgcrypt distribution.
+
 2008-09-09  David Vazquez  <davazp@gmail.com>
 
 	* src/base/pdf-crypt.h (pdf_crypt_md_new): New function.
