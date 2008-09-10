@@ -47,9 +47,36 @@ GNU PDF Library Hackers Guide
 @end ifnottex
 
 @menu
+* Use of Autotools::
 * Coding Conventions::
 * Sending Patches::
 @end menu
+
+@node Use of Autotools
+@chapter Use of Autotools
+
+The build system of the GNU PDF software uses the GNU build utilities
+(otherwise known as the GNU Autotools). This chapter contains some
+guidelines to apply when incorporating changes into the codebase.
+
+@menu
+* Third-party m4 macros::
+@end menu
+
+@node Third-party m4 macros
+@section Third-party m4 macros
+
+Sometimes it is useful to use third-party m4 macros provided by some
+build dependency (such as libgcrypt that provides an
+@code{AM_PATH_LIBGCRYPT} macro).
+
+In that situation we are introducing a dependency in @emph{bootstrap}
+time, and it is not desirable: the dependencies should be checked in
+@emph{configure} time.
+
+Any third-party m4 file should be copied in @file{libgnupdf/m4/} and
+put under version control. In that way we avoid the dependency in
+@emph{bootstrap} time.
 
 @node Coding Conventions
 @chapter Coding Conventions
