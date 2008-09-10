@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/28 22:27:29 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/10 15:39:24 jemarch"
  *
  *       File:         pdf-time.h
  *       Date:         Mon Apr 28 23:23:04 2008
@@ -107,8 +107,8 @@ pdf_time_init(void);
 /* --------------------- Time Creation and Destruction ---------------------- */
 
 /* Create new pdf_time_t object */
-pdf_time_t
-pdf_time_new (void);
+pdf_status_t
+pdf_time_new (pdf_time_t *time);
 
 /* Duplicate pdf_time_t object */
 pdf_time_t
