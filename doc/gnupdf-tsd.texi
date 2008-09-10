@@ -103,13 +103,26 @@ The call should not produce an error.
 @subsubsection pdf_realloc
 
 @deffn Test pdf_realloc_001
-Reallocate some bytes.
+Get more memory.
 @table @strong
 @item Success condition
-The call should not produce an error.
+@itemize @bullet
+@item The call should not produce an error.
+@item The previous contents of the buffer should still be there.
+@end itemize
 @end table
 @end deffn
 
+@deffn Test pdf_realloc_002
+Reduce the size of a memory buffer.
+@table @strong
+@item Success condition
+@itemize @bullet
+@item The call should not produce an error.
+@item The truncated previous contents of the buffer should still be there.
+@end itemize
+@end table
+@end deffn
 
 @node pdf_dealloc
 @subsubsection pdf_dealloc
