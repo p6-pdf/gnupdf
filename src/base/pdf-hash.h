@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/08 23:56:00 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/10 20:36:54 jemarch"
  *
  *       File:         pdf-hash.h
  *       Date:         Sat Apr  12 12:22:05 2008
@@ -68,7 +68,7 @@ pdf_status_t
 pdf_hash_new (pdf_hash_key_dispose_fn_t dispose_key_fn, pdf_hash_t *table);
 
 pdf_status_t
-pdf_hash_destroy (pdf_hash_t *table);
+pdf_hash_destroy (pdf_hash_t table);
 
 
 /* Hash Table properties */
@@ -105,13 +105,13 @@ pdf_hash_search (const pdf_hash_t table, const char *key, const void **elem_poin
 /* Working with iterators  */
 
 pdf_status_t
-pdf_hash_iterator (const pdf_hash_t table, pdf_hash_iterator_t *iterator);
+pdf_hash_iterator_new (const pdf_hash_t table, pdf_hash_iterator_t *iterator);
 
 pdf_status_t
-pdf_hash_iterator_next (pdf_hash_iterator_t *iterator, const char **key);
+pdf_hash_iterator_next (pdf_hash_iterator_t iterator, const char **key);
 
 pdf_status_t
-pdf_hash_iterator_free (pdf_hash_iterator_t *iterator);
+pdf_hash_iterator_destroy (pdf_hash_iterator_t iterator);
 
 /* Basic dispose functions */
 

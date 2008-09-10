@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/09 00:02:30 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/10 20:10:47 jemarch"
  *
  *       File:         pdf-hash-key-p.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -46,7 +46,7 @@ START_TEST (pdf_hash_key_p_001)
  
   fail_if (pdf_hash_key_p (table, "key") != PDF_TRUE);
 
-  pdf_hash_destroy (&table);
+  pdf_hash_destroy (table);
 }
 END_TEST
 
@@ -67,7 +67,7 @@ START_TEST (pdf_hash_key_p_002)
  
   fail_if (pdf_hash_key_p (table, "ke") != PDF_FALSE);
 
-  pdf_hash_destroy (&table);
+  pdf_hash_destroy (table);
 }
 END_TEST
 

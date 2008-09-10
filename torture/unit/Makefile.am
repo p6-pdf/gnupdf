@@ -70,9 +70,9 @@ TEST_SUITE_HASH = base/hash/pdf-hash-new.c \
 		  base/hash/pdf-hash-search.c \
 		  base/hash/pdf-hash-key-p.c \
 		  base/hash/pdf-hash-rename.c \
-		  base/hash/pdf-hash-iterator.c \
+		  base/hash/pdf-hash-iterator-new.c \
 		  base/hash/pdf-hash-iterator-next.c \
-		  base/hash/pdf-hash-iterator-free.c
+		  base/hash/pdf-hash-iterator-destroy.c
 
 TEST_SUITE_LIST = base/list/pdf-list-add-first.c \
                   base/list/pdf-list-add-at.c \
