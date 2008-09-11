@@ -2295,7 +2295,33 @@ Invalid @var{node} pointer.
 @end table
 @item Usage example
 @example
-XXX
+pdf_list_t list;
+pdf_list_node_t node;
+int elem1;
+int elem2;
+int elem3;
+
+if (pdf_list_new (list_element_equal_p,
+                  list_element_destroy,
+                  PDF_FALSE,  /* Allow duplicates */
+                  &list) == PDF_OK)
+   @{
+      /* Insert several elements into the list */
+      pdf_list_add_last (list, (void *) &elem1, NULL);
+      pdf_list_add_last (list, (void *) &elem2, NULL);
+      pdf_list_add_last (list, (void *) &elem3, NULL);
+
+
+      /* Search for an element into the list */
+      if (pdf_list_search_from (list,
+                                (void *) &elem1,
+                                1,
+                                &node) == PDF_OK)
+         @{
+            /* The program should never reach this place, since 
+               elem1 occupies the first position (0) in the list */
+         @}
+   @}
 @end example
 @end table
 @end deftypefun
@@ -2333,7 +2359,34 @@ Invalid @var{node} pointer.
 @end table
 @item Usage example
 @example
-XXX
+pdf_list_t list;
+pdf_list_node_t node;
+int elem1;
+int elem2;
+int elem3;
+int elem4;
+
+if (pdf_list_new (list_element_equal_p,
+                  list_element_destroy,
+                  PDF_FALSE,  /* Allow duplicates */
+                  &list) == PDF_OK)
+   @{
+      /* Insert several elements into the list */
+      pdf_list_add_last (list, (void *) &elem1, NULL);
+      pdf_list_add_last (list, (void *) &elem2, NULL);
+      pdf_list_add_last (list, (void *) &elem3, NULL);
+      pdf_list_add_last (list, (void *) &elem4, NULL);
+
+      /* Search for an element into the list */
+      if (pdf_list_search_from_to (list,
+                                   (void *) &elem4,
+                                   1, 3,
+                                   &node) == PDF_OK)
+         @{
+            /* The program should never reach this place, since 
+               elem4 occupies the last position (3) in the list */
+         @}
+   @}
 @end example
 @end table
 @end deftypefun
@@ -2364,7 +2417,29 @@ Invalid @var{next} pointer.
 @end table
 @item Usage example
 @example
-XXX
+pdf_list_t list;
+pdf_list_node_t node_first;
+pdf_list_node_t node_second;
+int elem1;
+int elem2;
+
+if (pdf_list_new (list_element_equal_p,
+                  list_element_destroy,
+                  PDF_FALSE,  /* Allow duplicates */
+                  &list) == PDF_OK)
+   @{
+      /* Insert several elements into the list */
+      pdf_list_add_last (list, (void *) &elem1, NULL);
+      pdf_list_add_last (list, (void *) &elem2, NULL);
+
+      /* Get the node containing "elem1" */
+      pdf_list_search (list, (void *) &elem1, &node_first);
+
+      /* Get the next node in the list */
+      pdf_list_next_node (list, first_node, &node_second);
+
+      /* Now node_second is the node containing elem2 */
+   @}
 @end example
 @end table
 @end deftypefun
@@ -2395,7 +2470,29 @@ Invalid @var{prev} pointer.
 @end table
 @item Usage example
 @example
-XXX
+pdf_list_t list;
+pdf_list_node_t node_first;
+pdf_list_node_t node_second;
+int elem1;
+int elem2;
+
+if (pdf_list_new (list_element_equal_p,
+                  list_element_destroy,
+                  PDF_FALSE,  /* Allow duplicates */
+                  &list) == PDF_OK)
+   @{
+      /* Insert several elements into the list */
+      pdf_list_add_last (list, (void *) &elem1, NULL);
+      pdf_list_add_last (list, (void *) &elem2, NULL);
+
+      /* Get the node containing "elem2" */
+      pdf_list_search (list, (void *) &elem2, &node_second);
+
+      /* Get the previous node in the list */
+      pdf_list_previous_node (list, second_node, &node_first);
+
+      /* Now node_first is the node containing elem2 */
+   @}
 @end example
 @end table
 @end deftypefun
@@ -2426,7 +2523,27 @@ Invalid or NULL pointers.
 @end table
 @item Usage Example
 @example
-XXX
+pdf_list_t list;
+pdf_list_node_t node_first;
+pdf_list_node_t node_second;
+int elem1;
+int elem2;
+pdf_size_t index_of_elem2;
+
+if (pdf_list_new (list_element_equal_p,
+                  list_element_destroy,
+                  PDF_FALSE,  /* Allow duplicates */
+                  &list) == PDF_OK)
+   @{
+      /* Insert several elements into the list */
+      pdf_list_add_last (list, (void *) &elem1, NULL);
+      pdf_list_add_last (list, (void *) &elem2, NULL);
+
+      /* Get the index of elem2 */
+      pdf_list_indexof (list, (void *) &elem2, &size_of_elem2);
+
+      /* Now size_of_elem2 contains 1 */
+   @}
 @end example
 @end table
 @end deftypefun
@@ -2461,7 +2578,36 @@ Invalid or NULL pointers.
 @end table
 @item Usage example
 @example
-XXX
+pdf_list_t list;
+pdf_list_node_t node_first;
+pdf_list_node_t node_second;
+int elem1;
+int elem2;
+int elem3;
+int elem4;
+pdf_size_t index_of_elem1;
+
+if (pdf_list_new (list_element_equal_p,
+                  list_element_destroy,
+                  PDF_FALSE,  /* Allow duplicates */
+                  &list) == PDF_OK)
+   @{
+      /* Insert several elements into the list */
+      pdf_list_add_last (list, (void *) &elem1, NULL);
+      pdf_list_add_last (list, (void *) &elem2, NULL);
+      pdf_list_add_last (list, (void *) &elem3, NULL);
+      pdf_list_add_last (list, (void *) &elem4, NULL);
+
+      /* Get the index of elem1 */
+      if (pdf_list_indexof_from (list,
+                                 1, 
+                                 (void *) &elem1,
+                                 &size_of_elem1) == PDF_ENONODE)
+         @{
+            /* The program reaches this point, since elem1 occupies
+               the first position into the list */
+         @}
+   @}
 @end example
 @end table
 @end deftypefun
@@ -2498,7 +2644,36 @@ Invalid or NULL pointers.
 @end table
 @item Usage example
 @example
-XXX
+pdf_list_t list;
+pdf_list_node_t node_first;
+pdf_list_node_t node_second;
+int elem1;
+int elem2;
+int elem3;
+int elem4;
+pdf_size_t index_of_elem4;
+
+if (pdf_list_new (list_element_equal_p,
+                  list_element_destroy,
+                  PDF_FALSE,  /* Allow duplicates */
+                  &list) == PDF_OK)
+   @{
+      /* Insert several elements into the list */
+      pdf_list_add_last (list, (void *) &elem1, NULL);
+      pdf_list_add_last (list, (void *) &elem2, NULL);
+      pdf_list_add_last (list, (void *) &elem3, NULL);
+      pdf_list_add_last (list, (void *) &elem4, NULL);
+
+      /* Get the index of elem4 */
+      if (pdf_list_indexof_from_to (list,
+                                    1, 3,
+                                    (void *) &elem1,
+                                    &size_of_elem4) == PDF_ENONODE)
+         @{
+            /* The program reaches this point, since elem4 occupies
+               the last position (3) into the list */
+         @}
+   @}
 @end example
 @end table
 @end deftypefun
@@ -2522,12 +2697,30 @@ A node of @var{list}.
 The element value represented by @var{node}.
 @item Usage example
 @example
-XXX
+pdf_list_t list;
+pdf_list_node_t node;
+int elem1;
+int *pointer_to_elem1;
+
+if (pdf_list_new (list_element_equal_p,
+                  list_element_destroy,
+                  PDF_FALSE,  /* Allow duplicates */
+                  &list) == PDF_OK)
+   @{
+      /* Insert an element into the list */
+      pdf_list_add_last (list, (void *) &elem1, NULL);
+
+      /* Get the node of the element of the list */
+      pdf_list_search (list, (void *) &elem1, &node);
+
+      /* Get the value out of the node */
+      pointer_to_elem1 = (int *) pdf_list_node_value (list, node);
+   @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_get_at (const pdf_list_t @var{list}, const pdf_size_t @var{position}, const void @var{**value})
+@deftypefun pdf_status_t pdf_list_get_at (const pdf_list_t @var{list}, const pdf_size_t @var{position}, void @var{**value})
 
 Get the element at a given position in the list.
 
@@ -2554,7 +2747,21 @@ Invalid @var{value} pointer.
 @end table
 @item Usage example
 @example
-XXX
+pdf_list_t list;
+int elem1;
+int *pointer_to_elem1;
+
+if (pdf_list_new (list_element_equal_p,
+                  list_element_destroy,
+                  PDF_FALSE,  /* Allow duplicates */
+                  &list) == PDF_OK)
+   @{
+      /* Insert an element into the list */
+      pdf_list_add_last (list, (void *) &elem1, NULL);
+
+      /* Get the first element of the list */
+      pdf_list_get_at (list, 0, &pointer_to_elem_1);
+   @}
 @end example
 @end table
 @end deftypefun

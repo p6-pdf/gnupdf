@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/21 00:53:59 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/11 15:19:37 jemarch"
  *
  *       File:         pdf-types.h
  *       Date:         Sun Feb 10 21:30:00 2008
@@ -40,6 +40,17 @@
 #else
 #define INLINE
 #endif /* HAVE_INLINE */
+
+/* Host dependent definitions to be used */
+
+#if defined _WIN32 || defined __WIN32__
+ #define PDF_HOST_WIN32
+ #include <windows.h>
+#endif
+
+#if defined(BSD)
+ #define PDF_HOST_BSD
+#endif
 
 #define PDF_TRUE 1
 #define PDF_FALSE 0
@@ -409,19 +420,6 @@ pdf_i64_to_i32(const pdf_i64_t bignum);
 
 /* PDF_EOF to store an EOF marker in integers */
 #define PDF_EOF -1
-
-
-/* Host dependent definitions to be used */
-
-#if defined _WIN32 || defined __WIN32__
- #define PDF_HOST_WIN32
- #include <windows.h>
-#endif
-
-#if defined(BSD)
- #define PDF_HOST_BSD
-#endif
-
 
 /* END PUBLIC */
 
