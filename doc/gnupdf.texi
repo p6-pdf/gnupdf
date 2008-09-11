@@ -2697,12 +2697,30 @@ A node of @var{list}.
 The element value represented by @var{node}.
 @item Usage example
 @example
-XXX
+pdf_list_t list;
+pdf_list_node_t node;
+int elem1;
+int *pointer_to_elem1;
+
+if (pdf_list_new (list_element_equal_p,
+                  list_element_destroy,
+                  PDF_FALSE,  /* Allow duplicates */
+                  &list) == PDF_OK)
+   @{
+      /* Insert an element into the list */
+      pdf_list_add_last (list, (void *) &elem1, NULL);
+
+      /* Get the node of the element of the list */
+      pdf_list_search (list, (void *) &elem1, &node);
+
+      /* Get the value out of the node */
+      pointer_to_elem1 = (int *) pdf_list_node_value (list, node);
+   @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_get_at (const pdf_list_t @var{list}, const pdf_size_t @var{position}, const void @var{**value})
+@deftypefun pdf_status_t pdf_list_get_at (const pdf_list_t @var{list}, const pdf_size_t @var{position}, void @var{**value})
 
 Get the element at a given position in the list.
 
@@ -2729,7 +2747,21 @@ Invalid @var{value} pointer.
 @end table
 @item Usage example
 @example
-XXX
+pdf_list_t list;
+int elem1;
+int *pointer_to_elem1;
+
+if (pdf_list_new (list_element_equal_p,
+                  list_element_destroy,
+                  PDF_FALSE,  /* Allow duplicates */
+                  &list) == PDF_OK)
+   @{
+      /* Insert an element into the list */
+      pdf_list_add_last (list, (void *) &elem1, NULL);
+
+      /* Get the first element of the list */
+      pdf_list_get_at (list, 0, &pointer_to_elem_1);
+   @}
 @end example
 @end table
 @end deftypefun

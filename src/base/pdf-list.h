@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/08 22:40:22 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/11 01:59:23 jemarch"
  *
  *       File:         pdf-list.h
  *       Date:         Sat Mar 1 02:14:35 2008
@@ -109,7 +109,7 @@ pdf_status_t pdf_list_indexof_from_to (const pdf_list_t list, const pdf_size_t s
 /* Element setting and getting functions */
 
 const void * pdf_list_node_value (const pdf_list_t list, const pdf_list_node_t node);
-const pdf_status_t pdf_list_get_at (const pdf_list_t list, const pdf_size_t position, const void **value);
+const pdf_status_t pdf_list_get_at (const pdf_list_t list, const pdf_size_t position, void **value);
 pdf_status_t pdf_list_set_at (pdf_list_t list, const pdf_size_t position,
                               const void* element, pdf_list_node_t *node);
 
@@ -523,7 +523,7 @@ pdf_list_node_value (const pdf_list_t list, const pdf_list_node_t node)
 EXTERN_INLINE pdf_status_t
 pdf_list_get_at (const pdf_list_t list,
                  const pdf_size_t position,
-                 const void **value)
+                 void **value)
 {
   pdf_status_t st;
   

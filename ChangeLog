@@ -1,5 +1,11 @@
 2008-09-11  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf.texi (Setting and Getting List Elements): Example for
+	'pdf_list_get_at'.
+
+	* src/base/pdf-list.h (pdf_list_get_at): value argument to
+	'pdf_list_get_at' should not be qualified with const.
+
 	* doc/gnupdf.texi (Searching for List Elements): Example for
 	'pdf_list_next_node'.
 	(Searching for List Elements): Example for
@@ -9,6 +15,10 @@
 	'pdf_list_indexof_from'.
 	(Searching for List Elements): Example for
 	'pdf_list_indexof_from_to'.
+	(Setting and Getting List Elements): Example for
+	'pdf_list_node_value'.
+	(Setting and Getting List Elements): 'value' argument to
+	pdf_list_get_at should not be const.
 
 2008-09-10  Jose E. Marchesi  <jemarch@gnu.org>
 
