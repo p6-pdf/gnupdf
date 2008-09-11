@@ -1,5 +1,8 @@
 2008-09-11  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-types.h: System-type definitions moved to the
+	beginning of the file.
+
 	* doc/gnupdf.texi (Setting and Getting List Elements): Example for
 	'pdf_list_get_at'.
 
