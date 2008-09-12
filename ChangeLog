@@ -1,3 +1,7 @@
+2008-09-12  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-types.h: New macros PDF_MAX and PDF_MIN.
+
 2008-09-11  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* configure.ac: Minimum required version of libgcrypt relaxed to

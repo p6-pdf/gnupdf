@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/11 02:12:49 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/12 05:02:54 jemarch"
  *
  *       File:         pdf-types.h
  *       Date:         Sun Feb 10 21:30:00 2008
@@ -101,7 +101,15 @@ typedef char pdf_i8_t;
 /* Boolean type */
 typedef unsigned char pdf_bool_t;
 
+/* Utility macros */
 
+#define PDF_MAX(integral1, integral2) \
+  (((integral1) > (integral2)) ?      \
+   (integral1) : (integral2))
+
+#define PDF_MIN(integral1, integral2) \
+  (((integral1) < (integral2)) ?      \
+   (integral1) : (integral2))
 
 /********************** 64-bit type built-in support **************************/
 
