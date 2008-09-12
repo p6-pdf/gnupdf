@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/09 04:18:06 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/11 15:29:47 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -93,7 +93,11 @@ pdf_stm_destroy (pdf_stm_t stm)
   pdf_stm_filter_t filter;
   pdf_stm_filter_t filter_to_delete;
 
-  /* FIXME: Make a flush? */
+  if (stm->mode == PDF_STM_WRITE)
+    {
+      /* Flush the cache */
+      pdf_stm_flush (stm);
+    }
 
   /* Destroy the backend */
   pdf_stm_be_destroy (stm->backend);
