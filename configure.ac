@@ -51,7 +51,7 @@ CHECK_ZLIB
 AM_CONDITIONAL([ZLIB], [test "x$have_zlib" = "xyes"])
 AC_CHECK_LIB(m,exp,,,)
 
-AM_PATH_LIBGCRYPT([1.4.1], have_libgcrypt="yes", have_libgcrypt="no")
+AM_PATH_LIBGCRYPT([1.2.4], have_libgcrypt="yes", have_libgcrypt="no")
 if test x$have_libgcrypt == "xno"; then
 AC_MSG_ERROR([cannot find libgcrypt library. Please install it and rerun `configure'.])
 fi

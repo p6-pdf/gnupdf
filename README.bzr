@@ -19,6 +19,7 @@ Bazaar version of the GNU PDF library:
    texi2html (optional)
    graphviz (optional)
    taskjuggler (optional)
+   libgcrypt >= 1.2.4 (required)
 
 2- Regenerate the configure script:
 
