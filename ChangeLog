@@ -1,3 +1,12 @@
+2008-09-13  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-list.h (pdf_list_get_at): third argument should be
+	'const'.
+
+2008-09-13  David Vazquez  <davazp@gmail.com>
+
+	* src/base/pdf-error.h: Identifiers and strings are kept in a single list.
+
 2008-09-12  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-types.h: New macros PDF_MAX and PDF_MIN.

@@ -2720,7 +2720,7 @@ if (pdf_list_new (list_element_equal_p,
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_get_at (const pdf_list_t @var{list}, const pdf_size_t @var{position}, void @var{**value})
+@deftypefun pdf_status_t pdf_list_get_at (const pdf_list_t @var{list}, const pdf_size_t @var{position}, const void @var{**value})
 
 Get the element at a given position in the list.
 

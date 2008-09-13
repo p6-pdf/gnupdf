@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/11 01:59:23 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/13 20:26:25 jemarch"
  *
  *       File:         pdf-list.h
  *       Date:         Sat Mar 1 02:14:35 2008
@@ -523,7 +523,7 @@ pdf_list_node_value (const pdf_list_t list, const pdf_list_node_t node)
 EXTERN_INLINE pdf_status_t
 pdf_list_get_at (const pdf_list_t list,
                  const pdf_size_t position,
-                 void **value)
+                 const void **value)
 {
   pdf_status_t st;
   
