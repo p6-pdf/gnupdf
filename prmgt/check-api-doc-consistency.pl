@@ -45,15 +45,15 @@ sub clean_docsigs
     # remove info syntax
     $str =~ s/(\@deftypefun |\@var)//g;
     # remove curly brackets
-    $str =~ s/ *(\{|\}) */ /g;
+    $str =~ s/\s*(\{|\})\s*/ /g;
     # remove comma spaces
-    $str =~ s/ *, */,/g;
+    $str =~ s/\s*,\s*/,/g;
     # remove pointer spaces
-    $str =~ s/ *\* */\*/g;
+    $str =~ s/\s*\*\s*/\*/g;
     # remove bracket spaces
-    $str =~ s/ *(\(|\)) */$1/g;
+    $str =~ s/\s*(\(|\))\s*/$1/g;
     # remove word spaces
-    $str =~ s/ *(\w+) +/$1 /g;
+    $str =~ s/\s*(\w+)\s+/$1 /g;
 
     if ($novars == 1){
         # remove variable names
@@ -101,19 +101,20 @@ sub clean_implsigs
     # remove newlines
     $lines =~ tr/\n/ /;
     # remove comma spaces
-    $lines =~ s/ *, */,/g;
+    $lines =~ s/\s*,\s*/,/g;
     # remove pointer spaces
-    $lines =~ s/ *\* */\*/g;
+    $lines =~ s/\s*\*\s*/\*/g;
     # remove bracket spaces
-    $lines =~ s/ *(\(|\)) */$1/g;
+    $lines =~ s/\s*(\(|\))\s*/$1/g;
     # remove word spaces
-    $lines =~ s/ *(\w+) +/$1 /g;
+    $lines =~ s/\s*(\w+)\s+/$1 /g;
 
     if ($novars == 1){
         # remove variable names
         $lines =~ s/(\w+)(,|\))/$2/g;
     }
-
+#    print "\n\n\n";
+#    print $lines . "\n\n\n";
     return ($lines);
 }
 
@@ -244,6 +245,7 @@ foreach my $docsig (@DOCSIGS)
 {
     $matched=0;
     $reg = quotemeta($docsig);
+#    print " >>>> $reg" . "\n";
     foreach my $implsig (@IMPLSIGS){
         if ($implsig =~ m/$reg/){
             $matched = 1;

@@ -1,3 +1,8 @@
+2008-09-13  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* prmgt/check-api-doc-consistency.pl: using '\s' class character
+	in regexs.
+
 2008-09-13  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-list.h (pdf_list_get_at): third argument should be
