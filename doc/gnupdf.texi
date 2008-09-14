@@ -304,7 +304,7 @@ If there is not enough available memory to satisfy the petition then
 int *p;
 
 p = (int *) pdf_alloc (sizeof(int));
-p = 666;
+*p = 666;
 @end example
 @end table
 @end deftypefun
