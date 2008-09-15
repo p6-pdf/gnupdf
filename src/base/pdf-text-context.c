@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/09 03:26:05 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/15 23:18:35 jemarch"
  *
  *       File:         pdf-text-context.c
  *       Date:         Fri Feb 25 23:58:56 2008
@@ -131,23 +131,27 @@ pdf_text_detect_host_language_and_country(void)
   
   /* Get system default locale name and check it */
   locale_name = gl_locale_name(LC_CTYPE, "LC_CTYPE");
-  if((locale_name == NULL) || \
-     (strlen(locale_name) < 2))
+  if (locale_name == NULL)
     {
-      PDF_DEBUG_BASE("Invalid locale info detected! '%s'",
+      PDF_DEBUG_BASE("Invalid locale info detected! (null)",
                      ((locale_name!=NULL) ? locale_name : "null"));
       return PDF_ETEXTENC;
     }
 
-  /* Store language ID */
-  strncpy((char *)&(text_context.host_language_id[0]), locale_name,
-          PDF_TEXT_HLL-1);
-  /* If available, store country ID */
-  if((strlen(locale_name) >= 5) && \
-     (locale_name[2] == '_'))
+  if ((strcmp (locale_name, "C") != 0) &&
+      (strcmp (locale_name, "POSIX") != 0))
     {
-      strncpy((char *)&(text_context.host_country_id[0]), &locale_name[3],
+      /* Store language ID */
+      strncpy((char *)&(text_context.host_language_id[0]), locale_name,
               PDF_TEXT_HLL-1);
+
+      /* If available, store country ID */
+      if((strlen(locale_name) >= 5) &&          \
+         (locale_name[2] == '_'))
+        {
+          strncpy((char *)&(text_context.host_country_id[0]), &locale_name[3],
+                  PDF_TEXT_HLL-1);
+        }
     }
 
   PDF_DEBUG_BASE("TextContext: Locale name is '%s'", locale_name);
