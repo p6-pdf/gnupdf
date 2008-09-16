@@ -1,3 +1,17 @@
+2008-09-15  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* AUTHORS: Updated.
+
+	* src/base/pdf-text-context.c
+	(pdf_text_detect_host_language_and_country): Take into account the
+	default POSIX locale, setting an empty language and an empty
+	country in that case.
+
+2008-09-14  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Memory Allocation): Fixed a typo in the usage
+	example for 'pdf_alloc'.
+
 2008-09-13  Gerardo E. Gidoni  <gerel@gnu.org>
 
 	* prmgt/check-api-doc-consistency.pl: using '\s' class character
