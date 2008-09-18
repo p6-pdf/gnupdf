@@ -1,3 +1,47 @@
+2008-09-19  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Encryption and decryption): Add missing
+	'result_size' parameter to the prototype of
+	'pdf_crypt_cipher_decrypt'.
+	(Encryption and decryption): Fix the return value type for
+	'pdf_crypt_cipher_decrypt_size'.
+	(Creating and destroying Ciphers): Fix parameters for
+	'pdf_crypt_cipher_new'.
+	(Memory Allocation): Fix parameters for 'pdf_alloc'.
+	(Memory Allocation): Fix parameters for 'pdf_realloc'.
+	(Working with iterators): Fix parameters for
+	'pdf_hash_iterator_next'.
+	(Working with iterators): Fix parameters for
+	'pdf_hash_iterator_destroy'.
+	(Managing Time Values): Fix name of parameters for
+	'pdf_time_get_utc_cal'.
+	(Managing Time Span Values): Fix parameters for
+	'pdf_time_span_negate'.
+	(Managing Time Span Values): Fix return type for
+	'pdf_time_span_to_secs'.
+	(Platform-specific functions): Fix parameters for
+	'pdf_time_w32_set_from_filetime'.
+	(Getting File System Properties): Fix parameters for
+	'pdf_fsys_get_free_space'.
+	(Getting File System Item Properties): Fix deftypefun entry for
+	'pdf_fsys_item_props_to_hash'.
+	(File System Utility Functions): Fix parameters for
+	'pdf_fsys_get_temp_path_name'.
+	(File Properties Management): Fix return value type for
+	'pdf_fsys_file_get_size'.
+	(Changing the Size of a File): Fix the prototype for
+	'pdf_fsys_file_set_size'.
+
+	* src/base/pdf-crypt.h (pdf_crypt_md_destroy): Rename 'hd' to
+	'md' to be consistent with the reference manual.
+
+	* AUTHORS: Updated.
+
+	* prmgt/fly2org: New file.
+
+	* doc/gnupdf.texi (Message digest functions): Fix prototype for
+	'pdf_crypt_md_hash'.
+
 2008-09-15  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* AUTHORS: Updated.

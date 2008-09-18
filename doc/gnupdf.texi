@@ -309,7 +309,7 @@ p = (int *) pdf_alloc (sizeof(int));
 @end table
 @end deftypefun
 
-@deftypefun void pdf_dealloc (void *@var{pointer})
+@deftypefun void pdf_dealloc (const void *@var{pointer})
 
 Deallocates heap memory.
 
@@ -336,7 +336,7 @@ pdf_dealloc (p);
 @end table
 @end deftypefun
 
-@deftypefun void* pdf_realloc (void *@var{pointer}, const pdf_size_t @var{size})
+@deftypefun void* pdf_realloc (const void *@var{pointer}, const pdf_size_t @var{size})
 
 Reallocates memory.
 
@@ -1666,7 +1666,7 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_hash_iterator_next (pdf_hash_iterator_t *@var{iterator}, const char **@var{key})
+@deftypefun pdf_status_t pdf_hash_iterator_next (pdf_hash_iterator_t @var{iterator}, const char **@var{key})
 
 Retrieves the next key from @var{iterator}.
 
@@ -1713,7 +1713,7 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_hash_iterator_destroy (pdf_hash_iterator_t *@var{iterator})
+@deftypefun pdf_status_t pdf_hash_iterator_destroy (pdf_hash_iterator_t @var{iterator})
 
 Free all resources used by @var{iterator}. 
 
@@ -5802,7 +5802,7 @@ pdf_time_get_local_cal (mytime, &cal);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_get_utc_cal (const pdf_time_t @var{time_var}, struct pdf_time_cal_s *@var{p_cal_time})
+@deftypefun pdf_status_t pdf_time_get_utc_cal (const pdf_time_t @var{time_var}, struct pdf_time_cal_s *@var{p_utc_time})
 Get the UTC calendar time of a given time variable.
 
 @table @strong
@@ -6336,7 +6336,7 @@ pdf_time_span_set_from_i32 (&span, -10); /* The span is -10 seconds long */
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_span_negate (pdf_time_span_t @var{span})
+@deftypefun pdf_status_t pdf_time_span_negate (pdf_time_span_t *@var{span})
 
 Make a positive time span into a negative one or make a negative time
 span into a positive one.
@@ -6346,7 +6346,7 @@ span into a positive one.
 
 @table @var
 @item span
-A properly created time span variable.
+A pointer to a properly created time span variable.
 @end table
 
 @item Returns
@@ -6475,7 +6475,7 @@ pdf_time_span_diff (span1, span2, span_diff);
 @end table
 @end deftypefun
 
-@deftypefun pdf_64_t pdf_time_span_to_secs (const pdf_time_span_t @var{span})
+@deftypefun pdf_i64_t pdf_time_span_to_secs (const pdf_time_span_t @var{span})
 
 Get the value of a time span in seconds. 
 
@@ -6728,7 +6728,7 @@ if (pdf_time_cal_span_diff (&span1,
 @node Platform-specific functions
 @subsection Platform-specific functions
 
-@deftypefun pdf_status_t pdf_time_w32_set_from_filetime (pdf_time_t @var{time_var}, FILETIME *@var{p_filetime})
+@deftypefun pdf_status_t pdf_time_w32_set_from_filetime (pdf_time_t @var{time_var}, const FILETIME *@var{p_filetime})
 This function will initialize @var{time_var} to the given Filetime epoch in UTC timescale.
 
 This function is only available in Windows OS.
@@ -6930,7 +6930,7 @@ directory).
 @node Getting File System Properties
 @subsubsection Getting File System Properties
 
-@deftypefun pdf_size_t pdf_fsys_get_free_space (pdf_fsys_t @var{file_system}, pdf_text_t @var{path_name})
+@deftypefun pdf_size_t pdf_fsys_get_free_space (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name})
 
 Get the free storage space in the volume containing @var{path_name}.
 
@@ -7174,7 +7174,7 @@ pdf_status_t ret = pdf_fsys_get_item_props (NULL, path, &item_props);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s @var{item_props}, pdf_hash_t @var{props_hash}
+@deftypefun pdf_status_t pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s @var{item_props}, pdf_hash_t @var{props_hash})
 
 Get a PDF hash variable containing the properties of a filesystem
 item.
@@ -7332,7 +7332,7 @@ pdf_bool_t ret = pdf_fsys_item_writable_p (NULL, path);
 @node File System Utility Functions
 @subsubsection File System Utility Functions
 
-@deftypefun pdf_text_t pdf_fsys_get_temp_path_name (pdf_fsys_t @var{file_system})
+@deftypefun pdf_text_t pdf_fsys_get_temp_path_name (pdf_fsys_t @var{filesystem})
 
 Return a path name for a new temporary file in the specified filesystem.
 
@@ -7429,7 +7429,7 @@ filesystem.
 The following functions provides access to several properties of open
 files. 
 
-@deftypefun pdf_status_t pdf_fsys_file_get_size (pdf_fsys_file_t @var{file}, pdf_size_t *@var{size})
+@deftypefun pdf_size_t pdf_fsys_file_get_size (pdf_fsys_file_t @var{file})
 
 Get the size (in number of octects) of a given open file.
 
@@ -7438,15 +7438,9 @@ Get the size (in number of octects) of a given open file.
 @table @var
 @item file
 An open file.
-@item size
-PDF size variable to hold the size of the file.
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
-@end table
+The size of the file in octects.
 @item Usage example
 @example
 XXX
@@ -7713,7 +7707,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_fsys_file_set_size (pdf_fsys_file_t @var{file}, pdf_size_t @var{new_size})
+@deftypefun pdf_status_t pdf_fsys_file_set_size (pdf_fsys_file_t @var{file}, pdf_size_t @var{size})
 
 Resize a given file to a given new size measured in octects.
 
@@ -8491,7 +8485,7 @@ A cipher. It contains data which is required between several calls to
 functions.
 @end deftp
 
-@deftypefun pdf_status_t pdf_crypt_cipher_new (pdf_crypt_cipher_algo_t @var{algorithm}, pdf_crypt_cipher_t *@var{cipher})
+@deftypefun pdf_status_t pdf_crypt_cipher_new (pdf_crypt_cipher_algo_t *@var{algorithm}, pdf_crypt_cipher_t *@var{cipher})
 
 Create a new cipher.
 
@@ -8599,7 +8593,7 @@ function for this parameters.
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_crypt_cipher_decrypt_size (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size})
+@deftypefun pdf_size_t pdf_crypt_cipher_decrypt_size (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{in}, pdf_size_t @var{in_size})
 
 Compute the size for a valid output buffer in
 @code{pdf_crypt_cipher_decrypt} function for the given parameters.
@@ -8658,7 +8652,7 @@ xxx
 @end deftypefun
 
 
-@deftypefun pdf_status_t pdf_crypt_cipher_decrypt (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{out}, pdf_size_t  @var{out_size}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size}, pdf_size_t )
+@deftypefun pdf_status_t pdf_crypt_cipher_decrypt (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{out}, pdf_size_t  @var{out_size}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size}, pdf_size_t *@var{result_size})
 
 Decrypt a buffer. The plain text will be put in @var{out}.
 
@@ -8742,7 +8736,7 @@ xxx
 
 
 
-@deftypefun pdf_status_t pdf_crypt_md_hash (pdf_crypt_md_t *@var{md}, pdf_char_t  *@var{out}, pdf_size_t  @var{out_size}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size})
+@deftypefun pdf_status_t pdf_crypt_md_hash (pdf_crypt_md_t @var{md}, pdf_char_t  *@var{out}, pdf_size_t  @var{out_size}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size})
 
 Compute the message-digest for a given buffer.
 
