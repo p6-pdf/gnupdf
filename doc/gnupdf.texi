@@ -6336,7 +6336,7 @@ pdf_time_span_set_from_i32 (&span, -10); /* The span is -10 seconds long */
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_span_negate (pdf_time_span_t *@var{span})
+@deftypefun pdf_status_t pdf_time_span_negate (pdf_time_span_t *@var{p_span})
 
 Make a positive time span into a negative one or make a negative time
 span into a positive one.
