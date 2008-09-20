@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/20 17:56:56 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/20 20:26:43 jemarch"
  *
  *       File:         pdf-stm-filter.c
  *       Date:         Thu Jun 12 22:13:31 2008
@@ -65,6 +65,7 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
       {
         new->impl.init_fn = pdf_stm_f_null_init;
         new->impl.apply_fn = pdf_stm_f_null_apply;
+        new->impl.finish_fn = pdf_stm_f_null_finish;
         break;
       }
     default:
@@ -175,6 +176,22 @@ pdf_stm_filter_get_tail (pdf_stm_filter_t filter)
     {
       return pdf_stm_filter_get_tail (filter->next);
     }
+}
+
+pdf_status_t
+pdf_stm_filter_finish (pdf_stm_filter_t filter)
+{
+  pdf_status_t ret;
+
+  if (filter->next != NULL)
+    {
+      pdf_stm_filter_finish (filter->next);
+    }
+
+  ret = filter->impl.finish_fn (filter->params,
+                                filter->state,
+                                filter->out);
+  return ret;
 }
 
 /*

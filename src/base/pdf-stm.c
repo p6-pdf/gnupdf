@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/20 20:13:45 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/20 20:21:27 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -38,6 +38,7 @@ static pdf_status_t pdf_stm_init (pdf_size_t buffer_size,
 static inline pdf_stm_t pdf_stm_alloc (void);
 static inline void pdf_stm_dealloc (pdf_stm_t stm);
 static pdf_u32_t pdf_stm_read_peek_char (pdf_stm_t stm, pdf_bool_t peek_p);
+static pdf_size_t pdf_stm_finish (pdf_stm_t stm);
 
 /*
  * Public functions
@@ -98,6 +99,9 @@ pdf_stm_destroy (pdf_stm_t stm)
     {
       /* Flush the cache */
       pdf_stm_flush (stm);
+
+      /* Finish the filters */
+      pdf_stm_finish (stm);
     }
 
   /* Destroy the backend */
@@ -465,6 +469,20 @@ pdf_stm_read_peek_char (pdf_stm_t stm,
   return ret_char;
 }
 
+static pdf_size_t
+pdf_stm_finish (pdf_stm_t stm)
+{
+  pdf_size_t to_write_bytes;
+
+  /* Finish the filter chain */
+  pdf_stm_filter_finish (stm->filter);
+
+  /* Write the data from the cache into the backend */
+  to_write_bytes = stm->cache->wp - stm->cache->rp;
+  return (pdf_stm_be_write (stm->backend,
+                            stm->cache->data + stm->cache->rp,
+                            to_write_bytes));
+}
 
 static inline pdf_stm_t
 pdf_stm_alloc (void)
