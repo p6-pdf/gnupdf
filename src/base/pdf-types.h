@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/20 14:13:06 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/20 14:31:43 jemarch"
  *
  *       File:         pdf-types.h
  *       Date:         Sun Feb 10 21:30:00 2008
@@ -106,8 +106,6 @@ typedef char pdf_i8_t;
 
 /* Boolean type */
 typedef unsigned char pdf_bool_t;
-
-
 
 /********************** 64-bit type built-in support **************************/
 

@@ -40,7 +40,7 @@ Jose E. Marchesi: wrote AUTHORS configure.ac doc/gnupdf-manual.init
   src/base/pdf-fsys-disk.h src/base/pdf-fsys-disk.c
   prmgt/generate-coverage-report torture/unit/base/alloc/pdf-alloc.c
   torture/unit/base/alloc/pdf-realloc.c
-  torture/unit/base/alloc/pdf-dealloc.c
+  torture/unit/base/alloc/pdf-dealloc.c prmgt/fly2org
 and changed src/base/pdf-stm-f-pred.c src/base/pdf-stm-f-pred.h
   src/base/pdf-list.h src/base/pdf-list.c
   torture/unit/base/text/pdf-text-get-unicode.c src/base/pdf-error.h
@@ -108,7 +108,7 @@ and changed src/base/pdf-stm-f-pred.c src/base/pdf-stm-f-pred.h
   torture/unit/base/text/pdf-text-test-data.c
   torture/unit/base/text/tsuite-text.c
   prmgt/check-api-doc-consistency.pl torture/unit/nocheck/README
-  src/base/pdf-hash.h src/base/pdf-hash.c
+  src/base/pdf-hash.h src/base/pdf-hash.c src/base/pdf-text-context.c
 
 Juan Pedro Bolívar Puente: wrote src/base/pdf-stm-f-pred.c
   src/base/pdf-stm-f-pred.h src/base/pdf-stm-f-lzw.c

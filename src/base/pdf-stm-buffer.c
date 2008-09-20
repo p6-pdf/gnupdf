@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/12 05:47:44 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/20 14:33:28 jemarch"
  *
  *       File:         pdf-stm-buffer.c
  *       Date:         Wed Jul 23 23:28:59 2008
@@ -69,6 +69,8 @@ pdf_stm_buffer_rewind (pdf_stm_buffer_t buffer)
 {
   buffer->rp = 0;
   buffer->wp = 0;
+
+  return PDF_OK;
 }
 
 /* End of pdf-stm-buffer.c */
