@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/21 01:41:45 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/20 18:30:54 jemarch"
  *
  *       File:         pdf-stm-be.h
  *       Date:         Wed Jun 18 20:53:27 2008
@@ -69,6 +69,11 @@ pdf_size_t pdf_stm_be_read (pdf_stm_be_t be,
 pdf_size_t pdf_stm_be_write (pdf_stm_be_t be,
                              pdf_char_t *buffer,
                              pdf_size_t bytes);
+
+pdf_off_t pdf_stm_be_seek (pdf_stm_be_t be,
+                           pdf_off_t pos);
+
+pdf_off_t pdf_stm_be_tell (pdf_stm_be_t be);
 
 #endif /* !PDF_STM_BE_H */
 

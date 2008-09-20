@@ -3472,30 +3472,6 @@ XXX
 @node Managing the Filter Chain
 @subsection Managing the Filter Chain
 
-@deftypefun pdf_status_t pdf_stm_uninstall_filters (pdf_stm_t @var{stm})
-
-Uninstall any installed filter in a given stream. 
-
-@table @strong
-@item Parameters
-@table @var
-@item stm
-A stream.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
-
-
 The following functions can be used to build the filter chain of a
 given stream.
 

@@ -186,6 +186,7 @@ Open an existing, readable and writable file for reading and writing.
 * pdf_stm_read::
 * pdf_stm_read_char::
 * pdf_stm_peek_char::
+* pdf_stm_seek::
 @end menu
 
 @node pdf_stm_mem_new
@@ -272,6 +273,28 @@ Peek a character from an empty memory stream.
 @table @strong
 @item Success condition
 The peek character should be @code{PDF_EOF}.
+@end table
+@end deffn
+
+@node pdf_stm_seek
+@subsubsection pdf_stm_seek
+
+@deffn Test pdf_stm_seek_001
+Seek into a memory read stream.
+@table @strong
+@item Success condition
+The seek operation should success.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_seek_002
+Seek to a position beyond the size of the stream
+into a memory read stream.
+@table @strong
+@item Success condition
+The seek operation should success and the seek
+position should be to the last valid position 
+in the stream.
 @end table
 @end deffn
 

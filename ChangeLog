@@ -1,5 +1,31 @@
 2008-09-20  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* torture/unit/base/stm/pdf-stm-seek.c: New file.
+	(START_TEST): New test 'pdf_stm_seek_001'.
+	(START_TEST): New test 'pdf_stm_seek_002'.
+
+	* doc/gnupdf-tsd.texi (pdf_stm_seek): New section.
+
+	* src/base/pdf-stm-be.c (pdf_stm_be_mem_read): Take care about the
+	current position when reading data from the buffer.
+	(pdf_stm_be_mem_write): Take care about the current position when
+	writing data into the buffer.
+
+	* src/base/pdf-stm.c (pdf_stm_seek): New function.
+	(pdf_stm_tell): New function.
+
+	* src/base/pdf-stm-be.c (pdf_stm_be_tell): New function.
+	(pdf_stm_be_seek): New function.
+	(pdf_stm_be_mem_seek): New function.
+	(pdf_stm_be_mem_tell): New function.
+	(pdf_stm_be_file_tell): New function.
+	(pdf_stm_be_file_seek): New function.
+
+	* doc/gnupdf.texi (Managing the Filter Chain): Removed useless
+	function 'pdf_stm_uninstall_filters'.
+
+	* src/base/pdf-stm.h: Likewise.
+
 	* doc/gnupdf-tsd.texi (pdf_stm_read_char): New section.
 	(pdf_stm_peek_char): New section.
 

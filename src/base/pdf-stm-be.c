@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/20 18:01:46 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/20 19:04:25 jemarch"
  *
  *       File:         pdf-stm-be.c
  *       Date:         Wed Jun 18 21:15:16 2008
@@ -19,12 +19,18 @@ static pdf_size_t pdf_stm_be_mem_read (pdf_stm_be_t be,
 static pdf_size_t pdf_stm_be_mem_write (pdf_stm_be_t be,
                                         pdf_char_t *buffer,
                                         pdf_size_t bytes);
+static pdf_off_t pdf_stm_be_mem_seek (pdf_stm_be_t be,
+                                      pdf_off_t pos);
+static pdf_off_t pdf_stm_be_mem_tell (pdf_stm_be_t be);
 static pdf_size_t pdf_stm_be_file_read (pdf_stm_be_t be,
                                         pdf_char_t *buffer,
                                         pdf_size_t bytes);
 static pdf_size_t pdf_stm_be_file_write (pdf_stm_be_t be,
                                          pdf_char_t *buffer,
                                          pdf_size_t bytes);
+static pdf_off_t pdf_stm_be_file_seek (pdf_stm_be_t be,
+                                       pdf_off_t pos);
+static pdf_off_t pdf_stm_be_file_tell (pdf_stm_be_t be);
 
 /*
  * Public functions
@@ -144,6 +150,61 @@ pdf_stm_be_write (pdf_stm_be_t be,
   return written_bytes;
 }
 
+pdf_off_t
+pdf_stm_be_seek (pdf_stm_be_t be,
+                 pdf_off_t pos)
+{
+  pdf_off_t result;
+
+  switch (be->type)
+    {
+    case PDF_STM_BE_MEM:
+      {
+        result =  pdf_stm_be_mem_seek (be, pos);
+        break;
+      }
+    case PDF_STM_BE_FILE:
+      {
+        result = pdf_stm_be_file_seek (be, pos);
+        break;
+      }
+    default:
+      {
+        /* Uh oh */
+        return 0;
+      }
+    }
+
+  return result;
+}
+
+pdf_off_t
+pdf_stm_be_tell (pdf_stm_be_t be)
+{
+  pdf_off_t result;
+
+  switch (be->type)
+    {
+    case PDF_STM_BE_MEM:
+      {
+        result =  pdf_stm_be_mem_tell (be);
+        break;
+      }
+    case PDF_STM_BE_FILE:
+      {
+        result = pdf_stm_be_file_tell (be);
+        break;
+      }
+    default:
+      {
+        /* Uh oh */
+        return 0;
+      }
+    }
+
+  return result;
+}
+
 /*
  * Private functions
  */
@@ -176,7 +237,7 @@ pdf_stm_be_mem_read (pdf_stm_be_t be,
     {
       /* Copy the data */
       strncpy ((char *) buffer,
-               (char *) be->data.mem.buffer,
+               (char *) be->data.mem.buffer + be->data.mem.pos,
                readed_bytes);
 
       be->data.mem.pos += readed_bytes;
@@ -214,7 +275,7 @@ pdf_stm_be_mem_write (pdf_stm_be_t be,
   if (written_bytes != 0)
     {
       /* Copy the data */
-      strncpy ((char *) be->data.mem.buffer,
+      strncpy ((char *) be->data.mem.buffer + be->data.mem.pos,
                (char *) buffer,
                written_bytes);
     }
@@ -295,5 +356,59 @@ pdf_stm_be_file_write (pdf_stm_be_t be,
   return written_bytes;
 }
 
+static pdf_off_t
+pdf_stm_be_mem_seek (pdf_stm_be_t be,
+                     pdf_off_t pos)
+{
+  /* Check the requested position */
+  if (pos >= be->data.mem.size)
+    {
+      pos = be->data.mem.size - 1;
+    }
+  if (pos < 0)
+    {
+      pos = 0;
+    }
+
+  /* Move there */
+  be->data.mem.pos = pos;
+
+  return pos;
+}
+
+static pdf_off_t
+pdf_stm_be_mem_tell (pdf_stm_be_t be)
+{
+  return be->data.mem.pos;
+}
+
+static pdf_off_t
+pdf_stm_be_file_seek (pdf_stm_be_t be,
+                      pdf_off_t pos)
+{
+  pdf_size_t file_size;
+
+  file_size = pdf_fsys_file_get_size (be->data.file.file);
+
+  /* Check the requested position */
+  if (pos < 0)
+    {
+      pos = 0;
+    }
+  if (pos >= file_size)
+    {
+      pos = file_size - 1;
+    }
+
+  be->data.file.pos = pos;
+
+  return pos;
+}
+
+static pdf_off_t
+pdf_stm_be_file_tell (pdf_stm_be_t be)
+{
+  return be->data.file.pos;
+}
 
 /* End of pdf-stm-be.c */

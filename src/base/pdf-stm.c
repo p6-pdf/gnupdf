@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/20 18:06:30 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/20 18:49:04 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -269,6 +269,49 @@ pdf_u32_t
 pdf_stm_peek_char (pdf_stm_t stm)
 {
   return pdf_stm_read_peek_char (stm, PDF_TRUE);
+}
+
+pdf_off_t
+pdf_stm_seek (pdf_stm_t stm,
+              pdf_off_t pos)
+{
+  pdf_off_t new_pos;
+
+  if (stm->mode == PDF_STM_READ)
+    {
+      /* Discard the cache contents */
+      pdf_stm_buffer_rewind (stm->cache);
+
+      /* Seek the backend */
+      new_pos = pdf_stm_be_seek (stm->backend, pos);
+    }
+  else
+    {
+      /* Writing stream */
+      /* FIXME */
+    }
+
+  return new_pos;
+}
+
+pdf_off_t
+pdf_stm_tell (pdf_stm_t stm)
+{
+  pdf_off_t pos;
+  pdf_size_t cache_size;
+
+  if (stm->mode == PDF_STM_READ)
+    {
+      cache_size = stm->cache->wp - stm->cache->rp;
+      pos = pdf_stm_be_tell (stm->backend) + cache_size;
+    }
+  else
+    {
+      /* Writing stream */
+      /* FIXME */
+    }
+
+  return pos;
 }
 
 /*

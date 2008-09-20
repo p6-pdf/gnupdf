@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/20 15:07:51 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/20 18:26:39 jemarch"
  *
  *       File:         pdf-stm.h
  *       Date:         Fri Jul  6 18:37:57 2007
@@ -128,7 +128,6 @@ pdf_off_t pdf_stm_tell (pdf_stm_t stm);
 
 /* Management of the filter chain */
 
-pdf_status_t pdf_stm_uninstall_filters (pdf_stm_t stm);
 pdf_status_t pdf_stm_install_filter (pdf_stm_t stm,
                                      enum pdf_stm_filter_type_e filter_type,
                                      pdf_hash_t filter_params);
