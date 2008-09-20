@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/20 19:59:17 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/20 20:13:45 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -181,58 +181,55 @@ pdf_stm_write (pdf_stm_t stm,
                pdf_char_t *buf,
                pdf_size_t bytes)
 {
-  pdf_bool_t eof_p;
+  pdf_status_t ret;
   pdf_size_t written_bytes;
   pdf_size_t pending_bytes;
-  pdf_stm_buffer_t tail_in;
-  pdf_stm_filter_t tail;
+  pdf_size_t to_write_bytes;
+  pdf_stm_filter_t tail_filter;
+  pdf_stm_buffer_t tail_buffer;
+  pdf_size_t tail_buffer_size;
 
-  /* Get the input buffer of the tail filter */
-  tail = pdf_stm_filter_get_tail (stm->filter);
-  tail_in = pdf_stm_filter_get_in (tail);
-
-  eof_p = PDF_FALSE;
-  written_bytes = 0;
-  while ((written_bytes < bytes) 
-         && (! eof_p))
+  if (stm->mode != PDF_STM_WRITE)
     {
-      pending_bytes = bytes - written_bytes;
+      /* Invalid operation */
+      return 0;
+    }
 
-      /* If the input buffer of the tail filter is full, apply the
-         head */
-      if (pdf_stm_buffer_full_p (tail_in))
+  tail_filter = pdf_stm_filter_get_tail (stm->filter);
+  tail_buffer = pdf_stm_filter_get_in (tail_filter);
+
+  ret = PDF_OK;
+  written_bytes = 0;
+  while ((written_bytes < bytes) &&
+         (ret == PDF_OK))
+    {
+      if (pdf_stm_buffer_eob_p (tail_buffer))
         {
-          while (!pdf_stm_buffer_eob_p (tail_in))
+          /* Flush the cache */
+          tail_buffer_size = tail_buffer->wp - tail_buffer->rp;
+          if (pdf_stm_flush (stm) < tail_buffer_size)
             {
-              if (pdf_stm_filter_apply (stm->filter) == 0)
-                {
-                  /* EOF condition */
-                  eof_p = PDF_TRUE;
-                }
-              else
-                {
-                  /* Write the cache contents into the backend */
-                  if (pdf_stm_be_write (stm->backend,
-                                        stm->cache->data + stm->cache->rp,
-                                        stm->cache->wp - stm->cache->rp)
-                      < stm->cache->wp - stm->cache->rp)
-                    {
-                      /* EOF condition */
-                      eof_p = PDF_TRUE;
-                    }
-                }
+              ret = PDF_EEOF;
             }
         }
 
-      /* In this point the input buffer of the tail filter should be
-         empty. Copy data into that buffer */
-      strncpy ((char *) tail_in->data,
-               (char *) buf + written_bytes,
-               PDF_MIN(pending_bytes, stm->cache->size));
-               
-      written_bytes += PDF_MIN(pending_bytes, stm->cache->size);
-    }
+      if (ret == PDF_OK)
+        {
+          /* Write the data into the tail buffer. Note that at this
+             point the tail buffer should be empty */
+          tail_buffer_size = tail_buffer->wp - tail_buffer->rp;
+          pending_bytes = bytes - written_bytes;
 
+          to_write_bytes = PDF_MIN(pending_bytes, tail_buffer_size);
+
+          strncpy ((char *) tail_buffer->data,
+                   (char *) buf + written_bytes,
+                   to_write_bytes);
+                   
+          written_bytes += to_write_bytes;
+        }
+    }
+  
   return written_bytes;
 }
 
@@ -274,7 +271,7 @@ pdf_stm_flush (pdf_stm_t stm)
           if (written_bytes < cache_size)
             {
               /* There is no room in the backend */
-              ret = PDF_EOF;
+              ret = PDF_EEOF;
             }
         }
     }
