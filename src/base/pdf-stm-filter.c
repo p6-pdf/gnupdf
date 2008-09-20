@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/20 16:37:43 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/20 17:56:56 jemarch"
  *
  *       File:         pdf-stm-filter.c
  *       Date:         Thu Jun 12 22:13:31 2008
@@ -199,6 +199,7 @@ pdf_stm_filter_get_input (pdf_stm_filter_t filter)
                                     filter->in->data,
                                     filter->in->size);
       filter->in->wp = read_bytes;
+      printf("XXX readed from backend %d bytes\n", read_bytes);
       if (read_bytes == 0)
         {
           ret = PDF_EEOF;

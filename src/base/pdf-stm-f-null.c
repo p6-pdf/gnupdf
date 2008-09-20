@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/20 16:35:45 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/20 17:52:13 jemarch"
  *
  *       File:         pdf-stm-f-null.c
  *       Date:         Mon Jul  9 22:01:41 2007
@@ -60,12 +60,16 @@ pdf_stm_f_null_apply (pdf_hash_t params,
   out_size = out->size - out->wp;
 
   bytes_to_copy = PDF_MIN(out_size, in_size);
-  strncpy ((char *) out->data,
-           (char *) in->data,
-           bytes_to_copy);
 
-  in->rp = in->rp + bytes_to_copy;
-  out->wp = out->wp + bytes_to_copy;
+  if (bytes_to_copy != 0)
+    {
+      strncpy ((char *) out->data,
+               (char *) in->data,
+               bytes_to_copy);
+
+      in->rp = in->rp + bytes_to_copy;
+      out->wp = out->wp + bytes_to_copy;
+    }
 
   if (bytes_to_copy < out_size)
     {

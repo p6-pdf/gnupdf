@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/20 15:22:26 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/20 18:12:28 jemarch"
  *
  *       File:         tsuit-stm.c
  *       Date:         Sat Feb 23 21:35:11 2008
@@ -27,6 +27,8 @@
 
 extern TCase *test_pdf_stm_mem_new (void);
 extern TCase *test_pdf_stm_read (void);
+extern TCase *test_pdf_stm_read_char (void);
+extern TCase *test_pdf_stm_peek_char (void);
 
 Suite *
 tsuite_stm ()
@@ -37,6 +39,8 @@ tsuite_stm ()
   
   suite_add_tcase (s, test_pdf_stm_mem_new ());
   suite_add_tcase (s, test_pdf_stm_read ());
+  suite_add_tcase (s, test_pdf_stm_read_char ());
+  suite_add_tcase (s, test_pdf_stm_peek_char ());
 
   return s;
 }

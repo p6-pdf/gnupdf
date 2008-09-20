@@ -184,6 +184,8 @@ Open an existing, readable and writable file for reading and writing.
 @menu
 * pdf_stm_mem_new::
 * pdf_stm_read::
+* pdf_stm_read_char::
+* pdf_stm_peek_char::
 @end menu
 
 @node pdf_stm_mem_new
@@ -232,6 +234,44 @@ two null filters installed.
 @table @strong
 @item Success condition
 The readed data should be consistent.
+@end table
+@end deffn
+
+@node pdf_stm_read_char
+@subsubsection pdf_stm_read_char
+
+@deffn Test pdf_stm_read_char_001
+Read a character from a memory stream.
+@table @strong
+@item Success condition
+The read character should be ok.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_read_char_002
+Read a character from an empty memory stream.
+@table @strong
+@item Success condition
+The read character should be @code{PDF_EOF}.
+@end table
+@end deffn
+
+@node pdf_stm_peek_char
+@subsubsection pdf_stm_peek_char
+
+@deffn Test pdf_stm_peek_char_001
+Peek a character from a memory stream.
+@table @strong
+@item Success condition
+The peek character should be ok.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_peek_char_002
+Peek a character from an empty memory stream.
+@table @strong
+@item Success condition
+The peek character should be @code{PDF_EOF}.
 @end table
 @end deffn
 

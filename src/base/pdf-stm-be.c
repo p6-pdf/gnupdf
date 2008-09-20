@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/27 18:26:57 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/20 18:01:46 jemarch"
  *
  *       File:         pdf-stm-be.c
  *       Date:         Wed Jun 18 21:15:16 2008
@@ -178,6 +178,8 @@ pdf_stm_be_mem_read (pdf_stm_be_t be,
       strncpy ((char *) buffer,
                (char *) be->data.mem.buffer,
                readed_bytes);
+
+      be->data.mem.pos += readed_bytes;
     }
 
   /* Ok, bye bye */

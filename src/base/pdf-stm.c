@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/20 16:38:23 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/20 18:06:30 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -37,6 +37,7 @@ static pdf_status_t pdf_stm_init (pdf_size_t buffer_size,
                                   pdf_stm_t stm);
 static inline pdf_stm_t pdf_stm_alloc (void);
 static inline void pdf_stm_dealloc (pdf_stm_t stm);
+static pdf_u32_t pdf_stm_read_peek_char (pdf_stm_t stm, pdf_bool_t peek_p);
 
 /*
  * Public functions
@@ -168,6 +169,7 @@ pdf_stm_read (pdf_stm_t stm,
   return read_bytes;
 }
 
+
 pdf_size_t
 pdf_stm_write (pdf_stm_t stm,
                pdf_char_t *buf,
@@ -257,6 +259,18 @@ pdf_stm_install_filter (pdf_stm_t stm,
   return PDF_OK;
 }
 
+pdf_u32_t
+pdf_stm_read_char (pdf_stm_t stm)
+{
+  return pdf_stm_read_peek_char (stm, PDF_FALSE);
+}
+
+pdf_u32_t
+pdf_stm_peek_char (pdf_stm_t stm)
+{
+  return pdf_stm_read_peek_char (stm, PDF_TRUE);
+}
+
 /*
  * Private functions
  */
@@ -312,6 +326,40 @@ pdf_stm_init (pdf_size_t cache_size,
 
   return PDF_OK;
 }
+
+static pdf_u32_t
+pdf_stm_read_peek_char (pdf_stm_t stm,
+                        pdf_bool_t peek_p)
+{
+  pdf_status_t ret;
+  pdf_u32_t ret_char;
+
+  /* Is the cache empty? */
+  ret = PDF_OK;
+  if (pdf_stm_buffer_eob_p (stm->cache))
+    {
+      ret = pdf_stm_filter_apply (stm->filter);
+    }
+
+  if (pdf_stm_buffer_eob_p (stm->cache))
+    {
+      ret_char = PDF_EOF;
+    }
+  else
+    {
+      /* Read a character from the cache */
+      ret_char = 
+        (pdf_u32_t) stm->cache->data[stm->cache->rp];
+
+      if (!peek_p)
+        {
+          stm->cache->rp++;
+        }
+    }
+  
+  return ret_char;
+}
+
 
 static inline pdf_stm_t
 pdf_stm_alloc (void)

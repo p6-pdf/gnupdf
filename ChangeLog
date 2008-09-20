@@ -1,5 +1,21 @@
 2008-09-20  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf-tsd.texi (pdf_stm_read_char): New section.
+	(pdf_stm_peek_char): New section.
+
+	* torture/unit/base/stm/pdf-stm-peek-char.c: New file.
+
+	* src/base/pdf-stm.c (pdf_stm_peek_char): New function.
+
+	* src/base/pdf-stm-be.c (pdf_stm_be_mem_read): Advance the
+	internal position pointer after a read.
+
+	* torture/unit/base/stm/pdf-stm-read-char.c: New file.
+	(START_TEST): New test 'pdf_stm_read_char_001'.
+	(START_TEST): New test 'pdf_stm_read_char_002'.
+
+	* src/base/pdf-stm.c (pdf_stm_read_char): New function.
+
 	* doc/gnupdf-tsd.texi (pdf_stm_read): New section.
 	* doc/gnupdf-tsd.texi (pdf_stm_mem_new): New section.
 
