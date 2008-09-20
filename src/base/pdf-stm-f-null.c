@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/20 14:28:31 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/20 16:35:45 jemarch"
  *
  *       File:         pdf-stm-f-null.c
  *       Date:         Mon Jul  9 22:01:41 2007
@@ -49,6 +49,7 @@ pdf_stm_f_null_apply (pdf_hash_t params,
                       pdf_stm_buffer_t in,
                       pdf_stm_buffer_t out)
 {
+  pdf_status_t ret;
   pdf_size_t in_size;
   pdf_size_t out_size;
   pdf_size_t bytes_to_copy;
@@ -66,7 +67,16 @@ pdf_stm_f_null_apply (pdf_hash_t params,
   in->rp = in->rp + bytes_to_copy;
   out->wp = out->wp + bytes_to_copy;
 
-  return PDF_OK;
+  if (bytes_to_copy < out_size)
+    {
+      ret = PDF_EEOF;
+    }
+  else
+    {
+      ret = PDF_OK;
+    }
+
+  return ret;
 }
 
 /* End of pdf_stm_f_null.c */

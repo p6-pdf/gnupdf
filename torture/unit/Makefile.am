@@ -60,7 +60,8 @@ TEST_SUITE_ERROR = base/error/pdf-error.c \
 		   base/error/pdf-perror.c
 
 # Unit tests for the Stream Module test suite
-TEST_SUITE_STM = base/stm/pdf-stm-mem-new.c
+TEST_SUITE_STM = base/stm/pdf-stm-mem-new.c \
+                 base/stm/pdf-stm-read.c
 
 TEST_SUITE_HASH = base/hash/pdf-hash-new.c \
 		  base/hash/pdf-hash-destroy.c \

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/12 15:47:34 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/20 15:07:51 jemarch"
  *
  *       File:         pdf-stm.h
  *       Date:         Fri Jul  6 18:37:57 2007
@@ -87,8 +87,6 @@ struct pdf_stm_s
   pdf_stm_be_t backend;     /* Stream backend */
   pdf_stm_filter_t filter;  /* Filter chain */
   pdf_stm_buffer_t cache;   /* Stream cache */
-  pdf_size_t cache_begin;   
-  pdf_size_t cache_end;
 };
 
 typedef struct pdf_stm_s *pdf_stm_t;

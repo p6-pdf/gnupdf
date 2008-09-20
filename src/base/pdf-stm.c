@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/20 15:03:57 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/20 16:38:23 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -127,40 +127,42 @@ pdf_stm_read (pdf_stm_t stm,
 {
   pdf_size_t read_bytes;
   pdf_size_t pending_bytes;
-  pdf_size_t used_cache;
+  pdf_size_t cache_size;
   pdf_size_t to_copy_bytes;
+  pdf_status_t ret;
 
+  ret = PDF_OK;
   read_bytes = 0;
-  used_cache = 0;
-  to_copy_bytes = 0;
-
-  while (read_bytes < bytes) 
+  while ((read_bytes < bytes) &&
+         (ret == PDF_OK))
     {
       pending_bytes = bytes - read_bytes;
 
       /* If the cache is empty, refill it with filtered data */
-      if (stm->cache_begin == stm->cache_end)
+      if (pdf_stm_buffer_eob_p (stm->cache))
         {
-          stm->cache_begin = 0;
-          stm->cache_end = pdf_stm_filter_apply (stm->filter);
-          
-          if (stm->cache_end == 0)
-            {
-              /* EOF condition from the filter. Exit the read loop */
-              break;
-            }
+          ret = pdf_stm_filter_apply (stm->filter);
         }
-      used_cache = stm->cache_end - stm->cache_begin;
 
-      /* Read data from the cache */
-      to_copy_bytes = (pending_bytes <= used_cache) ?
-        pending_bytes : used_cache;
-      strncpy ((char *) (buf + read_bytes),
-               (char *) stm->cache->data + stm->cache_begin,
-               to_copy_bytes);
+      if (ret != PDF_ERROR)
+        {
+          /* Read data from the cache */
+          pending_bytes = bytes - read_bytes;
+          cache_size = stm->cache->wp - stm->cache->rp;
+          to_copy_bytes = PDF_MIN(pending_bytes, cache_size);
 
-      read_bytes = read_bytes + to_copy_bytes;
-      stm->cache_begin = stm->cache_begin + to_copy_bytes;
+          strncpy ((char *) (buf + read_bytes),
+                   (char *) stm->cache->data + stm->cache->rp,
+                   to_copy_bytes);
+          
+          read_bytes += to_copy_bytes;
+          stm->cache->rp += to_copy_bytes;
+        }
+    }
+
+  if (ret == PDF_ERROR)
+    {
+      read_bytes = 0;
     }
 
   return read_bytes;
@@ -234,6 +236,27 @@ pdf_stm_flush (pdf_stm_t stm)
   return 0;
 }
 
+pdf_status_t
+pdf_stm_install_filter (pdf_stm_t stm,
+                        enum pdf_stm_filter_type_e filter_type,
+                        pdf_hash_t filter_params)
+{
+  pdf_stm_filter_t filter;
+
+  /* Create the new filter */
+  filter = pdf_stm_filter_new (filter_type,
+                               filter_params,
+                               stm->cache->size);
+
+  /* Set the new filter as the new head of the filter chain */
+  pdf_stm_filter_set_next (filter, stm->filter);
+  pdf_stm_filter_set_out (filter, stm->cache);
+  pdf_stm_filter_set_out (stm->filter, pdf_stm_filter_get_in (filter));
+  stm->filter = filter;
+
+  return PDF_OK;
+}
+
 /*
  * Private functions
  */
@@ -261,8 +284,6 @@ pdf_stm_init (pdf_size_t cache_size,
 
   /* Initialize the filter cache */
   stm->cache = pdf_stm_buffer_new (cache_size);
-  stm->cache_begin = 0;
-  stm->cache_end = 0;
 
   /* Configure the filter */
   stm->mode = mode;
