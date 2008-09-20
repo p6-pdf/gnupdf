@@ -1,11 +1,11 @@
-/* -*- mode: C -*- Time-stamp: "08/08/01 21:17:57 jemarch"
-   *
-   *       File:         pdf-stm-filter.h
-   *       Date:         Thu Jun 12 22:05:06 2008
-   *
-   *       GNU PDF Library - Stream Filter
-   *
-   */
+/* -*- mode: C -*- Time-stamp: "08/09/20 14:04:34 jemarch"
+ *
+ *       File:         pdf-stm-filter.h
+ *       Date:         Thu Jun 12 22:05:06 2008
+ *
+ *       GNU PDF Library - Stream Filter
+ *
+ */
 
 /* Copyright (C) 2008 Free Software Foundation, Inc. */
 
@@ -51,9 +51,7 @@ struct pdf_stm_filter_impl_s
   pdf_status_t (*apply_fn) (pdf_hash_t params,
                             pdf_hash_t state,
                             pdf_stm_buffer_t in,
-                            pdf_stm_buffer_t out,
-                            pdf_size_t *bytes_consumed,
-                            pdf_size_t *bytes_produced);
+                            pdf_stm_buffer_t out);
 };
 
 /* Filter data type */
@@ -69,10 +67,6 @@ struct pdf_stm_filter_s
   pdf_stm_buffer_t in;
   pdf_stm_buffer_t out;
 
-  /* Valid slice in the input buffer */
-  pdf_size_t in_begin;
-  pdf_size_t in_end;
-  
   /* Filter-specific information */
   pdf_hash_t state;
   pdf_hash_t params;
@@ -99,15 +93,10 @@ inline pdf_status_t pdf_stm_filter_set_be (pdf_stm_filter_t filter,
                                            pdf_stm_be_t be);
 inline pdf_status_t pdf_stm_filter_set_out (pdf_stm_filter_t filter,
                                             pdf_stm_buffer_t buffer);
+pdf_stm_filter_t pdf_stm_filter_get_tail (pdf_stm_filter_t filter);
 inline pdf_stm_buffer_t pdf_stm_filter_get_in (pdf_stm_filter_t filter);
-inline pdf_size_t pdf_stm_filter_get_in_begin (pdf_stm_filter_t filter);
-inline void pdf_stm_filter_set_in_begin (pdf_stm_filter_t filter,
-                                         pdf_size_t in_size);
-inline pdf_size_t pdf_stm_filter_get_in_end (pdf_stm_filter_t filter);
-inline void pdf_stm_filter_set_in_end (pdf_stm_filter_t filter,
-                                       pdf_size_t out_size);
 
-pdf_size_t pdf_stm_filter_apply (pdf_stm_filter_t filter);
+pdf_status_t pdf_stm_filter_apply (pdf_stm_filter_t filter);
 pdf_status_t pdf_stm_filter_close (pdf_stm_filter_t filter);
 pdf_status_t pdf_stm_filter_reset (pdf_stm_filter_t filter);
 

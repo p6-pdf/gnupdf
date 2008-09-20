@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/11 15:19:37 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/20 14:13:06 jemarch"
  *
  *       File:         pdf-types.h
  *       Date:         Sun Feb 10 21:30:00 2008
@@ -54,6 +54,12 @@
 
 #define PDF_TRUE 1
 #define PDF_FALSE 0
+
+#define PDF_MIN(i1, i2) \
+  (((i1) < (i2)) ? (i1) : (i2))
+
+#define PDF_MAX(i1, i2) \
+  (((i1) > (i2)) ? (i1) : (i2))
 
 /* Definitions used in the operations of the  pdf_i64_t type*/
 #define PDF_I32_MAX 2147483647;

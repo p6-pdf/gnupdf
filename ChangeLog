@@ -1,3 +1,22 @@
+2008-09-20  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-types.h (PDF_MIN): New macro.
+	(PDF_MAX): New macro.
+
+2008-09-12  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Reading and Writing Data): Change the
+	description of 'pdf_stm_write' to the new prototype.
+
+	* src/base/pdf-stm.c (pdf_stm_write): Simplify the function
+	prototype.
+
+	* src/base/pdf-stm-buffer.c (pdf_stm_buffer_full_p): New function.
+	(pdf_stm_buffer_eob_p): New function.
+
+	* src/base/pdf-stm-filter.c (pdf_stm_filter_get_tail): New
+	function.
+
 2008-09-11  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* configure.ac: Minimum required version of libgcrypt relaxed to

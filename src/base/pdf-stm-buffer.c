@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/30 00:28:19 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/12 05:47:44 jemarch"
  *
  *       File:         pdf-stm-buffer.c
  *       Date:         Wed Jul 23 23:28:59 2008
@@ -37,6 +37,7 @@ pdf_stm_buffer_new (pdf_size_t size)
     {
       new_buf->data = pdf_alloc (sizeof(pdf_char_t) * size);
       new_buf->size = size;
+      pdf_stm_buffer_rewind (new_buf);
     }
 
   return new_buf;
@@ -49,6 +50,25 @@ pdf_stm_buffer_destroy (pdf_stm_buffer_t buffer)
   pdf_dealloc (buffer);
 
   return PDF_OK;
+}
+
+pdf_bool_t
+pdf_stm_buffer_full_p (pdf_stm_buffer_t buffer)
+{
+  return (buffer->wp == buffer->size);
+}
+
+pdf_bool_t
+pdf_stm_buffer_eob_p (pdf_stm_buffer_t buffer)
+{
+  return ((buffer->wp - buffer->rp) == 0);
+}
+
+pdf_status_t
+pdf_stm_buffer_rewind (pdf_stm_buffer_t buffer)
+{
+  buffer->rp = 0;
+  buffer->wp = 0;
 }
 
 /* End of pdf-stm-buffer.c */

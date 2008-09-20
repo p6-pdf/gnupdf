@@ -3942,7 +3942,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_stm_write (pdf_stm_t @var{stm}, const pdf_size_t @var{elem_size}, const pdf_size_t @var{elem_count}, pdf_char_t *@var{buf})
+@deftypefun pdf_size_t pdf_stm_write (pdf_stm_t @var{stm}, pdf_char_t *@var{buf}, pdf_size_t @var{bytes})
 
 Write a chunk of data into a given stream.
 
@@ -3951,16 +3951,14 @@ Write a chunk of data into a given stream.
 @table @var
 @item stm
 A stream.
-@item elem_size
-Size (in octects) of the elements to write.
-@item elem_count
-Number of elements to write.
 @item buf
 The buffer containing the written information.
+@item bytes
+The number of bytes to write into the stream.
 @end table
 @item Returns
 A PDF size value containing the number of octects actually readed. If
-the returned value is less than @code{elem_count * elem_size} then a
+the returned value is less than @code{bytes} then a
 disk full condition has occured.
 @item Usage example
 @example

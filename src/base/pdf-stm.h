@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/08/18 22:58:09 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/12 15:47:34 jemarch"
  *
  *       File:         pdf-stm.h
  *       Date:         Fri Jul  6 18:37:57 2007
@@ -115,9 +115,8 @@ pdf_size_t pdf_stm_read (pdf_stm_t stm,
                          pdf_char_t *buf,
                          pdf_size_t bytes);
 pdf_size_t pdf_stm_write (pdf_stm_t stm,
-                          const pdf_size_t elem_size,
-                          const pdf_size_t elem_count,
-                          pdf_char_t *buf);
+                          pdf_char_t *buf,
+                          pdf_size_t bytes);
 pdf_u32_t pdf_stm_read_char (pdf_stm_t stm);
 pdf_u32_t pdf_stm_peek_char (pdf_stm_t stm);
 pdf_size_t pdf_stm_flush (pdf_stm_t stm);

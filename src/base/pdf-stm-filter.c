@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/08/16 13:15:11 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/20 14:16:12 jemarch"
  *
  *       File:         pdf-stm-filter.c
  *       Date:         Thu Jun 12 22:13:31 2008
@@ -29,6 +29,7 @@
 /* Forward references */
 static pdf_size_t pdf_stm_filter_get_input (pdf_stm_filter_t filter);
 
+
 /*
  * Public functions
  */
@@ -53,8 +54,6 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
 
   /* Input buffer */
   new->in = pdf_stm_buffer_new (buffer_size);
-  new->in_begin = 0;
-  new->in_end = 0;
 
   /* Output buffer */
   new->out = NULL;
@@ -77,8 +76,8 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
 
   /* Initialization of the implementation */
   new->params = params;
-  pdf_hash_create (NULL,
-                   &(new->state));
+  pdf_hash_new (NULL,
+                &(new->state));
   new->impl.init_fn (new->params,
                      new->state);
 
@@ -89,7 +88,7 @@ pdf_status_t
 pdf_stm_filter_destroy (pdf_stm_filter_t filter)
 {
   pdf_stm_buffer_destroy (filter->in);
-  pdf_hash_destroy (&filter->state);
+  pdf_hash_destroy (filter->state);
   pdf_dealloc (filter);
 
   /* Note that the memory used by the output buffer and by the params
@@ -128,93 +127,34 @@ pdf_stm_filter_get_in (pdf_stm_filter_t filter)
   return filter->in;
 }
 
-inline pdf_size_t
-pdf_stm_filter_get_in_begin (pdf_stm_filter_t filter)
-{
-  return filter->in_begin;
-}
-
-inline void
-pdf_stm_filter_set_in_begin (pdf_stm_filter_t filter,
-                             pdf_size_t in_begin)
-{
-  filter->in_begin = in_begin;
-}
-
-inline pdf_size_t
-pdf_stm_filter_get_in_end (pdf_stm_filter_t filter)
-{
-  return filter->in_end;
-}
-
-inline void
-pdf_stm_filter_set_in_end (pdf_stm_filter_t filter,
-                           pdf_size_t in_end)
-{
-  filter->in_end = in_end;
-}
-
-
-pdf_size_t
+pdf_status_t
 pdf_stm_filter_apply (pdf_stm_filter_t filter)
 {
   pdf_status_t ret;
-  pdf_size_t bytes_read;
-  pdf_size_t bytes_produced;
-  pdf_size_t impl_bytes_consumed;
-  pdf_size_t impl_bytes_produced;
-  struct pdf_stm_buffer_s buffer_in;
-  struct pdf_stm_buffer_s buffer_out;
 
-  /* Note that at this point the output buffer should be empty => any
-     previous contents of the buffer can be safely overwritten */
+  pdf_stm_buffer_rewind (filter->out);
+  ret = PDF_OK;
 
-  bytes_read = filter->out->size;
-  bytes_produced = 0;
-
-  while ((bytes_produced < filter->out->size) &&
-         (bytes_read == filter->out->size))
+  while ((!pdf_stm_buffer_full_p (filter->out)) 
+         && (ret == PDF_OK))
     {
-      if (filter->in_begin == filter->in_end)
+      /* If the input buffer is empty, refill it */
+      if (pdf_stm_buffer_eob_p (filter->in))
         {
-          /* Fill the input buffer */
-          bytes_read = pdf_stm_filter_get_input (filter);
-          if (bytes_read == 0)
-            {
-              /* Error. The filter is in an invalid state now */
-              return 0;
-            }
-
-          filter->in_begin = 0;
-          filter->in_end = bytes_read;
+          ret = pdf_stm_filter_get_input (filter);
         }
 
-      /* Set buffers for the filter implementation */
-      buffer_in.data = filter->in->data + filter->in_begin;
-      buffer_in.size = filter->in_end - filter->in_begin;
-      buffer_out.data = filter->out->data;
-      buffer_out.size = filter->out->size;
-
-      /* Generate output */
-      ret = filter->impl.apply_fn (filter->params,
-                                   filter->state,
-                                   &buffer_in,
-                                   &buffer_out,
-                                   &impl_bytes_consumed,
-                                   &impl_bytes_produced);
-      if (ret != PDF_OK)
+      if (ret == PDF_OK)
         {
-          /* Error. The filter is in an invalid state now */
-          return 0;
-        }
-      else
-        {
-          bytes_produced = bytes_produced + impl_bytes_produced;
-          filter->in_begin = filter->in_begin + impl_bytes_consumed;
+          /* Generate output */
+          ret = filter->impl.apply_fn (filter->params,
+                                       filter->state,
+                                       filter->in,
+                                       filter->out);
         }
     }
 
-  return bytes_produced;
+  return ret;
 }
 
 pdf_status_t
@@ -224,6 +164,19 @@ pdf_stm_filter_reset (pdf_stm_filter_t filter)
                                filter->state);
 }
 
+pdf_stm_filter_t
+pdf_stm_filter_get_tail (pdf_stm_filter_t filter)
+{
+  if (filter->next == NULL)
+    {
+      return filter;
+    }
+  else
+    {
+      return pdf_stm_filter_get_tail (filter->next);
+    }
+}
+
 /*
  * Private functions
  */
@@ -231,21 +184,34 @@ pdf_stm_filter_reset (pdf_stm_filter_t filter)
 static pdf_size_t
 pdf_stm_filter_get_input (pdf_stm_filter_t filter)
 {
-  pdf_size_t bytes_read;
+  pdf_status_t ret;
 
-  bytes_read = 0;
+  pdf_stm_buffer_rewind (filter->in);
+
   if (filter->next != NULL)
     {
-      bytes_read = pdf_stm_filter_apply (filter->next);
+      ret = pdf_stm_filter_apply (filter->next);
     }
   else if (filter->backend != NULL)
     {
-      bytes_read = pdf_stm_be_read (filter->backend,
-                                    filter->in->data,
-                                    filter->in->size);
+      if (pdf_stm_be_read (filter->backend,
+                           filter->in->data,
+                           filter->in->size) == 0)
+        {
+          ret = PDF_EEOF;
+        }
+      else
+        {
+          ret = PDF_OK;
+        }
     }
-  
-  return bytes_read;
+  else
+    {
+      /* No backend */
+      ret = PDF_EEOF;
+    }
+
+  return ret;
 }
 
 /* End of pdf-stm-filter.c */

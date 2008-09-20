@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/11 15:29:47 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/20 14:15:16 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -168,32 +168,59 @@ pdf_stm_read (pdf_stm_t stm,
 
 pdf_size_t
 pdf_stm_write (pdf_stm_t stm,
-               const pdf_size_t elem_size,
-               const pdf_size_t elem_count,
-               pdf_char_t *buf)
+               pdf_char_t *buf,
+               pdf_size_t bytes)
 {
+  pdf_bool_t eof_p;
   pdf_size_t written_bytes;
   pdf_size_t pending_bytes;
-  pdf_size_t to_write_bytes;
+  pdf_stm_buffer_t tail_in;
+  pdf_stm_filter_t tail;
 
+  /* Get the input buffer of the tail filter */
+  tail = pdf_stm_filter_get_tail (stm->filter);
+  tail_in = pdf_stm_filter_get_in (tail);
+
+  eof_p = PDF_FALSE;
   written_bytes = 0;
-
-  while (written_bytes < (elem_size * elem_count))
+  while ((written_bytes < bytes) 
+         && (! eof_p))
     {
-      pending_bytes = (elem_size * elem_count) - written_bytes;
+      pending_bytes = bytes - written_bytes;
 
-      /* If the input buffer of the top filter is full, apply the last
-         one */
-      if (pdf_stm_filter_get_in_end (stm->filter) == NULL)
+      /* If the input buffer of the tail filter is full, apply the
+         head */
+      if (pdf_stm_buffer_full_p (tail_in))
         {
-          if (pdf_stm_filter_apply (stm->filter) == 0)
+          while (!pdf_stm_buffer_eob_p (tail_in))
             {
-              /* Backend full condition from the filter, give up */
-              break;
+              if (pdf_stm_filter_apply (stm->filter) == 0)
+                {
+                  /* EOF condition */
+                  eof_p = PDF_TRUE;
+                }
+              else
+                {
+                  /* Write the cache contents into the backend */
+                  if (pdf_stm_be_write (stm->backend,
+                                        stm->cache->data + stm->cache->rp,
+                                        stm->cache->wp - stm->cache->rp)
+                      < stm->cache->wp - stm->cache->rp)
+                    {
+                      /* EOF condition */
+                      eof_p = PDF_TRUE;
+                    }
+                }
             }
         }
 
-      /* Write the data into the filter input buffer */
+      /* In this point the input buffer of the tail filter should be
+         empty. Copy data into that buffer */
+      strncpy ((char *) tail_in->data,
+               (char *) buf + written_bytes,
+               PDF_MIN(pending_bytes, stm->cache->size));
+               
+      written_bytes += PDF_MIN(pending_bytes, stm->cache->size);
     }
 
   return written_bytes;
@@ -226,8 +253,8 @@ pdf_stm_init (pdf_size_t cache_size,
     } 
 
   /* Initialize the null filter */
-  pdf_hash_create (NULL, &null_filter_params);
-  pdf_hash_create (NULL, &null_filter_state);
+  pdf_hash_new (NULL, &null_filter_params);
+  pdf_hash_new (NULL, &null_filter_state);
   stm->filter = pdf_stm_filter_new (PDF_STM_FILTER_NULL,
                                     null_filter_params,
                                     cache_size);
