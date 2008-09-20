@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/20 18:55:40 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/20 19:19:48 jemarch"
  *
  *       File:         tsuit-stm.c
  *       Date:         Sat Feb 23 21:35:11 2008
@@ -43,6 +43,7 @@ tsuite_stm ()
   suite_add_tcase (s, test_pdf_stm_read_char ());
   suite_add_tcase (s, test_pdf_stm_peek_char ());
   suite_add_tcase (s, test_pdf_stm_seek ());
+  suite_add_tcase (s, test_pdf_stm_tell ());
 
   return s;
 }

@@ -187,6 +187,7 @@ Open an existing, readable and writable file for reading and writing.
 * pdf_stm_read_char::
 * pdf_stm_peek_char::
 * pdf_stm_seek::
+* pdf_stm_tell::
 @end menu
 
 @node pdf_stm_mem_new
@@ -295,6 +296,18 @@ into a memory read stream.
 The seek operation should success and the seek
 position should be to the last valid position 
 in the stream.
+@end table
+@end deffn
+
+@node pdf_stm_tell
+@subsubsection pdf_stm_tell
+
+@deffn Test pdf_stm_tell_001
+Tell an initialized reading memory stream.
+@table @strong
+@item Success condition
+The tell operation should report the first position
+in the stream (0).
 @end table
 @end deffn
 
