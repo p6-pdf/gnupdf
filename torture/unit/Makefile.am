@@ -60,7 +60,7 @@ TEST_SUITE_ERROR = base/error/pdf-error.c \
 		   base/error/pdf-perror.c
 
 # Unit tests for the Stream Module test suite
-TEST_SUITE_STM = base/stm/pdf-create-file-stm.c
+TEST_SUITE_STM = base/stm/pdf-stm-mem-new.c
 
 TEST_SUITE_HASH = base/hash/pdf-hash-new.c \
 		  base/hash/pdf-hash-destroy.c \
@@ -174,7 +174,8 @@ TEST_FILES = $(TEST_SUITE_LIST) \
              $(TEST_SUITE_ERROR) \
 	     $(TEST_SUITE_TYPES) \
              $(TEST_SUITE_CRYPT) \
-             $(TEST_SUITE_ALLOC)
+             $(TEST_SUITE_ALLOC) \
+             $(TEST_SUITE_STM)
 
 TSUITE_FILES = base/alloc/tsuite-alloc.c \
                base/list/tsuite-list.c \
@@ -182,7 +183,8 @@ TSUITE_FILES = base/alloc/tsuite-alloc.c \
                base/hash/tsuite-hash.c \
                base/error/tsuite-error.c \
 	       base/types/tsuite-types.c \
-               base/crypt/tsuite-crypt.c
+               base/crypt/tsuite-crypt.c \
+               base/stm/tsuite-stm.c
 
 runtests_SOURCES = $(NOCHECK_SRC) \
                    $(TSUITE_FILES) \

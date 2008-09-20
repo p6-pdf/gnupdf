@@ -1,5 +1,14 @@
 2008-09-20  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-error.h: Include stdio.h in the public area of the
+	header file to avoid undefined symbols when including pdf.h.
+
+	* torture/unit/Makefile.am (TSUITE_FILES): Add the test suite
+	definition fsource file for the stm module.
+
+	* torture/unit/base/stm/pdf-stm-mem-new.c: New file.
+	(START_TEST): New test 'pdf_stm_mem_new_001'.
+
 	* src/base/pdf-types.h (PDF_MIN): New macro.
 	(PDF_MAX): New macro.
 

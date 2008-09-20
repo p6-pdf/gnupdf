@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/20 14:15:16 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/20 15:03:57 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -111,7 +111,7 @@ pdf_stm_destroy (pdf_stm_t stm)
     {
       filter_to_delete = filter;
       filter = filter->next;
-      pdf_stm_filter_destroy (filter);
+      pdf_stm_filter_destroy (filter_to_delete);
     }
 
   /* Deallocate the stm structure */

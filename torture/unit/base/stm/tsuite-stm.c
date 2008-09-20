@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/23 22:00:25 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/20 14:46:38 jemarch"
  *
  *       File:         tsuit-stm.c
  *       Date:         Sat Feb 23 21:35:11 2008
@@ -25,7 +25,7 @@
 
 #include <check.h>
 
-extern TCase *test_pdf_create_file_stm (void);
+extern TCase *test_pdf_stm_mem_new (void);
 
 Suite *
 tsuite_stm ()
@@ -34,7 +34,7 @@ tsuite_stm ()
 
   s = suite_create("stm");
   
-  suite_add_tcase (s, test_pdf_create_file_stm ());
+  suite_add_tcase (s, test_pdf_stm_mem_new ());
 
   return s;
 }
