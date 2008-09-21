@@ -188,6 +188,7 @@ Open an existing, readable and writable file for reading and writing.
 * pdf_stm_peek_char::
 * pdf_stm_seek::
 * pdf_stm_tell::
+* pdf_stm_write::
 @end menu
 
 @node pdf_stm_mem_new
@@ -308,6 +309,35 @@ Tell an initialized reading memory stream.
 @item Success condition
 The tell operation should report the first position
 in the stream (0).
+@end table
+@end deffn
+
+@node pdf_stm_write
+@subsubsection pdf_stm_write
+
+@deffn Test pdf_stm_write_001
+Write some bytes to a write memory stream.
+@table @strong
+@item Success condition
+The written data should be consistent.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_write_002
+Write some bytes to a write memory stream with
+two null filter installed.
+@table @strong
+@item Success condition
+The written data should be consistent.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_write_003
+Write some bytes to a write memory stream
+producing a cache flush.
+@table @strong
+@item Success condition
+The written data should be consistent.
 @end table
 @end deffn
 

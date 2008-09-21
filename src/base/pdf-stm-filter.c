@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/21 16:44:47 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/21 17:46:41 jemarch"
  *
  *       File:         pdf-stm-filter.c
  *       Date:         Thu Jun 12 22:13:31 2008
@@ -190,6 +190,7 @@ pdf_stm_filter_finish (pdf_stm_filter_t filter)
 
   ret = filter->impl.finish_fn (filter->params,
                                 filter->state,
+                                filter->in,
                                 filter->out);
   return ret;
 }

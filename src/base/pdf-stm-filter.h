@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/20 20:22:25 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/21 17:47:05 jemarch"
  *
  *       File:         pdf-stm-filter.h
  *       Date:         Thu Jun 12 22:05:06 2008
@@ -54,6 +54,7 @@ struct pdf_stm_filter_impl_s
                             pdf_stm_buffer_t out);
   pdf_status_t (*finish_fn) (pdf_hash_t params,
                              pdf_hash_t state,
+                             pdf_stm_buffer_t in,
                              pdf_stm_buffer_t out);
 };
 

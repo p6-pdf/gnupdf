@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/20 14:33:28 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/21 18:33:41 jemarch"
  *
  *       File:         pdf-stm-buffer.c
  *       Date:         Wed Jul 23 23:28:59 2008
@@ -55,7 +55,8 @@ pdf_stm_buffer_destroy (pdf_stm_buffer_t buffer)
 pdf_bool_t
 pdf_stm_buffer_full_p (pdf_stm_buffer_t buffer)
 {
-  return (buffer->wp == buffer->size);
+  return ((buffer->wp == buffer->size) &&
+          (buffer->rp != buffer->wp));
 }
 
 pdf_bool_t

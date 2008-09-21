@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/21 16:53:25 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/21 19:17:09 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -228,7 +228,7 @@ pdf_stm_write (pdf_stm_t stm,
 
           if (to_write_bytes != 0)
             {
-              strncpy ((char *) tail_buffer->data,
+              strncpy ((char *) tail_buffer->data + tail_buffer->wp,
                        (char *) buf + written_bytes,
                        to_write_bytes);
 
@@ -273,16 +273,21 @@ pdf_stm_flush (pdf_stm_t stm)
         {
           /* Write the data from the buffer cache into the backend */
           cache_size = stm->cache->wp - stm->cache->rp;
-          printf("XXX cache_size = %d\n", cache_size);
           written_bytes = pdf_stm_be_write (stm->backend,
                                             stm->cache->data + stm->cache->rp,  
                                             cache_size);
+
           if (written_bytes < cache_size)
             {
               /* There is no room in the backend */
               ret = PDF_EEOF;
             }
         }
+    }
+
+  if (pdf_stm_buffer_eob_p (tail_buffer))
+    {
+      pdf_stm_buffer_rewind (tail_buffer);
     }
 
   return (tail_buffer_size - 
