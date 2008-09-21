@@ -3508,7 +3508,7 @@ XXX
 @node Reading and Writing Data
 @subsection Reading and Writing Data
 
-@deftypefun pdf_size_t pdf_stm_read (pdf_stm_t @var{stm}, pdf_char_t **@var{buf}, pdf_size_t @var{bytes})
+@deftypefun pdf_size_t pdf_stm_read (pdf_stm_t @var{stm}, pdf_char_t *@var{buf}, pdf_size_t @var{bytes})
 
 Read a chunk of data from a given stream.
 
@@ -3518,7 +3518,7 @@ Read a chunk of data from a given stream.
 @item stm
 A stream.
 @item buf
-The buffer to hold the readed data.
+The buffer to hold the read data.
 @item bytes
 The number of octects to read.
 @end table

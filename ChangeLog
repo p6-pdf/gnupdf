@@ -1,3 +1,8 @@
+2008-09-22  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Reading and Writing Data): Fix the function
+	prototype of 'pdf_stm_read'.
+
 2008-09-21  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Reading and Writing Data): New function
