@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/20 20:21:27 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/21 16:53:25 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -207,7 +207,7 @@ pdf_stm_write (pdf_stm_t stm,
   while ((written_bytes < bytes) &&
          (ret == PDF_OK))
     {
-      if (pdf_stm_buffer_eob_p (tail_buffer))
+      if (pdf_stm_buffer_full_p (tail_buffer))
         {
           /* Flush the cache */
           tail_buffer_size = tail_buffer->wp - tail_buffer->rp;
@@ -221,16 +221,20 @@ pdf_stm_write (pdf_stm_t stm,
         {
           /* Write the data into the tail buffer. Note that at this
              point the tail buffer should be empty */
-          tail_buffer_size = tail_buffer->wp - tail_buffer->rp;
+          tail_buffer_size = tail_buffer->size - tail_buffer->wp;
           pending_bytes = bytes - written_bytes;
 
           to_write_bytes = PDF_MIN(pending_bytes, tail_buffer_size);
 
-          strncpy ((char *) tail_buffer->data,
-                   (char *) buf + written_bytes,
-                   to_write_bytes);
-                   
-          written_bytes += to_write_bytes;
+          if (to_write_bytes != 0)
+            {
+              strncpy ((char *) tail_buffer->data,
+                       (char *) buf + written_bytes,
+                       to_write_bytes);
+
+              written_bytes += to_write_bytes;
+              tail_buffer->wp += to_write_bytes;
+            }
         }
     }
   
@@ -269,6 +273,7 @@ pdf_stm_flush (pdf_stm_t stm)
         {
           /* Write the data from the buffer cache into the backend */
           cache_size = stm->cache->wp - stm->cache->rp;
+          printf("XXX cache_size = %d\n", cache_size);
           written_bytes = pdf_stm_be_write (stm->backend,
                                             stm->cache->data + stm->cache->rp,  
                                             cache_size);

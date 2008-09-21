@@ -44,8 +44,10 @@ Jose E. Marchesi: wrote AUTHORS configure.ac doc/gnupdf-manual.init
   torture/unit/base/stm/pdf-stm-mem-new.c
   torture/unit/base/stm/pdf-stm-peek-char.c
   torture/unit/base/stm/pdf-stm-read-char.c
-  torture/unit/base/stm-pdf-stm-read.c
-  torture/unit/base/stm-pdf-seek.c
+  torture/unit/base/stm/stm-pdf-stm-read.c
+  torture/unit/base/stm/stm-pdf-seek.c 
+  torture/unit/base/stm/stm-pdf-tell.c
+  torture/unit/base/stm/stm-pdf-write.c
 and changed src/base/pdf-stm-f-pred.c src/base/pdf-stm-f-pred.h
   src/base/pdf-list.h src/base/pdf-list.c
   torture/unit/base/text/pdf-text-get-unicode.c src/base/pdf-error.h
