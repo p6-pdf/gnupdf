@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/08/04 22:48:47 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/08/16 13:08:32 jemarch"
  *
  *       File:         pdf-fsys.h
  *       Date:         Thu May 22 15:49:59 2008
@@ -33,7 +33,6 @@
 #include <pdf-hash.h>
 #include <pdf-text.h>
 #include <pdf-time.h>
-/* #include <pdf-time.h> */
 
 /*
  * Data Types

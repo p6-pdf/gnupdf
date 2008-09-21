@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/08 22:41:54 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/21 22:05:58 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -23,758 +23,516 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
+#include <config.h>
 #include <unistd.h>
+#include <string.h>
 
 #include <pdf-alloc.h>
 #include <pdf-stm.h>
-#include <pdf-stm-file.h>
-#include <pdf-stm-mem.h>
 
+/* Forward declarations */
 
-static pdf_stm_t pdf_stm_alloc (void);
-static void pdf_stm_dealloc (pdf_stm_t stm);
-static int pdf_stm_install_filter (pdf_stm_t stm,
-                                   int direction,
-                                   pdf_stm_init_filter_fn_t init_fn,
-                                   pdf_stm_apply_filter_fn_t process_fn,
-                                   pdf_stm_dealloc_filter_fn_t dealloc_fn,
-                                   void *conf);
-static void pdf_stm_filter_dealloc_list (const void *elt);
-static int pdf_stm_apply_filters (pdf_list_t filter_list, pdf_char_t **buf, pdf_size_t *buf_size);
-                                   
+static pdf_status_t pdf_stm_init (pdf_size_t buffer_size,
+                                  enum pdf_stm_mode_e mode,
+                                  pdf_stm_t stm);
+static inline pdf_stm_t pdf_stm_alloc (void);
+static inline void pdf_stm_dealloc (pdf_stm_t stm);
+static pdf_u32_t pdf_stm_read_peek_char (pdf_stm_t stm, pdf_bool_t peek_p);
 
 /*
- * Backend-specific initialization functions
+ * Public functions
  */
 
-pdf_stm_t
-pdf_create_file_stm (char *filename,
-                     int mode)
+pdf_status_t
+pdf_stm_file_new (pdf_fsys_file_t file,
+                  pdf_off_t offset,
+                  pdf_size_t cache_size,
+                  enum pdf_stm_mode_e mode,
+                  pdf_stm_t *stm)
 {
-  pdf_stm_t new_stm;
-  struct pdf_stm_file_conf_s conf;
+  /* Allocate memory for the new stream */
+  *stm = pdf_stm_alloc ();
 
-  new_stm = pdf_stm_alloc ();
+  /* Initialize a file stream */
+  (*stm)->type = PDF_STM_FILE;
+  (*stm)->backend = pdf_stm_be_new_file (file,
+                                         offset);
+  pdf_stm_filter_set_be ((*stm)->filter,
+                         (*stm)->backend);
+
+  /* Initialize the common parts */
+  return pdf_stm_init (cache_size,
+                       mode,
+                       *stm);
+}
+
+pdf_status_t
+pdf_stm_mem_new (pdf_char_t *buffer,
+                 pdf_size_t size,
+                 pdf_size_t cache_size,
+                 enum pdf_stm_mode_e mode,
+                 pdf_stm_t *stm)
+{
+  /* Allocate memory for the new stream */
+  *stm = pdf_stm_alloc ();
+
+  /* Initialize a memory stream */
+  (*stm)->type = PDF_STM_MEM;
+  (*stm)->backend = pdf_stm_be_new_mem (buffer,
+                                        size,
+                                        0);
   
-  /* Install backend functions */
-  new_stm->backend.funcs.init = pdf_stm_file_init;
-  new_stm->backend.funcs.write_p = pdf_stm_file_write_p;
-  new_stm->backend.funcs.read_p = pdf_stm_file_read_p;
-  new_stm->backend.funcs.seek_p = pdf_stm_file_seek_p;
-  new_stm->backend.funcs.size_p = pdf_stm_file_size_p;
-  new_stm->backend.funcs.peek_p = pdf_stm_file_peek_p;
-  new_stm->backend.funcs.tell_p = pdf_stm_file_tell_p;
-  new_stm->backend.funcs.size = pdf_stm_file_size;
-  new_stm->backend.funcs.seek = pdf_stm_file_seek;
-  new_stm->backend.funcs.tell = pdf_stm_file_tell;
-  new_stm->backend.funcs.read = pdf_stm_file_read;
-  new_stm->backend.funcs.write = pdf_stm_file_write;
-  new_stm->backend.funcs.flush = pdf_stm_file_flush;
-  new_stm->backend.funcs.read_char = pdf_stm_file_read_char;
-  new_stm->backend.funcs.peek_char = pdf_stm_file_peek_char;
-  new_stm->backend.funcs.close = pdf_stm_file_close;
+  /* Initialize the common parts */
+  return pdf_stm_init (cache_size,
+                       mode,
+                       *stm);
+}
 
-  /* Configure the backend */
-  conf.filename = filename;
-  
-  switch (mode)
+pdf_status_t
+pdf_stm_destroy (pdf_stm_t stm)
+{
+  pdf_stm_filter_t filter;
+  pdf_stm_filter_t filter_to_delete;
+
+  if (stm->mode == PDF_STM_WRITE)
     {
-    case PDF_STM_OPEN_MODE_READ:
-      {
-        conf.mode = PDF_STM_FILE_OPEN_MODE_READ;
-        break;
-      }
-    case PDF_STM_OPEN_MODE_WRITE:
-      {
-        conf.mode = PDF_STM_FILE_OPEN_MODE_WRITE;
-        break;
-      }
-    case PDF_STM_OPEN_MODE_RW:
-      {
-        conf.mode = PDF_STM_FILE_OPEN_MODE_RW;
-        break;
-      }
-    default:
-      {
-        /* Make the compiler happy */
-        break;
-      }
+      /* Flush the cache */
+      pdf_stm_flush (stm);
+
+      /* Finish the filters */
+      pdf_stm_finish (stm);
     }
 
-  /* Initialize the backend */
-  if (((new_stm->backend.funcs.init) (&new_stm->backend.data, &conf)) != PDF_OK)
+  /* Destroy the backend */
+  pdf_stm_be_destroy (stm->backend);
+
+  /* Destroy the cache */
+  pdf_stm_buffer_destroy (stm->cache);
+
+  /* Destroy the filter chain */
+  filter = stm->filter;
+  while (filter != NULL)
     {
-      pdf_stm_dealloc (new_stm);
-      return NULL;
+      filter_to_delete = filter;
+      filter = filter->next;
+      pdf_stm_filter_destroy (filter_to_delete);
     }
-  else
-    {
-      return new_stm;
-    }
-}
 
-pdf_stm_t                                  
-pdf_create_mem_stm (pdf_stm_pos_t size,
-                    int init_p,      
-                    unsigned char init,
-                    int resize_p)
-{
-  pdf_stm_t new_stm;
-  struct pdf_stm_mem_conf_s conf;          
-
-  new_stm = pdf_stm_alloc ();
-
-  /* Install backend functions */
-  new_stm->backend.funcs.init = pdf_stm_mem_init;
-  new_stm->backend.funcs.write_p = pdf_stm_mem_write_p;
-  new_stm->backend.funcs.read_p = pdf_stm_mem_read_p;
-  new_stm->backend.funcs.seek_p = pdf_stm_mem_seek_p;
-  new_stm->backend.funcs.size_p = pdf_stm_mem_size_p;
-  new_stm->backend.funcs.peek_p = pdf_stm_mem_peek_p;
-  new_stm->backend.funcs.size = pdf_stm_mem_size;
-  new_stm->backend.funcs.seek = pdf_stm_mem_seek;
-  new_stm->backend.funcs.tell = pdf_stm_mem_tell;
-  new_stm->backend.funcs.read = pdf_stm_mem_read;
-  new_stm->backend.funcs.write = pdf_stm_mem_write;
-  new_stm->backend.funcs.flush = pdf_stm_mem_flush;
-  new_stm->backend.funcs.read_char = pdf_stm_mem_read_char;
-  new_stm->backend.funcs.peek_char = pdf_stm_mem_peek_char;
-  new_stm->backend.funcs.close = pdf_stm_mem_close;
-
-  /* Configure the backend */
-  conf.size = size;
-  conf.init_p = init_p;
-  conf.init_char = init;
-  conf.resize_p = resize_p;
-
-  /* Initialize the backend */
-  if (!(new_stm->backend.funcs.init) (&new_stm->backend.data, &conf))
-    {
-      pdf_stm_dealloc (new_stm);
-      return NULL;
-    }
-  else
-    {
-      return new_stm;
-    }
-}
-
-/*
- * Filter-specific installation functions
- */
-
-int
-pdf_stm_install_null_filter (pdf_stm_t stm, 
-                             int direction)
-{
-  return pdf_stm_install_filter (stm,
-                                 direction,
-                                 pdf_stm_f_null_init,
-                                 pdf_stm_f_null_apply,
-                                 pdf_stm_f_null_dealloc,
-                                 NULL);
-}
-
-#ifdef HAVE_LIBZ
-int
-pdf_stm_install_flatedec_filter (pdf_stm_t stm,
-                                 int direction)
-{
-  struct pdf_stm_f_flate_conf_s conf;
-
-  conf.mode = PDF_STM_F_FLATE_MODE_DECODE;
-
-  return pdf_stm_install_filter (stm,
-                                 direction,
-                                 pdf_stm_f_flate_init,
-                                 pdf_stm_f_flate_apply,
-                                 pdf_stm_f_flate_dealloc,
-                                 &conf);
-}
-
-int
-pdf_stm_install_flateenc_filter (pdf_stm_t stm,
-                                 int direction)
-{
-  struct pdf_stm_f_flate_conf_s conf;
-
-  conf.mode = PDF_STM_F_FLATE_MODE_ENCODE;
-
-  return pdf_stm_install_filter (stm,
-                                 direction,
-                                 pdf_stm_f_flate_init,
-                                 pdf_stm_f_flate_apply,
-                                 pdf_stm_f_flate_dealloc,
-                                 &conf);
-}
-#endif /* HAVE_LIBZ */
-
-int
-pdf_stm_install_preddec_filter (pdf_stm_t stm,
-                                int direction,
-                                int predictor,
-                                int colors,
-                                int bits_per_component,
-                                int columns)
-{
-  struct pdf_stm_f_pred_conf_s conf;
-
-  conf.mode = PDF_STM_F_PRED_MODE_DECODE;
-  conf.predictor = predictor;
-  conf.colors = colors;
-  conf.bits_per_component = bits_per_component;
-  conf.columns = columns;
-
-  return pdf_stm_install_filter (stm,
-                                 direction,
-                                 pdf_stm_f_pred_init,
-                                 pdf_stm_f_pred_apply,
-                                 pdf_stm_f_pred_dealloc,
-                                 &conf);
-}
-
-int
-pdf_stm_install_predenc_filter (pdf_stm_t stm,
-                                int direction,
-                                int predictor,
-                                int colors,
-                                int bits_per_component,
-                                int columns)
-{
-  struct pdf_stm_f_pred_conf_s conf;
-
-  conf.mode = PDF_STM_F_PRED_MODE_ENCODE;
-  conf.predictor = predictor;
-  conf.colors = colors;
-  conf.bits_per_component = bits_per_component;
-  conf.columns = columns;
-
-  return pdf_stm_install_filter (stm,
-                                 direction,
-                                 pdf_stm_f_pred_init,
-                                 pdf_stm_f_pred_apply,
-                                 pdf_stm_f_pred_dealloc,
-                                 &conf);
-}
-
-int
-pdf_stm_install_ahexdec_filter (pdf_stm_t stm, 
-                                int direction)
-{
-  struct pdf_stm_f_ahex_conf_s conf;
-
-  conf.mode = PDF_STM_F_AHEX_MODE_DECODE;
-
-  return pdf_stm_install_filter (stm,
-                                 direction,
-                                 pdf_stm_f_ahex_init,
-                                 pdf_stm_f_ahex_apply,
-                                 pdf_stm_f_ahex_dealloc,
-                                 &conf);
-}
-
-int
-pdf_stm_install_ahexenc_filter (pdf_stm_t stm, 
-                                int direction)
-{
-  struct pdf_stm_f_ahex_conf_s conf;
-
-  conf.mode = PDF_STM_F_AHEX_MODE_ENCODE;
-
-  return pdf_stm_install_filter (stm,
-                                 direction,
-                                 pdf_stm_f_ahex_init,
-                                 pdf_stm_f_ahex_apply,
-                                 pdf_stm_f_ahex_dealloc,
-                                 &conf);
-}
-
-int
-pdf_stm_install_a85dec_filter (pdf_stm_t stm,
-                               int direction)
-{
-  struct pdf_stm_f_a85_conf_s conf;
-
-  conf.mode = PDF_STM_F_A85_MODE_DECODE;
-
-  return pdf_stm_install_filter (stm,
-                                 direction,
-                                 pdf_stm_f_a85_init,
-                                 pdf_stm_f_a85_apply,
-                                 pdf_stm_f_a85_dealloc,
-                                 &conf);
-}
-
-int
-pdf_stm_install_a85enc_filter (pdf_stm_t stm,
-                               int direction)
-{
-  struct pdf_stm_f_a85_conf_s conf;
-
-  conf.mode = PDF_STM_F_A85_MODE_ENCODE;
-
-  return pdf_stm_install_filter (stm,
-                                 direction,
-                                 pdf_stm_f_a85_init,
-                                 pdf_stm_f_a85_apply,
-                                 pdf_stm_f_a85_dealloc,
-                                 &conf);
-}
-
-int
-pdf_stm_install_rldec_filter (pdf_stm_t stm,
-                              int direction)
-{
-  struct pdf_stm_f_rl_conf_s conf;
-
-  conf.mode = PDF_STM_F_RL_MODE_DECODE;
-
-  return pdf_stm_install_filter (stm,
-                                 direction,
-                                 pdf_stm_f_rl_init,
-                                 pdf_stm_f_rl_apply,
-                                 pdf_stm_f_rl_dealloc,
-                                 &conf);
-}
-
-int
-pdf_stm_install_rlenc_filter (pdf_stm_t stm,
-                              int direction)
-{
-  struct pdf_stm_f_rl_conf_s conf;
-
-  conf.mode = PDF_STM_F_RL_MODE_ENCODE;
-
-  return pdf_stm_install_filter (stm,
-                                 direction,
-                                 pdf_stm_f_rl_init,
-                                 pdf_stm_f_rl_apply,
-                                 pdf_stm_f_rl_dealloc,
-                                 &conf);
-}
-
-int 
-pdf_stm_install_faxenc_filter (pdf_stm_t stm, 
-                               int direction,
-                               int k,
-                               int end_of_line_p,
-                               int encoded_byte_align_p,
-                               int columns,
-                               int rows,
-                               int end_of_block_p,
-                               int blackls1_p,
-                               int damaged_rows_before_error)
-{
-  struct pdf_stm_f_fax_conf_s conf;
-
-  conf.mode = PDF_STM_F_FAX_MODE_ENCODE;
-  conf.k = k;
-  conf.end_of_line_p = end_of_line_p;
-  conf.encoded_byte_align_p = encoded_byte_align_p;
-  conf.columns = columns;
-  conf.rows = rows;
-  conf.end_of_block_p = end_of_block_p;
-  conf.blackls1_p = blackls1_p;
-  conf.damaged_rows_before_error = damaged_rows_before_error;
-
-  return pdf_stm_install_filter (stm,
-                                 direction,
-                                 pdf_stm_f_fax_init,
-                                 pdf_stm_f_fax_apply,
-                                 pdf_stm_f_fax_dealloc,
-                                 &conf);
-}
-
-int 
-pdf_stm_install_faxdec_filter (pdf_stm_t stm, 
-                               int direction,
-                               int k,
-                               int end_of_line_p,
-                               int encoded_byte_align_p,
-                               int columns,
-                               int rows,
-                               int end_of_block_p,
-                               int blackls1_p,
-                               int damaged_rows_before_error)
-{
-  struct pdf_stm_f_fax_conf_s conf;
-
-  conf.mode = PDF_STM_F_FAX_MODE_DECODE;
-  conf.k = k;
-  conf.end_of_line_p = end_of_line_p;
-  conf.encoded_byte_align_p = encoded_byte_align_p;
-  conf.columns = columns;
-  conf.rows = rows;
-  conf.end_of_block_p = end_of_block_p;
-  conf.blackls1_p = blackls1_p;
-  conf.damaged_rows_before_error = damaged_rows_before_error;
-
-  return pdf_stm_install_filter (stm,
-                                 direction,
-                                 pdf_stm_f_fax_init,
-                                 pdf_stm_f_fax_apply,
-                                 pdf_stm_f_fax_dealloc,
-                                 &conf);
-}
-
-int
-pdf_stm_install_lzwenc_filter (pdf_stm_t stm,
-                               int direction,
-                               int early_change)
-{
-  struct pdf_stm_f_lzw_conf_s conf;
-
-  conf.mode = PDF_STM_F_LZW_MODE_ENCODE;
-  conf.early_change = early_change;
-
-  return pdf_stm_install_filter (stm,
-                                 direction,
-                                 pdf_stm_f_lzw_init,
-                                 pdf_stm_f_lzw_apply,
-                                 pdf_stm_f_lzw_dealloc,
-                                 &conf);
-}
-
-int
-pdf_stm_install_lzwdec_filter (pdf_stm_t stm,
-                               int direction,
-                               int early_change)
-{
-  struct pdf_stm_f_lzw_conf_s conf;
-
-  conf.mode = PDF_STM_F_LZW_MODE_DECODE;
-  conf.early_change = early_change;
-
-  return pdf_stm_install_filter (stm,
-                                 direction,
-                                 pdf_stm_f_lzw_init,
-                                 pdf_stm_f_lzw_apply,
-                                 pdf_stm_f_lzw_dealloc,
-                                 &conf);
-}
-
-/* 
- * Generic functions
- */
-
-int
-pdf_stm_close (pdf_stm_t stm)
-{
-  int status;
-
-  status = 
-    stm->backend.funcs.close (&stm->backend.data);
+  /* Deallocate the stm structure */
   pdf_stm_dealloc (stm);
 
-  return status;
-}
-
-pdf_stm_pos_t
-pdf_stm_size (pdf_stm_t stm)
-{
-  pdf_stm_pos_t size;
-
-  if (stm->backend.funcs.size_p (BE_DATA(stm)))
-    {
-      size = stm->backend.funcs.size (BE_DATA(stm));
-    }
-  else
-    {
-      size = 0;
-    }
-  
-  return size;
-}
-
-int
-pdf_stm_seek (pdf_stm_t stm,
-              pdf_stm_pos_t pos)
-{
-  int status;
-
-  if (stm->backend.funcs.seek_p (BE_DATA(stm)))
-    {
-      status = stm->backend.funcs.seek (BE_DATA(stm), pos);
-    }
-  else
-    {
-      status = PDF_ERROR;
-    }
-
-  return status;
-}
-
-pdf_stm_pos_t
-pdf_stm_tell (pdf_stm_t stm)
-{
-  pdf_stm_pos_t result;
-
-  if (stm->backend.funcs.tell_p (BE_DATA(stm)))
-    {
-      result = stm->backend.funcs.tell (BE_DATA(stm));
-    }
-  else
-    {
-      result = 0;
-    }
-
-  return result;
+  return PDF_OK;
 }
 
 pdf_size_t
 pdf_stm_read (pdf_stm_t stm,
-              unsigned char **buf,
+              pdf_char_t *buf,
               pdf_size_t bytes)
 {
-  pdf_size_t readed_bytes;
+  pdf_size_t read_bytes;
+  pdf_size_t pending_bytes;
+  pdf_size_t cache_size;
+  pdf_size_t to_copy_bytes;
+  pdf_status_t ret;
 
-  if (stm->backend.funcs.read_p (BE_DATA(stm)))
+  if (stm->mode != PDF_STM_READ)
     {
-      readed_bytes = stm->backend.funcs.read (BE_DATA(stm),
-                                              buf,
-                                              bytes);
-    }
-  else
-    {
-      readed_bytes = 0;
-    }
-
-  if (readed_bytes != 0)
-    {
-      pdf_stm_apply_filters (stm->read_filter_list,
-                             buf, 
-                             &readed_bytes);
+      /* Invalid operation */
+      return 0;
     }
 
-  return readed_bytes;
+  ret = PDF_OK;
+  read_bytes = 0;
+  while ((read_bytes < bytes) &&
+         (ret == PDF_OK))
+    {
+      pending_bytes = bytes - read_bytes;
+
+      /* If the cache is empty, refill it with filtered data */
+      if (pdf_stm_buffer_eob_p (stm->cache))
+        {
+          ret = pdf_stm_filter_apply (stm->filter, PDF_FALSE);
+        }
+
+      if (ret != PDF_ERROR)
+        {
+          /* Read data from the cache */
+          pending_bytes = bytes - read_bytes;
+          cache_size = stm->cache->wp - stm->cache->rp;
+          to_copy_bytes = PDF_MIN(pending_bytes, cache_size);
+
+          strncpy ((char *) (buf + read_bytes),
+                   (char *) stm->cache->data + stm->cache->rp,
+                   to_copy_bytes);
+          
+          read_bytes += to_copy_bytes;
+          stm->cache->rp += to_copy_bytes;
+        }
+    }
+
+  if (ret == PDF_ERROR)
+    {
+      read_bytes = 0;
+    }
+
+  return read_bytes;
 }
+
 
 pdf_size_t
 pdf_stm_write (pdf_stm_t stm,
-               unsigned char *buf,
+               pdf_char_t *buf,
                pdf_size_t bytes)
 {
+  pdf_status_t ret;
   pdf_size_t written_bytes;
+  pdf_size_t pending_bytes;
+  pdf_size_t to_write_bytes;
+  pdf_stm_filter_t tail_filter;
+  pdf_stm_buffer_t tail_buffer;
+  pdf_size_t tail_buffer_size;
 
-  pdf_stm_apply_filters (stm->write_filter_list,
-                         &buf,
-                         &bytes);
-
-  if (stm->backend.funcs.write_p (BE_DATA(stm)))
+  if (stm->mode != PDF_STM_WRITE)
     {
-      written_bytes = stm->backend.funcs.write (BE_DATA(stm),
-                                                buf,
-                                                bytes);
-    }
-  else
-    {
-      written_bytes = 0;
+      /* Invalid operation */
+      return 0;
     }
 
+  tail_filter = pdf_stm_filter_get_tail (stm->filter);
+  tail_buffer = pdf_stm_filter_get_in (tail_filter);
+
+  ret = PDF_OK;
+  written_bytes = 0;
+  while ((written_bytes < bytes) &&
+         (ret == PDF_OK))
+    {
+      if (pdf_stm_buffer_full_p (tail_buffer))
+        {
+          /* Flush the cache */
+          tail_buffer_size = tail_buffer->wp - tail_buffer->rp;
+          if (pdf_stm_flush (stm) < tail_buffer_size)
+            {
+              ret = PDF_EEOF;
+            }
+        }
+
+      if (ret == PDF_OK)
+        {
+          /* Write the data into the tail buffer. Note that at this
+             point the tail buffer should be empty */
+          tail_buffer_size = tail_buffer->size - tail_buffer->wp;
+          pending_bytes = bytes - written_bytes;
+
+          to_write_bytes = PDF_MIN(pending_bytes, tail_buffer_size);
+
+          if (to_write_bytes != 0)
+            {
+              strncpy ((char *) tail_buffer->data + tail_buffer->wp,
+                       (char *) buf + written_bytes,
+                       to_write_bytes);
+
+              written_bytes += to_write_bytes;
+              tail_buffer->wp += to_write_bytes;
+            }
+        }
+    }
+  
   return written_bytes;
 }
 
 pdf_size_t
 pdf_stm_flush (pdf_stm_t stm)
 {
-  pdf_size_t bytes;
+  pdf_stm_filter_t tail_filter;
+  pdf_stm_buffer_t tail_buffer;
+  pdf_status_t ret;
+  pdf_size_t cache_size;
+  pdf_size_t written_bytes;
+  pdf_size_t tail_buffer_size;
 
-  if (stm->backend.funcs.write_p (BE_DATA(stm)))
+  if (stm->mode != PDF_STM_WRITE)
     {
-      bytes = stm->backend.funcs.flush (BE_DATA(stm));
-    }
-  else
-    {
-      bytes = 0;
-    }
-
-  return bytes;
-}
-
-int
-pdf_stm_read_char (pdf_stm_t stm)
-{
-  int c;
-
-  if (stm->backend.funcs.read_p (BE_DATA(stm)))
-    {
-      c = stm->backend.funcs.read_char (BE_DATA(stm));
-    }
-  else
-    {
-      c = 0;
+      /* Invalid operation */
+      return 0;
     }
 
-  return c;
-}
+  tail_filter = pdf_stm_filter_get_tail (stm->filter);
+  tail_buffer = pdf_stm_filter_get_in (tail_filter);
+  tail_buffer_size = tail_buffer->wp - tail_buffer->rp;
 
-int
-pdf_stm_peek_char (pdf_stm_t stm)
-{
-  int c;
-
-  if (stm->backend.funcs.read_p (BE_DATA(stm)))
+  /* Apply the head filter until the input buffer of the
+     tail filter gets empty */
+  ret = PDF_OK;
+  while ((!pdf_stm_buffer_eob_p (tail_buffer)) &&
+         (ret == PDF_OK))
     {
-      c = stm->backend.funcs.peek_char (BE_DATA(stm));
-    }
-  else
-    {
-      c = 0;
-    }
-
-  return c;
-}
-
-int
-pdf_stm_uninstall_filters (pdf_stm_t stm)
-{
-  int count;
-
-  for (count = 0; 
-       count < pdf_list_size (stm->read_filter_list); 
-       count++)
-    {
-      pdf_list_remove_at (stm->read_filter_list, 0);
-    }
-
-  for (count = 0; 
-       count < pdf_list_size (stm->write_filter_list); 
-       count++)
-    {
-      pdf_list_remove_at (stm->write_filter_list, 0);
-    }
-
-  return PDF_OK;
-}
-
-
-/* Private functions */
-
-static pdf_stm_t 
-pdf_stm_alloc (void)
-{
-  pdf_stm_t stm;
-
-  stm = (pdf_stm_t) pdf_alloc (sizeof (struct pdf_stm_s));
-  pdf_list_new (NULL,      /* compare_fn */
-                pdf_stm_filter_dealloc_list,
-                PDF_TRUE,
-                &stm->read_filter_list); /* allow duplicates */
-  pdf_list_new (NULL,      /* compare_fn */
-                pdf_stm_filter_dealloc_list,
-                PDF_TRUE,
-                &stm->write_filter_list); /* allow duplicates */
-
-  return stm;
-}
-
-static void
-pdf_stm_dealloc (pdf_stm_t stm)
-{
-  pdf_list_destroy (stm->read_filter_list);
-  pdf_list_destroy (stm->write_filter_list);
-  pdf_dealloc (stm);
-}
-
-static int 
-pdf_stm_install_filter (pdf_stm_t stm,
-                        int direction,
-                        pdf_stm_init_filter_fn_t init_fn,
-                        pdf_stm_apply_filter_fn_t apply_fn,
-                        pdf_stm_dealloc_filter_fn_t dealloc_fn,
-                        void *conf)
-{
-  pdf_stm_filter_t filter;
-  
-  /* Create the new filter */
-  filter = (pdf_stm_filter_t) pdf_alloc (sizeof(struct pdf_stm_filter_s));
-  filter->funcs.init = init_fn;
-  filter->funcs.apply = apply_fn;
-  filter->funcs.dealloc = dealloc_fn;
-
-  /* Initialize it */
-  if (conf != NULL)
-    {
-      (filter->funcs.init) (&filter->data, conf);
-    }
-  else
-    {
-      (filter->funcs.init) (&filter->data, NULL);
-    }
-
-  /* Queue it */
-  switch (direction)
-    {
-    case PDF_STM_FILTER_READ:
-      {
-        pdf_list_add_last (stm->read_filter_list, 
-                           (const void *) filter,
-                           NULL);
-        break;
-      }
-    case PDF_STM_FILTER_WRITE:
-      {
-        pdf_list_add_last (stm->write_filter_list, 
-                           (const void *) filter,
-                           NULL);
-        break;
-      }
-    default:
-      {
-        /* Make compiler happy */
-        break;
-      }
-    }
-
-  return PDF_OK;
-}
-
-static void
-pdf_stm_filter_dealloc_list (const void *elt)
-{
-  pdf_stm_filter_t filter;
-
-  filter = (pdf_stm_filter_t) elt;
-
-  (filter->funcs.dealloc) (&filter->data);
-  pdf_dealloc (filter);
-}
-
-static int
-pdf_stm_apply_filters (pdf_list_t filter_list,
-                       pdf_char_t **buf,
-                       pdf_size_t *buf_size)
-{
-  pdf_stm_filter_t filter;
-  pdf_list_iterator_t iter;
-  pdf_list_node_t node;
-  pdf_char_t *filtered_data;
-  pdf_stm_pos_t filtered_size;
-
-  if (pdf_list_size (filter_list) == 0)
-    {
-      return PDF_TRUE;
-    }
-  
-  pdf_list_iterator (filter_list, &iter);
-  while (pdf_list_iterator_next (&iter, (const void **) &filter, &node) == PDF_OK)
-    {
-      if (filter->funcs.apply (filter->data, 
-                               *buf, *buf_size,
-                               &filtered_data, &filtered_size))
+      ret = pdf_stm_filter_apply (stm->filter, PDF_FALSE);
+      
+      if (ret != PDF_ERROR)
         {
-          /* This filter was applied successfully. Replace data with
-             the result */
-          pdf_dealloc (*buf);
-          *buf = filtered_data;
-          *buf_size = filtered_size;
+          /* Write the data from the buffer cache into the backend */
+          cache_size = stm->cache->wp - stm->cache->rp;
+          written_bytes = pdf_stm_be_write (stm->backend,
+                                            stm->cache->data + stm->cache->rp,  
+                                            cache_size);
+
+          if (written_bytes < cache_size)
+            {
+              /* There is no room in the backend */
+              ret = PDF_EEOF;
+            }
         }
     }
-  pdf_list_iterator_free (&iter);
+
+  if (pdf_stm_buffer_eob_p (tail_buffer))
+    {
+      pdf_stm_buffer_rewind (tail_buffer);
+    }
+
+  return (tail_buffer_size - 
+          (tail_buffer->wp - tail_buffer->rp));
+}
+
+pdf_status_t
+pdf_stm_install_filter (pdf_stm_t stm,
+                        enum pdf_stm_filter_type_e filter_type,
+                        pdf_hash_t filter_params)
+{
+  pdf_stm_filter_t filter;
+
+  /* Create the new filter */
+  filter = pdf_stm_filter_new (filter_type,
+                               filter_params,
+                               stm->cache->size);
+
+  /* Set the new filter as the new head of the filter chain */
+  pdf_stm_filter_set_next (filter, stm->filter);
+  pdf_stm_filter_set_out (filter, stm->cache);
+  pdf_stm_filter_set_out (stm->filter, pdf_stm_filter_get_in (filter));
+  stm->filter = filter;
 
   return PDF_OK;
+}
+
+pdf_u32_t
+pdf_stm_read_char (pdf_stm_t stm)
+{
+  return pdf_stm_read_peek_char (stm, PDF_FALSE);
+}
+
+pdf_u32_t
+pdf_stm_peek_char (pdf_stm_t stm)
+{
+  return pdf_stm_read_peek_char (stm, PDF_TRUE);
+}
+
+pdf_off_t
+pdf_stm_seek (pdf_stm_t stm,
+              pdf_off_t pos)
+{
+  pdf_off_t new_pos;
+  pdf_stm_filter_t tail_filter;
+  pdf_stm_buffer_t tail_buffer;
+
+  if (stm->mode == PDF_STM_READ)
+    {
+      /* Discard the cache contents */
+      pdf_stm_buffer_rewind (stm->cache);
+
+      /* Seek the backend */
+      new_pos = pdf_stm_be_seek (stm->backend, pos);
+    }
+  else
+    {
+      /* Writing stream */
+      /* Flush the stream */
+      tail_filter = pdf_stm_filter_get_tail (stm->filter);
+      tail_buffer = pdf_stm_filter_get_in (tail_filter);
+
+      pdf_stm_flush (stm);
+
+      /* Note that if there is an EOF condition in the backend we are
+         going to lose data */
+      pdf_stm_buffer_rewind (tail_buffer);
+
+      /* Seek the backend */
+      new_pos = pdf_stm_be_seek (stm->backend, pos);
+    }
+
+  return new_pos;
+}
+
+pdf_off_t
+pdf_stm_tell (pdf_stm_t stm)
+{
+  pdf_off_t pos;
+  pdf_size_t cache_size;
+  pdf_stm_filter_t tail_filter;
+  pdf_stm_buffer_t tail_buffer;
+
+  if (stm->mode == PDF_STM_READ)
+    {
+      cache_size = stm->cache->wp - stm->cache->rp;
+      pos = pdf_stm_be_tell (stm->backend) + cache_size;
+    }
+  else
+    {
+      /* Writing stream */
+
+      tail_filter = pdf_stm_filter_get_tail (stm->filter);
+      tail_buffer = pdf_stm_filter_get_in (tail_filter);
+
+      cache_size = tail_buffer->wp - tail_buffer->rp;
+      pos = pdf_stm_be_tell (stm->backend) + cache_size;
+    }
+
+  return pos;
+}
+
+pdf_size_t
+pdf_stm_finish (pdf_stm_t stm)
+{
+  pdf_stm_filter_t tail_filter;
+  pdf_stm_buffer_t tail_buffer;
+  pdf_status_t ret;
+  pdf_size_t written_bytes;
+  pdf_size_t cache_size;
+
+  if (stm->mode != PDF_STM_WRITE)
+    {
+      /* Invalid operation */
+      return 0;
+    }
+
+  written_bytes = 0;
+  tail_filter = pdf_stm_filter_get_tail (stm->filter);
+  tail_buffer = pdf_stm_filter_get_in (tail_filter);
+
+  /* Rewind the tail buffer */
+  pdf_stm_buffer_rewind (tail_buffer);
+  
+  /* Finish the filters */
+  ret = pdf_stm_filter_apply (stm->filter, PDF_TRUE);
+      
+  if (ret != PDF_ERROR)
+    {
+      /* Write the data from the buffer cache into the backend. 
+         
+         Note that we have a design flaw here: the data generated by
+         the finalization of the filters should not exceed the size of
+         the stream cache. */
+      cache_size = stm->cache->wp - stm->cache->rp;
+      written_bytes = pdf_stm_be_write (stm->backend,
+                                        stm->cache->data + stm->cache->rp,  
+                                        cache_size);
+    }
+
+  return written_bytes;
+}
+
+/*
+ * Private functions
+ */
+
+static pdf_status_t
+pdf_stm_init (pdf_size_t cache_size,
+              enum pdf_stm_mode_e mode,
+              pdf_stm_t stm)
+{
+  pdf_hash_t null_filter_params;
+  pdf_hash_t null_filter_state;
+
+  if (cache_size == 0)
+    {
+      /* Use the default cache size */
+      cache_size = PDF_STM_DEFAULT_CACHE_SIZE;
+    } 
+
+  /* Initialize the null filter */
+  pdf_hash_new (NULL, &null_filter_params);
+  pdf_hash_new (NULL, &null_filter_state);
+  stm->filter = pdf_stm_filter_new (PDF_STM_FILTER_NULL,
+                                    null_filter_params,
+                                    cache_size);
+
+  /* Initialize the filter cache */
+  stm->cache = pdf_stm_buffer_new (cache_size);
+
+  /* Configure the filter */
+  stm->mode = mode;
+  if (stm->mode == PDF_STM_READ)
+    {
+      /* Configuration for a reading stream
+       *
+       *  <cache> <--- <null-filter> <--- <backend>
+       */
+
+      pdf_stm_filter_set_out (stm->filter, 
+                              stm->cache);
+      pdf_stm_filter_set_be (stm->filter,
+                             stm->backend);
+    } 
+  else
+    {
+      /* Configuration for a writing stream
+       *
+       * <null-filter> --> <cache> --> <backend>
+       */
+
+      pdf_stm_filter_set_out (stm->filter,
+                              stm->cache);
+    }
+
+  return PDF_OK;
+}
+
+
+static pdf_u32_t
+pdf_stm_read_peek_char (pdf_stm_t stm,
+                        pdf_bool_t peek_p)
+{
+  pdf_status_t ret;
+  pdf_u32_t ret_char;
+
+  /* Is the cache empty? */
+  ret = PDF_OK;
+  if (pdf_stm_buffer_eob_p (stm->cache))
+    {
+      ret = pdf_stm_filter_apply (stm->filter, PDF_FALSE);
+    }
+
+  if (pdf_stm_buffer_eob_p (stm->cache))
+    {
+      ret_char = PDF_EOF;
+    }
+  else
+    {
+      /* Read a character from the cache */
+      ret_char = 
+        (pdf_u32_t) stm->cache->data[stm->cache->rp];
+
+      if (!peek_p)
+        {
+          stm->cache->rp++;
+        }
+    }
+  
+  return ret_char;
+}
+
+static inline pdf_stm_t
+pdf_stm_alloc (void)
+{
+  pdf_stm_t new;
+
+  new =  pdf_alloc (sizeof(struct pdf_stm_s));
+  return new;
+}
+
+static inline void
+pdf_stm_dealloc (pdf_stm_t stm)
+{
+  pdf_dealloc (stm);
 }
 
 /* End of pdf_stm.c */

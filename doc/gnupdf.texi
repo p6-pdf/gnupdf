@@ -3376,7 +3376,7 @@ The stm will be used to write data into the open file or memory buffer.
 @node Creating and Destroying Streams
 @subsection Creating and Destroying Streams
 
-@deftypefun pdf_status_t pdf_stm_file_new (pdf_fsys_file_t @var{file}, enum pdf_stm_mode_e @var{mode}, pdf_size_t @var{buffer_size})
+@deftypefun pdf_status_t pdf_stm_file_new (pdf_fsys_file_t @var{file}, pdf_off_t @var{offset}, pdf_size_t @var{cache_size}, enum pdf_stm_mode_e @var{mode}, pdf_stm_t *@var{stm})
 
 Create a new stream operating in a given open file. 
 
@@ -3385,11 +3385,15 @@ Create a new stream operating in a given open file.
 @table @var
 @item file
 An open file.
+@item offset
+Position into the file.
+@item cache_size
+The desired size for the stream cache, measured in octects. If it is
+@code{0} then the default size (4kb) is used.
 @item mode
 The operation mode for the stream.
-@item buffer_size
-The desired size for the stream buffer, measured in octects. If it is
-@code{0} then the default size (4kb) is used.
+@item stm
+A pointer to the stm to be created.
 @end table
 @item Returns
 A PDF status value:
@@ -3406,17 +3410,24 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_stm_mem_new (enum pdf_stm_mode_e @var{mode}, pdf_size_t @var{size})
+@deftypefun pdf_status_t pdf_stm_mem_new (pdf_char_t *@var{buffer}, pdf_size_t @var{size}, pdf_size_t @var{cache_size}, enum pdf_stm_mode_e @var{mode}, pdf_stm_t *@var{stm})
 
 Create a new stream operating in a memory buffer.
 
 @table @strong
 @item Parameters
 @table @var
-@item mode
-The operation mode for the stream.
+@item buffer
+Memory buffer where the information will be written-to or readed-from.
 @item size
 The desired size for the memory buffer, measured in octects.
+@item cache_size
+The desired size for the stream cache, measured in octects. If it is
+@code{0} then the default size (4kb) is used.
+@item mode
+The operation mode for the stream.
+@item stm
+A pointer to the stm to be created.
 @end table
 @item Returns
 A PDF status value:
@@ -3460,30 +3471,6 @@ XXX
 
 @node Managing the Filter Chain
 @subsection Managing the Filter Chain
-
-@deftypefun pdf_status_t pdf_stm_uninstall_filters (pdf_stm_t @var{stm})
-
-Uninstall any installed filter in a given stream. 
-
-@table @strong
-@item Parameters
-@table @var
-@item stm
-A stream.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
-
 
 The following functions can be used to build the filter chain of a
 given stream.
@@ -3931,7 +3918,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_stm_write (pdf_stm_t @var{stm}, const pdf_size_t @var{elem_size}, const pdf_size_t @var{elem_count}, pdf_char_t *@var{buf})
+@deftypefun pdf_size_t pdf_stm_write (pdf_stm_t @var{stm}, pdf_char_t *@var{buf}, pdf_size_t @var{bytes})
 
 Write a chunk of data into a given stream.
 
@@ -3940,16 +3927,14 @@ Write a chunk of data into a given stream.
 @table @var
 @item stm
 A stream.
-@item elem_size
-Size (in octects) of the elements to write.
-@item elem_count
-Number of elements to write.
 @item buf
 The buffer containing the written information.
+@item bytes
+The number of bytes to write into the stream.
 @end table
 @item Returns
 A PDF size value containing the number of octects actually readed. If
-the returned value is less than @code{elem_count * elem_size} then a
+the returned value is less than @code{bytes} then a
 disk full condition has occured.
 @item Usage example
 @example
@@ -3957,6 +3942,27 @@ XXX
 @end example
 @end table
 @end deftypefun
+
+@deftypefun pdf_size_t pdf_stm_finish (pdf_stm_t @var{stm})
+
+Finish the filter chain of a write stream.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@end table
+@item Returns
+A PDF size value containing the number of bytes written by the finish
+operation.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
 
 @deftypefun pdf_u32_t pdf_stm_read_char (pdf_stm_t stm)
 

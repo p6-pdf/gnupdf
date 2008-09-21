@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/12 05:02:54 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/20 16:47:58 jemarch"
  *
  *       File:         pdf-types.h
  *       Date:         Sun Feb 10 21:30:00 2008
@@ -55,6 +55,12 @@
 #define PDF_TRUE 1
 #define PDF_FALSE 0
 
+#define PDF_MIN(i1, i2) \
+  (((i1) < (i2)) ? (i1) : (i2))
+
+#define PDF_MAX(i1, i2) \
+  (((i1) > (i2)) ? (i1) : (i2))
+
 /* Definitions used in the operations of the  pdf_i64_t type*/
 #define PDF_I32_MAX 2147483647;
 #define PDF_I32_DIV 2147483648;
@@ -65,14 +71,14 @@
 #define PDF_U8_DIV 256;
 
 
-/* A variable of type `pdf_stm_pos_t' contain a byte-offset relative to
+/* A variable of type `pdf_off_t' contain a byte-offset relative to
    the beginning of a stream object. 
 
-   Please be careful manipulating `pdf_stm_pos_t' values. Its value is
+   Please be careful manipulating `pdf_off_t' values. Its value is
    assured to be a signed scalable one, but its size may be wider than
    a long. */
 #define NO_POS -1
-typedef off_t pdf_stm_pos_t;
+typedef off_t pdf_off_t;
 
 /* Memory indexes (size_t) */
 typedef size_t pdf_size_t;
@@ -100,16 +106,6 @@ typedef char pdf_i8_t;
 
 /* Boolean type */
 typedef unsigned char pdf_bool_t;
-
-/* Utility macros */
-
-#define PDF_MAX(integral1, integral2) \
-  (((integral1) > (integral2)) ?      \
-   (integral1) : (integral2))
-
-#define PDF_MIN(integral1, integral2) \
-  (((integral1) < (integral2)) ?      \
-   (integral1) : (integral2))
 
 /********************** 64-bit type built-in support **************************/
 
@@ -423,8 +419,6 @@ pdf_i64_to_i32(const pdf_i64_t bignum);
 #define pdf_i64_to_i32(bignum) bignum
 
 #endif
-
-
 
 /* PDF_EOF to store an EOF marker in integers */
 #define PDF_EOF -1

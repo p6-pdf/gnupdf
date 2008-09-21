@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 01:07:20 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/21 21:24:31 jemarch"
  *
  *       File:         pdf-filter.c
  *       Date:         Tue Jul 10 18:42:07 2007
@@ -143,33 +143,45 @@ typedef struct filter_args_s
 static void
 filter_args_init(filter_args_t* a)
 {
-  a->lzw_early_change = DEF_LZW_EARLY_CHANGE;
+  /*  a->lzw_early_change = DEF_LZW_EARLY_CHANGE;
   a->pred_enc_type = DEF_PRED_ENC_TYPE;
   a->pred_dec_type = DEF_PRED_DEC_TYPE;
   a->pred_colors = DEF_PRED_COLORS;
   a->pred_bpc = DEF_PRED_BPC;
-  a->pred_columns = DEF_PRED_COLUMS;
+  a->pred_columns = DEF_PRED_COLUMS; */
 }
 
 int
 main (int argc, char *argv[])
 {
   char c;
-  pdf_stm_t input;
-  size_t line_bytes;
-  size_t readed;
-  char *line;
-  unsigned char *output_buffer;
-  int ret;
-  filter_args_t args;
+  pdf_stm_t stm;
+  pdf_char_t *buf;
+  pdf_size_t buf_size;
+  pdf_status_t ret;
+  pdf_hash_t null_filter_params;
+  pdf_char_t *line;
+  pdf_size_t line_bytes;
+  pdf_size_t read_bytes;
+  pdf_size_t written_bytes;
 
-  /* Initialization */
-  input = pdf_create_mem_stm (0,         /* Initial 0 length */
-                              PDF_FALSE, /* Dont initialize */
-                              0,         /* Init character */
-                              PDF_TRUE); /* Auto-resize when necessary */
+  /* Create the output buffer */
+  buf_size = 4096;
+  buf = pdf_alloc (buf_size);
 
-  filter_args_init(&args);
+  /* Create a writing memory stream */
+  ret = pdf_stm_mem_new (buf,
+                         buf_size,
+                         0, /* Use the default cache size */
+                         PDF_STM_WRITE,
+                         &stm);
+  if (ret != PDF_OK)
+    {
+      pdf_error (ret, stderr, "while creating the write stream");
+      exit (1);
+    }
+
+  /*  filter_args_init(&args); */
 
   /* Manage command line arguments */
   while ((ret = getopt_long (argc,
@@ -203,72 +215,80 @@ main (int argc, char *argv[])
 	  /* FILTER INSTALLERS */
         case NULL_FILTER_ARG:
           {
-            pdf_stm_install_null_filter (input, 
-                                         PDF_STM_FILTER_READ);
+            ret = pdf_hash_new (NULL, &null_filter_params);
+            if (ret != PDF_OK)
+              {
+                pdf_error (ret, stderr, "while creating the null filter parameters hash table");
+                exit (1);
+              }
+
+            pdf_stm_install_filter (stm,
+                                    PDF_STM_FILTER_NULL,
+                                    null_filter_params);
             break;
           }
         case ASCIIHEXDEC_FILTER_ARG:
           {
-            pdf_stm_install_ahexdec_filter (input,
-                                            PDF_STM_FILTER_READ);
+            /* pdf_stm_install_ahexdec_filter (input,
+               PDF_STM_FILTER_READ); */
             break;
           }
         case ASCIIHEXENC_FILTER_ARG:
           {
-            pdf_stm_install_ahexenc_filter (input,
-                                            PDF_STM_FILTER_READ);
+            /* pdf_stm_install_ahexenc_filter (input,
+               PDF_STM_FILTER_READ); */
             break;
           }
         case ASCII85DEC_FILTER_ARG:
           {
-            pdf_stm_install_a85dec_filter (input,
-                                           PDF_STM_FILTER_READ);
+            /* pdf_stm_install_a85dec_filter (input,
+               PDF_STM_FILTER_READ); */
             break;
           }
         case ASCII85ENC_FILTER_ARG:
           {
-            pdf_stm_install_a85enc_filter (input,
-                                           PDF_STM_FILTER_READ);
+            /* pdf_stm_install_a85enc_filter (input,
+               PDF_STM_FILTER_READ); */
             break;
           }
 	case LZWENC_FILTER_ARG:
           {
-	    pdf_stm_install_lzwenc_filter (input,
-                                           PDF_STM_FILTER_READ,
-					   args.lzw_early_change);
+	    /* pdf_stm_install_lzwenc_filter (input,
+               PDF_STM_FILTER_READ,
+               args.lzw_early_change); */
             break;
           }
         case LZWDEC_FILTER_ARG:
           {
-	    pdf_stm_install_lzwdec_filter (input,
-                                           PDF_STM_FILTER_READ,
-					   args.lzw_early_change);
+	    /* pdf_stm_install_lzwdec_filter (input,
+               PDF_STM_FILTER_READ,
+               args.lzw_early_change); */
             break;
           }
 #ifdef HAVE_LIBZ
         case FLATEDEC_FILTER_ARG:
           {
-            pdf_stm_install_flatedec_filter (input,
-                                             PDF_STM_FILTER_READ);
+            /* pdf_stm_install_flatedec_filter (input,
+               PDF_STM_FILTER_READ); */
             break;
           }
         case FLATEENC_FILTER_ARG:
           {
-            pdf_stm_install_flateenc_filter (input,
-                                             PDF_STM_FILTER_READ);
+            /* pdf_stm_install_flateenc_filter (input,
+               PDF_STM_FILTER_READ); */
             break;
           }
 #endif /* HAVE_LIBZ */
         case RUNLENGTHDEC_FILTER_ARG:
           {
-            pdf_stm_install_rldec_filter (input,
-                                          PDF_STM_FILTER_READ);
+            /* pdf_stm_install_rldec_filter (input,
+               PDF_STM_FILTER_READ); */
             break;
           }
         case RUNLENGTHENC_FILTER_ARG:
           {
-            pdf_stm_install_rlenc_filter (input,
-                                          PDF_STM_FILTER_READ);
+            /* pdf_stm_install_rlenc_filter (input,
+               PDF_STM_FILTER_READ); */
             break;
           }
         case CCITTFAXDEC_FILTER_ARG:
@@ -289,53 +309,53 @@ main (int argc, char *argv[])
           }
         case PREDENC_FILTER_ARG:
           {
-            pdf_stm_install_predenc_filter (input,
-                                            PDF_STM_FILTER_READ,
-                                            args.pred_enc_type,
-                                            args.pred_colors,
-					    args.pred_bpc,
-					    args.pred_columns);
+            /* pdf_stm_install_predenc_filter (input,
+               PDF_STM_FILTER_READ,
+               args.pred_enc_type,
+               args.pred_colors,
+               args.pred_bpc,
+               args.pred_columns); */
             break;
           }
         case PREDDEC_FILTER_ARG:
           {
-            pdf_stm_install_preddec_filter (input,
-                                            PDF_STM_FILTER_READ,
-                                            args.pred_dec_type,
-                                            args.pred_colors,
-					    args.pred_bpc,
-					    args.pred_columns);
+            /* pdf_stm_install_preddec_filter (input,
+               PDF_STM_FILTER_READ,
+               args.pred_dec_type,
+               args.pred_colors,
+               args.pred_bpc,
+               args.pred_columns); */
             break;
           }
 	  /* FILTER OPTIONS: */
 	case PREDDEC_TYPE_ARG:
 	  {
-	    args.pred_dec_type = atoi(optarg);
+	    /* args.pred_dec_type = atoi(optarg); */
 	    break;
 	  }
 	case PREDENC_TYPE_ARG:
 	  {
-	    args.pred_enc_type = atoi(optarg);
+	    /* args.pred_enc_type = atoi(optarg); */
 	    break;
 	  }
 	case PRED_COLORS_ARG:
 	  {
-	    args.pred_colors = atoi(optarg);
+	    /* args.pred_colors = atoi(optarg); */
 	    break;
 	  }
 	case PRED_BPC_ARG:
 	  {
-	    args.pred_bpc = atoi(optarg);
+	    /* args.pred_bpc = atoi(optarg); */
 	    break;
 	  }
 	case PRED_COLUMNS_ARG:
 	  {
-	    args.pred_columns = atoi(optarg);
+	    /* args.pred_columns = atoi(optarg); */
 	    break;
 	  }
 	case LZW_EARLY_CHANGE_ARG:
 	  {
-	    args.lzw_early_change = !args.lzw_early_change;
+	    /* args.lzw_early_change = !args.lzw_early_change; */
 	    break;
 	  }
 	  /* ERROR: */
@@ -349,32 +369,36 @@ main (int argc, char *argv[])
         }
     }
 
-  /* Read stdin into the pdf stream */
+  /* Write stdin into the write stream */
   line = NULL;
   line_bytes = 0;
-  while ((readed = getline (&line, &line_bytes, stdin)) != EOF)
+  while ((read_bytes = getline ((char **) &line, &line_bytes, stdin)) != EOF)
     {
-      pdf_stm_write (input,
-                     line,
-                     readed);
-      free (line);
+      pdf_stm_seek (stm, 0);
+      written_bytes = pdf_stm_write (stm,
+                                     line,
+                                     read_bytes);
+      pdf_stm_flush (stm);
+      fwrite ((char *) buf,
+              written_bytes,
+              1,
+              stdout);
+  
+      pdf_dealloc (line);
       line = NULL;
       line_bytes = 0;
     }
 
-  /* Write the filtered pdf stream contents into stdout */
-  pdf_stm_seek (input, 0);
-  readed = pdf_stm_read (input, 
-                         &output_buffer,
-                         pdf_stm_size (input));
-  fwrite (output_buffer,
-          readed,
+  pdf_stm_seek (stm, 0);
+  written_bytes = pdf_stm_finish (stm);
+  fwrite ((char *) buf,
+          written_bytes,
           1,
           stdout);
 
   /* Cleanup */
-  free (output_buffer);
-  pdf_stm_close (input);
+  free (buf);
+  pdf_stm_destroy (stm);
   
   return 0;
 }
