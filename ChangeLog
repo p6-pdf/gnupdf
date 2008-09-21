@@ -2,6 +2,8 @@
 
 	* doc/gnupdf.texi (Reading and Writing Data): New function
 	'pdf_stm_finish'.
+	Replace the old specific filter installation functions with the
+	new generic function.
 
 	* doc/gnupdf-tsd.texi (pdf_stm_write): New section.
 
