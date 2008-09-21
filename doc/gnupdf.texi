@@ -3943,6 +3943,27 @@ XXX
 @end table
 @end deftypefun
 
+@deftypefun pdf_size_t pdf_stm_finish (pdf_stm_t @var{stm})
+
+Finish the filter chain of a write stream.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@end table
+@item Returns
+A PDF size value containing the number of bytes written by the finish
+operation.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+
 @deftypefun pdf_u32_t pdf_stm_read_char (pdf_stm_t stm)
 
 Read a character from a given stream.

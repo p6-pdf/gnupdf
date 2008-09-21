@@ -1,5 +1,8 @@
 2008-09-21  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf.texi (Reading and Writing Data): New function
+	'pdf_stm_finish'.
+
 	* doc/gnupdf-tsd.texi (pdf_stm_write): New section.
 
 	* torture/unit/base/stm/pdf-stm-write.c (START_TEST): New test
