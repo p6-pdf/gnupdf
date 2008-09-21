@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/21 20:33:00 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/21 20:47:08 jemarch"
  *
  *       File:         pdf-stm-f-null.c
  *       Date:         Mon Jul  9 22:01:41 2007
@@ -60,12 +60,6 @@ pdf_stm_f_null_apply (pdf_hash_t params,
   in_size = in->wp - in->rp;
   out_size = out->size - out->wp;
 
-  if (finish_p)
-    {
-      /* Left one octect for the finish character */
-      out_size--;
-    }
-
   bytes_to_copy = PDF_MIN(out_size, in_size);
 
   if (bytes_to_copy != 0)
@@ -76,13 +70,6 @@ pdf_stm_f_null_apply (pdf_hash_t params,
 
       in->rp = in->rp + bytes_to_copy;
       out->wp = out->wp + bytes_to_copy;
-    }
-
-  if (finish_p)
-    {
-      out->data[out->wp] = 'X';
-      out->wp++;
-      bytes_to_copy++;
     }
 
   if (bytes_to_copy < out_size)
