@@ -5423,7 +5423,7 @@ pdf_time_get_local_cal (mytime, &cal);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_get_utc_cal (const pdf_time_t @var{time_var}, struct pdf_time_cal_s *@var{p_utc_time})
+@deftypefun pdf_status_t pdf_time_get_utc_cal (const pdf_time_t @var{time_var}, struct pdf_time_cal_s *@var{p_utc_cal})
 Get the UTC calendar time of a given time variable.
 
 @table @strong
