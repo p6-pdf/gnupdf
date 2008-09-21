@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/21 20:31:37 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/21 21:58:38 jemarch"
  *
  *       File:         pdf-stm-write.c
  *       Date:         Sun Sep 21 16:37:27 2008
@@ -169,10 +169,6 @@ START_TEST (pdf_stm_write_003)
 
   /* Check the result of the operation */
   fail_if(strncmp (buf, "GNU", 3) != 0);
-  printf("XXX buf[0] = %c\n", buf[0]);
-  printf("XXX buf[1] = %c\n", buf[1]);
-  printf("XXX buf[2] = %c\n", buf[2]);
-  printf("XXX buf[3] = %c\n", buf[3]);
 
   /* Destroy data */
   pdf_dealloc (buf);
