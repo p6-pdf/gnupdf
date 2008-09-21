@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/21 17:46:41 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/21 19:41:38 jemarch"
  *
  *       File:         pdf-stm-filter.c
  *       Date:         Thu Jun 12 22:13:31 2008
@@ -27,7 +27,8 @@
 #include <pdf-stm-filter.h>
 
 /* Forward references */
-static pdf_size_t pdf_stm_filter_get_input (pdf_stm_filter_t filter);
+static pdf_size_t pdf_stm_filter_get_input (pdf_stm_filter_t filter,
+                                            pdf_bool_t finish_p);
 
 
 /*
@@ -65,7 +66,6 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
       {
         new->impl.init_fn = pdf_stm_f_null_init;
         new->impl.apply_fn = pdf_stm_f_null_apply;
-        new->impl.finish_fn = pdf_stm_f_null_finish;
         break;
       }
     default:
@@ -129,7 +129,8 @@ pdf_stm_filter_get_in (pdf_stm_filter_t filter)
 }
 
 pdf_status_t
-pdf_stm_filter_apply (pdf_stm_filter_t filter)
+pdf_stm_filter_apply (pdf_stm_filter_t filter,
+                      pdf_bool_t finish_p)
 {
   pdf_status_t ret;
 
@@ -142,7 +143,7 @@ pdf_stm_filter_apply (pdf_stm_filter_t filter)
       /* If the input buffer is empty, refill it */
       if (pdf_stm_buffer_eob_p (filter->in))
         {
-          ret = pdf_stm_filter_get_input (filter);
+          ret = pdf_stm_filter_get_input (filter, finish_p);
         }
 
       if (ret != PDF_ERROR)
@@ -151,7 +152,8 @@ pdf_stm_filter_apply (pdf_stm_filter_t filter)
           ret = filter->impl.apply_fn (filter->params,
                                        filter->state,
                                        filter->in,
-                                       filter->out);
+                                       filter->out,
+                                       finish_p);
         }
     }
 
@@ -178,29 +180,13 @@ pdf_stm_filter_get_tail (pdf_stm_filter_t filter)
     }
 }
 
-pdf_status_t
-pdf_stm_filter_finish (pdf_stm_filter_t filter)
-{
-  pdf_status_t ret;
-
-  if (filter->next != NULL)
-    {
-      pdf_stm_filter_finish (filter->next);
-    }
-
-  ret = filter->impl.finish_fn (filter->params,
-                                filter->state,
-                                filter->in,
-                                filter->out);
-  return ret;
-}
-
 /*
  * Private functions
  */
 
 static pdf_size_t
-pdf_stm_filter_get_input (pdf_stm_filter_t filter)
+pdf_stm_filter_get_input (pdf_stm_filter_t filter,
+                          pdf_bool_t finish_p)
 {
   pdf_status_t ret;
   pdf_size_t read_bytes;
@@ -209,7 +195,7 @@ pdf_stm_filter_get_input (pdf_stm_filter_t filter)
 
   if (filter->next != NULL)
     {
-      ret = pdf_stm_filter_apply (filter->next);
+      ret = pdf_stm_filter_apply (filter->next, finish_p);
     }
   else if (filter->backend != NULL)
     {
