@@ -182,44 +182,164 @@ Open an existing, readable and writable file for reading and writing.
 @subsection Stream Module
 
 @menu
-* pdf_create_file_stm::
+* pdf_stm_mem_new::
+* pdf_stm_read::
+* pdf_stm_read_char::
+* pdf_stm_peek_char::
+* pdf_stm_seek::
+* pdf_stm_tell::
+* pdf_stm_write::
 @end menu
 
-@node pdf_create_file_stm
-@subsubsection pdf_create_file_stm
+@node pdf_stm_mem_new
+@subsubsection pdf_stm_mem_new
 
-@deffn Test pdf_create_file_stm_001
-Try to open a file stream to a non-existing file.
+@deffn Test pdf_stm_mem_new_001
+Create a new memory-based reading stream.
 @table @strong
 @item Success condition
-@code{pdf_create_file_stm} should return a @code{NULL} pointer.
+@code{pdf_stm_mem_new} should return a @code{PDF_OK}.
 @end table
 @end deffn
 
-@deffn Test pdf_create_file_stm_002
-Open a file stream to an existing file in read-only mode.
+@node pdf_stm_read
+@subsubsection pdf_stm_read
+
+@deffn Test pdf_stm_read_001
+Read some bytes from a reading memory stream.
 @table @strong
 @item Success condition
-@code{pdf_create_file_stm} should return a correct stream object.
+The readed data should be consistent.
 @end table
 @end deffn
 
-@deffn Test pdf_create_file_stm_003
-Open a file stream to a non existing file in write-only mode.
+@deffn Test pdf_stm_read_002
+Read bytes from a reading memory stream getting and EOF condition in
+the returned value.
 @table @strong
 @item Success condition
-@code{pdf_create_file_stm} should return a correct stream object.
+The readed data should be consistent and we should get
+and EOF condition in the returned value.
 @end table
 @end deffn
 
-@deffn Test pdf_create_file_stm_004
-Open a file stream to an existing file in write-only mode.
+@deffn Test pdf_stm_read_003
+Read bytes from a reading memory stream in several steps.
 @table @strong
 @item Success condition
-@code{pdf_create_file_stm} should return a correct stream object.
+The readed data should be consistent.
 @end table
 @end deffn
 
+@deffn Test pdf_stm_read_004
+Read some bytes from a reading memory cache with
+two null filters installed.
+@table @strong
+@item Success condition
+The readed data should be consistent.
+@end table
+@end deffn
+
+@node pdf_stm_read_char
+@subsubsection pdf_stm_read_char
+
+@deffn Test pdf_stm_read_char_001
+Read a character from a memory stream.
+@table @strong
+@item Success condition
+The read character should be ok.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_read_char_002
+Read a character from an empty memory stream.
+@table @strong
+@item Success condition
+The read character should be @code{PDF_EOF}.
+@end table
+@end deffn
+
+@node pdf_stm_peek_char
+@subsubsection pdf_stm_peek_char
+
+@deffn Test pdf_stm_peek_char_001
+Peek a character from a memory stream.
+@table @strong
+@item Success condition
+The peek character should be ok.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_peek_char_002
+Peek a character from an empty memory stream.
+@table @strong
+@item Success condition
+The peek character should be @code{PDF_EOF}.
+@end table
+@end deffn
+
+@node pdf_stm_seek
+@subsubsection pdf_stm_seek
+
+@deffn Test pdf_stm_seek_001
+Seek into a memory read stream.
+@table @strong
+@item Success condition
+The seek operation should success.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_seek_002
+Seek to a position beyond the size of the stream
+into a memory read stream.
+@table @strong
+@item Success condition
+The seek operation should success and the seek
+position should be to the last valid position 
+in the stream.
+@end table
+@end deffn
+
+@node pdf_stm_tell
+@subsubsection pdf_stm_tell
+
+@deffn Test pdf_stm_tell_001
+Tell an initialized reading memory stream.
+@table @strong
+@item Success condition
+The tell operation should report the first position
+in the stream (0).
+@end table
+@end deffn
+
+@node pdf_stm_write
+@subsubsection pdf_stm_write
+
+@deffn Test pdf_stm_write_001
+Write some bytes to a write memory stream.
+@table @strong
+@item Success condition
+The written data should be consistent.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_write_002
+Write some bytes to a write memory stream with
+two null filter installed.
+@table @strong
+@item Success condition
+The written data should be consistent.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_write_003
+Write some bytes to a write memory stream
+producing a cache flush.
+@table @strong
+@item Success condition
+The written data should be consistent.
+@end table
+@end deffn
 
 @node Text Module
 @subsection Text Module

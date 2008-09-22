@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-09 04:07:01 david"
+/* -*- mode: C -*- Time-stamp: "08/09/20 14:43:38 jemarch"
  *
  *       File:         pdf-crypt-cipher-decrypt-size.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -73,8 +73,10 @@ TCase *
 test_pdf_crypt_cipher_decrypt_size (void)
 {
   TCase *tc = tcase_create("pdf_crypt_cipher_decrypt_size");
+
   tcase_add_test(tc, pdf_crypt_cipher_decrypt_size_001);
   tcase_add_test(tc, pdf_crypt_cipher_decrypt_size_002);
+
   return tc;
 }
 

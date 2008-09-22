@@ -1,3 +1,154 @@
+2008-09-22  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Reading and Writing Data): Fix the function
+	prototype of 'pdf_stm_read'.
+	(Managing Time Values): Fix the function prototype of
+	'pdf_time_get_local_cal'.
+
+2008-09-21  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Reading and Writing Data): New function
+	'pdf_stm_finish'.
+	Replace the old specific filter installation functions with the
+	new generic function.
+
+	* doc/gnupdf-tsd.texi (pdf_stm_write): New section.
+
+	* torture/unit/base/stm/pdf-stm-write.c (START_TEST): New test
+	'pdf_stm_write_002'.
+	(START_TEST): New test 'pdf_stm_write_003'.
+
+	* AUTHORS: Updated.
+
+	* torture/unit/Makefile.am (TEST_SUITE_STM): Source file
+	'pdf-stm-write.c' added.
+
+	* torture/unit/base/stm/tsuite-stm.c: Test suite for pdf_stm_write
+	added.
+
+	* torture/unit/base/stm/pdf-stm-write.c: New file.
+	(START_TEST): New test 'pdf_stm_write_001'.
+
+2008-09-20  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-stm-f-null.c (pdf_stm_f_null_finish): New function.
+
+	* src/base/pdf-stm-filter.c (pdf_stm_filter_finish): New function.
+
+	* src/base/pdf-stm.c (pdf_stm_flush): New function.
+	(pdf_stm_finish): New function.
+
+	* AUTHORS: Updated.
+
+	* torture/unit/base/stm/pdf-stm-seek.c: New file.
+	(START_TEST): New test 'pdf_stm_seek_001'.
+	(START_TEST): New test 'pdf_stm_seek_002'.
+
+	* doc/gnupdf-tsd.texi (pdf_stm_seek): New section.
+
+	* src/base/pdf-stm-be.c (pdf_stm_be_mem_read): Take care about the
+	current position when reading data from the buffer.
+	(pdf_stm_be_mem_write): Take care about the current position when
+	writing data into the buffer.
+
+	* src/base/pdf-stm.c (pdf_stm_seek): New function.
+	(pdf_stm_tell): New function.
+
+	* src/base/pdf-stm-be.c (pdf_stm_be_tell): New function.
+	(pdf_stm_be_seek): New function.
+	(pdf_stm_be_mem_seek): New function.
+	(pdf_stm_be_mem_tell): New function.
+	(pdf_stm_be_file_tell): New function.
+	(pdf_stm_be_file_seek): New function.
+
+	* doc/gnupdf.texi (Managing the Filter Chain): Removed useless
+	function 'pdf_stm_uninstall_filters'.
+
+	* src/base/pdf-stm.h: Likewise.
+
+	* doc/gnupdf-tsd.texi (pdf_stm_read_char): New section.
+	(pdf_stm_peek_char): New section.
+
+	* torture/unit/base/stm/pdf-stm-peek-char.c: New file.
+
+	* src/base/pdf-stm.c (pdf_stm_peek_char): New function.
+
+	* src/base/pdf-stm-be.c (pdf_stm_be_mem_read): Advance the
+	internal position pointer after a read.
+
+	* torture/unit/base/stm/pdf-stm-read-char.c: New file.
+	(START_TEST): New test 'pdf_stm_read_char_001'.
+	(START_TEST): New test 'pdf_stm_read_char_002'.
+
+	* src/base/pdf-stm.c (pdf_stm_read_char): New function.
+
+	* doc/gnupdf-tsd.texi (pdf_stm_read): New section.
+	* doc/gnupdf-tsd.texi (pdf_stm_mem_new): New section.
+
+	* src/base/pdf-stm.c (pdf_stm_install_filter): New function.
+
+	* torture/unit/base/stm/pdf-stm-read.c: New file.
+	(START_TEST): New test 'pdf_stm_read_001'.
+	(START_TEST): New test 'pdf_stm_read_002'.
+	(START_TEST): New test 'pdf_stm_read_003'.
+	(START_TEST): New test 'pdf_stm_read_004'.
+
+	* src/base/pdf-error.h: Include stdio.h in the public area of the
+	header file to avoid undefined symbols when including pdf.h.
+
+	* torture/unit/Makefile.am (TSUITE_FILES): Add the test suite
+	definition fsource file for the stm module.
+
+	* torture/unit/base/stm/pdf-stm-mem-new.c: New file.
+	(START_TEST): New test 'pdf_stm_mem_new_001'.
+
+	* src/base/pdf-types.h (PDF_MIN): New macro.
+	(PDF_MAX): New macro.
+
+2008-09-19  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Encryption and decryption): Add missing
+	'result_size' parameter to the prototype of
+	'pdf_crypt_cipher_decrypt'.
+	(Encryption and decryption): Fix the return value type for
+	'pdf_crypt_cipher_decrypt_size'.
+	(Creating and destroying Ciphers): Fix parameters for
+	'pdf_crypt_cipher_new'.
+	(Memory Allocation): Fix parameters for 'pdf_alloc'.
+	(Memory Allocation): Fix parameters for 'pdf_realloc'.
+	(Working with iterators): Fix parameters for
+	'pdf_hash_iterator_next'.
+	(Working with iterators): Fix parameters for
+	'pdf_hash_iterator_destroy'.
+	(Managing Time Values): Fix name of parameters for
+	'pdf_time_get_utc_cal'.
+	(Managing Time Span Values): Fix parameters for
+	'pdf_time_span_negate'.
+	(Managing Time Span Values): Fix return type for
+	'pdf_time_span_to_secs'.
+	(Platform-specific functions): Fix parameters for
+	'pdf_time_w32_set_from_filetime'.
+	(Getting File System Properties): Fix parameters for
+	'pdf_fsys_get_free_space'.
+	(Getting File System Item Properties): Fix deftypefun entry for
+	'pdf_fsys_item_props_to_hash'.
+	(File System Utility Functions): Fix parameters for
+	'pdf_fsys_get_temp_path_name'.
+	(File Properties Management): Fix return value type for
+	'pdf_fsys_file_get_size'.
+	(Changing the Size of a File): Fix the prototype for
+	'pdf_fsys_file_set_size'.
+
+	* src/base/pdf-crypt.h (pdf_crypt_md_destroy): Rename 'hd' to
+	'md' to be consistent with the reference manual.
+
+	* AUTHORS: Updated.
+
+	* prmgt/fly2org: New file.
+
+	* doc/gnupdf.texi (Message digest functions): Fix prototype for
+	'pdf_crypt_md_hash'.
+
 2008-09-15  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* AUTHORS: Updated.
@@ -26,9 +177,20 @@
 
 	* src/base/pdf-error.h: Identifiers and strings are kept in a single list.
 
+
 2008-09-12  Jose E. Marchesi  <jemarch@gnu.org>
 
-	* src/base/pdf-types.h: New macros PDF_MAX and PDF_MIN.
+	* doc/gnupdf.texi (Reading and Writing Data): Change the
+	description of 'pdf_stm_write' to the new prototype.
+
+	* src/base/pdf-stm.c (pdf_stm_write): Simplify the function
+	prototype.
+
+	* src/base/pdf-stm-buffer.c (pdf_stm_buffer_full_p): New function.
+	(pdf_stm_buffer_eob_p): New function.
+
+	* src/base/pdf-stm-filter.c (pdf_stm_filter_get_tail): New
+	function.
 
 2008-09-11  Jose E. Marchesi  <jemarch@gnu.org>
 
@@ -513,6 +675,9 @@
 
 2008-08-18  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-stm.c (pdf_stm_read): New function.
+	(pdf_stm_write): New function.
+
 	* AUTHORS: Added David Vazquez.
 
 2008-08-15  David Vazquez  <davazp@gmail.com>
@@ -566,6 +731,34 @@
 	`struct pdf_fsys_item_props_s'. Added examples for `pdf_fsys_item_p',
 	`pdf_fsys_get_item_props', `pdf_fsys_item_readable_p' and
 	`pdf_fsys_item_writable_p'
+
+2008-08-01  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-stm.c (pdf_stm_dealloc): New function.
+	(pdf_stm_destroy): New function.
+
+	* src/base/pdf-stm-filter.c (pdf_stm_filter_get_in): New function.
+	(pdf_stm_filter_set_in_end): New function.
+	(pdf_stm_filter_get_in_end): New function.
+	(pdf_stm_filter_set_in_begin): New function.
+	(pdf_stm_filter_get_in_begin): New function.
+
+2008-07-30  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Creating and Destroying Streams): API updated.
+
+	* src/base/pdf-stm.c (pdf_stm_mem_new): New function.
+	(pdf_stm_alloc): New function.
+	(pdf_stm_init): New function.
+
+2008-07-29  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-stm.c (pdf_stm_file_new): New function.
+
+	* src/base/pdf-stm.h: Offset parameter to 'pdf_stm_file_new'.
+
+	* doc/gnupdf.texi (Creating and Destroying Streams): Add an offset
+	parameter.
 
 2008-07-28  Jose E. Marchesi  <jemarch@gnu.org>
 
@@ -713,6 +906,10 @@
 	* doc/gnupdf.texi: Changed i64 interfaces
 
 	* doc/gnupdf-tsd.texi: Added new i64 tests
+
+2008-07-21  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-types.h: pdf_stm_pos_t is not pdf_off_t
 
 2008-07-21  Jose E. Marchesi  <jemarch@gnu.org>
 

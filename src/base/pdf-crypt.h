@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-07 03:44:18 david"
+/* -*- mode: C -*- Time-stamp: "08/09/19 00:55:33 jemarch"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -194,7 +194,7 @@ pdf_crypt_init (void)
 
 
 EXTERN_INLINE pdf_status_t
-pdf_crypt_cipher_new (pdf_crypt_cipher_algo_t * algorithm,
+pdf_crypt_cipher_new (pdf_crypt_cipher_algo_t *algorithm,
 		      pdf_crypt_cipher_t *cipher)
 {
   pdf_status_t status;
@@ -334,9 +334,9 @@ pdf_crypt_md_hash (pdf_crypt_md_t md,
 
 
 EXTERN_INLINE pdf_status_t
-pdf_crypt_md_destroy (pdf_crypt_md_t hd)
+pdf_crypt_md_destroy (pdf_crypt_md_t md)
 {
-  pdf_dealloc (hd.raw);
+  pdf_dealloc (md.raw);
   return PDF_OK;
 }
 

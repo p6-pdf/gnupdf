@@ -309,7 +309,7 @@ p = (int *) pdf_alloc (sizeof(int));
 @end table
 @end deftypefun
 
-@deftypefun void pdf_dealloc (void *@var{pointer})
+@deftypefun void pdf_dealloc (const void *@var{pointer})
 
 Deallocates heap memory.
 
@@ -336,7 +336,7 @@ pdf_dealloc (p);
 @end table
 @end deftypefun
 
-@deftypefun void* pdf_realloc (void *@var{pointer}, const pdf_size_t @var{size})
+@deftypefun void* pdf_realloc (const void *@var{pointer}, const pdf_size_t @var{size})
 
 Reallocates memory.
 
@@ -1666,7 +1666,7 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_hash_iterator_next (pdf_hash_iterator_t *@var{iterator}, const char **@var{key})
+@deftypefun pdf_status_t pdf_hash_iterator_next (pdf_hash_iterator_t @var{iterator}, const char **@var{key})
 
 Retrieves the next key from @var{iterator}.
 
@@ -1713,7 +1713,7 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_hash_iterator_destroy (pdf_hash_iterator_t *@var{iterator})
+@deftypefun pdf_status_t pdf_hash_iterator_destroy (pdf_hash_iterator_t @var{iterator})
 
 Free all resources used by @var{iterator}. 
 
@@ -3376,7 +3376,7 @@ The stm will be used to write data into the open file or memory buffer.
 @node Creating and Destroying Streams
 @subsection Creating and Destroying Streams
 
-@deftypefun pdf_status_t pdf_stm_file_new (pdf_fsys_file_t @var{file}, enum pdf_stm_mode_e @var{mode}, pdf_size_t @var{buffer_size})
+@deftypefun pdf_status_t pdf_stm_file_new (pdf_fsys_file_t @var{file}, pdf_off_t @var{offset}, pdf_size_t @var{cache_size}, enum pdf_stm_mode_e @var{mode}, pdf_stm_t *@var{stm})
 
 Create a new stream operating in a given open file. 
 
@@ -3385,11 +3385,15 @@ Create a new stream operating in a given open file.
 @table @var
 @item file
 An open file.
+@item offset
+Position into the file.
+@item cache_size
+The desired size for the stream cache, measured in octects. If it is
+@code{0} then the default size (4kb) is used.
 @item mode
 The operation mode for the stream.
-@item buffer_size
-The desired size for the stream buffer, measured in octects. If it is
-@code{0} then the default size (4kb) is used.
+@item stm
+A pointer to the stm to be created.
 @end table
 @item Returns
 A PDF status value:
@@ -3406,17 +3410,24 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_stm_mem_new (enum pdf_stm_mode_e @var{mode}, pdf_size_t @var{size})
+@deftypefun pdf_status_t pdf_stm_mem_new (pdf_char_t *@var{buffer}, pdf_size_t @var{size}, pdf_size_t @var{cache_size}, enum pdf_stm_mode_e @var{mode}, pdf_stm_t *@var{stm})
 
 Create a new stream operating in a memory buffer.
 
 @table @strong
 @item Parameters
 @table @var
-@item mode
-The operation mode for the stream.
+@item buffer
+Memory buffer where the information will be written-to or readed-from.
 @item size
 The desired size for the memory buffer, measured in octects.
+@item cache_size
+The desired size for the stream cache, measured in octects. If it is
+@code{0} then the default size (4kb) is used.
+@item mode
+The operation mode for the stream.
+@item stm
+A pointer to the stm to be created.
 @end table
 @item Returns
 A PDF status value:
@@ -3461,432 +3472,23 @@ XXX
 @node Managing the Filter Chain
 @subsection Managing the Filter Chain
 
-@deftypefun pdf_status_t pdf_stm_uninstall_filters (pdf_stm_t @var{stm})
-
-Uninstall any installed filter in a given stream. 
-
-@table @strong
-@item Parameters
-@table @var
-@item stm
-A stream.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
-
-
 The following functions can be used to build the filter chain of a
 given stream.
 
-@deftypefun pdf_status_t pdf_stm_install_null_filter (pdf_stm_t @var{stm})
+@deftypefun pdf_status_t pdf_stm_install_filter (pdf_stm_t @var{stm}, enum pdf_stm_filter_type_e @var{filter_type}, pdf_hash_t @var{filter_params})
 
-Add a NULL filter to a stream filter chain.
-
-@table @strong
-@item Parameters
-@table @var
-@item stm
-A stream.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The filter was successfully installed in the stream.
-@item PDF_ERROR
-There was an error and the filter was not installed in the stream.
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_stm_install_flatedec_filter (pdf_stm_t @var{stm})
-
-Add a flate decode filter to a stream filter chain.
+Install a fiter in the filter chain of a stream.
 
 @table @strong
 @item Parameters
 @table @var
 @item stm
 A stream.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The filter was successfully installed in the stream.
-@item PDF_ERROR
-There was an error and the filter was not installed in the stream.
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_stm_install_flateenc_filter (pdf_stm_t @var{stm})
-
-Add a flate encode filter to a stream filter chain.
-
-@table @strong
-@item Parameters
-@table @var
-@item stm
-A stream.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The filter was successfully installed in the stream.
-@item PDF_ERROR
-There was an error and the filter was not installed in the stream.
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_stm_install_pred_filter (pdf_stm_t @var{stm}, pdf_u32_t @var{predictor}, pdf_u32_t @var{colors}, pdf_u32_t @var{bits_per_component}, pdf_u32_t @var{columns})
-
-Add a PDF or TIFF predictor filter to a stream filter chain.
-
-@table @strong
-@item Parameters
-@table @var
-@item stm
-A stream.
-@item predictor
-The predictor function to use.
-
-Valid values are:
-@table @code
-@item 1
-The filter assumes that the normal algorithm was used to encode the
-data, without prediction.
-@item 2
-Use the TIFF 2 predictor function.
-@item 10
-Use the PNG NONE ALL ROWS predictor function.
-@item 11
-Use the PNG SUB ALL ROWS predictor function.
-@item 12
-Use the PNG UP ALL ROWS predictor function.
-@item 13
-Use the PNG AVERAGE ALL ROWS predictor function.
-@item 14
-Use the PNG Paeth predictor function.
-@item 15
-Use the PNG optimum predictor function.
-@end table
-@item colors
-The number of colors.
-@item bits_per_component
-The number of bits per component (pixel).
-@item columns
-The number of columns in each row.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The filter was successfully installed in the stream.
-@item PDF_ERROR
-There was an error and the filter was not installed in the stream.
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_stm_install_ahexdec_filter (pdf_stm_t @var{stm})
-
-Add an ASCII Hex decoder filter to a stream filter chain.
-
-@table @strong
-@item Parameters
-@table @var
-@item stm
-A stream.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The filter was successfully installed in the stream.
-@item PDF_ERROR
-There was an error and the filter was not installed in the stream.
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_stm_install_ahexenc_filter (pdf_stm_t @var{stm})
-
-Add an ASCII Hex encoder filter to a stream filter chain.
-
-@table @strong
-@item Parameters
-@table @var
-@item stm
-A stream.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The filter was successfully installed in the stream.
-@item PDF_ERROR
-There was an error and the filter was not installed in the stream.
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_stm_install_a85dec_filter (pdf_stm_t @var{stm})
-
-Add an ASCII 85 decoder filter to a stream filter chain.
-
-@table @strong
-@item Parameters
-@table @var
-@item stm
-A stream.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The filter was successfully installed in the stream.
-@item PDF_ERROR
-There was an error and the filter was not installed in the stream.
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_stm_install_a85enc_filter (pdf_stm_t @var{stm})
-
-Add an ASCII 85 encoder filter to a stream filter chain.
-
-@table @strong
-@item Parameters
-@table @var
-@item stm
-A stream.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The filter was successfully installed in the stream.
-@item PDF_ERROR
-There was an error and the filter was not installed in the stream.
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_stm_install_rldec_filter (pdf_stm_t @var{stm})
-
-Add a RL decoder filter to a stream filter chain.
-
-@table @strong
-@item Parameters
-@table @var
-@item stm
-A stream.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The filter was successfully installed in the stream.
-@item PDF_ERROR
-There was an error and the filter was not installed in the stream.
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_stm_install_rlenc_filter (pdf_stm_t @var{stm})
-
-Add a RL encoder filter to a stream filter chain.
-
-@table @strong
-@item Parameters
-@table @var
-@item stm
-A stream.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The filter was successfully installed in the stream.
-@item PDF_ERROR
-There was an error and the filter was not installed in the stream.
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_stm_install_faxdec_filter (pdf_stm_t @var{stm}, pdf_u32_t @var{k}, pdf_bool_t @var{end_of_line_p}, pdf_bool_t @var{encoded_byte_align_p}, pdf_u32_t @var{columns}, pdf_u32_t @var{rows}, pdf_bool_t @var{end_of_block_p}, pdf_bool_t @var{blackls1_p}, pdf_u32_t @var{damaged_rows_before_error})
-
-Add a CCITT (FAX) decoder filter to a stream filter chain.
-
-@table @strong
-@item Parameters
-@table @var
-@item stm
-A stream.
-@item k
-XXX
-@item end_on_line_P
-XXX
-@item encoded_byte_align_p
-XXX
-@item columns
-XXX
-@item rows
-XXX
-@item end_of_block_p
-XXX
-@item blackls1_p
-XXX
-@item damaged_rows_before_error
-XXX
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The filter was successfully installed in the stream.
-@item PDF_ERROR
-There was an error and the filter was not installed in the stream.
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_stm_install_faxenc_filter (pdf_stm_t @var{stm}, pdf_u32_t @var{k}, pdf_bool_t @var{end_of_line_p}, pdf_bool_t @var{encoded_byte_align_p}, pdf_u32_t @var{columns}, pdf_u32_t @var{rows}, pdf_bool_t @var{end_of_block_p}, pdf_bool_t @var{blackls1_p}, pdf_u32_t @var{damaged_rows_before_error})
-
-Add a CCITT (FAX) encoder filter to a stream filter chain.
-
-@table @strong
-@item Parameters
-@table @var
-@item stm
-A stream.
-@item k
-XXX
-@item end_on_line_P
-XXX
-@item encoded_byte_align_p
-XXX
-@item columns
-XXX
-@item rows
-XXX
-@item end_of_block_p
-XXX
-@item blackls1_p
-XXX
-@item damaged_rows_before_error
-XXX
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The filter was successfully installed in the stream.
-@item PDF_ERROR
-There was an error and the filter was not installed in the stream.
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_stm_install_lzwdec_filter (pdf_stm_t @var{stm}, pdf_u32_t @var{early_change})
-
-Add a LZW decoder filter to a stream filter chain.
-
-@table @strong
-@item Parameters
-@table @var
-@item stm
-A stream.
-@item early_change
-XXX
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The filter was successfully installed in the stream.
-@item PDF_ERROR
-There was an error and the filter was not installed in the stream.
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_stm_install_lzwenc_filter (pdf_stm_t @var{stm}, pdf_u32_t @var{early_change})
-
-Add a LZW encoder filter to a stream filter chain.
-
-@table @strong
-@item Parameters
-@table @var
-@item stm
-A stream.
-@item early_change
-XXX
+@item filter_type
+The type of the filter to be installed.
+@item filter_params
+Hash table containing a set of key-value pairs with the parameters for
+the filter.
 @end table
 @item Returns
 A PDF status value:
@@ -3906,7 +3508,7 @@ XXX
 @node Reading and Writing Data
 @subsection Reading and Writing Data
 
-@deftypefun pdf_size_t pdf_stm_read (pdf_stm_t @var{stm}, pdf_char_t **@var{buf}, pdf_size_t @var{bytes})
+@deftypefun pdf_size_t pdf_stm_read (pdf_stm_t @var{stm}, pdf_char_t *@var{buf}, pdf_size_t @var{bytes})
 
 Read a chunk of data from a given stream.
 
@@ -3916,7 +3518,7 @@ Read a chunk of data from a given stream.
 @item stm
 A stream.
 @item buf
-The buffer to hold the readed data.
+The buffer to hold the read data.
 @item bytes
 The number of octects to read.
 @end table
@@ -3931,7 +3533,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_stm_write (pdf_stm_t @var{stm}, const pdf_size_t @var{elem_size}, const pdf_size_t @var{elem_count}, pdf_char_t *@var{buf})
+@deftypefun pdf_size_t pdf_stm_write (pdf_stm_t @var{stm}, pdf_char_t *@var{buf}, pdf_size_t @var{bytes})
 
 Write a chunk of data into a given stream.
 
@@ -3940,16 +3542,14 @@ Write a chunk of data into a given stream.
 @table @var
 @item stm
 A stream.
-@item elem_size
-Size (in octects) of the elements to write.
-@item elem_count
-Number of elements to write.
 @item buf
 The buffer containing the written information.
+@item bytes
+The number of bytes to write into the stream.
 @end table
 @item Returns
 A PDF size value containing the number of octects actually readed. If
-the returned value is less than @code{elem_count * elem_size} then a
+the returned value is less than @code{bytes} then a
 disk full condition has occured.
 @item Usage example
 @example
@@ -3957,6 +3557,27 @@ XXX
 @end example
 @end table
 @end deftypefun
+
+@deftypefun pdf_size_t pdf_stm_finish (pdf_stm_t @var{stm})
+
+Finish the filter chain of a write stream.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@end table
+@item Returns
+A PDF size value containing the number of bytes written by the finish
+operation.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
 
 @deftypefun pdf_u32_t pdf_stm_read_char (pdf_stm_t stm)
 
@@ -5802,7 +5423,7 @@ pdf_time_get_local_cal (mytime, &cal);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_get_utc_cal (const pdf_time_t @var{time_var}, struct pdf_time_cal_s *@var{p_cal_time})
+@deftypefun pdf_status_t pdf_time_get_utc_cal (const pdf_time_t @var{time_var}, struct pdf_time_cal_s *@var{p_utc_cal})
 Get the UTC calendar time of a given time variable.
 
 @table @strong
@@ -6336,7 +5957,7 @@ pdf_time_span_set_from_i32 (&span, -10); /* The span is -10 seconds long */
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_span_negate (pdf_time_span_t @var{span})
+@deftypefun pdf_status_t pdf_time_span_negate (pdf_time_span_t *@var{p_span})
 
 Make a positive time span into a negative one or make a negative time
 span into a positive one.
@@ -6346,7 +5967,7 @@ span into a positive one.
 
 @table @var
 @item span
-A properly created time span variable.
+A pointer to a properly created time span variable.
 @end table
 
 @item Returns
@@ -6475,7 +6096,7 @@ pdf_time_span_diff (span1, span2, span_diff);
 @end table
 @end deftypefun
 
-@deftypefun pdf_64_t pdf_time_span_to_secs (const pdf_time_span_t @var{span})
+@deftypefun pdf_i64_t pdf_time_span_to_secs (const pdf_time_span_t @var{span})
 
 Get the value of a time span in seconds. 
 
@@ -6728,7 +6349,7 @@ if (pdf_time_cal_span_diff (&span1,
 @node Platform-specific functions
 @subsection Platform-specific functions
 
-@deftypefun pdf_status_t pdf_time_w32_set_from_filetime (pdf_time_t @var{time_var}, FILETIME *@var{p_filetime})
+@deftypefun pdf_status_t pdf_time_w32_set_from_filetime (pdf_time_t @var{time_var}, const FILETIME *@var{p_filetime})
 This function will initialize @var{time_var} to the given Filetime epoch in UTC timescale.
 
 This function is only available in Windows OS.
@@ -6930,7 +6551,7 @@ directory).
 @node Getting File System Properties
 @subsubsection Getting File System Properties
 
-@deftypefun pdf_size_t pdf_fsys_get_free_space (pdf_fsys_t @var{file_system}, pdf_text_t @var{path_name})
+@deftypefun pdf_size_t pdf_fsys_get_free_space (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name})
 
 Get the free storage space in the volume containing @var{path_name}.
 
@@ -7174,7 +6795,7 @@ pdf_status_t ret = pdf_fsys_get_item_props (NULL, path, &item_props);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s @var{item_props}, pdf_hash_t @var{props_hash}
+@deftypefun pdf_status_t pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s @var{item_props}, pdf_hash_t @var{props_hash})
 
 Get a PDF hash variable containing the properties of a filesystem
 item.
@@ -7332,7 +6953,7 @@ pdf_bool_t ret = pdf_fsys_item_writable_p (NULL, path);
 @node File System Utility Functions
 @subsubsection File System Utility Functions
 
-@deftypefun pdf_text_t pdf_fsys_get_temp_path_name (pdf_fsys_t @var{file_system})
+@deftypefun pdf_text_t pdf_fsys_get_temp_path_name (pdf_fsys_t @var{filesystem})
 
 Return a path name for a new temporary file in the specified filesystem.
 
@@ -7429,7 +7050,7 @@ filesystem.
 The following functions provides access to several properties of open
 files. 
 
-@deftypefun pdf_status_t pdf_fsys_file_get_size (pdf_fsys_file_t @var{file}, pdf_size_t *@var{size})
+@deftypefun pdf_size_t pdf_fsys_file_get_size (pdf_fsys_file_t @var{file})
 
 Get the size (in number of octects) of a given open file.
 
@@ -7438,15 +7059,9 @@ Get the size (in number of octects) of a given open file.
 @table @var
 @item file
 An open file.
-@item size
-PDF size variable to hold the size of the file.
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
-@end table
+The size of the file in octects.
 @item Usage example
 @example
 XXX
@@ -7713,7 +7328,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_fsys_file_set_size (pdf_fsys_file_t @var{file}, pdf_size_t @var{new_size})
+@deftypefun pdf_status_t pdf_fsys_file_set_size (pdf_fsys_file_t @var{file}, pdf_size_t @var{size})
 
 Resize a given file to a given new size measured in octects.
 
@@ -8491,7 +8106,7 @@ A cipher. It contains data which is required between several calls to
 functions.
 @end deftp
 
-@deftypefun pdf_status_t pdf_crypt_cipher_new (pdf_crypt_cipher_algo_t @var{algorithm}, pdf_crypt_cipher_t *@var{cipher})
+@deftypefun pdf_status_t pdf_crypt_cipher_new (pdf_crypt_cipher_algo_t *@var{algorithm}, pdf_crypt_cipher_t *@var{cipher})
 
 Create a new cipher.
 
@@ -8599,7 +8214,7 @@ function for this parameters.
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_crypt_cipher_decrypt_size (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size})
+@deftypefun pdf_size_t pdf_crypt_cipher_decrypt_size (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{in}, pdf_size_t @var{in_size})
 
 Compute the size for a valid output buffer in
 @code{pdf_crypt_cipher_decrypt} function for the given parameters.
@@ -8658,7 +8273,7 @@ xxx
 @end deftypefun
 
 
-@deftypefun pdf_status_t pdf_crypt_cipher_decrypt (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{out}, pdf_size_t  @var{out_size}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size}, pdf_size_t )
+@deftypefun pdf_status_t pdf_crypt_cipher_decrypt (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{out}, pdf_size_t  @var{out_size}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size}, pdf_size_t *@var{result_size})
 
 Decrypt a buffer. The plain text will be put in @var{out}.
 
@@ -8742,7 +8357,7 @@ xxx
 
 
 
-@deftypefun pdf_status_t pdf_crypt_md_hash (pdf_crypt_md_t *@var{md}, pdf_char_t  *@var{out}, pdf_size_t  @var{out_size}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size})
+@deftypefun pdf_status_t pdf_crypt_md_hash (pdf_crypt_md_t @var{md}, pdf_char_t  *@var{out}, pdf_size_t  @var{out_size}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size})
 
 Compute the message-digest for a given buffer.
 
