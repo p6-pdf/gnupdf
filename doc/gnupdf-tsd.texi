@@ -3312,7 +3312,7 @@ Compare two different text objects, non-case-sensitive.
 * pdf_list_add_at::
 * pdf_list_add_first::
 * pdf_list_add_last::
-* pdf_list_create::
+* pdf_list_new::
 * pdf_list_destroy::
 * pdf_list_get_at::
 * pdf_list_indexof_from_to::
@@ -3390,10 +3390,10 @@ We get the right pdf_list_size().
 @end table
 @end deffn
 
-@node pdf_list_create
-@subsubsection pdf_list_create
+@node pdf_list_new
+@subsubsection pdf_list_new
 
-@deffn Test pdf_list_create_001
+@deffn Test pdf_list_new_001
 Try to create an empty list.
 @table @strong
 @item Success condition
@@ -3401,7 +3401,7 @@ Returns PDF_OK
 @end table
 @end deffn
 
-@deffn Test pdf_list_create_002
+@deffn Test pdf_list_new_002
 Try to create an empty list given a NULL list pointer.
 @table @strong
 @item Success condition
@@ -3409,7 +3409,7 @@ Returns PDF_EBADDATA
 @end table
 @end deffn
 
-@deffn Test pdf_list_create_003
+@deffn Test pdf_list_new_003
 Try to create an empty list allowing duplicates.
 @table @strong
 @item Success condition
@@ -4096,12 +4096,17 @@ Returns PDF_EBADDATA
 @subsection Hash Module
 
 @menu
-* pdf_hash_create::
+* pdf_hash_new::
 * pdf_hash_detroy::
 * pdf_hash_size::
 * pdf_hash_key_p::
 * pdf_hash_rename::
 * pdf_hash_add::
+* pdf_hash_add_stm::
+* pdf_hash_add_hash::
+* pdf_hash_add_list::
+* pdf_hash_add_text::
+* pdf_hash_add_time::
 * pdf_hash_remove::
 * pdf_hash_search::
 * pdf_hash_iterator::
@@ -4109,10 +4114,10 @@ Returns PDF_EBADDATA
 * pdf_hash_iterator_free::
 @end menu
 
-@node pdf_hash_create
-@subsubsection pdf_hash_create
+@node pdf_hash_new
+@subsubsection pdf_hash_new
 
-@deffn Test pdf_hash_create_001
+@deffn Test pdf_hash_new_001
 Try to create an empty hash.
 @table @strong
 @item Success condition
@@ -4121,7 +4126,7 @@ Returns PDF_OK
 @end deffn
 
 
-@deffn Test pdf_hash_create_002
+@deffn Test pdf_hash_new_002
 Try to create an empty hash with a NULL pointer.
 @table @strong
 @item Success condition
@@ -4240,6 +4245,62 @@ Try to add key/NULL pair to an empty hash.
 @table @strong
 @item Success condition
 Returns PDF_EBADDATA
+@end table
+@end deffn
+
+
+@node pdf_hash_add_stm
+@subsubsection pdf_hash_add_stm
+
+@deffn Test pdf_hash_add_stm_001
+Try to add a stream inside a hash table.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@node pdf_hash_add_hash
+@subsubsection pdf_hash_add_hash
+
+@deffn Test pdf_hash_add_hash_001
+Try to add a hash table inside a hash table.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@node pdf_hash_add_list
+@subsubsection pdf_hash_add_list
+
+@deffn Test pdf_hash_add_list_001
+Try to add a list inside a hash table.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@node pdf_hash_add_text
+@subsubsection pdf_hash_add_text
+
+@deffn Test pdf_hash_add_text_001
+Try to add a text variable inside a hash table.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@node pdf_hash_add_time
+@subsubsection pdf_hash_add_time
+
+@deffn Test pdf_hash_add_time_001
+Try to add a time variable inside a hash table.
+@table @strong
+@item Success condition
+Returns PDF_OK
 @end table
 @end deffn
 

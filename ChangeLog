@@ -42,6 +42,24 @@
 	* torture/unit/base/stm/pdf-stm-write.c: New file.
 	(START_TEST): New test 'pdf_stm_write_001'.
 
+2008-09-21  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* doc/gnupdf-tsd.texi: updated for hash helper tests.
+
+	* torture/unit/Makefile.am: same.
+
+	* torture/unit/base/hash/tsuite-hash.c: same.
+
+	* torture/unit/base/hash/pdf-hash-add-hash.c: initial add.
+
+	* torture/unit/base/hash/pdf-hash-add-list.c: initial add.
+
+	* torture/unit/base/hash/pdf-hash-add-stm.c: initial add.
+
+	* torture/unit/base/hash/pdf-hash-add-text.c: initial add.
+
+	* torture/unit/base/hash/pdf-hash-add-time.c: initial add.
+
 2008-09-20  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-stm-f-null.c (pdf_stm_f_null_finish): New function.
