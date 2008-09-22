@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/21 21:24:31 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/22 23:33:08 jemarch"
  *
  *       File:         pdf-filter.c
  *       Date:         Tue Jul 10 18:42:07 2007
@@ -235,8 +235,7 @@ main (int argc, char *argv[])
           }
         case ASCIIHEXENC_FILTER_ARG:
           {
-            /* pdf_stm_install_ahexenc_filter (input,
-               PDF_STM_FILTER_READ); */
+
             break;
           }
         case ASCII85DEC_FILTER_ARG:
@@ -375,15 +374,16 @@ main (int argc, char *argv[])
   while ((read_bytes = getline ((char **) &line, &line_bytes, stdin)) != EOF)
     {
       pdf_stm_seek (stm, 0);
-      written_bytes = pdf_stm_write (stm,
-                                     line,
-                                     read_bytes);
-      pdf_stm_flush (stm);
+      pdf_stm_write (stm,
+                     line,
+                     read_bytes);
+
+      written_bytes = pdf_stm_flush (stm);
       fwrite ((char *) buf,
               written_bytes,
               1,
               stdout);
-  
+
       pdf_dealloc (line);
       line = NULL;
       line_bytes = 0;
