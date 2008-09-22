@@ -2,6 +2,8 @@
 
 	* utils/pdf-filter.c (main): Add support for the ASCII Hex
 	encoding filter.
+	(main): Use the number of flushed bytes, not
+	the number of written bytes.
 
 	* src/base/pdf-stm-filter.h (enum pdf_stm_filter_type_e): Filter
 	types 'PDF_STM_FILTER_AHEX_ENC' and 'PDF_STM_FILTER_AHEX_DEC'
@@ -15,6 +17,7 @@
 	(pdf_stm_f_ahexdec_apply): New function.
 
 	* src/base/pdf-stm.c: Likewise.
+	(pdf_stm_flush): Fix the returned number of flushed bytes.
 
 	* src/base/pdf-stm-filter.c: Likewise.
 
