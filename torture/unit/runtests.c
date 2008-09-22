@@ -38,7 +38,7 @@ main (int argc, char **argv)
 
   /* Set log file */
   srunner_set_log (sr, "ut.log");
-  srunner_set_fork_status (sr, CK_NOFORK);
+  srunner_set_fork_status (sr, CK_FORK);
   /* Run all test suites */
   srunner_run_all (sr, CK_VERBOSE);
   failures = srunner_ntests_failed (sr);

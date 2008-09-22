@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/21 19:41:38 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/22 20:17:16 jemarch"
  *
  *       File:         pdf-stm-filter.c
  *       Date:         Thu Jun 12 22:13:31 2008
@@ -77,10 +77,9 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
 
   /* Initialization of the implementation */
   new->params = params;
-  pdf_hash_new (NULL,
-                &(new->state));
+  new->state = NULL;
   new->impl.init_fn (new->params,
-                     new->state);
+                     &(new->state));
 
   return new;
 }
@@ -89,7 +88,7 @@ pdf_status_t
 pdf_stm_filter_destroy (pdf_stm_filter_t filter)
 {
   pdf_stm_buffer_destroy (filter->in);
-  pdf_hash_destroy (filter->state);
+  pdf_dealloc (filter->state);
   pdf_dealloc (filter);
 
   /* Note that the memory used by the output buffer and by the params
@@ -164,7 +163,7 @@ pdf_status_t
 pdf_stm_filter_reset (pdf_stm_filter_t filter)
 {
   return filter->impl.init_fn (filter->params,
-                               filter->state);
+                               &(filter->state));
 }
 
 pdf_stm_filter_t

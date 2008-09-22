@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/21 19:40:37 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/22 20:10:36 jemarch"
  *
  *       File:         pdf-stm-f-null.h
  *       Date:         Mon Jul  9 21:59:50 2007
@@ -34,10 +34,10 @@
 /* Filter implementation API */
 
 pdf_status_t pdf_stm_f_null_init (pdf_hash_t params,
-                                  pdf_hash_t state);
+                                  void **state);
 
 pdf_status_t pdf_stm_f_null_apply (pdf_hash_t params,
-                                   pdf_hash_t state,
+                                   void *state,
                                    pdf_stm_buffer_t in,
                                    pdf_stm_buffer_t out,
                                    pdf_bool_t finish_p);

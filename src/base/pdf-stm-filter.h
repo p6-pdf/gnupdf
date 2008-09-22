@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/21 19:36:35 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/22 20:09:37 jemarch"
  *
  *       File:         pdf-stm-filter.h
  *       Date:         Thu Jun 12 22:05:06 2008
@@ -46,10 +46,10 @@ enum pdf_stm_filter_type_e
 struct pdf_stm_filter_impl_s
 {
   pdf_status_t (*init_fn) (pdf_hash_t params,
-                           pdf_hash_t state);
+                           void **state);
 
   pdf_status_t (*apply_fn) (pdf_hash_t params,
-                            pdf_hash_t state,
+                            void *state,
                             pdf_stm_buffer_t in,
                             pdf_stm_buffer_t out,
                             pdf_bool_t finish_p);
@@ -69,8 +69,8 @@ struct pdf_stm_filter_s
   pdf_stm_buffer_t out;
 
   /* Filter-specific information */
-  pdf_hash_t state;
   pdf_hash_t params;
+  void *state;
 
   /* Filter implementation */
   struct pdf_stm_filter_impl_s impl;

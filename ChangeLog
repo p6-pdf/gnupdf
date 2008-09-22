@@ -1,5 +1,18 @@
 2008-09-22  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-stm.c: Likewise.
+
+	* src/base/pdf-stm-filter.c: Likewise.
+
+	* src/base/pdf-stm-filter.h: Likewise.
+
+	* src/base/pdf-stm-f-null.h: Likewise.
+
+	* src/base/pdf-stm-f-null.c: Use a void pointer to hold the filter
+	private state.
+
+	* torture/unit/runtests.c (main): Run in fork-mode by default.
+
 	* doc/gnupdf.texi (Reading and Writing Data): Fix the function
 	prototype of 'pdf_stm_read'.
 	(Managing Time Values): Fix the function prototype of
