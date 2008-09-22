@@ -1,3 +1,9 @@
+2008-09-23  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* ../ahex-filters/src/base/pdf-stm-f-ahex.c
+	(pdf_stm_f_ahexenc_apply): Use 'pdf_stm_buffer_eob_p' to decide if
+	the return value is PDF_EEOF.
+
 2008-09-22  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* utils/pdf-filter.c (main): Add support for the ASCII Hex
