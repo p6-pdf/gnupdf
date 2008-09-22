@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/22 20:16:18 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/22 23:29:02 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -248,7 +248,7 @@ pdf_stm_flush (pdf_stm_t stm)
   pdf_status_t ret;
   pdf_size_t cache_size;
   pdf_size_t written_bytes;
-  pdf_size_t tail_buffer_size;
+  pdf_size_t flushed_bytes;
 
   if (stm->mode != PDF_STM_WRITE)
     {
@@ -258,10 +258,10 @@ pdf_stm_flush (pdf_stm_t stm)
 
   tail_filter = pdf_stm_filter_get_tail (stm->filter);
   tail_buffer = pdf_stm_filter_get_in (tail_filter);
-  tail_buffer_size = tail_buffer->wp - tail_buffer->rp;
 
   /* Apply the head filter until the input buffer of the
      tail filter gets empty */
+  flushed_bytes = 0;
   ret = PDF_OK;
   while ((!pdf_stm_buffer_eob_p (tail_buffer)) &&
          (ret == PDF_OK))
@@ -275,6 +275,7 @@ pdf_stm_flush (pdf_stm_t stm)
           written_bytes = pdf_stm_be_write (stm->backend,
                                             stm->cache->data + stm->cache->rp,  
                                             cache_size);
+          flushed_bytes += written_bytes;
 
           if (written_bytes < cache_size)
             {
@@ -289,8 +290,7 @@ pdf_stm_flush (pdf_stm_t stm)
       pdf_stm_buffer_rewind (tail_buffer);
     }
 
-  return (tail_buffer_size - 
-          (tail_buffer->wp - tail_buffer->rp));
+  return flushed_bytes;
 }
 
 pdf_status_t

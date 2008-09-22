@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/03/05 12:24:27 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/22 23:13:52 jemarch"
  *
  *       File:         pdf-stm-f-ahex.c
  *       Date:         Fri Jul 13 17:08:41 2007
@@ -24,82 +24,144 @@
  */
 
 
-#include <string.h>
-#include <stdio.h>
-#include <pdf-alloc.h>
+#include <config.h>
 #include <pdf-stm-f-ahex.h>
 
-static int pdf_stm_f_ahex_white_p (int hex);
-static int pdf_stm_f_ahex_hex_p (int hex);
-static int pdf_stm_f_ahex_hex2int (int hex);
-static pdf_char_t pdf_stm_f_ahex_int2hex (int n);
-static int pdf_stm_f_ahex_encode (pdf_char_t *in, pdf_stm_pos_t in_size,
-                                  pdf_char_t **out, pdf_stm_pos_t *out_size);
-static int pdf_stm_f_ahex_decode (pdf_char_t *in, pdf_stm_pos_t in_size,
-                                  pdf_char_t **out, pdf_stm_pos_t *out_size);
+static pdf_u32_t pdf_stm_f_ahex_white_p (pdf_u32_t hex);
+static pdf_u32_t pdf_stm_f_ahex_hex_p (pdf_u32_t hex);
+static pdf_u32_t pdf_stm_f_ahex_hex2int (pdf_u32_t hex);
+static pdf_char_t pdf_stm_f_ahex_int2hex (pdf_u32_t n);
 
-
-
-int
-pdf_stm_f_ahex_init (void **filter_data,
-                     void *conf_data)
+pdf_status_t
+pdf_stm_f_ahexenc_init (pdf_hash_t params,
+                        void **state)
 {
-  pdf_stm_f_ahex_data_t *data;
-  pdf_stm_f_ahex_conf_t conf;
+  pdf_stm_f_ahexenc_t filter_state;
 
-  data = (pdf_stm_f_ahex_data_t *) filter_data;
-  conf = (pdf_stm_f_ahex_conf_t) conf_data;
+  /* This filter uses no parameters */
+  /* Allocate the internal state structure */
+  filter_state = pdf_alloc (sizeof (struct pdf_stm_f_ahexenc_s));
 
-  /* Create the private data storage */
-  *data =
-    (pdf_stm_f_ahex_data_t) pdf_alloc (sizeof(struct pdf_stm_f_ahex_data_s));
-  (*data)->mode = conf->mode;
+  if (state == NULL)
+    {
+      return PDF_ERROR;
+    }
+  
+  /* Initialize fields */
+  filter_state->last_nibble = -1;
+  *state = (void *) filter_state;
 
   return PDF_OK;
 }
 
-int 
-pdf_stm_f_ahex_apply (void *filter_data,
-                      pdf_char_t *in, pdf_stm_pos_t in_size,
-                      pdf_char_t **out, pdf_stm_pos_t *out_size)
+pdf_status_t
+pdf_stm_f_ahexenc_apply (pdf_hash_t params,
+                         void *state,
+                         pdf_stm_buffer_t in,
+                         pdf_stm_buffer_t out,
+                         pdf_bool_t finish_p)
 {
-  pdf_stm_f_ahex_data_t data;
+  pdf_status_t ret;
+  pdf_stm_f_ahexenc_t filter_state;
+  pdf_char_t first_nibble;
+  pdf_char_t second_nibble;
+  pdf_char_t in_char;
+  
+  filter_state = (pdf_stm_f_ahexenc_t) state;
 
-  data = (pdf_stm_f_ahex_data_t) filter_data;
-  switch (data->mode)
+  while ((!pdf_stm_buffer_eob_p (in)) &&
+         (!pdf_stm_buffer_full_p (out)))
     {
-    case PDF_STM_F_AHEX_MODE_ENCODE:
-      {
-        return pdf_stm_f_ahex_encode (in, in_size, out, out_size);
-      }
-    case PDF_STM_F_AHEX_MODE_DECODE:
-      {
-        return pdf_stm_f_ahex_decode (in, in_size, out, out_size);
-      }
-    default:
-      {
-        return PDF_ERROR;
-      }
+      /* For each byte in the input we should generate two bytes in the
+         output. */
+      in_char = in->data[in->rp];
+
+      /* Determine the hex digits to write for this input character */
+      if (filter_state->last_nibble != -1)
+        {
+          first_nibble = (pdf_char_t) filter_state->last_nibble;
+          second_nibble = pdf_stm_f_ahex_int2hex (in_char >> 4);
+        }
+      else
+        {
+          first_nibble = pdf_stm_f_ahex_int2hex (in_char >> 4);
+          second_nibble = pdf_stm_f_ahex_int2hex (in_char);
+        }
+      in->rp++;
+
+      /* Write the hex digits to the output buffer, if possible */
+
+      /* First nibble */
+      out->data[out->wp] = first_nibble;
+      out->wp++;
+
+      /* Maybe write the second nibble */
+      if (pdf_stm_buffer_full_p (out))
+        {
+          filter_state->last_nibble = second_nibble;
+        }
+      else
+        {
+          out->data[out->wp] = second_nibble;
+          out->wp++;
+        }
     }
 
-  /* Not reached */
+  if (finish_p)
+    {
+      /* The end of the encoded data is a 3E '>' ASCII character */
+      if (!pdf_stm_buffer_full_p (out))
+        {
+          out->data[out->wp] = '>';
+          out->wp++;
+        }
+      else
+        {
+          /* This should not be reached, but just in case */
+          return PDF_ERROR;
+        }
+    }
+
+  if ((in->wp - in->rp) == 0)
+    {
+      ret = PDF_EEOF;
+    }
+  else
+    {
+      ret = PDF_OK;
+    }
+
+  return ret;
 }
 
-int
-pdf_stm_f_ahex_dealloc (void **filter_data)
+pdf_status_t
+pdf_stm_f_ahexdec_init (pdf_hash_t params,
+                        void **state)
 {
-  pdf_stm_f_ahex_data_t *data;
-  
-  data = (pdf_stm_f_ahex_data_t *) filter_data;
-  pdf_dealloc (*data);
+  /* This filter uses no parameters */
+
+  /* Allocate the internal state structure */
+  /* FIXME */
 
   return PDF_OK;
 }
+
+pdf_status_t
+pdf_stm_f_ahexdec_apply (pdf_hash_t params,
+                         void *state,
+                         pdf_stm_buffer_t in,
+                         pdf_stm_buffer_t out,
+                         pdf_bool_t finish_p)
+{
+  
+  return PDF_OK;
+}
+
 
 /* Private functions */
 
-static int
-pdf_stm_f_ahex_white_p (int hex)
+static pdf_u32_t
+pdf_stm_f_ahex_white_p (pdf_u32_t hex)
 {
   return ((hex == '\0')    /* Null */
           || (hex == '\t') /* Tab */
@@ -109,8 +171,8 @@ pdf_stm_f_ahex_white_p (int hex)
           || (hex == 32)); /* Space character */
 }
 
-static int
-pdf_stm_f_ahex_hex_p (int hex)
+static pdf_u32_t
+pdf_stm_f_ahex_hex_p (pdf_u32_t hex)
 {
   return (((hex >= 'a') && (hex <= 'f')) ||
           ((hex >= 'A') && (hex <= 'F')) ||
@@ -120,13 +182,13 @@ pdf_stm_f_ahex_hex_p (int hex)
 static const pdf_char_t to_hex[16] = "0123456789ABCDEF";
 
 static pdf_char_t
-pdf_stm_f_ahex_int2hex (int hex)
+pdf_stm_f_ahex_int2hex (pdf_u32_t hex)
 {
   return to_hex[hex & 0x0f];
 }
 
-static int
-pdf_stm_f_ahex_hex2int (int hex)
+static pdf_u32_t
+pdf_stm_f_ahex_hex2int (pdf_u32_t hex)
 {
   if ((hex >= 'a') && (hex <= 'f'))
     {
@@ -143,116 +205,5 @@ pdf_stm_f_ahex_hex2int (int hex)
 
   return -1;
 }
-
-#define AHEX_ENC_LINE_LENGTH 80
-
-static int
-pdf_stm_f_ahex_encode (pdf_char_t *in, 
-                       pdf_stm_pos_t in_size,
-                       pdf_char_t **out,
-                       pdf_stm_pos_t *out_size)
-{
-  pdf_stm_pos_t pos_in;
-  pdf_stm_pos_t pos_out;
-  pdf_stm_pos_t num_lines;
-  pdf_stm_pos_t line_length;
-
-  *out_size = 
-    (in_size * 2) +                         /* Expansion of 1:2 */
-    1 +                                     /* EOD marker */
-    ((in_size * 2) / AHEX_ENC_LINE_LENGTH); /* line splitting */
-  *out = (pdf_char_t *) pdf_alloc (*out_size);
-
-  pos_out = 0;
-  num_lines = 0;
-  line_length = 0;
-  for (pos_in = 0;
-       pos_in < in_size;
-       pos_in++)
-    {
-      pos_out = (pos_in * 2) + num_lines;
-      
-      (*out)[pos_out] = pdf_stm_f_ahex_int2hex (in[pos_in] >> 4);
-      (*out)[pos_out + 1] = pdf_stm_f_ahex_int2hex (in[pos_in]);
-
-      line_length = line_length + 2;
-
-      if (line_length >= AHEX_ENC_LINE_LENGTH)
-        {
-          (*out)[pos_out + 2] = '\n';
-          line_length = 0;
-          num_lines++;
-        }
-    }
-
-  /* Insert the EOD marker */
-  (*out)[*out_size - 1] = '>';
-
-  return PDF_OK;
-}
-
-static int
-pdf_stm_f_ahex_decode (pdf_char_t *in,
-                       pdf_stm_pos_t in_size,
-                       pdf_char_t **out,
-                       pdf_stm_pos_t *out_size)
-{
-  pdf_stm_pos_t in_pos;
-  pdf_stm_pos_t out_pos;
-  int odd_p;
-
-  /* Decompression ratio is 2:1
-     but take care about whitespaces and the EOD marker */
-  *out = (pdf_char_t *) pdf_alloc (in_size);
-  
-  in_pos = 0;
-  out_pos = 0;
-  odd_p = PDF_TRUE;
-  while (in_pos < in_size)
-    {
-      if (pdf_stm_f_ahex_hex_p (in[in_pos]))
-        {
-          if (odd_p)
-            {
-              /* First nibble */
-              (*out)[out_pos] = 0;
-              (*out)[out_pos] = pdf_stm_f_ahex_hex2int (in[in_pos]) << 4;
-              odd_p = !odd_p;
-            }
-          else
-            {
-              /* Second nibble */
-              (*out)[out_pos] += pdf_stm_f_ahex_hex2int (in[in_pos]);
-              odd_p = !odd_p;
-              out_pos++;
-            }
-
-          in_pos++;
-        }
-      else if (pdf_stm_f_ahex_white_p (in[in_pos]))
-        {
-          in_pos++;
-        }
-      else if (in[in_pos] == '>')
-        {
-          break;
-        }
-      else
-        {
-          goto error;
-        }
-    }
-
-  /* Adjust output buffer size */
-  *out_size = out_pos;
-  *out = (pdf_char_t *) pdf_realloc (*out, *out_size);
-  
-  return PDF_OK;
-
- error:
-  
-  return PDF_ERROR;
-}
-
 
 /* End of pdf_stm_f_ahex.c */
