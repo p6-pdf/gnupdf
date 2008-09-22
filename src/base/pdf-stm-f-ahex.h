@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/22 22:05:16 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/23 01:17:14 jemarch"
  *
  *       File:         pdf-stm-f-ahex.h
  *       Date:         Fri Jul 13 17:04:29 2007
@@ -35,6 +35,7 @@
 struct pdf_stm_f_ahexenc_s
 {
   pdf_i32_t last_nibble;
+  pdf_size_t written_bytes;
 };
 
 typedef struct pdf_stm_f_ahexenc_s *pdf_stm_f_ahexenc_t;

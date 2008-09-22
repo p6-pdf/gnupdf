@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/22 23:13:52 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/23 01:25:32 jemarch"
  *
  *       File:         pdf-stm-f-ahex.c
  *       Date:         Fri Jul 13 17:08:41 2007
@@ -49,10 +49,14 @@ pdf_stm_f_ahexenc_init (pdf_hash_t params,
   
   /* Initialize fields */
   filter_state->last_nibble = -1;
+  filter_state->written_bytes = 0;
+
   *state = (void *) filter_state;
 
   return PDF_OK;
 }
+
+#define PDF_STM_F_AHEX_LINE_WIDTH 60
 
 pdf_status_t
 pdf_stm_f_ahexenc_apply (pdf_hash_t params,
@@ -66,12 +70,29 @@ pdf_stm_f_ahexenc_apply (pdf_hash_t params,
   pdf_char_t first_nibble;
   pdf_char_t second_nibble;
   pdf_char_t in_char;
+  pdf_bool_t wrote_newline;
   
   filter_state = (pdf_stm_f_ahexenc_t) state;
-
+  wrote_newline = PDF_FALSE;
   while ((!pdf_stm_buffer_eob_p (in)) &&
          (!pdf_stm_buffer_full_p (out)))
     {
+      if ((!wrote_newline) &&
+          (filter_state->written_bytes != 0) &&
+          ((filter_state->written_bytes % PDF_STM_F_AHEX_LINE_WIDTH) == 0))
+        {
+          /* Insert a new line character */
+          out->data[out->wp] = '\n';
+          out->wp++;
+          wrote_newline = PDF_TRUE;
+
+          continue;
+        }
+      else
+        {
+          wrote_newline = PDF_FALSE;
+        }
+
       /* For each byte in the input we should generate two bytes in the
          output. */
       in_char = in->data[in->rp];
@@ -94,6 +115,7 @@ pdf_stm_f_ahexenc_apply (pdf_hash_t params,
       /* First nibble */
       out->data[out->wp] = first_nibble;
       out->wp++;
+      filter_state->written_bytes++;
 
       /* Maybe write the second nibble */
       if (pdf_stm_buffer_full_p (out))
@@ -104,6 +126,7 @@ pdf_stm_f_ahexenc_apply (pdf_hash_t params,
         {
           out->data[out->wp] = second_nibble;
           out->wp++;
+          filter_state->written_bytes++;
         }
     }
 
