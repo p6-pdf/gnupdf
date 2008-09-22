@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/22 20:09:37 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/22 22:18:18 jemarch"
  *
  *       File:         pdf-stm-filter.h
  *       Date:         Thu Jun 12 22:05:06 2008
@@ -33,13 +33,16 @@
 #include <pdf-stm-be.h>
 
 #include <pdf-stm-f-null.h>
+#include <pdf-stm-f-ahex.h>
 
 /* BEGIN PUBLIC */
 
 /* Types of filters */
 enum pdf_stm_filter_type_e 
 {
-  PDF_STM_FILTER_NULL = 0
+  PDF_STM_FILTER_NULL = 0,
+  PDF_STM_FILTER_AHEX_ENC,
+  PDF_STM_FILTER_AHEX_DEC
 };
 
 /* Filter implementation */

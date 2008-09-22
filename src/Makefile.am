@@ -42,7 +42,8 @@ STM_MODULE_SOURCES = base/pdf-stm.c base/pdf-stm.h \
                      base/pdf-stm-be.c base/pdf-stm-be.h \
                      base/pdf-stm-buffer.c base/pdf-stm-buffer.h \
                      base/pdf-stm-filter.h base/pdf-stm-filter.c \
-                     base/pdf-stm-f-null.h base/pdf-stm-f-null.c
+                     base/pdf-stm-f-null.h base/pdf-stm-f-null.c \
+                     base/pdf-stm-f-ahex.h base/pdf-stm-f-ahex.c
 
 # if ZLIB
 #  STM_MODULE_SOURCES += base/pdf-stm-f-flate.c base/pdf-stm-f-flate.h

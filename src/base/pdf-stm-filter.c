@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/22 20:17:16 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/22 22:18:10 jemarch"
  *
  *       File:         pdf-stm-filter.c
  *       Date:         Thu Jun 12 22:13:31 2008
@@ -68,6 +68,19 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
         new->impl.apply_fn = pdf_stm_f_null_apply;
         break;
       }
+    case PDF_STM_FILTER_AHEX_ENC:
+      {
+        new->impl.init_fn = pdf_stm_f_ahexenc_init;
+        new->impl.apply_fn = pdf_stm_f_ahexenc_apply;
+        break;
+      }
+    case PDF_STM_FILTER_AHEX_DEC:
+      {
+        new->impl.init_fn = pdf_stm_f_ahexdec_init;
+        new->impl.apply_fn = pdf_stm_f_ahexdec_apply;
+        break;
+      }
+
     default:
       {
         /* Shall not be reached, but makes the compiler happy */
