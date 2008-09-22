@@ -71,6 +71,11 @@ TEST_SUITE_STM = base/stm/pdf-stm-mem-new.c \
 TEST_SUITE_HASH = base/hash/pdf-hash-new.c \
 		  base/hash/pdf-hash-destroy.c \
 		  base/hash/pdf-hash-add.c \
+		  base/hash/pdf-hash-add-time.c \
+		  base/hash/pdf-hash-add-hash.c \
+		  base/hash/pdf-hash-add-list.c \
+		  base/hash/pdf-hash-add-stm.c \
+		  base/hash/pdf-hash-add-text.c \
 		  base/hash/pdf-hash-remove.c \
 		  base/hash/pdf-hash-size.c \
 		  base/hash/pdf-hash-search.c \
