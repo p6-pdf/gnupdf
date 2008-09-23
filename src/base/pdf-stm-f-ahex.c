@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/23 01:25:32 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/24 01:08:14 jemarch"
  *
  *       File:         pdf-stm-f-ahex.c
  *       Date:         Fri Jul 13 17:08:41 2007
@@ -161,12 +161,26 @@ pdf_status_t
 pdf_stm_f_ahexdec_init (pdf_hash_t params,
                         void **state)
 {
+  pdf_stm_f_ahexdec_t ahexdec_state;
+  pdf_status_t ret;
+
   /* This filter uses no parameters */
-
   /* Allocate the internal state structure */
-  /* FIXME */
+  ahexdec_state = pdf_alloc (sizeof(struct pdf_stm_f_ahexdec_s));
+  if (ahexdec_state != NULL)
+    {
+      ahexdec_state->last_nibble = PDF_EOF;
+      ahexdec_state->written_bytes = 0;
 
-  return PDF_OK;
+      *state = ahexdec_state;
+      ret = PDF_OK;
+    }
+  else
+    {
+      ret = PDF_ERROR;
+    }
+
+  return ret;
 }
 
 pdf_status_t
@@ -176,8 +190,87 @@ pdf_stm_f_ahexdec_apply (pdf_hash_t params,
                          pdf_stm_buffer_t out,
                          pdf_bool_t finish_p)
 {
+  pdf_status_t ret;
+  pdf_stm_f_ahexdec_t filter_state;
+  pdf_i32_t first_nibble;
+  pdf_i32_t second_nibble;
+
+  ret = PDF_OK;
+  first_nibble = PDF_EOF;
+  second_nibble = PDF_EOF;
+  filter_state = (pdf_stm_f_ahexdec_t) state;
+
+  while ((!pdf_stm_buffer_eob_p (in)) &&
+         (!pdf_stm_buffer_full_p (out)))
+    {
+      /* Skip white characters */
+      if (pdf_stm_f_ahex_white_p ((pdf_u32_t) in->data[in->rp]))
+        {
+          in->rp++;
+          continue;
+        }
+
+      /* Detect the end of the hex data */
+      if (in->data[in->rp] == '>')
+        {
+          if (filter_state->last_nibble == PDF_EOF)
+            {
+              /* We are done :'D */
+              in->rp++;
+              ret = PDF_EEOF;
+              break;
+            }
+          else
+            {
+              /* Found an even number of hex digits. We assume that
+                 the second nibble is 0, so generate a byte of data
+                 and finish */
+              out->data[out->wp] =
+                pdf_stm_f_ahex_hex2int (filter_state->last_nibble << 4);
+              out->wp++;
+              break;
+            }
+        }
+
+      /* Detect an invalid character */
+      if (!pdf_stm_f_ahex_hex_p ((pdf_u32_t) in->data[in->rp]))
+        {
+          ret = PDF_ERROR;
+          break;
+        }
+
+      /* Process this character. This is the first or the second part
+         of a mibble. */
+      if (filter_state->last_nibble == PDF_EOF)
+        {
+          /* Get the first nibble */
+          first_nibble = (pdf_u32_t) in->data[in->rp];
+          in->rp++;
+
+          filter_state->last_nibble = first_nibble;
+        }
+      else
+        {
+          /* Get the second nibble */
+          second_nibble = (pdf_u32_t) in->data[in->rp];
+          in->rp++;
+
+          /* Generate one byte of data */
+          out->data[out->wp] = (pdf_stm_f_ahex_hex2int (first_nibble) << 4)
+            + pdf_stm_f_ahex_hex2int (second_nibble);
+          out->wp++;
+
+          filter_state->last_nibble = PDF_EOF;
+        }
+    }
   
-  return PDF_OK;
+  if ((ret == PDF_OK) &&
+      (pdf_stm_buffer_eob_p (in)))
+    {
+      ret = PDF_EEOF;
+    }
+
+  return ret;
 }
 
 

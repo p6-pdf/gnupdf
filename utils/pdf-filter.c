@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/23 01:30:05 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/23 22:57:56 jemarch"
  *
  *       File:         pdf-filter.c
  *       Date:         Tue Jul 10 18:42:07 2007
@@ -161,6 +161,7 @@ main (int argc, char *argv[])
   pdf_status_t ret;
   pdf_hash_t null_filter_params;
   pdf_hash_t ahexenc_filter_params;
+  pdf_hash_t ahexdec_filter_params;
   pdf_char_t *line;
   pdf_size_t line_bytes;
   pdf_size_t read_bytes;
@@ -230,8 +231,16 @@ main (int argc, char *argv[])
           }
         case ASCIIHEXDEC_FILTER_ARG:
           {
-            /* pdf_stm_install_ahexdec_filter (input,
-               PDF_STM_FILTER_READ); */
+            ret = pdf_hash_new (NULL, &ahexdec_filter_params);
+            if (ret != PDF_OK)
+              {
+                pdf_error (ret, stderr, "while creating the ahexdec filter parameters hash table");
+                exit (1);
+              }
+
+            pdf_stm_install_filter (stm,
+                                    PDF_STM_FILTER_AHEX_DEC,
+                                    ahexenc_filter_params);
             break;
           }
         case ASCIIHEXENC_FILTER_ARG:
