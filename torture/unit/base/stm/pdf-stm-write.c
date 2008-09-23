@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/21 21:58:38 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/23 21:50:12 jemarch"
  *
  *       File:         pdf-stm-write.c
  *       Date:         Sun Sep 21 16:37:27 2008
@@ -176,6 +176,64 @@ START_TEST (pdf_stm_write_003)
 END_TEST
 
 /*
+ * Test: pdf_stm_write_004
+ * Description:
+ *   Write some bytes to a write memory stream with an
+ *   ASCII Hex encoder.
+ * Success condition:
+ *   The written data should be consistent.
+ */
+START_TEST (pdf_stm_write_004)
+{
+  pdf_status_t ret;
+  pdf_stm_t stm;
+  pdf_char_t *buf;
+  pdf_size_t buf_size;
+  pdf_size_t written_bytes;
+  pdf_hash_t ahexenc_filter_parameters;
+
+  /* Create a buffer */
+  buf_size = 10;
+  buf = pdf_alloc (buf_size);
+  fail_if(buf == NULL);
+
+  /* Create the stream */
+  ret = pdf_stm_mem_new (buf,
+                         buf_size,
+                         0, /* Use the default cache size */
+                         PDF_STM_WRITE,
+                         &stm);
+  fail_if(ret != PDF_OK);
+
+  /* Install an ASCII Hex encoder in the stream */
+  ret = pdf_hash_new (NULL, &ahexenc_filter_parameters);
+  fail_if(ret != PDF_OK);
+
+  ret = pdf_stm_install_filter (stm,
+                                PDF_STM_FILTER_AHEX_ENC,
+                                ahexenc_filter_parameters);
+  fail_if(ret != PDF_OK);
+
+  /* Write some data into the stream */
+  written_bytes = pdf_stm_write (stm,
+                                 "abc",
+                                 3);
+  fail_if(written_bytes != 3);
+
+  /* Close the stream */
+  pdf_stm_destroy (stm);
+
+  /* Check the result of the operation */
+  fail_if(strncmp (buf, "616263>", 7) != 0);
+
+
+  /* Destroy data */
+  pdf_hash_destroy (ahexenc_filter_parameters);
+  pdf_dealloc (buf);
+}
+END_TEST
+
+/*
  * Test case creation function
  */
 TCase *
@@ -186,6 +244,7 @@ test_pdf_stm_write (void)
   tcase_add_test(tc, pdf_stm_write_001);
   tcase_add_test(tc, pdf_stm_write_002);
   tcase_add_test(tc, pdf_stm_write_003);
+  tcase_add_test(tc, pdf_stm_write_004);
 
   return tc;
 }
