@@ -1,3 +1,7 @@
+2008-09-24  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* src/base/pdf-stm-be.c: using memcpy() instead of strncpy().
+
 2008-09-23  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* ../ahex-filters/src/base/pdf-stm-f-ahex.c
