@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/22 20:10:54 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/26 20:52:10 jemarch"
  *
  *       File:         pdf-stm-f-null.c
  *       Date:         Mon Jul  9 22:01:41 2007
@@ -82,6 +82,12 @@ pdf_stm_f_null_apply (pdf_hash_t params,
     }
 
   return ret;
+}
+
+pdf_status_t
+pdf_stm_f_null_dealloc_state (void *state)
+{
+  return PDF_OK;
 }
 
 /* End of pdf_stm_f_null.c */

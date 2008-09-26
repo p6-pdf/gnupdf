@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/24 01:08:14 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/26 22:46:53 jemarch"
  *
  *       File:         pdf-stm-f-ahex.c
  *       Date:         Fri Jul 13 17:08:41 2007
@@ -158,6 +158,17 @@ pdf_stm_f_ahexenc_apply (pdf_hash_t params,
 }
 
 pdf_status_t
+pdf_stm_f_ahexenc_dealloc_state (void *state)
+{
+  pdf_stm_f_ahexenc_t ahexenc_state;
+
+  ahexenc_state = (pdf_stm_f_ahexenc_t) state;
+  pdf_dealloc (ahexenc_state);
+
+  return PDF_OK;
+}
+
+pdf_status_t
 pdf_stm_f_ahexdec_init (pdf_hash_t params,
                         void **state)
 {
@@ -273,6 +284,16 @@ pdf_stm_f_ahexdec_apply (pdf_hash_t params,
   return ret;
 }
 
+pdf_status_t
+pdf_stm_f_ahexdec_dealloc_state (void *state)
+{
+  pdf_stm_f_ahexenc_t ahexenc_state;
+
+  ahexenc_state = (pdf_stm_f_ahexenc_t) state;
+  pdf_dealloc (ahexenc_state);
+
+  return PDF_OK;
+}
 
 /* Private functions */
 
