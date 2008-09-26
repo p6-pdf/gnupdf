@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/26 22:46:53 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/27 00:50:51 jemarch"
  *
  *       File:         pdf-stm-f-ahex.c
  *       Date:         Fri Jul 13 17:08:41 2007
@@ -237,8 +237,10 @@ pdf_stm_f_ahexdec_apply (pdf_hash_t params,
                  the second nibble is 0, so generate a byte of data
                  and finish */
               out->data[out->wp] =
-                pdf_stm_f_ahex_hex2int (filter_state->last_nibble << 4);
+                pdf_stm_f_ahex_hex2int (filter_state->last_nibble) << 4;
               out->wp++;
+              filter_state->last_nibble = PDF_EOF;
+              ret = PDF_EEOF;
               break;
             }
         }

@@ -1,3 +1,8 @@
+2008-09-27  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-stm-f-ahex.c (pdf_stm_f_ahexdec_apply): Fix the
+	management of an even number of hex digits before the EOD.
+
 2008-09-26  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-stm-filter.c: Updated to take care about the
