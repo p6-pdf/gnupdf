@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/22 22:18:18 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/26 20:46:37 jemarch"
  *
  *       File:         pdf-stm-filter.h
  *       Date:         Thu Jun 12 22:05:06 2008
@@ -56,6 +56,7 @@ struct pdf_stm_filter_impl_s
                             pdf_stm_buffer_t in,
                             pdf_stm_buffer_t out,
                             pdf_bool_t finish_p);
+  pdf_status_t (*dealloc_state_fn) (void *state);
 };
 
 /* Filter data type */

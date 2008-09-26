@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/23 01:17:14 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/26 20:48:08 jemarch"
  *
  *       File:         pdf-stm-f-ahex.h
  *       Date:         Fri Jul 13 17:04:29 2007
@@ -49,6 +49,8 @@ pdf_status_t pdf_stm_f_ahexdec_apply (pdf_hash_t params,
                                       pdf_stm_buffer_t in,
                                       pdf_stm_buffer_t out,
                                       pdf_bool_t finish_p);
+pdf_status_t pdf_stm_f_ahexdec_dealloc_state (void *state);
+
 pdf_status_t pdf_stm_f_ahexenc_init (pdf_hash_t params,
                                      void **state);
 pdf_status_t pdf_stm_f_ahexenc_apply (pdf_hash_t params,
@@ -56,6 +58,7 @@ pdf_status_t pdf_stm_f_ahexenc_apply (pdf_hash_t params,
                                       pdf_stm_buffer_t in,
                                       pdf_stm_buffer_t out,
                                       pdf_bool_t finish_p);
+pdf_status_t pdf_stm_f_ahexenc_dealloc_state (void *state);
 
 #endif /* pdf_stm_f_ahex.h */
 
