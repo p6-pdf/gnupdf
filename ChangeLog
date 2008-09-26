@@ -15,6 +15,13 @@
 
 2008-09-23  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-stm-f-ahex.c (pdf_stm_f_ahexdec_init): New
+	function.
+	(pdf_stm_f_ahexdec_apply): New function.
+
+	* torture/unit/base/stm/pdf-stm-write.c (START_TEST): New test
+	'pdf_stm_write_004'.
+
 	* ../ahex-filters/src/base/pdf-stm-f-ahex.c
 	(pdf_stm_f_ahexenc_apply): Use 'pdf_stm_buffer_eob_p' to decide if
 	the return value is PDF_EEOF.
