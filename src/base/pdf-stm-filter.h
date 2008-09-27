@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/26 20:46:37 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-09-27 18:18:52 gerel"
  *
  *       File:         pdf-stm-filter.h
  *       Date:         Thu Jun 12 22:05:06 2008
@@ -34,6 +34,7 @@
 
 #include <pdf-stm-f-null.h>
 #include <pdf-stm-f-ahex.h>
+#include <pdf-stm-f-rl.h>
 
 /* BEGIN PUBLIC */
 
@@ -42,7 +43,9 @@ enum pdf_stm_filter_type_e
 {
   PDF_STM_FILTER_NULL = 0,
   PDF_STM_FILTER_AHEX_ENC,
-  PDF_STM_FILTER_AHEX_DEC
+  PDF_STM_FILTER_AHEX_DEC,
+  PDF_STM_FILTER_RL_ENC,
+  PDF_STM_FILTER_RL_DEC
 };
 
 /* Filter implementation */
@@ -56,7 +59,6 @@ struct pdf_stm_filter_impl_s
                             pdf_stm_buffer_t in,
                             pdf_stm_buffer_t out,
                             pdf_bool_t finish_p);
-  pdf_status_t (*dealloc_state_fn) (void *state);
 };
 
 /* Filter data type */

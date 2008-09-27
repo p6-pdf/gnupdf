@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/03/05 12:24:57 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-09-27 18:32:05 gerel"
  *
  *       File:         pdf-stm-f-rl.c
  *       Date:         Sun Jul 15 22:01:18 2007
@@ -29,203 +29,272 @@
 #include <pdf-alloc.h>
 #include <pdf-stm-f-rl.h>
 
-static int pdf_stm_f_rl_encode (pdf_char_t *in, pdf_stm_pos_t in_size,
-                                pdf_char_t **out, pdf_stm_pos_t *out_size);
-static int pdf_stm_f_rl_decode (pdf_char_t *in, pdf_stm_pos_t in_size,
-                                pdf_char_t **out, pdf_stm_pos_t *out_size);
 
-int
-pdf_stm_f_rl_init (void **filter_data,
-                   void *conf_data)
+static int encode_rl_char (pdf_stm_f_rl_t st, pdf_stm_buffer_t out);
+static int decode_rl_char (pdf_stm_f_rl_t st, pdf_stm_buffer_t out);
+static int copy_next_bytes (pdf_stm_f_rl_t st, pdf_stm_buffer_t in,
+                            pdf_stm_buffer_t out);
+
+
+pdf_status_t
+pdf_stm_f_rlenc_init (pdf_hash_t params, void **state)
 {
-  pdf_stm_f_rl_data_t *data;
-  pdf_stm_f_rl_conf_t conf;
+  pdf_status_t ret;
+  pdf_stm_f_rl_t filter_state;
 
-  data = (pdf_stm_f_rl_data_t *) filter_data;
-  conf = (pdf_stm_f_rl_conf_t) conf_data;
+  filter_state = pdf_alloc (sizeof (struct pdf_stm_f_rl_s));
 
-  /* Create the private data storage */
-  *data =
-    (pdf_stm_f_rl_data_t) pdf_alloc (sizeof(struct pdf_stm_f_rl_data_s));
-  (*data)->mode = conf->mode;
-
-  return PDF_OK;
-}
-
-int
-pdf_stm_f_rl_apply (void *filter_data,
-                    pdf_char_t *in, pdf_stm_pos_t in_size,
-                    pdf_char_t **out, pdf_stm_pos_t *out_size)
-{
-  pdf_stm_f_rl_data_t data;
-
-  data = (pdf_stm_f_rl_data_t) filter_data;
-  switch (data->mode)
+  if (state == NULL)
     {
-    case PDF_STM_F_RL_MODE_ENCODE:
-      {
-        return pdf_stm_f_rl_encode (in, in_size, out, out_size);
-        
-      }
-    case PDF_STM_F_RL_MODE_DECODE:
-      {
-        return pdf_stm_f_rl_decode (in, in_size, out, out_size);
-      }
-    default:
-      {
-        return PDF_ERROR;
-      }
+      ret = PDF_EBADDATA;
+    }
+  else if (filter_state == NULL)
+    {
+      ret = PDF_ENOMEM;
+    }
+  else
+    {
+      /* Initialize fields */
+      filter_state->curchar = 0;
+      filter_state->rlchar = 0;
+      filter_state->run_p = PDF_FALSE;
+      filter_state->rl = -1;
+      filter_state->dec_p = PDF_FALSE;;
+      filter_state->dec_count = 0;
+      filter_state->enc_p = PDF_STM_F_RL_NONE;
+
+      *state = (void *) filter_state;
+      ret = PDF_OK;
     }
 
-  /* Not reached */
+  return ret;
 }
 
-int
-pdf_stm_f_rl_dealloc (void **filter_data)
+
+pdf_status_t
+pdf_stm_f_rldec_init (pdf_hash_t params, void **state)
 {
-  pdf_stm_f_rl_data_t *data;
-
-  data = (pdf_stm_f_rl_data_t *) filter_data;
-  pdf_dealloc (*data);
-
-  return PDF_OK;
+  return pdf_stm_f_rlenc_init (params,state);
 }
 
-/* Private functions */
 
-static int
-pdf_stm_f_rl_encode (pdf_char_t *in,
-                     pdf_stm_pos_t in_size,
-                     pdf_char_t **out,
-                     pdf_stm_pos_t *out_size)
+pdf_status_t
+pdf_stm_f_rlenc_apply (pdf_hash_t params, void * state, pdf_stm_buffer_t in,
+                       pdf_stm_buffer_t out, pdf_bool_t finish_p)
 {
-  pdf_stm_pos_t in_pos;
-  pdf_stm_pos_t out_pos;
-  pdf_stm_pos_t run_length;
-  pdf_char_t run_char;
-  int run_p;
-  pdf_char_t c;
+  pdf_stm_f_rl_t st;
 
-  /* The compression achieved by run-length encoding depends on the
-     input data. The worst case (the hexadecimal sequence `00'
-     alternating with `FF') results in an expansion of 127:128 
+  st = (pdf_stm_f_rl_t) state;
 
-     But take care about the EOD marker (one octect). */
-  *out_size = (in_size * 2) + (in_size / 127) + 1;
-  *out = (pdf_char_t *) pdf_alloc (*out_size);
-
-  out_pos = 0;
-  run_length = 0;
-  run_char = 0;
-  run_p = PDF_FALSE;
-  in_pos = 0;
-  while (in_pos < in_size)
+  while (!pdf_stm_buffer_eob_p (in))
     {
-      c = in[in_pos];
+      st->curchar = in->data[in->rp];
 
-      if (!run_p)
+      /* we're not encoding any character yet */
+      if (!st->run_p)
         {
-          run_char = c;
-          run_p = PDF_TRUE;
+          st->rlchar = st->curchar;
+          st->run_p = PDF_TRUE;
+          st->rl++; 
+          in->rp++;
         }
-     
-      if ((c == run_char) &&
-          (run_length < 128))
+      /* we're encoding some character now */
+      else if (st->curchar == st->rlchar && st->rl < 127)
         {
-          run_length++;
-          in_pos++;
+          st->rl++;
+          in->rp++;
         }
+      /* 
+       * the rl code is too long or the rl char is different,
+       * so we write what we encoded so far.
+       */
       else
         {
-          (*out)[out_pos++] = run_length;
-          (*out)[out_pos++] = run_char;
-          run_length = 0;
-          run_p = PDF_FALSE;
+          if (encode_rl_char (st, out) < 0)
+            {
+              return PDF_OK;
+            }
+          st->rl=-1;
+          st->run_p = PDF_FALSE;
         }
     }
 
-  /* Insert EOD marker */
-  (*out)[out_pos++] = 128;
+  /* 
+   * we may have finished with some history, we save it if needed,
+   * then we add the EOD.
+   */
+  if (finish_p)
+    {
+      if (st->run_p)
+        {
+          if (encode_rl_char (st, out) < 0)
+            {
+              /* Should not be reached */
+              return PDF_ERROR;
+            }
+          st->rl=-1;
+          st->run_p = PDF_FALSE;
+        }
+      if (pdf_stm_buffer_full_p (out))
+        {
+          /* Should not be reached */
+          return PDF_ERROR;
+        }
+      /* Insert EOD marker */
+      out->data[out->wp++] = 128;
+    }
 
-  *out_size = out_pos;
-  *out = (pdf_char_t *) pdf_realloc (*out,
-                                  *out_size);
-
+  if (pdf_stm_buffer_eob_p (in))
+    {
+      return PDF_EEOF;
+    }
   return PDF_OK;
 }
 
-static int
-pdf_stm_f_rl_decode (pdf_char_t *in,
-                     pdf_stm_pos_t in_size,
-                     pdf_char_t **out,
-                     pdf_stm_pos_t *out_size)
+
+pdf_status_t
+pdf_stm_f_rldec_apply (pdf_hash_t params, void *state, pdf_stm_buffer_t in,
+                       pdf_stm_buffer_t out, pdf_bool_t finish_p)
 {
-  pdf_stm_pos_t in_pos;
-  pdf_stm_pos_t out_pos;
-  pdf_stm_pos_t run_length;
-  pdf_stm_pos_t i;
-  pdf_char_t c;
+  pdf_stm_f_rl_t st;
+  pdf_status_t copied;
 
-  /* In the best case (all zeros), a compression of approximately 64:1
-     is achieved for long files. */
-  *out_size = in_size * 64;
-  *out = (pdf_char_t *) pdf_alloc (*out_size);
+  st = (pdf_stm_f_rl_t) state;
 
-  out_pos = 0;
-  in_pos = 0;
-  while (in_pos < in_size)
+  while (!pdf_stm_buffer_eob_p (in))
     {
-      c = in[in_pos];
+      st->curchar = in->data[in->rp];
 
-      if (c == 128)
+      /* we're not decoding any character yet */
+      if (!st->run_p)
         {
-          /* EOD marker */
+          st->rlchar = st->curchar;
+          st->run_p = PDF_TRUE;
+          in->rp++;
+        }
+      /* copy the following 1 to 128 bytes literally */
+      else if (st->rlchar < 128)
+        {
+          copied = copy_next_bytes (st, in, out);
+          if (copied < 0)
+            {
+              return PDF_OK;
+            }
+          else if (copied > 0)
+            {
+              return PDF_EEOF;
+            }
+          st->run_p = PDF_FALSE;
+        }
+      /* copy the next char 257 - length (2 to 128) times */
+      else if (st->rlchar > 128)
+        {
+          if (decode_rl_char (st, out) < 0)
+            {
+              return PDF_OK;
+            }
+          st->run_p = PDF_FALSE;
+          in->rp++;
+        }
+      /* EOD mark */
+      else
+        {
+          in->rp++;
           break;
         }
-      if (c <= 127)
-        {
-          run_length = c;
-          if ((in_pos + run_length) >= in_size)
-            {
-              /* Not enough input */
-              goto error;
-            }
-
-          for (i = 0;
-               i < c;
-               i++)
-            {
-              (*out)[out_pos++] = in[in_pos + run_length];
-            }
-          in_pos = in_pos + run_length;
-        }
-      if (c >= 129)
-        {
-          run_length = c;
-          if ((in_pos + 1) >= in_size)
-            {
-              goto error;
-            }
-
-          for (i = 0;
-               i < (287 - run_length);
-               i++)
-            {
-              (*out)[out_pos++] = in[in_pos + 1];
-            }
-          in_pos = in_pos + 1;
-        }
     }
 
-  /* Adjust output buffer */
-  *out_size = out_pos;
-  *out = (pdf_char_t *) pdf_realloc (*out, *out_size);
+  if (pdf_stm_buffer_eob_p (in))
+    {
+      return PDF_EEOF;
+    }
 
   return PDF_OK;
-
- error:
-  pdf_dealloc (*out);
-  return PDF_ERROR;
 }
+
+
+static int
+encode_rl_char (pdf_stm_f_rl_t st, pdf_stm_buffer_t out)
+{
+  if (st->enc_p == PDF_STM_F_RL_NONE)
+    {
+      if (pdf_stm_buffer_full_p (out))
+        {
+          return -1;
+        }
+      out->data[out->wp++] = (st->rl == 0) ? 0 : 256 - st->rl;    
+      st->enc_p = PDF_STM_F_RL_WRL;
+    }
+
+  if (st->enc_p == PDF_STM_F_RL_WRL)
+    {
+      if (pdf_stm_buffer_full_p (out))
+        {
+          return -1;
+        }
+      out->data[out->wp++] = st->rlchar;
+      st->enc_p = PDF_STM_F_RL_NONE;
+    }
+
+  return 0;
+}
+
+
+static int
+decode_rl_char (pdf_stm_f_rl_t st, pdf_stm_buffer_t out)
+{
+  if (!st->dec_p)
+    {
+      st->dec_count = 257 - st->rlchar;
+      st->dec_p = PDF_TRUE;
+    }
+
+  while (st->dec_count > 0)
+    {
+      if (pdf_stm_buffer_full_p (out))
+        {
+          return -1;
+        }
+      out->data[out->wp++] = st->curchar;
+      st->dec_count--;
+    }
+
+  st->dec_p = PDF_FALSE;
+  return 0;
+}
+
+
+static int
+copy_next_bytes (pdf_stm_f_rl_t st, pdf_stm_buffer_t in, pdf_stm_buffer_t out)
+{
+  if (!st->dec_p)
+    {
+      st->dec_count = st->rlchar + 1;
+      st->dec_p = PDF_TRUE;
+      out->data[out->wp++] = st->curchar;
+      in->rp++;
+      st->dec_count--;
+    }
+
+  while (st->dec_count > 0)
+    {
+      if (pdf_stm_buffer_eob_p (in))
+        {
+          return 1;
+        }
+      else if (pdf_stm_buffer_full_p (out))
+        {
+          return -1;
+        }
+      out->data[out->wp] = in->data[in->rp];
+      out->wp++;
+      in->rp++;
+      st->dec_count--;
+    }
+
+  st->dec_p = PDF_FALSE;
+  return 0;
+}
+
 
 /* End of pdf_stm_f_rl.c */
