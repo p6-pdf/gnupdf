@@ -1,3 +1,9 @@
+2008-09-27  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* src/base/pdf-stm-f-null.c: using memcpy() instead of strncpy().
+
+	* src/base/pdf-stm.c: same.
+
 2008-09-27  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-stm-f-ahex.c (pdf_stm_f_ahexdec_apply): Fix the

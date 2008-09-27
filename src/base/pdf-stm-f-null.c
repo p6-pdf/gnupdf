@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/26 20:52:10 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-09-27 17:52:19 gerel"
  *
  *       File:         pdf-stm-f-null.c
  *       Date:         Mon Jul  9 22:01:41 2007
@@ -64,9 +64,9 @@ pdf_stm_f_null_apply (pdf_hash_t params,
 
   if (bytes_to_copy != 0)
     {
-      strncpy ((char *) out->data,
-               (char *) in->data,
-               bytes_to_copy);
+      memcpy ((char *) out->data,
+              (char *) in->data,
+              bytes_to_copy);
 
       in->rp = in->rp + bytes_to_copy;
       out->wp = out->wp + bytes_to_copy;
