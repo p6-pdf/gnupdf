@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/20 16:48:46 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-09-27 17:57:24 gerel"
  *
  *       File:         pdf-error.h
  *       Date:         Sun Feb  24 20:22:05 2008
@@ -80,8 +80,8 @@
   ERROR_ENTRY (PDF_EBADNAME,    "invalid path name"),                   \
   ERROR_ENTRY (PDF_EAGAIN,      "operation can't be performed now, maybe later"), \
   ERROR_ENTRY (PDF_ENOSPC,      "no space left on device"),             \
-  ERROR_ENTRY (PDF_ENOTEMPTY,   "text module global context not initialized"), \
-  ERROR_ENTRY (PDF_EBADCONTEXT, "operation requires some entity be empty")
+  ERROR_ENTRY (PDF_EBADCONTEXT, "text module global context not initialized"), \
+  ERROR_ENTRY (PDF_ENOTEMPTY,   "operation requires some entity be empty")
 
 
 #define ERROR_ENTRY(id,string) id
