@@ -267,6 +267,16 @@ The decoded data should be correct.
 @end table
 @end deffn
 
+@deffn Test pdf_stm_read_008
+Read some bytes from a read memory stream with an
+ASCII Hex decoder having an even number of hex digits
+in the input.
+@table @strong
+@item Success condition
+The decoded data should be correct.
+@end table
+@end deffn
+
 @node pdf_stm_read_char
 @subsubsection pdf_stm_read_char
 
