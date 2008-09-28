@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/28 15:45:51 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-09-28 20:18:38 gerel"
  *
  *       File:         pdf-stm-f-rl.c
  *       Date:         Sun Jul 15 22:01:18 2007
@@ -206,8 +206,7 @@ pdf_stm_f_rldec_apply (pdf_hash_t params, void *state, pdf_stm_buffer_t in,
       /* EOD mark */
       else
         {
-          in->rp++;
-          break;
+          st->run_p = PDF_FALSE;
         }
     }
 

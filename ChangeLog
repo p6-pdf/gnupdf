@@ -1,3 +1,9 @@
+2008-09-28  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* src/base/pdf-stm-f-rl.c: decoder EOD mark fix.
+
+	* torture/unit/base/stm/pdf-stm-read.c: force RL decoder to consume EOD.
+
 2008-09-28  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf-tsd.texi (pdf_stm_read): Documentation added for the
