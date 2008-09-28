@@ -1,5 +1,11 @@
 2008-09-28  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf-tsd.texi (pdf_stm_write): Documentation added for the
+	unit test 'pdf_stm_write_006'.
+
+	* torture/unit/base/stm/pdf-stm-write.c (START_TEST): New test
+	'pdf_stm_write_006'.
+
 	* torture/unit/base/stm/pdf-stm-read.c (START_TEST): New test
 	'pdf_stm_read_007'.
 

@@ -385,6 +385,15 @@ The encoded data should be correct.
 @end table
 @end deffn
 
+@deffn Test pdf_stm_write_006
+Write some bytes to a write memory stream with an
+ASCII Hex encoder, generating new lines.
+@table @strong
+@item Success condition
+The encoded data should be correct.
+@end table
+@end deffn
+
 
 @node Text Module
 @subsection Text Module
