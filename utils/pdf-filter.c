@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/23 22:57:56 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/28 12:54:36 jemarch"
  *
  *       File:         pdf-filter.c
  *       Date:         Tue Jul 10 18:42:07 2007
@@ -162,6 +162,8 @@ main (int argc, char *argv[])
   pdf_hash_t null_filter_params;
   pdf_hash_t ahexenc_filter_params;
   pdf_hash_t ahexdec_filter_params;
+  pdf_hash_t rlenc_filter_params;
+  pdf_hash_t rldec_filter_params;
   pdf_char_t *line;
   pdf_size_t line_bytes;
   pdf_size_t read_bytes;
@@ -299,14 +301,30 @@ main (int argc, char *argv[])
 #endif /* HAVE_LIBZ */
         case RUNLENGTHDEC_FILTER_ARG:
           {
-            /* pdf_stm_install_rldec_filter (input,
-               PDF_STM_FILTER_READ); */
+            ret = pdf_hash_new (NULL, &rldec_filter_params);
+            if (ret != PDF_OK)
+              {
+                pdf_error (ret, stderr, "while creating the rldec filter parameters hash table");
+                exit (1);
+              }
+
+            pdf_stm_install_filter (stm,
+                                    PDF_STM_FILTER_RL_DEC,
+                                    rldec_filter_params);
             break;
           }
         case RUNLENGTHENC_FILTER_ARG:
           {
-            /* pdf_stm_install_rlenc_filter (input,
-               PDF_STM_FILTER_READ); */
+            ret = pdf_hash_new (NULL, &rlenc_filter_params);
+            if (ret != PDF_OK)
+              {
+                pdf_error (ret, stderr, "while creating the rlenc filter parameters hash table");
+                exit (1);
+              }
+
+            pdf_stm_install_filter (stm,
+                                    PDF_STM_FILTER_RL_ENC,
+                                    rlenc_filter_params);
             break;
           }
         case CCITTFAXDEC_FILTER_ARG:

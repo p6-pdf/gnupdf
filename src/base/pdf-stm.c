@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/22 23:29:02 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-09-27 17:52:37 gerel"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -161,9 +161,9 @@ pdf_stm_read (pdf_stm_t stm,
           cache_size = stm->cache->wp - stm->cache->rp;
           to_copy_bytes = PDF_MIN(pending_bytes, cache_size);
 
-          strncpy ((char *) (buf + read_bytes),
-                   (char *) stm->cache->data + stm->cache->rp,
-                   to_copy_bytes);
+          memcpy ((char *) (buf + read_bytes),
+                  (char *) stm->cache->data + stm->cache->rp,
+                  to_copy_bytes);
           
           read_bytes += to_copy_bytes;
           stm->cache->rp += to_copy_bytes;
@@ -227,9 +227,9 @@ pdf_stm_write (pdf_stm_t stm,
 
           if (to_write_bytes != 0)
             {
-              strncpy ((char *) tail_buffer->data + tail_buffer->wp,
-                       (char *) buf + written_bytes,
-                       to_write_bytes);
+              memcpy ((char *) tail_buffer->data + tail_buffer->wp,
+                      (char *) buf + written_bytes,
+                      to_write_bytes);
 
               written_bytes += to_write_bytes;
               tail_buffer->wp += to_write_bytes;

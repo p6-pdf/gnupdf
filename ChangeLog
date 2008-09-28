@@ -1,5 +1,8 @@
 2008-09-28  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* utils/pdf-filter.c: Support for RunLength encoding and decoding
+	filters.
+
 	* AUTHORS: updated.
 
 	* src/base/pdf-stm-f-rl.h: Do not include 'pdf-base.h'.
@@ -26,6 +29,10 @@
 	* src/base/pdf-base.h: added pdf-list, pdf-hash and pdf-stm APIs.
 
 	* src/base/pdf-error.h: fixed PDF_ENOTEMPY error string order.
+
+	* src/base/pdf-stm-f-null.c: using memcpy() instead of strncpy().
+
+	* src/base/pdf-stm.c: same.
 
 2008-09-27  Jose E. Marchesi  <jemarch@gnu.org>
 
