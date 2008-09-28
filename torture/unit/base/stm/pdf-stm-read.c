@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/28 14:06:04 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/28 15:17:41 jemarch"
  *
  *       File:         pdf-stm-read.c
  *       Date:         Sat Sep 20 15:20:17 2008
@@ -408,6 +408,70 @@ START_TEST (pdf_stm_read_006)
 END_TEST
 
 /*
+ * Test: pdf_stm_read_007
+ * Description:
+ *   Read some bytes from a read memory stream with an
+ *   ASCII Hex decoder having white characters in the data.
+ * Success condition:
+ *   The read data should be consistent.
+ */
+START_TEST (pdf_stm_read_007)
+{
+  pdf_status_t ret;
+  pdf_stm_t stm;
+  pdf_char_t *buf;
+  pdf_char_t *ret_buf;
+  pdf_size_t buf_size;
+  pdf_size_t read_bytes;
+  pdf_hash_t ahexdec_filter_parameters;
+
+  /* Create the buffers */
+  buf_size = 20;
+  buf = pdf_alloc (buf_size);
+  fail_if(buf == NULL);
+  strcpy (buf, "61 6\n2 63\n>");
+
+  ret_buf = pdf_alloc (buf_size);
+  fail_if(buf == NULL);
+
+  /* Create the stream */
+  ret = pdf_stm_mem_new (buf,
+                         buf_size,
+                         0, /* Use the default cache size */
+                         PDF_STM_READ,
+                         &stm);
+  fail_if(ret != PDF_OK);
+
+  /* Install an ASCII Hex decoder in the stream */
+  ret = pdf_hash_new (NULL, &ahexdec_filter_parameters);
+  fail_if(ret != PDF_OK);
+
+  ret = pdf_stm_install_filter (stm,
+                                PDF_STM_FILTER_AHEX_DEC,
+                                ahexdec_filter_parameters);
+  fail_if(ret != PDF_OK);
+
+  /* Read some data from the stream */
+  read_bytes = pdf_stm_read (stm,
+                             ret_buf,
+                             3);
+  fail_if(read_bytes != 3);
+
+  /* Close the stream */
+  pdf_stm_destroy (stm);
+
+  /* Check the result of the operation */
+  fail_if(strncmp (ret_buf, "abc", 3) != 0);
+
+
+  /* Destroy data */
+  pdf_hash_destroy (ahexdec_filter_parameters);
+  pdf_dealloc (buf);
+  pdf_dealloc (ret_buf);
+}
+END_TEST
+
+/*
  * Test case creation function
  */
 TCase *
@@ -421,6 +485,7 @@ test_pdf_stm_read (void)
   tcase_add_test(tc, pdf_stm_read_004);
   tcase_add_test(tc, pdf_stm_read_005);
   tcase_add_test(tc, pdf_stm_read_006);
+  tcase_add_test(tc, pdf_stm_read_007);
 
   return tc;
 }

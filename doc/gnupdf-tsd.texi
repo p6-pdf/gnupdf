@@ -258,6 +258,15 @@ The decoded data should be correct.
 @end table
 @end deffn
 
+@deffn Test pdf_stm_read_007
+Read some bytes from a read memory stream with an
+ASCII Hex decoder having white characters in the data.
+@table @strong
+@item Success condition
+The decoded data should be correct.
+@end table
+@end deffn
+
 @node pdf_stm_read_char
 @subsubsection pdf_stm_read_char
 
