@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-27 18:32:05 gerel"
+/* -*- mode: C -*- Time-stamp: "08/09/28 15:45:51 jemarch"
  *
  *       File:         pdf-stm-f-rl.c
  *       Date:         Sun Jul 15 22:01:18 2007
@@ -153,6 +153,13 @@ pdf_stm_f_rlenc_apply (pdf_hash_t params, void * state, pdf_stm_buffer_t in,
 
 
 pdf_status_t
+pdf_stm_f_rlenc_dealloc_state (void *state)
+{
+  pdf_dealloc (state);
+  return PDF_OK;
+}
+
+pdf_status_t
 pdf_stm_f_rldec_apply (pdf_hash_t params, void *state, pdf_stm_buffer_t in,
                        pdf_stm_buffer_t out, pdf_bool_t finish_p)
 {
@@ -212,6 +219,14 @@ pdf_stm_f_rldec_apply (pdf_hash_t params, void *state, pdf_stm_buffer_t in,
   return PDF_OK;
 }
 
+pdf_status_t
+pdf_stm_f_rldec_dealloc_state (void *state)
+{
+  pdf_dealloc (state);
+  return PDF_OK;
+}
+
+/* Private functions */
 
 static int
 encode_rl_char (pdf_stm_f_rl_t st, pdf_stm_buffer_t out)

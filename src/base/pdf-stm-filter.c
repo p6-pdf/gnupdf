@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-27 18:11:56 gerel"
+/* -*- mode: C -*- Time-stamp: "08/09/28 15:44:46 jemarch"
  *
  *       File:         pdf-stm-filter.c
  *       Date:         Thu Jun 12 22:13:31 2008
@@ -66,30 +66,35 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
       {
         new->impl.init_fn = pdf_stm_f_null_init;
         new->impl.apply_fn = pdf_stm_f_null_apply;
+        new->impl.dealloc_state_fn = pdf_stm_f_null_dealloc_state;
         break;
       }
     case PDF_STM_FILTER_AHEX_ENC:
       {
         new->impl.init_fn = pdf_stm_f_ahexenc_init;
         new->impl.apply_fn = pdf_stm_f_ahexenc_apply;
+        new->impl.dealloc_state_fn = pdf_stm_f_ahexenc_dealloc_state;
         break;
       }
     case PDF_STM_FILTER_AHEX_DEC:
       {
         new->impl.init_fn = pdf_stm_f_ahexdec_init;
         new->impl.apply_fn = pdf_stm_f_ahexdec_apply;
+        new->impl.dealloc_state_fn = pdf_stm_f_ahexdec_dealloc_state;
         break;
       }
     case PDF_STM_FILTER_RL_ENC:
       {
         new->impl.init_fn = pdf_stm_f_rlenc_init;
         new->impl.apply_fn = pdf_stm_f_rlenc_apply;
+        new->impl.dealloc_state_fn = pdf_stm_f_rlenc_dealloc_state;
         break;
       }
     case PDF_STM_FILTER_RL_DEC:
       {
         new->impl.init_fn = pdf_stm_f_rldec_init;
         new->impl.apply_fn = pdf_stm_f_rldec_apply;
+        new->impl.dealloc_state_fn = pdf_stm_f_rldec_dealloc_state;
         break;
       }
     default:
@@ -112,7 +117,7 @@ pdf_status_t
 pdf_stm_filter_destroy (pdf_stm_filter_t filter)
 {
   pdf_stm_buffer_destroy (filter->in);
-  pdf_dealloc (filter->state);
+  filter->impl.dealloc_state_fn (filter->state);
   pdf_dealloc (filter);
 
   /* Note that the memory used by the output buffer and by the params
