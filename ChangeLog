@@ -23,6 +23,10 @@
 	* doc/gnupdf-tsd.texi: added filter tests and missing
 	pdf_stm_write() test specification.
 
+	* src/base/pdf-base.h: added pdf-list, pdf-hash and pdf-stm APIs.
+
+	* src/base/pdf-error.h: fixed PDF_ENOTEMPY error string order.
+
 2008-09-27  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-stm-f-ahex.c (pdf_stm_f_ahexdec_apply): Fix the
