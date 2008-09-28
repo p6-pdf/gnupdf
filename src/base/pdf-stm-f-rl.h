@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 01:04:56 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/28 12:33:05 jemarch"
  *
  *       File:         pdf-stm-f-rl.h
  *       Date:         Sun Jul 15 21:57:35 2007
@@ -27,43 +27,47 @@
 #define PDF_STM_F_RL_H
 
 #include <config.h>
-#include <pdf-base.h>
+#include <pdf-types.h>
+#include <pdf-hash.h>
+#include <pdf-stm-buffer.h>
 
-/* BEGIN PUBLIC */
 
-enum pdf_stm_f_rl_mode_t
+typedef enum
 {
-  PDF_STM_F_RL_MODE_ENCODE,
-  PDF_STM_F_RL_MODE_DECODE
+        PDF_STM_F_RL_WRL=0,
+        PDF_STM_F_RL_NONE
+} pdf_stm_f_rl_enc_e;
+
+struct pdf_stm_f_rl_s
+{
+  pdf_char_t curchar, rlchar, dec_count;
+  pdf_i32_t rl;
+  pdf_bool_t run_p, dec_p;
+  pdf_stm_f_rl_enc_e enc_p;
 };
 
-/* END PUBLIC */
+typedef struct pdf_stm_f_rl_s * pdf_stm_f_rl_t;
 
-/* Configuration data */
-
-struct pdf_stm_f_rl_conf_s
-{
-  int mode;
-};
-
-typedef struct pdf_stm_f_rl_conf_s *pdf_stm_f_rl_conf_t;
-
-/* Private data */
-
-struct pdf_stm_f_rl_data_s
-{
-  int mode;
-};
-
-typedef struct pdf_stm_f_rl_data_s *pdf_stm_f_rl_data_t;
 
 /* Filter API implementation */
 
-int pdf_stm_f_rl_init (void **filter_data, void *conf_data);
-int pdf_stm_f_rl_apply (void *filter_data,
-                        pdf_char_t *in, pdf_stm_pos_t in_size,
-                        pdf_char_t **out, pdf_stm_pos_t *out_size);
-int pdf_stm_f_rl_dealloc (void **filter_data);
+pdf_status_t pdf_stm_f_rldec_init (pdf_hash_t params,
+                                   void **state);
+
+pdf_status_t pdf_stm_f_rldec_apply (pdf_hash_t params,
+                                    void *state,
+                                    pdf_stm_buffer_t in,
+                                    pdf_stm_buffer_t out,
+                                    pdf_bool_t finish_p);
+
+pdf_status_t pdf_stm_f_rlenc_init (pdf_hash_t params,
+                                   void **state);
+
+pdf_status_t pdf_stm_f_rlenc_apply (pdf_hash_t params,
+                                    void *state,
+                                    pdf_stm_buffer_t in,
+                                    pdf_stm_buffer_t out,
+                                    pdf_bool_t finish_p);
 
 #endif /* pdf_stm_f_rl.h */
 

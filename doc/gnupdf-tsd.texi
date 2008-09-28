@@ -240,6 +240,15 @@ The readed data should be consistent.
 @end table
 @end deffn
 
+@deffn Test pdf_stm_read_005
+Create a memory-based reading stream and attach a RunLength filter
+decoder to it.
+@table @strong
+@item Success condition
+The decoded data should be correct.
+@end table
+@end deffn
+
 @node pdf_stm_read_char
 @subsubsection pdf_stm_read_char
 
@@ -340,6 +349,24 @@ producing a cache flush.
 The written data should be consistent.
 @end table
 @end deffn
+
+@deffn Test pdf_stm_write_004
+Write some bytes to a write memory stream with an ASCII Hex encoder.
+@table @strong
+@item Success condition
+The written data should be consistent.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_write_005
+Create a memory-based writing stream and attach a RunLength filter
+encoder to it.
+@table @strong
+@item Success condition
+The encoded data should be correct.
+@end table
+@end deffn
+
 
 @node Text Module
 @subsection Text Module

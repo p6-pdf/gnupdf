@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/23 21:50:12 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-09-27 19:17:22 gerel"
  *
  *       File:         pdf-stm-write.c
  *       Date:         Sun Sep 21 16:37:27 2008
@@ -233,6 +233,64 @@ START_TEST (pdf_stm_write_004)
 }
 END_TEST
 
+
+/*
+ * Test: pdf_stm_write_005
+ * Description:
+ *   Create a memory-based writing stream and attach a RunLength filter
+ *   encoder to it.
+ * Success condition:
+ *   The encoded data should be correct.
+ */
+START_TEST (pdf_stm_write_005)
+{
+  pdf_status_t ret;
+  pdf_hash_t params;
+  pdf_stm_t stm;
+  pdf_char_t *buf, *decoded="122333444455555666666777777788888888999999999";
+  pdf_size_t buf_size, total=46, written;
+  pdf_char_t *dataux, *encoded =
+    "\x00" "1" "\xff" "2" "\xfe" "3" "\xfd" "4" "\xfc" "5" "\xfb" "6" \
+    "\xfa" "7" "\xf9" "8" "\xf8" "9" "\x00" "\x00" "\x80";
+
+  /* Writing stream */
+  /* Create a memory buffer */
+  buf_size = 100;
+  buf = pdf_alloc (buf_size);
+  fail_if(buf == NULL);
+  /* Create the stream */
+  ret = pdf_stm_mem_new (buf,
+                         buf_size,
+                         5, /* Minimum with EOD, to restore filter's state */
+                         PDF_STM_WRITE,
+                         &stm);
+  fail_if(ret != PDF_OK);
+  /* Create the filter */
+  fail_if (pdf_stm_install_filter (stm, PDF_STM_FILTER_RL_ENC, params) !=
+           PDF_OK);
+
+  written=0;
+  dataux = decoded;
+  while (total > 0)
+    {
+      written = pdf_stm_write (stm, dataux, total);
+      dataux = dataux + written;
+      total -= written;
+    }
+  pdf_stm_flush(stm);
+  pdf_stm_finish(stm);
+
+  fail_if (memcmp (buf, encoded, 21) != 0);
+  /* Destroy the stream */
+  pdf_stm_destroy (stm);
+  pdf_dealloc (buf);
+
+}
+END_TEST
+
+
+
+
 /*
  * Test case creation function
  */
@@ -245,7 +303,8 @@ test_pdf_stm_write (void)
   tcase_add_test(tc, pdf_stm_write_002);
   tcase_add_test(tc, pdf_stm_write_003);
   tcase_add_test(tc, pdf_stm_write_004);
-
+  tcase_add_test(tc, pdf_stm_write_005);
+  
   return tc;
 }
 

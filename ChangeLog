@@ -1,3 +1,28 @@
+2008-09-28  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* AUTHORS: updated.
+
+	* src/base/pdf-stm-f-rl.h: Do not include 'pdf-base.h'.
+
+2008-09-27  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* src/Makefile.am: added the RunLength filter.
+
+	* src/base/pdf-stm-f-rl.c: adapted to the new API.
+
+	* src/base/pdf-stm-f-rl.h: adapted to the new API.
+
+	* src/base/pdf-stm-filter.c: added the RunLength filter.
+
+	* src/base/pdf-stm-filter.h: added the RunLength filter.
+
+	* torture/unit/base/stm/pdf-stm-read.c: added decoder filter test.
+
+	* torture/unit/base/stm/pdf-stm-write.c: added encoder filter test.
+
+	* doc/gnupdf-tsd.texi: added filter tests and missing
+	pdf_stm_write() test specification.
+
 2008-09-27  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-stm-f-ahex.c (pdf_stm_f_ahexdec_apply): Fix the

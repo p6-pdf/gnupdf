@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/20 16:43:32 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-09-27 19:15:57 gerel"
  *
  *       File:         pdf-stm-read.c
  *       Date:         Sat Sep 20 15:20:17 2008
@@ -290,6 +290,63 @@ START_TEST (pdf_stm_read_004)
 END_TEST
 
 /*
+ * Test: pdf_stm_read_005
+ * Description:
+ *   Create a memory-based reading stream and attach a RunLength filter
+ *   decoder to it.
+ * Success condition:
+ *   The decoded data should be correct.
+ */
+START_TEST (pdf_stm_read_005)
+{
+  pdf_status_t ret;
+  pdf_hash_t params;
+  pdf_stm_t stm;
+  pdf_char_t *buf, *decoded="122333444455555666666777777788888888999999999";
+  pdf_size_t buf_size, total=46,read;
+  pdf_char_t *dataux, *encoded =
+    "\x00" "1" "\xff" "2" "\xfe" "3" "\xfd" "4" "\xfc" "5" "\xfb" "6" \
+    "\xfa" "7" "\xf9" "8" "\xf8" "9" "\x00" "\x00" "\x80";
+
+  /* Writing stream */
+  /* Create a memory buffer */
+  buf_size = 100;
+  buf = pdf_alloc (buf_size);
+  fail_if(buf == NULL);
+  /* Create the stream */
+  ret = pdf_stm_mem_new (encoded,
+                         21,
+                         1, /* Minimum, to restore filter's state */
+                         PDF_STM_READ,
+                         &stm);
+  fail_if(ret != PDF_OK);
+  /* Create the filter */
+  fail_if (pdf_stm_install_filter (stm, PDF_STM_FILTER_RL_DEC, params) !=
+           PDF_OK);
+
+  read = 0;
+  total = 46;
+  dataux = buf;
+  while (total > 0)
+    {
+      read = pdf_stm_read (stm, dataux, total);
+      dataux = dataux + read;
+      total -= read;
+    }
+
+  fail_if (memcmp (buf, decoded, 46) != 0);
+  /* Destroy the stream */
+  pdf_stm_destroy (stm);
+  pdf_dealloc (buf);
+
+
+}
+END_TEST
+
+
+
+
+/*
  * Test case creation function
  */
 TCase *
@@ -301,6 +358,7 @@ test_pdf_stm_read (void)
   tcase_add_test(tc, pdf_stm_read_002);
   tcase_add_test(tc, pdf_stm_read_003);
   tcase_add_test(tc, pdf_stm_read_004);
+  tcase_add_test(tc, pdf_stm_read_005);
 
   return tc;
 }
