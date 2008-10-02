@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/28 15:32:34 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/10/02 22:26:20 jemarch"
  *
  *       File:         pdf-stm-write.c
  *       Date:         Sun Sep 21 16:37:27 2008
@@ -277,8 +277,7 @@ START_TEST (pdf_stm_write_005)
       dataux = dataux + written;
       total -= written;
     }
-  pdf_stm_flush(stm);
-  pdf_stm_finish(stm);
+  pdf_stm_flush(stm, PDF_TRUE);
 
   fail_if (memcmp (buf, encoded, 21) != 0);
   /* Destroy the stream */

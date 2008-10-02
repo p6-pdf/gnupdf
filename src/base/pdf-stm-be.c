@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-24 18:45:45 gerel"
+/* -*- mode: C -*- Time-stamp: "08/10/02 00:32:07 jemarch"
  *
  *       File:         pdf-stm-be.c
  *       Date:         Wed Jun 18 21:15:16 2008

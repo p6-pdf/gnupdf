@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/28 15:44:46 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/10/02 22:44:22 jemarch"
  *
  *       File:         pdf-stm-filter.c
  *       Date:         Thu Jun 12 22:13:31 2008
@@ -109,6 +109,7 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
   new->state = NULL;
   new->impl.init_fn (new->params,
                      &(new->state));
+  new->status = PDF_OK;
 
   return new;
 }
@@ -161,27 +162,74 @@ pdf_stm_filter_apply (pdf_stm_filter_t filter,
                       pdf_bool_t finish_p)
 {
   pdf_status_t ret;
+  pdf_status_t apply_ret;
+  pdf_status_t ret_in;
+  pdf_bool_t really_finish_p;
 
-  pdf_stm_buffer_rewind (filter->out);
-  ret = PDF_OK;
-
-  while ((!pdf_stm_buffer_full_p (filter->out)) 
-         && (ret == PDF_OK))
+  /* If the filter is in an error state or it is in an eof state, just
+     communicate it to the caller */
+  if (filter->status != PDF_OK)
     {
-      /* If the input buffer is empty, refill it */
-      if (pdf_stm_buffer_eob_p (filter->in))
-        {
-          ret = pdf_stm_filter_get_input (filter, finish_p);
-        }
+      return filter->status;
+    }
 
-      if (ret != PDF_ERROR)
+  really_finish_p = PDF_FALSE;
+  ret = PDF_OK;
+  while (!pdf_stm_buffer_full_p (filter->out))
+    {
+      /* Generate output */
+      apply_ret = filter->impl.apply_fn (filter->params,
+                                         filter->state,
+                                         filter->in,
+                                         filter->out,
+                                         really_finish_p);
+      if (apply_ret == PDF_ERROR)
         {
-          /* Generate output */
-          ret = filter->impl.apply_fn (filter->params,
-                                       filter->state,
-                                       filter->in,
-                                       filter->out,
-                                       finish_p);
+          /* The filter is now in an error condition. We should not
+             call this filter anymore without a previous reset */
+          filter->status = PDF_ERROR;
+          ret = filter->status;
+          break;
+        }
+      if (apply_ret == PDF_EEOF)
+        {
+          /* The filter is now in an EOF condition. We should not call
+             this filter anymore without a previous reset */
+          filter->status = PDF_EEOF;
+          ret = filter->status;
+          break;
+        }
+      if (apply_ret == PDF_ENINPUT)
+        {
+          /* The filter needs more input, try to get the input buffer
+             filled with some data */
+          ret_in = pdf_stm_filter_get_input (filter, finish_p);
+          if (ret_in == PDF_ERROR)
+            {
+              filter->status = PDF_ERROR;
+              ret = filter->status;
+              break;
+            }
+          else if ((ret_in == PDF_EEOF) 
+                   && (pdf_stm_buffer_eob_p (filter->in)))
+            {
+              if ((finish_p) && (!really_finish_p))
+                {
+                  really_finish_p = PDF_TRUE;
+                }
+              else
+                {
+                  ret = PDF_EEOF;
+                  break;
+                }
+            }
+        }
+      if (apply_ret == PDF_ENOUTPUT)
+        {
+          /* The filter needs to generate output and the output buffer
+             is full */
+          filter->status = PDF_OK;
+          break;
         }
     }
 
@@ -191,6 +239,7 @@ pdf_stm_filter_apply (pdf_stm_filter_t filter,
 pdf_status_t
 pdf_stm_filter_reset (pdf_stm_filter_t filter)
 {
+  filter->status = PDF_OK;
   return filter->impl.init_fn (filter->params,
                                &(filter->state));
 }
@@ -219,8 +268,10 @@ pdf_stm_filter_get_input (pdf_stm_filter_t filter,
   pdf_status_t ret;
   pdf_size_t read_bytes;
 
+  /* The input buffer should be empty at this point */
   pdf_stm_buffer_rewind (filter->in);
 
+  ret = PDF_OK;
   if (filter->next != NULL)
     {
       ret = pdf_stm_filter_apply (filter->next, finish_p);
@@ -231,13 +282,9 @@ pdf_stm_filter_get_input (pdf_stm_filter_t filter,
                                     filter->in->data,
                                     filter->in->size);
       filter->in->wp = read_bytes;
-      if (read_bytes == 0)
+      if (read_bytes < filter->in->size)
         {
           ret = PDF_EEOF;
-        }
-      else
-        {
-          ret = PDF_OK;
         }
     }
   else

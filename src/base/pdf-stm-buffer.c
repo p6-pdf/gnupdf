@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/21 18:33:41 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/10/02 19:52:50 jemarch"
  *
  *       File:         pdf-stm-buffer.c
  *       Date:         Wed Jul 23 23:28:59 2008

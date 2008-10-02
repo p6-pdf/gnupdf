@@ -1,3 +1,7 @@
+2008-10-02  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* Bug fixing and design changes in the stream module.
+
 2008-09-28  Gerardo E. Gidoni  <gerel@gnu.org>
 
 	* src/base/pdf-stm-f-rl.c: decoder EOD mark fix.

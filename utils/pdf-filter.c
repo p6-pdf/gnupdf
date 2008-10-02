@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/28 12:54:36 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/10/02 22:47:32 jemarch"
  *
  *       File:         pdf-filter.c
  *       Date:         Tue Jul 10 18:42:07 2007
@@ -164,6 +164,8 @@ main (int argc, char *argv[])
   pdf_hash_t ahexdec_filter_params;
   pdf_hash_t rlenc_filter_params;
   pdf_hash_t rldec_filter_params;
+  /*  pdf_hash_t a85enc_filter_params;
+      pdf_hash_t a85dec_filter_params; */
   pdf_char_t *line;
   pdf_size_t line_bytes;
   pdf_size_t read_bytes;
@@ -176,7 +178,7 @@ main (int argc, char *argv[])
   /* Create a writing memory stream */
   ret = pdf_stm_mem_new (buf,
                          buf_size,
-                         0, /* Use the default cache size */
+                         1, /* Use the default cache size */
                          PDF_STM_WRITE,
                          &stm);
   if (ret != PDF_OK)
@@ -261,14 +263,30 @@ main (int argc, char *argv[])
           }
         case ASCII85DEC_FILTER_ARG:
           {
-            /* pdf_stm_install_a85dec_filter (input,
-               PDF_STM_FILTER_READ); */
+            /*            ret = pdf_hash_new (NULL, &a85dec_filter_params);
+            if (ret != PDF_OK)
+              {
+                pdf_error (ret, stderr, "while creating the a85dec filter parameters hash table");
+                exit (1);
+              }
+
+            pdf_stm_install_filter (stm,
+                                    PDF_STM_FILTER_A85_DEC,
+                                    a85dec_filter_params); */
             break;
           }
         case ASCII85ENC_FILTER_ARG:
           {
-            /* pdf_stm_install_a85enc_filter (input,
-               PDF_STM_FILTER_READ); */
+            /*            ret = pdf_hash_new (NULL, &a85enc_filter_params);
+            if (ret != PDF_OK)
+              {
+                pdf_error (ret, stderr, "while creating the a85enc filter parameters hash table");
+                exit (1);
+              }
+
+            pdf_stm_install_filter (stm,
+                                    PDF_STM_FILTER_A85_ENC,
+                                    a85enc_filter_params); */
             break;
           }
 	case LZWENC_FILTER_ARG:
@@ -415,9 +433,9 @@ main (int argc, char *argv[])
                      line,
                      read_bytes);
 
-      written_bytes = pdf_stm_flush (stm);
+      pdf_stm_flush (stm, PDF_FALSE);
       fwrite ((char *) buf,
-              written_bytes,
+              pdf_stm_tell (stm),
               1,
               stdout);
 
@@ -427,9 +445,9 @@ main (int argc, char *argv[])
     }
 
   pdf_stm_seek (stm, 0);
-  written_bytes = pdf_stm_finish (stm);
+  written_bytes = pdf_stm_flush (stm, PDF_TRUE);
   fwrite ((char *) buf,
-          written_bytes,
+          pdf_stm_tell (stm),
           1,
           stdout);
 

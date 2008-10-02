@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-27 17:52:19 gerel"
+/* -*- mode: C -*- Time-stamp: "08/10/02 19:10:38 jemarch"
  *
  *       File:         pdf-stm-f-null.c
  *       Date:         Mon Jul  9 22:01:41 2007
@@ -37,7 +37,7 @@ pdf_status_t
 pdf_stm_f_null_init (pdf_hash_t params,
                      void **state)
 {
-  /* This filter doe not use any parameters and does not hold any
+  /* This filter does not use any parameters and does not hold any
      internal state */
 
   return PDF_OK;
@@ -50,10 +50,10 @@ pdf_stm_f_null_apply (pdf_hash_t params,
                       pdf_stm_buffer_t out,
                       pdf_bool_t finish_p)
 {
-  pdf_status_t ret;
   pdf_size_t in_size;
   pdf_size_t out_size;
   pdf_size_t bytes_to_copy;
+  pdf_status_t ret;
 
   /* Fill the output buffer with the contents of the input buffer, but
      note that the second may be bigger than the former */
@@ -72,15 +72,17 @@ pdf_stm_f_null_apply (pdf_hash_t params,
       out->wp = out->wp + bytes_to_copy;
     }
 
-  if (bytes_to_copy < out_size)
+  if (in_size < out_size)
     {
-      ret = PDF_EEOF;
+      /* We can process more input */
+      ret = PDF_ENINPUT;
     }
   else
     {
-      ret = PDF_OK;
+      /* We need more room in the output buffer */
+      ret = PDF_ENOUTPUT;
     }
-
+      
   return ret;
 }
 

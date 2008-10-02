@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/27 00:50:51 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/10/02 22:37:34 jemarch"
  *
  *       File:         pdf-stm-f-ahex.c
  *       Date:         Fri Jul 13 17:08:41 2007
@@ -50,6 +50,7 @@ pdf_stm_f_ahexenc_init (pdf_hash_t params,
   /* Initialize fields */
   filter_state->last_nibble = -1;
   filter_state->written_bytes = 0;
+  filter_state->newlines = 0;
 
   *state = (void *) filter_state;
 
@@ -65,93 +66,89 @@ pdf_stm_f_ahexenc_apply (pdf_hash_t params,
                          pdf_stm_buffer_t out,
                          pdf_bool_t finish_p)
 {
-  pdf_status_t ret;
   pdf_stm_f_ahexenc_t filter_state;
   pdf_char_t first_nibble;
   pdf_char_t second_nibble;
   pdf_char_t in_char;
-  pdf_bool_t wrote_newline;
-  
-  filter_state = (pdf_stm_f_ahexenc_t) state;
-  wrote_newline = PDF_FALSE;
-  while ((!pdf_stm_buffer_eob_p (in)) &&
-         (!pdf_stm_buffer_full_p (out)))
-    {
-      if ((!wrote_newline) &&
-          (filter_state->written_bytes != 0) &&
-          ((filter_state->written_bytes % PDF_STM_F_AHEX_LINE_WIDTH) == 0))
-        {
-          /* Insert a new line character */
-          out->data[out->wp] = '\n';
-          out->wp++;
-          wrote_newline = PDF_TRUE;
-
-          continue;
-        }
-      else
-        {
-          wrote_newline = PDF_FALSE;
-        }
-
-      /* For each byte in the input we should generate two bytes in the
-         output. */
-      in_char = in->data[in->rp];
-
-      /* Determine the hex digits to write for this input character */
-      if (filter_state->last_nibble != -1)
-        {
-          first_nibble = (pdf_char_t) filter_state->last_nibble;
-          second_nibble = pdf_stm_f_ahex_int2hex (in_char >> 4);
-        }
-      else
-        {
-          first_nibble = pdf_stm_f_ahex_int2hex (in_char >> 4);
-          second_nibble = pdf_stm_f_ahex_int2hex (in_char);
-        }
-      in->rp++;
-
-      /* Write the hex digits to the output buffer, if possible */
-
-      /* First nibble */
-      out->data[out->wp] = first_nibble;
-      out->wp++;
-      filter_state->written_bytes++;
-
-      /* Maybe write the second nibble */
-      if (pdf_stm_buffer_full_p (out))
-        {
-          filter_state->last_nibble = second_nibble;
-        }
-      else
-        {
-          out->data[out->wp] = second_nibble;
-          out->wp++;
-          filter_state->written_bytes++;
-        }
-    }
+  pdf_status_t ret;
 
   if (finish_p)
     {
-      /* The end of the encoded data is a 3E '>' ASCII character */
-      if (!pdf_stm_buffer_full_p (out))
+      /* Assume that there is room in the output buffer to hold the
+         EOD marker */
+      out->data[out->wp++] = '>';
+      return PDF_EEOF;
+    }
+
+  filter_state = (pdf_stm_f_ahexenc_t) state;
+  ret = PDF_OK;
+  while (!pdf_stm_buffer_full_p (out))
+    {
+      /* Write down any pending nibble, if needed, without consuming
+         any input byte */
+      if (filter_state->last_nibble != -1) 
         {
-          out->data[out->wp] = '>';
+          out->data[out->wp] = filter_state->last_nibble;
           out->wp++;
+          filter_state->written_bytes++;
+          filter_state->last_nibble = -1;
+          continue;
+        }
+
+      /* Try to consume an input byte */
+      if (!pdf_stm_buffer_eob_p (in))
+        {
+          /* For each byte in the input we should generate two bytes in the
+             output. */
+          in_char = in->data[in->rp];
+          
+          /* Determine the hex digits to write for this input character */
+          if (filter_state->last_nibble != -1)
+            {
+              first_nibble = (pdf_char_t) filter_state->last_nibble;
+              second_nibble = pdf_stm_f_ahex_int2hex (in_char >> 4);
+            }
+          else
+            {
+              first_nibble = pdf_stm_f_ahex_int2hex (in_char >> 4);
+              second_nibble = pdf_stm_f_ahex_int2hex (in_char);
+            }
+          in->rp++;
+
+          /* Write the hex digits into the output buffer, if
+             possible */
+          
+          /* First nibble */
+          out->data[out->wp] = first_nibble;
+          out->wp++;
+          filter_state->written_bytes++;
+          
+          /* Maybe write the second nibble */
+          if (pdf_stm_buffer_full_p (out))
+            {
+              filter_state->last_nibble = second_nibble;
+            }
+          else
+            {
+              out->data[out->wp] = second_nibble;
+              out->wp++;
+              filter_state->written_bytes++;
+            }
         }
       else
         {
-          /* This should not be reached, but just in case */
-          return PDF_ERROR;
+          /* We need more input */
+          break;
         }
     }
 
-  if ((in->wp - in->rp) == 0)
+  if (pdf_stm_buffer_full_p (out))
     {
-      ret = PDF_EEOF;
+      ret = PDF_ENOUTPUT;
     }
   else
     {
-      ret = PDF_OK;
+      ret = PDF_ENINPUT;
     }
 
   return ret;
@@ -180,7 +177,7 @@ pdf_stm_f_ahexdec_init (pdf_hash_t params,
   ahexdec_state = pdf_alloc (sizeof(struct pdf_stm_f_ahexdec_s));
   if (ahexdec_state != NULL)
     {
-      ahexdec_state->last_nibble = PDF_EOF;
+      ahexdec_state->last_nibble = -1;
       ahexdec_state->written_bytes = 0;
 
       *state = ahexdec_state;
@@ -203,84 +200,98 @@ pdf_stm_f_ahexdec_apply (pdf_hash_t params,
 {
   pdf_status_t ret;
   pdf_stm_f_ahexdec_t filter_state;
-  pdf_i32_t first_nibble;
-  pdf_i32_t second_nibble;
+  pdf_u32_t first_nibble;
+  pdf_u32_t second_nibble;
 
   ret = PDF_OK;
-  first_nibble = PDF_EOF;
-  second_nibble = PDF_EOF;
+  first_nibble = -1;
+  second_nibble = -1;
   filter_state = (pdf_stm_f_ahexdec_t) state;
 
-  while ((!pdf_stm_buffer_eob_p (in)) &&
-         (!pdf_stm_buffer_full_p (out)))
+  while (!pdf_stm_buffer_full_p (out))
     {
-      /* Skip white characters */
-      if (pdf_stm_f_ahex_white_p ((pdf_u32_t) in->data[in->rp]))
+      if (pdf_stm_buffer_eob_p (in))
         {
-          in->rp++;
-          continue;
-        }
-
-      /* Detect the end of the hex data */
-      if (in->data[in->rp] == '>')
-        {
-          if (filter_state->last_nibble == PDF_EOF)
-            {
-              /* We are done :'D */
-              in->rp++;
-              ret = PDF_EEOF;
-              break;
-            }
-          else
-            {
-              /* Found an even number of hex digits. We assume that
-                 the second nibble is 0, so generate a byte of data
-                 and finish */
-              out->data[out->wp] =
-                pdf_stm_f_ahex_hex2int (filter_state->last_nibble) << 4;
-              out->wp++;
-              filter_state->last_nibble = PDF_EOF;
-              ret = PDF_EEOF;
-              break;
-            }
-        }
-
-      /* Detect an invalid character */
-      if (!pdf_stm_f_ahex_hex_p ((pdf_u32_t) in->data[in->rp]))
-        {
-          ret = PDF_ERROR;
+          /* Need more input */
           break;
-        }
-
-      /* Process this character. This is the first or the second part
-         of a mibble. */
-      if (filter_state->last_nibble == PDF_EOF)
-        {
-          /* Get the first nibble */
-          first_nibble = (pdf_u32_t) in->data[in->rp];
-          in->rp++;
-
-          filter_state->last_nibble = first_nibble;
         }
       else
         {
-          /* Get the second nibble */
-          second_nibble = (pdf_u32_t) in->data[in->rp];
-          in->rp++;
+          /* Skip white characters */
+          if (pdf_stm_f_ahex_white_p ((pdf_u32_t) in->data[in->rp]))
+            {
+              in->rp++;
+              continue;
+            }
 
-          /* Generate one byte of data */
-          out->data[out->wp] = (pdf_stm_f_ahex_hex2int (first_nibble) << 4)
-            + pdf_stm_f_ahex_hex2int (second_nibble);
-          out->wp++;
+          /* Detect the end of the hex data */
+          if (in->data[in->rp] == '>')
+            {
+              if (filter_state->last_nibble == PDF_EOF)
+                {
+                  /* We are done :'D */
+                  in->rp++;
+                  ret = PDF_EEOF;
+                  break;
+                }
+              else
+                {
+                  /* Found an even number of hex digits. We assume that
+                     the second nibble is 0, so generate a byte of data
+                     and finish */
+                  out->data[out->wp] =
+                    pdf_stm_f_ahex_hex2int (filter_state->last_nibble) << 4;
+                  out->wp++;
+                  filter_state->last_nibble = PDF_EOF;
+                  ret = PDF_EEOF;
+                  break;
+                }
+            }
+          
+          /* Detect an invalid character */
+          if (!pdf_stm_f_ahex_hex_p ((pdf_u32_t) in->data[in->rp]))
+            {
+              ret = PDF_ERROR;
+              break;
+            }
+          
+          /* Process this character. This is the first or the second part
+             of a mibble. */
+          if (filter_state->last_nibble == -1)
+            {
+              /* Get the first nibble */
+              first_nibble = (pdf_u32_t) in->data[in->rp];
+              in->rp++;
 
-          filter_state->last_nibble = PDF_EOF;
+              filter_state->last_nibble = first_nibble;
+            }
+          else
+            {
+              /* Get the second nibble */
+              second_nibble = (pdf_u32_t) in->data[in->rp];
+              in->rp++;
+
+              /* Generate one byte of data */
+              first_nibble = filter_state->last_nibble;
+              out->data[out->wp] = (pdf_stm_f_ahex_hex2int (first_nibble) << 4)
+                + pdf_stm_f_ahex_hex2int (second_nibble);
+              out->wp++;
+
+              filter_state->last_nibble = -1;
+            }
         }
     }
   
-  if ((ret == PDF_OK) &&
-      (pdf_stm_buffer_eob_p (in)))
+  if (ret == PDF_OK)
     {
-      ret = PDF_EEOF;
+      if (pdf_stm_buffer_eob_p (in))
+        {
+          ret = PDF_ENINPUT;
+        }
+      else
+        {
+          ret = PDF_ENOUTPUT;
+        }
     }
 
   return ret;

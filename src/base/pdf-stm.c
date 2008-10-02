@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-27 17:52:37 gerel"
+/* -*- mode: C -*- Time-stamp: "08/10/02 22:28:36 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -96,11 +96,8 @@ pdf_stm_destroy (pdf_stm_t stm)
 
   if (stm->mode == PDF_STM_WRITE)
     {
-      /* Flush the cache */
-      pdf_stm_flush (stm);
-
-      /* Finish the filters */
-      pdf_stm_finish (stm);
+      /* Flush the cache, finishing the filters */
+      pdf_stm_flush (stm, PDF_TRUE);
     }
 
   /* Destroy the backend */
@@ -206,11 +203,12 @@ pdf_stm_write (pdf_stm_t stm,
   while ((written_bytes < bytes) &&
          (ret == PDF_OK))
     {
-      if (pdf_stm_buffer_full_p (tail_buffer))
+      if ((pdf_stm_buffer_full_p (tail_buffer)) &&
+          (!pdf_stm_buffer_eob_p (tail_buffer)))
         {
           /* Flush the cache */
           tail_buffer_size = tail_buffer->wp - tail_buffer->rp;
-          if (pdf_stm_flush (stm) < tail_buffer_size)
+          if (pdf_stm_flush (stm, PDF_FALSE) < tail_buffer_size)
             {
               ret = PDF_EEOF;
             }
@@ -241,7 +239,8 @@ pdf_stm_write (pdf_stm_t stm,
 }
 
 pdf_size_t
-pdf_stm_flush (pdf_stm_t stm)
+pdf_stm_flush (pdf_stm_t stm,
+               pdf_bool_t finish_p)
 {
   pdf_stm_filter_t tail_filter;
   pdf_stm_buffer_t tail_buffer;
@@ -249,6 +248,7 @@ pdf_stm_flush (pdf_stm_t stm)
   pdf_size_t cache_size;
   pdf_size_t written_bytes;
   pdf_size_t flushed_bytes;
+  pdf_size_t tail_size;
 
   if (stm->mode != PDF_STM_WRITE)
     {
@@ -256,39 +256,44 @@ pdf_stm_flush (pdf_stm_t stm)
       return 0;
     }
 
+  /* Apply the head filter until the filter chain gets empty */
   tail_filter = pdf_stm_filter_get_tail (stm->filter);
   tail_buffer = pdf_stm_filter_get_in (tail_filter);
-
-  /* Apply the head filter until the input buffer of the
-     tail filter gets empty */
   flushed_bytes = 0;
-  ret = PDF_OK;
-  while ((!pdf_stm_buffer_eob_p (tail_buffer)) &&
-         (ret == PDF_OK))
+  while (1)
     {
-      ret = pdf_stm_filter_apply (stm->filter, PDF_FALSE);
-      
-      if (ret != PDF_ERROR)
+      tail_size = tail_buffer->wp - tail_buffer->rp;
+      ret = pdf_stm_filter_apply (stm->filter, finish_p);
+
+      if (ret == PDF_ERROR)
         {
-          /* Write the data from the buffer cache into the backend */
-          cache_size = stm->cache->wp - stm->cache->rp;
-          written_bytes = pdf_stm_be_write (stm->backend,
-                                            stm->cache->data + stm->cache->rp,  
-                                            cache_size);
-          flushed_bytes += written_bytes;
-
-          if (written_bytes < cache_size)
-            {
-              /* There is no room in the backend */
-              ret = PDF_EEOF;
-            }
+          /* The filter chain is in error */
+          break;
         }
+
+      /* Update the number of flushed bytes */
+      flushed_bytes += tail_size
+        - (tail_buffer->wp - tail_buffer->rp);
+      
+      if ((ret == PDF_EEOF)
+          && (pdf_stm_buffer_eob_p (stm->cache)))
+        {
+          break;
+        }
+
+      /* Write the data from the buffer cache into the backend */
+      cache_size = stm->cache->wp - stm->cache->rp;
+      written_bytes = pdf_stm_be_write (stm->backend,
+                                        stm->cache->data + stm->cache->rp,
+                                        cache_size);
+              
+      /* Rewind the cache */
+      pdf_stm_buffer_rewind (stm->cache);
     }
 
-  if (pdf_stm_buffer_eob_p (tail_buffer))
-    {
-      pdf_stm_buffer_rewind (tail_buffer);
-    }
+  /* If we got an EOFF from a filter then the tail buffer may not be
+     empty */
+  pdf_stm_buffer_rewind (tail_buffer);
 
   return flushed_bytes;
 }
@@ -345,14 +350,17 @@ pdf_stm_seek (pdf_stm_t stm,
   else
     {
       /* Writing stream */
-      /* Flush the stream */
+
       tail_filter = pdf_stm_filter_get_tail (stm->filter);
       tail_buffer = pdf_stm_filter_get_in (tail_filter);
-
-      pdf_stm_flush (stm);
+      if (!pdf_stm_buffer_eob_p (tail_buffer))
+        {
+          /* Flush the stream */
+          pdf_stm_flush (stm, PDF_FALSE);
+        }
 
       /* Note that if there is an EOF condition in the backend we are
-         going to lose data */
+         going to loose data */
       pdf_stm_buffer_rewind (tail_buffer);
 
       /* Seek the backend */
@@ -387,47 +395,6 @@ pdf_stm_tell (pdf_stm_t stm)
     }
 
   return pos;
-}
-
-pdf_size_t
-pdf_stm_finish (pdf_stm_t stm)
-{
-  pdf_stm_filter_t tail_filter;
-  pdf_stm_buffer_t tail_buffer;
-  pdf_status_t ret;
-  pdf_size_t written_bytes;
-  pdf_size_t cache_size;
-
-  if (stm->mode != PDF_STM_WRITE)
-    {
-      /* Invalid operation */
-      return 0;
-    }
-
-  written_bytes = 0;
-  tail_filter = pdf_stm_filter_get_tail (stm->filter);
-  tail_buffer = pdf_stm_filter_get_in (tail_filter);
-
-  /* Rewind the tail buffer */
-  pdf_stm_buffer_rewind (tail_buffer);
-  
-  /* Finish the filters */
-  ret = pdf_stm_filter_apply (stm->filter, PDF_TRUE);
-      
-  if (ret != PDF_ERROR)
-    {
-      /* Write the data from the buffer cache into the backend. 
-         
-         Note that we have a design flaw here: the data generated by
-         the finalization of the filters should not exceed the size of
-         the stream cache. */
-      cache_size = stm->cache->wp - stm->cache->rp;
-      written_bytes = pdf_stm_be_write (stm->backend,
-                                        stm->cache->data + stm->cache->rp,  
-                                        cache_size);
-    }
-
-  return written_bytes;
 }
 
 /*

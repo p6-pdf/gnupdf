@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/28 15:40:32 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/10/02 22:44:10 jemarch"
  *
  *       File:         pdf-stm-filter.h
  *       Date:         Thu Jun 12 22:05:06 2008
@@ -81,6 +81,9 @@ struct pdf_stm_filter_s
 
   /* Filter implementation */
   struct pdf_stm_filter_impl_s impl;
+
+  /* Filter status */
+  pdf_status_t status;
 };
 
 typedef struct pdf_stm_filter_s *pdf_stm_filter_t;

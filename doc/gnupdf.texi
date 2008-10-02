@@ -3558,7 +3558,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_stm_finish (pdf_stm_t @var{stm})
+@deftypefun pdf_size_t pdf_stm_finish (pdf_stm_t @var{stm}, pdf_bool_t @var{finish_p})
 
 Finish the filter chain of a write stream.
 
@@ -3567,6 +3567,8 @@ Finish the filter chain of a write stream.
 @table @var
 @item stm
 A stream.
+@item finish_p
+Boolean value indicating whether to finish the filters in the chain.
 @end table
 @item Returns
 A PDF size value containing the number of bytes written by the finish
