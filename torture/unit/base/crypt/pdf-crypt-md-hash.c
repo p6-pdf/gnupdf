@@ -50,6 +50,8 @@ START_TEST (pdf_crypt_md_hash_001)
     0xec, 0xf8, 0x42, 0x7e
   };
 
+  pdf_crypt_init();
+
   pdf_crypt_md_new (&md, PDF_CRYPT_MD_MD5);
   fail_if (pdf_crypt_md_hash (md, out, sizeof(out), in, 0) != PDF_OK);
   fail_if (!memcmp (real_out, out, sizeof(out)));

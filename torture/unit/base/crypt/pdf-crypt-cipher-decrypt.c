@@ -64,6 +64,8 @@ START_TEST (pdf_crypt_cipher_decrypt_001)
       0xab, 0x17, 0x08, 0x08
     };
 			     
+  pdf_crypt_init();
+
   pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
   pdf_crypt_cipher_setkey (&cipher, key, sizeof(key));
 
@@ -101,6 +103,8 @@ START_TEST (pdf_crypt_cipher_decrypt_002)
   pdf_size_t   ciphered_size;
 			     
   ciphered_size = 0;
+
+  pdf_crypt_init();
 
   pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &cipher);
   pdf_crypt_cipher_setkey (&cipher, NULL, 0);

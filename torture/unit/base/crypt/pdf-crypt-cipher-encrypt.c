@@ -48,6 +48,8 @@ START_TEST (pdf_crypt_cipher_encrypt_001)
   pdf_char_t key[16];		/* unintialized data */
   
   in_size = 0;
+
+  pdf_crypt_init();
   
   pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
   pdf_crypt_cipher_setkey (&cipher, key, in_size);
@@ -81,6 +83,8 @@ START_TEST (pdf_crypt_cipher_encrypt_002)
   pdf_char_t key[16];		/* uninitialized data */
 
   in_size = 0;
+
+  pdf_crypt_init();
 
   pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &cipher);
   pdf_crypt_cipher_setkey (&cipher, key, sizeof(key));

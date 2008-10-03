@@ -46,15 +46,15 @@ struct pdf_crypt_cipher_algo_s
 
   pdf_size_t (*decrypt_size) (void * cipher, pdf_char_t *in, pdf_size_t in_size);
 
-  pdf_size_t (*encrypt) (void * cipher,
-			 pdf_char_t *out, pdf_size_t out_size,
-			 pdf_char_t *in,  pdf_size_t in_size,
-			 pdf_size_t *result_size);
+  pdf_status_t (*encrypt) (void * cipher,
+			   pdf_char_t *out, pdf_size_t out_size,
+			   pdf_char_t *in,  pdf_size_t in_size,
+			   pdf_size_t *result_size);
 
-  pdf_size_t (*decrypt) (void * cipher,
-			 pdf_char_t *out, pdf_size_t out_size,
-			 pdf_char_t *in,  pdf_size_t in_sizem,
-			 pdf_size_t *result_size);
+  pdf_status_t (*decrypt) (void * cipher,
+			   pdf_char_t *out, pdf_size_t out_size,
+			   pdf_char_t *in,  pdf_size_t in_sizem,
+			   pdf_size_t *result_size);
 
   pdf_status_t (*destroy) (void * cipher);
 };
@@ -188,7 +188,7 @@ pdf_status_t pdf_crypt_md_destroy (pdf_crypt_md_t hd);
 EXTERN_INLINE pdf_status_t
 pdf_crypt_init (void)
 {
-  gcry_check_version (NULL);
+  gcry_check_version (GCRYPT_VERSION);
   return PDF_OK;
 }
 
