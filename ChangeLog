@@ -1,3 +1,8 @@
+2008-10-04  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-stm-f-ahex.c (pdf_stm_f_ahexenc_init): Check the
+	right pointer in initialization.
+
 2008-10-03  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-stm-f-ahex.c (pdf_stm_f_ahexenc_apply): Emit

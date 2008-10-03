@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/10/03 02:05:04 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/10/04 00:35:33 jemarch"
  *
  *       File:         pdf-stm-f-ahex.c
  *       Date:         Fri Jul 13 17:08:41 2007
@@ -41,8 +41,7 @@ pdf_stm_f_ahexenc_init (pdf_hash_t params,
   /* This filter uses no parameters */
   /* Allocate the internal state structure */
   filter_state = pdf_alloc (sizeof (struct pdf_stm_f_ahexenc_s));
-
-  if (state == NULL)
+  if (filter_state == NULL)
     {
       return PDF_ERROR;
     }
