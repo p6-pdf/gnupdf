@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/10/02 22:26:20 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-10-04 15:38:46 gerel"
  *
  *       File:         pdf-stm-write.c
  *       Date:         Sun Sep 21 16:37:27 2008
@@ -261,7 +261,7 @@ START_TEST (pdf_stm_write_005)
   /* Create the stream */
   ret = pdf_stm_mem_new (buf,
                          buf_size,
-                         5, /* Minimum with EOD, to restore filter's state */
+                         1, /* Minimum with EOD, to restore filter's state */
                          PDF_STM_WRITE,
                          &stm);
   fail_if(ret != PDF_OK);

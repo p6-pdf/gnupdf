@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-28 20:18:38 gerel"
+/* -*- mode: C -*- Time-stamp: "2008-10-04 15:41:30 gerel"
  *
  *       File:         pdf-stm-f-rl.c
  *       Date:         Sun Jul 15 22:01:18 2007
@@ -112,7 +112,7 @@ pdf_stm_f_rlenc_apply (pdf_hash_t params, void * state, pdf_stm_buffer_t in,
         {
           if (encode_rl_char (st, out) < 0)
             {
-              return PDF_OK;
+              return PDF_ENOUTPUT;
             }
           st->rl=-1;
           st->run_p = PDF_FALSE;
@@ -130,7 +130,7 @@ pdf_stm_f_rlenc_apply (pdf_hash_t params, void * state, pdf_stm_buffer_t in,
           if (encode_rl_char (st, out) < 0)
             {
               /* Should not be reached */
-              return PDF_ERROR;
+              return PDF_ENOUTPUT;
             }
           st->rl=-1;
           st->run_p = PDF_FALSE;
@@ -138,17 +138,14 @@ pdf_stm_f_rlenc_apply (pdf_hash_t params, void * state, pdf_stm_buffer_t in,
       if (pdf_stm_buffer_full_p (out))
         {
           /* Should not be reached */
-          return PDF_ERROR;
+          return PDF_ENOUTPUT;
         }
       /* Insert EOD marker */
       out->data[out->wp++] = 128;
-    }
-
-  if (pdf_stm_buffer_eob_p (in))
-    {
       return PDF_EEOF;
     }
-  return PDF_OK;
+
+  return PDF_ENINPUT;
 }
 
 
@@ -185,11 +182,11 @@ pdf_stm_f_rldec_apply (pdf_hash_t params, void *state, pdf_stm_buffer_t in,
           copied = copy_next_bytes (st, in, out);
           if (copied < 0)
             {
-              return PDF_OK;
+              return PDF_ENOUTPUT;
             }
           else if (copied > 0)
             {
-              return PDF_EEOF;
+              return PDF_ENINPUT;
             }
           st->run_p = PDF_FALSE;
         }
@@ -198,7 +195,7 @@ pdf_stm_f_rldec_apply (pdf_hash_t params, void *state, pdf_stm_buffer_t in,
         {
           if (decode_rl_char (st, out) < 0)
             {
-              return PDF_OK;
+              return PDF_ENOUTPUT;
             }
           st->run_p = PDF_FALSE;
           in->rp++;
@@ -207,15 +204,11 @@ pdf_stm_f_rldec_apply (pdf_hash_t params, void *state, pdf_stm_buffer_t in,
       else
         {
           st->run_p = PDF_FALSE;
+          return PDF_EEOF;
         }
     }
 
-  if (pdf_stm_buffer_eob_p (in))
-    {
-      return PDF_EEOF;
-    }
-
-  return PDF_OK;
+  return PDF_ENINPUT;
 }
 
 pdf_status_t
@@ -283,6 +276,10 @@ copy_next_bytes (pdf_stm_f_rl_t st, pdf_stm_buffer_t in, pdf_stm_buffer_t out)
 {
   if (!st->dec_p)
     {
+      if (pdf_stm_buffer_full_p (out))
+        {
+          return -1;
+        }
       st->dec_count = st->rlchar + 1;
       st->dec_p = PDF_TRUE;
       out->data[out->wp++] = st->curchar;
