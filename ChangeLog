@@ -1,3 +1,15 @@
+2008-10-04 Juan Pedro Bolívar Puente <raskolnikov@es.gnu.org>
+
+	* src/base/pdf-stm-be.*: Added cfile stream backend for
+	input and output to FILE* C streams.
+
+	* src/base/pdf-stm.c (pdf_stm_read): Fixed bug that lead
+	to infinite loop.
+
+	* utils/pdf-util.*: Update to correctly use new streams
+	architecture. Deprecated options deleted. Added
+	'--readmode' and '--cache' options.
+
 2008-10-04  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-stm-filter.c (pdf_stm_filter_new): Initialize
