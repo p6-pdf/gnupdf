@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/10/02 22:44:22 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/10/04 04:35:11 jemarch"
  *
  *       File:         pdf-stm-filter.c
  *       Date:         Thu Jun 12 22:13:31 2008
@@ -110,6 +110,7 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
   new->impl.init_fn (new->params,
                      &(new->state));
   new->status = PDF_OK;
+  new->really_finish_p = PDF_FALSE;
 
   return new;
 }
@@ -164,7 +165,6 @@ pdf_stm_filter_apply (pdf_stm_filter_t filter,
   pdf_status_t ret;
   pdf_status_t apply_ret;
   pdf_status_t ret_in;
-  pdf_bool_t really_finish_p;
 
   /* If the filter is in an error state or it is in an eof state, just
      communicate it to the caller */
@@ -173,7 +173,6 @@ pdf_stm_filter_apply (pdf_stm_filter_t filter,
       return filter->status;
     }
 
-  really_finish_p = PDF_FALSE;
   ret = PDF_OK;
   while (!pdf_stm_buffer_full_p (filter->out))
     {
@@ -182,7 +181,7 @@ pdf_stm_filter_apply (pdf_stm_filter_t filter,
                                          filter->state,
                                          filter->in,
                                          filter->out,
-                                         really_finish_p);
+                                         filter->really_finish_p);
       if (apply_ret == PDF_ERROR)
         {
           /* The filter is now in an error condition. We should not
@@ -213,9 +212,9 @@ pdf_stm_filter_apply (pdf_stm_filter_t filter,
           else if ((ret_in == PDF_EEOF) 
                    && (pdf_stm_buffer_eob_p (filter->in)))
             {
-              if ((finish_p) && (!really_finish_p))
+              if ((finish_p) && (!filter->really_finish_p))
                 {
-                  really_finish_p = PDF_TRUE;
+                  filter->really_finish_p = PDF_TRUE;
                 }
               else
                 {
@@ -240,6 +239,7 @@ pdf_status_t
 pdf_stm_filter_reset (pdf_stm_filter_t filter)
 {
   filter->status = PDF_OK;
+  filter->really_finish_p = PDF_FALSE;
   return filter->impl.init_fn (filter->params,
                                &(filter->state));
 }
