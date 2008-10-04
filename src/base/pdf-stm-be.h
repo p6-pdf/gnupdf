@@ -13,6 +13,7 @@
 #include <config.h>
 #include <pdf-types.h>
 #include <pdf-fsys.h>
+#include <stdio.h>
 
 /* BEGIN PUBLIC */
 
@@ -20,7 +21,8 @@
 enum pdf_stm_be_type_e
 {
   PDF_STM_BE_MEM = 0,
-  PDF_STM_BE_FILE
+  PDF_STM_BE_FILE,
+  PDF_STM_BE_CFILE
 };
 
 /* Backend data type */
@@ -28,6 +30,12 @@ struct pdf_stm_be_file_s
 {
   pdf_fsys_file_t file;
   pdf_off_t pos; /* Current position */
+};
+
+struct pdf_stm_be_cfile_s
+{
+  FILE*      file;
+  pdf_off_t  pos;
 };
 
 struct pdf_stm_be_mem_s
@@ -45,6 +53,7 @@ struct pdf_stm_be_s
   {
     struct pdf_stm_be_mem_s mem;
     struct pdf_stm_be_file_s file;
+    struct pdf_stm_be_cfile_s cfile;
   } data;
 };
 
@@ -56,6 +65,8 @@ typedef struct pdf_stm_be_s *pdf_stm_be_t;
  * Public API
  */
 
+pdf_stm_be_t pdf_stm_be_new_cfile (FILE* file,
+				   pdf_off_t pos);
 pdf_stm_be_t pdf_stm_be_new_file (pdf_fsys_file_t file,
                                   pdf_off_t pos);
 pdf_stm_be_t pdf_stm_be_new_mem (pdf_char_t *buffer,

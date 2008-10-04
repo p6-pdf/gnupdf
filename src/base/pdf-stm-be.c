@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/10/02 00:32:07 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-09-24 18:45:45 gerel"
  *
  *       File:         pdf-stm-be.c
  *       Date:         Wed Jun 18 21:15:16 2008
@@ -31,10 +31,41 @@ static pdf_size_t pdf_stm_be_file_write (pdf_stm_be_t be,
 static pdf_off_t pdf_stm_be_file_seek (pdf_stm_be_t be,
                                        pdf_off_t pos);
 static pdf_off_t pdf_stm_be_file_tell (pdf_stm_be_t be);
+static pdf_size_t pdf_stm_be_cfile_read (pdf_stm_be_t be,
+                                        pdf_char_t *buffer,
+                                        pdf_size_t bytes);
+static pdf_size_t pdf_stm_be_cfile_write (pdf_stm_be_t be,
+                                         pdf_char_t *buffer,
+                                         pdf_size_t bytes);
+static pdf_off_t pdf_stm_be_cfile_seek (pdf_stm_be_t be,
+                                       pdf_off_t pos);
+static pdf_off_t pdf_stm_be_cfile_tell (pdf_stm_be_t be);
 
 /*
  * Public functions
  */
+
+pdf_stm_be_t
+pdf_stm_be_new_cfile (FILE* file,
+		      pdf_off_t pos)
+{
+  pdf_stm_be_t new;
+
+  /* Allocate a new structure */
+  new = (pdf_stm_be_t) pdf_alloc (sizeof(struct pdf_stm_be_s));
+
+  /* Initialization */
+  new->type = PDF_STM_BE_CFILE;
+  new->data.cfile.file = file;
+  new->data.cfile.pos = pos;
+
+  if (pos)
+    {
+      pdf_stm_be_cfile_seek (new, pos);
+    }
+
+  return new;
+}
 
 pdf_stm_be_t
 pdf_stm_be_new_file (pdf_fsys_file_t file,
@@ -105,6 +136,13 @@ pdf_stm_be_read (pdf_stm_be_t be,
                                              bytes);
         break;
       }
+    case PDF_STM_BE_CFILE:
+      {
+        readed_bytes = pdf_stm_be_cfile_read (be,
+					      buffer,
+					      bytes);
+        break;
+      }
     default:
       {
         /* Uh oh */
@@ -139,6 +177,13 @@ pdf_stm_be_write (pdf_stm_be_t be,
                                                bytes);
         break;
       }
+    case PDF_STM_BE_CFILE:
+      {
+        written_bytes = pdf_stm_be_cfile_write (be,
+						buffer,
+						bytes);
+        break;
+      }
     default:
       {
         /* Uh oh */
@@ -168,6 +213,11 @@ pdf_stm_be_seek (pdf_stm_be_t be,
         result = pdf_stm_be_file_seek (be, pos);
         break;
       }
+    case PDF_STM_BE_CFILE:
+      {
+        result = pdf_stm_be_cfile_seek (be, pos);
+        break;
+      }
     default:
       {
         /* Uh oh */
@@ -193,6 +243,11 @@ pdf_stm_be_tell (pdf_stm_be_t be)
     case PDF_STM_BE_FILE:
       {
         result = pdf_stm_be_file_tell (be);
+        break;
+      }
+    case PDF_STM_BE_CFILE:
+      {
+        result = pdf_stm_be_cfile_tell (be);
         break;
       }
     default:
@@ -411,6 +466,71 @@ static pdf_off_t
 pdf_stm_be_file_tell (pdf_stm_be_t be)
 {
   return be->data.file.pos;
+}
+
+/* cfile backend implementation */
+
+static pdf_off_t
+pdf_stm_be_cfile_seek (pdf_stm_be_t be,
+		       pdf_off_t pos)
+{
+  pdf_off_t max_pos;
+  
+  fseek (be->data.cfile.file, 0, SEEK_END);
+  max_pos = ftell (be->data.cfile.file);
+
+  /* Check the requested position */
+  if (pos < 0)
+    {
+      pos = 0;
+    }
+  if (pos > max_pos)
+    {
+      pos = max_pos - 1;
+    }
+
+  be->data.cfile.pos = pos;
+  fseek (be->data.cfile.file,
+	 be->data.cfile.pos,
+	 SEEK_SET);
+
+  return pos;
+}
+
+static pdf_off_t
+pdf_stm_be_cfile_tell (pdf_stm_be_t be)
+{
+  return be->data.cfile.pos;
+}
+
+static pdf_size_t
+pdf_stm_be_cfile_read (pdf_stm_be_t be,
+                      pdf_char_t *buffer,
+                      pdf_size_t bytes)
+{
+  pdf_size_t readed_bytes;
+
+  /* Read the requested number of bytes */
+  readed_bytes = fread (buffer, 
+			1, bytes,
+			be->data.cfile.file);
+
+  return readed_bytes;
+}
+
+static pdf_size_t
+pdf_stm_be_cfile_write (pdf_stm_be_t be,
+			pdf_char_t *buffer,
+			pdf_size_t bytes)
+{
+  pdf_size_t written_bytes;
+
+  /* Write the requested number of bytes */
+  written_bytes = fwrite (buffer,
+			  1, bytes,
+			  be->data.cfile.file);
+  
+  return written_bytes;
 }
 
 /* End of pdf-stm-be.c */
