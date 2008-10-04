@@ -44,6 +44,28 @@ static pdf_u32_t pdf_stm_read_peek_char (pdf_stm_t stm, pdf_bool_t peek_p);
  */
 
 pdf_status_t
+pdf_stm_cfile_new (FILE* file,
+		   pdf_off_t offset,
+		   pdf_size_t cache_size,
+		   enum pdf_stm_mode_e mode,
+		   pdf_stm_t *stm)
+{
+  /* Allocate memory for the new stream */
+  *stm = pdf_stm_alloc ();
+
+  /* Initialize a file stream */
+  (*stm)->type = PDF_STM_FILE;
+  (*stm)->backend = pdf_stm_be_new_cfile (file,
+                                         offset);
+
+  /* Initialize the common parts */
+  return pdf_stm_init (cache_size,
+                       mode,
+                       *stm);
+}
+
+
+pdf_status_t
 pdf_stm_file_new (pdf_fsys_file_t file,
                   pdf_off_t offset,
                   pdf_size_t cache_size,
@@ -57,8 +79,6 @@ pdf_stm_file_new (pdf_fsys_file_t file,
   (*stm)->type = PDF_STM_FILE;
   (*stm)->backend = pdf_stm_be_new_file (file,
                                          offset);
-  pdf_stm_filter_set_be ((*stm)->filter,
-                         (*stm)->backend);
 
   /* Initialize the common parts */
   return pdf_stm_init (cache_size,
@@ -148,6 +168,7 @@ pdf_stm_read (pdf_stm_t stm,
       /* If the cache is empty, refill it with filtered data */
       if (pdf_stm_buffer_eob_p (stm->cache))
         {
+	  pdf_stm_buffer_rewind (stm->cache);
           ret = pdf_stm_filter_apply (stm->filter, PDF_FALSE);
         }
 

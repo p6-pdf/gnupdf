@@ -120,6 +120,8 @@ Juan Pedro Bolívar Puente: wrote src/base/pdf-stm-f-pred.c
   src/base/pdf-stm-f-pred.h src/base/pdf-stm-f-lzw.c
   src/base/pdf-stm-f-lzw.h 
 and changed utils/pdf-filter.c utils/pdf-filter.h
+    src/base/pdf-stm.c
+    src/base/pdf-stm-be.c src/base/pdf-stm-be.h
 
 Karl Berry: changed doc/gnupdf.texi doc/gnupdf-utils.texi
   doc/Makefile.am 
