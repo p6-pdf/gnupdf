@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-28 20:17:40 gerel"
+/* -*- mode: C -*- Time-stamp: "2008-10-04 15:42:24 gerel"
  *
  *       File:         pdf-stm-read.c
  *       Date:         Sat Sep 20 15:20:17 2008
@@ -306,7 +306,7 @@ START_TEST (pdf_stm_read_005)
   pdf_size_t buf_size, total=46,read;
   pdf_char_t *dataux, *encoded =
     "\x00" "1" "\xff" "2" "\xfe" "3" "\xfd" "4" "\xfc" "5" "\xfb" "6" \
-    "\xfa" "7" "\xf9" "8" "\xf8" "9" "\x80" "\x00" "\x00" "\x80";
+    "\xfa" "7" "\xf9" "8" "\xf8" "9" "\x00" "\x00" "\x80";
 
   /* Writing stream */
   /* Create a memory buffer */
@@ -315,7 +315,7 @@ START_TEST (pdf_stm_read_005)
   fail_if(buf == NULL);
   /* Create the stream */
   ret = pdf_stm_mem_new (encoded,
-                         22,
+                         21,
                          1, /* Minimum, to restore filter's state */
                          PDF_STM_READ,
                          &stm);
