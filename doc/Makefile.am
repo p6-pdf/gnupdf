@@ -16,13 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-EXTRA_DIST = pdf_filter.1
-
 noinst_TEXINFOS = gnupdf-tsd.texi gnupdf-hg.texi
 info_TEXINFOS = gnupdf.texi gnupdf-utils.texi
 gnupdf_TEXINFOS = fdl.texi
-
-man_MANS = pdf_filter.1
 
 AM_MAKEINFOHTMLFLAGS = --no-headers --no-split
 

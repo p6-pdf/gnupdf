@@ -227,5 +227,10 @@ int srunner_ntests_failed (SRunner *sr)
   return 0;
 }
 
+void srunner_set_fork_status (SRunner *sr, enum print_output print_mode)
+{
+  /* Do nothing */
+}
+
 /* End of check.c */
 
