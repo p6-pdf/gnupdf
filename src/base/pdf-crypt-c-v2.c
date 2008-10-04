@@ -136,7 +136,7 @@ pdf_crypt_cipher_v2_encrypt (void * cipher,
 
 
 
-static pdf_size_t
+static pdf_status_t
 pdf_crypt_cipher_v2_decrypt (void * cipher,
 			     pdf_char_t *out, pdf_size_t out_size,
 			     pdf_char_t *in,  pdf_size_t in_size,

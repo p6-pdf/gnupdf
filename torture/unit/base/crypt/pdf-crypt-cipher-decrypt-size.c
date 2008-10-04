@@ -41,6 +41,7 @@
 START_TEST (pdf_crypt_cipher_decrypt_size_001)
 {
   pdf_crypt_cipher_t cipher;
+  pdf_crypt_init();
   pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
   fail_if (pdf_crypt_cipher_decrypt_size (cipher, NULL, 32) != 0);
   pdf_crypt_cipher_destroy (cipher);
@@ -58,6 +59,7 @@ END_TEST
 START_TEST (pdf_crypt_cipher_decrypt_size_002)
 {
   pdf_crypt_cipher_t cipher;
+  pdf_crypt_init();
   pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &cipher);
   fail_if (pdf_crypt_cipher_decrypt_size (cipher, NULL, 15) != 15);
   pdf_crypt_cipher_destroy (cipher);

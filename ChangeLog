@@ -18,6 +18,10 @@
 	* src/base/pdf-stm-f-ahex.c (pdf_stm_f_ahexenc_apply): Emit
 	newlines to keep output lines short.
 
+2008-10-03  David Vazquez <davazp@es.gnu.org>
+
+	* Bug fixing crypt module unit tests failures.
+
 2008-10-02  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* Bug fixing and design changes in the stream module.
