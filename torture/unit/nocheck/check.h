@@ -86,7 +86,9 @@ enum print_output {
   CK_NORMAL,
   CK_VERBOSE,
   CK_ENV,
-  CK_LAST
+  CK_LAST,
+  CK_FORK,
+  CK_NOFORK
 };
 
 /* Run all tests */
@@ -97,7 +99,7 @@ void srunner_run_all (SRunner *sr, enum print_output print_mode);
 int srunner_ntests_failed (SRunner *sr);
 void tcase_fn_start (const char *fname, const char *file, int line);
 void srunner_set_log (SRunner *sr, const char *fname);
-
+void srunner_set_fork_status (SRunner *sr, enum print_output print_mode);
 
 
 
