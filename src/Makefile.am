@@ -46,9 +46,9 @@ STM_MODULE_SOURCES = base/pdf-stm.c base/pdf-stm.h \
                      base/pdf-stm-f-ahex.h base/pdf-stm-f-ahex.c \
                      base/pdf-stm-f-rl.h base/pdf-stm-f-rl.c
 
-# if ZLIB
-#  STM_MODULE_SOURCES += base/pdf-stm-f-flate.c base/pdf-stm-f-flate.h
-#endif
+if ZLIB
+  STM_MODULE_SOURCES += base/pdf-stm-f-flate.c base/pdf-stm-f-flate.h
+endif
 
 TEXT_MODULE_SOURCES = base/pdf-text-context.c base/pdf-text-context.h \
                       base/pdf-text-encoding.c base/pdf-text-encoding.h \

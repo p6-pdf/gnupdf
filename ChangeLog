@@ -1,3 +1,23 @@
+2008-10-05  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* doc/gnupdf-tsd.texi: added flate filter tests.
+
+	* torture/unit/base/stm/pdf-stm-read.c: same.
+
+	* torture/unit/base/stm/pdf-stm-write.c: same.
+
+	* src/Makefile.am: added flate filter source files.
+
+	* src/base/pdf-stm-f-flate.c: adapted for new stream API.
+
+	* src/base/pdf-stm-f-flate.h: same.
+
+	* src/base/pdf-stm-filter.c: added flate filter.
+
+	* src/base/pdf-stm-filter.h: same.
+
+	* utils/pdf-filter.c: same.
+
 2008-10-04  Gerardo E. Gidoni  <gerel@gnu.org>
 
 	* src/base/pdf-stm-f-rl.c: adapted to new filter API.

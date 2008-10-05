@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/10/04 20:05:35 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-10-05 12:57:40 gerel"
  *
  *       File:         pdf-filter.c
  *       Date:         Tue Jul 10 18:42:07 2007
@@ -335,10 +335,30 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
 #ifdef HAVE_LIBZ
         case FLATEDEC_FILTER_ARG:
           {
+            ret = pdf_hash_new (NULL, &filter_params);
+            if (ret != PDF_OK)
+              {
+                pdf_error (ret, stderr, "while creating the flatedec filter parameters hash table");
+                exit (1);
+              }
+
+            pdf_stm_install_filter (stm,
+                                    PDF_STM_FILTER_FLATE_DEC,
+                                    filter_params);
             break;
           }
         case FLATEENC_FILTER_ARG:
           {
+            ret = pdf_hash_new (NULL, &filter_params);
+            if (ret != PDF_OK)
+              {
+                pdf_error (ret, stderr, "while creating the flateenc filter parameters hash table");
+                exit (1);
+              }
+
+            pdf_stm_install_filter (stm,
+                                    PDF_STM_FILTER_FLATE_ENC,
+                                    filter_params);
             break;
           }
 #endif /* HAVE_LIBZ */

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/10/04 04:34:08 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-10-05 12:59:37 gerel"
  *
  *       File:         pdf-stm-filter.h
  *       Date:         Thu Jun 12 22:05:06 2008
@@ -35,6 +35,7 @@
 #include <pdf-stm-f-null.h>
 #include <pdf-stm-f-ahex.h>
 #include <pdf-stm-f-rl.h>
+#include <pdf-stm-f-flate.h>
 
 /* BEGIN PUBLIC */
 
@@ -45,7 +46,10 @@ enum pdf_stm_filter_type_e
   PDF_STM_FILTER_AHEX_ENC,
   PDF_STM_FILTER_AHEX_DEC,
   PDF_STM_FILTER_RL_ENC,
-  PDF_STM_FILTER_RL_DEC
+  PDF_STM_FILTER_RL_DEC,
+  PDF_STM_FILTER_FLATE_ENC,
+  PDF_STM_FILTER_FLATE_DEC
+
 };
 
 /* Filter implementation */

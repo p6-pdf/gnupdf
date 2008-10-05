@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-10-04 15:42:24 gerel"
+/* -*- mode: C -*- Time-stamp: "2008-10-05 13:07:53 gerel"
  *
  *       File:         pdf-stm-read.c
  *       Date:         Sat Sep 20 15:20:17 2008
@@ -471,6 +471,7 @@ START_TEST (pdf_stm_read_007)
 }
 END_TEST
 
+
 /*
  * Test: pdf_stm_read_008
  * Description:
@@ -536,6 +537,83 @@ START_TEST (pdf_stm_read_008)
 }
 END_TEST
 
+/*
+ * Test: pdf_stm_read_009
+ * Description:
+ *   Create a memory-based reading stream and attach a flate filter
+ *   decoder to it.
+ * Success condition:
+ *   The decoded data should be correct.
+ */
+START_TEST (pdf_stm_read_009)
+{
+  pdf_status_t ret;
+  pdf_hash_t params;
+  pdf_stm_t stm;
+  pdf_size_t buf_size, total=1059,read;
+  pdf_char_t *buf, *decoded=
+    "1223334444555556666667777777888888889999999990" \
+    "1223334444555556666667777777888888889999999990" \
+    "1223334444555556666667777777888888889999999990" \
+    "1223334444555556666667777777888888889999999990" \
+    "1223334444555556666667777777888888889999999990" \
+    "1223334444555556666667777777888888889999999990" \
+    "1223334444555556666667777777888888889999999990" \
+    "1223334444555556666667777777888888889999999990" \
+    "1223334444555556666667777777888888889999999990" \
+    "1223334444555556666667777777888888889999999990" \
+    "1223334444555556666667777777888888889999999990" \
+    "1223334444555556666667777777888888889999999990" \
+    "1223334444555556666667777777888888889999999990" \
+    "1223334444555556666667777777888888889999999990" \
+    "1223334444555556666667777777888888889999999990" \
+    "1223334444555556666667777777888888889999999990" \
+    "1223334444555556666667777777888888889999999990" \
+    "1223334444555556666667777777888888889999999990" \
+    "1223334444555556666667777777888888889999999990" \
+    "1223334444555556666667777777888888889999999990" \
+    "1223334444555556666667777777888888889999999990" \
+    "1223334444555556666667777777888888889999999990" \
+    "1223334444555556666667777777888888889999999990";
+  pdf_char_t *dataux, *encoded =
+    "\x78\x9c\x33\x34\x32\x32\x36\x36\x36\x01\x02\x53\x10\x30\x03\x03"
+    "\x73\x08\xb0\x80\x02\x4b\x18\x30\x30\x1c\x55\x3d\xaa\x7a\x54\xf5"
+    "\x88\x52\xcd\x00\x00\xe1\x0b\xdf\xfc";
+
+  /* Writing stream */
+  /* Create a memory buffer */
+  buf_size = 2000;
+  buf = pdf_alloc (buf_size);
+  fail_if(buf == NULL);
+  /* Create the stream */
+  ret = pdf_stm_mem_new (encoded,
+                         41,
+                         1,
+                         PDF_STM_READ,
+                         &stm);
+  fail_if(ret != PDF_OK);
+  /* Create the filter */
+  fail_if (pdf_stm_install_filter (stm, PDF_STM_FILTER_FLATE_DEC, params) !=
+           PDF_OK);
+
+  read = 0;
+  total = 1059;
+  dataux = buf;
+  while (total > 0)
+    {
+      read = pdf_stm_read (stm, dataux, total);
+      dataux = dataux + read;
+      total -= read;
+    }
+
+  fail_if (memcmp (buf, decoded, 1059) != 0);
+  /* Destroy the stream */
+  pdf_stm_destroy (stm);
+  pdf_dealloc (buf);
+
+}
+END_TEST
+
 
 /*
  * Test case creation function
@@ -553,6 +631,7 @@ test_pdf_stm_read (void)
   tcase_add_test(tc, pdf_stm_read_006);
   tcase_add_test(tc, pdf_stm_read_007);
   tcase_add_test(tc, pdf_stm_read_008);
+  tcase_add_test(tc, pdf_stm_read_009);
 
   return tc;
 }
