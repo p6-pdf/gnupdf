@@ -1,5 +1,9 @@
 2008-10-05  Gerardo E. Gidoni  <gerel@gnu.org>
 
+	* src/base/pdf-stm-f-flate.h: greater chunk size.
+
+2008-10-05  Gerardo E. Gidoni  <gerel@gnu.org>
+
 	* doc/gnupdf-tsd.texi: added flate filter tests.
 
 	* torture/unit/base/stm/pdf-stm-read.c: same.
