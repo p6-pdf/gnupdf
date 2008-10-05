@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/10/04 04:35:11 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-10-05 12:59:17 gerel"
  *
  *       File:         pdf-stm-filter.c
  *       Date:         Thu Jun 12 22:13:31 2008
@@ -95,6 +95,20 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
         new->impl.init_fn = pdf_stm_f_rldec_init;
         new->impl.apply_fn = pdf_stm_f_rldec_apply;
         new->impl.dealloc_state_fn = pdf_stm_f_rldec_dealloc_state;
+        break;
+      }
+    case PDF_STM_FILTER_FLATE_ENC:
+      {
+        new->impl.init_fn = pdf_stm_f_flateenc_init;
+        new->impl.apply_fn = pdf_stm_f_flateenc_apply;
+        new->impl.dealloc_state_fn = pdf_stm_f_flateenc_dealloc_state;
+        break;
+      }
+    case PDF_STM_FILTER_FLATE_DEC:
+      {
+        new->impl.init_fn = pdf_stm_f_flatedec_init;
+        new->impl.apply_fn = pdf_stm_f_flatedec_apply;
+        new->impl.dealloc_state_fn = pdf_stm_f_flatedec_dealloc_state;
         break;
       }
     default:

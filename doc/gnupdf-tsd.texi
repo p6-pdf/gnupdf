@@ -277,6 +277,16 @@ The decoded data should be correct.
 @end table
 @end deffn
 
+
+@deffn Test pdf_stm_read_009
+Create a memory-based reading stream and attach a flate filter
+decoder to it.
+@table @strong
+@item Success condition
+The decoded data should be correct.
+@end table
+@end deffn
+
 @node pdf_stm_read_char
 @subsubsection pdf_stm_read_char
 
@@ -403,6 +413,18 @@ ASCII Hex encoder, generating new lines.
 The encoded data should be correct.
 @end table
 @end deffn
+
+
+@deffn Test pdf_stm_write_007
+Create a memory-based writing stream and attach a flate filter
+encoder to it.
+@table @strong
+@item Success condition
+The encoded data should be correct.
+@end table
+@end deffn
+
+
 
 
 @node Text Module
