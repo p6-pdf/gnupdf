@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-10-01 18:16:15 gerel"
+/* -*- mode: C -*- Time-stamp: "2008-10-05 20:52:07 gerel"
  *
  *       File:         pdf-stm-f-flate.h
  *       Date:         Tue Jul 10 23:39:27 2007
@@ -33,12 +33,7 @@
 
 
 
- /* 
-  * As read in the zlib documentation, our cache size must be at least 0.1%
-  * larger than the CHUNK size, plus 12 bytes.
-  * We assume that our cache size is of 4096 bytes.
-  */
-#define PDF_STM_F_FLATE_CHUNK 1024
+#define PDF_STM_F_FLATE_CHUNK 16384
 
 struct pdf_stm_f_flate_s
 {
