@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-10-04 18:03:28 gerel"
+/* -*- mode: C -*- Time-stamp: "2008-10-07 17:20:45 gerel"
  *
  *       File:         pdf-stm-f-flate.c
  *       Date:         Tue Jul 10 23:44:00 2007
@@ -31,6 +31,11 @@
 #include <pdf-stm-f-flate.h>
 
 
+static pdf_status_t read_and_inflate (pdf_stm_f_flate_t st, pdf_stm_buffer_t in,
+                                      pdf_stm_buffer_t out);
+static pdf_status_t read_and_deflate (pdf_stm_f_flate_t st, pdf_stm_buffer_t in,
+                                      pdf_stm_buffer_t out,
+                                      pdf_bool_t finish_p);
 static int deflate_inbuf (pdf_stm_f_flate_t st, pdf_stm_buffer_t out,
                           int flush);
 static pdf_status_t deflate_inbuf_return (pdf_stm_f_flate_t st,
@@ -131,9 +136,59 @@ pdf_stm_f_flateenc_apply (pdf_hash_t params, void *state, pdf_stm_buffer_t in,
                           pdf_stm_buffer_t out, pdf_bool_t finish_p)
 {
   pdf_stm_f_flate_t st;
-
+  pdf_status_t ret;
   st = (pdf_stm_f_flate_t) state;
 
+  ret = read_and_deflate (st, in, out, finish_p);
+  while (ret == PDF_OK)
+    {
+      ret = read_and_deflate (st, in, out, finish_p);
+    }
+  return ret;
+}
+
+
+pdf_status_t
+pdf_stm_f_flatedec_apply (pdf_hash_t params, void *state, pdf_stm_buffer_t in,
+                          pdf_stm_buffer_t out, pdf_bool_t finish_p)
+{
+  pdf_stm_f_flate_t st;
+  pdf_status_t ret;
+  st = (pdf_stm_f_flate_t) state;
+  
+  ret = read_and_inflate (st, in, out);
+  while (ret == PDF_OK)
+    {
+      ret = read_and_inflate (st, in, out);
+    }
+  return ret;
+}
+
+
+
+pdf_status_t
+pdf_stm_f_flatedec_dealloc_state (void *state)
+{
+  pdf_stm_f_flate_t st = state;
+  inflateEnd(&(st->stream));
+  pdf_dealloc (state);
+  return PDF_OK;
+}
+
+pdf_status_t
+pdf_stm_f_flateenc_dealloc_state (void *state)
+{
+  pdf_dealloc (state);
+  return PDF_OK;
+}
+
+
+/* Private functions */
+
+
+static pdf_status_t read_and_deflate (pdf_stm_f_flate_t st, pdf_stm_buffer_t in,
+                                      pdf_stm_buffer_t out, pdf_bool_t finish_p)
+{
 
   /* Fill the input CHUNK  */
   if (!st->writing_p)
@@ -159,14 +214,9 @@ pdf_stm_f_flateenc_apply (pdf_hash_t params, void *state, pdf_stm_buffer_t in,
 }
 
 
-pdf_status_t
-pdf_stm_f_flatedec_apply (pdf_hash_t params, void *state, pdf_stm_buffer_t in,
-                          pdf_stm_buffer_t out, pdf_bool_t finish_p)
+static pdf_status_t read_and_inflate (pdf_stm_f_flate_t st, pdf_stm_buffer_t in,
+                                      pdf_stm_buffer_t out)
 {
-  pdf_stm_f_flate_t st;
-
-  st = (pdf_stm_f_flate_t) state;
-
   /* Fill the input CHUNK */
   if (!st->writing_p)
     {
@@ -179,7 +229,7 @@ pdf_stm_f_flatedec_apply (pdf_hash_t params, void *state, pdf_stm_buffer_t in,
     }
   else
     {
-      /* 
+      /*
        * Not nice, but keeps the writing process code clear.
        * Notice that the labeled code is inside a while loop,
        * so I feel that avoiding this goto won't bring us better code.
@@ -237,29 +287,10 @@ pdf_stm_f_flatedec_apply (pdf_hash_t params, void *state, pdf_stm_buffer_t in,
       return PDF_ENINPUT;
     }
 
+  /* ask for the input we couldn't read */
   return PDF_OK;
 }
 
-
-
-pdf_status_t
-pdf_stm_f_flatedec_dealloc_state (void *state)
-{
-  pdf_stm_f_flate_t st = state;
-  inflateEnd(&(st->stream));
-  pdf_dealloc (state);
-  return PDF_OK;
-}
-
-pdf_status_t
-pdf_stm_f_flateenc_dealloc_state (void *state)
-{
-  pdf_dealloc (state);
-  return PDF_OK;
-}
-
-
-/* Private functions */
 
 static int
 deflate_inbuf (pdf_stm_f_flate_t st, pdf_stm_buffer_t out, int flush)
@@ -342,6 +373,7 @@ deflate_inbuf_return (pdf_stm_f_flate_t st, pdf_stm_buffer_t out,
     {
       /* the input CHUNK now is empty */
       st->incnt = 0;
+      /* ask for the input we couldn't read */
       return PDF_OK;
     }
 }

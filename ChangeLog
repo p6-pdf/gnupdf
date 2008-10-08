@@ -1,3 +1,7 @@
+2008-10-07  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* src/base/pdf-stm-f-flate.h: solved cases with PDF_OK from old API.
+
 2008-10-05  Gerardo E. Gidoni  <gerel@gnu.org>
 
 	* src/base/pdf-stm-f-flate.h: greater chunk size.
