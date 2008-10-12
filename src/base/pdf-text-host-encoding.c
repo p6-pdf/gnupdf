@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/08/29 01:39:33 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/10/12 20:23:00 jemarch"
  *
  *       File:         pdf-text-host-encoding.c
  *       Date:         Fri Jan 11 21:09:23 2008
@@ -114,7 +114,7 @@ pdf_text_convert_encoding_name_to_CP(const pdf_char_t *encoding_name,
                                      UINT *pCP)
 {
   UINT CodePage;
-  char end_char;
+  char *end_char;
 
   /* In windows, the charset name stored in the pdf_text_host_encoding_t
    *  element will be in the following format: "CPn", where 'n' is the

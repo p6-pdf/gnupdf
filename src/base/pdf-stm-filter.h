@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-10-05 12:59:37 gerel"
+/* -*- mode: C -*- Time-stamp: "08/10/12 18:33:23 jemarch"
  *
  *       File:         pdf-stm-filter.h
  *       Date:         Thu Jun 12 22:05:06 2008
@@ -35,7 +35,10 @@
 #include <pdf-stm-f-null.h>
 #include <pdf-stm-f-ahex.h>
 #include <pdf-stm-f-rl.h>
-#include <pdf-stm-f-flate.h>
+
+#if defined(HAVE_LIBZ)
+#  include <pdf-stm-f-flate.h>
+#endif /* HAVE_LIBZ */
 
 /* BEGIN PUBLIC */
 

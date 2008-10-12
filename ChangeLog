@@ -1,5 +1,26 @@
 2008-10-12  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-text-host-encoding.c
+	(pdf_text_convert_encoding_name_to_CP): Fix parameter to strtol.
+
+	* configure.ac (HAVE_LIBZ): Define HAVE_LIBZ if there is a zlib
+	available.
+
+	* m4/zlib.m4: Dont assume /usr and /usr/local by default as the
+	installation of zlib.
+
+	* src/base/pdf-time-context.c (pdf_time_context_init): Use
+	_timezone instead of the struct tm to determine the GMT offset if
+	compiling with mingw.
+
+	* src/base/pdf-stm-filter.c (pdf_stm_filter_new): Install the
+	flate filters only if libz is available.
+
+	* src/base/pdf-stm-filter.h: Include the flate filters only if
+	libz is available.
+
+	* src/pdf-global.h: Dont include pdf-base.h.
+
 	* configure.ac: Dont generate 'prmgt/pmccabe2html'.
 
 	* prmgt/Makefile.am: Use gnulib's pmccabe2html.

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/09 01:09:10 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/10/12 18:42:03 jemarch"
  *
  *       File:         pdf-time-context.c
  *       Date:         Sun May 18 13:08:37 2008
@@ -55,8 +55,15 @@ pdf_time_context_init(void)
   time(&tloc);
   time_struct = localtime(&tloc);
 
+#if defined(PDF_HOST_WIN32)
+  /* mingw does not support tm_gmtoff in struct tm, but it provides
+     the _timezone global variable with the difference in seconds
+     between GMT and local time. */
+  time_context.local_time_gmt_offset = _timezone;
+#else
   /* Set GMT offset */
   time_context.local_time_gmt_offset = time_struct->tm_gmtoff;
+#endif
 
   /* Set flag to indicate if Daylight saving times are applied in the system
    * if needed */
