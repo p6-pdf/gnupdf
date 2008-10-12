@@ -255,7 +255,7 @@ AM_CONDITIONAL([COMPILE_W32_SYSTEM], [test "x$compile_w32_system" = "xyes"])
 
 
 dnl Generate output files
-AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile torture/unit/Makefile doc/Makefile utils/Makefile prmgt/Makefile prmgt/pmccabe2html prmgt/apic2wiki prmgt/testlog2wiki prmgt/docfuncs prmgt/tsdfuncs src/extract-public-hdr build-aux/Makefile)
+AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile torture/unit/Makefile doc/Makefile utils/Makefile prmgt/Makefile prmgt/apic2wiki prmgt/testlog2wiki prmgt/docfuncs prmgt/tsdfuncs src/extract-public-hdr build-aux/Makefile)
 
 dnl Report configuration results
 

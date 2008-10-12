@@ -91,6 +91,7 @@ AC_DEFUN([gl_INIT],
   gl_STDLIB_MODULE_INDICATOR([malloc-posix])
   gl_MATH_H
   gl_FUNC_MKDIR_TRAILING_SLASH
+  gl_PMCCABE2HTML
   gl_FUNC_REALLOC_POSIX
   gl_STDLIB_MODULE_INDICATOR([realloc-posix])
   gl_FUNC_RMDIR
@@ -242,6 +243,8 @@ AC_DEFUN([gltests_LIBSOURCES], [
 # gnulib-tool and may be removed by future gnulib-tool invocations.
 AC_DEFUN([gl_FILE_LIST], [
   build-aux/link-warning.h
+  build-aux/pmccabe.css
+  build-aux/pmccabe2html
   lib/basename.c
   lib/config.charset
   lib/dirname.c
@@ -340,6 +343,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/math_h.m4
   m4/mkdir-slash.m4
   m4/onceonly.m4
+  m4/pmccabe2html.m4
   m4/realloc.m4
   m4/rmdir.m4
   m4/size_max.m4

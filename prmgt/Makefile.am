@@ -21,12 +21,22 @@ if PRMGT
 TARGETS = cyclo.html cyclo.wiki apic.wiki ut.wiki
 
 cyclo.html:
-	chmod +x ${srcdir}/pmccabe2html
-	pmccabe ${top_srcdir}/src/base/*.[ch] | sort -nr | ${srcdir}/pmccabe2html -v lang=html > cyclo.html
+	chmod +x ${top_srcdir}/build-aux/pmccabe2html
+	$(PMCCABE) ${top_srcdir}/src/base/*.[ch] \
+                | sort -nr \
+                | $(AWK) -f ${top_srcdir}/build-aux/pmccabe2html \
+                         -v lang=html -v name="GNU PDF" \
+                         -v vcurl="%FILENAME%" \
+                         -v url="http://www.gnupdf.org" \
+                  > cyclo.html
 
 cyclo.wiki:
-	chmod +x ${srcdir}/pmccabe2html
-	pmccabe ${top_srcdir}/src/base/*.[ch] | sort -nr | ${srcdir}/pmccabe2html -v lang=wiki > cyclo.wiki
+	chmod +x ${top_srcdir}/build-aux/pmccabe2html
+	$(PMCCABE) ${top_srcdir}/src/base/*.[ch] \
+                | sort -nr \
+                | $(AWK) -f ${top_srcdir}/build-aux/pmccabe2html \
+                         -v lang=wiki -v name="GNU PDF" \
+                  > cyclo.wiki
 
 apic.wiki:
 	chmod +x ${srcdir}/apic2wiki
