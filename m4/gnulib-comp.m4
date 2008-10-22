@@ -44,9 +44,9 @@ AC_DEFUN([gl_INIT],
   m4_pushdef([gl_LIBSOURCES_DIR], [])
   gl_COMMON
   gl_source_base='lib'
-  gl_EOVERFLOW
   gl_DIRNAME
   gl_DOUBLE_SLASH_ROOT
+  gl_HEADER_ERRNO_H
   gl_ERROR
   m4_ifdef([AM_XGETTEXT_OPTION],
     [AM_XGETTEXT_OPTION([--flag=error:3:c-format])
@@ -91,6 +91,7 @@ AC_DEFUN([gl_INIT],
   gl_STDLIB_MODULE_INDICATOR([malloc-posix])
   gl_MATH_H
   gl_FUNC_MKDIR_TRAILING_SLASH
+  gl_PMCCABE2HTML
   gl_FUNC_REALLOC_POSIX
   gl_STDLIB_MODULE_INDICATOR([realloc-posix])
   gl_FUNC_RMDIR
@@ -242,10 +243,13 @@ AC_DEFUN([gltests_LIBSOURCES], [
 # gnulib-tool and may be removed by future gnulib-tool invocations.
 AC_DEFUN([gl_FILE_LIST], [
   build-aux/link-warning.h
+  build-aux/pmccabe.css
+  build-aux/pmccabe2html
   lib/basename.c
   lib/config.charset
   lib/dirname.c
   lib/dirname.h
+  lib/errno.in.h
   lib/error.c
   lib/error.h
   lib/exitfail.c
@@ -291,6 +295,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/stdbool.in.h
   lib/stdint.in.h
   lib/stdio-impl.h
+  lib/stdio-write.c
   lib/stdio.in.h
   lib/stdlib.in.h
   lib/strerror.c
@@ -311,7 +316,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/dirname.m4
   m4/dos.m4
   m4/double-slash-root.m4
-  m4/eoverflow.m4
+  m4/errno_h.m4
   m4/error.m4
   m4/exitfail.m4
   m4/extensions.m4
@@ -338,6 +343,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/math_h.m4
   m4/mkdir-slash.m4
   m4/onceonly.m4
+  m4/pmccabe2html.m4
   m4/realloc.m4
   m4/rmdir.m4
   m4/size_max.m4
@@ -352,6 +358,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/sys_stat_h.m4
   m4/unistd_h.m4
   m4/wchar.m4
+  m4/wint_t.m4
   m4/xalloc.m4
   m4/xsize.m4
   m4/xstrndup.m4

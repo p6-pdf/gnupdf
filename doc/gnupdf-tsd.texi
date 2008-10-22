@@ -76,6 +76,7 @@ Indices
 * Hash Module::
 * Error Module::
 * Types Module::
+* Crypt Module::
 @end menu
 
 @node Memory Allocation Module
@@ -102,13 +103,26 @@ The call should not produce an error.
 @subsubsection pdf_realloc
 
 @deffn Test pdf_realloc_001
-Reallocate some bytes.
+Get more memory.
 @table @strong
 @item Success condition
-The call should not produce an error.
+@itemize @bullet
+@item The call should not produce an error.
+@item The previous contents of the buffer should still be there.
+@end itemize
 @end table
 @end deffn
 
+@deffn Test pdf_realloc_002
+Reduce the size of a memory buffer.
+@table @strong
+@item Success condition
+@itemize @bullet
+@item The call should not produce an error.
+@item The truncated previous contents of the buffer should still be there.
+@end itemize
+@end table
+@end deffn
 
 @node pdf_dealloc
 @subsubsection pdf_dealloc
@@ -642,43 +656,249 @@ Get size of an opened file
 @subsection Stream Module
 
 @menu
-* pdf_create_file_stm::
+* pdf_stm_mem_new::
+* pdf_stm_read::
+* pdf_stm_read_char::
+* pdf_stm_peek_char::
+* pdf_stm_seek::
+* pdf_stm_tell::
+* pdf_stm_write::
 @end menu
 
-@node pdf_create_file_stm
-@subsubsection pdf_create_file_stm
+@node pdf_stm_mem_new
+@subsubsection pdf_stm_mem_new
 
-@deffn Test pdf_create_file_stm_001
-Try to open a file stream to a non-existing file.
+@deffn Test pdf_stm_mem_new_001
+Create a new memory-based reading stream.
 @table @strong
 @item Success condition
-@code{pdf_create_file_stm} should return a @code{NULL} pointer.
+@code{pdf_stm_mem_new} should return a @code{PDF_OK}.
 @end table
 @end deffn
 
-@deffn Test pdf_create_file_stm_002
-Open a file stream to an existing file in read-only mode.
+@node pdf_stm_read
+@subsubsection pdf_stm_read
+
+@deffn Test pdf_stm_read_001
+Read some bytes from a reading memory stream.
 @table @strong
 @item Success condition
-@code{pdf_create_file_stm} should return a correct stream object.
+The readed data should be consistent.
 @end table
 @end deffn
 
-@deffn Test pdf_create_file_stm_003
-Open a file stream to a non existing file in write-only mode.
+@deffn Test pdf_stm_read_002
+Read bytes from a reading memory stream getting and EOF condition in
+the returned value.
 @table @strong
 @item Success condition
-@code{pdf_create_file_stm} should return a correct stream object.
+The readed data should be consistent and we should get
+and EOF condition in the returned value.
 @end table
 @end deffn
 
-@deffn Test pdf_create_file_stm_004
-Open a file stream to an existing file in write-only mode.
+@deffn Test pdf_stm_read_003
+Read bytes from a reading memory stream in several steps.
 @table @strong
 @item Success condition
-@code{pdf_create_file_stm} should return a correct stream object.
+The readed data should be consistent.
 @end table
 @end deffn
+
+@deffn Test pdf_stm_read_004
+Read some bytes from a reading memory cache with
+two null filters installed.
+@table @strong
+@item Success condition
+The readed data should be consistent.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_read_005
+Create a memory-based reading stream and attach a RunLength filter
+decoder to it.
+@table @strong
+@item Success condition
+The decoded data should be correct.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_read_006
+Read some bytes from a read memory stream with an
+ASCII Hex decoder.
+@table @strong
+@item Success condition
+The decoded data should be correct.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_read_007
+Read some bytes from a read memory stream with an
+ASCII Hex decoder having white characters in the data.
+@table @strong
+@item Success condition
+The decoded data should be correct.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_read_008
+Read some bytes from a read memory stream with an
+ASCII Hex decoder having an even number of hex digits
+in the input.
+@table @strong
+@item Success condition
+The decoded data should be correct.
+@end table
+@end deffn
+
+
+@deffn Test pdf_stm_read_009
+Create a memory-based reading stream and attach a flate filter
+decoder to it.
+@table @strong
+@item Success condition
+The decoded data should be correct.
+@end table
+@end deffn
+
+@node pdf_stm_read_char
+@subsubsection pdf_stm_read_char
+
+@deffn Test pdf_stm_read_char_001
+Read a character from a memory stream.
+@table @strong
+@item Success condition
+The read character should be ok.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_read_char_002
+Read a character from an empty memory stream.
+@table @strong
+@item Success condition
+The read character should be @code{PDF_EOF}.
+@end table
+@end deffn
+
+@node pdf_stm_peek_char
+@subsubsection pdf_stm_peek_char
+
+@deffn Test pdf_stm_peek_char_001
+Peek a character from a memory stream.
+@table @strong
+@item Success condition
+The peek character should be ok.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_peek_char_002
+Peek a character from an empty memory stream.
+@table @strong
+@item Success condition
+The peek character should be @code{PDF_EOF}.
+@end table
+@end deffn
+
+@node pdf_stm_seek
+@subsubsection pdf_stm_seek
+
+@deffn Test pdf_stm_seek_001
+Seek into a memory read stream.
+@table @strong
+@item Success condition
+The seek operation should success.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_seek_002
+Seek to a position beyond the size of the stream
+into a memory read stream.
+@table @strong
+@item Success condition
+The seek operation should success and the seek
+position should be to the last valid position 
+in the stream.
+@end table
+@end deffn
+
+@node pdf_stm_tell
+@subsubsection pdf_stm_tell
+
+@deffn Test pdf_stm_tell_001
+Tell an initialized reading memory stream.
+@table @strong
+@item Success condition
+The tell operation should report the first position
+in the stream (0).
+@end table
+@end deffn
+
+@node pdf_stm_write
+@subsubsection pdf_stm_write
+
+@deffn Test pdf_stm_write_001
+Write some bytes to a write memory stream.
+@table @strong
+@item Success condition
+The written data should be consistent.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_write_002
+Write some bytes to a write memory stream with
+two null filter installed.
+@table @strong
+@item Success condition
+The written data should be consistent.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_write_003
+Write some bytes to a write memory stream
+producing a cache flush.
+@table @strong
+@item Success condition
+The written data should be consistent.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_write_004
+Write some bytes to a write memory stream with an ASCII Hex encoder.
+@table @strong
+@item Success condition
+The written data should be consistent.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_write_005
+Create a memory-based writing stream and attach a RunLength filter
+encoder to it.
+@table @strong
+@item Success condition
+The encoded data should be correct.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_write_006
+Write some bytes to a write memory stream with an
+ASCII Hex encoder, generating new lines.
+@table @strong
+@item Success condition
+The encoded data should be correct.
+@end table
+@end deffn
+
+
+@deffn Test pdf_stm_write_007
+Create a memory-based writing stream and attach a flate filter
+encoder to it.
+@table @strong
+@item Success condition
+The encoded data should be correct.
+@end table
+@end deffn
+
+
 
 
 @node Text Module
@@ -3652,7 +3872,7 @@ Compare two different text objects, non-case-sensitive.
 * pdf_list_add_at::
 * pdf_list_add_first::
 * pdf_list_add_last::
-* pdf_list_create::
+* pdf_list_new::
 * pdf_list_destroy::
 * pdf_list_get_at::
 * pdf_list_indexof_from_to::
@@ -3730,10 +3950,10 @@ We get the right pdf_list_size().
 @end table
 @end deffn
 
-@node pdf_list_create
-@subsubsection pdf_list_create
+@node pdf_list_new
+@subsubsection pdf_list_new
 
-@deffn Test pdf_list_create_001
+@deffn Test pdf_list_new_001
 Try to create an empty list.
 @table @strong
 @item Success condition
@@ -3741,7 +3961,7 @@ Returns PDF_OK
 @end table
 @end deffn
 
-@deffn Test pdf_list_create_002
+@deffn Test pdf_list_new_002
 Try to create an empty list given a NULL list pointer.
 @table @strong
 @item Success condition
@@ -3749,7 +3969,7 @@ Returns PDF_EBADDATA
 @end table
 @end deffn
 
-@deffn Test pdf_list_create_003
+@deffn Test pdf_list_new_003
 Try to create an empty list allowing duplicates.
 @table @strong
 @item Success condition
@@ -4436,12 +4656,17 @@ Returns PDF_EBADDATA
 @subsection Hash Module
 
 @menu
-* pdf_hash_create::
+* pdf_hash_new::
 * pdf_hash_detroy::
 * pdf_hash_size::
 * pdf_hash_key_p::
 * pdf_hash_rename::
 * pdf_hash_add::
+* pdf_hash_add_stm::
+* pdf_hash_add_hash::
+* pdf_hash_add_list::
+* pdf_hash_add_text::
+* pdf_hash_add_time::
 * pdf_hash_remove::
 * pdf_hash_search::
 * pdf_hash_iterator::
@@ -4449,10 +4674,10 @@ Returns PDF_EBADDATA
 * pdf_hash_iterator_free::
 @end menu
 
-@node pdf_hash_create
-@subsubsection pdf_hash_create
+@node pdf_hash_new
+@subsubsection pdf_hash_new
 
-@deffn Test pdf_hash_create_001
+@deffn Test pdf_hash_new_001
 Try to create an empty hash.
 @table @strong
 @item Success condition
@@ -4461,7 +4686,7 @@ Returns PDF_OK
 @end deffn
 
 
-@deffn Test pdf_hash_create_002
+@deffn Test pdf_hash_new_002
 Try to create an empty hash with a NULL pointer.
 @table @strong
 @item Success condition
@@ -4584,6 +4809,62 @@ Returns PDF_EBADDATA
 @end deffn
 
 
+@node pdf_hash_add_stm
+@subsubsection pdf_hash_add_stm
+
+@deffn Test pdf_hash_add_stm_001
+Try to add a stream inside a hash table.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@node pdf_hash_add_hash
+@subsubsection pdf_hash_add_hash
+
+@deffn Test pdf_hash_add_hash_001
+Try to add a hash table inside a hash table.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@node pdf_hash_add_list
+@subsubsection pdf_hash_add_list
+
+@deffn Test pdf_hash_add_list_001
+Try to add a list inside a hash table.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@node pdf_hash_add_text
+@subsubsection pdf_hash_add_text
+
+@deffn Test pdf_hash_add_text_001
+Try to add a text variable inside a hash table.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@node pdf_hash_add_time
+@subsubsection pdf_hash_add_time
+
+@deffn Test pdf_hash_add_time_001
+Try to add a time variable inside a hash table.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+
 @node pdf_hash_remove
 @subsubsection pdf_hash_remove
 
@@ -4685,16 +4966,6 @@ Try to iterate over an iterator.
 Returns PDF_OK
 @end table
 @end deffn
-
-
-@deffn Test pdf_hash_iterator_next_002
-Try to iterate over a NULL iterator.
-@table @strong
-@item Success condition
-Returns PDF_EBADDATA
-@end table
-@end deffn
-
 
 @deffn Test pdf_hash_iterator_next_003
 Try to iterate over an iterator given a NULL key pointer.
@@ -5075,6 +5346,224 @@ The call should not produce an error
 The call should not produce an error
 @end table
 @end deffn
+
+
+
+@node Crypt Module
+@subsection Crypt Module
+
+@menu
+* pdf_crypt_init::
+* pdf_crypt_cipher_new::
+* pdf_crypt_cipher_destroy::
+* pdf_crypt_cipher_setkey::
+* pdf_crypt_cipher_encrypt_size::
+* pdf_crypt_cipher_decrypt_size::
+* pdf_crypt_cipher_encrypt::
+* pdf_crypt_cipher_decrypt::
+* pdf_crypt_md_new::
+* pdf_crypt_md_hash::
+* pdf_crypt_md_destroy::
+@end menu
+
+@node pdf_crypt_init
+@subsubsection pdf_crypt_init
+
+@deffn Test pdf_crypt_init_001
+Initialize the module.
+@table @strong
+@item Success condition
+Returns PDF_OK.
+@end table
+@end deffn
+
+
+@node pdf_crypt_cipher_new
+@subsubsection pdf_crypt_cipher_new
+
+@deffn Test pdf_crypt_cipher_new_001
+Create an AESV2 cipher.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@deffn Test pdf_crypt_cipher_new_002
+Create a V2 cipher.
+@table @strong
+@item Success condition
+Returns PDF_OK.
+@end table
+@end deffn
+
+
+@node pdf_crypt_cipher_destroy
+@subsubsection pdf_crypt_cipher_destroy
+
+@deffn Test pdf_crypt_cipher_destroy_001
+Destroy a cipher.
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+
+@node pdf_crypt_cipher_encrypt_size
+@subsubsection pdf_crypt_cipher_encrypt_size
+
+@deffn Test pdf_crypt_cipher_encrypt_size_001
+Get the ciphered buffer size for an empty input buffer (AESV2).
+@table @strong
+@item Success condition
+Returns 32
+@end table
+@end deffn
+
+@deffn Test pdf_crypt_cipher_encrypt_size_002
+Get the ciphered buffer size for a 15 bytes buffer (AESV2).
+@table @strong
+@item Success condition
+Returns 32
+@end table
+@end deffn
+
+@deffn Test pdf_crypt_cipher_encrypt_size_003
+Get the ciphered buffer size for an empty buffer (V2).
+@table @strong
+@item Success condition
+Returns 0
+@end table
+@end deffn
+
+@deffn Test pdf_crypt_cipher_encrypt_size_004
+Get the ciphered buffer size for a 15 bytes buffer in a (V2).
+@table @strong
+@item Success condition
+Returns 15
+@end table
+@end deffn
+
+
+@node pdf_crypt_cipher_setkey
+@subsubsection pdf_crypt_cipher_setkey
+
+@deffn Test pdf_crypt_cipher_setkey_001
+Try set a empty key for a cipher (AESV2).
+@table @strong
+@item Success condition
+Returns PDF_EBADDATA
+@end table
+@end deffn
+
+
+@deffn Test pdf_crypt_cipher_setkey_001
+Set a key for a cipher (AESV2).
+@table @strong
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+
+
+
+@node pdf_crypt_cipher_decrypt_size
+@subsubsection pdf_crypt_cipher_decrypt_size
+
+@deffn Test pdf_crypt_cipher_decrypt_size_001
+@table @strong
+Get the plain buffer size for a 32 bytes ciphered buffer (AESV2).
+@item Success condition
+Returns 0
+@end table
+@end deffn
+
+@deffn Test pdf_crypt_cipher_decrypt_size_002
+@table @strong
+Get the plain buffer size for a 15 bytes ciphered buffer (V2).
+@item Success condition
+Returns 15
+@end table
+@end deffn
+
+
+@node pdf_crypt_cipher_encrypt
+@subsubsection pdf_crypt_cipher_encrypt
+
+@deffn Test pdf_crypt_cipher_encrypt_001
+@table @strong
+Encrypt an empty buffer (AESV2).
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+@deffn Test pdf_crypt_cipher_encrypt_002
+@table @strong
+Encrypt an empty buffer (V2).
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
+
+@node pdf_crypt_cipher_decrypt
+@subsubsection pdf_crypt_cipher_decrypt
+
+@deffn Test pdf_crypt_cipher_decrypt_001
+@table @strong
+Decrypt an ciphered empty buffer (AESV2).
+@item Success condition
+Returns PDF_OK and the length of output buffer is zero.
+@end table
+@end deffn
+
+@deffn Test pdf_crypt_cipher_decrypt_002
+@table @strong
+Decrypt an ciphered empty buffer (V2).
+@item Success condition
+Returns PDF_OK and the length of output buffer is zero.
+@end table
+@end deffn
+
+
+@node pdf_crypt_md_new
+@subsubsection pdf_crypt_md_new
+
+@deffn Test pdf_crypt_md_new_001
+@table @strong
+Create a new message-digester.
+@item Success condition
+Returns PDF_OK.
+@end table
+@end deffn
+
+
+@node pdf_crypt_md_hash
+@subsubsection pdf_crypt_md_hash
+
+@deffn Test pdf_crypt_md_hash_001
+@table @strong
+Compute the md5 of an empty buffer.
+@item Success condition
+Returns PDF_OK and output buffer matches.
+@end table
+@end deffn
+
+
+@node pdf_crypt_md_destroy
+@subsubsection pdf_crypt_md_destroy
+
+@deffn Test pdf_crypt_md_destroy_001
+@table @strong
+Destroy a message-digest descriptor.
+@item Success condition
+Returns PDF_OK
+@end table
+@end deffn
+
 
 
 @node Subsystem Testing

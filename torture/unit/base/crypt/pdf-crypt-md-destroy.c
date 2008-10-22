@@ -1,9 +1,9 @@
-/* -*- mode: C -*- Time-stamp: "2008-07-23 08:11:50 gerel"
+/* -*- mode: C -*- Time-stamp: "2008-09-09 04:18:49 david"
  *
- *       File:         pdf-hash-create.c
+ *       File:         pdf-crypt-md-destroy.c
  *       Date:         Wed Mar  12 12:43:00 2008
  *
- *       GNU PDF Library - Unit tests for pdf_hash_create
+ *       GNU PDF Library - Unit tests for pdf_crypt_md_destroy
  *
  */
 
@@ -32,32 +32,18 @@
 
 
 /*
- * Test: pdf_hash_create_001
+ * Test: pdf_crypt_md_destroy_001
  * Description:
- *   Try to create an empty hash.
+ *   Destroy a message-digest descriptor.
  * Success condition:
  *   Returns PDF_OK
  */
-START_TEST (pdf_hash_create_001)
+START_TEST (pdf_crypt_md_destroy_001)
 {
-  pdf_hash_t table;
-
-  fail_if (pdf_hash_create (NULL, &table) != PDF_OK);
-
-  pdf_hash_destroy (&table);
-}
-END_TEST
-
-/*
- * Test: pdf_hash_create_002
- * Description:
- *   Try to create an empty hash with a NULL pointer.
- * Success condition:
- *   Returns PDF_EBADDATA
- */
-START_TEST (pdf_hash_create_002)
-{
-  fail_if (pdf_hash_create (NULL, NULL) != PDF_EBADDATA);
+  pdf_crypt_md_t md;
+  pdf_crypt_init();
+  pdf_crypt_md_new (&md, PDF_CRYPT_MD_MD5);
+  fail_if (pdf_crypt_md_destroy (md));
 }
 END_TEST
 
@@ -66,12 +52,13 @@ END_TEST
  * Test case creation function
  */
 TCase *
-test_pdf_hash_create (void)
+test_pdf_crypt_md_destroy (void)
 {
-  TCase *tc = tcase_create("pdf_hash_create");
-  tcase_add_test(tc, pdf_hash_create_001);
-  tcase_add_test(tc, pdf_hash_create_002);
+  TCase *tc = tcase_create("pdf_crypt_md_destroy");
+  tcase_add_test(tc, pdf_crypt_md_destroy_001);
   return tc;
 }
 
-/* End of pdf-hash-create.c */
+
+/* End of pdf-crypt-md-destroy.c */
+

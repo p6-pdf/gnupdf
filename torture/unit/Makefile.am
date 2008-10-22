@@ -60,25 +60,36 @@ TEST_SUITE_ERROR = base/error/pdf-error.c \
 		   base/error/pdf-perror.c
 
 # Unit tests for the Stream Module test suite
-TEST_SUITE_STM = base/stm/pdf-create-file-stm.c
+TEST_SUITE_STM = base/stm/pdf-stm-mem-new.c \
+                 base/stm/pdf-stm-read.c \
+                 base/stm/pdf-stm-read-char.c \
+                 base/stm/pdf-stm-peek-char.c \
+                 base/stm/pdf-stm-seek.c \
+                 base/stm/pdf-stm-tell.c \
+                 base/stm/pdf-stm-write.c
 
-TEST_SUITE_HASH = base/hash/pdf-hash-create.c \
+TEST_SUITE_HASH = base/hash/pdf-hash-new.c \
 		  base/hash/pdf-hash-destroy.c \
 		  base/hash/pdf-hash-add.c \
+		  base/hash/pdf-hash-add-time.c \
+		  base/hash/pdf-hash-add-hash.c \
+		  base/hash/pdf-hash-add-list.c \
+		  base/hash/pdf-hash-add-stm.c \
+		  base/hash/pdf-hash-add-text.c \
 		  base/hash/pdf-hash-remove.c \
 		  base/hash/pdf-hash-size.c \
 		  base/hash/pdf-hash-search.c \
 		  base/hash/pdf-hash-key-p.c \
 		  base/hash/pdf-hash-rename.c \
-		  base/hash/pdf-hash-iterator.c \
+		  base/hash/pdf-hash-iterator-new.c \
 		  base/hash/pdf-hash-iterator-next.c \
-		  base/hash/pdf-hash-iterator-free.c
+		  base/hash/pdf-hash-iterator-destroy.c
 
 TEST_SUITE_LIST = base/list/pdf-list-add-first.c \
                   base/list/pdf-list-add-at.c \
                   base/list/pdf-list-add-last.c \
                   base/list/pdf-list-size.c \
-                  base/list/pdf-list-create.c \
+                  base/list/pdf-list-new.c \
                   base/list/pdf-list-destroy.c \
                   base/list/pdf-list-get-at.c \
                   base/list/pdf-list-indexof.c \
@@ -149,24 +160,42 @@ TEST_SUITE_TYPES = base/types/pdf-i64-new.c \
 		   base/types/pdf-i64-mult.c \
 		   base/types/pdf-i64-div.c \
 		   base/types/pdf-i64-mod.c \
- 		   base/types/pdf-i64-subtraction.c 
+		   base/types/pdf-i64-subtraction.c 
+
+TEST_SUITE_CRYPT = base/crypt/pdf-crypt-init.c \
+		   base/crypt/pdf-crypt-cipher-new.c \
+		   base/crypt/pdf-crypt-cipher-destroy.c \
+                   base/crypt/pdf-crypt-cipher-encrypt-size.c \
+		   base/crypt/pdf-crypt-cipher-decrypt-size.c \
+		   base/crypt/pdf-crypt-cipher-encrypt.c \
+		   base/crypt/pdf-crypt-cipher-decrypt.c \
+		   base/crypt/pdf-crypt-md-new.c \
+		   base/crypt/pdf-crypt-md-hash.c \
+		   base/crypt/pdf-crypt-md-destroy.c
+
+TEST_SUITE_ALLOC = base/alloc/pdf-alloc.c \
+                   base/alloc/pdf-realloc.c \
+                   base/alloc/pdf-dealloc.c
 
 TEST_ENVIRONMENT = CHARSETALIASDIR=$(top_srcdir)/lib
 
-TEST_FILES = $(TEST_SUITE_STM) \
-             $(TEST_SUITE_LIST) \
+TEST_FILES = $(TEST_SUITE_LIST) \
              $(TEST_SUITE_TEXT) \
              $(TEST_SUITE_HASH) \
              $(TEST_SUITE_ERROR) \
-	     $(TEST_SUITE_TYPES)
+	     $(TEST_SUITE_TYPES) \
+             $(TEST_SUITE_CRYPT) \
+             $(TEST_SUITE_ALLOC) \
+             $(TEST_SUITE_STM)
 
 TSUITE_FILES = base/alloc/tsuite-alloc.c \
-               base/stm/tsuite-stm.c \
                base/list/tsuite-list.c \
                base/text/tsuite-text.c \
                base/hash/tsuite-hash.c \
                base/error/tsuite-error.c \
-	       base/types/tsuite-types.c
+	       base/types/tsuite-types.c \
+               base/crypt/tsuite-crypt.c \
+               base/stm/tsuite-stm.c
 
 runtests_SOURCES = $(NOCHECK_SRC) \
                    $(TSUITE_FILES) \

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/27 10:28:07 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-09-27 17:58:27 gerel"
  *
  *       File:         pdf-base.h
  *       Date:         Fri Jul  6 20:22:05 2007
@@ -29,6 +29,8 @@
 #include <pdf-alloc.h>
 #include <pdf-types.h>
 #include <pdf-error.h>
+#include <pdf-list.h>
+#include <pdf-hash.h>
 #include <pdf-stm.h>
 #include <pdf-fp.h>
 #include <pdf-text.h>

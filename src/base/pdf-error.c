@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-06-15 18:48:36 gerel"
+/* -*- mode: C -*- Time-stamp: "2008-09-13 17:39:59 davazp"
  *
  *       File:         pdf-error.c
  *       Date:         Sun Feb  24 20:22:05 2008
@@ -35,25 +35,12 @@
 extern char *program_name;
 
 /* Update this list according to pdf_status_t. */
+#define ERROR_ENTRY(id, string) string
 const char * pdf_error_stlist [] =
   {
-          "error",
-          "invalid or bad arguments",
-          "insufficient memory",
-          "end of file",
-          "divison by zero",
-          "no node found",
-          "invalid range",
-          "error in text encoding",
-          "no matching found",
-          "invalid text format",
-          "not enough permissions",
-          "invalid path name",
-          "operation can't be performed now, maybe later",
-          "no space left on device",
-          "operation requires some entity be empty"
+    PDF_ERROR_LIST
   };
-
+#undef ERROR_ENTRY
 
 void
 pdf_perror (const pdf_status_t status, const char *str)

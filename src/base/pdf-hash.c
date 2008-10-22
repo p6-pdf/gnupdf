@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/08/29 01:43:24 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/10 20:39:43 jemarch"
  *
  *       File:         pdf-hash.c
  *       Date:         Sat Apr  12 12:22:05 2008
@@ -62,7 +62,7 @@ static int key_numeric_cmp (const char *key1, const char *key2);
 static int key_compare (const void *key1, const void *key2);
 
 pdf_status_t
-pdf_hash_create (pdf_hash_key_dispose_fn_t dispose_key_fn, pdf_hash_t *table)
+pdf_hash_new (pdf_hash_key_dispose_fn_t dispose_key_fn, pdf_hash_t *table)
 {
   pdf_status_t st;
 
@@ -91,14 +91,14 @@ pdf_hash_create (pdf_hash_key_dispose_fn_t dispose_key_fn, pdf_hash_t *table)
 
 
 pdf_status_t
-pdf_hash_destroy (pdf_hash_t *table)
+pdf_hash_destroy (pdf_hash_t table)
 {
   gl_list_iterator_t itr;
   const void *elt;
 
-  if (table != NULL && table->elements != NULL && table->keys != NULL)
+  if (table.elements != NULL && table.keys != NULL)
     {
-      itr = gl_list_iterator ((gl_list_t)table->elements);
+      itr = gl_list_iterator ((gl_list_t)table.elements);
       while (gl_list_iterator_next (&itr, &elt, NULL))
         {
           if (((pdf_hash_element_t*)elt)->disp_fn != NULL)
@@ -110,8 +110,8 @@ pdf_hash_destroy (pdf_hash_t *table)
         }
       gl_list_iterator_free (&itr);
   
-      gl_list_free((gl_list_t)table->elements);
-      gl_list_free((gl_list_t)table->keys);
+      gl_list_free((gl_list_t)table.elements);
+      gl_list_free((gl_list_t)table.keys);
     }
   
   return PDF_OK;
@@ -294,7 +294,7 @@ pdf_hash_search (const pdf_hash_t table, const char *key, const void **elem_poin
 
 
 pdf_status_t
-pdf_hash_iterator (const pdf_hash_t table, pdf_hash_iterator_t *iterator)
+pdf_hash_iterator_new (const pdf_hash_t table, pdf_hash_iterator_t *iterator)
 {
   pdf_status_t st;
 
@@ -324,15 +324,15 @@ pdf_hash_iterator (const pdf_hash_t table, pdf_hash_iterator_t *iterator)
 
 
 pdf_status_t
-pdf_hash_iterator_next (pdf_hash_iterator_t *iterator, const char **key)
+pdf_hash_iterator_next (pdf_hash_iterator_t iterator, const char **key)
 {
   pdf_status_t st;
 
   st = PDF_OK;
 
-  if (iterator != NULL && key != NULL)
+  if (key != NULL)
     {
-      if (!gl_list_iterator_next((gl_list_iterator_t*)iterator->gl_itr,
+      if (!gl_list_iterator_next((gl_list_iterator_t*)iterator.gl_itr,
                                  (const void**)key, NULL))
         {
           st = PDF_ERROR;
@@ -348,13 +348,13 @@ pdf_hash_iterator_next (pdf_hash_iterator_t *iterator, const char **key)
 
 
 pdf_status_t
-pdf_hash_iterator_free (pdf_hash_iterator_t *iterator)
+pdf_hash_iterator_destroy (pdf_hash_iterator_t iterator)
 {
 
-  if (iterator != NULL && iterator->gl_itr != NULL)
+  if (iterator.gl_itr != NULL)
     {
-      gl_list_iterator_free ((gl_list_iterator_t*)iterator->gl_itr);
-      pdf_dealloc (iterator->gl_itr);
+      gl_list_iterator_free ((gl_list_iterator_t*)iterator.gl_itr);
+      pdf_dealloc (iterator.gl_itr);
     }
 
   return PDF_OK;

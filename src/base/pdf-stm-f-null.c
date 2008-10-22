@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/22 22:51:39 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/10/02 19:10:38 jemarch"
  *
  *       File:         pdf-stm-f-null.c
  *       Date:         Mon Jul  9 22:01:41 2007
@@ -23,52 +23,73 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <config.h>
 #include <string.h>
-#include <pdf-alloc.h>
+
+#include <pdf-stm-buffer.h>
 #include <pdf-stm-f-null.h>
 
-int
-pdf_stm_f_null_init (void **filter_data,
-                     void *conf_data)
-{
-  pdf_stm_f_null_data_t *data;
-  data = (pdf_stm_f_null_data_t *) filter_data;
+/*
+ * Public functions
+ */
 
-  /* Create the private data storage */
-  *data = 
-    (pdf_stm_f_null_data_t) pdf_alloc (sizeof(struct pdf_stm_f_null_data_s));
-  (*data)->dummy = 0;
+pdf_status_t
+pdf_stm_f_null_init (pdf_hash_t params,
+                     void **state)
+{
+  /* This filter does not use any parameters and does not hold any
+     internal state */
 
   return PDF_OK;
 }
 
-int
-pdf_stm_f_null_apply (void *filter_data,
-                      pdf_char_t *in, pdf_stm_pos_t in_size,
-                      pdf_char_t **out, pdf_stm_pos_t *out_size)
+pdf_status_t
+pdf_stm_f_null_apply (pdf_hash_t params,
+                      void *state,
+                      pdf_stm_buffer_t in,
+                      pdf_stm_buffer_t out,
+                      pdf_bool_t finish_p)
 {
-  pdf_stm_f_null_data_t data;
-  data = (pdf_stm_f_null_data_t) filter_data;
+  pdf_size_t in_size;
+  pdf_size_t out_size;
+  pdf_size_t bytes_to_copy;
+  pdf_status_t ret;
 
-  /* Do nothing */
-  *out = (pdf_char_t *) pdf_alloc (in_size);
-  memcpy (*out,
-          in,
-          in_size);
-  *out_size = in_size;
-  
+  /* Fill the output buffer with the contents of the input buffer, but
+     note that the second may be bigger than the former */
+  in_size = in->wp - in->rp;
+  out_size = out->size - out->wp;
+
+  bytes_to_copy = PDF_MIN(out_size, in_size);
+
+  if (bytes_to_copy != 0)
+    {
+      memcpy ((char *) out->data,
+              (char *) in->data,
+              bytes_to_copy);
+
+      in->rp = in->rp + bytes_to_copy;
+      out->wp = out->wp + bytes_to_copy;
+    }
+
+  if (in_size < out_size)
+    {
+      /* We can process more input */
+      ret = PDF_ENINPUT;
+    }
+  else
+    {
+      /* We need more room in the output buffer */
+      ret = PDF_ENOUTPUT;
+    }
+      
+  return ret;
+}
+
+pdf_status_t
+pdf_stm_f_null_dealloc_state (void *state)
+{
   return PDF_OK;
 }
-  
-int
-pdf_stm_f_null_dealloc (void **filter_data)
-{
-  pdf_stm_f_null_data_t *data;
-
-  data = (pdf_stm_f_null_data_t *) filter_data;
-  pdf_dealloc (*data);
-
-  return PDF_OK;
-}                    
 
 /* End of pdf_stm_f_null.c */

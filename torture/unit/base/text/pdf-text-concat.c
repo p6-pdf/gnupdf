@@ -50,10 +50,8 @@ START_TEST(pdf_text_concat_001)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
-  text1 = pdf_text_new();
-  fail_if(text1 == NULL);
-  text2 = pdf_text_new();
-  fail_if(text2 == NULL);
+  fail_if(pdf_text_new (&text1) != PDF_OK);
+  fail_if(pdf_text_new (&text2) != PDF_OK);
 
   fail_if(pdf_text_set_pdfdocenc(text1, (pdf_char_t *)"GNU's not") != PDF_OK);
   fail_if(pdf_text_set_pdfdocenc(text2, (pdf_char_t *)" Unix") != PDF_OK);
@@ -103,10 +101,8 @@ START_TEST(pdf_text_concat_002)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
-  text1 = pdf_text_new();
-  fail_if(text1 == NULL);
-  text2 = pdf_text_new();
-  fail_if(text2 == NULL);
+  fail_if(pdf_text_new (&text1) != PDF_OK);
+  fail_if(pdf_text_new (&text2) != PDF_OK);
   
   fail_if(pdf_text_set_pdfdocenc(text1, (pdf_char_t *)"GNU's not") != PDF_OK);
   fail_if(pdf_text_set_pdfdocenc(text2, (pdf_char_t *)" Unix") != PDF_OK);
@@ -153,10 +149,8 @@ START_TEST(pdf_text_concat_003)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
-  text1 = pdf_text_new();
-  fail_if(text1 == NULL);
-  text2 = pdf_text_new();
-  fail_if(text2 == NULL);
+  fail_if(pdf_text_new (&text1) != PDF_OK);
+  fail_if(pdf_text_new (&text2) != PDF_OK);
   
   fail_if(pdf_text_set_pdfdocenc(text1, (pdf_char_t *)"GNU's not") != PDF_OK);
   fail_if(pdf_text_set_pdfdocenc(text2, (pdf_char_t *)" Unix") != PDF_OK);
@@ -204,10 +198,8 @@ START_TEST(pdf_text_concat_004)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
-  text1 = pdf_text_new();
-  fail_if(text1 == NULL);
-  text2 = pdf_text_new();
-  fail_if(text2 == NULL);
+  fail_if(pdf_text_new (&text1) != PDF_OK);
+  fail_if(pdf_text_new (&text2) != PDF_OK);
   
   fail_if(pdf_text_set_pdfdocenc(text1, (pdf_char_t *)"") != PDF_OK);
   fail_if(pdf_text_set_pdfdocenc(text2, (pdf_char_t *)"") != PDF_OK);
@@ -256,10 +248,8 @@ START_TEST(pdf_text_concat_005)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
-  text1 = pdf_text_new();
-  fail_if(text1 == NULL);
-  text2 = pdf_text_new();
-  fail_if(text2 == NULL);
+  fail_if(pdf_text_new (&text1) != PDF_OK);
+  fail_if(pdf_text_new (&text2) != PDF_OK);
   
   fail_if(pdf_text_set_pdfdocenc(text1, (pdf_char_t *)"") != PDF_OK);
   fail_if(pdf_text_set_pdfdocenc(text2, (pdf_char_t *)"") != PDF_OK);
@@ -305,10 +295,8 @@ START_TEST(pdf_text_concat_006)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
-  text1 = pdf_text_new();
-  fail_if(text1 == NULL);
-  text2 = pdf_text_new();
-  fail_if(text2 == NULL);
+  fail_if(pdf_text_new (&text1) != PDF_OK);
+  fail_if(pdf_text_new (&text2) != PDF_OK);
   
   fail_if(pdf_text_set_pdfdocenc(text1, (pdf_char_t *)"") != PDF_OK);
   fail_if(pdf_text_set_pdfdocenc(text2, (pdf_char_t *)"") != PDF_OK);
@@ -356,10 +344,8 @@ START_TEST(pdf_text_concat_007)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
-  text1 = pdf_text_new();
-  fail_if(text1 == NULL);
-  text2 = pdf_text_new();
-  fail_if(text2 == NULL);
+  fail_if(pdf_text_new (&text1) != PDF_OK);
+  fail_if(pdf_text_new (&text2) != PDF_OK);;
   
   fail_if(pdf_text_set_pdfdocenc(text1, (pdf_char_t *)"GNU's not") != PDF_OK);
   fail_if(pdf_text_set_pdfdocenc(text2, (pdf_char_t *)" Unix") != PDF_OK);
@@ -409,10 +395,8 @@ START_TEST(pdf_text_concat_008)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
-  text1 = pdf_text_new();
-  fail_if(text1 == NULL);
-  text2 = pdf_text_new();
-  fail_if(text2 == NULL);
+  fail_if(pdf_text_new (&text1) != PDF_OK);
+  fail_if(pdf_text_new (&text2) != PDF_OK);
   
   fail_if(pdf_text_set_pdfdocenc(text1, (pdf_char_t *)"GNU's not") != PDF_OK);
   fail_if(pdf_text_set_pdfdocenc(text2, (pdf_char_t *)" Unix") != PDF_OK);
@@ -460,10 +444,8 @@ START_TEST(pdf_text_concat_009)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
-  text1 = pdf_text_new();
-  fail_if(text1 == NULL);
-  text2 = pdf_text_new();
-  fail_if(text2 == NULL);
+  fail_if(pdf_text_new (&text1) != PDF_OK);
+  fail_if(pdf_text_new (&text2) != PDF_OK);
   
   fail_if(pdf_text_set_pdfdocenc(text1, (pdf_char_t *)"GNU's not") != PDF_OK);
   fail_if(pdf_text_set_pdfdocenc(text2, (pdf_char_t *)" Unix") != PDF_OK);
@@ -514,10 +496,8 @@ START_TEST(pdf_text_concat_010)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
-  text1 = pdf_text_new();
-  fail_if(text1 == NULL);
-  text2 = pdf_text_new();
-  fail_if(text2 == NULL);
+  fail_if(pdf_text_new (&text1) != PDF_OK);
+  fail_if(pdf_text_new (&text2) != PDF_OK);
   
   fail_if(pdf_text_set_pdfdocenc(text1, (pdf_char_t *)"") != PDF_OK);
   fail_if(pdf_text_set_pdfdocenc(text2, (pdf_char_t *)"") != PDF_OK);
@@ -566,10 +546,8 @@ START_TEST(pdf_text_concat_011)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
-  text1 = pdf_text_new();
-  fail_if(text1 == NULL);
-  text2 = pdf_text_new();
-  fail_if(text2 == NULL);
+  fail_if(pdf_text_new (&text1) != PDF_OK);
+  fail_if(pdf_text_new (&text2) != PDF_OK);
   
   fail_if(pdf_text_set_pdfdocenc(text1, (pdf_char_t *)"") != PDF_OK);
   fail_if(pdf_text_set_pdfdocenc(text2, (pdf_char_t *)"") != PDF_OK);
@@ -617,10 +595,8 @@ START_TEST(pdf_text_concat_012)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
   
-  text1 = pdf_text_new();
-  fail_if(text1 == NULL);
-  text2 = pdf_text_new();
-  fail_if(text2 == NULL);
+  fail_if(pdf_text_new (&text1) != PDF_OK);
+  fail_if(pdf_text_new (&text2) != PDF_OK);
   
   fail_if(pdf_text_set_pdfdocenc(text1, (pdf_char_t *)"") != PDF_OK);
   fail_if(pdf_text_set_pdfdocenc(text2, (pdf_char_t *)"") != PDF_OK);

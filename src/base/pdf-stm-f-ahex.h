@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 01:03:50 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/10/03 02:03:35 jemarch"
  *
  *       File:         pdf-stm-f-ahex.h
  *       Date:         Fri Jul 13 17:04:29 2007
@@ -27,44 +27,46 @@
 #define PDF_STM_F_AHEX_H
 
 #include <config.h>
-#include <pdf-base.h>
+#include <pdf-types.h>
+#include <pdf-hash.h>
+#include <pdf-stm-buffer.h>
 
-/* Configuration data */
-
-/* BEGIN PUBLIC */
-
-enum pdf_stm_f_ahex_mode_t
+/* Internal state */
+struct pdf_stm_f_ahexenc_s
 {
-  PDF_STM_F_AHEX_MODE_ENCODE,
-  PDF_STM_F_AHEX_MODE_DECODE
+  pdf_i32_t last_nibble;
+  pdf_size_t written_bytes;
 };
 
+typedef struct pdf_stm_f_ahexenc_s *pdf_stm_f_ahexenc_t;
 
-/* END PUBLIC */
-
-struct pdf_stm_f_ahex_conf_s
+struct pdf_stm_f_ahexdec_s
 {
-  int mode;
+  pdf_i32_t last_nibble;
+  pdf_size_t written_bytes;
 };
 
-typedef struct pdf_stm_f_ahex_conf_s *pdf_stm_f_ahex_conf_t;
+typedef struct pdf_stm_f_ahexdec_s *pdf_stm_f_ahexdec_t;
 
-/* Private data */
+/* Filters implementation API */
 
-struct pdf_stm_f_ahex_data_s
-{
-  int mode;
-};
+pdf_status_t pdf_stm_f_ahexdec_init (pdf_hash_t params,
+                                     void **state);
+pdf_status_t pdf_stm_f_ahexdec_apply (pdf_hash_t params,
+                                      void *state,
+                                      pdf_stm_buffer_t in,
+                                      pdf_stm_buffer_t out,
+                                      pdf_bool_t finish_p);
+pdf_status_t pdf_stm_f_ahexdec_dealloc_state (void *state);
 
-typedef struct pdf_stm_f_ahex_data_s *pdf_stm_f_ahex_data_t;
-
-/* Filter API implementation */
-
-int pdf_stm_f_ahex_init (void **filter_data, void *conf_data);
-int pdf_stm_f_ahex_apply (void *filter_data,
-                          pdf_char_t *in, pdf_stm_pos_t in_size,
-                          pdf_char_t **out, pdf_stm_pos_t *out_size);
-int pdf_stm_f_ahex_dealloc (void **filter_data);
+pdf_status_t pdf_stm_f_ahexenc_init (pdf_hash_t params,
+                                     void **state);
+pdf_status_t pdf_stm_f_ahexenc_apply (pdf_hash_t params,
+                                      void *state,
+                                      pdf_stm_buffer_t in,
+                                      pdf_stm_buffer_t out,
+                                      pdf_bool_t finish_p);
+pdf_status_t pdf_stm_f_ahexenc_dealloc_state (void *state);
 
 #endif /* pdf_stm_f_ahex.h */
 

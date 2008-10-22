@@ -1,4 +1,5 @@
 # Copyright © 2004 Loic Dachary <loic@senga.org>
+# Copyright © 2008 Free Software Foundation
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -53,49 +54,52 @@ fi])
 
 
 if test "x$with_zlib" != "xno"; then
-ZLIB_HOME=/usr/local
-if test ! -f "${ZLIB_HOME}/include/zlib.h"
-then
-        ZLIB_HOME=/usr
-fi
+
+# if test -z "${ZLIB_HOME}"
+# then
+#  ZLIB_HOME=/usr/local
+#  if test ! -f "${ZLIB_HOME}/include/zlib.h"
+#  then
+#          ZLIB_HOME=/usr
+#  fi
+# fi
 
 #
 # Locate zlib, if wanted
 #
+ZLIB_OLD_LDFLAGS=$LDFLAGS
+ZLIB_OLD_CPPFLAGS=$LDFLAGS
+
 if test -n "${ZLIB_HOME}"
 then
-        ZLIB_OLD_LDFLAGS=$LDFLAGS
-        ZLIB_OLD_CPPFLAGS=$LDFLAGS
-        LDFLAGS="$LDFLAGS -L${ZLIB_HOME}/lib"
-        CPPFLAGS="$CPPFLAGS -I${ZLIB_HOME}/include"
-        AC_LANG_SAVE
-        AC_LANG_C
-        AC_CHECK_LIB(z, inflateEnd, [zlib_cv_libz=yes], [zlib_cv_libz=no])
-        AC_CHECK_HEADER(zlib.h, [zlib_cv_zlib_h=yes], [zlib_cv_zlib_h=no])
-        AC_LANG_RESTORE
-        if test "$zlib_cv_libz" = "yes" -a "$zlib_cv_zlib_h" = "yes"
-        then
-                #
-                # If both library and header were found, use them
-                #
-                AC_CHECK_LIB(z, inflateEnd)
-                AC_MSG_CHECKING(zlib in ${ZLIB_HOME})
-                AC_MSG_RESULT(ok)
-                have_zlib=yes
-        else
-                #
-                # If either header or library was not found, revert and bomb
-                #
-                AC_MSG_CHECKING(zlib in ${ZLIB_HOME})
-                LDFLAGS="$ZLIB_OLD_LDFLAGS"
-                CPPFLAGS="$ZLIB_OLD_CPPFLAGS"
-                AC_MSG_RESULT(failed)
-                AC_MSG_ERROR(either specify a valid zlib installation with --with-zlib=DIR or disable zlib usage with --without-zlib)
-                have_zlib=no
-        fi
+  LDFLAGS="$LDFLAGS -L${ZLIB_HOME}/lib"
+  CPPFLAGS="$CPPFLAGS -I${ZLIB_HOME}/include"
 fi
+AC_LANG_SAVE
+AC_LANG_C
+AC_CHECK_LIB(z, inflateEnd, [zlib_cv_libz=yes], [zlib_cv_libz=no])
+AC_CHECK_HEADER(zlib.h, [zlib_cv_zlib_h=yes], [zlib_cv_zlib_h=no])
+AC_LANG_RESTORE
+if test "$zlib_cv_libz" = "yes" -a "$zlib_cv_zlib_h" = "yes"
+then
+   #
+   # If both library and header were found, use them
+   #
+   AC_CHECK_LIB(z, inflateEnd)
+   AC_MSG_CHECKING(zlib in ${ZLIB_HOME})
+   AC_MSG_RESULT(ok)
+   have_zlib=yes
 else
-    have_zlib=no
+   #
+   # If either header or library was not found, revert and bomb
+   #
+   AC_MSG_CHECKING(zlib in ${ZLIB_HOME})
+   LDFLAGS="$ZLIB_OLD_LDFLAGS"
+   CPPFLAGS="$ZLIB_OLD_CPPFLAGS"
+   AC_MSG_RESULT(failed)
+   AC_MSG_ERROR(either specify a valid zlib installation with --with-zlib=DIR or disable zlib usage with --without-zlib)
+   have_zlib=no
+fi
 fi
 ])
 

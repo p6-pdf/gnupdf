@@ -38,16 +38,13 @@ FILESYSTEM_MODULE_SOURCES = base/pdf-fsys.c base/pdf-fsys.h \
                             base/pdf-fsys-def.h \
                             base/pdf-fsys-disk.c base/pdf-fsys-disk.h
 
-STM_MODULE_SOURCES = base/pdf-stm-f-a85.c base/pdf-stm-f-a85.h \
-                     base/pdf-stm-f-ahex.c base/pdf-stm-f-ahex.h \
-                     base/pdf-stm-f-fax.c base/pdf-stm-f-fax.h \
-                     base/pdf-stm-f-lzw.c base/pdf-stm-f-lzw.h \
-                     base/pdf-stm-f-null.c base/pdf-stm-f-null.h \
-                     base/pdf-stm-f-pred.c base/pdf-stm-f-pred.h \
-                     base/pdf-stm-f-rl.c base/pdf-stm-f-rl.h \
-                     base/pdf-stm-file.c base/pdf-stm-file.h \
-                     base/pdf-stm-mem.c base/pdf-stm-mem.h \
-                     base/pdf-stm.c base/pdf-stm.h
+STM_MODULE_SOURCES = base/pdf-stm.c base/pdf-stm.h \
+                     base/pdf-stm-be.c base/pdf-stm-be.h \
+                     base/pdf-stm-buffer.c base/pdf-stm-buffer.h \
+                     base/pdf-stm-filter.h base/pdf-stm-filter.c \
+                     base/pdf-stm-f-null.h base/pdf-stm-f-null.c \
+                     base/pdf-stm-f-ahex.h base/pdf-stm-f-ahex.c \
+                     base/pdf-stm-f-rl.h base/pdf-stm-f-rl.c
 
 if ZLIB
   STM_MODULE_SOURCES += base/pdf-stm-f-flate.c base/pdf-stm-f-flate.h
@@ -69,6 +66,10 @@ TIME_MODULE_SOURCES = base/pdf-time-context.c base/pdf-time-context.h \
                       base/pdf-time-string.c base/pdf-time-string.h \
                       base/pdf-time.c base/pdf-time.h
 
+CRYPT_MODULE_SOURCES = base/pdf-crypt.c base/pdf-crypt.h \
+                       base/pdf-crypt-c-aesv2.c base/pdf-crypt-c-aesv2.h \
+                       base/pdf-crypt-c-v2.c base/pdf-crypt-c-v2.h
+
 BASE_LAYER_SOURCES = base/pdf-base.c base/pdf-base.h \
                      $(ALLOC_MODULE_SOURCES) \
                      $(TYPES_MODULE_SOURCES) \
@@ -78,7 +79,9 @@ BASE_LAYER_SOURCES = base/pdf-base.c base/pdf-base.h \
                      $(LIST_MODULE_SOURCES) \
                      $(TEXT_MODULE_SOURCES) \
                      $(HASH_MODULE_SOURCES) \
-                     $(TIME_MODULE_SOURCES)
+                     $(TIME_MODULE_SOURCES) \
+                     $(CRYPT_MODULE_SOURCES)
+
 
 # Library sources
 
@@ -89,13 +92,13 @@ if COMPILE_BASE_LAYER
 endif
 
 include_HEADERS = pdf.h
-libgnupdf_la_LIBADD = $(top_srcdir)/lib/libgnu.la
+libgnupdf_la_LIBADD = $(top_srcdir)/lib/libgnu.la $(LIBGCRYPT_LIBS)
 # We want a DLL if compiling for Windows
 if COMPILE_W32_SYSTEM
   libgnupdf_la_LDFLAGS = -no-undefined
 endif
 
-AM_CFLAGS = -Wall -fno-strict-aliasing
+AM_CFLAGS = -Wall -fno-strict-aliasing $(LIBGCRYPT_CFLAGS)
 if USE_COVERAGE
   AM_CFLAGS += -fprofile-arcs -ftest-coverage
 endif
@@ -115,16 +118,14 @@ PUBLIC_HDRS = pdf-global.h \
               base/pdf-time.h \
               base/pdf-text.h \
               base/pdf-fsys.h \
-              base/pdf-stm-f-a85.h \
-              base/pdf-stm-f-ahex.h \
-              base/pdf-stm-f-fax.h \
-              base/pdf-stm-f-flate.h \
-              base/pdf-stm-f-lzw.h \
-              base/pdf-stm-f-pred.h \
-              base/pdf-stm-f-rl.h \
-              base/pdf-stm-file.h \
+              base/pdf-stm-buffer.h \
+              base/pdf-stm-be.h \
+              base/pdf-stm-filter.h \
               base/pdf-stm.h \
-              base/pdf-hash-helper.h 
+              base/pdf-hash-helper.h \
+              base/pdf-crypt.h \
+              base/pdf-crypt-c-v2.h \
+              base/pdf-crypt-c-aesv2.h
 
 pdf.h : $(PUBLIC_HDRS)
 	chmod +x $(top_srcdir)/src/extract-public-hdr

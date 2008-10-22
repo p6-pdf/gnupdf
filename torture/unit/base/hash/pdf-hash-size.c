@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-07-23 08:14:28 gerel"
+/* -*- mode: C -*- Time-stamp: "08/09/10 20:12:08 jemarch"
  *
  *       File:         pdf-hash-size.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -41,11 +41,11 @@ START_TEST (pdf_hash_size_001)
 {
   pdf_hash_t table;
 
-  pdf_hash_create (NULL, &table);
+  pdf_hash_new (NULL, &table);
 
   fail_if (pdf_hash_size (table) != 0);
 
-  pdf_hash_destroy (&table);
+  pdf_hash_destroy (table);
 }
 END_TEST
 

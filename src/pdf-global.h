@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 01:02:56 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/10/12 18:31:43 jemarch"
  *
  *       File:         pdf-global.h
  *       Date:         Thu Jul  5 19:52:48 2007
@@ -27,8 +27,7 @@
 #define _PDF_H
 
 #include <config.h>
-
-#include <pdf-base.h>
+#include <pdf-types.h>
 
 /* BEGIN PUBLIC */
 

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/28 22:26:14 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/09 00:54:52 jemarch"
  *
  *       File:         pdf-text-context.h
  *       Date:         Fri Jan 11 21:09:23 2008
@@ -62,6 +62,8 @@ enum pdf_text_eol_types {
 pdf_status_t
 pdf_text_context_init(void);
 
+/* Is the text context initialized? */
+pdf_bool_t pdf_text_context_initialized (void);
 
 /* Returns the host endianess */
 enum pdf_endianness_e

@@ -47,9 +47,36 @@ GNU PDF Library Hackers Guide
 @end ifnottex
 
 @menu
+* Use of Autotools::
 * Coding Conventions::
 * Sending Patches::
 @end menu
+
+@node Use of Autotools
+@chapter Use of Autotools
+
+The build system of the GNU PDF software uses the GNU build utilities
+(otherwise known as the GNU Autotools). This chapter contains some
+guidelines to apply when incorporating changes into the codebase.
+
+@menu
+* Third-party m4 macros::
+@end menu
+
+@node Third-party m4 macros
+@section Third-party m4 macros
+
+Sometimes it is useful to use third-party m4 macros provided by some
+build dependency (such as libgcrypt that provides an
+@code{AM_PATH_LIBGCRYPT} macro).
+
+In that situation we are introducing a dependency in @emph{bootstrap}
+time, and it is not desirable: the dependencies should be checked in
+@emph{configure} time.
+
+Any third-party m4 file should be copied in @file{libgnupdf/m4/} and
+put under version control. In that way we avoid the dependency in
+@emph{bootstrap} time.
 
 @node Coding Conventions
 @chapter Coding Conventions
@@ -64,7 +91,9 @@ a good level of coherence in the codebase.
 
 @menu
 * File Headers::
+* Spaces vs. Tabs::
 * Naming Functions::
+* Abstract Data Types::
 @end menu
 
 @node File Headers
@@ -110,6 +139,32 @@ template-expansion time.
 A one-sentence brief description of the contents of the file. This
 description should not exceed one physical line of text.
 @end table
+
+@node Spaces vs. Tabs
+@section Spaces vs. Tabs
+
+It is preferable to use blank characters instead of tabs to indent the
+source code: the interpretation of the actual width of a tab is up to
+the viewer program.
+
+Please use blank characters when writing code to be included in GNU
+PDF software. 
+
+If you use Emacs you can tell it to insert spaces instead of tabs
+including:
+
+@example
+(setq-default indent-tabs-mode nil)
+@end example
+
+in your @file{.emacs}.
+
+If you use GNU indent to indent your sources you can use the
+@code{--nut} option:
+
+@example
+$ indent --nut [rest-of-parameters] [source-files]
+@end example
 
 @node Naming Functions
 @section Naming Functions
@@ -174,6 +229,125 @@ For Windows systems.
 For Macos X systems.
 @end table
 
+@node Abstract Data Types
+@section Abstract Data Types
+
+The GNU PDF Library codebase is written using the C programming
+language. C does not support the notion of @emph{object} as used in
+object-oriented programming. 
+
+Instead of objects we are using a kind of data-control abstraction
+called @emph{abstract data types}. This abstraction provides high
+encapsulation of the implementation details of the data types and thus
+allow the definition of @emph{opaque} types.
+
+An @acronym{ADT} is composed by:
+
+@itemize @bullet
+@item
+A @emph{data structure} containing the private data that characterizes
+each instance of the @acronym{ADT}.
+@item
+A set of @emph{access functions} that implement actions on the
+@acronym{ADT}.
+@end itemize
+
+@menu
+* Implementation Files For ADTs::
+* Data Structures For ADTs::
+* Access Functions For ADTs::
+@end menu
+
+@node Implementation Files For ADTs
+@subsection Implementation Files For ADTs
+
+Each Abstract Data Type shall be implemented in source files following
+this naming convention:
+
+@example
+pdf-FOO-*.[ch]
+@end example
+
+where @var{FOO} is the name of the @acronym{ADT}; for example,
+@file{pdf-text-context.c}.
+
+A general header file for the @acronym{ADT} should always be present
+and should be named after:
+
+@example
+pdf-FOO.h
+@end example
+
+where @var{FOO} is again the name of the @acronym{ADT}; for example,
+@file{pdf-text.h}.
+
+@node Data Structures For ADTs
+@subsection Data Structures For ADTs
+
+There are two different approaches that shall be used to define the
+data structures containing the private data for an @acronym{ADT}:
+
+@table @strong
+@item A pointer to a structure
+In this case a C structure should be defined to hold the private data:
+@example
+/* Definition of the pdf_foo_t ADT */
+struct pdf_foo_s
+@{
+   int data_a;
+   int data_b;
+@};
+@end example
+and then a typedef that defines @code{pdf_foo_t} as a pointer to that
+structure:
+@example
+typedef struct pdf_foo_s *pdf_foo_t;
+@end example
+@item A structure
+In this case a C structure (not a pointer to it) is used to represent
+the @acronym{ADT}:
+@example
+typedef struct pdf_foo_s pdf_foo_t;
+@end example
+This alternative is indicated in the case where the private data of
+the @acronym{ADT} is small, allowing the developer to allocate
+instances of the @acronym{ADT} in the stack and thus avoiding
+fragmentation of the heap.
+@end table
+
+Note that both alternatives allow to copy a @strong{reference} using
+the C assignation operator, like in:
+
+@example
+reference_to_adt_instance1 = adt_instance1;
+@end example
+
+@node Access Functions For ADTs
+@subsection Access Functions For ADTs
+
+Every access function implemented by an @acronym{ADT} should have a
+prototype conformant to the following convention:
+
+@example
+RETURN_TYPE pdf_FOO_* (pdf_FOO_t adt, args...)
+@end example
+
+where @var{FOO} is the name of the @acronym{ADT}.
+
+The following standard functions shall be defined:
+
+@table @code
+@item pdf_status_t pdf_FOO_new (args..., pdf_FOO_t *adt)
+This is the function used to create a new instance of the
+@acronym{ADT}. The last parameter of the function should be a pointer
+to a @code{pdf_FOO_t} value. The returned status value should indicate
+the state of the operation.
+@item pdf_FOO_destroy (pdf_FOO_t adt)
+This is the function used to destroy an instance of the
+@acronym{ADT}. The memory occupied by the @acronym{ADT} data structure
+is freed.
+@end table
+
 @node Sending Patches
 @chapter Sending Patches
 
@@ -181,8 +355,37 @@ This chapter contains some useful information to send patches to be
 integrated in the trunk.
 
 @menu
+* Generating a Bazaar Merge Directive::
 * Syntax Check::
+* Patch Safety Dispatcher::
 @end menu
+
+@node Generating a Bazaar Merge Directive
+@section Generating a Bazaar Merge Directive
+
+The Bazaar version control system supports the notion of @emph{merge
+directives}. A merge directive is a kind of ``superpatch'' that contain
+an ascii-encoded binary block describing the patch (changes to file
+contents, addition of new files, etc) and a preview that is much like
+a regular diff.
+
+A merge directive can be merged into a given branch much like any
+other branch.
+
+To create a merge directive out of your bazaar branch just type the
+following command:
+
+@example
+$ bzr send -o my-patch
+@end example
+
+Then send the file @file{my-patch} in an email to
+@email{pdf-devel@@gnu.org} in order to be reviewed by the development
+team.
+
+Note that you dont need to specify extra parameters to the @code{bzr
+send} command: it will use the appropriate format for the patch by
+default (unidiff).
 
 @node Syntax Check
 @section Syntax Check
@@ -193,6 +396,40 @@ useful for the maintainership of the package.
 One of the targets is 'syntax-check'. It performs a check of common
 pitfalls on the source code and GCS conformance.
 
-Please do a make syntax-check before to send a patch.
+Please do a make syntax-check before to send a patch, or alternatively
+use the Patch Safety Dispatcher (see the next section).
+
+
+@node Patch Safety Dispatcher
+@section Patch Safety Dispatcher
+
+Before sending a patch to the list to be included in the trunk you
+can run the patch safety dispatcher, which is a script that runs a
+few more scripts, like the syntax check mentioned in this chapter.
+
+In fact, the Patch Safety Dispatcher is a bzr plugin that is run before a
+commit is applied to your working copy.
+In order to execute it you need to tell bzr where the plugin is
+located. There are two ways to do it:
+
+1. Copy the script located in ``prmgt/patch-safety-dispatcher.py'' at
+the projects root directory to your bazaar plugins directory
+``~/.bazaar/plugins''.
+
+2. Add the ``prmgt'' directory to the BZR_PLUGIN_PATH variable. For
+example, doing ``export BZR_PLUGIN_PATH=/your/path/to/libgnupdf/prmgt''
+(alternatively you can add it to your ~/.bashrc).
+
+After telling bzr where your plugins are, you can test it doing: ``bzr
+hooks'' (from the projects root directory) . You should find it in the
+list as ``Patch safety scripts hook'' in the pre_commit section.
+
+That's all. Now when you do a ``bzr commit'' a small report will tell if
+your patch is correct in terms of the QA scripts we run daily.
+If it is the commit will be applied, otherwise it won't.
+
+NOTE: Make sure you run ``bzr commit'' from your working copy root
+directory.  Bazaar will fail with some error or don't even run the
+script otherwise. Until now we have no solution for this problem.
 
 @bye

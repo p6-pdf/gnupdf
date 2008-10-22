@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-04-16 20:40:33 gerel"
+/* -*- mode: C -*- Time-stamp: "08/09/08 22:57:10 jemarch"
  *
  *       File:         tsuite-list.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -25,7 +25,7 @@
 
 #include <check.h>
 
-extern TCase *test_pdf_list_create (void);
+extern TCase *test_pdf_list_new (void);
 extern TCase *test_pdf_list_destroy (void);
 extern TCase *test_pdf_list_iterator_free (void);
 extern TCase *test_pdf_list_size (void);
@@ -65,7 +65,7 @@ tsuite_list ()
 
   s = suite_create("list");
   
-  suite_add_tcase (s, test_pdf_list_create ());
+  suite_add_tcase (s, test_pdf_list_new ());
   suite_add_tcase (s, test_pdf_list_destroy ());
   suite_add_tcase (s, test_pdf_list_size ());
   suite_add_tcase (s, test_pdf_list_add_first ());

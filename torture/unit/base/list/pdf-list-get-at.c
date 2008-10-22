@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/04/21 19:38:52 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/08 22:50:35 jemarch"
  *
  *       File:         pdf-list-get-at.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -43,7 +43,7 @@ START_TEST (pdf_list_get_at_001)
   
   elem = 2212;
 
-  pdf_list_create (NULL, NULL, 0, &list);
+  pdf_list_new (NULL, NULL, 0, &list);
 
   pdf_list_add_last (list, &elem, NULL);
 
@@ -70,7 +70,7 @@ START_TEST (pdf_list_get_at_002)
 
   elem = 2212;
 
-  pdf_list_create (NULL, NULL, 0, &list);
+  pdf_list_new (NULL, NULL, 0, &list);
 
   pdf_list_add_last (list, &elem, NULL);
 
@@ -97,7 +97,7 @@ START_TEST (pdf_list_get_at_003)
 
   elem = 2212;
 
-  pdf_list_create (NULL, NULL, 0, &list);
+  pdf_list_new (NULL, NULL, 0, &list);
 
   pdf_list_add_last (list, &elem, NULL);
 

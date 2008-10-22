@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/05/22 23:05:13 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/20 16:47:58 jemarch"
  *
  *       File:         pdf-types.h
  *       Date:         Sun Feb 10 21:30:00 2008
@@ -33,6 +33,7 @@
 #include <sys/types.h> /* for off_t */
 #include <stdint.h> /* for uint32_t and others, from gnulib */
 
+#include <sys/param.h> /* for determining system types (mostly BSD) */
 
 #ifdef HAVE_INLINE
 #define INLINE inline
@@ -40,8 +41,25 @@
 #define INLINE
 #endif /* HAVE_INLINE */
 
+/* Host dependent definitions to be used */
+
+#if defined _WIN32 || defined __WIN32__
+ #define PDF_HOST_WIN32
+ #include <windows.h>
+#endif
+
+#if defined(BSD)
+ #define PDF_HOST_BSD
+#endif
+
 #define PDF_TRUE 1
 #define PDF_FALSE 0
+
+#define PDF_MIN(i1, i2) \
+  (((i1) < (i2)) ? (i1) : (i2))
+
+#define PDF_MAX(i1, i2) \
+  (((i1) > (i2)) ? (i1) : (i2))
 
 /* Definitions used in the operations of the  pdf_i64_t type*/
 #define PDF_I32_MAX 2147483647;
@@ -53,14 +71,14 @@
 #define PDF_U8_DIV 256;
 
 
-/* A variable of type `pdf_stm_pos_t' contain a byte-offset relative to
+/* A variable of type `pdf_off_t' contain a byte-offset relative to
    the beginning of a stream object. 
 
-   Please be careful manipulating `pdf_stm_pos_t' values. Its value is
+   Please be careful manipulating `pdf_off_t' values. Its value is
    assured to be a signed scalable one, but its size may be wider than
    a long. */
 #define NO_POS -1
-typedef off_t pdf_stm_pos_t;
+typedef off_t pdf_off_t;
 
 /* Memory indexes (size_t) */
 typedef size_t pdf_size_t;
@@ -88,8 +106,6 @@ typedef char pdf_i8_t;
 
 /* Boolean type */
 typedef unsigned char pdf_bool_t;
-
-
 
 /********************** 64-bit type built-in support **************************/
 
@@ -404,20 +420,8 @@ pdf_i64_to_i32(const pdf_i64_t bignum);
 
 #endif
 
-
-
 /* PDF_EOF to store an EOF marker in integers */
 #define PDF_EOF -1
-
-
-/* Host dependent definitions to be used */
-
-#if defined _WIN32 || defined __WIN32__
- #define PDF_HOST_WIN32
- #include <windows.h>
-#endif
-
-
 
 /* END PUBLIC */
 

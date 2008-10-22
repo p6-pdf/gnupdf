@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-04-13 15:28:44 gerel"
+/* -*- mode: C -*- Time-stamp: "08/09/08 22:56:25 jemarch"
  *
  *       File:         pdf-list-sorted-remove.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -49,7 +49,7 @@ START_TEST (pdf_list_sorted_remove_001)
 
   elem = 1212;
 
-  pdf_list_create (NULL, NULL, 0, &list);
+  pdf_list_new (NULL, NULL, 0, &list);
   pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
   st = pdf_list_sorted_remove (list, l_comp_asc, &elem);
 
@@ -76,7 +76,7 @@ START_TEST (pdf_list_sorted_remove_002)
   elem = 1212;
   elem2 = 3333;
   
-  pdf_list_create (l_comp, NULL, 0, &list);
+  pdf_list_new (l_comp, NULL, 0, &list);
   pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
   st = pdf_list_sorted_remove (list, l_comp_asc, &elem2);
 
@@ -102,7 +102,7 @@ START_TEST (pdf_list_sorted_remove_003)
 
   elem = 1212;
   
-  pdf_list_create (l_comp, NULL, 0, &list);
+  pdf_list_new (l_comp, NULL, 0, &list);
   pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
   st = pdf_list_sorted_remove (list, NULL, &elem);
 

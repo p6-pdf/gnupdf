@@ -1,9 +1,9 @@
-/* -*- mode: C -*- Time-stamp: "2008-07-23 08:13:00 gerel"
+/* -*- mode: C -*- Time-stamp: "2008-09-21 23:02:11 gerel"
  *
- *       File:         pdf-hash-iterator-free.c
+ *       File:         pdf-hash-add-text.c
  *       Date:         Wed Mar  12 12:43:00 2008
  *
- *       GNU PDF Library - Unit tests for pdf_hash_iterator_free
+ *       GNU PDF Library - Unit tests for pdf_hash_add_text
  *
  */
 
@@ -30,25 +30,25 @@
 #include <pdf.h>
 #include <check.h>
 
+
 /*
- * Test: pdf_hash_iterator_free_001
+ * Test: pdf_hash_add_text_001
  * Description:
- *   Try to free an iterator.
+ *   Try to add a text variable inside a hash table.
  * Success condition:
  *   Returns PDF_OK
  */
-START_TEST (pdf_hash_iterator_free_001)
+START_TEST (pdf_hash_add_text_001)
 {
   pdf_hash_t table;
-  pdf_hash_iterator_t itr;
+  pdf_text_t inner;
 
-  pdf_hash_create (NULL, &table);
-  pdf_hash_iterator (table, &itr);
+  fail_if (pdf_text_init () != PDF_OK);
+  fail_if (pdf_text_new (&inner) != PDF_OK);
+  fail_if (pdf_hash_new (NULL, &table) != PDF_OK);
+  fail_if (pdf_hash_add_text (table, "theKey", &inner) != PDF_OK);
 
-  fail_if (pdf_hash_iterator_free (&itr) != PDF_OK);
-
-  pdf_hash_destroy (&table);
-
+  pdf_hash_destroy (table);
 }
 END_TEST
 
@@ -57,11 +57,11 @@ END_TEST
  * Test case creation function
  */
 TCase *
-test_pdf_hash_iterator_free (void)
+test_pdf_hash_add_text (void)
 {
-  TCase *tc = tcase_create("pdf_hash_iterator_free");
-  tcase_add_test(tc, pdf_hash_iterator_free_001);
+  TCase *tc = tcase_create("pdf_hash_add_text");
+  tcase_add_test(tc, pdf_hash_add_text_001);
   return tc;
 }
 
-/* End of pdf-hash-iterator-free.c */
+/* End of pdf-hash-add-text.c */

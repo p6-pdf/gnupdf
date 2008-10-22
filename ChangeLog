@@ -1,3 +1,867 @@
+2008-10-12  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-text-host-encoding.c
+	(pdf_text_convert_encoding_name_to_CP): Fix parameter to strtol.
+
+	* configure.ac (HAVE_LIBZ): Define HAVE_LIBZ if there is a zlib
+	available.
+
+	* m4/zlib.m4: Dont assume /usr and /usr/local by default as the
+	installation of zlib.
+
+	* src/base/pdf-time-context.c (pdf_time_context_init): Use
+	_timezone instead of the struct tm to determine the GMT offset if
+	compiling with mingw.
+
+	* src/base/pdf-stm-filter.c (pdf_stm_filter_new): Install the
+	flate filters only if libz is available.
+
+	* src/base/pdf-stm-filter.h: Include the flate filters only if
+	libz is available.
+
+	* src/pdf-global.h: Dont include pdf-base.h.
+
+	* configure.ac: Dont generate 'prmgt/pmccabe2html'.
+
+	* prmgt/Makefile.am: Use gnulib's pmccabe2html.
+
+2008-10-07  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* src/base/pdf-stm-f-flate.h: solved cases with PDF_OK from old API.
+
+2008-10-05  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* src/base/pdf-stm-f-flate.h: greater chunk size.
+
+2008-10-05  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* doc/gnupdf-tsd.texi: added flate filter tests.
+
+	* torture/unit/base/stm/pdf-stm-read.c: same.
+
+	* torture/unit/base/stm/pdf-stm-write.c: same.
+
+	* src/Makefile.am: added flate filter source files.
+
+	* src/base/pdf-stm-f-flate.c: adapted for new stream API.
+
+	* src/base/pdf-stm-f-flate.h: same.
+
+	* src/base/pdf-stm-filter.c: added flate filter.
+
+	* src/base/pdf-stm-filter.h: same.
+
+	* utils/pdf-filter.c: same.
+
+2008-10-04  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* src/base/pdf-stm-f-rl.c: adapted to new filter API.
+
+	* torture/unit/base/stm/pdf-stm-read.c: same.
+
+	* torture/unit/base/stm/pdf-stm-write.c: same.
+
+2008-10-04  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/pdf-filter.1: Generated.
+
+2008-10-04 Juan Pedro Bolívar Puente <raskolnikov@es.gnu.org>
+
+	* src/base/pdf-stm-be.*: Added cfile stream backend for
+	input and output to FILE* C streams.
+
+	* src/base/pdf-stm.c (pdf_stm_read): Fixed bug that lead
+	to infinite loop.
+
+	* utils/pdf-util.*: Update to correctly use new streams
+	architecture. Deprecated options deleted. Added
+	'--readmode' and '--cache' options.
+
+2008-10-04  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-stm-filter.c (pdf_stm_filter_new): Initialize
+	'really_finish_p'.
+	(pdf_stm_filter_reset): Reset 'really_finish_p'.
+
+	* src/base/pdf-stm-filter.h (struct pdf_stm_filter_s): New
+	attribute 'really_finish_p'.
+
+	* src/base/pdf-stm-buffer.c (pdf_stm_buffer_full_p): Conditional
+	used to determine buffer fullness has been fixed.
+
+	* src/base/pdf-stm-f-ahex.c (pdf_stm_f_ahexenc_init): Check the
+	right pointer in initialization.
+
+2008-10-03  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-stm-f-ahex.c (pdf_stm_f_ahexenc_apply): Emit
+	newlines to keep output lines short.
+
+2008-10-03  David Vazquez <davazp@es.gnu.org>
+
+	* Bug fixing crypt module unit tests failures.
+
+2008-10-02  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* Bug fixing and design changes in the stream module.
+
+2008-09-28  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* src/base/pdf-stm-f-rl.c: decoder EOD mark fix.
+
+	* torture/unit/base/stm/pdf-stm-read.c: force RL decoder to consume EOD.
+
+2008-09-28  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-tsd.texi (pdf_stm_read): Documentation added for the
+	unit test 'pdf_stm_read_008'.
+
+	* torture/unit/base/stm/pdf-stm-read.c (START_TEST): New test
+	'pdf_stm_read_008'.
+
+	* doc/gnupdf-tsd.texi (pdf_stm_write): Documentation added for the
+	unit test 'pdf_stm_write_006'.
+
+	* torture/unit/base/stm/pdf-stm-write.c (START_TEST): New test
+	'pdf_stm_write_006'.
+
+	* torture/unit/base/stm/pdf-stm-read.c (START_TEST): New test
+	'pdf_stm_read_007'.
+
+	* doc/gnupdf-tsd.texi (pdf_stm_read): Documentation added for the
+	unit test 'pdf_stm_read_006'.
+
+	* torture/unit/base/stm/pdf-stm-read.c (START_TEST): New test
+	'pdf_stm_read_006'.
+
+	* utils/pdf-filter.c: Support for RunLength encoding and decoding
+	filters.
+
+	* AUTHORS: updated.
+
+	* src/base/pdf-stm-f-rl.h: Do not include 'pdf-base.h'.
+
+2008-09-27  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* src/Makefile.am: added the RunLength filter.
+
+	* src/base/pdf-stm-f-rl.c: adapted to the new API.
+
+	* src/base/pdf-stm-f-rl.h: adapted to the new API.
+
+	* src/base/pdf-stm-filter.c: added the RunLength filter.
+
+	* src/base/pdf-stm-filter.h: added the RunLength filter.
+
+	* torture/unit/base/stm/pdf-stm-read.c: added decoder filter test.
+
+	* torture/unit/base/stm/pdf-stm-write.c: added encoder filter test.
+
+	* doc/gnupdf-tsd.texi: added filter tests and missing
+	pdf_stm_write() test specification.
+
+	* src/base/pdf-base.h: added pdf-list, pdf-hash and pdf-stm APIs.
+
+	* src/base/pdf-error.h: fixed PDF_ENOTEMPY error string order.
+
+	* src/base/pdf-stm-f-null.c: using memcpy() instead of strncpy().
+
+	* src/base/pdf-stm.c: same.
+
+2008-09-27  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-stm-f-ahex.c (pdf_stm_f_ahexdec_apply): Fix the
+	management of an even number of hex digits before the EOD.
+
+2008-09-26  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-stm-filter.c: Updated to take care about the
+	'dealloc_state' functions implemented by the filter
+	implementations.
+
+	* src/base/pdf-stm-f-ahex.c (pdf_stm_f_ahexdec_dealloc_state): New function.
+	(pdf_stm_f_ahexenc_dealloc_state): New function.
+
+	* src/base/pdf-stm-f-null.c (pdf_stm_f_null_dealloc_state): New function.
+
+2008-09-24  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* src/base/pdf-stm-be.c: using memcpy() instead of strncpy().
+
+2008-09-23  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-stm-f-ahex.c (pdf_stm_f_ahexdec_init): New
+	function.
+	(pdf_stm_f_ahexdec_apply): New function.
+
+	* torture/unit/base/stm/pdf-stm-write.c (START_TEST): New test
+	'pdf_stm_write_004'.
+
+	* ../ahex-filters/src/base/pdf-stm-f-ahex.c
+	(pdf_stm_f_ahexenc_apply): Use 'pdf_stm_buffer_eob_p' to decide if
+	the return value is PDF_EEOF.
+
+2008-09-22  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* utils/pdf-filter.c (main): Add support for the ASCII Hex
+	encoding filter.
+	(main): Use the number of flushed bytes, not
+	the number of written bytes.
+
+	* src/base/pdf-stm-filter.h (enum pdf_stm_filter_type_e): Filter
+	types 'PDF_STM_FILTER_AHEX_ENC' and 'PDF_STM_FILTER_AHEX_DEC'
+	added.
+
+	* src/Makefile.am (STM_MODULE_SOURCES): Sources for the ascii hex
+	filters added.
+
+	* src/base/pdf-stm-f-ahex.c (pdf_stm_f_ahexenc_init): New function.
+	(pdf_stm_f_ahexenc_apply): New function.
+	(pdf_stm_f_ahexdec_apply): New function.
+
+	* src/base/pdf-stm.c: Likewise.
+	(pdf_stm_flush): Fix the returned number of flushed bytes.
+
+	* src/base/pdf-stm-filter.c: Likewise.
+
+	* src/base/pdf-stm-filter.h: Likewise.
+
+	* src/base/pdf-stm-f-null.h: Likewise.
+
+	* src/base/pdf-stm-f-null.c: Use a void pointer to hold the filter
+	private state.
+
+	* torture/unit/runtests.c (main): Run in fork-mode by default.
+
+	* doc/gnupdf.texi (Reading and Writing Data): Fix the function
+	prototype of 'pdf_stm_read'.
+	(Managing Time Values): Fix the function prototype of
+	'pdf_time_get_local_cal'.
+
+2008-09-21  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Reading and Writing Data): New function
+	'pdf_stm_finish'.
+	Replace the old specific filter installation functions with the
+	new generic function.
+
+	* doc/gnupdf-tsd.texi (pdf_stm_write): New section.
+
+	* torture/unit/base/stm/pdf-stm-write.c (START_TEST): New test
+	'pdf_stm_write_002'.
+	(START_TEST): New test 'pdf_stm_write_003'.
+
+	* AUTHORS: Updated.
+
+	* torture/unit/Makefile.am (TEST_SUITE_STM): Source file
+	'pdf-stm-write.c' added.
+
+	* torture/unit/base/stm/tsuite-stm.c: Test suite for pdf_stm_write
+	added.
+
+	* torture/unit/base/stm/pdf-stm-write.c: New file.
+	(START_TEST): New test 'pdf_stm_write_001'.
+
+2008-09-21  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* doc/gnupdf-tsd.texi: updated for hash helper tests.
+
+	* torture/unit/Makefile.am: same.
+
+	* torture/unit/base/hash/tsuite-hash.c: same.
+
+	* torture/unit/base/hash/pdf-hash-add-hash.c: initial add.
+
+	* torture/unit/base/hash/pdf-hash-add-list.c: initial add.
+
+	* torture/unit/base/hash/pdf-hash-add-stm.c: initial add.
+
+	* torture/unit/base/hash/pdf-hash-add-text.c: initial add.
+
+	* torture/unit/base/hash/pdf-hash-add-time.c: initial add.
+
+2008-09-20  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-stm-f-null.c (pdf_stm_f_null_finish): New function.
+
+	* src/base/pdf-stm-filter.c (pdf_stm_filter_finish): New function.
+
+	* src/base/pdf-stm.c (pdf_stm_flush): New function.
+	(pdf_stm_finish): New function.
+
+	* AUTHORS: Updated.
+
+	* torture/unit/base/stm/pdf-stm-seek.c: New file.
+	(START_TEST): New test 'pdf_stm_seek_001'.
+	(START_TEST): New test 'pdf_stm_seek_002'.
+
+	* doc/gnupdf-tsd.texi (pdf_stm_seek): New section.
+
+	* src/base/pdf-stm-be.c (pdf_stm_be_mem_read): Take care about the
+	current position when reading data from the buffer.
+	(pdf_stm_be_mem_write): Take care about the current position when
+	writing data into the buffer.
+
+	* src/base/pdf-stm.c (pdf_stm_seek): New function.
+	(pdf_stm_tell): New function.
+
+	* src/base/pdf-stm-be.c (pdf_stm_be_tell): New function.
+	(pdf_stm_be_seek): New function.
+	(pdf_stm_be_mem_seek): New function.
+	(pdf_stm_be_mem_tell): New function.
+	(pdf_stm_be_file_tell): New function.
+	(pdf_stm_be_file_seek): New function.
+
+	* doc/gnupdf.texi (Managing the Filter Chain): Removed useless
+	function 'pdf_stm_uninstall_filters'.
+
+	* src/base/pdf-stm.h: Likewise.
+
+	* doc/gnupdf-tsd.texi (pdf_stm_read_char): New section.
+	(pdf_stm_peek_char): New section.
+
+	* torture/unit/base/stm/pdf-stm-peek-char.c: New file.
+
+	* src/base/pdf-stm.c (pdf_stm_peek_char): New function.
+
+	* src/base/pdf-stm-be.c (pdf_stm_be_mem_read): Advance the
+	internal position pointer after a read.
+
+	* torture/unit/base/stm/pdf-stm-read-char.c: New file.
+	(START_TEST): New test 'pdf_stm_read_char_001'.
+	(START_TEST): New test 'pdf_stm_read_char_002'.
+
+	* src/base/pdf-stm.c (pdf_stm_read_char): New function.
+
+	* doc/gnupdf-tsd.texi (pdf_stm_read): New section.
+	* doc/gnupdf-tsd.texi (pdf_stm_mem_new): New section.
+
+	* src/base/pdf-stm.c (pdf_stm_install_filter): New function.
+
+	* torture/unit/base/stm/pdf-stm-read.c: New file.
+	(START_TEST): New test 'pdf_stm_read_001'.
+	(START_TEST): New test 'pdf_stm_read_002'.
+	(START_TEST): New test 'pdf_stm_read_003'.
+	(START_TEST): New test 'pdf_stm_read_004'.
+
+	* src/base/pdf-error.h: Include stdio.h in the public area of the
+	header file to avoid undefined symbols when including pdf.h.
+
+	* torture/unit/Makefile.am (TSUITE_FILES): Add the test suite
+	definition fsource file for the stm module.
+
+	* torture/unit/base/stm/pdf-stm-mem-new.c: New file.
+	(START_TEST): New test 'pdf_stm_mem_new_001'.
+
+	* src/base/pdf-types.h (PDF_MIN): New macro.
+	(PDF_MAX): New macro.
+
+2008-09-19  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Encryption and decryption): Add missing
+	'result_size' parameter to the prototype of
+	'pdf_crypt_cipher_decrypt'.
+	(Encryption and decryption): Fix the return value type for
+	'pdf_crypt_cipher_decrypt_size'.
+	(Creating and destroying Ciphers): Fix parameters for
+	'pdf_crypt_cipher_new'.
+	(Memory Allocation): Fix parameters for 'pdf_alloc'.
+	(Memory Allocation): Fix parameters for 'pdf_realloc'.
+	(Working with iterators): Fix parameters for
+	'pdf_hash_iterator_next'.
+	(Working with iterators): Fix parameters for
+	'pdf_hash_iterator_destroy'.
+	(Managing Time Values): Fix name of parameters for
+	'pdf_time_get_utc_cal'.
+	(Managing Time Span Values): Fix parameters for
+	'pdf_time_span_negate'.
+	(Managing Time Span Values): Fix return type for
+	'pdf_time_span_to_secs'.
+	(Platform-specific functions): Fix parameters for
+	'pdf_time_w32_set_from_filetime'.
+	(Getting File System Properties): Fix parameters for
+	'pdf_fsys_get_free_space'.
+	(Getting File System Item Properties): Fix deftypefun entry for
+	'pdf_fsys_item_props_to_hash'.
+	(File System Utility Functions): Fix parameters for
+	'pdf_fsys_get_temp_path_name'.
+	(File Properties Management): Fix return value type for
+	'pdf_fsys_file_get_size'.
+	(Changing the Size of a File): Fix the prototype for
+	'pdf_fsys_file_set_size'.
+
+	* src/base/pdf-crypt.h (pdf_crypt_md_destroy): Rename 'hd' to
+	'md' to be consistent with the reference manual.
+
+	* AUTHORS: Updated.
+
+	* prmgt/fly2org: New file.
+
+	* doc/gnupdf.texi (Message digest functions): Fix prototype for
+	'pdf_crypt_md_hash'.
+
+2008-09-15  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* AUTHORS: Updated.
+
+	* src/base/pdf-text-context.c
+	(pdf_text_detect_host_language_and_country): Take into account the
+	default POSIX locale, setting an empty language and an empty
+	country in that case.
+
+2008-09-14  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Memory Allocation): Fixed a typo in the usage
+	example for 'pdf_alloc'.
+
+2008-09-13  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* prmgt/check-api-doc-consistency.pl: using '\s' class character
+	in regexs.
+
+2008-09-13  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-list.h (pdf_list_get_at): third argument should be
+	'const'.
+
+2008-09-13  David Vazquez  <davazp@gmail.com>
+
+	* src/base/pdf-error.h: Identifiers and strings are kept in a single list.
+
+
+2008-09-12  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Reading and Writing Data): Change the
+	description of 'pdf_stm_write' to the new prototype.
+
+	* src/base/pdf-stm.c (pdf_stm_write): Simplify the function
+	prototype.
+
+	* src/base/pdf-stm-buffer.c (pdf_stm_buffer_full_p): New function.
+	(pdf_stm_buffer_eob_p): New function.
+
+	* src/base/pdf-stm-filter.c (pdf_stm_filter_get_tail): New
+	function.
+
+2008-09-11  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* configure.ac: Minimum required version of libgcrypt relaxed to
+	1.2.4.
+
+	* README.bzr: Add libgcrypt >= 2.4.0 as a required package.
+
+	* src/base/pdf-types.h: System-type definitions moved to the
+	beginning of the file.
+
+	* doc/gnupdf.texi (Setting and Getting List Elements): Example for
+	'pdf_list_get_at'.
+
+	* src/base/pdf-list.h (pdf_list_get_at): value argument to
+	'pdf_list_get_at' should not be qualified with const.
+
+	* doc/gnupdf.texi (Searching for List Elements): Example for
+	'pdf_list_next_node'.
+	(Searching for List Elements): Example for
+	'pdf_list_previous_node'.
+	(Searching for List Elements): Example for 'pdf_list_indexof'.
+	(Searching for List Elements): Example for
+	'pdf_list_indexof_from'.
+	(Searching for List Elements): Example for
+	'pdf_list_indexof_from_to'.
+	(Setting and Getting List Elements): Example for
+	'pdf_list_node_value'.
+	(Setting and Getting List Elements): 'value' argument to
+	pdf_list_get_at should not be const.
+
+2008-09-10  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Searching for List Elements): Example for
+	'pdf_list_search'.
+	(Searching for List Elements): Example for 'pdf_list_search_from'.
+	(Searching for List Elements): Example for
+	'pdf_list_search_from_to'.
+
+	* AUTHORS: Updated.
+
+	* torture/unit/Makefile.am (TEST_SUITE_ALLOC): Source files for
+	the memory allocation unit tests.
+
+	* torture/unit/base/alloc/tsuite-alloc.c (tsuite_alloc): Test
+	cases for the allocation module added.
+
+	* torture/unit/base/alloc/pdf-realloc.c: New file.
+
+	* torture/unit/base/alloc/pdf-dealloc.c: New file.
+
+	* torture/unit/base/alloc/pdf-alloc.c: New file.
+
+	* doc/gnupdf.texi (Working with iterators): Example for
+	'pdf_hash_iterator_destroy'.
+	(Basic dispose functions): Example for
+	'pdf_hash_element_dealloc_fn'.
+	(Basic dispose functions): Example for 'pdf_hash_key_dealloc_fn'.
+	(Hash helper functions): Example for 'pdf_hash_add_text'.
+	(Hash helper functions): Example for 'pdf_hash_add_time'.
+	(Hash helper functions): Example for 'pdf_hash_add_list'.
+	(Hash helper functions): Example for 'pdf_hash_add_hash'.
+
+	* torture/unit/Makefile.am (TEST_SUITE_HASH): Rename
+	'pdf_hash_iterator' to 'pdf_hash_iterator_new' and
+	'pdf_hash_iterator_free' to 'pdf_hash_iterator_destroy'.
+
+	* torture/unit/base/hash/pdf-hash-iterator-new.c: File renamed
+	from 'pdf-hash-iterator.c'.
+
+	* torture/unit/base/hash/pdf-hash-iterator.c: Adapt to changes in
+	pdf_hash.
+
+	* torture/unit/base/hash/tsuite-hash.c (tsuite_hash): Likewise.
+
+	* torture/unit/base/hash/pdf-hash-iterator-next.c: Test
+	'pdf_hash_iterator_next_002' removed.
+
+	* doc/gnupdf-tsd.texi (pdf_hash_iterator_next): Removed entry for
+	test 'pdf_hash_iterator_next_002' because it doesnt has sense
+	anymore.
+
+	* torture/unit/base/hash/pdf-hash-iterator-destroy.c: File renamed
+	from 'pdf-hash-iterator-free.c'.
+
+	* src/base/pdf-hash.c (pdf_hash_iterator_new): Renamed from
+	'pdf_hash_iterator'.
+	(pdf_hash_iterator_destroy): Renamed from 'pdf_hash_iterator_free'.
+
+	* src/base/pdf-hash.h: 'pdf_hash_iterator_next' should receive a
+	'pdf_hash_iterator_t' value, not a pointer to it.
+	'pdf_hash_iterator_free' should receive a 'pdf_hash_iterator_t',
+	not a pointer to it.
+	Function 'pdf_hash_iterator' renamed to 'pdf_hash_iterator_new'.
+
+	* doc/gnupdf.texi (Creating and Destroying Hash Tables): Example
+	for 'pdf_hash_destroy'.
+	(Hash Table properties): Example for 'pdf_hash_size'.
+	(Working with keys): Example for 'pdf_hash_key_p'.
+	(Working with keys): Example for 'pdf_hash_rename'.
+	(Adding and removing elements): Example for 'pdf_hash_add'.
+	(Adding and removing elements): Example for 'pdf_hash_remove'.
+	(Searching elements): Example for 'pdf_hash_search'.
+	(Working with iterators): Example for 'pdf_hash_iterator'.
+
+	* src/base/pdf-hash-helper.c (hash_dispose_fn): Use the new
+	version of 'pdf_hash_destroy'.
+
+	* torture/unit/base/hash/pdf-hash-iterator.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-size.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-search.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-rename.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-remove.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-new.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-key-p.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-iterator-next.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-iterator-free.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-destroy.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-add.c: Likewise.
+
+	* src/base/pdf-hash.h: 'pdf_hash_destroy' should not receive a
+	pointer to a 'pdf_hash_t' but a 'pdf_hash_t' value.
+
+	* src/base/pdf-hash.c (pdf_hash_destroy): Likewise.
+
+	* doc/gnupdf.texi (Creating and Destroying Hash Tables): Example
+	for 'pdf_hash_new'.
+
+	* src/base/pdf-time.c (pdf_time_dup): Likewise.
+
+	* src/base/pdf-time-string.c (pdf_time_get_century_in_sliding_window): Likewise.
+
+	* doc/gnupdf.texi (Time Creation and Destruction): Likewise.
+
+	* src/base/pdf-time.c (pdf_time_new): Likewise.
+
+	* src/base/pdf-time.h: Changed to follow the ADT conventions.
+
+	* doc/gnupdf-hg.texi (Spaces vs. Tabs): New section.
+	(Third-party m4 macros): New section.
+
+	* m4/libgcrypt.m4: Added from the libgcrypt distribution.
+
+2008-09-09  David Vazquez  <davazp@gmail.com>
+
+	* src/base/pdf-crypt.h (pdf_crypt_md_new): New function.
+	(pdf_crypt_md_hash): New function.
+	(pdf_crypt_md_destroy): New function.
+
+	* doc/gnupdf-tsd.texi (Crypt Module): New section.
+
+2008-09-09  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-hg.texi (Generating a Bazaar Merge Directive): New
+	section.
+
+	* src/base/pdf-text-context.c: New static variable
+	'text_context_initialized'.
+
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_win32_device_p): The
+	text object 'device_name' was being initialized twice.
+	Make 'pdf_text_new' to conform to the
+	coding conventions.
+
+	* src/base/pdf-text-context.c (pdf_text_context_initialize): New
+	function.
+
+	* src/base/pdf-error.c: Error message for PDF_EBADCONTEXT.
+
+	* src/base/pdf-error.h (enum pdf_status_e): PDF_EBADCONTEXT added.
+
+	* src/base/pdf-text.c (pdf_text_new): Check for a valid global
+	context.
+
+	* src/base/pdf-text.h: Make 'pdf_text_new' to conform to the
+	coding conventions.
+
+	* torture/unit/base/text/pdf-text-set-unicode.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-set-pdfdocenc.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-set-language.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-set-host.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-set-country.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-replace.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-replace-ascii.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-new-from-unicode.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-new-from-u32.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-new-from-pdf-string.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-new-from-host.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-new-destroy.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-get-unicode.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-get-pdfdocenc.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-get-language.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-get-host.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-get-hex.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-get-country.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-get-best-encoding.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-filter.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-empty-p.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-dup.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-concat.c: Likewise.
+
+	* torture/unit/base/text/pdf-text-cmp.c: Likewise.
+
+	* doc/gnupdf.texi (Creating and Destroying Text): Likewise.
+
+	* torture/unit/Makefile.am: Likewise.
+
+	* doc/gnupdf.texi: Likewise.
+
+	* doc/gnupdf-tsd.texi: Likewise.
+
+	* src/base/pdf-text-filter.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-add.c: Rename 'pdf_hash_create'
+	to 'pdf_hash_new'.
+
+	* torture/unit/base/hash/tsuite-hash.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-size.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-search.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-rename.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-remove.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-key-p.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-iterator.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-iterator-next.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-iterator-free.c: Likewise.
+
+	* torture/unit/base/hash/pdf-hash-destroy.c: Likewise.
+
+2008-09-08  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-hash.h (pdf_hash_new): Rename from
+	'pdf_hash_create'.
+
+	* src/base/pdf-hash.c (pdf_hash_new): Likewise.
+
+	* doc/gnupdf-hg.texi (Abstract Data Types): New chapter.
+
+	* torture/unit/Makefile.am (TEST_SUITE_LIST): Rename
+	'pdf-list-create.c' to 'pdf-list-new.c'.
+
+	* torture/unit/base/list/pdf-list-new.c: File rename from
+	'pdf-list-create.c'.
+
+	* src/base/pdf-stm.c: Rename 'pdf_list_create' to 'pdf_list_new'.
+
+	* doc/gnupdf.texi: Likewise.
+
+	* torture/unit/base/list/pdf-list-add-last.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-add-first.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-add-at.c: Likewise.
+
+	* src/object/pdf-obj.c: Likewise.
+
+	* src/base/pdf-text.c: Likewise.
+
+	* torture/unit/base/list/tsuite-list.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-sorted-search.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-sorted-search-from-to.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-sorted-remove.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-sorted-indexof.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-sorted-indexof-from-to.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-sorted-add.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-size.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-set-at.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-search.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-search-from.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-search-from-to.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-remove.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-remove-node.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-remove-at.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-previous-node.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-node-value.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-next-node.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-iterator.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-iterator-next.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-iterator-from-to.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-iterator-free.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-indexof.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-indexof-from.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-indexof-from-to.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-get-at.c: Likewise.
+
+	* torture/unit/base/list/pdf-list-destroy.c: Likewise.
+
+	* doc/gnupdf-tsd.texi: Likewise.
+
+	* src/base/pdf-list.h (pdf_list_new): Rename from
+	'pdf_list_create'.
+
+2008-09-04  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* prmgt/patch_safety_dispatcher.py: End of file comment added.
+
+	* AUTHORS: Gerardo E. Gidoni wrote
+	prmgt/patch_safety_dispatcher.py
+
+2008-09-03  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* prmgt/patch_safety_dispatcher.py: small typo fix.
+
+	* doc/gnupdf-hg.texi: added section for the patch-safety-dispatcher.
+
+	* prmgt/patch_safety_dispatcher.py: first commit.
+
+2008-09-02  Zac Brown  <zac@zacbrown.org>
+	* src/base/pdf-fsys-disk.c: Change statvfs to statfs to facilitate
+	portability across unixes.
+
+	* src/base/pdf-time-context.c (pdf_time_context_init): Change
+	pdf_time_context_init to use struct tm for getting GMT offset and
+	DST settings.
+
+	* src/base/pdf-types.h: Add PDF host type for BSD operating
+	systems and include sys/param.h to get specific OS details to
+	determine whether to set PDF_HOST_BSD.
+
+2008-08-29  David Vazquez  <davazp@gmail.com>
+
+	* torture/unit/runtests.c: Add test suite crypt.
+
+	* torture/unit/base/crypt/tsuite-crypt.c: New file.
+
+	* src/base/pdf-crypt-c-v2.h: New file.
+
+	* src/base/pdf-crypt-c-v2.c: New file.
+
+	* src/base/pdf-crypt-c-aesv2.h: New file.
+
+	* src/base/pdf-crypt-c-aesv2.c: New file.
+
+	* doc/gnupdf.texi (Creating and destroying Ciphers): Rename
+	pdf_crypt_algo_e by pdf_crypt_cipher_algo_t.
+	pdf_crypt_cipher_encrypt and pdf_crypt_cipher_decrypt functions
+	return pdf_size_t.
+
+	* src/Makefile.am (AM_CFLAGS): Flags for libgcrypt added.
+	(libgnupdf_la_LIBADD): Libgcrypt library added.
+
+	* configure.ac: Check for libgcrypt library added.
+
+	* src/base/pdf-crypt.c: New file.
+
+	* src/base/pdf-crypt.h: New file.
+	(pdf_crypt_init): Implemented function.
+	(pdf_crypt_cipher_new): Implemented function.
+	(pdf_crypt_cipher_setkey): Implemented function.
+	(pdf_crypt_cipher_encrypt_size): Implemented function.
+	(pdf_crypt_cipher_decrypt_size): Implemented function.
+	(pdf_crypt_cipher_encrypt): Implemented function.
+	(pdf_crypt_cipher_decrypt): Implemented function.
+	(pdf_crypt_cipher_destroy): Implemented function.
+	(pdf_crypt_md_md5): Implemented function.
+
 2008-08-29  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf-hg.texi (Syntax Check): New section.
@@ -62,6 +926,9 @@
 
 2008-08-18  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-stm.c (pdf_stm_read): New function.
+	(pdf_stm_write): New function.
+
 	* AUTHORS: Added David Vazquez.
 
 2008-08-15  David Vazquez  <davazp@gmail.com>
@@ -115,6 +982,34 @@
 	`struct pdf_fsys_item_props_s'. Added examples for `pdf_fsys_item_p',
 	`pdf_fsys_get_item_props', `pdf_fsys_item_readable_p' and
 	`pdf_fsys_item_writable_p'
+
+2008-08-01  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-stm.c (pdf_stm_dealloc): New function.
+	(pdf_stm_destroy): New function.
+
+	* src/base/pdf-stm-filter.c (pdf_stm_filter_get_in): New function.
+	(pdf_stm_filter_set_in_end): New function.
+	(pdf_stm_filter_get_in_end): New function.
+	(pdf_stm_filter_set_in_begin): New function.
+	(pdf_stm_filter_get_in_begin): New function.
+
+2008-07-30  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Creating and Destroying Streams): API updated.
+
+	* src/base/pdf-stm.c (pdf_stm_mem_new): New function.
+	(pdf_stm_alloc): New function.
+	(pdf_stm_init): New function.
+
+2008-07-29  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-stm.c (pdf_stm_file_new): New function.
+
+	* src/base/pdf-stm.h: Offset parameter to 'pdf_stm_file_new'.
+
+	* doc/gnupdf.texi (Creating and Destroying Streams): Add an offset
+	parameter.
 
 2008-07-28  Jose E. Marchesi  <jemarch@gnu.org>
 
@@ -262,6 +1157,10 @@
 	* doc/gnupdf.texi: Changed i64 interfaces
 
 	* doc/gnupdf-tsd.texi: Added new i64 tests
+
+2008-07-21  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-types.h: pdf_stm_pos_t is not pdf_off_t
 
 2008-07-21  Jose E. Marchesi  <jemarch@gnu.org>
 

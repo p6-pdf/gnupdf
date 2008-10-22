@@ -1,9 +1,9 @@
-/* -*- mode: C -*- Time-stamp: "2008-07-23 08:13:29 gerel"
+/* -*- mode: C -*- Time-stamp: "08/09/10 20:41:07 jemarch"
  *
- *       File:         pdf-hash-iterator.c
+ *       File:         pdf-hash-iterator-free.c
  *       Date:         Wed Mar  12 12:43:00 2008
  *
- *       GNU PDF Library - Unit tests for pdf_hash_iterator
+ *       GNU PDF Library - Unit tests for pdf_hash_iterator_destroy
  *
  */
 
@@ -31,44 +31,23 @@
 #include <check.h>
 
 /*
- * Test: pdf_hash_iterator_001
+ * Test: pdf_hash_iterator_destroy_001
  * Description:
- *   Try to create an iterator.
+ *   Try to free an iterator.
  * Success condition:
  *   Returns PDF_OK
  */
-START_TEST (pdf_hash_iterator_001)
+START_TEST (pdf_hash_iterator_destroy_001)
 {
   pdf_hash_t table;
   pdf_hash_iterator_t itr;
-  
-  pdf_hash_create (NULL, &table);
 
-  fail_if (pdf_hash_iterator (table, &itr) != PDF_OK);
+  pdf_hash_new (NULL, &table);
+  pdf_hash_iterator_new (table, &itr);
 
-  pdf_hash_destroy (&table);
-  pdf_hash_iterator_free(&itr);
+  fail_if (pdf_hash_iterator_destroy (itr) != PDF_OK);
 
-}
-END_TEST
-
-
-/*
- * Test: pdf_hash_iterator_002
- * Description:
- *   Try to create an iterator given a NULL iterator pointer.
- * Success condition:
- *   Returns PDF_EBADDATA
- */
-START_TEST (pdf_hash_iterator_002)
-{
-  pdf_hash_t table;
-  
-  pdf_hash_create (NULL, &table);
-
-  fail_if (pdf_hash_iterator (table, NULL) != PDF_EBADDATA);
-
-  pdf_hash_destroy (&table);
+  pdf_hash_destroy (table);
 
 }
 END_TEST
@@ -78,12 +57,11 @@ END_TEST
  * Test case creation function
  */
 TCase *
-test_pdf_hash_iterator (void)
+test_pdf_hash_iterator_destroy (void)
 {
-  TCase *tc = tcase_create("pdf_hash_iterator");
-  tcase_add_test(tc, pdf_hash_iterator_001);
-  tcase_add_test(tc, pdf_hash_iterator_002);
+  TCase *tc = tcase_create("pdf_hash_iterator_destroy");
+  tcase_add_test(tc, pdf_hash_iterator_destroy_001);
   return tc;
 }
 
-/* End of pdf-hash-iterator.c */
+/* End of pdf-hash-iterator-free.c */

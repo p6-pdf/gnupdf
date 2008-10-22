@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 01:04:11 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-10-05 20:52:07 gerel"
  *
  *       File:         pdf-stm-f-flate.h
  *       Date:         Tue Jul 10 23:39:27 2007
@@ -27,43 +27,48 @@
 #define PDF_STM_F_FLATE_H
 
 #include <config.h>
-#include <pdf-base.h>
+#include <pdf-hash.h>
+#include <pdf-stm-buffer.h>
+#include <zlib.h>
 
-/* Filter configuration */
 
-/* BEGIN PUBLIC */
 
-enum pdf_stm_f_flate_mode_t
+#define PDF_STM_F_FLATE_CHUNK 16384
+
+struct pdf_stm_f_flate_s
 {
-  PDF_STM_F_FLATE_MODE_ENCODE,
-  PDF_STM_F_FLATE_MODE_DECODE
+  z_stream stream;
+  int zret;
+  pdf_size_t incnt, outcnt, to_write;
+  pdf_bool_t writing_p;
+  pdf_char_t inbuf[PDF_STM_F_FLATE_CHUNK], outbuf[PDF_STM_F_FLATE_CHUNK];
 };
 
-/* END PUBLIC */
+typedef struct pdf_stm_f_flate_s * pdf_stm_f_flate_t;
 
-struct pdf_stm_f_flate_conf_s
-{
-  int mode;
-};
-
-typedef struct pdf_stm_f_flate_conf_s *pdf_stm_f_flate_conf_t;
-
-/* Private data */
-
-struct pdf_stm_f_flate_data_s
-{
-  int mode;
-};
-
-typedef struct pdf_stm_f_flate_data_s *pdf_stm_f_flate_data_t;
 
 /* Filter API implementation */
 
-int pdf_stm_f_flate_init (void **filter_data, void *conf_data);
-int pdf_stm_f_flate_apply (void *filter_data,
-                          pdf_char_t *in, pdf_stm_pos_t in_size,
-                          pdf_char_t **out, pdf_stm_pos_t *out_size);
-int pdf_stm_f_flate_dealloc (void **filter_data);
+pdf_status_t pdf_stm_f_flatedec_init (pdf_hash_t params,
+                                   void **state);
+
+pdf_status_t pdf_stm_f_flatedec_apply (pdf_hash_t params,
+                                    void *state,
+                                    pdf_stm_buffer_t in,
+                                    pdf_stm_buffer_t out,
+                                    pdf_bool_t finish_p);
+
+pdf_status_t pdf_stm_f_flateenc_init (pdf_hash_t params,
+                                   void **state);
+
+pdf_status_t pdf_stm_f_flateenc_apply (pdf_hash_t params,
+                                    void *state,
+                                    pdf_stm_buffer_t in,
+                                    pdf_stm_buffer_t out,
+                                    pdf_bool_t finish_p);
+
+pdf_status_t pdf_stm_f_flatedec_dealloc_state (void *state);
+pdf_status_t pdf_stm_f_flateenc_dealloc_state (void *state);
 
 
 #endif /* pdf_stm_f_flate.h */

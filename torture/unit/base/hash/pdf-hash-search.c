@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-07-23 08:14:22 gerel"
+/* -*- mode: C -*- Time-stamp: "08/09/10 20:11:54 jemarch"
  *
  *       File:         pdf-hash-search.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -42,7 +42,7 @@ START_TEST (pdf_hash_search_001)
   pdf_hash_t table;
   char *s;
 
-  pdf_hash_create (NULL, &table);
+  pdf_hash_new (NULL, &table);
   pdf_hash_add (table, "key", "val",NULL);
   pdf_hash_add (table, "ky", "val",NULL);
   pdf_hash_add (table, "ky23", "val",NULL);
@@ -59,7 +59,7 @@ START_TEST (pdf_hash_search_001)
   
   fail_if (pdf_hash_search (table, "key", (void *) &s) != PDF_OK);
 
-  pdf_hash_destroy (&table);
+  pdf_hash_destroy (table);
 
 }
 END_TEST
@@ -76,12 +76,12 @@ START_TEST (pdf_hash_search_002)
   pdf_hash_t table;
   char *s;
 
-  pdf_hash_create (NULL, &table);
+  pdf_hash_new (NULL, &table);
   pdf_hash_add (table, "key", "val",NULL);
   
   fail_if (pdf_hash_search (table, "ke", (void *) &s) != PDF_ERROR);
 
-  pdf_hash_destroy (&table);
+  pdf_hash_destroy (table);
 
 }
 END_TEST
@@ -97,12 +97,12 @@ START_TEST (pdf_hash_search_003)
 {
   pdf_hash_t table;
 
-  pdf_hash_create (NULL, &table);
+  pdf_hash_new (NULL, &table);
   pdf_hash_add (table, "key", "val",NULL);
   
   fail_if (pdf_hash_search (table, "key", NULL) != PDF_EBADDATA);
 
-  pdf_hash_destroy (&table);
+  pdf_hash_destroy (table);
 
 }
 END_TEST
@@ -120,12 +120,12 @@ START_TEST (pdf_hash_search_004)
   pdf_hash_t table;
   char *s;
 
-  pdf_hash_create (NULL, &table);
+  pdf_hash_new (NULL, &table);
   pdf_hash_add (table, "key", "val",NULL);
   
   fail_if (pdf_hash_search (table, NULL, (void *) &s) != PDF_EBADDATA);
 
-  pdf_hash_destroy (&table);
+  pdf_hash_destroy (table);
 
 }
 END_TEST

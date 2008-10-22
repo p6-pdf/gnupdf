@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/03/17 14:22:12 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-09-09 03:48:41 david"
  *
  *       File:         pdf-list-add-at.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -44,7 +44,7 @@ START_TEST (pdf_list_add_at_001)
 
   elem = 333;
 
-  pdf_list_create (NULL, NULL, 0, &list);
+  pdf_list_new (NULL, NULL, 0, &list);
 
   st = pdf_list_add_at (list, 0, &elem, &node);
 
@@ -71,7 +71,7 @@ START_TEST (pdf_list_add_at_002)
   pdf_status_t st;
   elem = 321;
 
-  pdf_list_create (NULL, NULL, 0, &list);
+  pdf_list_new (NULL, NULL, 0, &list);
 
   st = pdf_list_add_at (list, 1, &elem, &node);
 

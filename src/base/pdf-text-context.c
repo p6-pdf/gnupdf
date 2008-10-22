@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/28 22:26:10 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/15 23:18:35 jemarch"
  *
  *       File:         pdf-text-context.c
  *       Date:         Fri Feb 25 23:58:56 2008
@@ -59,7 +59,7 @@ typedef struct pdf_text_context_s {
  *  be treated as constant from then on, so there shouldn't be any problem
  *  with multiple threading and reentrancy */
 static pdf_text_context_t text_context;
-
+static pdf_bool_t text_context_initialized = PDF_FALSE;
 
 /* Definition of the different platform-dependent EOL types, in UTF-8. This
  *  array is based on the `enum pdf_text_eol_types' enumeration. */
@@ -131,23 +131,27 @@ pdf_text_detect_host_language_and_country(void)
   
   /* Get system default locale name and check it */
   locale_name = gl_locale_name(LC_CTYPE, "LC_CTYPE");
-  if((locale_name == NULL) || \
-     (strlen(locale_name) < 2))
+  if (locale_name == NULL)
     {
-      PDF_DEBUG_BASE("Invalid locale info detected! '%s'",
+      PDF_DEBUG_BASE("Invalid locale info detected! (null)",
                      ((locale_name!=NULL) ? locale_name : "null"));
       return PDF_ETEXTENC;
     }
 
-  /* Store language ID */
-  strncpy((char *)&(text_context.host_language_id[0]), locale_name,
-          PDF_TEXT_HLL-1);
-  /* If available, store country ID */
-  if((strlen(locale_name) >= 5) && \
-     (locale_name[2] == '_'))
+  if ((strcmp (locale_name, "C") != 0) &&
+      (strcmp (locale_name, "POSIX") != 0))
     {
-      strncpy((char *)&(text_context.host_country_id[0]), &locale_name[3],
+      /* Store language ID */
+      strncpy((char *)&(text_context.host_language_id[0]), locale_name,
               PDF_TEXT_HLL-1);
+
+      /* If available, store country ID */
+      if((strlen(locale_name) >= 5) &&          \
+         (locale_name[2] == '_'))
+        {
+          strncpy((char *)&(text_context.host_country_id[0]), &locale_name[3],
+                  PDF_TEXT_HLL-1);
+        }
     }
 
   PDF_DEBUG_BASE("TextContext: Locale name is '%s'", locale_name);
@@ -188,9 +192,11 @@ pdf_text_detect_host_eol(void)
 
 
 pdf_status_t
-pdf_text_context_init(void)
+pdf_text_context_init (void)
 {
   extern pdf_text_context_t text_context;
+  extern pdf_bool_t text_context_initialized;
+
   pdf_status_t ret_code = PDF_OK;
   
 #if defined HAVE_SETLOCALE
@@ -234,7 +240,17 @@ pdf_text_context_init(void)
       return ret_code;
     }
 
+  /* Mark the context as initialized */
+  text_context_initialized = PDF_TRUE;
+
   return PDF_OK;
+}
+
+pdf_bool_t
+pdf_text_context_initialized (void)
+{
+  extern pdf_bool_t text_context_initialized;
+  return text_context_initialized;
 }
 
 enum pdf_endianness_e

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-07-24 19:19:09 gerel"
+/* -*- mode: C -*- Time-stamp: "08/10/02 22:07:35 jemarch"
  *
  *       File:         pdf-hash-helper.c
  *       Date:         Thu Jul 24 21:05:05 2008
@@ -92,15 +92,15 @@ list_dispose_fn (const void *elt)
 static void
 hash_dispose_fn (const void *elt)
 {
-  pdf_hash_destroy ((pdf_hash_t*)elt);
+  pdf_hash_destroy (*((pdf_hash_t*)elt));
 }
 
 static void
 stm_dispose_fn (const void *elt)
 {
   pdf_stm_t * stm = (pdf_stm_t*) elt;
-  pdf_stm_flush(*stm);
-  pdf_stm_close(*stm);
+  pdf_stm_flush (*stm, PDF_TRUE);
+  pdf_stm_destroy (*stm);
 }
 
 

@@ -53,14 +53,14 @@ START_TEST(pdf_text_cmp_001)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text objects with same contents */
-  fail_if(pdf_text_new_from_unicode(&text1,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF8) != PDF_OK);
-  fail_if(pdf_text_new_from_unicode(&text2,
-                                    input_data,
+                                    PDF_TEXT_UTF8,
+                                    &text1) != PDF_OK);
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF8) != PDF_OK);
+                                    PDF_TEXT_UTF8,
+                                    &text2) != PDF_OK);
   
   /* 1. The call to  pdf_text_cmp should return 0. */
   fail_unless(pdf_text_cmp(text1, text2, PDF_TRUE, &ret_code) == 0);
@@ -94,14 +94,14 @@ START_TEST(pdf_text_cmp_002)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text objects with same contents */
-  fail_if(pdf_text_new_from_unicode(&text1,
-                                    input_data,
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF8) != PDF_OK);
-  fail_if(pdf_text_new_from_unicode(&text2,
-                                    input_data,
+                                    PDF_TEXT_UTF8,
+                                    &text1) != PDF_OK);
+  fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
-                                    PDF_TEXT_UTF8) != PDF_OK);
+                                    PDF_TEXT_UTF8,
+                                    &text2) != PDF_OK);
   
   if(INTERACTIVE_DEBUG)
     {
@@ -156,14 +156,14 @@ START_TEST(pdf_text_cmp_003)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text objects with same contents */
-  fail_if(pdf_text_new_from_unicode(&text1,
-                                    upper_data,
+  fail_if(pdf_text_new_from_unicode(upper_data,
                                     input_size,
-                                    PDF_TEXT_UTF8) != PDF_OK);
-  fail_if(pdf_text_new_from_unicode(&text2,
-                                    lower_data,
+                                    PDF_TEXT_UTF8,
+                                    &text1) != PDF_OK);
+  fail_if(pdf_text_new_from_unicode(lower_data,
                                     input_size,
-                                    PDF_TEXT_UTF8) != PDF_OK);
+                                    PDF_TEXT_UTF8,
+                                    &text2) != PDF_OK);
   
   /* 1. The call to  pdf_text_cmp should NOT return 0. */
   fail_unless(pdf_text_cmp(text1, text2, PDF_TRUE, &ret_code) != 0);
@@ -198,14 +198,14 @@ START_TEST(pdf_text_cmp_004)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text objects with same contents */
-  fail_if(pdf_text_new_from_unicode(&text1,
-                                    upper_data,
+  fail_if(pdf_text_new_from_unicode(upper_data,
                                     input_size,
-                                    PDF_TEXT_UTF8) != PDF_OK);
-  fail_if(pdf_text_new_from_unicode(&text2,
-                                    lower_data,
+                                    PDF_TEXT_UTF8,
+                                    &text1) != PDF_OK);
+  fail_if(pdf_text_new_from_unicode(lower_data,
                                     input_size,
-                                    PDF_TEXT_UTF8) != PDF_OK);
+                                    PDF_TEXT_UTF8,
+                                    &text2) != PDF_OK);
   
   /* 1. The call to  pdf_text_cmp should return 0. */
   fail_unless(pdf_text_cmp(text1, text2, PDF_FALSE, &ret_code) == 0);
@@ -241,14 +241,14 @@ START_TEST(pdf_text_cmp_005)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text objects with same contents */
-  fail_if(pdf_text_new_from_unicode(&text1,
-                                    input_data1,
+  fail_if(pdf_text_new_from_unicode(input_data1,
                                     input_size1,
-                                    PDF_TEXT_UTF8) != PDF_OK);
-  fail_if(pdf_text_new_from_unicode(&text2,
-                                    input_data2,
+                                    PDF_TEXT_UTF8,
+                                    &text1) != PDF_OK);
+  fail_if(pdf_text_new_from_unicode(input_data2,
                                     input_size2,
-                                    PDF_TEXT_UTF8) != PDF_OK);
+                                    PDF_TEXT_UTF8,
+                                    &text2) != PDF_OK);
   
   /* 1. The call to  pdf_text_cmp should NOT return 0. */
   fail_unless(pdf_text_cmp(text1, text2, PDF_TRUE, &ret_code) != 0);
@@ -283,14 +283,14 @@ START_TEST(pdf_text_cmp_006)
   fail_if(pdf_text_init() != PDF_OK);
   
   /* Create text objects with same contents */
-  fail_if(pdf_text_new_from_unicode(&text1,
-                                    input_data1,
+  fail_if(pdf_text_new_from_unicode(input_data1,
                                     input_size1,
-                                    PDF_TEXT_UTF8) != PDF_OK);
-  fail_if(pdf_text_new_from_unicode(&text2,
-                                    input_data2,
+                                    PDF_TEXT_UTF8,
+                                    &text1) != PDF_OK);
+  fail_if(pdf_text_new_from_unicode(input_data2,
                                     input_size2,
-                                    PDF_TEXT_UTF8) != PDF_OK);
+                                    PDF_TEXT_UTF8,
+                                    &text2) != PDF_OK);
   
   /* 1. The call to  pdf_text_cmp should NOT return 0. */
   fail_unless(pdf_text_cmp(text1, text2, PDF_FALSE, &ret_code) != 0);

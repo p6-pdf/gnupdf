@@ -15,6 +15,7 @@ extern Suite *tsuite_list (void);
 extern Suite *tsuite_text (void);
 extern Suite *tsuite_hash (void);
 extern Suite *tsuite_types (void);
+extern Suite *tsuite_crypt (void);
 extern Suite *tsuite_error (void);
 
 int
@@ -27,17 +28,17 @@ main (int argc, char **argv)
   sr = srunner_create (NULL);
   /* Start adding suites */
   srunner_add_suite (sr, tsuite_alloc ());
-  /* Stream module unit tests are deactivated until the new
-     implementation based on the Filesystem module is done.
-  srunner_add_suite (sr, tsuite_stm ());
-  */
   srunner_add_suite (sr, tsuite_list ());
   srunner_add_suite (sr, tsuite_text ());
   srunner_add_suite (sr, tsuite_hash ());
   srunner_add_suite (sr, tsuite_types ());
+  srunner_add_suite (sr, tsuite_crypt ());
   srunner_add_suite (sr, tsuite_error ());
+  srunner_add_suite (sr, tsuite_stm ());
+
   /* Set log file */
   srunner_set_log (sr, "ut.log");
+  srunner_set_fork_status (sr, CK_FORK);
   /* Run all test suites */
   srunner_run_all (sr, CK_VERBOSE);
   failures = srunner_ntests_failed (sr);

@@ -20,10 +20,11 @@ Jose E. Marchesi: wrote AUTHORS configure.ac doc/gnupdf-manual.init
   src/base/pdf-stm-f-ahex.h src/base/pdf-stm-ahex.c
   src/base/pdf-stm-fax.h src/base/pdf-stm-fax.c
   src/base/pdf-stm-flate.h src/base/pdf-stm-flate.c
-  src/base/pdf-stm-file.h src/base/pdf-stm-file.c
   src/base/pdf-stm-f-null.h src/base/pdf-stm-f-null.c
-  src/base/pdf-stm-f-rl.h src/base/pdf-stm-f-rl.c
-  src/base/pdf-stm-mem.h src/base/pdf-stm-mem.c src/base/pdf-types.h
+  src/base/pdf-stm-buffer.h src/base/pdf-stm-buffer.c
+  src/base/pdf-stm-filter.h src/base/pdf-stm-filter.c
+  src/base/pdf-stm-be.h src/base/pdf-stm-be.c
+  src/base/pdf-types.h
   src/base/pdf-types.c src/object/pdf-obj.h src/object/pdf-obj.c
   src/document/pdf-date.h src/document/pdf-date.c
   src/document/pdf-function.h src/document/pdf-function.c
@@ -36,7 +37,16 @@ Jose E. Marchesi: wrote AUTHORS configure.ac doc/gnupdf-manual.init
   prmgt/apic2wiki.in prmgt/testlog2wiki.in
   src/base/pdf-fsys.h src/base/pdf-fsys.c src/base/pdf-fsys-def.h
   src/base/pdf-fsys-disk.h src/base/pdf-fsys-disk.c
-  prmgt/generate-coverage-report
+  prmgt/generate-coverage-report torture/unit/base/alloc/pdf-alloc.c
+  torture/unit/base/alloc/pdf-realloc.c
+  torture/unit/base/alloc/pdf-dealloc.c prmgt/fly2org
+  torture/unit/base/stm/pdf-stm-mem-new.c
+  torture/unit/base/stm/pdf-stm-peek-char.c
+  torture/unit/base/stm/pdf-stm-read-char.c
+  torture/unit/base/stm/stm-pdf-stm-read.c
+  torture/unit/base/stm/stm-pdf-seek.c 
+  torture/unit/base/stm/stm-pdf-tell.c
+  torture/unit/base/stm/stm-pdf-write.c
 and changed src/base/pdf-stm-f-pred.c src/base/pdf-stm-f-pred.h
   src/base/pdf-list.h src/base/pdf-list.c
   torture/unit/base/text/pdf-text-get-unicode.c src/base/pdf-error.h
@@ -61,12 +71,57 @@ and changed src/base/pdf-stm-f-pred.c src/base/pdf-stm-f-pred.h
   torture/unit/base/list/pdf-list-search.c
   torture/unit/base/list/pdf-list-set-at.c 
   torture/unit/base/hash/pdf-hash-search.c
+  torture/unit/base/hash/pdf-hash-add.c
+  torture/unit/base/hash/pdf-hash-destroy.c
+  torture/unit/base/hash/pdf-hash-iterator-free.c
+  torture/unit/base/hash/pdf-hash-iterator-next.c
+  torture/unit/base/hash/pdf-hash-iterator.c
+  torture/unit/base/hash/pdf-hash-key-p.c
+  torture/unit/base/hash/pdf-hash-new.c
+  torture/unit/base/hash/pdf-hash-remove.c
+  torture/unit/base/hash/pdf-hash-rename.c
+  torture/unit/base/hash/pdf-hash-size.c
+  torture/unit/base/hash/suite-hash.c
+  torture/unit/base/text/pdf-text-check-hsot-encoding.c
+  torture/unit/base/text/pdf-text-cmp.c
+  torture/unit/base/text/pdf-text-concat.c
+  torture/unit/base/text/pdf-text-dup.c
+  torture/unit/base/text/pdf-text-empty-p.c
+  torture/unit/base/text/pdf-text-filter.c
+  torture/unit/base/text/pdf-text-get-best-encoding.c
+  torture/unit/base/text/pdf-text-get-country.c
+  torture/unit/base/text/pdf-text-get-hex.c
+  torture/unit/base/text/pdf-text-get-host-encoding.c
+  torture/unit/base/text/pdf-text-get-host.c
+  torture/unit/base/text/pdf-text-get-language.c
+  torture/unit/base/text/pdf-text-get-pdfdocenc.c
+  torture/unit/base/text/pdf-text-get-unicode.c
+  torture/unit/base/text/pdf-text-init.c
+  torture/unit/base/text/pdf-text-new-destroy.c
+  torture/unit/base/text/pdf-text-new-from-host.c
+  torture/unit/base/text/pdf-text-new-from-pdf-string.c
+  torture/unit/base/text/pdf-text-new-from-u32.c
+  torture/unit/base/text/pdf-text-new-from-unicode.c
+  torture/unit/base/text/pdf-text-replace-ascii.c
+  torture/unit/base/text/pdf-text-replace.c
+  torture/unit/base/text/pdf-text-set-country.c
+  torture/unit/base/text/pdf-text-set-host.c
+  torture/unit/base/text/pdf-text-set-language.c
+  torture/unit/base/text/pdf-text-set-pdfdocenc.c
+  torture/unit/base/text/pdf-text-set-unicode.c
+  torture/unit/base/text/pdf-text-test-common.c
+  torture/unit/base/text/pdf-text-test-common.h
+  torture/unit/base/text/pdf-text-test-data.c
+  torture/unit/base/text/tsuite-text.c
   prmgt/check-api-doc-consistency.pl torture/unit/nocheck/README
+  src/base/pdf-hash.h src/base/pdf-hash.c src/base/pdf-text-context.c
 
 Juan Pedro Bolívar Puente: wrote src/base/pdf-stm-f-pred.c
   src/base/pdf-stm-f-pred.h src/base/pdf-stm-f-lzw.c
   src/base/pdf-stm-f-lzw.h 
 and changed utils/pdf-filter.c utils/pdf-filter.h
+    src/base/pdf-stm.c src/base/pdf-stm.h
+    src/base/pdf-stm-be.c src/base/pdf-stm-be.h
 
 Karl Berry: changed doc/gnupdf.texi doc/gnupdf-utils.texi
   doc/Makefile.am 
@@ -80,7 +135,8 @@ and changed configure.ac torture/Makefile.am torture/test-date.c
 
 Gerardo E. Gidoni: wrote src/base/pdf-error.c src/base/pdf-error.h
   src/base/pdf-list.c src/base/pdf-list.h src/base/pdf-hash.c
-  src/base/pdf-hash.h
+  src/base/pdf-hash.h prmgt/patch-safety-dispatcher.py
+  src/base/pdf-stm-f-rl.h src/base/pdf-stm-f-rl.c
 and changed src/base/pdf-stm.c src/base/pdf-stm.h src/base/pdf-types.h
   src/object/pdf-obj.c src/object/pdf-obj.h src/Makefile.am
 
@@ -165,5 +221,21 @@ and changed src/Makefile.am
 
 Zac Brown: changed doc/gnupdf.texi src/base/pdf-fsys-disk.c
 
-David Vazquez: changed doc/gnupdf.texi
-
+David Vazquez: wrote /torture/unit/base/crypt/
+  /torture/unit/base/crypt/pdf-crypt-cipher-decrypt.c
+  /torture/unit/base/crypt/pdf-crypt-cipher-decrypt-size.c
+  /torture/unit/base/crypt/pdf-crypt-cipher-destroy.c
+  /torture/unit/base/crypt/pdf-crypt-cipher-encrypt.c
+  /torture/unit/base/crypt/pdf-crypt-cipher-encrypt-size.c
+  /torture/unit/base/crypt/pdf-crypt-cipher-new.c
+  /torture/unit/base/crypt/pdf-crypt-cipher-setkey.c
+  /torture/unit/base/crypt/pdf-crypt-init.c
+  /torture/unit/base/crypt/pdf-crypt-md-md5.c
+  /torture/unit/base/crypt/tsuite-crypt.c
+  /src/base/pdf-crypt.c
+  /src/base/pdf-crypt-c-aesv2.c
+  /src/base/pdf-crypt-c-aesv2.h
+  /src/base/pdf-crypt-c-v2.c
+  /src/base/pdf-crypt-c-v2.h
+  /src/base/pdf-crypt.h
+changed doc/gnupdf.texi

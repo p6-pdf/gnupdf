@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/28 22:27:21 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/10 15:45:18 jemarch"
  *
  *       File:         pdf-time-string.c
  *       Date:         Sun May 18 13:08:37 2008
@@ -297,7 +297,7 @@ pdf_time_get_century_in_sliding_window(pdf_i32_t year_in_century)
   pdf_i32_t full_year = -1;
   pdf_time_t current;
   struct pdf_time_cal_s current_cal;
-  current = pdf_time_new();
+  pdf_time_new (&current);
 
   if((current != NULL) && \
      (pdf_time_set_to_current_utc_time(current) == PDF_OK) && \

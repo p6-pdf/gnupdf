@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 01:04:32 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/09/26 20:49:42 jemarch"
  *
  *       File:         pdf-stm-f-null.h
  *       Date:         Mon Jul  9 21:59:50 2007
@@ -27,28 +27,22 @@
 #define PDF_STM_F_NULL_H
 
 #include <config.h>
-#include <pdf-base.h>
+#include <pdf-types.h>
+#include <pdf-hash.h>
+#include <pdf-stm-buffer.h>
 
-/* This filter do not have a configuration structure */
+/* Filter implementation API */
 
-/* Private data */
+pdf_status_t pdf_stm_f_null_init (pdf_hash_t params,
+                                  void **state);
 
-struct pdf_stm_f_null_data_s
-{
-  int dummy;
-};
+pdf_status_t pdf_stm_f_null_apply (pdf_hash_t params,
+                                   void *state,
+                                   pdf_stm_buffer_t in,
+                                   pdf_stm_buffer_t out,
+                                   pdf_bool_t finish_p);
+pdf_status_t pdf_stm_f_null_dealloc_state (void *state);
 
-typedef struct pdf_stm_f_null_data_s *pdf_stm_f_null_data_t;
-
-/* Filter API implementation */
-
-int pdf_stm_f_null_init (void **filter_data, void *conf_data);
-int pdf_stm_f_null_apply (void *filter_data,
-                          pdf_char_t *in, pdf_stm_pos_t in_size,
-                          pdf_char_t **out, pdf_stm_pos_t *out_size);
-int pdf_stm_f_null_dealloc (void **filter_data);
-
-
-#endif /* pdf_stm_f_null.h */
+#endif /* !PDF_STM_F_NULL_H */
 
 /* End of pdf_stm_f_null.h */

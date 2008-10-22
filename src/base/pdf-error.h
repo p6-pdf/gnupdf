@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-06-15 18:48:33 gerel"
+/* -*- mode: C -*- Time-stamp: "08/10/02 14:43:41 jemarch"
  *
  *       File:         pdf-error.h
  *       Date:         Sun Feb  24 20:22:05 2008
@@ -26,6 +26,7 @@
 #ifndef PDF_ERROR_H
 #define PDF_ERROR_H
 
+#include <config.h>
 #include <stdio.h>
 
 #ifdef HAVE_DEBUG_BASE
@@ -62,30 +63,37 @@
 
 /* BEGIN PUBLIC */
 
-/* If you add a status code don't forget to add the corresponding string
- * to pdf_error_stlist[] defined in pdf-error.c.
- * Also PDF_STATUS_ITEMS must be the last entry.
- */
+#include <stdio.h>  /* Included again for the public header */
+
+#define PDF_ERROR_LIST                                                  \
+  ERROR_ENTRY (PDF_ERROR,       "error"),                               \
+  ERROR_ENTRY (PDF_EBADDATA,    "invalid or bad arguments"),            \
+  ERROR_ENTRY (PDF_ENOMEM,      "insufficient memory"),                 \
+  ERROR_ENTRY (PDF_EEOF,        "end of file"),                         \
+  ERROR_ENTRY (PDF_EDIVBYZERO,  "divison by zero"),                     \
+  ERROR_ENTRY (PDF_ENONODE,     "no node found"),                       \
+  ERROR_ENTRY (PDF_EINVRANGE,   "invalid range"),                       \
+  ERROR_ENTRY (PDF_ETEXTENC,    "error in text encoding"),              \
+  ERROR_ENTRY (PDF_ENOMATCH,    "no matching found"),                   \
+  ERROR_ENTRY (PDF_EBADTEXT,    "invalid text format"),                 \
+  ERROR_ENTRY (PDF_EBADPERMS,   "not enough permissions"),              \
+  ERROR_ENTRY (PDF_EBADNAME,    "invalid path name"),                   \
+  ERROR_ENTRY (PDF_EAGAIN,      "operation can't be performed now, maybe later"), \
+  ERROR_ENTRY (PDF_ENOSPC,      "no space left on device"),             \
+  ERROR_ENTRY (PDF_EBADCONTEXT, "text module global context not initialized"), \
+  ERROR_ENTRY (PDF_ENOTEMPTY,   "operation requires some entity be empty"), \
+  ERROR_ENTRY (PDF_ENINPUT,     "filter needs more input"), \
+  ERROR_ENTRY (PDF_ENOUTPUT,    "filter needs more output room")
+
+
+#define ERROR_ENTRY(id,string) id
 enum pdf_status_e
 {
-        PDF_OK = 0,
-        PDF_ERROR,
-        PDF_EBADDATA,
-        PDF_ENOMEM,
-        PDF_EEOF,
-        PDF_EDIVBYZERO,
-        PDF_ENONODE,
-        PDF_EINVRANGE,
-        PDF_ETEXTENC,
-        PDF_ENOMATCH,
-        PDF_EBADTEXT,
-        PDF_EBADPERMS,
-        PDF_EBADNAME,
-        PDF_EAGAIN,
-        PDF_ENOSPC,
-        PDF_ENOTEMPTY,
-        PDF_STATUS_ITEMS
+  PDF_OK = 0,
+  PDF_ERROR_LIST,
+  PDF_STATUS_ITEMS
 };
+#undef ERROR_ENTRY
 
 typedef enum pdf_status_e pdf_status_t;
 
