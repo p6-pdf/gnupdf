@@ -161,7 +161,6 @@ The call should not produce an error.
 * pdf_fsys_file_set_size::
 * pdf_fsys_file_read::
 * pdf_fsys_file_write::
-* pdf_fsys_file_flush::
 * pdf_fsys_file_request_ria::
 * pdf_fsys_file_has_ria::
 * pdf_fsys_file_cancle_ria::
@@ -616,32 +615,161 @@ Get size of an opened file
 @node pdf_fsys_file_set_size
 @subsection pdf_fsys_file_set_size
 
+@deffn Test pdf_fsys_file_set_size_001
+Set size of on opended file
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_set_size} should return the new file size (old size plus added size).
+@end table
+@end deffn
+
 @node pdf_fsys_file_read
-@subsection pdf_fsys_file_write
+@subsection pdf_fsys_file_read
+
+@deffn Test pdf_fsys_file_read_001
+Read from an opened file
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_read} should return a size that matches the size of the read data. The
+read data should equal the data in the file.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_file_read_002
+Read more data from an opened file than it contains
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_read} should return @code{0}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_file_read_003
+Read data from an opened file, that was opened for writing only
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_read} should return @code{0}.
+@end table
+@end deffn
 
 @node pdf_fsys_file_write
-@subsection pdf_fsys_file_flush
+@subsection pdf_fsys_file_write
 
-@node pdf_fsys_file_flush
-@subsection pdf_fsys_file_flush
+@deffn Test pdf_fsys_file_write_001
+Write data to an opened file
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_write} should return the size of the data writen to the file.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_file_write_002
+Write more data to an opened file than space is available
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_write} should return @code{0}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_file_write_003
+Write data to an opened file that was opened readonly.
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_write} should return @code{0}.
+@end table
+@end deffn
 
 @node pdf_fsys_file_request_ria
 @subsection pdf_fsys_file_request_ria
 
+@deffn Test pdf_fsys_file_request_ria_001
+Request a read-in-advance operation for on open file on a filesystem, that supports ria.
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_request_ria} should return @code{PDF_OK}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_file_request_ria_002
+Request a read-in-advance operation for on open file on a filesystem, 
+that doesn't support ria.
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_request_ria} should return @code{PDF_ERROR}.
+@end table
+@end deffn
+
 @node pdf_fsys_file_has_ria
 @subsection pdf_fsys_file_has_ria
+
+@deffn Test pdf_fsys_file_has_ria_001
+Check if the filesystem is performing a ria operation on an open 
+file that has an ongoing ria operation.
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_has_ria} should return @code{PDF_TRUE}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_file_has_ria_002
+Check if the filesystem is performing a ria operation on an open 
+file that has no ongoing ria operation.
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_has_ria} should return @code{PDF_FALSE}.
+@end table
+@end deffn
+
+@deffn Test pdf_fsys_file_has_ria_003
+Check if the filesystem is performing a ria operation on an open 
+file, on a filesystem, that doesn't support ria operations.
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_has_ria} should return @code{PDF_FALSE}.
+@end table
+@end deffn
 
 @node pdf_fsys_file_cancle_ria
 @subsection pdf_fsys_file_cancle_ria
 
+@deffn Test pdf_fsys_file_cancle_ria_001
+Cancle all read-in-advance operations for an open file.
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_cancle_ria} should return @code{PDF_OK}.
+@end table
+@end deffn
+
+
+
 @node pdf_fsys_file_close
 @subsection pdf_fsys_file_close
+
+@deffn Test pdf_fsys_file_close_001
+Close a file.
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_close} should return @code{PDF_OK}.
+@end table
+@end deffn
 
 @node pdf_fsys_file_reopen
 @subsection pdf_fsys_file_reopen
 
+@deffn Test pdf_fsys_file_reopen_001
+Reopen a file with right permissions in any mode.
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_reopen} should return @code{PDF_OK}.
+@end table
+@end deffn
 
-
+@deffn Test pdf_fsys_file_reopen_002
+Reopen a readonly file in write mode.
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_reopen} should return @code{PDF_EBADPERMS}.
+@end table
+@end deffn
 
 
 
