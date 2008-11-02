@@ -157,15 +157,17 @@ The call should not produce an error.
 * pdf_fsys_file_set_mode::
 * pdf_fsys_file_get_size::
 * pdf_fsys_file_same_p::
-* pdf_fsys_file_get_size::
 * pdf_fsys_file_set_size::
 * pdf_fsys_file_read::
 * pdf_fsys_file_write::
+* pdf_fsys_file_flush::
 * pdf_fsys_file_request_ria::
 * pdf_fsys_file_has_ria::
 * pdf_fsys_file_cancle_ria::
 * pdf_fsys_file_close::
 * pdf_fsys_file_reopen::
+* pdf_fsys_create::
+* pdf_fsys_destroy::
 @end menu
 
 @node pdf_fsys_get_free_space
@@ -574,8 +576,8 @@ Get the size of an open file
 @end table
 @end deffn
 
-@node pdf_fsys_same_p
-@subsubsection pdf_fsys_same_p
+@node pdf_fsys_file_same_p
+@subsubsection pdf_fsys_file_same_p
 
 @deffn Test pdf_fsys_file_same_p_001
 Compare an open file with its own path
@@ -601,19 +603,8 @@ Compare an open file with a non-existing path
 @end table
 @end deffn
 
-@node pdf_fsys_file_get_size
-@subsection pdf_fsys_file_get_size
-
-@deffn Test pdf_fsys_file_get_size_001
-Get size of an opened file
-@table @strong
-@item Success condition
-@code{pdf_fsys_file_get_size} should return the file's size.
-@end table
-@end deffn
-
 @node pdf_fsys_file_set_size
-@subsection pdf_fsys_file_set_size
+@subsubsection pdf_fsys_file_set_size
 
 @deffn Test pdf_fsys_file_set_size_001
 Set size of on opended file
@@ -624,7 +615,7 @@ Set size of on opended file
 @end deffn
 
 @node pdf_fsys_file_read
-@subsection pdf_fsys_file_read
+@subsubsection pdf_fsys_file_read
 
 @deffn Test pdf_fsys_file_read_001
 Read from an opened file
@@ -652,7 +643,7 @@ Read data from an opened file, that was opened for writing only
 @end deffn
 
 @node pdf_fsys_file_write
-@subsection pdf_fsys_file_write
+@subsubsection pdf_fsys_file_write
 
 @deffn Test pdf_fsys_file_write_001
 Write data to an opened file
@@ -678,8 +669,19 @@ Write data to an opened file that was opened readonly.
 @end table
 @end deffn
 
+@node pdf_fsys_file_flush
+@subsubsection pdf_fsys_file_flush
+
+@deffn Test pdf_fsys_file_flush_001
+Write data to a file, flush it and test if it's in the file.
+@table @strong
+@item Success condition
+@code{pdf_fsys_file_flush} should return @code{PDF_OK}.
+@end table
+@end deffn
+
 @node pdf_fsys_file_request_ria
-@subsection pdf_fsys_file_request_ria
+@subsubsection pdf_fsys_file_request_ria
 
 @deffn Test pdf_fsys_file_request_ria_001
 Request a read-in-advance operation for on open file on a filesystem, that supports ria.
@@ -699,7 +701,7 @@ that doesn't support ria.
 @end deffn
 
 @node pdf_fsys_file_has_ria
-@subsection pdf_fsys_file_has_ria
+@subsubsection pdf_fsys_file_has_ria
 
 @deffn Test pdf_fsys_file_has_ria_001
 Check if the filesystem is performing a ria operation on an open 
@@ -729,7 +731,7 @@ file, on a filesystem, that doesn't support ria operations.
 @end deffn
 
 @node pdf_fsys_file_cancle_ria
-@subsection pdf_fsys_file_cancle_ria
+@subsubsection pdf_fsys_file_cancle_ria
 
 @deffn Test pdf_fsys_file_cancle_ria_001
 Cancle all read-in-advance operations for an open file.
@@ -739,10 +741,8 @@ Cancle all read-in-advance operations for an open file.
 @end table
 @end deffn
 
-
-
 @node pdf_fsys_file_close
-@subsection pdf_fsys_file_close
+@subsubsection pdf_fsys_file_close
 
 @deffn Test pdf_fsys_file_close_001
 Close a file.
@@ -753,7 +753,7 @@ Close a file.
 @end deffn
 
 @node pdf_fsys_file_reopen
-@subsection pdf_fsys_file_reopen
+@subsubsection pdf_fsys_file_reopen
 
 @deffn Test pdf_fsys_file_reopen_001
 Reopen a file with right permissions in any mode.
@@ -771,13 +771,27 @@ Reopen a readonly file in write mode.
 @end table
 @end deffn
 
+@node pdf_fsys_create
+@subsubsection pdf_fsys_create
 
+@deffn Test pdf_fsys_create_001
+Create filesystem.
+@table @strong
+@item Success condition
+@code{pdf_fsys_create} should return @code{PDF_OK}.
+@end table
+@end deffn
 
+@node pdf_fsys_destroy
+@subsubsection pdf_fsys_destroy
 
-
-
-
-
+@deffn Test pdf_fsys_destroy_001
+Destroy filesystem.
+@table @strong
+@item Success condition
+@code{pdf_fsys_destroy} should return @code{PDF_OK}.
+@end table
+@end deffn
 
 
 @node Stream Module
