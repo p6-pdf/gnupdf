@@ -4023,11 +4023,11 @@ pdf_text_ucd_create_case_context(pdf_text_ucd_context_t *context,
   /* Set language code, if any */
   if(strlen((char *)language) == 2)
     {
-      strncpy((char *)&(context->locale[2]), (char *)language, 2);
+      strncpy((char *)&(context->locale[0]), (char *)language, 2);
     }
   else
     {
-      strncpy((char *)&(context->locale[2]), "  ", 2);
+      strncpy((char *)&(context->locale[0]), "  ", 2);
     }
   
   return PDF_OK;

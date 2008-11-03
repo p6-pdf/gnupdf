@@ -1,3 +1,20 @@
+2008-11-04  Aleksander Morgado  <aleksander@es.gnu.org>
+
+	* utils/pdf-filter.c (process_stream): We should check return value of
+	fwrite to avoid gcc warning.
+
+	* src/base/pdf-text-ucd-case.c (pdf_text_ucd_create_case_context): Avoid
+	buffer overflow.
+
+	* torture/unit/base/text/pdf-text-new-from-pdf-string.c: pdf_size_t is a
+	32-bit integer in 32-bit machines. Avoid warnings when printing it.
+
+	* torture/unit/base/text/pdf-text-filter.c: strlen returns size_t, so
+	cast it to long always before printing it, so that there won't be any
+	warning neither in 32bit nor in 64bit machines.
+
+	* torture/unit/base/text/pdf-text-cmp.c: Idem.	
+
 2008-10-12  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-text-host-encoding.c
