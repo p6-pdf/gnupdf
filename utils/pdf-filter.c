@@ -156,10 +156,13 @@ process_stream (pdf_stm_t stm, pdf_bool_t read_mode)
       /* Read from the buffer which will process anything on stdin
 	 and push to stdout */
       do
-	{
-	  read_bytes = pdf_stm_read (stm, buf, BUF_SIZE);
-	  fwrite (buf, 1, read_bytes, stdout);
-	}
+        {
+          read_bytes = pdf_stm_read (stm, buf, BUF_SIZE);
+	      if(fwrite (buf, 1, read_bytes, stdout) != read_bytes)
+            {
+              fprintf(stderr,"fwrite failed (%ld)", (long)read_bytes);
+             }
+	    }
       while (read_bytes == BUF_SIZE);
     }
   else

@@ -1,3 +1,4 @@
+
 /* -*- mode: C -*- Time-stamp: ""
  *
  *       File:         pdf-text-cmp.c
@@ -109,7 +110,7 @@ START_TEST(pdf_text_cmp_002)
       internal_hex = pdf_text_test_get_hex(text1->data, text1->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_cmp_002:1:Text1> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   if(INTERACTIVE_DEBUG)
@@ -118,7 +119,7 @@ START_TEST(pdf_text_cmp_002)
       internal_hex = pdf_text_test_get_hex(text2->data, text2->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_cmp_002:1:Text2> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
 

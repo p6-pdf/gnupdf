@@ -65,8 +65,8 @@ START_TEST(pdf_text_filter_001)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  input_size = strlen((char *)input_data);
-  expected_size = strlen((char *)expected_data);
+  input_size = (long)strlen((char *)input_data);
+  expected_size = (long)strlen((char *)expected_data);
   
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
@@ -82,7 +82,7 @@ START_TEST(pdf_text_filter_001)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_001:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)(long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -95,7 +95,7 @@ START_TEST(pdf_text_filter_001)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_001:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)(long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -147,7 +147,7 @@ START_TEST(pdf_text_filter_002)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_002:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)(long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -160,7 +160,7 @@ START_TEST(pdf_text_filter_002)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_002:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)(long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -206,8 +206,8 @@ START_TEST(pdf_text_filter_003)
   pdf_char_t *output_data;
   pdf_size_t output_size;
   
-  input_size = strlen((char *)input_data);
-  expected_size = strlen((char *)expected_data);
+  input_size = (long)strlen((char *)input_data);
+  expected_size = (long)strlen((char *)expected_data);
   
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
@@ -223,7 +223,7 @@ START_TEST(pdf_text_filter_003)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_003:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)(long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -237,7 +237,7 @@ START_TEST(pdf_text_filter_003)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_003:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)(long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -289,7 +289,7 @@ START_TEST(pdf_text_filter_004)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_004:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)(long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -303,7 +303,7 @@ START_TEST(pdf_text_filter_004)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_004:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)(long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -343,8 +343,8 @@ START_TEST(pdf_text_filter_005)
   pdf_char_t *output_data;
   pdf_size_t output_size;
   
-  input_size = strlen((char *)input_data);
-  expected_size = strlen((char *)expected_data);
+  input_size = (long)strlen((char *)input_data);
+  expected_size = (long)strlen((char *)expected_data);
   
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_text_init() != PDF_OK);
@@ -359,7 +359,7 @@ START_TEST(pdf_text_filter_005)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_005:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)(long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -372,7 +372,7 @@ START_TEST(pdf_text_filter_005)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_005:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)(long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -424,7 +424,7 @@ START_TEST(pdf_text_filter_006)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_006:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)(long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -437,7 +437,7 @@ START_TEST(pdf_text_filter_006)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_006:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)(long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -499,7 +499,7 @@ START_TEST(pdf_text_filter_007)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_007:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -513,7 +513,7 @@ START_TEST(pdf_text_filter_007)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_007:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -568,7 +568,7 @@ START_TEST(pdf_text_filter_008)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_007:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -582,7 +582,7 @@ START_TEST(pdf_text_filter_008)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_007:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -634,7 +634,7 @@ START_TEST(pdf_text_filter_009)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_006:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -648,7 +648,7 @@ START_TEST(pdf_text_filter_009)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_006:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -711,7 +711,7 @@ START_TEST(pdf_text_filter_010)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_010:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -724,7 +724,7 @@ START_TEST(pdf_text_filter_010)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_010:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -788,7 +788,7 @@ START_TEST(pdf_text_filter_011)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_011:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -801,7 +801,7 @@ START_TEST(pdf_text_filter_011)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_011:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -993,7 +993,7 @@ START_TEST(pdf_text_filter_013)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_013:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -1006,7 +1006,7 @@ START_TEST(pdf_text_filter_013)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_013:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -1070,7 +1070,7 @@ START_TEST(pdf_text_filter_014)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_014:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -1083,7 +1083,7 @@ START_TEST(pdf_text_filter_014)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_014:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -1169,7 +1169,7 @@ START_TEST(pdf_text_filter_016)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_016:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -1182,7 +1182,7 @@ START_TEST(pdf_text_filter_016)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_016:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -1246,7 +1246,7 @@ START_TEST(pdf_text_filter_017)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_017:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -1259,7 +1259,7 @@ START_TEST(pdf_text_filter_017)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_017:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -1327,7 +1327,7 @@ START_TEST(pdf_text_filter_018)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_016:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -1340,7 +1340,7 @@ START_TEST(pdf_text_filter_018)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_016:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -1409,7 +1409,7 @@ START_TEST(pdf_text_filter_019)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_016:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -1422,7 +1422,7 @@ START_TEST(pdf_text_filter_019)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_016:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -1624,7 +1624,7 @@ START_TEST(pdf_text_filter_021)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_021:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -1637,7 +1637,7 @@ START_TEST(pdf_text_filter_021)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_021:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -1705,7 +1705,7 @@ START_TEST(pdf_text_filter_022)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_022:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -1718,7 +1718,7 @@ START_TEST(pdf_text_filter_022)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_022:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -1809,7 +1809,7 @@ START_TEST(pdf_text_filter_024)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_024:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -1822,7 +1822,7 @@ START_TEST(pdf_text_filter_024)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_024:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -1886,7 +1886,7 @@ START_TEST(pdf_text_filter_025)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_025:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -1899,7 +1899,7 @@ START_TEST(pdf_text_filter_025)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_025:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -1971,7 +1971,7 @@ START_TEST(pdf_text_filter_026)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_026:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -1984,7 +1984,7 @@ START_TEST(pdf_text_filter_026)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_026:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -2057,7 +2057,7 @@ START_TEST(pdf_text_filter_027)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_027:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -2070,7 +2070,7 @@ START_TEST(pdf_text_filter_027)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_027:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -2134,7 +2134,7 @@ START_TEST(pdf_text_filter_028)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_028:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -2147,7 +2147,7 @@ START_TEST(pdf_text_filter_028)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_028:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -2205,7 +2205,7 @@ START_TEST(pdf_text_filter_029)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_029:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -2218,7 +2218,7 @@ START_TEST(pdf_text_filter_029)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_029:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -2441,7 +2441,7 @@ START_TEST(pdf_text_filter_031)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_031:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -2454,7 +2454,7 @@ START_TEST(pdf_text_filter_031)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_031:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -2518,7 +2518,7 @@ START_TEST(pdf_text_filter_032)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_032:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -2531,7 +2531,7 @@ START_TEST(pdf_text_filter_032)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_032:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -2616,7 +2616,7 @@ START_TEST(pdf_text_filter_034)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_034:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -2629,7 +2629,7 @@ START_TEST(pdf_text_filter_034)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_034:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -2692,7 +2692,7 @@ START_TEST(pdf_text_filter_035)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_035:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -2705,7 +2705,7 @@ START_TEST(pdf_text_filter_035)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_035:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -2772,7 +2772,7 @@ START_TEST(pdf_text_filter_036)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_016:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -2785,7 +2785,7 @@ START_TEST(pdf_text_filter_036)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_016:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -2854,7 +2854,7 @@ START_TEST(pdf_text_filter_037)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_037:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -2867,7 +2867,7 @@ START_TEST(pdf_text_filter_037)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_037:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -3084,7 +3084,7 @@ START_TEST(pdf_text_filter_039)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_039:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -3097,7 +3097,7 @@ START_TEST(pdf_text_filter_039)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_039:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -3166,7 +3166,7 @@ START_TEST(pdf_text_filter_040)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_040:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -3179,7 +3179,7 @@ START_TEST(pdf_text_filter_040)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_040:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -3270,7 +3270,7 @@ START_TEST(pdf_text_filter_042)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_042:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -3283,7 +3283,7 @@ START_TEST(pdf_text_filter_042)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_042:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -3347,7 +3347,7 @@ START_TEST(pdf_text_filter_043)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_043:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -3360,7 +3360,7 @@ START_TEST(pdf_text_filter_043)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_043:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -3432,7 +3432,7 @@ START_TEST(pdf_text_filter_044)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_044:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -3445,7 +3445,7 @@ START_TEST(pdf_text_filter_044)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_044:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -3517,7 +3517,7 @@ START_TEST(pdf_text_filter_045)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_045:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -3530,7 +3530,7 @@ START_TEST(pdf_text_filter_045)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_045:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -3594,7 +3594,7 @@ START_TEST(pdf_text_filter_046)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_046:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -3607,7 +3607,7 @@ START_TEST(pdf_text_filter_046)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_046:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -3667,7 +3667,7 @@ START_TEST(pdf_text_filter_047)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_047:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -3680,7 +3680,7 @@ START_TEST(pdf_text_filter_047)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_047:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -3891,7 +3891,7 @@ START_TEST(pdf_text_filter_049)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_049:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -3904,7 +3904,7 @@ START_TEST(pdf_text_filter_049)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_049:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -3970,7 +3970,7 @@ START_TEST(pdf_text_filter_050)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_050:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -3983,7 +3983,7 @@ START_TEST(pdf_text_filter_050)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_050:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -4070,7 +4070,7 @@ START_TEST(pdf_text_filter_052)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_052:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -4083,7 +4083,7 @@ START_TEST(pdf_text_filter_052)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_052:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -4148,7 +4148,7 @@ START_TEST(pdf_text_filter_053)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_053:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -4161,7 +4161,7 @@ START_TEST(pdf_text_filter_053)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_053:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -4230,7 +4230,7 @@ START_TEST(pdf_text_filter_054)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_054:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -4243,7 +4243,7 @@ START_TEST(pdf_text_filter_054)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_054:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -4314,7 +4314,7 @@ START_TEST(pdf_text_filter_055)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_055:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -4327,7 +4327,7 @@ START_TEST(pdf_text_filter_055)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_055:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -4552,7 +4552,7 @@ START_TEST(pdf_text_filter_057)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_057:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -4565,7 +4565,7 @@ START_TEST(pdf_text_filter_057)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_057:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -4636,7 +4636,7 @@ START_TEST(pdf_text_filter_058)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_058:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -4649,7 +4649,7 @@ START_TEST(pdf_text_filter_058)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_058:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -4742,7 +4742,7 @@ START_TEST(pdf_text_filter_060)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_060:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -4755,7 +4755,7 @@ START_TEST(pdf_text_filter_060)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_060:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -4821,7 +4821,7 @@ START_TEST(pdf_text_filter_061)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_061:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -4834,7 +4834,7 @@ START_TEST(pdf_text_filter_061)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_061:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -4908,7 +4908,7 @@ START_TEST(pdf_text_filter_062)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_062:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -4921,7 +4921,7 @@ START_TEST(pdf_text_filter_062)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_062:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -4993,7 +4993,7 @@ START_TEST(pdf_text_filter_063)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_063:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   
@@ -5006,7 +5006,7 @@ START_TEST(pdf_text_filter_063)
       internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_063:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, strlen((char *)internal_hex));
+             internal_hex, (long)strlen((char *)internal_hex));
       pdf_dealloc(internal_hex);
     }
   

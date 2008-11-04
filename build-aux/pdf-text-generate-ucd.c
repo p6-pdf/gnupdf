@@ -772,7 +772,7 @@ add_entry_to_UnicodeData_CASE(FILE *pf,
           for(i=0; i<PDF_TEXT_MNSC; i++)
             {
               fprintf(pf, "%ld%s",
-                      ((i<special_case_info->n_deltas) ? special_case_info->p_deltas[i] : -1),
+                      (long)((i<special_case_info->n_deltas) ? special_case_info->p_deltas[i] : -1),
                       ((i==PDF_TEXT_MNSC-1) ? " } }," : ", "));
             }
           
@@ -962,7 +962,7 @@ compute_UnicodeData_CASE(const char *UnicodeDataFile,
     {
       if(special_case_array_entries_flags[index] == 0)
         {
-          printf("***** Special casing in index '%d' not considered!!!!\n",
+          printf("***** Special casing in index '%ld' not considered!!!!\n",
                  index);
         }
     }

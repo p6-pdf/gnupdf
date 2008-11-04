@@ -798,7 +798,7 @@ START_TEST(pdf_text_new_from_pdf_string_008)
           printf("pdf_text_new_from_pdf_string_008:%d:Country_1> '%s'\n",
                  i, pdf_text_get_country(text1));
           printf("pdf_text_new_from_pdf_string_008:%d:remaining_length_1> "
-                 "'%ld'\n", i, remaining_length);
+                 "'%ld'\n", i, (long)remaining_length);
           printf("pdf_text_new_from_pdf_string_008:%d:remaining_length_1> "
                  "'%s'\n", i, ((remaining_str == NULL)?"NULL":"not NULL"));
         }
@@ -854,7 +854,7 @@ START_TEST(pdf_text_new_from_pdf_string_008)
           printf("pdf_text_new_from_pdf_string_008:%d:Country_2> '%s'\n",
                  i, pdf_text_get_country(text2));
           printf("pdf_text_new_from_pdf_string_008:%d:remaining_length_2> "
-                 "'%ld'\n", i, remaining_length);
+                 "'%ld'\n", i, (long)remaining_length);
           printf("pdf_text_new_from_pdf_string_008:%d:remaining_length_2> "
                  "'%s'\n", i, ((remaining_str == NULL)?"NULL":"not NULL"));
         }
@@ -910,7 +910,7 @@ START_TEST(pdf_text_new_from_pdf_string_008)
           printf("pdf_text_new_from_pdf_string_008:%d:Country_3> '%s'\n",
                  i, pdf_text_get_country(text3));
           printf("pdf_text_new_from_pdf_string_008:%d:remaining_length_3> "
-                 "'%ld'\n", i, remaining_length);
+                 "'%ld'\n", i, (long)remaining_length);
           printf("pdf_text_new_from_pdf_string_008:%d:remaining_length_3> "
                  "'%s'\n", i, ((remaining_str == NULL)?"NULL":"not NULL"));
         }
@@ -1134,7 +1134,7 @@ START_TEST(pdf_text_new_from_pdf_string_009)
           printf("pdf_text_new_from_pdf_string_008:%d:Country_1> '%s'\n",
                  i, pdf_text_get_country(text1));
           printf("pdf_text_new_from_pdf_string_008:%d:remaining_length_1> "
-                 "'%ld'\n", i, remaining_length);
+                 "'%ld'\n", i, (long)remaining_length);
           printf("pdf_text_new_from_pdf_string_008:%d:remaining_length_1> "
                  "'%s'\n", i, ((remaining_str == NULL)?"NULL":"not NULL"));
         }
@@ -1192,7 +1192,7 @@ START_TEST(pdf_text_new_from_pdf_string_009)
           printf("pdf_text_new_from_pdf_string_008:%d:Country_2> '%s'\n",
                  i, pdf_text_get_country(text2));
           printf("pdf_text_new_from_pdf_string_008:%d:remaining_length_2> "
-                 "'%ld'\n", i, remaining_length);
+                 "'%ld'\n", i, (long)remaining_length);
           printf("pdf_text_new_from_pdf_string_008:%d:remaining_length_2> "
                  "'%s'\n", i, ((remaining_str == NULL)?"NULL":"not NULL"));
         }
@@ -1250,7 +1250,7 @@ START_TEST(pdf_text_new_from_pdf_string_009)
           printf("pdf_text_new_from_pdf_string_008:%d:Country_3> '%s'\n",
                  i, pdf_text_get_country(text3));
           printf("pdf_text_new_from_pdf_string_008:%d:remaining_length_3> "
-                 "'%ld'\n", i, remaining_length);
+                 "'%ld'\n", i, (long)remaining_length);
           printf("pdf_text_new_from_pdf_string_008:%d:remaining_length_3> "
                  "'%s'\n", i, ((remaining_str == NULL)?"NULL":"not NULL"));
         }
