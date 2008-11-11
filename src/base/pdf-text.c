@@ -781,8 +781,8 @@ pdf_text_get_unicode (pdf_char_t **contents,
             }
 
           out_data = new_out_data;
-          out_length += (header_size);
-        }  
+          out_length += (header_size + trailer_size);
+        }
       else
         {
           PDF_DEBUG_BASE("Invalid unicode option requested (%u)",

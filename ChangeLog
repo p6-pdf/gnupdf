@@ -1,5 +1,11 @@
 2008-11-11  Aleksander Morgado  <aleksander@es.gnu.org>
 
+	* src/base/pdf-text.c (pdf_text_get_unicode): Correct out_length when
+	using PDF_TEXT_UNICODE_WITH_NUL_SUFFIX.
+
+	* torture/unit/base/text/pdf-text-get-unicode.c
+	(test_pdf_text_get_unicode): Added implementation of new test cases.
+
 	* doc/gnupdf-tsd.texi (pdf_text_get_unicode): Added new test cases to
 	test the new option in `pdf_text_get_unicode' function to get the string
 	with a NUL suffix.
