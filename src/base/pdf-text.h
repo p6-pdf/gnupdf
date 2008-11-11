@@ -60,9 +60,10 @@ enum pdf_text_unicode_encoding_e {
  *  Each of these enumerations is a Mask of Bits, so that multiple options 
  *  can be set at the same time */
 enum pdf_text_unicode_options_e {
-  PDF_TEXT_UNICODE_NO_OPTION     = 0x00,
-  PDF_TEXT_UNICODE_WITH_BOM      = 0x01, /* UTF-8, UTF-16(L/B)E, UTF-32(L/B)E */
-  PDF_TEXT_UTF16BE_WITH_LANGCODE = 0x02  /* UTF16BE */
+  PDF_TEXT_UNICODE_NO_OPTION       = 0x00,
+  PDF_TEXT_UNICODE_WITH_BOM        = 0x01, /* UTF-8, UTF-16(L/B)E, UTF-32(L/B)E */
+  PDF_TEXT_UTF16BE_WITH_LANGCODE   = 0x02, /* UTF16BE */
+  PDF_TEXT_UNICODE_WITH_NUL_SUFFIX = 0x04  /* UTF-8, UTF-16(L/B)E, UTF-32(L/B)E */
 };
 
 

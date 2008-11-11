@@ -2488,6 +2488,553 @@ Get the contents of an empty text object with language info (no country info), i
 @end deffn
 
 
+@deffn Test pdf_text_get_unicode_055
+Get the contents of a non-empty text object in UTF-8 without BOM and with NUL suffix. The contents of the text object include characters that are encoded in UTF-8 using 8-bit, 16-bit, 24-bit and 32-bit.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be the expected one, NUL terminated.
+
+3. The returned length must be the expected one, including the length of the last NUL.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_056
+Get the contents of a non-empty text object in UTF-8 with BOM and with NUL suffix. The contents of the text object include characters that are encoded in UTF-8 using 8-bit, 16-bit, 24-bit and 32-bit.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be the expected one, NUL terminated.
+
+3. The returned length must be the expected one, including the length of the BOM in UTF-8 and the length of the last NUL.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_057
+Get the contents of an empty text object in UTF-8 without BOM and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must not be NULL, and should include the last NUL.
+
+3. The returned length must be equal to 1.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_058
+Get the contents of an empty text object in UTF-8 with BOM and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must only contain the BOM in UTF-8, NUL terminated.
+
+3. The returned length must be equal to the length of the BOM in UTF-8 plus the length of the last NUL.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_059
+Get the contents of a non-empty text object with lang/country info, in UTF-8 without BOM, with lang/country information embedded (which should not be supported in UTF-8) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_060
+Get the contents of a non-empty text object with lang/country info, in UTF-8 with BOM, with lang/country information embedded (which should not be supported in UTF-8) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+
+@deffn Test pdf_text_get_unicode_061
+Get the contents of a non-empty text object in UTF-16BE without BOM and with NUL suffix. The contents of the text object include characters that are encoded in UTF-16 using 16-bit and 32-bit.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be the expected one, NUL terminated.
+
+3. The returned length must be the expected one, including the length of the last NUL.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_062
+Get the contents of a non-empty text object in UTF-16BE with BOM and with NUL suffix. The contents of the text object include characters that are encoded in UTF-16 using 16-bit and 32-bit.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be the expected one, NUL terminated.
+
+3. The returned length must be the expected one, including the length of the BOM in UTF-16 and the length of the last NUL.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_063
+Get the contents of an empty text object in UTF-16BE without BOM and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must not be NULL.
+
+3. The returned length must be equal to the length of the last NUL.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_064
+Get the contents of an empty text object in UTF-16BE with BOM and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must only contain the BOM in UTF-16BE, NUL terminated.
+
+3. The returned length must be equal to the length of the BOM in UTF-16 plus the length of the last NUL.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_065
+Get the contents of a non-empty text object with lang/country info, in UTF-16BE without BOM, with lang/country information embedded (which IS supported in UTF-16BE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be the expected one, including the lang/country information embedded, NUL terminated.
+
+3. The returned length must be the expected one, including the length of the lang/country info and the length of the last NUL.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_066
+Get the contents of a non-empty text object with language info (no country info), in UTF-16BE without BOM, with lang/country information embedded (which IS supported in UTF-16BE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be the expected one, including the language information embedded, NUL terminated.
+
+3. The returned length must be the expected one, including the length of the language info and the length of the last NUL.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_067
+Get the contents of an empty text object with lang/country info, in UTF-16BE without BOM, with lang/country information embedded (which IS supported in UTF-16BE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must only include the lang/country information embedded, NUL terminated.
+
+3. The returned length must be equal to the length of the lang/country info plus the length of the last NUL.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_068
+Get the contents of an empty text object with language info (no country info), in UTF-16BE without BOM, with lang/country information embedded (which IS supported in UTF-16BE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must only contain the language information embedded, NUL terminated.
+
+3. The returned length must be equal to the length of the language info plus the length of the last NUL.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_069
+Get the contents of a non-empty text object with lang/country info, in UTF-16BE with BOM, with lang/country information embedded (which IS supported in UTF-16BE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be the expected one, including the BOM and the lang/country information embedded, NUL terminated.
+
+3. The returned length must be the expected one, including the length of the lang/country info and the BOM and the length of the last NUL.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_070
+Get the contents of a non-empty text object with language info (no country info), in UTF-16BE with BOM, with lang/country information embedded (which IS supported in UTF-16BE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be the expected one, including the BOM and the language information embedded, NUL terminated.
+
+3. The returned length must be the expected one, including the length of the language info and the BOM and the length of the last NUL.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_071
+Get the contents of an empty text object with lang/country info, in UTF-16BE with BOM, with lang/country information embedded (which IS supported in UTF-16BE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must only include the BOM and lang/country information embedded, NUL terminated.
+
+3. The returned length must be equal to the length of the lang/country info plus the length of the BOM and the length of the last NUL.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_072
+Get the contents of an empty text object with language info (no country info), in UTF-16BE with BOM, with lang/country information embedded (which IS supported in UTF-16BE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must only contain the BOM and the language information embedded, NUL terminated.
+
+3. The returned length must be equal to the length of the language info plus the length of the BOM and the length of the last NUL.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_073
+Get the contents of a non-empty text object in UTF-16LE without BOM and with NUL suffix. The contents of the text object include characters that are encoded in UTF-16 using 16-bit and 32-bit.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be the expected one, NUL terminated.
+
+3. The returned length must be the expected one, including the length of the last NUL.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_074
+Get the contents of a non-empty text object in UTF-16LE with BOM and with NUL suffix. The contents of the text object include characters that are encoded in UTF-16 using 16-bit and 32-bit.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be the expected one, NUL terminated.
+
+3. The returned length must be the expected one, including the length of the BOM in UTF-16 and the length of the last NUL.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_075
+Get the contents of an empty text object in UTF-16LE without BOM and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must not be NULL.
+
+3. The returned length must be equal to the length of the last NUL.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_076
+Get the contents of an empty text object in UTF-16LE with BOM and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must only contain the BOM in UTF-16LE, NUL terminated.
+
+3. The returned length must be equal to the length of the BOM in UTF-16 plus the length of the last NUL.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_077
+Get the contents of a non-empty text object with lang/country info, in UTF-16LE without BOM, with lang/country information embedded (which is NOT supported in UTF-16LE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_078
+Get the contents of a non-empty text object with language info (no country info), in UTF-16LE without BOM, with lang/country information embedded (which is NOT supported in UTF-16LE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_079
+Get the contents of an empty text object with lang/country info, in UTF-16LE without BOM, with lang/country information embedded (which is NOT supported in UTF-16LE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_080
+Get the contents of an empty text object with language info (no country info), in UTF-16LE without BOM, with lang/country information embedded (which is NOT supported in UTF-16LE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_081
+Get the contents of a non-empty text object with lang/country info, in UTF-16LE with BOM, with lang/country information embedded (which is NOT supported in UTF-16LE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_082
+Get the contents of a non-empty text object with language info (no country info), in UTF-16LE with BOM, with lang/country information embedded (which is NOT supported in UTF-16LE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_083
+Get the contents of an empty text object with lang/country info, in UTF-16LE with BOM, with lang/country information embedded (which is NOT supported in UTF-16LE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_084
+Get the contents of an empty text object with language info (no country info), in UTF-16LE with BOM, with lang/country information embedded (which is NOT supported in UTF-16LE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_085
+Get the contents of a non-empty text object in UTF-32BE without BOM and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be the expected one, NUL terminated.
+
+3. The returned length must be the expected one, including the length of the last NUL.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_086
+Get the contents of a non-empty text object in UTF-32BE with BOM and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be the expected one, NUL terminated.
+
+3. The returned length must be the expected one, including the length of the BOM in UTF-32 and the length of the last NUL.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_087
+Get the contents of an empty text object in UTF-32BE without BOM and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must not be NULL.
+
+3. The returned length must be equal to the length of the last NUL.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_088
+Get the contents of an empty text object in UTF-32BE with BOM and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must only contain the BOM in UTF-32BE, NUL terminated.
+
+3. The returned length must be equal to the length of the BOM in UTF-32 plus the length of the last NUL.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_089
+Get the contents of a non-empty text object with lang/country info, in UTF-32BE without BOM, with lang/country information embedded (which is NOT supported in UTF-32BE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_090
+Get the contents of a non-empty text object with language info (no country info), in UTF-32BE without BOM, with lang/country information embedded (which is NOT supported in UTF-32BE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_091
+Get the contents of an empty text object with lang/country info, in UTF-32BE without BOM, with lang/country information embedded (which is NOT supported in UTF-32BE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_092
+Get the contents of an empty text object with language info (no country info), in UTF-32BE without BOM, with lang/country information embedded (which is NOT supported in UTF-32BE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_093
+Get the contents of a non-empty text object with lang/country info, in UTF-32BE with BOM, with lang/country information embedded (which is NOT supported in UTF-32BE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_094
+Get the contents of a non-empty text object with language info (no country info), in UTF-32BE with BOM, with lang/country information embedded (which is NOT supported in UTF-32BE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_095
+Get the contents of an empty text object with lang/country info, in UTF-32BE with BOM, with lang/country information embedded (which is NOT supported in UTF-32BE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_096
+Get the contents of an empty text object with language info (no country info), in UTF-32BE with BOM, with lang/country information embedded (which is NOT supported in UTF-32BE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_097
+Get the contents of a non-empty text object in UTF-32LE without BOM and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be the expected one, NUL terminated.
+
+3. The returned length must be the expected one, including the length of the last NUL.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_098
+Get the contents of a non-empty text object in UTF-32LE with BOM and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must be the expected one, NUL terminated.
+
+3. The returned length must be the expected one, including the length of the BOM in UTF-32 and the length of the NUL suffix.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_099
+Get the contents of an empty text object in UTF-32LE without BOM and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must not be NULL.
+
+3. The returned length must be equal to the length of the last NUL.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_100
+Get the contents of an empty text object in UTF-32LE with BOM and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should return PDF_OK.
+
+2. The returned string must only contain the BOM in UTF-32LE, NUL terminated.
+
+3. The returned length must be equal to the length of the BOM in UTF-32 plus the length of the last NUL.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_101
+Get the contents of a non-empty text object with lang/country info, in UTF-32LE without BOM, with lang/country information embedded (which is NOT supported in UTF-32LE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_102
+Get the contents of a non-empty text object with language info (no country info), in UTF-32LE without BOM, with lang/country information embedded (which is NOT supported in UTF-32LE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_103
+Get the contents of an empty text object with lang/country info, in UTF-32LE without BOM, with lang/country information embedded (which is NOT supported in UTF-32LE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_104
+Get the contents of an empty text object with language info (no country info), in UTF-32LE without BOM, with lang/country information embedded (which is NOT supported in UTF-32LE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_105
+Get the contents of a non-empty text object with lang/country info, in UTF-32LE with BOM, with lang/country information embedded (which is NOT supported in UTF-32LE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_106
+Get the contents of a non-empty text object with language info (no country info), in UTF-32LE with BOM, with lang/country information embedded (which is NOT supported in UTF-32LE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_107
+Get the contents of an empty text object with lang/country info, in UTF-32LE with BOM, with lang/country information embedded (which is NOT supported in UTF-32LE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+@deffn Test pdf_text_get_unicode_108
+Get the contents of an empty text object with language info (no country info), in UTF-32LE with BOM, with lang/country information embedded (which is NOT supported in UTF-32LE) and with NUL suffix.
+@table @strong
+@item Success conditions
+1. The call to @code{ pdf_text_get_unicode} should NOT return PDF_OK.
+@end table
+@end deffn
+
+
+
 @node pdf_text_get_hex
 @subsubsection pdf_text_get_hex
 
