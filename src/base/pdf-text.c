@@ -709,22 +709,55 @@ pdf_text_get_unicode (pdf_char_t **contents,
     {
       pdf_char_t header[PDF_TEXT_USHMAXL];
       pdf_size_t header_size = 0;
-      /* Clear header array */
-      memset(&(header[0]), 0, PDF_TEXT_USHMAXL);
-      /* Get requested header (BOM and/or lang/country info) */
-      pdf_text_get_unicode_string_header(header,
-                                         &header_size,
-                                         new_enc,
-                                         options,
-                                         pdf_text_get_language(text),
-                                         pdf_text_get_country(text));
+      pdf_size_t trailer_size = 0;
+
+      /* Compute header if needed */
+      if((options &  PDF_TEXT_UNICODE_WITH_BOM) || \
+         (options &  PDF_TEXT_UTF16BE_WITH_LANGCODE))
+        {
+          /* Clear header array */
+          memset(&(header[0]), 0, PDF_TEXT_USHMAXL);
+          /* Get requested header (BOM and/or lang/country info) */
+          pdf_text_get_unicode_string_header(header,
+                                             &header_size,
+                                             new_enc,
+                                             options,
+                                             pdf_text_get_language(text),
+                                             pdf_text_get_country(text));
+        }
+      /* Compute trailer if needed */
+      if(options & PDF_TEXT_UNICODE_WITH_NUL_SUFFIX)
+        {
+          switch(new_enc)
+            {
+              case PDF_TEXT_UTF8:
+                  trailer_size = 1;
+                  break;
+              case PDF_TEXT_UTF16_BE:
+              case PDF_TEXT_UTF16_LE:
+              case PDF_TEXT_UTF16_HE:
+                  trailer_size = 2;
+                  break;
+              case PDF_TEXT_UTF32_BE:
+              case PDF_TEXT_UTF32_LE:
+              case PDF_TEXT_UTF32_HE:
+                  trailer_size = 4;
+                  break;
+              default:
+                  trailer_size = 0;
+                  break;
+            }
+        }
       
-      if(header_size > 0)
+      if((header_size > 0) || \
+         (trailer_size > 0))
         {
           pdf_char_t *new_out_data = NULL;
           
           /* Allocate memory for new string */
-          new_out_data = (pdf_char_t *)pdf_alloc(out_length + header_size);
+          new_out_data = (pdf_char_t *)pdf_alloc(out_length + \
+                                                 header_size + \
+                                                 trailer_size);
           if(new_out_data == NULL)
             {
               return PDF_ENOMEM;
@@ -740,9 +773,16 @@ pdf_text_get_unicode (pdf_char_t **contents,
               /* Reset output data array, if any */
               pdf_dealloc(out_data);
             }
+
+          /* Store trailer (N-byte NUL) */
+          if(trailer_size > 0)
+            {
+              memset(&new_out_data[out_length+header_size],0,trailer_size);
+            }
+
           out_data = new_out_data;
-          out_length += (header_size);
-        }  
+          out_length += (header_size + trailer_size);
+        }
       else
         {
           PDF_DEBUG_BASE("Invalid unicode option requested (%u)",

@@ -3857,7 +3857,10 @@ Prepend Byte Order Marker to the UNICODE string.
 @item PDF_TEXT_UTF16BE_WITH_LANGCODE
 Insert language/country code information between the BOM (if required) and the
 data. This option is ONLY applicable to UTF16BE. If specified in any other
-encoding, the function will fail. 
+encoding, the function will fail.
+@item PDF_TEXT_UNICODE_WITH_NUL_SUFFIX
+Append a NUL suffix to the Unicode string (1-byte NUL for UTF-8, 2-byte NUL for
+UTF-16 and 4-byte NUL for UTF-32).
 @end table
 @end deftp
 

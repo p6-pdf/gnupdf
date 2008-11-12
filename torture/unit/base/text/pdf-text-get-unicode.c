@@ -32,6 +32,8 @@
 
 #define INTERACTIVE_DEBUG   0
 
+
+
 /*
  * Test: pdf_text_get_unicode_001
  * Description:
@@ -2833,6 +2835,477 @@ START_TEST(pdf_text_get_unicode_054)
 END_TEST
 
 
+
+
+/*
+ * Test: pdf_text_get_unicode_055
+ * Description:
+ *   Get the contents of a non-empty text object in UTF-8 without BOM and with
+ *   NUL suffix. The contents of the text object include characters that are
+ *   encoded in UTF-8 using 8-bit, 16-bit, 24-bit and 32-bit. 
+ * Success conditions:
+ *    1. The call to  pdf_text_get_unicode should return PDF_OK.
+ *    2. The returned string must be the expected one, NUL terminated.
+ *    3. The returned length must be the expected one, including the length of
+ *        the last NUL.
+ */
+START_TEST(pdf_text_get_unicode_055)
+{
+  extern const test_string_t utf8_strings[];
+  int i;
+  
+  /* Always INIT! Check runs each test in a different process */
+  fail_if(pdf_text_init() != PDF_OK);
+  
+  i = 0;
+  while(utf8_strings[i].data != NULL)
+    {
+      pdf_text_t text;
+      pdf_char_t *data = NULL;
+      pdf_size_t size = 0;
+      pdf_char_t *expected_data;
+      pdf_size_t expected_size;
+      
+      /* Set expected data and size (without BOM, with last NUL) */
+      expected_size = 1 + utf8_strings[i].size -3;
+      expected_data = pdf_alloc(expected_size);
+      fail_if(expected_data == NULL);
+      memcpy(expected_data, &(utf8_strings[i].data[3]), utf8_strings[i].size - 3);
+      expected_data[expected_size-1] = '\0';      
+      
+      fail_if(pdf_text_new_from_unicode((pdf_char_t *) \
+                                        utf8_strings[i].utf32be_data,
+                                        (pdf_size_t) \
+                                        utf8_strings[i].utf32be_size,
+                                        PDF_TEXT_UTF32_BE,
+                                        &text) != PDF_OK);
+      
+      
+      /* 1. The call to  pdf_text_get_unicode should return PDF_OK. */
+      fail_unless(pdf_text_get_unicode(&data,
+                                       &size,
+                                       text,
+                                       PDF_TEXT_UTF8,
+                                       PDF_TEXT_UNICODE_WITH_NUL_SUFFIX) == PDF_OK);
+      
+      
+      if(INTERACTIVE_DEBUG)
+        {
+          pdf_char_t *internal_hex = NULL;
+          pdf_char_t *expected_hex = NULL;
+          internal_hex = pdf_text_test_get_hex(text->data,text->size,':');
+          expected_hex = pdf_text_test_get_hex(expected_data,expected_size,':');
+          fail_if(expected_hex == NULL);
+          fail_if(internal_hex == NULL);
+          printf("pdf_text_get_unicode_055:%d:Internal> '%s'\n",
+                 i, internal_hex);
+          printf("pdf_text_get_unicode_055:%d:Expected> '%s'\n",
+                 i, expected_hex);
+          pdf_dealloc(internal_hex);
+          pdf_dealloc(expected_hex);
+        }
+      
+      /* 2. The returned string must be the expected one, NUL terminated */
+      fail_if(data == NULL);
+      fail_unless(memcmp(expected_data, data, size) == 0);
+      fail_unless(data[size-1] == '\0');
+
+      /* 3. The returned length must be the expected one. */
+      fail_unless(size == expected_size);
+
+      pdf_text_destroy(text);
+      pdf_dealloc(data);
+      pdf_dealloc(expected_data);
+      
+      ++i;
+    }
+  
+}
+END_TEST
+
+
+
+
+
+
+
+/*
+ * Test: pdf_text_get_unicode_056
+ * Description:
+ *   Get the contents of a non-empty text object in UTF-8 with BOM and with NUL
+ *   suffix. The contents of the text object include characters that are encoded
+ *   in UTF-8 using 8-bit, 16-bit, 24-bit and 32-bit.
+ * Success conditions:
+ *    1. The call to  pdf_text_get_unicode should return PDF_OK.
+ *    2. The returned string must be the expected one, NUL terminated.
+ *    3. The returned length must be the expected one, including the length of
+ *       the BOM in UTF-8 and the length of the NUL suffix.
+ */
+START_TEST(pdf_text_get_unicode_056)
+{
+  extern const test_string_t utf8_strings[];
+  int i;
+  
+  /* Always INIT! Check runs each test in a different process */
+  fail_if(pdf_text_init() != PDF_OK);
+  
+  i = 0;
+  while(utf8_strings[i].data != NULL)
+    {
+      pdf_text_t text;
+      pdf_char_t *data = NULL;
+      pdf_size_t size = 0;
+      pdf_char_t *expected_data;
+      pdf_size_t expected_size;
+      
+      /* Set expected data and size (with BOM) */
+      expected_size = 1 + utf8_strings[i].size;
+      expected_data = pdf_alloc(expected_size);
+      fail_if(expected_data == NULL);
+      memcpy(expected_data, &(utf8_strings[i].data[0]), utf8_strings[i].size);
+      expected_data[expected_size-1] = '\0';
+
+      
+      fail_if(pdf_text_new_from_unicode((pdf_char_t *) \
+                                        utf8_strings[i].utf32be_data,
+                                        (pdf_size_t) \
+                                        utf8_strings[i].utf32be_size,
+                                        PDF_TEXT_UTF32_BE,
+                                        &text) != PDF_OK);
+      
+      
+      /* 1. The call to  pdf_text_get_unicode should return PDF_OK. */
+      fail_unless(pdf_text_get_unicode(&data,
+                                       &size,
+                                       text,
+                                       PDF_TEXT_UTF8,
+                                       (PDF_TEXT_UNICODE_WITH_BOM | \
+                                        PDF_TEXT_UNICODE_WITH_NUL_SUFFIX)) == PDF_OK);
+      
+      
+      if(INTERACTIVE_DEBUG)
+        {
+          pdf_char_t *internal_hex = NULL;
+          pdf_char_t *expected_hex = NULL;
+          pdf_char_t *output_hex = NULL;
+          internal_hex = pdf_text_test_get_hex(text->data,text->size,':');
+          expected_hex = pdf_text_test_get_hex(expected_data,expected_size,':');
+          output_hex = pdf_text_test_get_hex(data,size,':');
+          fail_if(expected_hex == NULL);
+          fail_if(internal_hex == NULL);
+          fail_if(output_hex == NULL);
+          printf("pdf_text_get_unicode_056:%d:Internal> '%s'\n",
+                 i, internal_hex);
+          printf("pdf_text_get_unicode_056:%d:Expected> '%s'\n",
+                 i, expected_hex);
+          printf("pdf_text_get_unicode_056:%d:Output> '%s'\n",
+                 i, output_hex);
+          pdf_dealloc(internal_hex);
+          pdf_dealloc(expected_hex);
+          pdf_dealloc(output_hex);
+        }
+      
+      /* 2. The returned string must be the expected one, not NUL terminated */
+      fail_if(data == NULL);
+      fail_unless(memcmp(expected_data, data, size) == 0);
+
+      /* 3. The returned length must be the expected one, including the length
+       *       of the BOM in UTF-8. */
+      fail_unless(size == expected_size);
+      
+      pdf_text_destroy(text);
+      pdf_dealloc(data);
+      pdf_dealloc(expected_data);
+      
+      ++i;
+    }
+  
+}
+END_TEST
+
+
+/*
+ * Test: pdf_text_get_unicode_057
+ * Description:
+ *   Get the contents of an empty text object in UTF-8 without BOM and with NUL
+ *    suffix.
+ * Success conditions:
+ *    1. The call to  pdf_text_get_unicode should return PDF_OK.
+ *    2. The returned string must not be NULL.
+ *    3. The returned length must be equal to the length of the last NUL.
+ */
+START_TEST(pdf_text_get_unicode_057)
+{
+  /* Always INIT! Check runs each test in a different process */
+  fail_if(pdf_text_init() != PDF_OK);
+  
+  pdf_text_t text;
+  pdf_char_t *data = NULL;
+  pdf_size_t size = 0;
+  
+  fail_if(pdf_text_new (&text) != PDF_OK);
+  
+  /* 1. The call to  pdf_text_get_unicode should return PDF_OK. */
+  fail_unless(pdf_text_get_unicode(&data,
+                                   &size,
+                                   text,
+                                   PDF_TEXT_UTF8,
+                                   PDF_TEXT_UNICODE_WITH_NUL_SUFFIX) == PDF_OK);
+  
+  /* 2. The returned string must not be NULL */
+  fail_unless(data != NULL);
+  fail_unless(memcmp(data, "\x00", 1) == 0);
+  /* 3. The returned length must be equal to the last NUL. */
+  fail_unless(size == 1);
+  
+  pdf_text_destroy(text);
+}
+END_TEST
+
+
+/*
+ * Test: pdf_text_get_unicode_058
+ * Description:
+ *   Get the contents of an empty text object in UTF-8 with BOM and with NUL
+ *    suffix.
+ * Success conditions:
+ *    1. The call to  pdf_text_get_unicode should return PDF_OK.
+ *    2. The returned string must only contain the BOM in UTF-8, NUL
+ *       terminated.
+ *    3. The returned length must be equal to the length of the BOM in UTF-8
+ *        plus the length of the last NUL.
+ */
+START_TEST(pdf_text_get_unicode_058)
+{
+  /* Always INIT! Check runs each test in a different process */
+  fail_if(pdf_text_init() != PDF_OK);
+  
+  pdf_text_t text;
+  pdf_char_t *data = NULL;
+  pdf_size_t size = 0;
+  
+  fail_if(pdf_text_new (&text) != PDF_OK);
+  
+  /* 1. The call to  pdf_text_get_unicode should return PDF_OK. */
+  fail_unless(pdf_text_get_unicode(&data,
+                                   &size,
+                                   text,
+                                   PDF_TEXT_UTF8,
+                                   (PDF_TEXT_UNICODE_WITH_BOM | \
+                                    PDF_TEXT_UNICODE_WITH_NUL_SUFFIX)) == PDF_OK);
+  
+  /* 2. The returned string must only contain the BOM in UTF-8, NUL
+   *       terminated. */
+  fail_unless(data != NULL);
+  fail_unless(memcmp(&data[0], "\xEF\xBB\xBF\x00", 4) == 0);
+
+  /* 3. The returned length must be equal to the length of the BOM in UTF-8 plus
+   *      the length of the last NUL. */
+  fail_unless(size == 4);
+  
+  pdf_text_destroy(text);
+  pdf_dealloc(data);
+}
+END_TEST
+
+
+/*
+ * Test: pdf_text_get_unicode_059
+ * Description:
+ *   Get the contents of a non-empty text object with lang/country info, in
+ *   UTF-8 without BOM, with lang/country information embedded (which should
+ *   not be supported in UTF-8) and with NUL suffix.
+ * Success conditions:
+ *    1. The call to  pdf_text_get_unicode should NOT return PDF_OK.
+ */
+START_TEST(pdf_text_get_unicode_059)
+{
+  /* Always INIT! Check runs each test in a different process */
+  fail_if(pdf_text_init() != PDF_OK);
+  
+  pdf_text_t text;
+  pdf_char_t *data = NULL;
+  pdf_size_t size = 0;
+  pdf_char_t *utf8data = (pdf_char_t *)"GNU's not Unix";
+  pdf_size_t utf8size = strlen((char *)utf8data);
+  const pdf_char_t *language = (pdf_char_t *)"en";
+  const pdf_char_t *country = (pdf_char_t *)"GB";
+  
+  fail_if(pdf_text_new_from_unicode(utf8data, utf8size,
+                                    PDF_TEXT_UTF8,
+                                    &text) != PDF_OK);
+  fail_if(pdf_text_set_language(text, language) != PDF_OK);
+  fail_if(pdf_text_set_country(text, country) != PDF_OK);
+  
+
+  
+  /* 1. The call to  pdf_text_get_unicode should NOT return PDF_OK. */
+  fail_unless(pdf_text_get_unicode(&data,
+                                   &size,
+                                   text,
+                                   PDF_TEXT_UTF8,
+                                   (PDF_TEXT_UTF16BE_WITH_LANGCODE | \
+                                    PDF_TEXT_UNICODE_WITH_NUL_SUFFIX)) != PDF_OK);
+  pdf_text_destroy(text);
+}
+END_TEST
+
+
+/*
+ * Test: pdf_text_get_unicode_060
+ * Description:
+ *   Get the contents of a non-empty text object with lang/country info, in
+ *   UTF-8 with BOM, with lang/country information embedded (which should
+ *   not be supported in UTF-8) and with NUL suffix.
+ * Success conditions:
+ *    1. The call to  pdf_text_get_unicode should NOT return PDF_OK.
+ */
+START_TEST(pdf_text_get_unicode_060)
+{
+  /* Always INIT! Check runs each test in a different process */
+  fail_if(pdf_text_init() != PDF_OK);
+  
+  pdf_text_t text;
+  pdf_char_t *data = NULL;
+  pdf_size_t size = 0;
+  pdf_char_t *utf8data = (pdf_char_t *)"GNU's not Unix";
+  pdf_size_t utf8size = strlen((char *)utf8data);
+  const pdf_char_t *language = (pdf_char_t *)"en";
+  const pdf_char_t *country = (pdf_char_t *)"GB";
+  
+  fail_if(pdf_text_new_from_unicode(utf8data, utf8size,
+                                    PDF_TEXT_UTF8,
+                                    &text) != PDF_OK);
+  fail_if(pdf_text_set_language(text, language) != PDF_OK);
+  fail_if(pdf_text_set_country(text, country) != PDF_OK);
+
+  /* 1. The call to  pdf_text_get_unicode should NOT return PDF_OK. */
+  fail_unless(pdf_text_get_unicode(&data,
+                                   &size,
+                                   text,
+                                   PDF_TEXT_UTF8,
+                                   (PDF_TEXT_UNICODE_WITH_BOM | \
+                                    PDF_TEXT_UTF16BE_WITH_LANGCODE | \
+                                    PDF_TEXT_UNICODE_WITH_NUL_SUFFIX)) != PDF_OK);
+  pdf_text_destroy(text);
+}
+END_TEST
+
+
+/*
+ * Test: pdf_text_get_unicode_061
+ * Description:
+ *   Get the contents of a non-empty text object in UTF-16BE without BOM and
+ *   with NUL suffix. The contents of the text object include characters that
+ *   are encoded in UTF-16 using 16-bit and 32-bit.
+ * Success conditions:
+ *    1. The call to  pdf_text_get_unicode should return PDF_OK.
+ *    2. The returned string must be the expected one, NUL terminated.
+ *    3. The returned length must be the expected one, including the length of
+ *        the last NUL.
+ */
+START_TEST(pdf_text_get_unicode_061)
+{
+  extern const test_string_t utf16be_strings[];
+  int i;
+  
+  /* Always INIT! Check runs each test in a different process */
+  fail_if(pdf_text_init() != PDF_OK);
+  
+  i = 0;
+  while(utf16be_strings[i].data != NULL)
+    {
+      pdf_text_t text;
+      pdf_char_t *data = NULL;
+      pdf_size_t size = 0;
+      pdf_char_t *expected_data;
+      pdf_size_t expected_size;
+      
+      /* Set expected data and size (without BOM) and with last NUL */
+      expected_size = utf16be_strings[i].size -2 + 2;
+      expected_data = pdf_alloc(expected_size);
+      fail_if(expected_data == NULL);
+      memcpy(expected_data, &(utf16be_strings[i].data[2]), utf16be_strings[i].size -2);
+      memset(&expected_data[expected_size-2], 0, 2);
+
+      
+      fail_if(pdf_text_new_from_unicode((pdf_char_t *) \
+                                        utf16be_strings[i].utf32be_data,
+                                        (pdf_size_t) \
+                                        utf16be_strings[i].utf32be_size,
+                                        PDF_TEXT_UTF32_BE,
+                                        &text) != PDF_OK);
+      
+      
+      /* 1. The call to  pdf_text_get_unicode should return PDF_OK. */
+      fail_unless(pdf_text_get_unicode(&data,
+                                       &size,
+                                       text,
+                                       PDF_TEXT_UTF16_BE,
+                                       PDF_TEXT_UNICODE_WITH_NUL_SUFFIX) == PDF_OK);
+      
+      
+      if(INTERACTIVE_DEBUG)
+        {
+          pdf_char_t *internal_hex = NULL;
+          pdf_char_t *expected_hex = NULL;
+          internal_hex = pdf_text_test_get_hex(text->data,text->size,':');
+          expected_hex = pdf_text_test_get_hex(expected_data,expected_size,':');
+          fail_if(expected_hex == NULL);
+          fail_if(internal_hex == NULL);
+          printf("pdf_text_get_unicode_061:%d:Internal> '%s'\n",
+                 i, internal_hex);
+          printf("pdf_text_get_unicode_061:%d:Expected> '%s'\n",
+                 i, expected_hex);
+          pdf_dealloc(internal_hex);
+          pdf_dealloc(expected_hex);
+        }
+      
+      /* 2. The returned string must be the expected one, not NUL terminated */
+      fail_if(data == NULL);
+      fail_unless(memcmp(expected_data, data, size) == 0);
+
+      /* 3. The returned length must be the expected one. */
+      fail_unless(size == expected_size);
+      
+      pdf_text_destroy(text);
+      pdf_dealloc(data);
+      pdf_dealloc(expected_data);
+      
+      ++i;
+    }
+  
+}
+END_TEST
+
+
+/*
+
+CONTINUE HERE WITH TESTS FROM #62 to #108.
+
+Check:
+http://gnupdf.org/Lib:Test_Specification_Document#pdf_text_get_unicode
+
+And the corresponding Flyspray task.
+
+Tests from #55 to #108 are EQUIVALENT to tests from #1 to #54, with the only
+difference that the new PDF_TEXT_UNICODE_WITH_NUL_SUFFIX option is used. 
+
+Check the pass/fail criteria from the TSD for each test.
+
+The next test to be done is the #62, which is equivalent to #8.
+
+Also, take into account that last NUL has different sizes depending the
+encoding:
+  - 1 NUL byte for UTF-8
+  - 2 NUL bytes for all the UTF-16 encodings 
+  - 4 NUL bytes for all the UTF-32 encodings 
+
+*/
+
+
+
+
 /*
  * Test case creation function
  */
@@ -2895,6 +3368,15 @@ test_pdf_text_get_unicode (void)
   tcase_add_test(tc, pdf_text_get_unicode_052);
   tcase_add_test(tc, pdf_text_get_unicode_053);
   tcase_add_test(tc, pdf_text_get_unicode_054);
+
+  tcase_add_test(tc, pdf_text_get_unicode_055);
+  tcase_add_test(tc, pdf_text_get_unicode_056);
+  tcase_add_test(tc, pdf_text_get_unicode_057);
+  tcase_add_test(tc, pdf_text_get_unicode_058);
+  tcase_add_test(tc, pdf_text_get_unicode_059);
+  tcase_add_test(tc, pdf_text_get_unicode_060);
+  tcase_add_test(tc, pdf_text_get_unicode_061);
+
   
   
   return tc;
