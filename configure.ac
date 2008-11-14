@@ -204,6 +204,14 @@ AC_ARG_ENABLE([coverage], AS_HELP_STRING([--enable-coverage],
                                         [use_gcov=yes], [use_gcov=no])
 AM_CONDITIONAL([USE_COVERAGE], [test "x$use_gcov" = "xyes"])
 
+dnl bignums
+force_bignums=no
+AC_ARG_ENABLE([bignum-forcing], AS_HELP_STRING([--enable-bignum-forcing],
+                                           [Force the usage of the 64bits bignum implementation even if the system support a suitable native type]),
+                                                   [force_bignums=yes], [force_bignums=no])
+if test "x$force_bignums" = "xyes"; then
+   AC_DEFINE([PDF_FORCE_BIGNUMS],[1],[Force the usage of the 64bits bignum implementation even if the system support a suitable native type])
+fi
 
 dnl nocheck (simple replacement of Check framework when this is not available)
 use_nocheck=no

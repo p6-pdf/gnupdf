@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/20 16:47:58 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/11/14 21:40:21 jemarch"
  *
  *       File:         pdf-types.h
  *       Date:         Sun Feb 10 21:30:00 2008
@@ -109,7 +109,7 @@ typedef unsigned char pdf_bool_t;
 
 /********************** 64-bit type built-in support **************************/
 
-#ifdef int64_t
+#if defined(int64_t) && !defined(PDF_FORCE_BIGNUMS)
 #define PDF_USE_BUILTIN_64BIT_SUPPORT
 #endif
 
