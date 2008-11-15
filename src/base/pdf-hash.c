@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/10 20:39:43 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-11-15 15:06:39 gerel"
  *
  *       File:         pdf-hash.c
  *       Date:         Sat Apr  12 12:22:05 2008
@@ -416,15 +416,21 @@ key_equal (const void *key1, const void *key2)
 static int
 key_numeric_p (const char *str)
 {
-  while (str != NULL)
+  if (str != NULL && *str != '\0')
     {
-      if (*str < '0' || *str > '9')
+      while (*str != '\0')
         {
-          return 0;
-        }         
-      str++;
+          if (*str < '0' || *str > '9')
+            {
+              return 0;
+            }  
+          str++;
+        }
+
+      return 1;
     }
-  return 1;
+
+  return 0;
 }
 
 
