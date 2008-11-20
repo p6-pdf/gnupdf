@@ -13,3 +13,10 @@ are not intended to be installed in the target machine.
       all the sources related to the Unicode Character Database. It always
       points to the latest repository of the Unicode Standard.
 
+  `pmccabe2html'
+  `pmccabe.css'
+
+      Files from the pmccabe2html gnulib module providing the
+      generation of cyclomatic complexity reports in both mediawiki
+      markup and html.
+

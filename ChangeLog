@@ -1,3 +1,7 @@
+2008-11-21  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* build-aux/README: Updated.
+
 2008-11-14  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-types.h: Take care about the PDF_FORCE_BIGNUMS
