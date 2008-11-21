@@ -51,6 +51,10 @@ CHECK_ZLIB
 AM_CONDITIONAL([ZLIB], [test "x$have_zlib" = "xyes"])
 AC_CHECK_LIB(m,exp,,,)
 
+have_jbig2dec=no
+AC_CHECK_LIB([jbig2dec],[jbig2_ctx_new],[have_jbig2dec=yes],,)
+AM_CONDITIONAL([JBIG2DEC], [test "x$have_jbig2dec" = "xyes"])
+
 AM_PATH_LIBGCRYPT([1.2.4], have_libgcrypt="yes", have_libgcrypt="no")
 if test x$have_libgcrypt == "xno"; then
 AC_MSG_ERROR([cannot find libgcrypt library. Please install it and rerun `configure'.])
@@ -285,6 +289,7 @@ Configured for \`${canonical}'.
 
   Compilation level:                        ${PDFLIB_LEVEL} (${PDFLIB_LEVEL_DESCR})
   Using FlateDecode filter?                 ${have_zlib}
+  Using JBIG2 decoder filter?               ${have_jbig2dec}
   With unit tests support?                  ${ut_support} ${ut_framework}
   Program to build html manuals             ${texihtmlprogram}
   Build project management resources?       ${prmgt_mode}
@@ -297,6 +302,12 @@ dnl Report warnings
 if test "x$have_zlib" = "xno" ; then
 echo "
 WARNING: you are going to build a library without FlateDecode support. 
+         That means you wont be able to process many PDF files."
+fi
+
+if test "x$have_jbig2dec" = "xno" ; then
+echo "
+WARNING: you are going to build a library without JBIG2Decode support.
          That means you wont be able to process many PDF files."
 fi
 

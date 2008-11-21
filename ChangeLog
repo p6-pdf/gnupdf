@@ -1,5 +1,13 @@
 2008-11-21  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-stm-f-jbig2.c: New file.
+	(pdf_stm_f_jbig2dec_dealloc_state): New function.
+	(pdf_stm_f_jbig2dec_init): New function.
+
+	* src/base/pdf-stm-f-jbig2.h: New file.
+
+	* configure.ac: Check for the jbig2dec library.
+
 	* build-aux/README: Updated.
 
 2008-11-14  Jose E. Marchesi  <jemarch@gnu.org>
