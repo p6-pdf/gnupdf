@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-10-05 12:57:40 gerel"
+/* -*- mode: C -*- Time-stamp: "08/11/24 15:48:01 jemarch"
  *
  *       File:         pdf-filter.c
  *       Date:         Tue Jul 10 18:42:07 2007
@@ -35,6 +35,8 @@
 #include <stdlib.h>
 #endif /* HAVE_MALLOC_H */
 
+#include <sys/stat.h>
+
 #include <xalloc.h>
 #include <pdf-filter.h>
 #include <pdf.h>
@@ -64,7 +66,10 @@ static struct option GNU_longOptions[] =
     {"rldec", no_argument, NULL, RUNLENGTHDEC_FILTER_ARG},
     {"rlenc", no_argument, NULL, RUNLENGTHENC_FILTER_ARG},
     {"cfaxdec", no_argument, NULL, CCITTFAXDEC_FILTER_ARG},
+#ifdef HAVE_JBIG2DEC
     {"jbig2dec", no_argument, NULL, JBIG2DEC_FILTER_ARG},
+    {"jbig2dec-globals", required_argument, NULL, JBIG2DEC_GLOBAL_SEGMENTS_ARG},
+#endif /* HAVE_JBIG2DEC */
     {"dctdec", no_argument, NULL, DCTDEC_FILTER_ARG},
     {"jxpdec", no_argument, NULL, JXPDEC_FILTER_ARG},
     {"predenc", no_argument, NULL, PREDENC_FILTER_ARG},
@@ -115,6 +120,7 @@ available filters\n\
   --pred-colors=NUM                   next predictors colors per sample\n\
   --pred-bpc=NUM                      next predictors bits per color component\n\
   --pred-columns=NUM                  next predictors number of samples per row\n\
+  --jbig2dec-globals=FILE             file containing global segments\n\
 ";
 
 char *pdf_filter_help_msg = "";
@@ -269,6 +275,9 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
 {
   char c;
   pdf_hash_t filter_params;
+  FILE *file;
+  char *jbig2dec_global_segments = NULL;
+  pdf_size_t jbig2dec_global_segments_size = 0;
 
   /* Install filters */
   do
@@ -396,10 +405,73 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
           {
             break;
           }
-        case JBIG2DEC_FILTER_ARG:
+#ifdef HAVE_JBIG2DEC
+        case JBIG2DEC_GLOBAL_SEGMENTS_ARG:
           {
+            struct stat fstats;
+
+
+            stat (optarg, &fstats);
+
+            /* Load the contents of a jbig2 global segments file */
+            file = fopen (optarg, "r");
+            if (file == NULL)
+              {
+                fprintf (stderr, "error: invalid jbig2 global segments file\n");
+                exit (1);
+              }
+
+            jbig2dec_global_segments = pdf_alloc (fstats.st_size);
+            jbig2dec_global_segments_size = fstats.st_size;
+            if (fread (jbig2dec_global_segments,
+                       1, fstats.st_size, file) != fstats.st_size)
+              {
+                fprintf (stderr, "error: reading jbig2 global segments file\n");
+                exit (1);
+              }
+
+            fclose (file);
             break;
           }
+        case JBIG2DEC_FILTER_ARG:
+          {
+            ret = pdf_hash_new (NULL, &filter_params);
+            if (ret != PDF_OK)
+              {
+                pdf_error (ret, stderr, "while creating the jbig2dec filter parameters hash table");
+                exit (1);
+              }
+
+            if (jbig2dec_global_segments != NULL)
+              {
+                pdf_size_t *size;
+
+                pdf_hash_add (filter_params,
+                              "GlobalStreamsBuffer",
+                              (const void *) &jbig2dec_global_segments,
+                              NULL);
+
+                size = pdf_alloc (sizeof(pdf_size_t));
+                *size = jbig2dec_global_segments_size;
+                pdf_hash_add (filter_params,
+                              "GlobalStreamsSize",
+                              (const void *) size,
+                              NULL);
+              }
+
+
+            pdf_stm_install_filter (stm,
+                                    PDF_STM_FILTER_JBIG2_DEC,
+                                    filter_params);
+
+            /* Note that a reference to this memory remains into the
+               stream */
+            jbig2dec_global_segments = NULL;
+            jbig2dec_global_segments_size = 0;
+
+            break;
+          }
+#endif /* HAVE_JBIG2DEC */
         case DCTDEC_FILTER_ARG:
           {
             break;

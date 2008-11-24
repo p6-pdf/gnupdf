@@ -53,6 +53,12 @@ AC_CHECK_LIB(m,exp,,,)
 
 have_jbig2dec=no
 AC_CHECK_LIB([jbig2dec],[jbig2_ctx_new],[have_jbig2dec=yes],,)
+
+if test "x$have_jbig2dec" = "xyes"; then
+   LIBS="-ljbig2dec $LIBS"
+   AC_DEFINE([HAVE_JBIG2DEC], [1], [The jbig2dec library is available])
+fi
+
 AM_CONDITIONAL([JBIG2DEC], [test "x$have_jbig2dec" = "xyes"])
 
 AM_PATH_LIBGCRYPT([1.2.4], have_libgcrypt="yes", have_libgcrypt="no")
