@@ -1,4 +1,19 @@
+2008-11-25  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* configure.ac: Output torture/prmgt/get-test-data.sh
+
+	* prmgt/get-test-data.sh: New file.
+
+	* torture/testdata/README: New file
+
 2008-11-24  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/unit/Makefile.am (TORTUTILS_FILES): New variable
+	containig tortutils sources.
+
+	* torture/tortutils/tortutils.c: New file.
+
+	* torture/tortutils/tortutils.h: New file.
 
 	* src/base/pdf-stm-filter.c (pdf_stm_filter_apply): Make finish_p
 	to be activated upon EOF in read-mode streams.

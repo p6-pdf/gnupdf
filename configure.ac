@@ -19,7 +19,7 @@ dnl You should have received a copy of the GNU General Public License
 dnl along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 AC_INIT(src/pdf-global.h)
-AM_INIT_AUTOMAKE(gnupdf, 0.1)
+AM_INIT_AUTOMAKE(gnupdf, trunk)
 AM_CONFIG_HEADER(src/config.h)
 
 gl_EARLY
@@ -270,10 +270,11 @@ esac
 dnl Specific W32 needs of compilation
 AM_CONDITIONAL([COMPILE_W32_SYSTEM], [test "x$compile_w32_system" = "xyes"])
 
-
+GNUPDF_VERSION=$VERSION
+AC_SUBST(GNUPDF_VERSION)
 
 dnl Generate output files
-AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile torture/unit/Makefile doc/Makefile utils/Makefile prmgt/Makefile prmgt/apic2wiki prmgt/testlog2wiki prmgt/docfuncs prmgt/tsdfuncs src/extract-public-hdr build-aux/Makefile)
+AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile torture/unit/Makefile doc/Makefile utils/Makefile prmgt/Makefile prmgt/apic2wiki prmgt/testlog2wiki prmgt/docfuncs prmgt/tsdfuncs src/extract-public-hdr build-aux/Makefile prmgt/get-test-data.sh)
 
 dnl Report configuration results
 
