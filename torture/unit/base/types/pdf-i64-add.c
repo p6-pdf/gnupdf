@@ -59,7 +59,7 @@ START_TEST(pdf_i64_add_001)
   fail_if(dest.high != 2147483647);
 #else
   pdf_i64_add(&dest,add1,add2, &p_status);
-  fail_if(dest != 0x7FFFFFFF00000000);
+  fail_if(dest != 0x7FFFFFFF00000000LL);
 #endif
 
 }

@@ -50,7 +50,7 @@ START_TEST(pdf_i64_new_001)
   fail_if(k.low != 5);
   fail_if(k.high != 4);
 #else
-  fail_if(k != 0x400000005);
+  fail_if(k != 0x400000005LL);
 #endif
   
 
