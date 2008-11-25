@@ -51,6 +51,8 @@ AM_CPPFLAGS = -I$(top_srcdir)/lib \
               -I$(top_srcdir)/src \
               -I$(top_srcdir)/src/base \
               -I$(top_srcdir)/src/object \
+              -I$(top_srcdir)/torture/tortutils \
+              -DTEST_DATA_PATH=\"$(top_srcdir)/torture/testdata\" \
               $(NOCHECK_CPPFLAGS)
 AM_CFLAGS = -g
 
@@ -197,7 +199,11 @@ TSUITE_FILES = base/alloc/tsuite-alloc.c \
                base/crypt/tsuite-crypt.c \
                base/stm/tsuite-stm.c
 
+TORTUTILS_FILES = $(top_srcdir)/torture/tortutils/tortutils.h \
+                  $(top_srcdir)/torture/tortutils/tortutils.c
+
 runtests_SOURCES = $(NOCHECK_SRC) \
+                   $(TORTUTILS_FILES) \
                    $(TSUITE_FILES) \
                    $(TEST_FILES) \
                    runtests.c

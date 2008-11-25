@@ -50,6 +50,7 @@ GNU PDF Library Test Specification Document
 * Unit Testing::
 * Subsystem Testing::
 * System Testing::
+* Test Data Files::
 * GNU Free Documentation License:: Distribution terms of this document.
 
 Indices
@@ -900,6 +901,21 @@ decoder to it.
 @table @strong
 @item Success condition
 The decoded data should be correct.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_read_010
+Create a memory-based reading stream and attach a JBIG2 decoder to
+it. Then decode a JBIG2 page using a global segment.
+@table @strong
+@item Success condition
+The decoded bitmap should be equal to @file{TD00003}.
+@item Data files
+@itemize @minus
+@item @file{TD00001}
+@item @file{TD00002}
+@item @file{TD00003}
+@end itemize
 @end table
 @end deffn
 
@@ -6260,6 +6276,19 @@ Returns PDF_OK
 
 @node System Testing
 @chapter System Testing
+
+@node Test Data Files
+@chapter Test Data Files
+
+@table @file
+@item TD00001
+JBIG2 global segment for the page @file{TD00002}.
+@item TD00002
+JBIG2 page using global segment @file{TD00001}.
+@item TD00003
+Decoded JBIG2 page bitmap from page @file{TD00002} and global
+segment @file{TD00001}.
+@end table
 
 @node GNU Free Documentation License
 @appendix GNU Free Documentation License
