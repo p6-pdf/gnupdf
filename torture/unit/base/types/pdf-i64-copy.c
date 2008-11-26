@@ -57,7 +57,7 @@ START_TEST(pdf_i64_copy_001)
   fail_if(copy.high != 4);
 #else
   pdf_i64_copy(orig,&copy,&p_status);
-  fail_if(copy != 0x0000000400000005);
+  fail_if(copy != 0x0000000400000005LL);
 #endif
   
 
