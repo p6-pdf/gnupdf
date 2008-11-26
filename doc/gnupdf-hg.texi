@@ -356,10 +356,23 @@ This chapter contains some useful information to send patches to be
 integrated in the trunk.
 
 @menu
+* Documenting Your Changes::
 * Generating a Bazaar Merge Directive::
 * Syntax Check::
 * Patch Safety Dispatcher::
 @end menu
+
+@node Documenting Your Changes
+@section Documenting Your Changes
+
+Everyone loves documentation! :D
+
+If your change includes new files please update the
+@file{MANIFEST.wiki} in the directory containing the new files.
+
+If your change is not trivial please take a look to the appropriate
+architecture page in the wiki. Maybe it is needed to update the page
+with more information?
 
 @node Generating a Bazaar Merge Directive
 @section Generating a Bazaar Merge Directive

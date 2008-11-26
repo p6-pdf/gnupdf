@@ -1,3 +1,7 @@
+2008-11-26  Jose E. Marchesi  <jemarch@gnu.org>
+
+	*  Initial version of the MANIFEST.wiki files.
+
 2008-11-25  Gerardo E. Gidoni  <gerel@gnu.org>
 
 	* torture/unit/base/types/pdf-i64-add.c: added 'long long'

@@ -49,10 +49,16 @@ closedir(DIR);
 
 # push these by hand
 push (@dirs, ""); # for TOPDIR
+push (@dirs, "prmgt");
+push (@dirs, "lib");
+push (@dirs, "m4");
+push (@dirs, "src");
 push (@dirs, "src/base");
 push (@dirs, "src/object");
 push (@dirs, "src/document");
 push (@dirs, "src/page");
+push (@dirs, "utils");
+push (@dirs, "torture");
 
 foreach my $dir (sort(@dirs)){
     my $file = $TOPDIR . '/' . $dir . '/' . $DOCFILE;
