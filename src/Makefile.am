@@ -74,9 +74,12 @@ CRYPT_MODULE_SOURCES = base/pdf-crypt.c base/pdf-crypt.h \
                        base/pdf-crypt-c-aesv2.c base/pdf-crypt-c-aesv2.h \
                        base/pdf-crypt-c-v2.c base/pdf-crypt-c-v2.h
 
+FP_MODULE_SOURCES = base/pdf-fp.h base/pdf-fp.c
+
 BASE_LAYER_SOURCES = base/pdf-base.c base/pdf-base.h \
                      $(ALLOC_MODULE_SOURCES) \
                      $(TYPES_MODULE_SOURCES) \
+                     $(FP_MODULE_SOURCES) \
                      $(FILESYSTEM_MODULE_SOURCES) \
                      $(STM_MODULE_SOURCES) \
                      $(ERROR_MODULE_SOURCES) \

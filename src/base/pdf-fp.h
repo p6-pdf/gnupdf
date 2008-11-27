@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 00:59:52 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/11/27 20:59:39 jemarch"
  *
  *       File:         pdf-fp.h
  *       Date:         Sun Feb 10 21:36:37 2008
@@ -43,18 +43,6 @@ pdf_point_t pdf_create_point (void);
 void pdf_destroy_point (pdf_point_t point);
 pdf_point_t pdf_point_dup (pdf_point_t point);
 
-/* Interpolation functions */
-
-double pdf_interp_lineal (double x1, double y1,
-                          double x2, double y2,
-                          double x);
-
-double pdf_interp_exp_coef_m (double x1, double x2,
-                              double y1, double y2);
-double pdf_interp_exp_coef_k (double x1, double y1,
-                              double m);
-double pdf_interp_exp (double m, double k,
-                       double x);
 
 /* END PUBLIC */
 

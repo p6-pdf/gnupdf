@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/22 22:47:33 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/11/27 21:00:00 jemarch"
  *
  *       File:         pdf-fp.c
  *       Date:         Sun Feb 10 21:38:34 2008
@@ -55,39 +55,5 @@ pdf_point_dup (pdf_point_t point)
   return new_point;
 }
 
-inline double
-pdf_interp_lineal (double x1,
-                   double y1,
-                   double x2,
-                   double y2,
-                   double x)
-{
-  return (y2 + ((y2 - y1) / (x2 - x1)) * (x - x1));
-}
-
-inline double
-pdf_interp_exp_coef_m (double x1, 
-                       double y1,
-                       double x2,
-                       double y2)
-{
-  return ((log (y2 / y1)) / (x2 - x1));
-}
-
-inline double
-pdf_interp_exp_coef_k (double x1,
-                       double y1,
-                       double m)
-{
-  return (y1 * exp (-1 * m * x1));
-}
-
-inline double
-pdf_interp_exp (double m,
-                double k,
-                double x)
-{
-  return (k * exp (m * x));
-}
 
 /* End of pdf-fp.c */

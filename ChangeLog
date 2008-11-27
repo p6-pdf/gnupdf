@@ -1,3 +1,17 @@
+2008-11-27  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-fp.h: Useless interpolation functions deleted.
+
+	* src/base/pdf-fp.c: Idem.
+
+	* src/Makefile.am (FP_MODULE_SOURCES): New variable.
+
+	* build-aux/link-warning.h: Moved from top_srcdir.
+
+2008-11-27  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* prmgt/srcinfo-extractor.pl.in: originally srcinfo-extractor.pl.
+
 2008-11-26  Jose E. Marchesi  <jemarch@gnu.org>
 
 	*  Initial version of the MANIFEST.wiki files.
