@@ -2059,7 +2059,30 @@ Either @var{table}, @var{key} or @var{elt} is invalid.
 @end table
 @item Usage example
 @example
-XXX
+pdf_hash_t hash;
+pdf_stm_t elem;
+pdf_char_t *buf;
+
+/* Create a new hash */
+if (pdf_hash_new (NULL, &hash) == PDF_OK)
+   @{
+      /* Create the element for the hash */
+      buf = pdf_alloc (10);
+      pdf_stm_mem_new (buf,
+                       10,
+                       0, /* Use default cache size */
+                       PDF_STM_READ,
+                       &stm);
+
+      /* Add the element to the hash */
+      pdf_hash_add_hash (hash, "a-key", &elem);
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+
+      /* Destroy the memory buffer */
+      pdf_dealloc (buf);
+   @}
 @end example
 @end table
 @end deftypefun
@@ -2796,7 +2819,29 @@ The list does not allow duplicated values and already contain
 @end table
 @item Usage example
 @example
-XXX
+pdf_list_t list;
+pdf_u32_t a;
+pdf_u32_t b;
+pdf_u32_t c;
+pdf_u32_t x;
+
+/* Create a list of integers */
+if (pdf_list_new (NULL,
+                  NULL,
+                  PDF_FALSE, /* Allow duplicates */
+                  &list) == PDF_OK)
+   @{
+      /* Insert the elements into the list */
+      pdf_list_add_last (list, (void *) &a, NULL);
+      pdf_list_add_last (list, (void *) &b, NULL);
+      pdf_list_add_last (list, (void *) &c, NULL);
+
+      /* Now the list contains abc */
+
+      pdf_list_set_at (list, 1, (void *) &x, NULL);
+
+      /* Now the list contains axc */
+   @}
 @end example
 @end table
 @end deftypefun
