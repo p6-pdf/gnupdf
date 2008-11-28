@@ -1,5 +1,8 @@
 2008-11-28  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* utils/pdf-filter.h (HELP_ARG): take care about missing
+	filters.
+
 	* doc/gnupdf.texi (Hash helper functions): Usage example for
 	pdf_hash_add_stm.
 	(Setting and Getting List Elements): Usage example for
