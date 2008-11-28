@@ -3418,6 +3418,27 @@ The stm will be used to write data into the open file or memory buffer.
 @end table
 @end deftp
 
+@deftp {Data Type} {enum pdf_stm_filter_type_e}
+The several types of supported stream filters.
+
+@table @code
+@item PDF_STM_FILTER_AHEX_ENC
+ASCII Hex encoder.
+@item PDF_STM_FILTER_AHEX_DEC
+ASCII Hex decoder.
+@item PDF_STM_FILTER_RL_ENC
+Run-Length encoder.
+@item PDF_STM_FILTER_RL_DEC
+Run-Length decoder.
+@item PDF_STM_FILTER_FLATE_ENC
+Flate (zlib) encoder.
+@item PDF_STM_FILTER_FLATE_DEC
+Flate (zlib) decoder.
+@item PDF_STM_FILTER_JBIG2_DEC
+JBIG2 decoder.
+@end table
+@end deftp
+
 @node Creating and Destroying Streams
 @subsection Creating and Destroying Streams
 
@@ -3603,29 +3624,6 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_stm_finish (pdf_stm_t @var{stm}, pdf_bool_t @var{finish_p})
-
-Finish the filter chain of a write stream.
-
-@table @strong
-@item Parameters
-@table @var
-@item stm
-A stream.
-@item finish_p
-Boolean value indicating whether to finish the filters in the chain.
-@end table
-@item Returns
-A PDF size value containing the number of bytes written by the finish
-operation.
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
-
-
 @deftypefun pdf_u32_t pdf_stm_read_char (pdf_stm_t stm)
 
 Read a character from a given stream.
@@ -3666,16 +3664,20 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_stm_flush (pdf_stm_t @var{stm})
+@deftypefun pdf_size_t pdf_stm_flush (pdf_stm_t @var{stm}, pdf_bool_t @var{finish_p})
 
-Flush any pending writing data in a given stream. It is a no-op in a
-memory stream.
+Flush any pending writing data in a given stream.
+
+If @var{finish_p} equals to @code{PDF_TRUE} then the filters in the
+stream's filter chain are tell to generate any remaining output.
 
 @table @strong
 @item Parameters
 @table @var
 @item stm
 A stream.
+@item finish_p
+A boolean value indicating whether to finalize the filter chain.
 @end table
 @item Returns
 A PDF size value containing the number of octects that has been

@@ -4,6 +4,10 @@
 	pdf_hash_add_stm.
 	(Setting and Getting List Elements): Usage example for
 	pdf_list_set_at.
+	(Reading and Writing Data): Documentation of pdf_stm_flush
+	adjusted to the new implementation.
+	(Stream Types): Document pdf_stm_filter_type_e in the reference
+	manual.
 
 2008-11-27  Jose E. Marchesi  <jemarch@gnu.org>
 
