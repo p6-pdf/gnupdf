@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-09 04:10:20 david"
+/* -*- mode: C -*- Time-stamp: "08/11/29 16:04:01 jemarch"
  *
  *       File:         pdf-crypt-cipher-encrypt.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -52,7 +52,7 @@ START_TEST (pdf_crypt_cipher_encrypt_001)
   pdf_crypt_init();
   
   pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
-  pdf_crypt_cipher_setkey (&cipher, key, in_size);
+  pdf_crypt_cipher_setkey (cipher, key, in_size);
   out_size = pdf_crypt_cipher_encrypt_size (cipher, in, in_size);
 
   out = pdf_alloc (out_size);
@@ -87,7 +87,7 @@ START_TEST (pdf_crypt_cipher_encrypt_002)
   pdf_crypt_init();
 
   pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &cipher);
-  pdf_crypt_cipher_setkey (&cipher, key, sizeof(key));
+  pdf_crypt_cipher_setkey (cipher, key, sizeof(key));
   out_size = pdf_crypt_cipher_encrypt_size (cipher, in, in_size);
 
   out = pdf_alloc (out_size);

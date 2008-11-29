@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/09 00:41:56 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/11/29 16:11:02 jemarch"
  *
  *       File:         pdf-text.h
  *       Date:         Fri Jan 11 21:09:23 2008
@@ -82,20 +82,6 @@ enum pdf_text_filter_type_e {
 };
 
 
-/* Common Code Length for both country and language codes 
- *  (including last NUL char) */
-#define PDF_TEXT_CCL     3
-
-/* Structure defining the basic text type. Contents are always stored internally
- *  in UNICODE UTF32-HE encoding */
-struct pdf_text_s {
-  pdf_char_t *data;                 /* Contents in UTF-32HE */
-  pdf_size_t size;                  /* Number of Bytes */
-  pdf_list_t word_boundaries;       /* List of Word boundaries (optional) */
-  pdf_char_t lang[PDF_TEXT_CCL];    /* Associated language code (optional) */
-  pdf_char_t country[PDF_TEXT_CCL]; /* Associated country code (optional) */
-};
-
 /* And reference to the structure (basic type to be used) */
 typedef struct pdf_text_s *pdf_text_t;
 
@@ -108,7 +94,6 @@ typedef struct pdf_text_s *pdf_text_t;
 typedef struct pdf_text_host_encoding_s {
   pdf_char_t name[PDF_TEXT_HENMAXL];
 } pdf_text_host_encoding_t;
-
 
 /* --------------------- Text Module initialization ------------------------- */
 
@@ -329,7 +314,19 @@ pdf_text_cmp (const pdf_text_t text1,
 
 /* END PUBLIC */
 
+/* Common Code Length for both country and language codes 
+ *  (including last NUL char) */
+#define PDF_TEXT_CCL     3
 
+/* Structure defining the basic text type. Contents are always stored internally
+ *  in UNICODE UTF32-HE encoding */
+struct pdf_text_s {
+  pdf_char_t *data;                 /* Contents in UTF-32HE */
+  pdf_size_t size;                  /* Number of Bytes */
+  pdf_list_t word_boundaries;       /* List of Word boundaries (optional) */
+  pdf_char_t lang[PDF_TEXT_CCL];    /* Associated language code (optional) */
+  pdf_char_t country[PDF_TEXT_CCL]; /* Associated country code (optional) */
+};
 
 /* Structure containing the word boundary information */
 struct pdf_text_wb_s {

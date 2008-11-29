@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/11/24 15:11:50 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/11/29 15:10:34 jemarch"
  *
  *       File:         pdf-stm-filter.h
  *       Date:         Thu Jun 12 22:05:06 2008
@@ -59,6 +59,16 @@ enum pdf_stm_filter_type_e
   PDF_STM_FILTER_JBIG2_DEC
 };
 
+/* END PUBLIC */
+
+enum pdf_stm_filter_mode_e
+{
+  PDF_STM_FILTER_MODE_READ,
+  PDF_STM_FILTER_MODE_WRITE
+};
+
+typedef struct pdf_stm_filter_s *pdf_stm_filter_t;
+
 /* Filter implementation */
 struct pdf_stm_filter_impl_s
 {
@@ -71,12 +81,6 @@ struct pdf_stm_filter_impl_s
                             pdf_stm_buffer_t out,
                             pdf_bool_t finish_p);
   pdf_status_t (*dealloc_state_fn) (void *state);
-};
-
-enum pdf_stm_filter_mode_e
-{
-  PDF_STM_FILTER_MODE_READ,
-  PDF_STM_FILTER_MODE_WRITE
 };
 
 /* Filter data type */
@@ -106,10 +110,6 @@ struct pdf_stm_filter_s
   /* Operation mode */
   enum pdf_stm_filter_mode_e mode;
 };
-
-typedef struct pdf_stm_filter_s *pdf_stm_filter_t;
-
-/* END PUBLIC */
 
 /*
  * Public API

@@ -40,6 +40,9 @@
  */
 START_TEST(pdf_text_set_host_001)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t ascii_strings[];
   int i;
   
@@ -104,6 +107,7 @@ START_TEST(pdf_text_set_host_001)
       
       ++i;
     }
+#endif /* DEACTIVATED */
 }
 END_TEST
 

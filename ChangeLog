@@ -1,3 +1,27 @@
+2008-11-29  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/unit/base/crypt/pdf-crypt-cipher-decrypt.c: Adapted to
+	use the new API.
+
+	* torture/unit/base/crypt/pdf-crypt-cipher-encrypt.c: Adapted to
+	use the new API.
+
+	* src/base/pdf-crypt.h: Make `pdf_crypt_cipher_t' and
+	`pdf_crypt_md_t' opaque pointers.
+	Provide `enum pdf_crypt_md_algo_e' instead of `pdf_crypt_md_algo_t'.
+
+	* src/base/pdf-stm-buffer.h: Do not export definitions to the
+	public header file.
+
+	* src/base/pdf-stm-be.h: Do not export definitions to the public
+	header file.
+
+	* src/base/pdf-stm-filter.h: Make `pdf_stm_filter_t' private.
+
+	* src/base/pdf-stm.h: Make `pdf_stm_t' a opaque pointer.
+
+	* src/base/pdf-time.h: Make `pdf_time_t' a opaque pointer.
+
 2008-11-28  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* utils/pdf-filter.h (HELP_ARG): take care about missing

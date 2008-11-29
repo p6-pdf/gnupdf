@@ -48,6 +48,9 @@
  */
 START_TEST(pdf_text_new_from_pdf_string_001)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t pdf_doc_encoding_strings[];
   int i;
   
@@ -116,6 +119,7 @@ START_TEST(pdf_text_new_from_pdf_string_001)
         }
       ++i;
     }
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -169,6 +173,9 @@ END_TEST
  */
 START_TEST(pdf_text_new_from_pdf_string_003)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf16be_strings[];
   int i;
   
@@ -254,6 +261,7 @@ START_TEST(pdf_text_new_from_pdf_string_003)
         }
       ++i;
     }
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -381,6 +389,9 @@ END_TEST
  */
 START_TEST(pdf_text_new_from_pdf_string_006)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf16be_strings[];
   int i;
   const pdf_char_t *language_code = (pdf_char_t *)"en";
@@ -487,6 +498,7 @@ START_TEST(pdf_text_new_from_pdf_string_006)
       pdf_dealloc(input_data);
       ++i;
     }
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -508,6 +520,9 @@ END_TEST
  */
 START_TEST(pdf_text_new_from_pdf_string_007)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf16be_strings[];
   int i;
   const pdf_char_t *language_code = (pdf_char_t *)"en";
@@ -619,6 +634,7 @@ START_TEST(pdf_text_new_from_pdf_string_007)
       pdf_dealloc(input_data);
       ++i;
     }
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -658,6 +674,9 @@ END_TEST
  */
 START_TEST(pdf_text_new_from_pdf_string_008)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf16be_strings[];
   int i;
   const pdf_char_t *language_code1 = (pdf_char_t *)"en";
@@ -947,6 +966,8 @@ START_TEST(pdf_text_new_from_pdf_string_008)
       pdf_dealloc(input_data);
       ++i;
     }
+
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -988,6 +1009,9 @@ END_TEST
  */
 START_TEST(pdf_text_new_from_pdf_string_009)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf16be_strings[];
   int i;
   const pdf_char_t *language_code1 = (pdf_char_t *)"en";
@@ -1289,6 +1313,7 @@ START_TEST(pdf_text_new_from_pdf_string_009)
       pdf_dealloc(input_data);
       ++i;
     }
+#endif /* DEACTIVATED */
 }
 END_TEST
 

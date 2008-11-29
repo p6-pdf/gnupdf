@@ -39,6 +39,9 @@
  */
 START_TEST(pdf_text_get_country_001)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   pdf_text_t text;
   const pdf_char_t *country = NULL;
 
@@ -61,6 +64,7 @@ START_TEST(pdf_text_get_country_001)
   fail_unless(strlen((char *)country) == 2);
 
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
