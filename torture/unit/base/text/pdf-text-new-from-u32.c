@@ -38,6 +38,9 @@
  */
 START_TEST(pdf_text_new_from_u32_001)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   pdf_text_t text;
   pdf_u32_t number = 0;
   const pdf_char_t *expected_data_be = (pdf_char_t *)"\x00\x00\x00" "0";
@@ -64,6 +67,8 @@ START_TEST(pdf_text_new_from_u32_001)
   fail_if(memcmp(text->data, expected_data, expected_size) != 0);
   
   pdf_text_destroy(text);
+
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -78,6 +83,9 @@ END_TEST
  */
 START_TEST(pdf_text_new_from_u32_002)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   pdf_text_t text;
   pdf_u32_t number = 123450;
   const pdf_char_t *expected_data_be = (pdf_char_t *)"\x00\x00\x00" "1" \
@@ -114,6 +122,8 @@ START_TEST(pdf_text_new_from_u32_002)
   fail_if(memcmp(text->data, expected_data, expected_size) != 0);
   
   pdf_text_destroy(text);
+
+#endif /* DEACTIVATED */
 }
 END_TEST
 

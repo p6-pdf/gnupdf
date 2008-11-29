@@ -8148,7 +8148,7 @@ if (st != PDF_OK)
 @node Creating and destroying Ciphers
 @subsection Creating and destroying Ciphers
 
-@deftp {Data Type} {pdf_crypt_cipher_algo_t}
+@deftp {Data Type} {enum pdf_crypt_cipher_algo_e}
 An algorithm provided. It contains low level functions of the algorithm
 implementation.
 
@@ -8165,7 +8165,7 @@ A cipher. It contains data which is required between several calls to
 functions.
 @end deftp
 
-@deftypefun pdf_status_t pdf_crypt_cipher_new (pdf_crypt_cipher_algo_t *@var{algorithm}, pdf_crypt_cipher_t *@var{cipher})
+@deftypefun pdf_status_t pdf_crypt_cipher_new (enum pdf_crypt_cipher_algo_e @var{algorithm}, pdf_crypt_cipher_t *@var{cipher})
 
 Create a new cipher.
 
@@ -8446,7 +8446,7 @@ if (st != PDF_OK)
 @node Message digest functions
 @subsection Message digest functions
 
-@deftp {Data Type} {pdf_crypt_md_algo_t}
+@deftp {Data Type} {enum pdf_crypt_md_algo_e}
 An algorithm provided. It contains low level functions of the algorithm
 implementation.
 
@@ -8462,7 +8462,7 @@ A message-digest descriptor.
 
 
 
-@deftypefun pdf_status_t pdf_crypt_md_new (pdf_crypt_md_t  *@var{md}, pdf_crypt_md_algo_t @var{algo})
+@deftypefun pdf_status_t pdf_crypt_md_new (pdf_crypt_md_t  *@var{md}, enum pdf_crypt_md_algo_e @var{algo})
 
 Create a message-digest descriptor for an algorithm.
 

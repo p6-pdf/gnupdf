@@ -126,13 +126,10 @@ PUBLIC_HDRS = pdf-global.h \
               base/pdf-text.h \
               base/pdf-fsys.h \
               base/pdf-stm-buffer.h \
-              base/pdf-stm-be.h \
               base/pdf-stm-filter.h \
               base/pdf-stm.h \
               base/pdf-hash-helper.h \
-              base/pdf-crypt.h \
-              base/pdf-crypt-c-v2.h \
-              base/pdf-crypt-c-aesv2.h
+              base/pdf-crypt.h
 
 pdf.h : $(PUBLIC_HDRS)
 	chmod +x $(top_srcdir)/src/extract-public-hdr

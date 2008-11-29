@@ -85,6 +85,9 @@ END_TEST
  */
 START_TEST(pdf_text_cmp_002)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   const pdf_char_t *input_data = (pdf_char_t *) "GNU's Not Unix. ";
   pdf_size_t input_size = strlen((char *)input_data);
   pdf_text_t text1;
@@ -131,6 +134,7 @@ START_TEST(pdf_text_cmp_002)
   
   pdf_text_destroy(text1);
   pdf_text_destroy(text2);
+#endif /* DEACTIVATED */
 }
 END_TEST
 

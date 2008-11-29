@@ -43,6 +43,9 @@
  */
 START_TEST(pdf_text_set_unicode_001)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf8_strings[];
   int i;
   
@@ -97,6 +100,7 @@ START_TEST(pdf_text_set_unicode_001)
         }
       ++i;
     }  
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -112,6 +116,9 @@ END_TEST
  */
 START_TEST(pdf_text_set_unicode_002)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf16be_strings[];
   int i;
   
@@ -165,6 +172,7 @@ START_TEST(pdf_text_set_unicode_002)
         }
       ++i;
     }  
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -180,6 +188,9 @@ END_TEST
  */
 START_TEST(pdf_text_set_unicode_003)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf16be_strings[];
   int i;
   
@@ -235,7 +246,8 @@ START_TEST(pdf_text_set_unicode_003)
         }
       pdf_dealloc(input_data);
       ++i;
-    }  
+    }
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -250,6 +262,9 @@ END_TEST
  */
 START_TEST(pdf_text_set_unicode_004)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf16be_strings[];
   int i;
   
@@ -321,6 +336,7 @@ START_TEST(pdf_text_set_unicode_004)
         }
       ++i;
     }  
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -336,6 +352,9 @@ END_TEST
  */
 START_TEST(pdf_text_set_unicode_005)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf32be_strings[];
   int i;
   
@@ -389,6 +408,7 @@ START_TEST(pdf_text_set_unicode_005)
         }
       ++i;
     }  
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -404,6 +424,9 @@ END_TEST
  */
 START_TEST(pdf_text_set_unicode_006)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf32be_strings[];
   int i;
   
@@ -460,6 +483,7 @@ START_TEST(pdf_text_set_unicode_006)
       pdf_dealloc(input_data);
       ++i;
     }  
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -475,6 +499,9 @@ END_TEST
  */
 START_TEST(pdf_text_set_unicode_007)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf32be_strings[];
   int i;
   
@@ -545,6 +572,7 @@ START_TEST(pdf_text_set_unicode_007)
         }
       ++i;
     }  
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -559,6 +587,9 @@ END_TEST
  */
 START_TEST(pdf_text_set_unicode_008)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf8_strings[];
   int i;
   
@@ -612,6 +643,7 @@ START_TEST(pdf_text_set_unicode_008)
         }
       ++i;
     }  
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -627,6 +659,9 @@ END_TEST
  */
 START_TEST(pdf_text_set_unicode_009)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf16be_strings[];
   int i;
   
@@ -680,6 +715,7 @@ START_TEST(pdf_text_set_unicode_009)
         }
       ++i;
     }  
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -695,6 +731,9 @@ END_TEST
  */
 START_TEST(pdf_text_set_unicode_010)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf16be_strings[];
   int i;
   
@@ -751,6 +790,7 @@ START_TEST(pdf_text_set_unicode_010)
       pdf_dealloc(input_data);
       ++i;
     }  
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -765,6 +805,9 @@ END_TEST
  */
 START_TEST(pdf_text_set_unicode_011)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf16be_strings[];
   int i;
   
@@ -835,7 +878,8 @@ START_TEST(pdf_text_set_unicode_011)
           pdf_dealloc(input_data);
         }
       ++i;
-    }  
+    }
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -851,6 +895,9 @@ END_TEST
  */
 START_TEST(pdf_text_set_unicode_012)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf32be_strings[];
   int i;
   
@@ -926,6 +973,7 @@ START_TEST(pdf_text_set_unicode_012)
         }
       ++i;
     }  
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -941,6 +989,9 @@ END_TEST
  */
 START_TEST(pdf_text_set_unicode_013)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf32be_strings[];
   int i;
   
@@ -997,6 +1048,7 @@ START_TEST(pdf_text_set_unicode_013)
       pdf_dealloc(input_data);
       ++i;
     }  
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -1012,6 +1064,9 @@ END_TEST
  */
 START_TEST(pdf_text_set_unicode_014)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf32be_strings[];
   int i;
   
@@ -1082,6 +1137,7 @@ START_TEST(pdf_text_set_unicode_014)
         }
       ++i;
     }  
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -2007,6 +2063,9 @@ END_TEST
  */
 START_TEST(pdf_text_set_unicode_029)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf16be_strings[];
   int i;
   const pdf_char_t *language_code = (pdf_char_t *)"en";
@@ -2111,6 +2170,7 @@ START_TEST(pdf_text_set_unicode_029)
 
       ++i;
     }
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -2129,6 +2189,9 @@ END_TEST
  */
 START_TEST(pdf_text_set_unicode_030)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf16be_strings[];
   int i;
   const pdf_char_t *language_code = (pdf_char_t *)"en";
@@ -2231,6 +2294,7 @@ START_TEST(pdf_text_set_unicode_030)
       
       ++i;
     }
+#endif /* DEACTIVATED */
 }
 END_TEST
 

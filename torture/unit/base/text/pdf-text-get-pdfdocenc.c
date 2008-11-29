@@ -42,6 +42,9 @@
  */
 START_TEST(pdf_text_get_pdfdocenc_001)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t pdf_doc_encoding_strings[];
   int i;
   
@@ -83,7 +86,7 @@ START_TEST(pdf_text_get_pdfdocenc_001)
       
       ++i;
     }
-  
+#endif /* DEACTIVATED */  
 }
 END_TEST
 

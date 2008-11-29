@@ -40,6 +40,9 @@
  */
 START_TEST(pdf_text_set_country_001)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   pdf_text_t text;
   const pdf_char_t *country = (pdf_char_t *)"GB";
   
@@ -56,6 +59,7 @@ START_TEST(pdf_text_set_country_001)
   fail_unless(strcmp((char *)text->country, (char *)country)==0);
   
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
