@@ -1,5 +1,11 @@
 2008-11-30  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-fp-func.c: Missing copyright and distribution terms
+	added.
+
+	* src/base/pdf-fp-func.h: Missing copyright and distribution terms
+	added.
+
 	* src/base/pdf-fp-func.c: New file.
 
 	* src/base/pdf-fp-func.h: New file.
