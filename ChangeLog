@@ -1,3 +1,9 @@
+2008-11-30  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-fp-func.c: New file.
+
+	* src/base/pdf-fp-func.h: New file.
+
 2008-11-29  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* torture/unit/base/crypt/pdf-crypt-cipher-decrypt.c: Adapted to

@@ -1,0 +1,151 @@
+/* -*- mode: C -*- Time-stamp: "08/11/30 21:13:31 jemarch"
+ *
+ *       File:         pdf-fp-func.h
+ *       Date:         Sun Nov 30 18:44:41 2008
+ *
+ *       GNU PDF Library - Functions
+ *
+ */
+
+#ifndef PDF_FP_FUNC_H
+#define PDF_FP_FUNC_H
+
+#include <config.h>
+
+#include <pdf-types.h>
+#include <pdf-fp.h>
+
+/* BEGIN PUBLIC */
+
+typedef struct pdf_fp_func_s *pdf_fp_func_t;
+
+/* END PUBLIC */
+
+struct pdf_fp_func_0_s
+{
+  pdf_u32_t m;
+  pdf_u32_t n;
+  double *encode;
+  double *decode;
+  pdf_u32_t *size;
+  // pdf_u32_t *stride; /* stride[i] := prod(j=0,i-1,size[i]) */
+  pdf_u32_t nsamples; /* product of all size[] entries, number of samples per output dimension */
+  
+  pdf_u32_t *k; /* base index, never out of range */
+  double *wm;
+  double *w0;
+  double *w1;
+  double *w2; /* precalculated weights, do not index into y[] if zero */
+  
+  pdf_real_t *y; /* sample table */
+  
+  /* not used for recursive variants */
+  pdf_real_t *r; /* reduction buffer */
+  pdf_real_t *y1; /* spline derivatives */
+  pdf_real_t *d; /* tmp buffer for diagonal of spline eq */
+  pdf_real_t *b; /* tmp buffer for right hand side of spline eq */
+};
+
+struct pdf_fp_func_2_s
+{
+  pdf_real_t *c0;
+  pdf_real_t *c1;
+  pdf_real_t N;
+};
+
+struct pdf_fp_func_3_s
+{
+  pdf_u32_t k;
+  /* number of functions 
+   * m = 1 for all component functions 
+   * fixed n for all component functions 
+   */
+  pdf_fp_func_t *functions;
+  pdf_real_t *bounds; /* bounds[0] == domain[0], bounds[k] == domain[1] */
+  double *encode; /* mapping of domains */
+};
+
+struct pdf_fp_func_4_s
+{
+  pdf_char_t *opcodes;
+  pdf_u32_t n_opcodes;
+  pdf_u32_t n_alloc;
+};
+
+struct pdf_fp_func_s
+{
+  pdf_i32_t type;
+  pdf_u32_t m;
+  pdf_u32_t n;
+  pdf_real_t *domain;
+  pdf_real_t *range;
+  pdf_i32_t init;
+  pdf_status_t (*eval) (pdf_fp_func_t fun,
+                        const pdf_real_t in[],
+                        pdf_real_t out[]);
+  union 
+  {
+    struct pdf_fp_func_0_s t0;
+    struct pdf_fp_func_2_s t2;
+    struct pdf_fp_func_3_s t3;
+    struct pdf_fp_func_4_s t4;
+  } u;
+};
+
+/* BEGIN PUBLIC */
+
+pdf_status_t pdf_fp_func_0_new (pdf_u32_t m,
+                                pdf_u32_t n,
+                                const pdf_real_t domain[],
+                                const pdf_real_t range[],
+                                pdf_u32_t size[],
+                                pdf_u32_t bps,
+                                pdf_u32_t order,
+                                const pdf_real_t encode[],
+                                const pdf_real_t decode[],
+                                pdf_char_t *samples,
+                                pdf_size_t samples_size,
+                                pdf_fp_func_t *function);
+
+pdf_status_t pdf_fp_func_2_new (pdf_u32_t m,
+                                pdf_u32_t n,
+                                const pdf_real_t domain[],
+                                const pdf_real_t range[],
+                                pdf_real_t N,
+                                pdf_real_t c0[],
+                                pdf_real_t c1[],
+                                pdf_fp_func_t *function);
+
+pdf_status_t pdf_fp_func_3_new (pdf_u32_t m,
+                                pdf_u32_t n,
+                                const pdf_real_t domain[],
+                                const pdf_real_t range[],
+                                pdf_u32_t k,
+                                pdf_fp_func_t *functions,
+                                pdf_real_t bounds[],
+                                const pdf_u32_t encode[],
+                                pdf_fp_func_t *function);
+
+pdf_status_t pdf_fp_func_4_new (pdf_u32_t m,
+                                pdf_u32_t n,
+                                const pdf_real_t domain[],
+                                const pdf_real_t range[],
+                                pdf_char_t *code,
+                                pdf_size_t code_size,
+                                pdf_fp_func_t *function);
+
+pdf_status_t pdf_fp_func_eval (pdf_fp_func_t function,
+                               const pdf_real_t in[],
+                               pdf_real_t out[]);
+
+pdf_status_t pdf_fp_func_get_bounds (const pdf_fp_func_t function,
+                                     pdf_i32_t *in_dimensions,
+                                     pdf_i32_t *out_dimensions);
+
+pdf_status_t pdf_fp_func_destroy (pdf_fp_func_t function);
+
+/* END PUBLIC */
+
+#endif /* pdf-fp-func.h */
+
+/* End of pdf-fp-func.h */
