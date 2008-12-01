@@ -3773,15 +3773,20 @@ A pointer to a @code{pdf_point_s} structure.
 @end deftp
 
 @deftp {Data Type} {struct pdf_matrix_s}
-This structure represents a 3x3 matrix.
+
+This structure represents a 3x3 matrix representing an affine
+transformation.
 
 @table @code
 @item pdf_real_t a
 @item pdf_real_t b
+The first row of the matrix is @code{a b 0}.
 @item pdf_real_t c
 @item pdf_real_t d
+The second row of the matrix is @code{c d 0}.
 @item pdf_real_t h
 @item pdf_real_t v
+The third row of the matrix is @code{h v 1}.
 @end table
 @end deftp
 
