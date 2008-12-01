@@ -82,7 +82,7 @@ Indices
 * Hash Tables::
 * Lists::
 * Filtered Streams::
-* Floating Point Arithmetic::
+* Floating Point Maths::
 * Encoded Text::
 * Time Management::
 * The Filesystem Module::
@@ -3735,26 +3735,25 @@ XXX
 @end table
 @end deftypefun
 
-@node Floating Point Arithmetic
-@section Floating Point Arithmetic
+@node Floating Point Maths
+@section Floating Point Maths
 
 @menu
 * Floating Point Types::
-* Point Manipulation Functions::
-* Rectangle Manipulation Functions::
-* Quadrilateral Manipulation Functions::
-* Matrix Manipulation Functions::
-* Interpolation Functions::
+* Number Conversion Routines::
+* Geometry Routines::
+* Creation and Destruction of Functions::
+* Evaluation of Functions::
 @end menu
 
 @node Floating Point Types
 @subsection Floating Point Types
 
 @deftp {Data Type} pdf_real_t
-A floating-point number.
+An opaque type representing a floating-point number.
 @end deftp
 
-@deftp {Data Type} struct pdf_point_s
+@deftp {Data Type} {struct pdf_point_s}
 
 This structure represents a single point. The coordinates of the point
 are made using floating point numbers.
@@ -3767,7 +3766,33 @@ Vertical coordinate.
 @end table
 @end deftp
 
-@deftp {Data Type} struct pdf_rect_s
+@deftp {Data Type} pdf_point_t
+
+A pointer to a @code{pdf_point_s} structure.
+
+@end deftp
+
+@deftp {Data Type} {struct pdf_matrix_s}
+This structure represents a 3x3 matrix.
+
+@table @code
+@item pdf_real_t a
+@item pdf_real_t b
+@item pdf_real_t c
+@item pdf_real_t d
+@item pdf_real_t h
+@item pdf_real_t v
+@end table
+@end deftp
+
+@deftp {Data Type} pdf_matrix_t
+
+A pointer to a @code{pdf_matrix_s} structure.
+
+@end deftp
+
+
+@deftp {Data Type} {struct pdf_rect_s}
 
 This structure represents a rectangle. It is composed by the
 coordinates for its four sides.
@@ -3787,7 +3812,13 @@ sides should be parallel.
 @end table
 @end deftp
 
-@deftp {Data Type} struct pdf_quad_s
+@deftp {Data Type} pdf_rect_t
+
+A pointer to a @code{pdf_rect_s} structure.
+
+@end deftp
+
+@deftp {Data Type} {struct pdf_quad_s}
 This structure represents a quadrilateral. It is composed by four
 corners (floating-point points).
 @table @code
@@ -3802,55 +3833,250 @@ Bottom-right point.
 @end table
 @end deftp
 
-@deftp {Data Type} struct pdf_matrix_s
-This structure represents a 3x3 matrix.
+@deftp {Data Type} pdf_quad_t
 
-@table @code
-@item pdf_real_t a11
-@item pdf_real_t a12
-@item pdf_real_t a13
-First row.
-@item pdf_real_t a21
-@item pdf_real_t a22
-@item pdf_real_t a23
-Second row.
-@item pdf_real_t a31
-@item pdf_real_t a32
-@item pdf_real_t a33
-Third row.
-@end table
+A pointer to a @code{pdf_quad_t} structure.
+
 @end deftp
 
-@node Point Manipulation Functions
-@subsection Point Manipulation Functions
+@deftp {Data Type} pdf_fp_func_t
 
-@node Quadrilateral Manipulation Functions
-@subsection Quadrilateral Manipulation Functions
+Opaque type representing a Floating Point function.
 
-@node Rectangle Manipulation Functions
-@subsection Rectangle Manipulation Functions
+@end deftp
 
-@node Matrix Manipulation Functions
-@subsection Matrix Manipulation Functions
+@node Number Conversion Routines
+@subsection Number Conversion Routines
 
-@deftypefun pdf_status_t pdf_fp_matrix_concat (pdf_matrix_t @var{result}, const pdf_matrix_t @var{m1}, const pdf_matrix_t @var{m2})
+@deftypefun pdf_status_t pdf_fp_string_to_real (const pdf_char_t *@var{string}, pdf_real_t *@var{result})
 
+Convert a numeric string representation to a @code{pdf_real_t}
+value. The string is scanned from left to right, taking into account
+the data before the first invalid character.
+
+@table @strong
+@item Parameters
+@table @var
+@item string
+A @code{NULL} terminated string.
+@item result
+The real variable where the result is stored.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The conversion was successful.
+@item PDF_ERROR
+No recognizable real value was found in the string.
+@end table
+@item Usage example
+@example
+pdf_real_t real;
+pdf_char_t str[5];
+
+strcpy (str, "1");
+str[1] = 0;
+pdf_fp_string_to_real (str, &real);
+/* real now contains 1.0 */
+
+strcpy (str, "1.0");
+str[3] = 0;
+pdf_fp_string_to_real (str, &real);
+/* real now contains 1.0 */
+
+
+strcpy (str, "1.0X");
+str[4] = 0;
+pdf_fp_string_to_real (str, &real);
+/* real now contains 1.0 */
+
+strcpy (str, "foo");
+str[3] = 0;
+if (pdf_fp_string_to_real (str, &real) == PDF_ERROR)
+@{
+   /* The code reach this point */
+@}
+@end example
+@end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fp_matrix_invert (pdf_matrix_t @var{result}, const pdf_matrix_t @var{m})
 
+@deftypefun pdf_status_t pdf_fp_real_to_string (pdf_real_t @var{real}, pdf_char_t *@var{s}, pdf_size_t @var{max_length}, pdf_u32_t @var{precision})
+
+Get a textual representation of a  @code{pdf_real_t} value.
+
+@table @strong
+@item Parameters
+@table @var
+@item real
+The number to convert.
+@item s
+The string where to store the textual representation of
+@var{real}. Note that this function adds a '\0' to the end of the
+textual representation.
+@item max_length
+The maximum number of characters that @var{s} may contain.
+@item precision
+The number of decimal digits to include in the textual representation.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+A textual representation of @var{real} was successfully written in
+@var{s}.
+@item PDF_ERROR
+An error prevented to perform the conversion.
+@end table
+@item Usage example
+@example
+pdf_real_t real;
+pdf_char_t s[9];
+
+real = 1.123456;
+
+pdf_fp_real_to_string (real, s, 9, 6);
+/* s contains "1.123456" */
+
+pdf_fp_real_to_string (real, s, 9, 3);
+/* s contains "1.123" */
+
+if (pdf_fp_real_to_string (real, s, 4, 3) == PDF_ERROR)
+@{
+    /* The code reach this point: not enough space in the string
+       to hold the textual representation of the number with
+       the specified precision */
+@}
+@end example
+@end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fp_matrix_transform (pdf_point_t @var{result}, const pdf_matrix_t @var{m}, const pdf_point_t @var{p})
 
+@node Geometry Routines
+@subsection Geometry Routines
+
+@deftypefun pdf_status_t pdf_fp_matrix_concat (pdf_matrix_t @var{result}, pdf_matrix_t @var{matrix_1}, pdf_matrix_t @var{matrix_2})
+
+Multiplies two matrices.
+
+@table @strong
+@item Parameters
+@item result
+Pointer to the matrix that will be filled with the result. It may be
+a copy of @var{matrix_1} or @var{matrix_2}.
+@item matrix_1
+The first matrix to multiply.
+@item matrix_2
+The second matrix to multiply.
+@item Returns
+A PDF status code:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ERROR
+There was an error performing the execution.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fp_matrix_transform_rect (pdf_rect_t @var{result}, const pdf_matrix_t @var{m}, const pdf_rect_t @var{rect})
+@deftypefun pdf_status_t pdf_fp_matrix_invert (pdf_matrix_t @var{result}, pdf_matrix_t @var{matrix})
 
+Calculate the inverse of a matrix.
+
+@table @strong
+@item Parameters
+@table @var
+@item result
+A pointer to a matrix that will store the inverted matrix. This
+parameters can be a copy of @var{matrix}.
+@item matrix
+A pointer to a matrix used to calculate the inverse.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ERROR
+An error prevented the operation to finish.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
 @end deftypefun
 
-@node Interpolation Functions
-@subsection Interpolation Functions
+@deftypefun pdf_fp_matrix_transform (pdf_point_t @var{result}, const pdf_matrix_t @var{matrix}, const pdf_point_t @var{point})
+
+Transform a point through a matrix.
+
+@table @strong
+@item Parameters
+@table @var
+@item result
+A pointer to a point to hold the result. This can be a copy of
+@var{point}.
+@item matrix
+A pointer to the matrix used to perform the transformation.
+@item point
+A pointer to the point to transform.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation suceeded.
+@item PDF_ERROR
+An error prevented the operation to finish.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_fp_matrix_transform_rect (pdf_rect_t @var{result}, const pdf_matrix_t @var{matrix}, const pdf_rect_t @var{rect})
+
+Transform a rectangle through a matrix.
+
+@table @strong
+@item Parameters
+@table @var
+@item result
+A pointer to a rectangle to hold the result. This can be a copy of
+@var{rect}.
+@item matrix
+A pointer to the matrix used to perform the transformation.
+@item point
+A pointer to the rectangle to transform.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation suceeded.
+@item PDF_ERROR
+An error prevented the operation to finish.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@node Creation and Destruction of Functions
+@subsection Creation and Destruction of Functions
+
+@node Evaluation of Functions
+@subsection Evaluation of Functions
 
 @node Encoded Text
 @section Encoded Text

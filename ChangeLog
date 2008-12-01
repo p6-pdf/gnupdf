@@ -1,3 +1,18 @@
+2008-12-01  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Conversion Routines): Documentation for
+	'pdf_fp_string_to_real'.
+	(Conversion Routines): Documentation for 'pdf_fp_real_to_string'.
+	(Geometry Routines): Documentation for 'pdf_fp_matrix_concat'.
+	(Geometry Routines): Documentation for 'pdf_fp_matrix_invert'.
+	(Geometry Routines): Documentation for 'pdf_fp_matrix_transform'.
+	(Geometry Routines): Documentation for
+	'pdf_fp_matrix_transform_rect'.
+
+	* src/base/pdf-fp.c: Obsolete functions removed.
+
+	* src/base/pdf-fp.h: New types and function prototypes.
+
 2008-11-30  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-fp-func.c: Missing copyright and distribution terms

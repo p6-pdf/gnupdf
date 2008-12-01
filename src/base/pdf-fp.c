@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/11/27 21:00:00 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/01 21:37:03 jemarch"
  *
  *       File:         pdf-fp.c
  *       Date:         Sun Feb 10 21:38:34 2008
@@ -23,37 +23,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <pdf-alloc.h>
+#include <config.h>
 #include <pdf-fp.h>
 
-pdf_point_t
-pdf_create_point (void)
-{
-  pdf_point_t new_point;
-
-  new_point = (pdf_real_t *) pdf_alloc (sizeof(pdf_real_t) * 2);
-  P_X(new_point) = 0.0;
-  P_Y(new_point) = 0.0;
-  return new_point;
-}
-
-void
-pdf_destroy_point (pdf_point_t point)
-{
-  pdf_dealloc (point);
-}
-
-pdf_point_t
-pdf_point_dup (pdf_point_t point)
-{
-  pdf_point_t new_point;
-
-  new_point = pdf_create_point ();
-  P_X(new_point) = P_X(point);
-  P_Y(new_point) = P_Y(point);
-
-  return new_point;
-}
 
 
 /* End of pdf-fp.c */
