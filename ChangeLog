@@ -1,5 +1,10 @@
 2008-12-02  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf.texi: Use 'version.texi' to get versioning
+	information.
+
+	* doc/version.texi.in: New file.
+
 	* doc/gnupdf.texi (Floating Point Types): Description for
 	'pdf_matrix_s'.
 

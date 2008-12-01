@@ -5,8 +5,8 @@
 @settitle GNU PDF Library Reference
 @comment %**end of header
 
+@include version.texi
 @set EDITION first
-@set VERSION 0.1
 
 @copying 
 This is the @strong{@value{EDITION}} edition of the @cite{GNU PDF Library
