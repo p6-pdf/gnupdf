@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/02 21:28:01 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/02 22:12:34 jemarch"
  *
  *       File:         pdf-fp-func-eval.c
  *       Date:         Tue Dec  2 20:11:38 2008
@@ -13,6 +13,7 @@
 #include <check.h>
 #include <pdf.h>
 
+#define DEG2RAD(N) ((N) * (180.0/M_PI))
 
 /*
  * Test: pdf_fp_func_eval_001
@@ -27,7 +28,8 @@
 static pdf_real_t 
 double_dot (pdf_real_t x, pdf_real_t y)
 {
-  return (((sin (360 * x)) / 2) + ((sin (360 * y)) / 2));
+  return ((sin (DEG2RAD(360 * x)) / 2) +
+          ((sin (DEG2RAD(360 * y)) / 2)));
 }
 
 START_TEST(pdf_fp_func_eval_001)
@@ -68,9 +70,21 @@ START_TEST(pdf_fp_func_eval_001)
   fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
   fail_if(fabs(out[0] - double_dot (in[0], in[1])) > ABS_ERROR);
 
-  /* x = 1, y = 1 */
-  in[0] = 1;
+  /* x = 0, y = 1 */
+  in[0] = 0;
   in[1] = 1;
+  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(fabs(out[0] - double_dot (in[0], in[1])) > ABS_ERROR);
+
+  /* x = 1, y = 0 */
+  in[0] = 1;
+  in[1] = 0;
+  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(fabs(out[0] - double_dot (in[0], in[1])) > ABS_ERROR);
+
+  /* x = 0.322, y = 0.233 */
+  in[0] = 0.322;
+  in[1] = 0.233;
   fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
   fail_if(fabs(out[0] - double_dot (in[0], in[1])) > ABS_ERROR);
 }
