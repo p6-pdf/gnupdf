@@ -6282,7 +6282,227 @@ Returns PDF_OK
 
 @deffn Test pdf_fp_func_eval_001
 Evaluate a type 4 function implementing the predefined function
+SimpleDot and compare the results with a C implementation.
+@table @strong
+@item Success condition
+The result of the type 4 function evaluations should match the results
+from the C implementation with an absolute error less than
+@code{0.00001}.
+@end table
+@end deffn
+
+@deffn Test pdf_fp_func_eval_002
+Evaluate a type 4 function implementing the predefined function
+InvertedSimpleDot and compare the results with a C implementation.
+@table @strong
+@item Success condition
+The result of the type 4 function evaluations should match the results
+from the C implementation with an absolute error less than
+@code{0.00001}.
+@end table
+@end deffn
+
+@deffn Test pdf_fp_func_eval_003
+Evaluate a type 4 function implementing the predefined function
 DoubleDot and compare the results with a C implementation.
+@table @strong
+@item Success condition
+The result of the type 4 function evaluations should match the results
+from the C implementation with an absolute error less than
+@code{0.00001}.
+@end table
+@end deffn
+
+@deffn Test pdf_fp_func_eval_004
+Evaluate a type 4 function implementing the predefined function
+InvertedDoubleDot and compare the results with a C implementation.
+@table @strong
+@item Success condition
+The result of the type 4 function evaluations should match the results
+from the C implementation with an absolute error less than
+@code{0.00001}.
+@end table
+@end deffn
+
+@deffn Test pdf_fp_func_eval_005
+Evaluate a type 4 function implementing the predefined function
+CosineDot and compare the results with a C implementation.
+@table @strong
+@item Success condition
+The result of the type 4 function evaluations should match the results
+from the C implementation with an absolute error less than
+@code{0.00001}.
+@end table
+@end deffn
+
+@deffn Test pdf_fp_func_eval_006
+Evaluate a type 4 function implementing the predefined function
+Double and compare the results with a C implementation.
+@table @strong
+@item Success condition
+The result of the type 4 function evaluations should match the results
+from the C implementation with an absolute error less than
+@code{0.00001}.
+@end table
+@end deffn
+
+@deffn Test pdf_fp_func_eval_007
+Evaluate a type 4 function implementing the predefined function
+InvertedDouble and compare the results with a C implementation.
+@table @strong
+@item Success condition
+The result of the type 4 function evaluations should match the results
+from the C implementation with an absolute error less than
+@code{0.00001}.
+@end table
+@end deffn
+
+@deffn Test pdf_fp_func_eval_008
+Evaluate a type 4 function implementing the predefined function
+Line and compare the results with a C implementation.
+@table @strong
+@item Success condition
+The result of the type 4 function evaluations should match the results
+from the C implementation with an absolute error less than
+@code{0.00001}.
+@end table
+@end deffn
+
+@deffn Test pdf_fp_func_eval_009
+Evaluate a type 4 function implementing the predefined function
+LineX and compare the results with a C implementation.
+@table @strong
+@item Success condition
+The result of the type 4 function evaluations should match the results
+from the C implementation with an absolute error less than
+@code{0.00001}.
+@end table
+@end deffn
+
+@deffn Test pdf_fp_func_eval_010
+Evaluate a type 4 function implementing the predefined function
+LineY and compare the results with a C implementation.
+@table @strong
+@item Success condition
+The result of the type 4 function evaluations should match the results
+from the C implementation with an absolute error less than
+@code{0.00001}.
+@end table
+@end deffn
+
+@deffn Test pdf_fp_func_eval_011
+Evaluate a type 4 function implementing the predefined function
+Round and compare the results with a C implementation.
+@table @strong
+@item Success condition
+The result of the type 4 function evaluations should match the results
+from the C implementation with an absolute error less than
+@code{0.00001}.
+@end table
+@end deffn
+
+@deffn Test pdf_fp_func_eval_012
+Evaluate a type 4 function implementing the predefined function
+Ellipse and compare the results with a C implementation.
+@table @strong
+@item Success condition
+The result of the type 4 function evaluations should match the results
+from the C implementation with an absolute error less than
+@code{0.00001}.
+@end table
+@end deffn
+
+@deffn Test pdf_fp_func_eval_013
+Evaluate a type 4 function implementing the predefined function
+EllipseA and compare the results with a C implementation.
+@table @strong
+@item Success condition
+The result of the type 4 function evaluations should match the results
+from the C implementation with an absolute error less than
+@code{0.00001}.
+@end table
+@end deffn
+
+@deffn Test pdf_fp_func_eval_014
+Evaluate a type 4 function implementing the predefined function
+InvertedEllipseA and compare the results with a C implementation.
+@table @strong
+@item Success condition
+The result of the type 4 function evaluations should match the results
+from the C implementation with an absolute error less than
+@code{0.00001}.
+@end table
+@end deffn
+
+@deffn Test pdf_fp_func_eval_015
+Evaluate a type 4 function implementing the predefined function
+EllipseB and compare the results with a C implementation.
+@table @strong
+@item Success condition
+The result of the type 4 function evaluations should match the results
+from the C implementation with an absolute error less than
+@code{0.00001}.
+@end table
+@end deffn
+
+@deffn Test pdf_fp_func_eval_016
+Evaluate a type 4 function implementing the predefined function
+EllipseC and compare the results with a C implementation.
+@table @strong
+@item Success condition
+The result of the type 4 function evaluations should match the results
+from the C implementation with an absolute error less than
+@code{0.00001}.
+@end table
+@end deffn
+
+@deffn Test pdf_fp_func_eval_017
+Evaluate a type 4 function implementing the predefined function
+InvertedEllipseC and compare the results with a C implementation.
+@table @strong
+@item Success condition
+The result of the type 4 function evaluations should match the results
+from the C implementation with an absolute error less than
+@code{0.00001}.
+@end table
+@end deffn
+
+@deffn Test pdf_fp_func_eval_018
+Evaluate a type 4 function implementing the predefined function
+Square and compare the results with a C implementation.
+@table @strong
+@item Success condition
+The result of the type 4 function evaluations should match the results
+from the C implementation with an absolute error less than
+@code{0.00001}.
+@end table
+@end deffn
+
+@deffn Test pdf_fp_func_eval_019
+Evaluate a type 4 function implementing the predefined function
+Cross and compare the results with a C implementation.
+@table @strong
+@item Success condition
+The result of the type 4 function evaluations should match the results
+from the C implementation with an absolute error less than
+@code{0.00001}.
+@end table
+@end deffn
+
+@deffn Test pdf_fp_func_eval_020
+Evaluate a type 4 function implementing the predefined function
+Rhomboid and compare the results with a C implementation.
+@table @strong
+@item Success condition
+The result of the type 4 function evaluations should match the results
+from the C implementation with an absolute error less than
+@code{0.00001}.
+@end table
+@end deffn
+
+@deffn Test pdf_fp_func_eval_021
+Evaluate a type 4 function implementing the predefined function
+Diamond and compare the results with a C implementation.
 @table @strong
 @item Success condition
 The result of the type 4 function evaluations should match the results

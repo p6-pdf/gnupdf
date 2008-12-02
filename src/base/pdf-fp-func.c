@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/02 21:04:17 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/02 23:38:26 jemarch"
  *
  *       File:         pdf-fp-func.c
  *       Date:         Sun Nov 30 18:46:06 2008
@@ -1442,11 +1442,17 @@ pdf_eval_type4 (pdf_fp_func_t t,
             n = INT(stack[sp]);
             if (n < 0 || n > sp) goto range_error;
             if (sp + n >= NSTACK) goto stack_overflow;
-            sp--;
-            for (i = 0; i < n; i++,sp++)
-              stack[sp+n] = stack[sp];
+            sp = sp - n;
+            for (i = 0; i < n; i++, sp++)
+              {
+                stack[sp+n] = stack[sp];
+              }
+            if (n > 0)
+              {
+                sp++;
+              }
+            break;
           }	
-          break;
         case OPC_roll:
           {
             pdf_i32_t n,s;
@@ -1466,8 +1472,8 @@ pdf_eval_type4 (pdf_fp_func_t t,
                 memmove(stack,stack+s,(n-s)*sizeof(stack[0]));
                 memcpy(stack,pp,s*sizeof(double));
               }
+            break;
           }	
-          break;
         case OPC_cvr:
           if (sp < 0) goto stack_underflow;
           /* boolean goes unchecked */
@@ -1613,8 +1619,8 @@ pdf_eval_type4 (pdf_fp_func_t t,
     }
 
  block_error	   : return -1;
- stack_underflow: return -1;
- stack_overflow : return -1;
+ stack_underflow: printf("STACK UNDEFLOW\n"); return -1;
+ stack_overflow : printf("STACK OVERFLOW\n"); return -1;
  stack_error    : return -1;
  range_error    : return -1;
  type_error     : return -1;

@@ -1,4 +1,38 @@
+2008-12-03  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/unit/base/fp/pdf-fp-func-eval.c (START_TEST): New test
+	'pdf_fp_func_eval_017'.
+	(START_TEST): New test 'pdf_fp_func_eval_018'.
+	(START_TEST): New test 'pdf_fp_func_eval_019'.
+	(START_TEST): New test 'pdf_fp_func_eval_020'.
+	(START_TEST): New test 'pdf_fp_func_eval_021'.
+
 2008-12-02  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/unit/base/fp/pdf-fp-func-eval.c (START_TEST): New test
+	'pdf_fp_func_eval_012'.
+	(START_TEST): New test 'pdf_fp_func_eval_013'.
+	(START_TEST): New test 'pdf_fp_func_eval_014'.
+	(START_TEST): New test 'pdf_fp_func_eval_015'.
+	(START_TEST): New test 'pdf_fp_func_eval_016'.
+
+	* src/base/pdf-fp-func.c (pdf_eval_type4): OPC_copy operator
+	fixed.
+
+	* torture/unit/base/fp/pdf-fp-func-eval.c (START_TEST): New test
+	'pdf_fp_func_eval_001'.
+	(START_TEST): New test 'pdf_fp_func_eval_002'.
+	(START_TEST): New test 'pdf_fp_func_eval_004'.
+	(START_TEST): New test 'pdf_fp_func_eval_005'.
+	(START_TEST): New test 'pdf_fp_func_eval_006'.
+	(START_TEST): New test 'pdf_fp_func_eval_007'.
+	(START_TEST): New test 'pdf_fp_func_eval_008'.
+	(START_TEST): New test 'pdf_fp_func_eval_009'.
+	(START_TEST): New test 'pdf_fp_func_eval_010'.
+	(START_TEST): New test 'pdf_fp_func_eval_011'.
+
+	* doc/gnupdf-tsd.texi (pdf_fp_func_eval): Documentation for tests
+	from 'pdf_fp_func_eval_002' to 'pdf_fp_func_eval_021'.
 
 	* torture/unit/base/fp/pdf-fp-func-eval.c: New file.
 
