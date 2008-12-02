@@ -1,5 +1,12 @@
 2008-12-02  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* torture/unit/base/fp/pdf-fp-func-eval.c: New file.
+
+	* torture/unit/runtests.c (main): Run the fp testsuite.
+
+	* torture/unit/base/fp/tsuite-fp.c: New file.
+	(tsuite_fp): New function.
+
 	* doc/gnupdf.texi: Use 'version.texi' to get versioning
 	information.
 

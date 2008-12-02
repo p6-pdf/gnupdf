@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/11/30 21:49:12 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/02 21:04:17 jemarch"
  *
  *       File:         pdf-fp-func.c
  *       Date:         Sun Nov 30 18:46:06 2008
@@ -368,8 +368,8 @@ pdf_fp_func_3_new (pdf_u32_t m,
 
 pdf_status_t pdf_fp_func_4_new (pdf_u32_t m,
                                 pdf_u32_t n,
-                                const pdf_real_t domain[],
-                                const pdf_real_t range[],
+                                pdf_real_t domain[],
+                                pdf_real_t range[],
                                 pdf_char_t *code,
                                 pdf_size_t code_size,
                                 pdf_fp_func_t *function)
@@ -389,6 +389,8 @@ pdf_status_t pdf_fp_func_4_new (pdf_u32_t m,
   f = pdf_alloc (sizeof(struct pdf_fp_func_s));
   f->m = m;
   f->n = n;
+  f->range = range;
+  f->domain = domain;
   f->type = 4;
 
   /* Specific data */
@@ -1220,6 +1222,7 @@ pdf_eval_stitch (pdf_fp_func_t t,
   x = x * t->u.t3.encode[2*i] + t->u.t3.encode[2*i+1];
 
   f = t->u.t3.functions[i];
+
   return f->eval(f,&x,out);
 }
 
@@ -1312,11 +1315,13 @@ pdf_eval_type4 (pdf_fp_func_t t,
   n   = t->u.t4.n_opcodes;
 
   for (sp = 0; sp < t->m; sp++)
-    stack[sp] = in[sp];
-  sp--;
-  for(pc = 0; pc < n; pc++)
     {
-      switch(	(PDF_TYPE4_OPC) op[pc])
+      stack[sp] = in[sp];
+    }
+  sp--;
+  for (pc = 0; pc < n; pc++)
+    {
+      switch ((PDF_TYPE4_OPC) op[pc])
         {
         case OPC_ret:
           if (sp+1 < t->n) goto stack_underflow;
@@ -1324,7 +1329,9 @@ pdf_eval_type4 (pdf_fp_func_t t,
           for (sp = 0; sp < t->n; sp++)
             {
               if (isnan(stack[sp]))
-                goto math_error;
+                {
+                  goto math_error;
+                }
               out[sp] = clip(stack[sp], t->range + 2*sp);
             }
           return 0;
@@ -1754,8 +1761,8 @@ static pdf_i32_t get_token (pdf_char_t *buffer,
   c = buffer[*cur_pos];
   while ((*cur_pos < buf_size) && PDF_ISWHITE(buffer[*cur_pos]))
     {
-      c = buffer[*cur_pos];
       (*cur_pos)++;
+      c = buffer[*cur_pos];
     }
   if (*cur_pos == buf_size)
     {
@@ -1765,13 +1772,16 @@ static pdf_i32_t get_token (pdf_char_t *buffer,
 
   bp = 0;
   buf[bp++] = c;
+  (*cur_pos)++;
   while ((*cur_pos < buf_size) && !PDF_ISWHITE(buffer[*cur_pos]))
     {
       c = buffer[*cur_pos];
       (*cur_pos)++;
       buf[bp++] = c;
       if (bp >= sizeof(buf)/sizeof(buf[0]) || c >= 0x80)
-        return OPC_bad;
+        {
+          return OPC_bad;
+        }
     }
   buf[bp] = '\0';
   if (isdigit(buf[0]) || buf[0] < 'a' )

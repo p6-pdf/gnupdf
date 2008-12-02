@@ -78,6 +78,7 @@ Indices
 * Error Module::
 * Types Module::
 * Crypt Module::
+* Floating Point Maths Module::
 @end menu
 
 @node Memory Allocation Module
@@ -6269,7 +6270,26 @@ Returns PDF_OK
 @end table
 @end deffn
 
+@node Floating Point Maths Module
+@subsection Floating Point Maths Module
 
+@menu
+* pdf_fp_func_eval::
+@end menu
+
+@node pdf_fp_func_eval
+@subsubsection pdf_fp_func_eval
+
+@deffn Test pdf_fp_func_eval_001
+Evaluate a type 4 function implementing the predefined function
+DoubleDot and compare the results with a C implementation.
+@table @strong
+@item Success condition
+The result of the type 4 function evaluations should match the results
+from the C implementation with an absolute error less than
+@code{0.00001}.
+@end table
+@end deffn
 
 @node Subsystem Testing
 @chapter Subsystem Testing

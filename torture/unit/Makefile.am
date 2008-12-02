@@ -179,6 +179,8 @@ TEST_SUITE_ALLOC = base/alloc/pdf-alloc.c \
                    base/alloc/pdf-realloc.c \
                    base/alloc/pdf-dealloc.c
 
+TEST_SUITE_FP = base/fp/pdf-fp-func-eval.c
+
 TEST_ENVIRONMENT = CHARSETALIASDIR=$(top_srcdir)/lib
 
 TEST_FILES = $(TEST_SUITE_LIST) \
@@ -188,7 +190,8 @@ TEST_FILES = $(TEST_SUITE_LIST) \
 	     $(TEST_SUITE_TYPES) \
              $(TEST_SUITE_CRYPT) \
              $(TEST_SUITE_ALLOC) \
-             $(TEST_SUITE_STM)
+             $(TEST_SUITE_STM) \
+             $(TEST_SUITE_FP)
 
 TSUITE_FILES = base/alloc/tsuite-alloc.c \
                base/list/tsuite-list.c \
@@ -197,7 +200,8 @@ TSUITE_FILES = base/alloc/tsuite-alloc.c \
                base/error/tsuite-error.c \
 	       base/types/tsuite-types.c \
                base/crypt/tsuite-crypt.c \
-               base/stm/tsuite-stm.c
+               base/stm/tsuite-stm.c \
+               base/fp/tsuite-fp.c
 
 TORTUTILS_FILES = $(top_srcdir)/torture/tortutils/tortutils.h \
                   $(top_srcdir)/torture/tortutils/tortutils.c

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/11/30 21:49:21 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/02 21:04:31 jemarch"
  *
  *       File:         pdf-fp-func.h
  *       Date:         Sun Nov 30 18:44:41 2008
@@ -144,8 +144,8 @@ pdf_status_t pdf_fp_func_3_new (pdf_u32_t m,
 
 pdf_status_t pdf_fp_func_4_new (pdf_u32_t m,
                                 pdf_u32_t n,
-                                const pdf_real_t domain[],
-                                const pdf_real_t range[],
+                                pdf_real_t domain[],
+                                pdf_real_t range[],
                                 pdf_char_t *code,
                                 pdf_size_t code_size,
                                 pdf_fp_func_t *function);
