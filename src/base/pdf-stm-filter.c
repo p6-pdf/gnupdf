@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/11/24 15:45:18 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/08 20:02:37 jemarch"
  *
  *       File:         pdf-stm-filter.c
  *       Date:         Thu Jun 12 22:13:31 2008
@@ -136,10 +136,17 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
   /* Initialization of the implementation */
   new->params = params;
   new->state = NULL;
-  new->impl.init_fn (new->params,
-                     &(new->state));
   new->status = PDF_OK;
   new->really_finish_p = PDF_FALSE;
+
+  if (new->impl.init_fn (new->params,
+                         &(new->state)) != PDF_OK)
+    {
+      /* Error initializing the filter implementation */
+      pdf_stm_buffer_destroy (new->in);
+      pdf_dealloc (new);
+      new = NULL;
+    }
 
   return new;
 }
