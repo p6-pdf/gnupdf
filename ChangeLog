@@ -1,3 +1,8 @@
+2008-12-10  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/unit/runtests.c (main): Dont set the CK_FORK variable,
+	so the environment variable is used instead.
+
 2008-12-08  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-stm.c (pdf_stm_install_filter): Return PDF_ERROR in
