@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/10/12 18:34:54 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/08 20:02:37 jemarch"
  *
  *       File:         pdf-stm-filter.c
  *       Date:         Thu Jun 12 22:13:31 2008
@@ -38,7 +38,8 @@ static pdf_size_t pdf_stm_filter_get_input (pdf_stm_filter_t filter,
 pdf_stm_filter_t
 pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
                     pdf_hash_t params,
-                    pdf_size_t buffer_size)
+                    pdf_size_t buffer_size,
+                    enum pdf_stm_filter_mode_e mode)
 {
   pdf_stm_filter_t new;
 
@@ -52,6 +53,9 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
   /* Data sources */
   new->next = NULL;
   new->backend = NULL;
+
+  /* Operation mode */
+  new->mode = mode;
 
   /* Input buffer */
   new->in = pdf_stm_buffer_new (buffer_size);
@@ -113,6 +117,24 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
         break;
       }
 #endif /* HAVE_LIBZ */
+#if defined(HAVE_JBIG2DEC)
+    case PDF_STM_FILTER_JBIG2_DEC:
+      {
+        new->impl.init_fn = pdf_stm_f_jbig2dec_init;
+        new->impl.apply_fn = pdf_stm_f_jbig2dec_apply;
+        new->impl.dealloc_state_fn = pdf_stm_f_jbig2dec_dealloc_state;
+        break;
+      }
+#endif /* HAVE_JBIG2DEC */
+#if defined(HAVE_JPEGLIB)
+    case PDF_STM_FILTER_DCT_DEC:
+      {
+        new->impl.init_fn = pdf_stm_f_dctdec_init;
+        new->impl.apply_fn = pdf_stm_f_dctdec_apply;
+        new->impl.dealloc_state_fn = pdf_stm_f_dctdec_dealloc_state;
+        break;
+      }
+#endif /* HAVE_JPEGLIB */
     default:
       {
         /* Shall not be reached, but makes the compiler happy */
@@ -123,10 +145,17 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
   /* Initialization of the implementation */
   new->params = params;
   new->state = NULL;
-  new->impl.init_fn (new->params,
-                     &(new->state));
   new->status = PDF_OK;
   new->really_finish_p = PDF_FALSE;
+
+  if (new->impl.init_fn (new->params,
+                         &(new->state)) != PDF_OK)
+    {
+      /* Error initializing the filter implementation */
+      pdf_stm_buffer_destroy (new->in);
+      pdf_dealloc (new);
+      new = NULL;
+    }
 
   return new;
 }
@@ -198,6 +227,7 @@ pdf_stm_filter_apply (pdf_stm_filter_t filter,
                                          filter->in,
                                          filter->out,
                                          filter->really_finish_p);
+
       if (apply_ret == PDF_ERROR)
         {
           /* The filter is now in an error condition. We should not
@@ -228,7 +258,10 @@ pdf_stm_filter_apply (pdf_stm_filter_t filter,
           else if ((ret_in == PDF_EEOF) 
                    && (pdf_stm_buffer_eob_p (filter->in)))
             {
-              if ((finish_p) && (!filter->really_finish_p))
+              if (((filter->mode == PDF_STM_FILTER_MODE_WRITE) 
+                   && ((finish_p) && (!filter->really_finish_p))) ||
+                  ((filter->mode == PDF_STM_FILTER_MODE_READ)
+                   && (!filter->really_finish_p)))
                 {
                   filter->really_finish_p = PDF_TRUE;
                 }

@@ -1,0 +1,30 @@
+==='''src/base''' Base Layer Source Code===
+
+This directory contains the source files for the Base Layer of the library.
+
+; '''pdf-base.h''', '''pdf-base.c'''
+: Layer-wide main code.
+
+; '''pdf-stm.h''', '''pdf-stm.c'''
+: [[Lib:Stream|Stream library module]].
+
+; '''pdf-stm-f-a85.h''', '''pdf-stm-f-a85.c'''
+; '''pdf-stm-f-ahex.h''', '''pdf-stm-f-ahex.c'''
+; '''pdf-stm-f-fax.h''', '''pdf-stm-f-fax.c'''
+; '''pdf-stm-f-flate.h''', '''pdf-stm-f-flate.c'''
+; '''pdf-stm-f-lzw.h''', '''pdf-stm-f-lzw.c'''
+; '''pdf-stm-f-null.h''', '''pdf-stm-f-null.c'''
+; '''pdf-stm-f-pred.h''', '''pdf-stm-f-pred.c'''
+; '''pdf-stm-f-rl.h''', '''pdf-stm-f-rl.c'''
+: [[PDF:Standard_Filters|Implementation of the PDF standard filters]].
+
+; '''pdf-stm-file.h''', '''pdf-stm-file.c'''
+; '''pdf-stm-mem.h''', '''pdf-stm-mem.c'''
+: Stream backends.
+
+; '''pdf-fp.h''', '''pdf-fp.c'''
+: Floating Point Arithmetic Module.
+
+; '''pdf-types.h''', '''pdf-types.c'''
+: Basic Types Module.
+

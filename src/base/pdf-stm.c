@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/10/02 22:28:36 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/08 20:01:52 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -324,20 +324,40 @@ pdf_stm_install_filter (pdf_stm_t stm,
                         enum pdf_stm_filter_type_e filter_type,
                         pdf_hash_t filter_params)
 {
+  pdf_status_t ret;
   pdf_stm_filter_t filter;
+  enum pdf_stm_filter_mode_e filter_mode;
+
+  if (stm->mode == PDF_STM_READ)
+    {
+      filter_mode = PDF_STM_FILTER_MODE_READ;
+    }
+  else
+    {
+      filter_mode = PDF_STM_FILTER_MODE_WRITE;
+    }
 
   /* Create the new filter */
   filter = pdf_stm_filter_new (filter_type,
                                filter_params,
-                               stm->cache->size);
+                               stm->cache->size,
+                               filter_mode);
 
-  /* Set the new filter as the new head of the filter chain */
-  pdf_stm_filter_set_next (filter, stm->filter);
-  pdf_stm_filter_set_out (filter, stm->cache);
-  pdf_stm_filter_set_out (stm->filter, pdf_stm_filter_get_in (filter));
-  stm->filter = filter;
+  if (filter != NULL)
+    {
+      /* Set the new filter as the new head of the filter chain */
+      pdf_stm_filter_set_next (filter, stm->filter);
+      pdf_stm_filter_set_out (filter, stm->cache);
+      pdf_stm_filter_set_out (stm->filter, pdf_stm_filter_get_in (filter));
+      stm->filter = filter;
+      ret = PDF_OK;
+    }
+  else
+    {
+      ret = PDF_ERROR;
+    }
 
-  return PDF_OK;
+  return ret;
 }
 
 pdf_u32_t
@@ -428,6 +448,7 @@ pdf_stm_init (pdf_size_t cache_size,
               pdf_stm_t stm)
 {
   pdf_hash_t null_filter_params;
+  enum pdf_stm_filter_mode_e filter_mode;
 
   if (cache_size == 0)
     {
@@ -437,9 +458,20 @@ pdf_stm_init (pdf_size_t cache_size,
 
   /* Initialize the null filter */
   pdf_hash_new (NULL, &null_filter_params);
+
+  if (stm->mode == PDF_STM_READ)
+    {
+      filter_mode = PDF_STM_FILTER_MODE_READ;
+    }
+  else
+    {
+      filter_mode = PDF_STM_FILTER_MODE_WRITE;
+    }
+
   stm->filter = pdf_stm_filter_new (PDF_STM_FILTER_NULL,
                                     null_filter_params,
-                                    cache_size);
+                                    cache_size,
+                                    filter_mode);
 
   /* Initialize the filter cache */
   stm->cache = pdf_stm_buffer_new (cache_size);

@@ -1,0 +1,36 @@
+=='''doc/''' Manuals and Manpages==
+
+This directory contain the texinfo source files of the GNU PDF Reference Manual (it is only a stub by now).
+
+We may also want to generate manpages for the API documented in the texinfo manual. We dont want to manually maintain the manpages, so we would need a script to extract the contents of the texinfo file.
+
+Automatically generated manpages for the library utilities will be generated (using the help2man command) here.
+
+
+; '''Makefile.am'''
+: Automake input file.
+
+; '''fdl.texi'''
+: A copy of the GNU Free Documentation License (included in the manual).
+
+; '''gnupdf-manual-wiki.init'''
+: texi2html initialization file for wiki pages generation.
+
+; '''gnupdf-manual.init'''
+: texi2html initialization file for html generation.
+
+; '''manuals.css'''
+: Cascade Style Sheet for the html manuals.
+
+; '''texinfo.tex'''
+: Implementation of texinfo over TeX.
+
+; '''gnupdf.texi'''
+: Texinfo source code of the Reference Manual.
+
+; '''gnupdf-utils.texi'''
+: Texinfo source code of the Utils Manual.
+
+; '''pdf_filter.1'''
+: Manual page (generated using help2man) for the ''pdf_filter'' utility.
+

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/10/04 00:35:33 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/11/24 15:50:21 jemarch"
  *
  *       File:         pdf-stm-f-ahex.c
  *       Date:         Fri Jul 13 17:08:41 2007
@@ -22,7 +22,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 
 #include <config.h>
 #include <pdf-stm-f-ahex.h>

@@ -19,7 +19,7 @@ dnl You should have received a copy of the GNU General Public License
 dnl along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 AC_INIT(src/pdf-global.h)
-AM_INIT_AUTOMAKE(gnupdf, 0.1)
+AM_INIT_AUTOMAKE(gnupdf, trunk)
 AM_CONFIG_HEADER(src/config.h)
 
 gl_EARLY
@@ -50,6 +50,25 @@ dnl Search for required libraries
 CHECK_ZLIB
 AM_CONDITIONAL([ZLIB], [test "x$have_zlib" = "xyes"])
 AC_CHECK_LIB(m,exp,,,)
+
+have_jpeglib=no
+AC_CHECK_LIB([jpeg],[jpeg_std_error],[have_jpeglib=yes],,)
+
+if test "x$have_jpeglib" = "xyes"; then
+   LIBS="-ljpeg $LIBS"
+   AC_DEFINE([HAVE_JPEGLIB], [1], [The jpeglib library is available])
+fi
+AM_CONDITIONAL([JPEGLIB], [test "x$have_jpeglib" = "xyes"])
+
+have_jbig2dec=no
+AC_CHECK_LIB([jbig2dec],[jbig2_ctx_new],[have_jbig2dec=yes],,)
+
+if test "x$have_jbig2dec" = "xyes"; then
+   LIBS="-ljbig2dec $LIBS"
+   AC_DEFINE([HAVE_JBIG2DEC], [1], [The jbig2dec library is available])
+fi
+
+AM_CONDITIONAL([JBIG2DEC], [test "x$have_jbig2dec" = "xyes"])
 
 AM_PATH_LIBGCRYPT([1.2.4], have_libgcrypt="yes", have_libgcrypt="no")
 if test x$have_libgcrypt == "xno"; then
@@ -260,10 +279,11 @@ esac
 dnl Specific W32 needs of compilation
 AM_CONDITIONAL([COMPILE_W32_SYSTEM], [test "x$compile_w32_system" = "xyes"])
 
-
+GNUPDF_VERSION=$VERSION
+AC_SUBST(GNUPDF_VERSION)
 
 dnl Generate output files
-AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile torture/unit/Makefile doc/Makefile utils/Makefile prmgt/Makefile prmgt/apic2wiki prmgt/testlog2wiki prmgt/docfuncs prmgt/tsdfuncs src/extract-public-hdr build-aux/Makefile)
+AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile torture/unit/Makefile doc/Makefile utils/Makefile prmgt/Makefile prmgt/apic2wiki prmgt/testlog2wiki prmgt/docfuncs prmgt/tsdfuncs src/extract-public-hdr build-aux/Makefile prmgt/get-test-data.sh prmgt/srcinfo-extractor.pl doc/version.texi)
 
 dnl Report configuration results
 
@@ -285,6 +305,8 @@ Configured for \`${canonical}'.
 
   Compilation level:                        ${PDFLIB_LEVEL} (${PDFLIB_LEVEL_DESCR})
   Using FlateDecode filter?                 ${have_zlib}
+  Using JBIG2 decoder filter?               ${have_jbig2dec}
+  Using JPEG filter?                        ${have_jpeglib}
   With unit tests support?                  ${ut_support} ${ut_framework}
   Program to build html manuals             ${texihtmlprogram}
   Build project management resources?       ${prmgt_mode}
@@ -297,6 +319,12 @@ dnl Report warnings
 if test "x$have_zlib" = "xno" ; then
 echo "
 WARNING: you are going to build a library without FlateDecode support. 
+         That means you wont be able to process many PDF files."
+fi
+
+if test "x$have_jbig2dec" = "xno" ; then
+echo "
+WARNING: you are going to build a library without JBIG2Decode support.
          That means you wont be able to process many PDF files."
 fi
 

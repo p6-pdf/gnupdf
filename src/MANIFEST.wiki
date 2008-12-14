@@ -1,0 +1,17 @@
+=='''src/''' Library Source Code==
+
+This directory contain a subdirectory containing the source files for each library layer, plus some global source files and scripts.
+
+; '''Makefile.am'''
+: Automake source file
+
+; '''extract-public-hdr.in'''
+: Script used to generate the public header file to be included by client applications.
+
+; '''pdf-global.h'''
+: Main definitions for the library.
+
+; '''pdf-global.c'''
+: * Definition of global variables.
+: * Library initialization and finalization routines.
+

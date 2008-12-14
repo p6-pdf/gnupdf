@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/12 05:45:27 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/11/29 15:14:38 jemarch"
  *
  *       File:         pdf-stm-buffer.h
  *       Date:         Wed Jun 18 20:34:23 2008
@@ -28,8 +28,6 @@
 
 #include <pdf-types.h>
 
-/* BEGIN PUBLIC */
-
 /* Memory buffer data type */
 struct pdf_stm_buffer_s
 {
@@ -40,8 +38,6 @@ struct pdf_stm_buffer_s
 };
 
 typedef struct pdf_stm_buffer_s *pdf_stm_buffer_t;
-
-/* END PUBLIC */
 
 /*
  * Public functions

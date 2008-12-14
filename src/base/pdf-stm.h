@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/10/02 22:28:38 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/11/29 15:06:59 jemarch"
  *
  *       File:         pdf-stm.h
  *       Date:         Fri Jul  6 18:37:57 2007
@@ -78,17 +78,6 @@ enum pdf_stm_type_e
   PDF_STM_MEM
 };
 
-/* Stream data type */
-struct pdf_stm_s
-{
-  enum pdf_stm_type_e type;
-  enum pdf_stm_mode_e mode;
-
-  pdf_stm_be_t backend;     /* Stream backend */
-  pdf_stm_filter_t filter;  /* Filter chain */
-  pdf_stm_buffer_t cache;   /* Stream cache */
-};
-
 typedef struct pdf_stm_s *pdf_stm_t;
 
 /* 
@@ -137,6 +126,17 @@ pdf_status_t pdf_stm_install_filter (pdf_stm_t stm,
                                      enum pdf_stm_filter_type_e filter_type,
                                      pdf_hash_t filter_params);
 /* END PUBLIC */
+
+/* Stream data type */
+struct pdf_stm_s
+{
+  enum pdf_stm_type_e type;
+  enum pdf_stm_mode_e mode;
+
+  pdf_stm_be_t backend;     /* Stream backend */
+  pdf_stm_filter_t filter;  /* Filter chain */
+  pdf_stm_buffer_t cache;   /* Stream cache */
+};
 
 #endif /* pdf_stm.h */
 

@@ -44,6 +44,9 @@
  */
 START_TEST(pdf_text_filter_001)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "GNU's Not Unix" "\r""\n" \
                                                 "GNU's Not Unix" "\r" \
@@ -112,6 +115,7 @@ START_TEST(pdf_text_filter_001)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -126,6 +130,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_002)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "";
   const pdf_char_t *expected_data = input_data;
@@ -177,6 +184,7 @@ START_TEST(pdf_text_filter_002)
   
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -192,6 +200,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_003)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "GNU's Not Unix. " "\r""\n" \
                                                 "GNU's Not Unix. " "\r" \
@@ -254,6 +265,7 @@ START_TEST(pdf_text_filter_003)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -268,6 +280,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_004)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "";
   const pdf_char_t *expected_data = input_data;
@@ -320,6 +335,7 @@ START_TEST(pdf_text_filter_004)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -335,6 +351,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_005)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "GNU & GNU && GNU";
   const pdf_char_t *expected_data = (pdf_char_t *) "GNU GNU & GNU";
@@ -389,6 +408,7 @@ START_TEST(pdf_text_filter_005)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -403,6 +423,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_006)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "";
   const pdf_char_t *expected_data = input_data;
@@ -454,6 +477,7 @@ START_TEST(pdf_text_filter_006)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -470,6 +494,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_007)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00"" " \
                                                 "\x00\x00\x00""G" \
@@ -530,6 +557,7 @@ START_TEST(pdf_text_filter_007)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -545,6 +573,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_008)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x6C\x34" \
                                                 "\x00\x00\x00"" " \
@@ -599,6 +630,7 @@ START_TEST(pdf_text_filter_008)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -613,6 +645,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_009)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "";
   const pdf_char_t *expected_data = input_data;
@@ -665,6 +700,7 @@ START_TEST(pdf_text_filter_009)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -682,6 +718,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_010)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00"" " \
                                                 "\x00\x00\x00""g" \
@@ -744,6 +783,7 @@ START_TEST(pdf_text_filter_010)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -759,6 +799,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_011)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x1E\x98" \
@@ -818,6 +861,7 @@ START_TEST(pdf_text_filter_011)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -833,6 +877,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_012)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* Final_Sigma condition in Special Case algorithms
    *  When the given character is preceded by a sequence consisting of a
    *  cased unicode point (with case information) and a case-ignorable
@@ -948,6 +995,7 @@ START_TEST(pdf_text_filter_012)
       pdf_dealloc(output_data);
       pdf_text_destroy(text);
     }
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -963,6 +1011,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_013)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* 0307; 0307; ; ; lt After_Soft_Dotted; # COMBINING DOT ABOVE */
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
@@ -1023,6 +1074,7 @@ START_TEST(pdf_text_filter_013)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -1037,6 +1089,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_014)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* Code:0049; Lower:0069 0307; Title:0049; Upper:0049;
    * lt More_Above; # LATIN CAPITAL LETTER I */
 
@@ -1100,6 +1155,8 @@ START_TEST(pdf_text_filter_014)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -1136,6 +1193,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_016)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   
@@ -1199,6 +1259,7 @@ START_TEST(pdf_text_filter_016)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -1215,6 +1276,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_017)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* # When uppercasing, i turns into a dotted capital I
    * 0069; 0069; 0130; 0130; tr; # LATIN SMALL LETTER I */
   
@@ -1276,6 +1340,7 @@ START_TEST(pdf_text_filter_017)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -1294,6 +1359,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_018)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   
@@ -1357,6 +1425,7 @@ START_TEST(pdf_text_filter_018)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -1375,6 +1444,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_019)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* # When lowercasing, unless an I is before a dot_above, it turns into a
    *   dotless i.
    * 0049; 0131; 0049; 0049; tr Not_Before_Dot; # LATIN CAPITAL LETTER I */
@@ -1439,6 +1511,7 @@ START_TEST(pdf_text_filter_019)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -1454,6 +1527,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_020)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* Final_Sigma condition in Special Case algorithms
    *  When the given character is preceded by a sequence consisting of a
    *  cased unicode point (with case information) and a case-ignorable
@@ -1575,6 +1651,7 @@ START_TEST(pdf_text_filter_020)
       pdf_dealloc(output_data);
       pdf_text_destroy(text);
     }
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -1591,6 +1668,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_021)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* 0x030C has combining class 230, so condition should not be fulfilled */
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
@@ -1654,6 +1734,7 @@ START_TEST(pdf_text_filter_021)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -1669,6 +1750,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_022)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* Code:0049; Lower:0069 0307; Title:0049; Upper:0049;
    * lt More_Above; # LATIN CAPITAL LETTER I
    * As 0xC0 has combining class 0, the condition must not be fullfilled*/
@@ -1735,6 +1819,7 @@ START_TEST(pdf_text_filter_022)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -1773,6 +1858,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_024)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   /* 0x030C has combining class 230, so condition should not be fulfilled */
@@ -1839,6 +1927,7 @@ START_TEST(pdf_text_filter_024)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -1855,6 +1944,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_025)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* # When uppercasing, i turns into a dotted capital I
    * 0069; 0069; 0130; 0130; tr; # LATIN SMALL LETTER I */
   
@@ -1916,6 +2008,7 @@ START_TEST(pdf_text_filter_025)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -1935,6 +2028,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_026)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   /* 0x030C has combining class 230, so condition should not be fulfilled */
@@ -2001,6 +2097,7 @@ START_TEST(pdf_text_filter_026)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -2020,6 +2117,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_027)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* # When lowercasing, unless an I is before a dot_above, it turns into a
    *   dotless i.
    * 0049; 0131; 0049; 0049; tr Not_Before_Dot; # LATIN CAPITAL LETTER I
@@ -2087,6 +2187,7 @@ START_TEST(pdf_text_filter_027)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -2105,6 +2206,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_028)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00"" " \
                                                 "\x00\x00\x00""G" \
@@ -2167,6 +2271,7 @@ START_TEST(pdf_text_filter_028)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -2182,6 +2287,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_029)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x01\x30";
@@ -2235,6 +2343,7 @@ START_TEST(pdf_text_filter_029)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -2251,6 +2360,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_030)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* Final_Sigma condition in Special Case algorithms
    *  When the given character is preceded by a sequence consisting of a
    *  cased unicode point (with case information) and a case-ignorable
@@ -2395,6 +2507,7 @@ START_TEST(pdf_text_filter_030)
       pdf_dealloc(output_data);
       pdf_text_destroy(text);
     }
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -2411,6 +2524,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_031)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00" "i" \
@@ -2471,6 +2587,7 @@ START_TEST(pdf_text_filter_031)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -2485,6 +2602,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_032)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* Code:0049; Lower:0069 0307; Title:0049; Upper:0049;
    * lt More_Above; # LATIN CAPITAL LETTER I */
   
@@ -2548,6 +2668,7 @@ START_TEST(pdf_text_filter_032)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -2584,6 +2705,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_034)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   
@@ -2646,6 +2770,7 @@ START_TEST(pdf_text_filter_034)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -2662,6 +2787,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_035)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* 00CC; 0069 0307 0300; 00CC; 00CC; lt; # LATIN CAPITAL LETTER I WITH GRAVE*/
   
   pdf_text_t text;
@@ -2722,6 +2850,7 @@ START_TEST(pdf_text_filter_035)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -2740,6 +2869,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_036)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   
@@ -2802,6 +2934,7 @@ START_TEST(pdf_text_filter_036)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -2820,6 +2953,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_037)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* # When lowercasing, unless an I is before a dot_above, it turns into a
    *   dotless i.
    * 0049; 0131; 0049; 0049; tr Not_Before_Dot; # LATIN CAPITAL LETTER I */
@@ -2884,6 +3020,7 @@ START_TEST(pdf_text_filter_037)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -2900,6 +3037,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_038)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* Final_Sigma condition in Special Case algorithms
    *  When the given character is preceded by a sequence consisting of a
    *  cased unicode point (with case information) and a case-ignorable
@@ -3034,6 +3174,7 @@ START_TEST(pdf_text_filter_038)
       pdf_dealloc(output_data);
       pdf_text_destroy(text);
     }
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -3051,6 +3192,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_039)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* 0x030C has combining class 230, so condition should not be fulfilled */
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
@@ -3114,6 +3258,7 @@ START_TEST(pdf_text_filter_039)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -3130,6 +3275,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_040)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* Code:0049; Lower:0069 0307; Title:0049; Upper:0049;
    * lt More_Above; # LATIN CAPITAL LETTER I
    * As 0xC0 has combining class 0, the condition must not be fullfilled */
@@ -3196,6 +3344,7 @@ START_TEST(pdf_text_filter_040)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -3234,6 +3383,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_042)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   /* 0x030C has combining class 230, so condition should not be fulfilled */
@@ -3300,6 +3452,7 @@ START_TEST(pdf_text_filter_042)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -3316,6 +3469,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_043)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* 00CC; 0069 0307 0300; 00CC; 00CC; lt; # LATIN CAPITAL LETTER I WITH GRAVE 
    * If condition not fulfilled, simple lowercase gives: 00EC */
   
@@ -3377,6 +3533,7 @@ START_TEST(pdf_text_filter_043)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -3396,6 +3553,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_044)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   /* 0x030C has combining class 230, so condition should not be fulfilled */
@@ -3462,6 +3622,7 @@ START_TEST(pdf_text_filter_044)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -3481,6 +3642,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_045)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* # When lowercasing, unless an I is before a dot_above, it turns into a
    *   dotless i.
    * 0049; 0131; 0049; 0049; tr Not_Before_Dot; # LATIN CAPITAL LETTER I
@@ -3547,6 +3711,7 @@ START_TEST(pdf_text_filter_045)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -3565,6 +3730,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_046)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00"" " \
                                                 "\x00\x00\x00""G" \
@@ -3627,6 +3795,7 @@ START_TEST(pdf_text_filter_046)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -3642,6 +3811,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_047)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00""A" \
@@ -3697,6 +3869,7 @@ START_TEST(pdf_text_filter_047)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -3713,6 +3886,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_048)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* Final_Sigma condition in Special Case algorithms
    *  When the given character is preceded by a sequence consisting of a
    *  cased unicode point (with case information) and a case-ignorable
@@ -3845,6 +4021,7 @@ START_TEST(pdf_text_filter_048)
       pdf_dealloc(output_data);
       pdf_text_destroy(text);
     }
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -3861,6 +4038,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_049)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00" "i" \
@@ -3921,6 +4101,7 @@ START_TEST(pdf_text_filter_049)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -3935,6 +4116,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_050)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* Code:0049; Lower:0069 0307; Title:0049; Upper:0049;
    * lt More_Above; # LATIN CAPITAL LETTER I */
   
@@ -4000,6 +4184,7 @@ START_TEST(pdf_text_filter_050)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -4036,6 +4221,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_052)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   
@@ -4100,6 +4288,7 @@ START_TEST(pdf_text_filter_052)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -4116,6 +4305,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_053)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* 00CC; 0069 0307 0300; 00CC; 00CC; lt; # LATIN CAPITAL LETTER I WITH GRAVE*/
   
   pdf_text_t text;
@@ -4178,6 +4370,7 @@ START_TEST(pdf_text_filter_053)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -4196,6 +4389,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_054)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   
@@ -4260,6 +4456,7 @@ START_TEST(pdf_text_filter_054)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -4278,6 +4475,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_055)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* # When lowercasing, unless an I is before a dot_above, it turns into a
    *   dotless i.
    * 0049; 0131; 0049; 0049; tr Not_Before_Dot; # LATIN CAPITAL LETTER I */
@@ -4344,6 +4544,7 @@ START_TEST(pdf_text_filter_055)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -4360,6 +4561,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_056)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* Final_Sigma condition in Special Case algorithms
    *  When the given character is preceded by a sequence consisting of a
    *  cased unicode point (with case information) and a case-ignorable
@@ -4501,6 +4705,7 @@ START_TEST(pdf_text_filter_056)
       pdf_dealloc(output_data);
       pdf_text_destroy(text);
     }
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -4517,6 +4722,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_057)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* 0x030C has combining class 230, so condition should not be fulfilled */
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
@@ -4582,6 +4790,7 @@ START_TEST(pdf_text_filter_057)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -4598,6 +4807,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_058)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* Code:0049; Lower:0069 0307; Title:0049; Upper:0049;
    * lt More_Above; # LATIN CAPITAL LETTER I
    * As 0xC0 has combining class 0, the condition must not be fullfilled */
@@ -4666,6 +4878,7 @@ START_TEST(pdf_text_filter_058)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -4704,6 +4917,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_060)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   /* 0x030C has combining class 230, so condition should not be fulfilled */
@@ -4772,6 +4988,8 @@ START_TEST(pdf_text_filter_060)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -4788,6 +5006,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_061)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* 00CC; 0069 0307 0300; 00CC; 00CC; lt; # LATIN CAPITAL LETTER I WITH GRAVE 
    * If condition not fulfilled, simple lowercase gives: 00EC */
   
@@ -4851,6 +5072,7 @@ START_TEST(pdf_text_filter_061)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -4870,6 +5092,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_062)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   /* 0x030C has combining class 230, so condition should not be fulfilled */
@@ -4938,6 +5163,7 @@ START_TEST(pdf_text_filter_062)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -4957,6 +5183,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_063)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   /* # When lowercasing, unless an I is before a dot_above, it turns into a
    *   dotless i.
    * 0049; 0131; 0049; 0049; tr Not_Before_Dot; # LATIN CAPITAL LETTER I
@@ -5023,6 +5252,7 @@ START_TEST(pdf_text_filter_063)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
+#endif /* DEACTIVATED */
 }
 END_TEST
 

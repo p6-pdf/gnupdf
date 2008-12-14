@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/10/02 14:43:41 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/11/30 20:47:16 jemarch"
  *
  *       File:         pdf-error.h
  *       Date:         Sun Feb  24 20:22:05 2008
@@ -83,7 +83,11 @@
   ERROR_ENTRY (PDF_EBADCONTEXT, "text module global context not initialized"), \
   ERROR_ENTRY (PDF_ENOTEMPTY,   "operation requires some entity be empty"), \
   ERROR_ENTRY (PDF_ENINPUT,     "filter needs more input"), \
-  ERROR_ENTRY (PDF_ENOUTPUT,    "filter needs more output room")
+  ERROR_ENTRY (PDF_ENOUTPUT,    "filter needs more output room"),     \
+  ERROR_ENTRY (PDF_EOVERFLOW,   "/FunctionType 0: Sample Table too large"), \
+  ERROR_ENTRY (PDF_EMTOOBIG,    "/FunctionType 0: input dim too high (<= 12)"), \
+  ERROR_ENTRY (PDF_EBADSAMPLES, "/FunctionType 0: error while reading sample table")
+    
 
 
 #define ERROR_ENTRY(id,string) id

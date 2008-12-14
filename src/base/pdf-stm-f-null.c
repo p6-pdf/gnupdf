@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/10/02 19:10:38 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/11/24 15:43:39 jemarch"
  *
  *       File:         pdf-stm-f-null.c
  *       Date:         Mon Jul  9 22:01:41 2007
@@ -72,15 +72,15 @@ pdf_stm_f_null_apply (pdf_hash_t params,
       out->wp = out->wp + bytes_to_copy;
     }
 
-  if (in_size < out_size)
-    {
-      /* We can process more input */
-      ret = PDF_ENINPUT;
-    }
-  else
+  if (in_size > out_size)
     {
       /* We need more room in the output buffer */
       ret = PDF_ENOUTPUT;
+    }
+  else
+    {
+      /* We can process more input */
+      ret = PDF_ENINPUT;
     }
       
   return ret;

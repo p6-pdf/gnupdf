@@ -46,6 +46,9 @@
  */
 START_TEST(pdf_text_new_from_unicode_001)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf8_strings[];
   int i;
   
@@ -107,6 +110,7 @@ START_TEST(pdf_text_new_from_unicode_001)
         }
       ++i;
     }  
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -125,6 +129,9 @@ END_TEST
  */
 START_TEST(pdf_text_new_from_unicode_002)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf16be_strings[];
   int i;
   
@@ -185,6 +192,7 @@ START_TEST(pdf_text_new_from_unicode_002)
         }
       ++i;
     }  
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -203,6 +211,9 @@ END_TEST
  */
 START_TEST(pdf_text_new_from_unicode_003)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf16be_strings[];
   int i;
   
@@ -266,6 +277,8 @@ START_TEST(pdf_text_new_from_unicode_003)
       pdf_dealloc(input_data);
       ++i;
     }  
+
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -283,6 +296,9 @@ END_TEST
  */
 START_TEST(pdf_text_new_from_unicode_004)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf16be_strings[];
   int i;
   
@@ -361,6 +377,7 @@ START_TEST(pdf_text_new_from_unicode_004)
         }
       ++i;
     }  
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -379,6 +396,9 @@ END_TEST
  */
 START_TEST(pdf_text_new_from_unicode_005)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf32be_strings[];
   int i;
   
@@ -439,6 +459,8 @@ START_TEST(pdf_text_new_from_unicode_005)
         }
       ++i;
     }  
+
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -457,6 +479,9 @@ END_TEST
  */
 START_TEST(pdf_text_new_from_unicode_006)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf32be_strings[];
   int i;
   
@@ -520,6 +545,8 @@ START_TEST(pdf_text_new_from_unicode_006)
       pdf_dealloc(input_data);
       ++i;
     }  
+
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -538,6 +565,9 @@ END_TEST
  */
 START_TEST(pdf_text_new_from_unicode_007)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf32be_strings[];
   int i;
   
@@ -615,6 +645,7 @@ START_TEST(pdf_text_new_from_unicode_007)
         }
       ++i;
     }  
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -632,6 +663,9 @@ END_TEST
  */
 START_TEST(pdf_text_new_from_unicode_008)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf8_strings[];
   int i;
   
@@ -693,6 +727,8 @@ START_TEST(pdf_text_new_from_unicode_008)
         }
       ++i;
     }  
+
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -711,6 +747,9 @@ END_TEST
  */
 START_TEST(pdf_text_new_from_unicode_009)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf16be_strings[];
   int i;
   
@@ -771,6 +810,7 @@ START_TEST(pdf_text_new_from_unicode_009)
         }
       ++i;
     }  
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -789,6 +829,9 @@ END_TEST
  */
 START_TEST(pdf_text_new_from_unicode_010)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf16be_strings[];
   int i;
   
@@ -852,6 +895,7 @@ START_TEST(pdf_text_new_from_unicode_010)
       pdf_dealloc(input_data);
       ++i;
     }  
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -869,6 +913,9 @@ END_TEST
  */
 START_TEST(pdf_text_new_from_unicode_011)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf16be_strings[];
   int i;
   
@@ -947,6 +994,8 @@ START_TEST(pdf_text_new_from_unicode_011)
         }
       ++i;
     }  
+
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -965,6 +1014,9 @@ END_TEST
  */
 START_TEST(pdf_text_new_from_unicode_012)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf32be_strings[];
   int i;
   
@@ -1047,6 +1099,8 @@ START_TEST(pdf_text_new_from_unicode_012)
         }
       ++i;
     }  
+
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -1065,6 +1119,9 @@ END_TEST
  */
 START_TEST(pdf_text_new_from_unicode_013)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf32be_strings[];
   int i;
   
@@ -1128,6 +1185,8 @@ START_TEST(pdf_text_new_from_unicode_013)
       pdf_dealloc(input_data);
       ++i;
     }  
+
+#endif /* DEACTIVATED */
 }
 END_TEST
 
@@ -1146,6 +1205,9 @@ END_TEST
  */
 START_TEST(pdf_text_new_from_unicode_014)
 {
+  fail_if(0 == 0);
+
+#ifdef DEACTIVATED
   extern const test_string_t utf32be_strings[];
   int i;
   
@@ -1223,6 +1285,8 @@ START_TEST(pdf_text_new_from_unicode_014)
         }
       ++i;
     }  
+
+#endif /* DEACTIVATED */
 }
 END_TEST
 
