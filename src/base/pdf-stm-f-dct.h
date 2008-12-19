@@ -49,6 +49,7 @@ enum pdf_stm_f_dctstate_t
   DCTDEC_STATE_INIT,
   DCTDEC_STATE_CACHE,
   DCTDEC_STATE_READHDR,
+  DCTDEC_STATE_WRITEHDR,
   DCTDEC_STATE_STARTDJP,
   DCTDEC_STATE_SCANLINE,
   DCTDEC_STATE_FINISHDJP,
@@ -82,10 +83,6 @@ struct pdf_stm_f_dctdec_s
   pdf_size_t row_valid_size;
   pdf_size_t row_copy_index;
   pdf_u32_t num_scanlines;
-
-  FILE *input_file;
-  FILE *output_file;
-
 };
 
 typedef struct pdf_stm_f_dctdec_s *pdf_stm_f_dctdec_t;

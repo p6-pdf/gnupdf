@@ -33,11 +33,21 @@
 #else
 #define debugmsg(msg) printf msg
 #endif
+#if 1
+#define debugmsg1(msg) 
+#else
+#define debugmsg1(msg) printf msg
+#endif
+
+#define PPM_MAXVAL 255
 
 pdf_status_t pdf_stm_f_dct_src_fill(j_decompress_ptr cinfo, pdf_stm_buffer_t in);
 static void pdf_stm_dct_dec_jpeg_cache_src (j_decompress_ptr cinfo, pdf_stm_buffer_t cache);
 static void pdf_stm_dct_dec_jpeg_cache_src_special (j_decompress_ptr cinfo, pdf_stm_buffer_t cache);
 METHODDEF(boolean)  print_text_marker (j_decompress_ptr cinfo);
+static pdf_status_t write_bmp_header (j_decompress_ptr cinfo, pdf_stm_buffer_t out);
+static pdf_status_t pdf_stm_dctdec_write_ppm_header(j_decompress_ptr cinfo, pdf_stm_buffer_t out);
+
 
 pdf_status_t
 pdf_stm_f_dctenc_init (pdf_hash_t params,
@@ -248,6 +258,7 @@ pdf_stm_f_dctdec_init (pdf_hash_t params,
   /* This filter uses no parameters */
   /* Allocate the internal state structure */
   dctdec_state = pdf_alloc (sizeof(struct pdf_stm_f_dctdec_s));
+  memset(dctdec_state, 0, sizeof(struct pdf_stm_f_dctdec_s));
   if (dctdec_state != NULL)
     {
       dctdec_state->cinfo.err = jpeg_std_error(&dctdec_state->jerr);
@@ -274,15 +285,15 @@ pdf_stm_f_dctdec_init (pdf_hash_t params,
       jpeg_set_marker_processor(&dctdec_state->cinfo, JPEG_COM, print_text_marker);
       jpeg_set_marker_processor(&dctdec_state->cinfo, JPEG_APP0+12, print_text_marker);
 
-      dctdec_state->input_file = stdin;//fopen("testimg.jpg", "rb"); /*stdin;*/
-      if(!dctdec_state->input_file)
-      {
-        return PDF_ERROR;
-      }
       //jpeg_stdio_src(&dctdec_state->cinfo, dctdec_state->input_file);
       dctdec_state->state = DCTDEC_STATE_INIT;
       *state = dctdec_state;
       ret = PDF_OK;
+      {
+        int i=0;
+        while(i--)
+          sleep(1);
+      }
     }
   else
     {
@@ -292,7 +303,7 @@ pdf_stm_f_dctdec_init (pdf_hash_t params,
   return ret;
 }
 
-#define PDF_DJPEG_CACHE_SIZE (1024)
+#define PDF_DJPEG_CACHE_SIZE (10240)
 
 pdf_status_t
 pdf_stm_f_dctdec_apply (pdf_hash_t params,
@@ -301,6 +312,7 @@ pdf_stm_f_dctdec_apply (pdf_hash_t params,
                          pdf_stm_buffer_t out,
                          pdf_bool_t finish_p)
 {
+  pdf_i32_t    loop_end = 0;
   pdf_status_t ret;
   pdf_i32_t iret;
   pdf_u32_t unusedint;
@@ -310,26 +322,36 @@ pdf_stm_f_dctdec_apply (pdf_hash_t params,
   pdf_stm_buffer_t cache_in, cache_out;
 
 
-  debugmsg(("entering dct_dec_apply....\n"));
   ret = PDF_OK;
   filter_state = (pdf_stm_f_dctdec_t) state;
 
-  if(finish_p)
+  debugmsg1(("\n\n#############################################\n"));
+  debugmsg1(("#     enter dct_dec_apply....\n"));
+  debugmsg1(("#     apply status ======= %d\nbuffer in:%x, %d, %d\n", filter_state->state, in->data, in->rp, in->wp));
+  debugmsg1(("#     scanline: %d of %d\n", pcinfo->output_scanline, pcinfo->output_height));
+
+  if(finish_p && in->wp - in->rp < 1 && pcinfo->output_scanline == pcinfo->output_height)
   {
-    debugmsg(("finished.\n"));
+    debugmsg1(("\n\nfinished.\n"));
     return PDF_EEOF;
   }
 
+  while(!loop_end && ret == PDF_OK)
+  {
+  debugmsg1(("\n=========================\n"));
+  debugmsg1(("= ret: %d,  status %d \n", ret, filter_state->state));
+  debugmsg1(("=========================\n"));
+ 
   if(DCTDEC_STATE_INIT == filter_state->state)
   {
-    debugmsg(("init state....\n"));
       cache_in = filter_state->djpeg_in;
       if(!filter_state->djpeg_in)
       {
         filter_state->djpeg_in = pdf_stm_buffer_new(PDF_DJPEG_CACHE_SIZE);
         if(!filter_state->djpeg_in)
         {
-          return PDF_ERROR;
+          ret = PDF_ERROR;
+          break;
         }
         cache_in = filter_state->djpeg_in;
       }
@@ -339,63 +361,73 @@ pdf_stm_f_dctdec_apply (pdf_hash_t params,
   }
   if(DCTDEC_STATE_CACHE == filter_state->state)
   {
-    debugmsg(("cache state....\n"));
-    debugmsg(("in data dumped...\n"));
     if(pdf_stm_buffer_eob_p(in))
     {
-      return PDF_ENINPUT;
+      ret = PDF_ENINPUT;
+      break;
     }
-
     ret = pdf_stm_f_dct_src_fill(pcinfo, in);
+    {
+      int i = 0;
+      while(i--)
+        sleep(1);
+    }
     if(PDF_OK != ret)
     {
-      return ret;
+      break;
     }
     filter_state->state = filter_state->backup_state;
   }
   if( DCTDEC_STATE_READHDR == filter_state->state)
   {
-    int testcount = 0;
-    debugmsg(("cinfo->src.fill_input_buffer....\t\t%x\n", pcinfo->src->fill_input_buffer));
-    debugmsg(("read header state....\n"));
-    while(testcount--)
-      sleep(1);
-    
     iret = jpeg_read_header(&filter_state->cinfo, TRUE);
-      //pdf_stm_dct_dec_jpeg_cache_src_special(pcinfo, filter_state->djpeg_in);
-    debugmsg(("cinfo->src.fill_input_buffer....\t\t%x\n", pcinfo->src->fill_input_buffer));
     if(iret == JPEG_SUSPENDED)
     {
-      debugmsg(("read_header suspended, need input...\n"));
+      /* continue the loop, go into the "cache state" */
+      ret = PDF_OK;
       filter_state->backup_state = filter_state->state;
       filter_state->state = DCTDEC_STATE_CACHE;
-      return PDF_ENINPUT;
+      continue;
     }
 
     if(iret != JPEG_HEADER_OK)
     {
       debugmsg(("read_header error!!!!!...\n"));
-      return PDF_ERROR;
+      ret = PDF_ERROR;
+      break;
     }
     filter_state->state = DCTDEC_STATE_STARTDJP;
+  }
+
+  if(DCTDEC_STATE_WRITEHDR == filter_state->state)
+  {
+    ret = pdf_stm_dctdec_write_ppm_header( pcinfo, out);
+    if(PDF_ENINPUT == ret) 
+    {
+      ret = PDF_OK;
+      filter_state->backup_state = filter_state->state;
+      filter_state->state = DCTDEC_STATE_CACHE;
+      continue;
+    }
+    else if(PDF_OK != ret)
+    {
+      break;
+    }
+    filter_state->state = DCTDEC_STATE_SCANLINE;
   }
     
   if(DCTDEC_STATE_STARTDJP == filter_state->state)
   {
     iret = jpeg_start_decompress(&filter_state->cinfo);
-    if(iret == JPEG_SUSPENDED)
+    if(iret == FALSE)
     {
+      /* continue the loop, go into the "cache state" */
+      ret = PDF_OK;
       filter_state->backup_state = filter_state->state;
       filter_state->state = DCTDEC_STATE_CACHE;
-      return PDF_ENINPUT;
-    }
-    if(iret != PDF_TRUE)
-    {
-      printf("error in jpeg_start_decompress!!!\n");
-      return PDF_ERROR;
+      continue;
     }
     /* here we know the output size, so allocate memory for them. */
-    //pdf_stm_f_dctdec_dst_init(filter_state);
     filter_state->row_stride = pcinfo->output_width * pcinfo->output_components;
 
       /* Make a one-row-high sample array that will go away when done with image */
@@ -403,78 +435,94 @@ pdf_stm_f_dctdec_apply (pdf_hash_t params,
             ((j_common_ptr) pcinfo, JPOOL_IMAGE, filter_state->row_stride, 1);
     filter_state->row_valid_size = 0;
     filter_state->row_copy_index = 0;
-    filter_state->state = DCTDEC_STATE_SCANLINE;  
+    filter_state->state = DCTDEC_STATE_WRITEHDR;  
   }
   if(DCTDEC_STATE_SCANLINE == filter_state->state)
   {
-    while(pcinfo->output_scanline < pcinfo->output_height)
+    if(!filter_state->djpeg_out)
     {
+      filter_state->djpeg_out = pdf_stm_buffer_new(pcinfo->output_width * pcinfo->output_height * 3);
+      if(!filter_state->djpeg_out)
+        return PDF_ERROR;
+    }
+    while(pcinfo->output_scanline < pcinfo->output_height || filter_state->row_valid_size > filter_state->row_copy_index)
+    {
+          ret = PDF_OK;
       if(filter_state->row_valid_size <= filter_state->row_copy_index)
       {
         pdf_i32_t scannum = 0;
-        debugmsg(("libjpeg buffer status: ============= %x, %d\n", pcinfo->src->bytes_in_buffer, pcinfo->src->next_input_byte));
         scannum = jpeg_read_scanlines(pcinfo, filter_state->row_buf, 1);  //pcinfo->output_height);
+  debugmsg1(("\n-------------\n"));
+  debugmsg1(("- scan: %d,  result: %d \n", pcinfo->output_scanline, scannum));
+  debugmsg1(("-------------\n"));
         if(scannum == 0)
         {
+          ret = PDF_OK;
           filter_state->backup_state = filter_state->state;
           filter_state->state = DCTDEC_STATE_CACHE;
-          ret = PDF_ENINPUT;
-          debugmsg(("read_scanlines failed, need input.\n"));
           break;
-        }
-        else if(0)
-        {
-          FILE *hF = fopen("testdct.rgb", "wb");
-          printf("writing output...size: %d\n", filter_state->row_stride);
-          fwrite(filter_state->row_buf[0], 1, filter_state->row_stride, hF);
-          fclose(hF);
-          return PDF_EEOF;
         }
         if(scannum != 1)
         {
-          printf("!!!error scannum: %d\n", scannum);
-          return PDF_ERROR;
+          debugmsg1(("!!!error scannum: %d\n", scannum));
+          ret = PDF_ERROR;
+          break;
+          loop_end = 1;
         }
         filter_state->num_scanlines += scannum;
         filter_state->row_valid_size = scannum * filter_state->row_stride;
         filter_state->row_copy_index = 0;
-        debugmsg(("scan sucessfully! now %d, and size: %d\n", filter_state->num_scanlines, pcinfo->output_width * pcinfo->output_components));
+        debugmsg(("scan sucessfully! now %d \n", filter_state->num_scanlines));
       }
     
       if(pdf_stm_buffer_full_p(out))
       {
         ret = PDF_ENOUTPUT;
         break;
+        loop_end = 1;
       }
       else
       {
 #if 0
-      debugmsg(("#####################\n"));
-      debugmsg(("copy to output:\n"));
-      debugmsg(("out: %d of %d\n", out->size-out->wp, out->size));
-      debugmsg(("in cache: %d of %d\n", filter_state->row_valid_size-filter_state->row_copy_index, filter_state->row_valid_size));
-      debugmsg(("#####################\n"));
-#endif
+        static int copy_index = 0;
+        pdf_size_t bytes_to_copy = filter_state->row_valid_size - filter_state->row_copy_index;
+        if(bytes_to_copy > 0)
+        {
+          fwrite(filter_state->row_buf[0], 1, bytes_to_copy, stdout);
+          filter_state->row_copy_index += bytes_to_copy;
+          copy_index += bytes_to_copy;
+        }
+#else
         pdf_size_t bytes_to_copy = PDF_MIN(filter_state->row_valid_size - filter_state->row_copy_index, out->size - out->wp);
         if(bytes_to_copy > 0)
         {
-          memcpy(out->data + out->wp, filter_state->row_buf[0] + filter_state->row_copy_index, bytes_to_copy);
+          memcpy(out->data+out->wp, filter_state->row_buf[0]+filter_state->row_copy_index, bytes_to_copy);
+          out->wp += bytes_to_copy;
         }
-        out->wp += bytes_to_copy;
         filter_state->row_copy_index += bytes_to_copy;
+#endif
         if(filter_state->row_copy_index != filter_state->row_valid_size)
         {
           ret = PDF_ENOUTPUT;
           break;
+          loop_end = 1;
         }
       }
+  if(PDF_OK == ret && pcinfo->output_scanline == pcinfo->output_height)
+  {
+    ret = PDF_EEOF;
+    break;
+    loop_end = 1;
+  }
     }
+  }
   }
   if(PDF_OK == ret)
   {
     ret = PDF_EEOF;
   }
-  debugmsg(("exiting dct_dec_apply....\n"));
+  debugmsg1(("leave dct_dec_apply....%d\n", ret));
+  debugmsg1(("#############################################\n"));
   return ret;
 }
 
@@ -483,8 +531,8 @@ pdf_stm_f_dctdec_dealloc_state (void *state)
 {
   pdf_stm_f_dctdec_t dctdec_state;
   dctdec_state = (pdf_stm_f_dctdec_t) state;
-  printf("\nentering dealloc, %d\n", __LINE__);
-  printf("scanlines : %d\n", dctdec_state->num_scanlines);
+  debugmsg1(("\nentering dealloc, %d\n", __LINE__));
+  debugmsg1(("scanlines : %d\n", dctdec_state->num_scanlines));
 #if 1
   //(*dctdec_state->dest_mgr->start_output) (&dctdec_state->cinfo, dctdec_state->dest_mgr);
   /* Process data */
@@ -501,14 +549,9 @@ pdf_stm_f_dctdec_dealloc_state (void *state)
    jpeg_destroy_decompress(&dctdec_state->cinfo);
  
   /* Close files, if we opened them */
-   if (dctdec_state->input_file != stdin)
-    fclose(dctdec_state->input_file);
-   if (dctdec_state->output_file != stdout)
-     fclose(dctdec_state->output_file);
 
   //pdf_dealloc (dctdec_state);
 #endif
-  printf("exiting %s, %d\n", __FILE__, __LINE__);
   return PDF_OK;
 }
 
@@ -581,7 +624,7 @@ pdf_stm_f_dct_src_fill(j_decompress_ptr cinfo, pdf_stm_buffer_t in)
   pdf_stm_f_dct_cache_source_mgr_t src = (pdf_stm_f_dct_cache_source_mgr_t ) cinfo->src;
 
   pdf_size_t bytes_to_copy; 
-  debugmsg(("entering src_fill called.\n"));
+  debugmsg1(("---->entering src_fill called.\n"));
   debugmsg(("src->pub->fill: %x\n", src->pub.fill_input_buffer));
 
   if(src->size_to_skip > in->wp - in->rp)
@@ -613,19 +656,18 @@ pdf_stm_f_dct_src_fill(j_decompress_ptr cinfo, pdf_stm_buffer_t in)
   {
     memcpy(src->cache->data + src->cache->wp, in->data + in->rp, bytes_to_copy);
     {
-      FILE *htmp = fopen("original.jpg", "wb");
+      FILE *htmp = fopen("original.jpg", "ab+");
       fwrite(in->data + in->rp, bytes_to_copy, 1, htmp);
       fclose(htmp);
     }
     in->rp += bytes_to_copy;
     src->cache->wp += bytes_to_copy;
-    debugmsg(("copy data into cache....%d, left %d\n", bytes_to_copy, in->wp - in->rp));
+    debugmsg1(("copy data into cache....%d, left %d\n", bytes_to_copy, in->wp - in->rp));
   }
 
-  debugmsg(("leave src_fill..source buffer: %d, %d, %d\n", src->cache->size, src->cache->rp, src->cache->wp));
+  debugmsg1(("<---leave src_fill..source buffer: %d, %d, %d\n", src->cache->size, src->cache->rp, src->cache->wp));
   src->pub.bytes_in_buffer = src->cache->wp - src->cache->rp;
   src->pub.next_input_byte = src->cache->data + src->cache->rp;
-  debugmsg(("src->pub->fill: %x\n", src->pub.fill_input_buffer));
   return PDF_OK;
 }
 
@@ -748,5 +790,122 @@ METHODDEF(boolean)
    return TRUE;
 }
 
+static pdf_status_t
+write_bmp_header (j_decompress_ptr cinfo, pdf_stm_buffer_t out)
+  /* Write a Windows-style BMP file header, including colormap if needed */
+{
+  char bmpfileheader[14];
+  char bmpinfoheader[40];
+#define PUT_2B(array,offset,value)  \
+  (array[offset] = (char) ((value) & 0xFF), \
+  array[offset+1] = (char) (((value) >> 8) & 0xFF))
+#define PUT_4B(array,offset,value)  \
+  (array[offset] = (char) ((value) & 0xFF), \
+  array[offset+1] = (char) (((value) >> 8) & 0xFF), \
+  array[offset+2] = (char) (((value) >> 16) & 0xFF), \
+  array[offset+3] = (char) (((value) >> 24) & 0xFF))
+  INT32 headersize, bfSize;
+  int bits_per_pixel, cmap_entries;
+
+  /* check out buffer writable len */
+  if(out->size - out->wp < 64)
+  {
+    return PDF_ENOUTPUT;
+  }
+
+  /* Compute colormap size and total file size */
+  if (cinfo->out_color_space == JCS_RGB) {
+    if (cinfo->quantize_colors) {
+      /* Colormapped RGB */
+      bits_per_pixel = 8;
+      cmap_entries = 256;
+    } else {
+      /* Unquantized, full color RGB */
+      bits_per_pixel = 24;
+      cmap_entries = 0;
+    }
+  } else {
+    /* Grayscale output.  We need to fake a 256-entry colormap. */
+    bits_per_pixel = 8;
+    cmap_entries = 256;
+  }
+  /* File size */
+  headersize = 14 + 40 + cmap_entries * 4; /* Header and colormap */
+  bfSize = headersize + (INT32) cinfo->output_width * (INT32) cinfo->output_height;
+
+  /* Set unused fields of header to 0 */
+  memset(bmpfileheader, 0, sizeof(bmpfileheader));
+  memset(bmpinfoheader, 0, sizeof(bmpinfoheader));
+
+  /* Fill the file header */
+  bmpfileheader[0] = 0x42;  /* first 2 bytes are ASCII 'B', 'M' */
+  bmpfileheader[1] = 0x4D;
+  PUT_4B(bmpfileheader, 2, bfSize); /* bfSize */
+  /* we leave bfReserved1 & bfReserved2 = 0 */
+  PUT_4B(bmpfileheader, 10, headersize); /* bfOffBits */
+
+  /* Fill the info header (Microsoft calls this a BITMAPINFOHEADER) */
+  PUT_2B(bmpinfoheader, 0, 40); /* biSize */
+  PUT_4B(bmpinfoheader, 4, cinfo->output_width); /* biWidth */
+  PUT_4B(bmpinfoheader, 8, cinfo->output_height); /* biHeight */
+
+  PUT_2B(bmpinfoheader, 12, 1); /* biPlanes - must be 1 */
+  PUT_2B(bmpinfoheader, 14, bits_per_pixel); /* biBitCount */
+  /* we leave biCompression = 0, for none */
+  /* we leave biSizeImage = 0; this is correct for uncompressed data */
+  if (cinfo->density_unit == 2) { /* if have density in dots/cm, then */
+    PUT_4B(bmpinfoheader, 24, (INT32) (cinfo->X_density*100)); /* XPels/M */
+    PUT_4B(bmpinfoheader, 28, (INT32) (cinfo->Y_density*100)); /* XPels/M */
+  }
+  PUT_2B(bmpinfoheader, 32, cmap_entries); /* biClrUsed */
+  /* we leave biClrImportant = 0 */
+
+  memcpy(out->data + out->wp, bmpfileheader, 14);
+  out->wp += 14;
+  memcpy(out->data + out->wp, bmpinfoheader, 40);
+  out->wp += 40;
+  return PDF_OK;
+}
+static pdf_status_t 
+pdf_stm_dctdec_write_ppm_header(j_decompress_ptr cinfo, pdf_stm_buffer_t out)
+{
+  pdf_char_t header[64];
+  pdf_i32_t hlen;
+
+  if(out->size - out->wp < 64)
+  {
+    return PDF_ENOUTPUT;
+  }
+    /* Emit file header */
+  switch (cinfo->out_color_space) {
+    case JCS_GRAYSCALE:
+      /* emit header for raw PGM format */
+
+      sprintf(header, "P5\n%ld %ld\n%d\n",
+          (long) cinfo->output_width, (long) cinfo->output_height,
+          PPM_MAXVAL);
+      break;
+    case JCS_RGB:
+      /* emit header for raw PPM format */
+      sprintf(header, "P6\n%ld %ld\n%d\n",
+             (long) cinfo->output_width, (long) cinfo->output_height,
+             PPM_MAXVAL);
+     break;
+    default:
+     return PDF_ERROR;
+  }
+  hlen = strlen(header);
+  if(hlen > out->size-out->wp)
+  {
+    return PDF_ENOUTPUT;
+  }
+#if 0
+  fwrite(header, hlen, 1, stdout);
+#else
+  memcpy(out->data + out->wp, header, hlen); 
+  out->wp += hlen; 
+#endif
+  return PDF_OK;
+}
 
 /* End of pdf_stm_f_ahex.c */
