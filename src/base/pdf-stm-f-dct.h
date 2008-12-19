@@ -31,18 +31,6 @@
 #include <pdf-hash.h>
 #include <pdf-stm-buffer.h>
 #include <jpeglib.h>
-//#include <cdjpecg.h>
-
-
-typedef struct pdf_jpeg_dec_dst_s *pdf_jpeg_dec_dst_t;
-struct pdf_jpeg_dec_dst_s
-{
-  //struct jpeg_destination_mgr jdst;
-  pdf_char_t *buf;
-  pdf_char_t *off;
-  pdf_size_t sz;
-  pdf_size_t used;
-};
 
 enum pdf_stm_f_dctstate_t
 {
@@ -55,9 +43,6 @@ enum pdf_stm_f_dctstate_t
   DCTDEC_STATE_FINISHDJP,
   DCTDEC_STATE_ERROR
 };
-
-
-
 /* Internal state */
 struct pdf_stm_f_dctenc_s
 {
