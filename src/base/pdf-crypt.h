@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/11/29 16:01:38 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-12-21 14:46:36 davazp"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -32,7 +32,7 @@
 #include <pdf-alloc.h>
 #include <pdf-crypt-c-aesv2.h>
 #include <pdf-crypt-c-v2.h>
-
+#include <string.h>
 
 /* BEGIN PUBLIC */
 
@@ -129,7 +129,7 @@ pdf_status_t pdf_crypt_cipher_decrypt (pdf_crypt_cipher_t cipher,
 pdf_status_t pdf_crypt_cipher_destroy (pdf_crypt_cipher_t cipher);
 
 
-pdf_status_t pdf_crypt_md_new (pdf_crypt_md_t *md, enum pdf_crypt_md_algo_e algo);
+pdf_status_t pdf_crypt_md_new (enum pdf_crypt_md_algo_e algo, pdf_crypt_md_t *md);
 
 pdf_status_t pdf_crypt_md_hash (pdf_crypt_md_t md,
 				pdf_char_t *out, pdf_size_t out_size,
@@ -321,28 +321,36 @@ pdf_crypt_cipher_destroy (pdf_crypt_cipher_t cipher)
 
 
 EXTERN_INLINE pdf_status_t
-pdf_crypt_md_new (pdf_crypt_md_t *md, enum pdf_crypt_md_algo_e algo)
+pdf_crypt_md_new (enum pdf_crypt_md_algo_e algo, pdf_crypt_md_t *_md)
 {
-  *md = pdf_alloc (sizeof(struct pdf_crypt_md_s));
+  pdf_crypt_md_t md;
+  gcry_md_hd_t * raw;
+  pdf_status_t ret;
+  
+  md = pdf_alloc (sizeof(struct pdf_crypt_md_s));
 
   if (algo == PDF_CRYPT_MD_MD5)
     {
-      (*md)->raw = pdf_alloc (sizeof(gcry_md_hd_t));
+      raw = pdf_alloc (sizeof(gcry_md_hd_t));
 
-      if (gcry_md_open ((*md)->raw, GCRY_MD_MD5, 0) == GPG_ERR_NO_ERROR)
-	{
-	  return PDF_OK;
-	}
+      if (gcry_md_open (raw, GCRY_MD_MD5, 0) == GPG_ERR_NO_ERROR)
+        {
+          md->raw = raw;
+          *_md = md;
+          ret = PDF_OK;
+        }
       else
-	{
-	  pdf_dealloc ((*md)->raw);
-	  return PDF_ERROR;
-	}
+        {
+          gcry_md_close (*raw);
+          ret = PDF_ERROR;
+        }
     }
   else
     {
-      return PDF_EBADDATA;
+      ret = PDF_EBADDATA;
     }
+
+  return ret;
 }
 
 
@@ -352,8 +360,12 @@ pdf_crypt_md_hash (pdf_crypt_md_t md,
 		   pdf_char_t *out, pdf_size_t out_size,
 		   pdf_char_t *in,  pdf_size_t in_size)
 {
-  gcry_md_hd_t * gcry_md = md->raw;
+  gcry_md_hd_t * gcry_md   = md->raw;
+  pdf_size_t required_size = gcry_md_get_algo_dlen (GCRY_MD_MD5);
   register pdf_size_t i;
+  
+  if (out_size < required_size)
+    return PDF_EBADDATA;
   
   for (i = 0; i < in_size; i++)
     {
@@ -366,8 +378,18 @@ pdf_crypt_md_hash (pdf_crypt_md_t md,
     }
   else
     {
-      gcry_md_read  (*gcry_md, GCRY_MD_MD5);
-      gcry_md_close (*gcry_md);
+      void * hash;
+
+      hash = gcry_md_read  (*gcry_md, GCRY_MD_MD5);
+
+      if (hash == NULL)
+        return PDF_ERROR;
+      else
+        {
+          memcpy (out, hash, required_size);
+        }
+
+      gcry_md_reset (*gcry_md);
       return PDF_OK;
     }
 }

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/11/29 15:10:34 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-12-15 17:55:24 davazp"
  *
  *       File:         pdf-stm-filter.h
  *       Date:         Thu Jun 12 22:05:06 2008
@@ -35,6 +35,9 @@
 #include <pdf-stm-f-null.h>
 #include <pdf-stm-f-ahex.h>
 #include <pdf-stm-f-rl.h>
+#include <pdf-stm-f-v2.h>
+#include <pdf-stm-f-aesv2.h>
+#include <pdf-stm-f-md5.h>
 
 #if defined(HAVE_LIBZ)
 #  include <pdf-stm-f-flate.h>
@@ -56,6 +59,11 @@ enum pdf_stm_filter_type_e
   PDF_STM_FILTER_RL_DEC,
   PDF_STM_FILTER_FLATE_ENC,
   PDF_STM_FILTER_FLATE_DEC,
+  PDF_STM_FILTER_AESV2_ENC,
+  PDF_STM_FILTER_AESV2_DEC,
+  PDF_STM_FILTER_V2_ENC,
+  PDF_STM_FILTER_V2_DEC,
+  PDF_STM_FILTER_MD5_ENC,
   PDF_STM_FILTER_JBIG2_DEC
 };
 

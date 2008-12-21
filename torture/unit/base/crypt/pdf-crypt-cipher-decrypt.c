@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/11/29 16:04:36 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-12-21 15:07:47 davazp"
  *
  *       File:         pdf-crypt-cipher-decrypt.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -127,6 +127,21 @@ END_TEST
 
 
 /*
+ * Test: pdf_crypt_cipher_decrypt_003
+ * Description:
+ *   Decrypt an ciphered buffer (AESV2).
+ * Success condition:
+ *   Decrypted data should be correct.
+ */
+
+START_TEST (pdf_crypt_cipher_decrypt_003)
+{
+}
+END_TEST
+
+
+
+/*
  * Test case creation function
  */
 TCase *
@@ -135,6 +150,7 @@ test_pdf_crypt_cipher_decrypt (void)
   TCase *tc = tcase_create("pdf_crypt_cipher_decrypt");
   tcase_add_test(tc, pdf_crypt_cipher_decrypt_001);
   tcase_add_test(tc, pdf_crypt_cipher_decrypt_002);
+  tcase_add_test(tc, pdf_crypt_cipher_decrypt_003);
   return tc;
 }
 

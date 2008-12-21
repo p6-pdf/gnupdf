@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-09 03:13:18 david"
+/* -*- mode: C -*- Time-stamp: "2008-12-15 18:14:03 davazp"
  *
  *       File:         pdf-crypt-md-new.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -42,7 +42,7 @@ START_TEST (pdf_crypt_md_new_001)
 {
   pdf_crypt_md_t md;
   pdf_crypt_init();
-  fail_if ( pdf_crypt_md_new (&md, PDF_CRYPT_MD_MD5) != PDF_OK);
+  fail_if ( pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md) != PDF_OK);
   pdf_crypt_md_destroy (md);
 }
 END_TEST

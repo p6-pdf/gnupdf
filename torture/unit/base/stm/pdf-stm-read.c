@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-10-05 13:07:53 gerel"
+/* -*- mode: C -*- Time-stamp: "2008-12-14 20:25:41 davazp"
  *
  *       File:         pdf-stm-read.c
  *       Date:         Sat Sep 20 15:20:17 2008
@@ -615,6 +615,56 @@ START_TEST (pdf_stm_read_009)
 END_TEST
 
 
+
+/*
+ * Test: pdf_stm_read_011
+ * Description:
+ *   Create a memory-based writing stream and attach an V2 cipher filter
+ *   decode to it.
+ * Success condition:
+ *   The decoded data should be correct.
+ */
+START_TEST (pdf_stm_read_011)
+{
+  pdf_stm_t stm;
+  pdf_hash_t params;
+
+  pdf_char_t out[14];
+  pdf_size_t out_size = sizeof(out);
+  pdf_char_t in[] =
+    {
+      0x45, 0xA0, 0x1F, 0x64, 0x5F, 0xC3, 0x5B,
+      0x38, 0x35, 0x52, 0x54, 0x4B, 0x9B, 0xF5
+    };
+  pdf_size_t in_size = sizeof(in);
+  pdf_char_t key[6] = "Secret"; /* not trailing '\0' */
+  pdf_size_t keysize = sizeof(key);
+  pdf_char_t plaintext[] = "Attack at dawn";
+  pdf_char_t read;
+  
+  pdf_crypt_init();
+
+  fail_if ( pdf_stm_mem_new (in, in_size, 0, PDF_STM_READ, &stm) != PDF_OK);
+
+  pdf_hash_new (NULL, &params);
+  pdf_hash_add (params, "Key", key, NULL);
+  pdf_hash_add (params, "KeySize", &keysize, NULL);
+
+  fail_if ( pdf_stm_install_filter (stm, PDF_STM_FILTER_V2_DEC, params) != PDF_OK);
+
+  read = pdf_stm_read (stm, out, out_size);
+  fail_if (read != out_size);
+
+  fail_if (memcmp (out, plaintext, read) != 0);
+
+  pdf_hash_destroy (params);
+  pdf_stm_destroy (stm);
+}
+END_TEST
+
+
+
+
 /*
  * Test case creation function
  */
@@ -632,6 +682,7 @@ test_pdf_stm_read (void)
   tcase_add_test(tc, pdf_stm_read_007);
   tcase_add_test(tc, pdf_stm_read_008);
   tcase_add_test(tc, pdf_stm_read_009);
+  tcase_add_test(tc, pdf_stm_read_011);
 
   return tc;
 }

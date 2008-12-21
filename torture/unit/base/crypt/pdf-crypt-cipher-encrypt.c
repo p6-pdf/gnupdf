@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/11/29 16:04:01 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-12-21 15:04:43 davazp"
  *
  *       File:         pdf-crypt-cipher-encrypt.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -101,6 +101,45 @@ END_TEST
 
 
 
+/*
+ * Test: pdf_crypt_cipher_encrypt_003
+ * Description:
+ *   Encrypt a buffer (V2).
+ * Success condition:
+ *   Encrypted data should be correct.
+ */
+START_TEST (pdf_crypt_cipher_encrypt_003)
+{
+  pdf_crypt_cipher_t cipher;
+  pdf_char_t out[14];
+  pdf_size_t out_size;
+  pdf_char_t in[14] = "Attack at dawn"; /* not trailing '\0' */
+  pdf_size_t in_size;
+  pdf_char_t key[6] = "Secret"; /* not trailing '\0' */
+
+  pdf_char_t ciphered[] =
+    {
+      0x45, 0xA0, 0x1F, 0x64, 0x5F, 0xC3, 0x5B,
+      0x38, 0x35, 0x52, 0x54, 0x4B, 0x9B, 0xF5
+    };
+  
+  pdf_crypt_init();
+
+  in_size  = sizeof(in);
+  out_size = in_size;
+  
+  pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &cipher);
+  pdf_crypt_cipher_setkey (cipher, key, sizeof(key));
+
+  fail_if (pdf_crypt_cipher_encrypt (cipher, out, out_size, in, in_size, &out_size) != PDF_OK);
+  fail_if (memcmp (out, ciphered, out_size) != 0);
+
+  pdf_crypt_cipher_destroy (cipher);
+}
+END_TEST
+
+
+
 
 /*
  * Test case creation function
@@ -111,6 +150,7 @@ test_pdf_crypt_cipher_encrypt (void)
   TCase *tc = tcase_create("pdf_crypt_cipher_encrypt");
   tcase_add_test(tc, pdf_crypt_cipher_encrypt_001);
   tcase_add_test(tc, pdf_crypt_cipher_encrypt_002);
+  tcase_add_test(tc, pdf_crypt_cipher_encrypt_003);
   return tc;
 }
 

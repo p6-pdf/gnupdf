@@ -1,3 +1,46 @@
+2008-12-20  David Vazquez  <davazp@es.gnu.org>
+
+	* src/base/pdf-crypt.h (pdf_crypt_md_hash): Minor bug fixed.
+
+	* src/base/pdf-stm-buffer.c (pdf_stm_buffer_resize): New function.
+
+2008-12-15  David Vazquez  <davazp@es.gnu.org>
+
+	* doc/gnupdf-tsd.texi (pdf_crypt_md_hash)
+	(Message digest functions): Updated.
+
+	* torture/unit/base/crypt/pdf-crypt-md-hash.c: New tests.
+
+	* src/base/pdf-crypt.h (pdf_crypt_md_new): The *MD argument should
+	is the last argument.
+
+2008-12-14  David Vazquez  <davazp@es.gnu.org>
+
+	* src/base/MANIFEST.wiki: Updated.
+
+	* src/base/pdf-stm-f-aesv2.c: New file
+
+	* src/base/pdf-stm-f-v2.c: New file
+
+	* src/base/pdf-stm-f-md5.c: New file
+
+	* src/base/pdf-crypt-c-aesv2.c (pdf_crypt_cipher_aesv2_decrypt):
+	Check padding size is lesser than AESV2_BLKSIZE.
+
+	* torture/unit/base/crypt/pdf-crypt-cipher-decrypt.c: New test.
+
+2008-12-11  David Vazquez  <davazp@es.gnu.org>
+
+	* torture/unit/base/stm/pdf-stm-read.c: New test.
+
+	* doc/gnupdf-tsd.texi (pdf_crypt_cipher_encrypt): New test documentation.
+	(pdf_stm_write): New tests documentation.
+
+	* torture/unit/base/crypt/pdf-crypt-cipher-encrypt.c: New test
+
+	* torture/unit/base/crypt/pdf-crypt-cipher-decrypt.c: Change
+	`pdf_crypt_cipher_decrypt_001' ciphered buffer and key.
+
 2008-12-10  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* torture/unit/runtests.c (main): Dont set the CK_FORK variable,

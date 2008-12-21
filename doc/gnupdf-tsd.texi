@@ -920,6 +920,16 @@ The decoded bitmap should be equal to @file{TD00003}.
 @end table
 @end deffn
 
+@deffn Test pdf_stm_read_011
+Create a memory-based reading stream and attach a cipher filter
+decoder to it.
+@table @strong
+@item Success condition
+The decoded data should be correct.
+@end table
+@end deffn
+
+
 @node pdf_stm_read_char
 @subsubsection pdf_stm_read_char
 
@@ -1057,6 +1067,41 @@ The encoded data should be correct.
 @end table
 @end deffn
 
+
+@deffn Test pdf_stm_write_008
+Create a memory-based writing stream and attach an V2 filter without parameters.
+@table @strong
+@item Success condition
+The installation of the filter should fail.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_write_009
+Create a memory-based writing stream and attach a V2 cipher filter to
+encode it.
+@table @strong
+@item Success condition
+The encoded data should be correct.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_write_010
+Create a memory-based writing stream and attach an AESV2 cipher filter to
+encode it.
+@table @strong
+@item Success condition
+The encoded data should be correct.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_write_011
+Create a memory-based writing stream and attach an MD5 cipher filter to
+encode it.
+@table @strong
+@item Success condition
+The encoded data should be correct.
+@end table
+@end deffn
 
 
 
@@ -6214,6 +6259,14 @@ Returns PDF_OK
 @end table
 @end deffn
 
+@deffn Test pdf_crypt_cipher_encrypt_003
+@table @strong
+Encrypt a empty buffer (V2).
+@item Success condition
+Encrypted data should be correct.
+@end table
+@end deffn
+
 
 @node pdf_crypt_cipher_decrypt
 @subsubsection pdf_crypt_cipher_decrypt
@@ -6255,6 +6308,22 @@ Returns PDF_OK.
 Compute the md5 of an empty buffer.
 @item Success condition
 Returns PDF_OK and output buffer matches.
+@end table
+@end deffn
+
+@deffn Test pdf_crypt_md_hash_002
+@table @strong
+Compute the md5 checksum of a string.
+@item Success condition
+The output data should be correct.
+@end table
+@end deffn
+
+@deffn Test pdf_crypt_md_hash_003
+@table @strong
+Compute the md5 checksum of a string.
+@item Success condition
+The output data should be correct.
 @end table
 @end deffn
 

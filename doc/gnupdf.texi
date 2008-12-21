@@ -307,6 +307,8 @@ p = (int *) pdf_alloc (sizeof(int));
 *p = 666;
 @end example
 @end table
+
+
 @end deftypefun
 
 @deftypefun void pdf_dealloc (const void *@var{pointer})
@@ -8130,7 +8132,7 @@ The callback should return a PDF status variable:
 @table @code
 @item PDF_OK
 The operation was successfully performed and the current position in
-@var{file} was set to @var{pos}.
+n@var{file} was set to @var{pos}.
 @end table
 
 This callback is called by the @code{pdf_fsys_file_set_pos} file
@@ -8693,7 +8695,7 @@ A message-digest descriptor.
 
 
 
-@deftypefun pdf_status_t pdf_crypt_md_new (pdf_crypt_md_t  *@var{md}, enum pdf_crypt_md_algo_e @var{algo})
+@deftypefun pdf_status_t pdf_crypt_md_new (enum pdf_crypt_md_algo_e @var{algo}, pdf_crypt_md_t  *@var{md})
 
 Create a message-digest descriptor for an algorithm.
 

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/11/29 15:58:15 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-12-14 18:27:42 davazp"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -187,6 +187,10 @@ pdf_crypt_cipher_aesv2_decrypt (void * cipher,
     }
 
   padding_size = content[buffer_size - iv_size - 1];
+
+  if (padding_size > AESV2_BLKSIZE)
+    return PDF_ERROR;
+
   content_size = buffer_size - iv_size - padding_size;
 
   memcpy (out, content, content_size);
