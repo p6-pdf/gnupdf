@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/08/06 23:44:05 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-11-29 17:48:56 aleksander"
  *
  *       File:         pdf-fsys.c
  *       Date:         Thu May 22 15:51:13 2008
@@ -35,7 +35,7 @@ static void pdf_fsys_dealloc (pdf_fsys_t filesystem);
  * Filesystem Interface Implementation
  */
 
-pdf_size_t
+pdf_i64_t
 pdf_fsys_get_free_space (pdf_fsys_t filesystem,
                          pdf_text_t path_name)
 {
@@ -52,25 +52,7 @@ pdf_fsys_get_free_space (pdf_fsys_t filesystem,
     }
 }
 
-pdf_status_t
-pdf_fsys_open (const pdf_fsys_t filesystem,
-               const pdf_text_t path_name,
-               const enum pdf_fsys_file_mode_e mode,
-               pdf_fsys_file_t file)
-{
-  if (filesystem == NULL)
-    {
-      /* Use the default filesystem */
-      return
-        pdf_fsys_def_open(path_name, mode, file);
-    }
-  else
-    {
-      return filesystem->implementation->open_fn (path_name,
-                                                  mode,
-                                                  file);
-    }
-}
+
 
 pdf_status_t 
 pdf_fsys_create_folder (const pdf_fsys_t filesystem,
@@ -320,6 +302,27 @@ pdf_fsys_get_temp_path_name (pdf_fsys_t filesystem)
 /*
  * File Interface Implementation
  */
+
+pdf_status_t
+pdf_fsys_file_open (const pdf_fsys_t filesystem,
+                    const pdf_text_t path_name,
+                    const enum pdf_fsys_file_mode_e mode,
+                    pdf_fsys_file_t *p_file)
+{
+  if (filesystem == NULL)
+    {
+      /* Use the default filesystem */
+      return
+        pdf_fsys_def_file_open(path_name, mode, p_file);
+    }
+  else
+    {
+      return filesystem->implementation->file_open_fn (path_name,
+                                                       mode,
+                                                       p_file);
+    }
+}
+
 
 pdf_fsys_t 
 pdf_fsys_file_get_filesystem (pdf_fsys_file_t file)

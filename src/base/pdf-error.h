@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/10/02 14:43:41 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-11-29 16:24:39 aleksander"
  *
  *       File:         pdf-error.h
  *       Date:         Sun Feb  24 20:22:05 2008
@@ -80,10 +80,13 @@
   ERROR_ENTRY (PDF_EBADNAME,    "invalid path name"),                   \
   ERROR_ENTRY (PDF_EAGAIN,      "operation can't be performed now, maybe later"), \
   ERROR_ENTRY (PDF_ENOSPC,      "no space left on device"),             \
-  ERROR_ENTRY (PDF_EBADCONTEXT, "text module global context not initialized"), \
+  ERROR_ENTRY (PDF_EBADCONTEXT, "text module global context not initialized"),    \
   ERROR_ENTRY (PDF_ENOTEMPTY,   "operation requires some entity be empty"), \
-  ERROR_ENTRY (PDF_ENINPUT,     "filter needs more input"), \
-  ERROR_ENTRY (PDF_ENOUTPUT,    "filter needs more output room")
+  ERROR_ENTRY (PDF_ENINPUT,     "filter needs more input"),             \
+  ERROR_ENTRY (PDF_ENOUTPUT,    "filter needs more output room"),       \
+  ERROR_ENTRY (PDF_EEXIST,      "already exists"),                      \
+  ERROR_ENTRY (PDF_EOPENED,     "file is opened"),                      \
+  ERROR_ENTRY (PDF_ECLOSED,     "file is closed")
 
 
 #define ERROR_ENTRY(id,string) id
