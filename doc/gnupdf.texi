@@ -6520,7 +6520,6 @@ becomes a no-op.
 @menu
 * Filesystem Data Types::
 * Getting File System Properties::
-* Opening Files::
 * Folder Management::
 * Getting File System Item Properties::
 * File System Utility Functions::
@@ -6577,51 +6576,6 @@ XXX
 @end example
 @end table
 @end deftypefun
-
-@node Opening Files
-@subsubsection Opening Files
-
-@deftypefun pdf_status_t pdf_fsys_open (const pdf_fsys_t @var{filesystem}, const pdf_text_t @var{path_name}, const enum pdf_fsys_file_mode_e @var{mode}, pdf_fsys_file_t @var{file})
-
-Open a file in @var{filesystem} identified by @var{path_name} using
-the specified @var{mode} and store a new open file variable in
-@var{file}.
-
-@table @strong
-@item Parameters
-@table @var
-@item filesystem
-A filesystem. If @code{NULL} the default filesystem is used.
-@item path_name
-A path name that identifies the file to be opened. The format and
-encoding of this text variable depends on the underlying filesystem
-implementation. 
-@item mode
-The open mode to use to open the file.
-@item file
-The output file variable.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK 
-The file was successfully opened and stored in the @var{file}
-variable.
-@item PDF_EBADNAME
-The path name specified in @var{path_name} does not identify an existing
-file in the filesystem.
-@item PDF_EBADPERMS
-The client does not have permission to open the specified file using the
-specified mode. 
-@item PDF_ENOMEM
-Not enough memory.
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun               
 
 @node Folder Management
 @subsubsection Folder Management
@@ -7008,6 +6962,7 @@ File flags (status) management.
 
 @menu
 * File Data Types::
+* Opening Files::
 * File Properties Management::
 * Comparing Files::
 * Managing File Positions::
@@ -7016,6 +6971,8 @@ File flags (status) management.
 * Read in Advance::
 * Closing and Reopening Files::
 @end menu
+
+
 
 @node File Data Types
 @subsubsection File Data Types
@@ -7048,6 +7005,54 @@ filesystem.
 @item 
 @end table
 @end deftp
+
+
+@node Opening Files
+@subsubsection Opening Files
+
+@deftypefun pdf_status_t pdf_fsys_open (const pdf_fsys_t @var{filesystem}, const pdf_text_t @var{path_name}, const enum pdf_fsys_file_mode_e @var{mode}, pdf_fsys_file_t @var{file})
+
+Open a file in @var{filesystem} identified by @var{path_name} using
+the specified @var{mode} and store a new open file variable in
+@var{file}.
+
+@table @strong
+@item Parameters
+@table @var
+@item filesystem
+A filesystem. If @code{NULL} the default filesystem is used.
+@item path_name
+A path name that identifies the file to be opened. The format and
+encoding of this text variable depends on the underlying filesystem
+implementation. 
+@item mode
+The open mode to use to open the file.
+@item file
+The output file variable.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK 
+The file was successfully opened and stored in the @var{file}
+variable.
+@item PDF_EBADNAME
+The path name specified in @var{path_name} does not identify an existing
+file in the filesystem.
+@item PDF_EBADPERMS
+The client does not have permission to open the specified file using the
+specified mode. 
+@item PDF_ENOMEM
+Not enough memory.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun               
+
+
 
 @node File Properties Management
 @subsubsection File Properties Management
