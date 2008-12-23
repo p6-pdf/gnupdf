@@ -166,13 +166,13 @@ TEST_SUITE_TYPES = base/types/pdf-i64-new.c \
 
 TEST_SUITE_CRYPT = base/crypt/pdf-crypt-init.c \
 		   base/crypt/pdf-crypt-cipher-new.c \
+		   base/crypt/pdf-crypt-cipher-setkey.c \
 		   base/crypt/pdf-crypt-cipher-destroy.c \
-                   base/crypt/pdf-crypt-cipher-encrypt-size.c \
-		   base/crypt/pdf-crypt-cipher-decrypt-size.c \
 		   base/crypt/pdf-crypt-cipher-encrypt.c \
 		   base/crypt/pdf-crypt-cipher-decrypt.c \
 		   base/crypt/pdf-crypt-md-new.c \
-		   base/crypt/pdf-crypt-md-hash.c \
+		   base/crypt/pdf-crypt-md-write.c \
+		   base/crypt/pdf-crypt-md-read.c \
 		   base/crypt/pdf-crypt-md-destroy.c
 
 TEST_SUITE_ALLOC = base/alloc/pdf-alloc.c \

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-12-15 17:55:24 davazp"
+/* -*- mode: C -*- Time-stamp: "2008-12-23 16:20:10 davazp"
  *
  *       File:         pdf-stm-filter.h
  *       Date:         Thu Jun 12 22:05:06 2008
@@ -59,11 +59,13 @@ enum pdf_stm_filter_type_e
   PDF_STM_FILTER_RL_DEC,
   PDF_STM_FILTER_FLATE_ENC,
   PDF_STM_FILTER_FLATE_DEC,
-  PDF_STM_FILTER_AESV2_ENC,
-  PDF_STM_FILTER_AESV2_DEC,
-  PDF_STM_FILTER_V2_ENC,
-  PDF_STM_FILTER_V2_DEC,
-  PDF_STM_FILTER_MD5_ENC,
+  /* 
+   * PDF_STM_FILTER_AESV2_ENC,
+   * PDF_STM_FILTER_AESV2_DEC,
+   * PDF_STM_FILTER_V2_ENC,
+   * PDF_STM_FILTER_V2_DEC,
+   * PDF_STM_FILTER_MD5_ENC,
+   */
   PDF_STM_FILTER_JBIG2_DEC
 };
 

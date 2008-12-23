@@ -1,3 +1,21 @@
+2008-12-23  David Vazquez  <davazp@es.gnu.org>
+
+	* doc/gnupdf-tsd.texi: Updated.
+
+	* torture/unit/base/crypt/pdf-crypt-cipher-setkey.c (test_pdf_crypt_cipher_setkey): New tests.
+
+	* torture/unit/base/crypt/pdf-crypt-cipher-decrypt.c: New tests.
+
+	* torture/unit/base/crypt/pdf-crypt-md-write.c (test_pdf_crypt_md_write): New tests.
+
+	* doc/gnupdf.texi (Encryption): Updated.
+
+	* src/base/pdf-crypt-c-aesv2.c: Incremental encryption support added.
+
+	* src/base/pdf-crypt-c-v2.c: Same.
+
+	* src/base/pdf-crypt.h: Same.
+
 2008-12-20  David Vazquez  <davazp@es.gnu.org>
 
 	* src/base/pdf-crypt.h (pdf_crypt_md_hash): Minor bug fixed.

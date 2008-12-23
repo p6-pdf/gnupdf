@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-12-21 14:46:36 davazp"
+/* -*- mode: C -*- Time-stamp: "2008-12-23 17:13:24 davazp"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -59,10 +59,6 @@ struct pdf_crypt_cipher_algo_s
 
   pdf_status_t (*setkey) (void * cipher, pdf_char_t *key, pdf_size_t size);
 
-  pdf_size_t (*encrypt_size) (void * cipher, pdf_char_t *in, pdf_size_t in_size);
-
-  pdf_size_t (*decrypt_size) (void * cipher, pdf_char_t *in, pdf_size_t in_size);
-
   pdf_status_t (*encrypt) (void * cipher,
 			   pdf_char_t *out, pdf_size_t out_size,
 			   pdf_char_t *in,  pdf_size_t in_size,
@@ -81,8 +77,6 @@ typedef struct pdf_crypt_cipher_algo_s *pdf_crypt_cipher_algo_t;
 struct pdf_crypt_cipher_s
 {
   pdf_crypt_cipher_algo_t algo;
-  pdf_char_t * key;
-  pdf_size_t key_size;
   void * raw;
 };
 
@@ -99,18 +93,14 @@ struct pdf_crypt_md_s
 
 pdf_status_t pdf_crypt_init (void);
 
+pdf_status_t pdf_crypt_nonce (pdf_char_t * buffer, pdf_size_t size);
+
 pdf_status_t pdf_crypt_cipher_new (enum pdf_crypt_cipher_algo_e algorithm,
 				   pdf_crypt_cipher_t *cipher);
 
 pdf_status_t pdf_crypt_cipher_setkey (pdf_crypt_cipher_t cipher,
 				      pdf_char_t *key,
 				      pdf_size_t size);
-
-pdf_size_t pdf_crypt_cipher_encrypt_size (pdf_crypt_cipher_t cipher,
-					  pdf_char_t *in, pdf_size_t in_size);
-
-pdf_size_t pdf_crypt_cipher_decrypt_size (pdf_crypt_cipher_t cipher,
-					  pdf_char_t *in, pdf_size_t in_size);
 
 pdf_status_t pdf_crypt_cipher_encrypt (pdf_crypt_cipher_t cipher,
 				       pdf_char_t *out,
@@ -131,9 +121,12 @@ pdf_status_t pdf_crypt_cipher_destroy (pdf_crypt_cipher_t cipher);
 
 pdf_status_t pdf_crypt_md_new (enum pdf_crypt_md_algo_e algo, pdf_crypt_md_t *md);
 
-pdf_status_t pdf_crypt_md_hash (pdf_crypt_md_t md,
-				pdf_char_t *out, pdf_size_t out_size,
-				pdf_char_t *in,  pdf_size_t in_size);
+pdf_status_t pdf_crypt_md_write (pdf_crypt_md_t md,
+                                 pdf_char_t *in,  pdf_size_t in_size);
+
+pdf_status_t pdf_crypt_md_read (pdf_crypt_md_t md,
+				pdf_char_t *out, pdf_size_t out_size);
+
 
 pdf_status_t pdf_crypt_md_destroy (pdf_crypt_md_t hd);
 
@@ -191,6 +184,15 @@ pdf_crypt_init (void)
 
 
 EXTERN_INLINE pdf_status_t
+pdf_crypt_nonce (pdf_char_t * buffer, pdf_size_t size)
+{
+  gcry_create_nonce (buffer, size);
+  return PDF_OK;
+}
+
+
+
+EXTERN_INLINE pdf_status_t
 pdf_crypt_cipher_new (enum pdf_crypt_cipher_algo_e algorithm,
 		      pdf_crypt_cipher_t *cipher)
 {
@@ -206,8 +208,6 @@ pdf_crypt_cipher_new (enum pdf_crypt_cipher_algo_e algorithm,
       {
         cipher_algo->new = pdf_crypt_cipher_aesv2_new;
         cipher_algo->setkey = pdf_crypt_cipher_aesv2_setkey;
-        cipher_algo->encrypt_size = pdf_crypt_cipher_aesv2_encrypt_size;
-        cipher_algo->decrypt_size = pdf_crypt_cipher_aesv2_decrypt_size;
         cipher_algo->encrypt = pdf_crypt_cipher_aesv2_encrypt;
         cipher_algo->decrypt = pdf_crypt_cipher_aesv2_decrypt;
         cipher_algo->destroy = pdf_crypt_cipher_aesv2_destroy;
@@ -217,8 +217,6 @@ pdf_crypt_cipher_new (enum pdf_crypt_cipher_algo_e algorithm,
       {
         cipher_algo->new = pdf_crypt_cipher_v2_new;
         cipher_algo->setkey = pdf_crypt_cipher_v2_setkey;
-        cipher_algo->encrypt_size = pdf_crypt_cipher_v2_encrypt_size;
-        cipher_algo->decrypt_size = pdf_crypt_cipher_v2_decrypt_size;
         cipher_algo->encrypt = pdf_crypt_cipher_v2_encrypt;
         cipher_algo->decrypt = pdf_crypt_cipher_v2_decrypt;
         cipher_algo->destroy = pdf_crypt_cipher_v2_destroy;
@@ -234,10 +232,8 @@ pdf_crypt_cipher_new (enum pdf_crypt_cipher_algo_e algorithm,
 
   if (cipher_algo->new (&(*cipher)->raw) == PDF_OK)
     {
-      (*cipher)->algo     = cipher_algo;
-      (*cipher)->key      = NULL;
-      (*cipher)->key_size = 0;
-      status	       = PDF_OK;
+      (*cipher)->algo = cipher_algo;
+      status	      = PDF_OK;
     }
   else
     status = PDF_ERROR;
@@ -250,34 +246,7 @@ EXTERN_INLINE pdf_status_t
 pdf_crypt_cipher_setkey (pdf_crypt_cipher_t cipher,
 			 pdf_char_t *key, pdf_size_t size)
 {
-  pdf_status_t status;
-
-  status = cipher->algo->setkey (cipher->raw, key, size);
-
-  if (status == PDF_OK)
-    {
-      cipher->key = pdf_alloc (size);
-      cipher->key_size = size;
-      memcpy (cipher->key, key, size);
-    }
-
-  return status;
-}
-
-
-EXTERN_INLINE pdf_size_t
-pdf_crypt_cipher_encrypt_size (pdf_crypt_cipher_t cipher,
-			       pdf_char_t *in, pdf_size_t in_size)
-{
-  return cipher->algo->encrypt_size (cipher->raw, in, in_size);
-}
-
-
-EXTERN_INLINE pdf_size_t
-pdf_crypt_cipher_decrypt_size (pdf_crypt_cipher_t cipher,
-			       pdf_char_t *in, pdf_size_t in_size)
-{
-  return cipher->algo->decrypt_size (cipher->raw, in, in_size);
+  return cipher->algo->setkey (cipher->raw, key, size);
 }
 
 
@@ -287,7 +256,6 @@ pdf_crypt_cipher_encrypt (pdf_crypt_cipher_t cipher,
 			  pdf_char_t *in,  pdf_size_t in_size,
 			  pdf_size_t *result_size)
 {
-  cipher->algo->setkey (cipher->raw, cipher->key, cipher->key_size);
   return cipher->algo->encrypt (cipher->raw, out, out_size, in, in_size, result_size);
 }
 
@@ -298,7 +266,6 @@ pdf_crypt_cipher_decrypt (pdf_crypt_cipher_t cipher,
 			  pdf_char_t *in,  pdf_size_t in_size,
 			  pdf_size_t *result_size)
 {
-  cipher->algo->setkey (cipher->raw, cipher->key, cipher->key_size);
   return cipher->algo->decrypt (cipher->raw, out, out_size, in, in_size, result_size);
 }
 
@@ -308,11 +275,9 @@ pdf_crypt_cipher_destroy (pdf_crypt_cipher_t cipher)
 {
   pdf_status_t ret;
 
-  pdf_dealloc (cipher->key);
   ret = cipher->algo->destroy (cipher->raw);
   pdf_dealloc (cipher->algo);
   pdf_dealloc (cipher);
-
   return ret;
 }
 
@@ -356,22 +321,25 @@ pdf_crypt_md_new (enum pdf_crypt_md_algo_e algo, pdf_crypt_md_t *_md)
 
 
 EXTERN_INLINE pdf_status_t
-pdf_crypt_md_hash (pdf_crypt_md_t md,
-		   pdf_char_t *out, pdf_size_t out_size,
-		   pdf_char_t *in,  pdf_size_t in_size)
+pdf_crypt_md_write (pdf_crypt_md_t md,
+                    pdf_char_t *in,  pdf_size_t in_size)
+{
+  gcry_md_hd_t * gcry_md = md->raw;
+  gcry_md_write (*gcry_md, in, in_size);
+  return PDF_OK;
+}
+
+
+EXTERN_INLINE pdf_status_t
+pdf_crypt_md_read (pdf_crypt_md_t md,
+		   pdf_char_t *out, pdf_size_t out_size)
 {
   gcry_md_hd_t * gcry_md   = md->raw;
   pdf_size_t required_size = gcry_md_get_algo_dlen (GCRY_MD_MD5);
-  register pdf_size_t i;
   
   if (out_size < required_size)
     return PDF_EBADDATA;
   
-  for (i = 0; i < in_size; i++)
-    {
-      gcry_md_putc (*gcry_md, in[i]);
-    }
-
   if (gcry_md_final (*gcry_md) != GPG_ERR_NO_ERROR)
     {
       return PDF_ERROR;
@@ -393,6 +361,7 @@ pdf_crypt_md_hash (pdf_crypt_md_t md,
       return PDF_OK;
     }
 }
+
 
 
 EXTERN_INLINE pdf_status_t

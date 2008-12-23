@@ -8340,7 +8340,8 @@ This section describes related to encryption functions.
 * Initializating the module::   
 * Creating and destroying Ciphers::  
 * Encryption and decryption::   
-* Message digest functions::  
+* Message digest functions::    
+* Utilities::                   
 @end menu
 
 @node Initializating the module
@@ -8377,6 +8378,7 @@ if (st != PDF_OK)
 @end example
 @end table
 @end deftypefun
+
 
 @node Creating and destroying Ciphers
 @subsection Creating and destroying Ciphers
@@ -8509,67 +8511,6 @@ if (st != PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_crypt_cipher_encrypt_size (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size})
-
-Compute the size for the output buffer in
-@code{pdf_crypt_cipher_encrypt} function for the given parameters.
-
-@table @strong
-@item Parameters
-@table @var
-@item cipher
-A cipher.
-@item in
-A pointer to the buffer which will be encrypted.
-@item in_size
-The length of the buffer in bytes.
-@end table
-@item Returns
-The size of a valid output buffer in @code{pdf_crypt_cipher_encrypt}
-function for this parameters.
-@item Usage example
-@example
-pdf_crypt_cipher_t cipher;
-pdf_size_t size;
-pdf_char_t in[16];
-
-/* ...prepare the cipher... */
-size = pdf_crypt_cipher_encrypt_size (cipher, in, sizeof (in));
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_size_t pdf_crypt_cipher_decrypt_size (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{in}, pdf_size_t @var{in_size})
-
-Compute the size for a valid output buffer in
-@code{pdf_crypt_cipher_decrypt} function for the given parameters.
-
-@table @strong
-@item Parameters
-@table @var
-@item cipher
-A cipher.
-@item in
-A pointer to the buffer which will be decrypted.
-@item in_size
-The length of the buffer in bytes.
-@end table
-@item Returns
-The size of a valid output buffer in @code{pdf_crypt_cipher_encrypt}
-function for this parameters.
-@item Usage example
-@example
-pdf_crypt_cipher_t cipher;
-pdf_size_t size;
-pdf_char_t *in;
-pdf_size_t in_size;
-
-/* ...prepare the cipher... */
-size = pdf_crypt_cipher_decrypt_size (cipher, in, in_size);
-@end example
-@end table
-@end deftypefun
-
 
 @deftypefun pdf_status_t pdf_crypt_cipher_encrypt (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{out}, pdf_size_t  @var{out_size}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size}, pdf_size_t *@var{result_size})
 
@@ -8588,7 +8529,9 @@ it is not too large to contain the output.
 @item in
 A pointer to input buffer.
 @item in_size
-The length of the input buffer in bytes. I must be greater than zero.
+The length of the input buffer in bytes. I must be greater than
+zero. Some algorithms requires than IN_SIZE to be multiple of a fixed
+integer.
 @item result_size
 A pointer where it will put the real size of the output buffer. This
 size will be lesser or equal than out_size.
@@ -8732,19 +8675,15 @@ if (st != PDF_OK)
 
 
 
-@deftypefun pdf_status_t pdf_crypt_md_hash (pdf_crypt_md_t @var{md}, pdf_char_t  *@var{out}, pdf_size_t  @var{out_size}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size})
+@deftypefun pdf_status_t pdf_crypt_md_write (pdf_crypt_md_t @var{md}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size})
 
-Compute the message-digest for a given buffer.
+Pass a buffer to the message-digest handler in order to compute its digest.
 
 @table @strong
 @item Parameters
 @table @var
 @item md
 A message-digest descriptor.
-@item out
-A pointer to output buffer.
-@item out_size
-The size of output buffer in bytes.
 @item in
 A pointer to the input buffer.
 @item in_size
@@ -8761,7 +8700,6 @@ Bad parameter. The size of the output buffer is wrong.
 @item Usage example
 @example
 pdf_crypt_md_t md;
-pdf_char_t out[16];
 pdf_char_t *in;
 pdf_size_t in_size;
 pdf_status_t st;
@@ -8770,7 +8708,7 @@ pdf_status_t st;
 
 pdf_crypt_md_new (&md, PDF_CRYPT_MD_MD5);
 
-st = pdf_crypt_md_hash (md, out, sizeof(out), in, in_size);
+st = pdf_crypt_md_hash (md, in, in_size);
 
 if (st != PDF_OK)
 @{
@@ -8781,6 +8719,50 @@ pdf_crypt_md_destroy (md);
 @end example
 @end table
 @end deftypefun
+
+
+
+@deftypefun pdf_status_t pdf_crypt_md_read (pdf_crypt_md_t @var{md}, pdf_char_t  *@var{out}, pdf_size_t  @var{out_size})
+
+Read the computed digest value from a message-digest descriptor.
+
+@table @strong
+@item Parameters
+@table @var
+@item md
+A message-digest descriptor.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+Operation successful
+@item PDF_EBADDATA
+Bad parameter. The size of the output buffer is wrong.
+@end table
+@item Usage example
+@example
+pdf_crypt_md_t md;
+pdf_char_t *out;
+pdf_size_t out_size;
+pdf_status_t st;
+
+pdf_crypt_md_new (&md, PDF_CRYPT_MD_MD5);
+
+/* ...Write the buffer into descriptor here... */
+
+st = pdf_crypt_md_read (md, out, out_size);
+
+if (st != PDF_OK)
+@{
+   /* Error */
+@}
+
+pdf_crypt_md_destroy (md);
+@end example
+@end table
+@end deftypefun
+
 
 
 @deftypefun pdf_status_t pdf_crypt_md_destroy (pdf_crypt_md_t  @var{md})
@@ -8815,6 +8797,36 @@ pdf_crypt_md_destroy (md);
 @end table
 @end deftypefun
 
+
+@node Utilities
+@subsection Utilities
+
+@deftypefun pdf_status_t pdf_crypt_nonce (pdf_crypt_char_t  *@var{buffer}, pdf_size_t @var{size})
+
+Fill a buffer with random bytes.
+
+@table @strong
+@item Parameters
+@table @var
+@item buffer
+Buffer which be filled.  
+@item size
+Size of the buffer in bytes.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+Operation successful
+@end table
+@item Usage example
+@example
+pdf_char_t buffer[16];
+
+pdf_crypt_nonce (buffer, sizeof(buffer));
+@end example
+@end table
+@end deftypefun
 
 
 

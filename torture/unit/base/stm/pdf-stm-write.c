@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-12-21 15:06:36 davazp"
+/* -*- mode: C -*- Time-stamp: "2008-12-23 17:33:28 davazp"
  *
  *       File:         pdf-stm-write.c
  *       Date:         Sun Sep 21 16:37:27 2008
@@ -430,141 +430,143 @@ END_TEST
 
 
 
-/*
- * Test: pdf_stm_write_008
- * Description:
- *   Create a memory-based writing stream and attach an V2 filter without parameters.
- * Success condition:
- *   The installation of the filter should fail.
+/* 
+ * /\*
+ *  * Test: pdf_stm_write_008
+ *  * Description:
+ *  *   Create a memory-based writing stream and attach an V2 filter without parameters.
+ *  * Success condition:
+ *  *   The installation of the filter should fail.
+ *  *\/
+ * START_TEST (pdf_stm_write_008)
+ * {
+ *   pdf_stm_t stm;
+ *   pdf_hash_t params;
+ *   pdf_char_t buffer[16];
+ *   pdf_status_t ret;
+ *   
+ *   pdf_crypt_init();
+ * 
+ *   ret = pdf_stm_mem_new (buffer, sizeof(buffer), 0, PDF_STM_WRITE, &stm);
+ *   fail_if (ret != PDF_OK);
+ * 
+ *   pdf_hash_new (NULL, &params);
+ *   
+ *   ret = pdf_stm_install_filter (stm, PDF_STM_FILTER_V2_ENC, params);
+ *   fail_if (ret == PDF_OK);
+ * 
+ *   pdf_hash_destroy (params);
+ *   pdf_stm_destroy (stm);
+ * }
+ * END_TEST
+ * 
+ * 
+ * 
+ * /\*
+ *  * Test: pdf_stm_write_009
+ *  * Description:
+ *  *   Create a memory-based writing stream and attach an V2 filter
+ *  *   encoder to it.
+ *  * Success condition:
+ *  *   The encoded data should be correct.
+ *  *\/
+ * START_TEST (pdf_stm_write_009)
+ * {
+ *   pdf_stm_t stm;
+ *   pdf_hash_t params;
+ * 
+ *   pdf_char_t out[14];
+ *   pdf_size_t out_size = sizeof(out);
+ *   pdf_char_t in[14] = "Attack at dawn"; /\* not trailing '\0' *\/
+ *   pdf_size_t in_size = sizeof(in);
+ *   pdf_char_t key[6] = "Secret"; /\* not trailing '\0' *\/
+ *   pdf_size_t keysize = sizeof(key);
+ *   
+ *   pdf_char_t ciphered[] = {
+ *     0x45, 0xA0, 0x1F, 0x64, 0x5F, 0xC3, 0x5B,
+ *     0x38, 0x35, 0x52, 0x54, 0x4B, 0x9B, 0xF5
+ *   };
+ * 
+ *   pdf_char_t written;
+ *   
+ *   pdf_crypt_init();
+ * 
+ *   fail_if ( pdf_stm_mem_new (out, out_size, 0, PDF_STM_WRITE, &stm) != PDF_OK);
+ * 
+ *   pdf_hash_new (NULL, &params);
+ *   pdf_hash_add (params, "Key", key, NULL);
+ *   pdf_hash_add (params, "KeySize", &keysize, NULL);
+ * 
+ *   fail_if ( pdf_stm_install_filter (stm, PDF_STM_FILTER_V2_ENC, params) != PDF_OK);
+ * 
+ *   written = pdf_stm_write (stm, in, in_size);
+ *   fail_if (written != out_size);
+ * 
+ *   pdf_stm_flush (stm, PDF_TRUE);
+ * 
+ *   fail_if (memcmp (out, ciphered, written) != 0);
+ * 
+ *   pdf_hash_destroy (params);
+ *   pdf_stm_destroy (stm);
+ * }
+ * END_TEST
+ * 
+ * 
+ * 
+ * /\*
+ *  * Test: pdf_stm_write_010
+ *  * Description:
+ *  *   Create a memory-based writing stream and attach an AESV2 filter
+ *  *   encoder to it.
+ *  * Success condition:
+ *  *   The encoded data should be correct.
+ *  *\/
+ * START_TEST (pdf_stm_write_010)
+ * {
+ * }
+ * END_TEST
+ * 
+ * 
+ * 
+ * /\*
+ *  * Test: pdf_stm_write_011
+ *  * Description:
+ *  *   Create a memory-based writing stream and attach an MD5 filter
+ *  *   encoder to it.
+ *  * Success condition:
+ *  *   The output data should be correct.
+ *  *\/
+ * START_TEST (pdf_stm_write_011)
+ * {
+ *   pdf_stm_t stm;
+ *   pdf_hash_t params;
+ *   pdf_char_t in[26] = "abcdefghijklmnopqrstuvwxyz";
+ *   pdf_char_t out[16];
+ *   pdf_crypt_md_t md;
+ *   pdf_char_t real_out[] = {
+ *     0xC3, 0xFC, 0xD3, 0xD7,
+ *     0x61, 0x92, 0xE4, 0x00,
+ *     0x7D, 0xFB, 0x49, 0x6C,
+ *     0xCA, 0x67, 0xE1, 0x3B
+ *   };
+ * 
+ *   pdf_crypt_init();
+ * 
+ *   pdf_hash_new (NULL, &params);
+ * 
+ *   fail_if ( pdf_stm_mem_new (out, sizeof(out), 0, PDF_STM_WRITE, &stm) != PDF_OK);
+ *   fail_if ( pdf_stm_install_filter (stm, PDF_STM_FILTER_MD5_ENC, params) != PDF_OK);
+ * 
+ *   pdf_stm_write (stm, in, sizeof(in));
+ *   pdf_stm_flush (stm, PDF_TRUE);
+ * 
+ *   fail_if (memcmp (out, real_out, sizeof(out)) != 0);
+ * 
+ *   pdf_hash_destroy (params);
+ *   pdf_stm_destroy (stm);
+ * }
+ * END_TEST
  */
-START_TEST (pdf_stm_write_008)
-{
-  pdf_stm_t stm;
-  pdf_hash_t params;
-  pdf_char_t buffer[16];
-  pdf_status_t ret;
-  
-  pdf_crypt_init();
-
-  ret = pdf_stm_mem_new (buffer, sizeof(buffer), 0, PDF_STM_WRITE, &stm);
-  fail_if (ret != PDF_OK);
-
-  pdf_hash_new (NULL, &params);
-  
-  ret = pdf_stm_install_filter (stm, PDF_STM_FILTER_V2_ENC, params);
-  fail_if (ret == PDF_OK);
-
-  pdf_hash_destroy (params);
-  pdf_stm_destroy (stm);
-}
-END_TEST
-
-
-
-/*
- * Test: pdf_stm_write_009
- * Description:
- *   Create a memory-based writing stream and attach an V2 filter
- *   encoder to it.
- * Success condition:
- *   The encoded data should be correct.
- */
-START_TEST (pdf_stm_write_009)
-{
-  pdf_stm_t stm;
-  pdf_hash_t params;
-
-  pdf_char_t out[14];
-  pdf_size_t out_size = sizeof(out);
-  pdf_char_t in[14] = "Attack at dawn"; /* not trailing '\0' */
-  pdf_size_t in_size = sizeof(in);
-  pdf_char_t key[6] = "Secret"; /* not trailing '\0' */
-  pdf_size_t keysize = sizeof(key);
-  
-  pdf_char_t ciphered[] = {
-    0x45, 0xA0, 0x1F, 0x64, 0x5F, 0xC3, 0x5B,
-    0x38, 0x35, 0x52, 0x54, 0x4B, 0x9B, 0xF5
-  };
-
-  pdf_char_t written;
-  
-  pdf_crypt_init();
-
-  fail_if ( pdf_stm_mem_new (out, out_size, 0, PDF_STM_WRITE, &stm) != PDF_OK);
-
-  pdf_hash_new (NULL, &params);
-  pdf_hash_add (params, "Key", key, NULL);
-  pdf_hash_add (params, "KeySize", &keysize, NULL);
-
-  fail_if ( pdf_stm_install_filter (stm, PDF_STM_FILTER_V2_ENC, params) != PDF_OK);
-
-  written = pdf_stm_write (stm, in, in_size);
-  fail_if (written != out_size);
-
-  pdf_stm_flush (stm, PDF_TRUE);
-
-  fail_if (memcmp (out, ciphered, written) != 0);
-
-  pdf_hash_destroy (params);
-  pdf_stm_destroy (stm);
-}
-END_TEST
-
-
-
-/*
- * Test: pdf_stm_write_010
- * Description:
- *   Create a memory-based writing stream and attach an AESV2 filter
- *   encoder to it.
- * Success condition:
- *   The encoded data should be correct.
- */
-START_TEST (pdf_stm_write_010)
-{
-}
-END_TEST
-
-
-
-/*
- * Test: pdf_stm_write_011
- * Description:
- *   Create a memory-based writing stream and attach an MD5 filter
- *   encoder to it.
- * Success condition:
- *   The output data should be correct.
- */
-START_TEST (pdf_stm_write_011)
-{
-  pdf_stm_t stm;
-  pdf_hash_t params;
-  pdf_char_t in[26] = "abcdefghijklmnopqrstuvwxyz";
-  pdf_char_t out[16];
-  pdf_crypt_md_t md;
-  pdf_char_t real_out[] = {
-    0xC3, 0xFC, 0xD3, 0xD7,
-    0x61, 0x92, 0xE4, 0x00,
-    0x7D, 0xFB, 0x49, 0x6C,
-    0xCA, 0x67, 0xE1, 0x3B
-  };
-
-  pdf_crypt_init();
-
-  pdf_hash_new (NULL, &params);
-
-  fail_if ( pdf_stm_mem_new (out, sizeof(out), 0, PDF_STM_WRITE, &stm) != PDF_OK);
-  fail_if ( pdf_stm_install_filter (stm, PDF_STM_FILTER_MD5_ENC, params) != PDF_OK);
-
-  pdf_stm_write (stm, in, sizeof(in));
-  pdf_stm_flush (stm, PDF_TRUE);
-
-  fail_if (memcmp (out, real_out, sizeof(out)) != 0);
-
-  pdf_hash_destroy (params);
-  pdf_stm_destroy (stm);
-}
-END_TEST
 
 
 
@@ -583,10 +585,12 @@ test_pdf_stm_write (void)
   tcase_add_test(tc, pdf_stm_write_005);
   tcase_add_test(tc, pdf_stm_write_006);
   tcase_add_test(tc, pdf_stm_write_007);
-  tcase_add_test(tc, pdf_stm_write_008);
-  tcase_add_test(tc, pdf_stm_write_009);
-  tcase_add_test(tc, pdf_stm_write_010);
-  tcase_add_test(tc, pdf_stm_write_011);
+  /* 
+   * tcase_add_test(tc, pdf_stm_write_008);
+   * tcase_add_test(tc, pdf_stm_write_009);
+   * tcase_add_test(tc, pdf_stm_write_010);
+   * tcase_add_test(tc, pdf_stm_write_011);
+   */
 
   return tc;
 }

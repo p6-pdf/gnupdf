@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-12-14 18:27:42 davazp"
+/* -*- mode: C -*- Time-stamp: "2008-12-23 18:47:26 davazp"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -32,38 +32,49 @@
 #include <pdf-error.h>
 #include <pdf-crypt-c-aesv2.h>
 
+
 #define AESV2_BLKSIZE 16	/* Size of a block in AES128 */
 
+
+struct aesv2_state_s
+{
+  gcry_cipher_hd_t cipher;
+  pdf_bool_t first_block;
+};
+
+typedef struct aesv2_state_s * aesv2_state_t;
+  
 
 /* Creation and destruction of aesv2 ciphers */
 
 pdf_status_t
-pdf_crypt_cipher_aesv2_new (void ** cipher)
+pdf_crypt_cipher_aesv2_new (void ** out)
 {
-  gcry_cipher_hd_t * hd;
+  aesv2_state_t state;
 
-  hd = pdf_alloc (sizeof (gcry_cipher_hd_t));
+  state = pdf_alloc (sizeof(struct aesv2_state_s));
 
-  if (hd != NULL)
+  if (state != NULL)
     {
       gcry_error_t err;
 
-      err = gcry_cipher_open (hd, GCRY_CIPHER_AES128, GCRY_CIPHER_MODE_CBC, 0);
-
+      err = gcry_cipher_open (&state->cipher, GCRY_CIPHER_AES128, GCRY_CIPHER_MODE_CBC, 0);
+      state->first_block = PDF_TRUE;
+      
       if (err == GPG_ERR_NO_ERROR)
 	{
-	  *cipher = hd;
+	  *out = state;
 	  return PDF_OK;
 	}
       else
 	{
-	  pdf_dealloc (hd);
+	  pdf_dealloc (state);
 	  return PDF_ERROR;
 	}
     }
   else
     {
-      pdf_dealloc (hd);
+      pdf_dealloc (state);
       return PDF_ENOMEM;
     }
 
@@ -73,11 +84,11 @@ pdf_crypt_cipher_aesv2_new (void ** cipher)
 
 
 pdf_status_t
-pdf_crypt_cipher_aesv2_destroy (void * cipher)
+pdf_crypt_cipher_aesv2_destroy (void * _state)
 {
-  gcry_cipher_hd_t * hd = cipher;
-  gcry_cipher_close (*hd);
-  pdf_dealloc (cipher);
+  aesv2_state_t state = _state;
+  gcry_cipher_close (state->cipher);
+  pdf_dealloc (state);
   return PDF_OK;
 }
 
@@ -86,12 +97,12 @@ pdf_crypt_cipher_aesv2_destroy (void * cipher)
 /* Encryption and decryption functions */
 
 pdf_status_t
-pdf_crypt_cipher_aesv2_setkey (void * cipher,
+pdf_crypt_cipher_aesv2_setkey (void * _state,
 			       pdf_char_t *key, pdf_size_t size)
 {
-  gcry_cipher_hd_t * hd = cipher;
+  aesv2_state_t state = _state;
   
-  if (gcry_cipher_setkey (*hd, key, size) == GPG_ERR_NO_ERROR)
+  if (gcry_cipher_setkey (state->cipher, key, size) == GPG_ERR_NO_ERROR)
     return PDF_OK;
   else
     return PDF_EBADDATA;
@@ -99,105 +110,115 @@ pdf_crypt_cipher_aesv2_setkey (void * cipher,
 
 
 
-pdf_size_t
-pdf_crypt_cipher_aesv2_encrypt_size (void * cipher,
-				     pdf_char_t *in, pdf_size_t in_size)
+pdf_status_t
+pdf_crypt_cipher_aesv2_encrypt (void * _state,
+				pdf_char_t *out, pdf_size_t out_size,
+				pdf_char_t *in,  pdf_size_t in_size,
+				pdf_size_t *result_size)
 {
-  return in_size + 2*AESV2_BLKSIZE - (in_size % AESV2_BLKSIZE);
-}
+  aesv2_state_t state = _state;
+  pdf_char_t * output;
+  pdf_size_t output_size;
+  pdf_char_t * input;
+  pdf_size_t input_size;
+  
+  if (in_size < AESV2_BLKSIZE || in_size % AESV2_BLKSIZE != 0)
+    return PDF_EBADDATA;
 
+  if (out_size < in_size)
+    return PDF_EBADDATA;
 
-
-pdf_size_t
-pdf_crypt_cipher_aesv2_decrypt_size (void * cipher,
-				     pdf_char_t *in, pdf_size_t in_size)
-{
-  if (in_size < 2*AESV2_BLKSIZE)
+  /* If we are at first block, then we have found the IV vector */
+  if (state->first_block == PDF_TRUE)
     {
-      PDF_DEBUG_BASE ("Invalid input buffer size");
-      return 0;
+      pdf_char_t * iv = in;
+      gcry_cipher_setiv (state->cipher, iv, AESV2_BLKSIZE);
+      input = in + AESV2_BLKSIZE;
+      input_size = in_size - AESV2_BLKSIZE;
+
+      memcpy (out, iv, AESV2_BLKSIZE);
+
+      output = out + AESV2_BLKSIZE;
+      output_size = out_size - AESV2_BLKSIZE;
+
+      state->first_block = PDF_FALSE;
     }
   else
     {
-      return in_size <= 2*AESV2_BLKSIZE ? 0: in_size - 2*AESV2_BLKSIZE;
+      output = out;
+      output_size = out_size;
+      input = in;
+      input_size = in_size;
     }
-}
 
-
-
-pdf_status_t
-pdf_crypt_cipher_aesv2_encrypt (void * cipher,
-				pdf_char_t *out, pdf_size_t out_size,
-				pdf_char_t *in,  pdf_size_t in_size,
-				pdf_size_t *result_size)
-{
-  gcry_cipher_hd_t * hd = cipher;
-  pdf_size_t   buffer_size;
-  pdf_size_t   iv_size	     = AESV2_BLKSIZE;
-  pdf_size_t   content_size  = in_size;
-  pdf_size_t   padding_size;
-  pdf_char_t * buffer	     = out;
-  pdf_char_t * iv	     = &buffer[0];
-  pdf_char_t * content	     = &buffer[iv_size];
-  pdf_char_t * padding	     = &buffer[iv_size + content_size];
-
-  buffer_size  = pdf_crypt_cipher_aesv2_encrypt_size (cipher, in, in_size);
-
-  if (out_size < buffer_size)
-    return PDF_ERROR;
-
-  padding_size = buffer_size - iv_size - content_size;
-
-  gcry_create_nonce (iv, iv_size);
-  memcpy (content, in, in_size);
-  memset (padding, padding_size, padding_size);
-  
-  gcry_cipher_setiv (*hd, iv, iv_size);
-  if (gcry_cipher_encrypt (*hd, content, content_size + padding_size, NULL, 0) != GPG_ERR_NO_ERROR)
+  if (gcry_cipher_encrypt (state->cipher, output, output_size, input, input_size) != GPG_ERR_NO_ERROR)
     {
       return PDF_ERROR;
     }
 
-  *result_size = buffer_size;
+  if (result_size != NULL)
+    *result_size = in_size;
 
   return PDF_OK;
 }
 
 
 
+
 pdf_status_t
-pdf_crypt_cipher_aesv2_decrypt (void * cipher,
+pdf_crypt_cipher_aesv2_decrypt (void * _state,
 				pdf_char_t *out, pdf_size_t out_size,
 				pdf_char_t *in,  pdf_size_t in_size,
 				pdf_size_t *result_size)
 {
-  gcry_cipher_hd_t * hd = cipher;
-  pdf_size_t   buffer_size   = in_size;
-  pdf_size_t   iv_size	     = AESV2_BLKSIZE;
-  pdf_size_t   content_size;
-  pdf_size_t   padding_size;
-  pdf_char_t * buffer	     = in;
-  pdf_char_t * iv	     = &buffer[0];
-  pdf_char_t * content	     = &buffer[iv_size];
+  aesv2_state_t state = _state;
+  pdf_char_t * output;
+  pdf_size_t output_size;
+  pdf_char_t * input;
+  pdf_size_t input_size;
   
-  gcry_cipher_setiv (*hd, iv, iv_size);
-  if (gcry_cipher_decrypt (*hd, content, buffer_size - iv_size, NULL, 0) != GPG_ERR_NO_ERROR)
+  if (in_size < AESV2_BLKSIZE || in_size % AESV2_BLKSIZE != 0)
+    return PDF_EBADDATA;
+
+  if (out_size < in_size)
+    return PDF_EBADDATA;
+
+  /* If we are at first block, then we have found the IV vector */
+  if (state->first_block == PDF_TRUE)
+    {
+      pdf_char_t * iv = in;
+      gcry_cipher_setiv (state->cipher, iv, AESV2_BLKSIZE);
+      input = in + AESV2_BLKSIZE;
+      input_size = in_size - AESV2_BLKSIZE;
+
+      memcpy (out, iv, AESV2_BLKSIZE);
+
+      output = out + AESV2_BLKSIZE;
+      output_size = out_size - AESV2_BLKSIZE;
+
+      state->first_block = PDF_FALSE;
+    }
+  else
+    {
+      output = out;
+      output_size = out_size;
+      input = in;
+      input_size = in_size;
+    }
+
+  if (gcry_cipher_decrypt (state->cipher, output, output_size, input, input_size) != GPG_ERR_NO_ERROR)
     {
       return PDF_ERROR;
     }
 
-  padding_size = content[buffer_size - iv_size - 1];
+  if (result_size != NULL)
+    *result_size = in_size;
 
-  if (padding_size > AESV2_BLKSIZE)
-    return PDF_ERROR;
-
-  content_size = buffer_size - iv_size - padding_size;
-
-  memcpy (out, content, content_size);
-
-  *result_size = content_size;
-  
   return PDF_OK;
 }
+
+
+
+
 
 /* End of pdf-crypt-c-aesv2.c */
