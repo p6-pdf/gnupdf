@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/11/24 15:48:01 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/23 23:00:32 jemarch"
  *
  *       File:         pdf-filter.c
  *       Date:         Tue Jul 10 18:42:07 2007
@@ -66,10 +66,10 @@ static struct option GNU_longOptions[] =
     {"rldec", no_argument, NULL, RUNLENGTHDEC_FILTER_ARG},
     {"rlenc", no_argument, NULL, RUNLENGTHENC_FILTER_ARG},
     {"cfaxdec", no_argument, NULL, CCITTFAXDEC_FILTER_ARG},
-#ifdef HAVE_JBIG2DEC
+#ifdef HAVE_LIBJBIG2DEC
     {"jbig2dec", no_argument, NULL, JBIG2DEC_FILTER_ARG},
     {"jbig2dec-globals", required_argument, NULL, JBIG2DEC_GLOBAL_SEGMENTS_ARG},
-#endif /* HAVE_JBIG2DEC */
+#endif /* HAVE_LIBJBIG2DEC */
     {"dctdec", no_argument, NULL, DCTDEC_FILTER_ARG},
     {"jxpdec", no_argument, NULL, JXPDEC_FILTER_ARG},
     {"predenc", no_argument, NULL, PREDENC_FILTER_ARG},
@@ -405,7 +405,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
           {
             break;
           }
-#ifdef HAVE_JBIG2DEC
+#ifdef HAVE_LIBJBIG2DEC
         case JBIG2DEC_GLOBAL_SEGMENTS_ARG:
           {
             struct stat fstats;
@@ -471,7 +471,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
 
             break;
           }
-#endif /* HAVE_JBIG2DEC */
+#endif /* HAVE_LIBJBIG2DEC */
         case DCTDEC_FILTER_ARG:
           {
             break;
