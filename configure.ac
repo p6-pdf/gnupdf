@@ -58,7 +58,7 @@ if test "x$have_jpeglib" = "xyes"; then
    LIBS="-ljpeg $LIBS"
    AC_DEFINE([HAVE_JPEGLIB], [1], [The jpeglib library is available])
 fi
-AM_CONDITIONAL([JPEGLIB], [test "x$have_jpeglib" = "xyes"])
+AM_CONDITIONAL([HAVE_JPEGLIB], [test "x$have_jpeglib" = "xyes"])
 
 have_jbig2dec=no
 AC_CHECK_LIB([jbig2dec],[jbig2_ctx_new],[have_jbig2dec=yes],,)

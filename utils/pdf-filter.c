@@ -472,6 +472,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
             break;
           }
 #endif /* HAVE_JBIG2DEC */
+#if defined(HAVE_JPEGLIB)
         case DCTDEC_FILTER_ARG:
           {
             ret = pdf_hash_new (NULL, &filter_params);
@@ -480,25 +481,6 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
                 pdf_error (ret, stderr, "while creating the dctdec filter parameters hash table");
                 exit (1);
               }
-
-            if (jbig2dec_global_segments != NULL)
-              {
-                pdf_size_t *size;
-
-                pdf_hash_add (filter_params,
-                              "GlobalStreamsBuffer",
-                              (const void *) &jbig2dec_global_segments,
-                              NULL);
-
-                size = pdf_alloc (sizeof(pdf_size_t));
-                *size = jbig2dec_global_segments_size;
-                pdf_hash_add (filter_params,
-                              "GlobalStreamsSize",
-                              (const void *) size,
-                              NULL);
-              }
-
-
             pdf_stm_install_filter (stm,
                                     PDF_STM_FILTER_DCT_DEC,
                                     filter_params);
@@ -510,6 +492,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
 
             break;
           }
+#endif
         case JXPDEC_FILTER_ARG:
           {
             break;

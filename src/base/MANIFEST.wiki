@@ -1,4 +1,4 @@
-==='''src/base''' Base Layer Source Code===
+﻿==='''src/base''' Base Layer Source Code===
 
 This directory contains the source files for the Base Layer of the library.
 
@@ -16,6 +16,7 @@ This directory contains the source files for the Base Layer of the library.
 ; '''pdf-stm-f-null.h''', '''pdf-stm-f-null.c'''
 ; '''pdf-stm-f-pred.h''', '''pdf-stm-f-pred.c'''
 ; '''pdf-stm-f-rl.h''', '''pdf-stm-f-rl.c'''
+; '''pdf-stm-f-dct.h''', '''pdf-stm-f-dct.c'''
 : [[PDF:Standard_Filters|Implementation of the PDF standard filters]].
 
 ; '''pdf-stm-file.h''', '''pdf-stm-file.c'''

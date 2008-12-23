@@ -1,7 +1,7 @@
-/* -*- mode: C -*- Time-stamp: "08/11/26 21:21:35 yangchanghua"
+/* -*- mode: C -*- Time-stamp: "08/12/22 21:21:35 yangchanghua"
  *
  *       File:         pdf-stm-f-dct.h
- *       Date:         Fri Jul 13 17:04:29 2007
+ *       Date:         Mon Dec 13 21:21:35 2008
  *
  *       GNU PDF Library - DCT encoder/decoder
  *
@@ -25,21 +25,22 @@
 
 #ifndef PDF_STM_F_DCT_H
 #define PDF_STM_F_DCT_H
-
 #include <config.h>
 #include <pdf-types.h>
 #include <pdf-hash.h>
 #include <pdf-stm-buffer.h>
+#if defined(HAVE_JPEGLIB)
 #include <jpeglib.h>
 
 enum pdf_stm_f_dctstate_t
 {
   DCTDEC_STATE_INIT,
-  DCTDEC_STATE_CACHE,
+  DCTDEC_STATE_CACHE_IN,
   DCTDEC_STATE_READHDR,
-  DCTDEC_STATE_WRITEHDR,
   DCTDEC_STATE_STARTDJP,
+  DCTDEC_STATE_WRITEHDR,
   DCTDEC_STATE_SCANLINE,
+  DCTDEC_STATE_OUTPUTLINE,
   DCTDEC_STATE_FINISHDJP,
   DCTDEC_STATE_ERROR
 };
@@ -52,15 +53,14 @@ typedef struct pdf_stm_f_dctenc_s *pdf_stm_f_dctenc_t;
 
 struct pdf_stm_f_dctdec_s
 {
-  struct jpeg_decompress_struct cinfo;
-  struct jpeg_error_mgr jerr;
+  struct jpeg_decompress_struct *cinfo;
+  struct jpeg_error_mgr *jerr;
 
   enum pdf_stm_f_dctstate_t  state;
   enum pdf_stm_f_dctstate_t  backup_state;
 
   /* image cache for input data */
   pdf_stm_buffer_t djpeg_in;
-  pdf_stm_buffer_t djpeg_out;
 
   /* cache for output data */
   pdf_size_t row_stride;
@@ -91,6 +91,7 @@ pdf_status_t pdf_stm_f_dctenc_apply (pdf_hash_t params,
                                       pdf_stm_buffer_t out,
                                       pdf_bool_t finish_p);
 pdf_status_t pdf_stm_f_dctenc_dealloc_state (void *state);
+#endif /* HAVE_JPEGLIB */
 
 #endif /* pdf_stm_f_dct.h */
 
