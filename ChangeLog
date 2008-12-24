@@ -1,3 +1,14 @@
+2008-12-23  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-stm-filter.h: Fill pdf_stm_filter_type_e only
+	if the required libraries are available.
+
+	* src/base/pdf-stm-filter.c (pdf_stm_filter_new): Use
+	HAVE_LIBJBIG2DEC instead of HAVE_JBIG2DEC.
+
+	* configure.ac: Simplify the checking of libraries, as suggested
+	by Yavor Doganov.
+
 2008-12-10  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* torture/unit/runtests.c (main): Dont set the CK_FORK variable,

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/11/28 22:21:40 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/23 23:00:15 jemarch"
  *
  *       File:         pdf-filter.h
  *       Date:         Tue Jul 10 18:40:55 2007
@@ -52,11 +52,11 @@ enum
   RUNLENGTHDEC_FILTER_ARG,
   RUNLENGTHENC_FILTER_ARG,
   CCITTFAXDEC_FILTER_ARG,
-#ifdef HAVE_JBIG2DEC
+#ifdef HAVE_LIBJBIG2DEC
   JBIG2DEC_FILTER_ARG,
   JBIG2DEC_GLOBAL_SEGMENTS_ARG,
   JBIG2DEC_PAGE_SIZE,
-#endif /* HAVE_JBIG2DEC */
+#endif /* HAVE_LIBJBIG2DEC */
   DCTDEC_FILTER_ARG,
   JXPDEC_FILTER_ARG,
   PREDENC_FILTER_ARG,

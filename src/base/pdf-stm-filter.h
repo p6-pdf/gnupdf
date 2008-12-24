@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/11/29 15:10:34 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/23 23:02:55 jemarch"
  *
  *       File:         pdf-stm-filter.h
  *       Date:         Thu Jun 12 22:05:06 2008
@@ -40,12 +40,13 @@
 #  include <pdf-stm-f-flate.h>
 #endif /* HAVE_LIBZ */
 
-#if defined(HAVE_JBIG2DEC)
+#if defined(HAVE_LIBJBIG2DEC)
 #  include <pdf-stm-f-jbig2.h>
-#endif /* HAVE_JBIG2DEC */
+#endif /* HAVE_LIBJBIG2DEC */
+
 #if defined(HAVE_LIBJPEG)
 #  include <pdf-stm-f-dct.h>
-#endif /* HAVE_LIBJPEG*/
+#endif
 
 /* BEGIN PUBLIC */
 
@@ -53,14 +54,20 @@
 enum pdf_stm_filter_type_e 
 {
   PDF_STM_FILTER_NULL = 0,
-  PDF_STM_FILTER_AHEX_ENC,
-  PDF_STM_FILTER_AHEX_DEC,
   PDF_STM_FILTER_RL_ENC,
   PDF_STM_FILTER_RL_DEC,
+#if defined(HAVE_LIBZ)
   PDF_STM_FILTER_FLATE_ENC,
   PDF_STM_FILTER_FLATE_DEC,
+#endif /* HAVE_LIBZ */
+#if defined(HAVE_LIBJBIG2DEC)
   PDF_STM_FILTER_JBIG2_DEC,
-  PDF_STM_FILTER_DCT_DEC
+#endif /* HAVE_LIBJBIG2DEC */
+#if defined(HAVE_LIBJPEG)
+  PDF_STM_FILTER_DCT_DEC,
+#endif
+  PDF_STM_FILTER_AHEX_ENC,
+  PDF_STM_FILTER_AHEX_DEC
 };
 
 /* END PUBLIC */

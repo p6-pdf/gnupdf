@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/08 20:02:37 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/23 23:01:03 jemarch"
  *
  *       File:         pdf-stm-filter.c
  *       Date:         Thu Jun 12 22:13:31 2008
@@ -117,7 +117,7 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
         break;
       }
 #endif /* HAVE_LIBZ */
-#if defined(HAVE_JBIG2DEC)
+#if defined(HAVE_LIBJBIG2DEC)
     case PDF_STM_FILTER_JBIG2_DEC:
       {
         new->impl.init_fn = pdf_stm_f_jbig2dec_init;
@@ -125,9 +125,9 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
         new->impl.dealloc_state_fn = pdf_stm_f_jbig2dec_dealloc_state;
         break;
       }
-#endif /* HAVE_JBIG2DEC */
+#endif /* HAVE_LIBJBIG2DEC */
 #if defined(HAVE_LIBJPEG)
-    case PDF_STM_FILTER_DCT_DEC:
+   case PDF_STM_FILTER_DCT_DEC:
       {
         new->impl.init_fn = pdf_stm_f_dctdec_init;
         new->impl.apply_fn = pdf_stm_f_dctdec_apply;

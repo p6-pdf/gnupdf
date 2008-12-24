@@ -55,26 +55,18 @@ have_libjpeg=yes
 AC_CHECK_LIB([jpeg],[jpeg_std_error],[],[have_libjpeg=no])
 AM_CONDITIONAL([LIBJPEG], [test "x$have_libjpeg" != "no"])
 
-have_jbig2dec=no
-AC_CHECK_LIB([jbig2dec],[jbig2_ctx_new],[have_jbig2dec=yes],,)
-
-if test "x$have_jbig2dec" = "xyes"; then
-   LIBS="-ljbig2dec $LIBS"
-   AC_DEFINE([HAVE_JBIG2DEC], [1], [The jbig2dec library is available])
-fi
-
-AM_CONDITIONAL([JBIG2DEC], [test "x$have_jbig2dec" = "xyes"])
+have_jbig2dec=yes
+AC_CHECK_LIB([jbig2dec],[jbig2_ctx_new],[],[have_jbig2dec = no])
+AM_CONDITIONAL([JBIG2DEC], [test "x$have_jbig2dec" != "xno"])
 
 AM_PATH_LIBGCRYPT([1.2.4], have_libgcrypt="yes", have_libgcrypt="no")
 if test x$have_libgcrypt == "xno"; then
 AC_MSG_ERROR([cannot find libgcrypt library. Please install it and rerun `configure'.])
 fi
 
-AC_CHECK_LIB([check],[suite_create],[have_check=yes],[have_check=no],)
-AM_CONDITIONAL([CHECK], [test "x$have_check" = "xyes"])
-if test "x$have_check" = "xno"; then
-  AC_DEFINE([HAVE_CHECK], [1], [Check Unit Test Framework])
-fi
+have_check=yes
+AC_CHECK_LIB([check],[suite_create],,[have_check=no])
+AM_CONDITIONAL([CHECK], [test "x$have_check" != "xno"])
 
 AC_CHECK_LIB([iconv],[iconv_open],[have_iconv=yes],[have_iconv=no],)
 AM_CONDITIONAL([ICONV], [test "x$have_iconv" = "xyes"])
@@ -241,12 +233,12 @@ AM_CONDITIONAL([NOCHECK], [test "x$use_nocheck" = "xyes"])
 
 dnl Check if Unit testing support is available with Check or No-Check
 ut_support=no
-AM_CONDITIONAL([COMPILE_UT], [test "x$use_nocheck" = "xyes" -o "x$have_check" = "xyes"])
+AM_CONDITIONAL([COMPILE_UT], [test "x$use_nocheck" = "xyes" -o "x$ac_cv_lib_check_suite_create" = "xyes"])
 if test "x$use_nocheck" = "xyes"; then
   ut_framework="(builtin No-Check)"
   ut_support=yes
 else
-  if test "x$have_check" = "xyes"; then
+  if test "x$ac_cv_lib_check_suite_create" = "xyes"; then
     ut_framework="(Check)"
     ut_support=yes
   fi
@@ -300,8 +292,8 @@ Configured for \`${canonical}'.
 
   Compilation level:                        ${PDFLIB_LEVEL} (${PDFLIB_LEVEL_DESCR})
   Using FlateDecode filter?                 ${have_zlib}
-  Using JBIG2 decoder filter?               ${have_jbig2dec}
-  Using JPEG filter?                        ${have_libjpeg}
+  Using JBIG2 decoder filter?               ${ac_cv_lib_jbig2dec_jbig2_ctx_new}
+  Using DCT filter?                         ${have_libjpeg}
   With unit tests support?                  ${ut_support} ${ut_framework}
   Program to build html manuals             ${texihtmlprogram}
   Build project management resources?       ${prmgt_mode}
@@ -317,7 +309,7 @@ WARNING: you are going to build a library without FlateDecode support.
          That means you wont be able to process many PDF files."
 fi
 
-if test "x$have_jbig2dec" = "xno" ; then
+if test "x$ac_cv_lib_jbig2dec_jbig2_ctx_new" = "xno" ; then
 echo "
 WARNING: you are going to build a library without JBIG2Decode support.
          That means you wont be able to process many PDF files."
