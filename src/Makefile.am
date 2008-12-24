@@ -44,8 +44,7 @@ STM_MODULE_SOURCES = base/pdf-stm.c base/pdf-stm.h \
                      base/pdf-stm-filter.h base/pdf-stm-filter.c \
                      base/pdf-stm-f-null.h base/pdf-stm-f-null.c \
                      base/pdf-stm-f-ahex.h base/pdf-stm-f-ahex.c \
-                     base/pdf-stm-f-rl.h base/pdf-stm-f-rl.c \
-                     base/pdf-stm-f-rl.h base/pdf-stm-f-dct.c
+                     base/pdf-stm-f-rl.h base/pdf-stm-f-rl.c 
 
 if ZLIB
   STM_MODULE_SOURCES += base/pdf-stm-f-flate.c base/pdf-stm-f-flate.h
@@ -53,6 +52,9 @@ endif
 
 if JBIG2DEC
   STM_MODULE_SOURCES += base/pdf-stm-f-jbig2.c base/pdf-stm-f-jbig2.h
+endif
+if LIBJPEG
+  STM_MODULE_SOURCES += base/pdf-stm-f-dct.c base/pdf-stm-f-dct.h
 endif
 
 TEXT_MODULE_SOURCES = base/pdf-text-context.c base/pdf-text-context.h \

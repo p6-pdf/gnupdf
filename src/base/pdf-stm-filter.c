@@ -126,7 +126,7 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
         break;
       }
 #endif /* HAVE_JBIG2DEC */
-#if defined(HAVE_JPEGLIB)
+#if defined(HAVE_LIBJPEG)
     case PDF_STM_FILTER_DCT_DEC:
       {
         new->impl.init_fn = pdf_stm_f_dctdec_init;
@@ -134,7 +134,7 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
         new->impl.dealloc_state_fn = pdf_stm_f_dctdec_dealloc_state;
         break;
       }
-#endif /* HAVE_JPEGLIB */
+#endif /* HAVE_LIBJPEG */
     default:
       {
         /* Shall not be reached, but makes the compiler happy */

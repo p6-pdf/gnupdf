@@ -43,9 +43,9 @@
 #if defined(HAVE_JBIG2DEC)
 #  include <pdf-stm-f-jbig2.h>
 #endif /* HAVE_JBIG2DEC */
-#if defined(HAVE_JPEGLIB)
+#if defined(HAVE_LIBJPEG)
 #  include <pdf-stm-f-dct.h>
-#endif /* HAVE_JPEGLIB */
+#endif /* HAVE_LIBJPEG*/
 
 /* BEGIN PUBLIC */
 

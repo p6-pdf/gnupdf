@@ -51,14 +51,9 @@ CHECK_ZLIB
 AM_CONDITIONAL([ZLIB], [test "x$have_zlib" = "xyes"])
 AC_CHECK_LIB(m,exp,,,)
 
-have_jpeglib=no
-AC_CHECK_LIB([jpeg],[jpeg_std_error],[have_jpeglib=yes],,)
-
-if test "x$have_jpeglib" = "xyes"; then
-   LIBS="-ljpeg $LIBS"
-   AC_DEFINE([HAVE_JPEGLIB], [1], [The jpeglib library is available])
-fi
-AM_CONDITIONAL([HAVE_JPEGLIB], [test "x$have_jpeglib" = "xyes"])
+have_libjpeg=yes
+AC_CHECK_LIB([jpeg],[jpeg_std_error],[],[have_libjpeg=no])
+AM_CONDITIONAL([LIBJPEG], [test "x$have_libjpeg" != "no"])
 
 have_jbig2dec=no
 AC_CHECK_LIB([jbig2dec],[jbig2_ctx_new],[have_jbig2dec=yes],,)
@@ -306,7 +301,7 @@ Configured for \`${canonical}'.
   Compilation level:                        ${PDFLIB_LEVEL} (${PDFLIB_LEVEL_DESCR})
   Using FlateDecode filter?                 ${have_zlib}
   Using JBIG2 decoder filter?               ${have_jbig2dec}
-  Using JPEG filter?                        ${have_jpeglib}
+  Using JPEG filter?                        ${have_libjpeg}
   With unit tests support?                  ${ut_support} ${ut_framework}
   Program to build html manuals             ${texihtmlprogram}
   Build project management resources?       ${prmgt_mode}

@@ -472,7 +472,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
             break;
           }
 #endif /* HAVE_JBIG2DEC */
-#if defined(HAVE_JPEGLIB)
+#if defined(HAVE_LIBJPEG)
         case DCTDEC_FILTER_ARG:
           {
             ret = pdf_hash_new (NULL, &filter_params);

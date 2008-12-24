@@ -29,7 +29,6 @@
 #include <pdf-types.h>
 #include <pdf-hash.h>
 #include <pdf-stm-buffer.h>
-#if defined(HAVE_JPEGLIB)
 #include <jpeglib.h>
 
 enum pdf_stm_f_dctstate_t
@@ -91,7 +90,6 @@ pdf_status_t pdf_stm_f_dctenc_apply (pdf_hash_t params,
                                       pdf_stm_buffer_t out,
                                       pdf_bool_t finish_p);
 pdf_status_t pdf_stm_f_dctenc_dealloc_state (void *state);
-#endif /* HAVE_JPEGLIB */
 
 #endif /* pdf_stm_f_dct.h */
 

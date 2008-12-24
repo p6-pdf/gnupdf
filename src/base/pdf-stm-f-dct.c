@@ -27,7 +27,6 @@
 #include <jerror.h>
 #include <memory.h>
 
-#if defined(HAVE_JPEGLIB)
 #define PPM_MAXVAL 255
 
 static void         pdf_stm_f_dctdec_jpeg_cache_src (j_decompress_ptr cinfo, pdf_stm_buffer_t cache);
@@ -460,5 +459,4 @@ pdf_stm_f_dctdec_write_ppm_header(j_decompress_ptr cinfo, pdf_stm_buffer_t out)
 #endif
   return PDF_OK;
 }
-#endif /* HAVE_JPEGLIB */
 /* End of pdf_stm_f_ahex.c */
