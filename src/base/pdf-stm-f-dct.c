@@ -350,19 +350,19 @@ pdf_stm_f_dctdec_src_fill(j_decompress_ptr cinfo, pdf_stm_buffer_t in)
     in->rp = in->wp;
     return PDF_ENINPUT;
   }
-  else
-  {
-    in->rp += src->size_to_skip;
-    src->size_to_skip = 0;
-  }
 
+  in->rp += src->size_to_skip;
+  src->size_to_skip = 0;
+
+  /* clear the src cache */
+  src->cache->rp = 0;
+  src->cache->wp = 0;
   bytes_to_copy = src->pub.bytes_in_buffer;
   if(bytes_to_copy > 0)
   {
     /* shift the backtrack data when suspension happens. */
     memmove(src->cache->data, src->pub.next_input_byte, bytes_to_copy);
-    src->cache->rp = 0;
-    src->cache->wp = bytes_to_copy;
+    src->cache->wp += bytes_to_copy;
   }
 
   bytes_to_copy = PDF_MIN(in->wp - in->rp, src->cache->size - src->cache->wp);
