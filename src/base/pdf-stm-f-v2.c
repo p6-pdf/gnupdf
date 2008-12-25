@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-12-20 16:45:27 davazp"
+/* -*- mode: C -*- Time-stamp: "2008-12-24 22:58:05 davazp"
  *
  *       File:         pdf-stm-f-v2.c
  *       Date:         Tue Jul 10 23:44:00 2007
@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

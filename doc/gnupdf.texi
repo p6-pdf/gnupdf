@@ -3438,6 +3438,16 @@ Flate (zlib) encoder.
 Flate (zlib) decoder.
 @item PDF_STM_FILTER_JBIG2_DEC
 JBIG2 decoder.
+@item PDF_STM_FILTER_AESV2_ENC
+AESV2 encoder.
+@item PDF_STM_FILTER_AESV2_DEC
+AESV2 decoder.
+@item PDF_STM_FILTER_V2_ENC
+V2 encoder.
+@item PDF_STM_FILTER_V2_ENC
+V2 decoder.
+@item PDF_STM_FILTER_MD5_ENC
+MD5 encoder.
 @end table
 @end deftp
 

@@ -1,3 +1,11 @@
+2008-12-25  David Vazquez  <davazp@es.gnu.org>
+
+	* doc/gnupdf.texi (Stream Types): Crypt filters added.
+
+	* src/base/pdf-stm-f-aesv2.c: Adjust to use new crypt module functions.
+
+	* src/base/pdf-stm-f-md5.c: Same.
+
 2008-12-23  David Vazquez  <davazp@es.gnu.org>
 
 	* doc/gnupdf-tsd.texi: Updated.

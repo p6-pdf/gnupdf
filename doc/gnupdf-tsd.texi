@@ -1095,7 +1095,7 @@ The encoded data should be correct.
 @end deffn
 
 @deffn Test pdf_stm_write_011
-Create a memory-based writing stream and attach an MD5 cipher filter to
+Create a memory-based writing stream and attach an MD5 filter to
 encode it.
 @table @strong
 @item Success condition
@@ -1103,6 +1103,14 @@ The encoded data should be correct.
 @end table
 @end deffn
 
+@deffn Test pdf_stm_write_012
+Create a memory-based writing stream and attach an AESv2 cipher filter to
+encode it.
+@table @strong
+@item Success condition
+The encoded data should be correct.
+@end table
+@end deffn
 
 
 @node Text Module

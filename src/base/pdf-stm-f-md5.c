@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-12-21 14:10:04 davazp"
+/* -*- mode: C -*- Time-stamp: "2008-12-25 00:13:01 davazp"
  *
  *       File:         pdf-stm-f-md5.c
  *       Date:         Fri Dec  5 16:40:50 2008
@@ -27,7 +27,7 @@
 #include <string.h>
 
 #define MD5_OUTPUT_SIZE 16
-#define MD5_CACHE_SIZE 1024
+
 
 
 /* Internal state */
@@ -64,17 +64,17 @@ pdf_stm_f_md5enc_init (pdf_hash_t params, void **state)
       if (pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md) == PDF_OK)
         {
           filter_state->md = md;
-
-          /* Initialize the buffer cache */
-          filter_state->cache = pdf_stm_buffer_new (MD5_CACHE_SIZE);
-          if (filter_state->cache != NULL)
+          filter_state->cache = pdf_stm_buffer_new (MD5_OUTPUT_SIZE);
+          
+          if (filter_state->cache == NULL)
             {
-              ret = PDF_OK;
-              *state = filter_state;
+              pdf_dealloc (filter_state);
+              ret = PDF_ERROR;
             }
           else
             {
-              ret = PDF_ENOMEM;
+              *state = filter_state;
+              ret = PDF_OK;
             }
         }
       else
@@ -95,61 +95,43 @@ pdf_stm_f_md5enc_apply (pdf_hash_t params, void *state, pdf_stm_buffer_t in,
   pdf_stm_f_md5_t filter_state = state;
   pdf_stm_buffer_t cache = filter_state->cache;
   pdf_size_t in_size;
+  pdf_status_t ret;
   
   in_size = in->wp - in->rp;
   
-  /* We need operate on whole buffer in a single function
-     call. So, we must to cache all input before. */
-  if (in_size != 0)
-    {
-      if ((cache->size - cache->wp) < in_size)
-        {
-          if (pdf_stm_buffer_resize (cache, cache->size + in_size) != PDF_OK)
-            return PDF_ERROR;
-        }
-      
-      memcpy (cache->data + cache->wp, in->data, in_size);
-
-      cache->wp += in_size;
-      in->rp    += in_size;
-    }
+  pdf_crypt_md_write (filter_state->md, in->data, in_size);
+  in->rp += in_size;
+  ret = PDF_ENINPUT;
 
   if (finish_p == PDF_TRUE)
     {
-      /* Once we have collected all input, then we can go on. */
+      pdf_size_t bytes_to_write;
       pdf_size_t cache_size;
       pdf_size_t out_size;
 
-      cache_size  = cache->wp - cache->rp;
-
-      if (cache_size == 0)
-        return PDF_ENINPUT;
+      if (pdf_stm_buffer_eob_p (cache))
+        {
+          /* If we have reached the end, read the hash value in cache */
+          pdf_crypt_md_read (filter_state->md, cache->data, cache->size);
+          cache->wp = cache->size;
+        }
 
       out_size = out->size - out->wp;
+      cache_size = cache->wp - cache->rp;
+      bytes_to_write = PDF_MIN (out_size, cache_size);
 
-      if (MD5_OUTPUT_SIZE > out_size)
-        {
-          /* We should can return PDF_ENOUTPUT. However the
-             output buffer is assumed to be full if we return
-             PDF_ENOUTPUT, but we can not write it partially.  */
-          return PDF_ERROR;
-        }
+      memcpy (out->data, cache->data + cache->rp, bytes_to_write);
+
+      cache->rp += bytes_to_write;
+      out->wp   += bytes_to_write;
+
+      if (out_size < cache_size)
+        ret = PDF_ENOUTPUT;
       else
-        {
-          pdf_crypt_md_hash (filter_state->md,
-                             out->data,
-                             out_size,
-                             cache->data,
-                             cache_size);
-        }
-
-      /* Update output buffer */
-      cache->rp += cache_size;
-      out->wp += MD5_OUTPUT_SIZE;
+        ret = PDF_EEOF;
     }
 
-
-  return PDF_ENINPUT;
+  return ret;
 }
 
 

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-12-21 14:17:04 davazp"
+/* -*- mode: C -*- Time-stamp: "2008-12-25 16:37:22 davazp"
  *
  *       File:         pdf-stm-f-aesv2.c
  *       Date:         Sun Dec 14 20:13:53 2008
@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,28 +23,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 #include <pdf-stm-f-aesv2.h>
 #include <stdlib.h>
 #include <string.h>
 
-#define AESV2_CACHE_SIZE 1024
+#define AESV2_CACHE_SIZE 16
 
 
 /* Internal state */
 struct pdf_stm_f_aesv2_s
 {
   pdf_crypt_cipher_t cipher;
-  pdf_stm_buffer_t cache;
+  pdf_stm_buffer_t in_cache;
+  pdf_stm_buffer_t out_cache;
 };
 typedef struct pdf_stm_f_aesv2_s * pdf_stm_f_aesv2_t;
 
 
 /* Encryption and decryption  */
 enum pdf_stm_f_aesv2_mode_e
-{
+  {
     PDF_STM_F_AESV2_MODE_ENCODE,
     PDF_STM_F_AESV2_MODE_DECODE
-};
+  };
 typedef enum pdf_stm_f_aesv2_mode_e pdf_stm_f_aesv2_mode_t;
 
 
@@ -84,9 +86,11 @@ pdf_stm_f_aesv2_init (pdf_hash_t params, void **state)
             {
               filter_state->cipher = cipher;
 
-              /* Initialize the cache buffer */
-              filter_state->cache = pdf_stm_buffer_new (AESV2_CACHE_SIZE);
-              if (filter_state->cache == NULL)
+              /* Initialize cache buffers */
+              filter_state->in_cache  = pdf_stm_buffer_new (AESV2_CACHE_SIZE);
+              filter_state->out_cache = pdf_stm_buffer_new (AESV2_CACHE_SIZE);
+
+              if (filter_state->in_cache == NULL || filter_state->out_cache == NULL)
                 {
                   ret = PDF_ERROR;
                 }
@@ -95,7 +99,6 @@ pdf_stm_f_aesv2_init (pdf_hash_t params, void **state)
                   ret = PDF_OK;
                   *state = filter_state;
                 }
-                
             }
           else
             {
@@ -115,98 +118,150 @@ pdf_stm_f_aesv2_init (pdf_hash_t params, void **state)
 
 
 
+
 static inline pdf_status_t
 pdf_stm_f_aesv2_apply (pdf_stm_f_aesv2_mode_t mode,
                        pdf_hash_t params, void *state, pdf_stm_buffer_t in,
                        pdf_stm_buffer_t out, pdf_bool_t finish_p)
 {
   pdf_stm_f_aesv2_t filter_state = state;
-  pdf_stm_buffer_t cache = filter_state->cache;
-  pdf_size_t in_size;
+  pdf_crypt_cipher_t cipher   = filter_state->cipher;
+  pdf_stm_buffer_t in_cache   = filter_state->in_cache;
+  pdf_stm_buffer_t out_cache  = filter_state->out_cache;
   
-  in_size = in->wp - in->rp;
-  
-  /* We need operate on whole buffer in a single function
-     call. So, we must to cache all input before. */
-  if (in_size != 0)
+  while(1)
     {
-      /* if CACHE is not too large, we must resize it in order to we
-         can append the IN buffer. */
-      if ((cache->size - cache->wp) < in_size)
-        {
-          if (pdf_stm_buffer_resize (cache, cache->size + in_size) != PDF_OK)
-            return PDF_ERROR;
-        }
-      
-      memcpy (cache->data + cache->wp, in->data, in_size);
-
-      cache->wp += in_size;
-      in->rp    += in_size;
-    }
-
-
-  if (finish_p == PDF_TRUE)
-    {
-      /* Once we have collected all input, then we can encrypt/decrypt. */
-      pdf_size_t cache_size;
+      pdf_size_t in_size;
       pdf_size_t out_size;
-      pdf_size_t written;
+      pdf_size_t in_cache_size;
+      pdf_size_t out_cache_size;
+      pdf_size_t bytes_to_read;
+      pdf_size_t bytes_to_write;
 
-      cache_size  = cache->wp - cache->rp;
+      /* Read bytes from IN and fill IN_CACHE*/
+      in_size = in->wp - in->rp;
+      in_cache_size = in_cache->size - in_cache->wp;
+      bytes_to_read = PDF_MIN (in_size, in_cache_size);
+
+      memcpy (in_cache->data + in_cache->wp,
+              in->data       + in->rp,
+              bytes_to_read);
+
+      in_cache->wp += bytes_to_read;
+      in->rp       += bytes_to_read;
+
+
+      /* If we cannot fill all IN_CACHE...  */
+      if (!pdf_stm_buffer_full_p (in_cache))
+        {
+          if (finish_p && mode == PDF_STM_F_AESV2_MODE_DECODE
+              && in_cache->wp > 0)
+            return PDF_ERROR;
+          
+          /* ...pad the cache if we have reached EOD */
+          if (finish_p
+              && !pdf_stm_buffer_full_p (in_cache)
+              && mode == PDF_STM_F_AESV2_MODE_ENCODE)
+            {
+              pdf_size_t padding;
+              padding = in_cache->size - in_cache->wp;
+          
+              memset (in_cache->data + in_cache->wp,
+                      padding,
+                      padding);
+              
+              in_cache->wp += padding;
+            }
+          else
+            {
+              if (pdf_stm_buffer_eob_p (out_cache))
+                return PDF_ENINPUT; /* ...ask more input */
+            }
+        }
+
+
+      /* If OUT_CACHE is empty and IN_CACHE is full, then it is ready
+         to be processed. */
+      if (pdf_stm_buffer_full_p (in_cache) && pdf_stm_buffer_eob_p (out_cache))
+        {
+          switch (mode)
+            {
+            case PDF_STM_F_AESV2_MODE_ENCODE:
+              pdf_crypt_cipher_encrypt (cipher,
+                                        out_cache->data,
+                                        out_cache->size,
+                                        in_cache->data,
+                                        in_cache->size,
+                                        NULL);
+              break;
+              
+            case PDF_STM_F_AESV2_MODE_DECODE:
+              pdf_crypt_cipher_decrypt (cipher,
+                                        out_cache->data,
+                                        out_cache->size,
+                                        in_cache->data,
+                                        in_cache->size,
+                                        NULL);
+              break;
+
+            default: /* not reached */
+              break;
+            }
+
+          /* Both cache are full now */
+          pdf_stm_buffer_rewind (in_cache);
+          out_cache->wp = out_cache->size;
+        }
+
+
+      /* When we are decrypting data, we need know what block is the
+         last. If both IN and IN_CACHE are empty, then OUT_CACHE could
+         hold it. So, we ask more input to we make sure.*/
+      if (mode == PDF_STM_F_AESV2_MODE_DECODE
+          && pdf_stm_buffer_eob_p (in) && pdf_stm_buffer_eob_p (in_cache))
+        {
+          /* When we know it is the last, remove the padding. */
+          if (finish_p)
+            {
+              pdf_size_t padding;
+              padding = out_cache->data[out_cache->size - 1];
+
+              if (padding > AESV2_CACHE_SIZE)
+                return PDF_ERROR;
+
+              out_cache->wp = out_cache->size - padding;
+            }
+          else
+            return PDF_ENINPUT;
+        }
+          
+
+      /* Finally, we fill the OUT buffer */
       out_size = out->size - out->wp;
+      out_cache_size = out_cache->wp - out_cache->rp;
+      bytes_to_write = PDF_MIN (out_size, out_cache_size);
 
-      if (cache_size == 0)
-        return PDF_ENINPUT;
+      memcpy (out->data + out->wp,
+              out_cache->data + out_cache->rp,
+              bytes_to_write);
+
+      out_cache->rp += bytes_to_write;
+      out->wp       += bytes_to_write;
 
 
-      if (mode == PDF_STM_F_AESV2_MODE_ENCODE) /* encoding data */
+      if (finish_p)
         {
-          pdf_size_t aux_size;
-          aux_size = pdf_crypt_cipher_encrypt_size (filter_state->cipher, cache->data, cache_size);
-
-          if (aux_size > out_size)
-            {
-              /* We should can return PDF_ENOUTPUT. However the
-                 output buffer is assumed to be full if we return
-                 PDF_ENOUTPUT, but we can not write it partially.  */
-              return PDF_ERROR;
-            }
-          else
-            {
-              pdf_crypt_cipher_encrypt (filter_state->cipher,
-                                        out->data,
-                                        out_size,
-                                        cache->data,
-                                        cache_size,
-                                        &written);
-            }
+          return PDF_EEOF;
         }
-      else if (mode == PDF_STM_F_AESV2_MODE_DECODE) /* decoding data */
+      else if (pdf_stm_buffer_full_p (out))
         {
-          pdf_size_t aux_size;
-          aux_size = pdf_crypt_cipher_decrypt_size (filter_state->cipher, cache->data, cache_size);
-
-          if (aux_size > out_size)
-            {
-              return PDF_ERROR;
-            }
-          else
-            {
-              pdf_crypt_cipher_decrypt (filter_state->cipher,
-                                        out->data,
-                                        out_size,
-                                        cache->data,
-                                        cache_size,
-                                        &written);
-            }
+          return PDF_ENOUTPUT;
         }
-
-      /* Update output buffer */
-      cache->rp += cache_size;
-      out->wp += written;
+      else
+        {
+          pdf_stm_buffer_rewind (out_cache);
+        }
     }
-
-  return PDF_ENINPUT;
 }
 
 
@@ -216,7 +271,8 @@ pdf_stm_f_aesv2_dealloc_state (void *state)
 {
   pdf_stm_f_aesv2_t filter_state = state;
   pdf_crypt_cipher_destroy (filter_state->cipher);
-  pdf_stm_buffer_destroy (filter_state->cache);
+  pdf_stm_buffer_destroy (filter_state->in_cache);
+  pdf_stm_buffer_destroy (filter_state->out_cache);
   pdf_dealloc (state);
   return PDF_OK;
 }
