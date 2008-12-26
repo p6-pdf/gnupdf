@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/10/04 14:26:53 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-12-20 15:48:31 davazp"
  *
  *       File:         pdf-stm-buffer.c
  *       Date:         Wed Jul 23 23:28:59 2008
@@ -25,6 +25,7 @@
 
 #include <pdf-alloc.h>
 #include <pdf-stm-buffer.h>
+#include <stdlib.h>
 
 pdf_stm_buffer_t
 pdf_stm_buffer_new (pdf_size_t size)
@@ -63,6 +64,20 @@ pdf_stm_buffer_eob_p (pdf_stm_buffer_t buffer)
 {
   return ((buffer->wp - buffer->rp) == 0);
 }
+
+
+pdf_status_t
+pdf_stm_buffer_resize (pdf_stm_buffer_t buffer, pdf_size_t newsize)
+{
+  if (pdf_realloc (buffer->data, newsize) != PDF_OK)
+    return PDF_ENOMEM;
+
+  buffer->size = newsize;
+  buffer->rp = PDF_MIN (buffer->rp, newsize);
+  buffer->wp = PDF_MIN (buffer->wp, newsize);
+  return PDF_OK;
+}
+
 
 pdf_status_t
 pdf_stm_buffer_rewind (pdf_stm_buffer_t buffer)
