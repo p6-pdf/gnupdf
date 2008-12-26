@@ -1,3 +1,7 @@
+2008-12-26  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* configure.ac: Fix incorrect sh assignation.
+
 2008-12-25  David Vazquez  <davazp@es.gnu.org>
 
 	* doc/gnupdf.texi (Stream Types): Crypt filters added.
