@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/11/24 16:22:54 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/28 00:17:22 jemarch"
  *
  *       File:         pdf-stm-f-jbig2.c
  *       Date:         Fri Nov 21 01:12:48 2008
@@ -9,6 +9,7 @@
 
 #include <config.h>
 #include <string.h>
+#include <pdf-hash-helper.h>
 #include <pdf-stm-f-jbig2.h>
 
 static int jbig2dec_error_cb (void *data,
@@ -22,7 +23,7 @@ pdf_stm_f_jbig2dec_init (pdf_hash_t params,
 {
   pdf_stm_f_jbig2dec_t filter_state;
   pdf_char_t *global_stream_buffer;
-  pdf_size_t *global_stream_size;
+  pdf_size_t global_stream_size;
 
 
   /* Allocate the internal state structure */
@@ -44,12 +45,12 @@ pdf_stm_f_jbig2dec_init (pdf_hash_t params,
       (pdf_hash_key_p (params, "GlobalStreamsSize") == PDF_TRUE))
     {
       /* Get the parameters from the hash table */
-      pdf_hash_search (params,
-                       "GlobalStreamsBuffer",
-                       (const void **) &global_stream_buffer);
-      pdf_hash_search (params,
-                       "GlobalStreamsSize",
-                       (const void **) &global_stream_size);
+      pdf_hash_get_string (params,
+                           "GlobalStreamsBuffer",
+                           &global_stream_buffer);
+      pdf_hash_get_size (params,
+                         "GlobalStreamsSize",
+                         &global_stream_size);
 
       /* Initialize the global context */
       filter_state->jbig2_context = jbig2_ctx_new (filter_state->jbig2_allocator,
@@ -60,7 +61,7 @@ pdf_stm_f_jbig2dec_init (pdf_hash_t params,
 
       jbig2_data_in (filter_state->jbig2_context,
                      global_stream_buffer,
-                     *global_stream_size);
+                     global_stream_size);
       filter_state->jbig2_global_context =
         jbig2_make_global_ctx (filter_state->jbig2_context);
     }

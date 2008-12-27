@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/27 21:47:35 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/28 00:14:54 jemarch"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -31,7 +31,7 @@
 #include <pdf-types.h>
 #include <pdf-error.h>
 #include <pdf-crypt-c-aesv2.h>
-
+#include <pdf-hash-helper.h>
 
 #define AESV2_BLKSIZE 16	/* Size of a block in AES128 */
 

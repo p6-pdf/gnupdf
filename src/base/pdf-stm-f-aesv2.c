@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/27 21:46:18 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/28 00:17:02 jemarch"
  *
  *       File:         pdf-stm-f-aesv2.c
  *       Date:         Sun Dec 14 20:13:53 2008
@@ -24,9 +24,11 @@
  */
 
 
-#include <pdf-stm-f-aesv2.h>
+
 #include <stdlib.h>
 #include <string.h>
+#include <pdf-stm-f-aesv2.h>
+#include <pdf-hash-helper.h>
 
 #define AESV2_CACHE_SIZE 16
 
@@ -70,21 +72,21 @@ pdf_stm_f_aesv2_init (pdf_hash_t params, void **state)
     }
   else
     {
-      pdf_char_t * key;
-      pdf_size_t * keysize;
+      pdf_char_t *key;
+      pdf_size_t keysize;
       pdf_crypt_cipher_t cipher;
       
       /* We demand all parameters are present */
       if ((( pdf_hash_key_p (params, "Key")     == PDF_TRUE))
           && pdf_hash_key_p (params, "KeySize") == PDF_TRUE)
         {
-          pdf_hash_search (params, "Key",       (const void **)&key);
-          pdf_hash_search (params, "KeySize",   (const void **)&keysize);
+          pdf_hash_get_string (params, "Key", &key);
+          pdf_hash_get_size (params, "KeySize", &keysize);
 
           ret = pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
           if (ret == PDF_OK)
             {
-              ret = pdf_crypt_cipher_setkey (cipher, key, *keysize);
+              ret = pdf_crypt_cipher_setkey (cipher, key, keysize);
               if (ret == PDF_OK)
                 {
                   filter_state->cipher = cipher;

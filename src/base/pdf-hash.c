@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-11-15 15:06:39 gerel"
+/* -*- mode: C -*- Time-stamp: "08/12/27 23:45:02 jemarch"
  *
  *       File:         pdf-hash.c
  *       Date:         Sat Apr  12 12:22:05 2008
@@ -260,7 +260,7 @@ pdf_hash_remove (pdf_hash_t table, const char *key)
 
 
 pdf_status_t
-pdf_hash_search (const pdf_hash_t table, const char *key, const void **elem_pointer)
+pdf_hash_get (const pdf_hash_t table, const char *key, const void **elem_pointer)
 {
   pdf_status_t st;
   gl_list_node_t node;

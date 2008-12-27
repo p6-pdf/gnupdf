@@ -80,7 +80,7 @@ TEST_SUITE_HASH = base/hash/pdf-hash-new.c \
 		  base/hash/pdf-hash-add-text.c \
 		  base/hash/pdf-hash-remove.c \
 		  base/hash/pdf-hash-size.c \
-		  base/hash/pdf-hash-search.c \
+		  base/hash/pdf-hash-get.c \
 		  base/hash/pdf-hash-key-p.c \
 		  base/hash/pdf-hash-rename.c \
 		  base/hash/pdf-hash-iterator-new.c \

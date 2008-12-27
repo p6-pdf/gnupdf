@@ -1,4 +1,40 @@
+2008-12-28  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Hash helper functions): Documentation for
+	'pdf_hash_get_text'.
+	(Hash helper functions): Documentation for 'pdf_hash_get_time'.
+	(Hash helper functions): Documentation for 'pdf_hash_get_list'.
+	(Hash helper functions): Documentation for 'pdf_hash_get_hash'.
+	(Hash helper functions): Documentation for 'pdf_hash_get_stm'.
+	(Hash helper functions): Documentation for 'pdf_hash_get_size'.
+	(Hash helper functions): Documentation for 'pdf_hash_get_string'.
+
+	* src/base/pdf-stm-f-jbig2.c (pdf_stm_f_jbig2dec_init): Use the
+	new hash helper functions.
+
+	* src/base/pdf-stm-f-aesv2.c (pdf_stm_f_aesv2_init): Use the new
+	hash helper functions.
+
+	* src/base/pdf-stm-f-v2.c (pdf_stm_f_v2_init): Use the new hash
+	helper functions.
+
+	* src/base/pdf-hash-helper.h: New functions 'pdf_hash_get_text',
+	'pdf_hash_get_time', 'pdf_hash_get_list', 'pdf_hash_get_hash',
+	'pdf_hash_get_stm', 'pdf_hash_get_size', 'pdf_hash_get_string'.
+
 2008-12-27  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/unit/base/hash/pdf-hash-get.c: Renamed from
+	'pdf-hash-search.c'.
+
+	* src/base/pdf-hash.h: pdf_hash_search renamed to pdf_hash_get.
+
+	* src/base/pdf-hash.c: Idem.
+
+	* doc/gnupdf.texi (Searching elements): Idem.
+
+	* src/base/pdf-hash-helper.c (pdf_hash_add_string): Use an
+	intermediate value instead to call strlen twice.
 
 	* src/base/pdf-fp-func.c (pdf_eval_type4): Use sinf and cosf
 	instead of sin and cos.

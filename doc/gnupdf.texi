@@ -1581,7 +1581,7 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 @node Searching elements
 @subsection Searching elements
 
-@deftypefun pdf_status_t pdf_hash_search (const pdf_hash_t @var{table}, const char @var{*key}, const void **@var{elem_pointer})
+@deftypefun pdf_status_t pdf_hash_get (const pdf_hash_t @var{table}, const char @var{*key}, const void **@var{elem_pointer})
 
 Searches for the element associated with the given @var{key} in @var{table} and store it in @var{elem_pointer}.
 
@@ -1839,10 +1839,10 @@ if (pdf_hash_new (pdf_hash_key_dealloc_fn, &hash) == PDF_OK)
 @node Hash helper functions
 @subsection Hash helper functions
 
-These are specific functions for adding different types of elements
-(types defined by the library). They guarantee that when an element of
-one of these types is removed from a hash table the correct disposal
-function is called.
+These are specific functions for adding and getting different types of
+elements (types defined by the library). They guarantee that when an
+element of one of these types is removed from a hash table the correct
+disposal function is called.
 
 NOTE: If you are going to use the element after the table containing
 the element is destroyed, in that case don't use these functions.
@@ -1896,6 +1896,43 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 @end table
 @end deftypefun
 
+@deftypefun pdf_status_t pdf_hash_get_text (pdf_hash_t @var{table}, const pdf_char_t *@var{key}, pdf_text_t *@var{elt})
+
+Get a text variable from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+The hash table to get the value from.
+@item key
+The key associated with the desired value.
+@item elt
+A pointer to the text variable to hold the value.
+@end table
+@item Returns
+A PDF status variable:
+@table @code
+@item PDF_OK
+The value was successfully stored into @var{elt}.
+@item PDF_EBADDATA
+Either @var{elt} is NULL, @var{key} or the @var{table} is invalid.
+@item PDF_ERROR
+The @var{key} wasn't found.
+@end table
+@item Usage example
+@example
+pdf_text_t text;
+pdf_hash_t table;
+
+/* ... insert a text variable into the hash ... */
+if (pdf_hash_get_text (table, "a text", &text) != PDF_OK)
+   @{
+      /* Error */
+   @}
+@end example
+@end table
+@end deftypefun
 
 @deftypefun pdf_status_t pdf_hash_add_time (pdf_hash_t @var{table}, const char @var{*key}, const pdf_time_t @var{*elt})
 
@@ -1937,6 +1974,44 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 
       /* Destroy the hash */
       pdf_hash_destroy (hash);
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_hash_get_time (pdf_hash_t @var{table}, const pdf_char_t *@var{key}, pdf_time_t *@var{elt})
+
+Get a time variable from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+The hash table to get the value from.
+@item key
+The key associated with the desired value.
+@item elt
+A pointer to the time variable to hold the value.
+@end table
+@item Returns
+A PDF status variable:
+@table @code
+@item PDF_OK
+The value was successfully stored into @var{elt}.
+@item PDF_EBADDATA
+Either @var{elt} is NULL, @var{key} or the @var{table} is invalid.
+@item PDF_ERROR
+The @var{key} wasn't found.
+@end table
+@item Usage example
+@example
+pdf_time_t time;
+pdf_hash_t table;
+
+/* ... insert a time variable into the hash ... */
+if (pdf_hash_get_time (table, "a time", &time) != PDF_OK)
+   @{
+      /* Error */
    @}
 @end example
 @end table
@@ -1989,6 +2064,44 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 @end table
 @end deftypefun
 
+@deftypefun pdf_status_t pdf_hash_get_list (pdf_hash_t @var{table}, const pdf_char_t *@var{key}, pdf_list_t *@var{elt})
+
+Get a list variable from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+The hash table to get the value from.
+@item key
+The key associated with the desired value.
+@item elt
+A pointer to the list variable to hold the value.
+@end table
+@item Returns
+A PDF status variable:
+@table @code
+@item PDF_OK
+The value was successfully stored into @var{elt}.
+@item PDF_EBADDATA
+Either @var{elt} is NULL, @var{key} or the @var{table} is invalid.
+@item PDF_ERROR
+The @var{key} wasn't found.
+@end table
+@item Usage example
+@example
+pdf_list_t list;
+pdf_hash_t table;
+
+/* ... insert a list variable into the hash ... */
+if (pdf_hash_get_list (table, "a list", &list) != PDF_OK)
+   @{
+      /* Error */
+   @}
+@end example
+@end table
+@end deftypefun
+
 
 @deftypefun pdf_status_t pdf_hash_add_hash (pdf_hash_t @var{table}, const char @var{*key}, const pdf_hash_t @var{*elt})
 
@@ -2034,6 +2147,45 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 @end example
 @end table
 @end deftypefun
+
+@deftypefun pdf_status_t pdf_hash_get_hash (pdf_hash_t @var{table}, const pdf_char_t *@var{key}, pdf_hash_t *@var{elt})
+
+Get a hash variable from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+The hash table to get the value from.
+@item key
+The key associated with the desired value.
+@item elt
+A pointer to the hash variable to hold the value.
+@end table
+@item Returns
+A PDF status variable:
+@table @code
+@item PDF_OK
+The value was successfully stored into @var{elt}.
+@item PDF_EBADDATA
+Either @var{elt} is NULL, @var{key} or the @var{table} is invalid.
+@item PDF_ERROR
+The @var{key} wasn't found.
+@end table
+@item Usage example
+@example
+pdf_hash_t hash;
+pdf_hash_t table;
+
+/* ... insert a hash variable into the hash ... */
+if (pdf_hash_get_hash (table, "a hash", &hash) != PDF_OK)
+   @{
+      /* Error */
+   @}
+@end example
+@end table
+@end deftypefun
+
 
 @deftypefun pdf_status_t pdf_hash_add_stm (pdf_hash_t @var{table}, const char @var{*key}, const pdf_stm_t @var{*elt})
 
@@ -2089,6 +2241,45 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 @end table
 @end deftypefun
 
+@deftypefun pdf_status_t pdf_hash_get_stm (pdf_hash_t @var{table}, const pdf_char_t *@var{key}, pdf_stm_t *@var{elt})
+
+Get a stm variable from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+The hash table to get the value from.
+@item key
+The key associated with the desired value.
+@item elt
+A pointer to the stm variable to hold the value.
+@end table
+@item Returns
+A PDF status variable:
+@table @code
+@item PDF_OK
+The value was successfully stored into @var{elt}.
+@item PDF_EBADDATA
+Either @var{elt} is NULL, @var{key} or the @var{table} is invalid.
+@item PDF_ERROR
+The @var{key} wasn't found.
+@end table
+@item Usage example
+@example
+pdf_stm_t stm;
+pdf_hash_t table;
+
+/* ... insert a stm variable into the hash ... */
+if (pdf_hash_get_stm (table, "a stm", &stm) != PDF_OK)
+   @{
+      /* Error */
+   @}
+@end example
+@end table
+@end deftypefun
+
+
 @deftypefun pdf_status_t pdf_hash_add_size (pdf_hash_t @var{table}, const char *@var{key}, const pdf_size_t @var{elt})
 
 Adds the @code{pdf_size_t} value @var{elt} with the associated key
@@ -2137,6 +2328,45 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 @end example
 @end table
 @end deftypefun
+
+@deftypefun pdf_status_t pdf_hash_get_size (pdf_hash_t @var{table}, const pdf_char_t *@var{key}, pdf_size_t *@var{elt})
+
+Get a size variable from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+The hash table to get the value from.
+@item key
+The key associated with the desired value.
+@item elt
+A pointer to the size variable to hold the value.
+@end table
+@item Returns
+A PDF status variable:
+@table @code
+@item PDF_OK
+The value was successfully stored into @var{elt}.
+@item PDF_EBADDATA
+Either @var{elt} is NULL, @var{key} or the @var{table} is invalid.
+@item PDF_ERROR
+The @var{key} wasn't found.
+@end table
+@item Usage example
+@example
+pdf_size_t size;
+pdf_hash_t table;
+
+/* ... insert a size variable into the hash ... */
+if (pdf_hash_get_size (table, "a size", &size) != PDF_OK)
+   @{
+      /* Error */
+   @}
+@end example
+@end table
+@end deftypefun
+
 
 @deftypefun pdf_status_t pdf_hash_add_string (pdf_hash_t @var{table}, const char *@var{key}, const pdf_char_t *@var{elt})
 
@@ -2187,6 +2417,45 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 @end example
 @end table
 @end deftypefun
+
+@deftypefun pdf_status_t pdf_hash_get_string (pdf_hash_t @var{table}, const pdf_char_t *@var{key}, pdf_char_t *@var{elt})
+
+Get a string variable from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+The hash table to get the value from.
+@item key
+The key associated with the desired value.
+@item elt
+A pointer to the string variable to hold the value.
+@end table
+@item Returns
+A PDF status variable:
+@table @code
+@item PDF_OK
+The value was successfully stored into @var{elt}.
+@item PDF_EBADDATA
+Either @var{elt} is NULL, @var{key} or the @var{table} is invalid.
+@item PDF_ERROR
+The @var{key} wasn't found.
+@end table
+@item Usage example
+@example
+pdf_char_t *string;
+pdf_hash_t table;
+
+/* ... insert a string variable into the hash ... */
+if (pdf_hash_get_string (table, "a string", &string) != PDF_OK)
+   @{
+      /* Error */
+   @}
+@end example
+@end table
+@end deftypefun
+
 
 @node Lists
 @section Lists
