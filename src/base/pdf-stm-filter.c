@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/26 22:03:54 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/27 21:32:03 jemarch"
  *
  *       File:         pdf-stm-filter.c
  *       Date:         Thu Jun 12 22:13:31 2008
@@ -35,12 +35,14 @@ static pdf_size_t pdf_stm_filter_get_input (pdf_stm_filter_t filter,
  * Public functions
  */
 
-pdf_stm_filter_t
+pdf_status_t
 pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
                     pdf_hash_t params,
                     pdf_size_t buffer_size,
-                    enum pdf_stm_filter_mode_e mode)
+                    enum pdf_stm_filter_mode_e mode,
+                    pdf_stm_filter_t *filter)
 {
+  pdf_status_t init_ret;
   pdf_stm_filter_t new;
 
   /* Allocate the filter structure */
@@ -175,8 +177,9 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
   new->status = PDF_OK;
   new->really_finish_p = PDF_FALSE;
 
-  if (new->impl.init_fn (new->params,
-                         &(new->state)) != PDF_OK)
+  init_ret = new->impl.init_fn (new->params,
+                                &(new->state));
+  if (init_ret != PDF_OK)
     {
       /* Error initializing the filter implementation */
       pdf_stm_buffer_destroy (new->in);
@@ -184,7 +187,8 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
       new = NULL;
     }
 
-  return new;
+  *filter = new;
+  return init_ret;
 }
 
 pdf_status_t

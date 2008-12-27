@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/26 22:08:22 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/27 21:30:09 jemarch"
  *
  *       File:         pdf-stm-filter.h
  *       Date:         Thu Jun 12 22:05:06 2008
@@ -127,10 +127,11 @@ struct pdf_stm_filter_s
  * Public API
  */
 
-pdf_stm_filter_t pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
-                                     pdf_hash_t params,
-                                     pdf_size_t buffer_size,
-                                     enum pdf_stm_filter_mode_e mode);
+pdf_status_t pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
+                                 pdf_hash_t params,
+                                 pdf_size_t buffer_size,
+                                 enum pdf_stm_filter_mode_e mode,
+                                 pdf_stm_filter_t *filter);
 pdf_status_t pdf_stm_filter_destroy (pdf_stm_filter_t filter);
 inline pdf_status_t pdf_stm_filter_set_next (pdf_stm_filter_t filter,
                                              pdf_stm_filter_t next_filter);

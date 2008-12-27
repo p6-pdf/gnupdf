@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/27 20:46:43 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/27 21:39:45 jemarch"
  *
  *       File:         pdf-stm-f-v2.c
  *       Date:         Tue Jul 10 23:44:00 2007
@@ -74,17 +74,20 @@ pdf_stm_f_v2_init (pdf_hash_t params, void **state)
           pdf_hash_search (params, "Key",       (const void **)&key);
           pdf_hash_search (params, "KeySize",   (const void **)&keysize);
 
-          if (pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &cipher) == PDF_OK
-              && pdf_crypt_cipher_setkey (cipher, key, *keysize) == PDF_OK)
+          ret = pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &cipher);
+          if (ret == PDF_OK)
             {
-              filter_state->cipher = cipher;
-              *state = filter_state;
-              ret = PDF_OK;
+              ret = pdf_crypt_cipher_setkey (cipher, key, *keysize);
+              if (ret == PDF_OK)
+                {
+                  filter_state->cipher = cipher;
+                  *state = filter_state;
+                }
             }
-          else
+
+          if (ret != PDF_OK)
             {
               pdf_dealloc (filter_state);
-              ret = PDF_EBADDATA;
             }
         }
       else
@@ -93,7 +96,7 @@ pdf_stm_f_v2_init (pdf_hash_t params, void **state)
           ret = PDF_EBADDATA;
         }
     }
-  
+
   return ret;
 }
 

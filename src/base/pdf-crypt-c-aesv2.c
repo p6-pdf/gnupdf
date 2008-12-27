@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-12-23 18:47:26 davazp"
+/* -*- mode: C -*- Time-stamp: "08/12/27 21:47:35 jemarch"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -103,9 +103,13 @@ pdf_crypt_cipher_aesv2_setkey (void * _state,
   aesv2_state_t state = _state;
   
   if (gcry_cipher_setkey (state->cipher, key, size) == GPG_ERR_NO_ERROR)
-    return PDF_OK;
+    {
+      return PDF_OK;
+    }
   else
-    return PDF_EBADDATA;
+    {
+      return PDF_EBADAESKEY;
+    }
 }
 
 

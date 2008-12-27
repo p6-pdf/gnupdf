@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-12-25 16:37:22 davazp"
+/* -*- mode: C -*- Time-stamp: "08/12/27 21:46:18 jemarch"
  *
  *       File:         pdf-stm-f-aesv2.c
  *       Date:         Sun Dec 14 20:13:53 2008
@@ -81,35 +81,38 @@ pdf_stm_f_aesv2_init (pdf_hash_t params, void **state)
           pdf_hash_search (params, "Key",       (const void **)&key);
           pdf_hash_search (params, "KeySize",   (const void **)&keysize);
 
-          if (pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher) == PDF_OK
-              && pdf_crypt_cipher_setkey (cipher, key, *keysize) == PDF_OK)
+          ret = pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
+          if (ret == PDF_OK)
             {
-              filter_state->cipher = cipher;
-
-              /* Initialize cache buffers */
-              filter_state->in_cache  = pdf_stm_buffer_new (AESV2_CACHE_SIZE);
-              filter_state->out_cache = pdf_stm_buffer_new (AESV2_CACHE_SIZE);
-
-              if (filter_state->in_cache == NULL || filter_state->out_cache == NULL)
+              ret = pdf_crypt_cipher_setkey (cipher, key, *keysize);
+              if (ret == PDF_OK)
                 {
-                  ret = PDF_ERROR;
+                  filter_state->cipher = cipher;
+                  
+                  /* Initialize cache buffers */
+                  filter_state->in_cache  = pdf_stm_buffer_new (AESV2_CACHE_SIZE);
+                  filter_state->out_cache = pdf_stm_buffer_new (AESV2_CACHE_SIZE);
+                  
+                  if (filter_state->in_cache == NULL || filter_state->out_cache == NULL)
+                    {
+                      ret = PDF_ERROR;
+                    }
+                  else
+                    {
+                      ret = PDF_OK;
+                      *state = filter_state;
+                    }
                 }
-              else
-                {
-                  ret = PDF_OK;
-                  *state = filter_state;
-                }
-            }
-          else
-            {
-              pdf_dealloc (filter_state);
-              ret = PDF_EBADDATA;
             }
         }
       else
         {
-          pdf_dealloc (filter_state);
           ret = PDF_EBADDATA;
+        }
+
+      if (ret != PDF_OK)
+        {
+          pdf_dealloc (filter_state);
         }
     }
   

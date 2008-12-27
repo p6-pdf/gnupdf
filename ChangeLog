@@ -1,5 +1,30 @@
 2008-12-27  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-crypt-c-aesv2.c (pdf_crypt_cipher_aesv2_setkey):
+	Return PDF_EBADAESKEY instead of PDF_EBADDATA.
+
+	* src/base/pdf-stm-f-aesv2.c (pdf_stm_f_aesv2_init): Return the
+	correct status value if in error setting the key.
+
+	* src/base/pdf-stm-f-v2.c (pdf_stm_f_v2_init): Return the correct
+	status value if in error setting the key.
+
+	* src/base/pdf-stm.c (pdf_stm_install_filter): Adapted to use the
+	new 'pdf_stm_filter_new' prototype.
+	(pdf_stm_init): Idem.
+
+	* src/base/pdf-stm-filter.c (pdf_stm_filter_new): Make
+	'pdf_stm_filter_new' return a 'pdf_status_t' value.
+
+	* src/base/pdf-stm-filter.h: Make 'pdf_stm_filter_new' return a
+	'pdf_status_t' value.
+
+	* utils/pdf-filter.c (install_filters): Update the key when it was
+	holding another value.
+	(install_filters): Call 'pdf_crypt_init'.
+	(install_filters): Check for error status in the filters
+	installation.
+
 	* doc/pdf-filter.1: Updated.
 
 	* doc/gnupdf.texi (Hash helper functions): Documentation for
