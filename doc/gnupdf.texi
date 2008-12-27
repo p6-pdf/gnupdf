@@ -2089,7 +2089,104 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 @end table
 @end deftypefun
 
+@deftypefun pdf_status_t pdf_hash_add_size (pdf_hash_t @var{table}, const char *@var{key}, const pdf_size_t @var{elt})
 
+Adds the @code{pdf_size_t} value @var{elt} with the associated key
+@var{key} to @var{table}. If @var{key} already exists nothing is done.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid key string.
+@item elt
+A @code{pdf_size_t} value.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@item PDF_EBADDATA
+Either @var{table}, @var{key} or @var{elt} is invalid.
+@end table
+@item Usage example
+@example
+pdf_hash_t hash;
+pdf_size_t elem;
+
+/* Create a new hash */
+if (pdf_hash_new (NULL, &hash) == PDF_OK)
+   @{
+      /* Create the element for the hash */
+      elem = 10;
+
+      /* Add the element to the hash */
+      pdf_hash_add_size (hash, "a-key", elem);
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+
+      /* Destroy the memory buffer */
+      pdf_dealloc (buf);
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_hash_add_string (pdf_hash_t @var{table}, const char *@var{key}, const pdf_char_t *@var{elt})
+
+Adds the @code{*pdf_char_t} value @var{elt} with the associated key
+@var{key} to @var{table}. If @var{key} already exists nothing is done.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid key string.
+@item elt
+A @code{* pdf_char_t} value.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@item PDF_EBADDATA
+Either @var{table}, @var{key} or @var{elt} is invalid.
+@end table
+@item Usage example
+@example
+pdf_hash_t hash;
+pdf_char_t *elem;
+
+/* Create a new hash */
+if (pdf_hash_new (NULL, &hash) == PDF_OK)
+   @{
+      /* Create the element for the hash */
+      elem = pdf_alloc(4);
+      strncpy (elem, "abc", 4);
+
+      /* Add the element to the hash */
+      pdf_hash_add_size (hash, "a-key", elem);
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+
+      /* Destroy the memory buffer */
+      pdf_dealloc (buf);
+   @}
+@end example
+@end table
+@end deftypefun
 
 @node Lists
 @section Lists
@@ -8749,7 +8846,7 @@ pdf_crypt_cipher_destroy (cipher);
 @node Encryption and decryption
 @subsection Encryption and decryption
 
-@deftypefun pdf_status_t pdf_crypt_cipher_setkey (pdf_crypt_cipher_t *@var{cipher}, pdf_char_t  *@var{key}, pdf_size_t @var{size})
+@deftypefun pdf_status_t pdf_crypt_cipher_setkey (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{key}, pdf_size_t @var{size})
 
 Set the key which will be used to encrypt and decrypt data.
 
@@ -9082,7 +9179,7 @@ pdf_crypt_md_destroy (md);
 @node Utilities
 @subsection Utilities
 
-@deftypefun pdf_status_t pdf_crypt_nonce (pdf_crypt_char_t  *@var{buffer}, pdf_size_t @var{size})
+@deftypefun pdf_status_t pdf_crypt_nonce (pdf_char_t *@var{buffer}, pdf_size_t @var{size})
 
 Fill a buffer with random bytes.
 

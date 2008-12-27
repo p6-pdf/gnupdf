@@ -1,5 +1,24 @@
 2008-12-27  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf.texi (Hash helper functions): Documentation for
+	'pdf_hash_add_size'.
+	(Hash helper functions): Documentation for 'pdf_hash_add_string'.
+	(Encryption and decryption): 'pdf_crypt_cipher_setkey'
+	documentation fixed.
+	(Utilities): Documentation for 'pdf_crypt_nonce' fixed.
+
+	* utils/pdf-filter.c (install_filters): Use the new hash helper
+	functions for size and string values.
+
+	* src/base/pdf-hash-helper.h: New function 'pdf_hash_add_size'.
+	New function 'pdf_hash_add_string'.
+
+	* utils/pdf-filter.c: Support for MD5 encoder filter.
+	Support for AESV2 encoder, AESV2 decoder, V2 encoder and V2
+	decoder.
+
+	* utils/pdf-filter.h (HELP_ARG): Support for MD5ENC_FILTER_ARG.
+
 	* doc/gnupdf.texi (Creation and Destruction of Functions):
 	Documentation for 'pdf_fp_func_0_new'.
 	(Creation and Destruction of Functions): Documentation for

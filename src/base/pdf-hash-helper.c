@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/10/02 22:07:35 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/27 20:44:17 jemarch"
  *
  *       File:         pdf-hash-helper.c
  *       Date:         Thu Jul 24 21:05:05 2008
@@ -67,6 +67,37 @@ pdf_hash_add_stm (pdf_hash_t table, const char *key, const pdf_stm_t *elt)
   return (pdf_hash_add(table,key,elt,stm_dispose_fn));
 }
 
+pdf_status_t
+pdf_hash_add_size (pdf_hash_t table, const char *key, const pdf_size_t elt)
+{
+  pdf_size_t *size;
+
+  size = pdf_alloc (sizeof(pdf_size_t));
+  if (size == NULL)
+    {
+      return PDF_ERROR;
+    }
+
+  *size = elt;
+
+  return (pdf_hash_add (table, key, size, pdf_dealloc));
+}
+
+pdf_status_t
+pdf_hash_add_string (pdf_hash_t table, const char *key, const pdf_char_t *elt)
+{
+  pdf_char_t *string;
+
+  string = pdf_alloc (strlen ((char *) elt) + 1);
+  if (string == NULL)
+    {
+      return PDF_ERROR;
+    }
+
+  string = (pdf_char_t *) strncpy ((char *) string, (char *) elt, strlen((char *) elt) + 1);
+
+  return (pdf_hash_add (table, key, string, pdf_dealloc));
+}
 
 static void
 text_dispose_fn (const void *elt)

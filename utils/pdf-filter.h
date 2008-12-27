@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/23 23:00:15 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/27 20:11:16 jemarch"
  *
  *       File:         pdf-filter.h
  *       Date:         Tue Jul 10 18:40:55 2007
@@ -60,7 +60,13 @@ enum
   DCTDEC_FILTER_ARG,
   JXPDEC_FILTER_ARG,
   PREDENC_FILTER_ARG,
-  PREDDEC_FILTER_ARG
+  PREDDEC_FILTER_ARG,
+  MD5ENC_FILTER_ARG,
+  KEY_ARG,
+  AESENC_FILTER_ARG,
+  AESDEC_FILTER_ARG,
+  V2ENC_FILTER_ARG,
+  V2DEC_FILTER_ARG
 };
 
 #endif /* pdf_filter.h */
