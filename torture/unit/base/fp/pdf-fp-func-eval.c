@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/03 00:17:48 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/27 22:39:16 jemarch"
  *
  *       File:         pdf-fp-func-eval.c
  *       Date:         Tue Dec  2 20:11:38 2008
@@ -164,8 +164,8 @@ END_TEST
 static pdf_real_t
 double_dot (pdf_real_t x, pdf_real_t y)
 {
-  return ((sin (DEG2RAD(360 * x)) / 2) +
-          ((sin (DEG2RAD(360 * y)) / 2)));
+  return ((sinf (DEG2RAD(360 * x)) / 2) +
+          ((sinf (DEG2RAD(360 * y)) / 2)));
 }
 
 START_TEST(pdf_fp_func_eval_003)
@@ -237,8 +237,8 @@ END_TEST
 static pdf_real_t
 inverted_double_dot (pdf_real_t x, pdf_real_t y)
 {
-  return (-1 * ((sin (DEG2RAD(360 * x)) / 2) +
-                ((sin (DEG2RAD(360 * y)) / 2))));
+  return (-1 * ((sinf (DEG2RAD(360 * x)) / 2) +
+                ((sinf (DEG2RAD(360 * y)) / 2))));
 }
 
 START_TEST(pdf_fp_func_eval_004)
@@ -312,8 +312,8 @@ END_TEST
 static pdf_real_t
 cosine_dot (pdf_real_t x, pdf_real_t y)
 {
-  return (((cos (DEG2RAD(180 * x)) / 2) +
-           ((cos (DEG2RAD(180 * y)) / 2))));
+  return (((cosf (DEG2RAD(180 * x)) / 2) +
+           ((cosf (DEG2RAD(180 * y)) / 2))));
 }
 
 START_TEST(pdf_fp_func_eval_005)
@@ -385,8 +385,8 @@ END_TEST
 static pdf_real_t
 double_f (pdf_real_t x, pdf_real_t y)
 {
-  return ((sin(DEG2RAD(360 * (x / 2))) / 2) +
-          (sin(DEG2RAD(360 * y)) / 2));
+  return ((sinf (DEG2RAD(360 * (x / 2))) / 2) +
+          (sinf (DEG2RAD(360 * y)) / 2));
 }
 
 START_TEST(pdf_fp_func_eval_006)
@@ -460,8 +460,8 @@ END_TEST
 static pdf_real_t
 inverted_double (pdf_real_t x, pdf_real_t y)
 {
-  return (-1 * ((sin(DEG2RAD(360 * (x / 2))) / 2) +
-                (sin(DEG2RAD(360 * y)) / 2)));
+  return (-1 * ((sinf (DEG2RAD(360 * (x / 2))) / 2) +
+                (sinf (DEG2RAD(360 * y)) / 2)));
 }
 
 START_TEST(pdf_fp_func_eval_007)

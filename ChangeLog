@@ -1,5 +1,10 @@
 2008-12-27  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-fp-func.c (pdf_eval_type4): Use sinf and cosf
+	instead of sin and cos.
+
+	* torture/unit/base/fp/pdf-fp-func-eval.c: Use sinf and cosf.
+
 	* src/base/pdf-crypt-c-aesv2.c (pdf_crypt_cipher_aesv2_setkey):
 	Return PDF_EBADAESKEY instead of PDF_EBADDATA.
 

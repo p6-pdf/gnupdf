@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/02 23:38:26 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/27 22:38:12 jemarch"
  *
  *       File:         pdf-fp-func.c
  *       Date:         Sun Nov 30 18:46:06 2008
@@ -1372,11 +1372,11 @@ pdf_eval_type4 (pdf_fp_func_t t,
           break;
         case OPC_sin:
           if (sp < 0) goto stack_underflow;
-          stack[sp] = sin((180/M_PI)*stack[sp]);
+          stack[sp] = sinf ((180/M_PI)*stack[sp]);
           break;
         case OPC_cos:
           if (sp < 0) goto stack_underflow;
-          stack[sp] = cos((180/M_PI)*stack[sp]);
+          stack[sp] = cosf ((180/M_PI)*stack[sp]);
           break;
         case OPC_neg:
           if (sp < 0) goto stack_underflow;
