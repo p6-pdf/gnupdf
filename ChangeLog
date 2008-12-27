@@ -1,3 +1,19 @@
+2008-12-27  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Creation and Destruction of Functions):
+	Documentation for 'pdf_fp_func_0_new'.
+	(Creation and Destruction of Functions): Documentation for
+	'pdf_fp_func_2_new'.
+	(Creation and Destruction of Functions): Documentation for
+	'pdf_fp_func_3_new'.
+	(Creation and Destruction of Functions): Documentation for
+	'pdf_fp_func_4_new'.
+	(Creation and Destruction of Functions): Documentation for
+	'pdf_fp_func_destroy'.
+	(Evaluation of Functions): Documentation for
+	'pdf_fp_func_get_bounds'.
+	(Evaluation of Functions): Documentation for 'pdf_fp_func_eval'.
+
 2008-12-26  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* configure.ac: Fix incorrect sh assignation.

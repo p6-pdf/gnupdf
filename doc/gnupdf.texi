@@ -4092,8 +4092,279 @@ XXX
 @node Creation and Destruction of Functions
 @subsection Creation and Destruction of Functions
 
+@deftypefun pdf_status_t pdf_fp_func_0_new (pdf_u32_t @var{m}, pdf_u32_t @var{n}, const pdf_real_t @var{domain}[], const pdf_real_t @var{range}[], pdf_u32_t @var{size}[], pdf_u32_t @var{bps}, pdf_u32_t @var{order}, const pdf_real_t @var{encode}[], const pdf_real_t @var{decode}[], pdf_char_t *@var{samples}, pdf_size_t @var{samples_size}, pdf_fp_func_t *@var{function})
+
+Create a new type 0 (sampled) function.
+
+@table @strong
+@item Parameters
+@table @var
+@item m
+Number of input values.
+@item n
+Number of output values.
+@item domain
+Array of @code{2 * m} numbers. Each pair of consecutive numbers
+defines the domain of an input variable.
+@item range
+Array of @code{2 * n} numbers. Each pair of consecutive numbers
+defines the range of an output variable. Output values outside these
+ranges will be clipped to the appropriate range.
+@item size
+Array of @code{m} positive integers containing the number of samples
+in each input dimension in the samples table.
+@item bps
+The number of bits used to represent a sample in the samples
+table. Valid values shall be @code{1}, @code{2}, @code{4}, @code{8},
+@code{12}, @code{16}, @code{24} and @code{32}.
+@item order
+Order of interpolation between samples. Valid values shall be @code{1}
+and @code{3}.
+@item encode
+Array of @code{2 * m} numbers specifying the linear mapping of input
+values into the domain of the function's sample table.
+@item decode
+Array of @code{2 * n} numbers specifying the linear mapping of sample
+values into the range appropriate for the function's output values.
+@item samples
+Buffer containing the samples table for the function.
+@item samples_size
+Size of the samples table.
+@item function
+A pointer to the variable holding the new function.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The function was successfully created.
+@item PDF_ERROR
+Error while creating the function.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_fp_func_2_new (pdf_u32_t @var{m}, pdf_u32_t @var{n}, const pdf_real_t @var{domain}[], const pdf_real_t @var{range}[], pdf_real_t @var{N}, pdf_real_t @var{c0}[], pdf_real_t @var{c1}[], pdf_fp_func_t @var{function})
+
+Create a new type 2 (exponential interpolation) function.
+
+@table @strong
+@item Parameters
+@table @var
+@item m
+Number of input values.
+@item n
+Number of output values.
+@item domain
+Array of @code{2 * m} numbers. Each pair of consecutive numbers
+defines the domain of an input variable.
+@item range
+Array of @code{2 * n} numbers. Each pair of consecutive numbers
+defines the range of an output variable. Output values outside these
+ranges will be clipped to the appropriate range.
+@item N
+The interpolation exponent.
+@item c0
+An array of @code{n} numbers that shall define the function result
+when @code{x = 0.0}.
+@item c1
+An array of n numbers that shall define the function return when
+@code{x = 1.0}.
+@item function
+Pointer to a variable holding the new function.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The function was successfully created.
+@item PDF_ERROR
+Error while creating the function.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_fp_func_3_new (pdf_u32_t @var{m}, pdf_u32_t @var{n}, const pdf_real_t @var{domain}[], const pdf_real_t @var{range}[], pdf_u32_t @var{k}, pdf_fp_func_t *@var{functions}, pdf_real_t @var{bounds}[], const pdf_u32_t @var{encode}[], pdf_fp_func_t *@var{function})
+
+Create a new type 3 (stitching) function.
+
+@table @strong
+@item Parameters
+@table @var
+@item m
+Number of input values.
+@item n
+Number of output values.
+@item domain
+Array of @code{2 * m} numbers. Each pair of consecutive numbers
+defines the domain of an input variable.
+@item range
+Array of @code{2 * n} numbers. Each pair of consecutive numbers
+defines the range of an output variable. Output values outside these
+ranges will be clipped to the appropriate range.
+@item k
+Number of stitching functions.
+@item functions
+An array of @code{k} 1-input functions that shall make up the
+stitching function. The output dimensionality of all functions shall
+be the same, and compatible with the value of @var{range}.
+@item bounds
+An array of @code{k - 1} numbers that, in combination with
+@var{domain}, shall define the intervals to which each function from
+the @var{functions} parameter shall apply. @var{bounds} elements shall
+be in order of increasing value, and each value shall be within the
+domain defined by @var{domain}.
+@item encode
+An array of @code{2 * k} numbers that, taken in pairs, shall map each
+subset of the domain defined by @var{domain} and the @var{bounds}
+parameter to the domain of the corresponding function.
+@item function
+A pointer to a variable holding the new function.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The function was successfully created.
+@item PDF_ERROR
+Error while creating the function.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_fp_func_4_new (pdf_u32_t @var{m}, pdf_u32_t @var{n}, pdf_real_t @var{domain}[], pdf_real_t @var{range}[], pdf_char_t *@var{code}, pdf_size_t @var{code_size}, pdf_fp_func_t *@var{function})
+
+Create a new type 4 (postscript calculator) function.
+
+@table @strong
+@item Parameters
+@table @var
+@item m
+Number of input values.
+@item n
+Number of output values.
+@item domain
+Array of @code{2 * m} numbers. Each pair of consecutive numbers
+defines the domain of an input variable.
+@item range
+Array of @code{2 * n} numbers. Each pair of consecutive numbers
+defines the range of an output variable. Output values outside these
+ranges will be clipped to the appropriate range.
+@item code
+Memory buffer containing the postscript code to execute.
+@item code_size
+Size of @var{code}.
+@item function
+Pointer to a variable holding the new function.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The function was successfully created.
+@item PDF_ERROR
+Error while creating the function.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_fp_func_destroy (pdf_fp_func_t @var{function})
+
+Destroy a function.
+
+@table @strong
+@item Parameters
+@table @var
+@item function
+A pointer to an initialized function.
+@end table
+@item Returns
+A PDF status variable:
+@table @code
+@item PDF_OK
+The function was successfully destroyed.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
 @node Evaluation of Functions
 @subsection Evaluation of Functions
+
+@deftypefun pdf_status_t pdf_fp_func_get_bounds (const pdf_fp_func_t @var{function}, pdf_i32_t *@var{in_dimensions}, pdf_i32_t *@var{out_dimensions})
+
+Return the bounds of a given function.
+
+@table @strong
+@item Parameters
+@table @var
+@item function
+An initialized function.
+@item in_dimensions
+Variable to hold the input dimensions of @var{function}.
+@item out_dimensions
+Variable to hold the output dimensions of @var{function}.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation was successfully performed.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_fp_func_eval (pdf_fp_func_t @var{function}, const pdf_real_t @var{in}[], pdf_real_t @var{out}[])
+
+Evaluate a function.
+
+@table @strong
+@item Parameters
+@table @var
+@item function
+The function to evaluate.
+@item in
+Array containing the input values for the function.
+@item out
+Array containing the output values from the function evaluation.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The evaluation was successfully performed.
+@item PDF_ERROR
+Error while evaluating the function.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
 
 @node Encoded Text
 @section Encoded Text
