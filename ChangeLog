@@ -1,5 +1,7 @@
 2008-12-27  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/pdf-filter.1: Updated.
+
 	* doc/gnupdf.texi (Hash helper functions): Documentation for
 	'pdf_hash_add_size'.
 	(Hash helper functions): Documentation for 'pdf_hash_add_string'.
