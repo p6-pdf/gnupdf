@@ -1,3 +1,4 @@
+
 2008-12-28  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Hash helper functions): Documentation for
@@ -29,6 +30,41 @@
 	* src/base/pdf-hash-helper.h: New functions 'pdf_hash_get_text',
 	'pdf_hash_get_time', 'pdf_hash_get_list', 'pdf_hash_get_hash',
 	'pdf_hash_get_stm', 'pdf_hash_get_size', 'pdf_hash_get_string'.
+
+
+2008-12-27  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* torture/unit/base/text/pdf-text-cmp.c: fixed test cases to not
+	access internal data without the API.
+
+	* torture/unit/base/text/pdf-text-filter.c: same.
+
+	* torture/unit/base/text/pdf-text-get-country.c: same.
+
+	* torture/unit/base/text/pdf-text-get-language.c: same.
+
+	* torture/unit/base/text/pdf-text-get-pdfdocenc.c: same.
+
+	* torture/unit/base/text/pdf-text-get-unicode.c: same.
+
+	* torture/unit/base/text/pdf-text-new-from-host.c: same.
+
+	* torture/unit/base/text/pdf-text-new-from-pdf-string.c: same.
+
+	* torture/unit/base/text/pdf-text-new-from-u32.c: same.
+
+	* torture/unit/base/text/pdf-text-new-from-unicode.c: same.
+
+	* torture/unit/base/text/pdf-text-set-country.c: same.
+
+	* torture/unit/base/text/pdf-text-set-host.c: same.
+
+	* torture/unit/base/text/pdf-text-set-language.c: same.
+
+	* torture/unit/base/text/pdf-text-set-pdfdocenc.c: same.
+
+	* torture/unit/base/text/pdf-text-set-unicode.c: same.
+
 
 2008-12-27  Jose E. Marchesi  <jemarch@gnu.org>
 
