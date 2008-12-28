@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-10-05 13:07:53 gerel"
+/* -*- mode: C -*- Time-stamp: "2008-12-25 16:21:49 davazp"
  *
  *       File:         pdf-stm-read.c
  *       Date:         Sat Sep 20 15:20:17 2008
@@ -615,6 +615,120 @@ START_TEST (pdf_stm_read_009)
 END_TEST
 
 
+
+/*
+ * Test: pdf_stm_read_011
+ * Description:
+ *   Create a memory-based writing stream and attach an V2 cipher filter
+ *   decode to it.
+ * Success condition:
+ *   The decoded data should be correct.
+ */
+START_TEST (pdf_stm_read_011)
+{
+  pdf_stm_t stm;
+  pdf_hash_t params;
+
+  pdf_char_t out[14];
+  pdf_size_t out_size = sizeof(out);
+  pdf_char_t in[] =
+    {
+      0x45, 0xA0, 0x1F, 0x64, 0x5F, 0xC3, 0x5B,
+      0x38, 0x35, 0x52, 0x54, 0x4B, 0x9B, 0xF5
+    };
+  pdf_size_t in_size = sizeof(in);
+  pdf_char_t key[6] = "Secret"; /* not trailing '\0' */
+  pdf_size_t keysize = sizeof(key);
+  pdf_char_t plaintext[] = "Attack at dawn";
+  pdf_char_t read;
+  
+  pdf_crypt_init();
+
+  fail_if ( pdf_stm_mem_new (in, in_size, 0, PDF_STM_READ, &stm) != PDF_OK);
+
+  pdf_hash_new (NULL, &params);
+  pdf_hash_add (params, "Key", key, NULL);
+  pdf_hash_add (params, "KeySize", &keysize, NULL);
+
+  fail_if ( pdf_stm_install_filter (stm, PDF_STM_FILTER_V2_DEC, params) != PDF_OK);
+
+  read = pdf_stm_read (stm, out, out_size);
+  fail_if (read != out_size);
+
+  fail_if (memcmp (out, plaintext, read) != 0);
+
+  pdf_hash_destroy (params);
+  pdf_stm_destroy (stm);
+}
+END_TEST
+
+
+
+/*
+ * Test: pdf_stm_read_012
+ * Description:
+ *   Create a memory-based reading stream and attach an AESV2 filter
+ *   decoder to it.
+ * Success condition:
+ *   The decoded data should be correct.
+ */
+START_TEST (pdf_stm_read_012)
+{
+  pdf_stm_t stm;
+  pdf_hash_t params;
+  pdf_char_t out[48];
+  pdf_size_t out_size;
+  
+  pdf_char_t key[] =
+    {
+      0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
+      0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff
+    };
+  pdf_size_t keysize = sizeof(key);
+
+  pdf_char_t plain[] =
+    {
+      0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, /* iv */
+      0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
+      0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, /* content */
+      0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
+      0x0f,
+      /* padding */
+      /* 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f,
+         0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f, 0x0f */
+    };
+
+  pdf_char_t ciphered[] =
+    {
+      0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, /* iv vector */
+      0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
+      0xbb, 0x03, 0x13, 0xee, 0x2f, 0x65, 0x43, 0xa9, /* content */
+      0x04, 0xf2, 0x8e, 0xff, 0x68, 0x59, 0x05, 0x35,
+      0x81, 0x7e, 0x24, 0x33, 0x5f, 0x18, 0x72, 0x12, /* padding */
+      0x8c, 0xb8, 0x4c, 0x23, 0x59, 0xd0, 0xe0, 0x36,
+    };
+
+  pdf_crypt_init();
+
+  pdf_hash_new (NULL, &params);
+  pdf_hash_add (params, "Key", key, NULL);
+  pdf_hash_add (params, "KeySize", &keysize, NULL);
+
+  fail_if ( pdf_stm_mem_new (ciphered, sizeof(ciphered), 0, PDF_STM_READ, &stm) != PDF_OK);
+  fail_if ( pdf_stm_install_filter (stm, PDF_STM_FILTER_AESV2_DEC, params) != PDF_OK);
+
+  out_size = pdf_stm_read (stm, out , sizeof(out));
+
+  fail_if (out_size != sizeof(plain));
+  fail_if (memcmp (out, plain, out_size) != 0);
+
+  pdf_hash_destroy (params);
+  pdf_stm_destroy (stm);
+}
+END_TEST
+
+
+
 /*
  * Test case creation function
  */
@@ -632,6 +746,8 @@ test_pdf_stm_read (void)
   tcase_add_test(tc, pdf_stm_read_007);
   tcase_add_test(tc, pdf_stm_read_008);
   tcase_add_test(tc, pdf_stm_read_009);
+  tcase_add_test(tc, pdf_stm_read_011);
+  tcase_add_test(tc, pdf_stm_read_012);
 
   return tc;
 }

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/23 23:01:03 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/27 21:32:03 jemarch"
  *
  *       File:         pdf-stm-filter.c
  *       Date:         Thu Jun 12 22:13:31 2008
@@ -35,12 +35,14 @@ static pdf_size_t pdf_stm_filter_get_input (pdf_stm_filter_t filter,
  * Public functions
  */
 
-pdf_stm_filter_t
+pdf_status_t
 pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
                     pdf_hash_t params,
                     pdf_size_t buffer_size,
-                    enum pdf_stm_filter_mode_e mode)
+                    enum pdf_stm_filter_mode_e mode,
+                    pdf_stm_filter_t *filter)
 {
+  pdf_status_t init_ret;
   pdf_stm_filter_t new;
 
   /* Allocate the filter structure */
@@ -101,6 +103,7 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
         new->impl.dealloc_state_fn = pdf_stm_f_rldec_dealloc_state;
         break;
       }
+
 #if defined(HAVE_LIBZ)
     case PDF_STM_FILTER_FLATE_ENC:
       {
@@ -117,6 +120,41 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
         break;
       }
 #endif /* HAVE_LIBZ */
+    case PDF_STM_FILTER_V2_ENC:
+      {
+        new->impl.init_fn = pdf_stm_f_v2enc_init;
+        new->impl.apply_fn = pdf_stm_f_v2enc_apply;
+        new->impl.dealloc_state_fn = pdf_stm_f_v2enc_dealloc_state;
+        break;
+      }
+    case PDF_STM_FILTER_V2_DEC:
+      {
+        new->impl.init_fn = pdf_stm_f_v2dec_init;
+        new->impl.apply_fn = pdf_stm_f_v2dec_apply;
+        new->impl.dealloc_state_fn = pdf_stm_f_v2dec_dealloc_state;
+        break;
+      }
+    case PDF_STM_FILTER_AESV2_ENC:
+      {
+        new->impl.init_fn = pdf_stm_f_aesv2enc_init;
+        new->impl.apply_fn = pdf_stm_f_aesv2enc_apply;
+        new->impl.dealloc_state_fn = pdf_stm_f_aesv2enc_dealloc_state;
+        break;
+      }
+    case PDF_STM_FILTER_AESV2_DEC:
+      {
+        new->impl.init_fn = pdf_stm_f_aesv2dec_init;
+        new->impl.apply_fn = pdf_stm_f_aesv2dec_apply;
+        new->impl.dealloc_state_fn = pdf_stm_f_aesv2dec_dealloc_state;
+        break;
+      }
+    case PDF_STM_FILTER_MD5_ENC:
+      {
+        new->impl.init_fn = pdf_stm_f_md5enc_init;
+        new->impl.apply_fn = pdf_stm_f_md5enc_apply;
+        new->impl.dealloc_state_fn = pdf_stm_f_md5enc_dealloc_state;
+        break;
+      }
 #if defined(HAVE_LIBJBIG2DEC)
     case PDF_STM_FILTER_JBIG2_DEC:
       {
@@ -148,8 +186,9 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
   new->status = PDF_OK;
   new->really_finish_p = PDF_FALSE;
 
-  if (new->impl.init_fn (new->params,
-                         &(new->state)) != PDF_OK)
+  init_ret = new->impl.init_fn (new->params,
+                                &(new->state));
+  if (init_ret != PDF_OK)
     {
       /* Error initializing the filter implementation */
       pdf_stm_buffer_destroy (new->in);
@@ -157,7 +196,8 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
       new = NULL;
     }
 
-  return new;
+  *filter = new;
+  return init_ret;
 }
 
 pdf_status_t

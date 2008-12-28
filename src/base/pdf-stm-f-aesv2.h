@@ -1,9 +1,9 @@
-/* -*- mode: C -*- Time-stamp: "08/12/28 00:14:01 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/28 00:14:17 jemarch"
  *
- *       File:         pdf-stm-f-jbig2.h
- *       Date:         Fri Nov 21 01:07:54 2008
+ *       File:         pdf-stm-f-aesv2.h
+ *       Date:         Fri Dec  5 16:58:49 2008
  *
- *       GNU PDF Library - JBIG2 encoder/decoder
+ *       GNU PDF Library - AESv2 stream filter
  *
  */
 
@@ -23,42 +23,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PDF_STM_F_JBIG2_H
-#define PDF_STM_F_JBIG2_H
+#ifndef PDF_STM_F_AESV2_H
+#define PDF_STM_F_AESV2_H
 
 #include <config.h>
 #include <pdf-types.h>
 #include <pdf-hash.h>
+#include <pdf-alloc.h>
 #include <pdf-stm-buffer.h>
+#include <pdf-crypt.h>
+#include <stdio.h>
 
-#include <jbig2.h>
 
-/* Internal state */
-struct pdf_stm_f_jbig2dec_s
-{
-  Jbig2Allocator *jbig2_allocator;
-  Jbig2Ctx *jbig2_context;
-  Jbig2GlobalCtx *jbig2_global_context;
-  Jbig2ErrorCallback jbig2_error_cb_fn;
-  Jbig2Image *jbig2_page;
-  pdf_size_t index;
-  pdf_bool_t error_p;
-  pdf_size_t data_size;
-};
-
-typedef struct pdf_stm_f_jbig2dec_s *pdf_stm_f_jbig2dec_t;
-
-/* Filters implementation API */
-
-pdf_status_t pdf_stm_f_jbig2dec_init (pdf_hash_t params,
+pdf_status_t pdf_stm_f_aesv2enc_init (pdf_hash_t params,
                                       void **state);
-pdf_status_t pdf_stm_f_jbig2dec_apply (pdf_hash_t params,
+
+pdf_status_t pdf_stm_f_aesv2enc_apply (pdf_hash_t params,
                                        void *state,
                                        pdf_stm_buffer_t in,
                                        pdf_stm_buffer_t out,
                                        pdf_bool_t finish_p);
-pdf_status_t pdf_stm_f_jbig2dec_dealloc_state (void *state);
 
-#endif /* pdf-stm-f-jbig2.h */
+pdf_status_t pdf_stm_f_aesv2enc_dealloc_state (void *state);
 
-/* End of pdf-stm-f-jbig2.h */
+
+pdf_status_t pdf_stm_f_aesv2dec_init (pdf_hash_t params,
+                                      void **state);
+
+pdf_status_t pdf_stm_f_aesv2dec_apply (pdf_hash_t params,
+                                       void *state,
+                                       pdf_stm_buffer_t in,
+                                       pdf_stm_buffer_t out,
+                                       pdf_bool_t finish_p);
+
+pdf_status_t pdf_stm_f_aesv2dec_dealloc_state (void *state);
+
+
+
+#endif /* PDF_STM_F_AESV2_H */
+
+/* End of pdf_stm_f_aesv2.h */

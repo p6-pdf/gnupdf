@@ -1,9 +1,9 @@
-/* -*- mode: C -*- Time-stamp: "08/09/10 20:11:54 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/27 23:49:51 jemarch"
  *
- *       File:         pdf-hash-search.c
+ *       File:         pdf-hash-get.c
  *       Date:         Wed Mar  12 12:43:00 2008
  *
- *       GNU PDF Library - Unit tests for pdf_hash_search
+ *       GNU PDF Library - Unit tests for pdf_hash_get
  *
  */
 
@@ -31,13 +31,13 @@
 #include <check.h>
 
 /*
- * Test: pdf_hash_search_001
+ * Test: pdf_hash_get_001
  * Description:
  *   Try to search an existent element.
  * Success condition:
  *   Returns PDF_OK
  */
-START_TEST (pdf_hash_search_001)
+START_TEST (pdf_hash_get_001)
 {
   pdf_hash_t table;
   char *s;
@@ -57,7 +57,7 @@ START_TEST (pdf_hash_search_001)
   pdf_hash_add (table, "0", "val",NULL);
   pdf_hash_add (table, "AB", "val",NULL);
   
-  fail_if (pdf_hash_search (table, "key", (void *) &s) != PDF_OK);
+  fail_if (pdf_hash_get (table, "key", (void *) &s) != PDF_OK);
 
   pdf_hash_destroy (table);
 
@@ -65,13 +65,13 @@ START_TEST (pdf_hash_search_001)
 END_TEST
 
 /*
- * Test: pdf_hash_search_002
+ * Test: pdf_hash_get_002
  * Description:
  *   Try to search a non-existent element.
  * Success condition:
  *   Returns PDF_ERROR
  */
-START_TEST (pdf_hash_search_002)
+START_TEST (pdf_hash_get_002)
 {
   pdf_hash_t table;
   char *s;
@@ -79,7 +79,7 @@ START_TEST (pdf_hash_search_002)
   pdf_hash_new (NULL, &table);
   pdf_hash_add (table, "key", "val",NULL);
   
-  fail_if (pdf_hash_search (table, "ke", (void *) &s) != PDF_ERROR);
+  fail_if (pdf_hash_get (table, "ke", (void *) &s) != PDF_ERROR);
 
   pdf_hash_destroy (table);
 
@@ -87,20 +87,20 @@ START_TEST (pdf_hash_search_002)
 END_TEST
 
 /*
- * Test: pdf_hash_search_003
+ * Test: pdf_hash_get_003
  * Description:
  *   Try to search an element given a NULL elem_pointer.
  * Success condition:
  *   Returns PDF_EBADDATA
  */
-START_TEST (pdf_hash_search_003)
+START_TEST (pdf_hash_get_003)
 {
   pdf_hash_t table;
 
   pdf_hash_new (NULL, &table);
   pdf_hash_add (table, "key", "val",NULL);
   
-  fail_if (pdf_hash_search (table, "key", NULL) != PDF_EBADDATA);
+  fail_if (pdf_hash_get (table, "key", NULL) != PDF_EBADDATA);
 
   pdf_hash_destroy (table);
 
@@ -109,13 +109,13 @@ END_TEST
 
 
 /*
- * Test: pdf_hash_search_004
+ * Test: pdf_hash_get_004
  * Description:
  *   Try to search an element given a NULL key.
  * Success condition:
  *   Returns PDF_EBADDATA
  */
-START_TEST (pdf_hash_search_004)
+START_TEST (pdf_hash_get_004)
 {
   pdf_hash_t table;
   char *s;
@@ -123,7 +123,7 @@ START_TEST (pdf_hash_search_004)
   pdf_hash_new (NULL, &table);
   pdf_hash_add (table, "key", "val",NULL);
   
-  fail_if (pdf_hash_search (table, NULL, (void *) &s) != PDF_EBADDATA);
+  fail_if (pdf_hash_get (table, NULL, (void *) &s) != PDF_EBADDATA);
 
   pdf_hash_destroy (table);
 
@@ -136,13 +136,13 @@ END_TEST
  * Test case creation function
  */
 TCase *
-test_pdf_hash_search (void)
+test_pdf_hash_get (void)
 {
-  TCase *tc = tcase_create("pdf_hash_search");
-  tcase_add_test(tc, pdf_hash_search_001);
-  tcase_add_test(tc, pdf_hash_search_002);
-  tcase_add_test(tc, pdf_hash_search_003);
-  tcase_add_test(tc, pdf_hash_search_004);
+  TCase *tc = tcase_create("pdf_hash_get");
+  tcase_add_test(tc, pdf_hash_get_001);
+  tcase_add_test(tc, pdf_hash_get_002);
+  tcase_add_test(tc, pdf_hash_get_003);
+  tcase_add_test(tc, pdf_hash_get_004);
   return tc;
 }
 

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/23 23:00:32 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/27 21:20:00 jemarch"
  *
  *       File:         pdf-filter.c
  *       Date:         Tue Jul 10 18:42:07 2007
@@ -28,6 +28,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <getopt.h>
+#include <string.h>
 
 #ifdef HAVE_MALLOC_H
 #include <malloc.h>
@@ -74,6 +75,12 @@ static struct option GNU_longOptions[] =
     {"jxpdec", no_argument, NULL, JXPDEC_FILTER_ARG},
     {"predenc", no_argument, NULL, PREDENC_FILTER_ARG},
     {"preddec", no_argument, NULL, PREDDEC_FILTER_ARG},
+    {"md5enc", no_argument, NULL, MD5ENC_FILTER_ARG},
+    {"key", required_argument, NULL, KEY_ARG},
+    {"aesenc", no_argument, NULL, AESENC_FILTER_ARG},
+    {"aesdec", no_argument, NULL, AESDEC_FILTER_ARG},
+    {"v2enc", no_argument, NULL, V2ENC_FILTER_ARG},
+    {"v2dec", no_argument, NULL, V2DEC_FILTER_ARG},
     {NULL, 0, NULL, 0}
   };
 
@@ -109,7 +116,12 @@ available filters\n\
   --dctdec                            use the DCT decoder filter\n\
   --jxpdec                            use the JXP decoder filter\n\
   --predenc                           use the predictor encoder filter\n\
-  --preddec                           use the predictor dncoder filter\n\
+  --preddec                           use the predictor decoder filter\n\
+  --md5enc                            use the MD5 encoder filter\n\
+  --aesenc                            use the AESv2 encoder filter\n\
+  --aesdec                            use the AESv2 decoder filter\n\
+  --v2enc                             use the V2 encoder filter\n\
+  --v2dec                             use the V2 decoder filter\n\
   --help                              print a help message and exit\n\
   --usage                             print a usage message and exit\n\
   --version                           show pdf_filter version and exit\n\
@@ -277,7 +289,16 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
   pdf_hash_t filter_params;
   FILE *file;
   char *jbig2dec_global_segments = NULL;
+  char *key = NULL;
   pdf_size_t jbig2dec_global_segments_size = 0;
+  pdf_status_t status;
+
+  /* Initialize the crypt module */
+  if (pdf_crypt_init () != PDF_OK)
+    {
+      fprintf(stderr, "Error calling pdf_crypt_init().\n");
+      exit (1);
+    }
 
   /* Install filters */
   do
@@ -295,9 +316,15 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
                 exit (1);
               }
 
-            pdf_stm_install_filter (stm,
-                                    PDF_STM_FILTER_NULL,
-                                    filter_params);
+            status = pdf_stm_install_filter (stm,
+                                             PDF_STM_FILTER_NULL,
+                                             filter_params);
+            if (status != PDF_OK)
+              {
+                pdf_error (status, stderr, "while installing the null filter");
+                exit (1);
+              }
+
             break;
           }
         case ASCIIHEXDEC_FILTER_ARG:
@@ -309,9 +336,15 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
                 exit (1);
               }
 
-            pdf_stm_install_filter (stm,
-                                    PDF_STM_FILTER_AHEX_DEC,
-                                    filter_params);
+            status = pdf_stm_install_filter (stm,
+                                             PDF_STM_FILTER_AHEX_DEC,
+                                             filter_params);
+            if (status != PDF_OK)
+              {
+                pdf_error (status, stderr, "while installing the ASCII hex decoder filter");
+                exit (1);
+              }
+
             break;
           }
         case ASCIIHEXENC_FILTER_ARG:
@@ -323,9 +356,15 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
                 exit (1);
               }
 
-            pdf_stm_install_filter (stm,
-                                    PDF_STM_FILTER_AHEX_ENC,
-                                    filter_params);
+            status = pdf_stm_install_filter (stm,
+                                             PDF_STM_FILTER_AHEX_ENC,
+                                             filter_params);
+            if (status != PDF_OK)
+              {
+                pdf_error (status, stderr, "while installing the ASCII hex encoder filter");
+                exit (1);
+              }
+
             break;
           }
         case ASCII85DEC_FILTER_ARG:
@@ -354,9 +393,15 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
                 exit (1);
               }
 
-            pdf_stm_install_filter (stm,
-                                    PDF_STM_FILTER_FLATE_DEC,
-                                    filter_params);
+            status = pdf_stm_install_filter (stm,
+                                             PDF_STM_FILTER_FLATE_DEC,
+                                             filter_params);
+            if (status != PDF_OK)
+              {
+                pdf_error (status, stderr, "while installing the flate decoder filter");
+                exit (1);
+              }
+
             break;
           }
         case FLATEENC_FILTER_ARG:
@@ -368,9 +413,15 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
                 exit (1);
               }
 
-            pdf_stm_install_filter (stm,
-                                    PDF_STM_FILTER_FLATE_ENC,
-                                    filter_params);
+            status = pdf_stm_install_filter (stm,
+                                             PDF_STM_FILTER_FLATE_ENC,
+                                             filter_params);
+            if (status != PDF_OK)
+              {
+                pdf_error (status, stderr, "while installing the flate encoder filter");
+                exit (1);
+              }
+
             break;
           }
 #endif /* HAVE_LIBZ */
@@ -383,9 +434,16 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
                 exit (1);
               }
 
-            pdf_stm_install_filter (stm,
-                                    PDF_STM_FILTER_RL_DEC,
-                                    filter_params);
+            status = pdf_stm_install_filter (stm,
+                                             PDF_STM_FILTER_RL_DEC,
+                                             filter_params);
+
+            if (status != PDF_OK)
+              {
+                pdf_error (status, stderr, "while installing the RunLength decoder filter");
+                exit (1);
+              }
+
             break;
           }
         case RUNLENGTHENC_FILTER_ARG:
@@ -396,9 +454,17 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
                 pdf_error (ret, stderr, "while creating the rlenc filter parameters hash table");
                 exit (1);
               }
-            pdf_stm_install_filter (stm,
-                                    PDF_STM_FILTER_RL_ENC,
-                                    filter_params);
+
+            status = pdf_stm_install_filter (stm,
+                                             PDF_STM_FILTER_RL_ENC,
+                                             filter_params);
+
+            if (status != PDF_OK)
+              {
+                pdf_error (status, stderr, "while installing the RunLength encoder filter");
+                exit (1);
+              }
+
             break;
           }
         case CCITTFAXDEC_FILTER_ARG:
@@ -444,25 +510,20 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
 
             if (jbig2dec_global_segments != NULL)
               {
-                pdf_size_t *size;
-
-                pdf_hash_add (filter_params,
-                              "GlobalStreamsBuffer",
-                              (const void *) &jbig2dec_global_segments,
-                              NULL);
-
-                size = pdf_alloc (sizeof(pdf_size_t));
-                *size = jbig2dec_global_segments_size;
-                pdf_hash_add (filter_params,
-                              "GlobalStreamsSize",
-                              (const void *) size,
-                              NULL);
+                pdf_hash_add_string (filter_params, "GlobalStreamsBuffer", jbig2dec_global_segments);
+                pdf_hash_add_size (filter_params, "GlobalStreamsSize", strlen (jbig2dec_global_segments) + 1);
               }
 
 
-            pdf_stm_install_filter (stm,
-                                    PDF_STM_FILTER_JBIG2_DEC,
-                                    filter_params);
+            status = pdf_stm_install_filter (stm,
+                                             PDF_STM_FILTER_JBIG2_DEC,
+                                             filter_params);
+
+            if (status != PDF_OK)
+              {
+                pdf_error (status, stderr, "while installing the JBIG2 decoder filter");
+                exit (1);
+              }
 
             /* Note that a reference to this memory remains into the
                stream */
@@ -514,6 +575,170 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
                args.pred_colors,
                args.pred_bpc,
                args.pred_columns); */
+            break;
+          }
+        case MD5ENC_FILTER_ARG:
+          {
+            ret = pdf_hash_new (NULL, &filter_params);
+            if (ret != PDF_OK)
+              {
+                pdf_error (ret, stderr, "while creating the md5enc filter parameters hash table");
+                exit (1);
+              }
+
+            status = pdf_stm_install_filter (stm,
+                                             PDF_STM_FILTER_MD5_ENC,
+                                             filter_params);
+
+            if (status != PDF_OK)
+              {
+                pdf_error (status, stderr, "while installing the MD5 encoder filter");
+                exit (1);
+              }
+
+            break;
+          }
+        case KEY_ARG:
+          {
+            if (key != NULL)
+              {
+                pdf_dealloc (key);
+                key = NULL;
+              }
+
+            key = strdup (optarg);
+            break;
+          }
+        case AESENC_FILTER_ARG:
+          {
+            ret = pdf_hash_new (NULL, &filter_params);
+            if (ret != PDF_OK)
+              {
+                pdf_error (ret, stderr, "while creating the aesenc filter parameters hash table");
+                exit (1);
+              }
+
+            if (key != NULL)
+              {
+                pdf_hash_add_string (filter_params, "Key", key);
+                pdf_hash_add_size (filter_params, "KeySize", strlen (key));
+              }
+            else
+              {
+                fprintf (stderr, "You should specify a key for the aesenc filter.\n");
+                exit (1);
+              }
+
+            
+            status = pdf_stm_install_filter (stm,
+                                             PDF_STM_FILTER_AESV2_ENC,
+                                             filter_params);
+
+            if (status != PDF_OK)
+              {
+                pdf_error (status, stderr, "while installing the AESV2 encoder filter");
+                exit (1);
+              }
+
+            break;
+          }
+        case AESDEC_FILTER_ARG:
+          {
+            ret = pdf_hash_new (NULL, &filter_params);
+            if (ret != PDF_OK)
+              {
+                pdf_error (ret, stderr, "while creating the aesdec filter parameters hash table");
+                exit (1);
+              }
+
+            if (key != NULL)
+              {
+                pdf_hash_add_string (filter_params, "Key", key);
+                pdf_hash_add_size (filter_params, "KeySize", strlen (key));
+              }
+            else
+              {
+                fprintf (stderr, "You should specify a key for the aesdec filter.\n");
+                exit (1);
+              }
+
+            
+            status = pdf_stm_install_filter (stm,
+                                             PDF_STM_FILTER_AESV2_DEC,
+                                             filter_params);
+
+            if (status != PDF_OK)
+              {
+                pdf_error (status, stderr, "while installing the AESV2 decoder filter");
+                exit (1);
+              }
+
+            break;
+          }
+        case V2ENC_FILTER_ARG:
+          {
+            ret = pdf_hash_new (NULL, &filter_params);
+            if (ret != PDF_OK)
+              {
+                pdf_error (ret, stderr, "while creating the v2enc filter parameters hash table");
+                exit (1);
+              }
+
+            if (key != NULL)
+              {
+                pdf_hash_add_string (filter_params, "Key", key);
+                pdf_hash_add_size (filter_params, "KeySize", strlen (key));
+              }
+            else
+              {
+                fprintf (stderr, "You should specify a key for the v2enc filter.\n");
+                exit (1);
+              }
+
+            
+            status = pdf_stm_install_filter (stm,
+                                             PDF_STM_FILTER_V2_ENC,
+                                             filter_params); 
+
+            if (status != PDF_OK)
+              {
+                pdf_error (status, stderr, "while installing the V2 encoder filter");
+                exit (1);
+              }
+
+            break;
+          }
+        case V2DEC_FILTER_ARG:
+          {
+            ret = pdf_hash_new (NULL, &filter_params);
+            if (ret != PDF_OK)
+              {
+                pdf_error (ret, stderr, "while creating the v2dec filter parameters hash table");
+                exit (1);
+              }
+
+            if (key != NULL)
+              {
+                pdf_hash_add_string (filter_params, "Key", key);
+                pdf_hash_add_size (filter_params, "KeySize", strlen (key));
+              }
+            else
+              {
+                fprintf (stderr, "You should specify a key for the v2dec filter.\n");
+                exit (1);
+              }
+
+            
+            status = pdf_stm_install_filter (stm,
+                                             PDF_STM_FILTER_V2_DEC,
+                                             filter_params); 
+
+            if (status != PDF_OK)
+              {
+                pdf_error (status, stderr, "while installing the V2 decoder filter");
+                exit (1);
+              }
+
             break;
           }
 	  /* FILTER OPTIONS: */

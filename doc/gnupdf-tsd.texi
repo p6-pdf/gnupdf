@@ -920,6 +920,16 @@ The decoded bitmap should be equal to @file{TD00003}.
 @end table
 @end deffn
 
+@deffn Test pdf_stm_read_011
+Create a memory-based reading stream and attach a cipher filter
+decoder to it.
+@table @strong
+@item Success condition
+The decoded data should be correct.
+@end table
+@end deffn
+
+
 @node pdf_stm_read_char
 @subsubsection pdf_stm_read_char
 
@@ -1058,6 +1068,49 @@ The encoded data should be correct.
 @end deffn
 
 
+@deffn Test pdf_stm_write_008
+Create a memory-based writing stream and attach an V2 filter without parameters.
+@table @strong
+@item Success condition
+The installation of the filter should fail.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_write_009
+Create a memory-based writing stream and attach a V2 cipher filter to
+encode it.
+@table @strong
+@item Success condition
+The encoded data should be correct.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_write_010
+Create a memory-based writing stream and attach an AESV2 cipher filter to
+encode it.
+@table @strong
+@item Success condition
+The encoded data should be correct.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_write_011
+Create a memory-based writing stream and attach an MD5 filter to
+encode it.
+@table @strong
+@item Success condition
+The encoded data should be correct.
+@end table
+@end deffn
+
+@deffn Test pdf_stm_write_012
+Create a memory-based writing stream and attach an AESv2 cipher filter to
+encode it.
+@table @strong
+@item Success condition
+The encoded data should be correct.
+@end table
+@end deffn
 
 
 @node Text Module
@@ -6063,12 +6116,11 @@ The call should not produce an error
 * pdf_crypt_cipher_new::
 * pdf_crypt_cipher_destroy::
 * pdf_crypt_cipher_setkey::
-* pdf_crypt_cipher_encrypt_size::
-* pdf_crypt_cipher_decrypt_size::
 * pdf_crypt_cipher_encrypt::
 * pdf_crypt_cipher_decrypt::
 * pdf_crypt_md_new::
-* pdf_crypt_md_hash::
+* pdf_crypt_md_write::
+* pdf_crypt_md_read::
 * pdf_crypt_md_destroy::
 @end menu
 
@@ -6116,83 +6168,9 @@ Returns PDF_OK
 @end deffn
 
 
-@node pdf_crypt_cipher_encrypt_size
-@subsubsection pdf_crypt_cipher_encrypt_size
-
-@deffn Test pdf_crypt_cipher_encrypt_size_001
-Get the ciphered buffer size for an empty input buffer (AESV2).
-@table @strong
-@item Success condition
-Returns 32
-@end table
-@end deffn
-
-@deffn Test pdf_crypt_cipher_encrypt_size_002
-Get the ciphered buffer size for a 15 bytes buffer (AESV2).
-@table @strong
-@item Success condition
-Returns 32
-@end table
-@end deffn
-
-@deffn Test pdf_crypt_cipher_encrypt_size_003
-Get the ciphered buffer size for an empty buffer (V2).
-@table @strong
-@item Success condition
-Returns 0
-@end table
-@end deffn
-
-@deffn Test pdf_crypt_cipher_encrypt_size_004
-Get the ciphered buffer size for a 15 bytes buffer in a (V2).
-@table @strong
-@item Success condition
-Returns 15
-@end table
-@end deffn
-
-
 @node pdf_crypt_cipher_setkey
 @subsubsection pdf_crypt_cipher_setkey
 
-@deffn Test pdf_crypt_cipher_setkey_001
-Try set a empty key for a cipher (AESV2).
-@table @strong
-@item Success condition
-Returns PDF_EBADDATA
-@end table
-@end deffn
-
-
-@deffn Test pdf_crypt_cipher_setkey_001
-Set a key for a cipher (AESV2).
-@table @strong
-@item Success condition
-Returns PDF_OK
-@end table
-@end deffn
-
-
-
-
-@node pdf_crypt_cipher_decrypt_size
-@subsubsection pdf_crypt_cipher_decrypt_size
-
-@deffn Test pdf_crypt_cipher_decrypt_size_001
-@table @strong
-Get the plain buffer size for a 32 bytes ciphered buffer (AESV2).
-@item Success condition
-Returns 0
-@end table
-@end deffn
-
-@deffn Test pdf_crypt_cipher_decrypt_size_002
-@table @strong
-Get the plain buffer size for a 15 bytes ciphered buffer (V2).
-@item Success condition
-Returns 15
-@end table
-@end deffn
 
 
 @node pdf_crypt_cipher_encrypt
@@ -6208,9 +6186,17 @@ Returns PDF_OK
 
 @deffn Test pdf_crypt_cipher_encrypt_002
 @table @strong
-Encrypt an empty buffer (V2).
+Encrypt an ciphered buffer (AESV2).
 @item Success condition
-Returns PDF_OK
+The output data should be correct.
+@end table
+@end deffn
+
+@deffn Test pdf_crypt_cipher_encrypt_003
+@table @strong
+Encrypt an ciphered buffer incrementally (AESV2).
+@item Success condition
+The output data should be correct.
 @end table
 @end deffn
 
@@ -6220,9 +6206,9 @@ Returns PDF_OK
 
 @deffn Test pdf_crypt_cipher_decrypt_001
 @table @strong
-Decrypt an ciphered empty buffer (AESV2).
+Decrypt an ciphered buffer (AESV2).
 @item Success condition
-Returns PDF_OK and the length of output buffer is zero.
+The output data should be correct.
 @end table
 @end deffn
 
@@ -6231,6 +6217,22 @@ Returns PDF_OK and the length of output buffer is zero.
 Decrypt an ciphered empty buffer (V2).
 @item Success condition
 Returns PDF_OK and the length of output buffer is zero.
+@end table
+@end deffn
+
+@deffn Test pdf_crypt_cipher_decrypt_003
+@table @strong
+Decrypt an ciphered buffer (AESV2).
+@item Success condition
+The output data should be correct.
+@end table
+@end deffn
+
+@deffn Test pdf_crypt_cipher_decrypt_004
+@table @strong
+Decrypt an ciphered buffer incrementally (AESV2).
+@item Success condition
+The output data should be correct.
 @end table
 @end deffn
 
@@ -6247,16 +6249,45 @@ Returns PDF_OK.
 @end deffn
 
 
-@node pdf_crypt_md_hash
-@subsubsection pdf_crypt_md_hash
+@node pdf_crypt_md_write
+@subsubsection pdf_crypt_md_write
 
-@deffn Test pdf_crypt_md_hash_001
+@deffn Test pdf_crypt_md_write_001
+@table @strong
+Pass an empty message.
+@item Success condition
+Returns PDF_OK.
+@end table
+@end deffn
+
+
+@node pdf_crypt_md_read
+@subsubsection pdf_crypt_md_read
+
+@deffn Test pdf_crypt_md_read_001
 @table @strong
 Compute the md5 of an empty buffer.
 @item Success condition
 Returns PDF_OK and output buffer matches.
 @end table
 @end deffn
+
+@deffn Test pdf_crypt_md_read_002
+@table @strong
+Compute the md5 checksum of a string.
+@item Success condition
+The output data should be correct.
+@end table
+@end deffn
+
+@deffn Test pdf_crypt_md_read_003
+@table @strong
+Compute the md5 checksum of a string.
+@item Success condition
+The output data should be correct.
+@end table
+@end deffn
+
 
 
 @node pdf_crypt_md_destroy

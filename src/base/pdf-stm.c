@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/08 20:01:52 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/27 21:34:07 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -338,10 +338,11 @@ pdf_stm_install_filter (pdf_stm_t stm,
     }
 
   /* Create the new filter */
-  filter = pdf_stm_filter_new (filter_type,
-                               filter_params,
-                               stm->cache->size,
-                               filter_mode);
+  ret = pdf_stm_filter_new (filter_type,
+                            filter_params,
+                            stm->cache->size,
+                            filter_mode,
+                            &filter);
 
   if (filter != NULL)
     {
@@ -350,11 +351,6 @@ pdf_stm_install_filter (pdf_stm_t stm,
       pdf_stm_filter_set_out (filter, stm->cache);
       pdf_stm_filter_set_out (stm->filter, pdf_stm_filter_get_in (filter));
       stm->filter = filter;
-      ret = PDF_OK;
-    }
-  else
-    {
-      ret = PDF_ERROR;
     }
 
   return ret;
@@ -449,6 +445,7 @@ pdf_stm_init (pdf_size_t cache_size,
 {
   pdf_hash_t null_filter_params;
   enum pdf_stm_filter_mode_e filter_mode;
+  pdf_status_t ret;
 
   if (cache_size == 0)
     {
@@ -468,40 +465,44 @@ pdf_stm_init (pdf_size_t cache_size,
       filter_mode = PDF_STM_FILTER_MODE_WRITE;
     }
 
-  stm->filter = pdf_stm_filter_new (PDF_STM_FILTER_NULL,
-                                    null_filter_params,
-                                    cache_size,
-                                    filter_mode);
+  ret = pdf_stm_filter_new (PDF_STM_FILTER_NULL,
+                            null_filter_params,
+                            cache_size,
+                            filter_mode,
+                            &(stm->filter));
 
-  /* Initialize the filter cache */
-  stm->cache = pdf_stm_buffer_new (cache_size);
-
-  /* Configure the filter */
-  stm->mode = mode;
-  if (stm->mode == PDF_STM_READ)
+  if (ret == PDF_OK)
     {
-      /* Configuration for a reading stream
-       *
-       *  <cache> <--- <null-filter> <--- <backend>
-       */
-
-      pdf_stm_filter_set_out (stm->filter, 
-                              stm->cache);
-      pdf_stm_filter_set_be (stm->filter,
-                             stm->backend);
-    } 
-  else
-    {
-      /* Configuration for a writing stream
-       *
-       * <null-filter> --> <cache> --> <backend>
-       */
-
-      pdf_stm_filter_set_out (stm->filter,
-                              stm->cache);
+      /* Initialize the filter cache */
+      stm->cache = pdf_stm_buffer_new (cache_size);
+      
+      /* Configure the filter */
+      stm->mode = mode;
+      if (stm->mode == PDF_STM_READ)
+        {
+          /* Configuration for a reading stream
+           *
+           *  <cache> <--- <null-filter> <--- <backend>
+           */
+          
+          pdf_stm_filter_set_out (stm->filter, 
+                                  stm->cache);
+          pdf_stm_filter_set_be (stm->filter,
+                                 stm->backend);
+        } 
+      else
+        {
+          /* Configuration for a writing stream
+           *
+           * <null-filter> --> <cache> --> <backend>
+           */
+          
+          pdf_stm_filter_set_out (stm->filter,
+                                  stm->cache);
+        }
     }
 
-  return PDF_OK;
+  return ret;
 }
 
 

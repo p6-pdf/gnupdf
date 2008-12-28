@@ -56,7 +56,7 @@ AC_CHECK_LIB([jpeg],[jpeg_std_error],[],[have_libjpeg=no])
 AM_CONDITIONAL([LIBJPEG], [test "x$have_libjpeg" != "no"])
 
 have_jbig2dec=yes
-AC_CHECK_LIB([jbig2dec],[jbig2_ctx_new],[],[have_jbig2dec = no])
+AC_CHECK_LIB([jbig2dec],[jbig2_ctx_new],[],[have_jbig2dec=no])
 AM_CONDITIONAL([JBIG2DEC], [test "x$have_jbig2dec" != "xno"])
 
 AM_PATH_LIBGCRYPT([1.2.4], have_libgcrypt="yes", have_libgcrypt="no")
