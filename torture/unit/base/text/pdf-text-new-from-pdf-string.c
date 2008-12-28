@@ -48,9 +48,9 @@
  */
 START_TEST(pdf_text_new_from_pdf_string_001)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   extern const test_string_t pdf_doc_encoding_strings[];
   int i;
   
@@ -97,8 +97,12 @@ START_TEST(pdf_text_new_from_pdf_string_001)
       fail_if(text == NULL);
       
       /* 3. The contents of the text object must be the expected ones. */
-      fail_unless(text->size == expected_size);
-      fail_unless(memcmp(text->data, expected_data, expected_size) == 0);
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      fail_unless(actual_size == expected_size);
+      fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
 
       /* 4. The language code of the output object should be empty */
       fail_unless(strlen((char *)pdf_text_get_language(text)) == 0);
@@ -119,7 +123,7 @@ START_TEST(pdf_text_new_from_pdf_string_001)
         }
       ++i;
     }
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -173,9 +177,9 @@ END_TEST
  */
 START_TEST(pdf_text_new_from_pdf_string_003)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   extern const test_string_t utf16be_strings[];
   int i;
   
@@ -226,7 +230,12 @@ START_TEST(pdf_text_new_from_pdf_string_003)
           pdf_char_t *internal_hex = NULL;
           pdf_char_t *expected_hex = NULL;
           
-          internal_hex = pdf_text_test_get_hex(text->data,text->size,':');
+          pdf_size_t actual_size;
+          pdf_char_t *actual_data;
+          fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                           PDF_TEXT_UTF32_HE,0) == PDF_OK);
+          internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
+
           expected_hex = pdf_text_test_get_hex(expected_data,expected_size,':');
           fail_if((internal_hex == NULL) || \
                   (expected_hex == NULL));
@@ -239,8 +248,12 @@ START_TEST(pdf_text_new_from_pdf_string_003)
         }
       
       /* 3. The contents of the text object must be the expected ones. */
-      fail_unless(text->size == expected_size);
-      fail_unless(memcmp(text->data, expected_data, expected_size) == 0);
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      fail_unless(actual_size == expected_size);
+      fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
       
       /* 4. The language code of the output object should be empty */
       fail_unless(strlen((char *)pdf_text_get_language(text)) == 0);
@@ -261,7 +274,7 @@ START_TEST(pdf_text_new_from_pdf_string_003)
         }
       ++i;
     }
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -389,9 +402,9 @@ END_TEST
  */
 START_TEST(pdf_text_new_from_pdf_string_006)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   extern const test_string_t utf16be_strings[];
   int i;
   const pdf_char_t *language_code = (pdf_char_t *)"en";
@@ -454,8 +467,12 @@ START_TEST(pdf_text_new_from_pdf_string_006)
         {
           pdf_char_t *internal_hex = NULL;
           pdf_char_t *expected_hex = NULL;
-          
-          internal_hex = pdf_text_test_get_hex(text->data,text->size,':');
+
+          pdf_size_t actual_size;
+          pdf_char_t *actual_data;
+          fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                           PDF_TEXT_UTF32_HE,0) == PDF_OK);
+          internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           expected_hex = pdf_text_test_get_hex(expected_data,expected_size,':');
           fail_if((internal_hex == NULL) || \
                   (expected_hex == NULL));
@@ -472,8 +489,13 @@ START_TEST(pdf_text_new_from_pdf_string_006)
         }
       
       /* 3. The contents of the text object must be the expected ones. */
-      fail_unless(text->size == expected_size);
-      fail_unless(memcmp(text->data, expected_data, expected_size) == 0);
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      fail_unless(actual_size == expected_size);
+      fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
+
       
       /* 4. The languange code within the text object must be the expected
        *    one */
@@ -498,7 +520,7 @@ START_TEST(pdf_text_new_from_pdf_string_006)
       pdf_dealloc(input_data);
       ++i;
     }
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -520,9 +542,9 @@ END_TEST
  */
 START_TEST(pdf_text_new_from_pdf_string_007)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   extern const test_string_t utf16be_strings[];
   int i;
   const pdf_char_t *language_code = (pdf_char_t *)"en";
@@ -588,8 +610,12 @@ START_TEST(pdf_text_new_from_pdf_string_007)
         {
           pdf_char_t *internal_hex = NULL;
           pdf_char_t *expected_hex = NULL;
-          
-          internal_hex = pdf_text_test_get_hex(text->data,text->size,':');
+
+          pdf_size_t actual_size;
+          pdf_char_t *actual_data;
+          fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                           PDF_TEXT_UTF32_HE,0) == PDF_OK);
+          internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           expected_hex = pdf_text_test_get_hex(expected_data,expected_size,':');
           fail_if((internal_hex == NULL) || \
                   (expected_hex == NULL));
@@ -606,8 +632,12 @@ START_TEST(pdf_text_new_from_pdf_string_007)
         }
       
       /* 3. The contents of the text object must be the expected ones. */
-      fail_unless(text->size == expected_size);
-      fail_unless(memcmp(text->data, expected_data, expected_size) == 0);
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      fail_unless(actual_size == expected_size);
+      fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
       
       /* 4. The languange code within the text object must be the expected
        *    one */
@@ -634,7 +664,7 @@ START_TEST(pdf_text_new_from_pdf_string_007)
       pdf_dealloc(input_data);
       ++i;
     }
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -674,9 +704,9 @@ END_TEST
  */
 START_TEST(pdf_text_new_from_pdf_string_008)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   extern const test_string_t utf16be_strings[];
   int i;
   const pdf_char_t *language_code1 = (pdf_char_t *)"en";
@@ -800,8 +830,12 @@ START_TEST(pdf_text_new_from_pdf_string_008)
         {
           pdf_char_t *internal_hex = NULL;
           pdf_char_t *expected_hex = NULL;
-          
-          internal_hex = pdf_text_test_get_hex(text1->data,text1->size,':');
+
+          pdf_size_t actual_size;
+          pdf_char_t *actual_data;
+          fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text1,
+                                           PDF_TEXT_UTF32_HE,0) == PDF_OK);
+          internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           expected_hex = pdf_text_test_get_hex(expected_data1,
                                                expected_size1,':');
           fail_if((internal_hex == NULL) || \
@@ -823,8 +857,12 @@ START_TEST(pdf_text_new_from_pdf_string_008)
         }
       
       /* 3. The contents of the first text object must be the expected ones. */
-      fail_unless(text1->size == expected_size1);
-      fail_unless(memcmp(text1->data, expected_data1, expected_size1) == 0);
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text1,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      fail_unless(actual_size == expected_size1);
+      fail_unless(memcmp(actual_data, expected_data1, expected_size1)==0);
       
       /* 4. The languange code within the first text object must be the expected
        *    one */
@@ -856,8 +894,12 @@ START_TEST(pdf_text_new_from_pdf_string_008)
         {
           pdf_char_t *internal_hex = NULL;
           pdf_char_t *expected_hex = NULL;
-          
-          internal_hex = pdf_text_test_get_hex(text2->data,text2->size,':');
+
+          pdf_size_t actual_size;
+          pdf_char_t *actual_data;
+          fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text2,
+                                           PDF_TEXT_UTF32_HE,0) == PDF_OK);
+          internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           expected_hex = pdf_text_test_get_hex(expected_data2,
                                                expected_size2,':');
           fail_if((internal_hex == NULL) || \
@@ -879,8 +921,10 @@ START_TEST(pdf_text_new_from_pdf_string_008)
         }
       
       /* 9. The contents of the second text object must be the expected ones. */
-      fail_unless(text2->size == expected_size2);
-      fail_unless(memcmp(text2->data, expected_data2, expected_size2) == 0);
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text2,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      fail_unless(actual_size == expected_size2);
+      fail_unless(memcmp(actual_data, expected_data2, expected_size2)==0);
       
       /* 10. The languange code within the second text object must be the 
        *    expected one */
@@ -912,8 +956,12 @@ START_TEST(pdf_text_new_from_pdf_string_008)
         {
           pdf_char_t *internal_hex = NULL;
           pdf_char_t *expected_hex = NULL;
-          
-          internal_hex = pdf_text_test_get_hex(text3->data,text3->size,':');
+
+          pdf_size_t actual_size;
+          pdf_char_t *actual_data;
+          fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text3,
+                                           PDF_TEXT_UTF32_HE,0) == PDF_OK);
+          internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           expected_hex = pdf_text_test_get_hex(expected_data3,
                                                expected_size3,':');
           fail_if((internal_hex == NULL) || \
@@ -935,8 +983,10 @@ START_TEST(pdf_text_new_from_pdf_string_008)
         }
       
       /* 15. The contents of the third text object must be the expected ones. */
-      fail_unless(text3->size == expected_size3);
-      fail_unless(memcmp(text3->data, expected_data3, expected_size3) == 0);
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text3,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      fail_unless(actual_size == expected_size3);
+      fail_unless(memcmp(actual_data, expected_data3, expected_size3)==0);
       
       /* 16. The languange code within the third text object must be the 
        *    expected one */
@@ -967,7 +1017,7 @@ START_TEST(pdf_text_new_from_pdf_string_008)
       ++i;
     }
 
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -1009,9 +1059,9 @@ END_TEST
  */
 START_TEST(pdf_text_new_from_pdf_string_009)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   extern const test_string_t utf16be_strings[];
   int i;
   const pdf_char_t *language_code1 = (pdf_char_t *)"en";
@@ -1141,8 +1191,12 @@ START_TEST(pdf_text_new_from_pdf_string_009)
         {
           pdf_char_t *internal_hex = NULL;
           pdf_char_t *expected_hex = NULL;
-          
-          internal_hex = pdf_text_test_get_hex(text1->data,text1->size,':');
+
+          pdf_size_t actual_size;
+          pdf_char_t *actual_data;
+          fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text1,
+                                           PDF_TEXT_UTF32_HE,0) == PDF_OK);
+          internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           expected_hex = pdf_text_test_get_hex(expected_data1,
                                                expected_size1,':');
           fail_if((internal_hex == NULL) || \
@@ -1164,8 +1218,12 @@ START_TEST(pdf_text_new_from_pdf_string_009)
         }
       
       /* 3. The contents of the first text object must be the expected ones. */
-      fail_unless(text1->size == expected_size1);
-      fail_unless(memcmp(text1->data, expected_data1, expected_size1) == 0);
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text1,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      fail_unless(actual_size == expected_size1);
+      fail_unless(memcmp(actual_data, expected_data1, expected_size1)==0);
       
       /* 4. The languange code within the first text object must be the expected
        *    one */
@@ -1199,8 +1257,12 @@ START_TEST(pdf_text_new_from_pdf_string_009)
         {
           pdf_char_t *internal_hex = NULL;
           pdf_char_t *expected_hex = NULL;
-          
-          internal_hex = pdf_text_test_get_hex(text2->data,text2->size,':');
+
+          pdf_size_t actual_size;
+          pdf_char_t *actual_data;
+          fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text2,
+                                           PDF_TEXT_UTF32_HE,0) == PDF_OK);
+          internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           expected_hex = pdf_text_test_get_hex(expected_data2,
                                                expected_size2,':');
           fail_if((internal_hex == NULL) || \
@@ -1222,8 +1284,10 @@ START_TEST(pdf_text_new_from_pdf_string_009)
         }
       
       /* 9. The contents of the second text object must be the expected ones. */
-      fail_unless(text2->size == expected_size2);
-      fail_unless(memcmp(text2->data, expected_data2, expected_size2) == 0);
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text2,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      fail_unless(actual_size == expected_size2);
+      fail_unless(memcmp(actual_data, expected_data2, expected_size2)==0);
       
       /* 10. The languange code within the second text object must be the 
        *    expected one */
@@ -1257,8 +1321,12 @@ START_TEST(pdf_text_new_from_pdf_string_009)
         {
           pdf_char_t *internal_hex = NULL;
           pdf_char_t *expected_hex = NULL;
-          
-          internal_hex = pdf_text_test_get_hex(text3->data,text3->size,':');
+
+          pdf_size_t actual_size;
+          pdf_char_t *actual_data;
+          fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text3,
+                                           PDF_TEXT_UTF32_HE,0) == PDF_OK);
+          internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           expected_hex = pdf_text_test_get_hex(expected_data3,
                                                expected_size3,':');
           fail_if((internal_hex == NULL) || \
@@ -1280,8 +1348,10 @@ START_TEST(pdf_text_new_from_pdf_string_009)
         }
       
       /* 15. The contents of the third text object must be the expected ones. */
-      fail_unless(text3->size == expected_size3);
-      fail_unless(memcmp(text3->data, expected_data3, expected_size3) == 0);
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text3,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      fail_unless(actual_size == expected_size3);
+      fail_unless(memcmp(actual_data, expected_data3, expected_size3)==0);
       
       /* 16. The languange code within the third text object must be the 
        *    expected one */
@@ -1313,7 +1383,7 @@ START_TEST(pdf_text_new_from_pdf_string_009)
       pdf_dealloc(input_data);
       ++i;
     }
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 

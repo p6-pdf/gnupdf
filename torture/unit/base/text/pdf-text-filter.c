@@ -44,9 +44,9 @@
  */
 START_TEST(pdf_text_filter_001)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "GNU's Not Unix" "\r""\n" \
                                                 "GNU's Not Unix" "\r" \
@@ -82,7 +82,11 @@ START_TEST(pdf_text_filter_001)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_001:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)(long)strlen((char *)internal_hex));
@@ -95,7 +99,11 @@ START_TEST(pdf_text_filter_001)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_001:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)(long)strlen((char *)internal_hex));
@@ -115,7 +123,7 @@ START_TEST(pdf_text_filter_001)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -130,9 +138,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_002)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "";
   const pdf_char_t *expected_data = input_data;
@@ -151,7 +159,11 @@ START_TEST(pdf_text_filter_002)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_002:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)(long)strlen((char *)internal_hex));
@@ -164,7 +176,11 @@ START_TEST(pdf_text_filter_002)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_002:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)(long)strlen((char *)internal_hex));
@@ -184,7 +200,7 @@ START_TEST(pdf_text_filter_002)
   
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -200,9 +216,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_003)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "GNU's Not Unix. " "\r""\n" \
                                                 "GNU's Not Unix. " "\r" \
@@ -231,7 +247,11 @@ START_TEST(pdf_text_filter_003)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_003:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)(long)strlen((char *)internal_hex));
@@ -245,7 +265,11 @@ START_TEST(pdf_text_filter_003)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_003:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)(long)strlen((char *)internal_hex));
@@ -265,7 +289,7 @@ START_TEST(pdf_text_filter_003)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -280,9 +304,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_004)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "";
   const pdf_char_t *expected_data = input_data;
@@ -301,7 +325,11 @@ START_TEST(pdf_text_filter_004)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_004:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)(long)strlen((char *)internal_hex));
@@ -315,7 +343,11 @@ START_TEST(pdf_text_filter_004)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_004:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)(long)strlen((char *)internal_hex));
@@ -335,7 +367,7 @@ START_TEST(pdf_text_filter_004)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -351,9 +383,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_005)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "GNU & GNU && GNU";
   const pdf_char_t *expected_data = (pdf_char_t *) "GNU GNU & GNU";
@@ -375,7 +407,11 @@ START_TEST(pdf_text_filter_005)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_005:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)(long)strlen((char *)internal_hex));
@@ -388,7 +424,11 @@ START_TEST(pdf_text_filter_005)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_005:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)(long)strlen((char *)internal_hex));
@@ -408,7 +448,7 @@ START_TEST(pdf_text_filter_005)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -423,9 +463,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_006)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "";
   const pdf_char_t *expected_data = input_data;
@@ -444,7 +484,11 @@ START_TEST(pdf_text_filter_006)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_006:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)(long)strlen((char *)internal_hex));
@@ -457,7 +501,11 @@ START_TEST(pdf_text_filter_006)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_006:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)(long)strlen((char *)internal_hex));
@@ -477,7 +525,7 @@ START_TEST(pdf_text_filter_006)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -494,9 +542,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_007)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00"" " \
                                                 "\x00\x00\x00""G" \
@@ -523,7 +571,11 @@ START_TEST(pdf_text_filter_007)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_007:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -537,7 +589,11 @@ START_TEST(pdf_text_filter_007)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_007:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -557,7 +613,7 @@ START_TEST(pdf_text_filter_007)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -573,9 +629,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_008)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x6C\x34" \
                                                 "\x00\x00\x00"" " \
@@ -596,7 +652,11 @@ START_TEST(pdf_text_filter_008)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_007:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -610,7 +670,11 @@ START_TEST(pdf_text_filter_008)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_007:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -630,7 +694,7 @@ START_TEST(pdf_text_filter_008)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -645,9 +709,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_009)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "";
   const pdf_char_t *expected_data = input_data;
@@ -666,7 +730,11 @@ START_TEST(pdf_text_filter_009)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_006:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -680,7 +748,11 @@ START_TEST(pdf_text_filter_009)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_006:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -700,7 +772,7 @@ START_TEST(pdf_text_filter_009)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -718,9 +790,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_010)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00"" " \
                                                 "\x00\x00\x00""g" \
@@ -747,7 +819,11 @@ START_TEST(pdf_text_filter_010)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_010:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -760,7 +836,11 @@ START_TEST(pdf_text_filter_010)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_010:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -783,7 +863,7 @@ START_TEST(pdf_text_filter_010)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -799,9 +879,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_011)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x1E\x98" \
@@ -828,7 +908,11 @@ START_TEST(pdf_text_filter_011)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_011:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -841,7 +925,11 @@ START_TEST(pdf_text_filter_011)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_011:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -861,7 +949,7 @@ START_TEST(pdf_text_filter_011)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -877,9 +965,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_012)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* Final_Sigma condition in Special Case algorithms
    *  When the given character is preceded by a sequence consisting of a
    *  cased unicode point (with case information) and a case-ignorable
@@ -927,7 +1015,11 @@ START_TEST(pdf_text_filter_012)
     if(INTERACTIVE_DEBUG)
       {
         pdf_char_t *internal_hex = NULL;
-        internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
         fail_if(internal_hex == NULL);
         printf("pdf_text_filter:12:1:Internal> '%s'\n", internal_hex);
         pdf_dealloc(internal_hex);
@@ -975,7 +1067,11 @@ START_TEST(pdf_text_filter_012)
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
-          internal_hex = pdf_text_test_get_hex(text->data,text->size,':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           fail_if(internal_hex == NULL);
           printf("pdf_text_filter:12:2:Internal> '%s'\n", internal_hex);
           pdf_dealloc(internal_hex);
@@ -995,7 +1091,7 @@ START_TEST(pdf_text_filter_012)
       pdf_dealloc(output_data);
       pdf_text_destroy(text);
     }
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -1011,9 +1107,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_013)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* 0307; 0307; ; ; lt After_Soft_Dotted; # COMBINING DOT ABOVE */
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
@@ -1041,7 +1137,11 @@ START_TEST(pdf_text_filter_013)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_013:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -1054,7 +1154,11 @@ START_TEST(pdf_text_filter_013)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_013:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -1074,7 +1178,7 @@ START_TEST(pdf_text_filter_013)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -1089,9 +1193,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_014)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* Code:0049; Lower:0069 0307; Title:0049; Upper:0049;
    * lt More_Above; # LATIN CAPITAL LETTER I */
 
@@ -1122,7 +1226,11 @@ START_TEST(pdf_text_filter_014)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_014:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -1135,7 +1243,11 @@ START_TEST(pdf_text_filter_014)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_014:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -1156,7 +1268,7 @@ START_TEST(pdf_text_filter_014)
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
 
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -1193,9 +1305,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_016)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   
@@ -1226,7 +1338,11 @@ START_TEST(pdf_text_filter_016)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_016:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -1239,7 +1355,11 @@ START_TEST(pdf_text_filter_016)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_016:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -1259,7 +1379,7 @@ START_TEST(pdf_text_filter_016)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -1276,9 +1396,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_017)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* # When uppercasing, i turns into a dotted capital I
    * 0069; 0069; 0130; 0130; tr; # LATIN SMALL LETTER I */
   
@@ -1307,7 +1427,11 @@ START_TEST(pdf_text_filter_017)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_017:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -1320,7 +1444,11 @@ START_TEST(pdf_text_filter_017)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_017:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -1340,7 +1468,7 @@ START_TEST(pdf_text_filter_017)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -1359,9 +1487,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_018)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   
@@ -1392,7 +1520,11 @@ START_TEST(pdf_text_filter_018)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_016:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -1405,7 +1537,11 @@ START_TEST(pdf_text_filter_018)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_016:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -1425,7 +1561,7 @@ START_TEST(pdf_text_filter_018)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -1444,9 +1580,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_019)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* # When lowercasing, unless an I is before a dot_above, it turns into a
    *   dotless i.
    * 0049; 0131; 0049; 0049; tr Not_Before_Dot; # LATIN CAPITAL LETTER I */
@@ -1478,7 +1614,11 @@ START_TEST(pdf_text_filter_019)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_016:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -1491,7 +1631,11 @@ START_TEST(pdf_text_filter_019)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_016:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -1511,7 +1655,7 @@ START_TEST(pdf_text_filter_019)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -1527,9 +1671,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_020)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* Final_Sigma condition in Special Case algorithms
    *  When the given character is preceded by a sequence consisting of a
    *  cased unicode point (with case information) and a case-ignorable
@@ -1582,7 +1726,11 @@ START_TEST(pdf_text_filter_020)
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
-          internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           fail_if(internal_hex == NULL);
           printf("pdf_text_filter:20:1:Internal> '%s'\n", internal_hex);
           pdf_dealloc(internal_hex);
@@ -1631,7 +1779,11 @@ START_TEST(pdf_text_filter_020)
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
-          internal_hex = pdf_text_test_get_hex(text->data,text->size,':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           fail_if(internal_hex == NULL);
           printf("pdf_text_filter:20:2:Internal> '%s'\n", internal_hex);
           pdf_dealloc(internal_hex);
@@ -1651,7 +1803,7 @@ START_TEST(pdf_text_filter_020)
       pdf_dealloc(output_data);
       pdf_text_destroy(text);
     }
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -1668,9 +1820,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_021)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* 0x030C has combining class 230, so condition should not be fulfilled */
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
@@ -1701,7 +1853,11 @@ START_TEST(pdf_text_filter_021)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_021:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -1714,7 +1870,11 @@ START_TEST(pdf_text_filter_021)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_021:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -1734,7 +1894,7 @@ START_TEST(pdf_text_filter_021)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -1750,9 +1910,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_022)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* Code:0049; Lower:0069 0307; Title:0049; Upper:0049;
    * lt More_Above; # LATIN CAPITAL LETTER I
    * As 0xC0 has combining class 0, the condition must not be fullfilled*/
@@ -1786,7 +1946,11 @@ START_TEST(pdf_text_filter_022)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_022:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -1799,7 +1963,11 @@ START_TEST(pdf_text_filter_022)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_022:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -1819,7 +1987,7 @@ START_TEST(pdf_text_filter_022)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -1858,9 +2026,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_024)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   /* 0x030C has combining class 230, so condition should not be fulfilled */
@@ -1894,7 +2062,11 @@ START_TEST(pdf_text_filter_024)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_024:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -1907,7 +2079,11 @@ START_TEST(pdf_text_filter_024)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_024:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -1927,7 +2103,7 @@ START_TEST(pdf_text_filter_024)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -1944,9 +2120,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_025)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* # When uppercasing, i turns into a dotted capital I
    * 0069; 0069; 0130; 0130; tr; # LATIN SMALL LETTER I */
   
@@ -1975,7 +2151,11 @@ START_TEST(pdf_text_filter_025)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_025:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -1988,7 +2168,11 @@ START_TEST(pdf_text_filter_025)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_025:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -2008,7 +2192,7 @@ START_TEST(pdf_text_filter_025)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -2028,9 +2212,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_026)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   /* 0x030C has combining class 230, so condition should not be fulfilled */
@@ -2064,7 +2248,11 @@ START_TEST(pdf_text_filter_026)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_026:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -2077,7 +2265,11 @@ START_TEST(pdf_text_filter_026)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_026:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -2097,7 +2289,7 @@ START_TEST(pdf_text_filter_026)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -2117,9 +2309,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_027)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* # When lowercasing, unless an I is before a dot_above, it turns into a
    *   dotless i.
    * 0049; 0131; 0049; 0049; tr Not_Before_Dot; # LATIN CAPITAL LETTER I
@@ -2154,7 +2346,11 @@ START_TEST(pdf_text_filter_027)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_027:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -2167,7 +2363,11 @@ START_TEST(pdf_text_filter_027)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_027:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -2187,7 +2387,7 @@ START_TEST(pdf_text_filter_027)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -2206,9 +2406,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_028)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00"" " \
                                                 "\x00\x00\x00""G" \
@@ -2235,7 +2435,11 @@ START_TEST(pdf_text_filter_028)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_028:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -2248,7 +2452,11 @@ START_TEST(pdf_text_filter_028)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_028:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -2271,7 +2479,7 @@ START_TEST(pdf_text_filter_028)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -2287,9 +2495,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_029)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x01\x30";
@@ -2310,7 +2518,11 @@ START_TEST(pdf_text_filter_029)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_029:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -2323,7 +2535,11 @@ START_TEST(pdf_text_filter_029)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_029:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -2343,7 +2559,7 @@ START_TEST(pdf_text_filter_029)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -2360,9 +2576,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_030)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* Final_Sigma condition in Special Case algorithms
    *  When the given character is preceded by a sequence consisting of a
    *  cased unicode point (with case information) and a case-ignorable
@@ -2413,7 +2629,11 @@ START_TEST(pdf_text_filter_030)
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
-          internal_hex = pdf_text_test_get_hex(text->data,text->size,':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           fail_if(internal_hex == NULL);
           printf("pdf_text_filter:30:1:Before> '%s'\n", internal_hex);
           pdf_dealloc(internal_hex);
@@ -2425,7 +2645,11 @@ START_TEST(pdf_text_filter_030)
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
-          internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           fail_if(internal_hex == NULL);
           printf("pdf_text_filter:30:1:After> '%s'\n", internal_hex);
           pdf_dealloc(internal_hex);
@@ -2475,7 +2699,11 @@ START_TEST(pdf_text_filter_030)
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
-          internal_hex = pdf_text_test_get_hex(text->data,text->size,':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           fail_if(internal_hex == NULL);
           printf("pdf_text_filter:30:2:Before> '%s'\n", internal_hex);
           pdf_dealloc(internal_hex);
@@ -2487,7 +2715,11 @@ START_TEST(pdf_text_filter_030)
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
-          internal_hex = pdf_text_test_get_hex(text->data,text->size,':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           fail_if(internal_hex == NULL);
           printf("pdf_text_filter:30:2:After> '%s'\n", internal_hex);
           pdf_dealloc(internal_hex);
@@ -2507,7 +2739,7 @@ START_TEST(pdf_text_filter_030)
       pdf_dealloc(output_data);
       pdf_text_destroy(text);
     }
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -2524,9 +2756,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_031)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00" "i" \
@@ -2554,7 +2786,11 @@ START_TEST(pdf_text_filter_031)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_031:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -2567,7 +2803,11 @@ START_TEST(pdf_text_filter_031)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_031:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -2587,7 +2827,7 @@ START_TEST(pdf_text_filter_031)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -2602,9 +2842,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_032)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* Code:0049; Lower:0069 0307; Title:0049; Upper:0049;
    * lt More_Above; # LATIN CAPITAL LETTER I */
   
@@ -2635,7 +2875,11 @@ START_TEST(pdf_text_filter_032)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_032:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -2648,7 +2892,11 @@ START_TEST(pdf_text_filter_032)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_032:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -2668,7 +2916,7 @@ START_TEST(pdf_text_filter_032)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -2705,9 +2953,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_034)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   
@@ -2737,7 +2985,11 @@ START_TEST(pdf_text_filter_034)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_034:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -2750,7 +3002,11 @@ START_TEST(pdf_text_filter_034)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_034:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -2770,7 +3026,7 @@ START_TEST(pdf_text_filter_034)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -2787,9 +3043,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_035)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* 00CC; 0069 0307 0300; 00CC; 00CC; lt; # LATIN CAPITAL LETTER I WITH GRAVE*/
   
   pdf_text_t text;
@@ -2817,7 +3073,11 @@ START_TEST(pdf_text_filter_035)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_035:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -2830,7 +3090,11 @@ START_TEST(pdf_text_filter_035)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_035:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -2850,7 +3114,7 @@ START_TEST(pdf_text_filter_035)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -2869,9 +3133,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_036)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   
@@ -2901,7 +3165,11 @@ START_TEST(pdf_text_filter_036)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_016:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -2914,7 +3182,11 @@ START_TEST(pdf_text_filter_036)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_016:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -2934,7 +3206,7 @@ START_TEST(pdf_text_filter_036)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -2953,9 +3225,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_037)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* # When lowercasing, unless an I is before a dot_above, it turns into a
    *   dotless i.
    * 0049; 0131; 0049; 0049; tr Not_Before_Dot; # LATIN CAPITAL LETTER I */
@@ -2987,7 +3259,11 @@ START_TEST(pdf_text_filter_037)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_037:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -3000,7 +3276,11 @@ START_TEST(pdf_text_filter_037)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_037:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -3020,7 +3300,7 @@ START_TEST(pdf_text_filter_037)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -3037,9 +3317,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_038)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* Final_Sigma condition in Special Case algorithms
    *  When the given character is preceded by a sequence consisting of a
    *  cased unicode point (with case information) and a case-ignorable
@@ -3098,7 +3378,11 @@ START_TEST(pdf_text_filter_038)
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
-          internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           fail_if(internal_hex == NULL);
           printf("pdf_text_filter:38:1:Internal> '%s'\n", internal_hex);
           pdf_dealloc(internal_hex);
@@ -3154,7 +3438,11 @@ START_TEST(pdf_text_filter_038)
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
-          internal_hex = pdf_text_test_get_hex(text->data,text->size,':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           fail_if(internal_hex == NULL);
           printf("pdf_text_filter:38:2:Internal> '%s'\n", internal_hex);
           pdf_dealloc(internal_hex);
@@ -3174,7 +3462,7 @@ START_TEST(pdf_text_filter_038)
       pdf_dealloc(output_data);
       pdf_text_destroy(text);
     }
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -3192,9 +3480,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_039)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* 0x030C has combining class 230, so condition should not be fulfilled */
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
@@ -3225,7 +3513,11 @@ START_TEST(pdf_text_filter_039)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_039:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -3238,7 +3530,11 @@ START_TEST(pdf_text_filter_039)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_039:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -3258,7 +3554,7 @@ START_TEST(pdf_text_filter_039)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -3275,9 +3571,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_040)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* Code:0049; Lower:0069 0307; Title:0049; Upper:0049;
    * lt More_Above; # LATIN CAPITAL LETTER I
    * As 0xC0 has combining class 0, the condition must not be fullfilled */
@@ -3311,7 +3607,11 @@ START_TEST(pdf_text_filter_040)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_040:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -3324,7 +3624,11 @@ START_TEST(pdf_text_filter_040)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_040:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -3344,7 +3648,7 @@ START_TEST(pdf_text_filter_040)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -3383,9 +3687,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_042)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   /* 0x030C has combining class 230, so condition should not be fulfilled */
@@ -3419,7 +3723,11 @@ START_TEST(pdf_text_filter_042)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_042:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -3432,7 +3740,11 @@ START_TEST(pdf_text_filter_042)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_042:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -3452,7 +3764,7 @@ START_TEST(pdf_text_filter_042)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -3469,9 +3781,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_043)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* 00CC; 0069 0307 0300; 00CC; 00CC; lt; # LATIN CAPITAL LETTER I WITH GRAVE 
    * If condition not fulfilled, simple lowercase gives: 00EC */
   
@@ -3500,7 +3812,11 @@ START_TEST(pdf_text_filter_043)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_043:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -3513,7 +3829,11 @@ START_TEST(pdf_text_filter_043)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_043:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -3533,7 +3853,7 @@ START_TEST(pdf_text_filter_043)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -3553,9 +3873,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_044)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   /* 0x030C has combining class 230, so condition should not be fulfilled */
@@ -3589,7 +3909,11 @@ START_TEST(pdf_text_filter_044)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_044:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -3602,7 +3926,11 @@ START_TEST(pdf_text_filter_044)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_044:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -3622,7 +3950,7 @@ START_TEST(pdf_text_filter_044)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -3642,9 +3970,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_045)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* # When lowercasing, unless an I is before a dot_above, it turns into a
    *   dotless i.
    * 0049; 0131; 0049; 0049; tr Not_Before_Dot; # LATIN CAPITAL LETTER I
@@ -3678,7 +4006,11 @@ START_TEST(pdf_text_filter_045)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_045:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -3691,7 +4023,11 @@ START_TEST(pdf_text_filter_045)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_045:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -3711,7 +4047,7 @@ START_TEST(pdf_text_filter_045)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -3730,9 +4066,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_046)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00"" " \
                                                 "\x00\x00\x00""G" \
@@ -3759,7 +4095,11 @@ START_TEST(pdf_text_filter_046)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_046:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -3772,7 +4112,11 @@ START_TEST(pdf_text_filter_046)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_046:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -3795,7 +4139,7 @@ START_TEST(pdf_text_filter_046)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -3811,9 +4155,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_047)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00""A" \
@@ -3836,7 +4180,11 @@ START_TEST(pdf_text_filter_047)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_047:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -3849,7 +4197,11 @@ START_TEST(pdf_text_filter_047)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_047:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -3869,7 +4221,7 @@ START_TEST(pdf_text_filter_047)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -3886,9 +4238,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_048)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* Final_Sigma condition in Special Case algorithms
    *  When the given character is preceded by a sequence consisting of a
    *  cased unicode point (with case information) and a case-ignorable
@@ -3946,7 +4298,11 @@ START_TEST(pdf_text_filter_048)
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
-          internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           fail_if(internal_hex == NULL);
           printf("pdf_text_filter:48:1:Internal> '%s'\n", internal_hex);
           pdf_dealloc(internal_hex);
@@ -4001,7 +4357,11 @@ START_TEST(pdf_text_filter_048)
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
-          internal_hex = pdf_text_test_get_hex(text->data,text->size,':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           fail_if(internal_hex == NULL);
           printf("pdf_text_filter:48:2:Internal> '%s'\n", internal_hex);
           pdf_dealloc(internal_hex);
@@ -4021,7 +4381,7 @@ START_TEST(pdf_text_filter_048)
       pdf_dealloc(output_data);
       pdf_text_destroy(text);
     }
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -4038,9 +4398,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_049)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00" "i" \
@@ -4068,7 +4428,11 @@ START_TEST(pdf_text_filter_049)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_049:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -4081,7 +4445,11 @@ START_TEST(pdf_text_filter_049)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_049:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -4101,7 +4469,7 @@ START_TEST(pdf_text_filter_049)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -4116,9 +4484,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_050)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* Code:0049; Lower:0069 0307; Title:0049; Upper:0049;
    * lt More_Above; # LATIN CAPITAL LETTER I */
   
@@ -4151,7 +4519,11 @@ START_TEST(pdf_text_filter_050)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_050:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -4164,7 +4536,11 @@ START_TEST(pdf_text_filter_050)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_050:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -4184,7 +4560,7 @@ START_TEST(pdf_text_filter_050)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -4221,9 +4597,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_052)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   
@@ -4255,7 +4631,11 @@ START_TEST(pdf_text_filter_052)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_052:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -4268,7 +4648,11 @@ START_TEST(pdf_text_filter_052)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_052:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -4288,7 +4672,7 @@ START_TEST(pdf_text_filter_052)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -4305,9 +4689,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_053)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* 00CC; 0069 0307 0300; 00CC; 00CC; lt; # LATIN CAPITAL LETTER I WITH GRAVE*/
   
   pdf_text_t text;
@@ -4337,7 +4721,11 @@ START_TEST(pdf_text_filter_053)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_053:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -4350,7 +4738,11 @@ START_TEST(pdf_text_filter_053)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_053:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -4370,7 +4762,7 @@ START_TEST(pdf_text_filter_053)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -4389,9 +4781,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_054)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   
@@ -4423,7 +4815,11 @@ START_TEST(pdf_text_filter_054)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_054:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -4436,7 +4832,11 @@ START_TEST(pdf_text_filter_054)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_054:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -4456,7 +4856,7 @@ START_TEST(pdf_text_filter_054)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -4475,9 +4875,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_055)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* # When lowercasing, unless an I is before a dot_above, it turns into a
    *   dotless i.
    * 0049; 0131; 0049; 0049; tr Not_Before_Dot; # LATIN CAPITAL LETTER I */
@@ -4511,7 +4911,11 @@ START_TEST(pdf_text_filter_055)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_055:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -4524,7 +4928,11 @@ START_TEST(pdf_text_filter_055)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_055:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -4544,7 +4952,7 @@ START_TEST(pdf_text_filter_055)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -4561,9 +4969,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_056)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* Final_Sigma condition in Special Case algorithms
    *  When the given character is preceded by a sequence consisting of a
    *  cased unicode point (with case information) and a case-ignorable
@@ -4627,7 +5035,11 @@ START_TEST(pdf_text_filter_056)
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
-          internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           fail_if(internal_hex == NULL);
           printf("pdf_text_filter:56:1:Internal> '%s'\n", internal_hex);
           pdf_dealloc(internal_hex);
@@ -4685,7 +5097,11 @@ START_TEST(pdf_text_filter_056)
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
-          internal_hex = pdf_text_test_get_hex(text->data,text->size,':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           fail_if(internal_hex == NULL);
           printf("pdf_text_filter:56:2:Internal> '%s'\n", internal_hex);
           pdf_dealloc(internal_hex);
@@ -4705,7 +5121,7 @@ START_TEST(pdf_text_filter_056)
       pdf_dealloc(output_data);
       pdf_text_destroy(text);
     }
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -4722,9 +5138,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_057)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* 0x030C has combining class 230, so condition should not be fulfilled */
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
@@ -4757,7 +5173,11 @@ START_TEST(pdf_text_filter_057)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_057:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -4770,7 +5190,11 @@ START_TEST(pdf_text_filter_057)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_057:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -4790,7 +5214,7 @@ START_TEST(pdf_text_filter_057)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -4807,9 +5231,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_058)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* Code:0049; Lower:0069 0307; Title:0049; Upper:0049;
    * lt More_Above; # LATIN CAPITAL LETTER I
    * As 0xC0 has combining class 0, the condition must not be fullfilled */
@@ -4845,7 +5269,11 @@ START_TEST(pdf_text_filter_058)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_058:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -4858,7 +5286,11 @@ START_TEST(pdf_text_filter_058)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_058:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -4878,7 +5310,7 @@ START_TEST(pdf_text_filter_058)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -4917,9 +5349,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_060)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   /* 0x030C has combining class 230, so condition should not be fulfilled */
@@ -4955,7 +5387,11 @@ START_TEST(pdf_text_filter_060)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_060:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -4968,7 +5404,11 @@ START_TEST(pdf_text_filter_060)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_060:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -4989,7 +5429,7 @@ START_TEST(pdf_text_filter_060)
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
 
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -5006,9 +5446,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_061)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* 00CC; 0069 0307 0300; 00CC; 00CC; lt; # LATIN CAPITAL LETTER I WITH GRAVE 
    * If condition not fulfilled, simple lowercase gives: 00EC */
   
@@ -5039,7 +5479,11 @@ START_TEST(pdf_text_filter_061)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_061:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -5052,7 +5496,11 @@ START_TEST(pdf_text_filter_061)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_061:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -5072,7 +5520,7 @@ START_TEST(pdf_text_filter_061)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -5092,9 +5540,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_062)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   /* 0x030C has combining class 230, so condition should not be fulfilled */
@@ -5130,7 +5578,11 @@ START_TEST(pdf_text_filter_062)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_062:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -5143,7 +5595,11 @@ START_TEST(pdf_text_filter_062)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_062:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -5163,7 +5619,7 @@ START_TEST(pdf_text_filter_062)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -5183,9 +5639,9 @@ END_TEST
  */
 START_TEST(pdf_text_filter_063)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   /* # When lowercasing, unless an I is before a dot_above, it turns into a
    *   dotless i.
    * 0049; 0131; 0049; 0049; tr Not_Before_Dot; # LATIN CAPITAL LETTER I
@@ -5219,7 +5675,11 @@ START_TEST(pdf_text_filter_063)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_063:1:BeforeInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -5232,7 +5692,11 @@ START_TEST(pdf_text_filter_063)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text->data, text->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_filter_063:1:AfterInternal> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -5252,7 +5716,7 @@ START_TEST(pdf_text_filter_063)
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
