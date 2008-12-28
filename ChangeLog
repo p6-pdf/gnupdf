@@ -1,5 +1,10 @@
 2008-12-28  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-hash-helper.h: Use char instead of pdf_char_t for
+	keys in pdf_hash_t variables.
+
+	* doc/gnupdf.texi: Idem.
+
 	* doc/gnupdf.texi (Hash helper functions): Documentation for
 	'pdf_hash_get_text'.
 	(Hash helper functions): Documentation for 'pdf_hash_get_time'.

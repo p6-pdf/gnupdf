@@ -1896,7 +1896,7 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_hash_get_text (pdf_hash_t @var{table}, const pdf_char_t *@var{key}, pdf_text_t *@var{elt})
+@deftypefun pdf_status_t pdf_hash_get_text (pdf_hash_t @var{table}, const char *@var{key}, pdf_text_t *@var{elt})
 
 Get a text variable from a hash table.
 
@@ -1979,7 +1979,7 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_hash_get_time (pdf_hash_t @var{table}, const pdf_char_t *@var{key}, pdf_time_t *@var{elt})
+@deftypefun pdf_status_t pdf_hash_get_time (pdf_hash_t @var{table}, const char *@var{key}, pdf_time_t *@var{elt})
 
 Get a time variable from a hash table.
 
@@ -2064,7 +2064,7 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_hash_get_list (pdf_hash_t @var{table}, const pdf_char_t *@var{key}, pdf_list_t *@var{elt})
+@deftypefun pdf_status_t pdf_hash_get_list (pdf_hash_t @var{table}, const char *@var{key}, pdf_list_t *@var{elt})
 
 Get a list variable from a hash table.
 
@@ -2148,7 +2148,7 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_hash_get_hash (pdf_hash_t @var{table}, const pdf_char_t *@var{key}, pdf_hash_t *@var{elt})
+@deftypefun pdf_status_t pdf_hash_get_hash (pdf_hash_t @var{table}, const char *@var{key}, pdf_hash_t *@var{elt})
 
 Get a hash variable from a hash table.
 
@@ -2241,7 +2241,7 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_hash_get_stm (pdf_hash_t @var{table}, const pdf_char_t *@var{key}, pdf_stm_t *@var{elt})
+@deftypefun pdf_status_t pdf_hash_get_stm (pdf_hash_t @var{table}, const char *@var{key}, pdf_stm_t *@var{elt})
 
 Get a stm variable from a hash table.
 
@@ -2329,7 +2329,7 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_hash_get_size (pdf_hash_t @var{table}, const pdf_char_t *@var{key}, pdf_size_t *@var{elt})
+@deftypefun pdf_status_t pdf_hash_get_size (pdf_hash_t @var{table}, const char *@var{key}, pdf_size_t *@var{elt})
 
 Get a size variable from a hash table.
 
@@ -2418,7 +2418,7 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_hash_get_string (pdf_hash_t @var{table}, const pdf_char_t *@var{key}, pdf_char_t *@var{elt})
+@deftypefun pdf_status_t pdf_hash_get_string (pdf_hash_t @var{table}, const char *@var{key}, pdf_char_t *@var{elt})
 
 Get a string variable from a hash table.
 
