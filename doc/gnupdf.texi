@@ -4395,7 +4395,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_fp_matrix_transform (pdf_point_t @var{result}, const pdf_matrix_t @var{matrix}, const pdf_point_t @var{point})
+@deftypefun pdf_status_t pdf_fp_matrix_transform (pdf_point_t @var{result}, const pdf_matrix_t @var{matrix}, const pdf_point_t @var{point})
 
 Transform a point through a matrix.
 
@@ -4425,7 +4425,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_fp_matrix_transform_rect (pdf_rect_t @var{result}, const pdf_matrix_t @var{matrix}, const pdf_rect_t @var{rect})
+@deftypefun pdf_status_t pdf_fp_matrix_transform_rect (pdf_rect_t @var{result}, const pdf_matrix_t @var{matrix}, const pdf_rect_t @var{rect})
 
 Transform a rectangle through a matrix.
 
