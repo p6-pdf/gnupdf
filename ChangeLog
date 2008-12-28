@@ -1,8 +1,3 @@
-2008-12-27  Gerardo E. Gidoni  <gerel@gnu.org>
-
-	* prmgt/check-api-doc-consistency.pl: make it work with array
-	subscripts [].
-
 2008-12-28  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Hash helper functions): Documentation for
@@ -34,6 +29,11 @@
 	* src/base/pdf-hash-helper.h: New functions 'pdf_hash_get_text',
 	'pdf_hash_get_time', 'pdf_hash_get_list', 'pdf_hash_get_hash',
 	'pdf_hash_get_stm', 'pdf_hash_get_size', 'pdf_hash_get_string'.
+
+2008-12-27  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* prmgt/check-api-doc-consistency.pl: make it work with array
+	subscripts [].
 
 2008-12-27  Jose E. Marchesi  <jemarch@gnu.org>
 
