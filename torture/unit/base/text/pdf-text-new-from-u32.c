@@ -38,9 +38,9 @@
  */
 START_TEST(pdf_text_new_from_u32_001)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   pdf_text_t text;
   pdf_u32_t number = 0;
   const pdf_char_t *expected_data_be = (pdf_char_t *)"\x00\x00\x00" "0";
@@ -64,11 +64,16 @@ START_TEST(pdf_text_new_from_u32_001)
   fail_unless(pdf_text_new_from_u32(number, &text) == PDF_OK);
 
   /* 2. The contents of the text object must be the expected ones. */
-  fail_if(memcmp(text->data, expected_data, expected_size) != 0);
+  pdf_size_t actual_size;
+  pdf_char_t *actual_data;
+  fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                   PDF_TEXT_UTF32_HE,0) == PDF_OK);
+  fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
+
   
   pdf_text_destroy(text);
 
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -83,9 +88,9 @@ END_TEST
  */
 START_TEST(pdf_text_new_from_u32_002)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   pdf_text_t text;
   pdf_u32_t number = 123450;
   const pdf_char_t *expected_data_be = (pdf_char_t *)"\x00\x00\x00" "1" \
@@ -119,11 +124,16 @@ START_TEST(pdf_text_new_from_u32_002)
   fail_unless(pdf_text_new_from_u32(number, &text) == PDF_OK);
   
   /* 2. The contents of the text object must be the expected ones. */
-  fail_if(memcmp(text->data, expected_data, expected_size) != 0);
+  pdf_size_t actual_size;
+  pdf_char_t *actual_data;
+  fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                   PDF_TEXT_UTF32_HE,0) == PDF_OK);
+  fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
+
   
   pdf_text_destroy(text);
 
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 

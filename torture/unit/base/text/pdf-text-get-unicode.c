@@ -47,9 +47,9 @@
  */
 START_TEST(pdf_text_get_unicode_001)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   extern const test_string_t utf8_strings[];
   int i;
   
@@ -89,7 +89,11 @@ START_TEST(pdf_text_get_unicode_001)
         {
           pdf_char_t *internal_hex = NULL;
           pdf_char_t *expected_hex = NULL;
-          internal_hex = pdf_text_test_get_hex(text->data,text->size,':');
+          pdf_size_t actual_size;
+          pdf_char_t *actual_data;
+          fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                           PDF_TEXT_UTF32_HE,0) == PDF_OK);
+          internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           expected_hex = pdf_text_test_get_hex(expected_data,expected_size,':');
           fail_if(expected_hex == NULL);
           fail_if(internal_hex == NULL);
@@ -113,7 +117,7 @@ START_TEST(pdf_text_get_unicode_001)
       
       ++i;
     }
-#endif /* DEACTIVATED */  
+  
 }
 END_TEST
 
@@ -132,9 +136,9 @@ END_TEST
  */
 START_TEST(pdf_text_get_unicode_002)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   extern const test_string_t utf8_strings[];
   int i;
   
@@ -175,7 +179,11 @@ START_TEST(pdf_text_get_unicode_002)
           pdf_char_t *internal_hex = NULL;
           pdf_char_t *expected_hex = NULL;
           pdf_char_t *output_hex = NULL;
-          internal_hex = pdf_text_test_get_hex(text->data,text->size,':');
+          pdf_size_t actual_size;
+          pdf_char_t *actual_data;
+          fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                           PDF_TEXT_UTF32_HE,0) == PDF_OK);
+          internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           expected_hex = pdf_text_test_get_hex(expected_data,expected_size,':');
           output_hex = pdf_text_test_get_hex(data,size,':');
           fail_if(expected_hex == NULL);
@@ -205,7 +213,7 @@ START_TEST(pdf_text_get_unicode_002)
       
       ++i;
     }
-#endif /* DEACTIVATED */  
+  
 }
 END_TEST
 
@@ -383,9 +391,9 @@ END_TEST
  */
 START_TEST(pdf_text_get_unicode_007)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   extern const test_string_t utf16be_strings[];
   int i;
   
@@ -425,7 +433,11 @@ START_TEST(pdf_text_get_unicode_007)
         {
           pdf_char_t *internal_hex = NULL;
           pdf_char_t *expected_hex = NULL;
-          internal_hex = pdf_text_test_get_hex(text->data,text->size,':');
+          pdf_size_t actual_size;
+          pdf_char_t *actual_data;
+          fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                           PDF_TEXT_UTF32_HE,0) == PDF_OK);
+          internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           expected_hex = pdf_text_test_get_hex(expected_data,expected_size,':');
           fail_if(expected_hex == NULL);
           fail_if(internal_hex == NULL);
@@ -449,7 +461,7 @@ START_TEST(pdf_text_get_unicode_007)
       
       ++i;
     }
-#endif /* DEACTIVATED */  
+  
 }
 END_TEST
 
@@ -467,9 +479,9 @@ END_TEST
  */
 START_TEST(pdf_text_get_unicode_008)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   extern const test_string_t utf16be_strings[];
   int i;
   
@@ -509,7 +521,11 @@ START_TEST(pdf_text_get_unicode_008)
         {
           pdf_char_t *internal_hex = NULL;
           pdf_char_t *expected_hex = NULL;
-          internal_hex = pdf_text_test_get_hex(text->data,text->size,':');
+          pdf_size_t actual_size;
+          pdf_char_t *actual_data;
+          fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                           PDF_TEXT_UTF32_HE,0) == PDF_OK);
+          internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           expected_hex = pdf_text_test_get_hex(expected_data,expected_size,':');
           fail_if(expected_hex == NULL);
           fail_if(internal_hex == NULL);
@@ -533,7 +549,7 @@ START_TEST(pdf_text_get_unicode_008)
       
       ++i;
     }
-#endif /* DEACTIVATED */  
+  
 }
 END_TEST
 
@@ -634,9 +650,9 @@ END_TEST
  */
 START_TEST(pdf_text_get_unicode_011)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   extern const test_string_t utf16be_strings[];
   int i;
 
@@ -678,7 +694,11 @@ START_TEST(pdf_text_get_unicode_011)
           pdf_char_t *internal_hex = NULL;
           pdf_char_t *expected_hex = NULL;
           pdf_char_t *output_hex = NULL;
-          internal_hex = pdf_text_test_get_hex(text->data,text->size,':');
+          pdf_size_t actual_size;
+          pdf_char_t *actual_data;
+          fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                           PDF_TEXT_UTF32_HE,0) == PDF_OK);
+          internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           expected_hex = pdf_text_test_get_hex(expected_data,expected_size,':');
           output_hex = pdf_text_test_get_hex(data,size,':');          
           fail_if(expected_hex == NULL);
@@ -712,7 +732,7 @@ START_TEST(pdf_text_get_unicode_011)
       pdf_dealloc(data);
       ++i;
     }
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -732,9 +752,9 @@ END_TEST
  */
 START_TEST(pdf_text_get_unicode_012)
 {  
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   extern const test_string_t utf16be_strings[];
   int i;
   
@@ -775,7 +795,11 @@ START_TEST(pdf_text_get_unicode_012)
           pdf_char_t *internal_hex = NULL;
           pdf_char_t *expected_hex = NULL;
           pdf_char_t *output_hex = NULL;
-          internal_hex = pdf_text_test_get_hex(text->data,text->size,':');
+          pdf_size_t actual_size;
+          pdf_char_t *actual_data;
+          fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                           PDF_TEXT_UTF32_HE,0) == PDF_OK);
+          internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           expected_hex = pdf_text_test_get_hex(expected_data,expected_size,':');
           output_hex = pdf_text_test_get_hex(data,size,':');          
           fail_if(expected_hex == NULL);
@@ -810,7 +834,7 @@ START_TEST(pdf_text_get_unicode_012)
       ++i;
     }
 
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 
@@ -1306,9 +1330,9 @@ END_TEST
  */
 START_TEST(pdf_text_get_unicode_020)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   extern const test_string_t utf16be_strings[];
   int i;
   
@@ -1352,7 +1376,11 @@ START_TEST(pdf_text_get_unicode_020)
         {
           pdf_char_t *internal_hex = NULL;
           pdf_char_t *expected_hex = NULL;
-          internal_hex = pdf_text_test_get_hex(text->data,text->size,':');
+          pdf_size_t actual_size;
+          pdf_char_t *actual_data;
+          fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                           PDF_TEXT_UTF32_HE,0) == PDF_OK);
+          internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           expected_hex = pdf_text_test_get_hex(expected_data,expected_size,':');
           fail_if(expected_hex == NULL);
           fail_if(internal_hex == NULL);
@@ -1378,7 +1406,7 @@ START_TEST(pdf_text_get_unicode_020)
       
       ++i;
     }
-#endif /* DEACTIVATED */  
+  
 }
 END_TEST
 
@@ -1778,9 +1806,9 @@ END_TEST
  */
 START_TEST(pdf_text_get_unicode_031)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   extern const test_string_t utf32be_strings[];
   int i;
   
@@ -1810,7 +1838,11 @@ START_TEST(pdf_text_get_unicode_031)
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
-          internal_hex = pdf_text_test_get_hex(text->data,text->size,':');
+          pdf_size_t actual_size;
+          pdf_char_t *actual_data;
+          fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                           PDF_TEXT_UTF32_HE,0) == PDF_OK);
+          internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           fail_if(internal_hex == NULL);
           printf("pdf_text_get_unicode_031:%d:Internal> '%s'\n",
                  i, internal_hex);
@@ -1853,7 +1885,7 @@ START_TEST(pdf_text_get_unicode_031)
       pdf_dealloc(data);      
       ++i;
     }
-#endif /* DEACTIVATED */  
+  
 }
 END_TEST
 
@@ -1870,9 +1902,9 @@ END_TEST
  */
 START_TEST(pdf_text_get_unicode_032)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   extern const test_string_t utf32be_strings[];
   int i;
   
@@ -1912,7 +1944,11 @@ START_TEST(pdf_text_get_unicode_032)
         {
           pdf_char_t *internal_hex = NULL;
           pdf_char_t *expected_hex = NULL;
-          internal_hex = pdf_text_test_get_hex(text->data,text->size,':');
+          pdf_size_t actual_size;
+          pdf_char_t *actual_data;
+          fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                           PDF_TEXT_UTF32_HE,0) == PDF_OK);
+          internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           expected_hex = pdf_text_test_get_hex(expected_data,expected_size,':');
           fail_if(expected_hex == NULL);
           fail_if(internal_hex == NULL);
@@ -1937,7 +1973,7 @@ START_TEST(pdf_text_get_unicode_032)
       
       ++i;
     }
-#endif /* DEACTIVATED */  
+  
 }
 END_TEST
 
@@ -2414,9 +2450,9 @@ END_TEST
  */
 START_TEST(pdf_text_get_unicode_044)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   extern const test_string_t utf32be_strings[];
   int i;
   
@@ -2460,7 +2496,11 @@ START_TEST(pdf_text_get_unicode_044)
         {
           pdf_char_t *internal_hex = NULL;
           pdf_char_t *expected_hex = NULL;
-          internal_hex = pdf_text_test_get_hex(text->data,text->size,':');
+          pdf_size_t actual_size;
+          pdf_char_t *actual_data;
+          fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                           PDF_TEXT_UTF32_HE,0) == PDF_OK);
+          internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           expected_hex = pdf_text_test_get_hex(expected_data,expected_size,':');
           fail_if(expected_hex == NULL);
           fail_if(internal_hex == NULL);
@@ -2486,7 +2526,7 @@ START_TEST(pdf_text_get_unicode_044)
       
       ++i;
     }
-#endif /* DEACTIVATED */  
+  
 }
 END_TEST
 
@@ -2884,9 +2924,9 @@ END_TEST
  */
 START_TEST(pdf_text_get_unicode_055)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   extern const test_string_t utf8_strings[];
   int i;
   
@@ -2929,7 +2969,11 @@ START_TEST(pdf_text_get_unicode_055)
         {
           pdf_char_t *internal_hex = NULL;
           pdf_char_t *expected_hex = NULL;
-          internal_hex = pdf_text_test_get_hex(text->data,text->size,':');
+          pdf_size_t actual_size;
+          pdf_char_t *actual_data;
+          fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                           PDF_TEXT_UTF32_HE,0) == PDF_OK);
+          internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           expected_hex = pdf_text_test_get_hex(expected_data,expected_size,':');
           fail_if(expected_hex == NULL);
           fail_if(internal_hex == NULL);
@@ -2955,7 +2999,7 @@ START_TEST(pdf_text_get_unicode_055)
       
       ++i;
     }
-#endif /* DEACTIVATED */  
+  
 }
 END_TEST
 
@@ -2979,9 +3023,9 @@ END_TEST
  */
 START_TEST(pdf_text_get_unicode_056)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   extern const test_string_t utf8_strings[];
   int i;
   
@@ -3027,7 +3071,11 @@ START_TEST(pdf_text_get_unicode_056)
           pdf_char_t *internal_hex = NULL;
           pdf_char_t *expected_hex = NULL;
           pdf_char_t *output_hex = NULL;
-          internal_hex = pdf_text_test_get_hex(text->data,text->size,':');
+          pdf_size_t actual_size;
+          pdf_char_t *actual_data;
+          fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                           PDF_TEXT_UTF32_HE,0) == PDF_OK);
+          internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           expected_hex = pdf_text_test_get_hex(expected_data,expected_size,':');
           output_hex = pdf_text_test_get_hex(data,size,':');
           fail_if(expected_hex == NULL);
@@ -3058,7 +3106,7 @@ START_TEST(pdf_text_get_unicode_056)
       
       ++i;
     }
-#endif /* DEACTIVATED */  
+  
 }
 END_TEST
 
@@ -3245,9 +3293,9 @@ END_TEST
  */
 START_TEST(pdf_text_get_unicode_061)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   extern const test_string_t utf16be_strings[];
   int i;
   
@@ -3291,7 +3339,11 @@ START_TEST(pdf_text_get_unicode_061)
         {
           pdf_char_t *internal_hex = NULL;
           pdf_char_t *expected_hex = NULL;
-          internal_hex = pdf_text_test_get_hex(text->data,text->size,':');
+          pdf_size_t actual_size;
+          pdf_char_t *actual_data;
+          fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                           PDF_TEXT_UTF32_HE,0) == PDF_OK);
+          internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           expected_hex = pdf_text_test_get_hex(expected_data,expected_size,':');
           fail_if(expected_hex == NULL);
           fail_if(internal_hex == NULL);
@@ -3316,7 +3368,7 @@ START_TEST(pdf_text_get_unicode_061)
       
       ++i;
     }
-#endif /* DEACTIVATED */  
+  
 }
 END_TEST
 
