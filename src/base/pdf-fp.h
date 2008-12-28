@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/01 21:45:32 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/28 17:53:30 jemarch"
  *
  *       File:         pdf-fp.h
  *       Date:         Sun Feb 10 21:36:37 2008
@@ -72,25 +72,6 @@ struct pdf_rect_s
 };
 
 typedef struct pdf_rect_s *pdf_rect_t;
-
-
-pdf_status_t pdf_fp_string_to_real (const pdf_char_t *string,
-                                    pdf_real_t *result);
-pdf_status_t pdf_fp_real_to_string (pdf_real_t real,
-                                    pdf_char_t *s,
-                                    pdf_size_t max_length,
-                                    pdf_u32_t precision);
-pdf_status_t pdf_fp_matrix_concat (pdf_matrix_t result,
-                                   pdf_matrix_t matrix_1,
-                                   pdf_matrix_t matrix_2);
-pdf_status_t pdf_fp_matrix_invert (pdf_matrix_t result,
-                                   pdf_matrix_t matrix);
-pdf_status_t pdf_fp_matrix_transform (pdf_point_t result,
-                                      const pdf_matrix_t matrix,
-                                      const pdf_point_t point);
-pdf_status_t pdf_fp_matrix_transform_rect (pdf_rect_t result,
-                                           const pdf_matrix_t matrix,
-                                           const pdf_rect_t rect);
 
 /* END PUBLIC */
 
