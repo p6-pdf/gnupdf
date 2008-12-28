@@ -2418,7 +2418,7 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_hash_get_string (pdf_hash_t @var{table}, const char *@var{key}, pdf_char_t *@var{elt})
+@deftypefun pdf_status_t pdf_hash_get_string (pdf_hash_t @var{table}, const char *@var{key}, pdf_char_t **@var{elt})
 
 Get a string variable from a hash table.
 
