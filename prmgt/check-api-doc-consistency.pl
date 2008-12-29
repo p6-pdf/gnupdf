@@ -54,12 +54,14 @@ sub clean_docsigs
     $str =~ s/\s*(\(|\))\s*/$1/g;
     # remove word spaces
     $str =~ s/\s*(\w+)\s+/$1 /g;
+    # remove square brackets spaces
+    $str =~ s/\s*(\[\s*\])\s*/[]/g;
 
     if ($novars == 1){
         # remove variable names
         $str =~ s/(\w+)(,|\))/$2/g;
     }
-
+#    print $str . "\n";
     return $str;
 }
 
@@ -108,6 +110,8 @@ sub clean_implsigs
     $lines =~ s/\s*(\(|\))\s*/$1/g;
     # remove word spaces
     $lines =~ s/\s*(\w+)\s+/$1 /g;
+    # remove square brackets spaces
+    $lines =~ s/\s*(\[\s*\])\s*/[]/g;
 
     if ($novars == 1){
         # remove variable names

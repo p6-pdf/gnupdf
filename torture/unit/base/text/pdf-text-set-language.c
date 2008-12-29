@@ -40,9 +40,9 @@
  */
 START_TEST(pdf_text_set_language_001)
 {
-  fail_if(0 == 0);
+  
 
-#ifdef DEACTIVATED
+
   pdf_text_t text;
   const pdf_char_t *language = (pdf_char_t *)"es";
   
@@ -56,10 +56,10 @@ START_TEST(pdf_text_set_language_001)
   
   /* 2. The contents of the internal language ID representation should be the
    *      expected ones. */
-  fail_unless(strcmp((char *)text->lang, (char *)language)==0);
+  fail_unless(strcmp(pdf_text_get_language(text), (char *)language)==0);
   
   pdf_text_destroy(text);
-#endif /* DEACTIVATED */
+
 }
 END_TEST
 

@@ -4395,7 +4395,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_fp_matrix_transform (pdf_point_t @var{result}, const pdf_matrix_t @var{matrix}, const pdf_point_t @var{point})
+@deftypefun pdf_status_t pdf_fp_matrix_transform (pdf_point_t @var{result}, const pdf_matrix_t @var{matrix}, const pdf_point_t @var{point})
 
 Transform a point through a matrix.
 
@@ -4425,7 +4425,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_fp_matrix_transform_rect (pdf_rect_t @var{result}, const pdf_matrix_t @var{matrix}, const pdf_rect_t @var{rect})
+@deftypefun pdf_status_t pdf_fp_matrix_transform_rect (pdf_rect_t @var{result}, const pdf_matrix_t @var{matrix}, const pdf_rect_t @var{rect})
 
 Transform a rectangle through a matrix.
 
@@ -4514,7 +4514,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fp_func_2_new (pdf_u32_t @var{m}, pdf_u32_t @var{n}, const pdf_real_t @var{domain}[], const pdf_real_t @var{range}[], pdf_real_t @var{N}, pdf_real_t @var{c0}[], pdf_real_t @var{c1}[], pdf_fp_func_t @var{function})
+@deftypefun pdf_status_t pdf_fp_func_2_new (pdf_u32_t @var{m}, pdf_u32_t @var{n}, const pdf_real_t @var{domain}[], const pdf_real_t @var{range}[], pdf_real_t @var{N}, pdf_real_t @var{c0}[], pdf_real_t @var{c1}[], pdf_fp_func_t *@var{function})
 
 Create a new type 2 (exponential interpolation) function.
 
