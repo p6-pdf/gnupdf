@@ -26,13 +26,60 @@
 #include <pdf-stm-f-dct.h>
 #include <jerror.h>
 #include <memory.h>
+#include <jpeglib.h>
+
+enum pdf_stm_f_dctdec_state_t
+{
+  DCTDEC_STATE_INIT,
+  DCTDEC_STATE_CACHE_IN,
+  DCTDEC_STATE_READHDR,
+  DCTDEC_STATE_STARTDJP,
+  DCTDEC_STATE_WRITEHDR,
+  DCTDEC_STATE_SCANLINE,
+  DCTDEC_STATE_OUTPUTLINE,
+  DCTDEC_STATE_FINISHDJP,
+  DCTDEC_STATE_ERROR
+};
+
+/* Internal state */
+struct pdf_stm_f_dctenc_s
+{
+};
+
+typedef struct pdf_stm_f_dctenc_s *pdf_stm_f_dctenc_t;
+
+struct pdf_stm_f_dctdec_s
+{
+  struct jpeg_decompress_struct *cinfo;
+  struct jpeg_error_mgr *jerr;
+
+  enum pdf_stm_f_dctdec_state_t state;
+  enum pdf_stm_f_dctdec_state_t backup_state;
+  /* filter dictionary */
+  pdf_i32_t *param_color_transform;
+
+  /* image cache for input data */
+  pdf_stm_buffer_t djpeg_in;
+
+  /* cache for output data */
+  pdf_size_t row_stride;
+  pdf_char_t **row_buf;
+  pdf_size_t row_valid_size;
+  pdf_size_t row_copy_index;
+  pdf_u32_t num_scanlines;
+};
+typedef struct pdf_stm_f_dctdec_s *pdf_stm_f_dctdec_t;
 
 #define PPM_MAXVAL 255
 
-static void         pdf_stm_f_dctdec_jpeg_cache_src (j_decompress_ptr cinfo, pdf_stm_buffer_t cache);
-static pdf_status_t pdf_stm_f_dctdec_src_fill(j_decompress_ptr cinfo, pdf_stm_buffer_t in);
-static pdf_status_t pdf_stm_f_dctdec_write_ppm_header(j_decompress_ptr cinfo, pdf_stm_buffer_t out);
-
+static void         pdf_stm_f_dctdec_jpeg_cache_src (j_decompress_ptr cinfo, 
+                                                     pdf_stm_buffer_t cache);
+static pdf_status_t pdf_stm_f_dctdec_src_fill(j_decompress_ptr cinfo, 
+                                              pdf_stm_buffer_t in);
+static pdf_status_t pdf_stm_f_dctdec_write_ppm_header(j_decompress_ptr cinfo, 
+                                                      pdf_stm_buffer_t out);
+static void         pdf_stm_f_dctdec_set_djpeg_param(j_decompress_ptr cinfo, 
+                                                     pdf_stm_f_dctdec_t filter_state);
 
 pdf_status_t
 pdf_stm_f_dctenc_init (pdf_hash_t params,
@@ -57,6 +104,8 @@ pdf_stm_f_dctenc_dealloc_state (void *state)
 {
   return PDF_OK;
 }
+
+static const char *DCTDecode_param_name = "ColorTransform";
 
 pdf_status_t
 pdf_stm_f_dctdec_init (pdf_hash_t params,
@@ -84,8 +133,15 @@ pdf_stm_f_dctdec_init (pdf_hash_t params,
       dctdec_state->cinfo->err = jpeg_std_error(dctdec_state->jerr);
       jpeg_create_decompress(dctdec_state->cinfo);
 
+      dctdec_state->param_color_transform = NULL;
+      if( pdf_hash_key_p(params, DCTDecode_param_name))
+      {
+        pdf_hash_get(params, DCTDecode_param_name, (const void**)&dctdec_state->param_color_transform);
+      }
+
       dctdec_state->state = DCTDEC_STATE_INIT;
       *state = dctdec_state;
+      sleep(14);
       ret = PDF_OK;
     }
   else
@@ -166,6 +222,8 @@ pdf_stm_f_dctdec_apply (pdf_hash_t params,
         ret = PDF_ERROR;
         break;
       }
+      pdf_stm_f_dctdec_set_djpeg_param(pcinfo, filter_state);
+
       filter_state->state = DCTDEC_STATE_STARTDJP;
     }
     if(DCTDEC_STATE_STARTDJP == filter_state->state)
@@ -289,6 +347,49 @@ pdf_stm_f_dctdec_dealloc_state (void *state)
 }
 
 /* Private functions */
+
+static void
+pdf_stm_f_dctdec_set_djpeg_param(j_decompress_ptr cinfo, 
+                                 pdf_stm_f_dctdec_t filter_state )
+{
+  /* set color transfor according to DCTDecode dictionary. */
+  if(cinfo->saw_Adobe_marker)
+  {
+    /* if adobe marker is present in encoded data, dictionary should be ignored.*/
+    return;
+  }
+  switch (cinfo->num_components) 
+  {
+    case 3:
+      if ( NULL == filter_state->param_color_transform 
+          || 1 == *filter_state->param_color_transform ) 
+      {
+        /* dictionary not present or value is 1, transform should be done.*/
+        cinfo->jpeg_color_space = JCS_YCbCr; /* YCbCr */
+      }
+      else
+      {
+        /* no transform, so jpeg color space should be rgb.*/
+        cinfo->jpeg_color_space = JCS_RGB; 
+      }
+      break;
+    case 4:
+      if( NULL != filter_state->param_color_transform 
+          && 1 == *filter_state->param_color_transform )
+      {
+        /* do transform only if the dictionary value is one.*/
+        cinfo->jpeg_color_space = JCS_YCCK; 
+      }
+      else
+      {
+        /* no transform.*/
+        cinfo->jpeg_color_space = JCS_CMYK;
+      }
+      break;
+    default:
+      break;
+  }
+}
 
 /* source manager for decompress */
 struct pdf_stm_f_dct_cache_source_mgr_s{
