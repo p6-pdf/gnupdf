@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-12-22 22:24:06 aleksander"
+/* -*- mode: C -*- Time-stamp: "2008-12-31 19:26:43 aleksander"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -71,11 +71,14 @@ __pdf_fsys_disk_get_host_path (const pdf_text_t path,
                                pdf_char_t **host_path,
                                pdf_u32_t *host_path_size);
 static pdf_status_t
-__pdf_fsys_disk_is_writable(const pdf_char_t *host_path,
-                            pdf_bool_t *p_result);
+__pdf_fsys_disk_is_writable_from_host_path(const pdf_char_t *host_path,
+                                           pdf_bool_t *p_result);
 static pdf_status_t
-__pdf_fsys_disk_is_readable(const pdf_char_t *host_path,
-                            pdf_bool_t *p_result);
+__pdf_fsys_disk_is_readable_from_host_path(const pdf_char_t *host_path,
+                                           pdf_bool_t *p_result);
+static pdf_status_t
+__pdf_fsys_disk_file_get_size_from_host_path(const pdf_char_t *host_path,
+                                             pdf_size_t *p_result);
 
 /* static pdf_status_t */
 /* __pdf_fsys_disk_build_mode_string (const enum pdf_fsys_file_mode_e mode, */
@@ -310,7 +313,8 @@ pdf_fsys_disk_file_open(const pdf_text_t path_name,
 
           /* Get the mode string for fopen */
           mode_str =__pdf_fsys_disk_get_mode_string(mode);
-          PDF_DEBUG_BASE("Opening file with mode '%s'... (file_data: %p)",
+          PDF_DEBUG_BASE("Opening file '%s' with mode '%s'... (file_data: %p)",
+                         file_data->host_path,
                          (((mode_str != NULL) ? (char *)mode_str : "<null>")),
                          file_data);
 
@@ -339,7 +343,7 @@ pdf_fsys_disk_file_open(const pdf_text_t path_name,
                 }
               else
                 {
-                  PDF_DEBUG_BASE("fopen failed...");
+                    PDF_DEBUG_BASE("fopen '%s' failed...", file_data->host_path);
                   /* Deallocate and deinit base file data */
                   __pdf_fsys_deinit_base_file_data(&file_data);
                   pdf_dealloc(file);
@@ -619,8 +623,8 @@ pdf_fsys_disk_remove_folder (const pdf_text_t path_name)
 
 
 static pdf_status_t
-__pdf_fsys_disk_is_readable(const pdf_char_t *host_path,
-                            pdf_bool_t *p_result)
+__pdf_fsys_disk_is_readable_from_host_path(const pdf_char_t *host_path,
+                                           pdf_bool_t *p_result)
 {
   pdf_status_t ret_code = PDF_EBADDATA;
   /* Check if file can be read */
@@ -650,8 +654,8 @@ __pdf_fsys_disk_is_readable(const pdf_char_t *host_path,
 }
 
 static pdf_status_t
-__pdf_fsys_disk_is_writable(const pdf_char_t *host_path,
-                            pdf_bool_t *p_result)
+__pdf_fsys_disk_is_writable_from_host_path(const pdf_char_t *host_path,
+                                           pdf_bool_t *p_result)
 {
   pdf_status_t ret_code = PDF_EBADDATA;
   /* Check if file can be written */
@@ -682,8 +686,8 @@ __pdf_fsys_disk_is_writable(const pdf_char_t *host_path,
 
 
 static pdf_status_t
-__pdf_fsys_disk_get_size(const pdf_char_t *host_path,
-                         pdf_size_t *p_result)
+__pdf_fsys_disk_file_get_size_from_host_path(const pdf_char_t *host_path,
+                                             pdf_size_t *p_result)
 {
   pdf_status_t ret_code = PDF_EBADDATA;
   /* Check if file can be written */
@@ -727,15 +731,15 @@ pdf_fsys_disk_get_item_props (pdf_text_t path_name,
   /* Is readable ? */
   if(ret_code == PDF_OK)
     {
-      ret_code = __pdf_fsys_disk_is_readable(host_path,                 \
-                                             &(item_props->is_readable));
+      ret_code = __pdf_fsys_disk_is_readable_from_host_path(host_path,                 \
+                                                            &(item_props->is_readable));
     }
 
   /* Is writable ? */
   if(ret_code == PDF_OK)
     {
-      ret_code = __pdf_fsys_disk_is_writable(host_path,                 \
-                                             &(item_props->is_writable));
+      ret_code = __pdf_fsys_disk_is_writable_from_host_path(host_path,                 \
+                                                            &(item_props->is_writable));
     }
 
   /* TODO: is hidden ? */
@@ -750,7 +754,7 @@ pdf_fsys_disk_get_item_props (pdf_text_t path_name,
     {
       pdf_size_t size;
 
-      ret_code = __pdf_fsys_disk_get_size(host_path, &size);
+      ret_code = __pdf_fsys_disk_file_get_size_from_host_path(host_path, &size);
       if(ret_code == PDF_OK)
         {
           item_props->file_size_high = 0;
@@ -802,7 +806,7 @@ pdf_fsys_disk_item_readable_p (pdf_text_t path_name)
                                         &host_path,
                                         &host_path_len) == PDF_OK)
         {
-          __pdf_fsys_disk_is_readable(host_path, &result);
+          __pdf_fsys_disk_is_readable_from_host_path(host_path, &result);
           pdf_dealloc(host_path);
         }
     }
@@ -825,7 +829,7 @@ pdf_fsys_disk_item_writable_p (pdf_text_t path_name)
                                         &host_path,
                                         &host_path_len) == PDF_OK)
         {
-          __pdf_fsys_disk_is_writable(host_path, &result);
+          __pdf_fsys_disk_is_writable_from_host_path(host_path, &result);
           pdf_dealloc(host_path);
         }
     }
@@ -850,7 +854,7 @@ pdf_fsys_disk_file_get_mode (pdf_fsys_file_t file)
 {
   return (((file != NULL) && (file->data != NULL)) ?        \
           (((pdf_fsys_disk_file_t)file->data)->file_mode) : \
-          PDF_FSYS_OPEN_MODE_INVALID);;
+          PDF_FSYS_OPEN_MODE_INVALID);
 }
 
 pdf_text_t 
@@ -1152,7 +1156,9 @@ pdf_fsys_disk_file_reopen (pdf_fsys_file_t file,
           ret_code = PDF_ERROR;
           /* Get the new mode string for freopen */
           mode_str =__pdf_fsys_disk_get_mode_string(mode);
-          PDF_DEBUG_BASE("Re-opening file with mode '%s'...", mode_str);
+          PDF_DEBUG_BASE("Re-opening file '%s' with mode '%s'...",
+                         file_data->host_path,
+                         mode_str);
 
           if(mode_str != NULL)
             {
@@ -1180,15 +1186,32 @@ pdf_fsys_disk_file_reopen (pdf_fsys_file_t file,
 
 static pdf_status_t
 __pdf_fsys_disk_get_host_path (pdf_text_t path,
-                             pdf_char_t **host_path,
-                             pdf_u32_t *host_path_size)
+                               pdf_char_t **host_path,
+                               pdf_u32_t *host_path_size)
 {
   /* Call the pdf_text module to get a host-encoded version of the
-     given path */
-  return pdf_text_get_host (host_path,
-                            host_path_size,
-                            path,
-                            pdf_text_get_host_encoding ());
+   *  given path */
+  pdf_char_t *padded = NULL;
+  pdf_u32_t padded_size = 0;
+
+  if(pdf_text_get_host(&padded,
+                       &padded_size,
+                       path,
+                       pdf_text_get_host_encoding ()) == PDF_OK)
+    {
+      *host_path = pdf_realloc(padded, padded_size+2);
+      if(*host_path != NULL)
+        {
+          *host_path_size = padded_size + 2;
+          (*host_path)[(*host_path_size)-1] = '\0'; 
+          (*host_path)[(*host_path_size)-2] = '\0'; 
+          return PDF_OK;
+        }
+      else
+        return PDF_ENOMEM;
+    }
+  else
+    return PDF_ERROR;
 }
 
 
