@@ -1,4 +1,452 @@
+2008-12-28  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Creation and Destruction of Functions):
+	Documentation for pdf_fp_matrix_transform and
+	pdf_fp_matrix_transform_rect fixed.
+
+	* src/base/pdf-fp.h: Prototypes of unimplemented functions
+	removed.
+
+	* doc/gnupdf.texi (Creation and Destruction of Functions): Fix
+	documentation for pdf_fp_func_2_new.
+
+	* configure.ac: Use AC_CONFIG_MACRO_DIR.
+
+	* doc/gnupdf.texi (Hash helper functions): Documentation for
+	'pdf_hash_get_string' fixed.
+
+	* src/base/pdf-hash-helper.h: Use char instead of pdf_char_t for
+	keys in pdf_hash_t variables.
+
+	* doc/gnupdf.texi: Idem.
+
+	* doc/gnupdf.texi (Hash helper functions): Documentation for
+	'pdf_hash_get_text'.
+	(Hash helper functions): Documentation for 'pdf_hash_get_time'.
+	(Hash helper functions): Documentation for 'pdf_hash_get_list'.
+	(Hash helper functions): Documentation for 'pdf_hash_get_hash'.
+	(Hash helper functions): Documentation for 'pdf_hash_get_stm'.
+	(Hash helper functions): Documentation for 'pdf_hash_get_size'.
+	(Hash helper functions): Documentation for 'pdf_hash_get_string'.
+
+	* src/base/pdf-stm-f-jbig2.c (pdf_stm_f_jbig2dec_init): Use the
+	new hash helper functions.
+
+	* src/base/pdf-stm-f-aesv2.c (pdf_stm_f_aesv2_init): Use the new
+	hash helper functions.
+
+	* src/base/pdf-stm-f-v2.c (pdf_stm_f_v2_init): Use the new hash
+	helper functions.
+
+	* src/base/pdf-hash-helper.h: New functions 'pdf_hash_get_text',
+	'pdf_hash_get_time', 'pdf_hash_get_list', 'pdf_hash_get_hash',
+	'pdf_hash_get_stm', 'pdf_hash_get_size', 'pdf_hash_get_string'.
+
+2008-12-27  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* prmgt/check-api-doc-consistency.pl: make it work with array
+	subscripts [].
+
+2008-12-27  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* torture/unit/base/text/pdf-text-cmp.c: fixed test cases to not
+	access internal data without the API.
+
+	* torture/unit/base/text/pdf-text-filter.c: same.
+
+	* torture/unit/base/text/pdf-text-get-country.c: same.
+
+	* torture/unit/base/text/pdf-text-get-language.c: same.
+
+	* torture/unit/base/text/pdf-text-get-pdfdocenc.c: same.
+
+	* torture/unit/base/text/pdf-text-get-unicode.c: same.
+
+	* torture/unit/base/text/pdf-text-new-from-host.c: same.
+
+	* torture/unit/base/text/pdf-text-new-from-pdf-string.c: same.
+
+	* torture/unit/base/text/pdf-text-new-from-u32.c: same.
+
+	* torture/unit/base/text/pdf-text-new-from-unicode.c: same.
+
+	* torture/unit/base/text/pdf-text-set-country.c: same.
+
+	* torture/unit/base/text/pdf-text-set-host.c: same.
+
+	* torture/unit/base/text/pdf-text-set-language.c: same.
+
+	* torture/unit/base/text/pdf-text-set-pdfdocenc.c: same.
+
+	* torture/unit/base/text/pdf-text-set-unicode.c: same.
+
+2008-12-27  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/unit/base/hash/pdf-hash-get.c: Renamed from
+	'pdf-hash-search.c'.
+
+	* src/base/pdf-hash.h: pdf_hash_search renamed to pdf_hash_get.
+
+	* src/base/pdf-hash.c: Idem.
+
+	* doc/gnupdf.texi (Searching elements): Idem.
+
+	* src/base/pdf-hash-helper.c (pdf_hash_add_string): Use an
+	intermediate value instead to call strlen twice.
+
+	* src/base/pdf-fp-func.c (pdf_eval_type4): Use sinf and cosf
+	instead of sin and cos.
+
+	* torture/unit/base/fp/pdf-fp-func-eval.c: Use sinf and cosf.
+
+	* src/base/pdf-crypt-c-aesv2.c (pdf_crypt_cipher_aesv2_setkey):
+	Return PDF_EBADAESKEY instead of PDF_EBADDATA.
+
+	* src/base/pdf-stm-f-aesv2.c (pdf_stm_f_aesv2_init): Return the
+	correct status value if in error setting the key.
+
+	* src/base/pdf-stm-f-v2.c (pdf_stm_f_v2_init): Return the correct
+	status value if in error setting the key.
+
+	* src/base/pdf-stm.c (pdf_stm_install_filter): Adapted to use the
+	new 'pdf_stm_filter_new' prototype.
+	(pdf_stm_init): Idem.
+
+	* src/base/pdf-stm-filter.c (pdf_stm_filter_new): Make
+	'pdf_stm_filter_new' return a 'pdf_status_t' value.
+
+	* src/base/pdf-stm-filter.h: Make 'pdf_stm_filter_new' return a
+	'pdf_status_t' value.
+
+	* utils/pdf-filter.c (install_filters): Update the key when it was
+	holding another value.
+	(install_filters): Call 'pdf_crypt_init'.
+	(install_filters): Check for error status in the filters
+	installation.
+
+	* doc/pdf-filter.1: Updated.
+
+	* doc/gnupdf.texi (Hash helper functions): Documentation for
+	'pdf_hash_add_size'.
+	(Hash helper functions): Documentation for 'pdf_hash_add_string'.
+	(Encryption and decryption): 'pdf_crypt_cipher_setkey'
+	documentation fixed.
+	(Utilities): Documentation for 'pdf_crypt_nonce' fixed.
+
+	* utils/pdf-filter.c (install_filters): Use the new hash helper
+	functions for size and string values.
+
+	* src/base/pdf-hash-helper.h: New function 'pdf_hash_add_size'.
+	New function 'pdf_hash_add_string'.
+
+	* utils/pdf-filter.c: Support for MD5 encoder filter.
+	Support for AESV2 encoder, AESV2 decoder, V2 encoder and V2
+	decoder.
+
+	* utils/pdf-filter.h (HELP_ARG): Support for MD5ENC_FILTER_ARG.
+
+	* doc/gnupdf.texi (Creation and Destruction of Functions):
+	Documentation for 'pdf_fp_func_0_new'.
+	(Creation and Destruction of Functions): Documentation for
+	'pdf_fp_func_2_new'.
+	(Creation and Destruction of Functions): Documentation for
+	'pdf_fp_func_3_new'.
+	(Creation and Destruction of Functions): Documentation for
+	'pdf_fp_func_4_new'.
+	(Creation and Destruction of Functions): Documentation for
+	'pdf_fp_func_destroy'.
+	(Evaluation of Functions): Documentation for
+	'pdf_fp_func_get_bounds'.
+	(Evaluation of Functions): Documentation for 'pdf_fp_func_eval'.
+
+2008-12-26  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* configure.ac: Fix incorrect sh assignation.
+
+2008-12-25  David Vazquez  <davazp@es.gnu.org>
+
+	* doc/gnupdf.texi (Stream Types): Crypt filters added.
+
+	* src/base/pdf-stm-f-aesv2.c: Adjust to use new crypt module functions.
+
+	* src/base/pdf-stm-f-md5.c: Same.
+
+2008-12-23  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-stm-filter.h: Fill pdf_stm_filter_type_e only
+	if the required libraries are available.
+
+	* src/base/pdf-stm-filter.c (pdf_stm_filter_new): Use
+	HAVE_LIBJBIG2DEC instead of HAVE_JBIG2DEC.
+
+	* configure.ac: Simplify the checking of libraries, as suggested
+	by Yavor Doganov.
+
+2008-12-23  David Vazquez  <davazp@es.gnu.org>
+
+	* doc/gnupdf-tsd.texi: Updated.
+
+	* torture/unit/base/crypt/pdf-crypt-cipher-setkey.c (test_pdf_crypt_cipher_setkey): New tests.
+
+	* torture/unit/base/crypt/pdf-crypt-cipher-decrypt.c: New tests.
+
+	* torture/unit/base/crypt/pdf-crypt-md-write.c (test_pdf_crypt_md_write): New tests.
+
+	* doc/gnupdf.texi (Encryption): Updated.
+
+	* src/base/pdf-crypt-c-aesv2.c: Incremental encryption support added.
+
+	* src/base/pdf-crypt-c-v2.c: Same.
+
+	* src/base/pdf-crypt.h: Same.
+
+2008-12-20  David Vazquez  <davazp@es.gnu.org>
+
+	* src/base/pdf-crypt.h (pdf_crypt_md_hash): Minor bug fixed.
+
+	* src/base/pdf-stm-buffer.c (pdf_stm_buffer_resize): New function.
+
+2008-12-15  David Vazquez  <davazp@es.gnu.org>
+
+	* doc/gnupdf-tsd.texi (pdf_crypt_md_hash)
+	(Message digest functions): Updated.
+
+	* torture/unit/base/crypt/pdf-crypt-md-hash.c: New tests.
+
+	* src/base/pdf-crypt.h (pdf_crypt_md_new): The *MD argument should
+	is the last argument.
+
+2008-12-14  David Vazquez  <davazp@es.gnu.org>
+
+	* src/base/MANIFEST.wiki: Updated.
+
+	* src/base/pdf-stm-f-aesv2.c: New file
+
+	* src/base/pdf-stm-f-v2.c: New file
+
+	* src/base/pdf-stm-f-md5.c: New file
+
+	* src/base/pdf-crypt-c-aesv2.c (pdf_crypt_cipher_aesv2_decrypt):
+	Check padding size is lesser than AESV2_BLKSIZE.
+
+	* torture/unit/base/crypt/pdf-crypt-cipher-decrypt.c: New test.
+
+2008-12-11  David Vazquez  <davazp@es.gnu.org>
+
+	* torture/unit/base/stm/pdf-stm-read.c: New test.
+
+	* doc/gnupdf-tsd.texi (pdf_crypt_cipher_encrypt): New test documentation.
+	(pdf_stm_write): New tests documentation.
+
+	* torture/unit/base/crypt/pdf-crypt-cipher-encrypt.c: New test
+
+	* torture/unit/base/crypt/pdf-crypt-cipher-decrypt.c: Change
+	`pdf_crypt_cipher_decrypt_001' ciphered buffer and key.
+
+2008-12-10  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/unit/runtests.c (main): Dont set the CK_FORK variable,
+	so the environment variable is used instead.
+
+2008-12-08  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-stm.c (pdf_stm_install_filter): Return PDF_ERROR in
+	the case of an error while executing 'pdf_stm_filter_new'.
+
+	* src/base/pdf-stm-filter.c (pdf_stm_filter_new): Return NULL in
+	the case of an error initializing the filter implementation.
+
+2008-12-03  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/unit/base/fp/pdf-fp-func-eval.c (START_TEST): New test
+	'pdf_fp_func_eval_017'.
+	(START_TEST): New test 'pdf_fp_func_eval_018'.
+	(START_TEST): New test 'pdf_fp_func_eval_019'.
+	(START_TEST): New test 'pdf_fp_func_eval_020'.
+	(START_TEST): New test 'pdf_fp_func_eval_021'.
+
+2008-12-02  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/unit/base/fp/pdf-fp-func-eval.c (START_TEST): New test
+	'pdf_fp_func_eval_012'.
+	(START_TEST): New test 'pdf_fp_func_eval_013'.
+	(START_TEST): New test 'pdf_fp_func_eval_014'.
+	(START_TEST): New test 'pdf_fp_func_eval_015'.
+	(START_TEST): New test 'pdf_fp_func_eval_016'.
+
+	* src/base/pdf-fp-func.c (pdf_eval_type4): OPC_copy operator
+	fixed.
+
+	* torture/unit/base/fp/pdf-fp-func-eval.c (START_TEST): New test
+	'pdf_fp_func_eval_001'.
+	(START_TEST): New test 'pdf_fp_func_eval_002'.
+	(START_TEST): New test 'pdf_fp_func_eval_004'.
+	(START_TEST): New test 'pdf_fp_func_eval_005'.
+	(START_TEST): New test 'pdf_fp_func_eval_006'.
+	(START_TEST): New test 'pdf_fp_func_eval_007'.
+	(START_TEST): New test 'pdf_fp_func_eval_008'.
+	(START_TEST): New test 'pdf_fp_func_eval_009'.
+	(START_TEST): New test 'pdf_fp_func_eval_010'.
+	(START_TEST): New test 'pdf_fp_func_eval_011'.
+
+	* doc/gnupdf-tsd.texi (pdf_fp_func_eval): Documentation for tests
+	from 'pdf_fp_func_eval_002' to 'pdf_fp_func_eval_021'.
+
+	* torture/unit/base/fp/pdf-fp-func-eval.c: New file.
+
+	* torture/unit/runtests.c (main): Run the fp testsuite.
+
+	* torture/unit/base/fp/tsuite-fp.c: New file.
+	(tsuite_fp): New function.
+
+	* doc/gnupdf.texi: Use 'version.texi' to get versioning
+	information.
+
+	* doc/version.texi.in: New file.
+
+	* doc/gnupdf.texi (Floating Point Types): Description for
+	'pdf_matrix_s'.
+
+2008-12-01  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Conversion Routines): Documentation for
+	'pdf_fp_string_to_real'.
+	(Conversion Routines): Documentation for 'pdf_fp_real_to_string'.
+	(Geometry Routines): Documentation for 'pdf_fp_matrix_concat'.
+	(Geometry Routines): Documentation for 'pdf_fp_matrix_invert'.
+	(Geometry Routines): Documentation for 'pdf_fp_matrix_transform'.
+	(Geometry Routines): Documentation for
+	'pdf_fp_matrix_transform_rect'.
+
+	* src/base/pdf-fp.c: Obsolete functions removed.
+
+	* src/base/pdf-fp.h: New types and function prototypes.
+
+2008-11-30  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-fp-func.c: Missing copyright and distribution terms
+	added.
+
+	* src/base/pdf-fp-func.h: Missing copyright and distribution terms
+	added.
+
+	* src/base/pdf-fp-func.c: New file.
+
+	* src/base/pdf-fp-func.h: New file.
+
+2008-11-29  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/unit/base/crypt/pdf-crypt-cipher-decrypt.c: Adapted to
+	use the new API.
+
+	* torture/unit/base/crypt/pdf-crypt-cipher-encrypt.c: Adapted to
+	use the new API.
+
+	* src/base/pdf-crypt.h: Make `pdf_crypt_cipher_t' and
+	`pdf_crypt_md_t' opaque pointers.
+	Provide `enum pdf_crypt_md_algo_e' instead of `pdf_crypt_md_algo_t'.
+
+	* src/base/pdf-stm-buffer.h: Do not export definitions to the
+	public header file.
+
+	* src/base/pdf-stm-be.h: Do not export definitions to the public
+	header file.
+
+	* src/base/pdf-stm-filter.h: Make `pdf_stm_filter_t' private.
+
+	* src/base/pdf-stm.h: Make `pdf_stm_t' a opaque pointer.
+
+	* src/base/pdf-time.h: Make `pdf_time_t' a opaque pointer.
+
+2008-11-28  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* utils/pdf-filter.h (HELP_ARG): take care about missing
+	filters.
+
+	* doc/gnupdf.texi (Hash helper functions): Usage example for
+	pdf_hash_add_stm.
+	(Setting and Getting List Elements): Usage example for
+	pdf_list_set_at.
+	(Reading and Writing Data): Documentation of pdf_stm_flush
+	adjusted to the new implementation.
+	(Stream Types): Document pdf_stm_filter_type_e in the reference
+	manual.
+
+2008-11-27  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-fp.h: Useless interpolation functions deleted.
+
+	* src/base/pdf-fp.c: Idem.
+
+	* src/Makefile.am (FP_MODULE_SOURCES): New variable.
+
+	* build-aux/link-warning.h: Moved from top_srcdir.
+
+2008-11-27  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* prmgt/srcinfo-extractor.pl.in: originally srcinfo-extractor.pl.
+
+2008-11-26  Jose E. Marchesi  <jemarch@gnu.org>
+
+	*  Initial version of the MANIFEST.wiki files.
+
+2008-11-25  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* torture/unit/base/types/pdf-i64-add.c: added 'long long'
+	literals to avoid GCC warnings.
+
+	* torture/unit/base/types/pdf-i64-assign.c: same.
+
+	* torture/unit/base/types/pdf-i64-copy.c: same.
+
+	* torture/unit/base/types/pdf-i64-new.c: same.
+
+2008-11-25  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* configure.ac: Output torture/prmgt/get-test-data.sh
+
+	* prmgt/get-test-data.sh: New file.
+
+	* torture/testdata/README: New file
+
+2008-11-24  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/unit/Makefile.am (TORTUTILS_FILES): New variable
+	containig tortutils sources.
+
+	* torture/tortutils/tortutils.c: New file.
+
+	* torture/tortutils/tortutils.h: New file.
+
+	* src/base/pdf-stm-filter.c (pdf_stm_filter_apply): Make finish_p
+	to be activated upon EOF in read-mode streams.
+
+2008-11-23  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* AUTHORS: Updated.
+
 2008-11-21  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-stm-filter.c (pdf_stm_filter_new): Install JBIG2
+	decoder functions.
+
+	* src/base/pdf-stm-filter.h (p): Added the
+	PDF_STM_FILTER_JBIG2_DEC filter type.
+	Conditionally include pdf-stm-f-jbig2.h
+
+	* utils/pdf-filter.c (install_filters): Added support for the
+	JBIG2 decoder filter.
+
+	* src/Makefile.am (STM_MODULE_SOURCES): Add source files for the
+	JBIG2 decoder filter.
+
+	* src/base/pdf-stm-f-jbig2.c: New file.
+	(pdf_stm_f_jbig2dec_dealloc_state): New function.
+	(pdf_stm_f_jbig2dec_init): New function.
+
+	* src/base/pdf-stm-f-jbig2.h: New file.
+
+	* configure.ac: Check for the jbig2dec library.
 
 	* build-aux/README: Updated.
 

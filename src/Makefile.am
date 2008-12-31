@@ -44,10 +44,17 @@ STM_MODULE_SOURCES = base/pdf-stm.c base/pdf-stm.h \
                      base/pdf-stm-filter.h base/pdf-stm-filter.c \
                      base/pdf-stm-f-null.h base/pdf-stm-f-null.c \
                      base/pdf-stm-f-ahex.h base/pdf-stm-f-ahex.c \
-                     base/pdf-stm-f-rl.h base/pdf-stm-f-rl.c
+                     base/pdf-stm-f-rl.h base/pdf-stm-f-rl.c \
+                     base/pdf-stm-f-v2.h base/pdf-stm-f-v2.c \
+                     base/pdf-stm-f-aesv2.h base/pdf-stm-f-aesv2.c \
+                     base/pdf-stm-f-md5.h base/pdf-stm-f-md5.c
 
 if ZLIB
   STM_MODULE_SOURCES += base/pdf-stm-f-flate.c base/pdf-stm-f-flate.h
+endif
+
+if JBIG2DEC
+  STM_MODULE_SOURCES += base/pdf-stm-f-jbig2.c base/pdf-stm-f-jbig2.h
 endif
 
 TEXT_MODULE_SOURCES = base/pdf-text-context.c base/pdf-text-context.h \
@@ -70,9 +77,13 @@ CRYPT_MODULE_SOURCES = base/pdf-crypt.c base/pdf-crypt.h \
                        base/pdf-crypt-c-aesv2.c base/pdf-crypt-c-aesv2.h \
                        base/pdf-crypt-c-v2.c base/pdf-crypt-c-v2.h
 
+FP_MODULE_SOURCES = base/pdf-fp.h base/pdf-fp.c \
+                    base/pdf-fp-func.h base/pdf-fp-func.c
+
 BASE_LAYER_SOURCES = base/pdf-base.c base/pdf-base.h \
                      $(ALLOC_MODULE_SOURCES) \
                      $(TYPES_MODULE_SOURCES) \
+                     $(FP_MODULE_SOURCES) \
                      $(FILESYSTEM_MODULE_SOURCES) \
                      $(STM_MODULE_SOURCES) \
                      $(ERROR_MODULE_SOURCES) \
@@ -112,6 +123,7 @@ AM_CPPFLAGS = -I$(top_builddir)/lib -I$(srcdir)/base \
 PUBLIC_HDRS = pdf-global.h \
               base/pdf-error.h \
               base/pdf-types.h \
+              base/pdf-fp.h \
               base/pdf-alloc.h \
               base/pdf-list.h \
               base/pdf-hash.h \
@@ -119,13 +131,11 @@ PUBLIC_HDRS = pdf-global.h \
               base/pdf-text.h \
               base/pdf-fsys.h \
               base/pdf-stm-buffer.h \
-              base/pdf-stm-be.h \
               base/pdf-stm-filter.h \
               base/pdf-stm.h \
               base/pdf-hash-helper.h \
               base/pdf-crypt.h \
-              base/pdf-crypt-c-v2.h \
-              base/pdf-crypt-c-aesv2.h
+              base/pdf-fp-func.h
 
 pdf.h : $(PUBLIC_HDRS)
 	chmod +x $(top_srcdir)/src/extract-public-hdr

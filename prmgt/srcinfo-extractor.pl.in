@@ -1,4 +1,5 @@
 #!/usr/bin/env perl
+# @configure_input@
 
 # Copyright (C) 2008 Free Software Foundation, Inc.
 
@@ -17,48 +18,29 @@
 
 use warnings;
 use strict;
+use File::Find;
 
 ##
-# This script traverses every directory in the root and looks for a
+# This script traverses every directory from topdir and looks for a
 # "MANIFEST.wiki" file, from which the directory information is then extracted.
 ###
 
-my $TOPDIR="..";
-my $DOCFILE = "MANIFEST.wiki";
+my $TOPDIR="@abs_top_builddir@";
+my $DOCREGEX = 'MANIFEST\.wiki$';
 
 sub print_docfile
 {
     my $str = shift;
     open (FILE, $str);
     print <FILE>;
-    print "\n"; # in case it's not at end of FILE.
+    print "\n"; # in case it's missing in FILE.
     close(FILE);
 }
-
-
 
 ##
 # MAIN PROGRAM
 ###
 
-my @dirs;
-
-opendir (DIR, $TOPDIR) or die "Couldn't open $TOPDIR\n";
-@dirs = grep { !m/^\./ && -d "$TOPDIR/$_" } readdir(DIR);
-closedir(DIR);
-
-# push these by hand
-push (@dirs, ""); # for TOPDIR
-push (@dirs, "src/base");
-push (@dirs, "src/object");
-push (@dirs, "src/document");
-push (@dirs, "src/page");
-
-foreach my $dir (sort(@dirs)){
-    my $file = $TOPDIR . '/' . $dir . '/' . $DOCFILE;
-    if (-e $file and -r $file){
-        print_docfile ($file);
-    }
-}
+find (sub {print_docfile($_) if -r and m/$DOCREGEX/ }, $TOPDIR);
 
 0;

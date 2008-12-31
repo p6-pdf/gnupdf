@@ -54,7 +54,7 @@ START_TEST(pdf_i64_assign_001)
   fail_if(k.high != 4);
 #else
   pdf_i64_assign(&k,4,5,&p_status);
-  fail_if(k != 0x400000005);
+  fail_if(k != 0x400000005LL);
 #endif
 
 }

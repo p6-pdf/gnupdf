@@ -50,6 +50,7 @@ GNU PDF Library Hackers Guide
 * Use of Autotools::
 * Coding Conventions::
 * Sending Patches::
+* Writing Tests::
 @end menu
 
 @node Use of Autotools
@@ -355,10 +356,23 @@ This chapter contains some useful information to send patches to be
 integrated in the trunk.
 
 @menu
+* Documenting Your Changes::
 * Generating a Bazaar Merge Directive::
 * Syntax Check::
 * Patch Safety Dispatcher::
 @end menu
+
+@node Documenting Your Changes
+@section Documenting Your Changes
+
+Everyone loves documentation! :D
+
+If your change includes new files please update the
+@file{MANIFEST.wiki} in the directory containing the new files.
+
+If your change is not trivial please take a look to the appropriate
+architecture page in the wiki. Maybe it is needed to update the page
+with more information?
 
 @node Generating a Bazaar Merge Directive
 @section Generating a Bazaar Merge Directive
@@ -431,5 +445,48 @@ If it is the commit will be applied, otherwise it won't.
 NOTE: Make sure you run ``bzr commit'' from your working copy root
 directory.  Bazaar will fail with some error or don't even run the
 script otherwise. Until now we have no solution for this problem.
+
+@node Writing Tests
+@chapter Writing Tests
+
+@menu
+* Test Data Files::
+* The tortutils Library::
+@end menu
+
+@node Test Data Files
+@section Test Data Files
+
+Some tests require the use of data files:
+
+@itemize @minus
+@item to hold input for the software under test
+@item to hold output to be compared with the output of the software under test
+@end itemize
+
+Since we are not distributing the test data files with the source
+distribution, neither they are stored in the bazaar repository, we
+need to download a tarball
+@url{http://www.gnupdf.org/prmgt/testdata/gnupdf-testdata-RELEASE.tar.gz},
+where @var{release} is the version of the library or @file{trunk}.
+
+After downloaded the data files should be untarred in the
+@file{torture/testadata/} directory.
+
+The easiest way to get the test data files is by using the
+@file{prmgt/get-test-data.sh} script, that will download and install
+the data files tarball matching the appropriate release.
+
+The test data files are documented in the ``Test Data Files'' chapter
+in the Test Specification Document.
+
+@node The tortutils Library
+@section The tortutils Library
+
+The ``torture utils'' library provides several utility functions that
+can be used while writing tests.
+
+See @file{torture/tortutils/tortutils.h} for documentation on the
+functions provided by the library.
 
 @bye

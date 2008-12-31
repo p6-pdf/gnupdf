@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/20 18:30:54 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/11/29 15:11:39 jemarch"
  *
  *       File:         pdf-stm-be.h
  *       Date:         Wed Jun 18 20:53:27 2008
@@ -14,8 +14,6 @@
 #include <pdf-types.h>
 #include <pdf-fsys.h>
 #include <stdio.h>
-
-/* BEGIN PUBLIC */
 
 /* Backend types */
 enum pdf_stm_be_type_e
@@ -58,8 +56,6 @@ struct pdf_stm_be_s
 };
 
 typedef struct pdf_stm_be_s *pdf_stm_be_t;
-
-/* END PUBLIC */
 
 /* 
  * Public API

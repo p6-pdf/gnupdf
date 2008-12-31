@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/12 05:45:27 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-12-20 15:48:34 davazp"
  *
  *       File:         pdf-stm-buffer.h
  *       Date:         Wed Jun 18 20:34:23 2008
@@ -28,8 +28,6 @@
 
 #include <pdf-types.h>
 
-/* BEGIN PUBLIC */
-
 /* Memory buffer data type */
 struct pdf_stm_buffer_s
 {
@@ -41,8 +39,6 @@ struct pdf_stm_buffer_s
 
 typedef struct pdf_stm_buffer_s *pdf_stm_buffer_t;
 
-/* END PUBLIC */
-
 /*
  * Public functions
  */
@@ -53,6 +49,7 @@ pdf_status_t pdf_stm_buffer_destroy (pdf_stm_buffer_t buffer);
 pdf_bool_t pdf_stm_buffer_full_p (pdf_stm_buffer_t buffer);
 pdf_bool_t pdf_stm_buffer_eob_p (pdf_stm_buffer_t buffer);
 
+pdf_status_t pdf_stm_buffer_resize (pdf_stm_buffer_t buffer, pdf_size_t newsize);
 pdf_status_t pdf_stm_buffer_rewind (pdf_stm_buffer_t buffer);
 
 #endif /* !PDF_STM_BUFFER_H */

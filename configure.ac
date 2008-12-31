@@ -19,8 +19,9 @@ dnl You should have received a copy of the GNU General Public License
 dnl along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 AC_INIT(src/pdf-global.h)
-AM_INIT_AUTOMAKE(gnupdf, 0.1)
+AM_INIT_AUTOMAKE(gnupdf, trunk)
 AM_CONFIG_HEADER(src/config.h)
+AC_CONFIG_MACRO_DIR([m4])
 
 gl_EARLY
 
@@ -51,16 +52,18 @@ CHECK_ZLIB
 AM_CONDITIONAL([ZLIB], [test "x$have_zlib" = "xyes"])
 AC_CHECK_LIB(m,exp,,,)
 
+have_jbig2dec=yes
+AC_CHECK_LIB([jbig2dec],[jbig2_ctx_new],[],[have_jbig2dec=no])
+AM_CONDITIONAL([JBIG2DEC], [test "x$have_jbig2dec" != "xno"])
+
 AM_PATH_LIBGCRYPT([1.2.4], have_libgcrypt="yes", have_libgcrypt="no")
 if test x$have_libgcrypt == "xno"; then
 AC_MSG_ERROR([cannot find libgcrypt library. Please install it and rerun `configure'.])
 fi
 
-AC_CHECK_LIB([check],[suite_create],[have_check=yes],[have_check=no],)
-AM_CONDITIONAL([CHECK], [test "x$have_check" = "xyes"])
-if test "x$have_check" = "xno"; then
-  AC_DEFINE([HAVE_CHECK], [1], [Check Unit Test Framework])
-fi
+have_check=yes
+AC_CHECK_LIB([check],[suite_create],,[have_check=no])
+AM_CONDITIONAL([CHECK], [test "x$have_check" != "xno"])
 
 AC_CHECK_LIB([iconv],[iconv_open],[have_iconv=yes],[have_iconv=no],)
 AM_CONDITIONAL([ICONV], [test "x$have_iconv" = "xyes"])
@@ -227,12 +230,12 @@ AM_CONDITIONAL([NOCHECK], [test "x$use_nocheck" = "xyes"])
 
 dnl Check if Unit testing support is available with Check or No-Check
 ut_support=no
-AM_CONDITIONAL([COMPILE_UT], [test "x$use_nocheck" = "xyes" -o "x$have_check" = "xyes"])
+AM_CONDITIONAL([COMPILE_UT], [test "x$use_nocheck" = "xyes" -o "x$ac_cv_lib_check_suite_create" = "xyes"])
 if test "x$use_nocheck" = "xyes"; then
   ut_framework="(builtin No-Check)"
   ut_support=yes
 else
-  if test "x$have_check" = "xyes"; then
+  if test "x$ac_cv_lib_check_suite_create" = "xyes"; then
     ut_framework="(Check)"
     ut_support=yes
   fi
@@ -260,10 +263,11 @@ esac
 dnl Specific W32 needs of compilation
 AM_CONDITIONAL([COMPILE_W32_SYSTEM], [test "x$compile_w32_system" = "xyes"])
 
-
+GNUPDF_VERSION=$VERSION
+AC_SUBST(GNUPDF_VERSION)
 
 dnl Generate output files
-AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile torture/unit/Makefile doc/Makefile utils/Makefile prmgt/Makefile prmgt/apic2wiki prmgt/testlog2wiki prmgt/docfuncs prmgt/tsdfuncs src/extract-public-hdr build-aux/Makefile)
+AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile torture/unit/Makefile doc/Makefile utils/Makefile prmgt/Makefile prmgt/apic2wiki prmgt/testlog2wiki prmgt/docfuncs prmgt/tsdfuncs src/extract-public-hdr build-aux/Makefile prmgt/get-test-data.sh prmgt/srcinfo-extractor.pl doc/version.texi)
 
 dnl Report configuration results
 
@@ -285,6 +289,7 @@ Configured for \`${canonical}'.
 
   Compilation level:                        ${PDFLIB_LEVEL} (${PDFLIB_LEVEL_DESCR})
   Using FlateDecode filter?                 ${have_zlib}
+  Using JBIG2 decoder filter?               ${ac_cv_lib_jbig2dec_jbig2_ctx_new}
   With unit tests support?                  ${ut_support} ${ut_framework}
   Program to build html manuals             ${texihtmlprogram}
   Build project management resources?       ${prmgt_mode}
@@ -297,6 +302,12 @@ dnl Report warnings
 if test "x$have_zlib" = "xno" ; then
 echo "
 WARNING: you are going to build a library without FlateDecode support. 
+         That means you wont be able to process many PDF files."
+fi
+
+if test "x$ac_cv_lib_jbig2dec_jbig2_ctx_new" = "xno" ; then
+echo "
+WARNING: you are going to build a library without JBIG2Decode support.
          That means you wont be able to process many PDF files."
 fi
 

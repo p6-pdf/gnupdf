@@ -40,6 +40,9 @@
  */
 START_TEST(pdf_text_set_country_001)
 {
+  
+
+
   pdf_text_t text;
   const pdf_char_t *country = (pdf_char_t *)"GB";
   
@@ -53,9 +56,10 @@ START_TEST(pdf_text_set_country_001)
   
   /* 2. The contents of the internal country ID representation should be the
    *      expected ones. */
-  fail_unless(strcmp((char *)text->country, (char *)country)==0);
+  fail_unless(strcmp(pdf_text_get_country(text), (char *)country)==0);
   
   pdf_text_destroy(text);
+
 }
 END_TEST
 

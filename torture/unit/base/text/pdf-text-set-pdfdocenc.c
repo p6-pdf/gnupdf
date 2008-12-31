@@ -41,6 +41,9 @@
  */
 START_TEST(pdf_text_set_pdfdocenc_001)
 {
+  
+
+
   extern const test_string_t pdf_doc_encoding_strings[];
   int i;
   
@@ -85,8 +88,13 @@ START_TEST(pdf_text_set_pdfdocenc_001)
                                      input_data) != PDF_OK);
             
       /* 2. The contents of the text object must be the expected ones. */
-      fail_unless(text->size == expected_size);
-      fail_unless(memcmp(text->data, expected_data, expected_size) == 0);
+
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      fail_unless(actual_size == expected_size);
+      fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
       
       fail_if(pdf_text_destroy(text) != PDF_OK);
       
@@ -97,6 +105,7 @@ START_TEST(pdf_text_set_pdfdocenc_001)
       pdf_dealloc(input_data);
       ++i;
     }
+
 }
 END_TEST
 

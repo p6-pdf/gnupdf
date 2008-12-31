@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 00:59:52 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/28 17:53:30 jemarch"
  *
  *       File:         pdf-fp.h
  *       Date:         Sun Feb 10 21:36:37 2008
@@ -26,35 +26,52 @@
 #ifndef PDF_FP_H
 #define PDF_FP_H
 
+#include <config.h> 
 #include <pdf-types.h>
 
 /* BEGIN PUBLIC */
 
 typedef float pdf_real_t;
 
-/* Geometry */
+struct pdf_point_s
+{
+  pdf_real_t h;
+  pdf_real_t v;
+};
 
-typedef pdf_real_t *pdf_point_t;
+typedef struct pdf_point_s *pdf_point_t;
 
-#define P_X(point) (point)[0]
-#define P_Y(point) (point)[1]
+struct pdf_matrix_s
+{
+  pdf_real_t a;
+  pdf_real_t b;
+  pdf_real_t c;
+  pdf_real_t d;
+  pdf_real_t h;
+  pdf_real_t v;
+};
 
-pdf_point_t pdf_create_point (void);
-void pdf_destroy_point (pdf_point_t point);
-pdf_point_t pdf_point_dup (pdf_point_t point);
+typedef struct pdf_matrix_s *pdf_matrix_t;
 
-/* Interpolation functions */
+struct pdf_quad_s
+{
+  pdf_real_t t1;
+  pdf_real_t tr;
+  pdf_real_t b1;
+  pdf_real_t br;
+};
 
-double pdf_interp_lineal (double x1, double y1,
-                          double x2, double y2,
-                          double x);
+typedef struct pdf_quad_s *pdf_quad_t;
 
-double pdf_interp_exp_coef_m (double x1, double x2,
-                              double y1, double y2);
-double pdf_interp_exp_coef_k (double x1, double y1,
-                              double m);
-double pdf_interp_exp (double m, double k,
-                       double x);
+struct pdf_rect_s
+{
+  pdf_real_t left;
+  pdf_real_t top;
+  pdf_real_t right;
+  pdf_real_t bottom;
+};
+
+typedef struct pdf_rect_s *pdf_rect_t;
 
 /* END PUBLIC */
 

@@ -1,9 +1,9 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-09 04:18:07 david"
+/* -*- mode: C -*- Time-stamp: "2008-12-23 17:47:49 davazp"
  *
  *       File:         pdf-crypt-md-hash.c
  *       Date:         Wed Mar  12 12:43:00 2008
  *
- *       GNU PDF Library - Unit tests for pdf_crypt_md_hash
+ *       GNU PDF Library - Unit tests for pdf_crypt_md_write
  *
  */
 
@@ -32,34 +32,22 @@
 
 
 /*
- * Test: pdf_crypt_md_hash_001
+ * Test: pdf_crypt_md_write_001
  * Description:
- *   Compute the md5 of an empty buffer.
+ *   Pass an empty message
  * Success condition:
- *   Returns PDF_OK and output buffer matches.
+ *   Returns PDF_OK.
  */
-START_TEST (pdf_crypt_md_hash_001)
+START_TEST (pdf_crypt_md_write_001)
 {
-  pdf_char_t *in;
-  pdf_char_t out[16];
+  pdf_char_t * in;
   pdf_crypt_md_t md;
-  pdf_char_t real_out[] = {
-    0xd4, 0x1d, 0x8c, 0xd9,
-    0x8f, 0x00, 0xb2, 0x04,
-    0xe9, 0x80, 0x09, 0x98,
-    0xec, 0xf8, 0x42, 0x7e
-  };
-
   pdf_crypt_init();
-
-  pdf_crypt_md_new (&md, PDF_CRYPT_MD_MD5);
-  fail_if (pdf_crypt_md_hash (md, out, sizeof(out), in, 0) != PDF_OK);
-  fail_if (!memcmp (real_out, out, sizeof(out)));
-  
+  pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md);
+  fail_if (pdf_crypt_md_write (md, in, 0) != PDF_OK);
   pdf_crypt_md_destroy (md);
 }
 END_TEST
-
 
 
 
@@ -67,13 +55,13 @@ END_TEST
  * Test case creation function
  */
 TCase *
-test_pdf_crypt_md_hash (void)
+test_pdf_crypt_md_write (void)
 {
-  TCase *tc = tcase_create("pdf_crypt_md_hash");
-  tcase_add_test(tc, pdf_crypt_md_hash_001);
+  TCase *tc = tcase_create("pdf_crypt_md_write");
+  tcase_add_test(tc, pdf_crypt_md_write_001);
   return tc;
 }
 
 
-/* End of pdf-crypt-md-hash.c */
+/* End of pdf-crypt-md-write.c */
 

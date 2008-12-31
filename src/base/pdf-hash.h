@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/10 20:36:54 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/27 23:44:37 jemarch"
  *
  *       File:         pdf-hash.h
  *       Date:         Sat Apr  12 12:22:05 2008
@@ -99,7 +99,7 @@ pdf_hash_remove (pdf_hash_t table, const char *key);
 /* Searching elements */
 
 pdf_status_t
-pdf_hash_search (const pdf_hash_t table, const char *key, const void **elem_pointer);
+pdf_hash_get (const pdf_hash_t table, const char *key, const void **elem_pointer);
 
 
 /* Working with iterators  */

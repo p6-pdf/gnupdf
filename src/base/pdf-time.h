@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/10 15:39:24 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/11/29 14:54:14 jemarch"
  *
  *       File:         pdf-time.h
  *       Date:         Mon Apr 28 23:23:04 2008
@@ -30,9 +30,6 @@
 #include <pdf-types.h>
 
 
-/* BEGIN PUBLIC */
-
-
 /* A variable of type pdf_time_t contains information about a particular date
  *  and time. It is stored in seconds since 1 January 1970 (UTC). Additionally
  *  an extra variable specifies the local time, as the offset between UTC and
@@ -42,6 +39,9 @@ struct pdf_time_s {
   /* A GMT offset, seconds WEST of GMT */
   pdf_i32_t  gmt_offset;
 };
+
+/* BEGIN PUBLIC */
+
 typedef struct pdf_time_s *pdf_time_t;
 
 

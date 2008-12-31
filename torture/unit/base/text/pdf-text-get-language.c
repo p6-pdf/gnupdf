@@ -39,6 +39,9 @@
  */
 START_TEST(pdf_text_get_language_001)
 {
+  
+
+
   pdf_text_t text;
   const pdf_char_t *language = NULL;
   
@@ -48,8 +51,7 @@ START_TEST(pdf_text_get_language_001)
   fail_if(pdf_text_new (&text) != PDF_OK);
   
   /* Store language ID without using the API */
-  strncpy((char *)(&(text->lang[0])), "en", 2);
-  text->lang[2] = '\0';
+  fail_if(pdf_text_set_language(text, "en") != PDF_OK);
   
   /* Get country ID */
   language = pdf_text_get_language(text);
@@ -61,6 +63,7 @@ START_TEST(pdf_text_get_language_001)
   fail_unless(strlen((char *)language) == 2);
   
   pdf_text_destroy(text);
+
 }
 END_TEST
 

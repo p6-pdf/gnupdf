@@ -85,6 +85,9 @@ END_TEST
  */
 START_TEST(pdf_text_cmp_002)
 {
+  
+
+
   const pdf_char_t *input_data = (pdf_char_t *) "GNU's Not Unix. ";
   pdf_size_t input_size = strlen((char *)input_data);
   pdf_text_t text1;
@@ -107,7 +110,11 @@ START_TEST(pdf_text_cmp_002)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text1->data, text1->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text1,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_cmp_002:1:Text1> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -116,7 +123,11 @@ START_TEST(pdf_text_cmp_002)
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
-      internal_hex = pdf_text_test_get_hex(text2->data, text2->size, ':');
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text2,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_cmp_002:1:Text2> '%s' (%ld)\n",
              internal_hex, (long)strlen((char *)internal_hex));
@@ -131,6 +142,7 @@ START_TEST(pdf_text_cmp_002)
   
   pdf_text_destroy(text1);
   pdf_text_destroy(text2);
+
 }
 END_TEST
 

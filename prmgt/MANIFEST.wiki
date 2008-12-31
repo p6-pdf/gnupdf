@@ -1,0 +1,16 @@
+=='''prmgt/''' Project Management==
+
+This directory contain several files with management information about the project: tasks, reports, etc.
+
+; '''libgnupdf.tjp'''
+: taskjuggler file for libgnupdf.
+
+; '''pertdot.xsl''', '''pertfdp.xsl'''
+: xsl templates to get Pert diagrams for '''libgnupdf.tjp'''.
+
+; '''pmccabe2html.in'''
+: AWK program to generate a html report from the output of the pmccabe program.
+
+; '''pmccabe.css'''
+: CSS stylesheets.
+

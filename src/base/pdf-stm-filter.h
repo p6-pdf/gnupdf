@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/10/12 18:33:23 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/27 21:30:09 jemarch"
  *
  *       File:         pdf-stm-filter.h
  *       Date:         Thu Jun 12 22:05:06 2008
@@ -35,10 +35,17 @@
 #include <pdf-stm-f-null.h>
 #include <pdf-stm-f-ahex.h>
 #include <pdf-stm-f-rl.h>
+#include <pdf-stm-f-v2.h>
+#include <pdf-stm-f-aesv2.h>
+#include <pdf-stm-f-md5.h>
 
 #if defined(HAVE_LIBZ)
 #  include <pdf-stm-f-flate.h>
 #endif /* HAVE_LIBZ */
+
+#if defined(HAVE_LIBJBIG2DEC)
+#  include <pdf-stm-f-jbig2.h>
+#endif /* HAVE_LIBJBIG2DEC */
 
 /* BEGIN PUBLIC */
 
@@ -46,14 +53,33 @@
 enum pdf_stm_filter_type_e 
 {
   PDF_STM_FILTER_NULL = 0,
-  PDF_STM_FILTER_AHEX_ENC,
-  PDF_STM_FILTER_AHEX_DEC,
   PDF_STM_FILTER_RL_ENC,
   PDF_STM_FILTER_RL_DEC,
+#if defined(HAVE_LIBZ)
   PDF_STM_FILTER_FLATE_ENC,
-  PDF_STM_FILTER_FLATE_DEC
-
+  PDF_STM_FILTER_FLATE_DEC,
+#endif /* HAVE_LIBZ */
+#if defined(HAVE_LIBJBIG2DEC)
+  PDF_STM_FILTER_JBIG2_DEC,
+#endif /* HAVE_LIBJBIG2DEC */
+  PDF_STM_FILTER_AHEX_ENC,
+  PDF_STM_FILTER_AHEX_DEC,
+  PDF_STM_FILTER_AESV2_ENC,
+  PDF_STM_FILTER_AESV2_DEC,
+  PDF_STM_FILTER_V2_ENC,
+  PDF_STM_FILTER_V2_DEC,
+  PDF_STM_FILTER_MD5_ENC
 };
+
+/* END PUBLIC */
+
+enum pdf_stm_filter_mode_e
+{
+  PDF_STM_FILTER_MODE_READ,
+  PDF_STM_FILTER_MODE_WRITE
+};
+
+typedef struct pdf_stm_filter_s *pdf_stm_filter_t;
 
 /* Filter implementation */
 struct pdf_stm_filter_impl_s
@@ -92,19 +118,20 @@ struct pdf_stm_filter_s
   /* Filter status */
   pdf_status_t status;
   pdf_bool_t really_finish_p;
+
+  /* Operation mode */
+  enum pdf_stm_filter_mode_e mode;
 };
-
-typedef struct pdf_stm_filter_s *pdf_stm_filter_t;
-
-/* END PUBLIC */
 
 /*
  * Public API
  */
 
-pdf_stm_filter_t pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
-                                     pdf_hash_t params,
-                                     pdf_size_t buffer_size);
+pdf_status_t pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
+                                 pdf_hash_t params,
+                                 pdf_size_t buffer_size,
+                                 enum pdf_stm_filter_mode_e mode,
+                                 pdf_stm_filter_t *filter);
 pdf_status_t pdf_stm_filter_destroy (pdf_stm_filter_t filter);
 inline pdf_status_t pdf_stm_filter_set_next (pdf_stm_filter_t filter,
                                              pdf_stm_filter_t next_filter);

@@ -43,6 +43,9 @@
  */
 START_TEST(pdf_text_new_from_host_001)
 {
+  
+
+
   extern const test_string_t ascii_strings[];
   int i;
   
@@ -93,9 +96,13 @@ START_TEST(pdf_text_new_from_host_001)
                                          &text) == PDF_OK);
 
       /* 2. The contents of the text object must be the expected ones. */
-      fail_unless(text->size == expected_size);
-      fail_unless(memcmp(text->data, expected_data, expected_size)==0);
-  
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
+      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
+                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
+      fail_unless(actual_size == expected_size);
+      fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
+
       pdf_text_destroy(text);
       
       if(expected_free)
@@ -105,6 +112,7 @@ START_TEST(pdf_text_new_from_host_001)
 
       ++i;
     }
+
 }
 END_TEST
 

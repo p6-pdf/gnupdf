@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-21 22:25:49 gerel"
+/* -*- mode: C -*- Time-stamp: "08/12/27 23:51:10 jemarch"
  *
  *       File:         tsuite-hash.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -37,7 +37,7 @@ extern TCase *test_pdf_hash_add_text (void);
 extern TCase *test_pdf_hash_add_list (void);
 extern TCase *test_pdf_hash_add_stm (void);
 extern TCase *test_pdf_hash_remove (void);
-extern TCase *test_pdf_hash_search (void);
+extern TCase *test_pdf_hash_get (void);
 extern TCase *test_pdf_hash_iterator_new (void);
 extern TCase *test_pdf_hash_iterator_next (void);
 extern TCase *test_pdf_hash_iterator_destroy (void);
@@ -54,7 +54,7 @@ tsuite_hash ()
   suite_add_tcase (s, test_pdf_hash_size ());
   suite_add_tcase (s, test_pdf_hash_add ());
   suite_add_tcase (s, test_pdf_hash_remove ());
-  suite_add_tcase (s, test_pdf_hash_search ());
+  suite_add_tcase (s, test_pdf_hash_get ());
   suite_add_tcase (s, test_pdf_hash_key_p ());
   suite_add_tcase (s, test_pdf_hash_rename ());
   suite_add_tcase (s, test_pdf_hash_iterator_new ());

@@ -5,8 +5,8 @@
 @settitle GNU PDF Library Reference
 @comment %**end of header
 
+@include version.texi
 @set EDITION first
-@set VERSION 0.1
 
 @copying 
 This is the @strong{@value{EDITION}} edition of the @cite{GNU PDF Library
@@ -82,7 +82,7 @@ Indices
 * Hash Tables::
 * Lists::
 * Filtered Streams::
-* Floating Point Arithmetic::
+* Floating Point Maths::
 * Encoded Text::
 * Time Management::
 * The Filesystem Module::
@@ -307,6 +307,8 @@ p = (int *) pdf_alloc (sizeof(int));
 *p = 666;
 @end example
 @end table
+
+
 @end deftypefun
 
 @deftypefun void pdf_dealloc (const void *@var{pointer})
@@ -1579,7 +1581,7 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 @node Searching elements
 @subsection Searching elements
 
-@deftypefun pdf_status_t pdf_hash_search (const pdf_hash_t @var{table}, const char @var{*key}, const void **@var{elem_pointer})
+@deftypefun pdf_status_t pdf_hash_get (const pdf_hash_t @var{table}, const char @var{*key}, const void **@var{elem_pointer})
 
 Searches for the element associated with the given @var{key} in @var{table} and store it in @var{elem_pointer}.
 
@@ -1837,10 +1839,10 @@ if (pdf_hash_new (pdf_hash_key_dealloc_fn, &hash) == PDF_OK)
 @node Hash helper functions
 @subsection Hash helper functions
 
-These are specific functions for adding different types of elements
-(types defined by the library). They guarantee that when an element of
-one of these types is removed from a hash table the correct disposal
-function is called.
+These are specific functions for adding and getting different types of
+elements (types defined by the library). They guarantee that when an
+element of one of these types is removed from a hash table the correct
+disposal function is called.
 
 NOTE: If you are going to use the element after the table containing
 the element is destroyed, in that case don't use these functions.
@@ -1894,6 +1896,43 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 @end table
 @end deftypefun
 
+@deftypefun pdf_status_t pdf_hash_get_text (pdf_hash_t @var{table}, const char *@var{key}, pdf_text_t *@var{elt})
+
+Get a text variable from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+The hash table to get the value from.
+@item key
+The key associated with the desired value.
+@item elt
+A pointer to the text variable to hold the value.
+@end table
+@item Returns
+A PDF status variable:
+@table @code
+@item PDF_OK
+The value was successfully stored into @var{elt}.
+@item PDF_EBADDATA
+Either @var{elt} is NULL, @var{key} or the @var{table} is invalid.
+@item PDF_ERROR
+The @var{key} wasn't found.
+@end table
+@item Usage example
+@example
+pdf_text_t text;
+pdf_hash_t table;
+
+/* ... insert a text variable into the hash ... */
+if (pdf_hash_get_text (table, "a text", &text) != PDF_OK)
+   @{
+      /* Error */
+   @}
+@end example
+@end table
+@end deftypefun
 
 @deftypefun pdf_status_t pdf_hash_add_time (pdf_hash_t @var{table}, const char @var{*key}, const pdf_time_t @var{*elt})
 
@@ -1935,6 +1974,44 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 
       /* Destroy the hash */
       pdf_hash_destroy (hash);
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_hash_get_time (pdf_hash_t @var{table}, const char *@var{key}, pdf_time_t *@var{elt})
+
+Get a time variable from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+The hash table to get the value from.
+@item key
+The key associated with the desired value.
+@item elt
+A pointer to the time variable to hold the value.
+@end table
+@item Returns
+A PDF status variable:
+@table @code
+@item PDF_OK
+The value was successfully stored into @var{elt}.
+@item PDF_EBADDATA
+Either @var{elt} is NULL, @var{key} or the @var{table} is invalid.
+@item PDF_ERROR
+The @var{key} wasn't found.
+@end table
+@item Usage example
+@example
+pdf_time_t time;
+pdf_hash_t table;
+
+/* ... insert a time variable into the hash ... */
+if (pdf_hash_get_time (table, "a time", &time) != PDF_OK)
+   @{
+      /* Error */
    @}
 @end example
 @end table
@@ -1987,6 +2064,44 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 @end table
 @end deftypefun
 
+@deftypefun pdf_status_t pdf_hash_get_list (pdf_hash_t @var{table}, const char *@var{key}, pdf_list_t *@var{elt})
+
+Get a list variable from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+The hash table to get the value from.
+@item key
+The key associated with the desired value.
+@item elt
+A pointer to the list variable to hold the value.
+@end table
+@item Returns
+A PDF status variable:
+@table @code
+@item PDF_OK
+The value was successfully stored into @var{elt}.
+@item PDF_EBADDATA
+Either @var{elt} is NULL, @var{key} or the @var{table} is invalid.
+@item PDF_ERROR
+The @var{key} wasn't found.
+@end table
+@item Usage example
+@example
+pdf_list_t list;
+pdf_hash_t table;
+
+/* ... insert a list variable into the hash ... */
+if (pdf_hash_get_list (table, "a list", &list) != PDF_OK)
+   @{
+      /* Error */
+   @}
+@end example
+@end table
+@end deftypefun
+
 
 @deftypefun pdf_status_t pdf_hash_add_hash (pdf_hash_t @var{table}, const char @var{*key}, const pdf_hash_t @var{*elt})
 
@@ -2033,6 +2148,45 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 @end table
 @end deftypefun
 
+@deftypefun pdf_status_t pdf_hash_get_hash (pdf_hash_t @var{table}, const char *@var{key}, pdf_hash_t *@var{elt})
+
+Get a hash variable from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+The hash table to get the value from.
+@item key
+The key associated with the desired value.
+@item elt
+A pointer to the hash variable to hold the value.
+@end table
+@item Returns
+A PDF status variable:
+@table @code
+@item PDF_OK
+The value was successfully stored into @var{elt}.
+@item PDF_EBADDATA
+Either @var{elt} is NULL, @var{key} or the @var{table} is invalid.
+@item PDF_ERROR
+The @var{key} wasn't found.
+@end table
+@item Usage example
+@example
+pdf_hash_t hash;
+pdf_hash_t table;
+
+/* ... insert a hash variable into the hash ... */
+if (pdf_hash_get_hash (table, "a hash", &hash) != PDF_OK)
+   @{
+      /* Error */
+   @}
+@end example
+@end table
+@end deftypefun
+
+
 @deftypefun pdf_status_t pdf_hash_add_stm (pdf_hash_t @var{table}, const char @var{*key}, const pdf_stm_t @var{*elt})
 
 Adds the stream @var{elt} with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done.
@@ -2059,11 +2213,248 @@ Either @var{table}, @var{key} or @var{elt} is invalid.
 @end table
 @item Usage example
 @example
-XXX
+pdf_hash_t hash;
+pdf_stm_t elem;
+pdf_char_t *buf;
+
+/* Create a new hash */
+if (pdf_hash_new (NULL, &hash) == PDF_OK)
+   @{
+      /* Create the element for the hash */
+      buf = pdf_alloc (10);
+      pdf_stm_mem_new (buf,
+                       10,
+                       0, /* Use default cache size */
+                       PDF_STM_READ,
+                       &stm);
+
+      /* Add the element to the hash */
+      pdf_hash_add_hash (hash, "a-key", &elem);
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+
+      /* Destroy the memory buffer */
+      pdf_dealloc (buf);
+   @}
 @end example
 @end table
 @end deftypefun
 
+@deftypefun pdf_status_t pdf_hash_get_stm (pdf_hash_t @var{table}, const char *@var{key}, pdf_stm_t *@var{elt})
+
+Get a stm variable from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+The hash table to get the value from.
+@item key
+The key associated with the desired value.
+@item elt
+A pointer to the stm variable to hold the value.
+@end table
+@item Returns
+A PDF status variable:
+@table @code
+@item PDF_OK
+The value was successfully stored into @var{elt}.
+@item PDF_EBADDATA
+Either @var{elt} is NULL, @var{key} or the @var{table} is invalid.
+@item PDF_ERROR
+The @var{key} wasn't found.
+@end table
+@item Usage example
+@example
+pdf_stm_t stm;
+pdf_hash_t table;
+
+/* ... insert a stm variable into the hash ... */
+if (pdf_hash_get_stm (table, "a stm", &stm) != PDF_OK)
+   @{
+      /* Error */
+   @}
+@end example
+@end table
+@end deftypefun
+
+
+@deftypefun pdf_status_t pdf_hash_add_size (pdf_hash_t @var{table}, const char *@var{key}, const pdf_size_t @var{elt})
+
+Adds the @code{pdf_size_t} value @var{elt} with the associated key
+@var{key} to @var{table}. If @var{key} already exists nothing is done.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid key string.
+@item elt
+A @code{pdf_size_t} value.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@item PDF_EBADDATA
+Either @var{table}, @var{key} or @var{elt} is invalid.
+@end table
+@item Usage example
+@example
+pdf_hash_t hash;
+pdf_size_t elem;
+
+/* Create a new hash */
+if (pdf_hash_new (NULL, &hash) == PDF_OK)
+   @{
+      /* Create the element for the hash */
+      elem = 10;
+
+      /* Add the element to the hash */
+      pdf_hash_add_size (hash, "a-key", elem);
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+
+      /* Destroy the memory buffer */
+      pdf_dealloc (buf);
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_hash_get_size (pdf_hash_t @var{table}, const char *@var{key}, pdf_size_t *@var{elt})
+
+Get a size variable from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+The hash table to get the value from.
+@item key
+The key associated with the desired value.
+@item elt
+A pointer to the size variable to hold the value.
+@end table
+@item Returns
+A PDF status variable:
+@table @code
+@item PDF_OK
+The value was successfully stored into @var{elt}.
+@item PDF_EBADDATA
+Either @var{elt} is NULL, @var{key} or the @var{table} is invalid.
+@item PDF_ERROR
+The @var{key} wasn't found.
+@end table
+@item Usage example
+@example
+pdf_size_t size;
+pdf_hash_t table;
+
+/* ... insert a size variable into the hash ... */
+if (pdf_hash_get_size (table, "a size", &size) != PDF_OK)
+   @{
+      /* Error */
+   @}
+@end example
+@end table
+@end deftypefun
+
+
+@deftypefun pdf_status_t pdf_hash_add_string (pdf_hash_t @var{table}, const char *@var{key}, const pdf_char_t *@var{elt})
+
+Adds the @code{*pdf_char_t} value @var{elt} with the associated key
+@var{key} to @var{table}. If @var{key} already exists nothing is done.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid key string.
+@item elt
+A @code{* pdf_char_t} value.
+@end table
+@item Returns
+A pdf status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@item PDF_EBADDATA
+Either @var{table}, @var{key} or @var{elt} is invalid.
+@end table
+@item Usage example
+@example
+pdf_hash_t hash;
+pdf_char_t *elem;
+
+/* Create a new hash */
+if (pdf_hash_new (NULL, &hash) == PDF_OK)
+   @{
+      /* Create the element for the hash */
+      elem = pdf_alloc(4);
+      strncpy (elem, "abc", 4);
+
+      /* Add the element to the hash */
+      pdf_hash_add_size (hash, "a-key", elem);
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+
+      /* Destroy the memory buffer */
+      pdf_dealloc (buf);
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_hash_get_string (pdf_hash_t @var{table}, const char *@var{key}, pdf_char_t **@var{elt})
+
+Get a string variable from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+The hash table to get the value from.
+@item key
+The key associated with the desired value.
+@item elt
+A pointer to the string variable to hold the value.
+@end table
+@item Returns
+A PDF status variable:
+@table @code
+@item PDF_OK
+The value was successfully stored into @var{elt}.
+@item PDF_EBADDATA
+Either @var{elt} is NULL, @var{key} or the @var{table} is invalid.
+@item PDF_ERROR
+The @var{key} wasn't found.
+@end table
+@item Usage example
+@example
+pdf_char_t *string;
+pdf_hash_t table;
+
+/* ... insert a string variable into the hash ... */
+if (pdf_hash_get_string (table, "a string", &string) != PDF_OK)
+   @{
+      /* Error */
+   @}
+@end example
+@end table
+@end deftypefun
 
 
 @node Lists
@@ -2796,7 +3187,29 @@ The list does not allow duplicated values and already contain
 @end table
 @item Usage example
 @example
-XXX
+pdf_list_t list;
+pdf_u32_t a;
+pdf_u32_t b;
+pdf_u32_t c;
+pdf_u32_t x;
+
+/* Create a list of integers */
+if (pdf_list_new (NULL,
+                  NULL,
+                  PDF_FALSE, /* Allow duplicates */
+                  &list) == PDF_OK)
+   @{
+      /* Insert the elements into the list */
+      pdf_list_add_last (list, (void *) &a, NULL);
+      pdf_list_add_last (list, (void *) &b, NULL);
+      pdf_list_add_last (list, (void *) &c, NULL);
+
+      /* Now the list contains abc */
+
+      pdf_list_set_at (list, 1, (void *) &x, NULL);
+
+      /* Now the list contains axc */
+   @}
 @end example
 @end table
 @end deftypefun
@@ -3373,6 +3786,37 @@ The stm will be used to write data into the open file or memory buffer.
 @end table
 @end deftp
 
+@deftp {Data Type} {enum pdf_stm_filter_type_e}
+The several types of supported stream filters.
+
+@table @code
+@item PDF_STM_FILTER_AHEX_ENC
+ASCII Hex encoder.
+@item PDF_STM_FILTER_AHEX_DEC
+ASCII Hex decoder.
+@item PDF_STM_FILTER_RL_ENC
+Run-Length encoder.
+@item PDF_STM_FILTER_RL_DEC
+Run-Length decoder.
+@item PDF_STM_FILTER_FLATE_ENC
+Flate (zlib) encoder.
+@item PDF_STM_FILTER_FLATE_DEC
+Flate (zlib) decoder.
+@item PDF_STM_FILTER_JBIG2_DEC
+JBIG2 decoder.
+@item PDF_STM_FILTER_AESV2_ENC
+AESV2 encoder.
+@item PDF_STM_FILTER_AESV2_DEC
+AESV2 decoder.
+@item PDF_STM_FILTER_V2_ENC
+V2 encoder.
+@item PDF_STM_FILTER_V2_ENC
+V2 decoder.
+@item PDF_STM_FILTER_MD5_ENC
+MD5 encoder.
+@end table
+@end deftp
+
 @node Creating and Destroying Streams
 @subsection Creating and Destroying Streams
 
@@ -3558,29 +4002,6 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_stm_finish (pdf_stm_t @var{stm}, pdf_bool_t @var{finish_p})
-
-Finish the filter chain of a write stream.
-
-@table @strong
-@item Parameters
-@table @var
-@item stm
-A stream.
-@item finish_p
-Boolean value indicating whether to finish the filters in the chain.
-@end table
-@item Returns
-A PDF size value containing the number of bytes written by the finish
-operation.
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
-
-
 @deftypefun pdf_u32_t pdf_stm_read_char (pdf_stm_t stm)
 
 Read a character from a given stream.
@@ -3621,16 +4042,20 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_stm_flush (pdf_stm_t @var{stm})
+@deftypefun pdf_size_t pdf_stm_flush (pdf_stm_t @var{stm}, pdf_bool_t @var{finish_p})
 
-Flush any pending writing data in a given stream. It is a no-op in a
-memory stream.
+Flush any pending writing data in a given stream.
+
+If @var{finish_p} equals to @code{PDF_TRUE} then the filters in the
+stream's filter chain are tell to generate any remaining output.
 
 @table @strong
 @item Parameters
 @table @var
 @item stm
 A stream.
+@item finish_p
+A boolean value indicating whether to finalize the filter chain.
 @end table
 @item Returns
 A PDF size value containing the number of octects that has been
@@ -3688,26 +4113,25 @@ XXX
 @end table
 @end deftypefun
 
-@node Floating Point Arithmetic
-@section Floating Point Arithmetic
+@node Floating Point Maths
+@section Floating Point Maths
 
 @menu
 * Floating Point Types::
-* Point Manipulation Functions::
-* Rectangle Manipulation Functions::
-* Quadrilateral Manipulation Functions::
-* Matrix Manipulation Functions::
-* Interpolation Functions::
+* Number Conversion Routines::
+* Geometry Routines::
+* Creation and Destruction of Functions::
+* Evaluation of Functions::
 @end menu
 
 @node Floating Point Types
 @subsection Floating Point Types
 
 @deftp {Data Type} pdf_real_t
-A floating-point number.
+An opaque type representing a floating-point number.
 @end deftp
 
-@deftp {Data Type} struct pdf_point_s
+@deftp {Data Type} {struct pdf_point_s}
 
 This structure represents a single point. The coordinates of the point
 are made using floating point numbers.
@@ -3720,7 +4144,38 @@ Vertical coordinate.
 @end table
 @end deftp
 
-@deftp {Data Type} struct pdf_rect_s
+@deftp {Data Type} pdf_point_t
+
+A pointer to a @code{pdf_point_s} structure.
+
+@end deftp
+
+@deftp {Data Type} {struct pdf_matrix_s}
+
+This structure represents a 3x3 matrix representing an affine
+transformation.
+
+@table @code
+@item pdf_real_t a
+@item pdf_real_t b
+The first row of the matrix is @code{a b 0}.
+@item pdf_real_t c
+@item pdf_real_t d
+The second row of the matrix is @code{c d 0}.
+@item pdf_real_t h
+@item pdf_real_t v
+The third row of the matrix is @code{h v 1}.
+@end table
+@end deftp
+
+@deftp {Data Type} pdf_matrix_t
+
+A pointer to a @code{pdf_matrix_s} structure.
+
+@end deftp
+
+
+@deftp {Data Type} {struct pdf_rect_s}
 
 This structure represents a rectangle. It is composed by the
 coordinates for its four sides.
@@ -3740,7 +4195,13 @@ sides should be parallel.
 @end table
 @end deftp
 
-@deftp {Data Type} struct pdf_quad_s
+@deftp {Data Type} pdf_rect_t
+
+A pointer to a @code{pdf_rect_s} structure.
+
+@end deftp
+
+@deftp {Data Type} {struct pdf_quad_s}
 This structure represents a quadrilateral. It is composed by four
 corners (floating-point points).
 @table @code
@@ -3755,55 +4216,521 @@ Bottom-right point.
 @end table
 @end deftp
 
-@deftp {Data Type} struct pdf_matrix_s
-This structure represents a 3x3 matrix.
+@deftp {Data Type} pdf_quad_t
 
-@table @code
-@item pdf_real_t a11
-@item pdf_real_t a12
-@item pdf_real_t a13
-First row.
-@item pdf_real_t a21
-@item pdf_real_t a22
-@item pdf_real_t a23
-Second row.
-@item pdf_real_t a31
-@item pdf_real_t a32
-@item pdf_real_t a33
-Third row.
-@end table
+A pointer to a @code{pdf_quad_t} structure.
+
 @end deftp
 
-@node Point Manipulation Functions
-@subsection Point Manipulation Functions
+@deftp {Data Type} pdf_fp_func_t
 
-@node Quadrilateral Manipulation Functions
-@subsection Quadrilateral Manipulation Functions
+Opaque type representing a Floating Point function.
 
-@node Rectangle Manipulation Functions
-@subsection Rectangle Manipulation Functions
+@end deftp
 
-@node Matrix Manipulation Functions
-@subsection Matrix Manipulation Functions
+@node Number Conversion Routines
+@subsection Number Conversion Routines
 
-@deftypefun pdf_status_t pdf_fp_matrix_concat (pdf_matrix_t @var{result}, const pdf_matrix_t @var{m1}, const pdf_matrix_t @var{m2})
+@deftypefun pdf_status_t pdf_fp_string_to_real (const pdf_char_t *@var{string}, pdf_real_t *@var{result})
 
+Convert a numeric string representation to a @code{pdf_real_t}
+value. The string is scanned from left to right, taking into account
+the data before the first invalid character.
+
+@table @strong
+@item Parameters
+@table @var
+@item string
+A @code{NULL} terminated string.
+@item result
+The real variable where the result is stored.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The conversion was successful.
+@item PDF_ERROR
+No recognizable real value was found in the string.
+@end table
+@item Usage example
+@example
+pdf_real_t real;
+pdf_char_t str[5];
+
+strcpy (str, "1");
+str[1] = 0;
+pdf_fp_string_to_real (str, &real);
+/* real now contains 1.0 */
+
+strcpy (str, "1.0");
+str[3] = 0;
+pdf_fp_string_to_real (str, &real);
+/* real now contains 1.0 */
+
+
+strcpy (str, "1.0X");
+str[4] = 0;
+pdf_fp_string_to_real (str, &real);
+/* real now contains 1.0 */
+
+strcpy (str, "foo");
+str[3] = 0;
+if (pdf_fp_string_to_real (str, &real) == PDF_ERROR)
+@{
+   /* The code reach this point */
+@}
+@end example
+@end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fp_matrix_invert (pdf_matrix_t @var{result}, const pdf_matrix_t @var{m})
 
+@deftypefun pdf_status_t pdf_fp_real_to_string (pdf_real_t @var{real}, pdf_char_t *@var{s}, pdf_size_t @var{max_length}, pdf_u32_t @var{precision})
+
+Get a textual representation of a  @code{pdf_real_t} value.
+
+@table @strong
+@item Parameters
+@table @var
+@item real
+The number to convert.
+@item s
+The string where to store the textual representation of
+@var{real}. Note that this function adds a '\0' to the end of the
+textual representation.
+@item max_length
+The maximum number of characters that @var{s} may contain.
+@item precision
+The number of decimal digits to include in the textual representation.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+A textual representation of @var{real} was successfully written in
+@var{s}.
+@item PDF_ERROR
+An error prevented to perform the conversion.
+@end table
+@item Usage example
+@example
+pdf_real_t real;
+pdf_char_t s[9];
+
+real = 1.123456;
+
+pdf_fp_real_to_string (real, s, 9, 6);
+/* s contains "1.123456" */
+
+pdf_fp_real_to_string (real, s, 9, 3);
+/* s contains "1.123" */
+
+if (pdf_fp_real_to_string (real, s, 4, 3) == PDF_ERROR)
+@{
+    /* The code reach this point: not enough space in the string
+       to hold the textual representation of the number with
+       the specified precision */
+@}
+@end example
+@end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fp_matrix_transform (pdf_point_t @var{result}, const pdf_matrix_t @var{m}, const pdf_point_t @var{p})
 
+@node Geometry Routines
+@subsection Geometry Routines
+
+@deftypefun pdf_status_t pdf_fp_matrix_concat (pdf_matrix_t @var{result}, pdf_matrix_t @var{matrix_1}, pdf_matrix_t @var{matrix_2})
+
+Multiplies two matrices.
+
+@table @strong
+@item Parameters
+@item result
+Pointer to the matrix that will be filled with the result. It may be
+a copy of @var{matrix_1} or @var{matrix_2}.
+@item matrix_1
+The first matrix to multiply.
+@item matrix_2
+The second matrix to multiply.
+@item Returns
+A PDF status code:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ERROR
+There was an error performing the execution.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fp_matrix_transform_rect (pdf_rect_t @var{result}, const pdf_matrix_t @var{m}, const pdf_rect_t @var{rect})
+@deftypefun pdf_status_t pdf_fp_matrix_invert (pdf_matrix_t @var{result}, pdf_matrix_t @var{matrix})
 
+Calculate the inverse of a matrix.
+
+@table @strong
+@item Parameters
+@table @var
+@item result
+A pointer to a matrix that will store the inverted matrix. This
+parameters can be a copy of @var{matrix}.
+@item matrix
+A pointer to a matrix used to calculate the inverse.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ERROR
+An error prevented the operation to finish.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
 @end deftypefun
 
-@node Interpolation Functions
-@subsection Interpolation Functions
+@deftypefun pdf_status_t pdf_fp_matrix_transform (pdf_point_t @var{result}, const pdf_matrix_t @var{matrix}, const pdf_point_t @var{point})
+
+Transform a point through a matrix.
+
+@table @strong
+@item Parameters
+@table @var
+@item result
+A pointer to a point to hold the result. This can be a copy of
+@var{point}.
+@item matrix
+A pointer to the matrix used to perform the transformation.
+@item point
+A pointer to the point to transform.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation suceeded.
+@item PDF_ERROR
+An error prevented the operation to finish.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_fp_matrix_transform_rect (pdf_rect_t @var{result}, const pdf_matrix_t @var{matrix}, const pdf_rect_t @var{rect})
+
+Transform a rectangle through a matrix.
+
+@table @strong
+@item Parameters
+@table @var
+@item result
+A pointer to a rectangle to hold the result. This can be a copy of
+@var{rect}.
+@item matrix
+A pointer to the matrix used to perform the transformation.
+@item point
+A pointer to the rectangle to transform.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation suceeded.
+@item PDF_ERROR
+An error prevented the operation to finish.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@node Creation and Destruction of Functions
+@subsection Creation and Destruction of Functions
+
+@deftypefun pdf_status_t pdf_fp_func_0_new (pdf_u32_t @var{m}, pdf_u32_t @var{n}, const pdf_real_t @var{domain}[], const pdf_real_t @var{range}[], pdf_u32_t @var{size}[], pdf_u32_t @var{bps}, pdf_u32_t @var{order}, const pdf_real_t @var{encode}[], const pdf_real_t @var{decode}[], pdf_char_t *@var{samples}, pdf_size_t @var{samples_size}, pdf_fp_func_t *@var{function})
+
+Create a new type 0 (sampled) function.
+
+@table @strong
+@item Parameters
+@table @var
+@item m
+Number of input values.
+@item n
+Number of output values.
+@item domain
+Array of @code{2 * m} numbers. Each pair of consecutive numbers
+defines the domain of an input variable.
+@item range
+Array of @code{2 * n} numbers. Each pair of consecutive numbers
+defines the range of an output variable. Output values outside these
+ranges will be clipped to the appropriate range.
+@item size
+Array of @code{m} positive integers containing the number of samples
+in each input dimension in the samples table.
+@item bps
+The number of bits used to represent a sample in the samples
+table. Valid values shall be @code{1}, @code{2}, @code{4}, @code{8},
+@code{12}, @code{16}, @code{24} and @code{32}.
+@item order
+Order of interpolation between samples. Valid values shall be @code{1}
+and @code{3}.
+@item encode
+Array of @code{2 * m} numbers specifying the linear mapping of input
+values into the domain of the function's sample table.
+@item decode
+Array of @code{2 * n} numbers specifying the linear mapping of sample
+values into the range appropriate for the function's output values.
+@item samples
+Buffer containing the samples table for the function.
+@item samples_size
+Size of the samples table.
+@item function
+A pointer to the variable holding the new function.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The function was successfully created.
+@item PDF_ERROR
+Error while creating the function.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_fp_func_2_new (pdf_u32_t @var{m}, pdf_u32_t @var{n}, const pdf_real_t @var{domain}[], const pdf_real_t @var{range}[], pdf_real_t @var{N}, pdf_real_t @var{c0}[], pdf_real_t @var{c1}[], pdf_fp_func_t *@var{function})
+
+Create a new type 2 (exponential interpolation) function.
+
+@table @strong
+@item Parameters
+@table @var
+@item m
+Number of input values.
+@item n
+Number of output values.
+@item domain
+Array of @code{2 * m} numbers. Each pair of consecutive numbers
+defines the domain of an input variable.
+@item range
+Array of @code{2 * n} numbers. Each pair of consecutive numbers
+defines the range of an output variable. Output values outside these
+ranges will be clipped to the appropriate range.
+@item N
+The interpolation exponent.
+@item c0
+An array of @code{n} numbers that shall define the function result
+when @code{x = 0.0}.
+@item c1
+An array of n numbers that shall define the function return when
+@code{x = 1.0}.
+@item function
+Pointer to a variable holding the new function.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The function was successfully created.
+@item PDF_ERROR
+Error while creating the function.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_fp_func_3_new (pdf_u32_t @var{m}, pdf_u32_t @var{n}, const pdf_real_t @var{domain}[], const pdf_real_t @var{range}[], pdf_u32_t @var{k}, pdf_fp_func_t *@var{functions}, pdf_real_t @var{bounds}[], const pdf_u32_t @var{encode}[], pdf_fp_func_t *@var{function})
+
+Create a new type 3 (stitching) function.
+
+@table @strong
+@item Parameters
+@table @var
+@item m
+Number of input values.
+@item n
+Number of output values.
+@item domain
+Array of @code{2 * m} numbers. Each pair of consecutive numbers
+defines the domain of an input variable.
+@item range
+Array of @code{2 * n} numbers. Each pair of consecutive numbers
+defines the range of an output variable. Output values outside these
+ranges will be clipped to the appropriate range.
+@item k
+Number of stitching functions.
+@item functions
+An array of @code{k} 1-input functions that shall make up the
+stitching function. The output dimensionality of all functions shall
+be the same, and compatible with the value of @var{range}.
+@item bounds
+An array of @code{k - 1} numbers that, in combination with
+@var{domain}, shall define the intervals to which each function from
+the @var{functions} parameter shall apply. @var{bounds} elements shall
+be in order of increasing value, and each value shall be within the
+domain defined by @var{domain}.
+@item encode
+An array of @code{2 * k} numbers that, taken in pairs, shall map each
+subset of the domain defined by @var{domain} and the @var{bounds}
+parameter to the domain of the corresponding function.
+@item function
+A pointer to a variable holding the new function.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The function was successfully created.
+@item PDF_ERROR
+Error while creating the function.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_fp_func_4_new (pdf_u32_t @var{m}, pdf_u32_t @var{n}, pdf_real_t @var{domain}[], pdf_real_t @var{range}[], pdf_char_t *@var{code}, pdf_size_t @var{code_size}, pdf_fp_func_t *@var{function})
+
+Create a new type 4 (postscript calculator) function.
+
+@table @strong
+@item Parameters
+@table @var
+@item m
+Number of input values.
+@item n
+Number of output values.
+@item domain
+Array of @code{2 * m} numbers. Each pair of consecutive numbers
+defines the domain of an input variable.
+@item range
+Array of @code{2 * n} numbers. Each pair of consecutive numbers
+defines the range of an output variable. Output values outside these
+ranges will be clipped to the appropriate range.
+@item code
+Memory buffer containing the postscript code to execute.
+@item code_size
+Size of @var{code}.
+@item function
+Pointer to a variable holding the new function.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The function was successfully created.
+@item PDF_ERROR
+Error while creating the function.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_fp_func_destroy (pdf_fp_func_t @var{function})
+
+Destroy a function.
+
+@table @strong
+@item Parameters
+@table @var
+@item function
+A pointer to an initialized function.
+@end table
+@item Returns
+A PDF status variable:
+@table @code
+@item PDF_OK
+The function was successfully destroyed.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@node Evaluation of Functions
+@subsection Evaluation of Functions
+
+@deftypefun pdf_status_t pdf_fp_func_get_bounds (const pdf_fp_func_t @var{function}, pdf_i32_t *@var{in_dimensions}, pdf_i32_t *@var{out_dimensions})
+
+Return the bounds of a given function.
+
+@table @strong
+@item Parameters
+@table @var
+@item function
+An initialized function.
+@item in_dimensions
+Variable to hold the input dimensions of @var{function}.
+@item out_dimensions
+Variable to hold the output dimensions of @var{function}.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation was successfully performed.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_fp_func_eval (pdf_fp_func_t @var{function}, const pdf_real_t @var{in}[], pdf_real_t @var{out}[])
+
+Evaluate a function.
+
+@table @strong
+@item Parameters
+@table @var
+@item function
+The function to evaluate.
+@item in
+Array containing the input values for the function.
+@item out
+Array containing the output values from the function evaluation.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The evaluation was successfully performed.
+@item PDF_ERROR
+Error while evaluating the function.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
 
 @node Encoded Text
 @section Encoded Text
@@ -7857,7 +8784,7 @@ The callback should return a PDF status variable:
 @table @code
 @item PDF_OK
 The operation was successfully performed and the current position in
-@var{file} was set to @var{pos}.
+n@var{file} was set to @var{pos}.
 @end table
 
 This callback is called by the @code{pdf_fsys_file_set_pos} file
@@ -8065,7 +8992,8 @@ This section describes related to encryption functions.
 * Initializating the module::   
 * Creating and destroying Ciphers::  
 * Encryption and decryption::   
-* Message digest functions::  
+* Message digest functions::    
+* Utilities::                   
 @end menu
 
 @node Initializating the module
@@ -8103,10 +9031,11 @@ if (st != PDF_OK)
 @end table
 @end deftypefun
 
+
 @node Creating and destroying Ciphers
 @subsection Creating and destroying Ciphers
 
-@deftp {Data Type} {pdf_crypt_cipher_algo_t}
+@deftp {Data Type} {enum pdf_crypt_cipher_algo_e}
 An algorithm provided. It contains low level functions of the algorithm
 implementation.
 
@@ -8123,7 +9052,7 @@ A cipher. It contains data which is required between several calls to
 functions.
 @end deftp
 
-@deftypefun pdf_status_t pdf_crypt_cipher_new (pdf_crypt_cipher_algo_t *@var{algorithm}, pdf_crypt_cipher_t *@var{cipher})
+@deftypefun pdf_status_t pdf_crypt_cipher_new (enum pdf_crypt_cipher_algo_e @var{algorithm}, pdf_crypt_cipher_t *@var{cipher})
 
 Create a new cipher.
 
@@ -8191,7 +9120,7 @@ pdf_crypt_cipher_destroy (cipher);
 @node Encryption and decryption
 @subsection Encryption and decryption
 
-@deftypefun pdf_status_t pdf_crypt_cipher_setkey (pdf_crypt_cipher_t *@var{cipher}, pdf_char_t  *@var{key}, pdf_size_t @var{size})
+@deftypefun pdf_status_t pdf_crypt_cipher_setkey (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{key}, pdf_size_t @var{size})
 
 Set the key which will be used to encrypt and decrypt data.
 
@@ -8234,67 +9163,6 @@ if (st != PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_crypt_cipher_encrypt_size (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size})
-
-Compute the size for the output buffer in
-@code{pdf_crypt_cipher_encrypt} function for the given parameters.
-
-@table @strong
-@item Parameters
-@table @var
-@item cipher
-A cipher.
-@item in
-A pointer to the buffer which will be encrypted.
-@item in_size
-The length of the buffer in bytes.
-@end table
-@item Returns
-The size of a valid output buffer in @code{pdf_crypt_cipher_encrypt}
-function for this parameters.
-@item Usage example
-@example
-pdf_crypt_cipher_t cipher;
-pdf_size_t size;
-pdf_char_t in[16];
-
-/* ...prepare the cipher... */
-size = pdf_crypt_cipher_encrypt_size (cipher, in, sizeof (in));
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_size_t pdf_crypt_cipher_decrypt_size (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{in}, pdf_size_t @var{in_size})
-
-Compute the size for a valid output buffer in
-@code{pdf_crypt_cipher_decrypt} function for the given parameters.
-
-@table @strong
-@item Parameters
-@table @var
-@item cipher
-A cipher.
-@item in
-A pointer to the buffer which will be decrypted.
-@item in_size
-The length of the buffer in bytes.
-@end table
-@item Returns
-The size of a valid output buffer in @code{pdf_crypt_cipher_encrypt}
-function for this parameters.
-@item Usage example
-@example
-pdf_crypt_cipher_t cipher;
-pdf_size_t size;
-pdf_char_t *in;
-pdf_size_t in_size;
-
-/* ...prepare the cipher... */
-size = pdf_crypt_cipher_decrypt_size (cipher, in, in_size);
-@end example
-@end table
-@end deftypefun
-
 
 @deftypefun pdf_status_t pdf_crypt_cipher_encrypt (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{out}, pdf_size_t  @var{out_size}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size}, pdf_size_t *@var{result_size})
 
@@ -8313,7 +9181,9 @@ it is not too large to contain the output.
 @item in
 A pointer to input buffer.
 @item in_size
-The length of the input buffer in bytes. I must be greater than zero.
+The length of the input buffer in bytes. I must be greater than
+zero. Some algorithms requires than IN_SIZE to be multiple of a fixed
+integer.
 @item result_size
 A pointer where it will put the real size of the output buffer. This
 size will be lesser or equal than out_size.
@@ -8404,7 +9274,7 @@ if (st != PDF_OK)
 @node Message digest functions
 @subsection Message digest functions
 
-@deftp {Data Type} {pdf_crypt_md_algo_t}
+@deftp {Data Type} {enum pdf_crypt_md_algo_e}
 An algorithm provided. It contains low level functions of the algorithm
 implementation.
 
@@ -8420,7 +9290,7 @@ A message-digest descriptor.
 
 
 
-@deftypefun pdf_status_t pdf_crypt_md_new (pdf_crypt_md_t  *@var{md}, pdf_crypt_md_algo_t @var{algo})
+@deftypefun pdf_status_t pdf_crypt_md_new (enum pdf_crypt_md_algo_e @var{algo}, pdf_crypt_md_t  *@var{md})
 
 Create a message-digest descriptor for an algorithm.
 
@@ -8457,19 +9327,15 @@ if (st != PDF_OK)
 
 
 
-@deftypefun pdf_status_t pdf_crypt_md_hash (pdf_crypt_md_t @var{md}, pdf_char_t  *@var{out}, pdf_size_t  @var{out_size}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size})
+@deftypefun pdf_status_t pdf_crypt_md_write (pdf_crypt_md_t @var{md}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size})
 
-Compute the message-digest for a given buffer.
+Pass a buffer to the message-digest handler in order to compute its digest.
 
 @table @strong
 @item Parameters
 @table @var
 @item md
 A message-digest descriptor.
-@item out
-A pointer to output buffer.
-@item out_size
-The size of output buffer in bytes.
 @item in
 A pointer to the input buffer.
 @item in_size
@@ -8486,7 +9352,6 @@ Bad parameter. The size of the output buffer is wrong.
 @item Usage example
 @example
 pdf_crypt_md_t md;
-pdf_char_t out[16];
 pdf_char_t *in;
 pdf_size_t in_size;
 pdf_status_t st;
@@ -8495,7 +9360,7 @@ pdf_status_t st;
 
 pdf_crypt_md_new (&md, PDF_CRYPT_MD_MD5);
 
-st = pdf_crypt_md_hash (md, out, sizeof(out), in, in_size);
+st = pdf_crypt_md_hash (md, in, in_size);
 
 if (st != PDF_OK)
 @{
@@ -8506,6 +9371,50 @@ pdf_crypt_md_destroy (md);
 @end example
 @end table
 @end deftypefun
+
+
+
+@deftypefun pdf_status_t pdf_crypt_md_read (pdf_crypt_md_t @var{md}, pdf_char_t  *@var{out}, pdf_size_t  @var{out_size})
+
+Read the computed digest value from a message-digest descriptor.
+
+@table @strong
+@item Parameters
+@table @var
+@item md
+A message-digest descriptor.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+Operation successful
+@item PDF_EBADDATA
+Bad parameter. The size of the output buffer is wrong.
+@end table
+@item Usage example
+@example
+pdf_crypt_md_t md;
+pdf_char_t *out;
+pdf_size_t out_size;
+pdf_status_t st;
+
+pdf_crypt_md_new (&md, PDF_CRYPT_MD_MD5);
+
+/* ...Write the buffer into descriptor here... */
+
+st = pdf_crypt_md_read (md, out, out_size);
+
+if (st != PDF_OK)
+@{
+   /* Error */
+@}
+
+pdf_crypt_md_destroy (md);
+@end example
+@end table
+@end deftypefun
+
 
 
 @deftypefun pdf_status_t pdf_crypt_md_destroy (pdf_crypt_md_t  @var{md})
@@ -8540,6 +9449,36 @@ pdf_crypt_md_destroy (md);
 @end table
 @end deftypefun
 
+
+@node Utilities
+@subsection Utilities
+
+@deftypefun pdf_status_t pdf_crypt_nonce (pdf_char_t *@var{buffer}, pdf_size_t @var{size})
+
+Fill a buffer with random bytes.
+
+@table @strong
+@item Parameters
+@table @var
+@item buffer
+Buffer which be filled.  
+@item size
+Size of the buffer in bytes.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+Operation successful
+@end table
+@item Usage example
+@example
+pdf_char_t buffer[16];
+
+pdf_crypt_nonce (buffer, sizeof(buffer));
+@end example
+@end table
+@end deftypefun
 
 
 

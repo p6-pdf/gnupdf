@@ -42,6 +42,9 @@
  */
 START_TEST(pdf_text_get_pdfdocenc_001)
 {
+  
+
+
   extern const test_string_t pdf_doc_encoding_strings[];
   int i;
   

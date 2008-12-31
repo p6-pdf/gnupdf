@@ -51,6 +51,8 @@ AM_CPPFLAGS = -I$(top_srcdir)/lib \
               -I$(top_srcdir)/src \
               -I$(top_srcdir)/src/base \
               -I$(top_srcdir)/src/object \
+              -I$(top_srcdir)/torture/tortutils \
+              -DTEST_DATA_PATH=\"$(top_srcdir)/torture/testdata\" \
               $(NOCHECK_CPPFLAGS)
 AM_CFLAGS = -g
 
@@ -78,7 +80,7 @@ TEST_SUITE_HASH = base/hash/pdf-hash-new.c \
 		  base/hash/pdf-hash-add-text.c \
 		  base/hash/pdf-hash-remove.c \
 		  base/hash/pdf-hash-size.c \
-		  base/hash/pdf-hash-search.c \
+		  base/hash/pdf-hash-get.c \
 		  base/hash/pdf-hash-key-p.c \
 		  base/hash/pdf-hash-rename.c \
 		  base/hash/pdf-hash-iterator-new.c \
@@ -164,18 +166,20 @@ TEST_SUITE_TYPES = base/types/pdf-i64-new.c \
 
 TEST_SUITE_CRYPT = base/crypt/pdf-crypt-init.c \
 		   base/crypt/pdf-crypt-cipher-new.c \
+		   base/crypt/pdf-crypt-cipher-setkey.c \
 		   base/crypt/pdf-crypt-cipher-destroy.c \
-                   base/crypt/pdf-crypt-cipher-encrypt-size.c \
-		   base/crypt/pdf-crypt-cipher-decrypt-size.c \
 		   base/crypt/pdf-crypt-cipher-encrypt.c \
 		   base/crypt/pdf-crypt-cipher-decrypt.c \
 		   base/crypt/pdf-crypt-md-new.c \
-		   base/crypt/pdf-crypt-md-hash.c \
+		   base/crypt/pdf-crypt-md-write.c \
+		   base/crypt/pdf-crypt-md-read.c \
 		   base/crypt/pdf-crypt-md-destroy.c
 
 TEST_SUITE_ALLOC = base/alloc/pdf-alloc.c \
                    base/alloc/pdf-realloc.c \
                    base/alloc/pdf-dealloc.c
+
+TEST_SUITE_FP = base/fp/pdf-fp-func-eval.c
 
 TEST_ENVIRONMENT = CHARSETALIASDIR=$(top_srcdir)/lib
 
@@ -186,7 +190,8 @@ TEST_FILES = $(TEST_SUITE_LIST) \
 	     $(TEST_SUITE_TYPES) \
              $(TEST_SUITE_CRYPT) \
              $(TEST_SUITE_ALLOC) \
-             $(TEST_SUITE_STM)
+             $(TEST_SUITE_STM) \
+             $(TEST_SUITE_FP)
 
 TSUITE_FILES = base/alloc/tsuite-alloc.c \
                base/list/tsuite-list.c \
@@ -195,9 +200,14 @@ TSUITE_FILES = base/alloc/tsuite-alloc.c \
                base/error/tsuite-error.c \
 	       base/types/tsuite-types.c \
                base/crypt/tsuite-crypt.c \
-               base/stm/tsuite-stm.c
+               base/stm/tsuite-stm.c \
+               base/fp/tsuite-fp.c
+
+TORTUTILS_FILES = $(top_srcdir)/torture/tortutils/tortutils.h \
+                  $(top_srcdir)/torture/tortutils/tortutils.c
 
 runtests_SOURCES = $(NOCHECK_SRC) \
+                   $(TORTUTILS_FILES) \
                    $(TSUITE_FILES) \
                    $(TEST_FILES) \
                    runtests.c

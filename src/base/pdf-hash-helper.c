@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/10/02 22:07:35 jemarch"
+/* -*- mode: C -*- Time-stamp: "08/12/28 02:11:07 jemarch"
  *
  *       File:         pdf-hash-helper.c
  *       Date:         Thu Jul 24 21:05:05 2008
@@ -41,9 +41,21 @@ pdf_hash_add_text (pdf_hash_t table, const char *key, const pdf_text_t *elt)
 }
 
 pdf_status_t
+pdf_hash_get_text (pdf_hash_t table, const char *key, pdf_text_t *elt)
+{
+  return pdf_hash_get (table, key, (const void **) &elt);
+}
+
+pdf_status_t
 pdf_hash_add_time (pdf_hash_t table, const char *key, const pdf_time_t *elt)
 {
   return (pdf_hash_add(table,key,elt,time_dispose_fn));
+}
+
+pdf_status_t
+pdf_hash_get_time (pdf_hash_t table, const char *key, pdf_time_t *elt)
+{
+  return pdf_hash_get (table, key, (const void **) &elt);
 }
 
 
@@ -53,11 +65,22 @@ pdf_hash_add_list (pdf_hash_t table, const char *key, const pdf_list_t *elt)
   return (pdf_hash_add(table,key,elt,list_dispose_fn));
 }
 
+pdf_status_t
+pdf_hash_get_list (pdf_hash_t table, const char *key, pdf_list_t *elt)
+{
+  return pdf_hash_get (table, key, (const void **) &elt);
+}
 
 pdf_status_t
 pdf_hash_add_hash (pdf_hash_t table, const char *key, const pdf_hash_t *elt)
 {
   return (pdf_hash_add(table,key,elt,hash_dispose_fn));
+}
+
+pdf_status_t
+pdf_hash_get_hash (pdf_hash_t table, const char *key, pdf_hash_t *elt)
+{
+  return pdf_hash_get (table, key, (const void **) &elt);
 }
 
 
@@ -67,6 +90,65 @@ pdf_hash_add_stm (pdf_hash_t table, const char *key, const pdf_stm_t *elt)
   return (pdf_hash_add(table,key,elt,stm_dispose_fn));
 }
 
+pdf_status_t
+pdf_hash_get_stm (pdf_hash_t table, const char *key, pdf_stm_t *elt)
+{
+  return pdf_hash_get (table, key, (const void **) &elt);
+}
+
+pdf_status_t
+pdf_hash_add_size (pdf_hash_t table, const char *key, const pdf_size_t elt)
+{
+  pdf_size_t *size;
+
+  size = pdf_alloc (sizeof(pdf_size_t));
+  if (size == NULL)
+    {
+      return PDF_ERROR;
+    }
+
+  *size = elt;
+
+  return (pdf_hash_add (table, key, size, pdf_dealloc));
+}
+
+pdf_status_t
+pdf_hash_get_size (pdf_hash_t table, const char *key, pdf_size_t *elt)
+{
+  pdf_status_t ret;
+  pdf_size_t *size;
+  ret = pdf_hash_get (table, key, (const void **) &size);
+  if (ret == PDF_OK)
+    {
+      *elt = *size;
+    }
+
+  return ret;
+}
+
+pdf_status_t
+pdf_hash_add_string (pdf_hash_t table, const char *key, const pdf_char_t *elt)
+{
+  pdf_char_t *string;
+  pdf_size_t string_size;
+
+  string_size = strlen ((char *) elt) + 1;
+  string = pdf_alloc (string_size);
+  if (string == NULL)
+    {
+      return PDF_ERROR;
+    }
+
+  string = (pdf_char_t *) strncpy ((char *) string, (char *) elt, string_size);
+
+  return (pdf_hash_add (table, key, string, pdf_dealloc));
+}
+
+pdf_status_t
+pdf_hash_get_string (pdf_hash_t table, const char *key, pdf_char_t **elt)
+{
+  return pdf_hash_get (table, key, (const void **) elt);
+}
 
 static void
 text_dispose_fn (const void *elt)

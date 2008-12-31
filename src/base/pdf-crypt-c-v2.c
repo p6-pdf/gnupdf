@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-05 04:39:13 david"
+/* -*- mode: C -*- Time-stamp: "08/12/27 21:41:28 jemarch"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -34,7 +34,7 @@
 
 /* Creation and destruction of a v2 cipher */
 
-static pdf_status_t
+pdf_status_t
 pdf_crypt_cipher_v2_new (void ** cipher)
 {
   gcry_cipher_hd_t * hd;
@@ -68,7 +68,7 @@ pdf_crypt_cipher_v2_new (void ** cipher)
 }
 
 
-static pdf_status_t
+pdf_status_t
 pdf_crypt_cipher_v2_destroy (void * cipher)
 {
   gcry_cipher_hd_t * hd = cipher;
@@ -81,14 +81,14 @@ pdf_crypt_cipher_v2_destroy (void * cipher)
 
 /* Encryption and decryption functions */
 
-static pdf_status_t
+pdf_status_t
 pdf_crypt_cipher_v2_setkey (void * cipher,
 			    pdf_char_t *key, pdf_size_t size)
 {
   gcry_cipher_hd_t * hd = cipher;
   if (gcry_cipher_setkey (*hd, key, size) != GPG_ERR_NO_ERROR)
     {
-      return PDF_EBADDATA;
+      return PDF_EBADV2KEY;
     }
   else
     {
@@ -97,25 +97,7 @@ pdf_crypt_cipher_v2_setkey (void * cipher,
   
 }
 
-
-static pdf_size_t
-pdf_crypt_cipher_v2_encrypt_size (void * cipher,
-				  pdf_char_t *in, pdf_size_t in_size)
-{
-  return in_size;
-}
-
-
-static pdf_size_t
-pdf_crypt_cipher_v2_decrypt_size (void * cipher,
-				  pdf_char_t *in, pdf_size_t in_size)
-{
-  return in_size;
-}
-
-
-
-static pdf_status_t
+pdf_status_t
 pdf_crypt_cipher_v2_encrypt (void * cipher,
 			     pdf_char_t *out, pdf_size_t out_size,
 			     pdf_char_t *in,  pdf_size_t in_size,
@@ -125,7 +107,8 @@ pdf_crypt_cipher_v2_encrypt (void * cipher,
 
   if (gcry_cipher_encrypt (*hd, out, out_size, in, in_size) == GPG_ERR_NO_ERROR)
     {
-      *result_size = in_size;
+      if (result_size != NULL)
+        *result_size = in_size;
       return PDF_OK;
     }
   else
@@ -136,7 +119,7 @@ pdf_crypt_cipher_v2_encrypt (void * cipher,
 
 
 
-static pdf_status_t
+pdf_status_t
 pdf_crypt_cipher_v2_decrypt (void * cipher,
 			     pdf_char_t *out, pdf_size_t out_size,
 			     pdf_char_t *in,  pdf_size_t in_size,
@@ -146,7 +129,8 @@ pdf_crypt_cipher_v2_decrypt (void * cipher,
 
   if (gcry_cipher_decrypt (*hd, out, out_size, in, in_size) == GPG_ERR_NO_ERROR)
     {
-      *result_size = in_size;
+      if (result_size != NULL)
+        *result_size = in_size;
       return PDF_OK;
     }
   else
@@ -154,18 +138,5 @@ pdf_crypt_cipher_v2_decrypt (void * cipher,
       return PDF_ERROR;
     }
 }
-
-
-struct pdf_crypt_cipher_algo_s pdf_crypt_cipher_v2 = 
-{
-    pdf_crypt_cipher_v2_new,
-    pdf_crypt_cipher_v2_setkey,
-    pdf_crypt_cipher_v2_encrypt_size,
-    pdf_crypt_cipher_v2_decrypt_size,
-    pdf_crypt_cipher_v2_encrypt,  
-    pdf_crypt_cipher_v2_decrypt,
-    pdf_crypt_cipher_v2_destroy
-};
-
 
 /* End of pdf-crypt-c-v2.c */
