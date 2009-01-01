@@ -141,7 +141,6 @@ pdf_stm_f_dctdec_init (pdf_hash_t params,
 
       dctdec_state->state = DCTDEC_STATE_INIT;
       *state = dctdec_state;
-      sleep(14);
       ret = PDF_OK;
     }
   else
@@ -552,12 +551,8 @@ pdf_stm_f_dctdec_write_ppm_header(j_decompress_ptr cinfo, pdf_stm_buffer_t out)
   {
     return PDF_ENOUTPUT;
   }
-#if 0
-  fwrite(header, hlen, 1, stdout);
-#else
   memcpy(out->data + out->wp, header, hlen); 
   out->wp += hlen; 
-#endif
   return PDF_OK;
 }
 /* End of pdf_stm_f_ahex.c */
