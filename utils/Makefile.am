@@ -24,7 +24,7 @@ endif #ICONV
 
 bin_PROGRAMS = pdf-filter
 
-LDADD = $(top_srcdir)/src/libgnupdf.la \
+LDADD = $(top_builddir)/src/libgnupdf.la \
         $(ICONV_LIBS)
 
 AM_CPPFLAGS = -I$(top_srcdir)/lib -I$(top_srcdir)/src/ \
