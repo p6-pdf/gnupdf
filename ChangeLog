@@ -1,3 +1,11 @@
+2009-01-01  Michael Gold  <mgold@ncf.ca>
+
+	* utils/Makefile.am: Fix VPATH builds.
+
+	* torture/unit/Makefile.am: Idem.
+
+	* src/Makefile.am: Idem.
+
 2008-12-10  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* torture/unit/runtests.c (main): Dont set the CK_FORK variable,

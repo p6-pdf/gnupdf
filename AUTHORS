@@ -244,4 +244,8 @@ David Vazquez: wrote /torture/unit/base/crypt/
   /src/base/pdf-crypt-c-v2.c
   /src/base/pdf-crypt-c-v2.h
   /src/base/pdf-crypt.h
-changed doc/gnupdf.texi
+and changed doc/gnupdf.texi
+
+Michael Gold: changed src/Makefile.am utils/Makefile.am
+  torture/unit/Makefile.am
+
