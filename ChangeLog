@@ -1,3 +1,15 @@
+2009-01-03  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* prmgt/apic2wiki.in: Use the -t option of
+	check-api-doc-consistency.pl and generate information about unit
+	tests.
+
+	* prmgt/check-api-doc-consistency.pl.in (show_help): Make the output
+	easily parseable with awk.
+
+	* prmgt/Makefile.am (apic.wiki): Add the execution permission to
+	prmgt/check-api-doc-consistency.pl
+
 2009-01-01  Michael Gold  <mgold@ncf.ca>
 
 	* utils/Makefile.am: Fix VPATH builds.
@@ -5,6 +17,13 @@
 	* torture/unit/Makefile.am: Idem.
 
 	* src/Makefile.am: Idem.
+
+2008-12-30  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* configure.ac: added check-api-doc-consistency.pl.in.
+
+	* prmgt/check-api-doc-consistency.pl.in: new feature, count tests
+	cases for each consistent function.
 
 2008-12-28  Jose E. Marchesi  <jemarch@gnu.org>
 
