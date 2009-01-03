@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-12-25 16:48:54 davazp"
+/* -*- mode: C -*- Time-stamp: "2009-01-01 18:50:46 aleksander"
  *
  *       File:         pdf-stm-write.c
  *       Date:         Sun Sep 21 16:37:27 2008
@@ -348,6 +348,9 @@ START_TEST (pdf_stm_write_006)
 END_TEST
 
 
+/* Note: PDF_STM_FILTER_FLATE_DEC is only available if LIBZ is used */
+#if defined(HAVE_LIBZ)
+
 /*
  * Test: pdf_stm_write_007
  * Description:
@@ -426,7 +429,7 @@ START_TEST (pdf_stm_write_007)
 }
 END_TEST
 
-
+#endif
 
 
 
@@ -708,7 +711,10 @@ test_pdf_stm_write (void)
   tcase_add_test(tc, pdf_stm_write_004);
   tcase_add_test(tc, pdf_stm_write_005);
   tcase_add_test(tc, pdf_stm_write_006);
+/* Note: PDF_STM_FILTER_FLATE_DEC is only available if LIBZ is used */
+#if defined(HAVE_LIBZ)
   tcase_add_test(tc, pdf_stm_write_007);
+#endif
   tcase_add_test(tc, pdf_stm_write_008);
   tcase_add_test(tc, pdf_stm_write_009);
   tcase_add_test(tc, pdf_stm_write_010);

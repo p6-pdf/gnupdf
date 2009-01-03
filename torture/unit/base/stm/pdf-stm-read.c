@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-12-25 16:21:49 davazp"
+/* -*- mode: C -*- Time-stamp: "2009-01-01 18:51:13 aleksander"
  *
  *       File:         pdf-stm-read.c
  *       Date:         Sat Sep 20 15:20:17 2008
@@ -537,6 +537,10 @@ START_TEST (pdf_stm_read_008)
 }
 END_TEST
 
+
+/* Note: PDF_STM_FILTER_FLATE_DEC is only available if LIBZ is used */
+#if defined(HAVE_LIBZ)
+
 /*
  * Test: pdf_stm_read_009
  * Description:
@@ -610,11 +614,10 @@ START_TEST (pdf_stm_read_009)
   /* Destroy the stream */
   pdf_stm_destroy (stm);
   pdf_dealloc (buf);
-
 }
 END_TEST
 
-
+#endif
 
 /*
  * Test: pdf_stm_read_011
@@ -745,7 +748,10 @@ test_pdf_stm_read (void)
   tcase_add_test(tc, pdf_stm_read_006);
   tcase_add_test(tc, pdf_stm_read_007);
   tcase_add_test(tc, pdf_stm_read_008);
+/* Note: PDF_STM_FILTER_FLATE_DEC is only available if LIBZ is used */
+#if defined(HAVE_LIBZ)
   tcase_add_test(tc, pdf_stm_read_009);
+#endif
   tcase_add_test(tc, pdf_stm_read_011);
   tcase_add_test(tc, pdf_stm_read_012);
 

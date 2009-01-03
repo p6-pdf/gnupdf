@@ -18,6 +18,17 @@
 
 	* src/Makefile.am: Idem.
 
+
+2009-01-01  Aleksander Morgado  <aleksander@es.gnu.org>
+
+	* torture/unit/base/stm/pdf-stm-write.c: Disable compilation and
+	execution of test `pdf_stm_write_007' if LIBZ not available, as
+	`PDF_STM_FILTER_FLATE_DEC' is not defined.
+
+	* torture/unit/base/stm/pdf-stm-read.c: Disable compilation and
+	execution of test `pdf_stm_read_009' if LIBZ not available, as
+	`PDF_STM_FILTER_FLATE_DEC' is not defined.
+
 2008-12-30  Gerardo E. Gidoni  <gerel@gnu.org>
 
 	* configure.ac: added check-api-doc-consistency.pl.in.
