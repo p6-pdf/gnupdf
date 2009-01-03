@@ -1,5 +1,47 @@
 2009-01-03  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf.texi (Rounding Routines): Documentation for
+	'pdf_fp_floor'.
+	(Rounding Routines): Documentation for 'pdf_fp_ceil'.
+	(Rounding Routines): New section.
+	(Trigonometric Routines): New section.
+	(Trigonometric Routines): Documentation for 'pdf_fp_sin'.
+	(Trigonometric Routines): Documentation for 'pdf_fp_cos'.
+	(Trigonometric Routines): Documentation for 'pdf_fp_atan2'.
+	(Exponential and Logarithmic Routines): New section.
+	(Exponential and Logarithmic Routines): Documentation for
+	'pdf_fp_exp'.
+	(Exponential and Logarithmic Routines): Documentation for
+	'pdf_fp_log'.
+	(Exponential and Logarithmic Routines): Documentation for
+	'pdf_fp_log10'.
+	(Floating Point Constants): New section.
+	(Other Maths Routines): New section.
+	(Other Maths Routines): Documentation for 'pdf_fp_abs'.
+	(Other Maths Routines): Documentation for 'pdf_fp_sqrt'.
+
+	* torture/unit/base/fp/pdf-fp-func-eval.c (ellipse_b): Use
+	pdf_fp_sqrt instead of sqrtf.
+	(double_dot): Use pdf_fp_sin instead of sinf.
+	(cosine_dot): Use pdf_fp_cos instead of cosf.
+	Use pdf_fp_abs instead of fabs in all the file.
+
+	* src/base/pdf-fp.c (pdf_fp_sqrt): New function.
+	(pdf_fp_sin): New function.
+	(pdf_fp_cos): New function.
+	(pdf_fp_atan2): New function.
+	(pdf_fp_exp): New function.
+	(pdf_fp_abs): New function.
+	(pdf_fp_log10): New function.
+	(pdf_fp_log): New function.
+	(pdf_fp_floor): New function.
+	(pdf_fp_ceil): New function.
+
+	* src/base/pdf-fp.h: Declaration of the functions 'pdf_fp_sqrt',
+	'pdf_fp_sin', 'pdf_fp_cos', 'pdf_fp_atan2', 'pdf_fp_exp',
+	'pdf_fp_abs', 'pdf_fp_log10', 'pdf_fp_log', 'pdf_fp_floor',
+	'pdf_fp_ceil'.
+
 	* prmgt/apic2wiki.in: Use the -t option of
 	check-api-doc-consistency.pl and generate information about unit
 	tests.

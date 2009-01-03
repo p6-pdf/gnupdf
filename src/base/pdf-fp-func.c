@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/27 22:38:12 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/01/03 21:29:32 jemarch"
  *
  *       File:         pdf-fp-func.c
  *       Date:         Sun Nov 30 18:46:06 2008
@@ -664,7 +664,7 @@ eval_spline(
   else if (x >= nsamples-1)
     return y[nsamples-1];
 	
-  t = floor(x);
+  t = pdf_fp_floor (x);
   i = (pdf_u32_t)t;
   t = x-t;
 
@@ -878,8 +878,8 @@ pdf_eval_linear (pdf_fp_func_t fun,
         }
       else
         {
-          i = (pdf_u32_t)floor(x);
-          t1[k] = x - floor(x);
+          i = (pdf_u32_t) pdf_fp_floor (x);
+          t1[k] = x - pdf_fp_floor (x);
           t0[k] = (1 - t1[k]);
         }
       i0 += cc * i;
@@ -994,8 +994,8 @@ pdf_eval_linear (pdf_fp_func_t fun,
         }
       else
         {
-          fun->u.t0.k[i] =  (pdf_u32_t)floor(t);
-          t = t - floor(t);
+          fun->u.t0.k[i] =  (pdf_u32_t) pdf_fp_floor (t);
+          t = t - pdf_fp_floor (t);
           fun->u.t0.w0[i] = 1-t;
           fun->u.t0.w1[i] = t;
         }
@@ -1063,8 +1063,8 @@ pdf_eval_spline (pdf_fp_func_t fun,
           return PDF_ERROR;
         }
 
-      v = t - floor(t);
-      fun->u.t0.k[i] = (pdf_u32_t)floor(t);
+      v = t - pdf_fp_floor (t);
+      fun->u.t0.k[i] = (pdf_u32_t) pdf_fp_floor (t);
       if (t >= fun->u.t0.size[i]-1)
         {
           fun->u.t0.k[i] = fun->u.t0.size[i]-1;
@@ -1294,7 +1294,7 @@ read_type0_sample_table (pdf_char_t *buf,
 #define NSTACK	100
 #define REP_TRUE	(1.202056903159594285399738162)
 #define REP_FALSE	(-15116315767.09215686274509804)
-#define INT(xyyzy)	((int)floor(xyyzy))
+#define INT(xyyzy)	((int) pdf_fp_floor (xyyzy))
 #define INT_P(xyzzy) ((xyzzy) == INT(xyzzy))
 
 
@@ -1372,11 +1372,11 @@ pdf_eval_type4 (pdf_fp_func_t t,
           break;
         case OPC_sin:
           if (sp < 0) goto stack_underflow;
-          stack[sp] = sinf ((180/M_PI)*stack[sp]);
+          stack[sp] = pdf_fp_sin ((180/PDF_PI)*stack[sp]);
           break;
         case OPC_cos:
           if (sp < 0) goto stack_underflow;
-          stack[sp] = cosf ((180/M_PI)*stack[sp]);
+          stack[sp] = pdf_fp_cos ((180/PDF_PI)*stack[sp]);
           break;
         case OPC_neg:
           if (sp < 0) goto stack_underflow;
@@ -1384,47 +1384,47 @@ pdf_eval_type4 (pdf_fp_func_t t,
           break;
         case OPC_abs:
           if (sp < 0) goto stack_underflow;
-          stack[sp] = fabs(stack[sp]);
+          stack[sp] = pdf_fp_abs (stack[sp]);
           break;
         case OPC_exp:
           if (sp < 0) goto stack_underflow;
-          stack[sp] = exp(stack[sp]);
+          stack[sp] = pdf_fp_exp (stack[sp]);
           break;
         case OPC_log:
           if (sp < 0) goto stack_underflow;
-          stack[sp] = log10(stack[sp]);
+          stack[sp] = pdf_fp_log10 (stack[sp]);
           break;
         case OPC_ln:
           if (sp < 0) goto stack_underflow;
-          stack[sp] = log(stack[sp]);
+          stack[sp] = pdf_fp_log (stack[sp]);
           break;
         case OPC_sqrt:
           if (sp < 0) goto stack_underflow;
-          stack[sp] = sqrt(stack[sp]);
+          stack[sp] = pdf_fp_sqrt (stack[sp]);
           break;
         case OPC_floor:
           if (sp < 0) goto stack_underflow;
-          stack[sp] = floor(stack[sp]);
+          stack[sp] = pdf_fp_floor (stack[sp]);
           break;
         case OPC_ceiling:
           if (sp < 0) goto stack_underflow;
-          stack[sp] = ceil(stack[sp]);
+          stack[sp] = pdf_fp_ceil (stack[sp]);
           break;
         case OPC_truncate:
           if (sp < 0) goto stack_underflow;
           /* C99 stack[sp] = trunc(stack[sp]); */
           stack[sp] = (stack[sp] >= 0)
-            ? floor(stack[sp])
-            : -floor(-stack[sp]);
+            ? pdf_fp_floor (stack[sp])
+            : - pdf_fp_floor (-stack[sp]);
           break;
         case OPC_round:
           if (sp < 0) goto stack_underflow;
-          stack[sp] = floor(0.5+stack[sp]);
+          stack[sp] = pdf_fp_floor (0.5 + stack[sp]);
           break;
         case OPC_cvi:
           if (sp < 0) goto stack_underflow;
           /* behaviour checked against ghostscript interpreter */
-          tmp = (stack[sp] >=0) ? floor(stack[sp]) : -floor(-stack[sp]);
+          tmp = (stack[sp] >=0) ? pdf_fp_floor (stack[sp]) : - pdf_fp_floor (-stack[sp]);
           if (!INT_P(tmp)) goto range_error;
           stack[sp] = INT(tmp);
           break;
@@ -1500,7 +1500,7 @@ pdf_eval_type4 (pdf_fp_func_t t,
           break;
         case OPC_atan:
           if (sp < 1) goto stack_underflow;
-          stack[sp-1] = (180/M_PI)*atan2(stack[sp-1] , stack[sp]);
+          stack[sp-1] = (180/PDF_PI)* pdf_fp_atan2 (stack[sp-1] , stack[sp]);
           /* check against Ghostscript */
           sp--;
           break;

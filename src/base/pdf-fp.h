@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/28 17:53:30 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/01/03 21:24:54 jemarch"
  *
  *       File:         pdf-fp.h
  *       Date:         Sun Feb 10 21:36:37 2008
@@ -27,9 +27,16 @@
 #define PDF_FP_H
 
 #include <config.h> 
+#include <math.h>
 #include <pdf-types.h>
 
 /* BEGIN PUBLIC */
+
+/* Constants */
+
+#define PDF_PI M_PI
+
+/* Data types */
 
 typedef float pdf_real_t;
 
@@ -72,6 +79,19 @@ struct pdf_rect_s
 };
 
 typedef struct pdf_rect_s *pdf_rect_t;
+
+/* Function prototypes */
+
+pdf_real_t pdf_fp_sqrt (pdf_real_t op);
+pdf_real_t pdf_fp_sin (pdf_real_t op);
+pdf_real_t pdf_fp_cos (pdf_real_t op);
+pdf_real_t pdf_fp_atan2 (pdf_real_t op1, pdf_real_t op2);
+pdf_real_t pdf_fp_exp (pdf_real_t op);
+pdf_real_t pdf_fp_abs (pdf_real_t op);
+pdf_real_t pdf_fp_log10 (pdf_real_t op);
+pdf_real_t pdf_fp_log (pdf_real_t op);
+pdf_real_t pdf_fp_floor (pdf_real_t op);
+pdf_real_t pdf_fp_ceil (pdf_real_t op);
 
 /* END PUBLIC */
 

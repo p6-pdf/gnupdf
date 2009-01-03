@@ -4117,12 +4117,22 @@ XXX
 @section Floating Point Maths
 
 @menu
+* Floating Point Constants::
 * Floating Point Types::
+* Rounding Routines::
+* Exponential and Logarithmic Routines::
 * Number Conversion Routines::
+* Trigonometric Routines::
 * Geometry Routines::
+* Other Maths Routines::
 * Creation and Destruction of Functions::
 * Evaluation of Functions::
 @end menu
+
+@node Floating Point Constants
+@subsection Floating Point Constants
+
+@code{PDF_PI} contains the value of pi.
 
 @node Floating Point Types
 @subsection Floating Point Types
@@ -4227,6 +4237,137 @@ A pointer to a @code{pdf_quad_t} structure.
 Opaque type representing a Floating Point function.
 
 @end deftp
+
+@node Rounding Routines
+@subsection Rounding Routines
+
+@deftypefun pdf_real_t pdf_fp_floor (pdf_real_t @var{op})
+
+Round @var{op} down to the nearest integer.
+
+@table @strong
+@item Parameters
+@table @var
+@item op
+A real operand.
+@end table
+@item Returns
+The rounded integer value. If @var{op} is integral or infinite,
+@var{op} itself is returned.
+@item Usage example
+@example
+pdf_real_t number;
+pdf_u32_t rounded;
+
+number = 1.2;
+rounded = pdf_fp_floor (number);
+/* rounded equals 1 */
+
+number = 1.6;
+rounded = pdf_fp_floor (number);
+/* rounded equals 1 */
+
+number = 2;
+rounded = pdf_fp_floor (number);
+/* rounded equals 2 */
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_real_t pdf_fp_ceil (pdf_real_t @var{op})
+
+Round @var{op} up to the nearest integer.
+
+@table @strong
+@item Parameters
+@table @var
+@item op
+A real operand.
+@end table
+@item Returns
+The rounded integer value. If @var{op} is integral or infinite,
+@var{op} itself is returned.
+@item Usage example
+@example
+pdf_real_t number;
+pdf_u32_t rounded;
+
+number = 1.2;
+rounded = pdf_fp_ceil (number);
+/* rounded equals 2 */
+
+number = 1.6;
+rounded = pdf_fp_ceil (number);
+/* rounded equals 2 */
+
+number = 2;
+rounded = pdf_fp_ceil (number);
+/* rounded equals 2 */
+@end example
+@end table
+@end deftypefun
+
+@node Exponential and Logarithmic Routines
+@subsection Exponential and Logarithmic Routines
+
+@deftypefun pdf_real_t pdf_fp_exp (pdf_real_t @var{op})
+
+Return the value of e (the base of natural logarithms) raised to the
+power of @var{op}.
+
+@table @strong
+@item Parameters
+@table @var
+@item op
+A real operand.
+@end table
+@item Returns
+The value of e raised to the power of @var{op}.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_real_t pdf_fp_log (pdf_real_t @var{op})
+
+Return the natural logarithm of @var{op}.
+
+@table @strong
+@item Parameters
+@table @var
+@item op
+A real operand.
+@end table
+@item Returns
+The natural logarithm of @var{op}.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_real_t pdf_fp_log10 (pdf_real_t @var{op})
+
+Return the base 10 logarithm of @var{op}.
+
+@table @strong
+@item Parameters
+@table @var
+@item op
+A real operand.
+@end table
+@item Returns
+The base 10 logarithm of @var{op}.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
 
 @node Number Conversion Routines
 @subsection Number Conversion Routines
@@ -4335,6 +4476,69 @@ if (pdf_fp_real_to_string (real, s, 4, 3) == PDF_ERROR)
 @end table
 @end deftypefun
 
+@node Trigonometric Routines
+@subsection Trigonometric Routines
+
+@deftypefun pdf_real_t pdf_fp_sin (pdf_real_t @var{op})
+
+Return the sine of @var{op}, where @var{op} is given in radians.
+
+@table @strong
+@item Parameters
+@table @var
+@item op
+A real operand.
+@end table
+@item Returns
+A real value between @code{-1} and @code{1}.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_real_t pdf_fp_cos (pdf_real_t @var{op})
+
+Return the cosine of @var{op}, where @var{op} is given in radians.
+
+@table @strong
+@item Parameters
+@table @var
+@item op
+A real operand.
+@end table
+@item Returns
+A real value between @code{-1} and @code{1}.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_real_t pdf_fp_atan2 (pdf_real_t @var{op1}, pdf_real_t @var{op2})
+
+Return the arc tangent of the two values @var{op1} and @var{op2}. It
+is similar to calculating the arc tangent of @code{op1 / op2} except
+that the signs of both arguments are used to determine the quadrant of
+the result.
+
+@table @strong
+@item Parameters
+@table @var
+@item op
+A real operand.
+@end table
+@item Returns
+The result in radians, wichi is between @code{-PDF_PI} and
+@code{PDF_PI} (inclusive).
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
 
 @node Geometry Routines
 @subsection Geometry Routines
@@ -4454,6 +4658,48 @@ XXX
 @end example
 @end table
 @end deftypefun
+
+@node Other Maths Routines
+@subsection Other Maths Routines
+
+@deftypefun pdf_fp_abs (pdf_real_t @var{op})
+
+Return the absolute value of the real number @var{op}.
+
+@table @strong
+@item Parameters
+@table @var
+@item op
+A real operand.
+@end table
+@item Returns
+The absolute value of the operand.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_fp_sqrt (pdf_real_t @var{op})
+
+Return the non-negative square root of @var{op}.
+
+@table @strong
+@item Parameters
+@table @var
+@item op
+A real operand.
+@end table
+@item Returns
+The square root of @var{op}.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
 
 @node Creation and Destruction of Functions
 @subsection Creation and Destruction of Functions
