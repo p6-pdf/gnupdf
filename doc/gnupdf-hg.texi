@@ -47,11 +47,116 @@ GNU PDF Library Hackers Guide
 @end ifnottex
 
 @menu
+* Information for Newcomers::
 * Use of Autotools::
 * Coding Conventions::
 * Sending Patches::
 * Writing Tests::
 @end menu
+
+@node Information for Newcomers
+@chapter Information for Newcomers
+
+First of all, many thanks for your interest in collaborate in the development!
+Here you will find some useful information to get started. 
+
+@table @strong
+@item Getting a copy of the sources
+
+The first step to perform is to get a local copy of the development
+sources. Just install a GNU Bazaar client and issue the following
+commands.
+
+To get the sources of the GNU PDF Library from the trunk:
+
+@example
+$ bzr branch http://bzr.savannah.gnu.org/r/pdf/libgnupdf/branches/trunk
+@end example
+
+@item Getting familiar with GNU Bazaar
+
+We are using the GNU Bazaar @footnote{http://bazaar-vcs.org} version
+control system. Before to be able to contribute code to this project
+you should get familiar to the usage of GNU Bazaar.
+
+The GNU Bazaar User Guide
+@footnote{http://doc.bazaar-vcs.org/bzr.dev/en/user-guide/index.html}
+is very good. In the GNU Bazaar site you will also find useful tips
+for people coming from other VCSs such as CVS or subversion.
+
+@item Subscribing to the development mailing list
+
+GNU PDF developers communicate using the @email{pdf-devel@@gnu.org}
+mailing list. Most of the work in the development is discussed there,
+so you definitely want to subscribe to it if you are going to do
+development work.
+
+Goto the pdf-devel mailman web interface in
+@url{http://lists.gnu.org/mailman/listinfo/pdf-devel} and set up your
+subscription. Then, send a first email saying "Hello" :)
+
+@item Getting familiar with Savannah
+
+Savannah is the central point of development for GNU software. The GNU
+PDF project has a savannah project in
+@url{http://savannah.gnu.org/projects/pdf}
+
+@item Getting familiar with the library
+
+Take a look to the design of the library and the source code. If you
+have doubts about any aspect of the library or the implementation,
+just ask to pdf-devel.
+
+@item Getting familiar with the GNU standards
+
+The GNU PDF Library is a GNU package. That means we should follow the
+GNU Standards to ensure quality and compatibility with other parts of
+the GNU Operating System.
+
+You should be familiar with the GNU Coding Standards before to write
+code for the GNU PDF library. You can read it online in
+@url{http://www.gnu.org/prep/standards}.
+
+@item Getting familiar with our coding conventions
+
+Read our Hackers Guide document for several conventions we use when
+writing source code.
+
+@item Taking a task to work on
+
+Please read the documentation on tasks management.
+
+If you want to work in a NEXT task, please be sure to state your
+interest in the gnu-devel mailing list before. The developers in the
+pdf-devel mailing list can guide you towards the more convenient task
+for you to take and can give valuable advice about how to implement
+it.
+
+@item Getting an account for the wiki
+
+It is quite important to write down the design of the code you write
+for the project. So if you are going to write code please ask the
+maintainer for an account in gnupdf.org.
+
+@item Signing papers
+
+The GNU PDF codebase is copyrighted by the Free Software
+Foundation. It is a way to strength the GPL. That means that we need
+you to sign papers before to be able to integrate your code in the
+distribution. There are several ways to get this done. Please ask the
+GNU PDF maintainer for the details.
+
+@item Sending patches for inclusion
+
+If you have written a patch you want to be included in GNU PDF, please
+send it to the pdf-devel mailing list. Your patch will be then
+discussed and maybe accepted.
+
+Please do not insert your patch in the savannah patch manager: the
+maintainer will do it.
+
+@end table
+
 
 @node Use of Autotools
 @chapter Use of Autotools
