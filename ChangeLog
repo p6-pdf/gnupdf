@@ -1,7 +1,25 @@
+2009-01-05  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/Makefile.am (noinst_TEXINFOS): Added gnupdf-arch.texi.
+
+	* doc/gnupdf-hg.texi (The tortutils Library): Architecture chapter
+	moved to 'gnupdf-arch.texi'.
+
+	* doc/gnupdf-arch.texi: New document.
+	Contents moved from 'gnupdf-hg.texi'.
+
+	* doc/gnupdf-hg.texi: Import 'version.texi'.
+
 2009-01-04  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf-hg.texi (Information for Newcomers): New chapter
 	containing the information from the Newcomers page.
+	(The build system): Renamed from 'Use of Autotools'.
+	(Library architecture): New chapter.
+	(The base layer): New section.
+	(The object layer): New section.
+	(The document layer): New section.
+	(The page layer): New section.
 
 2009-01-03  Jose E. Marchesi  <jemarch@gnu.org>
 
