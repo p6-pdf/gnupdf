@@ -1,3 +1,7 @@
+2009-01-06  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/Makefile.am: Dont generate html manuals using texi2html.
+
 2009-01-05  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/Makefile.am (noinst_TEXINFOS): Added gnupdf-arch.texi.
