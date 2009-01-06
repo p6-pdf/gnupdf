@@ -5,7 +5,7 @@
 @settitle GNU PDF Library Hackers Guide
 @comment %**end of header
 
-@set VERSION 0.1
+@include version.texi
 
 @copying
 This is the @cite{GNU PDF Library Hackers Guide},
@@ -48,7 +48,7 @@ GNU PDF Library Hackers Guide
 
 @menu
 * Information for Newcomers::
-* Use of Autotools::
+* The build system::
 * Coding Conventions::
 * Sending Patches::
 * Writing Tests::
@@ -158,8 +158,8 @@ maintainer will do it.
 @end table
 
 
-@node Use of Autotools
-@chapter Use of Autotools
+@node The build system
+@chapter The build system
 
 The build system of the GNU PDF software uses the GNU build utilities
 (otherwise known as the GNU Autotools). This chapter contains some
