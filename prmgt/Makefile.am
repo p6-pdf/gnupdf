@@ -40,7 +40,8 @@ cyclo.wiki:
 
 apic.wiki:
 	chmod +x ${srcdir}/apic2wiki
-	${srcdir}/check-api-doc-consistency.pl -p | ${srcdir}/apic2wiki > apic.wiki
+	chmod +x ${srcdir}/check-api-doc-consistency.pl
+	${srcdir}/check-api-doc-consistency.pl -p -t | ${srcdir}/apic2wiki > apic.wiki
 
 ut.wiki:
 	chmod +x ${srcdir}/testlog2wiki

@@ -26,6 +26,8 @@ BEGIN {
     nfuncs = 0;
     nok = 0;
     nfail = 0;
+    ntested = 0;
+    nuntested = 0;
 }
 
 # Functions
@@ -45,6 +47,14 @@ function wiki_global_stats ()
     print "|-"
     print "| class=\"cyclo_resume_header_entry\" | Non implemented functions"
     print "| class=\"cyclo_resume_number_entry\" |" nfail
+    # Tested functions
+    print "|-"
+    print "| class=\"cyclo_resume_header_entry\" | Tested functions"
+    print "| class=\"cyclo_resume_number_entry\" |" ntested
+    # Untested functions
+    print "|-"
+    print "| class=\"cyclo_resume_header_entry\" | Untested functions"
+    print "| class=\"cyclo_resume_number_entry\" |" nuntested
     print "|}"
 }
 
@@ -58,6 +68,7 @@ function wiki_function_data ()
     print "! class=\"cyclo_function_table_header_entry\" | Function Name"
     print "! class=\"cyclo_function_table_header_entry\" | Documented"
     print "! class=\"cyclo_function_table_header_entry\" | Implemented"
+    print "! class=\"cyclo_function_table_header_entry\" | Unit tests"
 
     # Table data
 
@@ -76,13 +87,34 @@ function wiki_function_data ()
             # Implemented
             print "| class=\"cyclo_function_entry_name\" |"     \
                 ((fstatus[nfnc] == "ok") ? "yes" : "no")
+            # Unit tests
+            print "| class=\"cyclo_function_entry_number\" | 0"
         }
     }
 
-    # Implemented functions
+    # Implemented but non-tested functions
     for (nfnc = 1; nfnc < nfuncs; nfnc++)
     {
-        if (fstatus[nfnc] == "ok")
+        if ((fstatus[nfnc] == "ok") && (fntests[nfnc] < 1))
+        {
+            trclass="cyclo_function_entry_moderate"
+
+            print "|- class=\"" trclass "\""
+            # Function name
+            print "| class=\"cyclo_function_entry_name\" |" fnames[nfnc]
+            # Documented
+            print "| class=\"cyclo_function_entry_name\" |" "yes"
+            # Implemented
+            print "| class=\"cyclo_function_entry_name\" |" "yes"
+            # Unit tests
+            print "| class=\"cyclo_function_entry_number\" |" fntests[nfnc]
+        }
+    }
+
+    # Implemented and tested functions
+    for (nfnc = 1; nfnc < nfuncs; nfnc++)
+    {
+        if ((fstatus[nfnc] == "ok") && (fntests[nfnc] > 0))
         {
             trclass="cyclo_function_entry_simple"
 
@@ -93,6 +125,8 @@ function wiki_function_data ()
             print "| class=\"cyclo_function_entry_name\" |" "yes"
             # Implemented
             print "| class=\"cyclo_function_entry_name\" |" "yes"
+            # Unit tests
+            print "| class=\"cyclo_function_entry_number\" |" fntests[nfnc]
         }
     }
 
@@ -103,6 +137,7 @@ function wiki_function_data ()
 {
     fname = $1;
     status = $3;
+    ntests = $4;
 
     nfuncs++;
     if (status == "ok") 
@@ -113,9 +148,18 @@ function wiki_function_data ()
     {
         nfail++
     }
+    if (ntests > 0)
+    {
+        ntested++;
+    }
+    else
+    {
+        nuntested++;
+    }
 
     fnames[nfuncs] = fname
     fstatus[nfuncs] = status
+    fntests[nfuncs] = ntests
 }
 
 

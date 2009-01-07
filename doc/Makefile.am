@@ -16,19 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-noinst_TEXINFOS = gnupdf-tsd.texi gnupdf-hg.texi
+noinst_TEXINFOS = gnupdf-tsd.texi gnupdf-hg.texi gnupdf-arch.texi
 info_TEXINFOS = gnupdf.texi gnupdf-utils.texi
 gnupdf_TEXINFOS = fdl.texi
 
-AM_MAKEINFOHTMLFLAGS = --no-headers --no-split
+AM_MAKEINFOHTMLFLAGS = --css-include=manuals.css
 
 if TEXI2HTML
-
-html-local:
-	texi2html --init-file=gnupdf-manual.init --css-include=manuals.css gnupdf.texi
-	texi2html --init-file=gnupdf-manual.init --css-include=manuals.css gnupdf-utils.texi
-	texi2html --init-file=gnupdf-manual.init --css-include=manuals.css gnupdf-tsd.texi
-	texi2html --init-file=gnupdf-manual.init --css-include=manuals.css gnupdf-hg.texi
 
 wiki: gnupdf.wiki gnupdf-utils.wiki gnupdf-tsd.wiki gnupdf-hg.wiki
 
