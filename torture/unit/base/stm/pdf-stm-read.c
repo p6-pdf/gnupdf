@@ -537,6 +537,10 @@ START_TEST (pdf_stm_read_008)
 }
 END_TEST
 
+
+/* Note: PDF_STM_FILTER_FLATE_DEC is only available if LIBZ is used */
+#if defined(HAVE_LIBZ)
+
 /*
  * Test: pdf_stm_read_009
  * Description:
@@ -610,11 +614,10 @@ START_TEST (pdf_stm_read_009)
   /* Destroy the stream */
   pdf_stm_destroy (stm);
   pdf_dealloc (buf);
-
 }
 END_TEST
 
-
+#endif
 
 /*
  * Test: pdf_stm_read_011
@@ -745,7 +748,10 @@ test_pdf_stm_read (void)
   tcase_add_test(tc, pdf_stm_read_006);
   tcase_add_test(tc, pdf_stm_read_007);
   tcase_add_test(tc, pdf_stm_read_008);
+/* Note: PDF_STM_FILTER_FLATE_DEC is only available if LIBZ is used */
+#if defined(HAVE_LIBZ)
   tcase_add_test(tc, pdf_stm_read_009);
+#endif
   tcase_add_test(tc, pdf_stm_read_011);
   tcase_add_test(tc, pdf_stm_read_012);
 
