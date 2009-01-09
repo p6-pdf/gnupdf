@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-12-31 19:26:43 aleksander"
+/* -*- mode: C -*- Time-stamp: "2009-01-09 22:06:50 aleksander"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -99,8 +99,8 @@ __pdf_fsys_disk_get_mode_string(const enum pdf_fsys_file_mode_e mode);
 pdf_i64_t
 pdf_fsys_disk_get_free_space (pdf_text_t path_name)
 {
-  pdf_char_t *host_path = NULL;
-  pdf_u32_t host_path_size = 0;
+  pdf_char_t *utf16le_path = NULL;
+  pdf_u32_t utf16le_path_size = 0;
   ULARGE_INTEGER free_bytes;
   pdf_i64_t result = pdf_i64_new((32 << 1),1); /* (-1) */
 
@@ -261,8 +261,8 @@ __pdf_fsys_init_base_file_data(const pdf_text_t path_name)
           if(file_data->unicode_path != NULL)
             {
               if (__pdf_fsys_disk_get_host_path(file_data->unicode_path,
-                                                &file_data->host_path,
-                                                &file_data->host_path_size) != PDF_OK)
+                                                &(file_data->host_path),
+                                                &(file_data->host_path_size)) != PDF_OK)
                 {
                   pdf_text_destroy(file_data->unicode_path);
                   pdf_dealloc(file_data);
@@ -283,7 +283,7 @@ __pdf_fsys_init_base_file_data(const pdf_text_t path_name)
 
 /* Host-dependent fopen() */
 #ifdef PDF_HOST_WIN32
-#define PDF_FOPEN(f,m) _wfopen((wchar_t *)f,(wchar_t *m)  
+#define PDF_FOPEN(f,m) _wfopen((wchar_t *)f,(wchar_t *)m)
 #else
 #define PDF_FOPEN(f,m) fopen((char *)f,(char *)m)
 #endif
@@ -313,18 +313,13 @@ pdf_fsys_disk_file_open(const pdf_text_t path_name,
 
           /* Get the mode string for fopen */
           mode_str =__pdf_fsys_disk_get_mode_string(mode);
-          PDF_DEBUG_BASE("Opening file '%s' with mode '%s'... (file_data: %p)",
-                         file_data->host_path,
-                         (((mode_str != NULL) ? (char *)mode_str : "<null>")),
-                         file_data);
 
           /* Only continue if previous operations went ok */
           if((file_data != NULL) &&             \
              (mode_str != NULL))
             {
               /* Open the file */
-              file_data->file_descriptor = PDF_FOPEN (file_data->host_path,
-                                                      mode_str);
+              file_data->file_descriptor = PDF_FOPEN(file_data->host_path, mode_str);
               /* If got a good FD, set output data */
               if (file_data->file_descriptor != NULL)
                 {
@@ -343,7 +338,7 @@ pdf_fsys_disk_file_open(const pdf_text_t path_name,
                 }
               else
                 {
-                    PDF_DEBUG_BASE("fopen '%s' failed...", file_data->host_path);
+                  PDF_DEBUG_BASE("fopen failed...");
                   /* Deallocate and deinit base file data */
                   __pdf_fsys_deinit_base_file_data(&file_data);
                   pdf_dealloc(file);
@@ -434,14 +429,14 @@ pdf_fsys_disk_create_folder (const pdf_text_t path_name)
           */
           ret_code = PDF_OK;
           /* Open the file */
-          if (PDF_MKDIR(host_path,                     \
-                        (S_IRUSR | S_IWUSR | S_IXUSR | \
-                         S_IRGRP | S_IXGRP |           \
-                         S_IROTH | S_IXOTH)) != 0)
-            {
-              PDF_DEBUG_BASE("mkdir failed with errno '%d'", errno);
-              ret_code = __pdf_fsys_disk_get_status_from_errno(errno);
-            }
+/*           if (PDF_MKDIR(host_path,                     \ */
+/*                         (S_IRUSR | S_IWUSR | S_IXUSR | \ */
+/*                          S_IRGRP | S_IXGRP |           \ */
+/*                          S_IROTH | S_IXOTH)) != 0) */
+/*             { */
+/*               PDF_DEBUG_BASE("mkdir failed with errno '%d'", errno); */
+/*               ret_code = __pdf_fsys_disk_get_status_from_errno(errno); */
+/*             } */
         }
     }
 
@@ -592,13 +587,13 @@ pdf_fsys_disk_remove_folder (const pdf_text_t path_name)
       else
         {
           /* Try to remove the directory */
-          if (PDF_RMDIR(host_path) != 0)
-            {
-              /* Cleanup */
-              pdf_dealloc (host_path);
+/*           if (PDF_RMDIR(host_path) != 0) */
+/*             { */
+/*               /\* Cleanup *\/ */
+/*               pdf_dealloc (host_path); */
               
-              ret_code = __pdf_fsys_disk_get_status_from_errno(errno);
-            }
+/*               ret_code = __pdf_fsys_disk_get_status_from_errno(errno); */
+/*             } */
         }
       /* Cleanup */
       pdf_dealloc (host_path);
@@ -694,16 +689,16 @@ __pdf_fsys_disk_file_get_size_from_host_path(const pdf_char_t *host_path,
   if((host_path != NULL)  && \
      (p_result != NULL))
     {
-      struct stat file_info;
-      if (PDF_STAT(host_path, &file_info) != 0)
-        {
-          ret_code = __pdf_fsys_disk_get_status_from_errno(errno);          
-        }
-      else
-        {
-          *p_result = file_info.st_size;
-          ret_code = PDF_OK;
-        }
+/*       struct stat file_info; */
+/*       if (PDF_STAT(host_path, &file_info) != 0) */
+/*         { */
+/*           ret_code = __pdf_fsys_disk_get_status_from_errno(errno);           */
+/*         } */
+/*       else */
+/*         { */
+/*           *p_result = file_info.st_size; */
+/*           ret_code = PDF_OK; */
+/*         } */
     }
 
   return ret_code;
@@ -860,8 +855,37 @@ pdf_fsys_disk_file_get_mode (pdf_fsys_file_t file)
 pdf_text_t 
 pdf_fsys_disk_file_get_url (pdf_fsys_file_t file)
 {
-  /* FIXME: Please implement me :D */
-  return NULL;
+  if((file != NULL) && (file->data != NULL))
+    {
+#ifdef PDF_HOST_WIN32
+      /* In W32, we just copy the path string */
+      return pdf_text_dup((((pdf_fsys_disk_file_t)file->data)->unicode_path));
+#else
+      /* In POSIX, we return file:/ plus the path string */ 
+      pdf_text_t url = NULL;
+#define PDF_DISK_URL_PREFIX  "file:/"
+      if(pdf_text_new_from_unicode(PDF_DISK_URL_PREFIX,
+                                   strlen(PDF_DISK_URL_PREFIX),
+                                   PDF_TEXT_UTF8,
+                                   &url) == PDF_OK)
+        {
+          if(pdf_text_concat(url,
+                             (((pdf_fsys_disk_file_t)file->data)->unicode_path),
+                             PDF_TRUE) == PDF_OK)
+            {
+              return url;
+            }
+        }
+#undef PDF_DISK_URL_PREFIX
+      if(url != NULL)
+        {
+          pdf_text_destroy(url);
+        }
+      return NULL;
+#endif
+    }
+  else
+    return NULL;
 }
 
 pdf_status_t
@@ -1115,7 +1139,7 @@ pdf_fsys_disk_file_cancel_ria (pdf_fsys_file_t file)
 
 /* Host-dependent freopen() */
 #ifdef PDF_HOST_WIN32
-#define PDF_FREOPEN(f,m,s) _wfreopen((wchar_t *)f,(wchar_t *m),s)
+#define PDF_FREOPEN(f,m,s) _wfreopen((wchar_t *)f,(wchar_t *)m,s)
 #else
 #define PDF_FREOPEN(f,m,s) freopen((char *)f,(char *)m,s)
 #endif
@@ -1189,6 +1213,25 @@ __pdf_fsys_disk_get_host_path (pdf_text_t path,
                                pdf_char_t **host_path,
                                pdf_u32_t *host_path_size)
 {
+#ifdef PDF_HOST_WIN32
+  /* For W32, we will always use widechar functions, so Windows' wchar_t
+   * implementation should be used (UTF-16LE) */
+  pdf_char_t *data = NULL;
+  pdf_u32_t size = 0;
+
+  if(pdf_text_get_unicode(&data,
+                          &size,
+                          path,
+                          PDF_TEXT_UTF16_LE,
+                          PDF_TEXT_UNICODE_WITH_NUL_SUFFIX) == PDF_OK)
+    {
+      *host_path = data;
+      *host_path_size = size;
+      return PDF_OK;
+    }
+  else
+    return PDF_ERROR;
+#else
   /* Call the pdf_text module to get a host-encoded version of the
    *  given path */
   pdf_char_t *padded = NULL;
@@ -1202,9 +1245,8 @@ __pdf_fsys_disk_get_host_path (pdf_text_t path,
       *host_path = pdf_realloc(padded, padded_size+2);
       if(*host_path != NULL)
         {
-          *host_path_size = padded_size + 2;
+          *host_path_size = padded_size + 1;
           (*host_path)[(*host_path_size)-1] = '\0'; 
-          (*host_path)[(*host_path_size)-2] = '\0'; 
           return PDF_OK;
         }
       else
@@ -1212,6 +1254,7 @@ __pdf_fsys_disk_get_host_path (pdf_text_t path,
     }
   else
     return PDF_ERROR;
+#endif
 }
 
 
@@ -1221,7 +1264,7 @@ __pdf_fsys_disk_get_host_path (pdf_text_t path,
 #ifndef PDF_HOST_WIN32
 /* Posix-based open mode */
 static const pdf_char_t *__pdf_fsys_open_mode_strings[PDF_FSYS_OPEN_MODE_MAX] = {
-  /* PDF_FSYS_OPEN_MODE_INVALID  */ (pdf_char_t *)"invalid",
+  /* PDF_FSYS_OPEN_MODE_INVALID  */ (pdf_char_t *)"",
   /* PDF_FSYS_OPEN_MODE_READ     */ (pdf_char_t *)"r",
   /* PDF_FSYS_OPEN_MODE_WRITE    */ (pdf_char_t *)"w",
   /* PDF_FSYS_OPEN_MODE_RW      */ (pdf_char_t *)"r+",
@@ -1237,22 +1280,109 @@ static const pdf_char_t *__pdf_fsys_open_mode_strings[PDF_FSYS_OPEN_MODE_MAX] = 
    * open files only while running in Windows.
    */
 static const pdf_char_t *__pdf_fsys_open_mode_strings[PDF_FSYS_OPEN_MODE_MAX] = {
-  /* PDF_FSYS_OPEN_MODE_INVALID  */ (pdf_char_t *)"invalid",
-  /* PDF_FSYS_OPEN_MODE_READ     */ (pdf_char_t *)"rb",
-  /* PDF_FSYS_OPEN_MODE_WRITE    */ (pdf_char_t *)"wb",
-  /* PDF_FSYS_OPEN_MODE_RW       */ (pdf_char_t *)"rb+",
+  /* PDF_FSYS_OPEN_MODE_INVALID  */ (pdf_char_t *)"\x00\x00",
+  /* PDF_FSYS_OPEN_MODE_READ     */ (pdf_char_t *)"\x72\x00\x62\x00\x00\x00",
+  /* PDF_FSYS_OPEN_MODE_WRITE    */ (pdf_char_t *)"\x77\x00\x62\x00\x00\x00",
+  /* PDF_FSYS_OPEN_MODE_RW       */ (pdf_char_t *)"\x72\x00\x62\x00\x2B\x00\x00\x00",
 };
 #endif
 
 
+
+/* pdf_char_t * */
+/* pdf_text_test_get_hex (const pdf_char_t *data, */
+/*                        const pdf_size_t size, */
+/*                        const pdf_char_t delimiter) */
+/* { */
+/*   int i; */
+/*   int j; */
+/*   unsigned int new_str_length;  */
+/*   pdf_char_t *new_str; */
+/*   char new_hex_char [3]; */
+
+/*   /\* Get new string length. If input string has N bytes, we need: */
+/*    * - 1 byte for last NUL char */
+/*    * - 2N bytes for hexadecimal char representation of each byte... */
+/*    * - N-1 bytes for the separator ':' */
+/*    * So... a total of (1+2N+N-1) = 3N bytes are needed... *\/ */
+/*   new_str_length =  3 * size; */
+  
+/*   /\* Allocate memory for new array and initialize contents to NUL *\/ */
+/*   new_str = (pdf_char_t *)pdf_alloc(new_str_length); */
+/*   memset(new_str, 0, new_str_length); */
+  
+/*   /\* Print hexadecimal representation of each byte... *\/ */
+/*   for(i=0, j=0; i<size; i++, j+=3) */
+/*     { */
+/*       /\* Clear helper array... *\/ */
+/*       memset(&new_hex_char[0], 0, 3); */
+/*       /\* Print character in helper array... *\/ */
+/*       sprintf( new_hex_char, "%02X", (unsigned int)data[i]); */
+/*       /\* Copy to output string... *\/ */
+/*       memcpy(&new_str[j],&new_hex_char[0],2); */
+/*       /\* And if needed, add separator *\/ */
+/*       if(i != (size-1) ) */
+/*         { */
+/*           new_str[j+2] = delimiter; */
+/*         } */
+/*     } */
+  
+/*   /\* Set output string *\/ */
+/*   return new_str; */
+/* } */
+
 static const pdf_char_t *
 __pdf_fsys_disk_get_mode_string(const enum pdf_fsys_file_mode_e mode)
 {
+/* #ifdef PDF_HOST_WIN32 */
+/*   /\* For W32, we will always use widechar functions, so Windows' wchar_t */
+/*    * implementation should be used (UTF-16LE) *\/ */
+
+/*   if((mode >= PDF_FSYS_OPEN_MODE_FIRST) &&                        \ */
+/*      (mode <= PDF_FSYS_OPEN_MODE_LAST)) */
+/*     { */
+/*       /\* NOTE!!!! This step of converting to UTF-16 WILL BE SKIPPED AS SOON AS I */
+/*        *  HAVE THE UTF-16LE representation of the corresponding modes *\/ */
+
+/*       extern const pdf_char_t *__pdf_fsys_open_mode_strings[PDF_FSYS_OPEN_MODE_MAX]; */
+
+/*       pdf_text_t text = NULL; */
+/*       int i; */
+      
+/*       for(i=PDF_FSYS_OPEN_MODE_INVALID; i<=PDF_FSYS_OPEN_MODE_RW; i++) */
+/*         { */
+/*       pdf_char_t *data = (pdf_char_t *)__pdf_fsys_open_mode_strings[i]; */
+/*       pdf_u32_t size = strlen((char *)data); */
+/*       if(pdf_text_new_from_unicode(data, */
+/*                                    size, */
+/*                                    PDF_TEXT_UTF8, */
+/*                                    &text) == PDF_OK) */
+/*         { */
+/*           data = NULL; */
+/*           if(pdf_text_get_unicode(&data, */
+/*                                   &size, */
+/*                                   text, */
+/*                                   PDF_TEXT_UTF16_LE, */
+/*                                   PDF_TEXT_UNICODE_WITH_NUL_SUFFIX) == PDF_OK) */
+/*             { */
+/*               pdf_char_t *hex = NULL; */
+/*               hex = pdf_text_test_get_hex(data,size,':'); */
+/*               PDF_DEBUG_BASE("For open mode '%s', UTF-16LE is '%s'", */
+/*                              __pdf_fsys_open_mode_strings[i], */
+/*                              hex); */
+/*               pdf_dealloc(hex); */
+/*             } */
+/*         } */
+/*         } */
+/*     } */
+/*   return NULL; */
+/* #else */
   extern const pdf_char_t *__pdf_fsys_open_mode_strings[PDF_FSYS_OPEN_MODE_MAX];
   return (((mode >= PDF_FSYS_OPEN_MODE_FIRST) &&                        \
            (mode <= PDF_FSYS_OPEN_MODE_LAST)) ?                         \
           __pdf_fsys_open_mode_strings[mode] :                          \
           NULL);
+/* #endif */
 }
 
 
