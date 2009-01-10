@@ -22,9 +22,13 @@ gnupdf_TEXINFOS = fdl.texi
 
 AM_MAKEINFOHTMLFLAGS = --css-include=manuals.css
 
+
 if TEXI2HTML
 
 wiki: gnupdf.wiki gnupdf-utils.wiki gnupdf-tsd.wiki gnupdf-hg.wiki
+
+generate-tsd:
+	perl generate-tsd.pl > generated-tsd.texi
 
 gnupdf.wiki: gnupdf.texi
 	texi2html --no-menu --init-file=gnupdf-manual-wiki.init gnupdf.texi
@@ -32,11 +36,13 @@ gnupdf.wiki: gnupdf.texi
 gnupdf-utils.wiki: gnupdf-utils.texi
 	texi2html --no-menu --init-file=gnupdf-manual-wiki.init gnupdf-utils.texi
 
-gnupdf-tsd.wiki: gnupdf-tsd.texi
+gnupdf-tsd.wiki: generate-tsd gnupdf-tsd.texi
 	texi2html --no-menu --init-file=gnupdf-manual-wiki.init gnupdf-tsd.texi
 
 gnupdf-hg.wiki: gnupdf-hg.texi
 	texi2html --no-menu --init-file=gnupdf-manual-wiki.init gnupdf-hg.texi
+
+
 
 clean-local:
 	-rm -f gnupdf.info gnupdf-utils.info gnupdf-hg.info gnupdf-tsd.info
