@@ -1,3 +1,19 @@
+2009-01-09  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* doc/generate-tsd.pl.in: new script to generate the TSD manual.
+
+	* configure.ac: added doc/generate-tsd.pl.in.
+
+	* doc/Makefile.am: added rule to generate the TSD manual.
+
+	* doc/gnupdf-tsd.texi: modified to include the generated TSD manual.
+
+	* torture/testdata/TD00001.desc: moved from the original TSD manual.
+
+	* torture/testdata/TD00002.desc: same.
+
+	* torture/testdata/TD00003.desc: same.
+
 2009-01-06  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/Makefile.am: Dont generate html manuals using texi2html.
