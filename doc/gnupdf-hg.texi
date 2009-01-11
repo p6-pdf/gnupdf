@@ -49,6 +49,7 @@ GNU PDF Library Hackers Guide
 @menu
 * Information for Newcomers::
 * The build system::
+* Development procedures::
 * Tasks management::
 * Coding Conventions::
 * Sending Patches::
@@ -126,7 +127,8 @@ use when writing source code.
 
 @item Taking a task to work on
 
-Please read the documentation on tasks management in FIXME:xref.
+Please read the documentation on tasks management in 
+@ref{Tasks management}.
 
 If you want to work in a NEXT task, please be sure to state your
 interest in the gnu-devel mailing list before. The developers in the
@@ -183,6 +185,43 @@ time, and it is not desirable: the dependencies should be checked in
 Any third-party m4 file should be copied in @file{libgnupdf/m4/} and
 put under version control. In that way we avoid the dependency in
 @emph{bootstrap} time.
+
+@node Development procedures
+@chapter Development procedures
+
+The GNU PDF Library is composed by several layers. Each layer is in
+turn composed by several modules. The combination of the modules
+provide the functionality to layers. @xref{Top,,,gnupdf-arch,}.
+
+The development of the library involves the design of the overall
+architecture (determination of the layers that composes the library),
+the development of each layer and the design and implementation of
+system tests.
+
+@float Figure,fig:lib-development-procedure
+@image{figures/lib-development-procedure}
+@caption{Library Development Procedure}
+@end float
+
+The development of each library layer involves the design of the
+overall architecture of the layer (determination of the modules that
+composes the layer), the development of each module and the design and
+implementation of subsystem tests.
+
+@float Figure,fig:layer-development-procedure
+@image{figures/layer-development-procedure}
+@caption{Layer Development Procedure}
+@end float
+
+The development of each module involves the design of the API offered
+by the module and the architectural details, the definition of
+development tasks needed to complete the implementation of the module
+and the design and implementation of unit tests.
+
+@float Figure,fig:module-development-procedure
+@image{figures/module-development-procedure}
+@caption{Module Development Procedure}
+@end float
 
 @node Tasks management
 @chapter Tasks management

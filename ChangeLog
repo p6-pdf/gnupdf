@@ -3,6 +3,8 @@
 	* doc/gnupdf-hg.texi (Information for Newcomers): Several fixes
 	and footnotes added.
 	(Tasks management): New chapter.
+	(Information for Newcomers): Cross-reference inserted.
+	(Development procedures): New chapter.
 
 2009-01-09  Gerardo E. Gidoni  <gerel@gnu.org>
 
