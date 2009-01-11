@@ -49,6 +49,7 @@ GNU PDF Library Hackers Guide
 @menu
 * Information for Newcomers::
 * The build system::
+* Tasks management::
 * Coding Conventions::
 * Sending Patches::
 * Writing Tests::
@@ -77,12 +78,13 @@ $ bzr branch http://bzr.savannah.gnu.org/r/pdf/libgnupdf/branches/trunk
 
 We are using the GNU Bazaar @footnote{http://bazaar-vcs.org} version
 control system. Before to be able to contribute code to this project
-you should get familiar to the usage of GNU Bazaar.
+you should get familiar to the usage of Bazaar.
 
 The GNU Bazaar User Guide
 @footnote{http://doc.bazaar-vcs.org/bzr.dev/en/user-guide/index.html}
-is very good. In the GNU Bazaar site you will also find useful tips
-for people coming from other VCSs such as CVS or subversion.
+is very good. In the Bazaar site (http://www.bazaar-vcs.org)
+you will also find useful tips for people coming from other VCSs such
+as CVS or subversion.
 
 @item Subscribing to the development mailing list
 
@@ -119,12 +121,12 @@ code for the GNU PDF library. You can read it online in
 
 @item Getting familiar with our coding conventions
 
-Read our Hackers Guide document for several conventions we use when
-writing source code.
+Read our Hackers Guide (this very document) for several conventions we
+use when writing source code.
 
 @item Taking a task to work on
 
-Please read the documentation on tasks management.
+Please read the documentation on tasks management in FIXME:xref.
 
 If you want to work in a NEXT task, please be sure to state your
 interest in the gnu-devel mailing list before. The developers in the
@@ -136,7 +138,8 @@ it.
 
 It is quite important to write down the design of the code you write
 for the project. So if you are going to write code please ask the
-maintainer for an account in gnupdf.org.
+maintainer @footnote{@email{pdf-maintainer@@gnu.org}} for an account in
+gnupdf.org.
 
 @item Signing papers
 
@@ -144,16 +147,13 @@ The GNU PDF codebase is copyrighted by the Free Software
 Foundation. It is a way to strength the GPL. That means that we need
 you to sign papers before to be able to integrate your code in the
 distribution. There are several ways to get this done. Please ask the
-GNU PDF maintainer for the details.
+maintainer for the details.
 
 @item Sending patches for inclusion
 
 If you have written a patch you want to be included in GNU PDF, please
 send it to the pdf-devel mailing list. Your patch will be then
 discussed and maybe accepted.
-
-Please do not insert your patch in the savannah patch manager: the
-maintainer will do it.
 
 @end table
 
@@ -183,6 +183,167 @@ time, and it is not desirable: the dependencies should be checked in
 Any third-party m4 file should be copied in @file{libgnupdf/m4/} and
 put under version control. In that way we avoid the dependency in
 @emph{bootstrap} time.
+
+@node Tasks management
+@chapter Tasks management
+
+This chapter contains information about the tasks management we use in
+the development of the GNU PDF Library.
+
+@menu
+* The tasks pool::
+* Task originators::
+* Task types::
+* Tasks workflow::
+* The flyspray task manager::
+@end menu
+
+@node The tasks pool
+@section The tasks pool
+
+The real tasks being worked out in the project are contained in what
+we call the tasks pool.
+
+The tasks pool contain a set of tasks that should be performed out by
+some agent. The pool do not contain all the tasks for the project:
+there is an approximation in the project plan. Instead there is a
+constant flow of tasks being introduced in the pool by originators and
+being consumed out by the developers. That means that when a task is
+performed by a developer it is pulled out of the pool and archived.
+
+An archived task can be reactivated and inserted again in the tasks
+pool.
+
+@float Figure,fig:tasks-pool
+@image{figures/tasks-pool}
+@caption{The tasks pool}
+@end float
+
+A task is attributed with a priority while it is into the tasks
+pool. The priority is a number between 1 (less priority) to 9 (higher
+priority). Some priority levels have names:
+
+@itemize @bullet
+@item 1 - Later
+@item 2
+@item 3 - Low
+@item 4
+@item 5 - Normal
+@item 6
+@item 7 - High
+@item 8
+@item 9 - Immediate
+@end itemize
+
+@quotation Note
+The maintainer may change the priority of a task to avoid it
+to starve.
+@end quotation
+
+@quotation Note
+A reactivated task gets a new priority number when it is
+reinserted into the tasks pool.
+@end quotation
+
+@node Task originators
+@section Task originators
+
+There are several possible originators of tasks:
+
+@table @strong
+@item The maintainer
+The maintainer is the responsible of maintaining the tasks pool,
+introducing new tasks when needed and setting the priorities. The
+source of the tasks is either the project plan, bug reports or
+reactivated tasks.
+@item Cron jobs running in gnupdf.org
+There are several cron jobs running in gnupdf.org that perform checks
+on a nightly build of the sources and executes the unit tests. These
+jobs can automatically generate new tasks to fix some problem (a high
+cyclomatic complexity in a module or a fail in a test case).
+@end table
+
+@node Task types
+@section Task types
+
+We distinguish between some types of tasks. Each task type has an
+initial priority defined:
+
+@multitable @columnfractions .25 .25 .25 .25
+@headitem task type @tab originator @tab source @tab initial priority
+@item @strong{planned task}
+@tab maintainer
+@tab project plan
+@tab 5 (Normal)
+@item @strong{sporadic task}
+@tab maintainer
+@tab bug report
+@tab 4
+@item @strong{automatic task}
+@tab gnupdf.org
+@tab test fail or bad software metric
+@tab 6
+@end multitable
+
+@node Tasks workflow
+@section Tasks workflow
+
+The following diagram depicts the possible states for a task and the
+allowed transitions between states:
+
+@float Figure,fig:tasks-workflow
+@image{figures/tasks-workflow}
+@caption{Tasks workflow}
+@end float
+
+@table @strong
+@item TODO
+The task is into the tasks pool but it not ready to be performed.
+@item NEXT
+The task is into the tasks pool and it is ready to be performed by a
+developer.
+@item STARTED
+The task has been started by a developer but it is not finished.
+@item DONE
+The task is archived and succesfully performed. 
+@item DISCARDED
+The task is archived but it has been discarded.
+@end table
+
+@node The flyspray task manager
+@section The flyspray task manager
+
+We use a flyspray task tracker installed in
+@url{http://gnupdf.org/flyspray} in order to implement the tasks pool.
+
+Each flyspray task has the following attributes:
+
+@table @strong
+@item Type
+The type of the task:
+@itemize @minus
+@item planned
+@item sporadic
+@item automatic
+@end itemize
+@item Category
+he context of the task. It may be the name of a library layer (such as
+base layer), the name of a library module or a more general context
+(such as build system).
+@item Priority
+The priority of the task. 
+@item Status
+The status of the task:
+@itemize @minus
+@item TODO
+@item NEXT
+@item STARTED
+@item DONE
+@item DISCARDED.
+@end itemize
+@item Summary
+A summary of the task.
+@end table
 
 @node Coding Conventions
 @chapter Coding Conventions
