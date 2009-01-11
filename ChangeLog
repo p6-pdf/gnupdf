@@ -1,5 +1,56 @@
 2009-01-11  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf.texi (Memory Buffers): New section.
+	(Memory Buffers): Documentation for the pdf_buffer related data
+	types and functions.
+
+	* src/base/pdf-stm-f-jbig2.c: Missing header added.
+
+	* src/base/pdf-stm.c: Use 'pdf_stm_buffer' instead of
+	'pdf_stm_buffer'.
+
+	* src/base/pdf-stm.h: Likewise.
+
+	* src/base/pdf-stm-f-v2.h: Likewise.
+
+	* src/base/pdf-stm-f-v2.c: Likewise.
+
+	* src/base/pdf-stm-f-rl.h: Likewise.
+
+	* src/base/pdf-stm-f-rl.c: Likewise.
+
+	* src/base/pdf-stm-f-null.h: Likewise.
+
+	* src/base/pdf-stm-f-null.c: Likewise.
+
+	* src/base/pdf-stm-f-md5.h: Likewise.
+
+	* src/base/pdf-stm-f-md5.c: Likewise.
+
+	* src/base/pdf-stm-f-jbig2.h: Likewise.
+
+	* src/base/pdf-stm-f-jbig2.c: Likewise.
+
+	* src/base/pdf-stm-filter.h: Likewise.
+
+	* src/base/pdf-stm-filter.c: Likewise.
+
+	* src/base/pdf-stm-f-flate.h: Likewise.
+
+	* src/base/pdf-stm-f-flate.c: Likewise.
+
+	* src/base/pdf-stm-f-ahex.h: Likewise.
+
+	* src/base/pdf-stm-f-ahex.c: Likewise.
+
+	* src/base/pdf-stm-f-aesv2.h: Likewise.
+
+	* src/base/pdf-stm-f-aesv2.c: Likewise.
+
+	* src/Makefile.am: References to pdf-stm-buffer.[ch] deleted.
+
+	* src/base/pdf-types.h: New pdf_buffer_t type.
+
 	* doc/gnupdf-hg.texi (Information for Newcomers): Several fixes
 	and footnotes added.
 	(Tasks management): New chapter.

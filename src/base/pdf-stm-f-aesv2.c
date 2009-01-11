@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/28 00:17:02 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/01/11 22:02:19 jemarch"
  *
  *       File:         pdf-stm-f-aesv2.c
  *       Date:         Sun Dec 14 20:13:53 2008
@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008, 2009 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,8 +37,8 @@
 struct pdf_stm_f_aesv2_s
 {
   pdf_crypt_cipher_t cipher;
-  pdf_stm_buffer_t in_cache;
-  pdf_stm_buffer_t out_cache;
+  pdf_buffer_t in_cache;
+  pdf_buffer_t out_cache;
 };
 typedef struct pdf_stm_f_aesv2_s * pdf_stm_f_aesv2_t;
 
@@ -92,8 +92,8 @@ pdf_stm_f_aesv2_init (pdf_hash_t params, void **state)
                   filter_state->cipher = cipher;
                   
                   /* Initialize cache buffers */
-                  filter_state->in_cache  = pdf_stm_buffer_new (AESV2_CACHE_SIZE);
-                  filter_state->out_cache = pdf_stm_buffer_new (AESV2_CACHE_SIZE);
+                  filter_state->in_cache  = pdf_buffer_new (AESV2_CACHE_SIZE);
+                  filter_state->out_cache = pdf_buffer_new (AESV2_CACHE_SIZE);
                   
                   if (filter_state->in_cache == NULL || filter_state->out_cache == NULL)
                     {
@@ -126,13 +126,13 @@ pdf_stm_f_aesv2_init (pdf_hash_t params, void **state)
 
 static inline pdf_status_t
 pdf_stm_f_aesv2_apply (pdf_stm_f_aesv2_mode_t mode,
-                       pdf_hash_t params, void *state, pdf_stm_buffer_t in,
-                       pdf_stm_buffer_t out, pdf_bool_t finish_p)
+                       pdf_hash_t params, void *state, pdf_buffer_t in,
+                       pdf_buffer_t out, pdf_bool_t finish_p)
 {
   pdf_stm_f_aesv2_t filter_state = state;
   pdf_crypt_cipher_t cipher   = filter_state->cipher;
-  pdf_stm_buffer_t in_cache   = filter_state->in_cache;
-  pdf_stm_buffer_t out_cache  = filter_state->out_cache;
+  pdf_buffer_t in_cache   = filter_state->in_cache;
+  pdf_buffer_t out_cache  = filter_state->out_cache;
   
   while(1)
     {
@@ -157,7 +157,7 @@ pdf_stm_f_aesv2_apply (pdf_stm_f_aesv2_mode_t mode,
 
 
       /* If we cannot fill all IN_CACHE...  */
-      if (!pdf_stm_buffer_full_p (in_cache))
+      if (!pdf_buffer_full_p (in_cache))
         {
           if (finish_p && mode == PDF_STM_F_AESV2_MODE_DECODE
               && in_cache->wp > 0)
@@ -165,7 +165,7 @@ pdf_stm_f_aesv2_apply (pdf_stm_f_aesv2_mode_t mode,
           
           /* ...pad the cache if we have reached EOD */
           if (finish_p
-              && !pdf_stm_buffer_full_p (in_cache)
+              && !pdf_buffer_full_p (in_cache)
               && mode == PDF_STM_F_AESV2_MODE_ENCODE)
             {
               pdf_size_t padding;
@@ -179,7 +179,7 @@ pdf_stm_f_aesv2_apply (pdf_stm_f_aesv2_mode_t mode,
             }
           else
             {
-              if (pdf_stm_buffer_eob_p (out_cache))
+              if (pdf_buffer_eob_p (out_cache))
                 return PDF_ENINPUT; /* ...ask more input */
             }
         }
@@ -187,7 +187,7 @@ pdf_stm_f_aesv2_apply (pdf_stm_f_aesv2_mode_t mode,
 
       /* If OUT_CACHE is empty and IN_CACHE is full, then it is ready
          to be processed. */
-      if (pdf_stm_buffer_full_p (in_cache) && pdf_stm_buffer_eob_p (out_cache))
+      if (pdf_buffer_full_p (in_cache) && pdf_buffer_eob_p (out_cache))
         {
           switch (mode)
             {
@@ -214,7 +214,7 @@ pdf_stm_f_aesv2_apply (pdf_stm_f_aesv2_mode_t mode,
             }
 
           /* Both cache are full now */
-          pdf_stm_buffer_rewind (in_cache);
+          pdf_buffer_rewind (in_cache);
           out_cache->wp = out_cache->size;
         }
 
@@ -223,7 +223,7 @@ pdf_stm_f_aesv2_apply (pdf_stm_f_aesv2_mode_t mode,
          last. If both IN and IN_CACHE are empty, then OUT_CACHE could
          hold it. So, we ask more input to we make sure.*/
       if (mode == PDF_STM_F_AESV2_MODE_DECODE
-          && pdf_stm_buffer_eob_p (in) && pdf_stm_buffer_eob_p (in_cache))
+          && pdf_buffer_eob_p (in) && pdf_buffer_eob_p (in_cache))
         {
           /* When we know it is the last, remove the padding. */
           if (finish_p)
@@ -258,13 +258,13 @@ pdf_stm_f_aesv2_apply (pdf_stm_f_aesv2_mode_t mode,
         {
           return PDF_EEOF;
         }
-      else if (pdf_stm_buffer_full_p (out))
+      else if (pdf_buffer_full_p (out))
         {
           return PDF_ENOUTPUT;
         }
       else
         {
-          pdf_stm_buffer_rewind (out_cache);
+          pdf_buffer_rewind (out_cache);
         }
     }
 }
@@ -276,8 +276,8 @@ pdf_stm_f_aesv2_dealloc_state (void *state)
 {
   pdf_stm_f_aesv2_t filter_state = state;
   pdf_crypt_cipher_destroy (filter_state->cipher);
-  pdf_stm_buffer_destroy (filter_state->in_cache);
-  pdf_stm_buffer_destroy (filter_state->out_cache);
+  pdf_buffer_destroy (filter_state->in_cache);
+  pdf_buffer_destroy (filter_state->out_cache);
   pdf_dealloc (state);
   return PDF_OK;
 }
@@ -294,8 +294,8 @@ pdf_stm_f_aesv2enc_init (pdf_hash_t params, void **state)
 }
 
 pdf_status_t
-pdf_stm_f_aesv2enc_apply (pdf_hash_t params, void *state, pdf_stm_buffer_t in,
-                          pdf_stm_buffer_t out, pdf_bool_t finish_p)
+pdf_stm_f_aesv2enc_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
+                          pdf_buffer_t out, pdf_bool_t finish_p)
 {
   return pdf_stm_f_aesv2_apply (PDF_STM_F_AESV2_MODE_ENCODE,
                                 params, state, in, out, finish_p);
@@ -319,8 +319,8 @@ pdf_stm_f_aesv2dec_init (pdf_hash_t params, void **state)
 
 
 pdf_status_t
-pdf_stm_f_aesv2dec_apply (pdf_hash_t params, void *state, pdf_stm_buffer_t in,
-                          pdf_stm_buffer_t out, pdf_bool_t finish_p)
+pdf_stm_f_aesv2dec_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
+                          pdf_buffer_t out, pdf_bool_t finish_p)
 {
   return pdf_stm_f_aesv2_apply (PDF_STM_F_AESV2_MODE_DECODE,
                                 params, state, in, out, finish_p);

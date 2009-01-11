@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/11/29 16:02:47 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/01/11 22:02:30 jemarch"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008, 2009 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

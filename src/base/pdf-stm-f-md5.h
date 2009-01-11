@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-12-15 17:53:17 davazp"
+/* -*- mode: C -*- Time-stamp: "09/01/11 22:04:47 jemarch"
  *
  *       File:         pdf-stm-f-md5.h
  *       Date:         Fri Dec  5 16:38:39 2008
@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008, 2009 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,6 @@
 #include <pdf-types.h>
 #include <pdf-hash.h>
 #include <pdf-alloc.h>
-#include <pdf-stm-buffer.h>
 #include <pdf-crypt.h>
 #include <stdio.h>
 
@@ -50,8 +49,8 @@ pdf_status_t pdf_stm_f_md5enc_init (pdf_hash_t params,
 
 pdf_status_t pdf_stm_f_md5enc_apply (pdf_hash_t params,
                                        void *state,
-                                       pdf_stm_buffer_t in,
-                                       pdf_stm_buffer_t out,
+                                       pdf_buffer_t in,
+                                       pdf_buffer_t out,
                                        pdf_bool_t finish_p);
 
 pdf_status_t pdf_stm_f_md5enc_dealloc_state (void *state);

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/27 21:30:09 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/01/11 22:03:22 jemarch"
  *
  *       File:         pdf-stm-filter.h
  *       Date:         Thu Jun 12 22:05:06 2008
@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008, 2009 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,6 @@
 #include <config.h>
 #include <pdf-types.h>
 #include <pdf-hash.h>
-#include <pdf-stm-buffer.h>
 #include <pdf-stm-be.h>
 
 #include <pdf-stm-f-null.h>
@@ -89,8 +88,8 @@ struct pdf_stm_filter_impl_s
 
   pdf_status_t (*apply_fn) (pdf_hash_t params,
                             void *state,
-                            pdf_stm_buffer_t in,
-                            pdf_stm_buffer_t out,
+                            pdf_buffer_t in,
+                            pdf_buffer_t out,
                             pdf_bool_t finish_p);
   pdf_status_t (*dealloc_state_fn) (void *state);
 };
@@ -105,8 +104,8 @@ struct pdf_stm_filter_s
   pdf_stm_be_t backend;          /* Backend, or NULL */
 
   /* Input and output buffers */
-  pdf_stm_buffer_t in;
-  pdf_stm_buffer_t out;
+  pdf_buffer_t in;
+  pdf_buffer_t out;
 
   /* Filter-specific information */
   pdf_hash_t params;
@@ -138,9 +137,9 @@ inline pdf_status_t pdf_stm_filter_set_next (pdf_stm_filter_t filter,
 inline pdf_status_t pdf_stm_filter_set_be (pdf_stm_filter_t filter,
                                            pdf_stm_be_t be);
 inline pdf_status_t pdf_stm_filter_set_out (pdf_stm_filter_t filter,
-                                            pdf_stm_buffer_t buffer);
+                                            pdf_buffer_t buffer);
 pdf_stm_filter_t pdf_stm_filter_get_tail (pdf_stm_filter_t filter);
-inline pdf_stm_buffer_t pdf_stm_filter_get_in (pdf_stm_filter_t filter);
+inline pdf_buffer_t pdf_stm_filter_get_in (pdf_stm_filter_t filter);
 
 pdf_status_t pdf_stm_filter_apply (pdf_stm_filter_t filter, pdf_bool_t finish_p);
 pdf_status_t pdf_stm_filter_reset (pdf_stm_filter_t filter);

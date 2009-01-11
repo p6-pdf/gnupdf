@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/08/29 00:32:31 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/01/11 22:04:33 jemarch"
  *
  *       File:         pdf-stm-f-lzw.c
  *       Date:         Wed Aug 15 14:41:18 2007
@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2007, 2008, 2009 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

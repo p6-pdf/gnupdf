@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-12-25 00:13:01 davazp"
+/* -*- mode: C -*- Time-stamp: "09/01/11 22:04:42 jemarch"
  *
  *       File:         pdf-stm-f-md5.c
  *       Date:         Fri Dec  5 16:40:50 2008
@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008, 2009 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 struct pdf_stm_f_md5_s
 {
   pdf_crypt_md_t md;
-  pdf_stm_buffer_t cache;
+  pdf_buffer_t cache;
 };
 typedef struct pdf_stm_f_md5_s * pdf_stm_f_md5_t;
 
@@ -64,7 +64,7 @@ pdf_stm_f_md5enc_init (pdf_hash_t params, void **state)
       if (pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md) == PDF_OK)
         {
           filter_state->md = md;
-          filter_state->cache = pdf_stm_buffer_new (MD5_OUTPUT_SIZE);
+          filter_state->cache = pdf_buffer_new (MD5_OUTPUT_SIZE);
           
           if (filter_state->cache == NULL)
             {
@@ -89,11 +89,11 @@ pdf_stm_f_md5enc_init (pdf_hash_t params, void **state)
 
 
 pdf_status_t
-pdf_stm_f_md5enc_apply (pdf_hash_t params, void *state, pdf_stm_buffer_t in,
-                        pdf_stm_buffer_t out, pdf_bool_t finish_p)
+pdf_stm_f_md5enc_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
+                        pdf_buffer_t out, pdf_bool_t finish_p)
 {
   pdf_stm_f_md5_t filter_state = state;
-  pdf_stm_buffer_t cache = filter_state->cache;
+  pdf_buffer_t cache = filter_state->cache;
   pdf_size_t in_size;
   pdf_status_t ret;
   
@@ -109,7 +109,7 @@ pdf_stm_f_md5enc_apply (pdf_hash_t params, void *state, pdf_stm_buffer_t in,
       pdf_size_t cache_size;
       pdf_size_t out_size;
 
-      if (pdf_stm_buffer_eob_p (cache))
+      if (pdf_buffer_eob_p (cache))
         {
           /* If we have reached the end, read the hash value in cache */
           pdf_crypt_md_read (filter_state->md, cache->data, cache->size);
@@ -141,7 +141,7 @@ pdf_stm_f_md5enc_dealloc_state (void *state)
 {
   pdf_stm_f_md5_t filter_state = state;
   pdf_crypt_md_destroy (filter_state->md);
-  pdf_stm_buffer_destroy (filter_state->cache);
+  pdf_buffer_destroy (filter_state->cache);
   pdf_dealloc (state);
   return PDF_OK;
 }

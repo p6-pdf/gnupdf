@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/26 20:49:42 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/01/11 22:04:58 jemarch"
  *
  *       File:         pdf-stm-f-null.h
  *       Date:         Mon Jul  9 21:59:50 2007
@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2007, 2008, 2009 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,6 @@
 #include <config.h>
 #include <pdf-types.h>
 #include <pdf-hash.h>
-#include <pdf-stm-buffer.h>
 
 /* Filter implementation API */
 
@@ -38,8 +37,8 @@ pdf_status_t pdf_stm_f_null_init (pdf_hash_t params,
 
 pdf_status_t pdf_stm_f_null_apply (pdf_hash_t params,
                                    void *state,
-                                   pdf_stm_buffer_t in,
-                                   pdf_stm_buffer_t out,
+                                   pdf_buffer_t in,
+                                   pdf_buffer_t out,
                                    pdf_bool_t finish_p);
 pdf_status_t pdf_stm_f_null_dealloc_state (void *state);
 

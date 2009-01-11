@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-10-04 15:41:30 gerel"
+/* -*- mode: C -*- Time-stamp: "09/01/11 22:05:07 jemarch"
  *
  *       File:         pdf-stm-f-rl.c
  *       Date:         Sun Jul 15 22:01:18 2007
@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2007, 2008, 2009 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,10 +30,10 @@
 #include <pdf-stm-f-rl.h>
 
 
-static int encode_rl_char (pdf_stm_f_rl_t st, pdf_stm_buffer_t out);
-static int decode_rl_char (pdf_stm_f_rl_t st, pdf_stm_buffer_t out);
-static int copy_next_bytes (pdf_stm_f_rl_t st, pdf_stm_buffer_t in,
-                            pdf_stm_buffer_t out);
+static int encode_rl_char (pdf_stm_f_rl_t st, pdf_buffer_t out);
+static int decode_rl_char (pdf_stm_f_rl_t st, pdf_buffer_t out);
+static int copy_next_bytes (pdf_stm_f_rl_t st, pdf_buffer_t in,
+                            pdf_buffer_t out);
 
 
 pdf_status_t
@@ -79,14 +79,14 @@ pdf_stm_f_rldec_init (pdf_hash_t params, void **state)
 
 
 pdf_status_t
-pdf_stm_f_rlenc_apply (pdf_hash_t params, void * state, pdf_stm_buffer_t in,
-                       pdf_stm_buffer_t out, pdf_bool_t finish_p)
+pdf_stm_f_rlenc_apply (pdf_hash_t params, void * state, pdf_buffer_t in,
+                       pdf_buffer_t out, pdf_bool_t finish_p)
 {
   pdf_stm_f_rl_t st;
 
   st = (pdf_stm_f_rl_t) state;
 
-  while (!pdf_stm_buffer_eob_p (in))
+  while (!pdf_buffer_eob_p (in))
     {
       st->curchar = in->data[in->rp];
 
@@ -135,7 +135,7 @@ pdf_stm_f_rlenc_apply (pdf_hash_t params, void * state, pdf_stm_buffer_t in,
           st->rl=-1;
           st->run_p = PDF_FALSE;
         }
-      if (pdf_stm_buffer_full_p (out))
+      if (pdf_buffer_full_p (out))
         {
           /* Should not be reached */
           return PDF_ENOUTPUT;
@@ -157,15 +157,15 @@ pdf_stm_f_rlenc_dealloc_state (void *state)
 }
 
 pdf_status_t
-pdf_stm_f_rldec_apply (pdf_hash_t params, void *state, pdf_stm_buffer_t in,
-                       pdf_stm_buffer_t out, pdf_bool_t finish_p)
+pdf_stm_f_rldec_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
+                       pdf_buffer_t out, pdf_bool_t finish_p)
 {
   pdf_stm_f_rl_t st;
   pdf_status_t copied;
 
   st = (pdf_stm_f_rl_t) state;
 
-  while (!pdf_stm_buffer_eob_p (in))
+  while (!pdf_buffer_eob_p (in))
     {
       st->curchar = in->data[in->rp];
 
@@ -221,11 +221,11 @@ pdf_stm_f_rldec_dealloc_state (void *state)
 /* Private functions */
 
 static int
-encode_rl_char (pdf_stm_f_rl_t st, pdf_stm_buffer_t out)
+encode_rl_char (pdf_stm_f_rl_t st, pdf_buffer_t out)
 {
   if (st->enc_p == PDF_STM_F_RL_NONE)
     {
-      if (pdf_stm_buffer_full_p (out))
+      if (pdf_buffer_full_p (out))
         {
           return -1;
         }
@@ -235,7 +235,7 @@ encode_rl_char (pdf_stm_f_rl_t st, pdf_stm_buffer_t out)
 
   if (st->enc_p == PDF_STM_F_RL_WRL)
     {
-      if (pdf_stm_buffer_full_p (out))
+      if (pdf_buffer_full_p (out))
         {
           return -1;
         }
@@ -248,7 +248,7 @@ encode_rl_char (pdf_stm_f_rl_t st, pdf_stm_buffer_t out)
 
 
 static int
-decode_rl_char (pdf_stm_f_rl_t st, pdf_stm_buffer_t out)
+decode_rl_char (pdf_stm_f_rl_t st, pdf_buffer_t out)
 {
   if (!st->dec_p)
     {
@@ -258,7 +258,7 @@ decode_rl_char (pdf_stm_f_rl_t st, pdf_stm_buffer_t out)
 
   while (st->dec_count > 0)
     {
-      if (pdf_stm_buffer_full_p (out))
+      if (pdf_buffer_full_p (out))
         {
           return -1;
         }
@@ -272,11 +272,11 @@ decode_rl_char (pdf_stm_f_rl_t st, pdf_stm_buffer_t out)
 
 
 static int
-copy_next_bytes (pdf_stm_f_rl_t st, pdf_stm_buffer_t in, pdf_stm_buffer_t out)
+copy_next_bytes (pdf_stm_f_rl_t st, pdf_buffer_t in, pdf_buffer_t out)
 {
   if (!st->dec_p)
     {
-      if (pdf_stm_buffer_full_p (out))
+      if (pdf_buffer_full_p (out))
         {
           return -1;
         }
@@ -289,11 +289,11 @@ copy_next_bytes (pdf_stm_f_rl_t st, pdf_stm_buffer_t in, pdf_stm_buffer_t out)
 
   while (st->dec_count > 0)
     {
-      if (pdf_stm_buffer_eob_p (in))
+      if (pdf_buffer_eob_p (in))
         {
           return 1;
         }
-      else if (pdf_stm_buffer_full_p (out))
+      else if (pdf_buffer_full_p (out))
         {
           return -1;
         }
