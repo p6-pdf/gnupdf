@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/27 21:34:07 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/01/11 21:48:04 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -124,7 +124,7 @@ pdf_stm_destroy (pdf_stm_t stm)
   pdf_stm_be_destroy (stm->backend);
 
   /* Destroy the cache */
-  pdf_stm_buffer_destroy (stm->cache);
+  pdf_buffer_destroy (stm->cache);
 
   /* Destroy the filter chain */
   filter = stm->filter;
@@ -166,9 +166,9 @@ pdf_stm_read (pdf_stm_t stm,
       pending_bytes = bytes - read_bytes;
 
       /* If the cache is empty, refill it with filtered data */
-      if (pdf_stm_buffer_eob_p (stm->cache))
+      if (pdf_buffer_eob_p (stm->cache))
         {
-	  pdf_stm_buffer_rewind (stm->cache);
+	  pdf_buffer_rewind (stm->cache);
           ret = pdf_stm_filter_apply (stm->filter, PDF_FALSE);
         }
 
@@ -207,7 +207,7 @@ pdf_stm_write (pdf_stm_t stm,
   pdf_size_t pending_bytes;
   pdf_size_t to_write_bytes;
   pdf_stm_filter_t tail_filter;
-  pdf_stm_buffer_t tail_buffer;
+  pdf_buffer_t tail_buffer;
   pdf_size_t tail_buffer_size;
 
   if (stm->mode != PDF_STM_WRITE)
@@ -224,8 +224,8 @@ pdf_stm_write (pdf_stm_t stm,
   while ((written_bytes < bytes) &&
          (ret == PDF_OK))
     {
-      if ((pdf_stm_buffer_full_p (tail_buffer)) &&
-          (!pdf_stm_buffer_eob_p (tail_buffer)))
+      if ((pdf_buffer_full_p (tail_buffer)) &&
+          (!pdf_buffer_eob_p (tail_buffer)))
         {
           /* Flush the cache */
           tail_buffer_size = tail_buffer->wp - tail_buffer->rp;
@@ -264,7 +264,7 @@ pdf_stm_flush (pdf_stm_t stm,
                pdf_bool_t finish_p)
 {
   pdf_stm_filter_t tail_filter;
-  pdf_stm_buffer_t tail_buffer;
+  pdf_buffer_t tail_buffer;
   pdf_status_t ret;
   pdf_size_t cache_size;
   pdf_size_t written_bytes;
@@ -297,7 +297,7 @@ pdf_stm_flush (pdf_stm_t stm,
         - (tail_buffer->wp - tail_buffer->rp);
       
       if ((ret == PDF_EEOF)
-          && (pdf_stm_buffer_eob_p (stm->cache)))
+          && (pdf_buffer_eob_p (stm->cache)))
         {
           break;
         }
@@ -309,12 +309,12 @@ pdf_stm_flush (pdf_stm_t stm,
                                         cache_size);
               
       /* Rewind the cache */
-      pdf_stm_buffer_rewind (stm->cache);
+      pdf_buffer_rewind (stm->cache);
     }
 
   /* If we got an EOFF from a filter then the tail buffer may not be
      empty */
-  pdf_stm_buffer_rewind (tail_buffer);
+  pdf_buffer_rewind (tail_buffer);
 
   return flushed_bytes;
 }
@@ -374,12 +374,12 @@ pdf_stm_seek (pdf_stm_t stm,
 {
   pdf_off_t new_pos;
   pdf_stm_filter_t tail_filter;
-  pdf_stm_buffer_t tail_buffer;
+  pdf_buffer_t tail_buffer;
 
   if (stm->mode == PDF_STM_READ)
     {
       /* Discard the cache contents */
-      pdf_stm_buffer_rewind (stm->cache);
+      pdf_buffer_rewind (stm->cache);
 
       /* Seek the backend */
       new_pos = pdf_stm_be_seek (stm->backend, pos);
@@ -390,7 +390,7 @@ pdf_stm_seek (pdf_stm_t stm,
 
       tail_filter = pdf_stm_filter_get_tail (stm->filter);
       tail_buffer = pdf_stm_filter_get_in (tail_filter);
-      if (!pdf_stm_buffer_eob_p (tail_buffer))
+      if (!pdf_buffer_eob_p (tail_buffer))
         {
           /* Flush the stream */
           pdf_stm_flush (stm, PDF_FALSE);
@@ -398,7 +398,7 @@ pdf_stm_seek (pdf_stm_t stm,
 
       /* Note that if there is an EOF condition in the backend we are
          going to loose data */
-      pdf_stm_buffer_rewind (tail_buffer);
+      pdf_buffer_rewind (tail_buffer);
 
       /* Seek the backend */
       new_pos = pdf_stm_be_seek (stm->backend, pos);
@@ -413,7 +413,7 @@ pdf_stm_tell (pdf_stm_t stm)
   pdf_off_t pos;
   pdf_size_t cache_size;
   pdf_stm_filter_t tail_filter;
-  pdf_stm_buffer_t tail_buffer;
+  pdf_buffer_t tail_buffer;
 
   if (stm->mode == PDF_STM_READ)
     {
@@ -474,7 +474,7 @@ pdf_stm_init (pdf_size_t cache_size,
   if (ret == PDF_OK)
     {
       /* Initialize the filter cache */
-      stm->cache = pdf_stm_buffer_new (cache_size);
+      stm->cache = pdf_buffer_new (cache_size);
       
       /* Configure the filter */
       stm->mode = mode;
@@ -515,12 +515,12 @@ pdf_stm_read_peek_char (pdf_stm_t stm,
 
   /* Is the cache empty? */
   ret = PDF_OK;
-  if (pdf_stm_buffer_eob_p (stm->cache))
+  if (pdf_buffer_eob_p (stm->cache))
     {
       ret = pdf_stm_filter_apply (stm->filter, PDF_FALSE);
     }
 
-  if (pdf_stm_buffer_eob_p (stm->cache))
+  if (pdf_buffer_eob_p (stm->cache))
     {
       ret_char = PDF_EOF;
     }

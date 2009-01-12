@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/27 21:32:03 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/01/11 22:03:18 jemarch"
  *
  *       File:         pdf-stm-filter.c
  *       Date:         Thu Jun 12 22:13:31 2008
@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008, 2009 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,7 +60,7 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
   new->mode = mode;
 
   /* Input buffer */
-  new->in = pdf_stm_buffer_new (buffer_size);
+  new->in = pdf_buffer_new (buffer_size);
 
   /* Output buffer */
   new->out = NULL;
@@ -191,7 +191,7 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
   if (init_ret != PDF_OK)
     {
       /* Error initializing the filter implementation */
-      pdf_stm_buffer_destroy (new->in);
+      pdf_buffer_destroy (new->in);
       pdf_dealloc (new);
       new = NULL;
     }
@@ -203,7 +203,7 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
 pdf_status_t
 pdf_stm_filter_destroy (pdf_stm_filter_t filter)
 {
-  pdf_stm_buffer_destroy (filter->in);
+  pdf_buffer_destroy (filter->in);
   filter->impl.dealloc_state_fn (filter->state);
   pdf_dealloc (filter);
 
@@ -231,13 +231,13 @@ pdf_stm_filter_set_be (pdf_stm_filter_t filter,
 
 inline pdf_status_t
 pdf_stm_filter_set_out (pdf_stm_filter_t filter,
-                        pdf_stm_buffer_t buffer)
+                        pdf_buffer_t buffer)
 {
   filter->out = buffer;
   return PDF_OK;
 }
 
-inline pdf_stm_buffer_t
+inline pdf_buffer_t
 pdf_stm_filter_get_in (pdf_stm_filter_t filter)
 {
   return filter->in;
@@ -259,7 +259,7 @@ pdf_stm_filter_apply (pdf_stm_filter_t filter,
     }
 
   ret = PDF_OK;
-  while (!pdf_stm_buffer_full_p (filter->out))
+  while (!pdf_buffer_full_p (filter->out))
     {
       /* Generate output */
       apply_ret = filter->impl.apply_fn (filter->params,
@@ -296,7 +296,7 @@ pdf_stm_filter_apply (pdf_stm_filter_t filter,
               break;
             }
           else if ((ret_in == PDF_EEOF) 
-                   && (pdf_stm_buffer_eob_p (filter->in)))
+                   && (pdf_buffer_eob_p (filter->in)))
             {
               if (((filter->mode == PDF_STM_FILTER_MODE_WRITE) 
                    && ((finish_p) && (!filter->really_finish_p))) ||
@@ -358,7 +358,7 @@ pdf_stm_filter_get_input (pdf_stm_filter_t filter,
   pdf_size_t read_bytes;
 
   /* The input buffer should be empty at this point */
-  pdf_stm_buffer_rewind (filter->in);
+  pdf_buffer_rewind (filter->in);
 
   ret = PDF_OK;
   if (filter->next != NULL)

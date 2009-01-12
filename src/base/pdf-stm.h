@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/11/29 15:06:59 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/01/11 22:05:26 jemarch"
  *
  *       File:         pdf-stm.h
  *       Date:         Fri Jul  6 18:37:57 2007
@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2007, 2008, 2009 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,6 @@
 #include <pdf-types.h>
 #include <pdf-hash.h>
 #include <pdf-fsys.h>
-#include <pdf-stm-buffer.h>
 #include <pdf-stm-filter.h>
 #include <pdf-stm-be.h>
 
@@ -135,7 +134,7 @@ struct pdf_stm_s
 
   pdf_stm_be_t backend;     /* Stream backend */
   pdf_stm_filter_t filter;  /* Filter chain */
-  pdf_stm_buffer_t cache;   /* Stream cache */
+  pdf_buffer_t cache;   /* Stream cache */
 };
 
 #endif /* pdf_stm.h */

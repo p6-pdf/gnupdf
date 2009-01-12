@@ -1,3 +1,79 @@
+2009-01-11  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Memory Buffers): New section.
+	(Memory Buffers): Documentation for the pdf_buffer related data
+	types and functions.
+
+	* src/base/pdf-stm-f-jbig2.c: Missing header added.
+
+	* src/base/pdf-stm.c: Use 'pdf_stm_buffer' instead of
+	'pdf_stm_buffer'.
+
+	* src/base/pdf-stm.h: Likewise.
+
+	* src/base/pdf-stm-f-v2.h: Likewise.
+
+	* src/base/pdf-stm-f-v2.c: Likewise.
+
+	* src/base/pdf-stm-f-rl.h: Likewise.
+
+	* src/base/pdf-stm-f-rl.c: Likewise.
+
+	* src/base/pdf-stm-f-null.h: Likewise.
+
+	* src/base/pdf-stm-f-null.c: Likewise.
+
+	* src/base/pdf-stm-f-md5.h: Likewise.
+
+	* src/base/pdf-stm-f-md5.c: Likewise.
+
+	* src/base/pdf-stm-f-jbig2.h: Likewise.
+
+	* src/base/pdf-stm-f-jbig2.c: Likewise.
+
+	* src/base/pdf-stm-filter.h: Likewise.
+
+	* src/base/pdf-stm-filter.c: Likewise.
+
+	* src/base/pdf-stm-f-flate.h: Likewise.
+
+	* src/base/pdf-stm-f-flate.c: Likewise.
+
+	* src/base/pdf-stm-f-ahex.h: Likewise.
+
+	* src/base/pdf-stm-f-ahex.c: Likewise.
+
+	* src/base/pdf-stm-f-aesv2.h: Likewise.
+
+	* src/base/pdf-stm-f-aesv2.c: Likewise.
+
+	* src/Makefile.am: References to pdf-stm-buffer.[ch] deleted.
+
+	* src/base/pdf-types.h: New pdf_buffer_t type.
+
+	* doc/gnupdf-hg.texi (Information for Newcomers): Several fixes
+	and footnotes added.
+	(Tasks management): New chapter.
+	(Information for Newcomers): Cross-reference inserted.
+	(Development procedures): New chapter.
+	(Unit testing): New section.
+
+2009-01-09  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* doc/generate-tsd.pl.in: new script to generate the TSD manual.
+
+	* configure.ac: added doc/generate-tsd.pl.in.
+
+	* doc/Makefile.am: added rule to generate the TSD manual.
+
+	* doc/gnupdf-tsd.texi: modified to include the generated TSD manual.
+
+	* torture/testdata/TD00001.desc: moved from the original TSD manual.
+
+	* torture/testdata/TD00002.desc: same.
+
+	* torture/testdata/TD00003.desc: same.
+
 2009-01-06  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/Makefile.am: Dont generate html manuals using texi2html.

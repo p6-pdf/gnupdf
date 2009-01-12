@@ -49,9 +49,11 @@ GNU PDF Library Hackers Guide
 @menu
 * Information for Newcomers::
 * The build system::
+* Development procedures::
+* Tasks management::
 * Coding Conventions::
 * Sending Patches::
-* Writing Tests::
+* Testing the library::
 @end menu
 
 @node Information for Newcomers
@@ -77,12 +79,13 @@ $ bzr branch http://bzr.savannah.gnu.org/r/pdf/libgnupdf/branches/trunk
 
 We are using the GNU Bazaar @footnote{http://bazaar-vcs.org} version
 control system. Before to be able to contribute code to this project
-you should get familiar to the usage of GNU Bazaar.
+you should get familiar to the usage of Bazaar.
 
 The GNU Bazaar User Guide
 @footnote{http://doc.bazaar-vcs.org/bzr.dev/en/user-guide/index.html}
-is very good. In the GNU Bazaar site you will also find useful tips
-for people coming from other VCSs such as CVS or subversion.
+is very good. In the Bazaar site (http://www.bazaar-vcs.org)
+you will also find useful tips for people coming from other VCSs such
+as CVS or subversion.
 
 @item Subscribing to the development mailing list
 
@@ -119,12 +122,13 @@ code for the GNU PDF library. You can read it online in
 
 @item Getting familiar with our coding conventions
 
-Read our Hackers Guide document for several conventions we use when
-writing source code.
+Read our Hackers Guide (this very document) for several conventions we
+use when writing source code.
 
 @item Taking a task to work on
 
-Please read the documentation on tasks management.
+Please read the documentation on tasks management in 
+@ref{Tasks management}.
 
 If you want to work in a NEXT task, please be sure to state your
 interest in the gnu-devel mailing list before. The developers in the
@@ -136,7 +140,8 @@ it.
 
 It is quite important to write down the design of the code you write
 for the project. So if you are going to write code please ask the
-maintainer for an account in gnupdf.org.
+maintainer @footnote{@email{pdf-maintainer@@gnu.org}} for an account in
+gnupdf.org.
 
 @item Signing papers
 
@@ -144,16 +149,13 @@ The GNU PDF codebase is copyrighted by the Free Software
 Foundation. It is a way to strength the GPL. That means that we need
 you to sign papers before to be able to integrate your code in the
 distribution. There are several ways to get this done. Please ask the
-GNU PDF maintainer for the details.
+maintainer for the details.
 
 @item Sending patches for inclusion
 
 If you have written a patch you want to be included in GNU PDF, please
 send it to the pdf-devel mailing list. Your patch will be then
 discussed and maybe accepted.
-
-Please do not insert your patch in the savannah patch manager: the
-maintainer will do it.
 
 @end table
 
@@ -183,6 +185,204 @@ time, and it is not desirable: the dependencies should be checked in
 Any third-party m4 file should be copied in @file{libgnupdf/m4/} and
 put under version control. In that way we avoid the dependency in
 @emph{bootstrap} time.
+
+@node Development procedures
+@chapter Development procedures
+
+The GNU PDF Library is composed by several layers. Each layer is in
+turn composed by several modules. The combination of the modules
+provide the functionality to layers. @xref{Top,,,gnupdf-arch,}.
+
+The development of the library involves the design of the overall
+architecture (determination of the layers that composes the library),
+the development of each layer and the design and implementation of
+system tests.
+
+@float Figure,fig:lib-development-procedure
+@image{figures/lib-development-procedure}
+@caption{Library Development Procedure}
+@end float
+
+The development of each library layer involves the design of the
+overall architecture of the layer (determination of the modules that
+composes the layer), the development of each module and the design and
+implementation of subsystem tests.
+
+@float Figure,fig:layer-development-procedure
+@image{figures/layer-development-procedure}
+@caption{Layer Development Procedure}
+@end float
+
+The development of each module involves the design of the API offered
+by the module and the architectural details, the definition of
+development tasks needed to complete the implementation of the module
+and the design and implementation of unit tests.
+
+@float Figure,fig:module-development-procedure
+@image{figures/module-development-procedure}
+@caption{Module Development Procedure}
+@end float
+
+@node Tasks management
+@chapter Tasks management
+
+This chapter contains information about the tasks management we use in
+the development of the GNU PDF Library.
+
+@menu
+* The tasks pool::
+* Task originators::
+* Task types::
+* Tasks workflow::
+* The flyspray task manager::
+@end menu
+
+@node The tasks pool
+@section The tasks pool
+
+The real tasks being worked out in the project are contained in what
+we call the tasks pool.
+
+The tasks pool contain a set of tasks that should be performed out by
+some agent. The pool do not contain all the tasks for the project:
+there is an approximation in the project plan. Instead there is a
+constant flow of tasks being introduced in the pool by originators and
+being consumed out by the developers. That means that when a task is
+performed by a developer it is pulled out of the pool and archived.
+
+An archived task can be reactivated and inserted again in the tasks
+pool.
+
+@float Figure,fig:tasks-pool
+@image{figures/tasks-pool}
+@caption{The tasks pool}
+@end float
+
+A task is attributed with a priority while it is into the tasks
+pool. The priority is a number between 1 (less priority) to 9 (higher
+priority). Some priority levels have names:
+
+@itemize @bullet
+@item 1 - Later
+@item 2
+@item 3 - Low
+@item 4
+@item 5 - Normal
+@item 6
+@item 7 - High
+@item 8
+@item 9 - Immediate
+@end itemize
+
+@quotation Note
+The maintainer may change the priority of a task to avoid it
+to starve.
+@end quotation
+
+@quotation Note
+A reactivated task gets a new priority number when it is
+reinserted into the tasks pool.
+@end quotation
+
+@node Task originators
+@section Task originators
+
+There are several possible originators of tasks:
+
+@table @strong
+@item The maintainer
+The maintainer is the responsible of maintaining the tasks pool,
+introducing new tasks when needed and setting the priorities. The
+source of the tasks is either the project plan, bug reports or
+reactivated tasks.
+@item Cron jobs running in gnupdf.org
+There are several cron jobs running in gnupdf.org that perform checks
+on a nightly build of the sources and executes the unit tests. These
+jobs can automatically generate new tasks to fix some problem (a high
+cyclomatic complexity in a module or a fail in a test case).
+@end table
+
+@node Task types
+@section Task types
+
+We distinguish between some types of tasks. Each task type has an
+initial priority defined:
+
+@multitable @columnfractions .25 .25 .25 .25
+@headitem task type @tab originator @tab source @tab initial priority
+@item @strong{planned task}
+@tab maintainer
+@tab project plan
+@tab 5 (Normal)
+@item @strong{sporadic task}
+@tab maintainer
+@tab bug report
+@tab 4
+@item @strong{automatic task}
+@tab gnupdf.org
+@tab test fail or bad software metric
+@tab 6
+@end multitable
+
+@node Tasks workflow
+@section Tasks workflow
+
+The following diagram depicts the possible states for a task and the
+allowed transitions between states:
+
+@float Figure,fig:tasks-workflow
+@image{figures/tasks-workflow}
+@caption{Tasks workflow}
+@end float
+
+@table @strong
+@item TODO
+The task is into the tasks pool but it not ready to be performed.
+@item NEXT
+The task is into the tasks pool and it is ready to be performed by a
+developer.
+@item STARTED
+The task has been started by a developer but it is not finished.
+@item DONE
+The task is archived and succesfully performed. 
+@item DISCARDED
+The task is archived but it has been discarded.
+@end table
+
+@node The flyspray task manager
+@section The flyspray task manager
+
+We use a flyspray task tracker installed in
+@url{http://gnupdf.org/flyspray} in order to implement the tasks pool.
+
+Each flyspray task has the following attributes:
+
+@table @strong
+@item Type
+The type of the task:
+@itemize @minus
+@item planned
+@item sporadic
+@item automatic
+@end itemize
+@item Category
+he context of the task. It may be the name of a library layer (such as
+base layer), the name of a library module or a more general context
+(such as build system).
+@item Priority
+The priority of the task. 
+@item Status
+The status of the task:
+@itemize @minus
+@item TODO
+@item NEXT
+@item STARTED
+@item DONE
+@item DISCARDED.
+@end itemize
+@item Summary
+A summary of the task.
+@end table
 
 @node Coding Conventions
 @chapter Coding Conventions
@@ -551,13 +751,227 @@ NOTE: Make sure you run ``bzr commit'' from your working copy root
 directory.  Bazaar will fail with some error or don't even run the
 script otherwise. Until now we have no solution for this problem.
 
-@node Writing Tests
-@chapter Writing Tests
+@node Testing the library
+@chapter Testing the library
+
+We are following a bottom-up testing strategy. The verification of the
+library is performed in the following steps:
+
+@float Figure,fig:test-types
+@image{figures/test-types}
+@caption{Test types}
+@end float
+
+@enumerate
+@item @strong{Unit testing} is performed in order to verify the low-level modules of the library.
+@item @strong{Subsystem testing} is performed in order to verify the combination of several subsystems. i.e. to test each library layer.
+@item @strong{System testing} is performed in order to verify the whole system. i.e. the GNU PDF Library. 
+@end enumerate
+
+We use check @footnote{A testing framework for C. See http://check.sf.net} 
+to implement our testing infrastructure. Please
+read the check manual in order to become familiar with its concepts
+such as test suite, test case, etc.
 
 @menu
+* The test specification document::
+* Unit testing::
 * Test Data Files::
 * The tortutils Library::
 @end menu
+
+@node The test specification document
+@section The test specification document
+
+The tests for the GNU PDF Library are documented in a document called
+"Test Specification Document" or TSD. It is available as a texinfo
+file in the sources distribution in the @file{doc/gnupdf-tsd.texi}
+file.
+
+There is an online version of the TSD in
+@url{http://www.gnupdf.org/manuals/gnupdf-tsd.html}. It is
+automatically updated daily from the bazaar trunk.
+
+@node Unit testing
+@section Unit testing
+
+We organize unit tests using the following structure:
+
+@float Figure,fig:unit-testing-architecture
+@image{figures/unit-testing-architecture}
+@caption{Unit Testing Architecture}
+@end float
+
+Test suites are used to collect unit tests for a given module. In turn
+each test suite contain a collection of test cases. Each test case
+identifies a function implemented in the module. Several tests can
+then be defined to test the function capabilities.
+
+The unit tests are stored in the @file{torture/unit/} directory.
+
+@float Figure,fig:unit-testing-sources
+@image{figures/unit-testing-sources}
+@caption{Unit Testing Sources}
+@end float
+
+@menu
+* Designing unit tests::
+* Test files::
+* Test suite files::
+* The runtests program::
+* Running the unit tests::
+* Using gdb to debug check tests::
+@end menu
+
+@node Designing unit tests
+@subsection Designing unit tests
+
+Please keep in mind the following considerations when designing unit
+tests for the functions of a library module:
+
+For any given function we would like to define @strong{positive},
+@strong{negative} and @strong{stressing} unit tests:
+
+@itemize @minus
+@item @strong{Positive tests} are used to test the function with valid input data. The return value (or any documented side effect) of the function should be checked with the expected effect.
+@item @strong{Negative tests} are used to test the function with invalid input data.
+@item @strong{Stressing tests} are used to test the function with strategic or "interesting" valid input data (such as @code{MAXINT} or @code{MININT} in a function accepting an integer value). 
+@end itemize
+
+Many functions are simple enough to only require a single positive
+test running the function (no parameters). It is important to have
+this unit test since the execution may fail even for such simple
+functions.
+
+While designing the unit tests you may find that the API contain
+errors or that it may be improved in any way. That is fine and it is
+quite welcomed. You can propose any change of the API in this list.
+
+@node Test files
+@subsection Test files
+
+The test files contain collections of unit tests associated with a
+function. Each test file is named @file{function-name.c}, where
+@file{function-name} is the name of the function under testing with
+underscores replaced with dashes.
+
+For example, the source file containing unit tests for the pdf_stm_new
+function would be called @file{stm-new.c}.
+
+A minimal test file looks like this:
+
+@example
+/* 
+ * Include the check library.
+ */
+#include <check.h>
+
+/* 
+ * START_TEST and END_TEST are macros provided by the check
+ * library.
+ */
+START_TEST(FUNCTION_NAME_NNN)
+@{
+  /* Check a condition.  One of several types of check 
+     available in the check library.
+   */
+  fail_if(0 == 1);
+@}
+END_TEST
+
+
+/* 
+ * Provide this function to gather all the tests together.
+ */
+TCase* test_FUNCTION_NAME (void)
+@{
+  TCase* tc = tcase_create ("FUNCTION_NAME");
+  tcase_add_test(tc, FUNCTION_NAME_NNN);
+  return tc;
+@}
+@end example
+
+Note the @code{test_FUNCTION_NAME} function. It is the function called
+by the test driver in order to perform all the tests implemented in
+the test file.
+
+@node Test suite files
+@subsection Test suite files
+
+Once you add a new test file, that defines a testcase for some module
+function, you need to integrate it into the test suite that defines
+the module itself.
+
+Each module directory (such as @file{torture/unit/base/stm}) has a
+test suite definition file such as @file{tsuite-stm.c}. The suite
+definition file defines a function called @file{tsuite_MODULE-NAME}
+that return a @code{Suite *} object.
+
+New test cases are added using the @code{suite_add_tcase} function:
+
+@example
+extern TCase *my_new_tcase (void);
+
+Suite *
+tsuite_mymodule ()
+@{
+  Suite *s;
+  ...
+
+  suite_add_tcase (s, my_new_tcase ());
+  ...
+
+  return s;
+@}
+@end example
+
+@node The runtests program
+@subsection The runtests program
+
+The runtests program is the driver of the testing procedure. It is
+located in the @file{torture/unit/} directory.
+
+In order to integrate new test files into the runtests program the
+source files of the test files should be added to the value of the
+@code{TEST_FILES} variable in @file{torture/unit/Makefile.am}.
+
+For example:
+
+@example
+TEST_FILES = base/stm/pdf-create-file-stm.c \
+             base/OTHER-MODULE/OTHER-TEST-FILE.c
+@end example
+
+@node Running the unit tests
+@subsection Running the unit tests
+
+The runtests program will run all the defined unit tests of the
+library. It can be invoked (and it is the preferred way) by typing
+
+@example
+$ make check
+@end example
+
+in the terminal.
+
+The test driver display several messages to the standard output and
+also dump a logfile named @file{ut.log} with details about the test
+execution.
+
+@node Using gdb to debug check tests
+@subsection Using gdb to debug check tests
+
+The check testing framework uses fork calls in order to create the
+processes used to run the single tests. This makes possible to caught
+unexpected process terminations such as a segmentation fault or a
+division by zero.
+
+Sometimes we want to debug those failure conditions using
+gdb. Unfortunately the GNU debugger cannot caught the unexpected
+termination of the child processess.
+
+The check implementor foreseen this and provides a workaround: to
+define the @code{CK_FORK} variable to "no" and launch the debugger.
 
 @node Test Data Files
 @section Test Data Files

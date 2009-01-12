@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-10-05 20:52:07 gerel"
+/* -*- mode: C -*- Time-stamp: "09/01/11 22:03:01 jemarch"
  *
  *       File:         pdf-stm-f-flate.h
  *       Date:         Tue Jul 10 23:39:27 2007
@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2007, 2008, 2009 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,8 +27,8 @@
 #define PDF_STM_F_FLATE_H
 
 #include <config.h>
+#include <pdf-types.h>
 #include <pdf-hash.h>
-#include <pdf-stm-buffer.h>
 #include <zlib.h>
 
 
@@ -54,8 +54,8 @@ pdf_status_t pdf_stm_f_flatedec_init (pdf_hash_t params,
 
 pdf_status_t pdf_stm_f_flatedec_apply (pdf_hash_t params,
                                     void *state,
-                                    pdf_stm_buffer_t in,
-                                    pdf_stm_buffer_t out,
+                                    pdf_buffer_t in,
+                                    pdf_buffer_t out,
                                     pdf_bool_t finish_p);
 
 pdf_status_t pdf_stm_f_flateenc_init (pdf_hash_t params,
@@ -63,8 +63,8 @@ pdf_status_t pdf_stm_f_flateenc_init (pdf_hash_t params,
 
 pdf_status_t pdf_stm_f_flateenc_apply (pdf_hash_t params,
                                     void *state,
-                                    pdf_stm_buffer_t in,
-                                    pdf_stm_buffer_t out,
+                                    pdf_buffer_t in,
+                                    pdf_buffer_t out,
                                     pdf_bool_t finish_p);
 
 pdf_status_t pdf_stm_f_flatedec_dealloc_state (void *state);
