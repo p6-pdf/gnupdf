@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/11 22:05:36 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/01/13 22:26:38 jemarch"
  *
  *       File:         pdf-types.c
  *       Date:         Sun Feb 10 21:33:44 2008
@@ -24,6 +24,7 @@
  */
 
 #include <pdf-types.h>
+#include <pdf-alloc.h>
 
 
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT

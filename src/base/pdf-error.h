@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/27 21:42:55 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/01/13 22:06:33 jemarch"
  *
  *       File:         pdf-error.h
  *       Date:         Sun Feb  24 20:22:05 2008
@@ -88,7 +88,8 @@
   ERROR_ENTRY (PDF_EMTOOBIG,    "/FunctionType 0: input dim too high (<= 12)"), \
   ERROR_ENTRY (PDF_EBADSAMPLES, "/FunctionType 0: error while reading sample table"), \
   ERROR_ENTRY (PDF_EBADAESKEY,  "the size of an AES  key should be a multiple of 16"), \
-  ERROR_ENTRY (PDF_EBADV2KEY,   "a V2 key should be at least 40 bits long")
+  ERROR_ENTRY (PDF_EBADV2KEY,   "a V2 key should be at least 40 bits long"), \
+  ERROR_ENTRY (PDF_EINVOP,      "invalid operation")
     
 
 

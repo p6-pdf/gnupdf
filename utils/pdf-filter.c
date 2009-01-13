@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/27 21:20:00 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/01/13 22:30:03 jemarch"
  *
  *       File:         pdf-filter.c
  *       Date:         Tue Jul 10 18:42:07 2007
@@ -166,7 +166,9 @@ process_stream (pdf_stm_t stm, pdf_bool_t read_mode)
 {
 #define BUF_SIZE 256
   
+  pdf_status_t ret;
   pdf_size_t read_bytes;
+  pdf_size_t written_bytes;
   pdf_char_t buf [BUF_SIZE];
   
   if (read_mode)
@@ -175,8 +177,8 @@ process_stream (pdf_stm_t stm, pdf_bool_t read_mode)
 	 and push to stdout */
       do
         {
-          read_bytes = pdf_stm_read (stm, buf, BUF_SIZE);
-	      if(fwrite (buf, 1, read_bytes, stdout) != read_bytes)
+          ret = pdf_stm_read (stm, buf, BUF_SIZE, &read_bytes);
+          if(fwrite (buf, 1, read_bytes, stdout) != read_bytes)
             {
               fprintf(stderr,"fwrite failed (%ld)", (long)read_bytes);
              }
@@ -190,7 +192,7 @@ process_stream (pdf_stm_t stm, pdf_bool_t read_mode)
       do
 	{
 	  read_bytes = fread (buf, 1, BUF_SIZE, stdin);
-	  pdf_stm_write (stm, buf, read_bytes);
+	  ret = pdf_stm_write (stm, buf, read_bytes, &written_bytes);
 	}
       while (read_bytes == BUF_SIZE);
     }

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/11 22:02:43 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/01/13 22:28:30 jemarch"
  *
  *       File:         pdf-stm-f-ahex.c
  *       Date:         Fri Jul 13 17:08:41 2007
@@ -239,7 +239,7 @@ pdf_stm_f_ahexdec_apply (pdf_hash_t params,
           /* Detect the end of the hex data */
           if (in->data[in->rp] == '>')
             {
-              if (filter_state->last_nibble == PDF_EOF)
+              if (filter_state->last_nibble == -1)
                 {
                   /* We are done :'D */
                   in->rp++;
@@ -254,7 +254,7 @@ pdf_stm_f_ahexdec_apply (pdf_hash_t params,
                   out->data[out->wp] =
                     pdf_stm_f_ahex_hex2int (filter_state->last_nibble) << 4;
                   out->wp++;
-                  filter_state->last_nibble = PDF_EOF;
+                  filter_state->last_nibble = -1;
                   ret = PDF_EEOF;
                   break;
                 }

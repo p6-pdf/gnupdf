@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/11 22:05:43 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/01/13 22:00:18 jemarch"
  *
  *       File:         pdf-types.h
  *       Date:         Sun Feb 10 21:30:00 2008
@@ -441,9 +441,6 @@ pdf_i64_to_i32(const pdf_i64_t bignum);
 #define pdf_i64_to_i32(bignum) bignum
 
 #endif
-
-/* PDF_EOF to store an EOF marker in integers */
-#define PDF_EOF -1
 
 /* END PUBLIC */
 
