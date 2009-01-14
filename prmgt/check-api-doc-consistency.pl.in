@@ -17,18 +17,19 @@
 
 use warnings;
 use strict;
+use File::Find;
 
 ##
 # This script takes every procedure documented on the texinfo document "gnupdf.texi"
 # and match it with the procedures implemented in the header files.
 ###
 
-my $TOPDIR="..";
-
+my $TOPDIR="@abs_top_builddir@";
 my $SRCDIR = $TOPDIR."/src";
 my $INFODIR = $TOPDIR."/doc";
 my $MAKEFILE = $SRCDIR."/Makefile.am";
 my $INFODOC = $INFODIR ."/gnupdf.texi";
+my $TESTDIR = $TOPDIR."/torture/unit";
 
 my @ALLSRCS = ();
 
@@ -197,22 +198,37 @@ sub read_filenames
 }
 
 
+sub count_tests
+{
+    my $filename = shift;
+    my $count=0;
+    open (FILE, $filename);
+    while (<FILE>)
+    {
+        $count += ($_ =~ m/\s*START_TEST/);
+    }
+    close(FILE);
+    return $count;
+}
+
 sub show_help
 {
     print "\nUusage: $0 [OPT]\n";
     print "OPT is one of:\n";
-    print "\t -h:\tprint this help.\n";
     print "\t -f:\tshow failing checks only.\n";
+    print "\t -h:\tprint this help.\n";
     print "\t -i:\tignore variable names.\n";
-    print "\t -p:\tplain mode: do not print a resume.\n\n";
+    print "\t -p:\tplain mode: do not print a resume.\n";
+    print "\t -t:\tshow number of tests for successful checks.\n\n";
 }
 
 ##
 # MAIN PROGRAM
 ###
-my ($reg, $matched, $fails, $total, $showok,$plainmode, $ignorevars);
+my ($reg, $matched, $fails, $total, $showok,$plainmode, $ignorevars,
+    $counttests, $testfile);
 
-
+$counttests = 0;
 $showok = 1;
 $plainmode = 0;
 $ignorevars = 0;
@@ -228,6 +244,9 @@ if (grep ($_ eq '-p', @ARGV)) {
 }
 if (grep ($_ eq '-i', @ARGV)) {
     $ignorevars = 1;
+}
+if (grep ($_ eq '-t', @ARGV)) {
+    $counttests = 1;
 }
 
 
@@ -261,7 +280,17 @@ foreach my $docsig (@DOCSIGS)
     if ($matched)
     {
         if ($showok){
-            print "$docsig() ... ok\n";
+            print "$docsig() ... ok";
+            if ($counttests)
+            {
+                my $count=0;
+                $testfile = $docsig . ".c";
+                $testfile =~ s/_/-/g;
+                find(sub{$count = count_tests($_)
+                             if -r and m/$testfile/}, $TESTDIR);
+                print " $count tests";
+            }
+            print "\n";
         }
     }else{
         $fails++;

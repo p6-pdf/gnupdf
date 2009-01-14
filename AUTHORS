@@ -204,6 +204,8 @@ and changed doc/gnupdf.texi doc/gnupdf-tsd.texi configure.ac src/Makefile.am
   torture/unit/base/hash/pdf-hash-iterator.c
   torture/unit/base/list/pdf-list-iterator-from-to.c
   torture/unit/base/list/pdf-list-iterator-next.c
+  torture/unit/base/stm/pdf-stm-write.c
+  torture/unit/base/stm/pdf-stm-read.c
   
 Daniel Vidal: wrote /torture/unit/base/types/pdf-i64-add.c
   /torture/unit/base/types/pdf-i64-assign.c
@@ -244,4 +246,8 @@ David Vazquez: wrote /torture/unit/base/crypt/
   /src/base/pdf-crypt-c-v2.c
   /src/base/pdf-crypt-c-v2.h
   /src/base/pdf-crypt.h
-changed doc/gnupdf.texi
+and changed doc/gnupdf.texi
+
+Michael Gold: changed src/Makefile.am utils/Makefile.am
+  torture/unit/Makefile.am
+

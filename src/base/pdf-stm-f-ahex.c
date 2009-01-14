@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/11/24 15:50:21 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/01/13 22:28:30 jemarch"
  *
  *       File:         pdf-stm-f-ahex.c
  *       Date:         Fri Jul 13 17:08:41 2007
@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2007, 2008, 2009 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,8 +59,8 @@ pdf_stm_f_ahexenc_init (pdf_hash_t params,
 pdf_status_t
 pdf_stm_f_ahexenc_apply (pdf_hash_t params,
                          void *state,
-                         pdf_stm_buffer_t in,
-                         pdf_stm_buffer_t out,
+                         pdf_buffer_t in,
+                         pdf_buffer_t out,
                          pdf_bool_t finish_p)
 {
   pdf_stm_f_ahexenc_t filter_state;
@@ -82,7 +82,7 @@ pdf_stm_f_ahexenc_apply (pdf_hash_t params,
   
   wrote_newline = PDF_FALSE;
   ret = PDF_OK;
-  while (!pdf_stm_buffer_full_p (out))
+  while (!pdf_buffer_full_p (out))
     {
       if ((!wrote_newline) &&
           (filter_state->written_bytes != 0) &&
@@ -108,7 +108,7 @@ pdf_stm_f_ahexenc_apply (pdf_hash_t params,
         }
 
       /* Try to consume an input byte */
-      if (!pdf_stm_buffer_eob_p (in))
+      if (!pdf_buffer_eob_p (in))
         {
           /* For each byte in the input we should generate two bytes in the
              output. */
@@ -136,7 +136,7 @@ pdf_stm_f_ahexenc_apply (pdf_hash_t params,
           filter_state->written_bytes++;
           
           /* Maybe write the second nibble */
-          if (pdf_stm_buffer_full_p (out))
+          if (pdf_buffer_full_p (out))
             {
               filter_state->last_nibble = second_nibble;
             }
@@ -154,7 +154,7 @@ pdf_stm_f_ahexenc_apply (pdf_hash_t params,
         }
     }
 
-  if (pdf_stm_buffer_full_p (out))
+  if (pdf_buffer_full_p (out))
     {
       ret = PDF_ENOUTPUT;
     }
@@ -206,8 +206,8 @@ pdf_stm_f_ahexdec_init (pdf_hash_t params,
 pdf_status_t
 pdf_stm_f_ahexdec_apply (pdf_hash_t params,
                          void *state,
-                         pdf_stm_buffer_t in,
-                         pdf_stm_buffer_t out,
+                         pdf_buffer_t in,
+                         pdf_buffer_t out,
                          pdf_bool_t finish_p)
 {
   pdf_status_t ret;
@@ -220,9 +220,9 @@ pdf_stm_f_ahexdec_apply (pdf_hash_t params,
   second_nibble = -1;
   filter_state = (pdf_stm_f_ahexdec_t) state;
 
-  while (!pdf_stm_buffer_full_p (out))
+  while (!pdf_buffer_full_p (out))
     {
-      if (pdf_stm_buffer_eob_p (in))
+      if (pdf_buffer_eob_p (in))
         {
           /* Need more input */
           break;
@@ -239,7 +239,7 @@ pdf_stm_f_ahexdec_apply (pdf_hash_t params,
           /* Detect the end of the hex data */
           if (in->data[in->rp] == '>')
             {
-              if (filter_state->last_nibble == PDF_EOF)
+              if (filter_state->last_nibble == -1)
                 {
                   /* We are done :'D */
                   in->rp++;
@@ -254,7 +254,7 @@ pdf_stm_f_ahexdec_apply (pdf_hash_t params,
                   out->data[out->wp] =
                     pdf_stm_f_ahex_hex2int (filter_state->last_nibble) << 4;
                   out->wp++;
-                  filter_state->last_nibble = PDF_EOF;
+                  filter_state->last_nibble = -1;
                   ret = PDF_EEOF;
                   break;
                 }
@@ -296,7 +296,7 @@ pdf_stm_f_ahexdec_apply (pdf_hash_t params,
   
   if (ret == PDF_OK)
     {
-      if (pdf_stm_buffer_eob_p (in))
+      if (pdf_buffer_eob_p (in))
         {
           ret = PDF_ENINPUT;
         }

@@ -1,0 +1,227 @@
+#!/usr/bin/env perl
+
+# Copyright (C) 2009 Free Software Foundation, Inc.
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+use warnings;
+use strict;
+use File::Find;
+
+##
+# This script generates the TSD manual from the unit tests located at
+# torture/unit and the test data located at torture/testdata.
+###
+
+my $TOPDIR="@abs_top_builddir@";
+my $DATADIR = $TOPDIR."/torture/testdata";
+my $TESTDIR = $TOPDIR."/torture/unit";
+my $TESTREGEX = 'pdf.+\.c$';
+my %dirs =("base"=>$TESTDIR."/base",
+           "object"=>$TESTDIR."/object",
+           "document"=>$TESTDIR."/document",
+           "page"=>$TESTDIR."/page");
+my %mods = ('base'=>[],
+            'object'=>[],
+            'document'=>[],
+            'page'=>[]);
+my @datafiles;
+
+sub print_data_desc
+{
+    my $str = shift;
+    open (FILE, $DATADIR."/$str".'.desc');
+    print <FILE>;
+    close(FILE);
+}
+
+sub print_comment
+{
+    my $comment = shift;
+    my ($tidx,$didx,$sidx,$fidx,$flen,$slen);
+    $tidx = index($comment, "Test:");
+    $slen=18;
+    $flen=10;
+    $comment =~ tr/\n/ /;
+    if ($tidx<0){
+        # should not ocurr.
+        return;
+    }
+    $didx = index($comment, "Description:");
+    $sidx = index($comment, "Success condition:");
+    $fidx = index($comment, "Data file:");
+    if ($sidx < 0){
+        $slen++;
+        $sidx = index($comment, "Success conditions:");
+    }
+    if ($fidx < 0){
+        $flen++;
+        $fidx = index($comment, "Data files:");
+    }
+    print '@deffn Test '.substr($comment,$tidx+5,$didx-($tidx+5))."\n";
+    if ($sidx<0 || $didx<0){
+        print "BAD FORMAT AT: " . substr($comment,$tidx+5,
+                                         length($comment)-($tidx+5));
+        print "\n".'@end deffn'."\n\n";
+        return;
+    }
+    print substr($comment, $didx+12, $sidx-($didx+12))."\n";
+    print '@table @strong'."\n";
+    print '@item Success condition'."\n";
+    if ($fidx<0){
+        print substr($comment, $sidx+$slen, length($comment)-($sidx+$slen));
+        print "\n".'@end table';
+    }else{
+        my $datafiles;
+        print substr($comment, $sidx+$slen, $fidx-($sidx+$slen));
+        print "\n".'@end table';
+        print "\n".'@table @file'."\n";
+        $datafiles = substr($comment, $fidx+$flen,
+                            length($comment)-($fidx+$flen));
+        while($datafiles =~ m/\G\W*(\w+)\W*/g){
+            print '@item '.$1."\n";
+            print_data_desc($1);
+            print "\n";
+        }
+        print "\n".'@end table';
+    }
+    print "\n".'@end deffn'."\n\n";
+}
+
+sub print_tests
+{
+    my $dir = shift;
+    my $testname = shift;
+    my $testfile = $dir.'/'.$testname.'.c';
+    $testfile =~ s/_/-/g;
+    my ($fd,$char,$comment,$nextchar);
+    open($fd,$testfile);
+
+  READCHAR:
+    $comment="";
+    while (read ($fd, $char, 1))
+    {
+        if ($char eq "/")
+        {
+            if (read ($fd, $nextchar, 1) && $nextchar eq "*")
+            {
+              EATCOMMENT:
+                while (read ($fd, $nextchar, 1) && $nextchar ne "*" )
+                {
+                    $comment .= $nextchar;                    
+                }
+                if (read ($fd, $nextchar, 1) && $nextchar eq "/" )
+                {
+                    print_comment($comment) if $comment =~ /^\s+Test:/g;
+                    goto READCHAR;
+                }
+                goto EATCOMMENT;
+            }
+        }
+    }
+
+
+}
+
+sub print_layer
+{
+    my $layer=shift;
+    print '@menu'."\n";
+    foreach my $mod (sort(@{$mods{$layer}})){
+        print "* " . ucfirst $mod. " Module::\n";
+    }
+    print '@end menu'."\n";
+
+    foreach my $mod (sort(@{$mods{$layer}})){
+        my @tests;
+
+        find (sub {
+            if (-r && m/$TESTREGEX/){
+                my $m=substr($_,0,-2);
+                $m =~ s/-/_/g;
+                push @tests,$m;
+            }}, $dirs{$layer}."/$mod");
+
+        print '@node '. ucfirst $mod . " Module\n";
+        print '@subsection '. ucfirst $mod . " Module\n";
+        print '@menu'."\n";
+        foreach my $test (sort(@tests)){
+            print "* $test"."::\n";
+        }
+        print '@end menu'."\n";
+        foreach my $test (sort(@tests)){
+            print '@node '.$test."\n";
+            print '@subsubsection '.$test."\n";
+            print_tests($dirs{$layer}."/$mod",$test);
+        }
+
+    }
+}
+
+
+##
+# MAIN PROGRAM
+###
+# We should uncomment the following lines as we develop each layer.
+
+find (sub {push @{$mods{'base'}},$_ if -d && $_ ne '.';}, $dirs{'base'});
+#find (sub {push (@{$mods{'object'}},$_) if -d && $_ ne '.';}, $dirs{'object'});
+#find (sub {push (@{$mods{'document'}},$_) if -d && $_ ne '.';}, $dirs{'document'});
+#find (sub {push (@{$mods{'page'}},$_) if -d && $_ ne '.';}, $dirs{'page'});
+
+print '@menu'."\n";
+print "* Base Layer Modules::\n";
+#print "* Object Layer Modules::\n";
+#print "* Document Layer Modules::\n";
+#print "* Page Layer Modules::\n";
+print '@end menu'."\n";
+
+print "\@node Base Layer Modules\n";
+print "\@section Base Layer Modules\n";
+print_layer('base');
+
+#print "\@node Object Layer Modules\n";
+#print "\@section Object Layer Modules\n";
+#print_layer('object');
+
+#print "\@node Document Layer Modules\n";
+#print "\@section Document Layer Modules\n";
+#print_layer('document');
+
+#print "\@node Page Layer Modules\n";
+#print "\@section Page Layer Modules\n";
+#print_layer('page');
+
+
+print '@node Subsystem Testing'."\n";
+print '@chapter Subsystem Testing'."\n";
+
+print '@node System Testing'."\n";
+print '@chapter System Testing'."\n";
+
+print '@node Test Data Files'."\n";
+print '@chapter Test Data Files'."\n";
+
+print '@table @file'."\n";
+
+
+find (sub {push @datafiles,substr($_,0,-5) if -r && m/.+\.desc/g}, $DATADIR);
+foreach my $name (sort(@datafiles)){
+    print '@item ' . $name ."\n";
+    print_data_desc($name);
+}
+print '@end table'."\n";
+
+
+0;

@@ -43,7 +43,7 @@ endif #ICONV
 noinst_PROGRAMS = runtests
 
 LDADD = $(CHECK_LIBS) \
-        $(top_srcdir)/src/libgnupdf.la \
+        $(top_builddir)/src/libgnupdf.la \
         $(INTL_MACOSX_LIBS) \
         $(ICONV_LIBS)
 

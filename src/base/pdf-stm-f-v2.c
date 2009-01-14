@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/28 00:16:49 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/01/11 22:05:16 jemarch"
  *
  *       File:         pdf-stm-f-v2.c
  *       Date:         Tue Jul 10 23:44:00 2007
@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008, 2009 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,8 +104,8 @@ pdf_stm_f_v2_init (pdf_hash_t params, void **state)
 
 static inline pdf_status_t
 pdf_stm_f_v2_apply (pdf_stm_f_v2_mode_t mode,
-                    pdf_hash_t params, void *state, pdf_stm_buffer_t in,
-                    pdf_stm_buffer_t out, pdf_bool_t finish_p)
+                    pdf_hash_t params, void *state, pdf_buffer_t in,
+                    pdf_buffer_t out, pdf_bool_t finish_p)
 {
   pdf_stm_f_v2_t filter_state = state;
   
@@ -184,8 +184,8 @@ pdf_stm_f_v2enc_init (pdf_hash_t params, void **state)
 }
 
 pdf_status_t
-pdf_stm_f_v2enc_apply (pdf_hash_t params, void *state, pdf_stm_buffer_t in,
-                           pdf_stm_buffer_t out, pdf_bool_t finish_p)
+pdf_stm_f_v2enc_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
+                           pdf_buffer_t out, pdf_bool_t finish_p)
 {
   return pdf_stm_f_v2_apply (PDF_STM_F_V2_MODE_ENCODE,
                              params, state, in, out, finish_p);
@@ -208,8 +208,8 @@ pdf_stm_f_v2dec_init (pdf_hash_t params, void **state)
 
 
 pdf_status_t
-pdf_stm_f_v2dec_apply (pdf_hash_t params, void *state, pdf_stm_buffer_t in,
-                        pdf_stm_buffer_t out, pdf_bool_t finish_p)
+pdf_stm_f_v2dec_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
+                        pdf_buffer_t out, pdf_bool_t finish_p)
 {
   return pdf_stm_f_v2_apply (PDF_STM_F_V2_MODE_DECODE,
                              params, state, in, out, finish_p);

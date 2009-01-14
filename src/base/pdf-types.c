@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/05/19 00:14:52 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/01/13 22:26:38 jemarch"
  *
  *       File:         pdf-types.c
  *       Date:         Sun Feb 10 21:33:44 2008
@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc */
+/* Copyright (C) 2008, 2009 Free Software Foundation, Inc */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
  */
 
 #include <pdf-types.h>
+#include <pdf-alloc.h>
 
 
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
@@ -1180,14 +1181,73 @@ pdf_i64_mod_i32_divisor(pdf_i64_t *dest, \
   pdf_i64_mod(dest, dividend, aux, p_status);
 }
 
-
-
 /* Get number as pdf_i32_t */
 pdf_i32_t
 pdf_i64_to_i32(const pdf_i64_t bignum)
 {
   /* From the highest 32bits, take the sign only */
   return ((bignum.high >= 0) ? bignum.low : (-1 * bignum.low));
+}
+
+pdf_buffer_t
+pdf_buffer_new (pdf_size_t size)
+{
+  pdf_buffer_t new_buf;
+
+  new_buf = pdf_alloc (sizeof(struct pdf_buffer_s));
+
+  if (new_buf != NULL)
+    {
+      new_buf->data = pdf_alloc (sizeof(pdf_char_t) * size);
+      new_buf->size = size;
+      pdf_buffer_rewind (new_buf);
+    }
+
+  return new_buf;
+}
+
+pdf_status_t
+pdf_buffer_destroy (pdf_buffer_t buffer)
+{
+  pdf_dealloc (buffer->data);
+  pdf_dealloc (buffer);
+
+  return PDF_OK;
+}
+
+pdf_bool_t
+pdf_buffer_full_p (pdf_buffer_t buffer)
+{
+  return (buffer->wp == buffer->size);
+}
+
+pdf_bool_t
+pdf_buffer_eob_p (pdf_buffer_t buffer)
+{
+  return ((buffer->wp - buffer->rp) == 0);
+}
+
+
+pdf_status_t
+pdf_buffer_resize (pdf_buffer_t buffer, pdf_size_t newsize)
+{
+  if (pdf_realloc (buffer->data, newsize) != PDF_OK)
+    return PDF_ENOMEM;
+
+  buffer->size = newsize;
+  buffer->rp = PDF_MIN (buffer->rp, newsize);
+  buffer->wp = PDF_MIN (buffer->wp, newsize);
+  return PDF_OK;
+}
+
+
+pdf_status_t
+pdf_buffer_rewind (pdf_buffer_t buffer)
+{
+  buffer->rp = 0;
+  buffer->wp = 0;
+
+  return PDF_OK;
 }
 
 /* End of pdf-types.c */

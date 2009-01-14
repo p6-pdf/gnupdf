@@ -40,7 +40,6 @@ FILESYSTEM_MODULE_SOURCES = base/pdf-fsys.c base/pdf-fsys.h \
 
 STM_MODULE_SOURCES = base/pdf-stm.c base/pdf-stm.h \
                      base/pdf-stm-be.c base/pdf-stm-be.h \
-                     base/pdf-stm-buffer.c base/pdf-stm-buffer.h \
                      base/pdf-stm-filter.h base/pdf-stm-filter.c \
                      base/pdf-stm-f-null.h base/pdf-stm-f-null.c \
                      base/pdf-stm-f-ahex.h base/pdf-stm-f-ahex.c \
@@ -103,7 +102,7 @@ if COMPILE_BASE_LAYER
 endif
 
 include_HEADERS = pdf.h
-libgnupdf_la_LIBADD = $(top_srcdir)/lib/libgnu.la $(LIBGCRYPT_LIBS)
+libgnupdf_la_LIBADD = $(top_builddir)/lib/libgnu.la $(LIBGCRYPT_LIBS)
 # We want a DLL if compiling for Windows
 if COMPILE_W32_SYSTEM
   libgnupdf_la_LDFLAGS = -no-undefined
@@ -114,7 +113,7 @@ if USE_COVERAGE
   AM_CFLAGS += -fprofile-arcs -ftest-coverage
 endif
 
-AM_CPPFLAGS = -I$(top_builddir)/lib -I$(srcdir)/base \
+AM_CPPFLAGS = -I$(top_srcdir)/lib -I$(srcdir)/base \
               -I$(srcdir)/object -I$(srcdir)/document
 
 
@@ -130,7 +129,6 @@ PUBLIC_HDRS = pdf-global.h \
               base/pdf-time.h \
               base/pdf-text.h \
               base/pdf-fsys.h \
-              base/pdf-stm-buffer.h \
               base/pdf-stm-filter.h \
               base/pdf-stm.h \
               base/pdf-hash-helper.h \
@@ -138,11 +136,11 @@ PUBLIC_HDRS = pdf-global.h \
               base/pdf-fp-func.h
 
 pdf.h : $(PUBLIC_HDRS)
-	chmod +x $(top_srcdir)/src/extract-public-hdr
-	cat header-autogen > $@
+	chmod +x $(top_builddir)/src/extract-public-hdr
+	cat $(srcdir)/header-autogen > $@
 	echo "#ifndef PDF_H" >> $@
 	echo "#define PDF_H" >> $@
-	cat $(PUBLIC_HDRS) | $(top_srcdir)/src/extract-public-hdr >> $@
+	cat $^ | $(top_builddir)/src/extract-public-hdr >> $@
 	echo "#endif /* !PDF_H */" >> $@
 	echo "/* end of pdf.h */" >> $@
 

@@ -16,19 +16,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-noinst_TEXINFOS = gnupdf-tsd.texi gnupdf-hg.texi
+noinst_TEXINFOS = gnupdf-tsd.texi gnupdf-hg.texi gnupdf-arch.texi
 info_TEXINFOS = gnupdf.texi gnupdf-utils.texi
 gnupdf_TEXINFOS = fdl.texi
 
-AM_MAKEINFOHTMLFLAGS = --no-headers --no-split
+AM_MAKEINFOHTMLFLAGS = --css-include=manuals.css
+
+gnupdf-tsd.texi: generated-tsd.texi
+generated-tsd.texi:
+	perl $(srcdir)/generate-tsd.pl > $(srcdir)/generated-tsd.texi
 
 if TEXI2HTML
-
-html-local:
-	texi2html --init-file=gnupdf-manual.init --css-include=manuals.css gnupdf.texi
-	texi2html --init-file=gnupdf-manual.init --css-include=manuals.css gnupdf-utils.texi
-	texi2html --init-file=gnupdf-manual.init --css-include=manuals.css gnupdf-tsd.texi
-	texi2html --init-file=gnupdf-manual.init --css-include=manuals.css gnupdf-hg.texi
 
 wiki: gnupdf.wiki gnupdf-utils.wiki gnupdf-tsd.wiki gnupdf-hg.wiki
 
@@ -38,11 +36,13 @@ gnupdf.wiki: gnupdf.texi
 gnupdf-utils.wiki: gnupdf-utils.texi
 	texi2html --no-menu --init-file=gnupdf-manual-wiki.init gnupdf-utils.texi
 
-gnupdf-tsd.wiki: gnupdf-tsd.texi
+gnupdf-tsd.wiki: generate-tsd gnupdf-tsd.texi
 	texi2html --no-menu --init-file=gnupdf-manual-wiki.init gnupdf-tsd.texi
 
 gnupdf-hg.wiki: gnupdf-hg.texi
 	texi2html --no-menu --init-file=gnupdf-manual-wiki.init gnupdf-hg.texi
+
+
 
 clean-local:
 	-rm -f gnupdf.info gnupdf-utils.info gnupdf-hg.info gnupdf-tsd.info

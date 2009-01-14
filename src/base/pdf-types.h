@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/11/14 21:40:21 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/01/13 22:00:18 jemarch"
  *
  *       File:         pdf-types.h
  *       Date:         Sun Feb 10 21:30:00 2008
@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc */
+/* Copyright (C) 2008, 2009 Free Software Foundation, Inc */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -106,6 +106,28 @@ typedef char pdf_i8_t;
 
 /* Boolean type */
 typedef unsigned char pdf_bool_t;
+
+/********************** Simple memory buffers **************************/
+
+struct pdf_buffer_s
+{
+  pdf_char_t *data;    /* Buffer contents */
+  pdf_size_t size;     /* Size of the buffer in octects */
+  pdf_size_t rp;       /* Read pointer */
+  pdf_size_t wp;       /* Write pointer */
+};
+
+typedef struct pdf_buffer_s *pdf_buffer_t;
+
+pdf_buffer_t pdf_buffer_new (pdf_size_t size);
+pdf_status_t pdf_buffer_destroy (pdf_buffer_t buffer);
+
+pdf_bool_t pdf_buffer_full_p (pdf_buffer_t buffer);
+pdf_bool_t pdf_buffer_eob_p (pdf_buffer_t buffer);
+
+pdf_status_t pdf_buffer_resize (pdf_buffer_t buffer, pdf_size_t newsize);
+pdf_status_t pdf_buffer_rewind (pdf_buffer_t buffer);
+
 
 /********************** 64-bit type built-in support **************************/
 
@@ -419,9 +441,6 @@ pdf_i64_to_i32(const pdf_i64_t bignum);
 #define pdf_i64_to_i32(bignum) bignum
 
 #endif
-
-/* PDF_EOF to store an EOF marker in integers */
-#define PDF_EOF -1
 
 /* END PUBLIC */
 

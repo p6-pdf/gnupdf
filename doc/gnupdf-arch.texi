@@ -1,0 +1,1812 @@
+\input texinfo
+@comment %**start of header
+@setfilename gnupdf-arch.info
+@settitle GNU PDF Library Architecture Guide
+@comment %**end of header
+
+@include version.texi
+
+@copying
+This is the @cite{GNU PDF Library Architecture Guide},
+updated for @strong{libgnupdf} version @strong{@value{VERSION}}.
+
+Copyright @copyright{} 2008 Free Software Foundation, Inc.
+
+@quotation
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A
+copy of the license is included in the section entitled ``GNU Free
+Documentation License''.
+@end quotation
+@end copying
+
+@titlepage
+@sp 6
+@center @titlefont{GNU PDF Library Architecture Guide}
+@sp 4
+@center Updated for version @value{VERSION}.
+@sp 5
+@page Free Software Foundation
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+
+@contents
+
+@ifnottex
+@node Top
+@top GNU PDF Library Architecture Guide
+
+GNU PDF Library Architecture Guide
+
+@insertcopying
+@end ifnottex
+
+@menu
+* Overview::
+* The base layer::
+* The object layer::
+* The document layer::
+* The page layer::
+* List of Figures::
+@end menu
+
+@node Overview
+@chapter Overview
+
+
+This document contains a description of the architecture (both
+external and internal) of the GNU PDF Library.
+
+@cartouche
+The GNU PDF Library provides functions to read and write PDF documents
+conforming to the PDF 1.7 specification. This includes visualization
+(retrieving of bitmaps with rasterized page contents) and interactive
+features such as annotations and interactive forms. The library also
+support the generation of specific subsets of PDF conforming to the
+ISO standards PDF/A, PDF/X and ISO 32000.
+@end cartouche
+
+The GNU PDF Library is composed by several layers:
+
+@float Figure,fig:library-architecture
+@image{figures/library-architecture}
+@caption{Layered architecture of the GNU PDF Library}
+@end float
+
+@table @strong
+@item Base Layer
+This layer implements basic functionality such as memory allocation,
+fixed-point arithmetic, interpolation functions, geometry routines,
+character encoding and access to the filesystem. The base layer is the
+responsible to provide common system-independent abstractions to other
+parts of the library.
+@item Object Layer
+This layer implements the concepts of PDF objects and PDF documents as
+a structured hierarchy of objects. An API is provided to manipulate
+that structure and the objects that compound it. Since the object
+hierarchy can be quite complex a garbage collection mechanism is
+provided to the client of the layer.
+@item Document Layer
+This layer implements the concept of PDF documents as a collection of
+pages, annotations, fonts, sounds, 3d artwork, discussion threads,
+forms, etc. It is implemented on top of the object layer. An API is
+provided to manipulate those abstractions.
+@item Page Layer
+This layer implements several abstractions that represent the contents
+of a page in a PDF document: text, lines, arcs, bitmaps, etc. This
+layer also provides rasterized bitmaps with page contents, using some
+graphics library. An API is provided to both read and write page
+contents.
+@end table
+
+Some remarks:
+
+@itemize @minus
+@item Each layer is built using the API exported by the underlying layers.
+@item A client application has access to all layers.
+@item Each layer export an API that gives access to the functionality it implement to clients.
+@item As for terminology we use the terms procedure and function meaning the same thing. 
+@end itemize
+
+@node The base layer
+@chapter The base layer
+
+The base layer of the GNU PDF Library provide system-independent access to several facilities.
+
+The implemented facilities are organized into modules. Each module
+export an API to be used by the client application or other layers of
+the library. Some modules make use of the facilities implemented in
+other modules (such as allocation or error functions).
+
+@float Figure,fig:base-layer-architecture
+@image{figures/base-layer-architecture}
+@caption{The Base Layer}
+@end float
+
+@table @strong
+@item Memory Allocation Module
+This module provides system-independent memory
+allocation/deallocation.
+@item Basic Types Module
+This module provides a system-independent implementation of basic data
+types such as signed and unsigned integers, constants, etc.
+@item Hash Module
+This module provides an implementation of associative tables using
+several hashing algorithms.
+@item List Module
+This module provides an implementation of dynamic lists and vectors.
+@item Stream Module
+This module provides system-independent and device-independent
+homogeneous access to filesystem files and memory buffers.The streams
+are buffered and support filtering for both read and write operations.
+@item Floating Point Arithmetic Module
+This module provides system-independent floating point real numbers
+and several related facilities such as matrix and points
+manipulations, interpolation routines, real to string and string to
+real conversion and rounding.
+@item Text Module
+This module provides access to a text abstraction as an encoded
+sequence of characters. Several text encodings are supported and
+conversion functions to change the encoding of a text are provided.
+@item Time Module
+This module provides facilities to manipulate calendar dates, time
+arithmetic and time spans.
+@item Filesystem Module
+This module provides facilities to access filesystem objects (files,
+directories, file permissions, etc) in a system-independent way.
+@item Error Module
+This module provides facilities to manage error types, error
+signaling, error descriptions, etc.
+@item Crypt Module
+This module provides de/encryption facilities.
+@end table
+
+@menu
+* Memory allocation module::
+* Basic types module::
+* Hash module::
+* List module::
+* Stream module::
+* Floating point arithmetic module::
+* Text module::
+* Time module::
+* Filesystem module::
+* Error module::
+* Crypt module::
+@end menu
+
+@node Memory allocation module
+@section Memory allocation module
+
+The memory allocation module provides system-independent heap memory
+allocation and deallocation. The usual malloc/free/realloc schema is
+used to provide this service.
+
+The allocation functions should test for memory exhaustion
+conditions. If the program calling the allocation functions gets out
+of memory then NULL is returned.
+
+@node Basic types module
+@section Basic types module
+
+This module provides a system-independent implementation of basic data
+types:
+
+@table @strong
+@item Boolean types
+Simple C constanst to denote @code{TRUE} and @code{FALSE} are
+provided.
+@item Integer types
+Both signed and unsigned types are provided for 16, 32 and 64 bits
+wide integers.
+@item 64 bits big numbers
+The pdf_i64_t type is a signed 64 bit integer designed to represent
+large numbers in 32 bit machines (e.g. embedded systems in printers,
+etc...). Negative numbers are represented in 2's-complement
+format. The way to initialise a 64 bit number is by using a 32 bit
+signed integer and a 32 bit unsigned integer (see API for details on
+this). One has to remember that the final result is in 2's complement
+so the user has to set the bits of each input integer accordingly so,
+when concatenated, they form the desired 64 bit signed integer.
+
+Several methods related to this type are defined in the API. The
+initialisation function, pdf_i64_new, fulfils the tasks mentioned in
+the previous paragraph. Two other funcitons, pdf_i64_assign and
+pdf_i64_assign_quick, assign a value to the selected pdf_i64_t by
+using two 32 bit integers (one unsigned and one signed) for the former
+and one signed integer for the latter. Also included, is a basic copy
+method to copy data between pdf_i64_t type variables.
+
+Several arithmetic operations are included in the API: addition,
+subtraction, multiplication, division, comparison, negation and
+absolute value.
+
+The addition method is based on the classical addition algorithm
+included in Knuth's Art of Computer Programming (Vol 2). In this
+algorithm a convenient base is selected to represent the numbers to be
+added and a relatively simple carry system is used. In our case, due
+to the 32 bit limit imposed by the portability requirement of the pdf
+library, the unsigned 32 bit number and the signed 32 bit numbers are
+divided in two 16 bit ones each to be able to manage the intermediate
+storage. In other words, the addition is made in a 16 bit base (and
+not 32 bit) to avoid unwanted overflows during the process.
+
+Regarding the subtraction, thanks to the nature of the 2's-complement
+system, it is simply carried out by negating the subtrahend and adding
+it up to the minuend. The negation function is used in this case. This
+function basically carries out the 2's-complement conversion of a
+64-bit number type by inverting the integer's bits and adding one to
+the result. The absolute value of a pdf_64i_t number is carried out in
+a similar fashion.
+
+The comparison of two pdf_i64_bit types starts with the 32 bit signed
+part of the structure and if they are the same, a comparison of the 32
+bit unsigned part of the structure representing the least significant
+bits is carried out.
+
+The multiplication operation is also based in one of the classical
+arithmetic algorithm's presented in Knuth's Art of Computer
+Programming (Vol 2). Overflows are more common in this case so an 8
+bit base is chosen to avoid them during the calculations. Internally
+the method can handle results of 128 bits, but if the result needs
+more than 64 bits (in 2's complement format) to be represented then an
+error is flagged as an output of the function.
+
+The long division is also based on an intuitive algorithm included and
+proved by Knuth in the same volume mentioned above.
+@end table
+
+@node Hash module
+@section Hash module
+
+The Hash module provides procedures to work with Hash tables. Thus,
+for a given table T, an element entry E, an associated key K and a
+determined function F, we have that T(F(K)) = E (in case no hash
+collision is detected). This gives constant access time. In case of a
+hash collision the module knows how to deal with it but constant
+access time is not guaranteed.
+
+A hash table can store elements of any type.
+
+TODO: complete me.
+
+@node List module
+@section List module
+
+This module provides an implementation of dynamic lists and vectors.
+
+These operations are for unsorted lists and some of them have its
+sorted version. When dealing with sorted lists their sorted versions
+should be used. For more information see the GNU PDF Library Reference
+Manual
+
+@table @strong
+@item Creation and Destruction of Lists
+Procedures to create a new empty list are defined. As well as
+procedures to destroy it, freeing all used resources (the elements of
+the list are disposed first).
+@item Management of List Properties
+Procedures to get list properties are defined, like the list size.
+@item Search of List Elements
+Procedures to search an element in a list are defined given it's
+value, node or position in the list. It's also possible to get the
+next or previous node given another one.
+@item Setting and Getting the Value of List Elements
+Procedures to get an element are defined given it's containing node or
+position. It's also possible to replace an element at a given
+position.
+@item Adding and Removing List Elements
+Procedures to add an element in a list are defined, at the beginning,
+final or a given position. Also it's possible to add an element after
+or before a given node.
+
+Procedures to remove an element are also defined, given it's
+containing node, element or position.
+@item Iterator operations
+Procedures to create and destroy an iterator are defined given a
+list. They can be created to traverse a given position range (default
+is from first to last element).
+
+Note: The list contents must not be modified while the iterator is in
+use, except for replacing or removing the last returned element.
+@end table
+
+@node Stream module
+@section Stream module
+
+This module provides read/write streams of data to memory buffers and
+open files adding the following functionality:
+
+@itemize @minus
+@item Filtering
+@item Buffering
+@end itemize
+
+@float Figure,fig:stream-context
+@image{figures/stream-context}
+@caption{Stream context}
+@end float
+
+Several streams can be created to operate on the same open file. This
+provides a convenient access to files with several parts requiring
+different filters to read or write its contents.
+
+@float Figure,fig:streams-operating-file
+@image{figures/streams-operating-file}
+@caption{Several streams operating on an open file}
+@end float
+
+@menu
+* Filtering support::
+* Stream operation modes::
+* Reading from a stream::
+* Writing to a stream::
+* Positioning into a stream::
+* Supported filters::
+* Stream buffers::
+* Stream backends::
+* Stream filters::
+* Structure of a reading stream::
+* Structure of a writing stream::
+@end menu
+
+@node Filtering support
+@subsection Filtering support
+
+Filters (such as the PDF standard ones) are supported for both reading
+and writing (depending on the mode of operation of the stream. See
+below). Many filters may be used in a single stream (those filters are
+applied in order when writing or reading).
+
+@float Figure,fig:stream-filtering-support
+@image{figures/stream-filtering-support}
+@caption{Stream filtering support}
+@end float
+
+The streams maintain a buffer for both reading and writing. The size
+of the buffer is specified by the client in creation time. This is
+used, for example, to provide efficient character-based I/O.
+
+@node Stream operation modes
+@subsection Stream operation modes
+
+A stream can be opened in one of the following operation modes:
+
+@table @strong
+@item Read mode
+The stream is opened for reading. Writing is forbidden. The initial
+position of the read-pointer is 0. If it is a file stream then the
+underlying open file should support reading.
+@item Write mode
+The stream is opened for writing. Reading is forbidden. The initial
+position of the write-pointer is 0. If it is a file stream then the
+underlying open file should support writing.
+@end table
+
+@node Reading from a stream
+@subsection Reading from a stream
+
+A stream provides the following operations to read data from the
+memory buffer or open file:
+
+@itemize @minus
+@item Read a chunk of a specified number of consecutive octects and store it in a given buffer.
+@item Read a single character (octet) in an efficient way and return its numeric code.
+@item Peek a single character (octet) in an efficient way and return its numeric code. 
+@end itemize
+
+The stream manages the end-of-data condition in the following way:
+
+@itemize @minus
+@item When reading a specified number of consecutive octects, it will return the number of octects currently readed and stored in the specified buffer. If that number if less than the requested number of octects then the stream is in a end-of-data condition.
+@item When reading or peeking a single character, return an integer able to store a special value PDF_EOF. The caller then can check that condition before casting the returned value to a character one.
+@end itemize
+
+@node Writing to a stream
+@subsection Writing to a stream
+
+The stream provides the following operations to write data in a memory
+buffer or open file:
+
+@itemize @minus
+@item Write a chunk of a specified number of consecutive octects.
+@end itemize
+
+The stream manages the end-of-data condition returning the number of
+octects actually written in the stream. If that number is less than
+the requested number of octects then the stream is in a end-of-data
+condition.
+
+@node Positioning into a stream
+@subsection Positioning into a stream
+
+The streams supports the notion of read and write pointers. A pointer
+value is measured in positions, where a position is a offset relative
+to the beginning of the stream storage in octects.
+
+@float Figure,fig:stream-read-write-pointer
+@image{figures/stream-read-write-pointer}
+@caption{A read/write pointer in a stream}
+@end float
+
+Each stream has one pointer. When a stream is created the pointer is
+set to 0.
+
+The read chunk of bytes, read a character and write a chunk of bytes
+modify the current value of the pointer.
+
+In contrast, the peek a character operation does not change the value
+of the pointer.
+
+@node Supported filters
+@subsection Supported filters
+
+The stream abstraction provides support for filters. A filter is a
+transformation @code{F( )} that can be applied to the contents of a
+input buffer and return an output buffer with the modified content.
+
+Filters can be concatenated to form what is called a filter chain. The
+client program is then able to build the chain, specifying the number
+of filters, its types and its position. The stream abstraction support
+a predefined set of filter types. A stream is created with an empty
+filter chain.
+
+The Stream module provide support for all the PDF standard filters as
+defined in the PDF 1.7 Reference, Chapter 3, Section 3. Namely:
+
+@itemize @minus
+@item ASCII Hex
+@item ASCII 85
+@item PNG and TIFF predictors
+@item Flate compression (zlib)
+@item LZW compression
+@item Run-length
+@item CCITT Fax
+@item JBIG2
+@item DCT
+@item JPX
+@item Encryption filters 
+@end itemize
+
+@node Stream buffers
+@subsection Stream buffers
+
+A pdf_stm_buffer_t is a simple data type implementing a buffer in memory.
+
+@float Figure,fig:stream-memory-buffer
+@image{figures/stream-memory-buffer}
+@caption{A memory buffer}
+@end float
+
+The following function is used to create a new memory buffer:
+
+@table @code
+@item pdf_stm_buffer_new (@var{size})
+Create a new memory buffer with the given size.
+@end table
+
+The following functions provide information about the current state of
+a buffer:
+
+@table @code
+@item pdf_stm_buffer_full_p (@var{buffer})
+Return @code{PDF_TRUE} if the buffer is full. Return @code{PDF_FALSE}
+otherwise.
+@item pdf_stm_buffer_eob_p (@var{buffer})
+Return @code{PDF_TRUE} if the buffer is in an "end of buffer"
+condition. Return @code{PDF_FALSE} otherwise.
+@end table
+
+The following funtion can be used to resize a buffer:
+
+@table @code
+@item pdf_status_t pdf_stm_buffer_resize (@var{buffer}, @var{new_size})
+Resize a given buffer. 
+
+If @var{new_size} is larger than the actual size of buffer then buffer
+size will be increased, while both reading and writing pointers will
+remain unchanged.
+
+If @var{new_size} is shorter than the actual size of @var{new_size}
+then the memory pointed by @code{@var{buffer}->data} will be
+truncated, the @var{buffer} size will be adjusted to the new value and
+both reading and writing pointers will be set to @var{buffer} size if
+they are exceeding the new size of the buffer.
+
+@item pdf_status_t pdf_stm_buffer_rewind (@var{buffer})
+Rewind the buffer (both the reading and writing pointers are set to
+0).
+@end table
+
+The following function can be used to rewind a buffer:
+
+@table @code
+@item pdf_status_t pdf_stm_buffer_rewind (@var{buffer})
+Rewind the buffer (both the reading and writing pointers are set to
+0).
+@end table
+
+The following properties can be used with buffer variables:
+
+@itemize @minus
+@item Read pointer (@code{buffer->rp})
+@item Write pointer (@code{buffer->wp})
+@item Size of the buffer (@code{buffer->size})
+@end itemize
+
+@node Stream backends
+@subsection Stream backends
+
+A @code{pdf_stm_be_t} is an opaque data type implementing the backend
+used by the stream to read or write information.  A stream backend
+Enlarge A stream backend
+
+There are two types of stream backends:
+
+@table @strong
+@item File backends
+Backends wrapping filesystem files.
+@item Memory backends
+Backends wrapping memory buffers.
+@end table
+
+A backend support the following operations:
+
+@table @code
+@item pdf_stm_be_read (@var{be}, @var{bytes})
+Read the requested number of @var{bytes} and put these in
+@var{buffer}. Return the number of actually readed bytes.
+@item pdf_stm_be_write (@var{be}, @var{bytes})
+Write the requested number of @var{bytes} from @var{buffer} into the
+backend. Return the number of actually written bytes.
+@item pdf_stm_be_seek (@var{be}, @var{pos})
+Move the read/write pointer of the backend to @var{pos}. 
+@item pdf_stm_be_tell (@var{be})
+Return the current position of the read/write pointer in the backend.
+@end table
+
+@node Stream filters
+@subsection Stream filters
+
+A filter is a component that performs some transformation in the
+contents of an input memory buffer and fills an output memory buffer
+with the result of the transformation.
+
+@quotation Note
+Some filters impose certain minimum cache size limits, the default
+cache size defined by the library is assured to work for any filter.
+@end quotation
+
+@float Figure,fig:stream-filter
+@image{figures/stream-filter}
+@caption{A stream filter}
+@end float
+
+If a filter needs more output in order to fill its output buffer it
+may call another filter or a backend in order to get its input buffer
+refilled.
+
+A filter abstraction is composed by:
+
+@table @strong
+@item An application function @code{F()}
+This internal function implement the logic of the filter. Reading from
+an input buffer it generates output. The specific transformation
+depends on the nature of the filter. Note that the size of the output
+of an application function can be larger than the input size (a
+decompression filter), shorter than the input size (a compression
+filter) or equal to the input size. Note also that in general it is
+not possible to know in advance the size of the output generated by an
+application function.
+@item An input buffer
+This buffer contain the input for the application function. Its
+purpose is to serve as a cache.
+@item An output buffer
+This is the buffer (provided by the client of the filter) where the
+filter writes its output.
+@end table
+
+A filter support the following operations:
+
+@table @strong
+@item init
+This operation initializes the filter providing its configuration
+parameters.
+@item apply
+This operation ask the filter to generate bytes by calling its
+internal application function until the output buffer gets full. It
+returns a status code.
+@item dealloc_state
+This operation deallocates any private state and does clean up work,
+calling other functions and such.
+@end table
+
+The library supports a number of predefined filter implementations,
+one per filter type.
+
+Filter implementations are implemented in the files:
+
+@example
+   src/base/pdf-stm-f-XXX.[ch]
+@end example
+
+where XXX is the name of the algorithm implemented by the filter. Note
+that usually we implement two filters in each @file{pdf-stm-f-XXX.[ch]}:
+
+@itemize @minus
+@item The compression filter.
+@item The uncompression filter.
+@end itemize
+
+Of course, in the case of filters with only one-way operation (such as
+the null filter) the implementation files only contain one filter
+implementation.
+
+A filter implementation consist of the definition of several
+functions:
+
+@itemize @minus
+@item @code{pdf_stm_filter_XXX_init}
+@item @code{pdf_stm_filter_XXX_apply}
+@item @code{pdf_stm_filter_XXX_dealloc_state}
+@end itemize
+
+The prototype of a filter initialization function should be like:
+
+@table @code
+@item pdf_status_t pdf_stm_filter_XXX_init (@var{filter_params}, @var{filter_state})
+
+The arguments of that call are:
+
+@table @var
+@item filter_params
+A PDF hash variable containing the configuration parameters for the
+specific filter.
+@item filter_state
+A void pointer variable to be used by the filter to hold its private
+state.
+@end table
+@end table
+
+The prototype of a filter application function should be like:
+
+@table @code
+@item pdf_status_t pdf_stm_filter_XXX_apply (@var{filter_params}, @var{filter_state}, @var{input_buffer}, @var{output_buffer}, @var{finish_p})
+
+The arguments of that call are:
+
+@table @var
+@item @var{filter_params}
+A PDF hash variable containing the configuration parameters for the
+specific filter. The filter may assume that it will always receive the
+same hash.
+@item @var{filter_state}
+A void pointer variable to be used by the filter to hold its private
+state. The filter may assume that it will always receive the same
+pointer.
+@item @var{input_buffer}
+The input memory buffer (a pdf_stm_buffer_t variable).
+@item @var{output_buffer}
+The output memory buffer (a pdf_stm_buffer_t variable).
+@item @var{finish_p}
+Some filters needs to append some kind of trailer to the end of the
+filtered data (such as "~>" in the case of the ascii hex filter). If
+this parameter is true then the apply operation should append the
+trailer to the filtered data. If the filter does not need to write
+down trailer information then this argument can be ignored.
+@end table
+@end table
+
+The return values of the apply function of a filter implementation
+are:
+
+@table @code
+@item PDF_ENINPUT
+The filter implementation has processed all the input buffer and is
+ready to receive more input when available, via a new call to the
+'apply' function. It is assumed that the input buffer is empty after
+the apply function returns this value.
+@item PDF_ENOUTPUT
+The filter implementation needs more room in the output buffer, and is
+ready to fill it when it becomes available, via a new call to the
+'apply' function. It is assumed that the output buffer is full after
+the apply function returns this value.
+@item PDF_ERROR
+Error in the data processed by the filter. If the filter
+implementation returns this value then the 'apply' function wont be
+called again without a previous call to 'init'.
+@item PDF_EEOF
+This value should be returned in the following situations: 
+@itemize @minus
+@item There has been an EOF condition produced by some characteristics in the input data. Only the filters interpreting EOD markers or working in fixed-size blocks of data will return PDF_EEOF due to this reason. 
+@item The filter implementation has emitted data due to a finalization request (via the finish_p) parameter. Only the filters supporting finalization data will return PDF_EEOF due to this reason. 
+@end itemize
+@end table
+
+The prototype of a filter deallocation function should be like:
+
+@table @code
+@item pdf_status_t pdf_stm_filter_XXX_dealloc_state (@var{filter_state})
+
+The arguments of that call are:
+
+@table @var
+@item filter_state
+A void pointer variable to the state allocated in the initialization
+function.
+@end table
+@end table
+
+@node Structure of a reading stream
+@subsection Structure of a reading stream
+
+A client can ask a read stream to provide a specific number of bytes
+and to store it in a specified buffer. This interface is like the read
+operation we can find in C libraries:
+
+@example
+   pdf_size_t pdf_stm_read (*BUFFER, BYTES);
+@end example
+
+The stream then tries to provide the asked number of bytes and return
+the number of actually readed bytes: if the returned number is less
+than the asked one then a backend-exhausted condition happened.
+
+@float Figure,fig:stream-read
+@image{figures/stream-read}
+@caption{A read stream}
+@end float
+
+A cache is used to get the information from the filter chain. A
+backend provides data to the filter chain.
+
+@node Structure of a writing stream
+@subsection Structure of a writing stream
+
+A client can ask a write stream to consume a specific number of bytes
+from a specified buffer. This interface is like the write operation we
+can fin in C libraries:
+
+@example
+   pdf_size_t pdf_stm_write (*BUFFER, BYTES);
+@end example
+
+The stream then tries to consume the asked number of bytes and return
+the number of actually written bytes: if the returned number is less
+than the asked one then a backend-full condition happened.
+
+@float Figure,fig:stream-write
+@image{figures/stream-write}
+@caption{A write stream}
+@end float
+
+In a write stream the cache is used to store the data produced by the
+filter pipeline. The filter pipeline obtain the data from the user
+provided buffer. Finally, the data in the cache is written into a
+backend.
+
+@node Floating point arithmetic module
+@section Floating point arithmetic module
+
+TODO
+
+@node Text module
+@section Text module
+
+This module provides access to a text abstraction as an encoded
+sequence of characters. Several text encodings are supported and
+conversion functions to change the encoding of a text are provided.
+
+@menu
+* Text variables::
+* Text content::
+* Country and language information::
+* List of word boundaries::
+* Text encodings::
+* GNU and Unix encodings::
+* Windows encodings::
+* Mac OS X encodings::
+* Text filters::
+* Text operations::
+* Unicode Character Database::
+* Casing algorithms::
+* Standard casing::
+* Special casing::
+* Special casing with conditions::
+* Word boundaries according to Unicode::
+@end menu
+
+@node Text variables
+@subsection Text variables
+
+The Text Module implements a data abstraction called text
+variables. It is an opaque type: the client doesn't know details about
+the implementation of text variables.
+
+@float Figure,fig:text-variable
+@image{figures/text-variable}
+@caption{A text variable}
+@end float
+
+A text variable (a variable of type @code{pdf_text_t}) holds the
+following information:
+
+@itemize @minus
+@item A text (sequence of characters), which is internally stored in UTF32-BE.
+@item A ISO 639-1 @footnote{http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=22109} language code (optional).
+@item A ISO 3166-1 alpha-2 @footnote{http://www.iso.org/iso/country_codes/iso_3166_code_lists/english_country_names_and_code_elements.htm} country code (optional).
+@end itemize
+
+@node Text content
+@subsection Text content
+
+Every text variable can contain any sequence of UNICODE points, which
+is internally stored in UTF32-HE (Host Endian) encoding with no Byte
+Order Marker. This means that every character will be stored as a
+32bit value.
+
+The length of the UNICODE point sequence is not stored as the number
+of characters, but as the number of bytes actually allocated for the
+data (four times the number of characters).
+
+In addition to this base UTF32-HE based content, other additional
+approaches can be taken, as storing the data in PDFDocEncoding or
+UTF16BE as well (for a faster encoding conversion, but using more
+memory). This extra feature will be decided in the future, when a
+clearer view of which the most used encoding conversions are is
+obtained. It will be simple to add this feature even as an extra
+option at configure level. 
+
+@node Country and language information
+@subsection Country and language information
+
+The ISO 3166-1 alpha-2 Country Code and ISO 639-1 Language Code are
+used within PDF strings to give more information on the text being
+stored, so that there is no need for a specific function to guess
+which the language being used in the text is. These Country Code and
+Language Code are inherited from UTF16-BE encoded PDF strings (between
+U+001B escape sequences), or can be explicitly set using Text Module
+functions (see description of Text Module features below).
+
+It should be noted that this information will always be linked to the
+UTF16-BE PDF string representation. No other encoding representation
+will handle this information.
+
+@node List of word boundaries
+@subsection List of word boundaries
+
+As a side product (so optional), the text object will store, if
+necessary, a list of word boundaries. This list is used in the casing
+algorithms basically, so that a specific 'casing context' is defined
+for each unicode point to be case-converted. The word boundaries are
+computed using the algorithms explained in Unicode Standard Annex #29:
+Text Boundaries, and they are stored in a @code{pdf_list_t} object.
+
+@node Text encodings
+@subsection Text encodings
+
+The Text Module has support for the following encodings:
+
+@table @strong
+@item PDF Doc Encoding
+The PDF specification defines a custom encoding. The PDF Doc Encoding
+does not cover all the Unicode characters, just a small subset of 256
+of them.
+
+@quotation Note
+Note: PDF Strings can be encoded in either PDF Doc Encoding or
+UTF16-BE with BOM
+@end quotation
+@item Unicode Encodings
+The following encodings of ISO-10646
+@footnote{http://en.wikipedia.org/wiki/ISO_10646} (Unicode) are
+supported:
+
+@itemize @minus
+@item UTF-8
+@item UTF-16 Big Endian
+@item UTF-16 Little Endian
+@item UTF-32 Big Endian
+@item UTF-32 Little Endian 
+@end itemize
+
+System endianness is also detected by the library, so additionally
+specific host-endian mappings are also available:
+
+@itemize @minus
+@item UTF-16 Host Endian (BE or LE)
+@item UTF-32 Host Endian (BE or LE)
+@end itemize
+
+@quotation Note
+Note: PDF Strings can be encoded in either PDF Doc Encoding or
+UTF16-BE with BOM
+@end quotation
+@item Host Encodings 
+In addition to "internal" built-in encodings such as Unicode and PDF
+Doc Encoding the Text Module supports conversions to and from several
+"host encodings".
+
+The supported host encodings depend on the specific host types:
+
+@itemize @minus
+@item GNU and Unix encodings
+@item Windows encodings
+@item Mac OS X encodings
+@end itemize
+
+The Text Module provides a specific data type to handle host encoding
+information, pdf_text_host_encoding_t, which stores not only the name
+of the encoding being used, but also the specific ANSI Code Page
+identifier.
+
+The full list of supported host encodings for each OS follows:
+
+@multitable @columnfractions .16 .16 .16 .16 .16 .16
+@headitem Encoding name @tab ANSI Code Page @tab GNU UNIX @tab Mac OS
+@tab Windows @tab Additional comments
+@item UTF-7
+@tab 65000
+@tab External
+@tab External
+@tab External
+@tab External
+@item UTF-8
+@tab 65001
+@tab Built-In
+@tab Built-In
+@tab Built-In
+@tab Built-In  
+@end multitable
+@end table
+
+@node GNU and Unix encodings
+@subsection GNU and Unix encodings
+
+The Text Module uses the @code{nl_langinfo()} function to get the
+specific encoding configured by the user in the Locale information
+(@code{LC_TYPE}, @code{LC_ALL} or @code{LANG}). For specific
+conversions to and from the internal UTF32-BE encoding of the
+pdf_char_t type, the Text Module uses the "iconv" API, which is part
+of the Single Unix Specification (SUS) standard.
+
+@itemize @minus
+@item Dependencies in GNU/Linux: 'iconv.h' and 'langinfo.h' headers
+@item Dependencies in UNIX systems: 'iconv.h' and 'langinfo.h' headers, plus specific system-dependent library
+@end itemize
+
+In all modern GNU/Linux operation systems, the 'iconv' utility is
+provided within the gnu c library. 
+
+@node Windows encodings
+@subsection Windows encodings
+
+The Text Module uses the Windows API to get the specific encoding
+being used by the system (@code{GetACP}
+@footnote{http://msdn2.microsoft.com/en-us/library/ms776259(VS.85).aspx}). By
+the means of this Windows API, the text module can convert any Windows
+specific host encoding (identified by an unique ANSI Code Page) to the
+internal UTF32-BE representation of the pdf_text_t element
+(@code{MultiByteToWideChar}
+@footnote{http://msdn2.microsoft.com/en-us/library/ms776413(VS.85).aspx}
+and @code{WideCharToMultiByte}
+@footnote{http://msdn2.microsoft.com/en-us/library/ms776420(VS.85).aspx}).
+
+A full list of ANSI Code Pages supported by Windows OS is given in the
+following link: Windows host encodings
+
+@itemize @minus
+@item Dependencies in Windows (95/98/Me/NT/2000/XP/Vista): 'windows.h' header, 'Kernel32.lib' library
+@item Dependencies in Windows CE: 'Winnls.h' header, 'Coreloc.lib' library 
+@end itemize
+
+@node Mac OS X encodings
+@subsection Mac OS X encodings
+
+Modern Mac OS X operating systems are fully UNIX 03 compliant, so the
+same encoding conversion scheme based on the 'iconv' utility used for
+GNU/Linux and UNIX systems can be applied (See iconv man page at Apple
+DC).
+
+@node Text filters
+@subsection Text filters
+
+It is possible to filter the contents of a text variable through
+several simple filters supported by the Text Module:
+
+@itemize @minus
+@item The Identity filter does not perform any transformation in the encoded text. It is a no-op.
+@item The Line Endings Normalization filter normalizes EOL sequences, converting all types of line endings to the platform-specific EOL type.
+@item The Upper Case filter makes all text upper case.
+@item The Lower Case filter makes all text lower case.
+@item The Title Case filter makes all text title case.
+@item The Remove Ampersands filter removes all single ampersands, substituting ` &' with a white space character. This filter also transforms ` && ' into ` & '.
+@item The Normalize with Full-Width characters filters transforms all the unicode points into the corresponding Full-Width variant (if available)
+@item The Remove Line Endings filter replaces line endings with space characters.
+@end itemize
+
+More than one filter can be applied at the same time (in the same
+function call), except for the case conversion filters ('Title Case',
+'Upper Case', 'Lower Case'), where only one per function call is
+applied. The same could be applied to the 'Remove Line Endings' and
+'Line Endings Normalization', but the difference is that in this
+second case the resulting string does not depend on the order the
+filter are applied. See the Library Reference Manual for details.
+
+@node Text operations
+@subsection Text operations
+
+The following operations are supported by the Text Module. See the
+Library Reference Manual for the details.
+
+@table @strong
+@item Creation and Destruction of Text Variables
+@itemize @minus
+@item Create a new text variable containing no text.
+@item Dup a new text variable from a existing one, copying the contents.
+@item Create a new text variable and initialize it with a given host encoded string.
+@item Create a new text variable and initialize it with a given PDF string text representation (encoded in either PDF Doc Encoding or UTF16-BE). This function should be used with caution, as an input UTF16-BE PDF string could be converted in more than one pdf_text_t elements if country/language code information is included within the data.
+@item Create a new text variable from a string of Unicode characters in a given Unicode encoding.
+@item Create a new text variable containing the textual representation of a given integer.
+@item Destroy a given text variable and its contents. 
+@end itemize
+@item Manipulation of Text Properties
+@itemize @minus
+@item Get the country code associated with a text variable.
+@item Get the language code associated with a text variable.
+@item Associate a text variable with a country code.
+@item Associate a text variable with a language code.
+@item Determine if a given text variable is empty (contains no text). 
+@end itemize
+@item Manipulation of Text Contents
+@itemize @minus
+@item Obtain the host encoding configured in the system or user environment.
+@item Guess the best available host encoding to encode the contents of a given text variable.
+@item Get the contents of a text variable encoded in a given host encoding.
+@item Get the contents of a text variable encoded in PDF Doc Encoding.
+@item Get the contents of a text variable encoded in a Unicode encoding (with or without BOM, with or without Country/Language Codes).
+@item Set the value of a text variable to a string encoded with some host encoding.
+@item Set the value of a text variable to a string encoded with PDF Doc Encoding.
+@item Set the value of a text variable to a string encoded with a Unicode encoding (with or without BOM).
+@item Concatenate the contents of two text variables.
+@item Replace a fixed pattern in the content of a given text variable.
+@item Replace a fixed ASCII pattern in the content of a given text variable.
+@item Filter the contents of a text variable with a predefined filter (See Filters section above). 
+@end itemize
+@item Comparison of Text Variables
+@itemize @minus
+@item Compare the contents (data and country/language information) of two text variables. 
+@end itemize
+@end table
+
+@node Unicode Character Database
+@subsection Unicode Character Database
+
+The text module involves the use of some algorithms (casing,
+normalization, ...) described in the Unicode standard, so an extensive
+use of the Unicode Character Database (UCD) is done. The following
+table shows the specific files from the UCD that are used in the Text
+Module.
+
+@multitable @columnfractions .33 .33 .33
+@headitem UCD file  @tab Contents considered  @tab Link to online UCD
+@item UnicodeData.txt
+@tab Simple Lowercase, Simple Uppercase, Simple Titlecase, General Category, Combining Class
+@tab @url{http://www.unicode.org/Public/UNIDATA/UnicodeData.txt}
+@item SpecialCasing.txt
+@tab All contents of file
+@tab @url{http://www.unicode.org/Public/UNIDATA/SpecialCasing.txt}
+@item WordBreakProperty.txt
+@tab All contents of file
+@tab @url{http://www.unicode.org/Public/UNIDATA/auxiliary/WordBreakProperty.txt}
+@item Proplist.txt
+@tab All contents of file, but only those with Soft_Dotted are currently used.
+@tab @url{http://www.unicode.org/Public/UNIDATA/Proplist.txt}
+@end multitable
+
+The internal required set of data coming from the UCD is
+self-generated using the `pdf-text-download-and-generate-ucd.sh'
+script available in the `build-aux' directory within the sources. For
+more information on how to regenerate the internal UCD data set (due
+to a new version of Unicode, for example) see README.regenerateUCD
+
+@quotation Note
+See Exhibit 1, Unicode License Agreement for terms of use of the UCD.
+@end quotation
+
+@node Casing algorithms
+@subsection Casing algorithms
+
+The text module provides a self implementation of casing algorithms
+based on Unicode standard v5.1. This casing algorithms can be divided
+in three different types:
+
+@itemize @minus
+@item Standard casing
+@item Special casing
+@item Special casing with conditions
+@end itemize
+
+For each of these casing types, three different low-level operations
+are available:
+
+@itemize @minus
+@item Uppercase a given character
+@item Lowercase a given character
+@item Titlecase a given character 
+@end itemize
+
+The text module will use these internal low-level functions in both
+filter operations and case-sensitive comparison.
+
+It must be noted that Unicode is still not perfect, and there are
+quite a lot of locale-dependent rules that could be applied when
+performing case-conversion algorithms. This library does not cover
+those special cases (yet).
+
+@node Standard casing
+@subsection Standard casing
+
+The standard casing is that where a single unicode code point is
+converted into another single unicode point. This algorithm covers all
+the casing needs for most of the languages where casing information is
+needed. If there is no case information for a given unicode point (e.g
+the uppercase of an already capital letter), the same unicode point is
+returned.
+
+Examples:
+
+@itemize @minus
+@item @code{UpperCase( g ) = G}
+@item @code{UpperCase( a2 ) = A2}
+@item @code{UpperCase( gnu pdf ) = GNU PDF}
+@item @code{UpperCase( Gnu PDF ) = GNU PDF}
+@item @code{TitleCase( gnu pdf ) = Gnu Pdf}
+@item @code{TitleCase( GNU PDF ) = Gnu Pdf}
+@end itemize
+
+@node Special casing
+@subsection Special casing
+
+There are special unicode points where a case operation converts a
+single unicode point into 0 or more unicode points. The text module
+interface is designed to allow such operations, by specifying not only
+the output unicode points, but also the number of points returned.
+
+Examples:
+
+@itemize @minus
+@item @code{UpperCase(HEIß) = HEISS}
+@end itemize
+
+@node Special casing with conditions
+@subsection Special casing with conditions
+
+The most complicated case algorithm is that involving specific
+conditions that must be met in order to apply the special case defined
+in Unicode. The types of conditions are listed below:
+
+@table @strong
+@item a
+The case conversion should be done only if the user's locale matches
+the one specified as condition. In the GNU PDF implementation, the
+user's locale is not checked: the embedded language/country
+information in PDF strings is used instead. This type of language
+context checks allow the text module to provide correct Uppercase and
+Lowercase turkish variants for dotless 'i', for example.
+@item b
+The character can be in a particular Casing Context, as specified
+below.
+
+@table @strong
+@item Final_Sigma
+When the given character is preceded by a sequence consisting of a
+cased unicode point (with case information) and a case-ignorable
+(without case information) sequence of points. The given character
+must no be followed by a sequence consisting of a case-ignorable
+sequence and a cased letter.
+@item After_Soft_Dotted
+There is a character with the Soft_Dotted property before the
+character to convert, with no intervening character of combining class
+0 or 230.
+@item More_Above
+The character to convert is followed by a character of combining class
+230 (Above) with no intervening character of combining class 0.
+@item Before_Dot
+The character to convert is followed by COMBINING DOT ABOVE
+(U+0307). Any sequence of characters with a combining class that is
+neither 0 nor 230 may intervene between the current character and the
+combining dot above.
+@item After_I
+There is an uppercase I before the character to convert, and there is
+no intervening combining character class 230 (Above) or 0.
+@end table
+@end table
+
+@node Word boundaries according to Unicode
+@subsection Word boundaries according to Unicode
+
+The text module provides a self implementation of word boundary
+detection based on Unicode Standard Annex #29. This algorithm is based
+on 14 different boundary rules that are applied to the UTF-32HE text
+stored within the text object, and it's basically used within case
+conversion algorithms.
+
+It must be noted that Unicode is still not perfect, and there are
+quite a lot of locale-dependent rules that could be applied when
+looking for word boundaries. This library does not cover those special
+cases (yet).
+
+@node Time module
+@section Time module
+
+This module provides facilities to manipulate calendar dates, time
+spans and to perform basic time arithmetic.
+
+@menu
+* Time data abstractions::
+* Calendar structures::
+* Supported time formats::
+* Time operations::
+@end menu
+
+@node Time data abstractions
+@subsection Time data abstractions
+
+@float Figure,fig:times-and-time-spans
+@image{figures/times-and-time-spans}
+@caption{Times and time spans}
+@end float
+
+The @code{pdf_time_t} opaque data type represents a specific UTC date
+and time. It is a discrete point in the continuous timeline. The
+resolution is in seconds. Time values are attributed with an offset
+with GMT (positive or negative) to allow to represent local times. The
+implementation may impose a minimum and/or a maximum time value,
+defining an interval of valid time values.
+
+The @code{pdf_time_span_t} opaque data type represents a time span
+measured in seconds. The span may alternatively be positive or
+negative. The implementation may impose a minimum and/or a maximum
+time span size.
+
+@node Calendar structures
+@subsection Calendar structures
+
+The time and time span abstractions are implemented in opaque
+types. The client does not know about the internal implementation of
+those data types: functions are provided to both get and manipulate
+the values of both time and time spans.
+
+Two data structures are provided to hold the several attributes that
+conform time and time spans: @code{pdf_time_cal_s} and
+@code{pdf_time_cal_span_s}.
+
+The @code{pdf_time_cal_s} structure holds information about a specific
+time represented in calendar items:
+
+@float Figure,fig:calendar-time
+@image{figures/calendar-time}
+@caption{A calendar time}
+@end float
+
+@table @strong
+@item Year
+A year number. Negative values may be supported in some systems.
+@item Month
+A month number. The valid range is 1..12. 
+@item Day
+A day number. The valid range is 1..31. 
+@item Day of week
+Day of the week. The valid range is 1..7 (Monday to Sunday). 
+@item Hour
+An hour. The valid range is 0..23. 
+@item Minute
+A minute. The valid range is 0..59. 
+@item Second
+A second. The valid range is 0..59. 
+@item GMT Offset
+A relative offset with GMT. May be negative.
+@end table
+
+The @code{pdf_time_cal_span_s} structure holds information about a
+time span represented in calendar items:
+
+@float Figure,fig:calendar-time-span
+@image{figures/calendar-time-span}
+@caption{A calendar time span}
+@end float
+
+@table @strong
+@item Years
+Number of years of the time span. 
+@item Months
+Number of months of the time span. 
+@item Days
+Number of days of the time span. 
+@item Hours
+Number of hours of the time span. 
+@item Minutes
+Number of minutes of the time span. 
+@item Seconds
+Number of seconds of the time span. 
+@end table
+
+Note that many distinct calendar structures may correspond to a unique
+time span (12 months and 0 years is the same than 0 months and 1 year,
+for example). The functions filling pdf_time_cal_span_s will always
+use the normalized time span calendar structure for a given time
+span. The rule to build normalized time span calendar structures is to
+maximize the values of the fields with the following precedence
+relationship: years <- months <- days <- hours <- minutes <- seconds.
+
+@node Supported time formats
+@subsection Supported time formats
+
+The time module support the following time formats:
+
+@itemize @minus
+@item PDF date strings (see Date).
+@item ISO 8601 date and time format [1].
+@item ASN1
+@item UTC ASN1 
+@end itemize
+
+Conversion and parsing functions are provided for all the above date formats.
+
+@node Time operations
+@subsection Time operations
+
+@table @strong
+@item Time creation and destruction
+The following operations are provided in order to create and destroy
+time data abstractions.
+@itemize @minus
+@item Create a new time initialized to the Epoch (Jan 1 1970-01-01 00:00:00 UTC).
+@item Dup a new time variable from a given one, allocating any needed resource.
+@item Destroy a time data abstraction freeing all used resources. 
+@end itemize
+@item Time Values Management
+The following operations are provided in order to manage the values
+contained in time data abstractions. Calendar structures are used to
+hold the attributes of the time data abstractions.
+
+@itemize @minus
+@item Copy the value of a time data abstraction to another data abstraction.
+@item Clear the value of a time data abstraction (set it to the Epoch).
+@item Add a time span data abstraction to the value of a given time data abstraction and store the result as the new value of the time data abstraction.
+@item Subtract a time span data abstraction to the value of a given time data abstraction and store the result as the new value of the time data abstraction.
+@item Add a time span represented in a calendar structure to the value of a given time data abstraction and store the result as the new value of the time data abstraction.
+@item Subtract a time span represented in a calendar structure to the value of a given time data abstraction and store the result as the new value of the time data abstraction.
+@item Fill a calendar structure with the local calendar time of a given time data abstraction.
+@item Fill a calendar structure with the UTC calendar time of a given time variable.
+@item Set the value of a time data abstraction to a given calendar time.
+@item Set the local time offset of a time data abstraction to the one used by the operating system.
+@item Calculate the time span that goes from a time data abstraction to another data abstraction and store its attributes into a calendar structure.
+@item Calculate the time span that goes from a time data abstraction to another data abstraction and store its attributes into a time span data abstraction.
+@item Compare two time data abstractions. 
+@end itemize
+@item Time Printing and Parsing
+The following operations are provided in order to perform string->time
+and time->string conversions.
+
+@itemize @minus
+@item Create a string representation of a time data abstraction according to a given supported time format.
+@item Get a string containing a time specification in some format and fill a time data abstraction with the parsed values. 
+@end itemize
+@item Getting the Current Time
+The following operations are provided in order to get the current time
+indicated by the operating system.
+
+@itemize @minus
+@item Set the value of a time data abstraction to the current local time used by the operating system.
+@item Set the value of a time data abstraction to the current UTC time used by the operating system. 
+@end itemize
+@item Time Span Creation and Destruction
+The following operations are provided in order to create and destroy
+time span data abstractions.
+
+@itemize @minus
+@item Create a new time span data abstraction initialized with a zero value (0 seconds).
+@item Dup a new time span data abstraction from another time span data abstraction.
+@item Destroy a time span data abstraction freeing all used resources. 
+@end itemize
+@item Time Span Values Management
+The following operations are provided to manage the values contained
+into time span data abstractions. Calendar structures are used to hold
+the attributes of the time span data abstractions.
+
+@itemize @minus
+@item Set the duration of a time span from two 32-bit integers representing the high part and the low part of a 64-bit value representing the number of seconds.
+@item Set the duration of a time span from a 32-bit integer representing the number of seconds.
+@item Make a positive time span into a negative one or make a negative time span into a positive one.
+@item Add two time span data abstractions and store the result in another time span abstraction.
+@item Copy the value of a time span data abstraction into another time span data abstraction.
+@item Difference two time span data abstractions and store the result (maybe negative) into another time span abstraction.
+@item Get the value of a time span abstraction in seconds.
+@item Compare the length of two given time span abstractions. 
+@end itemize
+@item Management of Time Span Calendar Structures
+The following operations are provided to ease the management of
+calendar structures containing the attributes of time span data
+abstractions.
+
+@itemize @minus
+@item Add two calendar structures containing time spans and store the result in another calendar structure.
+@item Compare two calendar structures containing time spans previously resolved with a given base time.
+@item Compute the difference between two calendar structures containing time spans relative to a given base time and store it in a given calendar structure. 
+@end itemize
+@end table
+
+@node Filesystem module
+@section Filesystem module
+
+This module provides facilities to access filesystem objects (files,
+folders, file permissions, etc) in a system-independent way.
+
+Filesystem objects provides access to file system services in an
+abstract way, letting the library client to define filesystems for
+other classes of devices. Open files are readable or writeable file
+items in a filesystem. Path names are named locations identifying
+files or folders.
+
+@menu
+* File systems::
+* Filesystem items::
+* Files::
+* Folders::
+* Path names::
+* Relation between path names open files and filesystems::
+* Filesystem interfaces::
+* The filesystem implementation interface::
+* The filesystem definition interface::
+* The filesystem interface::
+* The file interface::
+* The disk filesystem::
+@end menu
+
+@node File systems
+@subsection File systems
+
+In the GNU PDF Library a filesystem object (of type pdf_fsys_t) is an
+implementation of the file system services for a specific class of
+devices. The filesystem object provides the functionality to open
+files, read and write data from/to open files, create and delete
+folders, rename files, manage file and folder permissions, etc.
+
+By implementing the functions defined in the Filesystem Implementation
+Interface the client can define and use its own filesystems. In this
+way a high level of abstraction is achieved in the library code that
+uses the filesystem services: the library is able to read the contents
+of a PDF file from a file stored in the local filesystem, from a
+network webdav based filesystem, an http server or a compressed image.
+
+@float Figure,fig:filesystem-several-devices
+@image{figures/filesystem-several-devices}
+@caption{Heterogeneous filesystem implementations}
+@end float
+
+The GNU PDF Library provides the default disk filesystem
+implementation for each supported plattform.
+
+@node Filesystem items
+@subsection Filesystem items
+
+Conceptually speaking a filesystem contain a tree (or several trees in
+some filesystem implementations supporting several volumes) of
+filesystem items.
+
+Each time has a type and several properties. The client can ask the
+filesystem for the properties of a given item identified by a path
+name. Those properties are summarized in the pdf_fsys_item_props_s
+structure and are the following:
+
+@table @strong
+@item type
+The type of the item. Supported types are:
+@itemize @minus
+@item File
+@item Folder
+@item Unknown 
+@end itemize
+@item hidden_p
+Tells if the item has set the hidden bit.
+@item is_read_only_p
+Tells if the item has set the read-only bit.
+@item creation_date_known
+Tells if the creation date (see below) is useful.
+@item creation_date
+The creation date of the item.
+@item mod_date_known
+Tells if the last modification date (see below) is useful.
+@item mod_date
+The last modification date of the item.
+@item file_size
+If the item is a file then this field contain the lower 32-bits of the
+size (in octects) of the item.
+@item file_size_high
+If the item is a file then this field contain the upper 32-bits of the
+size (in octects) of the item.
+@item folder_size
+If the item is a folder then this field contain the number of items
+contained in the folder. 
+@end table
+
+@node Files
+@subsection Files
+
+An open file object (of type pdf_fsys_file_t) represent a readable and/or writable file in a filesystem. Open files are associated with a given filesystem and any filesystem can maintain an arbitrary number of open files (this may depend on the specific filesystem implementation).
+
+@float Figure,fig:filesystem-open-files
+@image{figures/filesystem-open-files}
+@caption{Filesystem with some open files}
+@end float
+
+The client can read and write data from/to an open file using the
+pdf_fsys_file_* functions. The implementation of the open files then
+call to the appropriate functionality of the filesystem managing the
+file.
+
+The client should close any opened file calling the appropriate
+function on the underlying filesystem.
+
+@node Folders
+@subsection Folders
+
+There is not an explicit data type for an open folder in the GNU PDF
+Library. Instead, folders are referred using path names.
+
+The Filesystem Interface provides functions to create, delete and
+rename folders.
+
+@node Path names
+@subsection Path names
+
+Both files and folders in a filesystem can be referred using a string
+locator: a path name. Path names are implemented using PDF
+strings. Several path names can refer to the same file or folder.
+
+Both the encoding and the format of the contents of a path name
+depends on the specific filesystem implementation. The default disk
+filesystem provided by the GNU PDF Library uses the textual device
+idependent file specifications described in the PDF Reference (section
+3.10). The interpretation of those path names depend in the specific
+plattform where the library is running. See XXX for more information
+about the disk filesystem path names.
+
+@node Relation between path names open files and filesystems
+@subsection Relation between path names open files and filesystems
+
+The following datamodel depicts the relation between path names, open
+files and filesystems:
+
+@float Figure,fig:er-paths-files-filesystems
+@image{figures/er-paths-files-filesystems}
+@caption{E/R diagram of path names, files and filesystems}
+@end float
+
+@node Filesystem interfaces
+@subsection Filesystem interfaces
+
+Several interfaces can be found in the Filesystem module. There is an
+internal interface filesystem implementors can implement to define a
+new filesystem. It is called the Filesystem Implementation
+Interface. A Filesystem Definition Interface allow users to register
+the implementation functions into a filesystem variable. There are
+also two interfaces implemented by the Filesystem module allowing
+clients to access the module functionality: the Filesystem Interface,
+used to manage several filesystem aspects, and the File Interface,
+that provides functionalities related to open files, such as reading
+and writing information.
+
+The following interface diagram show the relation between the
+filesystem interface, the filesystem definition interface, the
+filesystem implementation interface and the file interface:
+
+@float Figure,fig:filesystem-interfaces
+@image{figures/filesystem-interfaces}
+@caption{Filesystem interfaces}
+@end float
+
+@node The filesystem implementation interface
+@subsection The filesystem implementation interface
+
+The filesystem implementation interface is a set of functions that are
+installed in a pdf_fsys_t variable in order to provide its
+functionality. By implementing those functions the client can provide
+a filesystem for some (physical or logical) storage device: a webdav
+directory, a read-only http filesystem, etc.
+
+Note that the functions conforming the Implementation Interface are
+not intended to be directly invoked by clients. Clients can access to
+the functionality of the filesystem using indirect ways:
+
+@itemize @minus
+@item Making calls to the Filesystem Interface.
+@item Making calls to the File Interface. 
+@end itemize
+
+The implementation of both interfaces then makes use of the Filesystem
+Implementation Interface in order to honour the petition.
+
+Details about the Filesystem Implementation Interface can be found in
+the GNU PDF Library Reference Manual, section XXX.
+
+@node The filesystem definition interface
+@subsection The filesystem definition interface
+
+The Filesystem Definition Interface is implemented by the Filesystem
+module and provides functionality to provide an implementation to a
+filesystem. A @code{pdf_fsys_t} should be properly defined before to
+use it.
+
+The Filesystem Definition Interface defines the following elements:
+
+@itemize @minus
+@item The function types conforming the Filesystem Implementation Interface.
+@item Installation functions to register implementation functions into a filesystem variable.
+@end itemize
+
+@node The filesystem interface
+@subsection The filesystem interface
+
+The Filesystem Interface is implemented by the Filesystem module and
+provides access to some filesystem functionalities in a filesystem
+implementation independent way.
+
+The functionality covered by the Filesystem Interface includes:
+
+@itemize @minus
+@item Folder management.
+@item Folder contents management.
+@item Volume-level flush operations.
+@item Read In Advance (RIA) capabilities.
+@item Storage properties management (free space, etc).
+@item Management of filesystem items (rename, remove, flags, etc).
+@item Utility functions (get a path name for a temporal file, etc). 
+@end itemize
+
+Note that not every filesystem implementation supports these
+operations. Read In Advance capabilities, for example, are usually
+implemented in slow file system devices such as network
+filesystems. When a specific filesystem implementation do not support
+a functionality in the Filesystem Interface then the specific call
+becomes a no-op.
+
+Details about the Filesystem Interface can be found in the GNU PDF
+Library Reference Manual, section XXX.
+
+@node The file interface
+@subsection The file interface
+
+The File Interface is implemented by the filesystem module and
+provides access to filesystem functionality related with open files,
+such as writing and reading data to/from a specific file.
+
+Note that open file variables (@code{pdf_fsys_file_t}) contain a
+reference to its underlying filesystem implementation, so the client
+should only provide a correctly initialized (opened) file variable to
+the @code{pdf_fsys_file_*} functions.
+
+The functionality covered by the File Interface includes:
+
+@itemize @minus
+@item Synchronous Input/Output.
+@item Asynchronoous Input/Output (not to be confused with RIA. See above).
+@item File-level flush operations.
+@item File positioning management.
+@item File size management.
+@item File flags (status) management.
+@end itemize
+
+Details about the File Interface can be found in the GNU PDF Library
+Reference Manual, section XXX.
+
+@node The disk filesystem
+@subsection The disk filesystem
+
+TBD
+
+@node Error module
+@section Error module
+
+The Error module provides procedures for error reporting to the client
+as well as for error tracing (via debug messages) to developers. Here
+we also define status types returned by most procedures (there are
+exceptions though).
+
+A status type name is defined. This type of variable is returned by
+many library functions in order to communicate the status of the
+performed operation.
+
+Basic functions are defined to print messages either to stderr or to
+some other file.
+
+For each layer there is a macro procedure defined. These are only of
+interest to the library developers.
+
+@node Crypt module
+@section Crypt module
+
+The Encryption module provides procedures both for encryption and
+decryption of buffers. Indeed it also provides functions for
+message-digest.
+
+This module is required to be initialized once at startup, when
+libgnupdf is loaded.
+
+@menu
+* Ciphers::
+* Encryption algorithms::
+* Crypt module operations::
+* Message digest::
+@end menu
+
+@node Ciphers
+@subsection Ciphers
+
+Encryption module provides a new data type named cipher. A cipher
+turns a plain text buffer to a ciphered text one and vice versa. In
+order to hide the original content, a encryption key should be
+provided by the caller. The length of this key depends on algorithm
+used.
+
+There are two kinds of ciphers, the stream-based ciphers and
+block-based ones. Stream-based ciphers work on each byte of the input
+buffer. Meanwhile, a block-based cipher works on a fixed blocks of a
+certain fixed size. As block ciphers algorithms are designed to work
+on individual blocks, several modes of operation are defined. They
+specifies how to a sequence of blocks are encrypted. Finally, padding
+is a mechanism in order to allow input buffer can have an arbitrary
+length in a block cipher.
+
+@node Encryption algorithms
+@subsection Encryption algorithms
+
+The encryption module provides support for the following encryption algorithm, which are required by the pdf standard.
+
+@table @strong
+@item ARC4
+ARC4 is a RC4-compatible algorithm. It is a stream-based cipher.
+@item AES128
+It is a block-based cipher. Whether we want to encrypt a buffer whose
+length is not multiple of this size, then the buffer should be padded
+before encrypting. In this case, the algorithm described in RFC 2898
+is used for this purpose.
+
+A operation mode known as Cipher Block Chaining mode is used. It
+requires a initialization vector (herein IV) whose length is 16
+bytes. This vector is assumed to be at the beginning of the input
+buffer, and it will put in the same place for the output buffer
+automatically.
+@end table
+
+@node Crypt module operations
+@subsection Crypt module operations
+
+TBD
+
+@node Message digest
+@subsection Message digest
+
+This module provides message-digest md5 function too, since it is
+usually used in order to get a encryption key.
+
+@node The object layer
+@chapter The object layer
+
+@node The document layer
+@chapter The document layer
+
+@node The page layer
+@chapter The page layer
+
+@node List of Figures
+@unnumbered List of Figures
+@listoffloats Figure
+
+@bye

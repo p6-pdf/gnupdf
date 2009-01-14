@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-10-07 17:20:45 gerel"
+/* -*- mode: C -*- Time-stamp: "09/01/11 22:02:58 jemarch"
  *
  *       File:         pdf-stm-f-flate.c
  *       Date:         Tue Jul 10 23:44:00 2007
@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2007, 2008, 2009 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,15 +31,15 @@
 #include <pdf-stm-f-flate.h>
 
 
-static pdf_status_t read_and_inflate (pdf_stm_f_flate_t st, pdf_stm_buffer_t in,
-                                      pdf_stm_buffer_t out);
-static pdf_status_t read_and_deflate (pdf_stm_f_flate_t st, pdf_stm_buffer_t in,
-                                      pdf_stm_buffer_t out,
+static pdf_status_t read_and_inflate (pdf_stm_f_flate_t st, pdf_buffer_t in,
+                                      pdf_buffer_t out);
+static pdf_status_t read_and_deflate (pdf_stm_f_flate_t st, pdf_buffer_t in,
+                                      pdf_buffer_t out,
                                       pdf_bool_t finish_p);
-static int deflate_inbuf (pdf_stm_f_flate_t st, pdf_stm_buffer_t out,
+static int deflate_inbuf (pdf_stm_f_flate_t st, pdf_buffer_t out,
                           int flush);
 static pdf_status_t deflate_inbuf_return (pdf_stm_f_flate_t st,
-                                          pdf_stm_buffer_t out,
+                                          pdf_buffer_t out,
                                           pdf_bool_t finish_p);
 
 pdf_status_t
@@ -132,8 +132,8 @@ pdf_stm_f_flatedec_init (pdf_hash_t params, void **state)
 
 
 pdf_status_t
-pdf_stm_f_flateenc_apply (pdf_hash_t params, void *state, pdf_stm_buffer_t in,
-                          pdf_stm_buffer_t out, pdf_bool_t finish_p)
+pdf_stm_f_flateenc_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
+                          pdf_buffer_t out, pdf_bool_t finish_p)
 {
   pdf_stm_f_flate_t st;
   pdf_status_t ret;
@@ -149,8 +149,8 @@ pdf_stm_f_flateenc_apply (pdf_hash_t params, void *state, pdf_stm_buffer_t in,
 
 
 pdf_status_t
-pdf_stm_f_flatedec_apply (pdf_hash_t params, void *state, pdf_stm_buffer_t in,
-                          pdf_stm_buffer_t out, pdf_bool_t finish_p)
+pdf_stm_f_flatedec_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
+                          pdf_buffer_t out, pdf_bool_t finish_p)
 {
   pdf_stm_f_flate_t st;
   pdf_status_t ret;
@@ -186,14 +186,14 @@ pdf_stm_f_flateenc_dealloc_state (void *state)
 /* Private functions */
 
 
-static pdf_status_t read_and_deflate (pdf_stm_f_flate_t st, pdf_stm_buffer_t in,
-                                      pdf_stm_buffer_t out, pdf_bool_t finish_p)
+static pdf_status_t read_and_deflate (pdf_stm_f_flate_t st, pdf_buffer_t in,
+                                      pdf_buffer_t out, pdf_bool_t finish_p)
 {
 
   /* Fill the input CHUNK  */
   if (!st->writing_p)
     {
-      while (st->incnt < PDF_STM_F_FLATE_CHUNK && !pdf_stm_buffer_eob_p(in))
+      while (st->incnt < PDF_STM_F_FLATE_CHUNK && !pdf_buffer_eob_p(in))
         {
           st->inbuf[st->incnt] = in->data[in->rp];
           st->incnt++;
@@ -214,13 +214,13 @@ static pdf_status_t read_and_deflate (pdf_stm_f_flate_t st, pdf_stm_buffer_t in,
 }
 
 
-static pdf_status_t read_and_inflate (pdf_stm_f_flate_t st, pdf_stm_buffer_t in,
-                                      pdf_stm_buffer_t out)
+static pdf_status_t read_and_inflate (pdf_stm_f_flate_t st, pdf_buffer_t in,
+                                      pdf_buffer_t out)
 {
   /* Fill the input CHUNK */
   if (!st->writing_p)
     {
-      while (st->incnt < PDF_STM_F_FLATE_CHUNK && !pdf_stm_buffer_eob_p(in))
+      while (st->incnt < PDF_STM_F_FLATE_CHUNK && !pdf_buffer_eob_p(in))
         {
           st->inbuf[st->incnt] = in->data[in->rp];
           st->incnt++;
@@ -262,13 +262,13 @@ static pdf_status_t read_and_inflate (pdf_stm_f_flate_t st, pdf_stm_buffer_t in,
     st->to_write = PDF_STM_F_FLATE_CHUNK - st->stream.avail_out;
 
   writing:
-    while (st->outcnt < st->to_write && !pdf_stm_buffer_full_p(out))
+    while (st->outcnt < st->to_write && !pdf_buffer_full_p(out))
       {
         out->data[out->wp] = st->outbuf[st->outcnt];
         out->wp++;
         st->outcnt++;
       }
-    if (pdf_stm_buffer_full_p(out))
+    if (pdf_buffer_full_p(out))
       {
         st->writing_p = PDF_TRUE;
         return PDF_ENOUTPUT;
@@ -282,7 +282,7 @@ static pdf_status_t read_and_inflate (pdf_stm_f_flate_t st, pdf_stm_buffer_t in,
   /* the input CHUNK now is empty, if needed, ask for input */
   st->writing_p = PDF_FALSE;
   st->incnt = 0;
-  if (pdf_stm_buffer_eob_p(in))
+  if (pdf_buffer_eob_p(in))
     {
       return PDF_ENINPUT;
     }
@@ -293,7 +293,7 @@ static pdf_status_t read_and_inflate (pdf_stm_f_flate_t st, pdf_stm_buffer_t in,
 
 
 static int
-deflate_inbuf (pdf_stm_f_flate_t st, pdf_stm_buffer_t out, int flush)
+deflate_inbuf (pdf_stm_f_flate_t st, pdf_buffer_t out, int flush)
 {
   if (st->writing_p)
     {
@@ -324,12 +324,12 @@ deflate_inbuf (pdf_stm_f_flate_t st, pdf_stm_buffer_t out, int flush)
 
   writing:
 
-    while (st->outcnt < st->to_write && !pdf_stm_buffer_full_p(out))
+    while (st->outcnt < st->to_write && !pdf_buffer_full_p(out))
       {
         out->data[out->wp++] = st->outbuf[st->outcnt];
         st->outcnt++;
       }
-    if (pdf_stm_buffer_full_p(out))
+    if (pdf_buffer_full_p(out))
       {
         st->writing_p = PDF_TRUE;
         return 1;
@@ -342,7 +342,7 @@ deflate_inbuf (pdf_stm_f_flate_t st, pdf_stm_buffer_t out, int flush)
 
 
 static pdf_status_t
-deflate_inbuf_return (pdf_stm_f_flate_t st, pdf_stm_buffer_t out,
+deflate_inbuf_return (pdf_stm_f_flate_t st, pdf_buffer_t out,
                       pdf_bool_t finish_p)
 {
   int ret;

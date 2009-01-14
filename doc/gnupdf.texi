@@ -12,7 +12,7 @@
 This is the @strong{@value{EDITION}} edition of the @cite{GNU PDF Library
 Reference}, updated for @strong{libgnupdf} version @strong{@value{VERSION}}.
 
-Copyright @copyright{} 2007, 2008 Free Software Foundation, Inc.
+Copyright @copyright{} 2007, 2008, 2009 Free Software Foundation, Inc.
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document
@@ -399,6 +399,7 @@ pdf_dealloc (p);
 * Boolean Types::
 * Numeric Types::
 * Big Numbers::
+* Memory Buffers::
 @end menu
 
 @node Boolean Types
@@ -1246,6 +1247,182 @@ bignum = pdf_i64_new (0, 10);
 
 num = pdf_i64_to_i32(bignum);
 
+@end example
+@end table
+@end deftypefun
+
+@node Memory Buffers
+@subsection Memory Buffers
+
+@deftp {Data Type} {struct pdf_buffer_s}
+
+This structure contains the data associated to a simple memory
+buffer.
+
+@table @code
+@item data
+Pointer to the buffer contents.
+@item size
+Number of octects allocated in @code{data}.
+@item rp
+Current read pointer.
+@item wp
+Current write pointer.
+@end table
+@end deftp
+
+@deftp {Data Type} pdf_buffer_t
+Pointer to a @code{pdf_buffer_s} structure.
+@end deftp
+
+@deftypefun pdf_buffer_t pdf_buffer_new (pdf_size_t @var{size})
+
+Create a new memory buffer.
+
+@table @strong
+@item Parameters
+@table @var
+@item size
+The size of the new buffer, in octects.
+@end table
+@item Returns
+A pointer to a @code{pdf_buffer_s} structure, or @code{NULL} if there
+is not enough memory to serve the petition.
+@item Usage example
+@example
+pdf_buffer_t my_buffer;
+
+my_buffer = pdf_buffer_new (1024);
+if (my_buffer == NULL)
+@{
+   /* Not enough memory */
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_buffer_destroy (pdf_buffer_t @var{buffer})
+
+Destroy a memory buffer.
+
+@table @strong
+@item Parameters
+@table @var
+@item buffer
+A pointer to the buffer that will be destroyed.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation suceeded.
+@end table
+@item Usage example
+@example
+pdf_buffer_t my_buffer;
+
+my_buffer = pdf_buffer_new (1024);
+pdf_buffer_destroy (my_buffer);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_buffer_full_p (pdf_buffer_t @var{buffer})
+
+Determine whether a memory buffer is full.
+
+@table @strong
+@item Parameters
+@table @var
+@item buffer
+A pointer to a buffer.
+@end table
+@item Returns
+A PDF boolean value:
+@table @code
+@item PDF_OK
+The buffer is full.
+@item PDF_FALSE
+The buffer is not full.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_buffer_eob_p (pdf_buffer_t @var{buffer})
+
+Determine whether a memory buffer is in an end-of-buffer state.
+
+@table @strong
+@item Parameters
+@table @var
+@item buffer
+A pointer to a memory buffer.
+@end table
+@item Returns
+A PDF boolean value:
+@table @code
+@item PDF_TRUE
+The buffer is in an end-of-buffer state.
+@item PDF_FALSE
+The buffer is not in an end-of-buffer state.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_buffer_resize (pdf_buffer_t @var{buffer}, pdf_size_t @var{newsize})
+
+Resize a memory buffer.
+
+@table @strong
+@item Parameters
+@table @var
+@item buffer
+A pointer to a memory buffer.
+@item newsize
+The new size (in octects) for the buffer.
+@end table
+@item Returns
+A PDF status variable:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory to perform the operation.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_buffer_rewind (pdf_buffer_t @var{buffer})
+
+Rewind a memory buffer.
+
+@table @strong
+@item Parameters
+@table @var
+@item buffer
+A pointer to a memory buffer.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@end table
+@item Usage example
+@example
+XXX
 @end example
 @end table
 @end deftypefun
@@ -3952,7 +4129,7 @@ XXX
 @node Reading and Writing Data
 @subsection Reading and Writing Data
 
-@deftypefun pdf_size_t pdf_stm_read (pdf_stm_t @var{stm}, pdf_char_t *@var{buf}, pdf_size_t @var{bytes})
+@deftypefun pdf_status_t pdf_stm_read (pdf_stm_t @var{stm}, pdf_char_t *@var{buf}, pdf_size_t @var{bytes}, pdf_size_t *@var{read_bytes})
 
 Read a chunk of data from a given stream.
 
@@ -3965,11 +4142,22 @@ A stream.
 The buffer to hold the read data.
 @item bytes
 The number of octects to read.
+@item read_bytes
+The number of octects actually read. If this value is less than
+@var{bytes} then an end of file condition occurred.
 @end table
 @item Returns
-A PDF size value containing the number of octects actually readed. If
-the returned value is less than @var{bytes} then an end of file
-condition occurred.
+A PDF status value:
+@table @code
+@item PDF_OK
+All the requested bytes were successfully read into @var{buf}.
+@item PDF_EEOF
+An end of file condition occurred.
+@item PDF_EINVOP
+Reading was requested in a writing stream.
+@item PDF_ERROR
+An error prevented to read the bytes.
+@end table
 @item Usage example
 @example
 XXX
@@ -3977,7 +4165,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_stm_write (pdf_stm_t @var{stm}, pdf_char_t *@var{buf}, pdf_size_t @var{bytes})
+@deftypefun pdf_status_t pdf_stm_write (pdf_stm_t @var{stm}, pdf_char_t *@var{buf}, pdf_size_t @var{bytes}, pdf_size_t *@var{written_bytes})
 
 Write a chunk of data into a given stream.
 
@@ -3990,11 +4178,23 @@ A stream.
 The buffer containing the written information.
 @item bytes
 The number of bytes to write into the stream.
+@item written_bytes
+A pointer to a PDF size containing the number of octects actually
+written. If the returned value is less than @code{bytes} then a disk
+full condition has occured.
 @end table
 @item Returns
-A PDF size value containing the number of octects actually readed. If
-the returned value is less than @code{bytes} then a
-disk full condition has occured.
+A PDF status value:
+@table @code
+@item PDF_OK
+All the requested bytes were successfully read into @var{buf}.
+@item PDF_EEOF
+A disk full condition occurred.
+@item PDF_EINVOP
+Writting was requested in a read stream.
+@item PDF_ERROR
+An error prevented to read the bytes.
+@end table
 @item Usage example
 @example
 XXX
@@ -4002,7 +4202,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_u32_t pdf_stm_read_char (pdf_stm_t stm)
+@deftypefun pdf_status_t pdf_stm_read_char (pdf_stm_t @var{stm}, pdf_char_t *@var{c})
 
 Read a character from a given stream.
 
@@ -4011,10 +4211,21 @@ Read a character from a given stream.
 @table @var
 @item stm
 A stream.
+@item c
+The address of a character.
 @end table
 @item Returns
-An unsigned integer containing @code{PDF_EOF} or the readed character
-code.
+A PDF status value:
+@table @code
+@item PDF_OK
+A character was successfully read into @var{c}.
+@item PDF_EEOF
+End of file.
+@item PDF_EINVOP
+Reading was requested in a writing stream.
+@item PDF_ERROR
+An error prevented to read the character.
+@end table
 @item Usage example
 @example
 XXX
@@ -4022,7 +4233,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_u32_t pdf_stm_peek_char (pdf_stm_t stm)
+@deftypefun pdf_status_t pdf_stm_peek_char (pdf_stm_t @var{stm}, pdf_char_t *@var{c})
 
 Peek a character from a given stream.
 
@@ -4031,10 +4242,21 @@ Peek a character from a given stream.
 @table @var
 @item stm
 A stream.
+@item c
+The address of a character.
 @end table
 @item Returns
-An unsigned integer containing @code{PDF_EOF} or the peeked character
-code.
+A PDF status value:
+@table @code
+@item PDF_OK
+A character was successfully peek into @var{c}.
+@item PDF_EEOF
+End of file.
+@item PDF_EINVOP
+Peeking was requested in a writing stream.
+@item PDF_ERROR
+An error prevented to peek the character.
+@end table
 @item Usage example
 @example
 XXX
@@ -4117,12 +4339,22 @@ XXX
 @section Floating Point Maths
 
 @menu
+* Floating Point Constants::
 * Floating Point Types::
+* Rounding Routines::
+* Exponential and Logarithmic Routines::
 * Number Conversion Routines::
+* Trigonometric Routines::
 * Geometry Routines::
+* Other Maths Routines::
 * Creation and Destruction of Functions::
 * Evaluation of Functions::
 @end menu
+
+@node Floating Point Constants
+@subsection Floating Point Constants
+
+@code{PDF_PI} contains the value of pi.
 
 @node Floating Point Types
 @subsection Floating Point Types
@@ -4227,6 +4459,137 @@ A pointer to a @code{pdf_quad_t} structure.
 Opaque type representing a Floating Point function.
 
 @end deftp
+
+@node Rounding Routines
+@subsection Rounding Routines
+
+@deftypefun pdf_real_t pdf_fp_floor (pdf_real_t @var{op})
+
+Round @var{op} down to the nearest integer.
+
+@table @strong
+@item Parameters
+@table @var
+@item op
+A real operand.
+@end table
+@item Returns
+The rounded integer value. If @var{op} is integral or infinite,
+@var{op} itself is returned.
+@item Usage example
+@example
+pdf_real_t number;
+pdf_u32_t rounded;
+
+number = 1.2;
+rounded = pdf_fp_floor (number);
+/* rounded equals 1 */
+
+number = 1.6;
+rounded = pdf_fp_floor (number);
+/* rounded equals 1 */
+
+number = 2;
+rounded = pdf_fp_floor (number);
+/* rounded equals 2 */
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_real_t pdf_fp_ceil (pdf_real_t @var{op})
+
+Round @var{op} up to the nearest integer.
+
+@table @strong
+@item Parameters
+@table @var
+@item op
+A real operand.
+@end table
+@item Returns
+The rounded integer value. If @var{op} is integral or infinite,
+@var{op} itself is returned.
+@item Usage example
+@example
+pdf_real_t number;
+pdf_u32_t rounded;
+
+number = 1.2;
+rounded = pdf_fp_ceil (number);
+/* rounded equals 2 */
+
+number = 1.6;
+rounded = pdf_fp_ceil (number);
+/* rounded equals 2 */
+
+number = 2;
+rounded = pdf_fp_ceil (number);
+/* rounded equals 2 */
+@end example
+@end table
+@end deftypefun
+
+@node Exponential and Logarithmic Routines
+@subsection Exponential and Logarithmic Routines
+
+@deftypefun pdf_real_t pdf_fp_exp (pdf_real_t @var{op})
+
+Return the value of e (the base of natural logarithms) raised to the
+power of @var{op}.
+
+@table @strong
+@item Parameters
+@table @var
+@item op
+A real operand.
+@end table
+@item Returns
+The value of e raised to the power of @var{op}.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_real_t pdf_fp_log (pdf_real_t @var{op})
+
+Return the natural logarithm of @var{op}.
+
+@table @strong
+@item Parameters
+@table @var
+@item op
+A real operand.
+@end table
+@item Returns
+The natural logarithm of @var{op}.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_real_t pdf_fp_log10 (pdf_real_t @var{op})
+
+Return the base 10 logarithm of @var{op}.
+
+@table @strong
+@item Parameters
+@table @var
+@item op
+A real operand.
+@end table
+@item Returns
+The base 10 logarithm of @var{op}.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
 
 @node Number Conversion Routines
 @subsection Number Conversion Routines
@@ -4335,6 +4698,69 @@ if (pdf_fp_real_to_string (real, s, 4, 3) == PDF_ERROR)
 @end table
 @end deftypefun
 
+@node Trigonometric Routines
+@subsection Trigonometric Routines
+
+@deftypefun pdf_real_t pdf_fp_sin (pdf_real_t @var{op})
+
+Return the sine of @var{op}, where @var{op} is given in radians.
+
+@table @strong
+@item Parameters
+@table @var
+@item op
+A real operand.
+@end table
+@item Returns
+A real value between @code{-1} and @code{1}.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_real_t pdf_fp_cos (pdf_real_t @var{op})
+
+Return the cosine of @var{op}, where @var{op} is given in radians.
+
+@table @strong
+@item Parameters
+@table @var
+@item op
+A real operand.
+@end table
+@item Returns
+A real value between @code{-1} and @code{1}.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_real_t pdf_fp_atan2 (pdf_real_t @var{op1}, pdf_real_t @var{op2})
+
+Return the arc tangent of the two values @var{op1} and @var{op2}. It
+is similar to calculating the arc tangent of @code{op1 / op2} except
+that the signs of both arguments are used to determine the quadrant of
+the result.
+
+@table @strong
+@item Parameters
+@table @var
+@item op
+A real operand.
+@end table
+@item Returns
+The result in radians, wichi is between @code{-PDF_PI} and
+@code{PDF_PI} (inclusive).
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
 
 @node Geometry Routines
 @subsection Geometry Routines
@@ -4454,6 +4880,48 @@ XXX
 @end example
 @end table
 @end deftypefun
+
+@node Other Maths Routines
+@subsection Other Maths Routines
+
+@deftypefun pdf_fp_abs (pdf_real_t @var{op})
+
+Return the absolute value of the real number @var{op}.
+
+@table @strong
+@item Parameters
+@table @var
+@item op
+A real operand.
+@end table
+@item Returns
+The absolute value of the operand.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_fp_sqrt (pdf_real_t @var{op})
+
+Return the non-negative square root of @var{op}.
+
+@table @strong
+@item Parameters
+@table @var
+@item op
+A real operand.
+@end table
+@item Returns
+The square root of @var{op}.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
 
 @node Creation and Destruction of Functions
 @subsection Creation and Destruction of Functions

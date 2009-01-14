@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-12-25 16:21:49 davazp"
+/* -*- mode: C -*- Time-stamp: "09/01/13 22:46:02 jemarch"
  *
  *       File:         pdf-stm-read.c
  *       Date:         Sat Sep 20 15:20:17 2008
@@ -64,10 +64,11 @@ START_TEST (pdf_stm_read_001)
   fail_if(ret != PDF_OK);
 
   /* Read some data from the stream */
-  read_bytes = pdf_stm_read (stm,
-                             ret_buf,
-                             buf_size);
-  fail_if(read_bytes == 0);
+  ret = pdf_stm_read (stm,
+                      ret_buf,
+                      buf_size,
+                      &read_bytes);
+  fail_if(ret != PDF_OK);
   fail_if(read_bytes != buf_size);
 
   /* Check for the result */
@@ -117,9 +118,11 @@ START_TEST (pdf_stm_read_002)
   fail_if(ret != PDF_OK);
 
   /* Read some data from the stream */
-  read_bytes = pdf_stm_read (stm,
-                             ret_buf,
-                             (buf_size * 2));
+  ret = pdf_stm_read (stm,
+                      ret_buf,
+                      (buf_size * 2),
+                      &read_bytes);
+  fail_if(ret != PDF_EEOF);
   fail_if(read_bytes == 0);
   fail_if(read_bytes != buf_size);
 
@@ -169,54 +172,66 @@ START_TEST (pdf_stm_read_003)
   fail_if(ret != PDF_OK);
 
   /* Read 2 octects from the stream */
-  read_bytes = pdf_stm_read (stm,
-                             ret_buf,
-                             2);
+  ret = pdf_stm_read (stm,
+                      ret_buf,
+                      2,
+                      &read_bytes);
+  fail_if(ret != PDF_OK);
   fail_if(read_bytes != 2);
 
   /* Check for the result */
   fail_if(ret_buf[0] != '0' && ret_buf[1] != '1');
 
   /* Read 2 octects from the stream */
-  read_bytes = pdf_stm_read (stm,
-                             ret_buf,
-                             2);
+  ret = pdf_stm_read (stm,
+                      ret_buf,
+                      2,
+                      &read_bytes);
+  fail_if(ret != PDF_OK);
   fail_if(read_bytes != 2);
 
   /* Check for the result */
   fail_if(ret_buf[0] != '2' && ret_buf[1] != '3');
 
   /* Read 2 octects from the stream */
-  read_bytes = pdf_stm_read (stm,
-                             ret_buf,
-                             2);
+  ret = pdf_stm_read (stm,
+                      ret_buf,
+                      2,
+                      &read_bytes);
+  fail_if(ret != PDF_OK);
   fail_if(read_bytes != 2);
 
   /* Check for the result */
   fail_if(ret_buf[0] != '4' && ret_buf[1] != '5');
 
   /* Read 2 octects from the stream */
-  read_bytes = pdf_stm_read (stm,
-                             ret_buf,
-                             2);
+  ret = pdf_stm_read (stm,
+                      ret_buf,
+                      2,
+                      &read_bytes);
+  fail_if(ret != PDF_OK);
   fail_if(read_bytes != 2);
 
   /* Check for the result */
   fail_if(ret_buf[0] != '6' && ret_buf[1] != '7');
 
   /* Read 2 octects from the stream */
-  read_bytes = pdf_stm_read (stm,
-                             ret_buf,
-                             2);
+  ret = pdf_stm_read (stm,
+                      ret_buf,
+                      2,
+                      &read_bytes);
+  fail_if(ret != PDF_OK);
   fail_if(read_bytes != 2);
 
   /* Check for the result */
   fail_if(ret_buf[0] != '8' && ret_buf[1] != '9');
 
   /* Read 1 octect from the stream */
-  read_bytes = pdf_stm_read (stm,
-                             ret_buf,
-                             1);
+  ret = pdf_stm_read (stm,
+                      ret_buf,
+                      1,
+                      &read_bytes);
+  fail_if(ret != PDF_OK);
   fail_if(read_bytes != 1);
 
   /* Check for the result */
@@ -272,9 +287,11 @@ START_TEST (pdf_stm_read_004)
                                   null_filter_params) != PDF_OK);
 
   /* Read some data from the stream */
-  read_bytes = pdf_stm_read (stm,
-                             ret_buf,
-                             buf_size);
+  ret = pdf_stm_read (stm,
+                      ret_buf,
+                      buf_size,
+                      &read_bytes);
+  fail_if(ret != PDF_OK);
   fail_if(read_bytes == 0);
   fail_if(read_bytes != buf_size);
 
@@ -329,7 +346,8 @@ START_TEST (pdf_stm_read_005)
   dataux = buf;
   while (total > 0)
     {
-      read = pdf_stm_read (stm, dataux, total);
+      ret = pdf_stm_read (stm, dataux, total, &read);
+      fail_if(ret == PDF_ERROR);
       dataux = dataux + read;
       total -= read;
     }
@@ -388,9 +406,11 @@ START_TEST (pdf_stm_read_006)
   fail_if(ret != PDF_OK);
 
   /* Read some data from the stream */
-  read_bytes = pdf_stm_read (stm,
-                             ret_buf,
-                             3);
+  ret = pdf_stm_read (stm,
+                      ret_buf,
+                      3,
+                      &read_bytes);
+  fail_if(ret != PDF_OK);
   fail_if(read_bytes != 3);
 
   /* Close the stream */
@@ -452,9 +472,11 @@ START_TEST (pdf_stm_read_007)
   fail_if(ret != PDF_OK);
 
   /* Read some data from the stream */
-  read_bytes = pdf_stm_read (stm,
-                             ret_buf,
-                             3);
+  ret = pdf_stm_read (stm,
+                      ret_buf,
+                      3,
+                      &read_bytes);
+  fail_if(ret != PDF_OK);
   fail_if(read_bytes != 3);
 
   /* Close the stream */
@@ -518,9 +540,10 @@ START_TEST (pdf_stm_read_008)
   fail_if(ret != PDF_OK);
 
   /* Read some data from the stream */
-  read_bytes = pdf_stm_read (stm,
-                             ret_buf,
-                             3);
+  ret = pdf_stm_read (stm,
+                      ret_buf,
+                      3,
+                      &read_bytes);
   fail_if(read_bytes != 3);
 
   /* Close the stream */
@@ -605,7 +628,8 @@ START_TEST (pdf_stm_read_009)
   dataux = buf;
   while (total > 0)
     {
-      read = pdf_stm_read (stm, dataux, total);
+      ret = pdf_stm_read (stm, dataux, total, &read);
+      fail_if(ret == PDF_ERROR);
       dataux = dataux + read;
       total -= read;
     }
@@ -629,6 +653,7 @@ END_TEST
  */
 START_TEST (pdf_stm_read_011)
 {
+  pdf_status_t ret;
   pdf_stm_t stm;
   pdf_hash_t params;
 
@@ -643,7 +668,7 @@ START_TEST (pdf_stm_read_011)
   pdf_char_t key[6] = "Secret"; /* not trailing '\0' */
   pdf_size_t keysize = sizeof(key);
   pdf_char_t plaintext[] = "Attack at dawn";
-  pdf_char_t read;
+  pdf_size_t read;
   
   pdf_crypt_init();
 
@@ -655,7 +680,8 @@ START_TEST (pdf_stm_read_011)
 
   fail_if ( pdf_stm_install_filter (stm, PDF_STM_FILTER_V2_DEC, params) != PDF_OK);
 
-  read = pdf_stm_read (stm, out, out_size);
+  ret = pdf_stm_read (stm, out, out_size, &read);
+  fail_if(ret == PDF_ERROR);
   fail_if (read != out_size);
 
   fail_if (memcmp (out, plaintext, read) != 0);
@@ -681,6 +707,7 @@ START_TEST (pdf_stm_read_012)
   pdf_hash_t params;
   pdf_char_t out[48];
   pdf_size_t out_size;
+  pdf_status_t ret;
   
   pdf_char_t key[] =
     {
@@ -720,7 +747,8 @@ START_TEST (pdf_stm_read_012)
   fail_if ( pdf_stm_mem_new (ciphered, sizeof(ciphered), 0, PDF_STM_READ, &stm) != PDF_OK);
   fail_if ( pdf_stm_install_filter (stm, PDF_STM_FILTER_AESV2_DEC, params) != PDF_OK);
 
-  out_size = pdf_stm_read (stm, out , sizeof(out));
+  ret = pdf_stm_read (stm, out , sizeof(out), &out_size);
+  fail_if(ret == PDF_ERROR);
 
   fail_if (out_size != sizeof(plain));
   fail_if (memcmp (out, plain, out_size) != 0);

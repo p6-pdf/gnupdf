@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/20 18:12:36 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/01/13 22:10:30 jemarch"
  *
  *       File:         pdf-stm-peek-char.c
  *       Date:         Sat Sep 20 18:07:45 2008
@@ -41,7 +41,6 @@ START_TEST (pdf_stm_peek_char_001)
   pdf_status_t ret;
   pdf_stm_t stm;
   pdf_char_t *buf;
-  pdf_u32_t char_value;
   pdf_char_t ret_char;
   pdf_size_t buf_size;
 
@@ -60,12 +59,8 @@ START_TEST (pdf_stm_peek_char_001)
   fail_if(ret != PDF_OK);
 
   /* Peek a character from the stream */
-  char_value = pdf_stm_peek_char (stm);
-
-  /* Check the result */
-  fail_if(char_value == PDF_EOF);
-
-  ret_char = (pdf_char_t) char_value;
+  ret = pdf_stm_peek_char (stm, &ret_char);
+  fail_if(ret != PDF_OK);
   fail_if(ret_char != '0');
   
   /* Destroy data */
@@ -86,7 +81,6 @@ START_TEST (pdf_stm_peek_char_002)
   pdf_status_t ret;
   pdf_stm_t stm;
   pdf_char_t *buf;
-  pdf_u32_t char_value;
   pdf_char_t ret_char;
   pdf_size_t buf_size;
 
@@ -105,19 +99,13 @@ START_TEST (pdf_stm_peek_char_002)
   fail_if(ret != PDF_OK);
 
   /* Read a character from the stream */
-  char_value = pdf_stm_read_char (stm);
-
-  /* Check the result */
-  fail_if(char_value == PDF_EOF);
-
-  ret_char = (pdf_char_t) char_value;
+  ret = pdf_stm_read_char (stm, &ret_char);
+  fail_if(ret != PDF_OK);
   fail_if(ret_char != '0');
 
   /* Peek a character from the stream */
-  char_value = pdf_stm_read_char (stm);
-
-  /* Check the result */
-  fail_if(char_value != PDF_EOF);
+  ret = pdf_stm_read_char (stm, &ret_char);
+  fail_if(ret != PDF_EEOF);
 
   /* Destroy data */
   pdf_dealloc (buf);
