@@ -7950,7 +7950,7 @@ directory).
 @node Getting File System Properties
 @subsubsection Getting File System Properties
 
-@deftypefun pdf_size_t pdf_fsys_get_free_space (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name})
+@deftypefun pdf_i64_t pdf_fsys_get_free_space (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name})
 
 Get the free storage space in the volume containing @var{path_name}.
 
@@ -7963,7 +7963,7 @@ A filesystem. If @code{NULL} then the default filesystem is used.
 A path name.
 @end table
 @item Returns
-A PDF size value containing the remaining free space in the volume
+A 64-bit value containing the remaining free space in the volume
 containing @var{path_name}.
 @item Usage example
 @example
@@ -8405,7 +8405,7 @@ filesystem.
 @node Opening Files
 @subsubsection Opening Files
 
-@deftypefun pdf_status_t pdf_fsys_open (const pdf_fsys_t @var{filesystem}, const pdf_text_t @var{path_name}, const enum pdf_fsys_file_mode_e @var{mode}, pdf_fsys_file_t @var{file})
+@deftypefun pdf_status_t pdf_fsys_file_open (const pdf_fsys_t @var{filesystem}, const pdf_text_t @var{path_name}, const enum pdf_fsys_file_mode_e @var{mode}, pdf_fsys_file_t @var{file})
 
 Open a file in @var{filesystem} identified by @var{path_name} using
 the specified @var{mode} and store a new open file variable in

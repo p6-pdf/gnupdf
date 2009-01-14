@@ -1,3 +1,24 @@
+2009-01-14  Aleksander Morgado  <aleksander@es.gnu.org>
+
+	* src/base/pdf-fsys-disk.[h|c]: Most capabilities of the disk fsys
+	module implemented. For w32 compatibility using UNICODE paths, all the
+	system calls in windows are done using the wchar_t (UTF-16LE) versions.
+	In POSIX, host-encoded paths are used in the system calls.
+	Remaining stuff marked as TODO in the code.
+
+	* src/base/pdf-fsys.[h|c]: Renamed `pdf_fsys_open' to `pdf_fsys_file_open'.
+	(pdf_fsys_get_free_space): Return pdf_i64_t instead of pdf_size_t.
+
+	* src/base/pdf-fsys-def.h: Renamed `pdf_fsys_def_open' to
+	`pdf_fsys_def_file_open'.
+
+	* src/base/pdf-error.h (PDF_ERROR_LIST): Additional error codes added.
+
+	* doc/gnupdf.texi (Opening Files): Renamed `pdf_fsys_open' to
+	`pdf_fsys_file_open'.
+	 (Getting File System Properties): Return pdf_i64_t instead of pdf_size_t
+	in pdf_fsys_get_free_space.
+
 2009-01-13  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Reading and Writing Data): Documentation for
