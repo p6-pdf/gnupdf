@@ -1,3 +1,7 @@
+2009-01-14  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-arch.texi (The object layer): New chapter.
+
 2009-01-13  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Reading and Writing Data): Documentation for
