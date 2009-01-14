@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/05/22 19:27:48 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-11-29 17:42:11 aleksander"
  *
  *       File:         pdf-fsys-def.h
  *       Date:         Thu May 22 17:50:20 2008
@@ -31,8 +31,6 @@
 
 #define pdf_fsys_def_get_free_space(path_name) \
   pdf_fsys_disk_get_free_space ((path_name))
-#define pdf_fsys_def_open(path_name, mode, file) \
-  pdf_fsys_disk_open ((path_name), (mode), (file))
 #define pdf_fsys_def_create_folder(path_name) \
   pdf_fsys_disk_create_folder ((path_name))
 #define pdf_fsys_def_get_folder_contents(path_name, item_list) \
@@ -51,6 +49,8 @@
   pdf_fsys_disk_item_writable_p ((path_name))
 #define pdf_fsys_def_get_temp_path_name() \
   pdf_fsys_disk_get_temp_path_name ()
+#define pdf_fsys_def_file_open(path_name, mode, p_file)     \
+  pdf_fsys_disk_file_open ((path_name), (mode), (p_file))
 #define pdf_fsys_def_file_get_mode(file) \
   pdf_fsys_disk_file_get_mode ((file))
 #define pdf_fsys_def_file_get_url(file) \
