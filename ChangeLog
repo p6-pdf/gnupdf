@@ -1,3 +1,14 @@
+2009-01-16  Jose E. Marchesi  <jemarch@chapters.gnu.org>
+
+	* src/base/pdf-fsys-disk.c: Make path sizes of type pdf_size_t.
+
+	* src/base/pdf-types.c: Get the buffer_t functions out of the
+	#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
+
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_get_free_space):
+	pdf_i64_assign_quick cannot get a NULL value as the third
+	parameter when working in 64bits machines.
+
 2009-01-14  Aleksander Morgado  <aleksander@es.gnu.org>
 
 	* src/base/pdf-fsys-disk.[h|c]: Most capabilities of the disk fsys

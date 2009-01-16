@@ -58,10 +58,10 @@ __pdf_fsys_disk_get_status_from_errno(int _errno);
 static pdf_status_t
 __pdf_fsys_disk_get_host_path (const pdf_text_t path,
                                pdf_char_t **host_path,
-                               pdf_u32_t *host_path_size);
+                               pdf_size_t *host_path_size);
 static pdf_status_t
 __pdf_fsys_disk_set_host_path (const pdf_char_t *host_path,
-                               const pdf_u32_t  host_path_size,
+                               const pdf_size_t  host_path_size,
                                pdf_text_t *p_path);
 static pdf_status_t
 __pdf_fsys_disk_is_writable_from_host_path(const pdf_char_t *host_path,
@@ -159,7 +159,7 @@ pdf_fsys_disk_get_free_space (pdf_text_t path_name)
     {
       struct statfs fs_stats;
       pdf_char_t *host_path = NULL;
-      pdf_u32_t host_path_size = 0;
+      pdf_size_t host_path_size = 0;
 
 
       /* We get the string in HOST-encoding (with NUL-suffix) */
@@ -191,7 +191,7 @@ pdf_fsys_disk_get_free_space (pdf_text_t path_name)
               if(i64_ret_code != PDF_OK)
                 {
                   PDF_DEBUG_BASE("Couldn't compute bfree*bsize");
-                  pdf_i64_assign_quick(&result, -1, NULL); /* (-1) */
+                  pdf_i64_assign_quick(&result, -1, &i64_ret_code); /* (-1) */
                 }
             }
           else
@@ -399,7 +399,7 @@ pdf_fsys_disk_create_folder (const pdf_text_t path_name)
   if(path_name != NULL)
     {
       pdf_char_t *host_path;
-      pdf_u32_t host_path_size;
+      pdf_size_t host_path_size;
 
       /* Default return code */
       ret_code = PDF_OK;
@@ -466,7 +466,7 @@ pdf_fsys_disk_get_folder_contents (const pdf_text_t path_name,
     {
       PDF_DIR *dir_stream = NULL;
       pdf_char_t *host_path = NULL;
-      pdf_u32_t host_path_size;
+      pdf_size_t host_path_size;
       pdf_text_t entry_text = NULL;
       pdf_u32_t name_length;
   
@@ -554,7 +554,7 @@ pdf_fsys_disk_remove_folder (const pdf_text_t path_name)
   if(path_name != NULL)
     {
       pdf_char_t *host_path;
-      pdf_u32_t host_path_size;
+      pdf_size_t host_path_size;
 
       /* Get the pathname in the host encoding */
       if (__pdf_fsys_disk_get_host_path (path_name,
@@ -695,7 +695,7 @@ pdf_fsys_disk_get_item_props (pdf_text_t path_name,
                               struct pdf_fsys_item_props_s *item_props)
 {
   pdf_char_t* host_path = NULL;
-  pdf_u32_t host_path_len = 0;
+  pdf_size_t host_path_len = 0;
   pdf_status_t ret_code = PDF_EBADDATA;
 
   /* Get host path */
@@ -781,7 +781,7 @@ pdf_fsys_disk_item_readable_p (pdf_text_t path_name)
   if(path_name != NULL)
     {
       pdf_char_t* host_path = NULL;
-      pdf_u32_t host_path_len = 0;
+      pdf_size_t host_path_len = 0;
 
       if(__pdf_fsys_disk_get_host_path (path_name,
                                         &host_path,
@@ -804,7 +804,7 @@ pdf_fsys_disk_item_writable_p (pdf_text_t path_name)
   if(path_name != NULL)
     {
       pdf_char_t* host_path = NULL;
-      pdf_u32_t host_path_len = 0;
+      pdf_size_t host_path_len = 0;
 
       if(__pdf_fsys_disk_get_host_path (path_name,
                                         &host_path,
@@ -1221,13 +1221,13 @@ pdf_fsys_disk_file_reopen (pdf_fsys_file_t file,
 static pdf_status_t
 __pdf_fsys_disk_get_host_path (pdf_text_t path,
                                pdf_char_t **host_path,
-                               pdf_u32_t *host_path_size)
+                               pdf_size_t *host_path_size)
 {
 #ifdef PDF_HOST_WIN32
   /* For W32, we will always use widechar functions, so Windows' wchar_t
    * implementation should be used (UTF-16LE) */
   pdf_char_t *data = NULL;
-  pdf_u32_t size = 0;
+  pdf_size_t size = 0;
 
   if(pdf_text_get_unicode(&data,
                           &size,
@@ -1245,7 +1245,7 @@ __pdf_fsys_disk_get_host_path (pdf_text_t path,
   /* Call the pdf_text module to get a host-encoded version of the
    *  given path */
   pdf_char_t *padded = NULL;
-  pdf_u32_t padded_size = 0;
+  pdf_size_t padded_size = 0;
 
   if(pdf_text_get_host(&padded,
                        &padded_size,
@@ -1270,7 +1270,7 @@ __pdf_fsys_disk_get_host_path (pdf_text_t path,
 
 static pdf_status_t
 __pdf_fsys_disk_set_host_path (const pdf_char_t *host_path,
-                               const pdf_u32_t  host_path_size,
+                               const pdf_size_t  host_path_size,
                                pdf_text_t *p_path)
 {
   if((host_path == NULL) || \
