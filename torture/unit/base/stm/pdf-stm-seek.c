@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/20 19:12:47 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/01/13 22:33:25 jemarch"
  *
  *       File:         pdf-stm-seek.c
  *       Date:         Sat Sep 20 18:50:33 2008
@@ -41,7 +41,6 @@ START_TEST (pdf_stm_seek_001)
   pdf_status_t ret;
   pdf_stm_t stm;
   pdf_char_t *buf;
-  pdf_u32_t ret_char_value;
   pdf_char_t ret_char;
   pdf_size_t buf_size;
   pdf_off_t pos;
@@ -65,9 +64,8 @@ START_TEST (pdf_stm_seek_001)
   fail_if(pos != 3);
 
   /* Read a character */
-  ret_char_value = pdf_stm_read_char (stm);
-  fail_if(ret_char_value == PDF_EOF);
-  ret_char = (pdf_char_t) ret_char_value;
+  ret = pdf_stm_read_char (stm, &ret_char);
+  fail_if(ret != PDF_OK);
   fail_if(ret_char != '3');
 
   /* Seek into the stream */
@@ -75,9 +73,8 @@ START_TEST (pdf_stm_seek_001)
   fail_if(pos != 8);
 
   /* Read a character */
-  ret_char_value = pdf_stm_read_char (stm);
-  fail_if(ret_char_value == PDF_EOF);
-  ret_char = (pdf_char_t) ret_char_value;
+  ret = pdf_stm_read_char (stm, &ret_char);
+  fail_if(ret != PDF_OK);
   fail_if(ret_char != '8');
   
   /* Destroy data */
@@ -101,7 +98,6 @@ START_TEST (pdf_stm_seek_002)
   pdf_status_t ret;
   pdf_stm_t stm;
   pdf_char_t *buf;
-  pdf_u32_t ret_char_value;
   pdf_char_t ret_char;
   pdf_size_t buf_size;
   pdf_off_t pos;
@@ -125,9 +121,8 @@ START_TEST (pdf_stm_seek_002)
   fail_if(pos != 9);
 
   /* Read a character */
-  ret_char_value = pdf_stm_read_char (stm);
-  fail_if(ret_char_value == PDF_EOF);
-  ret_char = (pdf_char_t) ret_char_value;
+  ret = pdf_stm_read_char (stm, &ret_char);
+  fail_if(ret != PDF_OK);
   fail_if(ret_char != '9');
   
   /* Destroy data */

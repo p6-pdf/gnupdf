@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/27 21:42:55 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/01/13 22:06:33 jemarch"
  *
  *       File:         pdf-error.h
  *       Date:         Sun Feb  24 20:22:05 2008
@@ -80,17 +80,20 @@
   ERROR_ENTRY (PDF_EBADNAME,    "invalid path name"),                   \
   ERROR_ENTRY (PDF_EAGAIN,      "operation can't be performed now, maybe later"), \
   ERROR_ENTRY (PDF_ENOSPC,      "no space left on device"),             \
-  ERROR_ENTRY (PDF_EBADCONTEXT, "text module global context not initialized"), \
+  ERROR_ENTRY (PDF_EBADCONTEXT, "text module global context not initialized"),    \
   ERROR_ENTRY (PDF_ENOTEMPTY,   "operation requires some entity be empty"), \
-  ERROR_ENTRY (PDF_ENINPUT,     "filter needs more input"), \
-  ERROR_ENTRY (PDF_ENOUTPUT,    "filter needs more output room"),     \
+  ERROR_ENTRY (PDF_ENINPUT,     "filter needs more input"),             \
+  ERROR_ENTRY (PDF_ENOUTPUT,    "filter needs more output room"),       \
+  ERROR_ENTRY (PDF_EEXIST,      "already exists"),                      \
+  ERROR_ENTRY (PDF_EOPENED,     "file is opened"),                      \
+  ERROR_ENTRY (PDF_ECLOSED,     "file is closed"),                      \
   ERROR_ENTRY (PDF_EOVERFLOW,   "/FunctionType 0: Sample Table too large"), \
   ERROR_ENTRY (PDF_EMTOOBIG,    "/FunctionType 0: input dim too high (<= 12)"), \
   ERROR_ENTRY (PDF_EBADSAMPLES, "/FunctionType 0: error while reading sample table"), \
   ERROR_ENTRY (PDF_EBADAESKEY,  "the size of an AES  key should be a multiple of 16"), \
-  ERROR_ENTRY (PDF_EBADV2KEY,   "a V2 key should be at least 40 bits long")
+  ERROR_ENTRY (PDF_EBADV2KEY,   "a V2 key should be at least 40 bits long"), \
+  ERROR_ENTRY (PDF_EINVOP,      "invalid operation")
     
-
 
 #define ERROR_ENTRY(id,string) id
 enum pdf_status_e

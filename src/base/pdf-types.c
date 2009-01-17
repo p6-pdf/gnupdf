@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/11 22:05:36 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/01/13 22:26:38 jemarch"
  *
  *       File:         pdf-types.c
  *       Date:         Sun Feb 10 21:33:44 2008
@@ -24,6 +24,7 @@
  */
 
 #include <pdf-types.h>
+#include <pdf-alloc.h>
 
 
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
@@ -1188,6 +1189,8 @@ pdf_i64_to_i32(const pdf_i64_t bignum)
   return ((bignum.high >= 0) ? bignum.low : (-1 * bignum.low));
 }
 
+#endif /* !PDF_USE_BUILTIN_64BIT_SUPPORT */
+
 pdf_buffer_t
 pdf_buffer_new (pdf_size_t size)
 {
@@ -1249,6 +1252,5 @@ pdf_buffer_rewind (pdf_buffer_t buffer)
   return PDF_OK;
 }
 
-/* End of pdf-types.c */
 
-#endif
+/* End of pdf-types.c */

@@ -1,3 +1,85 @@
+2009-01-16  Jose E. Marchesi  <jemarch@chapters.gnu.org>
+
+	* src/base/pdf-fsys-disk.c: Make path sizes of type pdf_size_t.
+
+	* src/base/pdf-types.c: Get the buffer_t functions out of the
+	#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
+
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_get_free_space):
+	pdf_i64_assign_quick cannot get a NULL value as the third
+	parameter when working in 64bits machines.
+
+2009-01-14  Aleksander Morgado  <aleksander@es.gnu.org>
+
+	* src/base/pdf-fsys-disk.[h|c]: Most capabilities of the disk fsys
+	module implemented. For w32 compatibility using UNICODE paths, all the
+	system calls in windows are done using the wchar_t (UTF-16LE) versions.
+	In POSIX, host-encoded paths are used in the system calls.
+	Remaining stuff marked as TODO in the code.
+
+	* src/base/pdf-fsys.[h|c]: Renamed `pdf_fsys_open' to `pdf_fsys_file_open'.
+	(pdf_fsys_get_free_space): Return pdf_i64_t instead of pdf_size_t.
+
+	* src/base/pdf-fsys-def.h: Renamed `pdf_fsys_def_open' to
+	`pdf_fsys_def_file_open'.
+
+	* src/base/pdf-error.h (PDF_ERROR_LIST): Additional error codes added.
+
+	* doc/gnupdf.texi (Opening Files): Renamed `pdf_fsys_open' to
+	`pdf_fsys_file_open'.
+	 (Getting File System Properties): Return pdf_i64_t instead of pdf_size_t
+	in pdf_fsys_get_free_space.
+
+2009-01-13  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Reading and Writing Data): Documentation for
+	'pdf_stm_read', 'pdf_stm_write', 'pdf_stm_read_char' and
+	'pdf_stm_peek_char' updated to the new prototypes.
+
+	* torture/unit/base/stm/pdf-stm-seek.c: Use the new prototype of
+	'pdf_stm_read_char'.
+
+	* utils/pdf-filter.c (process_stream): Use the new prototype of
+	'pdf_stm_read'.
+	(process_stream): Use the new prototype of 'pdf_stm_write'.
+
+	* src/base/pdf-stm-f-ahex.c (pdf_stm_f_ahexdec_apply): Stop using
+	PDF_EOF.
+
+	* src/base/pdf-types.c: Include pdf-alloc.h.
+
+	* torture/unit/base/stm/pdf-stm-write.c: Tests adapted to use the
+	new interface of pdf_stm_write.
+
+	* torture/unit/base/stm/pdf-stm-read.c: Tests adapted to use the
+	new interface of pdf_stm_read.
+
+	* torture/unit/base/stm/pdf-stm-read-char.c: Tests adapted to use
+	the new interface of pdf_stm_read_char.
+
+	* torture/unit/base/stm/pdf-stm-peek-char.c: Tests adapted to use
+	the new interface of pdf_stm_peek_char.
+
+	* src/base/pdf-error.h (PDF_ERROR_LIST): Error code PDF_EINVOP for
+	signaling invalid operations added.
+
+	* src/base/pdf-stm.c (pdf_stm_read_char): Return a PDF status
+	value instead of the read byte. The read byte is stored in an out
+	parameter.
+	(pdf_stm_peek_char): Likewise.
+	(pdf_stm_read_peek_char): Return PDF_EINVOP if the stream is not a
+	read stream.
+
+	* src/base/pdf-types.h: Definition of PDF_EOF removed, since it is
+	not longer useful.
+
+	* src/base/pdf-stm.c (pdf_stm_read): Return a PDF status value
+	instead of the number of read bytes. The number of read bytes is
+	stored in an out parameter.
+	(pdf_stm_write): Return a PDF status value instead of the number
+	of written bytes. The number of written bytes is stored in an out
+	parameters.
+
 2009-01-11  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Memory Buffers): New section.

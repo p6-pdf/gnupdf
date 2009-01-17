@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-01-01 18:50:46 aleksander"
+/* -*- mode: C -*- Time-stamp: "09/01/13 22:34:08 jemarch"
  *
  *       File:         pdf-stm-write.c
  *       Date:         Sun Sep 21 16:37:27 2008
@@ -58,9 +58,11 @@ START_TEST (pdf_stm_write_001)
   fail_if(ret != PDF_OK);
 
   /* Write some data into the stream */
-  written_bytes = pdf_stm_write (stm,
-                                 "GNU",
-                                 3);
+  ret = pdf_stm_write (stm,
+                       "GNU",
+                       3,
+                       &written_bytes);
+  fail_if(ret != PDF_OK);
   fail_if(written_bytes != 3);
 
   /* Close the stream */
@@ -112,9 +114,11 @@ START_TEST (pdf_stm_write_002)
                                   null_filter_params) != PDF_OK);
 
   /* Write some data into the stream */
-  written_bytes = pdf_stm_write (stm,
-                                 "GNU",
-                                 3);
+  ret = pdf_stm_write (stm,
+                       "GNU",
+                       3,
+                       &written_bytes);
+  fail_if(ret != PDF_OK);
   fail_if(written_bytes != 3);
 
   /* Close the stream */
@@ -159,9 +163,10 @@ START_TEST (pdf_stm_write_003)
   fail_if(ret != PDF_OK);
 
   /* Write some data into the stream */
-  written_bytes = pdf_stm_write (stm,
-                                 "GNU",
-                                 3);
+  ret = pdf_stm_write (stm,
+                       "GNU",
+                       3,
+                       &written_bytes);
   fail_if(written_bytes != 3);
 
   /* Close the stream */
@@ -215,9 +220,10 @@ START_TEST (pdf_stm_write_004)
   fail_if(ret != PDF_OK);
 
   /* Write some data into the stream */
-  written_bytes = pdf_stm_write (stm,
-                                 "abc",
-                                 3);
+  ret = pdf_stm_write (stm,
+                       "abc",
+                       3,
+                       &written_bytes);
   fail_if(written_bytes != 3);
 
   /* Close the stream */
@@ -273,7 +279,8 @@ START_TEST (pdf_stm_write_005)
   dataux = decoded;
   while (total > 0)
     {
-      written = pdf_stm_write (stm, dataux, total);
+      ret = pdf_stm_write (stm, dataux, total, &written);
+      fail_if(ret == PDF_ERROR);
       dataux = dataux + written;
       total -= written;
     }
@@ -327,9 +334,11 @@ START_TEST (pdf_stm_write_006)
   fail_if(ret != PDF_OK);
 
   /* Write some data into the stream */
-  written_bytes = pdf_stm_write (stm,
-                                 "aaaaabbbbbaaaaabbbbbaaaaabbbbbaaaaabbbbbaaaaa",
-                                 45);
+  ret = pdf_stm_write (stm,
+                       "aaaaabbbbbaaaaabbbbbaaaaabbbbbaaaaabbbbbaaaaa",
+                       45,
+                       &written_bytes);
+  fail_if(ret != PDF_OK);
   fail_if(written_bytes != 45);
 
   /* Close the stream */
@@ -415,7 +424,8 @@ START_TEST (pdf_stm_write_007)
   dataux = decoded;
   while (total > 0)
     {
-      written = pdf_stm_write (stm, dataux, total);
+      ret = pdf_stm_write (stm, dataux, total, &written);
+      fail_if(ret == PDF_ERROR);
       dataux = dataux + written;
       total -= written;
     }
@@ -474,6 +484,7 @@ END_TEST
  */
 START_TEST (pdf_stm_write_009)
 {
+  pdf_status_t ret;
   pdf_stm_t stm;
   pdf_hash_t params;
 
@@ -489,7 +500,7 @@ START_TEST (pdf_stm_write_009)
     0x38, 0x35, 0x52, 0x54, 0x4B, 0x9B, 0xF5
   };
 
-  pdf_char_t written;
+  pdf_size_t written;
   
   pdf_crypt_init();
 
@@ -501,7 +512,7 @@ START_TEST (pdf_stm_write_009)
 
   fail_if ( pdf_stm_install_filter (stm, PDF_STM_FILTER_V2_ENC, params) != PDF_OK);
 
-  written = pdf_stm_write (stm, in, in_size);
+  ret = pdf_stm_write (stm, in, in_size, &written);
   fail_if (written != out_size);
 
   pdf_stm_flush (stm, PDF_TRUE);
@@ -525,6 +536,8 @@ END_TEST
  */
 START_TEST (pdf_stm_write_010)
 {
+  pdf_status_t ret;
+  pdf_size_t written;
   pdf_stm_t stm;
   pdf_hash_t params;
   pdf_char_t out[96];
@@ -575,11 +588,16 @@ START_TEST (pdf_stm_write_010)
   fail_if ( pdf_stm_mem_new (out, sizeof(out), 0, PDF_STM_WRITE, &stm) != PDF_OK);
   fail_if ( pdf_stm_install_filter (stm, PDF_STM_FILTER_AESV2_ENC, params) != PDF_OK);
 
-  pdf_stm_write (stm, plain + 00 , 16);
-  pdf_stm_write (stm, plain + 16 , 16);
-  pdf_stm_write (stm, plain + 32 , 16);
-  pdf_stm_write (stm, plain + 48 , 16);
-  pdf_stm_write (stm, plain + 64 , 16);
+  ret = pdf_stm_write (stm, plain + 00 , 16, &written);
+  fail_if(ret == PDF_ERROR);
+  ret = pdf_stm_write (stm, plain + 16 , 16, &written);
+  fail_if(ret == PDF_ERROR);
+  ret = pdf_stm_write (stm, plain + 32 , 16, &written);
+  fail_if(ret == PDF_ERROR);
+  ret = pdf_stm_write (stm, plain + 48 , 16, &written);
+  fail_if(ret == PDF_ERROR);
+  ret = pdf_stm_write (stm, plain + 64 , 16, &written);
+  fail_if(ret == PDF_ERROR);
 
   pdf_stm_flush (stm, PDF_TRUE);
 
@@ -602,6 +620,8 @@ END_TEST
  */
 START_TEST (pdf_stm_write_011)
 {
+  pdf_status_t ret;
+  pdf_size_t written;
   pdf_stm_t stm;
   pdf_hash_t params;
   pdf_char_t in[26] = "abcdefghijklmnopqrstuvwxyz";
@@ -621,7 +641,9 @@ START_TEST (pdf_stm_write_011)
   fail_if ( pdf_stm_mem_new (out, sizeof(out), 0, PDF_STM_WRITE, &stm) != PDF_OK);
   fail_if ( pdf_stm_install_filter (stm, PDF_STM_FILTER_MD5_ENC, params) != PDF_OK);
 
-  pdf_stm_write (stm, in, sizeof(in));
+  ret = pdf_stm_write (stm, in, sizeof(in), &written);
+  fail_if(ret == PDF_ERROR);
+
   pdf_stm_flush (stm, PDF_TRUE);
 
   fail_if (memcmp (out, real_out, sizeof(out)) != 0);
@@ -643,6 +665,8 @@ END_TEST
  */
 START_TEST (pdf_stm_write_012)
 {
+  pdf_status_t ret;
+  pdf_size_t written;
   pdf_stm_t stm;
   pdf_hash_t params;
   pdf_char_t out[48];
@@ -685,7 +709,8 @@ START_TEST (pdf_stm_write_012)
   fail_if ( pdf_stm_mem_new (out, sizeof(out), 0, PDF_STM_WRITE, &stm) != PDF_OK);
   fail_if ( pdf_stm_install_filter (stm, PDF_STM_FILTER_AESV2_ENC, params) != PDF_OK);
 
-  pdf_stm_write (stm, plain , sizeof(plain));
+  ret = pdf_stm_write (stm, plain , sizeof(plain), &written);
+  fail_if(ret == PDF_ERROR);
   pdf_stm_flush (stm, PDF_TRUE);
 
   fail_if (memcmp (out, ciphered, sizeof(out)) != 0);
