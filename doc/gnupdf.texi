@@ -11111,6 +11111,65 @@ pdf_obj_real_set (new_obj, 3.14);
 @node Boolean Objects
 @subsection Boolean Objects
 
+@deftypefun pdf_status_t pdf_obj_boolean_new (pdf_obj_doc_t @var{doc}, pdf_bool_t @var{indirect_p}, pdf_bool_t @var{value}, pdf_obj_t *@var{obj})
+
+Create a new Boolean object in the given document @var{doc} and store it
+in @var{obj}.
+
+@table @strong
+@item Parameters
+@table @var
+@item doc
+A document object.
+@item indirect_p
+A boolean value indicating whether to create an indirect object.
+@item value
+The initial value for the object.
+@item obj
+A pointer to a @code{pdf_obj_t} variable to store the newly created
+object.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_ERROR
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_boolean_value (pdf_obj_t @var{obj}, pdf_bool_t *@var{value})
+
+Get the value of a PDF boolean.
+
+@table @strong
+@item Parameters
+@table @var
+@item obj
+A PDF object.
+@item value
+A pointer to a @var{pdf_bool_t} variable to store the result.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_EINVOBJ
+The object @var{obj} is not a boolean object.
+@item PDF_ERROR
+Some error prevented the operation to complete.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
 @node Name Objects
 @subsection Name Objects
 
@@ -11119,6 +11178,276 @@ pdf_obj_real_set (new_obj, 3.14);
 
 @node Array Objects
 @subsection Array Objects
+
+@deftypefun pdf_status_t pdf_obj_array_new (pdf_obj_doc_t @var{doc}, pdf_bool_t @var{indirect_p}, pdf_size_t @var{array_size}, pdf_obj_t *@var{obj})
+
+Create a new Array object in the given document @var{doc} and store it
+in @var{obj}.
+
+@table @strong
+@item Parameters
+@table @var
+@item doc
+A document object.
+@item indirect_p
+A boolean value indicating whether to create an indirect object.
+@item array_size
+The number of elements of the new array.
+@item obj
+A pointer to a @code{pdf_obj_t} variable to store the newly created
+object.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_ERROR
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_array_get (pdf_obj_t @var{array}, pdf_size_t @var{index}, pdf_obj_t *@var{obj})
+
+Get the @var{index}th element of the given array and store it into
+@var{obj}.
+
+@table @strong
+@item Parameters
+@table @var
+@item array
+A PDF array.
+@item index
+An index into the array.
+@item obj
+A pointer to a @code{pdf_obj_t} variable to store the result.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_EBADDATA
+The specified @var{index} is invalid.
+@item PDF_ERROR
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_array_put (pdf_obj_t @var{array}, pdf_size_t @var{index}, pdf_obj_t @var{obj})
+
+Set the @var{index}th element of the array to the given object @var{obj}.
+
+@table @strong
+@item Parameters
+@table @var
+@item array
+A PDF array.
+@item index
+An index into the array.
+@item obj
+A PDF object.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_EINVOBJ
+The object @var{obj} is a direct object already contained in another
+object or the object belongs to other document.
+@item PDF_EBADDATA
+The specified @var{index} is invalid.
+@item PDF_ERROR
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+
+@deftypefun pdf_status_t pdf_obj_array_insert (pdf_obj_t @var{array}, pdf_size_t @var{index}, pdf_obj_t @var{obj})
+
+Insert the object @var{obj} into @var{array} just before the position
+specified by @var{index}.
+
+@table @strong
+@item Parameters
+@table @var
+@item array
+A PDF array.
+@item index
+An index into the array.
+@item obj
+A PDF object.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_EINVOBJ
+The object @var{obj} is a direct object already contained in another
+object or the object belongs to other document.
+@item PDF_EBADDATA
+The specified @var{index} is invalid.
+@item PDF_ERROR
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_size_t pdf_obj_array_size (pdf_obj_t @var{array})
+
+Get the number of elements contained in @var{array}.
+
+@table @strong
+@item Parameters
+@table @var
+@item array
+A PDF array.
+@end table
+@item Returns
+A PDF size value indicating the number of objects contained in
+@var{array}.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_obj_array_weak_p (pdf_obj_t @var{array}, pdf_size_t @var{index})
+
+Determine if the @var{index}th element of @var{array} is a weak
+reference.
+
+@table @strong
+@item Parameters
+@table @var
+@item array
+A PDF array.
+@item index
+An index into @var{array}.
+@end table
+@item Returns
+A boolean value:
+@table @code
+@item PDF_TRUE
+The element at @var{index} is a weak reference.
+@item PDF_FALSE
+The element at @var{index} has a strong reference.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_obj_array_weak_set (pdf_obj_t @var{array}, pdf_size_t @var{index}, pdf_bool_t @var{weak_p})
+
+Set if the @var{index}th element of @var{array} is a weak reference.
+
+@table @strong
+@item Parameters
+@table @var
+@item array
+A PDF array.
+@item index
+An index into @var{array}.
+@item weak_p
+A boolean value.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_EBADDATA
+The specified @var{index} is invalid.
+@item PDF_ERROR
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_array_remove (pdf_obj_t @var{array}, pdf_obj_t @var{obj})
+
+Find the first element equal to @var{obj} and remove it from the
+array.
+
+Note that it not safe to call @code{pdf_obj_array_remove} while
+executing a @code{pdf_obj_enum}.
+
+@table @strong
+@item Parameters
+@table @var
+@item array
+A PDF array.
+@item obj
+The PDF object to remove from the array.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@var{obj} was found and removed from the array.
+@item PDF_EBADDATA
+@var{obj} was not contained in the array.
+@item PDF_ERROR
+Some error prevented to complete the operation.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_array_remove_at (pdf_obj_t @var{array}, pdf_size_t @var{index})
+
+Find the @var{index}th element and remove it from the array.
+
+Note that it not safe to call @code{pdf_obj_array_remove_at} while
+executing a @code{pdf_obj_enum}.
+
+@table @strong
+@item Parameters
+@table @var
+@item array
+A PDF array.
+@item index
+The index of the element to remove from the array.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The requested element was found and removed from the array.
+@item PDF_EBADDATA
+The specified @var{index} is invalid.
+@item PDF_ERROR
+Some error prevented to complete the operation.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
 
 @node Dictionary Objects
 @subsection Dictionary Objects
