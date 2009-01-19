@@ -9974,7 +9974,6 @@ while maintaining its structural integrity.
 * Opening and Closing Object Documents::
 * Managing Object Document Properties::
 * Getting Objects::
-* Managing Object Collections::
 @end menu
 
 @node Object Document Data Types
@@ -10325,9 +10324,6 @@ XXX
 @end table
 @end deftypefun
 
-@node Managing Object Collections
-@subsection Managing Object Collections
-
 @node PDF Objects
 @section PDF Objects
 
@@ -10336,6 +10332,7 @@ XXX
 * Object Generic Functions::
 * Object Strong References::
 * Compressibility of Objects::
+* Object Collections::
 * Real Objects::
 * Integer Objects::
 * Boolean Objects::
@@ -10416,6 +10413,9 @@ A PDF status value.
 @end table
 @end deftp
 
+@deftp {Data Type} pdf_obj_col_t
+Opaque type representing an object collection into an object document.
+@end deftp
 
 @node Object Generic Functions
 @subsection Object Generic Functions
@@ -10585,7 +10585,7 @@ A pointer to a @var{pdf_obj_doc_t} variable.
 A PDF status value:
 @table @code
 @item PDF_OK
-@item PDF_EIOBJ
+@item PDF_EINVOBJ
 The specified object @var{obj} is a scalar object.
 @item PDF_ERROR
 @end table
@@ -10836,7 +10836,189 @@ XXX
 @end table
 @end deftypefun
 
+@node Object Collections
+@subsection Object Collections
 
+@deftypefun pdf_status_t pdf_obj_col_new (pdf_obj_doc_t @var{doc}, pdf_obj_col_t *@var{col})
+
+Create a new object collection in the specified object document @var{doc}.
+
+@table @strong
+@item Parameters
+@table @var
+@item doc
+An object document.
+@item col
+A pointer to a @var{pdf_obj_col_t} variable that will contain the new
+object collection.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_ERROR
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_col_enum (pdf_obj_col_t @var{col}, pdf_obj_enum_fn_t @var{enum_cb}, void *@var{client_data})
+
+Enumerate all the PDF objects contained in the given object collection
+@var{col}.
+
+@table @strong
+@item Parameters
+@table @var
+@item col
+An object collection.
+@item enum_cb
+The callback function.
+@item client_data
+Pointer passed to the callback function.
+@end table
+@item Returns
+A PDF status value, that is the AND logical value of the values
+returned by the enumeration procedure, considering @code{PDF_OK} as
+true and @code{<> PDF_OK} as false.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_obj_col_equal (pdf_obj_col_t @var{col1}, pdf_obj_col_t @var{col2})
+
+Test whether two PDF object collections are the same collection.
+
+@table @strong
+@item Parameters
+@table @var
+@item col1
+The first collection to compare.
+@item col2
+The second collection to compare.
+@end table
+@item Returns
+A boolean value:
+@table @code
+@item PDF_TRUE
+The collections are the same.
+@item PDF_FALSE
+The collections are not the same.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_u32_t pdf_obj_col_size (pdf_obj_col_t @var{col})
+
+Get the number of PDF objects contained in the object collection
+@var{col}.
+
+@table @strong
+@item Parameters
+@table @var
+@item col
+An object collection.
+@end table
+@item Returns
+The number of objects contained in @var{col}.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_col_add_obj (pdf_obj_col_t @var{col}, pdf_obj_t @var{obj})
+
+Add an object @var{obj} to a collection @var{col}. The given object
+should be compressible.
+
+@table @strong
+@item Parameters
+@table @var
+@item col
+An object collection.
+@item obj
+A PDF object.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_EINVOBJ
+The object @var{obj} is not compressible.
+@item PDF_ERROR
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_remove_from_col (pdf_obj_t @var{obj})
+
+Remove a given PDF object @var{obj} from its containing object
+collection. If the object is not contained in an object collection
+then this operation is a nop.
+
+@table @strong
+@item Parameters
+@table @var
+@item obj
+A PDF object.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_ERROR
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_get_col (pdf_obj_t @var{obj}, pdf_obj_col_t *@var{col})
+
+Get the containing object collection containing a given PDF object
+@var{obj}.
+
+@table @strong
+@item Parameters
+@table @var
+@item obj
+A PDF object.
+@item col
+A pointer to a @code{pdf_obj_col_t} value containing the returned
+object collection.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_EINVOBJ
+The PDF object @var{obj} does not have a containing object collection.
+@item PDF_ERROR
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
 
 @node Real Objects
 @subsection Real Objects
