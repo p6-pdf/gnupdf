@@ -1,3 +1,9 @@
+2009-01-19  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-types.h: Progress monitor data types implemented.
+
+	* doc/gnupdf.texi (Progress Monitors): New section.
+
 2009-01-16  Jose E. Marchesi  <jemarch@chapters.gnu.org>
 
 	* src/base/pdf-fsys-disk.c: Make path sizes of type pdf_size_t.

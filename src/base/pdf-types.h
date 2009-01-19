@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/13 22:00:18 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/01/19 22:49:48 jemarch"
  *
  *       File:         pdf-types.h
  *       Date:         Sun Feb 10 21:30:00 2008
@@ -128,6 +128,26 @@ pdf_bool_t pdf_buffer_eob_p (pdf_buffer_t buffer);
 pdf_status_t pdf_buffer_resize (pdf_buffer_t buffer, pdf_size_t newsize);
 pdf_status_t pdf_buffer_rewind (pdf_buffer_t buffer);
 
+/********************** progress monitors **************************/
+
+typedef pdf_status_t (*pdf_pm_begin_operation_fn_t) (void *client_data);
+typedef pdf_status_t (*pdf_pm_end_operation_fn_t) (void *client_data);
+typedef pdf_status_t (*pdf_pm_get_duration_fn_t) (void *client_data, void *duration);
+typedef pdf_status_t (*pdf_pm_set_duration_fn_t) (void *client_data, void *duration);
+typedef pdf_status_t (*pdf_pm_get_current_value_fn_t) (void *client_data, void *duration);
+typedef pdf_status_t (*pdf_pm_set_current_value_fn_t) (void *client_data, void *duration);
+typedef pdf_status_t (*pdf_pm_set_text_fn_t) (void *client_data, void *text);
+
+struct pdf_pm_s
+{
+  pdf_pm_begin_operation_fn_t begin_operation_fn;
+  pdf_pm_end_operation_fn_t end_operation_fn;
+  pdf_pm_get_duration_fn_t get_duration_fn;
+  pdf_pm_set_duration_fn_t set_duration_fn;
+  pdf_pm_get_current_value_fn_t get_current_value_fn_t;
+  pdf_pm_set_current_value_fn_t set_current_value_fn_t;
+  pdf_pm_set_text_fn_t set_text_fn;
+};
 
 /********************** 64-bit type built-in support **************************/
 
