@@ -1821,8 +1821,8 @@ modules.
 This module implements the abstraction of object level documents. An
 object-level document is a hierarchy of objects that conforms a PDF
 document. Facilities to get the objects from a document and to create
-new objects into a document are also provided. A cache of objects and
-a garbage collection algorithm is also implemented in this module.
+new objects into a document are provided. A cache of objects and
+a garbage collection algorithm are also implemented in this module.
 @item Object Module
 This module implements the several PDF objects and provides functions
 to manipulate the attributes of the objects associated with an
