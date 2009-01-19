@@ -9997,8 +9997,8 @@ A complete header string, like
 An encryption key if the security of the document is activated.
 @item pdf_size_t crypt_key_size
 Size of @code{crypt_key}.
-@item pdf_pm_t progress_monitor
-A progress monitor, or @code{NULL}.
+@item struct pdf_pm_s *progress_monitor
+A pointer to a progress monitor, or @code{NULL}.
 @item void *monitor_client_data
 Client-specific data for the progress monitor callbacks.
 @end table
@@ -11023,84 +11023,96 @@ XXX
 @node Real Objects
 @subsection Real Objects
 
-A real object represents a fixed-point real number.
+@deftypefun pdf_status_t pdf_obj_real_new (pdf_obj_doc_t @var{doc}, pdf_bool_t @var{indirect_p}, pdf_real_t @var{value}, pdf_obj_t *@var{obj})
 
-@deftypefun pdf_obj_t pdf_obj_real_new (const pdf_cos_t @var{doc}, const pdf_bool_t @var{indirect}, const pdf_real_t @var{value})
-
-Creates a new real object.
+Create a new Real object in the given document @var{doc} and store
+it in @var{obj}.
 
 @table @strong
 @item Parameters
-
 @table @var
 @item doc
-Document that contain this object.
-@item indirect
-Boolean value specifying if we want to create an indirect object.
+A document object.
+@item indirect_p
+A boolean value indicating whether to create an indirect object.
 @item value
-Initialization value.
+The initial value for the object.
+@item obj
+A pointer to a @code{pdf_obj_t} variable to store the newly created
+object.
 @end table
-
 @item Returns
-The newly created object.
-@item Usage example
-
-@example
-pdf_cos_t doc;
-pdf_obj_t new_obj;
-
-/* Initialize `doc' ... */
-
-new_obj = pdf_obj_real_new (doc, PDF_FALSE, 2.12);
-@end example 
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_ERROR
 @end table
-@end deftypefun 
-
-@deftypefun pdf_real_t pdf_obj_real_get (const pdf_obj_t @var{object})
-
-Gets the real value of a real object.
-
-@table @strong
-@item Parameters
-
-None.
-
-@item Returns
-The real value of the given object.
 @item Usage example
 @example
-pdf_obj_t real_obj;
-pdf_real_t value;
+pdf_obj_doc_t doc;
+pdf_obj_t real_obj_1;
+pdf_obj_t real_obj_2;
 
-/* Initialize `real_obj' as a Real object ... */
+/* Create some real objects */
+if (pdf_obj_real_new (doc, PDF_FALSE, 3.14, &integer_obj_1)
+    != PDF_OK)
+@{
+   /* Error creating real object */
+@}
 
-value = pdf_obj_real_get (new_obj);
+if (pdf_obj_real_new (doc, PDF_FALSE, 2.7182, &real_obj_2)
+    != PDF_OK)
+@{
+   /* Error creating real object */
+@}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun void pdf_obj_real_set (pdf_obj_t @var{object}, const pdf_real_t @var{value})
+@deftypefun pdf_status_t pdf_obj_real_value (pdf_obj_t @var{obj}, pdf_real_t *@var{value})
 
-Set a new real value in a real object.
+Get the value of a PDF Real object.
 
 @table @strong
 @item Parameters
 @table @var
-@item object
-Real object.
+@item obj
+A PDF object.
 @item value
-New real value.
+A pointer to a @var{pdf_real_t} variable to store the result.
 @end table
 @item Returns
-None.
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_EINVOBJ
+The object @var{obj} is not a Real object.
+@item PDF_ERROR
+Some error prevented the operation to complete.
+@end table
 @item Usage example
 @example
+pdf_obj_doc_t doc;
 pdf_obj_t real_obj;
-pdf_real_t value;
+pdf_real_t result;
 
-/* Initialize `real_obj' as a Real object ... */
-
-pdf_obj_real_set (new_obj, 3.14);
+if (pdf_obj_real_new (doc, PDF_FALSE, 3.14, &real_obj)
+    != PDF_OK)
+@{
+   /* Error creating Real object */
+@}
+else
+@{
+   if (pdf_obj_real_value (real_obj, &result)
+       != PDF_OK)
+   @{
+      /* Error getting the Real value */
+   @}
+   else
+   @{
+      /* result equals to 3.14 */
+   @}
+@}
 @end example
 @end table
 @end deftypefun
@@ -11156,7 +11168,7 @@ if (pdf_obj_integer_new (doc, PDF_FALSE, -10, &integer_obj_2)
 
 @deftypefun pdf_status_t pdf_obj_integer_value (pdf_obj_t @var{obj}, pdf_i32_t *@var{value})
 
-Get the value of a PDF Integer.
+Get the value of a PDF Integer object.
 
 @table @strong
 @item Parameters
@@ -11195,7 +11207,7 @@ else
    @}
    else
    @{
-      /* Now result has the value 10 */
+      /* result equals to 10 */
    @}
 @}
 @end example
@@ -11253,7 +11265,7 @@ if (pdf_obj_boolean_new (doc, PDF_FALSE, PDF_FALSE, &boolean_obj_2)
 
 @deftypefun pdf_status_t pdf_obj_boolean_value (pdf_obj_t @var{obj}, pdf_bool_t *@var{value})
 
-Get the value of a PDF boolean.
+Get the value of a PDF boolean object.
 
 @table @strong
 @item Parameters
@@ -11292,7 +11304,7 @@ else
    @}
    else
    @{
-      /* Now result has the value PDF_TRUE */
+      /* result equals to PDF_TRUE */
    @}
 @}
 @end example
@@ -11302,8 +11314,109 @@ else
 @node Name Objects
 @subsection Name Objects
 
+@deftypefun pdf_status_t pdf_obj_name_new (pdf_obj_doc_t @var{doc}, pdf_bool_t @var{indirect_p}, pdf_char_t *@var{value}, pdf_obj_t *@var{obj})
+
+Create a new Name object in the given document @var{doc} and store it
+in @var{obj}.
+
+@table @strong
+@item Parameters
+@table @var
+@item doc
+A document object.
+@item indirect_p
+A boolean value indicating whether to create an indirect object.
+@item value
+The string value for the object.
+@item obj
+A pointer to a @code{pdf_obj_t} variable to store the newly created
+object.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_EBADDATA
+Invalid value in @var{value}.
+@item PDF_ERROR
+@end table
+@item Usage example
+@example
+pdf_obj_doc_t doc;
+pdf_obj_t name_obj_1;
+pdf_obj_t name_obj_2;
+
+/* Create some Name objects */
+if (pdf_obj_name_new (doc, PDF_FALSE, "FooBar", &name_obj_1)
+    != PDF_OK)
+@{
+   /* Error creating name object */
+@}
+
+if (pdf_obj_name_new (doc, PDF_FALSE, "BazFoo", &name_obj_2)
+    != PDF_OK)
+@{
+   /* Error creating name object */
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_name_value (pdf_obj_t @var{obj}, pdf_char_t **@var{value})
+
+Get the value of a PDF Name object.
+
+@table @strong
+@item Parameters
+@table @var
+@item obj
+A PDF object.
+@item value
+A pointer to a @var{pdf_char_t *} variable to store the result. The
+client should free the memory in @var{value}.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_EINVOBJ
+The object @var{obj} is not a name object.
+@item PDF_ENOMEM
+Not enough memory.
+@item PDF_ERROR
+Some error prevented the operation to complete.
+@end table
+@item Usage example
+@example
+pdf_obj_doc_t doc;
+pdf_obj_t name_obj;
+pdf_char_t *result;
+
+if (pdf_obj_name_new (doc, PDF_FALSE, "FooBar", &boolean_obj)
+    != PDF_OK)
+@{
+   /* Error creating Name object */
+@}
+else
+@{
+   if (pdf_obj_name_value (name_obj, &result)
+       != PDF_OK)
+   @{
+      /* Error getting the Name value */
+   @}
+   else
+   @{
+      /* result equals to /FooBar */
+   @}
+@}
+@end example
+@end table
+@end deftypefun
+
 @node String Objects
 @subsection String Objects
+
+
 
 @node Array Objects
 @subsection Array Objects

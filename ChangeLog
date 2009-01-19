@@ -1,3 +1,27 @@
+2009-01-19  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Object Layer): New chapter.
+	(Object Documents): New section.
+	(Object Document Data Types): New section.
+	(Opening and Closing Object Documents): New section.
+	(Managing Object Document Properties): New section.
+	(Getting Objects): New section.
+	(Object Data Types): New section.
+	(Object Generic Functions): New section.
+	(Object Strong References): New section.
+	(Compressibility of Objects): New section.
+	(Object Collections): New section.
+	(Real Objects): New section.
+	(Integer Objects): New section.
+	(Boolean Objects): New section.
+	(Name Objects): New section.
+	(String Objects): New section.
+	(Array Objects): New section.
+	(Dictionary Objects): New section.
+	(Stream Objects): New section.
+	(Indirect Objects): New section.
+	(Null Object): New section.
+
 2009-01-14  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf-arch.texi (The object layer): New chapter.
