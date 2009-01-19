@@ -22,6 +22,44 @@
 	(Indirect Objects): New section.
 	(Null Object): New section.
 
+2009-01-19  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-types.h: Progress monitor data types implemented.
+
+	* doc/gnupdf.texi (Progress Monitors): New section.
+
+2009-01-16  Jose E. Marchesi  <jemarch@chapters.gnu.org>
+
+	* src/base/pdf-fsys-disk.c: Make path sizes of type pdf_size_t.
+
+	* src/base/pdf-types.c: Get the buffer_t functions out of the
+	#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
+
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_get_free_space):
+	pdf_i64_assign_quick cannot get a NULL value as the third
+	parameter when working in 64bits machines.
+
+2009-01-14  Aleksander Morgado  <aleksander@es.gnu.org>
+
+	* src/base/pdf-fsys-disk.[h|c]: Most capabilities of the disk fsys
+	module implemented. For w32 compatibility using UNICODE paths, all the
+	system calls in windows are done using the wchar_t (UTF-16LE) versions.
+	In POSIX, host-encoded paths are used in the system calls.
+	Remaining stuff marked as TODO in the code.
+
+	* src/base/pdf-fsys.[h|c]: Renamed `pdf_fsys_open' to `pdf_fsys_file_open'.
+	(pdf_fsys_get_free_space): Return pdf_i64_t instead of pdf_size_t.
+
+	* src/base/pdf-fsys-def.h: Renamed `pdf_fsys_def_open' to
+	`pdf_fsys_def_file_open'.
+
+	* src/base/pdf-error.h (PDF_ERROR_LIST): Additional error codes added.
+
+	* doc/gnupdf.texi (Opening Files): Renamed `pdf_fsys_open' to
+	`pdf_fsys_file_open'.
+	 (Getting File System Properties): Return pdf_i64_t instead of pdf_size_t
+	in pdf_fsys_get_free_space.
+
 2009-01-14  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf-arch.texi (The object layer): New chapter.

@@ -1189,6 +1189,8 @@ pdf_i64_to_i32(const pdf_i64_t bignum)
   return ((bignum.high >= 0) ? bignum.low : (-1 * bignum.low));
 }
 
+#endif /* !PDF_USE_BUILTIN_64BIT_SUPPORT */
+
 pdf_buffer_t
 pdf_buffer_new (pdf_size_t size)
 {
@@ -1250,6 +1252,5 @@ pdf_buffer_rewind (pdf_buffer_t buffer)
   return PDF_OK;
 }
 
-/* End of pdf-types.c */
 
-#endif
+/* End of pdf-types.c */
