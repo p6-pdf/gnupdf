@@ -89,8 +89,11 @@
   ERROR_ENTRY (PDF_EBADSAMPLES, "/FunctionType 0: error while reading sample table"), \
   ERROR_ENTRY (PDF_EBADAESKEY,  "the size of an AES  key should be a multiple of 16"), \
   ERROR_ENTRY (PDF_EBADV2KEY,   "a V2 key should be at least 40 bits long"), \
-  ERROR_ENTRY (PDF_EINVOP,      "invalid operation")
-    
+  ERROR_ENTRY (PDF_EINVOP,      "invalid operation"), \
+  ERROR_ENTRY (PDF_EBADFILE,    "file violates PDF specifications"), \
+  ERROR_ENTRY (PDF_EIMPLLIMIT,  "implementation limit exceeded"), \
+  ERROR_ENTRY (PDF_EEXIST,      "name already in use")
+
 
 
 #define ERROR_ENTRY(id,string) id

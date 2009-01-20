@@ -18,6 +18,7 @@ extern Suite *tsuite_types (void);
 extern Suite *tsuite_crypt (void);
 extern Suite *tsuite_error (void);
 extern Suite *tsuite_fp (void);
+extern Suite *tsuite_rd (void);
 
 int
 main (int argc, char **argv)
@@ -37,6 +38,7 @@ main (int argc, char **argv)
   srunner_add_suite (sr, tsuite_error ());
   srunner_add_suite (sr, tsuite_stm ());
   srunner_add_suite (sr, tsuite_fp ());
+  srunner_add_suite (sr, tsuite_rd ());
 
   /* Set log file */
   srunner_set_log (sr, "ut.log");
