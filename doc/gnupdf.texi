@@ -10502,7 +10502,6 @@ XXX
 * Array Objects::
 * Dictionary Objects::
 * Stream Objects::
-* Indirect Objects::
 * Null Object::
 @end menu
 
@@ -11577,7 +11576,136 @@ else
 @node String Objects
 @subsection String Objects
 
+@deftypefun pdf_status_t pdf_obj_string_new (pdf_obj_doc_t @var{doc}, pdf_bool_t @var{indirect_p}, pdf_char_t *@var{str}, pdf_size_t @var{str_size}, pdf_obj_t *@var{obj})
 
+Create a new String object in the given document @var{doc} and store it
+in @var{obj}.
+
+@table @strong
+@item Parameters
+@table @var
+@item doc
+A document object.
+@item indirect_p
+A boolean value indicating whether to create an indirect object.
+@item str
+The string value. Note that this is not a @code{0} terminated string,
+since PDF strings can cointain arbitrary binary data. The data pointed
+by @var{str} is copied internally.
+@item str_size
+The size of @var{str}, in bytes.
+@item obj
+A pointer to a @code{pdf_obj_t} variable to store the newly created
+object.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_ERROR
+@end table
+@item Usage example
+@example
+pdf_obj_doc_t doc;
+pdf_obj_t str;
+
+/* Create a new String PDF object */
+if (pdf_obj_string_new (doc, PDF_FALSE, "f\233o", 3, &str) 
+    != PDF_OK)
+@{
+   /* Error creating the String object */
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_string_value (pdf_obj_t @var{obj}, pdf_char_t *@var{buf}, pdf_size_t @var{buf_size}, pdf_size_t *@var{str_size})
+
+Get at most @var{buf_size} bytes from the string value of the PDF
+String object @var{obj} and store it in @var{buf}. The current size of
+the string object is stored in @var{str_size}.
+
+@table @strong
+@item Parameters
+@table @var
+@item obj
+A PDF object.
+@item buf
+A memory buffer.
+@item buf_size
+Size of the memory buffer.
+@item str_size
+Pointer to a @code{pdf_size_t} storing the actual size of the PDF
+String object.
+@item 
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_EINVOBJ
+The object @var{obj} is not a String object.
+@item PDF_ERROR
+Some error prevented the operation to complete.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_obj_string_hex_p (pdf_obj_t @var{obj})
+
+Return the hex flag of the String object @var{obj}. A String object
+with the hex flag set to true is saved in an hexadecimal form.
+
+@table @strong
+@item Parameters
+@table @var
+@item obj
+A PDF String object.
+@end table
+@item Returns
+A PDF boolean value:
+@table @code
+@item PDF_TRUE
+@item PDF_FALSE
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_string_hex_set (pdf_obj_t @var{obj}, pdf_bool_t @var{hex_p})
+
+Set the hex flag of the String object @var{obj}. A String object
+with the hex flag set to true is saved in an hexadecimal form.
+
+@table @strong
+@item Parameters
+@table @var
+@item obj
+A PDF String object.
+@item hex_p
+The new value of the hex flag for @var{obj}.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_EINVOBJ
+@var{obj} is not a String object.
+@item PDF_ERROR
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
 
 @node Array Objects
 @subsection Array Objects
@@ -11851,18 +11979,36 @@ XXX
 @end table
 @end deftypefun
 
-
 @node Dictionary Objects
 @subsection Dictionary Objects
 
 @node Stream Objects
 @subsection Stream Objects
 
-@node Indirect Objects
-@subsection Indirect Objects
-
 @node Null Object
 @subsection Null Object
+
+@deftypefun pdf_status_t pdf_obj_null_new (pdf_obj_t *@var{obj})
+
+Create a direct Null object.
+
+@table @strong
+@table @var
+@item obj
+A pointer to a @code{pdf_obj_t} variable to store the newly created
+object.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
 
 @node Document Layer
 @chapter Document Layer
