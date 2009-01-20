@@ -11982,6 +11982,389 @@ XXX
 @node Dictionary Objects
 @subsection Dictionary Objects
 
+@deftypefun pdf_status_t pdf_obj_dict_new (pdf_obj_doc_t @var{doc}, pdf_bool_t @var{indirect_p}, pdf_obj_t *@var{obj})
+
+Create a new PDF Dictionary object.
+
+@table @strong
+@table @var
+@item doc
+An object document.
+@item indirect_p
+A boolean value indicating whether to create an indirect object.
+@item obj
+A pointer to a @code{pdf_obj_t} variable to store the newly created
+object.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_dict_get (pdf_obj_t @var{dict}, pdf_obj_t @var{key}, pdf_obj_t &@var{obj})
+
+Get the value associated with @var{key} in @var{dict} and store it in
+@var{obj}.
+
+@table @strong
+@item Parameters
+@table @var
+@item dict
+A PDF dictionary object.
+@item key
+A PDF name object.
+@item obj
+A pointer to @code{pdf_obj_t} to store the value associated with
+@var{key}.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_EINVOBJ
+@var{key} is not a name object or @var{dict} is not a dictionary
+object.
+@item PDF_EBADDATA
+@var{key} is not in the dictionary.
+@item PDF_ERROR
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_dict_put (pdf_obj_t @var{dict}, pdf_obj_t @var{key}, pdf_obj_t &@var{val})
+
+Set @var{val} as the new value for @var{key} in the PDF dictionary
+@var{dict}. If the entry do not exist then it is added.
+
+@table @strong
+@item Parameters
+@table @var
+@item dict
+A PDF dictionary object.
+@item key
+A PDF name object.
+@item val
+A PDF object.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_EINVOBJ
+@var{key} is not a name object or @var{dict} is not a dictionary
+object.
+@item PDF_ERROR
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+
+@deftypefun pdf_status_t pdf_obj_dict_get_str (pdf_obj_t @var{dict}, pdf_char_t *@var{key}, pdf_obj_t &@var{obj})
+
+Get the value associated with @var{key} in @var{dict} and store it in
+@var{obj}.
+
+@table @strong
+@item Parameters
+@table @var
+@item dict
+A PDF dictionary object.
+@item key
+A string containing the name of the key, without the preceding slash
+character.
+@item obj
+A pointer to @code{pdf_obj_t} to store the value associated with
+@var{key}.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_EBADDATA
+@var{key} is not in the dictionary.
+@item PDF_ERROR
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_dict_put_str (pdf_obj_t @var{dict}, pdf_char_t *@var{key}, pdf_obj_t &@var{val})
+
+Set @var{val} as the new value for @var{key} in the PDF dictionary
+@var{dict}. If the entry do not exist then it is added.
+
+@table @strong
+@item Parameters
+@table @var
+@item dict
+A PDF dictionary object.
+@item key
+A string containing the name of the key, without the preceding slash
+character.
+@item val
+A PDF object.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_EINVOBJ
+@var{dict} is not a dictionary object.
+@item PDF_ERROR
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_dict_remove (pdf_obj_t @var{dict}, pdf_obj_t @var{key})
+
+Remove a key-value pair from a dictionary. If @var{key} is not found
+in @var{dict} then this is a no-op.
+
+@table @strong
+@item Parameters
+@table @var
+@item dict
+A PDF dictionary object.
+@item key
+A PDF name object.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_EINVOBJ
+Either @var{dict} is not a dictionary object or @var{key} is not a
+name object.
+@item PDF_ERROR
+An error prevented the operation to terminate.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_dict_remove_str (pdf_obj_t @var{dict}, pdf_char_t *@var{key})
+
+Remove a key-value pair from a dictionary. If @var{key} is not found
+in @var{dict} then this is a no-op.
+
+@table @strong
+@item Parameters
+@table @var
+@item dict
+A PDF dictionary object.
+@item key
+A string containing the textual representation of a PDF Name.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_EINVOBJ
+@var{dict} is not a dictionary object.
+@item PDF_ERROR
+An error prevented the operation to complete.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_obj_dict_key_p (pdf_obj_t @var{dict}, pdf_obj_t @var{key})
+
+Determine if a given @var{key} object is a key into @var{dict}.
+
+@table @strong
+@item Parameters
+@table @var
+@item dict
+A PDF Dictionary object.
+@item key
+A PDF Name object.
+@end table
+@item Returns
+A PDF boolean value:
+@table @code
+@item PDF_TRUE
+@var{key} is in a key-value pair into @var{dict}.
+@item PDF_FALSE
+@var{key} is not in a key-value pair into @var{dict}, or error.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_obj_dict_key_str_p (pdf_obj_t @var{dict}, pdf_char_t *@var{key})
+
+Determine if a given @var{key} string is a key into @var{dict}.
+
+@table @strong
+@item Parameters
+@table @var
+@item dict
+A PDF Dictionary object.
+@item key
+A string containing the string representation of a PDF Name.
+@end table
+@item Returns
+A PDF boolean value:
+@table @code
+@item PDF_TRUE
+@var{key} is in a key-value pair into @var{dict}.
+@item PDF_FALSE
+@var{key} is not in a key-value pair into @var{dict}, or error.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_obj_dict_weak_p (pdf_obj_t @var{dict}, pdf_obj_t @var{key})
+
+Determine if a given @var{key} object is a weak reference in @var{dict}.
+
+@table @strong
+@item Parameters
+@table @var
+@item dict
+A PDF Dictionary object.
+@item key
+A PDF Name object.
+@end table
+@item Returns
+A PDF boolean value:
+@table @code
+@item PDF_TRUE
+@var{key} is in a weak reference into @var{dict}.
+@item PDF_FALSE
+@var{key} is not a weak reference into @var{dict}, or error.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_dict_weak_set (pdf_obj_t @var{dict}, pdf_obj_t @var{key}, pdf_bool_t @var{weak_p})
+
+Set the @var{weak_p} attribute of @var{key} in @var{dict}.
+
+@table @strong
+@item Parameters
+@table @var
+@item dict
+A PDF Dictionary object.
+@item key
+A PDF Name object.
+@item weak_p
+The new value for the weak attribute of the key.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_EINVOBJ
+Either @var{dict} is not a PDF dictionary object or @var{key} is not a
+PDF Name object.
+@item PDF_ERROR
+An error prevented the operation to complete.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_obj_dict_weak_str_p (pdf_obj_t @var{dict}, pdf_char_t *@var{key})
+
+Determine if a given @var{key} object is a weak reference in @var{dict}.
+
+@table @strong
+@item Parameters
+@table @var
+@item dict
+A PDF Dictionary object.
+@item key
+A string containing the string representation of a PDF Name.
+@end table
+@item Returns
+A PDF boolean value:
+@table @code
+@item PDF_TRUE
+@var{key} is in a weak reference into @var{dict}.
+@item PDF_FALSE
+@var{key} is not a weak reference into @var{dict}, or error.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_dict_weak_str_set (pdf_obj_t @var{dict}, pdf_char_t *@var{key}, pdf_bool_t @var{weak_p})
+
+Set the @var{weak_p} attribute of @var{key} in @var{dict}.
+
+@table @strong
+@item Parameters
+@table @var
+@item dict
+A PDF Dictionary object.
+@item key
+A string containing the string representation of a PDF Name.
+@item weak_p
+The new value for the weak attribute of the key.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_EINVOBJ
+@var{dict} is not a PDF dictionary object.
+@item PDF_ERROR
+An error prevented the operation to complete.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
 @node Stream Objects
 @subsection Stream Objects
 
