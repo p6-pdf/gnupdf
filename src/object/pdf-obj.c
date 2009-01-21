@@ -581,7 +581,6 @@ pdf_obj_child_new (pdf_obj_t key, pdf_obj_t value, pdf_obj_child_t *elt)
   new->owned = 1;
   new->key = key;
   new->value = value;
-printf("alloc child k=%p v=%p ch=%p own=%d\n", key,value,new,new->owned);
 
   *elt = new;
   return PDF_OK;
@@ -593,8 +592,6 @@ pdf_obj_child_destroy_cb (const void *ptr)
   pdf_obj_child_t elt = (pdf_obj_child_t)ptr;
   if (elt->owned)
     {
-printf("del child k=%p v=%p ch=%p own=%d\n",
-         elt->key,elt->value, ptr,elt->owned);
       elt->owned = 0;
       pdf_obj_destroy (elt->value);
       if (elt->key)
@@ -764,7 +761,6 @@ pdf_status_t pdf_obj_array_replace (pdf_obj_t array,
   if (rv != PDF_OK)
     return rv;
 
-printf("replace ch %p\n",elt);
   assert(!elt->owned);
   if (old_obj)
     *old_obj = elt->value;
@@ -860,7 +856,6 @@ pdf_obj_array_extract (pdf_obj_t array,
         return rv;
 
       *obj = elt->value;
-printf("extract ch %p\n",elt);
       assert(elt->owned);
       elt->owned = 0;
     }
@@ -889,7 +884,6 @@ pdf_obj_array_clear (pdf_obj_t array)
   /* Clear the array, but don't free its objects (presumably because
    * they're still owned by someone else). */
 
-printf("arr clear\n");
   while (pdf_obj_array_size(array))
     {
       if (pdf_obj_array_pop_end(array, NULL) != PDF_OK)
