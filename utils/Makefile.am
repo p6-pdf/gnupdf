@@ -22,7 +22,7 @@ if ICONV
  ICONV_LIBS = -liconv
 endif #ICONV
 
-bin_PROGRAMS = pdf-filter toktest
+bin_PROGRAMS = pdf-filter toktest parsetest
 
 LDADD = $(top_builddir)/src/libgnupdf.la \
         $(ICONV_LIBS)
@@ -31,6 +31,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/lib -I$(top_srcdir)/src/ \
               -I$(top_srcdir)/src/base -I $(top_srcdir)/src/object
 
 pdf_filter_SOURCES = pdf-filter.h pdf-filter.c
-toktest_SOURCES = toktest.c
+toktest_SOURCES = toktest.c printobj.c
+parsetest_SOURCES = parsetest.c printobj.c
 
 # End of Makefile.am

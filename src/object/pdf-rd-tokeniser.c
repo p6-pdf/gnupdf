@@ -25,39 +25,64 @@
 
 #include "config.h"
 #include <assert.h>
+#include <stdlib.h>
 #include <string.h>
 #include <locale.h>
-
 #include "pdf-rd-tokeniser.h"
-
 
 static INLINE int can_store_char(pdf_tokeniser_t context);
 static INLINE pdf_status_t store_char(pdf_tokeniser_t context, pdf_char_t ch);
 static pdf_status_t exit_state(pdf_tokeniser_t context, pdf_obj_t *token);
 static pdf_status_t flush_token(pdf_tokeniser_t context, pdf_obj_t *token);
-static pdf_status_t handle_char(
-    pdf_tokeniser_t context, pdf_char_t ch, pdf_obj_t *token);
-static INLINE pdf_status_t handle_string_char(
-    pdf_tokeniser_t context, pdf_char_t ch, pdf_obj_t *token);
-static INLINE pdf_status_t handle_hexstring_char(
-    pdf_tokeniser_t context, pdf_char_t ch, pdf_obj_t *token);
+static pdf_status_t handle_char(pdf_tokeniser_t context,
+                                pdf_char_t ch,
+                                pdf_obj_t *token);
+static INLINE pdf_status_t handle_string_char(pdf_tokeniser_t context,
+                                              pdf_char_t ch,
+                                              pdf_obj_t *token);
+static INLINE pdf_status_t handle_hexstring_char(pdf_tokeniser_t context,
+                                                 pdf_char_t ch,
+                                                 pdf_obj_t *token);
 static int recognize_number(pdf_buffer_t buffer, int *int_value);
-static INLINE int parse_integer(
-    pdf_buffer_t buffer, int *int_value, int *int_state);
-static INLINE pdf_status_t parse_real(pdf_buffer_t buffer, double *value);
+static INLINE int parse_integer(pdf_buffer_t buffer, int *int_value,
+                                int *int_state);
+static INLINE pdf_status_t parse_real(pdf_buffer_t buffer,
+                                      char *locale_dec_pt,
+                                      double *value);
 static INLINE int validate_real(pdf_buffer_t buffer, int int_state);
 
 
 pdf_status_t
 pdf_tokeniser_new(pdf_stm_t stm, pdf_tokeniser_t *context)
 {
-  int err;
+  pdf_status_t err;
   pdf_tokeniser_t new_tokr;
 
   err = PDF_ENOMEM;
   new_tokr = pdf_alloc(sizeof(*new_tokr));
   if (!new_tokr)
     goto fail;
+
+  /* determine the current locale's decimal point
+   * (avoid using localeconv since it may not be thread-safe) */
+  new_tokr->decimal_point = NULL;
+  {
+    int len;
+    char decpt[16];
+
+    err = PDF_ERROR;
+    len = snprintf(decpt, sizeof(decpt), "%#.0f", 1.0);
+    if (len <= 0 || len >= sizeof(decpt))  /* shouldn't happen */
+      goto fail;
+
+    err = PDF_ENOMEM;
+    new_tokr->decimal_point = pdf_alloc(len);
+    if (!new_tokr->decimal_point)
+      goto fail;
+
+    /* this copies the trailing '\0' due to the starting offset */
+    memcpy(new_tokr->decimal_point, &decpt[1], len);
+  }
 
   /* max string size 32767 + terminating '\0' */
   new_tokr->buffer = pdf_buffer_new(32768);
@@ -76,7 +101,11 @@ pdf_tokeniser_new(pdf_stm_t stm, pdf_tokeniser_t *context)
 
 fail:
   if (new_tokr)
-    pdf_dealloc(new_tokr);
+    {
+      if (new_tokr->decimal_point)
+        pdf_dealloc(new_tokr->decimal_point);
+      pdf_dealloc(new_tokr);
+    }
 
   return err;
 }
@@ -89,6 +118,7 @@ pdf_tokeniser_destroy(pdf_tokeniser_t context)
   assert(context->buffer);
   if (context->buffer)
     pdf_buffer_destroy(context->buffer);
+  pdf_dealloc(context->decimal_point);
   pdf_dealloc(context);
 
   return PDF_OK;
@@ -375,7 +405,9 @@ flush_token(pdf_tokeniser_t context, pdf_obj_t *token)
         else if (ntyp == 2)
           {
             double realvalue;
-            rv = parse_real(context->buffer, &realvalue);
+            rv = parse_real(context->buffer,
+                            context->decimal_point,
+                            &realvalue);
             if (rv != PDF_OK)
               return rv;
             rv = pdf_obj_real_new((float)realvalue, &obj);
@@ -836,15 +868,14 @@ validate_real(pdf_buffer_t buffer, int int_state)
  * double by translating it to the execution character set, replacing '.' with
  * the locale's decimal point, and calling strtod. */
 static INLINE pdf_status_t
-parse_real(pdf_buffer_t buffer, double *value)
+parse_real(pdf_buffer_t buffer, char *locale_dec_pt, double *value)
 {
   pdf_status_t ret;
   size_t tmplen, wpos, ptlen;
-  char *tmp, *point, *endptr;
+  char *tmp, *endptr;
 
-  point = localeconv () ->decimal_point;
-  ptlen = strlen (point);
-  /* we may remove 1 byte (decimal point) and replace it with ptlen bytes */
+  ptlen = strlen (locale_dec_pt);
+  /* we may remove 1 byte ('.') and replace it with ptlen bytes */
   tmplen = buffer->wp - 1 + ptlen;
 
   tmp = pdf_alloc (tmplen + 1);
@@ -864,7 +895,7 @@ parse_real(pdf_buffer_t buffer, double *value)
           if (wpos + ptlen > tmplen)
             goto out;
 
-          memcpy (tmp + wpos, point, ptlen);
+          memcpy (tmp + wpos, locale_dec_pt, ptlen);
           wpos += ptlen;
         }
       else if (ch == 43)  /* '+' */

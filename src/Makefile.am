@@ -95,7 +95,8 @@ BASE_LAYER_SOURCES = base/pdf-base.c base/pdf-base.h \
 
 # Object layer sources
 
-READER_MODULE_SOURCES = object/pdf-rd-tokeniser.c object/pdf-rd-tokeniser.h
+READER_MODULE_SOURCES = object/pdf-rd-tokeniser.c object/pdf-rd-tokeniser.h \
+                        object/pdf-rd-parser.c object/pdf-rd-parser.h
 
 OBJECT_LAYER_SOURCES = object/pdf-obj.c object/pdf-obj.h \
                        $(READER_MODULE_SOURCES)

@@ -102,6 +102,7 @@ enum pdf_tokeniser_flag_e {
 struct pdf_tokeniser_s {
   int flags;  /* miscellaneous settings (from pdf_tokeniser_flag_e) */
   pdf_stm_t stream;  /* stream to read bytes from */
+  char *decimal_point;
 
   /* variables used by the state machine (described above) */
   int state;

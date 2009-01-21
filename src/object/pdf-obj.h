@@ -34,7 +34,7 @@
       - Name
       - Array
       - Dictionary
-      - Indirect object (pdf_indirect_t)
+      - Indirect object
       - Stream object
 
    And some object types used by the tokeniser:
@@ -55,6 +55,7 @@
 #define PDF_OBJ_H
 
 #include "config.h"
+#include "pdf-types.h"
 #include "pdf-list.h"
 #include "pdf-base.h"
 #include "pdf-stm.h"
@@ -120,9 +121,9 @@ pdf_obj_type_t pdf_obj_type (pdf_obj_t obj);
 pdf_bool_t pdf_obj_equal_p (pdf_obj_t obj1, pdf_obj_t obj2);
 
 /* Managing objects of basic types */
-pdf_bool_t pdf_get_bool (pdf_obj_t obj);
-int pdf_get_int (pdf_obj_t obj);
-pdf_real_t pdf_get_real (pdf_obj_t obj);
+pdf_bool_t pdf_obj_bool_value (pdf_obj_t obj);
+int pdf_obj_int_value (pdf_obj_t obj);
+pdf_real_t pdf_obj_real_value (pdf_obj_t obj);
 
 /* Managing strings */
 pdf_size_t pdf_obj_string_size (pdf_obj_t obj);
@@ -133,8 +134,12 @@ pdf_size_t pdf_obj_name_size (const pdf_obj_t obj);
 const pdf_char_t *pdf_obj_name_data (const pdf_obj_t obj);
 
 /* Managing keywords */
-pdf_size_t pdf_obj_keyword_size (const pdf_obj_t obj);
-const pdf_char_t *pdf_obj_keyword_data (const pdf_obj_t obj);
+pdf_size_t pdf_tok_keyword_size (const pdf_obj_t obj);
+const pdf_char_t *pdf_tok_keyword_data (const pdf_obj_t obj);
+
+/* Managing comments */
+pdf_size_t pdf_tok_comment_size (const pdf_obj_t obj);
+const pdf_char_t *pdf_tok_comment_data (const pdf_obj_t obj);
 
 /* Managing arrays */
 pdf_size_t pdf_obj_array_size (const pdf_obj_t array);
@@ -149,10 +154,10 @@ pdf_status_t pdf_obj_array_insert (pdf_obj_t array, pdf_size_t index,
                                    const pdf_obj_t obj);
 pdf_status_t pdf_obj_array_extract (pdf_obj_t array, pdf_size_t index,
                                     pdf_obj_t *obj);
-pdf_status_t pdf_obj_array_append (pdf_obj_t array,
-                                   const pdf_obj_t obj);
-pdf_status_t pdf_obj_array_pop_end (pdf_obj_t array,
-                                    pdf_obj_t *obj);
+pdf_status_t pdf_obj_array_append (pdf_obj_t array, const pdf_obj_t obj);
+pdf_status_t pdf_obj_array_remove (pdf_obj_t array, pdf_size_t index);
+pdf_status_t pdf_obj_array_pop_end (pdf_obj_t array, pdf_obj_t *obj);
+pdf_status_t pdf_obj_array_clear (pdf_obj_t array);
 pdf_status_t pdf_obj_array_clear_nodestroy (pdf_obj_t array);
 
 /* Managing dictionaries */
@@ -166,9 +171,13 @@ pdf_status_t pdf_obj_dict_remove (pdf_obj_t dict, const pdf_obj_t key);
 pdf_status_t pdf_obj_dict_clear_nodestroy (pdf_obj_t dict);
 
 /* Managing streams */
-pdf_obj_t pdf_get_stream_dict (pdf_obj_t stream);
-pdf_stm_t pdf_get_stream_stm (pdf_obj_t stream);
-pdf_off_t pdf_get_stream_data (pdf_obj_t stream);
+pdf_obj_t pdf_obj_stream_dict (pdf_obj_t stream);
+pdf_stm_t pdf_obj_stream_stm (pdf_obj_t stream);
+pdf_off_t pdf_obj_stream_data (pdf_obj_t stream);
+
+/* Managing indirect objects */
+unsigned int pdf_obj_indirect_on (pdf_obj_t indir);
+unsigned int pdf_obj_indirect_gn (pdf_obj_t indir);
 
 /* END PUBLIC */
 
@@ -243,8 +252,6 @@ struct pdf_indirect_s
   unsigned int gn;
 };
 
-typedef struct pdf_indirect_s *pdf_indirect_t;
-
 /* A PDF stream object is composed by a dictionary describing the
    stream, a reference to a stm structure, and a pointer (octects
    offset) that point to the beginning of the stream data in the stm
@@ -259,9 +266,6 @@ struct pdf_stream_s
   pdf_stm_t stm;
   pdf_off_t data;
 };
-
-typedef struct pdf_stream_s *pdf_stream_t;
-
 
 /* pdf_obj_buffer_s is an internal structure used for tokens with an
  * associated byte array. 'data' may or may not be null-terminated,
@@ -341,7 +345,8 @@ struct pdf_obj_s
 
 struct pdf_obj_child_s
 {
-  pdf_obj_t obj;
+  pdf_obj_t key;
+  pdf_obj_t value;
   int owned;
 };
 typedef struct pdf_obj_child_s *pdf_obj_child_t;
