@@ -88,13 +88,10 @@ pdf_tokeniser_new(pdf_stm_t stm, pdf_tokeniser_t *context)
   new_tokr->buffer = pdf_buffer_new(32768);
   if (!new_tokr->buffer)
     goto fail;
-  new_tokr->buffer->data[new_tokr->buffer->size-1] = 0;
 
   new_tokr->flags = 0;
-  new_tokr->state = PDF_TOKENISER_STATE_NONE;
-  new_tokr->substate = 0;
   new_tokr->stream = stm;
-  new_tokr->findstream = 0;
+  pdf_tokeniser_reset_state(new_tokr);
 
   *context = new_tokr;
   return PDF_OK;
@@ -108,6 +105,15 @@ fail:
     }
 
   return err;
+}
+
+pdf_status_t
+pdf_tokeniser_reset_state(pdf_tokeniser_t context)
+{
+  context->state = PDF_TOKENISER_STATE_NONE;
+  context->substate = 0;
+  context->findstream = 0;
+  return PDF_OK;
 }
 
 pdf_status_t
@@ -185,6 +191,9 @@ handle_char(pdf_tokeniser_t context, pdf_char_t ch, pdf_obj_t *token)
 
   switch (context->state)
     {
+    case PDF_TOKENISER_STATE_EOF:
+      return PDF_EEOF;
+
     case PDF_TOKENISER_STATE_STRING:
       return handle_string_char(context, ch, token);
 
@@ -239,7 +248,7 @@ handle_char(pdf_tokeniser_t context, pdf_char_t ch, pdf_obj_t *token)
           return PDF_EAGAIN;
         }
 
-      if (context->findstream && ch == 13)  /* '\r' */
+      if (context->findstream && ch == 10)  /* LF */
         {
           /* found the beginning of a stream */
           context->state = PDF_TOKENISER_STATE_EOF;
@@ -658,20 +667,21 @@ pdf_tokeniser_read(pdf_tokeniser_t context, pdf_obj_t *token)
 {
   pdf_status_t rv;
   pdf_char_t ch;
+  pdf_obj_t new_token = NULL;
+
   if (!context || !context->stream || !token)
     return PDF_EBADDATA;
 
-  *token = NULL;
   while ( (rv = pdf_stm_peek_char(context->stream, &ch)) == PDF_OK )
     {
-      rv = handle_char(context, ch, token);
+      rv = handle_char(context, ch, &new_token);
       if (rv == PDF_OK)
         {
           /* The character we peeked at was accepted, so get rid of it. */
           pdf_stm_read_char(context->stream, &ch);
         }
 
-      if (*token)
+      if (new_token)
         {
           /* Don't return an error code if we got a valid token.
            * We'll probably see the same error on the next call since we
@@ -687,17 +697,19 @@ pdf_tokeniser_read(pdf_tokeniser_t context, pdf_obj_t *token)
   if (rv != PDF_EEOF)
     return rv;
 
-  rv = exit_state(context, token);
+  rv = exit_state(context, &new_token);
   if (rv != PDF_OK)
     return rv;
 
   context->state = PDF_TOKENISER_STATE_EOF;
-  if (*token)
+  if (new_token)
     goto ret_token;
   else
     return PDF_EEOF;
 
 ret_token:
+  assert (new_token);
+  *token = new_token;
   return PDF_OK;
 }
 

@@ -102,7 +102,13 @@ static void print_obj_priv(pdf_obj_t obj, int indent)
 
     case PDF_STREAM_OBJ:
       typ = "STREAM";
-      str = "*TODO*";
+      snprintf(tmpbuf, sizeof(tmpbuf), "%d,",
+               pdf_obj_stream_data(obj) );
+      str = tmpbuf;
+
+      /* print the dictionary too */
+      recurse = 2;
+      obj = pdf_obj_stream_dict(obj);
       break;
 
     case PDF_COMMENT_TOK:
@@ -150,8 +156,9 @@ static void print_obj_priv(pdf_obj_t obj, int indent)
     {
       char *op = (recurse==1) ? "[" : "<<";
       char *ed = (recurse==1) ? "]" : ">>";
+      char *ext = str ? str : "";
 
-      printf("%s%s(%s\n", tabbuf, typ, op);
+      printf("%s%s(%s%s\n", tabbuf, typ, ext, op);
       if (recurse == 1)
         {
           pdf_size_t size = pdf_obj_array_size(obj);

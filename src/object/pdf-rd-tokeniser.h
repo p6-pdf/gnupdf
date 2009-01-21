@@ -39,6 +39,7 @@ pdf_status_t pdf_tokeniser_new(pdf_stm_t stm, pdf_tokeniser_t *tokr);
 pdf_status_t pdf_tokeniser_destroy(pdf_tokeniser_t tokr);
 pdf_status_t pdf_tokeniser_read(pdf_tokeniser_t tokr, pdf_obj_t *token);
 pdf_status_t pdf_tokeniser_end_at_stream(pdf_tokeniser_t tokr);
+pdf_status_t pdf_tokeniser_reset_state(pdf_tokeniser_t tokr);
 /* END PUBLIC */
 
 enum pdf_tokeniser_state_e {

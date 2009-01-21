@@ -27,34 +27,40 @@
 #include "pdf-rd-parser.h"
 #include "pdf-obj.h"
 
-static const pdf_char_t PDF_KW_NULL[] = {0x6e, 0x75, 0x6c, 0x6c};
-static const pdf_char_t PDF_KW_TRUE[] = {0x74, 0x72, 0x75, 0x65};
-static const pdf_char_t PDF_KW_FALSE[] = {0x66, 0x61, 0x6c, 0x73, 0x65};
+static const pdf_char_t PDF_KW_null[] = {0x6e, 0x75, 0x6c, 0x6c};
+static const pdf_char_t PDF_KW_true[] = {0x74, 0x72, 0x75, 0x65};
+static const pdf_char_t PDF_KW_false[] = {0x66, 0x61, 0x6c, 0x73, 0x65};
+static const pdf_char_t PDF_KW_stream[] = {0x73, 0x74, 0x72, 0x65, 0x61, 0x6d};
+static const pdf_char_t PDF_NAME_Length[]={0x4c, 0x65, 0x6e, 0x67, 0x74, 0x68};
 
-static pdf_status_t open_stack(pdf_parser_t parser, pdf_bool_t is_dict);
-static pdf_status_t close_stack(pdf_parser_t parser, pdf_bool_t is_dict);
+static pdf_status_t open_stack (pdf_parser_t parser, pdf_bool_t is_dict);
+static pdf_status_t close_stack (pdf_parser_t parser, pdf_bool_t is_dict);
 
 pdf_status_t
-pdf_parser_new(pdf_stm_t stm, pdf_parser_t *parser)
+pdf_parser_new (pdf_stm_t stm, pdf_parser_t *parser)
 {
   pdf_status_t rv;
   pdf_parser_t new_parser;
 
   rv = PDF_ENOMEM;
-  new_parser = pdf_alloc(sizeof(*new_parser));
+  new_parser = pdf_alloc (sizeof (*new_parser));
   if (!new_parser)
     goto fail;
 
   new_parser->tokr = NULL;
-  rv = pdf_tokeniser_new(stm, &new_parser->tokr);
+  rv = pdf_tokeniser_new (stm, &new_parser->tokr);
   if (rv != PDF_OK)
     goto fail;
 
+  new_parser->stream = stm;
   new_parser->token = NULL;
+  new_parser->allow_streams = PDF_TRUE;
+  new_parser->stuck_at_stream = PDF_FALSE;
+  new_parser->new_stream_dict = NULL;
 
   /* open the top-level stack (parent==NULL) */
   new_parser->stack = NULL;
-  rv = open_stack(new_parser, 0);
+  rv = open_stack (new_parser, 0);
   if (rv != PDF_OK)
     goto fail;
 
@@ -65,102 +71,131 @@ fail:
   if (new_parser)
     {
       if (new_parser->tokr)
-        pdf_tokeniser_destroy(new_parser->tokr);
-      pdf_dealloc(new_parser);
+        pdf_tokeniser_destroy (new_parser->tokr);
+      pdf_dealloc (new_parser);
     }
   return rv;
 }
 
 pdf_status_t
-pdf_parser_destroy(pdf_parser_t parser)
+pdf_parser_destroy (pdf_parser_t parser)
 {
   if (!parser) return PDF_EBADDATA;
 
-  assert(parser->tokr);
+  assert (parser->tokr);
   if (parser->tokr)
-    pdf_tokeniser_destroy(parser->tokr);
+    pdf_tokeniser_destroy (parser->tokr);
   if (parser->token)
-    pdf_obj_destroy(parser->token);
+    pdf_obj_destroy (parser->token);
 
   while (parser->stack)
     {
       pdf_parser_stack_t parent = parser->stack->parent;
-      pdf_obj_destroy(parser->stack->items);
-      pdf_dealloc(parser->stack);
+      pdf_obj_destroy (parser->stack->items);
+      pdf_dealloc (parser->stack);
       parser->stack = parent;
     }
 
-  pdf_dealloc(parser);
+  pdf_dealloc (parser);
   return PDF_OK;
 }
 
 static pdf_status_t
-handle_keyword(pdf_parser_t parser)
+handle_keyword (pdf_parser_t parser)
 {
   pdf_status_t rv;
   pdf_obj_t new_token = NULL;
-  const pdf_char_t *keyword = pdf_tok_keyword_data(parser->token);
+  const pdf_char_t *keyword = pdf_tok_keyword_data (parser->token);
 
-  switch (pdf_tok_keyword_size(parser->token))
+  switch (pdf_tok_keyword_size (parser->token))
     {
     case 1:
       if (keyword[0] == 82)  /* 'R' (indirect object) */
         {
           pdf_obj_t on, gn;
           pdf_obj_t items = parser->stack->items;
-          pdf_size_t size = pdf_obj_array_size(items);
+          pdf_size_t size = pdf_obj_array_size (items);
           if (size < 2)
             return PDF_EBADFILE;
 
-          rv = pdf_obj_array_get(items, size-2, &on);
+          rv = pdf_obj_array_get (items, size-2, &on);
           if (rv != PDF_OK)
             return rv;
 
-          rv = pdf_obj_array_get(items, size-1, &gn);
+          rv = pdf_obj_array_get (items, size-1, &gn);
           if (rv != PDF_OK)
             return rv;
 
-          if (pdf_obj_type(on) != PDF_INT_OBJ
-               || pdf_obj_type(gn) != PDF_INT_OBJ)
+          if (pdf_obj_type (on) != PDF_INT_OBJ
+               || pdf_obj_type (gn) != PDF_INT_OBJ)
             return PDF_EBADFILE;
 
-          rv = pdf_obj_indirect_new(pdf_obj_int_value(on),
-                                    pdf_obj_int_value(gn),
-                                    &new_token);
+          rv = pdf_obj_indirect_new (pdf_obj_int_value (on),
+                                     pdf_obj_int_value (gn),
+                                     &new_token);
           if (rv != PDF_OK)
             return rv;
 
-          pdf_obj_array_remove(items, size-1);
-          pdf_obj_array_remove(items, size-2);
+          pdf_obj_array_remove (items, size-1);
+          pdf_obj_array_remove (items, size-2);
         }
       break;
     case 4:
-      if (memcmp(keyword, PDF_KW_NULL, 4) == 0)
+      if (memcmp (keyword, PDF_KW_null, 4) == 0)
         {
-          rv = pdf_obj_null_new(&new_token);
+          rv = pdf_obj_null_new (&new_token);
           if (rv != PDF_OK)
             return rv;
         }
-      else if (memcmp(keyword, PDF_KW_TRUE, 4) == 0)
+      else if (memcmp (keyword, PDF_KW_true, 4) == 0)
         {
-          rv = pdf_obj_boolean_new(PDF_TRUE, &new_token);
+          rv = pdf_obj_boolean_new (PDF_TRUE, &new_token);
           if (rv != PDF_OK)
             return rv;
         }
       break;
     case 5:
-      if (memcmp(keyword, PDF_KW_FALSE, 5) == 0)
+      if (memcmp (keyword, PDF_KW_false, 5) == 0)
         {
-          rv = pdf_obj_boolean_new(PDF_FALSE, &new_token);
+          rv = pdf_obj_boolean_new (PDF_FALSE, &new_token);
           if (rv != PDF_OK)
             return rv;
+        }
+      break;
+    case 6:
+      if (memcmp (keyword, PDF_KW_stream, 6) == 0)
+        {
+          pdf_obj_t items = parser->stack->items;
+          pdf_obj_t stm_dict = NULL;
+          pdf_size_t size = pdf_obj_array_size (items);
+
+          if (size < 1 || parser->stack->parent || !parser->allow_streams)
+            return PDF_EBADFILE;
+
+          rv = pdf_obj_array_get (items, size-1, &stm_dict);
+          if (rv != PDF_OK)
+            return rv;
+          else if (pdf_obj_type (stm_dict) != PDF_DICT_OBJ)
+            return PDF_EBADFILE;
+
+          /* remove the argument without freeing it */
+          pdf_obj_array_pop_end (items, &parser->new_stream_dict);
+          assert (parser->new_stream_dict);
+
+          pdf_obj_destroy (parser->token);
+          parser->token = NULL;
+
+          /* now that new_stream_dict is set, we'll locate the beginning
+           * of the actual stream */
+          pdf_tokeniser_end_at_stream(parser->tokr);
+          return PDF_OK;
         }
       break;
     }
 
   if (new_token)
     {
-      pdf_obj_destroy(parser->token);
+      pdf_obj_destroy (parser->token);
       parser->token = new_token;
     }
   else if (parser->stack->parent)
@@ -173,45 +208,45 @@ handle_keyword(pdf_parser_t parser)
 }
 
 static pdf_status_t
-handle_token(pdf_parser_t parser)
+handle_token (pdf_parser_t parser)
 {
   pdf_status_t rv;
-  assert(parser->token);
+  assert (parser->token);
 
-  switch (pdf_obj_type(parser->token))
+  switch (pdf_obj_type (parser->token))
     {
     case PDF_ARRAY_START_TOK:
-      rv = open_stack(parser, 0);
+      rv = open_stack (parser, 0);
       if (rv != PDF_OK)
         return rv;
 
-      pdf_obj_destroy(parser->token);
+      pdf_obj_destroy (parser->token);
       parser->token = NULL;
       return PDF_OK;
 
     case PDF_DICT_START_TOK:
-      rv = open_stack(parser, 1);
+      rv = open_stack (parser, 1);
       if (rv != PDF_OK)
         return rv;
 
-      pdf_obj_destroy(parser->token);
+      pdf_obj_destroy (parser->token);
       parser->token = NULL;
       return PDF_OK;
 
     case PDF_ARRAY_END_TOK:
-      rv = close_stack(parser, 0);
+      rv = close_stack (parser, 0);
       if (rv != PDF_OK)
         return rv;
 
-      assert(pdf_obj_type(parser->token) != PDF_ARRAY_END_TOK);
+      assert (pdf_obj_type (parser->token) != PDF_ARRAY_END_TOK);
       break;
 
     case PDF_DICT_END_TOK:
-      rv = close_stack(parser, 1);
+      rv = close_stack (parser, 1);
       if (rv != PDF_OK)
         return rv;
 
-      assert(pdf_obj_type(parser->token) != PDF_DICT_END_TOK);
+      assert (pdf_obj_type (parser->token) != PDF_DICT_END_TOK);
       break;
 
     case PDF_PROC_START_TOK:  /* fall through */
@@ -228,21 +263,27 @@ handle_token(pdf_parser_t parser)
     case PDF_REAL_OBJ:      /* fall through */
     case PDF_STRING_OBJ:    /* fall through */
     case PDF_NAME_OBJ:      /* fall through */
+    case PDF_STREAM_OBJ:    /* fall through */
     case PDF_COMMENT_TOK:
       break;
 
     case PDF_KEYWORD_TOK:
-      rv = handle_keyword(parser);
+      rv = handle_keyword (parser);
       if (rv != PDF_OK)
         return rv;
+      else if (!parser->token)
+        return PDF_OK;
+
       break;
 
     default:
+      assert (0);
       return PDF_ERROR;
     }
 
   /* store the token */
-  rv = pdf_obj_array_append(parser->stack->items, parser->token);
+  assert (parser->token);
+  rv = pdf_obj_array_append (parser->stack->items, parser->token);
   if (rv != PDF_OK)
     return rv;
 
@@ -251,16 +292,16 @@ handle_token(pdf_parser_t parser)
 }
 
 static pdf_status_t
-open_stack(pdf_parser_t parser, pdf_bool_t is_dict)
+open_stack (pdf_parser_t parser, pdf_bool_t is_dict)
 {
   pdf_status_t rv;
   pdf_parser_stack_t new_stack;
 
-  new_stack = pdf_alloc(sizeof(*new_stack));
+  new_stack = pdf_alloc (sizeof (*new_stack));
   if (!new_stack)
     return PDF_ENOMEM;
 
-  rv = pdf_obj_array_new(&new_stack->items);
+  rv = pdf_obj_array_new (&new_stack->items);
   if (rv != PDF_OK)
     goto fail;
 
@@ -271,18 +312,18 @@ open_stack(pdf_parser_t parser, pdf_bool_t is_dict)
 
 fail:
   if (new_stack)
-    pdf_dealloc(new_stack);
+    pdf_dealloc (new_stack);
   return rv;
 }
 
 static pdf_status_t
-close_stack(pdf_parser_t parser, pdf_bool_t is_dict)
+close_stack (pdf_parser_t parser, pdf_bool_t is_dict)
 {
   pdf_status_t rv;
   pdf_obj_t new_dict = NULL;
   pdf_parser_stack_t stack = parser->stack;
 
-  assert(parser->token);
+  assert (parser->token);
   if (!stack || !stack->parent || (stack->is_dict != is_dict))
     return PDF_EBADFILE;
 
@@ -290,9 +331,9 @@ close_stack(pdf_parser_t parser, pdf_bool_t is_dict)
     {
       size_t i, size;
       pdf_obj_t items = stack->items;
-      size = pdf_obj_array_size(items);
+      size = pdf_obj_array_size (items);
 
-      rv = pdf_obj_dict_new(&new_dict);
+      rv = pdf_obj_dict_new (&new_dict);
       if (rv != PDF_OK)
         goto fail;
 
@@ -305,69 +346,105 @@ close_stack(pdf_parser_t parser, pdf_bool_t is_dict)
           if (i+1 == size)  /* key with no value */
             goto fail;
 
-          rv = pdf_obj_array_get(items, i, &key);
+          rv = pdf_obj_array_get (items, i, &key);
           if (rv != PDF_OK)
             goto fail;
 
           rv = PDF_EBADFILE;
-          if (pdf_obj_type(key) != PDF_NAME_OBJ)
+          if (pdf_obj_type (key) != PDF_NAME_OBJ)
             goto fail;
 
-          rv = pdf_obj_array_get(items, i+1, &value);
+          rv = pdf_obj_array_get (items, i+1, &value);
           if (rv != PDF_OK)
             goto fail;
 
-          rv = pdf_obj_dict_add(new_dict, key, value);
+          rv = pdf_obj_dict_add (new_dict, key, value);
           if (rv != PDF_OK)
             goto fail;
         }
 
       /* now delete the original stack without deleting its objects,
        * which were transferred to the dictionary */
-      pdf_obj_array_clear_nodestroy(stack->items);
-      pdf_obj_destroy(stack->items);
+      pdf_obj_array_clear_nodestroy (stack->items);
+      pdf_obj_destroy (stack->items);
 
       /* replace the token with a PDF_DICT_OBJ */
-      pdf_obj_destroy(parser->token);
+      pdf_obj_destroy (parser->token);
       parser->token = new_dict;
     }
   else
     {
       /* replace the token with a PDF_LIST_OBJ */
-      pdf_obj_destroy(parser->token);
+      pdf_obj_destroy (parser->token);
       parser->token = stack->items;
     }
 
   /* close this stack level */
   parser->stack = stack->parent;
-  pdf_dealloc(stack);
+  pdf_dealloc (stack);
   return PDF_OK;
 
 fail:
   if (new_dict)
     {
-      pdf_obj_dict_clear_nodestroy(new_dict);
-      pdf_obj_destroy(new_dict);
+      pdf_obj_dict_clear_nodestroy (new_dict);
+      pdf_obj_destroy (new_dict);
     }
   return rv;
 }
 
 pdf_status_t
-pdf_parser_read_to_command(pdf_parser_t parser, pdf_obj_t *stack_ref)
+pdf_parser_advance_past_stream (pdf_parser_t parser,
+                                pdf_off_t stream_data,
+                                pdf_size_t stream_size)
+{
+  pdf_off_t stream_end = stream_data + stream_size;
+  pdf_off_t new_pos = pdf_stm_seek(parser->stream, stream_end);
+
+  if (new_pos == stream_end)
+    return PDF_OK;
+  else
+    return PDF_ERROR;
+}
+
+pdf_status_t
+pdf_parser_read_to_command (pdf_parser_t parser, pdf_obj_t *stack_ref)
 {
   pdf_status_t rv;
+  if (new_parser->stuck_at_stream)
+    return PDF_ERROR;  /* need to reposition stream */
+
   assert (parser->stack);
-  for(;;)
+  for (;;)
     {
       if (!parser->token)
         {
-          rv = pdf_tokeniser_read(parser->tokr, &parser->token);
+          rv = pdf_tokeniser_read (parser->tokr, &parser->token);
           if (rv == PDF_EEOF)
-            break;
-          else if (rv != PDF_OK)
+            {
+              if (parser->new_stream_dict)
+                {
+                  /* set parser->token to a new stream token */
+                  rv = pdf_obj_stream_new (parser->new_stream_dict,
+                                           parser->stream,
+                                           pdf_stm_tell (parser->stream),
+                                           &parser->token);
+                  if (rv == PDF_OK)
+                    {
+                      parser->new_stream_dict = NULL;
+                      new_parser->stuck_at_stream = PDF_TRUE;
+                    }
+                }
+              else
+                break;
+            }
+
+          if (rv != PDF_OK)
             return rv;
+          assert (parser->token);
         }
-      rv = handle_token(parser);
+
+      rv = handle_token (parser);
       if (rv != PDF_OK)
         return rv;
 
@@ -375,17 +452,23 @@ pdf_parser_read_to_command(pdf_parser_t parser, pdf_obj_t *stack_ref)
       if (!parser->stack->parent)  /* at the top level */
         {
           pdf_obj_t last_obj;
-          rv = pdf_obj_array_get(parser->stack->items,
-                                 pdf_obj_array_size(parser->stack->items) - 1,
-                                 &last_obj);
-          if (rv != PDF_OK)
-            return PDF_ERROR;  /* shouldn't happen */
-
-          if (pdf_obj_type(last_obj) == PDF_KEYWORD_TOK)
+          pdf_size_t size = pdf_obj_array_size (parser->stack->items);
+          if (size)
             {
-              /* this token is a command */
-              *stack_ref = parser->stack->items;
-              return PDF_OK;
+              rv = pdf_obj_array_get (parser->stack->items,
+                                      size - 1,
+                                      &last_obj);
+              assert (rv == PDF_OK);
+              if (rv != PDF_OK)
+                return PDF_ERROR;  /* shouldn't happen */
+
+              assert (last_obj);
+              if (pdf_obj_type (last_obj) == PDF_KEYWORD_TOK)
+                {
+                  /* this token is a command */
+                  *stack_ref = parser->stack->items;
+                  return PDF_OK;
+                }
             }
         }
     }

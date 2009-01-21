@@ -103,22 +103,6 @@ pdf_obj_indirect_new (unsigned int on,
 }
 
 pdf_status_t
-pdf_obj_stream_new (pdf_obj_t dict,
-                    pdf_stm_t stm,
-                    pdf_off_t data,
-                    pdf_obj_t *obj)
-{
-  pdf_status_t rv = pdf_obj_new (PDF_STREAM_OBJ, obj);
-  if (rv == PDF_OK)
-    {
-      (*obj)->value.stream.dict = dict;
-      (*obj)->value.stream.stm = stm;
-      (*obj)->value.stream.data = data;
-    }
-  return rv;
-}
-
-pdf_status_t
 pdf_tok_valueless_new (pdf_obj_type_t type,
                        pdf_obj_t *obj)
 {
@@ -128,83 +112,52 @@ pdf_tok_valueless_new (pdf_obj_type_t type,
 pdf_obj_type_t
 pdf_obj_type (const pdf_obj_t obj)
 {
+  assert (obj);
   return obj->type;
 }
 
 pdf_bool_t
 pdf_obj_bool_value (const pdf_obj_t obj)
 {
+  assert (obj && obj->type == PDF_BOOLEAN_OBJ);
   return obj->value.boolean;
 }
 
 int
 pdf_obj_int_value (const pdf_obj_t obj)
 {
+  assert (obj && obj->type == PDF_INT_OBJ);
   return obj->value.integer;
 }
 
 pdf_real_t
 pdf_obj_real_value (const pdf_obj_t obj)
 {
+  assert (obj && obj->type == PDF_REAL_OBJ);
   return obj->value.real;
 }
 
 unsigned int
 pdf_obj_indirect_on (const pdf_obj_t obj)
 {
+  assert (obj && obj->type == PDF_INDIRECT_OBJ);
   return obj->value.indirect.on;
 }
 
 unsigned int
 pdf_obj_indirect_gn (const pdf_obj_t obj)
 {
+  assert (obj && obj->type == PDF_INDIRECT_OBJ);
   return obj->value.indirect.gn;
 }
-
-/*
-pdf_obj_t 
-pdf_get_stream_dict (pdf_obj_t stream)
-{
-  if (stream->type != PDF_STREAM_OBJ)
-    {
-      return NULL;
-    }
-
-  return pdf_obj_dup(stream->value.stream.dict);//XXX
-}
-*/
-
-/*
-pdf_stm_t
-pdf_get_stream_stm (pdf_obj_t stream)
-{
-  if (stream->type != PDF_STREAM_OBJ)
-    {
-      return NULL;
-    }
-
-  return stream->value.stream.stm;
-}
-*/
-
-/*
-pdf_off_t
-pdf_get_stream_data (pdf_obj_t stream)
-{
-  if (stream->type != PDF_STREAM_OBJ)
-    {
-      return NO_POS;
-    }
-
-  return stream->value.stream.data;
-}
-*/
 
 pdf_bool_t
 pdf_obj_equal_p (pdf_obj_t obj1,
                  pdf_obj_t obj2)
 {
   int equal_p;
+  assert (obj1);
+  assert (obj2);
 
   if (obj1 == obj2)
     return PDF_TRUE;
@@ -288,6 +241,7 @@ pdf_obj_equal_p (pdf_obj_t obj1,
 pdf_status_t
 pdf_obj_dup (const pdf_obj_t obj, pdf_obj_t *new)
 {
+  assert (obj);
   switch (obj->type)
     {
     case PDF_NULL_OBJ:         /* fall through */
@@ -350,6 +304,7 @@ static INLINE pdf_status_t
 pdf_obj_new (pdf_obj_type_t type, pdf_obj_t *obj)
 {
   pdf_obj_t new_obj;
+  assert (obj);
 
   new_obj = (pdf_obj_t) pdf_alloc (sizeof(struct pdf_obj_s));
   if (!new_obj)
@@ -396,6 +351,25 @@ pdf_obj_destroy (pdf_obj_t obj)
 }
 
 
+
+/*** streams **************************************************/
+
+pdf_status_t
+pdf_obj_stream_new (pdf_obj_t dict,
+                    pdf_stm_t stm,
+                    pdf_off_t data,
+                    pdf_obj_t *obj)
+{
+  pdf_status_t rv = pdf_obj_new (PDF_STREAM_OBJ, obj);
+  if (rv == PDF_OK)
+    {
+      (*obj)->value.stream.dict = dict;
+      (*obj)->value.stream.stm = stm;
+      (*obj)->value.stream.data = data;
+    }
+  return rv;
+}
+
 /* Note that the new stream will use the same stm */
 //TODO: avoid storing stm? rename .data to .offset
 static INLINE pdf_status_t
@@ -423,7 +397,54 @@ fail:
   return rv;
 }
 
+/* Two PDF streams are considered equal if both uses the same stm
+   object, its dictionaries are equal and the data pointer points to
+   the same position into the stm */
+static int
+pdf_stream_equal_p (pdf_obj_t obj1,
+                    pdf_obj_t obj2)
+{
+  return ((obj1->value.stream.stm == obj2->value.stream.stm)
+          && (obj1->value.stream.data == obj2->value.stream.data)
+          && pdf_obj_dict_equal_p (obj1->value.stream.dict,
+                                   obj2->value.stream.dict));
+}
 
+pdf_obj_t
+pdf_obj_stream_dict (pdf_obj_t stream)
+{
+  assert (stream && stream->type == PDF_STREAM_OBJ);
+  if (stream->type != PDF_STREAM_OBJ)
+    {
+      return NULL;
+    }
+
+  return stream->value.stream.dict;
+}
+
+pdf_stm_t
+pdf_obj_stream_stm (pdf_obj_t stream)
+{
+  assert (stream && stream->type == PDF_STREAM_OBJ);
+  if (stream->type != PDF_STREAM_OBJ)
+    {
+      return NULL;
+    }
+
+  return stream->value.stream.stm;
+}
+
+pdf_off_t
+pdf_obj_stream_data (pdf_obj_t stream)
+{
+  assert (stream && stream->type == PDF_STREAM_OBJ);
+  if (stream->type != PDF_STREAM_OBJ)
+    {
+      return NO_POS;
+    }
+
+  return stream->value.stream.data;
+}
 
 
 
@@ -485,12 +506,14 @@ pdf_obj_name_new (const pdf_char_t *value,
 pdf_size_t
 pdf_obj_name_size (pdf_obj_t name)
 {
+  assert (name && name->type == PDF_NAME_OBJ);
   return name->value.buffer.size;
 }
 
 const pdf_char_t *
 pdf_obj_name_data (pdf_obj_t name)
 {
+  assert (name && name->type == PDF_NAME_OBJ);
   return name->value.buffer.data;
 }
 
@@ -508,12 +531,14 @@ pdf_obj_string_new (const pdf_char_t *value,
 pdf_size_t
 pdf_obj_string_size (pdf_obj_t obj)
 {
+  assert (obj && obj->type == PDF_STRING_OBJ);
   return obj->value.buffer.size;
 }
 
 const pdf_char_t *
 pdf_obj_string_data (pdf_obj_t obj)
 {
+  assert (obj && obj->type == PDF_STRING_OBJ);
   return obj->value.buffer.data;
 }
 
@@ -536,12 +561,14 @@ pdf_tok_comment_new (const pdf_char_t *value,
 pdf_size_t
 pdf_tok_comment_size (pdf_obj_t comment)
 {
+  assert (comment && comment->type == PDF_COMMENT_TOK);
   return comment->value.buffer.size;
 }
 
 const pdf_char_t *
 pdf_tok_comment_data (pdf_obj_t comment)
 {
+  assert (comment && comment->type == PDF_COMMENT_TOK);
   return comment->value.buffer.data;
 }
 
@@ -559,14 +586,17 @@ pdf_tok_keyword_new (const pdf_char_t *value,
 pdf_size_t
 pdf_tok_keyword_size (pdf_obj_t keyword)
 {
+  assert (keyword && keyword->type == PDF_KEYWORD_TOK);
   return keyword->value.buffer.size;
 }
 
 const pdf_char_t *
 pdf_tok_keyword_data (pdf_obj_t keyword)
 {
+  assert (keyword && keyword->type == PDF_KEYWORD_TOK);
   return keyword->value.buffer.data;
 }
+
 
 
 /*** static functions for container types (array/dict) ********/
@@ -580,8 +610,10 @@ pdf_obj_child_new (pdf_obj_t key, pdf_obj_t value, pdf_obj_child_t *elt)
 
   new->owned = 1;
   new->key = key;
+  assert (value);
   new->value = value;
 
+  assert (elt);
   *elt = new;
   return PDF_OK;
 }
@@ -609,6 +641,7 @@ pdf_obj_child_equal_p_cb (const void *ptr1,
   return pdf_obj_equal_p (elt1->value, elt2->value);
 }
 
+
 
 /*** arrays ***************************************************/
 
@@ -629,6 +662,7 @@ pdf_obj_array_new (pdf_obj_t *array)
   if (rv != PDF_OK)
     goto fail;
 
+  assert (array);
   *array = new_array;
   return PDF_OK;
 
@@ -668,6 +702,7 @@ return PDF_ERROR;//TODO
 pdf_size_t
 pdf_obj_array_size (pdf_obj_t array)
 {
+  assert (array && array->type == PDF_ARRAY_OBJ);
   return pdf_list_size (array->value.array);
 }
 
@@ -739,6 +774,7 @@ pdf_status_t pdf_obj_array_get (const pdf_obj_t array,
        || (index >= pdf_list_size (array->value.array)))
     return PDF_EBADDATA;
 
+  assert (obj);
   rv = pdf_list_get_at (array->value.array, index, (const void**)&elt);
   if (rv == PDF_OK)
     *obj = elt->value;
@@ -907,6 +943,7 @@ pdf_obj_array_clear_nodestroy (pdf_obj_t array)
   return PDF_OK;
 }
 
+
 
 /*** dictionaries *********************************************/
 
@@ -1010,17 +1047,6 @@ return 0;
 #endif
 }
 
-/* Two PDF streams are considered equal if both uses the same stm
-   object, its dictionaries are equal and the data pointer points to
-   the same position into the stm */
-static int
-pdf_stream_equal_p (pdf_obj_t obj1,
-                    pdf_obj_t obj2)
-{
-  return ((obj1->value.stream.stm == obj2->value.stream.stm) &&
-          (obj1->value.stream.data == obj2->value.stream.data) &&
-          pdf_obj_dict_equal_p (obj1->value.stream.dict, obj2->value.stream.dict));
-}
 
 
 static pdf_status_t
