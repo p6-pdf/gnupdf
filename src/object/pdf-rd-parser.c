@@ -30,8 +30,6 @@
 static const pdf_char_t PDF_KW_null[] = {0x6e, 0x75, 0x6c, 0x6c};
 static const pdf_char_t PDF_KW_true[] = {0x74, 0x72, 0x75, 0x65};
 static const pdf_char_t PDF_KW_false[] = {0x66, 0x61, 0x6c, 0x73, 0x65};
-static const pdf_char_t PDF_KW_stream[] = {0x73, 0x74, 0x72, 0x65, 0x61, 0x6d};
-static const pdf_char_t PDF_NAME_Length[]={0x4c, 0x65, 0x6e, 0x67, 0x74, 0x68};
 
 static pdf_status_t open_stack (pdf_parser_t parser, pdf_bool_t is_dict);
 static pdf_status_t close_stack (pdf_parser_t parser, pdf_bool_t is_dict);
@@ -52,11 +50,7 @@ pdf_parser_new (pdf_stm_t stm, pdf_parser_t *parser)
   if (rv != PDF_OK)
     goto fail;
 
-  new_parser->stream = stm;
   new_parser->token = NULL;
-  new_parser->allow_streams = PDF_TRUE;
-  new_parser->stuck_at_stream = PDF_FALSE;
-  new_parser->new_stream_dict = NULL;
 
   /* open the top-level stack (parent==NULL) */
   new_parser->stack = NULL;
@@ -136,8 +130,8 @@ handle_keyword (pdf_parser_t parser)
           if (rv != PDF_OK)
             return rv;
 
-          pdf_obj_array_remove (items, size-1);
-          pdf_obj_array_remove (items, size-2);
+          pdf_obj_array_remove (items, size-1, NULL);
+          pdf_obj_array_remove (items, size-2, NULL);
         }
       break;
     case 4:
@@ -160,35 +154,6 @@ handle_keyword (pdf_parser_t parser)
           rv = pdf_obj_boolean_new (PDF_FALSE, &new_token);
           if (rv != PDF_OK)
             return rv;
-        }
-      break;
-    case 6:
-      if (memcmp (keyword, PDF_KW_stream, 6) == 0)
-        {
-          pdf_obj_t items = parser->stack->items;
-          pdf_obj_t stm_dict = NULL;
-          pdf_size_t size = pdf_obj_array_size (items);
-
-          if (size < 1 || parser->stack->parent || !parser->allow_streams)
-            return PDF_EBADFILE;
-
-          rv = pdf_obj_array_get (items, size-1, &stm_dict);
-          if (rv != PDF_OK)
-            return rv;
-          else if (pdf_obj_type (stm_dict) != PDF_DICT_OBJ)
-            return PDF_EBADFILE;
-
-          /* remove the argument without freeing it */
-          pdf_obj_array_pop_end (items, &parser->new_stream_dict);
-          assert (parser->new_stream_dict);
-
-          pdf_obj_destroy (parser->token);
-          parser->token = NULL;
-
-          /* now that new_stream_dict is set, we'll locate the beginning
-           * of the actual stream */
-          pdf_tokeniser_end_at_stream(parser->tokr);
-          return PDF_OK;
         }
       break;
     }
@@ -263,7 +228,6 @@ handle_token (pdf_parser_t parser)
     case PDF_REAL_OBJ:      /* fall through */
     case PDF_STRING_OBJ:    /* fall through */
     case PDF_NAME_OBJ:      /* fall through */
-    case PDF_STREAM_OBJ:    /* fall through */
     case PDF_COMMENT_TOK:
       break;
 
@@ -281,7 +245,7 @@ handle_token (pdf_parser_t parser)
       return PDF_ERROR;
     }
 
-  /* store the token */
+  /* store the token */  /*TODO: limit the length and depth of the stack */
   assert (parser->token);
   rv = pdf_obj_array_append (parser->stack->items, parser->token);
   if (rv != PDF_OK)
@@ -394,26 +358,9 @@ fail:
 }
 
 pdf_status_t
-pdf_parser_advance_past_stream (pdf_parser_t parser,
-                                pdf_off_t stream_data,
-                                pdf_size_t stream_size)
-{
-  pdf_off_t stream_end = stream_data + stream_size;
-  pdf_off_t new_pos = pdf_stm_seek(parser->stream, stream_end);
-
-  if (new_pos == stream_end)
-    return PDF_OK;
-  else
-    return PDF_ERROR;
-}
-
-pdf_status_t
 pdf_parser_read_to_command (pdf_parser_t parser, pdf_obj_t *stack_ref)
 {
   pdf_status_t rv;
-  if (new_parser->stuck_at_stream)
-    return PDF_ERROR;  /* need to reposition stream */
-
   assert (parser->stack);
   for (;;)
     {
@@ -421,29 +368,12 @@ pdf_parser_read_to_command (pdf_parser_t parser, pdf_obj_t *stack_ref)
         {
           rv = pdf_tokeniser_read (parser->tokr, &parser->token);
           if (rv == PDF_EEOF)
-            {
-              if (parser->new_stream_dict)
-                {
-                  /* set parser->token to a new stream token */
-                  rv = pdf_obj_stream_new (parser->new_stream_dict,
-                                           parser->stream,
-                                           pdf_stm_tell (parser->stream),
-                                           &parser->token);
-                  if (rv == PDF_OK)
-                    {
-                      parser->new_stream_dict = NULL;
-                      new_parser->stuck_at_stream = PDF_TRUE;
-                    }
-                }
-              else
-                break;
-            }
-
-          if (rv != PDF_OK)
+            break;
+          else if (rv != PDF_OK)
             return rv;
-          assert (parser->token);
         }
 
+      assert (parser->token);
       rv = handle_token (parser);
       if (rv != PDF_OK)
         return rv;

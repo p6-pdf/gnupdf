@@ -128,9 +128,10 @@ END_TEST
 /*
  * Test: pdf_tokeniser_read_002
  * Description:
- TODO
+ *   Test the pdf_tokeniser_end_at_stream function.
  * Success condition:
- TODO
+ *   The stream should be positioned after the '\n' character (at '<'), and
+ *   the tokeniser should act as if it reached the end of the input file.
  */
 START_TEST(pdf_tokeniser_read_002)
 {
@@ -138,7 +139,7 @@ START_TEST(pdf_tokeniser_read_002)
   pdf_tokeniser_t tokr;
   pdf_char_t ch;
 
-  INIT_STM_STR(&stm, "stream    \n\t  %com  \r"
+  INIT_STM_STR(&stm, "stream    \r\t  %com  \n"
       ">UNPARSABLE DATA IN STREAM\n\n\n\n\n\nx");
   INIT_TOKR(&tokr, stm);
 

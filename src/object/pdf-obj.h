@@ -121,53 +121,56 @@ pdf_obj_type_t pdf_obj_type (pdf_obj_t obj);
 pdf_bool_t pdf_obj_equal_p (pdf_obj_t obj1, pdf_obj_t obj2);
 
 /* Managing objects of basic types */
-pdf_bool_t pdf_obj_bool_value (pdf_obj_t obj);
-int pdf_obj_int_value (pdf_obj_t obj);
-pdf_real_t pdf_obj_real_value (pdf_obj_t obj);
+pdf_bool_t pdf_obj_bool_value (pdf_obj_t bool_obj);
+int pdf_obj_int_value (pdf_obj_t int_obj);
+pdf_real_t pdf_obj_real_value (pdf_obj_t real_obj);
 
 /* Managing strings */
-pdf_size_t pdf_obj_string_size (pdf_obj_t obj);
-const pdf_char_t *pdf_obj_string_data (pdf_obj_t obj);
+pdf_size_t pdf_obj_string_size (pdf_obj_t str_obj);
+const pdf_char_t *pdf_obj_string_data (pdf_obj_t str_obj);
 
 /* Managing names */
-pdf_size_t pdf_obj_name_size (const pdf_obj_t obj);
-const pdf_char_t *pdf_obj_name_data (const pdf_obj_t obj);
+pdf_size_t pdf_obj_name_size (const pdf_obj_t name);
+const pdf_char_t *pdf_obj_name_data (const pdf_obj_t name);
+pdf_bool_t pdf_obj_name_equal_p (const pdf_obj_t obj, const pdf_char_t *data);
 
 /* Managing keywords */
-pdf_size_t pdf_tok_keyword_size (const pdf_obj_t obj);
-const pdf_char_t *pdf_tok_keyword_data (const pdf_obj_t obj);
+pdf_size_t pdf_tok_keyword_size (const pdf_obj_t keyword);
+const pdf_char_t *pdf_tok_keyword_data (const pdf_obj_t keyword);
+pdf_bool_t pdf_tok_keyword_equal_p (const pdf_obj_t obj,
+                                    const pdf_char_t *data);
 
 /* Managing comments */
-pdf_size_t pdf_tok_comment_size (const pdf_obj_t obj);
-const pdf_char_t *pdf_tok_comment_data (const pdf_obj_t obj);
+pdf_size_t pdf_tok_comment_size (const pdf_obj_t comment);
+const pdf_char_t *pdf_tok_comment_data (const pdf_obj_t comment);
 
 /* Managing arrays */
 pdf_size_t pdf_obj_array_size (const pdf_obj_t array);
 pdf_status_t pdf_obj_array_get (const pdf_obj_t array, pdf_size_t index,
                                 pdf_obj_t *obj);
 pdf_status_t pdf_obj_array_set (pdf_obj_t array, pdf_size_t index,
-                                const pdf_obj_t obj);
-pdf_status_t pdf_obj_array_replace (pdf_obj_t array, pdf_size_t index,
-                                    const pdf_obj_t new_obj,
-                                    pdf_obj_t *old_obj);
+                                const pdf_obj_t new_obj,
+                                pdf_obj_t *old_obj);
 pdf_status_t pdf_obj_array_insert (pdf_obj_t array, pdf_size_t index,
                                    const pdf_obj_t obj);
-pdf_status_t pdf_obj_array_extract (pdf_obj_t array, pdf_size_t index,
-                                    pdf_obj_t *obj);
 pdf_status_t pdf_obj_array_append (pdf_obj_t array, const pdf_obj_t obj);
-pdf_status_t pdf_obj_array_remove (pdf_obj_t array, pdf_size_t index);
-pdf_status_t pdf_obj_array_pop_end (pdf_obj_t array, pdf_obj_t *obj);
+pdf_status_t pdf_obj_array_remove (pdf_obj_t array, pdf_size_t index,
+                                   pdf_obj_t *obj);
 pdf_status_t pdf_obj_array_clear (pdf_obj_t array);
 pdf_status_t pdf_obj_array_clear_nodestroy (pdf_obj_t array);
 
 /* Managing dictionaries */
 pdf_size_t pdf_obj_dict_size (const pdf_obj_t dict);
 pdf_bool_t pdf_obj_dict_key_p (const pdf_obj_t dict, const pdf_obj_t key);
+pdf_bool_t pdf_obj_dict_keyc_p (const pdf_obj_t dict, const pdf_char_t *key);
 pdf_status_t pdf_obj_dict_get (const pdf_obj_t dict, const pdf_obj_t key,
                                pdf_obj_t *value);
+pdf_status_t pdf_obj_dict_getc (const pdf_obj_t dict, const pdf_char_t *key,
+                                pdf_obj_t *value);
 pdf_status_t pdf_obj_dict_add (pdf_obj_t dict, const pdf_obj_t key,
                                pdf_obj_t value);
 pdf_status_t pdf_obj_dict_remove (pdf_obj_t dict, const pdf_obj_t key);
+pdf_status_t pdf_obj_dict_clear (pdf_obj_t dict);
 pdf_status_t pdf_obj_dict_clear_nodestroy (pdf_obj_t dict);
 
 /* Managing streams */

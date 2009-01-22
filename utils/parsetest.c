@@ -36,9 +36,28 @@ void print_file(FILE *file)
 
   while (( rv = pdf_parser_read_to_command(parser, &stack) ) == PDF_OK)
     {
+      pdf_size_t stacksize = pdf_obj_array_size(stack);
+      pdf_obj_t cmdobj = NULL;
+      int atstream;
+
       print_obj(stack);
+
+      rv = pdf_obj_array_get(stack, stacksize-1, &cmdobj);
+      assert (rv == PDF_OK);
+      assert (cmdobj && pdf_obj_type(cmdobj) == PDF_KEYWORD_TOK);
+
+      /* We can't easily read a stream's length since the value may be an
+       * indirect object, so we'll stop at the first stream. */
+      atstream = pdf_tok_keyword_equal_p(cmdobj, "stream");
+
       rv = pdf_obj_array_clear(stack);
       assert (rv == PDF_OK);
+
+      if (atstream)
+        {
+          printf("stopping at stream keyword\n");
+          goto out;
+        }
     }
 
   if (rv != PDF_EEOF)

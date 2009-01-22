@@ -54,15 +54,9 @@ enum pdf_parser_state_e
 
 struct pdf_parser_s
 {
-  pdf_stm_t stream;
-
   pdf_tokeniser_t tokr;
   pdf_obj_t token;  /* the next token to process, or NULL */
   pdf_parser_stack_t stack;
-
-  pdf_bool_t allow_streams;
-  pdf_bool_t stuck_at_stream;
-  pdf_obj_t new_stream_dict;  /* NULL unless we're looking for a stream */
 };
 
 #endif

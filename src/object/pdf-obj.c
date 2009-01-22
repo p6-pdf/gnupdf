@@ -55,7 +55,7 @@ static pdf_status_t pdf_obj_array_ins_priv (pdf_obj_t array, pdf_size_t index,
 pdf_status_t
 pdf_obj_null_new (pdf_obj_t *obj)
 {
-  return pdf_obj_new(PDF_NULL_OBJ, obj);
+  return pdf_obj_new (PDF_NULL_OBJ, obj);
 }
 
 pdf_status_t
@@ -106,7 +106,7 @@ pdf_status_t
 pdf_tok_valueless_new (pdf_obj_type_t type,
                        pdf_obj_t *obj)
 {
-  return pdf_obj_new(type, obj);
+  return pdf_obj_new (type, obj);
 }
 
 pdf_obj_type_t
@@ -218,9 +218,8 @@ pdf_obj_equal_p (pdf_obj_t obj1,
       }
     case PDF_INDIRECT_OBJ:
       {
-        equal_p = 
-          (obj1->value.indirect.on == obj2->value.indirect.on) &&
-          (obj1->value.indirect.gn == obj2->value.indirect.gn);
+        equal_p = (obj1->value.indirect.on == obj2->value.indirect.on
+                    && obj1->value.indirect.gn == obj2->value.indirect.gn);
         break;
       }
     case PDF_STREAM_OBJ:
@@ -306,7 +305,7 @@ pdf_obj_new (pdf_obj_type_t type, pdf_obj_t *obj)
   pdf_obj_t new_obj;
   assert (obj);
 
-  new_obj = (pdf_obj_t) pdf_alloc (sizeof(struct pdf_obj_s));
+  new_obj = (pdf_obj_t) pdf_alloc (sizeof (struct pdf_obj_s));
   if (!new_obj)
     return PDF_ENOMEM;
 
@@ -318,7 +317,7 @@ pdf_obj_new (pdf_obj_type_t type, pdf_obj_t *obj)
 pdf_status_t
 pdf_obj_destroy (pdf_obj_t obj)
 {
-  assert(obj);
+  assert (obj);
   switch (obj->type)
     {
     case PDF_STRING_OBJ:   /* fall through */
@@ -378,7 +377,7 @@ pdf_obj_stream_dup (pdf_obj_t obj, pdf_obj_t *new)
   pdf_status_t rv;
   pdf_obj_t new_dict = NULL;
 
-  rv = pdf_obj_dup(obj->value.stream.dict, &new_dict);
+  rv = pdf_obj_dup (obj->value.stream.dict, &new_dict);
   if (rv != PDF_OK)
     goto fail;
 
@@ -393,7 +392,7 @@ pdf_obj_stream_dup (pdf_obj_t obj, pdf_obj_t *new)
 
 fail:
   if (new_dict)
-    pdf_obj_destroy(new_dict);
+    pdf_obj_destroy (new_dict);
   return rv;
 }
 
@@ -458,7 +457,7 @@ pdf_obj_buffer_new (pdf_obj_type_t type,
                     pdf_obj_t *obj)
 {
   pdf_obj_t new_obj = NULL;
-  pdf_status_t rv = pdf_obj_new(type, &new_obj);
+  pdf_status_t rv = pdf_obj_new (type, &new_obj);
   if (rv != PDF_OK)
     goto fail;
 
@@ -489,7 +488,7 @@ pdf_obj_buffer_equal_p (pdf_obj_t obj1,
   struct pdf_obj_buffer_s *buf2 = &obj2->value.buffer;
   return (buf1->size == buf2->size
            && ( buf1->data == buf2->data
-                || !memcmp(buf1->data, buf2->data, buf1->size) ));
+                || !memcmp (buf1->data, buf2->data, buf1->size) ));
 }
 
 
@@ -515,6 +514,15 @@ pdf_obj_name_data (pdf_obj_t name)
 {
   assert (name && name->type == PDF_NAME_OBJ);
   return name->value.buffer.data;
+}
+
+pdf_bool_t
+pdf_obj_name_equal_p (pdf_obj_t obj, const pdf_char_t *data)
+{
+  size_t len = strlen ((const char*)data);
+  return (obj && obj->type == PDF_NAME_OBJ
+           && len == obj->value.buffer.size
+           && memcmp (obj->value.buffer.data, data, len+1) == 0);
 }
 
 
@@ -597,6 +605,15 @@ pdf_tok_keyword_data (pdf_obj_t keyword)
   return keyword->value.buffer.data;
 }
 
+pdf_bool_t
+pdf_tok_keyword_equal_p (pdf_obj_t obj, const pdf_char_t *data)
+{
+  size_t len = strlen ((const char*)data);
+  return (obj && obj->type == PDF_KEYWORD_TOK
+           && len == obj->value.buffer.size
+           && memcmp (obj->value.buffer.data, data, len+1) == 0);
+}
+
 
 
 /*** static functions for container types (array/dict) ********/
@@ -604,7 +621,7 @@ pdf_tok_keyword_data (pdf_obj_t keyword)
 static pdf_status_t
 pdf_obj_child_new (pdf_obj_t key, pdf_obj_t value, pdf_obj_child_t *elt)
 {
-  pdf_obj_child_t new = pdf_alloc(sizeof(*new));
+  pdf_obj_child_t new = pdf_alloc (sizeof (*new));
   if (!new)
     return PDF_ENOMEM;
 
@@ -629,7 +646,7 @@ pdf_obj_child_destroy_cb (const void *ptr)
       if (elt->key)
         pdf_obj_destroy (elt->key);
     }
-  pdf_dealloc(elt);
+  pdf_dealloc (elt);
 }
 
 static bool
@@ -668,7 +685,7 @@ pdf_obj_array_new (pdf_obj_t *array)
 
 fail:
   if (new_array)
-    pdf_dealloc(new_array);
+    pdf_dealloc (new_array);
   return rv;
 }
 
@@ -770,8 +787,7 @@ pdf_status_t pdf_obj_array_get (const pdf_obj_t array,
 {
   pdf_status_t rv;
   pdf_obj_child_t elt;
-  if ((array->type != PDF_ARRAY_OBJ)
-       || (index >= pdf_list_size (array->value.array)))
+  if (array->type != PDF_ARRAY_OBJ)
     return PDF_EBADDATA;
 
   assert (obj);
@@ -783,10 +799,10 @@ pdf_status_t pdf_obj_array_get (const pdf_obj_t array,
 }
 
 
-pdf_status_t pdf_obj_array_replace (pdf_obj_t array,
-                                    pdf_size_t index,
-                                    const pdf_obj_t new_obj,
-                                    pdf_obj_t *old_obj)
+pdf_status_t pdf_obj_array_set (pdf_obj_t array,
+                                pdf_size_t index,
+                                const pdf_obj_t new_obj,
+                                pdf_obj_t *old_obj)
 {
   pdf_status_t rv;
   pdf_obj_child_t elt;
@@ -797,26 +813,18 @@ pdf_status_t pdf_obj_array_replace (pdf_obj_t array,
   if (rv != PDF_OK)
     return rv;
 
-  assert(!elt->owned);
+  assert (!elt->owned);
   if (old_obj)
     *old_obj = elt->value;
   else
     {
       elt->owned = 0;
-      pdf_obj_destroy(elt->value);
+      pdf_obj_destroy (elt->value);
     }
 
   elt->owned = 1;
   elt->value = new_obj;
   return PDF_OK;
-}
-
-
-pdf_status_t pdf_obj_array_set (pdf_obj_t array,
-                                pdf_size_t index,
-                                const pdf_obj_t obj)
-{
-  return pdf_obj_array_replace (array, index, obj, NULL);
 }
 
 
@@ -854,7 +862,7 @@ pdf_obj_array_ins_priv (pdf_obj_t array,
 
 fail:
   if (elt)
-    pdf_dealloc(elt);
+    pdf_dealloc (elt);
   return rv;
 }
 
@@ -875,9 +883,9 @@ pdf_obj_array_append (pdf_obj_t array,
 
 
 pdf_status_t
-pdf_obj_array_extract (pdf_obj_t array,
-                       pdf_size_t index,
-                       pdf_obj_t *obj)
+pdf_obj_array_remove (pdf_obj_t array,
+                      pdf_size_t index,
+                      pdf_obj_t *obj)
 {
   if (array->type != PDF_ARRAY_OBJ)
     return PDF_EBADDATA;
@@ -892,37 +900,21 @@ pdf_obj_array_extract (pdf_obj_t array,
         return rv;
 
       *obj = elt->value;
-      assert(elt->owned);
+      assert (elt->owned);
       elt->owned = 0;
     }
 
   return pdf_list_remove_at (array->value.array, index);
 }
 
-pdf_status_t
-pdf_obj_array_remove (pdf_obj_t array,
-                      pdf_size_t index)
-{
-  return pdf_obj_array_extract (array, index, NULL);
-}
-
-pdf_status_t
-pdf_obj_array_pop_end (pdf_obj_t array,
-                       pdf_obj_t *obj)
-{
-  return pdf_obj_array_extract (array, pdf_obj_array_size(array)-1, obj);
-}
-
 
 pdf_status_t
 pdf_obj_array_clear (pdf_obj_t array)
 {
-  /* Clear the array, but don't free its objects (presumably because
-   * they're still owned by someone else). */
-
-  while (pdf_obj_array_size(array))
+  pdf_size_t size = pdf_obj_array_size (array);
+  while (size)
     {
-      if (pdf_obj_array_pop_end(array, NULL) != PDF_OK)
+      if (pdf_obj_array_remove (array, --size, NULL) != PDF_OK)
         return PDF_ERROR;  /* shouldn't happen */
     }
   return PDF_OK;
@@ -934,10 +926,11 @@ pdf_obj_array_clear_nodestroy (pdf_obj_t array)
   /* Clear the array, but don't free its objects (presumably because
    * they're still owned by someone else). */
 
-  while (pdf_obj_array_size(array))
+  pdf_size_t size = pdf_obj_array_size (array);
+  while (size)
     {
       pdf_obj_t dummy;
-      if (pdf_obj_array_pop_end(array, &dummy) != PDF_OK)
+      if (pdf_obj_array_remove (array, --size, &dummy) != PDF_OK)
         return PDF_ERROR;  /* shouldn't happen */
     }
   return PDF_OK;
@@ -967,7 +960,7 @@ pdf_obj_dict_new (pdf_obj_t *obj)
 
 fail:
   if (new_dict)
-    pdf_dealloc(new_dict);
+    pdf_dealloc (new_dict);
   return rv;
 }
 
@@ -1086,16 +1079,33 @@ pdf_obj_dict_size (const pdf_obj_t dict)
 
 pdf_status_t
 pdf_obj_dict_get (const pdf_obj_t dict,
-              const pdf_obj_t key,
-              pdf_obj_t *value)
+                  const pdf_obj_t key,
+                  pdf_obj_t *value)
 {
-  if ((dict->type != PDF_DICT_OBJ)
-      || (key->type != PDF_NAME_OBJ))
+  if (key->type != PDF_NAME_OBJ)
     return PDF_EBADDATA;
 
-  return pdf_hash_get(dict->value.dict,
-                      (char*)key->value.buffer.data,
-                      (void*)value);
+  return pdf_obj_dict_getc (dict, key->value.buffer.data, value);
+}
+
+pdf_status_t
+pdf_obj_dict_getc (const pdf_obj_t dict,
+                   const pdf_char_t *key,
+                   pdf_obj_t *value)
+{
+  pdf_obj_child_t elt = NULL;
+  pdf_status_t rv;
+
+  assert (value);
+  if (dict->type != PDF_DICT_OBJ)
+    return PDF_EBADDATA;
+
+  rv = pdf_hash_get (dict->value.dict, (char*)key, (void*)&elt);
+  if (rv != PDF_OK)
+    return rv;
+
+  *value = elt->value;
+  return PDF_OK;
 }
 
 pdf_bool_t
@@ -1104,13 +1114,21 @@ pdf_obj_dict_key_p (const pdf_obj_t dict,
 {
   return ((dict->type == PDF_DICT_OBJ)
            && (key->type == PDF_NAME_OBJ)
-           && pdf_hash_key_p(dict->value.dict,
-                             (char*)key->value.buffer.data));
+           && pdf_hash_key_p (dict->value.dict,
+                              (char*)key->value.buffer.data));
+}
+
+pdf_bool_t
+pdf_obj_dict_keyc_p (const pdf_obj_t dict,
+                     const pdf_char_t *key)
+{
+  return ((dict->type == PDF_DICT_OBJ)
+           && pdf_hash_key_p (dict->value.dict, (char*)key));
 }
 
 pdf_status_t
 pdf_obj_dict_remove (pdf_obj_t dict,
-                 pdf_obj_t key)
+                     pdf_obj_t key)
 {
   if ((dict->type != PDF_DICT_OBJ)
       || (key->type != PDF_NAME_OBJ))
@@ -1118,8 +1136,8 @@ pdf_obj_dict_remove (pdf_obj_t dict,
   else if (!pdf_obj_dict_key_p (dict, key))
     return PDF_ENONODE;
 
-  return pdf_hash_remove(dict->value.dict,
-                         (char*)key->value.buffer.data);
+  return pdf_hash_remove (dict->value.dict,
+                          (char*)key->value.buffer.data);
 }
 
 pdf_status_t
@@ -1141,7 +1159,7 @@ pdf_obj_dict_add (pdf_obj_t dict,
     goto fail;
 
   keystr = (char*)key->value.buffer.data;
-  rv = pdf_hash_add(dict->value.dict, keystr, elt, pdf_obj_child_destroy_cb);
+  rv = pdf_hash_add (dict->value.dict, keystr, elt, pdf_obj_child_destroy_cb);
   if (rv != PDF_OK)
     goto fail;
 
@@ -1149,7 +1167,7 @@ pdf_obj_dict_add (pdf_obj_t dict,
 
 fail:
   if (elt)
-    pdf_dealloc(elt);
+    pdf_dealloc (elt);
   return rv;
 }
 
@@ -1159,9 +1177,8 @@ pdf_obj_dict_clear_nodestroy (pdf_obj_t dict)
   /* Clear the dict, but don't free its objects (presumably because
    * they're still owned by someone else). */
 
-//  pdf_obj_t dummy;
   //TODO
-  return PDF_ERROR;//XXX
+  return PDF_ERROR;
 }
 
 /* End of pdf_obj.c */
