@@ -1,4 +1,5 @@
-/* -*- mode: C -*- Time-stamp: "08/08/06 23:44:05 jemarch"
+
+/* -*- mode: C -*- Time-stamp: "2008-12-31 19:31:45 aleksander"
  *
  *       File:         pdf-fsys.c
  *       Date:         Thu May 22 15:51:13 2008
@@ -35,7 +36,7 @@ static void pdf_fsys_dealloc (pdf_fsys_t filesystem);
  * Filesystem Interface Implementation
  */
 
-pdf_size_t
+pdf_i64_t
 pdf_fsys_get_free_space (pdf_fsys_t filesystem,
                          pdf_text_t path_name)
 {
@@ -52,25 +53,7 @@ pdf_fsys_get_free_space (pdf_fsys_t filesystem,
     }
 }
 
-pdf_status_t
-pdf_fsys_open (const pdf_fsys_t filesystem,
-               const pdf_text_t path_name,
-               const enum pdf_fsys_file_mode_e mode,
-               pdf_fsys_file_t file)
-{
-  if (filesystem == NULL)
-    {
-      /* Use the default filesystem */
-      return
-        pdf_fsys_def_open(path_name, mode, file);
-    }
-  else
-    {
-      return filesystem->implementation->open_fn (path_name,
-                                                  mode,
-                                                  file);
-    }
-}
+
 
 pdf_status_t 
 pdf_fsys_create_folder (const pdf_fsys_t filesystem,
@@ -321,9 +304,32 @@ pdf_fsys_get_temp_path_name (pdf_fsys_t filesystem)
  * File Interface Implementation
  */
 
+pdf_status_t
+pdf_fsys_file_open (const pdf_fsys_t filesystem,
+                    const pdf_text_t path_name,
+                    const enum pdf_fsys_file_mode_e mode,
+                    pdf_fsys_file_t *p_file)
+{
+  if (filesystem == NULL)
+    {
+      /* Use the default filesystem */
+      return
+        pdf_fsys_def_file_open(path_name, mode, p_file);
+    }
+  else
+    {
+      return filesystem->implementation->file_open_fn (path_name,
+                                                       mode,
+                                                       p_file);
+    }
+}
+
+
 pdf_fsys_t 
 pdf_fsys_file_get_filesystem (pdf_fsys_file_t file)
 {
+  if(file == NULL)
+    return NULL;
   /* May be NULL if it is the default filesystem */
   return file->fs;
 }
@@ -331,6 +337,9 @@ pdf_fsys_file_get_filesystem (pdf_fsys_file_t file)
 enum pdf_fsys_file_mode_e
 pdf_fsys_file_get_mode (pdf_fsys_file_t file)
 {
+  if(file == NULL)
+    return PDF_FSYS_OPEN_MODE_INVALID;
+
   if (file->fs == NULL)
     {
       /* Use the default filesystem */
@@ -346,6 +355,9 @@ pdf_fsys_file_get_mode (pdf_fsys_file_t file)
 pdf_text_t
 pdf_fsys_file_get_url (pdf_fsys_file_t file)
 {
+  if(file == NULL)
+    return NULL;
+
   if (file->fs == NULL)
     {
       /* Use the default filesystem */
@@ -362,6 +374,9 @@ pdf_status_t
 pdf_fsys_file_set_mode (pdf_fsys_file_t file,
                         enum pdf_fsys_file_mode_e new_mode)
 {
+  if(file == NULL)
+    return PDF_EBADDATA;
+
   if (file->fs == NULL)
     {
       /* Use the default filesystem */
@@ -379,6 +394,9 @@ pdf_bool_t
 pdf_fsys_file_same_p (pdf_fsys_file_t file,
                       pdf_text_t path)
 {
+  if(file == NULL)
+    return PDF_EBADDATA;
+
   if (file->fs == NULL)
     {
       /* Use the default filesystem */
@@ -395,6 +413,9 @@ pdf_status_t
 pdf_fsys_file_get_pos (pdf_fsys_file_t file,
                        pdf_size_t *pos)
 {
+  if(file == NULL)
+    return PDF_EBADDATA;
+
   if (file->fs == NULL)
     {
       /* Use the default filesystem */
@@ -411,6 +432,9 @@ pdf_status_t
 pdf_fsys_file_set_pos (pdf_fsys_file_t file,
                        pdf_size_t new_pos)
 {
+  if(file == NULL)
+    return PDF_EBADDATA;
+
   if (file->fs == NULL)
     {
       /* Use the default filesystem */
@@ -428,6 +452,9 @@ pdf_bool_t
 pdf_fsys_file_can_set_size_p (pdf_fsys_file_t file,
                               pdf_size_t size)
 {
+  if(file == NULL)
+    return PDF_EBADDATA;
+
   if (file->fs == NULL)
     {
       /* Use the default filesystem */
@@ -444,6 +471,9 @@ pdf_fsys_file_can_set_size_p (pdf_fsys_file_t file,
 pdf_size_t
 pdf_fsys_file_get_size (pdf_fsys_file_t file)
 {
+  if(file == NULL)
+    return PDF_EBADDATA;
+
   if (file->fs == NULL)
     {
       /* Use the default filesystem */
@@ -460,6 +490,9 @@ pdf_status_t
 pdf_fsys_file_set_size (pdf_fsys_file_t file,
                         pdf_size_t size)
 {
+  if(file == NULL)
+    return PDF_EBADDATA;
+
   if (file->fs == NULL)
     {
       /* Use the default filesystem */
@@ -479,6 +512,9 @@ pdf_fsys_file_read (pdf_fsys_file_t file,
                     const pdf_size_t elem_count,
                     void *data)
 {
+  if(file == NULL)
+    return 0;
+
   if (file->fs == NULL)
     {
       /* Use the default filesystem */
@@ -500,6 +536,9 @@ pdf_fsys_file_write (pdf_fsys_file_t file,
                      const pdf_size_t elem_count,
                      void *data)
 {
+  if(file == NULL)
+    return 0;
+
   if (file->fs == NULL)
     {
       /* Use the default filesystem */
@@ -518,6 +557,9 @@ pdf_fsys_file_write (pdf_fsys_file_t file,
 pdf_status_t
 pdf_fsys_file_flush (pdf_fsys_file_t file)
 {
+  if(file == NULL)
+    return PDF_EBADDATA;
+
   if (file->fs == NULL)
     {
       /* Use the default filesystem */
@@ -535,6 +577,9 @@ pdf_fsys_file_request_ria (pdf_fsys_file_t file,
                            pdf_size_t offset,
                            pdf_size_t count)
 {
+  if(file == NULL)
+    return PDF_EBADDATA;
+
   if (file->fs == NULL)
     {
       /* Use the default filesystem */
@@ -552,6 +597,9 @@ pdf_fsys_file_request_ria (pdf_fsys_file_t file,
 pdf_bool_t 
 pdf_fsys_file_has_ria (pdf_fsys_file_t file)
 {
+  if(file == NULL)
+    return PDF_FALSE;
+
   if (file->fs == NULL)
     {
       /* Use the default filesystem */
@@ -567,6 +615,9 @@ pdf_fsys_file_has_ria (pdf_fsys_file_t file)
 pdf_status_t
 pdf_fsys_file_cancel_ria (pdf_fsys_file_t file)
 {
+  if(file == NULL)
+    return PDF_EBADDATA;
+
   if (file->fs == NULL)
     {
       /* Use the default filesystem */
@@ -582,6 +633,9 @@ pdf_fsys_file_cancel_ria (pdf_fsys_file_t file)
 pdf_status_t
 pdf_fsys_file_close (pdf_fsys_file_t file)
 {
+  if(file == NULL)
+    return PDF_EBADDATA;
+
   if (file->fs == NULL)
     {
       /* Use the default filesystem */
@@ -598,6 +652,9 @@ pdf_status_t
 pdf_fsys_file_reopen (pdf_fsys_file_t file,
                       enum pdf_fsys_file_mode_e mode)
 {
+  if(file == NULL)
+    return PDF_EBADDATA;
+
   if (file->fs == NULL)
     {
       /* Use the default filesystem */

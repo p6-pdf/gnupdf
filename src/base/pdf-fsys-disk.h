@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/05/28 17:37:31 jemarch"
+/* -*- mode: C -*- Time-stamp: "2008-11-29 17:42:34 aleksander"
  *
  *       File:         pdf-fsys-disk.h
  *       Date:         Thu May 22 18:22:59 2008
@@ -44,51 +44,109 @@ struct pdf_fsys_disk_file_s
 
 typedef struct pdf_fsys_disk_file_s *pdf_fsys_disk_file_t;
 
-/* Filesystem Interface */
-pdf_size_t pdf_fsys_disk_get_free_space (pdf_text_t path_name);
-pdf_status_t pdf_fsys_disk_open (const pdf_text_t path_name,
-                                 const enum pdf_fsys_file_mode_e mode,
-                                 pdf_fsys_file_t file);
-pdf_status_t pdf_fsys_disk_create_folder (const pdf_text_t path_name);
-pdf_status_t pdf_fsys_disk_get_folder_contents (const pdf_text_t path_name,
-                                                pdf_list_t item_list);
-pdf_status_t pdf_fsys_disk_get_parent (const pdf_text_t path_name,
-                                       pdf_text_t parent_path);
-pdf_status_t pdf_fsys_disk_remove_folder (const pdf_text_t path_name);
-pdf_status_t pdf_fsys_disk_get_item_props (pdf_text_t path_name,
-                                           struct pdf_fsys_item_props_s *item_props);
-pdf_bool_t pdf_fsys_disk_item_p (pdf_text_t path_name);
-pdf_bool_t pdf_fsys_disk_item_readable_p (pdf_text_t path_name);
-pdf_bool_t pdf_fsys_disk_item_writable_p (pdf_text_t path_name);
-pdf_text_t pdf_fsys_disk_get_temp_path_name (void);
 
-/* File Interface */
 
-pdf_fsys_t pdf_fsys_disk_file_get_filesystem (pdf_fsys_file_t file);
-enum pdf_fsys_file_mode_e pdf_fsys_disk_file_get_mode (pdf_fsys_file_t file);
-pdf_text_t pdf_fsys_disk_file_get_url (pdf_fsys_file_t file);
-pdf_status_t pdf_fsys_disk_file_set_mode (pdf_fsys_file_t file,
-                                          enum pdf_fsys_file_mode_e new_mode);
-pdf_bool_t pdf_fsys_disk_file_same_p (pdf_fsys_file_t file,
-                                      pdf_text_t path);
+/* --------------------- Filesystem interface ------------------------- */
+
+/* Get the free storage space in the volume containing path_name */
+pdf_i64_t
+pdf_fsys_disk_get_free_space (pdf_text_t path_name);
+
+/* Create folder in disk */
+pdf_status_t
+pdf_fsys_disk_create_folder (const pdf_text_t path_name);
+
+/* Get folder contents from disk (list files in disk) */
+pdf_status_t
+pdf_fsys_disk_get_folder_contents (const pdf_text_t path_name,
+                                   pdf_list_t item_list);
+
+/* Get path name of the father of a given item in the filesystem */
+pdf_status_t
+pdf_fsys_disk_get_parent (const pdf_text_t path_name,
+                          pdf_text_t parent_path);
+
+/* Remove folder from disk */
+pdf_status_t
+pdf_fsys_disk_remove_folder (const pdf_text_t path_name);
+
+/* Get item properties */
+pdf_status_t
+pdf_fsys_disk_get_item_props (pdf_text_t path_name,
+                              struct pdf_fsys_item_props_s *item_props);
+
+/* Check if file exists in disk */
+pdf_bool_t
+pdf_fsys_disk_item_p (pdf_text_t path_name);
+
+/* Check if file is readable in disk */
+pdf_bool_t
+pdf_fsys_disk_item_readable_p (pdf_text_t path_name);
+
+/* Check if file is writable in disk */
+pdf_bool_t
+pdf_fsys_disk_item_writable_p (pdf_text_t path_name);
+
+/* Get temporal path name */
+pdf_text_t
+pdf_fsys_disk_get_temp_path_name (void);
+
+
+
+/* --------------------- File interface ------------------------- */
+
+/* Open a given file */
+pdf_status_t
+pdf_fsys_disk_file_open (const pdf_text_t path_name,
+                         const enum pdf_fsys_file_mode_e mode,
+                         pdf_fsys_file_t *p_file);
+
+
+/* Get file mode info */
+enum pdf_fsys_file_mode_e
+pdf_fsys_disk_file_get_mode (pdf_fsys_file_t file);
+
+/* Get URL from file */
+pdf_text_t
+pdf_fsys_disk_file_get_url (pdf_fsys_file_t file);
+
+/* Set file mode info */
+pdf_status_t
+pdf_fsys_disk_file_set_mode (pdf_fsys_file_t file,
+                             enum pdf_fsys_file_mode_e new_mode);
+
+/* Check if paths are same/equivalent */ 
+pdf_bool_t
+pdf_fsys_disk_file_same_p (pdf_fsys_file_t file,
+                           pdf_text_t path);
+
+/* Get pos */
 pdf_status_t pdf_fsys_disk_file_get_pos (pdf_fsys_file_t file,
                                          pdf_size_t *pos);
+
 pdf_status_t pdf_fsys_disk_file_set_pos (pdf_fsys_file_t file,
                                          pdf_size_t new_pos);
+
 pdf_bool_t pdf_fsys_disk_file_can_set_size_p (pdf_fsys_file_t file,
                                               pdf_size_t size);
+
 pdf_size_t pdf_fsys_disk_file_get_size (pdf_fsys_file_t file);
+
 pdf_status_t pdf_fsys_disk_file_set_size (pdf_fsys_file_t file,
                                           pdf_size_t size);
+
 pdf_size_t pdf_fsys_disk_file_read (pdf_fsys_file_t file,
                                     const pdf_size_t elem_size,
                                     const pdf_size_t elem_count,
                                     void *data);
+
 pdf_size_t pdf_fsys_disk_file_write (pdf_fsys_file_t file,
                                      const pdf_size_t elem_size,
                                      const pdf_size_t elem_count,
                                      void *data);
+
 pdf_status_t pdf_fsys_disk_file_flush (pdf_fsys_file_t file);
+
 pdf_status_t pdf_fsys_disk_file_request_ria (pdf_fsys_file_t file,
                                              pdf_size_t offset,
                                              pdf_size_t count);

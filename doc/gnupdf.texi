@@ -400,6 +400,7 @@ pdf_dealloc (p);
 * Numeric Types::
 * Big Numbers::
 * Memory Buffers::
+* Progress Monitors::
 @end menu
 
 @node Boolean Types
@@ -1426,6 +1427,161 @@ XXX
 @end example
 @end table
 @end deftypefun
+
+@node Progress Monitors
+@subsection Progress Monitors
+
+The client application of the library may want to monitor the progress
+of some operations, such as the saving of a document. The @code{struct
+pdf_pm_s} structure provides a way for the client application to
+specify callbacks implemented by a progress monitor.
+
+@deftp {Data Type} {struct pdf_pm_s}
+
+Structure containing several callbacks to be called as an operation
+progress.
+
+@table @code
+@item pdf_pm_begin_operation_fn_t begin_operation_fn
+@item pdf_pm_end_operation_fn_t end_operation_fn
+@item pdf_pm_get_duration_fn_t get_duration_fn
+@item pdf_pm_set_duration_fn_t set_duration_fn
+@item pdf_pm_get_current_value_fn_t get_current_value_fn_t
+@item pdf_pm_set_current_value_fn_t set_current_value_fn_t
+@item pdf_pm_set_text_fn_t set_text_fn
+@end table
+@end deftp
+
+The type definitions for the callbacks follows.
+
+@deftp {Data Type} {pdf_status_t (*pdf_pm_begin_operation_fn_t) (void *@var{client_data})}
+Callback implemented by a progress monitor that initializes it to a
+current value of @code{0}.
+
+@table @strong
+@item Parameters
+@table @var
+@item client_data
+User supplied data.
+@end table
+@item Returns
+This callback should return @code{PDF_OK} to the caller.
+@end table
+@end deftp
+
+@deftp {Data Type} {pdf_status_t (*pdf_pm_end_operation_fn_t) (void *@var{client_data})}
+Callback implemented by a progress monitor. This callback is called at
+the end of the operation.
+
+@table @strong
+@item Parameters
+@table @var
+@item client_data
+User supplied data.
+@end table
+@item Returns
+This callback should return @code{PDF_OK} to the caller.
+@end table
+@end deftp
+
+@deftp {Data Type} {pdf_status_t (*pdf_pm_get_duration_fn_t) (void *@var{client_data}, void *@var{duration})}
+
+Callback implemented by a progress monitor.
+
+This callback is called to get the current value of the progress
+monitor duration.
+@table @strong
+@item Parameters
+@table @var
+@item client_data
+User supplied data.
+@item duration
+A pointer to a @var{pdf_time_span_t} variable to store the current
+duration of the progress monitor.
+@end table
+@item Returns
+This callback should return @code{PDF_OK} to the caller.
+@end table
+@end deftp
+
+@deftp {Data Type} {pdf_status_t (*pdf_pm_set_duration_fn_t) (void *@var{client_data}, void *@var{duration})}
+
+Callback implemented by a progress monitor.
+
+This callback is called to set the current value of the progress
+monitor duration.
+@table @strong
+@item Parameters
+@table @var
+@item client_data
+User supplied data.
+@item duration
+A pointer to a time span variable containing the new duration for the
+progress monitor.
+@end table
+@item Returns
+This callback should return @code{PDF_OK} to the caller.
+@end table
+@end deftp
+
+@deftp {Data Type} {pdf_status_t (*pdf_pm_get_current_value_fn_t) (void *@var{client_data}, void *@var{duration})}
+
+Callback implemented by a progress monitor.
+
+This callback is called to get the current value of the progress
+monitor duration.
+@table @strong
+@item Parameters
+@table @var
+@item client_data
+User supplied data.
+@item duration
+A pointer to a @var{pdf_time_span_t} variable to store the current
+duration of the progress monitor.
+@end table
+@item Returns
+This callback should return @code{PDF_OK} to the caller.
+@end table
+@end deftp
+
+@deftp {Data Type} {pdf_status_t (*pdf_pm_set_current_value_fn_t) (void *@var{client_data}, void *@var{duration})}
+
+Callback implemented by a progress monitor.
+
+This callback is called to set the current value of the progress
+monitor duration.
+@table @strong
+@item Parameters
+@table @var
+@item client_data
+User supplied data.
+@item duration
+A time span variable containing the new duration for the progress
+monitor.
+@end table
+@item Returns
+This callback should return @code{PDF_OK} to the caller.
+@end table
+@end deftp
+
+@deftp {Data Type} {pdf_status_t (*pdf_pm_set_text_fn_t) (void *@var{client_data}, void *@var{text})}
+
+Callback implemented by a progress monitor.
+
+This callback is called to set the description of the current status
+of the operation to the progress monitor.
+@table @strong
+@item Parameters
+@table @var
+@item client_data
+User supplied data.
+@item text
+A text variable containing the new description.
+@end table
+@item Returns
+This callback should return @code{PDF_OK} to the caller.
+@end table
+@end deftp
 
 @node Hash Tables
 @section Hash Tables
@@ -7915,7 +8071,6 @@ becomes a no-op.
 @menu
 * Filesystem Data Types::
 * Getting File System Properties::
-* Opening Files::
 * Folder Management::
 * Getting File System Item Properties::
 * File System Utility Functions::
@@ -7951,7 +8106,7 @@ directory).
 @node Getting File System Properties
 @subsubsection Getting File System Properties
 
-@deftypefun pdf_size_t pdf_fsys_get_free_space (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name})
+@deftypefun pdf_i64_t pdf_fsys_get_free_space (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name})
 
 Get the free storage space in the volume containing @var{path_name}.
 
@@ -7964,7 +8119,7 @@ A filesystem. If @code{NULL} then the default filesystem is used.
 A path name.
 @end table
 @item Returns
-A PDF size value containing the remaining free space in the volume
+A 64-bit value containing the remaining free space in the volume
 containing @var{path_name}.
 @item Usage example
 @example
@@ -7972,51 +8127,6 @@ XXX
 @end example
 @end table
 @end deftypefun
-
-@node Opening Files
-@subsubsection Opening Files
-
-@deftypefun pdf_status_t pdf_fsys_open (const pdf_fsys_t @var{filesystem}, const pdf_text_t @var{path_name}, const enum pdf_fsys_file_mode_e @var{mode}, pdf_fsys_file_t @var{file})
-
-Open a file in @var{filesystem} identified by @var{path_name} using
-the specified @var{mode} and store a new open file variable in
-@var{file}.
-
-@table @strong
-@item Parameters
-@table @var
-@item filesystem
-A filesystem. If @code{NULL} the default filesystem is used.
-@item path_name
-A path name that identifies the file to be opened. The format and
-encoding of this text variable depends on the underlying filesystem
-implementation. 
-@item mode
-The open mode to use to open the file.
-@item file
-The output file variable.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK 
-The file was successfully opened and stored in the @var{file}
-variable.
-@item PDF_EBADNAME
-The path name specified in @var{path_name} does not identify an existing
-file in the filesystem.
-@item PDF_EBADPERMS
-The client does not have permission to open the specified file using the
-specified mode. 
-@item PDF_ENOMEM
-Not enough memory.
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun               
 
 @node Folder Management
 @subsubsection Folder Management
@@ -8403,6 +8513,7 @@ File flags (status) management.
 
 @menu
 * File Data Types::
+* Opening Files::
 * File Properties Management::
 * Comparing Files::
 * Managing File Positions::
@@ -8411,6 +8522,8 @@ File flags (status) management.
 * Read in Advance::
 * Closing and Reopening Files::
 @end menu
+
+
 
 @node File Data Types
 @subsubsection File Data Types
@@ -8443,6 +8556,54 @@ filesystem.
 @item 
 @end table
 @end deftp
+
+
+@node Opening Files
+@subsubsection Opening Files
+
+@deftypefun pdf_status_t pdf_fsys_file_open (const pdf_fsys_t @var{filesystem}, const pdf_text_t @var{path_name}, const enum pdf_fsys_file_mode_e @var{mode}, pdf_fsys_file_t @var{file})
+
+Open a file in @var{filesystem} identified by @var{path_name} using
+the specified @var{mode} and store a new open file variable in
+@var{file}.
+
+@table @strong
+@item Parameters
+@table @var
+@item filesystem
+A filesystem. If @code{NULL} the default filesystem is used.
+@item path_name
+A path name that identifies the file to be opened. The format and
+encoding of this text variable depends on the underlying filesystem
+implementation. 
+@item mode
+The open mode to use to open the file.
+@item file
+The output file variable.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK 
+The file was successfully opened and stored in the @var{file}
+variable.
+@item PDF_EBADNAME
+The path name specified in @var{path_name} does not identify an existing
+file in the filesystem.
+@item PDF_EBADPERMS
+The client does not have permission to open the specified file using the
+specified mode. 
+@item PDF_ENOMEM
+Not enough memory.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun               
+
+
 
 @node File Properties Management
 @subsubsection File Properties Management

@@ -80,10 +80,13 @@
   ERROR_ENTRY (PDF_EBADNAME,    "invalid path name"),                   \
   ERROR_ENTRY (PDF_EAGAIN,      "operation can't be performed now, maybe later"), \
   ERROR_ENTRY (PDF_ENOSPC,      "no space left on device"),             \
-  ERROR_ENTRY (PDF_EBADCONTEXT, "text module global context not initialized"), \
+  ERROR_ENTRY (PDF_EBADCONTEXT, "text module global context not initialized"),    \
   ERROR_ENTRY (PDF_ENOTEMPTY,   "operation requires some entity be empty"), \
-  ERROR_ENTRY (PDF_ENINPUT,     "filter needs more input"), \
-  ERROR_ENTRY (PDF_ENOUTPUT,    "filter needs more output room"),     \
+  ERROR_ENTRY (PDF_ENINPUT,     "filter needs more input"),             \
+  ERROR_ENTRY (PDF_ENOUTPUT,    "filter needs more output room"),       \
+  ERROR_ENTRY (PDF_EEXIST,      "already exists"),                      \
+  ERROR_ENTRY (PDF_EOPENED,     "file is opened"),                      \
+  ERROR_ENTRY (PDF_ECLOSED,     "file is closed"),                      \
   ERROR_ENTRY (PDF_EOVERFLOW,   "/FunctionType 0: Sample Table too large"), \
   ERROR_ENTRY (PDF_EMTOOBIG,    "/FunctionType 0: input dim too high (<= 12)"), \
   ERROR_ENTRY (PDF_EBADSAMPLES, "/FunctionType 0: error while reading sample table"), \
@@ -93,7 +96,6 @@
   ERROR_ENTRY (PDF_EBADFILE,    "file violates PDF specifications"), \
   ERROR_ENTRY (PDF_EIMPLLIMIT,  "implementation limit exceeded"), \
   ERROR_ENTRY (PDF_EEXIST,      "name already in use")
-
 
 
 #define ERROR_ENTRY(id,string) id
