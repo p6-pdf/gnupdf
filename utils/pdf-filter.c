@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/13 22:30:03 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-01-24 17:33:37 gerel"
  *
  *       File:         pdf-filter.c
  *       Date:         Tue Jul 10 18:42:07 2007
@@ -52,6 +52,8 @@ static struct option GNU_longOptions[] =
     {"usage", no_argument, NULL, USAGE_ARG},
     {"version", no_argument, NULL, VERSION_ARG},
     {"readmode", no_argument, NULL, READ_ARG},
+    {"input-file", required_argument, NULL, INFILE_ARG},
+    {"output-file", required_argument, NULL, OUTFILE_ARG},
     {"cache", required_argument, NULL, CACHE_ARG},
     {"null", no_argument, NULL, NULL_FILTER_ARG},
     {"ahexdec", no_argument, NULL, ASCIIHEXDEC_FILTER_ARG},
@@ -96,6 +98,8 @@ write the result in the standard output.\n\
 available options\n\
   --readmode                          test the stream in read mode instead\n\
                                        of write mode.\n\
+  -i FILE, --input-file=FILE          Use a given file as the input.\n\
+  -o FILE, --output-file=FILE         Use a given file as the output.\n\
   --cache=NUM                         set the stream cache size.\n\n\
 available filters\n\
   --null                              use the NULL filter\n\
@@ -138,31 +142,44 @@ available filters\n\
 char *pdf_filter_help_msg = "";
 
 static pdf_stm_t
-create_stream (int argc, char* argv[], pdf_bool_t* mode, pdf_status_t* last_ret);
+create_stream (int argc, char* argv[], pdf_bool_t* mode, pdf_status_t* last_ret,
+               pdf_bool_t * read_pdf_fsys, pdf_bool_t * write_pdf_fsys,
+               pdf_stm_t * fsys_stm);
 
 static void
 install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret);
 
 static void
-process_stream (pdf_stm_t, pdf_bool_t mode);
+process_stream (pdf_stm_t, pdf_bool_t mode, pdf_bool_t read_pdf_fsys,
+                pdf_bool_t write_pdf_fsys, pdf_stm_t fsys_stm);
+
+static
+open_file (pdf_char_t * name, pdf_fsys_file_t * file,
+           enum pdf_fsys_file_mode_e mode);
 
 int
 main (int argc, char *argv[])
 {
-  pdf_stm_t stm;
-  pdf_bool_t read_mode;
+  pdf_stm_t stm,fsys_stm;
+  pdf_bool_t read_mode,read_pdf_fsys,write_pdf_fsys;
   pdf_status_t last_ret;
   
-  stm = create_stream (argc, argv, &read_mode, &last_ret);
+  stm = create_stream (argc, argv, &read_mode, &last_ret, &read_pdf_fsys,
+                       &write_pdf_fsys, &fsys_stm);
   install_filters (argc, argv, stm, last_ret);
-  process_stream (stm, read_mode);
+  process_stream (stm, read_mode, read_pdf_fsys,write_pdf_fsys, fsys_stm);
   pdf_stm_destroy (stm);
+  if (read_pdf_fsys || write_pdf_fsys)
+    {
+      pdf_stm_destroy (fsys_stm);
+    }
  
   return 0;
 }
 
 static void
-process_stream (pdf_stm_t stm, pdf_bool_t read_mode)
+process_stream (pdf_stm_t stm, pdf_bool_t read_mode, pdf_bool_t read_pdf_fsys,
+                pdf_bool_t write_pdf_fsys, pdf_stm_t fsys_stm)
 {
 #define BUF_SIZE 256
   
@@ -174,15 +191,27 @@ process_stream (pdf_stm_t stm, pdf_bool_t read_mode)
   if (read_mode)
     {
       /* Read from the buffer which will process anything on stdin
-	 and push to stdout */
+         and push to stdout */
       do
         {
           ret = pdf_stm_read (stm, buf, BUF_SIZE, &read_bytes);
-          if(fwrite (buf, 1, read_bytes, stdout) != read_bytes)
+          if (write_pdf_fsys)
             {
-              fprintf(stderr,"fwrite failed (%ld)", (long)read_bytes);
-             }
-	    }
+              ret = pdf_stm_write (fsys_stm, buf, read_bytes, &written_bytes);
+              if (ret != PDF_OK)
+                {
+                  pdf_error (ret, stderr, "while writing to stream");
+                  exit (1);
+                }            
+            }
+          else
+            {
+              if(fwrite (buf, 1, read_bytes, stdout) != read_bytes)
+                {
+                  fprintf(stderr,"fwrite failed (%ld)", (long)read_bytes);
+                }
+            }
+        }
       while (read_bytes == BUF_SIZE);
     }
   else
@@ -190,25 +219,35 @@ process_stream (pdf_stm_t stm, pdf_bool_t read_mode)
       /* Write stdin into the write stream,
 	 which will be transparently writting the output to stdout. */
       do
-	{
-	  read_bytes = fread (buf, 1, BUF_SIZE, stdin);
-	  ret = pdf_stm_write (stm, buf, read_bytes, &written_bytes);
-	}
+        {
+          if (read_pdf_fsys)
+            {
+              ret = pdf_stm_read (fsys_stm, buf, BUF_SIZE, &read_bytes);
+            }
+          else
+            {
+              read_bytes = fread (buf, 1, BUF_SIZE, stdin);
+            }
+          ret = pdf_stm_write (stm, buf, read_bytes, &written_bytes);
+        }
       while (read_bytes == BUF_SIZE);
     }
-  
+
 #undef BUF_SIZE
 }
 
 static pdf_stm_t
 create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
-	       pdf_status_t* last_ret)
+	       pdf_status_t* last_ret, pdf_bool_t * read_pdf_fsys,
+               pdf_bool_t * write_pdf_fsys, pdf_stm_t * fsys_stm)
 {
   char c;
   pdf_status_t ret;
   pdf_size_t cache_size;
   pdf_stm_t stm;
   pdf_bool_t finish;
+  pdf_char_t *infile_name=NULL,*outfile_name=NULL;
+  pdf_fsys_file_t infile, outfile;
 
   finish = PDF_FALSE;
   cache_size = 0;
@@ -217,7 +256,7 @@ create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
   while (!finish &&
 	 (ret = getopt_long (argc,
 			     argv,
-			     "",
+			     "i:o:",
 			     GNU_longOptions, 
 			     NULL)) != -1)
     {
@@ -253,6 +292,20 @@ create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
 	    cache_size = atoi (optarg);
 	    break;
 	  }
+        case INFILE_ARG:
+        case 'i':
+          {
+            infile_name = pdf_alloc (strlen(optarg)+1);
+            strcpy (infile_name, optarg);
+            break;
+          }
+        case OUTFILE_ARG:
+        case 'o':
+          {
+            outfile_name = pdf_alloc (strlen(optarg)+1);
+            strcpy (outfile_name, optarg);
+            break;
+          }
 	case '?':
 	default:
 	  {
@@ -269,16 +322,75 @@ create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
   */
   *last_ret = ret;
 
-  ret = pdf_stm_cfile_new (*read_mode ? stdin : stdout,
+  if (pdf_text_init() != PDF_OK)
+    {
+      fprintf (stderr, "Error initializing the text module.\n");
+      exit(1);
+    }
+
+  *read_pdf_fsys = PDF_FALSE;
+  *write_pdf_fsys = PDF_FALSE;
+  if (infile_name == NULL && outfile_name == NULL)
+    {
+      ret = pdf_stm_cfile_new (*read_mode ? stdin : stdout,
 			       0,
 			       cache_size, 
 			       *read_mode ? PDF_STM_READ : PDF_STM_WRITE,
 			       &stm);
-    
-  if (ret != PDF_OK)
+      if (ret != PDF_OK)
+        {
+          pdf_error (ret, stderr, "while creating the write stream");
+          exit (1);
+        }
+    }
+  else
     {
-      pdf_error (ret, stderr, "while creating the write stream");
-      exit (1);
+      if (infile_name != NULL)
+        {
+          open_file (infile_name, &infile, PDF_FSYS_OPEN_MODE_READ);
+          *read_pdf_fsys = PDF_TRUE;
+          ret = pdf_stm_file_new (infile,0,cache_size,PDF_STM_READ,
+                                  *read_mode ? &stm : fsys_stm);
+          if (ret != PDF_OK)
+            {
+              pdf_error (ret, stderr, "while creating the read stream");
+              exit (1);
+            }
+        }
+      else
+        {
+          ret = pdf_stm_cfile_new (stdin,0,cache_size,PDF_STM_READ,
+                                   *read_mode ? &stm : fsys_stm);
+          if (ret != PDF_OK)
+            {
+              pdf_error (ret, stderr, "while creating the read stream");
+              exit (1);
+            }
+        }
+
+      if (outfile_name != NULL)
+        {
+          open_file (outfile_name, &outfile, PDF_FSYS_OPEN_MODE_WRITE);
+          *write_pdf_fsys = PDF_TRUE;
+          ret = pdf_stm_file_new (outfile,0,cache_size,PDF_STM_WRITE,
+                                  *read_mode ? fsys_stm : &stm);
+          if (ret != PDF_OK)
+            {
+              pdf_error (ret, stderr, "while creating the write stream");
+              exit (1);
+            }
+        }
+      else
+        {
+          ret = pdf_stm_cfile_new (stdout,0,cache_size,PDF_STM_WRITE,
+                                   *read_mode ? fsys_stm : &stm);
+          if (ret != PDF_OK)
+            {
+              pdf_error (ret, stderr, "while creating the write stream");
+              exit (1);
+            }
+
+        }
     }
 
   return stm;
@@ -745,6 +857,30 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
 			     GNU_longOptions, 
 			     NULL)) != -1);
 
+}
+
+static
+open_file (pdf_char_t * name, pdf_fsys_file_t * file,
+           enum pdf_fsys_file_mode_e mode)
+{
+  pdf_status_t ret;
+  pdf_text_t path;
+  pdf_char_t * rem;
+  pdf_size_t rem_len;
+
+  ret = pdf_text_new_from_pdf_string(name, strlen(name), &rem, &rem_len, &path);
+  if (ret != PDF_OK)
+    {
+      pdf_error (ret, stderr, "while creating pdf text path");
+      exit (1);
+    }
+
+  ret = pdf_fsys_file_open (NULL, path, mode, file);
+  if (ret != PDF_OK)
+    {
+      pdf_error (ret, stderr, "while opening file '%s'", name);
+      exit (1);
+    } 
 }
 
 /* End of pdf_filter.c */

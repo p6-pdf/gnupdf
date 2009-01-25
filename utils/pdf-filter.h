@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/27 20:11:16 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-01-23 12:06:54 gerel"
  *
  *       File:         pdf-filter.h
  *       Date:         Tue Jul 10 18:40:55 2007
@@ -37,6 +37,8 @@ enum
   USAGE_ARG,
   VERSION_ARG,
   READ_ARG,
+  INFILE_ARG,
+  OUTFILE_ARG,
   CACHE_ARG,
   NULL_FILTER_ARG,
   ASCIIHEXDEC_FILTER_ARG,

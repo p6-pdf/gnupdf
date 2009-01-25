@@ -1,3 +1,9 @@
+2009-01-24  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* utils/pdf-filter.c: added --input-file and --output-file options.
+
+	* utils/pdf-filter.h: same.
+
 2009-01-19  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-types.h: Progress monitor data types implemented.
