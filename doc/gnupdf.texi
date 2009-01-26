@@ -59,6 +59,7 @@ GNU PDF Library Reference
 * Document Layer::      Editing the document-level structure of a PDF
                           file.
 * Page Contents Layer::  Editing the contents of pages.
+* Implementation Limits:: Implementation limits in the library.
 * GNU Free Documentation License::  Distribution terms of this manual.
 
 Indices
@@ -10285,6 +10286,52 @@ pdfo_set_real (new_obj, 3.14);
 
 @node Page Contents Layer
 @chapter Page Contents Layer
+
+@node Implementation Limits
+@chapter Implementation Limits
+
+The limits documented in this chapter are not imposed by neither of
+the supported PDF specifications, but by this specific
+implementation. 
+
+In no case the implementation limits are violating the PDF
+specifications.
+
+@menu
+* Architectural limits::
+* Memory limits::
+@end menu
+
+@node Architectural limits
+@section Architectural limits
+
+@multitable @columnfractions .20 .15 .65
+@headitem Quantity @tab Limit @tab Description
+@item Size of a PDF file
+@tab 10^10 bytes
+@tab Larger supported PDF file using a cross-reference table.
+@item integer
+@tab ???
+@tab Largest integer value.
+@item real
+@tab ???
+@tab Largest real value.
+@item string in content stream
+@tab 32767
+@tab Maximum length of a string contained in a content stream, in
+bytes.
+@item name
+@tab ???
+@tab Maximum length of a name, in bytes.
+@item indirect object
+@tab ??
+@tab Maximum number of indirect objects in a PDF file.
+@end multitable
+
+@node Memory limits
+@section Memory limits
+
+TBC.
 
 
 @c FDL
