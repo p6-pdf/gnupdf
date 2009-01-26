@@ -10,6 +10,10 @@
 	(Opening and Closing Object Documents): Usage example added for
 	`pdf_obj_doc_save'.
 
+	* doc/gnupdf.texi (Implementation Limits): New chapter.
+	(Architectural limits): New section.
+	(Memory limits): New section.
+
 	* doc/pdf-filter.1: Regenerated with help2man using the -n option
 	to provide a useful description for 'whatis'.
 
