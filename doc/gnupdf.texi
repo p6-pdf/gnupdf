@@ -10206,7 +10206,7 @@ if (pdf_obj_doc_new (PDF_OBJ_DOC_CREATE_INFO_DIR,
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_doc_open (pdf_u32_t @var{flags}, pdf_fsys_t @var{filesystem}, pdf_text_t @var{path}, pdf_char_t @var{header_string}, pdf_obj_doc_t *@var{doc})
+@deftypefun pdf_status_t pdf_obj_doc_open (pdf_u32_t @var{flags}, pdf_fsys_t @var{filesystem}, pdf_text_t @var{path}, pdf_char_t *@var{header_string}, pdf_obj_doc_t *@var{doc})
 
 Open a document object from a file.
 
@@ -10239,7 +10239,23 @@ A PDF status value:
 @end table
 @item Usage example
 @example
-XXX
+pdf_text_t file_path;
+pdf_obj_doc_t doc;
+
+/* Open a PDF object document from /foo/bar.pdf */
+pdf_text_new_from_unicode ("/foo/bar.pdf",
+                           12,
+                           PDF_TEXT_UTF8,
+                           &file_path);
+
+if (pdf_obj_doc_open (PDF_OBJ_DOC_OPEN_DO_REPAIR,
+                      NULL, /* Use the default filesystem */
+                      file_path,
+                      "%PDF-",
+                      &doc) != PDF_OK)
+@{
+   /* Error opening /foo/bar.pdf */
+@}
 @end example
 @end table
 @end deftypefun
@@ -10269,7 +10285,7 @@ pdf_obj_doc_t mydoc;
 
 /* Create an object document... */
 
-if (pdf_obj_doc_close (mydoc) == PDF_ERROR)
+if (pdf_obj_doc_close (mydoc) != PDF_OK)
 @{
    /* Error closing the object document */
 @}
@@ -10316,7 +10332,26 @@ A PDF status value:
 @end table
 @item Usage example
 @example
-XXX
+struct pdf_obj_doc_save_params_s save_params;
+pdf_obj_doc_t doc;
+
+/* Open an object document 'doc'... */
+
+/* Fill in the save parameters */
+save_params.header = "%PDF-1.7";
+save_params.crypt_key = NULL;        /* No encryption */
+save_params.crypt_key_size = 0;
+save_params.progress_monitor = NULL; /* Do not use a progress monitor */
+save_params.monitor_client_data = NULL;
+
+/* Save the document in its associated file */
+if (pdf_obj_doc_save (doc,
+                      NULL, /* Use the associated file */
+                      PDF_OBJ_DOC_SAVE_FULL,
+                      save_params) != PDF_OK)
+@{
+   /* Error saving the object document */
+@}   
 @end example
 @end table
 @end deftypefun

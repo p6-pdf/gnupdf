@@ -3,6 +3,12 @@
 	* doc/gnupdf.texi (Stream Objects): Documentation for
 	`pdf_obj_stream_new', `pdf_obj_stream_pos',
 	`pdf_obj_stream_length' and `pdf_obj_stream_dict'.
+	(Opening and Closing Object Documents): Parameter fixed and usage
+	example added for `pdf_obj_doc_open'.
+	(Opening and Closing Object Documents): Fixed usage example for
+	`pdf_obj_doc_close'.
+	(Opening and Closing Object Documents): Usage example added for
+	`pdf_obj_doc_save'.
 
 2009-01-20  Jose E. Marchesi  <jemarch@gnu.org>
 
