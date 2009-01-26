@@ -1,3 +1,8 @@
+2009-01-26  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/pdf-filter.1: Regenerated with help2man using the -n option
+	to provide a useful description for 'whatis'.
+
 2009-01-24  Gerardo E. Gidoni  <gerel@gnu.org>
 
 	* utils/pdf-filter.c: added --input-file and --output-file options.
