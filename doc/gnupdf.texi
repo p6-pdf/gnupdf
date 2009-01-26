@@ -10577,6 +10577,22 @@ A PDF status value.
 Opaque type representing an object collection into an object document.
 @end deftp
 
+@deftp {Data Type} {enum pdf_obj_stm_open_mode_e}
+
+Open modes for PDF stream objects.
+
+@table @code
+@item PDF_OBJ_STM_OPEN_MODE_RAW
+The data will be decrypted but not filtered.
+@item PDF_OBJ_STM_OPEN_MODE_UNFILTERED
+@item PDF_OBJ_STM_OPEN_MODE_FILTERED
+The data will be both decrypted and filtered.
+@item PDF_OBJ_STM_OPEN_MODE_RAW_IFKEY
+@item PDF_OBJ_STM_OPEN_MODE_UNFILTERED_IFKEY
+@item PDF_OBJ_STM_OPEN_MODE_FILTERED_IFKEY
+@end table
+@end deftp
+
 @node Object Generic Functions
 @subsection Object Generic Functions
 
@@ -12367,6 +12383,174 @@ XXX
 
 @node Stream Objects
 @subsection Stream Objects
+
+@deftypefun pdf_status_t pdf_obj_stream_new (pdf_obj_doc_t @var{doc}, pdf_bool_t @var{indirect_p}, pdf_stm_t @var{stm}, pdf_obj_t @var{attrs_dict}, pdf_size_t @var{source_length}, pdf_obj_t *@var{obj})
+
+Create a new PDF Stream object.
+
+@table @strong
+@item Parameters
+@table @var
+@item doc
+An object document.
+@item indirect_p
+Should always be @code{PDF_TRUE}, since every stream is an indirect
+object.
+@item stm
+A base layer stream.
+@item attrs_dict
+Attributes dictionary to be used in the stream. If this dictionary
+contains a list of filters then these filters are applied in inverse
+order to the data readed from @var{stm}.
+@item source_length
+Number of octects to read from @var{stm}.
+@item obj
+A pointer to a @code{pdf_obj_t} variable to store the newly created
+object.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_EINVOBJ
+@var{stm} is not a stream object or @var{attr_dict} is not a
+dictionary object.
+@item PDF_ERROR
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_stream_dict (pdf_obj_t @var{stream}, pdf_obj_t *@var{obj})
+
+Get the stream dictionary associated with @var{stream}.
+
+@table @strong
+@item Parameters
+@table @var
+@item stream
+A stream object.
+@item obj
+A pointer to a @code{pdf_obj_t} variable to store the newly created
+object.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_EINVOBJ
+@var{stream} is not a stream object.
+@item PDF_ERROR
+@end table
+@item Usage example
+@example
+pdf_obj_t stream;
+pdf_obj_t stream_dict;
+
+/* Create a stream object... */
+
+if (pdf_obj_stream_dict (stream, &stream_dict) != PDF_OK)
+@{
+   /* Error getting the stream dictionary */
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_stream_length (pdf_obj_t @var{stream}, pdf_size_t @var{length})
+
+Get the @code{/Length} value of the stream dictionary pertaining to
+@var{stream}. The value returned in @var{length} is the size of the
+undecoded stream in octects.
+
+@table @strong
+@item Parameters
+@table @var
+@item stream
+A Stream object.
+@item length
+A pointer to a @var{pdf_size_t} variable to hold the returned value.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_EINVOBJ
+@var{stream} is not a stream object.
+@item PDF_EBADDATA
+The stream dictionary of @var{stream} does not contain a
+@code{/Length} entry.
+@item PDF_ERROR
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_off_t pdf_obj_stream_pos (pdf_obj_t @var{stream})
+
+Get the offset of the beginning of @var{stream}'s data in the PDF
+file.
+
+You can use this call only after saving the object in a PDF file.
+
+@table @strong
+@item Parameters
+@table @var
+@item stream
+A Stream object.
+@end table
+@item Returns
+The offset (in octects) of the beginning of the stream data: the
+position just after the @code{stream} keyword. If the returned number
+is @code{0} then an error occurred.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_stream_open_stm (pdf_obj_t @var{stream}, enum pdf_obj_stm_open_mode_e @var{mode}, pdf_stm_t *@var{stm})
+
+Create a base layer stream to read the contents of
+@var{stream}. The base layer stream @var{stm} is positioning at the
+beginning of the data contained in @var{stream}.
+
+The configuration of the filter chain in @var{stm} depends on the
+opening mode in @var{mode}.
+
+The client is responsible to close the stream @var{stm}.
+@table @strong
+@item Parameters
+@table @var
+@item stream
+A Stream object.
+@item mode
+Opening mode.
+@item stm
+A pointer to a @var{pdf_stm_t} variable holding the returned base
+layer stream.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_EINVOBJ
+@var{stream} is not a stream object.
+@item PDF_ERROR
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
 
 @node Null Object
 @subsection Null Object
