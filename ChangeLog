@@ -1,3 +1,7 @@
+2009-01-27  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* utils/pdf-filter.c: added missing status code checks.
+
 2009-01-24  Gerardo E. Gidoni  <gerel@gnu.org>
 
 	* utils/pdf-filter.c: added --input-file and --output-file options.

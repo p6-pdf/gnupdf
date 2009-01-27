@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-01-24 17:33:37 gerel"
+/* -*- mode: C -*- Time-stamp: "2009-01-27 11:09:42 gerel"
  *
  *       File:         pdf-filter.c
  *       Date:         Tue Jul 10 18:42:07 2007
@@ -195,14 +195,20 @@ process_stream (pdf_stm_t stm, pdf_bool_t read_mode, pdf_bool_t read_pdf_fsys,
       do
         {
           ret = pdf_stm_read (stm, buf, BUF_SIZE, &read_bytes);
+          if (ret != PDF_OK)
+            {
+              pdf_error (ret, stderr, "reading from stream");
+              exit (1);
+            }            
+
           if (write_pdf_fsys)
             {
               ret = pdf_stm_write (fsys_stm, buf, read_bytes, &written_bytes);
               if (ret != PDF_OK)
                 {
-                  pdf_error (ret, stderr, "while writing to stream");
+                  pdf_error (ret, stderr, "writing to stream");
                   exit (1);
-                }            
+                }
             }
           else
             {
@@ -223,12 +229,24 @@ process_stream (pdf_stm_t stm, pdf_bool_t read_mode, pdf_bool_t read_pdf_fsys,
           if (read_pdf_fsys)
             {
               ret = pdf_stm_read (fsys_stm, buf, BUF_SIZE, &read_bytes);
+              if (ret != PDF_OK)
+                {
+                  pdf_error (ret, stderr, "reading from stream");
+                  exit (1);
+                }            
+
             }
           else
             {
               read_bytes = fread (buf, 1, BUF_SIZE, stdin);
             }
           ret = pdf_stm_write (stm, buf, read_bytes, &written_bytes);
+          if (ret != PDF_OK)
+            {
+              pdf_error (ret, stderr, "writing to stream");
+              exit (1);
+            }            
+
         }
       while (read_bytes == BUF_SIZE);
     }
