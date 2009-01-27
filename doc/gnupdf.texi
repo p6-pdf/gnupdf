@@ -10122,11 +10122,13 @@ pdf_crypt_nonce (buffer, sizeof(buffer));
 The Object Layer of the library provides access to manipulate PDF
 documents as a collection of PDF objects (@pxref{PDF Objects}).
 
-Note that the use of this layer can lead to non-well conformed PDF
+@quotation Note
+The use of this layer can lead to non-well conformed PDF
 documents: not every PDF object collection define a document. So the
 client should be careful when using this layer. In contrast the
 @ref{Document Layer} provides a convenient API to manipulate PDF files
 while maintaining its structural integrity.
+@end quotation
 
 @node Object Documents
 @section Object Documents
