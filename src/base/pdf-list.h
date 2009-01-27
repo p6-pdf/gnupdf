@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-01-27 11:26:27 gerel"
+/* -*- mode: C -*- Time-stamp: "2009-01-27 13:21:22 gerel"
  *
  *       File:         pdf-list.h
  *       Date:         Sat Mar 1 02:14:35 2008
@@ -42,7 +42,7 @@
 
 /* Data types */
 
-#define PDF_LIST_ITERATOR_SIZE 32
+#define PDF_LIST_ITERATOR_SIZE 46
 
 struct pdf_list_s
 {

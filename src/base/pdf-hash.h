@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-01-27 11:34:07 gerel"
+/* -*- mode: C -*- Time-stamp: "2009-01-27 13:21:14 gerel"
  *
  *       File:         pdf-hash.h
  *       Date:         Sat Apr  12 12:22:05 2008
@@ -45,7 +45,7 @@ typedef struct pdf_hash_element_s pdf_hash_element_t;
 
 /* BEGIN PUBLIC */
 
-#define PDF_HASH_ITERATOR_SIZE 32
+#define PDF_HASH_ITERATOR_SIZE 46
 
 typedef void (*pdf_hash_key_dispose_fn_t) (const void *key);
 
