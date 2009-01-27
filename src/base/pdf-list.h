@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/13 20:26:25 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-01-27 11:26:27 gerel"
  *
  *       File:         pdf-list.h
  *       Date:         Sat Mar 1 02:14:35 2008
@@ -42,15 +42,17 @@
 
 /* Data types */
 
+#define PDF_LIST_ITERATOR_SIZE 32
+
 struct pdf_list_s
 {
   void *gl_list;
   pdf_bool_t allow_duplicates;
 };
- 
+
 struct pdf_list_iterator_s
 {
-  void *gl_iterator;
+  char gl_iterator[PDF_LIST_ITERATOR_SIZE];
 };
 
 struct pdf_list_node_s
@@ -747,17 +749,8 @@ pdf_list_iterator (const pdf_list_t list,
 
   if (itr != NULL)
     {
-      itr->gl_iterator = pdf_alloc (sizeof(gl_list_iterator_t));
-
-      if (itr->gl_iterator != NULL)
-        {
-          *((gl_list_iterator_t*)itr->gl_iterator) =
-            gl_list_iterator ((gl_list_t)list.gl_list);
-        }
-      else
-        {
-          st = PDF_ENOMEM;
-        }
+      *((gl_list_iterator_t*)itr->gl_iterator) =
+        gl_list_iterator ((gl_list_t)list.gl_list);
     }
   else
     {
@@ -784,18 +777,9 @@ pdf_list_iterator_from_to (const pdf_list_t list, const pdf_size_t start_index,
           (end_index > 0 && end_index <= pdf_list_size (list)) &&
           (start_index < end_index))
         {
-          itr->gl_iterator = pdf_alloc (sizeof(gl_list_iterator_t));
-      
-          if (itr->gl_iterator != NULL)
-            {
-              *((gl_list_iterator_t*)itr->gl_iterator) =
-                gl_list_iterator_from_to ((gl_list_t)list.gl_list, start_index,
+          *((gl_list_iterator_t*)itr->gl_iterator) =
+            gl_list_iterator_from_to ((gl_list_t)list.gl_list, start_index,
                                           end_index);
-            }
-          else
-            {
-              st = PDF_ENOMEM;
-            }
         }
       else
         {
@@ -831,8 +815,6 @@ EXTERN_INLINE pdf_status_t
 pdf_list_iterator_free (pdf_list_iterator_t *iterator)
 {
   gl_list_iterator_free ((gl_list_iterator_t*)(iterator->gl_iterator));
-
-  pdf_dealloc (iterator->gl_iterator);
 
   return PDF_OK;
 }

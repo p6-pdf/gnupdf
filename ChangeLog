@@ -1,3 +1,14 @@
+2009-01-27  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* doc/gnupdf.texi: removed PDF_ENOMEM status code for iterator
+	procedures.
+
+	* src/base/pdf-hash.c: implemented stack based iterators.
+
+	* src/base/pdf-hash.h: same.
+
+	* src/base/pdf-list.h: same.
+
 2009-01-26  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Implementation Limits): New chapter.
