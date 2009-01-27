@@ -4233,13 +4233,9 @@ Destroy a stream freeing all the used resources.
 A stream.
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The stream was successfully destroyed.
-@item PDF_ERROR
-There was an error destroying the stream.
-@end table
+A PDF status value. This is @code{PDF_OK} unless the closed stream is
+a writing stream. In that case the return code of @code{pdf_stm_flush}
+is returned.
 @item Usage example
 @example
 XXX
@@ -4421,7 +4417,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_stm_flush (pdf_stm_t @var{stm}, pdf_bool_t @var{finish_p})
+@deftypefun pdf_status_t pdf_stm_flush (pdf_stm_t @var{stm}, pdf_bool_t @var{finish_p}, pdf_size_t *@var{flushed_bytes})
 
 Flush any pending writing data in a given stream.
 
@@ -4435,10 +4431,13 @@ stream's filter chain are tell to generate any remaining output.
 A stream.
 @item finish_p
 A boolean value indicating whether to finalize the filter chain.
+@item flushed_bytes
+A pointer to a @code{pdf_size_t} variable to hold the number of
+flushed bytes. May be @code{0}.
 @end table
 @item Returns
-A PDF size value containing the number of octects that has been
-flushed. May be @code{0}.
+A PDF status value. The possible values are the same than the exit
+status of @code{pdf_stm_write}.
 @item Usage example
 @example
 XXX

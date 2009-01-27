@@ -1,3 +1,37 @@
+2009-01-27  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* utils/pdf-filter.c (main): Take care about the return value of
+	'pdf_stm_destroy' calls.
+
+	* src/base/pdf-hash-helper.c (stm_dispose_fn): Adapted to use the
+	new prototype of 'pdf_stm_flush', ignoring any error: it is a
+	callback.
+
+	* src/base/pdf-stm.c (pdf_stm_write): Adapted to use the new
+	prototype of 'pdf_stm_flush'.
+	(pdf_stm_seek): Adapted to use the new prototype of
+	'pdf_stm_flush', returning the current position if it returns an
+	error.
+
+	* doc/gnupdf.texi (Creating and Destroying Streams): Documentation
+	for 'pdf_stm_destroy' updated.
+
+	* src/base/pdf-stm.c (pdf_stm_destroy): Adapted to use the new
+	prototype for 'pdf_stm_flush' and to return its return code if the
+	stream is flushed before being closed.
+
+	* doc/gnupdf.texi (Reading and Writing Data): Documentation of
+	'pdf_stm_flush' updated to reflect the return of a pdf_status_t
+	value.
+
+	* src/base/pdf-stm.c (pdf_stm_flush): Return a pdf_status_t value
+	propagating the status of the filter chain after the last
+	operation.
+
+2009-01-27  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* utils/pdf-filter.c: added missing status code checks.
+
 2009-01-26  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Stream Objects): Documentation for
