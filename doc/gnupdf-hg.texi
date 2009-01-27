@@ -562,6 +562,7 @@ A set of @emph{access functions} that implement actions on the
 * Implementation Files For ADTs::
 * Data Structures For ADTs::
 * Access Functions For ADTs::
+* Opaque Pointers::
 @end menu
 
 @node Implementation Files For ADTs
@@ -653,6 +654,80 @@ This is the function used to destroy an instance of the
 @acronym{ADT}. The memory occupied by the @acronym{ADT} data structure
 is freed.
 @end table
+
+@node Opaque Pointers
+@subsection Opaque Pointers
+
+One way to achieve high encapsulation for @acronym{ADT}s is to publish
+``opaque pointers'' in the public header files. The usage of opaque
+pointers also improves binary compatibility.  @footnote{this technique
+is also known as the PIMPL idiom. See
+@url{http://en.wikipedia.org/wiki/Pimpl_idiom}}.
+
+The mechanism is quite simple. Suppose that we want to publish an
+opaque ADT to the user: @code{pdf_foo_t}. A first approximation would
+be to mark the full definition of @code{pdf_foo_t} as public in the
+header file, like:
+
+@example
+/* -*- mode: C -*- Time-stamp: "09/01/19 22:49:48 jemarch"
+ *
+ *       File:         pdf-foo.h
+ ...
+ */
+
+...
+
+/* BEGIN PUBLIC */
+
+struct pdf_foo_s 
+@{
+   int a;
+   int b;
+@};
+
+typedef struct pdf_foo_s *pdf_foo_t;
+
+/* END PUBLIC */
+
+...
+@end example
+
+Despite the user is not supposed to access the internal structure of
+@code{pdf_foo_t}, she @strong{can} actually do it using the exported
+structure @code{struct pdf_foo_s}.
+
+An additional problem is that the user can allocate @code{pdf_foo_s}
+structs in the stack, and thus the binary compatibility would be break
+if the binary links with a more recent version of the library
+exporting more fields (like a third integer @code{c}).
+
+The solution to both problems is to export a ``opaque pointer'': we
+simply do not export the details about the structure:
+
+@example
+/* -*- mode: C -*- Time-stamp: "09/01/19 22:49:48 jemarch"
+ *
+ *       File:         pdf-foo.h
+ ...
+ */
+
+...
+
+/* BEGIN PUBLIC */
+
+typedef struct pdf_foo_s *pdf_foo_t;
+
+/* END PUBLIC */
+
+struct pdf_foo_s 
+@{
+   int a;
+   int b;
+@};
+
+...
+@end example
 
 @node Sending Patches
 @chapter Sending Patches
