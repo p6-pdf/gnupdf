@@ -1977,8 +1977,6 @@ A pdf status value:
 @table @code
 @item PDF_OK
 The operation succeeded.
-@item PDF_ENOMEM
-Not enough memory.
 @item PDF_EBADDATA
 Either @var{iterator} is NULL or @var{table} is invalid.
 @end table
@@ -3962,8 +3960,6 @@ A status variable:
 @table @code
 @item PDF_OK
 @var{itr} contains a new iterator for @var{list}.
-@item PDF_ENOMEM
-There is no memory available for a new iterator.
 @item PDF_EBADDATA
 @var{itr} points to NULL.
 @end table
@@ -3999,8 +3995,6 @@ A status variable:
 @table @code
 @item PDF_OK
 @var{itr} contains a new iterator for @var{list} pointing to @var{start_index}.
-@item PDF_ENOMEM
-There is no memory available for a new iterator.
 @item PDF_EINVRANGE
 @var{start_index} or @var{end_index} is greater than the list size or less than 0.
 @item PDF_EBADDATA
