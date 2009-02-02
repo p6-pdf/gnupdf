@@ -1,3 +1,19 @@
+2009-01-28  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* doc/gnupdf.texi: removed PDF_ENOMEM status code for iterator
+	procedures.
+
+	* src/base/pdf-hash.c: implemented stack based iterators.
+
+	* src/base/pdf-hash.h: same.
+
+	* src/base/pdf-list.h: same.
+
+	* torture/unit/base/hash/pdf-hash-iterator-new.c: new iterator
+	size check.
+
+	* torture/unit/base/list/pdf-list-iterator.c: same.
+	
 2009-01-28  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf-hg.texi (Opaque Pointers): Opaque pointers documented

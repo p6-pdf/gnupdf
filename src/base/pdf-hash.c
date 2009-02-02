@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/27 23:45:02 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-01-27 11:34:52 gerel"
  *
  *       File:         pdf-hash.c
  *       Date:         Sat Apr  12 12:22:05 2008
@@ -302,16 +302,8 @@ pdf_hash_iterator_new (const pdf_hash_t table, pdf_hash_iterator_t *iterator)
 
   if (iterator != NULL)
     {
-      iterator->gl_itr = pdf_alloc (sizeof(gl_list_iterator_t));
-      if (iterator->gl_itr != NULL)
-        {
-          *((gl_list_iterator_t*)iterator->gl_itr) =
-            gl_list_iterator ((gl_list_t)table.keys);
-        }
-      else
-        {
-          st = PDF_ENOMEM;
-        }
+      *((gl_list_iterator_t*)iterator->gl_itr) =
+        gl_list_iterator ((gl_list_t)table.keys);
     }
   else
     {
@@ -354,7 +346,6 @@ pdf_hash_iterator_destroy (pdf_hash_iterator_t iterator)
   if (iterator.gl_itr != NULL)
     {
       gl_list_iterator_free ((gl_list_iterator_t*)iterator.gl_itr);
-      pdf_dealloc (iterator.gl_itr);
     }
 
   return PDF_OK;

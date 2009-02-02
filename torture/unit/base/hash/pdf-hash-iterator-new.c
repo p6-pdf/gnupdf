@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/10 20:49:54 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-01-28 08:47:58 gerel"
  *
  *       File:         pdf-hash-iterator.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <pdf.h>
 #include <check.h>
+#include <gl_list.h>
 
 /*
  * Test: pdf_hash_iterator_001
@@ -74,6 +75,20 @@ END_TEST
 
 
 /*
+ * Test: pdf_hash_iterator_003
+ * Description:
+ *   Iterator size check.
+ * Success condition:
+ *   The pdf hash iterator size is greater or equal than the gl list one.
+ */
+START_TEST (pdf_hash_iterator_003)
+{
+  fail_if (sizeof(pdf_hash_iterator_t) < sizeof(gl_list_iterator_t));
+}
+END_TEST
+
+
+/*
  * Test case creation function
  */
 TCase *
@@ -82,6 +97,7 @@ test_pdf_hash_iterator_new (void)
   TCase *tc = tcase_create("pdf_hash_iterator");
   tcase_add_test(tc, pdf_hash_iterator_001);
   tcase_add_test(tc, pdf_hash_iterator_002);
+  tcase_add_test(tc, pdf_hash_iterator_003);
   return tc;
 }
 
