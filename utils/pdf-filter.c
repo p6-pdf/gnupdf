@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/27 21:58:32 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/02/03 22:53:33 jemarch"
  *
  *       File:         pdf-filter.c
  *       Date:         Tue Jul 10 18:42:07 2007
@@ -58,25 +58,27 @@ static struct option GNU_longOptions[] =
     {"null", no_argument, NULL, NULL_FILTER_ARG},
     {"ahexdec", no_argument, NULL, ASCIIHEXDEC_FILTER_ARG},
     {"ahexenc", no_argument, NULL, ASCIIHEXENC_FILTER_ARG},
+#if 0
     {"a85dec", no_argument, NULL, ASCII85DEC_FILTER_ARG},
     {"a85enc", no_argument, NULL, ASCII85ENC_FILTER_ARG},
     {"lzwenc", no_argument, NULL, LZWENC_FILTER_ARG},
     {"lzwdec", no_argument, NULL, LZWDEC_FILTER_ARG},
+    {"cfaxdec", no_argument, NULL, CCITTFAXDEC_FILTER_ARG},
+    {"dctdec", no_argument, NULL, DCTDEC_FILTER_ARG},
+    {"jxpdec", no_argument, NULL, JXPDEC_FILTER_ARG},
+    {"predenc", no_argument, NULL, PREDENC_FILTER_ARG},
+    {"preddec", no_argument, NULL, PREDDEC_FILTER_ARG},
+#endif /* 0 */
 #ifdef HAVE_LIBZ
     {"flatedec", no_argument, NULL, FLATEDEC_FILTER_ARG},
     {"flateenc", no_argument, NULL, FLATEENC_FILTER_ARG},
 #endif /* HAVE_LIBZ */
     {"rldec", no_argument, NULL, RUNLENGTHDEC_FILTER_ARG},
     {"rlenc", no_argument, NULL, RUNLENGTHENC_FILTER_ARG},
-    {"cfaxdec", no_argument, NULL, CCITTFAXDEC_FILTER_ARG},
 #ifdef HAVE_LIBJBIG2DEC
     {"jbig2dec", no_argument, NULL, JBIG2DEC_FILTER_ARG},
     {"jbig2dec-globals", required_argument, NULL, JBIG2DEC_GLOBAL_SEGMENTS_ARG},
 #endif /* HAVE_LIBJBIG2DEC */
-    {"dctdec", no_argument, NULL, DCTDEC_FILTER_ARG},
-    {"jxpdec", no_argument, NULL, JXPDEC_FILTER_ARG},
-    {"predenc", no_argument, NULL, PREDENC_FILTER_ARG},
-    {"preddec", no_argument, NULL, PREDDEC_FILTER_ARG},
     {"md5enc", no_argument, NULL, MD5ENC_FILTER_ARG},
     {"key", required_argument, NULL, KEY_ARG},
     {"aesenc", no_argument, NULL, AESENC_FILTER_ARG},
@@ -104,11 +106,17 @@ available options\n\
 available filters\n\
   --null                              use the NULL filter\n\
   --ahexdec                           use the ASCII Hex decoder filter\n\
-  --ahexenc                           use the ASCII Hex encoder filter\n\
-  --a85dec                            use the ASCII 85 decoder filter\n\
+  --ahexenc                           use the ASCII Hex encoder filter\n"
+#if 0
+"  --a85dec                            use the ASCII 85 decoder filter\n\
   --a85enc                            use the ASCII 85 encoder filter\n\
   --lzwenc                            use the LZW encoder filter\n\
-  --lzwdec                            use the LZW decoder filter\n"
+  --lzwdec                            use the LZW decoder filter\n
+  --dctdec                            use the DCT decoder filter\n\
+  --jxpdec                            use the JXP decoder filter\n\
+  --predenc                           use the predictor encoder filter\n\
+  --preddec                           use the predictor decoder filter\n"
+#endif /* 0 */
 #ifdef HAVE_LIBZ
   "  --flatedec                          use the Flate decoder filter\n\
   --flateenc                          use the Flate encoder filter\n"
@@ -117,10 +125,6 @@ available filters\n\
   --rlenc                             use the Run Length encoder filter\n\
   --cfaxdec                           use the CCITT Fax decoder filter\n\
   --jbig2dec                          use the JBIG2 decoder filter\n\
-  --dctdec                            use the DCT decoder filter\n\
-  --jxpdec                            use the JXP decoder filter\n\
-  --predenc                           use the predictor encoder filter\n\
-  --preddec                           use the predictor decoder filter\n\
   --md5enc                            use the MD5 encoder filter\n\
   --aesenc                            use the AESv2 encoder filter\n\
   --aesdec                            use the AESv2 decoder filter\n\
@@ -129,14 +133,16 @@ available filters\n\
   --help                              print a help message and exit\n\
   --usage                             print a usage message and exit\n\
   --version                           show pdf_filter version and exit\n\
-\nfilter properties\n\
-  --lzw-earlychange                   toggles earlychange for next lzw filters\n\
+\nfilter properties\n"
+#if 0
+"  --lzw-earlychange                   toggles earlychange for next lzw filters\n\
   --preddec-type=NUM                  code for next preddec filters type\n\
   --predenc-type=NUM                  code for next predenc filters type\n\
   --pred-colors=NUM                   next predictors colors per sample\n\
   --pred-bpc=NUM                      next predictors bits per color component\n\
-  --pred-columns=NUM                  next predictors number of samples per row\n\
-  --jbig2dec-globals=FILE             file containing global segments\n\
+  --pred-columns=NUM                  next predictors number of samples per row\n"
+#endif /* 0 */
+"  --jbig2dec-globals=FILE             file containing global segments\n\
 ";
 
 char *pdf_filter_help_msg = "";
@@ -513,6 +519,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
 
             break;
           }
+#if 0
         case ASCII85DEC_FILTER_ARG:
           {
             break;
@@ -529,6 +536,39 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
           {
             break;
           }
+        case CCITTFAXDEC_FILTER_ARG:
+          {
+            break;
+          }
+        case DCTDEC_FILTER_ARG:
+          {
+            break;
+          }
+        case JXPDEC_FILTER_ARG:
+          {
+            break;
+          }
+        case PREDENC_FILTER_ARG:
+          {
+            /* pdf_stm_install_predenc_filter (input,
+               PDF_STM_FILTER_READ,
+               args.pred_enc_type,
+               args.pred_colors,
+               args.pred_bpc,
+               args.pred_columns); */
+            break;
+          }
+        case PREDDEC_FILTER_ARG:
+          {
+            /* pdf_stm_install_preddec_filter (input,
+               PDF_STM_FILTER_READ,
+               args.pred_dec_type,
+               args.pred_colors,
+               args.pred_bpc,
+               args.pred_columns); */
+            break;
+          }
+#endif /* 0 */
 #ifdef HAVE_LIBZ
         case FLATEDEC_FILTER_ARG:
           {
@@ -613,10 +653,6 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
 
             break;
           }
-        case CCITTFAXDEC_FILTER_ARG:
-          {
-            break;
-          }
 #ifdef HAVE_LIBJBIG2DEC
         case JBIG2DEC_GLOBAL_SEGMENTS_ARG:
           {
@@ -679,34 +715,6 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
             break;
           }
 #endif /* HAVE_LIBJBIG2DEC */
-        case DCTDEC_FILTER_ARG:
-          {
-            break;
-          }
-        case JXPDEC_FILTER_ARG:
-          {
-            break;
-          }
-        case PREDENC_FILTER_ARG:
-          {
-            /* pdf_stm_install_predenc_filter (input,
-               PDF_STM_FILTER_READ,
-               args.pred_enc_type,
-               args.pred_colors,
-               args.pred_bpc,
-               args.pred_columns); */
-            break;
-          }
-        case PREDDEC_FILTER_ARG:
-          {
-            /* pdf_stm_install_preddec_filter (input,
-               PDF_STM_FILTER_READ,
-               args.pred_dec_type,
-               args.pred_colors,
-               args.pred_bpc,
-               args.pred_columns); */
-            break;
-          }
         case MD5ENC_FILTER_ARG:
           {
             ret = pdf_hash_new (NULL, &filter_params);
