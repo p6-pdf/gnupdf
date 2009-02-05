@@ -62,6 +62,16 @@
 
 2009-01-26  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf.texi (Stream Objects): Documentation for
+	`pdf_obj_stream_new', `pdf_obj_stream_pos',
+	`pdf_obj_stream_length' and `pdf_obj_stream_dict'.
+	(Opening and Closing Object Documents): Parameter fixed and usage
+	example added for `pdf_obj_doc_open'.
+	(Opening and Closing Object Documents): Fixed usage example for
+	`pdf_obj_doc_close'.
+	(Opening and Closing Object Documents): Usage example added for
+	`pdf_obj_doc_save'.
+
 	* doc/gnupdf.texi (Implementation Limits): New chapter.
 	(Architectural limits): New section.
 	(Memory limits): New section.
@@ -74,6 +84,35 @@
 	* utils/pdf-filter.c: added --input-file and --output-file options.
 
 	* utils/pdf-filter.h: same.
+
+2009-01-20  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Dictionary Objects): Initial description of
+	dictionary functions.
+
+2009-01-19  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Object Layer): New chapter.
+	(Object Documents): New section.
+	(Object Document Data Types): New section.
+	(Opening and Closing Object Documents): New section.
+	(Managing Object Document Properties): New section.
+	(Getting Objects): New section.
+	(Object Data Types): New section.
+	(Object Generic Functions): New section.
+	(Object Strong References): New section.
+	(Compressibility of Objects): New section.
+	(Object Collections): New section.
+	(Real Objects): New section.
+	(Integer Objects): New section.
+	(Boolean Objects): New section.
+	(Name Objects): New section.
+	(String Objects): New section.
+	(Array Objects): New section.
+	(Dictionary Objects): New section.
+	(Stream Objects): New section.
+	(Indirect Objects): New section.
+	(Null Object): New section.
 
 2009-01-19  Jose E. Marchesi  <jemarch@gnu.org>
 
@@ -112,6 +151,10 @@
 	`pdf_fsys_file_open'.
 	 (Getting File System Properties): Return pdf_i64_t instead of pdf_size_t
 	in pdf_fsys_get_free_space.
+
+2009-01-14  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-arch.texi (The object layer): New chapter.
 
 2009-01-13  Jose E. Marchesi  <jemarch@gnu.org>
 

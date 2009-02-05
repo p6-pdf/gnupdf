@@ -1777,6 +1777,46 @@ since it is usually used in order to get a encryption key.
 @node The object layer
 @chapter The object layer
 
+This chapter contains a description of the object layer in the GNU PDF
+Library.
+
+This layer implements the concepts of PDF objects and PDF documents as
+a structured hierarchy of objects. An API is provided to manipulate
+that structure and the objects that compose it. Since the object
+hierarchy can be quite complex a garbage collection mechanism is
+provided to the client of the layer.
+
+@float Figure,fig:object-layer-architecture
+@image{figures/object-layer-architecture}
+@caption{The Object Layer}
+@end float
+
+The functionality provided by this layer is implemented in several
+modules.
+
+@table @strong
+@item Document Module
+This module implements the abstraction of object level documents. An
+object-level document is a hierarchy of objects that conforms a PDF
+document. Facilities to get the objects from a document and to create
+new objects into a document are provided. A cache of objects and
+a garbage collection algorithm are also implemented in this module.
+@item Object Module
+This module implements the several PDF objects and provides functions
+to manipulate the attributes of the objects associated with an
+object-level document.
+@item Parser Module
+This module implements the functionality to get PDF objects from a
+base-level stream.
+@item Tokeniser Module
+This module implements a stream tokeniser to read in PDF tokens from a
+base-level stream.
+@item Writer Module
+This module implements the functionality to create a textual version
+of PDF objects. The textual representation of objects are then written
+into a given base level stream.
+@end table
+
 @node The document layer
 @chapter The document layer
 
