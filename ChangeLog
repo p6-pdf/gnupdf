@@ -1,3 +1,11 @@
+2009-02-06  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-stm.c (pdf_stm_flush): Return PDF_EEOF if it was
+	not possible to write the contents of the cache buffer into the
+	stream backend.
+	(pdf_stm_flush): Rewind the cache buffer only if the filter
+	returned PDF_EEOF.
+
 2009-02-05  Gerardo E. Gidoni  <gerel@gnu.org>
 
 	* configure.ac: fixed --enable-* behavior.

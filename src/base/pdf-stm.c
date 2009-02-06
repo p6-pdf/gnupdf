@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/27 21:47:36 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/02/06 01:31:12 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -319,6 +319,8 @@ pdf_stm_flush (pdf_stm_t stm,
       if ((ret == PDF_EEOF)
           && (pdf_buffer_eob_p (stm->cache)))
         {
+          pdf_buffer_rewind (tail_buffer);
+          ret = PDF_OK;
           break;
         }
 
@@ -327,14 +329,19 @@ pdf_stm_flush (pdf_stm_t stm,
       written_bytes = pdf_stm_be_write (stm->backend,
                                         stm->cache->data + stm->cache->rp,
                                         cache_size);
-              
+
+      if (written_bytes != cache_size)
+        {
+          /* Could not write all the contents of the cache buffer into
+             the backend */
+          stm->cache->rp += written_bytes;
+          ret = PDF_EEOF;
+          break;
+        }
+
       /* Rewind the cache */
       pdf_buffer_rewind (stm->cache);
     }
-
-  /* If we got an EOFF from a filter then the tail buffer may not be
-     empty */
-  pdf_buffer_rewind (tail_buffer);
 
   return ret;
 }
