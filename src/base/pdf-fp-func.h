@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/02 21:04:31 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-02-08 17:55:48 davazp"
  *
  *       File:         pdf-fp-func.h
  *       Date:         Sun Nov 30 18:44:41 2008
@@ -148,6 +148,7 @@ pdf_status_t pdf_fp_func_4_new (pdf_u32_t m,
                                 pdf_real_t range[],
                                 pdf_char_t *code,
                                 pdf_size_t code_size,
+                                pdf_size_t *error_at,
                                 pdf_fp_func_t *function);
 
 pdf_status_t pdf_fp_func_eval (pdf_fp_func_t function,

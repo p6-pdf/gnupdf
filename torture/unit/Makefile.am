@@ -179,7 +179,8 @@ TEST_SUITE_ALLOC = base/alloc/pdf-alloc.c \
                    base/alloc/pdf-realloc.c \
                    base/alloc/pdf-dealloc.c
 
-TEST_SUITE_FP = base/fp/pdf-fp-func-eval.c
+TEST_SUITE_FP = base/fp/pdf-fp-func-eval.c \
+                base/fp/pdf-fp-func-4-new.c
 
 TEST_ENVIRONMENT = CHARSETALIASDIR=$(top_srcdir)/lib
 

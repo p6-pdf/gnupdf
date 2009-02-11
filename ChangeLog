@@ -1,3 +1,37 @@
+2009-02-08  David Vazquez  <davazp@es.gnu.org>
+
+	* src/base/pdf-fp-func.c (pdf_fp_func_4_new): Fix checking of
+	balanced braces wrongly, and manages others errors.
+
+	* src/base/pdf-error.h (PDF_ERROR_LIST): Errors for type 4
+	functions added.
+
+2009-02-07  David Vazquez  <davazp@es.gnu.org>
+
+	* torture/unit/base/fp/pdf-fp-func-4-new.c: New file
+
+	* src/base/pdf-fp-func.c (pdf_fp_func_4_new): New arguments for
+	error management.
+
+2009-02-06  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-stm.c (pdf_stm_flush): Return PDF_EEOF if it was
+	not possible to write the contents of the cache buffer into the
+	stream backend.
+	(pdf_stm_flush): Rewind the cache buffer only if the filter
+	returned PDF_EEOF.
+
+2009-02-05  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* configure.ac: fixed --enable-* behavior.
+
+2009-02-03  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* utils/pdf-filter.h (HELP_ARG): Do not include unimplemented
+	options.
+
+	* utils/pdf-filter.c: Likewise.
+
 2009-01-28  Gerardo E. Gidoni  <gerel@gnu.org>
 
 	* doc/gnupdf.texi: removed PDF_ENOMEM status code for iterator
@@ -13,7 +47,7 @@
 	size check.
 
 	* torture/unit/base/list/pdf-list-iterator.c: same.
-	
+
 2009-01-28  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf-hg.texi (Opaque Pointers): Opaque pointers documented
@@ -55,6 +89,16 @@
 
 2009-01-26  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf.texi (Stream Objects): Documentation for
+	`pdf_obj_stream_new', `pdf_obj_stream_pos',
+	`pdf_obj_stream_length' and `pdf_obj_stream_dict'.
+	(Opening and Closing Object Documents): Parameter fixed and usage
+	example added for `pdf_obj_doc_open'.
+	(Opening and Closing Object Documents): Fixed usage example for
+	`pdf_obj_doc_close'.
+	(Opening and Closing Object Documents): Usage example added for
+	`pdf_obj_doc_save'.
+
 	* doc/gnupdf.texi (Implementation Limits): New chapter.
 	(Architectural limits): New section.
 	(Memory limits): New section.
@@ -67,6 +111,35 @@
 	* utils/pdf-filter.c: added --input-file and --output-file options.
 
 	* utils/pdf-filter.h: same.
+
+2009-01-20  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Dictionary Objects): Initial description of
+	dictionary functions.
+
+2009-01-19  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Object Layer): New chapter.
+	(Object Documents): New section.
+	(Object Document Data Types): New section.
+	(Opening and Closing Object Documents): New section.
+	(Managing Object Document Properties): New section.
+	(Getting Objects): New section.
+	(Object Data Types): New section.
+	(Object Generic Functions): New section.
+	(Object Strong References): New section.
+	(Compressibility of Objects): New section.
+	(Object Collections): New section.
+	(Real Objects): New section.
+	(Integer Objects): New section.
+	(Boolean Objects): New section.
+	(Name Objects): New section.
+	(String Objects): New section.
+	(Array Objects): New section.
+	(Dictionary Objects): New section.
+	(Stream Objects): New section.
+	(Indirect Objects): New section.
+	(Null Object): New section.
 
 2009-01-19  Jose E. Marchesi  <jemarch@gnu.org>
 
@@ -105,6 +178,10 @@
 	`pdf_fsys_file_open'.
 	 (Getting File System Properties): Return pdf_i64_t instead of pdf_size_t
 	in pdf_fsys_get_free_space.
+
+2009-01-14  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-arch.texi (The object layer): New chapter.
 
 2009-01-13  Jose E. Marchesi  <jemarch@gnu.org>
 

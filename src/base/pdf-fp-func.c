@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/03 21:29:32 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-02-11 16:01:49 davazp"
  *
  *       File:         pdf-fp-func.c
  *       Date:         Sun Nov 30 18:46:06 2008
@@ -42,7 +42,9 @@ read_type0_sample_table (pdf_char_t *buf, pdf_size_t buf_size,
 
 static pdf_i32_t get_token (pdf_char_t *buf,
                             pdf_size_t buf_size,
-                            pdf_size_t *cur_pos,
+                            pdf_size_t start,
+                            pdf_size_t *bot,
+                            pdf_size_t *eot,
                             double *literal);
 static inline void setmap (double map[2],
                            const pdf_real_t to[2],
@@ -366,24 +368,32 @@ pdf_fp_func_3_new (pdf_u32_t m,
   return ret;
 }
 
-pdf_status_t pdf_fp_func_4_new (pdf_u32_t m,
-                                pdf_u32_t n,
-                                pdf_real_t domain[],
-                                pdf_real_t range[],
-                                pdf_char_t *code,
-                                pdf_size_t code_size,
-                                pdf_fp_func_t *function)
+#define BRACES_MAX_LEVEL 32
+
+pdf_status_t
+pdf_fp_func_4_new (pdf_u32_t m,
+                   pdf_u32_t n,
+                   pdf_real_t domain[],
+                   pdf_real_t range[],
+                   pdf_char_t *code,
+                   pdf_size_t code_size,
+                   pdf_size_t *error_at,
+                   pdf_fp_func_t *function)
 {
   pdf_fp_func_t f;
-  pdf_u32_t off[32];
+  pdf_u32_t off[BRACES_MAX_LEVEL];
+  pdf_u32_t braces_pos[BRACES_MAX_LEVEL];
   pdf_char_t *op;
   pdf_i32_t at;
   pdf_i32_t to;
   pdf_i32_t alloc;
   pdf_i32_t bsp;
+  pdf_i32_t blevel;             /* braces level depth */
   double lit;
   pdf_i32_t opc;
+  pdf_size_t beg_pos;               /* beginning of current token */
   pdf_size_t cur_pos;
+  pdf_status_t ret;
 
   /* Common data */
   f = pdf_alloc (sizeof(struct pdf_fp_func_s));
@@ -395,20 +405,24 @@ pdf_status_t pdf_fp_func_4_new (pdf_u32_t m,
 
   /* Specific data */
   cur_pos = 0;
+  beg_pos = 0;
   alloc = 64;
   op = pdf_alloc (alloc);
-  opc = get_token (code, code_size, &cur_pos, &lit);
+  opc = get_token (code, code_size, cur_pos, &beg_pos, &cur_pos, &lit);
   if (opc != OPC_begin)
     {
+      ret = PDF_ENOWRAP;
       goto fail;
     }
 
+  blevel = 1;
   bsp = 0;
   at  = 0;
   for(;;)
     {
-      if (bsp >= sizeof(off)/sizeof(off[0]))
+      if (bsp >= BRACES_MAX_LEVEL)
         {
+          ret = PDF_ETOODEPTH;
           goto fail;
         }
 
@@ -417,9 +431,12 @@ pdf_status_t pdf_fp_func_4_new (pdf_u32_t m,
           alloc *= 2;
           op = pdf_realloc (op,alloc);
         }
-      opc = get_token (code, code_size, &cur_pos, &lit);
+
+      beg_pos = cur_pos;
+      opc = get_token (code, code_size, cur_pos, &beg_pos, &cur_pos, &lit);
       if (opc < 0)
         {
+          ret = PDF_EEOF;
           goto fail;
         }	
       switch ((PDF_TYPE4_OPC)opc)
@@ -433,25 +450,43 @@ pdf_status_t pdf_fp_func_4_new (pdf_u32_t m,
           }
         case OPC_begin:
           {
-            off[bsp++] = at; /* backpatched by if/ifelse */
+            blevel++;
+            off[bsp] = at; /* backpatched by if/ifelse */
+            braces_pos[bsp] = beg_pos;
+            bsp++;
+
             op[at] = OPC_begin; /* OPC_error */
             at += 1+sizeof(at);
             break;
           }
         case OPC_end:
           {
-            if (bsp)
+            blevel--;
+
+            if (blevel)
               {
-                off[bsp++] = at;
+                off[bsp] = at;
+                braces_pos[bsp] = beg_pos;
+                bsp++;
               }
             else
               {
                 void *r;
+
                 op[at++] = OPC_ret;
-                if (get_token (code, code_size, &cur_pos, &lit) >= 0)
+                if (get_token (code, code_size, cur_pos, &beg_pos, &cur_pos, &lit) >= 0)
                   {
+                    ret = PDF_ENOWRAP;
                     goto fail;
                   }
+
+                if (bsp)
+                  {
+                    beg_pos = braces_pos[--bsp]; /* reporting error offset */
+                    ret = PDF_EMISSIF;
+                    goto fail;
+                  }
+
                 /* memory is transferred to f, not freed here */
                 r = pdf_realloc (op,at);
                 if (r)
@@ -471,6 +506,7 @@ pdf_status_t pdf_fp_func_4_new (pdf_u32_t m,
           {
             if (bsp < 2 || at != off[--bsp])
               {
+                ret = PDF_EMISSBODY;
                 goto fail;
               }
             op[off[--bsp]] = OPC_jnt;
@@ -482,6 +518,7 @@ pdf_status_t pdf_fp_func_4_new (pdf_u32_t m,
           {
             if (bsp < 4 || at != off[--bsp])
               {
+                ret = PDF_EMISSBODY;
                 goto fail;
               }
 
@@ -492,6 +529,7 @@ pdf_status_t pdf_fp_func_4_new (pdf_u32_t m,
             to = off[bsp--];
             if (to != off[bsp--])
               {
+                ret = PDF_EMISSBODY;
                 goto fail;
               }
             to += sizeof(to);
@@ -501,7 +539,7 @@ pdf_status_t pdf_fp_func_4_new (pdf_u32_t m,
           }
         case OPC_bad:
           {
-            /* stream offset would be nice */
+            ret = PDF_EBADOP;
             goto fail;
             break;
           }
@@ -516,8 +554,13 @@ pdf_status_t pdf_fp_func_4_new (pdf_u32_t m,
 
  fail:
   pdf_dealloc (op);
-  return PDF_ERROR;
 
+  if (error_at != NULL)
+    {
+      *error_at = beg_pos;
+    }
+
+  return ret;
 
  success:
   *function = f;
@@ -1750,13 +1793,17 @@ in_word_set (register const char *str, register pdf_i32_t len)
 
 static pdf_i32_t get_token (pdf_char_t *buffer,
                             pdf_size_t buf_size,
-                            pdf_size_t *cur_pos,
+                            pdf_size_t start,
+                            pdf_size_t *bot, /* beginning of token */
+                            pdf_size_t *eot, /* end of token */
                             double *literal)
 {
   pdf_char_t c;
   char buf[128];
   char *end;
   pdf_u32_t bp;
+  pdf_size_t cur_pos = start;
+  pdf_size_t beg_pos;
 
 #define PDF_ISWHITE(foo)                                                \
   (((foo) <= 0x20)                                                      \
@@ -1764,13 +1811,13 @@ static pdf_i32_t get_token (pdf_char_t *buffer,
        (foo) == 0x20 || (foo) == 0x09 || (foo) == 0x0a || (foo) == 0x0c \
        || (foo) == 0x0d || (foo) == 0x00))
 
-  c = buffer[*cur_pos];
-  while ((*cur_pos < buf_size) && PDF_ISWHITE(buffer[*cur_pos]))
+  c = buffer[cur_pos];
+  while ((cur_pos < buf_size) && PDF_ISWHITE(buffer[cur_pos]))
     {
-      (*cur_pos)++;
-      c = buffer[*cur_pos];
+      cur_pos++;
+      c = buffer[cur_pos];
     }
-  if (*cur_pos == buf_size)
+  if (cur_pos == buf_size)
     {
       /* EOF condition */
       return -1;
@@ -1778,11 +1825,12 @@ static pdf_i32_t get_token (pdf_char_t *buffer,
 
   bp = 0;
   buf[bp++] = c;
-  (*cur_pos)++;
-  while ((*cur_pos < buf_size) && !PDF_ISWHITE(buffer[*cur_pos]))
+  beg_pos = cur_pos;
+  cur_pos++;
+  while ((cur_pos < buf_size) && !PDF_ISWHITE(buffer[cur_pos]))
     {
-      c = buffer[*cur_pos];
-      (*cur_pos)++;
+      c = buffer[cur_pos];
+      cur_pos++;
       buf[bp++] = c;
       if (bp >= sizeof(buf)/sizeof(buf[0]) || c >= 0x80)
         {
@@ -1790,6 +1838,9 @@ static pdf_i32_t get_token (pdf_char_t *buffer,
         }
     }
   buf[bp] = '\0';
+  *bot = beg_pos;
+  *eot = cur_pos;
+
   if (isdigit(buf[0]) || buf[0] < 'a' )
     {
       *literal = strtod (buf,&end);

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/03 21:36:47 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-02-08 17:59:18 davazp"
  *
  *       File:         pdf-fp-func-eval.c
  *       Date:         Tue Dec  2 20:11:38 2008
@@ -53,6 +53,7 @@ START_TEST(pdf_fp_func_eval_001)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -121,6 +122,7 @@ START_TEST(pdf_fp_func_eval_002)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -194,6 +196,7 @@ START_TEST(pdf_fp_func_eval_003)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -268,6 +271,7 @@ START_TEST(pdf_fp_func_eval_004)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -342,6 +346,7 @@ START_TEST(pdf_fp_func_eval_005)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -417,6 +422,7 @@ START_TEST(pdf_fp_func_eval_006)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -493,6 +499,7 @@ START_TEST(pdf_fp_func_eval_007)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -561,6 +568,7 @@ START_TEST(pdf_fp_func_eval_008)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -629,6 +637,7 @@ START_TEST(pdf_fp_func_eval_009)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -697,6 +706,7 @@ START_TEST(pdf_fp_func_eval_010)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -784,6 +794,7 @@ START_TEST(pdf_fp_func_eval_011)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -887,6 +898,7 @@ START_TEST(pdf_fp_func_eval_012)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -961,6 +973,7 @@ START_TEST(pdf_fp_func_eval_013)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -1035,6 +1048,7 @@ START_TEST(pdf_fp_func_eval_014)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -1109,6 +1123,7 @@ START_TEST(pdf_fp_func_eval_015)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -1183,6 +1198,7 @@ START_TEST(pdf_fp_func_eval_016)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -1257,6 +1273,7 @@ START_TEST(pdf_fp_func_eval_017)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -1334,6 +1351,7 @@ START_TEST(pdf_fp_func_eval_018)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -1411,6 +1429,7 @@ START_TEST(pdf_fp_func_eval_019)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -1485,6 +1504,7 @@ START_TEST(pdf_fp_func_eval_020)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -1584,6 +1604,7 @@ START_TEST(pdf_fp_func_eval_021)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*

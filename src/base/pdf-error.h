@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/13 22:06:33 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-02-08 18:12:53 davazp"
  *
  *       File:         pdf-error.h
  *       Date:         Sun Feb  24 20:22:05 2008
@@ -92,8 +92,12 @@
   ERROR_ENTRY (PDF_EBADSAMPLES, "/FunctionType 0: error while reading sample table"), \
   ERROR_ENTRY (PDF_EBADAESKEY,  "the size of an AES  key should be a multiple of 16"), \
   ERROR_ENTRY (PDF_EBADV2KEY,   "a V2 key should be at least 40 bits long"), \
-  ERROR_ENTRY (PDF_EINVOP,      "invalid operation")
-    
+  ERROR_ENTRY (PDF_EINVOP,      "invalid operation"),                        \
+  ERROR_ENTRY (PDF_EBADOP,      "/FunctionType 4: Unknown operator"),                 \
+  ERROR_ENTRY (PDF_EMISSBODY,   "/FunctionType 4: Missing body conditional"),         \
+  ERROR_ENTRY (PDF_ENOWRAP,     "/FunctionType 4: Code should be wrapped by braces"), \
+  ERROR_ENTRY (PDF_ETOODEPTH,   "/FunctionType 4: Exceeded the max depth level"),     \
+  ERROR_ENTRY (PDF_EMISSIF,     "/FunctionType 4: Missing if/ifelse operator")
 
 #define ERROR_ENTRY(id,string) id
 enum pdf_status_e
