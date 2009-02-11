@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-02-11 16:01:49 davazp"
+/* -*- mode: C -*- Time-stamp: "2009-02-11 18:31:59 davazp"
  *
  *       File:         pdf-fp-func.c
  *       Date:         Sun Nov 30 18:46:06 2008
@@ -559,7 +559,6 @@ pdf_fp_func_4_new (pdf_u32_t m,
     {
       *error_at = beg_pos;
     }
-
   return ret;
 
  success:
@@ -1791,6 +1790,76 @@ in_word_set (register const char *str, register pdf_i32_t len)
   return 0;
 }
 
+
+
+pdf_status_t
+parse_real (char * string, char ** end, double * out)
+{
+  int negative;
+  unsigned int i;
+  unsigned int l_integer;
+  unsigned int l_decimal;
+  double x;
+  
+  i = 0;
+  l_integer = 0;
+  l_decimal = 0;
+  
+  /* read sign */
+  negative = 0;
+  if (string[i] == '-')
+    {
+      i++;
+      negative = 1;
+    }
+  else if (string[i] == '+')
+    {
+      i++;
+    }
+
+  /* read integer part */
+  x = 0.0;
+  while (string[i] >= '0' && string[i] <= '9')
+    {
+      x *= 10;
+      x += string[i]-'0';
+      i++;
+      l_integer++;
+    }
+
+  /* read decimal part */
+  if (string[i] == '.')
+    {
+      unsigned int weight = 10;
+      i++;
+
+      while(string[i] >= '0' && string[i] <= '9')
+        {
+          double dig = ((double)(string[i]-48)) / weight;
+          x += dig;
+          weight *= 10;
+          l_decimal++;
+          i++;
+        }
+    }
+
+  x = negative? -x: x;
+  
+  if (end != NULL)
+    *end = &string[i];
+
+  if (l_integer || l_decimal)
+    {
+      *out = x;
+      return PDF_OK;
+    }
+  else
+    return PDF_ERROR;
+}
+
+
+
+
 static pdf_i32_t get_token (pdf_char_t *buffer,
                             pdf_size_t buf_size,
                             pdf_size_t start,
@@ -1843,9 +1912,14 @@ static pdf_i32_t get_token (pdf_char_t *buffer,
 
   if (isdigit(buf[0]) || buf[0] < 'a' )
     {
-      *literal = strtod (buf,&end);
-      /* HF: recognizes a language larger than specified */
-      return (*end) ? OPC_bad : OPC_lit;
+      if (parse_real (buf, &end, literal) == PDF_OK)
+        {
+          return OPC_lit;
+        }
+      else
+        {
+          return OPC_bad;
+        }
     }
   else
     {
