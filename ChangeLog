@@ -1,3 +1,9 @@
+2009-02-10  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* ../object-layer/doc/gnupdf-arch.texi: Diagrams updated.
+
+	* doc/gnupdf-arch.texi (Tokeniser module): New section.
+
 2009-02-08  David Vazquez  <davazp@es.gnu.org>
 
 	* src/base/pdf-fp-func.c (pdf_fp_func_4_new): Fix checking of
