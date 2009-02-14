@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-02-08 18:12:53 davazp"
+/* -*- mode: C -*- Time-stamp: "2009-02-14 18:05:43 davazp"
  *
  *       File:         pdf-error.h
  *       Date:         Sun Feb  24 20:22:05 2008
@@ -87,7 +87,8 @@
   ERROR_ENTRY (PDF_EEXIST,      "already exists"),                      \
   ERROR_ENTRY (PDF_EOPENED,     "file is opened"),                      \
   ERROR_ENTRY (PDF_ECLOSED,     "file is closed"),                      \
-  ERROR_ENTRY (PDF_EOVERFLOW,   "/FunctionType 0: Sample Table too large"), \
+  ERROR_ENTRY (PDF_EOVERFLOW,   "Input is too large"),                  \
+  ERROR_ENTRY (PDF_EUNDERFLOW,  "Input is too small"),                  \
   ERROR_ENTRY (PDF_EMTOOBIG,    "/FunctionType 0: input dim too high (<= 12)"), \
   ERROR_ENTRY (PDF_EBADSAMPLES, "/FunctionType 0: error while reading sample table"), \
   ERROR_ENTRY (PDF_EBADAESKEY,  "the size of an AES  key should be a multiple of 16"), \
@@ -97,7 +98,12 @@
   ERROR_ENTRY (PDF_EMISSBODY,   "/FunctionType 4: Missing body conditional"),         \
   ERROR_ENTRY (PDF_ENOWRAP,     "/FunctionType 4: Code should be wrapped by braces"), \
   ERROR_ENTRY (PDF_ETOODEPTH,   "/FunctionType 4: Exceeded the max depth level"),     \
-  ERROR_ENTRY (PDF_EMISSIF,     "/FunctionType 4: Missing if/ifelse operator")
+  ERROR_ENTRY (PDF_EMISSIF,     "/FunctionType 4: Missing if/ifelse operator"),       \
+  ERROR_ENTRY (PDF_EBADTYPE,    "/FunctionType 4: Bad type"), \
+  ERROR_ENTRY (PDF_ETYPE0,      "/FunctionType 0: Error"),            \
+  ERROR_ENTRY (PDF_ETYPE2,      "/FunctionType 2: Error"),            \
+  ERROR_ENTRY (PDF_ETYPE3,      "/FunctionType 3: Error"),            \
+  ERROR_ENTRY (PDF_ETYPE4,      "/FunctionType 4: Error")
 
 #define ERROR_ENTRY(id,string) id
 enum pdf_status_e

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-02-11 18:31:59 davazp"
+/* -*- mode: C -*- Time-stamp: "2009-02-14 18:08:38 davazp"
  *
  *       File:         pdf-fp-func.c
  *       Date:         Sun Nov 30 18:46:06 2008
@@ -49,21 +49,31 @@ static pdf_i32_t get_token (pdf_char_t *buf,
 static inline void setmap (double map[2],
                            const pdf_real_t to[2],
                            const pdf_real_t from[2]);
+
 static pdf_status_t pdf_eval_spline (pdf_fp_func_t fun,
                                      const pdf_real_t t[],
-                                     pdf_real_t out[]);
+                                     pdf_real_t out[],
+                                     pdf_fp_func_debug_t * debug);
+
 static pdf_status_t pdf_eval_linear (pdf_fp_func_t fun,
                                      const pdf_real_t t[],
-                                     pdf_real_t out[]);
+                                     pdf_real_t out[],
+                                     pdf_fp_func_debug_t * debug);
+
 static pdf_status_t pdf_eval_exponential (pdf_fp_func_t t,
                                           const pdf_real_t in[],
-                                          pdf_real_t out[]);
+                                          pdf_real_t out[],
+                                          pdf_fp_func_debug_t * debug);
+
 static pdf_status_t pdf_eval_stitch (pdf_fp_func_t t,
                                      const pdf_real_t in[],
-                                     pdf_real_t out[]);
+                                     pdf_real_t out[],
+                                     pdf_fp_func_debug_t * debug);
+
 static pdf_status_t pdf_eval_type4(pdf_fp_func_t t,
                                    const pdf_real_t in[],
-                                   pdf_real_t out[]);
+                                   pdf_real_t out[],
+                                   pdf_fp_func_debug_t * debug);
 
 typedef enum
   {
@@ -569,9 +579,10 @@ pdf_fp_func_4_new (pdf_u32_t m,
 pdf_status_t
 pdf_fp_func_eval (pdf_fp_func_t function,
                   const pdf_real_t in[],
-                  pdf_real_t out[])
+                  pdf_real_t out[],
+                  pdf_fp_func_debug_t * result)
 {
-  return function->eval(function, in, out);
+  return function->eval(function, in, out, result);
 }
 
 pdf_status_t
@@ -1010,7 +1021,8 @@ linear_interpolation(pdf_u32_t i,
 static pdf_status_t
 pdf_eval_linear (pdf_fp_func_t fun,
                  const pdf_real_t in[],
-                 pdf_real_t out[])
+                 pdf_real_t out[],
+                 pdf_fp_func_debug_t * debug)
 {
   pdf_u32_t i,j;
   double t;
@@ -1093,7 +1105,8 @@ spline_interpolation(pdf_u32_t i,
 static pdf_status_t
 pdf_eval_spline (pdf_fp_func_t fun,
                  const pdf_real_t in[],
-                 pdf_real_t out[])
+                 pdf_real_t out[],
+                 pdf_fp_func_debug_t * debug)
 {
   pdf_u32_t i,j;
   double t,v;
@@ -1184,7 +1197,8 @@ pdf_eval_spline (pdf_fp_func_t fun,
 static pdf_status_t
 pdf_eval_exponential (pdf_fp_func_t t,
                       const pdf_real_t in[],
-                      pdf_real_t out[])
+                      pdf_real_t out[],
+                      pdf_fp_func_debug_t * debug)
 {
   pdf_u32_t j;
   pdf_real_t x,y;
@@ -1211,7 +1225,8 @@ pdf_eval_exponential (pdf_fp_func_t t,
 static pdf_status_t
 pdf_eval_stitch (pdf_fp_func_t t,
                  const pdf_real_t in[],
-                 pdf_real_t out[])
+                 pdf_real_t out[],
+                 pdf_fp_func_debug_t * debug)
 {
   pdf_fp_func_t f;
   pdf_real_t x;
@@ -1265,7 +1280,7 @@ pdf_eval_stitch (pdf_fp_func_t t,
 
   f = t->u.t3.functions[i];
 
-  return f->eval(f,&x,out);
+  return f->eval(f,&x,out, debug);
 }
 
 /* ------- decoder utilities ------ */
@@ -1333,7 +1348,7 @@ read_type0_sample_table (pdf_char_t *buf,
 /* --- ------------------------------- --- */
 
 
-#define NSTACK	100
+#define NSTACK          PDF_FP_FUNC_TYPE4_STACK_SIZE
 #define REP_TRUE	(1.202056903159594285399738162)
 #define REP_FALSE	(-15116315767.09215686274509804)
 #define INT(xyyzy)	((int) pdf_fp_floor (xyyzy))
@@ -1344,7 +1359,8 @@ read_type0_sample_table (pdf_char_t *buf,
 static pdf_status_t
 pdf_eval_type4 (pdf_fp_func_t t,
                 const pdf_real_t in[],
-                pdf_real_t out[])
+                pdf_real_t out[],
+                pdf_fp_func_debug_t * debug)
 {
   double stack[NSTACK+2];
   pdf_char_t *op;
@@ -1660,15 +1676,31 @@ pdf_eval_type4 (pdf_fp_func_t t,
         }
     }
 
- block_error	   : return -1;
- stack_underflow: printf("STACK UNDEFLOW\n"); return -1;
- stack_overflow : printf("STACK OVERFLOW\n"); return -1;
- stack_error    : return -1;
- range_error    : return -1;
- type_error     : return -1;
- math_error	: return -1;
-}
+ block_error:
+  return PDF_ETYPE4;
 
+ stack_underflow:
+  debug->type4.status = PDF_EUNDERFLOW;
+  return PDF_ETYPE4;
+
+ stack_overflow:
+  debug->type4.status = PDF_EOVERFLOW;
+  return PDF_ETYPE4;
+
+ stack_error:
+  return PDF_ETYPE4;
+
+ range_error:
+  debug->type4.status = PDF_EINVRANGE;
+  return PDF_ETYPE4;
+
+ type_error:
+  debug->type4.status = PDF_EBADTYPE;
+  return PDF_ETYPE4;
+
+ math_error:
+  return PDF_ETYPE4;
+}
 
 /* ANSI-C code produced by gperf version 3.0.1 */
 /* Command-line: gperf -t -m 100 pdf_function_type4.gperf  */
@@ -1796,57 +1828,57 @@ pdf_status_t
 parse_real (char * string, char ** end, double * out)
 {
   int negative;
-  unsigned int i;
+  char * p;
   unsigned int l_integer;
   unsigned int l_decimal;
   double x;
   
-  i = 0;
+  p = string;
   l_integer = 0;
   l_decimal = 0;
   
   /* read sign */
   negative = 0;
-  if (string[i] == '-')
+  if (*p == '-')
     {
-      i++;
+      p++;
       negative = 1;
     }
-  else if (string[i] == '+')
+  else if (*p == '+')
     {
-      i++;
+      p++;
     }
 
   /* read integer part */
   x = 0.0;
-  while (string[i] >= '0' && string[i] <= '9')
+  while (*p >= '0' && *p <= '9')
     {
       x *= 10;
-      x += string[i]-'0';
-      i++;
+      x += *p - '0';
+      p++;
       l_integer++;
     }
 
   /* read decimal part */
-  if (string[i] == '.')
+  if (*p == '.')
     {
       unsigned int weight = 10;
-      i++;
+      p++;
 
-      while(string[i] >= '0' && string[i] <= '9')
+      while(*p >= '0' && *p <= '9')
         {
-          double dig = ((double)(string[i]-48)) / weight;
+          double dig = ((double)(*p - '0')) / weight;
           x += dig;
           weight *= 10;
           l_decimal++;
-          i++;
+          p++;
         }
     }
 
   x = negative? -x: x;
   
   if (end != NULL)
-    *end = &string[i];
+    *end = p;
 
   if (l_integer || l_decimal)
     {
