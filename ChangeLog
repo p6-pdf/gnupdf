@@ -1,3 +1,8 @@
+2009-02-17  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Stream Objects): Several fixes to the object
+	layer API.
+
 2009-02-10  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* ../object-layer/doc/gnupdf-arch.texi: Diagrams updated.

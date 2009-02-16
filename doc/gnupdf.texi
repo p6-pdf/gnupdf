@@ -10164,7 +10164,7 @@ Client-specific data for the progress monitor callbacks.
 @node Opening and Closing Object Documents
 @subsection Opening and Closing Object Documents
 
-@deftypefun pdf_status_t pdf_obj_doc_new (pdf_u32_t @var{flags}, pdf_obj_doc_t &@var{doc})
+@deftypefun pdf_status_t pdf_obj_doc_new (pdf_u32_t @var{flags}, pdf_obj_doc_t *@var{doc})
 
 Create an empty object document.
 
@@ -10270,7 +10270,8 @@ An object document.
 A PDF status value:
 @table @code
 @item PDF_OK
-The object document has been closed.
+The object document has been closed. The reference in @var{doc}
+should be considered invalid.
 @item PDF_ERROR
 Error while closing the object document. The reference in @var{doc}
 should be considered invalid.
@@ -10314,7 +10315,7 @@ Create a cross reference table (or stream) when saving the document.
 Garbage-collect the document when saving it.
 @item PDF_OBJ_DOC_SAVE_FULL
 Do a ``full save'', writing all the objects instead of just the
-modified ones. This implies a garbage-collection of the document.
+modified ones.
 @end table
 @item params
 A @code{pdf_obj_doc_save_params_s} structure containing the parameters
@@ -10325,6 +10326,7 @@ A PDF status value:
 @table @code
 @item PDF_OK
 @item PDF_ERROR
+An error prevented the document to be saved.
 @end table
 @item Usage example
 @example
@@ -10556,6 +10558,7 @@ Supported types of PDF objects:
 @item PDF_OBJ_NAME
 @item PDF_OBJ_STREAM
 @item PDF_OBJ_STRING
+@item PDF_OBJ_REF
 @end table
 @end deftp
 
@@ -10565,7 +10568,7 @@ object.
 @end deftp
 
 @deftp {Data Type} {pdf_obj_gen_t}
-A positive integer representing the generation number of a PDF object.
+A non-negative number representing the generation number of a PDF object.
 @end deftp
 
 
@@ -10737,7 +10740,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_bool_t pdf_obj_equal (pdf_obj_t @var{obj1}, pdf_obj_t @var{obj2})
+@deftypefun pdf_bool_t pdf_obj_equal_p (pdf_obj_t @var{obj1}, pdf_obj_t @var{obj2})
 
 Test whether two PDF objects are equal.
 
@@ -10747,7 +10750,7 @@ satisfied:
 @itemize @minus
 @item They are both direct objects or indirect objects.
 @item They have the same type.
-@item If they are indirect, they share the same generation number.
+@item If they are indirect, they share the same generation number and has the same object number.
 @item If they are scalars, they have the same value.
 @item If they are non-scalar, they reference the same value.
 @end itemize
@@ -10841,10 +10844,9 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_u32_t pdf_obj_get_type (pdf_obj_t @var{obj})
+@deftypefun enum pdf_obj_type_e pdf_obj_get_type (pdf_obj_t @var{obj})
 
-Get the type of a given PDF object @var{obj}. The returned value
-should be interpreted as a @code{enum pdf_obj_type_e}.
+Get the type of a given PDF object @var{obj}.
 
 @table @strong
 @item Parameters
@@ -11534,7 +11536,7 @@ A document object.
 @item indirect_p
 A boolean value indicating whether to create an indirect object.
 @item value
-The string value for the object.
+The null-terminated string value for the object.
 @item obj
 A pointer to a @code{pdf_obj_t} variable to store the newly created
 object.
@@ -11854,7 +11856,8 @@ XXX
 @deftypefun pdf_status_t pdf_obj_array_insert (pdf_obj_t @var{array}, pdf_size_t @var{index}, pdf_obj_t @var{obj})
 
 Insert the object @var{obj} into @var{array} just before the position
-specified by @var{index}.
+specified by @var{index}. If @var{index} equals to the array size then
+the object is inserted at the end.
 
 @table @strong
 @item Parameters
@@ -11884,7 +11887,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_obj_array_size (pdf_obj_t @var{array})
+@deftypefun pdf_status_t pdf_obj_array_size (pdf_obj_t @var{array}, pdf_size_t @var{size})
 
 Get the number of elements contained in @var{array}.
 
@@ -11893,10 +11896,18 @@ Get the number of elements contained in @var{array}.
 @table @var
 @item array
 A PDF array.
+@item size
+A pointer to a PDF size variable to hold the number of objects
+contained in @var{array}.
 @end table
 @item Returns
-A PDF size value indicating the number of objects contained in
-@var{array}.
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_EINVOBJ
+@var{array} is not an array object.
+@item PDF_ERROR
+@end table
 @item Usage example
 @example
 XXX
@@ -12415,7 +12426,7 @@ XXX
 @node Stream Objects
 @subsection Stream Objects
 
-@deftypefun pdf_status_t pdf_obj_stream_new (pdf_obj_doc_t @var{doc}, pdf_bool_t @var{indirect_p}, pdf_stm_t @var{stm}, pdf_obj_t @var{attrs_dict}, pdf_size_t @var{source_length}, pdf_obj_t *@var{obj})
+@deftypefun pdf_status_t pdf_obj_stream_new (pdf_obj_doc_t @var{doc}, pdf_stm_t @var{stm}, pdf_obj_t @var{attrs_dict}, pdf_size_t @var{source_length}, pdf_obj_t *@var{obj})
 
 Create a new PDF Stream object.
 
@@ -12424,9 +12435,6 @@ Create a new PDF Stream object.
 @table @var
 @item doc
 An object document.
-@item indirect_p
-Should always be @code{PDF_TRUE}, since every stream is an indirect
-object.
 @item stm
 A base layer stream.
 @item attrs_dict
@@ -12491,7 +12499,7 @@ if (pdf_obj_stream_dict (stream, &stream_dict) != PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_stream_length (pdf_obj_t @var{stream}, pdf_size_t @var{length})
+@deftypefun pdf_status_t pdf_obj_stream_length (pdf_obj_t @var{stream}, pdf_size_t *@var{length})
 
 Get the @code{/Length} value of the stream dictionary pertaining to
 @var{stream}. The value returned in @var{length} is the size of the
