@@ -10131,6 +10131,7 @@ while maintaining its structural integrity.
 * Opening and Closing Object Documents::
 * Managing Object Document Properties::
 * Getting Objects::
+* Garbage collection in object documents::
 @end menu
 
 @node Object Document Data Types
@@ -10510,6 +10511,33 @@ A PDF status value:
 The object was stored in @var{obj}.
 @item PDF_ERROR
 Error while getting the object.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@node Garbage collection in object documents
+@subsection Garbage collection in object documents
+
+@deftypefun pdf_status_t pdf_obj_doc_gc (pdf_obj_doc_t @var{doc})
+
+Call the garbage collection on @var{doc}, removing non-reachable
+objects.
+
+@table @strong
+@item Parameters
+@table @var
+@item doc
+An object document.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_ERROR
 @end table
 @item Usage example
 @example
