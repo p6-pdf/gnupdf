@@ -10358,7 +10358,7 @@ if (pdf_obj_doc_save (doc,
 @node Managing Object Document Properties
 @subsection Managing Object Document Properties
 
-@deftypefun pdf_status_t pdf_obj_doc_get_id (pdf_obj_doc_t @var{doc}, pdf_char_t **@var{instance_id}, pdf_size_t *@var{instance_id_size}, pdf_char_t **@var{permanent_id}, pdf_size_t *@var{permanent_id_size})
+@deftypefun pdf_status_t pdf_obj_doc_get_id (pdf_obj_doc_t @var{doc}, pdf_obj_t *@var{instance_id}, pdf_obj_t *@var{permanent_id})
 
 Return two ID byte arrays identifying the object document.
 
@@ -10368,13 +10368,11 @@ Return two ID byte arrays identifying the object document.
 @item doc
 An object document.
 @item instance_id
-A pointer to a string.
-@item instance_id_size
-Size of @var{instance_id}.
+A pointer to a string object to hold the returned instance id. If the
+document does not have a instance id then the null object is returned.
 @item permanent_id
-A pointer to a string.
-@item permanent_id_size
-Size of @var{permanent_id}.
+A pointer to a string object to hold the returned permanent id. If the
+document does not have a instance id then the null object is returned.
 @end table
 @item Returns
 A PDF status value:
