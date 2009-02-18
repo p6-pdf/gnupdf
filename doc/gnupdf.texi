@@ -10337,7 +10337,7 @@ pdf_obj_doc_t doc;
 /* Open an object document 'doc'... */
 
 /* Fill in the save parameters */
-save_params.header = "%PDF-1.7";
+save_params.header = "%PDF-";
 save_params.crypt_key = NULL;        /* No encryption */
 save_params.crypt_key_size = 0;
 save_params.progress_monitor = NULL; /* Do not use a progress monitor */
