@@ -4,6 +4,8 @@
 	section.
 	(Garbage collection in object documents): Documentation for
 	function 'pdf_obj_doc_gc'.
+	(Opening and Closing Object Documents): Make 'pdf_obj_doc_save' to
+	create an xref table (or stream) by default.
 
 2009-02-17  Jose E. Marchesi  <jemarch@gnu.org>
 

@@ -10310,8 +10310,8 @@ If this parameter is @code{NULL} then the file associated with
 An ORed value of the following defined flags:
 
 @table @code
-@item PDF_OBJ_DOC_SAVE_CREATE_CR
-Create a cross reference table (or stream) when saving the document.
+@item PDF_OBJ_DOC_SAVE_DONT_CREATE_CR
+Do not create a cross reference table (or stream) when saving the document.
 @item PDF_OBJ_DOC_SAVE_DO_GC
 Garbage-collect the document when saving it.
 @item PDF_OBJ_DOC_SAVE_FULL
