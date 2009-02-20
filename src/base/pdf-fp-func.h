@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-02-14 17:30:21 davazp"
+/* -*- mode: C -*- Time-stamp: "2009-02-20 19:58:37 davazp"
  *
  *       File:         pdf-fp-func.h
  *       Date:         Sun Nov 30 18:44:41 2008
@@ -42,9 +42,8 @@ typedef union
 {
   struct {
     pdf_status_t status;
-    pdf_size_t op;
-    double args[PDF_FP_FUNC_TYPE4_STACK_SIZE];
-    pdf_size_t nargs;
+    pdf_i32_t op;
+    double stack[PDF_FP_FUNC_TYPE4_STACK_SIZE];
   } type4;
 } pdf_fp_func_debug_t;
 
@@ -99,7 +98,11 @@ struct pdf_fp_func_4_s
 {
   pdf_char_t *opcodes;
   pdf_u32_t n_opcodes;
-  pdf_u32_t n_alloc;
+
+  /* debug info */
+  /* translate opcodes offset to code offset */
+  pdf_u32_t (*debug_off)[2]; 
+  pdf_size_t debug_size;
 };
 
 struct pdf_fp_func_s

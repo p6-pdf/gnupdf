@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-02-14 18:05:43 davazp"
+/* -*- mode: C -*- Time-stamp: "2009-02-16 22:15:40 davazp"
  *
  *       File:         pdf-error.h
  *       Date:         Sun Feb  24 20:22:05 2008
@@ -99,7 +99,8 @@
   ERROR_ENTRY (PDF_ENOWRAP,     "/FunctionType 4: Code should be wrapped by braces"), \
   ERROR_ENTRY (PDF_ETOODEPTH,   "/FunctionType 4: Exceeded the max depth level"),     \
   ERROR_ENTRY (PDF_EMISSIF,     "/FunctionType 4: Missing if/ifelse operator"),       \
-  ERROR_ENTRY (PDF_EBADTYPE,    "/FunctionType 4: Bad type"), \
+  ERROR_ENTRY (PDF_EBADTYPE,    "/FunctionType 4: Bad type"),         \
+  ERROR_ENTRY (PDF_EMATH,       "/FunctionType 4: Math error"),       \
   ERROR_ENTRY (PDF_ETYPE0,      "/FunctionType 0: Error"),            \
   ERROR_ENTRY (PDF_ETYPE2,      "/FunctionType 2: Error"),            \
   ERROR_ENTRY (PDF_ETYPE3,      "/FunctionType 3: Error"),            \
