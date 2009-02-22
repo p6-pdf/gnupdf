@@ -524,7 +524,11 @@ if (*p_status != PDF_OK) /*bignum is now -10*/
 
 @deftypefun void pdf_i64_assign_quick (pdf_i64_t *@var{bignum}, const pdf_i32_t @var{value}, pdf_status_t *@var{p_status})
 
-Assign a value coming from one 32 bit signed integer to a  i64 integer.
+Assign a value coming from one 32 bit signed integer to a i64 integer.
+
+Note that if the client is in a system supporting true 64bit scalar
+types, @code{pdf_i64_assign_quick} will be a macro that will also
+accept a 64bits value.
 
 @table @strong
 @item Parameters

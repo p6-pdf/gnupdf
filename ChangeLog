@@ -1,3 +1,9 @@
+2009-02-22  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Big Numbers): Clarify that a 64bits value can
+	be passed to 'pdf_i64_assign_quick' when working in a system
+	providing true 64 bits scalar types.
+
 2009-02-18  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Garbage collection in object documents): New
