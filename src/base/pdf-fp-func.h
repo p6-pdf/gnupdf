@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-02-20 19:58:37 davazp"
+/* -*- mode: C -*- Time-stamp: "2009-02-24 18:12:56 davazp"
  *
  *       File:         pdf-fp-func.h
  *       Date:         Sun Nov 30 18:44:41 2008
@@ -43,6 +43,7 @@ typedef union
   struct {
     pdf_status_t status;
     pdf_i32_t op;
+    pdf_i32_t stack_size;
     double stack[PDF_FP_FUNC_TYPE4_STACK_SIZE];
   } type4;
 } pdf_fp_func_debug_t;

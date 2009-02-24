@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-02-20 20:03:33 davazp"
+/* -*- mode: C -*- Time-stamp: "2009-02-24 18:53:28 davazp"
  *
  *       File:         pdf-fp-func-eval.c
  *       Date:         Tue Dec  2 20:11:38 2008
@@ -1651,7 +1651,7 @@ END_TEST
  * Description:
  *   Evaluate a wrong type 4 function and detect the error.
  * Success condition:
- *   Return PDF_ETYPE4.
+ *   Return PDF_ETYPE4 and the debug information is correct.
  */
 
 START_TEST(pdf_fp_func_eval_022)
@@ -1685,10 +1685,104 @@ START_TEST(pdf_fp_func_eval_022)
   fail_if (pdf_fp_func_eval (func, in, out, &debug) != PDF_ETYPE4);
   fail_if (debug.type4.status != PDF_EMATH);
   fail_if (debug.type4.op != 10);
-  fail_if (debug.type4.stack[0] == 0);
-  fail_if (debug.type4.stack[1] == 1);
+  fail_if (debug.type4.stack[0] != 0);
+  fail_if (debug.type4.stack[1] != 1);
 }
 END_TEST
+
+
+
+
+/*
+ * Test: pdf_fp_func_eval_023
+ * Description:
+ *   Evaluate a wrong type 4 function and detect the error.
+ * Success condition:
+ *   Return PDF_ETYPE4 and the debug information is correct.
+ */
+
+START_TEST(pdf_fp_func_eval_023)
+{
+  pdf_fp_func_t func;
+  pdf_size_t prog_size;
+  pdf_char_t *prog =
+    "{ "
+    " sqrt "
+    " }";
+
+  pdf_real_t domain[1] = {-1.0};
+  pdf_real_t range[1] = {-1.0};
+  pdf_real_t in[1];
+  pdf_fp_func_debug_t debug;
+  pdf_real_t out[1];
+
+  prog_size = strlen (prog);
+
+  /* Create the function */
+  fail_if(pdf_fp_func_4_new (1, 1,
+                             domain,
+                             range,
+                             prog,
+                             prog_size,
+                             NULL,
+                             &func) != PDF_OK);
+
+  /* x = 0, y = 0 */
+  in[0] = -1;
+  fail_if (pdf_fp_func_eval (func, in, out, &debug) != PDF_ETYPE4);
+  fail_if (debug.type4.status != PDF_EINVRANGE);
+  fail_if (debug.type4.op != 3);
+  fail_if (debug.type4.stack[0] != -1);
+}
+END_TEST
+
+
+
+
+
+/*
+ * Test: pdf_fp_func_eval_024
+ * Description:
+ *   Evaluate a wrong type 4 function and detect the error.
+ * Success condition:
+ *   Return PDF_ETYPE4 and the debug information is correct.
+ */
+
+START_TEST(pdf_fp_func_eval_024)
+{
+  pdf_fp_func_t func;
+  pdf_size_t prog_size;
+  pdf_char_t *prog =
+    "{ "
+    " log "
+    " }";
+
+  pdf_real_t domain[1] = {-1.0};
+  pdf_real_t range[1] = {-1.0};
+  pdf_real_t in[1];
+  pdf_fp_func_debug_t debug;
+  pdf_real_t out[1];
+
+  prog_size = strlen (prog);
+
+  /* Create the function */
+  fail_if(pdf_fp_func_4_new (1, 1,
+                             domain,
+                             range,
+                             prog,
+                             prog_size,
+                             NULL,
+                             &func) != PDF_OK);
+
+  /* x = 0, y = 0 */
+  in[0] = -1;
+  fail_if (pdf_fp_func_eval (func, in, out, &debug) != PDF_ETYPE4);
+  fail_if (debug.type4.status != PDF_EINVRANGE);
+  fail_if (debug.type4.op != 3);
+  fail_if (debug.type4.stack[0] != -1);
+}
+END_TEST
+
 
 
 
@@ -1723,6 +1817,8 @@ test_pdf_fp_func_eval (void)
   tcase_add_test(tc, pdf_fp_func_eval_020);
   tcase_add_test(tc, pdf_fp_func_eval_021);
   tcase_add_test(tc, pdf_fp_func_eval_022);
+  tcase_add_test(tc, pdf_fp_func_eval_023);
+  tcase_add_test(tc, pdf_fp_func_eval_024);
 
   return tc;
 }

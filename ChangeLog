@@ -1,3 +1,7 @@
+2009-02-24  David Vazquez  <davazp@es.gnu.org>
+
+	* torture/unit/base/fp/pdf-fp-func-eval.c: Negative tests added.
+
 2009-02-10  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* ../object-layer/doc/gnupdf-arch.texi: Diagrams updated.

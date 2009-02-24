@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-02-20 19:58:32 davazp"
+/* -*- mode: C -*- Time-stamp: "2009-02-24 18:52:09 davazp"
  *
  *       File:         pdf-fp-func.c
  *       Date:         Sun Nov 30 18:46:06 2008
@@ -1500,14 +1500,17 @@ pdf_eval_type4 (pdf_fp_func_t t,
           break;
         case OPC_log:
           if (sp < 0) goto stack_underflow;
+          if (stack[sp] < 0) goto range_error;
           stack[sp] = pdf_fp_log10 (stack[sp]);
           break;
         case OPC_ln:
           if (sp < 0) goto stack_underflow;
+          if (stack[sp] < 0) goto range_error;
           stack[sp] = pdf_fp_log (stack[sp]);
           break;
         case OPC_sqrt:
           if (sp < 0) goto stack_underflow;
+          if (stack[sp] < 0) goto range_error;
           stack[sp] = pdf_fp_sqrt (stack[sp]);
           break;
         case OPC_floor:
@@ -1602,20 +1605,11 @@ pdf_eval_type4 (pdf_fp_func_t t,
           sp--;
           break;
         case OPC_div:
-          {
-            double p;
-          
-            if (sp < 1) goto stack_underflow;
-
-            p = stack[sp] == 0.0;
-            if (p) {
-              goto math_error;
-            }
-          
-            stack[sp-1] /= stack[sp];
-            sp--;
-            break;
-          }
+          if (sp < 1) goto stack_underflow;
+          if (stack[sp] == 0) goto math_error;
+          stack[sp-1] /= stack[sp];
+          sp--;
+          break;
         case OPC_atan:
           if (sp < 1) goto stack_underflow;
           stack[sp-1] = (180/PDF_PI)* pdf_fp_atan2 (stack[sp-1] , stack[sp]);
@@ -1762,7 +1756,11 @@ pdf_eval_type4 (pdf_fp_func_t t,
     }
 
   /* Copy some elements from the stack for debugging */
-  memcpy (debug_info.type4.stack, stack, sizeof(stack));
+  for (aux = 0; aux <= sp; aux++)
+    {
+      debug_info.type4.stack[aux] = stack[sp - aux];
+    }
+  debug_info.type4.stack_size = sp + 1;
 
   if (debug != NULL)
     *debug = debug_info;
