@@ -5323,7 +5323,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fp_func_eval (pdf_fp_func_t @var{function}, const pdf_real_t @var{in}[], pdf_real_t @var{out}[])
+@deftypefun pdf_status_t pdf_fp_func_eval (pdf_fp_func_t @var{function}, const pdf_real_t @var{in}[], pdf_real_t @var{out}[], pdf_fp_func_debug_t *@var{debug})
 
 Evaluate a function.
 
@@ -5336,6 +5336,8 @@ The function to evaluate.
 Array containing the input values for the function.
 @item out
 Array containing the output values from the function evaluation.
+@item debug
+A pointer to the structure will contain debug information.
 @end table
 @item Returns
 A PDF status value:
