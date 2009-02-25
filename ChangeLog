@@ -1,3 +1,13 @@
+2009-02-25  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-types.c (pdf_i64_assign_quick): Test for 'p_status
+	== NULL'.
+	(pdf_i64_copy): Likewise.
+	(pdf_i64_add): Likewise.
+	(pdf_i64_abs): Likewise.
+	(pdf_i64_neg): Likewise.
+	(pdf_i64_subtraction): Likewise.
+
 2009-02-22  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Big Numbers): Clarify that a 64bits value can

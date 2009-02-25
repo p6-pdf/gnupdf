@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/13 22:26:38 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/02/25 21:34:58 jemarch"
  *
  *       File:         pdf-types.c
  *       Date:         Sun Feb 10 21:33:44 2008
@@ -46,6 +46,10 @@ pdf_i64_assign (pdf_i64_t *bignum,
                 const pdf_u32_t low,
 		pdf_status_t *p_status)
 {
+  if (p_status == NULL)
+    {
+      return;
+    }
 
   if (bignum == NULL)
     {
@@ -65,6 +69,11 @@ pdf_i64_assign_quick (pdf_i64_t *bignum,
                       const pdf_i32_t value,
 		      pdf_status_t *p_status)
 {
+  if (p_status == NULL)
+    {
+      return;
+    }
+
   if (bignum == NULL)
     {
       *p_status = PDF_ERROR;
@@ -88,6 +97,11 @@ pdf_i64_copy (const pdf_i64_t orig,
               pdf_i64_t *copy,
 	      pdf_status_t *p_status)
 {
+  if (p_status == NULL)
+    {
+      return;
+    }
+
   if (copy == NULL)
     {
       *p_status = PDF_ERROR;
@@ -110,6 +124,11 @@ pdf_i64_add (pdf_i64_t *dest,
   pdf_u32_t carry = 0; /*carry*/
   pdf_u32_t low1, low2, high1, high2;
   
+  if (p_status == NULL)
+    {
+      return;
+    }
+
   if (dest == NULL)
     {
       *p_status = PDF_ERROR;
@@ -187,6 +206,11 @@ pdf_i64_abs (pdf_i64_t *dest,
  
   pdf_i64_t temp, one;
 
+  if (p_status == NULL)
+    {
+      return;
+    }
+
   if (dest == NULL)
     {
       *p_status = PDF_ERROR;
@@ -215,6 +239,11 @@ pdf_i64_neg (pdf_i64_t *dest,
 	     pdf_status_t *p_status)
 {
 
+  if (p_status == NULL)
+    {
+      return;
+    }
+
   if (dest == NULL)
     {
       *p_status = PDF_ERROR;
@@ -237,6 +266,11 @@ pdf_i64_subtraction (pdf_i64_t *dest,
 		     pdf_status_t *p_status)
 {
  
+  if (p_status == NULL)
+    {
+      return;
+    }
+
   if (dest == NULL)
     {
       *p_status = PDF_ERROR;
@@ -274,6 +308,11 @@ void
 shift_right_long(pdf_i64_t *dest_high,
                  pdf_i64_t *dest_low)
 {
+  if ((dest_high == NULL) || (dest_low == NULL))
+    {
+      return;
+    }
+
   shift_right(dest_low);
   if( (0x00000001 & dest_high->low) == 1)
     { 
@@ -302,6 +341,12 @@ add_long (pdf_i64_t *P1,
 {
   pdf_i64_t carry;
   pdf_status_t p_status = PDF_OK;
+
+  if ((P1 == NULL) || (P2 == NULL) || (P3 == NULL))
+    {
+      return;
+    }
+
   pdf_i64_add(P3, *P3, A3, &p_status);
   if (P3->low == 2)
     {
@@ -328,7 +373,7 @@ pdf_i64_mult (pdf_i64_t *dest,
   
   
   /*Knuth vol 2 method*/
-  
+
   int i, j;
   /*variables follow the nomenclature of the algorithm
     presented in Knuth vol 2.
@@ -350,6 +395,11 @@ pdf_i64_mult (pdf_i64_t *dest,
   pdf_i64_t temp; /*variable used to save partial results*/
   
 
+
+  if (p_status == NULL)
+    {
+      return;
+    }
   if (dest == NULL)
     {
       *p_status = PDF_ERROR;
@@ -460,6 +510,11 @@ mult_long (pdf_u32_t *w,
   pdf_i64_abs(&multiplier, factor_2, &p_status);
   pdf_u32_t v[8], u[8];
   
+  if (w == NULL)
+    {
+      return;
+    }
+
   for (i = 0;i < 16;i++)
     {
       w[i] = 0;
@@ -549,6 +604,11 @@ pdf_i64_div (pdf_i64_t *dest,
   dividend = pdf_i64_new (0, 0);
   pdf_i64_copy (const_dividend, &dividend, p_status);
 
+  if (p_status == NULL)
+    {
+      return;
+    }
+ 
   if (dest == NULL)
     {
       *p_status = PDF_ERROR;
@@ -834,6 +894,10 @@ pdf_i64_mod(pdf_i64_t *dest,
   dividend = pdf_i64_new (0, 0);
   pdf_i64_copy (const_dividend, &dividend, p_status);
 
+  if (p_status == NULL)
+    {
+      return;
+    }
   if (dest == NULL)
     {
       *p_status = PDF_ERROR;
