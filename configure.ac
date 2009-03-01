@@ -128,10 +128,9 @@ AM_CONDITIONAL([COMPILE_PAGE_LAYER], [test x$PDFLIB_LEVEL = "x3"])
 
 
 dnl Project management resources
-prmgt_mode=no
 AC_ARG_ENABLE([prmgt], AS_HELP_STRING([--enable-prmgt],
                                       [build project management resources (default is NO)]), 
-              [prmgt_mode=yes], [prmgt_mode=no])
+              [prmgt_mode=$enableval], [prmgt_mode=no])
 
 AM_CONDITIONAL([PRMGT],[test "x$prmgt_mode" = "xyes"])
 if test "x$prmgt_mode" = "xyes" ; then 
@@ -160,26 +159,22 @@ fi
 fi # prmgt_mode
 
 # debug_*_mode
-debug_base_mode=no
-debug_object_mode=no
-debug_document_mode=no
-debug_page_mode=no
 PDFLIB_DEBUG_DESCR=""
 AC_ARG_ENABLE([debug-base], AS_HELP_STRING([--enable-debug-base],
                                       [debug mode at the base layer (default is NO)]), 
-              [debug_base_mode=yes], [debug_base_mode=no])
+              [debug_base_mode=$enableval], [debug_base_mode=no])
 
 AC_ARG_ENABLE([debug-object], AS_HELP_STRING([--enable-debug-object],
                                       [debug mode at the object layer (default is NO)]), 
-              [debug_object_mode=yes], [debug_object_mode=no])
+              [debug_object_mode=$enableval], [debug_object_mode=no])
 
 AC_ARG_ENABLE([debug-document], AS_HELP_STRING([--enable-debug-document],
                                       [debug mode at the document layer (default is NO)]), 
-              [debug_document_mode=yes], [debug_document_mode=no])
+              [debug_document_mode=$enableval], [debug_document_mode=no])
 
 AC_ARG_ENABLE([debug-page], AS_HELP_STRING([--enable-debug-page],
                                       [debug mode at the page layer (default is NO)]), 
-              [debug_page_mode=yes], [debug_page_mode=no])
+              [debug_page_mode=$enableval], [debug_page_mode=no])
 
 if test "x$debug_base_mode" = "xyes"; then
   AC_DEFINE([HAVE_DEBUG_BASE], [1], [Debugging Base Layer])
@@ -205,26 +200,23 @@ fi
 # end debug_*_mode
 
 dnl gcov compilation
-use_gcov=no
 AC_ARG_ENABLE([coverage], AS_HELP_STRING([--enable-coverage],
                                         [Compile the library with code coverage support (default is NO)]),
-                                        [use_gcov=yes], [use_gcov=no])
+                                        [use_gcov=$enableval], [use_gcov=no])
 AM_CONDITIONAL([USE_COVERAGE], [test "x$use_gcov" = "xyes"])
 
 dnl bignums
-force_bignums=no
 AC_ARG_ENABLE([bignum-forcing], AS_HELP_STRING([--enable-bignum-forcing],
                                            [Force the usage of the 64bits bignum implementation even if the system support a suitable native type]),
-                                                   [force_bignums=yes], [force_bignums=no])
+                                                   [force_bignums=$enableval], [force_bignums=no])
 if test "x$force_bignums" = "xyes"; then
    AC_DEFINE([PDF_FORCE_BIGNUMS],[1],[Force the usage of the 64bits bignum implementation even if the system support a suitable native type])
 fi
 
 dnl nocheck (simple replacement of Check framework when this is not available)
-use_nocheck=no
 AC_ARG_ENABLE([nocheck], AS_HELP_STRING([--enable-nocheck],
                                       [Use built-in nocheck instead of Check (default is NO)]), 
-              [use_nocheck=yes], [use_nocheck=no])
+              [use_nocheck=$enableval], [use_nocheck=no])
 if test "x$use_nocheck" = "xyes"; then
   AC_DEFINE([HAVE_NOCHECK], [1], [Use No-Check instead of Check])
 fi

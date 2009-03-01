@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/13 22:34:08 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/01/27 21:41:44 jemarch"
  *
  *       File:         pdf-stm-write.c
  *       Date:         Sun Sep 21 16:37:27 2008
@@ -253,6 +253,7 @@ START_TEST (pdf_stm_write_005)
   pdf_status_t ret;
   pdf_hash_t params;
   pdf_stm_t stm;
+  pdf_size_t flushed_bytes;
   pdf_char_t *buf, *decoded="122333444455555666666777777788888888999999999";
   pdf_size_t buf_size, total=46, written;
   pdf_char_t *dataux, *encoded =
@@ -284,7 +285,7 @@ START_TEST (pdf_stm_write_005)
       dataux = dataux + written;
       total -= written;
     }
-  pdf_stm_flush(stm, PDF_TRUE);
+  fail_if(pdf_stm_flush(stm, PDF_TRUE, &flushed_bytes) == PDF_ERROR);
 
   fail_if (memcmp (buf, encoded, 21) != 0);
   /* Destroy the stream */
@@ -374,6 +375,7 @@ START_TEST (pdf_stm_write_007)
   pdf_hash_t params;
   pdf_stm_t stm;
   pdf_size_t buf_size, total,written;
+  pdf_size_t flushed_bytes;
   pdf_char_t *buf, *decoded=
     "1223334444555556666667777777888888889999999990" \
     "1223334444555556666667777777888888889999999990" \
@@ -429,7 +431,7 @@ START_TEST (pdf_stm_write_007)
       dataux = dataux + written;
       total -= written;
     }
-  pdf_stm_flush (stm, PDF_TRUE);
+  fail_if(pdf_stm_flush (stm, PDF_TRUE, &flushed_bytes) == PDF_ERROR);
 
   fail_if (memcmp (buf, encoded, 41) != 0);
   /* Destroy the stream */
@@ -488,6 +490,7 @@ START_TEST (pdf_stm_write_009)
   pdf_stm_t stm;
   pdf_hash_t params;
 
+  pdf_size_t flushed_bytes;
   pdf_char_t out[14];
   pdf_size_t out_size = sizeof(out);
   pdf_char_t in[14] = "Attack at dawn"; /* not trailing '\0' */
@@ -515,7 +518,7 @@ START_TEST (pdf_stm_write_009)
   ret = pdf_stm_write (stm, in, in_size, &written);
   fail_if (written != out_size);
 
-  pdf_stm_flush (stm, PDF_TRUE);
+  fail_if(pdf_stm_flush (stm, PDF_TRUE, &flushed_bytes) == PDF_ERROR);
 
   fail_if (memcmp (out, ciphered, written) != 0);
 
@@ -540,6 +543,7 @@ START_TEST (pdf_stm_write_010)
   pdf_size_t written;
   pdf_stm_t stm;
   pdf_hash_t params;
+  pdf_size_t flushed_bytes;
   pdf_char_t out[96];
   pdf_char_t key[16] =
     {
@@ -599,7 +603,7 @@ START_TEST (pdf_stm_write_010)
   ret = pdf_stm_write (stm, plain + 64 , 16, &written);
   fail_if(ret == PDF_ERROR);
 
-  pdf_stm_flush (stm, PDF_TRUE);
+  fail_if(pdf_stm_flush (stm, PDF_TRUE, &flushed_bytes) == PDF_ERROR);
 
   fail_if (memcmp (out, ciphered, sizeof(ciphered)) != 0);
 
@@ -624,6 +628,7 @@ START_TEST (pdf_stm_write_011)
   pdf_size_t written;
   pdf_stm_t stm;
   pdf_hash_t params;
+  pdf_size_t flushed_bytes;
   pdf_char_t in[26] = "abcdefghijklmnopqrstuvwxyz";
   pdf_char_t out[16];
   pdf_crypt_md_t md;
@@ -644,7 +649,7 @@ START_TEST (pdf_stm_write_011)
   ret = pdf_stm_write (stm, in, sizeof(in), &written);
   fail_if(ret == PDF_ERROR);
 
-  pdf_stm_flush (stm, PDF_TRUE);
+  fail_if(pdf_stm_flush (stm, PDF_TRUE, &flushed_bytes) == PDF_ERROR);
 
   fail_if (memcmp (out, real_out, sizeof(out)) != 0);
 
@@ -669,6 +674,7 @@ START_TEST (pdf_stm_write_012)
   pdf_size_t written;
   pdf_stm_t stm;
   pdf_hash_t params;
+  pdf_size_t flushed_bytes;
   pdf_char_t out[48];
   
   pdf_char_t key[] =
@@ -711,7 +717,7 @@ START_TEST (pdf_stm_write_012)
 
   ret = pdf_stm_write (stm, plain , sizeof(plain), &written);
   fail_if(ret == PDF_ERROR);
-  pdf_stm_flush (stm, PDF_TRUE);
+  fail_if(pdf_stm_flush (stm, PDF_TRUE, &flushed_bytes) == PDF_ERROR);
 
   fail_if (memcmp (out, ciphered, sizeof(out)) != 0);
 

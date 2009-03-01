@@ -46,12 +46,12 @@ GNU PDF Library Architecture Guide
 @end ifnottex
 
 @menu
-* Overview::
-* The base layer::
-* The object layer::
-* The document layer::
-* The page layer::
-* List of Figures::
+* Overview::                    
+* The base layer::              
+* The object layer::            
+* The document layer::          
+* The page layer::              
+* List of Figures::             
 @end menu
 
 @node Overview
@@ -163,20 +163,24 @@ This module provides facilities to manage error types, error
 signaling, error descriptions, etc.
 @item Crypt Module
 This module provides de/encryption facilities.
+@item Tokeniser Module
+This module implements a stream tokeniser to read in PDF tokens from a
+base-level stream.
 @end table
 
 @menu
-* Memory allocation module::
-* Basic types module::
-* Hash module::
-* List module::
-* Stream module::
-* Floating point arithmetic module::
-* Text module::
-* Time module::
-* Filesystem module::
-* Error module::
-* Crypt module::
+* Memory allocation module::    
+* Basic types module::          
+* Hash module::                 
+* List module::                 
+* Stream module::               
+* Floating point arithmetic module::  
+* Text module::                 
+* Time module::                 
+* Filesystem module::           
+* Error module::                
+* Crypt module::                
+* Tokeniser module::
 @end menu
 
 @node Memory allocation module
@@ -341,17 +345,17 @@ different filters to read or write its contents.
 @end float
 
 @menu
-* Filtering support::
-* Stream operation modes::
-* Reading from a stream::
-* Writing to a stream::
-* Positioning into a stream::
-* Supported filters::
-* Stream buffers::
-* Stream backends::
-* Stream filters::
-* Structure of a reading stream::
-* Structure of a writing stream::
+* Filtering support::           
+* Stream operation modes::      
+* Reading from a stream::       
+* Writing to a stream::         
+* Positioning into a stream::   
+* Supported filters::           
+* Stream buffers::              
+* Stream backends::             
+* Stream filters::              
+* Structure of a reading stream::  
+* Structure of a writing stream::  
 @end menu
 
 @node Filtering support
@@ -475,7 +479,7 @@ defined in the PDF 1.7 Reference, Chapter 3, Section 3. Namely:
 @node Stream buffers
 @subsection Stream buffers
 
-A pdf_stm_buffer_t is a simple data type implementing a buffer in memory.
+A pdf_stm_buffer_t is a e data type implementing a buffer in memory.
 
 @float Figure,fig:stream-memory-buffer
 @image{figures/stream-memory-buffer}
@@ -802,22 +806,22 @@ sequence of characters. Several text encodings are supported and
 conversion functions to change the encoding of a text are provided.
 
 @menu
-* Text variables::
-* Text content::
-* Country and language information::
-* List of word boundaries::
-* Text encodings::
-* GNU and Unix encodings::
-* Windows encodings::
-* Mac OS X encodings::
-* Text filters::
-* Text operations::
-* Unicode Character Database::
-* Casing algorithms::
-* Standard casing::
-* Special casing::
-* Special casing with conditions::
-* Word boundaries according to Unicode::
+* Text variables::              
+* Text content::                
+* Country and language information::  
+* List of word boundaries::     
+* Text encodings::              
+* GNU and Unix encodings::      
+* Windows encodings::           
+* Mac OS X encodings::          
+* Text filters::                
+* Text operations::             
+* Unicode Character Database::  
+* Casing algorithms::           
+* Standard casing::             
+* Special casing::              
+* Special casing with conditions::  
+* Word boundaries according to Unicode::  
 @end menu
 
 @node Text variables
@@ -1248,10 +1252,10 @@ This module provides facilities to manipulate calendar dates, time
 spans and to perform basic time arithmetic.
 
 @menu
-* Time data abstractions::
-* Calendar structures::
-* Supported time formats::
-* Time operations::
+* Time data abstractions::      
+* Calendar structures::         
+* Supported time formats::      
+* Time operations::             
 @end menu
 
 @node Time data abstractions
@@ -1455,18 +1459,18 @@ items in a filesystem. Path names are named locations identifying
 files or folders.
 
 @menu
-* File systems::
-* Filesystem items::
-* Files::
-* Folders::
-* Path names::
-* Relation between path names open files and filesystems::
-* Filesystem interfaces::
-* The filesystem implementation interface::
-* The filesystem definition interface::
-* The filesystem interface::
-* The file interface::
-* The disk filesystem::
+* File systems::                
+* Filesystem items::            
+* Files::                       
+* Folders::                     
+* Path names::                  
+* Relation between path names open files and filesystems::  
+* Filesystem interfaces::       
+* The filesystem implementation interface::  
+* The filesystem definition interface::  
+* The filesystem interface::    
+* The file interface::          
+* The disk filesystem::         
 @end menu
 
 @node File systems
@@ -1734,70 +1738,89 @@ interest to the library developers.
 
 The Encryption module provides procedures both for encryption and
 decryption of buffers. Indeed it also provides functions for
-message-digest.
+message-digest. This module is required to be initialized once at
+startup, when libgnupdf is loaded.
 
-This module is required to be initialized once at startup, when
-libgnupdf is loaded.
-
-@menu
-* Ciphers::
-* Encryption algorithms::
-* Crypt module operations::
-* Message digest::
-@end menu
-
-@node Ciphers
-@subsection Ciphers
-
-Encryption module provides a new data type named cipher. A cipher
-turns a plain text buffer to a ciphered text one and vice versa. In
-order to hide the original content, a encryption key should be
-provided by the caller. The length of this key depends on algorithm
-used.
-
-There are two kinds of ciphers, the stream-based ciphers and
-block-based ones. Stream-based ciphers work on each byte of the input
-buffer. Meanwhile, a block-based cipher works on a fixed blocks of a
-certain fixed size. As block ciphers algorithms are designed to work
-on individual blocks, several modes of operation are defined. They
-specifies how to a sequence of blocks are encrypted. Finally, padding
-is a mechanism in order to allow input buffer can have an arbitrary
-length in a block cipher.
-
-@node Encryption algorithms
-@subsection Encryption algorithms
-
-The encryption module provides support for the following encryption algorithm, which are required by the pdf standard.
+The crypt module provides a new data type `cipher' which hold the
+context of an operation, and procedures in order to encrypt and decrypt
+data. The following encryption algorithms are provided:
 
 @table @strong
-@item ARC4
-ARC4 is a RC4-compatible algorithm. It is a stream-based cipher.
-@item AES128
-It is a block-based cipher. Whether we want to encrypt a buffer whose
-length is not multiple of this size, then the buffer should be padded
-before encrypting. In this case, the algorithm described in RFC 2898
-is used for this purpose.
-
-A operation mode known as Cipher Block Chaining mode is used. It
-requires a initialization vector (herein IV) whose length is 16
-bytes. This vector is assumed to be at the beginning of the input
-buffer, and it will put in the same place for the output buffer
-automatically.
+@item AESV2
+It is a block cipher which uses the AES128 algorithm in
+Cipher Block chaining operation mode.
+@item V2
+It is a stream-based cipher which uses the RC4-compatible ARCFOUR
+algorithm.
 @end table
 
-@node Crypt module operations
-@subsection Crypt module operations
+The operations on a cipher are the following: 
 
-TBD
+@table @strong
+@item Create a cipher
+It creates a new cipher.
+@item Destroy a cipher
+Destroy a previously created cipher.
+@item Set a key
+Set a key to both encryption and decryption.
+@item Encrypt a chunk
+Encrypt a chunk of the buffer. Consecutive encrypted chunks are supposed
+to be adjoin data.
+@item Decrypt a chunk
+Decrypt a chunk of the buffer. Consecutive decrypted chunks are supposed
+to be adjoin data.
+@end table
 
-@node Message digest
-@subsection Message digest
+Different kind of ciphers could impose different restrictions to the
+operations.
 
-This module provides message-digest md5 function too, since it is
-usually used in order to get a encryption key.
+This module provides message-digest and other utilities functions too,
+since it is usually used in order to get a encryption key.
+
+@node Tokeniser module
+@section Tokeniser module
+
+TODO.
 
 @node The object layer
 @chapter The object layer
+
+This chapter contains a description of the object layer in the GNU PDF
+Library.
+
+This layer implements the concepts of PDF objects and PDF documents as
+a structured hierarchy of objects. An API is provided to manipulate
+that structure and the objects that compose it. Since the object
+hierarchy can be quite complex a garbage collection mechanism is
+provided to the client of the layer.
+
+@float Figure,fig:object-layer-architecture
+@image{figures/object-layer-architecture}
+@caption{The Object Layer}
+@end float
+
+The functionality provided by this layer is implemented in several
+modules.
+
+@table @strong
+@item Document Module
+This module implements the abstraction of object level documents. An
+object-level document is a hierarchy of objects that conforms a PDF
+document. Facilities to get the objects from a document and to create
+new objects into a document are provided. A cache of objects and
+a garbage collection algorithm are also implemented in this module.
+@item Object Module
+This module implements the several PDF objects and provides functions
+to manipulate the attributes of the objects associated with an
+object-level document.
+@item Parser Module
+This module implements the functionality to get PDF objects from a
+base-level stream.
+@item Writer Module
+This module implements the functionality to create a textual version
+of PDF objects. The textual representation of objects are then written
+into a given base level stream.
+@end table
 
 @node The document layer
 @chapter The document layer

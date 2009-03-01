@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/13 22:30:03 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/02/03 22:53:33 jemarch"
  *
  *       File:         pdf-filter.c
  *       Date:         Tue Jul 10 18:42:07 2007
@@ -52,29 +52,33 @@ static struct option GNU_longOptions[] =
     {"usage", no_argument, NULL, USAGE_ARG},
     {"version", no_argument, NULL, VERSION_ARG},
     {"readmode", no_argument, NULL, READ_ARG},
+    {"input-file", required_argument, NULL, INFILE_ARG},
+    {"output-file", required_argument, NULL, OUTFILE_ARG},
     {"cache", required_argument, NULL, CACHE_ARG},
     {"null", no_argument, NULL, NULL_FILTER_ARG},
     {"ahexdec", no_argument, NULL, ASCIIHEXDEC_FILTER_ARG},
     {"ahexenc", no_argument, NULL, ASCIIHEXENC_FILTER_ARG},
+#if 0
     {"a85dec", no_argument, NULL, ASCII85DEC_FILTER_ARG},
     {"a85enc", no_argument, NULL, ASCII85ENC_FILTER_ARG},
     {"lzwenc", no_argument, NULL, LZWENC_FILTER_ARG},
     {"lzwdec", no_argument, NULL, LZWDEC_FILTER_ARG},
+    {"cfaxdec", no_argument, NULL, CCITTFAXDEC_FILTER_ARG},
+    {"dctdec", no_argument, NULL, DCTDEC_FILTER_ARG},
+    {"jxpdec", no_argument, NULL, JXPDEC_FILTER_ARG},
+    {"predenc", no_argument, NULL, PREDENC_FILTER_ARG},
+    {"preddec", no_argument, NULL, PREDDEC_FILTER_ARG},
+#endif /* 0 */
 #ifdef HAVE_LIBZ
     {"flatedec", no_argument, NULL, FLATEDEC_FILTER_ARG},
     {"flateenc", no_argument, NULL, FLATEENC_FILTER_ARG},
 #endif /* HAVE_LIBZ */
     {"rldec", no_argument, NULL, RUNLENGTHDEC_FILTER_ARG},
     {"rlenc", no_argument, NULL, RUNLENGTHENC_FILTER_ARG},
-    {"cfaxdec", no_argument, NULL, CCITTFAXDEC_FILTER_ARG},
 #ifdef HAVE_LIBJBIG2DEC
     {"jbig2dec", no_argument, NULL, JBIG2DEC_FILTER_ARG},
     {"jbig2dec-globals", required_argument, NULL, JBIG2DEC_GLOBAL_SEGMENTS_ARG},
 #endif /* HAVE_LIBJBIG2DEC */
-    {"dctdec", no_argument, NULL, DCTDEC_FILTER_ARG},
-    {"jxpdec", no_argument, NULL, JXPDEC_FILTER_ARG},
-    {"predenc", no_argument, NULL, PREDENC_FILTER_ARG},
-    {"preddec", no_argument, NULL, PREDDEC_FILTER_ARG},
     {"md5enc", no_argument, NULL, MD5ENC_FILTER_ARG},
     {"key", required_argument, NULL, KEY_ARG},
     {"aesenc", no_argument, NULL, AESENC_FILTER_ARG},
@@ -96,15 +100,23 @@ write the result in the standard output.\n\
 available options\n\
   --readmode                          test the stream in read mode instead\n\
                                        of write mode.\n\
+  -i FILE, --input-file=FILE          Use a given file as the input.\n\
+  -o FILE, --output-file=FILE         Use a given file as the output.\n\
   --cache=NUM                         set the stream cache size.\n\n\
 available filters\n\
   --null                              use the NULL filter\n\
   --ahexdec                           use the ASCII Hex decoder filter\n\
-  --ahexenc                           use the ASCII Hex encoder filter\n\
-  --a85dec                            use the ASCII 85 decoder filter\n\
+  --ahexenc                           use the ASCII Hex encoder filter\n"
+#if 0
+"  --a85dec                            use the ASCII 85 decoder filter\n\
   --a85enc                            use the ASCII 85 encoder filter\n\
   --lzwenc                            use the LZW encoder filter\n\
-  --lzwdec                            use the LZW decoder filter\n"
+  --lzwdec                            use the LZW decoder filter\n
+  --dctdec                            use the DCT decoder filter\n\
+  --jxpdec                            use the JXP decoder filter\n\
+  --predenc                           use the predictor encoder filter\n\
+  --preddec                           use the predictor decoder filter\n"
+#endif /* 0 */
 #ifdef HAVE_LIBZ
   "  --flatedec                          use the Flate decoder filter\n\
   --flateenc                          use the Flate encoder filter\n"
@@ -113,10 +125,6 @@ available filters\n\
   --rlenc                             use the Run Length encoder filter\n\
   --cfaxdec                           use the CCITT Fax decoder filter\n\
   --jbig2dec                          use the JBIG2 decoder filter\n\
-  --dctdec                            use the DCT decoder filter\n\
-  --jxpdec                            use the JXP decoder filter\n\
-  --predenc                           use the predictor encoder filter\n\
-  --preddec                           use the predictor decoder filter\n\
   --md5enc                            use the MD5 encoder filter\n\
   --aesenc                            use the AESv2 encoder filter\n\
   --aesdec                            use the AESv2 decoder filter\n\
@@ -125,44 +133,73 @@ available filters\n\
   --help                              print a help message and exit\n\
   --usage                             print a usage message and exit\n\
   --version                           show pdf_filter version and exit\n\
-\nfilter properties\n\
-  --lzw-earlychange                   toggles earlychange for next lzw filters\n\
+\nfilter properties\n"
+#if 0
+"  --lzw-earlychange                   toggles earlychange for next lzw filters\n\
   --preddec-type=NUM                  code for next preddec filters type\n\
   --predenc-type=NUM                  code for next predenc filters type\n\
   --pred-colors=NUM                   next predictors colors per sample\n\
   --pred-bpc=NUM                      next predictors bits per color component\n\
-  --pred-columns=NUM                  next predictors number of samples per row\n\
-  --jbig2dec-globals=FILE             file containing global segments\n\
+  --pred-columns=NUM                  next predictors number of samples per row\n"
+#endif /* 0 */
+"  --jbig2dec-globals=FILE             file containing global segments\n\
 ";
 
 char *pdf_filter_help_msg = "";
 
 static pdf_stm_t
-create_stream (int argc, char* argv[], pdf_bool_t* mode, pdf_status_t* last_ret);
+create_stream (int argc, char* argv[], pdf_bool_t* mode, pdf_status_t* last_ret,
+               pdf_bool_t * read_pdf_fsys, pdf_bool_t * write_pdf_fsys,
+               pdf_stm_t * fsys_stm);
 
 static void
 install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret);
 
 static void
-process_stream (pdf_stm_t, pdf_bool_t mode);
+process_stream (pdf_stm_t, pdf_bool_t mode, pdf_bool_t read_pdf_fsys,
+                pdf_bool_t write_pdf_fsys, pdf_stm_t fsys_stm);
+
+static
+open_file (pdf_char_t * name, pdf_fsys_file_t * file,
+           enum pdf_fsys_file_mode_e mode);
 
 int
 main (int argc, char *argv[])
 {
-  pdf_stm_t stm;
-  pdf_bool_t read_mode;
+  pdf_stm_t stm,fsys_stm;
+  pdf_bool_t read_mode,read_pdf_fsys,write_pdf_fsys;
   pdf_status_t last_ret;
+  pdf_status_t destroy_ret;
   
-  stm = create_stream (argc, argv, &read_mode, &last_ret);
+  stm = create_stream (argc, argv, &read_mode, &last_ret, &read_pdf_fsys,
+                       &write_pdf_fsys, &fsys_stm);
   install_filters (argc, argv, stm, last_ret);
-  process_stream (stm, read_mode);
-  pdf_stm_destroy (stm);
+  process_stream (stm, read_mode, read_pdf_fsys,write_pdf_fsys, fsys_stm);
+  destroy_ret = pdf_stm_destroy (stm);
+  if ((destroy_ret != PDF_OK) && (destroy_ret != PDF_EEOF))
+    {
+      /* Only writing streams report errors on pdf_stm_destroy */
+      pdf_error (destroy_ret, stderr, "writing to stream");
+      exit(1);
+    }
+
+  if (read_pdf_fsys || write_pdf_fsys)
+    {
+      destroy_ret = pdf_stm_destroy (fsys_stm);
+      if (destroy_ret != PDF_OK)
+        {
+          /* Only writing streams report errors on pdf_stm_destroy */
+          pdf_error (destroy_ret, stderr, "writing to stream");
+          exit(1);
+        }
+    }
  
   return 0;
 }
 
 static void
-process_stream (pdf_stm_t stm, pdf_bool_t read_mode)
+process_stream (pdf_stm_t stm, pdf_bool_t read_mode, pdf_bool_t read_pdf_fsys,
+                pdf_bool_t write_pdf_fsys, pdf_stm_t fsys_stm)
 {
 #define BUF_SIZE 256
   
@@ -174,15 +211,33 @@ process_stream (pdf_stm_t stm, pdf_bool_t read_mode)
   if (read_mode)
     {
       /* Read from the buffer which will process anything on stdin
-	 and push to stdout */
+         and push to stdout */
       do
         {
           ret = pdf_stm_read (stm, buf, BUF_SIZE, &read_bytes);
-          if(fwrite (buf, 1, read_bytes, stdout) != read_bytes)
+          if ((ret != PDF_OK) && (ret != PDF_EEOF))
             {
-              fprintf(stderr,"fwrite failed (%ld)", (long)read_bytes);
-             }
-	    }
+              pdf_error (ret, stderr, "reading from stream");
+              exit (1);
+            }            
+
+          if (write_pdf_fsys)
+            {
+              ret = pdf_stm_write (fsys_stm, buf, read_bytes, &written_bytes);
+              if (ret != PDF_OK)
+                {
+                  pdf_error (ret, stderr, "writing to stream");
+                  exit (1);
+                }
+            }
+          else
+            {
+              if(fwrite (buf, 1, read_bytes, stdout) != read_bytes)
+                {
+                  fprintf(stderr,"fwrite failed (%ld)", (long)read_bytes);
+                }
+            }
+        }
       while (read_bytes == BUF_SIZE);
     }
   else
@@ -190,25 +245,47 @@ process_stream (pdf_stm_t stm, pdf_bool_t read_mode)
       /* Write stdin into the write stream,
 	 which will be transparently writting the output to stdout. */
       do
-	{
-	  read_bytes = fread (buf, 1, BUF_SIZE, stdin);
-	  ret = pdf_stm_write (stm, buf, read_bytes, &written_bytes);
-	}
+        {
+          if (read_pdf_fsys)
+            {
+              ret = pdf_stm_read (fsys_stm, buf, BUF_SIZE, &read_bytes);
+              if ((ret != PDF_OK) && (ret != PDF_EEOF))
+                {
+                  pdf_error (ret, stderr, "reading from stream");
+                  exit (1);
+                }            
+
+            }
+          else
+            {
+              read_bytes = fread (buf, 1, BUF_SIZE, stdin);
+            }
+          ret = pdf_stm_write (stm, buf, read_bytes, &written_bytes);
+          if (ret != PDF_OK)
+            {
+              pdf_error (ret, stderr, "writing to stream");
+              exit (1);
+            }            
+
+        }
       while (read_bytes == BUF_SIZE);
     }
-  
+
 #undef BUF_SIZE
 }
 
 static pdf_stm_t
 create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
-	       pdf_status_t* last_ret)
+	       pdf_status_t* last_ret, pdf_bool_t * read_pdf_fsys,
+               pdf_bool_t * write_pdf_fsys, pdf_stm_t * fsys_stm)
 {
   char c;
   pdf_status_t ret;
   pdf_size_t cache_size;
   pdf_stm_t stm;
   pdf_bool_t finish;
+  pdf_char_t *infile_name=NULL,*outfile_name=NULL;
+  pdf_fsys_file_t infile, outfile;
 
   finish = PDF_FALSE;
   cache_size = 0;
@@ -217,7 +294,7 @@ create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
   while (!finish &&
 	 (ret = getopt_long (argc,
 			     argv,
-			     "",
+			     "i:o:",
 			     GNU_longOptions, 
 			     NULL)) != -1)
     {
@@ -253,6 +330,20 @@ create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
 	    cache_size = atoi (optarg);
 	    break;
 	  }
+        case INFILE_ARG:
+        case 'i':
+          {
+            infile_name = pdf_alloc (strlen(optarg)+1);
+            strcpy (infile_name, optarg);
+            break;
+          }
+        case OUTFILE_ARG:
+        case 'o':
+          {
+            outfile_name = pdf_alloc (strlen(optarg)+1);
+            strcpy (outfile_name, optarg);
+            break;
+          }
 	case '?':
 	default:
 	  {
@@ -269,16 +360,75 @@ create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
   */
   *last_ret = ret;
 
-  ret = pdf_stm_cfile_new (*read_mode ? stdin : stdout,
+  if (pdf_text_init() != PDF_OK)
+    {
+      fprintf (stderr, "Error initializing the text module.\n");
+      exit(1);
+    }
+
+  *read_pdf_fsys = PDF_FALSE;
+  *write_pdf_fsys = PDF_FALSE;
+  if (infile_name == NULL && outfile_name == NULL)
+    {
+      ret = pdf_stm_cfile_new (*read_mode ? stdin : stdout,
 			       0,
 			       cache_size, 
 			       *read_mode ? PDF_STM_READ : PDF_STM_WRITE,
 			       &stm);
-    
-  if (ret != PDF_OK)
+      if (ret != PDF_OK)
+        {
+          pdf_error (ret, stderr, "while creating the write stream");
+          exit (1);
+        }
+    }
+  else
     {
-      pdf_error (ret, stderr, "while creating the write stream");
-      exit (1);
+      if (infile_name != NULL)
+        {
+          open_file (infile_name, &infile, PDF_FSYS_OPEN_MODE_READ);
+          *read_pdf_fsys = PDF_TRUE;
+          ret = pdf_stm_file_new (infile,0,cache_size,PDF_STM_READ,
+                                  *read_mode ? &stm : fsys_stm);
+          if (ret != PDF_OK)
+            {
+              pdf_error (ret, stderr, "while creating the read stream");
+              exit (1);
+            }
+        }
+      else
+        {
+          ret = pdf_stm_cfile_new (stdin,0,cache_size,PDF_STM_READ,
+                                   *read_mode ? &stm : fsys_stm);
+          if (ret != PDF_OK)
+            {
+              pdf_error (ret, stderr, "while creating the read stream");
+              exit (1);
+            }
+        }
+
+      if (outfile_name != NULL)
+        {
+          open_file (outfile_name, &outfile, PDF_FSYS_OPEN_MODE_WRITE);
+          *write_pdf_fsys = PDF_TRUE;
+          ret = pdf_stm_file_new (outfile,0,cache_size,PDF_STM_WRITE,
+                                  *read_mode ? fsys_stm : &stm);
+          if (ret != PDF_OK)
+            {
+              pdf_error (ret, stderr, "while creating the write stream");
+              exit (1);
+            }
+        }
+      else
+        {
+          ret = pdf_stm_cfile_new (stdout,0,cache_size,PDF_STM_WRITE,
+                                   *read_mode ? fsys_stm : &stm);
+          if (ret != PDF_OK)
+            {
+              pdf_error (ret, stderr, "while creating the write stream");
+              exit (1);
+            }
+
+        }
     }
 
   return stm;
@@ -369,6 +519,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
 
             break;
           }
+#if 0
         case ASCII85DEC_FILTER_ARG:
           {
             break;
@@ -385,6 +536,55 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
           {
             break;
           }
+        case CCITTFAXDEC_FILTER_ARG:
+          {
+            break;
+          }
+        case DCTDEC_FILTER_ARG:
+          {
+#if defined(HAVE_LIBJPEG)
+             ret = pdf_hash_new (NULL, &filter_params);
+             if (ret != PDF_OK)
+             {
+               pdf_error (ret, stderr, "while creating the dctdec filter parameters hash table");
+               exit (1);
+             }
+             pdf_stm_install_filter (stm,
+                                    PDF_STM_FILTER_DCT_DEC,
+                                    filter_params);
+
+             /* Note that a reference to this memory remains into the
+             *  stream */
+             jbig2dec_global_segments = NULL;
+             jbig2dec_global_segments_size = 0;
+#endif
+            break;
+          }
+        case JXPDEC_FILTER_ARG:
+          {
+            break;
+          }
+        case PREDENC_FILTER_ARG:
+          {
+            /* pdf_stm_install_predenc_filter (input,
+               PDF_STM_FILTER_READ,
+               args.pred_enc_type,
+               args.pred_colors,
+               args.pred_bpc,
+               args.pred_columns); */
+            break;
+          }
+        case PREDDEC_FILTER_ARG:
+          {
+            /* pdf_stm_install_preddec_filter (input,
+               PDF_STM_FILTER_READ,
+               args.pred_dec_type,
+               args.pred_colors,
+               args.pred_bpc,
+               args.pred_columns); */
+            break;
+          }
+#endif /* 0 */
 #ifdef HAVE_LIBZ
         case FLATEDEC_FILTER_ARG:
           {
@@ -469,10 +669,6 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
 
             break;
           }
-        case CCITTFAXDEC_FILTER_ARG:
-          {
-            break;
-          }
 #ifdef HAVE_LIBJBIG2DEC
         case JBIG2DEC_GLOBAL_SEGMENTS_ARG:
           {
@@ -535,50 +731,6 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
             break;
           }
 #endif /* HAVE_LIBJBIG2DEC */
-        case DCTDEC_FILTER_ARG:
-          {
-#if defined(HAVE_LIBJPEG)
-             ret = pdf_hash_new (NULL, &filter_params);
-             if (ret != PDF_OK)
-             {
-               pdf_error (ret, stderr, "while creating the dctdec filter parameters hash table");
-               exit (1);
-             }
-             pdf_stm_install_filter (stm,
-                                    PDF_STM_FILTER_DCT_DEC,
-                                    filter_params);
-
-             /* Note that a reference to this memory remains into the
-             *  stream */
-             jbig2dec_global_segments = NULL;
-             jbig2dec_global_segments_size = 0;
-#endif
-            break;
-          }
-        case JXPDEC_FILTER_ARG:
-          {
-            break;
-          }
-        case PREDENC_FILTER_ARG:
-          {
-            /* pdf_stm_install_predenc_filter (input,
-               PDF_STM_FILTER_READ,
-               args.pred_enc_type,
-               args.pred_colors,
-               args.pred_bpc,
-               args.pred_columns); */
-            break;
-          }
-        case PREDDEC_FILTER_ARG:
-          {
-            /* pdf_stm_install_preddec_filter (input,
-               PDF_STM_FILTER_READ,
-               args.pred_dec_type,
-               args.pred_colors,
-               args.pred_bpc,
-               args.pred_columns); */
-            break;
-          }
         case MD5ENC_FILTER_ARG:
           {
             ret = pdf_hash_new (NULL, &filter_params);
@@ -761,6 +913,30 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
 			     GNU_longOptions, 
 			     NULL)) != -1);
 
+}
+
+static
+open_file (pdf_char_t * name, pdf_fsys_file_t * file,
+           enum pdf_fsys_file_mode_e mode)
+{
+  pdf_status_t ret;
+  pdf_text_t path;
+  pdf_char_t * rem;
+  pdf_size_t rem_len;
+
+  ret = pdf_text_new_from_pdf_string(name, strlen(name), &rem, &rem_len, &path);
+  if (ret != PDF_OK)
+    {
+      pdf_error (ret, stderr, "while creating pdf text path");
+      exit (1);
+    }
+
+  ret = pdf_fsys_file_open (NULL, path, mode, file);
+  if (ret != PDF_OK)
+    {
+      pdf_error (ret, stderr, "while opening file '%s'", name);
+      exit (1);
+    } 
 }
 
 /* End of pdf_filter.c */
