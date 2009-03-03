@@ -29,8 +29,6 @@
 #include <pdf.h>
 #include <check.h>
 
-
-
 #define INTERACTIVE_DEBUG 0
 
 /*
@@ -58,14 +56,8 @@ START_TEST(pdf_i64_abs_001)
   fail_if(j != 2);
 #endif
 
-  
-  
-  
-  
-
 }
 END_TEST
-
 
 /*
  * Test: pdf_i64_abs_002
@@ -92,19 +84,8 @@ START_TEST(pdf_i64_abs_002)
   pdf_i64_abs( &j, k , &p_status);
   fail_if(j != 2);
 #endif
-
-  
-  
-  
 }
 END_TEST
-
-
-
-
-
-
-
 
 /*
  * Test case creation function

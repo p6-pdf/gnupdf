@@ -487,17 +487,21 @@ bignum = pdf_i64_new((32 << 1),10); /*bignum is now -10*/
 
 @deftypefun void pdf_i64_assign (pdf_i64_t *@var{bignum}, const pdf_i32_t @var{high}, const pdf_u32_t @var{low}, pdf_status_t *@var{p_status})
 
-Assign a value coming from one 32 bit signed integer and a 32 bit unsigned integer to a  i64 integer.
+Assign a value coming from one 32 bit signed integer and a 32 bit
+unsigned integer to a  i64 integer.
 
 @table @strong
 @item Parameters
 @table @var
+@item bignum
+Variable that stores 64 bit integer
 @item high
 The high (signed) part of the 64 bit integer.
 @item low
 The low (unsigned) part of the 64 bit integer.
-@item bignum
-Variable that stores 64 bit integer
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -537,6 +541,9 @@ accept a 64bits value.
 A signed 32 bit integer
 @item bignum
 Variable that stores 64 bit integer
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -571,6 +578,9 @@ Copies the data from orig to copy.
 Original variable whose data is to be copied.
 @item copy
 Variable where data is copied to.
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -606,6 +616,9 @@ First addend of the sum
 Second addend of the sum
 @item dest
 Where 64 bit result is stored
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -646,6 +659,9 @@ First addend of the sum (64bit type)
 Second addend of the sum (32 bit)
 @item dest
 Where 64 bit result is stored
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -685,6 +701,9 @@ The minuend of the subtraction
 The subtrahend of the subtraction
 @item dest
 Where 64 bit result is stored
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -725,6 +744,9 @@ The minuend of the subtraction (32 bits)
 The subtrahend of the subtraction (64 bits type)
 @item dest
 Where 64 bit result is stored
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -764,6 +786,9 @@ The minuend of the subtraction (64 bits type)
 The subtrahend of the subtraction (32 bits)
 @item dest
 Where 64 bit result is stored
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -803,6 +828,9 @@ First factor in the multiplication
 Second factor in the multiplication
 @item dest
 Where 64 bit result is stored
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -843,6 +871,9 @@ First factor in the multiplication (64 bits)
 Second factor in the multiplication (32bits)
 @item dest
 Where 64 bit result is stored
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -917,6 +948,9 @@ The dividend in the division (64 bits)
 The divisor in the division (32 bits)
 @item dest
 Where 64 bit result is stored
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 PDF_OK	Operation successful
@@ -951,6 +985,9 @@ The dividend in the division (64 bits)
 The divisor in the division (32 bits)
 @item dest
 Where 64 bit result is stored
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 PDF_OK	Operation successful
@@ -986,6 +1023,9 @@ The dividend in the division
 The divisor in the division
 @item dest
 Where 64 bit result is stored
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -1026,6 +1066,9 @@ The dividend in the division (32bits)
 The divisor in the division (64bits)
 @item dest
 Where 64 bit result is stored
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -1064,6 +1107,9 @@ The dividend in the division (64 bits)
 The divisor in the division (32 bits)
 @item dest
 Where 64 bit result is stored
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -1100,6 +1146,9 @@ Returns the absolute value
 pdf_i64_t type variable
 @item dest
 Where 64 bit result is stored
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -1202,6 +1251,9 @@ Changes sign of 64 bit integer
 @table @var
 @item number
 pdf_i64_t type variable
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
