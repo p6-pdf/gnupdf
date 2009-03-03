@@ -1353,7 +1353,25 @@ The buffer is not full.
 @end table
 @item Usage example
 @example
-XXX
+int i;
+pdf_buffer_t my_buffer;
+
+/* Create a new buffer */
+my_buffer = pdf_buffer_new (1024);
+
+/* Fill the entire buffer */
+for (i = 0; i < 1024; i++)
+@{
+   my_buffer->data[my_buffer->wp++] = 'a';
+@}
+
+/* The buffer should be full now */
+if (pdf_buffer_full_p (my_buffer))
+@{
+   /* Buffer full */
+@}
+
+pdf_buffer_destroy (my_buffer);
 @end example
 @end table
 @end deftypefun
@@ -1378,7 +1396,21 @@ The buffer is not in an end-of-buffer state.
 @end table
 @item Usage example
 @example
-XXX
+pdf_buffer_t my_buffer;
+pdf_char_t my_char;
+
+/* Create a new buffer */
+my_buffer = pdf_buffer_new (3);
+
+/* Copy some contents into the buffer, filling it entirely */
+strncpy (my_buffer->data, "abc", 3);
+my_buffer->wp += 3;
+
+/* Read data from the buffer until an eob condition */
+while (!pdf_buffer_eob_p (my_buffer))
+@{
+   my_char = my_buffer->data[my_buffer->rp++];   
+@}
 @end example
 @end table
 @end deftypefun
@@ -1405,7 +1437,39 @@ Not enough memory to perform the operation.
 @end table
 @item Usage example
 @example
-XXX
+pdf_buffer_t my_buffer;
+pdf_char_t my_char;
+pdf_char_t *my_string;
+pdf_size_t my_string_size;
+pdf_size_t written_bytes;
+
+/* Create a string */
+my_string_size = 10;
+my_string = pdf_alloc (my_string_size);
+strncpy (my_string, "0123456789", 10);
+my_string[10] = 0;
+
+/* Create a new buffer */
+my_buffer = pdf_buffer_new (4);
+
+/* Copy the contents of my_string into my_buffer making it larger in
+   chunks of 4 bytes */
+written_bytes = 0;
+while (written_bytes < my_string_size)
+@{
+   if (pdf_buffer_full_p (my_buffer))
+   @{
+      /* Grow the buffer */
+      pdf_buffer_resize (my_buffer,
+                         my_buffer->wp + 5);
+   @}
+
+   my_buffer->data[my_buffer->wp] = my_string[my_buffer->wp];
+   my_buffer->wp++;
+@}
+
+/* Adjust the buffer size */
+pdf_buffer_resize (my_buffer, my_string_size);
 @end example
 @end table
 @end deftypefun
@@ -1428,7 +1492,17 @@ The operation succeeded.
 @end table
 @item Usage example
 @example
-XXX
+pdf_buffer_t my_buffer;
+
+/* Create a new buffer and initialize its contents */
+my_buffer = pdf_buffer_new (3);
+strncpy (my_buffer->data, "abc", 3);
+my_buffer->wp += 3;
+
+/* Replace the contents */
+pdf_buffer_rewind (my_buffer);
+strncpy (my_buffer->data, "ABC", 3);
+my_buffer->wp += 3;
 @end example
 @end table
 @end deftypefun
