@@ -1,5 +1,8 @@
 2009-03-03  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_file_get_url): Avoid a
+	warning about the signedness of pdf_char_t.
+
 	* doc/gnupdf.texi (Memory Buffers): Usage example for
 	'pdf_buffer_full_p'.
 	(Memory Buffers): Usage example for 'pdf_buffer_eob_p'.
@@ -15,6 +18,12 @@
 	(pdf_i64_abs): Likewise.
 	(pdf_i64_neg): Likewise.
 	(pdf_i64_subtraction): Likewise.
+
+2009-02-24  David Vazquez  <davazp@es.gnu.org>
+
+	* doc/gnupdf.texi (Evaluation of Functions): Section updated.
+
+	* torture/unit/base/fp/pdf-fp-func-eval.c: Negative tests added.
 
 2009-02-22  Jose E. Marchesi  <jemarch@gnu.org>
 
@@ -45,6 +54,21 @@
 	* ../object-layer/doc/gnupdf-arch.texi: Diagrams updated.
 
 	* doc/gnupdf-arch.texi (Tokeniser module): New section.
+
+2009-02-08  David Vazquez  <davazp@es.gnu.org>
+
+	* src/base/pdf-fp-func.c (pdf_fp_func_4_new): Fix checking of
+	balanced braces wrongly, and manages others errors.
+
+	* src/base/pdf-error.h (PDF_ERROR_LIST): Errors for type 4
+	functions added.
+
+2009-02-07  David Vazquez  <davazp@es.gnu.org>
+
+	* torture/unit/base/fp/pdf-fp-func-4-new.c: New file
+
+	* src/base/pdf-fp-func.c (pdf_fp_func_4_new): New arguments for
+	error management.
 
 2009-02-06  Jose E. Marchesi  <jemarch@gnu.org>
 

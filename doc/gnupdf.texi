@@ -5306,7 +5306,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fp_func_4_new (pdf_u32_t @var{m}, pdf_u32_t @var{n}, pdf_real_t @var{domain}[], pdf_real_t @var{range}[], pdf_char_t *@var{code}, pdf_size_t @var{code_size}, pdf_fp_func_t *@var{function})
+@deftypefun pdf_status_t pdf_fp_func_4_new (pdf_u32_t @var{m}, pdf_u32_t @var{n}, pdf_real_t @var{domain}[], pdf_real_t @var{range}[], pdf_char_t *@var{code}, pdf_size_t @var{code_size}, pdf_size_t *@var{error_at}, pdf_fp_func_t *@var{function})
 
 Create a new type 4 (postscript calculator) function.
 
@@ -5328,6 +5328,8 @@ ranges will be clipped to the appropriate range.
 Memory buffer containing the postscript code to execute.
 @item code_size
 Size of @var{code}.
+@item error_at
+Pointer to a variable where it will put the current offset on error.
 @item function
 Pointer to a variable holding the new function.
 @end table
@@ -5399,7 +5401,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fp_func_eval (pdf_fp_func_t @var{function}, const pdf_real_t @var{in}[], pdf_real_t @var{out}[])
+@deftypefun pdf_status_t pdf_fp_func_eval (pdf_fp_func_t @var{function}, const pdf_real_t @var{in}[], pdf_real_t @var{out}[], pdf_fp_func_debug_t *@var{debug})
 
 Evaluate a function.
 
@@ -5412,6 +5414,8 @@ The function to evaluate.
 Array containing the input values for the function.
 @item out
 Array containing the output values from the function evaluation.
+@item debug
+A pointer to the structure will contain debug information.
 @end table
 @item Returns
 A PDF status value:

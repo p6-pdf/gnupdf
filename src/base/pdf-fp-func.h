@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/02 21:04:31 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-02-24 18:12:56 davazp"
  *
  *       File:         pdf-fp-func.h
  *       Date:         Sun Nov 30 18:44:41 2008
@@ -35,7 +35,21 @@
 
 typedef struct pdf_fp_func_s *pdf_fp_func_t;
 
+/* Interal size of the type 4 functions stack */
+#define PDF_FP_FUNC_TYPE4_STACK_SIZE 100
+
+typedef union
+{
+  struct {
+    pdf_status_t status;
+    pdf_i32_t op;
+    pdf_i32_t stack_size;
+    double stack[PDF_FP_FUNC_TYPE4_STACK_SIZE];
+  } type4;
+} pdf_fp_func_debug_t;
+
 /* END PUBLIC */
+
 
 struct pdf_fp_func_0_s
 {
@@ -85,7 +99,11 @@ struct pdf_fp_func_4_s
 {
   pdf_char_t *opcodes;
   pdf_u32_t n_opcodes;
-  pdf_u32_t n_alloc;
+
+  /* debug info */
+  /* translate opcodes offset to code offset */
+  pdf_u32_t (*debug_off)[2]; 
+  pdf_size_t debug_size;
 };
 
 struct pdf_fp_func_s
@@ -98,7 +116,8 @@ struct pdf_fp_func_s
   pdf_i32_t init;
   pdf_status_t (*eval) (pdf_fp_func_t fun,
                         const pdf_real_t in[],
-                        pdf_real_t out[]);
+                        pdf_real_t out[],
+                        pdf_fp_func_debug_t * debug);
   union 
   {
     struct pdf_fp_func_0_s t0;
@@ -148,11 +167,13 @@ pdf_status_t pdf_fp_func_4_new (pdf_u32_t m,
                                 pdf_real_t range[],
                                 pdf_char_t *code,
                                 pdf_size_t code_size,
+                                pdf_size_t *error_at,
                                 pdf_fp_func_t *function);
 
 pdf_status_t pdf_fp_func_eval (pdf_fp_func_t function,
                                const pdf_real_t in[],
-                               pdf_real_t out[]);
+                               pdf_real_t out[],
+                               pdf_fp_func_debug_t * debug);
 
 pdf_status_t pdf_fp_func_get_bounds (const pdf_fp_func_t function,
                                      pdf_i32_t *in_dimensions,
