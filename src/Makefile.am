@@ -140,7 +140,13 @@ pdf.h : $(PUBLIC_HDRS)
 	cat $(srcdir)/header-autogen > $@
 	echo "#ifndef PDF_H" >> $@
 	echo "#define PDF_H" >> $@
+	echo "#ifdef __cplusplus" >> $@
+	echo "extern \"C\" {" >> $@
+	echo "#endif" >> $@
 	cat $^ | $(top_builddir)/src/extract-public-hdr >> $@
+	echo "#ifdef __cplusplus" >> $@
+	echo "} // extern \"C\"" >> $@
+	echo "#endif" >> $@
 	echo "#endif /* !PDF_H */" >> $@
 	echo "/* end of pdf.h */" >> $@
 
