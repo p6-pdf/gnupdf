@@ -158,6 +158,36 @@ START_TEST(pdf_i64_div_004)
 }
 END_TEST
 
+/*
+ * Test: pdf_i64_div_005
+ * Description:
+ *   Checks if the division 1/86400 gives 0.
+ * Success conditions:
+ * The call should not produce an error
+ */
+START_TEST(pdf_i64_div_005)
+{
+  pdf_status_t p_status = PDF_OK;
+  pdf_i64_t div1,div2,dest;
+  div1 = pdf_i64_new(0,1);
+  div2 = pdf_i64_new(0,24*3600);
+
+  
+
+#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT  
+  pdf_i64_div(&dest,div1,div2, &p_status);
+  fail_if(p_status != PDF_OK);
+  fail_if(dest.low != 0);
+  fail_if(dest.high != 0);
+#else
+  pdf_i64_div(&dest,div1,div2, &p_status);
+  fail_if(dest != 0);
+#endif
+
+}
+END_TEST
+
+
 
 
 /*
@@ -171,6 +201,7 @@ test_pdf_i64_div (void)
   tcase_add_test(tc, pdf_i64_div_002);
   tcase_add_test(tc, pdf_i64_div_003);
   tcase_add_test(tc, pdf_i64_div_004);
+  tcase_add_test(tc, pdf_i64_div_005);
   return tc;
 }
 

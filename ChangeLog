@@ -1,3 +1,8 @@
+2009-04-17  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* Time module bugfixes and an initial set of unit tests by Lukasz
+	Spintzyk.
+
 2009-04-06  Gerardo E. Gidoni  <gerel@gnu.org>
 
 	* src/Makefile.am: added "extern C" in pdf.h for C++ compilers.
