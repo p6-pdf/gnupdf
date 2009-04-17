@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-02-24 18:52:09 davazp"
+/* -*- mode: C -*- Time-stamp: "2009-04-17 19:24:54 david"
  *
  *       File:         pdf-fp-func.c
  *       Date:         Sun Nov 30 18:46:06 2008
@@ -1397,11 +1397,10 @@ read_type0_sample_table (pdf_char_t *buf,
 
 
 #define NSTACK          PDF_FP_FUNC_TYPE4_STACK_SIZE
-#define REP_TRUE	(1.202056903159594285399738162)
-#define REP_FALSE	(-15116315767.09215686274509804)
+#define REP_TRUE	PDF_FP_FUNC_TYPE4_TRUE
+#define REP_FALSE	PDF_FP_FUNC_TYPE4_FALSE
 #define INT(xyyzy)	((int) pdf_fp_floor (xyyzy))
 #define INT_P(xyzzy) ((xyzzy) == INT(xyzzy))
-
 
 
 static pdf_status_t
@@ -1731,12 +1730,8 @@ pdf_eval_type4 (pdf_fp_func_t t,
     }
 
 
- block_error:
-  return PDF_ERROR;
-  
- stack_error:
-  return PDF_EINVRANGE;
-  
+ block_error:     debug_info.type4.status = PDF_ERROR;       goto end;
+ stack_error:     debug_info.type4.status = PDF_EINVRANGE;   goto end;
  stack_underflow: debug_info.type4.status = PDF_EUNDERFLOW;  goto end;
  stack_overflow:  debug_info.type4.status = PDF_EOVERFLOW;   goto end;
  range_error:     debug_info.type4.status = PDF_EINVRANGE;   goto end;

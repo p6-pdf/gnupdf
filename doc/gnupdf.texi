@@ -5453,6 +5453,58 @@ XXX
 @end table
 @end deftypefun
 
+
+@deftp {Constant} PDF_FP_FUNC_TYPE4_TRUE
+Stand for true value in the debugging information structure.
+@end deftp
+
+@deftp {Constant} PDF_FP_FUNC_TYPE4_FALSE
+Stand for false value in the debugging information structure.
+@end deftp
+
+
+@deftp {Data Type} {pdf_fp_func_debug_t}
+
+This structure contains debugging data associated to the evaluation of a
+function.
+
+@table @code
+@item type0
+No information for type0 functions.
+@item type2
+No information for type2 functions.
+@item type3
+No information for type3 functions.
+@item type4
+@table @code
+@item status
+A PDF status value:
+@table @code
+@item PDF_ERROR
+An unknown error ocurred.
+@item PDF_EINVRANGE
+Invalid range operand for the current operator..
+@item PDF_EUNDERFLOW
+Try to fetch an element from an empty stack.
+@item PDF_EOVERFLOW
+Overflow of stack.
+@item PDF_EBADTYPE
+Invalid type data for the current operator.
+@item PDF_EMATH
+Math error.
+@end table
+@item op
+Offset in the source code in which the error ocurred.
+@item stack_size
+Size of the stack.
+@item stack
+Array of elements in the stack when the error ocurred. The first element
+is the last pushed one. Each element is a double value or a boolean one.
+@end table
+@end table
+@end deftp
+
+
 @deftypefun pdf_status_t pdf_fp_func_eval (pdf_fp_func_t @var{function}, const pdf_real_t @var{in}[], pdf_real_t @var{out}[], pdf_fp_func_debug_t *@var{debug})
 
 Evaluate a function.
@@ -5476,6 +5528,14 @@ A PDF status value:
 The evaluation was successfully performed.
 @item PDF_ERROR
 Error while evaluating the function.
+@item PDF_TYPE0
+Error in a type0 function. The debug structure will contain more information.
+@item PDF_TYPE2
+Error in a type2 function. The debug structure will contain more information.
+@item PDF_TYPE3
+Error in a type3 function. The debug structure will contain more information.
+@item PDF_TYPE4
+Error in a type4 function. The debug structure will contain more information.
 @end table
 @item Usage example
 @example
