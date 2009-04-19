@@ -4464,13 +4464,13 @@ full condition has occured.
 A PDF status value:
 @table @code
 @item PDF_OK
-All the requested bytes were successfully read into @var{buf}.
+All the requested bytes were successfully written into @var{stm}.
 @item PDF_EEOF
 A disk full condition occurred.
 @item PDF_EINVOP
 Writting was requested in a read stream.
 @item PDF_ERROR
-An error prevented to read the bytes.
+An error prevented to write the bytes.
 @end table
 @item Usage example
 @example
@@ -4560,8 +4560,17 @@ A pointer to a @code{pdf_size_t} variable to hold the number of
 flushed bytes. May be @code{0}.
 @end table
 @item Returns
-A PDF status value. The possible values are the same than the exit
-status of @code{pdf_stm_write}.
+A PDF status value:
+@table @code
+@item PDF_OK
+All the requested bytes were successfully written into @var{stm}.
+@item PDF_EEOF
+A disk full condition occurred.
+@item PDF_EINVOP
+Writting was requested in a read stream.
+@item PDF_ERROR
+An error prevented to write the bytes.
+@end table
 @item Usage example
 @example
 XXX
