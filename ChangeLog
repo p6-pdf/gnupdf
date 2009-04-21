@@ -1,3 +1,10 @@
+2009-04-17  David Vazquez  <davazp@es.gnu.org>
+
+	* doc/gnupdf.texi (Evaluation of Functions): Document the
+	'pdf_fp_func_debug_t' data type.
+
+	* torture/tortutils/tortutils.c: Add stdlib.h header.
+
 2009-04-17  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* Time module bugfixes and an initial set of unit tests by Lukasz

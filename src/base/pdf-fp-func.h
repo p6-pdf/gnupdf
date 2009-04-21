@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-02-24 18:12:56 davazp"
+/* -*- mode: C -*- Time-stamp: "2009-04-17 19:17:00 david"
  *
  *       File:         pdf-fp-func.h
  *       Date:         Sun Nov 30 18:44:41 2008
@@ -37,6 +37,9 @@ typedef struct pdf_fp_func_s *pdf_fp_func_t;
 
 /* Interal size of the type 4 functions stack */
 #define PDF_FP_FUNC_TYPE4_STACK_SIZE 100
+
+#define PDF_FP_FUNC_TYPE4_TRUE  (1.202056903159594285399738162)
+#define PDF_FP_FUNC_TYPE4_FALSE (-15116315767.09215686274509804)
 
 typedef union
 {
