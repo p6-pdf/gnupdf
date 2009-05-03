@@ -208,6 +208,9 @@ TEST_SUITE_ALLOC = base/alloc/pdf-alloc.c \
 TEST_SUITE_FP = base/fp/pdf-fp-func-eval.c \
                 base/fp/pdf-fp-func-4-new.c
 
+TEST_SUITE_FSYS = base/fsys/pdf-fsys-get-free-space.c \
+                  base/fsys/pdf-fsys-file-open.c
+
 TEST_ENVIRONMENT = CHARSETALIASDIR=$(top_srcdir)/lib
 
 TEST_FILES = $(TEST_SUITE_LIST) \
@@ -219,7 +222,8 @@ TEST_FILES = $(TEST_SUITE_LIST) \
              $(TEST_SUITE_CRYPT) \
              $(TEST_SUITE_ALLOC) \
              $(TEST_SUITE_STM) \
-             $(TEST_SUITE_FP)
+             $(TEST_SUITE_FP) \
+						 $(TEST_SUITE_FSYS)
 
 TSUITE_FILES = base/alloc/tsuite-alloc.c \
                base/list/tsuite-list.c \
@@ -230,7 +234,8 @@ TSUITE_FILES = base/alloc/tsuite-alloc.c \
 			   base/time/tsuite-time.c \
                base/crypt/tsuite-crypt.c \
                base/stm/tsuite-stm.c \
-               base/fp/tsuite-fp.c
+               base/fp/tsuite-fp.c \
+							 base/fsys/tsuite-fsys.c
 
 TORTUTILS_FILES = $(top_srcdir)/torture/tortutils/tortutils.h \
                   $(top_srcdir)/torture/tortutils/tortutils.c
