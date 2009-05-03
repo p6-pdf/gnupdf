@@ -1,3 +1,18 @@
+2009-05-02  Aleksander Morgado  <aleksander@es.gnu.org>
+
+	Do not break compilation in PowerPC with gcc 3.3. Removing unneeded
+	extern declarations to import variables into the scope of the
+	function, as those variables are directly imported.
+	* src/base/pdf-fsys-disk.c
+	* src/base/pdf-text-context.c
+	* src/base/pdf-text-encoding.c
+	* src/base/pdf-text-ucd-case.c
+	* src/base/pdf-text-ucd-combclass.c
+	* src/base/pdf-text-ucd-gencat.c
+	* src/base/pdf-text-ucd-proplist.c
+	* src/base/pdf-text-ucd-wordbreak.c
+	* src/base/pdf-time-context.c
+
 2009-04-17  David Vazquez  <davazp@es.gnu.org>
 
 	* doc/gnupdf.texi (Evaluation of Functions): Document the
@@ -2203,10 +2218,10 @@
 
 	* torture/unit/base/types/pdf-i64-cmp.c: Changed pdf_i64 functions to conform to new API
 
-	* torture/unit/base/types/pdf-i64-assign.c: Changed pdf_i64 functions to 
+	* torture/unit/base/types/pdf-i64-assign.c: Changed pdf_i64 functions to
 	conform to new API
 
-	* torture/unit/base/types/pdf-i64-assign-quick.c: Changed pdf_i64 functions to 
+	* torture/unit/base/types/pdf-i64-assign-quick.c: Changed pdf_i64 functions to
 	conform to new API
 
 	* torture/unit/base/types/pdf-i64-add.c: Changed pdf_i64 functions to conform to new API
@@ -2215,10 +2230,10 @@
 
 	* src/base/pdf-time.c: Changed pdf_i64 functions to conform to new API
 
-	* src/base/pdf-types.c: Changed API to return void in all functions 
+	* src/base/pdf-types.c: Changed API to return void in all functions
 	but keeping error control
 
-	* src/base/pdf-types.h: Changed API to return void in all functions 
+	* src/base/pdf-types.h: Changed API to return void in all functions
 	but keeping error control
 
 2008-07-07  gerel  <gerel@gnu.org>
@@ -2828,7 +2843,7 @@
 
 2008-04-23  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
-	* src/base/pdf-text-context.c (pdf_text_detect_host_language_and_country): 
+	* src/base/pdf-text-context.c (pdf_text_detect_host_language_and_country):
 	Category name should also be added in case setlocale is not supported.
 
 2008-04-23  Aleksander Morgado Juez  <aleksander@es.gnu.org>
@@ -3247,7 +3262,7 @@
 	* src/base/pdf-text-ucd-case.c: Added `After_I' and `After_Soft_Dotted'
 	context conditions. Also minor bugfixes in casing context creation.
 
-	* src/base/pdf-text-filter.c (pdf_text_filter_change_case): Use 
+	* src/base/pdf-text-filter.c (pdf_text_filter_change_case): Use
 	`UCD_SC_MAX_EXPAND'. Also minor bugfix setting correct final data size.
 	(pdf_text_filter_remove_amp): Include whitespaces in the remove
 	ampersands filter when looking for `&' and `&&'.
@@ -3267,7 +3282,7 @@
 	* src/base/pdf-text-context.h (struct pdf_text_eol_s): Redefinition of
 	`pdf_text_eol_s' as a NUL-terminated string in UTF-8.
 
-	* src/base/pdf-text-context.c (pdf_text_eol_types): System dependent 
+	* src/base/pdf-text-context.c (pdf_text_eol_types): System dependent
 	EOL types stored in UTF-8 and as a NUL-terminated string.
 	(pdf_text_context_init): Check for return status of first call to `setlocale'.
 
@@ -3467,7 +3482,7 @@
 
 2008-03-25  Aleksander Morgado Juez  <aleksander@es.gnu.org>
 
-	* utils/pdf-text-generate-ucd.c: New file. Unicode Character Database 
+	* utils/pdf-text-generate-ucd.c: New file. Unicode Character Database
 	source generator.
 
 	* utils/Makefile.am: Added compilation of `pdf-text-generate-ucd'.

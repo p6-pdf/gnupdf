@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/28 22:27:02 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-05-02 16:36:34 aleksander"
  *
  *       File:         pdf-text-ucd-wordbreak.c
  *       Date:         Sun Mar 09 12:59:01 2008
@@ -837,7 +837,6 @@ pdf_text_ucd_wb_in_interval(pdf_u32_t character,
                             pdf_u32_t first_interval,
                             pdf_u32_t last_interval)
 {
-  extern unicode_wordbreak_info_t unicode_wordbreak_info[UCD_WB_INFO_N];
   int i;
   
   for(i=first_interval; i<=last_interval; ++i)

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/28 22:26:17 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-05-02 16:35:11 aleksander"
  *
  *       File:         pdf-text-encoding.c
  *       Date:         Fri Jan 11 21:09:56 2008
@@ -153,7 +153,6 @@ static const pdf_text_bom_t unicode_bom [PDF_TEXT_MAX_UNICODE_ENC] = {
 static pdf_text_utf32_char_t
 pdf_text_pdfdocenc_point_to_utf32he_point(const pdf_char_t pdfdocenc_val)
 {
-  extern const pdf_u32_t pdfdocenc_map [PDFDOCENC_MAX];
   pdf_text_utf32_char_t utf32val;
   utf32val.i =  pdfdocenc_map[(int)pdfdocenc_val];
   return utf32val;
@@ -221,7 +220,6 @@ pdf_text_utf32he_point_to_pdfdocenc_point(const pdf_text_utf32_char_t utf32val)
    *  conversion is possible */
   if(utf32val.i <= 0xFF)
     {
-      extern const pdfdocenc_map_interval_t pdfdocenc_map_direct[PDFDOCENC_MDI];
       /* Check if direct conversion is possible */
       for(i=0; i<PDFDOCENC_MDI; ++i)
         {
@@ -236,9 +234,6 @@ pdf_text_utf32he_point_to_pdfdocenc_point(const pdf_text_utf32_char_t utf32val)
     }
   else
     {
-      extern const pdf_u32_t pdfdocenc_map [PDFDOCENC_MAX];
-      extern const pdfdocenc_map_interval_t \
-                    pdfdocenc_map_indirect[PDFDOCENC_MII];
       /* Check if indirect conversion is possible */
       for(i=0; i<PDFDOCENC_MII; ++i)
         {
@@ -870,8 +865,6 @@ pdf_text_utf8_to_utf32he(const pdf_char_t    *input_data,
    *  This means that, if length of origin string is N bytes, the number of
    *  required bytes for the UTF32 representation of the string is 4N.
    *  (Each PDFDocEncoding byte is expanded to 4 bytes in UTF32. */
-  
-  extern const unsigned char n_bytes_in_utf8_char [256];
   pdf_size_t new_string_length;
   pdf_size_t new_string_length_worst;
   pdf_size_t bom_bytes;
@@ -1104,7 +1097,6 @@ pdf_text_utf32he_to_utf8(const pdf_char_t      *input_data,
 inline pdf_text_bom_t
 pdf_text_get_unicode_bom(enum pdf_text_unicode_encoding_e unicode_encoding)
 {
-  extern const pdf_text_bom_t unicode_bom [PDF_TEXT_MAX_UNICODE_ENC];
   return unicode_bom[unicode_encoding];
 }
 
@@ -1115,8 +1107,6 @@ pdf_text_check_unicode_bom (const pdf_char_t *data,
                             enum pdf_text_unicode_encoding_e enc,
                             int swap)
 {
-  extern const pdf_text_bom_t unicode_bom [PDF_TEXT_MAX_UNICODE_ENC];
-
   switch(enc)
   {
     case PDF_TEXT_UTF16_HE:

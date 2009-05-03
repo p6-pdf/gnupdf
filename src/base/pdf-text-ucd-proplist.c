@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/28 22:26:57 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-05-02 16:36:17 aleksander"
  *
  *       File:         pdf-text-ucd-proplist.c
  *       Date:         Mon Mar 31 19:58:17 2008
@@ -1221,7 +1221,6 @@ pdf_text_ucd_pl_in_interval(pdf_u32_t character,
                             pdf_u32_t first_interval,
                             pdf_u32_t last_interval)
 {
-  extern unicode_proplist_info_t unicode_proplist_info[UCD_PL_INFO_N];
   int i;
   
   for(i=first_interval; i<=last_interval; ++i)
