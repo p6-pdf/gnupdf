@@ -1,6 +1,6 @@
 2009-05-02  Aleksander Morgado  <aleksander@es.gnu.org>
 
-	Do not break compilation in PowerPC with gcc 3.3. Removing unneeded
+	Do not break compilation in PowerPC with gcc 3.4. Removing unneeded
 	extern declarations to import variables into the scope of the
 	function, as those variables are directly imported.
 	* src/base/pdf-fsys-disk.c
