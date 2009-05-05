@@ -487,17 +487,21 @@ bignum = pdf_i64_new((32 << 1),10); /*bignum is now -10*/
 
 @deftypefun void pdf_i64_assign (pdf_i64_t *@var{bignum}, const pdf_i32_t @var{high}, const pdf_u32_t @var{low}, pdf_status_t *@var{p_status})
 
-Assign a value coming from one 32 bit signed integer and a 32 bit unsigned integer to a  i64 integer.
+Assign a value coming from one 32 bit signed integer and a 32 bit
+unsigned integer to a  i64 integer.
 
 @table @strong
 @item Parameters
 @table @var
+@item bignum
+Variable that stores 64 bit integer
 @item high
 The high (signed) part of the 64 bit integer.
 @item low
 The low (unsigned) part of the 64 bit integer.
-@item bignum
-Variable that stores 64 bit integer
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -537,6 +541,9 @@ accept a 64bits value.
 A signed 32 bit integer
 @item bignum
 Variable that stores 64 bit integer
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -571,6 +578,9 @@ Copies the data from orig to copy.
 Original variable whose data is to be copied.
 @item copy
 Variable where data is copied to.
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -606,6 +616,9 @@ First addend of the sum
 Second addend of the sum
 @item dest
 Where 64 bit result is stored
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -646,6 +659,9 @@ First addend of the sum (64bit type)
 Second addend of the sum (32 bit)
 @item dest
 Where 64 bit result is stored
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -685,6 +701,9 @@ The minuend of the subtraction
 The subtrahend of the subtraction
 @item dest
 Where 64 bit result is stored
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -725,6 +744,9 @@ The minuend of the subtraction (32 bits)
 The subtrahend of the subtraction (64 bits type)
 @item dest
 Where 64 bit result is stored
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -764,6 +786,9 @@ The minuend of the subtraction (64 bits type)
 The subtrahend of the subtraction (32 bits)
 @item dest
 Where 64 bit result is stored
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -803,6 +828,9 @@ First factor in the multiplication
 Second factor in the multiplication
 @item dest
 Where 64 bit result is stored
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -843,6 +871,9 @@ First factor in the multiplication (64 bits)
 Second factor in the multiplication (32bits)
 @item dest
 Where 64 bit result is stored
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -917,6 +948,9 @@ The dividend in the division (64 bits)
 The divisor in the division (32 bits)
 @item dest
 Where 64 bit result is stored
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 PDF_OK	Operation successful
@@ -951,6 +985,9 @@ The dividend in the division (64 bits)
 The divisor in the division (32 bits)
 @item dest
 Where 64 bit result is stored
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 PDF_OK	Operation successful
@@ -986,6 +1023,9 @@ The dividend in the division
 The divisor in the division
 @item dest
 Where 64 bit result is stored
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -1026,6 +1066,9 @@ The dividend in the division (32bits)
 The divisor in the division (64bits)
 @item dest
 Where 64 bit result is stored
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -1064,6 +1107,9 @@ The dividend in the division (64 bits)
 The divisor in the division (32 bits)
 @item dest
 Where 64 bit result is stored
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -1100,6 +1146,9 @@ Returns the absolute value
 pdf_i64_t type variable
 @item dest
 Where 64 bit result is stored
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -1202,6 +1251,9 @@ Changes sign of 64 bit integer
 @table @var
 @item number
 pdf_i64_t type variable
+@item p_status
+Pointer to a pdf_status_t variable to hold the status of the
+operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
 A pdf status value:
@@ -1353,7 +1405,25 @@ The buffer is not full.
 @end table
 @item Usage example
 @example
-XXX
+int i;
+pdf_buffer_t my_buffer;
+
+/* Create a new buffer */
+my_buffer = pdf_buffer_new (1024);
+
+/* Fill the entire buffer */
+for (i = 0; i < 1024; i++)
+@{
+   my_buffer->data[my_buffer->wp++] = 'a';
+@}
+
+/* The buffer should be full now */
+if (pdf_buffer_full_p (my_buffer))
+@{
+   /* Buffer full */
+@}
+
+pdf_buffer_destroy (my_buffer);
 @end example
 @end table
 @end deftypefun
@@ -1378,7 +1448,21 @@ The buffer is not in an end-of-buffer state.
 @end table
 @item Usage example
 @example
-XXX
+pdf_buffer_t my_buffer;
+pdf_char_t my_char;
+
+/* Create a new buffer */
+my_buffer = pdf_buffer_new (3);
+
+/* Copy some contents into the buffer, filling it entirely */
+strncpy (my_buffer->data, "abc", 3);
+my_buffer->wp += 3;
+
+/* Read data from the buffer until an eob condition */
+while (!pdf_buffer_eob_p (my_buffer))
+@{
+   my_char = my_buffer->data[my_buffer->rp++];   
+@}
 @end example
 @end table
 @end deftypefun
@@ -1405,7 +1489,39 @@ Not enough memory to perform the operation.
 @end table
 @item Usage example
 @example
-XXX
+pdf_buffer_t my_buffer;
+pdf_char_t my_char;
+pdf_char_t *my_string;
+pdf_size_t my_string_size;
+pdf_size_t written_bytes;
+
+/* Create a string */
+my_string_size = 10;
+my_string = pdf_alloc (my_string_size);
+strncpy (my_string, "0123456789", 10);
+my_string[10] = 0;
+
+/* Create a new buffer */
+my_buffer = pdf_buffer_new (4);
+
+/* Copy the contents of my_string into my_buffer making it larger in
+   chunks of 4 bytes */
+written_bytes = 0;
+while (written_bytes < my_string_size)
+@{
+   if (pdf_buffer_full_p (my_buffer))
+   @{
+      /* Grow the buffer */
+      pdf_buffer_resize (my_buffer,
+                         my_buffer->wp + 5);
+   @}
+
+   my_buffer->data[my_buffer->wp] = my_string[my_buffer->wp];
+   my_buffer->wp++;
+@}
+
+/* Adjust the buffer size */
+pdf_buffer_resize (my_buffer, my_string_size);
 @end example
 @end table
 @end deftypefun
@@ -1428,7 +1544,17 @@ The operation succeeded.
 @end table
 @item Usage example
 @example
-XXX
+pdf_buffer_t my_buffer;
+
+/* Create a new buffer and initialize its contents */
+my_buffer = pdf_buffer_new (3);
+strncpy (my_buffer->data, "abc", 3);
+my_buffer->wp += 3;
+
+/* Replace the contents */
+pdf_buffer_rewind (my_buffer);
+strncpy (my_buffer->data, "ABC", 3);
+my_buffer->wp += 3;
 @end example
 @end table
 @end deftypefun
@@ -5232,7 +5358,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fp_func_4_new (pdf_u32_t @var{m}, pdf_u32_t @var{n}, pdf_real_t @var{domain}[], pdf_real_t @var{range}[], pdf_char_t *@var{code}, pdf_size_t @var{code_size}, pdf_fp_func_t *@var{function})
+@deftypefun pdf_status_t pdf_fp_func_4_new (pdf_u32_t @var{m}, pdf_u32_t @var{n}, pdf_real_t @var{domain}[], pdf_real_t @var{range}[], pdf_char_t *@var{code}, pdf_size_t @var{code_size}, pdf_size_t *@var{error_at}, pdf_fp_func_t *@var{function})
 
 Create a new type 4 (postscript calculator) function.
 
@@ -5254,6 +5380,8 @@ ranges will be clipped to the appropriate range.
 Memory buffer containing the postscript code to execute.
 @item code_size
 Size of @var{code}.
+@item error_at
+Pointer to a variable where it will put the current offset on error.
 @item function
 Pointer to a variable holding the new function.
 @end table
@@ -5325,7 +5453,59 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fp_func_eval (pdf_fp_func_t @var{function}, const pdf_real_t @var{in}[], pdf_real_t @var{out}[])
+
+@deftp {Constant} PDF_FP_FUNC_TYPE4_TRUE
+Stand for true value in the debugging information structure.
+@end deftp
+
+@deftp {Constant} PDF_FP_FUNC_TYPE4_FALSE
+Stand for false value in the debugging information structure.
+@end deftp
+
+
+@deftp {Data Type} {pdf_fp_func_debug_t}
+
+This structure contains debugging data associated to the evaluation of a
+function.
+
+@table @code
+@item type0
+No information for type0 functions.
+@item type2
+No information for type2 functions.
+@item type3
+No information for type3 functions.
+@item type4
+@table @code
+@item status
+A PDF status value:
+@table @code
+@item PDF_ERROR
+An unknown error ocurred.
+@item PDF_EINVRANGE
+Invalid range operand for the current operator..
+@item PDF_EUNDERFLOW
+Try to fetch an element from an empty stack.
+@item PDF_EOVERFLOW
+Overflow of stack.
+@item PDF_EBADTYPE
+Invalid type data for the current operator.
+@item PDF_EMATH
+Math error.
+@end table
+@item op
+Offset in the source code in which the error ocurred.
+@item stack_size
+Size of the stack.
+@item stack
+Array of elements in the stack when the error ocurred. The first element
+is the last pushed one. Each element is a double value or a boolean one.
+@end table
+@end table
+@end deftp
+
+
+@deftypefun pdf_status_t pdf_fp_func_eval (pdf_fp_func_t @var{function}, const pdf_real_t @var{in}[], pdf_real_t @var{out}[], pdf_fp_func_debug_t *@var{debug})
 
 Evaluate a function.
 
@@ -5338,6 +5518,8 @@ The function to evaluate.
 Array containing the input values for the function.
 @item out
 Array containing the output values from the function evaluation.
+@item debug
+A pointer to the structure will contain debug information.
 @end table
 @item Returns
 A PDF status value:
@@ -5346,6 +5528,14 @@ A PDF status value:
 The evaluation was successfully performed.
 @item PDF_ERROR
 Error while evaluating the function.
+@item PDF_TYPE0
+Error in a type0 function. The debug structure will contain more information.
+@item PDF_TYPE2
+Error in a type2 function. The debug structure will contain more information.
+@item PDF_TYPE3
+Error in a type3 function. The debug structure will contain more information.
+@item PDF_TYPE4
+Error in a type4 function. The debug structure will contain more information.
 @end table
 @item Usage example
 @example

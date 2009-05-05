@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/11/25 21:03:53 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-04-17 18:59:48 david"
  *
  *       File:         tortutils.c
  *       Date:         Mon Nov 24 22:18:12 2008
@@ -26,6 +26,7 @@
 #include <config.h>
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <xalloc.h>
@@ -52,7 +53,7 @@ tortu_get_data_file_path (char *datafilename)
   static char *separator = "/";
 #endif /* PDF_HOST_WIN32 */
 
-  path = strdup (tortu_data_path);
+  path = xstrdup (tortu_data_path);
   path = xrealloc (path, strlen(path) 
                    + strlen(separator) 
                    + strlen(datafilename)

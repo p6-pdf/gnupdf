@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-01-14 21:18:32 aleksander"
+/* -*- mode: C -*- Time-stamp: "09/03/03 22:04:32 jemarch"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -863,7 +863,7 @@ pdf_fsys_disk_file_get_url (pdf_fsys_file_t file)
       pdf_text_t url = NULL;
 #define PDF_DISK_URL_PREFIX  (pdf_char_t *)"file:/"
       if(pdf_text_new_from_unicode(PDF_DISK_URL_PREFIX,
-                                   strlen(PDF_DISK_URL_PREFIX),
+                                   strlen((char *) PDF_DISK_URL_PREFIX),
                                    PDF_TEXT_UTF8,
                                    &url) == PDF_OK)
         {

@@ -164,6 +164,32 @@ TEST_SUITE_TYPES = base/types/pdf-i64-new.c \
 		   base/types/pdf-i64-mod.c \
 		   base/types/pdf-i64-subtraction.c 
 
+TEST_SUITE_TIME =  base/time/pdf-time-init.c \
+	       base/time/pdf-time-new.c \
+		   base/time/pdf-time-dup.c \
+		   base/time/pdf-time-destroy.c \
+		   base/time/pdf-time-copy.c \
+		   base/time/pdf-time-clear.c \
+		   base/time/pdf-time-set-from-u32.c \
+		   base/time/pdf-time-set-from-i64.c \
+		   base/time/pdf-time-add-cal-span.c \
+		   base/time/pdf-time-from-cal.c \
+		   base/time/pdf-time-from-string.c \
+		   base/time/pdf-time-span-new.c \
+		   base/time/pdf-time-span-dup.c \
+		   base/time/pdf-time-span-destroy.c \
+		   base/time/pdf-time-span-set.c \
+  		   base/time/pdf-time-span-set-from-i32.c \
+  		   base/time/pdf-time-span-negate.c \
+  		   base/time/pdf-time-span-add.c \
+  		   base/time/pdf-time-span-cmp.c \
+  		   base/time/pdf-time-span-copy.c \
+  		   base/time/pdf-time-span-diff.c \
+  		   base/time/pdf-time-span-to-secs.c \
+		   base/time/pdf-time-testdata.c \
+		   base/time/pdf-time-test-common.c 
+
+
 TEST_SUITE_CRYPT = base/crypt/pdf-crypt-init.c \
 		   base/crypt/pdf-crypt-cipher-new.c \
 		   base/crypt/pdf-crypt-cipher-setkey.c \
@@ -179,7 +205,8 @@ TEST_SUITE_ALLOC = base/alloc/pdf-alloc.c \
                    base/alloc/pdf-realloc.c \
                    base/alloc/pdf-dealloc.c
 
-TEST_SUITE_FP = base/fp/pdf-fp-func-eval.c
+TEST_SUITE_FP = base/fp/pdf-fp-func-eval.c \
+                base/fp/pdf-fp-func-4-new.c
 
 TEST_ENVIRONMENT = CHARSETALIASDIR=$(top_srcdir)/lib
 
@@ -187,7 +214,8 @@ TEST_FILES = $(TEST_SUITE_LIST) \
              $(TEST_SUITE_TEXT) \
              $(TEST_SUITE_HASH) \
              $(TEST_SUITE_ERROR) \
-	     $(TEST_SUITE_TYPES) \
+			 $(TEST_SUITE_TYPES) \
+			 $(TEST_SUITE_TIME) \
              $(TEST_SUITE_CRYPT) \
              $(TEST_SUITE_ALLOC) \
              $(TEST_SUITE_STM) \
@@ -198,7 +226,8 @@ TSUITE_FILES = base/alloc/tsuite-alloc.c \
                base/text/tsuite-text.c \
                base/hash/tsuite-hash.c \
                base/error/tsuite-error.c \
-	       base/types/tsuite-types.c \
+		       base/types/tsuite-types.c \
+			   base/time/tsuite-time.c \
                base/crypt/tsuite-crypt.c \
                base/stm/tsuite-stm.c \
                base/fp/tsuite-fp.c

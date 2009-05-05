@@ -74,7 +74,6 @@ pdf_time_context_init(void)
   PDF_DEBUG_BASE("Daylight saving? %s",time_context.local_time_daylight_save ? \
                  "yes":"no");
 
-  pdf_dealloc (time_struct);
   return PDF_OK;
 }
 

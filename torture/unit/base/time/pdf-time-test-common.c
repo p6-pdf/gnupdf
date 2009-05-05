@@ -1,13 +1,13 @@
-/* -*- mode: C -*- Time-stamp: "2009-02-07 18:56:43 davazp"
+/* -*- mode: C -*- Time-stamp: "09/04/17 00:07:51 jemarch"
  *
- *       File:         tsuite-fp.c
- *       Date:         Tue Dec  2 20:08:22 2008
+ *       File:         pdf-time-test-common.c
+ *       Date:         Fri Feb 27 17:35:31 2009
  *
- *       GNU PDF Library - Testcase definition for the FP module
+ *       GNU PDF Library - Common code for the time tests
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2009 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,24 +23,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <check.h>
 
-extern TCase *test_pdf_fp_func_4_new (void);
-extern TCase *test_pdf_fp_func_eval (void);
+#include <base/time/pdf-time-test-common.h>
+#include <pdf.h>
+
+void print_pdf_time_cal(pdf_time_t time, pdf_char_t *info){
+    struct  pdf_time_cal_s cal;
+
+    pdf_time_from_cal(time, &cal);
+
+    printf("%s %d-%d-%d %d:%d:%d +%d | dow %d\n", info, cal.year, cal.month, cal.day, cal.hour, cal.minute, cal.second, cal.gmt_offset, cal.dow); 
 
 
-Suite *
-tsuite_fp ()
-{
-  Suite *s;
-
-  s = suite_create("fp");
-  
-  suite_add_tcase (s, test_pdf_fp_func_4_new ());
-  suite_add_tcase (s, test_pdf_fp_func_eval ());
-
-  return s;
 }
 
-
-/* End of tsuite-fp.c */
+/* End of pdf-time-test-common.c */
