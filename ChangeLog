@@ -13,6 +13,10 @@
 	* src/base/pdf-text-ucd-wordbreak.c
 	* src/base/pdf-time-context.c
 
+2009-04-19  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* doc/gnupdf.texi: corrected pdf_stm_write/flush return descriptions.
+
 2009-04-17  David Vazquez  <davazp@es.gnu.org>
 
 	* doc/gnupdf.texi (Evaluation of Functions): Document the
