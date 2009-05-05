@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/03/03 22:04:32 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-05-03 19:03:49 aleksander"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -1335,7 +1335,6 @@ static const pdf_char_t *__pdf_fsys_open_mode_strings[PDF_FSYS_OPEN_MODE_MAX] = 
 static const pdf_char_t *
 __pdf_fsys_disk_get_mode_string(const enum pdf_fsys_file_mode_e mode)
 {
-  extern const pdf_char_t *__pdf_fsys_open_mode_strings[PDF_FSYS_OPEN_MODE_MAX];
   return (((mode >= PDF_FSYS_OPEN_MODE_FIRST) &&                        \
            (mode <= PDF_FSYS_OPEN_MODE_LAST)) ?                         \
           __pdf_fsys_open_mode_strings[mode] :                          \

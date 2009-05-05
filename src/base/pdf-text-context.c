@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/15 23:18:35 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-05-02 16:36:41 aleksander"
  *
  *       File:         pdf-text-context.c
  *       Date:         Fri Feb 25 23:58:56 2008
@@ -91,7 +91,6 @@ pdf_text_detect_host_endianness(void)
 static pdf_status_t
 pdf_text_detect_host_encoding(void)
 {
-  extern pdf_text_context_t text_context;
   const char *charset = NULL;
   pdf_size_t length;
 
@@ -122,7 +121,6 @@ pdf_text_detect_host_encoding(void)
 static pdf_status_t
 pdf_text_detect_host_language_and_country(void)
 {
-  extern pdf_text_context_t text_context;
   const char *locale_name = NULL;
   
   /* Initialize context strings */
@@ -194,9 +192,6 @@ pdf_text_detect_host_eol(void)
 pdf_status_t
 pdf_text_context_init (void)
 {
-  extern pdf_text_context_t text_context;
-  extern pdf_bool_t text_context_initialized;
-
   pdf_status_t ret_code = PDF_OK;
   
 #if defined HAVE_SETLOCALE
@@ -249,35 +244,30 @@ pdf_text_context_init (void)
 pdf_bool_t
 pdf_text_context_initialized (void)
 {
-  extern pdf_bool_t text_context_initialized;
   return text_context_initialized;
 }
 
 enum pdf_endianness_e
 pdf_text_context_get_host_endianness(void)
 {
-  extern pdf_text_context_t text_context;
   return text_context.host_endianness;
 }
 
 pdf_text_host_encoding_t
 pdf_text_context_get_host_encoding(void)
 {
-  extern pdf_text_context_t text_context;
   return text_context.host_encoding;
 }
 
 const pdf_char_t *
 pdf_text_context_get_host_language(void)
 {
-  extern pdf_text_context_t text_context;
   return (const pdf_char_t *)text_context.host_language_id;
 }
 
 const pdf_char_t *
 pdf_text_context_get_host_country(void)
 {
-  extern pdf_text_context_t text_context;
   return (const pdf_char_t *)text_context.host_country_id;
 }
 
@@ -287,12 +277,10 @@ pdf_text_context_get_host_eol(enum pdf_text_eol_types eol_type)
 {
   if(eol_type == PDF_TEXT_EOL_HOST)
     {
-      extern pdf_text_context_t text_context;
       return text_context.host_eol;
     }
   else
     {
-      extern const struct pdf_text_eol_s pdf_text_eol_types [PDF_TEXT_EOLMAX];
       return (pdf_text_eol_t) &(pdf_text_eol_types [eol_type]);
     }
 }
