@@ -1,3 +1,19 @@
+2009-05-06  Jose E. Marchesi  <jemarch@gnu.org>
+
+	Support for DCT decoding by Yang Chang Hua and minor corrections.
+
+	* configure.ac: Changed "no" with "xno" in condition: support for
+	libjpeg was always assumed to exist.
+
+	* src/base/pdf-stm-f-dct.c (pdf_stm_f_dctdec_write_ppm_header):
+	Cast pdf_char_t pointers to char* in order to avoid a warning on
+	signess.
+
+	* utils/pdf-filter.c (GNU_longOptions): Add the DCT decoder.
+
+	* utils/pdf-filter.h (): Add the DCT decoder to the list of
+	options if libjpeg is present.
+
 2009-05-02  Aleksander Morgado  <aleksander@es.gnu.org>
 
 	Do not break compilation in PowerPC with gcc 3.4. Removing unneeded

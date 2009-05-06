@@ -55,6 +55,9 @@ endif
 if JBIG2DEC
   STM_MODULE_SOURCES += base/pdf-stm-f-jbig2.c base/pdf-stm-f-jbig2.h
 endif
+if LIBJPEG
+  STM_MODULE_SOURCES += base/pdf-stm-f-dct.c base/pdf-stm-f-dct.h
+endif
 
 TEXT_MODULE_SOURCES = base/pdf-text-context.c base/pdf-text-context.h \
                       base/pdf-text-encoding.c base/pdf-text-encoding.h \

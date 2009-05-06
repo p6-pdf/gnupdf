@@ -164,6 +164,15 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
         break;
       }
 #endif /* HAVE_LIBJBIG2DEC */
+#if defined(HAVE_LIBJPEG)
+   case PDF_STM_FILTER_DCT_DEC:
+      {
+        new->impl.init_fn = pdf_stm_f_dctdec_init;
+        new->impl.apply_fn = pdf_stm_f_dctdec_apply;
+        new->impl.dealloc_state_fn = pdf_stm_f_dctdec_dealloc_state;
+        break;
+      }
+#endif /* HAVE_LIBJPEG */
     default:
       {
         /* Shall not be reached, but makes the compiler happy */

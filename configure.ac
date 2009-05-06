@@ -52,6 +52,10 @@ CHECK_ZLIB
 AM_CONDITIONAL([ZLIB], [test "x$have_zlib" = "xyes"])
 AC_CHECK_LIB(m,exp,,,)
 
+have_libjpeg=yes
+AC_CHECK_LIB([jpeg],[jpeg_std_error],[],[have_libjpeg=no])
+AM_CONDITIONAL([LIBJPEG], [test "x$have_libjpeg" != "xno"])
+
 have_jbig2dec=yes
 AC_CHECK_LIB([jbig2dec],[jbig2_ctx_new],[],[have_jbig2dec=no])
 AM_CONDITIONAL([JBIG2DEC], [test "x$have_jbig2dec" != "xno"])
@@ -282,6 +286,7 @@ Configured for \`${canonical}'.
   Compilation level:                        ${PDFLIB_LEVEL} (${PDFLIB_LEVEL_DESCR})
   Using FlateDecode filter?                 ${have_zlib}
   Using JBIG2 decoder filter?               ${ac_cv_lib_jbig2dec_jbig2_ctx_new}
+  Using DCT filter?                         ${have_libjpeg}
   With unit tests support?                  ${ut_support} ${ut_framework}
   Program to build html manuals             ${texihtmlprogram}
   Build project management resources?       ${prmgt_mode}
@@ -294,13 +299,19 @@ dnl Report warnings
 if test "x$have_zlib" = "xno" ; then
 echo "
 WARNING: you are going to build a library without FlateDecode support. 
-         That means you wont be able to process many PDF files."
+         That means you will not be able to process many PDF files."
 fi
 
 if test "x$ac_cv_lib_jbig2dec_jbig2_ctx_new" = "xno" ; then
 echo "
 WARNING: you are going to build a library without JBIG2Decode support.
-         That means you wont be able to process many PDF files."
+         That means you will not be able to process many PDF files."
+fi
+
+if test "x$ac_cv_lib_jpeg_jpeg_std_error" = "xno" ; then
+echo "
+WARNING: you are going to build a library without JPEG support.
+         That means you will not be able to process many PDF files."
 fi
 
 if test "ut_support" = "xno" ; then

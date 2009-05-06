@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/02/03 22:47:52 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/05/06 19:46:33 jemarch"
  *
  *       File:         pdf-filter.h
  *       Date:         Tue Jul 10 18:40:55 2007
@@ -49,11 +49,13 @@ enum
   LZWENC_FILTER_ARG,
   LZWDEC_FILTER_ARG,
   CCITTFAXDEC_FILTER_ARG,
-  DCTDEC_FILTER_ARG,
   JXPDEC_FILTER_ARG,
   PREDENC_FILTER_ARG,
   PREDDEC_FILTER_ARG,
 #endif /* 0 */
+#ifdef HAVE_LIBJPEG
+  DCTDEC_FILTER_ARG,
+#endif /* HAVE_LIBJPEG */
 #ifdef HAVE_LIBZ
   FLATEDEC_FILTER_ARG,
   FLATEENC_FILTER_ARG,

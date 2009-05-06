@@ -46,6 +46,10 @@
 #  include <pdf-stm-f-jbig2.h>
 #endif /* HAVE_LIBJBIG2DEC */
 
+#if defined(HAVE_LIBJPEG)
+#  include <pdf-stm-f-dct.h>
+#endif
+
 /* BEGIN PUBLIC */
 
 /* Types of filters */
@@ -61,6 +65,9 @@ enum pdf_stm_filter_type_e
 #if defined(HAVE_LIBJBIG2DEC)
   PDF_STM_FILTER_JBIG2_DEC,
 #endif /* HAVE_LIBJBIG2DEC */
+#if defined(HAVE_LIBJPEG)
+  PDF_STM_FILTER_DCT_DEC,
+#endif
   PDF_STM_FILTER_AHEX_ENC,
   PDF_STM_FILTER_AHEX_DEC,
   PDF_STM_FILTER_AESV2_ENC,

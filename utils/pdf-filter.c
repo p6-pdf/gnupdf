@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/02/03 22:53:33 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/05/06 19:48:59 jemarch"
  *
  *       File:         pdf-filter.c
  *       Date:         Tue Jul 10 18:42:07 2007
@@ -64,11 +64,13 @@ static struct option GNU_longOptions[] =
     {"lzwenc", no_argument, NULL, LZWENC_FILTER_ARG},
     {"lzwdec", no_argument, NULL, LZWDEC_FILTER_ARG},
     {"cfaxdec", no_argument, NULL, CCITTFAXDEC_FILTER_ARG},
-    {"dctdec", no_argument, NULL, DCTDEC_FILTER_ARG},
     {"jxpdec", no_argument, NULL, JXPDEC_FILTER_ARG},
     {"predenc", no_argument, NULL, PREDENC_FILTER_ARG},
     {"preddec", no_argument, NULL, PREDDEC_FILTER_ARG},
 #endif /* 0 */
+#ifdef HAVE_LIBJPEG
+    {"dctdec", no_argument, NULL, DCTDEC_FILTER_ARG},
+#endif
 #ifdef HAVE_LIBZ
     {"flatedec", no_argument, NULL, FLATEDEC_FILTER_ARG},
     {"flateenc", no_argument, NULL, FLATEENC_FILTER_ARG},
@@ -540,10 +542,27 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
           {
             break;
           }
+#ifdef HAVE_LIBJPEG
         case DCTDEC_FILTER_ARG:
           {
+            ret = pdf_hash_new (NULL, &filter_params);
+            if (ret != PDF_OK)
+              {
+                pdf_error (ret, stderr, "while creating the dctdec filter parameters hash table");
+                exit (1);
+              }
+            pdf_stm_install_filter (stm,
+                                    PDF_STM_FILTER_DCT_DEC,
+                                    filter_params);
+            
+            /* Note that a reference to this memory remains into the
+             *  stream */
+            jbig2dec_global_segments = NULL;
+            jbig2dec_global_segments_size = 0;
+
             break;
           }
+#endif /* HAVE_LIBJPEG */
         case JXPDEC_FILTER_ARG:
           {
             break;
