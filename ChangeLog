@@ -1,5 +1,8 @@
 2009-05-06  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf-hg.texi (Debugging check tests): Some hints on
+	debugging check test suites added.
+
 	* AUTHORS: Entry added for Yang Chang Hua.
 
 	Support for DCT decoding by Yang Chang Hua and minor corrections:
