@@ -1,6 +1,8 @@
 2009-05-06  Jose E. Marchesi  <jemarch@gnu.org>
 
-	Support for DCT decoding by Yang Chang Hua and minor corrections.
+	* AUTHORS: Entry added for Yang Chang Hua.
+
+	Support for DCT decoding by Yang Chang Hua and minor corrections:
 
 	* configure.ac: Changed "no" with "xno" in condition: support for
 	libjpeg was always assumed to exist.
