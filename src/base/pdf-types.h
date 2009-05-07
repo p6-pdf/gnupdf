@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/05/07 11:13:53 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/05/07 12:18:09 jemarch"
  *
  *       File:         pdf-types.h
  *       Date:         Sun Feb 10 21:30:00 2008
@@ -285,63 +285,67 @@ pdf_i64_to_i32(const pdf_i64_t bignum);
 #define pdf_i64_new(high, low) ((((pdf_i64_t)high)<<32) + low)	
 
 #define pdf_i64_assign(bignum, high, low, p_status)	\
-  do{ \
-    if (bignum == NULL)				\
-      {						\
-	*p_status =  PDF_ERROR;			\
-      }						\
-    else					\
-      {						\
-	*p_status =  PDF_OK;			\
-	*bignum = 0;				\
-	*bignum = (((pdf_i64_t)high)<<32);	\
-	*bignum = *bignum + low;		\
-      }						\
-  }while(0)
+  do                                                    \
+    {                                                   \
+      if (bignum == NULL)                               \
+        {                                               \
+          *p_status =  PDF_ERROR;                       \
+        }                                               \
+      else                                              \
+        {                                               \
+          *p_status =  PDF_OK;                          \
+          *bignum = 0;                                  \
+          *bignum = (((pdf_i64_t)high)<<32);            \
+          *bignum = *bignum + low;                      \
+        }                                               \
+    } while(0)
    
 
 /*Quick version of assignment in which only the lowest siginificant
   part is taken into account*/
-#define pdf_i64_assign_quick(bignum, value, p_status) \
-  do{ \
-    if (bignum == NULL)				\
-      {						\
-	*p_status =  PDF_ERROR;			\
-      }						\
-    else					\
-      {						\
-	*p_status =  PDF_OK;			\
-	*bignum = value;			\
-      }						\
-  }while(0)
+#define pdf_i64_assign_quick(bignum, value, p_status)   \
+  do                                                    \
+    {                                                   \
+      if (bignum == NULL)                               \
+        {                                               \
+          *p_status =  PDF_ERROR;                       \
+        }                                               \
+      else                                              \
+        {                                               \
+          *p_status =  PDF_OK;                          \
+          *bignum = value;                              \
+        }                                               \
+    } while(0)
 
 /*Copy one pdf_i64_t variable into another*/
-#define pdf_i64_copy(orig, copy, p_status) \
-  do{\
-    if (copy == NULL)				\
-      {						\
-	*p_status =  PDF_ERROR;			\
-      }						\
-    else					\
-      {						\
-	*p_status =  PDF_OK;			\
-	*copy = orig;				\
-      }						\
-  }while(0)
+#define pdf_i64_copy(orig, copy, p_status)      \
+  do                                            \
+    {                                           \
+      if (copy == NULL)				\
+        {                                       \
+          *p_status =  PDF_ERROR;               \
+        }                                       \
+      else					\
+        {                                       \
+          *p_status =  PDF_OK;			\
+          *copy = orig;				\
+        }                                       \
+    } while(0)
 
 /*Add two pdf_i64_t variables*/
-#define pdf_i64_add(dest, addend1, addend2, p_status) \
-  do{\
-    if (dest == NULL)				\
-      {						\
-	*p_status =  PDF_ERROR;			\
-      }						\
-    else					\
-      {						\
-	*p_status =  PDF_OK;			\
-	*dest = addend1 + addend2;		\
-      }						\
-  }while(0)
+#define pdf_i64_add(dest, addend1, addend2, p_status)   \
+  do                                                    \
+    {                                                   \
+      if (dest == NULL)                                 \
+        {                                               \
+          *p_status =  PDF_ERROR;                       \
+        }                                               \
+      else                                              \
+        {                                               \
+          *p_status =  PDF_OK;                          \
+          *dest = addend1 + addend2;                    \
+        }                                               \
+    } while(0)
 
 /*Compare two pdf_i64_t variables*/
 #define pdf_i64_cmp(number_1, number_2) \
@@ -349,87 +353,93 @@ pdf_i64_to_i32(const pdf_i64_t bignum);
 
 /*Calculate the absolute value of a pdf_i64_t variable*/
 #define pdf_i64_abs(dest, number, p_status) \
-  do{\
-    if (dest == NULL)				\
-      {						\
-	*p_status =  PDF_ERROR;			\
-      }						\
-    else					\
-      {						\
-	*p_status =  PDF_OK;			\
-	*dest = abs(number);			\
-      }						\
-  }while(0)
+  do                                        \
+    {                                       \
+      if (dest == NULL)                     \
+        {                                   \
+          *p_status =  PDF_ERROR;           \
+        }                                   \
+      else                                  \
+        {                                   \
+          *p_status =  PDF_OK;              \
+          *dest = abs(number);              \
+        }                                   \
+    } while(0)
     
 /*Negate a pdf_i64_t type variable*/
 #define pdf_i64_neg(dest, number, p_status) \
-  do{\
-    if (dest == NULL)				\
-      {						\
-	*p_status =  PDF_ERROR;			\
-      }						\
-    else					\
-      {						\
-	*p_status =  PDF_OK;			\
-	*dest = -number;			\
-      }						\
-  }while(0)
+  do                                        \
+    {                                       \
+      if (dest == NULL)                     \
+        {                                   \
+          *p_status =  PDF_ERROR;           \
+        }                                   \
+      else                                  \
+        {                                   \
+          *p_status =  PDF_OK;              \
+          *dest = -number;                  \
+        }                                   \
+    } while(0)
 
 /*Subtract two pdf_i64_t variables*/
 #define pdf_i64_subtraction(dest, minuend, subtrahend, p_status) \
-  do{\
-    if (dest == NULL)				\
-      {						\
-	*p_status =  PDF_ERROR;			\
-      }						\
-    else					\
-      {						\
-	*p_status =  PDF_OK;			\
-	*dest = minuend - subtrahend;		\
-      }						\
-  }while(0)
+  do                                                             \
+    {                                                            \
+      if (dest == NULL)                                          \
+        {                                                        \
+          *p_status =  PDF_ERROR;                                \
+        }                                                        \
+      else                                                       \
+        {                                                        \
+          *p_status =  PDF_OK;                                   \
+          *dest = minuend - subtrahend;                          \
+        }                                                        \
+    } while(0)
 
 /*Multiply two pdf_i64_t variables*/
 #define pdf_i64_mult(dest, factor_1, factor_2, p_status) \
-  do{\
-    if (dest == NULL)				\
-      {						\
-	*p_status =  PDF_ERROR;			\
-      }						\
-    else					\
-      {						\
-	*p_status =  PDF_OK;			\
-	*dest = factor_1 * factor_2;		\
-      }						\
-  }while(0)
+  do                                                     \
+    {                                                    \
+      if (dest == NULL)                                  \
+        {                                                \
+          *p_status =  PDF_ERROR;                        \
+        }                                                \
+      else                                               \
+        {                                                \
+          *p_status =  PDF_OK;                           \
+          *dest = factor_1 * factor_2;                   \
+        }                                                \
+    } while(0)
 
 /*Division between two pdf_i64_t type variables*/
 #define pdf_i64_div(dest, dividend, divisor, p_status) \
-  do{\
-    if (dest == NULL)				\
-      {						\
-	*p_status =  PDF_ERROR;			\
-      }						\
-    else					\
-      {						\
-	*p_status =  PDF_OK;			\
-      }						\
-    *dest = dividend/divisor;\
-  }while(0)
+  do                                                   \
+    {                                                  \
+      if (dest == NULL)                                \
+        {                                              \
+          *p_status =  PDF_ERROR;                      \
+        }                                              \
+      else                                             \
+        {                                              \
+          *p_status =  PDF_OK;                         \
+        }                                              \
+      *dest = dividend/divisor;                        \
+    } while(0)
 
 /*Modulus division between two pdf_i64_t variables*/
 #define pdf_i64_mod(dest, dividend, divisor, p_status) \
-  do{\
-    if (dest == NULL)				\
-      {						\
-	*p_status =  PDF_ERROR;			\
-      }						\
-    else					\
-      {						\
-	*p_status =  PDF_OK;			\
-	*dest = dividend%divisor;		\
-      }						\
-  }while(0)
+  do                                                   \
+    {                                                  \
+      if (dest == NULL)                                \
+        {                                              \
+          *p_status =  PDF_ERROR;                      \
+        }                                              \
+      else                                             \
+        {                                              \
+          *p_status =  PDF_OK;                         \
+          *dest = dividend%divisor;                    \
+        }                                              \
+    } while(0)
 
 
 /* Add a pdf_i64_t and a pdf_i32_t */
