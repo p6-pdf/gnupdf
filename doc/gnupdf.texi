@@ -87,6 +87,7 @@ Indices
 * Encoded Text::
 * Time Management::
 * The Filesystem Module::
+* The Tokeniser::
 * Encryption::
 @end menu
 
@@ -9802,7 +9803,140 @@ XXX
 @end table
 @end deftypefun
 
+@node The Tokeniser
+@section The Tokeniser
 
+The tokeniser module provides functions to:
+
+@itemize @minus
+@item Read PDF lexical tokens from a base layer stream
+@item Write PDF lexical tokens into a base layer stream
+@end itemize
+
+@menu
+* Tokeniser data types::
+* Creation and destruction of tokenisers::
+* Reading tokens::
+* Writing tokens::
+* Manipulating PDF tokens::
+@end menu
+
+@node Tokeniser data types
+@subsection Tokeniser data types
+
+@deftp {Data Type} pdf_tokeniser_t
+A tokeniser that operates on a reading base layer stream and provides
+a stream of PDF tokens.
+@end deftp
+
+@deftp {Data Type} pdf_token_t
+A PDF token.
+@end deftp
+
+@node Creation and destruction of tokenisers
+@subsection Creation and destruction of tokenisers
+
+@deftypefun pdf_status_t pdf_tokeniser_new (pdf_stm_t @var{stm}, pdf_tokeniser_t *@var{tokr})
+
+Create a new tokeniser operating in a given stream.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A reading stream.
+@item tokr
+A pointer to a tokeniser variable.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The tokeniser was successfully created.
+@item PDF_EBADDATA
+@var{stm} is not a reading stream.
+@item PDF_ENOMEM
+Not enough memory to create the tokeniser.
+@item PDF_ERROR
+An error prevented to perform the operation.
+@end table
+@item Usage example
+@example
+pdf_stm_t stream;
+pdf_tokeniser_t tokr;
+
+/* Open a file stream */
+XXX
+
+/* Create the tokeniser */
+switch (pdf_tokeniser_new (stream, &tokr))
+@{
+   case PDF_BADDATA:
+   @{
+      /* STREAM is not a valid reading stream */
+      break;
+   @}
+   case PDF_ENOMEM:
+   @{
+      /* Not enough memory to create the tokeniser */
+      break;
+   @}
+   case PDF_ERROR:
+   @{
+      /* Any other error prevented the creation of
+         the tokeniser */
+      break;
+   @}
+   default:
+   @{
+      /* Success */
+      break;
+   @}
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_tokeniser_destroy (pdf_tokeniser_t @var{tokr})
+
+Destroy a tokeniser freeing any used resources.
+
+@table @strong
+@item Parameters
+@table @var
+@item tokr
+The tokeniser to destroy.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The tokeniser was destroyed.
+@end table
+@item Usage example
+@example
+pdf_tokeniser_t tokr;
+
+/* Create a tokeniser */
+XXX
+/* Destroy the tokeniser */
+pdf_tokeniser_destroy (tokr);
+@end example
+@end table
+@end deftypefun
+
+@node Reading tokens
+@subsection Reading tokens
+
+@c pdf_tokeniser_read
+@c pdf_tokeniser_end_at_stream
+@c pdf_tokeniser_reset_state
+
+@node Writing tokens
+@subsection Writing tokens
+
+@node Manipulating PDF tokens
+@subsection Manipulating PDF tokens
 
 @node Encryption
 @section Encryption

@@ -1,5 +1,14 @@
 2009-05-07  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf.texi (The Tokeniser): New section.
+	(Tokeniser data types): New section.
+	(Tokeniser data types): Data type 'pdf_tokeniser_t' documented.
+	(Tokeniser data types): Data type 'pdf_token_t' documented.
+	(Creation and destruction of tokenisers): Function
+	'pdf_tokeniser_new' documented.
+	(Creation and destruction of tokenisers): Function
+	'pdf_tokeniser_destroy' documented.
+
 	* doc/Makefile.am (clean-local): Remove gnupdf-arch.info,
 	gnupdf-arch.html and gnupdf-arch.wiki upon make clean.
 
