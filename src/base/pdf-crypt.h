@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-12-23 17:13:24 davazp"
+/* -*- mode: C -*- Time-stamp: "09/05/07 11:17:46 jemarch"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -136,44 +136,12 @@ pdf_status_t pdf_crypt_md_destroy (pdf_crypt_md_t hd);
 
 #else
 
-
-#if __GNUC__ == 4 && __GNUC_MINOR__ >= 3 && defined(__GNUC_STDC_INLINE__)
-#  define FUCKING_C99_SEMANTICS
-#endif
-
-/* Apple's gcc build > 5400 (since Xcode 3.0) doesn't support GNU
-   inline in C99 mode */
-#if __APPLE_CC__ > 5400 && ! defined(FUCKING_C99_SEMANTICS) && __STDC_VERSION__ >= 199901L
-#  define FUCKING_C99_SEMANTICS
-#endif
-
 #if defined(COMPILING_PDF_CRYPT)
-#  if defined(FUCKING_C99_SEMANTICS)
-/* force exported copy */
-#    define EXTERN_INLINE extern inline
-#  else
-#    define EXTERN_INLINE
-#  endif
-#else
-/* For gcc >= 4.1 not working in C99 inline semantics by default
-   (including the annoying 4.2 warnings about the extern inline
-   hack) */
-#  if defined(__GNUC_STDC_INLINE__) || defined(__GNUC_GNU_INLINE__)
-#    define EXTERN_INLINE  static inline
-#  else
-#    define EXTERN_INLINE extern inline
-#  endif
-/* For gcc >= 4.3 with C99 semantics */
-#  if defined(FUCKING_C99_SEMANTICS)
-/* either inline or link to extern version at compiler's choice */
-#    undef EXTERN_INLINE
-#    define EXTERN_INLINE inline
-#  endif
+# undef EXTERN_INLINE
+# define EXTERN_INLINE
 #endif /* COMPILING_PDF_CRYPT */
 
-
 #include <gcrypt.h>
-
 
 EXTERN_INLINE pdf_status_t
 pdf_crypt_init (void)

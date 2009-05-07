@@ -1,5 +1,12 @@
 2009-05-07  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-list.h: Use the new definition of EXTERN_INLINE
+	from pdf-types.h
+
+	* src/base/pdf-crypt.h: Likewise.
+
+	* src/base/pdf-types.h: Definition of EXTERN_INLINE.
+
 	* src/base/pdf-stm-f-ahex.c (pdf_stm_f_ahexenc_apply): Fix the
 	generation of newlines in the ASCII output.
 
