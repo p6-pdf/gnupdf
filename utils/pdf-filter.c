@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/05/06 19:48:59 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/05/07 10:49:54 jemarch"
  *
  *       File:         pdf-filter.c
  *       Date:         Tue Jul 10 18:42:07 2007
@@ -114,11 +114,13 @@ available filters\n\
   --a85enc                            use the ASCII 85 encoder filter\n\
   --lzwenc                            use the LZW encoder filter\n\
   --lzwdec                            use the LZW decoder filter\n
-  --dctdec                            use the DCT decoder filter\n\
   --jxpdec                            use the JXP decoder filter\n\
   --predenc                           use the predictor encoder filter\n\
   --preddec                           use the predictor decoder filter\n"
 #endif /* 0 */
+#ifdef HAVE_LIBJPEG
+  "  --dctdec                            use the DCT decoder filter\n"
+#endif
 #ifdef HAVE_LIBZ
   "  --flatedec                          use the Flate decoder filter\n\
   --flateenc                          use the Flate encoder filter\n"
