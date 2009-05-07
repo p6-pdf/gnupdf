@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/04/17 00:06:12 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/05/07 12:27:24 jemarch"
  *
  *       File:         pdf-time-span-copy.c
  *       Date:         Fri Feb 27 17:35:31 2009
@@ -78,10 +78,9 @@ START_TEST (pdf_time_span_copy_002)
 {
   pdf_status_t status;
   pdf_time_span_t span1;
-  pdf_time_span_t* span2;
+  pdf_time_span_t span2;
 
   span1 = pdf_time_span_new();
-  span2 = NULL;
 
   pdf_time_span_set(&span1,0x01234567,0x89ABCDEF);
 

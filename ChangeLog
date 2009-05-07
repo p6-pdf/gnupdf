@@ -1,5 +1,19 @@
 2009-05-07  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* AUTHORS: Updated.
+
+	* torture/unit/base/time/pdf-time-span-copy.c (START_TEST): Fix
+	the second parameter for pdf_time_span_set in
+	pdf_time_span_copy_002.
+
+	* torture/unit/base/time/pdf-time-span-negate.c (START_TEST): Fix
+	parameter for pdf_time_span_negate in pdf_time_span_negate_003.
+
+	* torture/unit/base/time/pdf-time-new.c: Added missing include for
+	string.h
+
+	* torture/unit/base/time/pdf-time-from-string.c: Likewise.
+
 	* src/base/pdf-types.h: Indentation in macro definitions fixed.
 
 	* src/base/pdf-list.h: Use the new definition of EXTERN_INLINE

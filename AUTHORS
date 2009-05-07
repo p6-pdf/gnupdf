@@ -121,6 +121,10 @@ and changed src/base/pdf-stm-f-pred.c src/base/pdf-stm-f-pred.h
   src/base/pdf-crypt.h
   torture/unit/base/crypt/pdf-crypt-cipher-decrypt.c
   torture/unit/base/crypt/pdf-crypt-cipher-encrypt.c
+  torture/unit/base/time/pdf-time-from-string.c
+  torture/unit/base/time/pdf-time-new.c
+  torture/unit/base/time/pdf-time-span-copy.c
+  torture/unit/base/time/pdf-time-span-negate.c
 
 Juan Pedro Bolívar Puente: wrote src/base/pdf-stm-f-pred.c
   src/base/pdf-stm-f-pred.h src/base/pdf-stm-f-lzw.c
