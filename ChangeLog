@@ -1,5 +1,8 @@
 2009-05-07  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-stm-f-ahex.c (pdf_stm_f_ahexenc_apply): Fix the
+	generation of newlines in the ASCII output.
+
 	* utils/pdf-filter.c (pdf_filter_usage_msg): Dump the --dctdec
 	option in the help output when available.
 

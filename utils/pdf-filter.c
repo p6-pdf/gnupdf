@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/05/07 10:49:54 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/05/07 10:55:00 jemarch"
  *
  *       File:         pdf-filter.c
  *       Date:         Tue Jul 10 18:42:07 2007
@@ -523,27 +523,6 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
 
             break;
           }
-#if 0
-        case ASCII85DEC_FILTER_ARG:
-          {
-            break;
-          }
-        case ASCII85ENC_FILTER_ARG:
-          {
-            break;
-          }
-	case LZWENC_FILTER_ARG:
-          {
-            break;
-          }
-        case LZWDEC_FILTER_ARG:
-          {
-            break;
-          }
-        case CCITTFAXDEC_FILTER_ARG:
-          {
-            break;
-          }
 #ifdef HAVE_LIBJPEG
         case DCTDEC_FILTER_ARG:
           {
@@ -565,6 +544,28 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
             break;
           }
 #endif /* HAVE_LIBJPEG */
+
+#if 0
+        case ASCII85DEC_FILTER_ARG:
+          {
+            break;
+          }
+        case ASCII85ENC_FILTER_ARG:
+          {
+            break;
+          }
+	case LZWENC_FILTER_ARG:
+          {
+            break;
+          }
+        case LZWDEC_FILTER_ARG:
+          {
+            break;
+          }
+        case CCITTFAXDEC_FILTER_ARG:
+          {
+            break;
+          }
         case JXPDEC_FILTER_ARG:
           {
             break;
