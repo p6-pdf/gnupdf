@@ -8,6 +8,8 @@
 	'pdf_tokeniser_new' documented.
 	(Creation and destruction of tokenisers): Function
 	'pdf_tokeniser_destroy' documented.
+	(Tokeniser data types): Data type 'enum pdf_token_type_e'
+	documented.
 
 	* doc/Makefile.am (clean-local): Remove gnupdf-arch.info,
 	gnupdf-arch.html and gnupdf-arch.wiki upon make clean.

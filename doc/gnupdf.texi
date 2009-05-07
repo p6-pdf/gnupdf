@@ -9824,52 +9824,80 @@ The tokeniser module provides functions to:
 @node Tokeniser data types
 @subsection Tokeniser data types
 
-@deftp {Data Type} pdf_tokeniser_t
-A tokeniser that operates on a reading base layer stream and provides
+@deftp {Data Type} pdf_token_t
+A PDF token.
+@end deftp
+
+@deftp {Data Type} {enum pdf_token_type_e}
+The type of a PDF token.
+
+Valid values are:
+
+@table @code
+@item PDF_TOKEN_BOOLEAN
+A PDF boolean value.
+@item PDF_TOKEN_NUMBER
+A PDF number value.
+@item PDF_TOKEN_NULL
+The null PDF object.
+@item PDF_TOKEN_STRING
+A PDF string value.
+@item PDF_TOKEN_NAME
+A PDF name value.
+@item PDF_TOKEN_INDIRECT
+A PDF indirect reference.
+@item PDF_TOKEN_COMMENT
+A PDF comment.
+@end table
+@end deftp
+
+@deftp {Data Type} pdf_token_reader_t
+A token reader that operates on a reading base layer stream and provides
 a stream of PDF tokens.
 @end deftp
 
-@deftp {Data Type} pdf_token_t
-A PDF token.
+@deftp {Data Type} pdf_token_writer_t
+A token writer that operates on a writing base layer stream,
+generating the textual representation of a PDF token.
 @end deftp
 
 @node Creation and destruction of tokenisers
 @subsection Creation and destruction of tokenisers
 
-@deftypefun pdf_status_t pdf_tokeniser_new (pdf_stm_t @var{stm}, pdf_tokeniser_t *@var{tokr})
+@deftypefun pdf_status_t pdf_token_reader_new (pdf_stm_t @var{stm}, pdf_token_reader_t *@var{reader})
 
-Create a new tokeniser operating in a given stream.
+Create a new token reader operating a given reading stream.
 
 @table @strong
 @item Parameters
 @table @var
 @item stm
 A reading stream.
-@item tokr
-A pointer to a tokeniser variable.
+@item reader
+A pointer to a token reader.
 @end table
 @item Returns
 A PDF status value:
 @table @code
 @item PDF_OK
-The tokeniser was successfully created.
+The reader was successfully created.
 @item PDF_EBADDATA
 @var{stm} is not a reading stream.
 @item PDF_ENOMEM
-Not enough memory to create the tokeniser.
+Not enough memory to create the reader.
 @item PDF_ERROR
 An error prevented to perform the operation.
 @end table
 @item Usage example
 @example
 pdf_stm_t stream;
-pdf_tokeniser_t tokr;
+pdf_token_reader_t reader;
 
 /* Open a file stream */
 XXX
 
-/* Create the tokeniser */
-switch (pdf_tokeniser_new (stream, &tokr))
+/* Create the token reader */
+switch (pdf_token_reader_new (stream, &reader))
 @{
    case PDF_BADDATA:
    @{
@@ -9878,13 +9906,13 @@ switch (pdf_tokeniser_new (stream, &tokr))
    @}
    case PDF_ENOMEM:
    @{
-      /* Not enough memory to create the tokeniser */
+      /* Not enough memory to create the reader */
       break;
    @}
    case PDF_ERROR:
    @{
       /* Any other error prevented the creation of
-         the tokeniser */
+         the reader */
       break;
    @}
    default:
@@ -9897,30 +9925,119 @@ switch (pdf_tokeniser_new (stream, &tokr))
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_tokeniser_destroy (pdf_tokeniser_t @var{tokr})
+@deftypefun pdf_status_t pdf_token_writer_new (pdf_stm_t @var{stm}, pdf_token_writer_t *@var{writer})
 
-Destroy a tokeniser freeing any used resources.
+Create a new token writer operating a given reading stream.
 
 @table @strong
 @item Parameters
 @table @var
-@item tokr
-The tokeniser to destroy.
+@item stm
+A writing stream.
+@item writer
+A pointer to a token writer.
 @end table
 @item Returns
 A PDF status value:
 @table @code
 @item PDF_OK
-The tokeniser was destroyed.
+The writer was successfully created.
+@item PDF_EBADDATA
+@var{stm} is not a writing stream.
+@item PDF_ENOMEM
+Not enough memory to create the writer.
+@item PDF_ERROR
+An error prevented to perform the operation.
 @end table
 @item Usage example
 @example
-pdf_tokeniser_t tokr;
+pdf_stm_t stream;
+pdf_token_writer_t writer;
 
-/* Create a tokeniser */
+/* Open a file stream */
 XXX
-/* Destroy the tokeniser */
-pdf_tokeniser_destroy (tokr);
+
+/* Create the token writer */
+switch (pdf_token_writer_new (stream, &writer))
+@{
+   case PDF_BADDATA:
+   @{
+      /* STREAM is not a valid writing stream */
+      break;
+   @}
+   case PDF_ENOMEM:
+   @{
+      /* Not enough memory to create the writer */
+      break;
+   @}
+   case PDF_ERROR:
+   @{
+      /* Any other error prevented the creation of
+         the writer */
+      break;
+   @}
+   default:
+   @{
+      /* Success */
+      break;
+   @}
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_tokeniser_reader_destroy (pdf_tokeniser_reader_t @var{reader})
+
+Destroy a token reader freeing any used resources.
+
+@table @strong
+@item Parameters
+@table @var
+@item reader
+The reader to destroy.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The token reader was destroyed.
+@end table
+@item Usage example
+@example
+pdf_token_reader_t reader;
+
+/* Create a reader */
+XXX
+/* Destroy the reader */
+pdf_token_reader_destroy (reader);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_tokeniser_writer_destroy (pdf_tokeniser_writer_t @var{writer})
+
+Destroy a token writer freeing any used resources.
+
+@table @strong
+@item Parameters
+@table @var
+@item writer
+The writer to destroy.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The token writer was destroyed.
+@end table
+@item Usage example
+@example
+pdf_token_writer_t writer;
+
+/* Create a writer */
+XXX
+/* Destroy the writer */
+pdf_token_writer_destroy (writer);
 @end example
 @end table
 @end deftypefun
@@ -9928,12 +10045,40 @@ pdf_tokeniser_destroy (tokr);
 @node Reading tokens
 @subsection Reading tokens
 
-@c pdf_tokeniser_read
-@c pdf_tokeniser_end_at_stream
-@c pdf_tokeniser_reset_state
+@deftypefun pdf_status_t pdf_token_read (pdf_token_reader_t @var{reader}, pdf_token_t *@var{token})
+
+Read a token from a token reader.
+
+@table @strong
+@item Parameters
+@table @var
+@item reader
+A token reader.
+@item token
+A pointer to a token that will hold the read token.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_EAGAIN
+@item PDF_ERROR
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@c pdf_token_read
+@c pdf_token_reader_end_at_stream
+@c pdf_token_reader_reset_state
 
 @node Writing tokens
 @subsection Writing tokens
+
+@c pdf_token_write
 
 @node Manipulating PDF tokens
 @subsection Manipulating PDF tokens
