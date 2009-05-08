@@ -10071,17 +10071,104 @@ XXX
 @end table
 @end deftypefun
 
-@c pdf_token_read
 @c pdf_token_reader_end_at_stream
 @c pdf_token_reader_reset_state
 
 @node Writing tokens
 @subsection Writing tokens
 
+@deftypefun pdf_status_t pdf_token_write (pdf_token_writer_t @var{writer}, pdf_token_t *@var{token})
+
+Write a given token using a given token writer.
+
+@table @strong
+@item Parameters
+@table @var
+@item writer
+A token writer.
+@item token
+A PDF token.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_EAGAIN
+@item PDF_ERROR
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
 @c pdf_token_write
 
 @node Manipulating PDF tokens
 @subsection Manipulating PDF tokens
+
+@deftypefun {enum pdf_token_type_e} pdf_token_get_type (pdf_token_t @var{token})
+
+Get the type of a given token.
+
+@table @strong
+@item Parameters
+@table @var
+@item token
+A token.
+@end table
+@item Returns
+The type of the given token.
+@item Usage example
+@example
+pdf_token_t token;
+pdf_token_reader_t reader;
+
+/* ... */
+
+/* Read a name */
+pdf_token_read (reader, &token);
+if (pdf_token_get_type (token) != PDF_TOKEN_NAME)
+@{
+   /* We were expecting a name */
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_token_set_attr (pdf_token_t @var{token}, pdf_token_attr_t @var{attr})
+
+Set a given attribute @var{attr} in a given token.
+
+@table @strong
+@item Parameters
+@table @var
+@item token
+A token.
+@item attr
+A token attribute.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+@item PDF_ERROR
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@c pdf_token_get_string
+@c pdf_token_get_integer
+@c pdf_token_get_real
+
+@c pdf_token_set_string
+@c pdf_token_set_integer
+@c pdf_token_set_real
 
 @node Encryption
 @section Encryption

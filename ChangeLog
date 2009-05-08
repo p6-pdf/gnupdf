@@ -1,3 +1,8 @@
+2009-05-08  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Manipulating PDF tokens): Documentation for
+	pdf_token_get_type.
+
 2009-05-07  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (The Tokeniser): New section.
