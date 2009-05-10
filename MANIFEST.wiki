@@ -11,8 +11,17 @@ The root directory of the distribution contain the following files.
 ; '''ChangeLog'''
 : A detailed record of the changes made to the library.
 
+; '''GNUmakefile'''
+: A generic top-level makefile from gnulib.
+
 ; '''INSTALL'''
 : Generic installation instructions from autoconf.
+
+; '''MANIFEST.wiki'''
+: This file.
+
+; '''Makefile.am'''
+: Top-level automake configuration file.
 
 ; '''NEWS'''
 : News of each release.
@@ -20,17 +29,20 @@ The root directory of the distribution contain the following files.
 ; '''README'''
 : Brief description of the project and links to the homepage and ftp.
 
+; '''README.bzr'''
+: Additional information to build a Bazaar checkout of the library.
+
 ; '''README.cvs'''
-: Additional information to build a CVS checkout of the library.
+: Additional information to build a CVS checkout of the library. This file is deprecated.
 
 ; '''bootstrap'''
-: Bootstrap script (alternative to ''autoreconf'') used to regenerate the libtool and autoconf files. Wrote by Karl Berry.
+: Bootstrap script (wrapper for ''autoreconf'') used to regenerate the libtool and autoconf files. Wrote by Karl Berry.
 
 ; '''configure.ac'''
 : Autoconf file for the library. It is used by autoconf to generate the ''configure'' script.
 
-; '''Makefile.am'''
-: Top-level automake configuration file.
+; '''maint.mk'''
+: Makefile containing useful rules for the maintainer. This file comes from gnulib.
 
 ; '''other files...'''
 : Several generated files.
