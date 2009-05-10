@@ -1,5 +1,7 @@
 2009-05-10  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* AUTHORS: List of authors reordered in alphabetical order.
+
 	* configure.ac: Don' use AM_PATH_LIBGCRYPT if compiling for
 	mingw. Use AC_CHECK_LIB instead.
 
