@@ -1,5 +1,7 @@
 2009-05-10  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf-arch.texi (Overview): Mention ISO 32000 conformance.
+
 	* prmgt/MANIFEST.wiki: Updated.
 
 	* doc/figures/MANIFEST.wiki: New file.

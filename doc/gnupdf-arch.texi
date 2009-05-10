@@ -63,11 +63,12 @@ external and internal) of the GNU PDF Library.
 
 @cartouche
 The GNU PDF Library provides functions to read and write PDF documents
-conforming to the PDF 1.7 specification. This includes visualization
-(retrieving of bitmaps with rasterized page contents) and interactive
-features such as annotations and interactive forms. The library also
-support the generation of specific subsets of PDF conforming to the
-ISO standards PDF/A, PDF/X and ISO 32000.
+conforming to the PDF 1.7 specification and the ISO 32000
+standard. This includes visualization (retrieving of bitmaps with
+rasterized page contents) and interactive features such as annotations
+and interactive forms. The library also support the generation of
+specific subsets of PDF conforming to the ISO standards PDF/A, PDF/X
+and ISO 32000.
 @end cartouche
 
 The GNU PDF Library is composed by several layers:
@@ -165,7 +166,8 @@ signaling, error descriptions, etc.
 This module provides de/encryption facilities.
 @item Tokeniser Module
 This module implements a stream tokeniser to read in PDF tokens from a
-base-level stream.
+base-level stream and a token writer that can write PDF tokens into
+some writing streams.
 @end table
 
 @menu
