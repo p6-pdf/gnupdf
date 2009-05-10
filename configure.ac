@@ -37,6 +37,16 @@ canonical=$host
 
 gl_INIT
 
+dnl OS-based compilation options
+compile_w32_system=no
+case "${host}" in
+    *-mingw32*)
+        compile_w32_system=yes
+        ;;
+    *)
+        ;;
+esac
+
 dnl Search for headers
 AC_CHECK_HEADERS(malloc.h)
 
@@ -60,9 +70,17 @@ have_jbig2dec=yes
 AC_CHECK_LIB([jbig2dec],[jbig2_ctx_new],[],[have_jbig2dec=no])
 AM_CONDITIONAL([JBIG2DEC], [test "x$have_jbig2dec" != "xno"])
 
-AM_PATH_LIBGCRYPT([1.2.4], have_libgcrypt="yes", have_libgcrypt="no")
+if test "x$compile_w32_system" == "xyes"; then
+  # We cannot use AM_PATH_LIBGCRYPT in this case, since it depends on
+  # environment variables and the execution of config-* programs.
+  AC_CHECK_LIB([libgcrypt],[gcry_check_version],[have_libgcrypt="yes"],[have_libgcrypt="no"])
+else
+  # Use the AM_PATH_LIBGCRYPT macro from libgcrypt
+  AM_PATH_LIBGCRYPT([1.2.4], have_libgcrypt="yes", have_libgcrypt="no")
+fi
+
 if test x$have_libgcrypt == "xno"; then
-AC_MSG_ERROR([cannot find libgcrypt library. Please install it and rerun `configure'.])
+  AC_MSG_ERROR([cannot find libgcrypt library. Please install it and rerun `configure'.])
 fi
 
 have_check=yes
@@ -245,16 +263,6 @@ else
   AC_DEFINE([PDF_IS_BIG_ENDIAN], [1], [Big endian?])
 fi
 
-
-dnl OS-based compilation options
-compile_w32_system=no
-case "${host}" in
-    *-mingw32*)
-        compile_w32_system=yes
-        ;;
-    *)
-        ;;
-esac
 
 dnl Specific W32 needs of compilation
 AM_CONDITIONAL([COMPILE_W32_SYSTEM], [test "x$compile_w32_system" = "xyes"])

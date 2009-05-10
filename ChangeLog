@@ -1,3 +1,8 @@
+2009-05-10  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* configure.ac: Don' use AM_PATH_LIBGCRYPT if compiling for
+	mingw. Use AC_CHECK_LIB instead.
+
 2009-05-08  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Manipulating PDF tokens): Documentation for
