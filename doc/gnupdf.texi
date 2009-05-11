@@ -268,6 +268,31 @@ PDF_DEBUG_BASE("Testing macro '%s' '%d' '%lf'", "string", 7, 10.1);
 @end example
 @end table
 
+
+Indeed, this module provides a assert macro for each layer.
+
+@defmac PDF_ASSERT_BASE (condition)
+@end defmac
+@defmac PDF_ASSERT_OBJECT (condition)
+@end defmac
+@defmac PDF_ASSERT_DOCUMENT (condition)
+@end defmac
+@defmac PDF_ASSERT_PAGE (condition)
+@end defmac
+
+@table @strong
+@item Parameters
+@table @var
+@item condition
+a C expression.
+@end table
+@item Usage example
+@example
+PDF_ASSERT_BASE (1 == 1);
+@end example
+@end table
+
+
 @subheading Output format
 The output format for these macros is,
 
@@ -276,6 +301,8 @@ GNU PDF:***DEBUG <layer>***:<file-name>:<line-number>: <message>.
 For example,
 
 GNU PDF:***DEBUG BASE***:pdf-memory.c:344: insufficient memory.
+
+
 
 @node Memory Allocation
 @section Memory Allocation
