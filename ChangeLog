@@ -1,3 +1,13 @@
+2009-05-11  David Vazquez  <davazp@es.gnu.org>
+
+	* doc/gnupdf.texi (Debugging procedures): Documentation for
+	PDF_ASSERT macros.
+
+	* src/base/pdf-error.h (PDF_DEBUG_BASE, PDF_DEBUG_OBJECT)
+	(PDF_DEBUG_DOCUMENT, PDF_DEBUG_PAGE): Export to the public header.
+	(PDF_ASSERT_BASE, PDF_ASSERT_OBJECT, PDF_ASSERT_DOCUMENT)
+	(PDF_ASSERT_PAGE): New macros for debugging.
+
 2009-05-10  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf-arch.texi (Overview): Mention ISO 32000 conformance.
