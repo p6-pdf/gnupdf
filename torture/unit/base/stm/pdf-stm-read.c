@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/13 22:46:02 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-05-14 00:58:48 gerel"
  *
  *       File:         pdf-stm-read.c
  *       Date:         Sat Sep 20 15:20:17 2008
@@ -761,6 +761,67 @@ END_TEST
 
 
 /*
+ * Test: pdf_stm_write_013
+ * Description:
+ *   Read some bytes from a read file stream.
+ * Success condition:
+ *   The read data should be consistent.
+ */
+START_TEST (pdf_stm_read_013)
+{
+  pdf_status_t ret;
+  pdf_stm_t stm;
+  pdf_size_t written,read_bytes;
+
+  pdf_fsys_file_t file;
+  char data[4];
+  pdf_text_t path;
+  pdf_char_t * remain;
+  pdf_size_t remain_length;
+
+  /* Create the file path */
+  pdf_text_init ();
+  ret = pdf_text_new_from_pdf_string ("tmp.test", 8, &remain, &remain_length, &path);
+  fail_if (ret != PDF_OK);
+
+  /* Open new file */
+  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, &file); 
+  fail_if (ret != PDF_OK);
+
+  written = pdf_fsys_file_write (file, 3, 1, "GNU");
+  fail_if (written != 1);
+  pdf_fsys_file_close (file);
+
+  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, &file); 
+  fail_if (ret != PDF_OK);
+  /* Create the stream */
+  ret = pdf_stm_file_new (file,
+                          0,
+                          0, /* Use the default cache size */
+                          PDF_STM_READ,
+                          &stm);
+  fail_if(ret != PDF_OK);
+
+  ret = pdf_stm_read (stm,
+                      data,
+                      3,
+                      &read_bytes);
+  fail_if(ret != PDF_OK);
+  fail_if(read_bytes != 3);
+  data[3] = '\0';
+
+  fail_if (strcmp (data, "GNU") != 0);
+
+  /* Free resources */
+  pdf_stm_destroy (stm);
+  pdf_fsys_file_close (file);
+  pdf_text_destroy (path);
+}
+END_TEST
+
+
+
+/*
  * Test case creation function
  */
 TCase *
@@ -782,6 +843,7 @@ test_pdf_stm_read (void)
 #endif
   tcase_add_test(tc, pdf_stm_read_011);
   tcase_add_test(tc, pdf_stm_read_012);
+  tcase_add_test(tc, pdf_stm_read_013);
 
   return tc;
 }
