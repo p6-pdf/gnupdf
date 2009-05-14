@@ -9162,7 +9162,7 @@ The number of data chunks to read from the file.
 A pointer to memory used to store the readed elements.
 @end table
 @item Returns
-A PDF size value indicating the number of readed octects or @code{0} if there
+A PDF size value indicating the number of read elements or @code{0} if there
 was an error.
 @item Usage example
 @example
@@ -9188,7 +9188,7 @@ The number of data chunks to be write into the file.
 A pointer to memory containing the data to write into the file.
 @end table
 @item Returns
-A PDF size value indicating the number of octects written into the
+A PDF size value indicating the number of elements written into the
 file or @code{0} if there was an error.
 @item Usage example
 @example
