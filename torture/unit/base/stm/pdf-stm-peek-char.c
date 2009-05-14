@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/13 22:10:30 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-05-14 01:22:06 gerel"
  *
  *       File:         pdf-stm-peek-char.c
  *       Date:         Sat Sep 20 18:07:45 2008
@@ -115,6 +115,61 @@ END_TEST
 
 
 /*
+ * Test: pdf_stm_peek_char_003
+ * Description:
+ *   Peek a character from a file stream.
+ * Success condition:
+ *   The peek character should be ok.
+ */
+START_TEST (pdf_stm_peek_char_003)
+{
+  pdf_status_t ret;
+  pdf_stm_t stm;
+  pdf_char_t ret_char;
+  pdf_size_t written;
+
+  pdf_fsys_file_t file;
+  pdf_text_t path;
+  pdf_char_t * remain;
+  pdf_size_t remain_length;
+
+  /* Create the file path */
+  pdf_text_init ();
+  ret = pdf_text_new_from_pdf_string ("tmp.test", 8, &remain, &remain_length, &path);
+  fail_if (ret != PDF_OK);
+
+  /* Open new file */
+  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, &file); 
+  fail_if (ret != PDF_OK);
+
+  written = pdf_fsys_file_write (file, 3, 1, "GNU");
+  fail_if (written != 1);
+  pdf_fsys_file_close (file);
+
+  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, &file); 
+  fail_if (ret != PDF_OK);
+  /* Create the stream */
+  ret = pdf_stm_file_new (file,
+                          0,
+                          0, /* Use the default cache size */
+                          PDF_STM_READ,
+                          &stm);
+  fail_if(ret != PDF_OK);
+
+  /* Peek a character from the stream */
+  ret = pdf_stm_peek_char (stm, &ret_char);
+  fail_if(ret != PDF_OK);
+  fail_if(ret_char != 'G');
+  
+  /* Destroy data */
+  pdf_stm_destroy (stm);
+  pdf_fsys_file_close (file);
+  pdf_text_destroy (path);
+}
+END_TEST
+
+
+/*
  * Test case creation function
  */
 TCase *
@@ -124,6 +179,7 @@ test_pdf_stm_peek_char (void)
 
   tcase_add_test(tc, pdf_stm_peek_char_001);
   tcase_add_test(tc, pdf_stm_peek_char_002);
+  tcase_add_test(tc, pdf_stm_peek_char_003);
 
   return tc;
 }

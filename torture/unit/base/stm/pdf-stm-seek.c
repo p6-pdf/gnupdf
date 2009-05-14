@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/13 22:33:25 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-05-14 01:35:15 gerel"
  *
  *       File:         pdf-stm-seek.c
  *       Date:         Sat Sep 20 18:50:33 2008
@@ -131,6 +131,140 @@ START_TEST (pdf_stm_seek_002)
 }
 END_TEST
 
+
+/*
+ * Test: pdf_stm_seek_003
+ * Description:
+ *   Seek into a file read stream.
+ * Success condition:
+ *   The seek operation should success.
+ */
+START_TEST (pdf_stm_seek_003)
+{
+  pdf_status_t ret;
+  pdf_stm_t stm;
+  pdf_char_t ret_char;
+  pdf_off_t pos;
+
+  pdf_fsys_file_t file;
+  pdf_text_t path;
+  pdf_char_t * remain;
+  pdf_size_t remain_length,written;
+
+  /* Create the file path */
+  pdf_text_init ();
+  ret = pdf_text_new_from_pdf_string ("tmp.test", 8, &remain, &remain_length,
+                                      &path);
+  fail_if (ret != PDF_OK);
+
+  /* Open new file */
+  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, &file); 
+  fail_if (ret != PDF_OK);
+
+  written = pdf_fsys_file_write (file, 10, 1, "0123456789");
+  fail_if (written != 1);
+  pdf_fsys_file_close (file);
+
+  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, &file); 
+  fail_if (ret != PDF_OK);
+  /* Create the stream */
+  ret = pdf_stm_file_new (file,
+                          0,
+                          0, /* Use the default cache size */
+                          PDF_STM_READ,
+                          &stm);
+  fail_if(ret != PDF_OK);
+
+  /* Seek into the stream */
+  pos = pdf_stm_seek (stm, 3);
+  fail_if(pos != 3);
+
+  /* Read a character */
+  ret = pdf_stm_read_char (stm, &ret_char);
+  fail_if(ret != PDF_OK);
+  fail_if(ret_char != '3');
+
+  /* Seek into the stream */
+  pos = pdf_stm_seek (stm, 8);
+  fail_if(pos != 8);
+
+  /* Read a character */
+  ret = pdf_stm_read_char (stm, &ret_char);
+  fail_if(ret != PDF_OK);
+  fail_if(ret_char != '8');
+  
+  /* Destroy data */
+  pdf_stm_destroy (stm);
+  pdf_fsys_file_close (file);
+  pdf_text_destroy (path);
+}
+END_TEST
+
+
+/*
+ * Test: pdf_stm_seek_004
+ * Description:
+ *   Seek to a position beyond the size of the stream 
+ *   into a file read stream.
+ * Success condition:
+ *   The seek operation should success and the seek
+ *   position should be to the last valid position
+ *   in the stream.
+ */
+START_TEST (pdf_stm_seek_004)
+{
+  pdf_status_t ret;
+  pdf_stm_t stm;
+  pdf_char_t ret_char;
+  pdf_off_t pos;
+
+  pdf_fsys_file_t file;
+  pdf_text_t path;
+  pdf_char_t * remain;
+  pdf_size_t remain_length,written;
+
+  /* Create the file path */
+  pdf_text_init ();
+  ret = pdf_text_new_from_pdf_string ("tmp.test", 8, &remain, &remain_length,
+                                      &path);
+  fail_if (ret != PDF_OK);
+
+  /* Open new file */
+  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, &file); 
+  fail_if (ret != PDF_OK);
+
+  written = pdf_fsys_file_write (file, 10, 1, "0123456789");
+  fail_if (written != 1);
+  pdf_fsys_file_close (file);
+
+  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, &file); 
+  fail_if (ret != PDF_OK);
+  /* Create the stream */
+  ret = pdf_stm_file_new (file,
+                          0,
+                          0, /* Use the default cache size */
+                          PDF_STM_READ,
+                          &stm);
+  fail_if(ret != PDF_OK);
+
+  /* Seek into the stream */
+  pos = pdf_stm_seek (stm, 300);
+  fail_if(pos != 9);
+
+  /* Read a character */
+  ret = pdf_stm_read_char (stm, &ret_char);
+  fail_if(ret != PDF_OK);
+  fail_if(ret_char != '9');
+
+  /* Destroy data */
+  pdf_stm_destroy (stm);
+  pdf_fsys_file_close (file);
+  pdf_text_destroy (path);
+}
+END_TEST
+
+
+
 /*
  * Test case creation function
  */
@@ -141,6 +275,8 @@ test_pdf_stm_seek (void)
 
   tcase_add_test(tc, pdf_stm_seek_001);
   tcase_add_test(tc, pdf_stm_seek_002);
+  tcase_add_test(tc, pdf_stm_seek_003);
+  tcase_add_test(tc, pdf_stm_seek_004);
 
   return tc;
 }
