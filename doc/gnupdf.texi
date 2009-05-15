@@ -9818,7 +9818,8 @@ The tokeniser module provides functions to:
 * Creation and destruction of tokenisers::
 * Reading tokens::
 * Writing tokens::
-* Manipulating PDF tokens::
+* Creating and destroying tokens::
+* Accessing token attributes::
 @end menu
 
 @node Tokeniser data types
@@ -9834,20 +9835,31 @@ The type of a PDF token.
 Valid values are:
 
 @table @code
-@item PDF_TOKEN_BOOLEAN
-A PDF boolean value.
-@item PDF_TOKEN_NUMBER
-A PDF number value.
-@item PDF_TOKEN_NULL
-The null PDF object.
+@item PDF_TOKEN_INTEGER
+A PDF integer value.
+@item PDF_TOKEN_REAL
+A PDF real value (a floating-point number).
 @item PDF_TOKEN_STRING
-A PDF string value.
+A PDF string.
 @item PDF_TOKEN_NAME
-A PDF name value.
-@item PDF_TOKEN_INDIRECT
-A PDF indirect reference.
+A PDF name.
 @item PDF_TOKEN_COMMENT
 A PDF comment.
+@item PDF_TOKEN_KEYWORD
+A keyword, i.e., any string of regular characters such as ``null''
+or ``R'' that is not matched as another type.
+@item PDF_TOKEN_DICT_START
+The ``<<'' operator, which marks the beginning of a dictionary.
+@item PDF_TOKEN_DICT_END
+The ``>>'' operator, which marks the end of a dictionary.
+@item PDF_TOKEN_ARRAY_START
+The ``['' operator, which marks the beginning of an array.
+@item PDF_TOKEN_ARRAY_END
+The ``]'' operator, which marks the end of an array.
+@item PDF_TOKEN_PROC_START
+The ``@{'' operator, which marks the beginning of a procedure.
+@item PDF_TOKEN_PROC_END
+The ``@}'' operator, which marks the end of a procedure.
 @end table
 @end deftp
 
@@ -10105,8 +10117,241 @@ XXX
 
 @c pdf_token_write
 
-@node Manipulating PDF tokens
-@subsection Manipulating PDF tokens
+@node Creating and destroying tokens
+@subsection Creating and destroying tokens
+
+@deftypefun pdf_status_t pdf_token_integer_new (pdf_i32_t @var{value}, pdf_token_t *@var{token})
+
+Create an integer token.
+
+@table @strong
+@item Parameters
+@table @var
+@item value
+The numeric value for the token.
+@item token
+A pointer to the newly created token.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@end table
+@end table
+
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_token_real_new (pdf_real_t @var{value}, pdf_token_t *@var{token})
+
+Create a real (floating-point number) token.
+
+@table @strong
+@item Parameters
+@table @var
+@item value
+The numeric value for the token.
+@item token
+A pointer to the newly created token.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@end table
+@end table
+
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_token_string_new (const pdf_char_t *@var{value}, pdf_size_t @var{size}, pdf_token_t *@var{token})
+
+Create a string token containing a copy of the given data.
+
+@table @strong
+@item Parameters
+@table @var
+@item value
+A pointer to the binary data that will make up the string.
+@item size
+The amount of data to copy, in octets.
+@item token
+A pointer to the newly created token.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@end table
+@end table
+
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_token_name_new (const pdf_char_t *@var{value}, pdf_size_t @var{size}, pdf_token_t *@var{token})
+
+Create a name token containing a copy of the given data.
+
+@table @strong
+@item Parameters
+@table @var
+@item value
+A pointer to the binary data that will make up the name.
+@item size
+The amount of data to copy, in octets.
+@item token
+A pointer to the newly created token.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@end table
+@end table
+
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_token_keyword_new (const pdf_char_t *@var{value}, pdf_size_t @var{size}, pdf_token_t *@var{token})
+
+Create a keyword token containing a copy of the given data.
+
+@table @strong
+@item Parameters
+@table @var
+@item value
+A pointer to the binary data that will make up the keyword.
+@item size
+The amount of data to copy, in octets.
+@item token
+A pointer to the newly created token.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@end table
+@end table
+
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_token_comment_new (const pdf_char_t *@var{value}, pdf_size_t @var{size}, pdf_bool_t continuation, pdf_token_t *@var{token})
+
+Create a comment token containing a copy of the given data.
+
+@table @strong
+@item Parameters
+@table @var
+@item value
+A pointer to the binary data that will make up the keyword.
+@item size
+The amount of data to copy, in octets.
+@item continuation
+A boolean value indicating whether this is a continuation of a previous comment token (if false, it's a new comment).
+@item token
+A pointer to the newly created token.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@end table
+@end table
+
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_token_valueless_new (enum pdf_token_type_e @var{type}, pdf_token_t *@var{token})
+
+Create a token of one of the valueless types (PDF_TOKEN_DICT_START,
+PDF_TOKEN_DICT_END, PDF_TOKEN_ARRAY_START, PDF_TOKEN_ARRAY_END,
+PDF_TOKEN_PROC_START, or PDF_TOKEN_PROC_END).
+
+@table @strong
+@item Parameters
+@table @var
+@item type
+The type of token to create.
+@item token
+A pointer to the newly created token.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@item PDF_EBADDATA
+The given type is not valid for this constructor.
+@end table
+@end table
+
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_token_dup (const pdf_token_t @var{old}, pdf_token_t *@var{new})
+
+Create a copy of the given token.
+
+@table @strong
+@item Parameters
+@table @var
+@item old
+The token to copy.
+@item new
+A pointer to the newly created token.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@end table
+@end table
+
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_token_destroy (pdf_token_t @var{token})
+
+Destroy the given token, freeing any memory it used.
+
+@table @strong
+@item Parameters
+@table @var
+@item old
+The token to copy.
+@item new
+A pointer to the newly created token.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@end table
+@end table
+
+@end deftypefun
+
+@node Accessing token attributes
+@subsection Accessing token attributes
 
 @deftypefun {enum pdf_token_type_e} pdf_token_get_type (pdf_token_t @var{token})
 
@@ -10128,7 +10373,10 @@ pdf_token_reader_t reader;
 /* ... */
 
 /* Read a name */
-pdf_token_read (reader, &token);
+if (pdf_token_read (reader, &token) != PDF_OK)
+@{
+   /* Error */
+@}
 if (pdf_token_get_type (token) != PDF_TOKEN_NAME)
 @{
    /* We were expecting a name */
@@ -10137,38 +10385,94 @@ if (pdf_token_get_type (token) != PDF_TOKEN_NAME)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_token_set_attr (pdf_token_t @var{token}, pdf_token_attr_t @var{attr})
+@c TODO: pdf_bool_t pdf_token_equal_p (pdf_token_t token1, pdf_token_t token2);
+@c          -- if needed
 
-Set a given attribute @var{attr} in a given token.
+@deftypefun pdf_i32_t pdf_token_get_integer_value (const pdf_token_t @var{token})
+
+Returns the value associated with a given integer token.
 
 @table @strong
 @item Parameters
 @table @var
 @item token
-A token.
-@item attr
-A token attribute.
+A token of type PDF_TOKEN_INTEGER.
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-@item PDF_ERROR
+The token's value.
 @end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
+
 @end deftypefun
 
-@c pdf_token_get_string
-@c pdf_token_get_integer
-@c pdf_token_get_real
+@deftypefun pdf_real_t pdf_token_get_real_value (const pdf_token_t @var{token})
 
-@c pdf_token_set_string
-@c pdf_token_set_integer
-@c pdf_token_set_real
+Returns the value associated with a given real token.
+
+@table @strong
+@item Parameters
+@table @var
+@item token
+A token of type PDF_TOKEN_REAL.
+@end table
+@item Returns
+The token's value.
+@end table
+
+@end deftypefun
+
+@deftypefun const pdf_char_t *pdf_token_get_string_data (const pdf_token_t @var{token})
+
+Returns a pointer to the data associated with a given string token.
+
+@table @strong
+@item Parameters
+@table @var
+@item token
+A token of type PDF_TOKEN_STRING.
+@end table
+@item Returns
+A pointer to the string data, which will be valid until the token is destroyed.
+The data is @strong{not} null-terminated.
+@end table
+
+@end deftypefun
+
+@deftypefun pdf_size_t pdf_token_get_string_size (const pdf_token_t @var{token})
+
+Returns the amount of data associated with a given string token.
+
+@table @strong
+@item Parameters
+@table @var
+@item token
+A token of type PDF_TOKEN_STRING.
+@end table
+@item Returns
+The string size, in octets.
+@end table
+
+@end deftypefun
+
+@c TODO: pdf_token_get_{name,keyword,comment}_{data,size}
+@c          -- these are basically the same as the string functions,
+@c             except the name and keyword data is null-terminated
+
+@deftypefun pdf_bool_t pdf_token_get_comment_continued (const pdf_token_t @var{token})
+
+Returns the continuation flag associated with a given comment token.
+
+@table @strong
+@item Parameters
+@table @var
+@item token
+A token of type PDF_TOKEN_COMMENT.
+@end table
+@item Returns
+True if the comment is continued from the comment token
+that precedes it in the stream; False if it's a new comment.
+@end table
+
+@end deftypefun
 
 @node Encryption
 @section Encryption
