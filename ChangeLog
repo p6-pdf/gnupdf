@@ -1,5 +1,8 @@
 2009-05-15  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf-hg.texi (Tasks workflow): Added a note about the
+	interpretation of TODO and NEXT.
+
 	* doc/gendocs_template: Customized.
 
 	* doc/Makefile.am: Support for generation of manuals using the

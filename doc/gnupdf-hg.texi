@@ -349,6 +349,21 @@ The task is archived and succesfully performed.
 The task is archived but it has been discarded.
 @end table
 
+Note that a task may also be assigned to someone or unassigned:
+
+@table @strong
+@item TODO and unassigned
+Dependency issues, no one in charge.
+@item TODO and assigned
+Dependency issues and someone showed interest.
+@item NEXT and unassigned
+Can be started, nobody interested.
+@item NEXT and assigned
+Someone is interested but can't work on it for personal issues.
+@item STARTED and assigned
+Someone is working on the task (no matter the time it takes)
+@end table
+
 @node The flyspray task manager
 @section The flyspray task manager
 
