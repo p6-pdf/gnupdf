@@ -2,6 +2,16 @@
 
 	* doc/gnupdf.texi: changed pdf_fsys_file_read/write to be like pdf_stm_read/write.
 
+	* src/base/pdf-fsys-disk.c: likewise.
+
+	* src/base/pdf-fsys-disk.h:likewise.
+
+	* src/base/pdf-fsys.c:likewise.
+
+	* src/base/pdf-fsys.h: likewise.
+
+	* src/base/pdf-stm-be.c: likewise.
+
 2009-05-14  Gerardo E. Gidoni  <gerel@gnu.org>
 
 	* torture/unit/Makefile.am: added file stm new test case.
