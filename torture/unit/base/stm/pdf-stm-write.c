@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-14 01:01:21 gerel"
+/* -*- mode: C -*- Time-stamp: "2009-05-15 13:53:39 gerel"
  *
  *       File:         pdf-stm-write.c
  *       Date:         Sun Sep 21 16:37:27 2008
@@ -780,10 +780,11 @@ START_TEST (pdf_stm_write_013)
   ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, &file); 
   fail_if (ret != PDF_OK);
 
-  read = pdf_fsys_file_read (file, 3, 1, data);
+  ret = pdf_fsys_file_read (file, data, 3, &read);
+  fail_if (ret != PDF_OK);
   data[3] = '\0';
 
-  fail_if(read != 1);
+  fail_if(read != 3);
   fail_if (strcmp (data, "GNU") != 0);
 
   /* Free resources */
@@ -856,10 +857,11 @@ START_TEST (pdf_stm_write_014)
   ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, &file); 
   fail_if (ret != PDF_OK);
 
-  read = pdf_fsys_file_read (file, 3, 1, data);
+  ret = pdf_fsys_file_read (file, data, 3, &read);
+  fail_if (ret != PDF_OK);
   data[3] = '\0';
 
-  fail_if(read != 1);
+  fail_if(read != 3);
   fail_if (strcmp (data, "GNU") != 0);
 
   /* Free resources */

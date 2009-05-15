@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-11-29 17:42:34 aleksander"
+/* -*- mode: C -*- Time-stamp: "2009-05-15 12:18:32 gerel"
  *
  *       File:         pdf-fsys-disk.h
  *       Date:         Thu May 22 18:22:59 2008
@@ -135,15 +135,13 @@ pdf_size_t pdf_fsys_disk_file_get_size (pdf_fsys_file_t file);
 pdf_status_t pdf_fsys_disk_file_set_size (pdf_fsys_file_t file,
                                           pdf_size_t size);
 
-pdf_size_t pdf_fsys_disk_file_read (pdf_fsys_file_t file,
-                                    const pdf_size_t elem_size,
-                                    const pdf_size_t elem_count,
-                                    void *data);
+pdf_status_t
+pdf_fsys_disk_file_write (pdf_fsys_file_t file, pdf_char_t *buf,
+                          pdf_size_t bytes, pdf_size_t *written_bytes);
 
-pdf_size_t pdf_fsys_disk_file_write (pdf_fsys_file_t file,
-                                     const pdf_size_t elem_size,
-                                     const pdf_size_t elem_count,
-                                     void *data);
+pdf_status_t
+pdf_fsys_disk_file_read (pdf_fsys_file_t file, pdf_char_t *buf,
+                         pdf_size_t bytes, pdf_size_t *read_bytes);
 
 pdf_status_t pdf_fsys_disk_file_flush (pdf_fsys_file_t file);
 

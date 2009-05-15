@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-24 18:45:45 gerel"
+/* -*- mode: C -*- Time-stamp: "2009-05-15 13:44:30 gerel"
  *
  *       File:         pdf-stm-be.c
  *       Date:         Wed Jun 18 21:15:16 2008
@@ -348,6 +348,7 @@ pdf_stm_be_file_read (pdf_stm_be_t be,
 {
   pdf_size_t readed_bytes;
   pdf_size_t current_pos;
+  pdf_status_t ret;
 
   /* Seek in the file */
   pdf_fsys_file_get_pos (be->data.file.file,
@@ -360,9 +361,10 @@ pdf_stm_be_file_read (pdf_stm_be_t be,
     }
 
   /* Read the requested number of bytes */
-  readed_bytes = pdf_fsys_file_read (be->data.file.file,
-                                     1, bytes,
-                                     (void *) buffer);
+  ret = pdf_fsys_file_read (be->data.file.file,
+                            buffer,
+                            bytes,
+                            &readed_bytes);
 
   /* Restore the file position and update the position of the
      stream */
@@ -384,6 +386,7 @@ pdf_stm_be_file_write (pdf_stm_be_t be,
 {
   pdf_size_t written_bytes;
   pdf_size_t current_pos;
+  pdf_status_t ret;
 
   /* Seek in the file */
   pdf_fsys_file_get_pos (be->data.file.file,
@@ -396,9 +399,10 @@ pdf_stm_be_file_write (pdf_stm_be_t be,
     }
   
   /* Write the requested number of bytes */
-  written_bytes = pdf_fsys_file_write (be->data.file.file,
-                                       1, bytes,
-                                       buffer);
+  ret = pdf_fsys_file_write (be->data.file.file,
+                             buffer,
+                             bytes,
+                             &written_bytes);
   
   /* Restore the file position and update the position of the
      stream */

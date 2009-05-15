@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-14 01:22:06 gerel"
+/* -*- mode: C -*- Time-stamp: "2009-05-15 13:46:31 gerel"
  *
  *       File:         pdf-stm-peek-char.c
  *       Date:         Sat Sep 20 18:07:45 2008
@@ -142,8 +142,9 @@ START_TEST (pdf_stm_peek_char_003)
   ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, &file); 
   fail_if (ret != PDF_OK);
 
-  written = pdf_fsys_file_write (file, 3, 1, "GNU");
-  fail_if (written != 1);
+  ret = pdf_fsys_file_write (file, "GNU", 3, &written);
+  fail_if (ret != PDF_OK);
+  fail_if (written != 3);
   pdf_fsys_file_close (file);
 
   ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, &file); 

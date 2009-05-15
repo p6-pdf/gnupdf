@@ -1,6 +1,8 @@
-2009-05-14  Gerardo E. Gidoni  <gerel@gnu.org>
+2009-05-15  Gerardo E. Gidoni  <gerel@gnu.org>
 
-	* doc/gnupdf.texi: fixed pdf_fsys_file_read/write return semantics.
+	* doc/gnupdf.texi: changed pdf_fsys_file_read/write to be like pdf_stm_read/write.
+
+2009-05-14  Gerardo E. Gidoni  <gerel@gnu.org>
 
 	* torture/unit/Makefile.am: added file stm new test case.
 
