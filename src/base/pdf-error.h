@@ -94,8 +94,7 @@
   ERROR_ENTRY (PDF_EBADV2KEY,   "a V2 key should be at least 40 bits long"), \
   ERROR_ENTRY (PDF_EINVOP,      "invalid operation"), \
   ERROR_ENTRY (PDF_EBADFILE,    "file violates PDF specifications"), \
-  ERROR_ENTRY (PDF_EIMPLLIMIT,  "implementation limit exceeded"), \
-  ERROR_ENTRY (PDF_EEXIST,      "name already in use")
+  ERROR_ENTRY (PDF_EIMPLLIMIT,  "implementation limit exceeded")
 
 
 #define ERROR_ENTRY(id,string) id

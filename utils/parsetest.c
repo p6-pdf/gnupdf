@@ -6,6 +6,7 @@
 #include "pdf-rd-parser.h"
 #include "pdf-obj.h"
 #include "pdf-error.h"
+#include "gl_list.h"
 
 void print_file(FILE *file)
 {
