@@ -1,0 +1,232 @@
+<html lang="en">
+  <head>
+    <title>%%TITLE%% - GNU PDF Project</title>
+    <meta htp-equiv="Content-Style-Type" content="text/css">
+      <style type="text/css"><!--
+/* CSS style for GNU PDF manuals
+ * 
+ *
+ * Copyright (C) 2007, 2008 Free Software Foundation, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
+
+body {
+    font-family: Helvetica, sans-serif;
+}
+
+defun {
+    background: grey;
+}
+
+blockquote {
+    font-size: 0.9em;
+    border: 1px black solid;
+    padding: 5px;
+
+}
+
+.sidemenu {
+    
+    border: 1px black solid;
+    padding: 5px;
+
+}
+
+.sidemenuheader {
+ 
+    color: darkred;
+    font-size: 1.1em;
+    font-weight: bold;
+    border-bottom: 1px dashed darkred;
+}
+
+.sidemenuentry {
+
+
+}
+
+.menu {
+
+}
+
+
+.hrule_small {
+    color: black;
+    size: 1px;
+}
+
+.hrule_middle {
+    color: black;
+    size: 2px;
+}
+
+.hrule_big {
+    color: black;
+    size: 6px;
+}
+
+.hrule_default {
+    color: black;
+    size: 1px;
+}
+
+.example {
+    border: 1px black solid;
+    padding: 10px;
+}
+
+.manualtitle {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+
+.manualedition {
+    font-size: 1em;
+    color: darkred;
+    font-weight: bold;
+}
+
+.manualrevision {
+    font-size: 1em;
+    color: darkred;
+    font-weight: bold;
+}
+
+.libraryversion {
+    font-size: 1em;
+    color: darkred;
+    font-weight: bold;
+}
+
+.settitle {
+    color: darkred;
+    border-bottom: 2px solid darkred;
+}
+
+.chapter {
+    color: darkred;
+    border-bottom: 2px solid darkred;
+}
+
+.appendix {
+    color: darkred;
+    border-bottom: 2px solid darkred;
+}
+
+.section {
+    color: darkred;
+    border-bottom: 2px solid darkred;
+}
+
+.subsection {
+    color: darkred;
+    border-bottom: 1px dashed darkred;
+}
+
+.node {
+    text-align: center;
+}
+
+/* end of manuals.css */-->
+      </style>
+    </meta>
+  </head>
+  <body>
+
+    <h2>%%TITLE%%</h2>
+
+    <address>GNU Project</address>
+    <address>last updated %%DATE%%</address>
+
+    <p>This manual (%%PACKAGE%%) is available in the following formats:</p>
+
+    <ul>
+      <li><a href="%%PACKAGE%%.html">HTML
+      (%%HTML_MONO_SIZE%%K bytes)</a> - entirely on one web page.</li>
+      <li><a href="html_node/index.html">HTML</a> - with one web page per
+      node.</li>
+      %%IF HTML_SECTION%%
+      <li><a href="html_section/index.html">HTML</a> - with one web page per
+      section.</li>
+      %%ENDIF HTML_SECTION%%
+      %%IF HTML_CHAPTER%%
+      <li><a href="html_chapter/index.html">HTML</a> - with one web page per
+      chapter.</li>
+      %%ENDIF HTML_CHAPTER%%
+      <li><a href="%%PACKAGE%%.html.gz">HTML compressed
+      (%%HTML_MONO_GZ_SIZE%%K gzipped characters)</a> - entirely on
+      one web page.</li>
+      <li><a href="%%PACKAGE%%.html_node.tar.gz">HTML compressed
+      (%%HTML_NODE_TGZ_SIZE%%K gzipped tar file)</a> -
+      with one web page per node.</li>
+      %%IF HTML_SECTION%%
+      <li><a href="%%PACKAGE%%.html_section.tar.gz">HTML compressed
+      (%%HTML_SECTION_TGZ_SIZE%%K gzipped tar file)</a> -
+      with one web page per section.</li>
+      %%ENDIF HTML_SECTION%%
+      %%IF HTML_CHAPTER%%
+      <li><a href="%%PACKAGE%%.html_chapter.tar.gz">HTML compressed
+      (%%HTML_CHAPTER_TGZ_SIZE%%K gzipped tar file)</a> -
+      with one web page per chapter.</li>
+      %%ENDIF HTML_CHAPTER%%
+      <li><a href="%%PACKAGE%%.info.tar.gz">Info document
+      (%%INFO_TGZ_SIZE%%K bytes gzipped tar file)</a>.</li>
+      <li><a href="%%PACKAGE%%.txt">ASCII text
+      (%%ASCII_SIZE%%K bytes)</a>.</li>
+      <li><a href="%%PACKAGE%%.txt.gz">ASCII text compressed
+      (%%ASCII_GZ_SIZE%%K bytes gzipped)</a>.</li>
+      <li><a href="%%PACKAGE%%.dvi.gz">TeX dvi file
+      (%%DVI_GZ_SIZE%%K bytes gzipped)</a>.</li>
+      <li><a href="%%PACKAGE%%.ps.gz">PostScript file
+      (%%PS_GZ_SIZE%%K bytes gzipped)</a>.</li>
+      <li><a href="%%PACKAGE%%.pdf">PDF file
+      (%%PDF_SIZE%%K bytes)</a>.</li>
+      <li><a href="%%PACKAGE%%.texi.tar.gz">Texinfo source
+      (%%TEXI_TGZ_SIZE%%K bytes gzipped tar file).</a></li>
+    </ul>
+
+    <p>You can <a href="http://shop.fsf.org/">buy printed copies of
+    some manuals</a> (among other items) from the Free Software Foundation;
+    this helps support FSF activities.</p>
+
+    <p>(This page generated by the <a href="%%SCRIPTURL%%">%%SCRIPTNAME%%
+    script</a>.)</p>
+
+    <!-- If needed, change the copyright block at the bottom. In general, -->
+    <!-- all pages on the GNU web server should have the section about    -->
+    <!-- verbatim copying.  Please do NOT remove this without talking     -->
+    <!-- with the webmasters first. -->
+    <!-- Please make sure the copyright date is consistent with the document -->
+    <!-- and that it is like this "2001, 2002" not this "2001-2002." -->
+  </div><!-- for id="content", starts in the include above -->
+  <div id="footer">
+
+    <p>
+      Please send FSF &amp; GNU inquiries to
+      <a href="mailto:gnu@gnu.org">&lt;gnu@gnu.org&gt;</a>.
+      There are also <a href="/contact/">other ways to contact</a>
+      the FSF.<br />
+      Please send broken links and other corrections or suggestions to
+      <a href="mailto:%%EMAIL%%">&lt;%%EMAIL%%&gt;</a>.
+    </p>
+
+    <p>Copyright &copy; 2009 Free Software Foundation, Inc.</p>
+
+    <p>Verbatim copying and distribution of this entire article is
+    permitted in any medium, provided this notice is preserved.</p>
+
+  </div>
+</body>
+</html>

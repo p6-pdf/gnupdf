@@ -12,6 +12,16 @@
 
 	* src/base/pdf-stm-be.c: likewise.
 
+2009-05-15  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-hg.texi (Tasks workflow): Added a note about the
+	interpretation of TODO and NEXT.
+
+	* doc/gendocs_template: Customized.
+
+	* doc/Makefile.am: Support for generation of manuals using the
+	gendocs.sh script from gnulib.
+	
 2009-05-14  Gerardo E. Gidoni  <gerel@gnu.org>
 
 	* torture/unit/Makefile.am: added file stm new test case.

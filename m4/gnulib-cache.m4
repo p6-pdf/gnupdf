@@ -1,4 +1,4 @@
-# Copyright (C) 2002-2008 Free Software Foundation, Inc.
+# Copyright (C) 2002-2009 Free Software Foundation, Inc.
 #
 # This file is free software, distributed under the terms of the GNU
 # General Public License.  As a special exception to the GNU General
@@ -15,13 +15,14 @@
 
 
 # Specification in the form of a command-line invocation:
-#   gnulib-tool --import --dir=. --lib=libgnu --source-base=lib --m4-base=m4 --doc-base=doc --tests-base=tests --aux-dir=build-aux --libtool --macro-prefix=gl array-list fflush getline getopt linkedhash-list list localcharset localename maintainer-makefile malloc math mkdir pmccabe2html rmdir stdint xalloc
+#   gnulib-tool --import --dir=. --lib=libgnu --source-base=lib --m4-base=m4 --doc-base=doc --tests-base=tests --aux-dir=build-aux --libtool --macro-prefix=gl array-list fflush gendocs getline getopt linkedhash-list list localcharset localename maintainer-makefile malloc math mkdir pmccabe2html rmdir stdint xalloc
 
 # Specification in the form of a few gnulib-tool.m4 macro invocations:
 gl_LOCAL_DIR([])
 gl_MODULES([
   array-list
   fflush
+  gendocs
   getline
   getopt
   linkedhash-list
