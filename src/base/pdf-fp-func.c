@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/03 21:29:32 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-04-17 19:24:54 david"
  *
  *       File:         pdf-fp-func.c
  *       Date:         Sun Nov 30 18:46:06 2008
@@ -42,26 +42,38 @@ read_type0_sample_table (pdf_char_t *buf, pdf_size_t buf_size,
 
 static pdf_i32_t get_token (pdf_char_t *buf,
                             pdf_size_t buf_size,
-                            pdf_size_t *cur_pos,
+                            pdf_size_t start,
+                            pdf_size_t *bot,
+                            pdf_size_t *eot,
                             double *literal);
 static inline void setmap (double map[2],
                            const pdf_real_t to[2],
                            const pdf_real_t from[2]);
+
 static pdf_status_t pdf_eval_spline (pdf_fp_func_t fun,
                                      const pdf_real_t t[],
-                                     pdf_real_t out[]);
+                                     pdf_real_t out[],
+                                     pdf_fp_func_debug_t * debug);
+
 static pdf_status_t pdf_eval_linear (pdf_fp_func_t fun,
                                      const pdf_real_t t[],
-                                     pdf_real_t out[]);
+                                     pdf_real_t out[],
+                                     pdf_fp_func_debug_t * debug);
+
 static pdf_status_t pdf_eval_exponential (pdf_fp_func_t t,
                                           const pdf_real_t in[],
-                                          pdf_real_t out[]);
+                                          pdf_real_t out[],
+                                          pdf_fp_func_debug_t * debug);
+
 static pdf_status_t pdf_eval_stitch (pdf_fp_func_t t,
                                      const pdf_real_t in[],
-                                     pdf_real_t out[]);
+                                     pdf_real_t out[],
+                                     pdf_fp_func_debug_t * debug);
+
 static pdf_status_t pdf_eval_type4(pdf_fp_func_t t,
                                    const pdf_real_t in[],
-                                   pdf_real_t out[]);
+                                   pdf_real_t out[],
+                                   pdf_fp_func_debug_t * debug);
 
 typedef enum
   {
@@ -366,24 +378,35 @@ pdf_fp_func_3_new (pdf_u32_t m,
   return ret;
 }
 
-pdf_status_t pdf_fp_func_4_new (pdf_u32_t m,
-                                pdf_u32_t n,
-                                pdf_real_t domain[],
-                                pdf_real_t range[],
-                                pdf_char_t *code,
-                                pdf_size_t code_size,
-                                pdf_fp_func_t *function)
+#define BRACES_MAX_LEVEL 32
+
+pdf_status_t
+pdf_fp_func_4_new (pdf_u32_t m,
+                   pdf_u32_t n,
+                   pdf_real_t domain[],
+                   pdf_real_t range[],
+                   pdf_char_t *code,
+                   pdf_size_t code_size,
+                   pdf_size_t *error_at,
+                   pdf_fp_func_t *function)
 {
   pdf_fp_func_t f;
-  pdf_u32_t off[32];
+  pdf_u32_t off[BRACES_MAX_LEVEL];
+  pdf_u32_t braces_pos[BRACES_MAX_LEVEL];
   pdf_char_t *op;
   pdf_i32_t at;
   pdf_i32_t to;
   pdf_i32_t alloc;
   pdf_i32_t bsp;
+  pdf_i32_t blevel;             /* braces level depth */
   double lit;
   pdf_i32_t opc;
+  pdf_size_t beg_pos;               /* beginning of current token */
   pdf_size_t cur_pos;
+  pdf_status_t ret;
+  pdf_u32_t (*debug_off)[2];
+  pdf_size_t debug_size;
+  pdf_size_t debug_alloc;
 
   /* Common data */
   f = pdf_alloc (sizeof(struct pdf_fp_func_s));
@@ -395,20 +418,28 @@ pdf_status_t pdf_fp_func_4_new (pdf_u32_t m,
 
   /* Specific data */
   cur_pos = 0;
+  beg_pos = 0;
   alloc = 64;
   op = pdf_alloc (alloc);
-  opc = get_token (code, code_size, &cur_pos, &lit);
+  debug_alloc = 64;
+  debug_size = 0;
+  debug_off = pdf_alloc (sizeof(*debug_off) * debug_alloc);
+
+  opc = get_token (code, code_size, cur_pos, &beg_pos, &cur_pos, &lit);
   if (opc != OPC_begin)
     {
+      ret = PDF_ENOWRAP;
       goto fail;
     }
 
+  blevel = 1;
   bsp = 0;
   at  = 0;
   for(;;)
     {
-      if (bsp >= sizeof(off)/sizeof(off[0]))
+      if (bsp >= BRACES_MAX_LEVEL)
         {
+          ret = PDF_ETOODEPTH;
           goto fail;
         }
 
@@ -417,15 +448,29 @@ pdf_status_t pdf_fp_func_4_new (pdf_u32_t m,
           alloc *= 2;
           op = pdf_realloc (op,alloc);
         }
-      opc = get_token (code, code_size, &cur_pos, &lit);
+
+      if (debug_size >= debug_alloc)
+        {
+          debug_alloc *= 2;
+          debug_off = pdf_realloc (debug_off, sizeof(*debug_off) * debug_alloc);
+        }
+
+
+      beg_pos = cur_pos;
+      opc = get_token (code, code_size, cur_pos, &beg_pos, &cur_pos, &lit);
       if (opc < 0)
         {
+          ret = PDF_EEOF;
           goto fail;
         }	
       switch ((PDF_TYPE4_OPC)opc)
         {
         case OPC_lit:
           {
+            debug_off[debug_size][0] = at;
+            debug_off[debug_size][1] = beg_pos;
+            debug_size++;
+            
             op[at++] = opc;
             memcpy (op+at, &lit, sizeof(lit));
             at += sizeof (lit);
@@ -433,26 +478,56 @@ pdf_status_t pdf_fp_func_4_new (pdf_u32_t m,
           }
         case OPC_begin:
           {
-            off[bsp++] = at; /* backpatched by if/ifelse */
+            blevel++;
+            off[bsp] = at; /* backpatched by if/ifelse */
+            braces_pos[bsp] = beg_pos;
+            bsp++;
+
+            debug_off[debug_size][0] = at;
+            debug_off[debug_size][1] = beg_pos;
+            debug_size++;
+
             op[at] = OPC_begin; /* OPC_error */
             at += 1+sizeof(at);
+            
             break;
           }
         case OPC_end:
           {
-            if (bsp)
+            blevel--;
+
+            if (blevel)
               {
-                off[bsp++] = at;
+                off[bsp] = at;
+                braces_pos[bsp] = beg_pos;
+                bsp++;
               }
             else
               {
                 void *r;
+
+                debug_off[debug_size][0] = at;
+                debug_off[debug_size][1] = beg_pos;
+                debug_size++;
+
                 op[at++] = OPC_ret;
-                if (get_token (code, code_size, &cur_pos, &lit) >= 0)
+
+                if (get_token (code, code_size, cur_pos, &beg_pos, &cur_pos, &lit) >= 0)
                   {
+                    ret = PDF_ENOWRAP;
                     goto fail;
                   }
+
+                if (bsp)
+                  {
+                    beg_pos = braces_pos[--bsp]; /* reporting error offset */
+                    ret = PDF_EMISSIF;
+                    goto fail;
+                  }
+
                 /* memory is transferred to f, not freed here */
+                debug_off = pdf_realloc (debug_off, sizeof(*debug_off) * debug_alloc);
+
                 r = pdf_realloc (op,at);
                 if (r)
                   {
@@ -461,6 +536,9 @@ pdf_status_t pdf_fp_func_4_new (pdf_u32_t m,
 
                 f->u.t4.opcodes = op;
                 f->u.t4.n_opcodes = at;
+                f->u.t4.debug_off = debug_off;
+                f->u.t4.debug_size = debug_size;
+                
                 f->eval = pdf_eval_type4;
 
                 goto success;
@@ -471,9 +549,15 @@ pdf_status_t pdf_fp_func_4_new (pdf_u32_t m,
           {
             if (bsp < 2 || at != off[--bsp])
               {
+                ret = PDF_EMISSBODY;
                 goto fail;
               }
-            op[off[--bsp]] = OPC_jnt;
+
+            debug_off[debug_size][0] = --bsp;
+            debug_off[debug_size][1] = beg_pos;
+            debug_size++;
+            
+            op[off[bsp]] = OPC_jnt;
             to = at - 1;
             memcpy(op+1+off[bsp],&to,sizeof(to));
             break;
@@ -482,16 +566,22 @@ pdf_status_t pdf_fp_func_4_new (pdf_u32_t m,
           {
             if (bsp < 4 || at != off[--bsp])
               {
+                ret = PDF_EMISSBODY;
                 goto fail;
               }
 
-            op[off[--bsp]] = OPC_jmp;
+            debug_off[debug_size][0] = --bsp;
+            debug_off[debug_size][1] = beg_pos;
+            debug_size++;
+
+            op[off[bsp]] = OPC_jmp;
             to = at-1;
             memcpy(op+off[bsp]+1,&to,sizeof(to));
 
             to = off[bsp--];
             if (to != off[bsp--])
               {
+                ret = PDF_EMISSBODY;
                 goto fail;
               }
             to += sizeof(to);
@@ -501,12 +591,16 @@ pdf_status_t pdf_fp_func_4_new (pdf_u32_t m,
           }
         case OPC_bad:
           {
-            /* stream offset would be nice */
+            ret = PDF_EBADOP;
             goto fail;
             break;
           }
         default:
           {
+            debug_off[debug_size][0] = at;
+            debug_off[debug_size][1] = beg_pos;
+            debug_size++;
+
             op[at++] = opc;
             break;
           }
@@ -516,8 +610,13 @@ pdf_status_t pdf_fp_func_4_new (pdf_u32_t m,
 
  fail:
   pdf_dealloc (op);
-  return PDF_ERROR;
-
+  pdf_dealloc (debug_off);
+  
+  if (error_at != NULL)
+    {
+      *error_at = beg_pos;
+    }
+  return ret;
 
  success:
   *function = f;
@@ -527,9 +626,10 @@ pdf_status_t pdf_fp_func_4_new (pdf_u32_t m,
 pdf_status_t
 pdf_fp_func_eval (pdf_fp_func_t function,
                   const pdf_real_t in[],
-                  pdf_real_t out[])
+                  pdf_real_t out[],
+                  pdf_fp_func_debug_t * result)
 {
-  return function->eval(function, in, out);
+  return function->eval(function, in, out, result);
 }
 
 pdf_status_t
@@ -593,6 +693,7 @@ pdf_fp_func_destroy (pdf_fp_func_t t)
       break;
     case 4:
       pdf_dealloc (t->u.t4.opcodes);
+      pdf_dealloc (t->u.t4.debug_off);
       break;
     }
 
@@ -968,7 +1069,8 @@ linear_interpolation(pdf_u32_t i,
 static pdf_status_t
 pdf_eval_linear (pdf_fp_func_t fun,
                  const pdf_real_t in[],
-                 pdf_real_t out[])
+                 pdf_real_t out[],
+                 pdf_fp_func_debug_t * debug)
 {
   pdf_u32_t i,j;
   double t;
@@ -1051,7 +1153,8 @@ spline_interpolation(pdf_u32_t i,
 static pdf_status_t
 pdf_eval_spline (pdf_fp_func_t fun,
                  const pdf_real_t in[],
-                 pdf_real_t out[])
+                 pdf_real_t out[],
+                 pdf_fp_func_debug_t * debug)
 {
   pdf_u32_t i,j;
   double t,v;
@@ -1142,7 +1245,8 @@ pdf_eval_spline (pdf_fp_func_t fun,
 static pdf_status_t
 pdf_eval_exponential (pdf_fp_func_t t,
                       const pdf_real_t in[],
-                      pdf_real_t out[])
+                      pdf_real_t out[],
+                      pdf_fp_func_debug_t * debug)
 {
   pdf_u32_t j;
   pdf_real_t x,y;
@@ -1169,7 +1273,8 @@ pdf_eval_exponential (pdf_fp_func_t t,
 static pdf_status_t
 pdf_eval_stitch (pdf_fp_func_t t,
                  const pdf_real_t in[],
-                 pdf_real_t out[])
+                 pdf_real_t out[],
+                 pdf_fp_func_debug_t * debug)
 {
   pdf_fp_func_t f;
   pdf_real_t x;
@@ -1223,7 +1328,7 @@ pdf_eval_stitch (pdf_fp_func_t t,
 
   f = t->u.t3.functions[i];
 
-  return f->eval(f,&x,out);
+  return f->eval(f,&x,out, debug);
 }
 
 /* ------- decoder utilities ------ */
@@ -1291,18 +1396,18 @@ read_type0_sample_table (pdf_char_t *buf,
 /* --- ------------------------------- --- */
 
 
-#define NSTACK	100
-#define REP_TRUE	(1.202056903159594285399738162)
-#define REP_FALSE	(-15116315767.09215686274509804)
+#define NSTACK          PDF_FP_FUNC_TYPE4_STACK_SIZE
+#define REP_TRUE	PDF_FP_FUNC_TYPE4_TRUE
+#define REP_FALSE	PDF_FP_FUNC_TYPE4_FALSE
 #define INT(xyyzy)	((int) pdf_fp_floor (xyyzy))
 #define INT_P(xyzzy) ((xyzzy) == INT(xyzzy))
-
 
 
 static pdf_status_t
 pdf_eval_type4 (pdf_fp_func_t t,
                 const pdf_real_t in[],
-                pdf_real_t out[])
+                pdf_real_t out[],
+                pdf_fp_func_debug_t * debug)
 {
   double stack[NSTACK+2];
   pdf_char_t *op;
@@ -1310,7 +1415,9 @@ pdf_eval_type4 (pdf_fp_func_t t,
   double tmp;
   pdf_i32_t sp;
   pdf_i32_t pc;
-
+  pdf_fp_func_debug_t debug_info;
+  pdf_i32_t aux;
+  
   op  = t->u.t4.opcodes;
   n   = t->u.t4.n_opcodes;
 
@@ -1334,7 +1441,7 @@ pdf_eval_type4 (pdf_fp_func_t t,
                 }
               out[sp] = clip(stack[sp], t->range + 2*sp);
             }
-          return 0;
+          return PDF_OK;
           break;
         case OPC_lit:
           if (sp >= NSTACK) goto stack_overflow;
@@ -1392,14 +1499,17 @@ pdf_eval_type4 (pdf_fp_func_t t,
           break;
         case OPC_log:
           if (sp < 0) goto stack_underflow;
+          if (stack[sp] < 0) goto range_error;
           stack[sp] = pdf_fp_log10 (stack[sp]);
           break;
         case OPC_ln:
           if (sp < 0) goto stack_underflow;
+          if (stack[sp] < 0) goto range_error;
           stack[sp] = pdf_fp_log (stack[sp]);
           break;
         case OPC_sqrt:
           if (sp < 0) goto stack_underflow;
+          if (stack[sp] < 0) goto range_error;
           stack[sp] = pdf_fp_sqrt (stack[sp]);
           break;
         case OPC_floor:
@@ -1495,6 +1605,7 @@ pdf_eval_type4 (pdf_fp_func_t t,
           break;
         case OPC_div:
           if (sp < 1) goto stack_underflow;
+          if (stack[sp] == 0) goto math_error;
           stack[sp-1] /= stack[sp];
           sp--;
           break;
@@ -1618,16 +1729,39 @@ pdf_eval_type4 (pdf_fp_func_t t,
         }
     }
 
- block_error	   : return -1;
- stack_underflow: printf("STACK UNDEFLOW\n"); return -1;
- stack_overflow : printf("STACK OVERFLOW\n"); return -1;
- stack_error    : return -1;
- range_error    : return -1;
- type_error     : return -1;
- math_error	: return -1;
+
+ block_error:     debug_info.type4.status = PDF_ERROR;       goto end;
+ stack_error:     debug_info.type4.status = PDF_EINVRANGE;   goto end;
+ stack_underflow: debug_info.type4.status = PDF_EUNDERFLOW;  goto end;
+ stack_overflow:  debug_info.type4.status = PDF_EOVERFLOW;   goto end;
+ range_error:     debug_info.type4.status = PDF_EINVRANGE;   goto end;
+ type_error:      debug_info.type4.status = PDF_EBADTYPE;    goto end;
+ math_error:      debug_info.type4.status = PDF_EMATH;       goto end;
+ end:
+
+  /* Found that code was compiled to the opcode for debugging.  */
+  debug_info.type4.op = -1;
+  for (aux = 0; aux < t->u.t4.debug_size; aux++)
+    {
+      if (t->u.t4.debug_off[aux][0] == pc)
+        {
+          debug_info.type4.op = t->u.t4.debug_off[aux][1];
+          break;
+        }
+    }
+
+  /* Copy some elements from the stack for debugging */
+  for (aux = 0; aux <= sp; aux++)
+    {
+      debug_info.type4.stack[aux] = stack[sp - aux];
+    }
+  debug_info.type4.stack_size = sp + 1;
+
+  if (debug != NULL)
+    *debug = debug_info;
+
+  return PDF_ETYPE4;
 }
-
-
 /* ANSI-C code produced by gperf version 3.0.1 */
 /* Command-line: gperf -t -m 100 pdf_function_type4.gperf  */
 /* Computed positions: -k'1-3' */
@@ -1748,15 +1882,89 @@ in_word_set (register const char *str, register pdf_i32_t len)
   return 0;
 }
 
+
+
+static pdf_status_t
+parse_real (char * string, char ** end, double * out)
+{
+  int negative;
+  char * p;
+  unsigned int l_integer;
+  unsigned int l_decimal;
+  double x;
+  
+  p = string;
+  l_integer = 0;
+  l_decimal = 0;
+  
+  /* read sign */
+  negative = 0;
+  if (*p == '-')
+    {
+      p++;
+      negative = 1;
+    }
+  else if (*p == '+')
+    {
+      p++;
+    }
+
+  /* read integer part */
+  x = 0.0;
+  while (*p >= '0' && *p <= '9')
+    {
+      x *= 10;
+      x += *p - '0';
+      p++;
+      l_integer++;
+    }
+
+  /* read decimal part */
+  if (*p == '.')
+    {
+      unsigned int weight = 10;
+      p++;
+
+      while(*p >= '0' && *p <= '9')
+        {
+          double dig = ((double)(*p - '0')) / weight;
+          x += dig;
+          weight *= 10;
+          l_decimal++;
+          p++;
+        }
+    }
+
+  x = negative? -x: x;
+  
+  if (end != NULL)
+    *end = p;
+
+  if (l_integer || l_decimal)
+    {
+      *out = x;
+      return PDF_OK;
+    }
+  else
+    return PDF_ERROR;
+}
+
+
+
+
 static pdf_i32_t get_token (pdf_char_t *buffer,
                             pdf_size_t buf_size,
-                            pdf_size_t *cur_pos,
+                            pdf_size_t start,
+                            pdf_size_t *bot, /* beginning of token */
+                            pdf_size_t *eot, /* end of token */
                             double *literal)
 {
   pdf_char_t c;
   char buf[128];
   char *end;
   pdf_u32_t bp;
+  pdf_size_t cur_pos = start;
+  pdf_size_t beg_pos;
 
 #define PDF_ISWHITE(foo)                                                \
   (((foo) <= 0x20)                                                      \
@@ -1764,13 +1972,13 @@ static pdf_i32_t get_token (pdf_char_t *buffer,
        (foo) == 0x20 || (foo) == 0x09 || (foo) == 0x0a || (foo) == 0x0c \
        || (foo) == 0x0d || (foo) == 0x00))
 
-  c = buffer[*cur_pos];
-  while ((*cur_pos < buf_size) && PDF_ISWHITE(buffer[*cur_pos]))
+  c = buffer[cur_pos];
+  while ((cur_pos < buf_size) && PDF_ISWHITE(buffer[cur_pos]))
     {
-      (*cur_pos)++;
-      c = buffer[*cur_pos];
+      cur_pos++;
+      c = buffer[cur_pos];
     }
-  if (*cur_pos == buf_size)
+  if (cur_pos == buf_size)
     {
       /* EOF condition */
       return -1;
@@ -1778,11 +1986,12 @@ static pdf_i32_t get_token (pdf_char_t *buffer,
 
   bp = 0;
   buf[bp++] = c;
-  (*cur_pos)++;
-  while ((*cur_pos < buf_size) && !PDF_ISWHITE(buffer[*cur_pos]))
+  beg_pos = cur_pos;
+  cur_pos++;
+  while ((cur_pos < buf_size) && !PDF_ISWHITE(buffer[cur_pos]))
     {
-      c = buffer[*cur_pos];
-      (*cur_pos)++;
+      c = buffer[cur_pos];
+      cur_pos++;
       buf[bp++] = c;
       if (bp >= sizeof(buf)/sizeof(buf[0]) || c >= 0x80)
         {
@@ -1790,11 +1999,19 @@ static pdf_i32_t get_token (pdf_char_t *buffer,
         }
     }
   buf[bp] = '\0';
+  *bot = beg_pos;
+  *eot = cur_pos;
+
   if (isdigit(buf[0]) || buf[0] < 'a' )
     {
-      *literal = strtod (buf,&end);
-      /* HF: recognizes a language larger than specified */
-      return (*end) ? OPC_bad : OPC_lit;
+      if (parse_real (buf, &end, literal) == PDF_OK)
+        {
+          return OPC_lit;
+        }
+      else
+        {
+          return OPC_bad;
+        }
     }
   else
     {

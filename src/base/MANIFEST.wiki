@@ -19,6 +19,7 @@ This directory contains the source files for the Base Layer of the library.
 ; '''pdf-stm-f-aesv2.h''', '''pdf-stm-f-aesv2.c'''
 ; '''pdf-stm-f-v2.h''', '''pdf-stm-f-v2.c'''
 ; '''pdf-stm-f-md.h''', '''pdf-stm-f-md.c'''
+; '''pdf-stm-f-dct.h''', '''pdf-stm-f-dct.c'''
 : [[PDF:Standard_Filters|Implementation of the PDF standard filters]].
 
 ; '''pdf-stm-file.h''', '''pdf-stm-file.c'''

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/10/12 18:42:03 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-05-02 16:36:31 aleksander"
  *
  *       File:         pdf-time-context.c
  *       Date:         Sun May 18 13:08:37 2008
@@ -48,7 +48,6 @@ static pdf_time_context_t time_context;
 pdf_status_t
 pdf_time_context_init(void)
 {
-  extern pdf_time_context_t time_context;
   time_t tloc;
   struct tm* time_struct;
 
@@ -74,7 +73,6 @@ pdf_time_context_init(void)
   PDF_DEBUG_BASE("Daylight saving? %s",time_context.local_time_daylight_save ? \
                  "yes":"no");
 
-  pdf_dealloc (time_struct);
   return PDF_OK;
 }
 
@@ -84,7 +82,6 @@ pdf_time_context_init(void)
 pdf_i32_t
 pdf_time_context_get_gmt_offset(void)
 {
-  extern pdf_time_context_t time_context;
   return time_context.local_time_gmt_offset;
 }
 

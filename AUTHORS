@@ -5,7 +5,125 @@ GNU PDF Library - Authors
 
 GNU maintainer: Jose E. Marchesi <jemarch@gnu.org>
 
-People who contributed with code or documentation:
+People who contributed with either code or documentation (in
+alphabetical order):
+
+Aleksander Morgado: wrote src/base/pdf-text.h src/base/pdf-text.c
+  src/base/pdf-text-context.h src/base/pdf-text-context.c
+  src/base/pdf-text-encoding.h src/base/pdf-text-encoding.c
+  src/base/pdf-text-host-encoding.h src/base/pdf-text-host-encoding.c
+  src/base/pdf-text-filter.h src/base/pdf-text-filter.c
+  src/base/pdf-text-ucd.h src/base/pdf-text-ucd-wordbreak.h
+  src/base/pdf-text-ucd-wordbreak.c src/base/pdf-text-ucd-gencat.h
+  src/base/pdf-text-ucd-gencat.c src/base/pdf-text-ucd-combclass.h
+  src/base/pdf-text-ucd-combclass.c src/base/pdf-text-ucd-case.h
+  src/base/pdf-text-case.c build-aux/pdf-text-generate-ucd.c
+  src/base/pdf-time-context.h src/base/pdf-time-context.c
+  src/base/pdf-time-string.h src/base/pdf-time-string.c
+  src/base/pdf-time.h src/base/pdf-time.c
+  build-aux/pdf-text-download-and-generate-ucd.sh
+  build-aux/README.regenerateUCD
+  torture/unit/base/text/pdf-text-check-host-encoding.c
+  torture/unit/base/text/pdf-text-cmp.c
+  torture/unit/base/text/pdf-text-concat.c
+  torture/unit/base/text/pdf-text-dup.c
+  torture/unit/base/text/pdf-text-empty-p.c
+  torture/unit/base/text/pdf-text-filter.c
+  torture/unit/base/text/pdf-text-get-best-encoding.c
+  torture/unit/base/text/pdf-text-get-country.c
+  torture/unit/base/text/pdf-text-get-hex.c
+  torture/unit/base/text/pdf-text-get-host-encoding.c
+  torture/unit/base/text/pdf-text-get-host.c
+  torture/unit/base/text/pdf-text-get-language.c
+  torture/unit/base/text/pdf-text-get-pdfdocenc.c
+  torture/unit/base/text/pdf-text-get-unicode.c
+  torture/unit/base/text/pdf-text-init.c
+  torture/unit/base/text/pdf-text-new-destroy.c
+  torture/unit/base/text/pdf-text-new-from-host.c
+  torture/unit/base/text/pdf-text-new-from-pdf-string.c
+  torture/unit/base/text/pdf-text-new-from-u32.c
+  torture/unit/base/text/pdf-text-new-from-unicode.c
+  torture/unit/base/text/pdf-text-replace-ascii.c
+  torture/unit/base/text/pdf-text-replace.c
+  torture/unit/base/text/pdf-text-set-country.c
+  torture/unit/base/text/pdf-text-set-host.c
+  torture/unit/base/text/pdf-text-set-language.c
+  torture/unit/base/text/pdf-text-set-pdfdocenc.c
+  torture/unit/base/text/pdf-text-set-unicode.c
+  torture/unit/base/text/pdf-text-test-common.c
+  torture/unit/base/text/pdf-text-test-common.h
+  torture/unit/base/text/pdf-text-test-data.c
+  torture/unit/base/text/pdf-text-tsuite-text.c
+  torture/unit/nocheck/check.h torture/unit/nocheck/check.c
+  torture/unit/nocheck/README
+and changed doc/gnupdf.texi doc/gnupdf-tsd.texi configure.ac src/Makefile.am
+  src/base/pdf-base.h src/base/pdf-error.c src/base/pdf-types.h
+  src/base/pdf-hash.c src/base/pdf-stm-file.c src/base/pdf-stm.c
+  src/base/pdf-stm-file.c src/base/pdf-fsys-disk.h src/base/pdf-fsys-disk.c
+  src/base/pdf-fsys.h src/base/pdf-fsys.c src/base/pdf-fsys-def.h
+  src/base/pdf-error.h
+  utils/Makefile.am
+  torture/unit/runtests.c torture/unit/Makefile.am
+  torture/unit/base/hash/pdf-hash-iterator-next.c
+  torture/unit/base/hash/pdf-hash-iterator.c
+  torture/unit/base/list/pdf-list-iterator-from-to.c
+  torture/unit/base/list/pdf-list-iterator-next.c
+  torture/unit/base/stm/pdf-stm-write.c
+  torture/unit/base/stm/pdf-stm-read.c
+
+Daniel Vidal: wrote /torture/unit/base/types/pdf-i64-add.c
+  /torture/unit/base/types/pdf-i64-assign.c
+  /torture/unit/base/types/pdf-i64-assign-quick.c
+  /torture/unit/base/types/pdf-i64-copy.c
+  /torture/unit/base/types/pdf-i64-new.c
+  /torture/unit/base/types/tsuite-types.c
+  /torture/unit/base/types/pdf-i64-neg.c
+  /torture/unit/base/types/pdf-i64-abs.c
+  /torture/unit/base/types/pdf-i64-cmp.c
+  /torture/unit/base/types/pdf-i64-mult.c
+  /torture/unit/base/types/pdf-i64-div.c
+  /torture/unit/base/types/pdf-i64-mod.c
+  /torture/unit/base/types/pdf-i64-subtraction.c
+and changed src/Makefile.am
+  src/base/pdf-types.h
+  src/base/pdf-types.c
+  torture/unit/Makefile.am
+  torture/unit/runtests.c
+  src/base/pdf-time.c
+
+David Vazquez: wrote /torture/unit/base/crypt/
+  torture/unit/base/crypt/pdf-crypt-cipher-decrypt.c
+  torture/unit/base/crypt/pdf-crypt-cipher-decrypt-size.c
+  torture/unit/base/crypt/pdf-crypt-cipher-destroy.c
+  torture/unit/base/crypt/pdf-crypt-cipher-encrypt.c
+  torture/unit/base/crypt/pdf-crypt-cipher-encrypt-size.c
+  torture/unit/base/crypt/pdf-crypt-cipher-new.c
+  torture/unit/base/crypt/pdf-crypt-cipher-setkey.c
+  torture/unit/base/crypt/pdf-crypt-init.c
+  torture/unit/base/crypt/pdf-crypt-md-md5.c
+  torture/unit/base/crypt/tsuite-crypt.c
+  src/base/pdf-crypt.c
+  src/base/pdf-crypt-c-aesv2.c
+  src/base/pdf-crypt-c-aesv2.h
+  src/base/pdf-crypt-c-v2.c
+  src/base/pdf-crypt-c-v2.h
+  src/base/pdf-crypt.h
+  src/base/pdf-stm-f-aesv2.c
+  src/base/pdf-stm-f-aesv2.h
+  src/base/pdf-stm-f-md5.c
+  src/base/pdf-stm-f-md5.h
+  src/base/pdf-stm-f-v2.c
+  src/base/pdf-stm-f-v2.h
+and changed doc/gnupdf.texi
+  torture/unit/base/stm/pdf-stm-read.c
+  torture/unit/base/stm/pdf-stm-write.c
+
+Gerardo E. Gidoni: wrote src/base/pdf-error.c src/base/pdf-error.h
+  src/base/pdf-list.c src/base/pdf-list.h src/base/pdf-hash.c
+  src/base/pdf-hash.h prmgt/patch-safety-dispatcher.py
+  src/base/pdf-stm-f-rl.h src/base/pdf-stm-f-rl.c
+and changed src/base/pdf-stm.c src/base/pdf-stm.h src/base/pdf-types.h
+  src/object/pdf-obj.c src/object/pdf-obj.h src/Makefile.am
 
 Jose E. Marchesi: wrote AUTHORS configure.ac doc/gnupdf-manual.init
   doc/gnupdf-manual-wiki.init doc/gnupdf.texi doc/gnupdf-tsd.texi
@@ -121,6 +239,10 @@ and changed src/base/pdf-stm-f-pred.c src/base/pdf-stm-f-pred.h
   src/base/pdf-crypt.h
   torture/unit/base/crypt/pdf-crypt-cipher-decrypt.c
   torture/unit/base/crypt/pdf-crypt-cipher-encrypt.c
+  torture/unit/base/time/pdf-time-from-string.c
+  torture/unit/base/time/pdf-time-new.c
+  torture/unit/base/time/pdf-time-span-copy.c
+  torture/unit/base/time/pdf-time-span-negate.c
 
 Juan Pedro Bolívar Puente: wrote src/base/pdf-stm-f-pred.c
   src/base/pdf-stm-f-pred.h src/base/pdf-stm-f-lzw.c
@@ -139,117 +261,11 @@ and changed configure.ac torture/Makefile.am torture/test-date.c
   torture/test-obj_dupequality.c torture/test-rectangle.c
   torture/test-stm_openclose.c
 
-Gerardo E. Gidoni: wrote src/base/pdf-error.c src/base/pdf-error.h
-  src/base/pdf-list.c src/base/pdf-list.h src/base/pdf-hash.c
-  src/base/pdf-hash.h prmgt/patch-safety-dispatcher.py
-  src/base/pdf-stm-f-rl.h src/base/pdf-stm-f-rl.c
-and changed src/base/pdf-stm.c src/base/pdf-stm.h src/base/pdf-types.h
-  src/object/pdf-obj.c src/object/pdf-obj.h src/Makefile.am
-
-Aleksander Morgado: wrote src/base/pdf-text.h src/base/pdf-text.c
-  src/base/pdf-text-context.h src/base/pdf-text-context.c
-  src/base/pdf-text-encoding.h src/base/pdf-text-encoding.c
-  src/base/pdf-text-host-encoding.h src/base/pdf-text-host-encoding.c
-  src/base/pdf-text-filter.h src/base/pdf-text-filter.c
-  src/base/pdf-text-ucd.h src/base/pdf-text-ucd-wordbreak.h
-  src/base/pdf-text-ucd-wordbreak.c src/base/pdf-text-ucd-gencat.h
-  src/base/pdf-text-ucd-gencat.c src/base/pdf-text-ucd-combclass.h
-  src/base/pdf-text-ucd-combclass.c src/base/pdf-text-ucd-case.h
-  src/base/pdf-text-case.c build-aux/pdf-text-generate-ucd.c
-  src/base/pdf-time-context.h src/base/pdf-time-context.c
-  src/base/pdf-time-string.h src/base/pdf-time-string.c
-  src/base/pdf-time.h src/base/pdf-time.c
-  build-aux/pdf-text-download-and-generate-ucd.sh
-  build-aux/README.regenerateUCD
-  torture/unit/base/text/pdf-text-check-host-encoding.c
-  torture/unit/base/text/pdf-text-cmp.c
-  torture/unit/base/text/pdf-text-concat.c
-  torture/unit/base/text/pdf-text-dup.c
-  torture/unit/base/text/pdf-text-empty-p.c
-  torture/unit/base/text/pdf-text-filter.c
-  torture/unit/base/text/pdf-text-get-best-encoding.c
-  torture/unit/base/text/pdf-text-get-country.c
-  torture/unit/base/text/pdf-text-get-hex.c
-  torture/unit/base/text/pdf-text-get-host-encoding.c
-  torture/unit/base/text/pdf-text-get-host.c
-  torture/unit/base/text/pdf-text-get-language.c
-  torture/unit/base/text/pdf-text-get-pdfdocenc.c
-  torture/unit/base/text/pdf-text-get-unicode.c
-  torture/unit/base/text/pdf-text-init.c
-  torture/unit/base/text/pdf-text-new-destroy.c
-  torture/unit/base/text/pdf-text-new-from-host.c
-  torture/unit/base/text/pdf-text-new-from-pdf-string.c
-  torture/unit/base/text/pdf-text-new-from-u32.c
-  torture/unit/base/text/pdf-text-new-from-unicode.c
-  torture/unit/base/text/pdf-text-replace-ascii.c
-  torture/unit/base/text/pdf-text-replace.c
-  torture/unit/base/text/pdf-text-set-country.c
-  torture/unit/base/text/pdf-text-set-host.c
-  torture/unit/base/text/pdf-text-set-language.c
-  torture/unit/base/text/pdf-text-set-pdfdocenc.c
-  torture/unit/base/text/pdf-text-set-unicode.c
-  torture/unit/base/text/pdf-text-test-common.c
-  torture/unit/base/text/pdf-text-test-common.h
-  torture/unit/base/text/pdf-text-test-data.c
-  torture/unit/base/text/pdf-text-tsuite-text.c
-  torture/unit/nocheck/check.h torture/unit/nocheck/check.c
-  torture/unit/nocheck/README
-and changed doc/gnupdf.texi doc/gnupdf-tsd.texi configure.ac src/Makefile.am
-  src/base/pdf-base.h src/base/pdf-error.c src/base/pdf-types.h
-  src/base/pdf-hash.c src/base/pdf-stm-file.c src/base/pdf-stm.c
-  src/base/pdf-stm-file.c src/base/pdf-fsys-disk.h src/base/pdf-fsys-disk.c
-  src/base/pdf-fsys.h src/base/pdf-fsys.c src/base/pdf-fsys-def.h
-  src/base/pdf-error.h
-  utils/Makefile.am
-  torture/unit/runtests.c torture/unit/Makefile.am
-  torture/unit/base/hash/pdf-hash-iterator-next.c
-  torture/unit/base/hash/pdf-hash-iterator.c
-  torture/unit/base/list/pdf-list-iterator-from-to.c
-  torture/unit/base/list/pdf-list-iterator-next.c
-  torture/unit/base/stm/pdf-stm-write.c
-  torture/unit/base/stm/pdf-stm-read.c
-  
-Daniel Vidal: wrote /torture/unit/base/types/pdf-i64-add.c
-  /torture/unit/base/types/pdf-i64-assign.c
-  /torture/unit/base/types/pdf-i64-assign-quick.c
-  /torture/unit/base/types/pdf-i64-copy.c
-  /torture/unit/base/types/pdf-i64-new.c
-  /torture/unit/base/types/tsuite-types.c
-  /torture/unit/base/types/pdf-i64-neg.c
-  /torture/unit/base/types/pdf-i64-abs.c
-  /torture/unit/base/types/pdf-i64-cmp.c
-  /torture/unit/base/types/pdf-i64-mult.c
-  /torture/unit/base/types/pdf-i64-div.c
-  /torture/unit/base/types/pdf-i64-mod.c
-  /torture/unit/base/types/pdf-i64-subtraction.c
-and changed src/Makefile.am
-  src/base/pdf-types.h
-  src/base/pdf-types.c
-  torture/unit/Makefile.am
-  torture/unit/runtests.c
-  src/base/pdf-time.c
-
-Zac Brown: changed doc/gnupdf.texi src/base/pdf-fsys-disk.c
-
-David Vazquez: wrote /torture/unit/base/crypt/
-  /torture/unit/base/crypt/pdf-crypt-cipher-decrypt.c
-  /torture/unit/base/crypt/pdf-crypt-cipher-decrypt-size.c
-  /torture/unit/base/crypt/pdf-crypt-cipher-destroy.c
-  /torture/unit/base/crypt/pdf-crypt-cipher-encrypt.c
-  /torture/unit/base/crypt/pdf-crypt-cipher-encrypt-size.c
-  /torture/unit/base/crypt/pdf-crypt-cipher-new.c
-  /torture/unit/base/crypt/pdf-crypt-cipher-setkey.c
-  /torture/unit/base/crypt/pdf-crypt-init.c
-  /torture/unit/base/crypt/pdf-crypt-md-md5.c
-  /torture/unit/base/crypt/tsuite-crypt.c
-  /src/base/pdf-crypt.c
-  /src/base/pdf-crypt-c-aesv2.c
-  /src/base/pdf-crypt-c-aesv2.h
-  /src/base/pdf-crypt-c-v2.c
-  /src/base/pdf-crypt-c-v2.h
-  /src/base/pdf-crypt.h
-and changed doc/gnupdf.texi
-
 Michael Gold: changed src/Makefile.am utils/Makefile.am
   torture/unit/Makefile.am
+
+Yang Chang Hua: wrote src/base/pdf-stm-f-dct.h
+  src/base/pdf-stm-f-dct.c
+
+Zac Brown: changed doc/gnupdf.texi src/base/pdf-fsys-disk.c
 

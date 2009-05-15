@@ -1,10 +1,26 @@
-/* -*- mode: C -*- Time-stamp: "09/01/03 21:36:47 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-02-24 18:56:51 davazp"
  *
  *       File:         pdf-fp-func-eval.c
  *       Date:         Tue Dec  2 20:11:38 2008
  *
  *       GNU PDF Library - Unit tests for pdf_fp_func_eval
  *
+ */
+
+/* Copyright (C) 2008, 2009 Free Software Foundation, Inc. */
+
+/* This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <config.h>
@@ -46,13 +62,14 @@ START_TEST(pdf_fp_func_eval_001)
   pdf_real_t out[1];
 
   prog_size = strlen (prog);
-
+  
   /* Create the function */
   fail_if(pdf_fp_func_4_new (2, 1,
                              domain,
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -62,25 +79,25 @@ START_TEST(pdf_fp_func_eval_001)
   /* x = 0, y = 0 */
   in[0] = 0;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - simple_dot (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0, y = 1 */
   in[0] = 0;
   in[1] = 1;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - simple_dot (in[0], in[1])) > ABS_ERROR);
 
   /* x = 1, y = 0 */
   in[0] = 1;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - simple_dot (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.322, y = 0.233 */
   in[0] = 0.322;
   in[1] = 0.233;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - simple_dot (in[0], in[1])) > ABS_ERROR);
 }
 END_TEST
@@ -121,6 +138,7 @@ START_TEST(pdf_fp_func_eval_002)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -130,25 +148,25 @@ START_TEST(pdf_fp_func_eval_002)
   /* x = 0, y = 0 */
   in[0] = 0;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - inverted_simple_dot (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0, y = 1 */
   in[0] = 0;
   in[1] = 1;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - inverted_simple_dot (in[0], in[1])) > ABS_ERROR);
 
   /* x = 1, y = 0 */
   in[0] = 1;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - inverted_simple_dot (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.322, y = 0.233 */
   in[0] = 0.322;
   in[1] = 0.233;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - inverted_simple_dot (in[0], in[1])) > ABS_ERROR);
 }
 END_TEST
@@ -194,6 +212,7 @@ START_TEST(pdf_fp_func_eval_003)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -203,25 +222,25 @@ START_TEST(pdf_fp_func_eval_003)
   /* x = 0, y = 0 */
   in[0] = 0;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - double_dot (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0, y = 1 */
   in[0] = 0;
   in[1] = 1;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - double_dot (in[0], in[1])) > ABS_ERROR);
 
   /* x = 1, y = 0 */
   in[0] = 1;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - double_dot (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.322, y = 0.233 */
   in[0] = 0.322;
   in[1] = 0.233;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - double_dot (in[0], in[1])) > ABS_ERROR);
 }
 END_TEST
@@ -268,6 +287,7 @@ START_TEST(pdf_fp_func_eval_004)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -277,25 +297,25 @@ START_TEST(pdf_fp_func_eval_004)
   /* x = 0, y = 0 */
   in[0] = 0;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - inverted_double_dot (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0, y = 1 */
   in[0] = 0;
   in[1] = 1;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - inverted_double_dot (in[0], in[1])) > ABS_ERROR);
 
   /* x = 1, y = 0 */
   in[0] = 1;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - inverted_double_dot (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.322, y = 0.233 */
   in[0] = 0.322;
   in[1] = 0.233;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - inverted_double_dot (in[0], in[1])) > ABS_ERROR);
 }
 END_TEST
@@ -342,6 +362,7 @@ START_TEST(pdf_fp_func_eval_005)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -351,25 +372,25 @@ START_TEST(pdf_fp_func_eval_005)
   /* x = 0, y = 0 */
   in[0] = 0;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - cosine_dot (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0, y = 1 */
   in[0] = 0;
   in[1] = 1;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - cosine_dot (in[0], in[1])) > ABS_ERROR);
 
   /* x = 1, y = 0 */
   in[0] = 1;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - cosine_dot (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.322, y = 0.233 */
   in[0] = 0.322;
   in[1] = 0.233;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - cosine_dot (in[0], in[1])) > ABS_ERROR);
 }
 END_TEST
@@ -417,6 +438,7 @@ START_TEST(pdf_fp_func_eval_006)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -426,25 +448,25 @@ START_TEST(pdf_fp_func_eval_006)
   /* x = 0, y = 0 */
   in[0] = 0;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - double_f (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0, y = 1 */
   in[0] = 0;
   in[1] = 1;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - double_f (in[0], in[1])) > ABS_ERROR);
 
   /* x = 1, y = 0 */
   in[0] = 1;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - double_f (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.322, y = 0.233 */
   in[0] = 0.322;
   in[1] = 0.233;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - double_f (in[0], in[1])) > ABS_ERROR);
 }
 END_TEST
@@ -493,6 +515,7 @@ START_TEST(pdf_fp_func_eval_007)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -502,25 +525,25 @@ START_TEST(pdf_fp_func_eval_007)
   /* x = 0, y = 0 */
   in[0] = 0;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - inverted_double (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0, y = 1 */
   in[0] = 0;
   in[1] = 1;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - inverted_double (in[0], in[1])) > ABS_ERROR);
 
   /* x = 1, y = 0 */
   in[0] = 1;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - inverted_double (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.322, y = 0.233 */
   in[0] = 0.322;
   in[1] = 0.233;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - inverted_double (in[0], in[1])) > ABS_ERROR);
 }
 END_TEST
@@ -561,6 +584,7 @@ START_TEST(pdf_fp_func_eval_008)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -570,25 +594,25 @@ START_TEST(pdf_fp_func_eval_008)
   /* x = 0, y = 0 */
   in[0] = 0;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - line (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0, y = 1 */
   in[0] = 0;
   in[1] = 1;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - line (in[0], in[1])) > ABS_ERROR);
 
   /* x = 1, y = 0 */
   in[0] = 1;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - line (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.322, y = 0.233 */
   in[0] = 0.322;
   in[1] = 0.233;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - line (in[0], in[1])) > ABS_ERROR);
 }
 END_TEST
@@ -629,6 +653,7 @@ START_TEST(pdf_fp_func_eval_009)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -638,25 +663,25 @@ START_TEST(pdf_fp_func_eval_009)
   /* x = 0, y = 0 */
   in[0] = 0;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - line_x (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0, y = 1 */
   in[0] = 0;
   in[1] = 1;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - line_x (in[0], in[1])) > ABS_ERROR);
 
   /* x = 1, y = 0 */
   in[0] = 1;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - line_x (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.322, y = 0.233 */
   in[0] = 0.322;
   in[1] = 0.233;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - line_x (in[0], in[1])) > ABS_ERROR);
 }
 END_TEST
@@ -697,6 +722,7 @@ START_TEST(pdf_fp_func_eval_010)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -706,25 +732,25 @@ START_TEST(pdf_fp_func_eval_010)
   /* x = 0, y = 0 */
   in[0] = 0;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - line_y (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0, y = 1 */
   in[0] = 0;
   in[1] = 1;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - line_y (in[0], in[1])) > ABS_ERROR);
 
   /* x = 1, y = 0 */
   in[0] = 1;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - line_y (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.322, y = 0.233 */
   in[0] = 0.322;
   in[1] = 0.233;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - line_y (in[0], in[1])) > ABS_ERROR);
 }
 END_TEST
@@ -784,6 +810,7 @@ START_TEST(pdf_fp_func_eval_011)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -793,37 +820,38 @@ START_TEST(pdf_fp_func_eval_011)
   /* x = 0, y = 0 */
   in[0] = 0;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - round_f (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0, y = 1 */
   in[0] = 0;
   in[1] = 1;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - round_f (in[0], in[1])) > ABS_ERROR);
 
   /* x = 1, y = 0 */
   in[0] = 1;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - round_f (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.322, y = 0.233 */
   in[0] = 0.322;
   in[1] = 0.233;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - round_f (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.93, y = 0.82 */
   in[0] = 0.93;
   in[1] = 0.82;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - round_f (in[0], in[1])) > ABS_ERROR);
 }
 END_TEST
 
 /*
  * Test: pdf_fp_func_eval_012
+ * Type: 
  * Description:
  *   Evaluate a type 4 function implementing the predefined function
  *   Ellipse and compare the results with a C implementation.
@@ -887,6 +915,7 @@ START_TEST(pdf_fp_func_eval_012)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -896,31 +925,31 @@ START_TEST(pdf_fp_func_eval_012)
   /* x = 0, y = 0 */
   in[0] = 0;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - ellipse_f (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0, y = 1 */
   in[0] = 0;
   in[1] = 1;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - ellipse_f (in[0], in[1])) > ABS_ERROR);
 
   /* x = 1, y = 0 */
   in[0] = 1;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - ellipse_f (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.322, y = 0.233 */
   in[0] = 0.322;
   in[1] = 0.233;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - ellipse_f (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.93, y = 0.82 */
   in[0] = 0.93;
   in[1] = 0.82;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - ellipse_f (in[0], in[1])) > ABS_ERROR);
 }
 END_TEST
@@ -961,6 +990,7 @@ START_TEST(pdf_fp_func_eval_013)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -970,31 +1000,31 @@ START_TEST(pdf_fp_func_eval_013)
   /* x = 0, y = 0 */
   in[0] = 0;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - ellipse_a (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0, y = 1 */
   in[0] = 0;
   in[1] = 1;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - ellipse_a (in[0], in[1])) > ABS_ERROR);
 
   /* x = 1, y = 0 */
   in[0] = 1;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - ellipse_a (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.322, y = 0.233 */
   in[0] = 0.322;
   in[1] = 0.233;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - ellipse_a (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.93, y = 0.82 */
   in[0] = 0.93;
   in[1] = 0.82;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - ellipse_a (in[0], in[1])) > ABS_ERROR);
 }
 END_TEST
@@ -1035,6 +1065,7 @@ START_TEST(pdf_fp_func_eval_014)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -1044,31 +1075,31 @@ START_TEST(pdf_fp_func_eval_014)
   /* x = 0, y = 0 */
   in[0] = 0;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - inverted_ellipse_a (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0, y = 1 */
   in[0] = 0;
   in[1] = 1;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - inverted_ellipse_a (in[0], in[1])) > ABS_ERROR);
 
   /* x = 1, y = 0 */
   in[0] = 1;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - inverted_ellipse_a (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.322, y = 0.233 */
   in[0] = 0.322;
   in[1] = 0.233;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - inverted_ellipse_a (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.93, y = 0.82 */
   in[0] = 0.93;
   in[1] = 0.82;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - inverted_ellipse_a (in[0], in[1])) > ABS_ERROR);
 }
 END_TEST
@@ -1109,6 +1140,7 @@ START_TEST(pdf_fp_func_eval_015)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -1118,31 +1150,31 @@ START_TEST(pdf_fp_func_eval_015)
   /* x = 0, y = 0 */
   in[0] = 0;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - ellipse_b (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0, y = 1 */
   in[0] = 0;
   in[1] = 1;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - ellipse_b (in[0], in[1])) > ABS_ERROR);
 
   /* x = 1, y = 0 */
   in[0] = 1;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - ellipse_b (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.322, y = 0.233 */
   in[0] = 0.322;
   in[1] = 0.233;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - ellipse_b (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.93, y = 0.82 */
   in[0] = 0.93;
   in[1] = 0.82;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - ellipse_b (in[0], in[1])) > ABS_ERROR);
 }
 END_TEST
@@ -1183,6 +1215,7 @@ START_TEST(pdf_fp_func_eval_016)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -1192,31 +1225,31 @@ START_TEST(pdf_fp_func_eval_016)
   /* x = 0, y = 0 */
   in[0] = 0;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - ellipse_c (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0, y = 1 */
   in[0] = 0;
   in[1] = 1;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - ellipse_c (in[0], in[1])) > ABS_ERROR);
 
   /* x = 1, y = 0 */
   in[0] = 1;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - ellipse_c (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.322, y = 0.233 */
   in[0] = 0.322;
   in[1] = 0.233;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - ellipse_c (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.93, y = 0.82 */
   in[0] = 0.93;
   in[1] = 0.82;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - ellipse_c (in[0], in[1])) > ABS_ERROR);
 }
 END_TEST
@@ -1257,6 +1290,7 @@ START_TEST(pdf_fp_func_eval_017)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -1266,31 +1300,31 @@ START_TEST(pdf_fp_func_eval_017)
   /* x = 0, y = 0 */
   in[0] = 0;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - inverted_ellipse_c (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0, y = 1 */
   in[0] = 0;
   in[1] = 1;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - inverted_ellipse_c (in[0], in[1])) > ABS_ERROR);
 
   /* x = 1, y = 0 */
   in[0] = 1;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - inverted_ellipse_c (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.322, y = 0.233 */
   in[0] = 0.322;
   in[1] = 0.233;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - inverted_ellipse_c (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.93, y = 0.82 */
   in[0] = 0.93;
   in[1] = 0.82;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - inverted_ellipse_c (in[0], in[1])) > ABS_ERROR);
 }
 END_TEST
@@ -1334,6 +1368,7 @@ START_TEST(pdf_fp_func_eval_018)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -1343,31 +1378,31 @@ START_TEST(pdf_fp_func_eval_018)
   /* x = 0, y = 0 */
   in[0] = 0;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - square_f (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0, y = 1 */
   in[0] = 0;
   in[1] = 1;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - square_f (in[0], in[1])) > ABS_ERROR);
 
   /* x = 1, y = 0 */
   in[0] = 1;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - square_f (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.322, y = 0.233 */
   in[0] = 0.322;
   in[1] = 0.233;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - square_f (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.93, y = 0.82 */
   in[0] = 0.93;
   in[1] = 0.82;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - square_f (in[0], in[1])) > ABS_ERROR);
 }
 END_TEST
@@ -1411,6 +1446,7 @@ START_TEST(pdf_fp_func_eval_019)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -1420,31 +1456,31 @@ START_TEST(pdf_fp_func_eval_019)
   /* x = 0, y = 0 */
   in[0] = 0;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - cross_f (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0, y = 1 */
   in[0] = 0;
   in[1] = 1;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - cross_f (in[0], in[1])) > ABS_ERROR);
 
   /* x = 1, y = 0 */
   in[0] = 1;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - cross_f (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.322, y = 0.233 */
   in[0] = 0.322;
   in[1] = 0.233;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - cross_f (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.93, y = 0.82 */
   in[0] = 0.93;
   in[1] = 0.82;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - cross_f (in[0], in[1])) > ABS_ERROR);
 }
 END_TEST
@@ -1485,6 +1521,7 @@ START_TEST(pdf_fp_func_eval_020)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -1494,31 +1531,31 @@ START_TEST(pdf_fp_func_eval_020)
   /* x = 0, y = 0 */
   in[0] = 0;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - rhomboid_f (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0, y = 1 */
   in[0] = 0;
   in[1] = 1;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - rhomboid_f (in[0], in[1])) > ABS_ERROR);
 
   /* x = 1, y = 0 */
   in[0] = 1;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - rhomboid_f (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.322, y = 0.233 */
   in[0] = 0.322;
   in[1] = 0.233;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - rhomboid_f (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.93, y = 0.82 */
   in[0] = 0.93;
   in[1] = 0.82;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - rhomboid_f (in[0], in[1])) > ABS_ERROR);
 }
 END_TEST
@@ -1584,6 +1621,7 @@ START_TEST(pdf_fp_func_eval_021)
                              range,
                              prog,
                              prog_size,
+                             NULL,
                              &func) != PDF_OK);
 
   /*
@@ -1593,34 +1631,178 @@ START_TEST(pdf_fp_func_eval_021)
   /* x = 0, y = 0 */
   in[0] = 0;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - diamond_f (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0, y = 1 */
   in[0] = 0;
   in[1] = 1;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - diamond_f (in[0], in[1])) > ABS_ERROR);
 
   /* x = 1, y = 0 */
   in[0] = 1;
   in[1] = 0;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - diamond_f (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.322, y = 0.233 */
   in[0] = 0.322;
   in[1] = 0.233;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - diamond_f (in[0], in[1])) > ABS_ERROR);
 
   /* x = 0.93, y = 0.82 */
   in[0] = 0.93;
   in[1] = 0.82;
-  fail_if(pdf_fp_func_eval (func, in, out) != PDF_OK);
+  fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
   fail_if(pdf_fp_abs(out[0] - diamond_f (in[0], in[1])) > ABS_ERROR);
 }
 END_TEST
+
+
+
+/*
+ * Test: pdf_fp_func_eval_022
+ * Description:
+ *   Evaluate a wrong type 4 function and detect the error.
+ * Success condition:
+ *   Return PDF_ETYPE4 and the debug information is correct.
+ */
+
+START_TEST(pdf_fp_func_eval_022)
+{
+  pdf_fp_func_t func;
+  pdf_size_t prog_size;
+  pdf_char_t *prog =
+    "{ "
+    " 1 exch div "
+    " }";
+
+  pdf_real_t domain[1] = {-1.0};
+  pdf_real_t range[1] = {-1.0};
+  pdf_real_t in[1];
+  pdf_fp_func_debug_t debug;
+  pdf_real_t out[1];
+
+  prog_size = strlen (prog);
+
+  /* Create the function */
+  fail_if(pdf_fp_func_4_new (1, 1,
+                             domain,
+                             range,
+                             prog,
+                             prog_size,
+                             NULL,
+                             &func) != PDF_OK);
+
+  /* x = 0, y = 0 */
+  in[0] = 0;
+  fail_if (pdf_fp_func_eval (func, in, out, &debug) != PDF_ETYPE4);
+  fail_if (debug.type4.status != PDF_EMATH);
+  fail_if (debug.type4.op != 10);
+  fail_if (debug.type4.stack[0] != 0);
+  fail_if (debug.type4.stack[1] != 1);
+}
+END_TEST
+
+
+
+
+/*
+ * Test: pdf_fp_func_eval_023
+ * Description:
+ *   Evaluate a wrong type 4 function and detect the error.
+ * Success condition:
+ *   Return PDF_ETYPE4 and the debug information is correct.
+ */
+
+START_TEST(pdf_fp_func_eval_023)
+{
+  pdf_fp_func_t func;
+  pdf_size_t prog_size;
+  pdf_char_t *prog =
+    "{ "
+    " sqrt "
+    " }";
+
+  pdf_real_t domain[1] = {-1.0};
+  pdf_real_t range[1] = {-1.0};
+  pdf_real_t in[1];
+  pdf_fp_func_debug_t debug;
+  pdf_real_t out[1];
+
+  prog_size = strlen (prog);
+
+  /* Create the function */
+  fail_if(pdf_fp_func_4_new (1, 1,
+                             domain,
+                             range,
+                             prog,
+                             prog_size,
+                             NULL,
+                             &func) != PDF_OK);
+
+  /* x = 0, y = 0 */
+  in[0] = -1;
+  fail_if (pdf_fp_func_eval (func, in, out, &debug) != PDF_ETYPE4);
+  fail_if (debug.type4.status != PDF_EINVRANGE);
+  fail_if (debug.type4.op != 3);
+  fail_if (debug.type4.stack[0] != -1);
+}
+END_TEST
+
+
+
+
+
+/*
+ * Test: pdf_fp_func_eval_024
+ * Description:
+ *   Evaluate a wrong type 4 function and detect the error.
+ * Success condition:
+ *   Return PDF_ETYPE4 and the debug information is correct.
+ */
+
+START_TEST(pdf_fp_func_eval_024)
+{
+  pdf_fp_func_t func;
+  pdf_size_t prog_size;
+  pdf_char_t *prog =
+    "{ "
+    " log "
+    " }";
+
+  pdf_real_t domain[1] = {-1.0};
+  pdf_real_t range[1] = {-1.0};
+  pdf_real_t in[1];
+  pdf_fp_func_debug_t debug;
+  pdf_real_t out[1];
+
+  prog_size = strlen (prog);
+
+  /* Create the function */
+  fail_if(pdf_fp_func_4_new (1, 1,
+                             domain,
+                             range,
+                             prog,
+                             prog_size,
+                             NULL,
+                             &func) != PDF_OK);
+
+  /* x = 0, y = 0 */
+  in[0] = -1;
+  fail_if (pdf_fp_func_eval (func, in, out, &debug) != PDF_ETYPE4);
+  fail_if (debug.type4.status != PDF_EINVRANGE);
+  fail_if (debug.type4.op != 3);
+  fail_if (debug.type4.stack[0] != -1);
+}
+END_TEST
+
+
+
+
+
 
 /*
  * Test case creation function
@@ -1650,6 +1832,9 @@ test_pdf_fp_func_eval (void)
   tcase_add_test(tc, pdf_fp_func_eval_019);
   tcase_add_test(tc, pdf_fp_func_eval_020);
   tcase_add_test(tc, pdf_fp_func_eval_021);
+  tcase_add_test(tc, pdf_fp_func_eval_022);
+  tcase_add_test(tc, pdf_fp_func_eval_023);
+  tcase_add_test(tc, pdf_fp_func_eval_024);
 
   return tc;
 }

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/13 20:26:25 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/05/07 11:16:19 jemarch"
  *
  *       File:         pdf-list.h
  *       Date:         Sat Mar 1 02:14:35 2008
@@ -42,15 +42,17 @@
 
 /* Data types */
 
+#define PDF_LIST_ITERATOR_SIZE 12
+
 struct pdf_list_s
 {
   void *gl_list;
   pdf_bool_t allow_duplicates;
 };
- 
+
 struct pdf_list_iterator_s
 {
-  void *gl_iterator;
+  void *gl_iterator[PDF_LIST_ITERATOR_SIZE];
 };
 
 struct pdf_list_node_s
@@ -172,38 +174,9 @@ pdf_status_t pdf_list_iterator_free (pdf_list_iterator_t *iterator);
 #else
 /* Inlined versions of the functions */
 
-#if __GNUC__ == 4 && __GNUC_MINOR__ >= 3 && defined(__GNUC_STDC_INLINE__)
-#  define FUCKING_C99_SEMANTICS
-#endif
-
-/* Apple's gcc build > 5400 (since Xcode 3.0) doesn't support GNU
-   inline in C99 mode */
-#if __APPLE_CC__ > 5400 && ! defined(FUCKING_C99_SEMANTICS)
-#  define FUCKING_C99_SEMANTICS
-#endif
-
 #if defined(COMPILING_PDF_LIST)
-#  if defined(FUCKING_C99_SEMANTICS)
-/* force exported copy */
-#    define EXTERN_INLINE extern inline
-#  else
-#    define EXTERN_INLINE
-#  endif
-#else
-/* For gcc >= 4.1 not working in C99 inline semantics by default
-   (including the annoying 4.2 warnings about the extern inline
-   hack) */
-#  if defined(__GNUC_STDC_INLINE__) || defined(__GNUC_GNU_INLINE__)
-#    define EXTERN_INLINE  static inline
-#  else
-#    define EXTERN_INLINE extern inline
-#  endif
-/* For gcc >= 4.3 with C99 semantics */
-#  if defined(FUCKING_C99_SEMANTICS)
-/* either inline or link to extern version at compiler's choice */
-#    undef EXTERN_INLINE
-#    define EXTERN_INLINE inline
-#  endif
+# undef EXTERN_INLINE
+# define EXTERN_INLINE
 #endif /* COMPILING_PDF_LIST */
 
 #include <gl_array_list.h>
@@ -747,17 +720,8 @@ pdf_list_iterator (const pdf_list_t list,
 
   if (itr != NULL)
     {
-      itr->gl_iterator = pdf_alloc (sizeof(gl_list_iterator_t));
-
-      if (itr->gl_iterator != NULL)
-        {
-          *((gl_list_iterator_t*)itr->gl_iterator) =
-            gl_list_iterator ((gl_list_t)list.gl_list);
-        }
-      else
-        {
-          st = PDF_ENOMEM;
-        }
+      *((gl_list_iterator_t*)itr->gl_iterator) =
+        gl_list_iterator ((gl_list_t)list.gl_list);
     }
   else
     {
@@ -784,18 +748,9 @@ pdf_list_iterator_from_to (const pdf_list_t list, const pdf_size_t start_index,
           (end_index > 0 && end_index <= pdf_list_size (list)) &&
           (start_index < end_index))
         {
-          itr->gl_iterator = pdf_alloc (sizeof(gl_list_iterator_t));
-      
-          if (itr->gl_iterator != NULL)
-            {
-              *((gl_list_iterator_t*)itr->gl_iterator) =
-                gl_list_iterator_from_to ((gl_list_t)list.gl_list, start_index,
+          *((gl_list_iterator_t*)itr->gl_iterator) =
+            gl_list_iterator_from_to ((gl_list_t)list.gl_list, start_index,
                                           end_index);
-            }
-          else
-            {
-              st = PDF_ENOMEM;
-            }
         }
       else
         {
@@ -831,8 +786,6 @@ EXTERN_INLINE pdf_status_t
 pdf_list_iterator_free (pdf_list_iterator_t *iterator)
 {
   gl_list_iterator_free ((gl_list_iterator_t*)(iterator->gl_iterator));
-
-  pdf_dealloc (iterator->gl_iterator);
 
   return PDF_OK;
 }

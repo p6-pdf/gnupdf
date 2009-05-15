@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/08 22:52:27 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-01-28 08:43:12 gerel"
  *
  *       File:         pdf-list-iterator.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <pdf.h>
 #include <check.h>
+#include <gl_list.h>
 
 /*
  * Test: pdf_list_iterator_001
@@ -77,6 +78,21 @@ END_TEST
 
 
 /*
+ * Test: pdf_list_iterator_003
+ * Description:
+ *   Iterator size check.
+ * Success condition:
+ *   The pdf list iterator size is greater or equal than the gl list one.
+ */
+START_TEST (pdf_list_iterator_003)
+{
+  fail_if (sizeof(pdf_list_iterator_t) < sizeof(gl_list_iterator_t));
+}
+END_TEST
+
+
+
+/*
  * Test case creation function
  */
 TCase *
@@ -85,6 +101,7 @@ test_pdf_list_iterator (void)
   TCase *tc = tcase_create("pdf_list_iterator");
   tcase_add_test(tc, pdf_list_iterator_001);
   tcase_add_test(tc, pdf_list_iterator_002);
+  tcase_add_test(tc, pdf_list_iterator_003);
 
   return tc;
 }

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/13 22:28:30 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/05/07 11:01:01 jemarch"
  *
  *       File:         pdf-stm-f-ahex.c
  *       Date:         Fri Jul 13 17:08:41 2007
@@ -68,7 +68,6 @@ pdf_stm_f_ahexenc_apply (pdf_hash_t params,
   pdf_char_t second_nibble;
   pdf_char_t in_char;
   pdf_status_t ret;
-  pdf_bool_t wrote_newline;
 
   if (finish_p)
     {
@@ -80,18 +79,15 @@ pdf_stm_f_ahexenc_apply (pdf_hash_t params,
 
   filter_state = (pdf_stm_f_ahexenc_t) state;
   
-  wrote_newline = PDF_FALSE;
   ret = PDF_OK;
   while (!pdf_buffer_full_p (out))
     {
-      if ((!wrote_newline) &&
-          (filter_state->written_bytes != 0) &&
+      if ((filter_state->written_bytes != 0) &&
           (filter_state->written_bytes % PDF_STM_F_AHEX_LINE_WIDTH) == 0)
         {
           /* Write down a newline character */
           out->data[out->wp] = '\n';
           out->wp++;
-          wrote_newline = PDF_TRUE;
           filter_state->written_bytes = 0;
           continue;
         }

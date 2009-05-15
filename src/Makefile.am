@@ -55,6 +55,9 @@ endif
 if JBIG2DEC
   STM_MODULE_SOURCES += base/pdf-stm-f-jbig2.c base/pdf-stm-f-jbig2.h
 endif
+if LIBJPEG
+  STM_MODULE_SOURCES += base/pdf-stm-f-dct.c base/pdf-stm-f-dct.h
+endif
 
 TEXT_MODULE_SOURCES = base/pdf-text-context.c base/pdf-text-context.h \
                       base/pdf-text-encoding.c base/pdf-text-encoding.h \
@@ -153,7 +156,13 @@ pdf.h : $(PUBLIC_HDRS)
 	cat $(srcdir)/header-autogen > $@
 	echo "#ifndef PDF_H" >> $@
 	echo "#define PDF_H" >> $@
+	echo "#ifdef __cplusplus" >> $@
+	echo "extern \"C\" {" >> $@
+	echo "#endif" >> $@
 	cat $^ | $(top_builddir)/src/extract-public-hdr >> $@
+	echo "#ifdef __cplusplus" >> $@
+	echo "} // extern \"C\"" >> $@
+	echo "#endif" >> $@
 	echo "#endif /* !PDF_H */" >> $@
 	echo "/* end of pdf.h */" >> $@
 

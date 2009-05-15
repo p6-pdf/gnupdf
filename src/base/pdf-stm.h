@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/13 22:26:14 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/01/27 21:26:55 jemarch"
  *
  *       File:         pdf-stm.h
  *       Date:         Fri Jul  6 18:37:57 2007
@@ -112,7 +112,9 @@ pdf_status_t pdf_stm_write (pdf_stm_t stm,
                             pdf_size_t *written_bytes);
 pdf_status_t pdf_stm_read_char (pdf_stm_t stm, pdf_char_t *c);
 pdf_status_t pdf_stm_peek_char (pdf_stm_t stm, pdf_char_t *c);
-pdf_size_t pdf_stm_flush (pdf_stm_t stm, pdf_bool_t finish_p);
+pdf_status_t pdf_stm_flush (pdf_stm_t stm,
+                            pdf_bool_t finish_p,
+                            pdf_size_t *flushed_bytes);
 
 /* Positioning */
 

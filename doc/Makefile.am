@@ -42,13 +42,12 @@ gnupdf-tsd.wiki: generate-tsd gnupdf-tsd.texi
 gnupdf-hg.wiki: gnupdf-hg.texi
 	texi2html --no-menu --init-file=gnupdf-manual-wiki.init gnupdf-hg.texi
 
-
+endif # TEXI2HTML
 
 clean-local:
 	-rm -f gnupdf.info gnupdf-utils.info gnupdf-hg.info gnupdf-tsd.info
 	-rm -f gnupdf.wiki gnupdf-utils.wiki gnupdf-hg.wiki gnupdf-tsd.wiki
 	-rm -f gnupdf.html gnupdf-utils.html
-
-endif # TEXI2HTML
+	-rm -f gnupdf-arch.info gnupdf-arch.html gnupdf-arch.wiki
 
 # End of Makefile.am

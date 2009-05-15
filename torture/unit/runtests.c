@@ -15,6 +15,7 @@ extern Suite *tsuite_list (void);
 extern Suite *tsuite_text (void);
 extern Suite *tsuite_hash (void);
 extern Suite *tsuite_types (void);
+extern Suite *tsuite_time (void);
 extern Suite *tsuite_crypt (void);
 extern Suite *tsuite_error (void);
 extern Suite *tsuite_fp (void);
@@ -34,6 +35,7 @@ main (int argc, char **argv)
   srunner_add_suite (sr, tsuite_text ());
   srunner_add_suite (sr, tsuite_hash ());
   srunner_add_suite (sr, tsuite_types ());
+  srunner_add_suite (sr, tsuite_time ());
   srunner_add_suite (sr, tsuite_crypt ());
   srunner_add_suite (sr, tsuite_error ());
   srunner_add_suite (sr, tsuite_stm ());

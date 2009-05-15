@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/02 20:22:07 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-02-07 18:56:43 davazp"
  *
  *       File:         tsuite-fp.c
  *       Date:         Tue Dec  2 20:08:22 2008
@@ -25,7 +25,9 @@
 
 #include <check.h>
 
+extern TCase *test_pdf_fp_func_4_new (void);
 extern TCase *test_pdf_fp_func_eval (void);
+
 
 Suite *
 tsuite_fp ()
@@ -34,6 +36,7 @@ tsuite_fp ()
 
   s = suite_create("fp");
   
+  suite_add_tcase (s, test_pdf_fp_func_4_new ());
   suite_add_tcase (s, test_pdf_fp_func_eval ());
 
   return s;

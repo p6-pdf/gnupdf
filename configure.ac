@@ -37,6 +37,16 @@ canonical=$host
 
 gl_INIT
 
+dnl OS-based compilation options
+compile_w32_system=no
+case "${host}" in
+    *-mingw32*)
+        compile_w32_system=yes
+        ;;
+    *)
+        ;;
+esac
+
 dnl Search for headers
 AC_CHECK_HEADERS(malloc.h)
 
@@ -52,13 +62,25 @@ CHECK_ZLIB
 AM_CONDITIONAL([ZLIB], [test "x$have_zlib" = "xyes"])
 AC_CHECK_LIB(m,exp,,,)
 
+have_libjpeg=yes
+AC_CHECK_LIB([jpeg],[jpeg_std_error],[],[have_libjpeg=no])
+AM_CONDITIONAL([LIBJPEG], [test "x$have_libjpeg" != "xno"])
+
 have_jbig2dec=yes
 AC_CHECK_LIB([jbig2dec],[jbig2_ctx_new],[],[have_jbig2dec=no])
 AM_CONDITIONAL([JBIG2DEC], [test "x$have_jbig2dec" != "xno"])
 
-AM_PATH_LIBGCRYPT([1.2.4], have_libgcrypt="yes", have_libgcrypt="no")
+if test "x$compile_w32_system" == "xyes"; then
+  # We cannot use AM_PATH_LIBGCRYPT in this case, since it depends on
+  # environment variables and the execution of config-* programs.
+  AC_CHECK_LIB([libgcrypt],[gcry_check_version],[have_libgcrypt="yes"],[have_libgcrypt="no"])
+else
+  # Use the AM_PATH_LIBGCRYPT macro from libgcrypt
+  AM_PATH_LIBGCRYPT([1.2.4], have_libgcrypt="yes", have_libgcrypt="no")
+fi
+
 if test x$have_libgcrypt == "xno"; then
-AC_MSG_ERROR([cannot find libgcrypt library. Please install it and rerun `configure'.])
+  AC_MSG_ERROR([cannot find libgcrypt library. Please install it and rerun `configure'.])
 fi
 
 have_check=yes
@@ -124,10 +146,9 @@ AM_CONDITIONAL([COMPILE_PAGE_LAYER], [test x$PDFLIB_LEVEL = "x3"])
 
 
 dnl Project management resources
-prmgt_mode=no
 AC_ARG_ENABLE([prmgt], AS_HELP_STRING([--enable-prmgt],
                                       [build project management resources (default is NO)]), 
-              [prmgt_mode=yes], [prmgt_mode=no])
+              [prmgt_mode=$enableval], [prmgt_mode=no])
 
 AM_CONDITIONAL([PRMGT],[test "x$prmgt_mode" = "xyes"])
 if test "x$prmgt_mode" = "xyes" ; then 
@@ -156,26 +177,22 @@ fi
 fi # prmgt_mode
 
 # debug_*_mode
-debug_base_mode=no
-debug_object_mode=no
-debug_document_mode=no
-debug_page_mode=no
 PDFLIB_DEBUG_DESCR=""
 AC_ARG_ENABLE([debug-base], AS_HELP_STRING([--enable-debug-base],
                                       [debug mode at the base layer (default is NO)]), 
-              [debug_base_mode=yes], [debug_base_mode=no])
+              [debug_base_mode=$enableval], [debug_base_mode=no])
 
 AC_ARG_ENABLE([debug-object], AS_HELP_STRING([--enable-debug-object],
                                       [debug mode at the object layer (default is NO)]), 
-              [debug_object_mode=yes], [debug_object_mode=no])
+              [debug_object_mode=$enableval], [debug_object_mode=no])
 
 AC_ARG_ENABLE([debug-document], AS_HELP_STRING([--enable-debug-document],
                                       [debug mode at the document layer (default is NO)]), 
-              [debug_document_mode=yes], [debug_document_mode=no])
+              [debug_document_mode=$enableval], [debug_document_mode=no])
 
 AC_ARG_ENABLE([debug-page], AS_HELP_STRING([--enable-debug-page],
                                       [debug mode at the page layer (default is NO)]), 
-              [debug_page_mode=yes], [debug_page_mode=no])
+              [debug_page_mode=$enableval], [debug_page_mode=no])
 
 if test "x$debug_base_mode" = "xyes"; then
   AC_DEFINE([HAVE_DEBUG_BASE], [1], [Debugging Base Layer])
@@ -201,26 +218,23 @@ fi
 # end debug_*_mode
 
 dnl gcov compilation
-use_gcov=no
 AC_ARG_ENABLE([coverage], AS_HELP_STRING([--enable-coverage],
                                         [Compile the library with code coverage support (default is NO)]),
-                                        [use_gcov=yes], [use_gcov=no])
+                                        [use_gcov=$enableval], [use_gcov=no])
 AM_CONDITIONAL([USE_COVERAGE], [test "x$use_gcov" = "xyes"])
 
 dnl bignums
-force_bignums=no
 AC_ARG_ENABLE([bignum-forcing], AS_HELP_STRING([--enable-bignum-forcing],
                                            [Force the usage of the 64bits bignum implementation even if the system support a suitable native type]),
-                                                   [force_bignums=yes], [force_bignums=no])
+                                                   [force_bignums=$enableval], [force_bignums=no])
 if test "x$force_bignums" = "xyes"; then
    AC_DEFINE([PDF_FORCE_BIGNUMS],[1],[Force the usage of the 64bits bignum implementation even if the system support a suitable native type])
 fi
 
 dnl nocheck (simple replacement of Check framework when this is not available)
-use_nocheck=no
 AC_ARG_ENABLE([nocheck], AS_HELP_STRING([--enable-nocheck],
                                       [Use built-in nocheck instead of Check (default is NO)]), 
-              [use_nocheck=yes], [use_nocheck=no])
+              [use_nocheck=$enableval], [use_nocheck=no])
 if test "x$use_nocheck" = "xyes"; then
   AC_DEFINE([HAVE_NOCHECK], [1], [Use No-Check instead of Check])
 fi
@@ -249,16 +263,6 @@ else
   AC_DEFINE([PDF_IS_BIG_ENDIAN], [1], [Big endian?])
 fi
 
-
-dnl OS-based compilation options
-compile_w32_system=no
-case "${host}" in
-    *-mingw32*)
-        compile_w32_system=yes
-        ;;
-    *)
-        ;;
-esac
 
 dnl Specific W32 needs of compilation
 AM_CONDITIONAL([COMPILE_W32_SYSTEM], [test "x$compile_w32_system" = "xyes"])
@@ -290,6 +294,7 @@ Configured for \`${canonical}'.
   Compilation level:                        ${PDFLIB_LEVEL} (${PDFLIB_LEVEL_DESCR})
   Using FlateDecode filter?                 ${have_zlib}
   Using JBIG2 decoder filter?               ${ac_cv_lib_jbig2dec_jbig2_ctx_new}
+  Using DCT filter?                         ${have_libjpeg}
   With unit tests support?                  ${ut_support} ${ut_framework}
   Program to build html manuals             ${texihtmlprogram}
   Build project management resources?       ${prmgt_mode}
@@ -302,13 +307,19 @@ dnl Report warnings
 if test "x$have_zlib" = "xno" ; then
 echo "
 WARNING: you are going to build a library without FlateDecode support. 
-         That means you wont be able to process many PDF files."
+         That means you will not be able to process many PDF files."
 fi
 
 if test "x$ac_cv_lib_jbig2dec_jbig2_ctx_new" = "xno" ; then
 echo "
 WARNING: you are going to build a library without JBIG2Decode support.
-         That means you wont be able to process many PDF files."
+         That means you will not be able to process many PDF files."
+fi
+
+if test "x$ac_cv_lib_jpeg_jpeg_std_error" = "xno" ; then
+echo "
+WARNING: you are going to build a library without JPEG support.
+         That means you will not be able to process many PDF files."
 fi
 
 if test "ut_support" = "xno" ; then

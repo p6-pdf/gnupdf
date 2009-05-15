@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-01-14 21:18:32 aleksander"
+/* -*- mode: C -*- Time-stamp: "2009-05-03 19:03:49 aleksander"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -863,7 +863,7 @@ pdf_fsys_disk_file_get_url (pdf_fsys_file_t file)
       pdf_text_t url = NULL;
 #define PDF_DISK_URL_PREFIX  (pdf_char_t *)"file:/"
       if(pdf_text_new_from_unicode(PDF_DISK_URL_PREFIX,
-                                   strlen(PDF_DISK_URL_PREFIX),
+                                   strlen((char *) PDF_DISK_URL_PREFIX),
                                    PDF_TEXT_UTF8,
                                    &url) == PDF_OK)
         {
@@ -1335,7 +1335,6 @@ static const pdf_char_t *__pdf_fsys_open_mode_strings[PDF_FSYS_OPEN_MODE_MAX] = 
 static const pdf_char_t *
 __pdf_fsys_disk_get_mode_string(const enum pdf_fsys_file_mode_e mode)
 {
-  extern const pdf_char_t *__pdf_fsys_open_mode_strings[PDF_FSYS_OPEN_MODE_MAX];
   return (((mode >= PDF_FSYS_OPEN_MODE_FIRST) &&                        \
            (mode <= PDF_FSYS_OPEN_MODE_LAST)) ?                         \
           __pdf_fsys_open_mode_strings[mode] :                          \

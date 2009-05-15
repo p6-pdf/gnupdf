@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/28 22:26:46 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-05-02 16:35:59 aleksander"
  *
  *       File:         pdf-text-ucd-combclass.c
  *       Date:         Sun Mar 09 12:59:01 2008
@@ -655,11 +655,6 @@ static unicode_combclass_interval_t unicode_combclass_interval[UCD_COMBCLASS_INT
 pdf_u8_t
 pdf_text_ucd_get_combining_class(const pdf_u32_t character)
 {
-  extern unicode_combclass_info_t unicode_combclass_info[UCD_COMBCLASS_INFO_N];
-  extern unicode_combclass_interval_t \
-          unicode_combclass_interval[UCD_COMBCLASS_INT_N];
-
-  
   pdf_bool_t found;
   int index;
   long delta = 0;
