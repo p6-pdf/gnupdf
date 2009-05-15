@@ -243,11 +243,13 @@ AC_DEFUN([gltests_LIBSOURCES], [
 # This macro records the list of files which have been installed by
 # gnulib-tool and may be removed by future gnulib-tool invocations.
 AC_DEFUN([gl_FILE_LIST], [
+  build-aux/gendocs.sh
   build-aux/link-warning.h
   build-aux/pmccabe.css
   build-aux/pmccabe2html
   build-aux/useless-if-before-free
   build-aux/vc-list-files
+  doc/gendocs_template
   lib/basename.c
   lib/config.charset
   lib/dirname.c
