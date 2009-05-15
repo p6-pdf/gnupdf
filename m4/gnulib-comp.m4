@@ -1,5 +1,5 @@
 # DO NOT EDIT! GENERATED AUTOMATICALLY!
-# Copyright (C) 2002-2008 Free Software Foundation, Inc.
+# Copyright (C) 2002-2009 Free Software Foundation, Inc.
 #
 # This file is free software, distributed under the terms of the GNU
 # General Public License.  As a special exception to the GNU General
@@ -91,6 +91,7 @@ AC_DEFUN([gl_INIT],
   gl_STDLIB_MODULE_INDICATOR([malloc-posix])
   gl_MATH_H
   gl_FUNC_MKDIR_TRAILING_SLASH
+  gl_MULTIARCH
   gl_PMCCABE2HTML
   gl_FUNC_REALLOC_POSIX
   gl_STDLIB_MODULE_INDICATOR([realloc-posix])
@@ -245,6 +246,8 @@ AC_DEFUN([gl_FILE_LIST], [
   build-aux/link-warning.h
   build-aux/pmccabe.css
   build-aux/pmccabe2html
+  build-aux/useless-if-before-free
+  build-aux/vc-list-files
   lib/basename.c
   lib/config.charset
   lib/dirname.c
@@ -312,6 +315,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/xsize.h
   lib/xstrndup.c
   lib/xstrndup.h
+  m4/00gnulib.m4
   m4/codeset.m4
   m4/dirname.m4
   m4/dos.m4
@@ -342,6 +346,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/malloc.m4
   m4/math_h.m4
   m4/mkdir-slash.m4
+  m4/multiarch.m4
   m4/onceonly.m4
   m4/pmccabe2html.m4
   m4/realloc.m4
