@@ -26,6 +26,23 @@ gnupdf-tsd.texi: generated-tsd.texi
 generated-tsd.texi:
 	perl $(srcdir)/generate-tsd.pl > $(srcdir)/generated-tsd.texi
 
+manuals: gnupdf-tsd.texi
+	../build-aux/gendocs.sh -o gnupdf-manual \
+                                --email pdf-devel@gnu.org \
+                                gnupdf "GNU PDF Reference Manual"
+	../build-aux/gendocs.sh -o gnupdf-tsd-manual \
+                                --email pdf-devel@gnu.org \
+                                gnupdf-tsd "GNU PDF Test Specification Document"
+	../build-aux/gendocs.sh -o gnupdf-arch-manual \
+                                --email pdf-devel@gnu.org \
+                                gnupdf-arch "GNU PDF Architecture Guide"
+	../build-aux/gendocs.sh -o gnupdf-hg-manual \
+                                --email pdf-devel@gnu.org \
+                                gnupdf-hg "GNU PDF Hacker's Guide"
+	../build-aux/gendocs.sh -o gnupdf-utils-manual \
+                                --email pdf-devel@gnu.org \
+                                gnupdf-utils "GNU PDF Utilities Manual"
+
 if TEXI2HTML
 
 wiki: gnupdf.wiki gnupdf-utils.wiki gnupdf-tsd.wiki gnupdf-hg.wiki
@@ -49,5 +66,10 @@ clean-local:
 	-rm -f gnupdf.wiki gnupdf-utils.wiki gnupdf-hg.wiki gnupdf-tsd.wiki
 	-rm -f gnupdf.html gnupdf-utils.html
 	-rm -f gnupdf-arch.info gnupdf-arch.html gnupdf-arch.wiki
+	-rm -r gnupdf-arch-manual
+	-rm -r gnupdf-hg-manual
+	-rm -r gnupdf-manual
+	-rm -r gnupdf-utils-manual
+	-rm -r gnupdf-tsd-manual
 
 # End of Makefile.am
