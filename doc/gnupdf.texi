@@ -10165,6 +10165,7 @@ Reset the state of the token reader.
 @table @var
 @item reader
 A token reader.
+@end table
 @item Returns
 A PDF status value:
 @table @code
