@@ -9998,7 +9998,7 @@ switch (pdf_token_writer_new (stream, &writer))
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_tokeniser_reader_destroy (pdf_tokeniser_reader_t @var{reader})
+@deftypefun pdf_status_t pdf_token_reader_destroy (pdf_tokeniser_reader_t @var{reader})
 
 Destroy a token reader freeing any used resources.
 
@@ -10026,9 +10026,9 @@ pdf_token_reader_destroy (reader);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_tokeniser_writer_destroy (pdf_tokeniser_writer_t @var{writer})
+@deftypefun pdf_status_t pdf_token_writer_destroy (pdf_tokeniser_writer_t @var{writer})
 
-Destroy a token writer freeing any used resources.
+Destroy a token writer, freeing any used resources.
 
 @table @strong
 @item Parameters
@@ -10057,7 +10057,7 @@ pdf_token_writer_destroy (writer);
 @node Reading tokens
 @subsection Reading tokens
 
-@deftypefun pdf_status_t pdf_token_read (pdf_token_reader_t @var{reader}, pdf_token_t *@var{token})
+@deftypefun pdf_status_t pdf_token_read (pdf_token_reader_t @var{reader}, pdf_u32_t @var{flags}, pdf_token_t *@var{token})
 
 Read a token from a token reader.
 
@@ -10066,15 +10066,40 @@ Read a token from a token reader.
 @table @var
 @item reader
 A token reader.
+@item flags
+A bitmask specifying a combination of these flags:
+@table @code
+@item PDF_TOKEN_NO_NAME_ESCAPES
+Don't treat ``#'' as a special character when reading name tokens
+(this flag should be used when reading PDF 1.1 files).
+@item PDF_TOKEN_RET_COMMENTS
+Return comments as tokens (rather than ignoring them).
+@item PDF_TOKEN_END_AT_STREAM
+Assume that a ``stream'' keyword token was just read, find the beginning
+of the corresponding stream, and return PDF_EEOF when successful
+(i.e., when the input stream is positioned after the first line feed).
+@end table
 @item token
-A pointer to a token that will hold the read token.
+A pointer to a pdf_token_t that will hold the read token.
 @end table
 @item Returns
 A PDF status value:
 @table @code
 @item PDF_OK
+The operation succeeded.
 @item PDF_EAGAIN
+It's not possible to read a full token now.
+Since one may have been partially read, the operation should be repeated
+with the same flags when data becomes available.
+@item PDF_EEOF
+Reached the end of the input stream (at a valid position).
+@item PDF_EBADFILE
+The stream violates the PDF specifications.
+@item PDF_EIMPLLIMIT
+It's not possible to read the next token without exceeding an
+implementation limit (e.g., the token is too long).
 @item PDF_ERROR
+An unspecified error occurred.
 @end table
 @item Usage example
 @example
@@ -10083,13 +10108,28 @@ XXX
 @end table
 @end deftypefun
 
-@c pdf_token_reader_end_at_stream
-@c pdf_token_reader_reset_state
+@deftypefun pdf_status_t pdf_token_reader_reset (pdf_token_reader_t @var{reader})
+
+Reset the state of the token reader.
+
+@table @strong
+@item Parameters
+@table @var
+@item reader
+A token reader.
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@end table
+@end table
+@end deftypefun
 
 @node Writing tokens
 @subsection Writing tokens
 
-@deftypefun pdf_status_t pdf_token_write (pdf_token_writer_t @var{writer}, pdf_token_t *@var{token})
+@deftypefun pdf_status_t pdf_token_write (pdf_token_writer_t @var{writer}, pdf_u32_t @var{flags}, pdf_token_t @var{token})
 
 Write a given token using a given token writer.
 
@@ -10098,6 +10138,18 @@ Write a given token using a given token writer.
 @table @var
 @item writer
 A token writer.
+@item flags
+A bitmask specifying a combination of these flags:
+@table @code
+@item PDF_TOKEN_NO_NAME_ESCAPES
+Don't escape special characters using ``#'' when writing name tokens
+(this flag should be used when writing PDF 1.1 files).
+@item PDF_TOKEN_HEX_STRINGS
+Write strings in hexadecimal encoding.
+@item PDF_TOKEN_READABLE_STRINGS
+Encode strings in a human-readable way
+(i.e., in hexadecimal or with special characters escaped).
+@end table
 @item token
 A PDF token.
 @end table
@@ -10105,8 +10157,16 @@ A PDF token.
 A PDF status value:
 @table @code
 @item PDF_OK
+The operation succeeded.
 @item PDF_EAGAIN
+It's not possible to write a full token now.
+Since it may have been partially written, the operation must be repeated
+with the same arguments when the stream becomes writable.
+@item PDF_EBADDATA
+One of the arguments is invalid. This may be caused by an invalid token
+(e.g., one that contains unrepresentable characters).
 @item PDF_ERROR
+An unspecified error occurred.
 @end table
 @item Usage example
 @example
@@ -10114,8 +10174,6 @@ XXX
 @end example
 @end table
 @end deftypefun
-
-@c pdf_token_write
 
 @node Creating and destroying tokens
 @subsection Creating and destroying tokens
@@ -10161,6 +10219,8 @@ A PDF status value:
 @table @code
 @item PDF_OK
 The operation succeeded.
+@item PDF_EBADDATA
+The given value is invalid.
 @item PDF_ENOMEM
 Not enough memory.
 @end table
@@ -13543,19 +13603,25 @@ specifications.
 @headitem Quantity @tab Limit @tab Description
 @item Size of a PDF file
 @tab 10^10 bytes
-@tab Larger supported PDF file using a cross-reference table.
+@tab Largest supported PDF file using a cross-reference table.
 @item integer
-@tab ???
+@tab 2^32 - 1
 @tab Largest integer value.
+@item integer
+@tab -2^32
+@tab Smallest integer value.
 @item real
-@tab ???
+@tab FLT_MAX
 @tab Largest real value.
+@item real
+@tab -FLT_MAX
+@tab Smallest real value.
 @item string in content stream
 @tab 32767
 @tab Maximum length of a string contained in a content stream, in
 bytes.
 @item name
-@tab ???
+@tab 32767
 @tab Maximum length of a name, in bytes.
 @item indirect object
 @tab ??
