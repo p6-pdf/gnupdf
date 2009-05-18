@@ -1,5 +1,5 @@
 
-/* -*- mode: C -*- Time-stamp: "2008-12-31 19:31:45 aleksander"
+/* -*- mode: C -*- Time-stamp: "2009-05-15 12:36:35 gerel"
  *
  *       File:         pdf-fsys.c
  *       Date:         Thu May 22 15:51:13 2008
@@ -506,51 +506,48 @@ pdf_fsys_file_set_size (pdf_fsys_file_t file,
     }
 }
 
-pdf_size_t 
-pdf_fsys_file_read (pdf_fsys_file_t file,
-                    const pdf_size_t elem_size,
-                    const pdf_size_t elem_count,
-                    void *data)
+
+pdf_status_t
+pdf_fsys_file_read (pdf_fsys_file_t file, pdf_char_t *buf,
+                    pdf_size_t bytes, pdf_size_t *read_bytes)
 {
   if(file == NULL)
-    return 0;
+    return PDF_EBADDATA;
 
   if (file->fs == NULL)
     {
       /* Use the default filesystem */
-      return pdf_fsys_def_file_read(file, elem_size, elem_count, data);
+      return pdf_fsys_def_file_read(file, buf, bytes, read_bytes);
     }
   else
     {
       return
         (file->fs->implementation->file_read_fn) (file,
-                                                  elem_size,
-                                                  elem_count,
-                                                  data);
+                                                  buf,
+                                                  bytes,
+                                                  read_bytes);
     }
 }
 
-pdf_size_t
-pdf_fsys_file_write (pdf_fsys_file_t file,
-                     const pdf_size_t elem_size,
-                     const pdf_size_t elem_count,
-                     void *data)
+pdf_status_t
+pdf_fsys_file_write (pdf_fsys_file_t file, pdf_char_t *buf,
+                     pdf_size_t bytes, pdf_size_t *written_bytes)
 {
   if(file == NULL)
-    return 0;
+    return PDF_EBADDATA;
 
   if (file->fs == NULL)
     {
       /* Use the default filesystem */
-      return pdf_fsys_def_file_write(file, elem_size, elem_count, data);
+      return pdf_fsys_def_file_write(file, buf, bytes, written_bytes);
     }
   else
     {
       return
         (file->fs->implementation->file_write_fn) (file,
-                                                   elem_size,
-                                                   elem_count,
-                                                   data);
+                                                   buf,
+                                                   bytes,
+                                                   written_bytes);
     }
 }
 
