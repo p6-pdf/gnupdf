@@ -268,6 +268,31 @@ PDF_DEBUG_BASE("Testing macro '%s' '%d' '%lf'", "string", 7, 10.1);
 @end example
 @end table
 
+
+Indeed, this module provides a assert macro for each layer.
+
+@defmac PDF_ASSERT_BASE (condition)
+@end defmac
+@defmac PDF_ASSERT_OBJECT (condition)
+@end defmac
+@defmac PDF_ASSERT_DOCUMENT (condition)
+@end defmac
+@defmac PDF_ASSERT_PAGE (condition)
+@end defmac
+
+@table @strong
+@item Parameters
+@table @var
+@item condition
+a C expression.
+@end table
+@item Usage example
+@example
+PDF_ASSERT_BASE (1 == 1);
+@end example
+@end table
+
+
 @subheading Output format
 The output format for these macros is,
 
@@ -275,7 +300,9 @@ GNU PDF:***DEBUG <layer>***:<file-name>:<line-number>: <message>.
 
 For example,
 
-GNU PDF:***DEBUG BASE***:pdf-memory.c:344: insufficient memory.
+GNU PDF:***DEBUG BASE***:pdf-fp-func.c:344: division by zero.
+
+
 
 @node Memory Allocation
 @section Memory Allocation
@@ -9118,7 +9145,8 @@ XXX
 The following functions provides synchronous input/output for open
 files.
 
-@deftypefun pdf_size_t pdf_fsys_file_read (pdf_fsys_file_t @var{file}, const pdf_size_t @var{elem_size}, const pdf_size_t @var{elem_count}, void *@var{data})
+
+@deftypefun pdf_status_t pdf_fsys_file_read (pdf_fsys_file_t @var{file}, pdf_char_t *@var{buf}, pdf_size_t @var{bytes}, pdf_size_t *@var{read_bytes})
 
 Synchronously read data from an open file item.
 
@@ -9126,17 +9154,26 @@ Synchronously read data from an open file item.
 @item Parameters
 @table @var
 @item file
-An open file variable.
-@item elem_size
-The size of the data chunks to read from the file.
-@item elem_count
-The number of data chunks to read from the file.
-@item data
-A pointer to memory used to store the readed elements.
+An open file.
+@item buf
+The buffer to hold the read data.
+@item bytes
+The number of octects to read.
+@item read_bytes
+The number of octects actually read.
 @end table
 @item Returns
-A PDF size value indicating the number of readed octects or @code{0} if there
-was an error.
+A PDF status value:
+@table @code
+@item PDF_OK
+All the requested bytes were successfully read into @var{buf}.
+@item PDF_EBADDATA
+The file element or a given pointer is invalid.
+@item PDF_EEOF
+An end of file condition occurred.
+@item PDF_ERROR
+An error prevented to read the bytes.
+@end table
 @item Usage example
 @example
 XXX
@@ -9144,7 +9181,8 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_fsys_file_write (pdf_fsys_file_t @var{file}, const pdf_size_t @var{elem_size}, const pdf_size_t @var{elem_count}, void *@var{data})
+
+@deftypefun pdf_status_t pdf_fsys_file_write (pdf_fsys_file_t @var{file}, pdf_char_t *@var{buf}, pdf_size_t @var{bytes}, pdf_size_t *@var{written_bytes})
 
 Synchronously write data to an open file item.
 
@@ -9152,23 +9190,33 @@ Synchronously write data to an open file item.
 @item Parameters
 @table @var
 @item file
-An open file variable.
-@item elem_size
-The size of the data chunks to write into the file.
-@item elem_count
-The number of data chunks to be write into the file.
-@item data
+An open file.
+@item buf
 A pointer to memory containing the data to write into the file.
+@item bytes
+The number of octects to write.
+@item written_bytes
+The number of octects actually written.
 @end table
 @item Returns
-A PDF size value indicating the number of octects written into the
-file or @code{0} if there was an error.
+A PDF status value:
+@table @code
+@item PDF_OK
+All the requested bytes were successfully written to @var{file}.
+@item PDF_EBADDATA
+The file element or a given pointer is invalid.
+@item PDF_ENOMEM
+A disk full condition ocurred.
+@item PDF_ERROR
+An error prevented to write the bytes.
+@end table
 @item Usage example
 @example
 XXX
 @end example
 @end table
 @end deftypefun
+
 
 @deftypefun pdf_status_t pdf_fsys_file_flush (pdf_fsys_file_t @var{file})
 
@@ -9451,7 +9499,8 @@ filesystem interface function.
 The following callbacks are defined to provide synchronous
 input/output in open files.
 
-@deftp {Data Type} {pdf_size_t (*pdf_fsys_file_read_fn_t) (pdf_fsys_file_t @var{file}, pdf_size_t @var{elem_size}, pdf_size_t @var{elem_count}, void *@var{data})}
+
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_read_fn_t) (pdf_fsys_file_t @var{file}, pdf_char_t*@var{buf}, pdf_size_t @var{bytes}, pdf_size_t*@var{read_bytes})}
 
 Filesystem callback used to synchronously read data from an open file
 item.
@@ -9460,8 +9509,7 @@ This callback is called by the @code{pdf_fsys_file_read} file
 interface function.
 @end deftp
 
-@deftp {Data Type} {pdf_size_t (*pdf_fsys_file_write_fn_t) (pdf_fsys_file_t @var{file}, pdf_size_t @var{elem_size}, pdf_size_t @var{elem_count}, void *@var{data})}
-
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_write_fn_t) (pdf_fsys_file_t @var{file}, pdf_char_t*@var{buf}, pdf_size_t @var{bytes}, pdf_size_t*@var{written_bytes})}
 Filesystem callback used to synchronously write data to an open file
 item.
 

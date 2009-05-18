@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-03 19:03:49 aleksander"
+/* -*- mode: C -*- Time-stamp: "2009-05-15 13:07:46 gerel"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -1017,17 +1017,14 @@ pdf_fsys_disk_file_set_size (pdf_fsys_file_t file,
   return PDF_OK;
 }
 
-pdf_size_t
-pdf_fsys_disk_file_read (pdf_fsys_file_t file,
-                         const pdf_size_t elem_size,
-                         const pdf_size_t elem_count,
-                         void *data)
+
+pdf_status_t
+pdf_fsys_disk_file_read (pdf_fsys_file_t file, pdf_char_t *buf,
+                         pdf_size_t bytes, pdf_size_t *read_bytes)
 {
-  pdf_size_t read_bytes = 0;
+  pdf_status_t ret = PDF_EBADDATA;
   if((file != NULL) &&                          \
-     (data != NULL) &&                          \
-     (elem_size > 0) &&                         \
-     (elem_count > 0))
+     (buf != NULL))
     {
       pdf_fsys_disk_file_t file_data = NULL;
       file_data = (pdf_fsys_disk_file_t)(file->data);
@@ -1039,31 +1036,40 @@ pdf_fsys_disk_file_read (pdf_fsys_file_t file,
         }
       else
         {
-          read_bytes = fread(data,
-                             (size_t)elem_size,
-                             (size_t)elem_count,
-                             file_data->file_descriptor);
+          *read_bytes = fread(buf,
+                              1,
+                              bytes,
+                              file_data->file_descriptor);
+          if (feof(file_data->file_descriptor))
+            {
+              ret = PDF_EEOF;
+            }
+          else if (ferror(file_data->file_descriptor))
+            {
+              ret = PDF_ERROR;
+            }
+          else
+            {
+              ret = PDF_OK;
+            }
         }
     }
   else
     {
-      PDF_DEBUG_BASE("Invalid inputs to file_read! (file:%p, data:%p, size:%u, count: %u)",
-                     file,data,elem_size,elem_count);
+      PDF_DEBUG_BASE("Invalid inputs to file_read! (file:%p, buf:%p, size:%u)",
+                     file,buf,bytes);
     }
-  return read_bytes;
+  return ret;
 }
 
-pdf_size_t
-pdf_fsys_disk_file_write (pdf_fsys_file_t file,
-                          const pdf_size_t elem_size,
-                          const pdf_size_t elem_count,
-                          void *data)
+
+pdf_status_t
+pdf_fsys_disk_file_write (pdf_fsys_file_t file, pdf_char_t *buf,
+                          pdf_size_t bytes, pdf_size_t *written_bytes)
 {
-  pdf_size_t written_bytes = 0;
+  pdf_status_t ret = PDF_EBADDATA;
   if((file != NULL) && \
-     (data != NULL) && \
-     (elem_size > 0) && \
-     (elem_count > 0))
+     (buf != NULL))
     {
       pdf_fsys_disk_file_t file_data = NULL;
       file_data = (pdf_fsys_disk_file_t)(file->data);
@@ -1075,18 +1081,34 @@ pdf_fsys_disk_file_write (pdf_fsys_file_t file,
         }
       else
         {
-          written_bytes = fwrite(data,
-                                 (size_t)elem_size,
-                                 (size_t)elem_count,
-                                 file_data->file_descriptor);
+          *written_bytes = fwrite(buf,
+                                  1,
+                                  bytes,
+                                  file_data->file_descriptor);
+          if (ferror(file_data->file_descriptor))
+            {
+              if (errno == ENOSPC)
+                {
+                  ret = PDF_ENOMEM;
+                }
+              else
+                {
+                  ret = PDF_ERROR;
+                }
+            }
+          else
+            {
+              ret = PDF_OK;
+            }
         }
     }
   else
     {
-      PDF_DEBUG_BASE("Invalid inputs to file_read! (file:%p, data:%p, size:%u, count: %u)",
-                     file,data,elem_size,elem_count);
+      PDF_DEBUG_BASE("Invalid inputs to file_write! (file:%p, buf:%p, size:%u)",
+                     file,buf,bytes);
     }
-  return written_bytes;
+  return ret;
+
 }
 
 

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-02-16 22:15:40 davazp"
+/* -*- mode: C -*- Time-stamp: "2009-05-11 16:05:06 davazp"
  *
  *       File:         pdf-error.h
  *       Date:         Sun Feb  24 20:22:05 2008
@@ -27,7 +27,12 @@
 #define PDF_ERROR_H
 
 #include <config.h>
-#include <stdio.h>
+
+
+/* BEGIN PUBLIC */
+
+#include <stdio.h>  /* Included again for the public header */
+
 
 #ifdef HAVE_DEBUG_BASE
 #define PDF_DEBUG_BASE(message, ...) \
@@ -61,9 +66,44 @@
 #define PDF_DEBUG_PAGE(...)
 #endif /* HAVE_DEBUG_PAGE */
 
-/* BEGIN PUBLIC */
 
-#include <stdio.h>  /* Included again for the public header */
+#define PDF_ASSERT_BASE(condition)                                      \
+  do                                                                    \
+    {                                                                   \
+      if (!(condition))                                                 \
+        {                                                               \
+          PDF_DEBUG_BASE("the assert `%s' failed", #condition);         \
+        }                                                               \
+    } while(0)
+
+#define PDF_ASSERT_OBJECT(condition)                                    \
+  do                                                                    \
+    {                                                                   \
+      if (!(condition))                                                 \
+        {                                                               \
+          PDF_DEBUG_OBJECT("the assert `%s' failed", #condition);       \
+        }                                                               \
+    } while(0)
+
+#define PDF_ASSERT_DOCUMENT(condition)                                  \
+  do                                                                    \
+    {                                                                   \
+      if (!(condition))                                                 \
+        {                                                               \
+          PDF_DEBUG_DOCUMENT("the assert `%s' failed", #condition);     \
+        }                                                               \
+    } while(0)
+
+#define PDF_ASSERT_PAGE(condition)                                      \
+  do                                                                    \
+    {                                                                   \
+      if (!(condition))                                                 \
+        {                                                               \
+          PDF_DEBUG_PAGE("the assert `%s' failed", #condition);         \
+        }                                                               \
+    } while(0)
+
+
 
 #define PDF_ERROR_LIST                                                  \
   ERROR_ENTRY (PDF_ERROR,       "error"),                               \

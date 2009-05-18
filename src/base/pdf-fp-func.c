@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-04-17 19:24:54 david"
+/* -*- mode: C -*- Time-stamp: "2009-05-11 16:03:09 davazp"
  *
  *       File:         pdf-fp-func.c
  *       Date:         Sun Nov 30 18:46:06 2008
@@ -29,7 +29,6 @@
 #include <math.h>
 #include <limits.h>
 #include <ctype.h>
-#include <assert.h>
 #include <string.h>
 
 #include <pdf-error.h>
@@ -769,7 +768,7 @@ eval_spline(
   i = (pdf_u32_t)t;
   t = x-t;
 
-  assert(i < nsamples);
+  PDF_ASSERT_BASE (i < nsamples);
 
   if (nsamples < 4)
     {
@@ -952,10 +951,10 @@ pdf_eval_linear (pdf_fp_func_t fun,
   double t0[TYPE0_MAX_DIM];
   double t1[TYPE0_MAX_DIM];
 
-  p = &fun->u.t0; 	
+  p = &fun->u.t0;
   m = fun->m;
 
-  assert(m <= TYPE0_MAX_DIM);
+  PDF_ASSERT_BASE (m <= TYPE0_MAX_DIM);
 
   xcp = 0;
   i0 = 0;
@@ -986,7 +985,7 @@ pdf_eval_linear (pdf_fp_func_t fun,
       i0 += cc * i;
       cc *= p->size[k];
     }
-  j = 0; 	
+  j = 0;
 
   for (j = 0; j < p->n; j++)
     {
@@ -1050,7 +1049,7 @@ linear_interpolation(pdf_u32_t i,
 
   if (w1[i]) /* zero indicates a possibly invalid array index */
     {
-      assert(j+1 < size[i]);
+      PDF_ASSERT_BASE (j+1 < size[i]);
       if (i == 0)
         return w0[i] * y[j] + w1[i] * y[j+1];
       else
@@ -1158,6 +1157,7 @@ pdf_eval_spline (pdf_fp_func_t fun,
 {
   pdf_u32_t i,j;
   double t,v;
+
   for (i = 0; i < fun->m; i++)
     {
       t = in[i] * fun->u.t0.encode[2*i] + fun->u.t0.encode[2*i+1];
@@ -1203,7 +1203,7 @@ pdf_eval_spline (pdf_fp_func_t fun,
             }
           else if (t > 0)
             {
-              assert(fun->u.t0.k[i] == 0);
+              PDF_ASSERT_BASE (fun->u.t0.k[i] == 0);
               fun->u.t0.wm[i] = 0;
               fun->u.t0.w0[i] = (0.5*v-1.5)*v +1;
               fun->u.t0.w1[i] = (2-v)*v;
@@ -1281,9 +1281,8 @@ pdf_eval_stitch (pdf_fp_func_t t,
   pdf_u32_t lo,hi;
   pdf_u32_t i;
 
-  assert(t->domain[0] == t->u.t3.bounds[0]);
-  assert(t->domain[1] == t->u.t3.bounds[t->u.t3.k]);
-
+  PDF_ASSERT_BASE (t->domain[0] == t->u.t3.bounds[0]);
+  PDF_ASSERT_BASE (t->domain[1] == t->u.t3.bounds[t->u.t3.k]);
 
   x = in[0];
 
