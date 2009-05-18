@@ -13287,7 +13287,7 @@ specifications.
 @headitem Quantity @tab Limit @tab Description
 @item Size of a PDF file
 @tab 10^10 bytes
-@tab Larger supported PDF file using a cross-reference table.
+@tab Largest supported PDF file using a cross-reference table.
 @item integer
 @tab ???
 @tab Largest integer value.
