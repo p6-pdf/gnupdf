@@ -10046,7 +10046,7 @@ switch (pdf_token_writer_new (stream, &writer))
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_token_reader_destroy (pdf_tokeniser_reader_t @var{reader})
+@deftypefun pdf_status_t pdf_token_reader_destroy (pdf_token_reader_t @var{reader})
 
 Destroy a token reader freeing any used resources.
 
@@ -10074,7 +10074,7 @@ pdf_token_reader_destroy (reader);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_token_writer_destroy (pdf_tokeniser_writer_t @var{writer})
+@deftypefun pdf_status_t pdf_token_writer_destroy (pdf_token_writer_t @var{writer})
 
 Destroy a token writer, freeing any used resources.
 
@@ -10322,6 +10322,8 @@ A PDF status value:
 @table @code
 @item PDF_OK
 The operation succeeded.
+@item PDF_EBADDATA
+The given value is invalid.
 @item PDF_ENOMEM
 Not enough memory.
 @end table
@@ -10348,6 +10350,8 @@ A PDF status value:
 @table @code
 @item PDF_OK
 The operation succeeded.
+@item PDF_EBADDATA
+The given value is invalid.
 @item PDF_ENOMEM
 Not enough memory.
 @end table
@@ -10376,6 +10380,8 @@ A PDF status value:
 @table @code
 @item PDF_OK
 The operation succeeded.
+@item PDF_EBADDATA
+The given value is invalid.
 @item PDF_ENOMEM
 Not enough memory.
 @end table
@@ -10452,8 +10458,6 @@ A PDF status value:
 @table @code
 @item PDF_OK
 The operation succeeded.
-@item PDF_ENOMEM
-Not enough memory.
 @end table
 @end table
 
@@ -10540,7 +10544,7 @@ Returns a pointer to the data associated with a given string token.
 A token of type PDF_TOKEN_STRING.
 @end table
 @item Returns
-A pointer to the string data, which will be valid until the token is destroyed.
+A pointer to the data, which will be valid until the token is destroyed.
 The data is @strong{not} null-terminated.
 @end table
 
@@ -10557,18 +10561,80 @@ Returns the amount of data associated with a given string token.
 A token of type PDF_TOKEN_STRING.
 @end table
 @item Returns
-The string size, in octets.
+The string's size, in octets.
 @end table
 
 @end deftypefun
 
-@c TODO: pdf_token_get_{name,keyword,comment}_{data,size}
-@c          -- these are basically the same as the string functions,
-@c             except the name and keyword data is null-terminated
+@deftypefun const pdf_char_t *pdf_token_get_name_data (const pdf_token_t @var{token})
 
-@deftypefun pdf_bool_t pdf_token_get_comment_continued (const pdf_token_t @var{token})
+Returns a pointer to the data associated with a given name token.
 
-Returns the continuation flag associated with a given comment token.
+@table @strong
+@item Parameters
+@table @var
+@item token
+A token of type PDF_TOKEN_NAME.
+@end table
+@item Returns
+A pointer to the name data, which will be valid until the token is destroyed.
+The data is null-terminated.
+@end table
+
+@end deftypefun
+
+@deftypefun pdf_size_t pdf_token_get_name_size (const pdf_token_t @var{token})
+
+Returns the amount of data associated with a given name token.
+
+@table @strong
+@item Parameters
+@table @var
+@item token
+A token of type PDF_TOKEN_NAME.
+@end table
+@item Returns
+The name's size, in octets (excluding the terminating null byte).
+@end table
+
+@end deftypefun
+
+@deftypefun const pdf_char_t *pdf_token_get_keyword_data (const pdf_token_t @var{token})
+
+Returns a pointer to the data associated with a given keyword token.
+
+@table @strong
+@item Parameters
+@table @var
+@item token
+A token of type PDF_TOKEN_KEYWORD.
+@end table
+@item Returns
+A pointer to the data, which will be valid until the token is destroyed.
+The data is null-terminated.
+@end table
+
+@end deftypefun
+
+@deftypefun pdf_size_t pdf_token_get_keyword_size (const pdf_token_t @var{token})
+
+Returns the amount of data associated with a given keyword token.
+
+@table @strong
+@item Parameters
+@table @var
+@item token
+A token of type PDF_TOKEN_KEYWORD.
+@end table
+@item Returns
+The keyword's size, in octets (excluding the terminating null byte).
+@end table
+
+@end deftypefun
+
+@deftypefun const pdf_char_t *pdf_token_get_comment_data (const pdf_token_t @var{token})
+
+Returns a pointer to the data associated with a given comment token.
 
 @table @strong
 @item Parameters
@@ -10577,8 +10643,48 @@ Returns the continuation flag associated with a given comment token.
 A token of type PDF_TOKEN_COMMENT.
 @end table
 @item Returns
-True if the comment is continued from the comment token
-that precedes it in the stream; False if it's a new comment.
+A pointer to the data, which will be valid until the token is destroyed.
+The data is @strong{not} null-terminated.
+@end table
+
+@end deftypefun
+
+@deftypefun pdf_size_t pdf_token_get_comment_size (const pdf_token_t @var{token})
+
+Returns the amount of data associated with a given comment token.
+
+@table @strong
+@item Parameters
+@table @var
+@item token
+A token of type PDF_TOKEN_COMMENT.
+@end table
+@item Returns
+The comment's size, in octets.
+@end table
+
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_token_get_comment_continued (const pdf_token_t @var{token})
+
+Returns a boolean indicating whether the comment token is a continuation
+of a previous token.  If the token reader breaks a comment into multiple
+tokens, each token except the last will be at least 32767 bytes long.
+
+@table @strong
+@item Parameters
+@table @var
+@item token
+A token of type PDF_TOKEN_COMMENT.
+@end table
+@item Returns
+A boolean value:
+@table @code
+@item PDF_TRUE
+The given comment token is a continuation of another.
+@item PDF_FALSE
+The token is a complete comment, or the beginning of a comment.
+@end table
 @end table
 
 @end deftypefun

@@ -1,3 +1,7 @@
+2009-05-19  Michael Gold  <mgold@ncf.ca>
+
+	* doc/gnupdf.texi: Expanded the tokeniser API documentation.
+
 2009-05-18  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Architectural limits): Typo fixed. Reported by
