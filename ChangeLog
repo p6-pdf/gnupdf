@@ -2,6 +2,16 @@
 
 	* doc/gnupdf.texi: Expanded the tokeniser API documentation.
 
+2009-05-19  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-stm.c: converted to Unix from DOS codification.
+
+	* src/base/pdf-stm-filter.c (pdf_stm_filter_new): Check for out of
+	memory situations.
+
+	* torture/unit/nocheck/check.c (srunner_free): It is not needed to
+	check for NULL before to apply a 'free()'.
+
 2009-05-18  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Architectural limits): Typo fixed. Reported by
