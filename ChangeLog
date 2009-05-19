@@ -1,5 +1,7 @@
 2009-05-19  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-stm.c: converted to Unix from DOS codification.
+
 	* src/base/pdf-stm-filter.c (pdf_stm_filter_new): Check for out of
 	memory situations.
 
