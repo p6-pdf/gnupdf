@@ -1,3 +1,74 @@
+2009-05-19  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-stm.c: converted to Unix from DOS codification.
+
+	* src/base/pdf-stm-filter.c (pdf_stm_filter_new): Check for out of
+	memory situations.
+
+	* torture/unit/nocheck/check.c (srunner_free): It is not needed to
+	check for NULL before to apply a 'free()'.
+
+2009-05-18  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Architectural limits): Typo fixed. Reported by
+	Brad Hards.
+
+	* src/README: Typo fixed. Reported by Brad Hards.
+
+2009-05-15  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* doc/gnupdf.texi: changed pdf_fsys_file_read/write to be like pdf_stm_read/write.
+
+	* src/base/pdf-fsys-disk.c: likewise.
+
+	* src/base/pdf-fsys-disk.h:likewise.
+
+	* src/base/pdf-fsys.c:likewise.
+
+	* src/base/pdf-fsys.h: likewise.
+
+	* src/base/pdf-stm-be.c: likewise.
+
+2009-05-15  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-hg.texi (Tasks workflow): Added a note about the
+	interpretation of TODO and NEXT.
+
+	* doc/gendocs_template: Customized.
+
+	* doc/Makefile.am: Support for generation of manuals using the
+	gendocs.sh script from gnulib.
+
+2009-05-14  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* torture/unit/Makefile.am: added file stm new test case.
+
+	* torture/unit/base/stm/pdf-stm-file-new.c: likewise.
+
+	* torture/unit/base/stm/pdf-stm-peek-char.c: added file stm tests.
+
+	* torture/unit/base/stm/pdf-stm-read-char.c: likewise.
+
+	* torture/unit/base/stm/pdf-stm-read.c: likewise.
+
+	* torture/unit/base/stm/pdf-stm-seek.c: likewise.
+
+	* torture/unit/base/stm/pdf-stm-tell.c: likewise.
+
+	* torture/unit/base/stm/pdf-stm-write.c: likewise.
+
+	* torture/unit/base/stm/tsuite-stm.c: likewise.
+
+2009-05-11  David Vazquez  <davazp@es.gnu.org>
+
+	* doc/gnupdf.texi (Debugging procedures): Documentation for
+	PDF_ASSERT macros.
+
+	* src/base/pdf-error.h (PDF_DEBUG_BASE, PDF_DEBUG_OBJECT)
+	(PDF_DEBUG_DOCUMENT, PDF_DEBUG_PAGE): Export to the public header.
+	(PDF_ASSERT_BASE, PDF_ASSERT_OBJECT, PDF_ASSERT_DOCUMENT)
+	(PDF_ASSERT_PAGE): New macros for debugging.
+
 2009-05-10  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf-arch.texi (Overview): Mention ISO 32000 conformance.

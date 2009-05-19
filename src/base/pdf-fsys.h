@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-11-29 17:48:43 aleksander"
+/* -*- mode: C -*- Time-stamp: "2009-05-15 12:13:58 gerel"
  *
  *       File:         pdf-fsys.h
  *       Date:         Thu May 22 15:49:59 2008
@@ -103,14 +103,15 @@ typedef pdf_status_t (*pdf_fsys_get_folder_contents_fn_t) (pdf_text_t path_name,
 typedef pdf_status_t (*pdf_fsys_get_parent_fn_t) (pdf_text_t path_name,
                                                   pdf_text_t parent_path);
 typedef pdf_status_t (*pdf_fsys_remove_folder_fn_t) (pdf_text_t path_name);
-typedef pdf_size_t (*pdf_fsys_file_read_fn_t) (pdf_fsys_file_t file,
-                                               pdf_size_t elem_size,
-                                               pdf_size_t elem_count,
-                                               void *data);
-typedef pdf_size_t (*pdf_fsys_file_write_fn_t) (pdf_fsys_file_t file,
-                                                pdf_size_t elem_size,
-                                                pdf_size_t elem_count,
-                                                void *data);
+
+typedef pdf_status_t
+(*pdf_fsys_file_read_fn_t) (pdf_fsys_file_t file, pdf_char_t *buf,
+                            pdf_size_t bytes, pdf_size_t *read_bytes);
+
+typedef pdf_status_t
+(*pdf_fsys_file_write_fn_t) (pdf_fsys_file_t file, pdf_char_t *buf,
+                             pdf_size_t bytes, pdf_size_t *written_bytes);
+
 typedef pdf_status_t (*pdf_fsys_file_flush_fn_t) (pdf_fsys_file_t file);
 typedef pdf_status_t (*pdf_fsys_get_item_props_fn_t) (pdf_text_t path_name,
                                                       struct pdf_fsys_item_props_s *props);
@@ -223,7 +224,7 @@ pdf_fsys_t pdf_fsys_file_get_filesystem (pdf_fsys_file_t file);
 enum pdf_fsys_file_mode_e pdf_fsys_file_get_mode (pdf_fsys_file_t file);
 pdf_text_t pdf_fsys_file_get_url (pdf_fsys_file_t file);
 pdf_status_t pdf_fsys_file_set_mode (pdf_fsys_file_t file,
-                                                  enum pdf_fsys_file_mode_e new_mode);
+                                     enum pdf_fsys_file_mode_e new_mode);
 pdf_bool_t pdf_fsys_file_same_p (pdf_fsys_file_t file,
                                  pdf_text_t path);
 pdf_status_t pdf_fsys_file_get_pos (pdf_fsys_file_t file,
@@ -235,14 +236,13 @@ pdf_bool_t pdf_fsys_file_can_set_size_p (pdf_fsys_file_t file,
 pdf_size_t pdf_fsys_file_get_size (pdf_fsys_file_t file);
 pdf_status_t pdf_fsys_file_set_size (pdf_fsys_file_t file,
                                      pdf_size_t size);
-pdf_size_t pdf_fsys_file_read (pdf_fsys_file_t file,
-                               const pdf_size_t elem_size,
-                               const pdf_size_t elem_count,
-                               void *data);
-pdf_size_t pdf_fsys_file_write (pdf_fsys_file_t file,
-                                const pdf_size_t elem_size,
-                                const pdf_size_t elem_count,
-                                void *data);
+
+pdf_status_t pdf_fsys_file_read (pdf_fsys_file_t file, pdf_char_t *buf,
+                                 pdf_size_t bytes, pdf_size_t *read_bytes);
+
+pdf_status_t pdf_fsys_file_write (pdf_fsys_file_t file, pdf_char_t *buf,
+                                  pdf_size_t bytes, pdf_size_t *written_bytes);
+
 pdf_status_t pdf_fsys_file_flush (pdf_fsys_file_t file);
 pdf_status_t pdf_fsys_file_request_ria (pdf_fsys_file_t file,
                                         pdf_size_t offset,

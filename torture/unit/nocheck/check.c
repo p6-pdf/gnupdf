@@ -118,20 +118,15 @@ void srunner_free (SRunner *sr)
       for(j=0; j < suite->n; j++)
         {
           TCase *tc = suite->elements[j];
-          if(tc->name != NULL)
-            free(tc->name);
-          if(tc->elements != NULL)
-            free(tc->elements);
+          free(tc->name);
+          free(tc->elements);
           free(tc);
         }
-      if(suite->name != NULL)
-        free(suite->name);
-      if(suite->elements != NULL)
-        free(suite->elements);
+      free(suite->name);
+      free(suite->elements);
       free(suite);
     }
-  if(sr->elements != NULL)
-    free(sr->elements);
+  free(sr->elements);
   free(sr);
   
   /* Close log file if it was open */
