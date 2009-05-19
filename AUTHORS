@@ -262,7 +262,7 @@ and changed configure.ac torture/Makefile.am torture/test-date.c
   torture/test-stm_openclose.c
 
 Michael Gold: changed src/Makefile.am utils/Makefile.am
-  torture/unit/Makefile.am
+  torture/unit/Makefile.am src/gnupdf.texi
 
 Yang Chang Hua: wrote src/base/pdf-stm-f-dct.h
   src/base/pdf-stm-f-dct.c
