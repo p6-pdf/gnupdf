@@ -1,3 +1,8 @@
+2009-05-19  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/unit/nocheck/check.c (srunner_free): It is not needed to
+	check for NULL before to apply a 'free()'.
+
 2009-05-18  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Architectural limits): Typo fixed. Reported by
