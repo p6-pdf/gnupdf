@@ -1,13 +1,13 @@
 /* -*- mode: C -*- Time-stamp: "2009-01-05 08:53:02 mgold"
  *
- *       File:         pdf-rd-tokeniser.h
+ *       File:         pdf-token.h
  *       Date:         Mon Dec 29 00:45:09 2008
  *
  *       GNU PDF Library - Stream tokeniser
  *
  */
 
-/* Copyright (C) 2008 Michael Gold */
+/* Copyright (C) 2008, 2009 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,39 +23,51 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PDF_RD_TOKENISER
-#define PDF_RD_TOKENISER
+#ifndef PDF_TOKEN_READER
+#define PDF_TOKEN_READER
 #include "pdf-types.h"
 #include "pdf-stm.h"
-#include "pdf-obj.h"
+#include "pdf-token-obj.h"
 
 /* BEGIN PUBLIC */
-/* pdf-rd-tokeniser.h */
+/* pdf-token-reader.h */
 
-struct pdf_tokeniser_s;  /* opaque type */
-typedef struct pdf_tokeniser_s *pdf_tokeniser_t;
+struct pdf_token_reader_s;  /* opaque type */
+typedef struct pdf_token_reader_s *pdf_token_reader_t;
 
-pdf_status_t pdf_tokeniser_new(pdf_stm_t stm, pdf_tokeniser_t *tokr);
-pdf_status_t pdf_tokeniser_destroy(pdf_tokeniser_t tokr);
-pdf_status_t pdf_tokeniser_read(pdf_tokeniser_t tokr, pdf_obj_t *token);
-pdf_status_t pdf_tokeniser_end_at_stream(pdf_tokeniser_t tokr);
-pdf_status_t pdf_tokeniser_reset_state(pdf_tokeniser_t tokr);
+pdf_status_t pdf_token_reader_new(pdf_stm_t stm, pdf_token_reader_t *reader);
+pdf_status_t pdf_token_reader_destroy(pdf_token_reader_t reader);
+pdf_status_t pdf_token_reader_reset(pdf_token_reader_t reader);
+pdf_status_t pdf_token_read(pdf_token_reader_t reader, pdf_u32_t flags,
+                            pdf_obj_t *token);
+
+enum pdf_token_rw_flags_e {
+  /* these flags are used for token_read and token_write */
+  PDF_TOKEN_NO_NAME_ESCAPES = 1,
+  PDF_TOKEN_RET_COMMENTS = 2,
+  PDF_TOKEN_END_AT_STREAM = 4,
+  PDF_TOKEN_HEX_STRINGS = 8,
+  PDF_TOKEN_READABLE_STRINGS = 16,
+}
+
 /* END PUBLIC */
 
-enum pdf_tokeniser_state_e {
-  PDF_TOKENISER_STATE_NONE = 0,
-  PDF_TOKENISER_STATE_COMMENT,
-  PDF_TOKENISER_STATE_KEYWORD,
-  PDF_TOKENISER_STATE_NAME,
-  PDF_TOKENISER_STATE_STRING,
-  PDF_TOKENISER_STATE_HEXSTRING,
-  PDF_TOKENISER_STATE_DICTEND,
-  PDF_TOKENISER_STATE_STREAMSTART,
-  PDF_TOKENISER_STATE_PENDING,
-  PDF_TOKENISER_STATE_EOF
+enum pdf_token_reader_state_e
+{
+  /* PDF_TOKR_ is used as an internal prefix for the token reader. */
+  PDF_TOKR_STATE_NONE = 0,
+  PDF_TOKR_STATE_COMMENT,
+  PDF_TOKR_STATE_KEYWORD,
+  PDF_TOKR_STATE_NAME,
+  PDF_TOKR_STATE_STRING,
+  PDF_TOKR_STATE_HEXSTRING,
+  PDF_TOKR_STATE_DICTEND,
+  PDF_TOKR_STATE_STREAMSTART,
+  PDF_TOKR_STATE_PENDING,
+  PDF_TOKR_STATE_EOF
 };
 
-/* Tokeniser states (from pdf_tokeniser_state_e):
+/* Token reader states (from pdf_token_reader_state_e):
  * NONE - Initial state; not reading a token.
  * COMMENT - Reading a comment.  buffer collects the comment bytes, excluding
  *   intparam is 1 if this token is continued from a previous token,
@@ -94,14 +106,9 @@ enum pdf_tokeniser_state_e {
  * EOF - Can't continue tokenising (reached EOF, or beginning of stream)
  */
 
-enum pdf_tokeniser_flag_e {
-  PDF_TOKENISER_FLAG_RET_COMMENTS = 1,  /* return comments as tokens */
-  PDF_TOKENISER_FLAG_PDF11 = 2,         /* disallow '#' escapes in names */
-};
-
 /* Internal state */
 struct pdf_tokeniser_s {
-  int flags;  /* miscellaneous settings (from pdf_tokeniser_flag_e) */
+//XXX  int flags;  /* miscellaneous settings (from pdf_tokeniser_flag_e) */
   pdf_stm_t stream;  /* stream to read bytes from */
   char *decimal_point;
 
@@ -111,10 +118,10 @@ struct pdf_tokeniser_s {
   pdf_char_t charparam;
   int intparam;
   pdf_buffer_t buffer;
-  pdf_bool_t findstream;
+//XXX  pdf_bool_t findstream;
   /***/
 };
 
 #endif
 
-/* End of pdf-rd-tokeniser.h */
+/* End of pdf-token-reader.h */

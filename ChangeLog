@@ -1,3 +1,13 @@
+2009-05-19  Michael Gold  <mgold@ncf.ca>
+
+	* src/base/pdf-token-reader.c: New file
+
+	* src/base/pdf-token-reader.h: New file
+
+	* src/base/pdf-token-obj.c: New file, based on src/object/pdf-obj.c
+
+	* src/base/pdf-token-obj.h: Likewise
+
 2009-05-19  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-stm.c: converted to Unix from DOS codification.

@@ -1,13 +1,13 @@
 /* -*- mode: C -*- Time-stamp: "2009-01-05 08:53:24 mgold"
  *
- *       File:         pdf-rd-tokeniser.c
+ *       File:         pdf-token-reader.c
  *       Date:         Mon Dec 29 00:45:09 2008
  *
  *       GNU PDF Library - Stream tokeniser
  *
  */
 
-/* Copyright (C) 2008 Michael Gold */
+/* Copyright (C) 2008, 2009 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,22 +28,26 @@
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
-#include "pdf-rd-tokeniser.h"
+#include "pdf-token-reader.h"
 
-static INLINE int can_store_char (pdf_tokeniser_t context);
-static INLINE pdf_status_t store_char (pdf_tokeniser_t context, pdf_char_t ch);
-static pdf_status_t exit_state (pdf_tokeniser_t context, pdf_obj_t *token);
-static pdf_status_t flush_token (pdf_tokeniser_t context, pdf_obj_t *token);
-static pdf_status_t handle_char (pdf_tokeniser_t context,
-                                 pdf_char_t ch,
+static INLINE int can_store_char (pdf_token_reader_t reader);
+static INLINE pdf_status_t store_char (pdf_token_reader_t reader,
+                                       pdf_char_t ch);
+static pdf_status_t exit_state (pdf_token_reader_t reader, pdf_u32_t flags,
+                                pdf_obj_t *token);
+static pdf_status_t flush_token (pdf_token_reader_t reader, pdf_u32_t flags,
                                  pdf_obj_t *token);
-static INLINE pdf_status_t handle_string_char (pdf_tokeniser_t context,
+static pdf_status_t handle_char (pdf_token_reader_t reader, pdf_u32_t flags,
+                                 pdf_char_t ch, pdf_obj_t *token);
+static INLINE pdf_status_t handle_string_char (pdf_token_reader_t reader,
+                                               pdf_u32_t flags,
                                                pdf_char_t ch,
                                                pdf_obj_t *token);
-static INLINE pdf_status_t handle_hexstring_char (pdf_tokeniser_t context,
+static INLINE pdf_status_t handle_hexstring_char (pdf_token_reader_t reader,
+                                                  pdf_u32_t flags,
                                                   pdf_char_t ch,
                                                   pdf_obj_t *token);
-static int recognize_number (pdf_buffer_t buffer, int *int_value);
+static int recognise_number (pdf_buffer_t buffer, int *int_value);
 static INLINE int parse_integer (pdf_buffer_t buffer, int *int_value,
                                  int *int_state);
 static INLINE pdf_status_t parse_real (pdf_buffer_t buffer,
@@ -53,10 +57,10 @@ static INLINE int validate_real (pdf_buffer_t buffer, int int_state);
 
 
 pdf_status_t
-pdf_tokeniser_new (pdf_stm_t stm, pdf_tokeniser_t *context)
+pdf_token_reader_new (pdf_stm_t stm, pdf_token_reader_t *reader)
 {
   pdf_status_t err;
-  pdf_tokeniser_t new_tokr;
+  pdf_token_reader_t new_tokr;
 
   err = PDF_ENOMEM;
   new_tokr = pdf_alloc (sizeof (*new_tokr));
@@ -89,11 +93,10 @@ pdf_tokeniser_new (pdf_stm_t stm, pdf_tokeniser_t *context)
   if (!new_tokr->buffer)
     goto fail;
 
-  new_tokr->flags = 0;
   new_tokr->stream = stm;
-  pdf_tokeniser_reset_state (new_tokr);
+  pdf_token_reader_reset (new_tokr);
 
-  *context = new_tokr;
+  *reader = new_tokr;
   return PDF_OK;
 
 fail:
@@ -108,24 +111,23 @@ fail:
 }
 
 pdf_status_t
-pdf_tokeniser_reset_state (pdf_tokeniser_t context)
+pdf_token_reader_reset (pdf_token_reader_t reader)
 {
-  context->state = PDF_TOKENISER_STATE_NONE;
-  context->substate = 0;
-  context->findstream = 0;
+  reader->state = PDF_TOKR_STATE_NONE;
+  reader->substate = 0;
   return PDF_OK;
 }
 
 pdf_status_t
-pdf_tokeniser_destroy (pdf_tokeniser_t context)
+pdf_token_reader_destroy (pdf_token_reader_t reader)
 {
-  if (!context) return PDF_EBADDATA;
+  if (!reader) return PDF_EBADDATA;
 
-  assert (context->buffer);
-  if (context->buffer)
-    pdf_buffer_destroy (context->buffer);
-  pdf_dealloc (context->decimal_point);
-  pdf_dealloc (context);
+  assert (reader->buffer);
+  if (reader->buffer)
+    pdf_buffer_destroy (reader->buffer);
+  pdf_dealloc (reader->decimal_point);
+  pdf_dealloc (reader);
 
   return PDF_OK;
 }
@@ -179,34 +181,35 @@ hexval (pdf_char_t ch)
  * A token may be produced even if the character isn't accepted.
  */
 static pdf_status_t
-handle_char (pdf_tokeniser_t context, pdf_char_t ch, pdf_obj_t *token)
+handle_char (pdf_token_reader_t reader, pdf_u32_t flags,
+             pdf_char_t ch, pdf_obj_t *token)
 {
   pdf_status_t rv;
 
   /* first, handle the states that shouldn't be exited when whitespace
    * or a delimiter is seen */
 
-  switch (context->state)
+  switch (reader->state)
     {
-    case PDF_TOKENISER_STATE_EOF:
+    case PDF_TOKR_STATE_EOF:
       return PDF_EEOF;
 
-    case PDF_TOKENISER_STATE_STRING:
-      return handle_string_char (context, ch, token);
+    case PDF_TOKR_STATE_STRING:
+      return handle_string_char (reader, flags, ch, token);
 
-    case PDF_TOKENISER_STATE_HEXSTRING:
-      return handle_hexstring_char (context, ch, token);
+    case PDF_TOKR_STATE_HEXSTRING:
+      return handle_hexstring_char (reader, flags, ch, token);
 
-    case PDF_TOKENISER_STATE_DICTEND:
+    case PDF_TOKR_STATE_DICTEND:
       if (ch != 62)  /* '>' */
         return PDF_EBADFILE;
-      context->substate = 1;  /* saw the closing '>' */
-      return exit_state (context, token);
+      reader->substate = 1;  /* saw the closing '>' */
+      return exit_state (reader, flags, token);
 
-    case PDF_TOKENISER_STATE_COMMENT:
+    case PDF_TOKR_STATE_COMMENT:
       if (pdf_is_eol_char (ch))
         {
-          rv = exit_state (context, token);
+          rv = exit_state (reader, flags, token);
           if (rv != PDF_OK)
             return rv;
 
@@ -214,15 +217,15 @@ handle_char (pdf_tokeniser_t context, pdf_char_t ch, pdf_obj_t *token)
           return PDF_EAGAIN;
         }
 
-      if (store_char (context, ch) != PDF_OK)
+      if (store_char (reader, ch) != PDF_OK)
         {
           /* the comment buffer is full, so split the token */
-          rv = flush_token (context, token);
+          rv = flush_token (reader, flags, token);
           if (rv != PDF_OK)
             return rv;
 
-          context->intparam = 1;  /* mark the next token as a continuation */
-          return store_char (context, ch);  /* can't fail this time */
+          reader->intparam = 1;  /* mark the next token as a continuation */
+          return store_char (reader, ch);  /* can't fail this time */
         }
 
       return PDF_OK;
@@ -234,26 +237,25 @@ handle_char (pdf_tokeniser_t context, pdf_char_t ch, pdf_obj_t *token)
 
   if (pdf_is_wspace_char (ch))
     {
-      if (context->state)
+      if (reader->state)
         {
-          rv = exit_state (context, token);
+          rv = exit_state (reader, flags, token);
           if (rv != PDF_OK)
             return rv;
 
-          /* avoid reading this byte so pdf_tokeniser_end_at_stream
+          /* avoid reading this byte so PDF_TOKEN_END_AT_STREAM
            * will work properly if it's '\r' */
           return PDF_EAGAIN;
         }
 
-      if (context->findstream && ch == 10)  /* LF */
+      if ((flags & PDF_TOKEN_END_AT_STREAM) && ch == 10)  /* LF */
         {
           /* found the beginning of a stream */
-          context->state = PDF_TOKENISER_STATE_EOF;
-          context->findstream = 0;
+          reader->state = PDF_TOKR_STATE_EOF;
         }
       return PDF_OK;
     }
-  else if (context->findstream && ch != 37)  /* 37=='%' */
+  else if ((flags & PDF_TOKEN_END_AT_STREAM) && ch != 37)  /* 37=='%' */
     {
       /* only allow whitespace/comments after the "stream" keyword */
       return PDF_EBADFILE;
@@ -262,9 +264,9 @@ handle_char (pdf_tokeniser_t context, pdf_char_t ch, pdf_obj_t *token)
   if (pdf_is_delim_char (ch))
     {
       /* set state 0 (UNINIT), substate 0, bufpos 0 */
-      if (context->state)
+      if (reader->state)
         {
-          rv = exit_state (context, token);
+          rv = exit_state (reader, flags, token);
           if (rv != PDF_OK)
             return rv;
           return PDF_EAGAIN;
@@ -273,24 +275,24 @@ handle_char (pdf_tokeniser_t context, pdf_char_t ch, pdf_obj_t *token)
       switch (ch)
         {
         case 37:  /* '%' */
-          context->state = PDF_TOKENISER_STATE_COMMENT;
-          context->intparam = 0;
-          return store_char (context, ch);
+          reader->state = PDF_TOKR_STATE_COMMENT;
+          reader->intparam = 0;
+          return store_char (reader, ch);
         case 40:  /* '(' */
-          context->state = PDF_TOKENISER_STATE_STRING;
-          context->intparam = 0;
+          reader->state = PDF_TOKR_STATE_STRING;
+          reader->intparam = 0;
           return PDF_OK;
         case 41:  /* ')' */
           /* this shouldn't occur outside the STRING and COMMENT states */
           return PDF_EBADFILE;
         case 47:  /* '/' */
-          context->state = PDF_TOKENISER_STATE_NAME;
+          reader->state = PDF_TOKR_STATE_NAME;
           return PDF_OK;
         case 60:  /* '<' */
-          context->state = PDF_TOKENISER_STATE_HEXSTRING;
+          reader->state = PDF_TOKR_STATE_HEXSTRING;
           return PDF_OK;
         case 62:  /* '>' */
-          context->state = PDF_TOKENISER_STATE_DICTEND;
+          reader->state = PDF_TOKR_STATE_DICTEND;
           return PDF_OK;
         case 91:  /* '[' */
           /* fall through */
@@ -301,8 +303,8 @@ handle_char (pdf_tokeniser_t context, pdf_char_t ch, pdf_obj_t *token)
         case 125: /* '}' */
           /* exit_state may have emitted a token, so we can't emit another
            * one now; we'll do it when exiting the PENDING state */
-          context->state = PDF_TOKENISER_STATE_PENDING;
-          context->charparam = ch;
+          reader->state = PDF_TOKR_STATE_PENDING;
+          reader->charparam = ch;
           return PDF_OK;
         }
 
@@ -312,109 +314,109 @@ handle_char (pdf_tokeniser_t context, pdf_char_t ch, pdf_obj_t *token)
 
   /* ch is a regular character */
 
-  switch (context->state)
+  switch (reader->state)
     {
-    case PDF_TOKENISER_STATE_PENDING:
-      rv = exit_state (context, token);
+    case PDF_TOKR_STATE_PENDING:
+      rv = exit_state (reader, flags, token);
       if (rv != PDF_OK)
         return rv;
       return PDF_EAGAIN;
 
-    case PDF_TOKENISER_STATE_NONE:
-      context->state = PDF_TOKENISER_STATE_KEYWORD;
+    case PDF_TOKR_STATE_NONE:
+      reader->state = PDF_TOKR_STATE_KEYWORD;
       /* fall through */
 
-    case PDF_TOKENISER_STATE_KEYWORD:
-      return store_char (context, ch);
+    case PDF_TOKR_STATE_KEYWORD:
+      return store_char (reader, ch);
 
-    case PDF_TOKENISER_STATE_NAME:
-      if (context->substate == 0)
+    case PDF_TOKR_STATE_NAME:
+      if (reader->substate == 0)
         {
           if (ch != 35  /* '#' */
-              || (context->flags & PDF_TOKENISER_FLAG_PDF11) )
-            return store_char (context, ch);
+              || (flags & PDF_TOKEN_NO_NAME_ESCAPES) )
+            return store_char (reader, ch);
 
-          context->substate = 1;
+          reader->substate = 1;
           return PDF_OK;
         }
 
       if ( (ch = hexval (ch)) >= 16 )
         return PDF_EBADFILE;
 
-      if (context->substate == 1)  /* the first hex digit of an escape */
+      if (reader->substate == 1)  /* the first hex digit of an escape */
         {
-          context->substate = 2;
-          context->charparam = ch;
+          reader->substate = 2;
+          reader->charparam = ch;
           return PDF_OK;
         }
 
-      ch = (context->charparam << 4) | ch;
+      ch = (reader->charparam << 4) | ch;
       if (ch == 0)  /* the PDF spec forbids "#00" */
         return PDF_EBADFILE;
 
-      rv = store_char (context, ch);
-      if (rv == PDF_OK) context->substate = 0;
+      rv = store_char (reader, ch);
+      if (rv == PDF_OK) reader->substate = 0;
       return rv;
 
     default:
       assert (0);
   }
 
-  return store_char (context, ch);
+  return store_char (reader, ch);
 }
 
 
 static INLINE int
-can_store_char (const pdf_tokeniser_t context)
+can_store_char (const pdf_token_reader_t reader)
 {
-  return context->buffer->wp < (context->buffer->size - 1);
+  return reader->buffer->wp < (reader->buffer->size - 1);
 }
 
 static INLINE pdf_status_t
-store_char (pdf_tokeniser_t context, pdf_char_t ch)
+store_char (pdf_token_reader_t reader, pdf_char_t ch)
 {
-  if (!can_store_char (context))
+  if (!can_store_char (reader))
     return PDF_EIMPLLIMIT;
-  context->buffer->data[context->buffer->wp++] = ch;
+  reader->buffer->data[reader->buffer->wp++] = ch;
   return PDF_OK;
 }
 
 
 static pdf_status_t
-flush_token (pdf_tokeniser_t context, pdf_obj_t *token)
+flush_token (pdf_token_reader_t reader, pdf_u32_t flags, pdf_obj_t *token)
 {
   pdf_status_t rv;
   pdf_obj_t obj;
-  pdf_char_t *data = context->buffer->data;
-  int datasize = context->buffer->wp;
+  pdf_char_t *data = reader->buffer->data;
+  int datasize = reader->buffer->wp;
 
-  switch (context->state)
+  switch (reader->state)
     {
-    case PDF_TOKENISER_STATE_NONE:
+    case PDF_TOKR_STATE_NONE:
       return PDF_OK;  /* no state to exit */
 
-    case PDF_TOKENISER_STATE_EOF:
+    case PDF_TOKR_STATE_EOF:
       return PDF_EEOF;  /* can't continue parsing after EOF */
 
-    case PDF_TOKENISER_STATE_COMMENT:
-      if (!(context->flags & PDF_TOKENISER_FLAG_RET_COMMENTS))
+    case PDF_TOKR_STATE_COMMENT:
+      if (!(reader->flags & PDF_TOKEN_RET_COMMENTS))
         goto finish;
 
       rv = pdf_tok_comment_new (data, datasize,
-          context->intparam /*continuation*/, &obj);
+          reader->intparam /*continued*/, &obj);
       break;
 
-    case PDF_TOKENISER_STATE_KEYWORD:
+    case PDF_TOKR_STATE_KEYWORD:
       {
         int value;
-        int ntyp = recognize_number (context->buffer, &value);
+        int ntyp = recognise_number (reader->buffer, &value);
         if (ntyp == 1)
           rv = pdf_obj_integer_new (value, &obj);
         else if (ntyp == 2)
           {
             double realvalue;
-            rv = parse_real (context->buffer,
-                             context->decimal_point,
+            rv = parse_real (reader->buffer,
+                             reader->decimal_point,
                              &realvalue);
             if (rv != PDF_OK)
               return rv;
@@ -425,36 +427,36 @@ flush_token (pdf_tokeniser_t context, pdf_obj_t *token)
       }
       break;
 
-    case PDF_TOKENISER_STATE_NAME:
-      if (context->substate != 0)  /* reading an escape sequence */
+    case PDF_TOKR_STATE_NAME:
+      if (reader->substate != 0)  /* reading an escape sequence */
         return PDF_EBADFILE;
 
       rv = pdf_obj_name_new (data, datasize, &obj);
       break;
 
-    case PDF_TOKENISER_STATE_STRING:
-      if (context->intparam >= 0)  /* didn't see the closing ')' */
+    case PDF_TOKR_STATE_STRING:
+      if (reader->intparam >= 0)  /* didn't see the closing ')' */
         return PDF_EBADFILE;
 
       rv = pdf_obj_string_new (data, datasize, &obj);
       break;
 
-    case PDF_TOKENISER_STATE_HEXSTRING:
-      if (context->substate != 3)  /* didn't see the closing '>' */
+    case PDF_TOKR_STATE_HEXSTRING:
+      if (reader->substate != 3)  /* didn't see the closing '>' */
         return PDF_EBADFILE;
 
       rv = pdf_obj_string_new (data, datasize, &obj);
       break;
 
-    case PDF_TOKENISER_STATE_DICTEND:
-      if (context->substate != 1)  /* didn't see a second '>' */
+    case PDF_TOKR_STATE_DICTEND:
+      if (reader->substate != 1)  /* didn't see a second '>' */
         return PDF_EBADFILE;
 
       rv = pdf_tok_valueless_new (PDF_DICT_END_TOK, &obj);
       break;
 
-    case PDF_TOKENISER_STATE_PENDING:
-      switch (context->charparam)
+    case PDF_TOKR_STATE_PENDING:
+      switch (reader->charparam)
         {
         case 60:  /* '<' */
           rv = pdf_tok_valueless_new (PDF_DICT_START_TOK, &obj);
@@ -487,35 +489,36 @@ flush_token (pdf_tokeniser_t context, pdf_obj_t *token)
 
   *token = obj;
 finish:
-  context->buffer->wp = 0;
+  reader->buffer->wp = 0;
   return PDF_OK;
 }
 
 
 static pdf_status_t
-exit_state (pdf_tokeniser_t context, pdf_obj_t *token)
+exit_state (pdf_token_reader_t reader, pdf_u32_t flags, pdf_obj_t *token)
 {
-  pdf_status_t rv = flush_token (context, token);
+  pdf_status_t rv = flush_token (reader, flags, token);
   if (rv == PDF_OK)
     {
-      context->state = PDF_TOKENISER_STATE_NONE;
-      context->substate = 0;
+      reader->state = PDF_TOKR_STATE_NONE;
+      reader->substate = 0;
     }
   return rv;
 }
 
 
 static INLINE pdf_status_t
-handle_string_char (pdf_tokeniser_t context,
+handle_string_char (pdf_token_reader_t reader,
+                    pdf_u32_t flags,
                     pdf_char_t ch,
                     pdf_obj_t *token)
 {
   pdf_status_t rv;
 start:
-  switch (context->substate)
+  switch (reader->substate)
     {
       case 1:  /* ignore LF */
-        context->substate = 0;
+        reader->substate = 0;
         if (ch == 10)
           return PDF_OK;
         /* fall through */
@@ -523,31 +526,31 @@ start:
       case 0:  /* no special state */
         if (ch == 92)  /* '\\' */
           {
-            context->substate = 2;  /* start an escape sequence */
+            reader->substate = 2;  /* start an escape sequence */
             return PDF_OK;
           }
-        else if (ch == 41 && context->intparam <= 0)  /* ')'; end of string */
+        else if (ch == 41 && reader->intparam <= 0)  /* ')'; end of string */
           {
-            context->intparam = -1;
-            return exit_state (context, token);
+            reader->intparam = -1;
+            return exit_state (reader, flags, token);
           }
 
-        if (!can_store_char (context))
+        if (!can_store_char (reader))
           return PDF_EIMPLLIMIT;
         else if (ch == 40)  /* '(' */
-          ++context->intparam;
+          ++reader->intparam;
         else if (ch == 41)  /* ')' */
-          --context->intparam;
+          --reader->intparam;
         else if (ch == 13)  /* '\r' */
           {
             ch = 10;  /* treat as LF */
-            context->substate = 1;  /* ignore the next char if it's LF */
+            reader->substate = 1;  /* ignore the next char if it's LF */
           }
 
-        return store_char (context, ch);
+        return store_char (reader, ch);
 
       case 2:  /* just saw a '\\' (starting an escape sequence) */
-        context->substate = 0;
+        reader->substate = 0;
         if (ch == 98)  /* 'b' */
           ch = 8;  /* BS: backspace */
         else if (ch == 102)  /* 'f' */
@@ -563,7 +566,7 @@ start:
         else if (ch == 13)  /* CR */
         {
           /* ignore the line break; also ignore the next byte if it's LF */
-          context->substate = 1;
+          reader->substate = 1;
           return PDF_OK;
         }
         else if (ch >= 48 && ch <= 48+7)  /* digits '0'--'7' */
@@ -571,40 +574,40 @@ start:
             /* starting an octal escape; we'll read three digits even if the
              * first is '4'--'7' (and calculate the final char modulo 256),
              * since the PDF/PS specs say to ignore high-order overflow */
-            context->substate = 3;
-            context->charparam = (ch-48);
+            reader->substate = 3;
+            reader->charparam = (ch-48);
             return PDF_OK;
           }
 
         /* for any other character, including '(', ')', and '\\',
          * store the same character (dropping the leading backslash) */
-        return store_char (context, ch);
+        return store_char (reader, ch);
 
       case 3:  /* saw 1 digit of an octal escape */
         /* fall through */
       case 4:  /* saw 2 digits of an octal escape */
         if (ch < 48 || ch > 48+7)  /* not digits '0'--'7' */
           {
-            rv = store_char (context, context->charparam);
+            rv = store_char (reader, reader->charparam);
             if (rv != PDF_OK) return rv;
 
             /* ch isn't part of the escape sequence, so retry */
-            context->substate = 0;
+            reader->substate = 0;
             goto start;
           }
 
         /* ch is a digit from '0'--'7' */
-        context->charparam = ((context->charparam & 0x1f) << 3) | (ch - 48);
-        if (context->substate == 4)  /* this was the final digit */
+        reader->charparam = ((reader->charparam & 0x1f) << 3) | (ch - 48);
+        if (reader->substate == 4)  /* this was the final digit */
           {
-            rv = store_char (context, context->charparam);
+            rv = store_char (reader, reader->charparam);
             if (rv != PDF_OK) return rv;
 
-            context->substate = 0;
+            reader->substate = 0;
             return PDF_OK;
           }
 
-        context->substate = 4;
+        reader->substate = 4;
         return PDF_OK;
 
       default:
@@ -614,24 +617,25 @@ start:
 
 
 static INLINE pdf_status_t
-handle_hexstring_char (pdf_tokeniser_t context,
+handle_hexstring_char (pdf_token_reader_t reader,
+                       pdf_u32_t flags,
                        pdf_char_t ch,
                        pdf_obj_t *token)
 {
   pdf_status_t rv;
 
-  if (context->substate == 0)
+  if (reader->substate == 0)
     {
       /* this is the first character after the initial '<' */
       if (ch == 60)  /* '<' */
         {
           /* this was actually the start of a dictionary */
-          context->state = PDF_TOKENISER_STATE_PENDING;
-          context->charparam = ch;
-          return exit_state (context, token);
+          reader->state = PDF_TOKR_STATE_PENDING;
+          reader->charparam = ch;
+          return exit_state (reader, flags, token);
         }
 
-      context->substate = 1;
+      reader->substate = 1;
     }
 
   if (pdf_is_wspace_char (ch))
@@ -639,50 +643,50 @@ handle_hexstring_char (pdf_tokeniser_t context,
 
   if (ch == 62)  /* '>': end of hex string */
     {
-      if (context->substate == 2)
+      if (reader->substate == 2)
         {
           /* the last digit is missing; assume it's '0' */
-          rv = store_char (context, context->charparam << 4);
+          rv = store_char (reader, reader->charparam << 4);
           if (rv != PDF_OK) return rv;
         }
 
-      context->substate = 3;  /* saw end of string */
-      return exit_state (context, token);
+      reader->substate = 3;  /* saw end of string */
+      return exit_state (reader, flags, token);
     }
 
   if ( (ch = hexval (ch)) == 255 )
     return PDF_EBADFILE;
 
-  if (context->substate == 1)  /* first character in a pair */
+  if (reader->substate == 1)  /* first character in a pair */
     {
-      context->substate = 2;
-      context->charparam = ch;
+      reader->substate = 2;
+      reader->charparam = ch;
       return PDF_OK;
     }
 
-  rv = store_char (context, (context->charparam << 4) | ch);
+  rv = store_char (reader, (reader->charparam << 4) | ch);
   if (rv == PDF_OK)
-    context->substate = 1;
+    reader->substate = 1;
   return rv;
 }
 
 pdf_status_t
-pdf_tokeniser_read (pdf_tokeniser_t context, pdf_obj_t *token)
+pdf_token_read (pdf_token_reader_t reader, pdf_u32_t flags, pdf_obj_t *token)
 {
   pdf_status_t rv;
   pdf_char_t ch;
   pdf_obj_t new_token = NULL;
 
-  if (!context || !context->stream || !token)
+  if (!reader || !reader->stream || !token)
     return PDF_EBADDATA;
 
-  while ( (rv = pdf_stm_peek_char (context->stream, &ch)) == PDF_OK )
+  while ( (rv = pdf_stm_peek_char (reader->stream, &ch)) == PDF_OK )
     {
-      rv = handle_char (context, ch, &new_token);
+      rv = handle_char (reader, ch, &new_token);
       if (rv == PDF_OK)
         {
           /* The character we peeked at was accepted, so get rid of it. */
-          pdf_stm_read_char (context->stream, &ch);
+          pdf_stm_read_char (reader->stream, &ch);
         }
 
       if (new_token)
@@ -701,11 +705,11 @@ pdf_tokeniser_read (pdf_tokeniser_t context, pdf_obj_t *token)
   if (rv != PDF_EEOF)
     return rv;
 
-  rv = exit_state (context, &new_token);
+  rv = exit_state (reader, flags, &new_token);
   if (rv != PDF_OK)
     return rv;
 
-  context->state = PDF_TOKENISER_STATE_EOF;
+  reader->state = PDF_TOKR_STATE_EOF;
   if (new_token)
     goto ret_token;
   else
@@ -714,17 +718,6 @@ pdf_tokeniser_read (pdf_tokeniser_t context, pdf_obj_t *token)
 ret_token:
   assert (new_token);
   *token = new_token;
-  return PDF_OK;
-}
-
-
-pdf_status_t
-pdf_tokeniser_end_at_stream (pdf_tokeniser_t context)
-{
-  if (context->state && (context->state != PDF_TOKENISER_STATE_COMMENT))
-    return PDF_EBADFILE;
-
-  context->findstream = 1;
   return PDF_OK;
 }
 
@@ -920,7 +913,7 @@ out:
  *   2 = real
  */
 static int
-recognize_number (pdf_buffer_t buffer, int *int_value)
+recognise_number (pdf_buffer_t buffer, int *int_value)
 {
   int rv, tmpint = 0, int_state = 0;
 
@@ -947,4 +940,4 @@ recognize_number (pdf_buffer_t buffer, int *int_value)
 }
 
 
-/* End of pdf-rd-tokeniser.c */
+/* End of pdf-token-reader.c */
