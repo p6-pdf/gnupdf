@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/05/07 11:16:19 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-05-19 20:32:37 davazp"
  *
  *       File:         pdf-list.h
  *       Date:         Sat Mar 1 02:14:35 2008
@@ -172,18 +172,20 @@ pdf_status_t pdf_list_iterator_free (pdf_list_iterator_t *iterator);
 /* END PUBLIC */
 
 #else
+
 /* Inlined versions of the functions */
 
 #if defined(COMPILING_PDF_LIST)
-# undef EXTERN_INLINE
-# define EXTERN_INLINE
+# define STATIC_INLINE
+#else
+# define STATIC_INLINE static inline
 #endif /* COMPILING_PDF_LIST */
 
 #include <gl_array_list.h>
 
 /* Creation and destruction functions */
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_list_new (pdf_list_element_equals_fn_t equals_fn,
               pdf_list_element_dispose_fn_t dispose_fn,
               const pdf_bool_t allow_duplicates,
@@ -212,7 +214,7 @@ pdf_list_new (pdf_list_element_equals_fn_t equals_fn,
   return (st);
 }
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_list_destroy (pdf_list_t list)
 {
   gl_list_free ((gl_list_t) list.gl_list);
@@ -221,7 +223,7 @@ pdf_list_destroy (pdf_list_t list)
 
 /* Property management functions */
 
-EXTERN_INLINE pdf_size_t
+STATIC_INLINE pdf_size_t
 pdf_list_size (const pdf_list_t list)
 {
   return ((pdf_size_t) gl_list_size((gl_list_t) list.gl_list));
@@ -229,7 +231,7 @@ pdf_list_size (const pdf_list_t list)
 
 /* Element searching functions */
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_list_search (const pdf_list_t list, 
                  const void* element,
                  pdf_list_node_t *node)
@@ -253,7 +255,7 @@ pdf_list_search (const pdf_list_t list,
   return (st);
 }
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_list_search_from (const pdf_list_t list, 
                       const pdf_size_t start_index,
                       const void* element,
@@ -288,7 +290,7 @@ pdf_list_search_from (const pdf_list_t list,
   return (st);
 }
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_list_search_from_to (const pdf_list_t list, 
                          const pdf_size_t start_index,
                          const pdf_size_t end_index,
@@ -328,7 +330,7 @@ pdf_list_search_from_to (const pdf_list_t list,
   return (st);
 }
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_list_next_node (const pdf_list_t list,
                     const pdf_list_node_t node,
                     pdf_list_node_t *next)
@@ -355,7 +357,7 @@ pdf_list_next_node (const pdf_list_t list,
 }
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_list_previous_node (const pdf_list_t list, const pdf_list_node_t node, pdf_list_node_t *prev)
 {
   pdf_status_t st;
@@ -379,7 +381,7 @@ pdf_list_previous_node (const pdf_list_t list, const pdf_list_node_t node, pdf_l
   return (st);
 }
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_list_indexof (const pdf_list_t list,
                   const void *element,
                   pdf_size_t *position)
@@ -406,7 +408,7 @@ pdf_list_indexof (const pdf_list_t list,
 }
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_list_indexof_from (const pdf_list_t list,
                        const pdf_size_t start_index,
                        const void *element,
@@ -442,7 +444,7 @@ pdf_list_indexof_from (const pdf_list_t list,
 }
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_list_indexof_from_to (const pdf_list_t list,
                           const pdf_size_t start_index,
                           const pdf_size_t end_index,
@@ -485,7 +487,7 @@ pdf_list_indexof_from_to (const pdf_list_t list,
 
 /* Element setting and getting functions */
 
-EXTERN_INLINE const void *
+STATIC_INLINE const void *
 pdf_list_node_value (const pdf_list_t list, const pdf_list_node_t node)
 {
   return (gl_list_node_value ((gl_list_t)list.gl_list,
@@ -493,7 +495,7 @@ pdf_list_node_value (const pdf_list_t list, const pdf_list_node_t node)
 }
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_list_get_at (const pdf_list_t list,
                  const pdf_size_t position,
                  const void **value)
@@ -523,7 +525,7 @@ pdf_list_get_at (const pdf_list_t list,
 }
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_list_set_at (pdf_list_t list,
                  const pdf_size_t position,
                  const void *element,
@@ -567,7 +569,7 @@ pdf_list_set_at (pdf_list_t list,
 /* Element addition and removal functions */
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_list_add_first (pdf_list_t list,
                     const void* element,
                     pdf_list_node_t *node)
@@ -595,7 +597,7 @@ pdf_list_add_first (pdf_list_t list,
 }
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_list_add_last (pdf_list_t list,
                    const void* element,
                    pdf_list_node_t *node)
@@ -623,7 +625,7 @@ pdf_list_add_last (pdf_list_t list,
 }
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_list_add_at (pdf_list_t list,
                  const pdf_size_t position,
                  const void *element,
@@ -664,7 +666,7 @@ pdf_list_add_at (pdf_list_t list,
 }
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_list_remove_node (pdf_list_t list, const pdf_list_node_t node)
 {
   gl_list_remove_node ((gl_list_t)list.gl_list, (gl_list_node_t)node.gl_node);
@@ -672,7 +674,7 @@ pdf_list_remove_node (pdf_list_t list, const pdf_list_node_t node)
 }
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_list_remove_at (pdf_list_t list, const pdf_size_t position)
 {
   pdf_status_t st;
@@ -693,7 +695,7 @@ pdf_list_remove_at (pdf_list_t list, const pdf_size_t position)
 }
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_list_remove (pdf_list_t list, const void * element)
 {
   pdf_status_t st;
@@ -710,7 +712,7 @@ pdf_list_remove (pdf_list_t list, const void * element)
 
 /* Element iterator functions */
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_list_iterator (const pdf_list_t list,
                    pdf_list_iterator_t *itr)
 {
@@ -732,7 +734,7 @@ pdf_list_iterator (const pdf_list_t list,
 }
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_list_iterator_from_to (const pdf_list_t list, const pdf_size_t start_index,
                            const pdf_size_t end_index,
                            pdf_list_iterator_t *itr)
@@ -765,7 +767,7 @@ pdf_list_iterator_from_to (const pdf_list_t list, const pdf_size_t start_index,
   return st;
 }
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_list_iterator_next (pdf_list_iterator_t *iterator,
                         const void **element_pointer,
                         pdf_list_node_t *node_pointer)
@@ -782,7 +784,7 @@ pdf_list_iterator_next (pdf_list_iterator_t *iterator,
   return st;
 }
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_list_iterator_free (pdf_list_iterator_t *iterator)
 {
   gl_list_iterator_free ((gl_list_iterator_t*)(iterator->gl_iterator));
@@ -791,7 +793,7 @@ pdf_list_iterator_free (pdf_list_iterator_t *iterator)
 }
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_list_sorted_add (pdf_list_t list, pdf_list_element_compar_fn_t compar_fn,
                      const void* element, pdf_list_node_t * element_node)
 {
@@ -818,7 +820,7 @@ pdf_list_sorted_add (pdf_list_t list, pdf_list_element_compar_fn_t compar_fn,
 
 }
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_list_sorted_remove (pdf_list_t list, pdf_list_element_compar_fn_t compar_fn,
                         const void * element)
 {
@@ -840,7 +842,7 @@ pdf_list_sorted_remove (pdf_list_t list, pdf_list_element_compar_fn_t compar_fn,
 
 }
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_list_sorted_search (const pdf_list_t list, pdf_list_element_compar_fn_t compar_fn,
                         const void* element, pdf_list_node_t *node)
 {
@@ -866,7 +868,7 @@ pdf_list_sorted_search (const pdf_list_t list, pdf_list_element_compar_fn_t comp
   return (st);
 }
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_list_sorted_search_from_to (const pdf_list_t list,
                                 pdf_list_element_compar_fn_t compar_fn,
                                 const pdf_size_t start_index, const pdf_size_t end_index,
@@ -905,7 +907,7 @@ pdf_list_sorted_search_from_to (const pdf_list_t list,
   return (st);
 }
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_list_sorted_indexof (const pdf_list_t list,
                          pdf_list_element_compar_fn_t compar_fn,
                          const void* element, pdf_size_t *position)
@@ -932,7 +934,7 @@ pdf_list_sorted_indexof (const pdf_list_t list,
   return (st);
 }
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_list_sorted_indexof_from_to (const pdf_list_t list,
                                  pdf_list_element_compar_fn_t compar_fn,
                                  const pdf_size_t start_index, const pdf_size_t end_index,

@@ -1,3 +1,11 @@
+2009-05-19  David Vazquez  <davazp@es.gnu.org>
+
+	* src/base/pdf-crypt.h: Use STATIC_INLINE indeed of EXTERN_INLINE.
+
+	* src/base/pdf-list.h: Use STATIC_INLINE indeed of EXTERN_INLINE.
+
+	* src/base/pdf-types.h: Remove EXTERN_INLINE macro.
+
 2009-05-19  Michael Gold  <mgold@ncf.ca>
 
 	* doc/gnupdf.texi: Expanded the tokeniser API documentation.
