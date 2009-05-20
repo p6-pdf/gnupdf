@@ -1,6 +1,6 @@
-/* -*- mode: C -*- Time-stamp: "2009-01-05 08:53:02 mgold"
+/* -*- mode: C -*- Time-stamp: "2009-05-20 04:01:14 mgold"
  *
- *       File:         pdf-token.h
+ *       File:         pdf-token-reader.h
  *       Date:         Mon Dec 29 00:45:09 2008
  *
  *       GNU PDF Library - Stream tokeniser

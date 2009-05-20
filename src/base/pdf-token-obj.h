@@ -207,4 +207,4 @@ struct pdf_token_s
 
 #endif /* PDF_TOKEN_OBJ_H */
 
-/* End of pdf-token-token.h */
+/* End of pdf-token-obj.h */

@@ -1,6 +1,6 @@
 /* -*- mode: C -*- Time-stamp: "2009-05-20 04:35:27 mgold"
  *
- *       File:         tsuite-rd.c
+ *       File:         tsuite-token.c
  *       Date:         Wed Jan 14 05:43:09 2009
  *
  *       GNU PDF Library - Testcase definition for the reader module
@@ -40,4 +40,4 @@ tsuite_token ()
 }
 
 
-/* End of tsuite-rd.c */
+/* End of tsuite-token.c */
