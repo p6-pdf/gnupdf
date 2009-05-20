@@ -100,19 +100,12 @@ BASE_LAYER_SOURCES = base/pdf-base.c base/pdf-base.h \
                      $(TOKEN_MODULE_SOURCES)
 
 
-# Object layer sources
-
-OBJECT_LAYER_SOURCES = object/pdf-obj.c object/pdf-obj.h
-
 # Library sources
 
 libgnupdf_la_SOURCES = pdf-global.c pdf-global.h
 
 if COMPILE_BASE_LAYER
   libgnupdf_la_SOURCES += $(BASE_LAYER_SOURCES)
-endif
-if COMPILE_OBJECT_LAYER
-  libgnupdf_la_SOURCES += $(OBJECT_LAYER_SOURCES)
 endif
 
 include_HEADERS = pdf.h
@@ -149,8 +142,7 @@ PUBLIC_HDRS = pdf-global.h \
               base/pdf-crypt.h \
               base/pdf-fp-func.h \
               base/pdf-token-obj.h \
-              base/pdf-token-reader.h \
-              object/pdf-obj.h
+              base/pdf-token-reader.h
 
 pdf.h : $(PUBLIC_HDRS)
 	chmod +x $(top_builddir)/src/extract-public-hdr

@@ -25,6 +25,7 @@
 
 #include <string.h>
 #include <assert.h>
+#include <math.h>
 
 #include "config.h"
 #include "pdf-token-obj.h"
@@ -247,10 +248,8 @@ pdf_token_real_new (pdf_real_t value, pdf_token_t *token)
 {
   pdf_status_t rv;
 
-  /*TODO: ensure isfinite is defined (possibly via gnulib)
-  if (!isfinite(value))
+  if (isnan(value) || isinf(value))
     return PDF_EBADDATA;
-  */
 
   rv = pdf_token_new (PDF_TOKEN_REAL, token);
   if (rv == PDF_OK)
