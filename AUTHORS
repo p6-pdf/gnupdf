@@ -261,8 +261,12 @@ and changed configure.ac torture/Makefile.am torture/test-date.c
   torture/test-obj_dupequality.c torture/test-rectangle.c
   torture/test-stm_openclose.c
 
-Michael Gold: changed src/Makefile.am utils/Makefile.am
-  torture/unit/Makefile.am src/gnupdf.texi
+Michael Gold: wrote src/base/pdf-token.c src/base/pdf-token.h
+  src/base/pdf-token-reader.c src/base/pdf-token-reader.h
+  torture/unit/base/token/pdf-token-read.c
+  torture/unit/base/token/tsuite-token.c utils/toktest.c
+and changed src/Makefile.am utils/Makefile.am torture/unit/Makefile.am
+  doc/gnupdf.texi src/base/pdf-error.h torture/unit/runtests.c
 
 Yang Chang Hua: wrote src/base/pdf-stm-f-dct.h
   src/base/pdf-stm-f-dct.c

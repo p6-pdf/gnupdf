@@ -1,3 +1,33 @@
+2009-05-20  Michael Gold  <mgold@ncf.ca>
+
+	Implement the token reader API.
+
+	* src/base/pdf-token.c: New file, based on src/object/pdf-obj.c
+
+	* src/base/pdf-token.h: Likewise
+
+	* src/base/pdf-token-reader.c: New file
+
+	* src/base/pdf-token-reader.h: New file
+
+	* src/base/pdf-error.h: Add PDF_EBADFILE, PDF_EIMPLLIMIT error codes
+
+	* src/Makefile.am: Add token reader support
+
+	* doc/gnupdf.text: Document pdf_token_equal_p
+
+	* torture/unit/base/token/pdf-token-read.c: New file
+
+	* torture/unit/base/token/tsuite-token.c: New file
+
+	* torture/unit/Makefile.am: Add token reader testcases
+
+	* torture/unit/runtests.c: Likewise
+
+	* utils/toktest.c: New file
+
+	* utils/Makefile.am: Build toktest
+
 2009-05-19  David Vazquez  <davazp@es.gnu.org>
 
 	* src/base/pdf-crypt.h: Use STATIC_INLINE indeed of EXTERN_INLINE.

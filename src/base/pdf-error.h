@@ -144,7 +144,9 @@
   ERROR_ENTRY (PDF_ETYPE0,      "/FunctionType 0: Error"),            \
   ERROR_ENTRY (PDF_ETYPE2,      "/FunctionType 2: Error"),            \
   ERROR_ENTRY (PDF_ETYPE3,      "/FunctionType 3: Error"),            \
-  ERROR_ENTRY (PDF_ETYPE4,      "/FunctionType 4: Error")
+  ERROR_ENTRY (PDF_ETYPE4,      "/FunctionType 4: Error"),            \
+  ERROR_ENTRY (PDF_EBADFILE,    "file violates PDF specifications"),  \
+  ERROR_ENTRY (PDF_EIMPLLIMIT,  "implementation limit exceeded")
 
 #define ERROR_ENTRY(id,string) id
 enum pdf_status_e
