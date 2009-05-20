@@ -23,156 +23,461 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <string.h>
-#include <assert.h>
+#include <config.h>
 
-#include "config.h"
-#include "pdf-obj.h"
-#include "pdf-alloc.h"
+#include <string.h>
+
+#ifdef HAVE_MALLOC_H
+ #include <malloc.h>
+#else
+ #include <stdlib.h>
+#endif /* HAVE_MALLOC_H */
+
+#include <xalloc.h>
+#include <pdf_obj.h>
 
 /* Private functions prototypes */
 
-static INLINE pdf_status_t pdf_obj_new (pdf_obj_type_t type, pdf_obj_t *obj);
-static void pdf_obj_child_destroy_cb (const void *obj);
-static void pdf_obj_dict_dealloc_key_cb (const void *obj);
+static pdf_obj_t pdf_alloc_obj (void);
+static void pdf_dealloc_obj (pdf_obj_t obj);
+static void pdf_dealloc_obj_list_elt (const void *elt);
+static bool pdf_compare_obj_list_elt (const void *elt1, const void *elt2);
 
-static bool pdf_obj_child_equal_p_cb (const void *elt1, const void *elt2);
-static int pdf_obj_buffer_equal_p (pdf_obj_t obj1, pdf_obj_t obj2);
-static pdf_bool_t pdf_obj_array_equal_p (pdf_obj_t obj1, pdf_obj_t obj2);
-static int pdf_obj_dict_equal_p (pdf_obj_t obj1, pdf_obj_t obj2);
+
+static pdf_dict_entry_t pdf_alloc_dict_entry (void);
+static void pdf_dealloc_dict_entry (pdf_dict_entry_t entry);
+static void pdf_dealloc_dict_entry_list_elt (const void *elt);
+static bool pdf_compare_dict_entry_list_elt (const void *elt1, const void *elt2);
+
+static int pdf_string_equal_p (pdf_obj_t obj1, pdf_obj_t obj2);
+static int pdf_name_equal_p (pdf_obj_t obj1, pdf_obj_t obj2);
+static int pdf_array_equal_p (pdf_obj_t obj1, pdf_obj_t obj2);
+static int pdf_dict_equal_p (pdf_obj_t obj1, pdf_obj_t obj2);
 static int pdf_stream_equal_p (pdf_obj_t obj1, pdf_obj_t obj2);
 
-static INLINE pdf_status_t pdf_obj_array_dup (pdf_obj_t obj, pdf_obj_t *new);
-static INLINE pdf_status_t pdf_obj_dict_dup (pdf_obj_t obj, pdf_obj_t *new);
-static INLINE pdf_status_t pdf_obj_stream_dup (pdf_obj_t obj, pdf_obj_t *new);
+static pdf_obj_t pdf_array_dup (pdf_obj_t obj);
+static pdf_obj_t pdf_dict_dup (pdf_obj_t obj);
+static pdf_obj_t pdf_stream_dup (pdf_obj_t obj);
 
-static pdf_status_t pdf_obj_array_ins_priv (pdf_obj_t array, pdf_size_t index,
-                                            pdf_obj_t obj, int atend);
+/* Public functions */
 
-
-/* General functions */
-
-pdf_status_t
-pdf_obj_null_new (pdf_obj_t *obj)
+pdf_obj_t
+pdf_create_null (void)
 {
-  return pdf_obj_new (PDF_NULL_OBJ, obj);
+  pdf_obj_t null_obj;
+
+  null_obj = pdf_alloc_obj ();
+  null_obj->type = PDF_NULL_OBJ;
+
+  return null_obj;
 }
 
-pdf_status_t
-pdf_obj_boolean_new (pdf_bool_t value, pdf_obj_t *obj)
+pdf_obj_t
+pdf_create_boolean (int value)
 {
-  pdf_status_t rv = pdf_obj_new (PDF_BOOLEAN_OBJ, obj);
-  if (rv == PDF_OK)
-    (*obj)->value.boolean = value;
+  pdf_obj_t bool_obj;
 
-  return rv;
+  bool_obj = pdf_alloc_obj ();
+  bool_obj->type = PDF_BOOLEAN_OBJ;
+  bool_obj->value.boolean = value;
+
+  return bool_obj;
 }
 
-pdf_status_t
-pdf_obj_integer_new (int value, pdf_obj_t *obj)
+pdf_obj_t
+pdf_create_integer (int value)
 {
-  pdf_status_t rv = pdf_obj_new (PDF_INT_OBJ, obj);
-  if (rv == PDF_OK)
-    (*obj)->value.integer = value;
+  pdf_obj_t int_obj;
 
-  return rv;
+  int_obj = pdf_alloc_obj ();
+  int_obj->type = PDF_INT_OBJ;
+  int_obj->value.integer = value;
+
+  return int_obj;
 }
 
-pdf_status_t
-pdf_obj_real_new (float value, pdf_obj_t *obj)
+pdf_obj_t
+pdf_create_real (float value)
 {
-  pdf_status_t rv = pdf_obj_new (PDF_REAL_OBJ, obj);
-  if (rv == PDF_OK)
-    (*obj)->value.real = value;
+  pdf_obj_t real_obj;
 
-  return rv;
+  real_obj = pdf_alloc_obj ();
+  real_obj->type = PDF_REAL_OBJ;
+  real_obj->value.real = value;
+
+  return real_obj;
 }
 
-pdf_status_t
-pdf_obj_indirect_new (unsigned int on,
-                      unsigned int gn,
-                      pdf_obj_t *obj)
+pdf_obj_t
+pdf_create_string (unsigned char *value,
+                   int size)
 {
-  pdf_status_t rv = pdf_obj_new (PDF_INDIRECT_OBJ, obj);
-  if (rv == PDF_OK)
-    {
-      (*obj)->value.indirect.on = on;
-      (*obj)->value.indirect.gn = gn;
-    }
-  return rv;
+  pdf_obj_t string_obj;
+
+  string_obj = pdf_alloc_obj ();
+  string_obj->type = PDF_STRING_OBJ;
+  string_obj->value.string.data = 
+    xmalloc (size);
+  memcpy (string_obj->value.string.data,
+          value,
+          size);
+  string_obj->value.string.size = size;
+
+  return string_obj;
 }
 
-pdf_status_t
-pdf_tok_valueless_new (pdf_obj_type_t type,
-                       pdf_obj_t *obj)
+pdf_obj_t
+pdf_create_name (unsigned char *value,
+                 int size)
 {
-  return pdf_obj_new (type, obj);
+  pdf_obj_t name_obj;
+
+  name_obj = pdf_alloc_obj ();
+  name_obj->type = PDF_NAME_OBJ;
+  name_obj->value.name.data =
+    xmalloc (size);
+  memcpy (name_obj->value.name.data,
+          value,
+          size);
+  name_obj->value.name.size = size;
+
+  return name_obj;
 }
 
-pdf_obj_type_t
-pdf_obj_type (const pdf_obj_t obj)
+pdf_obj_t
+pdf_create_array (void)
 {
-  assert (obj);
-  return obj->type;
+  pdf_obj_t new_array;
+
+  new_array = pdf_alloc_obj ();
+  new_array->type = PDF_ARRAY_OBJ;
+  new_array->value.array.objs = 
+    pdf_list_new (pdf_compare_obj_list_elt,
+                  pdf_dealloc_obj_list_elt,
+                  PDF_TRUE); /* allow duplicates */
+
+  return new_array;
 }
 
-pdf_bool_t
-pdf_obj_bool_value (const pdf_obj_t obj)
+pdf_obj_t
+pdf_create_dict (void)
 {
-  assert (obj && obj->type == PDF_BOOLEAN_OBJ);
+  pdf_obj_t new_dict;
+
+  new_dict = pdf_alloc_obj ();
+  new_dict->type = PDF_DICT_OBJ;
+  new_dict->value.dict.entries = 
+    pdf_list_new (pdf_compare_dict_entry_list_elt,
+                  pdf_dealloc_dict_entry_list_elt,
+                  PDF_FALSE); /* disallow duplicates. */
+
+  return new_dict;
+}
+
+pdf_obj_t
+pdf_create_indirect (unsigned int on,
+                     unsigned int gn)
+{
+  pdf_obj_t new_indirect;
+
+  new_indirect = pdf_alloc_obj ();
+  new_indirect->type = PDF_INDIRECT_OBJ;
+  new_indirect->value.indirect.on = on;
+  new_indirect->value.indirect.gn = gn;
+
+  return new_indirect;
+}
+
+pdf_obj_t
+pdf_create_stream (pdf_obj_t dict,
+                   pdf_stm_t stm,
+                   pdf_stm_pos_t data)
+{
+  pdf_obj_t new_stream;
+
+  new_stream = pdf_alloc_obj ();
+  new_stream->type = PDF_STREAM_OBJ;
+  new_stream->value.stream.dict = pdf_obj_dup (dict);
+  new_stream->value.stream.stm = stm;
+  new_stream->value.stream.data = data;
+
+  return new_stream;
+}
+
+inline int
+pdf_destroy_obj (pdf_obj_t obj)
+{
+  pdf_dealloc_obj (obj);
+  return PDF_OK;
+}
+
+inline int
+pdf_get_bool (pdf_obj_t obj)
+{
   return obj->value.boolean;
 }
 
-int
-pdf_obj_int_value (const pdf_obj_t obj)
+inline void
+pdf_set_bool (pdf_obj_t obj,
+              int value)
 {
-  assert (obj && obj->type == PDF_INT_OBJ);
+  obj->value.boolean = value;
+}
+
+inline int
+pdf_get_int (pdf_obj_t obj)
+{
   return obj->value.integer;
 }
 
-pdf_real_t
-pdf_obj_real_value (const pdf_obj_t obj)
+inline void
+pdf_set_int (pdf_obj_t obj, 
+             int value)
 {
-  assert (obj && obj->type == PDF_REAL_OBJ);
+  obj->value.integer = value;
+}
+
+inline pdf_real_t
+pdf_get_real (pdf_obj_t obj)
+{
   return obj->value.real;
 }
 
-unsigned int
-pdf_obj_indirect_on (const pdf_obj_t obj)
+inline void
+pdf_set_real (pdf_obj_t obj,
+              float value)
 {
-  assert (obj && obj->type == PDF_INDIRECT_OBJ);
-  return obj->value.indirect.on;
+  obj->value.real = value;
 }
 
-unsigned int
-pdf_obj_indirect_gn (const pdf_obj_t obj)
+inline int
+pdf_get_string_size (pdf_obj_t obj)
 {
-  assert (obj && obj->type == PDF_INDIRECT_OBJ);
-  return obj->value.indirect.gn;
+  return obj->value.string.size;
 }
 
-pdf_bool_t
+inline char *
+pdf_get_string_data (pdf_obj_t obj)
+{
+  char *data;
+
+  data = xmalloc (obj->value.string.size);
+  memcpy (data,
+          obj->value.string.data,
+          obj->value.string.size);
+
+  return data;
+}
+
+inline int
+pdf_get_name_size (pdf_obj_t obj)
+{
+  return obj->value.name.size;
+}
+
+inline char *
+pdf_get_name_data (pdf_obj_t obj)
+{
+  char *data;
+
+  data = xmalloc (obj->value.name.size);
+  memcpy (data,
+          obj->value.name.data,
+          obj->value.string.size);
+
+  return data;
+}
+
+inline int
+pdf_get_array_size (pdf_obj_t obj)
+{
+  return pdf_list_size (obj->value.array.objs);
+}
+
+inline int
+pdf_get_dict_size (pdf_obj_t obj)
+{
+  return pdf_list_size (obj->value.dict.entries);
+}
+
+int
+pdf_dict_key_p (pdf_obj_t obj,
+                pdf_obj_t key)
+{
+  int entry_p;
+  pdf_dict_entry_t entry;
+
+  if ((obj->type != PDF_DICT_OBJ) ||
+      (key->type != PDF_NAME_OBJ) ||
+      (pdf_list_size (obj->value.dict.entries) == 0))
+    {
+      return PDF_FALSE;
+    }
+  
+  entry = pdf_alloc_dict_entry ();
+  entry->key = pdf_obj_dup (key);
+  entry->value = pdf_create_null ();
+
+  if (pdf_list_search (obj->value.dict.entries,
+                      (const void *) entry) != NULL)
+    {
+      entry_p = PDF_TRUE;
+    }
+  else
+    {
+      entry_p = PDF_FALSE;
+    }
+
+  pdf_dealloc_dict_entry (entry);
+  return entry_p;
+}
+
+pdf_obj_t
+pdf_get_dict_entry (pdf_obj_t obj,
+                    pdf_obj_t key)
+{
+  pdf_dict_entry_t entry;
+  pdf_dict_entry_t result_entry;
+  pdf_list_node_t list_node;
+
+  if ((obj->type != PDF_DICT_OBJ) ||
+      (key->type != PDF_NAME_OBJ) ||
+      (pdf_list_size (obj->value.dict.entries) == 0))
+    {
+      return NULL;
+    }
+
+  entry = pdf_alloc_dict_entry ();
+  entry->key = pdf_obj_dup (key);
+  entry->value = pdf_create_null ();
+  
+  list_node = pdf_list_search (obj->value.dict.entries,
+                              entry);
+  pdf_dealloc_dict_entry (entry);
+
+  if (list_node == NULL)
+    {
+      return NULL;
+    }
+  else
+    {
+      result_entry = (pdf_dict_entry_t) 
+        pdf_list_node_value (obj->value.dict.entries, list_node);
+      
+      return result_entry->value;
+    }
+
+  /* Not reached */
+}
+
+int
+pdf_remove_dict_entry (pdf_obj_t obj,
+                       pdf_obj_t key)
+{
+  int status;
+  pdf_dict_entry_t entry;
+
+  if (!pdf_dict_key_p (obj, key))
+    {
+      return PDF_ERROR;
+    }
+
+  entry = pdf_alloc_dict_entry ();
+  entry->key = pdf_obj_dup (key);
+  entry->value = pdf_create_null ();
+
+  if (pdf_list_remove (obj->value.dict.entries,
+                      entry))
+    {
+      status = PDF_OK;
+    }
+  else 
+    {
+      status = PDF_ERROR;
+    }
+
+  pdf_dealloc_dict_entry (entry);
+
+  return status;
+}
+
+int
+pdf_create_dict_entry (pdf_obj_t obj,
+                       pdf_obj_t key,
+                       pdf_obj_t value)
+{
+  pdf_dict_entry_t entry;
+
+  if ((obj->type != PDF_DICT_OBJ) ||
+      (key->type != PDF_NAME_OBJ) ||
+      (pdf_dict_key_p (obj, key)))
+    {
+      return PDF_ERROR;
+    }
+
+  /* Create a new dictionary entry */
+  entry = pdf_alloc_dict_entry ();
+  entry->key = key;
+  entry->value = value;
+  if (pdf_list_add_last (obj->value.dict.entries,
+                        entry) == NULL)
+    {
+      pdf_dealloc_dict_entry (entry);
+      return PDF_ERROR;
+    }
+  else
+    {
+      return PDF_OK;
+    }
+}
+
+pdf_obj_t 
+pdf_get_stream_dict (pdf_obj_t stream)
+{
+  if (stream->type != PDF_STREAM_OBJ)
+    {
+      return NULL;
+    }
+
+  return pdf_obj_dup(stream->value.stream.dict);
+}
+
+pdf_stm_t
+pdf_get_stream_stm (pdf_obj_t stream)
+{
+  if (stream->type != PDF_STREAM_OBJ)
+    {
+      return NULL;
+    }
+
+  return stream->value.stream.stm;
+}
+
+pdf_stm_pos_t
+pdf_get_stream_data (pdf_obj_t stream)
+{
+  if (stream->type != PDF_STREAM_OBJ)
+    {
+      return NO_POS;
+    }
+
+  return stream->value.stream.data;
+}
+
+int
 pdf_obj_equal_p (pdf_obj_t obj1,
                  pdf_obj_t obj2)
 {
   int equal_p;
-  assert (obj1);
-  assert (obj2);
 
-  if (obj1 == obj2)
-    return PDF_TRUE;
-  else if (obj1->type != obj2->type)
-    return PDF_FALSE;
+  if (obj1->type != obj2->type)
+    {
+      return PDF_FALSE;
+    }
 
   switch (obj1->type)
     {
-    case PDF_NULL_OBJ:         /* fall through */
-    case PDF_DICT_START_TOK:   /* fall through */
-    case PDF_DICT_END_TOK:     /* fall through */
-    case PDF_ARRAY_START_TOK:  /* fall through */
-    case PDF_ARRAY_END_TOK:    /* fall through */
-    case PDF_PROC_START_TOK:   /* fall through */
-    case PDF_PROC_END_TOK:
+    case PDF_NULL_OBJ:
       {
         equal_p = PDF_TRUE;
         break;
@@ -192,34 +497,31 @@ pdf_obj_equal_p (pdf_obj_t obj1,
         equal_p = (obj1->value.real == obj2->value.real);
         break;
       }
-    case PDF_STRING_OBJ:  /* fall through */
-    case PDF_NAME_OBJ:    /* fall through */
-    case PDF_KEYWORD_TOK:
+    case PDF_STRING_OBJ:
       {
-        equal_p = pdf_obj_buffer_equal_p (obj1, obj2);
+        equal_p = pdf_string_equal_p (obj1, obj2);
         break;
       }
-    case PDF_COMMENT_TOK:
+    case PDF_NAME_OBJ:
       {
-        equal_p = ((obj1->value.comment.continuation
-                      == obj2->value.comment.continuation)
-                   && pdf_obj_buffer_equal_p (obj1, obj2));
+        equal_p = pdf_name_equal_p (obj1, obj2);
         break;
       }
     case PDF_ARRAY_OBJ:
       {
-        equal_p = pdf_obj_array_equal_p (obj1, obj2);
+        equal_p = pdf_array_equal_p (obj1, obj2);
         break;
       }
     case PDF_DICT_OBJ:
       {
-        equal_p = pdf_obj_dict_equal_p (obj1, obj2);
+        equal_p = pdf_dict_equal_p (obj1, obj2);
         break;
       }
     case PDF_INDIRECT_OBJ:
       {
-        equal_p = (obj1->value.indirect.on == obj2->value.indirect.on
-                    && obj1->value.indirect.gn == obj2->value.indirect.gn);
+        equal_p = 
+          (obj1->value.indirect.on == obj2->value.indirect.on) &&
+          (obj1->value.indirect.gn == obj2->value.indirect.gn);
         break;
       }
     case PDF_STREAM_OBJ:
@@ -237,105 +539,186 @@ pdf_obj_equal_p (pdf_obj_t obj1,
   return equal_p;
 }
 
-pdf_status_t
-pdf_obj_dup (const pdf_obj_t obj, pdf_obj_t *new)
+pdf_obj_t
+pdf_obj_dup (pdf_obj_t obj)
 {
-  assert (obj);
+  pdf_obj_t new_obj;
+
   switch (obj->type)
     {
-    case PDF_NULL_OBJ:         /* fall through */
-    case PDF_DICT_START_TOK:   /* fall through */
-    case PDF_DICT_END_TOK:     /* fall through */
-    case PDF_ARRAY_START_TOK:  /* fall through */
-    case PDF_ARRAY_END_TOK:    /* fall through */
-    case PDF_PROC_START_TOK:   /* fall through */
-    case PDF_PROC_END_TOK:
-      return pdf_tok_valueless_new (obj->type, new);
-
+    case PDF_NULL_OBJ:
+      {
+        new_obj = pdf_create_null();
+        break;
+      }
     case PDF_BOOLEAN_OBJ:
-      return pdf_obj_boolean_new (GET_BOOL(obj), new);
-
+      {
+        new_obj = pdf_create_boolean (GET_BOOL(obj));
+        break;
+      }
     case PDF_INT_OBJ:
-      return pdf_obj_integer_new (GET_INT(obj), new);
-
+      {
+        new_obj = pdf_create_integer (GET_INT(obj));
+        break;
+      }
     case PDF_REAL_OBJ:
-      return pdf_obj_real_new (GET_REAL(obj), new);
-
+      {
+        new_obj = pdf_create_real (GET_REAL(obj));
+        break;
+      }
     case PDF_STRING_OBJ:
-      return pdf_obj_string_new (obj->value.buffer.data,
-                                 obj->value.buffer.size,
-                                 new);
+      {
+        new_obj = pdf_create_string (obj->value.string.data,
+                                     obj->value.string.size);
+        break;
+      }
     case PDF_NAME_OBJ:
-      return pdf_obj_name_new (obj->value.buffer.data,
-                               obj->value.buffer.size,
-                               new);
-    case PDF_KEYWORD_TOK:
-      return pdf_tok_keyword_new (obj->value.buffer.data,
-                                  obj->value.buffer.size,
-                                  new);
-    case PDF_COMMENT_TOK:
-      return pdf_tok_comment_new (obj->value.comment.data,
-                                  obj->value.comment.size,
-                                  obj->value.comment.continuation,
-                                  new);
+      {
+        new_obj = pdf_create_name (obj->value.name.data,
+                                   obj->value.name.size);
+        break;
+      }
     case PDF_ARRAY_OBJ:
-      return pdf_obj_array_dup (obj, new);
-
+      {
+        new_obj = pdf_array_dup (obj);
+        break;
+      }
     case PDF_DICT_OBJ:
-      return pdf_obj_dict_dup (obj, new);
-
+      {
+        new_obj = pdf_dict_dup (obj);
+        break;
+      }
     case PDF_INDIRECT_OBJ:
-      return pdf_obj_indirect_new (obj->value.indirect.on,
-                                   obj->value.indirect.gn,
-                                   new);
+      {
+        new_obj = pdf_create_indirect (obj->value.indirect.on,
+                                       obj->value.indirect.gn);
+        break;
+      }
     case PDF_STREAM_OBJ:
-      return pdf_obj_stream_dup (obj, new);
-
+      {
+        new_obj = pdf_stream_dup (obj);
+        break;
+      }
     default:
-      /* Should not be reached: make the compiler happy */
-      return PDF_EBADDATA;
+      {
+        /* Should not be reached: make the compiler happy */
+        new_obj = NULL;
+        break;
+      }
     }
+
+  return new_obj;
+}
+
+int
+pdf_remove_array_elt (pdf_obj_t obj, 
+                      int index)
+{
+  if ((obj->type != PDF_ARRAY_OBJ) ||
+      (index < 0) ||
+      (index >= pdf_list_size (obj->value.array.objs)))
+    {
+      return PDF_ERROR;
+    }
+
+  pdf_list_remove_at (obj->value.array.objs, index);
+  return PDF_OK;
+}
+
+pdf_obj_t
+pdf_get_array_elt (pdf_obj_t obj,
+                   int index)
+{
+  if ((obj->type != PDF_ARRAY_OBJ) ||
+      (index < 0) ||
+      (index >= pdf_list_size (obj->value.array.objs)))
+    {
+      return NULL;
+    }
+
+  return (pdf_obj_t) pdf_list_get_at (obj->value.array.objs, index);
+}
+
+int
+pdf_set_array_elt (pdf_obj_t obj,
+                   int index,
+                   pdf_obj_t elt)
+{
+  if ((obj->type != PDF_ARRAY_OBJ) ||
+      (index < 0) ||
+      (index >= pdf_list_size (obj->value.array.objs)))
+    {
+      return PDF_ERROR;
+    }
+
+  pdf_list_set_at (obj->value.array.objs,
+                  index,
+                  elt);
+  return PDF_OK;
+}
+
+int 
+pdf_add_array_elt (pdf_obj_t obj, 
+                   int index, 
+                   pdf_obj_t elt)
+{
+  if ((obj->type != PDF_ARRAY_OBJ) ||
+      (index < 0) ||
+      (index > pdf_list_size (obj->value.array.objs)))
+    {
+      return PDF_ERROR;
+    }
+
+  pdf_list_add_at (obj->value.array.objs,
+                  index,
+                  elt);
+
+  return PDF_OK;
+}
+
+inline int
+pdf_append_array_elt (pdf_obj_t obj,
+                      pdf_obj_t elt)
+{
+  return pdf_add_array_elt (obj, 
+                            pdf_get_array_size (obj),
+                            elt);
 }
 
 /* Private functions */
 
-static INLINE pdf_status_t
-pdf_obj_new (pdf_obj_type_t type, pdf_obj_t *obj)
+static pdf_obj_t
+pdf_alloc_obj (void)
 {
   pdf_obj_t new_obj;
-  assert (obj);
 
-  new_obj = (pdf_obj_t) pdf_alloc (sizeof (struct pdf_obj_s));
-  if (!new_obj)
-    return PDF_ENOMEM;
-
-  new_obj->type = type;
-  *obj = new_obj;
-  return PDF_OK;
+  new_obj = (pdf_obj_t) xmalloc (sizeof(struct pdf_obj_s));
+  return new_obj;
 }
 
-pdf_status_t
-pdf_obj_destroy (pdf_obj_t obj)
+static void
+pdf_dealloc_obj (pdf_obj_t obj)
 {
-  assert (obj);
   switch (obj->type)
     {
-    case PDF_STRING_OBJ:   /* fall through */
-    case PDF_NAME_OBJ:     /* fall through */
-    case PDF_KEYWORD_TOK:  /* fall through */
-    case PDF_COMMENT_TOK:
+    case PDF_STRING_OBJ:
       {
-        pdf_dealloc (obj->value.buffer.data);
+        free (obj->value.string.data);
+        break;
+      }
+    case PDF_NAME_OBJ:
+      {
+        free (obj->value.name.data);
         break;
       }
     case PDF_ARRAY_OBJ:
       {
-        pdf_list_destroy (obj->value.array);
+        pdf_list_destroy (obj->value.array.objs);
         break;
       }
     case PDF_DICT_OBJ:
       {
-        pdf_hash_destroy (obj->value.dict);
+        pdf_list_destroy (obj->value.dict.entries);
         break;
       }
     default:
@@ -345,640 +728,135 @@ pdf_obj_destroy (pdf_obj_t obj)
       }
     }
 
-  pdf_dealloc (obj);
-  return PDF_OK;
+  free (obj);
+}
+
+void
+pdf_dealloc_obj_list_elt (const void* elt)
+{
+  pdf_dealloc_obj ((pdf_obj_t) elt);
+}
+
+static bool 
+pdf_compare_obj_list_elt (const void *elt1,
+                          const void *elt2)
+{
+  return pdf_obj_equal_p ((pdf_obj_t) elt1,
+                          (pdf_obj_t) elt2);
 }
 
 
-
-/*** streams **************************************************/
-
-pdf_status_t
-pdf_obj_stream_new (pdf_obj_t dict,
-                    pdf_stm_t stm,
-                    pdf_off_t data,
-                    pdf_obj_t *obj)
+static pdf_dict_entry_t 
+pdf_alloc_dict_entry (void)
 {
-  pdf_status_t rv = pdf_obj_new (PDF_STREAM_OBJ, obj);
-  if (rv == PDF_OK)
-    {
-      (*obj)->value.stream.dict = dict;
-      (*obj)->value.stream.stm = stm;
-      (*obj)->value.stream.data = data;
-    }
-  return rv;
+  pdf_dict_entry_t entry;
+
+  entry = (pdf_dict_entry_t) xmalloc (sizeof(struct pdf_dict_entry_s));
+  return entry;
 }
 
-/* Note that the new stream will use the same stm */
-//TODO: avoid storing stm? rename .data to .offset
-static INLINE pdf_status_t
-pdf_obj_stream_dup (pdf_obj_t obj, pdf_obj_t *new)
+static void 
+pdf_dealloc_dict_entry (pdf_dict_entry_t entry)
 {
-  pdf_status_t rv;
-  pdf_obj_t new_dict = NULL;
-
-  rv = pdf_obj_dup (obj->value.stream.dict, &new_dict);
-  if (rv != PDF_OK)
-    goto fail;
-
-  rv = pdf_obj_stream_new (new_dict,
-                           obj->value.stream.stm,
-                           obj->value.stream.data,
-                           new);
-  if (rv != PDF_OK)
-    goto fail;
-
-  return PDF_OK;
-
-fail:
-  if (new_dict)
-    pdf_obj_destroy (new_dict);
-  return rv;
-}
-
-/* Two PDF streams are considered equal if both uses the same stm
-   object, its dictionaries are equal and the data pointer points to
-   the same position into the stm */
-static int
-pdf_stream_equal_p (pdf_obj_t obj1,
-                    pdf_obj_t obj2)
-{
-  return ((obj1->value.stream.stm == obj2->value.stream.stm)
-          && (obj1->value.stream.data == obj2->value.stream.data)
-          && pdf_obj_dict_equal_p (obj1->value.stream.dict,
-                                   obj2->value.stream.dict));
-}
-
-pdf_obj_t
-pdf_obj_stream_dict (pdf_obj_t stream)
-{
-  assert (stream && stream->type == PDF_STREAM_OBJ);
-  if (stream->type != PDF_STREAM_OBJ)
-    {
-      return NULL;
-    }
-
-  return stream->value.stream.dict;
-}
-
-pdf_stm_t
-pdf_obj_stream_stm (pdf_obj_t stream)
-{
-  assert (stream && stream->type == PDF_STREAM_OBJ);
-  if (stream->type != PDF_STREAM_OBJ)
-    {
-      return NULL;
-    }
-
-  return stream->value.stream.stm;
-}
-
-pdf_off_t
-pdf_obj_stream_data (pdf_obj_t stream)
-{
-  assert (stream && stream->type == PDF_STREAM_OBJ);
-  if (stream->type != PDF_STREAM_OBJ)
-    {
-      return NO_POS;
-    }
-
-  return stream->value.stream.data;
-}
-
-
-
-/*** objects with buffers *************************************/
-
-static pdf_status_t
-pdf_obj_buffer_new (pdf_obj_type_t type,
-                    const pdf_char_t *value,
-                    pdf_size_t size,
-                    pdf_bool_t nullterm,
-                    pdf_obj_t *obj)
-{
-  pdf_obj_t new_obj = NULL;
-  pdf_status_t rv = pdf_obj_new (type, &new_obj);
-  if (rv != PDF_OK)
-    goto fail;
-
-  rv = PDF_ENOMEM;
-  new_obj->value.buffer.data = pdf_alloc (nullterm ? size + 1 : size);
-  if (!new_obj->value.buffer.data)
-    goto fail;
-
-  new_obj->value.buffer.size = size;
-  memcpy (new_obj->value.buffer.data, value, size);
-  if (nullterm)
-    new_obj->value.buffer.data[size] = 0;
-
-  *obj = new_obj;
-  return PDF_OK;
-
-fail:
-  if (new_obj)
-    pdf_dealloc (new_obj);
-  return rv;
-}
-
-static int
-pdf_obj_buffer_equal_p (pdf_obj_t obj1,
-                        pdf_obj_t obj2)
-{
-  struct pdf_obj_buffer_s *buf1 = &obj1->value.buffer;
-  struct pdf_obj_buffer_s *buf2 = &obj2->value.buffer;
-  return (buf1->size == buf2->size
-           && ( buf1->data == buf2->data
-                || !memcmp (buf1->data, buf2->data, buf1->size) ));
-}
-
-
-/** names *****/
-
-pdf_status_t
-pdf_obj_name_new (const pdf_char_t *value,
-                  pdf_size_t size,
-                  pdf_obj_t *obj)
-{
-  return pdf_obj_buffer_new (PDF_NAME_OBJ, value, size, 1, obj);
-}
-
-pdf_size_t
-pdf_obj_name_size (pdf_obj_t name)
-{
-  assert (name && name->type == PDF_NAME_OBJ);
-  return name->value.buffer.size;
-}
-
-const pdf_char_t *
-pdf_obj_name_data (pdf_obj_t name)
-{
-  assert (name && name->type == PDF_NAME_OBJ);
-  return name->value.buffer.data;
-}
-
-pdf_bool_t
-pdf_obj_name_equal_p (pdf_obj_t obj, const pdf_char_t *data)
-{
-  size_t len = strlen ((const char*)data);
-  return (obj && obj->type == PDF_NAME_OBJ
-           && len == obj->value.buffer.size
-           && memcmp (obj->value.buffer.data, data, len+1) == 0);
-}
-
-
-/** strings *****/
-
-pdf_status_t
-pdf_obj_string_new (const pdf_char_t *value,
-                    pdf_size_t size,
-                    pdf_obj_t *obj)
-{
-  return pdf_obj_buffer_new (PDF_STRING_OBJ, value, size, 0, obj);
-}
-
-pdf_size_t
-pdf_obj_string_size (pdf_obj_t obj)
-{
-  assert (obj && obj->type == PDF_STRING_OBJ);
-  return obj->value.buffer.size;
-}
-
-const pdf_char_t *
-pdf_obj_string_data (pdf_obj_t obj)
-{
-  assert (obj && obj->type == PDF_STRING_OBJ);
-  return obj->value.buffer.data;
-}
-
-
-/** comments *****/
-
-pdf_status_t
-pdf_tok_comment_new (const pdf_char_t *value,
-                     pdf_size_t size,
-                     pdf_bool_t continuation,
-                     pdf_obj_t *obj)
-{
-  pdf_status_t rv = pdf_obj_buffer_new (PDF_COMMENT_TOK, value, size, 0, obj);
-  if (rv == PDF_OK)
-    (*obj)->value.comment.continuation = !!continuation;
-
-  return rv;
-}
-
-pdf_size_t
-pdf_tok_comment_size (pdf_obj_t comment)
-{
-  assert (comment && comment->type == PDF_COMMENT_TOK);
-  return comment->value.buffer.size;
-}
-
-const pdf_char_t *
-pdf_tok_comment_data (pdf_obj_t comment)
-{
-  assert (comment && comment->type == PDF_COMMENT_TOK);
-  return comment->value.buffer.data;
-}
-
-
-/** keywords *****/
-
-pdf_status_t
-pdf_tok_keyword_new (const pdf_char_t *value,
-                     pdf_size_t size,
-                     pdf_obj_t *obj)
-{
-  return pdf_obj_buffer_new (PDF_KEYWORD_TOK, value, size, 1, obj);
-}
-
-pdf_size_t
-pdf_tok_keyword_size (pdf_obj_t keyword)
-{
-  assert (keyword && keyword->type == PDF_KEYWORD_TOK);
-  return keyword->value.buffer.size;
-}
-
-const pdf_char_t *
-pdf_tok_keyword_data (pdf_obj_t keyword)
-{
-  assert (keyword && keyword->type == PDF_KEYWORD_TOK);
-  return keyword->value.buffer.data;
-}
-
-pdf_bool_t
-pdf_tok_keyword_equal_p (pdf_obj_t obj, const pdf_char_t *data)
-{
-  size_t len = strlen ((const char*)data);
-  return (obj && obj->type == PDF_KEYWORD_TOK
-           && len == obj->value.buffer.size
-           && memcmp (obj->value.buffer.data, data, len+1) == 0);
-}
-
-
-
-/*** static functions for container types (array/dict) ********/
-
-static pdf_status_t
-pdf_obj_child_new (pdf_obj_t key, pdf_obj_t value, pdf_obj_child_t *elt)
-{
-  pdf_obj_child_t new = pdf_alloc (sizeof (*new));
-  if (!new)
-    return PDF_ENOMEM;
-
-  new->owned = 1;
-  new->key = key;
-  assert (value);
-  new->value = value;
-
-  assert (elt);
-  *elt = new;
-  return PDF_OK;
+  pdf_dealloc_obj (entry->key);
+  pdf_dealloc_obj (entry->value);
+  free (entry);
 }
 
 static void
-pdf_obj_child_destroy_cb (const void *ptr)
+pdf_dealloc_dict_entry_list_elt (const void *elt)
 {
-  pdf_obj_child_t elt = (pdf_obj_child_t)ptr;
-  if (elt->owned)
-    {
-      elt->owned = 0;
-      pdf_obj_destroy (elt->value);
-      if (elt->key)
-        pdf_obj_destroy (elt->key);
-    }
-  pdf_dealloc (elt);
+  pdf_dealloc_dict_entry ((pdf_dict_entry_t) elt);
 }
 
 static bool
-pdf_obj_child_equal_p_cb (const void *ptr1,
-                          const void *ptr2)
+pdf_compare_dict_entry_list_elt (const void *elt1,
+                                 const void *elt2)
 {
-  pdf_obj_child_t elt1 = (pdf_obj_child_t)ptr1;
-  pdf_obj_child_t elt2 = (pdf_obj_child_t)ptr2;
-  return pdf_obj_equal_p (elt1->value, elt2->value);
+  pdf_dict_entry_t entry1;
+  pdf_dict_entry_t entry2;
+
+  entry1 = (pdf_dict_entry_t) elt1;
+  entry2 = (pdf_dict_entry_t) elt2;
+
+  return pdf_obj_equal_p (entry1->key, entry2->key);
 }
 
-
-
-/*** arrays ***************************************************/
-
-pdf_status_t
-pdf_obj_array_new (pdf_obj_t *array)
+static int
+pdf_string_equal_p (pdf_obj_t obj1,
+                    pdf_obj_t obj2)
 {
-  pdf_status_t rv;
-  pdf_obj_t new_array = NULL;
-
-  rv = pdf_obj_new (PDF_ARRAY_OBJ, &new_array);
-  if (rv != PDF_OK)
-    goto fail;
-
-  rv = pdf_list_new (pdf_obj_child_equal_p_cb,
-                     pdf_obj_child_destroy_cb,
-                     PDF_TRUE,  /* allow duplicates */
-                     &new_array->value.array);
-  if (rv != PDF_OK)
-    goto fail;
-
-  assert (array);
-  *array = new_array;
-  return PDF_OK;
-
-fail:
-  if (new_array)
-    pdf_dealloc (new_array);
-  return rv;
+  return ((obj1->value.string.size == obj2->value.string.size) &&
+          (!memcmp (obj1->value.string.data,
+                    obj2->value.string.data,
+                    obj1->value.string.size)));
 }
 
-
-static pdf_status_t
-pdf_obj_array_dup (pdf_obj_t array, pdf_obj_t *new)
+static int
+pdf_name_equal_p (pdf_obj_t obj1,
+                  pdf_obj_t obj2)
 {
-return PDF_ERROR;//TODO
-#if 0
-  pdf_obj_t new_array;
-  pdf_obj_t obj_elt;
-  pdf_list_iterator_t iter;
-  pdf_list_node_t list_node;
-  
-
-  new_array = pdf_create_array ();
-
-  iter = pdf_list_iterator (obj->value.array);
-  while (pdf_list_iterator_next (&iter, (const void**) &obj_elt, &list_node))
-    {
-      pdf_list_add_last (new_array->value.array, 
-                        pdf_obj_dup (obj_elt));
-    }
-  pdf_list_iterator_free (&iter);
-
-  return new_array;
-#endif
+  return ((obj1->value.name.size == obj2->value.name.size) &&
+          (!memcmp (obj1->value.name.data,
+                    obj2->value.name.data,
+                    obj1->value.name.size)));
 }
-
-
-pdf_size_t
-pdf_obj_array_size (pdf_obj_t array)
-{
-  assert (array && array->type == PDF_ARRAY_OBJ);
-  return pdf_list_size (array->value.array);
-}
-
 
 /* Two PDF arrays are considered equal if the equal-intersection
    between the two sets of objects is empty and if the objects are
    contained in the same order */
-static pdf_bool_t
-pdf_obj_array_equal_p (pdf_obj_t array1,
-                       pdf_obj_t array2)
+static int
+pdf_array_equal_p (pdf_obj_t obj1,
+                   pdf_obj_t obj2)
 {
   int equal_p;
-  pdf_status_t rv;
-  pdf_obj_child_t elt1, elt2;
-  pdf_list_node_t node1, node2;
-  pdf_list_iterator_t iter1, iter2;
+  pdf_obj_t obj_elt1;
+  pdf_obj_t obj_elt2;
+  pdf_list_node_t list_node1;
+  pdf_list_node_t list_node2;
+  pdf_list_iterator_t iter1;
+  pdf_list_iterator_t iter2;
 
-  if (pdf_list_size (array1->value.array)
-       != pdf_list_size (array2->value.array))
+  if ((pdf_list_size (obj1->value.array.objs) !=
+       pdf_list_size (obj2->value.array.objs)))
     {
       return PDF_FALSE;
     }
 
-  if (pdf_list_size (array1->value.array) == 0)
+  if (pdf_list_size (obj1->value.array.objs) == 0)
     {
       return PDF_TRUE;
     }
 
-  equal_p = PDF_FALSE;
-
-  /* FIXME: this shouldn't be able to fail */
-
-  rv = pdf_list_iterator (array1->value.array, &iter1);
-  if (rv != PDF_OK)
-    goto free1;
-
-  rv = pdf_list_iterator (array2->value.array, &iter2);
-  if (rv != PDF_OK)
-    goto free2;
-
   equal_p = PDF_TRUE;
-  while (pdf_list_iterator_next (&iter1, (const void **) &elt1, &node1)
-          && pdf_list_iterator_next (&iter2, (const void **) &elt2, &node2))
+
+  iter1 = pdf_list_iterator (obj1->value.array.objs);
+  iter2 = pdf_list_iterator (obj2->value.array.objs);
+  
+  while (pdf_list_iterator_next (&iter1, (const void **) &obj_elt1, &list_node1) &&
+         pdf_list_iterator_next (&iter2, (const void **) &obj_elt2, &list_node2))
     {
       /* Note the indirect recursion there => avoid loops!!! */
-      if (!pdf_obj_equal_p (elt1->value, elt2->value))
+      if (!pdf_obj_equal_p (obj_elt1, obj_elt2))
         {
           equal_p = PDF_FALSE;
           break;
         }
     }
-
-free2:
-  pdf_list_iterator_free (&iter2);
-free1:
+  
   pdf_list_iterator_free (&iter1);
+  pdf_list_iterator_free (&iter2);
 
   return equal_p;
-}
-
-
-pdf_status_t pdf_obj_array_get (const pdf_obj_t array,
-                                pdf_size_t index,
-                                pdf_obj_t *obj)
-{
-  pdf_status_t rv;
-  pdf_obj_child_t elt;
-  if (array->type != PDF_ARRAY_OBJ)
-    return PDF_EBADDATA;
-
-  assert (obj);
-  rv = pdf_list_get_at (array->value.array, index, (const void**)&elt);
-  if (rv == PDF_OK)
-    *obj = elt->value;
-
-  return rv;
-}
-
-
-pdf_status_t pdf_obj_array_set (pdf_obj_t array,
-                                pdf_size_t index,
-                                const pdf_obj_t new_obj,
-                                pdf_obj_t *old_obj)
-{
-  pdf_status_t rv;
-  pdf_obj_child_t elt;
-  if (array->type != PDF_ARRAY_OBJ)
-    return PDF_EBADDATA;
-
-  rv = pdf_list_get_at (array->value.array, index, (const void**)&elt);
-  if (rv != PDF_OK)
-    return rv;
-
-  assert (!elt->owned);
-  if (old_obj)
-    *old_obj = elt->value;
-  else
-    {
-      elt->owned = 0;
-      pdf_obj_destroy (elt->value);
-    }
-
-  elt->owned = 1;
-  elt->value = new_obj;
-  return PDF_OK;
-}
-
-
-pdf_status_t
-pdf_obj_array_ins_priv (pdf_obj_t array,
-                        pdf_size_t index,
-                        pdf_obj_t obj,
-                        int atend)
-{
-  pdf_status_t rv;
-  pdf_obj_child_t elt = NULL;
-  pdf_size_t size;
-
-  if (array->type != PDF_ARRAY_OBJ)
-    return PDF_EBADDATA;
-
-  size = pdf_list_size (array->value.array);
-  if (atend)
-    index = size;
-
-  rv = pdf_obj_child_new (NULL, obj, &elt);
-  if (rv != PDF_OK)
-    goto fail;
-
-  /* add_at doesn't work for the last element */
-  if (index == size)
-    rv = pdf_list_add_last (array->value.array, elt, NULL);
-  else
-    rv = pdf_list_add_at (array->value.array, index, elt, NULL);
-
-  if (rv != PDF_OK)
-    goto fail;
-
-  return PDF_OK;
-
-fail:
-  if (elt)
-    pdf_dealloc (elt);
-  return rv;
-}
-
-pdf_status_t
-pdf_obj_array_insert (pdf_obj_t array,
-                      pdf_size_t index,
-                      pdf_obj_t obj)
-{
-  return pdf_obj_array_ins_priv (array, index, obj, 0 /* use index */);
-}
-
-pdf_status_t
-pdf_obj_array_append (pdf_obj_t array,
-                      const pdf_obj_t obj)
-{
-  return pdf_obj_array_ins_priv (array, 0 /*unused*/, obj, 1 /*at end*/);
-}
-
-
-pdf_status_t
-pdf_obj_array_remove (pdf_obj_t array,
-                      pdf_size_t index,
-                      pdf_obj_t *obj)
-{
-  if (array->type != PDF_ARRAY_OBJ)
-    return PDF_EBADDATA;
-
-  if (obj)
-    {
-      pdf_status_t rv;
-      pdf_obj_child_t elt;
-
-      rv = pdf_list_get_at (array->value.array, index, (const void**)&elt);
-      if (rv != PDF_OK)
-        return rv;
-
-      *obj = elt->value;
-      assert (elt->owned);
-      elt->owned = 0;
-    }
-
-  return pdf_list_remove_at (array->value.array, index);
-}
-
-
-pdf_status_t
-pdf_obj_array_clear (pdf_obj_t array)
-{
-  pdf_size_t size = pdf_obj_array_size (array);
-  while (size)
-    {
-      if (pdf_obj_array_remove (array, --size, NULL) != PDF_OK)
-        return PDF_ERROR;  /* shouldn't happen */
-    }
-  return PDF_OK;
-}
-
-pdf_status_t
-pdf_obj_array_clear_nodestroy (pdf_obj_t array)
-{
-  /* Clear the array, but don't free its objects (presumably because
-   * they're still owned by someone else). */
-
-  pdf_size_t size = pdf_obj_array_size (array);
-  while (size)
-    {
-      pdf_obj_t dummy;
-      if (pdf_obj_array_remove (array, --size, &dummy) != PDF_OK)
-        return PDF_ERROR;  /* shouldn't happen */
-    }
-  return PDF_OK;
-}
-
-
-
-/*** dictionaries *********************************************/
-
-pdf_status_t
-pdf_obj_dict_new (pdf_obj_t *obj)
-{
-  pdf_status_t rv;
-  pdf_obj_t new_dict = NULL;
-
-  rv = pdf_obj_new (PDF_DICT_OBJ, &new_dict);
-  if (rv != PDF_OK)
-    goto fail;
-
-  rv = pdf_hash_new (pdf_obj_dict_dealloc_key_cb,
-                     &new_dict->value.dict);
-  if (rv != PDF_OK)
-    goto fail;
-
-  *obj = new_dict;
-  return PDF_OK;
-
-fail:
-  if (new_dict)
-    pdf_dealloc (new_dict);
-  return rv;
-}
-
-static void
-pdf_obj_dict_dealloc_key_cb (const void *obj)
-{
-  /* key is deallocated with its value in pdf_obj_child_destroy_cb */
 }
 
 /* Two PDF dictionaries are considered equal if the equal-intersection
    between the two sets of objects is empty. Internal ordering doesnt
    matter. */
 static int
-pdf_obj_dict_equal_p (pdf_obj_t obj1,
-                      pdf_obj_t obj2)
+pdf_dict_equal_p (pdf_obj_t obj1,
+                  pdf_obj_t obj2)
 {
-return 0;
-#if 0
   int equal_p;
   pdf_list_t int_list;
   pdf_list_node_t list_node1;
@@ -1037,16 +915,45 @@ return 0;
 
   /* Bye bye */
   return equal_p;
-#endif
 }
 
-
-
-static pdf_status_t
-pdf_obj_dict_dup (pdf_obj_t obj, pdf_obj_t *new)
+/* Two PDF streams are considered equal if both uses the same stm
+   object, its dictionaries are equal and the data pointer points to
+   the same position into the stm */
+static int
+pdf_stream_equal_p (pdf_obj_t obj1,
+                    pdf_obj_t obj2)
 {
-return PDF_ERROR;//TODO
-#if 0
+  return ((obj1->value.stream.stm == obj2->value.stream.stm) &&
+          (obj1->value.stream.data == obj2->value.stream.data) &&
+          pdf_dict_equal_p (obj1->value.stream.dict, obj2->value.stream.dict));
+}
+
+static pdf_obj_t
+pdf_array_dup (pdf_obj_t obj)
+{
+  pdf_obj_t new_array;
+  pdf_obj_t obj_elt;
+  pdf_list_iterator_t iter;
+  pdf_list_node_t list_node;
+  
+
+  new_array = pdf_create_array ();
+
+  iter = pdf_list_iterator (obj->value.array.objs);
+  while (pdf_list_iterator_next (&iter, (const void**) &obj_elt, &list_node))
+    {
+      pdf_list_add_last (new_array->value.array.objs, 
+                        pdf_obj_dup (obj_elt));
+    }
+  pdf_list_iterator_free (&iter);
+
+  return new_array;
+}
+
+static pdf_obj_t
+pdf_dict_dup (pdf_obj_t obj)
+{
   pdf_obj_t new_dict;
   pdf_dict_entry_t entry_elt;
   pdf_dict_entry_t new_entry_elt;
@@ -1068,117 +975,19 @@ return PDF_ERROR;//TODO
   pdf_list_iterator_free (&iter);
 
   return new_dict;
-#endif
 }
 
-pdf_size_t
-pdf_obj_dict_size (const pdf_obj_t dict)
+/* Note that the new stream will use the same stm */
+static pdf_obj_t
+pdf_stream_dup (pdf_obj_t obj)
 {
-  return pdf_hash_size (dict->value.dict);
-}
+  pdf_obj_t new_stream;
 
-pdf_status_t
-pdf_obj_dict_get (const pdf_obj_t dict,
-                  const pdf_obj_t key,
-                  pdf_obj_t *value)
-{
-  if (key->type != PDF_NAME_OBJ)
-    return PDF_EBADDATA;
+  new_stream = pdf_create_stream (pdf_obj_dup (obj->value.stream.dict),
+                                  obj->value.stream.stm,
+                                  obj->value.stream.data);
 
-  return pdf_obj_dict_getc (dict, key->value.buffer.data, value);
-}
-
-pdf_status_t
-pdf_obj_dict_getc (const pdf_obj_t dict,
-                   const pdf_char_t *key,
-                   pdf_obj_t *value)
-{
-  pdf_obj_child_t elt = NULL;
-  pdf_status_t rv;
-
-  assert (value);
-  if (dict->type != PDF_DICT_OBJ)
-    return PDF_EBADDATA;
-
-  rv = pdf_hash_get (dict->value.dict, (char*)key, (void*)&elt);
-  if (rv != PDF_OK)
-    return rv;
-
-  *value = elt->value;
-  return PDF_OK;
-}
-
-pdf_bool_t
-pdf_obj_dict_key_p (const pdf_obj_t dict,
-                    const pdf_obj_t key)
-{
-  return ((dict->type == PDF_DICT_OBJ)
-           && (key->type == PDF_NAME_OBJ)
-           && pdf_hash_key_p (dict->value.dict,
-                              (char*)key->value.buffer.data));
-}
-
-pdf_bool_t
-pdf_obj_dict_keyc_p (const pdf_obj_t dict,
-                     const pdf_char_t *key)
-{
-  return ((dict->type == PDF_DICT_OBJ)
-           && pdf_hash_key_p (dict->value.dict, (char*)key));
-}
-
-pdf_status_t
-pdf_obj_dict_remove (pdf_obj_t dict,
-                     pdf_obj_t key)
-{
-  if ((dict->type != PDF_DICT_OBJ)
-      || (key->type != PDF_NAME_OBJ))
-    return PDF_EBADDATA;
-  else if (!pdf_obj_dict_key_p (dict, key))
-    return PDF_ENONODE;
-
-  return pdf_hash_remove (dict->value.dict,
-                          (char*)key->value.buffer.data);
-}
-
-pdf_status_t
-pdf_obj_dict_add (pdf_obj_t dict,
-                  pdf_obj_t key,
-                  pdf_obj_t value)
-{
-  pdf_status_t rv;
-  pdf_obj_child_t elt = NULL;
-  char *keystr = NULL;
-  if ((dict->type != PDF_DICT_OBJ)
-      || (key->type != PDF_NAME_OBJ))
-    return PDF_EBADDATA;
-  else if (pdf_obj_dict_key_p (dict, key))
-    return PDF_EEXIST;
-
-  rv = pdf_obj_child_new (key, value, &elt);
-  if (rv != PDF_OK)
-    goto fail;
-
-  keystr = (char*)key->value.buffer.data;
-  rv = pdf_hash_add (dict->value.dict, keystr, elt, pdf_obj_child_destroy_cb);
-  if (rv != PDF_OK)
-    goto fail;
-
-  return PDF_OK;
-
-fail:
-  if (elt)
-    pdf_dealloc (elt);
-  return rv;
-}
-
-pdf_status_t
-pdf_obj_dict_clear_nodestroy (pdf_obj_t dict)
-{
-  /* Clear the dict, but don't free its objects (presumably because
-   * they're still owned by someone else). */
-
-  //TODO
-  return PDF_ERROR;
+  return new_stream;
 }
 
 /* End of pdf_obj.c */

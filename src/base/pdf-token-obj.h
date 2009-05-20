@@ -88,28 +88,30 @@ pdf_status_t pdf_token_dup (const pdf_token_t token, pdf_token_t *new);
 pdf_status_t pdf_token_destroy (pdf_token_t token);
 
 /* Common functions */
-enum pdf_token_type_e pdf_token_type (pdf_token_t token);
+enum pdf_token_type_e pdf_token_type (const pdf_token_t token);
+pdf_bool_t pdf_token_equal_p (const pdf_token_t token1,
+                              const pdf_token_t token2);
 
 /* Managing tokens of numeric types */
-pdf_i32_t pdf_token_get_integer_value (pdf_token_t int_obj);
-pdf_real_t pdf_token_get_real_value (pdf_token_t real_obj);
+pdf_i32_t pdf_token_get_integer_value (const pdf_token_t token);
+pdf_real_t pdf_token_get_real_value (const pdf_token_t token);
 
 /* Managing strings */
-pdf_size_t pdf_token_get_string_size (pdf_token_t str_obj);
-const pdf_char_t *pdf_token_get_string_data (pdf_token_t str_obj);
+pdf_size_t pdf_token_get_string_size (pdf_token_t token);
+const pdf_char_t *pdf_token_get_string_data (pdf_token_t token);
 
 /* Managing names */
-pdf_size_t pdf_token_get_name_size (const pdf_token_t name);
-const pdf_char_t *pdf_token_get_name_data (const pdf_token_t name);
+pdf_size_t pdf_token_get_name_size (const pdf_token_t token);
+const pdf_char_t *pdf_token_get_name_data (const pdf_token_t token);
 
 /* Managing keywords */
-pdf_size_t pdf_token_get_keyword_size (const pdf_token_t keyword);
-const pdf_char_t *pdf_token_get_keyword_data (const pdf_token_t keyword);
+pdf_size_t pdf_token_get_keyword_size (const pdf_token_t token);
+const pdf_char_t *pdf_token_get_keyword_data (const pdf_token_t token);
 
 /* Managing comments */
-pdf_size_t pdf_token_get_comment_size (const pdf_token_t comment);
-const pdf_char_t *pdf_token_get_comment_data (const pdf_token_t comment);
-pdf_bool_t pdf_token_get_comment_continued (const pdf_token_t comment);
+pdf_size_t pdf_token_get_comment_size (const pdf_token_t token);
+const pdf_char_t *pdf_token_get_comment_data (const pdf_token_t token);
+pdf_bool_t pdf_token_get_comment_continued (const pdf_token_t token);
 
 /* END PUBLIC */
 

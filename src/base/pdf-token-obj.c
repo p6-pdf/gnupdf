@@ -27,7 +27,7 @@
 #include <assert.h>
 
 #include "config.h"
-#include "pdf-token.h"
+#include "pdf-token-obj.h"
 #include "pdf-alloc.h"
 
 /* Private functions */
@@ -113,6 +113,51 @@ pdf_token_get_type (const pdf_token_t token)
   return token->type;
 }
 
+pdf_bool_t
+pdf_token_equal_p (const pdf_token_t token1, const pdf_token_t token2)
+{
+  assert (token1 && token2);
+  if (token1->type != token2->type)
+    return PDF_FALSE;
+
+  switch (token1->type)
+    {
+    case PDF_TOKEN_DICT_START:   /* fall through */
+    case PDF_TOKEN_DICT_END:     /* fall through */
+    case PDF_TOKEN_ARRAY_START:  /* fall through */
+    case PDF_TOKEN_ARRAY_END:    /* fall through */
+    case PDF_TOKEN_PROC_START:   /* fall through */
+    case PDF_TOKEN_PROC_END:
+      return PDF_TRUE;
+
+    case PDF_TOKEN_INTEGER:
+      return token1->value.integer == token2->value.integer;
+
+    case PDF_TOKEN_REAL:
+      return token1->value.real == token2->value.real;
+
+    case PDF_TOKEN_COMMENT:
+      if (token1->value.comment.continued != token2->value.comment.continued)
+        return PDF_FALSE;
+
+      /* fall through */
+    case PDF_TOKEN_STRING:   /* fall through */
+    case PDF_TOKEN_NAME:     /* fall through */
+    case PDF_TOKEN_KEYWORD:
+      {
+        struct pdf_token_buffer_s *buf1 = &token1->value.buffer;
+        struct pdf_token_buffer_s *buf2 = &token2->value.buffer;
+        return (buf1->size == buf2->size
+                 && ( buf1->data == buf2->data
+                      || !memcmp (buf1->data, buf2->data, buf1->size) ));
+      }
+
+    default:
+      assert (0);  /* shouldn't happen */
+      return 0;
+    }
+}
+
 pdf_status_t
 pdf_token_dup (const pdf_token_t token, pdf_token_t *new)
 {
@@ -128,7 +173,7 @@ pdf_token_dup (const pdf_token_t token, pdf_token_t *new)
       return pdf_token_valueless_new (token->type, new);
 
     case PDF_TOKEN_INTEGER:
-      return pdf_token_integer_new (token->value.integer, new)
+      return pdf_token_integer_new (token->value.integer, new);
 
     case PDF_TOKEN_REAL:
       return pdf_token_real_new (token->value.real, new);
@@ -143,8 +188,8 @@ pdf_token_dup (const pdf_token_t token, pdf_token_t *new)
                                  new);
     case PDF_TOKEN_KEYWORD:
       return pdf_token_keyword_new (token->value.buffer.data,
-                                  token->value.buffer.size,
-                                  new);
+                                    token->value.buffer.size,
+                                    new);
     case PDF_TOKEN_COMMENT:
       return pdf_token_comment_new (token->value.comment.data,
                                     token->value.comment.size,
@@ -233,14 +278,14 @@ pdf_token_name_new (const pdf_char_t *value,
 }
 
 pdf_size_t
-pdf_token_name_size (pdf_token_t name)
+pdf_token_get_name_size (const pdf_token_t name)
 {
   assert (name && name->type == PDF_TOKEN_NAME);
   return name->value.buffer.size;
 }
 
 const pdf_char_t *
-pdf_token_name_data (pdf_token_t name)
+pdf_token_get_name_data (const pdf_token_t name)
 {
   assert (name && name->type == PDF_TOKEN_NAME);
   return name->value.buffer.data;
@@ -258,14 +303,14 @@ pdf_token_string_new (const pdf_char_t *value,
 }
 
 pdf_size_t
-pdf_token_string_size (pdf_token_t token)
+pdf_token_get_string_size (const pdf_token_t token)
 {
   assert (token && token->type == PDF_TOKEN_STRING);
   return token->value.buffer.size;
 }
 
 const pdf_char_t *
-pdf_token_string_data (pdf_token_t token)
+pdf_token_get_string_data (const pdf_token_t token)
 {
   assert (token && token->type == PDF_TOKEN_STRING);
   return token->value.buffer.data;
@@ -289,21 +334,21 @@ pdf_token_comment_new (const pdf_char_t *value,
 }
 
 pdf_size_t
-pdf_token_comment_size (pdf_token_t comment)
+pdf_token_get_comment_size (const pdf_token_t comment)
 {
   assert (comment && comment->type == PDF_TOKEN_COMMENT);
   return comment->value.buffer.size;
 }
 
 const pdf_char_t *
-pdf_token_comment_data (pdf_token_t comment)
+pdf_token_get_comment_data (const pdf_token_t comment)
 {
   assert (comment && comment->type == PDF_TOKEN_COMMENT);
   return comment->value.buffer.data;
 }
 
 pdf_bool_t
-pdf_token_comment_continued (pdf_token_t comment)
+pdf_token_get_comment_continued (const pdf_token_t comment)
 {
   assert (comment && comment->type == PDF_TOKEN_COMMENT);
   return comment->value.comment.continued;
@@ -321,14 +366,14 @@ pdf_token_keyword_new (const pdf_char_t *value,
 }
 
 pdf_size_t
-pdf_token_keyword_size (pdf_token_t keyword)
+pdf_token_get_keyword_size (const pdf_token_t keyword)
 {
   assert (keyword && keyword->type == PDF_TOKEN_KEYWORD);
   return keyword->value.buffer.size;
 }
 
 const pdf_char_t *
-pdf_token_keyword_data (pdf_token_t keyword)
+pdf_token_get_keyword_data (const pdf_token_t keyword)
 {
   assert (keyword && keyword->type == PDF_TOKEN_KEYWORD);
   return keyword->value.buffer.data;

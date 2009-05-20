@@ -23,8 +23,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PDF_TOKEN_READER
-#define PDF_TOKEN_READER
+#ifndef PDF_TOKEN_READER_H
+#define PDF_TOKEN_READER_H
 #include "pdf-types.h"
 #include "pdf-stm.h"
 #include "pdf-token-obj.h"
@@ -39,16 +39,16 @@ pdf_status_t pdf_token_reader_new(pdf_stm_t stm, pdf_token_reader_t *reader);
 pdf_status_t pdf_token_reader_destroy(pdf_token_reader_t reader);
 pdf_status_t pdf_token_reader_reset(pdf_token_reader_t reader);
 pdf_status_t pdf_token_read(pdf_token_reader_t reader, pdf_u32_t flags,
-                            pdf_obj_t *token);
+                            pdf_token_t *token);
 
 enum pdf_token_rw_flags_e {
   /* these flags are used for token_read and token_write */
-  PDF_TOKEN_NO_NAME_ESCAPES = 1,
-  PDF_TOKEN_RET_COMMENTS = 2,
-  PDF_TOKEN_END_AT_STREAM = 4,
-  PDF_TOKEN_HEX_STRINGS = 8,
-  PDF_TOKEN_READABLE_STRINGS = 16,
-}
+  PDF_TOKEN_NO_NAME_ESCAPES = 1,    /* read/write */
+  PDF_TOKEN_RET_COMMENTS = 2,       /* read */
+  PDF_TOKEN_END_AT_STREAM = 4,      /* read */
+  PDF_TOKEN_HEX_STRINGS = 8,        /* write */
+  PDF_TOKEN_READABLE_STRINGS = 16,  /* write */
+};
 
 /* END PUBLIC */
 
@@ -62,7 +62,6 @@ enum pdf_token_reader_state_e
   PDF_TOKR_STATE_STRING,
   PDF_TOKR_STATE_HEXSTRING,
   PDF_TOKR_STATE_DICTEND,
-  PDF_TOKR_STATE_STREAMSTART,
   PDF_TOKR_STATE_PENDING,
   PDF_TOKR_STATE_EOF
 };
@@ -107,8 +106,7 @@ enum pdf_token_reader_state_e
  */
 
 /* Internal state */
-struct pdf_tokeniser_s {
-//XXX  int flags;  /* miscellaneous settings (from pdf_tokeniser_flag_e) */
+struct pdf_token_reader_s {
   pdf_stm_t stream;  /* stream to read bytes from */
   char *decimal_point;
 
@@ -118,7 +116,6 @@ struct pdf_tokeniser_s {
   pdf_char_t charparam;
   int intparam;
   pdf_buffer_t buffer;
-//XXX  pdf_bool_t findstream;
   /***/
 };
 
