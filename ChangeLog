@@ -2,9 +2,9 @@
 
 	Implement the token reader API.
 
-	* src/base/pdf-token-obj.c: New file, based on src/object/pdf-obj.c
+	* src/base/pdf-token.c: New file, based on src/object/pdf-obj.c
 
-	* src/base/pdf-token-obj.h: Likewise
+	* src/base/pdf-token.h: Likewise
 
 	* src/base/pdf-token-reader.c: New file
 

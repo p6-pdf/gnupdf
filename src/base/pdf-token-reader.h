@@ -27,7 +27,7 @@
 #define PDF_TOKEN_READER_H
 #include "pdf-types.h"
 #include "pdf-stm.h"
-#include "pdf-token-obj.h"
+#include "pdf-token.h"
 
 /* BEGIN PUBLIC */
 /* pdf-token-reader.h */

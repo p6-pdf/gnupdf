@@ -1,6 +1,6 @@
 /* -*- mode: C -*- Time-stamp: "2009-05-20 04:01:14 mgold"
  *
- *       File:         pdf-token-obj.h
+ *       File:         pdf-token.h
  *       Date:         Sat Jul  7 01:10:11 2007
  *
  *       GNU PDF Library - PDF token objects
@@ -23,7 +23,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* pdf-token-obj.{c,h} implement the token ADT, used to represent
+/* pdf-token.{c,h} implement the token ADT, used to represent
    all types of tokens used by the token reader and writer:
       - Integer number
       - Real number
@@ -48,7 +48,7 @@
 #include "pdf-base.h"
 
 /* BEGIN PUBLIC */
-/* pdf-token-obj.h */
+/* pdf-token.h */
 
 enum pdf_token_type_e
 {
@@ -207,4 +207,4 @@ struct pdf_token_s
 
 #endif /* PDF_TOKEN_OBJ_H */
 
-/* End of pdf-token-obj.h */
+/* End of pdf-token.h */

@@ -1,6 +1,6 @@
 /* -*- mode: C -*- Time-stamp: "2009-05-20 04:50:13 mgold"
  *
- *       File:         pdf-token-obj.c
+ *       File:         pdf-token.c
  *       Date:         Sat Jul  7 03:04:30 2007
  *
  *       GNU PDF Library - PDF token objects
@@ -28,7 +28,7 @@
 #include <math.h>
 
 #include "config.h"
-#include "pdf-token-obj.h"
+#include "pdf-token.h"
 #include "pdf-alloc.h"
 
 /* Private functions */
@@ -402,4 +402,4 @@ pdf_token_get_keyword_data (const pdf_token_t keyword)
 }
 
 
-/* End of pdf-token-obj.c */
+/* End of pdf-token.c */

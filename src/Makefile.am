@@ -82,7 +82,7 @@ CRYPT_MODULE_SOURCES = base/pdf-crypt.c base/pdf-crypt.h \
 FP_MODULE_SOURCES = base/pdf-fp.h base/pdf-fp.c \
                     base/pdf-fp-func.h base/pdf-fp-func.c
 
-TOKEN_MODULE_SOURCES = base/pdf-token-obj.c base/pdf-token-obj.h \
+TOKEN_MODULE_SOURCES = base/pdf-token.c base/pdf-token.h \
                        base/pdf-token-reader.c base/pdf-token-reader.h
 
 BASE_LAYER_SOURCES = base/pdf-base.c base/pdf-base.h \
@@ -141,7 +141,7 @@ PUBLIC_HDRS = pdf-global.h \
               base/pdf-hash-helper.h \
               base/pdf-crypt.h \
               base/pdf-fp-func.h \
-              base/pdf-token-obj.h \
+              base/pdf-token.h \
               base/pdf-token-reader.h
 
 pdf.h : $(PUBLIC_HDRS)
