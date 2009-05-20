@@ -10498,8 +10498,29 @@ if (pdf_token_get_type (token) != PDF_TOKEN_NAME)
 @end table
 @end deftypefun
 
-@c TODO: pdf_bool_t pdf_token_equal_p (pdf_token_t token1, pdf_token_t token2);
-@c          -- if needed
+@deftypefun pdf_bool_t pdf_token_equal_p (const pdf_token_t @var{token1}, const pdf_token_t @var{token2})
+
+Determines whether the given tokens are equivalent.
+
+@table @strong
+@item Parameters
+@table @var
+@item token1
+A token.
+@item token2
+Another token.
+@end table
+@item Returns
+A boolean value:
+@table @code
+@item PDF_TRUE
+The given tokens are equal.
+@item PDF_FALSE
+The tokens are not equal.
+@end table
+@end table
+
+@end deftypefun
 
 @deftypefun pdf_i32_t pdf_token_get_integer_value (const pdf_token_t @var{token})
 
