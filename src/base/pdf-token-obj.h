@@ -116,6 +116,33 @@ pdf_bool_t pdf_token_get_comment_continued (const pdf_token_t token);
 /* END PUBLIC */
 
 
+static INLINE int
+pdf_is_wspace_char (pdf_char_t ch)
+{
+  /* ASCII codes for NUL, HT, LF, FF, CR, SP */
+  return (ch == 0 || ch == 9 || ch == 10 || ch == 12 || ch == 13 || ch == 32);
+}
+
+static INLINE int
+pdf_is_delim_char (pdf_char_t ch)
+{
+  /* ASCII codes for '%', '(', ')', '/'; '<', '>', '[', ']'; '{', '}' */
+  return (ch == 37 || ch == 40 || ch == 41 || ch == 47
+       || ch == 60 || ch == 62 || ch == 91 || ch == 93
+       || ch == 123 || ch == 125);
+}
+
+static INLINE int
+pdf_is_eol_char (pdf_char_t ch)
+{
+  return ch == 10 || ch == 13;
+}
+
+static INLINE int
+pdf_is_regular_char (pdf_char_t ch)
+{
+  return !pdf_is_wspace_char (ch) && !pdf_is_delim_char (ch);
+}
 
 /* According to the PDF reference, a PDF name object is an atomic
    symbol uniquely defined by a sequence of non-null characters. It has

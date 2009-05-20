@@ -270,9 +270,16 @@ pdf_token_get_real_value (const pdf_token_t token)
 
 pdf_status_t
 pdf_token_name_new (const pdf_char_t *value,
-                  pdf_size_t size,
-                  pdf_token_t *token)
+                    pdf_size_t size,
+                    pdf_token_t *token)
 {
+  pdf_size_t i;
+  for (i = 0; i < size; ++i)
+    {
+      if (value[i] == 0)  /* names can't include null bytes */
+        return PDF_EBADDATA;
+    }
+
   return pdf_token_buffer_new (PDF_TOKEN_NAME, value, size, 1, token);
 }
 
@@ -325,6 +332,14 @@ pdf_token_comment_new (const pdf_char_t *value,
                        pdf_token_t *token)
 {
   pdf_status_t rv;
+  pdf_size_t i;
+  for (i = 0; i < size; ++i)
+    {
+      /* comments can't span multiple lines */
+      if (pdf_is_eol_char(value[i]))
+        return PDF_EBADDATA;
+    }
+
   rv = pdf_token_buffer_new (PDF_TOKEN_COMMENT, value, size, 0, token);
   if (rv == PDF_OK)
     (*token)->value.comment.continued = !!continued;
@@ -361,6 +376,14 @@ pdf_token_keyword_new (const pdf_char_t *value,
                        pdf_size_t size,
                        pdf_token_t *token)
 {
+  pdf_size_t i;
+  for (i = 0; i < size; ++i)
+    {
+      /* keywords can only include regular characters */
+      if (!pdf_is_regular_char(value[i]))
+        return PDF_EBADDATA;
+    }
+
   return pdf_token_buffer_new (PDF_TOKEN_KEYWORD, value, size, 1, token);
 }
 
