@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/05/07 11:17:46 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-05-19 20:32:45 davazp"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -136,14 +136,17 @@ pdf_status_t pdf_crypt_md_destroy (pdf_crypt_md_t hd);
 
 #else
 
-#if defined(COMPILING_PDF_CRYPT)
-# undef EXTERN_INLINE
-# define EXTERN_INLINE
+#if defined (COMPILING_PDF_CRYPT)
+# define STATIC_INLINE
+#else
+# define STATIC_INLINE static inline
 #endif /* COMPILING_PDF_CRYPT */
+
 
 #include <gcrypt.h>
 
-EXTERN_INLINE pdf_status_t
+
+STATIC_INLINE pdf_status_t
 pdf_crypt_init (void)
 {
   gcry_check_version (GCRYPT_VERSION);
@@ -151,7 +154,7 @@ pdf_crypt_init (void)
 }
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_crypt_nonce (pdf_char_t * buffer, pdf_size_t size)
 {
   gcry_create_nonce (buffer, size);
@@ -160,7 +163,7 @@ pdf_crypt_nonce (pdf_char_t * buffer, pdf_size_t size)
 
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_crypt_cipher_new (enum pdf_crypt_cipher_algo_e algorithm,
 		      pdf_crypt_cipher_t *cipher)
 {
@@ -210,7 +213,7 @@ pdf_crypt_cipher_new (enum pdf_crypt_cipher_algo_e algorithm,
 }
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_crypt_cipher_setkey (pdf_crypt_cipher_t cipher,
 			 pdf_char_t *key, pdf_size_t size)
 {
@@ -218,7 +221,7 @@ pdf_crypt_cipher_setkey (pdf_crypt_cipher_t cipher,
 }
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_crypt_cipher_encrypt (pdf_crypt_cipher_t cipher,
 			  pdf_char_t *out, pdf_size_t out_size,
 			  pdf_char_t *in,  pdf_size_t in_size,
@@ -228,7 +231,7 @@ pdf_crypt_cipher_encrypt (pdf_crypt_cipher_t cipher,
 }
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_crypt_cipher_decrypt (pdf_crypt_cipher_t cipher,
 			  pdf_char_t *out, pdf_size_t out_size,
 			  pdf_char_t *in,  pdf_size_t in_size,
@@ -238,7 +241,7 @@ pdf_crypt_cipher_decrypt (pdf_crypt_cipher_t cipher,
 }
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_crypt_cipher_destroy (pdf_crypt_cipher_t cipher)
 {
   pdf_status_t ret;
@@ -253,7 +256,7 @@ pdf_crypt_cipher_destroy (pdf_crypt_cipher_t cipher)
 /* Hashing functions */
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_crypt_md_new (enum pdf_crypt_md_algo_e algo, pdf_crypt_md_t *_md)
 {
   pdf_crypt_md_t md;
@@ -288,7 +291,7 @@ pdf_crypt_md_new (enum pdf_crypt_md_algo_e algo, pdf_crypt_md_t *_md)
 
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_crypt_md_write (pdf_crypt_md_t md,
                     pdf_char_t *in,  pdf_size_t in_size)
 {
@@ -298,7 +301,7 @@ pdf_crypt_md_write (pdf_crypt_md_t md,
 }
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_crypt_md_read (pdf_crypt_md_t md,
 		   pdf_char_t *out, pdf_size_t out_size)
 {
@@ -332,7 +335,7 @@ pdf_crypt_md_read (pdf_crypt_md_t md,
 
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_crypt_md_destroy (pdf_crypt_md_t md)
 {
   pdf_dealloc (md->raw);

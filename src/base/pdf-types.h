@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/05/07 12:18:09 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-05-19 19:24:11 davazp"
  *
  *       File:         pdf-types.h
  *       Date:         Sun Feb 10 21:30:00 2008
@@ -473,30 +473,6 @@ pdf_i64_to_i32(const pdf_i64_t bignum);
 #endif
 
 /* END PUBLIC */
-
-/* GCC has `__inline__' in all modes, including strict ansi.  GCC 4.3 and
-   above with `-std=c99' or `-std=gnu99' implements ISO C99 inline semantics,
-   unless `-fgnu89-inline' is used.  Here we want GNU "extern inline"
-   semantics, hence the `__gnu_inline__' attribute, in accordance with:
-   http://gcc.gnu.org/gcc-4.3/porting_to.html .
-   
-   With GCC 4.2, `__GNUC_STDC_INLINE__' is never defined (because C99 inline
-   semantics are not supported), but a warning is issued in C99 mode if
-   `__gnu_inline__' is not used.
-   
-   Apple's GCC build >5400 (since Xcode 3.0) doesn't support GNU inline in
-   C99 mode and doesn't define `__GNUC_STDC_INLINE__'.  Fall back to "static
-   inline" in that case.  */
-
-# if (defined __GNUC__) && (!(__APPLE_CC__ > 5400 && __STDC_VERSION__ >= 199901L))
-#  if (defined __GNUC_STDC_INLINE__) || (__GNUC__ == 4 && __GNUC_MINOR__ == 2)
-#   define EXTERN_INLINE extern __inline__ __attribute__ ((__gnu_inline__))
-#  else
-#   define EXTERN_INLINE extern __inline__
-#  endif
-# elif (defined SCM_C_INLINE)
-#  define EXTERN_INLINE static SCM_C_INLINE
-# endif
 
 #endif /* !PDF_TYPES_H */
 
