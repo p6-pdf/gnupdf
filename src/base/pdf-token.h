@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-20 04:01:14 mgold"
+/* -*- mode: C -*- Time-stamp: "09/05/25 23:40:13 jemarch"
  *
  *       File:         pdf-token.h
  *       Date:         Sat Jul  7 01:10:11 2007
@@ -88,7 +88,7 @@ pdf_status_t pdf_token_dup (const pdf_token_t token, pdf_token_t *new);
 pdf_status_t pdf_token_destroy (pdf_token_t token);
 
 /* Common functions */
-enum pdf_token_type_e pdf_token_type (const pdf_token_t token);
+enum pdf_token_type_e pdf_token_get_type (const pdf_token_t token);
 pdf_bool_t pdf_token_equal_p (const pdf_token_t token1,
                               const pdf_token_t token2);
 

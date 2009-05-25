@@ -1,3 +1,13 @@
+2009-05-26  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-stm.c (pdf_stm_tell): The size of used cache should
+	be substracted to the position reported by the backend.
+
+2009-05-25  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-token.h (pdf_token_type): Prototype for
+	'pdf_token_type' changed to read 'pdf_token_get_type'.
+
 2009-05-20  Michael Gold  <mgold@ncf.ca>
 
 	Implement the token reader API.

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/02/06 01:31:12 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/05/26 00:14:11 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -455,7 +455,7 @@ pdf_stm_tell (pdf_stm_t stm)
   if (stm->mode == PDF_STM_READ)
     {
       cache_size = stm->cache->wp - stm->cache->rp;
-      pos = pdf_stm_be_tell (stm->backend) + cache_size;
+      pos = pdf_stm_be_tell (stm->backend) - cache_size;
     }
   else
     {
@@ -465,7 +465,7 @@ pdf_stm_tell (pdf_stm_t stm)
       tail_buffer = pdf_stm_filter_get_in (tail_filter);
 
       cache_size = tail_buffer->wp - tail_buffer->rp;
-      pos = pdf_stm_be_tell (stm->backend) + cache_size;
+      pos = pdf_stm_be_tell (stm->backend) - cache_size;
     }
 
   return pos;

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-20 04:01:14 mgold"
+/* -*- mode: C -*- Time-stamp: "09/05/25 23:21:47 jemarch"
  *
  *       File:         pdf-token-reader.h
  *       Date:         Mon Dec 29 00:45:09 2008
@@ -35,11 +35,11 @@
 struct pdf_token_reader_s;  /* opaque type */
 typedef struct pdf_token_reader_s *pdf_token_reader_t;
 
-pdf_status_t pdf_token_reader_new(pdf_stm_t stm, pdf_token_reader_t *reader);
-pdf_status_t pdf_token_reader_destroy(pdf_token_reader_t reader);
-pdf_status_t pdf_token_reader_reset(pdf_token_reader_t reader);
-pdf_status_t pdf_token_read(pdf_token_reader_t reader, pdf_u32_t flags,
-                            pdf_token_t *token);
+pdf_status_t pdf_token_reader_new (pdf_stm_t stm, pdf_token_reader_t *reader);
+pdf_status_t pdf_token_reader_destroy (pdf_token_reader_t reader);
+pdf_status_t pdf_token_reader_reset (pdf_token_reader_t reader);
+pdf_status_t pdf_token_read (pdf_token_reader_t reader, pdf_u32_t flags,
+                             pdf_token_t *token);
 
 enum pdf_token_rw_flags_e {
   /* these flags are used for token_read and token_write */
