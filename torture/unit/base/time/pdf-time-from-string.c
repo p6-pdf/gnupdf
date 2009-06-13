@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/05/07 12:22:20 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/06/13 17:46:28 jemarch"
  *
  *       File:         pdf-time-from-string.c
  *       Date:         Fri Feb 27 17:35:31 2008
@@ -170,7 +170,7 @@ START_TEST (pdf_time_from_string_002)
             dates[i].hour*3600 - gmt*60;
 
             if ( seconds < 0) continue;
-            memset(&dateString[0], 0, 26);
+            memset(&dateString[0], 0, 23);
 
             pdf_time_set_from_u32(time1,seconds);
 

@@ -1,7 +1,11 @@
 2009-06-13  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* AUTHORS: Brad Hards added.
+
 	* torture/unit/base/time/pdf-time-from-string.c: Several typos
 	fixed. Fix by Brad Hards.
+	(START_TEST): Memset the right amount of octects in
+	pdf_time_from_string_002. Reported by Brad hards.
 
 	* torture/unit/base/time/pdf-time-copy.c (START_TEST): Initialize
 	the time variable used as the destination in a copy. Fix by Brad
