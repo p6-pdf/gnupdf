@@ -1,5 +1,8 @@
 2009-06-13  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* torture/unit/base/time/pdf-time-from-string.c: Several typos
+	fixed. Fix by Brad Hards.
+
 	* torture/unit/base/time/pdf-time-copy.c (START_TEST): Initialize
 	the time variable used as the destination in a copy. Fix by Brad
 	Hards.
