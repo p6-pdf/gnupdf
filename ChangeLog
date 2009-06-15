@@ -1,3 +1,8 @@
+2009-06-15  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/unit/base/time/pdf-time-span-destroy.c: Pass addresses
+	to pdf_time_span_destroy_001.
+
 2009-06-13  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* AUTHORS: Brad Hards added.
