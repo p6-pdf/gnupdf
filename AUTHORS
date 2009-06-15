@@ -71,6 +71,9 @@ and changed doc/gnupdf.texi doc/gnupdf-tsd.texi configure.ac src/Makefile.am
   torture/unit/base/stm/pdf-stm-write.c
   torture/unit/base/stm/pdf-stm-read.c
 
+Brad Hards: changed torture/unit/base/time/pdf-time-from-string.c
+  torture/unit/base/time/pdf-time-copy.c
+
 Daniel Vidal: wrote /torture/unit/base/types/pdf-i64-add.c
   /torture/unit/base/types/pdf-i64-assign.c
   /torture/unit/base/types/pdf-i64-assign-quick.c

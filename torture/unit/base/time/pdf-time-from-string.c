@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/05/07 12:22:20 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/06/13 17:46:28 jemarch"
  *
  *       File:         pdf-time-from-string.c
  *       Date:         Fri Feb 27 17:35:31 2008
@@ -72,7 +72,7 @@ START_TEST (pdf_time_from_string_001)
   fail_if(status != PDF_OK);
   fail_if(time2 == NULL);
 
-  dateString = pdf_alloc(26); /* YYYY-MM-DDThh:mm:ss+hh:mm  - lenght = 26  */
+  dateString = pdf_alloc(26); /* YYYY-MM-DDThh:mm:ss+hh:mm  - length = 26  */
 
   for (i=0; i<DATES_SIZE; i++){
           for (gmt =-12*60; gmt <=12*60; gmt+=5){  /* Set various gmt_offsets. */
@@ -162,7 +162,7 @@ START_TEST (pdf_time_from_string_002)
   fail_if(status != PDF_OK);
   fail_if(time2 == NULL);
 
-  dateString = pdf_alloc(23); /* YYYY-MM-DDThh:mm+hh:mm  - lenght = 23  */
+  dateString = pdf_alloc(23); /* YYYY-MM-DDThh:mm+hh:mm  - length = 23  */
 
   for (i=0; i<DATES_SIZE; i++){
           for (gmt =-12*60; gmt <=12*60; gmt+=5){  /* Set various gmt_offsets. */
@@ -170,7 +170,7 @@ START_TEST (pdf_time_from_string_002)
             dates[i].hour*3600 - gmt*60;
 
             if ( seconds < 0) continue;
-            memset(&dateString[0], 0, 26);
+            memset(&dateString[0], 0, 23);
 
             pdf_time_set_from_u32(time1,seconds);
 
@@ -248,7 +248,7 @@ START_TEST (pdf_time_from_string_003)
   fail_if(status != PDF_OK);
   fail_if(time2 == NULL);
 
-  dateString = pdf_alloc(11); /* YYYY-MM-DD  - lenght = 11 */
+  dateString = pdf_alloc(11); /* YYYY-MM-DD  - length = 11 */
 
   for (i=0; i<DATES_SIZE; i++){
         seconds=datesInSeconds[i];
@@ -311,7 +311,7 @@ START_TEST (pdf_time_from_string_004)
   fail_if(status != PDF_OK);
   fail_if(time2 == NULL);
 
-  dateString = pdf_alloc(8); /* YYYY-MM  - lenght = 8 */
+  dateString = pdf_alloc(8); /* YYYY-MM  - length = 8 */
 
   for (i=0; i<DATES_SIZE; i++){
             seconds=datesInSeconds[i];
@@ -383,7 +383,7 @@ START_TEST (pdf_time_from_string_005)
   fail_if(status != PDF_OK);
   fail_if(time2 == NULL);
 
-  dateString = pdf_alloc(5); /* YYYY  - lenght = 5  */
+  dateString = pdf_alloc(5); /* YYYY  - length = 5  */
 
   for (i=0, seconds=0; i<DATES_SIZE; i++, seconds+=SEC_IN_NOLEEP_YEAR){
     if ((i-2)%4 == 0) seconds +=SEC_IN_DAY;     //add one day - 29 February
@@ -461,7 +461,7 @@ START_TEST (pdf_time_from_string_006)
   fail_if(status != PDF_OK);
   fail_if(time2 == NULL);
 
-  dateString = pdf_alloc(24); /* D:YYYYMMDDHHmmSSOHH'mm'  - lenght = 24  */
+  dateString = pdf_alloc(24); /* D:YYYYMMDDHHmmSSOHH'mm'  - length = 24  */
 
   for (i=0; i<DATES_SIZE; i++){
           for (gmt =-12*60; gmt <=12*60; gmt+=9){  /* Set various gmt_offsets. */
@@ -577,7 +577,7 @@ START_TEST (pdf_time_from_string_007)
   fail_if(status != PDF_OK);
   fail_if(time2 == NULL);
 
-  dateString = pdf_alloc(20); /* YYYYMMDDhhmmss+hhmm  - lenght = 20 */
+  dateString = pdf_alloc(20); /* YYYYMMDDhhmmss+hhmm  - length = 20 */
 
   for (i=0; i<DATES_SIZE; i++){
           for (gmt =-12*60; gmt <=12*60; gmt+=5){  /* Set various gmt_offsets. */
@@ -667,7 +667,7 @@ START_TEST (pdf_time_from_string_008)
   fail_if(status != PDF_OK);
   fail_if(time2 == NULL);
 
-  dateString = pdf_alloc(18); /* YYYYMMDDhhmm+hhmm  - lenght = 18  */
+  dateString = pdf_alloc(18); /* YYYYMMDDhhmm+hhmm  - length = 18  */
 
   for (i=0; i<DATES_SIZE; i++){
           for (gmt =-12*60; gmt <=12*60; gmt+=5){  /* Set various gmt_offsets. */
@@ -753,7 +753,7 @@ START_TEST (pdf_time_from_string_009)
   fail_if(status != PDF_OK);
   fail_if(time2 == NULL);
 
-  dateString = pdf_alloc(9); /* YYYYMMDD  - lenght = 9 */
+  dateString = pdf_alloc(9); /* YYYYMMDD  - length = 9 */
 
   for (i=0; i<DATES_SIZE; i++){
     seconds=datesInSeconds[i];
@@ -815,7 +815,7 @@ START_TEST (pdf_time_from_string_010)
   fail_if(status != PDF_OK);
   fail_if(time2 == NULL);
 
-  dateString = pdf_alloc(7); /* YYYYMM  - lenght = 7 */
+  dateString = pdf_alloc(7); /* YYYYMM  - length = 7 */
 
   for (i=0; i<DATES_SIZE; i++){
       seconds=datesInSeconds[i];
@@ -888,7 +888,7 @@ START_TEST (pdf_time_from_string_011)
   fail_if(status != PDF_OK);
   fail_if(time2 == NULL);
 
-  dateString = pdf_alloc(5); /* YYYY  - lenght = 5  */
+  dateString = pdf_alloc(5); /* YYYY  - length = 5  */
 
   for (i=0, seconds=0; i<40; i++, seconds+=SEC_IN_NOLEEP_YEAR){
     if ((i-2)%4 == 0) seconds +=SEC_IN_DAY;     //add one day - 29 February
@@ -965,7 +965,7 @@ START_TEST (pdf_time_from_string_012)
   fail_if(status != PDF_OK);
   fail_if(time2 == NULL);
 
-  dateString = pdf_alloc(18); /* yymmddhhmmss+hhmm  - lenght = 18 */
+  dateString = pdf_alloc(18); /* yymmddhhmmss+hhmm  - length = 18 */
 
   for (i=0; i<DATES_SIZE; i++){
           for (gmt =-12*60; gmt <=12*60; gmt+=5){  /* Set various gmt_offsets. */
@@ -1055,7 +1055,7 @@ START_TEST (pdf_time_from_string_013)
   fail_if(status != PDF_OK);
   fail_if(time2 == NULL);
 
-  dateString = pdf_alloc(18); /* YYMMDDhhmm+hhmm  - lenght = 16  */
+  dateString = pdf_alloc(18); /* YYMMDDhhmm+hhmm  - length = 16  */
 
   for (i=0; i<DATES_SIZE; i++){
           for (gmt =-12*60; gmt <=12*60; gmt+=5){  /* Set various gmt_offsets. */
