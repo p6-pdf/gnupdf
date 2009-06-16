@@ -280,6 +280,8 @@ Lukasz Spintzyk: wrote
   torture/unit/base/time/pdf-time-sub-span.c
   torture/unit/base/time/pdf-time-to-string.c
   torture/unit/base/time/pdf-time-w32-set-from-filetime.c
+  torture/unit/base/stm/pdf-stm-flush.c
+and changed torture/unit/base/stm/tsuite-stm.c
 
 Mathias Kolehmainen: wrote torture/testall.c
 and changed configure.ac torture/Makefile.am torture/test-date.c 

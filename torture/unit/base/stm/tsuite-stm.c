@@ -33,6 +33,7 @@ extern TCase *test_pdf_stm_peek_char (void);
 extern TCase *test_pdf_stm_seek (void);
 extern TCase *test_pdf_stm_tell (void);
 extern TCase *test_pdf_stm_write (void);
+extern TCase *test_pdf_stm_flush (void);
 
 Suite *
 tsuite_stm ()
@@ -49,6 +50,8 @@ tsuite_stm ()
   suite_add_tcase (s, test_pdf_stm_seek ());
   suite_add_tcase (s, test_pdf_stm_tell ());
   suite_add_tcase (s, test_pdf_stm_write ());
+  suite_add_tcase (s, test_pdf_stm_flush ());
+
 
   return s;
 }

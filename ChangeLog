@@ -1,5 +1,7 @@
 2009-06-16  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* torture/unit/base/stm/pdf-stm-flush.c: New file.
+
 	* torture/unit/base/time/pdf-time-span-negate.c
 	(pdf_time_span_negate_003): Pass a NULL pointer to
 	pdf_time_span_negate.
