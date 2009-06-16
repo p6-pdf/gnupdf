@@ -48,7 +48,7 @@ START_TEST (pdf_time_span_destroy_001)
   sec = pdf_time_span_to_secs(span);
   sec2 = pdf_i64_new(0, 0);
   
-  fail_unless(memcmp(sec, sec2, sizeof(pdf_i64_t)) == 0);
+  fail_unless(memcmp(&sec, &sec2, sizeof(pdf_i64_t)) == 0);
 
   status = pdf_time_span_destroy(&span);
   fail_if(status != PDF_OK);

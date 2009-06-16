@@ -31,11 +31,9 @@
  * Test: pdf_time_set_from_i64_001
  * Description:
  *   Create two pdf_time_t objects.
- *   First is initialized with
- *   pdf_time_set_from_u32, and second one to the
- *   same number with function
+ *   First is initialized with pdf_time_set_from_u32
+ *   and second one with the same number with function
  *   pdf_time_set_from_i64.
- *   seconds.
  *   Both object must be equal.
  *
  *Success condition:
@@ -69,7 +67,7 @@ START_TEST (pdf_time_set_from_i64_001)
   fail_if(status != PDF_OK);
 
 
-  fail_unless( pdf_time_cmp(time1, time2) == 0 );
+  fail_unless(pdf_time_cmp(time1, time2) == 0 );
 
 
   status = pdf_time_destroy(time1);

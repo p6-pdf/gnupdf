@@ -34,7 +34,7 @@
  * Create new pdf_time_t object and initialize it with 
  * value diffrent to zero.
  * Then clear that object and compare it with
- * newly created empty pdf_time_s.
+ * newly created empty pdf_time_t.
  *Success condition:
  * 1. Function pdf_time_new schould return PDF_OK
  * 2. Function pdf_time_clear schould return PDF_OK.

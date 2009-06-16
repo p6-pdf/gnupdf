@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/05/07 12:21:32 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/04/17 00:05:43 jemarch"
  *
  *       File:         pdf-time-new.c
  *       Date:         Fri Feb 27 17:35:31 2008
@@ -24,7 +24,6 @@
  */
 
 #include <config.h>
-#include <string.h>
 #include <check.h>
 #include <pdf.h>
 #include <stdlib.h>
