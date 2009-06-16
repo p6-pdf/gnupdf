@@ -160,13 +160,20 @@ pdf_time_from_string_pdf(pdf_time_t time_var,
       __GET_FIELD2(time_str, 4, calendar.year);
       /* more than year ? */
       if(time_str_length == 6)
+        {
+        calendar.month = 1;
+        calendar.day = 1;
         break;
+        }
 
       /* Get month */
       __GET_FIELD2(time_str, 6, calendar.month);
       /* more than month ? */
       if(time_str_length == 8)
+        {
+        calendar.day = 1;
         break;
+        }
 
       /* Get day */
       __GET_FIELD2(time_str, 8, calendar.day);
@@ -465,14 +472,21 @@ pdf_time_from_string_generalized_asn1(pdf_time_t time_var,
       __GET_FIELD2(time_str, 2, calendar.year);
       /* more than year ? */
       if(time_str_length == 4)
+        {
+        calendar.month = 1;
+        calendar.day = 1;
         break;
+        }
 
       
       /* Get month */
       __GET_FIELD2(time_str, 4, calendar.month);
       /* more than month ? */
       if(time_str_length == 6)
+        {
+        calendar.day = 1;
         break;
+        }
       
       /* Get day */
       __GET_FIELD2(time_str, 6, calendar.day);
@@ -577,14 +591,21 @@ pdf_time_from_string_iso8601(pdf_time_t time_var,
       __GET_FIELD2(time_str, 2, calendar.year);
       /* more than year ? */
       if(time_str_length == 4)
+        {
+        calendar.month = 1;
+        calendar.day = 1;
         break;
+        }
 
       
       /* Get month */
       __GET_FIELD2(time_str, 5, calendar.month);
       /* more than month ? */
       if(time_str_length == 7)
+        {
+        calendar.day = 1;
         break;
+        }
       
       /* Get day */
       __GET_FIELD2(time_str, 8, calendar.day);
@@ -595,10 +616,12 @@ pdf_time_from_string_iso8601(pdf_time_t time_var,
       /* Get hour and minutes */
       __GET_FIELD2(time_str, 11, calendar.hour);
       __GET_FIELD2(time_str, 14, calendar.minute);
+
       
       /* Get second if available */
       if((time_str[17] >= '0') && \
-         (time_str[17] <= '9'))
+         (time_str[17] <= '9') && \
+         (time_str[16] == ':'))
         {
           has_seconds = PDF_TRUE;
           __GET_FIELD2(time_str, 17, calendar.second);
@@ -655,6 +678,7 @@ pdf_time_to_string_pdf(const pdf_time_t time_var)
 
               offset_hours = (((calendar.gmt_offset < 0) ? (-1) : (1)) * calendar.gmt_offset) / 3600;
               offset_minutes = (((calendar.gmt_offset < 0) ? (-1) : (1)) * calendar.gmt_offset) % 3600;
+              offset_minutes /= 60; /* Get only full minutes */
               sprintf((char *)str, "D:%4d%s%d%s%d%s%d%s%d%s%d%c%s%d'%s%d'", \
                       calendar.year,
                       (calendar.month < 10 ? "0" : ""), calendar.month,
@@ -716,6 +740,7 @@ pdf_time_to_string_utc_asn1(const pdf_time_t time_var)
 
               offset_hours = (((calendar.gmt_offset < 0) ? (-1) : (1)) * calendar.gmt_offset) / 3600;
               offset_minutes = (((calendar.gmt_offset < 0) ? (-1) : (1)) * calendar.gmt_offset) % 3600;
+              offset_minutes /= 60;
               /* yymmddhhmmss+hhmm
                * yymmddhhmmss-hhmm
                */
@@ -775,6 +800,7 @@ pdf_time_to_string_generalized_asn1(const pdf_time_t time_var)
 
               offset_hours = (((calendar.gmt_offset < 0) ? (-1) : (1)) * calendar.gmt_offset) / 3600;
               offset_minutes = (((calendar.gmt_offset < 0) ? (-1) : (1)) * calendar.gmt_offset) % 3600;
+              offset_minutes /= 60; 
               sprintf((char *)str, "%4d%s%d%s%d%s%d%s%d%s%d%c%s%d%s%d", \
                       calendar.year,
                       (calendar.month < 10 ? "0" : ""), calendar.month,
@@ -828,6 +854,7 @@ pdf_time_to_string_iso8601(const pdf_time_t time_var)
 
               offset_hours = (((calendar.gmt_offset < 0) ? (-1) : (1)) * calendar.gmt_offset) / 3600;
               offset_minutes = (((calendar.gmt_offset < 0) ? (-1) : (1)) * calendar.gmt_offset) % 3600;
+              offset_minutes /= 60; /* Get only full minutes */
               sprintf((char *)str, "%4d-%s%d-%s%dT%s%d:%s%d:%s%d%c%s%d:%s%d", \
                       calendar.year,
                       (calendar.month < 10 ? "0" : ""), calendar.month,
