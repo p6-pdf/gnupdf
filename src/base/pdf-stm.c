@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/05/26 00:14:11 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/06/16 22:53:15 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -198,6 +198,9 @@ pdf_stm_read (pdf_stm_t stm,
       ret = PDF_OK;
     }
 
+  /* Update the sequential counter */
+  stm->seq_counter += *read_bytes;
+
   return ret;
 }
 
@@ -275,6 +278,8 @@ pdf_stm_write (pdf_stm_t stm,
       ret = PDF_OK;
     }
 
+  /* Update the sequential counter */
+  stm->seq_counter += *written_bytes;
   
   return ret;
 }
@@ -396,8 +401,8 @@ pdf_stm_peek_char (pdf_stm_t stm, pdf_char_t *c)
 }
 
 pdf_off_t
-pdf_stm_seek (pdf_stm_t stm,
-              pdf_off_t pos)
+pdf_stm_bseek (pdf_stm_t stm,
+               pdf_off_t pos)
 {
   pdf_off_t cur_pos;
   pdf_off_t new_pos;
@@ -441,11 +446,14 @@ pdf_stm_seek (pdf_stm_t stm,
       new_pos = pdf_stm_be_seek (stm->backend, pos);
     }
 
+  /* Reset the sequential counter */
+  stm->seq_counter = 0;
+
   return new_pos;
 }
 
 pdf_off_t
-pdf_stm_tell (pdf_stm_t stm)
+pdf_stm_btell (pdf_stm_t stm)
 {
   pdf_off_t pos;
   pdf_size_t cache_size;
@@ -471,6 +479,12 @@ pdf_stm_tell (pdf_stm_t stm)
   return pos;
 }
 
+pdf_off_t
+pdf_stm_tell (pdf_stm_t stm)
+{
+  return stm->seq_counter;
+}
+
 /*
  * Private functions
  */
@@ -489,6 +503,9 @@ pdf_stm_init (pdf_size_t cache_size,
       /* Use the default cache size */
       cache_size = PDF_STM_DEFAULT_CACHE_SIZE;
     } 
+
+  /* The sequential counter is initially 0 */
+  stm->seq_counter = 0;
 
   /* Initialize the null filter */
   pdf_hash_new (NULL, &null_filter_params);
@@ -584,6 +601,12 @@ pdf_stm_read_peek_char (pdf_stm_t stm,
           /* Avoid a false PDF_EEOF */
           ret = PDF_OK;
         }
+    }
+
+  if (ret == PDF_OK)
+    {
+      /* Update the sequential counter */
+      stm->seq_counter++;
     }
   
   return ret;

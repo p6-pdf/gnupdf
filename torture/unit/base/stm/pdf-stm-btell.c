@@ -1,9 +1,9 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-15 13:50:03 gerel"
+/* -*- mode: C -*- Time-stamp: "09/06/16 22:51:54 jemarch"
  *
- *       File:         pdf-stm-tell.c
+ *       File:         pdf-stm-btell.c
  *       Date:         Sat Sep 20 19:16:41 2008
  *
- *       GNU PDF Library - Unit tests for pdf_stm_tell
+ *       GNU PDF Library - Unit tests for pdf_stm_btell
  *
  */
 
@@ -30,14 +30,14 @@
 #include <pdf.h>
 
 /*
- * Test: pdf_stm_tell_001
+ * Test: pdf_stm_btell_001
  * Description:
- *   Tell an initialized reading memory stream.
+ *   Btell an initialized reading memory stream.
  * Success condition:
- *   The tell operation should report the first position
+ *   The btell operation should report the first position
  *   in the stream (0).
  */
-START_TEST (pdf_stm_tell_001)
+START_TEST (pdf_stm_btell_001)
 {
   pdf_status_t ret;
   pdf_stm_t stm;
@@ -59,8 +59,8 @@ START_TEST (pdf_stm_tell_001)
                          &stm);
   fail_if(ret != PDF_OK);
 
-  /* Tell the stream */
-  pos = pdf_stm_tell (stm);
+  /* Btell the stream */
+  pos = pdf_stm_btell (stm);
   fail_if(pos != 0);
 
   /* Destroy data */
@@ -71,14 +71,14 @@ END_TEST
 
 
 /*
- * Test: pdf_stm_tell_002
+ * Test: pdf_stm_btell_002
  * Description:
- *   Tell an initialized reading file stream.
+ *   Btell an initialized reading file stream.
  * Success condition:
- *   The tell operation should report the first position
+ *   The btell operation should report the first position
  *   in the stream (0).
  */
-START_TEST (pdf_stm_tell_002)
+START_TEST (pdf_stm_btell_002)
 {
   pdf_status_t ret;
   pdf_stm_t stm;
@@ -115,8 +115,8 @@ START_TEST (pdf_stm_tell_002)
                           &stm);
   fail_if(ret != PDF_OK);
 
-  /* Tell the stream */
-  pos = pdf_stm_tell (stm);
+  /* Btell the stream */
+  pos = pdf_stm_btell (stm);
   fail_if(pos != 0);
 
   /* Destroy data */
@@ -133,14 +133,14 @@ END_TEST
  * Test case creation function
  */
 TCase *
-test_pdf_stm_tell (void)
+test_pdf_stm_btell (void)
 {
-  TCase *tc = tcase_create ("pdf_stm_tell");
+  TCase *tc = tcase_create ("pdf_stm_btell");
 
-  tcase_add_test(tc, pdf_stm_tell_001);
-  tcase_add_test(tc, pdf_stm_tell_002);
+  tcase_add_test(tc, pdf_stm_btell_001);
+  tcase_add_test(tc, pdf_stm_btell_002);
 
   return tc;
 }
 
-/* End of pdf-stm-tell.c */
+/* End of pdf-stm-btell.c */

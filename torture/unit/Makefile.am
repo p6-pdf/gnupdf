@@ -67,8 +67,8 @@ TEST_SUITE_STM = base/stm/pdf-stm-mem-new.c \
                  base/stm/pdf-stm-read.c \
                  base/stm/pdf-stm-read-char.c \
                  base/stm/pdf-stm-peek-char.c \
-                 base/stm/pdf-stm-seek.c \
-                 base/stm/pdf-stm-tell.c \
+                 base/stm/pdf-stm-bseek.c \
+                 base/stm/pdf-stm-btell.c \
                  base/stm/pdf-stm-write.c \
 		 base/stm/pdf-stm-flush.c
 
@@ -187,13 +187,13 @@ TEST_SUITE_TIME =  base/time/pdf-time-init.c \
 		   base/time/pdf-time-span-dup.c \
 		   base/time/pdf-time-span-destroy.c \
 		   base/time/pdf-time-span-set.c \
-  		   base/time/pdf-time-span-set-from-i32.c \
-  		   base/time/pdf-time-span-negate.c \
-  		   base/time/pdf-time-span-add.c \
-  		   base/time/pdf-time-span-cmp.c \
-  		   base/time/pdf-time-span-copy.c \
-  		   base/time/pdf-time-span-diff.c \
-  		   base/time/pdf-time-span-to-secs.c \
+                   base/time/pdf-time-span-set-from-i32.c \
+                   base/time/pdf-time-span-negate.c \
+                   base/time/pdf-time-span-add.c \
+                   base/time/pdf-time-span-cmp.c \
+                   base/time/pdf-time-span-copy.c \
+                   base/time/pdf-time-span-diff.c \
+                   base/time/pdf-time-span-to-secs.c \
 		   base/time/pdf-time-testdata.c \
 		   base/time/pdf-time-test-common.c \
 		   base/time/pdf-time-diff-cal.c \

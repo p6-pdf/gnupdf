@@ -4615,9 +4615,9 @@ XXX
 @node Stream Positioning
 @subsection Stream Positioning
 
-@deftypefun pdf_off_t pdf_stm_seek (pdf_stm_t @var{stm}, pdf_off_t @var{pos})
+@deftypefun pdf_off_t pdf_stm_bseek (pdf_stm_t @var{stm}, pdf_off_t @var{pos})
 
-Seek into a given stream.
+Seek into the backend of a given stream.
 
 @table @strong
 @item Parameters
@@ -4626,7 +4626,7 @@ Seek into a given stream.
 A stream.
 @item pos
 The position to seek, measured in octects from the beginning of the
-stream.
+backend media.
 @end table
 @item Returns
 The new position of the stream read/write pointer. If it is equal to
@@ -4638,9 +4638,10 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_off_t pdf_stm_tell (pdf_stm_t @var{stm})
+@deftypefun pdf_off_t pdf_stm_btell (pdf_stm_t @var{stm})
 
-Get the current position of the read/write pointer of a stream.
+Get the current position of the read/write pointer of the backend of a
+stream.
 
 @table @strong
 @item Parameters
@@ -4650,7 +4651,28 @@ A stream.
 @end table
 @item Returns
 The current position (measured in octets from the beginning of the
-stream) of the read/write pointer.
+backend media) of the read/write pointer.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_off_t pdf_stm_tell (pdf_stm_t @var{stm})
+
+Get the number of octects read/written from/to the stream since either
+the last @code{pdf_stm_bseek} operation or the creation of the
+stream, if no bseek was made.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@end table
+@item Returns
+The current position (measured in octets) of the read/write pointer.
 @item Usage example
 @example
 XXX
