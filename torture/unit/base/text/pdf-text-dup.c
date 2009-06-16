@@ -231,6 +231,20 @@ START_TEST(pdf_text_dup_004)
 }
 END_TEST
 
+/*
+ * Test: pdf_text_dup_005
+ * Description:
+ *   Duplicate text without initializing the context
+ * Success conditions:
+ *   1. The call to @code{pdf_text_dup} should return a null pointer
+ */
+START_TEST(pdf_text_dup_005)
+{
+  pdf_text_t newtext = NULL;
+
+  fail_unless(pdf_text_dup (&newtext) == NULL);
+}
+END_TEST
 
 /*
  * Test case creation function
@@ -243,6 +257,7 @@ test_pdf_text_dup (void)
   tcase_add_test(tc, pdf_text_dup_002);
   tcase_add_test(tc, pdf_text_dup_003);
   tcase_add_test(tc, pdf_text_dup_004);
+  tcase_add_test(tc, pdf_text_dup_005);
   return tc;
 }
 

@@ -66,7 +66,20 @@ START_TEST(pdf_text_new_destroy_001)
 }
 END_TEST
 
+/*
+ * Test: pdf_text_new_destroy_002
+ * Description:
+ *   Create an text object without initializing the context
+ * Success conditions:
+ *   1. The call to @code{pdf_text_new} should return PDF_EBADCONTEXT
+ */
+START_TEST(pdf_text_new_destroy_002)
+{
+  pdf_text_t newtext = NULL;
 
+  fail_unless(pdf_text_new (&newtext) == PDF_EBADCONTEXT);
+}
+END_TEST
 
 /*
  * Test case creation function
@@ -76,6 +89,7 @@ test_pdf_text_new_destroy (void)
 {
   TCase *tc = tcase_create("pdf_text_new_destroy");
   tcase_add_test(tc, pdf_text_new_destroy_001);
+  tcase_add_test(tc, pdf_text_new_destroy_002);
   return tc;
 }
 

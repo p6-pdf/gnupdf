@@ -1060,6 +1060,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_ERROR
+@var{dest} is null
 @end table
 @item Usage example
 @example
@@ -1183,11 +1185,13 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_ERROR
+@var{dest} is null
 @end table
 @item Usage example
 @example
 pdf_i64_t *dest;
-pdf_i65_t result;
+pdf_i64_t result;
 pdf_i64_t number;
 pdf_status_t *p_status;
 number = pdf_i64_new ((32 << 1), 105); /*number is -105*/
@@ -1226,7 +1230,7 @@ If @var{number_2} is greater than @var{number_1}
 @end table
 @item Usage example
 @example
-pdf_i65_t number_1;
+pdf_i64_t number_1;
 pdf_i64_t number_2;
 int result;
 
@@ -1261,7 +1265,7 @@ If @var{number_2} is greater than @var{number_1}
 @end table
 @item Usage example
 @example
-pdf_i65_t number_1;
+pdf_i64_t number_1;
 int result;
 
 number_1 = pdf_i64_new ((32 << 1), 10); /* number_1 is -10 */
@@ -1288,11 +1292,13 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_ERROR
+@var{dest} is null
 @end table
 @item Usage example
 @example
 pdf_i64_t *dest;
-pdf_i65_t result;
+pdf_i64_t result;
 pdf_i64_t number;
 pdf_status_t *p_status;
 number = pdf_i64_new (0, 10);

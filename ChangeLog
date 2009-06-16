@@ -1,3 +1,8 @@
+2009-06-16  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* New tests for types/crypt modules and minor corrections in the
+	reference manual. By Brad Hards.
+
 2009-06-15  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* torture/unit/base/time/pdf-time-span-destroy.c: Pass addresses

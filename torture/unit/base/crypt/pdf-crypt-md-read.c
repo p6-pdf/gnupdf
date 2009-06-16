@@ -132,6 +132,57 @@ START_TEST (pdf_crypt_md_read_003)
 END_TEST
 
 
+/*
+ * Test: pdf_crypt_md_read_004
+ * Description:
+ *   Confirm that we handle the "output buffer is too small" case
+ * Success condition:
+ *   Returns PDF_EBADDATA.
+ */
+START_TEST (pdf_crypt_md_read_004)
+{
+  pdf_char_t *in;
+  pdf_char_t out[6];
+  pdf_crypt_md_t md;
+  pdf_char_t real_out[] = {
+    0xd4, 0x1d, 0x8c, 0xd9,
+    0x8f, 0x00, 0xb2, 0x04,
+    0xe9, 0x80, 0x09, 0x98,
+    0xec, 0xf8, 0x42, 0x7e
+  };
+
+  pdf_crypt_init();
+
+  pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md);
+
+  pdf_crypt_md_write (md, in, 0);
+
+  fail_unless (pdf_crypt_md_read (md, out, sizeof(out)) == PDF_EBADDATA);
+
+  pdf_crypt_md_destroy (md);
+}
+END_TEST
+
+/*
+ * Test: pdf_crypt_md_read_005
+ * Description:
+ *   Confirm that we handle passing an unsupported message digest
+ *   algorithm to pdf_crypt_md_new().
+ * Success condition:
+ *   Returns PDF_EBADDATA.
+ */
+START_TEST (pdf_crypt_md_read_005)
+{
+  pdf_char_t *in;
+  pdf_char_t out[20];
+  pdf_crypt_md_t md;
+
+  pdf_crypt_init();
+
+  fail_unless (pdf_crypt_md_new (PDF_CRYPT_MD_MD5 + 1, &md) == PDF_EBADDATA);
+}
+END_TEST
+
 
 
 /*
@@ -144,6 +195,8 @@ test_pdf_crypt_md_read (void)
   tcase_add_test(tc, pdf_crypt_md_read_001);
   tcase_add_test(tc, pdf_crypt_md_read_002);
   tcase_add_test(tc, pdf_crypt_md_read_003);
+  tcase_add_test(tc, pdf_crypt_md_read_004);
+  tcase_add_test(tc, pdf_crypt_md_read_005);
   return tc;
 }
 

@@ -158,7 +158,28 @@ START_TEST(pdf_i64_mod_004)
 }
 END_TEST
 
+/*
+ * Test: pdf_i64_neg_005
+ * Description:
+ *   Checks if an invalid destination correctly throws an error
+ * Success conditions:
+ * The call should return PDF_ERROR
+ */
+START_TEST(pdf_i64_mod_005)
+{
+  pdf_status_t p_status = PDF_OK;
+  pdf_i64_t mod1, mod2;
+  pdf_i64_t *dest = NULL;
 
+  pdf_i64_assign(&mod1,0, 5, &p_status);
+  fail_if(p_status != PDF_OK);
+  pdf_i64_assign(&mod2,0, 2, &p_status);
+  fail_if(p_status != PDF_OK);
+
+  pdf_i64_mod(dest, mod1, mod2, &p_status);
+  fail_unless(p_status == PDF_ERROR);
+}
+END_TEST
 
 /*
  * Test case creation function
@@ -171,6 +192,7 @@ test_pdf_i64_mod (void)
   tcase_add_test(tc, pdf_i64_mod_002);
   tcase_add_test(tc, pdf_i64_mod_003);
   tcase_add_test(tc, pdf_i64_mod_004);
+  tcase_add_test(tc, pdf_i64_mod_005);
   return tc;
 }
 
