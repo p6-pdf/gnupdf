@@ -1,0 +1,96 @@
+/* -*- mode: C -*- Time-stamp: "09/03/01 23:01:31 lukasz"
+ *
+ *       File:         pdf-time-from-cal.c
+ *       Date:         Fri Feb 27 17:35:31 2008
+ *
+ *       GNU PDF Library - Unit tests for pdf_time_add_span
+ *
+ */
+
+/* Copyright (C) 2008 Free Software Foundation, Inc. */
+
+/* This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#include <config.h>
+#include <check.h>
+#include <pdf.h>
+#include <stdlib.h>
+
+/*
+ * Test: pdf_time_add_span
+ * Description:
+ *   Compare two pdf_time_t objects. First is
+ *   initialized by adding pdf_time_span_t and second one
+ *   by pdf_i64_t value. Both pdf_time_t objects
+ *   must be equal.
+ *
+ *Success condition:
+ * 1. Function pdf_time_add_span schould return
+ * PDF_OK.
+ * 2. Function pdf_time_cmp schould return 0.
+ */
+START_TEST (pdf_time_add_span_001)
+{
+  pdf_status_t status;
+
+  pdf_time_t time1;
+  pdf_time_t time2;
+
+  pdf_time_span_t span;
+  pdf_i64_t num64;
+
+  status = pdf_time_new(&time1);
+  fail_if(status != PDF_OK);
+
+  status = pdf_time_new(&time2);
+  fail_if(status != PDF_OK);
+
+
+  span = pdf_time_span_new();
+
+  pdf_time_span_set(&span, 0x01234567,0xAABBCCDD);
+  num64=pdf_i64_new(0x01234567,0xAABBCCDD);
+
+  status = pdf_time_add_span(time1, span);
+  fail_if(status != PDF_OK);
+
+  status = pdf_time_set_from_i64(time2, num64);
+  fail_if(status != PDF_OK);
+
+  fail_unless(pdf_time_cmp(time1, time2) == 0);
+ 
+
+  status = pdf_time_destroy(time1);
+  fail_if(status != PDF_OK);
+
+  status = pdf_time_destroy(time2);
+  fail_if(status != PDF_OK);
+}
+END_TEST
+
+/*
+ * Test case creation function
+ */
+TCase *
+test_pdf_time_add_span (void)
+{
+  TCase *tc = tcase_create ("pdf_time_add_span");
+
+  tcase_add_test(tc, pdf_time_add_span_001);
+
+  return tc;
+}
+
+/* End of pdf-time-add-span.c */

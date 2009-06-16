@@ -1,5 +1,39 @@
 2009-06-16  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* torture/unit/base/time/pdf-time-w32-set-from-filetime.c: New
+	file.
+
+	* torture/unit/base/time/pdf-time-to-string.c: New file.
+
+	* torture/unit/base/time/pdf-time-sub-span.c: New file.
+
+	* torture/unit/base/time/pdf-time-sub-cal-span.c: New file.
+
+	* torture/unit/base/time/pdf-time-set-to-current-utc-time.c: New
+	file.
+
+	* torture/unit/base/time/pdf-time-set-to-current-local-time.c: New
+	file.
+
+	* torture/unit/base/time/pdf-time-set-local-offset.c: New file.
+
+	* torture/unit/base/time/pdf-time-get-utc-cal.c: New file.
+
+	* torture/unit/base/time/pdf-time-get-local-cal.c: New file.
+
+	* torture/unit/base/time/pdf-time-diff-cal.c: New file.
+
+	* torture/unit/base/time/pdf-time-diff.c: New file.
+
+	* torture/unit/base/time/pdf-time-cal-span-diff.c: New file.
+
+	* torture/unit/base/time/pdf-time-cal-span-cmp.c: New file.
+
+	* torture/unit/base/time/pdf-time-add-span.c: New file.
+
+	* torture/unit/base/time/pdf-time-add-cal-span-with-base.c: New
+	file.
+
 	* AUTHORS: Update.
 
 	* New tests for types/crypt modules and minor corrections in the
