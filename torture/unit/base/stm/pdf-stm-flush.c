@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/06/16 22:18:01 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/06/16 22:25:07 jemarch"
  *
  *       File:         pdf-stm-flush.c
  *       Date:         Mon Feb 02 09:53:26 2009
@@ -29,6 +29,7 @@
 #include <pdf.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 /*
  * Test: pdf_stm_flush_001
