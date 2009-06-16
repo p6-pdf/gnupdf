@@ -566,7 +566,8 @@ pdf_i64_div (pdf_i64_t *dest,
    is where the partial result of the division is stored, z is used to find
    the highest non-zero digit in the dividend*/
   /*See Knuth for definitions of m and n*/
-  pdf_u32_t k, q_bar, m , n, z;
+  pdf_u32_t k, q_bar, n, z;
+  pdf_i32_t m;
   /*divisor_nor stores normalised divisor, d_pdf is used to 
    normalise divisor and dividend, v_pdf is the internal pdf_i64_t 
    version of divisor, q_bar_pdf is the pdf_i64_t version of the
@@ -844,7 +845,8 @@ pdf_i64_mod(pdf_i64_t *dest,
    is where the partial result of the division is stored, z is used to find
    the highest non-zero digit in the dividend*/
   /*See Knuth for definitions of m and n*/
-  pdf_u32_t k, q_bar, m , n, z;
+  pdf_u32_t k, q_bar, n, z;
+  pdf_i32_t m;
   /*divisor_nor stores normalised divisor, d_pdf is used to 
    normalise divisor and dividend, v_pdf is the internal pdf_i64_t 
    version of divisor, q_bar_pdf is the pdf_i64_t version of the
