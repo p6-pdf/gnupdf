@@ -69,6 +69,7 @@ TEST_SUITE_STM = base/stm/pdf-stm-mem-new.c \
                  base/stm/pdf-stm-peek-char.c \
                  base/stm/pdf-stm-bseek.c \
                  base/stm/pdf-stm-btell.c \
+                 base/stm/pdf-stm-tell.c \
                  base/stm/pdf-stm-write.c \
 		 base/stm/pdf-stm-flush.c
 
