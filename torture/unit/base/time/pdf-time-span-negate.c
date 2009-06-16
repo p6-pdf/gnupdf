@@ -102,13 +102,12 @@ END_TEST
  *   Try to get invoke pdf_time_span_negate where 
  *   argument pointer is NUL.
  *Success condition:
- * 1. Function pdf_time_span_new schould return PDF_OK
- * 2. Function pdf_time_span_negate schould return PDF_ERROR
+ * 1. Function pdf_time_span_negate schould return PDF_ERROR
  */
 START_TEST (pdf_time_span_negate_003)
 {
     pdf_status_t status;
-    pdf_time_span_t span;
+    pdf_time_span_t *span=0;
 
     status = pdf_time_span_negate(&span);
     fail_if(status != PDF_ERROR);

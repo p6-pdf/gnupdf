@@ -1,5 +1,24 @@
 2009-06-16  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* torture/unit/base/time/pdf-time-to-string.c: Include string.h
+	for the definition of memset.
+
+	* torture/unit/base/time/pdf-time-set-to-current-utc-time.c:
+	Include string.h for the definition of memset.
+
+	* torture/unit/base/time/pdf-time-set-to-current-local-time.c:
+	Include string.h for the definition of memset.
+
+	* torture/unit/base/time/pdf-time-diff-cal.c: Include string.h for
+	the definition of memset.
+
+	* torture/unit/base/time/pdf-time-from-string.c: Include string.h
+	for the definition of memset.
+
+	* torture/unit/base/time/pdf-time-new.c: Include string.h.
+
+	* torture/unit/base/time/tsuite-time.c: Missing prototypes added.
+
 	* torture/unit/base/time/pdf-time-w32-set-from-filetime.c: New
 	file.
 

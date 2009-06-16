@@ -32,7 +32,7 @@
  * Description:
  *   Create pdf_time_t and pdf_time_span_t objects
  *   and initialize them to with the same number of
- *   seconds. After pdf_time_sub_span pdf_time_t
+ *   seconds. After calling pdf_time_sub_span pdf_time_t
  *   object schould be equal to 0.
  *
  *Success condition:
@@ -70,7 +70,7 @@ START_TEST (pdf_time_set_from_u32_001)
 
   status =  pdf_time_sub_span(time, span);
 
-  fail_unless( pdf_time_cmp(time, zero) == 0 );
+  fail_unless(pdf_time_cmp(time, zero) == 0 );
 
 
   status = pdf_time_destroy(time);

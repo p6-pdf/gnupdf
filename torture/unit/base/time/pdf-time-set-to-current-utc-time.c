@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/04/17 00:06:44 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/06/16 21:31:55 jemarch"
  *
  *       File:         pdf-time-set-to-current-utc-time.c
  *       Date:         Fri Feb 27 17:35:31 2009
@@ -28,6 +28,7 @@
 #include <pdf.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
 /*
  * Test: pdf_time_set_to_current_utc_time

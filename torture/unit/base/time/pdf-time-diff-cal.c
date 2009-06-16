@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/04/17 00:05:43 lukasz"
+/* -*- mode: C -*- Time-stamp: "09/06/16 21:31:04 jemarch"
  *
  *       File:         pdf-time-diff-cal.c
  *       Date:         Fri Feb 27 17:35:31 2008
@@ -28,6 +28,7 @@
 #include <pdf.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 #include <base/time/pdf-time-test-common.h>
 
 

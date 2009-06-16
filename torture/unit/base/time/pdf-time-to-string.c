@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/04/17 00:05:36 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/06/16 21:32:33 jemarch"
  *
  *       File:         pdf-time-to-string.c
  *       Date:         Fri Feb 27 17:35:31 2008
@@ -28,6 +28,7 @@
 #include <pdf.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <base/time/pdf-time-test-common.h>
 
 #define INTERACTIVE_DEBUG 0
