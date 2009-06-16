@@ -112,9 +112,6 @@ else
 texihtmlprogram=makeinfo
 fi
 
-AC_CHECK_PROG([have_taskjuggler], [taskjuggler], [yes], [no],,)
-AM_CONDITIONAL([TASKJUGGLER], [test "x$have_taskjuggler" = "xyes"])
-
 dnl Manage the compilation level
 dnl The GNU PDF library is composed by several layers. The following
 dnl `compilation levels' are defined allowing the user to compile a
