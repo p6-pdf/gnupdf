@@ -240,9 +240,7 @@ END_TEST
  */
 START_TEST(pdf_text_dup_005)
 {
-  pdf_text_t newtext = NULL;
-
-  fail_unless(pdf_text_dup (&newtext) == NULL);
+  fail_unless(pdf_text_dup ((pdf_text_t) NULL) == NULL);
 }
 END_TEST
 

@@ -1,5 +1,12 @@
 2009-06-16  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* torture/unit/base/time/pdf-time-span-negate.c
+	(pdf_time_span_negate_003): Pass a NULL pointer to
+	pdf_time_span_negate.
+
+	* torture/unit/base/text/pdf-text-dup.c (pdf_text_dup_005): Pass a
+	NULL pointer to pdf_text_dup.
+
 	* torture/unit/base/time/pdf-time-to-string.c: Include string.h
 	for the definition of memset.
 
