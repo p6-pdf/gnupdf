@@ -1,5 +1,17 @@
 2009-06-16  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-stm.c (pdf_stm_init): Initialize seq_counter to 0.
+
+	* src/base/pdf-stm.h (struct pdf_stm_s): New member seq_counter.
+
+	* src/base/pdf-stm.c (pdf_stm_bseek): Renamed from pdf_stm_seek.
+	(pdf_stm_btell): Renamed from pdf_stm_tell.
+	(pdf_stm_tell): New function.
+
+	* doc/gnupdf.texi (Stream Positioning): pdf_stm_tell/seek are not
+	pdf_stm_btell/bseek.
+	New documentation for pdf_stm_tell.
+
 	* torture/unit/base/stm/pdf-stm-flush.c: New file.
 
 	* torture/unit/base/time/pdf-time-span-negate.c

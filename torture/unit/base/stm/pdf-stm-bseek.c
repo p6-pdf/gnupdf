@@ -1,9 +1,9 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-15 13:49:49 gerel"
+/* -*- mode: C -*- Time-stamp: "09/06/16 22:51:41 jemarch"
  *
- *       File:         pdf-stm-seek.c
+ *       File:         pdf-stm-bseek.c
  *       Date:         Sat Sep 20 18:50:33 2008
  *
- *       GNU PDF Library - Unit tests for pdf_stm_seek
+ *       GNU PDF Library - Unit tests for pdf_stm_bseek
  *
  */
 
@@ -30,13 +30,13 @@
 #include <pdf.h>
 
 /*
- * Test: pdf_stm_seek_001
+ * Test: pdf_stm_bseek_001
  * Description:
- *   Seek into a memory read stream.
+ *   Bseek into a memory read stream.
  * Success condition:
- *   The seek operation should success.
+ *   The bseek operation should success.
  */
-START_TEST (pdf_stm_seek_001)
+START_TEST (pdf_stm_bseek_001)
 {
   pdf_status_t ret;
   pdf_stm_t stm;
@@ -59,8 +59,8 @@ START_TEST (pdf_stm_seek_001)
                          &stm);
   fail_if(ret != PDF_OK);
 
-  /* Seek into the stream */
-  pos = pdf_stm_seek (stm, 3);
+  /* Bseek into the stream */
+  pos = pdf_stm_bseek (stm, 3);
   fail_if(pos != 3);
 
   /* Read a character */
@@ -68,8 +68,8 @@ START_TEST (pdf_stm_seek_001)
   fail_if(ret != PDF_OK);
   fail_if(ret_char != '3');
 
-  /* Seek into the stream */
-  pos = pdf_stm_seek (stm, 8);
+  /* Bseek into the stream */
+  pos = pdf_stm_bseek (stm, 8);
   fail_if(pos != 8);
 
   /* Read a character */
@@ -84,16 +84,16 @@ START_TEST (pdf_stm_seek_001)
 END_TEST
 
 /*
- * Test: pdf_stm_seek_002
+ * Test: pdf_stm_bseek_002
  * Description:
- *   Seek to a position beyond the size of the stream 
+ *   Bseek to a position beyond the size of the stream 
  *   into a memory read stream.
  * Success condition:
- *   The seek operation should success and the seek
+ *   The bseek operation should success and the bseek
  *   position should be to the last valid position
  *   in the stream.
  */
-START_TEST (pdf_stm_seek_002)
+START_TEST (pdf_stm_bseek_002)
 {
   pdf_status_t ret;
   pdf_stm_t stm;
@@ -116,8 +116,8 @@ START_TEST (pdf_stm_seek_002)
                          &stm);
   fail_if(ret != PDF_OK);
 
-  /* Seek into the stream */
-  pos = pdf_stm_seek (stm, 300);
+  /* Bseek into the stream */
+  pos = pdf_stm_bseek (stm, 300);
   fail_if(pos != 9);
 
   /* Read a character */
@@ -133,13 +133,13 @@ END_TEST
 
 
 /*
- * Test: pdf_stm_seek_003
+ * Test: pdf_stm_bseek_003
  * Description:
- *   Seek into a file read stream.
+ *   Bseek into a file read stream.
  * Success condition:
- *   The seek operation should success.
+ *   The bseek operation should success.
  */
-START_TEST (pdf_stm_seek_003)
+START_TEST (pdf_stm_bseek_003)
 {
   pdf_status_t ret;
   pdf_stm_t stm;
@@ -176,8 +176,8 @@ START_TEST (pdf_stm_seek_003)
                           &stm);
   fail_if(ret != PDF_OK);
 
-  /* Seek into the stream */
-  pos = pdf_stm_seek (stm, 3);
+  /* Bseek into the stream */
+  pos = pdf_stm_bseek (stm, 3);
   fail_if(pos != 3);
 
   /* Read a character */
@@ -185,8 +185,8 @@ START_TEST (pdf_stm_seek_003)
   fail_if(ret != PDF_OK);
   fail_if(ret_char != '3');
 
-  /* Seek into the stream */
-  pos = pdf_stm_seek (stm, 8);
+  /* Bseek into the stream */
+  pos = pdf_stm_bseek (stm, 8);
   fail_if(pos != 8);
 
   /* Read a character */
@@ -203,16 +203,16 @@ END_TEST
 
 
 /*
- * Test: pdf_stm_seek_004
+ * Test: pdf_stm_bseek_004
  * Description:
- *   Seek to a position beyond the size of the stream 
+ *   Bseek to a position beyond the size of the stream 
  *   into a file read stream.
  * Success condition:
- *   The seek operation should success and the seek
+ *   The bseek operation should success and the bseek
  *   position should be to the last valid position
  *   in the stream.
  */
-START_TEST (pdf_stm_seek_004)
+START_TEST (pdf_stm_bseek_004)
 {
   pdf_status_t ret;
   pdf_stm_t stm;
@@ -250,8 +250,8 @@ START_TEST (pdf_stm_seek_004)
                           &stm);
   fail_if(ret != PDF_OK);
 
-  /* Seek into the stream */
-  pos = pdf_stm_seek (stm, 300);
+  /* Bseek into the stream */
+  pos = pdf_stm_bseek (stm, 300);
   fail_if(pos != 9);
 
   /* Read a character */
@@ -272,16 +272,16 @@ END_TEST
  * Test case creation function
  */
 TCase *
-test_pdf_stm_seek (void)
+test_pdf_stm_bseek (void)
 {
-  TCase *tc = tcase_create ("pdf_stm_seek");
+  TCase *tc = tcase_create ("pdf_stm_bseek");
 
-  tcase_add_test(tc, pdf_stm_seek_001);
-  tcase_add_test(tc, pdf_stm_seek_002);
-  tcase_add_test(tc, pdf_stm_seek_003);
-  tcase_add_test(tc, pdf_stm_seek_004);
+  tcase_add_test(tc, pdf_stm_bseek_001);
+  tcase_add_test(tc, pdf_stm_bseek_002);
+  tcase_add_test(tc, pdf_stm_bseek_003);
+  tcase_add_test(tc, pdf_stm_bseek_004);
 
   return tc;
 }
 
-/* End of pdf-stm-seek.c */
+/* End of pdf-stm-bseek.c */

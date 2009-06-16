@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/06/16 22:25:07 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/06/16 22:52:34 jemarch"
  *
  *       File:         pdf-stm-flush.c
  *       Date:         Mon Feb 02 09:53:26 2009
@@ -247,7 +247,7 @@ START_TEST (pdf_stm_flush_004)
   fail_if(flushed_bytes>0);
 
   /* Erase data in buffer */
-  pdf_stm_seek(stm,0);
+  pdf_stm_bseek(stm,0);
 
   ret =  pdf_stm_flush(stm, PDF_FALSE, &flushed_bytes);
   fail_unless(ret == PDF_OK);
