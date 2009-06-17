@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/05/26 00:30:44 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/06/17 21:40:08 jemarch"
  *
  *       File:         pdf-fp-func.c
  *       Date:         Sun Nov 30 18:46:06 2008
@@ -42,7 +42,8 @@ read_type0_sample_table (pdf_char_t *buf, pdf_size_t buf_size,
                          pdf_u32_t bps, pdf_u32_t nsamples , pdf_u32_t n);
 
 static pdf_i32_t get_token (pdf_token_reader_t reader,
-                            double *literal);
+                            double *literal,
+                            pdf_size_t *token_begin);
 static inline void setmap (double map[2],
                            const pdf_real_t to[2],
                            const pdf_real_t from[2]);
@@ -399,7 +400,6 @@ pdf_fp_func_4_new (pdf_u32_t m,
   double lit;
   pdf_i32_t opc;
   pdf_size_t beg_pos;               /* beginning of current token */
-  pdf_size_t cur_pos;
   pdf_status_t ret;
   pdf_u32_t (*debug_off)[2];
   pdf_size_t debug_size;
@@ -417,7 +417,6 @@ pdf_fp_func_4_new (pdf_u32_t m,
   f->type = 4;
 
   /* Specific data */
-  cur_pos = 0;
   beg_pos = 0;
   alloc = 64;
   op = pdf_alloc (alloc);
@@ -444,8 +443,7 @@ pdf_fp_func_4_new (pdf_u32_t m,
       goto fail;
     }
 
-  opc = get_token (reader, &lit);
-  cur_pos = pdf_stm_tell (reader_stm);
+  opc = get_token (reader, &lit, &beg_pos);
   if (opc != OPC_begin)
     {
       ret = PDF_ENOWRAP;
@@ -475,10 +473,7 @@ pdf_fp_func_4_new (pdf_u32_t m,
           debug_off = pdf_realloc (debug_off, sizeof(*debug_off) * debug_alloc);
         }
 
-      beg_pos = cur_pos;
-      opc = get_token (reader, &lit);
-      cur_pos = pdf_stm_tell (reader_stm);
-      printf("YYY cur_pos = %d\n", cur_pos);
+      opc = get_token (reader, &lit, &beg_pos);
       if (opc < 0)
         {
           ret = PDF_EEOF;
@@ -533,13 +528,11 @@ pdf_fp_func_4_new (pdf_u32_t m,
 
                 op[at++] = OPC_ret;
 
-                if (get_token (reader, &lit) >= 0)
+                if (get_token (reader, &lit, &beg_pos) >= 0)
                   {
-                    cur_pos = pdf_stm_tell (reader_stm);
                     ret = PDF_ENOWRAP;
                     goto fail;
                   }
-                cur_pos = pdf_stm_tell (reader_stm);
 
                 if (bsp)
                   {
@@ -638,7 +631,6 @@ pdf_fp_func_4_new (pdf_u32_t m,
   if (error_at != NULL)
     {
       *error_at = beg_pos;
-      printf("XXX error_at = %d\n", *error_at);
     }
   return ret;
 
@@ -1907,15 +1899,19 @@ in_word_set (register const char *str, register pdf_i32_t len)
 }
 
 static pdf_i32_t get_token (pdf_token_reader_t reader,
-                            double *literal)
+                            double *literal,
+                            pdf_size_t *token_begin)
 {
   pdf_token_t token;
   pdf_i32_t ret = OPC_bad;
+  pdf_status_t token_ret;
 
   /* Invoke the tokeniser */
-  switch (pdf_token_read (reader,
-                          PDF_TOKEN_NO_NAME_ESCAPES,
-                          &token))
+  token_ret = pdf_token_read (reader,
+                              PDF_TOKEN_NO_NAME_ESCAPES,
+                              &token);
+  *token_begin = pdf_token_reader_begin_pos (reader);
+  switch (token_ret)
     {
     case PDF_OK:
       {
@@ -1931,14 +1927,12 @@ static pdf_i32_t get_token (pdf_token_reader_t reader,
           case PDF_TOKEN_INTEGER:
             {
               *literal = pdf_token_get_integer_value (token);
-              printf("XXX LITERAL INTEGER: %f\n", *literal);
               ret = OPC_lit;
               break;
             }
           case PDF_TOKEN_REAL:
             {
               *literal = pdf_token_get_real_value (token);
-              printf("XXX LITERAL REAL: %f\n", *literal);
               ret = OPC_lit;
               break;
             }
@@ -1946,7 +1940,6 @@ static pdf_i32_t get_token (pdf_token_reader_t reader,
             {
               struct toklut *tk;
 
-              printf("XXX KEYWORD: %s\n", pdf_token_get_keyword_data(token));
               tk = in_word_set ((char *) pdf_token_get_keyword_data (token),
                                 pdf_token_get_keyword_size (token));
               ret = (tk) ? tk->ret : OPC_bad;
@@ -1954,13 +1947,11 @@ static pdf_i32_t get_token (pdf_token_reader_t reader,
             }
           case PDF_TOKEN_PROC_START:
             {
-              printf("XXX PROC_START\n");
               ret = OPC_begin;
               break;
             }
           case PDF_TOKEN_PROC_END:
             {
-              printf("XXX PROC_END\n");
               ret = OPC_end;
               break;
             }

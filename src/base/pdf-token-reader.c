@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-20 04:01:14 mgold"
+/* -*- mode: C -*- Time-stamp: "09/06/17 21:41:11 jemarch"
  *
  *       File:         pdf-token-reader.c
  *       Date:         Mon Dec 29 00:45:09 2008
@@ -35,6 +35,8 @@ static INLINE pdf_status_t store_char (pdf_token_reader_t reader,
                                        pdf_char_t ch);
 static pdf_status_t exit_state (pdf_token_reader_t reader, pdf_u32_t flags,
                                 pdf_token_t *token);
+static INLINE pdf_status_t enter_state (pdf_token_reader_t reader,
+                                        enum pdf_token_reader_state_e state);
 static pdf_status_t flush_token (pdf_token_reader_t reader, pdf_u32_t flags,
                                  pdf_token_t *token);
 static pdf_status_t handle_char (pdf_token_reader_t reader, pdf_u32_t flags,
@@ -66,6 +68,9 @@ pdf_token_reader_new (pdf_stm_t stm, pdf_token_reader_t *reader)
   new_tokr = pdf_alloc (sizeof (*new_tokr));
   if (!new_tokr)
     goto fail;
+
+  new_tokr->beg_pos = 0;
+  new_tokr->state_pos = 0;
 
   /* determine the current locale's decimal point
    * (avoid using localeconv since it may not be thread-safe) */
@@ -113,7 +118,7 @@ fail:
 pdf_status_t
 pdf_token_reader_reset (pdf_token_reader_t reader)
 {
-  reader->state = PDF_TOKR_STATE_NONE;
+  enter_state (reader, PDF_TOKR_STATE_NONE);
   reader->substate = 0;
   return PDF_OK;
 }
@@ -223,7 +228,7 @@ handle_char (pdf_token_reader_t reader, pdf_u32_t flags,
       if ((flags & PDF_TOKEN_END_AT_STREAM) && ch == 10)  /* LF */
         {
           /* found the beginning of a stream */
-          reader->state = PDF_TOKR_STATE_EOF;
+          enter_state (reader, PDF_TOKR_STATE_EOF);
         }
       return PDF_OK;
     }
@@ -247,24 +252,24 @@ handle_char (pdf_token_reader_t reader, pdf_u32_t flags,
       switch (ch)
         {
         case 37:  /* '%' */
-          reader->state = PDF_TOKR_STATE_COMMENT;
+          enter_state (reader, PDF_TOKR_STATE_COMMENT);
           reader->intparam = 0;
           return store_char (reader, ch);
         case 40:  /* '(' */
-          reader->state = PDF_TOKR_STATE_STRING;
+          enter_state (reader, PDF_TOKR_STATE_STRING);
           reader->intparam = 0;
           return PDF_OK;
         case 41:  /* ')' */
           /* this shouldn't occur outside the STRING and COMMENT states */
           return PDF_EBADFILE;
         case 47:  /* '/' */
-          reader->state = PDF_TOKR_STATE_NAME;
+          enter_state (reader, PDF_TOKR_STATE_NAME);
           return PDF_OK;
         case 60:  /* '<' */
-          reader->state = PDF_TOKR_STATE_HEXSTRING;
+          enter_state (reader, PDF_TOKR_STATE_HEXSTRING);
           return PDF_OK;
         case 62:  /* '>' */
-          reader->state = PDF_TOKR_STATE_DICTEND;
+          enter_state (reader, PDF_TOKR_STATE_DICTEND);
           return PDF_OK;
         case 91:  /* '[' */
           /* fall through */
@@ -275,7 +280,7 @@ handle_char (pdf_token_reader_t reader, pdf_u32_t flags,
         case 125: /* '}' */
           /* exit_state may have emitted a token, so we can't emit another
            * one now; we'll do it when exiting the PENDING state */
-          reader->state = PDF_TOKR_STATE_PENDING;
+          enter_state (reader, PDF_TOKR_STATE_PENDING);
           reader->charparam = ch;
           return PDF_OK;
         }
@@ -295,7 +300,7 @@ handle_char (pdf_token_reader_t reader, pdf_u32_t flags,
       return PDF_EAGAIN;
 
     case PDF_TOKR_STATE_NONE:
-      reader->state = PDF_TOKR_STATE_KEYWORD;
+      enter_state (reader, PDF_TOKR_STATE_KEYWORD);
       /* fall through */
 
     case PDF_TOKR_STATE_KEYWORD:
@@ -353,6 +358,15 @@ store_char (pdf_token_reader_t reader, pdf_char_t ch)
   return PDF_OK;
 }
 
+static INLINE pdf_status_t
+enter_state (pdf_token_reader_t reader,
+             enum pdf_token_reader_state_e state)
+{
+  reader->state = state;
+  reader->state_pos = pdf_stm_tell (reader->stream);
+
+  return PDF_OK;
+}
 
 static pdf_status_t
 flush_token (pdf_token_reader_t reader, pdf_u32_t flags, pdf_token_t *token)
@@ -361,6 +375,9 @@ flush_token (pdf_token_reader_t reader, pdf_u32_t flags, pdf_token_t *token)
   pdf_token_t new_tok;
   pdf_char_t *data = reader->buffer->data;
   int datasize = reader->buffer->wp;
+
+  /* Set the beginning position of this state */
+  reader->beg_pos = reader->state_pos;
 
   switch (reader->state)
     {
@@ -693,6 +710,11 @@ ret_token:
   return PDF_OK;
 }
 
+pdf_size_t
+pdf_token_reader_begin_pos (pdf_token_reader_t reader)
+{
+  return reader->beg_pos;
+}
 
 static INLINE int
 parse_integer (pdf_buffer_t buffer, int *int_value, int *int_state)

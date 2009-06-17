@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/06/16 22:53:15 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/06/17 21:35:52 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -603,7 +603,7 @@ pdf_stm_read_peek_char (pdf_stm_t stm,
         }
     }
 
-  if (ret == PDF_OK)
+  if ((!peek_p) && (ret == PDF_OK))
     {
       /* Update the sequential counter */
       stm->seq_counter++;
