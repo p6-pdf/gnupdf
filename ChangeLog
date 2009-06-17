@@ -1,9 +1,13 @@
+2009-06-17  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-token-reader.c (enter_state): New private function.
+
 2009-06-17  Brad Hards  <bradh@kde.org>
 
 	* src/base/pdf-time.c (pdf_time_span_negate): protect against null
 	argument.
 
-	* doc/gnupdf.texi: various typo fixes 
+	* doc/gnupdf.texi: various typo fixes.
 
 	* doc/gnupdf-hg.texi (Running the unit tests): document use of
 	the CK_VERBOSITY environment variable.

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/05/25 23:21:47 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/06/17 21:11:31 jemarch"
  *
  *       File:         pdf-token-reader.h
  *       Date:         Mon Dec 29 00:45:09 2008
@@ -38,6 +38,7 @@ typedef struct pdf_token_reader_s *pdf_token_reader_t;
 pdf_status_t pdf_token_reader_new (pdf_stm_t stm, pdf_token_reader_t *reader);
 pdf_status_t pdf_token_reader_destroy (pdf_token_reader_t reader);
 pdf_status_t pdf_token_reader_reset (pdf_token_reader_t reader);
+pdf_size_t pdf_token_reader_begin_pos (pdf_token_reader_t reader);
 pdf_status_t pdf_token_read (pdf_token_reader_t reader, pdf_u32_t flags,
                              pdf_token_t *token);
 
@@ -109,6 +110,10 @@ enum pdf_token_reader_state_e
 struct pdf_token_reader_s {
   pdf_stm_t stream;  /* stream to read bytes from */
   char *decimal_point;
+
+  pdf_size_t state_pos;
+  pdf_size_t beg_pos; /* Beginning position of the last read token in
+                         the input stream */
 
   /* variables used by the state machine (described above) */
   int state;

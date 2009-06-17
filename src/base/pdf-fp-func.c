@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-11 16:03:09 davazp"
+/* -*- mode: C -*- Time-stamp: "09/06/17 21:40:08 jemarch"
  *
  *       File:         pdf-fp-func.c
  *       Date:         Sun Nov 30 18:46:06 2008
@@ -33,18 +33,17 @@
 
 #include <pdf-error.h>
 #include <pdf-alloc.h>
+#include <pdf-stm.h>
+#include <pdf-token-reader.h>
 #include <pdf-fp-func.h>
 
 static pdf_real_t *
 read_type0_sample_table (pdf_char_t *buf, pdf_size_t buf_size,
                          pdf_u32_t bps, pdf_u32_t nsamples , pdf_u32_t n);
 
-static pdf_i32_t get_token (pdf_char_t *buf,
-                            pdf_size_t buf_size,
-                            pdf_size_t start,
-                            pdf_size_t *bot,
-                            pdf_size_t *eot,
-                            double *literal);
+static pdf_i32_t get_token (pdf_token_reader_t reader,
+                            double *literal,
+                            pdf_size_t *token_begin);
 static inline void setmap (double map[2],
                            const pdf_real_t to[2],
                            const pdf_real_t from[2]);
@@ -84,7 +83,7 @@ typedef enum
     OPC_end,   /* token closing brace */
     OPC_if,    /* token */
     OPC_ifelse,/* token */
-    OPC_bad,   /* bad token  */
+    OPC_bad,   /* bad token */
 
     OPC_floor,
     OPC_ceiling,
@@ -401,11 +400,13 @@ pdf_fp_func_4_new (pdf_u32_t m,
   double lit;
   pdf_i32_t opc;
   pdf_size_t beg_pos;               /* beginning of current token */
-  pdf_size_t cur_pos;
   pdf_status_t ret;
   pdf_u32_t (*debug_off)[2];
   pdf_size_t debug_size;
   pdf_size_t debug_alloc;
+
+  pdf_stm_t reader_stm;
+  pdf_token_reader_t reader;
 
   /* Common data */
   f = pdf_alloc (sizeof(struct pdf_fp_func_s));
@@ -416,7 +417,6 @@ pdf_fp_func_4_new (pdf_u32_t m,
   f->type = 4;
 
   /* Specific data */
-  cur_pos = 0;
   beg_pos = 0;
   alloc = 64;
   op = pdf_alloc (alloc);
@@ -424,7 +424,26 @@ pdf_fp_func_4_new (pdf_u32_t m,
   debug_size = 0;
   debug_off = pdf_alloc (sizeof(*debug_off) * debug_alloc);
 
-  opc = get_token (code, code_size, cur_pos, &beg_pos, &cur_pos, &lit);
+  /* Initialize the token reader */
+  if (pdf_stm_mem_new (code,
+                       code_size,
+                       code_size, /* Use the default cache size */
+                       PDF_STM_READ,
+                       &reader_stm) != PDF_OK)
+    {
+      /* FIXME: REFINE */
+      ret = PDF_ERROR;
+      goto fail;
+    }
+      
+  if (pdf_token_reader_new (reader_stm, &reader) != PDF_OK)
+    {
+      /* FIXME: REFINE */
+      ret = PDF_ERROR;
+      goto fail;
+    }
+
+  opc = get_token (reader, &lit, &beg_pos);
   if (opc != OPC_begin)
     {
       ret = PDF_ENOWRAP;
@@ -454,9 +473,7 @@ pdf_fp_func_4_new (pdf_u32_t m,
           debug_off = pdf_realloc (debug_off, sizeof(*debug_off) * debug_alloc);
         }
 
-
-      beg_pos = cur_pos;
-      opc = get_token (code, code_size, cur_pos, &beg_pos, &cur_pos, &lit);
+      opc = get_token (reader, &lit, &beg_pos);
       if (opc < 0)
         {
           ret = PDF_EEOF;
@@ -511,7 +528,7 @@ pdf_fp_func_4_new (pdf_u32_t m,
 
                 op[at++] = OPC_ret;
 
-                if (get_token (code, code_size, cur_pos, &beg_pos, &cur_pos, &lit) >= 0)
+                if (get_token (reader, &lit, &beg_pos) >= 0)
                   {
                     ret = PDF_ENOWRAP;
                     goto fail;
@@ -1881,143 +1898,87 @@ in_word_set (register const char *str, register pdf_i32_t len)
   return 0;
 }
 
-
-
-static pdf_status_t
-parse_real (char * string, char ** end, double * out)
+static pdf_i32_t get_token (pdf_token_reader_t reader,
+                            double *literal,
+                            pdf_size_t *token_begin)
 {
-  int negative;
-  char * p;
-  unsigned int l_integer;
-  unsigned int l_decimal;
-  double x;
-  
-  p = string;
-  l_integer = 0;
-  l_decimal = 0;
-  
-  /* read sign */
-  negative = 0;
-  if (*p == '-')
+  pdf_token_t token;
+  pdf_i32_t ret = OPC_bad;
+  pdf_status_t token_ret;
+
+  /* Invoke the tokeniser */
+  token_ret = pdf_token_read (reader,
+                              PDF_TOKEN_NO_NAME_ESCAPES,
+                              &token);
+  *token_begin = pdf_token_reader_begin_pos (reader);
+  switch (token_ret)
     {
-      p++;
-      negative = 1;
-    }
-  else if (*p == '+')
-    {
-      p++;
-    }
+    case PDF_OK:
+      {
+        /* The token should be:
+         * - A real literal or
+         * - An identifier or
+         * - An open brace { (OPC_begin) or
+         * - A close brace } (OPC_end)
+         */
 
-  /* read integer part */
-  x = 0.0;
-  while (*p >= '0' && *p <= '9')
-    {
-      x *= 10;
-      x += *p - '0';
-      p++;
-      l_integer++;
-    }
+        switch (pdf_token_get_type (token))
+          {
+          case PDF_TOKEN_INTEGER:
+            {
+              *literal = pdf_token_get_integer_value (token);
+              ret = OPC_lit;
+              break;
+            }
+          case PDF_TOKEN_REAL:
+            {
+              *literal = pdf_token_get_real_value (token);
+              ret = OPC_lit;
+              break;
+            }
+          case PDF_TOKEN_KEYWORD:
+            {
+              struct toklut *tk;
 
-  /* read decimal part */
-  if (*p == '.')
-    {
-      unsigned int weight = 10;
-      p++;
+              tk = in_word_set ((char *) pdf_token_get_keyword_data (token),
+                                pdf_token_get_keyword_size (token));
+              ret = (tk) ? tk->ret : OPC_bad;
+              break;
+            }
+          case PDF_TOKEN_PROC_START:
+            {
+              ret = OPC_begin;
+              break;
+            }
+          case PDF_TOKEN_PROC_END:
+            {
+              ret = OPC_end;
+              break;
+            }
+          default:
+            {
+              /* Wrong token type */
+              ret = OPC_bad;
+              break;
+            }
+          }
 
-      while(*p >= '0' && *p <= '9')
-        {
-          double dig = ((double)(*p - '0')) / weight;
-          x += dig;
-          weight *= 10;
-          l_decimal++;
-          p++;
-        }
-    }
-
-  x = negative? -x: x;
-  
-  if (end != NULL)
-    *end = p;
-
-  if (l_integer || l_decimal)
-    {
-      *out = x;
-      return PDF_OK;
-    }
-  else
-    return PDF_ERROR;
-}
-
-
-
-
-static pdf_i32_t get_token (pdf_char_t *buffer,
-                            pdf_size_t buf_size,
-                            pdf_size_t start,
-                            pdf_size_t *bot, /* beginning of token */
-                            pdf_size_t *eot, /* end of token */
-                            double *literal)
-{
-  pdf_char_t c;
-  char buf[128];
-  char *end;
-  pdf_u32_t bp;
-  pdf_size_t cur_pos = start;
-  pdf_size_t beg_pos;
-
-#define PDF_ISWHITE(foo)                                                \
-  (((foo) <= 0x20)                                                      \
-   && (                                                                 \
-       (foo) == 0x20 || (foo) == 0x09 || (foo) == 0x0a || (foo) == 0x0c \
-       || (foo) == 0x0d || (foo) == 0x00))
-
-  c = buffer[cur_pos];
-  while ((cur_pos < buf_size) && PDF_ISWHITE(buffer[cur_pos]))
-    {
-      cur_pos++;
-      c = buffer[cur_pos];
-    }
-  if (cur_pos == buf_size)
-    {
-      /* EOF condition */
-      return -1;
+        break;
+      }
+    case PDF_EEOF:
+      {
+        /* In EOF returns -1 */
+        return -1;
+      }
+    default:
+      {
+        /* Error */
+        ret = OPC_bad;
+      }
     }
 
-  bp = 0;
-  buf[bp++] = c;
-  beg_pos = cur_pos;
-  cur_pos++;
-  while ((cur_pos < buf_size) && !PDF_ISWHITE(buffer[cur_pos]))
-    {
-      c = buffer[cur_pos];
-      cur_pos++;
-      buf[bp++] = c;
-      if (bp >= sizeof(buf)/sizeof(buf[0]) || c >= 0x80)
-        {
-          return OPC_bad;
-        }
-    }
-  buf[bp] = '\0';
-  *bot = beg_pos;
-  *eot = cur_pos;
-
-  if (isdigit(buf[0]) || buf[0] < 'a' )
-    {
-      if (parse_real (buf, &end, literal) == PDF_OK)
-        {
-          return OPC_lit;
-        }
-      else
-        {
-          return OPC_bad;
-        }
-    }
-  else
-    {
-      struct toklut *tk;
-      tk = in_word_set(buf,bp);
-      return (tk) ? tk->ret : OPC_bad;
-    }
+  pdf_token_destroy (token);
+  return ret;
 }
 
 /* End of pdf-fp-func.c */
