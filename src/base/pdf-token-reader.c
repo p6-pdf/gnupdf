@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/06/17 21:41:11 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/06/18 00:14:15 jemarch"
  *
  *       File:         pdf-token-reader.c
  *       Date:         Mon Dec 29 00:45:09 2008
@@ -376,9 +376,6 @@ flush_token (pdf_token_reader_t reader, pdf_u32_t flags, pdf_token_t *token)
   pdf_char_t *data = reader->buffer->data;
   int datasize = reader->buffer->wp;
 
-  /* Set the beginning position of this state */
-  reader->beg_pos = reader->state_pos;
-
   switch (reader->state)
     {
     case PDF_TOKR_STATE_NONE:
@@ -477,6 +474,10 @@ flush_token (pdf_token_reader_t reader, pdf_u32_t flags, pdf_token_t *token)
     return rv;
 
   *token = new_tok;
+
+  /* Set the beginning position of this state */
+  reader->beg_pos = reader->state_pos;
+
 finish:
   reader->buffer->wp = 0;
   return PDF_OK;
