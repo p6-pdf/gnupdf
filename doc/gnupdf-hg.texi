@@ -1049,20 +1049,34 @@ The test driver display several messages to the standard output and
 also dump a logfile named @file{ut.log} with details about the test
 execution.
 
+The runtests program will (by default) output a list of which test
+suites were run, then a summary line followed by a list of failing
+lists. You can get a full list of tests (passing and failing) by 
+setting the @code{CK_VERBOSITY} environment variable to 'verbose'.
+You can get just the summary line and failing lists by setting the
+@code{CK_VERBOSITY} environment variable to 'minimal', and you can
+produce no output by setting it to 'silent'. Note that tests (in
+particular, the error reporting tests) may output additional 
+information as part of their normal operation - that isn't really
+part of the check testing framework, and won't be affected by the
+@code{CK_VERBOSITY} environment variable.
+
+
 @node Using gdb to debug check tests
 @subsection Using gdb to debug check tests
 
 The check testing framework uses fork calls in order to create the
-processes used to run the single tests. This makes possible to caught
+processes used to run the single tests. This makes possible to catch
 unexpected process terminations such as a segmentation fault or a
 division by zero.
 
 Sometimes we want to debug those failure conditions using
-gdb. Unfortunately the GNU debugger cannot caught the unexpected
+gdb. Unfortunately the GNU debugger cannot catch the unexpected
 termination of the child processess.
 
-The check implementor foreseen this and provides a workaround: to
-define the @code{CK_FORK} variable to "no" and launch the debugger.
+The check implementor foresaw this and provides a workaround: to
+define the @code{CK_FORK} environment variable to "no" and launch
+the debugger.
 
 @node Test Data Files
 @section Test Data Files
