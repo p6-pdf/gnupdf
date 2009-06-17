@@ -1,13 +1,13 @@
-/* -*- mode: C -*- Time-stamp: "09/04/17 00:05:28 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/03/01 23:01:31 lukasz"
  *
- *       File:         pdf-time-dup.c
+ *       File:         pdf-time-from-cal.c
  *       Date:         Fri Feb 27 17:35:31 2008
  *
- *       GNU PDF Library - Unit tests for pdf_time_dup
+ *       GNU PDF Library - Unit tests for pdf_time_add_span
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2008 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,60 +27,70 @@
 #include <check.h>
 #include <pdf.h>
 #include <stdlib.h>
-#include <base/time/pdf-time-test-common.h>
 
 /*
- * Test: pdf_time_dup_001
+ * Test: pdf_time_add_span
  * Description:
- *   Duplicate initialized pdf_time_t object
+ *   Compare two pdf_time_t objects. First is
+ *   initialized by adding pdf_time_span_t and second one
+ *   by pdf_i64_t value. Both pdf_time_t objects
+ *   must be equal.
+ *
  *Success condition:
- * 1. Function pdf_time_new schould return PDF_OK
- * 2. Function pdf_time_dup schould return pdf_time_t object.
- * 3. Structures pdf_time_s schould have the same data.
+ * 1. Function pdf_time_add_span schould return
+ * PDF_OK.
+ * 2. Function pdf_time_cmp schould return 0.
  */
-START_TEST (pdf_time_dup_001)
+START_TEST (pdf_time_add_span_001)
 {
   pdf_status_t status;
+
   pdf_time_t time1;
   pdf_time_t time2;
-  pdf_i64_t seconds;
-  pdf_u32_t i,j,sec;
+
+  pdf_time_span_t span;
+  pdf_i64_t num64;
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
-  fail_if(time1 == NULL);
 
-  seconds = pdf_i64_new(0x12345678,0x9ABCDEF0);
-
-  status = pdf_time_set_from_i64(time1, seconds);
+  status = pdf_time_new(&time2);
   fail_if(status != PDF_OK);
 
-  time2 = pdf_time_dup(time1);
-  fail_if(time2 == NULL);
-  fail_unless(pdf_time_cmp(time1, time2) == 0);
 
-  
+  span = pdf_time_span_new();
+
+  pdf_time_span_set(&span, 0x01234567,0xAABBCCDD);
+  num64=pdf_i64_new(0x01234567,0xAABBCCDD);
+
+  status = pdf_time_add_span(time1, span);
+  fail_if(status != PDF_OK);
+
+  status = pdf_time_set_from_i64(time2, num64);
+  fail_if(status != PDF_OK);
+
+  fail_unless(pdf_time_cmp(time1, time2) == 0);
+ 
+
   status = pdf_time_destroy(time1);
-  fail_if(status !=PDF_OK);
+  fail_if(status != PDF_OK);
 
   status = pdf_time_destroy(time2);
-  fail_if(status !=PDF_OK);
-
+  fail_if(status != PDF_OK);
 }
 END_TEST
-
 
 /*
  * Test case creation function
  */
 TCase *
-test_pdf_time_dup (void)
+test_pdf_time_add_span (void)
 {
-  TCase *tc = tcase_create ("pdf_time_dup");
+  TCase *tc = tcase_create ("pdf_time_add_span");
 
-  tcase_add_test(tc, pdf_time_dup_001);
+  tcase_add_test(tc, pdf_time_add_span_001);
 
   return tc;
 }
 
-/* End of pdf-time-dup.c */
+/* End of pdf-time-add-span.c */

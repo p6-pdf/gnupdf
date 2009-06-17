@@ -47,6 +47,20 @@ START_TEST (pdf_crypt_md_new_001)
 }
 END_TEST
 
+/*
+ * Test: pdf_crypt_md_new_002
+ * Description:
+ *   Create a new nonce (random initialization vector).
+ * Success condition:
+ *   Returns PDF_OK
+ */
+START_TEST (pdf_crypt_md_new_002)
+{
+  pdf_char_t buffer[16];
+
+  fail_if (pdf_crypt_nonce (buffer, sizeof(buffer)) != PDF_OK);
+}
+END_TEST
 
 /*
  * Test case creation function
@@ -56,6 +70,7 @@ test_pdf_crypt_md_new (void)
 {
   TCase *tc = tcase_create("pdf_crypt_md_new");
   tcase_add_test(tc, pdf_crypt_md_new_001);
+  tcase_add_test(tc, pdf_crypt_md_new_002);
   return tc;
 }
 

@@ -1,3 +1,97 @@
+2009-06-17  Brad Hards  <bradh@kde.org>
+
+	* src/base/pdf-time.c (pdf_time_span_negate): protect against null
+	argument.
+
+	* doc/gnupdf.texi: various typo fixes 
+
+	* doc/gnupdf-hg.texi (Running the unit tests): document use of
+	the CK_VERBOSITY environment variable.
+	Minor other doco fixes.
+
+	* torture/unit/runtests.c (main): use CK_ENV instead of CK_VERBOSE.
+
+2009-06-16  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-stm.c (pdf_stm_init): Initialize seq_counter to 0.
+
+	* src/base/pdf-stm.h (struct pdf_stm_s): New member seq_counter.
+
+	* src/base/pdf-stm.c (pdf_stm_bseek): Renamed from pdf_stm_seek.
+	(pdf_stm_btell): Renamed from pdf_stm_tell.
+	(pdf_stm_tell): New function.
+
+	* doc/gnupdf.texi (Stream Positioning): pdf_stm_tell/seek are not
+	pdf_stm_btell/bseek.
+	New documentation for pdf_stm_tell.
+
+	* torture/unit/base/stm/pdf-stm-flush.c: New file.
+
+	* torture/unit/base/time/pdf-time-span-negate.c
+	(pdf_time_span_negate_003): Pass a NULL pointer to
+	pdf_time_span_negate.
+
+	* torture/unit/base/text/pdf-text-dup.c (pdf_text_dup_005): Pass a
+	NULL pointer to pdf_text_dup.
+
+	* torture/unit/base/time/pdf-time-to-string.c: Include string.h
+	for the definition of memset.
+
+	* torture/unit/base/time/pdf-time-set-to-current-utc-time.c:
+	Include string.h for the definition of memset.
+
+	* torture/unit/base/time/pdf-time-set-to-current-local-time.c:
+	Include string.h for the definition of memset.
+
+	* torture/unit/base/time/pdf-time-diff-cal.c: Include string.h for
+	the definition of memset.
+
+	* torture/unit/base/time/pdf-time-from-string.c: Include string.h
+	for the definition of memset.
+
+	* torture/unit/base/time/pdf-time-new.c: Include string.h.
+
+	* torture/unit/base/time/tsuite-time.c: Missing prototypes added.
+
+	* torture/unit/base/time/pdf-time-w32-set-from-filetime.c: New
+	file.
+
+	* torture/unit/base/time/pdf-time-to-string.c: New file.
+
+	* torture/unit/base/time/pdf-time-sub-span.c: New file.
+
+	* torture/unit/base/time/pdf-time-sub-cal-span.c: New file.
+
+	* torture/unit/base/time/pdf-time-set-to-current-utc-time.c: New
+	file.
+
+	* torture/unit/base/time/pdf-time-set-to-current-local-time.c: New
+	file.
+
+	* torture/unit/base/time/pdf-time-set-local-offset.c: New file.
+
+	* torture/unit/base/time/pdf-time-get-utc-cal.c: New file.
+
+	* torture/unit/base/time/pdf-time-get-local-cal.c: New file.
+
+	* torture/unit/base/time/pdf-time-diff-cal.c: New file.
+
+	* torture/unit/base/time/pdf-time-diff.c: New file.
+
+	* torture/unit/base/time/pdf-time-cal-span-diff.c: New file.
+
+	* torture/unit/base/time/pdf-time-cal-span-cmp.c: New file.
+
+	* torture/unit/base/time/pdf-time-add-span.c: New file.
+
+	* torture/unit/base/time/pdf-time-add-cal-span-with-base.c: New
+	file.
+
+	* AUTHORS: Update.
+
+	* New tests for types/crypt modules and minor corrections in the
+	reference manual. By Brad Hards.
+
 2009-06-15  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* torture/unit/base/time/pdf-time-span-destroy.c: Pass addresses

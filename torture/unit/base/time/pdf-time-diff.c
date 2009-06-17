@@ -1,9 +1,9 @@
 /* -*- mode: C -*- Time-stamp: "09/04/17 00:06:44 jemarch"
  *
- *       File:         pdf-time-span-to-secs.c
+ *       File:         pdf-time-diff.c
  *       Date:         Fri Feb 27 17:35:31 2009
  *
- *       GNU PDF Library - Unit tests for pdf_time_span_to_secs
+ *       GNU PDF Library - Unit tests for pdf_time_diff
  *
  */
 
@@ -29,32 +29,43 @@
 #include <stdlib.h>
 
 /*
- * Test: pdf_time_span_to_secs_001
+ * Test: pdf_time_diff_001
  * Description:
- *   Create new pdf_time_span_t object and init it
- *   with pdf_i64_t number. Seconds returned by
- *   pdf_time_span_to_secs schould be equal to init
- *   number.
- *Success condition:
- * 1. Function pdf_time_span_new schould return PDF_OK
- * 2. Function pdf_time_span_set  return PDF_OK.
- * 3. Seconds returned by pdf_time_span_to_secs
- * schould be equal to initial number.
- * schould return PDF_OK
+ *   Create two pdf_time_t objects and initialize
+ *   them with the same value.
+ *   Returned pdf_time_diff_t schould be equal to 0.
+ *
+ * Success condition:
+ * 1. Function pdf_time_set_from_i64 schould return PDF_OK.
+ * 2. Function pdf_time_diff  schould return PDF_OK.
+ * 3. Diff returned by pdf_time_diff schould be equal to 0.
  */
-START_TEST (pdf_time_span_to_secs_001)
+START_TEST (pdf_time_diff_001)
 {
   pdf_status_t status;
+  pdf_time_t time1, time2;
   pdf_i64_t sec;
   pdf_i64_t sec2;
   pdf_time_span_t span;
 
+  status = pdf_time_new(&time1);
+  fail_if(status != PDF_OK);
+  
+  status = pdf_time_new(&time2);
+  fail_if(status != PDF_OK);
+
+  sec2 = pdf_i64_new(0x01234567, 0x89ABCDEF);
+  status = pdf_time_set_from_i64(time1, sec2);
+  fail_if(status != PDF_OK);
+  status = pdf_time_set_from_i64(time2, sec2);
+  fail_if(status != PDF_OK);
+
   span = pdf_time_span_new();
-  status = pdf_time_span_set(&span, 0x01234567, 0x89ABCDEF);
+  status = pdf_time_diff(time1, time2, &span);
   fail_if(status != PDF_OK);
   
   sec = pdf_time_span_to_secs(span);
-  sec2 = pdf_i64_new(0x01234567, 0x89ABCDEF);
+  sec2 = pdf_i64_new(0,0);
   fail_unless(memcmp(&sec,&sec2, sizeof(pdf_i64_t)) == 0);
 
   status = pdf_time_span_destroy(&span);
@@ -67,13 +78,13 @@ END_TEST
  * Test case creation function
  */
 TCase *
-test_pdf_time_span_to_secs (void)
+test_pdf_time_diff (void)
 {
-  TCase *tc = tcase_create ("pdf_time_span_to_secs");
+  TCase *tc = tcase_create ("pdf_time_diff");
 
-  tcase_add_test(tc, pdf_time_span_to_secs_001);
+  tcase_add_test(tc, pdf_time_diff_001);
 
   return tc;
 }
 
-/* End of pdf-time-span-to-secs.c */
+/* End of pdf-time-diff.c */

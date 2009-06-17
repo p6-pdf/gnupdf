@@ -29,7 +29,7 @@
 #include <pdf.h>
 
 /* Size of pdf_time_cal_span_s calspan[] table */
-#define DAY_TIME_SPAN_SIZE 32
+#define DAY_TIME_SPAN_SIZE 24
 #define YEAR_MONTH_SIZE 30
 
 #define DATES_SIZE 86

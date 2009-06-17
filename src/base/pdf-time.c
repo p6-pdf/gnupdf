@@ -239,6 +239,15 @@ pdf_time_get_cal (const pdf_time_t time_var,
 
   /* Set month and day of month */
   p_cal_time->month = months;
+  if (pdf_time_get_days_in_month(p_cal_time->year, p_cal_time->month) < days + 1){
+    p_cal_time->day = days + 1 - pdf_time_get_days_in_month(p_cal_time->year, p_cal_time->month);
+    p_cal_time->month+=1;
+    if (p_cal_time->month == 13) {
+        p_cal_time->month = 1;
+        p_cal_time->year+=1;
+    }
+  }
+  else 
   p_cal_time->day = days + 1;
   
   /* Finally, set gmt offset */
@@ -285,7 +294,7 @@ pdf_time_calendar_add_months(struct pdf_time_cal_s *p_calendar,
     }
   else if(delta_months < 0)
     {
-      p_calendar->month -= delta_months;
+      p_calendar->month += delta_months;
       while(p_calendar->month < 1)
         {
           p_calendar->month += 12;
@@ -338,20 +347,21 @@ pdf_time_calendar_add_days(struct pdf_time_cal_s *p_calendar,
       pdf_i32_t days_in_month;
       
       /* Initialize days in month */
-      days_in_month = pdf_time_get_days_in_month(p_calendar->year, \
-                                                 (enum pdf_time_month_e)p_calendar->month);
-      while(delta < days_in_month)
+      days_in_month = p_calendar->day - 1;
+
+      while(days_in_month <= (-delta))
         {
-          /* Go to end of previous month */
+          /* Go to the begin of previous month */
           p_calendar->day = 1;
           pdf_time_calendar_add_months(p_calendar, -1);
           
           /* Update remaining delta and new days_in_month */
-          delta -= (days_in_month - p_calendar->day +1);
+          delta += days_in_month;
           days_in_month = pdf_time_get_days_in_month(p_calendar->year, \
                                                      (enum pdf_time_month_e)p_calendar->month);
         }
       /* Add final delta, which doesn't require month change */
+      delta += days_in_month;
       p_calendar->day += delta;
     }
 }
@@ -620,7 +630,7 @@ pdf_time_copy (const pdf_time_t orig,
   pdf_status_t p_status = PDF_OK;
   pdf_i64_copy (orig->seconds, &(copy->seconds), &p_status);
   copy->gmt_offset = orig->gmt_offset;
-  return PDF_OK;
+  return p_status;
 }
 
 /* Clear contents of the pdf_time_t object */
@@ -632,7 +642,7 @@ pdf_time_clear (pdf_time_t time_var)
   pdf_i64_assign_quick(&time_var->seconds, 0, &p_status);
   /* UTC */
   time_var->gmt_offset = 0;
-  return PDF_OK;
+  return p_status;
 }
 
 
@@ -708,7 +718,7 @@ pdf_time_add_span (pdf_time_t time_var,
   pdf_i64_add ((&time_var->seconds),
                time_var->seconds,
                time_span, &p_status);
-  return PDF_OK;
+  return p_status;
 }
 
 /* Subtract the time span contained in time_span to time. As the time span is
@@ -721,7 +731,7 @@ pdf_time_sub_span (pdf_time_t time_var,
   pdf_i64_subtraction ((&time_var->seconds),
                        time_var->seconds,
                        time_span, &p_status);
-  return PDF_OK;
+  return p_status;
 }
 
 
@@ -902,7 +912,7 @@ pdf_time_diff (const pdf_time_t time1,
 { 
   pdf_status_t p_status = PDF_OK;
   pdf_i64_subtraction(p_time_span, time1->seconds, time2->seconds, &p_status);
-  return PDF_OK;
+  return p_status;
 }
 
 
@@ -998,7 +1008,7 @@ pdf_time_set_to_current_utc_time (pdf_time_t time_var)
       pdf_i64_assign_quick(&(time_var->seconds), (pdf_i32_t)time_now, &p_status);
       time_var->gmt_offset = 0;
     }
-  return PDF_OK;
+  return p_status;
 }
 
 
@@ -1044,7 +1054,7 @@ pdf_time_span_set (pdf_time_span_t *p_span,
 {
   pdf_status_t p_status = PDF_OK;
   pdf_i64_assign(p_span, high_value, low_value, &p_status);
-  return PDF_OK;
+  return p_status;
 }
 
 
@@ -1055,7 +1065,7 @@ pdf_time_span_set_from_i32 (pdf_time_span_t *p_span,
 {
   pdf_status_t p_status = PDF_OK;
   pdf_i64_assign_quick(p_span, seconds, &p_status);
-  return PDF_OK;
+  return p_status;
 }
 
 
@@ -1064,8 +1074,10 @@ pdf_status_t
 pdf_time_span_negate (pdf_time_span_t *p_span)
 {
   pdf_status_t p_status = PDF_OK;
+  if (p_span == NULL)
+    return PDF_ERROR;
   pdf_i64_neg(p_span, *p_span, &p_status);
-  return PDF_OK;
+  return p_status;
 }
 
 
@@ -1077,7 +1089,7 @@ pdf_time_span_add (const pdf_time_span_t span1,
 {
   pdf_status_t p_status = PDF_OK;
   pdf_i64_add((pdf_i64_t *)p_result, span1, span2, &p_status);
-  return PDF_OK;
+  return p_status;
 }
 
 /* Copy the value of a time span into another time span. */
@@ -1087,7 +1099,7 @@ pdf_time_span_copy (const pdf_time_span_t orig,
 {
   pdf_status_t p_status = PDF_OK;
   pdf_i64_copy(orig, (pdf_i64_t *)p_dest, &p_status);
-  return PDF_OK;
+  return p_status;
 }
 
 /* Difference two time spans and store the result (maybe negative) into another
@@ -1099,7 +1111,7 @@ pdf_time_span_diff (const pdf_time_span_t span1,
 {
   pdf_status_t p_status= PDF_OK;
   pdf_i64_subtraction(p_result, span1, span2, &p_status);
-  return PDF_OK;
+  return p_status;
 }
 
 /* Get the value of a time span in seconds. */
@@ -1140,13 +1152,14 @@ pdf_time_span_from_cal_span(pdf_time_span_t *p_span,
     {
       /* Get the difference in seconds */
       ret_code = pdf_time_diff(new_time, base_time, p_span);
-      pdf_time_destroy(base_time);
+      pdf_time_destroy(new_time);
+      new_time = NULL;
     }
 
   /* Destroy allocated object, if any */
   if(new_time != NULL)
     {
-      pdf_time_destroy(base_time);
+      pdf_time_destroy(new_time);
     }
   return ret_code;
 }
@@ -1198,8 +1211,8 @@ pdf_time_add_cal_span_with_base (const struct pdf_time_cal_span_s *p_span1,
   
   if( (p_span1 != NULL) && \
       (p_span2 != NULL) && \
-      (pdf_time_span_from_cal_span(&span_time_2,
-                                   p_span2,
+      (pdf_time_span_from_cal_span(&span_time_1,
+                                   p_span1,
                                    base_time) == PDF_OK) && \
       (pdf_time_span_from_cal_span(&span_time_2,
                                   p_span2,
@@ -1274,8 +1287,8 @@ pdf_time_cal_span_diff (const struct pdf_time_cal_span_s *p_span1,
   
   if((p_span1 != NULL) && \
      (p_span2 != NULL) && \
-     (pdf_time_span_from_cal_span(&span_time_2,
-                                  p_span2,
+     (pdf_time_span_from_cal_span(&span_time_1,
+                                  p_span1,
                                   base_time) == PDF_OK) && \
      (pdf_time_span_from_cal_span(&span_time_2,
                                   p_span2,

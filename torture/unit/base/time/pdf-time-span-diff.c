@@ -97,7 +97,7 @@ START_TEST (pdf_time_span_diff_002)
   pdf_time_span_set_from_i32(&span1,0x00FFFF11);
   pdf_time_span_set_from_i32(&span2,-0x00FFFF12);
 
-  status = pdf_time_span_add(span1,span2,result);
+  status = pdf_time_span_diff(span1,span2,result);
   fail_if(status != PDF_ERROR);
 
   status = pdf_time_span_destroy(&span1);

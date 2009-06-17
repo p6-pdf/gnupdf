@@ -62,8 +62,7 @@ START_TEST (pdf_time_from_cal_001)
   for (i=0; i<DATES_SIZE; i++){
         for (gmt =-12*3600; gmt <=12*3600; gmt+=1800){  /* Set various gmt_offsets. */
 
-            seconds=datesInSeconds[i] + dates[i].hour*3600 + \
-                    dates[i].minute*60 + dates[i].second -gmt ;
+            seconds=datesInSeconds[i] -gmt;
 
             if (seconds +gmt < gmt) continue;
 

@@ -71,8 +71,20 @@ and changed doc/gnupdf.texi doc/gnupdf-tsd.texi configure.ac src/Makefile.am
   torture/unit/base/stm/pdf-stm-write.c
   torture/unit/base/stm/pdf-stm-read.c
 
-Brad Hards: changed torture/unit/base/time/pdf-time-from-string.c
-  torture/unit/base/time/pdf-time-copy.c
+Brad Hards: changed doc/gnupdf-hg.texi
+  doc/gnupdf.texi
+  src/base/pdf-time.c
+  torture/unit/base/time/pdf-time-from-string.c
+  torture/unit/base/time/pdf-time-copy.c 
+  torture/unit/base/crypt/pdf-crypt-md-new.c
+  torture/unit/base/crypt/pdf-crypt-md-read.c
+  torture/unit/base/text/pdf-text-dup.c
+  torture/unit/base/text/pdf-text-new-destroy
+  torture/unit/base/text/pdf-text-new-from-host.c
+  torture/unit/base/types/pdf-i64-abs.c
+  torture/unit/base/types/pdf-i64-mod.c
+  torture/unit/base/types/pdf-i64-neg.c
+  torture/unit/runtests.c
 
 Daniel Vidal: wrote /torture/unit/base/types/pdf-i64-add.c
   /torture/unit/base/types/pdf-i64-assign.c
@@ -256,6 +268,25 @@ and changed utils/pdf-filter.c utils/pdf-filter.h
 
 Karl Berry: changed doc/gnupdf.texi doc/gnupdf-utils.texi
   doc/Makefile.am 
+
+Lukasz Spintzyk: wrote
+  torture/unit/base/time/pdf-time-add-cal-span-with-base.c
+  torture/unit/base/time/pdf-time-add-span.c
+  torture/unit/base/time/pdf-time-cal-span-cmp.c
+  torture/unit/base/time/pdf-time-cal-span-diff.c
+  torture/unit/base/time/pdf-time-diff-cal.c
+  torture/unit/base/time/pdf-time-diff.c
+  torture/unit/base/time/pdf-time-get-local-cal.c
+  torture/unit/base/time/pdf-time-get-utc-cal.c
+  torture/unit/base/time/pdf-time-set-local-offset.c
+  torture/unit/base/time/pdf-time-set-to-current-local-time.c
+  torture/unit/base/time/pdf-time-set-to-current-utc-time.c
+  torture/unit/base/time/pdf-time-sub-cal-span.c
+  torture/unit/base/time/pdf-time-sub-span.c
+  torture/unit/base/time/pdf-time-to-string.c
+  torture/unit/base/time/pdf-time-w32-set-from-filetime.c
+  torture/unit/base/stm/pdf-stm-flush.c
+and changed torture/unit/base/stm/tsuite-stm.c
 
 Mathias Kolehmainen: wrote torture/testall.c
 and changed configure.ac torture/Makefile.am torture/test-date.c 

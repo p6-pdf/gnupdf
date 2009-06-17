@@ -186,6 +186,61 @@ START_TEST(pdf_text_new_from_host_003)
 }
 END_TEST
 
+/*
+ * Test: pdf_text_new_from_host_004
+ * Description:
+ *   Create a text object with invalid input string
+ * Success conditions:
+ *    1. The call to  pdf_text_new_from_host should return PDF_EBADDATA
+ */
+START_TEST(pdf_text_new_from_host_004)
+{
+  pdf_text_t text = NULL;
+  pdf_text_host_encoding_t host_enc;
+  const pdf_char_t *sample_usascii = NULL;
+
+  /* Create, without using the API, a valid pdf_text_host_encoding_t */
+#ifdef PDF_HOST_WIN32
+  strcpy((char *)(&(host_enc.name[0])), "CP20127"); /* us-ascii */
+#else
+  strcpy((char *)(&(host_enc.name[0])), "us-ascii");
+#endif
+
+  fail_unless(pdf_text_new_from_host(sample_usascii,
+                                     1,
+                                     host_enc,
+                                     &text) == PDF_EBADDATA);
+
+}
+END_TEST
+
+/*
+ * Test: pdf_text_new_from_host_005
+ * Description:
+ *   Create a text object with invalid input string length
+ * Success conditions:
+ *    1. The call to  pdf_text_new_from_host should return PDF_EBADDATA
+ */
+START_TEST(pdf_text_new_from_host_005)
+{
+  pdf_text_t text = NULL;
+  pdf_text_host_encoding_t host_enc;
+  const pdf_char_t *sample_usascii = (pdf_char_t *)"GNU's not Unix";
+
+  /* Create, without using the API, a valid pdf_text_host_encoding_t */
+#ifdef PDF_HOST_WIN32
+  strcpy((char *)(&(host_enc.name[0])), "CP20127"); /* us-ascii */
+#else
+  strcpy((char *)(&(host_enc.name[0])), "us-ascii");
+#endif
+
+  fail_unless(pdf_text_new_from_host(sample_usascii,
+                                     0,
+                                     host_enc,
+                                     &text) == PDF_EBADDATA);
+
+}
+END_TEST
 
 
 /*
@@ -198,6 +253,8 @@ test_pdf_text_new_from_host(void)
   tcase_add_test(tc, pdf_text_new_from_host_001);
   tcase_add_test(tc, pdf_text_new_from_host_002);
   tcase_add_test(tc, pdf_text_new_from_host_003);
+  tcase_add_test(tc, pdf_text_new_from_host_004);
+  tcase_add_test(tc, pdf_text_new_from_host_005);
   return tc;
 }
 
