@@ -73,6 +73,7 @@ and changed doc/gnupdf.texi doc/gnupdf-tsd.texi configure.ac src/Makefile.am
 
 Brad Hards: changed doc/gnupdf-hg.texi
   doc/gnupdf.texi
+  src/base/pdf-time.c
   torture/unit/base/time/pdf-time-from-string.c
   torture/unit/base/time/pdf-time-copy.c 
   torture/unit/base/crypt/pdf-crypt-md-new.c

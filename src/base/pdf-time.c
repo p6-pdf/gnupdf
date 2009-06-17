@@ -1074,6 +1074,8 @@ pdf_status_t
 pdf_time_span_negate (pdf_time_span_t *p_span)
 {
   pdf_status_t p_status = PDF_OK;
+  if (p_span == NULL)
+    return PDF_ERROR;
   pdf_i64_neg(p_span, *p_span, &p_status);
   return p_status;
 }
