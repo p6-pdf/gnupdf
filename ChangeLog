@@ -1,3 +1,11 @@
+2009-06-17  Brad Hards  <bradh@kde.org>
+
+	* doc/gnupdf-hg.texi (Running the unit tests): document use of
+	the CK_VERBOSITY environment variable.
+	Minor other doco fixes.
+
+	* torture/unit/runtests.c (main): use CK_ENV instead of CK_VERBOSE.
+
 2009-06-16  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-stm.c (pdf_stm_init): Initialize seq_counter to 0.

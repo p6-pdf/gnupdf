@@ -46,7 +46,7 @@ main (int argc, char **argv)
   srunner_set_log (sr, "ut.log");
 
   /* Run all test suites */
-  srunner_run_all (sr, CK_VERBOSE);
+  srunner_run_all (sr, CK_ENV);
   failures = srunner_ntests_failed (sr);
   srunner_free (sr);
   
