@@ -1,5 +1,7 @@
 2009-06-17  Brad Hards  <bradh@kde.org>
 
+	* doc/gnupdf.texi: various typo fixes 
+
 	* doc/gnupdf-hg.texi (Running the unit tests): document use of
 	the CK_VERBOSITY environment variable.
 	Minor other doco fixes.
