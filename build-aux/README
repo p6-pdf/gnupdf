@@ -1,5 +1,5 @@
-This directory contain several programs and utilities used in the
-building of the library. All the programs contained in this directory
+This directory contains several programs and utilities used to
+build the library. All the programs contained in this directory
 are not intended to be installed in the target machine.
 
   `pdf-text-generate-ucd'

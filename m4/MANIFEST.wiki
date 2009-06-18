@@ -1,6 +1,6 @@
 =='''m4/''' M4 macros==
 
-This directory contain the definition of ''M4'' macros implementing tests used by autoconf. Note that some of the files are imported from GNUlib.
+This directory contains the definitions of ''M4'' macros implementing tests used by autoconf. Note that some of the files are imported from GNUlib.
 
 ; '''absolute-header.m4'''
 ; '''error.m4'''

@@ -1,6 +1,6 @@
 =='''prmgt/''' Project Management==
 
-This directory contain several files with management information about the project: tasks, reports, etc.
+This directory contains several files with management information about the project: tasks, reports, etc.
 
 ; '''MANIFEST.wiki'''
 : This file.
@@ -18,28 +18,16 @@ This directory contain several files with management information about the proje
 : Script that lists the documented functions in the GNU PDF Reference Manual.
 
 ; '''fly2org'''
-: Tcl script implementing flyspray tasks to org-mode.
+: Tcl script converting flyspray tasks to org-mode.
 
 ; '''generate-coverage-report'''
-: Shell script that generates a nice html report of code coverage.
+: Shell script that generates a nice HTML report of code coverage.
 
 ; '''get-test-data.sh.in'''
 : Shell script that downloads the test data files needed by the test suites of the library.
 
-; '''libgnupdf.tjp'''
-: taskjuggler file for libgnupdf.
-
 ; '''patch_safety_dispatcher.py'''
 : This script runs other QA scripts like the test suite and a syntax check conforming to GCS.
-
-; '''pertdot.xsl''', '''pertfdp.xsl'''
-: xsl templates to get Pert diagrams for '''libgnupdf.tjp'''.
-
-; '''pmccabe2html.in'''
-: AWK program to generate a html report from the output of the pmccabe program.
-
-; '''pmccabe.css'''
-: CSS stylesheets.
 
 ; '''srcinfo-extractor.pl.in'''
 : Perl script that traverses every directory from topdir and looks for a MANIFEST.wiki file, from which the directory information is then extracted.
@@ -47,6 +35,6 @@ This directory contain several files with management information about the proje
 ; '''testlog2wiki.in'''
 : Tests run report generator.
 
-; '''tsdfuncs'''
+; '''tsdfuncs.in'''
 : List the documented functions in the GNU PDF TSD.
 

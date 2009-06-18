@@ -1,6 +1,6 @@
 =='''src/''' Library Source Code==
 
-This directory contain a subdirectory containing the source files for each library layer, plus some global source files and scripts.
+This directory contains a subdirectory containing the source files for each library layer, plus some global source files and scripts.
 
 ; '''Makefile.am'''
 : Automake source file

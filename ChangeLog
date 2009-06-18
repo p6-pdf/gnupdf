@@ -1,3 +1,22 @@
+2009-06-18  Brad Hards  <bradh@kde.org>
+
+	* MANIFEST.wiki: update / fix typos.
+	* build-aux/README: likewise
+	* doc/MANIFEST.wiki: likewise
+	* doc/figures/MANIFEST.wiki: likewise
+	* lib/README: likewise
+	* m4/MANIFEST.wiki: likewise
+	* prmgt/MANIFEST.wiki: likewise
+	* src/MANIFEST.wiki: likewise
+	* src/README: likewise
+	* src/object/MANIFEST.wiki: likewise
+	* torture/MANIFEST.wiki: likewise
+	* torture/README: likewise
+	* utils/MANIFEST.wiki: likewise
+	* utils/README: likewise
+
+	* prmgt/pertdot.xsl, prmgt/pertfdp.xsl: delete unused.
+
 2009-06-18  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-token-reader.c (flush_token): Update beg_pos only
