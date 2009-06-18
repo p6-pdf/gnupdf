@@ -71,9 +71,21 @@ and changed doc/gnupdf.texi doc/gnupdf-tsd.texi configure.ac src/Makefile.am
   torture/unit/base/stm/pdf-stm-write.c
   torture/unit/base/stm/pdf-stm-read.c
 
-Brad Hards: changed doc/gnupdf-hg.texi
+Brad Hards: changed MANIFEST.wiki
+  build-aux/README
+  doc/MANIFEST.wiki
+  doc/figures/MANIFEST.wiki
+  doc/gnupdf-hg.texi
   doc/gnupdf.texi
+  lib/README
+  m4/MANIFEST.wiki
+  prmgt/MANIFEST.wiki
+  src/MANIFEST.wiki
+  src/README
   src/base/pdf-time.c
+  src/object/MANIFEST.wiki
+  torture/MANIFEST.wiki
+  torture/README
   torture/unit/base/time/pdf-time-from-string.c
   torture/unit/base/time/pdf-time-copy.c 
   torture/unit/base/crypt/pdf-crypt-md-new.c
@@ -85,6 +97,8 @@ Brad Hards: changed doc/gnupdf-hg.texi
   torture/unit/base/types/pdf-i64-mod.c
   torture/unit/base/types/pdf-i64-neg.c
   torture/unit/runtests.c
+  utils/MANIFEST.wiki
+  utils/README
 
 Daniel Vidal: wrote /torture/unit/base/types/pdf-i64-add.c
   /torture/unit/base/types/pdf-i64-assign.c

@@ -1,7 +1,9 @@
 =='''utils/''' Utilities==
 
-This directory contain several utilities to manipulate PDF documents. These utilities makes use of the GNU PDF Library.
+This directory contains several utilities to manipulate PDF documents. These utilities make use of the GNU PDF Library.
 
 ; '''pdf-filter.h''', '''pdf-filter.c''' 
 : '''pdf-filter''': a front-end for the standard PDF filters.
 
+; '''toktest.c'''
+: '''toktest''': a test application for the PDF tokenizer.
