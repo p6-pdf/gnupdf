@@ -1,5 +1,7 @@
 2009-06-18  Brad Hards  <bradh@kde.org>
 
+	* doc/gnupdf-arch.texi: fix typos
+
 	* MANIFEST.wiki: update / fix typos.
 	* build-aux/README: likewise
 	* doc/MANIFEST.wiki: likewise

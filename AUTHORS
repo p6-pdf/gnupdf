@@ -75,6 +75,7 @@ Brad Hards: changed MANIFEST.wiki
   build-aux/README
   doc/MANIFEST.wiki
   doc/figures/MANIFEST.wiki
+  doc/gnupdf-arch.texi
   doc/gnupdf-hg.texi
   doc/gnupdf.texi
   lib/README

@@ -400,7 +400,7 @@ A stream provides the following operations to read data from the
 memory buffer or open file:
 
 @itemize @minus
-@item Read a chunk of a specified number of consecutive octects and store it in a given buffer.
+@item Read a chunk of a specified number of consecutive octets and store it in a given buffer.
 @item Read a single character (octet) in an efficient way and return its numeric code.
 @item Peek a single character (octet) in an efficient way and return its numeric code. 
 @end itemize
@@ -408,7 +408,7 @@ memory buffer or open file:
 The stream manages the end-of-data condition in the following way:
 
 @itemize @minus
-@item When reading a specified number of consecutive octects, it will return the number of octects currently readed and stored in the specified buffer. If that number if less than the requested number of octects then the stream is in a end-of-data condition.
+@item When reading a specified number of consecutive octets, it will return the number of octets currently read and stored in the specified buffer. If that number if less than the requested number of octets then the stream is in a end-of-data condition.
 @item When reading or peeking a single character, return an integer able to store a special value PDF_EOF. The caller then can check that condition before casting the returned value to a character one.
 @end itemize
 
@@ -419,12 +419,12 @@ The stream provides the following operations to write data in a memory
 buffer or open file:
 
 @itemize @minus
-@item Write a chunk of a specified number of consecutive octects.
+@item Write a chunk of a specified number of consecutive octets.
 @end itemize
 
 The stream manages the end-of-data condition returning the number of
-octects actually written in the stream. If that number is less than
-the requested number of octects then the stream is in a end-of-data
+octets actually written in the stream. If that number is less than
+the requested number of octets then the stream is in a end-of-data
 condition.
 
 @node Positioning into a stream
@@ -432,7 +432,7 @@ condition.
 
 The streams supports the notion of read and write pointers. A pointer
 value is measured in positions, where a position is a offset relative
-to the beginning of the stream storage in octects.
+to the beginning of the stream storage in octets.
 
 @float Figure,fig:stream-read-write-pointer
 @image{figures/stream-read-write-pointer}
@@ -481,7 +481,7 @@ defined in the PDF 1.7 Reference, Chapter 3, Section 3. Namely:
 @node Stream buffers
 @subsection Stream buffers
 
-A pdf_stm_buffer_t is a e data type implementing a buffer in memory.
+A pdf_stm_buffer_t is a data type implementing a buffer in memory.
 
 @float Figure,fig:stream-memory-buffer
 @image{figures/stream-memory-buffer}
@@ -507,7 +507,7 @@ Return @code{PDF_TRUE} if the buffer is in an "end of buffer"
 condition. Return @code{PDF_FALSE} otherwise.
 @end table
 
-The following funtion can be used to resize a buffer:
+The following function can be used to resize a buffer:
 
 @table @code
 @item pdf_status_t pdf_stm_buffer_resize (@var{buffer}, @var{new_size})
@@ -548,8 +548,7 @@ The following properties can be used with buffer variables:
 @subsection Stream backends
 
 A @code{pdf_stm_be_t} is an opaque data type implementing the backend
-used by the stream to read or write information.  A stream backend
-Enlarge A stream backend
+used by the stream to read or write information.
 
 There are two types of stream backends:
 
@@ -600,7 +599,7 @@ A filter abstraction is composed by:
 
 @table @strong
 @item An application function @code{F()}
-This internal function implement the logic of the filter. Reading from
+This internal function implements the logic of the filter. Reading from
 an input buffer it generates output. The specific transformation
 depends on the nature of the filter. Note that the size of the output
 of an application function can be larger than the input size (a
@@ -1533,10 +1532,10 @@ Tells if the last modification date (see below) is useful.
 The last modification date of the item.
 @item file_size
 If the item is a file then this field contain the lower 32-bits of the
-size (in octects) of the item.
+size (in octets) of the item.
 @item file_size_high
 If the item is a file then this field contain the upper 32-bits of the
-size (in octects) of the item.
+size (in octets) of the item.
 @item folder_size
 If the item is a folder then this field contain the number of items
 contained in the folder. 
