@@ -66,12 +66,12 @@ The GNU PDF Library provides functions to read and write PDF documents
 conforming to the PDF 1.7 specification and the ISO 32000
 standard. This includes visualization (retrieving of bitmaps with
 rasterized page contents) and interactive features such as annotations
-and interactive forms. The library also support the generation of
+and interactive forms. The library also supports the generation of
 specific subsets of PDF conforming to the ISO standards PDF/A, PDF/X
 and ISO 32000.
 @end cartouche
 
-The GNU PDF Library is composed by several layers:
+The GNU PDF Library contains several layers:
 
 @float Figure,fig:library-architecture
 @image{figures/library-architecture}
@@ -80,15 +80,15 @@ The GNU PDF Library is composed by several layers:
 
 @table @strong
 @item Base Layer
-This layer implements basic functionality such as memory allocation,
+This layer implements basic functionals such as memory allocation,
 fixed-point arithmetic, interpolation functions, geometry routines,
-character encoding and access to the filesystem. The base layer is the
-responsible to provide common system-independent abstractions to other
+character encoding and access to the filesystem. The base layer is
+responsible for providing common system-independent abstractions to other
 parts of the library.
 @item Object Layer
 This layer implements the concepts of PDF objects and PDF documents as
 a structured hierarchy of objects. An API is provided to manipulate
-that structure and the objects that compound it. Since the object
+that structure and the objects that are part of it. Since the object
 hierarchy can be quite complex a garbage collection mechanism is
 provided to the client of the layer.
 @item Document Layer
@@ -108,9 +108,10 @@ Some remarks:
 
 @itemize @minus
 @item Each layer is built using the API exported by the underlying layers.
+@item A layer is made up of one or more modules.
 @item A client application has access to all layers.
 @item Each layer export an API that gives access to the functionality it implement to clients.
-@item As for terminology we use the terms procedure and function meaning the same thing. 
+@item We use the terms procedure and function to mean the same thing.
 @end itemize
 
 @node The base layer
@@ -118,10 +119,8 @@ Some remarks:
 
 The base layer of the GNU PDF Library provide system-independent access to several facilities.
 
-The implemented facilities are organized into modules. Each module
-export an API to be used by the client application or other layers of
-the library. Some modules make use of the facilities implemented in
-other modules (such as allocation or error functions).
+Some modules within the base layer make use of the facilities implemented in
+other modules within the base layer (such as allocation or error functions).
 
 @float Figure,fig:base-layer-architecture
 @image{figures/base-layer-architecture}
@@ -141,9 +140,9 @@ several hashing algorithms.
 @item List Module
 This module provides an implementation of dynamic lists and vectors.
 @item Stream Module
-This module provides system-independent and device-independent
-homogeneous access to filesystem files and memory buffers.The streams
-are buffered and support filtering for both read and write operations.
+This module provides access to a range of streams (including compressed
+streams) used within PDF files. The streams are buffered and support
+filtering for both read and write operations.
 @item Floating Point Arithmetic Module
 This module provides system-independent floating point real numbers
 and several related facilities such as matrix and points
@@ -163,11 +162,11 @@ directories, file permissions, etc) in a system-independent way.
 This module provides facilities to manage error types, error
 signaling, error descriptions, etc.
 @item Crypt Module
-This module provides de/encryption facilities.
+This module provides de/encryption and cryptographic hashing facilities.
 @item Tokeniser Module
 This module implements a stream tokeniser to read in PDF tokens from a
 base-level stream and a token writer that can write PDF tokens into
-some writing streams.
+a stream.
 @end table
 
 @menu
@@ -193,7 +192,7 @@ allocation and deallocation. The usual malloc/free/realloc schema is
 used to provide this service.
 
 The allocation functions should test for memory exhaustion
-conditions. If the program calling the allocation functions gets out
+conditions. If the program calling the allocation functions runs out
 of memory then NULL is returned.
 
 @node Basic types module
@@ -204,7 +203,7 @@ types:
 
 @table @strong
 @item Boolean types
-Simple C constanst to denote @code{TRUE} and @code{FALSE} are
+Simple C constants to denote @code{TRUE} and @code{FALSE} are
 provided.
 @item Integer types
 Both signed and unsigned types are provided for 16, 32 and 64 bits
@@ -212,19 +211,19 @@ wide integers.
 @item 64 bits big numbers
 The pdf_i64_t type is a signed 64 bit integer designed to represent
 large numbers in 32 bit machines (e.g. embedded systems in printers,
-etc...). Negative numbers are represented in 2's-complement
+etc...). Negative numbers are represented in two's-complement
 format. The way to initialise a 64 bit number is by using a 32 bit
 signed integer and a 32 bit unsigned integer (see API for details on
-this). One has to remember that the final result is in 2's complement
-so the user has to set the bits of each input integer accordingly so,
+this). One has to remember that the final result is in two's-complement
+so the user has to set the bits of each input integer such that,
 when concatenated, they form the desired 64 bit signed integer.
 
 Several methods related to this type are defined in the API. The
-initialisation function, pdf_i64_new, fulfils the tasks mentioned in
+initialization function, pdf_i64_new, performs the construction mentioned in
 the previous paragraph. Two other funcitons, pdf_i64_assign and
 pdf_i64_assign_quick, assign a value to the selected pdf_i64_t by
 using two 32 bit integers (one unsigned and one signed) for the former
-and one signed integer for the latter. Also included, is a basic copy
+and one signed integer for the latter. Also included is a basic copy
 method to copy data between pdf_i64_t type variables.
 
 Several arithmetic operations are included in the API: addition,
@@ -235,21 +234,21 @@ The addition method is based on the classical addition algorithm
 included in Knuth's Art of Computer Programming (Vol 2). In this
 algorithm a convenient base is selected to represent the numbers to be
 added and a relatively simple carry system is used. In our case, due
-to the 32 bit limit imposed by the portability requirement of the pdf
-library, the unsigned 32 bit number and the signed 32 bit numbers are
-divided in two 16 bit ones each to be able to manage the intermediate
+to the 32 bit limit imposed by the portability requirement of the GNU PDF
+library, the unsigned 32 bit number and the signed 32 bit number are
+each divided in two 16 bit numbers to manage the intermediate
 storage. In other words, the addition is made in a 16 bit base (and
 not 32 bit) to avoid unwanted overflows during the process.
 
-Regarding the subtraction, thanks to the nature of the 2's-complement
+Regarding the subtraction, thanks to the nature of the two's-complement
 system, it is simply carried out by negating the subtrahend and adding
-it up to the minuend. The negation function is used in this case. This
-function basically carries out the 2's-complement conversion of a
+it to the minuend. The negation function is used in this case. This
+function basically carries out the two's-complement conversion of a
 64-bit number type by inverting the integer's bits and adding one to
-the result. The absolute value of a pdf_64i_t number is carried out in
+the result. The absolute value of a pdf_i64_t number is calculated in
 a similar fashion.
 
-The comparison of two pdf_i64_bit types starts with the 32 bit signed
+The comparison of two pdf_i64_t types starts with the 32 bit signed
 part of the structure and if they are the same, a comparison of the 32
 bit unsigned part of the structure representing the least significant
 bits is carried out.
@@ -259,7 +258,7 @@ arithmetic algorithm's presented in Knuth's Art of Computer
 Programming (Vol 2). Overflows are more common in this case so an 8
 bit base is chosen to avoid them during the calculations. Internally
 the method can handle results of 128 bits, but if the result needs
-more than 64 bits (in 2's complement format) to be represented then an
+more than 64 bits (in two's complement format) to be represented then an
 error is flagged as an output of the function.
 
 The long division is also based on an intuitive algorithm included and
@@ -271,10 +270,10 @@ proved by Knuth in the same volume mentioned above.
 
 The Hash module provides procedures to work with Hash tables. Thus,
 for a given table T, an element entry E, an associated key K and a
-determined function F, we have that T(F(K)) = E (in case no hash
-collision is detected). This gives constant access time. In case of a
-hash collision the module knows how to deal with it but constant
-access time is not guaranteed.
+determined function F, we have that T(F(K)) = E (where no hash
+collision is detected). This gives constant access time. Where there
+is a hash collision the module manages it, but constant access time
+is not guaranteed.
 
 A hash table can store elements of any type.
 
@@ -338,7 +337,7 @@ open files adding the following functionality:
 @end float
 
 Several streams can be created to operate on the same open file. This
-provides a convenient access to files with several parts requiring
+provides a convenient way to access files with several parts requiring
 different filters to read or write its contents.
 
 @float Figure,fig:streams-operating-file
@@ -374,13 +373,13 @@ applied in order when writing or reading).
 @end float
 
 The streams maintain a buffer for both reading and writing. The size
-of the buffer is specified by the client in creation time. This is
+of the buffer is specified by the client at creation time. This is
 used, for example, to provide efficient character-based I/O.
 
 @node Stream operation modes
 @subsection Stream operation modes
 
-A stream can be opened in one of the following operation modes:
+A stream can be opened in one of the following modes:
 
 @table @strong
 @item Read mode
@@ -409,7 +408,7 @@ The stream manages the end-of-data condition in the following way:
 
 @itemize @minus
 @item When reading a specified number of consecutive octets, it will return the number of octets currently read and stored in the specified buffer. If that number if less than the requested number of octets then the stream is in a end-of-data condition.
-@item When reading or peeking a single character, return an integer able to store a special value PDF_EOF. The caller then can check that condition before casting the returned value to a character one.
+@item When reading or peeking a single character, return an integer able to store a special value PDF_EOF. The caller then can check that condition before casting the returned value to a character type.
 @end itemize
 
 @node Writing to a stream
@@ -430,7 +429,7 @@ condition.
 @node Positioning into a stream
 @subsection Positioning into a stream
 
-The streams supports the notion of read and write pointers. A pointer
+The streams supports the concept of read and write pointers. A pointer
 value is measured in positions, where a position is a offset relative
 to the beginning of the stream storage in octets.
 
@@ -443,7 +442,7 @@ Each stream has one pointer. When a stream is created the pointer is
 set to 0.
 
 The read chunk of bytes, read a character and write a chunk of bytes
-modify the current value of the pointer.
+operations modify the current value of the pointer.
 
 In contrast, the peek a character operation does not change the value
 of the pointer.
@@ -452,17 +451,17 @@ of the pointer.
 @subsection Supported filters
 
 The stream abstraction provides support for filters. A filter is a
-transformation @code{F( )} that can be applied to the contents of a
-input buffer and return an output buffer with the modified content.
+transformation function that can be applied to the contents of a
+input buffer and returns an output buffer with the modified content.
 
 Filters can be concatenated to form what is called a filter chain. The
 client program is then able to build the chain, specifying the number
-of filters, its types and its position. The stream abstraction support
+of filters, their types and their positions. The stream abstraction supports
 a predefined set of filter types. A stream is created with an empty
 filter chain.
 
-The Stream module provide support for all the PDF standard filters as
-defined in the PDF 1.7 Reference, Chapter 3, Section 3. Namely:
+The Stream module provides support for all the PDF standard filters as
+defined in the PDF 1.7 Reference, Chapter 3, Section 3. These are:
 
 @itemize @minus
 @item ASCII Hex
@@ -598,7 +597,7 @@ refilled.
 A filter abstraction is composed by:
 
 @table @strong
-@item An application function @code{F()}
+@item An application function
 This internal function implements the logic of the filter. Reading from
 an input buffer it generates output. The specific transformation
 depends on the nature of the filter. Note that the size of the output
@@ -615,15 +614,15 @@ This is the buffer (provided by the client of the filter) where the
 filter writes its output.
 @end table
 
-A filter support the following operations:
+Each filter support the following operations:
 
 @table @strong
 @item init
 This operation initializes the filter providing its configuration
 parameters.
 @item apply
-This operation ask the filter to generate bytes by calling its
-internal application function until the output buffer gets full. It
+This operation requests the filter to generate bytes by calling its
+internal application function until the output buffer is full. It
 returns a status code.
 @item dealloc_state
 This operation deallocates any private state and does clean up work,
@@ -644,14 +643,14 @@ that usually we implement two filters in each @file{pdf-stm-f-XXX.[ch]}:
 
 @itemize @minus
 @item The compression filter.
-@item The uncompression filter.
+@item The decompression filter.
 @end itemize
 
-Of course, in the case of filters with only one-way operation (such as
+For filters with only one-way operation (such as
 the null filter) the implementation files only contain one filter
 implementation.
 
-A filter implementation consist of the definition of several
+A filter implementation consists of the definition of several
 functions:
 
 @itemize @minus
@@ -665,7 +664,7 @@ The prototype of a filter initialization function should be like:
 @table @code
 @item pdf_status_t pdf_stm_filter_XXX_init (@var{filter_params}, @var{filter_state})
 
-The arguments of that call are:
+The arguments to that call are:
 
 @table @var
 @item filter_params
@@ -682,7 +681,7 @@ The prototype of a filter application function should be like:
 @table @code
 @item pdf_status_t pdf_stm_filter_XXX_apply (@var{filter_params}, @var{filter_state}, @var{input_buffer}, @var{output_buffer}, @var{finish_p})
 
-The arguments of that call are:
+The arguments to that call are:
 
 @table @var
 @item @var{filter_params}
@@ -702,12 +701,12 @@ Some filters needs to append some kind of trailer to the end of the
 filtered data (such as "~>" in the case of the ascii hex filter). If
 this parameter is true then the apply operation should append the
 trailer to the filtered data. If the filter does not need to write
-down trailer information then this argument can be ignored.
+trailer information then this argument can be ignored.
 @end table
 @end table
 
 The return values of the apply function of a filter implementation
-are:
+is one of:
 
 @table @code
 @item PDF_ENINPUT
@@ -722,12 +721,12 @@ ready to fill it when it becomes available, via a new call to the
 the apply function returns this value.
 @item PDF_ERROR
 Error in the data processed by the filter. If the filter
-implementation returns this value then the 'apply' function wont be
-called again without a previous call to 'init'.
+implementation returns this value then the 'apply' function will not be
+called again without another call to 'init'.
 @item PDF_EEOF
 This value should be returned in the following situations: 
 @itemize @minus
-@item There has been an EOF condition produced by some characteristics in the input data. Only the filters interpreting EOD markers or working in fixed-size blocks of data will return PDF_EEOF due to this reason. 
+@item There has been an EOF condition produced by some characteristics in the input data. Only the filters interpreting EOF markers or working in fixed-size blocks of data will return PDF_EEOF due to this reason.
 @item The filter implementation has emitted data due to a finalization request (via the finish_p) parameter. Only the filters supporting finalization data will return PDF_EEOF due to this reason. 
 @end itemize
 @end table
@@ -749,7 +748,7 @@ function.
 @node Structure of a reading stream
 @subsection Structure of a reading stream
 
-A client can ask a read stream to provide a specific number of bytes
+A client can request that a read stream provide a specific number of bytes
 and to store it in a specified buffer. This interface is like the read
 operation we can find in C libraries:
 
@@ -757,9 +756,9 @@ operation we can find in C libraries:
    pdf_size_t pdf_stm_read (*BUFFER, BYTES);
 @end example
 
-The stream then tries to provide the asked number of bytes and return
-the number of actually readed bytes: if the returned number is less
-than the asked one then a backend-exhausted condition happened.
+The stream then tries to provide the requested number of bytes and return
+the number of actually read bytes: if the return value is less
+than the requested number of bytes, then a backend-exhausted condition occured.
 
 @float Figure,fig:stream-read
 @image{figures/stream-read}
@@ -772,17 +771,17 @@ backend provides data to the filter chain.
 @node Structure of a writing stream
 @subsection Structure of a writing stream
 
-A client can ask a write stream to consume a specific number of bytes
+A client can request a write stream to consume a specific number of bytes
 from a specified buffer. This interface is like the write operation we
-can fin in C libraries:
+can find in C libraries:
 
 @example
    pdf_size_t pdf_stm_write (*BUFFER, BYTES);
 @end example
 
-The stream then tries to consume the asked number of bytes and return
-the number of actually written bytes: if the returned number is less
-than the asked one then a backend-full condition happened.
+The stream then tries to consume the requested number of bytes and return
+the number of actually written bytes: if the return value is less
+than the requested number of bytes, then a backend-full condition occured.
 
 @float Figure,fig:stream-write
 @image{figures/stream-write}
@@ -1269,8 +1268,8 @@ spans and to perform basic time arithmetic.
 
 The @code{pdf_time_t} opaque data type represents a specific UTC date
 and time. It is a discrete point in the continuous timeline. The
-resolution is in seconds. Time values are attributed with an offset
-with GMT (positive or negative) to allow to represent local times. The
+resolution is in seconds. Time values are associated with an offset
+from GMT (positive or negative) to allow them to represent local times. The
 implementation may impose a minimum and/or a maximum time value,
 defining an interval of valid time values.
 
@@ -1282,7 +1281,7 @@ time span size.
 @node Calendar structures
 @subsection Calendar structures
 
-The time and time span abstractions are implemented in opaque
+The time and time span abstractions are implemented as opaque
 types. The client does not know about the internal implementation of
 those data types: functions are provided to both get and manipulate
 the values of both time and time spans.
@@ -1501,7 +1500,7 @@ implementation for each supported plattform.
 @node Filesystem items
 @subsection Filesystem items
 
-Conceptually speaking a filesystem contain a tree (or several trees in
+Conceptually speaking a filesystem contains a tree (or several trees in
 some filesystem implementations supporting several volumes) of
 filesystem items.
 
@@ -1556,7 +1555,7 @@ pdf_fsys_file_* functions. The implementation of the open files then
 call to the appropriate functionality of the filesystem managing the
 file.
 
-The client should close any opened file calling the appropriate
+The client should close any opened file by calling the appropriate
 function on the underlying filesystem.
 
 @node Folders
@@ -1740,7 +1739,7 @@ interest to the library developers.
 The Encryption module provides procedures both for encryption and
 decryption of buffers. Indeed it also provides functions for
 message-digest. This module is required to be initialized once at
-startup, when libgnupdf is loaded.
+startup, when the GNU PDF library is loaded.
 
 The crypt module provides a new data type `cipher' which hold the
 context of an operation, and procedures in order to encrypt and decrypt
@@ -1776,7 +1775,9 @@ Different kind of ciphers could impose different restrictions to the
 operations.
 
 This module provides message-digest and other utilities functions too,
-since it is usually used in order to get a encryption key.
+since they are often used in order to get a encryption key.
+
+TODO: add description of digest functionality
 
 @node Tokeniser module
 @section Tokeniser module
