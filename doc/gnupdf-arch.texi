@@ -1737,24 +1737,24 @@ interest to the library developers.
 @section Crypt module
 
 The Encryption module provides procedures both for encryption and
-decryption of buffers. Indeed it also provides functions for
-message-digest. This module is required to be initialized once at
-startup, when the GNU PDF library is loaded.
+decryption of buffers. It also provides functions for message-digest
+operations (cryptographic hashing). This module is required to be
+initialized once at startup, when the GNU PDF library is loaded.
 
-The crypt module provides a new data type `cipher' which hold the
-context of an operation, and procedures in order to encrypt and decrypt
-data. The following encryption algorithms are provided:
+The crypt module provides a new data type `pdf_crypt_cipher_t' which
+holds the context of a encryption or decryption operation, and procedures to encrypt and decrypt data. The following encryption
+algorithms are provided:
 
 @table @strong
 @item AESV2
 It is a block cipher which uses the AES128 algorithm in
-Cipher Block chaining operation mode.
+Cipher Block Chaining operation mode.
 @item V2
 It is a stream-based cipher which uses the RC4-compatible ARCFOUR
 algorithm.
 @end table
 
-The operations on a cipher are the following: 
+The operations on a pdf_crypt_cipher_t are:
 
 @table @strong
 @item Create a cipher
@@ -1762,22 +1762,46 @@ It creates a new cipher.
 @item Destroy a cipher
 Destroy a previously created cipher.
 @item Set a key
-Set a key to both encryption and decryption.
+Set a key for both encryption and decryption.
 @item Encrypt a chunk
-Encrypt a chunk of the buffer. Consecutive encrypted chunks are supposed
-to be adjoin data.
+Encrypt a chunk of the buffer. Consecutive encrypted chunks are expected
+to be consecutive data.
 @item Decrypt a chunk
-Decrypt a chunk of the buffer. Consecutive decrypted chunks are supposed
-to be adjoin data.
+Decrypt a chunk of the buffer. Consecutive decrypted chunks are expected
+to be consecutive data.
 @end table
 
 Different kind of ciphers could impose different restrictions to the
 operations.
 
-This module provides message-digest and other utilities functions too,
+This module also provides message-digest and other utilities functions,
 since they are often used in order to get a encryption key.
 
-TODO: add description of digest functionality
+The message digest element of the crypt module provides a new data
+type ('pdf_crypt_md_t') which holds the context information for
+the digest operation.
+
+Only one message digest algorithm is currently provided:
+
+@table @strong
+@item MD5
+It is a cryptographic hash described in RFC1321, which produces
+a 128 bit hash for an arbitrary length input.
+@end table
+
+The operations on a pdf_crypt_hash_t are:
+
+@table @strong
+@item Create a cryptographic hash context.
+It creates a new cryptographic hash.
+@item Destroy a cryptographic hash context
+Destroy a previously created cryptographic hash.
+@item Write a chunk of data
+Add a chunk of data to the hash.
+@item Read the hash result
+Finalise the hash and return the result. No more data
+can be hashed without creating a new hash context.
+@end table
 
 @node Tokeniser module
 @section Tokeniser module
