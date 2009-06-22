@@ -1,5 +1,7 @@
 2009-06-22  Brad Hards  <bradh@kde.org>
 
+	* src/base/pdf-text.c (pdf_text_dup): Protect against NULL arg.
+
 	* torture/unit/base/text/tsuite-text.c (tsuite_text): Reorganise
 	tests to avoid failure when running with CK_FORK="no"
 	* torture/unit/base/text/pdf-text-new-destroy.c : likewise

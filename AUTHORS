@@ -83,6 +83,7 @@ Brad Hards: changed MANIFEST.wiki
   prmgt/MANIFEST.wiki
   src/MANIFEST.wiki
   src/README
+  src/base/pdf-text.c
   src/base/pdf-time.c
   src/object/MANIFEST.wiki
   torture/MANIFEST.wiki
