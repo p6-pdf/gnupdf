@@ -197,6 +197,11 @@ pdf_text_dup (const pdf_text_t text)
 {
   pdf_text_t element;
 
+  if (text == NULL)
+    {
+      return NULL;
+    }
+
   /* Allocate and initialize element */
   if (pdf_text_new (&element) == PDF_OK)
     {

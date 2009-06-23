@@ -29,8 +29,24 @@
 #include <pdf.h>
 #include <check.h>
 
+
 /*
  * Test: pdf_text_new_destroy_001
+ * Description:
+ *   Create a text object without initializing the context
+ * Success conditions:
+ *   1. The call to @code{pdf_text_new} should return PDF_EBADCONTEXT
+ */
+START_TEST(pdf_text_new_destroy_001)
+{
+  pdf_text_t newtext = NULL;
+
+  fail_unless(pdf_text_new (&newtext) == PDF_EBADCONTEXT);
+}
+END_TEST
+
+/*
+ * Test: pdf_text_new_destroy_002
  * Description:
  *   Create an empty text object and destroy it
  * Success conditions:
@@ -40,7 +56,7 @@
  *   4. The country code of the output object should be empty 
  *   5. The call to @code{pdf_text_destroy} should return PDF_OK;
  */
-START_TEST(pdf_text_new_destroy_001)
+START_TEST(pdf_text_new_destroy_002)
 {
   pdf_text_t newtext = NULL;
   
@@ -66,20 +82,6 @@ START_TEST(pdf_text_new_destroy_001)
 }
 END_TEST
 
-/*
- * Test: pdf_text_new_destroy_002
- * Description:
- *   Create an text object without initializing the context
- * Success conditions:
- *   1. The call to @code{pdf_text_new} should return PDF_EBADCONTEXT
- */
-START_TEST(pdf_text_new_destroy_002)
-{
-  pdf_text_t newtext = NULL;
-
-  fail_unless(pdf_text_new (&newtext) == PDF_EBADCONTEXT);
-}
-END_TEST
 
 /*
  * Test case creation function
