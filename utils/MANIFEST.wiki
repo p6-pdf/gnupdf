@@ -5,5 +5,5 @@ This directory contains several utilities to manipulate PDF documents. These uti
 ; '''pdf-filter.h''', '''pdf-filter.c''' 
 : '''pdf-filter''': a front-end for the standard PDF filters.
 
-; '''toktest.c'''
-: '''toktest''': a test application for the PDF tokenizer.
+; '''pdf-tokeniser.c'''
+: '''pdf-tokeniser''': a front-end for the PDF tokeniser.

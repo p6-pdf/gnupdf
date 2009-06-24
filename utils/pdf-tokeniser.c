@@ -1,6 +1,6 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-20 05:25:40 mgold"
+/* -*- mode: C -*- Time-stamp: "09/06/24 21:22:54 jemarch"
  *
- *       File:         toktest.c
+ *       File:         pdf-tokeniser.c
  *       Date:         Wed May 20 05:25:40 2009
  *
  *       GNU PDF Library - Read standard input using a token reader,
@@ -29,9 +29,41 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
-#include "pdf.h"
+#include <getopt.h>
+#include <pdf.h>
+#include <pdf-tokeniser.h>
 
-static char *fmtbin(const char *data, int size)
+/*
+ * Command line options management
+ */
+
+static struct option GNU_longOptions[] =
+  {
+    {"help", no_argument, NULL, HELP_ARG},
+    {"usage", no_argument, NULL, USAGE_ARG},
+    {"version", no_argument, NULL, VERSION_ARG},
+    {NULL, 0, NULL, 0}
+  };
+
+/* Messages */
+
+char *pdf_tokeniser_version_msg = "pdf_tokeniser 0.1";
+
+char *pdf_tokeniser_usage_msg = "\
+Usage: pdf_tokeniser [OPTIONS]\n\
+Read standard input using a token reader, and print the resulting tokens \n\
+to stdout.\n\
+\n\
+available options\n\
+  --help                              print a help message and exit\n\
+  --usage                             print a usage message and exit\n\
+  --version                           show pdf-tokeniser version and exit\n\
+";
+
+char *pdf_tokeniser_help_msg = "";
+
+static char *
+fmtbin (const char *data, int size)
 {
   int i;
   char *ret, *retp;
@@ -65,7 +97,8 @@ static char *fmtbin(const char *data, int size)
   return ret;
 }
 
-static void print_tok(pdf_token_t token)
+static void
+print_tok (pdf_token_t token)
 {
   char tmpbuf[256];
   const char *typ, *str = NULL;
@@ -148,7 +181,8 @@ static void print_tok(pdf_token_t token)
     }
 };
 
-void print_file(FILE *file)
+void
+print_file (FILE *file)
 {
   pdf_status_t rv;
   pdf_token_reader_t reader = NULL;
@@ -187,8 +221,45 @@ out:
   if (stm) pdf_stm_destroy(stm);
 }
 
-int main(int argc, char **argv)
+int
+main (int argc, char **argv)
 {
+  char c;
+
+  while ((c = getopt_long (argc,
+                           argv,
+                           "",
+                           GNU_longOptions,
+                           NULL)) != -1)
+    {
+      switch (c)
+        {
+          /* COMMON ARGUMENTS */
+        case HELP_ARG:
+          {
+            fprintf (stdout, "%s\n", pdf_tokeniser_usage_msg);
+            exit (0);
+            break;
+          }
+        case USAGE_ARG:
+          {
+            fprintf (stdout, "%s\n", pdf_tokeniser_usage_msg);
+            exit (0);
+            break;
+          }
+        case VERSION_ARG:
+          {
+            fprintf (stdout, "%s\n", pdf_tokeniser_version_msg);
+            exit (0);
+            break;
+          }
+        default:
+          {
+            break;
+          }
+        }
+    }
+
   setlocale(LC_ALL, "");
   print_file(stdin);
   return 0;

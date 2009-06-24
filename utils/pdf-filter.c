@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/05/07 10:55:00 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/06/24 21:00:38 jemarch"
  *
  *       File:         pdf-filter.c
  *       Date:         Tue Jul 10 18:42:07 2007
@@ -136,7 +136,7 @@ available filters\n\
   --v2dec                             use the V2 decoder filter\n\
   --help                              print a help message and exit\n\
   --usage                             print a usage message and exit\n\
-  --version                           show pdf_filter version and exit\n\
+  --version                           show pdf-filter version and exit\n\
 \nfilter properties\n"
 #if 0
 "  --lzw-earlychange                   toggles earlychange for next lzw filters\n\
