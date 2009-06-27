@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/11 22:04:37 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-06-24 20:18:48 raskolnikov"
  *
  *       File:         pdf-stm-f-lzw.h
  *       Date:         Wed Aug 15 14:13:20 2007
@@ -27,54 +27,31 @@
 #define PDF_STM_F_LZW_H
 
 #include <config.h>
-#include <pdf-base.h>
 
-/* Configuration data */
-
-/* BEGIN PUBLIC */
-
-enum pdf_stm_f_lzw_mode_t
-{
-  PDF_STM_F_LZW_MODE_ENCODE,
-  PDF_STM_F_LZW_MODE_DECODE
-};
-
-/* END PUBLIC */
-
-struct pdf_stm_f_lzw_conf_s
-{
-  int mode;
-  int early_change;   /* An indication of when to increase the code
-                         length. If the value of this entry is 0, code
-                         length increases are postponed as long as
-                         possible. If the value is 1, code length
-                         increases occur one code early. This
-                         parameter is included because LZW sample code
-                         distributed by some vendors increases the
-                         code length one code earlier than necessary.
-                         
-                         Default value: 1 */
-};
-
-typedef struct pdf_stm_f_lzw_conf_s *pdf_stm_f_lzw_conf_t;
-
-/* Private data */
-
-struct pdf_stm_f_lzw_data_s
-{
-  int mode;
-  int early_change;
-};
-
-typedef struct pdf_stm_f_lzw_data_s *pdf_stm_f_lzw_data_t;
+#include <pdf-types.h>
+#include <pdf-hash.h>
 
 /* Filter API implementation */
 
-int pdf_stm_f_lzw_init (void **filter_data, void *conf_data);
-int pdf_stm_f_lzw_apply (void *filter_data,
-                         pdf_char_t *in, pdf_stm_pos_t in_size,
-                         pdf_char_t **out, pdf_stm_pos_t *out_size);
-int pdf_stm_f_lzw_dealloc (void **filter_data);
+pdf_status_t pdf_stm_f_lzwenc_init (pdf_hash_t params,
+                                    void **state);
+pdf_status_t pdf_stm_f_lzwenc_apply (pdf_hash_t params,
+                                     void *state,
+                                     pdf_buffer_t in,
+                                     pdf_buffer_t out,
+                                     pdf_bool_t finish_p);
+
+pdf_status_t pdf_stm_f_lzwdec_init (pdf_hash_t params,
+                                    void **state);
+pdf_status_t pdf_stm_f_lzwdec_apply (pdf_hash_t params,
+                                     void *state,
+                                     pdf_buffer_t in,
+                                     pdf_buffer_t out,
+                                     pdf_bool_t finish_p);
+
+pdf_status_t pdf_stm_f_lzwdec_dealloc_state (void *state);
+
+pdf_status_t pdf_stm_f_lzwenc_dealloc_state (void *state);
 
 #endif /* pdf_stm_f_lzw.h */
 

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/05/19 15:13:06 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-06-28 00:33:54 raskolnikov"
  *
  *       File:         pdf-stm-filter.c
  *       Date:         Thu Jun 12 22:13:31 2008
@@ -160,6 +160,20 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
             new->impl.init_fn = pdf_stm_f_md5enc_init;
             new->impl.apply_fn = pdf_stm_f_md5enc_apply;
             new->impl.dealloc_state_fn = pdf_stm_f_md5enc_dealloc_state;
+            break;
+          }
+	case PDF_STM_FILTER_LZW_ENC:
+          {
+            new->impl.init_fn = pdf_stm_f_lzwenc_init;
+            new->impl.apply_fn = pdf_stm_f_lzwenc_apply;
+            new->impl.dealloc_state_fn = pdf_stm_f_lzwenc_dealloc_state;
+            break;
+          }
+	case PDF_STM_FILTER_LZW_DEC:
+          {
+            new->impl.init_fn = pdf_stm_f_lzwdec_init;
+            new->impl.apply_fn = pdf_stm_f_lzwdec_apply;
+            new->impl.dealloc_state_fn = pdf_stm_f_lzwdec_dealloc_state;
             break;
           }
 #if defined(HAVE_LIBJBIG2DEC)
