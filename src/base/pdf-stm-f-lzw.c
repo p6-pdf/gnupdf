@@ -1,9 +1,9 @@
-/* -*- mode: C -*- Time-stamp: "09/01/11 22:04:33 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-06-28 00:40:49 raskolnikov"
  *
  *       File:         pdf-stm-f-lzw.c
  *       Date:         Wed Aug 15 14:41:18 2007
  *
- *       GNU PDF Library - LWZ encoder/decoder filter
+ *       GNU PDF Library - LZW encoder/decoder filter
  *
  */
 
@@ -25,23 +25,23 @@
 
 #include <string.h>
 #include <pdf-alloc.h>
+#include <pdf-hash-helper.h>
 #include <pdf-stm-f-lzw.h>
 
-#define MIN_BITSIZE 9
-#define MAX_BITSIZE 12
-#define MAX_DICTSIZE (1 << MAX_BITSIZE)
+#define LZW_DEFAULT_EARLY_CHANGE  1
 
-#define MAX_COMPRESSION_FACTOR 1.5
+#define LZW_CACHE_SIZE    16
+#define LZW_MIN_BITSIZE   9
+#define LZW_MAX_BITSIZE   12
+#define LZW_MAX_DICTSIZE  (1 << LZW_MAX_BITSIZE)
+#define LZW_NULL_INDEX    ~0U
 
-#define NULL_INDEX ~0U
-
-enum {
-  LZW_RESET_CODE = 256,
-  LZW_EOD_CODE,
-  LZW_FIRST_CODE
-} lzw_special_codes;
-
-
+enum lzw_special_codes_e
+  {
+    LZW_RESET_CODE = 256,
+    LZW_EOD_CODE,
+    LZW_FIRST_CODE
+  };
 
 /* -- LZW code output/input -- */
 
@@ -49,54 +49,79 @@ enum {
  * Object to read and write codes of variable bitsize in a buffer.
  * Warning: using both get and put functions may break the buffer.
  */
-typedef struct lzw_buffer_s
+struct lzw_buffer_s
 {
-  pdf_char_t* curp;
-  pdf_char_t* endp;
+  pdf_buffer_t buf;
+  pdf_char_t cache [LZW_CACHE_SIZE];
+  int cache_rp;
+  int cache_wp;
   unsigned long valbuf;
-  unsigned valbits;
-  unsigned bitsize;
-  unsigned maxval;
-} lzw_buffer_t;
+  int valbits;
+  int bitsize;
+  int maxval;
+};
+typedef struct lzw_buffer_s* lzw_buffer_t;
 
 static void
-lzw_buffer_init (lzw_buffer_t* b, 
-		 pdf_char_t* ptr,
-		 int size,
+lzw_buffer_init (lzw_buffer_t b,
 		 int bitsize)
 {
-  b->curp = ptr;
-  b->endp = ptr + size;
+  b->buf = NULL;
   b->valbuf = 0;
   b->valbits = 0;
   b->bitsize = bitsize;
   b->maxval = (1 << bitsize) - 1;
+  b->cache_wp = 0;
+  b->cache_rp = 0;
 }
 
-static unsigned int
-lzw_buffer_get_code (lzw_buffer_t* b)
+static void
+lzw_buffer_set (lzw_buffer_t b,
+		pdf_buffer_t buf)
+{
+  b->buf = buf;
+}
+
+static pdf_status_t
+lzw_buffer_get_code (lzw_buffer_t b,
+		     unsigned int* code,
+		     pdf_bool_t finish_p)
 {
   unsigned long r;
-  
-  while (b->valbits <= 24)
-  {
-    if (b->curp > b->endp)
-      return NULL_INDEX;
-    
-    b->valbuf |= (unsigned long) *b->curp++ << (24 - b->valbits);
-    b->valbits += 8;
-  }
+
+  while (b->valbits <= 24 && !finish_p)
+    {
+      if (pdf_buffer_eob_p (b->buf))
+	{
+	  return PDF_ENINPUT;
+	}
+      else
+	{
+	  b->valbuf |=
+	    (unsigned int) b->buf->data [b->buf->rp++] <<
+	    (24 - b->valbits);
+	
+	  b->valbits += 8;
+	}
+    }
+
+  if (b->valbits < b->bitsize)
+    {
+      return PDF_EEOF;
+    }
 
   r = b->valbuf >> (32 - b->bitsize);
   b->valbuf <<= b->bitsize;
   b->valbits -= b->bitsize;
-  
-  return r;
+      
+  *code = r;
+
+  return PDF_OK;
 }
 
 /* Once finished, call with 0 as code value to flush the buffer. */
 static void
-lzw_buffer_put_code (lzw_buffer_t* b,
+lzw_buffer_put_code (lzw_buffer_t b,
 		     unsigned int code)
 {
   b->valbuf |= (unsigned long) code << (32 - b->bitsize - b->valbits);
@@ -104,17 +129,46 @@ lzw_buffer_put_code (lzw_buffer_t* b,
 
   while (b->valbits >= 8)
     {
-      *b->curp++ = b->valbuf >> 24;
+      if (pdf_buffer_full_p (b->buf))
+	{
+	  b->cache [b->cache_wp++] = (pdf_char_t) (b->valbuf >> 24);
+	}
+      else
+	{
+	  b->buf->data [b->buf->wp++] = (pdf_char_t) (b->valbuf >> 24);
+	}
       b->valbuf <<= 8;
       b->valbits -= 8;
     }
 }
 
-static int
-lzw_buffer_inc_bitsize (lzw_buffer_t* b)
+static pdf_status_t
+lzw_buffer_flush (lzw_buffer_t b)
 {
-  if (b->bitsize == MAX_BITSIZE)
-    return PDF_ERROR;
+  while (b->cache_rp != b->cache_wp &&
+	 !pdf_buffer_full_p (b->buf))
+    {
+      b->buf->data [b->buf->wp++] = b->cache [b->cache_rp++];
+    }
+
+  if (pdf_buffer_full_p (b->buf))
+    {
+      return PDF_ENOUTPUT;
+    }
+  
+  b->cache_wp = 0;
+  b->cache_rp = 0;
+  
+  return PDF_OK;
+}
+
+static int
+lzw_buffer_inc_bitsize (lzw_buffer_t b)
+{
+  if (b->bitsize == LZW_MAX_BITSIZE)
+    {
+      return PDF_ERROR;
+    }
   
   ++b->bitsize;
   b->maxval = (1 << b->bitsize) - 1;
@@ -123,20 +177,19 @@ lzw_buffer_inc_bitsize (lzw_buffer_t* b)
 }
 
 static void
-lzw_buffer_set_bitsize (lzw_buffer_t* b,
+lzw_buffer_set_bitsize (lzw_buffer_t b,
 			int newsize)
 {
   b->bitsize = newsize;
   b->maxval = (1 << newsize) - 1;
 }
 
-
 /* -- LZW dictionary handler -- */
 
 /*
  * The strings are stored in a non balanced ordered binary tree.
  */
-typedef struct lzw_string_s
+struct lzw_string_s
 {
   unsigned prefix;   /* Prefix string code */
   pdf_char_t suffix; /* Appended character */
@@ -144,44 +197,48 @@ typedef struct lzw_string_s
   unsigned first; /* First string with the same prefix.  */
   unsigned left;  /* Next string with smaller suffix and same prefix. */
   unsigned right; /* Next string with greater suffix and same prefix. */
-} lzw_string_t;
+};
+
+typedef struct lzw_string_s* lzw_string_t;
 
 static void
-lzw_string_init (lzw_string_t* s)
+lzw_string_init (lzw_string_t s)
 {
-  memset(s, 0xFF, sizeof(lzw_string_t));
+  memset (s, 0xFF, sizeof (struct lzw_string_s));
 }
 
-
-typedef struct lzw_dict_s
+struct lzw_dict_s
 {
-  lzw_string_t table[MAX_DICTSIZE];
+  struct lzw_string_s table [LZW_MAX_DICTSIZE];
   unsigned size;
-} lzw_dict_t;
+};
+typedef struct lzw_dict_s* lzw_dict_t;
 
 static void
-lzw_dict_init (lzw_dict_t* d)
+lzw_dict_init (lzw_dict_t d)
 {
   int i;
   
-  memset(d->table, 0xFF, sizeof(lzw_string_t) * MAX_DICTSIZE);
+  memset (d->table,
+	  0xFF,
+	  sizeof (struct lzw_string_s) * LZW_MAX_DICTSIZE);
 
   for (i = 0; i < LZW_FIRST_CODE; i++)
     {
-      d->table[i].suffix = i;
+      d->table[i].suffix = (pdf_char_t) (i & 0xFF);
     }
 
   d->size = LZW_FIRST_CODE;
 }
 
-static int
-lzw_dict_add (lzw_dict_t* d,
-	      lzw_string_t* s)
+static pdf_bool_t
+lzw_dict_add (lzw_dict_t d,
+	      lzw_string_t s)
 {
   unsigned index;
   int must_add;
   
-  if (s->prefix == NULL_INDEX)
+  if (s->prefix == LZW_NULL_INDEX)
     {
       s->prefix = s->suffix;
       return PDF_FALSE; /* The string is a basic character, found! */
@@ -189,7 +246,7 @@ lzw_dict_add (lzw_dict_t* d,
   
   index = d->table[s->prefix].first;
 
-  if (index == NULL_INDEX)
+  if (index == LZW_NULL_INDEX)
     {
       d->table[s->prefix].first = d->size;
     }
@@ -205,7 +262,7 @@ lzw_dict_add (lzw_dict_t* d,
 	    }
 	  else if (s->suffix < d->table[index].suffix)
 	    {
-	      if (d->table[index].left == NULL_INDEX)
+	      if (d->table[index].left == LZW_NULL_INDEX)
 		{
 		  d->table[index].left = d->size;
 		  must_add = PDF_TRUE;
@@ -217,7 +274,7 @@ lzw_dict_add (lzw_dict_t* d,
 	    }
 	  else
 	    {
-	      if (d->table[index].right == NULL_INDEX)
+	      if (d->table[index].right == LZW_NULL_INDEX)
 		{
 		  d->table[index].right = d->size;
 		  must_add = PDF_TRUE;
@@ -235,10 +292,14 @@ lzw_dict_add (lzw_dict_t* d,
   return PDF_TRUE;
 }
 
-#define lzw_dict_reset lzw_dict_init
+static void
+lzw_dict_reset (lzw_dict_t dict)
+{
+  lzw_dict_init (dict);
+}
 
 static void
-lzw_dict_fast_add (lzw_dict_t* d,
+lzw_dict_fast_add (lzw_dict_t d,
 		   unsigned prefix,
 		   pdf_char_t suffix)
 {
@@ -248,309 +309,392 @@ lzw_dict_fast_add (lzw_dict_t* d,
 }
 
 static void
-lzw_dict_decode (lzw_dict_t* d,
+lzw_dict_decode (lzw_dict_t d,
 		 unsigned code,
 		 pdf_char_t** decode,
 		 unsigned* size)
 {
   *size = 0;
 
-  do {
-    *(*decode)-- = d->table[code].suffix;
-    ++(*size);
-    code = d->table[code].prefix;
-  } while (code != NULL_INDEX);
+  do
+    {
+      *(*decode)-- = d->table[code].suffix;
+      ++(*size);
+      code = d->table[code].prefix;
+    }
+  while (code != LZW_NULL_INDEX);
+
   (*decode)++;
-  
 }
 
-/* -- The encoder -- */
+/* -- THE ENCODER -- */
 
-static int
-pdf_stm_f_lzw_encode (pdf_stm_f_lzw_data_t data,
-                      pdf_char_t *in,
-                      pdf_stm_pos_t in_size,
-                      pdf_char_t **out,
-                      pdf_stm_pos_t *out_size)
+struct lzwenc_state_s
 {
-  lzw_buffer_t buffer;
-  lzw_dict_t dict;
-  lzw_string_t string;
-  
-  /* Allocate buffer with enough space. */
-  *out_size = in_size * MAX_COMPRESSION_FACTOR;
-  if ((*out = (pdf_char_t *) pdf_alloc (*out_size)) == NULL)
+  /* cached params */
+  pdf_i32_t early_change;
+
+  /* encoding state */
+  pdf_bool_t           must_reset_p;
+  struct lzw_buffer_s  buffer;
+  struct lzw_dict_s    dict;
+  struct lzw_string_s  string;
+
+  pdf_bool_t           really_finish_p;
+};
+typedef struct lzwenc_state_s* lzwenc_state_t;
+
+pdf_status_t
+pdf_stm_f_lzwenc_init (pdf_hash_t params,
+		       void **ext_state)
+{
+  pdf_char_t *early_change_str;
+  lzwenc_state_t state;
+
+  state = pdf_alloc (sizeof (struct lzwenc_state_s));
+  if (!state)
     {
-      *out_size = 0;
       return PDF_ERROR;
     }
-
-  /* Do the actual encoding. */
-  lzw_buffer_init(&buffer, *out, *out_size, MIN_BITSIZE);
-  lzw_dict_init(&dict);
-  lzw_string_init(&string);
-
-  lzw_buffer_put_code(&buffer, LZW_RESET_CODE);
-
-  while (--in_size >= 0)
+  
+  state->early_change = 1; /* set default */
+  
+  if (pdf_hash_key_p (params, "EarlyChange") == PDF_TRUE)
     {
-      string.suffix = *in++;
+      pdf_hash_get_string (params, "EarlyChange", &early_change_str);
+      if (early_change_str[0] == '0')
+        {
+          state->early_change = 0;
+        }
+    }
 
-      if (lzw_dict_add(&dict, &string))
+  lzw_buffer_init (&state->buffer, LZW_MIN_BITSIZE);
+  lzw_dict_init (&state->dict);
+  lzw_string_init (&state->string);
+  state->must_reset_p = PDF_TRUE;
+  state->really_finish_p = PDF_FALSE;
+  
+  *ext_state = state;
+  return PDF_OK;
+}
+
+pdf_status_t
+pdf_stm_f_lzwenc_apply (pdf_hash_t params,
+			void *ext_state,
+			pdf_buffer_t in,
+			pdf_buffer_t out,
+			pdf_bool_t finish_p)
+{
+  pdf_status_t ret;
+  lzwenc_state_t st;
+
+  ret = PDF_OK;
+  st  = ext_state;
+  lzw_buffer_set (&st->buffer, out);
+
+  ret = lzw_buffer_flush (&st->buffer);
+  if (ret != PDF_OK)
+    {
+      return ret;
+    }
+  
+  if (st->really_finish_p)
+    {
+      return PDF_EEOF;
+    }
+  
+  if (st->must_reset_p)
+    {
+      lzw_buffer_put_code (&st->buffer, LZW_RESET_CODE);
+      st->must_reset_p = PDF_FALSE;
+    }
+  
+  while (!pdf_buffer_eob_p (in) &&
+	 !pdf_buffer_full_p (out))
+    {
+      st->string.suffix = in->data [in->rp++];
+      if (lzw_dict_add (&st->dict, &st->string))
 	{
-	  lzw_buffer_put_code(&buffer, string.prefix);
-	  string.prefix = string.suffix;
+	  lzw_buffer_put_code (&st->buffer, st->string.prefix);
+	  st->string.prefix = st->string.suffix;
 
-	  if (buffer.maxval - data->early_change == dict.size)
+	  if (st->buffer.maxval - st->early_change == st->dict.size)
 	    {
-	      if (!lzw_buffer_inc_bitsize(&buffer))
+	      if (!lzw_buffer_inc_bitsize(&st->buffer))
 		{
-		  lzw_buffer_put_code(&buffer, LZW_RESET_CODE);
-		  lzw_buffer_set_bitsize(&buffer, MIN_BITSIZE);
-		  lzw_dict_reset(&dict);
+		  lzw_buffer_put_code (&st->buffer, LZW_RESET_CODE);
+		  lzw_buffer_set_bitsize (&st->buffer, LZW_MIN_BITSIZE);
+		  lzw_dict_reset (&st->dict);
 		}
 	    }
 	}
     }
-  
-  lzw_buffer_put_code(&buffer, string.prefix);
-  if (buffer.maxval - data->early_change == dict.size)
-    lzw_buffer_inc_bitsize(&buffer);
-  lzw_buffer_put_code(&buffer, LZW_EOD_CODE);
-  lzw_buffer_put_code(&buffer, 0);
 
-  /* Resize buffer to fit the data. */
-  *out_size = (buffer.curp - *out);
-  if ((*out = pdf_realloc(*out, *out_size)) == NULL)
+  if (finish_p)
     {
-      *out_size = 0;
-      return PDF_ERROR;
-    }
-
-  return PDF_OK;
-}
-
-/* -- The decoder -- */
-
-/* Utility to write to the output. */
-
-typedef struct lzw_writer_s
-{
-  pdf_char_t* buf;
-  pdf_char_t* cur;
-  int writen;
-  int allocated;
-} lzw_writer_t;
-
-static int
-lzw_writer_init (lzw_writer_t* s,
-		 int size)
-{
-  if ((s->buf = pdf_alloc(size)) == NULL)
-    {
-      return PDF_ERROR;
-    }
-
-  s->cur = s->buf;
-  s->writen = 0;
-  s->allocated = size;
-  
-  return PDF_OK;
-}
-
-static int
-lzw_writer_fit (lzw_writer_t* s)
-{
-  if ((s->buf = pdf_realloc(s->buf, s->writen)) == NULL)
-    {
-      return PDF_ERROR;
-    }
-
-  s->cur = s->buf + s->writen;
-  s->allocated = s->writen;
-  
-  return PDF_OK;
-}
-
-static int
-lzw_writer_put (lzw_writer_t* s,
-		pdf_char_t* data,
-		unsigned size)
-{
-  if (s->allocated < s->writen + size)
-    {
-      s->allocated = s->allocated * 2 + 1;
-      if ((s->buf = pdf_realloc(s->buf, s->allocated)) == NULL)
+      lzw_buffer_put_code (&st->buffer, st->string.prefix);
+      if ((st->buffer.maxval - st->early_change) == st->dict.size)
 	{
-	  return PDF_ERROR;
+	  lzw_buffer_inc_bitsize(&st->buffer);
 	}
-      s->cur = s->buf + s->writen;
-    }
+      
+      lzw_buffer_put_code (&st->buffer, LZW_EOD_CODE);
+      lzw_buffer_put_code (&st->buffer, 0); /* flush */
 
-  memcpy(s->cur, data, size);
-  s->cur += size;
-  s->writen += size;
+      if (pdf_buffer_full_p (out))
+	{
+	  ret = PDF_ENOUTPUT;
+	}
+      else
+	{
+	  ret = PDF_EEOF;
+	}
+
+      st->really_finish_p = PDF_TRUE;
+    }
+  else if (pdf_buffer_full_p (out))
+    {
+      ret = PDF_ENOUTPUT;
+    }
+  else if (pdf_buffer_eob_p (in))
+    {
+      ret = PDF_ENINPUT;
+    }
   
+  return ret;
+}
+
+pdf_status_t
+pdf_stm_f_lzwenc_dealloc_state (void *state)
+{
+  pdf_dealloc (state);
   return PDF_OK;
 }
 
-static void
-lzw_writer_destroy (lzw_writer_t* s)
-{
-  pdf_dealloc (s->buf);
-}
+/* -- THE DECODER -- */
 
-static int
-pdf_stm_f_lzw_decode (pdf_stm_f_lzw_data_t data,
-                      pdf_char_t *in,
-                      pdf_stm_pos_t in_size,
-                      pdf_char_t **out,
-                      pdf_stm_pos_t *out_size)
+enum lzwdec_state
+  {
+    LZWDEC_STATE_START,
+    LZWDEC_STATE_CLEAN,
+    LZWDEC_STATE_WRITE,
+    LZWDEC_STATE_READ,
+    LZWDEC_STATE_LOOP_WRITE,
+    LZWDEC_STATE_LOOP_READ
+  };
+
+struct lzwdec_state_s
 {
-  pdf_char_t dec_buf[MAX_DICTSIZE];
+  /* cached params */
+  pdf_i32_t early_change;
+
+  /* state */
+  pdf_char_t  dec_buf [LZW_MAX_DICTSIZE];
   pdf_char_t* decoded;
-  unsigned dec_size;
+  unsigned    dec_size;
   
   unsigned new_code;
   unsigned old_code;
-   
-  lzw_buffer_t buffer;
-  lzw_dict_t dict;
-  lzw_writer_t writer;
 
-  *out = NULL;
-  *out_size = 0;
-
-  if (lzw_writer_init(&writer, in_size) == PDF_ERROR)
-    return PDF_ERROR;
+  /* flow managment */
+  enum lzwdec_state state_pos;
+  pdf_status_t tmp_ret;
   
-  lzw_buffer_init(&buffer, in, in_size,  MIN_BITSIZE);
-  lzw_dict_init(&dict);
-  old_code = NULL_INDEX;
-  
-  do {
-    lzw_buffer_set_bitsize(&buffer, MIN_BITSIZE);
-    lzw_dict_reset(&dict);
-
-    do {
-      new_code = lzw_buffer_get_code(&buffer);
-    } while(new_code == LZW_RESET_CODE);
-    
-    if (new_code == NULL_INDEX)
-      {
-	lzw_writer_destroy(&writer);
-	return PDF_ERROR;
-      }
-    
-    if (new_code != LZW_EOD_CODE)
-      {
-	if (lzw_writer_put(&writer, (pdf_char_t*)&new_code, 1) == PDF_ERROR)
-	  return PDF_ERROR;
-	
-	old_code = new_code;
-	new_code = lzw_buffer_get_code(&buffer);
-      }
-    
-    while (new_code != LZW_EOD_CODE && new_code != LZW_RESET_CODE)
-      {
-	decoded = &(dec_buf[MAX_DICTSIZE-2]);
-	
-	if (new_code < dict.size) /* Is new code in the dict? */
-	  {
-	    lzw_dict_decode(&dict, new_code, &decoded, &dec_size);
-	    lzw_dict_fast_add(&dict, old_code, decoded[0]);
-	  }
-	else
-	  {
-	    lzw_dict_decode(&dict, old_code, &decoded, &dec_size);
-	    lzw_dict_fast_add(&dict, old_code, decoded[0]);
-	    decoded[dec_size++] = decoded[0];
-	  }
-
-	if (lzw_writer_put(&writer, decoded, dec_size) == PDF_ERROR)
-	    return PDF_ERROR;
-
-	if (dict.size == buffer.maxval - 1 - data->early_change)
-	  if (!lzw_buffer_inc_bitsize(&buffer));
-	    /* break; We must wait for the reset code, don't reset yet. */
-	
-	old_code = new_code;
-	new_code = lzw_buffer_get_code(&buffer);
-	
-	if (new_code == NULL_INDEX)
-	  {
-	    lzw_writer_destroy(&writer);
-	    return PDF_ERROR;
-	  }
-      }
-  } while (new_code != LZW_EOD_CODE);
-  
-  if (lzw_writer_fit(&writer) == PDF_ERROR)
-    return PDF_ERROR;
-  
-  *out = writer.buf;
-  *out_size = writer.writen;
-
-  return PDF_OK;  
-}
+  struct lzw_buffer_s buffer;
+  struct lzw_dict_s   dict;
+};
+typedef struct lzwdec_state_s* lzwdec_state_t;
 
 
-/* -- PDF Filter functions --*/
-
-int 
-pdf_stm_f_lzw_init (void **filter_data,
-                    void *conf_data)
+pdf_status_t
+pdf_stm_f_lzwdec_init (pdf_hash_t params,
+		       void **ext_state)
 {
-  pdf_stm_f_lzw_data_t *data;
-  pdf_stm_f_lzw_conf_t conf;
+  pdf_char_t *early_change_str;
+  lzwdec_state_t state;
 
-  data = (pdf_stm_f_lzw_data_t *) filter_data;
-  conf = (pdf_stm_f_lzw_conf_t) conf_data;
+  state = pdf_alloc (sizeof (struct lzwdec_state_s));
+  if (!state)
+    {
+      return PDF_ERROR;
+    }
+    
+  state->early_change = 1; /* set default */
+  
+  if (pdf_hash_key_p (params, "EarlyChange") == PDF_TRUE)
+    {
+      pdf_hash_get_string (params, "EarlyChange", &early_change_str);
+      if (early_change_str[0] == '0')
+        {
+          state->early_change = 0;
+        }
+    }
 
-  /* Create the private data storage */
-  *data =
-    (pdf_stm_f_lzw_data_t) pdf_alloc (sizeof(struct pdf_stm_f_lzw_data_s));
-  (*data)->mode = conf->mode;
-  (*data)->early_change = conf->early_change;
-
+  lzw_buffer_init (&state->buffer, LZW_MIN_BITSIZE);
+  lzw_dict_init (&state->dict);
+  state->old_code = LZW_NULL_INDEX;
+  state->decoded = state->dec_buf + (LZW_MAX_DICTSIZE-2);
+  state->dec_size = 0;
+  state->state_pos = LZWDEC_STATE_START;
+  state->tmp_ret = 0;
+    
+  *ext_state = state;
   return PDF_OK;
 }
 
-int
-pdf_stm_f_lzw_apply (void *filter_data,
-                     pdf_char_t *in, pdf_stm_pos_t in_size,
-                     pdf_char_t **out, pdf_stm_pos_t *out_size)
+pdf_status_t
+lzwdec_put_decoded (lzwdec_state_t st, pdf_buffer_t out)
 {
-  pdf_stm_f_lzw_data_t data;
-
-  data = (pdf_stm_f_lzw_data_t) filter_data;
-  switch (data->mode)
-    {
-    case PDF_STM_F_LZW_MODE_ENCODE:
-      {
-        return pdf_stm_f_lzw_encode (data, in, in_size, out, out_size);
-      }
-    case PDF_STM_F_LZW_MODE_DECODE:
-      {
-        return pdf_stm_f_lzw_decode (data, in, in_size, out, out_size);
-      }
-    default:
-      {
-        return PDF_ERROR;
-      }
-    }
+  pdf_status_t ret;
+  pdf_size_t to_write;
   
-  /* Not reached */
+  ret = PDF_OK;
+
+  if (st->dec_size)
+    {
+      /* output the decoded string */
+      to_write = st->dec_size;
+      if (st->dec_size > (out->size - out->wp))
+	{
+	  to_write = out->size - out->wp;
+	  ret = PDF_ENOUTPUT;
+	}
+
+      memcpy (out->data + out->wp, st->decoded, to_write);
+      out->wp += to_write;
+      st->decoded += to_write;
+      st->dec_size -= to_write;
+    }
+
+  return ret;
 }
 
-int
-pdf_stm_f_lzw_dealloc (void **filter_data)
+pdf_status_t
+lzwdec_put_code (lzwdec_state_t st,
+		 pdf_buffer_t out,
+		 unsigned long  code)
 {
-  pdf_stm_f_lzw_data_t *data;
+  if (pdf_buffer_full_p (out))
+    {
+      return PDF_ENOUTPUT;
+    }
+  
+  out->data [out->wp++] = (pdf_char_t) (code & 0xFF);
+  
+  return PDF_OK;
+}
 
-  data = (pdf_stm_f_lzw_data_t *) filter_data;
-  pdf_dealloc (*data);
+#define LZWDEC_CHECK(st, pos, what)		\
+  do { (st)->state_pos = (pos);			\
+    if (((st)->tmp_ret = (what)) != PDF_OK)	\
+      { return ((st)->tmp_ret); }		\
+  } while (0);
 
+pdf_status_t
+pdf_stm_f_lzwdec_apply (pdf_hash_t params,
+			void *ext_state,
+			pdf_buffer_t in,
+			pdf_buffer_t out,
+			pdf_bool_t finish_p)
+{
+  lzwdec_state_t st;
+
+  st = ext_state;
+  lzw_buffer_set (&st->buffer, in);
+
+  switch (st->state_pos)
+    {
+    case LZWDEC_STATE_START:
+      break;
+    case LZWDEC_STATE_CLEAN:
+      goto lzwdec_state_clean;
+    case LZWDEC_STATE_WRITE:
+      goto lzwdec_state_write;
+    case LZWDEC_STATE_READ:
+      goto lzwdec_state_read;
+    case LZWDEC_STATE_LOOP_WRITE:
+      goto lzwdec_state_loop_write;
+    case LZWDEC_STATE_LOOP_READ:
+      goto lzwdec_state_loop_read;
+    default:
+      break;
+    }
+  
+  do
+    {
+      /* need a reset */
+      lzw_buffer_set_bitsize (&st->buffer, LZW_MIN_BITSIZE);
+      lzw_dict_reset (&st->dict);
+      
+      do 
+	{
+	lzwdec_state_clean:
+	  LZWDEC_CHECK (st, LZWDEC_STATE_CLEAN,
+			lzw_buffer_get_code (&st->buffer, &st->new_code, finish_p));
+	}
+      while (st->new_code == LZW_RESET_CODE);
+      
+      if (st->new_code != LZW_EOD_CODE)
+	{
+	lzwdec_state_write:
+	  LZWDEC_CHECK (st, LZWDEC_STATE_WRITE,
+			lzwdec_put_code (st, out, st->new_code));
+
+	  st->old_code = st->new_code;
+	lzwdec_state_read:
+	  LZWDEC_CHECK (st, LZWDEC_STATE_READ,
+			lzw_buffer_get_code (&st->buffer, &st->new_code, finish_p));  
+	}
+      
+      while (st->new_code != LZW_EOD_CODE &&
+	     st->new_code != LZW_RESET_CODE)
+	{
+	  st->decoded = st->dec_buf + (LZW_MAX_DICTSIZE-2);
+
+	  /* Is new code in the dict? */
+	  if (st->new_code < st->dict.size)
+	    {
+	      lzw_dict_decode (&st->dict, st->new_code,
+			       &st->decoded, &st->dec_size);
+	      lzw_dict_fast_add (&st->dict, st->old_code, st->decoded[0]);
+	    }
+	  else
+	    {
+	      lzw_dict_decode (&st->dict, st->old_code,
+			       &st->decoded, &st->dec_size);
+	      lzw_dict_fast_add (&st->dict, st->old_code, st->decoded[0]);
+	      st->decoded [st->dec_size++] = st->decoded [0];
+	    }
+
+	  /* output the decoded string */
+	lzwdec_state_loop_write:
+	  LZWDEC_CHECK (st, LZWDEC_STATE_LOOP_WRITE,
+			lzwdec_put_decoded (st, out));
+	  
+	  if (st->dict.size == st->buffer.maxval - 1 - st->early_change)
+	    {
+	      if (!lzw_buffer_inc_bitsize (&st->buffer));
+	      /* break; We must wait for the reset code, don't reset yet. */
+	    }
+	  
+	  /* get next code */
+	  st->old_code = st->new_code;
+	lzwdec_state_loop_read:
+	  LZWDEC_CHECK (st, LZWDEC_STATE_LOOP_READ,
+			lzw_buffer_get_code (&st->buffer, &st->new_code, finish_p));
+	}
+    }
+  while (st->new_code != LZW_EOD_CODE);
+
+  st->state_pos = LZWDEC_STATE_START;
+  
+  return PDF_EEOF;
+}
+
+pdf_status_t
+pdf_stm_f_lzwdec_dealloc_state (void *state)
+{
+  pdf_dealloc (state);
   return PDF_OK;
 }
 

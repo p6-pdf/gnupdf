@@ -1,3 +1,21 @@
+2009-06-28  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* utils/Makefile.am (pdf_tokeniser_SOURCES): Uncommented.
+	(bin_PROGRAMS): pdf-tokeniser added.
+
+2009-06-28  Juan Pedro Bolívar Puente  <raskolnikov@es.gnu.org>
+
+	* src/base/pdf-stm-f-lzw.c: port of LZW filter to new API
+	* src/base/pdf-stm-f-lzw.h: likewise
+	* src/base/pdf-stm-filter.c: likewise
+	* src/base/pdf-stm-filter.h: likewise
+	* src/Makefile.am: integrate pdf-stm-f-lzw.[c,h] back into build
+	system
+	* torture/unit/base/stm/pdf-stm-write.c: add test case from PDF
+	specification version 1.7.
+	* (Brad Hards contributed to this patch)
+	* util/pdf-filter.c: added LZW filter. (by Jose E. Marchesi)
+
 2009-06-24  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/pdf-tokeniser.1: New file, generated from
@@ -13,6 +31,19 @@
 	* utils/Makefile.am: Use 'pdf-tokeniser' instead of 'pdf-toktest'.
 
 	* utils/pdf-tokeniser.c: Renamed from 'utils/toktest.c'.
+
+
+2009-06-24  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-hash-helper.h: Added functions 'pdf_hash_add_bool'
+	and 'pdf_hash_get_bool'.
+
+	* src/base/pdf-hash-helper.c: Likewise.
+
+	* utils/pdf-filter.h: Added support for the LZW filters.
+
+	* utils/pdf-filter.c: Likewise.
+
 
 2009-06-22  Brad Hards  <bradh@kde.org>
 

@@ -46,7 +46,8 @@ STM_MODULE_SOURCES = base/pdf-stm.c base/pdf-stm.h \
                      base/pdf-stm-f-rl.h base/pdf-stm-f-rl.c \
                      base/pdf-stm-f-v2.h base/pdf-stm-f-v2.c \
                      base/pdf-stm-f-aesv2.h base/pdf-stm-f-aesv2.c \
-                     base/pdf-stm-f-md5.h base/pdf-stm-f-md5.c
+                     base/pdf-stm-f-md5.h base/pdf-stm-f-md5.c \
+                     base/pdf-stm-f-lzw.h base/pdf-stm-f-lzw.c
 
 if ZLIB
   STM_MODULE_SOURCES += base/pdf-stm-f-flate.c base/pdf-stm-f-flate.h
