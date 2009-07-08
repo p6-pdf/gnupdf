@@ -101,6 +101,7 @@ Brad Hards: changed MANIFEST.wiki
   torture/unit/base/types/pdf-i64-neg.c
   torture/unit/runtests.c
   utils/MANIFEST.wiki
+  utils/Makefile.am
   utils/README
 
 Daniel Vidal: wrote /torture/unit/base/types/pdf-i64-add.c
