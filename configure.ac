@@ -70,17 +70,22 @@ have_jbig2dec=yes
 AC_CHECK_LIB([jbig2dec],[jbig2_ctx_new],[],[have_jbig2dec=no])
 AM_CONDITIONAL([JBIG2DEC], [test "x$have_jbig2dec" != "xno"])
 
-if test "x$compile_w32_system" == "xyes"; then
+if test "x$compile_w32_system" = "xyes"; then
   # We cannot use AM_PATH_LIBGCRYPT in this case, since it depends on
   # environment variables and the execution of config-* programs.
-  AC_CHECK_LIB([libgcrypt],[gcry_check_version],[have_libgcrypt="yes"],[have_libgcrypt="no"])
+  AC_CHECK_LIB([gpg-error],[gpg_err_init],,[have_gpgerror="no"])
+  AC_CHECK_LIB([gcrypt],[gcry_check_version],,[have_libgcrypt="no"])
 else
   # Use the AM_PATH_LIBGCRYPT macro from libgcrypt
   AM_PATH_LIBGCRYPT([1.2.4], have_libgcrypt="yes", have_libgcrypt="no")
 fi
 
-if test x$have_libgcrypt == "xno"; then
-  AC_MSG_ERROR([cannot find libgcrypt library. Please install it and rerun `configure'.])
+if test x$have_gpgerror = "xno"; then
+  AC_MSG_ERROR([cannot find the libgpg-error library. Please install it and rerun `configure'.])
+fi
+
+if test x$have_libgcrypt = "xno"; then
+  AC_MSG_ERROR([cannot find the libgcrypt library. Please install it and rerun `configure'.])
 fi
 
 have_check=yes

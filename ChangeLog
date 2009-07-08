@@ -1,3 +1,9 @@
+2009-07-08  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* configure.ac: Typo in the detection of libgcrypt when compiling
+	for mingw32 fixed.
+	Explicitly check for libgpg-error if compiling for mingw32.
+
 2009-07-27  Brad Hards  <bradh@kde.org>
 
 	* utils/Makefile.am: Typo fix in pdf-tokeniser build.
