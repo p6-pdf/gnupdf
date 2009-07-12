@@ -11417,7 +11417,7 @@ should be considered invalid.
 @example
 pdf_obj_doc_t mydoc;
 
-/* Create an object document... */
+/* Close an object document... */
 
 if (pdf_obj_doc_close (mydoc) != PDF_OK)
 @{
