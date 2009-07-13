@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/10 15:47:49 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/07/13 22:28:31 jemarch"
  *
  *       File:         pdf-time.c
  *       Date:         Mon Apr 28 23:23:04 2008
@@ -956,12 +956,13 @@ pdf_time_to_string (const pdf_time_t time_var,
 pdf_status_t
 pdf_time_from_string (pdf_time_t time_var,
                       const pdf_char_t *time_str,
-                      const enum pdf_time_format_e time_format)
+                      const enum pdf_time_format_e time_format,
+                      pdf_bool_t require_trailing_apostrophe)
 {
   switch(time_format)
     {
       case PDF_TIME_FORMAT_PDF:
-        return pdf_time_from_string_pdf(time_var, time_str);
+        return pdf_time_from_string_pdf(time_var, time_str, require_trailing_apostrophe);
       case PDF_TIME_FORMAT_ISO_8601:
         return pdf_time_from_string_iso8601(time_var, time_str);
       case PDF_TIME_FORMAT_UTC_ASN1:

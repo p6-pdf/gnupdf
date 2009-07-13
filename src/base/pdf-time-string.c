@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/10 15:45:18 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/07/13 22:45:16 jemarch"
  *
  *       File:         pdf-time-string.c
  *       Date:         Sun May 18 13:08:37 2008
@@ -55,8 +55,9 @@
 #define PDF_MAX_PDFDATE_STR_LENGTH  24
 
 static pdf_status_t
-pdf_time_check_string_pdf(const pdf_char_t *time_str,
-                          const pdf_size_t time_str_length)
+pdf_time_check_string_pdf (const pdf_char_t *time_str,
+                           const pdf_size_t time_str_length,
+                           pdf_bool_t require_trailing_apostrophe)
 {
   pdf_i32_t i;
 
@@ -97,23 +98,43 @@ pdf_time_check_string_pdf(const pdf_char_t *time_str,
     }
   
   /* Check additional ' characters. Remember that the last ' character is
-   * mandatory in PDF Ref 1.7 but optional in ISO32000*/
-  if(((time_str_length >= 19) && \
-      (time_str[19] != '\'')) || \
-     ((time_str_length >= 22) && \
-      (time_str[22] != '\'')))
+   * mandatory depending on the require_trailing_apostrophe parameter */
+  if ((time_str_length >= 20) && 
+      (time_str[19] != '\''))
     {
-      PDF_DEBUG_BASE("Invalid separator found ('%c' or '%c') in '%s'",
+      PDF_DEBUG_BASE("Invalid separator found ('%c') in '%s'",
                      time_str[19], time_str[22], time_str);
       return PDF_EBADDATA;
     }
+
+  if (require_trailing_apostrophe)
+    {
+      if ((time_str_length < 23) ||
+          ((time_str[22] != '\'')))
+        {
+          PDF_DEBUG_BASE("Invalid separator found ('%c') in '%s'",
+                         time_str[19], time_str[22], time_str);
+          return PDF_EBADDATA;
+        }
+    }
+  else
+    {
+      if (time_str_length >= 23)
+        {
+          PDF_DEBUG_BASE("Invalid separator found ('%c') in '%s'",
+                         time_str[19], time_str[22], time_str);
+          return PDF_EBADDATA;
+        }
+    }
+
   return PDF_OK;
 }
 
 
 pdf_status_t
-pdf_time_from_string_pdf(pdf_time_t time_var,
-                         const pdf_char_t *time_str)
+pdf_time_from_string_pdf (pdf_time_t time_var,
+                          const pdf_char_t *time_str,
+                          pdf_bool_t require_trailing_apostrophe)
 {
   /*
    * From PDF Reference 1.7: ( D:YYYYMMDDHHmmSSOHH'mm' )
@@ -133,14 +154,16 @@ pdf_time_from_string_pdf(pdf_time_t time_var,
    *  HH   = two digits of hour (00 through 23) for the GMT offset
    *  '    = string "'"
    *  MM   = two digits of minute (00 through 59) for the GMT offset
-   *  '    = string "'"  (NOTE: Mandatory in 1.7, optional in ISO32000)
+   *  '    = string "'"  (NOTE: Mandatory in 1.7, non-valid in ISO32000)
    */
   struct pdf_time_cal_s calendar;
   pdf_status_t ret_code;
   pdf_i32_t    gmt_offset = 0;
   pdf_size_t   time_str_length = strlen((char *)time_str);
 
-  ret_code = pdf_time_check_string_pdf(time_str, time_str_length);
+  ret_code = pdf_time_check_string_pdf (time_str,
+                                        time_str_length,
+                                        require_trailing_apostrophe);
   if(ret_code != PDF_OK)
     {
       PDF_DEBUG_BASE("Input Date in PDF format is not valid (%s)",

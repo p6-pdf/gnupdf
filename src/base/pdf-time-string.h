@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/28 22:27:24 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/07/13 22:14:07 jemarch"
  *
  *       File:         pdf-time-string.h
  *       Date:         Mon Jun 02 19:42:25 2008
@@ -32,8 +32,9 @@
 
 /* Set time object contents based on Date in PDF format */
 pdf_status_t
-pdf_time_from_string_pdf(pdf_time_t time_var,
-                         const pdf_char_t *time_str);
+pdf_time_from_string_pdf (pdf_time_t time_var,
+                          const pdf_char_t *time_str,
+                          pdf_bool_t allow_trailing_apostrophe);
 
 
 /* Set time object contents based on Date in ASN1 format */

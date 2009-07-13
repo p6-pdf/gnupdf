@@ -1,5 +1,15 @@
 2009-07-13  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf.texi (Time Printing and Parsing): Mention the
+	'require_trailing_apostrophe' argument in the documentation of
+	'pdf_time_from_string'.
+
+	* src/base/pdf-time-string.c (pdf_time_from_string_pdf): New
+	parameter 'require_trailing_apostrophe' to support both PDF 1.x
+	and ISO 32000.
+	(pdf_time_check_string_pdf): Adapted to use
+	'require_trailing_apostrophe'.
+
 	* doc/gnupdf.texi (Generic Functions to Manipulate Objects):
 	Section renamed from 'Object Generic Functions'.
 
