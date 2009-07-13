@@ -11685,7 +11685,7 @@ XXX
 
 @menu
 * Object Data Types::
-* Object Generic Functions::
+* Generic Functions to Manipulate Objects::
 * Object Strong References::
 * Compressibility of Objects::
 * Object Collections::
@@ -11789,8 +11789,8 @@ The data will be both decrypted and filtered.
 @end table
 @end deftp
 
-@node Object Generic Functions
-@subsection Object Generic Functions
+@node Generic Functions to Manipulate Objects
+@subsection Generic Functions to Manipulate Objects
 
 The following functions can be called on any @code{pdf_obj_t}
 variable, regardless its type (but note that the effects of the call
