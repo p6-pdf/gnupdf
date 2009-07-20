@@ -92,7 +92,7 @@ have_check=yes
 AC_CHECK_LIB([check],[suite_create],,[have_check=no])
 AM_CONDITIONAL([CHECK], [test "x$have_check" != "xno"])
 
-AC_CHECK_LIB([iconv],[iconv_open],[have_iconv=yes],[have_iconv=no],)
+AC_CHECK_LIB([iconv],[iconv_open],[have_iconv=yes],[have_iconv=no])
 AM_CONDITIONAL([ICONV], [test "x$have_iconv" = "xyes"])
 
 dnl Search for required programs for building the sources
@@ -324,7 +324,7 @@ WARNING: you are going to build a library without JPEG support.
          That means you will not be able to process many PDF files."
 fi
 
-if test "ut_support" = "xno" ; then
+if test "x$ut_support" = "xno" ; then
 echo "
 WARNING: you are going to build the library without unit testing support.
          If you want to be able to perform the unit testing you should
