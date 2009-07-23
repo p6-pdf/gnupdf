@@ -1,5 +1,5 @@
 
-/* -*- mode: C -*- Time-stamp: "2009-05-15 12:36:35 gerel"
+/* -*- mode: C -*- Time-stamp: "09/07/23 21:00:57 jemarch"
  *
  *       File:         pdf-fsys.c
  *       Date:         Thu May 22 15:51:13 2008
@@ -175,9 +175,11 @@ pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s item_props,
   *file_size_low = item_props.file_size_low;
   *folder_size = item_props.folder_size;
   creation_date_str = pdf_time_to_string (item_props.creation_date,
-                                          PDF_TIME_FORMAT_PDF);
+                                          PDF_TIME_FORMAT_PDF,
+                                          PDF_TRUE);
   mod_date_str = pdf_time_to_string (item_props.modification_date,
-                                     PDF_TIME_FORMAT_PDF);
+                                     PDF_TIME_FORMAT_PDF,
+                                     PDF_TRUE);
 
   /* Associate values with hash keys */
   if (pdf_hash_add (props_hash, "isHidden", (void *) is_hidden,

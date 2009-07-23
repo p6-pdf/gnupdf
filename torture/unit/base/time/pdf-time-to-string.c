@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/06/16 21:32:33 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/07/23 21:08:23 jemarch"
  *
  *       File:         pdf-time-to-string.c
  *       Date:         Fri Feb 27 17:35:31 2008
@@ -92,7 +92,7 @@ START_TEST (pdf_time_to_string_001)
                             offset_hours, offset_minutes);
 
 
-            dateString = pdf_time_to_string(time1, PDF_TIME_FORMAT_ISO_8601);
+            dateString = pdf_time_to_string (time1, PDF_TIME_FORMAT_ISO_8601, PDF_FALSE);
 
 
             if (gmt == 0){
@@ -133,6 +133,7 @@ START_TEST (pdf_time_to_string_002)
   pdf_i32_t offset_minutes;
   pdf_char_t *dateString;
   pdf_char_t *testString;
+  pdf_char_t *testStringNA;
 
   extern struct pdf_time_cal_s dates[];
   struct pdf_time_cal_s calendar;
@@ -144,11 +145,13 @@ START_TEST (pdf_time_to_string_002)
 
 
   testString = pdf_alloc(24); /* D:YYYYMMDDHHmmSSOHH'mm'  - lenght = 24  */
+  testStringNA = pdf_alloc(23); /* D:YYYYMMDDHHmmSSOHH'mm - length = 23 */
 
   for (i=0; i<DATES_SIZE; i++){
           for (gmt =-12*60; gmt <=12*60; gmt+=51){  /* Set various gmt_offsets. */
 
             memset(&testString[0], 0, 24);
+            memset(&testStringNA[0], 0, 23);
 
             calendar.year = dates[i].year;
             calendar.month = dates[i].month;
@@ -166,16 +169,21 @@ START_TEST (pdf_time_to_string_002)
             offset_minutes = (((gmt < 0) ? (-1) : (1)) *gmt ) % 60;
 
             sprintf(&testString[0],"D:%d%02d%02d%02d%02d%02d%c%02d'%02d'",
-                            dates[i].year, dates[i].month, dates[i].day,
-                            dates[i].hour, dates[i].minute, dates[i].second,
-                            ((gmt < 0) ? '-' : '+'),
-                            offset_hours, offset_minutes);
+                    dates[i].year, dates[i].month, dates[i].day,
+                    dates[i].hour, dates[i].minute, dates[i].second,
+                    ((gmt < 0) ? '-' : '+'),
+                    offset_hours, offset_minutes);
+            sprintf(&testStringNA[0],"D:%d%02d%02d%02d%02d%02d%c%02d'%02d",
+                    dates[i].year, dates[i].month, dates[i].day,
+                    dates[i].hour, dates[i].minute, dates[i].second,
+                    ((gmt < 0) ? '-' : '+'),
+                    offset_hours, offset_minutes);
 
             
             if (INTERACTIVE_DEBUG) 
                 printf("pdf_time_from_string_002 > %s \n", testString);
 
-            dateString = pdf_time_to_string(time1, PDF_TIME_FORMAT_PDF);
+            dateString = pdf_time_to_string (time1, PDF_TIME_FORMAT_PDF, PDF_TRUE);
     
 
             if (gmt == 0){
@@ -185,9 +193,18 @@ START_TEST (pdf_time_to_string_002)
             }
 
             fail_unless(strcmp(testString, dateString) == 0);
+
+            dateString = pdf_time_to_string (time1, PDF_TIME_FORMAT_PDF, PDF_FALSE);
+    
+
+            if (gmt == 0){
+                /** Test D:YYYYMMDDHHmmSSZ format **/
+                testString[16]='Z';
+                testString[17]='\0';
+            }
+
+            fail_unless(strcmp(testStringNA, dateString) == 0);
             pdf_dealloc(dateString);
-
-
          }
   }
 
@@ -260,7 +277,7 @@ START_TEST (pdf_time_to_string_003)
                             offset_hours, offset_minutes);
 
 
-            dateString = pdf_time_to_string(time1, PDF_TIME_FORMAT_GENERALIZED_ASN1);
+            dateString = pdf_time_to_string (time1, PDF_TIME_FORMAT_GENERALIZED_ASN1, PDF_FALSE);
     
 
             if (gmt == 0){
@@ -344,7 +361,7 @@ START_TEST (pdf_time_to_string_004)
                             offset_hours, offset_minutes);
 
 
-            dateString = pdf_time_to_string(time1,  PDF_TIME_FORMAT_UTC_ASN1);
+            dateString = pdf_time_to_string (time1,  PDF_TIME_FORMAT_UTC_ASN1, PDF_FALSE);
             fail_if(status != PDF_OK);
     
 

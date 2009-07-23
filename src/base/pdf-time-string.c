@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/07/13 22:45:16 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/07/23 21:52:39 jemarch"
  *
  *       File:         pdf-time-string.c
  *       Date:         Sun May 18 13:08:37 2008
@@ -158,7 +158,6 @@ pdf_time_from_string_pdf (pdf_time_t time_var,
    */
   struct pdf_time_cal_s calendar;
   pdf_status_t ret_code;
-  pdf_i32_t    gmt_offset = 0;
   pdf_size_t   time_str_length = strlen((char *)time_str);
 
   ret_code = pdf_time_check_string_pdf (time_str,
@@ -248,11 +247,6 @@ pdf_time_from_string_pdf (pdf_time_t time_var,
   
   /* Get time value from break-down UTC calendar !*/
   ret_code = pdf_time_from_cal(time_var, &calendar);
-  if(ret_code == PDF_OK)
-    {
-      /* Now set GMT offset in pdf_time_t */
-      time_var->gmt_offset = gmt_offset;
-    }
 
   return ret_code;
 }
@@ -683,18 +677,19 @@ pdf_time_from_string_iso8601(pdf_time_t time_var,
 
 /* Get Date as a string in PDF format */
 pdf_char_t *
-pdf_time_to_string_pdf(const pdf_time_t time_var)
+pdf_time_to_string_pdf (const pdf_time_t time_var,
+                        pdf_bool_t include_trailing_apostrophe)
 {
   pdf_char_t *str;
   struct pdf_time_cal_s calendar;
   
-  str = (pdf_char_t *)pdf_alloc(PDF_MAX_PDFDATE_STR_LENGTH*sizeof(pdf_char_t));
+  str = (pdf_char_t *) pdf_alloc (PDF_MAX_PDFDATE_STR_LENGTH * sizeof(pdf_char_t));
   if(str != NULL)
     {
       /* D:YYYYMMDDHHmmSSOHH'mm' */
-      if(pdf_time_get_local_cal(time_var, &calendar) == PDF_OK)
+      if (pdf_time_get_local_cal(time_var, &calendar) == PDF_OK)
         {
-          if(calendar.gmt_offset != 0)
+          if (calendar.gmt_offset != 0)
             {
               pdf_i32_t offset_hours;
               pdf_i32_t offset_minutes;
@@ -702,7 +697,7 @@ pdf_time_to_string_pdf(const pdf_time_t time_var)
               offset_hours = (((calendar.gmt_offset < 0) ? (-1) : (1)) * calendar.gmt_offset) / 3600;
               offset_minutes = (((calendar.gmt_offset < 0) ? (-1) : (1)) * calendar.gmt_offset) % 3600;
               offset_minutes /= 60; /* Get only full minutes */
-              sprintf((char *)str, "D:%4d%s%d%s%d%s%d%s%d%s%d%c%s%d'%s%d'", \
+              sprintf((char *)str, "D:%4d%s%d%s%d%s%d%s%d%s%d%c%s%d'%s%d", \
                       calendar.year,
                       (calendar.month < 10 ? "0" : ""), calendar.month,
                       (calendar.day < 10 ? "0" : ""), calendar.day,
@@ -712,6 +707,12 @@ pdf_time_to_string_pdf(const pdf_time_t time_var)
                       ((calendar.gmt_offset < 0) ? '-' : '+'),
                       (offset_hours < 10 ? "0" : ""), offset_hours,
                       (offset_minutes < 10 ? "0" : ""), offset_minutes);
+
+              if (include_trailing_apostrophe)
+                {
+                  str[PDF_MAX_PDFDATE_STR_LENGTH - 2] = '\'';
+                  str[PDF_MAX_PDFDATE_STR_LENGTH - 1] = 0;
+                }
             }
           else
             {
