@@ -7480,7 +7480,7 @@ switch (pdf_time_cmp (time1, time2))
 @node Time Printing and Parsing
 @subsection Time Printing and Parsing
 
-@deftypefun pdf_char_t* pdf_time_to_string (const pdf_time_t @var{time_var}, const enum pdf_time_format_e @var{time_format})
+@deftypefun pdf_char_t* pdf_time_to_string (const pdf_time_t @var{time_var}, const enum pdf_time_format_e @var{time_format}, pdf_bool_t @var{include_trailing_apostrophe})
 Create a string representation of a given time.
 
 @table @strong
@@ -7490,7 +7490,12 @@ Create a string representation of a given time.
 @item time_var
 A properly created time variable.
 @item time_format
-The format to use when creating the string representation of @var{time}. 
+The format to use when creating the string representation of
+@var{time}. 
+@item include_trailing_apostrophe
+Append an apostrophe after the GMT offset minutes field, if
+present.  Note that this parameter is ignored if @var{time_format} is
+not @code{PDF_TIME_FORMAT_PDF}.
 @end table
 
 @item Returns
@@ -7511,7 +7516,7 @@ pdf_dealloc(mytime_str);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_from_string (pdf_time_t @var{time_var}, const pdf_char_t *@var{time_str}, const enum pdf_time_format_e @var{time_format})
+@deftypefun pdf_status_t pdf_time_from_string (pdf_time_t @var{time_var}, const pdf_char_t *@var{time_str}, const enum pdf_time_format_e @var{time_format}, pdf_bool_t @var{require_trailing_apostrophe})
 Get a string containing a time specification in some format and fill a
 time variable with the parsed values.
 
@@ -7526,6 +7531,12 @@ A properly created time variable.
 A null-terminated string representation of a time.
 @item time_format
 The format indicating how to parse @var{time_str}.
+@item require_trailing_apostrophe
+If this argument is @code{PDF_TRUE} a PDF date specification
+containing minutes should be followed by an APOSTROPHE character (').
+
+If @var{time_format} is not @code{PDF_TIME_FORMAT_PDF} then this
+argument is ignored.
 @end table
 
 @item Returns

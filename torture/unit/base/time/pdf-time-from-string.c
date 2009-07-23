@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/06/16 21:27:39 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/07/23 22:16:19 jemarch"
  *
  *       File:         pdf-time-from-string.c
  *       Date:         Fri Feb 27 17:35:31 2008
@@ -93,7 +93,7 @@ START_TEST (pdf_time_from_string_001)
                             offset_hours, offset_minutes);
 
 
-            status = pdf_time_from_string(time2,dateString, PDF_TIME_FORMAT_ISO_8601);
+            status = pdf_time_from_string (time2,dateString, PDF_TIME_FORMAT_ISO_8601, PDF_FALSE);
             fail_if(status != PDF_OK);
     
             fail_unless(pdf_time_cmp(time1, time2) == 0);
@@ -103,7 +103,7 @@ START_TEST (pdf_time_from_string_001)
                 /** Test YYYY-MM-DDThh:mm:ssZ format **/
                 dateString[19]='Z';
                 dateString[20]='\0';
-                status = pdf_time_from_string(time2,dateString, PDF_TIME_FORMAT_ISO_8601);
+                status = pdf_time_from_string (time2,dateString, PDF_TIME_FORMAT_ISO_8601, PDF_FALSE);
                 fail_if(status != PDF_OK);
     
                 fail_unless(pdf_time_cmp(time1, time2) == 0);
@@ -178,7 +178,7 @@ START_TEST (pdf_time_from_string_002)
                             offset_hours, offset_minutes);
 
 
-            status = pdf_time_from_string(time2,dateString, PDF_TIME_FORMAT_ISO_8601);
+            status = pdf_time_from_string (time2,dateString, PDF_TIME_FORMAT_ISO_8601, PDF_FALSE);
             fail_if(status != PDF_OK);
     
             fail_unless(pdf_time_cmp(time1, time2) == 0);
@@ -187,7 +187,7 @@ START_TEST (pdf_time_from_string_002)
                 /** Test YYYY-MM-DDThh:mmZ format **/
                 dateString[16]='Z';
                 dateString[17]='\0';
-                status = pdf_time_from_string(time2,dateString, PDF_TIME_FORMAT_ISO_8601);
+                status = pdf_time_from_string(time2,dateString, PDF_TIME_FORMAT_ISO_8601, PDF_FALSE);
                 fail_if(status != PDF_OK);
     
                 fail_unless(pdf_time_cmp(time1, time2) == 0);
@@ -251,7 +251,7 @@ START_TEST (pdf_time_from_string_003)
 
         if (INTERACTIVE_DEBUG)
            printf("pdf_time_from_string_003 %s %i\n",dateString,i);
-        status = pdf_time_from_string(time2,dateString, PDF_TIME_FORMAT_ISO_8601);
+        status = pdf_time_from_string(time2,dateString, PDF_TIME_FORMAT_ISO_8601, PDF_FALSE);
        fail_if(status != PDF_OK);
 
     
@@ -314,7 +314,7 @@ START_TEST (pdf_time_from_string_004)
 
             if (INTERACTIVE_DEBUG)
                 printf("pdf_time_from_string_004 %s %i\n",dateString,i);
-            status = pdf_time_from_string(time2,dateString, PDF_TIME_FORMAT_ISO_8601);
+            status = pdf_time_from_string (time2,dateString, PDF_TIME_FORMAT_ISO_8601, PDF_FALSE);
             fail_if(status != PDF_OK);
 
     
@@ -374,7 +374,7 @@ START_TEST (pdf_time_from_string_005)
     if (INTERACTIVE_DEBUG)
         printf("pdf_time_from_string_005 %s %d %d\n",dateString,i, seconds);
 
-    status = pdf_time_from_string(time2,dateString, PDF_TIME_FORMAT_ISO_8601);
+    status = pdf_time_from_string (time2,dateString, PDF_TIME_FORMAT_ISO_8601, PDF_FALSE);
     fail_if(status != PDF_OK);
     
     fail_unless(pdf_time_cmp(time1, time2) == 0);
@@ -396,8 +396,7 @@ END_TEST
  *   D:YYYYMMDDHHmmSSOHH'mm
  *   D:YYYYMMDDHHmmSSZ when gmt_offset == 0
  *Success condition:
- * 1. Function pdf_time_from_string schould return
- * PDF_OK.
+ * 1. Function pdf_time_from_string should return PDF_OK.
  * 2. Returned pdf_time_t object schould point the same time
  * as pdf_time_t object created by pdf_time_from_u32_t.
  * 3. pdf_time_cmp schould return PDF_OK
@@ -429,65 +428,71 @@ START_TEST (pdf_time_from_string_006)
 
   dateString = pdf_alloc(24); /* D:YYYYMMDDHHmmSSOHH'mm'  - length = 24  */
 
-  for (i=0; i<DATES_SIZE; i++){
-          for (gmt =-12*60; gmt <=12*60; gmt+=51){  /* Set various gmt_offsets. */
-            seconds=datesInSeconds[i] + dates[i].hour*3600 + dates[i].minute*60 + \
-                                     dates[i].second - gmt*60;
+  for (i=0; i<DATES_SIZE; i++)
+    {
+      for (gmt =-12*60; gmt <=12*60; gmt+=51)
+        {
+          /* Set various gmt_offsets. */
+          seconds=datesInSeconds[i] + dates[i].hour*3600 + dates[i].minute*60 + \
+            dates[i].second - gmt*60;
 
-            if ( seconds < 0) continue;
-            memset(&dateString[0], 0, 24);
+          if ( seconds < 0) continue;
+          memset(&dateString[0], 0, 24);
+          
+          pdf_time_set_from_u32 (time1, seconds);
 
-            pdf_time_set_from_u32(time1,seconds);
+          offset_hours = (((gmt < 0) ? (-1) : (1)) * gmt) / 60;
+          offset_minutes = (((gmt < 0) ? (-1) : (1)) *gmt ) % 60;
+
+          sprintf(&dateString[0],"D:%d%02d%02d%02d%02d%02d%c%02d'%02d'",
+                  dates[i].year, dates[i].month, dates[i].day,
+                  dates[i].hour, dates[i].minute, dates[i].second,
+                  ((gmt < 0) ? '-' : '+'),
+                  offset_hours, offset_minutes);
 
 
-            offset_hours = (((gmt < 0) ? (-1) : (1)) * gmt) / 60;
-            offset_minutes = (((gmt < 0) ? (-1) : (1)) *gmt ) % 60;
-
-            sprintf(&dateString[0],"D:%d%02d%02d%02d%02d%02d%c%02d'%02d'",
-                            dates[i].year, dates[i].month, dates[i].day,
-                            dates[i].hour, dates[i].minute, dates[i].second,
-                            ((gmt < 0) ? '-' : '+'),
-                            offset_hours, offset_minutes);
-
-
-            fail_if(PDF_OK != PDF_OK);
+          fail_if(PDF_OK != PDF_OK);
             
-            if (INTERACTIVE_DEBUG) 
-                printf("pdf_time_from_string_006 > %s \n", dateString);
+          if (INTERACTIVE_DEBUG) 
+            printf("pdf_time_from_string_006 > %s \n", dateString);
 
-            status = pdf_time_from_string(time2,dateString, PDF_TIME_FORMAT_PDF);
-            fail_if(status != PDF_OK);
-    
-            fail_unless(pdf_time_cmp(time1, time2) == 0);
+          status = pdf_time_from_string (time2, dateString, PDF_TIME_FORMAT_PDF, PDF_FALSE);
+          fail_if(status != PDF_EBADDATA);
 
-            /* Check format without last "'" 
-             * (From ISO 32000 )
-             * */ 
-            dateString[22]='\0';
+          status = pdf_time_from_string (time2, dateString, PDF_TIME_FORMAT_PDF, PDF_TRUE);
+          fail_if(status != PDF_OK);
+
+          fail_unless(pdf_time_cmp(time1, time2) == 0);
+
+          /* Check format without last "'" 
+           * (From ISO 32000)
+           * */ 
+          dateString[22]='\0';
  
-            if (INTERACTIVE_DEBUG) 
-                printf("pdf_time_from_string_006 > %s \n", dateString);
+          if (INTERACTIVE_DEBUG) 
+            printf("pdf_time_from_string_006 > %s \n", dateString);
 
-            status = pdf_time_from_string(time2,dateString, PDF_TIME_FORMAT_PDF);
-            fail_if(status != PDF_OK);
+          status = pdf_time_from_string (time2, dateString, PDF_TIME_FORMAT_PDF, PDF_TRUE);
+          fail_if(status != PDF_EBADDATA);
+
+          status = pdf_time_from_string (time2, dateString, PDF_TIME_FORMAT_PDF, PDF_FALSE);
+          fail_if(status != PDF_OK);
     
-            fail_unless(pdf_time_cmp(time1, time2) == 0);
+          fail_unless(pdf_time_cmp(time1, time2) == 0);
 
-            if (gmt == 0){
-                /** Test D:YYYYMMDDHHmmSSZ format **/
-                dateString[16]='Z';
-                dateString[17]='\0';
+          if (gmt == 0)
+            {
+              /** Test D:YYYYMMDDHHmmSSZ format **/
+              dateString[16]='Z';
+              dateString[17]='\0';
 
-                status = pdf_time_from_string(time2,dateString, PDF_TIME_FORMAT_PDF);
-                fail_if(status != PDF_OK);
+              status = pdf_time_from_string (time2,dateString, PDF_TIME_FORMAT_PDF, PDF_TRUE);
+              fail_if(status != PDF_OK);
     
-                fail_unless(pdf_time_cmp(time1, time2) == 0);
-
+              fail_unless(pdf_time_cmp(time1, time2) == 0);
             }
-
-
-         }
-  }
+        }
+    }
 
   pdf_dealloc(dateString);
 }
@@ -555,7 +560,7 @@ START_TEST (pdf_time_from_string_007)
                             offset_hours, offset_minutes);
 
 
-            status = pdf_time_from_string(time2,dateString, PDF_TIME_FORMAT_GENERALIZED_ASN1);
+            status = pdf_time_from_string (time2,dateString, PDF_TIME_FORMAT_GENERALIZED_ASN1, PDF_FALSE);
             fail_if(status != PDF_OK);
     
             fail_unless(pdf_time_cmp(time1, time2) == 0);
@@ -565,7 +570,7 @@ START_TEST (pdf_time_from_string_007)
                 /** Test YYYYMMDDhhmmssZ format **/
                 dateString[14]='Z';
                 dateString[15]='\0';
-                status = pdf_time_from_string(time2,dateString, PDF_TIME_FORMAT_GENERALIZED_ASN1);
+                status = pdf_time_from_string (time2,dateString, PDF_TIME_FORMAT_GENERALIZED_ASN1, PDF_FALSE);
                 fail_if(status != PDF_OK);
     
                 fail_unless(pdf_time_cmp(time1, time2) == 0);
@@ -639,7 +644,7 @@ START_TEST (pdf_time_from_string_008)
                             offset_hours, offset_minutes);
 
 
-            status = pdf_time_from_string(time2,dateString, PDF_TIME_FORMAT_GENERALIZED_ASN1);
+            status = pdf_time_from_string (time2,dateString, PDF_TIME_FORMAT_GENERALIZED_ASN1, PDF_FALSE);
             fail_if(status != PDF_OK);
     
             fail_unless(pdf_time_cmp(time1, time2) == 0);
@@ -648,7 +653,7 @@ START_TEST (pdf_time_from_string_008)
                 /** Test YYYYMMDDhhmmZ format **/
                 dateString[12]='Z';
                 dateString[13]='\0';
-                status = pdf_time_from_string(time2,dateString, PDF_TIME_FORMAT_GENERALIZED_ASN1);
+                status = pdf_time_from_string(time2,dateString, PDF_TIME_FORMAT_GENERALIZED_ASN1, PDF_FALSE);
                 fail_if(status != PDF_OK);
     
                 fail_unless(pdf_time_cmp(time1, time2) == 0);
@@ -712,7 +717,7 @@ START_TEST (pdf_time_from_string_009)
             dates[i].year, dates[i].month, dates[i].day);
 
 
-     status = pdf_time_from_string(time2,dateString, PDF_TIME_FORMAT_GENERALIZED_ASN1);
+    status = pdf_time_from_string(time2,dateString, PDF_TIME_FORMAT_GENERALIZED_ASN1, PDF_FALSE);
      fail_if(status != PDF_OK);
 
     
@@ -774,7 +779,7 @@ START_TEST (pdf_time_from_string_010)
 
         if (INTERACTIVE_DEBUG)
             printf("pdf_time_from_string_010 %s %i\n",dateString,i);
-        status = pdf_time_from_string(time2,dateString, PDF_TIME_FORMAT_GENERALIZED_ASN1);
+        status = pdf_time_from_string (time2,dateString, PDF_TIME_FORMAT_GENERALIZED_ASN1, PDF_FALSE);
         fail_if(status != PDF_OK);
 
     
@@ -836,7 +841,7 @@ START_TEST (pdf_time_from_string_011)
         printf("pdf_time_from_string_011 %s %d %d\n",dateString,i, seconds);
 
 
-    status = pdf_time_from_string(time2,dateString, PDF_TIME_FORMAT_GENERALIZED_ASN1);
+    status = pdf_time_from_string(time2,dateString, PDF_TIME_FORMAT_GENERALIZED_ASN1, PDF_FALSE);
     fail_if(status != PDF_OK);
     
     fail_unless(pdf_time_cmp(time1, time2) == 0);
@@ -910,7 +915,7 @@ START_TEST (pdf_time_from_string_012)
                             offset_hours, offset_minutes);
 
 
-            status = pdf_time_from_string(time2,&dateString[2], PDF_TIME_FORMAT_UTC_ASN1);
+            status = pdf_time_from_string(time2,&dateString[2], PDF_TIME_FORMAT_UTC_ASN1, PDF_FALSE);
             fail_if(status != PDF_OK);
     
             fail_unless(pdf_time_cmp(time1, time2) == 0);
@@ -920,7 +925,7 @@ START_TEST (pdf_time_from_string_012)
                 /** Test yymmddhhmmssZ format **/
                 dateString[14]='Z';
                 dateString[15]='\0';
-                status = pdf_time_from_string(time2,&dateString[2], PDF_TIME_FORMAT_UTC_ASN1);
+                status = pdf_time_from_string(time2,&dateString[2], PDF_TIME_FORMAT_UTC_ASN1, PDF_FALSE);
                 fail_if(status != PDF_OK);
     
                 fail_unless(pdf_time_cmp(time1, time2) == 0);
@@ -993,7 +998,7 @@ START_TEST (pdf_time_from_string_013)
                             ((gmt < 0) ? '-' : '+'),
                             offset_hours, offset_minutes);
 
-            status = pdf_time_from_string(time2,&dateString[2], PDF_TIME_FORMAT_UTC_ASN1);
+            status = pdf_time_from_string(time2,&dateString[2], PDF_TIME_FORMAT_UTC_ASN1, PDF_FALSE);
             fail_if(status != PDF_OK);
     
             fail_unless(pdf_time_cmp(time1, time2) == 0);
@@ -1002,7 +1007,7 @@ START_TEST (pdf_time_from_string_013)
                 /** Test YYMMDDhhmmZ format **/
                 dateString[12]='Z';
                 dateString[13]='\0';
-                status = pdf_time_from_string(time2,&dateString[2], PDF_TIME_FORMAT_UTC_ASN1);
+                status = pdf_time_from_string(time2,&dateString[2], PDF_TIME_FORMAT_UTC_ASN1, PDF_FALSE);
                 fail_if(status != PDF_OK);
     
                 fail_unless(pdf_time_cmp(time1, time2) == 0);
