@@ -1,3 +1,7 @@
+2009-07-24  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* prmgt/fly2org (generate_epilog): Top-level Epilog section.
+
 2009-07-23  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-time-string.c (pdf_time_from_string_pdf): Invalid
