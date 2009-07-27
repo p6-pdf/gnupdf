@@ -209,7 +209,9 @@ TEST_SUITE_FP = base/fp/pdf-fp-func-eval.c \
                 base/fp/pdf-fp-func-4-new.c
 
 TEST_SUITE_FSYS = base/fsys/pdf-fsys-get-free-space.c \
-                  base/fsys/pdf-fsys-file-open.c
+									base/fsys/pdf-fsys-get-temp-path-name.c \
+                  base/fsys/pdf-fsys-file-open.c \
+									base/fsys/pdf-fsys-file-close.c
 
 TEST_ENVIRONMENT = CHARSETALIASDIR=$(top_srcdir)/lib
 

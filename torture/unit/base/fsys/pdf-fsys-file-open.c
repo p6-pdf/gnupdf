@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-02 01:43:05 derhans"
+/* -*- mode: C -*- Time-stamp: "2009-05-03 19:43:05 derhans"
  *
  *       File:         pdf-fsys-file-open.c
  *       Date:         Sat May  2 00:02:09 2009
@@ -26,6 +26,7 @@
 #include <config.h>
 #include <check.h>
 #include <pdf.h>
+#include <string.h>
 
 /*
  * Test: pdf_fsys_file_open_001
@@ -47,7 +48,7 @@ START_TEST(pdf_fsys_file_open_001)
   fail_if( pdf_text_init() != PDF_OK );
 
   fail_if( pdf_text_new_from_unicode(pathname,
-                                     strlen((char*) pathname),
+                                     strlen((char *)pathname),
                                      PDF_TEXT_UTF8,
                                      &path) != PDF_OK );
 
@@ -80,7 +81,7 @@ START_TEST(pdf_fsys_file_open_002)
   fail_if( pdf_text_init() != PDF_OK );
 
   fail_if( pdf_text_new_from_unicode(filename,
-                                     strlen((char*) filename),
+                                     strlen((char *)filename),
                                      PDF_TEXT_UTF8,
                                      &path) != PDF_OK );
 
@@ -114,7 +115,7 @@ START_TEST(pdf_fsys_file_open_003)
   fail_if( pdf_text_init() != PDF_OK );
 
   fail_if( pdf_text_new_from_unicode(pathname,
-                                     strlen((char*) pathname),
+                                     strlen((char *)pathname),
                                      PDF_TEXT_UTF8,
                                      &path) != PDF_OK );
 
@@ -128,8 +129,68 @@ START_TEST(pdf_fsys_file_open_003)
 }
 END_TEST
 
+/*
+ * Test: pdf_fsys_file_open_004
+ * Description:
+ *   Open an existing and writeable file for writing
+ * Success condition:
+ *   The call to pdf_fsys_file_open should return PDF_OK
+ */
 
+START_TEST(pdf_fsys_file_open_004)
+{
+  pdf_fsys_file_t file;
+  pdf_text_t path;
+  pdf_char_t filename[] = "TDFSYS0002", *pathname;
 
+  pathname = tortu_get_data_file_path(filename);
+  file = (pdf_fsys_file_t)pdf_alloc(sizeof(struct pdf_fsys_file_s));
+
+  fail_if( pdf_text_init() != PDF_OK );
+
+  fail_if( pdf_text_new_from_unicode(pathname,
+                                     strlen((char *)pathname),
+                                     PDF_TEXT_UTF8,
+                                     &path) != PDF_OK );
+
+  fail_if( pdf_fsys_file_open(NULL, 
+                              path, 
+                              PDF_FSYS_OPEN_MODE_WRITE, 
+                              &file) != PDF_OK );
+
+  pdf_fsys_file_close(file);
+  pdf_text_destroy(path);
+}
+END_TEST
+
+/*
+ * Test: pdf_fsys_file_open_005
+ * Description:
+ *   Open a new (temporary) file for writing
+ * Success condition:
+ *   The call to pdf_fsys_file_open should return PDF_OK
+ */
+
+START_TEST(pdf_fsys_file_open_005)
+{
+  pdf_fsys_file_t file;
+  pdf_text_t path;
+
+  file = (pdf_fsys_file_t)pdf_alloc(sizeof(struct pdf_fsys_file_s));
+
+  path = pdf_fsys_get_temp_path_name(NULL);
+
+  fail_if( path == NULL );
+
+  fail_if( pdf_fsys_file_open(NULL, 
+                              path, 
+                              PDF_FSYS_OPEN_MODE_WRITE, 
+                              &file) != PDF_OK );
+
+  pdf_fsys_file_close(file);
+  pdf_text_destroy(path);
+}
+END_TEST
 
 /*
  * Test case creation function
@@ -141,6 +202,8 @@ test_pdf_fsys_file_open (void)
   tcase_add_test(tc, pdf_fsys_file_open_001);
   tcase_add_test(tc, pdf_fsys_file_open_002);
   tcase_add_test(tc, pdf_fsys_file_open_003);
+  tcase_add_test(tc, pdf_fsys_file_open_004);
+  tcase_add_test(tc, pdf_fsys_file_open_005);
   return tc;
 }
 

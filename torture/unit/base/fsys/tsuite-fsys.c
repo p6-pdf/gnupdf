@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-01 18:56:43 derhans"
+/* -*- mode: C -*- Time-stamp: "2009-05-03 21:56:43 derhans"
  *
  *       File:         tsuite-fsys.c
  *       Date:         Fri May  1 18:08:12 2009
@@ -26,7 +26,9 @@
 #include <check.h>
 
 extern TCase *test_pdf_fsys_get_free_space (void);
+extern TCase *test_pdf_fsys_get_temp_path_name (void);
 extern TCase *test_pdf_fsys_file_open (void);
+extern TCase *test_pdf_fsys_file_close (void);
 
 
 Suite *
@@ -37,7 +39,9 @@ tsuite_fsys ()
   s = suite_create("fsys");
   
   suite_add_tcase (s, test_pdf_fsys_get_free_space ());
+  suite_add_tcase (s, test_pdf_fsys_get_temp_path_name ());
   suite_add_tcase (s, test_pdf_fsys_file_open ());
+  suite_add_tcase (s, test_pdf_fsys_file_close ());
 
   return s;
 }
