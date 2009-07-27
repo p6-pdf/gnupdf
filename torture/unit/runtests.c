@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: ""2009-32-28 01:31:22 derhans"
+/* -*- mode: C -*- Time-stamp: ""
  *
  *       File:         runtests.c
  *       Date:         Sat Feb 23 21:40:43 2008
