@@ -43,7 +43,6 @@
 START_TEST (pdf_time_span_set_from_i32_001)
 {
     pdf_status_t status;
- //   extern struct pdf_time_cal_span_s day_time_span[];
     pdf_time_span_t span;
     pdf_i32_t seconds;
     pdf_i64_t seconds2;

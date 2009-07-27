@@ -34,9 +34,9 @@
 /*
  * Test: pdf_i64_abs_001
  * Description:
- *   Checks if the result is the absolute of the number
+ *   Checks if the result is the absolute value of the input variable
  * Success conditions:
- * The call should produce a positive number from a negative
+ * The call should produce a positive number from a negative argument
  */
 START_TEST(pdf_i64_abs_001)
 {
@@ -62,9 +62,9 @@ END_TEST
 /*
  * Test: pdf_i64_abs_002
  * Description:
- *   Checks if result is absolute of the input variable
+ *   Checks if result is absolute value of the input variable
  * Success conditions:
- * The call should produce a positive number from a positive
+ * The call should produce a positive number from a positive argument
  */
 
 START_TEST(pdf_i64_abs_002)
@@ -88,6 +88,27 @@ START_TEST(pdf_i64_abs_002)
 END_TEST
 
 /*
+ * Test: pdf_i64_abs_003
+ * Description:
+ *   Checks if an invalid destination correctly throws an error
+ * Success conditions:
+ * The call should return PDF_ERROR
+ */
+START_TEST(pdf_i64_abs_003)
+{
+  pdf_status_t p_status = PDF_OK;
+  pdf_i64_t src;
+  pdf_i64_t *dest = NULL;
+
+  pdf_i64_assign(&src,0, 3, &p_status);
+  fail_if(p_status != PDF_OK);
+
+  pdf_i64_abs(dest, src , &p_status);
+  fail_unless(p_status == PDF_ERROR);
+}
+END_TEST
+
+/*
  * Test case creation function
  */
 TCase *
@@ -96,6 +117,7 @@ test_pdf_i64_abs (void)
   TCase *tc = tcase_create("pdf_i64_abs");
   tcase_add_test(tc, pdf_i64_abs_001);
   tcase_add_test(tc, pdf_i64_abs_002);
+  tcase_add_test(tc, pdf_i64_abs_003);
   return tc;
 }
 

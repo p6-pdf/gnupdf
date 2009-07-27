@@ -1,13 +1,13 @@
-/* -*- mode: C -*- Time-stamp: "08/09/20 19:19:22 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/06/16 22:44:34 jemarch"
  *
  *       File:         pdf-stm-tell.c
- *       Date:         Sat Sep 20 19:16:41 2008
+ *       Date:         Tue Jun 16 22:22:49 2009
  *
  *       GNU PDF Library - Unit tests for pdf_stm_tell
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2009 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,9 +32,9 @@
 /*
  * Test: pdf_stm_tell_001
  * Description:
- *   Tell an initialized reading memory stream.
- * Success condition:
- *   The tell operation should report the first position
+ *   Tell in an initialized reading memory stream.
+ * Sucess condition:
+ *   The tell operation should report the first position 
  *   in the stream (0).
  */
 START_TEST (pdf_stm_tell_001)
@@ -66,6 +66,7 @@ START_TEST (pdf_stm_tell_001)
   /* Destroy data */
   pdf_dealloc (buf);
   pdf_stm_destroy (stm);
+
 }
 END_TEST
 

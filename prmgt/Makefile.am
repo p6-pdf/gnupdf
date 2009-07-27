@@ -47,23 +47,6 @@ ut.wiki:
 	chmod +x ${srcdir}/testlog2wiki
 	if test -f ${top_srcdir}/torture/unit/ut.log ; then cat ${top_srcdir}/torture/unit/ut.log | ${srcdir}/testlog2wiki > ut.wiki; fi
 
-if TASKJUGGLER
-
-TARGETS += libgnupdf-dot.png \
-           libgnupdf-fdp.png
-
-libgnupdf.tjx : libgnupdf.tjp
-	taskjuggler libgnupdf.tjp
-
-libgnupdf-dot.png: libgnupdf.tjx
-	zcat libgnupdf.tjx | xsltproc --novalid pertdot.xsl - | dot -T png > libgnupdf-dot.png
-
-libgnupdf-fdp.png: libgnupdf.tjx
-	zcat libgnupdf.tjx | xsltproc --novalid pertfdp.xsl - | fdp -T png > libgnupdf-fdp.png
-
-endif # TASKJUGGLER
-
-
 all-local: ${TARGETS}
 
 clean-local:

@@ -20,6 +20,7 @@ extern Suite *tsuite_crypt (void);
 extern Suite *tsuite_error (void);
 extern Suite *tsuite_fp (void);
 extern Suite *tsuite_fsys (void);
+extern Suite *tsuite_token (void);
 
 int
 main (int argc, char **argv)
@@ -30,7 +31,7 @@ main (int argc, char **argv)
   /* Create empty suite runner */
   sr = srunner_create (NULL);
   /* Start adding suites */
-/*  srunner_add_suite (sr, tsuite_alloc ());
+  srunner_add_suite (sr, tsuite_alloc ());
   srunner_add_suite (sr, tsuite_list ());
   srunner_add_suite (sr, tsuite_text ());
   srunner_add_suite (sr, tsuite_hash ());
@@ -39,14 +40,16 @@ main (int argc, char **argv)
   srunner_add_suite (sr, tsuite_crypt ());
   srunner_add_suite (sr, tsuite_error ());
   srunner_add_suite (sr, tsuite_stm ());
-  srunner_add_suite (sr, tsuite_fp ()); */
+  srunner_add_suite (sr, tsuite_fp ()); 
   srunner_add_suite (sr, tsuite_fsys());
+  srunner_add_suite (sr, tsuite_fp ());
+  srunner_add_suite (sr, tsuite_token ());
 
   /* Set log file */
   srunner_set_log (sr, "ut.log");
 
   /* Run all test suites */
-  srunner_run_all (sr, CK_VERBOSE);
+  srunner_run_all (sr, CK_ENV);
   failures = srunner_ntests_failed (sr);
   srunner_free (sr);
   

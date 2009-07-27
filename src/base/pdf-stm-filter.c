@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/11 22:03:18 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-06-28 00:33:54 raskolnikov"
  *
  *       File:         pdf-stm-filter.c
  *       Date:         Thu Jun 12 22:13:31 2008
@@ -42,152 +42,186 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
                     enum pdf_stm_filter_mode_e mode,
                     pdf_stm_filter_t *filter)
 {
-  pdf_status_t init_ret;
+  pdf_status_t init_ret = PDF_ERROR;
   pdf_stm_filter_t new;
 
   /* Allocate the filter structure */
   new = (pdf_stm_filter_t) 
     pdf_alloc (sizeof(struct pdf_stm_filter_s));
 
-  /* Initialisation */
-  new->type = type;
-
-  /* Data sources */
-  new->next = NULL;
-  new->backend = NULL;
-
-  /* Operation mode */
-  new->mode = mode;
-
-  /* Input buffer */
-  new->in = pdf_buffer_new (buffer_size);
-
-  /* Output buffer */
-  new->out = NULL;
-
-  /* Install the appropriate implementation */
-  switch (new->type)
+  if (new)
     {
-    case PDF_STM_FILTER_NULL:
-      {
-        new->impl.init_fn = pdf_stm_f_null_init;
-        new->impl.apply_fn = pdf_stm_f_null_apply;
-        new->impl.dealloc_state_fn = pdf_stm_f_null_dealloc_state;
-        break;
-      }
-    case PDF_STM_FILTER_AHEX_ENC:
-      {
-        new->impl.init_fn = pdf_stm_f_ahexenc_init;
-        new->impl.apply_fn = pdf_stm_f_ahexenc_apply;
-        new->impl.dealloc_state_fn = pdf_stm_f_ahexenc_dealloc_state;
-        break;
-      }
-    case PDF_STM_FILTER_AHEX_DEC:
-      {
-        new->impl.init_fn = pdf_stm_f_ahexdec_init;
-        new->impl.apply_fn = pdf_stm_f_ahexdec_apply;
-        new->impl.dealloc_state_fn = pdf_stm_f_ahexdec_dealloc_state;
-        break;
-      }
-    case PDF_STM_FILTER_RL_ENC:
-      {
-        new->impl.init_fn = pdf_stm_f_rlenc_init;
-        new->impl.apply_fn = pdf_stm_f_rlenc_apply;
-        new->impl.dealloc_state_fn = pdf_stm_f_rlenc_dealloc_state;
-        break;
-      }
-    case PDF_STM_FILTER_RL_DEC:
-      {
-        new->impl.init_fn = pdf_stm_f_rldec_init;
-        new->impl.apply_fn = pdf_stm_f_rldec_apply;
-        new->impl.dealloc_state_fn = pdf_stm_f_rldec_dealloc_state;
-        break;
-      }
-
+      /* Initialisation */
+      new->type = type;
+      
+      /* Data sources */
+      new->next = NULL;
+      new->backend = NULL;
+      
+      /* Operation mode */
+      new->mode = mode;
+      
+      /* Input buffer */
+      new->in = pdf_buffer_new (buffer_size);
+      if (!new->in)
+        {
+          /* Not enough memory. Retreat. */
+          pdf_dealloc (new);
+          goto exit;
+        }
+      
+      /* Output buffer */
+      new->out = NULL;
+      
+      /* Install the appropriate implementation */
+      switch (new->type)
+        {
+        case PDF_STM_FILTER_NULL:
+          {
+            new->impl.init_fn = pdf_stm_f_null_init;
+            new->impl.apply_fn = pdf_stm_f_null_apply;
+            new->impl.dealloc_state_fn = pdf_stm_f_null_dealloc_state;
+            break;
+          }
+        case PDF_STM_FILTER_AHEX_ENC:
+          {
+            new->impl.init_fn = pdf_stm_f_ahexenc_init;
+            new->impl.apply_fn = pdf_stm_f_ahexenc_apply;
+            new->impl.dealloc_state_fn = pdf_stm_f_ahexenc_dealloc_state;
+            break;
+          }
+        case PDF_STM_FILTER_AHEX_DEC:
+          {
+            new->impl.init_fn = pdf_stm_f_ahexdec_init;
+            new->impl.apply_fn = pdf_stm_f_ahexdec_apply;
+            new->impl.dealloc_state_fn = pdf_stm_f_ahexdec_dealloc_state;
+            break;
+          }
+        case PDF_STM_FILTER_RL_ENC:
+          {
+            new->impl.init_fn = pdf_stm_f_rlenc_init;
+            new->impl.apply_fn = pdf_stm_f_rlenc_apply;
+            new->impl.dealloc_state_fn = pdf_stm_f_rlenc_dealloc_state;
+            break;
+          }
+        case PDF_STM_FILTER_RL_DEC:
+          {
+            new->impl.init_fn = pdf_stm_f_rldec_init;
+            new->impl.apply_fn = pdf_stm_f_rldec_apply;
+            new->impl.dealloc_state_fn = pdf_stm_f_rldec_dealloc_state;
+            break;
+          }
 #if defined(HAVE_LIBZ)
-    case PDF_STM_FILTER_FLATE_ENC:
-      {
-        new->impl.init_fn = pdf_stm_f_flateenc_init;
-        new->impl.apply_fn = pdf_stm_f_flateenc_apply;
-        new->impl.dealloc_state_fn = pdf_stm_f_flateenc_dealloc_state;
-        break;
-      }
-    case PDF_STM_FILTER_FLATE_DEC:
-      {
-        new->impl.init_fn = pdf_stm_f_flatedec_init;
-        new->impl.apply_fn = pdf_stm_f_flatedec_apply;
-        new->impl.dealloc_state_fn = pdf_stm_f_flatedec_dealloc_state;
-        break;
-      }
+        case PDF_STM_FILTER_FLATE_ENC:
+          {
+            new->impl.init_fn = pdf_stm_f_flateenc_init;
+            new->impl.apply_fn = pdf_stm_f_flateenc_apply;
+            new->impl.dealloc_state_fn = pdf_stm_f_flateenc_dealloc_state;
+            break;
+          }
+        case PDF_STM_FILTER_FLATE_DEC:
+          {
+            new->impl.init_fn = pdf_stm_f_flatedec_init;
+            new->impl.apply_fn = pdf_stm_f_flatedec_apply;
+            new->impl.dealloc_state_fn = pdf_stm_f_flatedec_dealloc_state;
+            break;
+          }
 #endif /* HAVE_LIBZ */
-    case PDF_STM_FILTER_V2_ENC:
-      {
-        new->impl.init_fn = pdf_stm_f_v2enc_init;
-        new->impl.apply_fn = pdf_stm_f_v2enc_apply;
-        new->impl.dealloc_state_fn = pdf_stm_f_v2enc_dealloc_state;
-        break;
-      }
-    case PDF_STM_FILTER_V2_DEC:
-      {
-        new->impl.init_fn = pdf_stm_f_v2dec_init;
-        new->impl.apply_fn = pdf_stm_f_v2dec_apply;
-        new->impl.dealloc_state_fn = pdf_stm_f_v2dec_dealloc_state;
-        break;
-      }
-    case PDF_STM_FILTER_AESV2_ENC:
-      {
-        new->impl.init_fn = pdf_stm_f_aesv2enc_init;
-        new->impl.apply_fn = pdf_stm_f_aesv2enc_apply;
-        new->impl.dealloc_state_fn = pdf_stm_f_aesv2enc_dealloc_state;
-        break;
-      }
-    case PDF_STM_FILTER_AESV2_DEC:
-      {
-        new->impl.init_fn = pdf_stm_f_aesv2dec_init;
-        new->impl.apply_fn = pdf_stm_f_aesv2dec_apply;
-        new->impl.dealloc_state_fn = pdf_stm_f_aesv2dec_dealloc_state;
-        break;
-      }
-    case PDF_STM_FILTER_MD5_ENC:
-      {
-        new->impl.init_fn = pdf_stm_f_md5enc_init;
-        new->impl.apply_fn = pdf_stm_f_md5enc_apply;
-        new->impl.dealloc_state_fn = pdf_stm_f_md5enc_dealloc_state;
-        break;
-      }
+        case PDF_STM_FILTER_V2_ENC:
+          {
+            new->impl.init_fn = pdf_stm_f_v2enc_init;
+            new->impl.apply_fn = pdf_stm_f_v2enc_apply;
+            new->impl.dealloc_state_fn = pdf_stm_f_v2enc_dealloc_state;
+            break;
+          }
+        case PDF_STM_FILTER_V2_DEC:
+          {
+            new->impl.init_fn = pdf_stm_f_v2dec_init;
+            new->impl.apply_fn = pdf_stm_f_v2dec_apply;
+            new->impl.dealloc_state_fn = pdf_stm_f_v2dec_dealloc_state;
+            break;
+          }
+        case PDF_STM_FILTER_AESV2_ENC:
+          {
+            new->impl.init_fn = pdf_stm_f_aesv2enc_init;
+            new->impl.apply_fn = pdf_stm_f_aesv2enc_apply;
+            new->impl.dealloc_state_fn = pdf_stm_f_aesv2enc_dealloc_state;
+            break;
+          }
+        case PDF_STM_FILTER_AESV2_DEC:
+          {
+            new->impl.init_fn = pdf_stm_f_aesv2dec_init;
+            new->impl.apply_fn = pdf_stm_f_aesv2dec_apply;
+            new->impl.dealloc_state_fn = pdf_stm_f_aesv2dec_dealloc_state;
+            break;
+          }
+        case PDF_STM_FILTER_MD5_ENC:
+          {
+            new->impl.init_fn = pdf_stm_f_md5enc_init;
+            new->impl.apply_fn = pdf_stm_f_md5enc_apply;
+            new->impl.dealloc_state_fn = pdf_stm_f_md5enc_dealloc_state;
+            break;
+          }
+	case PDF_STM_FILTER_LZW_ENC:
+          {
+            new->impl.init_fn = pdf_stm_f_lzwenc_init;
+            new->impl.apply_fn = pdf_stm_f_lzwenc_apply;
+            new->impl.dealloc_state_fn = pdf_stm_f_lzwenc_dealloc_state;
+            break;
+          }
+	case PDF_STM_FILTER_LZW_DEC:
+          {
+            new->impl.init_fn = pdf_stm_f_lzwdec_init;
+            new->impl.apply_fn = pdf_stm_f_lzwdec_apply;
+            new->impl.dealloc_state_fn = pdf_stm_f_lzwdec_dealloc_state;
+            break;
+          }
 #if defined(HAVE_LIBJBIG2DEC)
-    case PDF_STM_FILTER_JBIG2_DEC:
-      {
-        new->impl.init_fn = pdf_stm_f_jbig2dec_init;
-        new->impl.apply_fn = pdf_stm_f_jbig2dec_apply;
-        new->impl.dealloc_state_fn = pdf_stm_f_jbig2dec_dealloc_state;
-        break;
-      }
+        case PDF_STM_FILTER_JBIG2_DEC:
+          {
+            new->impl.init_fn = pdf_stm_f_jbig2dec_init;
+            new->impl.apply_fn = pdf_stm_f_jbig2dec_apply;
+            new->impl.dealloc_state_fn = pdf_stm_f_jbig2dec_dealloc_state;
+            break;
+          }
 #endif /* HAVE_LIBJBIG2DEC */
-    default:
-      {
-        /* Shall not be reached, but makes the compiler happy */
-        break;
-      }
+#if defined(HAVE_LIBJPEG)
+        case PDF_STM_FILTER_DCT_DEC:
+          {
+            new->impl.init_fn = pdf_stm_f_dctdec_init;
+            new->impl.apply_fn = pdf_stm_f_dctdec_apply;
+            new->impl.dealloc_state_fn = pdf_stm_f_dctdec_dealloc_state;
+            break;
+          }
+#endif /* HAVE_LIBJPEG */
+        default:
+          {
+            /* Shall not be reached, but makes the compiler happy */
+            break;
+          }
+        }
+
+      /* Initialization of the implementation */
+      new->params = params;
+      new->state = NULL;
+      new->status = PDF_OK;
+      new->really_finish_p = PDF_FALSE;
+
+      init_ret = new->impl.init_fn (new->params,
+                                    &(new->state));
+      if (init_ret != PDF_OK)
+        {
+          /* Error initializing the filter implementation */
+          pdf_buffer_destroy (new->in);
+          pdf_dealloc (new);
+          new = NULL;
+        }
+
+      *filter = new;
     }
 
-  /* Initialization of the implementation */
-  new->params = params;
-  new->state = NULL;
-  new->status = PDF_OK;
-  new->really_finish_p = PDF_FALSE;
+ exit:
 
-  init_ret = new->impl.init_fn (new->params,
-                                &(new->state));
-  if (init_ret != PDF_OK)
-    {
-      /* Error initializing the filter implementation */
-      pdf_buffer_destroy (new->in);
-      pdf_dealloc (new);
-      new = NULL;
-    }
-
-  *filter = new;
   return init_ret;
 }
 

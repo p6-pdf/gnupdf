@@ -36,17 +36,15 @@
  * Description:
  *   Create two pdf_time_t objects.
  *   First is initialized with
- *   pdf_time_set_from_u32, and second one to the
- *   same number with function
- *   pdf_time_set_from_i64.
- *   seconds.
- *   Both object must be equal.
+ *   pdf_time_set_from_u32 and second one to the
+ *   same number with pdf_time_cal_span_s. Both
+ *   objects schould be equal.
  *
  *Success condition:
  * 1. Function pdf_time_new schould return PDF_OK
  * 2. Function pdf_time_set_from_u32 schould return
  * PDF_OK.
- * 3. Function pdf_time_set_from_i64 schould return
+ * 3. Function pdf_time_add_cal_span schould return
  * PDF_OK.
  * 4. pdf_time_t objects are equal.
  *
@@ -58,8 +56,6 @@ START_TEST (pdf_time_add_cal_span_001)
   pdf_time_t time2;
   pdf_u32_t i,j;
   pdf_u32_t seconds;
-  pdf_u32_t x;
-  x=0;
 
   extern struct pdf_time_cal_span_s day_time_span[];
   extern  struct pdf_time_cal_span_s years_months[];
@@ -106,9 +102,8 @@ START_TEST (pdf_time_add_cal_span_001)
         fail_if(status != PDF_OK);
     
 
-
-        x=pdf_time_cmp(time1,time2);
-        if (x != 0 && INTERACTIVE_DEBUG ){
+        fail_unless(pdf_time_cmp(time1,time2) == 0);
+        if (INTERACTIVE_DEBUG ){
             pdf_time_get_utc_cal(time2, &cal);
             pdf_time_get_utc_cal(time1, &cal1);
 
@@ -125,7 +120,6 @@ START_TEST (pdf_time_add_cal_span_001)
         }
 
 
-        fail_unless(x == 0);
 
         status = pdf_time_clear(time2);
         fail_if(status != PDF_OK);
@@ -144,20 +138,18 @@ START_TEST (pdf_time_add_cal_span_001)
 END_TEST
 
 /*
- * Test: pdf_time_set_from_i64_002
+ * Test: pdf_time_add_cal_span_002
  * Description:
- *   Create pdf_time_t and pdf_time_span_t objects
- *   and initialize them to with the same 64 bit number of
- *   seconds. After pdf_time_sub_span pdf_time_t
- *   object schould be equal to 0.
+ *   Create pdf_time_t objects and add to them a
+ *   pdf_time_cap_span_s initialized to 1 month and
+ *   27, 28, 29, 30 days.
+ *   All objcts schould be equal.
  *
  *Success condition:
  * 1. Function pdf_time_new schould return PDF_OK
- * 2. Function pdf_time_set_from_i64 schould return
+ * 2. Function pdf_time_add_cal_span schould return
  * PDF_OK.
- * 3. Function pdf_time_sub_span schould return
- * PDF_OK.
- * 4. pdf_time_t object is equal to 0.
+ * 3. pdf_time_t objects are equal.
  *
  */
 START_TEST (pdf_time_add_cal_span_002)
@@ -205,9 +197,9 @@ START_TEST (pdf_time_add_cal_span_002)
                                                              cal.hour, cal.minute, cal.second);
   }
 
-  fail_if(pdf_time_cmp(time27, time28) == 0);
-  fail_if(pdf_time_cmp(time28, time29) == 0);
-  fail_if(pdf_time_cmp(time29, time30) == 0);
+  fail_unless(pdf_time_cmp(time27, time28) == 0);
+  fail_unless(pdf_time_cmp(time28, time29) == 0);
+  fail_unless(pdf_time_cmp(time29, time30) == 0);
 
 
   status = pdf_time_destroy(time27);

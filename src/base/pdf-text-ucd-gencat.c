@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/28 22:26:52 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-05-02 16:36:06 aleksander"
  *
  *       File:         pdf-text-ucd-gencat.c
  *       Date:         Sun Mar 09 12:59:01 2008
@@ -19850,9 +19850,6 @@ static unicode_gencat_interval_t unicode_gencat_interval[UCD_GENCAT_INT_N] = {
 enum unicode_gencat_info_enum
 pdf_text_ucd_get_general_category(const pdf_u32_t character)
 {
-  extern unicode_gencat_info_t unicode_gencat_info[UCD_GENCAT_INFO_N];
-  extern unicode_gencat_interval_t unicode_gencat_interval[UCD_GENCAT_INT_N];
-  
   pdf_bool_t found;
   int index;
   long delta = 0;

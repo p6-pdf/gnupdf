@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/11/29 14:54:14 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/07/23 20:57:40 jemarch"
  *
  *       File:         pdf-time.h
  *       Date:         Mon Apr 28 23:23:04 2008
@@ -220,7 +220,8 @@ pdf_time_cmp (const pdf_time_t time1,
 /* Create a string representation of a given time. */
 pdf_char_t *
 pdf_time_to_string (const pdf_time_t time_var,
-                    const enum pdf_time_format_e time_format);
+                    const enum pdf_time_format_e time_format,
+                    pdf_bool_t include_trailing_apostrophe);
 
 
 /* Get a string containing a time specification in some format and fill a time
@@ -228,7 +229,8 @@ pdf_time_to_string (const pdf_time_t time_var,
 pdf_status_t
 pdf_time_from_string (pdf_time_t time_var,
                       const pdf_char_t *time_str,
-                      const enum pdf_time_format_e time_format);
+                      const enum pdf_time_format_e time_format,
+                      pdf_bool_t require_trailing_apostrophe);
 
 
 /* ---------------------- Getting the Current Time -------------------------- */

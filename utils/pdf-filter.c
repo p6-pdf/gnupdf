@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/02/03 22:53:33 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/06/24 21:00:38 jemarch"
  *
  *       File:         pdf-filter.c
  *       Date:         Tue Jul 10 18:42:07 2007
@@ -58,17 +58,20 @@ static struct option GNU_longOptions[] =
     {"null", no_argument, NULL, NULL_FILTER_ARG},
     {"ahexdec", no_argument, NULL, ASCIIHEXDEC_FILTER_ARG},
     {"ahexenc", no_argument, NULL, ASCIIHEXENC_FILTER_ARG},
+    {"lzwenc", no_argument, NULL, LZWENC_FILTER_ARG},
+    {"lzwdec", no_argument, NULL, LZWDEC_FILTER_ARG},
+    {"lzw-earlychange", no_argument, NULL, LZW_EARLYCHANGE_ARG},
 #if 0
     {"a85dec", no_argument, NULL, ASCII85DEC_FILTER_ARG},
     {"a85enc", no_argument, NULL, ASCII85ENC_FILTER_ARG},
-    {"lzwenc", no_argument, NULL, LZWENC_FILTER_ARG},
-    {"lzwdec", no_argument, NULL, LZWDEC_FILTER_ARG},
     {"cfaxdec", no_argument, NULL, CCITTFAXDEC_FILTER_ARG},
-    {"dctdec", no_argument, NULL, DCTDEC_FILTER_ARG},
     {"jxpdec", no_argument, NULL, JXPDEC_FILTER_ARG},
     {"predenc", no_argument, NULL, PREDENC_FILTER_ARG},
     {"preddec", no_argument, NULL, PREDDEC_FILTER_ARG},
 #endif /* 0 */
+#ifdef HAVE_LIBJPEG
+    {"dctdec", no_argument, NULL, DCTDEC_FILTER_ARG},
+#endif
 #ifdef HAVE_LIBZ
     {"flatedec", no_argument, NULL, FLATEDEC_FILTER_ARG},
     {"flateenc", no_argument, NULL, FLATEENC_FILTER_ARG},
@@ -106,17 +109,19 @@ available options\n\
 available filters\n\
   --null                              use the NULL filter\n\
   --ahexdec                           use the ASCII Hex decoder filter\n\
-  --ahexenc                           use the ASCII Hex encoder filter\n"
+  --ahexenc                           use the ASCII Hex encoder filter\n\
+  --lzwenc                            use the LZW encoder filter\n\
+  --lzwdec                            use the LZW decoder filter\n"
 #if 0
 "  --a85dec                            use the ASCII 85 decoder filter\n\
   --a85enc                            use the ASCII 85 encoder filter\n\
-  --lzwenc                            use the LZW encoder filter\n\
-  --lzwdec                            use the LZW decoder filter\n
-  --dctdec                            use the DCT decoder filter\n\
   --jxpdec                            use the JXP decoder filter\n\
   --predenc                           use the predictor encoder filter\n\
   --preddec                           use the predictor decoder filter\n"
 #endif /* 0 */
+#ifdef HAVE_LIBJPEG
+  "  --dctdec                            use the DCT decoder filter\n"
+#endif
 #ifdef HAVE_LIBZ
   "  --flatedec                          use the Flate decoder filter\n\
   --flateenc                          use the Flate encoder filter\n"
@@ -132,17 +137,18 @@ available filters\n\
   --v2dec                             use the V2 decoder filter\n\
   --help                              print a help message and exit\n\
   --usage                             print a usage message and exit\n\
-  --version                           show pdf_filter version and exit\n\
+  --version                           show pdf-filter version and exit\n\
 \nfilter properties\n"
 #if 0
-"  --lzw-earlychange                   toggles earlychange for next lzw filters\n\
+"  
   --preddec-type=NUM                  code for next preddec filters type\n\
   --predenc-type=NUM                  code for next predenc filters type\n\
   --pred-colors=NUM                   next predictors colors per sample\n\
   --pred-bpc=NUM                      next predictors bits per color component\n\
   --pred-columns=NUM                  next predictors number of samples per row\n"
 #endif /* 0 */
-"  --jbig2dec-globals=FILE             file containing global segments\n\
+"  --lzw-earlychange                   toggles earlychange for next lzw filters\n\
+  --jbig2dec-globals=FILE             file containing global segments\n\
 ";
 
 char *pdf_filter_help_msg = "";
@@ -444,6 +450,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
   char *key = NULL;
   pdf_size_t jbig2dec_global_segments_size = 0;
   pdf_status_t status;
+  pdf_bool_t lzw_earlychange = PDF_FALSE;
 
   /* Initialize the crypt module */
   if (pdf_crypt_init () != PDF_OK)
@@ -519,6 +526,28 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
 
             break;
           }
+#ifdef HAVE_LIBJPEG
+        case DCTDEC_FILTER_ARG:
+          {
+            ret = pdf_hash_new (NULL, &filter_params);
+            if (ret != PDF_OK)
+              {
+                pdf_error (ret, stderr, "while creating the dctdec filter parameters hash table");
+                exit (1);
+              }
+            pdf_stm_install_filter (stm,
+                                    PDF_STM_FILTER_DCT_DEC,
+                                    filter_params);
+            
+            /* Note that a reference to this memory remains into the
+             *  stream */
+            jbig2dec_global_segments = NULL;
+            jbig2dec_global_segments_size = 0;
+
+            break;
+          }
+#endif /* HAVE_LIBJPEG */
+
 #if 0
         case ASCII85DEC_FILTER_ARG:
           {
@@ -528,19 +557,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
           {
             break;
           }
-	case LZWENC_FILTER_ARG:
-          {
-            break;
-          }
-        case LZWDEC_FILTER_ARG:
-          {
-            break;
-          }
         case CCITTFAXDEC_FILTER_ARG:
-          {
-            break;
-          }
-        case DCTDEC_FILTER_ARG:
           {
             break;
           }
@@ -569,6 +586,57 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
             break;
           }
 #endif /* 0 */
+        case LZW_EARLYCHANGE_ARG:
+          {
+            lzw_earlychange = PDF_TRUE;
+            break;
+          }
+	case LZWENC_FILTER_ARG:
+          {
+            ret = pdf_hash_new (NULL, &filter_params);
+            if (ret != PDF_OK)
+              {
+                pdf_error (ret, stderr, "while creating the lzwenc filter parameters hash table");
+                exit (1);
+              }
+
+            pdf_hash_add_bool (filter_params, "EarlyChange", lzw_earlychange);
+
+            status = pdf_stm_install_filter (stm,
+                                             PDF_STM_FILTER_LZW_ENC,
+                                             filter_params);
+
+            if (status != PDF_OK)
+              {
+                pdf_error (status, stderr, "while creating the LZW encoder filter");
+                exit (1);
+              }
+
+            break;
+          }
+        case LZWDEC_FILTER_ARG:
+          {
+            ret = pdf_hash_new (NULL, &filter_params);
+            if (ret != PDF_OK)
+              {
+                pdf_error (ret, stderr, "while creating the lzwdec filter parameters hash table");
+                exit (1);
+              }
+
+            pdf_hash_add_bool (filter_params, "EarlyChange", lzw_earlychange);
+
+            status = pdf_stm_install_filter (stm,
+                                             PDF_STM_FILTER_LZW_DEC,
+                                             filter_params);
+
+            if (status != PDF_OK)
+              {
+                pdf_error (status, stderr, "while creating the LZW decoder filter");
+                exit (1);
+              }
+
+            break;
+          }
 #ifdef HAVE_LIBZ
         case FLATEDEC_FILTER_ARG:
           {

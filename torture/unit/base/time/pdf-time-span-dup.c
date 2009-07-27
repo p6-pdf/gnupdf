@@ -59,6 +59,13 @@ START_TEST (pdf_time_span_dup_001)
 
     fail_unless(memcmp(&span1, &span2, sizeof(pdf_time_span_t)) == 0); 
 
+    status = pdf_time_span_destroy(&span1);
+    fail_if(status != PDF_OK);
+
+    status = pdf_time_span_destroy(&span2);
+    fail_if(status != PDF_OK);
+
+
 }
 END_TEST
 

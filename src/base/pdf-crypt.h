@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-12-23 17:13:24 davazp"
+/* -*- mode: C -*- Time-stamp: "2009-05-19 20:32:45 davazp"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -136,46 +136,17 @@ pdf_status_t pdf_crypt_md_destroy (pdf_crypt_md_t hd);
 
 #else
 
-
-#if __GNUC__ == 4 && __GNUC_MINOR__ >= 3 && defined(__GNUC_STDC_INLINE__)
-#  define FUCKING_C99_SEMANTICS
-#endif
-
-/* Apple's gcc build > 5400 (since Xcode 3.0) doesn't support GNU
-   inline in C99 mode */
-#if __APPLE_CC__ > 5400 && ! defined(FUCKING_C99_SEMANTICS) && __STDC_VERSION__ >= 199901L
-#  define FUCKING_C99_SEMANTICS
-#endif
-
-#if defined(COMPILING_PDF_CRYPT)
-#  if defined(FUCKING_C99_SEMANTICS)
-/* force exported copy */
-#    define EXTERN_INLINE extern inline
-#  else
-#    define EXTERN_INLINE
-#  endif
+#if defined (COMPILING_PDF_CRYPT)
+# define STATIC_INLINE
 #else
-/* For gcc >= 4.1 not working in C99 inline semantics by default
-   (including the annoying 4.2 warnings about the extern inline
-   hack) */
-#  if defined(__GNUC_STDC_INLINE__) || defined(__GNUC_GNU_INLINE__)
-#    define EXTERN_INLINE  static inline
-#  else
-#    define EXTERN_INLINE extern inline
-#  endif
-/* For gcc >= 4.3 with C99 semantics */
-#  if defined(FUCKING_C99_SEMANTICS)
-/* either inline or link to extern version at compiler's choice */
-#    undef EXTERN_INLINE
-#    define EXTERN_INLINE inline
-#  endif
+# define STATIC_INLINE static inline
 #endif /* COMPILING_PDF_CRYPT */
 
 
 #include <gcrypt.h>
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_crypt_init (void)
 {
   gcry_check_version (GCRYPT_VERSION);
@@ -183,7 +154,7 @@ pdf_crypt_init (void)
 }
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_crypt_nonce (pdf_char_t * buffer, pdf_size_t size)
 {
   gcry_create_nonce (buffer, size);
@@ -192,7 +163,7 @@ pdf_crypt_nonce (pdf_char_t * buffer, pdf_size_t size)
 
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_crypt_cipher_new (enum pdf_crypt_cipher_algo_e algorithm,
 		      pdf_crypt_cipher_t *cipher)
 {
@@ -242,7 +213,7 @@ pdf_crypt_cipher_new (enum pdf_crypt_cipher_algo_e algorithm,
 }
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_crypt_cipher_setkey (pdf_crypt_cipher_t cipher,
 			 pdf_char_t *key, pdf_size_t size)
 {
@@ -250,7 +221,7 @@ pdf_crypt_cipher_setkey (pdf_crypt_cipher_t cipher,
 }
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_crypt_cipher_encrypt (pdf_crypt_cipher_t cipher,
 			  pdf_char_t *out, pdf_size_t out_size,
 			  pdf_char_t *in,  pdf_size_t in_size,
@@ -260,7 +231,7 @@ pdf_crypt_cipher_encrypt (pdf_crypt_cipher_t cipher,
 }
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_crypt_cipher_decrypt (pdf_crypt_cipher_t cipher,
 			  pdf_char_t *out, pdf_size_t out_size,
 			  pdf_char_t *in,  pdf_size_t in_size,
@@ -270,7 +241,7 @@ pdf_crypt_cipher_decrypt (pdf_crypt_cipher_t cipher,
 }
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_crypt_cipher_destroy (pdf_crypt_cipher_t cipher)
 {
   pdf_status_t ret;
@@ -285,7 +256,7 @@ pdf_crypt_cipher_destroy (pdf_crypt_cipher_t cipher)
 /* Hashing functions */
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_crypt_md_new (enum pdf_crypt_md_algo_e algo, pdf_crypt_md_t *_md)
 {
   pdf_crypt_md_t md;
@@ -320,7 +291,7 @@ pdf_crypt_md_new (enum pdf_crypt_md_algo_e algo, pdf_crypt_md_t *_md)
 
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_crypt_md_write (pdf_crypt_md_t md,
                     pdf_char_t *in,  pdf_size_t in_size)
 {
@@ -330,7 +301,7 @@ pdf_crypt_md_write (pdf_crypt_md_t md,
 }
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_crypt_md_read (pdf_crypt_md_t md,
 		   pdf_char_t *out, pdf_size_t out_size)
 {
@@ -364,7 +335,7 @@ pdf_crypt_md_read (pdf_crypt_md_t md,
 
 
 
-EXTERN_INLINE pdf_status_t
+STATIC_INLINE pdf_status_t
 pdf_crypt_md_destroy (pdf_crypt_md_t md)
 {
   pdf_dealloc (md->raw);

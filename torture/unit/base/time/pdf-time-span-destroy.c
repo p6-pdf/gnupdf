@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/04/17 00:06:15 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/06/15 21:25:20 jemarch"
  *
  *       File:         pdf-time-span_new.c
  *       Date:         Fri Feb 27 17:35:31 2009
@@ -48,7 +48,7 @@ START_TEST (pdf_time_span_destroy_001)
   sec = pdf_time_span_to_secs(span);
   sec2 = pdf_i64_new(0, 0);
   
-  fail_unless(memcmp(sec, sec2, sizeof(pdf_i64_t)) == 0);
+  fail_unless(memcmp(&sec, &sec2, sizeof(pdf_i64_t)) == 0);
 
   status = pdf_time_span_destroy(&span);
   fail_if(status != PDF_OK);

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/27 21:26:55 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/06/16 22:43:05 jemarch"
  *
  *       File:         pdf-stm.h
  *       Date:         Fri Jul  6 18:37:57 2007
@@ -118,8 +118,10 @@ pdf_status_t pdf_stm_flush (pdf_stm_t stm,
 
 /* Positioning */
 
-pdf_off_t pdf_stm_seek (pdf_stm_t stm,
-                        pdf_off_t pos);
+pdf_off_t pdf_stm_bseek (pdf_stm_t stm,
+                         pdf_off_t pos);
+pdf_off_t pdf_stm_btell (pdf_stm_t stm);
+
 pdf_off_t pdf_stm_tell (pdf_stm_t stm);
 
 
@@ -138,7 +140,11 @@ struct pdf_stm_s
 
   pdf_stm_be_t backend;     /* Stream backend */
   pdf_stm_filter_t filter;  /* Filter chain */
-  pdf_buffer_t cache;   /* Stream cache */
+  pdf_buffer_t cache;       /* Stream cache */
+  pdf_off_t seq_counter;    /* Number of octects read/written in the
+                               current sequential
+                               operation. i.e. since the last bseek or
+                               the creation of the stream */
 };
 
 #endif /* pdf_stm.h */

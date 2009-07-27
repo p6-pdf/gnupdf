@@ -1,16 +1,40 @@
 =='''prmgt/''' Project Management==
 
-This directory contain several files with management information about the project: tasks, reports, etc.
+This directory contains several files with management information about the project: tasks, reports, etc.
 
-; '''libgnupdf.tjp'''
-: taskjuggler file for libgnupdf.
+; '''MANIFEST.wiki'''
+: This file.
 
-; '''pertdot.xsl''', '''pertfdp.xsl'''
-: xsl templates to get Pert diagrams for '''libgnupdf.tjp'''.
+; '''Makefile.am'''
+: Input file for Automake.
 
-; '''pmccabe2html.in'''
-: AWK program to generate a html report from the output of the pmccabe program.
+; '''apic2wiki.in'''
+: Script that generates the wiki version of the API consistency report.
 
-; '''pmccabe.css'''
-: CSS stylesheets.
+; '''check-api-doc-consistency.pl.in'''
+: Perl script generating API consistency data from the source code of the library.
+
+; '''docfuncs.in'''
+: Script that lists the documented functions in the GNU PDF Reference Manual.
+
+; '''fly2org'''
+: Tcl script converting flyspray tasks to org-mode.
+
+; '''generate-coverage-report'''
+: Shell script that generates a nice HTML report of code coverage.
+
+; '''get-test-data.sh.in'''
+: Shell script that downloads the test data files needed by the test suites of the library.
+
+; '''patch_safety_dispatcher.py'''
+: This script runs other QA scripts like the test suite and a syntax check conforming to GCS.
+
+; '''srcinfo-extractor.pl.in'''
+: Perl script that traverses every directory from topdir and looks for a MANIFEST.wiki file, from which the directory information is then extracted.
+
+; '''testlog2wiki.in'''
+: Tests run report generator.
+
+; '''tsdfuncs.in'''
+: List the documented functions in the GNU PDF TSD.
 

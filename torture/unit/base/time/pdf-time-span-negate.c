@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/04/17 00:06:29 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/06/16 22:11:18 jemarch"
  *
  *       File:         pdf-time-span-set-negate.c
  *       Date:         Sun Sep 21 16:37:27 2008
@@ -102,16 +102,12 @@ END_TEST
  *   Try to get invoke pdf_time_span_negate where 
  *   argument pointer is NUL.
  *Success condition:
- * 1. Function pdf_time_span_new schould return PDF_OK
- * 2. Function pdf_time_span_negate schould return PDF_ERROR
+ * 1. Function pdf_time_span_negate schould return PDF_ERROR
  */
 START_TEST (pdf_time_span_negate_003)
 {
     pdf_status_t status;
-    pdf_time_span_t *span;
-    span = NULL;
-
-    status = pdf_time_span_negate(&span);
+    status = pdf_time_span_negate((pdf_time_span_t *) NULL);
     fail_if(status != PDF_ERROR);
 
 }

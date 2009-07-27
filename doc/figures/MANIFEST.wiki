@@ -1,0 +1,4 @@
+=='''doc/figures''' Figures==
+
+This directory contains the xfig source files of several figures, along with the generated png and encapsulated postscript versions of these figures.
+

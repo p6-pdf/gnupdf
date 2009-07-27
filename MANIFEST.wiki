@@ -1,9 +1,9 @@
 ==Root directory==
 
-The root directory of the distribution contain the following files.
+The root directory of the distribution contains the following files.
 
 ; '''AUTHORS'''
-: This file contain the names of the people that has contributed to the development of the library writing code or documentation. It is a detailed list, since we want to maintain precise information due to copyright issues.
+: This file contains the names of the people that have contributed to the development of the library writing code or documentation. It is a detailed list, since we want to maintain precise information due to copyright issues.
 
 ; '''COPYING'''
 : A copy of the ''GNU General Public License version 3''. This is the license governing the distribution of the library.
@@ -11,26 +11,38 @@ The root directory of the distribution contain the following files.
 ; '''ChangeLog'''
 : A detailed record of the changes made to the library.
 
+; '''GNUmakefile'''
+: A generic top-level makefile from gnulib.
+
 ; '''INSTALL'''
 : Generic installation instructions from autoconf.
+
+; '''MANIFEST.wiki'''
+: This file.
+
+; '''Makefile.am'''
+: Top-level automake configuration file.
 
 ; '''NEWS'''
 : News of each release.
 
 ; '''README'''
-: Brief description of the project and links to the homepage and ftp.
+: Brief description of the project and links to the homepage and ftp site.
+
+; '''README.bzr'''
+: Additional information to build a Bazaar checkout of the library.
 
 ; '''README.cvs'''
-: Additional information to build a CVS checkout of the library.
+: Additional information to build a CVS checkout of the library. This file is deprecated.
 
 ; '''bootstrap'''
-: Bootstrap script (alternative to ''autoreconf'') used to regenerate the libtool and autoconf files. Wrote by Karl Berry.
+: Bootstrap script (wrapper for ''autoreconf'') used to regenerate the libtool and autoconf files. Written by Karl Berry.
 
 ; '''configure.ac'''
 : Autoconf file for the library. It is used by autoconf to generate the ''configure'' script.
 
-; '''Makefile.am'''
-: Top-level automake configuration file.
+; '''maint.mk'''
+: Makefile containing useful rules for the maintainer. This file comes from gnulib.
 
 ; '''other files...'''
 : Several generated files.

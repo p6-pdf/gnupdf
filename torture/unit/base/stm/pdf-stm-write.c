@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/27 21:41:44 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-06-28 01:16:15 raskolnikov"
  *
  *       File:         pdf-stm-write.c
  *       Date:         Sun Sep 21 16:37:27 2008
@@ -28,6 +28,44 @@
 #include <string.h>
 #include <check.h>
 #include <pdf.h>
+
+/*
+ * Fixture: mem_stm_fixture.
+ * Description:
+ *   Common data for memory stream based tests.
+ */
+struct
+{
+  pdf_stm_t stm;
+  pdf_char_t *buf;
+} mem_stm_fixture;
+
+#define MEM_STM_FIXTURE_BUFFER_SIZE 1024
+#define MEM_STM_FIXTURE_CACHE_SIZE  1
+
+static void
+mem_stm_fixture_setup ()
+{
+  pdf_status_t ret;
+  
+  mem_stm_fixture.buf = pdf_alloc (MEM_STM_FIXTURE_BUFFER_SIZE);
+  fail_if (mem_stm_fixture.buf == NULL);
+
+  ret = pdf_stm_mem_new (mem_stm_fixture.buf,
+                         MEM_STM_FIXTURE_BUFFER_SIZE,
+                         MEM_STM_FIXTURE_CACHE_SIZE,
+                         PDF_STM_WRITE,
+                         &mem_stm_fixture.stm);
+  fail_if (ret != PDF_OK);  
+}
+
+static void
+mem_stm_fixture_teardown ()
+{
+  pdf_stm_destroy (mem_stm_fixture.stm);
+  pdf_dealloc (mem_stm_fixture.buf);
+}
+
 
 /*
  * Test: pdf_stm_write_001
@@ -729,6 +767,225 @@ END_TEST
 
 
 /*
+ * Test: pdf_stm_write_013
+ * Description:
+ *   Write some bytes to a write file stream.
+ * Success condition:
+ *   The written data should be consistent.
+ */
+START_TEST (pdf_stm_write_013)
+{
+  pdf_status_t ret;
+  pdf_stm_t stm;
+  pdf_size_t read,written_bytes;
+
+  pdf_fsys_file_t file;
+  char data[4];
+  pdf_text_t path;
+  pdf_char_t * remain;
+  pdf_size_t remain_length;
+
+  /* Create the file path */
+  pdf_text_init ();
+  ret = pdf_text_new_from_pdf_string ("tmp.test", 8, &remain, &remain_length, &path);
+  fail_if (ret != PDF_OK);
+
+  /* Open new file */
+  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, &file); 
+  fail_if (ret != PDF_OK);
+
+  /* Create the stream */
+  ret = pdf_stm_file_new (file,
+                          0,
+                          0, /* Use the default cache size */
+                          PDF_STM_WRITE,
+                          &stm);
+  fail_if(ret != PDF_OK);
+
+  /* Write some data into the stream */
+  ret = pdf_stm_write (stm,
+                       "GNU",
+                       3,
+                       &written_bytes);
+  fail_if(ret != PDF_OK);
+  fail_if(written_bytes != 3);
+
+  /* Destroy data */
+  pdf_stm_destroy (stm);
+  pdf_fsys_file_close (file);
+
+  /* Read file data and compare */
+  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, &file); 
+  fail_if (ret != PDF_OK);
+
+  ret = pdf_fsys_file_read (file, data, 3, &read);
+  fail_if (ret != PDF_OK);
+  data[3] = '\0';
+
+  fail_if(read != 3);
+  fail_if (strcmp (data, "GNU") != 0);
+
+  /* Free resources */
+  pdf_fsys_file_close (file);
+  pdf_text_destroy (path);
+}
+END_TEST
+
+
+
+/*
+ * Test: pdf_stm_write_014
+ * Description:
+ *   Write some bytes to a write file stream with
+ *   a null filter installed.
+ * Success condition:
+ *   The written data should be consistent.
+ */
+START_TEST (pdf_stm_write_014)
+{
+  pdf_status_t ret;
+  pdf_stm_t stm;
+  pdf_size_t read,written_bytes;
+  pdf_hash_t null_filter_params;
+
+  pdf_fsys_file_t file;
+  char data[4];
+  pdf_text_t path;
+  pdf_char_t * remain;
+  pdf_size_t remain_length;
+
+  /* Create the file path */
+  pdf_text_init ();
+  ret = pdf_text_new_from_pdf_string ("tmp.test", 8, &remain, &remain_length, &path);
+  fail_if (ret != PDF_OK);
+
+  /* Open new file */
+  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, &file); 
+  fail_if (ret != PDF_OK);
+
+  /* Create the stream */
+  ret = pdf_stm_file_new (file,
+                          0,
+                          0, /* Use the default cache size */
+                          PDF_STM_WRITE,
+                          &stm);
+  fail_if(ret != PDF_OK);
+
+
+  /* Install a new filter in the chain */
+  pdf_hash_new (NULL, &null_filter_params);
+  fail_if(pdf_stm_install_filter (stm,
+                                  PDF_STM_FILTER_NULL,
+                                  null_filter_params) != PDF_OK);
+
+  /* Write some data into the stream */
+  ret = pdf_stm_write (stm,
+                       "GNU",
+                       3,
+                       &written_bytes);
+  fail_if(ret != PDF_OK);
+  fail_if(written_bytes != 3);
+
+  /* Destroy data */
+  pdf_hash_destroy (null_filter_params);
+  pdf_stm_destroy (stm);
+  pdf_fsys_file_close (file);
+
+  /* Read file data and compare */
+  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, &file); 
+  fail_if (ret != PDF_OK);
+
+  ret = pdf_fsys_file_read (file, data, 3, &read);
+  fail_if (ret != PDF_OK);
+  data[3] = '\0';
+
+  fail_if(read != 3);
+  fail_if (strcmp (data, "GNU") != 0);
+
+  /* Free resources */
+  pdf_fsys_file_close (file);
+  pdf_text_destroy (path);
+}
+END_TEST
+
+
+
+/*
+ * Test: pdf_stm_write_015
+ * Description:
+ *   Create a memory-based writing stream and attach an LZW filter
+ *   encoder to it.
+ * Success condition:
+ *   The encoded data should be correct.
+ */
+START_TEST (pdf_stm_write_015)
+{
+  pdf_status_t ret;
+  pdf_hash_t params;
+  pdf_size_t tmp = 0;
+  
+  pdf_char_t *decoded =
+    "-----A---B";
+  pdf_char_t *encoded =
+    "\x80\x0B\x60\x50\x22\x0C\x0C\x85\x01";
+
+
+  /* Create the filter */
+  pdf_hash_new (NULL, &params);
+  fail_if (pdf_stm_install_filter (mem_stm_fixture.stm,
+				   PDF_STM_FILTER_LZW_ENC,
+				   params)
+	   != PDF_OK);
+
+  /* Write and test some stuff */
+  ret = pdf_stm_write (mem_stm_fixture.stm, decoded, 10, &tmp);
+  fail_if (ret == PDF_ERROR);
+  fail_if (pdf_stm_flush (mem_stm_fixture.stm, PDF_TRUE, &tmp) == PDF_ERROR);
+  fail_if (memcmp (mem_stm_fixture.buf, encoded, 9) != 0);
+
+  /* Cleanup */
+  pdf_hash_destroy (params);
+}
+END_TEST
+
+/*
+ * Test: pdf_stm_write_015
+ * Description:
+ *   Create a memory-based writing stream and attach an LZW filter
+ *   encoder to it.
+ * Success condition:
+ *   The encoded data should be correct.
+ */
+START_TEST (pdf_stm_write_016)
+{
+  pdf_status_t ret;
+  pdf_hash_t params;
+  pdf_size_t tmp = 0;
+
+  pdf_char_t *encoded =
+    "\x80\x0B\x60\x50\x22\x0C\x0C\x85\x01";
+  pdf_char_t *decoded =
+    "-----A---B";
+
+  /* Create the filter */
+  pdf_hash_new (NULL, &params);
+  fail_if (pdf_stm_install_filter (mem_stm_fixture.stm,
+				   PDF_STM_FILTER_LZW_DEC,
+				   params)
+	   != PDF_OK);
+
+  /* Test some data */
+  ret = pdf_stm_write (mem_stm_fixture.stm, encoded, 9, &tmp);
+  fail_if (ret == PDF_ERROR);
+  fail_if (pdf_stm_flush (mem_stm_fixture.stm, PDF_TRUE, &tmp) == PDF_ERROR);  
+  fail_if (memcmp (mem_stm_fixture.buf, decoded, 10) != 0);
+  
+  /* Cleanup */
+  pdf_hash_destroy (params);
+}
+END_TEST
+
+/*
  * Test case creation function
  */
 TCase *
@@ -736,6 +993,10 @@ test_pdf_stm_write (void)
 {
   TCase *tc = tcase_create ("pdf_stm_write");
 
+  tcase_add_checked_fixture(tc,
+			    mem_stm_fixture_setup,
+			    mem_stm_fixture_teardown);
+  
   tcase_add_test(tc, pdf_stm_write_001);
   tcase_add_test(tc, pdf_stm_write_002);
   tcase_add_test(tc, pdf_stm_write_003);
@@ -751,6 +1012,10 @@ test_pdf_stm_write (void)
   tcase_add_test(tc, pdf_stm_write_010);
   tcase_add_test(tc, pdf_stm_write_011);
   tcase_add_test(tc, pdf_stm_write_012);
+  tcase_add_test(tc, pdf_stm_write_013);
+  tcase_add_test(tc, pdf_stm_write_014);
+  tcase_add_test(tc, pdf_stm_write_015);
+  tcase_add_test(tc, pdf_stm_write_016);
 
   return tc;
 }

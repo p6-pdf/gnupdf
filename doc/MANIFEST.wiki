@@ -1,11 +1,13 @@
 =='''doc/''' Manuals and Manpages==
 
-This directory contain the texinfo source files of the GNU PDF Reference Manual (it is only a stub by now).
+This directory contains the texinfo source files of several manuals.
 
-We may also want to generate manpages for the API documented in the texinfo manual. We dont want to manually maintain the manpages, so we would need a script to extract the contents of the texinfo file.
+We may also want to generate manpages for the API documented in the texinfo manual. We don't want to manually maintain the manpages, so we would need a script to extract the contents of the texinfo file.
 
 Automatically generated manpages for the library utilities will be generated (using the help2man command) here.
 
+; '''MANIFEST.wiki'''
+: This file.
 
 ; '''Makefile.am'''
 : Automake input file.
@@ -13,24 +15,39 @@ Automatically generated manpages for the library utilities will be generated (us
 ; '''fdl.texi'''
 : A copy of the GNU Free Documentation License (included in the manual).
 
+; '''generate-tsd.pl.in'''
+: Perl script that generates the texinfo sources of the Test Specification Document from the source code of the library.
+
+; '''gnupdf-arch.texi'''
+: Texinfo sources of the GNU PDF Library Architecture Manual.
+
+; '''gnupdf-hg.texi'''
+: Texinfo sources of the GNU PDF Library Hackers Guide.
+
 ; '''gnupdf-manual-wiki.init'''
 : texi2html initialization file for wiki pages generation.
 
 ; '''gnupdf-manual.init'''
-: texi2html initialization file for html generation.
+: texi2html initialization file for HTML generation.
+
+; '''gnupdf-tsd.texi'''
+: Texinfo sources of the GNU PDF Library Tests Specification Document.
+
+; '''gnupdf-utils.texi'''
+: Texinfo sources of the GNU PDF Library Utilities Manual.
+
+; '''gnupdf.texi'''
+: Texinfo sources of the GNU PDF Library Reference Manual.
 
 ; '''manuals.css'''
-: Cascade Style Sheet for the html manuals.
+: Cascading Style Sheet for the HTML manuals.
 
 ; '''texinfo.tex'''
 : Implementation of texinfo over TeX.
 
-; '''gnupdf.texi'''
-: Texinfo source code of the Reference Manual.
-
-; '''gnupdf-utils.texi'''
-: Texinfo source code of the Utils Manual.
-
 ; '''pdf_filter.1'''
 : Manual page (generated using help2man) for the ''pdf_filter'' utility.
+
+; '''version.texi.in'''
+: Texinfo snippet containing versioning information.
 

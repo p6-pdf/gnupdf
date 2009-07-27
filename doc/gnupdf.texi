@@ -87,17 +87,18 @@ Indices
 * Encoded Text::
 * Time Management::
 * The Filesystem Module::
+* The Tokeniser::
 * Encryption::
 @end menu
 
 @node Base Layer Overview
 @section Overview
 
-The base layer of the GNU PDF Library provide system-independent
+The base layer of the GNU PDF Library provides system-independent
 access to several facilities.
 
 The implemented facilities are organized into modules. Each module
-export an API to be used by the client application or other layers of
+exports an API to be used by the client application or other layers of
 the library. Some modules make use of the facilities implemented in
 other modules (such as allocation or error functions).
 
@@ -125,7 +126,7 @@ functions in order to communicate the status of the performed
 operation.
 @end deftp
 
-The following constants defines the valid values to be hold in a
+The following constants define the valid values to be held in a
 @code{pdf_status_t} variable:
 
 @deftp {Constant} PDF_OK
@@ -267,6 +268,31 @@ PDF_DEBUG_BASE("Testing macro '%s' '%d' '%lf'", "string", 7, 10.1);
 @end example
 @end table
 
+
+In addition, this module provides a assert macro for each layer.
+
+@defmac PDF_ASSERT_BASE (condition)
+@end defmac
+@defmac PDF_ASSERT_OBJECT (condition)
+@end defmac
+@defmac PDF_ASSERT_DOCUMENT (condition)
+@end defmac
+@defmac PDF_ASSERT_PAGE (condition)
+@end defmac
+
+@table @strong
+@item Parameters
+@table @var
+@item condition
+a C expression.
+@end table
+@item Usage example
+@example
+PDF_ASSERT_BASE (1 == 1);
+@end example
+@end table
+
+
 @subheading Output format
 The output format for these macros is,
 
@@ -274,7 +300,9 @@ GNU PDF:***DEBUG <layer>***:<file-name>:<line-number>: <message>.
 
 For example,
 
-GNU PDF:***DEBUG BASE***:pdf-memory.c:344: insufficient memory.
+GNU PDF:***DEBUG BASE***:pdf-fp-func.c:344: division by zero.
+
+
 
 @node Memory Allocation
 @section Memory Allocation
@@ -363,7 +391,7 @@ If the requested size is larger or equal than the original size of the
 allocated memory then the previous contents of the allocated memory
 remains. The contents of newly allocated memory are undetermined.
 
-If there is not enough available memory to satisfy the petition a
+If there is not enough available memory to satisfy the request, then a
 fatal error is signaled killing the current process. An error status
 is returned to the operating system.
 @end table
@@ -411,7 +439,7 @@ pdf_dealloc (p);
 A boolean value.
 @end deftp
 
-The following constants defines the valid values to be hold in a
+The following constants define the valid values to be held in a
 @code{pdf_bool_t} variable:
 
 @deftp {Constant} PDF_TRUE
@@ -433,8 +461,7 @@ Signed 32 bits integer.
 Unsigned 32 bits integer.
 @end deftp
 
-The following constants are defined in order to define the valid value
-ranges for these data types:
+The following constants specify the valid ranges for these data types:
 
 @deftp {Constant} PDF_I32_MAX
 Maximum value able to be stored in a @code{pdf_i32_t} variable.
@@ -455,11 +482,11 @@ Minimum value able to be stored in a @code{pdf_u32_t} variable.
 @node Big Numbers
 @subsection Big Numbers
 
-An implementation of Big numbers (64 bit) is also provided. These
-bignums can be used in machines not providing true 64 bit integers.
+An implementation of big numbers (64 bit) is also provided. This data type
+can be used in machines not providing true 64 bit integers.
 
 @deftp {Data Type} pdf_i64_t
-A variable of type pdf_i64_t is capabable of representing 64 bit signed integers.
+A variable of type pdf_i64_t is capable of representing a 64 bit signed integer.
 @end deftp
 
 @deftypefun pdf_i64_t  pdf_i64_new (const pdf_i32_t @var{high}, const pdf_u32_t @var{low})
@@ -487,14 +514,14 @@ bignum = pdf_i64_new((32 << 1),10); /*bignum is now -10*/
 
 @deftypefun void pdf_i64_assign (pdf_i64_t *@var{bignum}, const pdf_i32_t @var{high}, const pdf_u32_t @var{low}, pdf_status_t *@var{p_status})
 
-Assign a value coming from one 32 bit signed integer and a 32 bit
-unsigned integer to a  i64 integer.
+Assign a value based on a 32 bit signed integer and a 32 bit
+unsigned integer to a 64 bit integer.
 
 @table @strong
 @item Parameters
 @table @var
 @item bignum
-Variable that stores 64 bit integer
+Variable that stores a 64 bit integer
 @item high
 The high (signed) part of the 64 bit integer.
 @item low
@@ -528,11 +555,11 @@ if (*p_status != PDF_OK) /*bignum is now -10*/
 
 @deftypefun void pdf_i64_assign_quick (pdf_i64_t *@var{bignum}, const pdf_i32_t @var{value}, pdf_status_t *@var{p_status})
 
-Assign a value coming from one 32 bit signed integer to a i64 integer.
+Assign a value coming from one 32 bit signed integer to a 64 bit signed integer.
 
-Note that if the client is in a system supporting true 64bit scalar
+Note that if the client is in a system supporting true 64 bit scalar
 types, @code{pdf_i64_assign_quick} will be a macro that will also
-accept a 64bits value.
+accept a 64 bit value.
 
 @table @strong
 @item Parameters
@@ -594,7 +621,7 @@ pdf_i64_t orig;
 pdf_i64_t *copy;
 pdf_status_t *p_status;
 orig = pdf_i64_new(0, 10);
-pdf_i64_copy(orig, copy,p_status)
+pdf_i64_copy(orig, copy, p_status)
 if ( *p_status != PDF_OK) /*Now copy is also 10*/
 @{
    /* Error code */
@@ -733,7 +760,7 @@ if (*p_status != PDF_OK) /* Now dest is -10 */
 
 @deftypefun void pdf_i64_subtraction_i32_min (pdf_i64_t *@var{dest}, const pdf_i32_t @var{minuend}, const pdf_i64_t @var{subtrahend}, pdf_status_t *@var{p_status})
 
-Finds the difference between a 32bit number and a 64bit number
+Finds the difference between a 32 bit number and a 64 bit number
 
 @table @strong
 @item Parameters
@@ -763,7 +790,7 @@ pdf_status_t *p_status;
 subtrahend = pdf_i64_new(0, 35);
 result = pdf_i64_new(0, 0);
 dest = &result;
-pdf_i64_subtraction (dest, 25, subtrahend,p_status)
+pdf_i64_subtraction (dest, 25, subtrahend, p_status)
 if (*p_status != PDF_OK) /* Now dest is -10 */
 @{
   /* Error code */
@@ -775,7 +802,7 @@ if (*p_status != PDF_OK) /* Now dest is -10 */
 
 @deftypefun void pdf_i64_subtraction_i32_sub (pdf_i64_t *@var{dest}, const pdf_i64_t @var{minuend}, const pdf_i32_t @var{subtrahend}, pdf_status_t *@var{p_status})
 
-Finds the difference between a 64bit number and a 32bit number
+Finds the difference between a 64 bit number and a 32 bit number
 
 @table @strong
 @item Parameters
@@ -805,7 +832,7 @@ pdf_status_t *p_status;
 minuend = pdf_i64_new(0, 25);
 result = pdf_i64_new(0, 0);
 dest = &result;
-pdf_i64_subtraction (dest, minuend, 35,p_status);
+pdf_i64_subtraction (dest, minuend, 35, p_status);
 if ( != PDF_OK) /* Now dest is -10 */
 @{
   /* Error code */
@@ -860,7 +887,7 @@ if ( *p_status != PDF_OK) /* Now dest is 1000 */
 
 @deftypefun void pdf_i64_mult_i32 (pdf_i64_t *@var{dest}, const pdf_i64_t @var{factor_1}, const pdf_i32_t @var{factor_2}, pdf_status_t *@var{p_status})
 
-Multiplication of a 64bit number and a 32bit number
+Multiplication of a 64 bit number and a 32 bit number
 
 @table @strong
 @item Parameters
@@ -1032,6 +1059,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_ERROR
+@var{dest} is null
 @end table
 @item Usage example
 @example
@@ -1055,7 +1084,7 @@ if ( *p_status != PDF_OK) /* Now dest is 5 */
 
 @deftypefun void pdf_i64_mod_i32_dividend (pdf_i64_t *@var{dest}, const pdf_i32_t @var{dividend}, const pdf_i64_t @var{divisor}, pdf_status_t *@var{p_status})
 
-Returns the remainder of the division between a 32bit number and a 64bit number
+Returns the remainder of the division between a 32 bit number and a 64 bit number
 
 @table @strong
 @item Parameters
@@ -1096,7 +1125,7 @@ if (pdf_i64_mod (dest, 105, divisor) != PDF_OK) /* Now dest is 5 */
 
 @deftypefun void pdf_i64_mod_i32_divisor (pdf_i64_t *@var{dest}, const pdf_i64_t @var{dividend}, const pdf_i32_t @var{divisor}, pdf_status_t *@var{p_status})
 
-Returns the remainder of the division between a 64bit number and a 32bit number
+Returns the remainder of the division between a 64 bit number and a 32 bit number
 
 @table @strong
 @item Parameters
@@ -1155,11 +1184,13 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_ERROR
+@var{dest} is null
 @end table
 @item Usage example
 @example
 pdf_i64_t *dest;
-pdf_i65_t result;
+pdf_i64_t result;
 pdf_i64_t number;
 pdf_status_t *p_status;
 number = pdf_i64_new ((32 << 1), 105); /*number is -105*/
@@ -1198,7 +1229,7 @@ If @var{number_2} is greater than @var{number_1}
 @end table
 @item Usage example
 @example
-pdf_i65_t number_1;
+pdf_i64_t number_1;
 pdf_i64_t number_2;
 int result;
 
@@ -1211,7 +1242,7 @@ result = pdf_i64_cmp (number_1, number_2); /* Now result is -1 */
 
 @deftypefun int pdf_i64_cmp_i32 (const pdf_i64_t @var{number_1}, const pdf_i32_t @var{number_2})
 
-Compares a 64bit number and a 32bit number
+Compares a 64 bit number and a 32 bit number
 
 @table @strong
 @item Parameters
@@ -1233,7 +1264,7 @@ If @var{number_2} is greater than @var{number_1}
 @end table
 @item Usage example
 @example
-pdf_i65_t number_1;
+pdf_i64_t number_1;
 int result;
 
 number_1 = pdf_i64_new ((32 << 1), 10); /* number_1 is -10 */
@@ -1260,11 +1291,13 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_ERROR
+@var{dest} is null
 @end table
 @item Usage example
 @example
 pdf_i64_t *dest;
-pdf_i65_t result;
+pdf_i64_t result;
 pdf_i64_t number;
 pdf_status_t *p_status;
 number = pdf_i64_new (0, 10);
@@ -1281,7 +1314,7 @@ if ( *p_status != PDF_OK) /* now dest stores -10 */
 
 @deftypefun pdf_i32_t pdf_i64_to_i32 (const pdf_i64_t @var{bignum})
 
-Converts a pdf_i64_t to a 32bit value. If number can't be represented in 32 bits
+Converts a pdf_i64_t to a 32 bit value. If number can't be represented in 32 bits
 the result is undefined, so should be used with caution.
 
 @table @strong
@@ -4464,13 +4497,13 @@ full condition has occured.
 A PDF status value:
 @table @code
 @item PDF_OK
-All the requested bytes were successfully read into @var{buf}.
+All the requested bytes were successfully written into @var{stm}.
 @item PDF_EEOF
 A disk full condition occurred.
 @item PDF_EINVOP
 Writting was requested in a read stream.
 @item PDF_ERROR
-An error prevented to read the bytes.
+An error prevented to write the bytes.
 @end table
 @item Usage example
 @example
@@ -4560,8 +4593,17 @@ A pointer to a @code{pdf_size_t} variable to hold the number of
 flushed bytes. May be @code{0}.
 @end table
 @item Returns
-A PDF status value. The possible values are the same than the exit
-status of @code{pdf_stm_write}.
+A PDF status value:
+@table @code
+@item PDF_OK
+All the requested bytes were successfully written into @var{stm}.
+@item PDF_EEOF
+A disk full condition occurred.
+@item PDF_EINVOP
+Writting was requested in a read stream.
+@item PDF_ERROR
+An error prevented to write the bytes.
+@end table
 @item Usage example
 @example
 XXX
@@ -4572,9 +4614,9 @@ XXX
 @node Stream Positioning
 @subsection Stream Positioning
 
-@deftypefun pdf_off_t pdf_stm_seek (pdf_stm_t @var{stm}, pdf_off_t @var{pos})
+@deftypefun pdf_off_t pdf_stm_bseek (pdf_stm_t @var{stm}, pdf_off_t @var{pos})
 
-Seek into a given stream.
+Seek into the backend of a given stream.
 
 @table @strong
 @item Parameters
@@ -4583,7 +4625,7 @@ Seek into a given stream.
 A stream.
 @item pos
 The position to seek, measured in octects from the beginning of the
-stream.
+backend media.
 @end table
 @item Returns
 The new position of the stream read/write pointer. If it is equal to
@@ -4595,9 +4637,10 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_off_t pdf_stm_tell (pdf_stm_t @var{stm})
+@deftypefun pdf_off_t pdf_stm_btell (pdf_stm_t @var{stm})
 
-Get the current position of the read/write pointer of a stream.
+Get the current position of the read/write pointer of the backend of a
+stream.
 
 @table @strong
 @item Parameters
@@ -4607,7 +4650,28 @@ A stream.
 @end table
 @item Returns
 The current position (measured in octets from the beginning of the
-stream) of the read/write pointer.
+backend media) of the read/write pointer.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_off_t pdf_stm_tell (pdf_stm_t @var{stm})
+
+Get the number of octects read/written from/to the stream since either
+the last @code{pdf_stm_bseek} operation or the creation of the
+stream, if no bseek was made.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@end table
+@item Returns
+The current position (measured in octets) of the read/write pointer.
 @item Usage example
 @example
 XXX
@@ -6922,7 +6986,7 @@ pdf_time_t mytime;
 
 mytime = pdf_time_new ();
 
-pdf_time_set_from_i32(mytime, 1217009657);
+pdf_time_set_from_u32(mytime, 1217009657);
 
 @end example
 @end table
@@ -7416,7 +7480,7 @@ switch (pdf_time_cmp (time1, time2))
 @node Time Printing and Parsing
 @subsection Time Printing and Parsing
 
-@deftypefun pdf_char_t* pdf_time_to_string (const pdf_time_t @var{time_var}, const enum pdf_time_format_e @var{time_format})
+@deftypefun pdf_char_t* pdf_time_to_string (const pdf_time_t @var{time_var}, const enum pdf_time_format_e @var{time_format}, pdf_bool_t @var{include_trailing_apostrophe})
 Create a string representation of a given time.
 
 @table @strong
@@ -7426,7 +7490,12 @@ Create a string representation of a given time.
 @item time_var
 A properly created time variable.
 @item time_format
-The format to use when creating the string representation of @var{time}. 
+The format to use when creating the string representation of
+@var{time}. 
+@item include_trailing_apostrophe
+Append an apostrophe after the GMT offset minutes field, if
+present.  Note that this parameter is ignored if @var{time_format} is
+not @code{PDF_TIME_FORMAT_PDF}.
 @end table
 
 @item Returns
@@ -7447,7 +7516,7 @@ pdf_dealloc(mytime_str);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_from_string (pdf_time_t @var{time_var}, const pdf_char_t *@var{time_str}, const enum pdf_time_format_e @var{time_format})
+@deftypefun pdf_status_t pdf_time_from_string (pdf_time_t @var{time_var}, const pdf_char_t *@var{time_str}, const enum pdf_time_format_e @var{time_format}, pdf_bool_t @var{require_trailing_apostrophe})
 Get a string containing a time specification in some format and fill a
 time variable with the parsed values.
 
@@ -7462,6 +7531,12 @@ A properly created time variable.
 A null-terminated string representation of a time.
 @item time_format
 The format indicating how to parse @var{time_str}.
+@item require_trailing_apostrophe
+If this argument is @code{PDF_TRUE} a PDF date specification
+containing minutes should be followed by an APOSTROPHE character (').
+
+If @var{time_format} is not @code{PDF_TIME_FORMAT_PDF} then this
+argument is ignored.
 @end table
 
 @item Returns
@@ -9108,7 +9183,8 @@ XXX
 The following functions provides synchronous input/output for open
 files.
 
-@deftypefun pdf_size_t pdf_fsys_file_read (pdf_fsys_file_t @var{file}, const pdf_size_t @var{elem_size}, const pdf_size_t @var{elem_count}, void *@var{data})
+
+@deftypefun pdf_status_t pdf_fsys_file_read (pdf_fsys_file_t @var{file}, pdf_char_t *@var{buf}, pdf_size_t @var{bytes}, pdf_size_t *@var{read_bytes})
 
 Synchronously read data from an open file item.
 
@@ -9116,17 +9192,26 @@ Synchronously read data from an open file item.
 @item Parameters
 @table @var
 @item file
-An open file variable.
-@item elem_size
-The size of the data chunks to read from the file.
-@item elem_count
-The number of data chunks to read from the file.
-@item data
-A pointer to memory used to store the readed elements.
+An open file.
+@item buf
+The buffer to hold the read data.
+@item bytes
+The number of octects to read.
+@item read_bytes
+The number of octects actually read.
 @end table
 @item Returns
-A PDF size value indicating the number of readed octects or @code{0} if there
-was an error.
+A PDF status value:
+@table @code
+@item PDF_OK
+All the requested bytes were successfully read into @var{buf}.
+@item PDF_EBADDATA
+The file element or a given pointer is invalid.
+@item PDF_EEOF
+An end of file condition occurred.
+@item PDF_ERROR
+An error prevented to read the bytes.
+@end table
 @item Usage example
 @example
 XXX
@@ -9134,7 +9219,8 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_fsys_file_write (pdf_fsys_file_t @var{file}, const pdf_size_t @var{elem_size}, const pdf_size_t @var{elem_count}, void *@var{data})
+
+@deftypefun pdf_status_t pdf_fsys_file_write (pdf_fsys_file_t @var{file}, pdf_char_t *@var{buf}, pdf_size_t @var{bytes}, pdf_size_t *@var{written_bytes})
 
 Synchronously write data to an open file item.
 
@@ -9142,23 +9228,33 @@ Synchronously write data to an open file item.
 @item Parameters
 @table @var
 @item file
-An open file variable.
-@item elem_size
-The size of the data chunks to write into the file.
-@item elem_count
-The number of data chunks to be write into the file.
-@item data
+An open file.
+@item buf
 A pointer to memory containing the data to write into the file.
+@item bytes
+The number of octects to write.
+@item written_bytes
+The number of octects actually written.
 @end table
 @item Returns
-A PDF size value indicating the number of octects written into the
-file or @code{0} if there was an error.
+A PDF status value:
+@table @code
+@item PDF_OK
+All the requested bytes were successfully written to @var{file}.
+@item PDF_EBADDATA
+The file element or a given pointer is invalid.
+@item PDF_ENOMEM
+A disk full condition ocurred.
+@item PDF_ERROR
+An error prevented to write the bytes.
+@end table
 @item Usage example
 @example
 XXX
 @end example
 @end table
 @end deftypefun
+
 
 @deftypefun pdf_status_t pdf_fsys_file_flush (pdf_fsys_file_t @var{file})
 
@@ -9441,7 +9537,8 @@ filesystem interface function.
 The following callbacks are defined to provide synchronous
 input/output in open files.
 
-@deftp {Data Type} {pdf_size_t (*pdf_fsys_file_read_fn_t) (pdf_fsys_file_t @var{file}, pdf_size_t @var{elem_size}, pdf_size_t @var{elem_count}, void *@var{data})}
+
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_read_fn_t) (pdf_fsys_file_t @var{file}, pdf_char_t*@var{buf}, pdf_size_t @var{bytes}, pdf_size_t*@var{read_bytes})}
 
 Filesystem callback used to synchronously read data from an open file
 item.
@@ -9450,8 +9547,7 @@ This callback is called by the @code{pdf_fsys_file_read} file
 interface function.
 @end deftp
 
-@deftp {Data Type} {pdf_size_t (*pdf_fsys_file_write_fn_t) (pdf_fsys_file_t @var{file}, pdf_size_t @var{elem_size}, pdf_size_t @var{elem_count}, void *@var{data})}
-
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_write_fn_t) (pdf_fsys_file_t @var{file}, pdf_char_t*@var{buf}, pdf_size_t @var{bytes}, pdf_size_t*@var{written_bytes})}
 Filesystem callback used to synchronously write data to an open file
 item.
 
@@ -9793,7 +9889,864 @@ XXX
 @end table
 @end deftypefun
 
+@node The Tokeniser
+@section The Tokeniser
 
+The tokeniser module provides functions to:
+
+@itemize @minus
+@item Read PDF lexical tokens from a base layer stream
+@item Write PDF lexical tokens into a base layer stream
+@end itemize
+
+@menu
+* Tokeniser data types::
+* Creation and destruction of tokenisers::
+* Reading tokens::
+* Writing tokens::
+* Creating and destroying tokens::
+* Accessing token attributes::
+@end menu
+
+@node Tokeniser data types
+@subsection Tokeniser data types
+
+@deftp {Data Type} pdf_token_t
+A PDF token.
+@end deftp
+
+@deftp {Data Type} {enum pdf_token_type_e}
+The type of a PDF token.
+
+Valid values are:
+
+@table @code
+@item PDF_TOKEN_INTEGER
+A PDF integer value.
+@item PDF_TOKEN_REAL
+A PDF real value (a floating-point number).
+@item PDF_TOKEN_STRING
+A PDF string.
+@item PDF_TOKEN_NAME
+A PDF name.
+@item PDF_TOKEN_COMMENT
+A PDF comment.
+@item PDF_TOKEN_KEYWORD
+A keyword, i.e., any string of regular characters such as ``null''
+or ``R'' that is not matched as another type.
+@item PDF_TOKEN_DICT_START
+The ``<<'' operator, which marks the beginning of a dictionary.
+@item PDF_TOKEN_DICT_END
+The ``>>'' operator, which marks the end of a dictionary.
+@item PDF_TOKEN_ARRAY_START
+The ``['' operator, which marks the beginning of an array.
+@item PDF_TOKEN_ARRAY_END
+The ``]'' operator, which marks the end of an array.
+@item PDF_TOKEN_PROC_START
+The ``@{'' operator, which marks the beginning of a procedure.
+@item PDF_TOKEN_PROC_END
+The ``@}'' operator, which marks the end of a procedure.
+@end table
+@end deftp
+
+@deftp {Data Type} pdf_token_reader_t
+A token reader that operates on a reading base layer stream and provides
+a stream of PDF tokens.
+@end deftp
+
+@deftp {Data Type} pdf_token_writer_t
+A token writer that operates on a writing base layer stream,
+generating the textual representation of a PDF token.
+@end deftp
+
+@node Creation and destruction of tokenisers
+@subsection Creation and destruction of tokenisers
+
+@deftypefun pdf_status_t pdf_token_reader_new (pdf_stm_t @var{stm}, pdf_token_reader_t *@var{reader})
+
+Create a new token reader operating a given reading stream.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A reading stream.
+@item reader
+A pointer to a token reader.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The reader was successfully created.
+@item PDF_EBADDATA
+@var{stm} is not a reading stream.
+@item PDF_ENOMEM
+Not enough memory to create the reader.
+@item PDF_ERROR
+An error prevented to perform the operation.
+@end table
+@item Usage example
+@example
+pdf_stm_t stream;
+pdf_token_reader_t reader;
+
+/* Open a file stream */
+XXX
+
+/* Create the token reader */
+switch (pdf_token_reader_new (stream, &reader))
+@{
+   case PDF_BADDATA:
+   @{
+      /* STREAM is not a valid reading stream */
+      break;
+   @}
+   case PDF_ENOMEM:
+   @{
+      /* Not enough memory to create the reader */
+      break;
+   @}
+   case PDF_ERROR:
+   @{
+      /* Any other error prevented the creation of
+         the reader */
+      break;
+   @}
+   default:
+   @{
+      /* Success */
+      break;
+   @}
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_token_writer_new (pdf_stm_t @var{stm}, pdf_token_writer_t *@var{writer})
+
+Create a new token writer operating a given reading stream.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A writing stream.
+@item writer
+A pointer to a token writer.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The writer was successfully created.
+@item PDF_EBADDATA
+@var{stm} is not a writing stream.
+@item PDF_ENOMEM
+Not enough memory to create the writer.
+@item PDF_ERROR
+An error prevented to perform the operation.
+@end table
+@item Usage example
+@example
+pdf_stm_t stream;
+pdf_token_writer_t writer;
+
+/* Open a file stream */
+XXX
+
+/* Create the token writer */
+switch (pdf_token_writer_new (stream, &writer))
+@{
+   case PDF_BADDATA:
+   @{
+      /* STREAM is not a valid writing stream */
+      break;
+   @}
+   case PDF_ENOMEM:
+   @{
+      /* Not enough memory to create the writer */
+      break;
+   @}
+   case PDF_ERROR:
+   @{
+      /* Any other error prevented the creation of
+         the writer */
+      break;
+   @}
+   default:
+   @{
+      /* Success */
+      break;
+   @}
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_token_reader_destroy (pdf_token_reader_t @var{reader})
+
+Destroy a token reader freeing any used resources.
+
+@table @strong
+@item Parameters
+@table @var
+@item reader
+The reader to destroy.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The token reader was destroyed.
+@end table
+@item Usage example
+@example
+pdf_token_reader_t reader;
+
+/* Create a reader */
+XXX
+/* Destroy the reader */
+pdf_token_reader_destroy (reader);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_token_writer_destroy (pdf_token_writer_t @var{writer})
+
+Destroy a token writer, freeing any used resources.
+
+@table @strong
+@item Parameters
+@table @var
+@item writer
+The writer to destroy.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The token writer was destroyed.
+@end table
+@item Usage example
+@example
+pdf_token_writer_t writer;
+
+/* Create a writer */
+XXX
+/* Destroy the writer */
+pdf_token_writer_destroy (writer);
+@end example
+@end table
+@end deftypefun
+
+@node Reading tokens
+@subsection Reading tokens
+
+@deftypefun pdf_status_t pdf_token_read (pdf_token_reader_t @var{reader}, pdf_u32_t @var{flags}, pdf_token_t *@var{token})
+
+Read a token from a token reader.
+
+@table @strong
+@item Parameters
+@table @var
+@item reader
+A token reader.
+@item flags
+A bitmask specifying a combination of these flags:
+@table @code
+@item PDF_TOKEN_NO_NAME_ESCAPES
+Don't treat ``#'' as a special character when reading name tokens
+(this flag should be used when reading PDF 1.1 files).
+@item PDF_TOKEN_RET_COMMENTS
+Return comments as tokens (rather than ignoring them).
+@item PDF_TOKEN_END_AT_STREAM
+Assume that a ``stream'' keyword token was just read, find the beginning
+of the corresponding stream, and return PDF_EEOF when successful
+(i.e., when the input stream is positioned after the first line feed).
+@end table
+@item token
+A pointer to a pdf_token_t that will hold the read token.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_EAGAIN
+It's not possible to read a full token now.
+Since one may have been partially read, the operation should be repeated
+with the same flags when data becomes available.
+@item PDF_EEOF
+Reached the end of the input stream (at a valid position).
+@item PDF_EBADFILE
+The stream violates the PDF specifications.
+@item PDF_EIMPLLIMIT
+It's not possible to read the next token without exceeding an
+implementation limit (e.g., the token is too long).
+@item PDF_ERROR
+An unspecified error occurred.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_token_reader_reset (pdf_token_reader_t @var{reader})
+
+Reset the state of the token reader.
+
+@table @strong
+@item Parameters
+@table @var
+@item reader
+A token reader.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@end table
+@end table
+@end deftypefun
+
+@node Writing tokens
+@subsection Writing tokens
+
+@deftypefun pdf_status_t pdf_token_write (pdf_token_writer_t @var{writer}, pdf_u32_t @var{flags}, pdf_token_t @var{token})
+
+Write a given token using a given token writer.
+
+@table @strong
+@item Parameters
+@table @var
+@item writer
+A token writer.
+@item flags
+A bitmask specifying a combination of these flags:
+@table @code
+@item PDF_TOKEN_NO_NAME_ESCAPES
+Don't escape special characters using ``#'' when writing name tokens
+(this flag should be used when writing PDF 1.1 files).
+@item PDF_TOKEN_HEX_STRINGS
+Write strings in hexadecimal encoding.
+@item PDF_TOKEN_READABLE_STRINGS
+Encode strings in a human-readable way
+(i.e., in hexadecimal or with special characters escaped).
+@end table
+@item token
+A PDF token.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_EAGAIN
+It's not possible to write a full token now.
+Since it may have been partially written, the operation must be repeated
+with the same arguments when the stream becomes writable.
+@item PDF_EBADDATA
+One of the arguments is invalid. This may be caused by an invalid token
+(e.g., one that contains unrepresentable characters).
+@item PDF_ERROR
+An unspecified error occurred.
+@end table
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@node Creating and destroying tokens
+@subsection Creating and destroying tokens
+
+@deftypefun pdf_status_t pdf_token_integer_new (pdf_i32_t @var{value}, pdf_token_t *@var{token})
+
+Create an integer token.
+
+@table @strong
+@item Parameters
+@table @var
+@item value
+The numeric value for the token.
+@item token
+A pointer to the newly created token.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@end table
+@end table
+
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_token_real_new (pdf_real_t @var{value}, pdf_token_t *@var{token})
+
+Create a real (floating-point number) token.
+
+@table @strong
+@item Parameters
+@table @var
+@item value
+The numeric value for the token.
+@item token
+A pointer to the newly created token.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_EBADDATA
+The given value is invalid.
+@item PDF_ENOMEM
+Not enough memory.
+@end table
+@end table
+
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_token_string_new (const pdf_char_t *@var{value}, pdf_size_t @var{size}, pdf_token_t *@var{token})
+
+Create a string token containing a copy of the given data.
+
+@table @strong
+@item Parameters
+@table @var
+@item value
+A pointer to the binary data that will make up the string.
+@item size
+The amount of data to copy, in octets.
+@item token
+A pointer to the newly created token.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@end table
+@end table
+
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_token_name_new (const pdf_char_t *@var{value}, pdf_size_t @var{size}, pdf_token_t *@var{token})
+
+Create a name token containing a copy of the given data.
+
+@table @strong
+@item Parameters
+@table @var
+@item value
+A pointer to the binary data that will make up the name.
+@item size
+The amount of data to copy, in octets.
+@item token
+A pointer to the newly created token.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_EBADDATA
+The given value is invalid.
+@item PDF_ENOMEM
+Not enough memory.
+@end table
+@end table
+
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_token_keyword_new (const pdf_char_t *@var{value}, pdf_size_t @var{size}, pdf_token_t *@var{token})
+
+Create a keyword token containing a copy of the given data.
+
+@table @strong
+@item Parameters
+@table @var
+@item value
+A pointer to the binary data that will make up the keyword.
+@item size
+The amount of data to copy, in octets.
+@item token
+A pointer to the newly created token.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_EBADDATA
+The given value is invalid.
+@item PDF_ENOMEM
+Not enough memory.
+@end table
+@end table
+
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_token_comment_new (const pdf_char_t *@var{value}, pdf_size_t @var{size}, pdf_bool_t continuation, pdf_token_t *@var{token})
+
+Create a comment token containing a copy of the given data.
+
+@table @strong
+@item Parameters
+@table @var
+@item value
+A pointer to the binary data that will make up the keyword.
+@item size
+The amount of data to copy, in octets.
+@item continuation
+A boolean value indicating whether this is a continuation of a previous comment token (if false, it's a new comment).
+@item token
+A pointer to the newly created token.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_EBADDATA
+The given value is invalid.
+@item PDF_ENOMEM
+Not enough memory.
+@end table
+@end table
+
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_token_valueless_new (enum pdf_token_type_e @var{type}, pdf_token_t *@var{token})
+
+Create a token of one of the valueless types (PDF_TOKEN_DICT_START,
+PDF_TOKEN_DICT_END, PDF_TOKEN_ARRAY_START, PDF_TOKEN_ARRAY_END,
+PDF_TOKEN_PROC_START, or PDF_TOKEN_PROC_END).
+
+@table @strong
+@item Parameters
+@table @var
+@item type
+The type of token to create.
+@item token
+A pointer to the newly created token.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@item PDF_EBADDATA
+The given type is not valid for this constructor.
+@end table
+@end table
+
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_token_dup (const pdf_token_t @var{old}, pdf_token_t *@var{new})
+
+Create a copy of the given token.
+
+@table @strong
+@item Parameters
+@table @var
+@item old
+The token to copy.
+@item new
+A pointer to the newly created token.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
+@end table
+@end table
+
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_token_destroy (pdf_token_t @var{token})
+
+Destroy the given token, freeing any memory it used.
+
+@table @strong
+@item Parameters
+@table @var
+@item old
+The token to copy.
+@item new
+A pointer to the newly created token.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@end table
+@end table
+
+@end deftypefun
+
+@node Accessing token attributes
+@subsection Accessing token attributes
+
+@deftypefun {enum pdf_token_type_e} pdf_token_get_type (pdf_token_t @var{token})
+
+Get the type of a given token.
+
+@table @strong
+@item Parameters
+@table @var
+@item token
+A token.
+@end table
+@item Returns
+The type of the given token.
+@item Usage example
+@example
+pdf_token_t token;
+pdf_token_reader_t reader;
+
+/* ... */
+
+/* Read a name */
+if (pdf_token_read (reader, &token) != PDF_OK)
+@{
+   /* Error */
+@}
+if (pdf_token_get_type (token) != PDF_TOKEN_NAME)
+@{
+   /* We were expecting a name */
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_token_equal_p (const pdf_token_t @var{token1}, const pdf_token_t @var{token2})
+
+Determines whether the given tokens are equivalent.
+
+@table @strong
+@item Parameters
+@table @var
+@item token1
+A token.
+@item token2
+Another token.
+@end table
+@item Returns
+A boolean value:
+@table @code
+@item PDF_TRUE
+The given tokens are equal.
+@item PDF_FALSE
+The tokens are not equal.
+@end table
+@end table
+
+@end deftypefun
+
+@deftypefun pdf_i32_t pdf_token_get_integer_value (const pdf_token_t @var{token})
+
+Returns the value associated with a given integer token.
+
+@table @strong
+@item Parameters
+@table @var
+@item token
+A token of type PDF_TOKEN_INTEGER.
+@end table
+@item Returns
+The token's value.
+@end table
+
+@end deftypefun
+
+@deftypefun pdf_real_t pdf_token_get_real_value (const pdf_token_t @var{token})
+
+Returns the value associated with a given real token.
+
+@table @strong
+@item Parameters
+@table @var
+@item token
+A token of type PDF_TOKEN_REAL.
+@end table
+@item Returns
+The token's value.
+@end table
+
+@end deftypefun
+
+@deftypefun const pdf_char_t *pdf_token_get_string_data (const pdf_token_t @var{token})
+
+Returns a pointer to the data associated with a given string token.
+
+@table @strong
+@item Parameters
+@table @var
+@item token
+A token of type PDF_TOKEN_STRING.
+@end table
+@item Returns
+A pointer to the data, which will be valid until the token is destroyed.
+The data is @strong{not} null-terminated.
+@end table
+
+@end deftypefun
+
+@deftypefun pdf_size_t pdf_token_get_string_size (const pdf_token_t @var{token})
+
+Returns the amount of data associated with a given string token.
+
+@table @strong
+@item Parameters
+@table @var
+@item token
+A token of type PDF_TOKEN_STRING.
+@end table
+@item Returns
+The string's size, in octets.
+@end table
+
+@end deftypefun
+
+@deftypefun const pdf_char_t *pdf_token_get_name_data (const pdf_token_t @var{token})
+
+Returns a pointer to the data associated with a given name token.
+
+@table @strong
+@item Parameters
+@table @var
+@item token
+A token of type PDF_TOKEN_NAME.
+@end table
+@item Returns
+A pointer to the name data, which will be valid until the token is destroyed.
+The data is null-terminated.
+@end table
+
+@end deftypefun
+
+@deftypefun pdf_size_t pdf_token_get_name_size (const pdf_token_t @var{token})
+
+Returns the amount of data associated with a given name token.
+
+@table @strong
+@item Parameters
+@table @var
+@item token
+A token of type PDF_TOKEN_NAME.
+@end table
+@item Returns
+The name's size, in octets (excluding the terminating null byte).
+@end table
+
+@end deftypefun
+
+@deftypefun const pdf_char_t *pdf_token_get_keyword_data (const pdf_token_t @var{token})
+
+Returns a pointer to the data associated with a given keyword token.
+
+@table @strong
+@item Parameters
+@table @var
+@item token
+A token of type PDF_TOKEN_KEYWORD.
+@end table
+@item Returns
+A pointer to the data, which will be valid until the token is destroyed.
+The data is null-terminated.
+@end table
+
+@end deftypefun
+
+@deftypefun pdf_size_t pdf_token_get_keyword_size (const pdf_token_t @var{token})
+
+Returns the amount of data associated with a given keyword token.
+
+@table @strong
+@item Parameters
+@table @var
+@item token
+A token of type PDF_TOKEN_KEYWORD.
+@end table
+@item Returns
+The keyword's size, in octets (excluding the terminating null byte).
+@end table
+
+@end deftypefun
+
+@deftypefun const pdf_char_t *pdf_token_get_comment_data (const pdf_token_t @var{token})
+
+Returns a pointer to the data associated with a given comment token.
+
+@table @strong
+@item Parameters
+@table @var
+@item token
+A token of type PDF_TOKEN_COMMENT.
+@end table
+@item Returns
+A pointer to the data, which will be valid until the token is destroyed.
+The data is @strong{not} null-terminated.
+@end table
+
+@end deftypefun
+
+@deftypefun pdf_size_t pdf_token_get_comment_size (const pdf_token_t @var{token})
+
+Returns the amount of data associated with a given comment token.
+
+@table @strong
+@item Parameters
+@table @var
+@item token
+A token of type PDF_TOKEN_COMMENT.
+@end table
+@item Returns
+The comment's size, in octets.
+@end table
+
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_token_get_comment_continued (const pdf_token_t @var{token})
+
+Returns a boolean indicating whether the comment token is a continuation
+of a previous token.  If the token reader breaks a comment into multiple
+tokens, each token except the last will be at least 32767 bytes long.
+
+@table @strong
+@item Parameters
+@table @var
+@item token
+A token of type PDF_TOKEN_COMMENT.
+@end table
+@item Returns
+A boolean value:
+@table @code
+@item PDF_TRUE
+The given comment token is a continuation of another.
+@item PDF_FALSE
+The token is a complete comment, or the beginning of a comment.
+@end table
+@end table
+
+@end deftypefun
 
 @node Encryption
 @section Encryption
@@ -10475,7 +11428,7 @@ should be considered invalid.
 @example
 pdf_obj_doc_t mydoc;
 
-/* Create an object document... */
+/* Close an object document... */
 
 if (pdf_obj_doc_close (mydoc) != PDF_OK)
 @{
@@ -10743,7 +11696,7 @@ XXX
 
 @menu
 * Object Data Types::
-* Object Generic Functions::
+* Generic Functions to Manipulate Objects::
 * Object Strong References::
 * Compressibility of Objects::
 * Object Collections::
@@ -10847,8 +11800,8 @@ The data will be both decrypted and filtered.
 @end table
 @end deftp
 
-@node Object Generic Functions
-@subsection Object Generic Functions
+@node Generic Functions to Manipulate Objects
+@subsection Generic Functions to Manipulate Objects
 
 The following functions can be called on any @code{pdf_obj_t}
 variable, regardless its type (but note that the effects of the call
@@ -12864,19 +13817,25 @@ specifications.
 @headitem Quantity @tab Limit @tab Description
 @item Size of a PDF file
 @tab 10^10 bytes
-@tab Larger supported PDF file using a cross-reference table.
+@tab Largest supported PDF file using a cross-reference table.
 @item integer
-@tab ???
+@tab 2^32 - 1
 @tab Largest integer value.
+@item integer
+@tab -2^32
+@tab Smallest integer value.
 @item real
-@tab ???
+@tab FLT_MAX
 @tab Largest real value.
+@item real
+@tab -FLT_MAX
+@tab Smallest real value.
 @item string in content stream
 @tab 32767
 @tab Maximum length of a string contained in a content stream, in
 bytes.
 @item name
-@tab ???
+@tab 32767
 @tab Maximum length of a name, in bytes.
 @item indirect object
 @tab ??

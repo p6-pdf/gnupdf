@@ -256,8 +256,9 @@ proc generate_prolog {} {
 
 proc generate_epilog {} {
 
-    puts ""
+    puts "* Epilog"
     # Write down the categories
+    puts ""
     puts -nonewline "#+SEQ_TODO: "
     foreach status_name [get_status_names] {
         puts -nonewline "[lindex $status_name 0] "

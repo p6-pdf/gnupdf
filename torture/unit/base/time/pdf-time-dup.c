@@ -46,9 +46,6 @@ START_TEST (pdf_time_dup_001)
   pdf_i64_t seconds;
   pdf_u32_t i,j,sec;
 
-  extern  pdf_u32_t daysInSeconds[];
-  extern struct pdf_time_cal_span_s day_time_span[];
-
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
   fail_if(time1 == NULL);
@@ -62,56 +59,13 @@ START_TEST (pdf_time_dup_001)
   fail_if(time2 == NULL);
   fail_unless(pdf_time_cmp(time1, time2) == 0);
 
+  
   status = pdf_time_destroy(time1);
   fail_if(status !=PDF_OK);
 
   status = pdf_time_destroy(time2);
   fail_if(status !=PDF_OK);
 
-
-
-
-/*
-  for(i=0; i < YEAR_MONTH_SIZE; i++){
-    for(j=0; j< DAY_TIME_SPAN_SIZE; j++){
-        sec=daysInSeconds[i] + day_time_span[i].days*SEC_IN_DAY + day_time_span[i].hours*3600 +
-                               day_time_span[i].minutes*60 + day_time_span[i].seconds;
-
-        status = pdf_time_set_from_u32(time1, sec);
-        fail_if(status != PDF_OK);
-
-        time2 = pdf_time_dup(time1);
-        fail_unless(pdf_time_cmp(time1, time2) == 0);
-
-        status = pdf_time_destroy(time2);
-        fail_if(status !=PDF_OK);
-    }
-  }
-
-  fail_if(time1==NULL);
-  status = pdf_time_destroy(time1);
-  fail_if(status != PDF_OK);*/
-}
-END_TEST
-
-/*
- * Test: pdf_time_dup_002
- * Description:
- *   Try to duplicate non existing pdf_time_t object
- *   which os initialized to NUL.
- *Success condition:
- * 1. Function pdf_time_dup schould return NULL
- */
-START_TEST (pdf_time_dup_002)
-{
-  pdf_time_t time1;
-  pdf_time_t time2;
-
-  time1 = NULL;
-
-
-  time2 = pdf_time_dup(time1);
-  fail_if(time2 != NULL);
 }
 END_TEST
 
@@ -125,7 +79,6 @@ test_pdf_time_dup (void)
   TCase *tc = tcase_create ("pdf_time_dup");
 
   tcase_add_test(tc, pdf_time_dup_001);
-//  tcase_add_test(tc, pdf_time_dup_002);
 
   return tc;
 }

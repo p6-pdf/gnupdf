@@ -37,6 +37,16 @@ canonical=$host
 
 gl_INIT
 
+dnl OS-based compilation options
+compile_w32_system=no
+case "${host}" in
+    *-mingw32*)
+        compile_w32_system=yes
+        ;;
+    *)
+        ;;
+esac
+
 dnl Search for headers
 AC_CHECK_HEADERS(malloc.h)
 
@@ -52,20 +62,37 @@ CHECK_ZLIB
 AM_CONDITIONAL([ZLIB], [test "x$have_zlib" = "xyes"])
 AC_CHECK_LIB(m,exp,,,)
 
+have_libjpeg=yes
+AC_CHECK_LIB([jpeg],[jpeg_std_error],[],[have_libjpeg=no])
+AM_CONDITIONAL([LIBJPEG], [test "x$have_libjpeg" != "xno"])
+
 have_jbig2dec=yes
 AC_CHECK_LIB([jbig2dec],[jbig2_ctx_new],[],[have_jbig2dec=no])
 AM_CONDITIONAL([JBIG2DEC], [test "x$have_jbig2dec" != "xno"])
 
-AM_PATH_LIBGCRYPT([1.2.4], have_libgcrypt="yes", have_libgcrypt="no")
-if test x$have_libgcrypt == "xno"; then
-AC_MSG_ERROR([cannot find libgcrypt library. Please install it and rerun `configure'.])
+if test "x$compile_w32_system" = "xyes"; then
+  # We cannot use AM_PATH_LIBGCRYPT in this case, since it depends on
+  # environment variables and the execution of config-* programs.
+  AC_CHECK_LIB([gpg-error],[gpg_err_init],,[have_gpgerror="no"])
+  AC_CHECK_LIB([gcrypt],[gcry_check_version],,[have_libgcrypt="no"])
+else
+  # Use the AM_PATH_LIBGCRYPT macro from libgcrypt
+  AM_PATH_LIBGCRYPT([1.2.4], have_libgcrypt="yes", have_libgcrypt="no")
+fi
+
+if test x$have_gpgerror = "xno"; then
+  AC_MSG_ERROR([cannot find the libgpg-error library. Please install it and rerun `configure'.])
+fi
+
+if test x$have_libgcrypt = "xno"; then
+  AC_MSG_ERROR([cannot find the libgcrypt library. Please install it and rerun `configure'.])
 fi
 
 have_check=yes
 AC_CHECK_LIB([check],[suite_create],,[have_check=no])
 AM_CONDITIONAL([CHECK], [test "x$have_check" != "xno"])
 
-AC_CHECK_LIB([iconv],[iconv_open],[have_iconv=yes],[have_iconv=no],)
+AC_CHECK_LIB([iconv],[iconv_open],[have_iconv=yes],[have_iconv=no])
 AM_CONDITIONAL([ICONV], [test "x$have_iconv" = "xyes"])
 
 dnl Search for required programs for building the sources
@@ -89,9 +116,6 @@ texihtmlprogram=texi2html
 else
 texihtmlprogram=makeinfo
 fi
-
-AC_CHECK_PROG([have_taskjuggler], [taskjuggler], [yes], [no],,)
-AM_CONDITIONAL([TASKJUGGLER], [test "x$have_taskjuggler" = "xyes"])
 
 dnl Manage the compilation level
 dnl The GNU PDF library is composed by several layers. The following
@@ -242,16 +266,6 @@ else
 fi
 
 
-dnl OS-based compilation options
-compile_w32_system=no
-case "${host}" in
-    *-mingw32*)
-        compile_w32_system=yes
-        ;;
-    *)
-        ;;
-esac
-
 dnl Specific W32 needs of compilation
 AM_CONDITIONAL([COMPILE_W32_SYSTEM], [test "x$compile_w32_system" = "xyes"])
 
@@ -282,6 +296,7 @@ Configured for \`${canonical}'.
   Compilation level:                        ${PDFLIB_LEVEL} (${PDFLIB_LEVEL_DESCR})
   Using FlateDecode filter?                 ${have_zlib}
   Using JBIG2 decoder filter?               ${ac_cv_lib_jbig2dec_jbig2_ctx_new}
+  Using DCT filter?                         ${have_libjpeg}
   With unit tests support?                  ${ut_support} ${ut_framework}
   Program to build html manuals             ${texihtmlprogram}
   Build project management resources?       ${prmgt_mode}
@@ -294,16 +309,22 @@ dnl Report warnings
 if test "x$have_zlib" = "xno" ; then
 echo "
 WARNING: you are going to build a library without FlateDecode support. 
-         That means you wont be able to process many PDF files."
+         That means you will not be able to process many PDF files."
 fi
 
 if test "x$ac_cv_lib_jbig2dec_jbig2_ctx_new" = "xno" ; then
 echo "
 WARNING: you are going to build a library without JBIG2Decode support.
-         That means you wont be able to process many PDF files."
+         That means you will not be able to process many PDF files."
 fi
 
-if test "ut_support" = "xno" ; then
+if test "x$ac_cv_lib_jpeg_jpeg_std_error" = "xno" ; then
+echo "
+WARNING: you are going to build a library without JPEG support.
+         That means you will not be able to process many PDF files."
+fi
+
+if test "x$ut_support" = "xno" ; then
 echo "
 WARNING: you are going to build the library without unit testing support.
          If you want to be able to perform the unit testing you should

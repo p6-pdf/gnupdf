@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/28 22:26:40 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-05-02 16:35:44 aleksander"
  *
  *       File:         pdf-text-ucd-case.c
  *       Date:         Sun Mar 09 12:59:01 2008
@@ -3645,7 +3645,6 @@ pdf_text_ucd_special_case_check_single(const pdf_text_ucd_context_t *context,
                                        const pdf_char_t *condition,
                                        pdf_bool_t *p_fulfilled)
 {
-  extern const pdf_text_ucd_condition_t ucd_condition_list[UCD_SC_COND_N];
   pdf_bool_t negate_condition = PDF_FALSE;
   pdf_char_t *walker = (pdf_char_t *)condition;
   
@@ -3777,9 +3776,6 @@ pdf_text_ucd_special_case(pdf_u32_t to_he[UCD_SC_MAX_EXPAND],
                           const pdf_text_ucd_context_t *context,
                           const enum unicode_case_type to_case)
 {
-  extern unicode_case_info_t unicode_case_info[UCD_C_INFO_N];
-  extern unicode_special_case_info_t unicode_special_case_info[UCD_SC_INFO_N];
-  
   int index = 0;
   pdf_char_t *condition_list = NULL;
 
@@ -3878,8 +3874,6 @@ pdf_text_ucd_simple_case(pdf_u32_t *to_he,
                          const pdf_i32_t index_in_array,
                          const enum unicode_case_type to_case)
 {
-  extern unicode_case_info_t unicode_case_info[UCD_C_INFO_N];
-  
   /* Sanity check to see if we really found the correct unicode point */
   if(from_he != unicode_case_info[index_in_array].unicode_point)
     {
@@ -3920,8 +3914,6 @@ pdf_text_ucd_simple_case(pdf_u32_t *to_he,
 static pdf_i32_t
 pdf_text_ucd_find_case_index(const pdf_u32_t from_he)
 {
-  extern unicode_case_interval_t unicode_case_int[UCD_C_INT_N];
-  
   pdf_bool_t found;
   int index;
   long delta = 0;

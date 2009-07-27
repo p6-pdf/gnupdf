@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/27 21:37:10 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/06/24 20:13:29 jemarch"
  *
  *       File:         pdf-hash-helper.c
  *       Date:         Thu Jul 24 21:05:05 2008
@@ -94,6 +94,37 @@ pdf_status_t
 pdf_hash_get_stm (pdf_hash_t table, const char *key, pdf_stm_t *elt)
 {
   return pdf_hash_get (table, key, (const void **) &elt);
+}
+
+pdf_status_t
+pdf_hash_add_bool (pdf_hash_t table, const char *key, const pdf_bool_t elt)
+{
+  pdf_bool_t *vbool;
+
+  vbool = pdf_alloc (sizeof(pdf_bool_t));
+  if (vbool == NULL)
+    {
+      return PDF_ERROR;
+    }
+
+  *vbool = elt;
+
+  return (pdf_hash_add (table, key, vbool, pdf_dealloc));
+}
+
+pdf_status_t
+pdf_hash_get_bool (pdf_hash_t table, const char *key, pdf_bool_t *elt)
+{
+  pdf_status_t ret;
+  pdf_bool_t *vbool;
+
+  ret = pdf_hash_get (table, key, (const void **) &vbool);
+  if (ret == PDF_OK)
+    {
+      *elt = *vbool;
+    }
+
+  return ret;
 }
 
 pdf_status_t

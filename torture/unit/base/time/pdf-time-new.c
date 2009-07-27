@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/04/17 00:05:43 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/07/23 21:02:09 jemarch"
  *
  *       File:         pdf-time-new.c
  *       Date:         Fri Feb 27 17:35:31 2008
@@ -27,6 +27,7 @@
 #include <check.h>
 #include <pdf.h>
 #include <stdlib.h>
+#include <string.h>
 
 /*
  * Test: pdf_time_new_001
@@ -52,7 +53,7 @@ START_TEST (pdf_time_new_001)
   fail_if(time1==NULL);
 
   
-  time_str1 = pdf_time_to_string(time1, PDF_TIME_FORMAT_ISO_8601);
+  time_str1 = pdf_time_to_string(time1, PDF_TIME_FORMAT_ISO_8601, PDF_FALSE);
 
   fail_unless(memcmp(time_str1, expected_time, strlen(expected_time)) == 0);
 
