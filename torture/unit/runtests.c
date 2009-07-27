@@ -31,7 +31,6 @@ main (int argc, char **argv)
   /* Create empty suite runner */
   sr = srunner_create (NULL);
   /* Start adding suites */
-  /*
   srunner_add_suite (sr, tsuite_alloc ());
   srunner_add_suite (sr, tsuite_list ());
   srunner_add_suite (sr, tsuite_text ());
@@ -44,7 +43,6 @@ main (int argc, char **argv)
   srunner_add_suite (sr, tsuite_fp ()); 
   srunner_add_suite (sr, tsuite_fp ());
   srunner_add_suite (sr, tsuite_token ()); 
-  */
   srunner_add_suite (sr, tsuite_fsys());
 
   /* Set log file */
