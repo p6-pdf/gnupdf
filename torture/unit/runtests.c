@@ -40,7 +40,6 @@ main (int argc, char **argv)
   srunner_add_suite (sr, tsuite_crypt ());
   srunner_add_suite (sr, tsuite_error ());
   srunner_add_suite (sr, tsuite_stm ());
-  srunner_add_suite (sr, tsuite_fp ()); 
   srunner_add_suite (sr, tsuite_fp ());
   srunner_add_suite (sr, tsuite_token ()); 
   srunner_add_suite (sr, tsuite_fsys());
