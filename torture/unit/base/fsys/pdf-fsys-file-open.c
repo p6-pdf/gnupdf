@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-03 19:43:05 derhans"
+/* -*- mode: C -*- Time-stamp: "2009-09-28 01:07:46 derhans"
  *
  *       File:         pdf-fsys-file-open.c
  *       Date:         Sat May  2 00:02:09 2009
@@ -27,6 +27,7 @@
 #include <check.h>
 #include <pdf.h>
 #include <string.h>
+
 
 /*
  * Test: pdf_fsys_file_open_001

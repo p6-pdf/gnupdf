@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: ""
+/* -*- mode: C -*- Time-stamp: ""2009-32-28 01:31:22 derhans"
  *
  *       File:         runtests.c
  *       Date:         Sat Feb 23 21:40:43 2008
@@ -19,8 +19,8 @@ extern Suite *tsuite_time (void);
 extern Suite *tsuite_crypt (void);
 extern Suite *tsuite_error (void);
 extern Suite *tsuite_fp (void);
-extern Suite *tsuite_fsys (void);
 extern Suite *tsuite_token (void);
+extern Suite *tsuite_fsys (void);
 
 int
 main (int argc, char **argv)
@@ -31,6 +31,7 @@ main (int argc, char **argv)
   /* Create empty suite runner */
   sr = srunner_create (NULL);
   /* Start adding suites */
+  /*
   srunner_add_suite (sr, tsuite_alloc ());
   srunner_add_suite (sr, tsuite_list ());
   srunner_add_suite (sr, tsuite_text ());
@@ -41,9 +42,10 @@ main (int argc, char **argv)
   srunner_add_suite (sr, tsuite_error ());
   srunner_add_suite (sr, tsuite_stm ());
   srunner_add_suite (sr, tsuite_fp ()); 
-  srunner_add_suite (sr, tsuite_fsys());
   srunner_add_suite (sr, tsuite_fp ());
-  srunner_add_suite (sr, tsuite_token ());
+  srunner_add_suite (sr, tsuite_token ()); 
+  */
+  srunner_add_suite (sr, tsuite_fsys());
 
   /* Set log file */
   srunner_set_log (sr, "ut.log");
