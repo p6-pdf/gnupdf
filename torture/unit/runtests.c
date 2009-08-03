@@ -20,6 +20,7 @@ extern Suite *tsuite_crypt (void);
 extern Suite *tsuite_error (void);
 extern Suite *tsuite_fp (void);
 extern Suite *tsuite_token (void);
+extern Suite *tsuite_fsys (void);
 
 int
 main (int argc, char **argv)
@@ -40,7 +41,8 @@ main (int argc, char **argv)
   srunner_add_suite (sr, tsuite_error ());
   srunner_add_suite (sr, tsuite_stm ());
   srunner_add_suite (sr, tsuite_fp ());
-  srunner_add_suite (sr, tsuite_token ());
+  srunner_add_suite (sr, tsuite_token ()); 
+  srunner_add_suite (sr, tsuite_fsys());
 
   /* Set log file */
   srunner_set_log (sr, "ut.log");
