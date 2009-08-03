@@ -433,8 +433,10 @@ START_TEST (pdf_time_from_string_006)
       for (gmt =-12*60; gmt <=12*60; gmt+=51)
         {
           /* Set various gmt_offsets. */
-          seconds=datesInSeconds[i] + dates[i].hour*3600 + dates[i].minute*60 + \
+//          seconds=datesInSeconds[i] + dates[i].hour*3600 + dates[i].minute*60 + \
             dates[i].second - gmt*60;
+          seconds=datesInSeconds[i] - gmt*60;
+
 
           if ( seconds < 0) continue;
           memset(&dateString[0], 0, 24);
