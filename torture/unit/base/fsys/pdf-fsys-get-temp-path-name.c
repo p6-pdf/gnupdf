@@ -37,6 +37,7 @@
 
 START_TEST(pdf_fsys_get_temp_path_name_001)
 {
+  fail_if( pdf_text_init() != PDF_OK );
   fail_if( pdf_fsys_get_temp_path_name(NULL) == NULL );
 }
 END_TEST

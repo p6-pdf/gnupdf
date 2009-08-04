@@ -177,6 +177,8 @@ START_TEST(pdf_fsys_file_open_005)
   pdf_fsys_file_t file;
   pdf_text_t path;
 
+  fail_if( pdf_text_init() != PDF_OK);
+
   file = (pdf_fsys_file_t)pdf_alloc(sizeof(struct pdf_fsys_file_s));
 
   path = pdf_fsys_get_temp_path_name(NULL);
