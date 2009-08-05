@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-12-23 17:42:38 davazp"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:40:12 davazp"
  *
  *       File:         pdf-crypt-md-read.c
  *       Date:         Tue Dec 23 17:30:19 2008
@@ -50,7 +50,7 @@ START_TEST (pdf_crypt_md_read_001)
     0xec, 0xf8, 0x42, 0x7e
   };
 
-  pdf_crypt_init();
+  pdf_init();
 
   pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md);
 
@@ -84,7 +84,7 @@ START_TEST (pdf_crypt_md_read_002)
     0x69, 0x77, 0x26, 0x61
   };
 
-  pdf_crypt_init();
+  pdf_init();
 
   pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md);
 
@@ -118,7 +118,7 @@ START_TEST (pdf_crypt_md_read_003)
     0xCA, 0x67, 0xE1, 0x3B
   };
 
-  pdf_crypt_init();
+  pdf_init();
 
   pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md);
 
@@ -151,7 +151,7 @@ START_TEST (pdf_crypt_md_read_004)
     0xec, 0xf8, 0x42, 0x7e
   };
 
-  pdf_crypt_init();
+  pdf_init();
 
   pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md);
 
@@ -177,7 +177,7 @@ START_TEST (pdf_crypt_md_read_005)
   pdf_char_t out[20];
   pdf_crypt_md_t md;
 
-  pdf_crypt_init();
+  pdf_init();
 
   fail_unless (pdf_crypt_md_new (PDF_CRYPT_MD_MD5 + 1, &md) == PDF_EBADDATA);
 }

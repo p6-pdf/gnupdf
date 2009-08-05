@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/06/16 21:31:04 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:14:11 davazp"
  *
  *       File:         pdf-time-diff-cal.c
  *       Date:         Fri Feb 27 17:35:31 2008
@@ -65,8 +65,8 @@ START_TEST (pdf_time_diff_cal_001)
   extern pdf_u32_t daysInSeconds[];
   struct pdf_time_cal_span_s calspan, calspan2;
 
-
-
+  pdf_init();
+  
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
 

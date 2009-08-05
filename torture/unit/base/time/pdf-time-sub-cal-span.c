@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/04/17 00:05:10 lukasz"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:18:24 davazp"
  *
  *       File:         pdf-time-add-cal-span.c
  *       Date:         Sun Sep 21 16:37:27 2008
@@ -63,6 +63,8 @@ START_TEST (pdf_time_sub_cal_span_001)
   struct pdf_time_cal_span_s calspan;
 
 
+
+  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);

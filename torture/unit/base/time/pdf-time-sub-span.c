@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/03/01 23:01:31 lukasz"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:18:30 davazp"
  *
  *       File:         pdf-time-sub-span.c
  *       Date:         Fri Feb 27 17:35:31 2008
@@ -50,6 +50,8 @@ START_TEST (pdf_time_sub_span_001)
 
   pdf_time_span_t span;
   pdf_i64_t num64;
+
+  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);

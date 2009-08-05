@@ -41,7 +41,7 @@ START_TEST(pdf_text_empty_p_001)
   pdf_text_t text;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   fail_if(pdf_text_new (&text) != PDF_OK);
 
@@ -65,7 +65,7 @@ START_TEST(pdf_text_empty_p_002)
   pdf_text_t text;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   fail_if(pdf_text_new_from_unicode((pdf_char_t *)"GNU", 3,
                                     PDF_TEXT_UTF8,

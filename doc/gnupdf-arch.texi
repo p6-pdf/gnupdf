@@ -181,7 +181,7 @@ a stream.
 * Filesystem module::           
 * Error module::                
 * Crypt module::                
-* Tokeniser module::
+* Tokeniser module::            
 @end menu
 
 @node Memory allocation module
@@ -806,6 +806,7 @@ sequence of characters. Several text encodings are supported and
 conversion functions to change the encoding of a text are provided.
 
 @menu
+* Initializing Text Module::    
 * Text variables::              
 * Text content::                
 * Country and language information::  
@@ -823,6 +824,22 @@ conversion functions to change the encoding of a text are provided.
 * Special casing with conditions::  
 * Word boundaries according to Unicode::  
 @end menu
+
+@node Initializing Text Module
+@subsection Initializing Text Module
+
+@deftypefun pdf_status_t pdf_text_init (void)
+
+Initialize the Text Module. Must be launched only once at program startup,
+and is NOT thread-safe.
+
+@table @strong
+@item Parameters
+None.
+@item Returns
+Status of the initialization.
+@end table
+@end deftypefun
 
 @node Text variables
 @subsection Text variables
@@ -1739,7 +1756,38 @@ interest to the library developers.
 The Encryption module provides procedures both for encryption and
 decryption of buffers. It also provides functions for message-digest
 operations (cryptographic hashing). This module is required to be
-initialized once at startup, when the GNU PDF library is loaded.
+initialized once at startup, when the GNU PDF library is loaded, the
+following procedure is provided for this:
+
+@deftypefun pdf_status_t pdf_crypt_init (void)
+
+Initialize the encryption module.
+
+@table @strong
+@item Parameters
+None.
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+Operation successful
+@item PDF_ERROR
+A error ocurred.
+@end table
+@item Usage example
+@example
+pdf_status_t st;
+
+st = pdf_crypt_init ();
+
+if (st != PDF_OK)
+@{
+   /* Error */
+@}
+@end example
+@end table
+@end deftypefun
+
 
 The crypt module provides a new data type `pdf_crypt_cipher_t' which
 holds the context of a encryption or decryption operation, and procedures to encrypt and decrypt data. The following encryption

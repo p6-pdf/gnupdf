@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/08 22:47:49 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:50:50 davazp"
  *
  *       File:         pdf-list-add-last.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -43,6 +43,8 @@ START_TEST (pdf_list_add_last_001)
 
   elem = 12345;
   elem2 = 4567;
+
+  pdf_init();
 
   pdf_list_new (NULL, NULL, 0, &list);
 

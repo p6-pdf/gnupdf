@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/06/16 21:31:55 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:06:16 davazp"
  *
  *       File:         pdf-time-set-to-current-utc-time.c
  *       Date:         Fri Feb 27 17:35:31 2009
@@ -50,8 +50,7 @@ START_TEST (pdf_time_set_to_current_utc_time_001)
   pdf_time_t utcTime, mytime;
   struct pdf_time_cal_s utccal, mycal;
     
-    
-  status = pdf_time_init();
+  status = pdf_init();
   fail_if(status != PDF_OK);
 
   status =  pdf_time_new(&utcTime);

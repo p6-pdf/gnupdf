@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/08 22:53:47 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:53:05 davazp"
  *
  *       File:         pdf-list-remove-node.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -42,6 +42,8 @@ START_TEST (pdf_list_remove_node_001)
   int elem;
 
   elem = 2212;
+
+  pdf_init();
 
   pdf_list_new (NULL, NULL, 0, &list);
 

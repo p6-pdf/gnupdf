@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/10 20:11:01 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:47:23 davazp"
  *
  *       File:         pdf-hash-create.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -41,6 +41,8 @@
 START_TEST (pdf_hash_new_001)
 {
   pdf_hash_t table;
+
+  pdf_init();
 
   fail_if (pdf_hash_new (NULL, &table) != PDF_OK);
 

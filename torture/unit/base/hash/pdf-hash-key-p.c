@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/10 20:10:47 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:47:16 davazp"
  *
  *       File:         pdf-hash-key-p.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -40,6 +40,8 @@
 START_TEST (pdf_hash_key_p_001)
 {
   pdf_hash_t table;
+
+  pdf_init();
 
   pdf_hash_new (NULL, &table);
   pdf_hash_add (table, "key", "val", NULL);

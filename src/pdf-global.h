@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/10/12 18:31:43 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:26:31 davazp"
  *
  *       File:         pdf-global.h
  *       Date:         Thu Jul  5 19:52:48 2007
@@ -41,7 +41,7 @@
 
 struct pdf_globals_s
 {
-
+  int initialized;
 };
 
 

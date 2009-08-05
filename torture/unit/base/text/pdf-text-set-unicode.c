@@ -50,7 +50,7 @@ START_TEST(pdf_text_set_unicode_001)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf8_strings[i].data != NULL)
@@ -128,7 +128,7 @@ START_TEST(pdf_text_set_unicode_002)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf16be_strings[i].data != NULL)
@@ -205,7 +205,7 @@ START_TEST(pdf_text_set_unicode_003)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf16be_strings[i].data != NULL)
@@ -284,7 +284,7 @@ START_TEST(pdf_text_set_unicode_004)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf16be_strings[i].data != NULL)
@@ -379,7 +379,7 @@ START_TEST(pdf_text_set_unicode_005)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf32be_strings[i].data != NULL)
@@ -456,7 +456,7 @@ START_TEST(pdf_text_set_unicode_006)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf32be_strings[i].data != NULL)
@@ -536,7 +536,7 @@ START_TEST(pdf_text_set_unicode_007)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf32be_strings[i].data != NULL)
@@ -629,7 +629,7 @@ START_TEST(pdf_text_set_unicode_008)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf8_strings[i].data != NULL)
@@ -706,7 +706,7 @@ START_TEST(pdf_text_set_unicode_009)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf16be_strings[i].data != NULL)
@@ -783,7 +783,7 @@ START_TEST(pdf_text_set_unicode_010)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf16be_strings[i].data != NULL)
@@ -862,7 +862,7 @@ START_TEST(pdf_text_set_unicode_011)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf16be_strings[i].data != NULL)
@@ -957,7 +957,7 @@ START_TEST(pdf_text_set_unicode_012)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf32be_strings[i].data != NULL)
@@ -1060,7 +1060,7 @@ START_TEST(pdf_text_set_unicode_013)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf32be_strings[i].data != NULL)
@@ -1140,7 +1140,7 @@ START_TEST(pdf_text_set_unicode_014)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf32be_strings[i].data != NULL)
@@ -1232,7 +1232,7 @@ START_TEST(pdf_text_set_unicode_015)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   
   /* Try UTF-16BE strings */
@@ -1321,7 +1321,7 @@ START_TEST(pdf_text_set_unicode_016)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   
   /* Try UTF-8 strings */
@@ -1377,7 +1377,7 @@ START_TEST(pdf_text_set_unicode_017)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   
   /* Try UTF-8 strings */
@@ -1432,7 +1432,7 @@ START_TEST(pdf_text_set_unicode_018)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   
   /* Try UTF-8 strings */
@@ -1487,7 +1487,7 @@ START_TEST(pdf_text_set_unicode_019)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   
   /* Try UTF-8 strings */
@@ -1542,7 +1542,7 @@ START_TEST(pdf_text_set_unicode_020)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   
   /* Try UTF-8 strings */
@@ -1597,7 +1597,7 @@ START_TEST(pdf_text_set_unicode_021)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   
   /* Try UTF-8 strings */
@@ -1655,7 +1655,7 @@ START_TEST(pdf_text_set_unicode_022)
   pdf_size_t bom_size = 3;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   
   /* Try UTF-16BE strings */
@@ -1755,7 +1755,7 @@ START_TEST(pdf_text_set_unicode_023)
   pdf_size_t bom_size = 2;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   
   /* Try UTF-8 strings */
@@ -1817,7 +1817,7 @@ START_TEST(pdf_text_set_unicode_024)
   pdf_size_t bom_size = 2;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   
   /* Try UTF-8 strings */
@@ -1887,7 +1887,7 @@ START_TEST(pdf_text_set_unicode_025)
     }
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   
   /* Try UTF-8 strings */
@@ -1948,7 +1948,7 @@ START_TEST(pdf_text_set_unicode_026)
   pdf_size_t bom_size = 4;
 
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   
   /* Try UTF-8 strings */
@@ -2009,7 +2009,7 @@ START_TEST(pdf_text_set_unicode_027)
   pdf_size_t bom_size = 4;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   
   /* Try UTF-8 strings */
@@ -2079,7 +2079,7 @@ START_TEST(pdf_text_set_unicode_028)
     }
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   
   /* Try UTF-8 strings */
@@ -2146,7 +2146,7 @@ START_TEST(pdf_text_set_unicode_029)
   const pdf_char_t *country_code = (pdf_char_t *)"US";
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf16be_strings[i].data != NULL)
@@ -2281,7 +2281,7 @@ START_TEST(pdf_text_set_unicode_030)
   const pdf_char_t *country_code = (pdf_char_t *)"US";
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf16be_strings[i].data != NULL)

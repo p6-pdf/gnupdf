@@ -45,6 +45,8 @@ START_TEST(pdf_i64_abs_001)
   pdf_i64_t k,j;
 
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
+  pdf_init();
+
   pdf_i64_assign(&k,0xFFFFFFFF,0xFFFFFFFE, &p_status); /*-2*/
   pdf_i64_abs( &j, k , &p_status);
   fail_if(p_status != PDF_OK);
@@ -74,6 +76,8 @@ START_TEST(pdf_i64_abs_002)
   pdf_i64_t k,j;
 
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
+  pdf_init();
+
   pdf_i64_assign(&k,0,2, &p_status); /*2*/
   pdf_i64_abs( &j, k , &p_status);
   fail_if(p_status != PDF_OK);
@@ -99,6 +103,8 @@ START_TEST(pdf_i64_abs_003)
   pdf_status_t p_status = PDF_OK;
   pdf_i64_t src;
   pdf_i64_t *dest = NULL;
+
+  pdf_init();
 
   pdf_i64_assign(&src,0, 3, &p_status);
   fail_if(p_status != PDF_OK);

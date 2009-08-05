@@ -52,7 +52,7 @@ START_TEST(pdf_text_replace_001)
   pdf_char_t *output_string = NULL;
 
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
 
   
   fail_if(pdf_text_new_from_pdf_string(input_string,
@@ -109,7 +109,7 @@ START_TEST(pdf_text_replace_002)
   pdf_char_t *output_string = NULL;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   
   fail_if(pdf_text_new_from_pdf_string(input_string,
@@ -165,7 +165,7 @@ START_TEST(pdf_text_replace_003)
   pdf_char_t *output_string = NULL;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   
   fail_if(pdf_text_new_from_pdf_string(input_string,
@@ -219,7 +219,7 @@ START_TEST(pdf_text_replace_004)
   pdf_char_t *output_string = NULL;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   
   fail_if(pdf_text_new_from_pdf_string(input_string,
@@ -275,7 +275,7 @@ START_TEST(pdf_text_replace_005)
   pdf_char_t *output_string = NULL;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   
   fail_if(pdf_text_new_from_pdf_string(input_string,
@@ -331,7 +331,7 @@ START_TEST(pdf_text_replace_006)
   pdf_char_t *output_string = NULL;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   
   fail_if(pdf_text_new_from_pdf_string(input_string,
@@ -387,7 +387,7 @@ START_TEST(pdf_text_replace_007)
   pdf_char_t *output_string = NULL;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   
   fail_if(pdf_text_new_from_pdf_string(input_string,
@@ -443,7 +443,7 @@ START_TEST(pdf_text_replace_008)
   pdf_char_t *output_string = NULL;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   
   fail_if(pdf_text_new_from_pdf_string(input_string,
@@ -495,7 +495,7 @@ START_TEST(pdf_text_replace_009)
                                    "Simple test string with no old pattern";
 
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   
   fail_if(pdf_text_new_from_pdf_string(input_string,
@@ -541,7 +541,7 @@ START_TEST(pdf_text_replace_010)
   pdf_char_t *output_string = NULL;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   
   fail_if(pdf_text_new_from_pdf_string(input_string,

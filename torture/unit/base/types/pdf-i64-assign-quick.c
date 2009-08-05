@@ -48,6 +48,8 @@ START_TEST(pdf_i64_assign_quick_001)
   pdf_status_t p_status = PDF_OK;
  
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
+  pdf_init();
+
   pdf_i64_assign_quick(&k,5,&p_status);
   fail_if(p_status != PDF_OK);  
   fail_if(k.low != 5);
@@ -74,6 +76,8 @@ START_TEST(pdf_i64_assign_quick_002)
   
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
   pdf_i64_t* k = NULL;
+  pdf_init();
+
   pdf_i64_assign_quick(k,5,&p_status);
   fail_if( p_status != PDF_ERROR);
 #endif

@@ -45,6 +45,8 @@ START_TEST(pdf_i64_copy_001)
   pdf_i64_t orig;
   pdf_i64_t copy;
   
+  pdf_init();
+
   orig = pdf_i64_new(4,5);
 
 
@@ -78,6 +80,8 @@ START_TEST(pdf_i64_copy_002)
   pdf_i64_t orig;
   
   
+  pdf_init();
+
   orig = pdf_i64_new(4,5);
   
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/10 21:49:15 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:37:11 davazp"
  *
  *       File:         pdf-realloc.c
  *       Date:         Wed Sep 10 21:28:49 2008
@@ -42,6 +42,8 @@ START_TEST(pdf_realloc_001)
 #define PDF_REALLOC_001_STRING "0123456789"
   char *data;
 
+  pdf_init();
+  
   /* Allocate some memory */
   data = pdf_alloc (strlen(PDF_REALLOC_001_STRING) + 1);
   fail_if (data == NULL);
@@ -75,6 +77,8 @@ START_TEST(pdf_realloc_002)
 #define PDF_REALLOC_001_STRING "0123456789"
   char *data;
 
+  pdf_init();
+  
   /* Allocate some memory */
   data = pdf_alloc (strlen(PDF_REALLOC_001_STRING) + 1);
   fail_if (data == NULL);

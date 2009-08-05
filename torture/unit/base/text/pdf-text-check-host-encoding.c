@@ -45,7 +45,7 @@ START_TEST(pdf_text_check_host_encoding_001)
   pdf_text_host_encoding_t host_enc;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
 
   /* 1. The call to pdf_text_check_host_encoding should return PDF_OK. */
 #ifdef PDF_HOST_WIN32
@@ -81,7 +81,7 @@ START_TEST(pdf_text_check_host_encoding_002)
   host_enc.name[5] = '\0';
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   /* 1. The call to pdf_text_check_host_encoding should NOT return PDF_OK. */
 #ifdef PDF_HOST_WIN32

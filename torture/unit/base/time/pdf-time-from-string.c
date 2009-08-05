@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/07/23 22:16:19 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:11:15 davazp"
  *
  *       File:         pdf-time-from-string.c
  *       Date:         Fri Feb 27 17:35:31 2008
@@ -63,6 +63,8 @@ START_TEST (pdf_time_from_string_001)
   extern pdf_u32_t datesInSeconds[];
   struct pdf_time_cal_s calendar;
 
+
+  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
@@ -147,6 +149,8 @@ START_TEST (pdf_time_from_string_002)
   struct pdf_time_cal_s calendar;
 
 
+  pdf_init();
+
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
   fail_if(time1 == NULL);
@@ -227,6 +231,8 @@ START_TEST (pdf_time_from_string_003)
   extern pdf_u32_t datesInSeconds[];
 
 
+  pdf_init();
+
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
   fail_if(time1 == NULL);
@@ -287,6 +293,8 @@ START_TEST (pdf_time_from_string_004)
   extern struct pdf_time_cal_s dates[];
   extern pdf_u32_t datesInSeconds[];
 
+
+  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
@@ -351,6 +359,8 @@ START_TEST (pdf_time_from_string_005)
   extern struct pdf_time_cal_s dates[];
   extern pdf_u32_t datesInSeconds[];
 
+
+  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
@@ -417,6 +427,8 @@ START_TEST (pdf_time_from_string_006)
   extern pdf_u32_t datesInSeconds[];
   struct pdf_time_cal_s calendar;
 
+
+  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
@@ -530,6 +542,8 @@ START_TEST (pdf_time_from_string_007)
   struct pdf_time_cal_s calendar;
 
 
+  pdf_init();
+
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
   fail_if(time1 == NULL);
@@ -614,6 +628,8 @@ START_TEST (pdf_time_from_string_008)
   struct pdf_time_cal_s calendar;
 
 
+  pdf_init();
+
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
   fail_if(time1 == NULL);
@@ -695,6 +711,8 @@ START_TEST (pdf_time_from_string_009)
   extern pdf_u32_t datesInSeconds[];
 
 
+  pdf_init();
+
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
   fail_if(time1 == NULL);
@@ -754,6 +772,8 @@ START_TEST (pdf_time_from_string_010)
   extern struct pdf_time_cal_s dates[];
   extern pdf_u32_t datesInSeconds[];
 
+
+  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
@@ -817,6 +837,8 @@ START_TEST (pdf_time_from_string_011)
   extern struct pdf_time_cal_s dates[];
   extern pdf_u32_t datesInSeconds[];
 
+
+  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
@@ -884,6 +906,8 @@ START_TEST (pdf_time_from_string_012)
   extern pdf_u32_t datesInSeconds[];
   struct pdf_time_cal_s calendar;
 
+
+  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
@@ -968,6 +992,8 @@ START_TEST (pdf_time_from_string_013)
   extern pdf_u32_t datesInSeconds[];
   struct pdf_time_cal_s calendar;
 
+
+  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);

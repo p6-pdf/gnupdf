@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/06/16 22:52:34 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:56:34 davazp"
  *
  *       File:         pdf-stm-flush.c
  *       Date:         Mon Feb 02 09:53:26 2009
@@ -50,6 +50,8 @@ START_TEST (pdf_stm_flush_001)
   
   /* Create a memory buffer */
   buf_size = 10;
+  pdf_init();
+
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
   strcpy((char*)buf, "hello world");
@@ -98,6 +100,8 @@ START_TEST (pdf_stm_flush_002)
   
   /* Create a memory buffer */
   buf_size = 40;
+  pdf_init();
+
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
 
@@ -158,6 +162,8 @@ START_TEST (pdf_stm_flush_003)
   
   /* Create a memory buffer */
   buf_size = 40;
+  pdf_init();
+
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
 
@@ -222,6 +228,8 @@ START_TEST (pdf_stm_flush_004)
 
   /* Create a memory buffer */
   buf_size = 12;
+
+  pdf_init();
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);

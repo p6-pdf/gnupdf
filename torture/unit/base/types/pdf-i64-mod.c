@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "danividal"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:21:53 davazp"
  *
  *       File:         pdf-i64-mod.c
  *       Date:         Mon May 05 10:30:01 2008
@@ -45,6 +45,8 @@ START_TEST(pdf_i64_mod_001)
 {
   pdf_status_t p_status = PDF_OK;
   pdf_i64_t mod1,mod2,dest;
+  pdf_init();
+
   mod1 = pdf_i64_new(0,7);
   mod2 = pdf_i64_new(0,2);
 
@@ -77,6 +79,8 @@ START_TEST(pdf_i64_mod_002)
   pdf_status_t p_status = PDF_OK;
   pdf_i64_t mod1,mod2;
   
+  pdf_init();
+
   mod1 = pdf_i64_new(0,4);
   mod2 = pdf_i64_new(5,0);
 
@@ -105,6 +109,8 @@ START_TEST(pdf_i64_mod_003)
   pdf_i64_t mod1, mod2, dest;
 
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
+  pdf_init();
+
   mod1 = pdf_i64_new(0xFFFFFFFF,0xFFFFFFFB); /*-5*/
   mod2 = pdf_i64_new(0,3);
   pdf_i64_mod(&dest, mod1, mod2, &p_status);
@@ -139,6 +145,8 @@ START_TEST(pdf_i64_mod_004)
   pdf_i64_t mod1, mod2, dest;
   pdf_status_t p_status = PDF_OK;
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
+  pdf_init();
+
   mod1 = pdf_i64_new(0xFFFFFFFF,0xFFFFFFFB); /*-5*/
   mod2 = pdf_i64_new(0xFFFFFFFF,0xFFFFFFFD); /*-3*/
 
@@ -170,6 +178,8 @@ START_TEST(pdf_i64_mod_005)
   pdf_status_t p_status = PDF_OK;
   pdf_i64_t mod1, mod2;
   pdf_i64_t *dest = NULL;
+
+  pdf_init();
 
   pdf_i64_assign(&mod1,0, 5, &p_status);
   fail_if(p_status != PDF_OK);

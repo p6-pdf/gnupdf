@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/06/16 21:31:30 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:16:44 davazp"
  *
  *       File:         pdf-time-set-to-current-local-time.c
  *       Date:         Fri Feb 27 17:35:31 2009
@@ -62,8 +62,7 @@ START_TEST (pdf_time_set_to_current_local_time_001)
   localgmt = time_struct->tm_gmtoff;
 #endif
     
-  status = pdf_time_init();
-  fail_if(status != PDF_OK);
+  pdf_init();
 
   status =  pdf_time_new(&localTime);
   fail_if(status != PDF_OK);

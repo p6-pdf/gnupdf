@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/20 14:58:45 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:56:56 davazp"
  *
  *       File:         pdf-stm-mem-new.c
  *       Date:         Sat Sep 20 14:37:26 2008
@@ -44,6 +44,8 @@ START_TEST (pdf_stm_mem_new_001)
 
   /* Create a memory buffer */
   buf_size = 100;
+  pdf_init();
+
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
 

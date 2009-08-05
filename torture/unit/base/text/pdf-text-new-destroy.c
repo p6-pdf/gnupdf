@@ -61,7 +61,7 @@ START_TEST(pdf_text_new_destroy_002)
   pdf_text_t newtext = NULL;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
 
   /* 1. The call to @code{pdf_text_new} should not return an error
      code. */

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/07/23 20:57:40 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 19:43:36 davazp"
  *
  *       File:         pdf-time.h
  *       Date:         Mon Apr 28 23:23:04 2008
@@ -39,6 +39,18 @@ struct pdf_time_s {
   /* A GMT offset, seconds WEST of GMT */
   pdf_i32_t  gmt_offset;
 };
+
+
+
+/* --------------------- Time Module Initialization ------------------------- */
+
+/* Initialize Time module. Warning! Not thread-safe, must be used only once when
+ *  the program starts. It will be in charge of detecting currently configured
+ *  time zone (GMT offset) and so on. */
+pdf_status_t
+pdf_time_init(void);
+
+
 
 /* BEGIN PUBLIC */
 
@@ -94,14 +106,6 @@ enum pdf_time_format_e {
   PDF_TIME_FORMAT_GENERALIZED_ASN1
 };
 
-
-/* --------------------- Time Module Initialization ------------------------- */
-
-/* Initialize Time module. Warning! Not thread-safe, must be used only once when
- *  the program starts. It will be in charge of detecting currently configured
- *  time zone (GMT offset) and so on. */
-pdf_status_t
-pdf_time_init(void);
 
 
 /* --------------------- Time Creation and Destruction ---------------------- */

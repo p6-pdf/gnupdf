@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-06-13 20:29:38 gerel"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:41:43 davazp"
  *
  *       File:         pdf-perror.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -39,9 +39,8 @@
  */
 START_TEST (pdf_perror_001)
 {
-
+  pdf_init();
   pdf_perror (PDF_OK, NULL);
-
 }
 END_TEST
 
@@ -55,9 +54,8 @@ END_TEST
  */
 START_TEST (pdf_perror_002)
 {
-
+  pdf_init();
   pdf_perror (PDF_OK, "test");
-
 }
 END_TEST
 

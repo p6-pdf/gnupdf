@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/04/17 00:05:43 lukasz"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:16:02 davazp"
  *
  *       File:         pdf-time-get-utc-cal.c
  *       Date:         Fri Feb 27 17:35:31 2008
@@ -55,6 +55,8 @@ START_TEST (pdf_time_get_utc_cal_001)
   extern pdf_u32_t datesInSeconds[];
   extern struct pdf_time_cal_s dates[];
 
+  pdf_init();
+
   status = pdf_time_new(&time1);
 
   fail_if(status != PDF_OK);
@@ -99,6 +101,8 @@ START_TEST (pdf_time_get_utc_cal_002)
   pdf_time_t time1;
   struct pdf_time_cal_s utccal;
   struct pdf_time_cal_s expected_cal;
+
+  pdf_init();
 
   status = pdf_time_new(&time1);
 

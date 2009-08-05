@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/04/17 00:06:09 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:17:13 davazp"
  *
  *       File:         pdf-time-span-cmp.c
  *       Date:         Fri Feb 27 17:35:31 2009
@@ -42,6 +42,8 @@ START_TEST (pdf_time_span_cmp_001)
   pdf_time_span_t span1;
   pdf_time_span_t span2;
 
+  pdf_init();
+
   span1 = pdf_time_span_new();
   span2 = pdf_time_span_new();
 
@@ -74,6 +76,8 @@ START_TEST (pdf_time_span_cmp_002)
   pdf_time_span_t span1;
   pdf_time_span_t span2;
 
+  pdf_init();
+
   span1 = pdf_time_span_new();
   span2 = pdf_time_span_new();
 
@@ -105,6 +109,8 @@ START_TEST (pdf_time_span_cmp_003)
   pdf_i64_t sec;
   pdf_time_span_t span1;
   pdf_time_span_t span2;
+
+  pdf_init();
 
   span1 = pdf_time_span_new();
   span2 = pdf_time_span_new();

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-01-28 08:43:12 gerel"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:51:46 davazp"
  *
  *       File:         pdf-list-iterator.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -42,6 +42,8 @@ START_TEST (pdf_list_iterator_001)
   pdf_list_iterator_t itr;
   pdf_status_t st;
 
+  pdf_init();
+
   pdf_list_new (NULL, NULL, 0, &list);
 
   st = pdf_list_iterator (list, &itr);
@@ -66,6 +68,8 @@ START_TEST (pdf_list_iterator_002)
   pdf_list_t list;
   pdf_status_t st;
 
+  pdf_init();
+
   pdf_list_new (NULL, NULL, 0, &list);
 
   st = pdf_list_iterator (list, NULL);
@@ -86,6 +90,8 @@ END_TEST
  */
 START_TEST (pdf_list_iterator_003)
 {
+  pdf_init();
+
   fail_if (sizeof(pdf_list_iterator_t) < sizeof(gl_list_iterator_t));
 }
 END_TEST

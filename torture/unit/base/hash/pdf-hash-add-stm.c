@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-21 22:59:35 gerel"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:46:12 davazp"
  *
  *       File:         pdf-hash-add-stm.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -43,6 +43,8 @@ START_TEST (pdf_hash_add_stm_001)
   pdf_hash_t table;
   pdf_stm_t inner;
   char mem[4];
+
+  pdf_init();
 
   fail_if (pdf_hash_new (NULL, &table) != PDF_OK);
   fail_if (pdf_stm_mem_new (mem, 4, 0, PDF_STM_READ, &inner) != PDF_OK);

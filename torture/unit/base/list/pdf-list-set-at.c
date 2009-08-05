@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/08 22:55:06 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:53:34 davazp"
  *
  *       File:         pdf-list-set-at.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -45,6 +45,8 @@ START_TEST (pdf_list_set_at_001)
   elem = 1123;
   elem2 = 3323;
   
+  pdf_init();
+
   pdf_list_new (NULL, NULL, 0, &list);
 
   pdf_list_add_last (list, &elem, NULL);
@@ -74,6 +76,8 @@ START_TEST (pdf_list_set_at_002)
   elem = 1123;
   elem2 = 3323;
   
+  pdf_init();
+
   pdf_list_new (NULL, NULL, 0, &list);
 
   pdf_list_add_last (list, &elem, NULL);

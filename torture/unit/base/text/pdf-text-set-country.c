@@ -47,7 +47,7 @@ START_TEST(pdf_text_set_country_001)
   const pdf_char_t *country = (pdf_char_t *)"GB";
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   fail_if(pdf_text_new (&text) != PDF_OK);
   
@@ -77,7 +77,7 @@ START_TEST(pdf_text_set_country_002)
   const pdf_char_t *country = (pdf_char_t *)"a";
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   fail_if(pdf_text_new (&text) != PDF_OK);
   
@@ -102,7 +102,7 @@ START_TEST(pdf_text_set_country_003)
   const pdf_char_t *country = (pdf_char_t *)"";
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   fail_if(pdf_text_new (&text) != PDF_OK);
   

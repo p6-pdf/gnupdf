@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/08 22:51:35 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:51:54 davazp"
  *
  *       File:         pdf-list-iterator-free.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -39,6 +39,8 @@ START_TEST (pdf_list_iterator_free_001)
 {
   pdf_list_t list;
   pdf_list_iterator_t itr;
+
+  pdf_init();
 
   pdf_list_new (NULL, NULL, 0, &list);
 

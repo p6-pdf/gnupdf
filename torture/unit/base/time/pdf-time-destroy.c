@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/04/17 00:05:24 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:13:11 davazp"
  *
  *       File:         pdf-time-destroy.c
  *       Date:         Fri Feb 27 17:35:31 2008
@@ -40,14 +40,14 @@
 START_TEST (pdf_time_destroy_001)
 {
   pdf_status_t status;
-
   pdf_time_t time1;
   pdf_char_t *time_str1;
+
+  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
   fail_if(time1==NULL);
-
 
   status = pdf_time_destroy(time1);
   fail_if(status != PDF_OK);

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/04/17 00:06:41 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:18:05 davazp"
  *
  *       File:         pdf-time-span-set.c
  *       Date:         Sun Sep 21 16:37:27 2008
@@ -48,6 +48,8 @@ START_TEST (pdf_time_span_set_001)
     pdf_time_span_t span;
     pdf_i64_t seconds;
     pdf_i64_t seconds2;
+
+    pdf_init();
 
     span=pdf_time_span_new();
 

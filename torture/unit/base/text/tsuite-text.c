@@ -25,7 +25,6 @@
 
 #include <check.h>
 
-extern TCase *test_pdf_text_init (void);
 extern TCase *test_pdf_text_new_destroy (void);
 extern TCase *test_pdf_text_dup (void);
 extern TCase *test_pdf_text_new_from_host (void);
@@ -61,7 +60,6 @@ tsuite_text ()
   s = suite_create("text");
 
   suite_add_tcase (s, test_pdf_text_new_destroy());
-  suite_add_tcase (s, test_pdf_text_init());
   suite_add_tcase (s, test_pdf_text_dup());
   suite_add_tcase (s, test_pdf_text_new_from_host());
   suite_add_tcase (s, test_pdf_text_new_from_pdf_string ());

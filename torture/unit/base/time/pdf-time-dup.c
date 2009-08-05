@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/04/17 00:05:28 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:14:42 davazp"
  *
  *       File:         pdf-time-dup.c
  *       Date:         Fri Feb 27 17:35:31 2008
@@ -45,6 +45,8 @@ START_TEST (pdf_time_dup_001)
   pdf_time_t time2;
   pdf_i64_t seconds;
   pdf_u32_t i,j,sec;
+
+  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);

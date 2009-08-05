@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/04/17 00:05:43 lukasz"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:05:41 davazp"
  *
  *       File:         pdf-time-set-local-offset.c
  *       Date:         Fri Feb 27 17:35:31 2008
@@ -38,8 +38,7 @@
  *   
  *Success condition:
  * 1. Function pdf_time_new schould return PDF_OK
- * 2. Function pdf_time_init schould return PDF_OK.
- * 3. Function pdf_time_set_local_offset schould return
+ * 2. Function pdf_time_set_local_offset schould return
  * PDF_OK.
  * 3. Function pdf_time_get_utc_cal schould return
  * PDF_OK.
@@ -56,6 +55,8 @@ START_TEST (pdf_time_set_local_offset_001)
   time_t tloc;
   struct tm* time_struct;
     
+  pdf_init();
+
   time(&tloc);
   time_struct = localtime(&tloc);
 
@@ -68,9 +69,6 @@ START_TEST (pdf_time_set_local_offset_001)
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
   
-  status = pdf_time_init();
-  fail_if(status != PDF_OK);
-    
   status = pdf_time_set_local_offset(time1);
   fail_if(status != PDF_OK);
 

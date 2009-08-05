@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-20 04:35:27 mgold"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:19:43 davazp"
  *
  *       File:         pdf-token-read.c
  *       Date:         Wed Jan 14 05:44:48 2009
@@ -89,6 +89,8 @@ START_TEST(pdf_token_read_001)
   pdf_stm_t stm;
   pdf_token_reader_t tokr;
 
+  pdf_init();
+
   INIT_STM_STR(&stm, "abc}{/kw/k#20w%com\n"
       "]1 2.0[>><4142434a4F4>"
       "(str(\\551ng(\0\r)\\60x\\\r\n)>>)"
@@ -131,12 +133,16 @@ START_TEST(pdf_token_read_002)
   pdf_token_reader_t tokr;
   pdf_char_t ch;
 
+  pdf_init();
+
   INIT_STM_STR(&stm, "stream    \r\t  %com  \n"
       ">UNPARSABLE DATA IN STREAM\n\n\n\n\n\nx");
   INIT_TOKR(&tokr, stm);
 
   EXPECT_KEYWORD( tokr, 0, "stream" );
   fail_unless( tokr_eof(tokr, PDF_TOKEN_END_AT_STREAM) );
+  pdf_init();
+
   fail_unless( PDF_OK==pdf_stm_peek_char(stm, &ch) );
   fail_unless( ch == '>' );
   /*TODO: verify stream position */

@@ -44,6 +44,8 @@ START_TEST(pdf_i64_subtraction_001)
 {
   pdf_status_t p_status = PDF_OK;
   pdf_i64_t subtraction1,subtraction2,dest;
+  pdf_init();
+
   subtraction1 = pdf_i64_new(0,5);
   subtraction2 = pdf_i64_new(0,3);
 
@@ -79,6 +81,8 @@ START_TEST(pdf_i64_subtraction_002)
   pdf_status_t p_status = PDF_OK;
   pdf_i64_t subtraction1,subtraction2;
   
+  pdf_init();
+
   subtraction1 = pdf_i64_new(0,4);
   subtraction2 = pdf_i64_new(5,0);
 
@@ -107,6 +111,8 @@ START_TEST(pdf_i64_subtraction_003)
   pdf_i64_t subtraction1, subtraction2, dest;
 
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
+  pdf_init();
+
   subtraction1 = pdf_i64_new(0xFFFFFFFF,0xFFFFFFFE); /*-2*/
   subtraction2 = pdf_i64_new(0,3);
   pdf_i64_subtraction(&dest, subtraction1, subtraction2, &p_status);
@@ -141,6 +147,8 @@ START_TEST(pdf_i64_subtraction_004)
   pdf_i64_t subtraction1, subtraction2, dest;
   pdf_status_t p_status = PDF_OK;
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
+  pdf_init();
+
   subtraction1 = pdf_i64_new(0xFFFFFFFF,0xFFFFFFFE); /*-2*/
   subtraction2 = pdf_i64_new(0xFFFFFFFF,0xFFFFFFFD); /*-3*/
 

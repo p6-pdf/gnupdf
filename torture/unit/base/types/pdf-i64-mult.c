@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "danividal"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:22:03 davazp"
  *
  *       File:         pdf-i64-mult.c
  *       Date:         Mon May 05 10:30:01 2008
@@ -45,6 +45,8 @@ START_TEST(pdf_i64_mult_001)
 {
   pdf_status_t p_status = PDF_OK;
   pdf_i64_t mult1,mult2,dest;
+  pdf_init();
+
   mult1 = pdf_i64_new(0,2);
   mult2 = pdf_i64_new(0,2);
 
@@ -77,6 +79,8 @@ START_TEST(pdf_i64_mult_002)
   pdf_status_t p_status = PDF_OK;
   pdf_i64_t mult1,mult2;
   
+  pdf_init();
+
   mult1 = pdf_i64_new(0,4);
   mult2 = pdf_i64_new(5,0);
 
@@ -105,6 +109,8 @@ START_TEST(pdf_i64_mult_003)
   pdf_i64_t mult1, mult2, dest;
 
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
+  pdf_init();
+
   mult1 = pdf_i64_new(0xFFFFFFFF,0xFFFFFFFE); /*-2*/
   mult2 = pdf_i64_new(0,3);
   pdf_i64_mult(&dest, mult1, mult2, &p_status);
@@ -139,6 +145,8 @@ START_TEST(pdf_i64_mult_004)
   pdf_i64_t mult1, mult2, dest;
   pdf_status_t p_status = PDF_OK;
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
+  pdf_init();
+
   mult1 = pdf_i64_new(0xFFFFFFFF,0xFFFFFFFE); /*-2*/
   mult2 = pdf_i64_new(0xFFFFFFFF,0xFFFFFFFE); /*-2*/
 

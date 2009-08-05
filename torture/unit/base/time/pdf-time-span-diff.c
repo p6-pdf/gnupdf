@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/04/17 00:06:20 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:17:35 davazp"
  *
  *       File:         pdf-time-span-diff.c
  *       Date:         Fri Feb 27 17:35:31 2009
@@ -46,6 +46,8 @@ START_TEST (pdf_time_span_diff_001)
   pdf_time_span_t span2;
   pdf_time_span_t result;
 
+  pdf_init();
+
   span1 = pdf_time_span_new();
   span2 = pdf_time_span_new();
   result = pdf_time_span_new();
@@ -89,6 +91,8 @@ START_TEST (pdf_time_span_diff_002)
   pdf_time_span_t span1;
   pdf_time_span_t span2;
   pdf_time_span_t *result;
+
+  pdf_init();
 
   span1 = pdf_time_span_new();
   span2 = pdf_time_span_new();

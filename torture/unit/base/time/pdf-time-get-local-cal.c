@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/04/17 00:05:43 lukasz"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:11:51 davazp"
  *
  *       File:         pdf-time-get-local-cal.c
  *       Date:         Fri Feb 27 17:35:31 2008
@@ -57,6 +57,8 @@ START_TEST (pdf_time_get_local_cal_001)
   extern pdf_u32_t datesInSeconds[];
   extern struct pdf_time_cal_s dates[];
 
+  pdf_init();
+
   status = pdf_time_new(&time1);
 
   fail_if(status != PDF_OK);
@@ -105,7 +107,7 @@ START_TEST (pdf_time_get_local_cal_002)
   time_t tloc;
   struct tm* time_struct;
     
-  pdf_time_init();
+  pdf_init();
   time(&tloc);
   time_struct = localtime(&tloc);
 

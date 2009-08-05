@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/06/16 22:44:34 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:58:44 davazp"
  *
  *       File:         pdf-stm-tell.c
  *       Date:         Tue Jun 16 22:22:49 2009
@@ -47,6 +47,9 @@ START_TEST (pdf_stm_tell_001)
 
   /* Create a buffer with some contents */
   buf_size = 11;
+
+  pdf_init();
+
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
   strcpy ((char *) buf, "0123456789");

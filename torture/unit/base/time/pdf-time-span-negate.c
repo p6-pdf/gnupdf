@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/06/16 22:11:18 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:17:50 davazp"
  *
  *       File:         pdf-time-span-set-negate.c
  *       Date:         Sun Sep 21 16:37:27 2008
@@ -46,6 +46,8 @@ START_TEST (pdf_time_span_negate_001)
     pdf_i32_t seconds;
     pdf_i64_t seconds2;
 
+    pdf_init();
+
     span=pdf_time_span_new();
 
     seconds = 0x77234567;
@@ -80,6 +82,8 @@ START_TEST (pdf_time_span_negate_002)
     pdf_i32_t seconds;
     pdf_i64_t seconds2;
 
+    pdf_init();
+
     span=pdf_time_span_new();
 
     seconds = -0x01234567;   //negative number
@@ -107,6 +111,8 @@ END_TEST
 START_TEST (pdf_time_span_negate_003)
 {
     pdf_status_t status;
+    pdf_init();
+
     status = pdf_time_span_negate((pdf_time_span_t *) NULL);
     fail_if(status != PDF_ERROR);
 

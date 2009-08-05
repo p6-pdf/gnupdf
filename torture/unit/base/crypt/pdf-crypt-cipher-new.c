@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-09 03:51:22 david"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:39:24 davazp"
  *
  *       File:         pdf-crypt-cipher-new.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -41,7 +41,7 @@
 START_TEST (pdf_crypt_cipher_new_001)
 {
   pdf_crypt_cipher_t cipher;
-  pdf_crypt_init();
+  pdf_init();
   fail_if (pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher) != PDF_OK);
   pdf_crypt_cipher_destroy (cipher);
 }
@@ -58,7 +58,7 @@ END_TEST
 START_TEST (pdf_crypt_cipher_new_002)
 {
   pdf_crypt_cipher_t cipher;
-  pdf_crypt_init();
+  pdf_init();
   fail_if (pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &cipher) != PDF_OK);
   pdf_crypt_cipher_destroy (cipher);
 }

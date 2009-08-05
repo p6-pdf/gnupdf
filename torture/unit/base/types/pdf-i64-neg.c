@@ -46,6 +46,8 @@ START_TEST(pdf_i64_neg_001)
   int cmp_res;
   pdf_i64_t k,j;
 
+  pdf_init();
+
   pdf_i64_assign(&k,0,2,&p_status); /*2*/
   
 
@@ -78,6 +80,8 @@ START_TEST(pdf_i64_neg_002)
   pdf_status_t p_status = PDF_OK;
   int cmp_res;
   pdf_i64_t k,j;
+  pdf_init();
+
   pdf_i64_assign(&k,0xFFFFFFFF,0xFFFFFFFE,&p_status); /*-2*/
 
   
@@ -109,6 +113,8 @@ START_TEST(pdf_i64_neg_003)
   pdf_status_t p_status = PDF_OK;
   pdf_i64_t src;
   pdf_i64_t *dest = NULL;
+
+  pdf_init();
 
   pdf_i64_assign(&src,0, 3, &p_status);
   fail_if(p_status != PDF_OK);

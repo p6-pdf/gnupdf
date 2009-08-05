@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/04/17 00:05:59 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:16:29 davazp"
  *
  *       File:         pdf-time-set-from-u32.c
  *       Date:         Sun Sep 21 16:37:27 2008
@@ -51,6 +51,8 @@ START_TEST (pdf_time_set_from_u32_001)
   pdf_time_t zero;
   pdf_time_span_t span;
   pdf_u32_t sec;
+
+  pdf_init();
 
   status = pdf_time_new(&time);
   fail_if(status != PDF_OK);

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-21 22:55:26 gerel"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:46:04 davazp"
  *
  *       File:         pdf-hash-add-list.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -42,6 +42,8 @@ START_TEST (pdf_hash_add_list_001)
 {
   pdf_hash_t table;
   pdf_list_t inner;
+
+  pdf_init();
 
   fail_if (pdf_hash_new (NULL, &table) != PDF_OK);
   fail_if (pdf_list_new (NULL,NULL, 0, &inner) != PDF_OK);

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/08 22:47:29 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:50:43 davazp"
  *
  *       File:         pdf-list-add-first.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -47,6 +47,8 @@ START_TEST (pdf_list_add_first_001)
   elem = 5123;
   elem2 = 5431;
 
+  pdf_init();
+
   pdf_list_new (l_comp, NULL, 0, &list);
 
   pdf_list_add_first (list, &elem, NULL);
@@ -73,6 +75,8 @@ START_TEST (pdf_list_add_first_002)
   int elem;
 
   elem = 5123;
+
+  pdf_init();
 
   pdf_list_new (l_comp, NULL, 1, &list);
   pdf_list_add_first (list, &elem, NULL);
