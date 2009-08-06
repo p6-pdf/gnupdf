@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/06/17 21:41:30 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:42:21 davazp"
  *
  *       File:         pdf-fp-func-eval.c
  *       Date:         Sat Feb  7 18:55:51 2009
@@ -54,6 +54,7 @@ START_TEST(pdf_fp_func_4_new_001)
   pdf_size_t error_at;
   pdf_status_t ret;
   
+  pdf_init();
 
   prog_size = sizeof(prog);
 
@@ -95,6 +96,7 @@ START_TEST(pdf_fp_func_4_new_002)
   pdf_size_t error_at;
   pdf_status_t ret;
   
+  pdf_init();
 
   prog_size = sizeof(prog);
 
@@ -135,6 +137,7 @@ START_TEST(pdf_fp_func_4_new_003)
   pdf_size_t error_at;
   pdf_status_t ret;
   
+  pdf_init();
 
   prog_size = sizeof(prog);
 
@@ -175,7 +178,8 @@ START_TEST(pdf_fp_func_4_new_004)
   pdf_size_t error_at;
   pdf_status_t ret;
   
-
+  pdf_init();
+  
   prog_size = sizeof(prog);
 
   /* Create the function */
@@ -215,6 +219,7 @@ START_TEST(pdf_fp_func_4_new_005)
   pdf_size_t error_at;
   pdf_status_t ret;
   
+  pdf_init();
 
   prog_size = sizeof(prog);
 

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/07/23 21:02:09 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:16:13 davazp"
  *
  *       File:         pdf-time-new.c
  *       Date:         Fri Feb 27 17:35:31 2008
@@ -47,6 +47,8 @@ START_TEST (pdf_time_new_001)
   pdf_time_t time1;
   pdf_char_t *time_str1;
   pdf_char_t *expected_time = "1970-01-01T00:00:00Z";
+
+  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);

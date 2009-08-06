@@ -51,7 +51,7 @@ START_TEST(pdf_text_cmp_001)
   pdf_status_t ret_code;
 
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   /* Create text objects with same contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -95,7 +95,7 @@ START_TEST(pdf_text_cmp_002)
   pdf_status_t ret_code;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   /* Create text objects with same contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -166,7 +166,7 @@ START_TEST(pdf_text_cmp_003)
   pdf_status_t ret_code;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   /* Create text objects with same contents */
   fail_if(pdf_text_new_from_unicode(upper_data,
@@ -208,7 +208,7 @@ START_TEST(pdf_text_cmp_004)
   pdf_status_t ret_code;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   /* Create text objects with same contents */
   fail_if(pdf_text_new_from_unicode(upper_data,
@@ -251,7 +251,7 @@ START_TEST(pdf_text_cmp_005)
   pdf_status_t ret_code;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   /* Create text objects with same contents */
   fail_if(pdf_text_new_from_unicode(input_data1,
@@ -293,7 +293,7 @@ START_TEST(pdf_text_cmp_006)
   pdf_status_t ret_code;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   /* Create text objects with same contents */
   fail_if(pdf_text_new_from_unicode(input_data1,

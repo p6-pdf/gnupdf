@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-12-23 17:43:16 davazp"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:29:35 davazp"
  *
  *       File:         tsuite-alloc.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -26,7 +26,6 @@
 
 #include <check.h>
 
-extern TCase *test_pdf_crypt_init (void);
 extern TCase *test_pdf_crypt_cipher_new (void);
 extern TCase *test_pdf_crypt_cipher_setkey (void);
 extern TCase *test_pdf_crypt_cipher_destroy (void);
@@ -49,7 +48,6 @@ tsuite_crypt ()
 
   s = suite_create("crypt");
 
-  suite_add_tcase (s, test_pdf_crypt_init ());
   suite_add_tcase (s, test_pdf_crypt_cipher_new ());
   suite_add_tcase (s, test_pdf_crypt_cipher_setkey ());
   suite_add_tcase (s, test_pdf_crypt_cipher_destroy ());

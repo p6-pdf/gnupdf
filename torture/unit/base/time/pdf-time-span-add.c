@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/04/17 00:06:05 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:17:02 davazp"
  *
  *       File:         pdf-time-span-add.c
  *       Date:         Fri Feb 27 17:35:31 2009
@@ -49,6 +49,8 @@ START_TEST (pdf_time_span_add_001)
  * W pdf_time_span_add ustawić poprawnie wartość
  * pdf_status_t */
 
+  pdf_init();
+
   span1 = pdf_time_span_new();
   span2 = pdf_time_span_new();
   result = pdf_time_span_new();
@@ -93,6 +95,8 @@ START_TEST (pdf_time_span_add_002)
   pdf_time_span_t span1;
   pdf_time_span_t span2;
   pdf_time_span_t *result;
+
+  pdf_init();
 
   span1 = pdf_time_span_new();
   span2 = pdf_time_span_new();

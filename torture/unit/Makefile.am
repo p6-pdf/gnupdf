@@ -125,7 +125,6 @@ TEST_SUITE_LIST = base/list/pdf-list-add-first.c \
 TEST_SUITE_TEXT = base/text/pdf-text-test-common.h \
                   base/text/pdf-text-test-common.c \
                   base/text/pdf-text-test-data.c \
-                  base/text/pdf-text-init.c \
                   base/text/pdf-text-new-destroy.c \
                   base/text/pdf-text-dup.c \
                   base/text/pdf-text-new-from-host.c \
@@ -167,8 +166,7 @@ TEST_SUITE_TYPES = base/types/pdf-i64-new.c \
 		   base/types/pdf-i64-mod.c \
 		   base/types/pdf-i64-subtraction.c 
 
-TEST_SUITE_TIME =  base/time/pdf-time-init.c \
-	       base/time/pdf-time-new.c \
+TEST_SUITE_TIME =  base/time/pdf-time-new.c \
 		   base/time/pdf-time-dup.c \
 		   base/time/pdf-time-destroy.c \
 		   base/time/pdf-time-copy.c \
@@ -207,8 +205,7 @@ TEST_SUITE_TIME =  base/time/pdf-time-init.c \
 		   base/time/pdf-time-add-cal-span-with-base.c \
 		   base/time/pdf-time-w32-set-from-filetime.c
 
-TEST_SUITE_CRYPT = base/crypt/pdf-crypt-init.c \
-		   base/crypt/pdf-crypt-cipher-new.c \
+TEST_SUITE_CRYPT = base/crypt/pdf-crypt-cipher-new.c \
 		   base/crypt/pdf-crypt-cipher-setkey.c \
 		   base/crypt/pdf-crypt-cipher-destroy.c \
 		   base/crypt/pdf-crypt-cipher-encrypt.c \

@@ -44,7 +44,7 @@ START_TEST(pdf_text_get_host_encoding_001)
   pdf_text_host_encoding_t host_enc;
 
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   host_enc = pdf_text_get_host_encoding();
   

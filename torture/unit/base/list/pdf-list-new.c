@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/08 22:49:03 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:52:21 davazp"
  *
  *       File:         pdf-list-create.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -101,6 +101,8 @@ START_TEST (pdf_list_new_001)
 {
   pdf_list_t list;
   
+  pdf_init();
+
   fail_if (pdf_list_new (l_comp, l_disp, 0, &list) != PDF_OK);
 
   pdf_list_destroy (list);
@@ -117,6 +119,8 @@ END_TEST
  */
 START_TEST (pdf_list_new_002)
 {
+  pdf_init();
+
   fail_if (pdf_list_new (l_comp, l_disp, 0, NULL) != PDF_EBADDATA);
 }
 END_TEST
@@ -133,6 +137,8 @@ START_TEST (pdf_list_new_003)
 {
   pdf_list_t list;
   
+  pdf_init();
+
   fail_if (pdf_list_new (l_comp, l_disp, 1, &list) != PDF_OK);
 
   pdf_list_destroy (list);

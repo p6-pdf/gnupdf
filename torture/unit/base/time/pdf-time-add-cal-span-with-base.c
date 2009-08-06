@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/04/17 00:06:09 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:07:46 davazp"
  *
  *       File:         pdf-time-add-cal-span-with-base.c
  *       Date:         Fri Feb 27 17:35:31 2009
@@ -60,6 +60,8 @@ START_TEST (pdf_time_add_cal_span_with_base_001)
   extern struct pdf_time_cal_span_s years_months[];
   extern pdf_u32_t daysInSeconds[];
 
+
+  pdf_init();
 
   status =  pdf_time_new(&basetime);
   fail_if(status != PDF_OK);

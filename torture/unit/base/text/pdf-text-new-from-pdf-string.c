@@ -55,7 +55,7 @@ START_TEST(pdf_text_new_from_pdf_string_001)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(pdf_doc_encoding_strings[i].data != NULL)
@@ -145,7 +145,7 @@ START_TEST(pdf_text_new_from_pdf_string_002)
   const pdf_char_t *invalid_pdfdocenc = (pdf_char_t *)"\x9D\x9E\x9F";
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   /* 1. The call to  pdf_text_new_from_host should NOT return PDF_OK. */
   fail_unless(pdf_text_new_from_pdf_string(invalid_pdfdocenc,
@@ -184,7 +184,7 @@ START_TEST(pdf_text_new_from_pdf_string_003)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf16be_strings[i].data != NULL)
@@ -294,7 +294,7 @@ START_TEST(pdf_text_new_from_pdf_string_004)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf16be_strings[i].data != NULL)
@@ -339,7 +339,7 @@ START_TEST(pdf_text_new_from_pdf_string_005)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf16be_strings[i].data != NULL)
@@ -410,7 +410,7 @@ START_TEST(pdf_text_new_from_pdf_string_006)
   const pdf_char_t *language_code = (pdf_char_t *)"en";
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf16be_strings[i].data != NULL)
@@ -551,7 +551,7 @@ START_TEST(pdf_text_new_from_pdf_string_007)
   const pdf_char_t *country_code = (pdf_char_t *)"US";
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf16be_strings[i].data != NULL)
@@ -714,7 +714,7 @@ START_TEST(pdf_text_new_from_pdf_string_008)
   const pdf_char_t *language_code3 = (pdf_char_t *)"fr";
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   /* 3 different strings will be read into a single utf-16be string */
   i = 0;
@@ -1072,7 +1072,7 @@ START_TEST(pdf_text_new_from_pdf_string_009)
   const pdf_char_t *country_code3 = (pdf_char_t *)"FR";
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   /* 3 different strings will be read into a single utf-16be string */
   i = 0;

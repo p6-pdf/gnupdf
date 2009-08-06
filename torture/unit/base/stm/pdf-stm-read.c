@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-15 13:48:43 gerel"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:58:15 davazp"
  *
  *       File:         pdf-stm-read.c
  *       Date:         Sat Sep 20 15:20:17 2008
@@ -47,6 +47,8 @@ START_TEST (pdf_stm_read_001)
 
   /* Create a buffer with some contents */
   buf_size = 11;
+  pdf_init();
+
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
   strcpy ((char *) buf, "0123456789");
@@ -101,6 +103,8 @@ START_TEST (pdf_stm_read_002)
 
   /* Create a buffer with some contents */
   buf_size = 11;
+  pdf_init();
+
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
   strcpy ((char *) buf, "0123456789");
@@ -155,6 +159,8 @@ START_TEST (pdf_stm_read_003)
 
   /* Create a buffer with some contents */
   buf_size = 11;
+  pdf_init();
+
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
   strcpy ((char *) buf, "0123456789");
@@ -264,6 +270,8 @@ START_TEST (pdf_stm_read_004)
 
   /* Create a buffer with some contents */
   buf_size = 11;
+  pdf_init();
+
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
   strcpy ((char *) buf, "0123456789");
@@ -328,6 +336,8 @@ START_TEST (pdf_stm_read_005)
   /* Writing stream */
   /* Create a memory buffer */
   buf_size = 100;
+  pdf_init();
+
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
   /* Create the stream */
@@ -381,6 +391,8 @@ START_TEST (pdf_stm_read_006)
 
   /* Create the buffers */
   buf_size = 10;
+  pdf_init();
+
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
   strcpy (buf, "616263>");
@@ -447,6 +459,8 @@ START_TEST (pdf_stm_read_007)
 
   /* Create the buffers */
   buf_size = 20;
+  pdf_init();
+
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
   strcpy (buf, "61 6\n2 63\n>");
@@ -515,6 +529,8 @@ START_TEST (pdf_stm_read_008)
 
   /* Create the buffers */
   buf_size = 20;
+  pdf_init();
+
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
   strcpy (buf, "61626>");
@@ -610,6 +626,8 @@ START_TEST (pdf_stm_read_009)
   /* Writing stream */
   /* Create a memory buffer */
   buf_size = 2000;
+  pdf_init();
+
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
   /* Create the stream */
@@ -658,6 +676,7 @@ START_TEST (pdf_stm_read_011)
   pdf_hash_t params;
 
   pdf_char_t out[14];
+
   pdf_size_t out_size = sizeof(out);
   pdf_char_t in[] =
     {
@@ -670,7 +689,7 @@ START_TEST (pdf_stm_read_011)
   pdf_char_t plaintext[] = "Attack at dawn";
   pdf_size_t read;
   
-  pdf_crypt_init();
+  pdf_init();
 
   fail_if ( pdf_stm_mem_new (in, in_size, 0, PDF_STM_READ, &stm) != PDF_OK);
 
@@ -714,6 +733,7 @@ START_TEST (pdf_stm_read_012)
       0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
       0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff
     };
+
   pdf_size_t keysize = sizeof(key);
 
   pdf_char_t plain[] =
@@ -738,7 +758,7 @@ START_TEST (pdf_stm_read_012)
       0x8c, 0xb8, 0x4c, 0x23, 0x59, 0xd0, 0xe0, 0x36,
     };
 
-  pdf_crypt_init();
+  pdf_init();
 
   pdf_hash_new (NULL, &params);
   pdf_hash_add (params, "Key", key, NULL);
@@ -780,7 +800,8 @@ START_TEST (pdf_stm_read_013)
   pdf_size_t remain_length;
 
   /* Create the file path */
-  pdf_text_init ();
+  pdf_init();
+
   ret = pdf_text_new_from_pdf_string ("tmp.test", 8, &remain, &remain_length, &path);
   fail_if (ret != PDF_OK);
 
@@ -842,7 +863,8 @@ START_TEST (pdf_stm_read_014)
   pdf_hash_t null_filter_params;
 
   /* Create the file path */
-  pdf_text_init ();
+  pdf_init();
+
   ret = pdf_text_new_from_pdf_string ("tmp.test", 8, &remain, &remain_length, &path);
   fail_if (ret != PDF_OK);
 

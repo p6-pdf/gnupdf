@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/07/23 21:08:23 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:18:54 davazp"
  *
  *       File:         pdf-time-to-string.c
  *       Date:         Fri Feb 27 17:35:31 2008
@@ -59,6 +59,8 @@ START_TEST (pdf_time_to_string_001)
   extern struct pdf_time_cal_s dates[];
   struct pdf_time_cal_s calendar;
 
+
+  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
@@ -138,6 +140,8 @@ START_TEST (pdf_time_to_string_002)
   extern struct pdf_time_cal_s dates[];
   struct pdf_time_cal_s calendar;
 
+
+  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
@@ -242,6 +246,8 @@ START_TEST (pdf_time_to_string_003)
   struct pdf_time_cal_s calendar;
 
 
+  pdf_init();
+
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
   fail_if(time1 == NULL);
@@ -323,6 +329,8 @@ START_TEST (pdf_time_to_string_004)
   extern struct pdf_time_cal_s dates[];
   struct pdf_time_cal_s calendar;
 
+
+  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);

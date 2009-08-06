@@ -62,7 +62,7 @@ START_TEST(pdf_text_get_hex_001)
   pdf_char_t *output_data = NULL;
 
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   fail_if(pdf_text_new_from_unicode(utf8data, strlen((char *)utf8data),
                                     PDF_TEXT_UTF8,
@@ -101,7 +101,7 @@ START_TEST(pdf_text_get_hex_002)
   pdf_char_t *output_data = NULL;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   fail_if(pdf_text_new (&text) != PDF_OK);
   

@@ -46,6 +46,8 @@ START_TEST(pdf_i64_cmp_001)
   pdf_status_t p_status = PDF_OK;
   int cmp_res;
   pdf_i64_t k,j;
+  pdf_init();
+
   pdf_i64_assign(&k,0xFFFFFFFF,0xFFFFFFFE,&p_status); /*-2*/
   pdf_i64_assign(&j,0,2,&p_status); /*2*/
 
@@ -74,6 +76,8 @@ START_TEST(pdf_i64_cmp_002)
   pdf_status_t p_status = PDF_OK;
   int cmp_res;
   pdf_i64_t k,j;
+  pdf_init();
+
   pdf_i64_assign(&k,0xFFFFFFFF,0xFFFFFFFE,&p_status); /*-2*/
   pdf_i64_assign(&j,0,2,&p_status); /*2*/
 
@@ -98,6 +102,8 @@ START_TEST(pdf_i64_cmp_003)
   pdf_status_t p_status = PDF_OK;
   int cmp_res;
   pdf_i64_t k,j;
+  pdf_init();
+
   pdf_i64_assign(&k,0,2,&p_status); /*2*/
   pdf_i64_assign(&j,0,2,&p_status); /*2*/
 

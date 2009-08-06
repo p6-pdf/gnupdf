@@ -48,7 +48,7 @@ START_TEST(pdf_text_concat_001)
   pdf_char_t *language = (pdf_char_t *)"en";
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   fail_if(pdf_text_new (&text1) != PDF_OK);
   fail_if(pdf_text_new (&text2) != PDF_OK);
@@ -99,7 +99,7 @@ START_TEST(pdf_text_concat_002)
   pdf_text_t text2 = NULL;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   fail_if(pdf_text_new (&text1) != PDF_OK);
   fail_if(pdf_text_new (&text2) != PDF_OK);
@@ -147,7 +147,7 @@ START_TEST(pdf_text_concat_003)
 
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   fail_if(pdf_text_new (&text1) != PDF_OK);
   fail_if(pdf_text_new (&text2) != PDF_OK);
@@ -196,7 +196,7 @@ START_TEST(pdf_text_concat_004)
   pdf_char_t *language = (pdf_char_t *)"en";
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   fail_if(pdf_text_new (&text1) != PDF_OK);
   fail_if(pdf_text_new (&text2) != PDF_OK);
@@ -246,7 +246,7 @@ START_TEST(pdf_text_concat_005)
   pdf_text_t text2 = NULL;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   fail_if(pdf_text_new (&text1) != PDF_OK);
   fail_if(pdf_text_new (&text2) != PDF_OK);
@@ -293,7 +293,7 @@ START_TEST(pdf_text_concat_006)
   
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   fail_if(pdf_text_new (&text1) != PDF_OK);
   fail_if(pdf_text_new (&text2) != PDF_OK);
@@ -342,7 +342,7 @@ START_TEST(pdf_text_concat_007)
   pdf_char_t *language = (pdf_char_t *)"en";
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   fail_if(pdf_text_new (&text1) != PDF_OK);
   fail_if(pdf_text_new (&text2) != PDF_OK);;
@@ -393,7 +393,7 @@ START_TEST(pdf_text_concat_008)
   pdf_text_t text2 = NULL;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   fail_if(pdf_text_new (&text1) != PDF_OK);
   fail_if(pdf_text_new (&text2) != PDF_OK);
@@ -442,7 +442,7 @@ START_TEST(pdf_text_concat_009)
   
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   fail_if(pdf_text_new (&text1) != PDF_OK);
   fail_if(pdf_text_new (&text2) != PDF_OK);
@@ -494,7 +494,7 @@ START_TEST(pdf_text_concat_010)
   pdf_char_t *language = (pdf_char_t *)"en";
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   fail_if(pdf_text_new (&text1) != PDF_OK);
   fail_if(pdf_text_new (&text2) != PDF_OK);
@@ -544,7 +544,7 @@ START_TEST(pdf_text_concat_011)
   pdf_text_t text2 = NULL;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   fail_if(pdf_text_new (&text1) != PDF_OK);
   fail_if(pdf_text_new (&text2) != PDF_OK);
@@ -593,7 +593,7 @@ START_TEST(pdf_text_concat_012)
   
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   fail_if(pdf_text_new (&text1) != PDF_OK);
   fail_if(pdf_text_new (&text2) != PDF_OK);

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/04/17 00:05:32 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:15:04 davazp"
  *
  *       File:         pdf-time-from-cal.c
  *       Date:         Fri Feb 27 17:35:31 2008
@@ -50,6 +50,8 @@ START_TEST (pdf_time_from_cal_001)
   extern struct pdf_time_cal_s dates[];
   extern pdf_u32_t datesInSeconds[];
   struct pdf_time_cal_s calendar;
+
+  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);

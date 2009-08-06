@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/10 21:33:32 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:36:38 davazp"
  *
  *       File:         pdf-alloc.c
  *       Date:         Wed Sep 10 21:28:49 2008
@@ -40,6 +40,8 @@ START_TEST(pdf_alloc_001)
 {
   char *data;
 
+  pdf_init();
+  
   /* Allocate some memory */
   data = pdf_alloc (100);
   fail_if (data == NULL);

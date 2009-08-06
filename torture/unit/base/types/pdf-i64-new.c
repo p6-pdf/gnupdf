@@ -44,6 +44,8 @@ START_TEST(pdf_i64_new_001)
 
   pdf_i64_t k;
 
+  pdf_init();
+
   k = pdf_i64_new(4,5);
 
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 

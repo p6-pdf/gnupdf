@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/04/17 00:06:44 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:13:20 davazp"
  *
  *       File:         pdf-time-diff.c
  *       Date:         Fri Feb 27 17:35:31 2009
@@ -47,6 +47,8 @@ START_TEST (pdf_time_diff_001)
   pdf_i64_t sec;
   pdf_i64_t sec2;
   pdf_time_span_t span;
+
+  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);

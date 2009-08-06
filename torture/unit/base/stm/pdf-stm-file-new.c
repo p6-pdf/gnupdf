@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-13 13:21:10 gerel"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:56:05 davazp"
  *
  *       File:         pdf-stm-file-new.c
  *       Date:         Sat Sep 20 14:37:26 2008
@@ -45,7 +45,8 @@ START_TEST (pdf_stm_file_new_001)
   pdf_size_t remain_length;
 
   /* Create the file path */
-  pdf_text_init ();
+  pdf_init();
+
   ret = pdf_text_new_from_pdf_string ("tmp.test", 8, &remain, &remain_length, &path);
   fail_if (ret != PDF_OK);
 

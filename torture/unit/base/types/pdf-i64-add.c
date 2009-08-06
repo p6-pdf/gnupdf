@@ -44,13 +44,10 @@ START_TEST(pdf_i64_add_001)
 {
   pdf_status_t p_status = PDF_OK;
   pdf_i64_t add1,add2,dest;
+  pdf_init();
+
   add1 = pdf_i64_new(0,0xFFFFFFFF);
   add2 = pdf_i64_new(2147483646,1);
-
-  
-
-
- 
 
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT  
   pdf_i64_add(&dest,add1,add2, &p_status);
@@ -79,6 +76,8 @@ START_TEST(pdf_i64_add_002)
   pdf_status_t p_status = PDF_OK;
   pdf_i64_t add1,add2;
   
+  pdf_init();
+
   add1 = pdf_i64_new(0,4);
   add2 = pdf_i64_new(5,0);
 
@@ -107,6 +106,8 @@ START_TEST(pdf_i64_add_003)
   pdf_i64_t add1, add2, dest;
 
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
+  pdf_init();
+
   add1 = pdf_i64_new(0xFFFFFFFF,0xFFFFFFFE); /*-2*/
   add2 = pdf_i64_new(0,3);
   pdf_i64_add(&dest, add1, add2, &p_status);
@@ -141,6 +142,8 @@ START_TEST(pdf_i64_add_004)
   pdf_i64_t add1, add2, dest;
   pdf_status_t p_status = PDF_OK;
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
+  pdf_init();
+
   add1 = pdf_i64_new(0xFFFFFFFF,0xFFFFFFFE); /*-2*/
   add2 = pdf_i64_new(0xFFFFFFFF,0xFFFFFFFE); /*-2*/
 

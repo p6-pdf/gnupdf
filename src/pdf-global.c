@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 01:03:05 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:27:36 davazp"
  *
  *       File:         pdf-global.c
  *       Date:         Thu Jul  5 21:07:10 2007
@@ -27,19 +27,46 @@
 
 #include <string.h>
 #include <pdf-global.h>
+#include <pdf-types.h>
+#include <pdf-crypt.h>
+#include <pdf-text.h>
+#include <pdf-time.h>
 
 /* Global variables */
 
 char *program_name = "libgnupdf";
 char *gnupdf_version = "0.1";
-struct pdf_globals_s pdf_globals;
+
+struct pdf_globals_s pdf_globals = {
+  PDF_FALSE
+};
+
 
 
 /* Library initialization routine */
 int
 pdf_init (void)
 {
+  int ret;
 
+  if (pdf_globals.initialized == PDF_FALSE)
+    {
+      ret = pdf_crypt_init();
+
+      if (ret != PDF_OK)
+        return ret;
+
+      ret = pdf_text_init();
+      if (ret != PDF_OK)
+        return ret;
+
+      ret = pdf_time_init();
+      if (ret != PDF_OK )
+        return ret;
+
+      pdf_globals.initialized = PDF_TRUE;
+    }
+  
   return PDF_OK;
 }
 

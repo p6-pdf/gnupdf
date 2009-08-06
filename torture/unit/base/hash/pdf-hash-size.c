@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/10 20:12:08 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:48:08 davazp"
  *
  *       File:         pdf-hash-size.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -40,6 +40,8 @@
 START_TEST (pdf_hash_size_001)
 {
   pdf_hash_t table;
+
+  pdf_init();
 
   pdf_hash_new (NULL, &table);
 

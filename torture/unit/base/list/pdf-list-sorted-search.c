@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/08 22:56:56 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:54:29 davazp"
  *
  *       File:         pdf-list-sorted-search.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -50,6 +50,8 @@ START_TEST (pdf_list_sorted_search_001)
 
   elem = 2232;
   
+  pdf_init();
+
   pdf_list_new (l_comp, NULL, 0, &list);
   pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
 
@@ -78,6 +80,8 @@ START_TEST (pdf_list_sorted_search_002)
 
   elem = 2232;
   
+  pdf_init();
+
   pdf_list_new (l_comp, NULL, 0, &list);
   pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
 
@@ -107,6 +111,8 @@ START_TEST (pdf_list_sorted_search_003)
   elem = 2232;
   elem2 = 1223;
   
+  pdf_init();
+
   pdf_list_new (l_comp, NULL, 0, &list);
   pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
 
@@ -136,6 +142,8 @@ START_TEST (pdf_list_sorted_search_004)
 
   elem = 2232;
   
+  pdf_init();
+
   pdf_list_new (l_comp, NULL, 0, &list);
   pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
 

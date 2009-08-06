@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-12-15 18:17:41 davazp"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:39:54 davazp"
  *
  *       File:         pdf-crypt-md-destroy.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -41,7 +41,7 @@
 START_TEST (pdf_crypt_md_destroy_001)
 {
   pdf_crypt_md_t md;
-  pdf_crypt_init();
+  pdf_init();
   pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md);
   fail_if (pdf_crypt_md_destroy (md));
 }

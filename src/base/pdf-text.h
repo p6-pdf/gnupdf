@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/11/29 16:11:02 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 19:42:52 davazp"
  *
  *       File:         pdf-text.h
  *       Date:         Fri Jan 11 21:09:23 2008
@@ -32,6 +32,17 @@
 #include <pdf-alloc.h>
 #include <pdf-error.h>
 #include <pdf-list.h>
+
+
+/* --------------------- Text Module initialization ------------------------- */
+
+/* Initialize Text Module. Warning! Not thread-safe, must be used only once when
+ *  the program starts. It will be in charge of detecting currently configured
+ *  locale, host encoding... in GNU/Linux and UNIX-like systems
+ *  (Mac OS X included) */
+pdf_status_t
+pdf_text_init(void);
+
 
 
 /* BEGIN PUBLIC */
@@ -94,15 +105,6 @@ typedef struct pdf_text_s *pdf_text_t;
 typedef struct pdf_text_host_encoding_s {
   pdf_char_t name[PDF_TEXT_HENMAXL];
 } pdf_text_host_encoding_t;
-
-/* --------------------- Text Module initialization ------------------------- */
-
-/* Initialize Text Module. Warning! Not thread-safe, must be used only once when
- *  the program starts. It will be in charge of detecting currently configured
- *  locale, host encoding... in GNU/Linux and UNIX-like systems
- *  (Mac OS X included) */
-pdf_status_t
-pdf_text_init(void);
 
 
 /* --------------------- Text Creation and Destruction ---------------------- */

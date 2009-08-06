@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/04/17 00:05:20 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:29:55 davazp"
  *
  *       File:         pdf-time-copy.c
  *       Date:         Fri Feb 27 17:35:31 2008
@@ -44,6 +44,8 @@ START_TEST (pdf_time_copy_001)
   pdf_time_t time2;
   pdf_i64_t seconds;
 
+  pdf_init();
+
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
   fail_if(time1 == NULL);
@@ -85,11 +87,10 @@ START_TEST (pdf_time_copy_002)
   pdf_time_t time2;
   time2 = NULL;
 
+  pdf_init();
+  
   status =  pdf_time_new(&time1);
   fail_if(status != PDF_OK);
-
-
-
   status  = pdf_time_copy(time1, time2);
   fail_if(status != PDF_ERROR);
 }

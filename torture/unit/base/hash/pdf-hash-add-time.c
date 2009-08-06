@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-21 23:02:49 gerel"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:46:34 davazp"
  *
  *       File:         pdf-hash-add-time.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -42,6 +42,8 @@ START_TEST (pdf_hash_add_time_001)
 {
   pdf_hash_t table;
   pdf_time_t inner;
+
+  pdf_init();
 
   fail_if (pdf_hash_new (NULL, &table) != PDF_OK);
   fail_if (pdf_time_new (&inner) != PDF_OK);

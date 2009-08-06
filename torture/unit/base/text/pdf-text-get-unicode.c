@@ -54,7 +54,7 @@ START_TEST(pdf_text_get_unicode_001)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf8_strings[i].data != NULL)
@@ -143,7 +143,7 @@ START_TEST(pdf_text_get_unicode_002)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf8_strings[i].data != NULL)
@@ -230,7 +230,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_003)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -268,7 +268,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_004)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -309,7 +309,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_005)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -350,7 +350,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_006)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -398,7 +398,7 @@ START_TEST(pdf_text_get_unicode_007)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf16be_strings[i].data != NULL)
@@ -486,7 +486,7 @@ START_TEST(pdf_text_get_unicode_008)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf16be_strings[i].data != NULL)
@@ -566,7 +566,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_009)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -604,7 +604,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_010)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -657,7 +657,7 @@ START_TEST(pdf_text_get_unicode_011)
   int i;
 
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
 
   i = 0;
   while(utf16be_strings[i].data != NULL)
@@ -759,7 +759,7 @@ START_TEST(pdf_text_get_unicode_012)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf16be_strings[i].data != NULL)
@@ -855,7 +855,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_013)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -918,7 +918,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_014)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -972,7 +972,7 @@ START_TEST(pdf_text_get_unicode_015)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf16be_strings[i].data != NULL)
@@ -1046,7 +1046,7 @@ START_TEST(pdf_text_get_unicode_016)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf16be_strings[i].data != NULL)
@@ -1126,7 +1126,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_017)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -1192,7 +1192,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_018)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -1248,7 +1248,7 @@ START_TEST(pdf_text_get_unicode_019)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf16be_strings[i].data != NULL)
@@ -1337,7 +1337,7 @@ START_TEST(pdf_text_get_unicode_020)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf16be_strings[i].data != NULL)
@@ -1423,7 +1423,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_021)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -1461,7 +1461,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_022)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -1503,7 +1503,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_023)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -1544,7 +1544,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_024)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -1584,7 +1584,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_025)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -1620,7 +1620,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_026)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -1652,7 +1652,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_027)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -1694,7 +1694,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_028)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -1735,7 +1735,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_029)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -1772,7 +1772,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_030)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -1813,7 +1813,7 @@ START_TEST(pdf_text_get_unicode_031)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf32be_strings[i].data != NULL)
@@ -1909,7 +1909,7 @@ START_TEST(pdf_text_get_unicode_032)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf32be_strings[i].data != NULL)
@@ -1990,7 +1990,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_033)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -2028,7 +2028,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_034)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -2070,7 +2070,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_035)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -2111,7 +2111,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_036)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -2151,7 +2151,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_037)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -2185,7 +2185,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_038)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -2217,7 +2217,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_039)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -2259,7 +2259,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_040)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -2298,7 +2298,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_041)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -2333,7 +2333,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_042)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -2370,7 +2370,7 @@ START_TEST(pdf_text_get_unicode_043)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf32be_strings[i].data != NULL)
@@ -2457,7 +2457,7 @@ START_TEST(pdf_text_get_unicode_044)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf32be_strings[i].data != NULL)
@@ -2543,7 +2543,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_045)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -2581,7 +2581,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_046)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -2623,7 +2623,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_047)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -2664,7 +2664,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_048)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -2704,7 +2704,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_049)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -2738,7 +2738,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_050)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -2770,7 +2770,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_051)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -2812,7 +2812,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_052)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -2851,7 +2851,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_053)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -2886,7 +2886,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_054)
 {  
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -2931,7 +2931,7 @@ START_TEST(pdf_text_get_unicode_055)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf8_strings[i].data != NULL)
@@ -3030,7 +3030,7 @@ START_TEST(pdf_text_get_unicode_056)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf8_strings[i].data != NULL)
@@ -3124,7 +3124,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_057)
 {
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -3165,7 +3165,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_058)
 {
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -3208,7 +3208,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_059)
 {
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -3250,7 +3250,7 @@ END_TEST
 START_TEST(pdf_text_get_unicode_060)
 {
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   pdf_text_t text;
   pdf_char_t *data = NULL;
@@ -3300,7 +3300,7 @@ START_TEST(pdf_text_get_unicode_061)
   int i;
   
   /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_text_init() != PDF_OK);
+  fail_if(pdf_init() != PDF_OK);
   
   i = 0;
   while(utf16be_strings[i].data != NULL)

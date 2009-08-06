@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-19 20:32:45 davazp"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 19:41:39 davazp"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -89,9 +89,10 @@ struct pdf_crypt_md_s
 #if !defined (HAVE_INLINE) && !defined (COMPILING_PDF_CRYPT)
 
 
-/* BEGIN PUBLIC */
-
 pdf_status_t pdf_crypt_init (void);
+
+
+/* BEGIN PUBLIC */
 
 pdf_status_t pdf_crypt_nonce (pdf_char_t * buffer, pdf_size_t size);
 

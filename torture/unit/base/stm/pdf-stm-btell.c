@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/06/16 22:51:54 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:55:55 davazp"
  *
  *       File:         pdf-stm-btell.c
  *       Date:         Sat Sep 20 19:16:41 2008
@@ -47,6 +47,8 @@ START_TEST (pdf_stm_btell_001)
 
   /* Create a buffer with some contents */
   buf_size = 11;
+  pdf_init();
+
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
   strcpy ((char *) buf, "0123456789");
@@ -91,7 +93,8 @@ START_TEST (pdf_stm_btell_002)
   pdf_size_t remain_length,written;
 
   /* Create the file path */
-  pdf_text_init ();
+  pdf_init();
+
   ret = pdf_text_new_from_pdf_string ("tmp.test", 8, &remain, &remain_length,
                                       &path);
   fail_if (ret != PDF_OK);

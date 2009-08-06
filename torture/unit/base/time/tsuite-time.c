@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/06/16 21:26:17 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 22:03:42 davazp"
  *
  *       File:         tsuit-time.c
  *       Date:         Sat Feb 23 21:35:11 2008
@@ -25,7 +25,6 @@
 
 #include <check.h>
 
-extern TCase *test_pdf_time_init (void);
 extern TCase *test_pdf_time_new (void);
 extern TCase *test_pdf_time_dup (void);
 extern TCase *test_pdf_time_destroy (void);
@@ -73,7 +72,6 @@ tsuite_time ()
 
   s = suite_create("time");
 
-	suite_add_tcase (s, test_pdf_time_init ());
 	suite_add_tcase (s, test_pdf_time_new ());
 	suite_add_tcase (s, test_pdf_time_dup ());
 	suite_add_tcase (s, test_pdf_time_destroy ());

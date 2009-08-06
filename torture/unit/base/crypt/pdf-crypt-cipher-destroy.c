@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-08-30 17:45:15 davazp"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:38:34 davazp"
  *
  *       File:         pdf-crypt-cipher-destroy.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -41,7 +41,7 @@
 START_TEST (pdf_crypt_cipher_destroy_001)
 {
   pdf_crypt_cipher_t cipher;
-  pdf_crypt_init();
+  pdf_init();
   pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
   fail_if (pdf_crypt_cipher_destroy (cipher) != PDF_OK);
 }
@@ -58,7 +58,7 @@ END_TEST
 START_TEST (pdf_crypt_cipher_destroy_002)
 {
   pdf_crypt_cipher_t cipher;
-  pdf_crypt_init();
+  pdf_init();
   pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &cipher);
   fail_if (pdf_crypt_cipher_destroy (cipher) != PDF_OK);
 }

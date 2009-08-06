@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-12-23 19:15:33 davazp"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:39:43 davazp"
  *
  *       File:         pdf-crypt-cipher-decrypt.c
  *       Date:         Tue Dec 23 17:36:21 2008
@@ -41,11 +41,9 @@
 START_TEST (pdf_crypt_cipher_setkey_001)
 {
   pdf_crypt_cipher_t cipher;
-  pdf_crypt_init();
+  pdf_init();
   pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
-
   fail_if (pdf_crypt_cipher_setkey (cipher, "0123456789abcdef", 16) != PDF_OK);
-  
   pdf_crypt_cipher_destroy (cipher);
 }
 END_TEST
@@ -61,11 +59,9 @@ END_TEST
 START_TEST (pdf_crypt_cipher_setkey_002)
 {
   pdf_crypt_cipher_t cipher;
-  pdf_crypt_init();
+  pdf_init();
   pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
-
   fail_if (pdf_crypt_cipher_setkey (cipher, "GNU", 3) == PDF_OK);
-  
   pdf_crypt_cipher_destroy (cipher);
 }
 END_TEST
@@ -81,11 +77,9 @@ END_TEST
 START_TEST (pdf_crypt_cipher_setkey_003)
 {
   pdf_crypt_cipher_t cipher;
-  pdf_crypt_init();
+  pdf_init();
   pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &cipher);
-
   fail_if (pdf_crypt_cipher_setkey (cipher, "GNUGNU", 6) != PDF_OK);
-  
   pdf_crypt_cipher_destroy (cipher);
 }
 END_TEST

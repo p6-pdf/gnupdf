@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/08 22:50:19 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:50:58 davazp"
  *
  *       File:         pdf-list-destroy.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -41,6 +41,8 @@ START_TEST (pdf_list_destroy_001)
 {
   pdf_list_t list;
   
+  pdf_init();
+
   pdf_list_new (NULL, NULL, 0, &list);
 
   fail_if (pdf_list_destroy (list) != PDF_OK);

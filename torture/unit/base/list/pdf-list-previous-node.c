@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/08 22:53:15 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:52:42 davazp"
  *
  *       File:         pdf-list-previous-node.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -45,6 +45,8 @@ START_TEST (pdf_list_previous_node_001)
   elem = 222;
   elem2 = 333;
 
+  pdf_init();
+
   pdf_list_new (NULL, NULL, 0, &list);
 
   pdf_list_add_last (list, &elem, NULL);
@@ -76,6 +78,8 @@ START_TEST (pdf_list_previous_node_002)
   
   elem = 222;
 
+  pdf_init();
+
   pdf_list_new (NULL, NULL, 0, &list);
 
   pdf_list_add_last (list, &elem, &node);
@@ -104,6 +108,8 @@ START_TEST (pdf_list_previous_node_003)
   pdf_status_t st;
   
   elem = 222;
+
+  pdf_init();
 
   pdf_list_new (NULL, NULL, 0, &list);
 

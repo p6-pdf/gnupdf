@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/08 22:55:37 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-08-05 21:53:52 davazp"
  *
  *       File:         pdf-list-sorted-add.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -50,6 +50,8 @@ START_TEST (pdf_list_sorted_add_001)
   
   elem = 5123;
 
+  pdf_init();
+
   pdf_list_new (l_comp, NULL, 0, &list);
   st = pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
   fail_if (st != PDF_OK);
@@ -73,6 +75,8 @@ START_TEST (pdf_list_sorted_add_002)
   pdf_status_t st;
   
   elem = 5123;
+
+  pdf_init();
 
   pdf_list_new (l_comp, NULL, 0, &list);
   st = pdf_list_sorted_add (list, NULL, &elem, NULL);
