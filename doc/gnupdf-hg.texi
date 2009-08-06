@@ -837,6 +837,21 @@ That's all. Now when you do a ``bzr commit'' a small report will tell if
 your patch is correct in terms of the QA scripts we run daily.
 If it is the commit will be applied, otherwise it won't.
 
+Note that the current hook only works with Bazaar 1.5 or later. To
+make it work on the older bazaar, you just need to replace this line:
+
+@example
+branch.Branch.hooks.install_named_hook('pre_commit', pre_commit_hook,
+                                'Patch safety scripts hook')
+@end example
+
+with these lines:
+
+@example
+branch.Branch.hooks.install_hook('pre_commit', pre_commit_hook)
+branch.Branch.hooks.name_hook(pre_commit_hook, 'Patch safety scripts hook')
+@end example
+
 NOTE: Make sure you run ``bzr commit'' from your working copy root
 directory.  Bazaar will fail with some error or don't even run the
 script otherwise. Until now we have no solution for this problem.

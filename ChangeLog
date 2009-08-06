@@ -1,3 +1,8 @@
+2009-08-06  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-hg.texi (Patch Safety Dispatcher): Added a note about
+	the needed version of bazaar (1.5 or later).
+
 2009-08-04  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* torture/unit/Makefile.am: Tabs removed.
