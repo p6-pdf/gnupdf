@@ -1,10 +1,5 @@
-This directory is intended to contain the test data needed to run the
-testsuite of the GNU PDF Library.
-
-The test data is not distributed in the source distribution. To get
-the test data for this version of libgnupdf please execute the script:
-
-      $ sh prmgt/get-test-data.sh
+This directory contains the test data needed to run the testsuite of
+the GNU PDF Library.
 
 Please see the GNU PDF Library Test Specification Document
 (doc/gnupdf-tsd.info) for information about the data files.

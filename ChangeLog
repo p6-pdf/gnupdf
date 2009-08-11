@@ -1,3 +1,23 @@
+2009-08-11  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-hg.texi (Test Data Files): Updated to reflect the
+	fact that we are distributing the test data files along with the
+	source package.
+
+	* torture/testdata/README: Updated.
+
+	* torture/testdata/TD00005.desc: New file.
+
+	* torture/testdata/TD00004.desc: New file.
+
+	* torture/testdata/TD00004: New file.
+
+	* torture/testdata/TD00003: New file.
+
+	* torture/testdata/TD00002: New file.
+
+	* torture/testdata/TD00001: New file.
+
 2009-08-06  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf-hg.texi (Patch Safety Dispatcher): Added a note about

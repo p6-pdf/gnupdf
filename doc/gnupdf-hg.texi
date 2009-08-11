@@ -1103,18 +1103,8 @@ Some tests require the use of data files:
 @item to hold output to be compared with the output of the software under test
 @end itemize
 
-Since we are not distributing the test data files with the source
-distribution, neither they are stored in the bazaar repository, we
-need to download a tarball
-@url{http://www.gnupdf.org/prmgt/testdata/gnupdf-testdata-RELEASE.tar.gz},
-where @var{release} is the version of the library or @file{trunk}.
-
-After downloaded the data files should be untarred in the
-@file{torture/testadata/} directory.
-
-The easiest way to get the test data files is by using the
-@file{prmgt/get-test-data.sh} script, that will download and install
-the data files tarball matching the appropriate release.
+The test data files are distributed in the @file{torture/testdata}
+directory along with the source code.
 
 The test data files are documented in the ``Test Data Files'' chapter
 in the Test Specification Document.
