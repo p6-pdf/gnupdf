@@ -1,5 +1,8 @@
 2009-08-11  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* torture/unit/base/fsys/pdf-fsys-file-open.c: Use the new names
+	for the test data files.
+
 	* doc/gnupdf-hg.texi (Test Data Files): Updated to reflect the
 	fact that we are distributing the test data files along with the
 	source package.

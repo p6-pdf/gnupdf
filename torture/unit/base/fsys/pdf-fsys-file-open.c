@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-07-28 01:47:46 derhans"
+/* -*- mode: C -*- Time-stamp: "09/08/11 16:25:14 jemarch"
  *
  *       File:         pdf-fsys-file-open.c
  *       Date:         Sat May  2 00:02:09 2009
@@ -41,7 +41,7 @@ START_TEST(pdf_fsys_file_open_001)
 {
   pdf_fsys_file_t file;
   pdf_text_t path;
-  pdf_char_t filename[] = "TDFSYS0001", *pathname;
+  pdf_char_t filename[] = "TD00004", *pathname;
 
   pathname = tortu_get_data_file_path(filename);
   file = (pdf_fsys_file_t)pdf_alloc(sizeof(struct pdf_fsys_file_s));
@@ -108,7 +108,7 @@ START_TEST(pdf_fsys_file_open_003)
 {
   pdf_fsys_file_t file;
   pdf_text_t path;
-  pdf_char_t filename[] = "TDFSYS0001", *pathname;
+  pdf_char_t filename[] = "TD00005", *pathname;
 
   pathname = tortu_get_data_file_path(filename);
   file = (pdf_fsys_file_t)pdf_alloc(sizeof(struct pdf_fsys_file_s));
@@ -142,7 +142,7 @@ START_TEST(pdf_fsys_file_open_004)
 {
   pdf_fsys_file_t file;
   pdf_text_t path;
-  pdf_char_t filename[] = "TDFSYS0002", *pathname;
+  pdf_char_t filename[] = "TD00005", *pathname;
 
   pathname = tortu_get_data_file_path(filename);
   file = (pdf_fsys_file_t)pdf_alloc(sizeof(struct pdf_fsys_file_s));
