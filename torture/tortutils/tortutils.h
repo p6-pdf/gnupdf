@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/11/25 20:53:49 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/08/11 16:42:16 jemarch"
  *
  *       File:         tortutils.h
  *       Date:         Mon Nov 24 22:11:23 2008
@@ -33,6 +33,8 @@
 #  include <windows.h>
 #endif
 
+#include <stdlib.h>
+
 #define TORTU_TRUE 1
 #define TORTU_FALSE 0
 
@@ -42,7 +44,7 @@
 
 /* Get the path to the data files. The returned pointer should
    be freed by the caller */
-char *tortu_get_data_path (char *datafilename);
+char *tortu_get_data_file_path (char *datafilename);
 
 /* Return whether a data file exists */
 int tortu_data_file_p (char *datafilename);

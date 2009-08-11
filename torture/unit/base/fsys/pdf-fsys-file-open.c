@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/08/11 16:25:14 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/08/11 16:42:42 jemarch"
  *
  *       File:         pdf-fsys-file-open.c
  *       Date:         Sat May  2 00:02:09 2009
@@ -24,6 +24,7 @@
  */
 
 #include <config.h>
+#include <tortutils.h>
 #include <check.h>
 #include <pdf.h>
 #include <string.h>
