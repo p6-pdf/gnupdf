@@ -11209,15 +11209,18 @@ The Object Layer of the library provides access to manipulate PDF
 documents as a collection of PDF objects (@pxref{PDF Objects}).
 
 @quotation Note
-The use of this layer can lead to non-well conformed PDF
-documents: not every PDF object collection define a document. So the
-client should be careful when using this layer. In contrast the
-@ref{Document Layer} provides a convenient API to manipulate PDF files
-while maintaining its structural integrity.
+The use of this layer can lead to non-well conformed PDF documents:
+not every PDF object document define a document.  The client should be
+careful when using this layer. In contrast the @ref{Document Layer}
+provides a convenient API to manipulate PDF files while maintaining
+its structural integrity.
 @end quotation
 
 @node Object Documents
 @section Object Documents
+
+At the syntactic level any PDF document can be viewed as a collection
+of objects organized in a certain way.  
 
 @menu
 * Object Document Data Types::  
