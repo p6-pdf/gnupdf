@@ -534,7 +534,7 @@ if compiling for a specific platform should use the following name
 convention:
 
 @example
-pdf_MDULE-NAME[_PART-NAME]_PLATFORM_...
+pdf_MODULE-NAME[_PART-NAME]_PLATFORM_...
 @end example
 
 where @code{platform} is the canonical name for the target platform:
@@ -755,6 +755,7 @@ integrated in the trunk.
 * Generating a Bazaar Merge Directive::
 * Syntax Check::
 * Patch Safety Dispatcher::
+* Sending your Patch::
 @end menu
 
 @node Documenting Your Changes
@@ -855,6 +856,22 @@ branch.Branch.hooks.name_hook(pre_commit_hook, 'Patch safety scripts hook')
 NOTE: Make sure you run ``bzr commit'' from your working copy root
 directory.  Bazaar will fail with some error or don't even run the
 script otherwise. Until now we have no solution for this problem.
+
+@node Sending your Patch
+@section Sending your Patch
+
+Before to send the patch to be considered for merging, please use the
+following checkpoints list to make sure that everything is in place:
+
+@itemize @minus
+@item Is the patch including a ChangeLog entry?
+@item Is the patch including an update to the @code{AUTHORS} file documenting any new modified/created file by you?
+@item What about the copyright headers?  Did you copy the header from other file and therefore it is needed to change the copyright years?
+@end itemize
+
+If everything is ok please send the patch to
+@email{pdf-devel@@gnu.org}.  Note that it is preferable to include the
+merge directive in the message body than to send it as an attachment.
 
 @node Testing the library
 @chapter Testing the library
