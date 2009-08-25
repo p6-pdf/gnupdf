@@ -11205,6 +11205,12 @@ pdf_crypt_nonce (buffer, sizeof(buffer));
 @node Object Layer Overview
 @section Overview
 
+In its more fundamental structure, a PDF document is conformed by a
+collection of PDF objects organized in a certain way.  @dfn{PDF
+objects} can signify values for several different data types, such as
+numeric values, records (called @dfn{dictionaries} in the PDF jargon)
+and arrays.
+
 The Object Layer of the library provides access to manipulate PDF
 documents as a collection of PDF objects (@pxref{PDF Objects}).
 
@@ -11222,11 +11228,14 @@ its structural integrity.
 At the syntactic level any PDF document can be viewed as a collection
 of objects organized in a certain way.  
 
+An object document can be associated with a file system file
+(@pxref{The Filesystem Module}).
+
 @menu
 * Object Document Data Types::  
 * Opening and Closing Object Documents::  
 * Managing Object Document Properties::  
-* Getting Objects::             
+* Retrieving Objects::             
 * Garbage collection in object documents::  
 @end menu
 
@@ -11265,16 +11274,22 @@ Client-specific data for the progress monitor callbacks.
 
 Create an empty object document.
 
+The newly created object document contains an empty root dictionary
+and an optional empty Document Information Dictionary.
+
 @table @strong
 @item Parameters
 @table @var
 @item doc
 A pointer to a @code{pdf_obj_doc_t} variable.
 @item flags
-An integer value containing flags. Valid values are:
+An integer value containing the ORed value of zero or more
+flags. Valid flags are:
 @table @code
 @item PDF_OBJ_DOC_CREATE_INFO_DIR
-Create an Info dictionary for the object document.
+Create an empty @dfn{Document Information Dictionary} in the object
+document as an indirect dictionary.  The Info dictionary will be
+referenced in the document trailer.
 @end table
 @end table
 @item Returns
@@ -11284,7 +11299,7 @@ A PDF status value:
 The object document was successfully created.
 @item PDF_ERROR
 Error creating the object document. The reference stored in @var{doc}
-is now invalid.
+becomes invalid.
 @end table
 @item Usage example
 @example
@@ -11299,27 +11314,21 @@ if (pdf_obj_doc_new (PDF_OBJ_DOC_CREATE_INFO_DIR,
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_doc_open (pdf_u32_t @var{flags}, pdf_fsys_t @var{filesystem}, pdf_text_t @var{path}, pdf_char_t *@var{header_string}, pdf_obj_doc_t *@var{doc})
+@deftypefun pdf_status_t pdf_obj_doc_open (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path}, pdf_char_t *@var{header_string}, pdf_obj_doc_t *@var{doc})
 
 Open a document object from a file.
 
 @table @strong
 @item Parameters
 @table @var
-@item flags
-An ORed value of some of the following opening flags:
-@table @code
-@item PDF_OBJ_DOC_OPEN_DO_REPAIR
-If this flag is set then it is possible to open a @strong{minimal
-document}. TODO: explain what a minimal document is.
-@end table
 @item filesystem
 A filesystem implementation. If this parameter is @code{NULL} then the
-default disk filesystem is used.
+default disk filesystem is used.  @xref{The Filesystem Module}.
 @item path
 The path to the file containing the object document.
 @item header_string
-A string like @code{"%PDF-"}.
+A string like @code{"%PDF-"}.  The string should appear as the first
+content of the specified file.  The string can be empty.
 @item doc
 A pointer to a @code{pdf_obj_doc_t} variable.
 @end table
@@ -11327,13 +11336,30 @@ A pointer to a @code{pdf_obj_doc_t} variable.
 A PDF status value:
 @table @code
 @item PDF_OK
+The object document was correctly loaded from @var{path} and stored in
+@var{doc}.
+@item PDF_ENOMEM
+Not enough memory to perform the operation.
+@item PDF_EBADNAME
+The path specified in @var{path} is not correct.
+@item PDF_EBADPERMS
+The file in @var{path} could not be read due to a lack of permissions.
+@item PDF_EBADFILE
+Parser error while interpreting the contents of the file in
+@var{path}.  (FIXME: an out parameter should be added to get the
+parsing information localizing the faulting line).
+@item PDF_EIMPLLIMIT
+Some implementation limit was exceeded.  For example, there is a limit
+in the number of PDF objects that can be contained in an object
+document. @xref{Implementation Limits}.
 @item PDF_ERROR
-@item COMPLETEME
+Some error prevented the operation to complete.  The value of
+@var{doc} is undefined and should not be used.
 @end table
 @item Usage example
 @example
 pdf_text_t file_path;
-pdf_obj_doc_t doc;
+pdf_obj_doc_t objdoc;
 
 /* Open a PDF object document from /foo/bar.pdf */
 pdf_text_new_from_unicode ("/foo/bar.pdf",
@@ -11341,11 +11367,10 @@ pdf_text_new_from_unicode ("/foo/bar.pdf",
                            PDF_TEXT_UTF8,
                            &file_path);
 
-if (pdf_obj_doc_open (PDF_OBJ_DOC_OPEN_DO_REPAIR,
-                      NULL, /* Use the default filesystem */
+if (pdf_obj_doc_open (NULL, /* Use the default filesystem */
                       file_path,
                       "%PDF-",
-                      &doc) != PDF_OK)
+                      &objdoc) != PDF_OK)
 @{
    /* Error opening /foo/bar.pdf */
 @}
@@ -11357,6 +11382,10 @@ if (pdf_obj_doc_open (PDF_OBJ_DOC_OPEN_DO_REPAIR,
 
 Close an object document.
 
+If the dirty flag of the object document is set then the contents are
+saved before closing.  The performed saving operation is equivalent to
+a call to @code{pdf_obj_doc_save} with @code{NULL} flags.
+
 @table @strong
 @item Parameters
 @table @var
@@ -11367,11 +11396,11 @@ An object document.
 A PDF status value:
 @table @code
 @item PDF_OK
-The object document has been closed. The reference in @var{doc}
-should be considered invalid.
+The object document has been closed.  The value of @var{doc} should be
+considered invalid and shall not be used.
 @item PDF_ERROR
-Error while closing the object document. The reference in @var{doc}
-should be considered invalid.
+Error while closing the object document.  The reference in @var{doc}
+should be considered invalid and shall not be used.
 @end table
 @item Usage example
 @example
@@ -11404,15 +11433,14 @@ If this parameter is @code{NULL} then the file associated with
 @var{doc} is used for the save operation.
 @item flags
 An ORed value of the following defined flags:
-
 @table @code
 @item PDF_OBJ_DOC_SAVE_DONT_CREATE_CR
 Do not create a cross reference table (or stream) when saving the document.
-@item PDF_OBJ_DOC_SAVE_DO_GC
-Garbage-collect the document when saving it.
 @item PDF_OBJ_DOC_SAVE_FULL
 Do a ``full save'', writing all the objects instead of just the
-modified ones.
+modified ones.  FIXME: is this option recreating the whole file with
+all the objects with generation 0?  Or creates a new generation for
+all the objects?.
 @end table
 @item params
 A @code{pdf_obj_doc_save_params_s} structure containing the parameters
@@ -11422,8 +11450,10 @@ of the save operation.
 A PDF status value:
 @table @code
 @item PDF_OK
+The object document was saved properly.
 @item PDF_ERROR
-An error prevented the document to be saved.
+An error prevented the document to be saved.  The value of @var{doc}
+is still valid.
 @end table
 @item Usage example
 @example
@@ -11433,10 +11463,12 @@ pdf_obj_doc_t doc;
 /* Open an object document 'doc'... */
 
 /* Fill in the save parameters */
-save_params.header = "%PDF-";
-save_params.crypt_key = NULL;        /* No encryption */
+save_params.header = "%PDF-1.6";
+/* No encryption */
+save_params.crypt_key = NULL;
 save_params.crypt_key_size = 0;
-save_params.progress_monitor = NULL; /* Do not use a progress monitor */
+/* Do not use a progress monitor */
+save_params.progress_monitor = NULL;
 save_params.monitor_client_data = NULL;
 
 /* Save the document in its associated file */
@@ -11474,35 +11506,52 @@ document does not have a instance id then the null object is returned.
 A PDF status value:
 @table @code
 @item PDF_OK
+The document id was correctly stored into @var{instance_id} and
+@var{permanent_id}.
 @item PDF_ERROR
+Some error prevented the operation to complete.  The value of
+@var{instance_id} and @var{permanent_id} is undefined.
 @end table
 @item Usage example
 @example
-XXX
-@end example
-@end table
-@end deftypefun
+pdf_obj_doc_t objdoc;
+pdf_obj_t instance_id;
+pdf_obj_t permanent_id;
 
-@deftypefun pdf_bool_t pdf_obj_doc_obj_in_range (pdf_obj_t @var{obj}, pdf_u32_t @var{byte_ranges}, pdf_u32_t @var{num_entries})
+/* Create an object document ... */
 
-COMPLETEME
+if (pdf_obj_doc_get_id (objdoc,
+                        instance_id,
+                        permanent_id) != PDF_ERROR)
+@{
+   if (pdf_obj_get_type (instance_id)
+       != PDF_OBJ_NULL)
+   @{
+      /* 'instance_id' is a PDF string object containing the
+         instance ID of the document */
+   @}
+   
+   if (pdf_obj_get_type (permanent_id)
+       != PDF_OBJ_NULL)
+   @{
+      /* 'permanent_id' is a PDF string object containing the
+         permanent ID of the document */
+   @}
+@}
 
-@table @strong
-@item Parameters
-@item Returns
-@item Usage example
-@example
-XXX
 @end example
 @end table
 @end deftypefun
 
 @deftypefun pdf_status_t pdf_obj_doc_set_dirty (pdf_obj_doc_t @var{doc}, pdf_bool_t @var{dirty_p})
 
-Set the dirty flag of the object document @var{doc} to @var{dirty_p}.
+Explicitly set the dirty flag of the object document @var{doc} to
+@var{dirty_p}.
 
 If the dirty flag of a document is set then its contents are saved
-before the document is closed.
+before the document is closed.  Note that if the dirty flag of the
+document is cleared using this function then any modified data will be
+lost upon closing.
 
 @table @strong
 @item Parameters
@@ -11516,48 +11565,111 @@ Boolean value.
 A PDF status value:
 @table @code
 @item PDF_OK
+The dirty flag was properly set.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t objdoc;
+pdf_text_t file_path;
+pdf_obj_t catalog;
+pdf_obj_t foo_value;
+
+/* Open an object document */
+pdf_text_new_from_unicode ("/foo/bar.pdf",
+                           12,
+                           PDF_TEXT_UTF8,
+                           &file_path);
+
+pdf_obj_doc_open (NULL, /* Use the default filesystem */
+                  file_path,
+                  "%PDF-",
+                  &objdoc);
+
+/* Modify the object document by adding a /Foo entry to
+   the catalog. This operation will set the dirty flag of
+   the document. */
+pdf_obj_doc_get_root (objdoc, &catalog);
+pdf_obj_integer_new (objdoc, PDF_FALSE, 10, &foo_value);
+pdf_obj_dict_put_str (catalog, "Foo", foo_value);
+
+/* Clear the dirty flag of the document. */
+pdf_obj_doc_set_dirty (objdoc, PDF_FALSE);
+
+/* Close the document.  The /Foo entry in the catalog dictionary is
+   lost, since the document is not saved. */
+pdf_obj_doc_close (objdoc);
 @end example
 @end table
 @end deftypefun
 
-@node Getting Objects
-@subsection Getting Objects
+@node Retrieving Objects
+@subsection Retrieving Objects
 
-@deftypefun pdf_status_t pdf_obj_doc_get_info_dict (pdf_obj_doc_t @var{doc}, pdf_obj_t *@var{obj})
+A PDF object document contains two special objects that can be
+retrieved using specific-purpose functions:
 
-Return the Info dictionary of the object document.
+@itemize @minus
+@item The @dfn{Document Information Dictionary}.  It is optional.
+@item The @dfn{root object}, that is the catalog dictionary in a well-formed PDF document.  It is mandatory.
+@end itemize
+
+Any other indirect object contained in the object document can be
+retrieved using an object identifier.
+
+@deftypefun pdf_status_t pdf_obj_doc_get_info_dict (pdf_obj_doc_t @var{objdoc}, pdf_obj_t *@var{info_dict})
+
+Return the Document Information Dictionary of the object document.  If
+the object document does not contain an info dictionary then the
+@code{null} object is returned.
 
 @table @strong
 @item Parameters
 @table @var
 @item doc
 An object document.
-@item obj
+@item info_dict
 A pointer to a @code{pdf_obj_t} variable.
 @end table
 @item Returns
 A PDF status value:
 @table @code
 @item PDF_OK
-The Info dictionary object was stored in @var{obj}.
+If the object document features an Info dictionary it was stored in
+@var{info_dict}.  Otherwise the @code{null} object was stored in
+@var{info_dict}.
 @item PDF_ERROR
-Error while getting the Info dictionary of the document object.
+Error while getting the Info dictionary of the document object.  The
+value in @var{info_dict} should be considered undefined.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t objdoc;
+pdf_obj_t info_dict;
+
+/* Get the Document Information Dictionary of the
+   object document. */
+if (pdf_obj_doc_get_info_dict (objdoc, &info_dict)
+    != PDF_ERROR)
+@{
+   if (pdf_obj_get_type (info_dict) != PDF_OBJ_NULL)
+   @{
+      /* The info dictionary of the document is stored in
+         'info_dict'. */
+   @}
+   else
+   @{
+      /* The object document does not feature an info
+         dictionary. */
+   @}
+@}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_doc_get_root (pdf_obj_doc_t @var{doc}, pdf_obj_t *@var{obj})
+@deftypefun pdf_status_t pdf_obj_doc_get_root (pdf_obj_doc_t @var{objdoc}, pdf_obj_t *@var{root_dict})
 
-Get the root object (catalog) of the document @var{doc} and store it
-in @var{obj}.
+Get the root object (maybe the catalog of a well-formed PDF document)
+of the object document @var{objdoc} and store it in @var{root_dict}.
 
 @table @strong
 @item Parameters
@@ -11571,13 +11683,23 @@ A pointer to a @code{pdf_obj_t} variable.
 A PDF status value:
 @table @code
 @item PDF_OK
-The root object has been stored in @var{obj}.
+The root object has been stored in @var{root_dict}.
 @item PDF_ERROR
-Error while getting the root object of the document.
+Error while getting the root object of the document.  The value of
+@var{root_dict} is invalid.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t objdoc;
+pdf_obj_t root_dict;
+
+/* Get the root object of an object document */
+if (pdf_obj_doc_get_root (objdoc, &root_dict)
+    != PDF_ERROR)
+@{
+   /* 'root_dict' contains the root dictionary of the
+      object document. */
+@}
 @end example
 @end table
 @end deftypefun
@@ -11588,13 +11710,17 @@ Get an object from @var{doc} given its @var{obj_id} and store it in
 @var{obj}. Note that the object with the latest generation number in
 the document is returned.
 
+[FIXME: what if we want to retrieve the object with an old generation
+        number?  (to restore it, for example).]
+
+Any previous content of @var{obj} is lost.
 @table @strong
 @item Parameters
 @table @var
 @item doc
 An object document.
 @item obj_id
-The object number of the desired object.
+The object identifier of the desired object.
 @item obj
 A pointer to a @code{pdf_obj_t} variable.
 @end table
@@ -11604,11 +11730,19 @@ A PDF status value:
 @item PDF_OK
 The object was stored in @var{obj}.
 @item PDF_ERROR
-Error while getting the object.
+Error while getting the object.  The value of @var{obj} is invalid.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t objdoc;
+pdf_obj_t pages_dict;
+
+/* Get the pages dictionary of 'objdoc' using its object id */
+if (pdf_obj_doc_get_obj (objdoc, 5, &catalog_dir)
+    != PDF_ERROR)
+@{
+   /* 'catalog_dir' contains the pages dictionary. */
+@}
 @end example
 @end table
 @end deftypefun
@@ -11616,26 +11750,72 @@ XXX
 @node Garbage collection in object documents
 @subsection Garbage collection in object documents
 
-@deftypefun pdf_status_t pdf_obj_doc_gc (pdf_obj_doc_t @var{doc})
+A garbage collector is provided by the library to remove non-reachable
+objects from an object document.
 
-Call the garbage collection on @var{doc}, removing non-reachable
-objects.
+A @dfn{non-reachable object} is any indirect object that cannot be
+reached starting from the root dictionary of the object document. A
+special case is the Document Information Dictionary.  It is never
+collected even if it is not reachable.
+
+The algorithm implemented by the collector is:
+
+@enumerate
+@item
+Mark the Document Information Dictionary if it exists.
+@item
+Starting from the root dictionary, inclusive, mark any reachable
+object.
+@item
+For every non-marked object...
+@enumerate
+@item
+If its acquire counter is @code{1}, destroy it freeing any used
+memory.  Any @code{pdf_obj_t} referencing the object becomes invalid.
+@end enumerate
+@end enumerate
+
+Note that the garbage collector is never called implicitly.
+
+@deftypefun pdf_status_t pdf_obj_doc_gc (pdf_obj_doc_t @var{objdoc})
+
+Call the garbage collector on @var{objdoc}, removing non-reachable
+non-acquired objects.
 
 @table @strong
 @item Parameters
 @table @var
-@item doc
+@item objdoc
 An object document.
 @end table
 @item Returns
 A PDF status value:
 @table @code
 @item PDF_OK
+The collection was successful.
 @item PDF_ERROR
+An error prevented the collector to terminate.  The document
+@var{objdoc} should be considered invalid.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t objdoc;
+pdf_obj_t unreachable_obj;
+
+pdf_obj_integer_new (objdoc, PDF_TRUE, 10, &unreachable_obj);
+
+/* Garbage-collect the document and save its
+   content. */
+if (pdf_obj_doc_gc (objdoc) != PDF_ERROR)
+@{
+   /* 'unreachable_obj' has been collected and its value is now
+      undefined. */
+@}
+else
+@{
+   /* The collector failed and the document in 'objdoc' should be
+      considered invalid. */
+@}
 @end example
 @end table
 @end deftypefun
@@ -11680,7 +11860,6 @@ Supported types of PDF objects:
 @item PDF_OBJ_NAME
 @item PDF_OBJ_STREAM
 @item PDF_OBJ_STRING
-@item PDF_OBJ_REF
 @end table
 @end deftp
 
@@ -11802,6 +11981,8 @@ If @var{obj} is a composite object (array, dictionary, stream) then
 any directly referenced object is also destroyed. The indirectly
 referenced objects are not destroyed.
 
+The root dictionary of an object document can not be destroyed.
+
 @table @strong
 @item Parameters
 @table @var
@@ -11813,6 +11994,9 @@ A PDF status value:
 @table @code
 @item PDF_OK
 @item PDF_ERROR
+@item PDF_FIXME
+The user requested to destroy the root dictionary of the object
+document.
 @end table
 @item Usage example
 @example
@@ -13312,7 +13496,22 @@ A PDF status value:
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t objdoc;
+pdf_obj_t root_dict;
+pdf_obj_t pages_dict;
+
+/* Create a /Pages entry in the root dictionary, as an indirect
+   object, containing an empty dictionary. */
+pdf_obj_doc_get_root (objdoc, &root_dir);
+pdf_obj_dict_new (objdoc, PDF_TRUE, &pages_dict);
+
+if (pdf_obj_dict_put_str (root_dir, "/Pages", pages_dict)
+    != PDF_ERROR)
+@{
+   /* The root dictionary now contains a /Pages entry
+      whose value is an object reference pointing to the
+      indirect dictionary 'pages'. */
+@}
 @end example
 @end table
 @end deftypefun
