@@ -11848,30 +11848,63 @@ Opaque type representing a PDF Object.
 @end deftp
 
 @deftp {Data Type} {enum pdf_obj_type_e}
-Supported types of PDF objects:
+Enumeration of the supported types of PDF objects:
 
 @table @code
-@item PDF_OBJ_NULL
-@item PDF_OBJ_ARRAY
-@item PDF_OBJ_BOOLEAN
-@item PDF_OBJ_DICT
 @item PDF_OBJ_REAL
+Real objects denote quantities in the real domain, such as @code{3,14}
+and @code{1,00000}.
+
+@xref{Real Objects}.
 @item PDF_OBJ_INTEGER
+Integer objects denote quantities in the integer domain, such as
+@code{3} and @code{1}.
+
+@xref{Integer Objects}.
+@item PDF_OBJ_BOOLEAN
+Possible values are @dfn{true} and @dfn{false}.
+
+@xref{Boolean Objects}.
 @item PDF_OBJ_NAME
-@item PDF_OBJ_STREAM
+A PDF name is an atomic symbol uniquely defined by a sequence of
+regular characters.  It does not have internal structure.
+
+@xref{Name Objects}.
 @item PDF_OBJ_STRING
+A PDF string is a sequence of bytes whose values are in the range
+@code{0-255}.
+
+@xref{String Objects}.
+@item PDF_OBJ_ARRAY
+A heterogeneous array of PDF objects.
+
+@xref{Array Objects}.
+@item PDF_OBJ_DICT
+A dictionary is a collection of key-value pairs.  Unlike the
+postscript dictionaries the key should be a Name Object, while the
+value is a PDF object of any type.
+
+@xref{Dictionary Objects}.
+@item PDF_OBJ_STREAM
+
+@xref{Stream Objects}.
+@item PDF_OBJ_NULL
+The Null object has a type and a value that are unequal to those of
+any other object.
+
+@xref{Null Object}.
 @end table
 @end deftp
 
 @deftp {Data Type} pdf_obj_id_t
 A positive integer representing the identification number of a PDF
-object.
+object.  An object ID uniquely represents an object into an object
+document.
 @end deftp
 
 @deftp {Data Type} {pdf_obj_gen_t}
 A non-negative number representing the generation number of a PDF object.
 @end deftp
-
 
 @deftp {Data Type} {pdf_bool_t (*pdf_obj_enum_fn_t) (pdf_obj_t @var{obj}, pdf_obj_t @var{value}, void *@var{client_data})}
 
@@ -11910,6 +11943,8 @@ A PDF status value.
 
 @deftp {Data Type} pdf_obj_col_t
 Opaque type representing an object collection into an object document.
+
+@xref{Object Collections}.
 @end deftp
 
 @deftp {Data Type} {enum pdf_obj_stm_open_mode_e}
@@ -11920,11 +11955,15 @@ Open modes for PDF stream objects.
 @item PDF_OBJ_STM_OPEN_MODE_RAW
 The data will be decrypted but not filtered.
 @item PDF_OBJ_STM_OPEN_MODE_UNFILTERED
+The data wont be filtered nor decrypted.
 @item PDF_OBJ_STM_OPEN_MODE_FILTERED
 The data will be both decrypted and filtered.
 @item PDF_OBJ_STM_OPEN_MODE_RAW_IFKEY
+FIXME
 @item PDF_OBJ_STM_OPEN_MODE_UNFILTERED_IFKEY
+FIXME
 @item PDF_OBJ_STM_OPEN_MODE_FILTERED_IFKEY
+FIXME
 @end table
 @end deftp
 
@@ -11933,7 +11972,7 @@ The data will be both decrypted and filtered.
 
 The following functions can be called on any @code{pdf_obj_t}
 variable, regardless its type (but note that the effects of the call
-may vary depending of the object type).
+may vary depending on the object type).
 
 @deftypefun pdf_status_t pdf_obj_copy (pdf_obj_t @var{source}, pdf_obj_doc_t @var{dest_doc}, pdf_bool_t @var{copy_indirect}, pdf_obj_t *@var{dest})
 
@@ -11945,7 +11984,7 @@ with @var{source}.
 @item Parameters
 @table @var
 @item source
-The PDF oject to copy.
+The PDF object to copy.
 @item dest_doc
 The object document that will hold the copied object.
 @item copy_indirect
@@ -11956,16 +11995,38 @@ All indirectly referenced objects in @var{source} are copied to
 @var{dest_doc}.
 @item PDF_FALSE
 The indirectly referenced objects in @var{source} are not copied to
-@var{dest_doc}.
+@var{dest_doc}.  The corresponding entries in @var{source} will be
+missing in @var{dest}.
 @end table
 @item dest
 A PDF object to hold the copied object.
 @end table
 @item Returns
 A PDF status value
+@table @code
+@item PDF_OK
+The copy was successfully performed.
+@item PDF_ENOMEM
+Not enough memory to perform the copy.
+@item PDF_ERROR
+Some error prevented the operation to complete.  The value of
+@var{dest} is undefined.
+@end table
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t objdoc;
+pdf_obj_t obj1;
+pdf_obj_t obj2;
+
+...
+
+/* Make a copy of 'obj1' in 'obj2' in the same object document
+   'objdoc' */
+if (pdf_obj_copy (obj1, objdoc, PDF_TRUE, &obj2)
+    != PDF_ERROR_)
+@{
+   /* 'obj2' now contains a copy of 'obj1'. */
+@}
 @end example
 @end table
 @end deftypefun
@@ -11993,14 +12054,25 @@ The PDF object to destroy.
 A PDF status value:
 @table @code
 @item PDF_OK
+The object was successfully destroyed.  The value of @var{obj} is now
+undefined and shall not be used.
 @item PDF_ERROR
-@item PDF_FIXME
+An error prevented to complete the operation.  The value of @var{obj}
+is now undefined and shall not be used.
+@item PDF_EINVOP
 The user requested to destroy the root dictionary of the object
 document.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t objdoc;
+pdf_obj_t info_dict;
+
+...
+
+/* Destroy the info dictionary of an object document */
+pdf_obj_doc_get_info_dict (objdoc, &info_dict);
+pdf_obj_destroy (info_dict);
 @end example
 @end table
 @end deftypefun
@@ -12041,7 +12113,27 @@ returned by the enumeration procedure, considering @code{PDF_OK} as
 true and @code{<> PDF_OK} as false.
 @item Usage example
 @example
-XXX
+/* Callback function */
+pdf_bool_t
+my_enum_callback (pdf_obj_t obj,
+                  pdf_obj_t value,
+                  void *client_data)
+@{
+   /* Process the callback... */
+@}
+
+...
+
+/* Perform an enumeration of the elements of some
+   object */
+if (pdf_obj_enum (obj, my_enum_callback, NULL))
+@{
+   /* All the calls to 'my_enum_callback' returned PDF_OK */
+@}
+else
+@{
+   /* Some call to 'my_enum_callback' returned <> PDF_OK */
+@}
 @end example
 @end table
 @end deftypefun
@@ -12079,16 +12171,29 @@ The PDF objects are not equal.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t objdoc;
+pdf_obj_t obj1;
+pdf_obj_t obj2;
+
+...
+
+/* Compare integers */
+pdf_obj_integer_new (objdoc, PDF_TRUE, 10, &obj1);
+pdf_obj_integer_new (objdoc, PDF_FALSE, 20, &obj2);
+pdf_obj_equal_p (obj1, obj2); /* Returns PDF_FALSE */
+pdf_obj_destroy (obj1);
+pdf_obj_destroy (obj2);
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_get_doc (pdf_obj_t @var{obj}, pdf_obj_doc_t *@var{doc})
+@deftypefun pdf_status_t pdf_obj_get_doc (pdf_obj_t @var{obj}, pdf_obj_doc_t *@var{objdoc})
 
 Gets the object document associated with a given PDF object
-@var{obj}. This is only defined for indirect and non-scalar objects.
+@var{obj}.
 
+This is a nop for direct scalar objects, since they are not associated
+with an object document.
 @table @strong
 @item Parameters
 @table @var
@@ -12101,18 +12206,31 @@ A pointer to a @var{pdf_obj_doc_t} variable.
 A PDF status value:
 @table @code
 @item PDF_OK
+The object document was stored in @var{objdoc}.
 @item PDF_EINVOBJ
 The specified object @var{obj} is a scalar object.
 @item PDF_ERROR
+An error prevented the operation to complete.  The value of
+@var{objdoc} is now undefined.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t objdoc;
+pdf_obj_t obj;
+
+...
+
+if (pdf_obj_get_doc (obj, &objdoc)
+    != PDF_ERROR)
+@{
+   /* 'objdoc' contains a reference to the object document containing
+      'obj'. */
+@}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_obj_gen_t pdf_obj_get_generation (pdf_obj_t @var{obj})
+@deftypefun pdf_status_t pdf_obj_get_generation (pdf_obj_t @var{obj}, pdf_obj_gen_t *@var{gen_number})
 
 Get the generation number of a given indirect PDF object @var{obj}.
 
@@ -12121,17 +12239,38 @@ Get the generation number of a given indirect PDF object @var{obj}.
 @table @var
 @item obj
 An indirect PDF object.
+@item gen_number
+A pointer to a @code{pdf_obj_gen_t} variable to hold the generation number.
 @end table
 @item Returns
-The generation number of @var{obj}.
+A PDF status value:
+@table @code
+@item PDF_OK
+The generation number was stored in @var{gen_number}.
+@item PDF_EINVOBJ
+@var{obj} is not an indirect object.  Any previous contents of
+@var{gen_number} are left untouched.
+@item PDF_ERROR
+An error prevented to complete the operation.  The value of
+@var{gen_number} is invalid and shall not be used.
+@end table
 @item Usage example
 @example
-XXX
+pdf_obj_t obj;
+pdf_obj_gen_t gen_number;
+
+...
+
+if (pdf_obj_get_generation (obj, &gen_number)
+    == PDF_OK)
+@{
+   /* 'gen_number' contains the generation number of 'obj'. */
+@}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_obj_id_t pdf_obj_get_id (pdf_obj_t @var{obj})
+@deftypefun pdf_status_t pdf_obj_get_id (pdf_obj_t @var{obj}, pdf_obj_id_t *@var{id_number})
 
 Get the identification number of a given indirect PDF object @var{obj}.
 
@@ -12140,12 +12279,34 @@ Get the identification number of a given indirect PDF object @var{obj}.
 @table @var
 @item obj
 An indirect PDF object.
+@item id_number
+A pointer to a @code{pdf_obj_id_t} variable to hold the id number.
 @end table
 @item Returns
-The identification number of @var{obj}.
+A PDF status value:
+@table @code
+@item PDF_OK
+The identification number of @var{obj} was stored in @var{id_number}.
+@item PDF_EINVOBJ
+@var{obj} is not an indirect object.  The previous value of
+@var{id_number} remains.
+@item PDF_ERROR
+Some error prevented the operation to complete.  The value of
+@var{id_number} is invalid and shall not be used.
+@end table
 @item Usage example
 @example
-XXX
+pdf_obj_t obj;
+pdf_obj_id_t id_number;
+
+...
+
+if (pdf_obj_get_id (obj, &id_number) 
+    == PDF_OK)
+@{
+   /* 'id_number' contains the identification
+      number of 'obj'. */
+@}
 @end example
 @end table
 @end deftypefun
@@ -12164,7 +12325,16 @@ A PDF object.
 The type of @var{obj}.
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t objdoc;
+pdf_obj_t obj;
+
+...
+
+/* Create an integer object */
+pdf_obj_integer_new (objdoc, PDF_FALSE, 10, &obj);
+
+/* Get its type */
+pdf_obj_get_type (obj);  /* Returns PDF_OBJ_INTEGER */
 @end example
 @end table
 @end deftypefun
@@ -12174,6 +12344,7 @@ XXX
 Determine if a given PDF object @var{obj} is compressed (i.e. it is
 contained in an object collection).
 
+@xref{Object Collections}.
 @table @strong
 @item Parameters
 @table @var
@@ -12190,7 +12361,16 @@ The object @var{obj} is not compressed.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_t obj;
+pdf_obj_col_t objcol;
+
+...
+
+/* Add 'obj' to an object collection. */
+pdf_obj_col_add_obj (objcol, obj);
+
+/* The following call returns PDF_TRUE */
+pdf_obj_compressed_p (obj);
 @end example
 @end table
 @end deftypefun
@@ -12211,11 +12391,23 @@ A boolean value:
 @item PDF_TRUE
 The object @var{obj} is indirect.
 @item PDF_FALSE
-The object @var{obj} is not indirect.
+The object @var{obj} is direct.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t objdoc;
+pdf_obj_t obj_direct;
+pdf_obj_t obj_indirect;
+
+...
+
+/* Create an indirect object */
+pdf_obj_integer_new (objdoc, PDF_TRUE, 10, &obj_indirect);
+pdf_obj_indirect_p (obj_indirect); /* Returns PDF_TRUE */
+
+/* Create a direct object */
+pdf_obj_integer_new (objdoc, PDF_FALSE, 10, &obj_direct);
+pdf_obj_indirect_p (obj_direct); /* Returns PDF_FALSE */
 @end example
 @end table
 @end deftypefun
@@ -12223,10 +12415,16 @@ XXX
 @node Object Strong References
 @subsection Object Strong References
 
+Every PDF object contained in an object document features an
+@dfn{acquire counter} whose value is initially @code{0}.  The
+garbage collector (@pxref{Garbage collection in object documents})
+never destroys unmarked objects with an acquire counter of 1 or more.
+
 @deftypefun pdf_status_t pdf_obj_acquire (pdf_obj_t @var{obj})
 
 Create a strong reference for @var{obj} in its container document.
-If @var{obj} is not an indirect object or a non-scalar direct object
+
+If @var{obj} is not an indirect object nor a non-scalar direct object
 then this operation is a nop.
 
 @table @strong
@@ -12239,6 +12437,7 @@ A PDF object.
 A PDF status value:
 @table @code
 @item PDF_OK
+The strong reference was created or the request was ignored.
 @end table
 @item Usage example
 @example
@@ -12256,8 +12455,9 @@ pdf_obj_acquire (obj);
 
 @deftypefun pdf_status_t pdf_obj_release (pdf_obj_t @var{obj})
 
-Remove a strong reference from the PDF object @var{obj}. For direct
-non-scalars this operation is a nop.
+Remove a strong reference from the PDF object @var{obj}.
+
+For direct scalars this operation is a nop.
 
 @table @strong
 @item Parameters
@@ -12269,6 +12469,7 @@ A PDF object.
 A PDF status value:
 @table @code
 @item PDF_OK
+The strong reference was destroyed or the operation was ignored.
 @end table
 @item Usage example
 @example
@@ -12300,6 +12501,9 @@ true:
 @item It has not been explicitly marked as incompressible with @code{pdf_obj_set_compressibility}.
 @end itemize
 
+A compressible object is suitable to be contained in an object
+collection.  @xref{Object Collections}.
+
 @deftypefun pdf_bool_t pdf_obj_get_compressibility (pdf_obj_t @var{obj})
 
 Test if a given PDF object @var{obj} is compressible. Only
@@ -12321,7 +12525,15 @@ The object is not compressible.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_t obj;
+
+...
+
+/* Check the compressibility of a PDF object */
+if (pdf_obj_get_compressibility (obj))
+@{
+   /* The object 'obj' is compressible. */
+@}
 @end example
 @end table
 @end deftypefun
@@ -12342,17 +12554,37 @@ A boolean value.
 A PDF status value:
 @table @code
 @item PDF_OK
+The compressibility of @var{obj} was set according to
+@var{compressible_p}.
+@item PDF_EINVOBJ
+@var{obj} cannot be compressed.
 @item PDF_ERROR
+Some error prevented the operation to complete.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_t obj;
+
+...
+
+/* Set the compressibility of 'obj' to true */
+pdf_obj_set_compressibility (obj, PDF_TRUE);
+
+/* Set it back to false */
+pdf_obj_set_compressibility (obj, PDF_FALSE);
 @end example
 @end table
 @end deftypefun
 
 @node Object Collections
 @subsection Object Collections
+
+It is possible to pack several PDF objects in a compressed stream in
+the object document on disk.  An @dfn{object collection} can be
+translated into one or several of such compressed streams.
+
+An object can be declared as part of one (and just one) object
+collection.  Only compressible objects can be added to a collection.
 
 @deftypefun pdf_status_t pdf_obj_col_new (pdf_obj_doc_t @var{doc}, pdf_obj_col_t *@var{col})
 
@@ -12371,11 +12603,23 @@ object collection.
 A PDF status value:
 @table @code
 @item PDF_OK
+The object collection was created and a reference to it was stored in
+@var{col}.
 @item PDF_ERROR
+An error prevented the operation to complete.  The value of @var{col}
+is undefined and shall not be used.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t objdoc;
+pdf_obj_col_t col1;
+pdf_obj_col_t col2;
+
+...
+
+/* Create some object collections */
+pdf_obj_col_new (objdoc, &col1);
+pdf_obj_col_new (objdoc, &col2);
 @end example
 @end table
 @end deftypefun
@@ -12401,12 +12645,33 @@ returned by the enumeration procedure, considering @code{PDF_OK} as
 true and @code{<> PDF_OK} as false.
 @item Usage example
 @example
-XXX
+/* Callback function */
+pdf_bool_t
+my_enum_callback (pdf_obj_t obj,
+                  pdf_obj_t value,
+                  void *client_data)
+@{
+   /* Process the callback... */
+@}
+
+...
+
+/* Perform an enumeration of the objects contained in some object
+   collection 'col'. */
+if (pdf_obj_col_enum (col, my_enum_callback, NULL)
+    == PDF_OK)
+@{
+   /* All the calls to 'my_enum_callback' returned PDF_OK */
+@}
+else
+@{
+   /* Some call to 'my_enum_callback' returned <> PDF_OK */
+@}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_bool_t pdf_obj_col_equal (pdf_obj_col_t @var{col1}, pdf_obj_col_t @var{col2})
+@deftypefun pdf_bool_t pdf_obj_col_equal_p (pdf_obj_col_t @var{col1}, pdf_obj_col_t @var{col2})
 
 Test whether two PDF object collections are the same collection.
 
@@ -12428,7 +12693,18 @@ The collections are not the same.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t objdoc;
+pdf_obj_col_t col1;
+pdf_obj_col_t col2;
+
+...
+
+/* Create two object collections and compare them */
+pdf_obj_col_new (objdoc, &col1);
+pdf_obj_col_new (objdoc, &col2);
+
+pdf_obj_col_equal_p (col1, col2); /* Returns PDF_FALSE */ 
+pdf_obj_col_equal_p (col1, col1); /* Returns PDF_TRUE */ 
 @end example
 @end table
 @end deftypefun
@@ -12448,7 +12724,20 @@ An object collection.
 The number of objects contained in @var{col}.
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t objdoc;
+pdf_obj_col_t col;
+pdf_obj_t obj1;
+pdf_obj_t obj2;
+
+...
+
+/* Create an object collection and put some objects in it. */
+pdf_obj_col_new (objdoc, &col);
+pdf_obj_col_add_obj (objcol, obj1);
+pdf_obj_col_add_obj (objcol, obj2);
+
+/* Get the number of objects */
+pdf_obj_col_size (objcol);  /* Should return 2 */
 @end example
 @end table
 @end deftypefun
@@ -12470,18 +12759,27 @@ A PDF object.
 A PDF status value:
 @table @code
 @item PDF_OK
+The object @var{obj} was successfully added into the object collection
+@var{col}.
 @item PDF_EINVOBJ
 The object @var{obj} is not compressible.
 @item PDF_ERROR
+An error prevented the operation to complete.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_col_t col;
+pdf_obj_t obj;
+
+...
+
+/* Add an object into an object collection */
+pdf_obj_col_add_obj (col, obj);
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_remove_from_col (pdf_obj_t @var{obj})
+@deftypefun pdf_status_t pdf_obj_col_remove_obj (pdf_obj_t @var{obj})
 
 Remove a given PDF object @var{obj} from its containing object
 collection. If the object is not contained in an object collection
@@ -12497,11 +12795,23 @@ A PDF object.
 A PDF status value:
 @table @code
 @item PDF_OK
+The object was successfully dissociated from any containing object
+collection.
 @item PDF_ERROR
+An error prevented the operation to complete.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_t obj;
+pdf_obj_col_t col;
+
+...
+
+pdf_obj_col_add_obj (col, obj);
+
+/* After the next sentence 'obj' won't be associated with 'col'
+   anymore */
+pdf_obj_col_remove_obj (obj);
 @end example
 @end table
 @end deftypefun
@@ -12524,19 +12834,36 @@ object collection.
 A PDF status value:
 @table @code
 @item PDF_OK
-@item PDF_EINVOBJ
-The PDF object @var{obj} does not have a containing object collection.
+The object collection containing @var{obj}, or @code{NULL} if there is
+no one, was stored in @var{col}.
 @item PDF_ERROR
+An error prevented the operation to complete.  The value in @var{col}
+is undefined and shall not be used.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t objdoc;
+pdf_obj_col_t col;
+pdf_obj_t obj;
+
+...
+
+pdf_obj_col_new (objdoc, &col);
+pdf_obj_col_add_obj (col, obj);
+
+pdf_obj_get_col (obj); /* Returns 'col' */
+pdf_obj_col_remove_obj (obj);
+pdf_obj_get_col (obj); /* Returns NULL */
 @end example
 @end table
 @end deftypefun
 
 @node Real Objects
 @subsection Real Objects
+
+PDF real objects are quantities in the real domain.  They are defined by
+range and precision.  Usually represented in fixed point rather than
+floating point.
 
 @deftypefun pdf_status_t pdf_obj_real_new (pdf_obj_doc_t @var{doc}, pdf_bool_t @var{indirect_p}, pdf_real_t @var{value}, pdf_obj_t *@var{obj})
 
@@ -12560,7 +12887,11 @@ object.
 A PDF status value:
 @table @code
 @item PDF_OK
+A new object of type real was created in @var{doc} and stored in
+@var{obj}.
 @item PDF_ERROR
+An error prevented the operation to complete.  The value in @var{obj}
+shall be considered invalid.
 @end table
 @item Usage example
 @example
@@ -12569,7 +12900,7 @@ pdf_obj_t real_obj_1;
 pdf_obj_t real_obj_2;
 
 /* Create some real objects */
-if (pdf_obj_real_new (doc, PDF_FALSE, 3.14, &integer_obj_1)
+if (pdf_obj_real_new (doc, PDF_FALSE, 3.14, &real_obj_1)
     != PDF_OK)
 @{
    /* Error creating real object */
@@ -12600,10 +12931,13 @@ A pointer to a @var{pdf_real_t} variable to store the result.
 A PDF status value:
 @table @code
 @item PDF_OK
+The real value stored in @var{obj} was successfully stored in
+@var{value}.
 @item PDF_EINVOBJ
 The object @var{obj} is not a Real object.
 @item PDF_ERROR
-Some error prevented the operation to complete.
+Some error prevented the operation to complete.  The value in
+@var{value} shall be considered invalid.
 @end table
 @item Usage example
 @example
@@ -12635,6 +12969,10 @@ else
 @node Integer Objects
 @subsection Integer Objects
 
+The PDF integer objects are quantities in the integer domain.  They
+are limited by an implementation limit (@pxref{Implementation
+Limits}).
+
 @deftypefun pdf_status_t pdf_obj_integer_new (pdf_obj_doc_t @var{doc}, pdf_bool_t @var{indirect_p}, pdf_i32_t @var{value}, pdf_obj_t *@var{obj})
 
 Create a new Integer object in the given document @var{doc} and store
@@ -12657,7 +12995,11 @@ object.
 A PDF status value:
 @table @code
 @item PDF_OK
+A new integer object was successfully created in @var{doc} and stored
+in @var{obj}.
 @item PDF_ERROR
+Some error prevented the operation to complete.  The value in
+@var{obj} shall be considered invalid.
 @end table
 @item Usage example
 @example
@@ -12697,10 +13039,12 @@ A pointer to a @var{pdf_i32_t} variable to store the result.
 A PDF status value:
 @table @code
 @item PDF_OK
+The integer value of @var{obj} was stored in @var{value}.
 @item PDF_EINVOBJ
 The object @var{obj} is not an Integer object.
 @item PDF_ERROR
-Some error prevented the operation to complete.
+Some error prevented the operation to complete.  The value of
+@var{value} shall be considered invalid.
 @end table
 @item Usage example
 @example
@@ -12732,6 +13076,17 @@ else
 @node Boolean Objects
 @subsection Boolean Objects
 
+Boolean objects can hold just two values:
+
+@itemize @minus
+@item @code{true}
+@item @code{false}
+@end itemize
+
+Can be used as values of array elements, values of dictionary entries
+and as operators in the postscript calculator functions (type 4
+functions). 
+
 @deftypefun pdf_status_t pdf_obj_boolean_new (pdf_obj_doc_t @var{doc}, pdf_bool_t @var{indirect_p}, pdf_bool_t @var{value}, pdf_obj_t *@var{obj})
 
 Create a new Boolean object in the given document @var{doc} and store it
@@ -12754,7 +13109,10 @@ object.
 A PDF status value:
 @table @code
 @item PDF_OK
+A new boolean object was created in @var{doc} and stored in @var{obj}.
 @item PDF_ERROR
+An error prevented the operation to complete.  The value in @var{obj}
+shall be considered invalid.
 @end table
 @item Usage example
 @example
@@ -12794,10 +13152,13 @@ A pointer to a @var{pdf_bool_t} variable to store the result.
 A PDF status value:
 @table @code
 @item PDF_OK
+The boolean value of @var{obj} was successfully stored in
+@var{value}.
 @item PDF_EINVOBJ
 The object @var{obj} is not a boolean object.
 @item PDF_ERROR
-Some error prevented the operation to complete.
+Some error prevented the operation to complete.  The value of
+@var{value} shall be considered invalid.
 @end table
 @item Usage example
 @example
@@ -12829,6 +13190,9 @@ else
 @node Name Objects
 @subsection Name Objects
 
+A PDF name object is an atomic symbol uniquely defined by a sequence
+of regular characters.  It does not have internal structure.
+
 @deftypefun pdf_status_t pdf_obj_name_new (pdf_obj_doc_t @var{doc}, pdf_bool_t @var{indirect_p}, pdf_char_t *@var{value}, pdf_obj_t *@var{obj})
 
 Create a new Name object in the given document @var{doc} and store it
@@ -12851,9 +13215,13 @@ object.
 A PDF status value:
 @table @code
 @item PDF_OK
+A new name object was successfully created in @var{doc} and stored in
+@var{obj}.
 @item PDF_EBADDATA
 Invalid value in @var{value}.
 @item PDF_ERROR
+An error prevented the operation to complete.  The value in @var{doc}
+shall be considered invalid.
 @end table
 @item Usage example
 @example
@@ -12888,18 +13256,22 @@ Get the value of a PDF Name object.
 A PDF object.
 @item value
 A pointer to a @var{pdf_char_t *} variable to store the result. The
-client should free the memory in @var{value}.
+client is responsible to free the memory allocated in @var{value} with
+@code{pdf_dealloc}.
 @end table
 @item Returns
 A PDF status value:
 @table @code
 @item PDF_OK
+The string representing the name value of @var{obj} was successfully
+stored in @var{value}.
 @item PDF_EINVOBJ
 The object @var{obj} is not a name object.
 @item PDF_ENOMEM
 Not enough memory.
 @item PDF_ERROR
-Some error prevented the operation to complete.
+Some error prevented the operation to complete.  The value in
+@var{value} shall be considered invalid.
 @end table
 @item Usage example
 @example
@@ -12931,6 +13303,9 @@ else
 @node String Objects
 @subsection String Objects
 
+A PDF string object is a sequence of bytes in the range @code{0-255}.
+They are not @code{NULL}-terminated. 
+
 @deftypefun pdf_status_t pdf_obj_string_new (pdf_obj_doc_t @var{doc}, pdf_bool_t @var{indirect_p}, pdf_char_t *@var{str}, pdf_size_t @var{str_size}, pdf_obj_t *@var{obj})
 
 Create a new String object in the given document @var{doc} and store it
@@ -12944,9 +13319,9 @@ A document object.
 @item indirect_p
 A boolean value indicating whether to create an indirect object.
 @item str
-The string value. Note that this is not a @code{0} terminated string,
-since PDF strings can cointain arbitrary binary data. The data pointed
-by @var{str} is copied internally.
+The string value. Note that this is not a @code{NULL} terminated
+string, since PDF strings can held arbitrary binary data. The data
+pointed by @var{str} is copied internally.
 @item str_size
 The size of @var{str}, in bytes.
 @item obj
@@ -12957,7 +13332,11 @@ object.
 A PDF status value:
 @table @code
 @item PDF_OK
+A new string object was successfully created in @var{doc} and stored
+in @var{obj}.
 @item PDF_ERROR
+An error prevented the operation to complete.  The value in @var{obj}
+shall be considered invalid.
 @end table
 @item Usage example
 @example
@@ -12974,11 +13353,49 @@ if (pdf_obj_string_new (doc, PDF_FALSE, "f\233o", 3, &str)
 @end table
 @end deftypefun
 
+@deftypefun pdf_status_t pdf_obj_string_size (pdf_obj_t @var{obj}, pdf_size_t *@var{size})
+
+Return the size of the PDF string @var{obj} (i.e. the number of
+octects composing it).
+
+@table @strong
+@item Parameters
+@table @var
+@item obj
+A PDF string object.
+@item size
+A pointer to a @var{pdf_size_t} variable to hold the size of
+@var{obj}.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The size of @var{obj} in octects was stored in @var{size}.
+@item PDF_EINVOBJ
+@var{obj} is not a string object.
+@item PDF_ERROR
+An error prevented the operation to complete.  The value in @var{size}
+is undefined and shall not be used.
+@end table
+@item Usage example
+@example
+pdf_obj_doc_t objdoc;
+pdf_obj_t str_obj;
+
+...
+
+pdf_obj_string_new (objdoc, PDF_FALSE, "foo", 3, &str_obj);
+pdf_obj_string_size (str_obj); /* Returns 3 */
+@end example
+@end table
+@end deftypefun
+
 @deftypefun pdf_status_t pdf_obj_string_value (pdf_obj_t @var{obj}, pdf_char_t *@var{buf}, pdf_size_t @var{buf_size}, pdf_size_t *@var{str_size})
 
 Get at most @var{buf_size} bytes from the string value of the PDF
 String object @var{obj} and store it in @var{buf}. The current size of
-the string object is stored in @var{str_size}.
+the partial string in @var{buf} is stored in @var{str_size}.
 
 @table @strong
 @item Parameters
@@ -12998,10 +13415,12 @@ String object.
 A PDF status value:
 @table @code
 @item PDF_OK
+The value of the string object was successfully stored in @var{buf}.
 @item PDF_EINVOBJ
 The object @var{obj} is not a String object.
 @item PDF_ERROR
-Some error prevented the operation to complete.
+Some error prevented the operation to complete.  The value in
+@var{buf} shall be considered invalid.
 @end table
 @item Usage example
 @example
@@ -13064,6 +13483,9 @@ XXX
 
 @node Array Objects
 @subsection Array Objects
+
+A PDF array is a one-dimensional collection of objects arranged
+sequentially.
 
 @deftypefun pdf_status_t pdf_obj_array_new (pdf_obj_doc_t @var{doc}, pdf_bool_t @var{indirect_p}, pdf_size_t @var{array_size}, pdf_obj_t *@var{obj})
 
@@ -13345,6 +13767,19 @@ XXX
 
 @node Dictionary Objects
 @subsection Dictionary Objects
+
+A PDF dictionary is an associative table containing pairs of objects.
+
+@itemize
+@item Dictionary entries
+@itemize
+@item Key (name object)
+@item Value (any type of object)
+@end itemize
+@end itemize
+
+A dictionary entry whose value is null is equivalent to an absent
+entry.
 
 @deftypefun pdf_status_t pdf_obj_dict_new (pdf_obj_doc_t @var{doc}, pdf_bool_t @var{indirect_p}, pdf_obj_t *@var{obj})
 
@@ -13747,6 +14182,13 @@ XXX
 @node Stream Objects
 @subsection Stream Objects
 
+A PDF stream is a sequence of bytes and a set of properties.  Unlike
+strings, a stream can be read incrementally and can be of unlimited
+length.
+
+All streams must be indirect objects and the stream dictionary must be
+a direct object.
+
 @deftypefun pdf_status_t pdf_obj_stream_new (pdf_obj_doc_t @var{doc}, pdf_stm_t @var{stm}, pdf_obj_t @var{attrs_dict}, pdf_size_t @var{source_length}, pdf_obj_t *@var{obj})
 
 Create a new PDF Stream object.
@@ -13915,6 +14357,13 @@ XXX
 @node Null Object
 @subsection Null Object
 
+A PDF null object has a type and a value that are unequal to those of
+any other object.  There is only one possible value for this object
+type: the @code{null} keyword.
+
+An indirect object reference to a nonexistant object is a reference to
+the null object.
+
 @deftypefun pdf_status_t pdf_obj_null_new (pdf_obj_t *@var{obj})
 
 Create a direct Null object.
@@ -13988,6 +14437,12 @@ bytes.
 @item indirect object
 @tab ??
 @tab Maximum number of indirect objects in a PDF file.
+@item content stream objects
+@tab 2^32
+Maximum number of objects in a content stream.
+@item linked content stream objects
+@tab 2^32
+Maximum number of objects in linked content streams.
 @end multitable
 
 @node Memory limits
