@@ -13245,19 +13245,67 @@ if (pdf_obj_name_new (doc, PDF_FALSE, "BazFoo", &name_obj_2)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_name_value (pdf_obj_t @var{obj}, pdf_char_t **@var{value})
+@deftypefun pdf_status_t pdf_obj_name_size (pdf_obj_t @var{obj}, pdf_size_t *@var{size})
 
-Get the value of a PDF Name object.
+Return the size of the PDF name @var{obj} (i.e. the number of
+characters composing it).
+
+Note that the initial slash character (@code{/}) is not included in
+the count.
+
+The size of the @code{/} name (without any character after the slash)
+is @code{0}.
+@table @strong
+@item Parameters
+@table @var
+@item obj
+A PDF name object.
+@item size
+A pointer to a @var{pdf_size_t} variable to hold the size of
+@var{obj} in octects.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The size of @var{obj} was stored in @var{size}.
+@item PDF_EINVOBJ
+@var{obj} is not a name object.  The value in @var{size} is
+unchenged.
+@item PDF_ERROR
+Some error prevented the operation to complete.  The value in
+@var{size} shall be considered invalid.
+@end table
+@item Usage example
+@example
+pdf_obj_doc_t objdoc;
+pdf_obj_t name;
+
+...
+
+
+pdf_obj_name_new (objdoc, PDF_FALSE, "Foo", &name);
+pdf_obj_name_size (name); /* Should return 3 */
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_name_value (pdf_obj_t @var{obj}, pdf_char_t *@var{buf})
+
+Get the value of a PDF Name object in the buffer pointed by
+@var{buf}.  There should be enough space in @var{buf} to hold the
+value (the user can get the size of the name object using
+@code{pdf_obj_name_size}).
+
+The value of the name object does not include the ``/'' prefix. 
 
 @table @strong
 @item Parameters
 @table @var
 @item obj
-A PDF object.
-@item value
-A pointer to a @var{pdf_char_t *} variable to store the result. The
-client is responsible to free the memory allocated in @var{value} with
-@code{pdf_dealloc}.
+A PDF name object.
+@item buf
+A memory buffer to store the result.
 @end table
 @item Returns
 A PDF status value:
@@ -13267,33 +13315,33 @@ The string representing the name value of @var{obj} was successfully
 stored in @var{value}.
 @item PDF_EINVOBJ
 The object @var{obj} is not a name object.
-@item PDF_ENOMEM
-Not enough memory.
 @item PDF_ERROR
 Some error prevented the operation to complete.  The value in
-@var{value} shall be considered invalid.
+@var{buf} shall be considered invalid.
 @end table
 @item Usage example
 @example
 pdf_obj_doc_t doc;
 pdf_obj_t name_obj;
-pdf_char_t *result;
+pdf_char_t *name;
 
-if (pdf_obj_name_new (doc, PDF_FALSE, "FooBar", &boolean_obj)
+if (pdf_obj_name_new (doc, PDF_FALSE, "FooBar", &name_obj)
     != PDF_OK)
 @{
    /* Error creating Name object */
 @}
 else
 @{
-   if (pdf_obj_name_value (name_obj, &result)
+   name = malloc (pdf_obj_name_size (name_obj));
+
+   if (pdf_obj_name_value (name_obj, name)
        != PDF_OK)
    @{
       /* Error getting the Name value */
    @}
    else
    @{
-      /* result equals to /FooBar */
+      /* 'name' equals to "FooBar" */
    @}
 @}
 @end example
@@ -13391,24 +13439,20 @@ pdf_obj_string_size (str_obj); /* Returns 3 */
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_string_value (pdf_obj_t @var{obj}, pdf_char_t *@var{buf}, pdf_size_t @var{buf_size}, pdf_size_t *@var{str_size})
+@deftypefun pdf_status_t pdf_obj_string_value (pdf_obj_t @var{obj}, pdf_char_t *@var{buf})
 
-Get at most @var{buf_size} bytes from the string value of the PDF
-String object @var{obj} and store it in @var{buf}. The current size of
-the partial string in @var{buf} is stored in @var{str_size}.
+Get the value of a PDF String object in the buffer pointed by
+@var{buf}.  There should be enough space in @var{buf} to hold the
+value (the user can get the size of the string using
+@code{pdf_obj_string_size}).
 
 @table @strong
 @item Parameters
 @table @var
 @item obj
-A PDF object.
+A PDF string object.
 @item buf
-A memory buffer.
-@item buf_size
-Size of the memory buffer.
-@item str_size
-Pointer to a @code{pdf_size_t} storing the actual size of the PDF
-String object.
+A memory buffer to store the result.
 @item 
 @end table
 @item Returns
@@ -13424,7 +13468,29 @@ Some error prevented the operation to complete.  The value in
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t doc;
+pdf_obj_t str_obj;
+pdf_char_t *str;
+
+if (pdf_obj_string_new (doc, PDF_FALSE, "foo bar baz", 11, &name_obj)
+    != PDF_OK)
+@{
+   /* Error creating the String object */
+@}
+else
+@{
+   str = malloc (pdf_obj_string_size (str_obj));
+   
+   if (pdf_obj_string_value (str_obj, str)
+       != PDF_OK)
+   @{
+      /* Error getting the String value */
+   @}
+   else
+   @{
+      /* 'str' contains "foo bar baz" */
+   @}
+@}
 @end example
 @end table
 @end deftypefun

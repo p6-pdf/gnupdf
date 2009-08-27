@@ -1,3 +1,7 @@
+2009-08-27  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi: Object layer API modifications and additions.
+
 2009-08-26  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi: Object layer API modifications and additions.
