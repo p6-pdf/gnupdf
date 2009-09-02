@@ -1,3 +1,8 @@
+2009-09-02  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-alloc.c (pdf_realloc): Spurious pointer check
+	removed.  Change suggested by Gaurav Aggarwal.
+
 2009-09-01  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-fsys.c: Spurious empty line removed from the
