@@ -1,3 +1,8 @@
+2009-09-01  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-fsys.c: Spurious empty line removed from the
+	beginning of the file.
+
 2009-08-27  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi: Object layer API modifications and additions.
