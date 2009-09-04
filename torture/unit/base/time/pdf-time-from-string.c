@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 22:11:15 davazp"
+/* -*- mode: C -*- Time-stamp: "09/09/04 13:14:38 jemarch"
  *
  *       File:         pdf-time-from-string.c
  *       Date:         Fri Feb 27 17:35:31 2008

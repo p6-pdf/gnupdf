@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/07/23 21:52:39 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/04 13:20:33 jemarch"
  *
  *       File:         pdf-time-string.c
  *       Date:         Sun May 18 13:08:37 2008
@@ -103,7 +103,7 @@ pdf_time_check_string_pdf (const pdf_char_t *time_str,
       (time_str[19] != '\''))
     {
       PDF_DEBUG_BASE("Invalid separator found ('%c') in '%s'",
-                     time_str[19], time_str[22], time_str);
+                     time_str[19], time_str);
       return PDF_EBADDATA;
     }
 
@@ -113,7 +113,8 @@ pdf_time_check_string_pdf (const pdf_char_t *time_str,
           ((time_str[22] != '\'')))
         {
           PDF_DEBUG_BASE("Invalid separator found ('%c') in '%s'",
-                         time_str[19], time_str[22], time_str);
+                         (time_str_length >= 21) ? time_str[22] : ' ',
+                         time_str);
           return PDF_EBADDATA;
         }
     }
@@ -122,7 +123,7 @@ pdf_time_check_string_pdf (const pdf_char_t *time_str,
       if (time_str_length >= 23)
         {
           PDF_DEBUG_BASE("Invalid separator found ('%c') in '%s'",
-                         time_str[19], time_str[22], time_str);
+                         time_str[19], time_str);
           return PDF_EBADDATA;
         }
     }

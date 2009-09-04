@@ -1,3 +1,9 @@
+2009-09-04  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-time-string.c (pdf_time_check_string_pdf): Invoke
+	PDF_DEBUG_BASE with the right number of parameters.  Reported by
+	Steven Vancoilli.
+
 2009-09-02  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-alloc.c (pdf_realloc): Spurious pointer check
