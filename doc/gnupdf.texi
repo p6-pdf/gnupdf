@@ -11830,7 +11830,7 @@ The algorithm implemented by the collector is:
 Mark the Document Information Dictionary if it exists.
 @item
 Starting from the root dictionary, inclusive, mark any reachable
-object.
+object that is not a weak reference.
 @item
 For every non-marked object...
 @enumerate
@@ -13630,12 +13630,12 @@ pdf_obj_string_hex_set (!pdf_obj_string_hex_p (str));
 @subsection Array Objects
 
 A PDF array is a one-dimensional collection of objects arranged
-sequentially.
+sequentially.  The objects can be of any type.
 
 @deftypefun pdf_status_t pdf_obj_array_new (pdf_obj_doc_t @var{doc}, pdf_bool_t @var{indirect_p}, pdf_size_t @var{array_size}, pdf_obj_t *@var{obj})
 
-Create a new Array object in the given document @var{doc} and store it
-in @var{obj}.
+Create a new Array object in the given object document @var{doc} and
+store it in @var{obj}.
 
 @table @strong
 @item Parameters
@@ -13654,11 +13654,28 @@ object.
 A PDF status value:
 @table @code
 @item PDF_OK
+The array object was created and stored into @var{obj}.
+@item PDF_ENOMEM
+Not enough memory.  The value of @var{obj} shall be considered
+invalid.
 @item PDF_ERROR
+Some error prevented the operation to complete.  The value of
+@var{obj} shall be considered invalid.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t objdoc;
+pdf_obj_t array;
+
+...
+
+/* Create an indirect array object to initially
+   held 10 elements */
+if (pdf_obj_array_new (doc, PDF_TRUE, 10, &array)
+    == PDF_OK)
+@{
+   /* The object was successfully created */
+@}
 @end example
 @end table
 @end deftypefun
@@ -13682,20 +13699,46 @@ A pointer to a @code{pdf_obj_t} variable to store the result.
 A PDF status value:
 @table @code
 @item PDF_OK
+The @var{index}th object was stored into @var{obj}.
 @item PDF_EBADDATA
-The specified @var{index} is invalid.
+The specified @var{index} is invalid.  The value of @var{obj} is
+untouched.
 @item PDF_ERROR
+Some error prevented the operation to complete.  The value of
+@var{obj} shall be considered invalid.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_t array;
+pdf_obj_t elem;
+pdf_size_t index;
+
+...
+
+/* Iterate through the first 5 objects of 'array' */
+for (index = 0; index < 5; index++)
+@{
+   if (pdf_obj_array_get (array, index, &elem)
+       == PDF_OK)
+   @{
+      /* Use 'elem' */
+   @}
+@}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_array_put (pdf_obj_t @var{array}, pdf_size_t @var{index}, pdf_obj_t @var{obj})
+@deftypefun pdf_status_t pdf_obj_array_set (pdf_obj_t @var{array}, pdf_size_t @var{index}, pdf_obj_t @var{obj})
 
-Set the @var{index}th element of the array to the given object @var{obj}.
+Set the @var{index}th element of the array to the given object
+@var{obj}.  The object @var{obj} and the array @var{array} should be
+associated with the same object document.
+
+If @var{index} equals to the array size then the object is inserted at
+the end.
+
+The previous object occupying the @var{index}th position is no longer
+referenced by the array.
 
 @table @strong
 @item Parameters
@@ -13711,6 +13754,7 @@ A PDF object.
 A PDF status value:
 @table @code
 @item PDF_OK
+The element was inserted at the specified position.
 @item PDF_EINVOBJ
 The object @var{obj} is a direct object already contained in another
 object or the object belongs to other document.
@@ -13720,47 +13764,31 @@ The specified @var{index} is invalid.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t objdoc;
+pdf_obj_t array;
+pdf_obj_t elem;
+pdf_size_t index;
+
+...
+
+/* Insert numbers as the first 10 elements of the array */
+for (index = 0; index < 10; index++)
+@{
+   pdf_obj_integer_new (objdoc,
+                        PDF_FALSE,
+                        (pdf_u32_t) index,
+                        &elem);
+
+   if (pdf_obj_array_set (array, index, elem) == PDF_OK)
+   @{
+      /* Element inserted into the array. */
+   @}
+@}
 @end example
 @end table
 @end deftypefun
 
-
-@deftypefun pdf_status_t pdf_obj_array_insert (pdf_obj_t @var{array}, pdf_size_t @var{index}, pdf_obj_t @var{obj})
-
-Insert the object @var{obj} into @var{array} just before the position
-specified by @var{index}. If @var{index} equals to the array size then
-the object is inserted at the end.
-
-@table @strong
-@item Parameters
-@table @var
-@item array
-A PDF array.
-@item index
-An index into the array.
-@item obj
-A PDF object.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-@item PDF_EINVOBJ
-The object @var{obj} is a direct object already contained in another
-object or the object belongs to other document.
-@item PDF_EBADDATA
-The specified @var{index} is invalid.
-@item PDF_ERROR
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_array_size (pdf_obj_t @var{array}, pdf_size_t @var{size})
+@deftypefun pdf_status_t pdf_obj_array_size (pdf_obj_t @var{array}, pdf_size_t *@var{size})
 
 Get the number of elements contained in @var{array}.
 
@@ -13777,13 +13805,28 @@ contained in @var{array}.
 A PDF status value:
 @table @code
 @item PDF_OK
+The size of @var{array} was stored in @var{size}.
 @item PDF_EINVOBJ
-@var{array} is not an array object.
+@var{array} is not an array object.  The value in @var{size} is left
+untouched.
 @item PDF_ERROR
+Some error prevented the operation to complete.  The value in
+@var{size} is undefined.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_t array;
+pdf_size_t array_size;
+pdf_size_t index;
+
+...
+
+/* Iterate through the element of the array */
+pdf_obj_array_size (array, &array_size);
+for (index = 0; index < array_size; index++)
+@{
+   /* Do something */
+@}
 @end example
 @end table
 @end deftypefun
@@ -13792,6 +13835,12 @@ XXX
 
 Determine if the @var{index}th element of @var{array} is a weak
 reference.
+
+A weak reference changes the way the garbage collection works.
+@xref{Garbage collection in object documents}.
+
+This function returns @code{PDF_FALSE} if @var{array} is not an array
+object and if @var{index} is out of bounds.
 
 @table @strong
 @item Parameters
@@ -13807,11 +13856,25 @@ A boolean value:
 @item PDF_TRUE
 The element at @var{index} is a weak reference.
 @item PDF_FALSE
-The element at @var{index} has a strong reference.
+The element at @var{index} is not a weak reference.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_t array;
+pdf_size_t index;
+pdf_size_t array_size;
+
+...
+
+/* Determine if some element of array has a weak reference */
+pdf_obj_array_size (array, &array_size);
+for (index = 0; index < array_size; index++)
+@{
+   if (pdf_obj_array_weak_p (array, index))
+   @{
+      /* The index-th element has a weak reference */
+   @}
+@}
 @end example
 @end table
 @end deftypefun
@@ -13819,6 +13882,11 @@ XXX
 @deftypefun pdf_bool_t pdf_obj_array_weak_set (pdf_obj_t @var{array}, pdf_size_t @var{index}, pdf_bool_t @var{weak_p})
 
 Set if the @var{index}th element of @var{array} is a weak reference.
+
+The effect of this call when @var{weak_p} is @code{PDF_FALSE} is to
+remove the effect of a previous call with @var{weak_p} set to
+@code{PDF_TRUE}.  In particular it does not set a strong reference to
+the object occupying the @var{index}th position in the array.
 
 @table @strong
 @item Parameters
@@ -13834,13 +13902,29 @@ A boolean value.
 A PDF status value:
 @table @code
 @item PDF_OK
+The weak reference was (un)set in the element occupying the
+@var{index}th position into @var{array}.
+@item PDF_EINVOBJ
+@var{array} is not an array object.
 @item PDF_EBADDATA
-The specified @var{index} is invalid.
+The specified @var{index} is out of bounds.
 @item PDF_ERROR
+An error prevented the operation to complete.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_t array;
+pdf_size_t index;
+pdf_size_t array_size;
+
+...
+
+/* Remove any weak reference in 'array' */
+pdf_obj_array_size (array, &array_size);
+for (index = 0; index < array_size; index++)
+@{
+   pdf_obj_array_weak_set (array, index, PDF_FALSE);
+@}
 @end example
 @end table
 @end deftypefun
@@ -13850,7 +13934,7 @@ XXX
 Find the first element equal to @var{obj} and remove it from the
 array.
 
-Note that it not safe to call @code{pdf_obj_array_remove} while
+Note that it is not safe to call @code{pdf_obj_array_remove} while
 executing a @code{pdf_obj_enum}.
 
 @table @strong
@@ -13866,6 +13950,8 @@ A PDF status value:
 @table @code
 @item PDF_OK
 @var{obj} was found and removed from the array.
+@item PDF_EINVOBJ
+@var{array} is not an array object.
 @item PDF_EBADDATA
 @var{obj} was not contained in the array.
 @item PDF_ERROR
@@ -13873,7 +13959,17 @@ Some error prevented to complete the operation.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_t array;
+pdf_obj_t elem;
+
+...
+
+/* Remove the third element of the array */
+pdf_obj_array_get (array, 2, &elem);
+if (pdf_obj_array_remove (array, elem) == PDF_OK)
+@{
+   /* The element was removed from the array */
+@}
 @end example
 @end table
 @end deftypefun
@@ -13898,6 +13994,8 @@ A PDF status value:
 @table @code
 @item PDF_OK
 The requested element was found and removed from the array.
+@item PDF_EINVOBJ
+@var{array} is not an array object.
 @item PDF_EBADDATA
 The specified @var{index} is invalid.
 @item PDF_ERROR
@@ -13905,7 +14003,15 @@ Some error prevented to complete the operation.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_t array;
+
+...
+
+/* Remove the third element of the array */
+if (pdf_obj_array_remove_at (array, 3) == PDF_OK)
+@{
+   /* The element was removed */
+@}
 @end example
 @end table
 @end deftypefun
@@ -13914,14 +14020,8 @@ XXX
 @subsection Dictionary Objects
 
 A PDF dictionary is an associative table containing pairs of objects.
-
-@itemize
-@item Dictionary entries
-@itemize
-@item Key (name object)
-@item Value (any type of object)
-@end itemize
-@end itemize
+The first object of each pair is a name object.  The type of the
+second object in the pair is unrestricted.
 
 A dictionary entry whose value is null is equivalent to an absent
 entry.
