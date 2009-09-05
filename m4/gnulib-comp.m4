@@ -90,6 +90,7 @@ AC_DEFUN([gl_INIT],
   gl_FUNC_MALLOC_POSIX
   gl_STDLIB_MODULE_INDICATOR([malloc-posix])
   gl_MATH_H
+  gl_FUNC_MEMCHR
   gl_FUNC_MKDIR_TRAILING_SLASH
   gl_MULTIARCH
   gl_PMCCABE2HTML
@@ -291,6 +292,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/lseek.c
   lib/malloc.c
   lib/math.in.h
+  lib/memchr.c
   lib/mkdir.c
   lib/realloc.c
   lib/ref-add.sin
@@ -347,6 +349,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/lseek.m4
   m4/malloc.m4
   m4/math_h.m4
+  m4/memchr.m4
   m4/mkdir-slash.m4
   m4/multiarch.m4
   m4/onceonly.m4
