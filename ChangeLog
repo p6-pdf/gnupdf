@@ -1,5 +1,14 @@
 2009-09-05  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* torture/unit/Makefile.am (TEST_SUITE_TIME):
+	pdf-time-test-common.h added.
+
+	* utils/Makefile.am (pdf_tokeniser_SOURCES): pdf-tokeniser.h
+	added.
+
+	* configure.ac: Change the name of the package from 'gnupdf' to
+	'libgnupdf'.
+
 	* doc/gnupdf-hg.texi (Inclusion of Header Files): New section.
 
 	* utils/pdf-tokeniser.c (main): Likewise.

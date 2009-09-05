@@ -203,7 +203,8 @@ TEST_SUITE_TIME =  base/time/pdf-time-new.c \
 		   base/time/pdf-time-cal-span-cmp.c \
 		   base/time/pdf-time-cal-span-diff.c \
 		   base/time/pdf-time-add-cal-span-with-base.c \
-		   base/time/pdf-time-w32-set-from-filetime.c
+		   base/time/pdf-time-w32-set-from-filetime.c \
+                   base/time/pdf-time-test-common.h
 
 TEST_SUITE_CRYPT = base/crypt/pdf-crypt-cipher-new.c \
 		   base/crypt/pdf-crypt-cipher-setkey.c \

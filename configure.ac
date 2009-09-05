@@ -19,7 +19,7 @@ dnl You should have received a copy of the GNU General Public License
 dnl along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 AC_INIT(src/pdf-global.h)
-AM_INIT_AUTOMAKE(gnupdf, trunk)
+AM_INIT_AUTOMAKE(libgnupdf, trunk)
 AM_CONFIG_HEADER(src/config.h)
 AC_CONFIG_MACRO_DIR([m4])
 

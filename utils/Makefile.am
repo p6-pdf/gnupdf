@@ -31,6 +31,6 @@ AM_CPPFLAGS = -I$(top_srcdir)/lib -I$(top_srcdir)/src/ \
               -I$(top_srcdir)/src/base -I $(top_srcdir)/src/object
 
 pdf_filter_SOURCES = pdf-filter.h pdf-filter.c
-pdf_tokeniser_SOURCES = pdf-tokeniser.c
+pdf_tokeniser_SOURCES = pdf-tokeniser.c pdf-tokeniser.h
 
 # End of Makefile.am
