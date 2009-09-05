@@ -412,6 +412,7 @@ a good level of coherence in the codebase.
 
 @menu
 * File Headers::
+* Inclusion of Header Files::
 * Spaces vs. Tabs::
 * Naming Functions::
 * Abstract Data Types::
@@ -460,6 +461,39 @@ template-expansion time.
 A one-sentence brief description of the contents of the file. This
 description should not exceed one physical line of text.
 @end table
+
+@node Inclusion of Header Files
+@section Inclusion of Header Files
+
+The order of the @code{#include} directives in any @file{.c} file
+shall be:
+
+@example
+/*
+ * ... file header ...
+ */
+
+#include <config.h>
+
+#include <system-file-1.h>
+#include <system-file-2.h>
+...
+#include <system-file-N.h>
+
+#include <lib-file-1.h>
+#include <lib-file-2.h>
+...
+#include <lib-file-N.h>
+@end example
+
+Note the empty lines separating the several blocks.
+
+In particular:
+
+@itemize @minus
+@item Always include @file{config.h}, and do it in the first position.
+@item Never use the @code{"foo.h"} kind of inclusion.  Use always @code{<foo.h>}.
+@end itemize
 
 @node Spaces vs. Tabs
 @section Spaces vs. Tabs

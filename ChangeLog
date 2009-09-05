@@ -1,5 +1,7 @@
 2009-09-05  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf-hg.texi (Inclusion of Header Files): New section.
+
 	* utils/pdf-tokeniser.c (main): Likewise.
 
 	* utils/pdf-filter.c (main): Likewise.
