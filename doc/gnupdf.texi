@@ -7533,7 +7533,8 @@ Error while parsing @var{time_str} according to @var{time_format}.
 @item Usage example
 @example
 pdf_time_t mytime;
-char time_str[] = "FIXME: put a correct PDF time there";
+char time_str[] = "D:20090813210000+00'00"; /* 13-August-2009, 21:00
+                                               GMT 0 */
 
 mytime = pdf_time_new ();
 if (pdf_time_from_string (mytime, 
@@ -11235,7 +11236,7 @@ An object document can be associated with a file system file
 * Object Document Data Types::  
 * Opening and Closing Object Documents::  
 * Managing Object Document Properties::  
-* Retrieving Objects::             
+* Retrieving and Storing Objects::             
 * Garbage collection in object documents::  
 @end menu
 
@@ -11264,6 +11265,19 @@ Size of @code{crypt_key}.
 A pointer to a progress monitor, or @code{NULL}.
 @item void *monitor_client_data
 Client-specific data for the progress monitor callbacks.
+@end table
+@end deftp
+
+@deftp {Data Type} {struct pdf_obj_doc_ctx_s}
+
+Structure to contain a localization of an error in the contents of an
+object document.
+
+@table @code
+@item pdf_off_t line
+Line number.
+@item pdf_char_t *error_description
+Description of the error.
 @end table
 @end deftp
 
@@ -11314,7 +11328,7 @@ if (pdf_obj_doc_new (PDF_OBJ_DOC_CREATE_INFO_DIR,
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_doc_open (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path}, pdf_char_t *@var{header_string}, pdf_obj_doc_t *@var{doc})
+@deftypefun pdf_status_t pdf_obj_doc_open (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path}, pdf_char_t *@var{header_string}, pdf_obj_doc_ctx_s *@var{ctx}, pdf_obj_doc_t *@var{doc})
 
 Open a document object from a file.
 
@@ -11329,6 +11343,10 @@ The path to the file containing the object document.
 @item header_string
 A string like @code{"%PDF-"}.  The string should appear as the first
 content of the specified file.  The string can be empty.
+@item ctx
+Pointer to a @code{pdf_obj_doc_ctx_s} structure that will contain the
+localization of an error in the document if some arises.  If it is
+@code{NULL} then it won't be used.
 @item doc
 A pointer to a @code{pdf_obj_doc_t} variable.
 @end table
@@ -11346,8 +11364,8 @@ The path specified in @var{path} is not correct.
 The file in @var{path} could not be read due to a lack of permissions.
 @item PDF_EBADFILE
 Parser error while interpreting the contents of the file in
-@var{path}.  (FIXME: an out parameter should be added to get the
-parsing information localizing the faulting line).
+@var{path}.  Information about the location of the error can be found
+in @var{ctx} if it was specified.
 @item PDF_EIMPLLIMIT
 Some implementation limit was exceeded.  For example, there is a limit
 in the number of PDF objects that can be contained in an object
@@ -11438,9 +11456,8 @@ An ORed value of the following defined flags:
 Do not create a cross reference table (or stream) when saving the document.
 @item PDF_OBJ_DOC_SAVE_FULL
 Do a ``full save'', writing all the objects instead of just the
-modified ones.  FIXME: is this option recreating the whole file with
-all the objects with generation 0?  Or creates a new generation for
-all the objects?.
+modified ones.  This option recreates the whole file with all the
+objects with a generation number of 0.
 @end table
 @item params
 A @code{pdf_obj_doc_save_params_s} structure containing the parameters
@@ -11602,11 +11619,11 @@ pdf_obj_doc_close (objdoc);
 @end table
 @end deftypefun
 
-@node Retrieving Objects
-@subsection Retrieving Objects
+@node Retrieving and Storing Objects
+@subsection Retrieving and Storing Objects
 
 A PDF object document contains two special objects that can be
-retrieved using specific-purpose functions:
+accessed using specific-purpose functions:
 
 @itemize @minus
 @item The @dfn{Document Information Dictionary}.  It is optional.
@@ -11614,7 +11631,7 @@ retrieved using specific-purpose functions:
 @end itemize
 
 Any other indirect object contained in the object document can be
-retrieved using an object identifier.
+accessed using an object identifier.
 
 @deftypefun pdf_status_t pdf_obj_doc_get_info_dict (pdf_obj_doc_t @var{objdoc}, pdf_obj_t *@var{info_dict})
 
@@ -11666,6 +11683,57 @@ if (pdf_obj_doc_get_info_dict (objdoc, &info_dict)
 @end table
 @end deftypefun
 
+@deftypefun pdf_status_t pdf_obj_doc_set_info_dict (pdf_obj_doc_t @var{objdoc}, pdf_obj_t @var{info_dict}
+
+Set @var{info_dict} as the Document Information Dictionary of
+@var{objdoc}.
+
+@var{info_dict} should be an indirect dictionary object.  If it is
+associated with a different document then a deep copy is performed
+before to set it as the Document Information Dictionary of
+@var{objdoc}.
+
+@table @strong
+@item Parameters
+@table @var
+@item objdoc
+An object document.
+@item info_dict
+An indirect dictionary object.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The dictionary @var{info_dict} was set as the new Document Information
+Dictionary of @var{objdoc}.
+@item PDF_EINVOBJ
+The specified object @var{info_dict} is not of the proper type.
+@item PDF_ERROR
+An error prevented the operation to complete.
+@end table
+@item Usage example
+@example
+pdf_obj_doc_t objdoc;
+pdf_obj_t info_dict;
+
+/* Create an object document without an info dictionary */
+pdf_obj_doc_new (0, &objdoc);
+
+/* Create an info dictionary */
+pdf_obj_dict_new (objdoc, PDF_TRUE, &info_dict);
+
+/* Set it as the new info dictionary in 'objdoc' */
+if (pdf_obj_doc_set_info_dict (objdoc, info_dict)
+    == PDF_OK)
+@{
+   /* 'info_dict' is now the Document Information Dictionary of
+      'objdoc' */
+@}
+@end example
+@end table
+@end deftypefun
+
 @deftypefun pdf_status_t pdf_obj_doc_get_root (pdf_obj_doc_t @var{objdoc}, pdf_obj_t *@var{root_dict})
 
 Get the root object (maybe the catalog of a well-formed PDF document)
@@ -11709,9 +11777,6 @@ if (pdf_obj_doc_get_root (objdoc, &root_dict)
 Get an object from @var{doc} given its @var{obj_id} and store it in
 @var{obj}. Note that the object with the latest generation number in
 the document is returned.
-
-[FIXME: what if we want to retrieve the object with an old generation
-        number?  (to restore it, for example).]
 
 Any previous content of @var{obj} is lost.
 @table @strong
@@ -11958,12 +12023,6 @@ The data will be decrypted but not filtered.
 The data wont be filtered nor decrypted.
 @item PDF_OBJ_STM_OPEN_MODE_FILTERED
 The data will be both decrypted and filtered.
-@item PDF_OBJ_STM_OPEN_MODE_RAW_IFKEY
-FIXME
-@item PDF_OBJ_STM_OPEN_MODE_UNFILTERED_IFKEY
-FIXME
-@item PDF_OBJ_STM_OPEN_MODE_FILTERED_IFKEY
-FIXME
 @end table
 @end deftp
 
@@ -13500,6 +13559,9 @@ else
 Return the hex flag of the String object @var{obj}. A String object
 with the hex flag set to true is saved in an hexadecimal form.
 
+If @var{obj} is not a string object then @code{PDF_FALSE} is
+returned.
+
 @table @strong
 @item Parameters
 @table @var
@@ -13510,11 +13572,22 @@ A PDF String object.
 A PDF boolean value:
 @table @code
 @item PDF_TRUE
+The string will be saved in hexadecimal form.
 @item PDF_FALSE
+The string won't be saved in hexadecimal form.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_t str;
+
+if (pdf_obj_string_hex_p (str))
+@{
+   /* The hex flag of 'str' is set */
+@}
+else
+@{
+   /* The hex flag of 'str' is not set */
+@}
 @end example
 @end table
 @end deftypefun
@@ -13536,13 +13609,19 @@ The new value of the hex flag for @var{obj}.
 A PDF status value:
 @table @code
 @item PDF_OK
+The hex flag of @var{obj} was set to @var{hex_p}.
 @item PDF_EINVOBJ
-@var{obj} is not a String object.
+@var{obj} is not a string object.
 @item PDF_ERROR
+An error prevented the operation to complete.  The hex flag of the
+document shall be considered unchanged.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_t str;
+
+/* Reverse the hex flag of 'str' */
+pdf_obj_string_hex_set (!pdf_obj_string_hex_p (str));
 @end example
 @end table
 @end deftypefun

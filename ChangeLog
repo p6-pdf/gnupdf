@@ -1,5 +1,12 @@
 2009-09-05  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf.texi (Retrieving and Storing Objects): New function
+	'pdf_obj_doc_set_info_dict'.
+	(Opening and Closing Object Documents): Meaning of the
+	'PDF_OBJ_DOC_SAVE_FULL' clarified.
+	(Object Document Data Types): New data type 'struct
+	pdf_obj_doc_ctx_s'.
+
 	* torture/unit/base/fsys/pdf-fsys-get-free-space.c: Missing
 	string.h included.
 
