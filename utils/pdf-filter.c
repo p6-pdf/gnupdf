@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 15:43:27 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 16:41:18 jemarch"
  *
  *       File:         pdf-filter.c
  *       Date:         Tue Jul 10 18:42:07 2007
@@ -46,7 +46,7 @@
  * Command line options management 
  */
 
-static struct option GNU_longOptions[] =
+static const struct option GNU_longOptions[] =
   {
     {"help", no_argument, NULL, HELP_ARG},
     {"usage", no_argument, NULL, USAGE_ARG},
@@ -176,7 +176,9 @@ main (int argc, char *argv[])
   pdf_bool_t read_mode,read_pdf_fsys,write_pdf_fsys;
   pdf_status_t last_ret;
   pdf_status_t destroy_ret;
-  
+
+  /*  set_program_name (argv[0]); */
+
   stm = create_stream (argc, argv, &read_mode, &last_ret, &read_pdf_fsys,
                        &write_pdf_fsys, &fsys_stm);
   install_filters (argc, argv, stm, last_ret);
@@ -334,7 +336,7 @@ create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
 	  }
 	case CACHE_ARG:
 	  {
-	    cache_size = strtol (optarg, &endptr, 10);
+	    cache_size = strtol (optarg, (char **) &endptr, 10);
             
             if ((endptr != NULL) && (*endptr != '\0'))
               {

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 15:25:57 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 16:41:31 jemarch"
  *
  *       File:         pdf-tokeniser.c
  *       Date:         Wed May 20 05:25:40 2009
@@ -23,21 +23,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <config.h>
 
 #include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 #include <getopt.h>
 #include <pdf.h>
+
 #include <pdf-tokeniser.h>
 
 /*
  * Command line options management
  */
 
-static struct option GNU_longOptions[] =
+static const struct option GNU_longOptions[] =
   {
     {"help", no_argument, NULL, HELP_ARG},
     {"usage", no_argument, NULL, USAGE_ARG},
@@ -225,6 +226,8 @@ int
 main (int argc, char **argv)
 {
   char c;
+
+  /*  set_program_name (argv[0]); */
 
   while ((c = getopt_long (argc,
                            argv,

@@ -28,19 +28,19 @@ generated-tsd.texi:
 
 manuals: gnupdf-tsd.texi
 	../build-aux/gendocs.sh -o gnupdf-manual \
-                                --email pdf-devel@gnu.org \
+                                --email  pdf-devel@gnu.org \
                                 gnupdf "GNU PDF Reference Manual"
 	../build-aux/gendocs.sh -o gnupdf-tsd-manual \
-                                --email pdf-devel@gnu.org \
+                                --email  pdf-devel@gnu.org \
                                 gnupdf-tsd "GNU PDF Test Specification Document"
 	../build-aux/gendocs.sh -o gnupdf-arch-manual \
-                                --email pdf-devel@gnu.org \
+                                --email  pdf-devel@gnu.org \
                                 gnupdf-arch "GNU PDF Architecture Guide"
 	../build-aux/gendocs.sh -o gnupdf-hg-manual \
-                                --email pdf-devel@gnu.org \
+                                --email  pdf-devel@gnu.org \
                                 gnupdf-hg "GNU PDF Hacker's Guide"
 	../build-aux/gendocs.sh -o gnupdf-utils-manual \
-                                --email pdf-devel@gnu.org \
+                                --email  pdf-devel@gnu.org \
                                 gnupdf-utils "GNU PDF Utilities Manual"
 
 if TEXI2HTML

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/25 00:32:31 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 15:54:57 jemarch"
  *
  *       File:         pdf-list.c
  *       Date:         Sat Mar 1 02:14:35 2008
@@ -24,6 +24,7 @@
  */
 
 #define COMPILING_PDF_LIST
+#include <config.h>
 #include <pdf-list.h>
 
 /* End of pdf-list.c */

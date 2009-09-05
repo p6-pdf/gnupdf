@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-20 04:35:27 mgold"
+/* -*- mode: C -*- Time-stamp: "09/09/05 16:06:31 jemarch"
  *
  *       File:         tsuite-token.c
  *       Date:         Wed Jan 14 05:43:09 2009
@@ -22,6 +22,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+#include <config.h>
 
 #include <check.h>
 

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-02 16:36:17 aleksander"
+/* -*- mode: C -*- Time-stamp: "09/09/05 16:21:05 jemarch"
  *
  *       File:         pdf-text-ucd-proplist.c
  *       Date:         Mon Mar 31 19:58:17 2008
@@ -27,6 +27,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <config.h>
 
 #include <pdf-text-ucd-proplist.h>
 

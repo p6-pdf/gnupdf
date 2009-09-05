@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/06/16 22:24:09 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 16:11:23 jemarch"
  *
  *       File:         tsuit-stm.c
  *       Date:         Sat Feb 23 21:35:11 2008
@@ -22,6 +22,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+#include <config.h>
 
 #include <check.h>
 

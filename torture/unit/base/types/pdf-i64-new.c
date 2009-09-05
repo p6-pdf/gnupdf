@@ -36,7 +36,7 @@
 /*
  * Test: pdf_i64_new_001
  * Description:
- *   Checks if the the pdf_i64_new function properly assigns
+ *   Checks if the pdf_i64_new function properly assigns
  *  the high and low values to a pdf_i64_t type
  */
 START_TEST(pdf_i64_new_001)

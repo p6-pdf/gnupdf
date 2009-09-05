@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/22 22:52:29 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 15:57:38 jemarch"
  *
  *       File:         pdf-stm-f-pred.c
  *       Date:         Thu Jul 12 01:21:33 2007
@@ -23,6 +23,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <config.h>
 
 #include <stdio.h>
 #include <stdlib.h>

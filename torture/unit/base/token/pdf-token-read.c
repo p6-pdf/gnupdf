@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 22:19:43 davazp"
+/* -*- mode: C -*- Time-stamp: "09/09/05 16:06:57 jemarch"
  *
  *       File:         pdf-token-read.c
  *       Date:         Wed Jan 14 05:44:48 2009
@@ -7,11 +7,13 @@
  *
  */
 
+#include <config.h>
+
 #include <string.h>
 #include <check.h>
 #include <stdlib.h>
-#include "config.h"
-#include "pdf.h"
+
+#include <pdf.h>
 
 #define STR_AND_LEN(s) (s),(sizeof(s)-1)
 

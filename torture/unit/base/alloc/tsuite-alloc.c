@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/10 21:45:12 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 16:08:58 jemarch"
  *
  *       File:         tsuite-alloc.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)
@@ -23,6 +23,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+#include <config.h>
 
 #include <check.h>
 

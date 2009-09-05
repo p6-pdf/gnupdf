@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-07-27 23:56:43 derhans"
+/* -*- mode: C -*- Time-stamp: "09/09/05 16:10:17 jemarch"
  *
  *       File:         tsuite-fsys.c
  *       Date:         Fri May  1 18:08:12 2009
@@ -22,6 +22,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+#include <config.h>
 
 #include <check.h>
 

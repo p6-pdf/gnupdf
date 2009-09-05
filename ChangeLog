@@ -1,5 +1,109 @@
 2009-09-05  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* utils/pdf-tokeniser.c (main): Likewise.
+
+	* utils/pdf-filter.c (main): Likewise.
+
+	* torture/unit/runtests.c (main): Call 'set_program_name'.
+
+	* utils/pdf-tokeniser.c: Removed the inclusion of the unused
+	assert.h.
+
+	* build-aux/pdf-text-generate-ucd.c: Include config.h.
+
+	* src/base/pdf-text-ucd-wordbreak.c: Likewise.
+
+	* src/base/pdf-text-ucd-proplist.c: Likewise.
+
+	* src/base/pdf-text-ucd-gencat.c: Likewise.
+
+	* src/base/pdf-stm-f-v2.c: Likewise.
+
+	* torture/unit/base/text/tsuite-text.c: Likewise.
+
+	* torture/unit/base/stm/tsuite-stm.c: Likewise.
+
+	* torture/unit/base/list/tsuite-list.c: Likewise.
+
+	* torture/unit/base/hash/tsuite-hash.c: Likewise.
+
+	* torture/unit/base/fsys/tsuite-fsys.c: Likewise.
+
+	* torture/unit/base/fp/tsuite-fp.c: Likewise.
+
+	* torture/unit/base/error/tsuite-error.c: Likewise.
+
+	* torture/unit/base/crypt/tsuite-crypt.c: Likewise.
+
+	* torture/unit/base/alloc/tsuite-alloc.c: Likewise.
+
+	* torture/unit/base/time/pdf-time-testdata.c: Likewise.
+
+	* torture/unit/base/time/pdf-time-test-common.c: Likewise.
+
+	* torture/unit/base/time/tsuite-time.c: Likewise.
+
+	* torture/unit/base/token/tsuite-token.c: Likewise.
+
+	* torture/unit/base/types/tsuite-types.c: Likewise.
+
+	* torture/unit/nocheck/check.c: Likewise.
+
+	* torture/unit/runtests.c: Likewise.
+
+	* utils/pdf-tokeniser.c: Likewise.
+
+	* src/base/pdf-token.c: Likewise.
+
+	* src/base/pdf-token-reader.c: Likewise.
+
+	* src/base/pdf-time-string.c: Likewise.
+
+	* src/base/pdf-time-context.c: Likewise.
+
+	* src/base/pdf-text-ucd-combclass.c: Likewise.
+
+	* src/base/pdf-text-ucd-case.c: Likewise.
+
+	* src/base/pdf-text-host-encoding.c: Likewise.
+
+	* src/base/pdf-text-filter.c: Likewise.
+
+	* src/base/pdf-text-encoding.c: Likewise.
+
+	* src/base/pdf-stm-f-rl.c: Likewise.
+
+	* src/base/pdf-stm-f-pred.c: Likewise.
+
+	* src/base/pdf-stm-f-md5.c: Likewise.
+
+	* src/base/pdf-stm-f-lzw.c: Likewise.
+
+	* src/base/pdf-stm-f-flate.c: Likewise.
+
+	* src/base/pdf-stm-f-fax.c: Likewise.
+
+	* src/base/pdf-stm-f-aesv2.c: Likewise.
+
+	* src/base/pdf-stm-f-a85.c: Likewise.
+
+	* src/base/pdf-list.c: Likewise.
+
+	* src/base/pdf-hash-helper.c: Likewise.
+
+	* src/base/pdf-fsys.c: Likewise.
+
+	* src/base/pdf-crypt.c: Likewise.
+
+	* src/base/pdf-crypt-c-v2.c: Likewise.
+
+	* src/base/pdf-crypt-c-aesv2.c: Likewise.
+
+	* doc/gnupdf.texi (Error Reporting procedures): Fixed a
+	capitalized error message in usage example.
+
+	* cfg.mk: Don't run the sc_prohibit_strcmp syntax check.
+
 	* utils/pdf-filter.c (create_stream): Use strtol instead of atoi
 	while parsing numeric arguments.
 

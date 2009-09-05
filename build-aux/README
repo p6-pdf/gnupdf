@@ -4,7 +4,7 @@ are not intended to be installed in the target machine.
 
   `pdf-text-generate-ucd'
 
-      A C source generator for the the Unicode Character Database. This library
+      A C source generator for the Unicode Character Database. This library
       does not really use the GNU PDF library.
 
   `pdf-text-download-and-generate-ucd.sh'

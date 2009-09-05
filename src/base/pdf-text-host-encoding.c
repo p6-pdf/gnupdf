@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/10/12 20:23:00 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 15:58:54 jemarch"
  *
  *       File:         pdf-text-host-encoding.c
  *       Date:         Fri Jan 11 21:09:23 2008
@@ -23,13 +23,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <config.h>
+
+#include <string.h>
+
 #include <pdf-types.h>
 #include <pdf-text.h>
 #include <pdf-text-context.h>
 #include <pdf-text-encoding.h>
 #include <pdf-text-host-encoding.h>
-
-#include <string.h>
 
 #ifdef PDF_HOST_WIN32
  #include <windows.h>

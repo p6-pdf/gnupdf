@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/27 23:51:10 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 16:10:34 jemarch"
  *
  *       File:         tsuite-hash.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -22,6 +22,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+#include <config.h>
 
 #include <check.h>
 

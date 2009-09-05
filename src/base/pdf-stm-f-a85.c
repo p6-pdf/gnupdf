@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/03/05 12:24:22 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 15:55:10 jemarch"
  *
  *       File:         pdf-stm-f-a85.c
  *       Date:         Sun Jul 15 06:01:42 2007
@@ -27,6 +27,8 @@
    the public domain by the author.
 
    Many thanks Paul! */
+
+#include <config.h>
 
 #include <string.h>
 #include <stdio.h>

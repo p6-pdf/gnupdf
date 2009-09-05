@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/06/18 00:14:15 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 16:00:57 jemarch"
  *
  *       File:         pdf-token-reader.c
  *       Date:         Mon Dec 29 00:45:09 2008
@@ -23,12 +23,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "config.h"
+#include <config.h>
+
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
-#include "pdf-token-reader.h"
+
+#include <pdf-token-reader.h>
 
 static INLINE int can_store_char (pdf_token_reader_t reader);
 static INLINE pdf_status_t store_char (pdf_token_reader_t reader,

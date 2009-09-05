@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-02 16:35:59 aleksander"
+/* -*- mode: C -*- Time-stamp: "09/09/05 15:59:48 jemarch"
  *
  *       File:         pdf-text-ucd-combclass.c
  *       Date:         Sun Mar 09 12:59:01 2008
@@ -26,6 +26,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+#include <config.h>
 
 #include <pdf-text-ucd-combclass.h>
 

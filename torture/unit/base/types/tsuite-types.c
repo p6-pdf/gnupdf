@@ -23,6 +23,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <config.h>
+
 #include <check.h>
 
 extern TCase *test_pdf_i64_new (void);

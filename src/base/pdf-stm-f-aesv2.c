@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/11 22:02:19 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 15:55:43 jemarch"
  *
  *       File:         pdf-stm-f-aesv2.c
  *       Date:         Sun Dec 14 20:13:53 2008
@@ -23,7 +23,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
+#include <config.h>
 
 #include <stdlib.h>
 #include <string.h>

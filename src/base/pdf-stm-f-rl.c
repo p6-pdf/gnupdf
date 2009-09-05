@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/11 22:05:07 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 15:57:52 jemarch"
  *
  *       File:         pdf-stm-f-rl.c
  *       Date:         Sun Jul 15 22:01:18 2007
@@ -23,6 +23,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <config.h>
 
 #include <string.h>
 #include <stdio.h>

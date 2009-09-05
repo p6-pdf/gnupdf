@@ -230,7 +230,7 @@ st = pdf_i64_add (dest, addend_1, addend_2);
 
 if (st != PDF_OK)
 @{
-        pdf_error (st, logfd, "Couldn't do i64 addition");
+        pdf_error (st, logfd, "couldn't do i64 addition");
 @}
 @end example
 @end table

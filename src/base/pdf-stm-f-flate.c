@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/11 22:02:58 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 15:56:25 jemarch"
  *
  *       File:         pdf-stm-f-flate.c
  *       Date:         Tue Jul 10 23:44:00 2007
@@ -23,6 +23,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <config.h>
 
 #include <stdio.h>
 #include <string.h>

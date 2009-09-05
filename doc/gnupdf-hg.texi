@@ -833,6 +833,10 @@ the syntax check implemented in
 
 Note that the @file{.x-RULE} files should not contain empty lines.
 
+In order to disable the execution of a syntax check for any file, just
+add the name of the syntax check to the @code{local-checks-to-skip}
+variable in @file{cfg.mk}.
+
 @node Patch Safety Dispatcher
 @section Patch Safety Dispatcher
 

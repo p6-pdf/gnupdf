@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/04/17 00:08:47 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 16:08:09 jemarch"
  *
  *       File:         pdf-time-testdata.c
  *       Date:         Fri Feb 27 17:35:31 2009
@@ -23,6 +23,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <config.h>
 
 #include <pdf.h>
 #include <base/time/pdf-time-test-common.h>

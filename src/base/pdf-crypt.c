@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-08-25 03:40:52 davazp"
+/* -*- mode: C -*- Time-stamp: "09/09/05 15:53:43 jemarch"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -24,6 +24,7 @@
  */
 
 #define COMPILING_PDF_CRYPT
+#include <config.h>
 #include <pdf-crypt.h>
 
 /* End of pdf-crypt.c */

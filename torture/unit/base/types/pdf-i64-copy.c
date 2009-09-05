@@ -36,7 +36,7 @@
 /*
  * Test: pdf_i64_copy_001
  * Description:
- *   Checks if the the pdf_i64_copy copies the values of one 
+ *   Checks if the pdf_i64_copy copies the values of one 
  * pdf_i64_t variable into another
  */
 START_TEST(pdf_i64_copy_001)
@@ -70,7 +70,7 @@ END_TEST
 /*
  * Test: pdf_i64_copy_001
  * Description:
- *   Checks if the the pdf_i64_copy function gets an error if
+ *   Checks if the pdf_i64_copy function gets an error if
  *  the target pointer is not properly initialised
  */
 

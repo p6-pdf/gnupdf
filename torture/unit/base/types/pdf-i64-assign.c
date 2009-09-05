@@ -36,7 +36,7 @@
 /*
  * Test: pdf_i64_assign_001
  * Description:
- *   Checks if the the pdf_i64_assign function properly assigns
+ *   Checks if the pdf_i64_assign function properly assigns
  *  the high and low values to a pdf_i64_t type
  * Success conditions:
  * The call should not produce an error
@@ -66,7 +66,7 @@ END_TEST
 /*
  * Test: pdf_i64_assign_002
  * Description:
- *   Checks if the the pdf_i64_assign function properly assigns
+ *   Checks if the pdf_i64_assign function properly assigns
  *  the high and low values to a NULL pdf_i64_t pointer type
  * Success conditions:
  * The call should produce an error

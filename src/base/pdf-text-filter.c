@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/09 00:57:35 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 15:58:29 jemarch"
  *
  *       File:         pdf-text-filter.c
  *       Date:         Fri Feb 25 23:58:56 2008
@@ -22,6 +22,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+#include <config.h>
 
 #include <string.h>
 #include <stdio.h>

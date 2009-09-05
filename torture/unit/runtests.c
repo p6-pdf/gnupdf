@@ -6,6 +6,9 @@
  *       GNU PDF Library - Unit testing driver
  *
  */
+
+#include <config.h>
+
 #include <stdio.h>
 #include <check.h>
 
@@ -27,6 +30,8 @@ main (int argc, char **argv)
 {
   int failures;
   SRunner *sr;
+
+  /*  set_program_name (argv[0]); */
 
   /* Create empty suite runner */
   sr = srunner_create (NULL);

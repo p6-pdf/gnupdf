@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/11 22:04:42 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 15:57:18 jemarch"
  *
  *       File:         pdf-stm-f-md5.c
  *       Date:         Fri Dec  5 16:40:50 2008
@@ -22,6 +22,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+#include <config.h>
 
 #include <pdf-stm-f-md5.h>
 #include <string.h>

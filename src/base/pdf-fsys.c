@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/01 12:18:18 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 15:54:07 jemarch"
  *
  *       File:         pdf-fsys.c
  *       Date:         Thu May 22 15:51:13 2008
@@ -22,6 +22,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+#include <config.h>
 
 #include <pdf-alloc.h>
 #include <pdf-fsys.h>

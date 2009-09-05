@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-20 04:50:13 mgold"
+/* -*- mode: C -*- Time-stamp: "09/09/05 16:01:21 jemarch"
  *
  *       File:         pdf-token.c
  *       Date:         Sat Jul  7 03:04:30 2007
@@ -23,13 +23,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <config.h>
+
 #include <string.h>
 #include <assert.h>
 #include <math.h>
 
-#include "config.h"
-#include "pdf-token.h"
-#include "pdf-alloc.h"
+#include <pdf-token.h>
+#include <pdf-alloc.h>
 
 /* Private functions */
 

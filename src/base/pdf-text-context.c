@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-02 16:36:41 aleksander"
+/* -*- mode: C -*- Time-stamp: "09/09/05 16:22:08 jemarch"
  *
  *       File:         pdf-text-context.c
  *       Date:         Fri Feb 25 23:58:56 2008
@@ -23,9 +23,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <config.h>
+
 #include <string.h>
 #include <stdio.h>
-#include <config.h>
 #include <locale.h>
 
 #include <localename.h>    /* From gnulib sources */

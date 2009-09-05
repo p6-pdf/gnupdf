@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/12/28 00:14:54 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 15:53:08 jemarch"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -23,6 +23,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <config.h>
 
 #include <stdlib.h>
 #include <string.h>

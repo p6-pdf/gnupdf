@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/06/24 20:13:29 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 15:54:16 jemarch"
  *
  *       File:         pdf-hash-helper.c
  *       Date:         Thu Jul 24 21:05:05 2008
@@ -23,6 +23,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <config.h>
 
 #include <pdf-hash-helper.h>
 
