@@ -1,3 +1,11 @@
+2009-09-05  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-hg.texi (Skipping syntax tests): New subsection
+	explaining how to avoid the execution of a syntax check in an
+	specific file.
+
+	* .x-sc_avoid_if_before_free: New file.
+
 2009-09-04  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-time-string.c (pdf_time_check_string_pdf): Invoke

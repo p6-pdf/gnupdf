@@ -71,7 +71,7 @@ export LC_ALL = C
 ## --------------- ##
 
 # Collect the names of rules starting with `sc_'.
-wsyntax-check-rules := $(shell sed -n 's/^\(sc_[a-zA-Z0-9_-]*\):.*/\1/p' \
+syntax-check-rules := $(shell sed -n 's/^\(sc_[a-zA-Z0-9_-]*\):.*/\1/p' \
 			$(srcdir)/$(ME) $(srcdir)/cfg.mk)
 .PHONY: $(syntax-check-rules)
 

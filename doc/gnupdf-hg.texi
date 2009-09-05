@@ -809,6 +809,27 @@ pitfalls on the source code and GCS conformance.
 Please do a make syntax-check before to send a patch, or alternatively
 use the Patch Safety Dispatcher (see the next section).
 
+@menu
+* Skipping syntax tests::       Avoid passing tests in some files       
+@end menu
+
+@node Skipping syntax tests
+@subsection Skipping syntax tests
+
+Sometimes it is not desirable to run an specific test in an specific
+source file.  Some typical situations are:
+
+@itemize @minus
+@item A false positive of the test.
+@item A positive on code that we are not maintaining (for example, any source file in the @file{lib/} directory).
+@end itemize
+
+In order to disable the execution of a syntax check in an specific
+file, the name of the source file should be added to the file
+@file{.x-RULE}, where @file{RULE} is the name of the syntax check.  An
+example is the file @file{.x-sc_avoid_if_before_free}, that affects
+the syntax check implemented in
+@file{build-aux/sc_avoid_if_before_free}.
 
 @node Patch Safety Dispatcher
 @section Patch Safety Dispatcher
