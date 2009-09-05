@@ -1,5 +1,8 @@
 2009-09-05  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* torture/unit/base/fsys/pdf-fsys-get-free-space.c: Missing
+	string.h included.
+
 	* torture/unit/Makefile.am (TEST_SUITE_TIME):
 	pdf-time-test-common.h added.
 

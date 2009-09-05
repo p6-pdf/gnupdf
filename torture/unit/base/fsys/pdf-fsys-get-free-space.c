@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-01 20:43:05 derhans"
+/* -*- mode: C -*- Time-stamp: "09/09/05 18:50:25 jemarch"
  *
  *       File:         pdf-fsys-get-free-space.c
  *       Date:         Fri May  1 20:20:11 2009
@@ -24,6 +24,8 @@
  */
 
 #include <config.h>
+
+#include <string.h>
 #include <check.h>
 #include <pdf.h>
 

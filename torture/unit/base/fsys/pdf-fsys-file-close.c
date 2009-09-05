@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-07-28 01:47:51 derhans"
+/* -*- mode: C -*- Time-stamp: "09/09/05 18:51:14 jemarch"
  *
  *       File:         pdf-fsys-file-close.c
  *       Date:         Sat May  3 21:02:12 2009
@@ -27,6 +27,8 @@
 #include <check.h>
 #include <pdf.h>
 #include <string.h>
+
+#include <tortutils.h>
 
 /*
  * Test: pdf_fsys_file_close_001
