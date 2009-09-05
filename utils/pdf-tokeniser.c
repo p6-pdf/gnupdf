@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/06/24 21:22:54 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 15:25:57 jemarch"
  *
  *       File:         pdf-tokeniser.c
  *       Date:         Wed May 20 05:25:40 2009
@@ -177,7 +177,7 @@ print_tok (pdf_token_t token)
   printf("%s(%s)\n", typ, str);
   if (str != tmpbuf)
     {
-      free((void*)str);
+      free(str);
     }
 };
 

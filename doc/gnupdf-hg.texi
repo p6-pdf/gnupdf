@@ -831,6 +831,8 @@ example is the file @file{.x-sc_avoid_if_before_free}, that affects
 the syntax check implemented in
 @file{build-aux/sc_avoid_if_before_free}.
 
+Note that the @file{.x-RULE} files should not contain empty lines.
+
 @node Patch Safety Dispatcher
 @section Patch Safety Dispatcher
 

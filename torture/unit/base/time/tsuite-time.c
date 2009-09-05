@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 22:03:42 davazp"
+/* -*- mode: C -*- Time-stamp: "09/09/05 15:30:49 jemarch"
  *
  *       File:         tsuit-time.c
  *       Date:         Sat Feb 23 21:35:11 2008
@@ -83,10 +83,10 @@ tsuite_time ()
 	suite_add_tcase (s, test_pdf_time_sub_cal_span ());
 	suite_add_tcase (s, test_pdf_time_add_span ());
 	suite_add_tcase (s, test_pdf_time_sub_span ());
-   	suite_add_tcase (s, test_pdf_time_get_local_cal ());
-   	suite_add_tcase (s, test_pdf_time_get_utc_cal ());
+        suite_add_tcase (s, test_pdf_time_get_local_cal ());
+        suite_add_tcase (s, test_pdf_time_get_utc_cal ());
 	suite_add_tcase (s, test_pdf_time_from_cal ());
-  	suite_add_tcase (s, test_pdf_time_set_local_offset ());
+        suite_add_tcase (s, test_pdf_time_set_local_offset ());
 	suite_add_tcase (s, test_pdf_time_from_string ());
 	suite_add_tcase (s, test_pdf_time_span_new ());
 	suite_add_tcase (s, test_pdf_time_span_dup ());

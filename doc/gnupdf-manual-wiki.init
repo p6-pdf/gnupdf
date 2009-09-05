@@ -137,18 +137,18 @@ sub mediawiki_anchor($;$$$)
 	    # If the i18n will replace this later, assume it's a full URL.
 	    || $href =~ /^%/)
 	{
-	    $text = " $text" if $text;
-    	    $href = "[$href$text]";
+            $text = " $text" if $text;
+            $href = "[$href$text]";
 	}
 	else
 	{
 	    $text = "|$text" if $text;
-    	    $href = "[[$href$text]]";
+            $href = "[[$href$text]]";
 	}
     }
     else
     {
-    	$href = $text;
+        $href = $text;
     }
 #print STDERR "!!!$name!$href!$text!$attributes!\n";
     return "$name$href";
@@ -580,7 +580,7 @@ sub mediawiki_index_summary($$)
 	if @$alpha;
     return '<table cellpadding="1" cellspacing="1" border="0">'
 	   . "<tr><th valign=\"top\">" . &$I('Jump to') .":</th>\n"
-    	   . join ("", map {"<td>$_</td>\n"} @$nonalpha, @$alpha),
+           . join ("", map {"<td>$_</td>\n"} @$nonalpha, @$alpha),
 	   . "</tr></table>\n";
 }
 

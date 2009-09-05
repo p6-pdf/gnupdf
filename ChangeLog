@@ -1,5 +1,16 @@
 2009-09-05  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* utils/pdf-filter.c (create_stream): Use strtol instead of atoi
+	while parsing numeric arguments.
+
+	* torture/unit/base/time/tsuite-time.c (tsuite_time): Replaced
+	tabs with spaces.
+
+	* doc/gnupdf-manual-wiki.init (mediawiki_anchor): Replace tabs
+	with spaces.
+
+	* utils/pdf-tokeniser.c (print_tok): Don't cast argument to free.
+
 	* doc/gnupdf-hg.texi (Skipping syntax tests): New subsection
 	explaining how to avoid the execution of a syntax check in an
 	specific file.

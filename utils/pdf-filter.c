@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/06/24 21:00:38 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 15:43:27 jemarch"
  *
  *       File:         pdf-filter.c
  *       Date:         Tue Jul 10 18:42:07 2007
@@ -291,6 +291,7 @@ create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
   pdf_stm_t stm;
   pdf_bool_t finish;
   pdf_char_t *infile_name=NULL,*outfile_name=NULL;
+  pdf_char_t *endptr = NULL; /* Used in strtol */
   pdf_fsys_file_t infile, outfile;
 
   finish = PDF_FALSE;
@@ -333,7 +334,15 @@ create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
 	  }
 	case CACHE_ARG:
 	  {
-	    cache_size = atoi (optarg);
+	    cache_size = strtol (optarg, &endptr, 10);
+            
+            if ((endptr != NULL) && (*endptr != '\0'))
+              {
+                /* Error parsing the number */
+                fprintf (stdout, "%s\n", pdf_filter_usage_msg);
+                exit(1);
+              }
+
 	    break;
 	  }
         case INFILE_ARG:
