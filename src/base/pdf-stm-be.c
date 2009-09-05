@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-15 13:44:30 gerel"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:50:32 jemarch"
  *
  *       File:         pdf-stm-be.c
  *       Date:         Wed Jun 18 21:15:16 2008
@@ -8,7 +8,9 @@
  */
 
 #include <config.h>
+
 #include <string.h>
+
 #include <pdf-stm-be.h>
 
 /* Forward declarations */

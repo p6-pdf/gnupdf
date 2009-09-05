@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/11 22:05:11 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:53:18 jemarch"
  *
  *       File:         pdf-stm-f-rl.h
  *       Date:         Sun Jul 15 21:57:35 2007
@@ -27,6 +27,7 @@
 #define PDF_STM_F_RL_H
 
 #include <config.h>
+
 #include <pdf-types.h>
 #include <pdf-hash.h>
 

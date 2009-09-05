@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-19 19:24:11 davazp"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:56:31 jemarch"
  *
  *       File:         pdf-types.h
  *       Date:         Sun Feb 10 21:30:00 2008
@@ -27,6 +27,7 @@
 #define PDF_TYPES_H
 
 #include <config.h>
+
 #include <pdf-error.h>
 
 /* BEGIN PUBLIC */
@@ -40,17 +41,6 @@
 #else
 #define INLINE
 #endif /* HAVE_INLINE */
-
-/* Host dependent definitions to be used */
-
-#if defined _WIN32 || defined __WIN32__
- #define PDF_HOST_WIN32
- #include <windows.h>
-#endif
-
-#if defined(BSD)
- #define PDF_HOST_BSD
-#endif
 
 #define PDF_TRUE 1
 #define PDF_FALSE 0

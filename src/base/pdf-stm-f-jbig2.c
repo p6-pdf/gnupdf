@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/11 22:04:05 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:52:24 jemarch"
  *
  *       File:         pdf-stm-f-jbig2.c
  *       Date:         Fri Nov 21 01:12:48 2008
@@ -25,7 +25,9 @@
 
 
 #include <config.h>
+
 #include <string.h>
+
 #include <pdf-hash-helper.h>
 #include <pdf-stm-f-jbig2.h>
 

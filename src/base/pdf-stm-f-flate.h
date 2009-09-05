@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/11 22:03:01 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:52:03 jemarch"
  *
  *       File:         pdf-stm-f-flate.h
  *       Date:         Tue Jul 10 23:39:27 2007
@@ -27,11 +27,11 @@
 #define PDF_STM_F_FLATE_H
 
 #include <config.h>
-#include <pdf-types.h>
-#include <pdf-hash.h>
+
 #include <zlib.h>
 
-
+#include <pdf-types.h>
+#include <pdf-hash.h>
 
 #define PDF_STM_F_FLATE_CHUNK 16384
 

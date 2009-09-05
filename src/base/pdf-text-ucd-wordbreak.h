@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/28 22:27:04 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:55:21 jemarch"
  *
  *       File:         pdf-text-ucd-wordbreak.h
  *       Date:         Sun Mar 09 12:59:01 2008
@@ -27,6 +27,7 @@
 #define _PDF_TEXT_UCD_WORDBREAK_H
 
 #include <config.h>
+
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>
@@ -34,7 +35,6 @@
 #ifdef HAVE_MALLOC_H
 #include <malloc.h>
 #endif /* HAVE_MALLOC_H */
-
 
 #include <pdf-text.h>
 

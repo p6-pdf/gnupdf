@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 15:58:54 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:45:54 jemarch"
  *
  *       File:         pdf-text-host-encoding.c
  *       Date:         Fri Jan 11 21:09:23 2008
@@ -26,13 +26,6 @@
 #include <config.h>
 
 #include <string.h>
-
-#include <pdf-types.h>
-#include <pdf-text.h>
-#include <pdf-text-context.h>
-#include <pdf-text-encoding.h>
-#include <pdf-text-host-encoding.h>
-
 #ifdef PDF_HOST_WIN32
  #include <windows.h>
 #else
@@ -40,6 +33,11 @@
  #include <errno.h>
 #endif
 
+#include <pdf-types.h>
+#include <pdf-text.h>
+#include <pdf-text-context.h>
+#include <pdf-text-encoding.h>
+#include <pdf-text-host-encoding.h>
 
 /*
  * ICONV API

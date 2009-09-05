@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 15:58:12 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:54:15 jemarch"
  *
  *       File:         pdf-text-encoding.c
  *       Date:         Fri Jan 11 21:09:56 2008
@@ -27,6 +27,7 @@
 
 #include <string.h>
 #include <stdio.h>
+
 #include <pdf-text-encoding.h>
 #include <pdf-text-context.h>
 

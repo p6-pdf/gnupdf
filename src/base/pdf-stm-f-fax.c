@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 15:55:59 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:51:42 jemarch"
  *
  *       File:         pdf-stm-f-fax.c
  *       Date:         Sun Aug  5 19:50:33 2007
@@ -26,6 +26,7 @@
 #include <config.h>
 
 #include <string.h>
+
 #include <pdf-alloc.h>
 #include <pdf-stm-f-fax.h>
 

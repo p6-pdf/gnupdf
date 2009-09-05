@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/11 22:04:28 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:52:32 jemarch"
  *
  *       File:         pdf-stm-f-jbig2.h
  *       Date:         Fri Nov 21 01:07:54 2008
@@ -27,10 +27,11 @@
 #define PDF_STM_F_JBIG2_H
 
 #include <config.h>
-#include <pdf-types.h>
-#include <pdf-hash.h>
 
 #include <jbig2.h>
+
+#include <pdf-types.h>
+#include <pdf-hash.h>
 
 /* Internal state */
 struct pdf_stm_f_jbig2dec_s

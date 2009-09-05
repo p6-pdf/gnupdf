@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 15:56:59 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:52:36 jemarch"
  *
  *       File:         pdf-stm-f-lzw.c
  *       Date:         Wed Aug 15 14:41:18 2007
@@ -26,6 +26,7 @@
 #include <config.h>
 
 #include <string.h>
+
 #include <pdf-alloc.h>
 #include <pdf-hash-helper.h>
 #include <pdf-stm-f-lzw.h>

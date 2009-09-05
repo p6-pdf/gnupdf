@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/11 22:02:51 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:51:15 jemarch"
  *
  *       File:         pdf-stm-f-ahex.h
  *       Date:         Fri Jul 13 17:04:29 2007
@@ -27,6 +27,7 @@
 #define PDF_STM_F_AHEX_H
 
 #include <config.h>
+
 #include <pdf-types.h>
 #include <pdf-hash.h>
 

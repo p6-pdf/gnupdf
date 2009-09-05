@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 15:57:18 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:52:44 jemarch"
  *
  *       File:         pdf-stm-f-md5.c
  *       Date:         Fri Dec  5 16:40:50 2008
@@ -25,8 +25,9 @@
 
 #include <config.h>
 
-#include <pdf-stm-f-md5.h>
 #include <string.h>
+
+#include <pdf-stm-f-md5.h>
 
 #define MD5_OUTPUT_SIZE 16
 

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/05/06 19:43:10 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:51:38 jemarch"
  *
  *       File:         pdf-stm-f-dct.h
  *       Date:         Mon Dec 13 21:21:35 2008
@@ -26,6 +26,7 @@
 #ifndef PDF_STM_F_DCT_H
 #define PDF_STM_F_DCT_H
 #include <config.h>
+
 #include <pdf-types.h>
 #include <pdf-hash.h>
 

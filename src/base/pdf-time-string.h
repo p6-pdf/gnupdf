@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/07/23 20:48:39 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:55:48 jemarch"
  *
  *       File:         pdf-time-string.h
  *       Date:         Mon Jun 02 19:42:25 2008
@@ -26,7 +26,10 @@
 #ifndef PDF_TIME_STRING_H
 #define PDF_TIME_STRING_H
 
+#include <config.h>
+
 #include <stdio.h>
+
 #include <pdf-time.h>
 
 

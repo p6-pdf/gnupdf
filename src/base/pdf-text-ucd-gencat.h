@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/28 22:26:54 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:55:02 jemarch"
  *
  *       File:         pdf-text-ucd-gencat.h
  *       Date:         Sun Mar 09 12:59:01 2008
@@ -28,6 +28,7 @@
 
 
 #include <config.h>
+
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>
@@ -36,9 +37,7 @@
 #include <malloc.h>
 #endif /* HAVE_MALLOC_H */
 
-
 #include <pdf-text.h>
-
 
 /*************** START OF SELF-GENERATED DATA *********************************/
 

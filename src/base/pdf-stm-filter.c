@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-06-28 00:33:54 raskolnikov"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:52:08 jemarch"
  *
  *       File:         pdf-stm-filter.c
  *       Date:         Thu Jun 12 22:13:31 2008
@@ -24,6 +24,7 @@
  */
 
 #include <config.h>
+
 #include <pdf-stm-filter.h>
 
 /* Forward references */

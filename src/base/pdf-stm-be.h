@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/11/29 15:11:39 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:50:42 jemarch"
  *
  *       File:         pdf-stm-be.h
  *       Date:         Wed Jun 18 20:53:27 2008
@@ -11,9 +11,11 @@
 #define PDF_STM_BE_H
 
 #include <config.h>
+
+#include <stdio.h>
+
 #include <pdf-types.h>
 #include <pdf-fsys.h>
-#include <stdio.h>
 
 /* Backend types */
 enum pdf_stm_be_type_e

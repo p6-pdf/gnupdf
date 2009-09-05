@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/03 21:33:50 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:49:28 jemarch"
  *
  *       File:         pdf-fp.c
  *       Date:         Sun Feb 10 21:38:34 2008
@@ -24,6 +24,7 @@
  */
 
 #include <config.h>
+
 #include <pdf-fp.h>
 
 pdf_real_t

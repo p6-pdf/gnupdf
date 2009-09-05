@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 15:58:29 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:54:21 jemarch"
  *
  *       File:         pdf-text-filter.c
  *       Date:         Fri Feb 25 23:58:56 2008
@@ -27,7 +27,6 @@
 
 #include <string.h>
 #include <stdio.h>
-
 
 #include <pdf-text.h>
 #include <pdf-text-filter.h>

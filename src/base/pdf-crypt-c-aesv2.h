@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/11 22:02:30 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:56:56 jemarch"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -26,6 +26,8 @@
 
 #ifndef PDF_CRYPT_C_AESV2_H
 #define PDF_CRYPT_C_AESV2_H
+
+#include <config.h>
 
 pdf_status_t pdf_crypt_cipher_aesv2_new (void ** cipher);
 pdf_status_t pdf_crypt_cipher_aesv2_destroy (void * cipher);

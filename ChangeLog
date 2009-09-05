@@ -1,5 +1,11 @@
 2009-09-05  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-types.h: Host identification macros PDF_HOST_*
+	moved to config.h, so that the system headers can be conditionally
+	included before the library headers.
+
+	* src/base/pdf-fsys-disk.c: Headers reordered.
+
 	* doc/gnupdf.texi (Retrieving and Storing Objects): New function
 	'pdf_obj_doc_set_info_dict'.
 	(Opening and Closing Object Documents): Meaning of the

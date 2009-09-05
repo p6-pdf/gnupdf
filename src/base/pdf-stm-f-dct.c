@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/05/06 19:50:14 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:59:11 jemarch"
  *
  *       File:         pdf-stm-f-dct.c
  *       Date:         Mon Dec 22 22:00:21 2008
@@ -23,10 +23,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <config.h>
-#include <pdf-stm-f-dct.h>
-#include <jerror.h>
-#include <memory.h>
+
+#include <stdio.h>  /* For jpeglib.h */
+#include <memory.h> /* For jpeglib.h */
+#include <jerror.h> /* For jpeglib.h */
 #include <jpeglib.h>
+
+#include <pdf-stm-f-dct.h>
+
+
 
 enum pdf_stm_f_dctdec_state_t
   {

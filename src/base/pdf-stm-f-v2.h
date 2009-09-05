@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/11 22:05:20 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:53:38 jemarch"
  *
  *       File:         pdf-stm-f-v2.h
  *       Date:         Fri Dec  5 16:58:49 2008
@@ -27,12 +27,13 @@
 #define PDF_STM_F_V2_H
 
 #include <config.h>
+
+#include <stdio.h>
+
 #include <pdf-types.h>
 #include <pdf-hash.h>
 #include <pdf-alloc.h>
 #include <pdf-crypt.h>
-#include <stdio.h>
-
 
 /* Filter API implementation */
 

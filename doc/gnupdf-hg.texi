@@ -495,6 +495,10 @@ In particular:
 @item Never use the @code{"foo.h"} kind of inclusion.  Use always @code{<foo.h>}.
 @end itemize
 
+If some headers shall be included conditionally depending on the host
+platform, the macros @code{PDF_HOST_*} defined in @file{config.h} can
+be used.  Those macros are set using autoheader.
+
 @node Spaces vs. Tabs
 @section Spaces vs. Tabs
 

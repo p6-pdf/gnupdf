@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-06-28 00:32:10 raskolnikov"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:52:14 jemarch"
  *
  *       File:         pdf-stm-filter.h
  *       Date:         Thu Jun 12 22:05:06 2008
@@ -27,10 +27,10 @@
 #define PDF_STM_FILTER_H
 
 #include <config.h>
+
 #include <pdf-types.h>
 #include <pdf-hash.h>
 #include <pdf-stm-be.h>
-
 #include <pdf-stm-f-null.h>
 #include <pdf-stm-f-ahex.h>
 #include <pdf-stm-f-rl.h>

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/06/17 21:35:52 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:50:47 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -24,6 +24,7 @@
  */
 
 #include <config.h>
+
 #include <unistd.h>
 #include <string.h>
 

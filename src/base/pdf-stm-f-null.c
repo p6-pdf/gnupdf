@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/11 22:04:55 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:53:00 jemarch"
  *
  *       File:         pdf-stm-f-null.c
  *       Date:         Mon Jul  9 22:01:41 2007
@@ -24,6 +24,7 @@
  */
 
 #include <config.h>
+
 #include <string.h>
 
 #include <pdf-types.h>

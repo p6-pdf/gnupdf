@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/11 22:04:47 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:52:56 jemarch"
  *
  *       File:         pdf-stm-f-md5.h
  *       Date:         Fri Dec  5 16:38:39 2008
@@ -27,12 +27,13 @@
 #define PDF_STM_F_MD5_H
 
 #include <config.h>
+
+#include <stdio.h>
+
 #include <pdf-types.h>
 #include <pdf-hash.h>
 #include <pdf-alloc.h>
 #include <pdf-crypt.h>
-#include <stdio.h>
-
 
 /* Internal state of cipher filter */
 

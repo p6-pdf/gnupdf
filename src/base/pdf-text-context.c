@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 16:22:08 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:54:06 jemarch"
  *
  *       File:         pdf-text-context.c
  *       Date:         Fri Feb 25 23:58:56 2008
@@ -28,9 +28,9 @@
 #include <string.h>
 #include <stdio.h>
 #include <locale.h>
-
 #include <localename.h>    /* From gnulib sources */
 #include <localcharset.h>  /* From gnulib sources */
+
 #include <pdf-types.h>
 #include <pdf-text.h>
 #include <pdf-text-context.h>

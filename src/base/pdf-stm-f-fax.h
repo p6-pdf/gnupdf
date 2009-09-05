@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 01:04:01 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:51:49 jemarch"
  *
  *       File:         pdf-stm-f-fax.h
  *       Date:         Sun Aug  5 19:46:07 2007
@@ -27,6 +27,7 @@
 #define PDF_STM_F_FAX_H
 
 #include <config.h>
+
 #include <pdf-base.h>
 
 /* Configuration data */

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/24 22:57:03 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:56:39 jemarch"
  *
  *       File:         pdf-alloc.h
  *       Date:         Fri Feb 22 20:54:18 2008
@@ -25,6 +25,8 @@
 
 #ifndef PDF_ALLOC_H
 #define PDF_ALLOC_H
+
+#include <config.h>
 
 #include <pdf-types.h>
 

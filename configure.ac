@@ -42,6 +42,10 @@ compile_w32_system=no
 case "${host}" in
     *-mingw32*)
         compile_w32_system=yes
+        AC_DEFINE([PDF_HOST_WIN32], [1], [Compiling for mingw32 systems])
+        ;;
+    *-bsd*)
+        AC_DEFINE([PDF_HOST_BSD], [1], [Compiling for bsd systems])
         ;;
     *)
         ;;

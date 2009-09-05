@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 15:53:43 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:48:44 jemarch"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -23,8 +23,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#define COMPILING_PDF_CRYPT
 #include <config.h>
+
+#define COMPILING_PDF_CRYPT
 #include <pdf-crypt.h>
 
 /* End of pdf-crypt.c */

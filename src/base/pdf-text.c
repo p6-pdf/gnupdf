@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/09 01:09:32 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:53:55 jemarch"
  *
  *       File:         pdf-text.c
  *       Date:         Fri Jan 11 21:09:56 2008
@@ -24,6 +24,7 @@
  */
 
 #include <config.h>
+
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/05/07 11:01:01 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:51:11 jemarch"
  *
  *       File:         pdf-stm-f-ahex.c
  *       Date:         Fri Jul 13 17:08:41 2007
@@ -24,6 +24,7 @@
  */
 
 #include <config.h>
+
 #include <pdf-stm-f-ahex.h>
 
 static pdf_u32_t pdf_stm_f_ahex_white_p (pdf_u32_t hex);

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/28 22:26:59 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:55:13 jemarch"
  *
  *       File:         pdf-text-ucd-proplist.h
  *       Date:         Mon Mar 31 19:58:17 2008
@@ -27,6 +27,7 @@
 #define _PDF_TEXT_UCD_PROPLIST_H
 
 #include <config.h>
+
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>
@@ -34,7 +35,6 @@
 #ifdef HAVE_MALLOC_H
 #include <malloc.h>
 #endif /* HAVE_MALLOC_H */
-
 
 #include <pdf-text.h>
 

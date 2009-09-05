@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 15:56:25 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:51:55 jemarch"
  *
  *       File:         pdf-stm-f-flate.c
  *       Date:         Tue Jul 10 23:44:00 2007
@@ -27,6 +27,7 @@
 
 #include <stdio.h>
 #include <string.h>
+
 #include <pdf-alloc.h>
 #include <pdf-hash.h>
 #include <pdf-stm-f-flate.h>

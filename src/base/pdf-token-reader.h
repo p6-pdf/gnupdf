@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/06/17 21:11:31 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:56:21 jemarch"
  *
  *       File:         pdf-token-reader.h
  *       Date:         Mon Dec 29 00:45:09 2008
@@ -25,9 +25,12 @@
 
 #ifndef PDF_TOKEN_READER_H
 #define PDF_TOKEN_READER_H
-#include "pdf-types.h"
-#include "pdf-stm.h"
-#include "pdf-token.h"
+
+#include <config.h>
+
+#include <pdf-types.h>
+#include <pdf-stm.h>
+#include <pdf-token.h>
 
 /* BEGIN PUBLIC */
 /* pdf-token-reader.h */

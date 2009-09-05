@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/07/23 20:57:03 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:55:26 jemarch"
  *
  *       File:         pdf-time.c
  *       Date:         Mon Apr 28 23:23:04 2008
@@ -24,6 +24,7 @@
  */
 
 #include <config.h>
+
 #include <time.h>
 
 #include <pdf-alloc.h>

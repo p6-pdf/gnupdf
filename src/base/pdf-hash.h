@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-01-28 08:33:27 gerel"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:50:11 jemarch"
  *
  *       File:         pdf-hash.h
  *       Date:         Sat Apr  12 12:22:05 2008
@@ -26,7 +26,10 @@
 #ifndef PDF_HASH_H
 #define PDF_HASH_H
 
+#include <config.h>
+
 #include <stdio.h>
+
 #include <pdf-list.h>
 
 

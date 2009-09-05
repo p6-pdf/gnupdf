@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/05/25 23:40:13 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:56:05 jemarch"
  *
  *       File:         pdf-token.h
  *       Date:         Sat Jul  7 01:10:11 2007
@@ -43,9 +43,10 @@
 #ifndef PDF_TOKEN_OBJ_H
 #define PDF_TOKEN_OBJ_H
 
-#include "config.h"
-#include "pdf-types.h"
-#include "pdf-base.h"
+#include <config.h>
+
+#include <pdf-types.h>
+#include <pdf-base.h>
 
 /* BEGIN PUBLIC */
 /* pdf-token.h */

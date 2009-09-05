@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/11 21:48:56 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:51:07 jemarch"
  *
  *       File:         pdf-stm-f-aesv2.h
  *       Date:         Fri Dec  5 16:58:49 2008
@@ -27,12 +27,13 @@
 #define PDF_STM_F_AESV2_H
 
 #include <config.h>
+
+#include <stdio.h>
+
 #include <pdf-types.h>
 #include <pdf-hash.h>
 #include <pdf-alloc.h>
 #include <pdf-crypt.h>
-#include <stdio.h>
-
 
 pdf_status_t pdf_stm_f_aesv2enc_init (pdf_hash_t params,
                                       void **state);

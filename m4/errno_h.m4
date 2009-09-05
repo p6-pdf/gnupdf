@@ -41,12 +41,14 @@ booboo
       [gl_cv_header_errno_h_complete=no],
       [gl_cv_header_errno_h_complete=yes])
   ])
+
+  gl_CHECK_NEXT_HEADERS([errno.h])
   if test $gl_cv_header_errno_h_complete = yes; then
     ERRNO_H=''
   else
-    gl_CHECK_NEXT_HEADERS([errno.h])
     ERRNO_H='errno.h'
   fi
+
   AC_SUBST([ERRNO_H])
   gl_REPLACE_ERRNO_VALUE([EMULTIHOP])
   gl_REPLACE_ERRNO_VALUE([ENOLINK])

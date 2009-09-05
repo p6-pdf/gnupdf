@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/03 21:24:54 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:49:41 jemarch"
  *
  *       File:         pdf-fp.h
  *       Date:         Sun Feb 10 21:36:37 2008
@@ -27,7 +27,9 @@
 #define PDF_FP_H
 
 #include <config.h> 
+
 #include <math.h>
+
 #include <pdf-types.h>
 
 /* BEGIN PUBLIC */

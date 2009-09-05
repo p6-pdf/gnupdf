@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 19:41:39 davazp"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:49:12 jemarch"
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -27,12 +27,14 @@
 #define PDF_CRYPT_H
 
 #include <config.h>
+
+#include <string.h>
+
 #include <pdf-types.h>
 #include <pdf-error.h>
 #include <pdf-alloc.h>
 #include <pdf-crypt-c-aesv2.h>
 #include <pdf-crypt-c-v2.h>
-#include <string.h>
 
 /* BEGIN PUBLIC */
 

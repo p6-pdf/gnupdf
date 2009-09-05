@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-15 13:07:46 gerel"
+/* -*- mode: C -*- Time-stamp: "09/09/05 22:45:06 jemarch"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -29,14 +29,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
-
-#include <dirent.h>
-#include <unistd.h>
-
-#include <pdf-types.h>
-#include <pdf-error.h>
-#include <pdf-fsys-disk.h>
-
 #ifndef PDF_HOST_WIN32
  #ifndef PDF_HOST_BSD
   #include <sys/statfs.h>
@@ -48,8 +40,12 @@
 #include <windows.h>
 #include <wchar.h>
 #endif /* !PDF_HOST_WIN32 */
+#include <dirent.h>
+#include <unistd.h>
 
-
+#include <pdf-types.h>
+#include <pdf-error.h>
+#include <pdf-fsys-disk.h>
 
 /* Private function declarations */
 
