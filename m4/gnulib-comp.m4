@@ -49,12 +49,13 @@ AC_DEFUN([gl_INIT],
   gl_HEADER_ERRNO_H
   gl_ERROR
   m4_ifdef([AM_XGETTEXT_OPTION],
-    [AM_XGETTEXT_OPTION([--flag=error:3:c-format])
-     AM_XGETTEXT_OPTION([--flag=error_at_line:5:c-format])])
+    [AM_][XGETTEXT_OPTION([--flag=error:3:c-format])
+     AM_][XGETTEXT_OPTION([--flag=error_at_line:5:c-format])])
   gl_EXITFAIL
   gl_FUNC_FFLUSH
   gl_STDIO_MODULE_INDICATOR([fflush])
   gl_FUNC_FPURGE
+  gl_STDIO_MODULE_INDICATOR([fpurge])
   gl_FUNC_FREADING
   gl_FUNC_FSEEKO
   gl_STDIO_MODULE_INDICATOR([fseeko])
@@ -64,7 +65,11 @@ AC_DEFUN([gl_INIT],
   gl_STDIO_MODULE_INDICATOR([getdelim])
   gl_FUNC_GETLINE
   gl_STDIO_MODULE_INDICATOR([getline])
-  gl_GETOPT
+  gl_FUNC_GETOPT_GNU
+  gl_MODULE_INDICATOR([getopt-gnu])
+  gl_FUNC_GETOPT_POSIX
+  gl_FUNC_GETPAGESIZE
+  gl_UNISTD_MODULE_INDICATOR([getpagesize])
   AC_SUBST([LIBINTL])
   AC_SUBST([LTLIBINTL])
   # Autoconf 2.61a.99 and earlier don't support linking a file only
@@ -91,6 +96,7 @@ AC_DEFUN([gl_INIT],
   gl_STDLIB_MODULE_INDICATOR([malloc-posix])
   gl_MATH_H
   gl_FUNC_MEMCHR
+  gl_STRING_MODULE_INDICATOR([memchr])
   gl_FUNC_MKDIR_TRAILING_SLASH
   gl_MULTIARCH
   gl_PMCCABE2HTML
@@ -99,6 +105,7 @@ AC_DEFUN([gl_INIT],
   gl_FUNC_RMDIR
   gl_SIZE_MAX
   AM_STDBOOL_H
+  gl_STDDEF_H
   gl_STDINT_H
   gl_STDIO_H
   gl_STDLIB_H
@@ -262,7 +269,6 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/exitfail.h
   lib/fflush.c
   lib/fpurge.c
-  lib/fpurge.h
   lib/freading.c
   lib/freading.h
   lib/fseeko.c
@@ -273,6 +279,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/getopt.in.h
   lib/getopt1.c
   lib/getopt_int.h
+  lib/getpagesize.c
   lib/gettext.h
   lib/gl_anyhash_list1.h
   lib/gl_anyhash_list2.h
@@ -293,6 +300,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/malloc.c
   lib/math.in.h
   lib/memchr.c
+  lib/memchr.valgrind
   lib/mkdir.c
   lib/realloc.c
   lib/ref-add.sin
@@ -300,6 +308,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/rmdir.c
   lib/size_max.h
   lib/stdbool.in.h
+  lib/stddef.in.h
   lib/stdint.in.h
   lib/stdio-impl.h
   lib/stdio-write.c
@@ -336,6 +345,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/getdelim.m4
   m4/getline.m4
   m4/getopt.m4
+  m4/getpagesize.m4
   m4/gl_list.m4
   m4/glibc21.m4
   m4/gnulib-common.m4
@@ -351,13 +361,16 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/math_h.m4
   m4/memchr.m4
   m4/mkdir-slash.m4
+  m4/mmap-anon.m4
   m4/multiarch.m4
   m4/onceonly.m4
+  m4/openat.m4
   m4/pmccabe2html.m4
   m4/realloc.m4
   m4/rmdir.m4
   m4/size_max.m4
   m4/stdbool.m4
+  m4/stddef_h.m4
   m4/stdint.m4
   m4/stdio_h.m4
   m4/stdlib_h.m4
@@ -368,6 +381,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/sys_stat_h.m4
   m4/unistd_h.m4
   m4/wchar.m4
+  m4/wchar_t.m4
   m4/wint_t.m4
   m4/xalloc.m4
   m4/xsize.m4
