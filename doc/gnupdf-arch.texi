@@ -1896,6 +1896,19 @@ of PDF objects. The textual representation of objects are then written
 into a given base level stream.
 @end table
 
+@menu
+* Object storage::      How the PDF objects are stored and organized
+                         into an object document.
+@end menu
+
+@node Object storage
+@section Object storage
+
+@float Figure,fig:object-storage
+@image{figures/object-storage}
+@caption{Storage of objects}
+@end float
+
 @node The document layer
 @chapter The document layer
 
