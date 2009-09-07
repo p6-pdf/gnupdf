@@ -14044,10 +14044,26 @@ object.
 A PDF status value:
 @table @code
 @item PDF_OK
+An empty dictionary object was created and stored in @var{obj}.
+@item PDF_ENOMEM
+Not enough memory to create the object.
+@item PDF_ERROR
+Some error prevented the operation to complete.  The value of
+@var{obj} shall be considered undefined.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t objdoc;
+pdf_obj_t dict;
+
+...
+
+/* Create an empty dictionary object */
+if (pdf_obj_dict_new (objdoc, PDF_TRUE, &dict)
+    == PDF_OK)
+@{
+   /* Dictionary object created and stored in 'dict'. */
+@}
 @end example
 @end table
 @end deftypefun
@@ -14072,51 +14088,35 @@ A pointer to @code{pdf_obj_t} to store the value associated with
 A PDF status value:
 @table @code
 @item PDF_OK
+A copy of the value associated with @var{key} was stored in @var{obj}.
 @item PDF_EINVOBJ
 @var{key} is not a name object or @var{dict} is not a dictionary
 object.
 @item PDF_EBADDATA
-@var{key} is not in the dictionary.
+@var{key} is not in the dictionary or it is not a name object.
 @item PDF_ERROR
+An error prevented the operation to complete.  The value in @var{obj}
+shall be considered undefined.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t doc;
+pdf_obj_t dict;
+pdf_obj_t key;
+pdf_obj_t value;
+
+...
+
+/* Get the value associated with "/Foo" */
+pdf_obj_name_new (doc, PDF_FALSE, "Foo", &key);
+if (pdf_obj_dict_get (dict, key, &value) == PDF_OK)
+@{
+   /* The object associated with "/Foo" in the dictionary is
+      now in 'foo'. */
+@}
 @end example
 @end table
 @end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_dict_put (pdf_obj_t @var{dict}, pdf_obj_t @var{key}, pdf_obj_t &@var{val})
-
-Set @var{val} as the new value for @var{key} in the PDF dictionary
-@var{dict}. If the entry do not exist then it is added.
-
-@table @strong
-@item Parameters
-@table @var
-@item dict
-A PDF dictionary object.
-@item key
-A PDF name object.
-@item val
-A PDF object.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-@item PDF_EINVOBJ
-@var{key} is not a name object or @var{dict} is not a dictionary
-object.
-@item PDF_ERROR
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
-
 
 @deftypefun pdf_status_t pdf_obj_dict_get_str (pdf_obj_t @var{dict}, pdf_char_t *@var{key}, pdf_obj_t &@var{obj})
 
@@ -14139,21 +14139,91 @@ A pointer to @code{pdf_obj_t} to store the value associated with
 A PDF status value:
 @table @code
 @item PDF_OK
+A copy of the value associated with @var{key} was stored in @var{obj}.
 @item PDF_EBADDATA
 @var{key} is not in the dictionary.
 @item PDF_ERROR
+An error prevented the operation to complete.  The value in @var{obj}
+shall be considered undefined.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t doc;
+pdf_obj_t dict;
+pdf_obj_t value;
+
+...
+
+/* Get the value associated with "/Foo" */
+if (pdf_obj_dict_get (dict, "Foo", &value) == PDF_OK)
+@{
+   /* The object associated with "/Foo" in the dictionary is
+      now in 'foo'. */
+@}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_dict_put_str (pdf_obj_t @var{dict}, pdf_char_t *@var{key}, pdf_obj_t &@var{val})
+@deftypefun pdf_status_t pdf_obj_dict_set (pdf_obj_t @var{dict}, pdf_obj_t @var{key}, pdf_obj_t &@var{val})
 
 Set @var{val} as the new value for @var{key} in the PDF dictionary
-@var{dict}. If the entry do not exist then it is added.
+@var{dict}.
+
+If the entry do not exist then it is added.
+
+@table @strong
+@item Parameters
+@table @var
+@item dict
+A PDF dictionary object.
+@item key
+A PDF name object.
+@item val
+A PDF object.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The value associated with @var{key} in @var{dict} was set to
+@var{val}.
+@item PDF_EINVOBJ
+@var{key} is not a name object or @var{dict} is not a
+dictionary object.
+@item PDF_ERROR
+Some error prevented the operation to complete.  The value in
+@var{val} is undefined.
+@end table
+@item Usage example
+@example
+pdf_obj_doc_t doc;
+pdf_obj_t dict;
+pdf_obj_t key;
+pdf_obj_t value;
+
+...
+
+/* Create a dictionary and insert a key-value pair
+   into it: /Age -> 29. */
+pdf_obj_dict_new (doc, PDF_TRUE, &dict);
+
+pdf_obj_name_new (doc, PDF_FALSE, "Age", &key);
+pdf_obj_integer_new (doc, PDF_FALSE, 29, &value);
+
+if (pdf_obj_dict_set (dict, key, value) == PDF_OK)
+@{
+   /* The pair key-value was inserted in 'dict'. */
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_dict_set_str (pdf_obj_t @var{dict}, pdf_char_t *@var{key}, pdf_obj_t &@var{val})
+
+Set @var{val} as the new value for @var{key} in the PDF dictionary
+@var{dict}.
+
+If the entry do not exist then it is added.
 
 @table @strong
 @item Parameters
@@ -14170,9 +14240,12 @@ A PDF object.
 A PDF status value:
 @table @code
 @item PDF_OK
+The value associated with @var{key} in @var{dict} was set to
 @item PDF_EINVOBJ
 @var{dict} is not a dictionary object.
 @item PDF_ERROR
+Some error prevented the operation to complete.  The value in
+@var{val} is undefined.
 @end table
 @item Usage example
 @example
@@ -14180,12 +14253,14 @@ pdf_obj_doc_t objdoc;
 pdf_obj_t root_dict;
 pdf_obj_t pages_dict;
 
+...
+
 /* Create a /Pages entry in the root dictionary, as an indirect
    object, containing an empty dictionary. */
 pdf_obj_doc_get_root (objdoc, &root_dir);
 pdf_obj_dict_new (objdoc, PDF_TRUE, &pages_dict);
 
-if (pdf_obj_dict_put_str (root_dir, "/Pages", pages_dict)
+if (pdf_obj_dict_set_str (root_dir, "/Pages", pages_dict)
     != PDF_ERROR)
 @{
    /* The root dictionary now contains a /Pages entry
@@ -14213,15 +14288,29 @@ A PDF name object.
 A PDF status value:
 @table @code
 @item PDF_OK
+@var{key} was found in the dictionary and the pair was removed.
 @item PDF_EINVOBJ
 Either @var{dict} is not a dictionary object or @var{key} is not a
 name object.
 @item PDF_ERROR
-An error prevented the operation to terminate.
+An error prevented the operation to complete.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t doc;
+pdf_obj_t dict;
+pdf_obj_t key;
+
+...
+
+/* Remove the "/Foo" entry from 'dict', if it exists */
+pdf_obj_name_new (doc, PDF_FALSE, "Foo", &key);
+
+if (pdf_obj_dict_remove (dict, key) == PDF_OK)
+@{
+   /* The entry, provided it was present, was removed from
+      the dictionary. */
+@}
 @end example
 @end table
 @end deftypefun
@@ -14243,6 +14332,7 @@ A string containing the textual representation of a PDF Name.
 A PDF status value:
 @table @code
 @item PDF_OK
+@var{key} was found in the dictionary and the pair was removed.
 @item PDF_EINVOBJ
 @var{dict} is not a dictionary object.
 @item PDF_ERROR
@@ -14250,14 +14340,24 @@ An error prevented the operation to complete.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t doc;
+pdf_obj_t dict;
+
+...
+
+/* Remove the "/Foo" entry from 'dict', if it exists */
+if (pdf_obj_dict_remove (dict, "Foo") == PDF_OK)
+@{
+   /* The entry, provided it was present, was removed from
+      the dictionary. */
+@}
 @end example
 @end table
 @end deftypefun
 
 @deftypefun pdf_bool_t pdf_obj_dict_key_p (pdf_obj_t @var{dict}, pdf_obj_t @var{key})
 
-Determine if a given @var{key} object is a key into @var{dict}.
+Determine if a given name object is a key into @var{dict}.
 
 @table @strong
 @item Parameters
@@ -14273,11 +14373,22 @@ A PDF boolean value:
 @item PDF_TRUE
 @var{key} is in a key-value pair into @var{dict}.
 @item PDF_FALSE
-@var{key} is not in a key-value pair into @var{dict}, or error.
+@var{key} is not in a key-value pair into @var{dict}, or @var{dict}
+is not a dictionary object, or @var{key} is not a name object.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t doc;
+pdf_obj_t dict;
+pdf_obj_t key;
+pdf_obj_t value;
+
+...
+
+pdf_obj_integer_new (doc, PDF_FALSE, 10, &value);
+pdf_obj_dict_set_str (dict, "Foo", value);
+
+pdf_obj_dict_key_str_p (dict, "Foo", value); /* Returns PDF_TRUE */
 @end example
 @end table
 @end deftypefun
@@ -14300,11 +14411,23 @@ A PDF boolean value:
 @item PDF_TRUE
 @var{key} is in a key-value pair into @var{dict}.
 @item PDF_FALSE
-@var{key} is not in a key-value pair into @var{dict}, or error.
+@var{key} is not in a key-value pair into @var{dict}, or @var{dict} is
+not a dictionary object.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t doc;
+pdf_obj_t dict;
+pdf_obj_t value;
+
+...
+
+pdf_obj_integer_new (doc, PDF_FALSE, 10, &value);
+
+pdf_obj_dict_set_str (dict, "Foo", value);
+
+pdf_obj_dict_key_p (dict, key, value); /* Returns PDF_TRUE */
+pdf_obj_dict_key_p (dict, value, key); /* Returns PDF_FALSE */
 @end example
 @end table
 @end deftypefun
@@ -14327,42 +14450,22 @@ A PDF boolean value:
 @item PDF_TRUE
 @var{key} is in a weak reference into @var{dict}.
 @item PDF_FALSE
-@var{key} is not a weak reference into @var{dict}, or error.
+@var{key} is not a weak reference into @var{dict}, or @var{key} does
+not exist in the dictionary, or @var{dict} is not a dictionary object,
+or @var{key} is not a name object.
 @end table
 @item Usage example
 @example
-XXX
-@end example
-@end table
-@end deftypefun
+pdf_obj_doc_t doc;
+pdf_obj_t dict;
+pdf_obj_t key;
 
-@deftypefun pdf_status_t pdf_obj_dict_weak_set (pdf_obj_t @var{dict}, pdf_obj_t @var{key}, pdf_bool_t @var{weak_p})
+...
 
-Set the @var{weak_p} attribute of @var{key} in @var{dict}.
+/* Determine if the entry "/Foo" has a weak reference in 'dict' */
+pdf_obj_name_new (doc, PDF_FALSE, "Foo", &key);
 
-@table @strong
-@item Parameters
-@table @var
-@item dict
-A PDF Dictionary object.
-@item key
-A PDF Name object.
-@item weak_p
-The new value for the weak attribute of the key.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-@item PDF_EINVOBJ
-Either @var{dict} is not a PDF dictionary object or @var{key} is not a
-PDF Name object.
-@item PDF_ERROR
-An error prevented the operation to complete.
-@end table
-@item Usage example
-@example
-XXX
+pdf_obj_dict_weak_p (dict, key);
 @end example
 @end table
 @end deftypefun
@@ -14385,18 +14488,72 @@ A PDF boolean value:
 @item PDF_TRUE
 @var{key} is in a weak reference into @var{dict}.
 @item PDF_FALSE
-@var{key} is not a weak reference into @var{dict}, or error.
+@var{key} is not a weak reference into @var{dict}, or @var{key} does
+not exist in the dictionary, or @var{dict} is not a dictionary object.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t doc;
+pdf_obj_t dict;
+pdf_obj_t key;
+
+...
+
+/* Determine if the entry "/Foo" has a weak reference in 'dict' */
+pdf_obj_dict_weak_p (dict, "Foo");
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_dict_weak_str_set (pdf_obj_t @var{dict}, pdf_char_t *@var{key}, pdf_bool_t @var{weak_p})
+@deftypefun pdf_status_t pdf_obj_dict_weak_set (pdf_obj_t @var{dict}, pdf_obj_t @var{key}, pdf_bool_t @var{weak_p})
 
-Set the @var{weak_p} attribute of @var{key} in @var{dict}.
+Set the @var{weak_p} attribute of @var{key} in @var{dict}.  Any
+key-value pair with @code{weak_p == PDF_TRUE} has a weak reference.
+@xref{Garbage collection in object documents}.
+
+@table @strong
+@item Parameters
+@table @var
+@item dict
+A PDF dictionary object.
+@item key
+A PDF name object.
+@item weak_p
+The new value for the weak attribute of the key-value pair.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The weak attribute for the pair was set to @var{weak_p}.
+@item PDF_EINVOBJ
+Either @var{dict} is not a PDF dictionary object or @var{key} is not a
+PDF name object.
+@item PDF_ERROR
+Some error prevented the operation to complete.
+@end table
+@item Usage example
+@example
+pdf_obj_doc_t doc;
+pdf_obj_t dict;
+pdf_obj_t key;
+
+...
+
+/* Set the weak attribute of the key-value pair in
+   'dict' with key "/Foo". */
+pdf_obj_name_new (doc, PDF_FALSE, "Foo", &key);
+
+pdf_obj_dict_weak_set (dict, key, PDF_TRUE);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_dict_weak_set_str (pdf_obj_t @var{dict}, pdf_char_t *@var{key}, pdf_bool_t @var{weak_p})
+
+Set the @var{weak_p} attribute of @var{key} in @var{dict}. Any
+key-value pair with @code{weak_p == PDF_TRUE} has a weak reference.
+@xref{Garbage collection in object documents}.
 
 @table @strong
 @item Parameters
@@ -14404,7 +14561,7 @@ Set the @var{weak_p} attribute of @var{key} in @var{dict}.
 @item dict
 A PDF Dictionary object.
 @item key
-A string containing the string representation of a PDF Name.
+A string containing the string representation of a PDF name.
 @item weak_p
 The new value for the weak attribute of the key.
 @end table
@@ -14412,6 +14569,7 @@ The new value for the weak attribute of the key.
 A PDF status value:
 @table @code
 @item PDF_OK
+The weak attribute for the pair was set to @var{weak_p}.
 @item PDF_EINVOBJ
 @var{dict} is not a PDF dictionary object.
 @item PDF_ERROR
@@ -14419,7 +14577,14 @@ An error prevented the operation to complete.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t doc;
+pdf_obj_t dict;
+
+...
+
+/* Set the weak attribute of the key-value pair in
+   'dict' with key "/Foo". */
+pdf_obj_dict_weak_set (dict, "Foo", PDF_TRUE);
 @end example
 @end table
 @end deftypefun
@@ -14427,9 +14592,11 @@ XXX
 @node Stream Objects
 @subsection Stream Objects
 
-A PDF stream is a sequence of bytes and a set of properties.  Unlike
-strings, a stream can be read incrementally and can be of unlimited
-length.
+A PDF stream is a sequence of bytes and a set of properties.  The
+properties of a stream object are contained in a dictionary.
+
+Unlike strings, a stream can be read incrementally and can be of
+unlimited length.
 
 All streams must be indirect objects and the stream dictionary must be
 a direct object.
