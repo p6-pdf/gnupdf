@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 22:50:47 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/08 23:05:51 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -167,8 +167,6 @@ pdf_stm_read (pdf_stm_t stm,
   while ((*read_bytes < bytes) &&
          (ret == PDF_OK))
     {
-      pending_bytes = bytes - *read_bytes;
-
       /* If the cache is empty, refill it with filtered data */
       if (pdf_buffer_eob_p (stm->cache))
         {

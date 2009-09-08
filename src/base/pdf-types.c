@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 16:01:40 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/08 23:03:23 jemarch"
  *
  *       File:         pdf-types.c
  *       Date:         Sun Feb 10 21:33:44 2008
@@ -156,9 +156,6 @@ pdf_i64_add (pdf_i64_t *dest,
       high2 = (carry + 
                ((addend1.high & 0xFFFF0000)>>16) + ((addend2.high & 0xFFFF0000)>>16))
         % PDF_U16_DIV;
-      carry = (carry +  
-               ((addend1.high & 0xFFFF0000)>>16) + ((addend2.high & 0xFFFF0000)>>16))
-        / PDF_U16_DIV;
       dest->high = high1 + (high2<<16);
     }
   else
@@ -446,7 +443,6 @@ pdf_i64_mult (pdf_i64_t *dest,
             }
         }
       
-      t = 0;
       for (j = 7; j >= 0;j--)
         {
           k = 0;
@@ -539,7 +535,6 @@ mult_long (pdf_u32_t *w,
     }
 
   
-  t = 0;
   for (j = 7; j >= 0;j--)
     {
       k = 0;

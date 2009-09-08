@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 22:45:06 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/08 23:04:51 jemarch"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -413,7 +413,6 @@ pdf_fsys_disk_create_folder (const pdf_text_t path_name)
           /* Set the permissions of the new directory (posix-only):
              rwxr_xr_x
           */
-          ret_code = PDF_OK;
           /* Open the file */
           if (PDF_MKDIR(host_path,                     \
                         (S_IRUSR | S_IWUSR | S_IXUSR | \

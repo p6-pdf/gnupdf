@@ -1,7 +1,16 @@
 2009-09-08  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-stm.c (pdf_stm_read): Dead assignment removed.
+
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_create_folder): Dead
+	assignment removed.
+
+	* src/base/pdf-types.c (mult_long): Dead assignment removed.
+	(pdf_i64_mult): Likewise.
+	(pdf_i64_add): Likewise.
+
 	* doc/gnupdf.texi: use 'doc' to name variables containing object
-	documents (pdf_obj_doc_t).
+	documents (pdf_obj_doc_t).x
 
 2009-09-05  Jose E. Marchesi  <jemarch@gnu.org>
 
