@@ -11377,7 +11377,7 @@ Some error prevented the operation to complete.  The value of
 @item Usage example
 @example
 pdf_text_t file_path;
-pdf_obj_doc_t objdoc;
+pdf_obj_doc_t doc;
 
 /* Open a PDF object document from /foo/bar.pdf */
 pdf_text_new_from_unicode ("/foo/bar.pdf",
@@ -11388,7 +11388,7 @@ pdf_text_new_from_unicode ("/foo/bar.pdf",
 if (pdf_obj_doc_open (NULL, /* Use the default filesystem */
                       file_path,
                       "%PDF-",
-                      &objdoc) != PDF_OK)
+                      &doc) != PDF_OK)
 @{
    /* Error opening /foo/bar.pdf */
 @}
@@ -11531,13 +11531,13 @@ Some error prevented the operation to complete.  The value of
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t objdoc;
+pdf_obj_doc_t doc;
 pdf_obj_t instance_id;
 pdf_obj_t permanent_id;
 
 /* Create an object document ... */
 
-if (pdf_obj_doc_get_id (objdoc,
+if (pdf_obj_doc_get_id (doc,
                         instance_id,
                         permanent_id) != PDF_ERROR)
 @{
@@ -11586,7 +11586,7 @@ The dirty flag was properly set.
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t objdoc;
+pdf_obj_doc_t doc;
 pdf_text_t file_path;
 pdf_obj_t catalog;
 pdf_obj_t foo_value;
@@ -11600,21 +11600,21 @@ pdf_text_new_from_unicode ("/foo/bar.pdf",
 pdf_obj_doc_open (NULL, /* Use the default filesystem */
                   file_path,
                   "%PDF-",
-                  &objdoc);
+                  &doc);
 
 /* Modify the object document by adding a /Foo entry to
    the catalog. This operation will set the dirty flag of
    the document. */
-pdf_obj_doc_get_root (objdoc, &catalog);
-pdf_obj_integer_new (objdoc, PDF_FALSE, 10, &foo_value);
+pdf_obj_doc_get_root (doc, &catalog);
+pdf_obj_integer_new (doc, PDF_FALSE, 10, &foo_value);
 pdf_obj_dict_put_str (catalog, "Foo", foo_value);
 
 /* Clear the dirty flag of the document. */
-pdf_obj_doc_set_dirty (objdoc, PDF_FALSE);
+pdf_obj_doc_set_dirty (doc, PDF_FALSE);
 
 /* Close the document.  The /Foo entry in the catalog dictionary is
    lost, since the document is not saved. */
-pdf_obj_doc_close (objdoc);
+pdf_obj_doc_close (doc);
 @end example
 @end table
 @end deftypefun
@@ -11633,7 +11633,7 @@ accessed using specific-purpose functions:
 Any other indirect object contained in the object document can be
 accessed using an object identifier.
 
-@deftypefun pdf_status_t pdf_obj_doc_get_info_dict (pdf_obj_doc_t @var{objdoc}, pdf_obj_t *@var{info_dict})
+@deftypefun pdf_status_t pdf_obj_doc_get_info_dict (pdf_obj_doc_t @var{doc}, pdf_obj_t *@var{info_dict})
 
 Return the Document Information Dictionary of the object document.  If
 the object document does not contain an info dictionary then the
@@ -11660,12 +11660,12 @@ value in @var{info_dict} should be considered undefined.
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t objdoc;
+pdf_obj_doc_t doc;
 pdf_obj_t info_dict;
 
 /* Get the Document Information Dictionary of the
    object document. */
-if (pdf_obj_doc_get_info_dict (objdoc, &info_dict)
+if (pdf_obj_doc_get_info_dict (doc, &info_dict)
     != PDF_ERROR)
 @{
    if (pdf_obj_get_type (info_dict) != PDF_OBJ_NULL)
@@ -11683,20 +11683,20 @@ if (pdf_obj_doc_get_info_dict (objdoc, &info_dict)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_doc_set_info_dict (pdf_obj_doc_t @var{objdoc}, pdf_obj_t @var{info_dict}
+@deftypefun pdf_status_t pdf_obj_doc_set_info_dict (pdf_obj_doc_t @var{doc}, pdf_obj_t @var{info_dict}
 
 Set @var{info_dict} as the Document Information Dictionary of
-@var{objdoc}.
+@var{doc}.
 
 @var{info_dict} should be an indirect dictionary object.  If it is
 associated with a different document then a deep copy is performed
 before to set it as the Document Information Dictionary of
-@var{objdoc}.
+@var{doc}.
 
 @table @strong
 @item Parameters
 @table @var
-@item objdoc
+@item doc
 An object document.
 @item info_dict
 An indirect dictionary object.
@@ -11706,7 +11706,7 @@ A PDF status value:
 @table @code
 @item PDF_OK
 The dictionary @var{info_dict} was set as the new Document Information
-Dictionary of @var{objdoc}.
+Dictionary of @var{doc}.
 @item PDF_EINVOBJ
 The specified object @var{info_dict} is not of the proper type.
 @item PDF_ERROR
@@ -11714,30 +11714,30 @@ An error prevented the operation to complete.
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t objdoc;
+pdf_obj_doc_t doc;
 pdf_obj_t info_dict;
 
 /* Create an object document without an info dictionary */
-pdf_obj_doc_new (0, &objdoc);
+pdf_obj_doc_new (0, &doc);
 
 /* Create an info dictionary */
-pdf_obj_dict_new (objdoc, PDF_TRUE, &info_dict);
+pdf_obj_dict_new (doc, PDF_TRUE, &info_dict);
 
-/* Set it as the new info dictionary in 'objdoc' */
-if (pdf_obj_doc_set_info_dict (objdoc, info_dict)
+/* Set it as the new info dictionary in 'doc' */
+if (pdf_obj_doc_set_info_dict (doc, info_dict)
     == PDF_OK)
 @{
    /* 'info_dict' is now the Document Information Dictionary of
-      'objdoc' */
+      'doc' */
 @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_doc_get_root (pdf_obj_doc_t @var{objdoc}, pdf_obj_t *@var{root_dict})
+@deftypefun pdf_status_t pdf_obj_doc_get_root (pdf_obj_doc_t @var{doc}, pdf_obj_t *@var{root_dict})
 
 Get the root object (maybe the catalog of a well-formed PDF document)
-of the object document @var{objdoc} and store it in @var{root_dict}.
+of the object document @var{doc} and store it in @var{root_dict}.
 
 @table @strong
 @item Parameters
@@ -11758,11 +11758,11 @@ Error while getting the root object of the document.  The value of
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t objdoc;
+pdf_obj_doc_t doc;
 pdf_obj_t root_dict;
 
 /* Get the root object of an object document */
-if (pdf_obj_doc_get_root (objdoc, &root_dict)
+if (pdf_obj_doc_get_root (doc, &root_dict)
     != PDF_ERROR)
 @{
    /* 'root_dict' contains the root dictionary of the
@@ -11799,11 +11799,11 @@ Error while getting the object.  The value of @var{obj} is invalid.
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t objdoc;
+pdf_obj_doc_t doc;
 pdf_obj_t pages_dict;
 
-/* Get the pages dictionary of 'objdoc' using its object id */
-if (pdf_obj_doc_get_obj (objdoc, 5, &catalog_dir)
+/* Get the pages dictionary of 'doc' using its object id */
+if (pdf_obj_doc_get_obj (doc, 5, &catalog_dir)
     != PDF_ERROR)
 @{
    /* 'catalog_dir' contains the pages dictionary. */
@@ -11842,15 +11842,15 @@ memory.  Any @code{pdf_obj_t} referencing the object becomes invalid.
 
 Note that the garbage collector is never called implicitly.
 
-@deftypefun pdf_status_t pdf_obj_doc_gc (pdf_obj_doc_t @var{objdoc})
+@deftypefun pdf_status_t pdf_obj_doc_gc (pdf_obj_doc_t @var{doc})
 
-Call the garbage collector on @var{objdoc}, removing non-reachable
+Call the garbage collector on @var{doc}, removing non-reachable
 non-acquired objects.
 
 @table @strong
 @item Parameters
 @table @var
-@item objdoc
+@item doc
 An object document.
 @end table
 @item Returns
@@ -11860,25 +11860,25 @@ A PDF status value:
 The collection was successful.
 @item PDF_ERROR
 An error prevented the collector to terminate.  The document
-@var{objdoc} should be considered invalid.
+@var{doc} should be considered invalid.
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t objdoc;
+pdf_obj_doc_t doc;
 pdf_obj_t unreachable_obj;
 
-pdf_obj_integer_new (objdoc, PDF_TRUE, 10, &unreachable_obj);
+pdf_obj_integer_new (doc, PDF_TRUE, 10, &unreachable_obj);
 
 /* Garbage-collect the document and save its
    content. */
-if (pdf_obj_doc_gc (objdoc) != PDF_ERROR)
+if (pdf_obj_doc_gc (doc) != PDF_ERROR)
 @{
    /* 'unreachable_obj' has been collected and its value is now
       undefined. */
 @}
 else
 @{
-   /* The collector failed and the document in 'objdoc' should be
+   /* The collector failed and the document in 'doc' should be
       considered invalid. */
 @}
 @end example
@@ -12073,15 +12073,15 @@ Some error prevented the operation to complete.  The value of
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t objdoc;
+pdf_obj_doc_t doc;
 pdf_obj_t obj1;
 pdf_obj_t obj2;
 
 ...
 
 /* Make a copy of 'obj1' in 'obj2' in the same object document
-   'objdoc' */
-if (pdf_obj_copy (obj1, objdoc, PDF_TRUE, &obj2)
+   'doc' */
+if (pdf_obj_copy (obj1, doc, PDF_TRUE, &obj2)
     != PDF_ERROR_)
 @{
    /* 'obj2' now contains a copy of 'obj1'. */
@@ -12124,13 +12124,13 @@ document.
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t objdoc;
+pdf_obj_doc_t doc;
 pdf_obj_t info_dict;
 
 ...
 
 /* Destroy the info dictionary of an object document */
-pdf_obj_doc_get_info_dict (objdoc, &info_dict);
+pdf_obj_doc_get_info_dict (doc, &info_dict);
 pdf_obj_destroy (info_dict);
 @end example
 @end table
@@ -12230,15 +12230,15 @@ The PDF objects are not equal.
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t objdoc;
+pdf_obj_doc_t doc;
 pdf_obj_t obj1;
 pdf_obj_t obj2;
 
 ...
 
 /* Compare integers */
-pdf_obj_integer_new (objdoc, PDF_TRUE, 10, &obj1);
-pdf_obj_integer_new (objdoc, PDF_FALSE, 20, &obj2);
+pdf_obj_integer_new (doc, PDF_TRUE, 10, &obj1);
+pdf_obj_integer_new (doc, PDF_FALSE, 20, &obj2);
 pdf_obj_equal_p (obj1, obj2); /* Returns PDF_FALSE */
 pdf_obj_destroy (obj1);
 pdf_obj_destroy (obj2);
@@ -12246,7 +12246,7 @@ pdf_obj_destroy (obj2);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_get_doc (pdf_obj_t @var{obj}, pdf_obj_doc_t *@var{objdoc})
+@deftypefun pdf_status_t pdf_obj_get_doc (pdf_obj_t @var{obj}, pdf_obj_doc_t *@var{doc})
 
 Gets the object document associated with a given PDF object
 @var{obj}.
@@ -12265,24 +12265,24 @@ A pointer to a @var{pdf_obj_doc_t} variable.
 A PDF status value:
 @table @code
 @item PDF_OK
-The object document was stored in @var{objdoc}.
+The object document was stored in @var{doc}.
 @item PDF_EINVOBJ
 The specified object @var{obj} is a scalar object.
 @item PDF_ERROR
 An error prevented the operation to complete.  The value of
-@var{objdoc} is now undefined.
+@var{doc} is now undefined.
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t objdoc;
+pdf_obj_doc_t doc;
 pdf_obj_t obj;
 
 ...
 
-if (pdf_obj_get_doc (obj, &objdoc)
+if (pdf_obj_get_doc (obj, &doc)
     != PDF_ERROR)
 @{
-   /* 'objdoc' contains a reference to the object document containing
+   /* 'doc' contains a reference to the object document containing
       'obj'. */
 @}
 @end example
@@ -12384,13 +12384,13 @@ A PDF object.
 The type of @var{obj}.
 @item Usage example
 @example
-pdf_obj_doc_t objdoc;
+pdf_obj_doc_t doc;
 pdf_obj_t obj;
 
 ...
 
 /* Create an integer object */
-pdf_obj_integer_new (objdoc, PDF_FALSE, 10, &obj);
+pdf_obj_integer_new (doc, PDF_FALSE, 10, &obj);
 
 /* Get its type */
 pdf_obj_get_type (obj);  /* Returns PDF_OBJ_INTEGER */
@@ -12454,18 +12454,18 @@ The object @var{obj} is direct.
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t objdoc;
+pdf_obj_doc_t doc;
 pdf_obj_t obj_direct;
 pdf_obj_t obj_indirect;
 
 ...
 
 /* Create an indirect object */
-pdf_obj_integer_new (objdoc, PDF_TRUE, 10, &obj_indirect);
+pdf_obj_integer_new (doc, PDF_TRUE, 10, &obj_indirect);
 pdf_obj_indirect_p (obj_indirect); /* Returns PDF_TRUE */
 
 /* Create a direct object */
-pdf_obj_integer_new (objdoc, PDF_FALSE, 10, &obj_direct);
+pdf_obj_integer_new (doc, PDF_FALSE, 10, &obj_direct);
 pdf_obj_indirect_p (obj_direct); /* Returns PDF_FALSE */
 @end example
 @end table
@@ -12670,15 +12670,15 @@ is undefined and shall not be used.
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t objdoc;
+pdf_obj_doc_t doc;
 pdf_obj_col_t col1;
 pdf_obj_col_t col2;
 
 ...
 
 /* Create some object collections */
-pdf_obj_col_new (objdoc, &col1);
-pdf_obj_col_new (objdoc, &col2);
+pdf_obj_col_new (doc, &col1);
+pdf_obj_col_new (doc, &col2);
 @end example
 @end table
 @end deftypefun
@@ -12752,15 +12752,15 @@ The collections are not the same.
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t objdoc;
+pdf_obj_doc_t doc;
 pdf_obj_col_t col1;
 pdf_obj_col_t col2;
 
 ...
 
 /* Create two object collections and compare them */
-pdf_obj_col_new (objdoc, &col1);
-pdf_obj_col_new (objdoc, &col2);
+pdf_obj_col_new (doc, &col1);
+pdf_obj_col_new (doc, &col2);
 
 pdf_obj_col_equal_p (col1, col2); /* Returns PDF_FALSE */ 
 pdf_obj_col_equal_p (col1, col1); /* Returns PDF_TRUE */ 
@@ -12783,7 +12783,7 @@ An object collection.
 The number of objects contained in @var{col}.
 @item Usage example
 @example
-pdf_obj_doc_t objdoc;
+pdf_obj_doc_t doc;
 pdf_obj_col_t col;
 pdf_obj_t obj1;
 pdf_obj_t obj2;
@@ -12791,7 +12791,7 @@ pdf_obj_t obj2;
 ...
 
 /* Create an object collection and put some objects in it. */
-pdf_obj_col_new (objdoc, &col);
+pdf_obj_col_new (doc, &col);
 pdf_obj_col_add_obj (objcol, obj1);
 pdf_obj_col_add_obj (objcol, obj2);
 
@@ -12901,13 +12901,13 @@ is undefined and shall not be used.
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t objdoc;
+pdf_obj_doc_t doc;
 pdf_obj_col_t col;
 pdf_obj_t obj;
 
 ...
 
-pdf_obj_col_new (objdoc, &col);
+pdf_obj_col_new (doc, &col);
 pdf_obj_col_add_obj (col, obj);
 
 pdf_obj_get_col (obj); /* Returns 'col' */
@@ -13337,13 +13337,13 @@ Some error prevented the operation to complete.  The value in
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t objdoc;
+pdf_obj_doc_t doc;
 pdf_obj_t name;
 
 ...
 
 
-pdf_obj_name_new (objdoc, PDF_FALSE, "Foo", &name);
+pdf_obj_name_new (doc, PDF_FALSE, "Foo", &name);
 pdf_obj_name_size (name); /* Should return 3 */
 @end example
 @end table
@@ -13487,12 +13487,12 @@ is undefined and shall not be used.
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t objdoc;
+pdf_obj_doc_t doc;
 pdf_obj_t str_obj;
 
 ...
 
-pdf_obj_string_new (objdoc, PDF_FALSE, "foo", 3, &str_obj);
+pdf_obj_string_new (doc, PDF_FALSE, "foo", 3, &str_obj);
 pdf_obj_string_size (str_obj); /* Returns 3 */
 @end example
 @end table
@@ -13664,7 +13664,7 @@ Some error prevented the operation to complete.  The value of
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t objdoc;
+pdf_obj_doc_t doc;
 pdf_obj_t array;
 
 ...
@@ -13764,7 +13764,7 @@ The specified @var{index} is invalid.
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t objdoc;
+pdf_obj_doc_t doc;
 pdf_obj_t array;
 pdf_obj_t elem;
 pdf_size_t index;
@@ -13774,7 +13774,7 @@ pdf_size_t index;
 /* Insert numbers as the first 10 elements of the array */
 for (index = 0; index < 10; index++)
 @{
-   pdf_obj_integer_new (objdoc,
+   pdf_obj_integer_new (doc,
                         PDF_FALSE,
                         (pdf_u32_t) index,
                         &elem);
@@ -14053,13 +14053,13 @@ Some error prevented the operation to complete.  The value of
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t objdoc;
+pdf_obj_doc_t doc;
 pdf_obj_t dict;
 
 ...
 
 /* Create an empty dictionary object */
-if (pdf_obj_dict_new (objdoc, PDF_TRUE, &dict)
+if (pdf_obj_dict_new (doc, PDF_TRUE, &dict)
     == PDF_OK)
 @{
    /* Dictionary object created and stored in 'dict'. */
@@ -14249,7 +14249,7 @@ Some error prevented the operation to complete.  The value in
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t objdoc;
+pdf_obj_doc_t doc;
 pdf_obj_t root_dict;
 pdf_obj_t pages_dict;
 
@@ -14257,8 +14257,8 @@ pdf_obj_t pages_dict;
 
 /* Create a /Pages entry in the root dictionary, as an indirect
    object, containing an empty dictionary. */
-pdf_obj_doc_get_root (objdoc, &root_dir);
-pdf_obj_dict_new (objdoc, PDF_TRUE, &pages_dict);
+pdf_obj_doc_get_root (doc, &root_dir);
+pdf_obj_dict_new (doc, PDF_TRUE, &pages_dict);
 
 if (pdf_obj_dict_set_str (root_dir, "/Pages", pages_dict)
     != PDF_ERROR)
