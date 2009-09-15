@@ -1,3 +1,8 @@
+2009-09-15  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/unit/base/fsys/pdf-fsys-file-close.c (START_TEST): Fix
+	the test data file opened in pdf_fsys_file_close_001.
+
 2009-09-15  David Vazquez  <davazp@es.gnu.org>
 
 	* torture/unit/base/crypt/pdf-crypt-md-new.c: Initialize the

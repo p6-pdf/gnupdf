@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 18:51:14 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/09/15 22:34:33 jemarch"
  *
  *       File:         pdf-fsys-file-close.c
  *       Date:         Sat May  3 21:02:12 2009
@@ -42,7 +42,7 @@ START_TEST(pdf_fsys_file_close_001)
 {
   pdf_fsys_file_t file;
   pdf_text_t path;
-  pdf_char_t filename[] = "TDFSYS0001", *pathname;
+  pdf_char_t filename[] = "TD00005", *pathname;
 
   pathname = tortu_get_data_file_path(filename);
   file = (pdf_fsys_file_t)pdf_alloc(sizeof(struct pdf_fsys_file_s));
