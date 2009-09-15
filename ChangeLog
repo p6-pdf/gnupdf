@@ -1,5 +1,14 @@
 2009-09-15  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* AUTHORS: Updated.
+
+	* configure.ac: Output torture/testdata/Makefile
+
+	* torture/testdata/Makefile.am: New file.
+
+	* torture/Makefile.am (SUBDIRS): Recurse on subdirectory
+	'testdata'.
+
 	* torture/unit/base/fsys/pdf-fsys-file-close.c (START_TEST): Fix
 	the test data file opened in pdf_fsys_file_close_001.
 

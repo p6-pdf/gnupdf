@@ -1,7 +1,7 @@
 # Torture directory Makefile.am
 # GNU PDF Library
 
-# Copyright (C) 2007, 2008 Free Software Foundation, Inc.
+# Copyright (C) 2009 Free Software Foundation, Inc.
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-SUBDIRS = testdata unit
+check-local:
+	@CHMOD@ a-r $(srcdir)/TD00004
+	@CHMOD@ a-w $(srcdir)/TD00005
 
 # End of Makefile.am
