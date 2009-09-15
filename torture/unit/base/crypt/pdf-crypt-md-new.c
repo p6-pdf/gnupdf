@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 21:40:03 davazp"
+/* -*- mode: C -*- Time-stamp: "2009-09-15 05:30:37 david"
  *
  *       File:         pdf-crypt-md-new.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -57,7 +57,7 @@ END_TEST
 START_TEST (pdf_crypt_md_new_002)
 {
   pdf_char_t buffer[16];
-
+  pdf_init();
   fail_if (pdf_crypt_nonce (buffer, sizeof(buffer)) != PDF_OK);
 }
 END_TEST
