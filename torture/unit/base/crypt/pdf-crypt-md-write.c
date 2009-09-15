@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 21:40:20 davazp"
+/* -*- mode: C -*- Time-stamp: "2009-09-15 05:33:48 david"
  *
  *       File:         pdf-crypt-md-hash.c
  *       Date:         Wed Mar  12 12:43:00 2008
@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008, 2009 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

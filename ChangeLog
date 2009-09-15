@@ -1,3 +1,8 @@
+2009-09-15  David Vazquez  <davazp@es.gnu.org>
+
+	* torture/unit/base/crypt/pdf-crypt-md-new.c: Initialize the
+	library.
+
 2009-09-08  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-stm.c (pdf_stm_read): Dead assignment removed.
