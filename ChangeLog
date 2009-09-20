@@ -1,5 +1,7 @@
 2009-09-20  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* configure.ac: Call AC_CONFIG_AUX_DIR.
+
 	* gnulib module 'getopt' replaced with 'getopt-gnu'.
 
 2009-09-15  Jose E. Marchesi  <jemarch@gnu.org>
