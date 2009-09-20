@@ -1,3 +1,7 @@
+2009-09-20  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* gnulib module 'getopt' replaced with 'getopt-gnu'.
+
 2009-09-15  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* AUTHORS: Updated.
