@@ -1,11 +1,11 @@
-# sys_stat_h.m4 serial 12   -*- Autoconf -*-
+# sys_stat_h.m4 serial 16   -*- Autoconf -*-
 dnl Copyright (C) 2006-2009 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
 dnl gives unlimited permission to copy and/or distribute it,
 dnl with or without modifications, as long as this notice is preserved.
 
 dnl From Eric Blake.
-dnl Test whether <sys/stat.h> contains lstat and mkdir or must be substituted.
+dnl Provide a GNU-like <sys/stat.h>.
 
 AC_DEFUN([gl_HEADER_SYS_STAT_H],
 [
@@ -49,11 +49,24 @@ AC_DEFUN([gl_SYS_STAT_MODULE_INDICATOR],
 AC_DEFUN([gl_SYS_STAT_H_DEFAULTS],
 [
   AC_REQUIRE([gl_UNISTD_H_DEFAULTS]) dnl for REPLACE_FCHDIR
-  AC_REQUIRE([gl_OPENAT_DEFAULTS]) dnl for GNULIB_OPENAT
-  GNULIB_LCHMOD=0; AC_SUBST([GNULIB_LCHMOD])
-  GNULIB_LSTAT=0;  AC_SUBST([GNULIB_LSTAT])
+  GNULIB_FCHMODAT=0;  AC_SUBST([GNULIB_FCHMODAT])
+  GNULIB_FSTATAT=0;   AC_SUBST([GNULIB_FSTATAT])
+  GNULIB_LCHMOD=0;    AC_SUBST([GNULIB_LCHMOD])
+  GNULIB_LSTAT=0;     AC_SUBST([GNULIB_LSTAT])
+  GNULIB_MKDIRAT=0;   AC_SUBST([GNULIB_MKDIRAT])
+  GNULIB_MKFIFOAT=0;  AC_SUBST([GNULIB_MKFIFOAT])
+  GNULIB_MKNODAT=0;   AC_SUBST([GNULIB_MKNODAT])
+  GNULIB_STAT=0;      AC_SUBST([GNULIB_STAT])
   dnl Assume proper GNU behavior unless another module says otherwise.
-  HAVE_LCHMOD=1;   AC_SUBST([HAVE_LCHMOD])
-  REPLACE_LSTAT=0; AC_SUBST([REPLACE_LSTAT])
-  REPLACE_MKDIR=0; AC_SUBST([REPLACE_MKDIR])
+  HAVE_FCHMODAT=1;    AC_SUBST([HAVE_FCHMODAT])
+  HAVE_FSTATAT=1;     AC_SUBST([HAVE_FSTATAT])
+  HAVE_LCHMOD=1;      AC_SUBST([HAVE_LCHMOD])
+  HAVE_MKDIRAT=1;     AC_SUBST([HAVE_MKDIRAT])
+  HAVE_MKFIFOAT=1;    AC_SUBST([HAVE_MKFIFOAT])
+  HAVE_MKNODAT=1;     AC_SUBST([HAVE_MKNODAT])
+  REPLACE_FSTAT=0;    AC_SUBST([REPLACE_FSTAT])
+  REPLACE_FSTATAT=0;  AC_SUBST([REPLACE_FSTATAT])
+  REPLACE_LSTAT=0;    AC_SUBST([REPLACE_LSTAT])
+  REPLACE_MKDIR=0;    AC_SUBST([REPLACE_MKDIR])
+  REPLACE_STAT=0;     AC_SUBST([REPLACE_STAT])
 ])

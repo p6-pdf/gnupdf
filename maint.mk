@@ -288,6 +288,11 @@ sc_prohibit_argmatch_without_use:
 	re='(\<(ARRAY_CARDINALITY|X?ARGMATCH(|_TO_ARGUMENT|_VERIFY))\>|\<argmatch(_exit_fn|_(in)?valid) *\()' \
 	  $(_header_without_use)
 
+sc_prohibit_canonicalize_without_use:
+	@h='"canonicalize.h"' \
+	re='CAN_(EXISTING|ALL_BUT_LAST|MISSING)|canonicalize_(mode_t|filename_mode)' \
+	  $(_header_without_use)
+
 sc_prohibit_root_dev_ino_without_use:
 	@h='"root-dev-ino.h"' \
 	re='(\<ROOT_DEV_INO_(CHECK|WARN)\>|\<get_root_dev_ino *\()' \
@@ -295,7 +300,7 @@ sc_prohibit_root_dev_ino_without_use:
 
 sc_prohibit_openat_without_use:
 	@h='"openat.h"' \
-	re='\<(openat_(permissive|needs_fchdir|(save|restore)_fail)|l?ch(own|mod)at)\>' \
+	re='\<(openat_(permissive|needs_fchdir|(save|restore)_fail)|l?(stat|ch(own|mod))at|(euid)?accessat)\>' \
 	  $(_header_without_use)
 
 # Prohibit the inclusion of c-ctype.h without an actual use.

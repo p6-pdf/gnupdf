@@ -103,6 +103,7 @@ AC_DEFUN([gl_INIT],
   gl_FUNC_REALLOC_POSIX
   gl_STDLIB_MODULE_INDICATOR([realloc-posix])
   gl_FUNC_RMDIR
+  gl_UNISTD_MODULE_INDICATOR([rmdir])
   gl_SIZE_MAX
   AM_STDBOOL_H
   gl_STDDEF_H
@@ -364,7 +365,6 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/mmap-anon.m4
   m4/multiarch.m4
   m4/onceonly.m4
-  m4/openat.m4
   m4/pmccabe2html.m4
   m4/realloc.m4
   m4/rmdir.m4
