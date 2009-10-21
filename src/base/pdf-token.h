@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 22:56:05 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-10-20 21:38:20 mgold"
  *
  *       File:         pdf-token.h
  *       Date:         Sat Jul  7 01:10:11 2007
@@ -80,7 +80,7 @@ pdf_status_t pdf_token_name_new (const pdf_char_t *value, pdf_size_t size,
 pdf_status_t pdf_token_keyword_new (const pdf_char_t *value, pdf_size_t size,
                                     pdf_token_t *token);
 pdf_status_t pdf_token_comment_new (const pdf_char_t *value, pdf_size_t size,
-                                    pdf_bool_t continued, pdf_token_t *token);
+                                    pdf_token_t *token);
 pdf_status_t pdf_token_valueless_new (enum pdf_token_type_e type,
                                       pdf_token_t *token);
 pdf_status_t pdf_token_dup (const pdf_token_t token, pdf_token_t *new);
@@ -112,7 +112,6 @@ const pdf_char_t *pdf_token_get_keyword_data (const pdf_token_t token);
 /* Managing comments */
 pdf_size_t pdf_token_get_comment_size (const pdf_token_t token);
 const pdf_char_t *pdf_token_get_comment_data (const pdf_token_t token);
-pdf_bool_t pdf_token_get_comment_continued (const pdf_token_t token);
 
 /* END PUBLIC */
 
@@ -177,16 +176,6 @@ struct pdf_token_buffer_s
   pdf_size_t size;
 };
 
-struct pdf_comment_s
-{
-  pdf_char_t *data;
-  pdf_size_t size;
-  /* This structure shares a common initial sequence with pdf_token_buffer_s,
-   * so the above fields can be accessed via token->value.buffer. */
-
-  pdf_bool_t continued;  /* is data continued from a previous token? */
-};
-
 
 /* A `pdf_token_s' structure stores a PDF object. The object may be of
    any type (including NULL). */
@@ -201,7 +190,6 @@ struct pdf_token_s
     struct pdf_token_buffer_s buffer;
     pdf_i32_t integer;
     pdf_real_t real;
-    struct pdf_comment_s comment;
 
   } value;
 };

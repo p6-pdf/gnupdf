@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/08 23:05:51 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-10-21 04:48:36 mgold"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -577,6 +577,7 @@ pdf_stm_read_peek_char (pdf_stm_t stm,
   ret = PDF_OK;
   if (pdf_buffer_eob_p (stm->cache))
     {
+      pdf_buffer_rewind (stm->cache);
       ret = pdf_stm_filter_apply (stm->filter, PDF_FALSE);
     }
 

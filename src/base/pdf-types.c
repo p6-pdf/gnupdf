@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/08 23:03:23 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-10-21 05:18:24 mgold"
  *
  *       File:         pdf-types.c
  *       Date:         Sun Feb 10 21:33:44 2008
@@ -1266,9 +1266,11 @@ pdf_buffer_eob_p (pdf_buffer_t buffer)
 pdf_status_t
 pdf_buffer_resize (pdf_buffer_t buffer, pdf_size_t newsize)
 {
-  if (pdf_realloc (buffer->data, newsize) != PDF_OK)
+  pdf_char_t *newdata = pdf_realloc (buffer->data, newsize);
+  if (!newdata)
     return PDF_ENOMEM;
 
+  buffer->data = newdata;
   buffer->size = newsize;
   buffer->rp = PDF_MIN (buffer->rp, newsize);
   buffer->wp = PDF_MIN (buffer->wp, newsize);

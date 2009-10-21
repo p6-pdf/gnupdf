@@ -1,3 +1,35 @@
+2009-10-21  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* utils/pdf-tokeniser.c (print_tok): Avoid a warning due to the
+	conversion from (const char *) to (char *).
+
+2009-10-20  Michael Gold  <mgold@ncf.ca>
+
+	* src/base/pdf-types.c (pdf_buffer_resize): Call pdf_realloc correctly.
+
+	* src/base/pdf-token-reader.c: Don't store a leading '%' for comments.
+	Reported by Pierre Filot.
+
+	* src/base/pdf-token-reader.c: Support strings longer than 32767
+	octets.  Suggested by Pierre Filot.
+
+	* src/base/pdf-token-reader.h: Likewise.
+
+	* doc/gnupdf.texi: Remove the 'continuation' flag for comment tokens,
+	and update the implementation limits.
+
+	* src/base/pdf-token.c: Remove the 'continuation' flag.
+
+	* src/base/pdf-token.h: Likewise.
+
+	* src/base/pdf-stm.c (pdf_stm_read_peek_char): If the cache is empty,
+	rewind the buffer before reading more data from the filter.
+
+	* torture/unit/base/stm/pdf-stm-read-char.c: Add a test case that
+	reads more than PDF_STM_DEFAULT_CACHE_SIZE bytes from a stream.
+
+	* torture/unit/base/token/pdf-token-read.c: Test long string tokens.
+
 2009-09-20  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* configure.ac: Call AC_CONFIG_AUX_DIR.

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 16:00:57 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-10-21 04:58:12 mgold"
  *
  *       File:         pdf-token-reader.c
  *       Date:         Mon Dec 29 00:45:09 2008
@@ -32,9 +32,10 @@
 
 #include <pdf-token-reader.h>
 
-static INLINE int can_store_char (pdf_token_reader_t reader);
 static INLINE pdf_status_t store_char (pdf_token_reader_t reader,
                                        pdf_char_t ch);
+static INLINE pdf_status_t store_char_grow (pdf_token_reader_t reader,
+                                            pdf_char_t ch);
 static pdf_status_t exit_state (pdf_token_reader_t reader, pdf_u32_t flags,
                                 pdf_token_t *token);
 static INLINE pdf_status_t enter_state (pdf_token_reader_t reader,
@@ -83,7 +84,7 @@ pdf_token_reader_new (pdf_stm_t stm, pdf_token_reader_t *reader)
 
     err = PDF_ERROR;
     len = snprintf (decpt, sizeof (decpt), "%#.0f", 1.0);
-    if (len <= 0 || len >= sizeof (decpt))  /* shouldn't happen */
+    if (len <= 0 || (pdf_size_t)len >= sizeof (decpt))  /* shouldn't happen */
       goto fail;
 
     err = PDF_ENOMEM;
@@ -95,8 +96,11 @@ pdf_token_reader_new (pdf_stm_t stm, pdf_token_reader_t *reader)
     memcpy (new_tokr->decimal_point, &decpt[1], len);
   }
 
-  /* max string size 32767 + terminating '\0' */
-  new_tokr->buffer = pdf_buffer_new (32768);
+  /* buffer_size_min is the default buffer size, which is also the maximum
+   * size for keywords, names, numbers, etc.; strings and comments will
+   * enlarge the buffer to whatever size is needed. */
+  new_tokr->buffer_size_min = 32768;
+  new_tokr->buffer = pdf_buffer_new (new_tokr->buffer_size_min);
   if (!new_tokr->buffer)
     goto fail;
 
@@ -117,11 +121,23 @@ fail:
   return err;
 }
 
+static void
+reset_buffer (pdf_token_reader_t reader)
+{
+  reader->buffer->wp = 0;
+  if (reader->buffer->size > reader->buffer_size_min)
+    {
+      /* Try to shrink the buffer, but don't worry if it fails. */
+      pdf_buffer_resize (reader->buffer, reader->buffer_size_min);
+    }
+}
+
 pdf_status_t
 pdf_token_reader_reset (pdf_token_reader_t reader)
 {
   enter_state (reader, PDF_TOKR_STATE_NONE);
   reader->substate = 0;
+  reset_buffer (reader);
   return PDF_OK;
 }
 
@@ -196,18 +212,12 @@ handle_char (pdf_token_reader_t reader, pdf_u32_t flags,
           return PDF_EAGAIN;
         }
 
-      if (store_char (reader, ch) != PDF_OK)
-        {
-          /* the comment buffer is full, so split the token */
-          rv = flush_token (reader, flags, token);
-          if (rv != PDF_OK)
-            return rv;
+      if (!(flags & PDF_TOKEN_RET_COMMENTS))
+        reader->substate = 1;
+      if (reader->substate == 1)
+        return PDF_OK;  /* we don't care about this comment */
 
-          reader->intparam = 1;  /* mark the next token as a continuation */
-          return store_char (reader, ch);  /* can't fail this time */
-        }
-
-      return PDF_OK;
+      return store_char_grow (reader, ch);
 
     default: ;
     }
@@ -255,8 +265,7 @@ handle_char (pdf_token_reader_t reader, pdf_u32_t flags,
         {
         case 37:  /* '%' */
           enter_state (reader, PDF_TOKR_STATE_COMMENT);
-          reader->intparam = 0;
-          return store_char (reader, ch);
+          return PDF_OK;
         case 40:  /* '(' */
           enter_state (reader, PDF_TOKR_STATE_STRING);
           reader->intparam = 0;
@@ -306,6 +315,7 @@ handle_char (pdf_token_reader_t reader, pdf_u32_t flags,
       /* fall through */
 
     case PDF_TOKR_STATE_KEYWORD:
+      /* Note: numbers are treated as keywords until flush_token is called. */
       return store_char (reader, ch);
 
     case PDF_TOKR_STATE_NAME:
@@ -339,16 +349,25 @@ handle_char (pdf_token_reader_t reader, pdf_u32_t flags,
 
     default:
       assert (0);
+      return PDF_ERROR;
   }
-
-  return store_char (reader, ch);
 }
 
 
 static INLINE int
 can_store_char (const pdf_token_reader_t reader)
 {
-  return reader->buffer->wp < (reader->buffer->size - 1);
+  return reader->buffer->wp < reader->buffer->size;
+}
+
+static pdf_status_t
+enlarge_buffer (pdf_token_reader_t reader)
+{
+  pdf_size_t size = reader->buffer->size, newsize = size * 2;
+  if (newsize < size)
+    return PDF_EIMPLLIMIT;
+
+  return pdf_buffer_resize (reader->buffer, newsize);
 }
 
 static INLINE pdf_status_t
@@ -356,6 +375,19 @@ store_char (pdf_token_reader_t reader, pdf_char_t ch)
 {
   if (!can_store_char (reader))
     return PDF_EIMPLLIMIT;
+  reader->buffer->data[reader->buffer->wp++] = ch;
+  return PDF_OK;
+}
+
+static INLINE pdf_status_t
+store_char_grow (pdf_token_reader_t reader, pdf_char_t ch)
+{
+  if (!can_store_char (reader))
+    {
+      pdf_status_t rv = enlarge_buffer(reader);
+      if (rv != PDF_OK)
+        return rv;
+    }
   reader->buffer->data[reader->buffer->wp++] = ch;
   return PDF_OK;
 }
@@ -387,11 +419,10 @@ flush_token (pdf_token_reader_t reader, pdf_u32_t flags, pdf_token_t *token)
       return PDF_EEOF;  /* can't continue parsing after EOF */
 
     case PDF_TOKR_STATE_COMMENT:
-      if (!(flags & PDF_TOKEN_RET_COMMENTS))
-        goto finish;
+      if ((reader->substate == 1) || !(flags & PDF_TOKEN_RET_COMMENTS))
+        goto finish;  /* don't return a token */
 
-      rv = pdf_token_comment_new (data, datasize,
-          reader->intparam /*continued*/, &new_tok);
+      rv = pdf_token_comment_new (data, datasize, &new_tok);
       break;
 
     case PDF_TOKR_STATE_KEYWORD:
@@ -481,7 +512,7 @@ flush_token (pdf_token_reader_t reader, pdf_u32_t flags, pdf_token_t *token)
   reader->beg_pos = reader->state_pos;
 
 finish:
-  reader->buffer->wp = 0;
+  reset_buffer (reader);
   return PDF_OK;
 }
 
@@ -516,30 +547,35 @@ start:
         /* fall through */
 
       case 0:  /* no special state */
-        if (ch == 92)  /* '\\' */
-          {
-            reader->substate = 2;  /* start an escape sequence */
-            return PDF_OK;
-          }
-        else if (ch == 41 && reader->intparam <= 0)  /* ')'; end of string */
-          {
-            reader->intparam = -1;
-            return exit_state (reader, flags, token);
-          }
+        {
+          if (ch == 92)  /* '\\' */
+            {
+              reader->substate = 2;  /* start an escape sequence */
+              return PDF_OK;
+            }
+          else if (ch == 41 && reader->intparam <= 0)  /* ')'; end of string */
+            {
+              reader->intparam = -1;
+              return exit_state (reader, flags, token);
+            }
 
-        if (!can_store_char (reader))
-          return PDF_EIMPLLIMIT;
-        else if (ch == 40)  /* '(' */
-          ++reader->intparam;
-        else if (ch == 41)  /* ')' */
-          --reader->intparam;
-        else if (ch == 13)  /* '\r' */
-          {
+          pdf_bool_t wasCR = (ch == 13);
+          if (wasCR)
             ch = 10;  /* treat as LF */
-            reader->substate = 1;  /* ignore the next char if it's LF */
-          }
+          rv = store_char_grow (reader, ch);
 
-        return store_char (reader, ch);
+          if (rv == PDF_OK)
+            {
+              if (wasCR)  /* '\r' */
+                reader->substate = 1;  /* ignore the next char if it's LF */
+              else if (ch == 40)  /* '(' */
+                ++reader->intparam;
+              else if (ch == 41)  /* ')' */
+                --reader->intparam;
+            }
+
+          return rv;
+        }
 
       case 2:  /* just saw a '\\' (starting an escape sequence) */
         reader->substate = 0;
@@ -573,14 +609,14 @@ start:
 
         /* for any other character, including '(', ')', and '\\',
          * store the same character (dropping the leading backslash) */
-        return store_char (reader, ch);
+        return store_char_grow (reader, ch);
 
       case 3:  /* saw 1 digit of an octal escape */
         /* fall through */
       case 4:  /* saw 2 digits of an octal escape */
         if (ch < 48 || ch > 48+7)  /* not digits '0'--'7' */
           {
-            rv = store_char (reader, reader->charparam);
+            rv = store_char_grow (reader, reader->charparam);
             if (rv != PDF_OK) return rv;
 
             /* ch isn't part of the escape sequence, so retry */
@@ -592,7 +628,7 @@ start:
         reader->charparam = ((reader->charparam & 0x1f) << 3) | (ch - 48);
         if (reader->substate == 4)  /* this was the final digit */
           {
-            rv = store_char (reader, reader->charparam);
+            rv = store_char_grow (reader, reader->charparam);
             if (rv != PDF_OK) return rv;
 
             reader->substate = 0;
@@ -638,7 +674,7 @@ handle_hexstring_char (pdf_token_reader_t reader,
       if (reader->substate == 2)
         {
           /* the last digit is missing; assume it's '0' */
-          rv = store_char (reader, reader->charparam << 4);
+          rv = store_char_grow (reader, reader->charparam << 4);
           if (rv != PDF_OK) return rv;
         }
 
@@ -656,7 +692,7 @@ handle_hexstring_char (pdf_token_reader_t reader,
       return PDF_OK;
     }
 
-  rv = store_char (reader, (reader->charparam << 4) | ch);
+  rv = store_char_grow (reader, (reader->charparam << 4) | ch);
   if (rv == PDF_OK)
     reader->substate = 1;
   return rv;

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 16:06:57 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-10-21 06:43:46 mgold"
  *
  *       File:         pdf-token-read.c
  *       Date:         Wed Jan 14 05:44:48 2009
@@ -15,7 +15,7 @@
 
 #include <pdf.h>
 
-#define STR_AND_LEN(s) (s),(sizeof(s)-1)
+#define STR_AND_LEN(s) (pdf_char_t*)(s),(sizeof(s)-1)
 
 /* Initialize an in-memory reader stream (pdf_stm_t *stm)
  * with the given string (a char* constant). */
@@ -78,7 +78,7 @@ tokr_eof(pdf_token_reader_t tokr, pdf_i32_t flags)
 }
 
 /*
- * Test: pdf_token_read_001
+ * Test: pdf_token_read_toktypes
  * Description:
  *   Read various tokens from an in-memory stream, and check whether they
  *   match the expected values.
@@ -86,7 +86,7 @@ tokr_eof(pdf_token_reader_t tokr, pdf_i32_t flags)
  *   Each token matches the expected one (according to pdf_token_equal_p),
  *   and no tokens remain afterwards.
  */
-START_TEST(pdf_token_read_001)
+START_TEST(pdf_token_read_toktypes)
 {
   pdf_stm_t stm;
   pdf_token_reader_t tokr;
@@ -122,14 +122,14 @@ START_TEST(pdf_token_read_001)
 END_TEST
 
 /*
- * Test: pdf_token_read_002
+ * Test: pdf_token_read_eos
  * Description:
  *   Test the PDF_TOKEN_END_AT_STREAM flag.
  * Success condition:
  *   The stream should be positioned after the '\n' character (at '<'), and
  *   the token reader should act as if it reached the end of the input file.
  */
-START_TEST(pdf_token_read_002)
+START_TEST(pdf_token_read_eos)
 {
   pdf_stm_t stm;
   pdf_token_reader_t tokr;
@@ -152,14 +152,58 @@ START_TEST(pdf_token_read_002)
 END_TEST
 
 /*
+ * Test: pdf_token_read_longstring
+ * Description:
+ *   Try to read a string longer than the normal buffer size.
+ * Success condition:
+ *   A token containing the string should be produced.
+ */
+START_TEST(pdf_token_read_longstring)
+{
+  const pdf_size_t filesize = 42000;
+  pdf_char_t *file;
+  pdf_stm_t stm;
+  pdf_token_reader_t tokr;
+  pdf_token_t token = NULL;
+  pdf_status_t rv;
+  pdf_size_t i, j;
+
+  pdf_init();
+
+  /* make long string '(XX'...'XX)' */
+  file = nonnull(pdf_alloc(filesize));
+  memset(file, 'X', filesize);
+  file[0] = '(';
+  file[filesize-1] = ')';
+
+  fail_unless(PDF_OK == pdf_stm_mem_new( file, filesize,
+      0 /*cache_size*/, PDF_STM_READ /*mode*/, &stm ));
+  INIT_TOKR(&tokr, stm);
+
+  rv = pdf_token_read(tokr, 0, &token);
+  fail_unless(rv == PDF_OK);
+  if (token)
+    {
+      fail_unless(pdf_token_get_type(token) == PDF_TOKEN_STRING);
+      fail_unless(pdf_token_get_string_size(token) == filesize-2);
+      pdf_token_destroy(token);
+    }
+
+  fail_unless( tokr_eof(tokr, 0) );
+  pdf_dealloc(file);
+}
+
+END_TEST
+/*
  * Test case creation function
  */
 TCase *
 test_pdf_token_read (void)
 {
   TCase *tc = tcase_create("pdf_token_read");
-  tcase_add_test(tc, pdf_token_read_001);
-  tcase_add_test(tc, pdf_token_read_002);
+  tcase_add_test(tc, pdf_token_read_toktypes);
+  tcase_add_test(tc, pdf_token_read_eos);
+  tcase_add_test(tc, pdf_token_read_longstring);
 
   return tc;
 }
