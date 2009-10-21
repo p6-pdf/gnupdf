@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 16:01:21 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-10-20 22:09:19 mgold"
  *
  *       File:         pdf-token.c
  *       Date:         Sat Jul  7 03:04:30 2007
@@ -87,14 +87,16 @@ pdf_token_buffer_new (enum pdf_token_type_e type,
     goto fail;
 
   rv = PDF_ENOMEM;
-  new_obj->value.buffer.data = pdf_alloc (nullterm ? size + 1 : size);
+  new_obj->value.buffer.data = pdf_alloc (size + 1);
   if (!new_obj->value.buffer.data)
     goto fail;
 
   new_obj->value.buffer.size = size;
   memcpy (new_obj->value.buffer.data, value, size);
-  if (nullterm)
-    new_obj->value.buffer.data[size] = 0;
+
+  /* If the value isn't null terminated, append a non-null character
+   * to catch bugs. */
+  new_obj->value.buffer.data[size] = nullterm ? 0 : 'X';
 
   *token = new_obj;
   return PDF_OK;
@@ -138,11 +140,7 @@ pdf_token_equal_p (const pdf_token_t token1, const pdf_token_t token2)
     case PDF_TOKEN_REAL:
       return token1->value.real == token2->value.real;
 
-    case PDF_TOKEN_COMMENT:
-      if (token1->value.comment.continued != token2->value.comment.continued)
-        return PDF_FALSE;
-
-      /* fall through */
+    case PDF_TOKEN_COMMENT:  /* fall through */
     case PDF_TOKEN_STRING:   /* fall through */
     case PDF_TOKEN_NAME:     /* fall through */
     case PDF_TOKEN_KEYWORD:
@@ -193,9 +191,8 @@ pdf_token_dup (const pdf_token_t token, pdf_token_t *new)
                                     token->value.buffer.size,
                                     new);
     case PDF_TOKEN_COMMENT:
-      return pdf_token_comment_new (token->value.comment.data,
-                                    token->value.comment.size,
-                                    token->value.comment.continued,
+      return pdf_token_comment_new (token->value.buffer.data,
+                                    token->value.buffer.size,
                                     new);
     default:
       /* Should not be reached: make the compiler happy */
@@ -329,10 +326,8 @@ pdf_token_get_string_data (const pdf_token_t token)
 pdf_status_t
 pdf_token_comment_new (const pdf_char_t *value,
                        pdf_size_t size,
-                       pdf_bool_t continued,
                        pdf_token_t *token)
 {
-  pdf_status_t rv;
   pdf_size_t i;
   for (i = 0; i < size; ++i)
     {
@@ -341,11 +336,7 @@ pdf_token_comment_new (const pdf_char_t *value,
         return PDF_EBADDATA;
     }
 
-  rv = pdf_token_buffer_new (PDF_TOKEN_COMMENT, value, size, 0, token);
-  if (rv == PDF_OK)
-    (*token)->value.comment.continued = !!continued;
-
-  return rv;
+  return pdf_token_buffer_new (PDF_TOKEN_COMMENT, value, size, 0, token);
 }
 
 pdf_size_t
@@ -360,13 +351,6 @@ pdf_token_get_comment_data (const pdf_token_t comment)
 {
   assert (comment && comment->type == PDF_TOKEN_COMMENT);
   return comment->value.buffer.data;
-}
-
-pdf_bool_t
-pdf_token_get_comment_continued (const pdf_token_t comment)
-{
-  assert (comment && comment->type == PDF_TOKEN_COMMENT);
-  return comment->value.comment.continued;
 }
 
 

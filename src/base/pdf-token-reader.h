@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 22:56:21 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-10-20 21:44:20 mgold"
  *
  *       File:         pdf-token-reader.h
  *       Date:         Mon Dec 29 00:45:09 2008
@@ -72,9 +72,10 @@ enum pdf_token_reader_state_e
 
 /* Token reader states (from pdf_token_reader_state_e):
  * NONE - Initial state; not reading a token.
- * COMMENT - Reading a comment.  buffer collects the comment bytes, excluding
- *   intparam is 1 if this token is continued from a previous token,
- *   and 0 otherwise.
+ * COMMENT - Reading a comment.  buffer collects the comment bytes.
+ *   Substates:
+ *     0 - normal state
+ *     1 - don't produce a token
  * KEYWORD - Reading some regular characters into buffer; this could result
  *           in a symbol like "null", or a number.
  * NAME - Reading a name (which starts with '/').
@@ -125,6 +126,7 @@ struct pdf_token_reader_s {
   int intparam;
   pdf_buffer_t buffer;
   /***/
+  pdf_size_t buffer_size_min;
 };
 
 #endif

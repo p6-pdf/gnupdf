@@ -10380,7 +10380,7 @@ Not enough memory.
 
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_token_comment_new (const pdf_char_t *@var{value}, pdf_size_t @var{size}, pdf_bool_t continuation, pdf_token_t *@var{token})
+@deftypefun pdf_status_t pdf_token_comment_new (const pdf_char_t *@var{value}, pdf_size_t @var{size}, pdf_token_t *@var{token})
 
 Create a comment token containing a copy of the given data.
 
@@ -10391,8 +10391,6 @@ Create a comment token containing a copy of the given data.
 A pointer to the binary data that will make up the keyword.
 @item size
 The amount of data to copy, in octets.
-@item continuation
-A boolean value indicating whether this is a continuation of a previous comment token (if false, it's a new comment).
 @item token
 A pointer to the newly created token.
 @end table
@@ -10703,30 +10701,6 @@ A token of type PDF_TOKEN_COMMENT.
 @end table
 @item Returns
 The comment's size, in octets.
-@end table
-
-@end deftypefun
-
-@deftypefun pdf_bool_t pdf_token_get_comment_continued (const pdf_token_t @var{token})
-
-Returns a boolean indicating whether the comment token is a continuation
-of a previous token.  If the token reader breaks a comment into multiple
-tokens, each token except the last will be at least 32767 bytes long.
-
-@table @strong
-@item Parameters
-@table @var
-@item token
-A token of type PDF_TOKEN_COMMENT.
-@end table
-@item Returns
-A boolean value:
-@table @code
-@item PDF_TRUE
-The given comment token is a continuation of another.
-@item PDF_FALSE
-The token is a complete comment, or the beginning of a comment.
-@end table
 @end table
 
 @end deftypefun
@@ -14840,11 +14814,11 @@ specifications.
 @tab -FLT_MAX
 @tab Smallest real value.
 @item string in content stream
-@tab 32767
+@tab SIZE_MAX/2
 @tab Maximum length of a string contained in a content stream, in
 bytes.
 @item name
-@tab 32767
+@tab 32768
 @tab Maximum length of a name, in bytes.
 @item indirect object
 @tab ??
