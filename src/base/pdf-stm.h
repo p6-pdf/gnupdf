@@ -107,7 +107,7 @@ pdf_status_t pdf_stm_read (pdf_stm_t stm,
                            pdf_size_t bytes,
                            pdf_size_t *read_bytes);
 pdf_status_t pdf_stm_write (pdf_stm_t stm,
-                            pdf_char_t *buf,
+                            const pdf_char_t *buf,
                             pdf_size_t bytes,
                             pdf_size_t *written_bytes);
 pdf_status_t pdf_stm_read_char (pdf_stm_t stm, pdf_char_t *c);
