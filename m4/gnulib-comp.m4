@@ -25,6 +25,7 @@ AC_DEFUN([gl_EARLY],
   m4_pattern_allow([^gl_LIBOBJS$])dnl a variable
   m4_pattern_allow([^gl_LTLIBOBJS$])dnl a variable
   AC_REQUIRE([AC_PROG_RANLIB])
+  AC_REQUIRE([AM_PROG_CC_C_O])
   AC_REQUIRE([gl_USE_SYSTEM_EXTENSIONS])
   AC_REQUIRE([AC_FUNC_FSEEKO])
   AC_REQUIRE([AC_FUNC_FSEEKO])
@@ -97,7 +98,7 @@ AC_DEFUN([gl_INIT],
   gl_MATH_H
   gl_FUNC_MEMCHR
   gl_STRING_MODULE_INDICATOR([memchr])
-  gl_FUNC_MKDIR_TRAILING_SLASH
+  gl_FUNC_MKDIR
   gl_MULTIARCH
   gl_PMCCABE2HTML
   gl_FUNC_REALLOC_POSIX
@@ -119,6 +120,7 @@ AC_DEFUN([gl_INIT],
   gl_STRING_MODULE_INDICATOR([strnlen])
   gl_HEADER_SYS_STAT_H
   AC_PROG_MKDIR_P
+  gl_HEADER_TIME_H
   gl_UNISTD_H
   gl_WCHAR_H
   gl_XALLOC
@@ -321,7 +323,11 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/strndup.c
   lib/strnlen.c
   lib/sys_stat.in.h
+  lib/time.in.h
   lib/unistd.in.h
+  lib/unistr.h
+  lib/unistr/u8-check.c
+  lib/unitypes.h
   lib/wchar.in.h
   lib/xalloc-die.c
   lib/xalloc.h
@@ -338,6 +344,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/error.m4
   m4/exitfail.m4
   m4/extensions.m4
+  m4/fcntl_h.m4
   m4/fflush.m4
   m4/fpurge.m4
   m4/freading.m4
@@ -361,7 +368,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/malloc.m4
   m4/math_h.m4
   m4/memchr.m4
-  m4/mkdir-slash.m4
+  m4/mkdir.m4
   m4/mmap-anon.m4
   m4/multiarch.m4
   m4/onceonly.m4
@@ -379,6 +386,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/strndup.m4
   m4/strnlen.m4
   m4/sys_stat_h.m4
+  m4/time_h.m4
   m4/unistd_h.m4
   m4/wchar.m4
   m4/wchar_t.m4

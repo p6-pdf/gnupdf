@@ -1,5 +1,7 @@
 2009-10-28  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* gnulib modules updated and unistr/u8-check imported.
+
 	* torture/unit/base/stm/pdf-stm-get-mode.c: Unit tests for
 	pdf_stm_get_mode.
 
