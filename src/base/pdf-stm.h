@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/06/16 22:43:05 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/10/28 21:26:53 jemarch"
  *
  *       File:         pdf-stm.h
  *       Date:         Fri Jul  6 18:37:57 2007
@@ -100,6 +100,10 @@ pdf_status_t pdf_stm_mem_new (pdf_char_t *buffer,
                               enum pdf_stm_mode_e mode,
                               pdf_stm_t *stm);
 pdf_status_t pdf_stm_destroy (pdf_stm_t stm);
+
+/* Getting and setting properties */
+
+enum pdf_stm_mode_e pdf_stm_get_mode (pdf_stm_t stm);
 
 /* Reading and writing data */
 pdf_status_t pdf_stm_read (pdf_stm_t stm,

@@ -4254,6 +4254,7 @@ buffering.
 @menu
 * Stream Types::                
 * Creating and Destroying Streams::  
+* Getting and Setting Stream Properties::
 * Managing the Filter Chain::   
 * Reading and Writing Data::    
 * Stream Positioning::          
@@ -4396,6 +4397,36 @@ is returned.
 @item Usage example
 @example
 XXX
+@end example
+@end table
+@end deftypefun
+
+@node Getting and Setting Stream Properties
+@subsection Getting and Setting Stream Properties
+
+@deftypefun pdf_stm_get_mode (pdf_stm_t @var{stm})
+
+Return the mode of a given stream @var{stm}.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A stream.
+@end table
+@item Returns
+The mode of the stream.
+@item Usage example
+@example
+pdf_stm_t stm;
+
+pdf_stm_mem_new (buffer,
+                 2048,
+                 0,     /* Use the default cache size */
+                 PDF_STM_WRITE,
+                 &stm);
+
+pdf_stm_get_mode (stm); /* Returns PDF_STM_WRITE */
 @end example
 @end table
 @end deftypefun
