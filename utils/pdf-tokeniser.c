@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-10-25 18:06:21 mgold"
+/* -*- mode: C -*- Time-stamp: "2009-10-29 15:43:35 mgold"
  *
  *       File:         pdf-tokeniser.c
  *       Date:         Wed May 20 05:25:40 2009
@@ -277,7 +277,7 @@ parse_u32_arg (const char *argvalue, const char *argname, const char *appname)
     {
       fprintf (stderr, "%s: invalid argument `%s' for `--%s'\n",
                appname, argvalue, argname);
-      exit (2);
+      exit (1);
     }
   return ret;
 }

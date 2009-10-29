@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-10-25 18:06:21 mgold"
+/* -*- mode: C -*- Time-stamp: "2009-10-29 16:51:18 mgold"
  *
  *       File:         pdf-token-writer.c
  *       Date:         Wed Sep 23 04:37:51 2009
@@ -96,7 +96,6 @@ fail:
 pdf_status_t
 pdf_token_writer_reset (pdf_token_writer_t writer)
 {
-  writer->pos = 0;
   writer->stage = 0;
   writer->in_keyword = PDF_FALSE;
   writer->line_length = 0;
@@ -250,16 +249,18 @@ hexchar (pdf_char_t value)
   return 255;
 }
 
+/* Prepare to write a new token, adding some whitespace if necessary. */
 static pdf_status_t
 start_token (pdf_token_writer_t writer, pdf_bool_t need_wspace,
              pdf_size_t len)
 {
   pdf_bool_t add_wspace = (need_wspace && writer->in_keyword);
-  pdf_char_t wspace_char = 32;  /*space*/
+  pdf_char_t wspace_char = 32;  /* space */
 
   if (add_wspace)
     ++len;
 
+  /* If the token would make this line too long, start a new line. */
   if (writer->line_length + len > writer->max_line_length
        && writer->max_line_length > 0)
     {
@@ -286,10 +287,10 @@ encode_buffer_number (pdf_token_writer_t writer, int len)
 {
   pdf_buffer_t buf = writer->buffer;
   if (len < 0 || len >= buf->size)
-    return PDF_FALSE;  /* snprint failed, or truncated its output. */
+    return PDF_FALSE;  /* snprintf failed, or truncated its output. */
 
   buf->wp = buf->rp = 0;
-  while (buf->wp < len)
+  while (buf->rp < len)
     {
       char ch = (char)buf->data[buf->rp];
       if (ch == '-')
@@ -458,7 +459,8 @@ scan_string (pdf_token_writer_t writer, pdf_u32_t flags,
     }
 
   /* Determine the size of the escaped string. */
-  writer->utf8 = (u8_check (data, len) == NULL);
+  writer->utf8 = (flags & PDF_TOKEN_READABLE_STRINGS)
+                   && (u8_check (data, len) == NULL);
   pdf_size_t enc_bytes = 0;
   for (i = 0; i < len; ++i)
     {
@@ -517,9 +519,9 @@ write_string_char (pdf_token_writer_t writer, pdf_u32_t flags,
               switch (digits)
                 {
                   /* fall through each case */
-                  case 3: esc[outlen++] = hexchar(ch / 0100);
-                  case 2: esc[outlen++] = hexchar((ch % 0100) / 010);
-                  case 1: esc[outlen++] = hexchar(ch % 010);
+                  case 3: esc[outlen++] = hexchar (ch / 0100);
+                  case 2: esc[outlen++] = hexchar ((ch % 0100) / 010);
+                  case 1: esc[outlen++] = hexchar (ch % 010);
                 }
               }
         }
@@ -527,7 +529,7 @@ write_string_char (pdf_token_writer_t writer, pdf_u32_t flags,
 
   /* If the line will be too long, split it (the length cannot be equal to
    * the maximum, since this would leave no room for the backslash). */
-  if (writer->max_line_length > 0 && !pdf_is_eol_char(output[0])
+  if (writer->max_line_length > 0 && !pdf_is_eol_char (output[0])
        && writer->buffered_line_length + outlen >= writer->max_line_length)
     {
       rv = reserve_buffer_space (writer, 2);
@@ -575,6 +577,8 @@ write_string_token (pdf_token_writer_t writer, pdf_u32_t flags,
           rv = start_token (writer, PDF_FALSE /*need_wspace*/, dummy_len);
           if (rv != PDF_OK) return rv;
         }
+
+        pdf_buffer_rewind (writer->buffer);
         writer->buffered_line_length = writer->line_length;
         write_buffered_char_nocheck (writer, 40 /* '(' */);
         writer->pos = 0;
@@ -604,6 +608,8 @@ hexstring_start:
           rv = start_token (writer, PDF_FALSE /*need_wspace*/, dummy_len);
           if (rv != PDF_OK) return rv;
         }
+
+        pdf_buffer_rewind (writer->buffer);
         writer->buffered_line_length = writer->line_length;
         write_buffered_char_nocheck (writer, 60 /* '<' */);
         writer->pos = 0;
@@ -624,11 +630,11 @@ hexstring_start:
             rv = reserve_buffer_space (writer, 2);
             if (rv != PDF_OK) return rv;
 
-            write_buffered_char_nocheck (writer, hexchar(ch / 16));
+            write_buffered_char_nocheck (writer, hexchar (ch / 16));
             if (writer->pos == size-1 && (ch%16) == 0)
               ;  /* don't write a final 0 */
             else
-              write_buffered_char_nocheck (writer, hexchar(ch % 16));
+              write_buffered_char_nocheck (writer, hexchar (ch % 16));
             ++writer->pos;
           }
         ++writer->stage;  /* fall through */
@@ -652,7 +658,7 @@ should_escape_namechar (pdf_u32_t flags, pdf_char_t ch, pdf_bool_t *escape)
   if (!ch)
     return PDF_EBADDATA;
 
-  *escape = !pdf_is_regular_char(ch);
+  *escape = !pdf_is_regular_char (ch);
   if (flags & PDF_TOKEN_NO_NAME_ESCAPES)
     {
       if (*escape)
@@ -684,13 +690,14 @@ write_name_token (pdf_token_writer_t writer, pdf_u32_t flags,
           for (i = 0; i < size; ++i)
             {
               pdf_bool_t escape;
-              rv = should_escape_namechar(flags, data[i], &escape);
+              rv = should_escape_namechar (flags, data[i], &escape);
               if (rv != PDF_OK) return rv;  /* bad name */
 
               if (escape)
                 writer->pos += 2;  /* 2 hex characters */
             }
         }
+        pdf_buffer_rewind (writer->buffer);
         write_buffered_char_nocheck (writer, 47 /* '/' */);
         ++writer->stage;  /* fall through */
       case 1:
@@ -705,7 +712,7 @@ write_name_token (pdf_token_writer_t writer, pdf_u32_t flags,
           {
             pdf_bool_t escape;
             pdf_char_t ch = data[writer->pos];
-            rv = should_escape_namechar(flags, ch, &escape);
+            rv = should_escape_namechar (flags, ch, &escape);
             if (rv != PDF_OK) return rv;  /* bad name */
 
             if (escape)
@@ -714,8 +721,8 @@ write_name_token (pdf_token_writer_t writer, pdf_u32_t flags,
                 if (rv != PDF_OK) return rv;
 
                 write_buffered_char_nocheck (writer, 35 /* '#' */);
-                write_buffered_char_nocheck (writer, hexchar(ch / 16));
-                write_buffered_char_nocheck (writer, hexchar(ch % 16));
+                write_buffered_char_nocheck (writer, hexchar (ch / 16));
+                write_buffered_char_nocheck (writer, hexchar (ch % 16));
               }
             else
               {
@@ -873,10 +880,7 @@ pdf_token_write (pdf_token_writer_t writer, pdf_u32_t flags, pdf_token_t token)
     }
 
   if (rv == PDF_OK)
-    {
-      pdf_buffer_rewind (writer->buffer);
-      writer->stage = 0;
-    }
+    writer->stage = 0;
   return rv;
 }
 
