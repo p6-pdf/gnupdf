@@ -66,9 +66,9 @@ struct pdf_token_writer_s {
  * are limited to no more than 255 characters"... */
 #define PDF_TOKW_MAX_LINE_LENGTH 255
 
-/* The buffer size is mostly arbitrary, except that reserve_buffer_space can't
- * be called with a length larger that the buffer size.  We never reserve more
- * than 4 bytes at a time, so any number >= 4 is fine. */
+/* The buffer size is mostly arbitrary, but the buffer must be large
+ * enough for snprintf to write any possible floating point value.
+ * Any number over 50 should be fine. */
 #define PDF_TOKW_BUFFER_SIZE 32768
 
 #endif
