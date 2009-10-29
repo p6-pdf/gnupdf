@@ -24,13 +24,13 @@ AM_INIT_AUTOMAKE(libgnupdf, trunk)
 AM_CONFIG_HEADER(src/config.h)
 AC_CONFIG_MACRO_DIR([m4])
 
+dnl Compiler issues
+AC_PROG_CC
+
 gl_EARLY
 
 dnl Libtool
 AC_PROG_LIBTOOL
-
-dnl Compiler issues
-AC_PROG_CC
 
 dnl System
 AC_CANONICAL_HOST

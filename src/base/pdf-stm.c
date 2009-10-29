@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-10-22 08:14:33 mgold"
+/* -*- mode: C -*- Time-stamp: "09/10/28 21:28:26 jemarch"
  *
  *       File:         pdf-stm.c
  *       Date:         Fri Jul  6 18:43:15 2007
@@ -143,6 +143,12 @@ pdf_stm_destroy (pdf_stm_t stm)
   pdf_stm_dealloc (stm);
 
   return ret;
+}
+
+enum pdf_stm_mode_e
+pdf_stm_get_mode (pdf_stm_t stm)
+{
+  return stm->mode;
 }
 
 pdf_status_t

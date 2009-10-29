@@ -1,3 +1,17 @@
+2009-10-28  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* gnulib modules updated and unistr/u8-check imported.
+
+	* torture/unit/base/stm/pdf-stm-get-mode.c: Unit tests for
+	pdf_stm_get_mode.
+
+	* doc/gnupdf.texi (Getting and Setting Stream Properties):
+	Documentation for 'pdf_stm_get_mode'.
+
+	* src/base/pdf-stm.c (pdf_stm_get_mode): New function.
+
+	* src/base/pdf-stm.h: New function pdf_stm_get_mode.
+
 2009-10-21  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* utils/pdf-tokeniser.c (print_tok): Avoid a warning due to the
