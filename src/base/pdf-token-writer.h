@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-10-25 02:43:11 mgold"
+/* -*- mode: C -*- Time-stamp: "2009-10-25 18:06:21 mgold"
  *
  *       File:         pdf-token-writer.h
  *       Date:         Wed Sep 23 04:30:26 2009
@@ -58,8 +58,18 @@ struct pdf_token_writer_s {
   int stage;
   pdf_size_t pos;
   pdf_size_t paren_quoting_start, paren_quoting_end;
+  pdf_bool_t utf8;
   pdf_buffer_t buffer;
 };
+
+/* PDF32000 7.5.1: "lines that are not part of stream object data
+ * are limited to no more than 255 characters"... */
+#define PDF_TOKW_MAX_LINE_LENGTH 255
+
+/* The buffer size is mostly arbitrary, except that reserve_buffer_space can't
+ * be called with a length larger that the buffer size.  We never reserve more
+ * than 4 bytes at a time, so any number >= 4 is fine. */
+#define PDF_TOKW_BUFFER_SIZE 32768
 
 #endif
 

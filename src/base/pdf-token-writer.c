@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-10-25 06:56:00 mgold"
+/* -*- mode: C -*- Time-stamp: "2009-10-25 18:06:21 mgold"
  *
  *       File:         pdf-token-writer.c
  *       Date:         Wed Sep 23 04:37:51 2009
@@ -33,6 +33,7 @@
 #include <math.h>
 
 #include <pdf-token-writer.h>
+#include <unistr.h>
 
 pdf_status_t
 pdf_token_writer_new (pdf_stm_t stm, pdf_token_writer_t *writer)
@@ -66,15 +67,19 @@ pdf_token_writer_new (pdf_stm_t stm, pdf_token_writer_t *writer)
     memcpy (new_tokw->decimal_point, &decpt[1], len);
   }
 
-  /* PDF32000 7.5.1: "lines that are not part of stream object data
-   * are limited to no more than 255 characters"... */
-  new_tokw->max_line_length = 255;  /* set to 0 to disable */
+  /* set max_line_length to 0 for no maximum */
+  new_tokw->max_line_length = PDF_TOKW_MAX_LINE_LENGTH;
 
-  new_tokw->buffer = pdf_buffer_new (32768);
+  err = PDF_ENOMEM;
+  new_tokw->buffer = pdf_buffer_new (PDF_TOKW_BUFFER_SIZE);
   if (!new_tokw->buffer)
     goto fail;
 
+  err = PDF_EBADDATA;
+  if (!stm || pdf_stm_get_mode (stm) != PDF_STM_WRITE)
+    goto fail;
   new_tokw->stream = stm;
+
   pdf_token_writer_reset (new_tokw);
 
   *writer = new_tokw;
@@ -236,12 +241,12 @@ write_buffered_char (pdf_token_writer_t writer, pdf_char_t ch)
 /* Takes a number from 0 to 15 and returns the ASCII code for the
  * corresponding hexadecimal digit. */
 static INLINE pdf_char_t
-hexchar (pdf_char_t ch)
+hexchar (pdf_char_t value)
 {
-  if (ch < 10)
-    return 48 + ch;       /* '0'--'9' */
-  else if (ch < 16)
-    return 65 + ch - 10;  /* 'A'--'F' */
+  if (value < 10)
+    return 48 + value;       /* '0'--'9' */
+  else if (value < 16)
+    return 65 + value - 10;  /* 'A'--'F' */
   return 255;
 }
 
@@ -274,7 +279,7 @@ start_token (pdf_token_writer_t writer, pdf_bool_t need_wspace,
 
 /***** Numeric tokens *****/
 
-/* Encode snprintf output for PDF.  'len' is the return value of snprint.
+/* Encode snprintf output for PDF.  'len' is the return value of snprintf.
  * Re-encodes bytes 0 to 'len' of writer->buffer and resets buffer->rp/wp. */
 static pdf_bool_t
 encode_buffer_number (pdf_token_writer_t writer, int len)
@@ -380,7 +385,7 @@ write_real_token (pdf_token_writer_t writer, pdf_token_t token)
 
 static INLINE pdf_bool_t
 should_escape_strchar (pdf_u32_t flags, pdf_char_t ch,
-                       pdf_bool_t quote_parens)
+                       pdf_bool_t quote_parens, pdf_bool_t is_utf8)
 {
   if (ch == 92 /* '\\' */ || ch == 13 /* CR */)
     return PDF_TRUE;
@@ -389,7 +394,8 @@ should_escape_strchar (pdf_u32_t flags, pdf_char_t ch,
 
   if (flags & PDF_TOKEN_READABLE_STRINGS)
     {
-      if (ch == 127 || (ch < 32 && ch != 10))
+      if (ch == 127 || (ch < 32 && ch != 10)
+           || (ch >= 128 && !is_utf8))
         return PDF_TRUE;
     }
 
@@ -452,12 +458,13 @@ scan_string (pdf_token_writer_t writer, pdf_u32_t flags,
     }
 
   /* Determine the size of the escaped string. */
+  writer->utf8 = (u8_check (data, len) == NULL);
   pdf_size_t enc_bytes = 0;
   for (i = 0; i < len; ++i)
     {
       pdf_bool_t quote_parens = (i >= writer->paren_quoting_start
                                   && i < writer->paren_quoting_end);
-      if (should_escape_strchar (flags, data[i], quote_parens))
+      if (should_escape_strchar (flags, data[i], quote_parens, writer->utf8))
         enc_bytes += str_escape_len (data, len, i);
       else
         ++enc_bytes;
@@ -479,7 +486,7 @@ write_string_char (pdf_token_writer_t writer, pdf_u32_t flags,
   pdf_char_t ch = data[pos];
   pdf_bool_t quote_parens = (pos >= writer->paren_quoting_start
                               && pos < writer->paren_quoting_end);
-  if (should_escape_strchar (flags, ch, quote_parens))
+  if (should_escape_strchar (flags, ch, quote_parens, writer->utf8))
     {
       /* escape the character */
       output = esc;
@@ -818,46 +825,53 @@ write_valueless_token (pdf_token_writer_t writer,
 
 /***** Token dispatching *****/
 
-static INLINE pdf_status_t
-write_token_dispatch (pdf_token_writer_t writer, pdf_u32_t flags,
-                      pdf_token_t token)
+pdf_status_t
+pdf_token_write (pdf_token_writer_t writer, pdf_u32_t flags, pdf_token_t token)
 {
+  pdf_status_t rv;
   switch (pdf_token_get_type (token))
     {
       case PDF_TOKEN_INTEGER:
-        return write_integer_token (writer, token);
+        rv = write_integer_token (writer, token);
+        break;
       case PDF_TOKEN_REAL:
-        return write_real_token (writer, token);
+        rv = write_real_token (writer, token);
+        break;
       case PDF_TOKEN_STRING:
-        return write_string_token (writer, flags, token);
+        rv = write_string_token (writer, flags, token);
+        break;
       case PDF_TOKEN_NAME:
-        return write_name_token (writer, flags, token);
+        rv = write_name_token (writer, flags, token);
+        break;
       case PDF_TOKEN_KEYWORD:
-        return write_keyword_token (writer, token);
+        rv = write_keyword_token (writer, token);
+        break;
       case PDF_TOKEN_COMMENT:
-        return write_comment_token (writer, token);
+        rv = write_comment_token (writer, token);
+        break;
       case PDF_TOKEN_DICT_START:
-        return write_valueless_token (writer, 60 /* '<' */, 2);
+        rv = write_valueless_token (writer, 60 /* '<' */, 2);
+        break;
       case PDF_TOKEN_DICT_END:
-        return write_valueless_token (writer, 62 /* '>' */, 2);
+        rv = write_valueless_token (writer, 62 /* '>' */, 2);
+        break;
       case PDF_TOKEN_ARRAY_START:
-        return write_valueless_token (writer, 91 /* '[' */, 1);
+        rv = write_valueless_token (writer, 91 /* '[' */, 1);
+        break;
       case PDF_TOKEN_ARRAY_END:
-        return write_valueless_token (writer, 93 /* ']' */, 1);
+        rv = write_valueless_token (writer, 93 /* ']' */, 1);
+        break;
       case PDF_TOKEN_PROC_START:
-        return write_valueless_token (writer, 123 /* '{' */, 1);
+        rv = write_valueless_token (writer, 123 /* '{' */, 1);
+        break;
       case PDF_TOKEN_PROC_END:
-        return write_valueless_token (writer, 125 /* '}' */, 1);
+        rv = write_valueless_token (writer, 125 /* '}' */, 1);
+        break;
       default:
         assert (0);
         return PDF_ERROR;
     }
-}
 
-pdf_status_t
-pdf_token_write (pdf_token_writer_t writer, pdf_u32_t flags, pdf_token_t token)
-{
-  pdf_status_t rv = write_token_dispatch (writer, flags, token);
   if (rv == PDF_OK)
     {
       pdf_buffer_rewind (writer->buffer);

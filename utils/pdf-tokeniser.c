@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-10-23 06:12:29 mgold"
+/* -*- mode: C -*- Time-stamp: "2009-10-25 18:06:21 mgold"
  *
  *       File:         pdf-tokeniser.c
  *       Date:         Wed May 20 05:25:40 2009
@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <getopt.h>
+#include <errno.h>
 #include <pdf.h>
 
 #include <pdf-tokeniser.h>
@@ -262,6 +263,25 @@ out:
   if (stm_in) pdf_stm_destroy(stm_in);
 }
 
+pdf_u32_t
+parse_u32_arg (const char *argvalue, const char *argname, const char *appname)
+{
+  char *end;
+  pdf_u32_t ret;
+  unsigned long int tmp;
+
+  errno = 0;
+  tmp = strtoul (argvalue, &end, 0);
+  ret = (pdf_u32_t)tmp;
+  if (errno || *end != '\0' || tmp != ret)
+    {
+      fprintf (stderr, "%s: invalid argument `%s' for `--%s'\n",
+               appname, argvalue, argname);
+      exit (2);
+    }
+  return ret;
+}
+
 int
 main (int argc, char **argv)
 {
@@ -305,12 +325,12 @@ main (int argc, char **argv)
           }
         case READER_FLAGS_ARG:
           {
-            reader_flags = atoi(optarg);
+            reader_flags = parse_u32_arg (optarg, "reader-flags", argv[0]);
             break;
           }
         case WRITER_FLAGS_ARG:
           {
-            writer_flags = atoi(optarg);
+            writer_flags = parse_u32_arg (optarg, "writer-flags", argv[0]);
             break;
           }
         default:

@@ -1,3 +1,21 @@
+2009-10-29  Michael Gold  <mgold@ncf.ca>
+
+	* src/base/pdf-token-writer.c: New file.
+
+	* src/base/pdf-token-writer.h: New file.
+
+	* src/Makefile.am: Build the token writer.
+
+	* src/base/pdf-stm.c (pdf_stm_write): Mark 'buf' as const.
+
+	* src/base/pdf-stm.h: Likewise.
+
+	* doc/gnupdf.texi: Update tokeniser documentation.
+
+	* utils/pdf-tokeniser.c: Optionally use the token writer for output.
+
+	* utils/pdf-tokeniser.h: Likewise.
+
 2009-10-28  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* gnulib modules updated and unistr/u8-check imported.

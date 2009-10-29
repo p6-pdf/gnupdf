@@ -4506,7 +4506,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_stm_write (pdf_stm_t @var{stm}, pdf_char_t *@var{buf}, pdf_size_t @var{bytes}, pdf_size_t *@var{written_bytes})
+@deftypefun pdf_status_t pdf_stm_write (pdf_stm_t @var{stm}, const pdf_char_t *@var{buf}, pdf_size_t @var{bytes}, pdf_size_t *@var{written_bytes})
 
 Write a chunk of data into a given stream.
 
@@ -10113,6 +10113,8 @@ A PDF status value:
 @table @code
 @item PDF_OK
 The token reader was destroyed.
+@item PDF_EBADDATA
+@var{reader} was NULL.
 @end table
 @item Usage example
 @example
@@ -10141,6 +10143,8 @@ A PDF status value:
 @table @code
 @item PDF_OK
 The token writer was destroyed.
+@item PDF_EBADDATA
+@var{writer} was NULL.
 @end table
 @item Usage example
 @example
@@ -10273,6 +10277,25 @@ An unspecified error occurred.
 @example
 XXX
 @end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_token_writer_reset (pdf_token_writer_t @var{writer})
+
+Reset the state of the token writer.
+
+@table @strong
+@item Parameters
+@table @var
+@item reader
+A token writer.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The operation succeeded.
+@end table
 @end table
 @end deftypefun
 
