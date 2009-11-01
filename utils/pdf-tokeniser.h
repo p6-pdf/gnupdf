@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/06/24 20:56:43 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-10-25 18:06:21 mgold"
  *
  *       File:         pdf-tokeniser.h
  *       Date:         Wed Jun 24 20:54:49 2009
@@ -35,7 +35,10 @@ enum
 {
   HELP_ARG,
   USAGE_ARG,
-  VERSION_ARG
+  VERSION_ARG,
+  TOKW_ARG,
+  READER_FLAGS_ARG,
+  WRITER_FLAGS_ARG
 };
 
 #endif /* pdf-tokeniser.h */

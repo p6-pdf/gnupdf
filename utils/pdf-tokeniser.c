@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/10/21 14:57:10 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/11/01 22:58:08 jemarch"
  *
  *       File:         pdf-tokeniser.c
  *       Date:         Wed May 20 05:25:40 2009
@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <getopt.h>
+#include <errno.h>
 #include <pdf.h>
 
 #include <pdf-tokeniser.h>
@@ -43,6 +44,9 @@ static const struct option GNU_longOptions[] =
     {"help", no_argument, NULL, HELP_ARG},
     {"usage", no_argument, NULL, USAGE_ARG},
     {"version", no_argument, NULL, VERSION_ARG},
+    {"token-writer", no_argument, NULL, TOKW_ARG},
+    {"reader-flags", required_argument, NULL, READER_FLAGS_ARG},
+    {"writer-flags", required_argument, NULL, WRITER_FLAGS_ARG},
     {NULL, 0, NULL, 0}
   };
 
@@ -59,6 +63,9 @@ available options\n\
   --help                              print a help message and exit\n\
   --usage                             print a usage message and exit\n\
   --version                           show pdf-tokeniser version and exit\n\
+  --token-writer                      generate output using the token writer\n\
+  --reader-flags=INTEGER              specify token reader flags\n\
+  --writer-flags=INTEGER              specify token writer flags\n\
 ";
 
 char *pdf_tokeniser_help_msg = "";
@@ -178,35 +185,67 @@ print_tok (pdf_token_t token)
   printf("%s(%s)\n", typ, str);
   if (str != tmpbuf)
     {
-      free((char *) str);
+      free(str);
     }
 };
 
 void
-print_file (FILE *file)
+print_file (FILE *file, pdf_bool_t use_tokw,
+            pdf_u32_t reader_flags, pdf_u32_t writer_flags)
 {
   pdf_status_t rv;
   pdf_token_reader_t reader = NULL;
+  pdf_token_writer_t writer = NULL;
   pdf_token_t token;
-  pdf_stm_t stm = NULL;
+  pdf_stm_t stm_in = NULL;
+  pdf_stm_t stm_out = NULL;
 
-  rv = pdf_stm_cfile_new (file, 0, 0 /*cache_size*/, PDF_STM_READ, &stm);
+  rv = pdf_stm_cfile_new (file, 0, 0 /*cache_size*/, PDF_STM_READ, &stm_in);
   if (rv != PDF_OK)
     {
-      fprintf(stderr, "failed to create stream\n");
+      fprintf(stderr, "failed to create input stream\n");
       goto out;
     }
 
-  rv = pdf_token_reader_new(stm, &reader);
+  rv = pdf_token_reader_new(stm_in, &reader);
   if (rv != PDF_OK)
     {
       fprintf(stderr, "failed to create reader\n");
       goto out;
     }
 
-  while (( rv = pdf_token_read(reader, 0, &token) ) == PDF_OK)
+  if (use_tokw)
     {
-      print_tok(token);
+      rv = pdf_stm_cfile_new (stdout, 0, 0 /*cache_size*/,
+                              PDF_STM_WRITE, &stm_out);
+      if (rv != PDF_OK)
+        {
+          fprintf(stderr, "failed to create output stream\n");
+          goto out;
+        }
+
+      rv = pdf_token_writer_new(stm_out, &writer);
+      if (rv != PDF_OK)
+        {
+          fprintf(stderr, "failed to create writer\n");
+          goto out;
+        }
+    }
+
+  while (( rv = pdf_token_read(reader, reader_flags, &token) ) == PDF_OK)
+    {
+      if (use_tokw)
+        {
+          rv = pdf_token_write(writer, writer_flags, token);
+          if (rv != PDF_OK)
+            {
+              fprintf(stderr, "pdf_token_write error %d\n", rv);
+              goto out;
+            }
+        }
+      else
+        print_tok(token);
+
       pdf_token_destroy(token);
     }
 
@@ -218,14 +257,37 @@ print_file (FILE *file)
 
   fprintf(stderr, "done\n");
 out:
+  if (writer) pdf_token_writer_destroy(writer);
+  if (stm_out) pdf_stm_destroy(stm_out);
   if (reader) pdf_token_reader_destroy(reader);
-  if (stm) pdf_stm_destroy(stm);
+  if (stm_in) pdf_stm_destroy(stm_in);
+}
+
+pdf_u32_t
+parse_u32_arg (const char *argvalue, const char *argname, const char *appname)
+{
+  char *end;
+  pdf_u32_t ret;
+  unsigned long int tmp;
+
+  errno = 0;
+  tmp = strtoul (argvalue, &end, 0);
+  ret = (pdf_u32_t)tmp;
+  if (errno || *end != '\0' || tmp != ret)
+    {
+      fprintf (stderr, "%s: invalid argument `%s' for `--%s'\n",
+               appname, argvalue, argname);
+      exit (1);
+    }
+  return ret;
 }
 
 int
 main (int argc, char **argv)
 {
   char c;
+  pdf_bool_t use_tokw = PDF_FALSE;
+  pdf_u32_t reader_flags = 0, writer_flags = 0;
 
   /*  set_program_name (argv[0]); */
 
@@ -256,6 +318,21 @@ main (int argc, char **argv)
             exit (0);
             break;
           }
+        case TOKW_ARG:
+          {
+            use_tokw = 1;
+            break;
+          }
+        case READER_FLAGS_ARG:
+          {
+            reader_flags = parse_u32_arg (optarg, "reader-flags", argv[0]);
+            break;
+          }
+        case WRITER_FLAGS_ARG:
+          {
+            writer_flags = parse_u32_arg (optarg, "writer-flags", argv[0]);
+            break;
+          }
         default:
           {
             break;
@@ -264,6 +341,6 @@ main (int argc, char **argv)
     }
 
   setlocale(LC_ALL, "");
-  print_file(stdin);
+  print_file(stdin, use_tokw, reader_flags, writer_flags);
   return 0;
 }

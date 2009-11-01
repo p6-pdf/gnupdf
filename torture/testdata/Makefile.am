@@ -18,7 +18,7 @@
 
 check-local:
 mg-disabled:
-	@CHMOD@ a-r $(srcdir)/TD00004
-	@CHMOD@ a-w $(srcdir)/TD00005
+	$(CHMOD) a-r $(srcdir)/TD00004
+	$(CHMOD) a-w $(srcdir)/TD00005
 
 # End of Makefile.am

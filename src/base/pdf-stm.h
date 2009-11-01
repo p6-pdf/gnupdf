@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/10/28 21:26:53 jemarch"
+/* -*- mode: C -*- Time-stamp: "2009-10-29 03:45:34 mgold"
  *
  *       File:         pdf-stm.h
  *       Date:         Fri Jul  6 18:37:57 2007
@@ -111,7 +111,7 @@ pdf_status_t pdf_stm_read (pdf_stm_t stm,
                            pdf_size_t bytes,
                            pdf_size_t *read_bytes);
 pdf_status_t pdf_stm_write (pdf_stm_t stm,
-                            pdf_char_t *buf,
+                            const pdf_char_t *buf,
                             pdf_size_t bytes,
                             pdf_size_t *written_bytes);
 pdf_status_t pdf_stm_read_char (pdf_stm_t stm, pdf_char_t *c);

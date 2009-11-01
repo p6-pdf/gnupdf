@@ -84,7 +84,8 @@ FP_MODULE_SOURCES = base/pdf-fp.h base/pdf-fp.c \
                     base/pdf-fp-func.h base/pdf-fp-func.c
 
 TOKEN_MODULE_SOURCES = base/pdf-token.c base/pdf-token.h \
-                       base/pdf-token-reader.c base/pdf-token-reader.h
+                       base/pdf-token-reader.c base/pdf-token-reader.h \
+                       base/pdf-token-writer.c base/pdf-token-writer.h
 
 BASE_LAYER_SOURCES = base/pdf-base.c base/pdf-base.h \
                      $(ALLOC_MODULE_SOURCES) \
@@ -143,7 +144,8 @@ PUBLIC_HDRS = pdf-global.h \
               base/pdf-crypt.h \
               base/pdf-fp-func.h \
               base/pdf-token.h \
-              base/pdf-token-reader.h
+              base/pdf-token-reader.h \
+              base/pdf-token-writer.h
 
 pdf.h : $(PUBLIC_HDRS)
 	chmod +x $(top_builddir)/src/extract-public-hdr
