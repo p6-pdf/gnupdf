@@ -17,7 +17,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 check-local:
-mg-disabled:
 	$(CHMOD) a-r $(srcdir)/TD00004
 	$(CHMOD) a-w $(srcdir)/TD00005
 

@@ -1,3 +1,15 @@
+2009-11-03  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/testdata/Makefile.am (check-local): Enable check-local
+	again.
+
+2009-11-03  Yang Chang hua <yangchanghua@gmail.com>
+
+	* doc/gnupdf-arch.texi: Add finite state machine implemented by 'pdf_stm_f_dctdec_apply'.
+	* doc/figures/dctdec-nfa.fig: New file.
+	* doc/figures/dctdec-nfa.jpg: New file.
+	* doc/figures/dctdec-nfa.png: New file.
+
 2009-11-01  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* torture/testdata/Makefile.am (mg-disabled): Use $(...) instead

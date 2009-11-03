@@ -355,6 +355,7 @@ different filters to read or write its contents.
 * Stream buffers::              
 * Stream backends::             
 * Stream filters::              
+* DCT filter::              
 * Structure of a reading stream::  
 * Structure of a writing stream::  
 @end menu
@@ -744,6 +745,18 @@ A void pointer variable to the state allocated in the initialization
 function.
 @end table
 @end table
+
+@node DCT filter
+@subsection DCT filter
+
+The DCTDecode filter decodes grayscale or colour image data that has been encoded in the JPEG baseline
+format.
+
+@float Figure,fig:dctdec-nfa
+@image{figures/dctdec-nfa}
+@caption{Finite state machine implemented by DTC decode filter 'pdf_stm_f_dctdec_apply'}
+@end float
+
 
 @node Structure of a reading stream
 @subsection Structure of a reading stream
