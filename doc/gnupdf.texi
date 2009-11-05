@@ -11846,10 +11846,10 @@ if (pdf_obj_doc_get_obj (doc, 5, &catalog_dir)
 A garbage collector is provided by the library to remove non-reachable
 objects from an object document.
 
-A @dfn{non-reachable object} is any indirect object that cannot be
+A @dfn{non-reachable object} is an indirect object that cannot be
 reached starting from the root dictionary of the object document. A
-special case is the Document Information Dictionary.  It is never
-collected even if it is not reachable.
+special case is the Document Information Dictionary.  If it is present
+it is never collected even if it is not reachable.
 
 The algorithm implemented by the collector is:
 
@@ -12509,10 +12509,10 @@ never destroys unmarked objects with an acquire counter of 1 or more.
 
 @deftypefun pdf_status_t pdf_obj_acquire (pdf_obj_t @var{obj})
 
-Create a strong reference for @var{obj} in its container document.
+Create a strong reference for @var{obj} in its container document by
+incrementing its acquire counter by one.
 
-If @var{obj} is not an indirect object nor a non-scalar direct object
-then this operation is a nop.
+For direct scalars this operation is a nop.
 
 @table @strong
 @item Parameters
@@ -12542,7 +12542,8 @@ pdf_obj_acquire (obj);
 
 @deftypefun pdf_status_t pdf_obj_release (pdf_obj_t @var{obj})
 
-Remove a strong reference from the PDF object @var{obj}.
+Remove a strong reference from the PDF object @var{obj} by decreasing
+its acquire counter by one.
 
 For direct scalars this operation is a nop.
 
@@ -12665,6 +12666,12 @@ pdf_obj_set_compressibility (obj, PDF_FALSE);
 
 @node Object Collections
 @subsection Object Collections
+
+Sometimes a group of objects are related in a way they acquire
+``locality'', meaning that if one of those objects is read it is very
+likely that the other objects will be also read.  An example is the
+collection of objects containing the contents of a page: you need to
+read them all to render the page.
 
 It is possible to pack several PDF objects in a compressed stream in
 the object document on disk.  An @dfn{object collection} can be

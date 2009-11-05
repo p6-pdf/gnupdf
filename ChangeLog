@@ -1,3 +1,8 @@
+2009-11-05  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Object Collections): Completed with more
+	information about what the object collections are useful for.
+
 2009-11-03  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* torture/testdata/Makefile.am (check-local): Enable check-local
