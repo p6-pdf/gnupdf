@@ -1,6 +1,11 @@
 -*- mode: text -*-
 
 NOTE: if you have obtained this source tree from the CVS repository
-then you are using an obsolete version. Please get the appropriate
-branch from http://bzr.savannah.gnu.org/r/pdf/libgnupdf/branches/trunk
+then you are using an obsolete version.
 
+Please get the head of the development of the GNU PDF Library by
+launching the following command:
+
+$ bzr branch http://bzr.savannah.gnu.org/r/pdf/libgnupdf/branches/trunk
+
+End of README.cvs
