@@ -1,0 +1,15 @@
+libgnupdf depends on some third party software to do its work.  The
+following dependencies are mandatory: the library won't compile
+without them:
+
+The following dependencies are optional.  Note that you can compile
+the libgnupdf library without satisfying these dependencies, but the
+resulting library may not be useful enough for you.
+
+   zlib (optional)
+   texi2html (optional)
+   graphviz (optional)
+   taskjuggler (optional)
+   libgcrypt >= 1.2.4 (required)
+
+End of DEPENDENCIES.

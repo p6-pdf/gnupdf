@@ -1,25 +1,20 @@
 -*- mode: text -*-
 
-You should perform the following steps in order to build the
-Bazaar version of the GNU PDF library:
+Please perform the following steps in order to build the bazaar
+version of the GNU PDF library:
 
-1- Check dependencies
+1- Dependency checking
 
-   The building system requires the following software to be 
-   installed:
+   Some building utilities are needed to build the bazaar version of
+   this package:
 
    automake 1.9
    autoconf >=2.60
    libtool 1.5
    awk
 
-   Additionally you may need to install some software:
-   
-   zlib (optional)
-   texi2html (optional)
-   graphviz (optional)
-   taskjuggler (optional)
-   libgcrypt >= 1.2.4 (required)
+   Check the DEPENDENCIES file in this distribution for additional run
+   time dependencies.
 
 2- Regenerate the configure script:
 
