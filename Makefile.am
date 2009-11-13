@@ -19,5 +19,8 @@
 ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = lib build-aux src utils torture doc prmgt
 
+version:
+	@echo "Name: libgnupdf"
+	@echo "Version: 1.0"
 
 # End of Makefile.am

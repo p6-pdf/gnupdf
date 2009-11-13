@@ -1,5 +1,9 @@
 2009-11-13  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* Makefile.am: Target 'version' introduced.
+
+	* DEPENDENCIES: New file.
+
 	* README.cvs: Clarify text.  Concrete branch command added.
 
 2009-11-05  Jose E. Marchesi  <jemarch@gnu.org>
