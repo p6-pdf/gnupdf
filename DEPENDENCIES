@@ -1,11 +1,11 @@
-# -*- mode: rec -*-
-#
-# libgnupdf depends on some third party software to do its work.
-# 
-# Some of the dependencies are mandatory: the library won't compile
-# without them. Some others are optional.  Note that you can compile
-# the libgnupdf library without satisfying these dependencies, but the
-# resulting library may not be useful enough for you.
+-*- mode: rec -*-
+
+libgnupdf depends on some third party software to do its work.
+ 
+Some of the dependencies are mandatory: the library won't compile
+without them. Some others are optional.  Note that you can compile the
+libgnupdf library without satisfying these dependencies, but the
+resulting library may not be useful enough for you.
 
 Name: zlib
 Mandatory: no
@@ -20,4 +20,4 @@ Name: libgcrypt
 Version: >= 1.2.4
 Mandatory: no
 
-# End of DEPENDENCIES.
+End of DEPENDENCIES.
