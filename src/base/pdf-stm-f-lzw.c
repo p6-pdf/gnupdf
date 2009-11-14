@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 22:52:36 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/11/14 20:14:39 jemarch"
  *
  *       File:         pdf-stm-f-lzw.c
  *       Date:         Wed Aug 15 14:41:18 2007
@@ -33,7 +33,7 @@
 
 #define LZW_DEFAULT_EARLY_CHANGE  1
 
-#define LZW_CACHE_SIZE    16
+#define LZW_CACHE_SIZE    (sizeof (lzw_code_t) << 3)
 #define LZW_MIN_BITSIZE   9
 #define LZW_MAX_BITSIZE   12
 #define LZW_MAX_DICTSIZE  (1 << LZW_MAX_BITSIZE)
@@ -46,8 +46,10 @@ enum lzw_special_codes_e
     LZW_FIRST_CODE
   };
 
-/* -- LZW code output/input -- */
+typedef unsigned lzw_code_t;
+#define LZW_CODE_SIZE (sizeof (lzw_code_t) << 3)
 
+/* -- LZW code output/input -- */
 /*
  * Object to read and write codes of variable bitsize in a buffer.
  * Warning: using both get and put functions may break the buffer.
@@ -56,12 +58,12 @@ struct lzw_buffer_s
 {
   pdf_buffer_t buf;
   pdf_char_t cache [LZW_CACHE_SIZE];
-  int cache_rp;
-  int cache_wp;
-  unsigned long valbuf;
-  int valbits;
+  pdf_size_t cache_rp;
+  pdf_size_t cache_wp;
+  lzw_code_t valbuf;
+  lzw_code_t maxval;
   int bitsize;
-  int maxval;
+  int valbits;
 };
 typedef struct lzw_buffer_s* lzw_buffer_t;
 
@@ -87,12 +89,12 @@ lzw_buffer_set (lzw_buffer_t b,
 
 static pdf_status_t
 lzw_buffer_get_code (lzw_buffer_t b,
-		     unsigned int* code,
+		     lzw_code_t* code,
 		     pdf_bool_t finish_p)
 {
-  unsigned long r;
+  lzw_code_t r;
 
-  while (b->valbits <= 24 && !finish_p)
+  while (b->valbits <= LZW_CODE_SIZE - 8 && !finish_p)
     {
       if (pdf_buffer_eob_p (b->buf))
 	{
@@ -101,8 +103,8 @@ lzw_buffer_get_code (lzw_buffer_t b,
       else
 	{
 	  b->valbuf |=
-	    (unsigned int) b->buf->data [b->buf->rp++] <<
-	    (24 - b->valbits);
+	    (lzw_code_t) b->buf->data [b->buf->rp++] 
+	    << (LZW_CODE_SIZE - 8 - b->valbits);
 	
 	  b->valbits += 8;
 	}
@@ -113,10 +115,10 @@ lzw_buffer_get_code (lzw_buffer_t b,
       return PDF_EEOF;
     }
 
-  r = b->valbuf >> (32 - b->bitsize);
+  r = b->valbuf >> (LZW_CODE_SIZE - b->bitsize);
   b->valbuf <<= b->bitsize;
   b->valbits -= b->bitsize;
-      
+  
   *code = r;
 
   return PDF_OK;
@@ -125,20 +127,22 @@ lzw_buffer_get_code (lzw_buffer_t b,
 /* Once finished, call with 0 as code value to flush the buffer. */
 static void
 lzw_buffer_put_code (lzw_buffer_t b,
-		     unsigned int code)
+		     lzw_code_t code)
 {
-  b->valbuf |= (unsigned long) code << (32 - b->bitsize - b->valbits);
+  b->valbuf |= (lzw_code_t) code << (LZW_CODE_SIZE - b->bitsize - b->valbits);
   b->valbits += b->bitsize;
 
   while (b->valbits >= 8)
     {
       if (pdf_buffer_full_p (b->buf))
 	{
-	  b->cache [b->cache_wp++] = (pdf_char_t) (b->valbuf >> 24);
+	  b->cache [b->cache_wp++] = 
+	    (pdf_char_t) (b->valbuf >> (LZW_CODE_SIZE - 8));
 	}
       else
 	{
-	  b->buf->data [b->buf->wp++] = (pdf_char_t) (b->valbuf >> 24);
+	  b->buf->data [b->buf->wp++] = 
+	    (pdf_char_t) (b->valbuf >> (LZW_CODE_SIZE - 8));
 	}
       b->valbuf <<= 8;
       b->valbits -= 8;
@@ -165,7 +169,7 @@ lzw_buffer_flush (lzw_buffer_t b)
   return PDF_OK;
 }
 
-static int
+static pdf_status_t
 lzw_buffer_inc_bitsize (lzw_buffer_t b)
 {
   if (b->bitsize == LZW_MAX_BITSIZE)
@@ -194,12 +198,12 @@ lzw_buffer_set_bitsize (lzw_buffer_t b,
  */
 struct lzw_string_s
 {
-  unsigned prefix;   /* Prefix string code */
+  lzw_code_t prefix;   /* Prefix string code */
   pdf_char_t suffix; /* Appended character */
 
-  unsigned first; /* First string with the same prefix.  */
-  unsigned left;  /* Next string with smaller suffix and same prefix. */
-  unsigned right; /* Next string with greater suffix and same prefix. */
+  lzw_code_t first; /* First string with the same prefix.  */
+  lzw_code_t left;  /* Next string with smaller suffix and same prefix. */
+  lzw_code_t right; /* Next string with greater suffix and same prefix. */
 };
 
 typedef struct lzw_string_s* lzw_string_t;
@@ -213,7 +217,7 @@ lzw_string_init (lzw_string_t s)
 struct lzw_dict_s
 {
   struct lzw_string_s table [LZW_MAX_DICTSIZE];
-  unsigned size;
+  pdf_size_t size;
 };
 typedef struct lzw_dict_s* lzw_dict_t;
 
@@ -238,8 +242,8 @@ static pdf_bool_t
 lzw_dict_add (lzw_dict_t d,
 	      lzw_string_t s)
 {
-  unsigned index;
-  int must_add;
+  lzw_code_t index;
+  pdf_bool_t must_add;
   
   if (s->prefix == LZW_NULL_INDEX)
     {
@@ -303,7 +307,7 @@ lzw_dict_reset (lzw_dict_t dict)
 
 static void
 lzw_dict_fast_add (lzw_dict_t d,
-		   unsigned prefix,
+		   lzw_code_t prefix,
 		   pdf_char_t suffix)
 {
   d->table[d->size].prefix = prefix;
@@ -313,9 +317,9 @@ lzw_dict_fast_add (lzw_dict_t d,
 
 static void
 lzw_dict_decode (lzw_dict_t d,
-		 unsigned code,
+		 lzw_code_t code,
 		 pdf_char_t** decode,
-		 unsigned* size)
+		 pdf_size_t* size)
 {
   *size = 0;
 
@@ -494,10 +498,10 @@ struct lzwdec_state_s
   /* state */
   pdf_char_t  dec_buf [LZW_MAX_DICTSIZE];
   pdf_char_t* decoded;
-  unsigned    dec_size;
+  pdf_size_t  dec_size;
   
-  unsigned new_code;
-  unsigned old_code;
+  lzw_code_t new_code;
+  lzw_code_t old_code;
 
   /* flow managment */
   enum lzwdec_state state_pos;

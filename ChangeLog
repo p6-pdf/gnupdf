@@ -1,3 +1,14 @@
+2009-11-14  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-stm-f-lzw.c (LZW_CACHE_SIZE): The value of this
+	constant is now the number of bits of the word.
+
+2009-11-14  Juan Pedro Bolivar  <raskolnikov@nexus8>
+
+	* src/base/pdf-stm-f-lzw.c: Added lzw_code_t type and parametrized
+	all code bit operations on sizeof (lzw_code_t) to achieve full
+	portability.
+
 2009-11-13  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* Makefile.am: Target 'version' introduced.
