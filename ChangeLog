@@ -1,3 +1,9 @@
+2009-11-14    <raskolnikov@nexus8>
+
+	* src/base/pdf-stm-f-lzw.c: Added lzw_code_t type and parametrized
+	all code bit operations on sizeof (lzw_code_t) to achieve full
+	portability.
+
 2009-11-13  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* README.cvs: Clarify text.  Concrete branch command added.
