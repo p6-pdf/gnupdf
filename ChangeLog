@@ -1,5 +1,14 @@
 2009-11-15  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* torture/unit/Makefile.am: Run runtests.sh instead of runtests
+	upon make check.
+
+	* torture/testdata/Makefile.am: Modification of permissions of
+	TD00004 and TD00005 are no longer made in this file, but in
+	runtests.sh.
+
+	* torture/unit/runtests.sh: New file.
+
 	* src/base/pdf-fsys-disk.c: Clarify the conditional compilation
 	cpp directives.
 

@@ -1,8 +1,7 @@
-# Torture directory Makefile.am
-# GNU PDF Library
+#!/bin/sh
 
 # Copyright (C) 2009 Free Software Foundation, Inc.
-
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -16,4 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# End of Makefile.am
+# Prologue
+chmod a-r ${top_srcdir}/torture/testdata/TD00004
+chmod a-w ${top_srcdir}/torture/testdata/TD00005
+
+# Run the test suite
+${srcdir}/runtests
+
+# Epilog
+chmod 644 ${top_srcdir}/torture/testdata/TD00004
+chmod 644 ${top_srcdir}/torture/testdata/TD00005
+
+# End of runtests.sh

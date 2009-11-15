@@ -16,9 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
-
-
 #Only generate unit tests if Check framework is available or No-Check utility
 # is requested...
 if COMPILE_UT
@@ -56,7 +53,8 @@ AM_CPPFLAGS = -I$(top_srcdir)/lib \
               $(NOCHECK_CPPFLAGS)
 AM_CFLAGS = -g
 
-TESTS = runtests
+TESTS = runtests.sh
+TESTS_ENVIRONMENT = top_srcdir=$(top_srcdir)
 
 TEST_SUITE_ERROR = base/error/pdf-error.c \
 		   base/error/pdf-perror.c
