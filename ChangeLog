@@ -1,3 +1,7 @@
+2009-11-15  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/unit/base/fsys/pdf-fsys-file-open.c: Doc improved.
+
 2009-11-14  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-stm-f-lzw.c (LZW_CACHE_SIZE): The value of this

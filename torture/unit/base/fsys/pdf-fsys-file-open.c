@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/15 22:50:11 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/11/14 23:07:34 jemarch"
  *
  *       File:         pdf-fsys-file-open.c
  *       Date:         Sat May  2 00:02:09 2009
@@ -134,7 +134,7 @@ END_TEST
 /*
  * Test: pdf_fsys_file_open_004
  * Description:
- *   Open an existing and writeable file for writing
+ *   Open an existing non readable but writeable file for writing
  * Success condition:
  *   The call to pdf_fsys_file_open should return PDF_OK
  */
