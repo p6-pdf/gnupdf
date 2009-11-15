@@ -3,13 +3,16 @@
 The root directory of the distribution contains the following files.
 
 ; '''AUTHORS'''
-: This file contains the names of the people that have contributed to the development of the library writing code or documentation. It is a detailed list, since we want to maintain precise information due to copyright issues.
+: This file contains the names of the people that have contributed to the development of the library writing code or documentation.
 
 ; '''COPYING'''
-: A copy of the ''GNU General Public License version 3''. This is the license governing the distribution of the library.
+: A copy of the ''GNU General Public License version 3''.
 
 ; '''ChangeLog'''
 : A detailed record of the changes made to the library.
+
+; '''DEPENDENCIES'''
+: List of the third party packages needed to build and run libgnupdf.
 
 ; '''GNUmakefile'''
 : A generic top-level makefile from gnulib.
@@ -37,6 +40,9 @@ The root directory of the distribution contains the following files.
 
 ; '''bootstrap'''
 : Bootstrap script (wrapper for ''autoreconf'') used to regenerate the libtool and autoconf files. Written by Karl Berry.
+
+; '''cfg.mk'''
+: Configuration for some of the facilities implemented by maint.mk
 
 ; '''configure.ac'''
 : Autoconf file for the library. It is used by autoconf to generate the ''configure'' script.
