@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/08 23:04:51 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/11/15 12:28:51 jemarch"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -29,17 +29,19 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
-#ifndef PDF_HOST_WIN32
- #ifndef PDF_HOST_BSD
-  #include <sys/statfs.h>
- #else
-  #include <sys/param.h>
-  #include <sys/mount.h>
- #endif
+
+#if defined(PDF_HOST_WIN32) || defined(PDF_HOST_BSD)
+#   include <sys/param.h>
+#   include <sys/mount.h>
 #else
-#include <windows.h>
-#include <wchar.h>
+#   include <sys/statfs.h>
+#endif /* PDF_HOST_WIN32 | PDF_HOST_BSD */
+
+#if defined(PDF_HOST_WIN32)
+#   include <windows.h>
+#   include <wchar.h>
 #endif /* !PDF_HOST_WIN32 */
+
 #include <dirent.h>
 #include <unistd.h>
 
