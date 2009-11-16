@@ -1,3 +1,9 @@
+2009-11-16  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* prmgt/fly2rec: New file.
+
+	* prmgt/fly2org: Strip carriage return characters.
+
 2009-11-15  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* MANIFEST.wiki: Updated.

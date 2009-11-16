@@ -1,6 +1,6 @@
 #!/usr/bin/tclsh
 
-# fly2org - flyspray tasks to org-mode
+# fly2rec - flyspray tasks to org-mode
 
 # Copyright (C) 2008 Free Software Foundation, Inc.
 
@@ -61,7 +61,7 @@ proc format_date {number} {
 
 proc text_lines {text} {
 
-    return [string map {\r {}} $text]
+    return [string map {\n \n+ \r {}} $text]
 }
 
 proc get_task_list {} {
@@ -79,7 +79,8 @@ proc get_task_list {} {
             resolution_reason,
             opened_by,
             percent_complete,
-            closed_by
+            closed_by,
+            task_id
      from
        flyspray_tasks inner join flyspray_users
        on flyspray_tasks.opened_by = flyspray_users.user_id
@@ -91,6 +92,12 @@ proc get_task_list {} {
              flyspray_projects.project_title like '$project';"
 
     return [::mysql::sel $db $sql -list]
+}
+
+proc get_task_id {task} {
+
+   return [lindex $task 10]
+
 }
 
 proc get_task_summary {task} {
@@ -207,8 +214,8 @@ proc generate_project {project_name} {
     global project
 
     set project $project_name
-    
-    puts "* $project"
+    puts "# $project"
+    puts ""
     foreach task [get_task_list] {
 
         set task_opened_by_name [get_task_opened_by $task]
@@ -222,17 +229,17 @@ proc generate_project {project_name} {
             set task_item_status_name [get_task_status $task]
         }
 
-        puts "** $task_item_status_name [get_task_summary $task]"
-        puts "   \[[get_task_date_opened $task]\]"
-        puts "   :PROPERTIES:"
-        puts "   :OpenedBy: $task_opened_by_name"
+        puts "Id: [get_task_id $task]"
+        puts "Summary: [get_task_summary $task]"
+        puts "Status: $task_item_status_name"
+        puts "Date: [get_task_date_opened $task]"
+        puts "Hacker:Name:OpenedBy: $task_opened_by_name"
         if {$task_closed_by != ""} then {
-            puts "   :ClosedBy: $task_closed_by"
+            puts "Hacker:Name:ClosedBy: $task_closed_by"
         }  
-        puts "   :PercentComplete: [get_task_percent_complete $task]"
-        puts "   :END:"
-        puts ""
-        puts [text_lines [get_task_detailed_desc $task]]
+        puts "PercentComplete: [get_task_percent_complete $task]"
+        puts "Description: [text_lines [get_task_detailed_desc $task]]"
+	puts ""
     }
 }
 
@@ -247,27 +254,21 @@ proc generate_prolog {} {
 
     global title
 
-    puts "-*- mode: org; fill-column: 78 -*-"
+    puts "# -*- mode: rec -*-"
+    puts "#"
+    puts "# $title"
+    puts "# Generated at [clock format [clock seconds]] by fly2rec"
     puts ""
-    puts $title
-    puts "Generated at [clock format [clock seconds]] by fly2org"
+
+    puts "%rec: Task"
+    puts "%key: Id"
+    puts "%doc:"
+    puts "+ Flyspray task."
     puts ""
 }
 
 proc generate_epilog {} {
-
-    puts "* Epilog"
-    # Write down the categories
-    puts ""
-    puts -nonewline "#+SEQ_TODO: "
-    foreach status_name [get_status_names] {
-        puts -nonewline "[lindex $status_name 0] "
-    }
-    puts -nonewline "| "
-    foreach resolution_reason [get_resolution_names] {
-        puts -nonewline "[lindex $resolution_reason 0] "
-    }
-    puts ""
+    puts "# End of file"
 }
 
 proc main {} {
@@ -288,4 +289,4 @@ proc main {} {
 # Call the main procedure
 main
 
-# End of fly2org
+# End of fly2rec
