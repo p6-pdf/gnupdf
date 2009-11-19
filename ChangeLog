@@ -1,5 +1,9 @@
 2009-11-19  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf.texi: Documentation for stream objects fixed.
+	Usage examples of 'pdf_text_new_from_unicode' fixed to use the
+	right type for the returned value.
+
 	* src/base/pdf-error.c: Use `pdf_library_name' instead of
 	`program_name'.
 

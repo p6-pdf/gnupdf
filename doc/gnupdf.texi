@@ -8573,9 +8573,12 @@ The client does not have enough permissions to read the requested item.
 @item Usage example
 @example
 struct pdf_fsys_item_props_s item_props;
-pdf_text_t path = pdf_text_new_from_unicode ("/path/to/foo",
-                                             12, PDF_TEXT_UTF8,
-                                             &text);
+pdf_status_t ret;
+pdf_text_t path;
+
+ret =  pdf_text_new_from_unicode ("/path/to/foo",
+                                  12, PDF_TEXT_UTF8,
+                                  &path);
 /* Get the properties for the item */
 pdf_status_t ret = pdf_fsys_get_item_props (NULL, path, &item_props);
 @end example
@@ -8664,9 +8667,12 @@ have enough permissions to be able to read it.
 @item Usage example
 @example
 pdf_bool_t ret;
-pdf_text_t path = pdf_text_new_from_unicode ("/path/to/foo",
-                                             12, PDF_TEXT_UTF8,
-                                             &text);
+pdf_status_t status;
+pdf_text_t path;
+
+status = pdf_text_new_from_unicode ("/path/to/foo",
+                                    12, PDF_TEXT_UTF8,
+                                    &path);
 /* Test whether the path to /path/to/foo is a valid path to foo */
 pdf_bool_t ret = pdf_fsys_item_p (NULL, path);
 @end example
@@ -8696,9 +8702,12 @@ The filesystem item is not readable.
 @end table
 @item Usage example
 @example
-pdf_text_t path = pdf_text_new_from_unicode ("/path/to/foo",
-                                             12, PDF_TEXT_UTF8,
-                                             &text);
+pdf_status_t status;
+pdf_text_t path;
+
+status = pdf_text_new_from_unicode ("/path/to/foo",
+                                    12, PDF_TEXT_UTF8,
+                                    &path);
 /* Determine if the item is readable */
 pdf_bool_t ret = pdf_fsys_item_readable_p (NULL, path);
 @end example
@@ -8728,9 +8737,12 @@ The filesystem item is not writable.
 @end table
 @item Usage example
 @example
-pdf_text_t path = pdf_text_new_from_unicode ("/path/to/foo",
-                                             12, PDF_TEXT_UTF8,
-                                             &text);
+pdf_status_t status;
+pdf_text_t path;
+
+status = pdf_text_new_from_unicode ("/path/to/foo",
+                                    12, PDF_TEXT_UTF8,
+                                    &path);
 /* Determine if the item is writable */
 pdf_bool_t ret = pdf_fsys_item_writable_p (NULL, path);
 @end example
@@ -8942,9 +8954,12 @@ A mode value if successful, otherwise returns -1.
 @example
 pdf_status_t ret;
 pdf_fsys_file_t file = pdf_alloc(sizeof(pdf_fsys_file_s));
-pdf_text_t path = pdf_text_new_from_unicode ("/path/to/foo",
-                                             12, PDF_TEXT_UTF8,
-                                             &text);
+pdf_status_t status;
+pdf_text_t path;
+
+status = pdf_text_new_from_unicode ("/path/to/foo",
+                                    12, PDF_TEXT_UTF8,
+                                    &path);
 ret = pdf_fsys_open (path, PDF_FSYS_OPEN_MODE_READ, file);
 
 enum pdf_fsys_file_mode_e mode;
@@ -9006,9 +9021,12 @@ General failure, most applicable to Win32.
 @example
 pdf_status_t ret;
 pdf_fsys_file_t file = pdf_alloc(sizeof(pdf_fsys_file_s));
-pdf_text_t path = pdf_text_new_from_unicode ("/path/to/foo",
-                                             12, PDF_TEXT_UTF8,
-                                             &text);
+pdf_status_t status;
+pdf_text_t path;
+
+status = pdf_text_new_from_unicode ("/path/to/foo",
+                                    12, PDF_TEXT_UTF8,
+                                    &path);
 ret = pdf_fsys_open (path, PDF_FSYS_OPEN_MODE_WRITE, file);
 
 enum pdf_fsys_file_mode_e mode = PDF_FSYS_OPEN_MODE_READ;
@@ -9048,9 +9066,12 @@ a file in the underlying filesystem.
 @example
 pdf_bool_t ret;
 pdf_fsys_file_t file; /* some pre-initialized file variable */
-pdf_text_t other_path = pdf_text_new_from_unicode ("/path/to/baz",
-                                                   12, PDF_TEXT_UTF8,
-                                                   &text);
+pdf_status_t status;
+pdf_text_t other_path;
+
+status = pdf_text_new_from_unicode ("/path/to/baz",
+                                    12, PDF_TEXT_UTF8,
+                                    &other_path);
 ret = pdf_fsys_file_same_p (file, other_path);
 @end example
 @end table
@@ -9086,9 +9107,12 @@ The function call failed due to an error.
 @example
 pdf_status_t ret;
 pdf_fsys_file_t file = pdf_alloc(sizeof(pdf_fsys_file_s));
-pdf_text_t path = pdf_text_new_from_unicode ("/path/to/foo",
-                                             12, PDF_TEXT_UTF8,
-                                             &text);
+pdf_status_t status;
+pdf_text_t path;
+
+status = pdf_text_new_from_unicode ("/path/to/foo",
+                                    12, PDF_TEXT_UTF8,
+                                    &path);
 ret = pdf_fsys_open (path, PDF_FSYS_OPEN_MODE_WRITE, file);
 
 pdf_size_t pos = 20;
@@ -9124,9 +9148,12 @@ position.
 @example
 pdf_status_t ret;
 pdf_fsys_file_t file = pdf_alloc(sizeof(pdf_fsys_file_s));
-pdf_text_t path = pdf_text_new_from_unicode ("/path/to/foo",
-                                             12, PDF_TEXT_UTF8,
-                                             &text);
+pdf_status_t status;
+pdf_text_t path;
+
+status = pdf_text_new_from_unicode ("/path/to/foo",
+                                    12, PDF_TEXT_UTF8,
+                                    &path);
 ret = pdf_fsys_open (path, PDF_FSYS_OPEN_MODE_WRITE, file);
 
 pdf_size_t pos = 20;
@@ -14627,16 +14654,18 @@ pdf_obj_dict_weak_set (dict, "Foo", PDF_TRUE);
 @node Stream Objects
 @subsection Stream Objects
 
-A PDF stream is a sequence of bytes and a set of properties.  The
-properties of a stream object are contained in a dictionary.
+A PDF stream object is an arbitrary long sequence of bytes
+characterized by a set of properties.  The properties of a stream
+object are specified by a dictionary that appears just before the
+stream in the PDF file.
 
 Unlike strings, a stream can be read incrementally and can be of
 unlimited length.
 
-All streams must be indirect objects and the stream dictionary must be
-a direct object.
+All streams must be indirect objects while the dictionary describing
+the stream must be a direct object.
 
-@deftypefun pdf_status_t pdf_obj_stream_new (pdf_obj_doc_t @var{doc}, pdf_stm_t @var{stm}, pdf_obj_t @var{attrs_dict}, pdf_size_t @var{source_length}, pdf_obj_t *@var{obj})
+@deftypefun pdf_status_t pdf_obj_stream_new (pdf_obj_doc_t @var{doc}, pdf_stm_t @var{stm}, pdf_size_t @var{source_length}, pdf_obj_t @var{attrs_dict}, pdf_obj_t *@var{obj})
 
 Create a new PDF Stream object.
 
@@ -14646,13 +14675,22 @@ Create a new PDF Stream object.
 @item doc
 An object document.
 @item stm
-A base layer stream.
-@item attrs_dict
-Attributes dictionary to be used in the stream. If this dictionary
-contains a list of filters then these filters are applied in inverse
-order to the data readed from @var{stm}.
+A base layer stream that will be used to retrieve the data for the
+stream object. @xref{Filtered Streams}.  The filtered stream can be
+used or closed by the user after this function is called.
 @item source_length
-Number of octects to read from @var{stm}.
+The number of octects to read from @var{stm}.  If this parameter is
+zero then read from the stream until it gets exhausted.
+@item attrs_dict
+Dictionary containing keys that will be copied to the dictionary
+describing the newly created stream. If this dictionary
+contains a list of filters then those filters are applied in inverse
+order to the data read from @var{stm}.
+
+Note that any @code{/Length} key present in @var{stm} will be ignored.
+
+See the PDF specification for the expected content of the stream
+dictionary.
 @item obj
 A pointer to a @code{pdf_obj_t} variable to store the newly created
 object.
@@ -14661,19 +14699,67 @@ object.
 A PDF status value:
 @table @code
 @item PDF_OK
+The stream object was successfully created, and a reference to it was
+stored in @var{obj}.
 @item PDF_EINVOBJ
 @var{stm} is not a stream object or @var{attr_dict} is not a
 dictionary object.
+@item PDF_ENOMEM
+Not enough memory to create the object.
 @item PDF_ERROR
+Some error prevented the creation of the stream object.  The reference
+stored @var{obj} shall be considered invalid.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t doc;
+pdf_obj_t dict;
+pdf_obj_t stream;
+pdf_obj_t filter_array;
+pdf_string_t data_file_path;
+pdf_fsys_file_t data_file;
+pdf_stm_t stm;
+
+...
+
+/* Create a filter array */
+pdf_obj_string_new (doc, PDF_FALSE, "ASCII85Decode");
+pdf_obj_string_new (doc, PDF_FALSE, "LZWDecode");
+
+pdf_obj_array_new (doc, PDF_FALSE, 2, &filter_array);
+pdf_obj_array_set (filter_array, 0, ascii85_label);
+pdf_obj_array_set (filter_array, 1, lzw_label);
+
+/* Create the dictionary */
+pdf_obj_dict_new (doc, PDF_FALSE, &dict);
+pdf_obj_dict_set_str (dict, "Filter", filter_array);
+
+/* Open a filtered stream to a file containing the data to be
+   stored in the object stream */
+pdf_text_new_from_unicode ("/path/to/data",
+                           14, PDF_TEXT_UTF8,
+                           &data_file_path);
+pdf_fsys_open (data_file_path, PDF_FSYS_OPEN_MODE_READ, data_file);
+pdf_stm_file_new (data_file,
+                  0,
+                  0, /* Use the default cache size */
+                  PDF_STM_READ,
+                  &stm);
+
+/* Create the stream object */
+if (pdf_obj_stream_new (doc,
+                        stm,
+                        0, /* Exhaust the stream */
+                        dict,
+                        &stream) != PDF_OK)
+@{
+   /* Some error prevented the creation of the stream */
+@}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_stream_dict (pdf_obj_t @var{stream}, pdf_obj_t *@var{obj})
+@deftypefun pdf_status_t pdf_obj_stream_dict (pdf_obj_t @var{stream}, pdf_obj_t *@var{dict})
 
 Get the stream dictionary associated with @var{stream}.
 
@@ -14682,17 +14768,21 @@ Get the stream dictionary associated with @var{stream}.
 @table @var
 @item stream
 A stream object.
-@item obj
+@item dict
 A pointer to a @code{pdf_obj_t} variable to store the newly created
-object.
+object.  The returned object shall not be destroyed nor modified by
+the caller.
 @end table
 @item Returns
 A PDF status value:
 @table @code
 @item PDF_OK
+The dictionary describing @var{stream} is now stored in @var{obj}.
 @item PDF_EINVOBJ
 @var{stream} is not a stream object.
 @item PDF_ERROR
+An error prevented the operation to complete.  The value of @var{dict}
+shall be considered invalid.
 @end table
 @item Usage example
 @example
@@ -14709,17 +14799,15 @@ if (pdf_obj_stream_dict (stream, &stream_dict) != PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_stream_length (pdf_obj_t @var{stream}, pdf_size_t *@var{length})
+@deftypefun pdf_status_t pdf_obj_stream_length (pdf_obj_t @var{stream}, pdf_off_t *@var{length})
 
-Get the @code{/Length} value of the stream dictionary pertaining to
-@var{stream}. The value returned in @var{length} is the size of the
-undecoded stream in octects.
+Get the size of the encoded stream in octects.
 
 @table @strong
 @item Parameters
 @table @var
 @item stream
-A Stream object.
+A stream object.
 @item length
 A pointer to a @var{pdf_size_t} variable to hold the returned value.
 @end table
@@ -14727,16 +14815,22 @@ A pointer to a @var{pdf_size_t} variable to hold the returned value.
 A PDF status value:
 @table @code
 @item PDF_OK
+The length of the encoded stream is stored in @var{length}.
 @item PDF_EINVOBJ
 @var{stream} is not a stream object.
-@item PDF_EBADDATA
-The stream dictionary of @var{stream} does not contain a
-@code{/Length} entry.
 @item PDF_ERROR
+An error prevented the operation to complete.  The value of
+@var{length} shall be considered invalid.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_t stream;
+pdf_off_t stream_length;
+
+...
+
+/* Get the length of the stream, in octects */
+pdf_obj_stream_length (stream, &stream_length);
 @end example
 @end table
 @end deftypefun
@@ -14756,16 +14850,38 @@ A Stream object.
 @end table
 @item Returns
 The offset (in octects) of the beginning of the stream data: the
-position just after the @code{stream} keyword. If the returned number
+position just after the @code{stream} keyword.  If the returned number
 is @code{0} then an error occurred.
 @item Usage example
 @example
-XXX
+pdf_obj_doc_t doc;
+pdf_obj_t stream;
+pdf_off_t stream_offset;
+
+...
+
+/* Try to get the offset without previously
+   saving the object document */
+if (stream_offset (stream) == 0)
+@{
+   /* Error: document was not saved before to 
+      call pdf_obj_stream_pos */
+@}
+
+/* Save the object document */
+pdf_obj_doc_save (doc, NULL, PDF_OBJ_DOC_SAVE_FULL, save_params);
+
+/* Get the offset where the data of the stream was
+   stored */
+if (stream_offset (stream) == 0)
+@{
+   /* Error obtaining the offset of the stream */
+@}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_stream_open_stm (pdf_obj_t @var{stream}, enum pdf_obj_stm_open_mode_e @var{mode}, pdf_stm_t *@var{stm})
+@deftypefun pdf_status_t pdf_obj_stream_open (pdf_obj_t @var{stream}, enum pdf_obj_stm_open_mode_e @var{mode}, pdf_stm_t *@var{stm})
 
 Create a base layer stream to read the contents of
 @var{stream}. The base layer stream @var{stm} is positioning at the
@@ -14781,7 +14897,7 @@ The client is responsible to close the stream @var{stm}.
 @item stream
 A Stream object.
 @item mode
-Opening mode.
+Mode used to open the stream. @xref{Object Data Types}.
 @item stm
 A pointer to a @var{pdf_stm_t} variable holding the returned base
 layer stream.
@@ -14790,13 +14906,30 @@ layer stream.
 A PDF status value:
 @table @code
 @item PDF_OK
+A filtered stream was opened to read the contents of @var{stream}.
 @item PDF_EINVOBJ
 @var{stream} is not a stream object.
+@item PDF_ENOMEM
+Not enough memory to perform the operation.
 @item PDF_ERROR
+An error prevented the operation to complete.  The value of @var{stm}
+shall be considered invalid.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_t stream;
+pdf_stm_t stm;
+
+...
+
+/* Get a filtered stream to read the contents
+   of 'stream' */
+if (pdf_obj_stream_open (stream,
+                         PDF_OBJ_STM_OPEN_MODE_FILTERED,
+                         &stm) != PDF_OK)
+@{
+   /* Error opening the stream */
+@}
 @end example
 @end table
 @end deftypefun
