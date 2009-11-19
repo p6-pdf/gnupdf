@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-09-13 17:39:59 davazp"
+/* -*- mode: C -*- Time-stamp: "09/11/19 16:24:27 jemarch"
  *
  *       File:         pdf-error.c
  *       Date:         Sun Feb  24 20:22:05 2008
@@ -32,7 +32,7 @@
 #include <pdf-global.h>
 #include <pdf-error.h>
 
-extern char *program_name;
+extern char *pdf_library_name;
 
 /* Update this list according to pdf_status_t. */
 #define ERROR_ENTRY(id, string) string
@@ -62,7 +62,7 @@ pdf_error (const pdf_status_t status, FILE * fd, const char *format, ...)
       fd = stderr;
     }
   
-  fprintf (fd, "%s", program_name);
+  fprintf (fd, "%s", pdf_library_name);
 
   if (format != NULL)
     {

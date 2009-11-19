@@ -1,3 +1,11 @@
+2009-11-19  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-error.c: Use `pdf_library_name' instead of
+	`program_name'.
+
+	* src/pdf-global.c: Change 'program_name' to
+	'gnupdf_library_name'.
+
 2009-11-16  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* prmgt/fly2rec: New file.

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 22:27:36 davazp"
+/* -*- mode: C -*- Time-stamp: "09/11/19 16:24:34 jemarch"
  *
  *       File:         pdf-global.c
  *       Date:         Thu Jul  5 21:07:10 2007
@@ -34,8 +34,8 @@
 
 /* Global variables */
 
-char *program_name = "libgnupdf";
-char *gnupdf_version = "0.1";
+char *pdf_library_name = "libgnupdf";
+char *pdf_version = "0.1";
 
 struct pdf_globals_s pdf_globals = {
   PDF_FALSE
