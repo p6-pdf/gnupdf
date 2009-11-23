@@ -1,5 +1,7 @@
 2009-11-23  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/figures/dctdec-nfa.eps: New file.
+
 	* doc/gnupdf-arch.texi: Initial work on the object layer
 	architecture.  Documenation of the internal API offered by the
 	Object Value Module.
