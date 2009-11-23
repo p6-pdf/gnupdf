@@ -1890,37 +1890,258 @@ The functionality provided by this layer is implemented in several
 modules.
 
 @table @strong
-@item Document Module
-This module implements the abstraction of object level documents. An
-object-level document is a hierarchy of objects that conforms a PDF
-document. Facilities to get the objects from a document and to create
-new objects into a document are provided. A cache of objects and
-a garbage collection algorithm are also implemented in this module.
-@item Object Module
-This module implements the several PDF objects and provides functions
-to manipulate the attributes of the objects associated with an
-object-level document.
+@item Object Values Module
+This module implements the @code{pdf_obj_val_t} abstract data type.
+@code{pdf_obj_val_t} variables hold the value of PDF objects.
 @item Parser Module
-This module implements the functionality to get PDF objects from a
+This module implements the functionality to read PDF objects from a
 base-level stream.
 @item Writer Module
 This module implements the functionality to create a textual version
 of PDF objects. The textual representation of objects are then written
 into a given base level stream.
+@item Object Document Module
+This module implements the abstraction of object level documents. An
+object-level document is a hierarchy of objects that conforms a PDF
+document. Facilities to get the objects from a document and to create
+new objects into a document are provided. A pool of objects and
+a garbage collection algorithm are also implemented in this module.
 @end table
 
 @menu
-* Object storage::      How the PDF objects are stored and organized
-                         into an object document.
+* Object Values Module::
+* Parser Module::
+* Writer Module::
+* Object Document Module::
 @end menu
 
-@node Object storage
-@section Object storage
+@node Object Values Module
+@section Object Values Module
 
-@float Figure,fig:object-storage
-@image{figures/object-storage}
-@caption{Storage of objects}
-@end float
+This module implements a data type named @code{pdf_obj_val_t} that is
+able to hold the value of a PDF object.  Supported PDF objects are:
+
+@itemize @minus
+@item Null Object
+@item Integer
+@item Real
+@item Boolean
+@item String
+@item Name
+@item Array
+@item Dictionary
+@item Stream
+@item Indirect
+@end itemize
+
+@menu
+* Object Value Data Types::
+* Creation and Destruction of Object Values::
+* Management of Object Values::
+@end menu
+
+@node Object Value Data Types
+@subsection Object Value Data Types
+
+@deftp {Data Type} pdf_obj_val_t
+The value of a PDF Object.
+@end deftp
+
+@deftp {Data Type} {enum pdf_obj_val_type_e}
+Enumeration of the allowed types for a PDF object value:
+
+@table @code
+@item PDF_OBJ_VAL_TYPE_NULL
+@item PDF_OBJ_VAL_TYPE_INTEGER
+@item PDF_OBJ_VAL_TYPE_REAL
+@item PDF_OBJ_VAL_TYPE_BOOLEAN
+@item PDF_OBJ_VAL_TYPE_STRING
+@item PDF_OBJ_VAL_TYPE_NAME
+@item PDF_OBJ_VAL_TYPE_ARRAY
+@item PDF_OBJ_VAL_TYPE_DICT
+@item PDF_OBJ_VAL_TYPE_STREAM
+@item PDF_OBJ_VAL_TYPE_INDIRECT
+@end table
+@end deftp
+
+@node Creation and Destruction of Object Values
+@subsection Creation and Destruction of Object Values
+
+@deftypefun pdf_status_t pdf_obj_val_null_new (void)
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_boolean_new (pdf_bool_t @var{value})
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_integer_new (pdf_u32_t @var{value})
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_real_new (pdf_u32_t @var{value})
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_string_new (pdf_char_t *@var{value}, pdf_size_t @var{size})
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_name_new (pdf_char_t *@var{value}, pdf_size_t @var{size})
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_array_new (void)
+Create an empty array.
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_dict_new (void)
+Create an empty dictionary.
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_stream_new (pdf_obj_val_t @var{dict}, pdf_stm_t @var{stm}, pdf_off_t @var{data})
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_indirect_new (unsigned int @var{on}, unsigned int @var{gn})
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_destroy (pdf_obj_val_t @var{obj_val})
+XXX
+@end deftypefun
+
+@node Management of Object Values
+@subsection Management of Object Values
+
+@deftypefun pdf_obj_val_t pdf_obj_val_dup (pdf_obj_val_t @var{obj_val})
+XXX
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_obj_val_equal_p (pdf_obj_val_t @var{obj_val_1}, pdf_obj_val_t @var{obj_val_2})
+XXX
+@end deftypefun
+
+The following functions manipulate the value of scalar objects, such
+as numbers and booleans.
+
+@deftypefun pdf_status_t pdf_obj_val_get_bool (pdf_obj_val_t @var{obj_val}, pdf_bool_t *@var{bool})
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_set_bool (pdf_obj_val_t @var{obj_val}, pdf_bool_t @var{bool})
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_get_int (pdf_obj_val_t @var{obj_val}, pdf_i32_t *@var{integer})
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_set_int (pdf_obj_val_t @var{obj_val}, pdf_i32_t @var{integer})
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_get_real (pdf_obj_val_t @var{obj_val}, pdf_real_t *@var{real})
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_set_real (pdf_obj_val_t @var{obj_val}, pdf_real_t @var{real})
+XXX
+@end deftypefun
+
+The following functions manage the value of string objects.
+
+@deftypefun pdf_size_t pdf_obj_val_get_string_size (pdf_obj_val_t @var{obj_val})
+If @var{obj_val} is not a string object then return @code{0}.
+XXX
+@end deftypefun
+
+@deftypefun {pdf_char_t *} pdf_obj_val_get_string_data (pdf_obj_val_t @var{obj_val})
+If @var{obj_val} is not a string object then return @code{NULL}.
+XXX
+@end deftypefun
+
+The following functions manage the value of name objects.
+
+@deftypefun pdf_size_t pdf_obj_val_get_name_size (pdf_obj_val_t @var{obj_val})
+If @var{obj_val} is not a name object then return @code{0}.
+XXX
+@end deftypefun
+
+@deftypefun {pdf_char_t *} pdf_obj_val_get_name_data (pdf_obj_val_t @var{obj_val})
+If @var{obj_val} is not a name object then return @code{NULL}.
+XXX
+@end deftypefun
+
+The following functions manage the value of array objects.
+
+@deftypefun pdf_size_t pdf_obj_val_get_array_size (pdf_obj_val_t @var{obj_val})
+If @var{obj_val} is not an array object then return @code{0}
+(nonsense).
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_remove_array_elt (pdf_obj_val_t @var{obj_val}, pdf_size_t @var{index})
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_get_array_elt (pdf_obj_val_t @var{obj_val}, pdf_size_t @var{index})
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_set_array_elt (pdf_obj_val_t @var{obj_val}, pdf_size_t @var{index}, pdf_obj_val_t @var{elt})
+XXX
+@end deftypefun
+
+The following functions manage the value of dictionary objects.
+
+@deftypefun pdf_size_t pdf_obj_val_get_dict_size (pdf_obj_val_t @var{obj_val})
+If @var{obj_val} is not a dictionary then return @code{0} (nonsense).
+XXX
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_obj_val_dict_key_p (pdf_obj_val_t @var{obj_val}, pdf_obj_val_t @var{key})
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_get_dict_entry (pdf_obj_val_t @var{obj_val}, pdf_obj_val_t @var{key}, pdf_obj_val_t *@var{elt})
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_remove_dict_entry (pdf_obj_val_t @var{obj_val}, pdf_obj_val_t @var{key})
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_create_dict_entry (pdf_obj_val_t @var{obj_val}, pdf_obj_val_t @var{key}, pdf_obj_val_t @var{value})
+XXX
+@end deftypefun
+
+The following functions manage the value of stream objects.
+
+@deftypefun pdf_status_t pdf_obj_val_get_stream_dict (pdf_obj_val_t @var{obj_val}, pdf_obj_val_t *@var{dict})
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_get_stream_stm (pdf_obj_val_t @var{obj_val}, pdf_stm_t *@var{stm})
+XXX
+@end deftypefun
+
+@node Parser Module
+@section Parser Module
+
+XXX
+
+@node Writer Module
+@section Writer Module
+
+XXX
+
+@node Object Document Module
+@section Object Document Module
+
+XXX
 
 @node The document layer
 @chapter The document layer
