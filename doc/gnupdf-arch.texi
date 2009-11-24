@@ -2131,6 +2131,28 @@ XXX
 @node Parser Module
 @section Parser Module
 
+This module implements a parser of PDF objects.
+
+@menu
+* Overview of the Parser module::
+* Parser data types::
+* Parser functions::
+@end menu
+
+@node Overview of the Parser module
+@subsection Overview of the Parser module
+
+XXX
+
+
+@node Parser data types
+@subsection Parser data types
+
+XXX
+
+@node Parser functions
+@subsection Parser functions
+
 XXX
 
 @node Writer Module
@@ -2140,6 +2162,25 @@ XXX
 
 @node Object Document Module
 @section Object Document Module
+
+
+@float Figure,fig:object-document-architecture
+@image{figures/object-document-architecture}
+@caption{Architecture of the Object Document Module}
+@end float
+
+@menu
+* The Xref Submodule::
+* The Object Pool Submodule::
+@end menu
+
+@node The Xref Submodule
+@subsection The Xref Submodule
+
+XXX
+
+@node The Object Pool Submodule
+@subsection The Object Pool Submodule
 
 XXX
 

@@ -10050,7 +10050,7 @@ switch (pdf_token_reader_new (stream, &reader))
    @}
    case PDF_ERROR:
    @{
-      /* Any other error prevented the creation of
+      /* Some other error prevented the creation of
          the reader */
       break;
    @}

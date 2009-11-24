@@ -1,3 +1,13 @@
+2009-11-24  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-hg.texi (Writing Documentation): New chapter.
+	(Generating pictures with ditaa): New section.
+
+	* doc/gnupdf-arch.texi (The Xref Submodule): New subsection.
+	(The Object Pool Submodule): New subsection.
+
+	* doc/figures/object-document-architecture.txt: New file.
+
 2009-11-23  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/figures/dctdec-nfa.eps: New file.

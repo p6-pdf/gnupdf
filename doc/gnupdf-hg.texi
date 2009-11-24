@@ -52,6 +52,7 @@ GNU PDF Library Hackers Guide
 * Development procedures::
 * Tasks management::
 * Coding Conventions::
+* Writing Documentation::
 * Sending Patches::
 * Testing the library::
 @end menu
@@ -781,6 +782,31 @@ struct pdf_foo_s
 
 ...
 @end example
+
+@node Writing Documentation
+@chapter Writing Documentation
+
+This chapter contains some useful information on writing documentation
+in the GNU PDF project.
+
+@menu
+* Generating pictures with ditaa::
+@end menu
+
+@node Generating pictures with ditaa
+@section Generating pictures with ditaa
+
+When generating pictures with ditaa, please make sure to not use
+implicit shape separation (@command{-E}) nor shadows (@command{-S}).
+
+So, for example:
+
+@example
+$ ditaa -S -E [YOUR-OPTIONS] figure.txt
+@end example
+
+Don't forget to regenerate both @file{png} and @file{eps} image files
+after an update to a picture.
 
 @node Sending Patches
 @chapter Sending Patches
