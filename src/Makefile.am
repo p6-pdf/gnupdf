@@ -155,6 +155,12 @@ pdf.h : $(PUBLIC_HDRS)
 	echo "#ifdef __cplusplus" >> $@
 	echo "extern \"C\" {" >> $@
 	echo "#endif" >> $@
+	echo "" >> $@
+	echo "/* Platform */" >> $@
+	echo "#if !defined($(PDF_HOST))" >> $@
+	echo "#   define $(PDF_HOST)" >> $@
+	echo "#endif /* !$(PDF_HOST) */" >> $@
+	echo "" >> $@
 	cat $^ | $(top_builddir)/src/extract-public-hdr >> $@
 	echo "#ifdef __cplusplus" >> $@
 	echo "} // extern \"C\"" >> $@

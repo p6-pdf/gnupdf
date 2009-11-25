@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/11/15 12:28:51 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/11/24 23:58:31 jemarch"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -32,7 +32,9 @@
 
 #if defined(PDF_HOST_WIN32) || defined(PDF_HOST_BSD)
 #   include <sys/param.h>
-#   include <sys/mount.h>
+#   if defined(PDF_HOST_BSD)
+#      include <sys/mount.h>
+#   endif /* PDF_HOST_BSD */
 #else
 #   include <sys/statfs.h>
 #endif /* PDF_HOST_WIN32 | PDF_HOST_BSD */

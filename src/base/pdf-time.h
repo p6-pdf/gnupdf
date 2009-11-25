@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 22:55:37 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/11/25 00:01:08 jemarch"
  *
  *       File:         pdf-time.h
  *       Date:         Mon Apr 28 23:23:04 2008
@@ -25,6 +25,16 @@
 
 #ifndef PDF_TIME_H
 #define PDF_TIME_H
+
+#include <config.h>
+
+/* BEGIN PUBLIC */
+
+#if defined(PDF_HOST_WIN32)
+#  include <windows.h>
+#endif /* PDF_HOST_WIN32 */
+
+/* END PUBLIC */
 
 #include <stdio.h>
 

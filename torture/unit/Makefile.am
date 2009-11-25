@@ -54,7 +54,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/lib \
 AM_CFLAGS = -g
 
 TESTS = runtests.sh
-TESTS_ENVIRONMENT = top_srcdir=$(top_srcdir)
+TESTS_ENVIRONMENT = top_srcdir=$(top_srcdir) PDF_HOST=$(PDF_HOST) WINE=$(WINE)
 
 TEST_SUITE_ERROR = base/error/pdf-error.c \
 		   base/error/pdf-perror.c
@@ -266,7 +266,6 @@ runtests_SOURCES = $(NOCHECK_SRC) \
                    $(TSUITE_FILES) \
                    $(TEST_FILES) \
                    runtests.c
-
 
 check_PROGRAMS = runtests
 

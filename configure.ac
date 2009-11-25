@@ -40,15 +40,27 @@ gl_INIT
 
 dnl OS-based compilation options
 compile_w32_system=no
+AC_SUBST([PDF_HOST])
+AC_SUBST([WINE])
 case "${host}" in
     *-mingw32*)
         compile_w32_system=yes
+        PDF_HOST=PDF_HOST_WIN32
+        if test "${host}" != "${build}"
+        then
+           # Cross-compilation: use wine for testing
+           WINE=wine
+        else
+           WINE=""
+        fi
         AC_DEFINE([PDF_HOST_WIN32], [1], [Compiling for mingw32 systems])
         ;;
     *-bsd*)
+        PDF_HOST=PDF_HOST_BSD
         AC_DEFINE([PDF_HOST_BSD], [1], [Compiling for bsd systems])
         ;;
     *)
+        PDF_HOST=PDF_HOST_GNU
         ;;
 esac
 

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 16:41:18 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/11/25 00:16:45 jemarch"
  *
  *       File:         pdf-filter.c
  *       Date:         Tue Jul 10 18:42:07 2007
@@ -41,6 +41,12 @@
 #include <xalloc.h>
 #include <pdf-filter.h>
 #include <pdf.h>
+
+/*
+ * Global variables
+ */
+
+char *program_name;  /* Initialized in main() */
 
 /*
  * Command line options management 
@@ -177,7 +183,7 @@ main (int argc, char *argv[])
   pdf_status_t last_ret;
   pdf_status_t destroy_ret;
 
-  /*  set_program_name (argv[0]); */
+  program_name = strdup (argv[0]);
 
   stm = create_stream (argc, argv, &read_mode, &last_ret, &read_pdf_fsys,
                        &write_pdf_fsys, &fsys_stm);

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/06/24 19:37:20 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/11/25 00:11:39 jemarch"
  *
  *       File:         pdf-filter.h
  *       Date:         Tue Jul 10 18:40:55 2007
@@ -26,8 +26,6 @@
 
 #ifndef PDF_FILTER_H
 #define PDF_FILTER_H
-
-#include <config.h>
 
 /* Command line arguments */
 

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/11/19 16:27:55 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/11/25 00:17:43 jemarch"
  *
  *       File:         pdf-tokeniser.c
  *       Date:         Wed May 20 05:25:40 2009
@@ -34,6 +34,12 @@
 #include <pdf.h>
 
 #include <pdf-tokeniser.h>
+
+/*
+ * Global variables
+ */
+
+char *program_name; /* Initialized in main() */
 
 /*
  * Command line options management
@@ -289,7 +295,7 @@ main (int argc, char **argv)
   pdf_bool_t use_tokw = PDF_FALSE;
   pdf_u32_t reader_flags = 0, writer_flags = 0;
 
-  /*  set_program_name (argv[0]); */
+  program_name = strdup (argv[0]);
 
   while ((c = getopt_long (argc,
                            argv,

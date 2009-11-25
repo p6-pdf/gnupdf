@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <check.h>
 
+char *program_name; /* Initialized in main () */
+
 extern Suite *tsuite_alloc (void);
 extern Suite *tsuite_stm (void);
 extern Suite *tsuite_list (void);
@@ -31,7 +33,7 @@ main (int argc, char **argv)
   int failures;
   SRunner *sr;
 
-  /*  set_program_name (argv[0]); */
+  program_name = strdup (argv[0]);
 
   /* Create empty suite runner */
   sr = srunner_create (NULL);

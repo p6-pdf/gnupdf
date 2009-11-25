@@ -1,4 +1,26 @@
+2009-11-25  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/tortutils/tortutils.h: Include `sys/types.h' if
+	compiling for mingw32.
+
+	* utils/pdf-filter.c: Define the global symbol `program_name' and
+	copy `argv[0]' into it.  To be used by the gnulib error module.
+
+	* utils/pdf-tokeniser.c: Likewise.
+
+	* torture/unit/runtests.c: Likewise.
+
+	* src/Makefile.am (pdf.h): Use PDF_HOST.
+
+	* configure.ac (PDF_HOST): Define the PDF_HOST output variable,
+	used to define the proper PDF_HOST_* variable in the generated
+	pdf.h.
+
+	* utils/pdf-filter.h: Do not include config.h.
+
 2009-11-24  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-time.h: Include windows.h if compiling for mingw32.
 
 	* doc/gnupdf-hg.texi (Writing Documentation): New chapter.
 	(Generating pictures with ditaa): New section.

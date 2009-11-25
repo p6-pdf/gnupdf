@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/08/11 16:42:16 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/11/25 00:23:51 jemarch"
  *
  *       File:         tortutils.h
  *       Date:         Mon Nov 24 22:11:23 2008
@@ -31,6 +31,7 @@
 #if defined _WIN32_ || defined __WIN32__
 #  define TORTU_HOST_WIN32
 #  include <windows.h>
+#  include <sys/types.h> /* for off_t */
 #endif
 
 #include <stdlib.h>

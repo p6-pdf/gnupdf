@@ -20,7 +20,14 @@ chmod a-r ${top_srcdir}/torture/testdata/TD00004
 chmod a-w ${top_srcdir}/torture/testdata/TD00005
 
 # Run the test suite
-${srcdir}/runtests
+if test "x$PDF_HOST" = "xPDF_HOST_WIN32"
+then
+    CK_FORK=no \
+    CK_VERBOSITY=normal \
+    ${WINE} ${srcdir}/runtests.exe
+else
+    ${srcdir}/runtests
+fi
 
 # Epilog
 chmod 644 ${top_srcdir}/torture/testdata/TD00004
