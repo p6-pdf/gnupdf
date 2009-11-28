@@ -1,3 +1,35 @@
+2009-11-27  Scott Fohey < s f o h e y at g m a i l dot c o m >
+	* doc/A85_Calculation_Spreadsheet.ods: OOO spreadsheet - helpfull
+	for performing ASCII85 conversions - encoding/decoding and for
+	determining values for test cases.
+
+	* src/Makefile.am: added entries for pdf-stm-f-a85
+
+	* src/base/pdf-stm-f-a85.c: recoded to current filter interface and
+	added encoder which did not previously exist.
+
+	* src/base/pdf-stm-f-a85.h: updated for current filter interface and
+	added encoder
+
+	* src/base/pdf-stm-filter.c: added A85 encoder/decoder
+
+	* src/base/pdf-stm-filter.h: added A85 encoder/decoder
+
+	* torture/unit/Makefile.am: added A85dec test file
+
+	* torture/unit/base/stm/pdf-stm-read.c: added a couple A85dec test cases
+
+	* torture/unit/base/stm/pdf-stm-write.c: added some A85enc tests
+
+	* torture/unit/base/stm/tsuite-stm.c: added ...a85dec_apply tests
+
+	* torture/unit/base/stm/pdf-stm-f-a85dec-apply.c: added ...a85dec_apply
+	tests to check requirements.
+
+	* utils/pdf-filter.c: uncommented A85 filter support
+
+	* utils/pdf-filter.h: uncommented A85 filter support
+
 2009-11-25  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* torture/tortutils/tortutils.h: Include `sys/types.h' if
