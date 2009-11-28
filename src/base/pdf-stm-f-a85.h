@@ -1,13 +1,13 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 22:50:55 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/01/11 22:04:58 kabute"
  *
  *       File:         pdf-stm-f-a85.h
- *       Date:         Sun Jul 15 05:57:38 2007
+ *       Date:         Mon Jul  9 21:59:50 2007
  *
- *       GNU PDF Library - ASCII85 encoder/decoder
+ *       GNU PDF Library - ASCII85 stream filter
  *
  */
 
-/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2009 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,45 +28,55 @@
 #define PDF_STM_F_A85_H
 
 #include <config.h>
+#include <pdf-types.h>
+#include <pdf-hash.h>
 
-#include <pdf-base.h>
+#define A85_SPARE_BYTES_LEN 4
+#define A85_OUTPUT_BUFF_LEN 8
 
-/* Configuration data */
+/* defined as 79 so that the newline character completes the 80 char line */
+/* (of course that only happens when newline is a single character...)    */
+#define A85_ENC_LINE_LENGTH 79
 
-/* BEGIN PUBLIC */
 
-enum pdf_stm_f_a85_mode_t
+
+/* Internal state */
+struct pdf_stm_f_a85_s
 {
-  PDF_STM_F_A85_MODE_ENCODE,
-  PDF_STM_F_A85_MODE_DECODE
+  /* spare_bytes will store leftover bytes if finish_p is not set */
+  pdf_size_t line_length;
+  pdf_size_t spare_count; /* Number of input bytes in spare_bytes */
+  pdf_size_t output_count; /* Number of output bytes left in output_buff */
+  int        terminated;
+  pdf_char_t spare_bytes[A85_SPARE_BYTES_LEN];
+  pdf_char_t output_buff[A85_OUTPUT_BUFF_LEN];
 };
 
-/* END PUBLIC */
+typedef struct pdf_stm_f_a85_s *pdf_stm_f_a85_t;
 
-struct pdf_stm_f_a85_conf_s
-{
-  int mode;
-};
+/* Filter implementation API */
 
-typedef struct pdf_stm_f_a85_conf_s *pdf_stm_f_a85_conf_t;
+pdf_status_t
+pdf_stm_f_a85enc_init (pdf_hash_t params, void **state);
 
-/* Private data */
+pdf_status_t
+pdf_stm_f_a85enc_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
+                        pdf_buffer_t out, pdf_bool_t finish_p);
 
-struct pdf_stm_f_a85_data_s
-{
-  int mode;
-};
+pdf_status_t
+pdf_stm_f_a85enc_dealloc_state (void *state);
 
-typedef struct pdf_stm_f_a85_data_s *pdf_stm_f_a85_data_t;
+pdf_status_t
+pdf_stm_f_a85dec_init (pdf_hash_t params, void **state);
 
-/* Filter API implementation */
+pdf_status_t
+pdf_stm_f_a85dec_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
+                        pdf_buffer_t out, pdf_bool_t finish_p);
 
-int pdf_stm_f_a85_init (void **filter_data, void *conf_data);
-int pdf_stm_f_a85_apply (void *filter_data,
-                         pdf_char_t *in, pdf_stm_pos_t in_size,
-                         pdf_char_t **out, pdf_stm_pos_t *out_size);
-int pdf_stm_f_a85_dealloc (void **filter_data);
+pdf_status_t
+pdf_stm_f_a85dec_dealloc_state (void *state);
 
-#endif /* pdf_stm_f_a85.h */
+
+#endif /* !PDF_STM_F_A85_H */
 
 /* End of pdf_stm_f_a85.h */

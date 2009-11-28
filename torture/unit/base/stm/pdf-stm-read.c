@@ -911,6 +911,344 @@ START_TEST (pdf_stm_read_014)
 }
 END_TEST
 
+/*
+ * Test: pdf_stm_read_015
+ * Description:
+ *   Create a memory-based writing stream and attach an A85 filter
+ *   decoder to it.
+ * Success condition:
+ *   The decoded data should be correct.
+ */
+START_TEST (pdf_stm_read_015)
+{
+  pdf_status_t ret;
+  pdf_stm_t stm;
+  pdf_char_t *ret_buf;
+  pdf_size_t buf_size;
+  pdf_size_t read_bytes;
+  pdf_hash_t a85dec_filter_parameters;
+
+  pdf_char_t *unencoded = 
+    "\x00\x01\x02\x03\x00\x00\x00\x00\x04\x05\x06\x07\x08\x09\x0A\x0B";
+  pdf_char_t *encoded = 
+    "!!\x2A\x2D\x27z\x22\x39\x65\x75\x37\x23\x52\x4C\x68\x47~>";
+
+
+  /* Create the buffers */
+  buf_size = 20;
+  pdf_init ();
+
+  ret_buf = pdf_alloc (buf_size);
+  fail_if (ret_buf == NULL);
+
+
+  /* Create the stream */
+  ret = pdf_stm_mem_new (encoded,
+                         18,
+                         0, /* Use the default cache size */
+                         PDF_STM_READ,
+                         &stm);
+  fail_if (ret != PDF_OK);
+
+  /* Install an A85 decoder in the stream */
+  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
+  fail_if (ret != PDF_OK);
+
+  ret = pdf_stm_install_filter (stm,
+                                PDF_STM_FILTER_A85_DEC,
+                                a85dec_filter_parameters);
+  fail_if (ret != PDF_OK);
+
+  /* Read some data from the stream */
+  ret = pdf_stm_read (stm,
+                      ret_buf,
+                      16,
+                      &read_bytes);
+  fail_if (read_bytes != 16);
+
+  /* Close the stream */
+  pdf_stm_destroy (stm);
+
+  /* Check the result of the operation */
+  fail_if (memcmp (ret_buf, unencoded, 16) != 0);
+
+
+  /* Destroy data */
+  pdf_hash_destroy (a85dec_filter_parameters);
+  pdf_dealloc (ret_buf);
+
+}
+END_TEST
+
+
+/*
+ * Test: pdf_stm_read_016
+ * Description:
+ *   Create a memory-based writing stream and attach an A85 filter
+ *   decoder to it.
+ * Success condition:
+ *   The decoded data should be correct.
+ */
+START_TEST (pdf_stm_read_016)
+{
+  pdf_status_t ret;
+  pdf_stm_t stm;
+  pdf_char_t *ret_buf;
+  pdf_size_t buf_size;
+  pdf_size_t read_bytes;
+  pdf_hash_t a85dec_filter_parameters;
+
+  pdf_char_t *unencoded = "\x00";
+  pdf_char_t *encoded =   "!!~>";
+
+
+  /* Create the buffers */
+  buf_size = 20;
+  pdf_init ();
+
+  ret_buf = pdf_alloc (buf_size);
+  fail_if (ret_buf == NULL);
+
+
+  /* Create the stream */
+  ret = pdf_stm_mem_new (encoded,
+                         4,
+                         0, /* Use the default cache size */
+                         PDF_STM_READ,
+                         &stm);
+  fail_if (ret != PDF_OK);
+
+  /* Install an A85 decoder in the stream */
+  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
+  fail_if (ret != PDF_OK);
+
+  ret = pdf_stm_install_filter (stm,
+                                PDF_STM_FILTER_A85_DEC,
+                                a85dec_filter_parameters);
+  fail_if (ret != PDF_OK);
+
+  /* Read some data from the stream */
+  ret = pdf_stm_read (stm,
+                      ret_buf,
+                      1,
+                      &read_bytes);
+  fail_if (read_bytes != 1);
+
+  /* Close the stream */
+  pdf_stm_destroy (stm);
+
+  /* Check the result of the operation */
+  fail_if (memcmp (ret_buf, unencoded, 1) != 0);
+
+
+  /* Destroy data */
+  pdf_hash_destroy (a85dec_filter_parameters);
+  pdf_dealloc (ret_buf);
+
+}
+END_TEST
+
+/*
+ * Test: pdf_stm_read_017
+ * Description:
+ *   Create a memory-based writing stream and attach an A85 filter
+ *   decoder to it.
+ * Success condition:
+ *   The decoded data should be correct.
+ */
+START_TEST (pdf_stm_read_017)
+{
+  pdf_status_t ret;
+  pdf_stm_t stm;
+  pdf_char_t *ret_buf;
+  pdf_size_t buf_size;
+  pdf_size_t read_bytes;
+  pdf_hash_t a85dec_filter_parameters;
+
+  pdf_char_t *unencoded = "\x00\x00";
+  pdf_char_t *encoded = "!!!~>";
+
+
+  /* Create the buffers */
+  buf_size = 20;
+  pdf_init ();
+
+  ret_buf = pdf_alloc (buf_size);
+  fail_if (ret_buf == NULL);
+
+
+  /* Create the stream */
+  ret = pdf_stm_mem_new (encoded,
+                         5,
+                         0, /* Use the default cache size */
+                         PDF_STM_READ,
+                         &stm);
+  fail_if (ret != PDF_OK);
+
+  /* Install an A85 decoder in the stream */
+  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
+  fail_if (ret != PDF_OK);
+
+  ret = pdf_stm_install_filter (stm,
+                                PDF_STM_FILTER_A85_DEC,
+                                a85dec_filter_parameters);
+  fail_if(ret != PDF_OK);
+
+  /* Read some data from the stream */
+  ret = pdf_stm_read (stm,
+                      ret_buf,
+                      2,
+                      &read_bytes);
+  fail_if (read_bytes != 2);
+
+  /* Close the stream */
+  pdf_stm_destroy (stm);
+
+  /* Check the result of the operation */
+  fail_if (memcmp (ret_buf, unencoded, 2) != 0);
+
+
+  /* Destroy data */
+  pdf_hash_destroy (a85dec_filter_parameters);
+  pdf_dealloc (ret_buf);
+
+}
+END_TEST
+
+/*
+ * Test: pdf_stm_read_018
+ * Description:
+ *   Create a memory-based writing stream and attach an A85 filter
+ *   decoder to it.
+ * Success condition:
+ *   The decoded data should be correct.
+ */
+START_TEST (pdf_stm_read_018)
+{
+  pdf_status_t ret;
+  pdf_stm_t stm;
+  pdf_char_t *ret_buf;
+  pdf_size_t buf_size;
+  pdf_size_t read_bytes;
+  pdf_hash_t a85dec_filter_parameters;
+
+  pdf_char_t *unencoded = "\x00\x00\x00";
+  pdf_char_t *encoded = "!!!!~>";
+
+
+  /* Create the buffers */
+  buf_size = 20;
+  pdf_init ();
+
+  ret_buf = pdf_alloc (buf_size);
+  fail_if (ret_buf == NULL);
+
+
+  /* Create the stream */
+  ret = pdf_stm_mem_new (encoded,
+                         6,
+                         0, /* Use the default cache size */
+                         PDF_STM_READ,
+                         &stm);
+  fail_if (ret != PDF_OK);
+
+  /* Install an A85 decoder in the stream */
+  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
+  fail_if (ret != PDF_OK);
+
+  ret = pdf_stm_install_filter (stm,
+                                PDF_STM_FILTER_A85_DEC,
+                                a85dec_filter_parameters);
+  fail_if (ret != PDF_OK);
+
+  /* Read some data from the stream */
+  ret = pdf_stm_read (stm,
+                      ret_buf,
+                      3,
+                      &read_bytes);
+  fail_if (read_bytes != 3);
+
+  /* Close the stream */
+  pdf_stm_destroy (stm);
+
+  /* Check the result of the operation */
+  fail_if (memcmp (ret_buf, unencoded, 3) != 0);
+
+
+  /* Destroy data */
+  pdf_hash_destroy (a85dec_filter_parameters);
+  pdf_dealloc (ret_buf);
+
+}
+END_TEST
+
+/*
+ * Test: pdf_stm_read_019
+ * Description:
+ *   Create a memory-based writing stream and attach an A85 filter
+ *   decoder to it.
+ * Success condition:
+ *   The decoded data should be correct.
+ */
+START_TEST (pdf_stm_read_019)
+{
+  pdf_status_t ret;
+  pdf_stm_t stm;
+  pdf_char_t *ret_buf;
+  pdf_size_t buf_size;
+  pdf_size_t read_bytes;
+  pdf_hash_t a85dec_filter_parameters;
+
+  pdf_char_t *unencoded = "\x00\x00\x00\x00";
+  pdf_char_t *encoded = "z~>";
+
+
+  /* Create the buffers */
+  buf_size = 20;
+  pdf_init ();
+
+  ret_buf = pdf_alloc (buf_size);
+  fail_if (ret_buf == NULL);
+
+
+  /* Create the stream */
+  ret = pdf_stm_mem_new (encoded,
+                         3,
+                         0, /* Use the default cache size */
+                         PDF_STM_READ,
+                         &stm);
+  fail_if (ret != PDF_OK);
+
+  /* Install an A85 decoder in the stream */
+  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
+  fail_if (ret != PDF_OK);
+
+  ret = pdf_stm_install_filter (stm,
+                                PDF_STM_FILTER_A85_DEC,
+                                a85dec_filter_parameters);
+  fail_if (ret != PDF_OK);
+
+  /* Read some data from the stream */
+  ret = pdf_stm_read (stm,
+                      ret_buf,
+                      4,
+                      &read_bytes);
+  fail_if (read_bytes != 4);
+
+  /* Close the stream */
+  pdf_stm_destroy (stm);
+
+  /* Check the result of the operation */
+  fail_if (memcmp (ret_buf, unencoded, 4) != 0);
+
+
+  /* Destroy data */
+  pdf_hash_destroy (a85dec_filter_parameters);
+  pdf_dealloc (ret_buf);
+
+}
+END_TEST
+
 
 
 /*
@@ -937,6 +1275,11 @@ test_pdf_stm_read (void)
   tcase_add_test(tc, pdf_stm_read_012);
   tcase_add_test(tc, pdf_stm_read_013);
   tcase_add_test(tc, pdf_stm_read_014);
+  tcase_add_test(tc, pdf_stm_read_015);
+  tcase_add_test(tc, pdf_stm_read_016);
+  tcase_add_test(tc, pdf_stm_read_017);
+  tcase_add_test(tc, pdf_stm_read_018);
+  tcase_add_test(tc, pdf_stm_read_019);
 
   return tc;
 }
