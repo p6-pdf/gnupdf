@@ -1,3 +1,8 @@
+2009-11-30  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-hg.texi (Running the unit tests): Added details on
+	how to run the unit tests in windows.
+
 2009-11-25  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* torture/tortutils/tortutils.h: Include `sys/types.h' if
