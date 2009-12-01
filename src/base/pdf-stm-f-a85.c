@@ -31,26 +31,26 @@
 
 #include <ctype.h>
 
-/* 
- * static function prototypes 
+/*
+ * static function prototypes
  */
 
 static pdf_status_t
-pdf_stm_f_a85enc_wr_tuple (pdf_u32_t tuple, pdf_u8_t tuple_bytes, 
+pdf_stm_f_a85enc_wr_tuple (pdf_u32_t tuple, pdf_u8_t tuple_bytes,
                            void *state, pdf_buffer_t out);
 
 static pdf_bool_t
 quad_can_fit (pdf_buffer_t buffer);
 
 static pdf_status_t
-pdf_stm_f_a85dec_wr_quad (const pdf_char_t *quint, const pdf_size_t outcount,
+pdf_stm_f_a85dec_wr_quad (const pdf_char_t * quint, const pdf_size_t outcount,
                           pdf_buffer_t out, pdf_stm_f_a85_t filter_state);
 
 static pdf_status_t
-pdf_stm_f_a85dec_getnext (pdf_buffer_t in, pdf_char_t *pc);
+pdf_stm_f_a85dec_getnext (pdf_buffer_t in, pdf_char_t * pc);
 
 static pdf_status_t
-pdf_stm_f_a85_write_outbuff (pdf_char_t c, pdf_buffer_t out, 
+pdf_stm_f_a85_write_outbuff (pdf_char_t c, pdf_buffer_t out,
                              pdf_stm_f_a85_t filter_state);
 
 static pdf_status_t
@@ -61,30 +61,29 @@ pdf_stm_f_a85_flush_outbuff (pdf_buffer_t out, pdf_stm_f_a85_t filter_state);
  */
 
 pdf_status_t
-pdf_stm_f_a85enc_init (pdf_hash_t params,
-                       void **state)
+pdf_stm_f_a85enc_init (pdf_hash_t params, void **state)
 {
-    
+
   pdf_stm_f_a85_t filter_state;
-  
+
   filter_state = pdf_alloc (sizeof (struct pdf_stm_f_a85_s));
   if (NULL == filter_state)
     {
       return PDF_ERROR;
     }
-  
+
   /* Initialization */
 
   filter_state->line_length = 0;
   filter_state->spare_count = 0;
   filter_state->output_count = 0;
   filter_state->terminated = PDF_FALSE;
-  
+
   *state = (void *) filter_state;
   return PDF_OK;
 }
 
-/* pdf_stm_f_a85_write_out helps deal with the possibility of extremely 
+/* pdf_stm_f_a85_write_out helps deal with the possibility of extremely
  * small output buffer sizes - like 1 byte for example.  Since this
  * filter needs to work with 4 to 5 input bytes at a time, and since it
  * then produces 1 to 8 output bytes at a time, it is necessary to be
@@ -93,11 +92,11 @@ pdf_stm_f_a85enc_init (pdf_hash_t params,
  *
  * pdf_stm_f_a85_write_out sends data directly to the output stream if
  * there is room, and if no data is already waiting to go out.
- * If there is data waiting to go out, then it appends to the end of 
+ * If there is data waiting to go out, then it appends to the end of
  * the output buffer.
  *
  * All writing to the out stream from this filter should take place
- * through this function. 
+ * through this function.
  *
  * it is critical that pdf_stm_a85_flush_outbuff return PDF_OK
  * (meaning that it's output buffers are empty) before starting
@@ -106,7 +105,7 @@ pdf_stm_f_a85enc_init (pdf_hash_t params,
  */
 
 static pdf_status_t
-pdf_stm_f_a85_write_out (pdf_char_t c, pdf_buffer_t out, 
+pdf_stm_f_a85_write_out (pdf_char_t c, pdf_buffer_t out,
                          pdf_stm_f_a85_t filter_state)
 {
   pdf_status_t retval = PDF_OK;
@@ -136,7 +135,7 @@ pdf_stm_f_a85_write_out (pdf_char_t c, pdf_buffer_t out,
   return retval;
 }
 
-/* pdf_stm_f_a85_flush_outbuff helps deal with the possibility of extremely 
+/* pdf_stm_f_a85_flush_outbuff helps deal with the possibility of extremely
  * small output buffer sizes - like 1 byte for example.  Since this
  * filter needs to work with 4 to 5 input bytes at a time, and since it
  * then produces 1 to 8 output bytes at a time, it is necessary to be
@@ -144,10 +143,10 @@ pdf_stm_f_a85_write_out (pdf_char_t c, pdf_buffer_t out,
  * them to be sent to the output stream.
  *
  * Because this output buffer is sized to handle the output data from a single
- * input group (up to 8 bytes for the encoding (5 output data bytes, plus a 
+ * input group (up to 8 bytes for the encoding (5 output data bytes, plus a
  * newline, plus the terminating sequence)) it is necessary that the output
  * buffer be empty before starting to generate another set of output.
- * 
+ *
  * pdf_stm_f_a85_flush_outbuff must return PDF_OK before starting to generate
  * a new set of output bytes.  This ensures that all call to _write_out for
  * this set of output bytes will succeed, and no data will be lost.
@@ -162,9 +161,9 @@ pdf_stm_f_a85_flush_outbuff (pdf_buffer_t out, pdf_stm_f_a85_t filter_state)
 
   i = 0;
 
-  while ((i<filter_state->output_count) && (PDF_OK == retval))
+  while ((i < filter_state->output_count) && (PDF_OK == retval))
     {
-      if (pdf_buffer_full_p(out))
+      if (pdf_buffer_full_p (out))
         {
           retval = PDF_ENOUTPUT;
         }
@@ -177,20 +176,20 @@ pdf_stm_f_a85_flush_outbuff (pdf_buffer_t out, pdf_stm_f_a85_t filter_state)
   if ((PDF_ENOUTPUT == retval) || (i == filter_state->output_count))
     { /* done flushing (to the extent possible) */
       /* shift remaining bytes back to the beginning of buffer */
-      
-      for (k = 0; (k+i) < filter_state->output_count; k++)
+
+      for (k = 0; (k + i) < filter_state->output_count; k++)
         {
-          filter_state->output_buff[k] = filter_state->output_buff[k+i];
+          filter_state->output_buff[k] = filter_state->output_buff[k + i];
         }
-      
+
       filter_state->output_count -= i;
-      
+
     }
   else
     { /* This should not be reachable */
       retval = PDF_ERROR;
     }
-  
+
   return retval;
 }
 
@@ -209,50 +208,52 @@ pdf_stm_f_a85enc_wr_tuple (pdf_u32_t tuple,
 
   filter_state = (pdf_stm_f_a85_t) state;
 
-  if (tuple == 0 && 4 == tuple_bytes) /* partial tuple doesn't get z handling */
+  /* partial tuple doesn't get z handling */
+  if ((0 == tuple) && (4 == tuple_bytes))
     {
       /* Four 0s in row */
-      
+
       retval = pdf_stm_f_a85_write_out ('z', out, filter_state);
-      //      *!*!*!* examine this
+      /*
+       * PDF_ERROR from pdf_stm_f_a85_write_out means full buffer
+       * This should never happen because buffer should have been 
+       * flushed before starting this set of output data. All
+       * subsequent calls to _write_out will fail with PDF_ERROR
+       * also, so it is reasonable to ignore the pass or fail
+       * status of these invocations within this function. The
+       * error will be reported back to the caller of this function.
+       */
       filter_state->line_length++;
-      
+
       if (filter_state->line_length >= A85_ENC_LINE_LENGTH)
         {
           retval = pdf_stm_f_a85_write_out ('\n', out, filter_state);
-          //      *!*!*!* examine this
           filter_state->line_length = 0;
         }
     }
   else
     {
       /* Encode this tuple in base-85 */
-      for (i = 0;
-           i < 5;
-           i++)
+      for (i = 0; i < 5; i++)
         {
-          buf[i] = (pdf_char_t)(tuple % 85);
+          buf[i] = (pdf_char_t) (tuple % 85);
           tuple = tuple / 85;
         }
-      
-      for (i = tuple_bytes;
-           i >= 0;
-           i--)
+
+      for (i = tuple_bytes; i >= 0; i--)
         {
-          retval = pdf_stm_f_a85_write_out (buf[i] + (pdf_char_t)'!', 
+          retval = pdf_stm_f_a85_write_out (buf[i] + (pdf_char_t) '!',
                                             out, filter_state);
-          //      *!*!*!* examine this
-          
           filter_state->line_length++;
           if (filter_state->line_length >= A85_ENC_LINE_LENGTH)
             {
               retval = pdf_stm_f_a85_write_out ('\n', out, filter_state);
-              //      *!*!*!* examine this
+
               filter_state->line_length = 0;
             }
         }
     }
-  
+
   return retval;
 }
 
@@ -273,19 +274,19 @@ pdf_stm_f_a85enc_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
   pdf_status_t retval = PDF_OK;
 
   filter_state = (pdf_stm_f_a85_t) state;
-  
-  /* 
+
+  /*
    * ASCII base-85 encoding produces 5 ASCII characters for every 4
    * bytes in the input data.
    *
    * But take care of the EOD marker (~>) and the newlines/whitespace.
    *
-   * Note that 0x00000000 is coded with 'z', 
+   * Note that 0x00000000 is coded with 'z',
    */
-  
-  /* 
+
+  /*
    * Make sure that the output_buff is flushed and ready to accept another
-   * batch of data 
+   * batch of data
    */
 
   retval = pdf_stm_f_a85_flush_outbuff (out, filter_state);
@@ -309,7 +310,7 @@ pdf_stm_f_a85enc_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
 
           tuple = tuple | (filter_state->spare_bytes[i++] << 24);
           filter_state->spare_count--;
-          
+
           if (filter_state->spare_count)
             {
               temp_byte = filter_state->spare_bytes[i++];
@@ -319,7 +320,7 @@ pdf_stm_f_a85enc_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
             {
               temp_byte = in->data[in->rp++];
             }
-          
+
           tuple = tuple | (temp_byte << 16);
 
           if (filter_state->spare_count)
@@ -331,7 +332,7 @@ pdf_stm_f_a85enc_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
             {
               temp_byte = in->data[in->rp++];
             }
-          
+
           tuple = tuple | (temp_byte << 8);
 
           tuple = tuple | in->data[in->rp++];
@@ -341,7 +342,7 @@ pdf_stm_f_a85enc_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
         } /* End of if there is a full tuple available */
       else
         {
-          /* There was no full tuple available - do nothing. 
+          /* There was no full tuple available - do nothing.
              If finish_p is set, then a partial tuple will be written later */
           retval = PDF_ENINPUT;
         }
@@ -349,7 +350,7 @@ pdf_stm_f_a85enc_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
     } /* end of if spare_count */
 
   retval = pdf_stm_f_a85_flush_outbuff (out, filter_state);
-  
+
   if (PDF_OK != retval)
     { /* Probably this is PDF_ENOUTPUT - meaning output_buff still has data */
       return retval;
@@ -359,11 +360,11 @@ pdf_stm_f_a85enc_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
   /* Now do all normal tuples */
 
   in_size = in->wp - in->rp;
-  
+
 
   if ((PDF_OK == retval) && (in_size >= 4))
     {
-      
+
       for (pos_in = 0; (pos_in < in_size) && (PDF_OK == retval); pos_in += 4)
         {
           tuple = 0;
@@ -390,7 +391,7 @@ pdf_stm_f_a85enc_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
         { /* Loop terminated by PDF_ENINPUT */
           retval = PDF_ENINPUT;
         }
-          
+
     } /* End if retval == PDF_OK && whole tuple available */
   else if ((PDF_OK == retval) && (in_size < 4))
     {
@@ -400,34 +401,32 @@ pdf_stm_f_a85enc_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
 
   if (finish_p && (PDF_ENINPUT == retval))
     {
-      
-      /* If the length of the binary data to be encoded is not a multiple of 4 
+
+      /* If the length of the binary data to be encoded is not a multiple of 4
          bytes, the last, partial group of 4 is used to produce a last, partial
-         group of 5 output  characters. Given n (1, 2 or 3) bytes of binary 
-         data, the encoder first appends 4 - n zero bytes to make a complete 
-         group of 4. It then encodes this group in the usual way, but without 
-         applying the special z case. Finally, it writes only the first n + 1 
+         group of 5 output  characters. Given n (1, 2 or 3) bytes of binary
+         data, the encoder first appends 4 - n zero bytes to make a complete
+         group of 4. It then encodes this group in the usual way, but without
+         applying the special z case. Finally, it writes only the first n + 1
          characters of the resulting group of 5. */
-      
+
       in_size = filter_state->spare_count + (in->wp - in->rp);
 
       if (in_size)
         {
 
-          for (i = 0; i < (4-in_size); i++)
+          for (i = 0; i < (4 - in_size); i++)
             {
               buf[i] = 0;
             }
-          
+
           read_bytes = 0;
-              
-          for (i = (4-in_size);
-               i < 4;
-               i++)
+
+          for (i = (4 - in_size); i < 4; i++)
             {
-              
+
               avail = in->wp - in->rp;
-              
+
               if (filter_state->spare_count || avail)
                 {
                   if (filter_state->spare_count)
@@ -444,17 +443,18 @@ pdf_stm_f_a85enc_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
                 {
                   buf[i] = 0;
                 }
-              
+
             }
-          
+
           tuple = 0;
           tuple = tuple | buf[0] << 24;
           tuple = tuple | buf[1] << 16;
           tuple = tuple | buf[2] << 8;
           tuple = tuple | buf[3];
 
-          retval = pdf_stm_f_a85enc_wr_tuple (tuple, in_size, filter_state, out);
-          
+          retval = 
+            pdf_stm_f_a85enc_wr_tuple (tuple, in_size, filter_state, out);
+
 
         } /* end of if (in_size) */
       else
@@ -483,7 +483,7 @@ pdf_stm_f_a85enc_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
             }
           else
             {
-              filter_state->spare_bytes[filter_state->spare_count++] = 
+              filter_state->spare_bytes[filter_state->spare_count++] =
                 in->data[in->rp++];
             }
           avail--;
@@ -500,7 +500,7 @@ pdf_stm_f_a85enc_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
           retval = PDF_EEOF;
         }
     }
-  
+
   return retval;
 
 }
@@ -511,20 +511,20 @@ pdf_stm_f_a85enc_dealloc_state (void *state)
   pdf_stm_f_a85_t a85_state;
   a85_state = (pdf_stm_f_a85_t) state;
   pdf_dealloc (a85_state);
-  
+
   return PDF_OK;
 }
 
 static pdf_bool_t
 quad_can_fit (pdf_buffer_t buffer)
 {
-  return (buffer->size >= (buffer->wp +4));
+  return (buffer->size >= (buffer->wp + 4));
 }
 
 /* Do not Pass this function a 'z' quint. */
 /* Make certain that there is room in the output buffer before calling */
 static pdf_status_t
-pdf_stm_f_a85dec_wr_quad (const pdf_char_t *quint, const pdf_size_t outcount,
+pdf_stm_f_a85dec_wr_quad (const pdf_char_t * quint, const pdf_size_t outcount,
                           pdf_buffer_t out, pdf_stm_f_a85_t filter_state)
 {
   pdf_status_t retval = PDF_OK;
@@ -544,31 +544,31 @@ pdf_stm_f_a85dec_wr_quad (const pdf_char_t *quint, const pdf_size_t outcount,
     { /* 83 * 85^4 is greater than 2^32 all by itself. */
       retval = PDF_ERROR;
     }
-  
-  if ((quint[1] > 84) || (quint[2] > 84) || 
-      (quint[3] > 84) || (quint[4] > 84) )
+
+  if ((quint[1] > 84) || (quint[2] > 84) ||
+      (quint[3] > 84) || (quint[4] > 84))
     { /* any character here greater than 84 is an error */
       retval = PDF_ERROR;
     }
-  
+
   /* Begin Conversion to quad. */
-  quad = (pdf_u32_t)quint[0] * 85u;
-  quad = (quad + (pdf_u32_t)quint[1]) * 85u;
-  quad = (quad + (pdf_u32_t)quint[2]) * 85u;
-  
+  quad = (pdf_u32_t) quint[0] * 85u;
+  quad = (quad + (pdf_u32_t) quint[1]) * 85u;
+  quad = (quad + (pdf_u32_t) quint[2]) * 85u;
+
   /* Now we could be adding up to too big a number */
   /* Go in smaller steps and check for potential overflow: */
-  quad = (quad + (pdf_u32_t)quint[3]);
-  
-  if (quad > (pdf_u32_t)((pdf_u32_t)UINT32_MAX / (pdf_u32_t)85u))
+  quad = (quad + (pdf_u32_t) quint[3]);
+
+  if (quad > (pdf_u32_t) ((pdf_u32_t) UINT32_MAX / (pdf_u32_t) 85u))
     { /* This would overflow, so it's an error. Bail */
       retval = PDF_ERROR;
     }
   else
     {
       quad = quad * 85u; /* Complete the incorporation of quint[3] */
-      
-      if (((pdf_u32_t)(UINT32_MAX - quad)) >= (pdf_u32_t)quint[4])
+
+      if (((pdf_u32_t) (UINT32_MAX - quad)) >= (pdf_u32_t) quint[4])
         {
           quad += quint[4];
         }
@@ -586,12 +586,12 @@ pdf_stm_f_a85dec_wr_quad (const pdf_char_t *quint, const pdf_size_t outcount,
           quad = quad / 256;
         }
 
-      for (i = (4-outcount); i < 4; i++)
+      for (i = (4 - outcount); i < 4; i++)
         {
           retval = pdf_stm_f_a85_write_out (outbytes[i], out, filter_state);
         }
     }
-  
+
   return retval;
 }
 
@@ -599,29 +599,29 @@ pdf_stm_f_a85dec_wr_quad (const pdf_char_t *quint, const pdf_size_t outcount,
 pdf_status_t
 pdf_stm_f_a85dec_init (pdf_hash_t params, void **state)
 {
-    
+
   pdf_stm_f_a85_t filter_state;
-  
+
   filter_state = pdf_alloc (sizeof (struct pdf_stm_f_a85_s));
   if (NULL == filter_state)
     {
       return PDF_ERROR;
     }
-  
+
   /* Initialization */
-  
+
   filter_state->line_length = 0;
   filter_state->spare_count = 0;
   filter_state->output_count = 0;
-  
-  
+
+
   *state = (void *) filter_state;
   return PDF_OK;
 }
 
 /* Get the next non-whitespace character */
 static pdf_status_t
-pdf_stm_f_a85dec_getnext (pdf_buffer_t in, pdf_char_t *pc)
+pdf_stm_f_a85dec_getnext (pdf_buffer_t in, pdf_char_t * pc)
 {
   /* Get the next non-whitespace character */
   int done = PDF_FALSE;
@@ -633,12 +633,12 @@ pdf_stm_f_a85dec_getnext (pdf_buffer_t in, pdf_char_t *pc)
       if (in->wp > in->rp)
         {
           c = in->data[in->rp++];
-          if (!isspace(c))
+          if (!isspace (c))
             { /* Found a non-whitespace character. We're done. */
               done = PDF_TRUE;
               retval = PDF_OK;
               *pc = c;
-            } 
+            }
         }
       else
         { /* ran out of input data. We're done. */
@@ -668,14 +668,14 @@ pdf_stm_f_a85dec_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
   int k;
 
   filter_state = (pdf_stm_f_a85_t) state;
-  
+
   /* Fill the output buffer with the contents of the input buffer, but
      note that the second may be bigger than the former */
 
   /* Only process the next bit of input if the output buffer is empty */
   retval = pdf_stm_f_a85_flush_outbuff (out, filter_state);
   if (PDF_OK != retval)
-    { 
+    {
       return retval;
     }
 
@@ -703,12 +703,12 @@ pdf_stm_f_a85dec_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
             }
           filter_state->spare_count = 0;
         }
-      
+
       /* Now attempt to fill up the rest of the quint from the input stream */
       done = PDF_FALSE;
       for (i = q_idx; ((i < 5) && !done); i++)
         {
-          retval = pdf_stm_f_a85dec_getnext(in, &(quint[q_idx]));
+          retval = pdf_stm_f_a85dec_getnext (in, &(quint[q_idx]));
           if (PDF_ENINPUT == retval)
             { /* Ran out of input before filling quint */
               done = PDF_TRUE;
@@ -724,7 +724,7 @@ pdf_stm_f_a85dec_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
                 {
                   done = PDF_TRUE;
                 }
-              
+
               q_idx++;
             }
         }
@@ -740,7 +740,7 @@ pdf_stm_f_a85dec_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
                   retval = pdf_stm_f_a85_write_out (0, out, filter_state);
                   retval = pdf_stm_f_a85_write_out (0, out, filter_state);
                   retval = pdf_stm_f_a85_write_out (0, out, filter_state);
-                  
+
                   q_idx = 0;
                 }
               else if (PDF_ENINPUT == retval)
@@ -770,12 +770,12 @@ pdf_stm_f_a85dec_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
               for (i = 0; i < 5; i++)
                 {
                   tr_quint[i] = quint[i] - '!';
-                  
+
                 }
-              
-              retval = pdf_stm_f_a85dec_wr_quad (tr_quint, 4, out, 
+
+              retval = pdf_stm_f_a85dec_wr_quad (tr_quint, 4, out,
                                                  filter_state);
-              
+
               if (PDF_OK != retval)
                 {
                   /* Something wrong in writing out data. Save for next call */
@@ -786,7 +786,7 @@ pdf_stm_f_a85dec_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
                   filter_state->spare_count = q_idx;
                   oldone = PDF_TRUE;
                 }
-              
+
             }
         }
       else
@@ -828,82 +828,6 @@ pdf_stm_f_a85dec_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
             {
               /* 0 == term_idx - only term sequence - no quad output */
             }
-
-#if 0
-          if ((0 == term_idx) && (2 == q_idx)
-              && ('>' == quint[1]) && (PDF_ENINPUT == retval))
-            { /* just term pattern. */
-              
-              /* Do nothing here */
-              
-            }
-          else if ((0 == term_idx) && (1 == q_idx) && (PDF_ENINPUT == retval))
-            { /* There is only one byte of the term sequence present */
-              /* Do nothing here - wait for next byte to complete term seq. */
-            }
-          else if (1 == term_idx)
-            { /* There is a single byte to process before term sequence */
-              /* This is an error */
-              retval = PDF_ERROR;
-              oldone = PDF_TRUE;
-            }
-          else if ((2 == term_idx) && (4 == q_idx)
-                   && ('>' == quint[3]) && (PDF_ENINPUT == retval))
-            { /* There are Two data bytes to work on */
-              tr_quint[0] = 0;
-              tr_quint[1] = 0;
-              tr_quint[2] = 0;
-              tr_quint[3] = quint[0] - '!';
-              tr_quint[4] = quint[1] - '!';
-
-              retval = pdf_stm_f_a85dec_wr_quad (tr_quint, 1, out, 
-                                                 filter_state);
-
-              /* Put term sequence at beginning of quint */
-              q_idx = 0;
-              quint[q_idx++] = quint[2];
-              quint[q_idx++] = quint[3];
-
-            }
-          else if ((3 == term_idx) && (5 == q_idx) && ('>' == quint[4]))
-            { /* There are Three data bytes and a term pattern */
-              tr_quint[0] = 0;
-              tr_quint[1] = 0;
-              tr_quint[2] = quint[0] - '!';
-              tr_quint[3] = quint[1] - '!';
-              tr_quint[4] = quint[2] - '!';
-
-              retval = pdf_stm_f_a85dec_wr_quad (tr_quint, 2, out, 
-                                                 filter_state);
-
-              /* Put term sequence at beginning of quint */
-              q_idx = 0;
-              quint[q_idx++] = quint[3];
-              quint[q_idx++] = quint[4];
-
-            }
-          else if ((4 == term_idx) && (5 == q_idx))
-            { /* There are Four data bytes to work on, and 1/2 of term patt. */
-              tr_quint[0] = 0;
-              tr_quint[1] = quint[0] - '!';
-              tr_quint[2] = quint[1] - '!';
-              tr_quint[3] = quint[2] - '!';
-              tr_quint[4] = quint[3] - '!';
-
-              retval = pdf_stm_f_a85dec_wr_quad (tr_quint, 3, out, 
-                                                 filter_state);
-
-              q_idx = 0;
-              quint[q_idx++] = quint[4];
-
-            }
-          else
-            { /* Some kind of invalid condition is present. */
-              retval = PDF_ERROR;
-              oldone = PDF_TRUE;
-            }
-
-#endif //0
 
           /* Now check to see if we have valid finishing conditions: */
           if ((PDF_ENINPUT == retval) && (2 == q_idx)
@@ -947,7 +871,7 @@ pdf_stm_f_a85dec_dealloc_state (void *state)
   pdf_stm_f_a85_t a85_state;
   a85_state = (pdf_stm_f_a85_t) state;
   pdf_dealloc (a85_state);
-  
+
   return PDF_OK;
 }
 
