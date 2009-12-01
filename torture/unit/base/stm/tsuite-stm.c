@@ -38,7 +38,6 @@ extern TCase *test_pdf_stm_tell (void);
 extern TCase *test_pdf_stm_write (void);
 extern TCase *test_pdf_stm_flush (void);
 extern TCase *test_pdf_stm_get_mode (void);
-extern TCase *test_pdf_stm_f_a85dec_apply (void);
 
 Suite *
 tsuite_stm ()
@@ -58,7 +57,6 @@ tsuite_stm ()
   suite_add_tcase (s, test_pdf_stm_write ());
   suite_add_tcase (s, test_pdf_stm_flush ());
   suite_add_tcase (s, test_pdf_stm_get_mode ());
-  suite_add_tcase (s, test_pdf_stm_f_a85dec_apply ());
 
 
   return s;

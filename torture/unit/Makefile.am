@@ -70,8 +70,7 @@ TEST_SUITE_STM = base/stm/pdf-stm-mem-new.c \
                  base/stm/pdf-stm-tell.c \
                  base/stm/pdf-stm-write.c \
 		 base/stm/pdf-stm-flush.c \
-                 base/stm/pdf-stm-get-mode.c \
-		 base/stm/pdf-stm-f-a85dec-apply.c
+                 base/stm/pdf-stm-get-mode.c
 
 TEST_SUITE_HASH = base/hash/pdf-hash-new.c \
 		  base/hash/pdf-hash-destroy.c \
