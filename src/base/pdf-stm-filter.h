@@ -38,6 +38,7 @@
 #include <pdf-stm-f-aesv2.h>
 #include <pdf-stm-f-md5.h>
 #include <pdf-stm-f-lzw.h>
+#include <pdf-stm-f-a85.h>
 
 #if defined(HAVE_LIBZ)
 #  include <pdf-stm-f-flate.h>
@@ -77,7 +78,9 @@ enum pdf_stm_filter_type_e
   PDF_STM_FILTER_V2_DEC,
   PDF_STM_FILTER_MD5_ENC,
   PDF_STM_FILTER_LZW_DEC,
-  PDF_STM_FILTER_LZW_ENC
+  PDF_STM_FILTER_LZW_ENC,
+  PDF_STM_FILTER_A85_DEC,
+  PDF_STM_FILTER_A85_ENC
 };
 
 /* END PUBLIC */

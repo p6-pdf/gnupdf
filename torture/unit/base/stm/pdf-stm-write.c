@@ -954,9 +954,9 @@ START_TEST (pdf_stm_write_015)
 
   pdf_hash_new (NULL, &params);
   fail_if (pdf_stm_install_filter (mem_stm_fixture.stm,
-				   PDF_STM_FILTER_LZW_ENC,
-				   params)
-	   != PDF_OK);
+                                   PDF_STM_FILTER_LZW_ENC,
+                                   params)
+           != PDF_OK);
 
   /* Write and test some stuff */
   ret = pdf_stm_write (mem_stm_fixture.stm, decoded, 10, &tmp);
@@ -970,7 +970,7 @@ START_TEST (pdf_stm_write_015)
 END_TEST
 
 /*
- * Test: pdf_stm_write_015
+ * Test: pdf_stm_write_016
  * Description:
  *   Create a memory-based writing stream and attach an LZW filter
  *   encoder to it.
@@ -993,9 +993,9 @@ START_TEST (pdf_stm_write_016)
 
   pdf_hash_new (NULL, &params);
   fail_if (pdf_stm_install_filter (mem_stm_fixture.stm,
-				   PDF_STM_FILTER_LZW_DEC,
-				   params)
-	   != PDF_OK);
+                                   PDF_STM_FILTER_LZW_DEC,
+                                   params)
+           != PDF_OK);
 
   /* Test some data */
   ret = pdf_stm_write (mem_stm_fixture.stm, encoded, 9, &tmp);
@@ -1009,6 +1009,196 @@ START_TEST (pdf_stm_write_016)
 END_TEST
 
 /*
+ * Test: pdf_stm_write_017
+ * Description:
+ *   Create a memory-based writing stream and attach an A85 filter
+ *   encoder to it.
+ * Success condition:
+ *   The encoded data should be correct.
+ */
+START_TEST (pdf_stm_write_017)
+{
+  pdf_status_t ret;
+  pdf_hash_t params;
+  pdf_size_t tmp = 0;
+
+  pdf_char_t *unencoded = 
+    "\x00\x01\x02\x03\x00\x00\x00\x00\x04\x05\x06\x07\x08\x09\x0A\x0B";
+  pdf_char_t *encoded = 
+    "!!\x2A\x2D\x27z\x22\x39\x65\x75\x37\x23\x52\x4C\x68\x47~>";
+
+  /* Create the filter */
+  pdf_init ();
+
+  pdf_hash_new (NULL, &params);
+  fail_if (pdf_stm_install_filter (mem_stm_fixture.stm,
+                                   PDF_STM_FILTER_A85_ENC,
+                                   params)
+           != PDF_OK);
+
+  /* Test some data */
+  ret = pdf_stm_write (mem_stm_fixture.stm, unencoded, 16, &tmp);
+  fail_if (ret == PDF_ERROR);
+  fail_if (pdf_stm_flush (mem_stm_fixture.stm, PDF_TRUE, &tmp) == PDF_ERROR);  
+  fail_if (memcmp (mem_stm_fixture.buf, encoded, 18) != 0);
+  
+  /* Cleanup */
+  pdf_hash_destroy (params);
+}
+END_TEST
+
+
+/*
+ * Test: pdf_stm_write_018
+ * Description:
+ *   Create a memory-based writing stream and attach an A85 filter
+ *   encoder to it.
+ * Success condition:
+ *   The encoded data should be correct.
+ */
+START_TEST (pdf_stm_write_018)
+{
+  pdf_status_t ret;
+  pdf_hash_t params;
+  pdf_size_t tmp = 0;
+
+  pdf_char_t *unencoded = "\x00";
+  pdf_char_t *encoded = "!!~>";
+
+  /* Create the filter */
+  pdf_init ();
+
+  pdf_hash_new (NULL, &params);
+  fail_if (pdf_stm_install_filter (mem_stm_fixture.stm,
+                                   PDF_STM_FILTER_A85_ENC,
+                                   params)
+           != PDF_OK);
+
+  /* Test some data */
+  ret = pdf_stm_write (mem_stm_fixture.stm, unencoded, 1, &tmp);
+  fail_if (ret == PDF_ERROR);
+  fail_if (pdf_stm_flush (mem_stm_fixture.stm, PDF_TRUE, &tmp) == PDF_ERROR);  
+  fail_if (memcmp (mem_stm_fixture.buf, encoded, 4) != 0);
+  
+  /* Cleanup */
+  pdf_hash_destroy (params);
+}
+END_TEST
+
+/*
+ * Test: pdf_stm_write_019
+ * Description:
+ *   Create a memory-based writing stream and attach an A85 filter
+ *   encoder to it.
+ * Success condition:
+ *   The encoded data should be correct.
+ */
+START_TEST (pdf_stm_write_019)
+{
+  pdf_status_t ret;
+  pdf_hash_t params;
+  pdf_size_t tmp = 0;
+
+  pdf_char_t *unencoded = "\x00\x00";
+  pdf_char_t *encoded = "!!!~>";
+
+  /* Create the filter */
+  pdf_init();
+
+  pdf_hash_new (NULL, &params);
+  fail_if (pdf_stm_install_filter (mem_stm_fixture.stm,
+                                   PDF_STM_FILTER_A85_ENC,
+                                   params)
+           != PDF_OK);
+
+  /* Test some data */
+  ret = pdf_stm_write (mem_stm_fixture.stm, unencoded, 2, &tmp);
+  fail_if (ret == PDF_ERROR);
+  fail_if (pdf_stm_flush (mem_stm_fixture.stm, PDF_TRUE, &tmp) == PDF_ERROR);  
+  fail_if (memcmp (mem_stm_fixture.buf, encoded, 5) != 0);
+  
+  /* Cleanup */
+  pdf_hash_destroy (params);
+}
+END_TEST
+
+/*
+ * Test: pdf_stm_write_020
+ * Description:
+ *   Create a memory-based writing stream and attach an A85 filter
+ *   encoder to it.
+ * Success condition:
+ *   The encoded data should be correct.
+ */
+START_TEST (pdf_stm_write_020)
+{
+  pdf_status_t ret;
+  pdf_hash_t params;
+  pdf_size_t tmp = 0;
+
+  pdf_char_t *unencoded = "\x00\x00\x00";
+  pdf_char_t *encoded = "!!!!~>";
+
+  /* Create the filter */
+  pdf_init ();
+
+  pdf_hash_new (NULL, &params);
+  fail_if (pdf_stm_install_filter (mem_stm_fixture.stm,
+                                   PDF_STM_FILTER_A85_ENC,
+                                   params)
+           != PDF_OK);
+
+  /* Test some data */
+  ret = pdf_stm_write (mem_stm_fixture.stm, unencoded, 3, &tmp);
+  fail_if (ret == PDF_ERROR);
+  fail_if (pdf_stm_flush (mem_stm_fixture.stm, PDF_TRUE, &tmp) == PDF_ERROR);  
+  fail_if (memcmp (mem_stm_fixture.buf, encoded, 6) != 0);
+  
+  /* Cleanup */
+  pdf_hash_destroy (params);
+}
+END_TEST
+
+/*
+ * Test: pdf_stm_write_021
+ * Description:
+ *   Create a memory-based writing stream and attach an A85 filter
+ *   encoder to it.
+ * Success condition:
+ *   The encoded data should be correct.
+ */
+START_TEST (pdf_stm_write_021)
+{
+  pdf_status_t ret;
+  pdf_hash_t params;
+  pdf_size_t tmp = 0;
+
+  pdf_char_t *unencoded = "\x00\x00\x00\x00";
+  pdf_char_t *encoded = "z~>";
+
+  /* Create the filter */
+  pdf_init ();
+
+  pdf_hash_new (NULL, &params);
+  fail_if (pdf_stm_install_filter (mem_stm_fixture.stm,
+                                   PDF_STM_FILTER_A85_ENC,
+                                   params)
+           != PDF_OK);
+
+  /* Test some data */
+  ret = pdf_stm_write (mem_stm_fixture.stm, unencoded, 4, &tmp);
+  fail_if (ret == PDF_ERROR);
+  fail_if (pdf_stm_flush (mem_stm_fixture.stm, PDF_TRUE, &tmp) == PDF_ERROR);  
+  fail_if (memcmp (mem_stm_fixture.buf, encoded, 3) != 0);
+  
+  /* Cleanup */
+  pdf_hash_destroy (params);
+}
+END_TEST
+
+
+
+/*
  * Test case creation function
  */
 TCase *
@@ -1017,8 +1207,8 @@ test_pdf_stm_write (void)
   TCase *tc = tcase_create ("pdf_stm_write");
 
   tcase_add_checked_fixture(tc,
-			    mem_stm_fixture_setup,
-			    mem_stm_fixture_teardown);
+                            mem_stm_fixture_setup,
+                            mem_stm_fixture_teardown);
   
   tcase_add_test(tc, pdf_stm_write_001);
   tcase_add_test(tc, pdf_stm_write_002);
@@ -1039,6 +1229,11 @@ test_pdf_stm_write (void)
   tcase_add_test(tc, pdf_stm_write_014);
   tcase_add_test(tc, pdf_stm_write_015);
   tcase_add_test(tc, pdf_stm_write_016);
+  tcase_add_test(tc, pdf_stm_write_017);
+  tcase_add_test(tc, pdf_stm_write_018);
+  tcase_add_test(tc, pdf_stm_write_019);
+  tcase_add_test(tc, pdf_stm_write_020);
+  tcase_add_test(tc, pdf_stm_write_021);
 
   return tc;
 }

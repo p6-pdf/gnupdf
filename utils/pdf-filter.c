@@ -67,9 +67,9 @@ static const struct option GNU_longOptions[] =
     {"lzwenc", no_argument, NULL, LZWENC_FILTER_ARG},
     {"lzwdec", no_argument, NULL, LZWDEC_FILTER_ARG},
     {"lzw-earlychange", no_argument, NULL, LZW_EARLYCHANGE_ARG},
-#if 0
     {"a85dec", no_argument, NULL, ASCII85DEC_FILTER_ARG},
     {"a85enc", no_argument, NULL, ASCII85ENC_FILTER_ARG},
+#if 0
     {"cfaxdec", no_argument, NULL, CCITTFAXDEC_FILTER_ARG},
     {"jxpdec", no_argument, NULL, JXPDEC_FILTER_ARG},
     {"predenc", no_argument, NULL, PREDENC_FILTER_ARG},
@@ -117,11 +117,11 @@ available filters\n\
   --ahexdec                           use the ASCII Hex decoder filter\n\
   --ahexenc                           use the ASCII Hex encoder filter\n\
   --lzwenc                            use the LZW encoder filter\n\
-  --lzwdec                            use the LZW decoder filter\n"
+  --lzwdec                            use the LZW decoder filter\n\
+  --a85dec                            use the ASCII 85 decoder filter\n\
+  --a85enc                            use the ASCII 85 encoder filter\n"
 #if 0
-"  --a85dec                            use the ASCII 85 decoder filter\n\
-  --a85enc                            use the ASCII 85 encoder filter\n\
-  --jxpdec                            use the JXP decoder filter\n\
+  "  --jxpdec                            use the JXP decoder filter\n\
   --predenc                           use the predictor encoder filter\n\
   --preddec                           use the predictor decoder filter\n"
 #endif /* 0 */
@@ -565,15 +565,47 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
           }
 #endif /* HAVE_LIBJPEG */
 
-#if 0
         case ASCII85DEC_FILTER_ARG:
           {
+            ret = pdf_hash_new (NULL, &filter_params);
+            if (ret != PDF_OK)
+              {
+                pdf_error (ret, stderr, "while creating the a85dec filter parameters hash table");
+                exit (1);
+              }
+
+            status = pdf_stm_install_filter (stm,
+                                             PDF_STM_FILTER_A85_DEC,
+                                             filter_params);
+            if (status != PDF_OK)
+              {
+                pdf_error (status, stderr, "while installing the A85 decoder filter");
+                exit (1);
+              }
+
             break;
           }
         case ASCII85ENC_FILTER_ARG:
           {
+            ret = pdf_hash_new (NULL, &filter_params);
+            if (ret != PDF_OK)
+              {
+                pdf_error (ret, stderr, "while creating the a85enc filter parameters hash table");
+                exit (1);
+              }
+
+            status = pdf_stm_install_filter (stm,
+                                             PDF_STM_FILTER_A85_ENC,
+                                             filter_params);
+            if (status != PDF_OK)
+              {
+                pdf_error (status, stderr, "while installing the A85 encoder filter");
+                exit (1);
+              }
+
             break;
           }
+#if 0
         case CCITTFAXDEC_FILTER_ARG:
           {
             break;

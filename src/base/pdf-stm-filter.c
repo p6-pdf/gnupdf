@@ -177,6 +177,20 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
             new->impl.dealloc_state_fn = pdf_stm_f_lzwdec_dealloc_state;
             break;
           }
+	case PDF_STM_FILTER_A85_ENC:
+	  {
+	    new->impl.init_fn = pdf_stm_f_a85enc_init;
+	    new->impl.apply_fn = pdf_stm_f_a85enc_apply;
+	    new->impl.dealloc_state_fn = pdf_stm_f_a85enc_dealloc_state;
+	    break;
+	  }
+	case PDF_STM_FILTER_A85_DEC:
+	  {
+	    new->impl.init_fn = pdf_stm_f_a85dec_init;
+	    new->impl.apply_fn = pdf_stm_f_a85dec_apply;
+	    new->impl.dealloc_state_fn = pdf_stm_f_a85dec_dealloc_state;
+	    break;
+	  }
 #if defined(HAVE_LIBJBIG2DEC)
         case PDF_STM_FILTER_JBIG2_DEC:
           {

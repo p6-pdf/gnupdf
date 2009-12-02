@@ -3,6 +3,34 @@
 	* doc/gnupdf-hg.texi (Running the unit tests): Added details on
 	how to run the unit tests in windows.
 
+2009-11-29  Scott Fohey < s f o h e y at g m a i l dot c o m >
+
+	* doc/A85_Calculation_Spreadsheet.ods: New File -
+	OOO spreadsheet helpfull for performing ASCII85 conversions
+
+	* torture/unit/pdf-stm-f-a85-tests.sh: New File
+	created to exercise ASCII85 enc. and dec. routines through pdf-filter
+
+	* src/Makefile.am: added entries for pdf-stm-f-a85
+
+	* src/base/pdf-stm-f-a85.c: recoded to current filter interface and
+	added encoder which did not previously exist.
+
+	* src/base/pdf-stm-f-a85.h: updated for current filter interface and
+	added encoder
+
+	* src/base/pdf-stm-filter.c: added A85 encoder/decoder
+
+	* src/base/pdf-stm-filter.h: added A85 encoder/decoder
+
+	* torture/unit/base/stm/pdf-stm-read.c: added A85dec test cases
+
+	* torture/unit/base/stm/pdf-stm-write.c: added some A85enc tests
+
+	* utils/pdf-filter.c: uncommented A85 filter support
+
+	* utils/pdf-filter.h: uncommented A85 filter support
+
 2009-11-25  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* torture/tortutils/tortutils.h: Include `sys/types.h' if
