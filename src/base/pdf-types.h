@@ -141,7 +141,7 @@ struct pdf_pm_s
 
 /********************** 64-bit type built-in support **************************/
 
-#if defined(int64_t) && !defined(PDF_FORCE_BIGNUMS)
+#if defined(HAVE_INT64_T) && !defined(PDF_FORCE_BIGNUMS)
 #define PDF_USE_BUILTIN_64BIT_SUPPORT
 #endif
 
