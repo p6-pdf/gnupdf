@@ -70,6 +70,13 @@ AC_CHECK_HEADERS(malloc.h)
 dnl Search for data types
 AC_CHECK_TYPE(size_t, unsigned)
 AC_CHECK_TYPE(off_t, long)
+AC_TYPE_INT64_T
+
+  if test $ac_cv_c_int64_t = yes; then
+    AC_DEFINE([HAVE_INT64_T], [1],
+      [Define to 1 if the system has the type `int64_t'.])
+  fi
+
 
 dnl Search for functions
 AC_FUNC_FSEEKO

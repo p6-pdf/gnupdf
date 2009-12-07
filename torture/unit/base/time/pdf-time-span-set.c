@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 22:18:05 davazp"
+/* -*- mode: C -*- Time-stamp: "09/12/07 21:32:19 jemarch"
  *
  *       File:         pdf-time-span-set.c
  *       Date:         Sun Sep 21 16:37:27 2008
@@ -58,7 +58,7 @@ START_TEST (pdf_time_span_set_001)
     seconds.high =0x00112233;
     status = pdf_time_span_set(&span,seconds.high,seconds.low);
 #else
-    seconds =  0x0011223344556677;
+    seconds =  0x556677;
     status = pdf_time_span_set(&span,(pdf_i32_t)(seconds>>32),(pdf_u32_t)seconds);
 #endif
     fail_if(status != PDF_OK);
@@ -72,7 +72,7 @@ START_TEST (pdf_time_span_set_001)
     seconds.high =0x11223344;
     status = pdf_time_span_set(&span,seconds.high,seconds.low);
 #else
-    seconds =  0x1122334455667788;
+    seconds =  0x55667788;
     status = pdf_time_span_set(&span,(pdf_i32_t)(seconds>>32),(pdf_u32_t)seconds);
 #endif
     fail_if(status != PDF_OK);

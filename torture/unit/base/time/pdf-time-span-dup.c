@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 22:17:41 davazp"
+/* -*- mode: C -*- Time-stamp: "09/12/07 21:32:44 jemarch"
  *
  *       File:         pdf-stm-write.c
  *       Date:         Sun Sep 21 16:37:27 2008
@@ -54,7 +54,7 @@ START_TEST (pdf_time_span_dup_001)
     span1.low = 5;
     span1.high =4;
 #else
-    span1 =  0x1122334455667788;
+    span1 = 0x55667788;
 #endif
 
     span2 = pdf_time_span_dup(span1);

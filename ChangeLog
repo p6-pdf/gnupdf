@@ -1,3 +1,14 @@
+2009-12-07  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/unit/base/time/pdf-time-span-dup.c: Do not overload
+	pdf_time_span_t values with big unsigned values.
+
+	* torture/unit/base/time/pdf-time-span-set.c: Likewise.
+
+	* src/base/pdf-types.h: Fixing int64_t detection (patch by Scott
+	Fohey).  Cover also the case where stdint.h is not present and
+	gnulib defines int64_t.
+
 2009-11-30  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf-hg.texi (Running the unit tests): Added details on
