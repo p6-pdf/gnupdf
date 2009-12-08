@@ -1,5 +1,8 @@
 2009-12-08  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf-arch.texi (Creation and Destruction of Object
+	Values): Functions documented.
+
 	* doc/gnupdf-hg.texi (Updating the AUTHORS file): New chapter.
 
 	* AUTHORS: Updated with the output of authors.el.

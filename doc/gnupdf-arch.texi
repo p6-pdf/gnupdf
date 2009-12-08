@@ -1944,7 +1944,7 @@ able to hold the value of a PDF object.  Supported PDF objects are:
 @subsection Object Value Data Types
 
 @deftp {Data Type} pdf_obj_val_t
-The value of a PDF Object.
+The value of a PDF Object.  This is an opaque type.
 @end deftp
 
 @deftp {Data Type} {enum pdf_obj_val_type_e}
@@ -1967,50 +1967,342 @@ Enumeration of the allowed types for a PDF object value:
 @node Creation and Destruction of Object Values
 @subsection Creation and Destruction of Object Values
 
-@deftypefun pdf_status_t pdf_obj_val_null_new (void)
-XXX
+@deftypefun pdf_status_t pdf_obj_val_null_new (pdf_obj_val_t *@var{obj_val})
+
+Create and return a new object value of type null.
+
+@table @strong
+@item Parameters
+@table @var
+@item obj_val
+A pointer to a @code{pdf_obj_val_t} variable that will hold the value.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+A null object value was created and stored in @var{obj_val}.
+@end table
+@item Usage example
+@example
+pdf_obj_val_t null_val;
+
+pdf_obj_val_null_new (&null_val);
+@end example
+@end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_val_boolean_new (pdf_bool_t @var{value})
-XXX
+@deftypefun pdf_status_t pdf_obj_val_boolean_new (pdf_bool_t @var{value}, pdf_obj_val_t *@var{obj_val})
+
+Create a boolean object value @var{obj_val} initialized to
+@var{value}.
+
+@table @strong
+@item Parameters
+@table @var
+@item value
+A boolean value used as the initial value of the object value.
+@item obj_val
+A pointer to a @code{pdf_obj_val_t} variable that will hold the value.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The boolean object value was created and stored in @var{obj_val}.
+@end table
+@item Usage example
+@example
+pdf_obj_val_t boolean_val;
+
+pdf_obj_val_boolean_new (PDF_TRUE, &boolean_val);
+@end example
+@end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_val_integer_new (pdf_u32_t @var{value})
-XXX
+@deftypefun pdf_status_t pdf_obj_val_integer_new (pdf_u32_t @var{value}, pdf_obj_val_t *@var{obj_val})
+
+Create an integer object value @var{obj_val} initialized to
+@var{value}.
+
+@table @strong
+@item Parameters
+@table @var
+@item value
+An integer value used as the initial value of the object value.
+@item obj_val
+A pointer to a @code{pdf_obj_val_t} variable that will hold the value.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The integer object value was created and stored in @var{obj_val}.
+@end table
+@item Usage example
+@example
+pdf_obj_val_t integer_val;
+
+pdf_obj_val_integer_new (20, &integer_val);
+@end example
+@end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_val_real_new (pdf_u32_t @var{value})
-XXX
+@deftypefun pdf_status_t pdf_obj_val_real_new (pdf_u32_t @var{value}, pdf_obj_val_t *@var{obj_val})
+
+Create a real object value @var{obj_val} initialized to @var{value}.
+
+@table @strong
+@item Parameters
+@table @var
+@item value
+A real value used as the initial value of the object value.
+@item obj_val
+A pointer to a @code{pdf_obj_val_t} variable that will hold the value.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The real object value was created and stored in @var{obj_val}.
+@end table
+@item Usage example
+@example
+pdf_obj_val_t real_val;
+
+pdf_obj_val_real_new (3.14, &real_val);
+@end example
+@end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_val_string_new (pdf_char_t *@var{value}, pdf_size_t @var{size})
-XXX
+@deftypefun pdf_status_t pdf_obj_val_string_new (pdf_char_t *@var{value}, pdf_size_t @var{size}, pdf_obj_val_t *@var{obj_val})
+
+Create a string object value @var{obj_val} initialized to @var{value}.
+
+@table @strong
+@item Parameters
+@table @var
+@item value
+A pointer to a memory buffer.  The pointer will be used internally by
+the object value, so the user should not deallocate it explicitly.
+@item size
+The size of @var{value} in octects.
+@item obj_val
+A pointer to a @code{pdf_obj_val_t} variable that will hold the value.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The string object value was created and stored in @var{obj_val}.
+@end table
+@item Usage example
+@example
+pdf_obj_val_t string_val;
+
+pdf_obj_val_string_new ("foo", 3, &string_val);
+@end example
+@end table
 @end deftypefun
 
 @deftypefun pdf_status_t pdf_obj_val_name_new (pdf_char_t *@var{value}, pdf_size_t @var{size})
-XXX
+
+Create a name object value @var{obj_val} initialized to @var{value}.
+
+@table @strong
+@item Parameters
+@table @var
+@item value
+A pointer to a memory buffer.  The pointer will be used internally by
+the object value, so the user should not deallocate it explicitly.
+@item size
+The size of @var{value} in octects.
+@item obj_val
+A pointer to a @code{pdf_obj_val_t} variable that will hold the value.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The name object value was created and stored in @var{obj_val}.
+@end table
+@item Usage example
+@example
+pdf_obj_val_t name_val;
+
+pdf_obj_val_name_new ("bar", 3, &name_val);
+@end example
+@end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_val_array_new (void)
-Create an empty array.
-XXX
+@deftypefun pdf_status_t pdf_obj_val_array_new (pdf_obj_val_t *@var{obj_val})
+
+Create an empty array and store it in @var{obj_val}.
+
+@table @strong
+@item Parameters
+@table @var
+@item obj_val
+A pointer to a @code{pdf_obj_val_t} variable that will hold the array.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The array object value was created and stored in @var{obj_val}.
+@item PDF_ENOMEM
+End of memory.  The reference stored in @var{obj_val} shall be
+considered invalid.
+@end table
+@item Usage example
+@example
+pdf_obj_val_t array_val;
+
+if (pdf_obj_val_array_new (&array_val) != PDF_OK)
+@{
+   /* End of memory condition */
+@}
+@end example
+@end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_val_dict_new (void)
-Create an empty dictionary.
-XXX
+@deftypefun pdf_status_t pdf_obj_val_dict_new (@var{obj_val})
+
+Create an empty dictionary and store it in @var{obj_val}.
+
+@table @strong
+@item Parameters
+@table @var
+@item obj_val
+A pointer to a @code{pdf_obj_val_t} variable that will hold the
+dictionary.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The dictionary object value was created and stored in @var{obj_val}.
+@item PDF_ENOMEM
+End of memory.  The reference stored in @var{obj_val} shall be
+considered invalid.
+@end table
+@item Usage example
+@example
+pdf_obj_val_t dict_val;
+
+if (pdf_obj_val_dict_new (&dict_val) != PDF_OK)
+@{
+   /* End of memory condition */
+@}
+@end example
+@end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_val_stream_new (pdf_obj_val_t @var{dict}, pdf_stm_t @var{stm}, pdf_off_t @var{data})
-XXX
+@deftypefun pdf_status_t pdf_obj_val_stream_new (pdf_obj_val_t @var{dict}, pdf_stm_t @var{stm}, pdf_off_t @var{size}, pdf_bool_t @var{volatile_p}, pdf_obj_val_t @var{obj_val})
+
+Create a value for a stream and store it in @var{obj_val}.
+
+@table @strong
+@item Parameters
+@item dict
+A dictionary value that will be used as the description dictionary for
+the stream.
+@item stm
+A reading base stream that can be used to get the data stored in the
+stream.
+@item offset
+The number of octects that can be read from @var{stm}.
+@item volatile_p
+Boolean value indicating whether the value is volatile.  See the
+documentation of @code{pdf_obj_val_destroy} for more information about
+volatile stream values.
+@item obj_val
+A pointer to a @code{pdf_obj_val_t} variable that will hold the
+stream.
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The value was successfully created.
+@item PDF_ENOMEM
+Out of memory condition.  The reference stored in @var{obj_val} shall
+be considered invalid.
+@end table
+@item Usage example
+@example
+pdf_stm_t stm;
+pdf_obj_val_t dict_val;
+pdf_obj_val_t stream_val;
+
+if (pdf_obj_val_stream_new (dict-val, stm, 100, 0,
+                            PDF_TRUE, &stream_val) != PDF_OK)
+@{
+   /* Error creating the stream value */
+@}
+@end example
+@end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_val_indirect_new (unsigned int @var{on}, unsigned int @var{gn})
-XXX
+@deftypefun pdf_status_t pdf_obj_val_indirect_new (unsigned int @var{on}, unsigned int @var{gn}, pdf_obj_val_t *@var{obj_val})
+
+Create a value for an indirect reference and store it in
+@var{obj_val}.
+
+@table @strong
+@item Parameters
+@table @var
+@item on
+The object number, a positive integer.
+@item gn
+The object generation number, a non-negative integer.
+@item obj_val
+A pointer to a @code{pdf_obj_val_t} variable that will hold the
+indirect reference.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The indirect reference value was created and stored in @var{obj_val}.
+@end table
+@item Usage example
+@example
+pdf_obj_val_t indirect_val;
+
+pdf_obj_val_indirect_new (10, 0, &indirect_val);
+@end example
+@end table
 @end deftypefun
 
 @deftypefun pdf_status_t pdf_obj_val_destroy (pdf_obj_val_t @var{obj_val})
+
+Deallocate the memory used by @var{obj_val}.
+
+If @var{obj_val} is a collection (dictionary or array) then all its
+elements are destroyed in a recursive way.
+
+If @var{obj_val} is a stream value then the stream dictionary is
+destroyed and the reading stream closed.  If the stream is volatile
+the open file associated with the reading stream is deleted from its
+containing filesystem.
+@table @strong
+@item Parameters
+@table @var
+@item obj_val
+The object value to destroy.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The memory associated with the object value was deallocated.  The
+reference stored in @var{obj_val} shall be considered invalid.
+@end table
+@item Usage example
+@example
 XXX
+@end example
+@end table
 @end deftypefun
 
 @node Management of Object Values
