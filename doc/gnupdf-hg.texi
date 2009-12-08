@@ -55,6 +55,7 @@ GNU PDF Library Hackers Guide
 * Writing Documentation::
 * Sending Patches::
 * Testing the library::
+* Updating the AUTHORS file::
 @end menu
 
 @node Information for Newcomers
@@ -1258,5 +1259,21 @@ can be used while writing tests.
 
 See @file{torture/tortutils/tortutils.h} for documentation on the
 functions provided by the library.
+
+@node Updating the AUTHORS file
+@chapter Updating the AUTHORS file
+
+The @file{AUTHORS} file is automatically generated using Emas.  The
+@file{prmgt/authors.el} elisp file contains the implementation of the
+@code{author} function.
+
+In order to regenerate the file:
+
+@enumerate
+@item Launch Emacs
+@item Load the @file{prmgt/authors.el} file.
+@item Call @kbd{M-xauthors} and specify the libgnupdf source tree.
+@item Update AUTHORS with the contents of the @code{*Authors*} buffer.
+@end enumerate
 
 @bye

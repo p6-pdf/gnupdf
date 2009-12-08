@@ -1,5 +1,7 @@
 2009-12-08  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf-hg.texi (Updating the AUTHORS file): New chapter.
+
 	* AUTHORS: Updated with the output of authors.el.
 
 	* prmgt/authors.el: New file copied from the Emacs sources and
