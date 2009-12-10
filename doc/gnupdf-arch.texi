@@ -1942,14 +1942,14 @@ the value of an arbitrary PDF object.
 
 @menu
 * Overview of the object values::
-* Object value data types::  pdf_obj_val_t and pdf_obj_val_type_e.
-* Generic functions for object values:: Object destruction,
-                                         properties, etc.
-* Scalar object values::     Boolean, integer and real values.
-* String and name object values:: String and names.
-* Container object values::  Arrays and dictionaries.
-* Stream object values::     Stream objects.
-* Indirect reference object values:: References to PDF objects.
+* Value data types::  pdf_obj_val_t and pdf_obj_val_type_e.
+* Generic functions to manipulate values:: Object destruction,
+                                            properties, etc.
+* Scalar values::     Boolean, integer and real values.
+* String and name values:: String and names.
+* Container values::  Arrays and dictionaries.
+* Stream values::     Stream objects.
+* Indirect reference values:: References to PDF objects.
 * The null object value::    The null object has only one value.
 @end menu
 
@@ -1961,8 +1961,8 @@ What this module implements?
 Who is using this module?
 XXX
 
-@node Object value data types
-@subsection Object value data types
+@node Value data types
+@subsection Value data types
 
 @deftp {Data Type} pdf_obj_val_t
 The value of a PDF Object.  This is an opaque type.
@@ -1985,8 +1985,8 @@ Enumeration of the allowed types for a PDF object value:
 @end table
 @end deftp
 
-@node Generic functions for object values
-@subsection Generic functions for object values
+@node Generic functions to manipulate values
+@subsection Generic functions to manipulate values
 
 @deftypefun {enum pdf_obj_val_type_e} pdf_obj_val_type (pdf_obj_val_t @var{obj_val})
 
@@ -2103,8 +2103,8 @@ pdf_obj_val_destroy (obj2);
 The following functions manipulate the value of scalar objects, such
 as numbers and booleans.
 
-@node Scalar object values
-@subsection Scalar object values
+@node Scalar values
+@subsection Scalar values
 
 Boolean objects can hold only two possible values: @code{PDF_TRUE} and
 @code{PDF_FALSE}.
@@ -2222,8 +2222,8 @@ XXX
 XXX
 @end deftypefun
 
-@node String and name object values
-@subsection String and name object values
+@node String and name values
+@subsection String and name values
 
 @deftypefun pdf_status_t pdf_obj_val_string_new (pdf_char_t *@var{value}, pdf_size_t @var{size}, pdf_obj_val_t *@var{obj_val})
 
@@ -2305,8 +2305,8 @@ If @var{obj_val} is not a name object then return @code{NULL}.
 XXX
 @end deftypefun
 
-@node Container object values
-@subsection Container object values
+@node Container values
+@subsection Container values
 
 @deftypefun pdf_status_t pdf_obj_val_array_new (pdf_obj_val_t *@var{obj_val})
 
@@ -2410,30 +2410,52 @@ XXX
 XXX
 @end deftypefun
 
-@node Stream object values
-@subsection Stream object values
+@node Stream values
+@subsection Stream values
 
-@deftypefun pdf_status_t pdf_obj_val_stream_new (pdf_obj_val_t @var{dict}, pdf_stm_t @var{stm}, pdf_off_t @var{size}, pdf_bool_t @var{volatile_p}, pdf_obj_val_t @var{obj_val})
+Streams are composed by a description dictionary and an arbitrary long
+stream of data.  The description dictionary contains entries that
+describe both characteristics of the stream (how long the stream is)
+and characteristics of the data contained in the stream (how should
+the data be filtered before it is read).
 
-Create a value for a stream and store it in @var{obj_val}.
+@float Figure,fig:stream-value-internals
+@image{figures/stream-value-internals}
+@caption{Stream value internals}
+@end float
+
+The @code{pdf_obj_val_stream_new} function is creating a temporary
+file in the host file system to hold the filtered data of the stream
+(see figure XXX).  When the stream value is destroyed using
+@code{pdf_obj_val_destroy} the temporary file is deleted.
+
+@deftypefun pdf_status_t pdf_obj_val_stream_new (pdf_stm_t @var{stm}, pdf_size_t @var{size}, pdf_obj_val_t @var{attrs_dict}, pdf_obj_val_t *@var{obj_val})
+
+Create a stream value and store it in @var{obj_val}.
 
 @table @strong
 @item Parameters
-@item dict
-A dictionary value that will be used as the description dictionary for
-the stream.
+@table @var
 @item stm
-A reading base stream that can be used to get the data stored in the
-stream.
-@item offset
-The number of octects that can be read from @var{stm}.
-@item volatile_p
-Boolean value indicating whether the value is volatile.  See the
-documentation of @code{pdf_obj_val_destroy} for more information about
-volatile stream values.
+A base layer stream containing the data that will be stored in the
+stream value.  The contents of this stream will be copied to an
+internal storage by this call.
+@item size
+The number of octects to read from @var{stm}.  If this parameter is
+zero then read from the stream until it gets exhausted.
+@item attrs_dict
+Dictionary value containing keys that will be copied to the dictionary
+describing the newly created stream.  If this dictionary contains a
+list of filters then those filters are applied in inverse order to the
+data read from @var{stm}.
+
+Note that any @code{/Length} key present in @var{stm} will be ignored.
+
+If this parameter is the null value then it is ignored.
 @item obj_val
 A pointer to a @code{pdf_obj_val_t} variable that will hold the
 stream.
+@end table
 @item Returns
 A PDF status value:
 @table @code
@@ -2442,32 +2464,176 @@ The value was successfully created.
 @item PDF_ENOMEM
 Out of memory condition.  The reference stored in @var{obj_val} shall
 be considered invalid.
+@item PDF_ENOSPC
+No space left on the disk for the temporary file.  The value
+stored in @var{obj_val} shall be considered invalid.
+@item PDF_EBADDATA
+@var{attrs_dict} is not a dictionary value nor the null value.
 @end table
 @item Usage example
 @example
-pdf_stm_t stm;
-pdf_obj_val_t dict_val;
 pdf_obj_val_t stream_val;
+pdf_obj_val_t null_val;
+pdf_obj_val_t dict_val;
+pdf_stm_t stm;
+pdf_text_t image_path;
+pdf_fsys_file_t image_file;
 
-if (pdf_obj_val_stream_new (dict-val, stm, 100, 0,
-                            PDF_TRUE, &stream_val) != PDF_OK)
+/*
+ * Create a stream value containing "/foo/bar.jpeg"
+ */
+
+/* Get the null object value */
+pdf_obj_val_null_new (null_val);
+
+/* Open a reading stream to the image file */
+pdf_text_new_from_unicode ("/foo/bar.jpeg", 13,
+                           PDF_TEXT_UTF8, &path);
+pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, &image_file);
+pdf_stm_file_new (image_file, 0, 0, PDF_STM_READ, &stm);
+
+/* Create the stream value */
+if (pdf_obj_val_stream_new (stm,
+                            0,  /* Read until stm exhausted */
+                            null_val, /* Don't filter the data */
+                            &stream_val)
+    == PDF_OK)
 @{
-   /* Error creating the stream value */
+   /* Stream value created */
 @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_val_get_stream_dict (pdf_obj_val_t @var{obj_val}, pdf_obj_val_t *@var{dict})
-XXX
+@deftypefun pdf_status_t pdf_obj_val_stream_dict (pdf_obj_val_t @var{stream_val}, pdf_obj_val_t *@var{dict_val})
+
+Get a copy of the description dictionary of the stream value
+@var{obj_val} and store it in @var{dict}.
+
+@table @strong
+@item Parameters
+@table @var
+@item stream_val
+The stream object.
+@item dict_val
+A pointer to a @code{pdf_obj_val_t} variable that will hold the
+dictionary value.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The dictionary value was stored in @var{dict_val}.
+@item PDF_ENOMEM
+Out of memory condition.  The value stored in @var{dict_val} shall be
+considered invalid.
+@item PDF_EBADDATA
+@var{stream_val} is not a stream value.
+@end table
+@item Usage example
+@example
+pdf_obj_val_t stream_val;
+pdf_obj_val_t dict_val;
+
+...
+
+/* Get a copy of the dictionary of STREAM_VAL */
+if (pdf_obj_val_get_stream_dict (stream_val, &dict_val)
+    == PDF_OK)
+@{
+   /* `dict_val' contains the dictionary value */
+@}
+@end example
+@end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_val_get_stream_stm (pdf_obj_val_t @var{obj_val}, pdf_stm_t *@var{stm})
-XXX
+@deftypefun pdf_status_t pdf_obj_val_stream_size (pdf_obj_val_t @var{stream_val}, pdf_off_t *@var{size})
+
+Get the size (measured in octects) of the data stored in
+@var{stream_val} and store it in @var{size}.
+
+@table @strong
+@item Parameters
+@table @var
+@item stream_val
+A stream value.
+@item size
+A pointer to a @code{pdf_off_t} variable.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The size of the contents stored in @var{stream_val} was written in
+@var{size}.
+@item PDF_EBADDATA
+@var{stream_val} is not a stream value.
+@end table
+@item Usage example
+@example
+pdf_off_t size;
+pdf_obj_val_t stream_val;
+
+/* Get the size of stream_val */
+pdf_obj_val_stream_size (stream_val, &size);
+@end example
+@end table
 @end deftypefun
 
-@node Indirect reference object values
-@subsection Indirect reference object values
+@deftypefun pdf_status_t pdf_obj_val_stream_stm (pdf_obj_val_t @var{stream_val}, pdf_stm_t *@var{stm})
+
+Open a reading stm to the stream data and store it into @var{stm}.
+
+@table @strong
+@item Parameters
+@table @var
+@item stream_val
+The stream value.
+@item stm
+A reading stm to the contents of the stream value.  The caller is
+responsible to close this stm.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The reading stm was opened and stored in @var{stm}.
+@item PDF_ENOMEM
+Out of memory condition.  The value stored in @var{stm} shall be
+considered invalid.
+@item PDF_EBADDATA
+@var{stream_val} is not a stream value.
+@end table
+@item Usage example
+@example
+pdf_stm_t stm;
+pdf_obj_val_t stream_val;
+pdf_off_t size, i;
+pdf_char_t c;
+
+...
+
+/* Get a stream to the data contained by stream_val 
+   and print the data in stdout octect by octect */
+if (pdf_obj_val_stream_stm (stream_val, &stm)
+    == PDF_OK)
+@{
+   /* Get the size of the stored data */
+   pdf_obj_val_stream_size (stream_val, &size);
+
+   /* Print the contents */
+   for (i = 0; i < size; i++)
+   @{
+      pdf_stm_read_char (stm, &c);
+      putchar (c);      
+   @}
+@}
+@end example
+@end table
+@end deftypefun
+
+@node Indirect reference values
+@subsection Indirect reference values
 
 @deftypefun pdf_status_t pdf_obj_val_indirect_new (unsigned int @var{on}, unsigned int @var{gn}, pdf_obj_val_t *@var{obj_val})
 

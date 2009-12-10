@@ -1,3 +1,15 @@
+2009-12-10  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi: Fix calls to 'pdf_fsys_file_open' in the
+	usage examples.
+
+	* doc/gnupdf-arch.texi (Stream values): Functions documented.
+
+	* doc/figures/stream-value-internals.txt: New file.
+
+	* doc/gnupdf.texi (Stream Objects): Simplify the name of some
+	parameters.
+
 2009-12-09  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf-arch.texi (Object values module): Reestructured

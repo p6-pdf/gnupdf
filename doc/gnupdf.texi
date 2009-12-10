@@ -8960,7 +8960,7 @@ pdf_text_t path;
 status = pdf_text_new_from_unicode ("/path/to/foo",
                                     12, PDF_TEXT_UTF8,
                                     &path);
-ret = pdf_fsys_open (path, PDF_FSYS_OPEN_MODE_READ, file);
+ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, file);
 
 enum pdf_fsys_file_mode_e mode;
 mode = pdf_fsys_file_get_mode(file);
@@ -9027,7 +9027,7 @@ pdf_text_t path;
 status = pdf_text_new_from_unicode ("/path/to/foo",
                                     12, PDF_TEXT_UTF8,
                                     &path);
-ret = pdf_fsys_open (path, PDF_FSYS_OPEN_MODE_WRITE, file);
+ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, file);
 
 enum pdf_fsys_file_mode_e mode = PDF_FSYS_OPEN_MODE_READ;
 ret = pdf_fsys_file_set_mode(file, mode);
@@ -9113,7 +9113,7 @@ pdf_text_t path;
 status = pdf_text_new_from_unicode ("/path/to/foo",
                                     12, PDF_TEXT_UTF8,
                                     &path);
-ret = pdf_fsys_open (path, PDF_FSYS_OPEN_MODE_WRITE, file);
+ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, file);
 
 pdf_size_t pos = 20;
 ret = pdf_fsys_file_get_pos(file, pos);
@@ -9154,7 +9154,7 @@ pdf_text_t path;
 status = pdf_text_new_from_unicode ("/path/to/foo",
                                     12, PDF_TEXT_UTF8,
                                     &path);
-ret = pdf_fsys_open (path, PDF_FSYS_OPEN_MODE_WRITE, file);
+ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, file);
 
 pdf_size_t pos = 20;
 ret = pdf_fsys_file_set_pos(file, pos);
@@ -14665,7 +14665,7 @@ unlimited length.
 All streams must be indirect objects while the dictionary describing
 the stream must be a direct object.
 
-@deftypefun pdf_status_t pdf_obj_stream_new (pdf_obj_doc_t @var{doc}, pdf_stm_t @var{stm}, pdf_size_t @var{source_length}, pdf_obj_t @var{attrs_dict}, pdf_obj_t *@var{obj})
+@deftypefun pdf_status_t pdf_obj_stream_new (pdf_obj_doc_t @var{doc}, pdf_stm_t @var{stm}, pdf_size_t @var{size}, pdf_obj_t @var{attrs_dict}, pdf_obj_t *@var{obj})
 
 Create a new PDF Stream object.
 
@@ -14676,9 +14676,9 @@ Create a new PDF Stream object.
 An object document.
 @item stm
 A base layer stream that will be used to retrieve the data for the
-stream object. @xref{Filtered Streams}.  The filtered stream can be
-used or closed by the user after this function is called.
-@item source_length
+stream object. @xref{Filtered Streams}.  The contents of this stream
+will be copied to an internal storage by this call.
+@item size
 The number of octects to read from @var{stm}.  If this parameter is
 zero then read from the stream until it gets exhausted.
 @item attrs_dict
@@ -14739,7 +14739,7 @@ pdf_obj_dict_set_str (dict, "Filter", filter_array);
 pdf_text_new_from_unicode ("/path/to/data",
                            14, PDF_TEXT_UTF8,
                            &data_file_path);
-pdf_fsys_open (data_file_path, PDF_FSYS_OPEN_MODE_READ, data_file);
+pdf_fsys_file_open (NULL, data_file_path, PDF_FSYS_OPEN_MODE_READ, data_file);
 pdf_stm_file_new (data_file,
                   0,
                   0, /* Use the default cache size */
