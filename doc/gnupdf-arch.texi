@@ -117,7 +117,32 @@ Some remarks:
 @node The base layer
 @chapter The base layer
 
-The base layer of the GNU PDF Library provide system-independent access to several facilities.
+The base layer of the GNU PDF Library provide system-independent
+access to several facilities used by the upper layers of the library.
+The modules in this layer are quite generic, and are available to the
+user of the library.
+
+@menu
+* Base layer overview::
+* Memory allocation module::    
+* Basic types module::          
+* Hash module::                 
+* List module::                 
+* Stream module::               
+* Floating point arithmetic module::  
+* Text module::                 
+* Time module::                 
+* Filesystem module::           
+* Error module::                
+* Crypt module::                
+* Tokeniser module::            
+@end menu
+
+@node Base layer overview
+@section Base layer overview
+
+The base layer of the GNU PDF Library provide system-independent
+access to several facilities.
 
 Some modules within the base layer make use of the facilities implemented in
 other modules within the base layer (such as allocation or error functions).
@@ -169,20 +194,6 @@ base-level stream and a token writer that can write PDF tokens into
 a stream.
 @end table
 
-@menu
-* Memory allocation module::    
-* Basic types module::          
-* Hash module::                 
-* List module::                 
-* Stream module::               
-* Floating point arithmetic module::  
-* Text module::                 
-* Time module::                 
-* Filesystem module::           
-* Error module::                
-* Crypt module::                
-* Tokeniser module::            
-@end menu
 
 @node Memory allocation module
 @section Memory allocation module
@@ -1525,7 +1536,7 @@ network webdav based filesystem, an http server or a compressed image.
 @end float
 
 The GNU PDF Library provides the default disk filesystem
-implementation for each supported plattform.
+implementation for all the supported plattform.
 
 @node Filesystem items
 @subsection Filesystem items
@@ -1875,11 +1886,26 @@ TODO.
 This chapter contains a description of the object layer in the GNU PDF
 Library.
 
-This layer implements the concepts of PDF objects and PDF documents as
-a structured hierarchy of objects. An API is provided to manipulate
-that structure and the objects that compose it. Since the object
-hierarchy can be quite complex a garbage collection mechanism is
-provided to the client of the layer.
+@menu
+* Object layer overview::       What is in this layer.
+* Object values module::        The internal representation of the
+                                 values of the PDF objects.
+* Parser module::               Generating object values from the
+                                 textual representation.
+* Writer module::               Printing out the textual
+                                 representation of object values.
+* Object Document Module::      A hierarchy of objects.
+@end menu
+
+@node Object layer overview
+@section Object layer overview
+
+The object layer implements the concepts of PDF objects and PDF
+documents as a structured hierarchy of objects. An API is provided to
+manipulate that structure and the objects composing it. Since the
+object hierarchy can be quite complex a garbage collection mechanism
+is provided to the client of the layer. XXX: xref to the reference
+manual or more details about the object hierarchy, etc.
 
 @float Figure,fig:object-layer-architecture
 @image{figures/object-layer-architecture}
@@ -1890,13 +1916,13 @@ The functionality provided by this layer is implemented in several
 modules.
 
 @table @strong
-@item Object Values Module
+@item Object values module
 This module implements the @code{pdf_obj_val_t} abstract data type.
 @code{pdf_obj_val_t} variables hold the value of PDF objects.
-@item Parser Module
+@item Parser module
 This module implements the functionality to read PDF objects from a
 base-level stream.
-@item Writer Module
+@item Writer module
 This module implements the functionality to create a textual version
 of PDF objects. The textual representation of objects are then written
 into a given base level stream.
@@ -1908,40 +1934,35 @@ new objects into a document are provided. A pool of objects and
 a garbage collection algorithm are also implemented in this module.
 @end table
 
-@menu
-* Object Values Module::
-* Parser Module::
-* Writer Module::
-* Object Document Module::
-@end menu
+@node Object values module
+@section Object values module
 
-@node Object Values Module
-@section Object Values Module
-
-This module implements a data type named @code{pdf_obj_val_t} that is
-able to hold the value of a PDF object.  Supported PDF objects are:
-
-@itemize @minus
-@item Null Object
-@item Integer
-@item Real
-@item Boolean
-@item String
-@item Name
-@item Array
-@item Dictionary
-@item Stream
-@item Indirect
-@end itemize
+This module implements a data type named @code{pdf_obj_val_t} to hold
+the value of an arbitrary PDF object.
 
 @menu
-* Object Value Data Types::
-* Creation and Destruction of Object Values::
-* Management of Object Values::
+* Overview of the object values::
+* Object value data types::  pdf_obj_val_t and pdf_obj_val_type_e.
+* Generic functions for object values:: Object destruction,
+                                         properties, etc.
+* Scalar object values::     Boolean, integer and real values.
+* String and name object values:: String and names.
+* Container object values::  Arrays and dictionaries.
+* Stream object values::     Stream objects.
+* Indirect reference object values:: References to PDF objects.
+* The null object value::    The null object has only one value.
 @end menu
 
-@node Object Value Data Types
-@subsection Object Value Data Types
+@node Overview of the object values
+@subsection Overview of the object values
+
+Why?
+What this module implements?
+Who is using this module?
+XXX
+
+@node Object value data types
+@subsection Object value data types
 
 @deftp {Data Type} pdf_obj_val_t
 The value of a PDF Object.  This is an opaque type.
@@ -1964,33 +1985,129 @@ Enumeration of the allowed types for a PDF object value:
 @end table
 @end deftp
 
-@node Creation and Destruction of Object Values
-@subsection Creation and Destruction of Object Values
+@node Generic functions for object values
+@subsection Generic functions for object values
 
-@deftypefun pdf_status_t pdf_obj_val_null_new (pdf_obj_val_t *@var{obj_val})
+@deftypefun {enum pdf_obj_val_type_e} pdf_obj_val_type (pdf_obj_val_t @var{obj_val})
 
-Create and return a new object value of type null.
+Return the type of an given object value @var{OBJ_VAL}.
 
 @table @strong
 @item Parameters
 @table @var
 @item obj_val
-A pointer to a @code{pdf_obj_val_t} variable that will hold the value.
+An object value.
+@end table
+@item Returns
+The type of @var{obj_val}.
+@item Usage example
+@example
+XXX
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_destroy (pdf_obj_val_t @var{obj_val})
+
+Deallocate the memory used by @var{obj_val}.
+
+If @var{obj_val} is a collection (dictionary or array) then all its
+elements are destroyed in a recursive way.
+
+If @var{obj_val} is a stream value then the stream dictionary is
+destroyed and the reading stream closed.  If the stream is volatile
+the open file associated with the reading stream is deleted from its
+containing filesystem.
+@table @strong
+@item Parameters
+@table @var
+@item obj_val
+The object value to destroy.
 @end table
 @item Returns
 A PDF status value:
 @table @code
 @item PDF_OK
-A null object value was created and stored in @var{obj_val}.
+The memory associated with the object value was deallocated.  The
+reference stored in @var{obj_val} shall be considered invalid.
 @end table
 @item Usage example
 @example
-pdf_obj_val_t null_val;
-
-pdf_obj_val_null_new (&null_val);
+XXX
 @end example
 @end table
 @end deftypefun
+
+@deftypefun pdf_obj_val_t pdf_obj_val_dup (pdf_obj_val_t @var{obj_val})
+XXX
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_obj_val_equal_p (pdf_obj_val_t @var{obj_val_1}, pdf_obj_val_t @var{obj_val_2})
+
+Compare two object values and determine if they are equal.
+
+Two object values are equal if, and only if:
+
+@itemize @minus
+@item They are of the same type, and
+@item If they are the null object value.
+@item If they are scalar values and the values are the same.
+@item If they are arrays:
+@itemize @minus
+@item They are of the same size.
+@item All the contained elements are equal and in the same order.
+@end itemize
+@item If they are dictionaries:
+@itemize @minus
+@item They have the same number of entries.
+@item The contained entries has the same key and equal values.
+@end itemize
+@end itemize
+
+@table @strong
+@item Parameters
+@table @var
+@item obj_val_1
+The first object value to compare.
+@item obj_val_2
+The second object value to compare.
+@end table
+@item Returns
+A boolean value:
+@table @code
+@item PDF_TRUE
+The given objects are equal.
+@item PDF_FALSE
+The given objects are not equal.
+@end table
+@item Usage example
+@example
+pdf_obj_val_t obj1;
+pdf_obj_val_t obj2;
+
+pdf_obj_val_null_new (obj1);
+pdf_obj_val_null_new (obj2);
+pdf_obj_val_equal_p (obj1, obj2); /* Returns PDF_TRUE */
+pdf_obj_val_destroy (obj1);
+pdf_obj_val_destroy (obj2);
+
+pdf_obj_val_integer_new (10, obj1);
+pdf_obj_val_integer_new (20, obj2);
+pdf_obj_val_equal_p (obj1, obj2); /* Returns PDF_FALSE */
+pdf_obj_val_destroy (obj1);
+pdf_obj_val_destroy (obj2);
+@end example
+@end table
+@end deftypefun
+
+The following functions manipulate the value of scalar objects, such
+as numbers and booleans.
+
+@node Scalar object values
+@subsection Scalar object values
+
+Boolean objects can hold only two possible values: @code{PDF_TRUE} and
+@code{PDF_FALSE}.
 
 @deftypefun pdf_status_t pdf_obj_val_boolean_new (pdf_bool_t @var{value}, pdf_obj_val_t *@var{obj_val})
 
@@ -2020,6 +2137,17 @@ pdf_obj_val_boolean_new (PDF_TRUE, &boolean_val);
 @end table
 @end deftypefun
 
+@deftypefun pdf_status_t pdf_obj_val_get_bool (pdf_obj_val_t @var{obj_val}, pdf_bool_t *@var{bool})
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_set_bool (pdf_obj_val_t @var{obj_val}, pdf_bool_t @var{bool})
+XXX
+@end deftypefun
+
+Integer objects can hold an integer value in the range
+@code{-2147483647-1} - @code{2147483647}.
+
 @deftypefun pdf_status_t pdf_obj_val_integer_new (pdf_u32_t @var{value}, pdf_obj_val_t *@var{obj_val})
 
 Create an integer object value @var{obj_val} initialized to
@@ -2048,6 +2176,17 @@ pdf_obj_val_integer_new (20, &integer_val);
 @end table
 @end deftypefun
 
+@deftypefun pdf_status_t pdf_obj_val_get_int (pdf_obj_val_t @var{obj_val}, pdf_i32_t *@var{integer})
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_set_int (pdf_obj_val_t @var{obj_val}, pdf_i32_t @var{integer})
+XXX
+@end deftypefun
+
+Real objects can hold a real value in the range @code{-FLT_MAX}
+- @code{FLT_MAX}.
+
 @deftypefun pdf_status_t pdf_obj_val_real_new (pdf_u32_t @var{value}, pdf_obj_val_t *@var{obj_val})
 
 Create a real object value @var{obj_val} initialized to @var{value}.
@@ -2074,6 +2213,17 @@ pdf_obj_val_real_new (3.14, &real_val);
 @end example
 @end table
 @end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_get_real (pdf_obj_val_t @var{obj_val}, pdf_real_t *@var{real})
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_set_real (pdf_obj_val_t @var{obj_val}, pdf_real_t @var{real})
+XXX
+@end deftypefun
+
+@node String and name object values
+@subsection String and name object values
 
 @deftypefun pdf_status_t pdf_obj_val_string_new (pdf_char_t *@var{value}, pdf_size_t @var{size}, pdf_obj_val_t *@var{obj_val})
 
@@ -2103,6 +2253,16 @@ pdf_obj_val_t string_val;
 pdf_obj_val_string_new ("foo", 3, &string_val);
 @end example
 @end table
+@end deftypefun
+
+@deftypefun pdf_size_t pdf_obj_val_get_string_size (pdf_obj_val_t @var{obj_val})
+If @var{obj_val} is not a string object then return @code{0}.
+XXX
+@end deftypefun
+
+@deftypefun {pdf_char_t *} pdf_obj_val_get_string_data (pdf_obj_val_t @var{obj_val})
+If @var{obj_val} is not a string object then return @code{NULL}.
+XXX
 @end deftypefun
 
 @deftypefun pdf_status_t pdf_obj_val_name_new (pdf_char_t *@var{value}, pdf_size_t @var{size})
@@ -2135,6 +2295,19 @@ pdf_obj_val_name_new ("bar", 3, &name_val);
 @end table
 @end deftypefun
 
+@deftypefun pdf_size_t pdf_obj_val_get_name_size (pdf_obj_val_t @var{obj_val})
+If @var{obj_val} is not a name object then return @code{0}.
+XXX
+@end deftypefun
+
+@deftypefun {pdf_char_t *} pdf_obj_val_get_name_data (pdf_obj_val_t @var{obj_val})
+If @var{obj_val} is not a name object then return @code{NULL}.
+XXX
+@end deftypefun
+
+@node Container object values
+@subsection Container object values
+
 @deftypefun pdf_status_t pdf_obj_val_array_new (pdf_obj_val_t *@var{obj_val})
 
 Create an empty array and store it in @var{obj_val}.
@@ -2164,6 +2337,24 @@ if (pdf_obj_val_array_new (&array_val) != PDF_OK)
 @}
 @end example
 @end table
+@end deftypefun
+
+@deftypefun pdf_size_t pdf_obj_val_get_array_size (pdf_obj_val_t @var{obj_val})
+If @var{obj_val} is not an array object then return @code{0}
+(nonsense).
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_remove_array_elt (pdf_obj_val_t @var{obj_val}, pdf_size_t @var{index})
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_get_array_elt (pdf_obj_val_t @var{obj_val}, pdf_size_t @var{index})
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_set_array_elt (pdf_obj_val_t @var{obj_val}, pdf_size_t @var{index}, pdf_obj_val_t @var{elt})
+XXX
 @end deftypefun
 
 @deftypefun pdf_status_t pdf_obj_val_dict_new (@var{obj_val})
@@ -2197,6 +2388,30 @@ if (pdf_obj_val_dict_new (&dict_val) != PDF_OK)
 @end example
 @end table
 @end deftypefun
+
+@deftypefun pdf_size_t pdf_obj_val_get_dict_size (pdf_obj_val_t @var{obj_val})
+If @var{obj_val} is not a dictionary then return @code{0} (nonsense).
+XXX
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_obj_val_dict_key_p (pdf_obj_val_t @var{obj_val}, pdf_obj_val_t @var{key})
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_get_dict_entry (pdf_obj_val_t @var{obj_val}, pdf_obj_val_t @var{key}, pdf_obj_val_t *@var{elt})
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_remove_dict_entry (pdf_obj_val_t @var{obj_val}, pdf_obj_val_t @var{key})
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_create_dict_entry (pdf_obj_val_t @var{obj_val}, pdf_obj_val_t @var{key}, pdf_obj_val_t @var{value})
+XXX
+@end deftypefun
+
+@node Stream object values
+@subsection Stream object values
 
 @deftypefun pdf_status_t pdf_obj_val_stream_new (pdf_obj_val_t @var{dict}, pdf_stm_t @var{stm}, pdf_off_t @var{size}, pdf_bool_t @var{volatile_p}, pdf_obj_val_t @var{obj_val})
 
@@ -2243,6 +2458,17 @@ if (pdf_obj_val_stream_new (dict-val, stm, 100, 0,
 @end table
 @end deftypefun
 
+@deftypefun pdf_status_t pdf_obj_val_get_stream_dict (pdf_obj_val_t @var{obj_val}, pdf_obj_val_t *@var{dict})
+XXX
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_val_get_stream_stm (pdf_obj_val_t @var{obj_val}, pdf_stm_t *@var{stm})
+XXX
+@end deftypefun
+
+@node Indirect reference object values
+@subsection Indirect reference object values
+
 @deftypefun pdf_status_t pdf_obj_val_indirect_new (unsigned int @var{on}, unsigned int @var{gn}, pdf_obj_val_t *@var{obj_val})
 
 Create a value for an indirect reference and store it in
@@ -2274,154 +2500,36 @@ pdf_obj_val_indirect_new (10, 0, &indirect_val);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_val_destroy (pdf_obj_val_t @var{obj_val})
+@node The null object value
+@subsection The null object value
 
-Deallocate the memory used by @var{obj_val}.
+@deftypefun pdf_status_t pdf_obj_val_null_new (pdf_obj_val_t *@var{obj_val})
 
-If @var{obj_val} is a collection (dictionary or array) then all its
-elements are destroyed in a recursive way.
+Create and return a new object value of type null.
 
-If @var{obj_val} is a stream value then the stream dictionary is
-destroyed and the reading stream closed.  If the stream is volatile
-the open file associated with the reading stream is deleted from its
-containing filesystem.
 @table @strong
 @item Parameters
 @table @var
 @item obj_val
-The object value to destroy.
+A pointer to a @code{pdf_obj_val_t} variable that will hold the value.
 @end table
 @item Returns
 A PDF status value:
 @table @code
 @item PDF_OK
-The memory associated with the object value was deallocated.  The
-reference stored in @var{obj_val} shall be considered invalid.
+A null object value was created and stored in @var{obj_val}.
 @end table
 @item Usage example
 @example
-XXX
+pdf_obj_val_t null_val;
+
+pdf_obj_val_null_new (&null_val);
 @end example
 @end table
 @end deftypefun
 
-@node Management of Object Values
-@subsection Management of Object Values
-
-@deftypefun pdf_obj_val_t pdf_obj_val_dup (pdf_obj_val_t @var{obj_val})
-XXX
-@end deftypefun
-
-@deftypefun pdf_bool_t pdf_obj_val_equal_p (pdf_obj_val_t @var{obj_val_1}, pdf_obj_val_t @var{obj_val_2})
-XXX
-@end deftypefun
-
-The following functions manipulate the value of scalar objects, such
-as numbers and booleans.
-
-@deftypefun pdf_status_t pdf_obj_val_get_bool (pdf_obj_val_t @var{obj_val}, pdf_bool_t *@var{bool})
-XXX
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_set_bool (pdf_obj_val_t @var{obj_val}, pdf_bool_t @var{bool})
-XXX
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_get_int (pdf_obj_val_t @var{obj_val}, pdf_i32_t *@var{integer})
-XXX
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_set_int (pdf_obj_val_t @var{obj_val}, pdf_i32_t @var{integer})
-XXX
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_get_real (pdf_obj_val_t @var{obj_val}, pdf_real_t *@var{real})
-XXX
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_set_real (pdf_obj_val_t @var{obj_val}, pdf_real_t @var{real})
-XXX
-@end deftypefun
-
-The following functions manage the value of string objects.
-
-@deftypefun pdf_size_t pdf_obj_val_get_string_size (pdf_obj_val_t @var{obj_val})
-If @var{obj_val} is not a string object then return @code{0}.
-XXX
-@end deftypefun
-
-@deftypefun {pdf_char_t *} pdf_obj_val_get_string_data (pdf_obj_val_t @var{obj_val})
-If @var{obj_val} is not a string object then return @code{NULL}.
-XXX
-@end deftypefun
-
-The following functions manage the value of name objects.
-
-@deftypefun pdf_size_t pdf_obj_val_get_name_size (pdf_obj_val_t @var{obj_val})
-If @var{obj_val} is not a name object then return @code{0}.
-XXX
-@end deftypefun
-
-@deftypefun {pdf_char_t *} pdf_obj_val_get_name_data (pdf_obj_val_t @var{obj_val})
-If @var{obj_val} is not a name object then return @code{NULL}.
-XXX
-@end deftypefun
-
-The following functions manage the value of array objects.
-
-@deftypefun pdf_size_t pdf_obj_val_get_array_size (pdf_obj_val_t @var{obj_val})
-If @var{obj_val} is not an array object then return @code{0}
-(nonsense).
-XXX
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_remove_array_elt (pdf_obj_val_t @var{obj_val}, pdf_size_t @var{index})
-XXX
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_get_array_elt (pdf_obj_val_t @var{obj_val}, pdf_size_t @var{index})
-XXX
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_set_array_elt (pdf_obj_val_t @var{obj_val}, pdf_size_t @var{index}, pdf_obj_val_t @var{elt})
-XXX
-@end deftypefun
-
-The following functions manage the value of dictionary objects.
-
-@deftypefun pdf_size_t pdf_obj_val_get_dict_size (pdf_obj_val_t @var{obj_val})
-If @var{obj_val} is not a dictionary then return @code{0} (nonsense).
-XXX
-@end deftypefun
-
-@deftypefun pdf_bool_t pdf_obj_val_dict_key_p (pdf_obj_val_t @var{obj_val}, pdf_obj_val_t @var{key})
-XXX
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_get_dict_entry (pdf_obj_val_t @var{obj_val}, pdf_obj_val_t @var{key}, pdf_obj_val_t *@var{elt})
-XXX
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_remove_dict_entry (pdf_obj_val_t @var{obj_val}, pdf_obj_val_t @var{key})
-XXX
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_create_dict_entry (pdf_obj_val_t @var{obj_val}, pdf_obj_val_t @var{key}, pdf_obj_val_t @var{value})
-XXX
-@end deftypefun
-
-The following functions manage the value of stream objects.
-
-@deftypefun pdf_status_t pdf_obj_val_get_stream_dict (pdf_obj_val_t @var{obj_val}, pdf_obj_val_t *@var{dict})
-XXX
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_get_stream_stm (pdf_obj_val_t @var{obj_val}, pdf_stm_t *@var{stm})
-XXX
-@end deftypefun
-
-@node Parser Module
-@section Parser Module
+@node Parser module
+@section Parser module
 
 This module implements a parser of PDF objects.
 
@@ -2447,8 +2555,8 @@ XXX
 
 XXX
 
-@node Writer Module
-@section Writer Module
+@node Writer module
+@section Writer module
 
 XXX
 

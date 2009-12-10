@@ -14996,10 +14996,10 @@ specifications.
 @tab 10^10 bytes
 @tab Largest supported PDF file using a cross-reference table.
 @item integer
-@tab 2^32 - 1
+@tab 2147483647
 @tab Largest integer value.
 @item integer
-@tab -2^32
+@tab -2147483647-1
 @tab Smallest integer value.
 @item real
 @tab FLT_MAX

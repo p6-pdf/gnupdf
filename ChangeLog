@@ -1,3 +1,10 @@
+2009-12-09  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-arch.texi (Object values module): Reestructured
+	chapter.
+
+	* doc/gnupdf.texi (Architectural limits): int32 limits fixed.
+
 2009-12-08  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf-arch.texi (Creation and Destruction of Object
