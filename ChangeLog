@@ -1,3 +1,13 @@
+2009-12-13  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-arch.texi (Scalar values): Documentation for
+	`pdf_obj_val_get_bool'.
+	(Scalar values): Documentation for `pdf_obj_val_set_bool'.
+	(Scalar values): Documentation for `pdf_obj_val_get_int'.
+	(Scalar values): Documentation for `pdf_obj_val_set_int'.
+	(Scalar values): Documentation for `pdf_obj_val_get_real'.
+	(Scalar values): Documentation for `pdf_obj_val_set_real'.
+
 2009-12-10  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi: Fix calls to 'pdf_fsys_file_open' in the

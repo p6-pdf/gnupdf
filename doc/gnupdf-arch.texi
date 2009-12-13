@@ -2106,10 +2106,16 @@ as numbers and booleans.
 @node Scalar values
 @subsection Scalar values
 
-Boolean objects can hold only two possible values: @code{PDF_TRUE} and
+Boolean values can represent two possible values: @code{PDF_TRUE} and
 @code{PDF_FALSE}.
 
-@deftypefun pdf_status_t pdf_obj_val_boolean_new (pdf_bool_t @var{value}, pdf_obj_val_t *@var{obj_val})
+Integer values can represent an integer value in the range
+@code{-2147483647-1} - @code{2147483647}.
+
+Real values can represent a real value in the range @code{-FLT_MAX} -
+@code{FLT_MAX}.
+
+@deftypefun pdf_status_t pdf_obj_val_bool_new (pdf_bool_t @var{value}, pdf_obj_val_t *@var{obj_val})
 
 Create a boolean object value @var{obj_val} initialized to
 @var{value}.
@@ -2132,23 +2138,79 @@ The boolean object value was created and stored in @var{obj_val}.
 @example
 pdf_obj_val_t boolean_val;
 
-pdf_obj_val_boolean_new (PDF_TRUE, &boolean_val);
+pdf_obj_val_bool_new (PDF_TRUE, &boolean_val);
 @end example
 @end table
 @end deftypefun
 
 @deftypefun pdf_status_t pdf_obj_val_get_bool (pdf_obj_val_t @var{obj_val}, pdf_bool_t *@var{bool})
-XXX
+
+Get the boolean value stored in @var{obj_val} and store it in
+@var{bool}.
+
+@table @strong
+@item Parameters
+@table @var
+@item obj_val
+An object value.
+@item bool
+A pointer to a @code{pdf_bool_t} variable.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The boolean value of @var{obj_val} has been stored in @var{bool}.
+@item PDF_EBADDATA
+@var{obj_val} is not a boolean object value.
+@end table
+@item Usage example
+@example
+pdf_obj_val_t bool_val;
+pdf_bool_t bool;
+
+pdf_obj_val_bool_new (PDF_TRUE, &bool_val);
+pdf_obj_val_get_bool (bool_val, &bool);
+/* bool is now PDF_TRUE */
+
+pdf_obj_val_bool_set (bool_val, PDF_FALSE);
+pdf_obj_val_get_bool (bool_val, &bool);
+/* bool is now PDF_FALSE */
+@end example
+@end table
 @end deftypefun
 
 @deftypefun pdf_status_t pdf_obj_val_set_bool (pdf_obj_val_t @var{obj_val}, pdf_bool_t @var{bool})
-XXX
+
+Set the boolean value of a boolean object value.
+
+@table @strong
+@item Parameters
+@table @var
+@item obj_val
+An object value.
+@item bool
+A boolean value.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The value stored in @var{obj_val} is now @var{bool}.
+@item PDF_EBADDATA
+@var{obj_val} is not a boolean object value.
+@end table
+@item Usage example
+@example
+pdf_obj_val_t bool_val;
+
+pdf_obj_val_bool_new (PDF_FALSE, &bool_val);
+pdf_obj_val_set_bool (bool_val, PDF_TRUE);
+@end example
+@end table
 @end deftypefun
 
-Integer objects can hold an integer value in the range
-@code{-2147483647-1} - @code{2147483647}.
-
-@deftypefun pdf_status_t pdf_obj_val_integer_new (pdf_u32_t @var{value}, pdf_obj_val_t *@var{obj_val})
+@deftypefun pdf_status_t pdf_obj_val_int_new (pdf_u32_t @var{value}, pdf_obj_val_t *@var{obj_val})
 
 Create an integer object value @var{obj_val} initialized to
 @var{value}.
@@ -2171,21 +2233,77 @@ The integer object value was created and stored in @var{obj_val}.
 @example
 pdf_obj_val_t integer_val;
 
-pdf_obj_val_integer_new (20, &integer_val);
+pdf_obj_val_int_new (20, &integer_val);
 @end example
 @end table
 @end deftypefun
 
 @deftypefun pdf_status_t pdf_obj_val_get_int (pdf_obj_val_t @var{obj_val}, pdf_i32_t *@var{integer})
-XXX
+
+Get the integer value stored in @var{obj_val} and store it in
+@var{integer}.
+
+@table @strong
+@item Parameters
+@table @var
+@item obj_val
+An object value.
+@item integer
+A pointer to a @code{pdf_i32_t} variable.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The boolean value of @var{obj_val} has been stored in @var{integer}.
+@item PDF_EBADDATA
+@var{obj_val} is not an integer object value.
+@end table
+@item Usage example
+@example
+pdf_obj_val_t int_val;
+pdf_i32_t integer;
+
+pdf_obj_val_int_new (13, &int_val);
+pdf_obj_val_get_int (int_val, &integer);
+/* `integer' is now 13 */
+
+pdf_obj_val_int_set (int_val, 20);
+pdf_obj_val_get_int (int_val, &integer);
+/* `integer' is now 20 */
+@end example
+@end table
 @end deftypefun
 
 @deftypefun pdf_status_t pdf_obj_val_set_int (pdf_obj_val_t @var{obj_val}, pdf_i32_t @var{integer})
-XXX
-@end deftypefun
 
-Real objects can hold a real value in the range @code{-FLT_MAX}
-- @code{FLT_MAX}.
+Set the integer value of an integer object value.
+
+@table @strong
+@item Parameters
+@table @var
+@item obj_val
+An object value.
+@item integer
+An integer value.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The value stored in @var{obj_val} is now @var{integer}.
+@item PDF_EBADDATA
+@var{obj_val} is not an integer object value.
+@end table
+@item Usage example
+@example
+pdf_obj_val_t int_val;
+
+pdf_obj_val_int_new (23, &bool_val);
+pdf_obj_val_set_int (int_val, 23000);
+@end example
+@end table
+@end deftypefun
 
 @deftypefun pdf_status_t pdf_obj_val_real_new (pdf_u32_t @var{value}, pdf_obj_val_t *@var{obj_val})
 
@@ -2215,11 +2333,69 @@ pdf_obj_val_real_new (3.14, &real_val);
 @end deftypefun
 
 @deftypefun pdf_status_t pdf_obj_val_get_real (pdf_obj_val_t @var{obj_val}, pdf_real_t *@var{real})
-XXX
+
+Get the real value stored in @var{obj_val} and store it in @var{real}.
+
+@table @strong
+@item Parameters
+@table @var
+@item obj_val
+An object value.
+@item real
+A pointer to a @code{pdf_real_t} variable.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The real value of @var{obj_val} has been stored in @var{real}.
+@item PDF_EBADDATA
+@var{obj_val} is not a real object value.
+@end table
+@item Usage example
+@example
+pdf_obj_val_t real_val;
+pdf_real_t real;
+
+pdf_obj_val_real_new (3.14, &real_val);
+pdf_obj_val_get_real (real_val, &real);
+/* `real' is now 3.14 */
+
+pdf_obj_val_real_set (real_val, 2.71);
+pdf_obj_val_get_real (real_val, &real);
+/* `real' is now 2.71 */
+@end example
+@end table
 @end deftypefun
 
 @deftypefun pdf_status_t pdf_obj_val_set_real (pdf_obj_val_t @var{obj_val}, pdf_real_t @var{real})
-XXX
+
+Set the real value of a real object value.
+
+@table @strong
+@item Parameters
+@table @var
+@item obj_val
+An object value.
+@item real
+A real value.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The value stored in @var{obj_val} is now @var{real}.
+@item PDF_EBADDATA
+@var{obj_val} is not a real object value.
+@end table
+@item Usage example
+@example
+pdf_obj_val_t real_val;
+
+pdf_obj_val_real_new (3.14, &real_val);
+pdf_obj_val_set_real (real_val, 2.71);
+@end example
+@end table
 @end deftypefun
 
 @node String and name values
