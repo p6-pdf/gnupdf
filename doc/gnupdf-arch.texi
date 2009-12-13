@@ -1946,11 +1946,11 @@ the value of an arbitrary PDF object.
 * Generic functions to manipulate values:: Object destruction,
                                             properties, etc.
 * Scalar values::     Boolean, integer and real values.
-* String and name values:: String and names.
-* Container values::  Arrays and dictionaries.
+* Strings and names:: String and names.
+* Arrays and dictionaries::  Compound values.
 * Stream values::     Stream objects.
-* Indirect reference values:: References to PDF objects.
-* The null object value::    The null object has only one value.
+* Indirect references:: References to PDF objects.
+* The null value::    The null object has only one value.
 @end menu
 
 @node Overview of the object values
@@ -1987,6 +1987,8 @@ Enumeration of the allowed types for a PDF object value:
 
 @node Generic functions to manipulate values
 @subsection Generic functions to manipulate values
+
+The following functions can be applied to objects of any type.
 
 @deftypefun {enum pdf_obj_val_type_e} pdf_obj_val_type (pdf_obj_val_t @var{obj_val})
 
@@ -2398,8 +2400,8 @@ pdf_obj_val_set_real (real_val, 2.71);
 @end table
 @end deftypefun
 
-@node String and name values
-@subsection String and name values
+@node Strings and names
+@subsection Strings and names
 
 @deftypefun pdf_status_t pdf_obj_val_string_new (pdf_char_t *@var{value}, pdf_size_t @var{size}, pdf_obj_val_t *@var{obj_val})
 
@@ -2481,8 +2483,8 @@ If @var{obj_val} is not a name object then return @code{NULL}.
 XXX
 @end deftypefun
 
-@node Container values
-@subsection Container values
+@node Arrays and dictionaries
+@subsection Arrays and dictionaries
 
 @deftypefun pdf_status_t pdf_obj_val_array_new (pdf_obj_val_t *@var{obj_val})
 
@@ -2808,8 +2810,8 @@ if (pdf_obj_val_stream_stm (stream_val, &stm)
 @end table
 @end deftypefun
 
-@node Indirect reference values
-@subsection Indirect reference values
+@node Indirect references
+@subsection Indirect references
 
 @deftypefun pdf_status_t pdf_obj_val_indirect_new (unsigned int @var{on}, unsigned int @var{gn}, pdf_obj_val_t *@var{obj_val})
 
@@ -2842,8 +2844,8 @@ pdf_obj_val_indirect_new (10, 0, &indirect_val);
 @end table
 @end deftypefun
 
-@node The null object value
-@subsection The null object value
+@node The null value
+@subsection The null value
 
 @deftypefun pdf_status_t pdf_obj_val_null_new (pdf_obj_val_t *@var{obj_val})
 
