@@ -201,7 +201,7 @@ the development of each layer and the design and implementation of
 system tests.
 
 @float Figure,fig:lib-development-procedure
-@image{figures/lib-development-procedure}
+@image{gnupdf-hg-figures/lib-development-procedure}
 @caption{Library Development Procedure}
 @end float
 
@@ -211,7 +211,7 @@ composes the layer), the development of each module and the design and
 implementation of subsystem tests.
 
 @float Figure,fig:layer-development-procedure
-@image{figures/layer-development-procedure}
+@image{gnupdf-hg-figures/layer-development-procedure}
 @caption{Layer Development Procedure}
 @end float
 
@@ -221,7 +221,7 @@ development tasks needed to complete the implementation of the module
 and the design and implementation of unit tests.
 
 @float Figure,fig:module-development-procedure
-@image{figures/module-development-procedure}
+@image{gnupdf-hg-figures/module-development-procedure}
 @caption{Module Development Procedure}
 @end float
 
@@ -256,7 +256,7 @@ An archived task can be reactivated and inserted again in the tasks
 pool.
 
 @float Figure,fig:tasks-pool
-@image{figures/tasks-pool}
+@image{gnupdf-hg-figures/tasks-pool}
 @caption{The tasks pool}
 @end float
 
@@ -333,7 +333,7 @@ The following diagram depicts the possible states for a task and the
 allowed transitions between states:
 
 @float Figure,fig:tasks-workflow
-@image{figures/tasks-workflow}
+@image{gnupdf-hg-figures/tasks-workflow}
 @caption{Tasks workflow}
 @end float
 
@@ -972,7 +972,7 @@ We are following a bottom-up testing strategy. The verification of the
 library is performed in the following steps:
 
 @float Figure,fig:test-types
-@image{figures/test-types}
+@image{gnupdf-hg-figures/test-types}
 @caption{Test types}
 @end float
 
@@ -1012,7 +1012,7 @@ automatically updated daily from the bazaar trunk.
 We organize unit tests using the following structure:
 
 @float Figure,fig:unit-testing-architecture
-@image{figures/unit-testing-architecture}
+@image{gnupdf-hg-figures/unit-testing-architecture}
 @caption{Unit Testing Architecture}
 @end float
 
@@ -1024,7 +1024,7 @@ then be defined to test the function capabilities.
 The unit tests are stored in the @file{torture/unit/} directory.
 
 @float Figure,fig:unit-testing-sources
-@image{figures/unit-testing-sources}
+@image{gnupdf-hg-figures/unit-testing-sources}
 @caption{Unit Testing Sources}
 @end float
 

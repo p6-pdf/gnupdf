@@ -74,7 +74,7 @@ and ISO 32000.
 The GNU PDF Library contains several layers:
 
 @float Figure,fig:library-architecture
-@image{figures/library-architecture}
+@image{gnupdf-arch-figures/library-architecture}
 @caption{Layered architecture of the GNU PDF Library}
 @end float
 
@@ -148,7 +148,7 @@ Some modules within the base layer make use of the facilities implemented in
 other modules within the base layer (such as allocation or error functions).
 
 @float Figure,fig:base-layer-architecture
-@image{figures/base-layer-architecture}
+@image{gnupdf-arch-figures/base-layer-architecture}
 @caption{The Base Layer}
 @end float
 
@@ -343,7 +343,7 @@ open files adding the following functionality:
 @end itemize
 
 @float Figure,fig:stream-context
-@image{figures/stream-context}
+@image{gnupdf-arch-figures/stream-context}
 @caption{Stream context}
 @end float
 
@@ -352,7 +352,7 @@ provides a convenient way to access files with several parts requiring
 different filters to read or write its contents.
 
 @float Figure,fig:streams-operating-file
-@image{figures/streams-operating-file}
+@image{gnupdf-arch-figures/streams-operating-file}
 @caption{Several streams operating on an open file}
 @end float
 
@@ -380,7 +380,7 @@ below). Many filters may be used in a single stream (those filters are
 applied in order when writing or reading).
 
 @float Figure,fig:stream-filtering-support
-@image{figures/stream-filtering-support}
+@image{gnupdf-arch-figures/stream-filtering-support}
 @caption{Stream filtering support}
 @end float
 
@@ -446,7 +446,7 @@ value is measured in positions, where a position is a offset relative
 to the beginning of the stream storage in octets.
 
 @float Figure,fig:stream-read-write-pointer
-@image{figures/stream-read-write-pointer}
+@image{gnupdf-arch-figures/stream-read-write-pointer}
 @caption{A read/write pointer in a stream}
 @end float
 
@@ -495,7 +495,7 @@ defined in the PDF 1.7 Reference, Chapter 3, Section 3. These are:
 A pdf_stm_buffer_t is a data type implementing a buffer in memory.
 
 @float Figure,fig:stream-memory-buffer
-@image{figures/stream-memory-buffer}
+@image{gnupdf-arch-figures/stream-memory-buffer}
 @caption{A memory buffer}
 @end float
 
@@ -598,7 +598,7 @@ cache size defined by the library is assured to work for any filter.
 @end quotation
 
 @float Figure,fig:stream-filter
-@image{figures/stream-filter}
+@image{gnupdf-arch-figures/stream-filter}
 @caption{A stream filter}
 @end float
 
@@ -764,7 +764,7 @@ The DCTDecode filter decodes grayscale or colour image data that has been encode
 format.
 
 @float Figure,fig:dctdec-nfa
-@image{figures/dctdec-nfa}
+@image{gnupdf-arch-figures/dctdec-nfa}
 @caption{Finite state machine implemented by DTC decode filter 'pdf_stm_f_dctdec_apply'}
 @end float
 
@@ -785,7 +785,7 @@ the number of actually read bytes: if the return value is less
 than the requested number of bytes, then a backend-exhausted condition occured.
 
 @float Figure,fig:stream-read
-@image{figures/stream-read}
+@image{gnupdf-arch-figures/stream-read}
 @caption{A read stream}
 @end float
 
@@ -808,7 +808,7 @@ the number of actually written bytes: if the return value is less
 than the requested number of bytes, then a backend-full condition occured.
 
 @float Figure,fig:stream-write
-@image{figures/stream-write}
+@image{gnupdf-arch-figures/stream-write}
 @caption{A write stream}
 @end float
 
@@ -873,7 +873,7 @@ variables. It is an opaque type: the client doesn't know details about
 the implementation of text variables.
 
 @float Figure,fig:text-variable
-@image{figures/text-variable}
+@image{gnupdf-arch-figures/text-variable}
 @caption{A text variable}
 @end float
 
@@ -1303,7 +1303,7 @@ spans and to perform basic time arithmetic.
 @subsection Time data abstractions
 
 @float Figure,fig:times-and-time-spans
-@image{figures/times-and-time-spans}
+@image{gnupdf-arch-figures/times-and-time-spans}
 @caption{Times and time spans}
 @end float
 
@@ -1335,7 +1335,7 @@ The @code{pdf_time_cal_s} structure holds information about a specific
 time represented in calendar items:
 
 @float Figure,fig:calendar-time
-@image{figures/calendar-time}
+@image{gnupdf-arch-figures/calendar-time}
 @caption{A calendar time}
 @end float
 
@@ -1362,7 +1362,7 @@ The @code{pdf_time_cal_span_s} structure holds information about a
 time span represented in calendar items:
 
 @float Figure,fig:calendar-time-span
-@image{figures/calendar-time-span}
+@image{gnupdf-arch-figures/calendar-time-span}
 @caption{A calendar time span}
 @end float
 
@@ -1531,7 +1531,7 @@ of a PDF file from a file stored in the local filesystem, from a
 network webdav based filesystem, an http server or a compressed image.
 
 @float Figure,fig:filesystem-several-devices
-@image{figures/filesystem-several-devices}
+@image{gnupdf-arch-figures/filesystem-several-devices}
 @caption{Heterogeneous filesystem implementations}
 @end float
 
@@ -1587,7 +1587,7 @@ contained in the folder.
 An open file object (of type pdf_fsys_file_t) represent a readable and/or writable file in a filesystem. Open files are associated with a given filesystem and any filesystem can maintain an arbitrary number of open files (this may depend on the specific filesystem implementation).
 
 @float Figure,fig:filesystem-open-files
-@image{figures/filesystem-open-files}
+@image{gnupdf-arch-figures/filesystem-open-files}
 @caption{Filesystem with some open files}
 @end float
 
@@ -1630,7 +1630,7 @@ The following datamodel depicts the relation between path names, open
 files and filesystems:
 
 @float Figure,fig:er-paths-files-filesystems
-@image{figures/er-paths-files-filesystems}
+@image{gnupdf-arch-figures/er-paths-files-filesystems}
 @caption{E/R diagram of path names, files and filesystems}
 @end float
 
@@ -1653,7 +1653,7 @@ filesystem interface, the filesystem definition interface, the
 filesystem implementation interface and the file interface:
 
 @float Figure,fig:filesystem-interfaces
-@image{figures/filesystem-interfaces}
+@image{gnupdf-arch-figures/filesystem-interfaces}
 @caption{Filesystem interfaces}
 @end float
 
@@ -1908,7 +1908,7 @@ is provided to the client of the layer. XXX: xref to the reference
 manual or more details about the object hierarchy, etc.
 
 @float Figure,fig:object-layer-architecture
-@image{figures/object-layer-architecture}
+@image{gnupdf-arch-figures/object-layer-architecture}
 @caption{The Object Layer}
 @end float
 
@@ -2433,17 +2433,78 @@ pdf_obj_val_string_new ("foo", 3, &string_val);
 @end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_obj_val_get_string_size (pdf_obj_val_t @var{obj_val})
-If @var{obj_val} is not a string object then return @code{0}.
-XXX
+@deftypefun pdf_status_t pdf_obj_val_string_size (pdf_obj_val_t @var{obj_val}, pdf_size_t @var{size})
+
+Get the size of the string value @var{obj_val}, measured in octects,
+and store it into @var{size}.
+
+@table @strong
+@item Parameters
+@table @var
+@item obj_val
+An object value.
+@item size
+A pointer to a @var{pdf_size_t} variable.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The size of @var{obj_val} was sotred into @var{size}.
+@item PDF_EBADDATA
+@var{obj_val} is not a string value.
+@end table
+@item Usage example
+@example
+pdf_obj_val_t string_val;
+pdf_size_t string_size;
+
+pdf_obj_val_string_new ("abc", 3, &string_val);
+pdf_obj_val_name_size (string_val, &string_size);
+/* `string_size' is 3 */
+@end example
+@end table
 @end deftypefun
 
-@deftypefun {pdf_char_t *} pdf_obj_val_get_string_data (pdf_obj_val_t @var{obj_val})
-If @var{obj_val} is not a string object then return @code{NULL}.
-XXX
+@deftypefun pdf_status_t pdf_obj_val_string_data (pdf_obj_val_t @var{obj_val}, pdf_char_t **@var{data}, pdf_size_t *@var{size})
+
+Get a pointer to the data stored in the string value @var{obj_val} and
+store it in @var{data}.  The size of the data, in octects, is stored
+in @var{size}.
+
+@table @strong
+@item Parameters
+@table @var
+@item obj_val
+An object value.
+@item data
+A pointer to a @code{pdf_char_t *} variable.
+@item size
+A pointer to a @code{pdf_size_t} variable.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The data stored in @var{obj_val} is now pointed by @var{data}, and the
+size of the data is stored in @var{size}.
+@item PDF_EBADDATA
+@var{obj_val} is not a string value.
+@end table
+@item Usage example
+@example
+pdf_obj_val_t string_val;
+pdf_char_t *buffer;
+pdf_size_t buffer_size;
+
+pdf_obj_val_string_new ("abc", 3, &string_val);
+pdf_obj_val_string_data (string_val, &buffer, &buffer_size);
+/* `buffer' points to "abc" and `buffer_size' is 3 */
+@end example
+@end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_val_name_new (pdf_char_t *@var{value}, pdf_size_t @var{size})
+@deftypefun pdf_status_t pdf_obj_val_name_new (pdf_char_t *@var{value}, pdf_obj_val_t @var{obj_val})
 
 Create a name object value @var{obj_val} initialized to @var{value}.
 
@@ -2453,8 +2514,6 @@ Create a name object value @var{obj_val} initialized to @var{value}.
 @item value
 A pointer to a memory buffer.  The pointer will be used internally by
 the object value, so the user should not deallocate it explicitly.
-@item size
-The size of @var{value} in octects.
 @item obj_val
 A pointer to a @code{pdf_obj_val_t} variable that will hold the value.
 @end table
@@ -2463,24 +2522,83 @@ A PDF status value:
 @table @code
 @item PDF_OK
 The name object value was created and stored in @var{obj_val}.
+@item PDF_ENOMEM
+Not enough memory to perform the operation.  The value stored in
+@var{obj_val} shall be considered invalid.
 @end table
 @item Usage example
 @example
 pdf_obj_val_t name_val;
 
-pdf_obj_val_name_new ("bar", 3, &name_val);
+pdf_obj_val_name_new ("bar", &name_val);
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_obj_val_get_name_size (pdf_obj_val_t @var{obj_val})
-If @var{obj_val} is not a name object then return @code{0}.
-XXX
+@deftypefun pdf_status_t pdf_obj_val_name_size (pdf_obj_val_t @var{obj_val}, pdf_size_t *@var{size})
+
+Get the size of the name value @var{obj_val}, measured in octects, and
+store it into @var{size}.
+
+@table @strong
+@item Parameters
+@table @var
+@item obj_val
+An object value.
+@item size
+A pointer to a @var{pdf_size_t} variable.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The size of @var{obj_val} was stored into @var{size}.
+@item PDF_EBADDATA
+@var{obj_val} is not a name value.
+@end table
+@item Usage example
+@example
+pdf_obj_val_t name_val;
+pdf_size_t name_size;
+
+pdf_obj_val_name_new ("abc", &name_val);
+pdf_obj_val_name_size (name_val, &name_size);
+/* `name_size' is 3 */
+@end example
+@end table
 @end deftypefun
 
-@deftypefun {pdf_char_t *} pdf_obj_val_get_name_data (pdf_obj_val_t @var{obj_val})
-If @var{obj_val} is not a name object then return @code{NULL}.
-XXX
+@deftypefun pdf_status_t pdf_obj_val_name_data (pdf_obj_val_t @var{obj_val}, pdf_char_t **@var{data})
+
+Get a pointer to the data stored in the name value @var{obj_val} and
+store it in @var{data}.
+
+@table @strong
+@item Parameters
+@table @var
+@item obj_val
+An object value.
+@item data
+A pointer to a @var{pdf_char_t *} variable.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The data stored in @var{obj_val} is now pointed by @var{data}.
+@item PDF_EBADDATA
+@var{obj_val} is not a name value.
+@end table
+@item Usage example
+@example
+pdf_obj_val_t name_val;
+pdf_char_t *data;
+
+pdf_obj_val_name_new ("abc", &name_val);
+pdf_obj_val_name_data (name_val, &data);
+/* `data' points to "abc" */
+@end example
+@end table
 @end deftypefun
 
 @node Arrays and dictionaries
@@ -2598,7 +2716,7 @@ and characteristics of the data contained in the stream (how should
 the data be filtered before it is read).
 
 @float Figure,fig:stream-value-internals
-@image{figures/stream-value-internals}
+@image{gnupdf-arch-figures/stream-value-internals}
 @caption{Stream value internals}
 @end float
 
@@ -2909,7 +3027,7 @@ XXX
 
 
 @float Figure,fig:object-document-architecture
-@image{figures/object-document-architecture}
+@image{gnupdf-arch-figures/object-document-architecture}
 @caption{Architecture of the Object Document Module}
 @end float
 

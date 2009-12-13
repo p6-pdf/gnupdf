@@ -1,3 +1,25 @@
+2009-12-14  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-hg.texi: Reference figures in 'gnupdf-hg-figures'
+	instead of 'figures'.
+
+	* Figures referenced by the hackers guide moved to
+	'doc/gnupdf-hg-figures'.
+
+	* New directory 'doc/gnupdf-hg-figures'.
+
+	* doc/gnupdf-arch.texi: Reference figures in 'gnupdf-arch-figures'
+	instead of 'figures'.
+
+	* Figures referenced by the architecture manual moved to
+	'doc/gnupdf-arch-figures'.
+
+	* New directory 'doc/gnupdf-arch-figures'.
+
+	* doc/gnupdf-arch.texi (Strings and names): Documentation for
+	`pdf_obj_val_string_size'.
+	(Strings and names): Documentation for `pdf_obj_val_string_data'.
+
 2009-12-13  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf-arch.texi (Scalar values): Documentation for
@@ -7,6 +29,8 @@
 	(Scalar values): Documentation for `pdf_obj_val_set_int'.
 	(Scalar values): Documentation for `pdf_obj_val_get_real'.
 	(Scalar values): Documentation for `pdf_obj_val_set_real'.
+	(Strings and names): Documentation for `pdf_obj_val_name_size'.
+	(Strings and names): Documentation for `pdf_obj_val_name_data'.
 
 2009-12-10  Jose E. Marchesi  <jemarch@gnu.org>
 
