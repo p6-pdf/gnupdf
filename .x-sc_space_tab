@@ -1,2 +1,4 @@
 lib/*
-doc/figures/*
+doc/gnupdf-arch-figures/*
+doc/gnupdf-hg-figures/*
+doc/gnupdf-figures/*

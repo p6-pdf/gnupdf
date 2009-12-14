@@ -1,5 +1,8 @@
 2009-12-14  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* .x-sc_space_tab: Do not apply the syntax check rule in the
+	*-figures directories.
+
 	* doc/gnupdf-hg.texi: Reference figures in 'gnupdf-hg-figures'
 	instead of 'figures'.
 
