@@ -22,7 +22,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "xalloc.h"
 
 /* Return the length of the prefix of FILE that will be used by
    dir_name.  If FILE is in the working directory, this returns zero
@@ -37,13 +36,13 @@ dir_len (char const *file)
 
   /* Advance prefix_length beyond important leading slashes.  */
   prefix_length += (prefix_length != 0
-		    ? (FILE_SYSTEM_DRIVE_PREFIX_CAN_BE_RELATIVE
-		       && ISSLASH (file[prefix_length]))
-		    : (ISSLASH (file[0])
-		       ? ((DOUBLE_SLASH_IS_DISTINCT_ROOT
-			   && ISSLASH (file[1]) && ! ISSLASH (file[2])
-			   ? 2 : 1))
-		       : 0));
+                    ? (FILE_SYSTEM_DRIVE_PREFIX_CAN_BE_RELATIVE
+                       && ISSLASH (file[prefix_length]))
+                    : (ISSLASH (file[0])
+                       ? ((DOUBLE_SLASH_IS_DISTINCT_ROOT
+                           && ISSLASH (file[1]) && ! ISSLASH (file[2])
+                           ? 2 : 1))
+                       : 0));
 
   /* Strip the basename and any redundant slashes before it.  */
   for (length = last_component (file) - file;
@@ -73,9 +72,9 @@ mdir_name (char const *file)
 {
   size_t length = dir_len (file);
   bool append_dot = (length == 0
-		     || (FILE_SYSTEM_DRIVE_PREFIX_CAN_BE_RELATIVE
-			 && length == FILE_SYSTEM_PREFIX_LEN (file)
-			 && file[2] != '\0' && ! ISSLASH (file[2])));
+                     || (FILE_SYSTEM_DRIVE_PREFIX_CAN_BE_RELATIVE
+                         && length == FILE_SYSTEM_PREFIX_LEN (file)
+                         && file[2] != '\0' && ! ISSLASH (file[2])));
   char *dir = malloc (length + append_dot + 1);
   if (!dir)
     return NULL;
@@ -84,17 +83,4 @@ mdir_name (char const *file)
     dir[length++] = '.';
   dir[length] = '\0';
   return dir;
-}
-
-/* Just like mdir_name, above, except, rather than
-   returning NULL upon malloc failure, here, we report the
-   "memory exhausted" condition and exit.  */
-
-char *
-dir_name (char const *file)
-{
-  char *result = mdir_name (file);
-  if (!result)
-    xalloc_die ();
-  return result;
 }

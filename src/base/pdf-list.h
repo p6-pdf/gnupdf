@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-19 20:32:37 davazp"
+/* -*- mode: C -*- Time-stamp: "09/12/16 20:29:17 jemarch"
  *
  *       File:         pdf-list.h
  *       Date:         Sat Mar 1 02:14:35 2008
@@ -197,13 +197,13 @@ pdf_list_new (pdf_list_element_equals_fn_t equals_fn,
 
   if (list != NULL)
     {
-      list->gl_list = gl_list_create_empty(GL_ARRAY_LIST, equals_fn, NULL,
-                                           dispose_fn, allow_duplicates);
+      list->gl_list = gl_list_nx_create_empty(GL_ARRAY_LIST, equals_fn, NULL,
+                                              dispose_fn, allow_duplicates);
       list->allow_duplicates = allow_duplicates;
 
       if (list->gl_list == NULL)
         {
-          st = PDF_ERROR;
+          st = PDF_ENOMEM;
         }
     }
   else
@@ -543,12 +543,21 @@ pdf_list_set_at (pdf_list_t list,
         {
           if (node != NULL)
             {
-              node->gl_node = gl_list_set_at ((gl_list_t)list.gl_list, position,
-                                              element);
+              node->gl_node = gl_list_nx_set_at ((gl_list_t)list.gl_list, position,
+                                                 element);
+
+              if (node->gl_node == NULL)
+                {
+                  st = PDF_ENOMEM;
+                }
             }
           else
             {
-              gl_list_set_at ((gl_list_t)list.gl_list, position, element);
+              if (gl_list_nx_set_at ((gl_list_t)list.gl_list, position, element)
+                  == NULL)
+                {
+                  st = PDF_ENOMEM;
+                }
             }
         }
       else
@@ -562,7 +571,7 @@ pdf_list_set_at (pdf_list_t list,
       st = PDF_EBADDATA;
     }
   
-  return (st); 
+  return st; 
 }
 
 
@@ -581,10 +590,15 @@ pdf_list_add_first (pdf_list_t list,
   if (list.allow_duplicates ||
       (gl_list_search ((gl_list_t)list.gl_list, element) == NULL))
     {
-      gl_node = gl_list_add_first ((gl_list_t)list.gl_list, element);
+      gl_node = gl_list_nx_add_first ((gl_list_t)list.gl_list, element);
       if (node != NULL)
         {
           node->gl_node = gl_node;
+        }
+      
+      if (gl_node == NULL)
+        {
+          st = PDF_ENOMEM;
         }
     }
   else
@@ -609,10 +623,14 @@ pdf_list_add_last (pdf_list_t list,
   if (list.allow_duplicates ||
       (gl_list_search ((gl_list_t)list.gl_list, element) == NULL))
     {
-      gl_node = gl_list_add_last ((gl_list_t)list.gl_list, element);
+      gl_node = gl_list_nx_add_last ((gl_list_t)list.gl_list, element);
       if (node != NULL)
         {
           node->gl_node = gl_node;
+        }
+      if (gl_node == NULL)
+        {
+          st = PDF_ENOMEM;
         }
     }
   else
@@ -643,12 +661,20 @@ pdf_list_add_at (pdf_list_t list,
         {
           if (node != NULL)
             {
-              node->gl_node = gl_list_add_at ((gl_list_t)list.gl_list,
-                                              position, element);
+              node->gl_node = gl_list_nx_add_at ((gl_list_t)list.gl_list,
+                                                 position, element);
+              if (node->gl_node == NULL)
+                {
+                  st = PDF_ENOMEM;
+                }
             }
           else
             {
-              gl_list_add_at ((gl_list_t)list.gl_list, position, element);
+              if (gl_list_nx_add_at ((gl_list_t)list.gl_list, position, element)
+                  == NULL)
+                {
+                  st = PDF_ENOMEM;
+                }
             }
         }
       else
@@ -804,11 +830,16 @@ pdf_list_sorted_add (pdf_list_t list, pdf_list_element_compar_fn_t compar_fn,
   
   if (compar_fn != NULL)
     {
-      node.gl_node = gl_sortedlist_add ((gl_list_t)list.gl_list, compar_fn,
-                                        element);
+      node.gl_node = gl_sortedlist_nx_add ((gl_list_t)list.gl_list, compar_fn,
+                                           element);
       if (element_node != NULL)
         {
           *element_node = node;
+        }
+
+      if (node.gl_node == NULL)
+        {
+          st = PDF_ENOMEM;
         }
     }
   else

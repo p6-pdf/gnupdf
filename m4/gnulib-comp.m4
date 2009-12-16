@@ -45,7 +45,7 @@ AC_DEFUN([gl_INIT],
   m4_pushdef([gl_LIBSOURCES_DIR], [])
   gl_COMMON
   gl_source_base='lib'
-  gl_DIRNAME
+  gl_DIRNAME_LGPL
   gl_DOUBLE_SLASH_ROOT
   gl_HEADER_ERRNO_H
   gl_ERROR
@@ -69,8 +69,6 @@ AC_DEFUN([gl_INIT],
   gl_FUNC_GETOPT_GNU
   gl_MODULE_INDICATOR([getopt-gnu])
   gl_FUNC_GETOPT_POSIX
-  gl_FUNC_GETPAGESIZE
-  gl_UNISTD_MODULE_INDICATOR([getpagesize])
   AC_SUBST([LIBINTL])
   AC_SUBST([LTLIBINTL])
   # Autoconf 2.61a.99 and earlier don't support linking a file only
@@ -96,11 +94,9 @@ AC_DEFUN([gl_INIT],
   gl_FUNC_MALLOC_POSIX
   gl_STDLIB_MODULE_INDICATOR([malloc-posix])
   gl_MATH_H
-  gl_FUNC_MEMCHR
-  gl_STRING_MODULE_INDICATOR([memchr])
   gl_FUNC_MKDIR
   gl_MULTIARCH
-  gl_PMCCABE2HTML
+  AC_PATH_PROG([PMCCABE], [pmccabe], [false])
   gl_FUNC_REALLOC_POSIX
   gl_STDLIB_MODULE_INDICATOR([realloc-posix])
   gl_FUNC_RMDIR
@@ -114,10 +110,6 @@ AC_DEFUN([gl_INIT],
   gl_FUNC_STRERROR
   gl_STRING_MODULE_INDICATOR([strerror])
   gl_HEADER_STRING_H
-  gl_FUNC_STRNDUP
-  gl_STRING_MODULE_INDICATOR([strndup])
-  gl_FUNC_STRNLEN
-  gl_STRING_MODULE_INDICATOR([strnlen])
   gl_HEADER_SYS_STAT_H
   AC_PROG_MKDIR_P
   gl_HEADER_TIME_H
@@ -125,7 +117,6 @@ AC_DEFUN([gl_INIT],
   gl_WCHAR_H
   gl_XALLOC
   gl_XSIZE
-  gl_XSTRNDUP
   m4_ifval(gl_LIBSOURCES_LIST, [
     m4_syscmd([test ! -d ]m4_defn([gl_LIBSOURCES_DIR])[ ||
       for gl_file in ]gl_LIBSOURCES_LIST[ ; do
@@ -148,7 +139,7 @@ AC_DEFUN([gl_INIT],
     if test -n "$gl_LIBOBJS"; then
       # Remove the extension.
       sed_drop_objext='s/\.o$//;s/\.obj$//'
-      for i in `for i in $gl_LIBOBJS; do echo "$i"; done | sed "$sed_drop_objext" | sort | uniq`; do
+      for i in `for i in $gl_LIBOBJS; do echo "$i"; done | sed -e "$sed_drop_objext" | sort | uniq`; do
         gl_libobjs="$gl_libobjs $i.$ac_objext"
         gl_ltlibobjs="$gl_ltlibobjs $i.lo"
       done
@@ -187,7 +178,7 @@ AC_DEFUN([gl_INIT],
     if test -n "$gltests_LIBOBJS"; then
       # Remove the extension.
       sed_drop_objext='s/\.o$//;s/\.obj$//'
-      for i in `for i in $gltests_LIBOBJS; do echo "$i"; done | sed "$sed_drop_objext" | sort | uniq`; do
+      for i in `for i in $gltests_LIBOBJS; do echo "$i"; done | sed -e "$sed_drop_objext" | sort | uniq`; do
         gltests_libobjs="$gltests_libobjs $i.$ac_objext"
         gltests_ltlibobjs="$gltests_ltlibobjs $i.lo"
       done
@@ -254,6 +245,7 @@ AC_DEFUN([gltests_LIBSOURCES], [
 # This macro records the list of files which have been installed by
 # gnulib-tool and may be removed by future gnulib-tool invocations.
 AC_DEFUN([gl_FILE_LIST], [
+  build-aux/arg-nonnull.h
   build-aux/gendocs.sh
   build-aux/link-warning.h
   build-aux/pmccabe.css
@@ -261,9 +253,9 @@ AC_DEFUN([gl_FILE_LIST], [
   build-aux/useless-if-before-free
   build-aux/vc-list-files
   doc/gendocs_template
-  lib/basename.c
+  lib/basename-lgpl.c
   lib/config.charset
-  lib/dirname.c
+  lib/dirname-lgpl.c
   lib/dirname.h
   lib/errno.in.h
   lib/error.c
@@ -282,7 +274,6 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/getopt.in.h
   lib/getopt1.c
   lib/getopt_int.h
-  lib/getpagesize.c
   lib/gettext.h
   lib/gl_anyhash_list1.h
   lib/gl_anyhash_list2.h
@@ -302,8 +293,6 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/lseek.c
   lib/malloc.c
   lib/math.in.h
-  lib/memchr.c
-  lib/memchr.valgrind
   lib/mkdir.c
   lib/realloc.c
   lib/ref-add.sin
@@ -320,8 +309,6 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/strerror.c
   lib/string.in.h
   lib/stripslash.c
-  lib/strndup.c
-  lib/strnlen.c
   lib/sys_stat.in.h
   lib/time.in.h
   lib/unistd.in.h
@@ -333,8 +320,6 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/xalloc.h
   lib/xmalloc.c
   lib/xsize.h
-  lib/xstrndup.c
-  lib/xstrndup.h
   m4/00gnulib.m4
   m4/codeset.m4
   m4/dirname.m4
@@ -353,7 +338,6 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/getdelim.m4
   m4/getline.m4
   m4/getopt.m4
-  m4/getpagesize.m4
   m4/gl_list.m4
   m4/glibc21.m4
   m4/gnulib-common.m4
@@ -367,12 +351,9 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/lseek.m4
   m4/malloc.m4
   m4/math_h.m4
-  m4/memchr.m4
   m4/mkdir.m4
-  m4/mmap-anon.m4
   m4/multiarch.m4
   m4/onceonly.m4
-  m4/pmccabe2html.m4
   m4/realloc.m4
   m4/rmdir.m4
   m4/size_max.m4
@@ -383,8 +364,6 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/stdlib_h.m4
   m4/strerror.m4
   m4/string_h.m4
-  m4/strndup.m4
-  m4/strnlen.m4
   m4/sys_stat_h.m4
   m4/time_h.m4
   m4/unistd_h.m4
@@ -393,7 +372,6 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/wint_t.m4
   m4/xalloc.m4
   m4/xsize.m4
-  m4/xstrndup.m4
   top/GNUmakefile
   top/maint.mk
 ])

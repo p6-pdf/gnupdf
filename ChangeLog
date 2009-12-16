@@ -1,3 +1,26 @@
+2009-12-16  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-stm-f-a85.c: Unused static function 'quad_can_fit'
+	deleted.
+
+	* src/base/pdf-hash.c (pdf_hash_new): Use the new nx functions
+	from gl_list.h.
+	(pdf_hash_rename): Likewise.
+	(pdf_hash_add): Likewise.
+
+	* doc/gnupdf.texi: Documentation for list functions updated to
+	include the PDF_ENOMEM return value.
+
+	* src/base/pdf-list.h (pdf_list_new): Use the new nx functions
+	from gl_list.h.
+	(pdf_list_set_at): Likewise.
+	(pdf_list_add_first): Likewise.
+	(pdf_list_add_last): Likewise.
+	(pdf_list_add_at): Likewise.
+	(pdf_list_sorted_add): Likewise.
+
+	* gnulib update.
+
 2009-12-14  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* .x-sc_space_tab: Do not apply the syntax check rule in the

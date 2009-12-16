@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/01/11 22:04:55 jemarch"
+/* -*- mode: C -*- Time-stamp: "09/12/16 20:51:22 jemarch"
  *
  *       File:         pdf-stm-f-a85.c
  *       Date:         Mon Jul  9 22:01:41 2007
@@ -38,9 +38,6 @@
 static pdf_status_t
 pdf_stm_f_a85enc_wr_tuple (pdf_u32_t tuple, pdf_u8_t tuple_bytes,
                            void *state, pdf_buffer_t out);
-
-static pdf_bool_t
-quad_can_fit (pdf_buffer_t buffer);
 
 static pdf_status_t
 pdf_stm_f_a85dec_wr_quad (const pdf_char_t * quint, const pdf_size_t outcount,
@@ -513,12 +510,6 @@ pdf_stm_f_a85enc_dealloc_state (void *state)
   pdf_dealloc (a85_state);
 
   return PDF_OK;
-}
-
-static pdf_bool_t
-quad_can_fit (pdf_buffer_t buffer)
-{
-  return (buffer->size >= (buffer->wp + 4));
 }
 
 /* Do not Pass this function a 'z' quint. */

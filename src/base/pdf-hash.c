@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-01-27 11:34:52 gerel"
+/* -*- mode: C -*- Time-stamp: "09/12/16 20:46:52 jemarch"
  *
  *       File:         pdf-hash.c
  *       Date:         Sat Apr  12 12:22:05 2008
@@ -70,13 +70,21 @@ pdf_hash_new (pdf_hash_key_dispose_fn_t dispose_key_fn, pdf_hash_t *table)
 
   if (table != NULL)
     {
-      table->elements = gl_list_create_empty (GL_LINKEDHASH_LIST,
-                                              elem_key_equal, hash_pjw,
-                                              NULL, 0);
-      table->keys = gl_list_create_empty (GL_ARRAY_LIST, key_equal, NULL,
-                                          dispose_key_fn, 0);
+      table->elements = gl_list_nx_create_empty (GL_LINKEDHASH_LIST,
+                                                 elem_key_equal, hash_pjw,
+                                                 NULL, 0);
 
-      if (table->elements == NULL || table->keys == NULL)
+      if (table->elements != NULL)
+        {
+          table->keys = gl_list_nx_create_empty (GL_ARRAY_LIST, key_equal, NULL,
+                                                 dispose_key_fn, 0);
+
+          if (table->keys == NULL)
+            {
+              st = PDF_ENOMEM;
+            }
+        }
+      else
         {
           st = PDF_ENOMEM;
         }
@@ -142,7 +150,7 @@ pdf_status_t
 pdf_hash_rename (pdf_hash_t table, const char *key, const char *new_key)
 {
   pdf_status_t st;
-  gl_list_node_t knode, vnode;
+  gl_list_node_t knode, vnode, tnode;
   pdf_hash_element_t elem, *updated;
   
   st = PDF_OK;
@@ -160,10 +168,26 @@ pdf_hash_rename (pdf_hash_t table, const char *key, const char *new_key)
           updated->key = new_key;
 
           /* update the lists */
-          gl_list_remove_node ((gl_list_t)table.elements, vnode);
-          gl_list_add_first ((gl_list_t)table.elements, updated);
-          gl_sortedlist_remove ((gl_list_t)table.keys, key_compare, key);
-          gl_sortedlist_add ((gl_list_t)table.keys, key_compare, new_key);
+          tnode = gl_list_nx_add_first ((gl_list_t) table.elements, updated);
+          if (tnode != NULL)
+            {
+              gl_list_remove_node ((gl_list_t)table.elements, vnode);
+          
+              if (gl_sortedlist_nx_add ((gl_list_t)table.keys, key_compare, new_key)
+                  != NULL)
+                {
+                  gl_sortedlist_remove ((gl_list_t)table.keys, key_compare, key);
+                }
+              else
+                {
+                  gl_list_remove_node ((gl_list_t) table.elements, tnode);
+                  st = PDF_ENOMEM;
+                }
+            }
+          else
+            {
+              st = PDF_ENOMEM;
+            }
         }
       else
         {
@@ -186,6 +210,7 @@ pdf_hash_add (pdf_hash_t table, const char *key, const void *element,
 {
   pdf_status_t st;
   pdf_hash_element_t *newelt;
+  gl_list_node_t tnode;
   st = PDF_OK;
 
   if (key != NULL && element != NULL)
@@ -196,8 +221,21 @@ pdf_hash_add (pdf_hash_t table, const char *key, const void *element,
           newelt->key = key;
           newelt->value = element;
           newelt->disp_fn = disp_fn;
-          gl_list_add_first ((gl_list_t)table.elements, newelt);
-          gl_sortedlist_add ((gl_list_t)table.keys, key_compare, key);
+          tnode = gl_list_nx_add_first ((gl_list_t) table.elements, newelt);
+          if (tnode != NULL)
+            {
+              if (gl_sortedlist_nx_add ((gl_list_t) table.keys, key_compare, key)
+                  == NULL)
+                {
+                  gl_list_remove_node ((gl_list_t) table.elements, tnode);
+                  st = PDF_ENOMEM;
+                }
+            }
+          else
+            {
+              pdf_dealloc (newelt);
+              st = PDF_ENOMEM;
+            }
         }
       else
         {

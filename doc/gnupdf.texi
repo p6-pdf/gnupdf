@@ -1958,6 +1958,8 @@ The operation succeded.
 The @var{key} is not associated with any element in @var{table}.
 @item PDF_EBADDATA
 Either @var{table} or a key string is invalid or NULL.
+@item PDF_ENOMEM
+Not enough memory to perform the operation.
 @end table
 @item Usage example
 @example
@@ -3031,8 +3033,8 @@ A status variable:
 @var{list} contains a new empty list.
 @item PDF_EBADDATA
 @var{list} points to NULL.
-@item PDF_ERROR
-An unexpected error or no memory available.
+@item PDF_ENOMEM
+Not enough memory to create the list.
 @end table
 @item Usage example
 @example
@@ -3679,6 +3681,8 @@ Invalid @var{position} range.
 @item PDF_BADDATA
 The list does not allow duplicated values and already contain
 @var{element}.
+@item PDF_ENOMEM
+Not enough memory to perform the operation.
 @end table
 @item Usage example
 @example
@@ -3735,6 +3739,8 @@ The element was inserted successfully.
 @item PDF_EBADDATA
 The list does not allow duplicated values and already contain
 @var{element}.
+@item PDF_ENOMEM
+Not enough memory to perform the operation.
 @end table
 @item Usage example
 @example
@@ -3766,6 +3772,8 @@ The element was inserted successfully.
 @item PDF_EBADDATA
 The list does not allow duplicated values and already contain
 @var{element}.
+@item PDF_ENOMEM
+Not enough memory to perform the operation.
 @end table
 @item Usage example
 @example
@@ -3801,6 +3809,8 @@ Invalid range of given @var{position}.
 @item PDF_BADDATA
 The list does not allow duplicated values and already contain
 @var{element}.
+@item PDF_ENOMEM
+Not enough memory to perform the operation.
 @end table
 @item Usage example
 @example
@@ -3915,6 +3925,8 @@ A pdf status value:
 The operation succeeded.
 @item PDF_EBADDATA
 Invalid @var{compar_fn} pointer.
+@item PDF_ENOMEM
+Not enough memory to perform the operation.
 @end table
 @item Usage example
 @example
