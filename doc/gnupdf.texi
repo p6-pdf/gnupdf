@@ -9760,7 +9760,7 @@ This callback is called by the @code{pdf_fsys_file_get_mode} file
 interface function.
 @end deftp
 
-@deftp {Data Type} {enum pdf_fsys_file_mode_e (*pdf_fsys_file_set_mode_fn_t) (pdf_fsys_file_t @var{file}, enum pdf_fsys_file_mode_e @var{new_mode})}
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_set_mode_fn_t) (pdf_fsys_file_t @var{file}, enum pdf_fsys_file_mode_e @var{new_mode})}
 
 Filesystem callback used to update the mode of a given open file with
 a given set of file modes.

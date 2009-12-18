@@ -1,3 +1,12 @@
+2009-12-18  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (File Interface Implementation): Document that
+	functions of type 'pdf_fsys_file_set_mode_fn_t' shall return a
+	status value.
+
+	* src/base/pdf-fsys.h: Make functions of type
+	'pdf_fsys_file_set_mode_fn_t' to return a status value.
+
 2009-12-16  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-stm-f-a85.c: Unused static function 'quad_can_fit'

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-15 12:13:58 gerel"
+/* -*- mode: C -*- Time-stamp: "09/12/18 14:11:54 jemarch"
  *
  *       File:         pdf-fsys.h
  *       Date:         Thu May 22 15:49:59 2008
@@ -133,8 +133,8 @@ typedef pdf_status_t (*pdf_fsys_file_get_pos_fn_t) (pdf_fsys_file_t file,
 typedef pdf_status_t (*pdf_fsys_file_set_pos_fn_t) (pdf_fsys_file_t file,
                                                     pdf_size_t pos);
 typedef enum pdf_fsys_file_mode_e (*pdf_fsys_file_get_mode_fn_t) (pdf_fsys_file_t file);
-typedef enum pdf_fsys_file_mode_e (*pdf_fsys_file_set_mode_fn_t) (pdf_fsys_file_t file,
-                                                                  enum pdf_fsys_file_mode_e new_mode);
+typedef pdf_status_t (*pdf_fsys_file_set_mode_fn_t) (pdf_fsys_file_t file,
+                                                     enum pdf_fsys_file_mode_e new_mode);
 typedef pdf_text_t (*pdf_fsys_file_get_url_fn_t) (pdf_fsys_file_t file);
 typedef pdf_bool_t (*pdf_fsys_file_same_p_fn_t) (pdf_fsys_file_t file,
                                                  pdf_text_t path_name);
