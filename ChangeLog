@@ -1,3 +1,8 @@
+2009-12-22  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-types.c (pdf_i64_copy): Buggy assignment to
+	p_status removed.  Reported by Luca Braglia.
+
 2009-12-18  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (File Interface Implementation): Document that

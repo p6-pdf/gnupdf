@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-10-21 05:18:24 mgold"
+/* -*- mode: C -*- Time-stamp: "09/12/22 19:04:03 jemarch"
  *
  *       File:         pdf-types.c
  *       Date:         Sun Feb 10 21:33:44 2008
@@ -108,7 +108,6 @@ pdf_i64_copy (const pdf_i64_t orig,
     {
       copy->high = orig.high;
       copy->low = orig.low;
-      *p_status = PDF_OK;
     }
   else
     {
