@@ -1,3 +1,12 @@
+2010-01-06  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Memory Allocation): Documentation for
+	`pdf_alloc' updated.
+
+	* src/base/pdf-alloc.c (pdf_alloc): Modified to use the same
+	semantics that glibc malloc when asked to allocate 0 bytes.
+	Reported by Luca Braglia.
+
 2009-12-22  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-types.c (pdf_i64_copy): Buggy assignment to

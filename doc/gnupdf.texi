@@ -320,7 +320,8 @@ Allocates heap memory.
 
 @table @var
 @item size
-The requested number of octects to allocate.
+The requested number of octects to allocate.  If this value is
+@code{0} then no memory is allocated and @code{NULL} is returned.
 @end table
 
 @item Returns

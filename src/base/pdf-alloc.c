@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/02 16:44:43 jemarch"
+/* -*- mode: C -*- Time-stamp: "10/01/06 10:56:54 jemarch"
  *
  *       File:         pdf-alloc.c
  *       Date:         Fri Feb 22 21:05:05 2008
@@ -36,13 +36,13 @@
 inline void *
 pdf_alloc (const pdf_size_t size)
 {
-  void *pointer;
+  void *pointer = NULL;
 
-  pointer = malloc (size);
-  if (!pointer && size != 0)
+  if (size > 0)
     {
-      pointer = NULL;
+      pointer = malloc (size);
     }
+
   return pointer;
 }
 
