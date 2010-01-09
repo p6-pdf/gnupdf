@@ -1439,7 +1439,7 @@ pdf_eval_type4 (pdf_fp_func_t t,
 
   for (sp = 0; sp < t->m; sp++)
     {
-      stack[sp] = in[sp];
+      stack[sp] = clip(in[sp], t->domain + 2*sp);
     }
   sp--;
   for (pc = 0; pc < n; pc++)
@@ -1515,7 +1515,7 @@ pdf_eval_type4 (pdf_fp_func_t t,
           break;
         case OPC_log:
           if (sp < 0) goto stack_underflow;
-          if (stack[sp] < 0) goto range_error;
+          if (stack[sp] <= 0) goto range_error;
           stack[sp] = pdf_fp_log10 (stack[sp]);
           break;
         case OPC_ln:
@@ -1642,6 +1642,8 @@ pdf_eval_type4 (pdf_fp_func_t t,
           if (sp < 1) goto stack_underflow;
           if (!INT_P(stack[sp]) || !INT_P(stack[sp-1]))
             goto type_error;
+          if (stack[sp-1] == 0)
+            goto math_error;
           stack[sp-1] = INT(stack[sp]) % INT(stack[sp-1]);
           sp--;
           break;
