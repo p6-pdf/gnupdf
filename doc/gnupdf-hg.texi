@@ -74,7 +74,7 @@ commands.
 To get the sources of the GNU PDF Library from the trunk:
 
 @example
-$ bzr branch http://bzr.savannah.gnu.org/r/pdf/libgnupdf/branches/trunk
+$ bzr branch http://bzr.savannah.gnu.org/r/pdf/libgnupdf/trunk
 @end example
 
 @item Getting familiar with GNU Bazaar
