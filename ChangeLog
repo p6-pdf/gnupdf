@@ -1,3 +1,8 @@
+2010-01-19  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* utils/pdf-filter.c: Make a clear distinction between the values
+	returned by getopt and `pdf_status_t' values.
+
 2010-01-09  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf-hg.texi (Information for Newcomers): Location of
