@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/11/25 00:16:45 jemarch"
+/* -*- mode: C -*- Time-stamp: "10/01/19 22:09:48 jemarch"
  *
  *       File:         pdf-filter.c
  *       Date:         Tue Jul 10 18:42:07 2007
@@ -160,12 +160,12 @@ available filters\n\
 char *pdf_filter_help_msg = "";
 
 static pdf_stm_t
-create_stream (int argc, char* argv[], pdf_bool_t* mode, pdf_status_t* last_ret,
+create_stream (int argc, char* argv[], pdf_bool_t* mode, int* last_ci,
                pdf_bool_t * read_pdf_fsys, pdf_bool_t * write_pdf_fsys,
                pdf_stm_t * fsys_stm);
 
 static void
-install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret);
+install_filters (int argc, char* argv[], pdf_stm_t stm, int ci);
 
 static void
 process_stream (pdf_stm_t, pdf_bool_t mode, pdf_bool_t read_pdf_fsys,
@@ -180,14 +180,14 @@ main (int argc, char *argv[])
 {
   pdf_stm_t stm,fsys_stm;
   pdf_bool_t read_mode,read_pdf_fsys,write_pdf_fsys;
-  pdf_status_t last_ret;
+  int last_ci;
   pdf_status_t destroy_ret;
 
   program_name = strdup (argv[0]);
 
-  stm = create_stream (argc, argv, &read_mode, &last_ret, &read_pdf_fsys,
+  stm = create_stream (argc, argv, &read_mode, &last_ci, &read_pdf_fsys,
                        &write_pdf_fsys, &fsys_stm);
-  install_filters (argc, argv, stm, last_ret);
+  install_filters (argc, argv, stm, last_ci);
   process_stream (stm, read_mode, read_pdf_fsys,write_pdf_fsys, fsys_stm);
   destroy_ret = pdf_stm_destroy (stm);
   if ((destroy_ret != PDF_OK) && (destroy_ret != PDF_EEOF))
@@ -290,9 +290,10 @@ process_stream (pdf_stm_t stm, pdf_bool_t read_mode, pdf_bool_t read_pdf_fsys,
 
 static pdf_stm_t
 create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
-	       pdf_status_t* last_ret, pdf_bool_t * read_pdf_fsys,
+	       int* last_ci, pdf_bool_t * read_pdf_fsys,
                pdf_bool_t * write_pdf_fsys, pdf_stm_t * fsys_stm)
 {
+  int ci;
   char c;
   pdf_status_t ret;
   pdf_size_t cache_size;
@@ -307,13 +308,13 @@ create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
   *read_mode = PDF_FALSE; 
     
   while (!finish &&
-	 (ret = getopt_long (argc,
+	 (ci = getopt_long (argc,
 			     argv,
 			     "i:o:",
 			     GNU_longOptions, 
 			     NULL)) != -1)
     {
-      c = ret;
+      c = ci;
       switch (c)
         {
 	  /* COMMON ARGUMENTS */
@@ -381,7 +382,7 @@ create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
     so the install_filters or any other function can continue processing
     arguments
   */
-  *last_ret = ret;
+  *last_ci = ci;
 
   if (pdf_text_init() != PDF_OK)
     {
@@ -458,9 +459,10 @@ create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
 }
 
 static void
-install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
+install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
 {
   char c;
+  pdf_status_t ret;
   pdf_hash_t filter_params;
   FILE *file;
   char *jbig2dec_global_segments = NULL;
@@ -479,7 +481,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
   /* Install filters */
   do
     {
-      c = ret;
+      c = ci;
       switch (c)
 	{
 	  /* FILTER INSTALLERS */
@@ -1008,11 +1010,11 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, pdf_status_t ret)
           }
         }
     }
-  while ((ret = getopt_long (argc,
-			     argv,
-			     "",
-			     GNU_longOptions, 
-			     NULL)) != -1);
+  while ((ci = getopt_long (argc,
+                            argv,
+                            "",
+                            GNU_longOptions, 
+                            NULL)) != -1);
 
 }
 
