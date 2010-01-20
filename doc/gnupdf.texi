@@ -11276,12 +11276,64 @@ pdf_crypt_nonce (buffer, sizeof(buffer));
 
 In its more fundamental structure, a PDF document is conformed by a
 collection of PDF objects organized in a certain way.  @dfn{PDF
-objects} can signify values for several different data types, such as
-numeric values, records (called @dfn{dictionaries} in the PDF jargon)
-and arrays.
+objects} can be of several data types:
 
-The Object Layer of the library provides access to manipulate PDF
-documents as a collection of PDF objects (@pxref{PDF Objects}).
+@table @dfn
+@item Scalars
+Scalar values are integer and real numbers and booleans (true, false).
+@item Names
+Name objects are atoms made out of a sequence of printable
+characters.  They are finished by a null octet.
+
+The characters of the string making up the name do not contribute to
+the meaning of the name.
+@item Strings
+Strings are sequences of octects.  Note that the octects contained in
+a PDF string are not restricted to the printable ASCII subset.  In
+particular the null octet (@code{00H}) can be part of a string and it
+is not used to to finalize it like in some programming languages.
+
+The interpretation of the contents of a string depends of the selected
+encoding and other factors.   Usually the UTF-8 encoding of ISO-16000
+is used.
+@item Arrays
+Arrays are collections of objects that are arranged sequentially.
+Unlike the arrays in most programming languages, PDF arrays does not
+need to be homogeneous: the same array can contain objects of several
+types including other arrays.
+@item Dictionaries
+Dictionaries are a set of @dfn{key-value pairs}.  Like arrays, they
+are heterogeneous.  Unlike arrays, the objects contained in
+dictionaries are usually accessed using the value of a key.  They are
+like the associative arrays of some programming languages.
+
+Both arrays and dictionaries are @dfn{containers}, meaning that they
+can contain other objects.
+@item Streams
+Streams are like strings, but they are unrestrained (no limitation on
+its size) and are accompanied by a descriptor dictionary.  The
+descriptor contains information about the stream, like its size and
+how its contents should be filtered when read.
+@item Indirect References
+An indirect reference is a way to refer to some indirect object (XXX:
+xref).
+@end table
+
+By using container objects it is possible to build arbitrary
+structures made out of objects.  A PDF document is a hierarchy of
+objects arranged following some conventions.
+
+@float Figure,fig:object-hierarchy
+@image{gnupdf-figures/object-hierarchy}
+@caption{Hierarchy of objects in a PDF document.}
+@end float
+
+The dictionary at the top of the hierarchy is known as the @dfn{root
+dictionary}.  Any other object in the document shall be accessible
+from the root dictionary.  The only exception is the optional
+@dfn{information dictionary}.  If it exists it contains
+meta-information about the document: software that made the document,
+author, etc.
 
 @quotation Note
 The use of this layer can lead to non-well conformed PDF documents:
