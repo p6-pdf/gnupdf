@@ -14723,8 +14723,8 @@ pdf_obj_t permanent_id;
 /* Create an object document ... */
 
 if (pdf_obj_doc_get_id (doc,
-                        instance_id,
-                        permanent_id) != PDF_ERROR)
+                        &instance_id,
+                        &permanent_id) != PDF_ERROR)
 @{
    if (pdf_obj_get_type (instance_id)
        != PDF_OBJ_NULL)
@@ -14741,6 +14741,44 @@ if (pdf_obj_doc_get_id (doc,
    @}
 @}
 
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_obj_doc_set_id (pdf_obj_doc_t @var{doc}, pdf_obj_t @var{instance_id}, pdf_obj_t @var{permanent_id})
+
+Set the two ID byte arrays identifying the object document @var{doc}.
+
+@table @strong
+@item Parameters
+@table @var
+@item doc
+An object document.
+@item instance_id
+A string object with the new instance id.
+@item permanent_id
+A string object with the new permanent id.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The new instance id and permanent id were set in @var{doc}.
+@end table
+@item Usage example
+@example
+pdf_obj_doc_t doc;
+pdf_obj_t instance_id;
+pdf_obj_t permanent_id;
+
+/* Create an object document and instance_id, permanent_id... */
+
+if (pdf_obj_doc_set_id (doc,
+                        instance_id,
+                        permanent_id) != PDF_ERROR)
+@{
+    /* The instance Id and permanent Id of the document were set.  */
+@}
 @end example
 @end table
 @end deftypefun
