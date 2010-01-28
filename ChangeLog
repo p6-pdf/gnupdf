@@ -1,3 +1,8 @@
+2010-01-28  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-types.h (pdf_i64_div): Set *dest only if dest is
+	not NULL.  Reported by Miguel Angel.
+
 2010-01-20  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Object Layer Overview): Completed.

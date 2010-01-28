@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/12/07 21:25:32 jemarch"
+/* -*- mode: C -*- Time-stamp: "10/01/28 21:01:42 jemarch"
  *
  *       File:         pdf-types.h
  *       Date:         Sun Feb 10 21:30:00 2008
@@ -414,8 +414,8 @@ pdf_i64_to_i32(const pdf_i64_t bignum);
       else                                             \
         {                                              \
           *p_status =  PDF_OK;                         \
+          *dest = dividend/divisor;                    \
         }                                              \
-      *dest = dividend/divisor;                        \
     } while(0)
 
 /*Modulus division between two pdf_i64_t variables*/
