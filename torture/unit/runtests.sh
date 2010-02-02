@@ -26,7 +26,13 @@ then
     CK_VERBOSITY=normal \
     ${WINE} ${srcdir}/runtests.exe
 else
-    ${srcdir}/runtests
+    if test "x${FUNCTION}" != "x"; then
+        ${srcdir}/runtests -f ${FUNCTION}
+    elif test "x${MODULE}" != "x"; then
+        ${srcdir}/runtests -m ${MODULE}
+    else
+        ${srcdir}/runtests
+    fi
 fi
 
 # Epilog

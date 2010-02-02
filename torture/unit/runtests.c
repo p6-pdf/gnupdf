@@ -10,6 +10,8 @@
 #include <config.h>
 
 #include <stdio.h>
+#include <getopt.h>
+
 #include <check.h>
 
 char *program_name; /* Initialized in main () */
@@ -27,13 +29,104 @@ extern Suite *tsuite_fp (void);
 extern Suite *tsuite_token (void);
 extern Suite *tsuite_fsys (void);
 
+
+/* Command line arguments used in getopt.  */
+enum
+{
+  HELP_ARG,
+  VERSION_ARG,
+  MODULE_ARG,
+  FUNCTION_ARG
+};
+
+static const struct option gnu_longoptions[] =
+  {
+    {"help", no_argument, NULL, HELP_ARG},
+    {"module", required_argument, NULL, MODULE_ARG},
+    {"function", required_argument, NULL, FUNCTION_ARG},
+    {NULL, 0, NULL, 0}
+  };
+
+char *runtests_version_msg = "runtests (GNU PDF Library)\n\
+Copyright (C) 2010 Free Software Foundation.\n\
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n\
+This is free software: you are free to change and redistribute it.\n\
+There is NO WARRANTY, to the extent permitted by law.";
+
+char *runtests_help_msg = "\
+Usage: runtests [OPTION]...\n\
+Run the unit tests of the GNU PDF Library.\n\
+\n\
+Mandatory arguments to long options are mandatory for short options too.\n\
+  -m, --module=NAME                   execute the unit tests of the specified module.\n\
+  -f, --function=NAME                 execute the unit tests of the specified function.\n\
+      --help                          print a help message and exit.\n\
+      --version                       show recinf version and exit.\n\
+\n\
+Examples:\n\
+\n\
+        runtests\n\
+        runtests -m fsys\n\
+        runtests -f pdf_fsys_file_close\n\
+\n\
+Report runtests bugs to pdf-devel@gnu.org\n\
+GNU PDF home page: <http://www.gnupdf.org/>\n\
+General help using GNU software: <http://www.gnu.org/gethelp/>\
+";
+  
 int
 main (int argc, char **argv)
 {
   int failures;
   SRunner *sr;
+  char *sname, *tcname;
+  char c, ret;
 
   program_name = strdup (argv[0]);
+  
+  sname = NULL;
+  tcname = NULL;
+
+  /* Parse command line arguments.  */
+  while ((ret = getopt_long (argc,
+                             argv,
+                             "m:f:",
+                             gnu_longoptions,
+                             NULL)) != -1)
+    {
+      c = ret;
+      switch (c)
+        {
+        case HELP_ARG:
+          {
+            fprintf (stdout, "%s\n", runtests_help_msg);
+            exit (0);
+            break;
+          }
+        case VERSION_ARG:
+          {
+            fprintf (stdout, "%s\n", runtests_version_msg);
+            exit (0);
+            break;
+          }
+        case MODULE_ARG:
+        case 'm':
+          {
+            sname = strdup (optarg);
+            break;
+          }
+        case FUNCTION_ARG:
+        case 'f':
+          {
+            tcname = strdup (optarg);
+            break;
+          }
+        default:
+          {
+            exit (1);
+          }
+        }
+    }
 
   /* Create empty suite runner */
   sr = srunner_create (NULL);
@@ -55,7 +148,7 @@ main (int argc, char **argv)
   srunner_set_log (sr, "ut.log");
 
   /* Run all test suites */
-  srunner_run_all (sr, CK_ENV);
+  srunner_run (sr, sname, tcname, CK_ENV);
   failures = srunner_ntests_failed (sr);
   srunner_free (sr);
   
