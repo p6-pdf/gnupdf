@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "10/01/19 22:09:48 jemarch"
+/* -*- mode: C -*- Time-stamp: "10/02/03 21:28:36 jemarch"
  *
  *       File:         pdf-filter.c
  *       Date:         Tue Jul 10 18:42:07 2007
@@ -25,6 +25,8 @@
  */
 
 #include <config.h>
+
+#include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <getopt.h>

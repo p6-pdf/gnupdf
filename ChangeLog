@@ -1,5 +1,16 @@
 2010-02-03  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* src/base/pdf-fsys-disk.c (PDF_FOPEN): Use fopen_safer instead of
+	fopen.
+	(PDF_FREOPEN): Use freopen_safer instead of freopen.
+	(pdf_fsys_disk_file_open_tmp): Use tmpfile_safer instead of
+	tmpfile.
+
+	* utils/pdf-filter.c: Include stdlib.h for the definition of
+	'exit'.
+
+	* gnulib update.
+
 	* torture/unit/Makefile.am: Include
 	base/fsys/pdf-fsys-file-open-tmp.c.
 

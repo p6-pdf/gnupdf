@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "10/02/03 21:16:47 jemarch"
+/* -*- mode: C -*- Time-stamp: "10/02/03 21:30:28 jemarch"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -27,6 +27,7 @@
 
 #include <errno.h>
 #include <stdio.h>
+#include <stdio-safer.h>
 #include <string.h>
 #include <sys/stat.h>
 
@@ -276,7 +277,7 @@ __pdf_fsys_init_base_file_data(const pdf_text_t path_name)
 #ifdef PDF_HOST_WIN32
 #define PDF_FOPEN(f,m) _wfopen((wchar_t *)f,(wchar_t *)m)
 #else
-#define PDF_FOPEN(f,m) fopen((char *)f,(char *)m)
+#define PDF_FOPEN(f,m) fopen_safer((char *)f,(char *)m)
 #endif
 
 
@@ -378,7 +379,7 @@ pdf_fsys_disk_file_open_tmp (pdf_fsys_file_t *p_file)
           file_data->file_mode = PDF_FSYS_OPEN_MODE_RW;
 
           /* Open a temporary file.  */
-          file_data->file_descriptor = tmpfile ();
+          file_data->file_descriptor = tmpfile_safer ();
           if (file_data->file_descriptor != NULL)
             {
               /* Success.  */
@@ -1197,7 +1198,7 @@ pdf_fsys_disk_file_cancel_ria (pdf_fsys_file_t file)
 #ifdef PDF_HOST_WIN32
 #define PDF_FREOPEN(f,m,s) _wfreopen((wchar_t *)f,(wchar_t *)m,s)
 #else
-#define PDF_FREOPEN(f,m,s) freopen ((char *)f,(char *)m,s)
+#define PDF_FREOPEN(f,m,s) freopen_safer ((char *)f,(char *)m,s)
 #endif
 
 
