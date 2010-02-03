@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/11/24 23:58:31 jemarch"
+/* -*- mode: C -*- Time-stamp: "10/02/03 21:16:47 jemarch"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -345,6 +345,52 @@ pdf_fsys_disk_file_open(const pdf_text_t path_name,
     }
 
   /* All was ok */
+  return ret_status;
+}
+
+pdf_status_t
+pdf_fsys_disk_file_open_tmp (pdf_fsys_file_t *p_file)
+{
+  pdf_text_t path_name;
+  pdf_status_t ret_status = PDF_ERROR;
+  pdf_fsys_file_t file = NULL;
+  pdf_fsys_disk_file_t file_data = NULL;
+  
+
+  file = (pdf_fsys_file_t) pdf_alloc (sizeof (struct pdf_fsys_file_s));
+  
+  if (file != NULL)
+    {
+      /* Create a dummy path name, so we can manage the temporary file
+         like an ordinary file.  */
+      if (pdf_text_new_from_unicode ((pdf_char_t *) "tmp",
+                                     3,
+                                     PDF_TEXT_UTF8,
+                                     &path_name)
+          != PDF_OK)
+        {
+          ret_status = PDF_ENOMEM;
+        }
+      else
+        {
+          /* Get base data.  */
+          file_data = __pdf_fsys_init_base_file_data (path_name);
+          file_data->file_mode = PDF_FSYS_OPEN_MODE_RW;
+
+          /* Open a temporary file.  */
+          file_data->file_descriptor = tmpfile ();
+          if (file_data->file_descriptor != NULL)
+            {
+              /* Success.  */
+              ret_status = PDF_OK;
+            }
+          else
+            {
+              pdf_text_destroy (path_name);
+            }
+        }
+    }
+
   return ret_status;
 }
 
@@ -816,27 +862,6 @@ pdf_fsys_disk_item_writable_p (pdf_text_t path_name)
   return result;
 }
 
-
-pdf_text_t
-pdf_fsys_disk_get_temp_path_name (void)
-{
-  pdf_text_t temp = NULL;
-  pdf_char_t filename[L_tmpnam + 1];
-  /* Get temporal filename */
-  if((tmpnam((char *)filename) != NULL) &&      \
-     (pdf_text_new_from_unicode(filename,
-                                strlen((char *)filename),
-                                PDF_TEXT_UTF8,
-                                &temp) == PDF_OK))
-    {
-      return temp;
-    }
-  else
-    {
-      return NULL;
-    }
-}
-
 /*
  * File Interface Implementation
  */
@@ -1172,7 +1197,7 @@ pdf_fsys_disk_file_cancel_ria (pdf_fsys_file_t file)
 #ifdef PDF_HOST_WIN32
 #define PDF_FREOPEN(f,m,s) _wfreopen((wchar_t *)f,(wchar_t *)m,s)
 #else
-#define PDF_FREOPEN(f,m,s) freopen((char *)f,(char *)m,s)
+#define PDF_FREOPEN(f,m,s) freopen ((char *)f,(char *)m,s)
 #endif
 
 

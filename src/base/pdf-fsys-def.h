@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-11-29 17:42:11 aleksander"
+/* -*- mode: C -*- Time-stamp: "10/02/03 21:02:47 jemarch"
  *
  *       File:         pdf-fsys-def.h
  *       Date:         Thu May 22 17:50:20 2008
@@ -47,10 +47,10 @@
   pdf_fsys_disk_item_readable_p ((path_name))
 #define pdf_fsys_def_item_writable_p(path_name) \
   pdf_fsys_disk_item_writable_p ((path_name))
-#define pdf_fsys_def_get_temp_path_name() \
-  pdf_fsys_disk_get_temp_path_name ()
 #define pdf_fsys_def_file_open(path_name, mode, p_file)     \
   pdf_fsys_disk_file_open ((path_name), (mode), (p_file))
+#define pdf_fsys_def_file_open_tmp(p_file)   \
+  pdf_fsys_disk_file_open_tmp ((p_file))
 #define pdf_fsys_def_file_get_mode(file) \
   pdf_fsys_disk_file_get_mode ((file))
 #define pdf_fsys_def_file_get_url(file) \

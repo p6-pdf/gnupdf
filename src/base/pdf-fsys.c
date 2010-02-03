@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 15:54:07 jemarch"
+/* -*- mode: C -*- Time-stamp: "10/02/03 21:02:33 jemarch"
  *
  *       File:         pdf-fsys.c
  *       Date:         Thu May 22 15:51:13 2008
@@ -287,22 +287,6 @@ pdf_fsys_item_writable_p (pdf_fsys_t filesystem,
     }
 }
 
-pdf_text_t
-pdf_fsys_get_temp_path_name (pdf_fsys_t filesystem)
-{
-  if (filesystem == NULL)
-    {
-      /* Use the default filesystem */
-      return
-        pdf_fsys_def_get_temp_path_name();
-    }
-  else
-    {
-      return 
-        filesystem->implementation->get_temp_path_name_fn ();
-    }
-}
-
 /*
  * File Interface Implementation
  */
@@ -327,6 +311,20 @@ pdf_fsys_file_open (const pdf_fsys_t filesystem,
     }
 }
 
+pdf_status_t
+pdf_fsys_file_open_tmp (const pdf_fsys_t filesystem,
+                        pdf_fsys_file_t *p_file)
+{
+  if (filesystem == NULL)
+    {
+      /* Use the default filesystem.  */
+      return pdf_fsys_def_file_open_tmp (p_file);
+    }
+  else
+    {
+      return filesystem->implementation->file_open_tmp_fn (p_file);
+    }
+}
 
 pdf_fsys_t 
 pdf_fsys_file_get_filesystem (pdf_fsys_file_t file)
