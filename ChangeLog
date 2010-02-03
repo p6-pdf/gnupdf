@@ -1,3 +1,58 @@
+2010-02-03  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-fsys-disk.c (PDF_FOPEN): Use fopen_safer instead of
+	fopen.
+	(PDF_FREOPEN): Use freopen_safer instead of freopen.
+	(pdf_fsys_disk_file_open_tmp): Use tmpfile_safer instead of
+	tmpfile.
+
+	* utils/pdf-filter.c: Include stdlib.h for the definition of
+	'exit'.
+
+	* gnulib update.
+
+	* torture/unit/Makefile.am: Include
+	base/fsys/pdf-fsys-file-open-tmp.c.
+
+	* torture/unit/base/fsys/tsuite-fsys.c (tsuite_fsys): Include the
+	test case for test_pdf_fsys_file_open_tmp.
+
+	* torture/unit/base/fsys/pdf-fsys-file-open-tmp.c: New file.
+
+	* src/base/pdf-fsys-disk.c: Include stdio-safer.h.
+
+	* torture/unit/Makefile.am: Remove mention to
+	base/fsys/pdf-fsys-get-temp-path-name.c.
+
+	* torture/unit/base/fsys/tsuite-fsys.c: Remove mention to
+	test_pdf_fsys_get_temp_path_name.
+
+	* src/base/pdf-fsys-disk.c: New function
+	pdf_fsys_disk_file_open_tmp.
+
+	* src/base/pdf-fsys-disk.h: New function
+	pdf_fsys_disk_file_open_tmp.
+	Function pdf_fsys_get_temp_path_name deleted.
+
+	* src/base/pdf-fsys-def.h (pdf_fsys_def_file_open): New macro
+	pdf_fsys_def_file_open.
+
+	* src/base/pdf-fsys.c: Function pdf_fsys_get_temp_path_name
+	removed.
+	(pdf_fsys_file_open_tmp): New function pdf_fsys_file_open_tmp.
+
+	* src/base/pdf-fsys.h: New type pdf_fsys_file_open_tmp_fn_t.
+	New function pdf_fsys_file_open_tmp.
+	Type pdf_fsys_get_temp_path_name_fn_t removed.
+	Function pdf_fsys_get_temp_path_name removed.
+
+	* doc/gnupdf.texi (Filesystem Interfaces): Remove obsolete
+	paragraph.
+	(Opening Files): Documentation for the function
+	pdf_fsys_file_open_tmp.
+	(File System Interface Implementation): Documentation for the
+	pdf_fsys_file_open_tmp_fn_t type.
+
 2010-01-28  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-types.h (pdf_i64_div): Set *dest only if dest is

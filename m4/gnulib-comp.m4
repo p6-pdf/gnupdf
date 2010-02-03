@@ -1,5 +1,5 @@
 # DO NOT EDIT! GENERATED AUTOMATICALLY!
-# Copyright (C) 2002-2009 Free Software Foundation, Inc.
+# Copyright (C) 2002-2010 Free Software Foundation, Inc.
 #
 # This file is free software, distributed under the terms of the GNU
 # General Public License.  As a special exception to the GNU General
@@ -30,6 +30,7 @@ AC_DEFUN([gl_EARLY],
   AC_REQUIRE([AC_FUNC_FSEEKO])
   AC_REQUIRE([AC_FUNC_FSEEKO])
   AC_REQUIRE([AC_FUNC_FSEEKO])
+  gl_THREADLIB_EARLY
 ])
 
 # This macro should be invoked from ./configure.ac, in the section
@@ -47,17 +48,30 @@ AC_DEFUN([gl_INIT],
   gl_source_base='lib'
   gl_DIRNAME_LGPL
   gl_DOUBLE_SLASH_ROOT
+  gl_FUNC_DUP2
+  gl_UNISTD_MODULE_INDICATOR([dup2])
   gl_HEADER_ERRNO_H
   gl_ERROR
   m4_ifdef([AM_XGETTEXT_OPTION],
     [AM_][XGETTEXT_OPTION([--flag=error:3:c-format])
      AM_][XGETTEXT_OPTION([--flag=error_at_line:5:c-format])])
   gl_EXITFAIL
+  gl_FUNC_FCNTL
+  gl_FCNTL_MODULE_INDICATOR([fcntl])
+  gl_FCNTL_H
   gl_FUNC_FFLUSH
   gl_STDIO_MODULE_INDICATOR([fflush])
+  gl_FUNC_FOPEN
+  gl_STDIO_MODULE_INDICATOR([fopen])
+  gl_FOPEN_SAFER
+  gl_MODULE_INDICATOR([fopen-safer])
   gl_FUNC_FPURGE
   gl_STDIO_MODULE_INDICATOR([fpurge])
   gl_FUNC_FREADING
+  gl_FUNC_FREOPEN
+  gl_STDIO_MODULE_INDICATOR([freopen])
+  gl_FREOPEN_SAFER
+  gl_MODULE_INDICATOR([freopen-safer])
   gl_FUNC_FSEEKO
   gl_STDIO_MODULE_INDICATOR([fseeko])
   gl_FUNC_FTELLO
@@ -71,6 +85,8 @@ AC_DEFUN([gl_INIT],
   gl_FUNC_GETOPT_POSIX
   AC_SUBST([LIBINTL])
   AC_SUBST([LTLIBINTL])
+  gl_FUNC_GETTIMEOFDAY
+  gl_SYS_TIME_MODULE_INDICATOR([gettimeofday])
   # Autoconf 2.61a.99 and earlier don't support linking a file only
   # in VPATH builds.  But since GNUmakefile is for maintainer use
   # only, it does not matter if we skip the link with older autoconf.
@@ -87,8 +103,13 @@ AC_DEFUN([gl_INIT],
   LOCALCHARSET_TESTS_ENVIRONMENT="CHARSETALIASDIR=\"\$(top_builddir)/$gl_source_base\""
   AC_SUBST([LOCALCHARSET_TESTS_ENVIRONMENT])
   gl_LOCALENAME
+  gl_LOCK
   gl_FUNC_LSEEK
   gl_UNISTD_MODULE_INDICATOR([lseek])
+  gl_FUNC_LSTAT
+  gl_SYS_STAT_MODULE_INDICATOR([lstat])
+  AC_CONFIG_COMMANDS_PRE([m4_ifdef([AH_HEADER],
+    [AC_SUBST([CONFIG_INCLUDE], m4_defn([AH_HEADER]))])])
   AC_FUNC_MALLOC
   AC_DEFINE([GNULIB_MALLOC_GNU], 1, [Define to indicate the 'malloc' module.])
   gl_FUNC_MALLOC_POSIX
@@ -96,12 +117,18 @@ AC_DEFUN([gl_INIT],
   gl_MATH_H
   gl_FUNC_MKDIR
   gl_MULTIARCH
+  gl_FUNC_OPEN
+  gl_MODULE_INDICATOR([open])
+  gl_FCNTL_MODULE_INDICATOR([open])
+  gl_PATHMAX
   AC_PATH_PROG([PMCCABE], [pmccabe], [false])
   gl_FUNC_REALLOC_POSIX
   gl_STDLIB_MODULE_INDICATOR([realloc-posix])
   gl_FUNC_RMDIR
   gl_UNISTD_MODULE_INDICATOR([rmdir])
   gl_SIZE_MAX
+  gl_FUNC_STAT
+  gl_SYS_STAT_MODULE_INDICATOR([stat])
   AM_STDBOOL_H
   gl_STDDEF_H
   gl_STDINT_H
@@ -112,8 +139,17 @@ AC_DEFUN([gl_INIT],
   gl_HEADER_STRING_H
   gl_HEADER_SYS_STAT_H
   AC_PROG_MKDIR_P
+  gl_HEADER_SYS_TIME_H
+  AC_PROG_MKDIR_P
+  gl_FUNC_GEN_TEMPNAME
+  gl_THREADLIB
   gl_HEADER_TIME_H
+  gt_TMPDIR
+  gl_TMPFILE
+  gl_TMPFILE_SAFER
+  gl_MODULE_INDICATOR([tmpfile-safer])
   gl_UNISTD_H
+  gl_UNISTD_SAFER
   gl_WCHAR_H
   gl_XALLOC
   gl_XSIZE
@@ -246,26 +282,38 @@ AC_DEFUN([gltests_LIBSOURCES], [
 # gnulib-tool and may be removed by future gnulib-tool invocations.
 AC_DEFUN([gl_FILE_LIST], [
   build-aux/arg-nonnull.h
+  build-aux/config.rpath
   build-aux/gendocs.sh
-  build-aux/link-warning.h
   build-aux/pmccabe.css
   build-aux/pmccabe2html
+  build-aux/unused-parameter.h
   build-aux/useless-if-before-free
   build-aux/vc-list-files
+  build-aux/warn-on-use.h
   doc/gendocs_template
   lib/basename-lgpl.c
+  lib/binary-io.h
   lib/config.charset
   lib/dirname-lgpl.c
   lib/dirname.h
+  lib/dup-safer.c
+  lib/dup2.c
   lib/errno.in.h
   lib/error.c
   lib/error.h
   lib/exitfail.c
   lib/exitfail.h
+  lib/fcntl.c
+  lib/fcntl.in.h
+  lib/fd-safer.c
   lib/fflush.c
+  lib/fopen-safer.c
+  lib/fopen.c
   lib/fpurge.c
   lib/freading.c
   lib/freading.h
+  lib/freopen-safer.c
+  lib/freopen.c
   lib/fseeko.c
   lib/ftello.c
   lib/getdelim.c
@@ -275,6 +323,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/getopt1.c
   lib/getopt_int.h
   lib/gettext.h
+  lib/gettimeofday.c
   lib/gl_anyhash_list1.h
   lib/gl_anyhash_list2.h
   lib/gl_anylinked_list1.h
@@ -285,24 +334,34 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/gl_linkedhash_list.h
   lib/gl_list.c
   lib/gl_list.h
+  lib/glthread/lock.c
+  lib/glthread/lock.h
+  lib/glthread/threadlib.c
   lib/intprops.h
   lib/localcharset.c
   lib/localcharset.h
   lib/localename.c
   lib/localename.h
   lib/lseek.c
+  lib/lstat.c
   lib/malloc.c
   lib/math.in.h
   lib/mkdir.c
+  lib/open.c
+  lib/pathmax.h
+  lib/pipe-safer.c
   lib/realloc.c
   lib/ref-add.sin
   lib/ref-del.sin
   lib/rmdir.c
   lib/size_max.h
+  lib/stat.c
   lib/stdbool.in.h
   lib/stddef.in.h
   lib/stdint.in.h
+  lib/stdio--.h
   lib/stdio-impl.h
+  lib/stdio-safer.h
   lib/stdio-write.c
   lib/stdio.in.h
   lib/stdlib.in.h
@@ -310,7 +369,16 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/string.in.h
   lib/stripslash.c
   lib/sys_stat.in.h
+  lib/sys_time.in.h
+  lib/tempname.c
+  lib/tempname.h
   lib/time.in.h
+  lib/tmpdir.c
+  lib/tmpdir.h
+  lib/tmpfile-safer.c
+  lib/tmpfile.c
+  lib/unistd--.h
+  lib/unistd-safer.h
   lib/unistd.in.h
   lib/unistr.h
   lib/unistr/u8-check.c
@@ -325,19 +393,25 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/dirname.m4
   m4/dos.m4
   m4/double-slash-root.m4
+  m4/dup2.m4
   m4/errno_h.m4
   m4/error.m4
   m4/exitfail.m4
   m4/extensions.m4
+  m4/fcntl-o.m4
+  m4/fcntl.m4
   m4/fcntl_h.m4
   m4/fflush.m4
+  m4/fopen.m4
   m4/fpurge.m4
   m4/freading.m4
+  m4/freopen.m4
   m4/fseeko.m4
   m4/ftello.m4
   m4/getdelim.m4
   m4/getline.m4
   m4/getopt.m4
+  m4/gettimeofday.m4
   m4/gl_list.m4
   m4/glibc21.m4
   m4/gnulib-common.m4
@@ -345,28 +419,45 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/inline.m4
   m4/intlmacosx.m4
   m4/lcmessage.m4
+  m4/lib-ld.m4
+  m4/lib-link.m4
+  m4/lib-prefix.m4
   m4/localcharset.m4
   m4/localename.m4
+  m4/lock.m4
   m4/longlong.m4
   m4/lseek.m4
+  m4/lstat.m4
   m4/malloc.m4
   m4/math_h.m4
   m4/mkdir.m4
+  m4/mode_t.m4
   m4/multiarch.m4
   m4/onceonly.m4
+  m4/open.m4
+  m4/pathmax.m4
   m4/realloc.m4
   m4/rmdir.m4
   m4/size_max.m4
+  m4/stat.m4
   m4/stdbool.m4
   m4/stddef_h.m4
   m4/stdint.m4
+  m4/stdio-safer.m4
   m4/stdio_h.m4
   m4/stdlib_h.m4
   m4/strerror.m4
   m4/string_h.m4
   m4/sys_stat_h.m4
+  m4/sys_time_h.m4
+  m4/tempname.m4
+  m4/threadlib.m4
   m4/time_h.m4
+  m4/tmpdir.m4
+  m4/tmpfile.m4
+  m4/unistd-safer.m4
   m4/unistd_h.m4
+  m4/warn-on-use.m4
   m4/wchar.m4
   m4/wchar_t.m4
   m4/wint_t.m4

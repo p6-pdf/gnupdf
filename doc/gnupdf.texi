@@ -8321,10 +8321,6 @@ the @emph{Filesystem Interface}, used to manage several filesystem
 aspects, and the @emph{File Interface}, that provides functionalities
 related to open files, such as reading and writing information.
 
-The following interface diagram show the relation between the
-filesystem interface, the filesystem definition interface, the
-filesystem implementation interface and the file interface:
-
 @node The Filesystem Interface
 @subsection The Filesystem Interface
 
@@ -8347,8 +8343,6 @@ Read In Advance (RIA) capabilities.
 Storage properties management (free space, etc).
 @item
 Management of filesystem items (rename, remove, flags, etc).
-@item
-Utility functions (get a path name for a temporal file, etc).
 @end itemize
 
 Note that not all the filesystem implementations support these
@@ -8363,7 +8357,6 @@ becomes a no-op.
 * Getting File System Properties::  
 * Folder Management::           
 * Getting File System Item Properties::  
-* File System Utility Functions::  
 @end menu
 
 @node Filesystem Data Types
@@ -8762,28 +8755,6 @@ pdf_bool_t ret = pdf_fsys_item_writable_p (NULL, path);
 @end table
 @end deftypefun
 
-@node File System Utility Functions
-@subsubsection File System Utility Functions
-
-@deftypefun pdf_text_t pdf_fsys_get_temp_path_name (pdf_fsys_t @var{filesystem})
-
-Return a path name for a new temporary file in the specified filesystem.
-
-@table @strong
-@item Parameters
-@table @var
-@item file_system
-A filesystem.
-@end table
-@item Returns
-A PDF text variable containing a path name.
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
-
 @node The File Interface
 @subsection The File Interface
 
@@ -8863,7 +8834,7 @@ filesystem.
 @node Opening Files
 @subsubsection Opening Files
 
-@deftypefun pdf_status_t pdf_fsys_file_open (const pdf_fsys_t @var{filesystem}, const pdf_text_t @var{path_name}, const enum pdf_fsys_file_mode_e @var{mode}, pdf_fsys_file_t @var{file})
+@deftypefun pdf_status_t pdf_fsys_file_open (const pdf_fsys_t @var{filesystem}, const pdf_text_t @var{path_name}, const enum pdf_fsys_file_mode_e @var{mode}, pdf_fsys_file_t *@var{file})
 
 Open a file in @var{filesystem} identified by @var{path_name} using
 the specified @var{mode} and store a new open file variable in
@@ -8905,7 +8876,51 @@ XXX
 @end table
 @end deftypefun               
 
+@deftypefun pdf_status_t pdf_fsys_file_open_tmp (const pdf_fsys_t @var{filesystem}, pdf_fsys_file_t *@var{file})
 
+Create a temporary file in @var{filesystem} and open it.
+
+The temporary file is opened with mode @code{PDF_FSYS_OPEN_MODE_RW}
+and stored in @var{file}.  The file will be automatically deleted with
+it is closed.
+
+Note that while the filesystem implementation may also delete the file
+when the client application exits, it is not guaranteed.
+
+@table @strong
+@item Parameters
+@table @var
+@item filesystem
+A filesystem. If @code{NULL} the default filesystem is used.
+@item file
+The output file variable.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK 
+The file was successfully opened and stored in the @var{file}
+variable.  If the filesystem implementation does not support this
+functionality then @code{NULL} is stored in @var{file}.
+@item PDF_ENOMEM
+Not enough memory.
+@item PDF_ERROR
+It was not possible to create the temporary file.
+@end table
+@item Usage example
+@example
+pdf_fsys_file_t tmpfile;
+pdf_size_t written;
+
+/* Open a temporary file and write some contents to it.  */
+pdf_fsys_file_open_tmp (NULL, &tmpfile);
+pdf_fsys_file_write (tmpfile, "Temporary data", 14, &written);
+
+/* Close the file.  This deletes it from the filesystem.  */
+pdf_fsys_file_close (tmpfile);
+@end example
+@end table
+@end deftypefun               
 
 @node File Properties Management
 @subsubsection File Properties Management
@@ -9527,13 +9542,22 @@ Implementation Interface in order to honour the petition.
 @node File System Interface Implementation
 @subsubsection File System Interface Implementation
 
-@deftp {Data Type} {pdf_status_t (*pdf_fsys_open_fn_t) (pdf_text_t @var{path_name}, enum pdf_fsys_file_mode_e @var{mode}, pdf_fsys_file_t @var{file})}
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_open_fn_t) (pdf_text_t @var{path_name}, enum pdf_fsys_file_mode_e @var{mode}, pdf_fsys_file_t *@var{file})}
 
 Filesystem callback called to open a file identified by the path
 @var{path_name} in the mode specified by @var{mode}. A new
 @code{pdf_fsys_file_t} is created and stored in @var{file}.
 
-This callback is called by the @code{pdf_fsys_open} filesystem
+This callback is called by the @code{pdf_file_fsys_open} filesystem
+interface function.
+@end deftp
+
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_open_tmp_fn_t) (pdf_fsys_file_t *@var{file})}
+
+Filesystem callback called to create a temporary file, to open it in
+read/write mode and to store it in @var{file}.
+
+This callback is called by the @code{pdf_fsys_file_open_tmp} filesystem
 interface function.
 @end deftp
 
@@ -9664,15 +9688,6 @@ Filesystem callback used to determine whether a given filesystem
 item, identified by a path name, is writeable.
 
 This callback is called by the @code{pdf_fsys_item_writeable_p} file
-system interface function.
-@end deftp
-
-@deftp {Data Type} {pdf_text_t (*pdf_fsys_get_temp_path_name_fn_t) (void)}
-
-Filesystem callback used to get a path name for a new temporary file
-in teh specified filesystem.
-
-This callback is called by the @code{pdf_fsys_get_temp_path_name} file
 system interface function.
 @end deftp
 

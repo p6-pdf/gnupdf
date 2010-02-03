@@ -1,5 +1,5 @@
 /* fflush.c -- allow flushing input streams
-   Copyright (C) 2007-2009 Free Software Foundation, Inc.
+   Copyright (C) 2007-2010 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -91,6 +91,11 @@ static inline void
 update_fpos_cache (FILE *fp, off_t pos)
 {
 #if defined __sferror || defined __DragonFly__ /* FreeBSD, NetBSD, OpenBSD, DragonFly, MacOS X, Cygwin */
+# if defined __CYGWIN__
+  /* fp_->_offset is typed as an integer.  */
+  fp_->_offset = pos;
+# else
+  /* fp_->_offset is an fpos_t.  */
   /* Use a union, since on NetBSD, the compilation flags determine
      whether fpos_t is typedef'd to off_t or a struct containing a
      single off_t member.  */
@@ -101,6 +106,7 @@ update_fpos_cache (FILE *fp, off_t pos)
     } u;
   u.o = pos;
   fp_->_offset = u.f;
+# endif
   fp_->_flags |= __SOFF;
 #endif
 }

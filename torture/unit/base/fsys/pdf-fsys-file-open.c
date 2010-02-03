@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/11/14 23:07:34 jemarch"
+/* -*- mode: C -*- Time-stamp: "10/02/03 21:11:56 jemarch"
  *
  *       File:         pdf-fsys-file-open.c
  *       Date:         Sat May  2 00:02:09 2009
@@ -24,11 +24,12 @@
  */
 
 #include <config.h>
+
+#include <string.h>
 #include <tortutils.h>
 #include <check.h>
-#include <pdf.h>
-#include <string.h>
 
+#include <pdf.h>
 
 /*
  * Test: pdf_fsys_file_open_001
@@ -166,37 +167,6 @@ START_TEST(pdf_fsys_file_open_004)
 END_TEST
 
 /*
- * Test: pdf_fsys_file_open_005
- * Description:
- *   Open a new (temporary) file for writing
- * Success condition:
- *   The call to pdf_fsys_file_open should return PDF_OK
- */
-
-START_TEST(pdf_fsys_file_open_005)
-{
-  pdf_fsys_file_t file;
-  pdf_text_t path;
-
-  fail_if( pdf_text_init() != PDF_OK);
-
-  file = (pdf_fsys_file_t)pdf_alloc(sizeof(struct pdf_fsys_file_s));
-
-  path = pdf_fsys_get_temp_path_name(NULL);
-
-  fail_if( path == NULL );
-
-  fail_if( pdf_fsys_file_open(NULL, 
-                              path, 
-                              PDF_FSYS_OPEN_MODE_WRITE, 
-                              &file) != PDF_OK );
-
-  pdf_fsys_file_close(file);
-  pdf_text_destroy(path);
-}
-END_TEST
-
-/*
  * Test case creation function
  */
 TCase *
@@ -207,7 +177,6 @@ test_pdf_fsys_file_open (void)
   tcase_add_test(tc, pdf_fsys_file_open_002);
   tcase_add_test(tc, pdf_fsys_file_open_003);
   tcase_add_test(tc, pdf_fsys_file_open_004);
-  tcase_add_test(tc, pdf_fsys_file_open_005);
   return tc;
 }
 

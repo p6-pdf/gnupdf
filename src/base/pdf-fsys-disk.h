@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-15 12:18:32 gerel"
+/* -*- mode: C -*- Time-stamp: "10/02/03 20:45:14 jemarch"
  *
  *       File:         pdf-fsys-disk.h
  *       Date:         Thu May 22 18:22:59 2008
@@ -87,11 +87,6 @@ pdf_fsys_disk_item_readable_p (pdf_text_t path_name);
 pdf_bool_t
 pdf_fsys_disk_item_writable_p (pdf_text_t path_name);
 
-/* Get temporal path name */
-pdf_text_t
-pdf_fsys_disk_get_temp_path_name (void);
-
-
 
 /* --------------------- File interface ------------------------- */
 
@@ -101,6 +96,9 @@ pdf_fsys_disk_file_open (const pdf_text_t path_name,
                          const enum pdf_fsys_file_mode_e mode,
                          pdf_fsys_file_t *p_file);
 
+/* Open a temporary file.  */
+pdf_status_t
+pdf_fsys_disk_file_open_tmp (pdf_fsys_file_t *p_file);
 
 /* Get file mode info */
 enum pdf_fsys_file_mode_e
