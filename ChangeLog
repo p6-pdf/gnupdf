@@ -1,3 +1,7 @@
+2010-02-04  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-types.h: Clarify the usage of PDF_FORCE_BIGNUMS.
+
 2010-02-03  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-fsys-disk.c (PDF_FOPEN): Use fopen_safer instead of
