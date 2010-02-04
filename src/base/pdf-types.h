@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "10/01/28 21:01:42 jemarch"
+/* -*- mode: C -*- Time-stamp: "10/02/04 19:23:42 jemarch"
  *
  *       File:         pdf-types.h
  *       Date:         Sun Feb 10 21:30:00 2008
@@ -142,7 +142,8 @@ struct pdf_pm_s
 /********************** 64-bit type built-in support **************************/
 
 /* Note that int64_t may be defined by the gnulib stdint.h in
-   platforms missing that header file. */
+   platforms missing that header file.  To force use of BIGNUM, define
+   PDF_FORCE_BIGNUMS in config.h. */
 #if (defined(HAVE_INT64_T) || defined(int64_t)) && !defined(PDF_FORCE_BIGNUMS)
 #define PDF_USE_BUILTIN_64BIT_SUPPORT
 #endif
