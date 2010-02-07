@@ -193,7 +193,7 @@ nothing
 @example
 pdf_status_t st;
 
-st = pdf_i64_add (dest, addend_1, addend_2);
+pdf_i64_add (dest, addend_1, addend_2, &st);
 
 if (st != PDF_OK)
 @{
@@ -226,7 +226,7 @@ nothing
 @example
 pdf_status_t st;
 
-st = pdf_i64_add (dest, addend_1, addend_2);
+pdf_i64_add (dest, addend_1, addend_2, &st);
 
 if (st != PDF_OK)
 @{
@@ -665,7 +665,7 @@ addend_1 = pdf_i64_new(0, 25);
 addend_2 = pdf_i64_new(0, 35);
 result = pdf_i64_new(0, 0);
 dest = &result;
-pdf_i64_add (dest, addend_1, addend_2,p_status);
+pdf_i64_add (dest, addend_1, addend_2, &p_status);
 if (*p_status != PDF_OK) /* Now dest is 60 */
 @{
    /* Error code */

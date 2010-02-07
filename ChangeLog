@@ -2,6 +2,7 @@
 
 	* doc/gnupdf.texi: 32 << 1 when 1 << 32 was meant fixed in many
 	usage examples.
+	Fix the calls to pdf_i64_add in usage examples.
 
 2010-02-06  Jose E. Marchesi  <jemarch@gnu.org>
 
