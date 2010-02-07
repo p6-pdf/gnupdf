@@ -1,3 +1,8 @@
+2010-02-07  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi: 32 << 1 when 1 << 32 was meant fixed in many
+	usage examples.
+
 2010-02-06  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-list.h: 'const' qualifier to scalar return type
