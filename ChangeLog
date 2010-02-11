@@ -1,3 +1,9 @@
+2010-02-11  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_file_open_tmp): Assign
+	the privte data of the created file and set fs.
+
+
 2010-02-07  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi: 32 << 1 when 1 << 32 was meant fixed in many
