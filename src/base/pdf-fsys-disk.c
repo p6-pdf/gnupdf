@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "10/02/03 21:30:28 jemarch"
+/* -*- mode: C -*- Time-stamp: "10/02/11 15:16:09 jemarch"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -282,9 +282,9 @@ __pdf_fsys_init_base_file_data(const pdf_text_t path_name)
 
 
 pdf_status_t
-pdf_fsys_disk_file_open(const pdf_text_t path_name,
-                        const enum pdf_fsys_file_mode_e mode,
-                        pdf_fsys_file_t *p_file)
+pdf_fsys_disk_file_open (const pdf_text_t path_name,
+                         const enum pdf_fsys_file_mode_e mode,
+                         pdf_fsys_file_t *p_file)
 {
   pdf_status_t ret_status = PDF_EBADDATA;
 
@@ -359,6 +359,7 @@ pdf_fsys_disk_file_open_tmp (pdf_fsys_file_t *p_file)
   
 
   file = (pdf_fsys_file_t) pdf_alloc (sizeof (struct pdf_fsys_file_s));
+  file->fs = NULL; /* Default filesystem.  */
   
   if (file != NULL)
     {
@@ -383,6 +384,8 @@ pdf_fsys_disk_file_open_tmp (pdf_fsys_file_t *p_file)
           if (file_data->file_descriptor != NULL)
             {
               /* Success.  */
+              file->data = (void *) file_data;
+              *p_file = file;
               ret_status = PDF_OK;
             }
           else
