@@ -12007,7 +12007,7 @@ pdf_obj_doc_t doc;
 pdf_obj_t obj;
 
 /* Get an object from a document */
-pdf_obj_doc_get_obj (doc, 10, &obj);
+pdf_obj_doc_get_obj (doc, 10, 0, &obj);
 
 /* Create a strong reference for the object in `doc' */
 pdf_obj_acquire (obj);
@@ -12040,7 +12040,7 @@ pdf_obj_doc_t doc;
 pdf_obj_t obj;
 
 /* Get an object from a document */
-pdf_obj_doc_get_obj (doc, 10, &obj);
+pdf_obj_doc_get_obj (doc, 10, 0, &obj);
 
 /* Create a strong reference for the object in `doc'.  Its acquire
 counter is increased to 1.  */
@@ -15010,11 +15010,10 @@ if (pdf_obj_doc_get_root (doc, &root_dict)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_doc_get_obj (pdf_obj_doc_t @var{doc}, pdf_obj_id_t @var{obj_id}, pdf_obj_t *@var{obj})
+@deftypefun pdf_status_t pdf_obj_doc_get_obj (pdf_obj_doc_t @var{doc}, pdf_obj_id_t @var{obj_in}, pdf_obj_gen_t @var{obj_gn}, pdf_obj_t *@var{obj})
 
-Get an object from @var{doc} given its @var{obj_id} and store it in
-@var{obj}. Note that the object with the latest generation number in
-the document is returned.
+Get an object from @var{doc} given its @var{obj_in} and @var{obj_gen}
+and store it in @var{obj}.
 
 Any previous content of @var{obj} is lost.
 @table @strong
@@ -15022,8 +15021,10 @@ Any previous content of @var{obj} is lost.
 @table @var
 @item doc
 An object document.
-@item obj_id
+@item obj_in
 The object identifier of the desired object.
+@item obj_gn
+The generation number of the desired object.
 @item obj
 A pointer to a @code{pdf_obj_t} variable.
 @end table
@@ -15041,7 +15042,7 @@ pdf_obj_doc_t doc;
 pdf_obj_t pages_dict;
 
 /* Get the pages dictionary of 'doc' using its object id */
-if (pdf_obj_doc_get_obj (doc, 5, &catalog_dir)
+if (pdf_obj_doc_get_obj (doc, 5, 0, &catalog_dir)
     != PDF_ERROR)
 @{
    /* 'catalog_dir' contains the pages dictionary. */
