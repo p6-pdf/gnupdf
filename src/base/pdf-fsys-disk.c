@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "10/02/11 15:16:09 jemarch"
+/* -*- mode: C -*- Time-stamp: "10/02/14 17:02:54 jemarch"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -85,6 +85,20 @@ __pdf_fsys_disk_win32_device_p (pdf_text_t path);
  * Filesystem Interface Implementation
  */
 
+pdf_status_t
+pdf_fsys_disk_init (void **data)
+{
+  /* Do nothing.  */
+  *data = NULL;
+  return PDF_OK;
+}
+
+pdf_status_t
+pdf_fsys_disk_cleanup (void *data)
+{
+  /* Do nothing.  */
+  return PDF_OK;
+}
 
 #ifdef PDF_HOST_WIN32
 

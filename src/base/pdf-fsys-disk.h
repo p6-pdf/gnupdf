@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "10/02/03 20:45:14 jemarch"
+/* -*- mode: C -*- Time-stamp: "10/02/14 16:57:41 jemarch"
  *
  *       File:         pdf-fsys-disk.h
  *       Date:         Thu May 22 18:22:59 2008
@@ -47,6 +47,10 @@ typedef struct pdf_fsys_disk_file_s *pdf_fsys_disk_file_t;
 
 
 /* --------------------- Filesystem interface ------------------------- */
+
+/* Initialization and cleanup.  */
+pdf_status_t pdf_fsys_disk_init (void **data);
+pdf_status_t pdf_fsys_disk_cleanup (void *data);
 
 /* Get the free storage space in the volume containing path_name */
 pdf_i64_t

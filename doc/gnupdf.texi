@@ -9542,6 +9542,22 @@ Implementation Interface in order to honour the petition.
 @node File System Interface Implementation
 @subsubsection File System Interface Implementation
 
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_init_fn_t) (void **@var{data})}
+
+Filesystem callback called to initialize the filesystem internal
+state, if any.
+
+This callback is called by the @code{pdf_fsys_create} function.
+@end deftp
+
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_cleanup_fn_t) (void *@var{data})}
+
+Filesystem callback called to cleanup the filesystem internal state,
+if any.
+
+This callback is called by the @code{pdf_fsys_destroy} function.
+@end deftp
+
 @deftp {Data Type} {pdf_status_t (*pdf_fsys_file_open_fn_t) (pdf_text_t @var{path_name}, enum pdf_fsys_file_mode_e @var{mode}, pdf_fsys_file_t *@var{file})}
 
 Filesystem callback called to open a file identified by the path
@@ -9880,6 +9896,8 @@ implementation.
 The members of the structure are the following:
 
 @table @code
+@item pdf_fsys_init_fn init_fn
+@item pdf_fsys_cleanup_fn cleanup_fn
 @item pdf_fsys_open_fn_t open_fn
 @item pdf_fsys_close_fn_t c close_fn
 @item pdf_fsys_create_folder_fn_t create_folder_fn

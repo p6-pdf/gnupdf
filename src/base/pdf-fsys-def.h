@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "10/02/03 21:02:47 jemarch"
+/* -*- mode: C -*- Time-stamp: "10/02/14 16:57:28 jemarch"
  *
  *       File:         pdf-fsys-def.h
  *       Date:         Thu May 22 17:50:20 2008
@@ -29,6 +29,10 @@
 
 #include <pdf-fsys-disk.h>
 
+#define pdf_fsys_def_init(DATA) \
+  pdf_fsys_disk_init ((DATA))
+#define pdf_fsys_def_cleanup(DATA) \
+  pdf_fsys_disk_cleanup ((DATA))
 #define pdf_fsys_def_get_free_space(path_name) \
   pdf_fsys_disk_get_free_space ((path_name))
 #define pdf_fsys_def_create_folder(path_name) \
