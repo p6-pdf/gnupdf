@@ -1,7 +1,33 @@
+2010-02-14  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi: Documentation of the filesystem implementation
+	callbacks 'init_fn' and 'cleanup_fn'.
+
+	* src/base/pdf-fsys.c (pdf_fsys_create): Invoke the 'init_fn'
+	callback of the filesystem.
+	(pdf_fsys_destroy): Invoke the 'cleanup_fn' callback of the
+	filesystem.
+
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_init): New function.
+	(pdf_fsys_disk_cleanup): New function.
+
+	* src/base/pdf-fsys-disk.h: Define 'pdf_fsys_disk_init' and
+	'pdf_fsys_disk_cleanup'.
+
+	* src/base/pdf-fsys-def.h: Define 'pdf_fsys_def_init' and
+	'pdf_fsys_def_cleanup'.
+
+	* src/base/pdf-fsys.h: Update copyright notices.
+	(struct pdf_fsys_s): Add a member 'void *data' to hold the private
+	state of the underlying implementation, if needed.
+	(struct pdf_fsys_impl_s): New members 'init_fn' and 'cleanup_fn'.
+	Definition of the types 'pdf_fsys_init_fn_t' and
+	'pdf_fsys_cleanup_fn_t'.
+
 2010-02-11  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_file_open_tmp): Assign
-	the privte data of the created file and set fs.
+	the private data of the created file and set fs.
 
 
 2010-02-07  Jose E. Marchesi  <jemarch@gnu.org>
