@@ -1,3 +1,16 @@
+2010-02-15  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-arch.texi (Parser functions): Documentation for
+	'pdf_parser_new'.
+	(Parser data types): Documentation for 'pdf_parser_t'.
+	(Parser functions): Documentation for 'pdf_parser_destroy'.
+	(Parser functions): Documentation for 'pdf_parser_stm'.
+
+	* doc/gnupdf-arch-figures/parser-overview.txt: New file.
+
+	* doc/gnupdf-arch.texi (Object Layer): Section on "object values"
+	removed.
+
 2010-02-11  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_file_open_tmp): Assign

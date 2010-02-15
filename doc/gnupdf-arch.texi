@@ -1888,12 +1888,9 @@ Library.
 
 @menu
 * Object layer overview::       What is in this layer.
-* Object values module::        The internal representation of the
-                                 values of the PDF objects.
-* Parser module::               Generating object values from the
-                                 textual representation.
+* Parser module::               Parsing objects from streams.
 * Writer module::               Printing out the textual
-                                 representation of object values.
+                                 representation of objects.
 * Object Document Module::      A hierarchy of objects.
 @end menu
 
@@ -1916,16 +1913,13 @@ The functionality provided by this layer is implemented in several
 modules.
 
 @table @strong
-@item Object values module
-This module implements the @code{pdf_obj_val_t} abstract data type.
-@code{pdf_obj_val_t} variables hold the value of PDF objects.
 @item Parser module
 This module implements the functionality to read PDF objects from a
 base-level stream.
 @item Writer module
-This module implements the functionality to create a textual version
-of PDF objects. The textual representation of objects are then written
-into a given base level stream.
+This module implements the functionality to create textual
+representations of PDF objects. The textual representation of objects
+are then written into a given base level stream.
 @item Object Document Module
 This module implements the abstraction of object level documents. An
 object-level document is a hierarchy of objects that conforms a PDF
@@ -1934,1066 +1928,11 @@ new objects into a document are provided. A pool of objects and
 a garbage collection algorithm are also implemented in this module.
 @end table
 
-@node Object values module
-@section Object values module
-
-This module implements a data type named @code{pdf_obj_val_t} to hold
-the value of an arbitrary PDF object.
-
-@menu
-* Overview of the object values::
-* Value data types::  pdf_obj_val_t and pdf_obj_val_type_e.
-* Generic functions to manipulate values:: Object destruction,
-                                            properties, etc.
-* Scalar values::     Boolean, integer and real values.
-* Strings and names:: String and names.
-* Arrays and dictionaries::  Compound values.
-* Stream values::     Stream objects.
-* Indirect references:: References to PDF objects.
-* The null value::    The null object has only one value.
-@end menu
-
-@node Overview of the object values
-@subsection Overview of the object values
-
-Why?
-What this module implements?
-Who is using this module?
-XXX
-
-@node Value data types
-@subsection Value data types
-
-@deftp {Data Type} pdf_obj_val_t
-The value of a PDF Object.  This is an opaque type.
-@end deftp
-
-@deftp {Data Type} {enum pdf_obj_val_type_e}
-Enumeration of the allowed types for a PDF object value:
-
-@table @code
-@item PDF_OBJ_VAL_TYPE_NULL
-@item PDF_OBJ_VAL_TYPE_INTEGER
-@item PDF_OBJ_VAL_TYPE_REAL
-@item PDF_OBJ_VAL_TYPE_BOOLEAN
-@item PDF_OBJ_VAL_TYPE_STRING
-@item PDF_OBJ_VAL_TYPE_NAME
-@item PDF_OBJ_VAL_TYPE_ARRAY
-@item PDF_OBJ_VAL_TYPE_DICT
-@item PDF_OBJ_VAL_TYPE_STREAM
-@item PDF_OBJ_VAL_TYPE_INDIRECT
-@end table
-@end deftp
-
-@node Generic functions to manipulate values
-@subsection Generic functions to manipulate values
-
-The following functions can be applied to objects of any type.
-
-@deftypefun {enum pdf_obj_val_type_e} pdf_obj_val_type (pdf_obj_val_t @var{obj_val})
-
-Return the type of an given object value @var{OBJ_VAL}.
-
-@table @strong
-@item Parameters
-@table @var
-@item obj_val
-An object value.
-@end table
-@item Returns
-The type of @var{obj_val}.
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_destroy (pdf_obj_val_t @var{obj_val})
-
-Deallocate the memory used by @var{obj_val}.
-
-If @var{obj_val} is a collection (dictionary or array) then all its
-elements are destroyed in a recursive way.
-
-If @var{obj_val} is a stream value then the stream dictionary is
-destroyed and the reading stream closed.  If the stream is volatile
-the open file associated with the reading stream is deleted from its
-containing filesystem.
-@table @strong
-@item Parameters
-@table @var
-@item obj_val
-The object value to destroy.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The memory associated with the object value was deallocated.  The
-reference stored in @var{obj_val} shall be considered invalid.
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_obj_val_t pdf_obj_val_dup (pdf_obj_val_t @var{obj_val})
-XXX
-@end deftypefun
-
-@deftypefun pdf_bool_t pdf_obj_val_equal_p (pdf_obj_val_t @var{obj_val_1}, pdf_obj_val_t @var{obj_val_2})
-
-Compare two object values and determine if they are equal.
-
-Two object values are equal if, and only if:
-
-@itemize @minus
-@item They are of the same type, and
-@item If they are the null object value.
-@item If they are scalar values and the values are the same.
-@item If they are arrays:
-@itemize @minus
-@item They are of the same size.
-@item All the contained elements are equal and in the same order.
-@end itemize
-@item If they are dictionaries:
-@itemize @minus
-@item They have the same number of entries.
-@item The contained entries has the same key and equal values.
-@end itemize
-@end itemize
-
-@table @strong
-@item Parameters
-@table @var
-@item obj_val_1
-The first object value to compare.
-@item obj_val_2
-The second object value to compare.
-@end table
-@item Returns
-A boolean value:
-@table @code
-@item PDF_TRUE
-The given objects are equal.
-@item PDF_FALSE
-The given objects are not equal.
-@end table
-@item Usage example
-@example
-pdf_obj_val_t obj1;
-pdf_obj_val_t obj2;
-
-pdf_obj_val_null_new (obj1);
-pdf_obj_val_null_new (obj2);
-pdf_obj_val_equal_p (obj1, obj2); /* Returns PDF_TRUE */
-pdf_obj_val_destroy (obj1);
-pdf_obj_val_destroy (obj2);
-
-pdf_obj_val_integer_new (10, obj1);
-pdf_obj_val_integer_new (20, obj2);
-pdf_obj_val_equal_p (obj1, obj2); /* Returns PDF_FALSE */
-pdf_obj_val_destroy (obj1);
-pdf_obj_val_destroy (obj2);
-@end example
-@end table
-@end deftypefun
-
-The following functions manipulate the value of scalar objects, such
-as numbers and booleans.
-
-@node Scalar values
-@subsection Scalar values
-
-Boolean values can represent two possible values: @code{PDF_TRUE} and
-@code{PDF_FALSE}.
-
-Integer values can represent an integer value in the range
-@code{-2147483647-1} - @code{2147483647}.
-
-Real values can represent a real value in the range @code{-FLT_MAX} -
-@code{FLT_MAX}.
-
-@deftypefun pdf_status_t pdf_obj_val_bool_new (pdf_bool_t @var{value}, pdf_obj_val_t *@var{obj_val})
-
-Create a boolean object value @var{obj_val} initialized to
-@var{value}.
-
-@table @strong
-@item Parameters
-@table @var
-@item value
-A boolean value used as the initial value of the object value.
-@item obj_val
-A pointer to a @code{pdf_obj_val_t} variable that will hold the value.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The boolean object value was created and stored in @var{obj_val}.
-@end table
-@item Usage example
-@example
-pdf_obj_val_t boolean_val;
-
-pdf_obj_val_bool_new (PDF_TRUE, &boolean_val);
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_get_bool (pdf_obj_val_t @var{obj_val}, pdf_bool_t *@var{bool})
-
-Get the boolean value stored in @var{obj_val} and store it in
-@var{bool}.
-
-@table @strong
-@item Parameters
-@table @var
-@item obj_val
-An object value.
-@item bool
-A pointer to a @code{pdf_bool_t} variable.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The boolean value of @var{obj_val} has been stored in @var{bool}.
-@item PDF_EBADDATA
-@var{obj_val} is not a boolean object value.
-@end table
-@item Usage example
-@example
-pdf_obj_val_t bool_val;
-pdf_bool_t bool;
-
-pdf_obj_val_bool_new (PDF_TRUE, &bool_val);
-pdf_obj_val_get_bool (bool_val, &bool);
-/* bool is now PDF_TRUE */
-
-pdf_obj_val_bool_set (bool_val, PDF_FALSE);
-pdf_obj_val_get_bool (bool_val, &bool);
-/* bool is now PDF_FALSE */
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_set_bool (pdf_obj_val_t @var{obj_val}, pdf_bool_t @var{bool})
-
-Set the boolean value of a boolean object value.
-
-@table @strong
-@item Parameters
-@table @var
-@item obj_val
-An object value.
-@item bool
-A boolean value.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The value stored in @var{obj_val} is now @var{bool}.
-@item PDF_EBADDATA
-@var{obj_val} is not a boolean object value.
-@end table
-@item Usage example
-@example
-pdf_obj_val_t bool_val;
-
-pdf_obj_val_bool_new (PDF_FALSE, &bool_val);
-pdf_obj_val_set_bool (bool_val, PDF_TRUE);
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_int_new (pdf_u32_t @var{value}, pdf_obj_val_t *@var{obj_val})
-
-Create an integer object value @var{obj_val} initialized to
-@var{value}.
-
-@table @strong
-@item Parameters
-@table @var
-@item value
-An integer value used as the initial value of the object value.
-@item obj_val
-A pointer to a @code{pdf_obj_val_t} variable that will hold the value.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The integer object value was created and stored in @var{obj_val}.
-@end table
-@item Usage example
-@example
-pdf_obj_val_t integer_val;
-
-pdf_obj_val_int_new (20, &integer_val);
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_get_int (pdf_obj_val_t @var{obj_val}, pdf_i32_t *@var{integer})
-
-Get the integer value stored in @var{obj_val} and store it in
-@var{integer}.
-
-@table @strong
-@item Parameters
-@table @var
-@item obj_val
-An object value.
-@item integer
-A pointer to a @code{pdf_i32_t} variable.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The boolean value of @var{obj_val} has been stored in @var{integer}.
-@item PDF_EBADDATA
-@var{obj_val} is not an integer object value.
-@end table
-@item Usage example
-@example
-pdf_obj_val_t int_val;
-pdf_i32_t integer;
-
-pdf_obj_val_int_new (13, &int_val);
-pdf_obj_val_get_int (int_val, &integer);
-/* `integer' is now 13 */
-
-pdf_obj_val_int_set (int_val, 20);
-pdf_obj_val_get_int (int_val, &integer);
-/* `integer' is now 20 */
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_set_int (pdf_obj_val_t @var{obj_val}, pdf_i32_t @var{integer})
-
-Set the integer value of an integer object value.
-
-@table @strong
-@item Parameters
-@table @var
-@item obj_val
-An object value.
-@item integer
-An integer value.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The value stored in @var{obj_val} is now @var{integer}.
-@item PDF_EBADDATA
-@var{obj_val} is not an integer object value.
-@end table
-@item Usage example
-@example
-pdf_obj_val_t int_val;
-
-pdf_obj_val_int_new (23, &bool_val);
-pdf_obj_val_set_int (int_val, 23000);
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_real_new (pdf_u32_t @var{value}, pdf_obj_val_t *@var{obj_val})
-
-Create a real object value @var{obj_val} initialized to @var{value}.
-
-@table @strong
-@item Parameters
-@table @var
-@item value
-A real value used as the initial value of the object value.
-@item obj_val
-A pointer to a @code{pdf_obj_val_t} variable that will hold the value.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The real object value was created and stored in @var{obj_val}.
-@end table
-@item Usage example
-@example
-pdf_obj_val_t real_val;
-
-pdf_obj_val_real_new (3.14, &real_val);
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_get_real (pdf_obj_val_t @var{obj_val}, pdf_real_t *@var{real})
-
-Get the real value stored in @var{obj_val} and store it in @var{real}.
-
-@table @strong
-@item Parameters
-@table @var
-@item obj_val
-An object value.
-@item real
-A pointer to a @code{pdf_real_t} variable.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The real value of @var{obj_val} has been stored in @var{real}.
-@item PDF_EBADDATA
-@var{obj_val} is not a real object value.
-@end table
-@item Usage example
-@example
-pdf_obj_val_t real_val;
-pdf_real_t real;
-
-pdf_obj_val_real_new (3.14, &real_val);
-pdf_obj_val_get_real (real_val, &real);
-/* `real' is now 3.14 */
-
-pdf_obj_val_real_set (real_val, 2.71);
-pdf_obj_val_get_real (real_val, &real);
-/* `real' is now 2.71 */
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_set_real (pdf_obj_val_t @var{obj_val}, pdf_real_t @var{real})
-
-Set the real value of a real object value.
-
-@table @strong
-@item Parameters
-@table @var
-@item obj_val
-An object value.
-@item real
-A real value.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The value stored in @var{obj_val} is now @var{real}.
-@item PDF_EBADDATA
-@var{obj_val} is not a real object value.
-@end table
-@item Usage example
-@example
-pdf_obj_val_t real_val;
-
-pdf_obj_val_real_new (3.14, &real_val);
-pdf_obj_val_set_real (real_val, 2.71);
-@end example
-@end table
-@end deftypefun
-
-@node Strings and names
-@subsection Strings and names
-
-@deftypefun pdf_status_t pdf_obj_val_string_new (pdf_char_t *@var{value}, pdf_size_t @var{size}, pdf_obj_val_t *@var{obj_val})
-
-Create a string object value @var{obj_val} initialized to @var{value}.
-
-@table @strong
-@item Parameters
-@table @var
-@item value
-A pointer to a memory buffer.  The pointer will be used internally by
-the object value, so the user should not deallocate it explicitly.
-@item size
-The size of @var{value} in octects.
-@item obj_val
-A pointer to a @code{pdf_obj_val_t} variable that will hold the value.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The string object value was created and stored in @var{obj_val}.
-@end table
-@item Usage example
-@example
-pdf_obj_val_t string_val;
-
-pdf_obj_val_string_new ("foo", 3, &string_val);
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_string_size (pdf_obj_val_t @var{obj_val}, pdf_size_t @var{size})
-
-Get the size of the string value @var{obj_val}, measured in octects,
-and store it into @var{size}.
-
-@table @strong
-@item Parameters
-@table @var
-@item obj_val
-An object value.
-@item size
-A pointer to a @var{pdf_size_t} variable.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The size of @var{obj_val} was sotred into @var{size}.
-@item PDF_EBADDATA
-@var{obj_val} is not a string value.
-@end table
-@item Usage example
-@example
-pdf_obj_val_t string_val;
-pdf_size_t string_size;
-
-pdf_obj_val_string_new ("abc", 3, &string_val);
-pdf_obj_val_name_size (string_val, &string_size);
-/* `string_size' is 3 */
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_string_data (pdf_obj_val_t @var{obj_val}, pdf_char_t **@var{data}, pdf_size_t *@var{size})
-
-Get a pointer to the data stored in the string value @var{obj_val} and
-store it in @var{data}.  The size of the data, in octects, is stored
-in @var{size}.
-
-@table @strong
-@item Parameters
-@table @var
-@item obj_val
-An object value.
-@item data
-A pointer to a @code{pdf_char_t *} variable.
-@item size
-A pointer to a @code{pdf_size_t} variable.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The data stored in @var{obj_val} is now pointed by @var{data}, and the
-size of the data is stored in @var{size}.
-@item PDF_EBADDATA
-@var{obj_val} is not a string value.
-@end table
-@item Usage example
-@example
-pdf_obj_val_t string_val;
-pdf_char_t *buffer;
-pdf_size_t buffer_size;
-
-pdf_obj_val_string_new ("abc", 3, &string_val);
-pdf_obj_val_string_data (string_val, &buffer, &buffer_size);
-/* `buffer' points to "abc" and `buffer_size' is 3 */
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_name_new (pdf_char_t *@var{value}, pdf_obj_val_t @var{obj_val})
-
-Create a name object value @var{obj_val} initialized to @var{value}.
-
-@table @strong
-@item Parameters
-@table @var
-@item value
-A pointer to a memory buffer.  The pointer will be used internally by
-the object value, so the user should not deallocate it explicitly.
-@item obj_val
-A pointer to a @code{pdf_obj_val_t} variable that will hold the value.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The name object value was created and stored in @var{obj_val}.
-@item PDF_ENOMEM
-Not enough memory to perform the operation.  The value stored in
-@var{obj_val} shall be considered invalid.
-@end table
-@item Usage example
-@example
-pdf_obj_val_t name_val;
-
-pdf_obj_val_name_new ("bar", &name_val);
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_name_size (pdf_obj_val_t @var{obj_val}, pdf_size_t *@var{size})
-
-Get the size of the name value @var{obj_val}, measured in octects, and
-store it into @var{size}.
-
-@table @strong
-@item Parameters
-@table @var
-@item obj_val
-An object value.
-@item size
-A pointer to a @var{pdf_size_t} variable.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The size of @var{obj_val} was stored into @var{size}.
-@item PDF_EBADDATA
-@var{obj_val} is not a name value.
-@end table
-@item Usage example
-@example
-pdf_obj_val_t name_val;
-pdf_size_t name_size;
-
-pdf_obj_val_name_new ("abc", &name_val);
-pdf_obj_val_name_size (name_val, &name_size);
-/* `name_size' is 3 */
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_name_data (pdf_obj_val_t @var{obj_val}, pdf_char_t **@var{data})
-
-Get a pointer to the data stored in the name value @var{obj_val} and
-store it in @var{data}.
-
-@table @strong
-@item Parameters
-@table @var
-@item obj_val
-An object value.
-@item data
-A pointer to a @var{pdf_char_t *} variable.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The data stored in @var{obj_val} is now pointed by @var{data}.
-@item PDF_EBADDATA
-@var{obj_val} is not a name value.
-@end table
-@item Usage example
-@example
-pdf_obj_val_t name_val;
-pdf_char_t *data;
-
-pdf_obj_val_name_new ("abc", &name_val);
-pdf_obj_val_name_data (name_val, &data);
-/* `data' points to "abc" */
-@end example
-@end table
-@end deftypefun
-
-@node Arrays and dictionaries
-@subsection Arrays and dictionaries
-
-@deftypefun pdf_status_t pdf_obj_val_array_new (pdf_obj_val_t *@var{obj_val})
-
-Create an empty array and store it in @var{obj_val}.
-
-@table @strong
-@item Parameters
-@table @var
-@item obj_val
-A pointer to a @code{pdf_obj_val_t} variable that will hold the array.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The array object value was created and stored in @var{obj_val}.
-@item PDF_ENOMEM
-End of memory.  The reference stored in @var{obj_val} shall be
-considered invalid.
-@end table
-@item Usage example
-@example
-pdf_obj_val_t array_val;
-
-if (pdf_obj_val_array_new (&array_val) != PDF_OK)
-@{
-   /* End of memory condition */
-@}
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_size_t pdf_obj_val_get_array_size (pdf_obj_val_t @var{obj_val})
-If @var{obj_val} is not an array object then return @code{0}
-(nonsense).
-XXX
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_remove_array_elt (pdf_obj_val_t @var{obj_val}, pdf_size_t @var{index})
-XXX
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_get_array_elt (pdf_obj_val_t @var{obj_val}, pdf_size_t @var{index})
-XXX
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_set_array_elt (pdf_obj_val_t @var{obj_val}, pdf_size_t @var{index}, pdf_obj_val_t @var{elt})
-XXX
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_dict_new (@var{obj_val})
-
-Create an empty dictionary and store it in @var{obj_val}.
-
-@table @strong
-@item Parameters
-@table @var
-@item obj_val
-A pointer to a @code{pdf_obj_val_t} variable that will hold the
-dictionary.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The dictionary object value was created and stored in @var{obj_val}.
-@item PDF_ENOMEM
-End of memory.  The reference stored in @var{obj_val} shall be
-considered invalid.
-@end table
-@item Usage example
-@example
-pdf_obj_val_t dict_val;
-
-if (pdf_obj_val_dict_new (&dict_val) != PDF_OK)
-@{
-   /* End of memory condition */
-@}
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_size_t pdf_obj_val_get_dict_size (pdf_obj_val_t @var{obj_val})
-If @var{obj_val} is not a dictionary then return @code{0} (nonsense).
-XXX
-@end deftypefun
-
-@deftypefun pdf_bool_t pdf_obj_val_dict_key_p (pdf_obj_val_t @var{obj_val}, pdf_obj_val_t @var{key})
-XXX
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_get_dict_entry (pdf_obj_val_t @var{obj_val}, pdf_obj_val_t @var{key}, pdf_obj_val_t *@var{elt})
-XXX
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_remove_dict_entry (pdf_obj_val_t @var{obj_val}, pdf_obj_val_t @var{key})
-XXX
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_create_dict_entry (pdf_obj_val_t @var{obj_val}, pdf_obj_val_t @var{key}, pdf_obj_val_t @var{value})
-XXX
-@end deftypefun
-
-@node Stream values
-@subsection Stream values
-
-Streams are composed by a description dictionary and an arbitrary long
-stream of data.  The description dictionary contains entries that
-describe both characteristics of the stream (how long the stream is)
-and characteristics of the data contained in the stream (how should
-the data be filtered before it is read).
-
-@float Figure,fig:stream-value-internals
-@image{gnupdf-arch-figures/stream-value-internals}
-@caption{Stream value internals}
-@end float
-
-The @code{pdf_obj_val_stream_new} function is creating a temporary
-file in the host file system to hold the filtered data of the stream
-(see figure XXX).  When the stream value is destroyed using
-@code{pdf_obj_val_destroy} the temporary file is deleted.
-
-@deftypefun pdf_status_t pdf_obj_val_stream_new (pdf_stm_t @var{stm}, pdf_size_t @var{size}, pdf_obj_val_t @var{attrs_dict}, pdf_obj_val_t *@var{obj_val})
-
-Create a stream value and store it in @var{obj_val}.
-
-@table @strong
-@item Parameters
-@table @var
-@item stm
-A base layer stream containing the data that will be stored in the
-stream value.  The contents of this stream will be copied to an
-internal storage by this call.
-@item size
-The number of octects to read from @var{stm}.  If this parameter is
-zero then read from the stream until it gets exhausted.
-@item attrs_dict
-Dictionary value containing keys that will be copied to the dictionary
-describing the newly created stream.  If this dictionary contains a
-list of filters then those filters are applied in inverse order to the
-data read from @var{stm}.
-
-Note that any @code{/Length} key present in @var{stm} will be ignored.
-
-If this parameter is the null value then it is ignored.
-@item obj_val
-A pointer to a @code{pdf_obj_val_t} variable that will hold the
-stream.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The value was successfully created.
-@item PDF_ENOMEM
-Out of memory condition.  The reference stored in @var{obj_val} shall
-be considered invalid.
-@item PDF_ENOSPC
-No space left on the disk for the temporary file.  The value
-stored in @var{obj_val} shall be considered invalid.
-@item PDF_EBADDATA
-@var{attrs_dict} is not a dictionary value nor the null value.
-@end table
-@item Usage example
-@example
-pdf_obj_val_t stream_val;
-pdf_obj_val_t null_val;
-pdf_obj_val_t dict_val;
-pdf_stm_t stm;
-pdf_text_t image_path;
-pdf_fsys_file_t image_file;
-
-/*
- * Create a stream value containing "/foo/bar.jpeg"
- */
-
-/* Get the null object value */
-pdf_obj_val_null_new (null_val);
-
-/* Open a reading stream to the image file */
-pdf_text_new_from_unicode ("/foo/bar.jpeg", 13,
-                           PDF_TEXT_UTF8, &path);
-pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, &image_file);
-pdf_stm_file_new (image_file, 0, 0, PDF_STM_READ, &stm);
-
-/* Create the stream value */
-if (pdf_obj_val_stream_new (stm,
-                            0,  /* Read until stm exhausted */
-                            null_val, /* Don't filter the data */
-                            &stream_val)
-    == PDF_OK)
-@{
-   /* Stream value created */
-@}
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_stream_dict (pdf_obj_val_t @var{stream_val}, pdf_obj_val_t *@var{dict_val})
-
-Get a copy of the description dictionary of the stream value
-@var{obj_val} and store it in @var{dict}.
-
-@table @strong
-@item Parameters
-@table @var
-@item stream_val
-The stream object.
-@item dict_val
-A pointer to a @code{pdf_obj_val_t} variable that will hold the
-dictionary value.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The dictionary value was stored in @var{dict_val}.
-@item PDF_ENOMEM
-Out of memory condition.  The value stored in @var{dict_val} shall be
-considered invalid.
-@item PDF_EBADDATA
-@var{stream_val} is not a stream value.
-@end table
-@item Usage example
-@example
-pdf_obj_val_t stream_val;
-pdf_obj_val_t dict_val;
-
-...
-
-/* Get a copy of the dictionary of STREAM_VAL */
-if (pdf_obj_val_get_stream_dict (stream_val, &dict_val)
-    == PDF_OK)
-@{
-   /* `dict_val' contains the dictionary value */
-@}
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_stream_size (pdf_obj_val_t @var{stream_val}, pdf_off_t *@var{size})
-
-Get the size (measured in octects) of the data stored in
-@var{stream_val} and store it in @var{size}.
-
-@table @strong
-@item Parameters
-@table @var
-@item stream_val
-A stream value.
-@item size
-A pointer to a @code{pdf_off_t} variable.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The size of the contents stored in @var{stream_val} was written in
-@var{size}.
-@item PDF_EBADDATA
-@var{stream_val} is not a stream value.
-@end table
-@item Usage example
-@example
-pdf_off_t size;
-pdf_obj_val_t stream_val;
-
-/* Get the size of stream_val */
-pdf_obj_val_stream_size (stream_val, &size);
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_val_stream_stm (pdf_obj_val_t @var{stream_val}, pdf_stm_t *@var{stm})
-
-Open a reading stm to the stream data and store it into @var{stm}.
-
-@table @strong
-@item Parameters
-@table @var
-@item stream_val
-The stream value.
-@item stm
-A reading stm to the contents of the stream value.  The caller is
-responsible to close this stm.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The reading stm was opened and stored in @var{stm}.
-@item PDF_ENOMEM
-Out of memory condition.  The value stored in @var{stm} shall be
-considered invalid.
-@item PDF_EBADDATA
-@var{stream_val} is not a stream value.
-@end table
-@item Usage example
-@example
-pdf_stm_t stm;
-pdf_obj_val_t stream_val;
-pdf_off_t size, i;
-pdf_char_t c;
-
-...
-
-/* Get a stream to the data contained by stream_val 
-   and print the data in stdout octect by octect */
-if (pdf_obj_val_stream_stm (stream_val, &stm)
-    == PDF_OK)
-@{
-   /* Get the size of the stored data */
-   pdf_obj_val_stream_size (stream_val, &size);
-
-   /* Print the contents */
-   for (i = 0; i < size; i++)
-   @{
-      pdf_stm_read_char (stm, &c);
-      putchar (c);      
-   @}
-@}
-@end example
-@end table
-@end deftypefun
-
-@node Indirect references
-@subsection Indirect references
-
-@deftypefun pdf_status_t pdf_obj_val_indirect_new (unsigned int @var{on}, unsigned int @var{gn}, pdf_obj_val_t *@var{obj_val})
-
-Create a value for an indirect reference and store it in
-@var{obj_val}.
-
-@table @strong
-@item Parameters
-@table @var
-@item on
-The object number, a positive integer.
-@item gn
-The object generation number, a non-negative integer.
-@item obj_val
-A pointer to a @code{pdf_obj_val_t} variable that will hold the
-indirect reference.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The indirect reference value was created and stored in @var{obj_val}.
-@end table
-@item Usage example
-@example
-pdf_obj_val_t indirect_val;
-
-pdf_obj_val_indirect_new (10, 0, &indirect_val);
-@end example
-@end table
-@end deftypefun
-
-@node The null value
-@subsection The null value
-
-@deftypefun pdf_status_t pdf_obj_val_null_new (pdf_obj_val_t *@var{obj_val})
-
-Create and return a new object value of type null.
-
-@table @strong
-@item Parameters
-@table @var
-@item obj_val
-A pointer to a @code{pdf_obj_val_t} variable that will hold the value.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-A null object value was created and stored in @var{obj_val}.
-@end table
-@item Usage example
-@example
-pdf_obj_val_t null_val;
-
-pdf_obj_val_null_new (&null_val);
-@end example
-@end table
-@end deftypefun
-
 @node Parser module
 @section Parser module
 
-This module implements a parser of PDF objects.
+This module implements a parser of PDF objects operating on base-layer
+streams.
 
 @menu
 * Overview of the Parser module::
@@ -3004,18 +1943,146 @@ This module implements a parser of PDF objects.
 @node Overview of the Parser module
 @subsection Overview of the Parser module
 
-XXX
+The parser module provides functions to parse objects out of
+base-layer streams.
 
+@float Figure,fig:parser-overview
+@image{gnupdf-arch-figures/parser-overview}
+@caption{Overview of the PDF Parser.}
+@end float
+
+In order to read the tokens it makes use of the tokeniser module (XXX:
+xref).  In turn the tokeniser module is getting the data from the
+user-supplied base layer stream, that may be operating on an open file
+(provided by some filesystem implementation) or a memory buffer.  The
+parser can seek into the stream at user request. XXX: what happens with the
+tokeniser then? Reset + Seek?
+
+The following figure depicts the flow and transformations suffered by
+the the data from the source of the data (either an open file or a
+memory buffer) to the parser user.
+
+@float Figure,fig:parser-data-flow
+@image{gnupdf-arch-figures/parser-data-flow}
+@caption{Data flows in the PDF parser.}
+@end float
+
+The objects created and returned by the parser are direct objects that
+are not associated with any document.
 
 @node Parser data types
 @subsection Parser data types
 
-XXX
+@deftp {Data Type} pdf_parser_t
+A PDF parser, that must be considered as an opaque type.
+@end deftp
 
 @node Parser functions
 @subsection Parser functions
 
-XXX
+@deftypefun pdf_status_t pdf_parser_new (pdf_stm_t @var{stm}, pdf_parser_t *@var{parser})
+
+Create a new parser operating on @var{stm} and store it in
+@var{parser}.  The new parser will operate on @var{stm} at offset
+@code{0}.
+
+@table @strong
+@item Parameters
+@table @var
+@item stm
+A reading stream.
+@item parser
+A pointer to a @code{pdf_parser_t} variable.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The parser was successfully created and stored in @var{parser}.
+@item PDF_EBADDATA
+@var{stm} is not a reading stream.
+@item PDF_ENOMEM
+Not enough memory to perform the operation.  The value of @var{parser}
+should be considered invalid.
+@end table
+@item Usage example
+@example
+pdf_stm_t stm;
+pdf_parser_t parser;
+
+/*
+ * Create a memory reading stream.
+ */
+pdf_stm_mem_new ("100",  /* Integer object 100.  */
+                 3,
+                 0,      /* Use default cache size.  */
+                 PDF_STM_READ,
+                 &stm);
+
+/*
+ * Create a parser operating the stream.
+ */
+if (pdf_parser_new (stm, &parser) != PDF_OK)
+@{
+   /* Error creating the parser.  */
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_parser_destroy (pdf_parser_t @var{parser})
+
+Destroy @var{parser} freeing all used resources.
+
+Note that this function does not close the internal reading stream
+operated by the parser.
+
+@table @strong
+@item Parameters
+@table @var
+@item parser
+The parser to destroy.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The parser was successfully destroyed.
+@end table
+@item Usage example
+@example
+pdf_parser_t parser;
+
+/*
+ * Destroy a parser freeing any used resources.
+ */
+pdf_parser_destroy (parser);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_stm_t pdf_parser_stm (pdf_parser_t @var{parser})
+
+Return the stream operated by @var{parser}.
+
+@table @strong
+@item Parameters
+@table @var
+@item parser
+A PDF parser.
+@end table
+@item Returns
+The stream operated by @var{parser}.
+@item Usage example
+@example
+pdf_parser_t parser;
+pdf_stm_t stm;
+
+/* Get the stream operated by a parser.  */
+stm = pdf_parser_stm (parser);
+@end example
+@end table
+@end deftypefun
 
 @node Writer module
 @section Writer module
