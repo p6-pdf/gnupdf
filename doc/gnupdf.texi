@@ -13587,7 +13587,7 @@ if (pdf_obj_dict_new (doc, PDF_TRUE, &dict)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_dict_get (pdf_obj_t @var{dict}, pdf_obj_t @var{key}, pdf_obj_t &@var{obj})
+@deftypefun pdf_status_t pdf_obj_dict_get (pdf_obj_t @var{dict}, pdf_obj_t @var{key}, pdf_obj_t *@var{obj})
 
 Get the value associated with @var{key} in @var{dict} and store it in
 @var{obj}.
@@ -13637,7 +13637,7 @@ if (pdf_obj_dict_get (dict, key, &value) == PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_dict_get_str (pdf_obj_t @var{dict}, pdf_char_t *@var{key}, pdf_obj_t &@var{obj})
+@deftypefun pdf_status_t pdf_obj_dict_get_str (pdf_obj_t @var{dict}, pdf_char_t *@var{key}, pdf_obj_t *@var{obj})
 
 Get the value associated with @var{key} in @var{dict} and store it in
 @var{obj}.
@@ -13683,7 +13683,7 @@ if (pdf_obj_dict_get (dict, "Foo", &value) == PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_dict_set (pdf_obj_t @var{dict}, pdf_obj_t @var{key}, pdf_obj_t &@var{val})
+@deftypefun pdf_status_t pdf_obj_dict_set (pdf_obj_t @var{dict}, pdf_obj_t @var{key}, pdf_obj_t @var{val})
 
 Set @var{val} as the new value for @var{key} in the PDF dictionary
 @var{dict}.
@@ -13737,7 +13737,7 @@ if (pdf_obj_dict_set (dict, key, value) == PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_dict_set_str (pdf_obj_t @var{dict}, pdf_char_t *@var{key}, pdf_obj_t &@var{val})
+@deftypefun pdf_status_t pdf_obj_dict_set_str (pdf_obj_t @var{dict}, pdf_char_t *@var{key}, pdf_obj_t @var{val})
 
 Set @var{val} as the new value for @var{key} in the PDF dictionary
 @var{dict}.
