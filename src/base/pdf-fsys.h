@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "10/02/03 21:01:53 jemarch"
+/* -*- mode: C -*- Time-stamp: "10/02/14 16:51:01 jemarch"
  *
  *       File:         pdf-fsys.h
  *       Date:         Thu May 22 15:49:59 2008
@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008, 2009, 2010 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,6 +59,9 @@ struct pdf_fsys_s
 {
   struct pdf_fsys_impl_s *implementation; /* Implementation of the
                                            * filesystem */
+
+  void *data; /* Private data used by the underlying filesystem
+                 implementation.  */
 };
 
 typedef struct pdf_fsys_s *pdf_fsys_t;
@@ -95,6 +98,10 @@ enum pdf_fsys_file_mode_e
     /* Helper to define array size based on this enum */
     PDF_FSYS_OPEN_MODE_MAX,
   };
+
+/* Filesystem initialization and cleanup callbacks.  */
+typedef pdf_status_t (*pdf_fsys_init_fn_t) (void **data);
+typedef pdf_status_t (*pdf_fsys_cleanup_fn_t) (void *data);
 
 /* Filesystem implementation callbacks */
 typedef pdf_status_t (*pdf_fsys_create_folder_fn_t) (pdf_text_t path_name);
@@ -150,6 +157,10 @@ typedef pdf_status_t (*pdf_fsys_file_reopen_fn_t) (pdf_fsys_file_t file,
 /* Filesystem implementation */
 struct pdf_fsys_impl_s
 {
+  /* Initialization and cleanup callbacks.  */
+  pdf_fsys_init_fn_t init_fn;
+  pdf_fsys_cleanup_fn_t cleanup_fn;
+
   /* Filesystem interface callbacks */
   pdf_fsys_create_folder_fn_t create_folder_fn;
   pdf_fsys_get_folder_contents_fn_t get_folder_contents_fn;

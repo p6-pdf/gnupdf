@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "10/02/03 21:02:33 jemarch"
+/* -*- mode: C -*- Time-stamp: "10/02/14 17:03:54 jemarch"
  *
  *       File:         pdf-fsys.c
  *       Date:         Thu May 22 15:51:13 2008
@@ -688,12 +688,20 @@ pdf_fsys_create (struct pdf_fsys_impl_s implementation)
   /* Set its properties */
   *(filesystem->implementation) = implementation;
 
+  /* Call the init_fn callback provided by the filesystem
+     implementation.  */
+  (filesystem->implementation->init_fn) (&filesystem->data);
+
   return filesystem;
 }
 
 pdf_status_t
 pdf_fsys_destroy (pdf_fsys_t filesystem)
 {
+  /* Call the cleanup_fn callback provided by the filesystem
+     implementation.  */
+  (filesystem->implementation->cleanup_fn) (filesystem->data);
+
   /* Deallocate all resources used by the filesystem implementation */
   pdf_dealloc (filesystem->implementation);
   pdf_fsys_dealloc (filesystem);
