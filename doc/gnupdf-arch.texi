@@ -1955,8 +1955,8 @@ In order to read the tokens it makes use of the tokeniser module (XXX:
 xref).  In turn the tokeniser module is getting the data from the
 user-supplied base layer stream, that may be operating on an open file
 (provided by some filesystem implementation) or a memory buffer.  The
-parser can seek into the stream at user request. XXX: what happens with the
-tokeniser then? Reset + Seek?
+parser can seek into the stream at user request. XXX: what happens
+with the tokeniser then? Reset + Seek?
 
 The following figure depicts the flow and transformations suffered by
 the the data from the source of the data (either an open file or a
