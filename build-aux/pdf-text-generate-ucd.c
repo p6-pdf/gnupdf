@@ -55,27 +55,27 @@ int ascii_hex_to_decimal(pdf_u32_t *out, const char *ascii_hex)
   int i;
   int power;
   int numeric_value;
-  
+
   if(strlen(ascii_hex) == 0)
     {
       /* Couldn't parse anything */
       return -1;
     }
-  
+
   /* Skip '0' at the beginning or even '0x000..' */
   start = (char *)ascii_hex;
   while((*start == '0') || (*start == 'x') || (*start == 'X'))
     {
       start++;
     }
-  
+
   if(strlen(start) == 0)
     {
       /* Then we got 0x0000 at the input... */
       *out = 0;
       return 0;
     }
-  
+
   /* Example: 0x159D is converted to...
    *    num = (D*16^0) + (9*16^1) + (5*16^2) + (1*16^3)
    */
@@ -102,7 +102,7 @@ int ascii_hex_to_decimal(pdf_u32_t *out, const char *ascii_hex)
         }
       val += (pow(16,power)) * numeric_value;
     }
-  
+
   /* Set output value */
   *out = val;
   return 0;
@@ -156,7 +156,7 @@ parse_UnicodeData_line_field(char *place_to_store,
   /* Fields are separated by ';' or '\n' (or '\r') */
   char *walker;
   int length;
-  
+
   /* Look for field separator */
   walker = (char *)fieldstart;
   while((walker != NULL) && \
@@ -176,16 +176,16 @@ parse_UnicodeData_line_field(char *place_to_store,
              "but only '%d' are available\n", length, max_field_length);
       return -1;
     }
-  
+
   /* Copy line contents */
   memcpy(place_to_store, fieldstart, length);
 
   /* Set last NUL char just in case */
   place_to_store[length] = '\0';
-  
+
   /* Set next field start */
   *field_end = walker+1;
-  
+
   return 0;
 }
 
@@ -196,7 +196,7 @@ parse_UnicodeData_line(ucd_entry *p_entry, const char *line)
 {
   char *stop;
   char *start;
-  
+
   start = (char *)line;
 
   /* Get entry fields! */
@@ -260,8 +260,8 @@ parse_UnicodeData_line(ucd_entry *p_entry, const char *line)
                                   CASE_MAPPING_LENGTH-1, start, &stop)!=0)
     return -1;
   start = stop;
-  
-  return 0; 
+
+  return 0;
 }
 
 static int
@@ -284,7 +284,7 @@ create_trailer(FILE *pf)
 *  should be enough for future updates of the
 *  standard */
 #define MAX_SPECIAL_CASE_ENTRIES 200 /* Much more than required in Unicode 5.0,
-*  should be enough for future updates of 
+*  should be enough for future updates of
 *  the standard */
 
 #ifndef UNICODE_POINT_LENGTH
@@ -316,7 +316,7 @@ short should_line_be_parsed_SpecialCasing(const char *line)
     {
       return 0;
     }
-  
+
   /* Check if line is commented */
   if(*line == '#')
     {
@@ -358,7 +358,7 @@ parse_SpecialCasing_line_field(char *place_to_store,
 {
   char *walker;
   int length;
-  
+
   /* Look for field separator (can be either ';' or end of line */
   walker = (char *)fieldstart;
   while((walker != NULL) && \
@@ -368,23 +368,23 @@ parse_SpecialCasing_line_field(char *place_to_store,
     {
       walker ++;
     }
-  
+
   /* Compute field length */
   length = walker - fieldstart;
-  
+
   if(length > max_field_length)
     {
       printf("[Error] '%d' bytes are required for the field, "
              "but only '%d' are available\n", length, max_field_length);
       return -1;
     }
-  
+
   /* Copy line contents */
   memcpy(place_to_store, fieldstart, length);
-  
+
   /* Set last NUL char */
   place_to_store[length] = '\0';
-  
+
   /* If stopped due to ';' delimiter, then look for next field start point */
   if(*walker == ';')
     {
@@ -402,7 +402,7 @@ parse_SpecialCasing_line_field(char *place_to_store,
       /* End of line reached, set null as output field end */
       *field_end = NULL;
     }
-  
+
   return 0;
 }
 
@@ -413,7 +413,7 @@ parse_SpecialCasing_line(ucd_special_case_entry *p_entry,
   char *stop;
   char *start;
   start = (char *)line;
-  
+
   /* Get entry fields! */
   if(parse_SpecialCasing_line_field(p_entry->unicode_point, \
                                     UNICODE_POINT_LENGTH-1, start, &stop)!=0)
@@ -434,7 +434,7 @@ parse_SpecialCasing_line(ucd_special_case_entry *p_entry,
   if(parse_SpecialCasing_line_field(p_entry->condition_list, \
                                     CONDITION_LIST_LENGTH-1, start, &stop)!=0)
     return -1;
-  
+
   if(stop == NULL)
     {
       /* This means that the last read field is not the condition list, but
@@ -442,7 +442,7 @@ parse_SpecialCasing_line(ucd_special_case_entry *p_entry,
        * field */
       memset(p_entry->condition_list, 0, CONDITION_LIST_LENGTH);
     }
-  
+
   return 0;
 }
 
@@ -468,7 +468,7 @@ create_SpecialCasing_header(FILE *pf)
               "typedef struct _unicode_special_case_info_s {\n"
               "  pdf_u32_t unicode_point;\n"
               "  pdf_u32_t lowercase_point[3];\n"
-              "  pdf_u32_t uppercase_point[3];\n"       
+              "  pdf_u32_t uppercase_point[3];\n"
               "  pdf_u32_t titlecase_point[3];\n"
               "  const char *condition_list;\n"
               "} unicode_special_case_info_t;\n\n"
@@ -491,9 +491,9 @@ cut_field_in_chunks_SpecialCasing(const char *field,
   char *_chunk_2 = NULL;
   char *_chunk_3 = NULL;
   char *walker;
-  
+
   _chunk_1 = (char *)field;
-  
+
   if(_chunk_1 == NULL)
     {
       *chunk_1 = _chunk_1;
@@ -501,55 +501,55 @@ cut_field_in_chunks_SpecialCasing(const char *field,
       *chunk_3 = _chunk_3;
       return -1;
     }
-  
+
   /* Skip heading white spaces */
   while(*_chunk_1 == ' ')
     _chunk_1++;
-  
+
   /* Look for end of term */
   walker = _chunk_1;
   while((*walker != ' ') && (*walker != '\0'))
     walker++;
-  
+
   /* Do we have more terms? */
   if(*walker == ' ')
     {
       *walker = '\0'; /* End _chunk_1 string */
-      
+
       _chunk_2 = walker+1;
-      
+
       /* Skip heading white spaces */
       while(*_chunk_2 == ' ')
         _chunk_2++;
-      
+
       /* Look for end of term */
       walker = _chunk_2;
       while((*walker != ' ') && (*walker != '\0'))
         walker++;
-      
+
       /* Do we have more terms? */
       if(*walker == ' ')
         {
           *walker = '\0'; /* End _chunk_2 string */
-          
+
           _chunk_3 = walker+1;
-          
+
           /* Skip heading white spaces */
           while(*_chunk_3 == ' ')
             _chunk_3++;
-          
+
           /* Look for end of term */
           walker = _chunk_3;
           while((*walker != ' ') && (*walker != '\0'))
             walker++;
-          
+
           if((*walker == ' '))
             {
-              *_chunk_3 = '\0'; /* End _chunk_3 string */                  
+              *_chunk_3 = '\0'; /* End _chunk_3 string */
             }
         }
     }
-  
+
   /* Set output chunks */
   *chunk_1 = _chunk_1;
   *chunk_2 = _chunk_2;
@@ -574,17 +574,17 @@ add_entry_to_SpecialCasing(FILE *pf,
       char *title_1 = NULL;
       char *title_2 = NULL;
       char *title_3 = NULL;
-      
+
       cut_field_in_chunks_SpecialCasing(p_entry->lowercase_point,
                                         &lower_1, &lower_2, &lower_3);
       cut_field_in_chunks_SpecialCasing(p_entry->uppercase_point,
                                         &upper_1, &upper_2, &upper_3);
       cut_field_in_chunks_SpecialCasing(p_entry->titlecase_point,
                                         &title_1, &title_2, &title_3);
-      
+
       fprintf(pf, "  {  /* index: %ld */ \n"
               "    0x%s,\n"
-              "    { 0x%s, 0x%s, 0x%s }, /* lowercase */ \n" 
+              "    { 0x%s, 0x%s, 0x%s }, /* lowercase */ \n"
               "    { 0x%s, 0x%s, 0x%s }, /* uppercase */ \n"
               "    { 0x%s, 0x%s, 0x%s }, /* titlecase */ \n"
               "    \"%s\" /* conditions */ \n"
@@ -616,7 +616,7 @@ compute_SpecialCasing(const char *SpecialCasingFile,
   long count;
   long index;
   char line [MAX_LINE_LENGTH];
-  
+
   pf = fopen(SpecialCasingFile, "r");
   if(pf == NULL)
     {
@@ -624,10 +624,10 @@ compute_SpecialCasing(const char *SpecialCasingFile,
               SpecialCasingFile);
       return -2;
     }
-  
+
   /* Set header */
   create_SpecialCasing_header(pf_out);
-  
+
   memset(&entry, 0, sizeof(entry));
   memset(&line[0], 0, MAX_LINE_LENGTH);
   count = 0;
@@ -637,17 +637,17 @@ compute_SpecialCasing(const char *SpecialCasingFile,
         {
           /* Parse line */
           parse_SpecialCasing_line(&entry, line);
-          
+
           /* Print in screen */
           /* print_SpecialCasing_info(&entry); */
-          
+
           /* Add to output file */
           if(add_entry_to_SpecialCasing(pf_out, &entry, count) >=0)
             {
               /* If added correctly to output source file, add it to the internal
                *  array, so that intervals can be directly computed. */
               pdf_u32_t unicode_point;
-              
+
               /* Transform unicode point value from ascii-hex to 32bit integer */
               if(ascii_hex_to_decimal(&unicode_point, entry.unicode_point)!=0)
                 {
@@ -660,18 +660,18 @@ compute_SpecialCasing(const char *SpecialCasingFile,
               count++;
             }
         }
-      
+
       /* Clear structure  and line contents */
       memset(&entry, 0, sizeof(entry));
       memset(&line[0], 0, MAX_LINE_LENGTH);
     }
-  
+
   /* Set trailer for the case changes list */
   create_SpecialCasing_trailer(pf_out);
 
   /* Print defines... */
   fprintf(pf_out, "\n\n#define UCD_SC_INFO_N %ld\n\n", count);
-  
+
   *p_count = count;
   return 0;
 }
@@ -761,7 +761,7 @@ add_entry_to_UnicodeData_CASE(FILE *pf,
          (special_case_info->n_deltas >0))
         {
           int i = 0;
-          
+
           fprintf(pf, "\t{ 0x%s, 0x%s, 0x%s, 0x%s, { ",
                   p_entry->unicode_point,
                   (strlen(p_entry->simple_uppercase_mapping) > 0) ? \
@@ -770,14 +770,14 @@ add_entry_to_UnicodeData_CASE(FILE *pf,
                   p_entry->simple_lowercase_mapping:p_entry->unicode_point,
                   (strlen(p_entry->simple_titlecase_mapping) > 0) ? \
                   p_entry->simple_titlecase_mapping:p_entry->unicode_point);
-          
+
           for(i=0; i<PDF_TEXT_MNSC; i++)
             {
               fprintf(pf, "%ld%s",
                       (long)((i<special_case_info->n_deltas) ? special_case_info->p_deltas[i] : -1),
                       ((i==PDF_TEXT_MNSC-1) ? " } }," : ", "));
             }
-          
+
           fprintf(pf, " /* index: %ld */\n", index);
 
           return 0;
@@ -858,11 +858,11 @@ compute_UnicodeData_CASE(const char *UnicodeDataFile,
   pdf_u32_t prev_point = 0;
   pdf_u32_t interval_start = 0;
   pdf_u32_t interval_stop = 0;
-  
+
   /* Create Standard Casing source file, involving not only the specific
    *  case changes, but also the intervals of Unicode points with casing
    *  info. */
-  
+
   pf = fopen(UnicodeDataFile, "r");
   if(pf == NULL)
     {
@@ -870,7 +870,7 @@ compute_UnicodeData_CASE(const char *UnicodeDataFile,
               UnicodeDataFile);
       return -2;
     }
-  
+
   pf_out = fopen(OUTPUT_UNICODEDATA_CASE_INFO, "w");
   if(pf_out == NULL)
     {
@@ -878,21 +878,21 @@ compute_UnicodeData_CASE(const char *UnicodeDataFile,
               OUTPUT_UNICODEDATA_CASE_INFO);
       return -3;
     }
-  
+
   /* First of all, create Special Casing array */
   compute_SpecialCasing(SpecialCaseFile,
                         pf_out,
                         special_case_array_entries,
                         &special_case_count);
   /* Reset all flags in special_case_array_entries_flags */
-  memset(&special_case_array_entries_flags[0], 
+  memset(&special_case_array_entries_flags[0],
          0,
          sizeof(short)*MAX_SPECIAL_CASE_ENTRIES);
-  
-  
+
+
   /* Set header */
   create_UnicodeData_CASE_header(pf_out);
-  
+
   memset(&entry, 0, sizeof(entry));
   memset(&line[0], 0, MAX_LINE_LENGTH);
   count = 0;
@@ -903,17 +903,17 @@ compute_UnicodeData_CASE(const char *UnicodeDataFile,
 
       /* Parse line */
       parse_UnicodeData_line(&entry, line);
-      
+
       /* Print in screen */
       /* print_UnicodeData_CASE_info(&entry); */
-      
+
       /* Transform unicode point value from ascii-hex to 32bit integer */
       if(ascii_hex_to_decimal(&unicode_point, entry.unicode_point)!=0)
         {
           fprintf(stderr, "\nError converting ASCII-HEX to integer...\n");
           return -1;
         }
-         
+
       /* Look for special case info, if any */
       look_for_SpecialCasing_info(unicode_point,
                                   &special_case_info,
@@ -921,7 +921,7 @@ compute_UnicodeData_CASE(const char *UnicodeDataFile,
                                   special_case_array_entries_flags,
                                   special_case_count,
                                   &maximum_number_of_deltas);
-      
+
       /* Add to output file */
       if(add_entry_to_UnicodeData_CASE(pf_out,
                                        &entry,
@@ -930,7 +930,7 @@ compute_UnicodeData_CASE(const char *UnicodeDataFile,
         {
           /* If added correctly to output source file, add it to the internal
            *  array, so that intervals can be directly computed. */
-          
+
           if(count == MAX_CASE_ENTRIES)
             {
               fprintf(stderr,
@@ -942,23 +942,23 @@ compute_UnicodeData_CASE(const char *UnicodeDataFile,
           /* And update count of elements in array */
           count++;
         }
-      
+
       if(special_case_info.n_deltas > 0)
         {
           free(special_case_info.p_deltas);
         }
-      
+
       /* Clear structure  and line contents */
       memset(&entry, 0, sizeof(entry));
       memset(&line[0], 0, MAX_LINE_LENGTH);
     }
-  
+
   /* Set trailer for the case changes list */
   create_UnicodeData_CASE_trailer(pf_out);
-  
+
   /* Input file can be closed now */
   fclose(pf);
-  
+
   /* Check if all special casing posibilities where found */
   for(index = 0; index < special_case_count; index++)
     {
@@ -968,11 +968,11 @@ compute_UnicodeData_CASE(const char *UnicodeDataFile,
                  index);
         }
     }
-  
+
   /*------ Compute intervals array ----------*/
-  
+
   create_UnicodeData_CASE_INTERVAL_header(pf_out);
-  
+
   /* Start first interval */
   interval_start = array_entries[0];
   oldDeltaToIndex = 0;
@@ -983,7 +983,7 @@ compute_UnicodeData_CASE(const char *UnicodeDataFile,
        *  to the unicode point value to get the index of the array previously
        *  created */
       deltaToIndex = array_entries[index] - index;
-      
+
       /* Check if a new interval started. This means that there was a gap
        *  between unicode points or a difference between consecutive delta to
        *  index values... */
@@ -993,7 +993,7 @@ compute_UnicodeData_CASE(const char *UnicodeDataFile,
         {
           /* Set the previous point as last interval point */
           interval_stop = array_entries[index-1];
-          
+
           /* Add interval */
           add_entry_to_UnicodeData_CASE_INTERVAL(pf_out,
                                                  interval_start,
@@ -1001,14 +1001,14 @@ compute_UnicodeData_CASE(const char *UnicodeDataFile,
                                                  oldDeltaToIndex,
                                                  count_intervals);
           count_intervals++;
-          
+
           /* Set new interval start */
-          interval_start = array_entries[index]; 
+          interval_start = array_entries[index];
         }
-      
+
       oldDeltaToIndex = deltaToIndex;
     }
-  
+
   /* Last interval... */
   interval_stop = array_entries[index-1];
   add_entry_to_UnicodeData_CASE_INTERVAL(pf_out,
@@ -1017,10 +1017,10 @@ compute_UnicodeData_CASE(const char *UnicodeDataFile,
                                          oldDeltaToIndex,
                                          count_intervals);
   count_intervals++;
-  
+
   create_UnicodeData_CASE_INTERVAL_trailer(pf_out);
-  
-  
+
+
   /* Print defines... */
   fprintf(pf_out, "\n\n#define UCD_C_INFO_N %ld", count);
   fprintf(pf_out, "\n#define UCD_C_INT_N %ld\n\n", count_intervals);
@@ -1028,7 +1028,7 @@ compute_UnicodeData_CASE(const char *UnicodeDataFile,
   /* Close output file and exit */
   fclose(pf_out);
 
-  
+
   return 0;
 }
 
@@ -1068,7 +1068,7 @@ create_UnicodeData_GENCAT_header(FILE *pf)
     {
       fprintf(pf, "\n\n\n"
                   "typedef enum {\n"
-                  "  UNICODE_GENCAT_Lu, /* Letter, Uppercase */\n" 
+                  "  UNICODE_GENCAT_Lu, /* Letter, Uppercase */\n"
                   "  UNICODE_GENCAT_Ll, /* Letter, Lowercase */\n"
                   "  UNICODE_GENCAT_Lt, /* Letter, Titlecase */\n"
                   "  UNICODE_GENCAT_Lm, /* Letter, Modifier */\n"
@@ -1099,7 +1099,7 @@ create_UnicodeData_GENCAT_header(FILE *pf)
                   "  UNICODE_GENCAT_Co, /* Other, Private use */\n"
                   "  UNICODE_GENCAT_Cn  /* Other, Not assigned */\n"
                   "} unicode_gencat_info_enum;\n\n");
-      
+
       fprintf(pf, "\n"
                   "typedef struct _unicode_gencat_info_s {\n"
                   "  pdf_u32_t unicode_point;\n"
@@ -1163,7 +1163,7 @@ add_entry_to_UnicodeData_GENCAT_INTERVAL(FILE *pf,
   return 0;
 }
 
-                                               
+
 static int
 compute_UnicodeData_GENCAT(const char *UnicodeDataFile)
 {
@@ -1184,7 +1184,7 @@ compute_UnicodeData_GENCAT(const char *UnicodeDataFile)
   /* Create Standard Casing source file, involving not only the specific
    *  case changes, but also the intervals of Unicode points with casing
    *  info. */
-  
+
   pf = fopen(UnicodeDataFile, "r");
   if(pf == NULL)
     {
@@ -1192,7 +1192,7 @@ compute_UnicodeData_GENCAT(const char *UnicodeDataFile)
               UnicodeDataFile);
       return -2;
     }
-  
+
   pf_out = fopen(OUTPUT_UNICODEDATA_GENCAT_INFO, "w");
   if(pf_out == NULL)
     {
@@ -1200,8 +1200,8 @@ compute_UnicodeData_GENCAT(const char *UnicodeDataFile)
               OUTPUT_UNICODEDATA_GENCAT_INFO);
       return -3;
     }
-  
-  
+
+
   /* Set header */
   create_UnicodeData_GENCAT_header(pf_out);
 
@@ -1212,17 +1212,17 @@ compute_UnicodeData_GENCAT(const char *UnicodeDataFile)
     {
       /* Parse line */
       parse_UnicodeData_line(&entry, line);
-      
+
       /* Print in screen */
       /* print_UnicodeData_GENCAT_info(&entry); */
-      
+
       /* Add to output file */
       if(add_entry_to_UnicodeData_GENCAT(pf_out, &entry) >=0)
         {
           /* If added correctly to output source file, add it to the internal
            *  array, so that intervals can be directly computed. */
           pdf_u32_t unicode_point;
-          
+
           /* Transform unicode point value from ascii-hex to 32bit integer */
           if(ascii_hex_to_decimal(&unicode_point, entry.unicode_point)!=0)
             {
@@ -1240,23 +1240,23 @@ compute_UnicodeData_GENCAT(const char *UnicodeDataFile)
           /* And update count of elements in array */
           count++;
         }
-      
+
       /* Clear structure  and line contents */
       memset(&entry, 0, sizeof(entry));
       memset(&line[0], 0, MAX_LINE_LENGTH);
     }
-  
+
   /* Set trailer for the gencat changes list */
   create_UnicodeData_GENCAT_trailer(pf_out);
-  
+
   /* Input file can be closed now */
   fclose(pf);
 
-  
+
   /*------ Compute intervals array ----------*/
 
   create_UnicodeData_GENCAT_INTERVAL_header(pf_out);
-  
+
   /* Start first interval */
   interval_start = array_entries[0];
   oldDeltaToIndex = 0;
@@ -1267,7 +1267,7 @@ compute_UnicodeData_GENCAT(const char *UnicodeDataFile)
        *  to the unicode point value to get the index of the array previously
        *  created */
       deltaToIndex = array_entries[index] - index;
-  
+
       /* Check if a new interval started. This means that there was a gap
        *  between unicode points or a difference between consecutive delta to
        *  index values... */
@@ -1277,7 +1277,7 @@ compute_UnicodeData_GENCAT(const char *UnicodeDataFile)
         {
           /* Set the previous point as last interval point */
           interval_stop = array_entries[index-1];
-          
+
           /* Add interval */
           add_entry_to_UnicodeData_GENCAT_INTERVAL(pf_out,
                                                    interval_start,
@@ -1286,12 +1286,12 @@ compute_UnicodeData_GENCAT(const char *UnicodeDataFile)
           count_intervals++;
 
           /* Set new interval start */
-          interval_start = array_entries[index]; 
+          interval_start = array_entries[index];
         }
-      
+
       oldDeltaToIndex = deltaToIndex;
     }
-  
+
   /* Last interval... */
   interval_stop = array_entries[index-1];
   add_entry_to_UnicodeData_GENCAT_INTERVAL(pf_out,
@@ -1302,14 +1302,14 @@ compute_UnicodeData_GENCAT(const char *UnicodeDataFile)
 
   create_UnicodeData_GENCAT_INTERVAL_trailer(pf_out);
 
-  
+
   /* Print defines... */
   fprintf(pf_out, "\n\n#define UCD_GENCAT_INFO_N %ld", count);
   fprintf(pf_out, "\n#define UCD_GENCAT_INT_N %ld\n\n", count_intervals);
 
   /* Close output file and exit */
   fclose(pf_out);
-  
+
   return 0;
 }
 
@@ -1424,11 +1424,11 @@ compute_UnicodeData_COMBCLASS(const char *UnicodeDataFile)
   pdf_u32_t prev_point = 0;
   pdf_u32_t interval_start = 0;
   pdf_u32_t interval_stop = 0;
-  
+
   /* Create Standard Casing source file, involving not only the specific
    *  case changes, but also the intervals of Unicode points with casing
    *  info. */
-  
+
   pf = fopen(UnicodeDataFile, "r");
   if(pf == NULL)
     {
@@ -1436,7 +1436,7 @@ compute_UnicodeData_COMBCLASS(const char *UnicodeDataFile)
               UnicodeDataFile);
       return -2;
     }
-  
+
   pf_out = fopen(OUTPUT_UNICODEDATA_COMBCLASS_INFO, "w");
   if(pf_out == NULL)
     {
@@ -1444,11 +1444,11 @@ compute_UnicodeData_COMBCLASS(const char *UnicodeDataFile)
               OUTPUT_UNICODEDATA_COMBCLASS_INFO);
       return -3;
     }
-  
-  
+
+
   /* Set header */
   create_UnicodeData_COMBCLASS_header(pf_out);
-  
+
   memset(&entry, 0, sizeof(entry));
   memset(&line[0], 0, MAX_LINE_LENGTH);
   count = 0;
@@ -1456,10 +1456,10 @@ compute_UnicodeData_COMBCLASS(const char *UnicodeDataFile)
     {
       /* Parse line */
       parse_UnicodeData_line(&entry, line);
-      
+
       /* Print in screen */
       /* print_UnicodeData_COMBCLASS_info(&entry); */
-      
+
       /* Add to output file ONLY if COMB CLASS is NOT 0 */
       if((strcmp(entry.canonical_combining_class, "0")!=0) && \
          (add_entry_to_UnicodeData_COMBCLASS(pf_out, &entry) >=0))
@@ -1467,7 +1467,7 @@ compute_UnicodeData_COMBCLASS(const char *UnicodeDataFile)
           /* If added correctly to output source file, add it to the internal
            *  array, so that intervals can be directly computed. */
           pdf_u32_t unicode_point;
-          
+
           /* Transform unicode point value from ascii-hex to 32bit integer */
           if(ascii_hex_to_decimal(&unicode_point, entry.unicode_point)!=0)
             {
@@ -1485,23 +1485,23 @@ compute_UnicodeData_COMBCLASS(const char *UnicodeDataFile)
           /* And update count of elements in array */
           count++;
         }
-      
+
       /* Clear structure  and line contents */
       memset(&entry, 0, sizeof(entry));
       memset(&line[0], 0, MAX_LINE_LENGTH);
     }
-  
+
   /* Set trailer for the gencat changes list */
   create_UnicodeData_COMBCLASS_trailer(pf_out);
-  
+
   /* Input file can be closed now */
   fclose(pf);
-  
-  
+
+
   /*------ Compute intervals array ----------*/
-  
+
   create_UnicodeData_COMBCLASS_INTERVAL_header(pf_out);
-  
+
   /* Start first interval */
   interval_start = array_entries[0];
   oldDeltaToIndex = 0;
@@ -1512,7 +1512,7 @@ compute_UnicodeData_COMBCLASS(const char *UnicodeDataFile)
        *  to the unicode point value to get the index of the array previously
        *  created */
       deltaToIndex = array_entries[index] - index;
-      
+
       /* Check if a new interval started. This means that there was a gap
        *  between unicode points or a difference between consecutive delta to
        *  index values... */
@@ -1522,21 +1522,21 @@ compute_UnicodeData_COMBCLASS(const char *UnicodeDataFile)
         {
           /* Set the previous point as last interval point */
           interval_stop = array_entries[index-1];
-          
+
           /* Add interval */
           add_entry_to_UnicodeData_COMBCLASS_INTERVAL(pf_out,
                                                       interval_start,
                                                       interval_stop,
                                                       oldDeltaToIndex);
           count_intervals++;
-          
+
           /* Set new interval start */
-          interval_start = array_entries[index]; 
+          interval_start = array_entries[index];
         }
-      
+
       oldDeltaToIndex = deltaToIndex;
     }
-  
+
   /* Last interval... */
   interval_stop = array_entries[index-1];
   add_entry_to_UnicodeData_COMBCLASS_INTERVAL(pf_out,
@@ -1544,16 +1544,16 @@ compute_UnicodeData_COMBCLASS(const char *UnicodeDataFile)
                                               interval_stop,
                                               oldDeltaToIndex);
   count_intervals++;
-  
+
   create_UnicodeData_COMBCLASS_INTERVAL_trailer(pf_out);
-  
+
   /* Print defines... */
   fprintf(pf_out, "\n\n#define UCD_COMBCLASS_INFO_N %ld", count);
   fprintf(pf_out, "\n#define UCD_COMBCLASS_INT_N %ld\n\n", count_intervals);
-  
+
   /* Close output file and exit */
   fclose(pf_out);
-  
+
   return 0;
 }
 
@@ -1567,7 +1567,7 @@ compute_UnicodeData_COMBCLASS(const char *UnicodeDataFile)
 #define OUTPUT_UNICODEDATA_WORDBREAK "WordBreakProperty.c"
 
 #define MAX_WORDBREAK_ENTRIES 2000 /* Much more than required in Unicode 5.0,
-                                    *  should be enough for future updates of 
+                                    *  should be enough for future updates of
                                     *  the standard */
 
 #ifndef UNICODE_POINT_LENGTH
@@ -1639,7 +1639,7 @@ parse_WordBreak_line_field(char *place_to_store,
 {
   char *walker;
   int length;
-  
+
   /* Look for field separator (can be either ';'  or end of line) */
   walker = (char *)fieldstart;
   while((walker != NULL) && \
@@ -1650,28 +1650,28 @@ parse_WordBreak_line_field(char *place_to_store,
     {
       walker ++;
     }
-  
+
   if(walker == NULL)
     {
       return -1;
     }
-    
+
   /* Compute field length */
   length = walker - fieldstart;
-  
+
   if(length > max_field_length)
     {
       printf("[Error] '%d' bytes are required for the field, "
              "but only '%d' are available\n", length, max_field_length);
       return -1;
     }
-  
+
   /* Copy line contents */
   memcpy(place_to_store, fieldstart, length);
-  
+
   /* Set last NUL char */
   place_to_store[length] = '\0';
-  
+
   /* If stopped due to ';' delimiters, then look for next field start
    *  point */
   if((*walker == ';') || (*walker == '#'))
@@ -1690,7 +1690,7 @@ parse_WordBreak_line_field(char *place_to_store,
       /* End of line reached, set null as output field end */
       *field_end = NULL;
     }
-  
+
   return 0;
 }
 
@@ -1707,7 +1707,7 @@ parse_WordBreak_line(ucd_wordbreak_entry *p_entry,
   char *start;
   char *aux;
   start = (char *)line;
-  
+
   memset(&temporal[0], 0, sizeof(char)*20);
   memset(&p_entry->unicode_point_start,0,UNICODE_POINT_LENGTH);
   memset(&p_entry->unicode_point_stop,0,UNICODE_POINT_LENGTH);
@@ -1748,7 +1748,7 @@ parse_WordBreak_line(ucd_wordbreak_entry *p_entry,
   if(parse_WordBreak_line_field(p_entry->comment, \
                                 WORDBREAK_COMMENT_LENGTH-1, start, &stop)!=0)
     return -1;
-  
+
   return 0;
 }
 
@@ -1759,7 +1759,7 @@ print_WordBreak_info(const ucd_wordbreak_entry *p_entry)
              "comments:'%s'\n",
              p_entry->unicode_point_start,
              (strlen(p_entry->unicode_point_stop)>0) ? \
-              p_entry->unicode_point_stop:"<None>", 
+              p_entry->unicode_point_stop:"<None>",
              p_entry->property,
              (strlen(p_entry->comment)>0) ? p_entry->comment:"<None>");
   return 0;
@@ -1816,11 +1816,11 @@ compute_WordBreak(const char *WordBreakFile)
   long interval_count;
   long count;
   char line [MAX_LINE_LENGTH];
-  
+
   /* Create Standard Casing source file, involving not only the specific
    *  case changes, but also the intervals of Unicode points with casing
    *  info. */
-  
+
   pf = fopen(WordBreakFile, "r");
   if(pf == NULL)
     {
@@ -1828,7 +1828,7 @@ compute_WordBreak(const char *WordBreakFile)
               WordBreakFile);
       return -2;
     }
-  
+
   pf_out = fopen(OUTPUT_UNICODEDATA_WORDBREAK, "w");
   if(pf_out == NULL)
     {
@@ -1836,11 +1836,11 @@ compute_WordBreak(const char *WordBreakFile)
               OUTPUT_UNICODEDATA_WORDBREAK);
       return -3;
     }
-  
-  
+
+
   /* Set header */
   create_WordBreak_header(pf_out);
-  
+
   memset(&entry, 0, sizeof(entry));
   memset(&line[0], 0, MAX_LINE_LENGTH);
   count = 0;
@@ -1851,10 +1851,10 @@ compute_WordBreak(const char *WordBreakFile)
         {
           /* Parse line */
           parse_WordBreak_line(&entry, line);
-      
+
           /* Print in screen */
           /* print_WordBreak_info(&entry); */
-          
+
           /* Consider having new interval */
           if((interval_count == -1) || \
              (strcmp(intervals[interval_count].property, entry.property)!=0))
@@ -1871,25 +1871,25 @@ compute_WordBreak(const char *WordBreakFile)
                      0, WORDBREAK_PROPERTY_LENGTH);
               strcpy(intervals[interval_count].property, entry.property);
             }
-      
+
           /* Add to output file */
           if(add_entry_to_WordBreak(pf_out, &entry,count) >=0)
             {
               count++;
             }
-        }      
+        }
       /* Clear structure  and line contents */
       memset(&entry, 0, sizeof(entry));
       memset(&line[0], 0, MAX_LINE_LENGTH);
     }
-    
+
   /* Set trailer for the case changes list */
   create_WordBreak_trailer(pf_out);
-  
+
   /* Set last interval stop index */
   intervals[interval_count].index_stop = count -1;
-  
-  
+
+
   /* Print enumeration of types... */
   fprintf(pf_out,"\nenum pdf_text_ucd_wb_property_e {\n"
           "  PDF_TEXT_UCD_WBP_None,\n");
@@ -1901,11 +1901,11 @@ compute_WordBreak(const char *WordBreakFile)
         {
           intervals[count].property[i] = '\0';
           i--;
-        }          
+        }
       fprintf(pf_out,"  PDF_TEXT_UCD_WBP_%s,\n", intervals[count].property);
     }
   fprintf(pf_out,"};\n");
-  
+
   /* Print interval indexes */
   for(count = 0; count <= interval_count; count++)
     {
@@ -1931,10 +1931,10 @@ compute_WordBreak(const char *WordBreakFile)
   fprintf(pf_out,
           "#define UCD_WB_INFO_N   %ld  /* Maximum number of elements in array    */\n",
           intervals[count-1].index_stop + 1);
-  
+
   /* Input file can be closed now */
   fclose(pf);
-  
+
   return 0;
 }
 
@@ -1943,7 +1943,7 @@ compute_WordBreak(const char *WordBreakFile)
 #define OUTPUT_UNICODEDATA_PROPLIST "PropList.c"
 
 #define MAX_PROPLIST_ENTRIES 2000 /* Much more than required in Unicode 5.0,
-                                   *  should be enough for future updates of 
+                                   *  should be enough for future updates of
                                    *  the standard */
 
 #ifndef UNICODE_POINT_LENGTH
@@ -1972,7 +1972,7 @@ should_line_be_parsed_PropList(const char *line)
     {
       return 0;
     }
-  
+
   /* Check if line is commented */
   if(*line == '#')
     {
@@ -2015,7 +2015,7 @@ parse_PropList_line_field(char *place_to_store,
 {
   char *walker;
   int length;
-  
+
   /* Look for field separator (can be either ';'  or end of line) */
   walker = (char *)fieldstart;
   while((walker != NULL) && \
@@ -2026,28 +2026,28 @@ parse_PropList_line_field(char *place_to_store,
     {
       walker ++;
     }
-  
+
   if(walker == NULL)
     {
       return -1;
     }
-  
+
   /* Compute field length */
   length = walker - fieldstart;
-  
+
   if(length > max_field_length)
     {
       printf("[Error] '%d' bytes are required for the field, "
              "but only '%d' are available\n", length, max_field_length);
       return -1;
     }
-  
+
   /* Copy line contents */
   memcpy(place_to_store, fieldstart, length);
-  
+
   /* Set last NUL char */
   place_to_store[length] = '\0';
-  
+
   /* If stopped due to ';' delimiters, then look for next field start
    *  point */
   if((*walker == ';') || (*walker == '#'))
@@ -2066,7 +2066,7 @@ parse_PropList_line_field(char *place_to_store,
       /* End of line reached, set null as output field end */
       *field_end = NULL;
     }
-  
+
   return 0;
 }
 
@@ -2083,11 +2083,11 @@ parse_PropList_line(ucd_proplist_entry *p_entry,
   char *start;
   char *aux;
   start = (char *)line;
-  
+
   memset(&temporal[0], 0, sizeof(char)*20);
   memset(&p_entry->unicode_point_start,0,UNICODE_POINT_LENGTH);
   memset(&p_entry->unicode_point_stop,0,UNICODE_POINT_LENGTH);
-  
+
   /* Get entry fields! */
   if(parse_PropList_line_field(temporal, 19, start, &stop)!=0)
     return -1;
@@ -2115,7 +2115,7 @@ parse_PropList_line(ucd_proplist_entry *p_entry,
           p_entry->unicode_point_stop[i] = '\0';
         }
     }
-  
+
   start = stop;
   if(parse_PropList_line_field(p_entry->property, \
                                 PROPLIST_PROPERTY_LENGTH-1, start, &stop)!=0)
@@ -2124,7 +2124,7 @@ parse_PropList_line(ucd_proplist_entry *p_entry,
   if(parse_PropList_line_field(p_entry->comment, \
                                 PROPLIST_COMMENT_LENGTH-1, start, &stop)!=0)
     return -1;
-  
+
   return 0;
 }
 
@@ -2135,7 +2135,7 @@ print_PropList_info(const ucd_proplist_entry *p_entry)
          "comments:'%s'\n",
          p_entry->unicode_point_start,
          (strlen(p_entry->unicode_point_stop)>0) ? \
-         p_entry->unicode_point_stop:"<None>", 
+         p_entry->unicode_point_stop:"<None>",
          p_entry->property,
          (strlen(p_entry->comment)>0) ? p_entry->comment:"<None>");
   return 0;
@@ -2172,7 +2172,7 @@ add_entry_to_PropList(FILE *pf,
       const char *start = p_entry->unicode_point_start;
       const char *stop = p_entry->unicode_point_stop;
       const char *property = p_entry->property;
-      
+
       fprintf(pf, "  { 0x%s, 0x%s, PDF_TEXT_UCD_PL_%s }, /* %d */\n",
               p_entry->unicode_point_start,
               p_entry->unicode_point_stop,
@@ -2193,9 +2193,9 @@ compute_PropList(const char *PropListFile)
   long interval_count;
   long count;
   char line [MAX_LINE_LENGTH];
-  
+
   /* Create PropList source file */
-  
+
   pf = fopen(PropListFile, "r");
   if(pf == NULL)
     {
@@ -2203,7 +2203,7 @@ compute_PropList(const char *PropListFile)
               PropListFile);
       return -2;
     }
-  
+
   pf_out = fopen(OUTPUT_UNICODEDATA_PROPLIST, "w");
   if(pf_out == NULL)
     {
@@ -2211,11 +2211,11 @@ compute_PropList(const char *PropListFile)
               OUTPUT_UNICODEDATA_PROPLIST);
       return -3;
     }
-  
-  
+
+
   /* Set header */
   create_PropList_header(pf_out);
-  
+
   memset(&entry, 0, sizeof(entry));
   memset(&line[0], 0, MAX_LINE_LENGTH);
   count = 0;
@@ -2226,10 +2226,10 @@ compute_PropList(const char *PropListFile)
         {
           /* Parse line */
           parse_PropList_line(&entry, line);
-          
+
           /* Print in screen */
           /* print_PropList_info(&entry); */
-          
+
           /* Consider having new interval */
           if((interval_count == -1) || \
              (strcmp(intervals[interval_count].property, entry.property)!=0))
@@ -2246,25 +2246,25 @@ compute_PropList(const char *PropListFile)
                      0, PROPLIST_PROPERTY_LENGTH);
               strcpy(intervals[interval_count].property, entry.property);
             }
-          
+
           /* Add to output file */
           if(add_entry_to_PropList(pf_out, &entry,count) >=0)
             {
               count++;
             }
-        }      
+        }
       /* Clear structure  and line contents */
       memset(&entry, 0, sizeof(entry));
       memset(&line[0], 0, MAX_LINE_LENGTH);
     }
-  
+
   /* Set trailer for the case changes list */
   create_PropList_trailer(pf_out);
 
-        
+
   /* Set last interval stop index */
   intervals[interval_count].index_stop = count -1;
-  
+
   /* Print enumeration of types... */
   fprintf(pf_out,"\nenum pdf_text_ucd_proplist_e {\n"
           "  PDF_TEXT_UCD_PL_None,\n");
@@ -2276,11 +2276,11 @@ compute_PropList(const char *PropListFile)
         {
           intervals[count].property[i] = '\0';
           i--;
-        }          
+        }
       fprintf(pf_out,"  PDF_TEXT_UCD_PL_%s,\n", intervals[count].property);
     }
   fprintf(pf_out,"};\n");
-  
+
   /* Print interval indexes */
   for(count = 0; count <= interval_count; count++)
     {
@@ -2306,10 +2306,10 @@ compute_PropList(const char *PropListFile)
   fprintf(pf_out,
           "#define UCD_PL_INFO_N   %ld  /* Maximum number of elements in array    */\n",
           intervals[count-1].index_stop + 1);
-  
+
   /* Input file can be closed now */
   fclose(pf);
-  
+
   return 0;
 }
 
@@ -2343,7 +2343,7 @@ int main (int argc, char **argv)
     {
       /* Compute CASE source file from UnicodeData.txt and SpecialCasing.txt */
       compute_UnicodeData_CASE(argv[1], argv[2]);
-      printf("UnicodeData parsed and CASE file created\n"); 
+      printf("UnicodeData parsed and CASE file created\n");
     }
   else if ((argc == 3) && \
       (strstr(argv[1], "UnicodeData.txt")!=NULL) && \
@@ -2351,7 +2351,7 @@ int main (int argc, char **argv)
     {
       /* Compute GENCAT source file from UnicodeData.txt */
       compute_UnicodeData_GENCAT(argv[1]);
-      printf("UnicodeData parsed and GENCAT file created\n"); 
+      printf("UnicodeData parsed and GENCAT file created\n");
     }
   else if ((argc == 3) && \
            (strstr(argv[1], "UnicodeData.txt")!=NULL) && \
@@ -2359,21 +2359,21 @@ int main (int argc, char **argv)
     {
       /* Compute COMBCLASS source file from UnicodeData.txt */
       compute_UnicodeData_COMBCLASS(argv[1]);
-      printf("UnicodeData parsed and COMBCLASS file created\n"); 
+      printf("UnicodeData parsed and COMBCLASS file created\n");
     }
   else if ((argc == 2) && \
            (strstr(argv[1], "WordBreakProperty.txt")!=NULL))
     {
       /* Compute Special CASE source file from SpecialCasing.txt */
       compute_WordBreak(argv[1]);
-      printf("WordBreakProperty parsed and WORDBREAK file created\n"); 
+      printf("WordBreakProperty parsed and WORDBREAK file created\n");
     }
   else if ((argc == 2) && \
            (strstr(argv[1], "PropList.txt")!=NULL))
     {
       /* Compute Special CASE source file from SpecialCasing.txt */
       compute_PropList(argv[1]);
-      printf("PropList parsed and PROPLIST file created\n"); 
+      printf("PropList parsed and PROPLIST file created\n");
     }
   else
     {
