@@ -1,3 +1,8 @@
+2010-02-15  Aleksander Morgado  <aleksander@es.gnu.org>
+
+	* doc/gnupdf.texi (Dictionary Objects): Fixed API of `pdf_obj_dict_get',
+	`pdf_obj_dict_get_str', `pdf_obj_dict_set' and `pdf_obj_dict_set_str'.
+
 2010-02-14  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi: Documentation of the filesystem implementation
