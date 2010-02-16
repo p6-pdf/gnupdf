@@ -1,3 +1,9 @@
+2010-02-16  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-arch.texi (Parser functions): Documentation for
+	'pdf_parser_seek'.
+	(Parser functions): Documentation for 'pdf_parser_tell'.
+
 2010-02-15  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf-arch.texi (Parser functions): Documentation for

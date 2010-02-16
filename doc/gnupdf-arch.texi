@@ -2084,6 +2084,94 @@ stm = pdf_parser_stm (parser);
 @end table
 @end deftypefun
 
+@deftypefun pdf_status_t pdf_parser_seek (pdf_parser_t @var{parser}, pdf_off_t @var{pos})
+
+Seek a parser to a position in the stream operated by the parser.
+
+Note that since several parsers can operate on a single stream in the
+same time, the parsers must maintain an internal position for the next
+parsing operation.  Before parsing the parser saves the current offset
+of the read pointer of the operated stream and replaces it with the
+parser position.  After the operation the position of the stream is
+restored.
+@table @strong
+@item Parameters
+@table @var
+@item parser
+A PDF parser.
+@item pos
+A position into the operated stream.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+The seek operation succeeded.
+@item PDF_EINVRANGE
+@var{pos} is not a valid position.  This means that the specified
+position is equal or larger than the size of the operated stream.
+@end table
+@item Usage example
+@example
+pdf_parser_t parser;
+pdf_stm_t stm;
+pdf_obj_t obj1, obj2, obj3;
+
+/*
+ * Parse several objects from different areas of a stream 'stm'.
+ */
+
+pdf_parser_new (stm, &parser);
+
+/* Get the object at offset 0 */
+if (pdf_parser_parse (parser, &obj1) != PDF_OK)
+@{
+    /* Parse error.  */
+@}
+
+/* Get the object at offset 100 */
+pdf_parser_seek (parser, 100);
+if (pdf_parser_parse (parser, &obj2) != PDF_OK)
+@{
+   /* Parse error.  */
+@}
+
+/* Get the object at offset 200 */
+pdf_parser_seek (parser, 200);
+if (pdf_parser_parse (parser, &obj3) != PDF_OK)
+@{
+  /* Parse error.  */
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_off_t pdf_parser_tell (pdf_parser_t @var{parser})
+
+Return the current position of a parser.
+
+The current position of a newly created parser is always @code{0}.
+
+@table @strong
+@item Parameters
+@table @var
+@item parser
+A PDF parser
+@end table
+@item Returns
+The current position of the parser in its operated stream, measured in
+bytes from the beginning of the stream.
+@item Usage example
+@example
+pdf_parser_t parser;
+pdf_off_t cur_pos;
+
+/* Get the current position of a parser.  */
+cur_pos = pdf_parser_tell (parser);
+@end example
+@end table
+@end deftypefun
+
 @node Writer module
 @section Writer module
 
