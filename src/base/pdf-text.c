@@ -1580,7 +1580,10 @@ pdf_text_compare_words(const pdf_char_t *word1,
       PDF_DEBUG_BASE("Problem lowercasing word 1");
       pdf_dealloc(lower1);
       pdf_dealloc(lower2);
-      *p_ret_code = PDF_ETEXTENC;
+      if(p_ret_code != NULL)
+        {
+          *p_ret_code = PDF_ETEXTENC;
+        }
       return -1;
     }
   if(pdf_text_ucd_word_change_case(lower2, &new_size2,
@@ -1590,7 +1593,10 @@ pdf_text_compare_words(const pdf_char_t *word1,
       PDF_DEBUG_BASE("Problem lowercasing word 2");
       pdf_dealloc(lower1);
       pdf_dealloc(lower2);
-      *p_ret_code = PDF_ETEXTENC;
+      if(p_ret_code != NULL)
+        {
+          *p_ret_code = PDF_ETEXTENC;
+        }
       return -1;
     }
 
@@ -1796,7 +1802,6 @@ pdf_text_get_unicode_string_header(pdf_char_t header[PDF_TEXT_USHMAXL],
                       language,
                       PDF_TEXT_LCI_0,PDF_TEXT_LCI_1);
             }
-          walker += lang_bytes;
         }
     }
   return PDF_OK;

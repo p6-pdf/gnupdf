@@ -484,7 +484,6 @@ pdf_time_from_string_generalized_asn1(pdf_time_t time_var,
 
   while(1)
     {
-      pdf_bool_t has_seconds = PDF_FALSE;
       /* Get century */
       __GET_FIELD2(time_str, 0, calendar.year);
       calendar.year *= 100;
@@ -522,7 +521,6 @@ pdf_time_from_string_generalized_asn1(pdf_time_t time_var,
       if((time_str[17] >= '0') && \
          (time_str[17] <= '9'))
         {
-          has_seconds = PDF_TRUE;
           __GET_FIELD2(time_str, 12, calendar.second);
         }
 
@@ -603,7 +601,6 @@ pdf_time_from_string_iso8601(pdf_time_t time_var,
 
   while(1)
     {
-      pdf_bool_t has_seconds = PDF_FALSE;
       /* Get century */
       __GET_FIELD2(time_str, 0, calendar.year);
       calendar.year *= 100;
@@ -643,7 +640,6 @@ pdf_time_from_string_iso8601(pdf_time_t time_var,
          (time_str[17] <= '9') && \
          (time_str[16] == ':'))
         {
-          has_seconds = PDF_TRUE;
           __GET_FIELD2(time_str, 17, calendar.second);
         }
 

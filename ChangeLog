@@ -1,3 +1,22 @@
+2010-02-16  Aleksander Morgado  <aleksander@es.gnu.org>
+
+	* build-aux/pdf-text-generate-ucd.c (parse_UnicodeData_line_field):
+	Return error if input 'fieldstart' is NULL.
+	(parse_SpecialCasing_line_field): Idem.
+	(add_entry_to_WordBreak): Avoid unused variables.
+	(add_entry_to_PropList): Idem.
+
+	* src/base/pdf-text-ucd-case.c (pdf_text_ucd_word_change_case): Avoid
+	unneeded data store, as 'new_char_size' is set afterwards.
+
+	* src/base/pdf-text.c (pdf_text_compare_words): Avoid potential segfault
+	when dereferencing a NULL pointer, if the input 'p_ret_code' argument is
+	NULL.
+
+	* src/base/pdf-time-string.c (pdf_time_from_string_generalized_asn1)
+	(pdf_time_from_string_iso8601): The 'has_seconds' flag is not needed in
+	these conversion types (avoid dead store).
+
 2010-02-14  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi: Documentation of the filesystem implementation

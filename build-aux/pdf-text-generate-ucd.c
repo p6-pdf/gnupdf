@@ -157,6 +157,12 @@ parse_UnicodeData_line_field(char *place_to_store,
   char *walker;
   int length;
 
+  if(fieldstart == NULL)
+    {
+      printf("[Error] Invalid fieldstart parsing UnicodeData\n");
+      return -1;
+    }
+
   /* Look for field separator */
   walker = (char *)fieldstart;
   while((walker != NULL) && \
@@ -259,7 +265,6 @@ parse_UnicodeData_line(ucd_entry *p_entry, const char *line)
   if(parse_UnicodeData_line_field(p_entry->simple_titlecase_mapping, \
                                   CASE_MAPPING_LENGTH-1, start, &stop)!=0)
     return -1;
-  start = stop;
 
   return 0;
 }
@@ -358,6 +363,12 @@ parse_SpecialCasing_line_field(char *place_to_store,
 {
   char *walker;
   int length;
+
+  if(fieldstart == NULL)
+    {
+      printf("[Error] Invalid fieldstart parsing SpecialCasing\n");
+      return -1;
+    }
 
   /* Look for field separator (can be either ';' or end of line */
   walker = (char *)fieldstart;
@@ -1792,10 +1803,6 @@ add_entry_to_WordBreak(FILE *pf,
 {
   if(pf != NULL)
     {
-      const char *start = p_entry->unicode_point_start;
-      const char *stop = p_entry->unicode_point_stop;
-      const char *property = p_entry->property;
-
       fprintf(pf, "  { 0x%s, 0x%s, PDF_TEXT_UCD_WBP_%s }, /* %d */\n",
               p_entry->unicode_point_start,
               p_entry->unicode_point_stop,
@@ -2169,10 +2176,6 @@ add_entry_to_PropList(FILE *pf,
 {
   if(pf != NULL)
     {
-      const char *start = p_entry->unicode_point_start;
-      const char *stop = p_entry->unicode_point_stop;
-      const char *property = p_entry->property;
-
       fprintf(pf, "  { 0x%s, 0x%s, PDF_TEXT_UCD_PL_%s }, /* %d */\n",
               p_entry->unicode_point_start,
               p_entry->unicode_point_stop,

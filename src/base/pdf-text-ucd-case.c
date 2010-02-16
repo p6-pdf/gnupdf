@@ -4070,7 +4070,6 @@ pdf_text_ucd_word_change_case(pdf_char_t *destination_word,
       enum unicode_case_type new_case;
       pdf_u32_t dest_character[UCD_SC_MAX_EXPAND];
       pdf_u32_t  character;
-      new_char_size = 0;
 
       /* In title case, only title-case the first character, and lower-case all
        *  the others */
