@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 22:53:55 jemarch"
+/* -*- mode: C -*- Time-stamp: "2010-02-16 23:35:04 aleksander"
  *
  *       File:         pdf-text.c
  *       Date:         Fri Jan 11 21:09:56 2008
@@ -54,7 +54,7 @@
 
 
 /* Longest header length when requesting a unicode string with options is that
- * of UTF-16BE with BOM and lang/country information: 2bytes-BOM + 
+ * of UTF-16BE with BOM and lang/country information: 2bytes-BOM +
  * 8bytes-lang/country = 10 bytes (+ 1 NUL byte) */
 #define PDF_TEXT_USHMAXL    11
 
@@ -182,13 +182,13 @@ pdf_text_destroy (pdf_text_t text)
       pdf_dealloc(text->data);
       text->data = NULL;
     }
-  
+
   /* Destroy word boundaries list */
   pdf_text_destroy_word_boundaries_list(&text->word_boundaries);
 
   /* Finally, clear full structure */
   pdf_dealloc(text);
-  
+
   return PDF_OK;
 }
 
@@ -208,7 +208,7 @@ pdf_text_dup (const pdf_text_t text)
     {
       /* Duplicate size */
       element->size = text->size;
-      
+
       /* Duplicate contents (if size > 0) */
       if(element->size > 0)
         {
@@ -218,11 +218,11 @@ pdf_text_dup (const pdf_text_t text)
               memcpy(element->data, text->data, (size_t)element->size);
             }
         }
-      
+
       /* Duplicate Language code and Country code (if available) */
       memcpy(element->lang, text->lang, (size_t) PDF_TEXT_CCL);
       memcpy(element->country, text->country, (size_t) PDF_TEXT_CCL);
-      
+
       /* We don't really need to duplicate the contents of the word
        *  boundaries list, as it is a side product */
 
@@ -247,13 +247,13 @@ pdf_text_new_from_host (const pdf_char_t *str,
   pdf_text_t element = NULL;
   pdf_status_t ret_code = PDF_ETEXTENC;
   pdf_status_t ret_code_new;
-  
+
   if((str == NULL) || \
      (size == 0))
     {
       return PDF_EBADDATA;
     }
-  
+
   /* Allocate and initialize element */
   ret_code_new = pdf_text_new (&element);
   if (ret_code_new != PDF_OK)
@@ -261,10 +261,10 @@ pdf_text_new_from_host (const pdf_char_t *str,
       /* Oops, element creation failed due to an error... */
       return ret_code_new;
     }
-  
+
   /* Set Host Encoding contents */
   ret_code = pdf_text_set_host(element, str, size, enc);
-  
+
   if(ret_code == PDF_OK)
     {
       /* Perfect! Set output variable */
@@ -275,10 +275,10 @@ pdf_text_new_from_host (const pdf_char_t *str,
       /* Conversion went wrong... so destroy object contents */
       pdf_text_destroy(element);
     }
-  
+
   /* Return status of the conversion */
   return ret_code;
-}                        
+}
 
 
 
@@ -299,7 +299,7 @@ pdf_text_new_from_pdf_string (const pdf_char_t *str,
     {
       return PDF_EBADDATA;
     }
-  
+
   /* Allocate and initialize element */
   ret_code_new = pdf_text_new (&element);
   if (ret_code_new != PDF_OK)
@@ -307,7 +307,7 @@ pdf_text_new_from_pdf_string (const pdf_char_t *str,
       /* Oops, element creation failed due to some error... */
       return ret_code_new;
     }
-  
+
   /* First of all, check first two bytes to detect UTF-16BE BOM or lang/country
    *  code initializer.
    *  If length of the text is less than 2, then we can assume it is encoded in
@@ -334,8 +334,8 @@ pdf_text_new_from_pdf_string (const pdf_char_t *str,
           lang_found = 1;
         }
     }
-  
-  /* If either BOM or Lang Marker are found, process PDF string as encoded 
+
+  /* If either BOM or Lang Marker are found, process PDF string as encoded
    *  in UTF16-BE */
   if(bom_found || lang_found)
     {
@@ -415,7 +415,7 @@ pdf_text_new_from_unicode (const pdf_char_t *str,
     {
       return PDF_EBADDATA;
     }
-  
+
   /* Allocate and initialize element */
   ret_code_new = pdf_text_new (&element);
   if (ret_code_new != PDF_OK)
@@ -423,13 +423,13 @@ pdf_text_new_from_unicode (const pdf_char_t *str,
       /* Oops, element creation failed due to some error... */
       return ret_code_new;
     }
-  
+
   /* Set Unicode contents */
   if(size > 0)
     {
       ret_code = pdf_text_set_unicode(element, str, size, enc);
     }
-  
+
   if(ret_code == PDF_OK)
     {
       /* Perfect! Set output variable */
@@ -495,11 +495,11 @@ pdf_text_set_country (pdf_text_t text,
     {
       return PDF_EBADDATA;
     }
-  
+
   memcpy(&(text->country[0]), code, PDF_TEXT_CCL-1);
   /* Make sure that last byte is NUL */
   text->country[PDF_TEXT_CCL-1] = '\0';
-  return PDF_OK; 
+  return PDF_OK;
 }
 
 
@@ -517,7 +517,7 @@ pdf_text_set_language (pdf_text_t text,
   memcpy(&(text->lang[0]), code, PDF_TEXT_CCL-1);
   /* Make sure that last byte is NUL */
   text->lang[PDF_TEXT_CCL-1] = '\0';
-  return PDF_OK; 
+  return PDF_OK;
 }
 
 
@@ -548,7 +548,7 @@ pdf_text_check_host_encoding(const pdf_char_t *encoding_name,
       PDF_DEBUG_BASE("Encoding name too long!");
       return PDF_EBADDATA;
     }
-  
+
   if(pdf_text_host_encoding_is_available(encoding_name) == PDF_OK)
     {
       strcpy((char *)(&(p_encoding->name[0])), (char *)encoding_name);
@@ -602,8 +602,8 @@ pdf_text_get_host (pdf_char_t **contents,
                    pdf_size_t *length,
                    const pdf_text_t text,
                    const pdf_text_host_encoding_t enc)
-{  
-  
+{
+
   return pdf_text_utf32he_to_host (text->data, text->size, enc,
                                    contents, length);
 }
@@ -708,8 +708,8 @@ pdf_text_get_unicode (pdf_char_t **contents,
         default:
           ret_code = PDF_ETEXTENC;
       }
-    }      
-  
+    }
+
   /* Check if specific options were requested */
   if(options != PDF_TEXT_UNICODE_NO_OPTION)
     {
@@ -754,12 +754,12 @@ pdf_text_get_unicode (pdf_char_t **contents,
                   break;
             }
         }
-      
+
       if((header_size > 0) || \
          (trailer_size > 0))
         {
           pdf_char_t *new_out_data = NULL;
-          
+
           /* Allocate memory for new string */
           new_out_data = (pdf_char_t *)pdf_alloc(out_length + \
                                                  header_size + \
@@ -795,7 +795,7 @@ pdf_text_get_unicode (pdf_char_t **contents,
                          (unsigned int)options);
         }
     }
-  
+
   /* Only store in the output element if and only if everything went ok */
   if(ret_code == PDF_OK)
     {
@@ -816,7 +816,7 @@ pdf_text_get_hex (const pdf_text_t text,
 {
   int i;
   int j;
-  unsigned int new_str_length; 
+  unsigned int new_str_length;
   pdf_char_t *new_str;
   char new_hex_char [3];
 
@@ -828,13 +828,13 @@ pdf_text_get_hex (const pdf_text_t text,
        * - N-1 bytes for the separator ':'
        * So... a total of (1+2N+N-1) = 3N bytes are needed... */
       new_str_length =  3 * text->size;
-      
+
       /* Allocate memory for new array and initialize contents to NUL */
       new_str = (pdf_char_t *)pdf_alloc(new_str_length);
       if(new_str != NULL)
         {
           memset(new_str, 0, new_str_length);
-          
+
           /* Print hexadecimal representation of each byte... */
           for(i=0, j=0; i<text->size; i++, j+=3)
             {
@@ -886,7 +886,7 @@ pdf_text_set_host (pdf_text_t text,
     {
       /* Destroy previous contents of text variable, if any */
       pdf_text_clean_contents(text);
-      
+
       /* Really set contents */
       text->data = temp_data;
       text->size = temp_size;
@@ -903,19 +903,19 @@ pdf_text_set_pdfdocenc (pdf_text_t text,
   pdf_status_t ret_code;
   pdf_char_t *temp_data;
   pdf_size_t temp_size;
-  
+
   if(str == NULL)
     {
       return PDF_EBADDATA;
     }
-  
+
   ret_code = pdf_text_pdfdocenc_to_utf32he (str, strlen((char *)str),
                                             &temp_data, &temp_size);
   if(ret_code == PDF_OK)
     {
       /* Destroy previous contents of text variable, if any */
       pdf_text_clean_contents(text);
-      
+
       /* Really set contents */
       text->data = temp_data;
       text->size = temp_size;
@@ -934,16 +934,16 @@ pdf_text_set_unicode (pdf_text_t text,
   pdf_char_t *temp_data;
   pdf_size_t temp_size;
   enum pdf_text_unicode_encoding_e new_enc;
-  
+
   if((str == NULL) || \
      (size == 0))
     {
       return PDF_EBADDATA;
     }
-  
+
   /* If host endianness required, check it and convert input encoding */
   new_enc = pdf_text_transform_he_to_unicode_encoding(enc);
-  
+
   switch(new_enc)
   {
     case PDF_TEXT_UTF8: /* UTF-8 */
@@ -970,12 +970,12 @@ pdf_text_set_unicode (pdf_text_t text,
     default:
       ret_code = PDF_EBADDATA;
   }
-  
+
   if(ret_code == PDF_OK)
     {
       /* Destroy previous contents of text variable, if any */
       pdf_text_clean_contents(text);
-      
+
       /* Really set contents */
       text->data = temp_data;
       text->size = temp_size;
@@ -997,14 +997,14 @@ pdf_text_concat (pdf_text_t text1,
         {
           return PDF_ETEXTENC;
         }
-      
+
       /* An error will be returned if country code is different */
       if(strcmp((char *)text1->country, (char *)text2->country) != 0)
         {
           return PDF_ETEXTENC;
         }
     }
-  
+
   /* Ok, so language/country info is equal or non-existent, start
    *  concatenation */
   if(text2->size > 0)
@@ -1012,10 +1012,10 @@ pdf_text_concat (pdf_text_t text1,
       /* Re-allocate memory in first text element */
       text1->data = (pdf_char_t *)pdf_realloc(text1->data, \
                                               text1->size + text2->size);
-  
+
       /* Copy contents of second element after the first one */
       memcpy(&(text1->data[text1->size]), text2->data, text2->size);
-      
+
       /* Update size of first element */
       text1->size += text2->size;
     }
@@ -1316,11 +1316,11 @@ pdf_text_replace_ascii (pdf_text_t text,
 
       /* Perform replacement */
       ret_code = pdf_text_replace(text, new_pattern_text, old_pattern_text);
-      
+
       /* Destroy used intermediate variables */
       pdf_text_destroy(new_pattern_text);
       pdf_text_destroy(old_pattern_text);
-      
+
       return ret_code;
     }
 }
@@ -1333,7 +1333,7 @@ pdf_text_filter (pdf_text_t text,
   /* More than one filter at the same time can be requested! But Caution!
    *  UpperCase filter, LowerCase filter and TitleCase filter are mutually
    *  exclusive (at most only one of them must be enabled) */
-  
+
   if((((filter & PDF_TEXT_FILTER_UPPER_CASE) ? 1 : 0) + \
       ((filter & PDF_TEXT_FILTER_LOWER_CASE) ? 1 : 0) + \
       ((filter & PDF_TEXT_FILTER_TITLE_CASE) ? 1 : 0)) > 1)
@@ -1411,13 +1411,13 @@ pdf_text_cmp (const pdf_text_t text1,
     {
       *p_ret_code = PDF_OK;
     }
-  
+
   /* Compare sizes of the texts */
   if(text1->size != text2->size)
     {
       return ((text1->size > text2->size) ? 1 : -1);
     }
-  
+
   if(case_sensitive == PDF_TRUE)
     {
       return memcmp(text1->data, text2->data, text1->size);
@@ -1446,7 +1446,7 @@ pdf_text_cmp_non_case_sensitive(pdf_text_t text1,
     {
       pdf_size_t size1;
       pdf_size_t size2;
-      
+
       size1 = pdf_list_size(text1->word_boundaries);
       size2 = pdf_list_size(text2->word_boundaries);
       /* First, compare number of words in each text */
@@ -1459,7 +1459,7 @@ pdf_text_cmp_non_case_sensitive(pdf_text_t text1,
         {
           /* Perform a word-per-word lower case comparison! */
           int n;
-          
+
           /* Get word from both texts */
           n = 0;
           while(n < size1)
@@ -1467,7 +1467,7 @@ pdf_text_cmp_non_case_sensitive(pdf_text_t text1,
               struct pdf_text_wb_s *p_word1;
               struct pdf_text_wb_s *p_word2;
               pdf_i32_t ret_num;
-              
+
               if(pdf_list_get_at(text1->word_boundaries, \
                                  n, \
                                  (const void **)&p_word1) != PDF_OK)
@@ -1475,9 +1475,9 @@ pdf_text_cmp_non_case_sensitive(pdf_text_t text1,
                   *p_ret_code = PDF_ETEXTENC;
                   PDF_DEBUG_BASE("Error getting word '%d' from text1", n);
                   /* An error happened computing word boundaries! */
-                  return -1; 
+                  return -1;
                 }
-              
+
               if(pdf_list_get_at(text2->word_boundaries,
                                  n,
                                  (const void **)&p_word2) != PDF_OK)
@@ -1485,9 +1485,9 @@ pdf_text_cmp_non_case_sensitive(pdf_text_t text1,
                   *p_ret_code = PDF_ETEXTENC;
                   PDF_DEBUG_BASE("Error getting word '%d' from text2", n);
                   /* An error happened computing word boundaries! */
-                  return -1; 
+                  return -1;
                 }
-              
+
               ret_num = pdf_text_compare_words(p_word1->word_start,
                                                p_word1->word_size,
                                                p_word2->word_start,
@@ -1501,7 +1501,7 @@ pdf_text_cmp_non_case_sensitive(pdf_text_t text1,
                   PDF_DEBUG_BASE("Words are not equal...");
                   return ret_num;
                 }
-              ++n; 
+              ++n;
             }
           /* If arrived here, the strings are completely equal */
           return 0;
@@ -1535,21 +1535,21 @@ pdf_text_compare_words(const pdf_char_t *word1,
   pdf_size_t new_size1;
   pdf_size_t new_size2;
   pdf_size_t worst_size;
-    
+
   if(p_ret_code != NULL)
     {
       *p_ret_code = PDF_OK;
     }
-  
+
   /* Compare sizes of words */
   if(size1 != size2)
     {
       return ((size1 > size2) ? 1 : -1);
     }
-  
+
   /* Compute new worst word length */
   worst_size = size1 * UCD_SC_MAX_EXPAND;
-  
+
   /* Allocate memory for lowercases */
   lower1 = (pdf_char_t *)pdf_alloc(worst_size);
   lower2 = (pdf_char_t *)pdf_alloc(worst_size);
@@ -1580,7 +1580,10 @@ pdf_text_compare_words(const pdf_char_t *word1,
       PDF_DEBUG_BASE("Problem lowercasing word 1");
       pdf_dealloc(lower1);
       pdf_dealloc(lower2);
-      *p_ret_code = PDF_ETEXTENC;
+      if(p_ret_code != NULL)
+        {
+          *p_ret_code = PDF_ETEXTENC;
+        }
       return -1;
     }
   if(pdf_text_ucd_word_change_case(lower2, &new_size2,
@@ -1590,10 +1593,13 @@ pdf_text_compare_words(const pdf_char_t *word1,
       PDF_DEBUG_BASE("Problem lowercasing word 2");
       pdf_dealloc(lower1);
       pdf_dealloc(lower2);
-      *p_ret_code = PDF_ETEXTENC;
+      if(p_ret_code != NULL)
+        {
+          *p_ret_code = PDF_ETEXTENC;
+        }
       return -1;
     }
-                                           
+
   /* Compare NEW sizes of words */
   if(new_size1 != new_size2)
     {
@@ -1646,7 +1652,7 @@ pdf_text_get_lang_from_utf16be(pdf_text_t element,
   /* Country code is optional */
   short country_available = PDF_FALSE;
   pdf_char_t aux[PDF_TEXT_CCL];
-  
+
   /* Check first code marker and MINIMUM length of array */
   if((str_in_length < PDF_TEXT_LCMINL) || \
      (str_in[1] != PDF_TEXT_LCI_1) || \
@@ -1654,8 +1660,8 @@ pdf_text_get_lang_from_utf16be(pdf_text_t element,
     {
       return PDF_EBADDATA;
     }
-  
-  /* Check last code marker position and MAXIMUM length of array. 
+
+  /* Check last code marker position and MAXIMUM length of array.
    *  Additionally, set `str_out' and `str_out_length' */
   if((str_in[5] != PDF_TEXT_LCI_1) || \
      (str_in[4] != PDF_TEXT_LCI_0))
@@ -1682,8 +1688,8 @@ pdf_text_get_lang_from_utf16be(pdf_text_t element,
       *str_out = (pdf_char_t *)str_in + PDF_TEXT_LCMINL;
       *str_out_length = str_in_length - PDF_TEXT_LCMINL;
     }
-  
-  
+
+
   /* Store 2-bytes ISO 639 language code */
   memcpy(&aux[0], &str_in[2], PDF_TEXT_CCL-1);
   aux[PDF_TEXT_CCL-1] = '\0';
@@ -1691,7 +1697,7 @@ pdf_text_get_lang_from_utf16be(pdf_text_t element,
     {
       return PDF_ETEXTENC;
     }
-  
+
   /* If optional country code is also available, store it... */
   if(country_available)
     {
@@ -1703,7 +1709,7 @@ pdf_text_get_lang_from_utf16be(pdf_text_t element,
           return PDF_ETEXTENC;
         }
     }
-  
+
   return PDF_OK;
 }
 
@@ -1730,7 +1736,7 @@ pdf_text_get_unicode_string_header(pdf_char_t header[PDF_TEXT_USHMAXL],
   short bom_bytes;
   short lang_bytes;
   pdf_text_bom_t bom  = pdf_text_get_unicode_bom(enc);
-  
+
   /* We know that these pointers will never be null if the function is only
    * called by pdf_text_get_unicode, but just in case */
   if((language == NULL) || \
@@ -1740,14 +1746,14 @@ pdf_text_get_unicode_string_header(pdf_char_t header[PDF_TEXT_USHMAXL],
       PDF_DEBUG_BASE("Invalid pointers received");
       return PDF_EBADDATA;
     }
-  
+
   /* Check if BOM really requested */
   bom_bytes = 0;
   if(options & PDF_TEXT_UNICODE_WITH_BOM)
     {
       bom_bytes = bom.bom_bytes;
     }
-  
+
   /* Check if Lang/Country code really requested (only for UTF16BE!!) */
   lang_bytes = 0;
   if((enc == PDF_TEXT_UTF16_BE) && \
@@ -1759,7 +1765,7 @@ pdf_text_get_unicode_string_header(pdf_char_t header[PDF_TEXT_USHMAXL],
       lang_bytes = (strlen((char *)country) == 2) ? PDF_TEXT_LCMAXL: \
                                                     PDF_TEXT_LCMINL;
     }
-  
+
   /* Modify header array, if needed, to add Language/Country info and/or
    *  BOM */
   *header_length = lang_bytes + bom_bytes;
@@ -1768,15 +1774,15 @@ pdf_text_get_unicode_string_header(pdf_char_t header[PDF_TEXT_USHMAXL],
     {
       pdf_char_t *walker;
       walker = &header[0];
-      
+
       /* Add BOM */
       if(bom_bytes > 0)
         {
-          memcpy(walker, bom.bom_data, bom_bytes);       
+          memcpy(walker, bom.bom_data, bom_bytes);
           /* Update walker */
           walker += bom_bytes;
         }
-      
+
       /* Add Lang/Country */
       if(lang_bytes > 0)
         {
@@ -1796,7 +1802,6 @@ pdf_text_get_unicode_string_header(pdf_char_t header[PDF_TEXT_USHMAXL],
                       language,
                       PDF_TEXT_LCI_0,PDF_TEXT_LCI_1);
             }
-          walker += lang_bytes;
         }
     }
   return PDF_OK;
@@ -1873,7 +1878,7 @@ pdf_text_create_word_boundaries_list(pdf_list_t *p_word_boundaries)
     {
       return PDF_ETEXTENC;
     }
-  
+
   /* Set output if everything went ok */
   *p_word_boundaries = temp_list;
   return PDF_OK;
@@ -1910,13 +1915,13 @@ pdf_text_fill_word_boundaries_list(pdf_list_t word_boundaries,
     {
       return PDF_EBADDATA;
     }
-  
+
   /* Only try to find word boundaries if length is greater than 0! */
   if(size > 0)
     {
       pdf_char_t *walker;
       pdf_size_t n_bytes_left;
-      
+
       /* Initialize walker and number of bytes left */
       walker = (pdf_char_t *)data;
       n_bytes_left = size;
@@ -1931,7 +1936,7 @@ pdf_text_fill_word_boundaries_list(pdf_list_t word_boundaries,
             {
               return PDF_ENOMEM;
             }
-          
+
           /* RULE WB1: Break at the start of text ( SOT % ) */
           p_word->word_start = walker;
 
@@ -1942,18 +1947,18 @@ pdf_text_fill_word_boundaries_list(pdf_list_t word_boundaries,
             {
               return PDF_ETEXTENC;
             }
-          
+
           /* Compute word size in bytes */
           p_word->word_size = (p_word->word_stop - p_word->word_start) + 4;
-          
+
           /* Add new word boundary to list */
           pdf_list_add_last(word_boundaries, p_word, NULL);
-          
+
           /* Update walker */
           walker = p_word->word_stop + 4;
         }
     }
-  
+
   return PDF_OK;
 }
 
