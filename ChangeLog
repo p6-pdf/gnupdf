@@ -1,4 +1,4 @@
-2010-02-16  Aleksander Morgado  <aleksander@es.gnu.org>
+2010-02-16  Aleksander Morgado  <aleksander@gnu.org>
 
 	* build-aux/pdf-text-generate-ucd.c (parse_UnicodeData_line_field):
 	Return error if input 'fieldstart' is NULL.
@@ -16,6 +16,11 @@
 	* src/base/pdf-time-string.c (pdf_time_from_string_generalized_asn1)
 	(pdf_time_from_string_iso8601): The 'has_seconds' flag is not needed in
 	these conversion types (avoid dead store).
+
+2010-02-15  Aleksander Morgado  <aleksander@gnu.org>
+
+	* doc/gnupdf.texi (Dictionary Objects): Fixed API of `pdf_obj_dict_get',
+	`pdf_obj_dict_get_str', `pdf_obj_dict_set' and `pdf_obj_dict_set_str'.
 
 2010-02-14  Jose E. Marchesi  <jemarch@gnu.org>
 
