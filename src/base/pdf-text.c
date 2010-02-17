@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2010-02-16 23:35:04 aleksander"
+/* -*- mode: C -*- Time-stamp: "10/02/17 20:00:12 jemarch"
  *
  *       File:         pdf-text.c
  *       Date:         Fri Jan 11 21:09:56 2008
@@ -451,7 +451,7 @@ pdf_text_new_from_u32 (const pdf_u32_t number,
                        pdf_text_t *text)
 {
   /* Longest number to hold in 32bit: 2^32 = 4294967296 (10 chars) */
-  pdf_char_t temp[10];
+  pdf_char_t temp[10 + 1];
   pdf_size_t n;
 
   /* Print number in temporal char array, and get number of output chars */
