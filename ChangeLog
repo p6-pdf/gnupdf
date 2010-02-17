@@ -1,3 +1,8 @@
+2010-02-17  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-text.c (pdf_text_new_from_u32): Avoid a possible
+	buffer overflow in sprintf.
+
 2010-02-14  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi: Documentation of the filesystem implementation
