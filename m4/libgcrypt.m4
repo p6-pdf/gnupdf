@@ -97,6 +97,7 @@ AC_DEFUN([AM_PATH_LIBGCRYPT],
   if test $ok = yes; then
     LIBGCRYPT_CFLAGS=`$LIBGCRYPT_CONFIG --cflags`
     LIBGCRYPT_LIBS=`$LIBGCRYPT_CONFIG --libs`
+    AC_DEFINE([HAVE_LIBGCRYPT],[1],[compiling with libgcrypt support.])
     ifelse([$2], , :, [$2])
   else
     LIBGCRYPT_CFLAGS=""
