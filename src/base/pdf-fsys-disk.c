@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/11/24 23:58:31 jemarch"
+/* -*- mode: C -*- Time-stamp: "10/02/17 20:30:12 jemarch"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -27,6 +27,7 @@
 
 #include <errno.h>
 #include <stdio.h>
+#include <stdio-safer.h>
 #include <string.h>
 #include <sys/stat.h>
 
@@ -84,6 +85,20 @@ __pdf_fsys_disk_win32_device_p (pdf_text_t path);
  * Filesystem Interface Implementation
  */
 
+pdf_status_t
+pdf_fsys_disk_init (void **data)
+{
+  /* Do nothing.  */
+  *data = NULL;
+  return PDF_OK;
+}
+
+pdf_status_t
+pdf_fsys_disk_cleanup (void *data)
+{
+  /* Do nothing.  */
+  return PDF_OK;
+}
 
 #ifdef PDF_HOST_WIN32
 
@@ -150,7 +165,8 @@ pdf_fsys_disk_get_free_space (pdf_text_t path_name)
 #else
 
 pdf_i64_t
-pdf_fsys_disk_get_free_space (pdf_text_t path_name)
+pdf_fsys_disk_get_free_space (void *data,
+                              pdf_text_t path_name)
 {
   pdf_i64_t result = pdf_i64_new((32 << 1),1); /* (-1) */
 
@@ -276,14 +292,15 @@ __pdf_fsys_init_base_file_data(const pdf_text_t path_name)
 #ifdef PDF_HOST_WIN32
 #define PDF_FOPEN(f,m) _wfopen((wchar_t *)f,(wchar_t *)m)
 #else
-#define PDF_FOPEN(f,m) fopen((char *)f,(char *)m)
+#define PDF_FOPEN(f,m) fopen_safer((char *)f,(char *)m)
 #endif
 
 
 pdf_status_t
-pdf_fsys_disk_file_open(const pdf_text_t path_name,
-                        const enum pdf_fsys_file_mode_e mode,
-                        pdf_fsys_file_t *p_file)
+pdf_fsys_disk_file_open (void *data,
+                         const pdf_text_t path_name,
+                         const enum pdf_fsys_file_mode_e mode,
+                         pdf_fsys_file_t *p_file)
 {
   pdf_status_t ret_status = PDF_EBADDATA;
 
@@ -348,6 +365,56 @@ pdf_fsys_disk_file_open(const pdf_text_t path_name,
   return ret_status;
 }
 
+pdf_status_t
+pdf_fsys_disk_file_open_tmp (void *data,
+                             pdf_fsys_file_t *p_file)
+{
+  pdf_text_t path_name;
+  pdf_status_t ret_status = PDF_ERROR;
+  pdf_fsys_file_t file = NULL;
+  pdf_fsys_disk_file_t file_data = NULL;
+  
+
+  file = (pdf_fsys_file_t) pdf_alloc (sizeof (struct pdf_fsys_file_s));
+  file->fs = NULL; /* Default filesystem.  */
+  
+  if (file != NULL)
+    {
+      /* Create a dummy path name, so we can manage the temporary file
+         like an ordinary file.  */
+      if (pdf_text_new_from_unicode ((pdf_char_t *) "tmp",
+                                     3,
+                                     PDF_TEXT_UTF8,
+                                     &path_name)
+          != PDF_OK)
+        {
+          ret_status = PDF_ENOMEM;
+        }
+      else
+        {
+          /* Get base data.  */
+          file_data = __pdf_fsys_init_base_file_data (path_name);
+          file_data->file_mode = PDF_FSYS_OPEN_MODE_RW;
+
+          /* Open a temporary file.  */
+          file_data->file_descriptor = tmpfile_safer ();
+          if (file_data->file_descriptor != NULL)
+            {
+              /* Success.  */
+              file->data = (void *) file_data;
+              *p_file = file;
+              ret_status = PDF_OK;
+            }
+          else
+            {
+              pdf_text_destroy (path_name);
+            }
+        }
+    }
+
+  return ret_status;
+}
+
 
 pdf_status_t
 pdf_fsys_disk_file_close (pdf_fsys_file_t file)
@@ -393,7 +460,8 @@ pdf_fsys_disk_file_close (pdf_fsys_file_t file)
 #endif
 
 pdf_status_t
-pdf_fsys_disk_create_folder (const pdf_text_t path_name)
+pdf_fsys_disk_create_folder (void *data,
+                             const pdf_text_t path_name)
 {
   pdf_status_t ret_code = PDF_EBADDATA;
   if(path_name != NULL)
@@ -457,7 +525,8 @@ pdf_fsys_disk_create_folder (const pdf_text_t path_name)
 
 
 pdf_status_t
-pdf_fsys_disk_get_folder_contents (const pdf_text_t path_name,
+pdf_fsys_disk_get_folder_contents (void *data,
+                                   const pdf_text_t path_name,
                                    pdf_list_t item_list)
 {
   pdf_status_t ret_code = PDF_EBADDATA;
@@ -525,7 +594,8 @@ pdf_fsys_disk_get_folder_contents (const pdf_text_t path_name,
 
 
 pdf_status_t
-pdf_fsys_disk_get_parent (const pdf_text_t path_name,
+pdf_fsys_disk_get_parent (void *data,
+                          const pdf_text_t path_name,
                           pdf_text_t parent_path)
 {
   pdf_status_t ret_code = PDF_EBADDATA;
@@ -547,7 +617,8 @@ pdf_fsys_disk_get_parent (const pdf_text_t path_name,
 #endif
 
 pdf_status_t
-pdf_fsys_disk_remove_folder (const pdf_text_t path_name)
+pdf_fsys_disk_remove_folder (void *data,
+                             const pdf_text_t path_name)
 {
   pdf_status_t ret_code = PDF_EBADDATA;
   if(path_name != NULL)
@@ -690,7 +761,8 @@ __pdf_fsys_disk_file_get_size_from_host_path(const pdf_char_t *host_path,
 
 
 pdf_status_t
-pdf_fsys_disk_get_item_props (pdf_text_t path_name,
+pdf_fsys_disk_get_item_props (void *data,
+                              pdf_text_t path_name,
                               struct pdf_fsys_item_props_s *item_props)
 {
   pdf_char_t* host_path = NULL;
@@ -757,7 +829,8 @@ pdf_fsys_disk_get_item_props (pdf_text_t path_name,
 
 
 pdf_bool_t
-pdf_fsys_disk_item_p (pdf_text_t path_name)
+pdf_fsys_disk_item_p (void *data,
+                      pdf_text_t path_name)
 {
   struct pdf_fsys_item_props_s item_props;
 #ifdef PDF_HOST_WIN32
@@ -766,15 +839,17 @@ pdf_fsys_disk_item_p (pdf_text_t path_name)
       return PDF_TRUE;
     }
 #endif
-  return ((pdf_fsys_disk_get_item_props(path_name,                  \
-                                        &item_props) == PDF_OK) ?   \
-          PDF_TRUE :                                                \
+  return ((pdf_fsys_disk_get_item_props(data,
+                                        path_name,
+                                        &item_props) == PDF_OK) ?
+          PDF_TRUE :
           PDF_FALSE);
 }
 
 
 pdf_bool_t 
-pdf_fsys_disk_item_readable_p (pdf_text_t path_name)
+pdf_fsys_disk_item_readable_p (void *data,
+                               pdf_text_t path_name)
 {
   pdf_bool_t result = PDF_FALSE;
   if(path_name != NULL)
@@ -797,7 +872,8 @@ pdf_fsys_disk_item_readable_p (pdf_text_t path_name)
 
 
 pdf_bool_t
-pdf_fsys_disk_item_writable_p (pdf_text_t path_name)
+pdf_fsys_disk_item_writable_p (void *data,
+                               pdf_text_t path_name)
 {
   pdf_bool_t result = PDF_FALSE;
   if(path_name != NULL)
@@ -814,27 +890,6 @@ pdf_fsys_disk_item_writable_p (pdf_text_t path_name)
         }
     }
   return result;
-}
-
-
-pdf_text_t
-pdf_fsys_disk_get_temp_path_name (void)
-{
-  pdf_text_t temp = NULL;
-  pdf_char_t filename[L_tmpnam + 1];
-  /* Get temporal filename */
-  if((tmpnam((char *)filename) != NULL) &&      \
-     (pdf_text_new_from_unicode(filename,
-                                strlen((char *)filename),
-                                PDF_TEXT_UTF8,
-                                &temp) == PDF_OK))
-    {
-      return temp;
-    }
-  else
-    {
-      return NULL;
-    }
 }
 
 /*
@@ -1172,7 +1227,7 @@ pdf_fsys_disk_file_cancel_ria (pdf_fsys_file_t file)
 #ifdef PDF_HOST_WIN32
 #define PDF_FREOPEN(f,m,s) _wfreopen((wchar_t *)f,(wchar_t *)m,s)
 #else
-#define PDF_FREOPEN(f,m,s) freopen((char *)f,(char *)m,s)
+#define PDF_FREOPEN(f,m,s) freopen_safer ((char *)f,(char *)m,s)
 #endif
 
 

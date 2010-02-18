@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-15 12:18:32 gerel"
+/* -*- mode: C -*- Time-stamp: "10/02/17 20:27:34 jemarch"
  *
  *       File:         pdf-fsys-disk.h
  *       Date:         Thu May 22 18:22:59 2008
@@ -48,59 +48,72 @@ typedef struct pdf_fsys_disk_file_s *pdf_fsys_disk_file_t;
 
 /* --------------------- Filesystem interface ------------------------- */
 
+/* Initialization and cleanup.  */
+pdf_status_t pdf_fsys_disk_init (void **data);
+pdf_status_t pdf_fsys_disk_cleanup (void *data);
+
 /* Get the free storage space in the volume containing path_name */
 pdf_i64_t
-pdf_fsys_disk_get_free_space (pdf_text_t path_name);
+pdf_fsys_disk_get_free_space (void *data,
+                              pdf_text_t path_name);
 
 /* Create folder in disk */
 pdf_status_t
-pdf_fsys_disk_create_folder (const pdf_text_t path_name);
+pdf_fsys_disk_create_folder (void *data,
+                             const pdf_text_t path_name);
 
 /* Get folder contents from disk (list files in disk) */
 pdf_status_t
-pdf_fsys_disk_get_folder_contents (const pdf_text_t path_name,
+pdf_fsys_disk_get_folder_contents (void *data,
+                                   const pdf_text_t path_name,
                                    pdf_list_t item_list);
 
 /* Get path name of the father of a given item in the filesystem */
 pdf_status_t
-pdf_fsys_disk_get_parent (const pdf_text_t path_name,
+pdf_fsys_disk_get_parent (void *data,
+                          const pdf_text_t path_name,
                           pdf_text_t parent_path);
 
 /* Remove folder from disk */
 pdf_status_t
-pdf_fsys_disk_remove_folder (const pdf_text_t path_name);
+pdf_fsys_disk_remove_folder (void *data,
+                             const pdf_text_t path_name);
 
 /* Get item properties */
 pdf_status_t
-pdf_fsys_disk_get_item_props (pdf_text_t path_name,
+pdf_fsys_disk_get_item_props (void *data,
+                              pdf_text_t path_name,
                               struct pdf_fsys_item_props_s *item_props);
 
 /* Check if file exists in disk */
 pdf_bool_t
-pdf_fsys_disk_item_p (pdf_text_t path_name);
+pdf_fsys_disk_item_p (void *data,
+                      pdf_text_t path_name);
 
 /* Check if file is readable in disk */
 pdf_bool_t
-pdf_fsys_disk_item_readable_p (pdf_text_t path_name);
+pdf_fsys_disk_item_readable_p (void *data,
+                               pdf_text_t path_name);
 
 /* Check if file is writable in disk */
 pdf_bool_t
-pdf_fsys_disk_item_writable_p (pdf_text_t path_name);
-
-/* Get temporal path name */
-pdf_text_t
-pdf_fsys_disk_get_temp_path_name (void);
-
+pdf_fsys_disk_item_writable_p (void *data,
+                               pdf_text_t path_name);
 
 
 /* --------------------- File interface ------------------------- */
 
 /* Open a given file */
 pdf_status_t
-pdf_fsys_disk_file_open (const pdf_text_t path_name,
+pdf_fsys_disk_file_open (void *data,
+                         const pdf_text_t path_name,
                          const enum pdf_fsys_file_mode_e mode,
                          pdf_fsys_file_t *p_file);
 
+/* Open a temporary file.  */
+pdf_status_t
+pdf_fsys_disk_file_open_tmp (void *data,
+                             pdf_fsys_file_t *p_file);
 
 /* Get file mode info */
 enum pdf_fsys_file_mode_e

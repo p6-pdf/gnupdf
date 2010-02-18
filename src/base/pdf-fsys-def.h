@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-11-29 17:42:11 aleksander"
+/* -*- mode: C -*- Time-stamp: "10/02/17 20:24:02 jemarch"
  *
  *       File:         pdf-fsys-def.h
  *       Date:         Thu May 22 17:50:20 2008
@@ -29,28 +29,32 @@
 
 #include <pdf-fsys-disk.h>
 
+#define pdf_fsys_def_init(DATA) \
+  pdf_fsys_disk_init ((DATA))
+#define pdf_fsys_def_cleanup(DATA) \
+  pdf_fsys_disk_cleanup ((DATA))
 #define pdf_fsys_def_get_free_space(path_name) \
-  pdf_fsys_disk_get_free_space ((path_name))
+  pdf_fsys_disk_get_free_space (NULL, (path_name))
 #define pdf_fsys_def_create_folder(path_name) \
-  pdf_fsys_disk_create_folder ((path_name))
+  pdf_fsys_disk_create_folder (NULL, (path_name))
 #define pdf_fsys_def_get_folder_contents(path_name, item_list) \
-  pdf_fsys_disk_get_folder_contents ((path_name), (item_list))
+  pdf_fsys_disk_get_folder_contents (NULL, (path_name), (item_list))
 #define pdf_fsys_def_get_parent(path_name, parent_path) \
-  pdf_fsys_disk_get_parent ((path_name), (parent_path))
+  pdf_fsys_disk_get_parent (NULL, (path_name), (parent_path))
 #define pdf_fsys_def_remove_folder(path_name) \
-  pdf_fsys_disk_remove_folder ((path_name))
+  pdf_fsys_disk_remove_folder (NULL, (path_name))
 #define pdf_fsys_def_get_item_props(path_name, item_props) \
-  pdf_fsys_disk_get_item_props ((path_name), (item_props))
+  pdf_fsys_disk_get_item_props (NULL, (path_name), (item_props))
 #define pdf_fsys_def_item_p(path_name) \
-  pdf_fsys_disk_item_p ((path_name))
+  pdf_fsys_disk_item_p (NULL, (path_name))
 #define pdf_fsys_def_item_readable_p(path_name) \
-  pdf_fsys_disk_item_readable_p ((path_name))
+  pdf_fsys_disk_item_readable_p (NULL, (path_name))
 #define pdf_fsys_def_item_writable_p(path_name) \
-  pdf_fsys_disk_item_writable_p ((path_name))
-#define pdf_fsys_def_get_temp_path_name() \
-  pdf_fsys_disk_get_temp_path_name ()
+  pdf_fsys_disk_item_writable_p (NULL, (path_name))
 #define pdf_fsys_def_file_open(path_name, mode, p_file)     \
-  pdf_fsys_disk_file_open ((path_name), (mode), (p_file))
+  pdf_fsys_disk_file_open (NULL, (path_name), (mode), (p_file))
+#define pdf_fsys_def_file_open_tmp(p_file)   \
+  pdf_fsys_disk_file_open_tmp (NULL, (p_file))
 #define pdf_fsys_def_file_get_mode(file) \
   pdf_fsys_disk_file_get_mode ((file))
 #define pdf_fsys_def_file_get_url(file) \

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 15:54:07 jemarch"
+/* -*- mode: C -*- Time-stamp: "10/02/17 20:23:35 jemarch"
  *
  *       File:         pdf-fsys.c
  *       Date:         Thu May 22 15:51:13 2008
@@ -50,7 +50,8 @@ pdf_fsys_get_free_space (pdf_fsys_t filesystem,
   else
     {
       return 
-        filesystem->implementation->get_free_space_fn (path_name);
+        filesystem->implementation->get_free_space_fn (filesystem->data,
+                                                       path_name);
     }
 }
 
@@ -69,7 +70,8 @@ pdf_fsys_create_folder (const pdf_fsys_t filesystem,
   else
     {
       return 
-        filesystem->implementation->create_folder_fn (path_name);
+        filesystem->implementation->create_folder_fn (filesystem->data,
+                                                      path_name);
     }
 }
 
@@ -87,7 +89,8 @@ pdf_fsys_get_folder_contents (const pdf_fsys_t filesystem,
   else
     {
       return
-        filesystem->implementation->get_folder_contents_fn (path_name,
+        filesystem->implementation->get_folder_contents_fn (filesystem->data,
+                                                            path_name,
                                                             item_list);
     }
 }
@@ -106,7 +109,8 @@ pdf_fsys_get_parent (const pdf_fsys_t filesystem,
   else
     {
       return
-        filesystem->implementation->get_parent_fn (path_name,
+        filesystem->implementation->get_parent_fn (filesystem->data,
+                                                   path_name,
                                                    parent_path);
     }
 }
@@ -124,7 +128,8 @@ pdf_fsys_remove_folder (const pdf_fsys_t filesystem,
   else
     {
       return 
-        filesystem->implementation->remove_folder_fn (path_name);
+        filesystem->implementation->remove_folder_fn (filesystem->data,
+                                                      path_name);
     }
 }
 
@@ -142,7 +147,8 @@ pdf_fsys_get_item_props (pdf_fsys_t filesystem,
   else
     {
       return
-        filesystem->implementation->get_item_props_fn (path_name,
+        filesystem->implementation->get_item_props_fn (filesystem->data,
+                                                       path_name,
                                                        item_props);
     }
 }
@@ -249,7 +255,8 @@ pdf_fsys_item_p (pdf_fsys_t filesystem,
   else
     {
       return 
-        filesystem->implementation->item_p_fn (path_name);
+        filesystem->implementation->item_p_fn (filesystem->data,
+                                               path_name);
     }
 }
 
@@ -266,7 +273,8 @@ pdf_fsys_item_readable_p (pdf_fsys_t filesystem,
   else
     {
       return
-        filesystem->implementation->item_readable_p_fn (path_name);
+        filesystem->implementation->item_readable_p_fn (filesystem->data,
+                                                        path_name);
     }
 }
 
@@ -283,23 +291,8 @@ pdf_fsys_item_writable_p (pdf_fsys_t filesystem,
   else
     {
       return
-        filesystem->implementation->item_writable_p_fn (path_name);
-    }
-}
-
-pdf_text_t
-pdf_fsys_get_temp_path_name (pdf_fsys_t filesystem)
-{
-  if (filesystem == NULL)
-    {
-      /* Use the default filesystem */
-      return
-        pdf_fsys_def_get_temp_path_name();
-    }
-  else
-    {
-      return 
-        filesystem->implementation->get_temp_path_name_fn ();
+        filesystem->implementation->item_writable_p_fn (filesystem->data,
+                                                        path_name);
     }
 }
 
@@ -321,12 +314,28 @@ pdf_fsys_file_open (const pdf_fsys_t filesystem,
     }
   else
     {
-      return filesystem->implementation->file_open_fn (path_name,
+      return filesystem->implementation->file_open_fn (filesystem->data,
+                                                       path_name,
                                                        mode,
                                                        p_file);
     }
 }
 
+pdf_status_t
+pdf_fsys_file_open_tmp (const pdf_fsys_t filesystem,
+                        pdf_fsys_file_t *p_file)
+{
+  if (filesystem == NULL)
+    {
+      /* Use the default filesystem.  */
+      return pdf_fsys_def_file_open_tmp (p_file);
+    }
+  else
+    {
+      return filesystem->implementation->file_open_tmp_fn (filesystem->data,
+                                                           p_file);
+    }
+}
 
 pdf_fsys_t 
 pdf_fsys_file_get_filesystem (pdf_fsys_file_t file)
@@ -690,12 +699,20 @@ pdf_fsys_create (struct pdf_fsys_impl_s implementation)
   /* Set its properties */
   *(filesystem->implementation) = implementation;
 
+  /* Call the init_fn callback provided by the filesystem
+     implementation.  */
+  (filesystem->implementation->init_fn) (&filesystem->data);
+
   return filesystem;
 }
 
 pdf_status_t
 pdf_fsys_destroy (pdf_fsys_t filesystem)
 {
+  /* Call the cleanup_fn callback provided by the filesystem
+     implementation.  */
+  (filesystem->implementation->cleanup_fn) (filesystem->data);
+
   /* Deallocate all resources used by the filesystem implementation */
   pdf_dealloc (filesystem->implementation);
   pdf_fsys_dealloc (filesystem);
