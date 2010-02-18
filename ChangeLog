@@ -173,6 +173,19 @@
 	(File System Interface Implementation): Documentation for the
 	pdf_fsys_file_open_tmp_fn_t type.
 
+2010-02-02  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-hg.texi (Running the unit tests): Document the usage
+	of FUNCTION and MODULE in make check.
+
+	* torture/unit/runtests.sh: Support for FUNCTION and MODULE in
+	make check.
+
+	* torture/unit/runtests.c: Use getopt for command line arguments
+	parsing.
+	Support for --help and --version.
+	Support for --module and --function.
+
 2010-01-28  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-types.h (pdf_i64_div): Set *dest only if dest is
