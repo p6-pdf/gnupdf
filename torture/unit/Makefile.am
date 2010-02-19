@@ -37,6 +37,8 @@ if ICONV
  ICONV_LIBS = -liconv
 endif #ICONV
 
+EXTRA_DIST=runtests.sh
+
 noinst_PROGRAMS = runtests
 
 LDADD = $(CHECK_LIBS) \
@@ -54,7 +56,10 @@ AM_CPPFLAGS = -I$(top_srcdir)/lib \
 AM_CFLAGS = -g
 
 TESTS = runtests.sh
-TESTS_ENVIRONMENT = top_srcdir=$(top_srcdir) PDF_HOST=$(PDF_HOST) WINE=$(WINE)
+TESTS_ENVIRONMENT = top_srcdir=$(top_srcdir) \
+                    top_builddir=$(top_builddir) \
+                    PDF_HOST=$(PDF_HOST) \
+                    WINE=$(WINE)
 
 TEST_SUITE_ERROR = base/error/pdf-error.c \
 		   base/error/pdf-perror.c
@@ -163,7 +168,7 @@ TEST_SUITE_TYPES = base/types/pdf-i64-new.c \
 		   base/types/pdf-i64-mult.c \
 		   base/types/pdf-i64-div.c \
 		   base/types/pdf-i64-mod.c \
-		   base/types/pdf-i64-subtraction.c 
+		   base/types/pdf-i64-subtraction.c
 
 TEST_SUITE_TIME =  base/time/pdf-time-new.c \
 		   base/time/pdf-time-dup.c \
