@@ -1160,13 +1160,25 @@ TEST_FILES = base/stm/pdf-create-file-stm.c \
 @subsection Running the unit tests
 
 The runtests program will run all the defined unit tests of the
-library. It can be invoked (and it is the preferred way) by typing
+library. It can be invoked (and it is the preferred way) by executing:
 
 @example
 $ make check
 @end example
 
-in the terminal.
+It is possible to run the unit tests corresponding to a specific
+library module by using the @command{MODULE} variable:
+
+@example
+$ make check MODULE=fsys
+@end example
+
+It is also possible to run the unit tests corresponding to a specific
+public function by using the @command{FUNCTION} variable:
+
+@example
+$ make check FUNCTION=fsys_close_file
+@end example
 
 The test driver display several messages to the standard output and
 also dump a logfile named @file{ut.log} with details about the test

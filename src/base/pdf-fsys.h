@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "10/02/14 16:51:01 jemarch"
+/* -*- mode: C -*- Time-stamp: "10/02/17 20:22:09 jemarch"
  *
  *       File:         pdf-fsys.h
  *       Date:         Thu May 22 15:49:59 2008
@@ -104,12 +104,27 @@ typedef pdf_status_t (*pdf_fsys_init_fn_t) (void **data);
 typedef pdf_status_t (*pdf_fsys_cleanup_fn_t) (void *data);
 
 /* Filesystem implementation callbacks */
-typedef pdf_status_t (*pdf_fsys_create_folder_fn_t) (pdf_text_t path_name);
-typedef pdf_status_t (*pdf_fsys_get_folder_contents_fn_t) (pdf_text_t path_name,
+typedef pdf_status_t (*pdf_fsys_create_folder_fn_t) (void *data,
+                                                     pdf_text_t path_name);
+typedef pdf_status_t (*pdf_fsys_get_folder_contents_fn_t) (void *data,
+                                                           pdf_text_t path_name,
                                                            pdf_list_t item_list);
-typedef pdf_status_t (*pdf_fsys_get_parent_fn_t) (pdf_text_t path_name,
+typedef pdf_status_t (*pdf_fsys_get_parent_fn_t) (void *data,
+                                                  pdf_text_t path_name,
                                                   pdf_text_t parent_path);
-typedef pdf_status_t (*pdf_fsys_remove_folder_fn_t) (pdf_text_t path_name);
+typedef pdf_status_t (*pdf_fsys_remove_folder_fn_t) (void *data,
+                                                     pdf_text_t path_name);
+typedef pdf_status_t (*pdf_fsys_get_item_props_fn_t) (void *data,
+                                                      pdf_text_t path_name,
+                                                      struct pdf_fsys_item_props_s *props);
+typedef pdf_i64_t (*pdf_fsys_get_free_space_fn_t) (void *data,
+                                                   pdf_text_t path_name);
+typedef pdf_bool_t (*pdf_fsys_item_p_fn_t) (void *data,
+                                            pdf_text_t path_name);
+typedef pdf_bool_t (*pdf_fsys_item_readable_p_fn_t) (void *data,
+                                                     pdf_text_t path_name);
+typedef pdf_bool_t (*pdf_fsys_item_writable_p_fn_t) (void *data,
+                                                     pdf_text_t path_name);
 
 typedef pdf_status_t
 (*pdf_fsys_file_read_fn_t) (pdf_fsys_file_t file, pdf_char_t *buf,
@@ -120,18 +135,14 @@ typedef pdf_status_t
                              pdf_size_t bytes, pdf_size_t *written_bytes);
 
 typedef pdf_status_t (*pdf_fsys_file_flush_fn_t) (pdf_fsys_file_t file);
-typedef pdf_status_t (*pdf_fsys_get_item_props_fn_t) (pdf_text_t path_name,
-                                                      struct pdf_fsys_item_props_s *props);
-typedef pdf_i64_t (*pdf_fsys_get_free_space_fn_t) (pdf_text_t path_name);
-typedef pdf_bool_t (*pdf_fsys_item_p_fn_t) (pdf_text_t path_name);
-typedef pdf_bool_t (*pdf_fsys_item_readable_p_fn_t) (pdf_text_t path_name);
-typedef pdf_bool_t (*pdf_fsys_item_writable_p_fn_t) (pdf_text_t path_name);
 typedef pdf_bool_t (*pdf_fsys_file_can_set_size_p_fn_t) (pdf_fsys_file_t file,
                                                        pdf_size_t pos);
-typedef pdf_status_t (*pdf_fsys_file_open_fn_t) (pdf_text_t path_name,
+typedef pdf_status_t (*pdf_fsys_file_open_fn_t) (void *data,
+                                                 pdf_text_t path_name,
                                                  enum pdf_fsys_file_mode_e mode,
                                                  pdf_fsys_file_t *p_file);
-typedef pdf_status_t (*pdf_fsys_file_open_tmp_fn_t) (pdf_fsys_file_t *p_file);
+typedef pdf_status_t (*pdf_fsys_file_open_tmp_fn_t) (void *data,
+                                                     pdf_fsys_file_t *p_file);
 typedef pdf_size_t (*pdf_fsys_file_get_size_fn_t) (pdf_fsys_file_t file);
 typedef pdf_status_t (*pdf_fsys_file_set_size_fn_t) (pdf_fsys_file_t file,
                                                      pdf_size_t pos);

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "10/02/14 17:02:54 jemarch"
+/* -*- mode: C -*- Time-stamp: "10/02/17 20:30:12 jemarch"
  *
  *       File:         pdf-fsys-disk.c
  *       Date:         Thu May 22 18:27:35 2008
@@ -165,7 +165,8 @@ pdf_fsys_disk_get_free_space (pdf_text_t path_name)
 #else
 
 pdf_i64_t
-pdf_fsys_disk_get_free_space (pdf_text_t path_name)
+pdf_fsys_disk_get_free_space (void *data,
+                              pdf_text_t path_name)
 {
   pdf_i64_t result = pdf_i64_new((32 << 1),1); /* (-1) */
 
@@ -296,7 +297,8 @@ __pdf_fsys_init_base_file_data(const pdf_text_t path_name)
 
 
 pdf_status_t
-pdf_fsys_disk_file_open (const pdf_text_t path_name,
+pdf_fsys_disk_file_open (void *data,
+                         const pdf_text_t path_name,
                          const enum pdf_fsys_file_mode_e mode,
                          pdf_fsys_file_t *p_file)
 {
@@ -364,7 +366,8 @@ pdf_fsys_disk_file_open (const pdf_text_t path_name,
 }
 
 pdf_status_t
-pdf_fsys_disk_file_open_tmp (pdf_fsys_file_t *p_file)
+pdf_fsys_disk_file_open_tmp (void *data,
+                             pdf_fsys_file_t *p_file)
 {
   pdf_text_t path_name;
   pdf_status_t ret_status = PDF_ERROR;
@@ -457,7 +460,8 @@ pdf_fsys_disk_file_close (pdf_fsys_file_t file)
 #endif
 
 pdf_status_t
-pdf_fsys_disk_create_folder (const pdf_text_t path_name)
+pdf_fsys_disk_create_folder (void *data,
+                             const pdf_text_t path_name)
 {
   pdf_status_t ret_code = PDF_EBADDATA;
   if(path_name != NULL)
@@ -521,7 +525,8 @@ pdf_fsys_disk_create_folder (const pdf_text_t path_name)
 
 
 pdf_status_t
-pdf_fsys_disk_get_folder_contents (const pdf_text_t path_name,
+pdf_fsys_disk_get_folder_contents (void *data,
+                                   const pdf_text_t path_name,
                                    pdf_list_t item_list)
 {
   pdf_status_t ret_code = PDF_EBADDATA;
@@ -589,7 +594,8 @@ pdf_fsys_disk_get_folder_contents (const pdf_text_t path_name,
 
 
 pdf_status_t
-pdf_fsys_disk_get_parent (const pdf_text_t path_name,
+pdf_fsys_disk_get_parent (void *data,
+                          const pdf_text_t path_name,
                           pdf_text_t parent_path)
 {
   pdf_status_t ret_code = PDF_EBADDATA;
@@ -611,7 +617,8 @@ pdf_fsys_disk_get_parent (const pdf_text_t path_name,
 #endif
 
 pdf_status_t
-pdf_fsys_disk_remove_folder (const pdf_text_t path_name)
+pdf_fsys_disk_remove_folder (void *data,
+                             const pdf_text_t path_name)
 {
   pdf_status_t ret_code = PDF_EBADDATA;
   if(path_name != NULL)
@@ -754,7 +761,8 @@ __pdf_fsys_disk_file_get_size_from_host_path(const pdf_char_t *host_path,
 
 
 pdf_status_t
-pdf_fsys_disk_get_item_props (pdf_text_t path_name,
+pdf_fsys_disk_get_item_props (void *data,
+                              pdf_text_t path_name,
                               struct pdf_fsys_item_props_s *item_props)
 {
   pdf_char_t* host_path = NULL;
@@ -821,7 +829,8 @@ pdf_fsys_disk_get_item_props (pdf_text_t path_name,
 
 
 pdf_bool_t
-pdf_fsys_disk_item_p (pdf_text_t path_name)
+pdf_fsys_disk_item_p (void *data,
+                      pdf_text_t path_name)
 {
   struct pdf_fsys_item_props_s item_props;
 #ifdef PDF_HOST_WIN32
@@ -830,15 +839,17 @@ pdf_fsys_disk_item_p (pdf_text_t path_name)
       return PDF_TRUE;
     }
 #endif
-  return ((pdf_fsys_disk_get_item_props(path_name,                  \
-                                        &item_props) == PDF_OK) ?   \
-          PDF_TRUE :                                                \
+  return ((pdf_fsys_disk_get_item_props(data,
+                                        path_name,
+                                        &item_props) == PDF_OK) ?
+          PDF_TRUE :
           PDF_FALSE);
 }
 
 
 pdf_bool_t 
-pdf_fsys_disk_item_readable_p (pdf_text_t path_name)
+pdf_fsys_disk_item_readable_p (void *data,
+                               pdf_text_t path_name)
 {
   pdf_bool_t result = PDF_FALSE;
   if(path_name != NULL)
@@ -861,7 +872,8 @@ pdf_fsys_disk_item_readable_p (pdf_text_t path_name)
 
 
 pdf_bool_t
-pdf_fsys_disk_item_writable_p (pdf_text_t path_name)
+pdf_fsys_disk_item_writable_p (void *data,
+                               pdf_text_t path_name)
 {
   pdf_bool_t result = PDF_FALSE;
   if(path_name != NULL)

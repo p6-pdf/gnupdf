@@ -20,7 +20,75 @@
 	(clean-local): `pdf.h' and `.gcno' files are created in the builddir
 	(EXTRA_DIST): Include `header-autogen' in the dist.
 
-2010-02-15  Aleksander Morgado  <aleksander@es.gnu.org>
+2010-02-17  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-fsys-disk.h: Add a 'void *data' parameter to
+	'pdf_fsys_disk_create_folder',
+	'pdf_fsys_disk_get_folder_contents',
+	'pdf_fsys_disk_disk_get_parent',
+	'pdf_fsys_disk_remove_folder', 'pdf_fsys_disk_get_item_props',
+	'pdf_fsys_disk_get_free_space', 'pdf_fsys_disk_item_p',
+	'pdf_fsys_disk_item_readable_p', 'pdf_fsys_disk_item_writable_p',
+	'pdf_fsys_disk_open' and 'pdf_fsys_disk_open_tmp'.
+
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_create_folder): Likewise.
+
+	* src/base/pdf-fsys-def.h (pdf_fsys_def_create_folder): Pass a
+	'NULL' filesystem internal state to the filesystem callback.
+	(pdf_fsys_def_get_folder_contents): Likewise.
+	(pdf_fsys_def_get_parent): Likewise.
+	(pdf_fsys_def_remove_folder): Likewise.
+	(pdf_fsys_def_get_item_props): Likewise.
+	(pdf_fsys_def_item_p): Likewise.
+	(pdf_fsys_def_item_readable_p): Likewise.
+	(pdf_fsys_def_item_writable_p): Likewise.
+	(pdf_fsys_def_get_free_space): Likewise.
+	(pdf_fsys_def_file_open): Likewise.
+	(pdf_fsys_def_file_open_tmp): Likewise.
+
+	* src/base/pdf-fsys.c (pdf_fsys_create_folder): Pass
+	'filesystem->data' to the filesystem callback.
+	(pdf_fsys_get_folder_contents): Likewise.
+	(pdf_fsys_get_parent): Likewise.
+	(pdf_fsys_remove_folder): Likewise.
+	(pdf_fsys_get_item_props): Likewise.
+	(pdf_fsys_item_p): Likewise.
+	(pdf_fsys_item_readable_p): Likewise.
+	(pdf_fsys_item_writable_p): Likewise.
+	(pdf_fsys_get_free_space): Likewise.
+	(pdf_fsys_file_open): Likewise.
+	(pdf_fsys_file_open_tmp): Likewise.
+
+	* src/base/pdf-fsys.h: Add an extra 'data' parameter containing
+	the private state of the filesystem instance to
+	'create_folder_fn', 'get_folder_contents_fn', 'get_parent_fn',
+	'remove_folder_fn', 'get_item_props_fn', 'get_free_space_fn',
+	'item_p_fn', 'item_readable_p_fn', 'item_writable_p_fn',
+	'file_open_fn' and 'file_open_tmp_fn'.
+
+	* src/base/pdf-text.c (pdf_text_new_from_u32): Avoid a possible
+	buffer overflow in sprintf.
+
+2010-02-16  Aleksander Morgado  <aleksander@gnu.org>
+
+	* build-aux/pdf-text-generate-ucd.c (parse_UnicodeData_line_field):
+	Return error if input 'fieldstart' is NULL.
+	(parse_SpecialCasing_line_field): Idem.
+	(add_entry_to_WordBreak): Avoid unused variables.
+	(add_entry_to_PropList): Idem.
+
+	* src/base/pdf-text-ucd-case.c (pdf_text_ucd_word_change_case): Avoid
+	unneeded data store, as 'new_char_size' is set afterwards.
+
+	* src/base/pdf-text.c (pdf_text_compare_words): Avoid potential segfault
+	when dereferencing a NULL pointer, if the input 'p_ret_code' argument is
+	NULL.
+
+	* src/base/pdf-time-string.c (pdf_time_from_string_generalized_asn1)
+	(pdf_time_from_string_iso8601): The 'has_seconds' flag is not needed in
+	these conversion types (avoid dead store).
+
+2010-02-15  Aleksander Morgado  <aleksander@gnu.org>
 
 	* doc/gnupdf.texi (Dictionary Objects): Fixed API of `pdf_obj_dict_get',
 	`pdf_obj_dict_get_str', `pdf_obj_dict_set' and `pdf_obj_dict_set_str'.
@@ -126,6 +194,19 @@
 	pdf_fsys_file_open_tmp.
 	(File System Interface Implementation): Documentation for the
 	pdf_fsys_file_open_tmp_fn_t type.
+
+2010-02-02  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-hg.texi (Running the unit tests): Document the usage
+	of FUNCTION and MODULE in make check.
+
+	* torture/unit/runtests.sh: Support for FUNCTION and MODULE in
+	make check.
+
+	* torture/unit/runtests.c: Use getopt for command line arguments
+	parsing.
+	Support for --help and --version.
+	Support for --module and --function.
 
 2010-01-28  Jose E. Marchesi  <jemarch@gnu.org>
 

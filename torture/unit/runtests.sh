@@ -26,7 +26,13 @@ then
     CK_VERBOSITY=normal \
     ${WINE} ${top_builddir}/torture/unit/runtests.exe
 else
-    ${top_builddir}/torture/unit/runtests
+    if test "x${FUNCTION}" != "x"; then
+        ${top_builddir}/torture/unit/runtests -f ${FUNCTION}
+    elif test "x${MODULE}" != "x"; then
+        ${top_builddir}/torture/unit/runtests -m ${MODULE}
+    else
+        ${top_builddir}/torture/unit/runtests
+    fi
 fi
 
 # Epilog
