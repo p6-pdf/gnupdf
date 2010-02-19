@@ -1,3 +1,25 @@
+2010-02-19  Aleksander Morgado  <aleksander@es.gnu.org>
+
+	* torture/unit/Makefile.am (EXTRA_DIST): Include `runtests.sh' in the
+	dist.
+	(top_builddir): The `runtests' binary to execute is generated in
+	builddir.
+
+	* torture/testdata/Makefile.am (EXTRA_DIST): Include test data in the
+	dist.
+
+	* doc/Makefile.am (clean-local): Additional file to be removed while
+	cleaning.
+
+	New files to include in the dist.
+	* doc/gnupdf-figures/acquire-counters.eps
+	* doc/gnupdf-figures/object-hierarchy.eps
+
+	* src/Makefile.am (nodist_include_HEADERS): `pdf.h' shouldn't be
+	included in dist.
+	(clean-local): `pdf.h' and `.gcno' files are created in the builddir
+	(EXTRA_DIST): Include `header-autogen' in the dist.
+
 2010-02-15  Aleksander Morgado  <aleksander@es.gnu.org>
 
 	* doc/gnupdf.texi (Dictionary Objects): Fixed API of `pdf_obj_dict_get',

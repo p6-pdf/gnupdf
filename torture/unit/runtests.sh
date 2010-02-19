@@ -24,9 +24,9 @@ if test "x$PDF_HOST" = "xPDF_HOST_WIN32"
 then
     CK_FORK=no \
     CK_VERBOSITY=normal \
-    ${WINE} ${srcdir}/runtests.exe
+    ${WINE} ${top_builddir}/torture/unit/runtests.exe
 else
-    ${srcdir}/runtests
+    ${top_builddir}/torture/unit/runtests
 fi
 
 # Epilog
