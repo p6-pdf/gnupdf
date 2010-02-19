@@ -4,6 +4,7 @@
 	dist.
 	(top_builddir): The `runtests' binary to execute is generated in
 	builddir.
+	(clean-local): Remove also `tmp.test' when cleaning.
 
 	* torture/testdata/Makefile.am (EXTRA_DIST): Include test data in the
 	dist.
