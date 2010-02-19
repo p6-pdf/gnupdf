@@ -32,13 +32,18 @@
 #include <pdf-text.h>
 #include <pdf-time.h>
 
+#if PDF_FSYS_HTTP
+#include <curl/curl.h>
+#endif
+
 /* Global variables */
 
 char *pdf_library_name = "libgnupdf";
 char *pdf_version = "0.1";
 
 struct pdf_globals_s pdf_globals = {
-  PDF_FALSE
+  PDF_FALSE,
+  PTHREAD_MUTEX_INITIALIZER
 };
 
 
@@ -48,26 +53,75 @@ int
 pdf_init (void)
 {
   int ret;
+#if PDF_FSYS_HTTP
+  CURLcode crv;
+#endif
 
-  if (pdf_globals.initialized == PDF_FALSE)
-    {
-      ret = pdf_crypt_init();
+  ret = pthread_mutex_lock ( &(pdf_globals.init_mutex) );
+  if (0 == ret)
+    { 
+      /* The mutex is locked within this brace. NO "return" statements allowed 
+       * from within this block as they will leave the mutex locked and set us
+       * up for a deadlock.
+       */
+  
+      if (pdf_globals.initialized == PDF_FALSE)
+        {
+          ret = pdf_crypt_init ();
+          
+          if (PDF_OK == ret)
+            {
+              ret = pdf_text_init ();
+            }
+          
+          if (PDF_OK == ret)
+            {
+              ret = pdf_time_init ();
+            }
+          
+#if PDF_FSYS_HTTP
 
-      if (ret != PDF_OK)
-        return ret;
+          /* The documentation for libcurl indicates that this initialization 
+           * ( curl_global_init () ) is _not_ thread-safe, and that it should 
+           * therefore be performed during application startup while the 
+           * application as a whole is single-threaded. If this is not possible 
+           * it must be ensured that no other threads are initializing any of 
+           * the libraries that libcurl will be initializing. 
+           */
 
-      ret = pdf_text_init();
-      if (ret != PDF_OK)
-        return ret;
+          /* From curl_global_init(3) (libcurl manpage):
+           * This function is not thread safe. You must not call it when any 
+           * other thread in the program  (i.e.  a  thread  sharing  the same 
+           * memory) is running.  This doesn't just mean no other thread that 
+           * is using libcurl.  Because curl_global_init() calls functions of 
+           * other libraries that are similarly thread unsafe, it could 
+           * conflict with any other thread that uses these other libraries.
+           */
 
-      ret = pdf_time_init();
-      if (ret != PDF_OK )
-        return ret;
+          if (PDF_OK == ret)
+            {
+              crv = curl_global_init (CURL_GLOBAL_ALL);
+              if (0 != crv )
+                {
+                  ret = PDF_ERROR;
+                }
+            }
+#endif // PDF_FSYS_HTTP
 
-      pdf_globals.initialized = PDF_TRUE;
+          if (PDF_OK == ret)
+            {
+              pdf_globals.initialized = PDF_TRUE;
+            }
+        }
+
+      pthread_mutex_unlock ( &(pdf_globals.init_mutex) );
+    }
+  else
+    { /* locking the mutex returned an error. This shouldn't happen. */
+      ret = PDF_ERROR;
     }
   
-  return PDF_OK;
+  return ret;
 }
 
 
@@ -75,6 +129,31 @@ pdf_init (void)
 int
 pdf_finish (void)
 {
+  int ret;
+#if PDF_FSYS_HTTP
+  ret = pthread_mutex_lock ( &(pdf_globals.init_mutex) );
+  if (0 == ret)
+    {
+      /* The mutex is locked within this brace. NO "return" statements allowed 
+       * from within this block as they will leave the mutex locked and set us
+       * up for a deadlock.
+       */
+
+      /* From curl_global_cleanup(3) (libcurl manpage):
+
+       * This function is not thread safe. You must not call it when any other 
+       * thread in the program  (i.e.  a  thread  sharing  the same memory) is 
+       * running.  This doesn't just mean no other thread that is using 
+       * libcurl.  Because curl_global_cleanup(3) calls  functions  of 
+       * other  libraries  that  are  similarly  thread  unsafe, it could 
+       * conflict with any other thread that uses these other libraries.
+       */
+
+      curl_global_cleanup ();
+
+      pthread_mutex_unlock ( &(pdf_globals.init_mutex) );
+    }
+#endif // PDF_FSYS_HTTP
   
   return PDF_OK;
 }

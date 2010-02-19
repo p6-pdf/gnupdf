@@ -31,6 +31,8 @@
 
 /* BEGIN PUBLIC */
 
+#include <pthread.h>
+
 /* Macro to access the global state of the library pdf_globals */
 #define PDF_GLOBALS extern struct pdf_globals_s pdf_globals;
 
@@ -42,6 +44,7 @@
 struct pdf_globals_s
 {
   int initialized;
+  pthread_mutex_t init_mutex;
 };
 
 

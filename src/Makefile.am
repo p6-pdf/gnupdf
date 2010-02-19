@@ -38,6 +38,10 @@ FILESYSTEM_MODULE_SOURCES = base/pdf-fsys.c base/pdf-fsys.h \
                             base/pdf-fsys-def.h \
                             base/pdf-fsys-disk.c base/pdf-fsys-disk.h
 
+if FSYS_HTTP
+  FILESYSTEM_MODULE_SOURCES += base/pdf-fsys-http.c base/pdf-fsys-http.h
+endif
+
 STM_MODULE_SOURCES = base/pdf-stm.c base/pdf-stm.h \
                      base/pdf-stm-be.c base/pdf-stm-be.h \
                      base/pdf-stm-filter.h base/pdf-stm-filter.c \
