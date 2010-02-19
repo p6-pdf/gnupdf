@@ -277,6 +277,7 @@ check_PROGRAMS = runtests
 clean-local:
 	-rm -f temporal-test-file
 	-rm -f ut.log
+	-rm -f tmp.test
 
 endif # COMPILE_UT
 
