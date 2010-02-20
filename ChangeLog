@@ -1,3 +1,15 @@
+2010-02-20  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-fsys-http.h: Copyright years fixed.
+
+	* src/base/pdf-fsys-http.c: End of file comment added.
+	Copyright years fixed.
+
+	* Initial stuff for the HTTP filesystem by Scott Fohey: support
+	for conditional compilation, linking with libcurl, initialization
+	of libcurl in pdf_init and skeletons for
+	'src/base/pdf-fsys-http.[ch]'.
+
 2010-02-19  Aleksander Morgado  <aleksander@es.gnu.org>
 
 	* torture/unit/Makefile.am (EXTRA_DIST): Include `runtests.sh' in the

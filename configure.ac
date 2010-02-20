@@ -90,6 +90,10 @@ have_libjpeg=yes
 AC_CHECK_LIB([jpeg],[jpeg_std_error],[],[have_libjpeg=no])
 AM_CONDITIONAL([LIBJPEG], [test "x$have_libjpeg" != "xno"])
 
+have_libcurl=yes
+AC_CHECK_LIB([curl],[curl_global_init],[],[have_libcurl=no])
+AM_CONDITIONAL([LIBCURL], [test "x$have_libcurl" != "xno"])
+
 have_jbig2dec=yes
 AC_CHECK_LIB([jbig2dec],[jbig2_ctx_new],[],[have_jbig2dec=no])
 AM_CONDITIONAL([JBIG2DEC], [test "x$have_jbig2dec" != "xno"])
@@ -249,6 +253,17 @@ AC_ARG_ENABLE([coverage], AS_HELP_STRING([--enable-coverage],
                                         [Compile the library with code coverage support (default is NO)]),
                                         [use_gcov=$enableval], [use_gcov=no])
 AM_CONDITIONAL([USE_COVERAGE], [test "x$use_gcov" = "xyes"])
+
+AC_ARG_ENABLE([fsys-http], AS_HELP_STRING([--enable-fsys-http],
+                                          [Include the HTTP filesystem implementation in the build]),
+                                          [fsys_http=$enableval], [fsys_http=no])
+if test "x$fsys_http" = "xyes"; then
+   if test x$have_libcurl = "xno"; then
+      AC_MSG_ERROR([libcurl is required for HTTP filesystem support. Please install libcurl and rerun autoconf.])
+   fi
+   AC_DEFINE([PDF_FSYS_HTTP],[1],[Include the HTTP filesystem in the build.])
+fi
+AM_CONDITIONAL([FSYS_HTTP], [test "x$fsys_http" != "xno"])
 
 dnl bignums
 AC_ARG_ENABLE([bignum-forcing], AS_HELP_STRING([--enable-bignum-forcing],

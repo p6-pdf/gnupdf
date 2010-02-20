@@ -32,3 +32,8 @@ This directory contains the source files for the Base Layer of the library.
 ; '''pdf-types.h''', '''pdf-types.c'''
 : Basic Types Module.
 
+; '''pdf-fsys.h''', '''pdf-fsys.c'''
+; '''pdf-fsys-def.h'''
+; '''pdf-fsys-disk.h''', '''pdf-fsys-disk.c'''
+; '''pdf-fsys-http.h''', '''pdf-fsys-http.c'''
+: Filesystem Modules
