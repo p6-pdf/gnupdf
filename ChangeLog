@@ -33,6 +33,10 @@
 
 2010-02-19  Aleksander Morgado  <aleksander@es.gnu.org>
 
+	* configure.ac: Check for `srunner_run' in libcheck, which is available
+	in the SVN version. If not found in the installed libcheck, no unit
+	tests will run.
+
 	* torture/unit/Makefile.am (EXTRA_DIST): Include `runtests.sh' in the
 	dist.
 	(top_builddir): The `runtests' binary to execute is generated in

@@ -117,7 +117,7 @@ if test x$have_libgcrypt = "xno"; then
 fi
 
 have_check=yes
-AC_CHECK_LIB([check],[suite_create],,[have_check=no])
+AC_CHECK_LIB([check],[srunner_run],,[have_check=no])
 AM_CONDITIONAL([CHECK], [test "x$have_check" != "xno"])
 
 AC_CHECK_LIB([iconv],[iconv_open],[have_iconv=yes],[have_iconv=no])
@@ -286,12 +286,12 @@ AM_CONDITIONAL([NOCHECK], [test "x$use_nocheck" = "xyes"])
 
 dnl Check if Unit testing support is available with Check or No-Check
 ut_support=no
-AM_CONDITIONAL([COMPILE_UT], [test "x$use_nocheck" = "xyes" -o "x$ac_cv_lib_check_suite_create" = "xyes"])
+AM_CONDITIONAL([COMPILE_UT], [test "x$use_nocheck" = "xyes" -o "x$ac_cv_lib_check_srunner_run" = "xyes"])
 if test "x$use_nocheck" = "xyes"; then
   ut_framework="(builtin No-Check)"
   ut_support=yes
 else
-  if test "x$ac_cv_lib_check_suite_create" = "xyes"; then
+  if test "x$ac_cv_lib_check_srunner_run" = "xyes"; then
     ut_framework="(Check)"
     ut_support=yes
   fi
