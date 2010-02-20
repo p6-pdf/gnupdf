@@ -34,7 +34,6 @@
 enum
 {
   HELP_ARG,
-  USAGE_ARG,
   VERSION_ARG,
   TOKW_ARG,
   READER_FLAGS_ARG,
