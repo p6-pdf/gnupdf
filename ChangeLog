@@ -1,5 +1,8 @@
 2010-02-20  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* configure.ac: Include package name, version, bug reporting email
+	address and tarball name in AC_INIT invokation.
+
 	* src/base/pdf-fsys-http.h: Copyright years fixed.
 
 	* src/base/pdf-fsys-http.c: End of file comment added.
