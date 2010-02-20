@@ -536,6 +536,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_EBADDATA
+@code{NULL} value in @var{bignum}.
 @end table
 @item Usage example
 @example
@@ -578,6 +580,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_EBADDATA
+@code{NULL} value in @var{bignum}.
 @end table
 @item Usage example
 @example
@@ -615,6 +619,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_EBADDATA
+@code{NULL} value in @var{bignum}.
 @end table
 @item Usage example
 @example
@@ -653,6 +659,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_EBADDATA
+@code{NULL} value in @var{bignum}.
 @end table
 @item Usage example
 @example
@@ -696,6 +704,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_EBADDATA
+@code{NULL} value in @var{dest}.
 @end table
 @item Usage example
 @example
@@ -738,6 +748,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_EBADDATA
+@code{NULL} value in @var{bignum}.
 @end table
 @item Usage example
 @example
@@ -781,6 +793,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_EBADDATA
+@code{NULL} value in @var{dest}.
 @end table
 @item Usage example
 @example
@@ -823,6 +837,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_EBADDATA
+@code{NULL} value in @var{dest}.
 @end table
 @item Usage example
 @example
@@ -865,6 +881,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_EBADDATA
+@code{NULL} value in @var{bignum}.
 @end table
 @item Usage example
 @example
@@ -908,6 +926,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_EBADDATA
+@code{NULL} value in @var{dest}.
 @end table
 @item Usage example
 @example
@@ -943,6 +963,10 @@ Where 64 bit result is stored
 @end table
 @item Returns
 PDF_OK	Operation successful
+@item PDF_EDIVBYZERO
+Division by zero.
+@item PDF_EBADDATA
+@code{NULL} value in @var{dest}.
 @item Usage example
 @example
 pdf_i64_t *dest;
@@ -981,7 +1005,13 @@ Pointer to a pdf_status_t variable to hold the status of the
 operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
-PDF_OK	Operation successful
+A PDF status value:
+@table @code
+@item PDF_OK 
+Operation successful
+@item PDF_EBADDATA
+@code{NULL} value in @var{dest}.
+@end table
 @item Usage example
 @example
 pdf_i64_t *dest;
@@ -1018,7 +1048,13 @@ Pointer to a pdf_status_t variable to hold the status of the
 operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
-PDF_OK	Operation successful
+A PDF status value:
+@table @code
+@item PDF_OK
+Operation successful.
+@item PDF_EBADDATA
+@code{NULL} value in @var{dest}.
+@end table
 @item Usage example
 @example
 pdf_i64_t *dest;
@@ -1060,7 +1096,7 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
-@item PDF_ERROR
+@item PDF_EBADDATA
 @var{dest} is null
 @end table
 @item Usage example
@@ -1105,6 +1141,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_EBADDATA
+@code{NULL} value in @var{dest}.
 @end table
 @item Usage example
 @example
@@ -1146,6 +1184,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_EBADDATA
+@code{NULL} value in @var{dest}.
 @end table
 @item Usage example
 @example
@@ -1185,8 +1225,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
-@item PDF_ERROR
-@var{dest} is null
+@item PDF_EBADDATA
+@code{NULL} value in @var{dest}.
 @end table
 @item Usage example
 @example
@@ -1292,8 +1332,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
-@item PDF_ERROR
-@var{dest} is null
+@item PDF_EBADDATA
+@code{NULL} value in @var{dest}.
 @end table
 @item Usage example
 @example
