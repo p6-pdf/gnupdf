@@ -1,5 +1,8 @@
 2010-02-20  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf-hg.texi (File Headers): Remove the recommendation of
+	including a Time-stamp keyword in the source file headers.
+
 	* doc/gnupdf.texi (Big Numbers): Updated return values to reflect
 	PDF_EBADDATA.
 

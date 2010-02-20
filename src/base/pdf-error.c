@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/11/19 16:24:27 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-error.c
  *       Date:         Sun Feb  24 20:22:05 2008

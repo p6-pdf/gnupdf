@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "10/02/18 21:12:47 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         tsuite-fsys.c
  *       Date:         Fri May  1 18:08:12 2009

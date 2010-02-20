@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 01:04:43 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-stm-f-pred.h
  *       Date:         Thu Jul 12 01:18:14 2007

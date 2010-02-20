@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: ""
+/* -*- mode: C -*-
  *
  *       File:         pdf-text-replace-ascii.c
  *       Date:         Mon Mar 10 18:30:01 2008

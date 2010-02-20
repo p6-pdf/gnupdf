@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/11/19 16:24:34 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-global.c
  *       Date:         Thu Jul  5 21:07:10 2007

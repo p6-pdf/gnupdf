@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: ""
+/* -*- mode: C -*-
  *
  *       File:         pdf-i64-abs.c
  *       Date:         Mon May 05 16:30:00 2008

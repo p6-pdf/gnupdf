@@ -427,7 +427,7 @@ The standard file header to be used in any source file in the library
 is the following:
 
 @example
-/* -*- mode: C -*- Time-stamp: TIME_STAMP
+/* -*- mode: C -*-
  *
  *       File:         FILE_NAME
  *       Date:         CREATION_TIME
@@ -440,13 +440,6 @@ is the following:
 The entries in the template are:
 
 @table @var
-@item TIME_STAMP
-This is a time stamp with the format: 
-@example
-YYYY-MM-DD hh:mm:ss nickname
-@end example
-Note that if you are writing your code using Emacs then you will get
-the timestamp automatically updated each time you save the file.
 @item FILE_NAME
 The basename of the file.
 @item CREATION_TIME
@@ -725,7 +718,7 @@ be to mark the full definition of @code{pdf_foo_t} as public in the
 header file, like:
 
 @example
-/* -*- mode: C -*- Time-stamp: "09/01/19 22:49:48 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-foo.h
  ...
@@ -761,7 +754,7 @@ The solution to both problems is to export a ``opaque pointer'': we
 simply do not export the details about the structure:
 
 @example
-/* -*- mode: C -*- Time-stamp: "09/01/19 22:49:48 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-foo.h
  ...

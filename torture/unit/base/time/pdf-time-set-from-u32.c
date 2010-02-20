@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 22:16:29 davazp"
+/* -*- mode: C -*-
  *
  *       File:         pdf-time-set-from-u32.c
  *       Date:         Sun Sep 21 16:37:27 2008

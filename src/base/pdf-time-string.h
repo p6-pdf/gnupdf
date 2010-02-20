@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 22:55:48 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-time-string.h
  *       Date:         Mon Jun 02 19:42:25 2008

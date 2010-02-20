@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2010-02-16 23:34:56 aleksander"
+/* -*- mode: C -*-
  *
  *       File:         pdf-text-ucd-case.c
  *       Date:         Sun Mar 09 12:59:01 2008

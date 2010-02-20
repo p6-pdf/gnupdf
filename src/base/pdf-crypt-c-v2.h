@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/11/29 16:02:59 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-crypt.c
  *       Date:         Fri Feb 22 21:05:05 2008

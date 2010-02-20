@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 22:52:56 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-stm-f-md5.h
  *       Date:         Fri Dec  5 16:38:39 2008

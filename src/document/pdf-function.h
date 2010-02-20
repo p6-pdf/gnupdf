@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 01:05:46 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-function.h
  *       Date:         Sun Sep  9 21:02:24 2007

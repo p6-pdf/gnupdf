@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 22:29:55 davazp"
+/* -*- mode: C -*-
  *
  *       File:         pdf-time-copy.c
  *       Date:         Fri Feb 27 17:35:31 2008

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2010-02-16 23:35:16 aleksander"
+/* -*- mode: C -*-
  *
  *       File:         pdf-time-string.c
  *       Date:         Sun May 18 13:08:37 2008

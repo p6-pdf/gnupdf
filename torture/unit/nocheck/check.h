@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: ""
+/* -*- mode: C -*-
  *
  *       File:         check.h
  *       Date:         Fri Apr 18 20:29:04 2008

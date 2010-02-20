@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 22:55:02 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-text-ucd-gencat.h
  *       Date:         Sun Mar 09 12:59:01 2008

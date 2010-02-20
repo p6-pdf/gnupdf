@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 22:07:46 davazp"
+/* -*- mode: C -*-
  *
  *       File:         pdf-time-add-cal-span-with-base.c
  *       Date:         Fri Feb 27 17:35:31 2009

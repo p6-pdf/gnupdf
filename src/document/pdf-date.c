@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/08/29 00:26:45 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-date.c
  *       Date:         Wed Sep  5 23:38:45 2007

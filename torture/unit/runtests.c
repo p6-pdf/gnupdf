@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: ""
+/* -*- mode: C -*-
  *
  *       File:         runtests.c
  *       Date:         Sat Feb 23 21:40:43 2008

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "10/02/20 15:33:32 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-fsys-http.h
  *       Date:         Thu Dec 17 18:22:59 2009

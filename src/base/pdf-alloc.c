@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "10/01/21 13:15:43 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-alloc.c
  *       Date:         Fri Feb 22 21:05:05 2008
