@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 21:56:05 davazp"
+/* -*- mode: C -*-
  *
  *       File:         pdf-stm-file-new.c
  *       Date:         Sat Sep 20 14:37:26 2008

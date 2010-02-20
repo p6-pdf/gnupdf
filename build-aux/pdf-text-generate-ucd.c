@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: ""
+/* -*- mode: C -*-
  *
  *       File:         pdf-text-generate-ucd.c
  *       Date:         Sat Feb 02 12:46:05 2008

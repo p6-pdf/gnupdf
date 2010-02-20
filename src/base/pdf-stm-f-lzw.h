@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-06-24 20:18:48 raskolnikov"
+/* -*- mode: C -*-
  *
  *       File:         pdf-stm-f-lzw.h
  *       Date:         Wed Aug 15 14:13:20 2007

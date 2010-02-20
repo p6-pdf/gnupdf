@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/10/28 21:44:35 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-stm-get-mode.c
  *       Date:         Wed Oct 28 21:34:34 2009

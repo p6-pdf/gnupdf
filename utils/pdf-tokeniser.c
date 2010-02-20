@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/11/25 00:17:43 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-tokeniser.c
  *       Date:         Wed May 20 05:25:40 2009

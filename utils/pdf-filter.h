@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/11/25 00:11:39 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-filter.h
  *       Date:         Tue Jul 10 18:40:55 2007

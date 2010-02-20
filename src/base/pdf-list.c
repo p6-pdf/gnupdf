@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 22:50:20 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-list.c
  *       Date:         Sat Mar 1 02:14:35 2008

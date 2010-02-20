@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 21:56:34 davazp"
+/* -*- mode: C -*-
  *
  *       File:         pdf-stm-flush.c
  *       Date:         Mon Feb 02 09:53:26 2009

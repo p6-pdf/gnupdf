@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 16:09:30 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         tsuite-error.c
  *       Date:         Wed Mar  12 12:43:00 2008

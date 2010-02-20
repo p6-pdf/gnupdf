@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "10/02/20 16:09:56 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-types.c
  *       Date:         Sun Feb 10 21:33:44 2008

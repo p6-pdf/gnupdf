@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 22:22:03 davazp"
+/* -*- mode: C -*-
  *
  *       File:         pdf-i64-mult.c
  *       Date:         Mon May 05 10:30:01 2008

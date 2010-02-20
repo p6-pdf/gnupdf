@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 16:08:58 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         tsuite-alloc.c
  *       Author:       Jose E. Marchesi (jemarch@gnu.org)

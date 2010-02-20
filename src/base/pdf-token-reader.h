@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-10-20 21:44:20 mgold"
+/* -*- mode: C -*-
  *
  *       File:         pdf-token-reader.h
  *       Date:         Mon Dec 29 00:45:09 2008

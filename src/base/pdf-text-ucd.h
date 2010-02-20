@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/07/28 22:27:07 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-text-ucd.h
  *       Date:         Fri Jan 11 21:09:23 2008

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 21:51:38 davazp"
+/* -*- mode: C -*-
  *
  *       File:         pdf-list-indexof-from-to.c
  *       Date:         Wed Mar  12 12:43:00 2008

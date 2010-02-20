@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/02/11 01:05:49 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-rectangle.c
  *       Date:         Sun Sep  9 01:33:26 2007

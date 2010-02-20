@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/11/25 00:23:51 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         tortutils.h
  *       Date:         Mon Nov 24 22:11:23 2008

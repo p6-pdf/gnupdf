@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-10-29 03:45:34 mgold"
+/* -*- mode: C -*-
  *
  *       File:         pdf-stm.h
  *       Date:         Fri Jul  6 18:37:57 2007

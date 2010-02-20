@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 21:57:10 davazp"
+/* -*- mode: C -*-
  *
  *       File:         pdf-stm-peek-char.c
  *       Date:         Sat Sep 20 18:07:45 2008
