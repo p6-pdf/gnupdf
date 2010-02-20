@@ -32,7 +32,6 @@
 enum
 {
   HELP_ARG,
-  USAGE_ARG,
   VERSION_ARG,
   READ_ARG,
   INFILE_ARG,

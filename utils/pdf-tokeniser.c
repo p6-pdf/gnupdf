@@ -48,7 +48,6 @@ char *program_name; /* Initialized in main() */
 static const struct option GNU_longOptions[] =
   {
     {"help", no_argument, NULL, HELP_ARG},
-    {"usage", no_argument, NULL, USAGE_ARG},
     {"version", no_argument, NULL, VERSION_ARG},
     {"token-writer", no_argument, NULL, TOKW_ARG},
     {"reader-flags", required_argument, NULL, READER_FLAGS_ARG},
@@ -58,23 +57,24 @@ static const struct option GNU_longOptions[] =
 
 /* Messages */
 
-char *pdf_tokeniser_version_msg = "pdf_tokeniser 0.1";
+char *pdf_tokeniser_version_msg = "pdf-tokeniser (GNU PDF Utilities) 0.1";
 
-char *pdf_tokeniser_usage_msg = "\
+char *pdf_tokeniser_help_msg = "\
 Usage: pdf_tokeniser [OPTIONS]\n\
 Read standard input using a token reader, and print the resulting tokens \n\
 to stdout.\n\
 \n\
-available options\n\
+Mandatory arguments to long options are mandatory for short options too.\n\
   --help                              print a help message and exit\n\
   --usage                             print a usage message and exit\n\
   --version                           show pdf-tokeniser version and exit\n\
   --token-writer                      generate output using the token writer\n\
   --reader-flags=INTEGER              specify token reader flags\n\
   --writer-flags=INTEGER              specify token writer flags\n\
-";
-
-char *pdf_tokeniser_help_msg = "";
+\n\
+Report pdf-tokeniser bugs to pdf-devel@gnu.org\n\
+GNU PDF Utilities home page: <http://www.gnupdf.org>\n\
+General help using GNU software: <http://www.gnu.org/gethelp/>";
 
 static char *
 fmtbin (const char *data, int size)
@@ -308,13 +308,7 @@ main (int argc, char **argv)
           /* COMMON ARGUMENTS */
         case HELP_ARG:
           {
-            fprintf (stdout, "%s\n", pdf_tokeniser_usage_msg);
-            exit (0);
-            break;
-          }
-        case USAGE_ARG:
-          {
-            fprintf (stdout, "%s\n", pdf_tokeniser_usage_msg);
+            fprintf (stdout, "%s\n", pdf_tokeniser_help_msg);
             exit (0);
             break;
           }
