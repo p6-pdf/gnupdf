@@ -1,3 +1,9 @@
+2010-02-21  Scott Fohey  <s f o h e y at g n u dot o r g>
+
+	* src/base/pdf-stm-f-a85.c: Correction of function prototype
+
+	* src/base/pdf-stm-f-a85.h: Correction of array length to match needs
+	
 2010-02-21  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* torture/unit/base/token/pdf-token-read.c: Additional tests for
