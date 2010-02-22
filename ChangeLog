@@ -1,5 +1,7 @@
 2010-02-22  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* gnulib update.
+
 	* src/pdf-global.c (pdf_finish): Unused variable 'ret' removed.
 
 	* doc/gnupdf-hg.texi (Documenting Your Changes): Added some notes

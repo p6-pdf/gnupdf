@@ -333,6 +333,15 @@ EXTRA_libgnu_la_SOURCES += getdelim.c
 
 ## end   gnulib module getdelim
 
+## begin gnulib module getdtablesize
+
+
+EXTRA_DIST += getdtablesize.c
+
+EXTRA_libgnu_la_SOURCES += getdtablesize.c
+
+## end   gnulib module getdtablesize
+
 ## begin gnulib module getline
 
 
