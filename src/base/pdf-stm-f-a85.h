@@ -31,7 +31,8 @@
 #include <pdf-types.h>
 #include <pdf-hash.h>
 
-#define A85_SPARE_BYTES_LEN 4
+/* If something goes wrong in writing out data, 5 bytes could be leftover */
+#define A85_SPARE_BYTES_LEN 5
 #define A85_OUTPUT_BUFF_LEN 8
 
 /* defined as 79 so that the newline character completes the 80 char line */
