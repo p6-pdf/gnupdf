@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 16:21:20 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-text-ucd-wordbreak.c
  *       Date:         Sun Mar 09 12:59:01 2008

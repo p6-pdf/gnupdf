@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-11 16:05:06 davazp"
+/* -*- mode: C -*-
  *
  *       File:         pdf-error.h
  *       Date:         Sun Feb  24 20:22:05 2008

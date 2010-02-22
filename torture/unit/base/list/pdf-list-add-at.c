@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 21:50:32 davazp"
+/* -*- mode: C -*-
  *
  *       File:         pdf-list-add-at.c
  *       Date:         Wed Mar  12 12:43:00 2008

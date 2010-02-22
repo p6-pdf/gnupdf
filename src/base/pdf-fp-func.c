@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/06/17 21:40:08 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-fp-func.c
  *       Date:         Sun Nov 30 18:46:06 2008

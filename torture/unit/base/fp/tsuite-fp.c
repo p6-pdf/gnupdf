@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 16:09:46 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         tsuite-fp.c
  *       Date:         Tue Dec  2 20:08:22 2008

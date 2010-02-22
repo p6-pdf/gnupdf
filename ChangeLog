@@ -1,3 +1,90 @@
+2010-02-21  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/unit/base/token/pdf-token-read.c: Additional tests for
+	the tokeniser module by Leonardo Nobrega.
+
+2010-02-20  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/pdf-filter.1: Regenerated.
+
+	* doc/pdf-tokeniser.1: Likewise.
+
+	* utils/pdf-tokeniser.c: Support for the --usage argument removed.
+	Version message improved.
+	Help message improved.
+
+	* utils/pdf-tokeniser.h (HELP_ARG): USAGE_ARG removed.
+
+	* utils/pdf-filter.h (HELP_ARG): USAGE_ARG removed.
+
+	* utils/pdf-filter.c: Support for the --usage argument removed.
+	Version message improved.
+	Help message improved.
+
+	* Time-stamp keyword removed from all source files.  Documentation
+	updated to reflect this.
+
+	* doc/gnupdf-hg.texi (File Headers): Remove the recommendation of
+	including a Time-stamp keyword in the source file headers.
+
+	* doc/gnupdf.texi (Big Numbers): Updated return values to reflect
+	PDF_EBADDATA.
+
+	* src/base/pdf-types.c (pdf_i64_assign): Return PDF_EBADDATA
+	instead of PDF_ERROR if 'bignum' is NULL.
+	(pdf_i64_assign_quick): Likewise.
+	(pdf_i64_copy): Likewise.
+	(pdf_i64_add): Likewise.
+	(pdf_i64_abs): Likewise with 'dest'.
+	(pdf_i64_neg): Likewise.
+	(pdf_i64_subtraction): Likewise.
+	(add_long): Compare status returned by 'pdf_i64_add' with PDF_OK
+	instead of PDF_ERROR.
+	(pdf_i64_mult): Likewise.
+	(pdf_i64_div): Likewise, and return PDF_EDIVBYZERO instead of
+	PDF_ERROR if the dividend is zero.
+	(pdf_i64_mod): Likewise.
+
+	* configure.ac: Include package name, version, bug reporting email
+	address and tarball name in AC_INIT invokation.
+
+	* src/base/pdf-fsys-http.h: Copyright years fixed.
+
+	* src/base/pdf-fsys-http.c: End of file comment added.
+	Copyright years fixed.
+
+	* Initial stuff for the HTTP filesystem by Scott Fohey: support
+	for conditional compilation, linking with libcurl, initialization
+	of libcurl in pdf_init and skeletons for
+	'src/base/pdf-fsys-http.[ch]'.
+
+2010-02-19  Aleksander Morgado  <aleksander@es.gnu.org>
+
+	* configure.ac: Check for `srunner_run' in libcheck, which is available
+	in the SVN version. If not found in the installed libcheck, no unit
+	tests will run.
+
+	* torture/unit/Makefile.am (EXTRA_DIST): Include `runtests.sh' in the
+	dist.
+	(top_builddir): The `runtests' binary to execute is generated in
+	builddir.
+	(clean-local): Remove also `tmp.test' when cleaning.
+
+	* torture/testdata/Makefile.am (EXTRA_DIST): Include test data in the
+	dist.
+
+	* doc/Makefile.am (clean-local): Additional file to be removed while
+	cleaning.
+
+	New files to include in the dist.
+	* doc/gnupdf-figures/acquire-counters.eps
+	* doc/gnupdf-figures/object-hierarchy.eps
+
+	* src/Makefile.am (nodist_include_HEADERS): `pdf.h' shouldn't be
+	included in dist.
+	(clean-local): `pdf.h' and `.gcno' files are created in the builddir
+	(EXTRA_DIST): Include `header-autogen' in the dist.
+
 2010-02-17  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-fsys-disk.h: Add a 'void *data' parameter to
@@ -172,6 +259,19 @@
 	pdf_fsys_file_open_tmp.
 	(File System Interface Implementation): Documentation for the
 	pdf_fsys_file_open_tmp_fn_t type.
+
+2010-02-02  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-hg.texi (Running the unit tests): Document the usage
+	of FUNCTION and MODULE in make check.
+
+	* torture/unit/runtests.sh: Support for FUNCTION and MODULE in
+	make check.
+
+	* torture/unit/runtests.c: Use getopt for command line arguments
+	parsing.
+	Support for --help and --version.
+	Support for --module and --function.
 
 2010-01-28  Jose E. Marchesi  <jemarch@gnu.org>
 

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 22:53:04 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-stm-f-null.h
  *       Date:         Mon Jul  9 21:59:50 2007

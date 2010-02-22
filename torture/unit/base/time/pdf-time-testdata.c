@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 16:08:09 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-time-testdata.c
  *       Date:         Fri Feb 27 17:35:31 2009

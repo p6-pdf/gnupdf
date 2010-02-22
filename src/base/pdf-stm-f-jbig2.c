@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 22:52:24 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-stm-f-jbig2.c
  *       Date:         Fri Nov 21 01:12:48 2008

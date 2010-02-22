@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "08/09/09 00:54:52 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-text-context.h
  *       Date:         Fri Jan 11 21:09:23 2008

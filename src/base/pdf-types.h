@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "10/02/04 19:23:42 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-types.h
  *       Date:         Sun Feb 10 21:30:00 2008

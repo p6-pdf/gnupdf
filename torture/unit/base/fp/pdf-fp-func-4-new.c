@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 21:42:21 davazp"
+/* -*- mode: C -*-
  *
  *       File:         pdf-fp-func-eval.c
  *       Date:         Sat Feb  7 18:55:51 2009

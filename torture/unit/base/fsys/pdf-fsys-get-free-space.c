@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 18:50:25 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-fsys-get-free-space.c
  *       Date:         Fri May  1 20:20:11 2009

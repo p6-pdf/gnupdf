@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "10/02/17 20:24:02 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-fsys-def.h
  *       Date:         Thu May 22 17:50:20 2008

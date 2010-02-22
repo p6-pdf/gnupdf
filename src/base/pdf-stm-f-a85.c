@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/12/16 20:51:22 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-stm-f-a85.c
  *       Date:         Mon Jul  9 22:01:41 2007

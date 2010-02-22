@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 16:12:26 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-stm-f-v2.c
  *       Date:         Tue Jul 10 23:44:00 2007

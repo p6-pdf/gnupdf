@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-05-15 12:18:32 gerel"
+/* -*- mode: C -*-
  *
  *       File:         pdf-fsys-http.h
  *       Date:         Thu Dec 17 18:22:59 2009
@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009, 2010 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

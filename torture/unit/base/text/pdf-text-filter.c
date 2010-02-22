@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: ""
+/* -*- mode: C -*-
  *
  *       File:         pdf-text-filter.c
  *       Date:         Thu Mar 27 20:25:17 2008

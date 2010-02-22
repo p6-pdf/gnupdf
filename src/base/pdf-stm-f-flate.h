@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 22:52:03 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-stm-f-flate.h
  *       Date:         Tue Jul 10 23:39:27 2007

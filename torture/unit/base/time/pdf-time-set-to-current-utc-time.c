@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 22:06:16 davazp"
+/* -*- mode: C -*-
  *
  *       File:         pdf-time-set-to-current-utc-time.c
  *       Date:         Fri Feb 27 17:35:31 2009

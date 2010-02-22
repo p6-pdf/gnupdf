@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 22:26:31 davazp"
+/* -*- mode: C -*- 
  *
  *       File:         pdf-global.h
  *       Date:         Thu Jul  5 19:52:48 2007

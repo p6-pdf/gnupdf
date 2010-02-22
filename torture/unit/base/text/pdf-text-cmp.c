@@ -1,5 +1,4 @@
-
-/* -*- mode: C -*- Time-stamp: ""
+/* -*- mode: C -*-
  *
  *       File:         pdf-text-cmp.c
  *       Date:         Mon Apr 13 21:08:34 2008

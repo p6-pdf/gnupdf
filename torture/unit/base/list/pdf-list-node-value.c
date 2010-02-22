@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 21:52:35 davazp"
+/* -*- mode: C -*-
  *
  *       File:         pdf-list-node-value.c
  *       Date:         Wed Mar  12 12:43:00 2008

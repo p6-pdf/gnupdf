@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: ""
+/* -*- mode: C -*-
  *
  *       File:         pdf-i64-subtraction.c
  *       Date:         Mon May 05 10:30:01 2008

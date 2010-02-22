@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "10/02/03 21:28:36 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-filter.c
  *       Date:         Tue Jul 10 18:42:07 2007
@@ -57,7 +57,6 @@ char *program_name;  /* Initialized in main() */
 static const struct option GNU_longOptions[] =
   {
     {"help", no_argument, NULL, HELP_ARG},
-    {"usage", no_argument, NULL, USAGE_ARG},
     {"version", no_argument, NULL, VERSION_ARG},
     {"readmode", no_argument, NULL, READ_ARG},
     {"input-file", required_argument, NULL, INFILE_ARG},
@@ -101,20 +100,24 @@ static const struct option GNU_longOptions[] =
 
 /* Messages */
 
-char *pdf_filter_version_msg = "pdf_filter 0.1";
+char *pdf_filter_version_msg = "pdf-filter (GNU PDF Utilities) 0.1\n\
+Copyright (C) 2009, 2010 Free Software Foundation, Inc.\n\
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n\
+This is free software: you are free to change and redistribute it.\n\
+There is NO WARRANTY, to the extent permitted by law.";
 
-char *pdf_filter_usage_msg = "\
+char *pdf_filter_help_msg = "\
 Usage: pdf_filter [[OPTIONS] [FILTER FILTER_ARGS]...]\n\
 Filter the standard input with the specified PDF standard filters and \n\
 write the result in the standard output.\n\
 \n\
-available options\n\
+Mandatory arguments to long options are mandatory for short options too.\n\
   --readmode                          test the stream in read mode instead\n\
                                        of write mode.\n\
   -i FILE, --input-file=FILE          Use a given file as the input.\n\
   -o FILE, --output-file=FILE         Use a given file as the output.\n\
   --cache=NUM                         set the stream cache size.\n\n\
-available filters\n\
+filters\n\
   --null                              use the NULL filter\n\
   --ahexdec                           use the ASCII Hex decoder filter\n\
   --ahexenc                           use the ASCII Hex encoder filter\n\
@@ -157,9 +160,10 @@ available filters\n\
 #endif /* 0 */
 "  --lzw-earlychange                   toggles earlychange for next lzw filters\n\
   --jbig2dec-globals=FILE             file containing global segments\n\
-";
-
-char *pdf_filter_help_msg = "";
+\n\
+Report pdf-filter bugs to pdf-devel@gnu.org\n\
+GNU PDF Utilities home page: <http://www.gnupdf.org>\n\
+General help using GNU software: <http://www.gnu.org/gethelp/>";
 
 static pdf_stm_t
 create_stream (int argc, char* argv[], pdf_bool_t* mode, int* last_ci,
@@ -322,19 +326,13 @@ create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
 	  /* COMMON ARGUMENTS */
         case HELP_ARG:
           {
-            fprintf (stdout, "%s\n", pdf_filter_usage_msg);
+            fprintf (stdout, "%s\n", pdf_filter_help_msg);
             exit (0);
             break;
           }
         case VERSION_ARG:
           {
             fprintf (stdout, "%s\n", pdf_filter_version_msg);
-            exit (0);
-            break;
-          }
-        case USAGE_ARG:
-          {
-            fprintf (stdout, "%s\n", pdf_filter_usage_msg);
             exit (0);
             break;
           }
@@ -350,7 +348,7 @@ create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
             if ((endptr != NULL) && (*endptr != '\0'))
               {
                 /* Error parsing the number */
-                fprintf (stdout, "%s\n", pdf_filter_usage_msg);
+                fprintf (stdout, "%s\n", pdf_filter_help_msg);
                 exit(1);
               }
 
@@ -1006,7 +1004,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
 	case '?':
           {
             /* Error, usage and exit */
-            fprintf (stdout, "%s\n", pdf_filter_usage_msg);
+            fprintf (stdout, "%s\n", pdf_filter_help_msg);
             exit (1);
             break;
           }

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-10-21 02:37:22 mgold"
+/* -*- mode: C -*-
  *
  *       File:         pdf-stm-read-char.c
  *       Date:         Sat Sep 20 16:59:27 2008

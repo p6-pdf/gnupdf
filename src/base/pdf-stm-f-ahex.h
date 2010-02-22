@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 22:51:15 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-stm-f-ahex.h
  *       Date:         Fri Jul 13 17:04:29 2007

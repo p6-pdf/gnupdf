@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2008-03-06 20:09:02 gerel"
+/* -*- mode: C -*-
  *
  *       File:         pdf-obj.h
  *       Date:         Sat Jul  7 01:10:11 2007

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-10-25 18:06:21 mgold"
+/* -*- mode: C -*-
  *
  *       File:         pdf-tokeniser.h
  *       Date:         Wed Jun 24 20:54:49 2009
@@ -34,7 +34,6 @@
 enum
 {
   HELP_ARG,
-  USAGE_ARG,
   VERSION_ARG,
   TOKW_ARG,
   READER_FLAGS_ARG,

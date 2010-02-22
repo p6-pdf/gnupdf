@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 22:17:50 davazp"
+/* -*- mode: C -*-
  *
  *       File:         pdf-time-span-set-negate.c
  *       Date:         Sun Sep 21 16:37:27 2008

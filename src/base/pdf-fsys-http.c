@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/11/24 23:58:31 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-fsys-http.c
  *       Date:         Thu Dec 17 18:27:35 2009
@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2009, 2010 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,3 +70,5 @@ pdf_fsys_http_file_set_size (pdf_fsys_file_t file, pdf_size_t size)
   /* Read Only filesystem - Not able to resize */
   return PDF_EBADPERMS;
 }
+
+/* End of pdf-fsys-http.c */
