@@ -819,7 +819,13 @@ integrated in the trunk.
 @node Documenting Your Changes
 @section Documenting Your Changes
 
-Everyone loves documentation! :D
+Everyone loves writing documentation! :D
+
+Please update the dates in the copyright notices in each of the files
+you have modified, if needed.
+
+Please update the file ChangeLog with a summary of which files have
+been changed, along with what the changes were for.
 
 If your change includes new files please update the
 @file{MANIFEST.wiki} in the directory containing the new files.

@@ -1,3 +1,17 @@
+2010-02-22  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/pdf-global.c (pdf_finish): Unused variable 'ret' removed.
+
+	* doc/gnupdf-hg.texi (Documenting Your Changes): Added some notes
+	about the updating of the copyright dates in the source files and
+	the need of including a ChangeLog entry along with the patches.
+
+2010-02-21  Scott Fohey  <sfohey@gmail.com>
+
+	* src/base/pdf-stm-f-a85.c: Correction of function prototype
+
+	* src/base/pdf-stm-f-a85.h: Correction of array length to match needs
+
 2010-02-21  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* torture/unit/base/token/pdf-token-read.c: Additional tests for
