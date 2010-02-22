@@ -125,7 +125,9 @@ local-checks-available = \
 
 # Arrange to print the name of each syntax-checking rule just before running it.
 $(syntax-check-rules): %: %.m
-$(patsubst %, %.m, $(syntax-check-rules)):
+sc_m_rules_ = $(patsubst %, %.m, $(syntax-check-rules))
+.PHONY: $(sc_m_rules_)
+$(sc_m_rules_):
 	@echo $(patsubst sc_%.m, %, $@)
 
 local-check := $(filter-out $(local-checks-to-skip), $(local-checks-available))
@@ -215,9 +217,13 @@ sc_prohibit_magic_number_exit:
 # Using EXIT_SUCCESS as the first argument to error is misleading,
 # since when that parameter is 0, error does not exit.  Use `0' instead.
 sc_error_exit_success:
-	@grep -nE 'error \(EXIT_SUCCESS,'				\
-	    $$($(VC_LIST_EXCEPT) | grep -E '\.[chly]$$') &&		\
-	  { echo '$(ME): found error (EXIT_SUCCESS' 1>&2; exit 1; } || :
+	@if $(VC_LIST_EXCEPT) | grep -E '\.[chly]$$' > /dev/null; then  \
+	  grep -nE 'error \(EXIT_SUCCESS,'				\
+		$$($(VC_LIST_EXCEPT) | grep -E '\.[chly]$$') &&		\
+	  { echo '$(ME): found error (EXIT_SUCCESS'			\
+		1>&2; exit 1; } || :;					\
+	else :;								\
+	fi
 
 # `FATAL:' should be fully upper-cased in error messages
 # `WARNING:' should be fully upper-cased, or fully lower-cased
@@ -334,6 +340,11 @@ sc_prohibit_inttostr_without_use:
 	  $(_header_without_use)
 
 # Don't include this header unless you use one of its functions.
+sc_prohibit_ignore_value_without_use:
+	@h='"ignore-value.h"' re='\<ignore_(value|ptr) *\(' \
+	  $(_header_without_use)
+
+# Don't include this header unless you use one of its functions.
 sc_prohibit_error_without_use:
 	@h='"error.h"' \
 	re='\<error(_at_line|_print_progname|_one_per_line|_message_count)? *\('\
@@ -360,6 +371,22 @@ _xa2 = X([CZ]|N?M)ALLOC
 sc_prohibit_xalloc_without_use:
 	@h='"xalloc.h"' \
 	re='\<($(_xa1)|$(_xa2)) *\('\
+	  $(_header_without_use)
+
+# Extract function names:
+# perl -lne '/^(?:extern )?(?:void|char) \*?(\w+) \(/ and print $1' lib/hash.h
+_hash_re = \
+clear|delete|free|get_(first|next)|insert|lookup|print_statistics|reset_tuning
+_hash_fn = \<($(_hash_re)) *\(
+_hash_struct = (struct )?\<[Hh]ash_(table|tuning)\>
+sc_prohibit_hash_without_use:
+	@h='"hash.h"' \
+	re='$(_hash_fn)|$(_hash_struct)'\
+	  $(_header_without_use)
+
+sc_prohibit_hash_pjw_without_use:
+	@h='"hash-pjw.h"' \
+	re='\<hash_pjw *\(' \
 	  $(_header_without_use)
 
 sc_prohibit_safe_read_without_use:
@@ -629,16 +656,22 @@ news-check: NEWS
 	fi
 
 sc_makefile_TAB_only_indentation:
-	@grep -nE '^	[ ]{8}'						\
-	    $$($(VC_LIST_EXCEPT) | grep -E 'akefile|\.mk$$')		\
-	  && { echo '$(ME): found TAB-8-space indentation' 1>&2;	\
-	       exit 1; } || :
+	@if $(VC_LIST_EXCEPT) | grep -E 'akefile|\.mk$$' > /dev/null; then	\
+	grep -nE '^	[ ]{8}'							\
+		$$($(VC_LIST_EXCEPT) | grep -E 'akefile|\.mk$$')		\
+	    && { echo '$(ME): found TAB-8-space indentation' 1>&2;		\
+		exit 1; } || :;							\
+	else :;									\
+	fi
 
 sc_m4_quote_check:
-	@grep -nE '(AC_DEFINE(_UNQUOTED)?|AC_DEFUN)\([^[]'		\
-	    $$($(VC_LIST_EXCEPT) | grep -E '(^configure\.ac|\.m4)$$')	\
-	  && { echo '$(ME): quote the first arg to AC_DEF*' 1>&2;	\
-	       exit 1; } || :
+	@if $(VC_LIST_EXCEPT) | grep -E '(^configure\.ac|\.m4)$$' > /dev/null; then	\
+	  grep -nE '(AC_DEFINE(_UNQUOTED)?|AC_DEFUN)\([^[]'				\
+		$$($(VC_LIST_EXCEPT) | grep -E '(^configure\.ac|\.m4)$$')		\
+	    && { echo '$(ME): quote the first arg to AC_DEF*' 1>&2;			\
+		exit 1; } || :;								\
+	else :;										\
+	fi
 
 fix_po_file_diag = \
 'you have changed the set of files with translatable diagnostics;\n\
@@ -677,9 +710,12 @@ sc_po_check:
 # path separator of `:', but rather the automake-provided `$(PATH_SEPARATOR)'.
 msg = '$(ME): Do not use `:'\'' above; use $$(PATH_SEPARATOR) instead'
 sc_makefile_path_separator_check:
-	@grep -nE 'PATH[=].*:'						\
-	    $$($(VC_LIST_EXCEPT) | grep -E 'akefile|\.mk$$')		\
-	  && { echo $(msg) 1>&2; exit 1; } || :
+	@if $(VC_LIST_EXCEPT) | grep -E 'akefile|\.mk$$' > /dev/null; then	\
+	  grep -nE 'PATH[=].*:'							\
+		$$($(VC_LIST_EXCEPT) | grep -E 'akefile|\.mk$$')		\
+	     && { echo $(msg) 1>&2; exit 1; } || :;				\
+	else :;									\
+	fi
 
 # Check that `make alpha' will not fail at the end of the process.
 writable-files:
@@ -782,11 +818,12 @@ announcement: NEWS ChangeLog $(rel-files)
 ftp-gnu = ftp://ftp.gnu.org/gnu
 www-gnu = http://www.gnu.org
 
+upload_dest_dir_ ?= $(PACKAGE)
 emit_upload_commands:
 	@echo =====================================
 	@echo =====================================
 	@echo "$(build_aux)/gnupload $(GNUPLOADFLAGS) \\"
-	@echo "    --to $(gnu_rel_host):$(PACKAGE) \\"
+	@echo "    --to $(gnu_rel_host):$(upload_dest_dir_) \\"
 	@echo "  $(rel-files)"
 	@echo '# send the ~/announce-$(my_distdir) e-mail'
 	@echo =====================================

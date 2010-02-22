@@ -78,6 +78,8 @@ AC_DEFUN([gl_INIT],
   gl_STDIO_MODULE_INDICATOR([ftello])
   gl_FUNC_GETDELIM
   gl_STDIO_MODULE_INDICATOR([getdelim])
+  gl_FUNC_GETDTABLESIZE
+  gl_UNISTD_MODULE_INDICATOR([getdtablesize])
   gl_FUNC_GETLINE
   gl_STDIO_MODULE_INDICATOR([getline])
   gl_FUNC_GETOPT_GNU
@@ -317,6 +319,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/fseeko.c
   lib/ftello.c
   lib/getdelim.c
+  lib/getdtablesize.c
   lib/getline.c
   lib/getopt.c
   lib/getopt.in.h
@@ -409,6 +412,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/fseeko.m4
   m4/ftello.m4
   m4/getdelim.m4
+  m4/getdtablesize.m4
   m4/getline.m4
   m4/getopt.m4
   m4/gettimeofday.m4
