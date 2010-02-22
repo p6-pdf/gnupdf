@@ -100,13 +100,13 @@ main (int argc, char **argv)
         case HELP_ARG:
           {
             fprintf (stdout, "%s\n", runtests_help_msg);
-            exit (0);
+            exit (EXIT_SUCCESS);
             break;
           }
         case VERSION_ARG:
           {
             fprintf (stdout, "%s\n", runtests_version_msg);
-            exit (0);
+            exit (EXIT_SUCCESS);
             break;
           }
         case MODULE_ARG:
@@ -123,7 +123,7 @@ main (int argc, char **argv)
           }
         default:
           {
-            exit (1);
+            exit (EXIT_FAILURE);
           }
         }
     }

@@ -1,5 +1,30 @@
 2010-02-22  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* utils/pdf-filter.c: Use EXIT_SUCCESS and EXIT_FAILURE in exit
+	calls.
+
+	* utils/pdf-tokeniser.c: Likewise.
+
+	* .x-sc_prohibit_magic_number_exit: New file.
+
+	* .x-sc_obsolete_symbols: New file.
+
+	* .x-sc_makefile_at_at_check: New file.
+
+	* .x-sc_m4_quote_check: New file.
+
+	* doc/fdl.texi: License updated to GFDL 1.3.
+
+	* doc/gnupdf.texi: Likewise.
+
+	* doc/gnupdf-utils.texi: Likewise.
+
+	* doc/gnupdf-tsd.texi: Likewise.
+
+	* doc/gnupdf-hg.texi: Likewise.
+
+	* doc/gnupdf-arch.texi: Likewise.
+
 	* gnulib update.
 
 	* src/pdf-global.c (pdf_finish): Unused variable 'ret' removed.
