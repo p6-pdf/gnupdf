@@ -1,3 +1,9 @@
+2010-02-22  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-hg.texi (Documenting Your Changes): Added some notes
+	about the updating of the copyright dates in the source files and
+	the need of including a ChangeLog entry along with the patches.
+
 2010-02-21  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* torture/unit/base/token/pdf-token-read.c: Additional tests for
