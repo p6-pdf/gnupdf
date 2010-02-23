@@ -52,13 +52,14 @@
   (((i1) > (i2)) ? (i1) : (i2))
 
 /* Definitions used in the operations of the  pdf_i64_t type*/
-#define PDF_I32_MAX 2147483647;
-#define PDF_I32_DIV 2147483648;
-#define PDF_U32_MAX 4294967295;
-#define PDF_U16_MAX 65535;
-#define PDF_U16_DIV 65536;
-#define PDF_U8_MAX 255;
-#define PDF_U8_DIV 256;
+#define PDF_I32_MAX 2147483647
+#define PDF_I32_MIN (-PDF_I32_MAX)
+#define PDF_I32_DIV 2147483648
+#define PDF_U32_MAX 4294967295
+#define PDF_U16_MAX 65535
+#define PDF_U16_DIV 65536
+#define PDF_U8_MAX 255
+#define PDF_U8_DIV 256
 
 
 /* A variable of type `pdf_off_t' contain a byte-offset relative to

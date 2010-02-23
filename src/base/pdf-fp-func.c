@@ -1,4 +1,4 @@
-/* -*- mode: C -*-
+/* -*- mode: C -*- Time-stamp: "09/06/17 21:40:08 jemarch"
  *
  *       File:         pdf-fp-func.c
  *       Date:         Sun Nov 30 18:46:06 2008
@@ -78,7 +78,8 @@ typedef enum
     OPC_ret, /* end of function, return result */
     OPC_jnt, /* jump if not true , offset follows  */
     OPC_jmp, /* jump always, offset follows   */
-    OPC_lit, /* literal follows. */
+    OPC_lit_i, /* integer literal follows. */
+    OPC_lit_r, /* real literal follows. */
     OPC_begin, /* token opening brace */
     OPC_end,   /* token closing brace */
     OPC_if,    /* token */
@@ -481,7 +482,8 @@ pdf_fp_func_4_new (pdf_u32_t m,
         }	
       switch ((PDF_TYPE4_OPC)opc)
         {
-        case OPC_lit:
+        case OPC_lit_i:
+        case OPC_lit_r:
           {
             debug_off[debug_size][0] = at;
             debug_off[debug_size][1] = beg_pos;
@@ -1415,8 +1417,17 @@ read_type0_sample_table (pdf_char_t *buf,
 #define NSTACK          PDF_FP_FUNC_TYPE4_STACK_SIZE
 #define REP_TRUE	PDF_FP_FUNC_TYPE4_TRUE
 #define REP_FALSE	PDF_FP_FUNC_TYPE4_FALSE
-#define INT(xyyzy)	((int) pdf_fp_floor (xyyzy))
-#define INT_P(xyzzy) ((xyzzy) == INT(xyzzy))
+#define TRUNC(x)	((x) < 0 ? pdf_fp_ceil(x) : pdf_fp_floor(x))
+#define INT(x)	        ((int) TRUNC(x))
+#define BOOL(x)	        ((x) \
+                         ? PDF_FP_FUNC_TYPE4_TRUE \
+                         : PDF_FP_FUNC_TYPE4_FALSE)
+#define P_INT(x)        ((x).t == INT)
+#define P_BOOL(x)       ((x).t == BOOL)
+#define P_NUM(x)        ((x).t != BOOL)
+#define P_TRUE(x)       ((x).v == REP_TRUE)
+#define P_FALSE(x)      ((x).v == REP_FALSE)
+#define NUM_TYPE(x, y)  ((P_INT(x) && P_INT(y)) ? INT : REAL)
 
 
 static pdf_status_t
@@ -1425,10 +1436,15 @@ pdf_eval_type4 (pdf_fp_func_t t,
                 pdf_real_t out[],
                 pdf_fp_func_debug_t * debug)
 {
-  double stack[NSTACK+2];
+  struct t_stack {
+    double v;
+    enum { BOOL, INT, REAL } t;
+  } stack[NSTACK+2];
+
   pdf_char_t *op;
   pdf_u32_t n;
   double tmp;
+  struct t_stack tmp_s;
   pdf_i32_t sp;
   pdf_i32_t pc;
   pdf_fp_func_debug_t debug_info;
@@ -1439,7 +1455,8 @@ pdf_eval_type4 (pdf_fp_func_t t,
 
   for (sp = 0; sp < t->m; sp++)
     {
-      stack[sp] = clip(in[sp], t->domain + 2*sp);
+      stack[sp].v = clip(in[sp], t->domain + 2*sp);
+      stack[sp].t = REAL;
     }
   sp--;
   for (pc = 0; pc < n; pc++)
@@ -1451,31 +1468,36 @@ pdf_eval_type4 (pdf_fp_func_t t,
           if (sp+1 > t->n) goto stack_error;
           for (sp = 0; sp < t->n; sp++)
             {
-              if (isnan(stack[sp]))
-                {
-                  goto math_error;
-                }
-              out[sp] = clip(stack[sp], t->range + 2*sp);
+              out[sp] = clip(stack[sp].v, t->range + 2*sp);
             }
           return PDF_OK;
           break;
-        case OPC_lit:
+        case OPC_lit_i:
           if (sp >= NSTACK) goto stack_overflow;
           sp++;
-          memcpy(&stack[sp], op+pc+1, sizeof(stack[0]));
-          pc += sizeof(stack[0]);
+          memcpy(&stack[sp].v, op+pc+1, sizeof(stack[0].v));
+          stack[sp].t = INT;
+          pc += sizeof(stack[0].v);
+          break;
+        case OPC_lit_r:
+          if (sp >= NSTACK) goto stack_overflow;
+          sp++;
+          memcpy(&stack[sp].v, op+pc+1, sizeof(stack[0].v));
+          stack[sp].t = REAL;
+          pc += sizeof(stack[0].v);
           break;
         case OPC_jmp:
           memcpy(&pc,op+pc+1,sizeof(pc));
           break;
         case OPC_jnt:
           if (sp < 0) goto stack_underflow;
-          tmp = stack[sp--];
-          if (tmp == REP_TRUE)
+          if (!P_BOOL(stack[sp])) goto type_error;
+          if (P_TRUE(stack[sp]))
             pc += sizeof(pc);
-          else if (tmp == REP_FALSE)
+          else if (P_FALSE(stack[sp]))
             memcpy(&pc,op+pc+1,sizeof(pc));
           else goto type_error;
+          sp--;
           break;
         case OPC_dup:
           if (sp < 0) goto stack_underflow;
@@ -1489,88 +1511,113 @@ pdf_eval_type4 (pdf_fp_func_t t,
           break;
         case OPC_exch:
           if (sp < 1) goto stack_underflow;
-          tmp = stack[sp-1];
+          tmp_s = stack[sp-1];
           stack[sp-1] = stack[sp];
-          stack[sp] = tmp;
+          stack[sp] = tmp_s;
           break;
         case OPC_sin:
           if (sp < 0) goto stack_underflow;
-          stack[sp] = pdf_fp_sin ((180/PDF_PI)*stack[sp]);
+          if (!P_NUM(stack[sp])) goto type_error;
+          stack[sp].v = pdf_fp_sin ((180/PDF_PI)*stack[sp].v);
+          stack[sp].t = REAL;
           break;
         case OPC_cos:
           if (sp < 0) goto stack_underflow;
-          stack[sp] = pdf_fp_cos ((180/PDF_PI)*stack[sp]);
+          if (!P_NUM(stack[sp])) goto type_error;
+          stack[sp].v = pdf_fp_cos ((180/PDF_PI)*stack[sp].v);
+          stack[sp].t = REAL;
           break;
         case OPC_neg:
           if (sp < 0) goto stack_underflow;
-          stack[sp] = - stack[sp];
+          if (!P_NUM(stack[sp])) goto type_error;
+          stack[sp].v = - stack[sp].v;
           break;
         case OPC_abs:
           if (sp < 0) goto stack_underflow;
-          stack[sp] = pdf_fp_abs (stack[sp]);
+          if (!P_NUM(stack[sp])) goto type_error;
+          stack[sp].v = pdf_fp_abs (stack[sp].v);
           break;
         case OPC_exp:
-          if (sp < 0) goto stack_underflow;
-          stack[sp] = pdf_fp_exp (stack[sp]);
+          if (sp < 1) goto stack_underflow;
+          if (!P_NUM(stack[sp-1]) || !P_NUM(stack[sp])) goto type_error;
+          tmp = pdf_fp_pow (stack[sp-1].v, stack[sp].v);
+          if (isinf(tmp) || tmp == HUGE_VAL) goto math_error;
+          stack[sp-1].v = tmp;
+          sp--;
           break;
         case OPC_log:
           if (sp < 0) goto stack_underflow;
-          if (stack[sp] <= 0) goto range_error;
-          stack[sp] = pdf_fp_log10 (stack[sp]);
+          if (!P_NUM(stack[sp])) goto type_error;
+          if (stack[sp].v <= 0) goto range_error;
+          stack[sp].v = pdf_fp_log10 (stack[sp].v);
+          stack[sp].t = REAL;
           break;
         case OPC_ln:
           if (sp < 0) goto stack_underflow;
-          if (stack[sp] < 0) goto range_error;
-          stack[sp] = pdf_fp_log (stack[sp]);
+          if (!P_NUM(stack[sp])) goto type_error;
+          if (stack[sp].v < 0) goto range_error;
+          stack[sp].v = pdf_fp_log (stack[sp].v);
+          stack[sp].t = REAL;
           break;
         case OPC_sqrt:
           if (sp < 0) goto stack_underflow;
-          if (stack[sp] < 0) goto range_error;
-          stack[sp] = pdf_fp_sqrt (stack[sp]);
+          if (!P_NUM(stack[sp])) goto type_error;
+          if (stack[sp].v < 0) goto range_error;
+          stack[sp].v = pdf_fp_sqrt (stack[sp].v);
+          stack[sp].t = REAL;
           break;
         case OPC_floor:
           if (sp < 0) goto stack_underflow;
-          stack[sp] = pdf_fp_floor (stack[sp]);
+          if (!P_NUM(stack[sp])) goto type_error;
+          tmp = pdf_fp_floor (stack[sp].v);
+          if (isnan(tmp)) goto limit_error;
+          stack[sp].v = tmp;
           break;
         case OPC_ceiling:
           if (sp < 0) goto stack_underflow;
-          stack[sp] = pdf_fp_ceil (stack[sp]);
+          if (!P_NUM(stack[sp])) goto type_error;
+          tmp = pdf_fp_ceil (stack[sp].v);
+          if (isnan(tmp)) goto limit_error;
+          stack[sp].v = tmp;
           break;
         case OPC_truncate:
           if (sp < 0) goto stack_underflow;
+          if (!P_NUM(stack[sp])) goto type_error;
           /* C99 stack[sp] = trunc(stack[sp]); */
-          stack[sp] = (stack[sp] >= 0)
-            ? pdf_fp_floor (stack[sp])
-            : - pdf_fp_floor (-stack[sp]);
+          stack[sp].v = TRUNC(stack[sp].v);
+          stack[sp].t = REAL;
           break;
         case OPC_round:
           if (sp < 0) goto stack_underflow;
-          stack[sp] = pdf_fp_floor (0.5 + stack[sp]);
+          if (!P_NUM(stack[sp])) goto type_error;
+          stack[sp].v = pdf_fp_floor (0.5 + stack[sp].v);
+          stack[sp].t = REAL;
           break;
         case OPC_cvi:
           if (sp < 0) goto stack_underflow;
-          /* behaviour checked against ghostscript interpreter */
-          tmp = (stack[sp] >=0) ? pdf_fp_floor (stack[sp]) : - pdf_fp_floor (-stack[sp]);
-          if (!INT_P(tmp)) goto range_error;
-          stack[sp] = INT(tmp);
+          if (!P_NUM(stack[sp])) goto type_error;
+          stack[sp].v = INT(stack[sp].v);
+          stack[sp].t = INT;
           break;
         case OPC_index:
           if (sp < 0) goto stack_underflow;
-          if (!INT_P(stack[sp])) goto type_error;
-          if (stack[sp] < 0 || stack[sp] > sp-1) goto range_error;
-          stack[sp] = stack[sp-1-INT(stack[sp])];
+          if (!P_INT(stack[sp])) goto type_error;
+          if (stack[sp].v < 0 || stack[sp].v > sp-1) goto range_error;
+          /* copy complete stack element with type info */
+          stack[sp] = stack[sp-1-INT(stack[sp].v)];
           break;
         case OPC_copy:
           {
             pdf_i32_t n,i;
             if (sp < 0) goto stack_underflow;
-            if (!INT_P(stack[sp])) goto type_error;
-            n = INT(stack[sp]);
+            if (!P_INT(stack[sp])) goto type_error;
+            n = INT(stack[sp].v);
             if (n < 0 || n > sp) goto range_error;
             if (sp + n >= NSTACK) goto stack_overflow;
             sp = sp - n;
             for (i = 0; i < n; i++, sp++)
               {
+                /* copy complete stack element with type info */
                 stack[sp+n] = stack[sp];
               }
             if (n > 0)
@@ -1583,14 +1630,14 @@ pdf_eval_type4 (pdf_fp_func_t t,
           {
             pdf_i32_t n,s;
             if (sp < 2) goto stack_underflow;
-            if (!INT_P(stack[sp]) || !INT_P(stack[sp-1])) goto type_error;
-            n = INT(stack[sp-1]);
-            s = INT(stack[sp]);
+            if (P_INT(stack[sp]) || P_INT(stack[sp-1])) goto type_error;
+            n = INT(stack[sp-1].v);
+            s = INT(stack[sp].v);
             sp -= 2;
             if (n < 0 || n > sp) goto range_error;
             if (n >= 2)
               {
-                double pp[NSTACK];
+                struct t_stack pp[NSTACK];
                 s = s % n;
                 if (s < 0)
                   s += n;
@@ -1602,145 +1649,213 @@ pdf_eval_type4 (pdf_fp_func_t t,
           }	
         case OPC_cvr:
           if (sp < 0) goto stack_underflow;
-          /* boolean goes unchecked */
+          if (!P_NUM(stack[sp])) goto type_error;
+          stack[sp].t = REAL;
           break;
         case OPC_add:
           if (sp < 1) goto stack_underflow;
-          stack[sp-1] += stack[sp];
+          if (!P_NUM(stack[sp-1]) || !P_NUM(stack[sp])) goto type_error;
+          if (isinf(tmp = pdf_fp_add(stack[sp-1].v, stack[sp].v))) 
+            goto limit_error;
+          stack[sp-1].v = tmp;
+          stack[sp-1].t = NUM_TYPE(stack[sp-1], stack[sp]);
           sp--;
           break;
         case OPC_sub:
           if (sp < 1) goto stack_underflow;
-          stack[sp-1] -= stack[sp];
+          if (!P_NUM(stack[sp-1]) || !P_NUM(stack[sp])) goto type_error;
+          if (isinf(tmp = pdf_fp_sub(stack[sp-1].v, stack[sp].v))) 
+            goto limit_error;
+          stack[sp-1].v = tmp;
+          stack[sp-1].t = NUM_TYPE(stack[sp-1], stack[sp]);
           sp--;
           break;
         case OPC_mul:
           if (sp < 1) goto stack_underflow;
-          stack[sp-1] *= stack[sp];
+          if (!P_NUM(stack[sp-1]) || !P_NUM(stack[sp])) goto type_error;
+          if (isinf(tmp = pdf_fp_mul(stack[sp-1].v, stack[sp].v))) 
+            goto limit_error;
+          stack[sp-1].v = tmp;
+          stack[sp-1].t = NUM_TYPE(stack[sp-1], stack[sp]);
           sp--;
           break;
         case OPC_div:
           if (sp < 1) goto stack_underflow;
-          if (stack[sp] == 0) goto math_error;
-          stack[sp-1] /= stack[sp];
+          if (!P_NUM(stack[sp-1]) || !P_NUM(stack[sp])) goto type_error;
+          if (stack[sp].v == 0) goto math_error;
+          if (isinf(tmp = pdf_fp_div(stack[sp-1].v, stack[sp].v))) 
+            goto limit_error;
+          stack[sp-1].v = tmp;
+          stack[sp-1].t = NUM_TYPE(stack[sp-1], stack[sp]);
           sp--;
           break;
         case OPC_atan:
           if (sp < 1) goto stack_underflow;
-          stack[sp-1] = (180/PDF_PI)* pdf_fp_atan2 (stack[sp-1] , stack[sp]);
+          if (!P_NUM(stack[sp-1]) || !P_NUM(stack[sp])) goto type_error;
+          stack[sp-1].v = (180/PDF_PI) * 
+                          pdf_fp_atan2 (stack[sp-1].v, stack[sp].v);
+          stack[sp-1].t = REAL;
           /* check against Ghostscript */
           sp--;
           break;
         case OPC_idiv:
           if (sp < 1) goto stack_underflow;
-          if (!INT_P(stack[sp]) || !INT_P(stack[sp-1]))
-            goto type_error;
-          stack[sp-1] = INT(stack[sp]) / INT(stack[sp-1]);
+          if (!P_INT(stack[sp-1]) || !P_INT(stack[sp])) goto type_error;
+          if (stack[sp].v == 0) goto math_error;
+          stack[sp-1].v = INT(pdf_fp_div(INT(stack[sp-1].v), INT(stack[sp].v)));
           sp--;
           break;
         case OPC_mod:
           if (sp < 1) goto stack_underflow;
-          if (!INT_P(stack[sp]) || !INT_P(stack[sp-1]))
-            goto type_error;
-          if (stack[sp-1] == 0)
-            goto math_error;
-          stack[sp-1] = INT(stack[sp]) % INT(stack[sp-1]);
+          if (!P_INT(stack[sp-1]) || !P_INT(stack[sp])) goto type_error;
+          if (stack[sp].v == 0) goto math_error;
+          stack[sp-1].v = pdf_fp_mod(stack[sp-1].v, stack[sp].v);
           sp--;
           break;
         case OPC_and:
-          if (sp < 1) goto stack_underflow;
-          if (!INT_P(stack[sp]) || !INT_P(stack[sp-1]))
+          if (sp < 1) goto stack_underflow; 
+          if (P_INT(stack[sp-1]) && P_INT(stack[sp]))
+            stack[sp-1].v = INT(stack[sp-1].v) & INT(stack[sp].v);
+          else if (P_BOOL(stack[sp-1]) && P_BOOL(stack[sp]))
+            stack[sp-1].v = BOOL(P_TRUE(stack[sp-1]) && P_TRUE(stack[sp]));
+          else
             goto type_error;
-          stack[sp-1] = INT(stack[sp]) & INT(stack[sp-1]);
           sp--;
           break;
         case OPC_bitshift:
           if (sp < 1) goto stack_underflow;
-          if (!INT_P(stack[sp]) || !INT_P(stack[sp-1]))
+          if (!P_INT(stack[sp-1]) || !P_INT(stack[sp]))
             goto type_error;
           {
-            pdf_u32_t x = INT(stack[sp-1]);
-            pdf_i32_t i = INT(stack[sp]);
+            pdf_i32_t x;
+            pdf_i32_t i = INT(stack[sp].v);
+            if ((stack[sp].v > PDF_I32_MAX) || 
+                (stack[sp].v < PDF_I32_MIN))
+              goto limit_error;
+            x = INT(stack[sp-1].v);
             if (i >= 0)
               x = (i < 32) ? (x<<i) : 0;
             else if (i < 0)
-              x = (i < 32) ? (x>>i) : 0;
-            stack[sp-1] = x;
+              x = (i > -32) ? (x>>-i) : 0;
+            stack[sp-1].v = x;
           }
           sp--;
           break;
         case OPC_or:
           if (sp < 1) goto stack_underflow;
-          if (!INT_P(stack[sp]) || !INT_P(stack[sp-1]))
+          if (P_INT(stack[sp-1]) && P_INT(stack[sp]))
+            stack[sp-1].v = INT(stack[sp-1].v) | INT(stack[sp].v);
+          else if (P_BOOL(stack[sp-1]) && P_BOOL(stack[sp]))
+            stack[sp-1].v = BOOL(P_TRUE(stack[sp-1]) || P_TRUE(stack[sp]));
+          else
             goto type_error;
-          stack[sp-1] = INT(stack[sp]) | INT(stack[sp-1]);
           sp--;
           break;
         case OPC_xor:
           if (sp < 1) goto stack_underflow;
-          if (!INT_P(stack[sp]) || !INT_P(stack[sp-1]))
+          if (P_INT(stack[sp-1]) && P_INT(stack[sp]))
+            stack[sp-1].v = INT(stack[sp-1].v) ^ INT(stack[sp].v);
+          else if (P_BOOL(stack[sp-1]) && P_BOOL(stack[sp]))
+            stack[sp-1].v = BOOL((P_TRUE(stack[sp-1]) || P_TRUE(stack[sp])) &&
+                                 (stack[sp-1].v != stack[sp].v));
+          else
             goto type_error;
-          stack[sp-1] = INT(stack[sp]) ^ INT(stack[sp-1]);
           sp--;
           break;
         case OPC_not:
           if (sp < 0) goto stack_underflow;
-          if (!INT_P(stack[sp]))
+          if (P_INT(stack[sp]))
+            stack[sp].v = ~INT(stack[sp].v);
+          else if (P_BOOL(stack[sp]))
+            stack[sp].v = BOOL(!P_TRUE(stack[sp]));
+          else
             goto type_error;
-          stack[sp] = ~INT(stack[sp]);
-          sp--;
           break;
         case OPC_eq:
           if (sp < 1) goto stack_underflow;
-          if (isnan(stack[sp-1]) || isnan(stack[sp]))
+          if (isnan(stack[sp-1].v) || isnan(stack[sp].v))
             goto math_error;
           /* any comparison involving NaN is false. */
           /* this should not go unnoticed */
-          stack[sp-1] = (stack[sp-1] == stack[sp]) ? (REP_TRUE):(REP_FALSE);
+          if ((P_NUM(stack[sp-1]) && P_NUM(stack[sp])) ||
+              (P_BOOL(stack[sp-1]) && P_BOOL(stack[sp])))
+            stack[sp-1].v = BOOL(stack[sp-1].v == stack[sp].v);
+          else
+            goto type_error;
+          stack[sp-1].t = BOOL;
           sp--;
           break;
         case OPC_ne:
           if (sp < 1) goto stack_underflow;
-          if (isnan(stack[sp-1]) || isnan(stack[sp]))
+          if (isnan(stack[sp-1].v) || isnan(stack[sp].v))
             goto math_error;
-          stack[sp-1] = (stack[sp-1] != stack[sp]) ? (REP_TRUE):(REP_FALSE);
+          if ((P_NUM(stack[sp-1]) && P_NUM(stack[sp])) ||
+              (P_BOOL(stack[sp-1]) && P_BOOL(stack[sp])))
+            stack[sp-1].v = BOOL(stack[sp-1].v != stack[sp].v);
+          else
+            goto type_error;
+          stack[sp-1].t = BOOL;
           sp--;
           break;
         case OPC_lt:
           if (sp < 1) goto stack_underflow;
-          if (isnan(stack[sp-1]) || isnan(stack[sp]))
+          if (isnan(stack[sp-1].v) || isnan(stack[sp].v))
             goto math_error;
-          stack[sp-1] = (stack[sp-1] < stack[sp]) ? (REP_TRUE):(REP_FALSE);
+          if ((P_NUM(stack[sp-1]) && P_NUM(stack[sp])) ||
+              (P_BOOL(stack[sp-1]) && P_BOOL(stack[sp])))
+            stack[sp-1].v = BOOL(stack[sp-1].v < stack[sp].v);
+          else
+            goto type_error;
+          stack[sp-1].t = BOOL;
           sp--;
           break;
         case OPC_le:
           if (sp < 1) goto stack_underflow;
-          if (isnan(stack[sp-1]) || isnan(stack[sp]))
+          if (isnan(stack[sp-1].v) || isnan(stack[sp].v))
             goto math_error;
-          stack[sp-1] = (stack[sp-1] <= stack[sp]) ? (REP_TRUE):(REP_FALSE);
+          if ((P_NUM(stack[sp-1]) && P_NUM(stack[sp])) ||
+              (P_BOOL(stack[sp-1]) && P_BOOL(stack[sp])))
+            stack[sp-1].v = BOOL(stack[sp-1].v <= stack[sp].v);
+          else
+            goto type_error;
+          stack[sp-1].t = BOOL;
           sp--;
           break;
         case OPC_ge:
           if (sp < 1) goto stack_underflow;
-          if (isnan(stack[sp-1]) || isnan(stack[sp]))
+          if (isnan(stack[sp-1].v) || isnan(stack[sp].v))
             goto math_error;
-          stack[sp-1] = (stack[sp-1] >= stack[sp]) ? (REP_TRUE):(REP_FALSE);
+          if ((P_NUM(stack[sp-1]) && P_NUM(stack[sp])) ||
+              (P_BOOL(stack[sp-1]) && P_BOOL(stack[sp])))
+            stack[sp-1].v = BOOL(stack[sp-1].v >= stack[sp].v);
+          else
+            goto type_error;
+          stack[sp-1].t = BOOL;
           sp--;
           break;
         case OPC_gt:
           if (sp < 1) goto stack_underflow;
-          if (isnan(stack[sp-1]) || isnan(stack[sp]))
+          if (isnan(stack[sp-1].v) || isnan(stack[sp].v))
             goto math_error;
-          stack[sp-1] = (stack[sp-1] > stack[sp]) ? (REP_TRUE):(REP_FALSE);
+          if ((P_NUM(stack[sp-1]) && P_NUM(stack[sp])) ||
+              (P_BOOL(stack[sp-1]) && P_BOOL(stack[sp])))
+            stack[sp-1].v = BOOL(stack[sp-1].v > stack[sp].v);
+          else
+            goto type_error;
+          stack[sp-1].t = BOOL;
           sp--;
           break;
         case OPC_true:
           if (sp >= NSTACK) goto stack_overflow;
-          stack[++sp] = REP_TRUE;
+          sp++;
+          stack[sp].v = REP_TRUE;
+          stack[sp].t = BOOL;
           break;
         case OPC_false:
           if (sp >= NSTACK) goto stack_overflow;
-          stack[++sp] = REP_FALSE;
+          sp++;
+          stack[sp].v = REP_FALSE;
+          stack[sp].t = BOOL;
           break;
         default:
           goto block_error;
@@ -1755,6 +1870,7 @@ pdf_eval_type4 (pdf_fp_func_t t,
  range_error:     debug_info.type4.status = PDF_EINVRANGE;   goto end;
  type_error:      debug_info.type4.status = PDF_EBADTYPE;    goto end;
  math_error:      debug_info.type4.status = PDF_EMATH;       goto end;
+ limit_error:     debug_info.type4.status = PDF_EIMPLLIMIT;  goto end;
  end:
 
   /* Found that code was compiled to the opcode for debugging.  */
@@ -1771,7 +1887,7 @@ pdf_eval_type4 (pdf_fp_func_t t,
   /* Copy some elements from the stack for debugging */
   for (aux = 0; aux <= sp; aux++)
     {
-      debug_info.type4.stack[aux] = stack[sp - aux];
+      debug_info.type4.stack[aux] = stack[sp - aux].v;
     }
   debug_info.type4.stack_size = sp + 1;
 
@@ -1929,13 +2045,13 @@ static pdf_i32_t get_token (pdf_token_reader_t reader,
           case PDF_TOKEN_INTEGER:
             {
               *literal = pdf_token_get_integer_value (token);
-              ret = OPC_lit;
+              ret = OPC_lit_i;
               break;
             }
           case PDF_TOKEN_REAL:
             {
               *literal = pdf_token_get_real_value (token);
-              ret = OPC_lit;
+              ret = OPC_lit_r;
               break;
             }
           case PDF_TOKEN_KEYWORD:
