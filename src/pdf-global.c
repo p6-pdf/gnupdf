@@ -129,6 +129,9 @@ pdf_init (void)
 int
 pdf_finish (void)
 {
+  int ret;
+  ret = PDF_OK;
+
 #if PDF_FSYS_HTTP
   ret = pthread_mutex_lock ( &(pdf_globals.init_mutex) );
   if (0 == ret)
@@ -154,7 +157,7 @@ pdf_finish (void)
     }
 #endif // PDF_FSYS_HTTP
   
-  return PDF_OK;
+  return ret;
 }
 
 /* End of pdf.c */
