@@ -1,3 +1,25 @@
+2010-02-23  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/unit/runtests.c: Include 'stdlib.h' to provide
+	EXIT_SUCCESS and EXIT_FAILURE.
+
+2010-02-22  Johannes Tax <johannes.tax@gmx.at>
+
+	* src/base/pdf-fp-func.c: Introduced type checks for type 4
+	functions.
+
+	* src/base/pdf-fp.c: Added fp functions needed by type 4
+	functions.
+
+	* src/base/pdf-fp.h: Likewise.
+
+	* src/base/pdf-types.h: Added PDF_I32_MIN, removed misplaced
+	semicolons.
+
+	* torture/unit/base/fp/pdf-fp-func-eval.c: Added tests for type 4
+	functions, mainly for type checking and systematic evaluation
+	checks.
+
 2010-02-22  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* utils/pdf-filter.c: Use EXIT_SUCCESS and EXIT_FAILURE in exit
