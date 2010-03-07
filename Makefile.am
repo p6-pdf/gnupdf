@@ -16,11 +16,24 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
 ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = lib build-aux src utils torture doc prmgt
 
+
+#------------------------------------------------------
+# Additional distribution files
+EXTRA_DIST = libgnupdf.pc
+
+
+#------------------------------------------------------
+# pkgconfig setup
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = libgnupdf.pc
+
+
 version:
 	@echo "Name: libgnupdf"
-	@echo "Version: 1.0"
+	@echo "Version: @VERSION@"
 
 # End of Makefile.am
