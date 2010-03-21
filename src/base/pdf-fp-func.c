@@ -1468,6 +1468,7 @@ pdf_eval_type4 (pdf_fp_func_t t,
           if (sp+1 > t->n) goto stack_error;
           for (sp = 0; sp < t->n; sp++)
             {
+              if (!P_NUM(stack[sp])) goto type_error;
               out[sp] = clip(stack[sp].v, t->range + 2*sp);
             }
           return PDF_OK;
@@ -1555,7 +1556,7 @@ pdf_eval_type4 (pdf_fp_func_t t,
         case OPC_ln:
           if (sp < 0) goto stack_underflow;
           if (!P_NUM(stack[sp])) goto type_error;
-          if (stack[sp].v < 0) goto range_error;
+          if (stack[sp].v <= 0) goto range_error;
           stack[sp].v = pdf_fp_log (stack[sp].v);
           stack[sp].t = REAL;
           break;
@@ -1585,13 +1586,11 @@ pdf_eval_type4 (pdf_fp_func_t t,
           if (!P_NUM(stack[sp])) goto type_error;
           /* C99 stack[sp] = trunc(stack[sp]); */
           stack[sp].v = TRUNC(stack[sp].v);
-          stack[sp].t = REAL;
           break;
         case OPC_round:
           if (sp < 0) goto stack_underflow;
           if (!P_NUM(stack[sp])) goto type_error;
           stack[sp].v = pdf_fp_floor (0.5 + stack[sp].v);
-          stack[sp].t = REAL;
           break;
         case OPC_cvi:
           if (sp < 0) goto stack_underflow;
@@ -1628,22 +1627,28 @@ pdf_eval_type4 (pdf_fp_func_t t,
           }	
         case OPC_roll:
           {
-            pdf_i32_t n,s;
+            pdf_i32_t n,s,j;
             if (sp < 2) goto stack_underflow;
-            if (P_INT(stack[sp]) || P_INT(stack[sp-1])) goto type_error;
+            if (!P_INT(stack[sp]) || !P_INT(stack[sp-1])) goto type_error;
             n = INT(stack[sp-1].v);
-            s = INT(stack[sp].v);
+            j = INT(stack[sp].v);
             sp -= 2;
             if (n < 0 || n > sp) goto range_error;
             if (n >= 2)
               {
                 struct t_stack pp[NSTACK];
-                s = s % n;
+                int pos;
+                s = (j-1) % n;
                 if (s < 0)
                   s += n;
-                memcpy(pp,&stack[n-s],s*sizeof(stack[0]));
-                memmove(stack,stack+s,(n-s)*sizeof(stack[0]));
-                memcpy(stack,pp,s*sizeof(double));
+                for (pos = 0; pos < n; pos++)
+                  {
+                    if (s < 0)
+                       s = n - 1;
+                    pp[pos] = stack[sp-s];
+                    s--;
+                  }
+                memcpy(&stack[sp-n+1],pp,n*sizeof(stack[0]));
               }
             break;
           }	
