@@ -1,4 +1,4 @@
-2010-03-07  Aleksander Morgado  <aleksander@gnu.org>
+2010-03-22  Aleksander Morgado  <aleksander@gnu.org>
 
 	* libgnupdf.pc.in: New file, pkg-config configuration.
 
@@ -6,6 +6,14 @@
 
 	* Makefile.am: Include `libgnupdf.pc' file in dist and pkgconfig
 	configuration.
+
+2010-03-21  Johannes Tax <johannes.tax@gmx.at>
+
+	* src/base/pdf-fp-func.c: Some small modifications for type
+	checking and for the roll operator.
+	* torture/unit/base/fp/pdf-fp-func-eval.c: Added unit tests for
+	type checking for operator arguments, stack operators and special
+	cases.
 
 2010-02-23  Jose E. Marchesi  <jemarch@gnu.org>
 

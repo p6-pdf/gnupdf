@@ -55,7 +55,7 @@ pdf_fp_func_4_tmake (pdf_u32_t m,
                      pdf_real_t domain[],                                 
                      pdf_real_t range[],                                 
                      pdf_fp_func_t *function,
-                     pdf_char_t *code_fmt,
+                     const pdf_char_t *code_fmt,
                      ...)
 {
   va_list ap;
@@ -1971,6 +1971,359 @@ END_TEST
  * **2 - Assure that the return value is correctly typed.
  */
 
+/*
+ * Test: pdf_fp_func_eval_201
+ * Description:
+ *   Evaluate a type 4 function and pass the result of a binary
+ *   function that must return an int to a function that requires
+ *   an integer argument.
+ * Success condition:
+ *   The evaluation does not return an error.
+ */
+START_TEST(pdf_fp_func_eval_201)
+{
+  char *ops[] = { "add", "sub", "mul", "idiv", "mod", "bitshift",
+                  "and", "or", "xor" };
+  int o;
+
+  for (o = 0; o < sizeof(ops)/sizeof(char*); o++)
+    {
+      pdf_fp_func_t func;
+      pdf_fp_func_debug_t debug;
+
+      pdf_real_t domain[0] = {};
+      pdf_real_t range[2] = {-1.0, 1.0};
+      pdf_real_t in[0];
+      pdf_real_t out[1];
+    
+      /* Create the function */
+      fail_if(pdf_fp_func_4_tmake(0, 1,
+                                  domain,
+                                  range,
+                                  &func,
+                                  "{ 1 1 %s 1 mod }",
+                                  ops[o]) != PDF_OK);
+    
+      /*
+       * Eval for some values
+       */
+    
+      fail_if (pdf_fp_func_eval (func, in, out, &debug) != PDF_OK,
+               TXT_ERR_EVAL, ops[o]);
+    }
+}
+END_TEST
+
+/*
+ * Test: pdf_fp_func_eval_202
+ * Description:
+ *   Evaluate a type 4 function and pass the result of a binary
+ *   function that must return a real to a function that requires
+ *   a boolean argument.
+ * Success condition:
+ *   Return PDF_ETYPE4, set PDF_EBADTYPE in the debug information,
+ */
+START_TEST(pdf_fp_func_eval_202)
+{
+  char *ops[] = { "idiv", "atan", "exp" };
+  int o;
+
+  for (o = 0; o < sizeof(ops)/sizeof(char*); o++)
+    {
+      pdf_fp_func_t func;
+      pdf_fp_func_debug_t debug;
+
+      pdf_real_t domain[0] = {};
+      pdf_real_t range[2] = {-1.0, 1.0};
+      pdf_real_t in[0];
+      pdf_real_t out[1];
+    
+      /* Create the function */
+      fail_if(pdf_fp_func_4_tmake(0, 1,
+                                  domain,
+                                  range,
+                                  &func,
+                                  "{ 4 3 %s true and }",
+                                  ops[o]) != PDF_OK);
+    
+      /*
+       * Eval for some values
+       */
+    
+      fail_if (pdf_fp_func_eval (func, in, out, &debug) != PDF_ETYPE4,
+               TXT_ERR_EVALSUCC, ops[o]);
+      fail_if (debug.type4.status != PDF_EBADTYPE,
+              TXT_ERR_ESTATUS, ops[o]);
+    }
+}
+END_TEST
+
+/*
+ * Test: pdf_fp_func_eval_203
+ * Description:
+ *   Evaluate a type 4 function and pass the result of a binary
+ *   function that must return a boolean to a function that requires
+ *   a boolean argument.
+ * Success condition:
+ *   The evaluation does not return an error.
+ */
+START_TEST(pdf_fp_func_eval_203)
+{
+  char *ops[] = { "eq", "ne", "gt", "ge", "lt", "le" };
+  int o;
+
+  for (o = 0; o < sizeof(ops)/sizeof(char*); o++)
+    {
+      pdf_fp_func_t func;
+      pdf_fp_func_debug_t debug;
+
+      pdf_real_t domain[4] = {-10, 10, -10, 10};
+      pdf_real_t range[2] = {-1.0, 1.0};
+      pdf_real_t in[2];
+      pdf_real_t out[1];
+    
+      /* Create the function */
+      fail_if(pdf_fp_func_4_tmake(2, 1,
+                                  domain,
+                                  range,
+                                  &func,
+                                  "{ %s true and pop 1 }",
+                                  ops[o]) != PDF_OK);
+    
+      /*
+       * Eval for some values
+       */
+      in[0] = 0;
+      in[1] = 1; 
+      fail_if (pdf_fp_func_eval (func, in, out, &debug) != PDF_OK,
+               TXT_ERR_EVAL, ops[o]);
+
+      in[0] = -1;
+      in[1] = 1; 
+      fail_if (pdf_fp_func_eval (func, in, out, &debug) != PDF_OK,
+               TXT_ERR_EVAL, ops[o]);
+
+      in[0] = 5;
+      in[1] = 5; 
+      fail_if (pdf_fp_func_eval (func, in, out, &debug) != PDF_OK,
+               TXT_ERR_EVAL, ops[o]);
+    }
+}
+END_TEST
+
+/*
+ * Test: pdf_fp_func_eval_204
+ * Description:
+ *   Evaluate a type 4 function and pass the result of a binary
+ *   function that must return a boolean to a function than 
+ *   requires a boolean argument.
+ * Success condition:
+ *   The evaluation does not return an error.
+ */
+START_TEST(pdf_fp_func_eval_204)
+{
+  char *ops[] = { "and", "or", "xor" };
+  int o;
+
+  for (o = 0; o < sizeof(ops)/sizeof(char*); o++)
+    {
+      pdf_fp_func_t func;
+      pdf_fp_func_debug_t debug;
+
+      pdf_real_t domain[0] = {};
+      pdf_real_t range[2] = {-1.0, 1.0};
+      pdf_real_t in[0];
+      pdf_real_t out[1];
+    
+      /* Create the function */
+      fail_if(pdf_fp_func_4_tmake(0, 1,
+                                  domain,
+                                  range,
+                                  &func,
+                                  "{ false true %s true and pop 1 }",
+                                  ops[o]) != PDF_OK);
+    
+      /*
+       * Eval for some values
+       */
+      fail_if (pdf_fp_func_eval (func, in, out, &debug) != PDF_OK,
+               TXT_ERR_EVAL, ops[o]);
+    }
+}
+END_TEST
+
+/*
+ * Test: pdf_fp_func_eval_205
+ * Description:
+ *   Evaluate a type 4 function and pass the result of a binary
+ *   function that must return a boolean to a function that requires
+ *   a boolean argument.
+ * Success condition:
+ *   The evaluation does not return an error.
+ */
+START_TEST(pdf_fp_func_eval_205)
+{
+  char *ops[] = { "not" };
+  int o;
+
+  for (o = 0; o < sizeof(ops)/sizeof(char*); o++)
+    {
+      pdf_fp_func_t func;
+      pdf_fp_func_debug_t debug;
+
+      pdf_real_t domain[0] = {};
+      pdf_real_t range[2] = {-1.0, 1.0};
+      pdf_real_t in[0];
+      pdf_real_t out[1];
+    
+      /* Create the function */
+      fail_if(pdf_fp_func_4_tmake(0, 1,
+                                  domain,
+                                  range,
+                                  &func,
+                                  "{ true %s true and pop 1 }",
+                                  ops[o]) != PDF_OK);
+    
+      /*
+       * Eval for some values
+       */
+      fail_if (pdf_fp_func_eval (func, in, out, &debug) != PDF_OK,
+               TXT_ERR_EVAL, ops[o]);
+    }
+}
+END_TEST
+
+/*
+ * Test: pdf_fp_func_eval_206
+ * Description:
+ *   Evaluate a type 4 function and pass the result of an unary
+ *   function that must return a real to a function that requires
+ *   a boolean argument.
+ * Success condition:
+ *   Return PDF_ETYPE4, set PDF_EBADTYPE in the debug information,
+ */
+START_TEST(pdf_fp_func_eval_206)
+{
+  char *ops[] = { "add", "mul", "sub", "div", "atan", "exp" };
+  int o;
+
+  for (o = 0; o < sizeof(ops)/sizeof(char*); o++)
+    {
+      pdf_fp_func_t func;
+      pdf_fp_func_debug_t debug;
+
+      pdf_real_t domain[4] = {-10, 10, -10, 10};
+      pdf_real_t range[2] = {-1.0, 1.0};
+      pdf_real_t in[2];
+      pdf_real_t out[1];
+    
+      /* Create the function */
+      fail_if(pdf_fp_func_4_tmake(2, 1,
+                                  domain,
+                                  range,
+                                  &func,
+                                  "{ %s true and }",
+                                  ops[o]) != PDF_OK);
+    
+      /*
+       * Eval for some values
+       */
+      in[0] = -1.43;
+      in[1] = 1.43; 
+      fail_if (pdf_fp_func_eval (func, in, out, &debug) != PDF_ETYPE4,
+               TXT_ERR_EVALSUCC, ops[o]);
+      fail_if (debug.type4.status != PDF_EBADTYPE,
+              TXT_ERR_ESTATUS, ops[o]);
+    }
+}
+END_TEST
+
+/*
+ * Test: pdf_fp_func_eval_207
+ * Description:
+ *   Evaluate a type 4 function and pass the result of an unary
+ *   function that must return a real to a function that requires
+ *   a boolean argument.
+ * Success condition:
+ *   The evaluation does not return an error.
+ */
+START_TEST(pdf_fp_func_eval_207)
+{
+  char *ops[] = { "neg", "abs", "ceiling", "floor", "round", "truncate",
+                  "cvi", "not" };
+  int o;
+
+  for (o = 0; o < sizeof(ops)/sizeof(char*); o++)
+    {
+      pdf_fp_func_t func;
+      pdf_fp_func_debug_t debug;
+
+      pdf_real_t domain[0] = {};
+      pdf_real_t range[2] = {-1.0, 1.0};
+      pdf_real_t in[0];
+      pdf_real_t out[1];
+    
+      /* Create the function */
+      fail_if(pdf_fp_func_4_tmake(0, 1,
+                                  domain,
+                                  range,
+                                  &func,
+                                  "{ 4 %s 1 mod }",
+                                  ops[o]) != PDF_OK);
+    
+      /*
+       * Eval for some values
+       */
+      fail_if (pdf_fp_func_eval (func, in, out, &debug) != PDF_OK,
+               TXT_ERR_EVAL, ops[o]);
+    }
+}
+END_TEST
+
+/*
+ * Test: pdf_fp_func_eval_208
+ * Description:
+ *   Evaluate a type 4 function and pass the result of a unary
+ *   function that must return an integer to a function that requires
+ *   an boolean argument.
+ * Success condition:
+ *   Return PDF_ETYPE4, set PDF_EBADTYPE in the debug information,
+ */
+START_TEST(pdf_fp_func_eval_208)
+{
+  char *ops[] = { "neg", "abs", "ceiling", "floor", "round", "truncate",
+                  "sqrt", "sin", "cos", "ln", "log", "cvr" };
+  int o;
+
+  for (o = 0; o < sizeof(ops)/sizeof(char*); o++)
+    {
+      pdf_fp_func_t func;
+      pdf_fp_func_debug_t debug;
+
+      pdf_real_t domain[2] = {-10.0, 10.0};
+      pdf_real_t range[2] = {-1.0, 1.0};
+      pdf_real_t in[1];
+      pdf_real_t out[1];
+    
+      /* Create the function */
+      fail_if(pdf_fp_func_4_tmake(1, 1,
+                                  domain,
+                                  range,
+                                  &func,
+                                  "{ %s true and }",
+                                  ops[o]) != PDF_OK);
+    
+      /*
+       * Eval for some values
+       */
+      in[0] = 1.43; 
+      fail_if (pdf_fp_func_eval (func, in, out, &debug) != PDF_ETYPE4,
+               TXT_ERR_EVALSUCC, ops[o]);
+      fail_if (debug.type4.status != PDF_EBADTYPE,
+              TXT_ERR_ESTATUS, ops[o]);
+    }
+}
+END_TEST
 
 /*
  * **3 - Assure that evaluations are correct.
@@ -2648,7 +3001,7 @@ START_TEST(pdf_fp_func_eval_307)
                 domain,
                 range,
                 &func,
-                "{ 1 eq not }") != PDF_OK);
+                "{ 1 eq not { 1 } { 0 } ifelse }") != PDF_OK);
 
     /*
      * Eval for some values
@@ -2717,6 +3070,268 @@ START_TEST(pdf_fp_func_eval_308)
 }
 END_TEST
 
+/*
+ * Test: pdf_fp_func_eval_309
+ * Description:
+ *   Evaluate unary type 4 functions that that uses the stack
+ *   manipulator pop.
+ * Success condition:
+ *   The result of the evaluations should be correct.
+ */
+START_TEST(pdf_fp_func_eval_309)
+{
+    pdf_fp_func_t func;
+    pdf_fp_func_debug_t debug;
+
+    pdf_real_t domain[4] = {-10.0, 10.0, -10.0, 10};
+    pdf_real_t range[2] = {0, 1};
+    pdf_real_t in[2];
+    pdf_real_t out[1];
+
+    /* Create the function */
+    fail_if(pdf_fp_func_4_tmake(2, 1,
+                domain,
+                range,
+                &func,
+                "{ pop }") != PDF_OK);
+
+    /*
+     * Eval for some values
+     */
+
+    /* x = 0, y = 1 */
+    in[0] = 0;
+    in[1] = 1;
+    fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
+    fail_if(pdf_fp_abs(out[0] - in[0]) > ABS_ERROR);
+}
+END_TEST
+
+/*
+ * Test: pdf_fp_func_eval_310
+ * Description:
+ *   Evaluate unary type 4 functions that that uses the stack
+ *   manipulator exch.
+ * Success condition:
+ *   The result of the evaluations should be correct.
+ */
+START_TEST(pdf_fp_func_eval_310)
+{
+    pdf_fp_func_t func;
+    pdf_fp_func_debug_t debug;
+
+    pdf_real_t domain[4] = {-10.0, 10.0, -10.0, 10};
+    pdf_real_t range[4] = {-10.0, 10.0, -10.0, 10};
+    pdf_real_t in[2];
+    pdf_real_t out[2];
+
+    /* Create the function */
+    fail_if(pdf_fp_func_4_tmake(2, 2,
+                domain,
+                range,
+                &func,
+                "{ exch }") != PDF_OK);
+
+    /*
+     * Eval for some values
+     */
+
+    /* x = 0, y = 1 */
+    in[0] = 0;
+    in[1] = 1;
+    fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
+    fail_if(pdf_fp_abs(out[0] - in[1]) > ABS_ERROR);
+    fail_if(pdf_fp_abs(out[1] - in[0]) > ABS_ERROR);
+}
+END_TEST
+
+/*
+ * Test: pdf_fp_func_eval_311
+ * Description:
+ *   Evaluate unary type 4 functions that that uses the stack
+ *   manipulator dup.
+ * Success condition:
+ *   The result of the evaluations should be correct.
+ */
+START_TEST(pdf_fp_func_eval_311)
+{
+    pdf_fp_func_t func;
+    pdf_fp_func_debug_t debug;
+
+    pdf_real_t domain[2] = {-10.0, 10.0};
+    pdf_real_t range[4] = {-10.0, 10.0, -10.0, 10};
+    pdf_real_t in[1];
+    pdf_real_t out[2];
+
+    /* Create the function */
+    fail_if(pdf_fp_func_4_tmake(1, 2,
+                domain,
+                range,
+                &func,
+                "{ dup }") != PDF_OK);
+
+    /*
+     * Eval for some values
+     */
+
+    /* x = 0, y = 1 */
+    in[0] = 3;
+    fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
+    fail_if(pdf_fp_abs(out[0] - in[0]) > ABS_ERROR);
+    fail_if(pdf_fp_abs(out[1] - in[0]) > ABS_ERROR);
+}
+END_TEST
+
+/*
+ * Test: pdf_fp_func_eval_312
+ * Description:
+ *   Evaluate unary type 4 functions that that uses the stack
+ *   manipulator copy.
+ * Success condition:
+ *   The result of the evaluations should be correct.
+ */
+START_TEST(pdf_fp_func_eval_312)
+{
+    pdf_fp_func_t func;
+    pdf_fp_func_debug_t debug;
+
+    pdf_real_t domain[6] = {-10.0, 10.0, -10.0, 10.0, -10.0, 10.0};
+    pdf_real_t range[10] = {-10.0, 10.0, -10.0, 10.0, -10.0, 10.0,
+                            -10.0, 10.0, -10.0, 10};
+    pdf_real_t in[3];
+    pdf_real_t out[5];
+
+    /* Create the function */
+    fail_if(pdf_fp_func_4_tmake(3, 5,
+                domain,
+                range,
+                &func,
+                "{ 2 copy }") != PDF_OK);
+
+    /*
+     * Eval for some values
+     */
+
+    /* x = 0, y = 1 */
+    in[0] = 3;
+    in[1] = 2;
+    in[2] = 1;
+    fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
+    fail_if(pdf_fp_abs(out[0] - in[0]) > ABS_ERROR);
+    fail_if(pdf_fp_abs(out[1] - in[1]) > ABS_ERROR);
+    fail_if(pdf_fp_abs(out[2] - in[2]) > ABS_ERROR);
+    fail_if(pdf_fp_abs(out[3] - in[1]) > ABS_ERROR);
+    fail_if(pdf_fp_abs(out[4] - in[2]) > ABS_ERROR);
+}
+END_TEST
+
+/*
+ * Test: pdf_fp_func_eval_313
+ * Description:
+ *   Evaluate unary type 4 functions that that uses the stack
+ *   manipulator index.
+ * Success condition:
+ *   The result of the evaluations should be correct.
+ */
+START_TEST(pdf_fp_func_eval_313)
+{
+    pdf_fp_func_t func;
+    pdf_fp_func_debug_t debug;
+
+    pdf_real_t domain[6] = {-10.0, 10.0, -10.0, 10.0, -10.0, 10.0};
+    pdf_real_t range[8] = {-10.0, 10.0, -10.0, 10.0, -10.0, 10.0,
+                           -10.0, 10.0};
+    pdf_real_t in[3];
+    pdf_real_t out[4];
+
+    /* Create the function */
+    fail_if(pdf_fp_func_4_tmake(3, 4,
+                domain,
+                range,
+                &func,
+                "{ 2 index }") != PDF_OK);
+
+    /*
+     * Eval for some values
+     */
+
+    /* x = 0, y = 1 */
+    in[0] = 3;
+    in[1] = 2;
+    in[2] = 1;
+    fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
+    fail_if(pdf_fp_abs(out[0] - in[0]) > ABS_ERROR);
+    fail_if(pdf_fp_abs(out[1] - in[1]) > ABS_ERROR);
+    fail_if(pdf_fp_abs(out[2] - in[2]) > ABS_ERROR);
+    fail_if(pdf_fp_abs(out[3] - in[0]) > ABS_ERROR);
+}
+END_TEST
+
+/*
+ * Test: pdf_fp_func_eval_314
+ * Description:
+ *   Evaluate unary type 4 functions that that uses the stack
+ *   manipulator roll.
+ * Success condition:
+ *   The result of the evaluations should be correct.
+ */
+START_TEST(pdf_fp_func_eval_314)
+{
+    pdf_fp_func_t func;
+    pdf_fp_func_debug_t debug;
+
+    pdf_real_t domain[14] = {-10.0, 10.0, -10.0, 10.0, -10.0, 10.0,
+                             -10.0, 10.0, -10.0, 10.0, -10.0, 10.0,
+                             -10.0, 10.0};
+    pdf_real_t range[10] = {-10.0, 10.0, -10.0, 10.0, -10.0, 10.0,
+                           -10.0, 10.0, -10.0, 10.0};
+    pdf_real_t in[7];
+    pdf_real_t out[5];
+
+    /* Create the function */
+    fail_if(pdf_fp_func_4_tmake(7, 5,
+                domain,
+                range,
+                &func,
+                "{ cvi exch cvi exch roll }") != PDF_OK);
+
+    /*
+     * Eval for some values
+     */
+
+    /* 1 - 2 - 3 - 4 - 5 */
+    in[0] = 1;
+    in[1] = 2;
+    in[2] = 3;
+    in[3] = 4;
+    in[4] = 5;
+    in[5] = 4;
+    in[6] = 3;
+    fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
+    fail_if(pdf_fp_abs(out[0] - in[0]) > ABS_ERROR);
+    fail_if(pdf_fp_abs(out[1] - in[2]) > ABS_ERROR);
+    fail_if(pdf_fp_abs(out[2] - in[3]) > ABS_ERROR);
+    fail_if(pdf_fp_abs(out[3] - in[4]) > ABS_ERROR);
+    fail_if(pdf_fp_abs(out[4] - in[1]) > ABS_ERROR);
+
+    /* 1 - 2 - 3 - 4 - 5 */
+    in[0] = 1;
+    in[1] = 3;
+    in[2] = 4;
+    in[3] = 5;
+    in[4] = 2;
+    in[5] = 4;
+    in[6] = -3;
+    fail_if(pdf_fp_func_eval (func, in, out, NULL) != PDF_OK);
+    fail_if(pdf_fp_abs(out[0] - in[0]) > ABS_ERROR);
+    fail_if(pdf_fp_abs(out[1] - in[4]) > ABS_ERROR);
+    fail_if(pdf_fp_abs(out[2] - in[1]) > ABS_ERROR);
+    fail_if(pdf_fp_abs(out[3] - in[2]) > ABS_ERROR);
+    fail_if(pdf_fp_abs(out[4] - in[3]) > ABS_ERROR);
+}
+END_TEST
+
+
 
 /*
  * **4 - Check some special cases
@@ -2725,84 +3340,78 @@ END_TEST
 /*
  * Test: pdf_fp_func_eval_401
  * Description:
- *   Evaluate a type 4 function that uses the div operator and
- *   supplies invalid arguments (division by zero).
+ *   Evaluate a type 4 function that uses the div, idiv or mod 
+ *   operators and supplies invalid arguments (division by zero).
  * Success condition:
- *   Return PDF_ETYPE4, set PDF_EMATH in the debug information
- *   and the offset of the error is correct.
+ *   Return PDF_ETYPE4, set PDF_EMATH in the debug information,
  */
 START_TEST(pdf_fp_func_eval_401)
 {
-    pdf_fp_func_t func;
-    pdf_fp_func_debug_t debug;
+  char *ops[] = { "div", "idiv", "mod" };
 
-    pdf_real_t domain[4] = {-1000, 1000, -1000.0, 1000};
-    pdf_real_t range[2] = {-1000, 1000};
-    pdf_real_t in[2];
-    pdf_real_t out[1];
+  int o;
 
-    /* Create the function */
-    fail_if(pdf_fp_func_4_tmake (2, 1,
-                domain,
-                range,
-                &func,
-                "{ div }") != PDF_OK);
-
-    /*
-     * Eval for some values
-     */
-
-    /* x = 1, y = 0 */
-    in[0] = 1;
-    in[1] = 0;
-    fail_if(pdf_fp_func_eval (func, in, out, &debug) != PDF_ETYPE4);
-    fail_if (debug.type4.status != PDF_EMATH);
-    fail_if (debug.type4.op != 2); 
-    fail_if (debug.type4.stack[0] != 0);
+  for (o = 0; o < sizeof(ops)/sizeof(char*); o++)
+    {
+      pdf_fp_func_t func;
+      pdf_fp_func_debug_t debug;
+  
+      pdf_real_t domain[4] = {-10, 10, -10.0, 10};
+      pdf_real_t range[2] = {-10, 10};
+      pdf_real_t in[2];
+      pdf_real_t out[1];
+  
+      /* Create the function */
+      fail_if(pdf_fp_func_4_tmake (2, 1,
+                  domain,
+                  range,
+                  &func,
+                  "{ cvi exch cvi exch %s }", ops[o]) != PDF_OK);
+  
+      /*
+       * Eval for some values
+       */
+  
+      /* x = 1, y = 0 */
+      in[0] = 1;
+      in[1] = 0;
+      fail_if(pdf_fp_func_eval (func, in, out, &debug) != PDF_ETYPE4);
+      fail_if (debug.type4.status != PDF_EMATH);
+    }
 }
 END_TEST
 
 /*
  * Test: pdf_fp_func_eval_402
  * Description:
- *   Evaluate a wrong type 4 function and detect the error.
+ *   Evaluate a type 4 function that passes an negative value to
+ *   the sqrt operator.
  * Success condition:
- *   Return PDF_ETYPE4 and the debug information is correct.
+ *   Return PDF_ETYPE4, set PDF_EINVRANGE in the debug information,
  */
 
 START_TEST(pdf_fp_func_eval_402)
 {
     pdf_fp_func_t func;
-    pdf_size_t prog_size;
-    pdf_char_t *prog =
-        "{ "
-        " sqrt "
-        " }";
-
-    pdf_real_t domain[1] = {-1.0};
-    pdf_real_t range[1] = {-1.0};
-    pdf_real_t in[1];
     pdf_fp_func_debug_t debug;
+
+    pdf_real_t domain[2] = {-1.0, 1.0};
+    pdf_real_t range[2] = {-1.0, 1.0};
+    pdf_real_t in[1];
     pdf_real_t out[1];
 
-    prog_size = strlen (prog);
-
-    pdf_init();
-
     /* Create the function */
-    fail_if(pdf_fp_func_4_new (1, 1,
-                domain,
-                range,
-                prog,
-                prog_size,
-                NULL,
-                &func) != PDF_OK);
+    fail_if(pdf_fp_func_4_tmake (1, 1,
+                                 domain,
+                                 range,
+                                 &func,
+                                 "{ sqrt }") != PDF_OK);
 
     /* x = 0, y = 0 */
     in[0] = -1;
     fail_if (pdf_fp_func_eval (func, in, out, &debug) != PDF_ETYPE4);
     fail_if (debug.type4.status != PDF_EINVRANGE);
-    fail_if (debug.type4.op != 3);
+    fail_if (debug.type4.op != 2);
     fail_if (debug.type4.stack[0] != -1);
 }
 END_TEST
@@ -2810,46 +3419,287 @@ END_TEST
 /*
  * Test: pdf_fp_func_eval_403
  * Description:
- *   Evaluate a wrong type 4 function and detect the error.
+ *   Evaluate a  type 4 function that passes invalid values to 
+ *   the log and ln operators.
  * Success condition:
- *   Return PDF_ETYPE4 and the debug information is correct.
+ *   Return PDF_ETYPE4, set PDF_EINVRANGE in the debug information,
  */
 START_TEST(pdf_fp_func_eval_403)
 {
-    pdf_fp_func_t func;
-    pdf_size_t prog_size;
-    pdf_char_t *prog =
-        "{ "
-        " log "
-        " }";
+  char *ops[] = { "log", "ln" };
 
-    pdf_real_t domain[1] = {-1.0};
-    pdf_real_t range[1] = {-1.0};
-    pdf_real_t in[1];
-    pdf_fp_func_debug_t debug;
-    pdf_real_t out[1];
+  int o;
 
-    prog_size = strlen (prog);
-
-    pdf_init();
-
-    /* Create the function */
-    fail_if(pdf_fp_func_4_new (1, 1,
-                domain,
-                range,
-                prog,
-                prog_size,
-                NULL,
-                &func) != PDF_OK);
-
-    /* x = 0, y = 0 */
-    in[0] = -1;
-    fail_if (pdf_fp_func_eval (func, in, out, &debug) != PDF_ETYPE4);
-    fail_if (debug.type4.status != PDF_EINVRANGE);
-    fail_if (debug.type4.op != 3);
-    fail_if (debug.type4.stack[0] != -1);
+  for (o = 0; o < sizeof(ops)/sizeof(char*); o++)
+    {
+      pdf_fp_func_t func;
+      pdf_fp_func_debug_t debug;
+  
+      pdf_real_t domain[2] = {-1.0, 1.0};
+      pdf_real_t range[2] = {-1.0, 1.0};
+      pdf_real_t in[1];
+      pdf_real_t out[1];
+  
+      /* Create the function */
+      fail_if(pdf_fp_func_4_tmake (1, 1,
+                                   domain,
+                                   range,
+                                   &func,
+                                   "{ %s }", ops[o]) != PDF_OK);
+  
+      /* x = 0, */
+      in[0] = 0;
+      fail_if (pdf_fp_func_eval (func, in, out, &debug) != PDF_ETYPE4);
+      fail_if (debug.type4.status != PDF_EINVRANGE);
+      fail_if (debug.type4.op != 2);
+      fail_if (debug.type4.stack[0] != 0);
+  
+      /* x = -1, */
+      in[0] = -1;
+      fail_if (pdf_fp_func_eval (func, in, out, &debug) != PDF_ETYPE4);
+      fail_if (debug.type4.status != PDF_EINVRANGE);
+      fail_if (debug.type4.op != 2);
+      fail_if (debug.type4.stack [0] != -1);
+    }
 }
 END_TEST
+
+
+/*
+ * **5 - General tests
+ */
+
+/*
+ * Test: pdf_fp_func_eval_501
+ * Description:
+ *   Evaluate a type 4 function that returns a boolean value on
+ *   the stack.
+ * Success condition:
+ *   Return PDF_ETYPE4, set PDF_EBADTYPE in the debug information.
+ */
+START_TEST(pdf_fp_func_eval_501)
+{
+  pdf_fp_func_t func;
+  pdf_fp_func_debug_t debug;
+  
+  pdf_real_t domain[0] = {};
+  pdf_real_t range[2] = {-10, 10};
+  pdf_real_t in[0];
+  pdf_real_t out[1];
+  
+  /* Create the function */
+  fail_if(pdf_fp_func_4_tmake (0, 1,
+                               domain,
+                               range,
+                               &func,
+                               "{ true }") != PDF_OK);
+  
+  /*
+   * Eval for some values
+   */
+  
+  fail_if(pdf_fp_func_eval (func, in, out, &debug) != PDF_ETYPE4);
+  fail_if (debug.type4.status != PDF_EBADTYPE);
+}
+END_TEST
+
+/*
+ * Test: pdf_fp_func_eval_502
+ * Description:
+ *   Evaluate a type 4 function that accepts and returns 100 
+ *   arguments.
+ * Success condition:
+ *   The result of the evaluations should be correct.
+ */
+START_TEST(pdf_fp_func_eval_502)
+{
+  pdf_fp_func_t func;
+  pdf_fp_func_debug_t debug;
+  
+  pdf_real_t domain[200];
+  pdf_real_t range[200];
+  pdf_real_t in[100];
+  pdf_real_t out[100];
+
+  int i;
+  for (i = 0; i <= 100; i++)
+    {
+      in[i] = i;
+      domain[i*2] = range[i*2] = -1;
+      domain[i*2+1] = range[i*2+1] = 200;
+    }
+  
+  /* Create the function */
+  fail_if(pdf_fp_func_4_tmake (100, 100,
+                               domain,
+                               range,
+                               &func,
+                               "{ exch }") != PDF_OK);
+  
+  /*
+   * Eval for some values
+   */
+  
+  fail_if(pdf_fp_func_eval (func, in, out, &debug) != PDF_OK);
+  fail_if(memcmp(in, out, sizeof(pdf_real_t) * 98) != 0);
+  fail_if(in[98] != out[99]);
+  fail_if(in[99] != out[98]);
+}
+END_TEST
+
+/*
+ * Test: pdf_fp_func_eval_503
+ * Description:
+ *   Evaluate a type 4 function and pass arguments out of the
+ *   domain.
+ * Success condition:
+ *   The result of the evaluations should be correct.
+ */
+START_TEST(pdf_fp_func_eval_503)
+{
+  pdf_fp_func_t func;
+  pdf_fp_func_debug_t debug;
+  
+  pdf_real_t domain[2] = { 0, 10 };
+  pdf_real_t range[2] = {-10, 100 };
+  pdf_real_t in[1];
+  pdf_real_t out[1];
+  
+  /* Create the function */
+  fail_if(pdf_fp_func_4_tmake (1, 1,
+                               domain,
+                               range,
+                               &func,
+                               "{ true pop }") != PDF_OK);
+  
+  /*
+   * Eval for some values
+   */
+
+  /* x = -3 */ 
+  in[0] = -3; 
+  fail_if(pdf_fp_func_eval (func, in, out, &debug) != PDF_OK);
+  fail_if (out[0] != domain[0]);
+
+  /* x = 20 */
+  in[0] = 20; 
+  fail_if(pdf_fp_func_eval (func, in, out, &debug) != PDF_OK);
+  fail_if (out[0] != domain[1]);
+}
+END_TEST
+
+/*
+ * Test: pdf_fp_func_eval_504
+ * Description:
+ *   Evaluate a type 4 function that must clip its return value
+ *   to the range.
+ * Success condition:
+ *   The result of the evaluations should be correct.
+ */
+START_TEST(pdf_fp_func_eval_504)
+{
+  pdf_fp_func_t func;
+  pdf_fp_func_debug_t debug;
+  
+  pdf_real_t domain[2] = { -10, 100 };
+  pdf_real_t range[2] = { 0, 10 };
+  pdf_real_t in[1];
+  pdf_real_t out[1];
+  
+  /* Create the function */
+  fail_if(pdf_fp_func_4_tmake (1, 1,
+                               domain,
+                               range,
+                               &func,
+                               "{ true pop }") != PDF_OK);
+  
+  /*
+   * Eval for some values
+   */
+
+  /* x = -3 */ 
+  in[0] = -3; 
+  fail_if(pdf_fp_func_eval (func, in, out, &debug) != PDF_OK);
+  fail_if (out[0] != range[0]);
+
+  /* x = 20 */
+  in[0] = 20; 
+  fail_if(pdf_fp_func_eval (func, in, out, &debug) != PDF_OK);
+  fail_if (out[0] != range[1]);
+}
+END_TEST
+
+/*
+ * Test: pdf_fp_func_eval_505
+ * Description:
+ *   Evaluate a type 4 function that causes a stack overflow.
+ * Success condition:
+ *   Return PDF_ETYPE4, set PDF_EINVRANGE in the debug information.
+ */
+START_TEST(pdf_fp_func_eval_505)
+{
+  pdf_fp_func_t func;
+  pdf_fp_func_debug_t debug;
+  
+  pdf_real_t domain[4] = { -10, 100, -10, 100 };
+  pdf_real_t range[2] = { 0, 10 };
+  pdf_real_t in[2];
+  pdf_real_t out[1];
+  
+  /* Create the function */
+  fail_if(pdf_fp_func_4_tmake (2, 1,
+                               domain,
+                               range,
+                               &func,
+                               "{ 1 add }") != PDF_OK);
+  
+  /*
+   * Eval for some values
+   */
+
+  /* x = -3, y = 3 */ 
+  in[0] = -3; 
+  in[1] = 3;
+  fail_if(pdf_fp_func_eval (func, in, out, &debug) != PDF_ETYPE4);
+  fail_if (debug.type4.status != PDF_EINVRANGE);
+}
+END_TEST
+
+/*
+ * Test: pdf_fp_func_eval_506
+ * Description:
+ *   Evaluate a type 4 function that causes a stack underflow.
+ * Success condition:
+ *   Return PDF_ETYPE4, set PDF_EUNDERFLOW in the debug information.
+ */
+START_TEST(pdf_fp_func_eval_506)
+{
+  pdf_fp_func_t func;
+  pdf_fp_func_debug_t debug;
+  
+  pdf_real_t domain[2] = { 0, 10 };
+  pdf_real_t range[4] = { -10, 100, -10, 100 };
+  pdf_real_t in[1];
+  pdf_real_t out[2];
+  
+  /* Create the function */
+  fail_if(pdf_fp_func_4_tmake (1, 2,
+                               domain,
+                               range,
+                               &func,
+                               "{ 1 add }") != PDF_OK);
+  
+  /*
+   * Eval for some values
+   */
+
+  /* x = -3, y = 3 */ 
+  in[0] = -3; 
+  fail_if(pdf_fp_func_eval (func, in, out, &debug) != PDF_ETYPE4);
+  fail_if (debug.type4.status != PDF_EUNDERFLOW);
+}
+END_TEST
+
 
 /*
  * Test case creation function
@@ -2883,6 +3733,14 @@ test_pdf_fp_func_eval (void)
   tcase_add_test(tc, pdf_fp_func_eval_102);
   tcase_add_test(tc, pdf_fp_func_eval_103);
   tcase_add_test(tc, pdf_fp_func_eval_104);
+  tcase_add_test(tc, pdf_fp_func_eval_201);
+  tcase_add_test(tc, pdf_fp_func_eval_202);
+  tcase_add_test(tc, pdf_fp_func_eval_203);
+  tcase_add_test(tc, pdf_fp_func_eval_204);
+  tcase_add_test(tc, pdf_fp_func_eval_205);
+  tcase_add_test(tc, pdf_fp_func_eval_206);
+  tcase_add_test(tc, pdf_fp_func_eval_207);
+  tcase_add_test(tc, pdf_fp_func_eval_208);
   tcase_add_test(tc, pdf_fp_func_eval_301);
   tcase_add_test(tc, pdf_fp_func_eval_302);
   tcase_add_test(tc, pdf_fp_func_eval_303);
@@ -2891,9 +3749,21 @@ test_pdf_fp_func_eval (void)
   tcase_add_test(tc, pdf_fp_func_eval_306);
   tcase_add_test(tc, pdf_fp_func_eval_307);
   tcase_add_test(tc, pdf_fp_func_eval_308);
+  tcase_add_test(tc, pdf_fp_func_eval_309);
+  tcase_add_test(tc, pdf_fp_func_eval_310);
+  tcase_add_test(tc, pdf_fp_func_eval_311);
+  tcase_add_test(tc, pdf_fp_func_eval_312);
+  tcase_add_test(tc, pdf_fp_func_eval_313);
+  tcase_add_test(tc, pdf_fp_func_eval_314);
   tcase_add_test(tc, pdf_fp_func_eval_401);
   tcase_add_test(tc, pdf_fp_func_eval_402);
   tcase_add_test(tc, pdf_fp_func_eval_403);
+  tcase_add_test(tc, pdf_fp_func_eval_501);
+  tcase_add_test(tc, pdf_fp_func_eval_502);
+  tcase_add_test(tc, pdf_fp_func_eval_503);
+  tcase_add_test(tc, pdf_fp_func_eval_504);
+  tcase_add_test(tc, pdf_fp_func_eval_505);
+  tcase_add_test(tc, pdf_fp_func_eval_506);
   return tc;
 }
 
