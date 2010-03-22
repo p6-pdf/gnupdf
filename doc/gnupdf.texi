@@ -4791,6 +4791,16 @@ XXX
 An opaque type representing a floating-point number.
 @end deftp
 
+The following constants specify the valid ranges for this data type:
+
+@deftp {Constant} PDF_REAL_MAX
+Maximum value able to be stored in a @code{pdf_real_t} variable.
+@end deftp
+
+@deftp {Constant} PDF_REAL_MIN
+Minimum value able to be stored in a @code{pdf_real_t} variable.
+@end deftp
+
 @deftp {Data Type} {struct pdf_point_s}
 
 This structure represents a single point. The coordinates of the point

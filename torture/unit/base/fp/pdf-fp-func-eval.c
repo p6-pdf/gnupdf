@@ -3464,6 +3464,64 @@ START_TEST(pdf_fp_func_eval_403)
 }
 END_TEST
 
+/*
+ * Test: pdf_fp_func_eval_404
+ * Description:
+ *   Evaluate a  type 4 function that passes invalid values to 
+ *   the roll operator.
+ * Success condition:
+ *   Return PDF_ETYPE4, set PDF_EINVRANGE in the debug information,
+ */
+START_TEST(pdf_fp_func_eval_404)
+{
+    pdf_fp_func_t func;
+    pdf_fp_func_debug_t debug;
+
+    pdf_real_t domain[14] = {-10.0, 10.0, -10.0, 10.0, -10.0, 10.0,
+                             -10.0, 10.0, -10.0, 10.0, -10.0, 10.0,
+                             -10.0, 10.0};
+    pdf_real_t range[10] = {-10.0, 10.0, -10.0, 10.0, -10.0, 10.0,
+                           -10.0, 10.0, -10.0, 10.0};
+    pdf_real_t in[7];
+    pdf_real_t out[5];
+
+    /* Create the function */
+    fail_if(pdf_fp_func_4_tmake(7, 5,
+                domain,
+                range,
+                &func,
+                "{ cvi exch cvi exch roll }") != PDF_OK);
+
+    /*
+     * Eval for some values
+     */
+
+    /* 1 - 2 - 3 - 4 - 5 */
+    in[0] = 1;
+    in[1] = 2;
+    in[2] = 3;
+    in[3] = 4;
+    in[4] = 5;
+    in[5] = 6;
+    in[6] = 3;
+    fail_if (pdf_fp_func_eval (func, in, out, &debug) != PDF_ETYPE4);
+    fail_if (debug.type4.status != PDF_EINVRANGE);
+    fail_if (debug.type4.op != 20);
+
+    /* 1 - 2 - 3 - 4 - 5 */
+    in[0] = 1;
+    in[1] = 3;
+    in[2] = 4;
+    in[3] = 5;
+    in[4] = 2;
+    in[5] = -1;
+    in[6] = -3;
+    fail_if (pdf_fp_func_eval (func, in, out, &debug) != PDF_ETYPE4);
+    fail_if (debug.type4.status != PDF_EINVRANGE);
+    fail_if (debug.type4.op != 20);
+}
+END_TEST
+
 
 /*
  * **5 - General tests
@@ -3700,6 +3758,77 @@ START_TEST(pdf_fp_func_eval_506)
 }
 END_TEST
 
+/*
+ * Test: pdf_fp_func_eval_507
+ * Description:
+ *   Evaluate a type 4 function that causes a stack overflow.
+ * Success condition:
+ *   Return PDF_ETYPE4, set PDF_EOVERFLOW in the debug information.
+ */
+START_TEST(pdf_fp_func_eval_507)
+{
+  pdf_fp_func_t func;
+  pdf_fp_func_debug_t debug;
+  
+  pdf_real_t domain[198];
+  pdf_real_t range[4] = { -10, 100, -10, 100 };
+  pdf_real_t in[99];
+  pdf_real_t out[2];
+  
+  /* Create the function */
+  fail_if(pdf_fp_func_4_tmake (99, 2,
+                               domain,
+                               range,
+                               &func,
+                               "{ 99 copy 198 copy "
+                               "  396 copy }") != PDF_OK);
+  
+  /*
+   * Eval for some values
+   */
+
+  /* x = -3, y = 3 */ 
+  in[0] = -3; 
+  fail_if(pdf_fp_func_eval (func, in, out, &debug) != PDF_ETYPE4);
+  fail_if (debug.type4.status != PDF_EOVERFLOW);
+}
+END_TEST
+
+/*
+ * Test: pdf_fp_func_eval_508
+ * Description:
+ *   Evaluate a type 4 function that exceeds implementation limits.
+ * Success condition:
+ *   Return PDF_ETYPE4, set PDF_EIMPLLIMIT in the debug information.
+ */
+START_TEST(pdf_fp_func_eval_508)
+{
+  pdf_fp_func_t func;
+  pdf_fp_func_debug_t debug;
+  
+  pdf_real_t domain[2] = { PDF_REAL_MIN, PDF_REAL_MAX };
+  pdf_real_t range[2] = { PDF_REAL_MIN, PDF_REAL_MAX };
+  pdf_real_t in[1];
+  pdf_real_t out[1];
+  
+  /* Create the function */
+  fail_if(pdf_fp_func_4_tmake (1, 1,
+                               domain,
+                               range,
+                               &func,
+                               "{ dup mul dup mul dup mul }") != PDF_OK);
+  
+  /*
+   * Eval for some values
+   */
+
+  /* x = -3, y = 3 */ 
+  in[0] = PDF_REAL_MAX; 
+  fail_if(pdf_fp_func_eval (func, in, out, &debug) != PDF_ETYPE4);
+  fail_if (debug.type4.status != PDF_EIMPLLIMIT);
+}
+END_TEST
+
 
 /*
  * Test case creation function
@@ -3758,12 +3887,15 @@ test_pdf_fp_func_eval (void)
   tcase_add_test(tc, pdf_fp_func_eval_401);
   tcase_add_test(tc, pdf_fp_func_eval_402);
   tcase_add_test(tc, pdf_fp_func_eval_403);
+  tcase_add_test(tc, pdf_fp_func_eval_404);
   tcase_add_test(tc, pdf_fp_func_eval_501);
   tcase_add_test(tc, pdf_fp_func_eval_502);
   tcase_add_test(tc, pdf_fp_func_eval_503);
   tcase_add_test(tc, pdf_fp_func_eval_504);
   tcase_add_test(tc, pdf_fp_func_eval_505);
   tcase_add_test(tc, pdf_fp_func_eval_506);
+  tcase_add_test(tc, pdf_fp_func_eval_507);
+  tcase_add_test(tc, pdf_fp_func_eval_508);
   return tc;
 }
 
