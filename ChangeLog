@@ -1,3 +1,13 @@
+2010-03-22  Johannes Tax <johannes.tax@gmx.at>
+
+	* doc/gnupdf.texi: Documented PDF_REAL_MAX and PDF_REAL_MIN.
+
+	* src/base/pdf-fp-func.c: Removed obsolete check in the roll
+	operator.
+
+	* torture/unit/base/fp/pdf-fp-func-eval.c: Added unit tests to
+	exercise the errors PDF_EOVERFLOW and PDF_EIMPLLIMIT.
+
 2010-03-21  Johannes Tax <johannes.tax@gmx.at>
 
 	* src/base/pdf-fp-func.c: Some small modifications for type
