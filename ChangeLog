@@ -1,5 +1,9 @@
 2010-03-23  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* doc/gnupdf.texi (Floating Point Constants): Documentation for
+	PDF_REAL_MIN and PDF_REAL_MAX moved from "Floating Point Types".
+	(Floating Point Constants): Use a deftp block to describe PDF_PI.
+
 	* Makefile.am (@echo "Version): Use $(VERSION) instead of
 	@VERSION@.
 
@@ -13,6 +17,16 @@
 
 	* Makefile.am: Include `libgnupdf.pc' file in dist and pkgconfig
 	configuration.
+
+2010-03-22  Johannes Tax <johannes.tax@gmx.at>
+
+	* doc/gnupdf.texi: Documented PDF_REAL_MAX and PDF_REAL_MIN.
+
+	* src/base/pdf-fp-func.c: Removed obsolete check in the roll
+	operator.
+
+	* torture/unit/base/fp/pdf-fp-func-eval.c: Added unit tests to
+	exercise the errors PDF_EOVERFLOW and PDF_EIMPLLIMIT.
 
 2010-03-21  Johannes Tax <johannes.tax@gmx.at>
 

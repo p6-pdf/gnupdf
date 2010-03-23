@@ -4782,7 +4782,17 @@ XXX
 @node Floating Point Constants
 @subsection Floating Point Constants
 
-@code{PDF_PI} contains the value of pi.
+@deftp {Constant} PDF_PI
+The value of PI.
+@end deftp
+
+@deftp {Constant} PDF_REAL_MAX
+Maximum value able to be stored in a @code{pdf_real_t} variable.
+@end deftp
+
+@deftp {Constant} PDF_REAL_MIN
+Minimum value able to be stored in a @code{pdf_real_t} variable.
+@end deftp
 
 @node Floating Point Types
 @subsection Floating Point Types
@@ -4790,6 +4800,8 @@ XXX
 @deftp {Data Type} pdf_real_t
 An opaque type representing a floating-point number.
 @end deftp
+
+The following constants specify the valid ranges for this data type:
 
 @deftp {Data Type} {struct pdf_point_s}
 

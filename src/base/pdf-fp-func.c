@@ -1639,8 +1639,6 @@ pdf_eval_type4 (pdf_fp_func_t t,
                 struct t_stack pp[NSTACK];
                 int pos;
                 s = (j-1) % n;
-                if (s < 0)
-                  s += n;
                 for (pos = 0; pos < n; pos++)
                   {
                     if (s < 0)
