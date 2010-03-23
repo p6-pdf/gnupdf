@@ -1,3 +1,19 @@
+2010-03-23  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* Makefile.am (@echo "Version): Use $(VERSION) instead of
+	@VERSION@.
+
+	* MANIFEST.wiki: Added description for libgnupdf.pc.in.
+
+2010-03-22  Aleksander Morgado  <aleksander@gnu.org>
+
+	* libgnupdf.pc.in: New file, pkg-config configuration.
+
+	* configure.ac: Generate the `libgnupdf.pc' file.
+
+	* Makefile.am: Include `libgnupdf.pc' file in dist and pkgconfig
+	configuration.
+
 2010-03-21  Johannes Tax <johannes.tax@gmx.at>
 
 	* src/base/pdf-fp-func.c: Some small modifications for type
