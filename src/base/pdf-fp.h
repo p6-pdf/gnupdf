@@ -40,10 +40,8 @@
 
 /* Limits */
 
-/* FIXME: check and document */
 #define PDF_REAL_MAX (340282346638528859811704183484516925440.000000)
 #define PDF_REAL_MIN (-PDF_REAL_MAX)
-#define PDF_INFINITY HUGE_VAL
 
 /* Data types */
 
