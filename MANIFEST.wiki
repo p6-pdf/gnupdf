@@ -50,5 +50,8 @@ The root directory of the distribution contains the following files.
 ; '''maint.mk'''
 : Makefile containing useful rules for the maintainer. This file comes from gnulib.
 
+; '''libgnupdf.pc.in'''
+: pkg-config file for libgnupdf.
+
 ; '''other files...'''
 : Several generated files.
