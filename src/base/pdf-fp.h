@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 22:49:41 jemarch"
+/* -*- mode: C -*- Time-stamp: "2010-03-24 22:13:41 jemarch"
  *
  *       File:         pdf-fp.h
  *       Date:         Sun Feb 10 21:36:37 2008
@@ -40,8 +40,8 @@
 
 /* Limits */
 
-#define PDF_REAL_MAX (340282346638528859811704183484516925440.000000)
-#define PDF_REAL_MIN (-PDF_REAL_MAX)
+#define PDF_REAL_MAX FLT_MAX
+#define PDF_REAL_MIN FLT_MIN
 
 /* Data types */
 

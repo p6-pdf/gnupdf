@@ -217,13 +217,9 @@ sc_prohibit_magic_number_exit:
 # Using EXIT_SUCCESS as the first argument to error is misleading,
 # since when that parameter is 0, error does not exit.  Use `0' instead.
 sc_error_exit_success:
-	@if $(VC_LIST_EXCEPT) | grep -E '\.[chly]$$' > /dev/null; then  \
-	  grep -nE 'error \(EXIT_SUCCESS,'				\
-		$$($(VC_LIST_EXCEPT) | grep -E '\.[chly]$$') &&		\
-	  { echo '$(ME): found error (EXIT_SUCCESS'			\
-		1>&2; exit 1; } || :;					\
-	else :;								\
-	fi
+	@grep -nE 'error \(EXIT_SUCCESS,'				\
+	    $$($(VC_LIST_EXCEPT) | grep -E '\.[chly]$$') &&		\
+	  { echo '$(ME): found error (EXIT_SUCCESS' 1>&2; exit 1; } || :
 
 # `FATAL:' should be fully upper-cased in error messages
 # `WARNING:' should be fully upper-cased, or fully lower-cased
@@ -456,6 +452,19 @@ sc_prohibit_signal_without_use:
 	re='\<($(_sig_function_re)) *\(|\<($(_sig_syms_re))\>'		\
 	  $(_header_without_use)
 
+# Get the list of symbol names with this:
+# perl -lne '/^# *define (\w+)\(/ and print $1' lib/intprops.h|grep -v '^s'|fmt
+_intprops_names =							\
+  TYPE_IS_INTEGER TYPE_TWOS_COMPLEMENT TYPE_ONES_COMPLEMENT		\
+  TYPE_SIGNED_MAGNITUDE TYPE_SIGNED TYPE_MINIMUM TYPE_MAXIMUM		\
+  INT_STRLEN_BOUND INT_BUFSIZE_BOUND
+_intprops_syms_re = $(subst $(_sp),|,$(strip $(_intprops_names)))
+# Prohibit the inclusion of intprops.h without an actual use.
+sc_prohibit_intprops_without_use:
+	@h='"intprops.h"'						\
+	re='\<($(_intprops_syms_re)) *\('				\
+	  $(_header_without_use)
+
 sc_obsolete_symbols:
 	@re='\<(HAVE''_FCNTL_H|O''_NDELAY)\>'				\
 	msg='do not use HAVE''_FCNTL_H or O'_NDELAY			\
@@ -551,6 +560,13 @@ _GFDL_regexp = (Free ''Documentation.*Version 1\.[^3]|Version 1\.[^3] or any)
 sc_GFDL_version:
 	@re='$(_GFDL_regexp)' msg='GFDL vN, N!=3'			\
 	  $(_prohibit_regexp)
+
+# Don't use Texinfo @acronym{} as it is not a good idea.
+sc_texinfo_acronym:
+	@grep -nE '@acronym{'						\
+	    $$($(VC_LIST_EXCEPT) | grep -E '\.texi$$') &&		\
+	  { echo '$(ME): found use of Texinfo @acronym{}' 1>&2;		\
+	    exit 1; } || :
 
 cvs_keywords = \
   Author|Date|Header|Id|Name|Locker|Log|RCSfile|Revision|Source|State
@@ -656,22 +672,16 @@ news-check: NEWS
 	fi
 
 sc_makefile_TAB_only_indentation:
-	@if $(VC_LIST_EXCEPT) | grep -E 'akefile|\.mk$$' > /dev/null; then	\
-	grep -nE '^	[ ]{8}'							\
-		$$($(VC_LIST_EXCEPT) | grep -E 'akefile|\.mk$$')		\
-	    && { echo '$(ME): found TAB-8-space indentation' 1>&2;		\
-		exit 1; } || :;							\
-	else :;									\
-	fi
+	@grep -nE '^	[ ]{8}'						\
+	    $$($(VC_LIST_EXCEPT) | grep -E 'akefile|\.mk$$')		\
+	  && { echo '$(ME): found TAB-8-space indentation' 1>&2;	\
+	       exit 1; } || :
 
 sc_m4_quote_check:
-	@if $(VC_LIST_EXCEPT) | grep -E '(^configure\.ac|\.m4)$$' > /dev/null; then	\
-	  grep -nE '(AC_DEFINE(_UNQUOTED)?|AC_DEFUN)\([^[]'				\
-		$$($(VC_LIST_EXCEPT) | grep -E '(^configure\.ac|\.m4)$$')		\
-	    && { echo '$(ME): quote the first arg to AC_DEF*' 1>&2;			\
-		exit 1; } || :;								\
-	else :;										\
-	fi
+	@grep -nE '(AC_DEFINE(_UNQUOTED)?|AC_DEFUN)\([^[]'		\
+	    $$($(VC_LIST_EXCEPT) | grep -E '(^configure\.ac|\.m4)$$')	\
+	  && { echo '$(ME): quote the first arg to AC_DEF*' 1>&2;	\
+	       exit 1; } || :
 
 fix_po_file_diag = \
 'you have changed the set of files with translatable diagnostics;\n\
@@ -710,12 +720,9 @@ sc_po_check:
 # path separator of `:', but rather the automake-provided `$(PATH_SEPARATOR)'.
 msg = '$(ME): Do not use `:'\'' above; use $$(PATH_SEPARATOR) instead'
 sc_makefile_path_separator_check:
-	@if $(VC_LIST_EXCEPT) | grep -E 'akefile|\.mk$$' > /dev/null; then	\
-	  grep -nE 'PATH[=].*:'							\
-		$$($(VC_LIST_EXCEPT) | grep -E 'akefile|\.mk$$')		\
-	     && { echo $(msg) 1>&2; exit 1; } || :;				\
-	else :;									\
-	fi
+	@grep -nE 'PATH[=].*:'						\
+	    $$($(VC_LIST_EXCEPT) | grep -E 'akefile|\.mk$$')		\
+	  && { echo $(msg) 1>&2; exit 1; } || :
 
 # Check that `make alpha' will not fail at the end of the process.
 writable-files:
@@ -759,8 +766,9 @@ sc_copyright_check:
 # tests many undefined macros, and so we can't enable that option.
 # So at least preclude common boolean strings as macro values.
 sc_Wundef_boolean:
-	@grep -Ei '^#define.*(yes|no|true|false)$$' '$(CONFIG_INCLUDE)' && \
-	  { echo 'Use 0 or 1 for macro values' 1>&2; exit 1; } || :
+	@test -e '$(CONFIG_INCLUDE)' &&                                 \
+	   grep -Ei '^#define.*(yes|no|true|false)$$' '$(CONFIG_INCLUDE)' && \
+	     { echo 'Use 0 or 1 for macro values' 1>&2; exit 1; } || :
 
 sc_vulnerable_makefile_CVE-2009-4029:
 	@files=$$(find $(srcdir) -name Makefile.in);			\

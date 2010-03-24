@@ -1,3 +1,19 @@
+2010-03-24  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* .x-sc_texinfo_acronym: New file.
+
+	* doc/gnupdf-hg.texi: Don't use the @acronym{} Texinfo tag.
+
+	* float module imported from gnulib.
+
+	* gnulib update.
+
+	* src/base/pdf-fp.h: Define PDF_REAL_MAX and PDF_REAL_MIN in terms
+	of FLT_MAX and FLT_MIN.
+
+	* doc/gnupdf.texi (Architectural limits): The smallest real value
+	is FLT_MIN, not -FLT_MAX.
+
 2010-03-23  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf.texi (Floating Point Constants): Documentation for
