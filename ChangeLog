@@ -1,5 +1,7 @@
 2010-03-24  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* .x-sc_texinfo_acronym: New file.
+
 	* doc/gnupdf-hg.texi: Don't use the @acronym{} Texinfo tag.
 
 	* float module imported from gnulib.
