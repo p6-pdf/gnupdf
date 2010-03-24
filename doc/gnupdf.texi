@@ -15232,7 +15232,7 @@ specifications.
 @tab FLT_MAX
 @tab Largest real value.
 @item real
-@tab -FLT_MAX
+@tab FLT_MIN
 @tab Smallest real value.
 @item string in content stream
 @tab SIZE_MAX/2
