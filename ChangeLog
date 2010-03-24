@@ -1,5 +1,9 @@
 2010-03-24  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* float module imported from gnulib.
+
+	* gnulib update.
+
 	* src/base/pdf-fp.h: Define PDF_REAL_MAX and PDF_REAL_MIN in terms
 	of FLT_MAX and FLT_MIN.
 
