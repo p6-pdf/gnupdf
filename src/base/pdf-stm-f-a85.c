@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/12/16 20:51:22 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-stm-f-a85.c
  *       Date:         Mon Jul  9 22:01:41 2007
@@ -47,8 +47,8 @@ static pdf_status_t
 pdf_stm_f_a85dec_getnext (pdf_buffer_t in, pdf_char_t * pc);
 
 static pdf_status_t
-pdf_stm_f_a85_write_outbuff (pdf_char_t c, pdf_buffer_t out,
-                             pdf_stm_f_a85_t filter_state);
+pdf_stm_f_a85_write_out (pdf_char_t c, pdf_buffer_t out,
+                         pdf_stm_f_a85_t filter_state);
 
 static pdf_status_t
 pdf_stm_f_a85_flush_outbuff (pdf_buffer_t out, pdf_stm_f_a85_t filter_state);

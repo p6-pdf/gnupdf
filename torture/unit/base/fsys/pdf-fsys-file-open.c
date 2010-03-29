@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "10/02/03 21:11:56 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-fsys-file-open.c
  *       Date:         Sat May  2 00:02:09 2009

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 22:51:07 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-stm-f-aesv2.h
  *       Date:         Fri Dec  5 16:58:49 2008

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-09-15 05:30:37 david"
+/* -*- mode: C -*-
  *
  *       File:         pdf-crypt-md-new.c
  *       Date:         Wed Mar  12 12:43:00 2008

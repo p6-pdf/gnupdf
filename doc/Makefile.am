@@ -20,6 +20,8 @@ noinst_TEXINFOS = gnupdf-tsd.texi gnupdf-hg.texi gnupdf-arch.texi
 info_TEXINFOS = gnupdf.texi gnupdf-utils.texi
 gnupdf_TEXINFOS = fdl.texi
 
+EXTRA_DIST = gnupdf-arch-figures gnupdf-figures gnupdf-hg-figures
+
 AM_MAKEINFOHTMLFLAGS = --css-include=manuals.css
 
 gnupdf-tsd.texi: generated-tsd.texi
@@ -64,7 +66,7 @@ endif # TEXI2HTML
 clean-local:
 	-rm -f gnupdf.info gnupdf-utils.info gnupdf-hg.info gnupdf-tsd.info
 	-rm -f gnupdf.wiki gnupdf-utils.wiki gnupdf-hg.wiki gnupdf-tsd.wiki
-	-rm -f gnupdf.html gnupdf-utils.html
+	-rm -f gnupdf.html gnupdf-utils.html gnupdf-utils.dvi
 	-rm -f gnupdf-arch.info gnupdf-arch.html gnupdf-arch.wiki
 	-rm -r gnupdf-arch-manual
 	-rm -r gnupdf-hg-manual

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 16:06:31 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         tsuite-token.c
  *       Date:         Wed Jan 14 05:43:09 2009

@@ -1,8 +1,283 @@
+2010-03-24  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* .x-sc_texinfo_acronym: New file.
+
+	* doc/gnupdf-hg.texi: Don't use the @acronym{} Texinfo tag.
+
+	* float module imported from gnulib.
+
+	* gnulib update.
+
+	* src/base/pdf-fp.h: Define PDF_REAL_MAX and PDF_REAL_MIN in terms
+	of FLT_MAX and FLT_MIN.
+
+	* doc/gnupdf.texi (Architectural limits): The smallest real value
+	is FLT_MIN, not -FLT_MAX.
+
+2010-03-23  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Floating Point Constants): Documentation for
+	PDF_REAL_MIN and PDF_REAL_MAX moved from "Floating Point Types".
+	(Floating Point Constants): Use a deftp block to describe PDF_PI.
+
+	* Makefile.am (@echo "Version): Use $(VERSION) instead of
+	@VERSION@.
+
+	* MANIFEST.wiki: Added description for libgnupdf.pc.in.
+
+2010-03-22  Aleksander Morgado  <aleksander@gnu.org>
+
+	* libgnupdf.pc.in: New file, pkg-config configuration.
+
+	* configure.ac: Generate the `libgnupdf.pc' file.
+
+	* Makefile.am: Include `libgnupdf.pc' file in dist and pkgconfig
+	configuration.
+
+2010-03-22  Johannes Tax <johannes.tax@gmx.at>
+
+	* doc/gnupdf.texi: Documented PDF_REAL_MAX and PDF_REAL_MIN.
+
+	* src/base/pdf-fp-func.c: Removed obsolete check in the roll
+	operator.
+
+	* torture/unit/base/fp/pdf-fp-func-eval.c: Added unit tests to
+	exercise the errors PDF_EOVERFLOW and PDF_EIMPLLIMIT.
+
+2010-03-21  Johannes Tax <johannes.tax@gmx.at>
+
+	* src/base/pdf-fp-func.c: Some small modifications for type
+	checking and for the roll operator.
+	* torture/unit/base/fp/pdf-fp-func-eval.c: Added unit tests for
+	type checking for operator arguments, stack operators and special
+	cases.
+
+2010-02-23  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/pdf-global.c (pdf_finish): Restore 'ret' and initialize it
+	to 'PDF_OK'.
+
+	* torture/unit/runtests.c: Include 'stdlib.h' to provide
+	EXIT_SUCCESS and EXIT_FAILURE.
+
+2010-02-22  Johannes Tax <johannes.tax@gmx.at>
+
+	* src/base/pdf-fp-func.c: Introduced type checks for type 4
+	functions.
+
+	* src/base/pdf-fp.c: Added fp functions needed by type 4
+	functions.
+
+	* src/base/pdf-fp.h: Likewise.
+
+	* src/base/pdf-types.h: Added PDF_I32_MIN, removed misplaced
+	semicolons.
+
+	* torture/unit/base/fp/pdf-fp-func-eval.c: Added tests for type 4
+	functions, mainly for type checking and systematic evaluation
+	checks.
+
+2010-02-22  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* utils/pdf-filter.c: Use EXIT_SUCCESS and EXIT_FAILURE in exit
+	calls.
+
+	* utils/pdf-tokeniser.c: Likewise.
+
+	* .x-sc_prohibit_magic_number_exit: New file.
+
+	* .x-sc_obsolete_symbols: New file.
+
+	* .x-sc_makefile_at_at_check: New file.
+
+	* .x-sc_m4_quote_check: New file.
+
+	* doc/fdl.texi: License updated to GFDL 1.3.
+
+	* doc/gnupdf.texi: Likewise.
+
+	* doc/gnupdf-utils.texi: Likewise.
+
+	* doc/gnupdf-tsd.texi: Likewise.
+
+	* doc/gnupdf-hg.texi: Likewise.
+
+	* doc/gnupdf-arch.texi: Likewise.
+
+	* gnulib update.
+
+	* src/pdf-global.c (pdf_finish): Unused variable 'ret' removed.
+
+	* doc/gnupdf-hg.texi (Documenting Your Changes): Added some notes
+	about the updating of the copyright dates in the source files and
+	the need of including a ChangeLog entry along with the patches.
+
+2010-02-21  Scott Fohey  <sfohey@gmail.com>
+
+	* src/base/pdf-stm-f-a85.c: Correction of function prototype
+
+	* src/base/pdf-stm-f-a85.h: Correction of array length to match needs
+
+2010-02-21  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/unit/base/token/pdf-token-read.c: Additional tests for
+	the tokeniser module by Leonardo Nobrega.
+
+2010-02-20  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/pdf-filter.1: Regenerated.
+
+	* doc/pdf-tokeniser.1: Likewise.
+
+	* utils/pdf-tokeniser.c: Support for the --usage argument removed.
+	Version message improved.
+	Help message improved.
+
+	* utils/pdf-tokeniser.h (HELP_ARG): USAGE_ARG removed.
+
+	* utils/pdf-filter.h (HELP_ARG): USAGE_ARG removed.
+
+	* utils/pdf-filter.c: Support for the --usage argument removed.
+	Version message improved.
+	Help message improved.
+
+	* Time-stamp keyword removed from all source files.  Documentation
+	updated to reflect this.
+
+	* doc/gnupdf-hg.texi (File Headers): Remove the recommendation of
+	including a Time-stamp keyword in the source file headers.
+
+	* doc/gnupdf.texi (Big Numbers): Updated return values to reflect
+	PDF_EBADDATA.
+
+	* src/base/pdf-types.c (pdf_i64_assign): Return PDF_EBADDATA
+	instead of PDF_ERROR if 'bignum' is NULL.
+	(pdf_i64_assign_quick): Likewise.
+	(pdf_i64_copy): Likewise.
+	(pdf_i64_add): Likewise.
+	(pdf_i64_abs): Likewise with 'dest'.
+	(pdf_i64_neg): Likewise.
+	(pdf_i64_subtraction): Likewise.
+	(add_long): Compare status returned by 'pdf_i64_add' with PDF_OK
+	instead of PDF_ERROR.
+	(pdf_i64_mult): Likewise.
+	(pdf_i64_div): Likewise, and return PDF_EDIVBYZERO instead of
+	PDF_ERROR if the dividend is zero.
+	(pdf_i64_mod): Likewise.
+
+	* configure.ac: Include package name, version, bug reporting email
+	address and tarball name in AC_INIT invokation.
+
+	* src/base/pdf-fsys-http.h: Copyright years fixed.
+
+	* src/base/pdf-fsys-http.c: End of file comment added.
+	Copyright years fixed.
+
+	* Initial stuff for the HTTP filesystem by Scott Fohey: support
+	for conditional compilation, linking with libcurl, initialization
+	of libcurl in pdf_init and skeletons for
+	'src/base/pdf-fsys-http.[ch]'.
+
+2010-02-19  Aleksander Morgado  <aleksander@es.gnu.org>
+
+	* configure.ac: Check for `srunner_run' in libcheck, which is available
+	in the SVN version. If not found in the installed libcheck, no unit
+	tests will run.
+
+	* torture/unit/Makefile.am (EXTRA_DIST): Include `runtests.sh' in the
+	dist.
+	(top_builddir): The `runtests' binary to execute is generated in
+	builddir.
+	(clean-local): Remove also `tmp.test' when cleaning.
+
+	* torture/testdata/Makefile.am (EXTRA_DIST): Include test data in the
+	dist.
+
+	* doc/Makefile.am (clean-local): Additional file to be removed while
+	cleaning.
+
+	New files to include in the dist.
+	* doc/gnupdf-figures/acquire-counters.eps
+	* doc/gnupdf-figures/object-hierarchy.eps
+
+	* src/Makefile.am (nodist_include_HEADERS): `pdf.h' shouldn't be
+	included in dist.
+	(clean-local): `pdf.h' and `.gcno' files are created in the builddir
+	(EXTRA_DIST): Include `header-autogen' in the dist.
+
+2010-02-17  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* src/base/pdf-fsys-disk.h: Add a 'void *data' parameter to
+	'pdf_fsys_disk_create_folder',
+	'pdf_fsys_disk_get_folder_contents',
+	'pdf_fsys_disk_disk_get_parent',
+	'pdf_fsys_disk_remove_folder', 'pdf_fsys_disk_get_item_props',
+	'pdf_fsys_disk_get_free_space', 'pdf_fsys_disk_item_p',
+	'pdf_fsys_disk_item_readable_p', 'pdf_fsys_disk_item_writable_p',
+	'pdf_fsys_disk_open' and 'pdf_fsys_disk_open_tmp'.
+
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_create_folder): Likewise.
+
+	* src/base/pdf-fsys-def.h (pdf_fsys_def_create_folder): Pass a
+	'NULL' filesystem internal state to the filesystem callback.
+	(pdf_fsys_def_get_folder_contents): Likewise.
+	(pdf_fsys_def_get_parent): Likewise.
+	(pdf_fsys_def_remove_folder): Likewise.
+	(pdf_fsys_def_get_item_props): Likewise.
+	(pdf_fsys_def_item_p): Likewise.
+	(pdf_fsys_def_item_readable_p): Likewise.
+	(pdf_fsys_def_item_writable_p): Likewise.
+	(pdf_fsys_def_get_free_space): Likewise.
+	(pdf_fsys_def_file_open): Likewise.
+	(pdf_fsys_def_file_open_tmp): Likewise.
+
+	* src/base/pdf-fsys.c (pdf_fsys_create_folder): Pass
+	'filesystem->data' to the filesystem callback.
+	(pdf_fsys_get_folder_contents): Likewise.
+	(pdf_fsys_get_parent): Likewise.
+	(pdf_fsys_remove_folder): Likewise.
+	(pdf_fsys_get_item_props): Likewise.
+	(pdf_fsys_item_p): Likewise.
+	(pdf_fsys_item_readable_p): Likewise.
+	(pdf_fsys_item_writable_p): Likewise.
+	(pdf_fsys_get_free_space): Likewise.
+	(pdf_fsys_file_open): Likewise.
+	(pdf_fsys_file_open_tmp): Likewise.
+
+	* src/base/pdf-fsys.h: Add an extra 'data' parameter containing
+	the private state of the filesystem instance to
+	'create_folder_fn', 'get_folder_contents_fn', 'get_parent_fn',
+	'remove_folder_fn', 'get_item_props_fn', 'get_free_space_fn',
+	'item_p_fn', 'item_readable_p_fn', 'item_writable_p_fn',
+	'file_open_fn' and 'file_open_tmp_fn'.
+
+	* src/base/pdf-text.c (pdf_text_new_from_u32): Avoid a possible
+	buffer overflow in sprintf.
+
 2010-02-16  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* doc/gnupdf-arch.texi (Parser functions): Documentation for
 	'pdf_parser_seek'.
 	(Parser functions): Documentation for 'pdf_parser_tell'.
+
+2010-02-16  Aleksander Morgado  <aleksander@gnu.org>
+
+	* build-aux/pdf-text-generate-ucd.c (parse_UnicodeData_line_field):
+	Return error if input 'fieldstart' is NULL.
+	(parse_SpecialCasing_line_field): Idem.
+	(add_entry_to_WordBreak): Avoid unused variables.
+	(add_entry_to_PropList): Idem.
+
+	* src/base/pdf-text-ucd-case.c (pdf_text_ucd_word_change_case): Avoid
+	unneeded data store, as 'new_char_size' is set afterwards.
+
+	* src/base/pdf-text.c (pdf_text_compare_words): Avoid potential segfault
+	when dereferencing a NULL pointer, if the input 'p_ret_code' argument is
+	NULL.
+
+	* src/base/pdf-time-string.c (pdf_time_from_string_generalized_asn1)
+	(pdf_time_from_string_iso8601): The 'has_seconds' flag is not needed in
+	these conversion types (avoid dead store).
 
 2010-02-15  Jose E. Marchesi  <jemarch@gnu.org>
 
@@ -17,10 +292,42 @@
 	* doc/gnupdf-arch.texi (Object Layer): Section on "object values"
 	removed.
 
+2010-02-15  Aleksander Morgado  <aleksander@gnu.org>
+
+	* doc/gnupdf.texi (Dictionary Objects): Fixed API of `pdf_obj_dict_get',
+	`pdf_obj_dict_get_str', `pdf_obj_dict_set' and `pdf_obj_dict_set_str'.
+
+2010-02-14  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi: Documentation of the filesystem implementation
+	callbacks 'init_fn' and 'cleanup_fn'.
+
+	* src/base/pdf-fsys.c (pdf_fsys_create): Invoke the 'init_fn'
+	callback of the filesystem.
+	(pdf_fsys_destroy): Invoke the 'cleanup_fn' callback of the
+	filesystem.
+
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_init): New function.
+	(pdf_fsys_disk_cleanup): New function.
+
+	* src/base/pdf-fsys-disk.h: Define 'pdf_fsys_disk_init' and
+	'pdf_fsys_disk_cleanup'.
+
+	* src/base/pdf-fsys-def.h: Define 'pdf_fsys_def_init' and
+	'pdf_fsys_def_cleanup'.
+
+	* src/base/pdf-fsys.h: Update copyright notices.
+	(struct pdf_fsys_s): Add a member 'void *data' to hold the private
+	state of the underlying implementation, if needed.
+	(struct pdf_fsys_impl_s): New members 'init_fn' and 'cleanup_fn'.
+	Definition of the types 'pdf_fsys_init_fn_t' and
+	'pdf_fsys_cleanup_fn_t'.
+>>>>>>> MERGE-SOURCE
+
 2010-02-11  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_file_open_tmp): Assign
-	the privte data of the created file and set fs.
+	the private data of the created file and set fs.
 
 
 2010-02-07  Jose E. Marchesi  <jemarch@gnu.org>
@@ -92,6 +399,19 @@
 	pdf_fsys_file_open_tmp.
 	(File System Interface Implementation): Documentation for the
 	pdf_fsys_file_open_tmp_fn_t type.
+
+2010-02-02  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-hg.texi (Running the unit tests): Document the usage
+	of FUNCTION and MODULE in make check.
+
+	* torture/unit/runtests.sh: Support for FUNCTION and MODULE in
+	make check.
+
+	* torture/unit/runtests.c: Use getopt for command line arguments
+	parsing.
+	Support for --help and --version.
+	Support for --module and --function.
 
 2010-01-28  Jose E. Marchesi  <jemarch@gnu.org>
 

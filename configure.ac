@@ -18,7 +18,7 @@ dnl
 dnl You should have received a copy of the GNU General Public License
 dnl along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-AC_INIT(src/pdf-global.h)
+AC_INIT([GNU PDF Library],[trunk],[pdf-devel@gnu.org],[libgnupdf])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE(libgnupdf, trunk)
 AM_CONFIG_HEADER(src/config.h)
@@ -90,6 +90,10 @@ have_libjpeg=yes
 AC_CHECK_LIB([jpeg],[jpeg_std_error],[],[have_libjpeg=no])
 AM_CONDITIONAL([LIBJPEG], [test "x$have_libjpeg" != "xno"])
 
+have_libcurl=yes
+AC_CHECK_LIB([curl],[curl_global_init],[],[have_libcurl=no])
+AM_CONDITIONAL([LIBCURL], [test "x$have_libcurl" != "xno"])
+
 have_jbig2dec=yes
 AC_CHECK_LIB([jbig2dec],[jbig2_ctx_new],[],[have_jbig2dec=no])
 AM_CONDITIONAL([JBIG2DEC], [test "x$have_jbig2dec" != "xno"])
@@ -113,7 +117,7 @@ if test x$have_libgcrypt = "xno"; then
 fi
 
 have_check=yes
-AC_CHECK_LIB([check],[suite_create],,[have_check=no])
+AC_CHECK_LIB([check],[srunner_run],,[have_check=no])
 AM_CONDITIONAL([CHECK], [test "x$have_check" != "xno"])
 
 AC_CHECK_LIB([iconv],[iconv_open],[have_iconv=yes],[have_iconv=no])
@@ -250,6 +254,17 @@ AC_ARG_ENABLE([coverage], AS_HELP_STRING([--enable-coverage],
                                         [use_gcov=$enableval], [use_gcov=no])
 AM_CONDITIONAL([USE_COVERAGE], [test "x$use_gcov" = "xyes"])
 
+AC_ARG_ENABLE([fsys-http], AS_HELP_STRING([--enable-fsys-http],
+                                          [Include the HTTP filesystem implementation in the build]),
+                                          [fsys_http=$enableval], [fsys_http=no])
+if test "x$fsys_http" = "xyes"; then
+   if test x$have_libcurl = "xno"; then
+      AC_MSG_ERROR([libcurl is required for HTTP filesystem support. Please install libcurl and rerun autoconf.])
+   fi
+   AC_DEFINE([PDF_FSYS_HTTP],[1],[Include the HTTP filesystem in the build.])
+fi
+AM_CONDITIONAL([FSYS_HTTP], [test "x$fsys_http" != "xno"])
+
 dnl bignums
 AC_ARG_ENABLE([bignum-forcing], AS_HELP_STRING([--enable-bignum-forcing],
                                            [Force the usage of the 64bits bignum implementation even if the system support a suitable native type]),
@@ -271,12 +286,12 @@ AM_CONDITIONAL([NOCHECK], [test "x$use_nocheck" = "xyes"])
 
 dnl Check if Unit testing support is available with Check or No-Check
 ut_support=no
-AM_CONDITIONAL([COMPILE_UT], [test "x$use_nocheck" = "xyes" -o "x$ac_cv_lib_check_suite_create" = "xyes"])
+AM_CONDITIONAL([COMPILE_UT], [test "x$use_nocheck" = "xyes" -o "x$ac_cv_lib_check_srunner_run" = "xyes"])
 if test "x$use_nocheck" = "xyes"; then
   ut_framework="(builtin No-Check)"
   ut_support=yes
 else
-  if test "x$ac_cv_lib_check_suite_create" = "xyes"; then
+  if test "x$ac_cv_lib_check_srunner_run" = "xyes"; then
     ut_framework="(Check)"
     ut_support=yes
   fi
@@ -298,7 +313,7 @@ GNUPDF_VERSION=$VERSION
 AC_SUBST(GNUPDF_VERSION)
 
 dnl Generate output files
-AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile torture/testdata/Makefile torture/unit/Makefile doc/Makefile utils/Makefile prmgt/Makefile prmgt/apic2wiki prmgt/testlog2wiki prmgt/docfuncs prmgt/tsdfuncs src/extract-public-hdr build-aux/Makefile prmgt/get-test-data.sh prmgt/srcinfo-extractor.pl doc/version.texi prmgt/check-api-doc-consistency.pl doc/generate-tsd.pl)
+AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile torture/testdata/Makefile torture/unit/Makefile doc/Makefile utils/Makefile prmgt/Makefile prmgt/apic2wiki prmgt/testlog2wiki prmgt/docfuncs prmgt/tsdfuncs src/extract-public-hdr build-aux/Makefile prmgt/get-test-data.sh prmgt/srcinfo-extractor.pl doc/version.texi prmgt/check-api-doc-consistency.pl doc/generate-tsd.pl libgnupdf.pc)
 
 dnl Report configuration results
 

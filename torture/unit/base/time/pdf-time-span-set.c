@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/12/07 21:32:19 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-time-span-set.c
  *       Date:         Sun Sep 21 16:37:27 2008

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "10/02/03 21:28:36 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-filter.c
  *       Date:         Tue Jul 10 18:42:07 2007
@@ -57,7 +57,6 @@ char *program_name;  /* Initialized in main() */
 static const struct option GNU_longOptions[] =
   {
     {"help", no_argument, NULL, HELP_ARG},
-    {"usage", no_argument, NULL, USAGE_ARG},
     {"version", no_argument, NULL, VERSION_ARG},
     {"readmode", no_argument, NULL, READ_ARG},
     {"input-file", required_argument, NULL, INFILE_ARG},
@@ -101,20 +100,24 @@ static const struct option GNU_longOptions[] =
 
 /* Messages */
 
-char *pdf_filter_version_msg = "pdf_filter 0.1";
+char *pdf_filter_version_msg = "pdf-filter (GNU PDF Utilities) 0.1\n\
+Copyright (C) 2009, 2010 Free Software Foundation, Inc.\n\
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n\
+This is free software: you are free to change and redistribute it.\n\
+There is NO WARRANTY, to the extent permitted by law.";
 
-char *pdf_filter_usage_msg = "\
+char *pdf_filter_help_msg = "\
 Usage: pdf_filter [[OPTIONS] [FILTER FILTER_ARGS]...]\n\
 Filter the standard input with the specified PDF standard filters and \n\
 write the result in the standard output.\n\
 \n\
-available options\n\
+Mandatory arguments to long options are mandatory for short options too.\n\
   --readmode                          test the stream in read mode instead\n\
                                        of write mode.\n\
   -i FILE, --input-file=FILE          Use a given file as the input.\n\
   -o FILE, --output-file=FILE         Use a given file as the output.\n\
   --cache=NUM                         set the stream cache size.\n\n\
-available filters\n\
+filters\n\
   --null                              use the NULL filter\n\
   --ahexdec                           use the ASCII Hex decoder filter\n\
   --ahexenc                           use the ASCII Hex encoder filter\n\
@@ -157,9 +160,10 @@ available filters\n\
 #endif /* 0 */
 "  --lzw-earlychange                   toggles earlychange for next lzw filters\n\
   --jbig2dec-globals=FILE             file containing global segments\n\
-";
-
-char *pdf_filter_help_msg = "";
+\n\
+Report pdf-filter bugs to pdf-devel@gnu.org\n\
+GNU PDF Utilities home page: <http://www.gnupdf.org>\n\
+General help using GNU software: <http://www.gnu.org/gethelp/>";
 
 static pdf_stm_t
 create_stream (int argc, char* argv[], pdf_bool_t* mode, int* last_ci,
@@ -196,7 +200,7 @@ main (int argc, char *argv[])
     {
       /* Only writing streams report errors on pdf_stm_destroy */
       pdf_error (destroy_ret, stderr, "writing to stream");
-      exit(1);
+      exit (EXIT_FAILURE);
     }
 
   if (read_pdf_fsys || write_pdf_fsys)
@@ -206,7 +210,7 @@ main (int argc, char *argv[])
         {
           /* Only writing streams report errors on pdf_stm_destroy */
           pdf_error (destroy_ret, stderr, "writing to stream");
-          exit(1);
+          exit (EXIT_FAILURE);
         }
     }
  
@@ -234,7 +238,7 @@ process_stream (pdf_stm_t stm, pdf_bool_t read_mode, pdf_bool_t read_pdf_fsys,
           if ((ret != PDF_OK) && (ret != PDF_EEOF))
             {
               pdf_error (ret, stderr, "reading from stream");
-              exit (1);
+              exit (EXIT_FAILURE);
             }            
 
           if (write_pdf_fsys)
@@ -243,7 +247,7 @@ process_stream (pdf_stm_t stm, pdf_bool_t read_mode, pdf_bool_t read_pdf_fsys,
               if (ret != PDF_OK)
                 {
                   pdf_error (ret, stderr, "writing to stream");
-                  exit (1);
+                  exit (EXIT_FAILURE);
                 }
             }
           else
@@ -268,7 +272,7 @@ process_stream (pdf_stm_t stm, pdf_bool_t read_mode, pdf_bool_t read_pdf_fsys,
               if ((ret != PDF_OK) && (ret != PDF_EEOF))
                 {
                   pdf_error (ret, stderr, "reading from stream");
-                  exit (1);
+                  exit (EXIT_FAILURE);
                 }            
 
             }
@@ -280,7 +284,7 @@ process_stream (pdf_stm_t stm, pdf_bool_t read_mode, pdf_bool_t read_pdf_fsys,
           if (ret != PDF_OK)
             {
               pdf_error (ret, stderr, "writing to stream");
-              exit (1);
+              exit (EXIT_FAILURE);
             }            
 
         }
@@ -322,20 +326,14 @@ create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
 	  /* COMMON ARGUMENTS */
         case HELP_ARG:
           {
-            fprintf (stdout, "%s\n", pdf_filter_usage_msg);
-            exit (0);
+            fprintf (stdout, "%s\n", pdf_filter_help_msg);
+            exit (EXIT_SUCCESS);
             break;
           }
         case VERSION_ARG:
           {
             fprintf (stdout, "%s\n", pdf_filter_version_msg);
-            exit (0);
-            break;
-          }
-        case USAGE_ARG:
-          {
-            fprintf (stdout, "%s\n", pdf_filter_usage_msg);
-            exit (0);
+            exit (EXIT_SUCCESS);
             break;
           }
 	case READ_ARG:
@@ -350,8 +348,8 @@ create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
             if ((endptr != NULL) && (*endptr != '\0'))
               {
                 /* Error parsing the number */
-                fprintf (stdout, "%s\n", pdf_filter_usage_msg);
-                exit(1);
+                fprintf (stdout, "%s\n", pdf_filter_help_msg);
+                exit (EXIT_FAILURE);
               }
 
 	    break;
@@ -389,7 +387,7 @@ create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
   if (pdf_text_init() != PDF_OK)
     {
       fprintf (stderr, "Error initializing the text module.\n");
-      exit(1);
+      exit (EXIT_FAILURE);
     }
 
   *read_pdf_fsys = PDF_FALSE;
@@ -404,7 +402,7 @@ create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
       if (ret != PDF_OK)
         {
           pdf_error (ret, stderr, "while creating the write stream");
-          exit (1);
+          exit (EXIT_FAILURE);
         }
     }
   else
@@ -418,7 +416,7 @@ create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
           if (ret != PDF_OK)
             {
               pdf_error (ret, stderr, "while creating the read stream");
-              exit (1);
+              exit (EXIT_FAILURE);
             }
         }
       else
@@ -428,7 +426,7 @@ create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
           if (ret != PDF_OK)
             {
               pdf_error (ret, stderr, "while creating the read stream");
-              exit (1);
+              exit (EXIT_FAILURE);
             }
         }
 
@@ -441,7 +439,7 @@ create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
           if (ret != PDF_OK)
             {
               pdf_error (ret, stderr, "while creating the write stream");
-              exit (1);
+              exit (EXIT_FAILURE);
             }
         }
       else
@@ -451,7 +449,7 @@ create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
           if (ret != PDF_OK)
             {
               pdf_error (ret, stderr, "while creating the write stream");
-              exit (1);
+              exit (EXIT_FAILURE);
             }
 
         }
@@ -477,7 +475,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
   if (pdf_crypt_init () != PDF_OK)
     {
       fprintf(stderr, "Error calling pdf_crypt_init().\n");
-      exit (1);
+      exit (EXIT_FAILURE);
     }
 
   /* Install filters */
@@ -493,7 +491,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (ret != PDF_OK)
               {
                 pdf_error (ret, stderr, "while creating the null filter parameters hash table");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             status = pdf_stm_install_filter (stm,
@@ -502,7 +500,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (status != PDF_OK)
               {
                 pdf_error (status, stderr, "while installing the null filter");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             break;
@@ -513,7 +511,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (ret != PDF_OK)
               {
                 pdf_error (ret, stderr, "while creating the ahexdec filter parameters hash table");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             status = pdf_stm_install_filter (stm,
@@ -522,7 +520,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (status != PDF_OK)
               {
                 pdf_error (status, stderr, "while installing the ASCII hex decoder filter");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             break;
@@ -533,7 +531,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (ret != PDF_OK)
               {
                 pdf_error (ret, stderr, "while creating the ahexenc filter parameters hash table");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             status = pdf_stm_install_filter (stm,
@@ -542,7 +540,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (status != PDF_OK)
               {
                 pdf_error (status, stderr, "while installing the ASCII hex encoder filter");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             break;
@@ -554,7 +552,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (ret != PDF_OK)
               {
                 pdf_error (ret, stderr, "while creating the dctdec filter parameters hash table");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
             pdf_stm_install_filter (stm,
                                     PDF_STM_FILTER_DCT_DEC,
@@ -575,7 +573,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (ret != PDF_OK)
               {
                 pdf_error (ret, stderr, "while creating the a85dec filter parameters hash table");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             status = pdf_stm_install_filter (stm,
@@ -584,7 +582,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (status != PDF_OK)
               {
                 pdf_error (status, stderr, "while installing the A85 decoder filter");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             break;
@@ -595,7 +593,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (ret != PDF_OK)
               {
                 pdf_error (ret, stderr, "while creating the a85enc filter parameters hash table");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             status = pdf_stm_install_filter (stm,
@@ -604,7 +602,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (status != PDF_OK)
               {
                 pdf_error (status, stderr, "while installing the A85 encoder filter");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             break;
@@ -650,7 +648,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (ret != PDF_OK)
               {
                 pdf_error (ret, stderr, "while creating the lzwenc filter parameters hash table");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             pdf_hash_add_bool (filter_params, "EarlyChange", lzw_earlychange);
@@ -662,7 +660,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (status != PDF_OK)
               {
                 pdf_error (status, stderr, "while creating the LZW encoder filter");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             break;
@@ -673,7 +671,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (ret != PDF_OK)
               {
                 pdf_error (ret, stderr, "while creating the lzwdec filter parameters hash table");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             pdf_hash_add_bool (filter_params, "EarlyChange", lzw_earlychange);
@@ -685,7 +683,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (status != PDF_OK)
               {
                 pdf_error (status, stderr, "while creating the LZW decoder filter");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             break;
@@ -697,7 +695,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (ret != PDF_OK)
               {
                 pdf_error (ret, stderr, "while creating the flatedec filter parameters hash table");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             status = pdf_stm_install_filter (stm,
@@ -706,7 +704,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (status != PDF_OK)
               {
                 pdf_error (status, stderr, "while installing the flate decoder filter");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             break;
@@ -717,7 +715,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (ret != PDF_OK)
               {
                 pdf_error (ret, stderr, "while creating the flateenc filter parameters hash table");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             status = pdf_stm_install_filter (stm,
@@ -726,7 +724,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (status != PDF_OK)
               {
                 pdf_error (status, stderr, "while installing the flate encoder filter");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             break;
@@ -738,7 +736,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (ret != PDF_OK)
               {
                 pdf_error (ret, stderr, "while creating the rldec filter parameters hash table");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             status = pdf_stm_install_filter (stm,
@@ -748,7 +746,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (status != PDF_OK)
               {
                 pdf_error (status, stderr, "while installing the RunLength decoder filter");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             break;
@@ -759,7 +757,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (ret != PDF_OK)
               {
                 pdf_error (ret, stderr, "while creating the rlenc filter parameters hash table");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             status = pdf_stm_install_filter (stm,
@@ -769,7 +767,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (status != PDF_OK)
               {
                 pdf_error (status, stderr, "while installing the RunLength encoder filter");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             break;
@@ -787,7 +785,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (file == NULL)
               {
                 fprintf (stderr, "error: invalid jbig2 global segments file\n");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             jbig2dec_global_segments = pdf_alloc (fstats.st_size);
@@ -796,7 +794,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
                        1, fstats.st_size, file) != fstats.st_size)
               {
                 fprintf (stderr, "error: reading jbig2 global segments file\n");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             fclose (file);
@@ -808,7 +806,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (ret != PDF_OK)
               {
                 pdf_error (ret, stderr, "while creating the jbig2dec filter parameters hash table");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             if (jbig2dec_global_segments != NULL)
@@ -825,7 +823,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (status != PDF_OK)
               {
                 pdf_error (status, stderr, "while installing the JBIG2 decoder filter");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             /* Note that a reference to this memory remains into the
@@ -842,7 +840,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (ret != PDF_OK)
               {
                 pdf_error (ret, stderr, "while creating the md5enc filter parameters hash table");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             status = pdf_stm_install_filter (stm,
@@ -852,7 +850,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (status != PDF_OK)
               {
                 pdf_error (status, stderr, "while installing the MD5 encoder filter");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             break;
@@ -874,7 +872,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (ret != PDF_OK)
               {
                 pdf_error (ret, stderr, "while creating the aesenc filter parameters hash table");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             if (key != NULL)
@@ -885,7 +883,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             else
               {
                 fprintf (stderr, "You should specify a key for the aesenc filter.\n");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             
@@ -896,7 +894,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (status != PDF_OK)
               {
                 pdf_error (status, stderr, "while installing the AESV2 encoder filter");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             break;
@@ -907,7 +905,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (ret != PDF_OK)
               {
                 pdf_error (ret, stderr, "while creating the aesdec filter parameters hash table");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             if (key != NULL)
@@ -918,7 +916,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             else
               {
                 fprintf (stderr, "You should specify a key for the aesdec filter.\n");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             
@@ -929,7 +927,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (status != PDF_OK)
               {
                 pdf_error (status, stderr, "while installing the AESV2 decoder filter");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             break;
@@ -940,7 +938,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (ret != PDF_OK)
               {
                 pdf_error (ret, stderr, "while creating the v2enc filter parameters hash table");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             if (key != NULL)
@@ -951,7 +949,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             else
               {
                 fprintf (stderr, "You should specify a key for the v2enc filter.\n");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             
@@ -962,7 +960,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (status != PDF_OK)
               {
                 pdf_error (status, stderr, "while installing the V2 encoder filter");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             break;
@@ -973,7 +971,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (ret != PDF_OK)
               {
                 pdf_error (ret, stderr, "while creating the v2dec filter parameters hash table");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             if (key != NULL)
@@ -984,7 +982,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             else
               {
                 fprintf (stderr, "You should specify a key for the v2dec filter.\n");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             
@@ -995,7 +993,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             if (status != PDF_OK)
               {
                 pdf_error (status, stderr, "while installing the V2 decoder filter");
-                exit (1);
+                exit (EXIT_FAILURE);
               }
 
             break;
@@ -1006,8 +1004,8 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
 	case '?':
           {
             /* Error, usage and exit */
-            fprintf (stdout, "%s\n", pdf_filter_usage_msg);
-            exit (1);
+            fprintf (stdout, "%s\n", pdf_filter_help_msg);
+            exit (EXIT_FAILURE);
             break;
           }
         }
@@ -1033,14 +1031,14 @@ open_file (pdf_char_t * name, pdf_fsys_file_t * file,
   if (ret != PDF_OK)
     {
       pdf_error (ret, stderr, "while creating pdf text path");
-      exit (1);
+      exit (EXIT_FAILURE);
     }
 
   ret = pdf_fsys_file_open (NULL, path, mode, file);
   if (ret != PDF_OK)
     {
       pdf_error (ret, stderr, "while opening file '%s'", name);
-      exit (1);
+      exit (EXIT_FAILURE);
     } 
 }
 

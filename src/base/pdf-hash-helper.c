@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 15:54:16 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-hash-helper.c
  *       Date:         Thu Jul 24 21:05:05 2008

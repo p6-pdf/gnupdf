@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 21:58:44 davazp"
+/* -*- mode: C -*-
  *
  *       File:         pdf-stm-tell.c
  *       Date:         Tue Jun 16 22:22:49 2009

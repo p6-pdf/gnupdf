@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/10/28 21:42:34 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         tsuit-stm.c
  *       Date:         Sat Feb 23 21:35:11 2008

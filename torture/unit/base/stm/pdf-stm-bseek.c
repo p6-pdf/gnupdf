@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 21:55:36 davazp"
+/* -*- mode: C -*-
  *
  *       File:         pdf-stm-bseek.c
  *       Date:         Sat Sep 20 18:50:33 2008

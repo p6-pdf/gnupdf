@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 21:37:11 davazp"
+/* -*- mode: C -*-
  *
  *       File:         pdf-realloc.c
  *       Date:         Wed Sep 10 21:28:49 2008

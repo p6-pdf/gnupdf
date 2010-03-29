@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 21:45:54 davazp"
+/* -*- mode: C -*-
  *
  *       File:         pdf-hash-add-hash.c
  *       Date:         Wed Mar  12 12:43:00 2008

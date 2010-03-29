@@ -15,7 +15,7 @@ Copyright @copyright{} 2008 Free Software Foundation, Inc.
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License, Version 1.2 or
+under the terms of the GNU Free Documentation License, Version 1.3 or
 any later version published by the Free Software Foundation; with no
 Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A
 copy of the license is included in the section entitled ``GNU Free
@@ -427,7 +427,7 @@ The standard file header to be used in any source file in the library
 is the following:
 
 @example
-/* -*- mode: C -*- Time-stamp: TIME_STAMP
+/* -*- mode: C -*-
  *
  *       File:         FILE_NAME
  *       Date:         CREATION_TIME
@@ -440,13 +440,6 @@ is the following:
 The entries in the template are:
 
 @table @var
-@item TIME_STAMP
-This is a time stamp with the format: 
-@example
-YYYY-MM-DD hh:mm:ss nickname
-@end example
-Note that if you are writing your code using Emacs then you will get
-the timestamp automatically updated each time you save the file.
 @item FILE_NAME
 The basename of the file.
 @item CREATION_TIME
@@ -602,15 +595,15 @@ called @emph{abstract data types}. This abstraction provides high
 encapsulation of the implementation details of the data types and thus
 allow the definition of @emph{opaque} types.
 
-An @acronym{ADT} is composed by:
+An ADT is composed by:
 
 @itemize @bullet
 @item
 A @emph{data structure} containing the private data that characterizes
-each instance of the @acronym{ADT}.
+each instance of the ADT.
 @item
 A set of @emph{access functions} that implement actions on the
-@acronym{ADT}.
+ADT.
 @end itemize
 
 @menu
@@ -630,24 +623,24 @@ this naming convention:
 pdf-FOO-*.[ch]
 @end example
 
-where @var{FOO} is the name of the @acronym{ADT}; for example,
+where @var{FOO} is the name of the ADT; for example,
 @file{pdf-text-context.c}.
 
-A general header file for the @acronym{ADT} should always be present
+A general header file for the ADT should always be present
 and should be named after:
 
 @example
 pdf-FOO.h
 @end example
 
-where @var{FOO} is again the name of the @acronym{ADT}; for example,
+where @var{FOO} is again the name of the ADT; for example,
 @file{pdf-text.h}.
 
 @node Data Structures For ADTs
 @subsection Data Structures For ADTs
 
 There are two different approaches that shall be used to define the
-data structures containing the private data for an @acronym{ADT}:
+data structures containing the private data for an ADT:
 
 @table @strong
 @item A pointer to a structure
@@ -667,13 +660,13 @@ typedef struct pdf_foo_s *pdf_foo_t;
 @end example
 @item A structure
 In this case a C structure (not a pointer to it) is used to represent
-the @acronym{ADT}:
+the ADT:
 @example
 typedef struct pdf_foo_s pdf_foo_t;
 @end example
 This alternative is indicated in the case where the private data of
-the @acronym{ADT} is small, allowing the developer to allocate
-instances of the @acronym{ADT} in the stack and thus avoiding
+the ADT is small, allowing the developer to allocate
+instances of the ADT in the stack and thus avoiding
 fragmentation of the heap.
 @end table
 
@@ -687,33 +680,33 @@ reference_to_adt_instance1 = adt_instance1;
 @node Access Functions For ADTs
 @subsection Access Functions For ADTs
 
-Every access function implemented by an @acronym{ADT} should have a
+Every access function implemented by an ADT should have a
 prototype conformant to the following convention:
 
 @example
 RETURN_TYPE pdf_FOO_* (pdf_FOO_t adt, args...)
 @end example
 
-where @var{FOO} is the name of the @acronym{ADT}.
+where @var{FOO} is the name of the ADT.
 
 The following standard functions shall be defined:
 
 @table @code
 @item pdf_status_t pdf_FOO_new (args..., pdf_FOO_t *adt)
 This is the function used to create a new instance of the
-@acronym{ADT}. The last parameter of the function should be a pointer
+ADT. The last parameter of the function should be a pointer
 to a @code{pdf_FOO_t} value. The returned status value should indicate
 the state of the operation.
 @item pdf_FOO_destroy (pdf_FOO_t adt)
 This is the function used to destroy an instance of the
-@acronym{ADT}. The memory occupied by the @acronym{ADT} data structure
+ADT. The memory occupied by the ADT data structure
 is freed.
 @end table
 
 @node Opaque Pointers
 @subsection Opaque Pointers
 
-One way to achieve high encapsulation for @acronym{ADT}s is to publish
+One way to achieve high encapsulation for ADTs is to publish
 ``opaque pointers'' in the public header files. The usage of opaque
 pointers also improves binary compatibility.  @footnote{this technique
 is also known as the PIMPL idiom. See
@@ -725,7 +718,7 @@ be to mark the full definition of @code{pdf_foo_t} as public in the
 header file, like:
 
 @example
-/* -*- mode: C -*- Time-stamp: "09/01/19 22:49:48 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-foo.h
  ...
@@ -761,7 +754,7 @@ The solution to both problems is to export a ``opaque pointer'': we
 simply do not export the details about the structure:
 
 @example
-/* -*- mode: C -*- Time-stamp: "09/01/19 22:49:48 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-foo.h
  ...
@@ -826,7 +819,13 @@ integrated in the trunk.
 @node Documenting Your Changes
 @section Documenting Your Changes
 
-Everyone loves documentation! :D
+Everyone loves writing documentation! :D
+
+Please update the dates in the copyright notices in each of the files
+you have modified, if needed.
+
+Please update the file ChangeLog with a summary of which files have
+been changed, along with what the changes were for.
 
 If your change includes new files please update the
 @file{MANIFEST.wiki} in the directory containing the new files.
@@ -1160,13 +1159,25 @@ TEST_FILES = base/stm/pdf-create-file-stm.c \
 @subsection Running the unit tests
 
 The runtests program will run all the defined unit tests of the
-library. It can be invoked (and it is the preferred way) by typing
+library. It can be invoked (and it is the preferred way) by executing:
 
 @example
 $ make check
 @end example
 
-in the terminal.
+It is possible to run the unit tests corresponding to a specific
+library module by using the @command{MODULE} variable:
+
+@example
+$ make check MODULE=fsys
+@end example
+
+It is also possible to run the unit tests corresponding to a specific
+public function by using the @command{FUNCTION} variable:
+
+@example
+$ make check FUNCTION=fsys_close_file
+@end example
 
 The test driver display several messages to the standard output and
 also dump a logfile named @file{ut.log} with details about the test

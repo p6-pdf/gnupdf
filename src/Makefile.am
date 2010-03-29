@@ -38,6 +38,10 @@ FILESYSTEM_MODULE_SOURCES = base/pdf-fsys.c base/pdf-fsys.h \
                             base/pdf-fsys-def.h \
                             base/pdf-fsys-disk.c base/pdf-fsys-disk.h
 
+if FSYS_HTTP
+  FILESYSTEM_MODULE_SOURCES += base/pdf-fsys-http.c base/pdf-fsys-http.h
+endif
+
 STM_MODULE_SOURCES = base/pdf-stm.c base/pdf-stm.h \
                      base/pdf-stm-be.c base/pdf-stm-be.h \
                      base/pdf-stm-filter.h base/pdf-stm-filter.c \
@@ -111,7 +115,7 @@ if COMPILE_BASE_LAYER
   libgnupdf_la_SOURCES += $(BASE_LAYER_SOURCES)
 endif
 
-include_HEADERS = pdf.h
+#include_HEADERS = pdf.h
 libgnupdf_la_LIBADD = $(top_builddir)/lib/libgnu.la $(LIBGCRYPT_LIBS)
 # We want a DLL if compiling for Windows
 if COMPILE_W32_SYSTEM
@@ -123,8 +127,11 @@ if USE_COVERAGE
   AM_CFLAGS += -fprofile-arcs -ftest-coverage
 endif
 
-AM_CPPFLAGS = -I$(top_srcdir)/lib -I$(srcdir)/base \
-              -I$(srcdir)/object -I$(srcdir)/document
+AM_CPPFLAGS = -I$(top_srcdir)/lib \
+              -I$(top_srcdir)/build-aux \
+              -I$(srcdir)/base \
+              -I$(srcdir)/object \
+              -I$(srcdir)/document
 
 
 # Public header generation
@@ -148,6 +155,9 @@ PUBLIC_HDRS = pdf-global.h \
               base/pdf-token-reader.h \
               base/pdf-token-writer.h
 
+
+EXTRA_DIST = header-autogen
+nodist_include_HEADERS = pdf.h
 pdf.h : $(PUBLIC_HDRS)
 	chmod +x $(top_builddir)/src/extract-public-hdr
 	cat $(srcdir)/header-autogen > $@
@@ -170,7 +180,8 @@ pdf.h : $(PUBLIC_HDRS)
 	echo "/* end of pdf.h */" >> $@
 
 clean-local:
-	rm -f $(srcdir)/pdf.h
-	rm -f $(srcdir)/*.gcno
+	rm -f $(top_builddir)/src/pdf.h
+	rm -f $(top_builddir)/src/*.gcno
+
 
 # End of Makefile.am

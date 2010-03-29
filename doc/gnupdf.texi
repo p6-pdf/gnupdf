@@ -8,7 +8,7 @@
 @include version.texi
 @set EDITION first
 
-@copying 
+@copying
 This is the @strong{@value{EDITION}} edition of the @cite{GNU PDF Library
 Reference}, updated for @strong{libgnupdf} version @strong{@value{VERSION}}.
 
@@ -16,7 +16,7 @@ Copyright @copyright{} 2007, 2008, 2009 Free Software Foundation, Inc.
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document
-under the terms of the GNU Free Documentation License, Version 1.2 or
+under the terms of the GNU Free Documentation License, Version 1.3 or
 any later version published by the Free Software Foundation; with no
 Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A
 copy of the license is included in the section entitled ``GNU Free
@@ -64,9 +64,9 @@ GNU PDF Library Reference
 
 Indices
 
-* Global variable index::       
-* Data type index::             
-* Function index::              
+* Global variable index::
+* Data type index::
+* Function index::
 @end menu
 
 @node Overview
@@ -76,19 +76,19 @@ Indices
 @chapter Base Layer
 
 @menu
-* Base Layer Overview::         
-* Error Management::            
-* Memory Allocation::           
-* Basic Types::                 
-* Hash Tables::                 
-* Lists::                       
-* Filtered Streams::            
-* Floating Point Maths::        
-* Encoded Text::                
-* Time Management::             
-* The Filesystem Module::       
-* The Tokeniser::               
-* Encryption::                  
+* Base Layer Overview::
+* Error Management::
+* Memory Allocation::
+* Basic Types::
+* Hash Tables::
+* Lists::
+* Filtered Streams::
+* Floating Point Maths::
+* Encoded Text::
+* Time Management::
+* The Filesystem Module::
+* The Tokeniser::
+* Encryption::
 @end menu
 
 @node Base Layer Overview
@@ -112,9 +112,9 @@ developers. Here we also define status types returned by most
 procedures (there are exceptions though).
 
 @menu
-* Status types::                
-* Error Reporting procedures::  
-* Debugging procedures::        
+* Status types::
+* Error Reporting procedures::
+* Debugging procedures::
 @end menu
 
 @node Status types
@@ -165,7 +165,7 @@ Invalid range
 Error in text encoding
 @end deftp
 
-@deftp {Constant} PDF_ENOMATCH 
+@deftp {Constant} PDF_ENOMATCH
 No matching found
 @end deftp
 
@@ -205,7 +205,7 @@ if (st != PDF_OK)
 
 @deftypefun void pdf_error (const pdf_status_t @var{status}, FILE *@var{fd}, const char *@var{format}, @var{...})
 
-Prints a message with `fprintf (@var{fd}, @var{format}, ...)'; 
+Prints a message with `fprintf (@var{fd}, @var{format}, ...)';
 if @var{status} is nonzero, also prints the corresponding message.
 
 @table @strong
@@ -325,7 +325,7 @@ The requested number of octects to allocate.  If this value is
 @end table
 
 @item Returns
-A pointer to the newly allocated memory. 
+A pointer to the newly allocated memory.
 
 If there is not enough available memory to satisfy the petition then
 @code{NULL} is returned.
@@ -377,12 +377,12 @@ Reallocates memory.
 
 @table @var
 @item pointer
-A pointer to previously allocated memory. 
+A pointer to previously allocated memory.
 
 The memory to reallocate should have been allocated using
 @code{pdf_alloc} or @code{pdf_realloc}.
 @item size
-The new size of the allocated memory chunk. 
+The new size of the allocated memory chunk.
 
 If the requested size is shorter than the original size of the
 allocated memory then it is truncated. Any previous contents in the
@@ -426,11 +426,11 @@ pdf_dealloc (p);
 @section Basic Types
 
 @menu
-* Boolean Types::               
-* Numeric Types::               
-* Big Numbers::                 
-* Memory Buffers::              
-* Progress Monitors::           
+* Boolean Types::
+* Numeric Types::
+* Big Numbers::
+* Memory Buffers::
+* Progress Monitors::
 @end menu
 
 @node Boolean Types
@@ -536,6 +536,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_EBADDATA
+@code{NULL} value in @var{bignum}.
 @end table
 @item Usage example
 @example
@@ -578,6 +580,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_EBADDATA
+@code{NULL} value in @var{bignum}.
 @end table
 @item Usage example
 @example
@@ -593,7 +597,7 @@ if (*p_status != PDF_OK) /*bignum is now -10*/
 @}
 @end example
 @end table
-@end deftypefun	
+@end deftypefun
 
 @deftypefun void pdf_i64_copy (const pdf_i64_t @var{orig}, pdf_i64_t *@var{copy}, pdf_status_t *@var{p_status})
 
@@ -615,6 +619,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_EBADDATA
+@code{NULL} value in @var{bignum}.
 @end table
 @item Usage example
 @example
@@ -653,6 +659,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_EBADDATA
+@code{NULL} value in @var{bignum}.
 @end table
 @item Usage example
 @example
@@ -696,6 +704,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_EBADDATA
+@code{NULL} value in @var{dest}.
 @end table
 @item Usage example
 @example
@@ -738,6 +748,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_EBADDATA
+@code{NULL} value in @var{bignum}.
 @end table
 @item Usage example
 @example
@@ -781,6 +793,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_EBADDATA
+@code{NULL} value in @var{dest}.
 @end table
 @item Usage example
 @example
@@ -823,6 +837,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_EBADDATA
+@code{NULL} value in @var{dest}.
 @end table
 @item Usage example
 @example
@@ -865,6 +881,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_EBADDATA
+@code{NULL} value in @var{bignum}.
 @end table
 @item Usage example
 @example
@@ -908,6 +926,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_EBADDATA
+@code{NULL} value in @var{dest}.
 @end table
 @item Usage example
 @example
@@ -943,6 +963,10 @@ Where 64 bit result is stored
 @end table
 @item Returns
 PDF_OK	Operation successful
+@item PDF_EDIVBYZERO
+Division by zero.
+@item PDF_EBADDATA
+@code{NULL} value in @var{dest}.
 @item Usage example
 @example
 pdf_i64_t *dest;
@@ -981,7 +1005,13 @@ Pointer to a pdf_status_t variable to hold the status of the
 operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
-PDF_OK	Operation successful
+A PDF status value:
+@table @code
+@item PDF_OK 
+Operation successful
+@item PDF_EBADDATA
+@code{NULL} value in @var{dest}.
+@end table
 @item Usage example
 @example
 pdf_i64_t *dest;
@@ -1018,7 +1048,13 @@ Pointer to a pdf_status_t variable to hold the status of the
 operation. If it is @code{NULL} then this parameter is ignored.
 @end table
 @item Returns
-PDF_OK	Operation successful
+A PDF status value:
+@table @code
+@item PDF_OK
+Operation successful.
+@item PDF_EBADDATA
+@code{NULL} value in @var{dest}.
+@end table
 @item Usage example
 @example
 pdf_i64_t *dest;
@@ -1060,7 +1096,7 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
-@item PDF_ERROR
+@item PDF_EBADDATA
 @var{dest} is null
 @end table
 @item Usage example
@@ -1078,7 +1114,7 @@ pdf_i64_mod (dest, dividend, divisor,p_status);
 if ( *p_status != PDF_OK) /* Now dest is 5 */
 @{
    /* Error code */
-@}	
+@}
 @end example
 @end table
 @end deftypefun
@@ -1105,6 +1141,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_EBADDATA
+@code{NULL} value in @var{dest}.
 @end table
 @item Usage example
 @example
@@ -1119,7 +1157,7 @@ dest = &result;
 if (pdf_i64_mod (dest, 105, divisor) != PDF_OK) /* Now dest is 5 */
 @{
    /* Error code */
-@}	
+@}
 @end example
 @end table
 @end deftypefun
@@ -1146,6 +1184,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
+@item PDF_EBADDATA
+@code{NULL} value in @var{dest}.
 @end table
 @item Usage example
 @example
@@ -1160,7 +1200,7 @@ dest = &result;
 if (pdf_i64_mod (dest, dividend, 10) != PDF_OK) /* Now dest is 5 */
 @{
    /* Error code */
-@}	
+@}
 @end example
 @end table
 @end deftypefun
@@ -1185,8 +1225,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
-@item PDF_ERROR
-@var{dest} is null
+@item PDF_EBADDATA
+@code{NULL} value in @var{dest}.
 @end table
 @item Usage example
 @example
@@ -1292,8 +1332,8 @@ A pdf status value:
 @table @code
 @item PDF_OK
 Operation successful
-@item PDF_ERROR
-@var{dest} is null
+@item PDF_EBADDATA
+@code{NULL} value in @var{dest}.
 @end table
 @item Usage example
 @example
@@ -1495,7 +1535,7 @@ my_buffer->wp += 3;
 /* Read data from the buffer until an eob condition */
 while (!pdf_buffer_eob_p (my_buffer))
 @{
-   my_char = my_buffer->data[my_buffer->rp++];   
+   my_char = my_buffer->data[my_buffer->rp++];
 @}
 @end example
 @end table
@@ -1752,15 +1792,15 @@ This callback should return @code{PDF_OK} to the caller.
 @section Hash Tables
 
 @menu
-* Hash Table Types::            
-* Creating and Destroying Hash Tables::  
-* Hash Table properties::       
-* Working with keys::           
-* Adding and removing elements::  
-* Searching elements::          
-* Working with iterators::      
-* Basic dispose functions::     
-* Hash helper functions::       
+* Hash Table Types::
+* Creating and Destroying Hash Tables::
+* Hash Table properties::
+* Working with keys::
+* Adding and removing elements::
+* Searching elements::
+* Working with iterators::
+* Basic dispose functions::
+* Hash helper functions::
 @end menu
 
 @node Hash Table Types
@@ -1997,7 +2037,7 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 @node Adding and removing elements
 @subsection Adding and removing elements
 
-@deftypefun pdf_status_t pdf_hash_add (pdf_hash_t @var{table}, const char @var{*key}, const void @var{*element}, pdf_hash_element_dispose_fn_t @var{disp_fn} ) 
+@deftypefun pdf_status_t pdf_hash_add (pdf_hash_t @var{table}, const char @var{*key}, const void @var{*element}, pdf_hash_element_dispose_fn_t @var{disp_fn} )
 
 Adds the element @var{element} with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done.
 
@@ -2215,7 +2255,7 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 
 @deftypefun pdf_status_t pdf_hash_iterator_destroy (pdf_hash_iterator_t @var{iterator})
 
-Free all resources used by @var{iterator}. 
+Free all resources used by @var{iterator}.
 
 @table @strong
 @item Parameters
@@ -2261,7 +2301,7 @@ pdf_alloc() and don't need to free any other resource.
 
 @deftypefun void pdf_hash_element_dealloc_fn (const void * @var{elt})
 
-Deallocates @var{elt} with pdf_dealloc(). 
+Deallocates @var{elt} with pdf_dealloc().
 
 @table @strong
 @item Parameters
@@ -2284,7 +2324,7 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
       strcpy ((char *) elem, "abc");
 
       /* Add an element to the hash, specifying
-         pdf_hash_element_dealloc_fn as its disposal 
+         pdf_hash_element_dealloc_fn as its disposal
          function */
       pdf_hash_add (hash,
                     "a-key",
@@ -2301,7 +2341,7 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 
 @deftypefun void pdf_hash_key_dealloc_fn (const void * @var{elt})
 
-Deallocates @var{elt} with pdf_dealloc(). 
+Deallocates @var{elt} with pdf_dealloc().
 
 @table @strong
 @item Parameters
@@ -2324,7 +2364,7 @@ if (pdf_hash_new (pdf_hash_key_dealloc_fn, &hash) == PDF_OK)
       strcpy ((char *) elem, "abc");
 
       /* Add an element to the hash, using the key */
-      pdf_hash_add (hash, key, "abc", NULL); 
+      pdf_hash_add (hash, key, "abc", NULL);
 
       /* Destroy the hash (the key disposal function invokes pdf_dealloc
          in the allocated string */
@@ -2381,9 +2421,9 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
       pdf_text_new_from_unicode ("abc", 3,
                                  PDF_TEXT_UTF8,
                                  &hash);
-      
+
       /* Add an element to the hash, specifying
-         pdf_hash_element_dealloc_fn as its disposal 
+         pdf_hash_element_dealloc_fn as its disposal
          function */
       pdf_hash_add_text (hash, "a-key", &elem);
 
@@ -2466,7 +2506,7 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
    @{
       /* Create the element for the hash */
       pdf_time_new (&elem);
-      
+
       /* Add an element to the hash */
       pdf_hash_add_time (hash, "a-key", &elem);
 
@@ -2551,7 +2591,7 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
    @{
       /* Create the element for the hash */
       pdf_list_new (&elem);
-      
+
       /* Add an element to the hash */
       pdf_hash_add_list (hash, "a-key", &elem);
 
@@ -2635,7 +2675,7 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
    @{
       /* Create the element for the hash */
       pdf_hash_new (&elem);
-      
+
       /* Add an element to the hash */
       pdf_hash_add_hash (hash, "a-key", &elem);
 
@@ -2961,14 +3001,14 @@ if (pdf_hash_get_string (table, "a string", &string) != PDF_OK)
 This section describes how to work with unsorted and sorted lists. In case you're going to work with a sorted list, you should use the sorted version of each function if it's available. @xref{Working with sorted lists}.
 
 @menu
-* List Data Types::             
-* Creating and Destroying Lists::  
-* Managing List Properties::    
-* Searching for List Elements::  
-* Setting and Getting List Elements::  
-* Adding and Removing List Elements::  
-* Working with sorted lists::   
-* Working with Iterators::      
+* List Data Types::
+* Creating and Destroying Lists::
+* Managing List Properties::
+* Searching for List Elements::
+* Setting and Getting List Elements::
+* Adding and Removing List Elements::
+* Working with sorted lists::
+* Working with Iterators::
 @end menu
 
 @node List Data Types
@@ -3015,7 +3055,7 @@ Create a new list containing no elements.
 @item Parameters
 @table @var
 @item equals_fn
-A function to compare list elements. 
+A function to compare list elements.
 It is used in sort operations.
 @item dispose_fn
 A function to dispose list elements.
@@ -3023,7 +3063,7 @@ It is used when destroying list elements.
 @item allow_duplicates
 This parameter indicate if the list is allowed to contain duplicate
 elements (elements for which @var{equals_fn} evaluate to
-@code{PDF_TRUE}). 
+@code{PDF_TRUE}).
 @item list
 A pointer to a list where the new one will be saved.
 @end table
@@ -3052,7 +3092,7 @@ if (pdf_list_new (list_element_equal_p, list_element_destroy,  PDF_FALSE,
 
 @deftypefun pdf_status_t pdf_list_destroy (pdf_list_t @var{list})
 
-Destroy a list freeing all used resources. 
+Destroy a list freeing all used resources.
 The elements of the list are disposed first.
 
 @table @strong
@@ -3207,7 +3247,7 @@ if (pdf_list_new (list_element_equal_p,
                                 1,
                                 &node) == PDF_OK)
          @{
-            /* The program should never reach this place, since 
+            /* The program should never reach this place, since
                elem1 occupies the first position (0) in the list */
          @}
    @}
@@ -3272,7 +3312,7 @@ if (pdf_list_new (list_element_equal_p,
                                    1, 3,
                                    &node) == PDF_OK)
          @{
-            /* The program should never reach this place, since 
+            /* The program should never reach this place, since
                elem4 occupies the last position (3) in the list */
          @}
    @}
@@ -3489,7 +3529,7 @@ if (pdf_list_new (list_element_equal_p,
 
       /* Get the index of elem1 */
       if (pdf_list_indexof_from (list,
-                                 1, 
+                                 1,
                                  (void *) &elem1,
                                  &size_of_elem1) == PDF_ENONODE)
          @{
@@ -3619,7 +3659,7 @@ Get the element at a given position in the list.
 @item list
 A list.
 @item position
-A position in @var{list}. 
+A position in @var{list}.
 Must be @code{>= 0} and @code{< pdf_list_size (list)}.
 @item value
 A pointer to which the element will be saved.
@@ -4265,12 +4305,12 @@ Note that the streams operating in memory buffers do not provide
 buffering.
 
 @menu
-* Stream Types::                
-* Creating and Destroying Streams::  
+* Stream Types::
+* Creating and Destroying Streams::
 * Getting and Setting Stream Properties::
-* Managing the Filter Chain::   
-* Reading and Writing Data::    
-* Stream Positioning::          
+* Managing the Filter Chain::
+* Reading and Writing Data::
+* Stream Positioning::
 @end menu
 
 @node Stream Types
@@ -4327,7 +4367,7 @@ MD5 encoder.
 
 @deftypefun pdf_status_t pdf_stm_file_new (pdf_fsys_file_t @var{file}, pdf_off_t @var{offset}, pdf_size_t @var{cache_size}, enum pdf_stm_mode_e @var{mode}, pdf_stm_t *@var{stm})
 
-Create a new stream operating in a given open file. 
+Create a new stream operating in a given open file.
 
 @table @strong
 @item Parameters
@@ -4727,22 +4767,32 @@ XXX
 @section Floating Point Maths
 
 @menu
-* Floating Point Constants::    
-* Floating Point Types::        
-* Rounding Routines::           
-* Exponential and Logarithmic Routines::  
-* Number Conversion Routines::  
-* Trigonometric Routines::      
-* Geometry Routines::           
-* Other Maths Routines::        
-* Creation and Destruction of Functions::  
-* Evaluation of Functions::     
+* Floating Point Constants::
+* Floating Point Types::
+* Rounding Routines::
+* Exponential and Logarithmic Routines::
+* Number Conversion Routines::
+* Trigonometric Routines::
+* Geometry Routines::
+* Other Maths Routines::
+* Creation and Destruction of Functions::
+* Evaluation of Functions::
 @end menu
 
 @node Floating Point Constants
 @subsection Floating Point Constants
 
-@code{PDF_PI} contains the value of pi.
+@deftp {Constant} PDF_PI
+The value of PI.
+@end deftp
+
+@deftp {Constant} PDF_REAL_MAX
+Maximum value able to be stored in a @code{pdf_real_t} variable.
+@end deftp
+
+@deftp {Constant} PDF_REAL_MIN
+Minimum value able to be stored in a @code{pdf_real_t} variable.
+@end deftp
 
 @node Floating Point Types
 @subsection Floating Point Types
@@ -4750,6 +4800,8 @@ XXX
 @deftp {Data Type} pdf_real_t
 An opaque type representing a floating-point number.
 @end deftp
+
+The following constants specify the valid ranges for this data type:
 
 @deftp {Data Type} {struct pdf_point_s}
 
@@ -5656,12 +5708,12 @@ XXX
 @section Encoded Text
 
 @menu
-* Text Data Types::             
-* Creating and Destroying Text::  
-* Managing Text Properties::    
-* Managing Text Contents::      
-* Comparing Text Variables::    
-* Managing Host Encodings::     
+* Text Data Types::
+* Creating and Destroying Text::
+* Managing Text Properties::
+* Managing Text Contents::
+* Comparing Text Variables::
+* Managing Host Encodings::
 @end menu
 
 @node Text Data Types
@@ -5972,7 +6024,7 @@ given unicode encoding. The Unicode string can be given with or without BOM,
 and there mustn't be any language/code information embedded in the string.
 
 Note that for UTF-16BE strings two options are possible to create the
-pdf_text_t object: treating it as a PDF string (so BOM is mandatory and 
+pdf_text_t object: treating it as a PDF string (so BOM is mandatory and
 Language/Country code are optional) or treating it as a general Unicode
 string (so BOM is optional and Language/Country code is not allowed).
 
@@ -6459,8 +6511,8 @@ if (pdf_text_set_unicode (text, str, length, enc) != PDF_OK)
 Concatenate the contents of two text variables (@var{text1} first,
 then @var{text2}) and store the result in @var{text}.
 
-Warning! @var{override_langinfo} is not set and different country/language 
-codes are found within the text variables an error will be returned 
+Warning! @var{override_langinfo} is not set and different country/language
+codes are found within the text variables an error will be returned
 (concatenation not possible). If @var{override_langinfo} is set, the country
  and language information is not checked.
 
@@ -6657,7 +6709,7 @@ switch (pdf_text_cmp (text1, text2, PDF_FALSE))
 
 @deftypefun pdf_text_host_encoding_t pdf_text_get_host_encoding (void)
 
-Return the host encoding configured by the user/system in the locale. 
+Return the host encoding configured by the user/system in the locale.
 
 @table @strong
 @item Parameters
@@ -6741,18 +6793,18 @@ enc = pdf_text_get_best_encoding (text, pref);
 @section Time Management
 
 @menu
-* Time Related Data Types::     
-* Time Creation and Destruction::  
-* Managing Time Values::        
-* Getting Time Intervals::      
-* Time Comparison::             
-* Time Printing and Parsing::   
-* Getting the Current Time::    
-* Time Span Creation and Destruction::  
-* Managing Time Span Values::   
-* Time Span Comparison::        
-* Calendar Spans Management::   
-* Platform-specific functions::  
+* Time Related Data Types::
+* Time Creation and Destruction::
+* Managing Time Values::
+* Getting Time Intervals::
+* Time Comparison::
+* Time Printing and Parsing::
+* Getting the Current Time::
+* Time Span Creation and Destruction::
+* Managing Time Span Values::
+* Time Span Comparison::
+* Calendar Spans Management::
+* Platform-specific functions::
 @end menu
 
 @node Time Related Data Types
@@ -6995,7 +7047,7 @@ The time is represented as a 32-bit unsigned integer.
 @table @strong
 @item Parameters
 @table @var
-@item time_var 
+@item time_var
 The time variable to set. Should be a properly create time variable.
 @item seconds
 Seconds since January 1st 1970, 32-bit unsigned value.
@@ -7025,7 +7077,7 @@ The time is represented as a pdf_i64_t integer.
 @table @strong
 @item Parameters
 @table @var
-@item time_var 
+@item time_var
 The time variable to set. Should be a properly create time variable.
 @item seconds
 Seconds since January 1st 1970, pdf_i64_t variable.
@@ -7517,7 +7569,7 @@ Create a string representation of a given time.
 A properly created time variable.
 @item time_format
 The format to use when creating the string representation of
-@var{time}. 
+@var{time}.
 @item include_trailing_apostrophe
 Append an apostrophe after the GMT offset minutes field, if
 present.  Note that this parameter is ignored if @var{time_format} is
@@ -7581,7 +7633,7 @@ char time_str[] = "D:20090813210000+00'00"; /* 13-August-2009, 21:00
                                                GMT 0 */
 
 mytime = pdf_time_new ();
-if (pdf_time_from_string (mytime, 
+if (pdf_time_from_string (mytime,
                           time_str,
                           PDF_TIME_FORMAT_PDF) == PDF_EBADDATA)
 @{
@@ -7668,7 +7720,7 @@ None.
 
 @item Returns
 The newly created time span variable or @code{NULL} if there is an
-error. 
+error.
 @item Usage example
 @example
 pdf_time_span_t span;
@@ -7944,7 +7996,7 @@ pdf_time_span_diff (span1, span2, span_diff);
 
 @deftypefun pdf_i64_t pdf_time_span_to_secs (const pdf_time_span_t @var{span})
 
-Get the value of a time span in seconds. 
+Get the value of a time span in seconds.
 
 @table @strong
 @item Parameters
@@ -8074,7 +8126,7 @@ if (pdf_time_add_cal_span_with_base (&cal_span1,
                                      &cal_result) == PDF_EBADDATA)
 @{
   /* Invalid data in `cal_span1' or `cal_span2' */
-@}      
+@}
 @end example
 @end table
 @end deftypefun
@@ -8177,8 +8229,8 @@ struct pdf_time_cal_span_s span1;
 struct pdf_time_cal_span_s span2;
 struct pdf_time_cal_span_s result;
 
-/* ...create and manipulate `span1', `span2' and 
- *    `result'... 
+/* ...create and manipulate `span1', `span2' and
+ *    `result'...
  */
 
 if (pdf_time_cal_span_diff (&span1,
@@ -8203,7 +8255,7 @@ This function is only available in Windows OS.
 @table @strong
 @item Parameters
 @table @var
-@item time_var 
+@item time_var
 The time variable to set. Should be a properly create time variable.
 @item p_filetime
 Pointer to a valid FILETIME structure, containing 100-nanosecond intervals since 1 January 1601.
@@ -8234,12 +8286,12 @@ pdf_time_w32_set_from_filetime(mytime, &filetime);
 @section The Filesystem Module
 
 @menu
-* Filesystem Concepts::         
-* Filesystem Interfaces::       
-* The Filesystem Interface::    
-* The File Interface::          
-* The Filesystem Implementation Interface::  
-* The Filesystem Definition Interface::  
+* Filesystem Concepts::
+* Filesystem Interfaces::
+* The Filesystem Interface::
+* The File Interface::
+* The Filesystem Implementation Interface::
+* The Filesystem Definition Interface::
 @end menu
 
 @node Filesystem Concepts
@@ -8269,7 +8321,7 @@ implementation for each supported plattform.
 
 Conceptually speaking a filesystem contain a tree (or several
 trees in some filesystem implementations supporting several
-volumes) of @emph{filesystem items}. 
+volumes) of @emph{filesystem items}.
 
 Each time has a type and several properties. The client can ask the
 filesystem for the properties of a given item identified by a path
@@ -8334,7 +8386,7 @@ The functionality covered by the Filesystem Interface includes:
 @item
 Folder management.
 @item
-Folder contents management. 
+Folder contents management.
 @item
 Volume-level flush operations.
 @item
@@ -8353,10 +8405,10 @@ a functionality in the Filesystem Interface then the specific call
 becomes a no-op.
 
 @menu
-* Filesystem Data Types::       
-* Getting File System Properties::  
-* Folder Management::           
-* Getting File System Item Properties::  
+* Filesystem Data Types::
+* Getting File System Properties::
+* Folder Management::
+* Getting File System Item Properties::
 @end menu
 
 @node Filesystem Data Types
@@ -8490,7 +8542,7 @@ Get the path name of the father of a given item in the filesystem.
 A filesystem. If @code{NULL} the default filesystem is used.
 @item path_name
 The path name of an item in the filesystem.
-@item parent_path 
+@item parent_path
 Output text variable to hold the path of the parent of the item
 identified by @var{path_name}. If @var{path_name} is the root
 directory then @code{NULL} is returned in @var{parent_path}.
@@ -8723,7 +8775,7 @@ pdf_bool_t ret = pdf_fsys_item_readable_p (NULL, path);
 @deftypefun pdf_bool_t pdf_fsys_item_writable_p (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name})
 
 Determine if a given filesystem item, identified by a path name, is
-writable. 
+writable.
 
 @table @strong
 @item Parameters
@@ -8785,15 +8837,15 @@ File flags (status) management.
 @end itemize
 
 @menu
-* File Data Types::             
-* Opening Files::               
-* File Properties Management::  
-* Comparing Files::             
-* Managing File Positions::     
-* Changing the Size of a File::  
-* Synchronous Input/Output::    
-* Read in Advance::             
-* Closing and Reopening Files::  
+* File Data Types::
+* Opening Files::
+* File Properties Management::
+* Comparing Files::
+* Managing File Positions::
+* Changing the Size of a File::
+* Synchronous Input/Output::
+* Read in Advance::
+* Closing and Reopening Files::
 @end menu
 
 
@@ -8826,7 +8878,7 @@ created if it does not exist.
 @item PDF_FSYS_OPEN_MODE_RW
 The file is opened in read/write mode. The file should exist in the
 filesystem.
-@item 
+@item
 @end table
 @end deftp
 
@@ -8848,7 +8900,7 @@ A filesystem. If @code{NULL} the default filesystem is used.
 @item path_name
 A path name that identifies the file to be opened. The format and
 encoding of this text variable depends on the underlying filesystem
-implementation. 
+implementation.
 @item mode
 The open mode to use to open the file.
 @item file
@@ -8857,7 +8909,7 @@ The output file variable.
 @item Returns
 A PDF status value:
 @table @code
-@item PDF_OK 
+@item PDF_OK
 The file was successfully opened and stored in the @var{file}
 variable.
 @item PDF_EBADNAME
@@ -8865,7 +8917,7 @@ The path name specified in @var{path_name} does not identify an existing
 file in the filesystem.
 @item PDF_EBADPERMS
 The client does not have permission to open the specified file using the
-specified mode. 
+specified mode.
 @item PDF_ENOMEM
 Not enough memory.
 @end table
@@ -8874,7 +8926,7 @@ Not enough memory.
 XXX
 @end example
 @end table
-@end deftypefun               
+@end deftypefun
 
 @deftypefun pdf_status_t pdf_fsys_file_open_tmp (const pdf_fsys_t @var{filesystem}, pdf_fsys_file_t *@var{file})
 
@@ -8898,7 +8950,7 @@ The output file variable.
 @item Returns
 A PDF status value:
 @table @code
-@item PDF_OK 
+@item PDF_OK
 The file was successfully opened and stored in the @var{file}
 variable.  If the filesystem implementation does not support this
 functionality then @code{NULL} is stored in @var{file}.
@@ -8920,13 +8972,13 @@ pdf_fsys_file_write (tmpfile, "Temporary data", 14, &written);
 pdf_fsys_file_close (tmpfile);
 @end example
 @end table
-@end deftypefun               
+@end deftypefun
 
 @node File Properties Management
 @subsubsection File Properties Management
 
 The following functions provides access to several properties of open
-files. 
+files.
 
 @deftypefun pdf_size_t pdf_fsys_file_get_size (pdf_fsys_file_t @var{file})
 
@@ -9535,12 +9587,28 @@ The implementation of both interfaces then makes use of the Filesystem
 Implementation Interface in order to honour the petition.
 
 @menu
-* File System Interface Implementation::  
-* File Interface Implementation::  
+* File System Interface Implementation::
+* File Interface Implementation::
 @end menu
 
 @node File System Interface Implementation
 @subsubsection File System Interface Implementation
+
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_init_fn_t) (void **@var{data})}
+
+Filesystem callback called to initialize the filesystem internal
+state, if any.
+
+This callback is called by the @code{pdf_fsys_create} function.
+@end deftp
+
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_cleanup_fn_t) (void *@var{data})}
+
+Filesystem callback called to cleanup the filesystem internal state,
+if any.
+
+This callback is called by the @code{pdf_fsys_destroy} function.
+@end deftp
 
 @deftp {Data Type} {pdf_status_t (*pdf_fsys_file_open_fn_t) (pdf_text_t @var{path_name}, enum pdf_fsys_file_mode_e @var{mode}, pdf_fsys_file_t *@var{file})}
 
@@ -9606,7 +9674,7 @@ interface function.
 @deftp {Data Type} {pdf_status_t (*pdf_fsys_remove_folder_fn_t) (pdf_text_t @var{path_name})}
 
 Filesystem callback used to remove an empty folder identified by
-@var{path_name}. 
+@var{path_name}.
 
 This callback is called by the @code{pdf_fsys_remove_folder}
 filesystem interface function.
@@ -9734,7 +9802,7 @@ The operation was successfully performed and the logical size of the
 file was changed.
 @item PDF_BADPERMS
 The client does not have enough permissions to set the logical size of
-@var{file}. 
+@var{file}.
 @end table
 @end deftp
 
@@ -9865,8 +9933,8 @@ filesystem variable.
 @end itemize
 
 @menu
-* File System Definition Data Types::  
-* File System Definition Functions::  
+* File System Definition Data Types::
+* File System Definition Functions::
 @end menu
 
 @node File System Definition Data Types
@@ -9880,6 +9948,8 @@ implementation.
 The members of the structure are the following:
 
 @table @code
+@item pdf_fsys_init_fn init_fn
+@item pdf_fsys_cleanup_fn cleanup_fn
 @item pdf_fsys_open_fn_t open_fn
 @item pdf_fsys_close_fn_t c close_fn
 @item pdf_fsys_create_folder_fn_t create_folder_fn
@@ -9969,12 +10039,12 @@ The tokeniser module provides functions to:
 @end itemize
 
 @menu
-* Tokeniser data types::        
-* Creation and destruction of tokenisers::  
-* Reading tokens::              
-* Writing tokens::              
-* Creating and destroying tokens::  
-* Accessing token attributes::  
+* Tokeniser data types::
+* Creation and destruction of tokenisers::
+* Reading tokens::
+* Writing tokens::
+* Creating and destroying tokens::
+* Accessing token attributes::
 @end menu
 
 @node Tokeniser data types
@@ -10820,10 +10890,10 @@ The comment's size, in octets.
 This section describes related to encryption functions.
 
 @menu
-* Creating and destroying Ciphers::  
-* Encryption and decryption::   
-* Message digest functions::    
-* Utilities::                   
+* Creating and destroying Ciphers::
+* Encryption and decryption::
+* Message digest functions::
+* Utilities::
 @end menu
 
 
@@ -10998,7 +11068,7 @@ pdf_char_t *out;
 pdf_char_t *in;
 pdf_size_t out_size;
 pdf_size_t in_size;
-  
+
 /* ... */
 out_size = pdf_crypt_cipher_encrypt_size (cipher, in, in_size);
 out = pdf_alloc (out_size);
@@ -11051,7 +11121,7 @@ pdf_char_t *out;
 pdf_char_t *in;
 pdf_size_t out_size;
 pdf_size_t in_size;
-  
+
 /* ... */
 out_size = pdf_crypt_cipher_decrypt_size (cipher, in, in_size);
 out = pdf_alloc (out_size);
@@ -11256,7 +11326,7 @@ Fill a buffer with random bytes.
 @item Parameters
 @table @var
 @item buffer
-Buffer which be filled.  
+Buffer which be filled.
 @item size
 Size of the buffer in bytes.
 @end table
@@ -11282,8 +11352,8 @@ pdf_crypt_nonce (buffer, sizeof(buffer));
 
 @menu
 * Object Layer Overview::
-* PDF Objects::                 
-* Object Documents::            
+* PDF Objects::
+* Object Documents::
 @end menu
 
 @node Object Layer Overview
@@ -11367,20 +11437,20 @@ manipulate all kind of PDF objects: numbers, booleans, names, strings,
 streams and the @code{null} object.
 
 @menu
-* Object Data Types::           
-* Generic Functions to Manipulate Objects::  
-* Object Strong References::    
-* Compressibility of Objects::  
-* Object Collections::          
-* Real Objects::                
-* Integer Objects::             
-* Boolean Objects::             
-* Name Objects::                
-* String Objects::              
-* Array Objects::               
-* Dictionary Objects::          
-* Stream Objects::              
-* Null Object::                 
+* Object Data Types::
+* Generic Functions to Manipulate Objects::
+* Object Strong References::
+* Compressibility of Objects::
+* Object Collections::
+* Real Objects::
+* Integer Objects::
+* Boolean Objects::
+* Name Objects::
+* String Objects::
+* Array Objects::
+* Dictionary Objects::
+* Stream Objects::
+* Null Object::
 @end menu
 
 @node Object Data Types
@@ -11650,7 +11720,7 @@ order is undefined.
 @item Array
 @var{enum_cb} is called for every element contained in the array,
 passing the value as the first argument and the Null object as the second
-argument. 
+argument.
 
 The enumeration order is ascending with the index of the array.
 @item Stream
@@ -11853,7 +11923,7 @@ pdf_obj_id_t id_number;
 
 ...
 
-if (pdf_obj_get_id (obj, &id_number) 
+if (pdf_obj_get_id (obj, &id_number)
     == PDF_OK)
 @{
    /* 'id_number' contains the identification
@@ -12274,8 +12344,8 @@ pdf_obj_col_t col2;
 pdf_obj_col_new (doc, &col1);
 pdf_obj_col_new (doc, &col2);
 
-pdf_obj_col_equal_p (col1, col2); /* Returns PDF_FALSE */ 
-pdf_obj_col_equal_p (col1, col1); /* Returns PDF_TRUE */ 
+pdf_obj_col_equal_p (col1, col2); /* Returns PDF_FALSE */
+pdf_obj_col_equal_p (col1, col1); /* Returns PDF_TRUE */
 @end example
 @end table
 @end deftypefun
@@ -12662,7 +12732,7 @@ Boolean objects can hold just two values:
 
 Can be used as values of array elements, values of dictionary entries
 and as operators in the postscript calculator functions (type 4
-functions). 
+functions).
 
 @deftypefun pdf_status_t pdf_obj_boolean_new (pdf_obj_doc_t @var{doc}, pdf_bool_t @var{indirect_p}, pdf_bool_t @var{value}, pdf_obj_t *@var{obj})
 
@@ -12874,7 +12944,7 @@ Get the value of a PDF Name object in the buffer pointed by
 value (the user can get the size of the name object using
 @code{pdf_obj_name_size}).
 
-The value of the name object does not include the ``/'' prefix. 
+The value of the name object does not include the ``/'' prefix.
 
 @table @strong
 @item Parameters
@@ -12929,7 +12999,7 @@ else
 @subsection String Objects
 
 A PDF string object is a sequence of bytes in the range @code{0-255}.
-They are not @code{NULL}-terminated. 
+They are not @code{NULL}-terminated.
 
 @deftypefun pdf_status_t pdf_obj_string_new (pdf_obj_doc_t @var{doc}, pdf_bool_t @var{indirect_p}, pdf_char_t *@var{str}, pdf_size_t @var{str_size}, pdf_obj_t *@var{obj})
 
@@ -12969,7 +13039,7 @@ pdf_obj_doc_t doc;
 pdf_obj_t str;
 
 /* Create a new String PDF object */
-if (pdf_obj_string_new (doc, PDF_FALSE, "f\233o", 3, &str) 
+if (pdf_obj_string_new (doc, PDF_FALSE, "f\233o", 3, &str)
     != PDF_OK)
 @{
    /* Error creating the String object */
@@ -13030,7 +13100,7 @@ value (the user can get the size of the string using
 A PDF string object.
 @item buf
 A memory buffer to store the result.
-@item 
+@item
 @end table
 @item Returns
 A PDF status value:
@@ -13057,7 +13127,7 @@ if (pdf_obj_string_new (doc, PDF_FALSE, "foo bar baz", 11, &name_obj)
 else
 @{
    str = malloc (pdf_obj_string_size (str_obj));
-   
+
    if (pdf_obj_string_value (str_obj, str)
        != PDF_OK)
    @{
@@ -13587,7 +13657,7 @@ if (pdf_obj_dict_new (doc, PDF_TRUE, &dict)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_dict_get (pdf_obj_t @var{dict}, pdf_obj_t @var{key}, pdf_obj_t &@var{obj})
+@deftypefun pdf_status_t pdf_obj_dict_get (pdf_obj_t @var{dict}, pdf_obj_t @var{key}, pdf_obj_t *@var{obj})
 
 Get the value associated with @var{key} in @var{dict} and store it in
 @var{obj}.
@@ -13637,7 +13707,7 @@ if (pdf_obj_dict_get (dict, key, &value) == PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_dict_get_str (pdf_obj_t @var{dict}, pdf_char_t *@var{key}, pdf_obj_t &@var{obj})
+@deftypefun pdf_status_t pdf_obj_dict_get_str (pdf_obj_t @var{dict}, pdf_char_t *@var{key}, pdf_obj_t *@var{obj})
 
 Get the value associated with @var{key} in @var{dict} and store it in
 @var{obj}.
@@ -13683,7 +13753,7 @@ if (pdf_obj_dict_get (dict, "Foo", &value) == PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_dict_set (pdf_obj_t @var{dict}, pdf_obj_t @var{key}, pdf_obj_t &@var{val})
+@deftypefun pdf_status_t pdf_obj_dict_set (pdf_obj_t @var{dict}, pdf_obj_t @var{key}, pdf_obj_t @var{val})
 
 Set @var{val} as the new value for @var{key} in the PDF dictionary
 @var{dict}.
@@ -13737,7 +13807,7 @@ if (pdf_obj_dict_set (dict, key, value) == PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_dict_set_str (pdf_obj_t @var{dict}, pdf_char_t *@var{key}, pdf_obj_t &@var{val})
+@deftypefun pdf_status_t pdf_obj_dict_set_str (pdf_obj_t @var{dict}, pdf_char_t *@var{key}, pdf_obj_t @var{val})
 
 Set @var{val} as the new value for @var{key} in the PDF dictionary
 @var{dict}.
@@ -14321,7 +14391,7 @@ pdf_off_t stream_offset;
    saving the object document */
 if (stream_offset (stream) == 0)
 @{
-   /* Error: document was not saved before to 
+   /* Error: document was not saved before to
       call pdf_obj_stream_pos */
 @}
 
@@ -14427,17 +14497,17 @@ XXX
 @section Object Documents
 
 At the syntactic level any PDF document can be viewed as a collection
-of objects organized in a certain way.  
+of objects organized in a certain way.
 
 An object document can be associated with a file system file
 (@pxref{The Filesystem Module}).
 
 @menu
-* Object Document Data Types::  
-* Opening and Closing Object Documents::  
-* Managing Object Document Properties::  
-* Retrieving and Storing Objects::             
-* Garbage collection in object documents::  
+* Object Document Data Types::
+* Opening and Closing Object Documents::
+* Managing Object Document Properties::
+* Retrieving and Storing Objects::
+* Garbage collection in object documents::
 @end menu
 
 @node Object Document Data Types
@@ -14695,7 +14765,7 @@ if (pdf_obj_doc_save (doc,
                       save_params) != PDF_OK)
 @{
    /* Error saving the object document */
-@}   
+@}
 @end example
 @end table
 @end deftypefun
@@ -14747,7 +14817,7 @@ if (pdf_obj_doc_get_id (doc,
       /* 'instance_id' is a PDF string object containing the
          instance ID of the document */
    @}
-   
+
    if (pdf_obj_get_type (permanent_id)
        != PDF_OBJ_NULL)
    @{
@@ -15135,14 +15205,14 @@ else
 
 The limits documented in this chapter are not imposed by neither of
 the supported PDF specifications, but by this specific
-implementation. 
+implementation.
 
 In no case the implementation limits are violating the PDF
 specifications.
 
 @menu
-* Architectural limits::        
-* Memory limits::               
+* Architectural limits::
+* Memory limits::
 @end menu
 
 @node Architectural limits
@@ -15163,7 +15233,7 @@ specifications.
 @tab FLT_MAX
 @tab Largest real value.
 @item real
-@tab -FLT_MAX
+@tab FLT_MIN
 @tab Smallest real value.
 @item string in content stream
 @tab SIZE_MAX/2

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 19:42:52 davazp"
+/* -*- mode: C -*-
  *
  *       File:         pdf-text.h
  *       Date:         Fri Jan 11 21:09:23 2008

@@ -16,4 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
+EXTRA_DIST = README \
+             TD00001 TD00001.desc \
+             TD00002 TD00002.desc \
+             TD00003 TD00003.desc \
+             TD00004 TD00004.desc \
+             TD00005 TD00005.desc
+
+
 # End of Makefile.am

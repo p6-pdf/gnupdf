@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 21:40:12 davazp"
+/* -*- mode: C -*-
  *
  *       File:         pdf-crypt-md-read.c
  *       Date:         Tue Dec 23 17:30:19 2008

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: ""
+/* -*- mode: C -*-
  *
  *       File:         tsuite-text.c
  *       Date:         Sat Feb 27 20:42:34 2008

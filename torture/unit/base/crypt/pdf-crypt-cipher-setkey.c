@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 21:39:43 davazp"
+/* -*- mode: C -*-
  *
  *       File:         pdf-crypt-cipher-decrypt.c
  *       Date:         Tue Dec 23 17:36:21 2008

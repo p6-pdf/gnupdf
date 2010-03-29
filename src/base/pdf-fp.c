@@ -27,6 +27,42 @@
 
 #include <pdf-fp.h>
 
+
+pdf_real_t
+pdf_fp_add (pdf_real_t op1,
+            pdf_real_t op2)
+{
+  return op1 + op2;
+}
+
+pdf_real_t
+pdf_fp_sub (pdf_real_t op1,
+            pdf_real_t op2)
+{
+  return op1 - op2;
+}
+
+pdf_real_t
+pdf_fp_mul (pdf_real_t op1,
+            pdf_real_t op2)
+{
+  return op1 * op2;
+}
+
+pdf_real_t
+pdf_fp_div (pdf_real_t op1,
+            pdf_real_t op2)
+{
+  return op1 / op2;
+}
+
+pdf_real_t
+pdf_fp_mod (pdf_real_t op1,
+            pdf_real_t op2)
+{
+  return (int)op1 % (int)op2;
+}
+
 pdf_real_t
 pdf_fp_sqrt (pdf_real_t op)
 {
@@ -50,6 +86,13 @@ pdf_fp_atan2 (pdf_real_t op1,
               pdf_real_t op2)
 {
   return atan2f (op1, op2);
+}
+
+pdf_real_t
+pdf_fp_pow (pdf_real_t op1,
+            pdf_real_t op2)
+{
+  return pow (op1, op2);
 }
 
 pdf_real_t

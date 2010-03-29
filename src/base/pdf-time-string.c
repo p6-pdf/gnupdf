@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 16:00:35 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-time-string.c
  *       Date:         Sun May 18 13:08:37 2008
@@ -77,17 +77,17 @@ pdf_time_check_string_pdf (const pdf_char_t *time_str,
                      time_str);
       return PDF_EBADDATA;
     }
-  
+
   /* We need to check the input characters are digits when we expect digits and
    *  the opposite as well. */
-  
+
 #define PDF_STRING_DIGIT_MASK  0x36FFFC /* 0011 0110 1111 1111 1111 1100 */
-  
+
   /* Don't really need to check again two first bytes, as already done before */
   i = 2;
   __CHECK_MASK(PDF_STRING_DIGIT_MASK, time_str_length, time_str, i);
 
-  
+
   /* Check time zone definer */
   if((time_str_length >=16) && \
      (time_str[16] != 'Z') && \
@@ -98,10 +98,10 @@ pdf_time_check_string_pdf (const pdf_char_t *time_str,
                      time_str[16], time_str);
       return PDF_EBADDATA;
     }
-  
+
   /* Check additional ' characters. Remember that the last ' character is
    * mandatory depending on the require_trailing_apostrophe parameter */
-  if ((time_str_length >= 20) && 
+  if ((time_str_length >= 20) &&
       (time_str[19] != '\''))
     {
       PDF_DEBUG_BASE("Invalid separator found ('%c') in '%s'",
@@ -204,8 +204,8 @@ pdf_time_from_string_pdf (pdf_time_t time_var,
       __GET_FIELD2(time_str, 8, calendar.day);
       /* more than day ? */
       if(time_str_length == 10)
-        break;   
-      
+        break;
+
       /* Get hour */
       __GET_FIELD2(time_str, 10, calendar.hour);
       /* more than hour ? */
@@ -217,7 +217,7 @@ pdf_time_from_string_pdf (pdf_time_t time_var,
       /* more than minute ? */
       if(time_str_length == 14)
         break;
-      
+
       /* Get second */
       __GET_FIELD2(time_str, 14, calendar.second);
       /* more than second ? */
@@ -234,10 +234,10 @@ pdf_time_from_string_pdf (pdf_time_t time_var,
         {
           __GET_FIELD2(time_str, 20, calendar.gmt_offset);
         }
-  
+
       /* Convert from minutes to seconds */
       calendar.gmt_offset *= 60;
-  
+
       /* Set proper sign */
       if(time_str[16]=='-')
         {
@@ -247,7 +247,7 @@ pdf_time_from_string_pdf (pdf_time_t time_var,
       /* Stop loop :-) */
       break;
     }
-  
+
   /* Get time value from break-down UTC calendar !*/
   ret_code = pdf_time_from_cal(time_var, &calendar);
 
@@ -266,7 +266,7 @@ pdf_time_check_string_utc_asn1(const pdf_char_t *time_str,
 
 #define UTCASN1_STRING_DIGIT_MASK1  0x03FF /* 0000 0011 1111 1111 */
 #define UTCASN1_STRING_DIGIT_MASK2  0x0FFF /* 0000 1111 1111 1111 */
-  
+
   /* Check length */
   if((time_str_length == 11) || \
      (time_str_length == 15))
@@ -286,7 +286,7 @@ pdf_time_check_string_utc_asn1(const pdf_char_t *time_str,
                      time_str);
       return PDF_EBADDATA;
     }
-  
+
   /* Check if GMT offset is expected */
   with_gmt_offset = (time_str_length >=15) ? PDF_TRUE : PDF_FALSE;
 
@@ -369,7 +369,7 @@ pdf_time_from_string_utc_asn1(pdf_time_t time_var,
    */
   struct pdf_time_cal_s calendar;
   pdf_size_t time_str_length = strlen((char *)time_str);
-  
+
   if(pdf_time_check_string_utc_asn1(time_str, time_str_length) != PDF_OK)
     {
       PDF_DEBUG_BASE("Input Date in UTC ASN1 format is not valid (%s)",
@@ -379,7 +379,7 @@ pdf_time_from_string_utc_asn1(pdf_time_t time_var,
 
   /* Reset calendar (all integers to zero) */
   memset(&calendar, 0, sizeof(calendar));
-  
+
   while(1)
     {
       pdf_bool_t has_seconds = PDF_FALSE;
@@ -390,16 +390,16 @@ pdf_time_from_string_utc_asn1(pdf_time_t time_var,
 
       /* Get month */
       __GET_FIELD2(time_str, 2, calendar.month);
-      
+
       /* Get day */
       __GET_FIELD2(time_str, 4, calendar.day);
-      
+
       /* Get hour */
       __GET_FIELD2(time_str, 6, calendar.hour);
-      
+
       /* Get minute */
       __GET_FIELD2(time_str, 8, calendar.minute);
-      
+
       /* Get second if available */
       if((time_str[10] >= '0') && \
          (time_str[10] <= '9'))
@@ -413,13 +413,13 @@ pdf_time_from_string_utc_asn1(pdf_time_t time_var,
         {
           break;
         }
-      
+
       /* Get timezone offset hours */
       __GET_FIELD2(time_str, (has_seconds ? 13 : 11), calendar.gmt_offset);
       /* And convert it in minutes */
       calendar.gmt_offset *= 60;
       /* Get timezone offset minutes */
-      __GET_FIELD2(time_str, (has_seconds ? 15 : 13), calendar.gmt_offset);      
+      __GET_FIELD2(time_str, (has_seconds ? 15 : 13), calendar.gmt_offset);
       /* Convert from minutes to seconds */
       calendar.gmt_offset *= 60;
 
@@ -432,7 +432,7 @@ pdf_time_from_string_utc_asn1(pdf_time_t time_var,
       /* Stop loop :-) */
       break;
     }
-  
+
   /* Get time value from break-down UTC calendar !*/
   return pdf_time_from_cal(time_var, &calendar);
 }
@@ -457,7 +457,7 @@ pdf_time_from_string_generalized_asn1(pdf_time_t time_var,
    *    YYYYMMDDThhmmss.sTZD (eg 1997071619:20:30.45+01:00)
    *
    *  where:
-   *  
+   *
    *  YYYY = four-digit year
    *  MM   = two-digit month (01=January, etc.)
    *  DD   = two-digit day of month (01 through 31)
@@ -466,11 +466,11 @@ pdf_time_from_string_generalized_asn1(pdf_time_t time_var,
    *  ss   = two digits of second (00 through 59)
    *  s    = one or more digits representing a decimal fraction of a second
    *  TZD  = time zone designator (Z or +hh:mm or -hh:mm)
-   *  
+   *
    */
   struct pdf_time_cal_s calendar;
   pdf_size_t time_str_length = strlen((char *)time_str);
-  
+
   /* Check minimum length */
   if(time_str_length < 4)
     {
@@ -478,13 +478,12 @@ pdf_time_from_string_generalized_asn1(pdf_time_t time_var,
                      time_str);
       return PDF_EBADDATA;
     }
-  
+
   /* Reset calendar */
   memset(&calendar, 0, sizeof(calendar));
 
   while(1)
     {
-      pdf_bool_t has_seconds = PDF_FALSE;
       /* Get century */
       __GET_FIELD2(time_str, 0, calendar.year);
       calendar.year *= 100;
@@ -498,7 +497,7 @@ pdf_time_from_string_generalized_asn1(pdf_time_t time_var,
         break;
         }
 
-      
+
       /* Get month */
       __GET_FIELD2(time_str, 4, calendar.month);
       /* more than month ? */
@@ -507,32 +506,31 @@ pdf_time_from_string_generalized_asn1(pdf_time_t time_var,
         calendar.day = 1;
         break;
         }
-      
+
       /* Get day */
       __GET_FIELD2(time_str, 6, calendar.day);
       /* more than day ? */
       if(time_str_length == 8)
         break;
-      
+
       /* Get hour and minutes */
       __GET_FIELD2(time_str, 8, calendar.hour);
       __GET_FIELD2(time_str, 10, calendar.minute);
-      
+
       /* Get second if available */
       if((time_str[17] >= '0') && \
          (time_str[17] <= '9'))
         {
-          has_seconds = PDF_TRUE;
           __GET_FIELD2(time_str, 12, calendar.second);
         }
-      
+
       /* Note: Fractional part of seconds not considered */
 
       if(time_str[time_str_length-1] == 'Z')
         {
           break;
-        }      
-      
+        }
+
       /* Get timezone offset hours */
       __GET_FIELD2(time_str, (time_str_length-4), calendar.gmt_offset);
       /* And convert it in minutes */
@@ -541,13 +539,13 @@ pdf_time_from_string_generalized_asn1(pdf_time_t time_var,
       __GET_FIELD2(time_str, (time_str_length-2), calendar.gmt_offset);
       /* Convert from minutes to seconds */
       calendar.gmt_offset *= 60;
-      
+
       /* Set proper sign */
       if(time_str[(time_str_length-5)]=='-')
         {
           calendar.gmt_offset *= (-1);
         }
-      
+
       /* Stop loop :-) */
       break;
     }
@@ -576,7 +574,7 @@ pdf_time_from_string_iso8601(pdf_time_t time_var,
    *    YYYY-MM-DDThh:mm:ss.sTZD (eg 1997-07-16T19:20:30.45+01:00)
    *
    *  where:
-   *  
+   *
    *  YYYY = four-digit year
    *  MM   = two-digit month (01=January, etc.)
    *  DD   = two-digit day of month (01 through 31)
@@ -585,11 +583,11 @@ pdf_time_from_string_iso8601(pdf_time_t time_var,
    *  ss   = two digits of second (00 through 59)
    *  s    = one or more digits representing a decimal fraction of a second
    *  TZD  = time zone designator (Z or +hh:mm or -hh:mm)
-   *  
+   *
    */
   struct pdf_time_cal_s calendar;
   pdf_size_t time_str_length = strlen((char *)time_str);
-  
+
   /* Check minimum length */
   if(time_str_length < 4)
     {
@@ -597,13 +595,12 @@ pdf_time_from_string_iso8601(pdf_time_t time_var,
                      time_str);
       return PDF_EBADDATA;
     }
-  
+
   /* Reset calendar */
   memset(&calendar, 0, sizeof(calendar));
 
   while(1)
     {
-      pdf_bool_t has_seconds = PDF_FALSE;
       /* Get century */
       __GET_FIELD2(time_str, 0, calendar.year);
       calendar.year *= 100;
@@ -617,7 +614,7 @@ pdf_time_from_string_iso8601(pdf_time_t time_var,
         break;
         }
 
-      
+
       /* Get month */
       __GET_FIELD2(time_str, 5, calendar.month);
       /* more than month ? */
@@ -626,34 +623,33 @@ pdf_time_from_string_iso8601(pdf_time_t time_var,
         calendar.day = 1;
         break;
         }
-      
+
       /* Get day */
       __GET_FIELD2(time_str, 8, calendar.day);
       /* more than day ? */
       if(time_str_length == 10)
         break;
-      
+
       /* Get hour and minutes */
       __GET_FIELD2(time_str, 11, calendar.hour);
       __GET_FIELD2(time_str, 14, calendar.minute);
 
-      
+
       /* Get second if available */
       if((time_str[17] >= '0') && \
          (time_str[17] <= '9') && \
          (time_str[16] == ':'))
         {
-          has_seconds = PDF_TRUE;
           __GET_FIELD2(time_str, 17, calendar.second);
         }
-      
+
       /* Note: Fractional part of seconds not considered */
 
       if(time_str[time_str_length-1] == 'Z')
         {
           break;
-        }      
-      
+        }
+
       /* Get timezone offset hours */
       __GET_FIELD2(time_str, (time_str_length-5), calendar.gmt_offset);
       /* And convert it in minutes */
@@ -662,13 +658,13 @@ pdf_time_from_string_iso8601(pdf_time_t time_var,
       __GET_FIELD2(time_str, (time_str_length-2), calendar.gmt_offset);
       /* Convert from minutes to seconds */
       calendar.gmt_offset *= 60;
-      
+
       /* Set proper sign */
       if(time_str[(time_str_length-6)]=='-')
         {
           calendar.gmt_offset *= (-1);
         }
-      
+
       /* Stop loop :-) */
       break;
     }
@@ -685,7 +681,7 @@ pdf_time_to_string_pdf (const pdf_time_t time_var,
 {
   pdf_char_t *str;
   struct pdf_time_cal_s calendar;
-  
+
   str = (pdf_char_t *) pdf_alloc (PDF_MAX_PDFDATE_STR_LENGTH * sizeof(pdf_char_t));
   if(str != NULL)
     {
@@ -735,7 +731,7 @@ pdf_time_to_string_pdf (const pdf_time_t time_var,
           str = NULL;
         }
     }
-  
+
   return str;
 }
 
@@ -772,7 +768,7 @@ pdf_time_to_string_utc_asn1(const pdf_time_t time_var)
                * yymmddhhmmss-hhmm
                */
               sprintf((char *)str, "%s%d%s%d%s%d%s%d%s%d%s%d%c%s%d%s%d", \
-                      (smallyear < 10 ? "0" : ""), smallyear,                      
+                      (smallyear < 10 ? "0" : ""), smallyear,
                       (calendar.month < 10 ? "0" : ""), calendar.month,
                       (calendar.day < 10 ? "0" : ""), calendar.day,
                       (calendar.hour < 10 ? "0" : ""), calendar.hour,
@@ -827,7 +823,7 @@ pdf_time_to_string_generalized_asn1(const pdf_time_t time_var)
 
               offset_hours = (((calendar.gmt_offset < 0) ? (-1) : (1)) * calendar.gmt_offset) / 3600;
               offset_minutes = (((calendar.gmt_offset < 0) ? (-1) : (1)) * calendar.gmt_offset) % 3600;
-              offset_minutes /= 60; 
+              offset_minutes /= 60;
               sprintf((char *)str, "%4d%s%d%s%d%s%d%s%d%s%d%c%s%d%s%d", \
                       calendar.year,
                       (calendar.month < 10 ? "0" : ""), calendar.month,

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-08-05 22:18:19 davazp"
+/* -*- mode: C -*-
  *
  *       File:         pdf-time-span-to-secs.c
  *       Date:         Fri Feb 27 17:35:31 2009

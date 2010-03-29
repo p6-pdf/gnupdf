@@ -24,9 +24,15 @@ if test "x$PDF_HOST" = "xPDF_HOST_WIN32"
 then
     CK_FORK=no \
     CK_VERBOSITY=normal \
-    ${WINE} ${srcdir}/runtests.exe
+    ${WINE} ${top_builddir}/torture/unit/runtests.exe
 else
-    ${srcdir}/runtests
+    if test "x${FUNCTION}" != "x"; then
+        ${top_builddir}/torture/unit/runtests -f ${FUNCTION}
+    elif test "x${MODULE}" != "x"; then
+        ${top_builddir}/torture/unit/runtests -m ${MODULE}
+    else
+        ${top_builddir}/torture/unit/runtests
+    fi
 fi
 
 # Epilog

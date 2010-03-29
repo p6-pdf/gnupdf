@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/12/22 19:04:03 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-types.c
  *       Date:         Sun Feb 10 21:33:44 2008
@@ -67,7 +67,7 @@ pdf_i64_assign (pdf_i64_t *bignum,
     }
   else
     {
-      ASSIGN_SAFE(p_status, PDF_ERROR);
+      ASSIGN_SAFE(p_status, PDF_EBADDATA);
     }
 }
 
@@ -92,7 +92,7 @@ pdf_i64_assign_quick (pdf_i64_t *bignum,
     }
   else
     {
-      ASSIGN_SAFE(p_status, PDF_ERROR);
+      ASSIGN_SAFE(p_status, PDF_EBADDATA);
     }
 }
 
@@ -111,7 +111,7 @@ pdf_i64_copy (const pdf_i64_t orig,
     }
   else
     {
-      ASSIGN_SAFE(p_status, PDF_ERROR);
+      ASSIGN_SAFE(p_status, PDF_EBADDATA);
     }
 }
 
@@ -159,7 +159,7 @@ pdf_i64_add (pdf_i64_t *dest,
     }
   else
     {
-      ASSIGN_SAFE(p_status, PDF_ERROR);
+      ASSIGN_SAFE(p_status, PDF_EBADDATA);
     }
 }
 
@@ -223,7 +223,7 @@ pdf_i64_abs (pdf_i64_t *dest,
     }
   else
     {
-      ASSIGN_SAFE(p_status, PDF_ERROR);
+      ASSIGN_SAFE(p_status, PDF_EBADDATA);
     }
 }
 
@@ -249,7 +249,7 @@ pdf_i64_neg (pdf_i64_t *dest,
     }
   else
     {
-      ASSIGN_SAFE(p_status, PDF_ERROR);
+      ASSIGN_SAFE(p_status, PDF_EBADDATA);
     }
 }
 
@@ -270,7 +270,7 @@ pdf_i64_subtraction (pdf_i64_t *dest,
     }
   else
     {
-      ASSIGN_SAFE(p_status, PDF_ERROR);
+      ASSIGN_SAFE(p_status, PDF_EBADDATA);
     }
 }
 
@@ -352,7 +352,7 @@ add_long (pdf_i64_t *P1,
     }
 
   pdf_i64_add(P2, *P2, A2, &p_status);
-  if (p_status == PDF_ERROR)
+  if (p_status != PDF_OK)
     {
       pdf_i64_assign(&carry, 0 , 1, &p_status);
     }
@@ -479,7 +479,7 @@ pdf_i64_mult (pdf_i64_t *dest,
     }
   else
     {
-      ASSIGN_SAFE(p_status, PDF_ERROR);
+      ASSIGN_SAFE(p_status, PDF_EBADDATA);
     }
 }
 
@@ -599,7 +599,7 @@ pdf_i64_div (pdf_i64_t *dest,
       /*Check first if divisor != 0*/
       if (pdf_i64_cmp(zero,divisor) == 0)
         {
-          ASSIGN_SAFE(p_status, PDF_ERROR);
+          ASSIGN_SAFE(p_status, PDF_EDIVBYZERO);
           return;
         }
       /*Now check the signs fo divisor and dividend*/
@@ -824,7 +824,7 @@ pdf_i64_div (pdf_i64_t *dest,
     }
   else
     {
-      ASSIGN_SAFE(p_status, PDF_ERROR);
+      ASSIGN_SAFE(p_status, PDF_EBADDATA);
     }
 }
 
@@ -879,7 +879,7 @@ pdf_i64_mod(pdf_i64_t *dest,
       /*Check first if divisor != 0*/
       if (pdf_i64_cmp(zero,divisor) == 0)
         {
-          ASSIGN_SAFE(p_status, PDF_ERROR);
+          ASSIGN_SAFE(p_status, PDF_EDIVBYZERO);
           return;
         }
       /*Now check the signs fo divisor and dividend*/
@@ -1087,7 +1087,7 @@ pdf_i64_mod(pdf_i64_t *dest,
     }
   else
     {
-      ASSIGN_SAFE(p_status, PDF_ERROR);
+      ASSIGN_SAFE(p_status, PDF_EBADDATA);
     }
 
 }

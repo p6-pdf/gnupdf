@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 15:59:33 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-text-ucd-case.c
  *       Date:         Sun Mar 09 12:59:01 2008
@@ -49,9 +49,9 @@ typedef struct _unicode_case_info_s {
 
 
 /* Structure to contain the interval information. All the unicode points in a
- *  given interval (between `interval_start' and `interval_stop', both included) 
- *  have the same `deltaToIndex' value. If this delta is applied to the 32bit 
- *  Unicode value itself, the INDEX of the unicode point in the 
+ *  given interval (between `interval_start' and `interval_stop', both included)
+ *  have the same `deltaToIndex' value. If this delta is applied to the 32bit
+ *  Unicode value itself, the INDEX of the unicode point in the
  *  `unicode_case_info' array is obtained, for a direct access to the case
  *  information */
 typedef struct _unicode_case_interval_s {
@@ -2300,841 +2300,841 @@ static unicode_case_interval_t unicode_case_int[UCD_C_INT_N] = {
 };
 
 
-/* Array containing the special case information for each unicode point (really 
+/* Array containing the special case information for each unicode point (really
  *  only for those which actually have some special case information) */
 static unicode_special_case_info_t unicode_special_case_info[UCD_SC_INFO_N] = {
-  {  /* index: 0 */ 
+  {  /* index: 0 */
     0x00DF,
-    { 0x00DF, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0053, 0x0053, 0x0000 }, /* uppercase */ 
-    { 0x0053, 0x0073, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x00DF, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0053, 0x0053, 0x0000 }, /* uppercase */
+    { 0x0053, 0x0073, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 1 */ 
+  {  /* index: 1 */
     0x0130,
-    { 0x0069, 0x0307, 0x0000 }, /* lowercase */ 
-    { 0x0130, 0x0000, 0x0000 }, /* uppercase */ 
-    { 0x0130, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x0069, 0x0307, 0x0000 }, /* lowercase */
+    { 0x0130, 0x0000, 0x0000 }, /* uppercase */
+    { 0x0130, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 2 */ 
+  {  /* index: 2 */
     0xFB00,
-    { 0xFB00, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0046, 0x0046, 0x0000 }, /* uppercase */ 
-    { 0x0046, 0x0066, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0xFB00, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0046, 0x0046, 0x0000 }, /* uppercase */
+    { 0x0046, 0x0066, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 3 */ 
+  {  /* index: 3 */
     0xFB01,
-    { 0xFB01, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0046, 0x0049, 0x0000 }, /* uppercase */ 
-    { 0x0046, 0x0069, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0xFB01, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0046, 0x0049, 0x0000 }, /* uppercase */
+    { 0x0046, 0x0069, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 4 */ 
+  {  /* index: 4 */
     0xFB02,
-    { 0xFB02, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0046, 0x004C, 0x0000 }, /* uppercase */ 
-    { 0x0046, 0x006C, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0xFB02, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0046, 0x004C, 0x0000 }, /* uppercase */
+    { 0x0046, 0x006C, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 5 */ 
+  {  /* index: 5 */
     0xFB03,
-    { 0xFB03, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0046, 0x0046, 0x0049 }, /* uppercase */ 
-    { 0x0046, 0x0066, 0x0069 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0xFB03, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0046, 0x0046, 0x0049 }, /* uppercase */
+    { 0x0046, 0x0066, 0x0069 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 6 */ 
+  {  /* index: 6 */
     0xFB04,
-    { 0xFB04, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0046, 0x0046, 0x004C }, /* uppercase */ 
-    { 0x0046, 0x0066, 0x006C }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0xFB04, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0046, 0x0046, 0x004C }, /* uppercase */
+    { 0x0046, 0x0066, 0x006C }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 7 */ 
+  {  /* index: 7 */
     0xFB05,
-    { 0xFB05, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0053, 0x0054, 0x0000 }, /* uppercase */ 
-    { 0x0053, 0x0074, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0xFB05, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0053, 0x0054, 0x0000 }, /* uppercase */
+    { 0x0053, 0x0074, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 8 */ 
+  {  /* index: 8 */
     0xFB06,
-    { 0xFB06, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0053, 0x0054, 0x0000 }, /* uppercase */ 
-    { 0x0053, 0x0074, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0xFB06, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0053, 0x0054, 0x0000 }, /* uppercase */
+    { 0x0053, 0x0074, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 9 */ 
+  {  /* index: 9 */
     0x0587,
-    { 0x0587, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0535, 0x0552, 0x0000 }, /* uppercase */ 
-    { 0x0535, 0x0582, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x0587, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0535, 0x0552, 0x0000 }, /* uppercase */
+    { 0x0535, 0x0582, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 10 */ 
+  {  /* index: 10 */
     0xFB13,
-    { 0xFB13, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0544, 0x0546, 0x0000 }, /* uppercase */ 
-    { 0x0544, 0x0576, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0xFB13, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0544, 0x0546, 0x0000 }, /* uppercase */
+    { 0x0544, 0x0576, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 11 */ 
+  {  /* index: 11 */
     0xFB14,
-    { 0xFB14, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0544, 0x0535, 0x0000 }, /* uppercase */ 
-    { 0x0544, 0x0565, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0xFB14, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0544, 0x0535, 0x0000 }, /* uppercase */
+    { 0x0544, 0x0565, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 12 */ 
+  {  /* index: 12 */
     0xFB15,
-    { 0xFB15, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0544, 0x053B, 0x0000 }, /* uppercase */ 
-    { 0x0544, 0x056B, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0xFB15, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0544, 0x053B, 0x0000 }, /* uppercase */
+    { 0x0544, 0x056B, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 13 */ 
+  {  /* index: 13 */
     0xFB16,
-    { 0xFB16, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x054E, 0x0546, 0x0000 }, /* uppercase */ 
-    { 0x054E, 0x0576, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0xFB16, 0x0000, 0x0000 }, /* lowercase */
+    { 0x054E, 0x0546, 0x0000 }, /* uppercase */
+    { 0x054E, 0x0576, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 14 */ 
+  {  /* index: 14 */
     0xFB17,
-    { 0xFB17, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0544, 0x053D, 0x0000 }, /* uppercase */ 
-    { 0x0544, 0x056D, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0xFB17, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0544, 0x053D, 0x0000 }, /* uppercase */
+    { 0x0544, 0x056D, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 15 */ 
+  {  /* index: 15 */
     0x0149,
-    { 0x0149, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x02BC, 0x004E, 0x0000 }, /* uppercase */ 
-    { 0x02BC, 0x004E, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x0149, 0x0000, 0x0000 }, /* lowercase */
+    { 0x02BC, 0x004E, 0x0000 }, /* uppercase */
+    { 0x02BC, 0x004E, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 16 */ 
+  {  /* index: 16 */
     0x0390,
-    { 0x0390, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0399, 0x0308, 0x0301 }, /* uppercase */ 
-    { 0x0399, 0x0308, 0x0301 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x0390, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0399, 0x0308, 0x0301 }, /* uppercase */
+    { 0x0399, 0x0308, 0x0301 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 17 */ 
+  {  /* index: 17 */
     0x03B0,
-    { 0x03B0, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x03A5, 0x0308, 0x0301 }, /* uppercase */ 
-    { 0x03A5, 0x0308, 0x0301 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x03B0, 0x0000, 0x0000 }, /* lowercase */
+    { 0x03A5, 0x0308, 0x0301 }, /* uppercase */
+    { 0x03A5, 0x0308, 0x0301 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 18 */ 
+  {  /* index: 18 */
     0x01F0,
-    { 0x01F0, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x004A, 0x030C, 0x0000 }, /* uppercase */ 
-    { 0x004A, 0x030C, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x01F0, 0x0000, 0x0000 }, /* lowercase */
+    { 0x004A, 0x030C, 0x0000 }, /* uppercase */
+    { 0x004A, 0x030C, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 19 */ 
+  {  /* index: 19 */
     0x1E96,
-    { 0x1E96, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0048, 0x0331, 0x0000 }, /* uppercase */ 
-    { 0x0048, 0x0331, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1E96, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0048, 0x0331, 0x0000 }, /* uppercase */
+    { 0x0048, 0x0331, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 20 */ 
+  {  /* index: 20 */
     0x1E97,
-    { 0x1E97, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0054, 0x0308, 0x0000 }, /* uppercase */ 
-    { 0x0054, 0x0308, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1E97, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0054, 0x0308, 0x0000 }, /* uppercase */
+    { 0x0054, 0x0308, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 21 */ 
+  {  /* index: 21 */
     0x1E98,
-    { 0x1E98, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0057, 0x030A, 0x0000 }, /* uppercase */ 
-    { 0x0057, 0x030A, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1E98, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0057, 0x030A, 0x0000 }, /* uppercase */
+    { 0x0057, 0x030A, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 22 */ 
+  {  /* index: 22 */
     0x1E99,
-    { 0x1E99, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0059, 0x030A, 0x0000 }, /* uppercase */ 
-    { 0x0059, 0x030A, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1E99, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0059, 0x030A, 0x0000 }, /* uppercase */
+    { 0x0059, 0x030A, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 23 */ 
+  {  /* index: 23 */
     0x1E9A,
-    { 0x1E9A, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0041, 0x02BE, 0x0000 }, /* uppercase */ 
-    { 0x0041, 0x02BE, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1E9A, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0041, 0x02BE, 0x0000 }, /* uppercase */
+    { 0x0041, 0x02BE, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 24 */ 
+  {  /* index: 24 */
     0x1F50,
-    { 0x1F50, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x03A5, 0x0313, 0x0000 }, /* uppercase */ 
-    { 0x03A5, 0x0313, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F50, 0x0000, 0x0000 }, /* lowercase */
+    { 0x03A5, 0x0313, 0x0000 }, /* uppercase */
+    { 0x03A5, 0x0313, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 25 */ 
+  {  /* index: 25 */
     0x1F52,
-    { 0x1F52, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x03A5, 0x0313, 0x0300 }, /* uppercase */ 
-    { 0x03A5, 0x0313, 0x0300 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F52, 0x0000, 0x0000 }, /* lowercase */
+    { 0x03A5, 0x0313, 0x0300 }, /* uppercase */
+    { 0x03A5, 0x0313, 0x0300 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 26 */ 
+  {  /* index: 26 */
     0x1F54,
-    { 0x1F54, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x03A5, 0x0313, 0x0301 }, /* uppercase */ 
-    { 0x03A5, 0x0313, 0x0301 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F54, 0x0000, 0x0000 }, /* lowercase */
+    { 0x03A5, 0x0313, 0x0301 }, /* uppercase */
+    { 0x03A5, 0x0313, 0x0301 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 27 */ 
+  {  /* index: 27 */
     0x1F56,
-    { 0x1F56, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x03A5, 0x0313, 0x0342 }, /* uppercase */ 
-    { 0x03A5, 0x0313, 0x0342 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F56, 0x0000, 0x0000 }, /* lowercase */
+    { 0x03A5, 0x0313, 0x0342 }, /* uppercase */
+    { 0x03A5, 0x0313, 0x0342 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 28 */ 
+  {  /* index: 28 */
     0x1FB6,
-    { 0x1FB6, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0391, 0x0342, 0x0000 }, /* uppercase */ 
-    { 0x0391, 0x0342, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FB6, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0391, 0x0342, 0x0000 }, /* uppercase */
+    { 0x0391, 0x0342, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 29 */ 
+  {  /* index: 29 */
     0x1FC6,
-    { 0x1FC6, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0397, 0x0342, 0x0000 }, /* uppercase */ 
-    { 0x0397, 0x0342, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FC6, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0397, 0x0342, 0x0000 }, /* uppercase */
+    { 0x0397, 0x0342, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 30 */ 
+  {  /* index: 30 */
     0x1FD2,
-    { 0x1FD2, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0399, 0x0308, 0x0300 }, /* uppercase */ 
-    { 0x0399, 0x0308, 0x0300 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FD2, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0399, 0x0308, 0x0300 }, /* uppercase */
+    { 0x0399, 0x0308, 0x0300 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 31 */ 
+  {  /* index: 31 */
     0x1FD3,
-    { 0x1FD3, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0399, 0x0308, 0x0301 }, /* uppercase */ 
-    { 0x0399, 0x0308, 0x0301 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FD3, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0399, 0x0308, 0x0301 }, /* uppercase */
+    { 0x0399, 0x0308, 0x0301 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 32 */ 
+  {  /* index: 32 */
     0x1FD6,
-    { 0x1FD6, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0399, 0x0342, 0x0000 }, /* uppercase */ 
-    { 0x0399, 0x0342, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FD6, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0399, 0x0342, 0x0000 }, /* uppercase */
+    { 0x0399, 0x0342, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 33 */ 
+  {  /* index: 33 */
     0x1FD7,
-    { 0x1FD7, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0399, 0x0308, 0x0342 }, /* uppercase */ 
-    { 0x0399, 0x0308, 0x0342 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FD7, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0399, 0x0308, 0x0342 }, /* uppercase */
+    { 0x0399, 0x0308, 0x0342 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 34 */ 
+  {  /* index: 34 */
     0x1FE2,
-    { 0x1FE2, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x03A5, 0x0308, 0x0300 }, /* uppercase */ 
-    { 0x03A5, 0x0308, 0x0300 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FE2, 0x0000, 0x0000 }, /* lowercase */
+    { 0x03A5, 0x0308, 0x0300 }, /* uppercase */
+    { 0x03A5, 0x0308, 0x0300 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 35 */ 
+  {  /* index: 35 */
     0x1FE3,
-    { 0x1FE3, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x03A5, 0x0308, 0x0301 }, /* uppercase */ 
-    { 0x03A5, 0x0308, 0x0301 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FE3, 0x0000, 0x0000 }, /* lowercase */
+    { 0x03A5, 0x0308, 0x0301 }, /* uppercase */
+    { 0x03A5, 0x0308, 0x0301 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 36 */ 
+  {  /* index: 36 */
     0x1FE4,
-    { 0x1FE4, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x03A1, 0x0313, 0x0000 }, /* uppercase */ 
-    { 0x03A1, 0x0313, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FE4, 0x0000, 0x0000 }, /* lowercase */
+    { 0x03A1, 0x0313, 0x0000 }, /* uppercase */
+    { 0x03A1, 0x0313, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 37 */ 
+  {  /* index: 37 */
     0x1FE6,
-    { 0x1FE6, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x03A5, 0x0342, 0x0000 }, /* uppercase */ 
-    { 0x03A5, 0x0342, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FE6, 0x0000, 0x0000 }, /* lowercase */
+    { 0x03A5, 0x0342, 0x0000 }, /* uppercase */
+    { 0x03A5, 0x0342, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 38 */ 
+  {  /* index: 38 */
     0x1FE7,
-    { 0x1FE7, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x03A5, 0x0308, 0x0342 }, /* uppercase */ 
-    { 0x03A5, 0x0308, 0x0342 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FE7, 0x0000, 0x0000 }, /* lowercase */
+    { 0x03A5, 0x0308, 0x0342 }, /* uppercase */
+    { 0x03A5, 0x0308, 0x0342 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 39 */ 
+  {  /* index: 39 */
     0x1FF6,
-    { 0x1FF6, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x03A9, 0x0342, 0x0000 }, /* uppercase */ 
-    { 0x03A9, 0x0342, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FF6, 0x0000, 0x0000 }, /* lowercase */
+    { 0x03A9, 0x0342, 0x0000 }, /* uppercase */
+    { 0x03A9, 0x0342, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 40 */ 
+  {  /* index: 40 */
     0x1F80,
-    { 0x1F80, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F08, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F88, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F80, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F08, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F88, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 41 */ 
+  {  /* index: 41 */
     0x1F81,
-    { 0x1F81, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F09, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F89, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F81, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F09, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F89, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 42 */ 
+  {  /* index: 42 */
     0x1F82,
-    { 0x1F82, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F0A, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F8A, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F82, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F0A, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F8A, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 43 */ 
+  {  /* index: 43 */
     0x1F83,
-    { 0x1F83, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F0B, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F8B, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F83, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F0B, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F8B, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 44 */ 
+  {  /* index: 44 */
     0x1F84,
-    { 0x1F84, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F0C, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F8C, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F84, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F0C, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F8C, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 45 */ 
+  {  /* index: 45 */
     0x1F85,
-    { 0x1F85, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F0D, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F8D, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F85, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F0D, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F8D, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 46 */ 
+  {  /* index: 46 */
     0x1F86,
-    { 0x1F86, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F0E, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F8E, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F86, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F0E, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F8E, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 47 */ 
+  {  /* index: 47 */
     0x1F87,
-    { 0x1F87, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F0F, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F8F, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F87, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F0F, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F8F, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 48 */ 
+  {  /* index: 48 */
     0x1F88,
-    { 0x1F80, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F08, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F88, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F80, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F08, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F88, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 49 */ 
+  {  /* index: 49 */
     0x1F89,
-    { 0x1F81, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F09, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F89, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F81, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F09, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F89, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 50 */ 
+  {  /* index: 50 */
     0x1F8A,
-    { 0x1F82, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F0A, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F8A, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F82, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F0A, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F8A, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 51 */ 
+  {  /* index: 51 */
     0x1F8B,
-    { 0x1F83, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F0B, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F8B, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F83, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F0B, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F8B, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 52 */ 
+  {  /* index: 52 */
     0x1F8C,
-    { 0x1F84, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F0C, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F8C, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F84, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F0C, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F8C, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 53 */ 
+  {  /* index: 53 */
     0x1F8D,
-    { 0x1F85, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F0D, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F8D, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F85, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F0D, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F8D, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 54 */ 
+  {  /* index: 54 */
     0x1F8E,
-    { 0x1F86, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F0E, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F8E, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F86, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F0E, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F8E, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 55 */ 
+  {  /* index: 55 */
     0x1F8F,
-    { 0x1F87, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F0F, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F8F, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F87, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F0F, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F8F, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 56 */ 
+  {  /* index: 56 */
     0x1F90,
-    { 0x1F90, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F28, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F98, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F90, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F28, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F98, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 57 */ 
+  {  /* index: 57 */
     0x1F91,
-    { 0x1F91, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F29, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F99, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F91, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F29, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F99, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 58 */ 
+  {  /* index: 58 */
     0x1F92,
-    { 0x1F92, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F2A, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F9A, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F92, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F2A, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F9A, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 59 */ 
+  {  /* index: 59 */
     0x1F93,
-    { 0x1F93, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F2B, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F9B, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F93, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F2B, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F9B, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 60 */ 
+  {  /* index: 60 */
     0x1F94,
-    { 0x1F94, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F2C, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F9C, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F94, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F2C, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F9C, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 61 */ 
+  {  /* index: 61 */
     0x1F95,
-    { 0x1F95, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F2D, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F9D, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F95, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F2D, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F9D, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 62 */ 
+  {  /* index: 62 */
     0x1F96,
-    { 0x1F96, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F2E, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F9E, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F96, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F2E, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F9E, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 63 */ 
+  {  /* index: 63 */
     0x1F97,
-    { 0x1F97, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F2F, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F9F, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F97, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F2F, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F9F, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 64 */ 
+  {  /* index: 64 */
     0x1F98,
-    { 0x1F90, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F28, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F98, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F90, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F28, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F98, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 65 */ 
+  {  /* index: 65 */
     0x1F99,
-    { 0x1F91, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F29, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F99, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F91, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F29, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F99, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 66 */ 
+  {  /* index: 66 */
     0x1F9A,
-    { 0x1F92, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F2A, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F9A, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F92, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F2A, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F9A, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 67 */ 
+  {  /* index: 67 */
     0x1F9B,
-    { 0x1F93, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F2B, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F9B, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F93, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F2B, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F9B, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 68 */ 
+  {  /* index: 68 */
     0x1F9C,
-    { 0x1F94, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F2C, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F9C, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F94, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F2C, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F9C, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 69 */ 
+  {  /* index: 69 */
     0x1F9D,
-    { 0x1F95, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F2D, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F9D, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F95, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F2D, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F9D, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 70 */ 
+  {  /* index: 70 */
     0x1F9E,
-    { 0x1F96, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F2E, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F9E, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F96, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F2E, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F9E, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 71 */ 
+  {  /* index: 71 */
     0x1F9F,
-    { 0x1F97, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F2F, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1F9F, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1F97, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F2F, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1F9F, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 72 */ 
+  {  /* index: 72 */
     0x1FA0,
-    { 0x1FA0, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F68, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1FA8, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FA0, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F68, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1FA8, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 73 */ 
+  {  /* index: 73 */
     0x1FA1,
-    { 0x1FA1, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F69, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1FA9, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FA1, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F69, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1FA9, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 74 */ 
+  {  /* index: 74 */
     0x1FA2,
-    { 0x1FA2, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F6A, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1FAA, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FA2, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F6A, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1FAA, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 75 */ 
+  {  /* index: 75 */
     0x1FA3,
-    { 0x1FA3, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F6B, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1FAB, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FA3, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F6B, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1FAB, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 76 */ 
+  {  /* index: 76 */
     0x1FA4,
-    { 0x1FA4, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F6C, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1FAC, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FA4, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F6C, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1FAC, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 77 */ 
+  {  /* index: 77 */
     0x1FA5,
-    { 0x1FA5, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F6D, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1FAD, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FA5, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F6D, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1FAD, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 78 */ 
+  {  /* index: 78 */
     0x1FA6,
-    { 0x1FA6, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F6E, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1FAE, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FA6, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F6E, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1FAE, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 79 */ 
+  {  /* index: 79 */
     0x1FA7,
-    { 0x1FA7, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F6F, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1FAF, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FA7, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F6F, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1FAF, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 80 */ 
+  {  /* index: 80 */
     0x1FA8,
-    { 0x1FA0, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F68, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1FA8, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FA0, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F68, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1FA8, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 81 */ 
+  {  /* index: 81 */
     0x1FA9,
-    { 0x1FA1, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F69, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1FA9, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FA1, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F69, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1FA9, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 82 */ 
+  {  /* index: 82 */
     0x1FAA,
-    { 0x1FA2, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F6A, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1FAA, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FA2, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F6A, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1FAA, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 83 */ 
+  {  /* index: 83 */
     0x1FAB,
-    { 0x1FA3, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F6B, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1FAB, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FA3, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F6B, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1FAB, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 84 */ 
+  {  /* index: 84 */
     0x1FAC,
-    { 0x1FA4, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F6C, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1FAC, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FA4, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F6C, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1FAC, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 85 */ 
+  {  /* index: 85 */
     0x1FAD,
-    { 0x1FA5, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F6D, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1FAD, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FA5, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F6D, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1FAD, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 86 */ 
+  {  /* index: 86 */
     0x1FAE,
-    { 0x1FA6, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F6E, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1FAE, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FA6, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F6E, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1FAE, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 87 */ 
+  {  /* index: 87 */
     0x1FAF,
-    { 0x1FA7, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1F6F, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1FAF, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FA7, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1F6F, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1FAF, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 88 */ 
+  {  /* index: 88 */
     0x1FB3,
-    { 0x1FB3, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0391, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1FBC, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FB3, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0391, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1FBC, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 89 */ 
+  {  /* index: 89 */
     0x1FBC,
-    { 0x1FB3, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0391, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1FBC, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FB3, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0391, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1FBC, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 90 */ 
+  {  /* index: 90 */
     0x1FC3,
-    { 0x1FC3, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0397, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1FCC, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FC3, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0397, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1FCC, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 91 */ 
+  {  /* index: 91 */
     0x1FCC,
-    { 0x1FC3, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0397, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1FCC, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FC3, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0397, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1FCC, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 92 */ 
+  {  /* index: 92 */
     0x1FF3,
-    { 0x1FF3, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x03A9, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1FFC, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FF3, 0x0000, 0x0000 }, /* lowercase */
+    { 0x03A9, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1FFC, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 93 */ 
+  {  /* index: 93 */
     0x1FFC,
-    { 0x1FF3, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x03A9, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1FFC, 0x0000, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FF3, 0x0000, 0x0000 }, /* lowercase */
+    { 0x03A9, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1FFC, 0x0000, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 94 */ 
+  {  /* index: 94 */
     0x1FB2,
-    { 0x1FB2, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1FBA, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1FBA, 0x0345, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FB2, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1FBA, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1FBA, 0x0345, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 95 */ 
+  {  /* index: 95 */
     0x1FB4,
-    { 0x1FB4, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0386, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x0386, 0x0345, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FB4, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0386, 0x0399, 0x0000 }, /* uppercase */
+    { 0x0386, 0x0345, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 96 */ 
+  {  /* index: 96 */
     0x1FC2,
-    { 0x1FC2, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1FCA, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1FCA, 0x0345, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FC2, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1FCA, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1FCA, 0x0345, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 97 */ 
+  {  /* index: 97 */
     0x1FC4,
-    { 0x1FC4, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0389, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x0389, 0x0345, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FC4, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0389, 0x0399, 0x0000 }, /* uppercase */
+    { 0x0389, 0x0345, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 98 */ 
+  {  /* index: 98 */
     0x1FF2,
-    { 0x1FF2, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x1FFA, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x1FFA, 0x0345, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FF2, 0x0000, 0x0000 }, /* lowercase */
+    { 0x1FFA, 0x0399, 0x0000 }, /* uppercase */
+    { 0x1FFA, 0x0345, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 99 */ 
+  {  /* index: 99 */
     0x1FF4,
-    { 0x1FF4, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x038F, 0x0399, 0x0000 }, /* uppercase */ 
-    { 0x038F, 0x0345, 0x0000 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FF4, 0x0000, 0x0000 }, /* lowercase */
+    { 0x038F, 0x0399, 0x0000 }, /* uppercase */
+    { 0x038F, 0x0345, 0x0000 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 100 */ 
+  {  /* index: 100 */
     0x1FB7,
-    { 0x1FB7, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0391, 0x0342, 0x0399 }, /* uppercase */ 
-    { 0x0391, 0x0342, 0x0345 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FB7, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0391, 0x0342, 0x0399 }, /* uppercase */
+    { 0x0391, 0x0342, 0x0345 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 101 */ 
+  {  /* index: 101 */
     0x1FC7,
-    { 0x1FC7, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0397, 0x0342, 0x0399 }, /* uppercase */ 
-    { 0x0397, 0x0342, 0x0345 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FC7, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0397, 0x0342, 0x0399 }, /* uppercase */
+    { 0x0397, 0x0342, 0x0345 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 102 */ 
+  {  /* index: 102 */
     0x1FF7,
-    { 0x1FF7, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x03A9, 0x0342, 0x0399 }, /* uppercase */ 
-    { 0x03A9, 0x0342, 0x0345 }, /* titlecase */ 
-    "" /* conditions */ 
+    { 0x1FF7, 0x0000, 0x0000 }, /* lowercase */
+    { 0x03A9, 0x0342, 0x0399 }, /* uppercase */
+    { 0x03A9, 0x0342, 0x0345 }, /* titlecase */
+    "" /* conditions */
   },
-  {  /* index: 103 */ 
+  {  /* index: 103 */
     0x03A3,
-    { 0x03C2, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x03A3, 0x0000, 0x0000 }, /* uppercase */ 
-    { 0x03A3, 0x0000, 0x0000 }, /* titlecase */ 
-    "Final_Sigma" /* conditions */ 
+    { 0x03C2, 0x0000, 0x0000 }, /* lowercase */
+    { 0x03A3, 0x0000, 0x0000 }, /* uppercase */
+    { 0x03A3, 0x0000, 0x0000 }, /* titlecase */
+    "Final_Sigma" /* conditions */
   },
-  {  /* index: 104 */ 
+  {  /* index: 104 */
     0x0307,
-    { 0x0307, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0000, 0x0000, 0x0000 }, /* uppercase */ 
-    { 0x0000, 0x0000, 0x0000 }, /* titlecase */ 
-    "lt After_Soft_Dotted" /* conditions */ 
+    { 0x0307, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0000, 0x0000, 0x0000 }, /* uppercase */
+    { 0x0000, 0x0000, 0x0000 }, /* titlecase */
+    "lt After_Soft_Dotted" /* conditions */
   },
-  {  /* index: 105 */ 
+  {  /* index: 105 */
     0x0049,
-    { 0x0069, 0x0307, 0x0000 }, /* lowercase */ 
-    { 0x0049, 0x0000, 0x0000 }, /* uppercase */ 
-    { 0x0049, 0x0000, 0x0000 }, /* titlecase */ 
-    "lt More_Above" /* conditions */ 
+    { 0x0069, 0x0307, 0x0000 }, /* lowercase */
+    { 0x0049, 0x0000, 0x0000 }, /* uppercase */
+    { 0x0049, 0x0000, 0x0000 }, /* titlecase */
+    "lt More_Above" /* conditions */
   },
-  {  /* index: 106 */ 
+  {  /* index: 106 */
     0x004A,
-    { 0x006A, 0x0307, 0x0000 }, /* lowercase */ 
-    { 0x004A, 0x0000, 0x0000 }, /* uppercase */ 
-    { 0x004A, 0x0000, 0x0000 }, /* titlecase */ 
-    "lt More_Above" /* conditions */ 
+    { 0x006A, 0x0307, 0x0000 }, /* lowercase */
+    { 0x004A, 0x0000, 0x0000 }, /* uppercase */
+    { 0x004A, 0x0000, 0x0000 }, /* titlecase */
+    "lt More_Above" /* conditions */
   },
-  {  /* index: 107 */ 
+  {  /* index: 107 */
     0x012E,
-    { 0x012F, 0x0307, 0x0000 }, /* lowercase */ 
-    { 0x012E, 0x0000, 0x0000 }, /* uppercase */ 
-    { 0x012E, 0x0000, 0x0000 }, /* titlecase */ 
-    "lt More_Above" /* conditions */ 
+    { 0x012F, 0x0307, 0x0000 }, /* lowercase */
+    { 0x012E, 0x0000, 0x0000 }, /* uppercase */
+    { 0x012E, 0x0000, 0x0000 }, /* titlecase */
+    "lt More_Above" /* conditions */
   },
-  {  /* index: 108 */ 
+  {  /* index: 108 */
     0x00CC,
-    { 0x0069, 0x0307, 0x0300 }, /* lowercase */ 
-    { 0x00CC, 0x0000, 0x0000 }, /* uppercase */ 
-    { 0x00CC, 0x0000, 0x0000 }, /* titlecase */ 
-    "lt" /* conditions */ 
+    { 0x0069, 0x0307, 0x0300 }, /* lowercase */
+    { 0x00CC, 0x0000, 0x0000 }, /* uppercase */
+    { 0x00CC, 0x0000, 0x0000 }, /* titlecase */
+    "lt" /* conditions */
   },
-  {  /* index: 109 */ 
+  {  /* index: 109 */
     0x00CD,
-    { 0x0069, 0x0307, 0x0301 }, /* lowercase */ 
-    { 0x00CD, 0x0000, 0x0000 }, /* uppercase */ 
-    { 0x00CD, 0x0000, 0x0000 }, /* titlecase */ 
-    "lt" /* conditions */ 
+    { 0x0069, 0x0307, 0x0301 }, /* lowercase */
+    { 0x00CD, 0x0000, 0x0000 }, /* uppercase */
+    { 0x00CD, 0x0000, 0x0000 }, /* titlecase */
+    "lt" /* conditions */
   },
-  {  /* index: 110 */ 
+  {  /* index: 110 */
     0x0128,
-    { 0x0069, 0x0307, 0x0303 }, /* lowercase */ 
-    { 0x0128, 0x0000, 0x0000 }, /* uppercase */ 
-    { 0x0128, 0x0000, 0x0000 }, /* titlecase */ 
-    "lt" /* conditions */ 
+    { 0x0069, 0x0307, 0x0303 }, /* lowercase */
+    { 0x0128, 0x0000, 0x0000 }, /* uppercase */
+    { 0x0128, 0x0000, 0x0000 }, /* titlecase */
+    "lt" /* conditions */
   },
-  {  /* index: 111 */ 
+  {  /* index: 111 */
     0x0130,
-    { 0x0069, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0130, 0x0000, 0x0000 }, /* uppercase */ 
-    { 0x0130, 0x0000, 0x0000 }, /* titlecase */ 
-    "tr" /* conditions */ 
+    { 0x0069, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0130, 0x0000, 0x0000 }, /* uppercase */
+    { 0x0130, 0x0000, 0x0000 }, /* titlecase */
+    "tr" /* conditions */
   },
-  {  /* index: 112 */ 
+  {  /* index: 112 */
     0x0130,
-    { 0x0069, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0130, 0x0000, 0x0000 }, /* uppercase */ 
-    { 0x0130, 0x0000, 0x0000 }, /* titlecase */ 
-    "az" /* conditions */ 
+    { 0x0069, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0130, 0x0000, 0x0000 }, /* uppercase */
+    { 0x0130, 0x0000, 0x0000 }, /* titlecase */
+    "az" /* conditions */
   },
-  {  /* index: 113 */ 
+  {  /* index: 113 */
     0x0307,
-    { 0x0000, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0307, 0x0000, 0x0000 }, /* uppercase */ 
-    { 0x0307, 0x0000, 0x0000 }, /* titlecase */ 
-    "tr After_I" /* conditions */ 
+    { 0x0000, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0307, 0x0000, 0x0000 }, /* uppercase */
+    { 0x0307, 0x0000, 0x0000 }, /* titlecase */
+    "tr After_I" /* conditions */
   },
-  {  /* index: 114 */ 
+  {  /* index: 114 */
     0x0307,
-    { 0x0000, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0307, 0x0000, 0x0000 }, /* uppercase */ 
-    { 0x0307, 0x0000, 0x0000 }, /* titlecase */ 
-    "az After_I" /* conditions */ 
+    { 0x0000, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0307, 0x0000, 0x0000 }, /* uppercase */
+    { 0x0307, 0x0000, 0x0000 }, /* titlecase */
+    "az After_I" /* conditions */
   },
-  {  /* index: 115 */ 
+  {  /* index: 115 */
     0x0049,
-    { 0x0131, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0049, 0x0000, 0x0000 }, /* uppercase */ 
-    { 0x0049, 0x0000, 0x0000 }, /* titlecase */ 
-    "tr Not_Before_Dot" /* conditions */ 
+    { 0x0131, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0049, 0x0000, 0x0000 }, /* uppercase */
+    { 0x0049, 0x0000, 0x0000 }, /* titlecase */
+    "tr Not_Before_Dot" /* conditions */
   },
-  {  /* index: 116 */ 
+  {  /* index: 116 */
     0x0049,
-    { 0x0131, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0049, 0x0000, 0x0000 }, /* uppercase */ 
-    { 0x0049, 0x0000, 0x0000 }, /* titlecase */ 
-    "az Not_Before_Dot" /* conditions */ 
+    { 0x0131, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0049, 0x0000, 0x0000 }, /* uppercase */
+    { 0x0049, 0x0000, 0x0000 }, /* titlecase */
+    "az Not_Before_Dot" /* conditions */
   },
-  {  /* index: 117 */ 
+  {  /* index: 117 */
     0x0069,
-    { 0x0069, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0130, 0x0000, 0x0000 }, /* uppercase */ 
-    { 0x0130, 0x0000, 0x0000 }, /* titlecase */ 
-    "tr" /* conditions */ 
+    { 0x0069, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0130, 0x0000, 0x0000 }, /* uppercase */
+    { 0x0130, 0x0000, 0x0000 }, /* titlecase */
+    "tr" /* conditions */
   },
-  {  /* index: 118 */ 
+  {  /* index: 118 */
     0x0069,
-    { 0x0069, 0x0000, 0x0000 }, /* lowercase */ 
-    { 0x0130, 0x0000, 0x0000 }, /* uppercase */ 
-    { 0x0130, 0x0000, 0x0000 }, /* titlecase */ 
-    "az" /* conditions */ 
+    { 0x0069, 0x0000, 0x0000 }, /* lowercase */
+    { 0x0130, 0x0000, 0x0000 }, /* uppercase */
+    { 0x0130, 0x0000, 0x0000 }, /* titlecase */
+    "az" /* conditions */
   },
 };
 
@@ -3172,9 +3172,9 @@ pdf_text_ucd_Final_Sigma(const pdf_text_ucd_context_t *context)
     }
 
   /*----- Check backward -----*/
-  
+
   n_case_ignorable = 0;
-  walker = (pdf_char_t *)(context->unicode_point - 4); 
+  walker = (pdf_char_t *)(context->unicode_point - 4);
   stop = 0;
   cased_found = 0;
   while(!stop)
@@ -3203,14 +3203,14 @@ pdf_text_ucd_Final_Sigma(const pdf_text_ucd_context_t *context)
             }
         }
     }
-  
-  /* Check status of previous characters */ 
+
+  /* Check status of previous characters */
   if((cased_found == 1) && \
      (n_case_ignorable >= 0))
     {
       /*----- Check forward -----*/
-      
-      walker = (pdf_char_t *)(context->unicode_point + 4); 
+
+      walker = (pdf_char_t *)(context->unicode_point + 4);
       stop = 0;
       cased_found = 0;
       n_case_ignorable = 0;
@@ -3240,8 +3240,8 @@ pdf_text_ucd_Final_Sigma(const pdf_text_ucd_context_t *context)
                 }
             }
         }
-      
-      /* Check status of next characters */ 
+
+      /* Check status of next characters */
       if((cased_found == 0) && \
          (n_case_ignorable == 0))
         {
@@ -3265,7 +3265,7 @@ pdf_text_ucd_After_Soft_Dotted(const pdf_text_ucd_context_t *context)
   int n_combclass230;
   int n_combclass0;
   int soft_dotted_found;
-  
+
   if((context->unicode_point < context->context_start) || \
      (context->unicode_point > context->context_stop))
     {
@@ -3273,7 +3273,7 @@ pdf_text_ucd_After_Soft_Dotted(const pdf_text_ucd_context_t *context)
       /* The unicode point must not be outside the context interval */
       return PDF_FALSE;
     }
-  
+
   if(context->unicode_point == context->context_start)
     {
       PDF_DEBUG_BASE("Unicode point is context start");
@@ -3281,9 +3281,9 @@ pdf_text_ucd_After_Soft_Dotted(const pdf_text_ucd_context_t *context)
        *  to have a sequence before it */
       return PDF_FALSE;
     }
-  
+
   /*----- Check backward -----*/
-  
+
   n_combclass0 = 0;
   n_combclass230 = 0;
   soft_dotted_found = 0;
@@ -3300,7 +3300,7 @@ pdf_text_ucd_After_Soft_Dotted(const pdf_text_ucd_context_t *context)
         {
           pdf_u32_t aux_point;
           memcpy(&aux_point, walker, 4);
-          
+
           /* Check for point being Soft_Dotted before checking combining class,
            * as the Soft_Dotted character can also be of combining class 0 */
           if(pdf_text_ucd_pl_is_Soft_Dotted(aux_point))
@@ -3348,7 +3348,7 @@ pdf_text_ucd_More_Above(const pdf_text_ucd_context_t *context)
   short stop;
   int combclass230found;
   int n_combclass0;
-  
+
   if((context->unicode_point < context->context_start) || \
      (context->unicode_point > context->context_stop))
     {
@@ -3356,17 +3356,17 @@ pdf_text_ucd_More_Above(const pdf_text_ucd_context_t *context)
       /* The unicode point must not be outside the context interval */
       return PDF_FALSE;
     }
-  
+
   if(context->unicode_point == context->context_stop)
     {
       /* If the unicode point is the start of the context, then it is impossible
        *  to have a sequence before it */
       return PDF_FALSE;
     }
-  
+
   /*----- Check forward -----*/
-  
-  walker = (pdf_char_t *)(context->unicode_point + 4); 
+
+  walker = (pdf_char_t *)(context->unicode_point + 4);
   stop = 0;
   combclass230found = 0;
   n_combclass0 = 0;
@@ -3383,7 +3383,7 @@ pdf_text_ucd_More_Above(const pdf_text_ucd_context_t *context)
           pdf_u32_t aux_point;
           memcpy(&aux_point, walker, 4);
           combining_class = pdf_text_ucd_get_combining_class(aux_point);
-          
+
           if(combining_class == 0)
             {
               n_combclass0++;
@@ -3416,7 +3416,7 @@ pdf_text_ucd_Before_Dot(const pdf_text_ucd_context_t *context)
   short stop;
   int dotAbovefound;
   int n_combclass0or230;
-  
+
   if((context->unicode_point < context->context_start) || \
      (context->unicode_point > context->context_stop))
     {
@@ -3424,17 +3424,17 @@ pdf_text_ucd_Before_Dot(const pdf_text_ucd_context_t *context)
       /* The unicode point must not be outside the context interval */
       return PDF_FALSE;
     }
-  
+
   if(context->unicode_point == context->context_stop)
     {
       /* If the unicode point is the start of the context, then it is impossible
        *  to have a sequence before it */
       return PDF_FALSE;
     }
-  
+
   /*----- Check forward -----*/
-  
-  walker = (pdf_char_t *)(context->unicode_point + 4); 
+
+  walker = (pdf_char_t *)(context->unicode_point + 4);
   stop = 0;
   dotAbovefound = 0;
   n_combclass0or230 = 0;
@@ -3487,7 +3487,7 @@ pdf_text_ucd_After_I(const pdf_text_ucd_context_t *context)
   int n_combclass230;
   int n_combclass0;
   int upper_i_found;
-  
+
   if((context->unicode_point < context->context_start) || \
      (context->unicode_point > context->context_stop))
     {
@@ -3495,16 +3495,16 @@ pdf_text_ucd_After_I(const pdf_text_ucd_context_t *context)
       /* The unicode point must not be outside the context interval */
       return PDF_FALSE;
     }
-  
+
   if(context->unicode_point == context->context_start)
     {
       /* If the unicode point is the start of the context, then it is impossible
        *  to have a sequence before it */
       return PDF_FALSE;
     }
-  
+
   /*----- Check backward -----*/
-  
+
   n_combclass0 = 0;
   n_combclass230 = 0;
   upper_i_found = 0;
@@ -3521,7 +3521,7 @@ pdf_text_ucd_After_I(const pdf_text_ucd_context_t *context)
         {
           pdf_u32_t aux_point;
           memcpy(&aux_point, walker, 4);
-          
+
           /* Check for character being I before checking combining class, as
            * code point I has a 0 value combining class... */
           if(aux_point == 0x49) /* 0x49 == 'I' */
@@ -3543,7 +3543,7 @@ pdf_text_ucd_After_I(const pdf_text_ucd_context_t *context)
                   break;
               }
             }
-          
+
           if(!stop)
             {
               walker -= 4; /* Point to previous UTF-32 char */
@@ -3585,11 +3585,11 @@ static const pdf_text_ucd_condition_t ucd_condition_list[UCD_SC_COND_N] = {
   { (pdf_char_t *)"After_Soft_Dotted",  pdf_text_ucd_After_Soft_Dotted  },
   { (pdf_char_t *)"More_Above",         pdf_text_ucd_More_Above         },
   { (pdf_char_t *)"Before_Dot",         pdf_text_ucd_Before_Dot         },
-  { (pdf_char_t *)"After_I",            pdf_text_ucd_After_I            }  
+  { (pdf_char_t *)"After_I",            pdf_text_ucd_After_I            }
 };
 
 
-/* Get pointers to next condition start. It also creates a NUL terminated 
+/* Get pointers to next condition start. It also creates a NUL terminated
  * string by putting a '\0' at the end of the condition. Returns PDF_TRUE if
  * last condition. */
 static pdf_bool_t
@@ -3598,7 +3598,7 @@ pdf_text_ucd_special_case_get_next_condition(pdf_char_t **condition_start,
 {
   pdf_char_t *field_start;
   pdf_char_t *field_stop;
-  
+
   if((condition_start == NULL) || \
      (condition_stop == NULL))
     {
@@ -3613,19 +3613,19 @@ pdf_text_ucd_special_case_get_next_condition(pdf_char_t **condition_start,
     {
       field_start++;
     }
-  
+
   /* Look for field stop */
   field_stop = field_start;
   while((*field_stop != ' ') && (*field_stop != '\0'))
     {
       field_stop++;
     }
-  
+
   /* Set output pointers */
   *condition_start = field_start;
   *condition_stop = field_stop;
 
-  
+
   /* Reset field end and create NUL-terminated string (if not already) */
   if(*field_stop == ' ')
     {
@@ -3649,7 +3649,7 @@ pdf_text_ucd_special_case_check_single(const pdf_text_ucd_context_t *context,
 {
   pdf_bool_t negate_condition = PDF_FALSE;
   pdf_char_t *walker = (pdf_char_t *)condition;
-  
+
   /* Check if it is a Negative condition (Preceded by 'Not_') */
   if((strlen((char *)walker) > 4) && \
      (strncmp((char *)walker, "Not_", 4) == 0))
@@ -3657,7 +3657,7 @@ pdf_text_ucd_special_case_check_single(const pdf_text_ucd_context_t *context,
       negate_condition = PDF_TRUE;
       walker += 4;
     }
-  
+
   /* Check if what we have is a LANGUAGE ID (2 characters) */
   if(strlen((char *)walker) == 2)
     {
@@ -3679,7 +3679,7 @@ pdf_text_ucd_special_case_check_single(const pdf_text_ucd_context_t *context,
               pdf_bool_t condition_ok;
               /* Condition found! */
               condition_ok = ucd_condition_list[i].cond_func(context);
-              /* Condition fulfilled if only one of condition_ok and 
+              /* Condition fulfilled if only one of condition_ok and
                *  negate_condition is true (XOR). */
               *p_fulfilled = condition_ok ^ negate_condition;
               return PDF_OK;
@@ -3710,9 +3710,9 @@ pdf_text_ucd_special_case_conditions(const pdf_text_ucd_context_t *context,
      (context->unicode_point == NULL) || \
      (strlen((char *)condition_list) == 0))
     {
-      return PDF_FALSE; /* Default is the condition not being fulfilled */ 
+      return PDF_FALSE; /* Default is the condition not being fulfilled */
     }
-  
+
   /* Copy condition list, as this function will modify it to create NUL
    * terminated strings per condition */
   condition_list_size = strlen((char *)condition_list);
@@ -3735,12 +3735,12 @@ pdf_text_ucd_special_case_conditions(const pdf_text_ucd_context_t *context,
     {
       pdf_char_t *field_end;
       pdf_bool_t fulfilled;
-      
+
       /* Get NUL-terminated string to next condition */
       is_last = pdf_text_ucd_special_case_get_next_condition(&walker, \
                                                              &field_end);
-      
-      
+
+
       /* Check single condition */
       if(pdf_text_ucd_special_case_check_single(context, \
                                                 walker, \
@@ -3804,11 +3804,11 @@ pdf_text_ucd_special_case(pdf_u32_t to_he[UCD_SC_MAX_EXPAND],
                              (long)index_in_array);
               return PDF_FALSE;
             }
-          
+
           /* Ok, there is a special case */
           /* Get conditions list in Special Case, if any */
           condition_list = (pdf_char_t *)unicode_special_case_info[index_in_sc_array].condition_list;
-          
+
           /* Check special case conditions */
           if(((strlen((char *)condition_list)>0) && \
               (pdf_text_ucd_special_case_conditions(context, condition_list)))||
@@ -3816,7 +3816,7 @@ pdf_text_ucd_special_case(pdf_u32_t to_he[UCD_SC_MAX_EXPAND],
             {
               pdf_u32_t *dest = NULL;
               /* If conditions fullfiled, or there was no condition.... */
-              
+
               /* Delta is the good one! */
               switch(to_case)
               {
@@ -3835,7 +3835,7 @@ pdf_text_ucd_special_case(pdf_u32_t to_he[UCD_SC_MAX_EXPAND],
               }
               /* Copy contents */
               memcpy(&to_he[0], dest, UCD_SC_MAX_EXPAND*4);
-              
+
               /* Compute number of valid points */
               if(p_n_points != NULL)
                 {
@@ -3853,8 +3853,8 @@ pdf_text_ucd_special_case(pdf_u32_t to_he[UCD_SC_MAX_EXPAND],
                     }
                   else
                     {
-                      /* It can really happen that a given Unicode point MUST 
-                       *  dissappear when converting to uppercase or titlecase, 
+                      /* It can really happen that a given Unicode point MUST
+                       *  dissappear when converting to uppercase or titlecase,
                        *  for example combining marks. E.g: 0x0307 */
                       *p_n_points = (pdf_size_t)0;
                     }
@@ -3885,7 +3885,7 @@ pdf_text_ucd_simple_case(pdf_u32_t *to_he,
                      (unsigned long)unicode_case_info[index_in_array].unicode_point);
       return PDF_FALSE;
     }
-  
+
   switch(to_case)
   {
     case UNICODE_CASE_INFO_UPPER_CASE:
@@ -3919,7 +3919,7 @@ pdf_text_ucd_find_case_index(const pdf_u32_t from_he)
   pdf_bool_t found;
   int index;
   long delta = 0;
-  
+
   /* Look for input unicode point in intervals */
   index = 0;
   found = PDF_FALSE;
@@ -3959,13 +3959,13 @@ pdf_text_ucd_to_case(pdf_u32_t dest[UCD_SC_MAX_EXPAND], pdf_u32_t origin,
 {
   pdf_i32_t unicode_point_index = -1;
   pdf_size_t n_points = 0;
-  
+
   /* Completely clear output array */
   memset(&dest[0],0,sizeof(pdf_u32_t)*UCD_SC_MAX_EXPAND);
-  
+
   /* Get index of unicode point in casing info array */
   unicode_point_index = pdf_text_ucd_find_case_index(origin);
-  
+
   /* If point was not found in casing info array, return the same point... */
   if(unicode_point_index < 0)
     {
@@ -4008,10 +4008,10 @@ pdf_text_ucd_create_case_context(pdf_text_ucd_context_t *context,
       PDF_DEBUG_BASE("Invalid word length");
       return PDF_EBADDATA;
     }
-  
+
   /* Set context start as the first character in the word */
   context->context_start = (pdf_char_t *)word;
-  /* Set context stop as the last character in the word. Length is coming in 
+  /* Set context stop as the last character in the word. Length is coming in
    *  bytes! */
   context->context_stop = (pdf_char_t *)&(word[length -4]);
   /* Set language code, if any */
@@ -4023,7 +4023,7 @@ pdf_text_ucd_create_case_context(pdf_text_ucd_context_t *context,
     {
       strncpy((char *)&(context->locale[0]), "  ", 2);
     }
-  
+
   return PDF_OK;
 }
 
@@ -4044,7 +4044,7 @@ pdf_text_ucd_word_change_case(pdf_char_t *destination_word,
   pdf_size_t j = 0; /* Index in the destination word */
   pdf_char_t new_length;
   pdf_size_t new_char_size = 0;
-  
+
   if((destination_word == NULL) || \
      (origin_word == NULL) || \
      (origin_lang == NULL) || \
@@ -4063,20 +4063,19 @@ pdf_text_ucd_word_change_case(pdf_char_t *destination_word,
       PDF_DEBUG_BASE("Error creating casing context");
       return PDF_EBADDATA;
     }
-  
+
   new_length = 0;
   for(i = 0; i < origin_length; i+=4, j+=new_char_size)
     {
       enum unicode_case_type new_case;
       pdf_u32_t dest_character[UCD_SC_MAX_EXPAND];
       pdf_u32_t  character;
-      new_char_size = 0;
-      
+
       /* In title case, only title-case the first character, and lower-case all
        *  the others */
       new_case = ((destination_case==UNICODE_CASE_INFO_TITLE_CASE)&&(i>0)) ? \
                   UNICODE_CASE_INFO_LOWER_CASE : destination_case;
-      
+
       /* Store pointer to character within the context */
       context.unicode_point = (pdf_char_t *)(&origin_word[i]);
       /* Store language info in context */
@@ -4088,7 +4087,7 @@ pdf_text_ucd_word_change_case(pdf_char_t *destination_word,
         {
           memset(&context.locale[0],0,2);
         }
-      
+
       /* Store character */
       memcpy(&character, &origin_word[i], 4);
       /* Perform conversion */
@@ -4114,11 +4113,11 @@ pdf_text_ucd_word_change_case(pdf_char_t *destination_word,
           memcpy(&destination_word[j], &dest_character[0], new_char_size);
         }
     }
-  
+
   /* Set output data length of word, in bytes! */
   *p_destination_length = new_length;
 
-  return PDF_OK;  
+  return PDF_OK;
 }
 
 
@@ -4127,13 +4126,13 @@ pdf_text_ucd_is_case_ignorable(const pdf_u32_t character)
 {
   /* If character has the MidLetter or MidNumLet property value in Word_Break...
    *   (List of chars obtained from WordBreakProperty.txt UCD file */
-  
+
   if(pdf_text_ucd_wb_is_midletter(character) || \
      pdf_text_ucd_wb_is_midnumlet(character))
     {
       return PDF_TRUE;
     }
-  
+
   /* Ok, so continue checking... Now if General Category is one of:
    *    Mn, Me, Cf, Lm, Sk
    *  then is case ignorable

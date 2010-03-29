@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 22:49:41 jemarch"
+/* -*- mode: C -*- Time-stamp: "2010-03-24 22:13:41 jemarch"
  *
  *       File:         pdf-fp.h
  *       Date:         Sun Feb 10 21:36:37 2008
@@ -37,6 +37,11 @@
 /* Constants */
 
 #define PDF_PI M_PI
+
+/* Limits */
+
+#define PDF_REAL_MAX FLT_MAX
+#define PDF_REAL_MIN FLT_MIN
 
 /* Data types */
 
@@ -84,10 +89,16 @@ typedef struct pdf_rect_s *pdf_rect_t;
 
 /* Function prototypes */
 
+pdf_real_t pdf_fp_add (pdf_real_t op1, pdf_real_t op2);
+pdf_real_t pdf_fp_sub(pdf_real_t op1, pdf_real_t op2);
+pdf_real_t pdf_fp_mul (pdf_real_t op1, pdf_real_t op2);
+pdf_real_t pdf_fp_div (pdf_real_t op1, pdf_real_t op2);
+pdf_real_t pdf_fp_mod (pdf_real_t op1, pdf_real_t op2);
 pdf_real_t pdf_fp_sqrt (pdf_real_t op);
 pdf_real_t pdf_fp_sin (pdf_real_t op);
 pdf_real_t pdf_fp_cos (pdf_real_t op);
 pdf_real_t pdf_fp_atan2 (pdf_real_t op1, pdf_real_t op2);
+pdf_real_t pdf_fp_pow (pdf_real_t op1, pdf_real_t op2);
 pdf_real_t pdf_fp_exp (pdf_real_t op);
 pdf_real_t pdf_fp_abs (pdf_real_t op);
 pdf_real_t pdf_fp_log10 (pdf_real_t op);

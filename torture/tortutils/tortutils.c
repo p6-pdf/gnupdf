@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2009-04-17 18:59:48 david"
+/* -*- mode: C -*-
  *
  *       File:         tortutils.c
  *       Date:         Mon Nov 24 22:18:12 2008

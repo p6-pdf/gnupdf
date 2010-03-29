@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/09/05 22:51:42 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-stm-f-fax.c
  *       Date:         Sun Aug  5 19:50:33 2007

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/11/14 20:14:39 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-stm-f-lzw.c
  *       Date:         Wed Aug 15 14:41:18 2007

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/04/17 00:08:14 jemarch"
+/* -*- mode: C -*-
  *
  *       File:         pdf-time-test-common.h
  *       Date:         Fri Feb 27 17:35:31 2009
