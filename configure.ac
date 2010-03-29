@@ -38,6 +38,7 @@ canonical=$host
 
 gl_INIT
 
+
 dnl OS-based compilation options
 compile_w32_system=no
 AC_SUBST([PDF_HOST])
@@ -154,10 +155,10 @@ dnl
 dnl level\layer | base | object | document | page |
 dnl ------------+------+--------+----------+------+
 dnl      0      |  *   |        |          |      |
-dnl      1      |  *   |    *   |          |      | 
+dnl      1      |  *   |    *   |          |      |
 dnl      2      |  *   |    *   |    *     |      |
 dnl      3      |  *   |    *   |    *     |   *  |
-dnl 
+dnl
 dnl Note that the base layer is always included in the library
 dnl regardless the compilation level.
 
@@ -178,11 +179,11 @@ AM_CONDITIONAL([COMPILE_PAGE_LAYER], [test x$PDFLIB_LEVEL = "x3"])
 
 dnl Project management resources
 AC_ARG_ENABLE([prmgt], AS_HELP_STRING([--enable-prmgt],
-                                      [build project management resources (default is NO)]), 
+                                      [build project management resources (default is NO)]),
               [prmgt_mode=$enableval], [prmgt_mode=no])
 
 AM_CONDITIONAL([PRMGT],[test "x$prmgt_mode" = "xyes"])
-if test "x$prmgt_mode" = "xyes" ; then 
+if test "x$prmgt_mode" = "xyes" ; then
 
 if test "x$have_taskjuggler" = "xyes" ; then
    AC_CHECK_PROG([have_dot], [dot], [yes], [no],,)
@@ -210,36 +211,49 @@ fi # prmgt_mode
 # debug_*_mode
 PDFLIB_DEBUG_DESCR=""
 AC_ARG_ENABLE([debug-base], AS_HELP_STRING([--enable-debug-base],
-                                      [debug mode at the base layer (default is NO)]), 
+                                      [debug mode at the base layer (default is NO)]),
               [debug_base_mode=$enableval], [debug_base_mode=no])
 
 AC_ARG_ENABLE([debug-object], AS_HELP_STRING([--enable-debug-object],
-                                      [debug mode at the object layer (default is NO)]), 
+                                      [debug mode at the object layer (default is NO)]),
               [debug_object_mode=$enableval], [debug_object_mode=no])
 
 AC_ARG_ENABLE([debug-document], AS_HELP_STRING([--enable-debug-document],
-                                      [debug mode at the document layer (default is NO)]), 
+                                      [debug mode at the document layer (default is NO)]),
               [debug_document_mode=$enableval], [debug_document_mode=no])
 
 AC_ARG_ENABLE([debug-page], AS_HELP_STRING([--enable-debug-page],
-                                      [debug mode at the page layer (default is NO)]), 
+                                      [debug mode at the page layer (default is NO)]),
               [debug_page_mode=$enableval], [debug_page_mode=no])
 
+
+AC_SUBST([PDF_HAVE_DEBUG_BASE_SUBST])
+PDF_HAVE_DEBUG_BASE_SUBST=0
 if test "x$debug_base_mode" = "xyes"; then
-  AC_DEFINE([HAVE_DEBUG_BASE], [1], [Debugging Base Layer])
+  AC_DEFINE([PDF_HAVE_DEBUG_BASE], [1], [Debugging Base Layer])
+  PDF_HAVE_DEBUG_BASE_SUBST=1
   PDFLIB_DEBUG_DESCR="base, "
-fi 
+fi
+AC_SUBST([PDF_HAVE_DEBUG_OBJECT_SUBST])
+PDF_HAVE_DEBUG_OBJECT_SUBST=0
 if test "x$debug_object_mode" = "xyes"; then
-  AC_DEFINE([HAVE_DEBUG_OBJECT], [1], [Debugging Object Layer])
+  AC_DEFINE([PDF_HAVE_DEBUG_OBJECT], [1], [Debugging Object Layer])
   PDFLIB_DEBUG_DESCR="${PDFLIB_DEBUG_DESCR}object, "
+  PDF_HAVE_DEBUG_OBJECT_SUBST=1
 fi
+AC_SUBST([PDF_HAVE_DEBUG_DOCUMENT_SUBST])
+PDF_HAVE_DEBUG_DOCUMENT_SUBST=0
 if test "x$debug_document_mode" = "xyes"; then
-  AC_DEFINE([HAVE_DEBUG_DOCUMENT], [1], [Debugging Document Layer])
+  AC_DEFINE([PDF_HAVE_DEBUG_DOCUMENT], [1], [Debugging Document Layer])
   PDFLIB_DEBUG_DESCR="${PDFLIB_DEBUG_DESCR}document, "
+  PDF_HAVE_DEBUG_DOCUMENT_SUBST=1
 fi
+AC_SUBST([PDF_HAVE_DEBUG_PAGE_SUBST])
+PDF_HAVE_DEBUG_PAGE_SUBST=0
 if test "x$debug_page_mode" = "xyes"; then
   AC_DEFINE([HAVE_DEBUG_PAGE], [1], [Debugging Page Layer])
   PDFLIB_DEBUG_DESCR="${PDFLIB_DEBUG_DESCR}page"
+  PDF_HAVE_DEBUG_PAGE_SUBST=1
 fi
 
 if test "x$PDFLIB_DEBUG_DESCR" = "x"; then
@@ -275,7 +289,7 @@ fi
 
 dnl nocheck (simple replacement of Check framework when this is not available)
 AC_ARG_ENABLE([nocheck], AS_HELP_STRING([--enable-nocheck],
-                                      [Use built-in nocheck instead of Check (default is NO)]), 
+                                      [Use built-in nocheck instead of Check (default is NO)]),
               [use_nocheck=$enableval], [use_nocheck=no])
 if test "x$use_nocheck" = "xyes"; then
   AC_DEFINE([HAVE_NOCHECK], [1], [Use No-Check instead of Check])
@@ -312,8 +326,20 @@ AM_CONDITIONAL([COMPILE_W32_SYSTEM], [test "x$compile_w32_system" = "xyes"])
 GNUPDF_VERSION=$VERSION
 AC_SUBST(GNUPDF_VERSION)
 
+
+dnl Some stuff we need to have properly defined in the pdf.h
+dnl Note that gl_cv_c_inline_effective comes from m4/inline.m4
+PDF_HAVE_INLINE_SUBST=0
+if test $gl_cv_c_inline_effective = yes; then
+   PDF_HAVE_INLINE_SUBST=1
+   AC_DEFINE([PDF_HAVE_INLINE], [1], [System has inline?])
+fi
+AC_SUBST(PDF_HAVE_INLINE_SUBST)
+
+
+
 dnl Generate output files
-AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile torture/testdata/Makefile torture/unit/Makefile doc/Makefile utils/Makefile prmgt/Makefile prmgt/apic2wiki prmgt/testlog2wiki prmgt/docfuncs prmgt/tsdfuncs src/extract-public-hdr build-aux/Makefile prmgt/get-test-data.sh prmgt/srcinfo-extractor.pl doc/version.texi prmgt/check-api-doc-consistency.pl doc/generate-tsd.pl libgnupdf.pc)
+AC_OUTPUT(Makefile lib/Makefile src/Makefile src/pdf-config.h torture/Makefile torture/testdata/Makefile torture/unit/Makefile doc/Makefile utils/Makefile prmgt/Makefile prmgt/apic2wiki prmgt/testlog2wiki prmgt/docfuncs prmgt/tsdfuncs src/extract-public-hdr build-aux/Makefile prmgt/get-test-data.sh prmgt/srcinfo-extractor.pl doc/version.texi prmgt/check-api-doc-consistency.pl doc/generate-tsd.pl libgnupdf.pc)
 
 dnl Report configuration results
 
@@ -348,7 +374,7 @@ dnl Report warnings
 
 if test "x$have_zlib" = "xno" ; then
 echo "
-WARNING: you are going to build a library without FlateDecode support. 
+WARNING: you are going to build a library without FlateDecode support.
          That means you will not be able to process many PDF files."
 fi
 
