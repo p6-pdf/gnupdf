@@ -1,5 +1,8 @@
 2010-03-30  Gerardo E. Gidoni  <gerel@gnu.org>
 
+	* src/base/pdf-types.h: corrected int64 macros return status
+	codes, PDF_EBADDATA should be returned instead of PDF_ERROR.
+
 	* torture/unit/base/types/pdf-i64-abs.c: testing for invalid destination
 	(with NULL) should return PDF_EBADDATA instead of PDF_ERROR.
 
