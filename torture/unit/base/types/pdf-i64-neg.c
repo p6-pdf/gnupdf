@@ -120,7 +120,7 @@ START_TEST(pdf_i64_neg_003)
   fail_if(p_status != PDF_OK);
 
   pdf_i64_neg(dest, src , &p_status);
-  fail_unless(p_status == PDF_ERROR);
+  fail_unless(p_status == PDF_EBADDATA);
 }
 END_TEST
 
