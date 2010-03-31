@@ -46,6 +46,38 @@
 #endif /* !@PDF_HAVE_INLINE_SUBST@ */
 
 
+/* zlib? */
+#if @PDF_HAVE_LIBZ_SUBST@
+#   if !defined(PDF_HAVE_LIBZ)
+#     define PDF_HAVE_LIBZ
+#   endif /* !PDF_HAVE_LIBZ */
+#else
+#   undef PDF_HAVE_LIBZ
+#endif /* !@PDF_HAVE_LIBZ_SUBST@ */
+
+
+/* libjpeg? */
+#if @PDF_HAVE_LIBJPEG_SUBST@
+#   if !defined(PDF_HAVE_LIBJPEG)
+#     define PDF_HAVE_LIBJPEG
+#   endif /* !PDF_HAVE_LIBJPEG */
+#else
+#   undef PDF_HAVE_LIBJPEG
+#endif /* !@PDF_HAVE_LIBJPEG_SUBST@ */
+
+
+
+/* libjbig2dec? */
+#if @PDF_HAVE_LIBJBIG2DEC_SUBST@
+#   if !defined(PDF_HAVE_LIBJBIG2DEC)
+#     define PDF_HAVE_LIBJBIG2DEC
+#   endif /* !PDF_HAVE_LIBJBIG2DEC */
+#else
+#   undef PDF_HAVE_LIBJBIG2DEC
+#endif /* !@PDF_HAVE_LIBJBIG2DEC_SUBST@ */
+
+
+
 /* Base Layer Debugging */
 #if @PDF_HAVE_DEBUG_BASE_SUBST@
 #   if !defined(PDF_HAVE_DEBUG_BASE)

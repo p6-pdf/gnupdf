@@ -83,21 +83,51 @@ dnl Search for functions
 AC_FUNC_FSEEKO
 
 dnl Search for required libraries
-CHECK_ZLIB
-AM_CONDITIONAL([ZLIB], [test "x$have_zlib" = "xyes"])
-AC_CHECK_LIB(m,exp,,,)
 
+
+dnl zlib? (optional)
+CHECK_ZLIB
+AC_SUBST([PDF_HAVE_LIBZ_SUBST])
+PDF_HAVE_LIBZ_SUBST=0
+AM_CONDITIONAL([ZLIB], [test "x$have_zlib" != "xno"])
+if test "x$have_zlib" != "xno"; then
+  AC_DEFINE([PDF_HAVE_LIBZ], [1], [Define to 1 if you have the `z' library])
+  PDF_HAVE_LIBZ_SUBST=1
+fi
+
+
+dnl libjpeg? (optional)
 have_libjpeg=yes
+AC_SUBST([PDF_HAVE_LIBJPEG_SUBST])
+PDF_HAVE_LIBJPEG_SUBST=0
 AC_CHECK_LIB([jpeg],[jpeg_std_error],[],[have_libjpeg=no])
 AM_CONDITIONAL([LIBJPEG], [test "x$have_libjpeg" != "xno"])
+if test "x$have_libjpeg" != "xno"; then
+  AC_DEFINE([PDF_HAVE_LIBJPEG], [1], [Define to 1 if you have the `jpeg' library])
+  PDF_HAVE_LIBJPEG_SUBST=1
+fi
 
+
+dnl jbig2dec? (optional)
+have_jbig2dec=yes
+AC_SUBST([PDF_HAVE_LIBJBIG2DEC_SUBST])
+PDF_HAVE_LIBJBIG2DEC_SUBST=0
+AC_CHECK_LIB([jbig2dec],[jbig2_ctx_new],[],[have_jbig2dec=no])
+AM_CONDITIONAL([JBIG2DEC], [test "x$have_jbig2dec" != "xno"])
+if test "x$have_jbig2dec" != "xno"; then
+  AC_DEFINE([PDF_HAVE_LIBJBIG2DEC], [1], [Define to 1 if you have the `jbig2dec' library])
+  PDF_HAVE_LIBJBIG2DEC_SUBST=1
+fi
+
+
+dnl libm? (mandatory)
+AC_CHECK_LIB(m,exp,,,)
+
+dnl libcurl? (optional)
 have_libcurl=yes
 AC_CHECK_LIB([curl],[curl_global_init],[],[have_libcurl=no])
 AM_CONDITIONAL([LIBCURL], [test "x$have_libcurl" != "xno"])
 
-have_jbig2dec=yes
-AC_CHECK_LIB([jbig2dec],[jbig2_ctx_new],[],[have_jbig2dec=no])
-AM_CONDITIONAL([JBIG2DEC], [test "x$have_jbig2dec" != "xno"])
 
 if test "x$compile_w32_system" = "xyes"; then
   # We cannot use AM_PATH_LIBGCRYPT in this case, since it depends on
@@ -109,20 +139,27 @@ else
   AM_PATH_LIBGCRYPT([1.2.4], have_libgcrypt="yes", have_libgcrypt="no")
 fi
 
+dnl libgpg-error? (mandatory)
 if test x$have_gpgerror = "xno"; then
   AC_MSG_ERROR([cannot find the libgpg-error library. Please install it and rerun `configure'.])
 fi
 
+dnl libgcrypt? (mandatory)
 if test x$have_libgcrypt = "xno"; then
   AC_MSG_ERROR([cannot find the libgcrypt library. Please install it and rerun `configure'.])
 fi
 
+dnl svn libcheck? (optional)
 have_check=yes
 AC_CHECK_LIB([check],[srunner_run],,[have_check=no])
 AM_CONDITIONAL([CHECK], [test "x$have_check" != "xno"])
 
+dnl libiconv? (optional)
 AC_CHECK_LIB([iconv],[iconv_open],[have_iconv=yes],[have_iconv=no])
 AM_CONDITIONAL([ICONV], [test "x$have_iconv" = "xyes"])
+
+
+
 
 dnl Search for required programs for building the sources
 AC_PROG_AWK
@@ -227,6 +264,8 @@ AC_ARG_ENABLE([debug-page], AS_HELP_STRING([--enable-debug-page],
               [debug_page_mode=$enableval], [debug_page_mode=no])
 
 
+dnl Note that these symbols are defined in both the public (pdf-config.h)
+dnl   and private (config.h) configuration headers
 AC_SUBST([PDF_HAVE_DEBUG_BASE_SUBST])
 PDF_HAVE_DEBUG_BASE_SUBST=0
 if test "x$debug_base_mode" = "xyes"; then
