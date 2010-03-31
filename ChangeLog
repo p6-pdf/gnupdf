@@ -1,5 +1,7 @@
 2010-03-31  Jose E. Marchesi  <jemarch@termi>
 
+	* src/base/pdf-types.h (struct pdf_i64_s): Indentation fixed.
+
 	* torture/unit/base/time/pdf-time-span-add.c: Expect PDF_EBADDATA
 	from pdf_time_span_add.
 

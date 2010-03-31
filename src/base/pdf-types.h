@@ -153,7 +153,7 @@ struct pdf_pm_s
 /*Definition of internal structure of the pdf_i64_t type*/
 struct pdf_i64_s
 {
-  pdf_i32_t   high;
+  pdf_i32_t high;
   pdf_u32_t low;
 };
 
