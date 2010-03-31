@@ -168,3 +168,5 @@ utils/Makefile
 utils/Makefile.in
 utils/pdf-filter
 utils/pdf-tokeniser
+torture/unit/tmp.test
+torture/unit/ut.log
