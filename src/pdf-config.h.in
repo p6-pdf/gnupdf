@@ -118,6 +118,26 @@
 #endif /* !@PDF_HAVE_DEBUG_PAGE_SUBST@ */
 
 
+/* Bignum support in the OS? */
+#if @PDF_HAVE_INT64_T_SUBST@
+#   if !defined(PDF_HAVE_INT64_T)
+#     define PDF_HAVE_INT64_T
+#   endif /* !PDF_HAVE_INT64_T */
+#else
+#   undef PDF_HAVE_INT64_T
+#endif /* !@PDF_HAVE_INT64_T_SUBST@ */
+
+
+/* GNU PDF Bignum implementation forced? */
+#if @PDF_FORCE_BIGNUMS_SUBST@
+#   if !defined(PDF_FORCE_BIGNUMS)
+#     define PDF_FORCE_BIGNUMS
+#   endif /* !PDF_FORCE_BIGNUMS */
+#else
+#   undef PDF_FORCE_BIGNUMS
+#endif /* !@PDF_FORCE_BIGNUMS_SUBST@ */
+
+
 
 /* END PUBLIC */
 

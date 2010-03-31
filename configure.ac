@@ -72,11 +72,12 @@ dnl Search for data types
 AC_CHECK_TYPE(size_t, unsigned)
 AC_CHECK_TYPE(off_t, long)
 AC_TYPE_INT64_T
-
-  if test $ac_cv_c_int64_t = yes; then
-    AC_DEFINE([HAVE_INT64_T], [1],
-      [Define to 1 if the system has the type `int64_t'.])
-  fi
+AC_SUBST([PDF_HAVE_INT64_T_SUBST])
+PDF_HAVE_INT64_T_SUBST=0
+if test "x$ac_cv_c_int64_t" = "xyes"; then
+  AC_DEFINE([PDF_HAVE_INT64_T], [1], [Define to 1 if the system has the type `int64_t'.])
+  PDF_HAVE_INT64_T_SUBST=1
+fi
 
 
 dnl Search for functions
@@ -247,20 +248,24 @@ fi # prmgt_mode
 
 # debug_*_mode
 PDFLIB_DEBUG_DESCR=""
-AC_ARG_ENABLE([debug-base], AS_HELP_STRING([--enable-debug-base],
-                                      [debug mode at the base layer (default is NO)]),
+AC_ARG_ENABLE([debug-base],
+              AS_HELP_STRING([--enable-debug-base],
+                             [debug mode at the base layer (default is NO)]),
               [debug_base_mode=$enableval], [debug_base_mode=no])
 
-AC_ARG_ENABLE([debug-object], AS_HELP_STRING([--enable-debug-object],
-                                      [debug mode at the object layer (default is NO)]),
+AC_ARG_ENABLE([debug-object],
+               AS_HELP_STRING([--enable-debug-object],
+                              [debug mode at the object layer (default is NO)]),
               [debug_object_mode=$enableval], [debug_object_mode=no])
 
-AC_ARG_ENABLE([debug-document], AS_HELP_STRING([--enable-debug-document],
-                                      [debug mode at the document layer (default is NO)]),
+AC_ARG_ENABLE([debug-document],
+               AS_HELP_STRING([--enable-debug-document],
+                              [debug mode at the document layer (default is NO)]),
               [debug_document_mode=$enableval], [debug_document_mode=no])
 
-AC_ARG_ENABLE([debug-page], AS_HELP_STRING([--enable-debug-page],
-                                      [debug mode at the page layer (default is NO)]),
+AC_ARG_ENABLE([debug-page],
+              AS_HELP_STRING([--enable-debug-page],
+                             [debug mode at the page layer (default is NO)]),
               [debug_page_mode=$enableval], [debug_page_mode=no])
 
 
@@ -302,14 +307,16 @@ fi
 # end debug_*_mode
 
 dnl gcov compilation
-AC_ARG_ENABLE([coverage], AS_HELP_STRING([--enable-coverage],
-                                        [Compile the library with code coverage support (default is NO)]),
-                                        [use_gcov=$enableval], [use_gcov=no])
+AC_ARG_ENABLE([coverage],
+              AS_HELP_STRING([--enable-coverage],
+                             [Compile the library with code coverage support (default is NO)]),
+              [use_gcov=$enableval], [use_gcov=no])
 AM_CONDITIONAL([USE_COVERAGE], [test "x$use_gcov" = "xyes"])
 
-AC_ARG_ENABLE([fsys-http], AS_HELP_STRING([--enable-fsys-http],
-                                          [Include the HTTP filesystem implementation in the build]),
-                                          [fsys_http=$enableval], [fsys_http=no])
+AC_ARG_ENABLE([fsys-http],
+               AS_HELP_STRING([--enable-fsys-http],
+                              [Include the HTTP filesystem implementation in the build]),
+              [fsys_http=$enableval], [fsys_http=no])
 if test "x$fsys_http" = "xyes"; then
    if test x$have_libcurl = "xno"; then
       AC_MSG_ERROR([libcurl is required for HTTP filesystem support. Please install libcurl and rerun autoconf.])
@@ -318,17 +325,29 @@ if test "x$fsys_http" = "xyes"; then
 fi
 AM_CONDITIONAL([FSYS_HTTP], [test "x$fsys_http" != "xno"])
 
-dnl bignums
-AC_ARG_ENABLE([bignum-forcing], AS_HELP_STRING([--enable-bignum-forcing],
-                                           [Force the usage of the 64bits bignum implementation even if the system support a suitable native type]),
-                                                   [force_bignums=$enableval], [force_bignums=no])
+dnl bignums forced?
+AC_ARG_ENABLE([bignum-forcing],
+              AS_HELP_STRING([--enable-bignum-forcing],
+                             [Force the usage of the 64bits bignum implementation even if the system support a suitable native type]),
+              [force_bignums=$enableval], [force_bignums=no])
+AC_SUBST([PDF_FORCE_BIGNUMS_SUBST])
+PDF_FORCE_BIGNUMS_SUBST=0
 if test "x$force_bignums" = "xyes"; then
    AC_DEFINE([PDF_FORCE_BIGNUMS],[1],[Force the usage of the 64bits bignum implementation even if the system support a suitable native type])
+   PDF_FORCE_BIGNUMS_SUBST=1
 fi
 
+if test "x$ac_cv_c_int64_t" != "xyes" -o "x$force_bignums" != "xyes"; then
+  bignum_implementation="built-in"
+else
+  bignum_implementation="gnupdf"
+fi
+
+
 dnl nocheck (simple replacement of Check framework when this is not available)
-AC_ARG_ENABLE([nocheck], AS_HELP_STRING([--enable-nocheck],
-                                      [Use built-in nocheck instead of Check (default is NO)]),
+AC_ARG_ENABLE([nocheck],
+              AS_HELP_STRING([--enable-nocheck],
+                             [Use built-in nocheck instead of Check (default is NO)]),
               [use_nocheck=$enableval], [use_nocheck=no])
 if test "x$use_nocheck" = "xyes"; then
   AC_DEFINE([HAVE_NOCHECK], [1], [Use No-Check instead of Check])
@@ -378,7 +397,30 @@ AC_SUBST(PDF_HAVE_INLINE_SUBST)
 
 
 dnl Generate output files
-AC_OUTPUT(Makefile lib/Makefile src/Makefile src/pdf-config.h torture/Makefile torture/testdata/Makefile torture/unit/Makefile doc/Makefile utils/Makefile prmgt/Makefile prmgt/apic2wiki prmgt/testlog2wiki prmgt/docfuncs prmgt/tsdfuncs src/extract-public-hdr build-aux/Makefile prmgt/get-test-data.sh prmgt/srcinfo-extractor.pl doc/version.texi prmgt/check-api-doc-consistency.pl doc/generate-tsd.pl libgnupdf.pc)
+dnl  (use of AC_OUTPUT with args is deprecated)
+AC_CONFIG_FILES([Makefile
+                 libgnupdf.pc
+                 build-aux/Makefile
+                 lib/Makefile
+                 src/Makefile
+                 src/pdf-config.h
+                 src/extract-public-hdr
+                 torture/Makefile
+                 torture/testdata/Makefile
+                 torture/unit/Makefile
+                 utils/Makefile
+                 prmgt/Makefile
+                 prmgt/apic2wiki
+                 prmgt/testlog2wiki
+                 prmgt/docfuncs
+                 prmgt/tsdfuncs
+                 prmgt/get-test-data.sh
+                 prmgt/srcinfo-extractor.pl
+                 prmgt/check-api-doc-consistency.pl
+                 doc/Makefile
+                 doc/version.texi
+                 doc/generate-tsd.pl])
+AC_OUTPUT
 
 dnl Report configuration results
 
@@ -402,6 +444,7 @@ Configured for \`${canonical}'.
   Using FlateDecode filter?                 ${have_zlib}
   Using JBIG2 decoder filter?               ${ac_cv_lib_jbig2dec_jbig2_ctx_new}
   Using DCT filter?                         ${have_libjpeg}
+  Bignum implementation?                    ${bignum_implementation}
   With unit tests support?                  ${ut_support} ${ut_framework}
   Program to build html manuals             ${texihtmlprogram}
   Build project management resources?       ${prmgt_mode}
