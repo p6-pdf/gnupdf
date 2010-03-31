@@ -1,3 +1,7 @@
+2010-03-31  Aleksander Morgado  <aleksander@gnu.org>
+
+	* .bzrignore: New file. bzr-ignore files generated during compilation.
+
 2010-03-31  Jose E. Marchesi  <jemarch@termi>
 
 	* torture/unit/base/time/pdf-time-span-add.c: Expect PDF_EBADDATA
