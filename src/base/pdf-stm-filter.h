@@ -40,15 +40,15 @@
 #include <pdf-stm-f-lzw.h>
 #include <pdf-stm-f-a85.h>
 
-#if defined(HAVE_LIBZ)
+#if defined(PDF_HAVE_LIBZ)
 #  include <pdf-stm-f-flate.h>
-#endif /* HAVE_LIBZ */
+#endif /* PDF_HAVE_LIBZ */
 
-#if defined(HAVE_LIBJBIG2DEC)
+#if defined(PDF_HAVE_LIBJBIG2DEC)
 #  include <pdf-stm-f-jbig2.h>
-#endif /* HAVE_LIBJBIG2DEC */
+#endif /* PDF_HAVE_LIBJBIG2DEC */
 
-#if defined(HAVE_LIBJPEG)
+#if defined(PDF_HAVE_LIBJPEG)
 #  include <pdf-stm-f-dct.h>
 #endif
 
@@ -60,16 +60,16 @@ enum pdf_stm_filter_type_e
   PDF_STM_FILTER_NULL = 0,
   PDF_STM_FILTER_RL_ENC,
   PDF_STM_FILTER_RL_DEC,
-#if defined(HAVE_LIBZ)
+#if defined(PDF_HAVE_LIBZ)
   PDF_STM_FILTER_FLATE_ENC,
   PDF_STM_FILTER_FLATE_DEC,
-#endif /* HAVE_LIBZ */
-#if defined(HAVE_LIBJBIG2DEC)
+#endif /* PDF_HAVE_LIBZ */
+#if defined(PDF_HAVE_LIBJBIG2DEC)
   PDF_STM_FILTER_JBIG2_DEC,
-#endif /* HAVE_LIBJBIG2DEC */
-#if defined(HAVE_LIBJPEG)
+#endif /* PDF_HAVE_LIBJBIG2DEC */
+#if defined(PDF_HAVE_LIBJPEG)
   PDF_STM_FILTER_DCT_DEC,
-#endif
+#endif /* PDF_HAVE_LIBJPEG */
   PDF_STM_FILTER_AHEX_ENC,
   PDF_STM_FILTER_AHEX_DEC,
   PDF_STM_FILTER_AESV2_ENC,

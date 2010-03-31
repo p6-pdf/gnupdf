@@ -33,9 +33,9 @@
 #include <string.h>
 
 #ifdef HAVE_MALLOC_H
-#include <malloc.h>
+#  include <malloc.h>
 #else
-#include <stdlib.h>
+#  include <stdlib.h>
 #endif /* HAVE_MALLOC_H */
 
 #include <sys/stat.h>
@@ -76,19 +76,19 @@ static const struct option GNU_longOptions[] =
     {"predenc", no_argument, NULL, PREDENC_FILTER_ARG},
     {"preddec", no_argument, NULL, PREDDEC_FILTER_ARG},
 #endif /* 0 */
-#ifdef HAVE_LIBJPEG
+#ifdef PDF_HAVE_LIBJPEG
     {"dctdec", no_argument, NULL, DCTDEC_FILTER_ARG},
-#endif
-#ifdef HAVE_LIBZ
+#endif /* PDF_HAVE_LIBJPEG */
+#ifdef PDF_HAVE_LIBZ
     {"flatedec", no_argument, NULL, FLATEDEC_FILTER_ARG},
     {"flateenc", no_argument, NULL, FLATEENC_FILTER_ARG},
-#endif /* HAVE_LIBZ */
+#endif /* PDF_HAVE_LIBZ */
     {"rldec", no_argument, NULL, RUNLENGTHDEC_FILTER_ARG},
     {"rlenc", no_argument, NULL, RUNLENGTHENC_FILTER_ARG},
-#ifdef HAVE_LIBJBIG2DEC
+#ifdef PDF_HAVE_LIBJBIG2DEC
     {"jbig2dec", no_argument, NULL, JBIG2DEC_FILTER_ARG},
     {"jbig2dec-globals", required_argument, NULL, JBIG2DEC_GLOBAL_SEGMENTS_ARG},
-#endif /* HAVE_LIBJBIG2DEC */
+#endif /* PDF_HAVE_LIBJBIG2DEC */
     {"md5enc", no_argument, NULL, MD5ENC_FILTER_ARG},
     {"key", required_argument, NULL, KEY_ARG},
     {"aesenc", no_argument, NULL, AESENC_FILTER_ARG},
@@ -126,18 +126,22 @@ filters\n\
   --a85dec                            use the ASCII 85 decoder filter\n\
   --a85enc                            use the ASCII 85 encoder filter\n"
 #if 0
-  "  --jxpdec                            use the JXP decoder filter\n\
+"\
+  --jxpdec                            use the JXP decoder filter\n\
   --predenc                           use the predictor encoder filter\n\
   --preddec                           use the predictor decoder filter\n"
 #endif /* 0 */
-#ifdef HAVE_LIBJPEG
-  "  --dctdec                            use the DCT decoder filter\n"
-#endif
-#ifdef HAVE_LIBZ
-  "  --flatedec                          use the Flate decoder filter\n\
+#ifdef PDF_HAVE_LIBJPEG
+"\
+  --dctdec                            use the DCT decoder filter\n"
+#endif /* PDF_HAVE_LIBZ */
+#ifdef PDF_HAVE_LIBZ
+"\
+  --flatedec                          use the Flate decoder filter\n\
   --flateenc                          use the Flate encoder filter\n"
-#endif /* HAVE_LIBZ */
-  "  --rldec                             use the Run Length decoder filter\n\
+#endif /* PDF_HAVE_LIBZ */
+"\
+  --rldec                             use the Run Length decoder filter\n\
   --rlenc                             use the Run Length encoder filter\n\
   --cfaxdec                           use the CCITT Fax decoder filter\n\
   --jbig2dec                          use the JBIG2 decoder filter\n\
@@ -151,14 +155,15 @@ filters\n\
   --version                           show pdf-filter version and exit\n\
 \nfilter properties\n"
 #if 0
-"  
+"\
   --preddec-type=NUM                  code for next preddec filters type\n\
   --predenc-type=NUM                  code for next predenc filters type\n\
   --pred-colors=NUM                   next predictors colors per sample\n\
   --pred-bpc=NUM                      next predictors bits per color component\n\
   --pred-columns=NUM                  next predictors number of samples per row\n"
 #endif /* 0 */
-"  --lzw-earlychange                   toggles earlychange for next lzw filters\n\
+"\
+  --lzw-earlychange                   toggles earlychange for next lzw filters\n\
   --jbig2dec-globals=FILE             file containing global segments\n\
 \n\
 Report pdf-filter bugs to pdf-devel@gnu.org\n\
@@ -545,7 +550,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
 
             break;
           }
-#ifdef HAVE_LIBJPEG
+#ifdef PDF_HAVE_LIBJPEG
         case DCTDEC_FILTER_ARG:
           {
             ret = pdf_hash_new (NULL, &filter_params);
@@ -565,7 +570,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
 
             break;
           }
-#endif /* HAVE_LIBJPEG */
+#endif /* PDF_HAVE_LIBJPEG */
 
         case ASCII85DEC_FILTER_ARG:
           {
@@ -688,7 +693,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
 
             break;
           }
-#ifdef HAVE_LIBZ
+#ifdef PDF_HAVE_LIBZ
         case FLATEDEC_FILTER_ARG:
           {
             ret = pdf_hash_new (NULL, &filter_params);
@@ -729,7 +734,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
 
             break;
           }
-#endif /* HAVE_LIBZ */
+#endif /* PDF_HAVE_LIBZ */
         case RUNLENGTHDEC_FILTER_ARG:
           {
             ret = pdf_hash_new (NULL, &filter_params);
@@ -772,7 +777,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
 
             break;
           }
-#ifdef HAVE_LIBJBIG2DEC
+#ifdef PDF_HAVE_LIBJBIG2DEC
         case JBIG2DEC_GLOBAL_SEGMENTS_ARG:
           {
             struct stat fstats;
@@ -833,7 +838,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
 
             break;
           }
-#endif /* HAVE_LIBJBIG2DEC */
+#endif /* PDF_HAVE_LIBJBIG2DEC */
         case MD5ENC_FILTER_ARG:
           {
             ret = pdf_hash_new (NULL, &filter_params);

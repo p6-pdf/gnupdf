@@ -34,37 +34,37 @@
 #include <stdio.h>  /* Included again for the public header */
 
 
-#ifdef HAVE_DEBUG_BASE
+#ifdef PDF_HAVE_DEBUG_BASE
 #define PDF_DEBUG_BASE(message, ...) \
   pdf_error (0, stderr, "***DEBUG BASE***:%s:%d: " message, \
   __FILE__, __LINE__, ##__VA_ARGS__)
 #else
 #define PDF_DEBUG_BASE(...)
-#endif /* HAVE_DEBUG_BASE */
+#endif /* PDF_HAVE_DEBUG_BASE */
 
-#ifdef HAVE_DEBUG_OBJECT
+#ifdef PDF_HAVE_DEBUG_OBJECT
 #define PDF_DEBUG_OBJECT(message, ...) \
   pdf_error (0, stderr, "***DEBUG OBJECT***:%s:%d: " message, \
   __FILE__, __LINE__, ##__VA_ARGS__)
 #else
 #define PDF_DEBUG_OBJECT(...)
-#endif /* HAVE_DEBUG_OBJECT */
+#endif /* PDF_HAVE_DEBUG_OBJECT */
 
-#ifdef HAVE_DEBUG_DOCUMENT
+#ifdef PDF_HAVE_DEBUG_DOCUMENT
 #define PDF_DEBUG_DOCUMENT(message, ...) \
   pdf_error (0, stderr, "***DEBUG DOCUMENT***:%s:%d: " message, \
   __FILE__, __LINE__, ##__VA_ARGS__)
 #else
 #define PDF_DEBUG_DOCUMENT(...)
-#endif /* HAVE_DEBUG_DOCUMENT */
+#endif /* PDF_HAVE_DEBUG_DOCUMENT */
 
-#ifdef HAVE_DEBUG_PAGE
+#ifdef PDF_HAVE_DEBUG_PAGE
 #define PDF_DEBUG_PAGE(message, ...) \
   pdf_error (0, stderr, "***DEBUG PAGE***:%s:%d: " message, \
   __FILE__, __LINE__, ##__VA_ARGS__)
 #else
 #define PDF_DEBUG_PAGE(...)
-#endif /* HAVE_DEBUG_PAGE */
+#endif /* PDF_HAVE_DEBUG_PAGE */
 
 
 #define PDF_ASSERT_BASE(condition)                                      \

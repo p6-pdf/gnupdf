@@ -1,0 +1,146 @@
+/* -*- mode: C -*-
+ *
+ *       File:         pdf-config.h.in
+ *       Date:         Mon Mar 29 20:54:25 2010
+ *
+ *       GNU PDF Library - Config options to include in the public pdf.h
+ *
+ */
+
+/* Copyright (C) 2010 Free Software Foundation, Inc. */
+
+/* This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#ifndef _PDF_CONFIG_H
+#define _PDF_CONFIG_H
+
+/* BEGIN PUBLIC */
+
+/* ------------------- Public Configuration Options ------------------------- */
+
+/* Platform */
+#if !defined(@PDF_HOST@)
+#   define @PDF_HOST@
+#endif /* !@PDF_HOST@ */
+
+
+/* Inlining */
+#if @PDF_HAVE_INLINE_SUBST@
+#   if !defined(PDF_HAVE_INLINE)
+#     define PDF_HAVE_INLINE
+#   endif /* !PDF_HAVE_INLINE */
+#else
+#   undef PDF_HAVE_INLINE
+#endif /* !@PDF_HAVE_INLINE_SUBST@ */
+
+
+/* zlib? */
+#if @PDF_HAVE_LIBZ_SUBST@
+#   if !defined(PDF_HAVE_LIBZ)
+#     define PDF_HAVE_LIBZ
+#   endif /* !PDF_HAVE_LIBZ */
+#else
+#   undef PDF_HAVE_LIBZ
+#endif /* !@PDF_HAVE_LIBZ_SUBST@ */
+
+
+/* libjpeg? */
+#if @PDF_HAVE_LIBJPEG_SUBST@
+#   if !defined(PDF_HAVE_LIBJPEG)
+#     define PDF_HAVE_LIBJPEG
+#   endif /* !PDF_HAVE_LIBJPEG */
+#else
+#   undef PDF_HAVE_LIBJPEG
+#endif /* !@PDF_HAVE_LIBJPEG_SUBST@ */
+
+
+
+/* libjbig2dec? */
+#if @PDF_HAVE_LIBJBIG2DEC_SUBST@
+#   if !defined(PDF_HAVE_LIBJBIG2DEC)
+#     define PDF_HAVE_LIBJBIG2DEC
+#   endif /* !PDF_HAVE_LIBJBIG2DEC */
+#else
+#   undef PDF_HAVE_LIBJBIG2DEC
+#endif /* !@PDF_HAVE_LIBJBIG2DEC_SUBST@ */
+
+
+
+/* Base Layer Debugging */
+#if @PDF_HAVE_DEBUG_BASE_SUBST@
+#   if !defined(PDF_HAVE_DEBUG_BASE)
+#     define PDF_HAVE_DEBUG_BASE
+#   endif /* !PDF_HAVE_DEBUG_BASE */
+#else
+#   undef PDF_HAVE_DEBUG_BASE
+#endif /* !@PDF_HAVE_DEBUG_BASE_SUBST@ */
+
+
+/* Object Layer Debugging */
+#if @PDF_HAVE_DEBUG_OBJECT_SUBST@
+#   if !defined(PDF_HAVE_DEBUG_OBJECT)
+#     define PDF_HAVE_DEBUG_OBJECT
+#   endif /* !PDF_HAVE_DEBUG_OBJECT */
+#else
+#   undef PDF_HAVE_DEBUG_OBJECT
+#endif /* !@PDF_HAVE_DEBUG_OBJECT_SUBST@ */
+
+
+/* Document Layer Debugging */
+#if @PDF_HAVE_DEBUG_DOCUMENT_SUBST@
+#   if !defined(PDF_HAVE_DEBUG_DOCUMENT)
+#     define PDF_HAVE_DEBUG_DOCUMENT
+#   endif /* !PDF_HAVE_DEBUG_DOCUMENT */
+#else
+#   undef PDF_HAVE_DEBUG_DOCUMENT
+#endif /* !@PDF_HAVE_DEBUG_DOCUMENT_SUBST@ */
+
+
+/* Page Layer Debugging */
+#if @PDF_HAVE_DEBUG_PAGE_SUBST@
+#   if !defined(PDF_HAVE_DEBUG_PAGE)
+#     define PDF_HAVE_DEBUG_PAGE
+#   endif /* !PDF_HAVE_DEBUG_PAGE */
+#else
+#   undef PDF_HAVE_DEBUG_PAGE
+#endif /* !@PDF_HAVE_DEBUG_PAGE_SUBST@ */
+
+
+/* Bignum support in the OS? */
+#if @PDF_HAVE_INT64_T_SUBST@
+#   if !defined(PDF_HAVE_INT64_T)
+#     define PDF_HAVE_INT64_T
+#   endif /* !PDF_HAVE_INT64_T */
+#else
+#   undef PDF_HAVE_INT64_T
+#endif /* !@PDF_HAVE_INT64_T_SUBST@ */
+
+
+/* GNU PDF Bignum implementation forced? */
+#if @PDF_FORCE_BIGNUMS_SUBST@
+#   if !defined(PDF_FORCE_BIGNUMS)
+#     define PDF_FORCE_BIGNUMS
+#   endif /* !PDF_FORCE_BIGNUMS */
+#else
+#   undef PDF_FORCE_BIGNUMS
+#endif /* !@PDF_FORCE_BIGNUMS_SUBST@ */
+
+
+
+/* END PUBLIC */
+
+#endif /* _PDF_CONFIG_H */
+
+/* End of pdf-config.h.in */
