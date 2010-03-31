@@ -83,8 +83,8 @@ fi
 dnl Search for functions
 AC_FUNC_FSEEKO
 
-dnl Search for required libraries
 
+dnl Search for required libraries
 
 dnl zlib? (optional)
 CHECK_ZLIB
@@ -285,6 +285,7 @@ if test "x$debug_base_mode" = "xyes"; then
   PDF_HAVE_DEBUG_BASE_SUBST=1
   PDFLIB_DEBUG_DESCR="base, "
 fi
+
 AC_SUBST([PDF_HAVE_DEBUG_OBJECT_SUBST])
 PDF_HAVE_DEBUG_OBJECT_SUBST=0
 if test "x$debug_object_mode" = "xyes"; then
@@ -292,6 +293,7 @@ if test "x$debug_object_mode" = "xyes"; then
   PDFLIB_DEBUG_DESCR="${PDFLIB_DEBUG_DESCR}object, "
   PDF_HAVE_DEBUG_OBJECT_SUBST=1
 fi
+
 AC_SUBST([PDF_HAVE_DEBUG_DOCUMENT_SUBST])
 PDF_HAVE_DEBUG_DOCUMENT_SUBST=0
 if test "x$debug_document_mode" = "xyes"; then
@@ -299,6 +301,7 @@ if test "x$debug_document_mode" = "xyes"; then
   PDFLIB_DEBUG_DESCR="${PDFLIB_DEBUG_DESCR}document, "
   PDF_HAVE_DEBUG_DOCUMENT_SUBST=1
 fi
+
 AC_SUBST([PDF_HAVE_DEBUG_PAGE_SUBST])
 PDF_HAVE_DEBUG_PAGE_SUBST=0
 if test "x$debug_page_mode" = "xyes"; then
@@ -392,7 +395,7 @@ GNUPDF_VERSION=$VERSION
 AC_SUBST(GNUPDF_VERSION)
 
 
-dnl Some stuff we need to have properly defined in the pdf.h
+dnl Some additional stuff we need to have properly defined in the pdf.h
 dnl Note that gl_cv_c_inline_effective comes from m4/inline.m4
 PDF_HAVE_INLINE_SUBST=0
 if test $gl_cv_c_inline_effective = yes; then
@@ -404,7 +407,6 @@ AC_SUBST(PDF_HAVE_INLINE_SUBST)
 
 
 dnl Generate output files
-dnl  (use of AC_OUTPUT with args is deprecated)
 AC_CONFIG_FILES([Makefile
                  libgnupdf.pc
                  build-aux/Makefile
