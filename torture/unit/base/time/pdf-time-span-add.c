@@ -106,7 +106,7 @@ START_TEST (pdf_time_span_add_002)
   pdf_time_span_set_from_i32(&span2,-0x00FFFF12);
 
   status = pdf_time_span_add(span1,span2,result);
-  fail_if(status != PDF_ERROR);
+  fail_if(status != PDF_EBADDATA);
 
   status = pdf_time_span_destroy(&span1);
   fail_if(status != PDF_OK);

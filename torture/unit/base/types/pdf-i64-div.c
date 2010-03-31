@@ -89,7 +89,7 @@ START_TEST(pdf_i64_div_002)
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
   pdf_i64_t *dest = NULL;
   pdf_i64_div(dest,div1,div2, &p_status); 
-  fail_if(p_status != PDF_ERROR);
+  fail_if(p_status != PDF_EBADDATA);
 #endif
   
   

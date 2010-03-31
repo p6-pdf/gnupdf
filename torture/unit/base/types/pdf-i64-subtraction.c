@@ -91,7 +91,7 @@ START_TEST(pdf_i64_subtraction_002)
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
   pdf_i64_t *dest = NULL;
   pdf_i64_subtraction(dest,subtraction1,subtraction2, &p_status); 
-  fail_if(p_status != PDF_ERROR);
+  fail_if(p_status != PDF_EBADDATA);
 #endif
   
   

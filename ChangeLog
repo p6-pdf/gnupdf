@@ -1,3 +1,47 @@
+2010-03-31  Jose E. Marchesi  <jemarch@termi>
+
+	* torture/unit/base/time/pdf-time-span-add.c: Expect PDF_EBADDATA
+	from pdf_time_span_add.
+
+	* torture/unit/base/time/pdf-time-span-diff.c: Likewise for
+	pdf_time_span_diff.
+
+	* torture/unit/base/time/pdf-time-span-copy.c: Likewise for
+	pdf_time_span_add.
+
+	* doc/gnupdf.texi (Managing Time Span Values): pdf_time_span_add
+	returns PDF_EBADDATA if the p_result parameter is not a valid
+	pointer.
+	Likewise for pdf_time_span_copy.
+	Likewise for pdf_time_span_diff.
+
+2010-03-30  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* src/base/pdf-types.h: corrected int64 macros return status
+	codes, PDF_EBADDATA should be returned instead of PDF_ERROR.
+
+	* torture/unit/base/types/pdf-i64-abs.c: testing for invalid destination
+	(with NULL) should return PDF_EBADDATA instead of PDF_ERROR.
+
+	* torture/unit/base/types/pdf-i64-add.c: likewise.
+
+	* torture/unit/base/types/pdf-i64-assign-quick.c: likewise.
+
+	* torture/unit/base/types/pdf-i64-assign.c: likewise.
+
+	* torture/unit/base/types/pdf-i64-copy.c: likewise.
+
+	* torture/unit/base/types/pdf-i64-div.c: likewise.
+
+	* torture/unit/base/types/pdf-i64-mod.c: likewise.
+
+	* torture/unit/base/types/pdf-i64-mult.c: likewise.
+
+	* torture/unit/base/types/pdf-i64-neg.c: likewise.
+
+	* torture/unit/base/types/pdf-i64-subtraction.c: likewise.
+
+
 2010-03-29  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* configure.ac: Check if the available version of libcheck is not
