@@ -7908,6 +7908,8 @@ A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
+@item PDF_EBADDATA
+@var{p_result} is not a valid pointer.
 @end table
 
 @item Usage example
@@ -7942,6 +7944,8 @@ A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
+@item PDF_EBADDATA
+@var{p_dest} is not a valid pointer.
 @end table
 
 @item Usage example
@@ -7979,6 +7983,8 @@ A status value:
 @table @code
 @item PDF_OK
 The operation successfully finished.
+@item PDF_EBADDATA
+@var{p_result} is not a valid pointer.
 @end table
 
 @item Usage example

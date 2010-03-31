@@ -90,7 +90,7 @@ START_TEST (pdf_time_span_copy_002)
   pdf_time_span_set(&span1,0x01234567,0x89ABCDEF);
 
   status = pdf_time_span_copy(span1, span2);
-  fail_if(status != PDF_ERROR);
+  fail_if(status != PDF_EBADDATA);
 
   status = pdf_time_span_destroy(&span1);
   fail_if(status != PDF_OK);
