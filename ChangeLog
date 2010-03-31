@@ -1,3 +1,31 @@
+2010-03-31  Aleksander Morgado  <aleksander@es.gnu.org>
+
+	* src/header-autogen: Updated copyright years in the generated `pdf.h'.
+
+	* src/base/pdf-error.h: Use the new `PDF_HAVE_DEBUG_*' symbols instead
+	of the previous `HAVE_DEBUG_*' ones.
+
+	* utils/pdf-filter.c: Idem.
+
+	* src/base/pdf-stm-filter.[h|c]: Idem.
+
+	* src/base/pdf-types.h: Idem. Plus some minor indentation changes.
+
+	* configure.ac (AC_CONFIG_FILES, AC_OUTPUT): Do not use `AC_OUTPUT' with
+	arguments, as that is the deprecated way. Also, added the new generation
+	of `pdf-config.h'.
+	(PDF_HAVE_INLINE_SUBST, PDF_HAVE_INT64_T_SUBST, PDF_HAVE_LIBZ_SUBST)
+	(PDF_HAVE_LIBJPEG_SUBST, PDF_HAVE_LIBJBIG2DEC_SUBST)
+	(PDF_HAVE_DEBUG_BASE_SUBST, PDF_HAVE_DEBUG_OBJECT_SUBST)
+	(PDF_HAVE_DEBUG_DOCUMENT_SUBST, PDF_HAVE_DEBUG_PAGE_SUBST)
+	(PDF_FORCE_BIGNUMS_SUBST, PDF_HAVE_INLINE_SUBST): New shell variables in
+	the configure which will get substituted to the proper values in the
+	`pdf-config.h.in' template when creating `pdf-config.h'.
+	Also, some minor indentation changes.
+
+	* src/pdf-config.h.in: New template file to generate the compilation
+	configuration that will be included in the beginning of `pdf.h'.
+
 2010-03-31  Jose E. Marchesi  <jemarch@termi>
 
 	* torture/unit/base/time/pdf-time-span-add.c: Expect PDF_EBADDATA
