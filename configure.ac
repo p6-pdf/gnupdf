@@ -154,6 +154,13 @@ dnl svn libcheck? (optional)
 have_check=yes
 AC_CHECK_LIB([check],[srunner_run],,[have_check=no])
 AM_CONDITIONAL([CHECK], [test "x$have_check" != "xno"])
+if test x$have_check = "xno"; then
+   have_check=yes
+   AC_CHECK_LIB([check],[srunner_run_all],,[have_check=no])
+   if test x$have_check = "xyes"; then
+      AC_MSG_ERROR([your version of libcheck is too old.  Please update to a newer version or to the SVN version.  See http://check.sf.net.])
+   fi
+fi
 
 dnl libiconv? (optional)
 AC_CHECK_LIB([iconv],[iconv_open],[have_iconv=yes],[have_iconv=no])
