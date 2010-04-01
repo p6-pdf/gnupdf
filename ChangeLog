@@ -1,3 +1,7 @@
+2010-04-01  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* .bzrignore: Simplified by using globs.
+
 2010-03-31  Jose E. Marchesi  <jemarch@termi>
 
 	* .bzrignore: Added torture/unit/temp.test and torture/unit/ut.log
