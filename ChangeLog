@@ -1,3 +1,9 @@
+2010-04-01  Johannes Tax  <johannes.tax@gmx.at>
+
+	* src/base/pdf-fp-func.c (pdf_fp_func_4_new): Make an internal
+	copy of the 'domain' and 'range' parameters that get deallocated
+	in pdf_fp_func_destroy.
+
 2010-04-01  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* .bzrignore: Simplified by using globs.
