@@ -237,7 +237,43 @@ START_TEST(pdf_fp_func_4_new_005)
 }
 END_TEST
 
+/*
+ * Test: pdf_fp_func_4_new_006
+ * Description:
+ *   Create and destroy a correct function.
+ * Success condition:
+ *   Creation and destruction routines should return PDF_OK.
+ */
 
+START_TEST(pdf_fp_func_4_new_006)
+{
+  pdf_fp_func_t func;
+  pdf_size_t prog_size;
+  pdf_char_t prog[] =
+    "{ pop }";
+
+  pdf_real_t domain[4] = {-1.0, 1.0, -1.0, 1.0};
+  pdf_real_t range[2] = {-1.0, 1.0};
+  pdf_real_t in[2];
+  pdf_real_t out[1];
+  
+  pdf_init();
+
+  prog_size = strlen(prog);
+
+  /* Create the function */
+  fail_if (pdf_fp_func_4_new (2, 1,
+                              domain,
+                              range,
+                              prog,
+                              prog_size,
+                              NULL, 
+                              &func) != PDF_OK);
+
+  /* Destroy the function */
+  fail_if (pdf_fp_func_destroy (func) != PDF_OK);
+}
+END_TEST
 
 
 /*
@@ -252,6 +288,7 @@ test_pdf_fp_func_4_new (void)
   tcase_add_test(tc, pdf_fp_func_4_new_003);
   tcase_add_test(tc, pdf_fp_func_4_new_004);
   tcase_add_test(tc, pdf_fp_func_4_new_005);
+  tcase_add_test(tc, pdf_fp_func_4_new_006);
   return tc;
 }
 
