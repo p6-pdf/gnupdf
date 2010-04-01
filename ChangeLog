@@ -1,3 +1,31 @@
+2010-04-01  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/unit/base/fp/pdf-fp-func-4-new.c
+	(pdf_fp_func_4_new_001): Destroy the PDF function at the end of
+	the test.
+	(pdf_fp_func_4_new_002): Likewise.
+	(pdf_fp_func_4_new_003): Likewise.
+	(pdf_fp_func_4_new_004): Likewise.
+	(pdf_fp_func_4_new_005): Likewise.
+
+	* torture/unit/base/fp/pdf-fp-func-eval.c
+	(pdf_fp_func_eval_001..021): Likewise.
+	(pdf_fp_func_eval_101..104): Likewise.
+	(pdf_fp_func_eval_201..208): Likewise.
+	(pdf_fp_func_eval_301..314): Likewise.
+	(pdf_fp_func_eval_401..404): Likewise.
+	(pdf_fp_func_eval_501..508): Likewise.
+
+2010-04-01  Johannes Tax  <johannes.tax@gmx.at>
+
+	* src/base/pdf-fp-func.c (pdf_fp_func_4_new): Make an internal
+	copy of the 'domain' and 'range' parameters that get deallocated
+	in pdf_fp_func_destroy.
+
+2010-04-01  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* .bzrignore: Simplified by using globs.
+
 2010-03-31  Jose E. Marchesi  <jemarch@termi>
 
 	* .bzrignore: Added torture/unit/temp.test and torture/unit/ut.log
