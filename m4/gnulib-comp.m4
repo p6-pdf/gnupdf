@@ -124,6 +124,7 @@ AC_DEFUN([gl_INIT],
 [
   AM_CONDITIONAL([GL_COND_LIBTOOL], [true])
   gl_cond_libtool=true
+  gl_m4_base='m4'
   m4_pushdef([AC_LIBOBJ], m4_defn([gl_LIBOBJ]))
   m4_pushdef([AC_REPLACE_FUNCS], m4_defn([gl_REPLACE_FUNCS]))
   m4_pushdef([AC_LIBSOURCES], m4_defn([gl_LIBSOURCES]))
@@ -302,7 +303,8 @@ AC_DEFUN([gl_INIT],
   # Code from module tmpdir:
   gt_TMPDIR
   # Code from module tmpfile:
-  gl_TMPFILE
+  gl_FUNC_TMPFILE
+  gl_STDIO_MODULE_INDICATOR([tmpfile])
   # Code from module tmpfile-safer:
   gl_TMPFILE_SAFER
   gl_MODULE_INDICATOR([tmpfile-safer])
