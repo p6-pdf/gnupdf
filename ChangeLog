@@ -1,3 +1,136 @@
+2010-04-01  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* torture/unit/base/fp/pdf-fp-func-4-new.c
+	(pdf_fp_func_4_new_001): Destroy the PDF function at the end of
+	the test.
+	(pdf_fp_func_4_new_002): Likewise.
+	(pdf_fp_func_4_new_003): Likewise.
+	(pdf_fp_func_4_new_004): Likewise.
+	(pdf_fp_func_4_new_005): Likewise.
+
+	* torture/unit/base/fp/pdf-fp-func-eval.c
+	(pdf_fp_func_eval_001..021): Likewise.
+	(pdf_fp_func_eval_101..104): Likewise.
+	(pdf_fp_func_eval_201..208): Likewise.
+	(pdf_fp_func_eval_301..314): Likewise.
+	(pdf_fp_func_eval_401..404): Likewise.
+	(pdf_fp_func_eval_501..508): Likewise.
+
+2010-04-01  Johannes Tax  <johannes.tax@gmx.at>
+
+	* src/base/pdf-fp-func.c (pdf_fp_func_4_new): Make an internal
+	copy of the 'domain' and 'range' parameters that get deallocated
+	in pdf_fp_func_destroy.
+
+2010-04-01  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* .bzrignore: Simplified by using globs.
+
+2010-03-31  Jose E. Marchesi  <jemarch@termi>
+
+	* .bzrignore: Added torture/unit/temp.test and torture/unit/ut.log
+
+2010-03-31  Aleksander Morgado  <aleksander@gnu.org>
+
+	* .bzrignore: New file. bzr-ignore files generated during compilation.
+
+2010-03-31  Jose E. Marchesi  <jemarch@termi>
+
+	* src/base/pdf-types.h (struct pdf_i64_s): Indentation fixed.
+
+	* torture/unit/base/time/pdf-time-span-add.c: Expect PDF_EBADDATA
+	from pdf_time_span_add.
+
+	* torture/unit/base/time/pdf-time-span-diff.c: Likewise for
+	pdf_time_span_diff.
+
+	* torture/unit/base/time/pdf-time-span-copy.c: Likewise for
+	pdf_time_span_add.
+
+	* doc/gnupdf.texi (Managing Time Span Values): pdf_time_span_add
+	returns PDF_EBADDATA if the p_result parameter is not a valid
+	pointer.
+	Likewise for pdf_time_span_copy.
+	Likewise for pdf_time_span_diff.
+
+2010-03-30  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	* src/base/pdf-types.h: corrected int64 macros return status
+	codes, PDF_EBADDATA should be returned instead of PDF_ERROR.
+
+	* torture/unit/base/types/pdf-i64-abs.c: testing for invalid destination
+	(with NULL) should return PDF_EBADDATA instead of PDF_ERROR.
+
+	* torture/unit/base/types/pdf-i64-add.c: likewise.
+
+	* torture/unit/base/types/pdf-i64-assign-quick.c: likewise.
+
+	* torture/unit/base/types/pdf-i64-assign.c: likewise.
+
+	* torture/unit/base/types/pdf-i64-copy.c: likewise.
+
+	* torture/unit/base/types/pdf-i64-div.c: likewise.
+
+	* torture/unit/base/types/pdf-i64-mod.c: likewise.
+
+	* torture/unit/base/types/pdf-i64-mult.c: likewise.
+
+	* torture/unit/base/types/pdf-i64-neg.c: likewise.
+
+	* torture/unit/base/types/pdf-i64-subtraction.c: likewise.
+
+
+2010-03-29  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* configure.ac: Check if the available version of libcheck is not
+	supporting `srunner_run'.  In that case, warn the user.
+
+2010-03-24  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* .x-sc_texinfo_acronym: New file.
+
+	* doc/gnupdf-hg.texi: Don't use the @acronym{} Texinfo tag.
+
+	* float module imported from gnulib.
+
+	* gnulib update.
+
+	* src/base/pdf-fp.h: Define PDF_REAL_MAX and PDF_REAL_MIN in terms
+	of FLT_MAX and FLT_MIN.
+
+	* doc/gnupdf.texi (Architectural limits): The smallest real value
+	is FLT_MIN, not -FLT_MAX.
+
+2010-03-23  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Floating Point Constants): Documentation for
+	PDF_REAL_MIN and PDF_REAL_MAX moved from "Floating Point Types".
+	(Floating Point Constants): Use a deftp block to describe PDF_PI.
+
+	* Makefile.am (@echo "Version): Use $(VERSION) instead of
+	@VERSION@.
+
+	* MANIFEST.wiki: Added description for libgnupdf.pc.in.
+
+2010-03-22  Aleksander Morgado  <aleksander@gnu.org>
+
+	* libgnupdf.pc.in: New file, pkg-config configuration.
+
+	* configure.ac: Generate the `libgnupdf.pc' file.
+
+	* Makefile.am: Include `libgnupdf.pc' file in dist and pkgconfig
+	configuration.
+
+2010-03-22  Johannes Tax <johannes.tax@gmx.at>
+
+	* doc/gnupdf.texi: Documented PDF_REAL_MAX and PDF_REAL_MIN.
+
+	* src/base/pdf-fp-func.c: Removed obsolete check in the roll
+	operator.
+
+	* torture/unit/base/fp/pdf-fp-func-eval.c: Added unit tests to
+	exercise the errors PDF_EOVERFLOW and PDF_EIMPLLIMIT.
+
 2010-03-21  Johannes Tax <johannes.tax@gmx.at>
 
 	* src/base/pdf-fp-func.c: Some small modifications for type

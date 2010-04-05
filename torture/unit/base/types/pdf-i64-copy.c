@@ -87,7 +87,7 @@ START_TEST(pdf_i64_copy_002)
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
   pdf_i64_t *copy = NULL;
   pdf_i64_copy(orig,copy,&p_status);
-  fail_if( p_status != PDF_ERROR);
+  fail_if( p_status != PDF_EBADDATA);
 #endif
   
 }

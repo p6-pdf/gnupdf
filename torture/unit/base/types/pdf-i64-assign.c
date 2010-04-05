@@ -80,7 +80,7 @@ START_TEST(pdf_i64_assign_002)
   pdf_init();
 
   pdf_i64_assign(k,4,5,&p_status);
-  fail_if( p_status != PDF_ERROR);
+  fail_if( p_status != PDF_EBADDATA);
 #endif
   
 }

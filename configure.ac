@@ -120,6 +120,14 @@ have_check=yes
 AC_CHECK_LIB([check],[srunner_run],,[have_check=no])
 AM_CONDITIONAL([CHECK], [test "x$have_check" != "xno"])
 
+if test x$have_check = "xno"; then
+   have_check=yes
+   AC_CHECK_LIB([check],[srunner_run_all],,[have_check=no])
+   if test x$have_check = "xyes"; then
+      AC_MSG_ERROR([your version of libcheck is too old.  Please update to a newer version or to the SVN version.  See http://check.sf.net.])
+   fi
+fi
+
 AC_CHECK_LIB([iconv],[iconv_open],[have_iconv=yes],[have_iconv=no])
 AM_CONDITIONAL([ICONV], [test "x$have_iconv" = "xyes"])
 
@@ -313,7 +321,7 @@ GNUPDF_VERSION=$VERSION
 AC_SUBST(GNUPDF_VERSION)
 
 dnl Generate output files
-AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile torture/testdata/Makefile torture/unit/Makefile doc/Makefile utils/Makefile prmgt/Makefile prmgt/apic2wiki prmgt/testlog2wiki prmgt/docfuncs prmgt/tsdfuncs src/extract-public-hdr build-aux/Makefile prmgt/get-test-data.sh prmgt/srcinfo-extractor.pl doc/version.texi prmgt/check-api-doc-consistency.pl doc/generate-tsd.pl)
+AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile torture/testdata/Makefile torture/unit/Makefile doc/Makefile utils/Makefile prmgt/Makefile prmgt/apic2wiki prmgt/testlog2wiki prmgt/docfuncs prmgt/tsdfuncs src/extract-public-hdr build-aux/Makefile prmgt/get-test-data.sh prmgt/srcinfo-extractor.pl doc/version.texi prmgt/check-api-doc-consistency.pl doc/generate-tsd.pl libgnupdf.pc)
 
 dnl Report configuration results
 

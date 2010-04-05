@@ -405,6 +405,8 @@ pdf_fp_func_4_new (pdf_u32_t m,
   pdf_u32_t (*debug_off)[2];
   pdf_size_t debug_size;
   pdf_size_t debug_alloc;
+  size_t s_domain = sizeof(pdf_real_t)*m*2;
+  size_t s_range = sizeof(pdf_real_t)*n*2;
 
   pdf_stm_t reader_stm;
   pdf_token_reader_t reader;
@@ -413,9 +415,11 @@ pdf_fp_func_4_new (pdf_u32_t m,
   f = pdf_alloc (sizeof(struct pdf_fp_func_s));
   f->m = m;
   f->n = n;
-  f->range = range;
-  f->domain = domain;
   f->type = 4;
+  f->domain = pdf_alloc (s_domain);
+  f->range = pdf_alloc (s_range);
+  memcpy (f->domain, domain, s_domain);
+  memcpy (f->range, range, s_range);
 
   /* Specific data */
   beg_pos = 0;
@@ -1639,8 +1643,6 @@ pdf_eval_type4 (pdf_fp_func_t t,
                 struct t_stack pp[NSTACK];
                 int pos;
                 s = (j-1) % n;
-                if (s < 0)
-                  s += n;
                 for (pos = 0; pos < n; pos++)
                   {
                     if (s < 0)

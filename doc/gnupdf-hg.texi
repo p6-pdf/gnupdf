@@ -595,15 +595,15 @@ called @emph{abstract data types}. This abstraction provides high
 encapsulation of the implementation details of the data types and thus
 allow the definition of @emph{opaque} types.
 
-An @acronym{ADT} is composed by:
+An ADT is composed by:
 
 @itemize @bullet
 @item
 A @emph{data structure} containing the private data that characterizes
-each instance of the @acronym{ADT}.
+each instance of the ADT.
 @item
 A set of @emph{access functions} that implement actions on the
-@acronym{ADT}.
+ADT.
 @end itemize
 
 @menu
@@ -623,24 +623,24 @@ this naming convention:
 pdf-FOO-*.[ch]
 @end example
 
-where @var{FOO} is the name of the @acronym{ADT}; for example,
+where @var{FOO} is the name of the ADT; for example,
 @file{pdf-text-context.c}.
 
-A general header file for the @acronym{ADT} should always be present
+A general header file for the ADT should always be present
 and should be named after:
 
 @example
 pdf-FOO.h
 @end example
 
-where @var{FOO} is again the name of the @acronym{ADT}; for example,
+where @var{FOO} is again the name of the ADT; for example,
 @file{pdf-text.h}.
 
 @node Data Structures For ADTs
 @subsection Data Structures For ADTs
 
 There are two different approaches that shall be used to define the
-data structures containing the private data for an @acronym{ADT}:
+data structures containing the private data for an ADT:
 
 @table @strong
 @item A pointer to a structure
@@ -660,13 +660,13 @@ typedef struct pdf_foo_s *pdf_foo_t;
 @end example
 @item A structure
 In this case a C structure (not a pointer to it) is used to represent
-the @acronym{ADT}:
+the ADT:
 @example
 typedef struct pdf_foo_s pdf_foo_t;
 @end example
 This alternative is indicated in the case where the private data of
-the @acronym{ADT} is small, allowing the developer to allocate
-instances of the @acronym{ADT} in the stack and thus avoiding
+the ADT is small, allowing the developer to allocate
+instances of the ADT in the stack and thus avoiding
 fragmentation of the heap.
 @end table
 
@@ -680,33 +680,33 @@ reference_to_adt_instance1 = adt_instance1;
 @node Access Functions For ADTs
 @subsection Access Functions For ADTs
 
-Every access function implemented by an @acronym{ADT} should have a
+Every access function implemented by an ADT should have a
 prototype conformant to the following convention:
 
 @example
 RETURN_TYPE pdf_FOO_* (pdf_FOO_t adt, args...)
 @end example
 
-where @var{FOO} is the name of the @acronym{ADT}.
+where @var{FOO} is the name of the ADT.
 
 The following standard functions shall be defined:
 
 @table @code
 @item pdf_status_t pdf_FOO_new (args..., pdf_FOO_t *adt)
 This is the function used to create a new instance of the
-@acronym{ADT}. The last parameter of the function should be a pointer
+ADT. The last parameter of the function should be a pointer
 to a @code{pdf_FOO_t} value. The returned status value should indicate
 the state of the operation.
 @item pdf_FOO_destroy (pdf_FOO_t adt)
 This is the function used to destroy an instance of the
-@acronym{ADT}. The memory occupied by the @acronym{ADT} data structure
+ADT. The memory occupied by the ADT data structure
 is freed.
 @end table
 
 @node Opaque Pointers
 @subsection Opaque Pointers
 
-One way to achieve high encapsulation for @acronym{ADT}s is to publish
+One way to achieve high encapsulation for ADTs is to publish
 ``opaque pointers'' in the public header files. The usage of opaque
 pointers also improves binary compatibility.  @footnote{this technique
 is also known as the PIMPL idiom. See
