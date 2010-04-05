@@ -1,3 +1,8 @@
+2010-04-05  Aleksander Morgado  <aleksander@gnu.org>
+
+	* configure.ac: AC_OUTPUT with arguments is deprecated. Use the
+	AC_CONFIG_FILES and AC_OUTPUT pair instead.
+
 2010-04-01  Jose E. Marchesi  <jemarch@gnu.org>
 
 	* torture/unit/base/fp/pdf-fp-func-4-new.c
