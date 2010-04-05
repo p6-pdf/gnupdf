@@ -30,112 +30,45 @@
 
 /* ------------------- Public Configuration Options ------------------------- */
 
-/* Platform */
-#if !defined(@PDF_HOST@)
-#   define @PDF_HOST@
-#endif /* !@PDF_HOST@ */
 
+/* System has inline? */
+#undef PDF_HAVE_INLINE
 
-/* Inlining */
-#if @PDF_HAVE_INLINE_SUBST@
-#   if !defined(PDF_HAVE_INLINE)
-#     define PDF_HAVE_INLINE
-#   endif /* !PDF_HAVE_INLINE */
-#else
-#   undef PDF_HAVE_INLINE
-#endif /* !@PDF_HAVE_INLINE_SUBST@ */
+/* Compiled for mingw32 systems? */
+#undef PDF_HOST_WIN32
 
+/* Compiled for BSD systems? */
+#undef PDF_HOST_BSD
 
-/* zlib? */
-#if @PDF_HAVE_LIBZ_SUBST@
-#   if !defined(PDF_HAVE_LIBZ)
-#     define PDF_HAVE_LIBZ
-#   endif /* !PDF_HAVE_LIBZ */
-#else
-#   undef PDF_HAVE_LIBZ
-#endif /* !@PDF_HAVE_LIBZ_SUBST@ */
+/* Compiled for GNU systems? */
+#undef PDF_HOST_GNU
 
+/* Compiled with libz support? */
+#undef PDF_HAVE_LIBZ
 
-/* libjpeg? */
-#if @PDF_HAVE_LIBJPEG_SUBST@
-#   if !defined(PDF_HAVE_LIBJPEG)
-#     define PDF_HAVE_LIBJPEG
-#   endif /* !PDF_HAVE_LIBJPEG */
-#else
-#   undef PDF_HAVE_LIBJPEG
-#endif /* !@PDF_HAVE_LIBJPEG_SUBST@ */
+/* Compiled with libjpeg support? */
+#undef PDF_HAVE_LIBJPEG
 
+/* Compiled with libjbig2dec support? */
+#undef PDF_HAVE_LIBJBIG2DEC
 
+/* Base Layer Debugging enabled? */
+#undef PDF_HAVE_DEBUG_BASE
 
-/* libjbig2dec? */
-#if @PDF_HAVE_LIBJBIG2DEC_SUBST@
-#   if !defined(PDF_HAVE_LIBJBIG2DEC)
-#     define PDF_HAVE_LIBJBIG2DEC
-#   endif /* !PDF_HAVE_LIBJBIG2DEC */
-#else
-#   undef PDF_HAVE_LIBJBIG2DEC
-#endif /* !@PDF_HAVE_LIBJBIG2DEC_SUBST@ */
+/* Object Layer Debugging enabled? */
+#undef PDF_HAVE_DEBUG_OBJECT
 
+/* Document Layer Debugging enabled? */
+#undef PDF_HAVE_DEBUG_DOCUMENT
 
-
-/* Base Layer Debugging */
-#if @PDF_HAVE_DEBUG_BASE_SUBST@
-#   if !defined(PDF_HAVE_DEBUG_BASE)
-#     define PDF_HAVE_DEBUG_BASE
-#   endif /* !PDF_HAVE_DEBUG_BASE */
-#else
-#   undef PDF_HAVE_DEBUG_BASE
-#endif /* !@PDF_HAVE_DEBUG_BASE_SUBST@ */
-
-
-/* Object Layer Debugging */
-#if @PDF_HAVE_DEBUG_OBJECT_SUBST@
-#   if !defined(PDF_HAVE_DEBUG_OBJECT)
-#     define PDF_HAVE_DEBUG_OBJECT
-#   endif /* !PDF_HAVE_DEBUG_OBJECT */
-#else
-#   undef PDF_HAVE_DEBUG_OBJECT
-#endif /* !@PDF_HAVE_DEBUG_OBJECT_SUBST@ */
-
-
-/* Document Layer Debugging */
-#if @PDF_HAVE_DEBUG_DOCUMENT_SUBST@
-#   if !defined(PDF_HAVE_DEBUG_DOCUMENT)
-#     define PDF_HAVE_DEBUG_DOCUMENT
-#   endif /* !PDF_HAVE_DEBUG_DOCUMENT */
-#else
-#   undef PDF_HAVE_DEBUG_DOCUMENT
-#endif /* !@PDF_HAVE_DEBUG_DOCUMENT_SUBST@ */
-
-
-/* Page Layer Debugging */
-#if @PDF_HAVE_DEBUG_PAGE_SUBST@
-#   if !defined(PDF_HAVE_DEBUG_PAGE)
-#     define PDF_HAVE_DEBUG_PAGE
-#   endif /* !PDF_HAVE_DEBUG_PAGE */
-#else
-#   undef PDF_HAVE_DEBUG_PAGE
-#endif /* !@PDF_HAVE_DEBUG_PAGE_SUBST@ */
-
+/* Page Layer Debugging enabled? */
+#undef PDF_HAVE_DEBUG_PAGE
 
 /* Bignum support in the OS? */
-#if @PDF_HAVE_INT64_T_SUBST@
-#   if !defined(PDF_HAVE_INT64_T)
-#     define PDF_HAVE_INT64_T
-#   endif /* !PDF_HAVE_INT64_T */
-#else
-#   undef PDF_HAVE_INT64_T
-#endif /* !@PDF_HAVE_INT64_T_SUBST@ */
-
+#undef PDF_HAVE_INT64_T
 
 /* GNU PDF Bignum implementation forced? */
-#if @PDF_FORCE_BIGNUMS_SUBST@
-#   if !defined(PDF_FORCE_BIGNUMS)
-#     define PDF_FORCE_BIGNUMS
-#   endif /* !PDF_FORCE_BIGNUMS */
-#else
-#   undef PDF_FORCE_BIGNUMS
-#endif /* !@PDF_FORCE_BIGNUMS_SUBST@ */
+#undef PDF_FORCE_BIGNUMS
 
 
 

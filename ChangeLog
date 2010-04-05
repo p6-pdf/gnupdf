@@ -1,4 +1,18 @@
-2010-03-31  Aleksander Morgado  <aleksander@es.gnu.org>
+2010-04-05  Aleksander Morgado  <aleksander@gnu.org>
+
+	* configure.ac (AC_CONFIG_HEADERS): Use AC_CONFIG_HEADERS instead of
+	AM_CONFIG_HEADER, and include the public config file.
+	(PDF_HAVE_INLINE_SUBST, PDF_HAVE_INT64_T_SUBST, PDF_HAVE_LIBZ_SUBST)
+	(PDF_HAVE_LIBJPEG_SUBST, PDF_HAVE_LIBJBIG2DEC_SUBST)
+	(PDF_HAVE_DEBUG_BASE_SUBST, PDF_HAVE_DEBUG_OBJECT_SUBST)
+	(PDF_HAVE_DEBUG_DOCUMENT_SUBST, PDF_HAVE_DEBUG_PAGE_SUBST)
+	(PDF_FORCE_BIGNUMS_SUBST, PDF_HAVE_INLINE_SUBST) Removed all variables,
+	as the new config.h-like method is quite cleaner.
+
+	* src/pdf-config.h.in: Use the config.h-like method instead of _SUBST
+	variable substitutions.
+
+2010-03-31  Aleksander Morgado  <aleksander@gnu.org>
 
 	* src/header-autogen: Updated copyright years in the generated `pdf.h'.
 
@@ -11,9 +25,7 @@
 
 	* src/base/pdf-types.h: Idem. Plus some minor indentation changes.
 
-	* configure.ac (AC_CONFIG_FILES, AC_OUTPUT): Do not use `AC_OUTPUT' with
-	arguments, as that is the deprecated way. Also, added the new generation
-	of `pdf-config.h'.
+	* configure.ac:
 	(PDF_HAVE_INLINE_SUBST, PDF_HAVE_INT64_T_SUBST, PDF_HAVE_LIBZ_SUBST)
 	(PDF_HAVE_LIBJPEG_SUBST, PDF_HAVE_LIBJBIG2DEC_SUBST)
 	(PDF_HAVE_DEBUG_BASE_SUBST, PDF_HAVE_DEBUG_OBJECT_SUBST)

@@ -21,7 +21,7 @@ dnl along with this program.  If not, see <http://www.gnu.org/licenses/>.
 AC_INIT([GNU PDF Library],[trunk],[pdf-devel@gnu.org],[libgnupdf])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE(libgnupdf, trunk)
-AM_CONFIG_HEADER(src/config.h)
+AC_CONFIG_HEADERS([src/config.h src/pdf-config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
 dnl Compiler issues
@@ -41,12 +41,10 @@ gl_INIT
 
 dnl OS-based compilation options
 compile_w32_system=no
-AC_SUBST([PDF_HOST])
 AC_SUBST([WINE])
 case "${host}" in
     *-mingw32*)
         compile_w32_system=yes
-        PDF_HOST=PDF_HOST_WIN32
         if test "${host}" != "${build}"
         then
            # Cross-compilation: use wine for testing
@@ -57,11 +55,10 @@ case "${host}" in
         AC_DEFINE([PDF_HOST_WIN32], [1], [Compiling for mingw32 systems])
         ;;
     *-bsd*)
-        PDF_HOST=PDF_HOST_BSD
         AC_DEFINE([PDF_HOST_BSD], [1], [Compiling for bsd systems])
         ;;
     *)
-        PDF_HOST=PDF_HOST_GNU
+        AC_DEFINE([PDF_HOST_GNU], [1], [Compiling for gnu systems])
         ;;
 esac
 
@@ -72,11 +69,9 @@ dnl Search for data types
 AC_CHECK_TYPE(size_t, unsigned)
 AC_CHECK_TYPE(off_t, long)
 AC_TYPE_INT64_T
-AC_SUBST([PDF_HAVE_INT64_T_SUBST])
-PDF_HAVE_INT64_T_SUBST=0
+
 if test "x$ac_cv_c_int64_t" = "xyes"; then
   AC_DEFINE([PDF_HAVE_INT64_T], [1], [Define to 1 if the system has the type `int64_t'.])
-  PDF_HAVE_INT64_T_SUBST=1
 fi
 
 
@@ -88,36 +83,27 @@ dnl Search for required libraries
 
 dnl zlib? (optional)
 CHECK_ZLIB
-AC_SUBST([PDF_HAVE_LIBZ_SUBST])
-PDF_HAVE_LIBZ_SUBST=0
 AM_CONDITIONAL([ZLIB], [test "x$have_zlib" != "xno"])
 if test "x$have_zlib" != "xno"; then
   AC_DEFINE([PDF_HAVE_LIBZ], [1], [Define to 1 if you have the `z' library])
-  PDF_HAVE_LIBZ_SUBST=1
 fi
 
 
 dnl libjpeg? (optional)
 have_libjpeg=yes
-AC_SUBST([PDF_HAVE_LIBJPEG_SUBST])
-PDF_HAVE_LIBJPEG_SUBST=0
 AC_CHECK_LIB([jpeg],[jpeg_std_error],[],[have_libjpeg=no])
 AM_CONDITIONAL([LIBJPEG], [test "x$have_libjpeg" != "xno"])
 if test "x$have_libjpeg" != "xno"; then
   AC_DEFINE([PDF_HAVE_LIBJPEG], [1], [Define to 1 if you have the `jpeg' library])
-  PDF_HAVE_LIBJPEG_SUBST=1
 fi
 
 
 dnl jbig2dec? (optional)
 have_jbig2dec=yes
-AC_SUBST([PDF_HAVE_LIBJBIG2DEC_SUBST])
-PDF_HAVE_LIBJBIG2DEC_SUBST=0
 AC_CHECK_LIB([jbig2dec],[jbig2_ctx_new],[],[have_jbig2dec=no])
 AM_CONDITIONAL([JBIG2DEC], [test "x$have_jbig2dec" != "xno"])
 if test "x$have_jbig2dec" != "xno"; then
   AC_DEFINE([PDF_HAVE_LIBJBIG2DEC], [1], [Define to 1 if you have the `jbig2dec' library])
-  PDF_HAVE_LIBJBIG2DEC_SUBST=1
 fi
 
 
@@ -278,36 +264,24 @@ AC_ARG_ENABLE([debug-page],
 
 dnl Note that these symbols are defined in both the public (pdf-config.h)
 dnl   and private (config.h) configuration headers
-AC_SUBST([PDF_HAVE_DEBUG_BASE_SUBST])
-PDF_HAVE_DEBUG_BASE_SUBST=0
 if test "x$debug_base_mode" = "xyes"; then
   AC_DEFINE([PDF_HAVE_DEBUG_BASE], [1], [Debugging Base Layer])
-  PDF_HAVE_DEBUG_BASE_SUBST=1
   PDFLIB_DEBUG_DESCR="base, "
 fi
 
-AC_SUBST([PDF_HAVE_DEBUG_OBJECT_SUBST])
-PDF_HAVE_DEBUG_OBJECT_SUBST=0
 if test "x$debug_object_mode" = "xyes"; then
   AC_DEFINE([PDF_HAVE_DEBUG_OBJECT], [1], [Debugging Object Layer])
   PDFLIB_DEBUG_DESCR="${PDFLIB_DEBUG_DESCR}object, "
-  PDF_HAVE_DEBUG_OBJECT_SUBST=1
 fi
 
-AC_SUBST([PDF_HAVE_DEBUG_DOCUMENT_SUBST])
-PDF_HAVE_DEBUG_DOCUMENT_SUBST=0
 if test "x$debug_document_mode" = "xyes"; then
   AC_DEFINE([PDF_HAVE_DEBUG_DOCUMENT], [1], [Debugging Document Layer])
   PDFLIB_DEBUG_DESCR="${PDFLIB_DEBUG_DESCR}document, "
-  PDF_HAVE_DEBUG_DOCUMENT_SUBST=1
 fi
 
-AC_SUBST([PDF_HAVE_DEBUG_PAGE_SUBST])
-PDF_HAVE_DEBUG_PAGE_SUBST=0
 if test "x$debug_page_mode" = "xyes"; then
   AC_DEFINE([HAVE_DEBUG_PAGE], [1], [Debugging Page Layer])
   PDFLIB_DEBUG_DESCR="${PDFLIB_DEBUG_DESCR}page"
-  PDF_HAVE_DEBUG_PAGE_SUBST=1
 fi
 
 if test "x$PDFLIB_DEBUG_DESCR" = "x"; then
@@ -340,11 +314,8 @@ AC_ARG_ENABLE([bignum-forcing],
               AS_HELP_STRING([--enable-bignum-forcing],
                              [Force the usage of the 64bits bignum implementation even if the system support a suitable native type]),
               [force_bignums=$enableval], [force_bignums=no])
-AC_SUBST([PDF_FORCE_BIGNUMS_SUBST])
-PDF_FORCE_BIGNUMS_SUBST=0
 if test "x$force_bignums" = "xyes"; then
    AC_DEFINE([PDF_FORCE_BIGNUMS],[1],[Force the usage of the 64bits bignum implementation even if the system support a suitable native type])
-   PDF_FORCE_BIGNUMS_SUBST=1
 fi
 
 if test "x$ac_cv_c_int64_t" != "xyes" -o "x$force_bignums" != "xyes"; then
@@ -397,12 +368,9 @@ AC_SUBST(GNUPDF_VERSION)
 
 dnl Some additional stuff we need to have properly defined in the pdf.h
 dnl Note that gl_cv_c_inline_effective comes from m4/inline.m4
-PDF_HAVE_INLINE_SUBST=0
 if test $gl_cv_c_inline_effective = yes; then
-   PDF_HAVE_INLINE_SUBST=1
    AC_DEFINE([PDF_HAVE_INLINE], [1], [System has inline?])
 fi
-AC_SUBST(PDF_HAVE_INLINE_SUBST)
 
 
 
@@ -412,7 +380,6 @@ AC_CONFIG_FILES([Makefile
                  build-aux/Makefile
                  lib/Makefile
                  src/Makefile
-                 src/pdf-config.h
                  src/extract-public-hdr
                  torture/Makefile
                  torture/testdata/Makefile
