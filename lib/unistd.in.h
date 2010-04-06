@@ -415,9 +415,8 @@ _GL_WARN_ON_USE (faccessat, "faccessat is not portable - "
    Return 0 if successful, otherwise -1 and errno set.
    See the POSIX:2001 specification
    <http://www.opengroup.org/susv3xsh/fchdir.html>.  */
-# if @REPLACE_FCHDIR@
-_GL_FUNCDECL_RPL (fchdir, int, (int /*fd*/));
-_GL_CXXALIAS_RPL (fchdir, int, (int /*fd*/));
+# if ! @HAVE_FCHDIR@
+_GL_FUNCDECL_SYS (fchdir, int, (int /*fd*/));
 
 /* Gnulib internal hooks needed to maintain the fchdir metadata.  */
 _GL_EXTERN_C int _gl_register_fd (int fd, const char *filename)
@@ -426,9 +425,8 @@ _GL_EXTERN_C void _gl_unregister_fd (int fd);
 _GL_EXTERN_C int _gl_register_dup (int oldfd, int newfd);
 _GL_EXTERN_C const char *_gl_directory_name (int fd);
 
-# else
-_GL_CXXALIAS_SYS (fchdir, int, (int /*fd*/));
 # endif
+_GL_CXXALIAS_SYS (fchdir, int, (int /*fd*/));
 _GL_CXXALIASWARN (fchdir);
 #elif defined GNULIB_POSIXCHECK
 # undef fchdir
@@ -525,7 +523,9 @@ _GL_WARN_ON_USE (ftruncate, "ftruncate is unportable - "
 _GL_FUNCDECL_RPL (getcwd, char *, (char *buf, size_t size));
 _GL_CXXALIAS_RPL (getcwd, char *, (char *buf, size_t size));
 # else
-_GL_CXXALIAS_SYS (getcwd, char *, (char *buf, size_t size));
+/* Need to cast, because on mingw, the second parameter is
+                                                   int size.  */
+_GL_CXXALIAS_SYS_CAST (getcwd, char *, (char *buf, size_t size));
 # endif
 _GL_CXXALIASWARN (getcwd);
 #elif defined GNULIB_POSIXCHECK
@@ -773,7 +773,9 @@ getpagesize ()
 /* Need to cast, because on Cygwin 1.5.x systems, the return type is size_t.  */
 _GL_CXXALIAS_SYS_CAST (getpagesize, int, (void));
 # endif
+# if @HAVE_DECL_GETPAGESIZE@
 _GL_CXXALIASWARN (getpagesize);
+# endif
 #elif defined GNULIB_POSIXCHECK
 # undef getpagesize
 # if HAVE_RAW_DECL_GETPAGESIZE
