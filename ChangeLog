@@ -1,5 +1,10 @@
 2010-04-06  Jose E. Marchesi  <jemarch@gnu.org>
 
+	build: Fix distcheck.
+	* doc/gnupdf-utils.texi: Fix filename in @setfilename.
+
+2010-04-06  Jose E. Marchesi  <jemarch@gnu.org>
+
 	pdf-types: Define maximum integral values in terms of system
 	constants.
 	* src/base/pdf-types.h (PDF_I32_MAX): Define in terms of
