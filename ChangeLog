@@ -1,3 +1,39 @@
+2010-04-06  Jose E. Marchesi  <jemarch@gnu.org>
+
+	pdf-types: Define maximum integral values in terms of system
+	constants.
+	* src/base/pdf-types.h (PDF_I32_MAX): Define in terms of
+	INT32_MAX.
+	(PDF_U32_MAX): Define in terms of UINT32_MAX.
+	(PDF_U16_MAX): Define in terms of UINT16_MAX.
+	(PDF_U8_MAX): Define in terms of UINT8_MAX.
+
+2010-04-06  Jose E. Marchesi  <jemarch@gnu.org>
+
+	build: Avoid non-portable test parameters -o and -a.
+	* configure.ac: Use test E1 || test E2 instead of test E1 -o E2.
+
+	* m4/zlib.m4 (CHECK_ZLIB): Use test E1 && test E2 instead of test
+	E1 -a E2.
+
+2010-04-06  Jose E. Marchesi  <jemarch@gnu.org>
+
+	token-reader: Check for the validity of the chars composing a name
+	token.
+	* torture/unit/base/token/pdf-token-read.c (test_char_array):
+	Don't call pdf_init() and pdf_finish(), since there are tests
+	calling test_char_array more than once.
+	(fail_for_raw_char): Don't rely on pdf_token_read to set token to
+	NULL if the reading failed.  Use the returned status value
+	instead.
+
+	* src/base/pdf-token-reader.c (handle_char): Check that a
+	given character is in the proper range before to add it to the
+	contents of a name token.
+
+	* torture/unit/base/token/pdf-token-read.c: Missing copyright
+	notification added.
+
 2010-04-05  Aleksander Morgado  <aleksander@gnu.org>
 
 	* configure.ac (AC_CONFIG_HEADERS): Use AC_CONFIG_HEADERS instead of
