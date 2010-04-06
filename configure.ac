@@ -200,11 +200,11 @@ PDFLIB_LEVEL=3
 fi
 
 AM_CONDITIONAL([COMPILE_BASE_LAYER], [test "true" = "true"])
-AM_CONDITIONAL([COMPILE_OBJECT_LAYER], [test "x$PDFLIB_LEVEL" = "x1" -o \
-                                             "x$PDFLIB_LEVEL" = "x2" -o \
-                                             "x$PDFLIB_LEVEL" = "x3"])
-AM_CONDITIONAL([COMPILE_DOCUMENT_LAYER], [test "x$PDFLIB_LEVEL" = "x2" -o \
-                                               "x$PDFLIB_LEVEL" = "x3"])
+AM_CONDITIONAL([COMPILE_OBJECT_LAYER], [test "x$PDFLIB_LEVEL" = "x1" || \
+                                        test "x$PDFLIB_LEVEL" = "x2" || \
+                                        test "x$PDFLIB_LEVEL" = "x3"])
+AM_CONDITIONAL([COMPILE_DOCUMENT_LAYER], [test "x$PDFLIB_LEVEL" = "x2" || \
+                                          test "x$PDFLIB_LEVEL" = "x3"])
 AM_CONDITIONAL([COMPILE_PAGE_LAYER], [test x$PDFLIB_LEVEL = "x3"])
 
 
@@ -318,7 +318,7 @@ if test "x$force_bignums" = "xyes"; then
    AC_DEFINE([PDF_FORCE_BIGNUMS],[1],[Force the usage of the 64bits bignum implementation even if the system support a suitable native type])
 fi
 
-if test "x$ac_cv_c_int64_t" != "xyes" -o "x$force_bignums" != "xyes"; then
+if test "x$ac_cv_c_int64_t" != "xyes" || test "x$force_bignums" != "xyes"; then
   bignum_implementation="built-in"
 else
   bignum_implementation="gnupdf"
@@ -339,7 +339,7 @@ AM_CONDITIONAL([NOCHECK], [test "x$use_nocheck" = "xyes"])
 
 dnl Check if Unit testing support is available with Check or No-Check
 ut_support=no
-AM_CONDITIONAL([COMPILE_UT], [test "x$use_nocheck" = "xyes" -o "x$ac_cv_lib_check_srunner_run" = "xyes"])
+AM_CONDITIONAL([COMPILE_UT], [test "x$use_nocheck" = "xyes" || test "x$ac_cv_lib_check_srunner_run" = "xyes"])
 if test "x$use_nocheck" = "xyes"; then
   ut_framework="(builtin No-Check)"
   ut_support=yes
