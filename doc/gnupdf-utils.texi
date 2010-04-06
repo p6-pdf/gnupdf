@@ -1,7 +1,7 @@
 \input texinfo
 @comment $Id: gnupdf-utils.texi,v 1.2 2008/02/11 00:11:25 jemarch Exp $
 @comment %**start of header
-@setfilename gnupdf_util.info
+@setfilename gnupdf-utils.info
 @settitle GNU PDF Utilities
 @comment %**end of header
 
