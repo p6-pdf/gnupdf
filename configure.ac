@@ -21,7 +21,7 @@ dnl along with this program.  If not, see <http://www.gnu.org/licenses/>.
 AC_INIT([GNU PDF Library],[trunk],[pdf-devel@gnu.org],[libgnupdf])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE(libgnupdf, trunk)
-AM_CONFIG_HEADER(src/config.h)
+AC_CONFIG_HEADERS([src/config.h src/pdf-config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
 dnl Compiler issues
@@ -38,14 +38,13 @@ canonical=$host
 
 gl_INIT
 
+
 dnl OS-based compilation options
 compile_w32_system=no
-AC_SUBST([PDF_HOST])
 AC_SUBST([WINE])
 case "${host}" in
     *-mingw32*)
         compile_w32_system=yes
-        PDF_HOST=PDF_HOST_WIN32
         if test "${host}" != "${build}"
         then
            # Cross-compilation: use wine for testing
@@ -56,11 +55,10 @@ case "${host}" in
         AC_DEFINE([PDF_HOST_WIN32], [1], [Compiling for mingw32 systems])
         ;;
     *-bsd*)
-        PDF_HOST=PDF_HOST_BSD
         AC_DEFINE([PDF_HOST_BSD], [1], [Compiling for bsd systems])
         ;;
     *)
-        PDF_HOST=PDF_HOST_GNU
+        AC_DEFINE([PDF_HOST_GNU], [1], [Compiling for gnu systems])
         ;;
 esac
 
@@ -72,31 +70,51 @@ AC_CHECK_TYPE(size_t, unsigned)
 AC_CHECK_TYPE(off_t, long)
 AC_TYPE_INT64_T
 
-  if test $ac_cv_c_int64_t = yes; then
-    AC_DEFINE([HAVE_INT64_T], [1],
-      [Define to 1 if the system has the type `int64_t'.])
-  fi
+if test "x$ac_cv_c_int64_t" = "xyes"; then
+  AC_DEFINE([PDF_HAVE_INT64_T], [1], [Define to 1 if the system has the type `int64_t'.])
+fi
 
 
 dnl Search for functions
 AC_FUNC_FSEEKO
 
-dnl Search for required libraries
-CHECK_ZLIB
-AM_CONDITIONAL([ZLIB], [test "x$have_zlib" = "xyes"])
-AC_CHECK_LIB(m,exp,,,)
 
+dnl Search for required libraries
+
+dnl zlib? (optional)
+CHECK_ZLIB
+AM_CONDITIONAL([ZLIB], [test "x$have_zlib" != "xno"])
+if test "x$have_zlib" != "xno"; then
+  AC_DEFINE([PDF_HAVE_LIBZ], [1], [Define to 1 if you have the `z' library])
+fi
+
+
+dnl libjpeg? (optional)
 have_libjpeg=yes
 AC_CHECK_LIB([jpeg],[jpeg_std_error],[],[have_libjpeg=no])
 AM_CONDITIONAL([LIBJPEG], [test "x$have_libjpeg" != "xno"])
+if test "x$have_libjpeg" != "xno"; then
+  AC_DEFINE([PDF_HAVE_LIBJPEG], [1], [Define to 1 if you have the `jpeg' library])
+fi
 
+
+dnl jbig2dec? (optional)
+have_jbig2dec=yes
+AC_CHECK_LIB([jbig2dec],[jbig2_ctx_new],[],[have_jbig2dec=no])
+AM_CONDITIONAL([JBIG2DEC], [test "x$have_jbig2dec" != "xno"])
+if test "x$have_jbig2dec" != "xno"; then
+  AC_DEFINE([PDF_HAVE_LIBJBIG2DEC], [1], [Define to 1 if you have the `jbig2dec' library])
+fi
+
+
+dnl libm? (mandatory)
+AC_CHECK_LIB(m,exp,,,)
+
+dnl libcurl? (optional)
 have_libcurl=yes
 AC_CHECK_LIB([curl],[curl_global_init],[],[have_libcurl=no])
 AM_CONDITIONAL([LIBCURL], [test "x$have_libcurl" != "xno"])
 
-have_jbig2dec=yes
-AC_CHECK_LIB([jbig2dec],[jbig2_ctx_new],[],[have_jbig2dec=no])
-AM_CONDITIONAL([JBIG2DEC], [test "x$have_jbig2dec" != "xno"])
 
 if test "x$compile_w32_system" = "xyes"; then
   # We cannot use AM_PATH_LIBGCRYPT in this case, since it depends on
@@ -108,18 +126,20 @@ else
   AM_PATH_LIBGCRYPT([1.2.4], have_libgcrypt="yes", have_libgcrypt="no")
 fi
 
+dnl libgpg-error? (mandatory)
 if test x$have_gpgerror = "xno"; then
   AC_MSG_ERROR([cannot find the libgpg-error library. Please install it and rerun `configure'.])
 fi
 
+dnl libgcrypt? (mandatory)
 if test x$have_libgcrypt = "xno"; then
   AC_MSG_ERROR([cannot find the libgcrypt library. Please install it and rerun `configure'.])
 fi
 
+dnl svn libcheck? (optional)
 have_check=yes
 AC_CHECK_LIB([check],[srunner_run],,[have_check=no])
 AM_CONDITIONAL([CHECK], [test "x$have_check" != "xno"])
-
 if test x$have_check = "xno"; then
    have_check=yes
    AC_CHECK_LIB([check],[srunner_run_all],,[have_check=no])
@@ -128,8 +148,12 @@ if test x$have_check = "xno"; then
    fi
 fi
 
+dnl libiconv? (optional)
 AC_CHECK_LIB([iconv],[iconv_open],[have_iconv=yes],[have_iconv=no])
 AM_CONDITIONAL([ICONV], [test "x$have_iconv" = "xyes"])
+
+
+
 
 dnl Search for required programs for building the sources
 AC_PROG_AWK
@@ -162,10 +186,10 @@ dnl
 dnl level\layer | base | object | document | page |
 dnl ------------+------+--------+----------+------+
 dnl      0      |  *   |        |          |      |
-dnl      1      |  *   |    *   |          |      | 
+dnl      1      |  *   |    *   |          |      |
 dnl      2      |  *   |    *   |    *     |      |
 dnl      3      |  *   |    *   |    *     |   *  |
-dnl 
+dnl
 dnl Note that the base layer is always included in the library
 dnl regardless the compilation level.
 
@@ -176,21 +200,21 @@ PDFLIB_LEVEL=3
 fi
 
 AM_CONDITIONAL([COMPILE_BASE_LAYER], [test "true" = "true"])
-AM_CONDITIONAL([COMPILE_OBJECT_LAYER], [test "x$PDFLIB_LEVEL" = "x1" -o \
-                                             "x$PDFLIB_LEVEL" = "x2" -o \
-                                             "x$PDFLIB_LEVEL" = "x3"])
-AM_CONDITIONAL([COMPILE_DOCUMENT_LAYER], [test "x$PDFLIB_LEVEL" = "x2" -o \
-                                               "x$PDFLIB_LEVEL" = "x3"])
+AM_CONDITIONAL([COMPILE_OBJECT_LAYER], [test "x$PDFLIB_LEVEL" = "x1" || \
+                                        test "x$PDFLIB_LEVEL" = "x2" || \
+                                        test "x$PDFLIB_LEVEL" = "x3"])
+AM_CONDITIONAL([COMPILE_DOCUMENT_LAYER], [test "x$PDFLIB_LEVEL" = "x2" || \
+                                          test "x$PDFLIB_LEVEL" = "x3"])
 AM_CONDITIONAL([COMPILE_PAGE_LAYER], [test x$PDFLIB_LEVEL = "x3"])
 
 
 dnl Project management resources
 AC_ARG_ENABLE([prmgt], AS_HELP_STRING([--enable-prmgt],
-                                      [build project management resources (default is NO)]), 
+                                      [build project management resources (default is NO)]),
               [prmgt_mode=$enableval], [prmgt_mode=no])
 
 AM_CONDITIONAL([PRMGT],[test "x$prmgt_mode" = "xyes"])
-if test "x$prmgt_mode" = "xyes" ; then 
+if test "x$prmgt_mode" = "xyes" ; then
 
 if test "x$have_taskjuggler" = "xyes" ; then
    AC_CHECK_PROG([have_dot], [dot], [yes], [no],,)
@@ -217,34 +241,44 @@ fi # prmgt_mode
 
 # debug_*_mode
 PDFLIB_DEBUG_DESCR=""
-AC_ARG_ENABLE([debug-base], AS_HELP_STRING([--enable-debug-base],
-                                      [debug mode at the base layer (default is NO)]), 
+AC_ARG_ENABLE([debug-base],
+              AS_HELP_STRING([--enable-debug-base],
+                             [debug mode at the base layer (default is NO)]),
               [debug_base_mode=$enableval], [debug_base_mode=no])
 
-AC_ARG_ENABLE([debug-object], AS_HELP_STRING([--enable-debug-object],
-                                      [debug mode at the object layer (default is NO)]), 
+AC_ARG_ENABLE([debug-object],
+               AS_HELP_STRING([--enable-debug-object],
+                              [debug mode at the object layer (default is NO)]),
               [debug_object_mode=$enableval], [debug_object_mode=no])
 
-AC_ARG_ENABLE([debug-document], AS_HELP_STRING([--enable-debug-document],
-                                      [debug mode at the document layer (default is NO)]), 
+AC_ARG_ENABLE([debug-document],
+               AS_HELP_STRING([--enable-debug-document],
+                              [debug mode at the document layer (default is NO)]),
               [debug_document_mode=$enableval], [debug_document_mode=no])
 
-AC_ARG_ENABLE([debug-page], AS_HELP_STRING([--enable-debug-page],
-                                      [debug mode at the page layer (default is NO)]), 
+AC_ARG_ENABLE([debug-page],
+              AS_HELP_STRING([--enable-debug-page],
+                             [debug mode at the page layer (default is NO)]),
               [debug_page_mode=$enableval], [debug_page_mode=no])
 
+
+dnl Note that these symbols are defined in both the public (pdf-config.h)
+dnl   and private (config.h) configuration headers
 if test "x$debug_base_mode" = "xyes"; then
-  AC_DEFINE([HAVE_DEBUG_BASE], [1], [Debugging Base Layer])
+  AC_DEFINE([PDF_HAVE_DEBUG_BASE], [1], [Debugging Base Layer])
   PDFLIB_DEBUG_DESCR="base, "
-fi 
+fi
+
 if test "x$debug_object_mode" = "xyes"; then
-  AC_DEFINE([HAVE_DEBUG_OBJECT], [1], [Debugging Object Layer])
+  AC_DEFINE([PDF_HAVE_DEBUG_OBJECT], [1], [Debugging Object Layer])
   PDFLIB_DEBUG_DESCR="${PDFLIB_DEBUG_DESCR}object, "
 fi
+
 if test "x$debug_document_mode" = "xyes"; then
-  AC_DEFINE([HAVE_DEBUG_DOCUMENT], [1], [Debugging Document Layer])
+  AC_DEFINE([PDF_HAVE_DEBUG_DOCUMENT], [1], [Debugging Document Layer])
   PDFLIB_DEBUG_DESCR="${PDFLIB_DEBUG_DESCR}document, "
 fi
+
 if test "x$debug_page_mode" = "xyes"; then
   AC_DEFINE([HAVE_DEBUG_PAGE], [1], [Debugging Page Layer])
   PDFLIB_DEBUG_DESCR="${PDFLIB_DEBUG_DESCR}page"
@@ -257,14 +291,16 @@ fi
 # end debug_*_mode
 
 dnl gcov compilation
-AC_ARG_ENABLE([coverage], AS_HELP_STRING([--enable-coverage],
-                                        [Compile the library with code coverage support (default is NO)]),
-                                        [use_gcov=$enableval], [use_gcov=no])
+AC_ARG_ENABLE([coverage],
+              AS_HELP_STRING([--enable-coverage],
+                             [Compile the library with code coverage support (default is NO)]),
+              [use_gcov=$enableval], [use_gcov=no])
 AM_CONDITIONAL([USE_COVERAGE], [test "x$use_gcov" = "xyes"])
 
-AC_ARG_ENABLE([fsys-http], AS_HELP_STRING([--enable-fsys-http],
-                                          [Include the HTTP filesystem implementation in the build]),
-                                          [fsys_http=$enableval], [fsys_http=no])
+AC_ARG_ENABLE([fsys-http],
+               AS_HELP_STRING([--enable-fsys-http],
+                              [Include the HTTP filesystem implementation in the build]),
+              [fsys_http=$enableval], [fsys_http=no])
 if test "x$fsys_http" = "xyes"; then
    if test x$have_libcurl = "xno"; then
       AC_MSG_ERROR([libcurl is required for HTTP filesystem support. Please install libcurl and rerun autoconf.])
@@ -273,17 +309,26 @@ if test "x$fsys_http" = "xyes"; then
 fi
 AM_CONDITIONAL([FSYS_HTTP], [test "x$fsys_http" != "xno"])
 
-dnl bignums
-AC_ARG_ENABLE([bignum-forcing], AS_HELP_STRING([--enable-bignum-forcing],
-                                           [Force the usage of the 64bits bignum implementation even if the system support a suitable native type]),
-                                                   [force_bignums=$enableval], [force_bignums=no])
+dnl bignums forced?
+AC_ARG_ENABLE([bignum-forcing],
+              AS_HELP_STRING([--enable-bignum-forcing],
+                             [Force the usage of the 64bits bignum implementation even if the system support a suitable native type]),
+              [force_bignums=$enableval], [force_bignums=no])
 if test "x$force_bignums" = "xyes"; then
    AC_DEFINE([PDF_FORCE_BIGNUMS],[1],[Force the usage of the 64bits bignum implementation even if the system support a suitable native type])
 fi
 
+if test "x$ac_cv_c_int64_t" != "xyes" || test "x$force_bignums" != "xyes"; then
+  bignum_implementation="built-in"
+else
+  bignum_implementation="gnupdf"
+fi
+
+
 dnl nocheck (simple replacement of Check framework when this is not available)
-AC_ARG_ENABLE([nocheck], AS_HELP_STRING([--enable-nocheck],
-                                      [Use built-in nocheck instead of Check (default is NO)]), 
+AC_ARG_ENABLE([nocheck],
+              AS_HELP_STRING([--enable-nocheck],
+                             [Use built-in nocheck instead of Check (default is NO)]),
               [use_nocheck=$enableval], [use_nocheck=no])
 if test "x$use_nocheck" = "xyes"; then
   AC_DEFINE([HAVE_NOCHECK], [1], [Use No-Check instead of Check])
@@ -294,7 +339,7 @@ AM_CONDITIONAL([NOCHECK], [test "x$use_nocheck" = "xyes"])
 
 dnl Check if Unit testing support is available with Check or No-Check
 ut_support=no
-AM_CONDITIONAL([COMPILE_UT], [test "x$use_nocheck" = "xyes" -o "x$ac_cv_lib_check_srunner_run" = "xyes"])
+AM_CONDITIONAL([COMPILE_UT], [test "x$use_nocheck" = "xyes" || test "x$ac_cv_lib_check_srunner_run" = "xyes"])
 if test "x$use_nocheck" = "xyes"; then
   ut_framework="(builtin No-Check)"
   ut_support=yes
@@ -320,8 +365,38 @@ AM_CONDITIONAL([COMPILE_W32_SYSTEM], [test "x$compile_w32_system" = "xyes"])
 GNUPDF_VERSION=$VERSION
 AC_SUBST(GNUPDF_VERSION)
 
+
+dnl Some additional stuff we need to have properly defined in the pdf.h
+dnl Note that gl_cv_c_inline_effective comes from m4/inline.m4
+if test $gl_cv_c_inline_effective = yes; then
+   AC_DEFINE([PDF_HAVE_INLINE], [1], [System has inline?])
+fi
+
+
+
 dnl Generate output files
-AC_OUTPUT(Makefile lib/Makefile src/Makefile torture/Makefile torture/testdata/Makefile torture/unit/Makefile doc/Makefile utils/Makefile prmgt/Makefile prmgt/apic2wiki prmgt/testlog2wiki prmgt/docfuncs prmgt/tsdfuncs src/extract-public-hdr build-aux/Makefile prmgt/get-test-data.sh prmgt/srcinfo-extractor.pl doc/version.texi prmgt/check-api-doc-consistency.pl doc/generate-tsd.pl libgnupdf.pc)
+AC_CONFIG_FILES([Makefile
+                 libgnupdf.pc
+                 build-aux/Makefile
+                 lib/Makefile
+                 src/Makefile
+                 src/extract-public-hdr
+                 torture/Makefile
+                 torture/testdata/Makefile
+                 torture/unit/Makefile
+                 utils/Makefile
+                 prmgt/Makefile
+                 prmgt/apic2wiki
+                 prmgt/testlog2wiki
+                 prmgt/docfuncs
+                 prmgt/tsdfuncs
+                 prmgt/get-test-data.sh
+                 prmgt/srcinfo-extractor.pl
+                 prmgt/check-api-doc-consistency.pl
+                 doc/Makefile
+                 doc/version.texi
+                 doc/generate-tsd.pl])
+AC_OUTPUT
 
 dnl Report configuration results
 
@@ -345,6 +420,7 @@ Configured for \`${canonical}'.
   Using FlateDecode filter?                 ${have_zlib}
   Using JBIG2 decoder filter?               ${ac_cv_lib_jbig2dec_jbig2_ctx_new}
   Using DCT filter?                         ${have_libjpeg}
+  Bignum implementation?                    ${bignum_implementation}
   With unit tests support?                  ${ut_support} ${ut_framework}
   Program to build html manuals             ${texihtmlprogram}
   Build project management resources?       ${prmgt_mode}
@@ -356,7 +432,7 @@ dnl Report warnings
 
 if test "x$have_zlib" = "xno" ; then
 echo "
-WARNING: you are going to build a library without FlateDecode support. 
+WARNING: you are going to build a library without FlateDecode support.
          That means you will not be able to process many PDF files."
 fi
 

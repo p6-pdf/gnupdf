@@ -80,7 +80,7 @@ AC_LANG_C
 AC_CHECK_LIB(z, inflateEnd, [zlib_cv_libz=yes], [zlib_cv_libz=no])
 AC_CHECK_HEADER(zlib.h, [zlib_cv_zlib_h=yes], [zlib_cv_zlib_h=no])
 AC_LANG_RESTORE
-if test "$zlib_cv_libz" = "yes" -a "$zlib_cv_zlib_h" = "yes"
+if test "$zlib_cv_libz" = "yes" && test "$zlib_cv_zlib_h" = "yes"
 then
    #
    # If both library and header were found, use them

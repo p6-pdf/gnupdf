@@ -136,7 +136,8 @@ AM_CPPFLAGS = -I$(top_srcdir)/lib \
 
 # Public header generation
 
-PUBLIC_HDRS = pdf-global.h \
+PUBLIC_HDRS = pdf-config.h \
+              pdf-global.h \
               base/pdf-error.h \
               base/pdf-types.h \
               base/pdf-fp.h \
@@ -166,11 +167,6 @@ pdf.h : $(PUBLIC_HDRS)
 	echo "#ifdef __cplusplus" >> $@
 	echo "extern \"C\" {" >> $@
 	echo "#endif" >> $@
-	echo "" >> $@
-	echo "/* Platform */" >> $@
-	echo "#if !defined($(PDF_HOST))" >> $@
-	echo "#   define $(PDF_HOST)" >> $@
-	echo "#endif /* !$(PDF_HOST) */" >> $@
 	echo "" >> $@
 	cat $^ | $(top_builddir)/src/extract-public-hdr >> $@
 	echo "#ifdef __cplusplus" >> $@
