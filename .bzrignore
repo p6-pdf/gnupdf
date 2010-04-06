@@ -66,3 +66,5 @@ utils/pdf-filter
 utils/pdf-tokeniser
 torture/unit/tmp.test
 torture/unit/ut.log
+src/pdf-config.h
+src/stamp-h2

@@ -112,7 +112,7 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
             new->impl.dealloc_state_fn = pdf_stm_f_rldec_dealloc_state;
             break;
           }
-#if defined(HAVE_LIBZ)
+#if defined(PDF_HAVE_LIBZ)
         case PDF_STM_FILTER_FLATE_ENC:
           {
             new->impl.init_fn = pdf_stm_f_flateenc_init;
@@ -127,7 +127,7 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
             new->impl.dealloc_state_fn = pdf_stm_f_flatedec_dealloc_state;
             break;
           }
-#endif /* HAVE_LIBZ */
+#endif /* PDF_HAVE_LIBZ */
         case PDF_STM_FILTER_V2_ENC:
           {
             new->impl.init_fn = pdf_stm_f_v2enc_init;
@@ -191,7 +191,7 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
 	    new->impl.dealloc_state_fn = pdf_stm_f_a85dec_dealloc_state;
 	    break;
 	  }
-#if defined(HAVE_LIBJBIG2DEC)
+#if defined(PDF_HAVE_LIBJBIG2DEC)
         case PDF_STM_FILTER_JBIG2_DEC:
           {
             new->impl.init_fn = pdf_stm_f_jbig2dec_init;
@@ -199,8 +199,8 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
             new->impl.dealloc_state_fn = pdf_stm_f_jbig2dec_dealloc_state;
             break;
           }
-#endif /* HAVE_LIBJBIG2DEC */
-#if defined(HAVE_LIBJPEG)
+#endif /* PDF_HAVE_LIBJBIG2DEC */
+#if defined(PDF_HAVE_LIBJPEG)
         case PDF_STM_FILTER_DCT_DEC:
           {
             new->impl.init_fn = pdf_stm_f_dctdec_init;
@@ -208,7 +208,7 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
             new->impl.dealloc_state_fn = pdf_stm_f_dctdec_dealloc_state;
             break;
           }
-#endif /* HAVE_LIBJPEG */
+#endif /* PDF_HAVE_LIBJPEG */
         default:
           {
             /* Shall not be reached, but makes the compiler happy */

@@ -1,0 +1,79 @@
+/* -*- mode: C -*-
+ *
+ *       File:         pdf-config.h.in
+ *       Date:         Mon Mar 29 20:54:25 2010
+ *
+ *       GNU PDF Library - Config options to include in the public pdf.h
+ *
+ */
+
+/* Copyright (C) 2010 Free Software Foundation, Inc. */
+
+/* This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#ifndef _PDF_CONFIG_H
+#define _PDF_CONFIG_H
+
+/* BEGIN PUBLIC */
+
+/* ------------------- Public Configuration Options ------------------------- */
+
+
+/* System has inline? */
+#undef PDF_HAVE_INLINE
+
+/* Compiled for mingw32 systems? */
+#undef PDF_HOST_WIN32
+
+/* Compiled for BSD systems? */
+#undef PDF_HOST_BSD
+
+/* Compiled for GNU systems? */
+#undef PDF_HOST_GNU
+
+/* Compiled with libz support? */
+#undef PDF_HAVE_LIBZ
+
+/* Compiled with libjpeg support? */
+#undef PDF_HAVE_LIBJPEG
+
+/* Compiled with libjbig2dec support? */
+#undef PDF_HAVE_LIBJBIG2DEC
+
+/* Base Layer Debugging enabled? */
+#undef PDF_HAVE_DEBUG_BASE
+
+/* Object Layer Debugging enabled? */
+#undef PDF_HAVE_DEBUG_OBJECT
+
+/* Document Layer Debugging enabled? */
+#undef PDF_HAVE_DEBUG_DOCUMENT
+
+/* Page Layer Debugging enabled? */
+#undef PDF_HAVE_DEBUG_PAGE
+
+/* Bignum support in the OS? */
+#undef PDF_HAVE_INT64_T
+
+/* GNU PDF Bignum implementation forced? */
+#undef PDF_FORCE_BIGNUMS
+
+
+
+/* END PUBLIC */
+
+#endif /* _PDF_CONFIG_H */
+
+/* End of pdf-config.h.in */
