@@ -1,5 +1,16 @@
 2010-04-06  Jose E. Marchesi  <jemarch@gnu.org>
 
+	* torture/unit/base/token/pdf-token-read.c (test_char_array):
+	Don't call pdf_init() and pdf_finish(), since there are tests
+	calling test_char_array more than once.
+	(fail_for_raw_char): Don't rely on pdf_token_read to set token to
+	NULL if the reading failed.  Use the returned status value
+	instead.
+
+	* src/base/pdf-token-reader.c (handle_char): Check that a
+	given character is in the proper range before to add it to the
+	contents of a name token.
+
 	* torture/unit/base/token/pdf-token-read.c: Missing copyright
 	notification added.
 

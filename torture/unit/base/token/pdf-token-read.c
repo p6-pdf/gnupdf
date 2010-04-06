@@ -141,13 +141,11 @@ test_char_array (void (*test_fn) (pdf_char_t),
   pdf_char_t ch = '\0';
   pdf_u32_t  idx = 0;
 
-  pdf_init ();
   for (idx = 0; idx < size; idx++)
     {
       ch = array[idx];
       test_fn (ch);
     }
-  pdf_finish ();
 }
 
 /*
@@ -204,14 +202,15 @@ fail_for_raw_char (pdf_char_t ch)
   if (PDF_OK == rv)
     {
       str = pdf_token_get_name_data (token);
+      pdf_token_destroy (token);
       ok = (strlen (str) == 0);
     }
   else
-    ok = PDF_TRUE;
-  fail_unless (ok);
+    {
+      ok = PDF_TRUE;
+    }
 
-  if (token)
-    pdf_token_destroy (token);
+  fail_unless (ok);
 
   pdf_token_reader_destroy (tokr);
   pdf_stm_destroy (stm);
@@ -616,9 +615,13 @@ END_TEST
 START_TEST (pdf_token_regular_char_as_number)
 {
   pdf_char_t regular_chars[256 - sizeof (non_regular_chars)];
+
+  pdf_init ();
+
   init_regular_chars_array (regular_chars);
   test_char_array (&ok_for_escaped_char, regular_chars,
                    sizeof (regular_chars));
+  pdf_finish ();
 }
 END_TEST
 
@@ -664,9 +667,13 @@ void test_ok_inside_range (pdf_char_t ch)
 START_TEST (pdf_token_regular_chars_inside_range)
 {
   pdf_char_t regular_chars[256 - sizeof (non_regular_chars)];
+
+  pdf_init ();
+
   init_regular_chars_array (regular_chars);
   test_char_array (&test_ok_inside_range, regular_chars,
                    sizeof (regular_chars));
+  pdf_finish ();
 }
 END_TEST
 
@@ -683,6 +690,8 @@ END_TEST
  */
 START_TEST (pdf_token_non_regular_chars)
 {
+  pdf_init ();
+
   /* verify that tokens that contain non-regular chars written
      as numbers are valid */
   test_char_array (&ok_for_escaped_char, non_regular_chars,
@@ -692,6 +701,8 @@ START_TEST (pdf_token_non_regular_chars)
      directly are invalid */
   test_char_array (&fail_for_raw_char, non_regular_chars,
                    sizeof (non_regular_chars));
+
+  pdf_finish ();
 }
 END_TEST
 
@@ -717,9 +728,14 @@ void test_fail_outside_range (pdf_char_t ch)
 START_TEST (pdf_token_regular_chars_outside_range)
 {
   pdf_char_t regular_chars[256 - sizeof (non_regular_chars)];
+
+  pdf_init ();
+
   init_regular_chars_array (regular_chars);
   test_char_array (&test_fail_outside_range, regular_chars,
                    sizeof (regular_chars));
+
+  pdf_finish ();
 }
 END_TEST
 
