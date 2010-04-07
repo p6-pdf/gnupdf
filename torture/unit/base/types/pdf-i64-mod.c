@@ -192,6 +192,74 @@ START_TEST(pdf_i64_mod_005)
 END_TEST
 
 /*
+ * Test: pdf_i64_mod_006
+ * Description:
+ *   Mods a positive and negative number
+ * Success conditions:
+ * The call should not produce an error
+ */
+START_TEST(pdf_i64_mod_006)
+{
+  pdf_status_t p_status = PDF_OK;
+  pdf_i64_t mod1, mod2, dest;
+
+#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
+  pdf_init();
+
+  mod1 = pdf_i64_new(0,5);
+  mod2 = pdf_i64_new(0xFFFFFFFF,0xFFFFFFFD); /*-3*/
+
+  pdf_i64_mod(&dest, mod1, mod2, &p_status);
+  
+  fail_if(p_status != PDF_OK);
+
+  fail_if(dest.low != 2); 
+  fail_if(dest.high != 0);
+#else
+  mod1 = 5;
+  mod2 = -3;
+  pdf_i64_mod(&dest, mod1, mod2, &p_status);
+  fail_if(dest != 2);
+#endif
+}
+END_TEST
+
+
+/*
+ * Test: pdf_i64_mod_007
+ * Description:
+ *   Mods a positive and negative number
+ * Success conditions:
+ * The call should not produce an error
+ */
+START_TEST(pdf_i64_mod_007)
+{
+  pdf_status_t p_status = PDF_OK;
+  pdf_i64_t mod1, mod2, dest;
+
+#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
+  pdf_init();
+
+  mod1 = pdf_i64_new(0xFFFFFFFF,0xFFFFFFFB); /*-5*/
+  mod2 = pdf_i64_new(0,3);
+
+  pdf_i64_mod(&dest, mod1, mod2, &p_status);
+  
+  fail_if(p_status != PDF_OK);
+
+  fail_if(dest.low !=  0xFFFFFFFE);
+  fail_if(dest.high != 0xFFFFFFFF);
+#else
+  mod1 = -5;
+  mod2 = 3;
+  pdf_i64_mod(&dest, mod1, mod2, &p_status);
+  fail_if(dest != -2);
+#endif
+}
+END_TEST
+
+
+/*
  * Test case creation function
  */
 TCase *
@@ -203,6 +271,8 @@ test_pdf_i64_mod (void)
   tcase_add_test(tc, pdf_i64_mod_003);
   tcase_add_test(tc, pdf_i64_mod_004);
   tcase_add_test(tc, pdf_i64_mod_005);
+  tcase_add_test(tc, pdf_i64_mod_006);
+  tcase_add_test(tc, pdf_i64_mod_007);
   return tc;
 }
 

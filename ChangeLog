@@ -1,3 +1,16 @@
+2010-04-07  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	pdf_i64_mod: fixed the result sign to match with pdf_i64_div()
+
+	* src/base/pdf-types.c: although knuth defines the quotient as
+	floor(a/b), our implementation computes it as trunc(a/b), like C99,
+	the sign depends on the dividend.
+
+	* torture/unit/base/types/pdf-i64-div.c: added some tests to prove
+	the above assumption.
+
+	* torture/unit/base/types/pdf-i64-mod.c: likewise.
+
 2010-04-06  Jose E. Marchesi  <jemarch@gnu.org>
 
 	pdf-types: Define maximum integral values in terms of system
