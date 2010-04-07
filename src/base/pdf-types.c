@@ -885,20 +885,12 @@ pdf_i64_mod(pdf_i64_t *dest,
       /*Now check the signs fo divisor and dividend*/
       if (pdf_i64_cmp(divisor,zero) < 0)
         {
-          result_sign = -1;
           pdf_i64_abs(&divisor,divisor, p_status);
         }
       if (pdf_i64_cmp(dividend,zero) < 0)
         {
           pdf_i64_abs(&dividend,dividend, p_status);
-          if (result_sign == -1)
-            {
-              result_sign = -1;
-            }
-          else
-            {
-              result_sign = -1;
-            }
+          result_sign = -1;
         }
 
       /*We check if abs(divisor) > abs(dividend)*/
