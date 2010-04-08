@@ -3785,7 +3785,19 @@ Not enough memory to perform the operation.
 @end table
 @item Usage example
 @example
-XXX
+pdf_list_t list;
+pdf_list_t sublist;
+
+/* Create empty lists.  */
+pdf_list_new (NULL, NULL, PDF_FALSE, &list);
+pdf_list_new (NULL, NULL, PDF_FALSE, &sublist);
+
+/* Set the sublist as the first element of the list.  */
+if (pdf_list_add_first (list, (void *) &sublist, NULL)
+    != PDF_OK)
+@{
+   /* Error adding the element to the list.  */
+@}
 @end example
 @end table
 @end deftypefun
@@ -3818,7 +3830,15 @@ Not enough memory to perform the operation.
 @end table
 @item Usage example
 @example
-XXX
+pdf_list_t list;
+my_t my_var;
+
+/* Append my_var to 'list'.  */
+if (pdf_list_add_last (list, (void *) &my_var, NULL)
+    != PDF_OK)
+@{
+   /* Error appending the element to the list.  */
+@}
 @end example
 @end table
 @end deftypefun
@@ -3855,7 +3875,15 @@ Not enough memory to perform the operation.
 @end table
 @item Usage example
 @example
-XXX
+pdf_list_t list;
+int a, b, c;
+
+/* Create the list and add some elements to it...  */
+pdf_list_new (NULL, NULL, PDF_FALSE, &list);
+
+pdf_list_add_at (list, 0, (void *) &a); /* (a) */
+pdf_list_add_at (list, 1, (void *) &c); /* (a c) */
+pdf_list_add_at (list, 1, (void *) &b); /* (a b c) */
 @end example
 @end table
 @end deftypefun

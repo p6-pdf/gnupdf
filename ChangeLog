@@ -1,3 +1,13 @@
+2010-04-08  Jose E. Marchesi  <jemarch@gnu.org>
+
+	refman: Added some usage examples.
+	* doc/gnupdf.texi (Adding and Removing List Elements):
+	Usage example for pdf_list_add_first.
+	(Adding and Removing List Elements): Likewise for
+	pdf_list_add_last.
+	(Adding and Removing List Elements): Likewise for
+	pdf_list_add_at.
+
 2010-04-07  Gerardo E. Gidoni  <gerel@gnu.org>
 
 	pdf_i64_mod: fixed the result sign to match with pdf_i64_div()
