@@ -1,5 +1,11 @@
 2010-04-13  Jose E. Marchesi  <jemarch@gnu.org>
 
+	Fix violations of the syntax rules.
+	* doc/gnupdf-arch.texi (Overview of the Parser module): Avoid a
+	"the the" typo.
+
+2010-04-13  Jose E. Marchesi  <jemarch@gnu.org>
+
 	gnupdf-arch: New figure parser-overview.
 	* doc/gnupdf-arch-figures/parser-overview.txt: New file.
 
