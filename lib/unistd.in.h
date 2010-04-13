@@ -15,6 +15,10 @@
    along with this program; if not, write to the Free Software Foundation,
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
 
+#if __GNUC__ >= 3
+@PRAGMA_SYSTEM_HEADER@
+#endif
+
 /* Special invocation convention:
    - On mingw, several headers, including <winsock2.h>, include <unistd.h>,
      but we need to ensure that both the system <unistd.h> and <winsock2.h>
@@ -32,10 +36,6 @@
 
 /* Normal invocation.  */
 #elif !defined _GL_UNISTD_H
-
-#if __GNUC__ >= 3
-@PRAGMA_SYSTEM_HEADER@
-#endif
 
 /* The include_next requires a split double-inclusion guard.  */
 #if @HAVE_UNISTD_H@
@@ -97,51 +97,88 @@
 # include <getopt.h>
 #endif
 
-#if @GNULIB_GETHOSTNAME@
-/* Get all possible declarations of gethostname().  */
-# if @UNISTD_H_HAVE_WINSOCK2_H@
-#  if !defined _GL_SYS_SOCKET_H
-#   undef socket
-#   define socket               socket_used_without_including_sys_socket_h
-#   undef connect
-#   define connect              connect_used_without_including_sys_socket_h
-#   undef accept
-#   define accept               accept_used_without_including_sys_socket_h
-#   undef bind
-#   define bind                 bind_used_without_including_sys_socket_h
-#   undef getpeername
-#   define getpeername          getpeername_used_without_including_sys_socket_h
-#   undef getsockname
-#   define getsockname          getsockname_used_without_including_sys_socket_h
-#   undef getsockopt
-#   define getsockopt           getsockopt_used_without_including_sys_socket_h
-#   undef listen
-#   define listen               listen_used_without_including_sys_socket_h
-#   undef recv
-#   define recv                 recv_used_without_including_sys_socket_h
-#   undef send
-#   define send                 send_used_without_including_sys_socket_h
-#   undef recvfrom
-#   define recvfrom             recvfrom_used_without_including_sys_socket_h
-#   undef sendto
-#   define sendto               sendto_used_without_including_sys_socket_h
-#   undef setsockopt
-#   define setsockopt           setsockopt_used_without_including_sys_socket_h
-#   undef shutdown
-#   define shutdown             shutdown_used_without_including_sys_socket_h
-#  endif
-#  if !defined _GL_SYS_SELECT_H
-#   undef select
-#   define select               select_used_without_including_sys_select_h
-#  endif
-# endif
-#endif
-
 /* The definitions of _GL_FUNCDECL_RPL etc. are copied here.  */
 
 /* The definition of _GL_ARG_NONNULL is copied here.  */
 
 /* The definition of _GL_WARN_ON_USE is copied here.  */
+
+
+#if @GNULIB_GETHOSTNAME@
+/* Get all possible declarations of gethostname().  */
+# if @UNISTD_H_HAVE_WINSOCK2_H@
+#  if !defined _GL_SYS_SOCKET_H
+#   if !(defined __cplusplus && defined GNULIB_NAMESPACE)
+#    undef socket
+#    define socket              socket_used_without_including_sys_socket_h
+#    undef connect
+#    define connect             connect_used_without_including_sys_socket_h
+#    undef accept
+#    define accept              accept_used_without_including_sys_socket_h
+#    undef bind
+#    define bind                bind_used_without_including_sys_socket_h
+#    undef getpeername
+#    define getpeername         getpeername_used_without_including_sys_socket_h
+#    undef getsockname
+#    define getsockname         getsockname_used_without_including_sys_socket_h
+#    undef getsockopt
+#    define getsockopt          getsockopt_used_without_including_sys_socket_h
+#    undef listen
+#    define listen              listen_used_without_including_sys_socket_h
+#    undef recv
+#    define recv                recv_used_without_including_sys_socket_h
+#    undef send
+#    define send                send_used_without_including_sys_socket_h
+#    undef recvfrom
+#    define recvfrom            recvfrom_used_without_including_sys_socket_h
+#    undef sendto
+#    define sendto              sendto_used_without_including_sys_socket_h
+#    undef setsockopt
+#    define setsockopt          setsockopt_used_without_including_sys_socket_h
+#    undef shutdown
+#    define shutdown            shutdown_used_without_including_sys_socket_h
+#   else
+     _GL_WARN_ON_USE (socket,
+                      "socket() used without including <sys/socket.h>");
+     _GL_WARN_ON_USE (connect,
+                      "connect() used without including <sys/socket.h>");
+     _GL_WARN_ON_USE (accept,
+                      "accept() used without including <sys/socket.h>");
+     _GL_WARN_ON_USE (bind,
+                      "bind() used without including <sys/socket.h>");
+     _GL_WARN_ON_USE (getpeername,
+                      "getpeername() used without including <sys/socket.h>");
+     _GL_WARN_ON_USE (getsockname,
+                      "getsockname() used without including <sys/socket.h>");
+     _GL_WARN_ON_USE (getsockopt,
+                      "getsockopt() used without including <sys/socket.h>");
+     _GL_WARN_ON_USE (listen,
+                      "listen() used without including <sys/socket.h>");
+     _GL_WARN_ON_USE (recv,
+                      "recv() used without including <sys/socket.h>");
+     _GL_WARN_ON_USE (send,
+                      "send() used without including <sys/socket.h>");
+     _GL_WARN_ON_USE (recvfrom,
+                      "recvfrom() used without including <sys/socket.h>");
+     _GL_WARN_ON_USE (sendto,
+                      "sendto() used without including <sys/socket.h>");
+     _GL_WARN_ON_USE (setsockopt,
+                      "setsockopt() used without including <sys/socket.h>");
+     _GL_WARN_ON_USE (shutdown,
+                      "shutdown() used without including <sys/socket.h>");
+#   endif
+#  endif
+#  if !defined _GL_SYS_SELECT_H
+#   if !(defined __cplusplus && defined GNULIB_NAMESPACE)
+#    undef select
+#    define select              select_used_without_including_sys_select_h
+#   else
+     _GL_WARN_ON_USE (select,
+                      "select() used without including <sys/select.h>");
+#   endif
+#  endif
+# endif
+#endif
 
 
 /* OS/2 EMX lacks these macros.  */
@@ -378,9 +415,8 @@ _GL_WARN_ON_USE (faccessat, "faccessat is not portable - "
    Return 0 if successful, otherwise -1 and errno set.
    See the POSIX:2001 specification
    <http://www.opengroup.org/susv3xsh/fchdir.html>.  */
-# if @REPLACE_FCHDIR@
-_GL_FUNCDECL_RPL (fchdir, int, (int /*fd*/));
-_GL_CXXALIAS_RPL (fchdir, int, (int /*fd*/));
+# if ! @HAVE_FCHDIR@
+_GL_FUNCDECL_SYS (fchdir, int, (int /*fd*/));
 
 /* Gnulib internal hooks needed to maintain the fchdir metadata.  */
 _GL_EXTERN_C int _gl_register_fd (int fd, const char *filename)
@@ -389,9 +425,8 @@ _GL_EXTERN_C void _gl_unregister_fd (int fd);
 _GL_EXTERN_C int _gl_register_dup (int oldfd, int newfd);
 _GL_EXTERN_C const char *_gl_directory_name (int fd);
 
-# else
-_GL_CXXALIAS_SYS (fchdir, int, (int /*fd*/));
 # endif
+_GL_CXXALIAS_SYS (fchdir, int, (int /*fd*/));
 _GL_CXXALIASWARN (fchdir);
 #elif defined GNULIB_POSIXCHECK
 # undef fchdir
@@ -488,7 +523,9 @@ _GL_WARN_ON_USE (ftruncate, "ftruncate is unportable - "
 _GL_FUNCDECL_RPL (getcwd, char *, (char *buf, size_t size));
 _GL_CXXALIAS_RPL (getcwd, char *, (char *buf, size_t size));
 # else
-_GL_CXXALIAS_SYS (getcwd, char *, (char *buf, size_t size));
+/* Need to cast, because on mingw, the second parameter is
+                                                   int size.  */
+_GL_CXXALIAS_SYS_CAST (getcwd, char *, (char *buf, size_t size));
 # endif
 _GL_CXXALIASWARN (getcwd);
 #elif defined GNULIB_POSIXCHECK
@@ -736,7 +773,9 @@ getpagesize ()
 /* Need to cast, because on Cygwin 1.5.x systems, the return type is size_t.  */
 _GL_CXXALIAS_SYS_CAST (getpagesize, int, (void));
 # endif
+# if @HAVE_DECL_GETPAGESIZE@
 _GL_CXXALIASWARN (getpagesize);
+# endif
 #elif defined GNULIB_POSIXCHECK
 # undef getpagesize
 # if HAVE_RAW_DECL_GETPAGESIZE

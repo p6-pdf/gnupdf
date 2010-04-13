@@ -89,7 +89,7 @@ START_TEST(pdf_i64_div_002)
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
   pdf_i64_t *dest = NULL;
   pdf_i64_div(dest,div1,div2, &p_status); 
-  fail_if(p_status != PDF_ERROR);
+  fail_if(p_status != PDF_EBADDATA);
 #endif
   
   
@@ -198,6 +198,108 @@ START_TEST(pdf_i64_div_005)
 END_TEST
 
 
+/*
+ * Test: pdf_i64_div_006
+ * Description:
+ *   Divs a positive and negative number
+ * Success conditions:
+ * The call should not produce an error
+ */
+START_TEST(pdf_i64_div_006)
+{
+  pdf_status_t p_status = PDF_OK;
+  pdf_i64_t div1, div2, dest;
+
+#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
+  pdf_init();
+
+  div1 = pdf_i64_new(0,6); 
+  div2 = pdf_i64_new(0xFFFFFFFF,0xFFFFFFFD); /*-3*/
+
+  pdf_i64_div(&dest, div1, div2, &p_status);
+  
+  fail_if(p_status != PDF_OK);
+  
+  fail_if(dest.low != 0xFFFFFFFE); /*-2*/
+  fail_if(dest.high != 0xFFFFFFFF);
+#else
+  div1 = 6;
+  div2 = -3;
+  pdf_i64_div(&dest, div1, div2, &p_status);
+  fail_if(dest != -2);
+#endif
+} 
+END_TEST
+
+/*
+ * Test: pdf_i64_div_007
+ * Description:
+ *   Divs a positive and negative number
+ * Success conditions:
+ * The call should not produce an error
+ */
+START_TEST(pdf_i64_div_007)
+{
+  pdf_status_t p_status = PDF_OK;
+  pdf_i64_t div1, div2, dest;
+
+#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
+  pdf_init();
+
+  div1 = pdf_i64_new(0xFFFFFFFF,0xFFFFFFFB); /*-5*/
+  div2 = pdf_i64_new(0,3);
+
+  pdf_i64_div(&dest, div1, div2, &p_status);
+  
+  fail_if(p_status != PDF_OK);
+  
+  fail_if(dest.low != 0xFFFFFFFF); /*-1*/
+  fail_if(dest.high != 0xFFFFFFFF);
+#else
+  div1 = -5;
+  div2 = 3;
+  pdf_i64_div(&dest, div1, div2, &p_status);
+  fail_if(dest != -1);
+#endif
+
+}
+END_TEST
+
+
+/*
+ * Test: pdf_i64_div_008
+ * Description:
+ *   Divs a positive and negative number
+ * Success conditions:
+ * The call should not produce an error
+ */
+START_TEST(pdf_i64_div_008)
+{
+  pdf_status_t p_status = PDF_OK;
+  pdf_i64_t div1, div2, dest;
+
+#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
+  pdf_init();
+
+  div1 = pdf_i64_new(0,5);
+  div2 = pdf_i64_new(0xFFFFFFFF,0xFFFFFFFD); /*-3*/
+
+  pdf_i64_div(&dest, div1, div2, &p_status);
+  
+  fail_if(p_status != PDF_OK);
+  
+  fail_if(dest.low != 0xFFFFFFFF); /*-1*/
+  fail_if(dest.high != 0xFFFFFFFF);
+#else
+  div1 = 5;
+  div2 = -3;
+  pdf_i64_div(&dest, div1, div2, &p_status);
+  fail_if(dest != -1);
+#endif
+
+}
+END_TEST
+
 
 
 /*
@@ -212,6 +314,9 @@ test_pdf_i64_div (void)
   tcase_add_test(tc, pdf_i64_div_003);
   tcase_add_test(tc, pdf_i64_div_004);
   tcase_add_test(tc, pdf_i64_div_005);
+  tcase_add_test(tc, pdf_i64_div_006);
+  tcase_add_test(tc, pdf_i64_div_007);
+  tcase_add_test(tc, pdf_i64_div_008);
   return tc;
 }
 

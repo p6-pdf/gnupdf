@@ -321,6 +321,12 @@ handle_char (pdf_token_reader_t reader, pdf_u32_t flags,
     case PDF_TOKR_STATE_NAME:
       if (reader->substate == 0)
         {
+          if ((ch < 0x21) || (ch > 0x7e))
+            {
+              /* Invalid character in a name.  */
+              return PDF_EBADFILE;
+            }
+
           if (ch != 35  /* '#' */
               || (flags & PDF_TOKEN_NO_NAME_ESCAPES) )
             return store_char (reader, ch);
