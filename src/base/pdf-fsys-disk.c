@@ -103,7 +103,8 @@ pdf_fsys_disk_cleanup (void *data)
 #ifdef PDF_HOST_WIN32
 
 pdf_i64_t
-pdf_fsys_disk_get_free_space (pdf_text_t path_name)
+pdf_fsys_disk_get_free_space (void *data,
+                              pdf_text_t path_name)
 {
   pdf_char_t *utf16le_path = NULL;
   pdf_u32_t utf16le_path_size = 0;
