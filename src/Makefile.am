@@ -128,6 +128,7 @@ if USE_COVERAGE
 endif
 
 AM_CPPFLAGS = -I$(top_srcdir)/lib \
+              -I$(top_builddir)/lib \
               -I$(top_srcdir)/build-aux \
               -I$(srcdir)/base \
               -I$(srcdir)/object \

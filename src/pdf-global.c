@@ -39,6 +39,13 @@
 /* Global variables */
 
 char *pdf_library_name = "libgnupdf";
+
+/* This is a temporary hack!  The dependencies in gnulib shall be
+   fixed to not include the 'error' module.  */
+#if defined(PDF_HOST_WIN32)
+char *program_name = "libgnupdf";
+#endif
+
 char *pdf_version = "0.1";
 
 struct pdf_globals_s pdf_globals = {
