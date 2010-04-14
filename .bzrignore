@@ -23,6 +23,8 @@ texinfo.tex
 .dirstamp
 *.info
 *.info-?
+*.dll
+*.exe
 build-aux/pdf-text-generate-ucd
 doc/generate-tsd.pl
 doc/stamp-vti
