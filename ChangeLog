@@ -1,5 +1,11 @@
 2010-04-15  Jose E. Marchesi  <jemarch@gnu.org>
 
+	syntax-check: activate sc_program_name and sc_useless_cpp_parens.
+	* cfg.mk (local-checks-to-skip): Remove tests sc_program_name and
+	sc_useless_cpp_parens.
+
+2010-04-15  Jose E. Marchesi  <jemarch@gnu.org>
+
 	Don't use useless parenthesis while checking for cpp symbols in
 	the codebase.
 	* doc/gnupdf-hg.texi (Testing for Preprocessor Symbols): New
