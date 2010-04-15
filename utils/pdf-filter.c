@@ -194,7 +194,7 @@ main (int argc, char *argv[])
   int last_ci;
   pdf_status_t destroy_ret;
 
-  program_name = strdup (argv[0]);
+  set_program_name (argv[0]);
 
   stm = create_stream (argc, argv, &read_mode, &last_ci, &read_pdf_fsys,
                        &write_pdf_fsys, &fsys_stm);

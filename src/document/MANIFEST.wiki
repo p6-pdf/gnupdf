@@ -1,5 +1,3 @@
 ==='''src/document''' Document Layer Source Code===
 
 This directory contains the source files pertanining to the Document Layer of the library.
-
-

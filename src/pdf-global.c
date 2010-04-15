@@ -42,7 +42,7 @@ char *pdf_library_name = "libgnupdf";
 
 /* This is a temporary hack!  The dependencies in gnulib shall be
    fixed to not include the 'error' module.  */
-#if defined(PDF_HOST_WIN32)
+#if defined PDF_HOST_WIN32
 char *program_name = "libgnupdf";
 #endif
 

@@ -295,7 +295,7 @@ main (int argc, char **argv)
   pdf_bool_t use_tokw = PDF_FALSE;
   pdf_u32_t reader_flags = 0, writer_flags = 0;
 
-  program_name = strdup (argv[0]);
+  set_program_name (argv[0]);
 
   while ((c = getopt_long (argc,
                            argv,

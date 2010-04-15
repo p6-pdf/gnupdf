@@ -31,16 +31,16 @@
 #include <string.h>
 #include <sys/stat.h>
 
-#if defined(PDF_HOST_WIN32) || defined(PDF_HOST_BSD)
+#if defined PDF_HOST_WIN32 || defined PDF_HOST_BSD
 #   include <sys/param.h>
-#   if defined(PDF_HOST_BSD)
+#   if defined PDF_HOST_BSD
 #      include <sys/mount.h>
 #   endif /* PDF_HOST_BSD */
 #else
 #   include <sys/statfs.h>
 #endif /* PDF_HOST_WIN32 | PDF_HOST_BSD */
 
-#if defined(PDF_HOST_WIN32)
+#if defined PDF_HOST_WIN32
 #   include <windows.h>
 #   include <wchar.h>
 #endif /* !PDF_HOST_WIN32 */

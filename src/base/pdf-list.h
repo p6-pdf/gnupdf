@@ -72,7 +72,7 @@ typedef int (*pdf_list_element_compar_fn_t) (const void *elt1, const void *elt2)
 
 /* END PUBLIC */
 
-#if ! defined(HAVE_INLINE) && ! defined(COMPILING_PDF_LIST)
+#if ! defined HAVE_INLINE && ! defined COMPILING_PDF_LIST
 
 /* BEGIN PUBLIC */
 
@@ -175,7 +175,7 @@ pdf_status_t pdf_list_iterator_free (pdf_list_iterator_t *iterator);
 
 /* Inlined versions of the functions */
 
-#if defined(COMPILING_PDF_LIST)
+#if defined COMPILING_PDF_LIST
 # define STATIC_INLINE
 #else
 # define STATIC_INLINE static inline

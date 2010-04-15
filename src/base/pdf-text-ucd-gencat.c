@@ -19895,4 +19895,3 @@ pdf_text_ucd_get_general_category(const pdf_u32_t character)
 }
 
 /* End of pdf-text-ucd-gencat.c */
-

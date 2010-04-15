@@ -19,4 +19,3 @@ are not intended to be installed in the target machine.
       Files from the pmccabe2html gnulib module providing the
       generation of cyclomatic complexity reports in both mediawiki
       markup and html.
-

@@ -323,4 +323,3 @@ pdf_text_filter_remove_line_endings(pdf_text_t text)
 
 
 /* End of pdf-text-filter.c */
-

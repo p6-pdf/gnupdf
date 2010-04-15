@@ -45,4 +45,3 @@ void *pdf_realloc (const void *pointer, const pdf_size_t size);
 #endif /* !PDF_ALLOC_H */
 
 /* End of pdf-alloc.h */
-

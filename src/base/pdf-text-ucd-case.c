@@ -4169,4 +4169,3 @@ pdf_text_ucd_is_cased(const pdf_u32_t character)
 }
 
 /* End of pdf-text-ucd-case.c */
-

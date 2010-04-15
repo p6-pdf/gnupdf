@@ -15,7 +15,7 @@
 
 
 # Specification in the form of a command-line invocation:
-#   gnulib-tool --import --dir=. --lib=libgnu --source-base=lib --m4-base=m4 --doc-base=doc --tests-base=tests --aux-dir=build-aux --libtool --macro-prefix=gl array-list fflush float fopen-safer freopen-safer gendocs getline getopt-gnu linkedhash-list list localcharset localename maintainer-makefile malloc math mkdir pmccabe2html rmdir stdint tmpfile-safer unistr/u8-check xalloc
+#   gnulib-tool --import --dir=. --lib=libgnu --source-base=lib --m4-base=m4 --doc-base=doc --tests-base=tests --aux-dir=build-aux --libtool --macro-prefix=gl array-list fflush float fopen-safer freopen-safer gendocs getline getopt-gnu linkedhash-list list localcharset localename maintainer-makefile malloc math mkdir pmccabe2html progname rmdir stdint streq tmpfile-safer unistr/u8-check xalloc
 
 # Specification in the form of a few gnulib-tool.m4 macro invocations:
 gl_LOCAL_DIR([])
@@ -37,8 +37,10 @@ gl_MODULES([
   math
   mkdir
   pmccabe2html
+  progname
   rmdir
   stdint
+  streq
   tmpfile-safer
   unistr/u8-check
   xalloc

@@ -61,4 +61,3 @@ test_pdf_crypt_md_destroy (void)
 
 
 /* End of pdf-crypt-md-destroy.c */
-

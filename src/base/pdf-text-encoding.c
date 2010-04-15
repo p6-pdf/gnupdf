@@ -1135,4 +1135,3 @@ pdf_text_check_unicode_bom (const pdf_char_t *data,
 }
 
 /* End of pdf-text-encoding.c */
-

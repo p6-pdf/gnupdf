@@ -111,7 +111,7 @@ START_TEST (pdf_time_get_local_cal_002)
   time(&tloc);
   time_struct = localtime(&tloc);
 
-#if defined(PDF_HOST_WIN32)
+#if defined PDF_HOST_WIN32
   localgmt = _timezone;
 #else
   localgmt = time_struct->tm_gmtoff;

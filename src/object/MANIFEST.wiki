@@ -1,5 +1,3 @@
 ==='''src/object''' Object Layer Source Code===
 
 This directory contains the source files for the Object Layer of the library.
-
-

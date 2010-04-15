@@ -9,6 +9,3 @@ documents. These utilities make use of the GNU PDF Library.
   `toktest'
 
       A test application for the PDF tokenizer.
-
-
-

@@ -415,6 +415,7 @@ a good level of coherence in the codebase.
 @menu
 * File Headers::
 * Inclusion of Header Files::
+* Testing for Preprocessor Symbols::
 * Spaces vs. Tabs::
 * Naming Functions::
 * Abstract Data Types::
@@ -493,6 +494,26 @@ In particular:
 If some headers shall be included conditionally depending on the host
 platform, the macros @code{PDF_HOST_*} defined in @file{config.h} can
 be used.  Those macros are set using autoheader.
+
+@node Testing for Preprocessor Symbols
+@section Testing for Preprocessor Symbols
+
+Please don't use parentheses like this while testing for pre-processor
+symbols:
+
+@example
+#if defined (FOO) && defined (BAR) || !defined (BAZ)
+  do something
+#endif
+@end example
+
+Instead, write something like:
+
+@example
+#if defined FOO && defined BAR || !defined BAZ
+  do something
+#endif
+@end example
 
 @node Spaces vs. Tabs
 @section Spaces vs. Tabs

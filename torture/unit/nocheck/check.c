@@ -230,4 +230,3 @@ void srunner_set_fork_status (SRunner *sr, enum print_output print_mode)
 }
 
 /* End of check.c */
-

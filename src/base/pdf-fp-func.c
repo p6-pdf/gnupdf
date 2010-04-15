@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/06/17 21:40:08 jemarch"
+/* -*- mode: C -*- Time-stamp: "2010-04-15 17:21:54 jemarch"
  *
  *       File:         pdf-fp-func.c
  *       Date:         Sun Nov 30 18:46:06 2008
@@ -2107,4 +2107,3 @@ static pdf_i32_t get_token (pdf_token_reader_t reader,
 }
 
 /* End of pdf-fp-func.c */
-

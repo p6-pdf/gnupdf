@@ -56,7 +56,7 @@ START_TEST (pdf_time_set_to_current_local_time_001)
   time(&tloc);
   time_struct = localtime(&tloc);
 
-#if defined(PDF_HOST_WIN32)
+#if defined PDF_HOST_WIN32
   localgmt = _timezone;
 #else
   localgmt = time_struct->tm_gmtoff;

@@ -14,4 +14,3 @@ This directory contains a subdirectory containing the source files for each libr
 ; '''pdf-global.c'''
 : * Definition of global variables.
 : * Library initialization and finalization routines.
-

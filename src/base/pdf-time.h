@@ -30,7 +30,7 @@
 
 /* BEGIN PUBLIC */
 
-#if defined(PDF_HOST_WIN32)
+#if defined PDF_HOST_WIN32
 #  include <windows.h>
 #endif /* PDF_HOST_WIN32 */
 

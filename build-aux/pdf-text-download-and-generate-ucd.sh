@@ -79,4 +79,4 @@ if [ -f PropList.c ]; then
 fi
 ./pdf-text-generate-ucd PropList.txt
 
-
+# End of pdf-text-download-and-generate-ucd.sh

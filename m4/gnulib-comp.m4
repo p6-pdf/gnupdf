@@ -83,6 +83,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module open:
   # Code from module pathmax:
   # Code from module pmccabe2html:
+  # Code from module progname:
   # Code from module realloc-posix:
   # Code from module rmdir:
   # Code from module size_max:
@@ -92,6 +93,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module stdint:
   # Code from module stdio:
   # Code from module stdlib:
+  # Code from module streq:
   # Code from module strerror:
   # Code from module string:
   # Code from module sys_stat:
@@ -262,6 +264,9 @@ AC_DEFUN([gl_INIT],
   gl_PATHMAX
   # Code from module pmccabe2html:
   AC_PATH_PROG([PMCCABE], [pmccabe], [false])
+  # Code from module progname:
+  AC_CHECK_DECLS([program_invocation_name], [], [], [#include <errno.h>])
+  AC_CHECK_DECLS([program_invocation_short_name], [], [], [#include <errno.h>])
   # Code from module realloc-posix:
   gl_FUNC_REALLOC_POSIX
   gl_STDLIB_MODULE_INDICATOR([realloc-posix])
@@ -283,6 +288,7 @@ AC_DEFUN([gl_INIT],
   gl_STDIO_H
   # Code from module stdlib:
   gl_STDLIB_H
+  # Code from module streq:
   # Code from module strerror:
   gl_FUNC_STRERROR
   gl_STRING_MODULE_INDICATOR([strerror])
@@ -534,6 +540,8 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/open.c
   lib/pathmax.h
   lib/pipe-safer.c
+  lib/progname.c
+  lib/progname.h
   lib/realloc.c
   lib/ref-add.sin
   lib/ref-del.sin
@@ -549,6 +557,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/stdio-write.c
   lib/stdio.in.h
   lib/stdlib.in.h
+  lib/streq.h
   lib/strerror.c
   lib/string.in.h
   lib/stripslash.c

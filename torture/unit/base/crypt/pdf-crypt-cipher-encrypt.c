@@ -222,4 +222,3 @@ test_pdf_crypt_cipher_encrypt (void)
 
 
 /* End of pdf-crypt-cipher-encrypt.c */
-

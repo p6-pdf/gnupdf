@@ -90,4 +90,3 @@ pdf_hash_get_string (pdf_hash_t table, const char *key, pdf_char_t **elt);
 #endif /* !PDF_HASH_HELPER_H */
 
 /* End of pdf-hash-helper.h */
-
