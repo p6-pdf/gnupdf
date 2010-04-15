@@ -102,4 +102,3 @@ test_pdf_crypt_cipher_setkey (void)
 
 
 /* End of pdf-crypt-cipher-setkey.c */
-

@@ -141,4 +141,3 @@ void _fail_unless (int result,
 #endif /* !_CHECK_H */
 
 /* End of check.h */
-

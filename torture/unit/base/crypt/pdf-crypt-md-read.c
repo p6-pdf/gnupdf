@@ -202,4 +202,3 @@ test_pdf_crypt_md_read (void)
 
 
 /* End of pdf-crypt-md-read.c */
-

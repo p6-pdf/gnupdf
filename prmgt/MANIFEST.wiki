@@ -37,4 +37,3 @@ This directory contains several files with management information about the proj
 
 ; '''tsdfuncs.in'''
 : List the documented functions in the GNU PDF TSD.
-

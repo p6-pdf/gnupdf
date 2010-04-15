@@ -283,4 +283,3 @@ test_pdf_crypt_cipher_decrypt (void)
 
 
 /* End of pdf-crypt-cipher-decrypt.c */
-

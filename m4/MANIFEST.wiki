@@ -31,4 +31,3 @@ This directory contains the definitions of ''M4'' macros implementing tests used
 
 ; '''zlib.m4'''
 : Defines the '''CHECK_ZLIB''' macro used in '''configure.ac'''. Written by Loic Dachary.
-

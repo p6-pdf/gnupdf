@@ -50,4 +50,3 @@ Automatically generated manpages for the library utilities will be generated (us
 
 ; '''version.texi.in'''
 : Texinfo snippet containing versioning information.
-

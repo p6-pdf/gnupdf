@@ -868,4 +868,3 @@ pdf_stm_f_pred_dealloc (void **filter_data)
 }
 
 /* End of pdf_stm_f_pred.c */
-

@@ -64,4 +64,3 @@ test_pdf_crypt_md_write (void)
 
 
 /* End of pdf-crypt-md-write.c */
-

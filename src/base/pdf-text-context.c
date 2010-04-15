@@ -289,4 +289,3 @@ pdf_text_context_get_host_eol(enum pdf_text_eol_types eol_type)
 
 
 /* End of pdf-text-context.c */
-

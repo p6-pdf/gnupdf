@@ -155,4 +155,3 @@ main (int argc, char **argv)
 }
 
 /* End of runtests.c */
-
