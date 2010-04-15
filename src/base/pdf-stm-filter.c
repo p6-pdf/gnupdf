@@ -112,7 +112,7 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
             new->impl.dealloc_state_fn = pdf_stm_f_rldec_dealloc_state;
             break;
           }
-#if defined(PDF_HAVE_LIBZ)
+#if defined PDF_HAVE_LIBZ
         case PDF_STM_FILTER_FLATE_ENC:
           {
             new->impl.init_fn = pdf_stm_f_flateenc_init;
@@ -191,7 +191,7 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
 	    new->impl.dealloc_state_fn = pdf_stm_f_a85dec_dealloc_state;
 	    break;
 	  }
-#if defined(PDF_HAVE_LIBJBIG2DEC)
+#if defined PDF_HAVE_LIBJBIG2DEC
         case PDF_STM_FILTER_JBIG2_DEC:
           {
             new->impl.init_fn = pdf_stm_f_jbig2dec_init;
@@ -200,7 +200,7 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
             break;
           }
 #endif /* PDF_HAVE_LIBJBIG2DEC */
-#if defined(PDF_HAVE_LIBJPEG)
+#if defined PDF_HAVE_LIBJPEG
         case PDF_STM_FILTER_DCT_DEC:
           {
             new->impl.init_fn = pdf_stm_f_dctdec_init;

@@ -1,5 +1,44 @@
 2010-04-15  Jose E. Marchesi  <jemarch@gnu.org>
 
+	Don't use useless parenthesis while checking for cpp symbols in
+	the codebase.
+	* doc/gnupdf-hg.texi (Testing for Preprocessor Symbols): New
+	section.
+
+	* .x-sc_useless_cpp_parens: New file.
+
+	* src/base/pdf-crypt.h: Useless parenthesis removed from cpp
+	directives.
+
+	* torture/unit/base/time/pdf-time-set-to-current-local-time.c:
+	Likewise.
+
+	* torture/unit/base/time/pdf-time-set-local-offset.c: Likewise.
+
+	* torture/unit/base/time/pdf-time-get-local-cal.c: Likewise.
+
+	* torture/unit/base/stm/pdf-stm-write.c: Likewise.
+
+	* torture/unit/base/stm/pdf-stm-read.c: Likewise.
+
+	* src/pdf-global.c: Likewise.
+
+	* src/base/pdf-types.h: Likewise.
+
+	* src/base/pdf-time.h: Likewise.
+
+	* src/base/pdf-time-context.c: Likewise.
+
+	* src/base/pdf-stm-filter.h: Likewise.
+
+	* src/base/pdf-stm-filter.c: Likewise.
+
+	* src/base/pdf-list.h: Likewise.
+
+	* src/base/pdf-fsys-disk.c: Likewise.
+
+2010-04-15  Jose E. Marchesi  <jemarch@gnu.org>
+
 	Import and use the gnulib 'progname' module.
 	* torture/unit/runtests.c (main): Use 'set_program_name' and
 	remove the global variable 'program_name'.
@@ -12,12 +51,16 @@
 
 	* lib/progname.c: Likewise.
 
+2010-04-15  Jose E. Marchesi  <jemarch@gnu.org>
+
 	Import and use the gnulib 'streq' module.
 	* src/base/pdf-text-context.c
 	(pdf_text_detect_host_language_and_country): Use STREQ instead of
 	strcmp to compare string literals.
 
 	* lib/streq.h: Imported from gnulib.
+
+2010-04-15  Jose E. Marchesi  <jemarch@gnu.org>
 
 	gnulib update.
 

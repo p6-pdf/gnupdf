@@ -56,7 +56,7 @@ pdf_time_context_init(void)
   time(&tloc);
   time_struct = localtime(&tloc);
 
-#if defined(PDF_HOST_WIN32)
+#if defined PDF_HOST_WIN32
   /* mingw does not support tm_gmtoff in struct tm, but it provides
      the _timezone global variable with the difference in seconds
      between GMT and local time. */

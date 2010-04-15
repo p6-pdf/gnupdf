@@ -146,7 +146,7 @@ struct pdf_pm_s
 /* Note that int64_t may be defined by the gnulib stdint.h in
    platforms missing that header file.  To force use of BIGNUM, define
    PDF_FORCE_BIGNUMS in config.h. */
-#if (defined(PDF_HAVE_INT64_T) || defined(int64_t)) && !defined(PDF_FORCE_BIGNUMS)
+#if defined PDF_HAVE_INT64_T || defined int64_t && !defined PDF_FORCE_BIGNUMS
 #  define PDF_USE_BUILTIN_64BIT_SUPPORT
 #endif
 

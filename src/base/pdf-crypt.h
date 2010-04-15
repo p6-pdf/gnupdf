@@ -88,7 +88,7 @@ struct pdf_crypt_md_s
 };
 
 
-#if !defined (HAVE_INLINE) && !defined (COMPILING_PDF_CRYPT)
+#if !defined HAVE_INLINE && !defined COMPILING_PDF_CRYPT
 
 
 pdf_status_t pdf_crypt_init (void);
@@ -139,7 +139,7 @@ pdf_status_t pdf_crypt_md_destroy (pdf_crypt_md_t hd);
 
 #else
 
-#if defined (COMPILING_PDF_CRYPT)
+#if defined COMPILING_PDF_CRYPT
 # define STATIC_INLINE
 #else
 # define STATIC_INLINE static inline

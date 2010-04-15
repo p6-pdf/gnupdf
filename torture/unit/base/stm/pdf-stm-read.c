@@ -578,7 +578,7 @@ END_TEST
 
 
 /* Note: PDF_STM_FILTER_FLATE_DEC is only available if LIBZ is used */
-#if defined(HAVE_LIBZ)
+#if defined HAVE_LIBZ
 
 /*
  * Test: pdf_stm_read_009
@@ -2882,7 +2882,7 @@ test_pdf_stm_read (void)
   tcase_add_test(tc, pdf_stm_read_007);
   tcase_add_test(tc, pdf_stm_read_008);
 /* Note: PDF_STM_FILTER_FLATE_DEC is only available if LIBZ is used */
-#if defined(HAVE_LIBZ)
+#if defined HAVE_LIBZ
   tcase_add_test(tc, pdf_stm_read_009);
 #endif
   tcase_add_test(tc, pdf_stm_read_011);
