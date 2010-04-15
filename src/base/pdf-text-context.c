@@ -28,8 +28,9 @@
 #include <string.h>
 #include <stdio.h>
 #include <locale.h>
-#include <localename.h>    /* From gnulib sources */
-#include <localcharset.h>  /* From gnulib sources */
+#include <localename.h>    /* From gnulib sources.  */
+#include <localcharset.h>  /* From gnulib sources.  */
+#include <streq.h>         /* From gnulib sources.  */
 
 #include <pdf-types.h>
 #include <pdf-text.h>
@@ -137,8 +138,8 @@ pdf_text_detect_host_language_and_country(void)
       return PDF_ETEXTENC;
     }
 
-  if ((strcmp (locale_name, "C") != 0) &&
-      (strcmp (locale_name, "POSIX") != 0))
+  if (!STREQ (locale_name, "C", 'C', 0, 0, 0, 0, 0, 0, 0, 0)
+      && !STREQ (locale_name, "POSIX", 'P', 'O', 'S', 'I', 'X', 0, 0, 0, 0))
     {
       /* Store language ID */
       strncpy((char *)&(text_context.host_language_id[0]), locale_name,

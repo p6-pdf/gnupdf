@@ -1,6 +1,13 @@
 2010-04-15  Jose E. Marchesi  <jemarch@gnu.org>
 
-	* gnulib update.
+	Import and use the gnulib 'streq' module.
+	* src/base/pdf-text-context.c
+	(pdf_text_detect_host_language_and_country): Use STREQ instead of
+	strcmp to compare string literals.
+
+	* lib/streq.h: Imported from gnulib.
+
+	gnulib update.
 
 2010-04-14  Jose E. Marchesi  <jemarch@gnu.org>
 
