@@ -83,6 +83,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module open:
   # Code from module pathmax:
   # Code from module pmccabe2html:
+  # Code from module progname:
   # Code from module realloc-posix:
   # Code from module rmdir:
   # Code from module size_max:
@@ -263,6 +264,9 @@ AC_DEFUN([gl_INIT],
   gl_PATHMAX
   # Code from module pmccabe2html:
   AC_PATH_PROG([PMCCABE], [pmccabe], [false])
+  # Code from module progname:
+  AC_CHECK_DECLS([program_invocation_name], [], [], [#include <errno.h>])
+  AC_CHECK_DECLS([program_invocation_short_name], [], [], [#include <errno.h>])
   # Code from module realloc-posix:
   gl_FUNC_REALLOC_POSIX
   gl_STDLIB_MODULE_INDICATOR([realloc-posix])
@@ -536,6 +540,8 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/open.c
   lib/pathmax.h
   lib/pipe-safer.c
+  lib/progname.c
+  lib/progname.h
   lib/realloc.c
   lib/ref-add.sin
   lib/ref-del.sin

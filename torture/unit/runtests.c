@@ -15,8 +15,6 @@
 
 #include <check.h>
 
-char *program_name; /* Initialized in main () */
-
 extern Suite *tsuite_alloc (void);
 extern Suite *tsuite_stm (void);
 extern Suite *tsuite_list (void);
@@ -83,7 +81,7 @@ main (int argc, char **argv)
   char *sname, *tcname;
   char c, ret;
 
-  program_name = strdup (argv[0]);
+  set_program_name (argv[0]);
   
   sname = NULL;
   tcname = NULL;
