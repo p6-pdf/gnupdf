@@ -25,12 +25,11 @@
 
 #include <config.h>
 
-#include <stdbool.h>
 #include <stdio.h>
 #include <pdf.h>
 #include <check.h>
 
-extern bool l_comp (const void * elemb, const void * elema);
+extern pdf_bool_t l_comp (const void * elemb, const void * elema);
 extern int l_comp_desc (const void *elema, const void * elemb);
 extern int l_comp_asc (const void *elema, const void * elemb);
 

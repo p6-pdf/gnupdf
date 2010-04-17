@@ -1,3 +1,32 @@
+2010-04-17  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	Updated pdf_list_element_equals_fn_t to return pdf_bool_t
+	* doc/gnupdf.texi: updated documentation.
+
+	* src/base/pdf-list.h: updated definition.
+
+	* torture/unit/base/list/pdf-list-add-first.c: likewise.
+
+	* torture/unit/base/list/pdf-list-destroy.c: likewise.
+
+	* torture/unit/base/list/pdf-list-new.c: likewise.
+
+	* torture/unit/base/list/pdf-list-remove.c: likewise.
+
+	* torture/unit/base/list/pdf-list-search-from-to.c: likewise.
+
+	* torture/unit/base/list/pdf-list-search-from.c: likewise.
+
+	* torture/unit/base/list/pdf-list-search.c: likewise.
+
+	* torture/unit/base/list/pdf-list-sorted-add.c: likewise.
+
+	* torture/unit/base/list/pdf-list-sorted-remove.c: likewise.
+
+	* torture/unit/base/list/pdf-list-sorted-search-from-to.c: likewise.
+
+	* torture/unit/base/list/pdf-list-sorted-search.c: likewise.
+
 2010-04-15  Jose E. Marchesi  <jemarch@gnu.org>
 
 	Remove spurious blank lines before EOF in the codebase.

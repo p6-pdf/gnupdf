@@ -3027,7 +3027,7 @@ npointer.
 A list iterator.
 @end deftp
 
-@deftp {Data Type} bool (*pdf_list_element_equals_fn_t) (const void *elt1, const void *elt2)
+@deftp {Data Type} pdf_bool_t (*pdf_list_element_equals_fn_t) (const void *elt1, const void *elt2)
 A function type for comparing list elements equality. Should return PDF_TRUE in case they are equal and PDF_FALSE otherwise.
 @end deftp
 
