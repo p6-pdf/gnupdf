@@ -157,6 +157,8 @@ pdf_text_new (pdf_text_t *text)
   /* Initialize all contents */
   (*text)->data = NULL;
   (*text)->size = 0;
+  (*text)->printable = NULL;
+  (*text)->modified = PDF_FALSE;
   memset(&((*text)->lang[0]), 0, PDF_TEXT_CCL);
   memset(&((*text)->country[0]), 0, PDF_TEXT_CCL);
 
@@ -181,6 +183,11 @@ pdf_text_destroy (pdf_text_t text)
     {
       pdf_dealloc(text->data);
       text->data = NULL;
+    }
+
+  if(text->printable != NULL)
+    {
+      pdf_dealloc(text->printable);
     }
 
   /* Destroy word boundaries list */
@@ -224,7 +231,7 @@ pdf_text_dup (const pdf_text_t text)
       memcpy(element->country, text->country, (size_t) PDF_TEXT_CCL);
 
       /* We don't really need to duplicate the contents of the word
-       *  boundaries list, as it is a side product */
+       *  boundaries list, as it is a side product, same with printable */
 
       /* Set output element...*/
       return element;
@@ -1018,6 +1025,8 @@ pdf_text_concat (pdf_text_t text1,
 
       /* Update size of first element */
       text1->size += text2->size;
+
+      text1->modified = PDF_TRUE;
     }
 
   return PDF_OK;
@@ -1267,6 +1276,8 @@ pdf_text_replace_multiple (pdf_text_t text,
           /* Dealloc list of pointers to replacements */
           pdf_dealloc(rep_ptrs);
         }
+
+      text->modified = PDF_TRUE;
     }
 
   return PDF_OK;
@@ -1389,16 +1400,42 @@ pdf_text_filter (pdf_text_t text,
     }
 
   /* 0x01000000 */
-    if((filter & PDF_TEXT_FILTER_REMOVE_LINE_ENDINGS) && \
-       (pdf_text_filter_remove_line_endings(text) != PDF_OK))
+  if((filter & PDF_TEXT_FILTER_REMOVE_LINE_ENDINGS) && \
+     (pdf_text_filter_remove_line_endings(text) != PDF_OK))
     {
       PDF_DEBUG_BASE("Error applying Line Ending Removal filter");
       return PDF_ETEXTENC;
     }
 
+  text->modified = PDF_TRUE;
   return PDF_OK;
 }
 
+const pdf_char_t *
+pdf_text_get_printable (pdf_text_t text)
+{
+  pdf_size_t size;
+
+  if (text->printable != NULL){
+    if (text->modified == PDF_FALSE){
+      return text->printable;
+    }else{
+      pdf_dealloc(text->printable);
+    }
+  }
+
+#ifdef PDF_HOST_WIN32
+  pdf_text_get_unicode(&text->printable, &size, text, PDF_TEXT_UTF16_HE,
+                       PDF_TEXT_UNICODE_NO_OPTION);
+#else
+  pdf_text_get_unicode(&text->printable, &size, text, PDF_TEXT_UTF8,
+                       PDF_TEXT_UNICODE_NO_OPTION);
+#endif /*PDF_HOST_WIN32*/
+
+  text->modified = PDF_FALSE;
+
+  return text->printable;
+}
 
 
 pdf_i32_t
@@ -1638,6 +1675,12 @@ pdf_text_clean_contents(pdf_text_t text)
   memset(&(text->country[0]), 0, PDF_TEXT_CCL);
   /* Reset data size */
   text->size = 0;
+
+  text->modified = PDF_FALSE;
+  if (text->printable != NULL){
+    pdf_dealloc(text->printable);
+    text->printable = NULL;
+  }
 }
 
 

@@ -301,6 +301,9 @@ pdf_status_t
 pdf_text_filter (pdf_text_t text,
                  const pdf_u32_t filter);
 
+/* Returns a read-only string to be used with printf's "%s" like format */
+const pdf_char_t *
+pdf_text_get_printable (pdf_text_t text);
 
 /* ------------------------- Text Comparison -------------------------------- */
 
@@ -328,6 +331,8 @@ struct pdf_text_s {
   pdf_list_t word_boundaries;       /* List of Word boundaries (optional) */
   pdf_char_t lang[PDF_TEXT_CCL];    /* Associated language code (optional) */
   pdf_char_t country[PDF_TEXT_CCL]; /* Associated country code (optional) */
+  pdf_bool_t modified;  /* set to PDF_TRUE each time the data is modified */
+  pdf_char_t * printable;
 };
 
 /* Structure containing the word boundary information */
