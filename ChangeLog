@@ -177,6 +177,17 @@
 	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_get_free_space): Get the
 	additional user data pointer argument in the mingw32 version.
 
+2010-04-13  Jose E. Marchesi  <jemarch@gnu.org>
+
+	Fix violations of the syntax rules.
+	* doc/gnupdf-arch.texi (Overview of the Parser module): Avoid a
+	"the the" typo.
+
+2010-04-13  Jose E. Marchesi  <jemarch@gnu.org>
+
+	gnupdf-arch: New figure parser-overview.
+	* doc/gnupdf-arch-figures/parser-overview.txt: New file.
+
 2010-04-08  Jose E. Marchesi  <jemarch@gnu.org>
 
 	refman: Added some usage examples.
@@ -627,6 +638,12 @@
 	* src/base/pdf-text.c (pdf_text_new_from_u32): Avoid a possible
 	buffer overflow in sprintf.
 
+2010-02-16  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-arch.texi (Parser functions): Documentation for
+	'pdf_parser_seek'.
+	(Parser functions): Documentation for 'pdf_parser_tell'.
+
 2010-02-16  Aleksander Morgado  <aleksander@gnu.org>
 
 	* build-aux/pdf-text-generate-ucd.c (parse_UnicodeData_line_field):
@@ -645,6 +662,19 @@
 	* src/base/pdf-time-string.c (pdf_time_from_string_generalized_asn1)
 	(pdf_time_from_string_iso8601): The 'has_seconds' flag is not needed in
 	these conversion types (avoid dead store).
+
+2010-02-15  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf-arch.texi (Parser functions): Documentation for
+	'pdf_parser_new'.
+	(Parser data types): Documentation for 'pdf_parser_t'.
+	(Parser functions): Documentation for 'pdf_parser_destroy'.
+	(Parser functions): Documentation for 'pdf_parser_stm'.
+
+	* doc/gnupdf-arch-figures/parser-overview.txt: New file.
+
+	* doc/gnupdf-arch.texi (Object Layer): Section on "object values"
+	removed.
 
 2010-02-15  Aleksander Morgado  <aleksander@gnu.org>
 
