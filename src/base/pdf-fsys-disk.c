@@ -1012,10 +1012,17 @@ pdf_fsys_disk_file_get_pos (pdf_fsys_file_t file,
   if((file != NULL) && \
      (pos != NULL))
     {
-      return ((fgetpos(((pdf_fsys_disk_file_t)file->data)->file_descriptor, \
-                       (fpos_t*)pos) == 0) ?                            \
-              PDF_OK :                                                  \
-              __pdf_fsys_disk_get_status_from_errno(errno));
+      long cpos;
+      cpos = ftell (((pdf_fsys_disk_file_t)file->data)->file_descriptor);
+      if (cpos<0)
+        {
+          return __pdf_fsys_disk_get_status_from_errno (errno);
+        }
+      else
+        {
+          *pos = cpos;
+          return PDF_OK;
+        }
     }
   else
     {
@@ -1029,10 +1036,17 @@ pdf_fsys_disk_file_set_pos (pdf_fsys_file_t file,
 {
   if(file != NULL)
     {
-      return ((fsetpos(((pdf_fsys_disk_file_t)file->data)->file_descriptor, \
-                       (fpos_t*)&new_pos) == 0) ?                       \
-              PDF_OK :                                                  \
-              __pdf_fsys_disk_get_status_from_errno(errno));
+      int st;
+      st = fseek (((pdf_fsys_disk_file_t)file->data)->file_descriptor,
+                 new_pos, SEEK_SET);
+      if (st < 0)
+        {
+          return __pdf_fsys_disk_get_status_from_errno (errno);
+        }
+      else
+        {
+          return PDF_OK;
+        }
     }
   else
     {
