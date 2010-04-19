@@ -1009,9 +1009,17 @@ pdf_text_concat (pdf_text_t text1,
    *  concatenation */
   if(text2->size > 0)
     {
+      pdf_char_t * tmp;
       /* Re-allocate memory in first text element */
-      text1->data = (pdf_char_t *)pdf_realloc(text1->data, \
-                                              text1->size + text2->size);
+      tmp = (pdf_char_t *)pdf_realloc (text1->data,
+                                       text1->size + text2->size);
+
+      if (tmp == NULL)
+        {
+          return PDF_ENOMEM;
+        }
+
+      text1->data = tmp;
 
       /* Copy contents of second element after the first one */
       memcpy(&(text1->data[text1->size]), text2->data, text2->size);
