@@ -1,10 +1,24 @@
+2010-04-18  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	Added new method pdf_text_concat_ascii()
+	* doc/gnupdf.texi: added its documentation.
+
+	* src/base/pdf-text.c: added implementation.
+
+	* src/base/pdf-text.h: likewise.
+
+	* torture/unit/Makefile.am: test implementation.
+
+	* torture/unit/base/text/tsuite-text.c: likewise.
+
+	* torture/unit/base/text/pdf-text-concat-ascii.c: likewise.
+
 2010-04-17  Gerardo E. Gidoni  <gerel@gnu.org>
 
 	Added new method pdf_text_get_printable().
 	* src/base/pdf-text.c: new method.
-	
-	* src/base/pdf-text.h: new method.
 
+	* src/base/pdf-text.h: new method.
 
 2010-04-15  Jose E. Marchesi  <jemarch@gnu.org>
 
