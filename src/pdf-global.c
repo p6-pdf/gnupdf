@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2007 Free Software Foundation, Inc. */
+/* Copyright (C) 2007, 2009, 2010 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,13 +39,6 @@
 /* Global variables */
 
 char *pdf_library_name = "libgnupdf";
-
-/* This is a temporary hack!  The dependencies in gnulib shall be
-   fixed to not include the 'error' module.  */
-#if defined PDF_HOST_WIN32
-char *program_name = "libgnupdf";
-#endif
-
 char *pdf_version = "0.1";
 
 struct pdf_globals_s pdf_globals = {

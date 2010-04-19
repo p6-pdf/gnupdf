@@ -1,3 +1,10 @@
+2010-04-19  Jose E. Marchesi  <jemarch@gnu.org>
+
+	Temporary hack removed from src/pdf-global.c.
+	* src/pdf-global.c: Copyright years updated.
+	Temporary hack defining the global 'program_name' variable
+	removed.
+
 2010-04-19  Gerardo E. Gidoni  <gerel@gnu.org>
 
 	Use temp pointer for realloc in pdf_text_concat().
