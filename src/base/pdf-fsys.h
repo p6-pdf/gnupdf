@@ -28,6 +28,7 @@
 
 #include <config.h>
 
+#include <stdarg.h>
 #include <pdf-types.h>
 #include <pdf-list.h>
 #include <pdf-hash.h>
@@ -125,6 +126,10 @@ typedef pdf_bool_t (*pdf_fsys_item_readable_p_fn_t) (void *data,
                                                      pdf_text_t path_name);
 typedef pdf_bool_t (*pdf_fsys_item_writable_p_fn_t) (void *data,
                                                      pdf_text_t path_name);
+typedef pdf_status_t (*pdf_fsys_build_path_fn_t) (void * data,
+                                                  pdf_text_t * output,
+                                                  pdf_text_t first_element,
+                                                  pdf_list_t rest);
 
 typedef pdf_status_t
 (*pdf_fsys_file_read_fn_t) (pdf_fsys_file_t file, pdf_char_t *buf,
@@ -183,6 +188,7 @@ struct pdf_fsys_impl_s
   pdf_fsys_item_readable_p_fn_t item_readable_p_fn;
   pdf_fsys_item_writable_p_fn_t item_writable_p_fn;
   pdf_fsys_file_get_url_fn_t file_get_url_fn;
+  pdf_fsys_build_path_fn_t build_path_fn;
 
   /* File interface callbacks */
   pdf_fsys_file_open_fn_t file_open_fn;
@@ -234,6 +240,9 @@ pdf_bool_t pdf_fsys_item_readable_p (pdf_fsys_t filesystem,
                                      pdf_text_t path_name);
 pdf_bool_t pdf_fsys_item_writable_p (pdf_fsys_t filesystem,
                                      pdf_text_t path_name);
+pdf_status_t pdf_fsys_build_path (pdf_fsys_t filesystem,
+                                  pdf_text_t * output,
+                                  pdf_text_t first_element, ...);
 
 /* File Interface */
 pdf_status_t pdf_fsys_file_open (const pdf_fsys_t filesystem,

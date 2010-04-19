@@ -16,6 +16,27 @@
 	Use temp pointer for realloc in pdf_text_concat().
 	* src/base/pdf-text.c: added fix.
 
+2010-04-19  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	Added pdf_fsys_build_path() method.
+	* doc/gnupdf.texi: updated documentation.
+
+	* src/base/pdf-fsys-def.h: disk implementation.
+
+	* src/base/pdf-fsys-disk.c: likewise.
+
+	* src/base/pdf-fsys-disk.h: likewise.
+
+	* src/base/pdf-fsys.c: fsys implementation.
+
+	* src/base/pdf-fsys.h: likewise.
+
+	* torture/unit/Makefile.am: method new test.
+
+	* torture/unit/base/fsys/tsuite-fsys.c: likewise.
+
+	* torture/unit/base/fsys/pdf-fsys-build-path.c: likewise.
+
 2010-04-18  Gerardo E. Gidoni  <gerel@gnu.org>
 
 	Added new method pdf_text_concat_ascii()

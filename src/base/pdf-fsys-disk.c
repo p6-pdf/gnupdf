@@ -893,6 +893,72 @@ pdf_fsys_disk_item_writable_p (void *data,
   return result;
 }
 
+pdf_status_t
+pdf_fsys_disk_build_path (void *data,
+                          pdf_text_t * output,
+                          pdf_text_t first_element,
+                          pdf_list_t rest)
+{
+  pdf_list_iterator_t itr;
+  pdf_text_t next, text_sep;
+  pdf_status_t st, st2;
+
+  st = pdf_list_iterator (rest, &itr);
+  if (st != PDF_OK)
+    {
+      return st;
+    }
+
+  *output = pdf_text_dup (first_element);
+  if (*output == NULL)
+    {
+      pdf_list_iterator_free (&itr);
+      return PDF_ENOMEM;
+    }
+
+#if FILE_SYSTEM_BACKSLASH_IS_FILE_NAME_SEPARATOR
+  st = pdf_text_new_from_unicode ((pdf_char_t*)"\\",1,PDF_TEXT_UTF8, &text_sep);
+#else
+  st = pdf_text_new_from_unicode ((pdf_char_t*)"/",1,PDF_TEXT_UTF8, &text_sep);
+#endif /* FILE_SYSTEM_BACKSLASH_IS_FILE_NAME_SEPARATOR */
+
+  if (st != PDF_OK)
+    {
+      pdf_list_iterator_free (&itr);
+      pdf_text_destroy(*output);
+      return st;
+    }
+
+  /* Concatenate separator and next text object */
+  st = pdf_list_iterator_next (&itr, (const void **) &next, NULL);
+  while (st == PDF_OK)
+    {
+      st2 = pdf_text_concat (*output, text_sep, PDF_TRUE);
+      if (st2 != PDF_OK)
+        {
+          pdf_list_iterator_free (&itr);
+          pdf_text_destroy(*output);
+          pdf_text_destroy (text_sep);
+          return st2;
+        }
+      
+      st2 = pdf_text_concat (*output, next, PDF_TRUE);
+      if (st2 != PDF_OK)
+        {
+          pdf_list_iterator_free (&itr);
+          pdf_text_destroy(*output);
+          pdf_text_destroy (text_sep);
+          return st2;
+        }
+      st = pdf_list_iterator_next (&itr, (const void **) &next, NULL);
+    }
+
+  pdf_list_iterator_free (&itr);
+  pdf_text_destroy (text_sep);
+  return PDF_OK;
+}
+
+
 /*
  * File Interface Implementation
  */

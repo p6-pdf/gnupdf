@@ -51,6 +51,8 @@
   pdf_fsys_disk_item_readable_p (NULL, (path_name))
 #define pdf_fsys_def_item_writable_p(path_name) \
   pdf_fsys_disk_item_writable_p (NULL, (path_name))
+#define pdf_fsys_def_build_path(output, first_element, rest) \
+  pdf_fsys_disk_build_path (NULL, (output), (first_element), (rest))
 #define pdf_fsys_def_file_open(path_name, mode, p_file)     \
   pdf_fsys_disk_file_open (NULL, (path_name), (mode), (p_file))
 #define pdf_fsys_def_file_open_tmp(p_file)   \
