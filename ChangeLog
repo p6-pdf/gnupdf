@@ -1,5 +1,11 @@
 2010-04-19  Jose E. Marchesi  <jemarch@gnu.org>
 
+	Skip sc_cross_check_PATH_usage_in_tests in make syntax-check.
+	* cfg.mk (local-checks-to-skip):
+	'sc_cross_check_PATH_usage_in_tests' added.
+
+2010-04-19  Jose E. Marchesi  <jemarch@gnu.org>
+
 	Temporary hack removed from src/pdf-global.c.
 	* src/pdf-global.c: Copyright years updated.
 	Temporary hack defining the global 'program_name' variable
