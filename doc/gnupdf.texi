@@ -6573,6 +6573,39 @@ if (pdf_text_concat (text1, text2, PDF_FALSE) != PDF_OK)
 @end table
 @end deftypefun
 
+
+@deftypefun pdf_status_t pdf_text_concat_ascii (pdf_text_t @var{text1}, const pdf_char_t * @var{ascii_str})
+
+Concatenate the contents of text variable @var{text1} with ASCII string @var{ascii_str},
+and store the result in @var{text1}.
+
+@table @strong
+@item Parameters
+@table @var
+@item text1
+The first text variable to concatenate. The contents of this variable
+are modified with the output of the concatenation.
+@item ascii_str
+The ascii string to concatenate. The contents of this variable
+are left unchanged.
+@end table
+@item Returns
+The status of the operation.
+@item Usage Example
+@example
+pdf_text_t text1;
+pdf_char_t * str;
+
+/* ...initialize `text1' and `str... */
+if (pdf_text_concat_ascii (text1, str) != PDF_OK)
+@{
+   /* Manage the error */
+@}
+@end example
+@end table
+@end deftypefun
+
+
 @deftypefun pdf_status_t pdf_text_replace (pdf_text_t @var{text}, const pdf_text_t @var{new_pattern}, const pdf_text_t @var{old_pattern})
 
 Replace a fixed pattern in the content of a given text variable.

@@ -282,6 +282,10 @@ pdf_text_concat (pdf_text_t text1,
                  const pdf_text_t text2,
                  const pdf_bool_t override_langinfo);
 
+/* Concatenate a text variable with an ascii string */
+pdf_status_t
+pdf_text_concat_ascii (pdf_text_t text1,
+                       const pdf_char_t * ascii_str);
 
 /* Replace a fixed pattern in the content of a given text variable */
 pdf_status_t

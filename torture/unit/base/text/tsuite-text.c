@@ -49,6 +49,7 @@ extern TCase *test_pdf_text_set_host(void);
 extern TCase *test_pdf_text_set_pdfdocenc (void);
 extern TCase *test_pdf_text_set_unicode (void);
 extern TCase *test_pdf_text_concat (void);
+extern TCase *test_pdf_text_concat_ascii (void);
 extern TCase *test_pdf_text_replace (void);
 extern TCase *test_pdf_text_replace_ascii (void);
 extern TCase *test_pdf_text_filter (void);
@@ -83,6 +84,7 @@ tsuite_text ()
   suite_add_tcase (s, test_pdf_text_set_pdfdocenc());
   suite_add_tcase (s, test_pdf_text_set_unicode());
   suite_add_tcase (s, test_pdf_text_concat());
+  suite_add_tcase (s, test_pdf_text_concat_ascii());
   suite_add_tcase (s, test_pdf_text_replace());
   suite_add_tcase (s, test_pdf_text_replace_ascii());
   suite_add_tcase (s, test_pdf_text_filter());

@@ -1024,6 +1024,52 @@ pdf_text_concat (pdf_text_t text1,
 }
 
 
+/* Concatenate a text variable with an ascii string */
+pdf_status_t
+pdf_text_concat_ascii (pdf_text_t text1,
+                       const pdf_char_t * ascii_str)
+{
+  pdf_size_t len;
+
+  len = (pdf_size_t) strlen ((char*)ascii_str);
+  if (!pdf_text_is_ascii7 (ascii_str, len))
+    {
+      return PDF_EBADDATA;
+    }
+
+  /* now convert to utf32he and concatenate */
+  if(len > 0)
+    {
+      pdf_char_t * newbuf;
+      pdf_status_t ret;
+      pdf_char_t *tmp_data;
+      pdf_size_t tmp_size;
+
+      /* ascii string is valid utf8 */
+      ret = pdf_text_utf8_to_utf32he (ascii_str, len, &tmp_data, &tmp_size);
+      if (ret != PDF_OK)
+        {
+          return ret;
+        }     
+
+      newbuf = (pdf_char_t *)pdf_realloc (text1->data, text1->size + tmp_size);
+      if (newbuf == NULL)
+        {
+          return PDF_ENOMEM;
+        }
+      else
+        {
+          text1->data = newbuf;
+        }
+
+      memcpy (&(text1->data[text1->size]), tmp_data, tmp_size);
+      text1->size += tmp_size;
+      pdf_dealloc (tmp_data);
+    }
+
+  return PDF_OK;
+}
+
 
 /* Default initial size of the list of replacements */
 #define PDF_TEXT_ISLR   32

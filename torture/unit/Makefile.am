@@ -151,6 +151,7 @@ TEST_SUITE_TEXT = base/text/pdf-text-test-common.h \
                   base/text/pdf-text-set-pdfdocenc.c \
                   base/text/pdf-text-set-unicode.c \
                   base/text/pdf-text-concat.c \
+                  base/text/pdf-text-concat-ascii.c \
                   base/text/pdf-text-replace.c \
                   base/text/pdf-text-replace-ascii.c \
                   base/text/pdf-text-filter.c \
