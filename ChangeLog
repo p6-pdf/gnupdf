@@ -1,3 +1,8 @@
+2010-04-17  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	Updated pdf_fsys_disk_file_set/get_pos to use fseek/ftell
+	* src/base/pdf-fsys-disk.c: changed fgetpos/fsetpos for ftell/fseek.
+
 2010-04-15  Jose E. Marchesi  <jemarch@gnu.org>
 
 	Remove spurious blank lines before EOF in the codebase.
