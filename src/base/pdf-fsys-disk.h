@@ -100,6 +100,11 @@ pdf_bool_t
 pdf_fsys_disk_item_writable_p (void *data,
                                pdf_text_t path_name);
 
+pdf_status_t
+pdf_fsys_disk_build_path (void *data,
+                          pdf_text_t * output,
+                          pdf_text_t first_element,
+                          pdf_list_t rest);
 
 /* --------------------- File interface ------------------------- */
 

@@ -1,3 +1,24 @@
+2010-04-19  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	Added pdf_fsys_build_path() method.
+	* doc/gnupdf.texi: updated documentation.
+
+	* src/base/pdf-fsys-def.h: disk implementation.
+
+	* src/base/pdf-fsys-disk.c: likewise.
+
+	* src/base/pdf-fsys-disk.h: likewise.
+
+	* src/base/pdf-fsys.c: fsys implementation.
+
+	* src/base/pdf-fsys.h: likewise.
+
+	* torture/unit/Makefile.am: method new test.
+
+	* torture/unit/base/fsys/tsuite-fsys.c: likewise.
+
+	* torture/unit/base/fsys/pdf-fsys-build-path.c: likewise.
+
 2010-04-15  Jose E. Marchesi  <jemarch@gnu.org>
 
 	Remove spurious blank lines before EOF in the codebase.

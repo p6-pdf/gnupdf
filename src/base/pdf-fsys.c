@@ -296,6 +296,55 @@ pdf_fsys_item_writable_p (pdf_fsys_t filesystem,
     }
 }
 
+pdf_status_t pdf_fsys_build_path (pdf_fsys_t filesystem,
+                                  pdf_text_t * output,
+                                  pdf_text_t first_element, ...)
+{
+  va_list args;
+  pdf_list_t rest;
+  pdf_status_t st;
+  pdf_text_t next;
+
+  st = pdf_list_new (NULL,NULL,PDF_TRUE,&rest);
+  if (st != PDF_OK)
+    {
+      return st;
+    }
+
+  /* Save the rest text objects */
+  va_start (args, first_element);
+  next = va_arg (args, pdf_text_t);
+  while (next != NULL)
+    {
+      st = pdf_list_add_last (rest, next, NULL);
+      if (st != PDF_OK)
+        {
+          pdf_list_destroy (rest);
+          va_end (args);
+          return st;
+        }
+
+      next = va_arg (args, pdf_text_t);
+    }
+  va_end (args);
+
+  if (filesystem == NULL)
+    {
+      /* Use the default filesystem */
+      st = pdf_fsys_def_build_path (output, first_element, rest);
+    }
+  else
+    {
+      st = filesystem->implementation->build_path_fn (filesystem->data,
+                                                      output, first_element,
+                                                      rest);
+    }
+
+  pdf_list_destroy (rest);
+  return st;
+}
+
+
 /*
  * File Interface Implementation
  */

@@ -31,7 +31,7 @@ extern TCase *test_pdf_fsys_get_free_space (void);
 extern TCase *test_pdf_fsys_file_open (void);
 extern TCase *test_pdf_fsys_file_open_tmp (void);
 extern TCase *test_pdf_fsys_file_close (void);
-
+extern TCase *test_pdf_fsys_build_path (void);
 
 Suite *
 tsuite_fsys ()
@@ -44,6 +44,7 @@ tsuite_fsys ()
   suite_add_tcase (s, test_pdf_fsys_file_open ());
   suite_add_tcase (s, test_pdf_fsys_file_open_tmp ());
   suite_add_tcase (s, test_pdf_fsys_file_close ());
+  suite_add_tcase (s, test_pdf_fsys_build_path ());
 
   return s;
 }

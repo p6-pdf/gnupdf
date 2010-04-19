@@ -8841,6 +8841,45 @@ pdf_bool_t ret = pdf_fsys_item_writable_p (NULL, path);
 @end table
 @end deftypefun
 
+
+@deftypefun pdf_status_t pdf_fsys_build_path (pdf_fsys_t @var{filesystem}, pdf_text_t *@var{output}, pdf_text_t @var{first_name}, ...)
+
+Build a file path by concatenating first_name with the following
+variable-length list of @code{pdf_text_t} objects, store resulting path in @var{output}.
+
+@table @strong
+@item Parameters
+@table @var
+@item filesystem
+A filesystem. If @code{NULL} the default filesystem is used.
+@item output
+A pdf_text_t pointer where the resulting path name will be stored.
+@item first_name
+First text path component.
+@item ...
+Variable-length pdf_text_t object list, last element must be NULL.
+@end table
+@item Returns
+Returns PDF_OK if operation succeeded and @var{output} points to built path.
+@item Usage example
+@example
+pdf_status_t st;
+pdf_text_t full_path = NULL;
+pdf_text_t filename = NULL;
+pdf_text_t parent_path = get_current_dir_as_text (); /* example */
+
+pdf_text_new_from_from_unicode ("filename.txt", strlen ("filename.txt"),
+                                PDF_TEXT_UTF8, &filename);
+st = pdf_fsys_build_path (NULL, &full_path, parent_dir, filename);
+if (st != PDF_OK)
+@{
+   /* ... */
+@}
+@end example
+@end table
+@end deftypefun
+
+
 @node The File Interface
 @subsection The File Interface
 
@@ -9792,6 +9831,21 @@ item, identified by a path name, is writeable.
 This callback is called by the @code{pdf_fsys_item_writeable_p} file
 system interface function.
 @end deftp
+
+typedef pdf_status_t (*pdf_fsys_build_path_fn_t) (void * data,
+                                                  pdf_text_t * output,
+                                                  pdf_text_t first_element,
+                                                  pdf_list_t rest);
+
+
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_build_path_fn_t) (void * @var{data}, pdf_text_t *@var{output}, pdf_text_t @var{first_name}, pdf_list_t @var{rest})}
+
+Filesystem callback used to concatenate and build a file path. Where @var{rest} is a list of pdf_text_t objects.
+
+This callback is called by the @code{pdf_fsys_build_path} file
+system interface function.
+@end deftp
+
 
 @node File Interface Implementation
 @subsubsection File Interface Implementation
