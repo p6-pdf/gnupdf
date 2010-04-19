@@ -1,3 +1,8 @@
+2010-04-19  Gerardo E. Gidoni  <gerel@gnu.org>
+
+	Use temp pointer for realloc in pdf_text_concat().
+	* src/base/pdf-text.c: added fix.
+
 2010-04-18  Gerardo E. Gidoni  <gerel@gnu.org>
 
 	Added new method pdf_text_concat_ascii()
