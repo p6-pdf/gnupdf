@@ -19,4 +19,6 @@
 noinst_PROGRAMS = pdf-text-generate-ucd
 pdf_text_generate_ucd_SOURCES = pdf-text-generate-ucd.c
 
+pdf_text_generate_ucd_LDFLAGS = $(LTLIBM)
+
 # End of Makefile.am

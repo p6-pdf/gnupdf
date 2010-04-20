@@ -1,3 +1,37 @@
+2010-04-20  Jose E. Marchesi  <jemarch@gnu.org>
+
+	Dependencies detection in configuration time.
+	* src/Makefile.am (libgnupdf_la_LDFLAGS): Use the LTLIBFOO
+	variables substitued by AC_LIB_HAVE_LINKFLAGS in LDFLAGS.
+
+	* configure.ac: Use gnulib's AC_LIB_HAVE_LINKFLAGS to check for
+	libraries.
+	Report missing libraries, outdated libraries and missing programs
+	together so the user gets a full report.
+
+	* build-aux/Makefile.am (pdf_text_generate_ucd_LDFLAGS): Defined.
+
+	* configure.ac: Copyright years updated.
+	Don't use AM_PATH_LIBGCRYPT.
+
+2010-04-20  Jose E. Marchesi  <jemarch@gnu.org>
+
+	Fix the file descriptions of the JBIG2 test data.
+	* torture/testdata/TD00001.desc: Likewise.
+
+	* torture/testdata/TD00002.desc: Description fixed.
+
+2010-04-20  Jose E. Marchesi  <jemarch@gnu.org>
+
+	Integrate Unicode tests work by Sylvain Beucler.
+	* torture/unit/base/text/pdf-text-get-unicode.c: New tests 063-108
+	exercising the little-endiant variants of the Unicode encodings.
+	Tests 001-062 refactored in the 'tests_params' array.
+	Documentation of the tests reduced to a single block documenting
+	all of them.  Work by Sylvain Beucler.
+
+	* doc/gnupdf.texi: Some typos fixed.  Reported by Sylvain Beucler.
+
 2010-04-19  Jose E. Marchesi  <jemarch@gnu.org>
 
 	Skip sc_cross_check_PATH_usage_in_tests in make syntax-check.

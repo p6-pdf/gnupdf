@@ -3,7 +3,7 @@ dnl GNU PDF Library
 
 dnl Please process this file with autoconf to get a `configure' script
 
-dnl Copyright (C) 2007, 2008 Free Software Foundation, Inc.
+dnl Copyright (C) 2007, 2008, 2009, 2010 Free Software Foundation, Inc.
 
 dnl This program is free software: you can redistribute it and/or modify
 dnl it under the terms of the GNU General Public License as published by
@@ -85,87 +85,72 @@ AC_FUNC_FSEEKO
 
 
 dnl Search for required libraries
+dnl
+dnl For each required library:
+dnl
+dnl   - The gnulib AC_LIB_HAVE_LINKFLAGS macro is used to define the
+dnl     HAVE_LIB${NAME} variable and the $(LTLIBFOO} variables
+dnl     substitued in the Makefile.am.  There are some exceptions
+dnl     where an specific macro is used.
+dnl
+dnl   - If the presence of the library determines the compilation of
+dnl     conditionally compiled code, an AM_CONDITIONAL is used to
+dnl     define the corresponding automake conditional, based on the
+dnl     result of AC_LIB_HAVE_LINKFLAGS.
+dnl
+dnl   - The HAVE_LIB${NAME} defined by AC_LIB_HAVE_LINKFLAGS cannot be
+dnl     used in the public pdf.h header.  For that purpose we define a
+dnl     PDF_HAVE_LIB${NAME} variable.
+dnl
+dnl Some of the libraries are mandatory, and some are optional.  See
+dnl the section "Report errors" below.
 
-dnl pthread? (mandatory)
-have_libpthread=yes
-AC_CHECK_LIB([pthread],[pthread_mutex_lock],[],[have_libpthread=no])
-if test "x$have_libpthread" = "xno"; then
-   AC_MSG_ERROR([cannot find the libpthread library.  Please install it and rerun `configure'.])
-fi
+dnl libpthread
+AC_LIB_HAVE_LINKFLAGS([pthread])
 
-dnl zlib? (optional)
+dnl libzlib
 CHECK_ZLIB
 AM_CONDITIONAL([ZLIB], [test "x$have_zlib" != "xno"])
 if test "x$have_zlib" != "xno"; then
   AC_DEFINE([PDF_HAVE_LIBZ], [1], [Define to 1 if you have the `z' library])
 fi
 
-
-dnl libjpeg? (optional)
-have_libjpeg=yes
-AC_CHECK_LIB([jpeg],[jpeg_std_error],[],[have_libjpeg=no])
-AM_CONDITIONAL([LIBJPEG], [test "x$have_libjpeg" != "xno"])
-if test "x$have_libjpeg" != "xno"; then
+dnl libjpeg
+AC_LIB_HAVE_LINKFLAGS([jpeg])
+AM_CONDITIONAL([LIBJPEG], [test "x$HAVE_LIBJPEG" != "xno"])
+if test "x$HAVE_LIBJPEG" = "xyes"; then
   AC_DEFINE([PDF_HAVE_LIBJPEG], [1], [Define to 1 if you have the `jpeg' library])
 fi
 
-
-dnl jbig2dec? (optional)
-have_jbig2dec=yes
-AC_CHECK_LIB([jbig2dec],[jbig2_ctx_new],[],[have_jbig2dec=no])
-AM_CONDITIONAL([JBIG2DEC], [test "x$have_jbig2dec" != "xno"])
-if test "x$have_jbig2dec" != "xno"; then
+dnl libjbig2dec
+AC_LIB_HAVE_LINKFLAGS([jbig2dec])
+AM_CONDITIONAL([JBIG2DEC], [test "x$HAVE_LIBJBIG2DEC" != "xno"])
+if test "x$HAVE_LIBJBIG2DEC" = "xyes"; then
   AC_DEFINE([PDF_HAVE_LIBJBIG2DEC], [1], [Define to 1 if you have the `jbig2dec' library])
 fi
 
+dnl libm
+AC_LIB_HAVE_LINKFLAGS([m])
 
-dnl libm? (mandatory)
-AC_CHECK_LIB(m,exp,,,)
+dnl libcurl
+AC_LIB_HAVE_LINKFLAGS([curl])
+AM_CONDITIONAL([LIBCURL], [test "x$HAVE_LIBCURL" = "xyes"])
 
-dnl libcurl? (optional)
-have_libcurl=yes
-AC_CHECK_LIB([curl],[curl_global_init],[],[have_libcurl=no])
-AM_CONDITIONAL([LIBCURL], [test "x$have_libcurl" != "xno"])
+dnl libgpg-error
+AC_LIB_HAVE_LINKFLAGS([gpg-error])
 
+dnl libgcrypt
+AC_LIB_HAVE_LINKFLAGS([gcrypt],[gpg-error],[#include <gpg-error.h>])
 
-if test "x$compile_w32_system" = "xyes"; then
-  # We cannot use AM_PATH_LIBGCRYPT in this case, since it depends on
-  # environment variables and the execution of config-* programs.
-  AC_CHECK_LIB([gpg-error],[gpg_err_init],,[have_gpgerror="no"])
-  AC_CHECK_LIB([gcrypt],[gcry_check_version],,[have_libgcrypt="no"])
-else
-  # Use the AM_PATH_LIBGCRYPT macro from libgcrypt
-  AM_PATH_LIBGCRYPT([1.2.4], have_libgcrypt="yes", have_libgcrypt="no")
-fi
+dnl libcheck
+AC_LIB_HAVE_LINKFLAGS([check])
+dnl We need a recent version of libcheck supporting 'srunner_run'.
+AC_CHECK_LIB([check],[srunner_run],[HAVE_SRUNNER_RUN=yes],[HAVE_SRUNNER_RUN=no])
+AM_CONDITIONAL([CHECK], [test "x$HAVE_CHECK" = "xyes"])
 
-dnl libgpg-error? (mandatory)
-if test x$have_gpgerror = "xno"; then
-  AC_MSG_ERROR([cannot find the libgpg-error library. Please install it and rerun `configure'.])
-fi
-
-dnl libgcrypt? (mandatory)
-if test x$have_libgcrypt = "xno"; then
-  AC_MSG_ERROR([cannot find the libgcrypt library. Please install it and rerun `configure'.])
-fi
-
-dnl svn libcheck? (optional)
-have_check=yes
-AC_CHECK_LIB([check],[srunner_run],,[have_check=no])
-AM_CONDITIONAL([CHECK], [test "x$have_check" != "xno"])
-if test x$have_check = "xno"; then
-   have_check=yes
-   AC_CHECK_LIB([check],[srunner_run_all],,[have_check=no])
-   if test x$have_check = "xyes"; then
-      AC_MSG_ERROR([your version of libcheck is too old.  Please update to a newer version or to the SVN version.  See http://check.sf.net.])
-   fi
-fi
-
-dnl libiconv? (optional)
-AC_CHECK_LIB([iconv],[iconv_open],[have_iconv=yes],[have_iconv=no])
-AM_CONDITIONAL([ICONV], [test "x$have_iconv" = "xyes"])
-
-
-
+dnl libiconv
+AC_LIB_HAVE_LINKFLAGS([iconv])
+AM_CONDITIONAL([ICONV], [test "x$HAVE_LIBICONV" = "xyes"])
 
 dnl Search for required programs for building the sources
 AC_PROG_AWK
@@ -384,8 +369,6 @@ if test $gl_cv_c_inline_effective = yes; then
    AC_DEFINE([PDF_HAVE_INLINE], [1], [System has inline?])
 fi
 
-
-
 dnl Generate output files
 AC_CONFIG_FILES([Makefile
                  libgnupdf.pc
@@ -410,6 +393,74 @@ AC_CONFIG_FILES([Makefile
                  doc/generate-tsd.pl])
 AC_OUTPUT
 
+dnl Report errors
+
+missing_programs=""
+missing_libs=""
+outdated_libs=""
+
+dnl Please update the variables above to achieve this visual
+dnl appearance:
+dnl
+dnl The following blah blah:
+dnl
+dnl    lib1 (> 2.3.4)
+dnl    lib2 (> 1.2.3)
+dnl    lib3 (svn required)
+
+if test "x$HAVE_LIBM" != "xyes"; then
+   missing_libs="
+   libm"
+fi
+if test "x$HAVE_LIBPTHREAD" != "xyes"; then
+   missing_libs="$missing_libs
+   libpthread"
+fi
+if test "x$HAVE_LIBGPG_ERROR" != "xyes"; then
+   missing_libs="$missing_libs
+   libgpg-error"
+fi
+if test "x$HAVE_LIBGCRYPT" != "xyes"; then
+   missing_libs="$missing_libs
+   libgcrypt"
+fi
+if test "x$HAVE_LIBCHECK" != "xyes"; then
+   missing_libs="$missing_libs
+   libcheck"
+fi
+if test "x$HAVE_LIBCHECK" = "xyes" && test "x$HAVE_SRUNNER_RUN" != "xyes"; then
+   outdated_libs="$outdated_libs
+   libcheck (svn required)"
+fi
+
+if test -n "$missing_libs"; then
+   echo ""
+   echo "The following required libraries are not available:"
+   echo "$missing_libs"
+   echo ""
+   echo "Please install them and rerun 'configure'."
+fi
+
+if test -n "$outdated_libs"; then
+   echo ""
+   echo "The following required libraries are too old:"
+   echo "$outdated_libs"
+   echo ""
+   echo "Please update them and rerun 'configure'."
+fi
+
+if test -n "$missing_programs"; then
+   echo ""
+   echo "The following required programs are missing:"
+   echo "$missing_programs"
+   echo ""
+   echo "Please install them and rerun 'configure'."
+fi
+
+if test -n "$missing_libs" || test -n "$outdated_libs" || test -n "$missing_programs"; then
+   exit 1
+fi
+
 dnl Report configuration results
 
 if test "x$PDFLIB_LEVEL" = "x3"; then
@@ -430,8 +481,8 @@ Configured for \`${canonical}'.
 
   Compilation level:                        ${PDFLIB_LEVEL} (${PDFLIB_LEVEL_DESCR})
   Using FlateDecode filter?                 ${have_zlib}
-  Using JBIG2 decoder filter?               ${ac_cv_lib_jbig2dec_jbig2_ctx_new}
-  Using DCT filter?                         ${have_libjpeg}
+  Using JBIG2 decoder filter?               ${HAVE_LIBJBIG2DEC}
+  Using DCT filter?                         ${HAVE_LIBJPEG}
   Bignum implementation?                    ${bignum_implementation}
   With unit tests support?                  ${ut_support} ${ut_framework}
   Program to build html manuals             ${texihtmlprogram}
@@ -439,7 +490,6 @@ Configured for \`${canonical}'.
   Layers with debug mode enabled            ${PDFLIB_DEBUG_DESCR}
   Generate code coverage information        ${use_gcov}
 "
-
 dnl Report warnings
 
 if test "x$have_zlib" = "xno" ; then

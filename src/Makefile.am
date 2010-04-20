@@ -115,11 +115,15 @@ if COMPILE_BASE_LAYER
   libgnupdf_la_SOURCES += $(BASE_LAYER_SOURCES)
 endif
 
-#include_HEADERS = pdf.h
-libgnupdf_la_LIBADD = $(top_builddir)/lib/libgnu.la $(LIBGCRYPT_LIBS)
+libgnupdf_la_LDFLAGS = $(top_builddir)/lib/libgnu.la \
+                       $(LTLIBPTHREAD) $(LTLIBM) \
+                       $(LTLIBJBIG2DEC) $(LTLIBJPEG) $(LTLIBCURL) \
+                       $(LIBGCRYPT_LIBS) $(LTLIBGPG_ERROR) $(LTLIBGCRYPT) \
+                       $(LTLIBCHECK) $(LTLIBICONV)
+
 # We want a DLL if compiling for Windows
 if COMPILE_W32_SYSTEM
-  libgnupdf_la_LDFLAGS = -no-undefined
+  libgnupdf_la_LDFLAGS += -no-undefined
 endif
 
 AM_CFLAGS = -Wall -fno-strict-aliasing $(LIBGCRYPT_CFLAGS)
