@@ -1,5 +1,12 @@
 2010-04-20  Jose E. Marchesi  <jemarch@gnu.org>
 
+	Fix the file descriptions of the JBIG2 test data.
+	* torture/testdata/TD00001.desc: Likewise.
+
+	* torture/testdata/TD00002.desc: Description fixed.
+
+2010-04-20  Jose E. Marchesi  <jemarch@gnu.org>
+
 	Integrate Unicode tests work by Sylvain Beucler.
 	* torture/unit/base/text/pdf-text-get-unicode.c: New tests 063-108
 	exercising the little-endiant variants of the Unicode encodings.
