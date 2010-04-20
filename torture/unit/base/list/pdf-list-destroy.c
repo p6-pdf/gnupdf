@@ -25,7 +25,6 @@
 
 #include <config.h>
 
-#include <stdbool.h>
 #include <stdio.h>
 #include <pdf.h>
 #include <check.h>

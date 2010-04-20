@@ -25,12 +25,12 @@
 
 #include <config.h>
 
-#include <stdbool.h>
+
 #include <stdio.h>
 #include <pdf.h>
 #include <check.h>
 
-extern bool l_comp (const void * elemb, const void * elema);
+extern pdf_bool_t l_comp (const void * elemb, const void * elema);
 
 /*
  * Test: pdf_list_search_001
