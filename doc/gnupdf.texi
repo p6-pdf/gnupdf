@@ -6062,9 +6062,9 @@ string (so BOM is optional and Language/Country code is not allowed).
 @item str
 A Unicode string.
 @item size
-The length of @var{ucs} in bytes.
+The length of @var{str} in bytes.
 @item enc
-The Unicode encoding used by @var{ucs}.
+The Unicode encoding used by @var{str}.
 @item text
 A pointer to the newly created text object.
 @end table
