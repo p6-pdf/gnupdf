@@ -25,13 +25,12 @@
 
 #include <config.h>
 
-#include <stdbool.h>
 #include <stdio.h>
 #include <pdf.h>
 #include <check.h>
 
 
-bool l_comp (const void * elemb, const void * elema)
+pdf_bool_t l_comp (const void * elemb, const void * elema)
 {
   int *elem1, *elem2;
   elem1 = (int*) elema;

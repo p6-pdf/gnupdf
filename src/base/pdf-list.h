@@ -28,10 +28,6 @@
 
 #include <config.h>
 
-/* BEGIN PUBLIC */
-#include <stdbool.h>
-/* END PUBLIC */
-
 #include <pdf-types.h>
 #include <pdf-error.h>
 #include <pdf-alloc.h>
@@ -64,7 +60,7 @@ typedef struct pdf_list_s pdf_list_t;
 typedef struct pdf_list_node_s pdf_list_node_t;
 typedef struct pdf_list_iterator_s pdf_list_iterator_t;
 
-typedef bool (*pdf_list_element_equals_fn_t) (const void *elt1, const void *elt2);
+typedef pdf_bool_t (*pdf_list_element_equals_fn_t) (const void *elt1, const void *elt2);
 typedef pdf_size_t (*pdf_list_element_hashcode_fn_t) (const void *elt);
 typedef void (*pdf_list_element_dispose_fn_t) (const void *elt);
 typedef int (*pdf_list_element_compar_fn_t) (const void *elt1, const void *elt2);
@@ -197,8 +193,9 @@ pdf_list_new (pdf_list_element_equals_fn_t equals_fn,
 
   if (list != NULL)
     {
-      list->gl_list = gl_list_nx_create_empty(GL_ARRAY_LIST, equals_fn, NULL,
-                                              dispose_fn, allow_duplicates);
+      list->gl_list = gl_list_nx_create_empty(GL_ARRAY_LIST,
+                                              equals_fn,
+                                              NULL,dispose_fn, allow_duplicates);
       list->allow_duplicates = allow_duplicates;
 
       if (list->gl_list == NULL)

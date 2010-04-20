@@ -31,10 +31,11 @@
 #include <pdf-error.h>
 
 /* BEGIN PUBLIC */
-#include <sys/types.h> /* for off_t */
-#include <stdint.h> /* for uint32_t and others, from gnulib */
+#include <sys/types.h> /* for off_t.  */
+#include <stdint.h>    /* for uint32_t and others, from gnulib.  */
+#include <stdbool.h>   /* for bool.  */
 
-#include <sys/param.h> /* for determining system types (mostly BSD) */
+#include <sys/param.h> /* for determining system types (mostly BSD).  */
 
 #ifdef PDF_HAVE_INLINE
 #define INLINE inline
@@ -42,8 +43,8 @@
 #define INLINE
 #endif /* PDF_HAVE_INLINE */
 
-#define PDF_TRUE 1
-#define PDF_FALSE 0
+#define PDF_TRUE true
+#define PDF_FALSE false
 
 #define PDF_MIN(i1, i2) \
   (((i1) < (i2)) ? (i1) : (i2))
@@ -96,7 +97,7 @@ typedef unsigned char pdf_u8_t;
 typedef char pdf_i8_t;
 
 /* Boolean type */
-typedef unsigned char pdf_bool_t;
+typedef bool pdf_bool_t;
 
 /********************** Simple memory buffers **************************/
 
