@@ -5115,8 +5115,7 @@ if (pdf_fp_string_to_real (str, &real) == PDF_ERROR)
 @end table
 @end deftypefun
 
-
-@deftypefun pdf_status_t pdf_fp_real_to_string (pdf_real_t @var{real}, pdf_char_t *@var{s}, pdf_size_t @var{max_length}, pdf_u32_t @var{precision})
+@deftypefun pdf_status_t pdf_fp_real_to_string (pdf_real_t @var{real}, pdf_char_t *@var{buffer}, pdf_size_t @var{size}, pdf_u32_t @var{precision})
 
 Get a textual representation of a  @code{pdf_real_t} value.
 
@@ -5125,14 +5124,15 @@ Get a textual representation of a  @code{pdf_real_t} value.
 @table @var
 @item real
 The number to convert.
-@item s
-The string where to store the textual representation of
-@var{real}. Note that this function adds a '\0' to the end of the
-textual representation.
-@item max_length
-The maximum number of characters that @var{s} may contain.
+@item buffer
+The buffer where to store the textual representation of @var{real}.
+Note that this function adds a @code{'\0'} to the end of the textual
+representation.
+@item size
+The maximum number of characteres that may be stored in @var{buffer}.
 @item precision
 The number of decimal digits to include in the textual representation.
+If it is @code{0} then the maximum precision is used.
 @end table
 @item Returns
 A PDF status value:

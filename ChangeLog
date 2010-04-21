@@ -1,3 +1,13 @@
+2010-04-21  Jose E. Marchesi  <jemarch@gnu.org>
+
+	Fixes in the documentation for the FP number conversion routines.
+	* doc/gnupdf.texi (Number Conversion Routines): Wording and markup
+	improved.
+	Use more meaningful names for the parameters of
+	'pdf_fp_real_to_string'.
+	Clarify what happens if the 'precision' parameter to
+	'pdf_fp_real_to_string' is 0.
+
 2010-04-20  Jose E. Marchesi  <jemarch@gnu.org>
 
 	Remove dependency on stdbool.h from pdf-list.h.
