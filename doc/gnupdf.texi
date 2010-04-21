@@ -10736,7 +10736,7 @@ The given type is not valid for this constructor.
 
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_token_dup (const pdf_token_t @var{old}, pdf_token_t *@var{new})
+@deftypefun pdf_status_t pdf_token_dup (const pdf_token_t @var{token}, pdf_token_t *@var{new})
 
 Create a copy of the given token.
 
@@ -10785,7 +10785,7 @@ The operation succeeded.
 @node Accessing token attributes
 @subsection Accessing token attributes
 
-@deftypefun {enum pdf_token_type_e} pdf_token_get_type (pdf_token_t @var{token})
+@deftypefun {enum pdf_token_type_e} pdf_token_get_type (const pdf_token_t @var{token})
 
 Get the type of a given token.
 

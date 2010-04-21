@@ -98,8 +98,8 @@ pdf_i32_t pdf_token_get_integer_value (const pdf_token_t token);
 pdf_real_t pdf_token_get_real_value (const pdf_token_t token);
 
 /* Managing strings */
-pdf_size_t pdf_token_get_string_size (pdf_token_t token);
-const pdf_char_t *pdf_token_get_string_data (pdf_token_t token);
+pdf_size_t pdf_token_get_string_size (const pdf_token_t token);
+const pdf_char_t *pdf_token_get_string_data (const pdf_token_t token);
 
 /* Managing names */
 pdf_size_t pdf_token_get_name_size (const pdf_token_t token);

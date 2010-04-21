@@ -39,13 +39,13 @@ cyclo.wiki:
                   > cyclo.wiki
 
 apic.wiki:
-	chmod +x ${srcdir}/apic2wiki
-	chmod +x ${srcdir}/check-api-doc-consistency.pl
-	${srcdir}/check-api-doc-consistency.pl -p -t | ${srcdir}/apic2wiki > apic.wiki
+	chmod +x ${builddir}/apic2wiki
+	chmod +x ${builddir}/check-api-doc-consistency.pl
+	${builddir}/check-api-doc-consistency.pl -p -t | ${builddir}/apic2wiki > apic.wiki
 
 ut.wiki:
-	chmod +x ${srcdir}/testlog2wiki
-	if test -f ${top_srcdir}/torture/unit/ut.log ; then cat ${top_srcdir}/torture/unit/ut.log | ${srcdir}/testlog2wiki > ut.wiki; fi
+	chmod +x ${builddir}/testlog2wiki
+	if test -f ${top_srcdir}/torture/unit/ut.log ; then cat ${top_srcdir}/torture/unit/ut.log | ${builddir}/testlog2wiki > ut.wiki; fi
 
 all-local: ${TARGETS}
 
