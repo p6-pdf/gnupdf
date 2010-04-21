@@ -1,5 +1,12 @@
 2010-04-21  Jose E. Marchesi  <jemarch@gnu.org>
 
+	configure: If no awk program is found then report the problem at
+	the end.
+	* configure.ac: If an awk program is not found then it is reported
+	in the "Report errors" section.
+
+2010-04-21  Jose E. Marchesi  <jemarch@gnu.org>
+
 	Fixes in the documentation for the FP number conversion routines.
 	* doc/gnupdf.texi (Number Conversion Routines): Wording and markup
 	improved.

@@ -153,10 +153,8 @@ AC_LIB_HAVE_LINKFLAGS([iconv])
 AM_CONDITIONAL([ICONV], [test "x$HAVE_LIBICONV" = "xyes"])
 
 dnl Search for required programs for building the sources
+AWK=""
 AC_PROG_AWK
-if test x$AWK = "xno"; then
-AC_MSG_ERROR([cannot find a suitable `awk' program. Please install it and rerun `configure'.])
-fi
 AC_PATH_PROG([PATH_TO_AWK],$AWK)
 AC_SUBST(PATH_TO_AWK)
 AC_PATH_PROG([CHMOD],[chmod])
@@ -432,6 +430,11 @@ if test "x$HAVE_LIBCHECK" = "xyes" && test "x$HAVE_SRUNNER_RUN" != "xyes"; then
    outdated_libs="$outdated_libs
    libcheck (svn required)"
 fi
+
+if test "x$AWK" = "x"; then
+   missing_programs="$missing_programs
+   awk"
+fi   
 
 if test -n "$missing_libs"; then
    echo ""
