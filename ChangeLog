@@ -1,3 +1,43 @@
+2010-04-21  Jose E. Marchesi  <jemarch@gnu.org>
+
+	API inconsistencies fixed.
+	* doc/gnupdf.texi (Accessing token attributes): Added a 'const'
+	qualifier to the 'token' parameter in the documentation of
+	'pdf_token_get_type'.
+
+	* src/base/pdf-token.h: Change function prototypes for
+	'pdf_token_get_type', 'pdf_token_get_string_size' and
+	'pdf_token_get_string_data' to avoid false positives in the API
+	consistency reporty.
+
+	* prmgt/check-api-doc-consistency.pl.in: Search for the source
+	code and the texinfo manuals from top_srcdir and not top_builddir.
+
+	* prmgt/Makefile.am (apic.wiki): Use 'builddir' instead of
+	'srcdir' to locate generated scripts.
+	(ut.wiki): Likewise.
+
+	* doc/gnupdf.texi (Creating and destroying tokens): Rename the
+	parameters of 'pdf_token_dup' to avoid false positives in the API
+	consistency report.
+
+2010-04-21  Jose E. Marchesi  <jemarch@gnu.org>
+
+	configure: If no awk program is found then report the problem at
+	the end.
+	* configure.ac: If an awk program is not found then it is reported
+	in the "Report errors" section.
+
+2010-04-21  Jose E. Marchesi  <jemarch@gnu.org>
+
+	Fixes in the documentation for the FP number conversion routines.
+	* doc/gnupdf.texi (Number Conversion Routines): Wording and markup
+	improved.
+	Use more meaningful names for the parameters of
+	'pdf_fp_real_to_string'.
+	Clarify what happens if the 'precision' parameter to
+	'pdf_fp_real_to_string' is 0.
+
 2010-04-20  Jose E. Marchesi  <jemarch@gnu.org>
 
 	Remove dependency on stdbool.h from pdf-list.h.

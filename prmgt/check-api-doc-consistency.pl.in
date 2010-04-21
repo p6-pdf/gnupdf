@@ -24,7 +24,7 @@ use File::Find;
 # and match it with the procedures implemented in the header files.
 ###
 
-my $TOPDIR="@abs_top_builddir@";
+my $TOPDIR="@abs_top_srcdir@";
 my $SRCDIR = $TOPDIR."/src";
 my $INFODIR = $TOPDIR."/doc";
 my $MAKEFILE = $SRCDIR."/Makefile.am";
