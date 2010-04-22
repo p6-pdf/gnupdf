@@ -1,3 +1,19 @@
+2010-04-22  Jose E. Marchesi  <jemarch@gnu.org>
+
+	Documentation for menu entries and usage examples in the reference
+	manual.
+	* doc/gnupdf.texi (Basic Types): Menu entries documented with a
+	short description.
+	(Top): Likewise.
+	(Base Layer): Likewise.
+	(Error Management): Likewise.
+	(Adding and Removing List Elements): Usage example added for
+	'pdf_list_remove_node'.
+	(Adding and Removing List Elements): Likewise for
+	'pdf_list_remove_at'.
+	(Adding and Removing List Elements): Likewise for
+	'pdf_list_remove'.
+
 2010-04-21  Jose E. Marchesi  <jemarch@gnu.org>
 
 	API inconsistencies fixed.

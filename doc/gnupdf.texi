@@ -57,16 +57,16 @@ GNU PDF Library Reference
 * Base Layer::                  Base library facilities.
 * Object Layer::                Editing the object structure of a PDF file.
 * Document Layer::              Editing the document-level structure of a PDF
-                          file.
+                                 file.
 * Page Contents Layer::         Editing the contents of pages.
 * Implementation Limits::       Implementation limits in the library.
 * GNU Free Documentation License::  Distribution terms of this manual.
 
 Indices
 
-* Global variable index::
-* Data type index::
-* Function index::
+* Global variable index::       Variables provided by the library.
+* Data type index::             Data types provided by the library.
+* Function index::              Functions provided by the library.
 @end menu
 
 @node Overview
@@ -76,19 +76,22 @@ Indices
 @chapter Base Layer
 
 @menu
-* Base Layer Overview::
-* Error Management::
-* Memory Allocation::
-* Basic Types::
-* Hash Tables::
-* Lists::
-* Filtered Streams::
-* Floating Point Maths::
-* Encoded Text::
-* Time Management::
-* The Filesystem Module::
-* The Tokeniser::
-* Encryption::
+* Base Layer Overview::         Definition and purpose of this layer.
+* Error Management::            Error reporting and tracing.
+* Memory Allocation::           Functions to (de)allocate memory.
+* Basic Types::                 Numbers, buffers and other simple
+                                 types.
+* Hash Tables::                 Generic associative tables.
+* Lists::                       Generic lists.
+* Filtered Streams::            Operating files or memory buffers with
+                                 filtering support.
+* Floating Point Maths::        Working with real numbers.
+* Encoded Text::                Manipulating encoded strings.
+* Time Management::             Calendars and time spans.
+* The Filesystem Module::       An abstract file system interface and
+                                 open files.
+* The Tokeniser::               Decomposing a PDF document in tokens.
+* Encryption::                  Basic encryption facilities.
 @end menu
 
 @node Base Layer Overview
@@ -105,16 +108,17 @@ other modules (such as allocation or error functions).
 @node Error Management
 @section Error Management
 
-
 The Error module provides procedures for error reporting to the
 client as well as for error tracing (via debug messages) to
 developers. Here we also define status types returned by most
 procedures (there are exceptions though).
 
 @menu
-* Status types::
-* Error Reporting procedures::
-* Debugging procedures::
+* Status types::               Status values returned by the functions
+                                of this library.
+* Error Reporting procedures:: Printing the textual description of an
+                                error code.
+* Debugging procedures::       Tracing support.
 @end menu
 
 @node Status types
@@ -426,11 +430,11 @@ pdf_dealloc (p);
 @section Basic Types
 
 @menu
-* Boolean Types::
-* Numeric Types::
-* Big Numbers::
-* Memory Buffers::
-* Progress Monitors::
+* Boolean Types::       The true/false boolean operators.    
+* Numeric Types::       Signed and unsigned 32bit integers.
+* Big Numbers::         Signed 64bit integers.
+* Memory Buffers::      Operations on simple memory buffers.
+* Progress Monitors::   Following the progress of operations.
 @end menu
 
 @node Boolean Types
@@ -3907,7 +3911,28 @@ A pdf status value:
 @end table
 @item Usage example
 @example
-XXX
+pdf_list_t list;
+pdf_list_node_t node;
+int elem1;
+int elem2;
+int elem3;
+
+if (pdf_list_new (NULL, NULL,
+                  PDF_FALSE, /* Allow duplicates.  */
+                  &list) == PDF_OK)
+@{
+   /* Add some elements to the list.  */
+   pdf_list_add_last (list, (void *) &elem1, NULL);
+   pdf_list_add_last (list, (void *) &elem2, NULL);
+   pdf_list_add_last (list, (void *) &elem3, NULL);
+
+  /* Remove the element containing 'elem2' from 'list'.  */
+  pdf_list_search (list, (void *) &elem2, &node);
+  if (pdf_list_remove_node (list, node) != PDF_OK)
+  @{
+     /* Error removing the node from the list.  */
+  @}
+@}
 @end example
 @end table
 @end deftypefun
@@ -3935,7 +3960,26 @@ Invalid @var{position} range.
 @end table
 @item Usage example
 @example
-XXX
+pdf_list_t list;
+int elem1;
+int elem2;
+int elem3;
+
+if (pdf_list_new (NULL, NULL,
+                  PDF_FALSE, /* Allow duplicates.  */
+                  &list) == PDF_OK)
+@{
+   /* Add some elements to the list.  */
+   pdf_list_add_last (list, (void *) &elem1, NULL);
+   pdf_list_add_last (list, (void *) &elem2, NULL);
+   pdf_list_add_last (list, (void *) &elem3, NULL);
+
+  /* Remove the element containing 'elem2' from 'list'.  */
+  if (pdf_list_remove_at (list, 1) != PDF_OK)
+  @{
+     /* Error removing the node from the list.  */
+  @}
+@}
 @end example
 @end table
 @end deftypefun
@@ -3962,7 +4006,26 @@ A pdf status value:
 @end table
 @item Usage example
 @example
-XXX
+pdf_list_t list;
+int elem1;
+int elem2;
+int elem3;
+
+if (pdf_list_new (NULL, NULL,
+                  PDF_FALSE, /* Allow duplicates.  */
+                  &list) == PDF_OK)
+@{
+   /* Add some elements to the list.  */
+   pdf_list_add_last (list, (void *) &elem1, NULL);
+   pdf_list_add_last (list, (void *) &elem2, NULL);
+   pdf_list_add_last (list, (void *) &elem3, NULL);
+
+  /* Remove the element containing 'elem2' from 'list'.  */
+  if (pdf_list_remove (list, (void *) &elem2) != PDF_OK)
+  @{
+     /* Error removing the node from the list.  */
+  @}
+@}
 @end example
 @end table
 @end deftypefun
