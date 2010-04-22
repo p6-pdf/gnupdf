@@ -1,5 +1,30 @@
 2010-04-22  Jose E. Marchesi  <jemarch@gnu.org>
 
+	manuals: Get the manuals target to work in offline builds.
+	* .bzrignore: Ignore doc/generated-tsd.texi.
+
+	* doc/Makefile.am (clean-local): Delete the MANUAL.info-? files
+	upon make clean.
+	(clean-local): Likewise for the files
+	MANUAL.(log|fns|aux|ky|fn|pg|toc|tp|tps|vr).
+
+	* doc/gnupdf-arch-figures/parser-overview.eps: New file.
+
+	* doc/gnupdf-arch-figures/parser-data-flow.eps: New file.
+
+	* doc/gnupdf-arch-figures/object-document-architecture.eps: New
+	file.
+
+	* doc/Makefile.am (manuals): Use $(top_srcdir) to provide the
+	right path to 'gendocs.sh'.
+	(generated-tsd.texi): Use builddir instead of srcdir to locate
+	generate-tsd.pl.
+	(manuals): Specify the Texinfo source file to be used by
+	gendocs.sh with -s.
+	(manuals): Specify the templates directory.
+
+2010-04-22  Jose E. Marchesi  <jemarch@gnu.org>
+
 	pdf-types: Documentation of the UUID related types and functions.
 	* doc/gnupdf.texi (UUIDs): New section.
 	(UUIDs): Documentation for the type 'pdf_uuid_t'.

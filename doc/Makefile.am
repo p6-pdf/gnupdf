@@ -26,23 +26,39 @@ AM_MAKEINFOHTMLFLAGS = --css-include=manuals.css
 
 gnupdf-tsd.texi: generated-tsd.texi
 generated-tsd.texi:
-	perl $(srcdir)/generate-tsd.pl > $(srcdir)/generated-tsd.texi
+	perl $(builddir)/generate-tsd.pl > $(builddir)/generated-tsd.texi
 
 manuals: gnupdf-tsd.texi
-	../build-aux/gendocs.sh -o gnupdf-manual \
+	test -d $(builddir)/gnupdf-arch-figures || \
+	   cp -r $(top_srcdir)/doc/gnupdf-arch-figures $(builddir)/
+	test -d $(builddir)/gnupdf-figures || \
+	   cp -r $(top_srcdir)/doc/gnupdf-figures $(builddir)/
+	test -d $(builddir)/gnupdf-hg-figures || \
+	   cp -r $(top_srcdir)/doc/gnupdf-hg-figures $(builddir)/
+	GENDOCS_TEMPLATE_DIR=$(top_srcdir)/doc \
+        sh $(top_srcdir)/build-aux/gendocs.sh -o gnupdf-manual \
                                 --email  pdf-devel@gnu.org \
+                                -s $(top_srcdir)/doc/gnupdf.texi \
                                 gnupdf "GNU PDF Reference Manual"
-	../build-aux/gendocs.sh -o gnupdf-tsd-manual \
+	GENDOCS_TEMPLATE_DIR=$(top_srcdir)/doc \
+	sh $(top_srcdir)/build-aux/gendocs.sh -o gnupdf-tsd-manual \
                                 --email  pdf-devel@gnu.org \
+                                -s $(top_srcdir)/doc/gnupdf-tsd.texi \
                                 gnupdf-tsd "GNU PDF Test Specification Document"
-	../build-aux/gendocs.sh -o gnupdf-arch-manual \
+	GENDOCS_TEMPLATE_DIR=$(top_srcdir)/doc \
+	sh $(top_srcdir)/build-aux/gendocs.sh -o gnupdf-arch-manual \
                                 --email  pdf-devel@gnu.org \
+                                -s $(top_srcdir)/doc/gnupdf-arch.texi \
                                 gnupdf-arch "GNU PDF Architecture Guide"
-	../build-aux/gendocs.sh -o gnupdf-hg-manual \
+	GENDOCS_TEMPLATE_DIR=$(top_srcdir)/doc \
+	sh $(top_srcdir)/build-aux/gendocs.sh -o gnupdf-hg-manual \
                                 --email  pdf-devel@gnu.org \
+                                -s $(top_srcdir)/doc/gnupdf-hg.texi \
                                 gnupdf-hg "GNU PDF Hacker's Guide"
-	../build-aux/gendocs.sh -o gnupdf-utils-manual \
+	GENDOCS_TEMPLATE_DIR=$(top_srcdir)/doc \
+	sh $(top_srcdir)/build-aux/gendocs.sh -o gnupdf-utils-manual \
                                 --email  pdf-devel@gnu.org \
+                                -s $(top_srcdir)/doc/gnupdf-utils.texi \
                                 gnupdf-utils "GNU PDF Utilities Manual"
 
 if TEXI2HTML
@@ -64,10 +80,13 @@ gnupdf-hg.wiki: gnupdf-hg.texi
 endif # TEXI2HTML
 
 clean-local:
-	-rm -f gnupdf.info gnupdf-utils.info gnupdf-hg.info gnupdf-tsd.info
-	-rm -f gnupdf.wiki gnupdf-utils.wiki gnupdf-hg.wiki gnupdf-tsd.wiki
-	-rm -f gnupdf.html gnupdf-utils.html gnupdf-utils.dvi
-	-rm -f gnupdf-arch.info gnupdf-arch.html gnupdf-arch.wiki
+	-for ext in 'info info-? log cp fn fns aux pg toc tp tps vr ky wiki dvi html'; do \
+		test -f gnupdf.$text && rm -f gnupdf.$ext; \
+		test -f gnupdf-utils.$ext && rm -f gnupdf-utils.$ext; \
+		test -f gnupdf-hg.$ext && rm -f gnupdf-hg.$ext; \
+		test -f gnupdf-tsd.$ext && rm -f gnupdf-tsd.$ext; \
+		test -f gnupdf-arch.$ext && rm -f gnupdf-arch.$ext; \
+	done
 	-rm -r gnupdf-arch-manual
 	-rm -r gnupdf-hg-manual
 	-rm -r gnupdf-manual
