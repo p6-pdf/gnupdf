@@ -1,5 +1,15 @@
 2010-04-22  Jose E. Marchesi  <jemarch@gnu.org>
 
+	pdf-types: Documentation of the UUID related types and functions.
+	* doc/gnupdf.texi (UUIDs): New section.
+	(UUIDs): Documentation for the type 'pdf_uuid_t'.
+	(UUIDs): Documentation for the type 'enum pdf_uuid_type_e'.
+	(UUIDs): Documentation for the function 'pdf_uuid_generate'.
+	(UUIDs): Documentation for the function 'pdf_uuid_string'.
+	(UUIDs): Documentation for the function 'pdf_uuid_equal_p'.
+
+2010-04-22  Jose E. Marchesi  <jemarch@gnu.org>
+
 	pdf-types: Define PDF_TRUE and PDF_FALSE in terms of 1 and 0.
 	* src/base/pdf-types.h (PDF_TRUE): Define to 1 instead of 'true'.
 	(PDF_FALSE): Define to 0 instead of 'false'.
