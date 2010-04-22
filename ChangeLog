@@ -1,5 +1,17 @@
 2010-04-22  Jose E. Marchesi  <jemarch@gnu.org>
 
+	prmgt: cleanup and AUTHORS regenerated.
+	* prmgt/authors.el (authors-valid-file-names): Added some valid
+	file names.
+
+	* prmgt/fly2rec: Removed.
+
+	* prmgt/fly2org: Removed.
+
+	* prmgt/get-test-data.sh.in: Removed.
+
+2010-04-22  Jose E. Marchesi  <jemarch@gnu.org>
+
 	Documentation for menu entries and usage examples in the reference
 	manual.
 	* doc/gnupdf.texi (Basic Types): Menu entries documented with a

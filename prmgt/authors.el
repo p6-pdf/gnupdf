@@ -96,6 +96,15 @@ Changes to files in this list are not listed.")
     "prmgt/pmccabe.css"
     "test-rectangle"
     "m4/onceonly_2_57.m4"
+    "doc/figures/stream-value-internals.txt"
+    "doc/figures/object-document-architecture.txt"
+    "doc/figures/dctdec-nfa.eps"
+    "doc/figures/object-pool.txt"
+    "doc/figures/object-layer-architecture.txt"
+    "doc/figures/dctdec-nfa.fig"
+    "doc/figures/dctdec-nfa.jpg"
+    "doc/figures/dctdec-nfa.png"
+    "prmgt/check-api-doc-consistency.pl"
     "prmgt/pertdot.xsl"
     "prmgt/pertfdp.xsl")
   "File names which are valid, but no longer exist (or cannot be
