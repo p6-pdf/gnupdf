@@ -1,5 +1,11 @@
 2010-04-22  Jose E. Marchesi  <jemarch@gnu.org>
 
+	pdf-types: Define PDF_TRUE and PDF_FALSE in terms of 1 and 0.
+	* src/base/pdf-types.h (PDF_TRUE): Define to 1 instead of 'true'.
+	(PDF_FALSE): Define to 0 instead of 'false'.
+
+2010-04-22  Jose E. Marchesi  <jemarch@gnu.org>
+
 	prmgt: cleanup and AUTHORS regenerated.
 	* prmgt/authors.el (authors-valid-file-names): Added some valid
 	file names.
