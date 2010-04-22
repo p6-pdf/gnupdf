@@ -1,3 +1,72 @@
+2010-04-22  Jose E. Marchesi  <jemarch@gnu.org>
+
+	manuals: Get the manuals target to work in offline builds.
+	* .bzrignore: Ignore doc/generated-tsd.texi.
+
+	* doc/Makefile.am (clean-local): Delete the MANUAL.info-? files
+	upon make clean.
+	(clean-local): Likewise for the files
+	MANUAL.(log|fns|aux|ky|fn|pg|toc|tp|tps|vr).
+
+	* doc/gnupdf-arch-figures/parser-overview.eps: New file.
+
+	* doc/gnupdf-arch-figures/parser-data-flow.eps: New file.
+
+	* doc/gnupdf-arch-figures/object-document-architecture.eps: New
+	file.
+
+	* doc/Makefile.am (manuals): Use $(top_srcdir) to provide the
+	right path to 'gendocs.sh'.
+	(generated-tsd.texi): Use builddir instead of srcdir to locate
+	generate-tsd.pl.
+	(manuals): Specify the Texinfo source file to be used by
+	gendocs.sh with -s.
+	(manuals): Specify the templates directory.
+
+2010-04-22  Jose E. Marchesi  <jemarch@gnu.org>
+
+	pdf-types: Documentation of the UUID related types and functions.
+	* doc/gnupdf.texi (UUIDs): New section.
+	(UUIDs): Documentation for the type 'pdf_uuid_t'.
+	(UUIDs): Documentation for the type 'enum pdf_uuid_type_e'.
+	(UUIDs): Documentation for the function 'pdf_uuid_generate'.
+	(UUIDs): Documentation for the function 'pdf_uuid_string'.
+	(UUIDs): Documentation for the function 'pdf_uuid_equal_p'.
+
+2010-04-22  Jose E. Marchesi  <jemarch@gnu.org>
+
+	pdf-types: Define PDF_TRUE and PDF_FALSE in terms of 1 and 0.
+	* src/base/pdf-types.h (PDF_TRUE): Define to 1 instead of 'true'.
+	(PDF_FALSE): Define to 0 instead of 'false'.
+
+2010-04-22  Jose E. Marchesi  <jemarch@gnu.org>
+
+	prmgt: cleanup and AUTHORS regenerated.
+	* prmgt/authors.el (authors-valid-file-names): Added some valid
+	file names.
+
+	* prmgt/fly2rec: Removed.
+
+	* prmgt/fly2org: Removed.
+
+	* prmgt/get-test-data.sh.in: Removed.
+
+2010-04-22  Jose E. Marchesi  <jemarch@gnu.org>
+
+	Documentation for menu entries and usage examples in the reference
+	manual.
+	* doc/gnupdf.texi (Basic Types): Menu entries documented with a
+	short description.
+	(Top): Likewise.
+	(Base Layer): Likewise.
+	(Error Management): Likewise.
+	(Adding and Removing List Elements): Usage example added for
+	'pdf_list_remove_node'.
+	(Adding and Removing List Elements): Likewise for
+	'pdf_list_remove_at'.
+	(Adding and Removing List Elements): Likewise for
+	'pdf_list_remove'.
+
 2010-04-21  Jose E. Marchesi  <jemarch@gnu.org>
 
 	API inconsistencies fixed.

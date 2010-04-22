@@ -43,8 +43,8 @@
 #define INLINE
 #endif /* PDF_HAVE_INLINE */
 
-#define PDF_TRUE true
-#define PDF_FALSE false
+#define PDF_TRUE 1
+#define PDF_FALSE 0
 
 #define PDF_MIN(i1, i2) \
   (((i1) < (i2)) ? (i1) : (i2))

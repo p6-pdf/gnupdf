@@ -29,6 +29,7 @@ build-aux/pdf-text-generate-ucd
 doc/generate-tsd.pl
 doc/stamp-vti
 doc/version.texi
+doc/generated-tsd.texi
 lib/arg-nonnull.h
 lib/c++defs.h
 lib/charset.alias
