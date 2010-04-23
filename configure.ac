@@ -383,7 +383,6 @@ AC_CONFIG_FILES([Makefile
                  prmgt/testlog2wiki
                  prmgt/docfuncs
                  prmgt/tsdfuncs
-                 prmgt/get-test-data.sh
                  prmgt/srcinfo-extractor.pl
                  prmgt/check-api-doc-consistency.pl
                  doc/Makefile

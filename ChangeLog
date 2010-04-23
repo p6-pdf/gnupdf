@@ -1,3 +1,8 @@
+2010-04-23  Jose E. Marchesi  <jemarch@gnu.org>
+
+	Fix broken build.
+	* configure.ac: Don't output prmgt/get-test-data.sh.in.
+
 2010-04-22  Jose E. Marchesi  <jemarch@gnu.org>
 
 	manuals: Get the manuals target to work in offline builds.
