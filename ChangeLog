@@ -1,5 +1,10 @@
 2010-04-23  Jose E. Marchesi  <jemarch@gnu.org>
 
+	Ignore gnulib generated files.
+	* .bzrignore: Ignore gnulib generated file 'lib/getopt.h'.
+
+2010-04-23  Jose E. Marchesi  <jemarch@gnu.org>
+
 	Fix broken build.
 	* configure.ac: Don't output prmgt/get-test-data.sh.in.
 
