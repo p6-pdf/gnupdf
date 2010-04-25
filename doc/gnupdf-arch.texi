@@ -1898,7 +1898,7 @@ Library.
 @section Object layer overview
 
 The object layer implements the concepts of PDF objects and PDF
-documents as a structured hierarchy of objects. An API is provided to
+documents as structured hierarchies of objects. An API is provided to
 manipulate that structure and the objects composing it. Since the
 object hierarchy can be quite complex a garbage collection mechanism
 is provided to the client of the layer. XXX: xref to the reference
@@ -2088,7 +2088,7 @@ stm = pdf_parser_stm (parser);
 
 Seek a parser to a position in the stream operated by the parser.
 
-Note that since several parsers can operate on a single stream in the
+Note that since several parsers can operate on a single stream at the
 same time, the parsers must maintain an internal position for the next
 parsing operation.  Before parsing the parser saves the current offset
 of the read pointer of the operated stream and replaces it with the
@@ -2148,7 +2148,7 @@ if (pdf_parser_parse (parser, &obj3) != PDF_OK)
 
 @deftypefun pdf_off_t pdf_parser_tell (pdf_parser_t @var{parser})
 
-Return the current position of a parser.
+Return the current position of a parser into its operated stream.
 
 The current position of a newly created parser is always @code{0}.
 
@@ -2168,6 +2168,42 @@ pdf_off_t cur_pos;
 
 /* Get the current position of a parser.  */
 cur_pos = pdf_parser_tell (parser);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_parser_parse (pdf_parser_t @var{parser}, pdf_obj_t *@var{obj})
+
+Parse an object.
+
+XXX: Add error diagnostics.
+
+@table @strong
+@item Parameters
+@table @var
+@item parser
+Parser used to get the object.
+@item obj
+@code{pdf_obj_t} variable used to hold the parsed object.  The parsed
+object is always a direct object, not associated with any document.
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+An object was successfully parsed and stored into @var{obj}.
+@item PDF_ENOMEM
+Out of memory.  The value stored into @var{obj} shall be considered
+invalid.
+@item PDF_EEOF
+End of file in the operated stream.  The value stored into @var{obj}
+shall be considered invalid.
+@item XXX
+more cases.
+@end table
+@item Usage example
+@example
+XXX
 @end example
 @end table
 @end deftypefun

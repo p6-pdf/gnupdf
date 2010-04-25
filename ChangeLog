@@ -1,3 +1,9 @@
+2010-04-25  Jose E. Marchesi  <jemarch@gnu.org>
+
+	gnupdf-arch: documentation work.
+	* doc/gnupdf-arch.texi (Parser functions): Typo fixed.
+	(Parser functions): Initial documentation for 'pdf_parser_parse'.
+
 2010-04-23  Jose E. Marchesi  <jemarch@gnu.org>
 
 	Ignore gnulib generated files.
