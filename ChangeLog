@@ -1,3 +1,24 @@
+2010-05-18  Jose E. Marchesi  <jemarch@gnu.org>
+
+	Copyright years updated in some source files.
+	* src/base/pdf-alloc.c: Copyright updated.
+
+	* src/base/pdf-types.h: Likewise.
+
+	* src/base/pdf-types.c: Likewise.
+
+	* src/base/pdf-time.c: Likewise.
+
+	* src/base/pdf-list.h: Likewise.
+
+	* src/base/pdf-list.c: Likewise.
+
+	* src/base/pdf-base.h: Likewise.
+
+	* src/base/pdf-base.c: Likewise.
+
+	* src/base/pdf-alloc.h: Likewise.
+
 2010-04-25  Jose E. Marchesi  <jemarch@gnu.org>
 
 	gnupdf-arch: documentation work.
