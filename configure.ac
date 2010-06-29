@@ -24,6 +24,9 @@ AM_INIT_AUTOMAKE(libgnupdf, trunk)
 AC_CONFIG_HEADERS([src/config.h src/pdf-config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
+dnl Autobuild
+AB_INIT
+
 dnl Compiler issues
 AC_PROG_CC
 

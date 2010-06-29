@@ -69,8 +69,6 @@ START_TEST(pdf_fp_func_4_new_001)
   
   fail_if (ret != PDF_ENOWRAP);
   fail_if (error_at != 58);
-
-  pdf_fp_func_destroy (func);
 }
 END_TEST
 
@@ -113,8 +111,6 @@ START_TEST(pdf_fp_func_4_new_002)
   
   fail_if (ret != PDF_ENOWRAP);
   fail_if (error_at != 8);
-
-  pdf_fp_func_destroy (func);
 }
 END_TEST
 
@@ -156,8 +152,6 @@ START_TEST(pdf_fp_func_4_new_003)
   
   fail_if (ret != PDF_ENOWRAP);
   fail_if (error_at != 0);
-
-  pdf_fp_func_destroy (func);
 }
 END_TEST
 
@@ -199,8 +193,6 @@ START_TEST(pdf_fp_func_4_new_004)
   
   fail_if (ret != PDF_EMISSIF);
   fail_if (error_at != 8);
-
-  pdf_fp_func_destroy (func);
 }
 END_TEST
 
@@ -242,8 +234,6 @@ START_TEST(pdf_fp_func_4_new_005)
   
   fail_if (ret != PDF_EMISSBODY);
   fail_if (error_at != 4);
-
-  pdf_fp_func_destroy (func);
 }
 END_TEST
 
