@@ -28,6 +28,8 @@ AC_DEFUN([gl_EARLY],
   AC_REQUIRE([AM_PROG_CC_C_O])
   # Code from module arg-nonnull:
   # Code from module array-list:
+  # Code from module autobuild:
+  AB_INIT
   # Code from module binary-io:
   # Code from module c++defs:
   # Code from module configmake:
@@ -136,6 +138,7 @@ AC_DEFUN([gl_INIT],
   gl_source_base='lib'
   # Code from module arg-nonnull:
   # Code from module array-list:
+  # Code from module autobuild:
   # Code from module binary-io:
   # Code from module c++defs:
   # Code from module configmake:
@@ -586,6 +589,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/xsize.h
   m4/00gnulib.m4
   m4/asm-underscore.m4
+  m4/autobuild.m4
   m4/codeset.m4
   m4/dirname.m4
   m4/dos.m4
