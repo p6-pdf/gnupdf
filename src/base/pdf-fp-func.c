@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2010-04-15 17:21:54 jemarch"
+/* -*- mode: C -*- Time-stamp: "2010-06-29 13:39:12 jemarch"
  *
  *       File:         pdf-fp-func.c
  *       Date:         Sun Nov 30 18:46:06 2008
@@ -638,6 +638,8 @@ pdf_fp_func_4_new (pdf_u32_t m,
     {
       *error_at = beg_pos;
     }
+
+  *function = NULL;
   return ret;
 
  success:
