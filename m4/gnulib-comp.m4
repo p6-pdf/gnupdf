@@ -246,7 +246,7 @@ AC_DEFUN([gl_INIT],
   AC_CONFIG_COMMANDS_PRE([m4_ifdef([AH_HEADER],
     [AC_SUBST([CONFIG_INCLUDE], m4_defn([AH_HEADER]))])])
   # Code from module malloc:
-  AC_FUNC_MALLOC
+  gl_FUNC_MALLOC_GNU
   AC_DEFINE([GNULIB_MALLOC_GNU], 1, [Define to indicate the 'malloc' module.])
   # Code from module malloc-posix:
   gl_FUNC_MALLOC_POSIX
@@ -319,8 +319,11 @@ AC_DEFUN([gl_INIT],
   # Code from module unistd-safer:
   gl_UNISTD_SAFER
   # Code from module unistr/base:
+  gl_LIBUNISTRING_LIBHEADER([0.9.2], [unistr.h])
   # Code from module unistr/u8-check:
+  gl_LIBUNISTRING_MODULE([0.9], [unistr/u8-check])
   # Code from module unitypes:
+  gl_LIBUNISTRING_LIBHEADER([0.9], [unitypes.h])
   # Code from module unused-parameter:
   # Code from module useless-if-before-free:
   # Code from module vc-list-files:
@@ -573,15 +576,16 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/unistd--.h
   lib/unistd-safer.h
   lib/unistd.in.h
-  lib/unistr.h
+  lib/unistr.in.h
   lib/unistr/u8-check.c
-  lib/unitypes.h
+  lib/unitypes.in.h
   lib/wchar.in.h
   lib/xalloc-die.c
   lib/xalloc.h
   lib/xmalloc.c
   lib/xsize.h
   m4/00gnulib.m4
+  m4/asm-underscore.m4
   m4/codeset.m4
   m4/dirname.m4
   m4/dos.m4
@@ -616,6 +620,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/lib-ld.m4
   m4/lib-link.m4
   m4/lib-prefix.m4
+  m4/libunistring-base.m4
   m4/localcharset.m4
   m4/localename.m4
   m4/lock.m4

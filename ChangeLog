@@ -1,3 +1,14 @@
+2010-06-29  Jose E. Marchesi  <jemarch@gnu.org>
+
+	gnulib update.
+	* lib/unistr.in.h: New file.
+
+	* lib/unitypes.in.h: New file.
+
+	* m4/asm-underscore.m4: New file.
+
+	* m4/libunistring-base.m4: New file.
+
 2010-05-18  Jose E. Marchesi  <jemarch@gnu.org>
 
 	Copyright years updated in some source files.

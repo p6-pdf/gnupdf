@@ -1,4 +1,3 @@
-/* DO NOT EDIT! GENERATED AUTOMATICALLY! */
 /* Elementary Unicode string functions.
    Copyright (C) 2001-2002, 2005-2010 Free Software Foundation, Inc.
 
