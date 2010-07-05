@@ -1,3 +1,24 @@
+2010-07-05  Jose E. Marchesi  <jemarch@gnu.org>
+
+	New pdf-utils.h file with common resources such as help strings.
+	* utils/pdf-filter.c: Include pdf-utils.h and make use of the
+	generic documentation macros in help strings.
+	* utils/pdf-tokeniser.c: Likewise.
+
+	* utils/Makefile.am (COMMON_SOURCES): New variable.
+	(pdf_filter_SOURCES): Include COMMON_SOURCES.
+	(pdf_tokeniser_SOURCES): Likewise.
+
+	* utils/pdf-utils.h: New file.
+	(PDF_UTILS_COPYRIGHT_DOC): New macro.
+	(PDF_UTILS_HELP_FOOTER_DOC): New macro.
+
+2010-07-01  Jose E. Marchesi  <jemarch@gnu.org>
+
+	* doc/gnupdf.texi (Retrieving and Storing Objects): Typo fixed.
+
+	* src/base/pdf-types.h: Cosmetic change.
+
 2010-06-29  Jose E. Marchesi  <jemarch@gnu.org>
 
 	Ignore lib/unistr.h and lib/unitypes.h.

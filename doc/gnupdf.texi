@@ -15402,7 +15402,7 @@ if (pdf_obj_doc_get_root (doc, &root_dict)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_doc_get_obj (pdf_obj_doc_t @var{doc}, pdf_obj_id_t @var{obj_in}, pdf_obj_gen_t @var{obj_gn}, pdf_obj_t *@var{obj})
+@deftypefun pdf_status_t pdf_obj_doc_get_obj (pdf_obj_doc_t @var{doc}, pdf_obj_id_t @var{obj_id}, pdf_obj_gen_t @var{obj_gn}, pdf_obj_t *@var{obj})
 
 Get an object from @var{doc} given its @var{obj_in} and @var{obj_gen}
 and store it in @var{obj}.

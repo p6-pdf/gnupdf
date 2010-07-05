@@ -41,8 +41,10 @@
 #include <sys/stat.h>
 
 #include <xalloc.h>
-#include <pdf-filter.h>
 #include <pdf.h>
+
+#include <pdf-utils.h>
+#include <pdf-filter.h>
 
 /*
  * Global variables
@@ -100,11 +102,7 @@ static const struct option GNU_longOptions[] =
 
 /* Messages */
 
-char *pdf_filter_version_msg = "pdf-filter (GNU PDF Utilities) 0.1\n\
-Copyright (C) 2009, 2010 Free Software Foundation, Inc.\n\
-License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n\
-This is free software: you are free to change and redistribute it.\n\
-There is NO WARRANTY, to the extent permitted by law.";
+PDF_UTILS_COPYRIGHT_DOC ("pdf-filter");
 
 char *pdf_filter_help_msg = "\
 Usage: pdf_filter [[OPTIONS] [FILTER FILTER_ARGS]...]\n\
@@ -151,9 +149,9 @@ filters\n\
   --v2enc                             use the V2 encoder filter\n\
   --v2dec                             use the V2 decoder filter\n\
   --help                              print a help message and exit\n\
-  --usage                             print a usage message and exit\n\
-  --version                           show pdf-filter version and exit\n\
-\nfilter properties\n"
+  --version                           print a version message and exit\n\
+\n\
+Filter properties\n"
 #if 0
 "\
   --preddec-type=NUM                  code for next preddec filters type\n\
@@ -165,10 +163,8 @@ filters\n\
 "\
   --lzw-earlychange                   toggles earlychange for next lzw filters\n\
   --jbig2dec-globals=FILE             file containing global segments\n\
-\n\
-Report pdf-filter bugs to pdf-devel@gnu.org\n\
-GNU PDF Utilities home page: <http://www.gnupdf.org>\n\
-General help using GNU software: <http://www.gnu.org/gethelp/>";
+\n"
+  PDF_UTILS_HELP_FOOTER_DOC ("pdf-filter");
 
 static pdf_stm_t
 create_stream (int argc, char* argv[], pdf_bool_t* mode, int* last_ci,
@@ -337,7 +333,7 @@ create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
           }
         case VERSION_ARG:
           {
-            fprintf (stdout, "%s\n", pdf_filter_version_msg);
+            fprintf (stdout, "%s\n", pdf_utils_version_msg);
             exit (EXIT_SUCCESS);
             break;
           }

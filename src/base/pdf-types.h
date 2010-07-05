@@ -164,7 +164,7 @@ typedef struct pdf_i64_s pdf_i64_t;
 
 #else
 
-/* 64-bit signed integer supported by system*/
+/* 64-bit signed integer supported by system. */
 typedef int64_t pdf_i64_t;
 #endif
 
