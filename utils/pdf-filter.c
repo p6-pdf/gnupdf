@@ -41,8 +41,9 @@
 #include <sys/stat.h>
 
 #include <xalloc.h>
-#include <pdf-filter.h>
 #include <pdf.h>
+
+#include <pdf-utils.h>
 
 /*
  * Global variables
@@ -53,6 +54,50 @@ char *program_name;  /* Initialized in main() */
 /*
  * Command line options management 
  */
+
+enum
+{
+  HELP_ARG,
+  VERSION_ARG,
+  READ_ARG,
+  INFILE_ARG,
+  OUTFILE_ARG,
+  CACHE_ARG,
+  NULL_FILTER_ARG,
+  ASCIIHEXDEC_FILTER_ARG,
+  ASCIIHEXENC_FILTER_ARG,
+  ASCII85DEC_FILTER_ARG,
+  ASCII85ENC_FILTER_ARG,
+#if 0
+  CCITTFAXDEC_FILTER_ARG,
+  JXPDEC_FILTER_ARG,
+  PREDENC_FILTER_ARG,
+  PREDDEC_FILTER_ARG,
+#endif /* 0 */
+#ifdef HAVE_LIBJPEG
+  DCTDEC_FILTER_ARG,
+#endif /* HAVE_LIBJPEG */
+#ifdef HAVE_LIBZ
+  FLATEDEC_FILTER_ARG,
+  FLATEENC_FILTER_ARG,
+#endif /* HAVE_LIBZ */
+  RUNLENGTHDEC_FILTER_ARG,
+  RUNLENGTHENC_FILTER_ARG,
+#ifdef HAVE_LIBJBIG2DEC
+  JBIG2DEC_FILTER_ARG,
+  JBIG2DEC_GLOBAL_SEGMENTS_ARG,
+  JBIG2DEC_PAGE_SIZE,
+#endif /* HAVE_LIBJBIG2DEC */
+  LZWENC_FILTER_ARG,
+  LZWDEC_FILTER_ARG,
+  LZW_EARLYCHANGE_ARG,
+  MD5ENC_FILTER_ARG,
+  KEY_ARG,
+  AESENC_FILTER_ARG,
+  AESDEC_FILTER_ARG,
+  V2ENC_FILTER_ARG,
+  V2DEC_FILTER_ARG
+};
 
 static const struct option GNU_longOptions[] =
   {
@@ -100,11 +145,7 @@ static const struct option GNU_longOptions[] =
 
 /* Messages */
 
-char *pdf_filter_version_msg = "pdf-filter (GNU PDF Utilities) 0.1\n\
-Copyright (C) 2009, 2010 Free Software Foundation, Inc.\n\
-License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n\
-This is free software: you are free to change and redistribute it.\n\
-There is NO WARRANTY, to the extent permitted by law.";
+PDF_UTILS_COPYRIGHT_DOC ("pdf-filter");
 
 char *pdf_filter_help_msg = "\
 Usage: pdf_filter [[OPTIONS] [FILTER FILTER_ARGS]...]\n\
@@ -151,9 +192,9 @@ filters\n\
   --v2enc                             use the V2 encoder filter\n\
   --v2dec                             use the V2 decoder filter\n\
   --help                              print a help message and exit\n\
-  --usage                             print a usage message and exit\n\
-  --version                           show pdf-filter version and exit\n\
-\nfilter properties\n"
+  --version                           print a version message and exit\n\
+\n\
+Filter properties\n"
 #if 0
 "\
   --preddec-type=NUM                  code for next preddec filters type\n\
@@ -165,10 +206,8 @@ filters\n\
 "\
   --lzw-earlychange                   toggles earlychange for next lzw filters\n\
   --jbig2dec-globals=FILE             file containing global segments\n\
-\n\
-Report pdf-filter bugs to pdf-devel@gnu.org\n\
-GNU PDF Utilities home page: <http://www.gnupdf.org>\n\
-General help using GNU software: <http://www.gnu.org/gethelp/>";
+\n"
+  PDF_UTILS_HELP_FOOTER_DOC ("pdf-filter");
 
 static pdf_stm_t
 create_stream (int argc, char* argv[], pdf_bool_t* mode, int* last_ci,
@@ -337,7 +376,7 @@ create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
           }
         case VERSION_ARG:
           {
-            fprintf (stdout, "%s\n", pdf_filter_version_msg);
+            fprintf (stdout, "%s\n", pdf_utils_version_msg);
             exit (EXIT_SUCCESS);
             break;
           }

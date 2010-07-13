@@ -33,7 +33,7 @@
 #include <errno.h>
 #include <pdf.h>
 
-#include <pdf-tokeniser.h>
+#include <pdf-utils.h>
 
 /*
  * Global variables
@@ -44,6 +44,15 @@ char *program_name; /* Initialized in main() */
 /*
  * Command line options management
  */
+
+enum
+{
+  HELP_ARG,
+  VERSION_ARG,
+  TOKW_ARG,
+  READER_FLAGS_ARG,
+  WRITER_FLAGS_ARG
+};
 
 static const struct option GNU_longOptions[] =
   {
@@ -57,7 +66,7 @@ static const struct option GNU_longOptions[] =
 
 /* Messages */
 
-char *pdf_tokeniser_version_msg = "pdf-tokeniser (GNU PDF Utilities) 0.1";
+PDF_UTILS_COPYRIGHT_DOC ("pdf-tokeniser");
 
 char *pdf_tokeniser_help_msg = "\
 Usage: pdf_tokeniser [OPTIONS]\n\
@@ -71,10 +80,8 @@ Mandatory arguments to long options are mandatory for short options too.\n\
   --token-writer                      generate output using the token writer\n\
   --reader-flags=INTEGER              specify token reader flags\n\
   --writer-flags=INTEGER              specify token writer flags\n\
-\n\
-Report pdf-tokeniser bugs to pdf-devel@gnu.org\n\
-GNU PDF Utilities home page: <http://www.gnupdf.org>\n\
-General help using GNU software: <http://www.gnu.org/gethelp/>";
+\n"
+  PDF_UTILS_HELP_FOOTER_DOC ("pdf-tokeniser");
 
 static char *
 fmtbin (const char *data, int size)
@@ -314,7 +321,7 @@ main (int argc, char **argv)
           }
         case VERSION_ARG:
           {
-            fprintf (stdout, "%s\n", pdf_tokeniser_version_msg);
+            fprintf (stdout, "%s\n", pdf_utils_version_msg);
             exit (EXIT_SUCCESS);
             break;
           }
