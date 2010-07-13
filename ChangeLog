@@ -1,3 +1,15 @@
+2010-07-13  Jose E. Marchesi  <jemarch@gnu.org>
+
+	Existing utilities are not featuring header files anymore.
+	* utils/Makefile.am (pdf_tokeniser_SOURCES): pdf-tokeniser.h
+	removed.
+	(pdf_filter_SOURCES): pdf-filter.h removed.
+
+	* utils/pdf-tokeniser.c: Enumeration with command-line options
+	moved from pdf-tokeniser.h
+
+	* utils/pdf-filter.c: Likewise.
+
 2010-07-05  Jose E. Marchesi  <jemarch@gnu.org>
 
 	New pdf-utils.h file with common resources such as help strings.

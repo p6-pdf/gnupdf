@@ -44,7 +44,6 @@
 #include <pdf.h>
 
 #include <pdf-utils.h>
-#include <pdf-filter.h>
 
 /*
  * Global variables
@@ -55,6 +54,50 @@ char *program_name;  /* Initialized in main() */
 /*
  * Command line options management 
  */
+
+enum
+{
+  HELP_ARG,
+  VERSION_ARG,
+  READ_ARG,
+  INFILE_ARG,
+  OUTFILE_ARG,
+  CACHE_ARG,
+  NULL_FILTER_ARG,
+  ASCIIHEXDEC_FILTER_ARG,
+  ASCIIHEXENC_FILTER_ARG,
+  ASCII85DEC_FILTER_ARG,
+  ASCII85ENC_FILTER_ARG,
+#if 0
+  CCITTFAXDEC_FILTER_ARG,
+  JXPDEC_FILTER_ARG,
+  PREDENC_FILTER_ARG,
+  PREDDEC_FILTER_ARG,
+#endif /* 0 */
+#ifdef HAVE_LIBJPEG
+  DCTDEC_FILTER_ARG,
+#endif /* HAVE_LIBJPEG */
+#ifdef HAVE_LIBZ
+  FLATEDEC_FILTER_ARG,
+  FLATEENC_FILTER_ARG,
+#endif /* HAVE_LIBZ */
+  RUNLENGTHDEC_FILTER_ARG,
+  RUNLENGTHENC_FILTER_ARG,
+#ifdef HAVE_LIBJBIG2DEC
+  JBIG2DEC_FILTER_ARG,
+  JBIG2DEC_GLOBAL_SEGMENTS_ARG,
+  JBIG2DEC_PAGE_SIZE,
+#endif /* HAVE_LIBJBIG2DEC */
+  LZWENC_FILTER_ARG,
+  LZWDEC_FILTER_ARG,
+  LZW_EARLYCHANGE_ARG,
+  MD5ENC_FILTER_ARG,
+  KEY_ARG,
+  AESENC_FILTER_ARG,
+  AESDEC_FILTER_ARG,
+  V2ENC_FILTER_ARG,
+  V2DEC_FILTER_ARG
+};
 
 static const struct option GNU_longOptions[] =
   {

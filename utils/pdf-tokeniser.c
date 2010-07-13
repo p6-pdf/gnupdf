@@ -34,8 +34,6 @@
 #include <pdf.h>
 
 #include <pdf-utils.h>
-#include <pdf-tokeniser.h>
-
 
 /*
  * Global variables
@@ -46,6 +44,15 @@ char *program_name; /* Initialized in main() */
 /*
  * Command line options management
  */
+
+enum
+{
+  HELP_ARG,
+  VERSION_ARG,
+  TOKW_ARG,
+  READER_FLAGS_ARG,
+  WRITER_FLAGS_ARG
+};
 
 static const struct option GNU_longOptions[] =
   {
