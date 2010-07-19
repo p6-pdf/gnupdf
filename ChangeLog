@@ -1,3 +1,13 @@
+2010-07-19  Jose E. Marchesi  <jemarch@gnu.org>
+
+	Dependencies file updated.
+	* DEPENDENCIES: Dependency on texinfo added.
+	Likewise for libcheck.
+	Likewise for libiconv.
+	Likewise for jbig2dec.
+	Likewise for libcurl.
+	Likewise for libjpeg.
+
 2010-07-13  Jose E. Marchesi  <jemarch@gnu.org>
 
 	Existing utilities are not featuring header files anymore.
