@@ -1007,6 +1007,11 @@ to implement our testing infrastructure. Please
 read the check manual in order to become familiar with its concepts
 such as test suite, test case, etc.
 
+At some point we wrote a simple replacement for libcheck in Windows
+systems: nocheck (@file{torture/unit/nocheck}).  The usage of the
+replacement is now deprecated, since the latest version of libcheck
+should support windows.
+
 @menu
 * The test specification document::
 * Unit testing::

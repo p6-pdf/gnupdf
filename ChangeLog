@@ -1,3 +1,9 @@
+2010-07-29  Jose E. Marchesi  <jemarch@gnu.org>
+
+	Document that nocheck is deprecated.
+	* doc/gnupdf-hg.texi (Testing the library): Added a note saying
+	what nocheck is and why its usage is deprecated now.
+
 2010-07-19  Jose E. Marchesi  <jemarch@gnu.org>
 
 	Dependencies file updated.
