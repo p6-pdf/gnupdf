@@ -374,6 +374,7 @@ dnl Generate output files
 AC_CONFIG_FILES([Makefile
                  libgnupdf.pc
                  build-aux/Makefile
+                 build-aux/generate-tsd.pl
                  lib/Makefile
                  src/Makefile
                  src/extract-public-hdr
@@ -389,8 +390,7 @@ AC_CONFIG_FILES([Makefile
                  prmgt/srcinfo-extractor.pl
                  prmgt/check-api-doc-consistency.pl
                  doc/Makefile
-                 doc/version.texi
-                 doc/generate-tsd.pl])
+                 doc/version.texi])
 AC_OUTPUT
 
 dnl Report errors

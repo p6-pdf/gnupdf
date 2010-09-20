@@ -1106,8 +1106,14 @@ A minimal test file looks like this:
 #include <check.h>
 
 /* 
- * START_TEST and END_TEST are macros provided by the check
- * library.
+ * Test: FUNCTION_NAME_NNN
+ * Description:
+ *   Description of the test.  Can be of several lines long,
+ *   indenting the text like this.
+ * Success conditions:
+ *   A list of success conditions.
+ * Data files:
+ *   A list of data files used in this test.
  */
 START_TEST(FUNCTION_NAME_NNN)
 @{
@@ -1133,6 +1139,11 @@ TCase* test_FUNCTION_NAME (void)
 Note the @code{test_FUNCTION_NAME} function. It is the function called
 by the test driver in order to perform all the tests implemented in
 the test file.
+
+Note also that the comments heading tests are written in a fixed
+format to allow the @file{build-aux/generate-tsd.pl} script to
+generate the bulk of the Test Specification Document from the
+comments.
 
 @node Test suite files
 @subsection Test suite files

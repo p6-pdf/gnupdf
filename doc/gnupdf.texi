@@ -4478,7 +4478,25 @@ There is not a next element.
 @end table
 @item Usage example
 @example
-XXX
+pdf_list_t mylist;
+pdf_list_iterator_t iter;
+void *elem;
+
+/* ... create and initialize mylist. */
+
+if (pdf_list_iterator (mylist, &iter) != PDF_OK)
+@{
+   /* Error creating the iterator.  */
+@}
+
+while (pdf_list_iterator_next (&iter, &elem, NULL)
+       == PDF_OK)
+@{
+   /* Process element.  */
+@}
+
+/* Destroy the iterator.  */
+pdf_list_iterator_free (iter);
 @end example
 @end table
 @end deftypefun
@@ -4500,7 +4518,20 @@ A pdf status value:
 @end table
 @item Usage example
 @example
-XXX
+pdf_list_t mylist;
+pdf_list_iterator_t iter;
+
+/* ... Create and initialize mylist. */
+
+if (pdf_list_iterator (mylist, &iter) != PDF_OK)
+@{
+   /* Error creating the iterator.  */
+@}
+
+/* Work with the iterator.  */
+
+/* Destroy the iterator.  */
+pdf_list_iterator_free (iter);
 @end example
 @end table
 @end deftypefun
