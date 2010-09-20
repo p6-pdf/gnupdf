@@ -26,7 +26,7 @@ AM_MAKEINFOHTMLFLAGS = --css-include=manuals.css
 
 gnupdf-tsd.texi: generated-tsd.texi
 generated-tsd.texi:
-	perl $(builddir)/generate-tsd.pl > $(builddir)/generated-tsd.texi
+	perl $(top_builddir)/build-aux/generate-tsd.pl > $(builddir)/generated-tsd.texi
 
 manuals: gnupdf-tsd.texi
 	test -d $(builddir)/gnupdf-arch-figures || \
@@ -92,5 +92,6 @@ clean-local:
 	-rm -r gnupdf-manual
 	-rm -r gnupdf-utils-manual
 	-rm -r gnupdf-tsd-manual
+	-rm generated-tsd.texi
 
 # End of Makefile.am

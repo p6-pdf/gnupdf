@@ -1,3 +1,19 @@
+2010-09-20  Jose E. Marchesi  <jemarch@gnu.org>
+
+	TSD generation script moved from doc/ to build-aux/.
+	* .bzrignore: doc/generate-tsd.pl -> build-aux/generate-tsd.pl
+
+	* doc/Makefile.am (clean-local): Remove the 'generated-tsd.texi'
+	file.
+
+	* doc/gnupdf-hg.texi (Test files): Mention the header format used
+	by the generate-tsd script.
+
+	* configure.ac: Output generate-tsd.pl in build-aux/.
+
+	* doc/Makefile.am (generated-tsd.texi): Find generate-tsd.pl under
+	$(top_builddir)/build-aux/.
+
 2010-07-29  Jose E. Marchesi  <jemarch@gnu.org>
 
 	Document that nocheck is deprecated.
