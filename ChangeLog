@@ -1,5 +1,21 @@
 2010-09-21  Jose E. Marchesi  <jemarch@gnu.org>
 
+	Testing infrastructure for the token writer, and tests for integer
+	tokens.
+	* torture/unit/base/token/tsuite-token.c (tsuite_token): Test
+	suite 'pdf_token_write' added.
+
+	* torture/unit/Makefile.am (TEST_SUITE_TOKEN): Added
+	base/token/pdf-token-write.c.
+
+	* torture/unit/base/token/pdf-token-write.c: New file.
+	(test_pdf_token_write): New function.
+	(write_and_check): New function.
+	(pdf_token_write_integer_positive): New test.
+	(pdf_token_write_integer_negative): New test.
+
+2010-09-21  Jose E. Marchesi  <jemarch@gnu.org>
+
 	Documentation fixes.
 	* doc/gnupdf.texi (Debugging procedures): Missing @example blocks
 	added.
