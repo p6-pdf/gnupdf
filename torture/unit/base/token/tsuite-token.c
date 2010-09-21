@@ -28,6 +28,7 @@
 #include <check.h>
 
 extern TCase *test_pdf_token_read (void);
+extern TCase *test_pdf_token_write (void);
 
 Suite *
 tsuite_token ()
@@ -37,6 +38,7 @@ tsuite_token ()
   s = suite_create("token");
 
   suite_add_tcase (s, test_pdf_token_read ());
+  suite_add_tcase (s, test_pdf_token_write ());
 
   return s;
 }
