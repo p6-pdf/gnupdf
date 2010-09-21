@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2010-09-21 21:44:17 jemarch"
+/* -*- mode: C -*- Time-stamp: "2010-09-21 21:48:53 jemarch"
  *
  *       File:         pdf-token-write.c
  *       Date:         Tue Sep 21 21:08:07 2010
@@ -28,7 +28,6 @@
 #include <string.h>
 #include <check.h>
 #include <stdlib.h>
-#include <assert.h>
 
 #include <pdf.h>
 

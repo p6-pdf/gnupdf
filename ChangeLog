@@ -1,5 +1,11 @@
 2010-09-21  Jose E. Marchesi  <jemarch@gnu.org>
 
+	Fixes for error reported by make syntax-check.
+	* torture/unit/base/token/pdf-token-write.c: Don't include
+	assert.h since it is not used.
+
+2010-09-21  Jose E. Marchesi  <jemarch@gnu.org>
+
 	Testing infrastructure for the token writer, and tests for integer
 	tokens.
 	* torture/unit/base/token/tsuite-token.c (tsuite_token): Test
