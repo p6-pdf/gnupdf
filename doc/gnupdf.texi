@@ -300,13 +300,15 @@ PDF_ASSERT_BASE (1 == 1);
 @subheading Output format
 The output format for these macros is,
 
+@example
 GNU PDF:***DEBUG <layer>***:<file-name>:<line-number>: <message>.
+@end example
 
 For example,
 
+@example
 GNU PDF:***DEBUG BASE***:pdf-fp-func.c:344: division by zero.
-
-
+@end example
 
 @node Memory Allocation
 @section Memory Allocation
@@ -4410,7 +4412,16 @@ A status variable:
 @end table
 @item Usage example
 @example
-XXX
+pdf_list_t list;
+pdf_list_iterator_t iter;
+
+/* Create a list and insert some elements into it...  */
+
+/* Get an iterator.  */
+if (pdf_list_iterator (list, &iter) != PDF_OK)
+@{
+    /* Error creating the iterator.  */
+@}
 @end example
 @end table
 @end deftypefun
@@ -4447,7 +4458,16 @@ A status variable:
 @end table
 @item Usage example
 @example
-XXX
+pdf_list_t list;
+pdf_list_iterator_t iter;
+
+/* Create a list containing 10 elements...  */
+
+/* Get an iterator to traverse the last 5 elements.  */
+if (pdf_list_iterator_from_to (list, 4, 9, &iter) != PDF_OK)
+@{
+    /* Error creating the iterator.  */
+@}
 @end example
 @end table
 @end deftypefun

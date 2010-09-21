@@ -1,3 +1,12 @@
+2010-09-21  Jose E. Marchesi  <jemarch@gnu.org>
+
+	Documentation fixes.
+	* doc/gnupdf.texi (Debugging procedures): Missing @example blocks
+	added.
+	(Working with Iterators): Usage example for 'pdf_list_iterator'.
+	(Working with Iterators): Usage example for
+	'pdf_list_iterator_from_to'.
+
 2010-09-20  Jose E. Marchesi  <jemarch@gnu.org>
 
 	Some usage examples in the reference manual.
