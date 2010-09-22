@@ -1,3 +1,23 @@
+2010-09-22  Jose E. Marchesi  <jemarch@gnu.org>
+
+	Token writer tests for real and string tokens.
+	* torture/unit/base/token/pdf-token-write.c
+	(pdf_token_write_real_positive): New test.
+	(pdf_token_write_real_round): New test.
+	(pdf_token_write_real_negative): New test.
+	(pdf_token_write_string_nonempty): New test.
+	(pdf_token_write_string_nonempty_hex): New test.
+	(pdf_token_write_string_empty): New test.
+	(pdf_token_write_string_empty_hex): New test.
+	(pdf_token_write_string_lf): New test.
+	(pdf_token_write_string_cr): New test.
+	(pdf_token_write_string_ht): New test.
+	(pdf_token_write_string_bs): New test.
+	(pdf_token_write_string_ff): New test.
+	(pdf_token_write_string_leftp): New test.
+	(pdf_token_write_string_rightp): New test.
+	(pdf_token_write_string_rs): New test.
+
 2010-09-21  Jose E. Marchesi  <jemarch@gnu.org>
 
 	Fixes for error reported by make syntax-check.
