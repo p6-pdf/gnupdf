@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2010-09-22 20:13:59 jemarch"
+/* -*- mode: C -*- Time-stamp: "2010-09-22 20:59:04 jemarch"
  *
  *       File:         pdf-token-write.c
  *       Date:         Tue Sep 21 21:08:07 2010
@@ -60,7 +60,7 @@ write_and_check (pdf_token_t token,
   fail_if (pdf_stm_destroy (stm) != PDF_OK);
 
   /* Compare results.  */
-  printf ("XXX: %s\n", buffer);
+  printf ("XXX: %s YYY: %s\n", buffer, expected);
   fail_unless (strncmp (buffer, expected, expected_size) == 0);
 }
 
@@ -299,8 +299,8 @@ END_TEST
  * Test: pdf_token_write_string_lf
  * Description:
  *   Write a string token containing line feeds (0Ah) characters into
- *   an in-memory stream using the hexadecimal format , and check
- *   whether the resulting textual representation is the expected one.
+ *   an in-memory stream, and check whether the resulting textual
+ *   representation is the expected one.
  * Success condition:
  *   The written representation of the token is correct.
  */
@@ -311,13 +311,13 @@ START_TEST(pdf_token_write_string_lf)
   pdf_init ();
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("a\nb\nc", 0, &token)
+  fail_if (pdf_token_string_new ("a\nb\nc", 5, &token)
            != PDF_OK);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
-                   "(a\\nb\\nc)", 11, 100);
+                   "(a\nb\nc)", 7, 100);
 }
 END_TEST
 
@@ -325,8 +325,8 @@ END_TEST
  * Test: pdf_token_write_string_cr
  * Description:
  *   Write a string token containing carriage return (0Dh) characters
- *   into an in-memory stream using the hexadecimal format , and check
- *   whether the resulting textual representation is the expected one.
+ *   into an in-memory stream, and check whether the resulting textual
+ *   representation is the expected one.
  * Success condition:
  *   The written representation of the token is correct.
  */
@@ -337,13 +337,13 @@ START_TEST(pdf_token_write_string_cr)
   pdf_init ();
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("a\rb\rc", 0, &token)
+  fail_if (pdf_token_string_new ("a\rb\rc", 5, &token)
            != PDF_OK);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
-                   "(a\\rb\\rc)", 11, 100);
+                   "(a\\rb\\rc)", 9, 100);
 }
 END_TEST
 
@@ -351,8 +351,8 @@ END_TEST
  * Test: pdf_token_write_string_ht
  * Description:
  *   Write a string token containing horizontal tab (09h) characters
- *   into an in-memory stream using the hexadecimal format , and check
- *   whether the resulting textual representation is the expected one.
+ *   into an in-memory stream, and check whether the resulting textual
+ *   representation is the expected one.
  * Success condition:
  *   The written representation of the token is correct.
  */
@@ -363,48 +363,48 @@ START_TEST(pdf_token_write_string_ht)
   pdf_init ();
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("a\tb\tc", 0, &token)
+  fail_if (pdf_token_string_new ("a\tb\tc", 5, &token)
            != PDF_OK);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
-                   "(a\\tb\\tc)", 11, 100);
+                   "(a\tb\tc)", 7, 100);
 }
 END_TEST
 
 /*
- * Test: pdf_token_write_string_bs
+ * Test: pdf_token_write_string_ht_readable
  * Description:
- *   Write a string token containing backspace (09h) characters
- *   into an in-memory stream using the hexadecimal format , and check
+ *   Write a string token containing horizontal tab (09h) characters
+ *   into an in-memory stream using the readable format, and check
  *   whether the resulting textual representation is the expected one.
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_string_bs)
+START_TEST(pdf_token_write_string_ht_readable)
 {
   pdf_token_t token;
 
   pdf_init ();
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("a\bb\bc", 0, &token)
+  fail_if (pdf_token_string_new ("a\tb\tc", 5, &token)
            != PDF_OK);
 
   /* Check.  */
   write_and_check (token,
-                   0,  /* Flags.  */
-                   "(a\\bb\\bc)", 11, 100);
+                   PDF_TOKEN_READABLE_STRINGS,  /* Flags.  */
+                   "(a\\tb\\tc)", 9, 100);
 }
 END_TEST
 
 /*
  * Test: pdf_token_write_string_ff
  * Description:
- *   Write a string token containing form feed (ffh) characters
- *   into an in-memory stream using the hexadecimal format , and check
- *   whether the resulting textual representation is the expected one.
+ *   Write a string token containing form feed (ffh) characters into
+ *   an in-memory stream, and check whether the resulting textual
+ *   representation is the expected one.
  * Success condition:
  *   The written representation of the token is correct.
  */
@@ -415,13 +415,40 @@ START_TEST(pdf_token_write_string_ff)
   pdf_init ();
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("a\fb\fc", 0, &token)
+  fail_if (pdf_token_string_new ("a\fb\fc", 5, &token)
            != PDF_OK);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
-                   "(a\\fb\\fc)", 11, 100);
+                   "(a\fb\fc)", 7, 100);
+}
+END_TEST
+
+
+/*
+ * Test: pdf_token_write_string_ff_readable
+ * Description:
+ *   Write a string token containing form feed (ffh) characters into
+ *   an in-memory stream using the readable format, and check whether
+ *   the resulting textual representation is the expected one.
+ * Success condition:
+ *   The written representation of the token is correct.
+ */
+START_TEST(pdf_token_write_string_ff_readable)
+{
+  pdf_token_t token;
+
+  pdf_init ();
+
+  /* Create the token.  */
+  fail_if (pdf_token_string_new ("a\fb\fc", 5, &token)
+           != PDF_OK);
+
+  /* Check.  */
+  write_and_check (token,
+                   PDF_TOKEN_READABLE_STRINGS,  /* Flags.  */
+                   "(a\\fb\\fc)", 9, 100);
 }
 END_TEST
 
@@ -429,8 +456,8 @@ END_TEST
  * Test: pdf_token_write_string_leftp
  * Description:
  *   Write a string token containing left parenthesis (28h) characters
- *   into an in-memory stream using the hexadecimal format , and check
- *   whether the resulting textual representation is the expected one.
+ *   into an in-memory stream, and check whether the resulting textual
+ *   representation is the expected one.
  * Success condition:
  *   The written representation of the token is correct.
  */
@@ -441,22 +468,22 @@ START_TEST(pdf_token_write_string_leftp)
   pdf_init ();
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("a(b(c", 0, &token)
+  fail_if (pdf_token_string_new ("a(b(c", 5, &token)
            != PDF_OK);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
-                   "(a\\(b\\(c)", 11, 100);
+                   "(a\\(b\\(c)", 9, 100);
 }
 END_TEST
 
 /*
  * Test: pdf_token_write_string_rightp
  * Description:
- *   Write a string token containing right parenthesis (29h) characters
- *   into an in-memory stream using the hexadecimal format , and check
- *   whether the resulting textual representation is the expected one.
+ *   Write a string token containing right parenthesis (29h)
+ *   characters into an in-memory stream, and check whether the
+ *   resulting textual representation is the expected one.
  * Success condition:
  *   The written representation of the token is correct.
  */
@@ -467,13 +494,13 @@ START_TEST(pdf_token_write_string_rightp)
   pdf_init ();
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("a)b)c", 0, &token)
+  fail_if (pdf_token_string_new ("a)b)c", 5, &token)
            != PDF_OK);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
-                   "(a\\)b\\)c)", 11, 100);
+                   "(a\\)b\\)c)", 9, 100);
 }
 END_TEST
 
@@ -481,8 +508,8 @@ END_TEST
  * Test: pdf_token_write_string_rs
  * Description:
  *   Write a string token containing reverse solidus (5Ch) characters
- *   into an in-memory stream using the hexadecimal format , and check
- *   whether the resulting textual representation is the expected one.
+ *   into an in-memory stream, and check whether the resulting textual
+ *   representation is the expected one.
  * Success condition:
  *   The written representation of the token is correct.
  */
@@ -493,15 +520,68 @@ START_TEST(pdf_token_write_string_rs)
   pdf_init ();
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("a\\b\\c", 0, &token)
+  fail_if (pdf_token_string_new ("a\\b\\c", 5, &token)
            != PDF_OK);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
-                   "(a\\\\b\\\\)", 12, 100);
+                   "(a\\\\b\\\\c)", 9, 100);
 }
 END_TEST
+
+/*
+ * Test: pdf_token_write_string_octal
+ * Description:
+ *   Write a string token containing non-printable octal characters
+ *   into an in-memory stream, and check whether the resulting textual
+ *   representation is the expected one.
+ * Success condition:
+ *   The written representation of the token is correct.
+ */
+START_TEST(pdf_token_write_string_octal)
+{
+  pdf_token_t token;
+
+  pdf_init ();
+
+  /* Create the token.  */
+  fail_if (pdf_token_string_new ("a\0007c", 3, &token)
+           != PDF_OK);
+
+  /* Check.  */
+  write_and_check (token,
+                   0,  /* Flags.  */
+                   "(a\0007c)", 5, 100);
+}
+END_TEST
+
+/*
+ * Test: pdf_token_write_string_octal_readable
+ * Description:
+ *   Write a string token containing non-printable octal characters
+ *   into an in-memory stream using the readable format, and check
+ *   whether the resulting textual representation is the expected one.
+ * Success condition:
+ *   The written representation of the token is correct.
+ */
+START_TEST(pdf_token_write_string_octal_readable)
+{
+  pdf_token_t token;
+
+  pdf_init ();
+
+  /* Create the token.  */
+  fail_if (pdf_token_string_new ("a\0007c", 3, &token)
+           != PDF_OK);
+
+  /* Check.  */
+  write_and_check (token,
+                   PDF_TOKEN_READABLE_STRINGS,  /* Flags.  */
+                   "(a\\007c)", 9, 100);
+}
+END_TEST
+
 
 /*
  * Test case creation function
@@ -522,11 +602,14 @@ test_pdf_token_write (void)
   tcase_add_test (tc, pdf_token_write_string_lf);
   tcase_add_test (tc, pdf_token_write_string_cr);
   tcase_add_test (tc, pdf_token_write_string_ht);
-  tcase_add_test (tc, pdf_token_write_string_bs);
+  tcase_add_test (tc, pdf_token_write_string_ht_readable);
   tcase_add_test (tc, pdf_token_write_string_ff);
+  tcase_add_test (tc, pdf_token_write_string_ff_readable);
   tcase_add_test (tc, pdf_token_write_string_leftp);
   tcase_add_test (tc, pdf_token_write_string_rightp);
   tcase_add_test (tc, pdf_token_write_string_rs);
+  tcase_add_test (tc, pdf_token_write_string_octal);
+  tcase_add_test (tc, pdf_token_write_string_octal_readable);
 
   return tc;
 }

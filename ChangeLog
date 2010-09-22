@@ -1,5 +1,19 @@
 2010-09-22  Jose E. Marchesi  <jemarch@gnu.org>
 
+	Additional token writer tests and a clarification in
+	pdf-token-writer.h.
+	* torture/unit/base/token/pdf-token-write.c
+	(pdf_token_write_string_ht_readable): New test.
+	(pdf_token_write_string_ff_readable): New test.
+	(pdf_token_write_string_bs): Test removed.
+	(pdf_token_write_string_octal): New test.
+	(pdf_token_write_string_octal_readable): New test.
+
+	* src/base/pdf-token-writer.h (struct pdf_token_writer_s): Comment
+	explaining the usage of the 'state' field.
+
+2010-09-22  Jose E. Marchesi  <jemarch@gnu.org>
+
 	Token writer tests for real and string tokens.
 	* torture/unit/base/token/pdf-token-write.c
 	(pdf_token_write_real_positive): New test.
