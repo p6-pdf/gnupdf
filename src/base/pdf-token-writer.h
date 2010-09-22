@@ -55,7 +55,11 @@ struct pdf_token_writer_s {
   pdf_bool_t in_keyword;
   pdf_size_t line_length, buffered_line_length, max_line_length;
 
-  int stage;
+  int stage; /* This field is used by the writing routines to denote
+                several states in the writing of the tokens.  Thus its
+                concrete meaning depends on the specific writing
+                routine.  See the write_*_token functions in
+                pdf-token-writer.c for more information. */
   pdf_size_t pos;
   pdf_size_t paren_quoting_start, paren_quoting_end;
   pdf_bool_t utf8;
