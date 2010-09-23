@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2010-09-22 20:59:04 jemarch"
+/* -*- mode: C -*- Time-stamp: "2010-09-23 20:11:03 jemarch"
  *
  *       File:         pdf-token-write.c
  *       Date:         Tue Sep 21 21:08:07 2010
@@ -582,6 +582,306 @@ START_TEST(pdf_token_write_string_octal_readable)
 }
 END_TEST
 
+/*
+ * Test: pdf_token_write_string_null
+ * Description:
+ *   Write a string token containing a null (00H) character, and check
+ *   whether the resulting textual representation is the expected one.
+ * Success condition:
+ *   The written representation of the token is correct.
+ */
+START_TEST(pdf_token_write_string_null)
+{
+  pdf_token_t token;
+
+  pdf_init ();
+
+  /* Create the token.  */
+  fail_if (pdf_token_string_new ("a\0000c", 3, &token)
+           != PDF_OK);
+
+  /* Check.  */
+  write_and_check (token,
+                   0,  /* Flags.  */
+                   "(a\00000c)", 9, 100);
+}
+END_TEST
+
+/*
+ * Test: pdf_token_write_name_nonempty
+ * Description:
+ *   Write a non empty name token, and check whether the resulting
+ *   textual representation is the expected one.
+ * Success condition:
+ *   The written representation of the token is correct.
+ */
+START_TEST(pdf_token_write_name_nonempty)
+{
+  pdf_token_t token;
+
+  pdf_init ();
+
+  /* Create the token.  */
+  fail_if (pdf_token_name_new ("abc", 3, &token)
+           != PDF_OK);
+
+  /* Check.  */
+  write_and_check (token,
+                   0,  /* Flags.  */
+                   "/abc", 4, 100);
+}
+END_TEST
+
+/*
+ * Test: pdf_token_write_name_empty
+ * Description:
+ *   Write an empty name token, and check whether the resulting
+ *   textual representation is the expected one.
+ * Success condition:
+ *   The written representation of the token is correct.
+ */
+START_TEST(pdf_token_write_name_empty)
+{
+  pdf_token_t token;
+
+  pdf_init ();
+
+  /* Create the token.  */
+  fail_if (pdf_token_name_new ("", 0, &token)
+           != PDF_OK);
+
+  /* Check.  */
+  write_and_check (token,
+                   0,  /* Flags.  */
+                   "/", 1, 100);
+}
+END_TEST
+
+/*
+ * Test: pdf_token_write_name_nonregular
+ * Description:
+ *   Write a name token containing a non-regular character, and check
+ *   whether the resulting textual representation is the expected one.
+ * Success condition:
+ *   The written representation of the token is correct.
+ */
+START_TEST(pdf_token_write_name_nonregular)
+{
+  pdf_token_t token;
+
+  pdf_init ();
+
+  /* Create the token.  */
+  fail_if (pdf_token_name_new ("a\nb", 3, &token)
+           != PDF_OK);
+
+  /* Check.  */
+  write_and_check (token,
+                   0,  /* Flags.  */
+                   "/a#0Ab", 6, 100);
+}
+END_TEST
+
+/*
+ * Test: pdf_token_write_name_alphanum
+ * Description:
+ *   Write a name token with alphanumeric characters, and check
+ *   whether the resulting textual representation is the expected one.
+ * Success condition:
+ *   The written representation of the token is correct.
+ */
+START_TEST(pdf_token_write_name_alphanum)
+{
+  pdf_token_t token;
+
+  pdf_init ();
+
+  /* Create the token.  */
+  fail_if (pdf_token_name_new ("Name1", 5, &token)
+           != PDF_OK);
+
+  /* Check.  */
+  write_and_check (token,
+                   0,  /* Flags.  */
+                   "/Name1", 6, 100);
+}
+END_TEST
+
+/*
+ * Test: pdf_token_write_name_long
+ * Description:
+ *   Write a long name token, and check whether the resulting textual
+ *   representation is the expected one.
+ * Success condition:
+ *   The written representation of the token is correct.
+ */
+START_TEST(pdf_token_write_name_long)
+{
+  pdf_token_t token;
+
+  pdf_init ();
+
+  /* Create the token.  */
+  fail_if (pdf_token_name_new ("ASomewhatLongerName", 19, &token)
+           != PDF_OK);
+
+  /* Check.  */
+  write_and_check (token,
+                   0,  /* Flags.  */
+                   "/ASomewhatLongerName", 20, 100);
+}
+END_TEST
+
+/*
+ * Test: pdf_token_write_name_various
+ * Description:
+ *   Write a name token with heterogeneous characters, and check
+ *   whether the resulting textual representation is the expected one.
+ * Success condition:
+ *   The written representation of the token is correct.
+ */
+START_TEST(pdf_token_write_name_various)
+{
+  pdf_token_t token;
+
+  pdf_init ();
+
+  /* Create the token.  */
+  fail_if (pdf_token_name_new ("A;Name_With-Various***Characters?", 33, &token)
+           != PDF_OK);
+
+  /* Check.  */
+  write_and_check (token,
+                   0,  /* Flags.  */
+                   "/A;Name_With-Various***Characters?", 34, 100);
+}
+END_TEST
+
+/*
+ * Test: pdf_token_write_name_real
+ * Description:
+ *   Write a name token that looks like a real, and check
+ *   whether the resulting textual representation is the expected one.
+ * Success condition:
+ *   The written representation of the token is correct.
+ */
+START_TEST(pdf_token_write_name_real)
+{
+  pdf_token_t token;
+
+  pdf_init ();
+
+  /* Create the token.  */
+  fail_if (pdf_token_name_new ("1.2", 3, &token)
+           != PDF_OK);
+
+  /* Check.  */
+  write_and_check (token,
+                   0,  /* Flags.  */
+                   "/1.2", 4, 100);
+}
+END_TEST
+
+/*
+ * Test: pdf_token_write_name_dollars
+ * Description:
+ *   Write a name token containing dollar characters, and check
+ *   whether the resulting textual representation is the expected one.
+ * Success condition:
+ *   The written representation of the token is correct.
+ */
+START_TEST(pdf_token_write_name_dollars)
+{
+  pdf_token_t token;
+
+  pdf_init ();
+
+  /* Create the token.  */
+  fail_if (pdf_token_name_new ("$$", 2, &token)
+           != PDF_OK);
+
+  /* Check.  */
+  write_and_check (token,
+                   0,  /* Flags.  */
+                   "/$$", 3, 100);
+}
+END_TEST
+
+/*
+ * Test: pdf_token_write_name_at
+ * Description:
+ *   Write a name token containing an at character, and check
+ *   whether the resulting textual representation is the expected one.
+ * Success condition:
+ *   The written representation of the token is correct.
+ */
+START_TEST(pdf_token_write_name_at)
+{
+  pdf_token_t token;
+
+  pdf_init ();
+
+  /* Create the token.  */
+  fail_if (pdf_token_name_new ("@pattern", 8, &token)
+           != PDF_OK);
+
+  /* Check.  */
+  write_and_check (token,
+                   0,  /* Flags.  */
+                   "/@pattern", 9, 100);
+}
+END_TEST
+
+/*
+ * Test: pdf_token_write_name_dot
+ * Description:
+ *   Write a name token beginning with a dot character, and check
+ *   whether the resulting textual representation is the expected one.
+ * Success condition:
+ *   The written representation of the token is correct.
+ */
+START_TEST(pdf_token_write_name_dot)
+{
+  pdf_token_t token;
+
+  pdf_init ();
+
+  /* Create the token.  */
+  fail_if (pdf_token_name_new (".notdef", 7, &token)
+           != PDF_OK);
+
+  /* Check.  */
+  write_and_check (token,
+                   0,  /* Flags.  */
+                   "/.notdef", 8, 100);
+}
+END_TEST
+
+/*
+ * Test: pdf_token_write_name_ns
+ * Description:
+ *   Write a name token containing a number sign character (#), and
+ *   check whether the resulting textual representation is the
+ *   expected one.
+ * Success condition:
+ *   The written representation of the token is correct.
+ */
+START_TEST(pdf_token_write_name_ns)
+{
+  pdf_token_t token;
+
+  pdf_init ();
+
+  /* Create the token.  */
+  fail_if (pdf_token_name_new ("The_Key_of_F#_Minor", 19, &token)
+           != PDF_OK);
+
+  /* Check.  */
+  write_and_check (token,
+                   0,  /* Flags.  */
+                   "/The_Key_of_F#23_Minor", 22, 100);
+}
+END_TEST
 
 /*
  * Test case creation function
@@ -610,6 +910,18 @@ test_pdf_token_write (void)
   tcase_add_test (tc, pdf_token_write_string_rs);
   tcase_add_test (tc, pdf_token_write_string_octal);
   tcase_add_test (tc, pdf_token_write_string_octal_readable);
+  tcase_add_test (tc, pdf_token_write_string_null);
+  tcase_add_test (tc, pdf_token_write_name_nonempty);
+  tcase_add_test (tc, pdf_token_write_name_empty);
+  tcase_add_test (tc, pdf_token_write_name_nonregular);
+  tcase_add_test (tc, pdf_token_write_name_alphanum);
+  tcase_add_test (tc, pdf_token_write_name_long);
+  tcase_add_test (tc, pdf_token_write_name_various);
+  tcase_add_test (tc, pdf_token_write_name_real);
+  tcase_add_test (tc, pdf_token_write_name_dollars);
+  tcase_add_test (tc, pdf_token_write_name_at);
+  tcase_add_test (tc, pdf_token_write_name_dot);
+  tcase_add_test (tc, pdf_token_write_name_ns);
 
   return tc;
 }
