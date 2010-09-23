@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2010-09-23 20:11:03 jemarch"
+/* -*- mode: C -*- Time-stamp: "2010-09-23 20:13:28 jemarch"
  *
  *       File:         pdf-token-write.c
  *       Date:         Tue Sep 21 21:08:07 2010
@@ -60,7 +60,6 @@ write_and_check (pdf_token_t token,
   fail_if (pdf_stm_destroy (stm) != PDF_OK);
 
   /* Compare results.  */
-  printf ("XXX: %s YYY: %s\n", buffer, expected);
   fail_unless (strncmp (buffer, expected, expected_size) == 0);
 }
 
