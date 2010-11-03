@@ -38,7 +38,7 @@ The root directory of the distribution contains the following files.
 ; '''README.cvs'''
 : Additional information to build a CVS checkout of the library. This file is deprecated.
 
-; '''bootstrap'''
+; '''autogen.sh'''
 : Bootstrap script (wrapper for ''autoreconf'') used to regenerate the libtool and autoconf files. Written by Karl Berry.
 
 ; '''cfg.mk'''

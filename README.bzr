@@ -18,7 +18,7 @@ version of the GNU PDF library:
 
 2- Regenerate the configure script:
 
-   $ ./bootstrap
+   $ ./autogen.sh
 
    Or, alternatively:
 

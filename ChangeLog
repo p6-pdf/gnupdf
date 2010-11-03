@@ -1,3 +1,12 @@
+2010-11-03  Jose E. Marchesi  <jemarch@gnu.org>
+
+	Bootstrap script renamed to the more standard autogen.sh.
+	* MANIFEST.wiki: Mentions to 'bootstrap' replaced with
+	'autogen.sh'.
+	* README.bzr: Likewise.
+
+	* autogen.sh: Renamed from 'bootstrap'.
+
 2010-09-23  Jose E. Marchesi  <jemarch@gnu.org>
 
 	Some more token writer unit tests.
