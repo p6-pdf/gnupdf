@@ -22,7 +22,7 @@ if ICONV
  ICONV_LIBS = -liconv
 endif #ICONV
 
-bin_PROGRAMS = pdf-filter pdf-tokeniser
+bin_PROGRAMS = pdf-filter pdf-tokeniser pdf-filereader 
 
 LDADD = $(top_builddir)/src/libgnupdf.la \
         $(ICONV_LIBS)
@@ -32,5 +32,6 @@ AM_CPPFLAGS = -I$(top_srcdir)/lib -I$(top_srcdir)/src/ \
 
 pdf_filter_SOURCES = pdf-filter.h pdf-filter.c
 pdf_tokeniser_SOURCES = pdf-tokeniser.c pdf-tokeniser.h
+pdf_filereader_SOURCES = pdf-filereader.c pdf-filereader.h
 
 # End of Makefile.am

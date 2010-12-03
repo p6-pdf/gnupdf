@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008, 2010 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,13 @@
 #define PDF_FSYS_DISK_H
 
 #include <pdf-fsys.h>
+
+/* BEGIN PUBLIC */
+
+extern const struct pdf_fsys_impl_s pdf_fsys_disk_implementation;
+
+/* END PUBLIC */
+
 
 /* Filesystem internal data associated with open files */
 struct pdf_fsys_disk_file_s
