@@ -51,6 +51,7 @@ const struct pdf_fsys_impl_s pdf_fsys_http_implementation =
     pdf_fsys_http_item_readable_p,
     pdf_fsys_http_item_writable_p,
     pdf_fsys_http_file_get_url,
+    pdf_fsys_http_build_path,
     pdf_fsys_http_file_open,
     pdf_fsys_http_file_open_tmp,
     pdf_fsys_http_file_read,
@@ -259,7 +260,6 @@ __pdf_fsys_http_multi_perform (pdf_fsys_http_data_t data)
       }
       pthread_mutex_unlock (&(data->mutex));
 
-#warning "for some reason handles continue to run"
       if (running < pre_run)
         {
           done = PDF_FALSE;
@@ -1347,6 +1347,15 @@ pdf_fsys_http_file_get_url (pdf_fsys_file_t file)
     }
 
   return text_rv;
+}
+
+pdf_status_t pdf_fsys_http_build_path (void * data,
+                                       pdf_text_t * output,
+                                       pdf_text_t first_element,
+                                       pdf_list_t rest)
+{
+  // !*!*!*!*! Implement me! !*!*!*!*
+  return PDF_ERROR;
 }
 
 

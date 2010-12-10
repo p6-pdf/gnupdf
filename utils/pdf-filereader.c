@@ -135,7 +135,7 @@ main (int argc, char *argv[])
 
   if (PDF_OK == ret_stat)
     {
-#if !PDF_FSYS_HTTP
+#if PDF_FSYS_HTTP
       if (reader_args.use_disk_fs)
 #endif
         { 

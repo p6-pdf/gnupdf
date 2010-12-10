@@ -66,6 +66,7 @@ const struct pdf_fsys_impl_s pdf_fsys_disk_implementation =
     pdf_fsys_disk_item_readable_p,
     pdf_fsys_disk_item_writable_p,
     pdf_fsys_disk_file_get_url,
+    pdf_fsys_disk_build_path,
     pdf_fsys_disk_file_open,
     pdf_fsys_disk_file_open_tmp,
     pdf_fsys_disk_file_read,

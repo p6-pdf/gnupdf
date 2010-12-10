@@ -127,6 +127,14 @@ pdf_bool_t
 pdf_fsys_http_item_writable_p (void *data,
                                pdf_text_t path_name);
 
+pdf_text_t
+pdf_fsys_http_file_get_url (pdf_fsys_file_t file);
+
+pdf_status_t pdf_fsys_http_build_path (void * data,
+                                       pdf_text_t * output,
+                                       pdf_text_t first_element,
+                                       pdf_list_t rest);
+
 /* --------------------- File interface ------------------------- */
 
 pdf_status_t
@@ -179,9 +187,6 @@ pdf_fsys_http_file_get_mode (pdf_fsys_file_t file);
 pdf_status_t
 pdf_fsys_http_file_set_mode (pdf_fsys_file_t file,
                              enum pdf_fsys_file_mode_e new_mode);
-
-pdf_text_t
-pdf_fsys_http_file_get_url (pdf_fsys_file_t file);
 
 pdf_bool_t
 pdf_fsys_http_file_same_p (pdf_fsys_file_t file,
