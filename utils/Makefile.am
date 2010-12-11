@@ -33,7 +33,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/lib -I$(top_srcdir)/src/ \
 pdf_filter_SOURCES = $(COMMON_SOURCES) \
                      pdf-filter.c
 
-pdf_filereader_SOURCES = pdf-filereader.c pdf-filereader.h
+pdf_filereader_SOURCES = pdf-filereader.c
 
 pdf_tokeniser_SOURCES = $(COMMON_SOURCES) \
                         pdf-tokeniser.c

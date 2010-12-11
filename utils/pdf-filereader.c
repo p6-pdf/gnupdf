@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "09/11/25 00:16:45 jemarch"
+/* -*- mode: C -*- Time-stamp: "2010-12-11 19:34:35 jemarch"
  *
  *       File:         pdf-filereader.c
  *       Date:         Thu Dec 2 23:35:55 2010
@@ -33,17 +33,21 @@
 #include <stdlib.h>
 
 #include <pdf.h>
-#include <pdf-filereader.h>
-
-/*
- * Global variables
- */
-
-pdf_filereader_args_t reader_args;
 
 /*
  * Command line options management 
  */
+
+enum
+{
+  HELP_ARG,
+  USAGE_ARG,
+  VERSION_ARG,
+  INFILE_ARG,
+  OUTFILE_ARG,
+  PROPS_ARG,
+  DISK_ARG,
+};
 
 static const struct option GNU_longOptions[] =
   {
@@ -85,8 +89,29 @@ available options:\n\
 
 char *pdf_filereader_help_msg = "try --usage";
 
-////////////////////////////////////////
-// Function Prototypes:
+/*
+ * Data types:
+ */
+
+struct pdf_filereader_args_s {
+  char * program_name;
+  char * in_fname;
+  char * out_fname;
+  pdf_bool_t print_props;
+  pdf_bool_t use_disk_fs;
+};
+
+typedef struct pdf_filereader_args_s pdf_filereader_args_t;
+
+/*
+ * Global variables
+ */
+
+pdf_filereader_args_t reader_args;
+
+/*
+ * Function Prototypes:
+ */
 
 void
 parse_args (int argc, char *argv[]);
@@ -98,8 +123,9 @@ int
 main (int argc, char *argv[]);
 
 
-////////////////////////////////////////
-// Function Implementations
+/*
+ * Function Implementations
+ */
 
 #define BUF_LEN 1024
 
@@ -321,7 +347,7 @@ parse_args (int argc, char *argv[])
           }
         }
 
-    } // end of while getopt_long
+    } /* end of while getopt_long */
   
 }
 
