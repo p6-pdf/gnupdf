@@ -70,6 +70,7 @@ src/stamp-h1
 torture/unit/runtests
 utils/pdf-filter
 utils/pdf-tokeniser
+utils/pdf-filereader
 torture/unit/tmp.test
 torture/unit/ut.log
 src/pdf-config.h

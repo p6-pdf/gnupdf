@@ -159,7 +159,9 @@ PUBLIC_HDRS = pdf-config.h \
               base/pdf-fp-func.h \
               base/pdf-token.h \
               base/pdf-token-reader.h \
-              base/pdf-token-writer.h
+              base/pdf-token-writer.h \
+              base/pdf-fsys-disk.h \
+              base/pdf-fsys-http.h
 
 
 EXTRA_DIST = header-autogen

@@ -229,7 +229,7 @@ pdf_time_get_cal (const pdf_time_t time_var,
     }
 
   /* Set year */
-  p_cal_time->year = years;// - 1900;
+  p_cal_time->year = years; /* - 1900; */
   
   for (months = 11; \
        days < pdf_time_get_days_before_month(p_cal_time->year,months); \

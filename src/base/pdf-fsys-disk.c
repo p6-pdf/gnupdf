@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008, 2010 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,6 +51,41 @@
 #include <pdf-types.h>
 #include <pdf-error.h>
 #include <pdf-fsys-disk.h>
+
+const struct pdf_fsys_impl_s pdf_fsys_disk_implementation = 
+  {
+    pdf_fsys_disk_init,
+    pdf_fsys_disk_cleanup,
+    pdf_fsys_disk_create_folder,
+    pdf_fsys_disk_get_folder_contents,
+    pdf_fsys_disk_get_parent,
+    pdf_fsys_disk_remove_folder,
+    pdf_fsys_disk_get_item_props,
+    pdf_fsys_disk_get_free_space,
+    pdf_fsys_disk_item_p,
+    pdf_fsys_disk_item_readable_p,
+    pdf_fsys_disk_item_writable_p,
+    pdf_fsys_disk_file_get_url,
+    pdf_fsys_disk_build_path,
+    pdf_fsys_disk_file_open,
+    pdf_fsys_disk_file_open_tmp,
+    pdf_fsys_disk_file_read,
+    pdf_fsys_disk_file_write,
+    pdf_fsys_disk_file_flush,
+    pdf_fsys_disk_file_can_set_size_p,
+    pdf_fsys_disk_file_get_size,
+    pdf_fsys_disk_file_set_size,
+    pdf_fsys_disk_file_get_pos,
+    pdf_fsys_disk_file_set_pos,
+    pdf_fsys_disk_file_get_mode,
+    pdf_fsys_disk_file_set_mode,
+    pdf_fsys_disk_file_same_p,
+    pdf_fsys_disk_file_request_ria,
+    pdf_fsys_disk_file_has_ria,
+    pdf_fsys_disk_file_cancel_ria,
+    pdf_fsys_disk_file_close,
+    pdf_fsys_disk_file_reopen
+  };
 
 /* Private function declarations */
 

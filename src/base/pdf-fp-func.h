@@ -61,7 +61,7 @@ struct pdf_fp_func_0_s
   double *encode;
   double *decode;
   pdf_u32_t *size;
-  // pdf_u32_t *stride; /* stride[i] := prod(j=0,i-1,size[i]) */
+  /* pdf_u32_t *stride; /* stride[i] := prod(j=0,i-1,size[i]) */
   pdf_u32_t nsamples; /* product of all size[] entries, number of samples per output dimension */
   
   pdf_u32_t *k; /* base index, never out of range */

@@ -1,3 +1,38 @@
+2010-12-11  Jose E. Marchesi  <jemarch@gnu.org>
+
+	Minor changes to the fsys http patch by Scott Fohey.
+	* .bzrignore: Ignore the file utils/pdf-filereader.
+
+	* src/base/pdf-fsys-http.c: C++ style comments changed to C style
+	comments.
+	!*!*!... marks changed to TODO: marks.
+	* src/base/pdf-fp-func.h: Likewise.
+	* src/base/pdf-fsys-http.h: Likewise.
+	* src/base/pdf-time.c: Likewise.
+
+2010-12-02  Scott Fohey  <sfohey@gmail.com>
+
+	* src/base/pdf-fsys-http.c: preliminary http filesystem functionality
+
+	* src/base/pdf-fsys-http.h: preliminary http filesystem functionality
+
+	* src/base/pdf-fsys-disk.c: provide a const pdf_fsys_impl_s for
+	pdf-fsys-disk to allow simple use.
+
+	* src/base/pdf-fsys-disk.h: provide a const pdf_fsys_impl_s for
+	pdf-fsys-disk to allow simple use.
+
+	* src/Makefile.am: provide a const pdf_fsys_impl_s for pdf-fsys-disk
+	and pdf-fsys-http to allow simple use.
+
+	* utils/pdf-filereader.c: added filesystem test utility
+
+	* utils/pdf-filereader.h: added filesystem test utility
+
+	* utils/MANIFEST.wiki: document addition of filereader utility
+
+	* utils/Makefile.am: make filereader utility build.
+
 2010-11-03  Jose E. Marchesi  <jemarch@gnu.org>
 
 	Bootstrap script renamed to the more standard autogen.sh.
