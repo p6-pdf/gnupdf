@@ -135,10 +135,6 @@ fi
 dnl libm
 AC_LIB_HAVE_LINKFLAGS([m])
 
-dnl libcurl
-AC_LIB_HAVE_LINKFLAGS([curl])
-AM_CONDITIONAL([LIBCURL], [test "x$HAVE_LIBCURL" = "xyes"])
-
 dnl libgpg-error
 AC_LIB_HAVE_LINKFLAGS([gpg-error])
 
@@ -297,15 +293,20 @@ AM_CONDITIONAL([USE_COVERAGE], [test "x$use_gcov" = "xyes"])
 
 AC_ARG_ENABLE([fsys-http],
                AS_HELP_STRING([--enable-fsys-http],
-                              [Include the HTTP filesystem implementation in the build]),
+                              [Include the HTTP filesystem implementation in the build (default is NO)]),
               [fsys_http=$enableval], [fsys_http=no])
+
+http_implementation=no
 if test "x$fsys_http" = "xyes"; then
-   if test x$have_libcurl = "xno"; then
-      AC_MSG_ERROR([libcurl is required for HTTP filesystem support. Please install libcurl and rerun autoconf.])
-   fi
-   AC_DEFINE([PDF_FSYS_HTTP],[1],[Include the HTTP filesystem in the build.])
+   AC_LIB_HAVE_LINKFLAGS([curl])
+   if test "x$HAVE_LIBCURL" = "xyes"; then
+     http_implementation=yes
+     AC_DEFINE([PDF_FSYS_HTTP],[1],[Include the HTTP filesystem in the build.])
+  fi
 fi
-AM_CONDITIONAL([FSYS_HTTP], [test "x$fsys_http" != "xno"])
+
+AM_CONDITIONAL([FSYS_HTTP],
+               [test "x$fsys_http" != "xno" && test "x$HAVE_LIBCURL" = "xyes"])
 
 dnl bignums forced?
 AC_ARG_ENABLE([bignum-forcing],
@@ -428,6 +429,10 @@ if test "x$HAVE_LIBCHECK" != "xyes"; then
    missing_libs="$missing_libs
    libcheck"
 fi
+if test "x$fsys_http" = "xyes" && test "x$HAVE_LIBCURL" = "xno"; then
+   missing_libs="$missing_libs
+   libcurl"
+fi
 if test "x$HAVE_LIBCHECK" = "xyes" && test "x$HAVE_SRUNNER_RUN" != "xyes"; then
    outdated_libs="$outdated_libs
    libcheck (svn required)"
@@ -489,6 +494,7 @@ Configured for \`${canonical}'.
   Using JBIG2 decoder filter?               ${HAVE_LIBJBIG2DEC}
   Using DCT filter?                         ${HAVE_LIBJPEG}
   Bignum implementation?                    ${bignum_implementation}
+  With http filesystem support?             ${http_implementation}
   With unit tests support?                  ${ut_support} ${ut_framework}
   Program to build html manuals             ${texihtmlprogram}
   Build project management resources?       ${prmgt_mode}

@@ -1,5 +1,14 @@
 2010-12-11  Jose E. Marchesi  <jemarch@gnu.org>
 
+	Don't include http fsys support by default, and report errors at
+	the end.
+	* configure.ac: Report an error (using 'missing_libs') if the user
+	requested to compile the http filesystem but libcurl is not
+	available.
+	Unused HAVE_LIBCURL automake conditional removed.
+
+2010-12-11  Jose E. Marchesi  <jemarch@gnu.org>
+
 	pdf-filereader modified to use a single .c file like the other
 	utilities.
 	* utils/pdf-filereader.c: Data structures moved from
