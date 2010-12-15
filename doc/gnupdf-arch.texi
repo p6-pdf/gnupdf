@@ -1512,6 +1512,7 @@ files or folders.
 * The filesystem interface::    
 * The file interface::          
 * The disk filesystem::         
+* The HTTP filesystem::         
 @end menu
 
 @node File systems
@@ -1755,6 +1756,25 @@ Reference Manual, section XXX.
 @subsection The disk filesystem
 
 TBD
+
+@node The HTTP filesystem
+@subsection The HTTP filesystem
+
+The HTTP filesystem (@code{pdf-fsys-http}) is implemented with the help
+of libcurl (@url{http://curl.haxx.se/libcurl/}) and the disk filesystem. 
+A worker thread is used to provide the ability to handle multiple 
+simultaneous download requests without blocking. When 
+@code{pdf_fsys_http_file_open(...)} is invoked the request to download 
+the file is handed to libcurl, and the worker thread services libcurl.  
+The downloaded data is written to a temporary file on the disk using 
+@code{pdf-fsys-disk} and calls to @code{pdf_fsys_http_file_read(...)} 
+will actually be handled by a call to @code{pdf_fsys_disk_file_read(...)} 
+provided that the data requested has already been downloaded.
+
+@float Figure,fig:pdf-fsys-http
+@image{gnupdf-arch-figures/pdf-fsys-http}
+@caption{Architecture of HTTP filesystem}
+@end float
 
 @node Error module
 @section Error module

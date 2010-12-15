@@ -1,3 +1,11 @@
+2010-12-14  Scott Fohey  <sfohey@gmail.com>
+
+	A start to pdf-fsys-http architecture documentation. Added a figure:
+	* doc/gnupdf-arch-figures/pdf-fsys-http.fig: Added a figure
+	* doc/gnupdf-arch-figures/pdf-fsys-http.eps: Added a figure
+	* doc/gnupdf-arch-figures/pdf-fsys-http.png: Added a figure
+	* doc/gnupdf-arch.texi: _very_ brief blurb on pdf-fsys-http
+
 2010-12-11  Jose E. Marchesi  <jemarch@gnu.org>
 
 	Don't include http fsys support by default, and report errors at
