@@ -74,7 +74,7 @@ and ISO 32000.
 The GNU PDF Library contains several layers:
 
 @float Figure,fig:library-architecture
-@image{gnupdf-arch-figures/library-architecture}
+@image{gnupdf-arch-figures/library-architecture,10cm}
 @caption{Layered architecture of the GNU PDF Library}
 @end float
 
@@ -148,7 +148,7 @@ Some modules within the base layer make use of the facilities implemented in
 other modules within the base layer (such as allocation or error functions).
 
 @float Figure,fig:base-layer-architecture
-@image{gnupdf-arch-figures/base-layer-architecture}
+@image{gnupdf-arch-figures/base-layer-architecture,15cm}
 @caption{The Base Layer}
 @end float
 
@@ -343,7 +343,7 @@ open files adding the following functionality:
 @end itemize
 
 @float Figure,fig:stream-context
-@image{gnupdf-arch-figures/stream-context}
+@image{gnupdf-arch-figures/stream-context,6cm}
 @caption{Stream context}
 @end float
 
@@ -352,7 +352,7 @@ provides a convenient way to access files with several parts requiring
 different filters to read or write its contents.
 
 @float Figure,fig:streams-operating-file
-@image{gnupdf-arch-figures/streams-operating-file}
+@image{gnupdf-arch-figures/streams-operating-file,8cm}
 @caption{Several streams operating on an open file}
 @end float
 
@@ -380,7 +380,7 @@ below). Many filters may be used in a single stream (those filters are
 applied in order when writing or reading).
 
 @float Figure,fig:stream-filtering-support
-@image{gnupdf-arch-figures/stream-filtering-support}
+@image{gnupdf-arch-figures/stream-filtering-support,6cm}
 @caption{Stream filtering support}
 @end float
 
@@ -446,7 +446,7 @@ value is measured in positions, where a position is a offset relative
 to the beginning of the stream storage in octets.
 
 @float Figure,fig:stream-read-write-pointer
-@image{gnupdf-arch-figures/stream-read-write-pointer}
+@image{gnupdf-arch-figures/stream-read-write-pointer,3cm}
 @caption{A read/write pointer in a stream}
 @end float
 
@@ -495,7 +495,7 @@ defined in the PDF 1.7 Reference, Chapter 3, Section 3. These are:
 A pdf_stm_buffer_t is a data type implementing a buffer in memory.
 
 @float Figure,fig:stream-memory-buffer
-@image{gnupdf-arch-figures/stream-memory-buffer}
+@image{gnupdf-arch-figures/stream-memory-buffer,4cm}
 @caption{A memory buffer}
 @end float
 
@@ -598,7 +598,7 @@ cache size defined by the library is assured to work for any filter.
 @end quotation
 
 @float Figure,fig:stream-filter
-@image{gnupdf-arch-figures/stream-filter}
+@image{gnupdf-arch-figures/stream-filter,8cm}
 @caption{A stream filter}
 @end float
 
@@ -764,7 +764,7 @@ The DCTDecode filter decodes grayscale or colour image data that has been encode
 format.
 
 @float Figure,fig:dctdec-nfa
-@image{gnupdf-arch-figures/dctdec-nfa}
+@image{gnupdf-arch-figures/dctdec-nfa,10cm}
 @caption{Finite state machine implemented by DTC decode filter 'pdf_stm_f_dctdec_apply'}
 @end float
 
@@ -785,7 +785,7 @@ the number of actually read bytes: if the return value is less
 than the requested number of bytes, then a backend-exhausted condition occured.
 
 @float Figure,fig:stream-read
-@image{gnupdf-arch-figures/stream-read}
+@image{gnupdf-arch-figures/stream-read,8cm}
 @caption{A read stream}
 @end float
 
@@ -808,7 +808,7 @@ the number of actually written bytes: if the return value is less
 than the requested number of bytes, then a backend-full condition occured.
 
 @float Figure,fig:stream-write
-@image{gnupdf-arch-figures/stream-write}
+@image{gnupdf-arch-figures/stream-write,8cm}
 @caption{A write stream}
 @end float
 
@@ -873,7 +873,7 @@ variables. It is an opaque type: the client doesn't know details about
 the implementation of text variables.
 
 @float Figure,fig:text-variable
-@image{gnupdf-arch-figures/text-variable}
+@image{gnupdf-arch-figures/text-variable,8cm}
 @caption{A text variable}
 @end float
 
@@ -1335,7 +1335,7 @@ The @code{pdf_time_cal_s} structure holds information about a specific
 time represented in calendar items:
 
 @float Figure,fig:calendar-time
-@image{gnupdf-arch-figures/calendar-time}
+@image{gnupdf-arch-figures/calendar-time,8cm}
 @caption{A calendar time}
 @end float
 
@@ -1362,7 +1362,7 @@ The @code{pdf_time_cal_span_s} structure holds information about a
 time span represented in calendar items:
 
 @float Figure,fig:calendar-time-span
-@image{gnupdf-arch-figures/calendar-time-span}
+@image{gnupdf-arch-figures/calendar-time-span,8cm}
 @caption{A calendar time span}
 @end float
 
@@ -1532,7 +1532,7 @@ of a PDF file from a file stored in the local filesystem, from a
 network webdav based filesystem, an http server or a compressed image.
 
 @float Figure,fig:filesystem-several-devices
-@image{gnupdf-arch-figures/filesystem-several-devices}
+@image{gnupdf-arch-figures/filesystem-several-devices,10cm}
 @caption{Heterogeneous filesystem implementations}
 @end float
 
@@ -1588,7 +1588,7 @@ contained in the folder.
 An open file object (of type pdf_fsys_file_t) represent a readable and/or writable file in a filesystem. Open files are associated with a given filesystem and any filesystem can maintain an arbitrary number of open files (this may depend on the specific filesystem implementation).
 
 @float Figure,fig:filesystem-open-files
-@image{gnupdf-arch-figures/filesystem-open-files}
+@image{gnupdf-arch-figures/filesystem-open-files,8cm}
 @caption{Filesystem with some open files}
 @end float
 
@@ -1631,7 +1631,7 @@ The following datamodel depicts the relation between path names, open
 files and filesystems:
 
 @float Figure,fig:er-paths-files-filesystems
-@image{gnupdf-arch-figures/er-paths-files-filesystems}
+@image{gnupdf-arch-figures/er-paths-files-filesystems,8cm}
 @caption{E/R diagram of path names, files and filesystems}
 @end float
 
@@ -1654,7 +1654,7 @@ filesystem interface, the filesystem definition interface, the
 filesystem implementation interface and the file interface:
 
 @float Figure,fig:filesystem-interfaces
-@image{gnupdf-arch-figures/filesystem-interfaces}
+@image{gnupdf-arch-figures/filesystem-interfaces,8cm}
 @caption{Filesystem interfaces}
 @end float
 
@@ -1772,7 +1772,7 @@ will actually be handled by a call to @code{pdf_fsys_disk_file_read(...)}
 provided that the data requested has already been downloaded.
 
 @float Figure,fig:pdf-fsys-http
-@image{gnupdf-arch-figures/pdf-fsys-http}
+@image{gnupdf-arch-figures/pdf-fsys-http,8cm}
 @caption{Architecture of HTTP filesystem}
 @end float
 
@@ -1925,7 +1925,7 @@ is provided to the client of the layer. XXX: xref to the reference
 manual or more details about the object hierarchy, etc.
 
 @float Figure,fig:object-layer-architecture
-@image{gnupdf-arch-figures/object-layer-architecture}
+@image{gnupdf-arch-figures/object-layer-architecture,8cm}
 @caption{The Object Layer}
 @end float
 
@@ -1967,7 +1967,7 @@ The parser module provides functions to parse objects out of
 base-layer streams.
 
 @float Figure,fig:parser-overview
-@image{gnupdf-arch-figures/parser-overview}
+@image{gnupdf-arch-figures/parser-overview,8cm}
 @caption{Overview of the PDF Parser.}
 @end float
 
@@ -1983,7 +1983,7 @@ the data from the source of the data (either an open file or a memory
 buffer) to the parser user.
 
 @float Figure,fig:parser-data-flow
-@image{gnupdf-arch-figures/parser-data-flow}
+@image{gnupdf-arch-figures/parser-data-flow,8cm}
 @caption{Data flows in the PDF parser.}
 @end float
 
@@ -2238,7 +2238,7 @@ XXX
 
 
 @float Figure,fig:object-document-architecture
-@image{gnupdf-arch-figures/object-document-architecture}
+@image{gnupdf-arch-figures/object-document-architecture,8cm}
 @caption{Architecture of the Object Document Module}
 @end float
 

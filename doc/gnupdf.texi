@@ -1029,10 +1029,11 @@ divisor = pdf_i64_new(0, 10);
 result = pdf_i64_new(0, 0);
 dest = &result;
 
-if (pdf_i64_div (dest, 200, divisor) != PDF_OK) /* Now dest is 20 */
+if (pdf_i64_div (dest, 200, divisor)!= PDF_OK)
 @{
    /* Error code */
 @}
+/* Now dest is 20 */
 @end example
 @end table
 @end deftypefun
@@ -1072,10 +1073,11 @@ dividend = pdf_i64_new(0, 200);
 result = pdf_i64_new(0, 0);
 dest = &result;
 
-if (pdf_i64_div (dest, dividend, 10) != PDF_OK) /* Now dest is 20 */
+if (pdf_i64_div (dest, dividend, 10) != PDF_OK)
 @{
    /* Error code */
 @}
+/* Now dest is 20 */
 @end example
 @end table
 @end deftypefun
@@ -1118,10 +1120,11 @@ divisor = pdf_i64_new(0, 10);
 result = pdf_i64_new(0, 0);
 dest = &result;
 pdf_i64_mod (dest, dividend, divisor,p_status);
-if ( *p_status != PDF_OK) /* Now dest is 5 */
+if ( *p_status != PDF_OK)
 @{
    /* Error code */
 @}
+/* Now dest is 5 */
 @end example
 @end table
 @end deftypefun
@@ -1161,10 +1164,11 @@ divisor = pdf_i64_new(0, 10);
 result = pdf_i64_new(0, 0);
 dest = &result;
 
-if (pdf_i64_mod (dest, 105, divisor) != PDF_OK) /* Now dest is 5 */
+if (pdf_i64_mod (dest, 105, divisor) != PDF_OK)
 @{
    /* Error code */
 @}
+/* Now dest is 5 */
 @end example
 @end table
 @end deftypefun
@@ -1241,7 +1245,7 @@ pdf_i64_t *dest;
 pdf_i64_t result;
 pdf_i64_t number;
 pdf_status_t *p_status;
-number = pdf_i64_new ((1 << 31), 105); /*number is -105*/
+number = pdf_i64_new ((1 << 31), 105);/*number is -105*/
 result = pdf_i64_new (0, 0);
 dest = &result;
 pdf_i64_abs (dest, number,p_status)
@@ -1281,9 +1285,12 @@ pdf_i64_t number_1;
 pdf_i64_t number_2;
 int result;
 
-number_1 = pdf_i64_new ((1 << 31), 10); /* number_1 is -10 */
-number_2 = pdf_i64_new (0, 10); /* number_2 is 10 */
-result = pdf_i64_cmp (number_1, number_2); /* Now result is -1 */
+number_1 = pdf_i64_new ((1 << 31), 10);
+/* number_1 is -10 */
+number_2 = pdf_i64_new (0, 10);
+/* number_2 is 10 */
+result = pdf_i64_cmp (number_1, number_2);
+/* Now result is -1 */
 @end example
 @end table
 @end deftypefun
@@ -1315,8 +1322,10 @@ If @var{number_2} is greater than @var{number_1}
 pdf_i64_t number_1;
 int result;
 
-number_1 = pdf_i64_new ((1 << 31), 10); /* number_1 is -10 */
-result = pdf_i64_cmp (number_1, 10); /* Now result is -1 */
+number_1 = pdf_i64_new ((1 << 31), 10);
+/* number_1 is -10 */
+result = pdf_i64_cmp (number_1, 10);
+/* Now result is -1 */
 @end example
 @end table
 @end deftypefun
@@ -1535,7 +1544,8 @@ pdf_char_t my_char;
 /* Create a new buffer */
 my_buffer = pdf_buffer_new (3);
 
-/* Copy some contents into the buffer, filling it entirely */
+/* Copy some contents into the buffer, filling it
+   entirely */
 strncpy (my_buffer->data, "abc", 3);
 my_buffer->wp += 3;
 
@@ -1585,8 +1595,8 @@ my_string[10] = 0;
 /* Create a new buffer */
 my_buffer = pdf_buffer_new (4);
 
-/* Copy the contents of my_string into my_buffer making it larger in
-   chunks of 4 bytes */
+/* Copy the contents of my_string into my_buffer
+   making it larger in chunks of 4 bytes */
 written_bytes = 0;
 while (written_bytes < my_string_size)
 @{
@@ -1597,7 +1607,8 @@ while (written_bytes < my_string_size)
                          my_buffer->wp + 5);
    @}
 
-   my_buffer->data[my_buffer->wp] = my_string[my_buffer->wp];
+   my_buffer->data[my_buffer->wp]
+     = my_string[my_buffer->wp];
    my_buffer->wp++;
 @}
 
@@ -1998,7 +2009,8 @@ Invalid @var{table} pointer.
 @example
 pdf_hash_t hash;
 
-/* Create an instance of a hash without a disposal function */
+/* Create an instance of a hash without a disposal
+   function */
 if (pdf_hash_new (NULL, &hash) != PDF_OK)
    @{
       /* Error creating the hash table */
@@ -2063,9 +2075,12 @@ pdf_hash_t hash;
 if (pdf_hash_new (NULL, &hash) == PDF_OK)
    @{
       /* Add some elements to the hash */
-      pdf_hash_add (hash, "first-key", "first-value", NULL);
-      pdf_hash_add (hash, "second-key", "second-value", NULL);
-      pdf_hash_add (hash, "third-key", "third-key", NULL);
+      pdf_hash_add (hash, "first-key", "first-value",
+                    NULL);
+      pdf_hash_add (hash, "second-key", "second-value",
+                    NULL);
+      pdf_hash_add (hash, "third-key", "third-key",
+                    NULL);
 
       /* This call should return 3 */
       pdf_hash_size (hash);
@@ -2079,7 +2094,8 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 
 @deftypefun pdf_bool_t pdf_hash_key_p (const pdf_hash_t @var{table}, const char *@var{key})
 
-Returns a boolean value indicating whether an element with key @var{key} exists in @var{table}.
+Returns a boolean value indicating whether an element with key
+@var{key} exists in @var{table}.
 
 @table @strong
 @item Parameters
@@ -2215,9 +2231,12 @@ pdf_hash_t hash;
 if (pdf_hash_new (NULL, &hash) == PDF_OK)
    @{
       /* Add some elements to the hash */
-      pdf_hash_add (hash, "first-key", "first-value", NULL);
-      pdf_hash_add (hash, "second-key", "second-value", NULL);
-      pdf_hash_add (hash, "third-key", "third-key", NULL);
+      pdf_hash_add (hash,
+                    "first-key", "first-value", NULL);
+      pdf_hash_add (hash,
+                    "second-key", "second-value", NULL);
+      pdf_hash_add (hash,
+                    "third-key", "third-key", NULL);
    @}
 @end example
 @end table
@@ -2225,7 +2244,8 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
 
 @deftypefun pdf_status_t pdf_hash_remove (pdf_hash_t @var{table}, const char @var{*key})
 
-Removes the element associated with @var{key} from @var{table}. The element is disposed first.
+Removes the element associated with @var{key} from @var{table}. The
+element is disposed first.
 
 @table @strong
 @item Parameters
@@ -2339,11 +2359,15 @@ pdf_hash_iterator_t hash_iter;
 if (pdf_hash_new (NULL, &hash) == PDF_OK)
    @{
       /* Add some elements to the hash */
-      pdf_hash_add (hash, "first-key", "first-value", NULL);
-      pdf_hash_add (hash, "second-key", "second-value", NULL);
-      pdf_hash_add (hash, "third-key", "third-key", NULL);
+      pdf_hash_add (hash,
+                    "first-key", "first-value", NULL);
+      pdf_hash_add (hash,
+                    "second-key", "second-value", NULL);
+      pdf_hash_add (hash,
+                    "third-key", "third-key", NULL);
 
-      /* Get an iterator to the first element of the hash */
+      /* Get an iterator to the first element of
+         the hash */
       pdf_hash_iterator_new (hash, &hash_iter);
    @}
 @end example
@@ -2382,13 +2406,18 @@ pdf_char_t *key;
 if (pdf_hash_new (NULL, &hash) == PDF_OK)
    @{
       /* Add some elements to the hash */
-      pdf_hash_add (hash, "first-key", "first-value", NULL);
-      pdf_hash_add (hash, "second-key", "second-value", NULL);
-      pdf_hash_add (hash, "third-key", "third-key", NULL);
+      pdf_hash_add (hash,
+                    "first-key", "first-value", NULL);
+      pdf_hash_add (hash,
+                    "second-key", "second-value", NULL);
+      pdf_hash_add (hash,
+                    "third-key", "third-key", NULL);
 
-     /* Traverse all the values of the hash with an iterator */
+     /* Traverse all the values of the hash with
+        an iterator */
      pdf_hash_iterator_new (hash, &hash_iter);
-     while (pdf_hash_iterator_next (hash_iter, &key) != PDF_ERROR)
+     while (pdf_hash_iterator_next (hash_iter, &key)
+            != PDF_ERROR)
       @{
          /* key contains the next key */
       @}
@@ -2422,11 +2451,15 @@ pdf_hash_iterator_t hash_iter;
 if (pdf_hash_new (NULL, &hash) == PDF_OK)
    @{
       /* Add some elements to the hash */
-      pdf_hash_add (hash, "first-key", "first-value", NULL);
-      pdf_hash_add (hash, "second-key", "second-value", NULL);
-      pdf_hash_add (hash, "third-key", "third-key", NULL);
+      pdf_hash_add (hash,
+                    "first-key", "first-value", NULL);
+      pdf_hash_add (hash,
+                    "second-key", "second-value", NULL);
+      pdf_hash_add (hash,
+                    "third-key", "third-key", NULL);
 
-      /* Get an iterator to the first element of the hash */
+      /* Get an iterator to the first element of
+         the hash */
       pdf_hash_iterator_new (hash, &hash_iter);
 
       /* Destroy the iterator */
@@ -2463,7 +2496,8 @@ pdf_char_t *elem;
 /* Create a new hash */
 if (pdf_hash_new (NULL, &hash) == PDF_OK)
    @{
-      /* Allocate memory for a value to be inserted into the hash */
+      /* Allocate memory for a value to be inserted
+         into the hash */
       elem = pdf_alloc (sizeof(pdf_char_t) * 4);
       strcpy ((char *) elem, "abc");
 
@@ -2475,8 +2509,9 @@ if (pdf_hash_new (NULL, &hash) == PDF_OK)
                     (void *) elem,
                     pdf_hash_element_dealloc_fn);
 
-      /* Destroy the hash (the disposal function invokes pdf_dealloc
-         in the allocated string */
+      /* Destroy the hash (the disposal function
+         invokes pdf_dealloc in the allocated
+         string */
       pdf_hash_destroy (hash);
    @}
 @end example
@@ -2501,17 +2536,19 @@ pdf_hash_t hash;
 pdf_char_t *key;
 
 /* Create a new hash */
-if (pdf_hash_new (pdf_hash_key_dealloc_fn, &hash) == PDF_OK)
+if (pdf_hash_new (pdf_hash_key_dealloc_fn, &hash)
+    == PDF_OK)
    @{
-      /* Allocate memory for a key to be used into the hash */
+      /* Allocate memory for a key to be used
+         into the hash */
       key = pdf_alloc (sizeof(pdf_char_t) * 4);
       strcpy ((char *) elem, "abc");
 
       /* Add an element to the hash, using the key */
       pdf_hash_add (hash, key, "abc", NULL);
 
-      /* Destroy the hash (the key disposal function invokes pdf_dealloc
-         in the allocated string */
+      /* Destroy the hash (the key disposal function
+         invokes pdf_dealloc in the allocated string */
       pdf_hash_destroy (hash);
    @}
 @end example
@@ -2860,7 +2897,8 @@ pdf_hash_t hash;
 pdf_hash_t table;
 
 /* ... insert a hash variable into the hash ... */
-if (pdf_hash_get_hash (table, "a hash", &hash) != PDF_OK)
+if (pdf_hash_get_hash (table, "a hash", &hash)
+    != PDF_OK)
    @{
       /* Error */
    @}
@@ -3130,7 +3168,8 @@ pdf_char_t *string;
 pdf_hash_t table;
 
 /* ... insert a string variable into the hash ... */
-if (pdf_hash_get_string (table, "a string", &string) != PDF_OK)
+if (pdf_hash_get_string (table, "a string", &string)
+    != PDF_OK)
    @{
       /* Error */
    @}
@@ -3225,8 +3264,9 @@ Not enough memory to create the list.
 @example
 pdf_list_t mylist;
 
-if (pdf_list_new (list_element_equal_p, list_element_destroy,  PDF_FALSE,
-    &mylist) != PDF_OK)
+if (pdf_list_new (list_element_equal_p, list_element_destroy,
+                  PDF_FALSE,
+                  &mylist) != PDF_OK)
   @{
     /* manage the error... */
   @}
@@ -3331,7 +3371,8 @@ if (pdf_list_new (list_element_equal_p,
       pdf_list_add_first (list, (void *) &elem, NULL);
 
       /* Search for that element into the list */
-      if (pdf_list_search (list, (void *) &elem, &node) == PDF_OK)
+      if (pdf_list_search (list, (void *) &elem, &node)
+          == PDF_OK)
          @{
             /* The program should reach this place */
          @}
@@ -3391,8 +3432,9 @@ if (pdf_list_new (list_element_equal_p,
                                 1,
                                 &node) == PDF_OK)
          @{
-            /* The program should never reach this place, since
-               elem1 occupies the first position (0) in the list */
+            /* The program should never reach this place,
+               since elem1 occupies the first position (0)
+               in the list */
          @}
    @}
 @end example
@@ -3456,8 +3498,9 @@ if (pdf_list_new (list_element_equal_p,
                                    1, 3,
                                    &node) == PDF_OK)
          @{
-            /* The program should never reach this place, since
-               elem4 occupies the last position (3) in the list */
+            /* The program should never reach this place,
+               since elem4 occupies the last position (3)
+               in the list */
          @}
    @}
 @end example
@@ -3506,10 +3549,12 @@ if (pdf_list_new (list_element_equal_p,
       pdf_list_add_last (list, (void *) &elem2, NULL);
 
       /* Get the node containing "elem1" */
-      pdf_list_search (list, (void *) &elem1, &node_first);
+      pdf_list_search (list, (void *) &elem1,
+                       &node_first);
 
       /* Get the next node in the list */
-      pdf_list_next_node (list, first_node, &node_second);
+      pdf_list_next_node (list, first_node,
+                          &node_second);
 
       /* Now node_second is the node containing elem2 */
    @}

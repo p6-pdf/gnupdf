@@ -1,3 +1,12 @@
+2011-01-14  Jose E. Marchesi  <jemarch@gnu.org>
+
+	manuals: improve the PDF output.
+	* doc/gnupdf.texi: Many examples reworked to avoid hbox overflows
+	when compiling the PDF output with LaTeX.
+
+	* doc/gnupdf-arch.texi: Scale the figures so they fit in the page
+	in the PDF output.
+
 2010-12-14  Scott Fohey  <sfohey@gmail.com>
 
 	A start to pdf-fsys-http architecture documentation. Added a figure:
