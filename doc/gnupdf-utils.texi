@@ -5,8 +5,16 @@
 @settitle GNU PDF Utilities
 @comment %**end of header
 
+@comment Avoid the indentation of @example and @smallexample in the
+@comment html output.  This doesn't fixes the problem of the
+@comment indentation, but it is better than nothing.
+@ifhtml
+@exampleindent 0
+@end ifhtml
+
+@include version.texi
 @set EDITION 1
-@set VERSION 0.1
+
 
 @copying
 This is the @value{EDITION} edition of the @cite{GNU PDF Utilities},

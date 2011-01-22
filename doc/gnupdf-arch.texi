@@ -4,6 +4,13 @@
 @settitle GNU PDF Library Architecture Guide
 @comment %**end of header
 
+@comment Avoid the indentation of @example and @smallexample in the
+@comment html output.  This doesn't fixes the problem of the
+@comment indentation, but it is better than nothing.
+@ifhtml
+@exampleindent 0
+@end ifhtml
+
 @include version.texi
 
 @copying

@@ -5,7 +5,14 @@
 @settitle GNU PDF Library Test Specification Document
 @comment %**end of header
 
-@set VERSION 0.1
+@comment Avoid the indentation of @example and @smallexample in the
+@comment html output.  This doesn't fixes the problem of the
+@comment indentation, but it is better than nothing.
+@ifhtml
+@exampleindent 0
+@end ifhtml
+
+@include version.texi
 
 @copying
 This is the @cite{GNU PDF Library Test Specification Document},

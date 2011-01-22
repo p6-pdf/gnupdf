@@ -1,5 +1,19 @@
 2011-01-22  Jose E. Marchesi  <jemarch@gnu.org>
 
+	doc: reduce the indentation of examples, and use version.texi in
+	all manuals.
+	* doc/gnupdf-tsd.texi: Include version.texi instead of setting
+	VERSION explicitly.
+	* doc/gnupdf-utils.texi: Likewise.
+
+	* doc/gnupdf.texi: Set the exampleindent value to 0.
+	* doc/gnupdf-utils.texi: Likewise.
+	* doc/gnupdf-tsd.texi: Likewise.
+	* doc/gnupdf-hg.texi: Likewise.
+	* doc/gnupdf-arch.texi: Likewise.
+
+2011-01-22  Jose E. Marchesi  <jemarch@gnu.org>
+
 	doc: new style for the html manuals.
 	* doc/Makefile.am (manuals): Ask gendocs.sh to pass the
 	--css-include option to makeinfo to include manuals.css.
