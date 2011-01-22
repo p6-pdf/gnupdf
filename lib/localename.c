@@ -1,5 +1,5 @@
 /* Determine name of the currently selected locale.
-   Copyright (C) 1995-2010 Free Software Foundation, Inc.
+   Copyright (C) 1995-2011 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify it
    under the terms of the GNU General Public License as published
@@ -2607,7 +2607,7 @@ gl_locale_name_thread_unsafe (int category, const char *categoryname)
     locale_t thread_locale = uselocale (NULL);
     if (thread_locale != LC_GLOBAL_LOCALE)
       {
-#  if __GLIBC__ >= 2
+#  if __GLIBC__ >= 2 && !defined __UCLIBC__
         /* Work around an incorrect definition of the _NL_LOCALE_NAME macro in
            glibc < 2.12.
            See <http://sourceware.org/bugzilla/show_bug.cgi?id=10968>.  */
@@ -2771,7 +2771,7 @@ gl_locale_name_thread (int category, const char *categoryname)
    However it does not specify the exact format.  Neither do SUSV2 and
    ISO C 99.  So we can use this feature only on selected systems (e.g.
    those using GNU C Library).  */
-#if defined _LIBC || (defined __GLIBC__ && __GLIBC__ >= 2)
+#if defined _LIBC || ((defined __GLIBC__ && __GLIBC__ >= 2) && !defined __UCLIBC__)
 # define HAVE_LOCALE_NULL
 #endif
 

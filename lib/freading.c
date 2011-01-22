@@ -1,5 +1,5 @@
 /* Retrieve information about a FILE stream.
-   Copyright (C) 2007-2010 Free Software Foundation, Inc.
+   Copyright (C) 2007-2011 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 
 /* Don't use glibc's __freading function in glibc < 2.7, see
    <http://sourceware.org/bugzilla/show_bug.cgi?id=4359>  */
-#if !(HAVE___FREADING && (!defined __GLIBC__ || __GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 7)))
+#if !(HAVE___FREADING && (!defined __GLIBC__ || defined __UCLIBC__ || __GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 7)))
 
 bool
 freading (FILE *fp)
@@ -39,7 +39,7 @@ freading (FILE *fp)
   return (fp_->_flags & __SRD) != 0;
 #elif defined __EMX__               /* emx+gcc */
   return (fp->_flags & _IOREAD) != 0;
-#elif defined _IOERR                /* AIX, HP-UX, IRIX, OSF/1, Solaris, OpenServer, mingw */
+#elif defined _IOERR                /* AIX, HP-UX, IRIX, OSF/1, Solaris, OpenServer, mingw, NonStop Kernel */
 # if defined __sun                  /* Solaris */
   return (fp->_flag & _IOREAD) != 0 && (fp->_flag & _IOWRT) == 0;
 # else

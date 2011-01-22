@@ -1,5 +1,10 @@
 2011-01-22  Jose E. Marchesi  <jemarch@gnu.org>
 
+	gnulib: update.
+	* m4/configmake.m4: New file
+
+2011-01-22  Jose E. Marchesi  <jemarch@gnu.org>
+
 	gnupdf-hg: several minor changes.
 	* doc/gnupdf-hg.texi (Information for Newcomers): Mention the
 	pdf-tasks@gnu.org mailing list and provide the mailman link.

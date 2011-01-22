@@ -1,5 +1,5 @@
 # DO NOT EDIT! GENERATED AUTOMATICALLY!
-# Copyright (C) 2002-2010 Free Software Foundation, Inc.
+# Copyright (C) 2002-2011 Free Software Foundation, Inc.
 #
 # This file is free software, distributed under the terms of the GNU
 # General Public License.  As a special exception to the GNU General
@@ -12,7 +12,8 @@
 # This file represents the compiled summary of the specification in
 # gnulib-cache.m4. It lists the computed macro invocations that need
 # to be invoked from configure.ac.
-# In projects using CVS, this file can be treated like other built files.
+# In projects that use version control, this file can be treated like
+# other built files.
 
 
 # This macro should be invoked from ./configure.ac, in the section
@@ -78,6 +79,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module lstat:
   # Code from module maintainer-makefile:
   # Code from module malloc:
+  # Code from module malloc-gnu:
   # Code from module malloc-posix:
   # Code from module math:
   # Code from module mkdir:
@@ -142,6 +144,7 @@ AC_DEFUN([gl_INIT],
   # Code from module binary-io:
   # Code from module c++defs:
   # Code from module configmake:
+  gl_CONFIGMAKE_PREP
   # Code from module dirname-lgpl:
   gl_DIRNAME_LGPL
   # Code from module double-slash-root:
@@ -249,8 +252,9 @@ AC_DEFUN([gl_INIT],
   AC_CONFIG_COMMANDS_PRE([m4_ifdef([AH_HEADER],
     [AC_SUBST([CONFIG_INCLUDE], m4_defn([AH_HEADER]))])])
   # Code from module malloc:
+  # Code from module malloc-gnu:
   gl_FUNC_MALLOC_GNU
-  AC_DEFINE([GNULIB_MALLOC_GNU], 1, [Define to indicate the 'malloc' module.])
+  gl_MODULE_INDICATOR([malloc-gnu])
   # Code from module malloc-posix:
   gl_FUNC_MALLOC_POSIX
   gl_STDLIB_MODULE_INDICATOR([malloc-posix])
@@ -591,6 +595,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/asm-underscore.m4
   m4/autobuild.m4
   m4/codeset.m4
+  m4/configmake.m4
   m4/dirname.m4
   m4/dos.m4
   m4/double-slash-root.m4
