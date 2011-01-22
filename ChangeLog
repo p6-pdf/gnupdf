@@ -1,3 +1,18 @@
+2011-01-22  Jose E. Marchesi  <jemarch@gnu.org>
+
+	gnupdf-hg: several minor changes.
+	* doc/gnupdf-hg.texi (Information for Newcomers): Mention the
+	pdf-tasks@gnu.org mailing list and provide the mailman link.
+	Copyright updated.
+	(Information for Newcomers): Mention the "Bzr for Emacs Devs"
+	document.
+	(Information for Newcomers): Mention the reference guide and the
+	architecture guide.
+	(Information for Newcomers): Fixed typo gnu-devel -> pdf-devel.
+	(Information for Newcomers): "Getting an account for the wiki"
+	section removed, since the design of the library is now documented
+	in a texinfo manual included in the sources repo.
+
 2011-01-14  Jose E. Marchesi  <jemarch@gnu.org>
 
 	manuals: improve the PDF output.

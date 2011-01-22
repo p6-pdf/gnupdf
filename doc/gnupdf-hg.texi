@@ -11,7 +11,7 @@
 This is the @cite{GNU PDF Library Hackers Guide},
 updated for @strong{libgnupdf} version @strong{@value{VERSION}}.
 
-Copyright @copyright{} 2008 Free Software Foundation, Inc.
+Copyright @copyright{} 2008, 2011 Free Software Foundation, Inc.
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document
@@ -89,16 +89,27 @@ is very good. In the Bazaar site (http://www.bazaar-vcs.org)
 you will also find useful tips for people coming from other VCSs such
 as CVS or subversion.
 
+The ``Bzr For Emacs Devs'' page in the Emacs wiki provides detailed
+information on the workflow used in the Emacs project.  Even if we
+don't follow that exact workflow, most of the guidelines there apply
+in the GNU PDF development.  You can find the document at
+@url{http://www.emacswiki.org/emacs/BzrForEmacsDevs}.
+
 @item Subscribing to the development mailing list
 
 GNU PDF developers communicate using the @email{pdf-devel@@gnu.org}
 mailing list. Most of the work in the development is discussed there,
-so you definitely want to subscribe to it if you are going to do
-development work.
+so you definitely want to subscribe to it if you are going to write
+some code.
 
 Goto the pdf-devel mailman web interface in
 @url{http://lists.gnu.org/mailman/listinfo/pdf-devel} and set up your
-subscription. Then, send a first email saying "Hello" :)
+subscription. Then, send a first email introducing yourself.
+
+There is another mailing list @email{pdf-tasks@@gnu.org} that is used
+by the Flyspray installation to send change notifications of tasks.
+You can subscribe to this mailing list at
+@url{http://lists.gnu.org/mailman/listinfo/pdf-tasks}.
 
 @item Getting familiar with Savannah
 
@@ -108,9 +119,13 @@ PDF project has a savannah project in
 
 @item Getting familiar with the library
 
-Take a look to the design of the library and the source code. If you
-have doubts about any aspect of the library or the implementation,
-just ask to pdf-devel.
+Take a look to the design of the library and the source code.  The
+documents to look at are the ``GNU PDF Library Reference Guide''
+(available in doc/gnupdf.texi) and the ``GNU PDF Library Architecture
+Manual'' (available in doc/gnupdf-arch.texi).
+
+If you have doubts about any aspect of the library or the
+implementation, just ask in pdf-devel.
 
 @item Getting familiar with the GNU standards
 
@@ -133,25 +148,18 @@ Please read the documentation on tasks management in
 @ref{Tasks management}.
 
 If you want to work in a NEXT task, please be sure to state your
-interest in the gnu-devel mailing list before. The developers in the
+interest in the pdf-devel mailing list before. The developers in the
 pdf-devel mailing list can guide you towards the more convenient task
 for you to take and can give valuable advice about how to implement
 it.
 
-@item Getting an account for the wiki
-
-It is quite important to write down the design of the code you write
-for the project. So if you are going to write code please ask the
-maintainer @footnote{@email{pdf-maintainer@@gnu.org}} for an account in
-gnupdf.org.
-
 @item Signing papers
 
 The GNU PDF codebase is copyrighted by the Free Software
-Foundation. It is a way to strength the GPL. That means that we need
+Foundation. This is a way to strength the GPL. That means that we need
 you to sign papers before to be able to integrate your code in the
-distribution. There are several ways to get this done. Please ask the
-maintainer for the details.
+distribution. There are several ways to get this done. Please ask in
+pdf-devel for the details.
 
 @item Sending patches for inclusion
 
