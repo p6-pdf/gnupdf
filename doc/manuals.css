@@ -1,7 +1,7 @@
 /* CSS style for GNU PDF manuals
  * 
  *
- * Copyright (C) 2007, 2008 Free Software Foundation, Inc.
+ * Copyright (C) 2007, 2008, 2011 Free Software Foundation, Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,121 +17,56 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 body {
-    font-family: Helvetica, sans-serif;
+    background: none no-repeat fixed left top #FAFAFA;
+    font: 14px sans-serif;
+    margin: 0 5em 0 5em;
+    padding: 0;
 }
 
-defun {
-    background: grey;
+body, td, th, input, textarea {
+    font-family: Verdana,Arial;
 }
 
-blockquote {
-    font-size: 0.9em;
-    border: 1px black solid;
-    padding: 5px;
-
-}
-
-.sidemenu {
-    
-    border: 1px black solid;
-    padding: 5px;
-
-}
-
-.sidemenuheader {
- 
-    color: darkred;
-    font-size: 1.1em;
-    font-weight: bold;
-    border-bottom: 1px dashed darkred;
-}
-
-.sidemenuentry {
-
-
-}
-
-.menu {
-
-}
-
-
-.hrule_small {
-    color: black;
-    size: 1px;
-}
-
-.hrule_middle {
-    color: black;
-    size: 2px;
-}
-
-.hrule_big {
-    color: black;
-    size: 6px;
-}
-
-.hrule_default {
-    color: black;
-    size: 1px;
-}
-
-.example {
-    border: 1px black solid;
-    padding: 10px;
-}
-
-.manualtitle {
-    font-size: 1.2em;
-    font-weight: bold;
-}
-
-
-.manualedition {
-    font-size: 1em;
-    color: darkred;
-    font-weight: bold;
-}
-
-.manualrevision {
-    font-size: 1em;
-    color: darkred;
-    font-weight: bold;
-}
-
-.libraryversion {
-    font-size: 1em;
-    color: darkred;
-    font-weight: bold;
-}
-
-.settitle {
-    color: darkred;
-    border-bottom: 2px solid darkred;
-}
-
-.chapter {
-    color: darkred;
-    border-bottom: 2px solid darkred;
-}
-
-.appendix {
-    color: darkred;
-    border-bottom: 2px solid darkred;
-}
-
-.section {
-    color: darkred;
-    border-bottom: 2px solid darkred;
-}
-
-.subsection {
-    color: darkred;
-    border-bottom: 1px dashed darkred;
+body, td, th, input, textarea, pre, h1, h2, h3, h4, h5, h6 {
+    color: #222222;
 }
 
 .node {
-    text-align: center;
+    font-size: 110%;
+}
+
+h1, h2, h3, h4 {
+    font-size: 140%;
+    color: black;
+    font-weight: normal;
+    border-bottom: 1px solid #DDDDDD;
+    margin-top: 1.32em;
+    padding: 0.35em 0.1em 0.3em 0;
+    margin-bottom: 0.6em;
+}
+
+ul {
+    list-style-image: url("arrow.gif");
+    line-height: 1.5em;
+}
+
+li {
+    margin-bottom: 0.1em;
+    margin-left: 0.5em;
+    padding: 0;
+}
+
+pre {
+    background-color: #FFFFF7;
+    border: 1px dashed #BBBBBB;
+    color: #444444;
+    line-height: 1.2em;
+    margin: 12px 0;
+    overflow-x: visible;
+    padding: 10px;
+    font-family: Monospace,Courier,Arial;
+/*    font-size: 100%; */
+    overflow-x: visible;
 }
 
 /* end of manuals.css */

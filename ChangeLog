@@ -1,5 +1,26 @@
 2011-01-22  Jose E. Marchesi  <jemarch@gnu.org>
 
+	doc: new style for the html manuals.
+	* doc/Makefile.am (manuals): Ask gendocs.sh to pass the
+	--css-include option to makeinfo to include manuals.css.
+
+	* doc/manuals.css: New style matching the new version of the
+	mediawiki skin.
+
+2011-01-22  Jose E. Marchesi  <jemarch@gnu.org>
+
+	maint.mk: syntax-check fixes.
+	* utils/pdf-filereader.c (parse_args): Return EXIT_* values
+	instead of explicit numbers.
+
+	* .x-sc_program_name: build-aux/ added.
+
+	* utils/pdf-filereader.c (main): Call add_program_name.
+
+	* .x-sc_bindtextdomain: New file.
+
+2011-01-22  Jose E. Marchesi  <jemarch@gnu.org>
+
 	gnulib: update.
 	* m4/configmake.m4: New file
 
