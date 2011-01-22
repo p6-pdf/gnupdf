@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2010-12-11 19:34:35 jemarch"
+/* -*- mode: C -*- Time-stamp: "2011-01-22 21:53:14 jemarch"
  *
  *       File:         pdf-filereader.c
  *       Date:         Thu Dec 2 23:35:55 2010
@@ -142,6 +142,8 @@ main (int argc, char *argv[])
   pdf_char_t buff[BUF_LEN];
 
   FILE *f = NULL;
+
+  set_program_name (argv[0]);
 
   /* Initialized global vars */
   reader_args.program_name = strdup (argv[0]);
@@ -306,19 +308,19 @@ parse_args (int argc, char *argv[])
         case HELP_ARG:
           {
             fprintf (stdout, "%s\n", pdf_filereader_usage_msg);
-            exit (0);
+            exit (EXIT_SUCCESS);
             break;
           }
         case VERSION_ARG:
           {
             fprintf (stdout, "%s\n", pdf_filereader_version_msg);
-            exit (0);
+            exit (EXIT_SUCCESS);
             break;
           }
         case USAGE_ARG:
           {
             fprintf (stdout, "%s\n", pdf_filereader_usage_msg);
-            exit (0);
+            exit (EXIT_SUCCESS);
             break;
           }
         case INFILE_ARG:
