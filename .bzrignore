@@ -75,3 +75,16 @@ torture/unit/tmp.test
 torture/unit/ut.log
 src/pdf-config.h
 src/stamp-h2
+lib/errno.h
+doc/gnupdf-arch.aux
+doc/gnupdf-arch.cp
+doc/gnupdf-arch.fn
+doc/gnupdf-arch.fns
+doc/gnupdf-arch.ky
+doc/gnupdf-arch.log
+doc/gnupdf-arch.pdf
+doc/gnupdf-arch.pg
+doc/gnupdf-arch.toc
+doc/gnupdf-arch.tp
+doc/gnupdf-arch.tps
+doc/gnupdf-arch.vr
