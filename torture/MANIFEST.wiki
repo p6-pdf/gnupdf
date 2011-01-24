@@ -1,6 +1,0 @@
-=='''torture/''' Test Suites (torture chamber)==
-
-This directory contains the [[Lib:Torture Chamber|unit tests]] for the library.
-
-; '''Makefile.am'''
-: Automake source file

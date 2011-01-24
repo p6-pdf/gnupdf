@@ -1,3 +1,21 @@
+2011-01-24  Jose E. Marchesi  <jemarch@gnu.org>
+
+	prmgt: MANIFEST.wiki files removed.
+	* configure.ac: Don't generate prmgt/srcinfo-extractor.pl
+
+	* prmgt/srcinfo-extractor.pl.in: Removed.
+	* MANIFEST.wiki: Likewise.
+	* doc/MANIFEST.wiki: Likewise.
+	* lib/MANIFEST.wiki: Likewise.
+	* m4/MANIFEST.wiki: Likewise.
+	* prmgt/MANIFEST.wiki: Likewise.
+	* src/MANIFEST.wiki: Likewise.
+	* src/base/MANIFEST.wiki: Likewise.
+	* src/document/MANIFEST.wiki: Likewise.
+	* src/object/MANIFEST.wiki: Likewise.
+	* torture/MANIFEST.wiki: Likewise.
+	* utils/MANIFEST.wiki: Likewise.
+
 2011-01-22  Jose E. Marchesi  <jemarch@gnu.org>
 
 	doc: reduce the indentation of examples, and use version.texi in

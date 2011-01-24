@@ -388,7 +388,6 @@ AC_CONFIG_FILES([Makefile
                  prmgt/testlog2wiki
                  prmgt/docfuncs
                  prmgt/tsdfuncs
-                 prmgt/srcinfo-extractor.pl
                  prmgt/check-api-doc-consistency.pl
                  doc/Makefile
                  doc/version.texi])
