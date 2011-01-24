@@ -389,8 +389,8 @@ AC_CONFIG_FILES([Makefile
                  prmgt/docfuncs
                  prmgt/tsdfuncs
                  prmgt/check-api-doc-consistency.pl
-                 doc/Makefile
-                 doc/version.texi])
+                 doc/Makefile])
+
 AC_OUTPUT
 
 dnl Report errors

@@ -19,6 +19,7 @@
 noinst_TEXINFOS = gnupdf-tsd.texi gnupdf-hg.texi gnupdf-arch.texi
 info_TEXINFOS = gnupdf.texi gnupdf-utils.texi
 gnupdf_TEXINFOS = fdl.texi
+gnupdf_utils_TEXINFOS = fdl.texi
 
 EXTRA_DIST = gnupdf-arch-figures gnupdf-figures gnupdf-hg-figures
 

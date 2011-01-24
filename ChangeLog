@@ -1,3 +1,12 @@
+2011-01-25  Jose E. Marchesi  <jemarch@gnu.org>
+
+	manuals: get version.texi generated automatically by automake.
+	* doc/gnupdf.texi: Do not set or use EDITION, since it is the same
+	than VERSION.
+	* doc/gnupdf-utils.texi: Likewise.
+
+	* configure.ac: Do not process doc/version.texi.in.
+
 2011-01-24  Jose E. Marchesi  <jemarch@gnu.org>
 
 	prmgt: MANIFEST.wiki files removed.

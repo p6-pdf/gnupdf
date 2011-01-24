@@ -12,13 +12,13 @@
 @exampleindent 0
 @end ifhtml
 
-@include version.texi
-@set EDITION 1
-
+@comment Automake complains if the next include is in place.
+@comment @include version.texi
+@set VERSION trunk
 
 @copying
-This is the @value{EDITION} edition of the @cite{GNU PDF Utilities},
-updated for libgnupdf version @value{VERSION}.
+This is the @cite{GNU PDF Utilities Manual}, updated for libgnupdf
+version @value{VERSION}.
 
 Copyright @copyright{} 2007, 2008 Free Software Foundation, Inc.
 
@@ -41,7 +41,7 @@ Documentation License''.
 @sp
 @center @titlefont{GNU PDF Utilities}
 @sp 4
-@center @value{EDITION} Edition, Updated for version @value{VERSION}.
+@center Updated for version @value{VERSION}.
 @sp 5
 @center Jos@'e E. Marchesi
 @page
