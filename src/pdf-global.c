@@ -38,8 +38,8 @@
 
 /* Global variables */
 
-char *pdf_library_name = "libgnupdf";
-char *pdf_version = "0.1";
+pdf_char_t *pdf_library_name = "libgnupdf";
+pdf_char_t *pdf_version = "0.1";
 
 struct pdf_globals_s pdf_globals = {
   PDF_FALSE,

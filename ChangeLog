@@ -1,5 +1,15 @@
 2011-01-27  Aleksander Morgado  <aleksander@gnu.org>
 
+	base/error: Use pdf_char_t type instead of just char
+	* src/base/pdf-error.[h|c]: Use pdf_char_t when possible. Also
+	indentation fixes.
+	* src/pdf-global.c: Likewise.
+
+	* src/Makefile.am (PUBLIC_HDRS): Include first pdf-types.h, and only
+	then pdf-error.h.
+
+2011-01-27  Aleksander Morgado  <aleksander@gnu.org>
+
 	base/types: Move progress monitor API to separate file
 	* src/base/pdf-types-pmon.h: New file.
 	* src/base/pdf-types.h: Moved progress monitor API to the new

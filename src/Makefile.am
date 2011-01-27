@@ -146,8 +146,8 @@ AM_CPPFLAGS = -I$(top_srcdir)/lib \
 
 PUBLIC_HDRS = pdf-config.h \
               pdf-global.h \
-              base/pdf-error.h \
               base/pdf-types.h \
+              base/pdf-error.h \
               base/pdf-types-64.h \
               base/pdf-types-buffer.h \
               base/pdf-types-pmon.h \
