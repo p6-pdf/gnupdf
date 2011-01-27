@@ -2,3 +2,4 @@ lib/*
 doc/gnupdf-arch-figures/*
 doc/gnupdf-hg-figures/*
 doc/gnupdf-figures/*
+build-aux/pmccabe2html
