@@ -123,8 +123,7 @@ error data type.
 @menu
 * Types::                      Status values returned by the functions
                                 of this library.
-* Error Reporting procedures:: Printing the textual description of an
-                                error code.
+* Error Reporting procedures:: Reporting errors in the library.
 * Error Printing procedures::  Printing the textual description of
                                 errors and error codes.
 * Debugging procedures::       Tracing support.

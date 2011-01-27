@@ -1,5 +1,10 @@
 2011-01-27  Aleksander Morgado  <aleksander@gnu.org>
 
+	doc: Fix section title.
+	* doc/gnupdf.texi (Error Management)
+
+2011-01-27  Aleksander Morgado  <aleksander@gnu.org>
+
 	doc: Documented the new API for the pdf_error_t.
 	* doc/gnupdf.texi (Error Management)
 
