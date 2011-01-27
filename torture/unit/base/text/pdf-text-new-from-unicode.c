@@ -100,10 +100,10 @@ START_TEST(pdf_text_new_from_unicode_001)
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
       
       /* 4. The language code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_language(text)) == 0);
+      fail_unless(strlen(pdf_text_get_language(text)) == 0);
       
       /* 5. The country code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_country(text)) == 0);
+      fail_unless(strlen(pdf_text_get_country(text)) == 0);
   
       
       fail_if(pdf_text_destroy(text) != PDF_OK);
@@ -187,10 +187,10 @@ START_TEST(pdf_text_new_from_unicode_002)
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
       
       /* 4. The language code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_language(text)) == 0);
+      fail_unless(strlen(pdf_text_get_language(text)) == 0);
       
       /* 5. The country code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_country(text)) == 0);
+      fail_unless(strlen(pdf_text_get_country(text)) == 0);
 
       fail_if(pdf_text_destroy(text) != PDF_OK);
       
@@ -275,10 +275,10 @@ START_TEST(pdf_text_new_from_unicode_003)
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
       
       /* 4. The language code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_language(text)) == 0);
+      fail_unless(strlen(pdf_text_get_language(text)) == 0);
       
       /* 5. The country code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_country(text)) == 0);
+      fail_unless(strlen(pdf_text_get_country(text)) == 0);
       
       fail_if(pdf_text_destroy(text) != PDF_OK);
       
@@ -376,10 +376,10 @@ START_TEST(pdf_text_new_from_unicode_004)
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
       
       /* 4. The language code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_language(text)) == 0);
+      fail_unless(strlen(pdf_text_get_language(text)) == 0);
       
       /* 5. The country code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_country(text)) == 0);
+      fail_unless(strlen(pdf_text_get_country(text)) == 0);
       
       fail_if(pdf_text_destroy(text) != PDF_OK);
       
@@ -466,10 +466,10 @@ START_TEST(pdf_text_new_from_unicode_005)
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
       
       /* 4. The language code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_language(text)) == 0);
+      fail_unless(strlen(pdf_text_get_language(text)) == 0);
       
       /* 5. The country code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_country(text)) == 0);
+      fail_unless(strlen(pdf_text_get_country(text)) == 0);
       
       fail_if(pdf_text_destroy(text) != PDF_OK);
       
@@ -555,10 +555,10 @@ START_TEST(pdf_text_new_from_unicode_006)
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
       
       /* 4. The language code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_language(text)) == 0);
+      fail_unless(strlen(pdf_text_get_language(text)) == 0);
       
       /* 5. The country code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_country(text)) == 0);
+      fail_unless(strlen(pdf_text_get_country(text)) == 0);
       
       fail_if(pdf_text_destroy(text) != PDF_OK);
       
@@ -656,10 +656,10 @@ START_TEST(pdf_text_new_from_unicode_007)
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
       
       /* 4. The language code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_language(text)) == 0);
+      fail_unless(strlen(pdf_text_get_language(text)) == 0);
       
       /* 5. The country code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_country(text)) == 0);
+      fail_unless(strlen(pdf_text_get_country(text)) == 0);
       
       fail_if(pdf_text_destroy(text) != PDF_OK);
       
@@ -745,10 +745,10 @@ START_TEST(pdf_text_new_from_unicode_008)
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
       
       /* 4. The language code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_language(text)) == 0);
+      fail_unless(strlen(pdf_text_get_language(text)) == 0);
       
       /* 5. The country code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_country(text)) == 0);
+      fail_unless(strlen(pdf_text_get_country(text)) == 0);
       
       
       fail_if(pdf_text_destroy(text) != PDF_OK);
@@ -833,10 +833,10 @@ START_TEST(pdf_text_new_from_unicode_009)
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
       
       /* 4. The language code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_language(text)) == 0);
+      fail_unless(strlen(pdf_text_get_language(text)) == 0);
       
       /* 5. The country code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_country(text)) == 0);
+      fail_unless(strlen(pdf_text_get_country(text)) == 0);
       
       fail_if(pdf_text_destroy(text) != PDF_OK);
       
@@ -921,10 +921,10 @@ START_TEST(pdf_text_new_from_unicode_010)
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
       
       /* 4. The language code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_language(text)) == 0);
+      fail_unless(strlen(pdf_text_get_language(text)) == 0);
       
       /* 5. The country code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_country(text)) == 0);
+      fail_unless(strlen(pdf_text_get_country(text)) == 0);
       
       fail_if(pdf_text_destroy(text) != PDF_OK);
       
@@ -1021,10 +1021,10 @@ START_TEST(pdf_text_new_from_unicode_011)
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
       
       /* 4. The language code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_language(text)) == 0);
+      fail_unless(strlen(pdf_text_get_language(text)) == 0);
       
       /* 5. The country code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_country(text)) == 0);
+      fail_unless(strlen(pdf_text_get_country(text)) == 0);
       
       fail_if(pdf_text_destroy(text) != PDF_OK);
       
@@ -1138,10 +1138,10 @@ START_TEST(pdf_text_new_from_unicode_012)
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
       
       /* 4. The language code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_language(text)) == 0);
+      fail_unless(strlen(pdf_text_get_language(text)) == 0);
       
       /* 5. The country code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_country(text)) == 0);
+      fail_unless(strlen(pdf_text_get_country(text)) == 0);
       
       fail_if(pdf_text_destroy(text) != PDF_OK);
       
@@ -1227,10 +1227,10 @@ START_TEST(pdf_text_new_from_unicode_013)
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
       
       /* 4. The language code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_language(text)) == 0);
+      fail_unless(strlen(pdf_text_get_language(text)) == 0);
       
       /* 5. The country code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_country(text)) == 0);
+      fail_unless(strlen(pdf_text_get_country(text)) == 0);
       
       fail_if(pdf_text_destroy(text) != PDF_OK);
       
@@ -1328,10 +1328,10 @@ START_TEST(pdf_text_new_from_unicode_014)
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
       
       /* 4. The language code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_language(text)) == 0);
+      fail_unless(strlen(pdf_text_get_language(text)) == 0);
       
       /* 5. The country code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_country(text)) == 0);
+      fail_unless(strlen(pdf_text_get_country(text)) == 0);
       
       fail_if(pdf_text_destroy(text) != PDF_OK);
       

@@ -198,7 +198,7 @@ print_tok (pdf_token_t token)
   printf("%s(%s)\n", typ, str);
   if (str != tmpbuf)
     {
-      free(str);
+      free((char *) str);
     }
 };
 

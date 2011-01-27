@@ -164,14 +164,14 @@ pdf_hash_add_string (pdf_hash_t table, const char *key, const pdf_char_t *elt)
   pdf_char_t *string;
   pdf_size_t string_size;
 
-  string_size = strlen ((char *) elt) + 1;
+  string_size = strlen (elt) + 1;
   string = pdf_alloc (string_size);
   if (string == NULL)
     {
       return PDF_ERROR;
     }
 
-  string = (pdf_char_t *) strncpy ((char *) string, (char *) elt, string_size);
+  string = (pdf_char_t *) strncpy (string, elt, string_size);
 
   return (pdf_hash_add (table, key, string, pdf_dealloc));
 }

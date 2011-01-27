@@ -51,7 +51,7 @@ START_TEST (pdf_stm_read_001)
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
-  strcpy ((char *) buf, "0123456789");
+  strcpy (buf, "0123456789");
 
   /* Create the return buffer */
   ret_buf = pdf_alloc (buf_size);
@@ -74,7 +74,7 @@ START_TEST (pdf_stm_read_001)
   fail_if(read_bytes != buf_size);
 
   /* Check for the result */
-  fail_if(strcmp("0123456789", (char *) ret_buf) != 0);
+  fail_if(strcmp("0123456789", ret_buf) != 0);
   
   /* Destroy data */
   pdf_dealloc (buf);
@@ -107,7 +107,7 @@ START_TEST (pdf_stm_read_002)
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
-  strcpy ((char *) buf, "0123456789");
+  strcpy (buf, "0123456789");
 
   /* Create the return buffer */
   ret_buf = pdf_alloc (buf_size * 2);
@@ -131,7 +131,7 @@ START_TEST (pdf_stm_read_002)
   fail_if(read_bytes != buf_size);
 
   /* Check for the result */
-  fail_if(strcmp("0123456789", (char *) ret_buf) != 0);
+  fail_if(strcmp("0123456789", ret_buf) != 0);
   
   /* Destroy data */
   pdf_dealloc (buf);
@@ -163,7 +163,7 @@ START_TEST (pdf_stm_read_003)
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
-  strcpy ((char *) buf, "0123456789");
+  strcpy (buf, "0123456789");
 
   /* Create the return buffer */
   ret_buf = pdf_alloc (2);
@@ -274,7 +274,7 @@ START_TEST (pdf_stm_read_004)
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
-  strcpy ((char *) buf, "0123456789");
+  strcpy (buf, "0123456789");
 
   /* Create the return buffer */
   ret_buf = pdf_alloc (buf_size);
@@ -304,7 +304,7 @@ START_TEST (pdf_stm_read_004)
   fail_if(read_bytes != buf_size);
 
   /* Check for the result */
-  fail_if(strcmp("0123456789", (char *) ret_buf) != 0);
+  fail_if(strcmp("0123456789", ret_buf) != 0);
   
   /* Destroy data */
   pdf_dealloc (buf);

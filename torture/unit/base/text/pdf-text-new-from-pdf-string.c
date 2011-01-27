@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,10 +105,10 @@ START_TEST(pdf_text_new_from_pdf_string_001)
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
 
       /* 4. The language code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_language(text)) == 0);
+      fail_unless(strlen(pdf_text_get_language(text)) == 0);
       
       /* 5. The country code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_country(text)) == 0);
+      fail_unless(strlen(pdf_text_get_country(text)) == 0);
       
       /* 6. The call should return a NULL remaining_str pointer and a zero
        *  remaining_length */
@@ -256,10 +256,10 @@ START_TEST(pdf_text_new_from_pdf_string_003)
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
       
       /* 4. The language code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_language(text)) == 0);
+      fail_unless(strlen(pdf_text_get_language(text)) == 0);
       
       /* 5. The country code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_country(text)) == 0);
+      fail_unless(strlen(pdf_text_get_country(text)) == 0);
       
       /* 6. The call should return a NULL remaining_str pointer and a zero
        *  remaining_length */
@@ -499,12 +499,12 @@ START_TEST(pdf_text_new_from_pdf_string_006)
       
       /* 4. The languange code within the text object must be the expected
        *    one */
-      fail_unless(strlen((char *)pdf_text_get_language(text)) == 2);
-      fail_unless(strcmp((char *)pdf_text_get_language(text), \
-                         (char *)language_code) == 0);
+      fail_unless(strlen(pdf_text_get_language(text)) == 2);
+      fail_unless(strcmp(pdf_text_get_language(text), \
+                         language_code) == 0);
       
       /* 5. The country code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_country(text)) == 0);
+      fail_unless(strlen(pdf_text_get_country(text)) == 0);
       
       /* 6. The call should return a NULL remaining_str pointer and a zero
        *  remaining_length */
@@ -641,14 +641,14 @@ START_TEST(pdf_text_new_from_pdf_string_007)
       
       /* 4. The languange code within the text object must be the expected
        *    one */
-      fail_unless(strlen((char *)pdf_text_get_language(text)) == 2);
-      fail_unless(strcmp((char *)pdf_text_get_language(text), \
-                         (char *)language_code) == 0);
+      fail_unless(strlen(pdf_text_get_language(text)) == 2);
+      fail_unless(strcmp(pdf_text_get_language(text), \
+                         language_code) == 0);
       
       /* 5. The country code within the text object must be the expected one */
-      fail_unless(strlen((char *)pdf_text_get_country(text)) == 2);
-      fail_unless(strcmp((char *)pdf_text_get_country(text), \
-                         (char *)country_code) == 0);
+      fail_unless(strlen(pdf_text_get_country(text)) == 2);
+      fail_unless(strcmp(pdf_text_get_country(text), \
+                         country_code) == 0);
       
       /* 6. The call should return a NULL remaining_str pointer and a zero
        *  remaining_length */
@@ -866,12 +866,12 @@ START_TEST(pdf_text_new_from_pdf_string_008)
       
       /* 4. The languange code within the first text object must be the expected
        *    one */
-      fail_unless(strlen((char *)pdf_text_get_language(text1)) == 2);
-      fail_unless(strcmp((char *)pdf_text_get_language(text1), \
-                         (char *)language_code1) == 0);
+      fail_unless(strlen(pdf_text_get_language(text1)) == 2);
+      fail_unless(strcmp(pdf_text_get_language(text1), \
+                         language_code1) == 0);
       
       /* 5. The country code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_country(text1)) == 0);
+      fail_unless(strlen(pdf_text_get_country(text1)) == 0);
       
       /* 6. The first call should return a valid remaining_str pointer and a
        *      non-zero remaining_length */
@@ -928,12 +928,12 @@ START_TEST(pdf_text_new_from_pdf_string_008)
       
       /* 10. The languange code within the second text object must be the 
        *    expected one */
-      fail_unless(strlen((char *)pdf_text_get_language(text2)) == 2);
-      fail_unless(strcmp((char *)pdf_text_get_language(text2), \
-                         (char *)language_code2) == 0);
+      fail_unless(strlen(pdf_text_get_language(text2)) == 2);
+      fail_unless(strcmp(pdf_text_get_language(text2), \
+                         language_code2) == 0);
       
       /* 11. The country code of the second output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_country(text2)) == 0);
+      fail_unless(strlen(pdf_text_get_country(text2)) == 0);
       
       /* 12. The second call should return a valid remaining_str pointer and a
        *      non-zero remaining_length */
@@ -990,12 +990,12 @@ START_TEST(pdf_text_new_from_pdf_string_008)
       
       /* 16. The languange code within the third text object must be the 
        *    expected one */
-      fail_unless(strlen((char *)pdf_text_get_language(text3)) == 2);
-      fail_unless(strcmp((char *)pdf_text_get_language(text3), \
-                         (char *)language_code3) == 0);
+      fail_unless(strlen(pdf_text_get_language(text3)) == 2);
+      fail_unless(strcmp(pdf_text_get_language(text3), \
+                         language_code3) == 0);
       
       /* 17. The country code of the third output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_country(text3)) == 0);
+      fail_unless(strlen(pdf_text_get_country(text3)) == 0);
       
       /* 18. The third call should return a NULL @code{remaining_str} pointer
        *      and a zero @code{remaining_length} */
@@ -1227,14 +1227,14 @@ START_TEST(pdf_text_new_from_pdf_string_009)
       
       /* 4. The languange code within the first text object must be the expected
        *    one */
-      fail_unless(strlen((char *)pdf_text_get_language(text1)) == 2);
-      fail_unless(strcmp((char *)pdf_text_get_language(text1), \
-                         (char *)language_code1) == 0);
+      fail_unless(strlen(pdf_text_get_language(text1)) == 2);
+      fail_unless(strcmp(pdf_text_get_language(text1), \
+                         language_code1) == 0);
       
       /* 5. The country code of the output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_country(text1)) == 2);
-      fail_unless(strcmp((char *)pdf_text_get_country(text1), \
-                         (char *)country_code1) == 0);
+      fail_unless(strlen(pdf_text_get_country(text1)) == 2);
+      fail_unless(strcmp(pdf_text_get_country(text1), \
+                         country_code1) == 0);
       
       /* 6. The first call should return a valid remaining_str pointer and a
        *      non-zero remaining_length */
@@ -1291,14 +1291,14 @@ START_TEST(pdf_text_new_from_pdf_string_009)
       
       /* 10. The languange code within the second text object must be the 
        *    expected one */
-      fail_unless(strlen((char *)pdf_text_get_language(text2)) == 2);
-      fail_unless(strcmp((char *)pdf_text_get_language(text2), \
-                         (char *)language_code2) == 0);
+      fail_unless(strlen(pdf_text_get_language(text2)) == 2);
+      fail_unless(strcmp(pdf_text_get_language(text2), \
+                         language_code2) == 0);
       
       /* 11. The country code of the second output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_country(text2)) == 2);
-      fail_unless(strcmp((char *)pdf_text_get_country(text2), \
-                         (char *)country_code2) == 0);
+      fail_unless(strlen(pdf_text_get_country(text2)) == 2);
+      fail_unless(strcmp(pdf_text_get_country(text2), \
+                         country_code2) == 0);
 
       /* 12. The second call should return a valid remaining_str pointer and a
        *      non-zero remaining_length */
@@ -1355,14 +1355,14 @@ START_TEST(pdf_text_new_from_pdf_string_009)
       
       /* 16. The languange code within the third text object must be the 
        *    expected one */
-      fail_unless(strlen((char *)pdf_text_get_language(text3)) == 2);
-      fail_unless(strcmp((char *)pdf_text_get_language(text3), \
-                         (char *)language_code3) == 0);
+      fail_unless(strlen(pdf_text_get_language(text3)) == 2);
+      fail_unless(strcmp(pdf_text_get_language(text3), \
+                         language_code3) == 0);
       
       /* 17. The country code of the third output object should be empty */
-      fail_unless(strlen((char *)pdf_text_get_country(text3)) == 2);
-      fail_unless(strcmp((char *)pdf_text_get_country(text3), \
-                         (char *)country_code3) == 0);
+      fail_unless(strlen(pdf_text_get_country(text3)) == 2);
+      fail_unless(strcmp(pdf_text_get_country(text3), \
+                         country_code3) == 0);
       
       /* 18. The third call should return a NULL @code{remaining_str} pointer
        *      and a zero @code{remaining_length} */

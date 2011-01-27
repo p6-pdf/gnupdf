@@ -187,8 +187,8 @@ pdf_stm_read (pdf_stm_t stm,
           cache_size = stm->cache->wp - stm->cache->rp;
           to_copy_bytes = PDF_MIN(pending_bytes, cache_size);
 
-          memcpy ((char *) (buf + *read_bytes),
-                  (char *) stm->cache->data + stm->cache->rp,
+          memcpy ((buf + *read_bytes),
+                  stm->cache->data + stm->cache->rp,
                   to_copy_bytes);
           
           *read_bytes += to_copy_bytes;
@@ -266,8 +266,8 @@ pdf_stm_write (pdf_stm_t stm,
 
           if (to_write_bytes != 0)
             {
-              memcpy ((char *) tail_buffer->data + tail_buffer->wp,
-                      (char *) buf + *written_bytes,
+              memcpy (tail_buffer->data + tail_buffer->wp,
+                      buf + *written_bytes,
                       to_write_bytes);
 
               *written_bytes += to_write_bytes;

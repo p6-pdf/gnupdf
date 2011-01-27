@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ START_TEST(pdf_text_check_host_encoding_001)
 
   /* 2. A non-empty pdf_text_host_encoding_t variable should be returned as
    *      well. */
-  fail_unless(strlen((char *)host_enc.name) > 0);
+  fail_unless(strlen(host_enc.name) > 0);
 }
 END_TEST
 
@@ -77,7 +77,7 @@ START_TEST(pdf_text_check_host_encoding_002)
   pdf_text_host_encoding_t host_enc;
 
   /* Set old host encoding name */
-  strncpy((char *)(&(host_enc.name[0])),"ascii",5);
+  strncpy((&(host_enc.name[0])),"ascii",5);
   host_enc.name[5] = '\0';
   
   /* Always INIT! Check runs each test in a different process */
@@ -93,7 +93,7 @@ START_TEST(pdf_text_check_host_encoding_002)
 #endif
   
   /* 2. The pdf_text_host_encoding_t variable should remain unchanged. */
-  fail_unless(strcmp((char *)host_enc.name, "ascii") == 0);
+  fail_unless(strcmp(host_enc.name, "ascii") == 0);
 }
 END_TEST
 

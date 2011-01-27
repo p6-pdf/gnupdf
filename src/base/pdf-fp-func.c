@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2010-06-29 13:39:12 jemarch"
+/* -*- mode: C -*- Time-stamp: "2011-01-26 22:16:04 jemarch"
  *
  *       File:         pdf-fp-func.c
  *       Date:         Sun Nov 30 18:46:06 2008
@@ -1942,13 +1942,13 @@ hash (register const char *str, register pdf_i32_t len)
   switch (hval)
     {
     default:
-      hval += asso_values[(pdf_char_t)str[2]];
+      hval += asso_values[(pdf_uchar_t) str[2]];
       /*FALLTHROUGH*/
     case 2:
-      hval += asso_values[(pdf_char_t)str[1]];
+      hval += asso_values[(pdf_uchar_t) str[1]];
       /*FALLTHROUGH*/
     case 1:
-      hval += asso_values[(pdf_char_t)str[0]];
+      hval += asso_values[(pdf_uchar_t) str[0]];
       break;
     }
   return hval;
@@ -2067,7 +2067,7 @@ static pdf_i32_t get_token (pdf_token_reader_t reader,
             {
               struct toklut *tk;
 
-              tk = in_word_set ((char *) pdf_token_get_keyword_data (token),
+              tk = in_word_set (pdf_token_get_keyword_data (token),
                                 pdf_token_get_keyword_size (token));
               ret = (tk) ? tk->ret : OPC_bad;
               break;

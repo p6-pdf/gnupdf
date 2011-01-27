@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,7 +60,7 @@ START_TEST(pdf_text_get_country_001)
   fail_if(country == NULL);
   
   /* 2. The length of the returned string should be 2. */
-  fail_unless(strlen((char *)country) == 2);
+  fail_unless(strlen(country) == 2);
 
   pdf_text_destroy(text);
 
@@ -93,7 +93,7 @@ START_TEST(pdf_text_get_country_002)
   fail_if(country == NULL);
   
   /* 2. The length of the returned string should be 2. */
-  fail_unless(strlen((char *)country) == 0);
+  fail_unless(strlen(country) == 0);
   
   pdf_text_destroy(text);
 }

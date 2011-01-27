@@ -111,7 +111,7 @@ pdf_text_detect_host_encoding(void)
   
   /* Limit length to maximum length, just in case */
   length = (length > (PDF_TEXT_HENMAXL-1)) ? (PDF_TEXT_HENMAXL-1) : length;
-  strncpy((char *)&(text_context.host_encoding.name[0]), charset, length);
+  strncpy(&(text_context.host_encoding.name[0]), charset, length);
 
   PDF_DEBUG_BASE("TextContext: Host Encoding is '%s'", \
                  text_context.host_encoding.name);
@@ -142,14 +142,14 @@ pdf_text_detect_host_language_and_country(void)
       && !STREQ (locale_name, "POSIX", 'P', 'O', 'S', 'I', 'X', 0, 0, 0, 0))
     {
       /* Store language ID */
-      strncpy((char *)&(text_context.host_language_id[0]), locale_name,
+      strncpy(&(text_context.host_language_id[0]), locale_name,
               PDF_TEXT_HLL-1);
 
       /* If available, store country ID */
       if((strlen(locale_name) >= 5) &&          \
          (locale_name[2] == '_'))
         {
-          strncpy((char *)&(text_context.host_country_id[0]), &locale_name[3],
+          strncpy(&(text_context.host_country_id[0]), &locale_name[3],
                   PDF_TEXT_HLL-1);
         }
     }

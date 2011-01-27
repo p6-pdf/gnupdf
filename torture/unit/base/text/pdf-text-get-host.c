@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,9 +49,9 @@ START_TEST(pdf_text_get_host_001)
   
   /* Create, without using the API, a valid pdf_text_host_encoding_t */
 #ifdef PDF_HOST_WIN32
-  strcpy((char *)(&(host_enc.name[0])), "CP20127"); /* us-ascii */
+  strcpy((&(host_enc.name[0])), "CP20127"); /* us-ascii */
 #else
-  strcpy((char *)(&(host_enc.name[0])), "us-ascii");
+  strcpy((&(host_enc.name[0])), "us-ascii");
 #endif
   
   i = 0;
@@ -113,9 +113,9 @@ START_TEST(pdf_text_get_host_002)
   
   /* Create, without using the API, an invalid pdf_text_host_encoding_t */
 #ifdef PDF_HOST_WIN32
-  strcpy((char *)(&(host_enc.name[0])), "CP17"); /* us-ascii */
+  strcpy((&(host_enc.name[0])), "CP17"); /* us-ascii */
 #else
-  strcpy((char *)(&(host_enc.name[0])), "invalid_host_enc");
+  strcpy((&(host_enc.name[0])), "invalid_host_enc");
 #endif
   
   i = 0;

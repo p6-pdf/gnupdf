@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,15 +56,15 @@ START_TEST(pdf_text_replace_001)
 
   
   fail_if(pdf_text_new_from_pdf_string(input_string,
-                                       strlen((char *)input_string),
+                                       strlen(input_string),
                                        NULL, NULL,
                                        &text) != PDF_OK);
   fail_if(pdf_text_new_from_pdf_string(old_pattern_ascii,
-                                       strlen((char *)old_pattern_ascii),
+                                       strlen(old_pattern_ascii),
                                        NULL, NULL,
                                        &old_pattern) != PDF_OK);
   fail_if(pdf_text_new_from_pdf_string(new_pattern_ascii,
-                                       strlen((char *)new_pattern_ascii),
+                                       strlen(new_pattern_ascii),
                                        NULL, NULL,
                                        &new_pattern) != PDF_OK);
 
@@ -74,8 +74,8 @@ START_TEST(pdf_text_replace_001)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_if(pdf_text_get_pdfdocenc(&output_string, text) != PDF_OK);
   fail_if(output_string == NULL);
-  fail_if(strlen((char *)output_string) != strlen((char *)expected_string));
-  fail_if(strcmp((char *)output_string, (char *)expected_string) != 0);
+  fail_if(strlen(output_string) != strlen(expected_string));
+  fail_if(strcmp(output_string, expected_string) != 0);
   
   pdf_text_destroy(text);
   pdf_text_destroy(new_pattern);
@@ -113,15 +113,15 @@ START_TEST(pdf_text_replace_002)
   
   
   fail_if(pdf_text_new_from_pdf_string(input_string,
-                                       strlen((char *)input_string),
+                                       strlen(input_string),
                                        NULL, NULL,
                                        &text) != PDF_OK);
   fail_if(pdf_text_new_from_pdf_string(old_pattern_ascii,
-                                       strlen((char *)old_pattern_ascii),
+                                       strlen(old_pattern_ascii),
                                        NULL, NULL,
                                        &old_pattern) != PDF_OK);
   fail_if(pdf_text_new_from_pdf_string(new_pattern_ascii,
-                                       strlen((char *)new_pattern_ascii),
+                                       strlen(new_pattern_ascii),
                                        NULL, NULL,
                                        &new_pattern) != PDF_OK);
   
@@ -131,8 +131,8 @@ START_TEST(pdf_text_replace_002)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_if(pdf_text_get_pdfdocenc(&output_string, text) != PDF_OK);
   fail_if(output_string == NULL);
-  fail_if(strlen((char *)output_string) != strlen((char *)expected_string));
-  fail_if(strcmp((char *)output_string, (char *)expected_string) != 0);
+  fail_if(strlen(output_string) != strlen(expected_string));
+  fail_if(strcmp(output_string, expected_string) != 0);
   
   pdf_text_destroy(text);
   pdf_text_destroy(new_pattern);
@@ -169,15 +169,15 @@ START_TEST(pdf_text_replace_003)
   
   
   fail_if(pdf_text_new_from_pdf_string(input_string,
-                                       strlen((char *)input_string),
+                                       strlen(input_string),
                                        NULL, NULL,
                                        &text) != PDF_OK);
   fail_if(pdf_text_new_from_pdf_string(old_pattern_ascii,
-                                       strlen((char *)old_pattern_ascii),
+                                       strlen(old_pattern_ascii),
                                        NULL, NULL,
                                        &old_pattern) != PDF_OK);
   fail_if(pdf_text_new_from_pdf_string(new_pattern_ascii,
-                                       strlen((char *)new_pattern_ascii),
+                                       strlen(new_pattern_ascii),
                                        NULL, NULL,
                                        &new_pattern) != PDF_OK);
   
@@ -187,8 +187,8 @@ START_TEST(pdf_text_replace_003)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_if(pdf_text_get_pdfdocenc(&output_string, text) != PDF_OK);
   fail_if(output_string == NULL);
-  fail_if(strlen((char *)output_string) != strlen((char *)expected_string));
-  fail_if(strcmp((char *)output_string, (char *)expected_string) != 0);
+  fail_if(strlen(output_string) != strlen(expected_string));
+  fail_if(strcmp(output_string, expected_string) != 0);
   
   pdf_text_destroy(text);
   pdf_text_destroy(new_pattern);
@@ -223,15 +223,15 @@ START_TEST(pdf_text_replace_004)
   
   
   fail_if(pdf_text_new_from_pdf_string(input_string,
-                                       strlen((char *)input_string),
+                                       strlen(input_string),
                                        NULL, NULL,
                                        &text) != PDF_OK);
   fail_if(pdf_text_new_from_pdf_string(old_pattern_ascii,
-                                       strlen((char *)old_pattern_ascii),
+                                       strlen(old_pattern_ascii),
                                        NULL, NULL,
                                        &old_pattern) != PDF_OK);
   fail_if(pdf_text_new_from_pdf_string(new_pattern_ascii,
-                                       strlen((char *)new_pattern_ascii),
+                                       strlen(new_pattern_ascii),
                                        NULL, NULL,
                                        &new_pattern) != PDF_OK);
   
@@ -241,8 +241,8 @@ START_TEST(pdf_text_replace_004)
   /* 2. The contents of the output text object must be the expected ones. */
   fail_if(pdf_text_get_pdfdocenc(&output_string, text) != PDF_OK);
   fail_if(output_string == NULL);
-  fail_if(strlen((char *)output_string) != strlen((char *)expected_string));
-  fail_if(strcmp((char *)output_string, (char *)expected_string) != 0);
+  fail_if(strlen(output_string) != strlen(expected_string));
+  fail_if(strcmp(output_string, expected_string) != 0);
   
   pdf_text_destroy(text);
   pdf_text_destroy(new_pattern);
@@ -279,15 +279,15 @@ START_TEST(pdf_text_replace_005)
   
   
   fail_if(pdf_text_new_from_pdf_string(input_string,
-                                       strlen((char *)input_string),
+                                       strlen(input_string),
                                        NULL, NULL,
                                        &text) != PDF_OK);
   fail_if(pdf_text_new_from_pdf_string(old_pattern_ascii,
-                                       strlen((char *)old_pattern_ascii),
+                                       strlen(old_pattern_ascii),
                                        NULL, NULL,
                                        &old_pattern) != PDF_OK);
   fail_if(pdf_text_new_from_pdf_string(new_pattern_ascii,
-                                       strlen((char *)new_pattern_ascii),
+                                       strlen(new_pattern_ascii),
                                        NULL, NULL,
                                        &new_pattern) != PDF_OK);
   
@@ -297,8 +297,8 @@ START_TEST(pdf_text_replace_005)
   /* 2. The contents of the output text object remain unchanged. */
   fail_if(pdf_text_get_pdfdocenc(&output_string, text) != PDF_OK);
   fail_if(output_string == NULL);
-  fail_if(strlen((char *)output_string) != strlen((char *)expected_string));
-  fail_if(strcmp((char *)output_string, (char *)expected_string) != 0);
+  fail_if(strlen(output_string) != strlen(expected_string));
+  fail_if(strcmp(output_string, expected_string) != 0);
   
   pdf_text_destroy(text);
   pdf_text_destroy(new_pattern);
@@ -335,15 +335,15 @@ START_TEST(pdf_text_replace_006)
   
   
   fail_if(pdf_text_new_from_pdf_string(input_string,
-                                       strlen((char *)input_string),
+                                       strlen(input_string),
                                        NULL, NULL,
                                        &text) != PDF_OK);
   fail_if(pdf_text_new_from_pdf_string(old_pattern_ascii,
-                                       strlen((char *)old_pattern_ascii),
+                                       strlen(old_pattern_ascii),
                                        NULL, NULL,
                                        &old_pattern) != PDF_OK);
   fail_if(pdf_text_new_from_pdf_string(new_pattern_ascii,
-                                       strlen((char *)new_pattern_ascii),
+                                       strlen(new_pattern_ascii),
                                        NULL, NULL,
                                        &new_pattern) != PDF_OK);
   
@@ -353,8 +353,8 @@ START_TEST(pdf_text_replace_006)
   /* 2. The contents of the output text object remain unchanged. */
   fail_if(pdf_text_get_pdfdocenc(&output_string, text) != PDF_OK);
   fail_if(output_string == NULL);
-  fail_if(strlen((char *)output_string) != strlen((char *)expected_string));
-  fail_if(strcmp((char *)output_string, (char *)expected_string) != 0);
+  fail_if(strlen(output_string) != strlen(expected_string));
+  fail_if(strcmp(output_string, expected_string) != 0);
   
   pdf_text_destroy(text);
   pdf_text_destroy(new_pattern);
@@ -391,15 +391,15 @@ START_TEST(pdf_text_replace_007)
   
   
   fail_if(pdf_text_new_from_pdf_string(input_string,
-                                       strlen((char *)input_string),
+                                       strlen(input_string),
                                        NULL, NULL,
                                        &text) != PDF_OK);
   fail_if(pdf_text_new_from_pdf_string(old_pattern_ascii,
-                                       strlen((char *)old_pattern_ascii),
+                                       strlen(old_pattern_ascii),
                                        NULL, NULL,
                                        &old_pattern) != PDF_OK);
   fail_if(pdf_text_new_from_pdf_string(new_pattern_ascii,
-                                       strlen((char *)new_pattern_ascii),
+                                       strlen(new_pattern_ascii),
                                        NULL, NULL,
                                        &new_pattern) != PDF_OK);
   
@@ -409,8 +409,8 @@ START_TEST(pdf_text_replace_007)
   /* 2. The contents of the output text object remain unchanged. */
   fail_if(pdf_text_get_pdfdocenc(&output_string, text) != PDF_OK);
   fail_if(output_string == NULL);
-  fail_if(strlen((char *)output_string) != strlen((char *)expected_string));
-  fail_if(strcmp((char *)output_string, (char *)expected_string) != 0);
+  fail_if(strlen(output_string) != strlen(expected_string));
+  fail_if(strcmp(output_string, expected_string) != 0);
   
   pdf_text_destroy(text);
   pdf_text_destroy(new_pattern);
@@ -447,15 +447,15 @@ START_TEST(pdf_text_replace_008)
   
   
   fail_if(pdf_text_new_from_pdf_string(input_string,
-                                       strlen((char *)input_string),
+                                       strlen(input_string),
                                        NULL, NULL,
                                        &text) != PDF_OK);
   fail_if(pdf_text_new_from_pdf_string(old_pattern_ascii,
-                                       strlen((char *)old_pattern_ascii),
+                                       strlen(old_pattern_ascii),
                                        NULL, NULL,
                                        &old_pattern) != PDF_OK);
   fail_if(pdf_text_new_from_pdf_string(new_pattern_ascii,
-                                       strlen((char *)new_pattern_ascii),
+                                       strlen(new_pattern_ascii),
                                        NULL, NULL,
                                        &new_pattern) != PDF_OK);
   
@@ -465,8 +465,8 @@ START_TEST(pdf_text_replace_008)
   /* 2. The contents of the output text object remain unchanged. */
   fail_if(pdf_text_get_pdfdocenc(&output_string, text) != PDF_OK);
   fail_if(output_string == NULL);
-  fail_if(strlen((char *)output_string) != strlen((char *)expected_string));
-  fail_if(strcmp((char *)output_string, (char *)expected_string) != 0);
+  fail_if(strlen(output_string) != strlen(expected_string));
+  fail_if(strcmp(output_string, expected_string) != 0);
   
   pdf_text_destroy(text);
   pdf_text_destroy(new_pattern);
@@ -499,15 +499,15 @@ START_TEST(pdf_text_replace_009)
   
   
   fail_if(pdf_text_new_from_pdf_string(input_string,
-                                       strlen((char *)input_string),
+                                       strlen(input_string),
                                        NULL, NULL,
                                        &text) != PDF_OK);
   fail_if(pdf_text_new_from_pdf_string(old_pattern_ascii,
-                                       strlen((char *)old_pattern_ascii),
+                                       strlen(old_pattern_ascii),
                                        NULL, NULL,
                                        &old_pattern) != PDF_OK);
   fail_if(pdf_text_new_from_pdf_string(new_pattern_ascii,
-                                       strlen((char *)new_pattern_ascii),
+                                       strlen(new_pattern_ascii),
                                        NULL, NULL,
                                        &new_pattern) != PDF_OK);
   
@@ -545,15 +545,15 @@ START_TEST(pdf_text_replace_010)
   
   
   fail_if(pdf_text_new_from_pdf_string(input_string,
-                                       strlen((char *)input_string),
+                                       strlen(input_string),
                                        NULL, NULL,
                                        &text) != PDF_OK);
   fail_if(pdf_text_new_from_pdf_string(old_pattern_ascii,
-                                       strlen((char *)old_pattern_ascii),
+                                       strlen(old_pattern_ascii),
                                        NULL, NULL,
                                        &old_pattern) != PDF_OK);
   fail_if(pdf_text_new_from_pdf_string(new_pattern_ascii,
-                                       strlen((char *)new_pattern_ascii),
+                                       strlen(new_pattern_ascii),
                                        NULL, NULL,
                                        &new_pattern) != PDF_OK);
   
@@ -563,7 +563,7 @@ START_TEST(pdf_text_replace_010)
   /* 2. The contents of the output text object remain empty. */
   fail_if(pdf_text_get_pdfdocenc(&output_string, text) != PDF_OK);
   fail_if(output_string == NULL);
-  fail_if(strlen((char *)output_string) != 0);
+  fail_if(strlen(output_string) != 0);
   
   pdf_text_destroy(text);
   pdf_text_destroy(new_pattern);
