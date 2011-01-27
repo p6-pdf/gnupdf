@@ -29,6 +29,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
+#include <pdf-alloc.h>
 #include <pdf-global.h>
 #include <pdf-error.h>
 
@@ -41,6 +42,21 @@ const pdf_char_t * pdf_error_stlist [] =
     PDF_ERROR_LIST
   };
 #undef ERROR_ENTRY
+
+/* Update this list according to pdf_error_domain_t. */
+#define ERROR_ENTRY(id, string) string
+const pdf_char_t * pdf_error_domain_stlist [] =
+  {
+    PDF_ERROR_DOMAIN_LIST
+  };
+#undef ERROR_ENTRY
+
+/* Structure of the PDF error object */
+struct pdf_error_s {
+  pdf_error_domain_t domain;
+  pdf_status_t status;
+  pdf_char_t *message;
+};
 
 void
 pdf_perror (const pdf_status_t  status,
@@ -80,7 +96,112 @@ pdf_error (const pdf_status_t  status,
 
   fprintf (fd, ".\n");
   fflush (fd);
+}
 
+static pdf_error_t *
+error_new_valist (pdf_error_domain_t  domain,
+                  pdf_status_t        status,
+                  const pdf_char_t   *format,
+                  va_list             args)
+{
+  pdf_error_t *error;
+
+  error = pdf_alloc (sizeof (struct pdf_error_s));
+  if (error != NULL)
+    {
+      if (vasprintf (&(error->message), format, args) < 0)
+        {
+          pdf_dealloc (error);
+          return NULL;
+        }
+      error->status = status;
+      error->domain = domain;
+    }
+  return error;
+}
+
+pdf_error_t *
+pdf_error_new (pdf_error_domain_t  domain,
+               pdf_status_t        status,
+               const pdf_char_t   *format,
+               ...)
+{
+  va_list args;
+  pdf_error_t *error;
+
+  va_start (args, format);
+  error = error_new_valist (domain,
+                            status,
+                            format,
+                            args);
+  va_end (args);
+  return error;
+}
+
+pdf_status_t
+pdf_error_get_status (pdf_error_t *error)
+{
+  return error->status;
+}
+
+pdf_error_domain_t
+pdf_error_get_domain (pdf_error_t *error)
+{
+  return error->domain;
+}
+
+const pdf_char_t *
+pdf_error_get_message (pdf_error_t *error)
+{
+  return error->message;
+}
+
+void
+pdf_error_destroy (pdf_error_t *error)
+{
+  pdf_dealloc (error->message);
+  pdf_dealloc (error);
+}
+
+void
+pdf_set_error (pdf_error_t        **err,
+               pdf_error_domain_t   domain,
+               pdf_status_t         status,
+               const pdf_char_t    *format,
+               ...)
+{
+  if (err != NULL)
+    {
+      va_list args;
+
+      va_start (args, format);
+      *err = error_new_valist (domain,
+                               status,
+                               format,
+                               args);
+      va_end (args);
+    }
+}
+
+void
+pdf_clear_error (pdf_error_t **err)
+{
+  if ((err == NULL) ||
+      (*err == NULL))
+    return;
+
+  pdf_error_destroy (*err);
+  *err = NULL;
+}
+
+void
+pdf_propagate_error (pdf_error_t **dest,
+                     pdf_error_t  *src)
+{
+  if (dest == NULL)
+    pdf_error_destroy (src);
+  else
+    *dest = src;
 }
 
 /* End of pdf-error.c */
