@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (C) 2009 Free Software Foundation, Inc.
+# Copyright (C) 2009,2011 Free Software Foundation, Inc.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -78,7 +78,7 @@ for ((i=1; i<=10; i++)) ; do {
        l=$(< test_out)
        echo -ne ${!k} > test_in
        m=$(< test_in)
-       if test "$l" == "$m" ; 
+       if test "$l" = "$m" ; 
          then {
            echo -ne " Pass\n"
          } ; 
@@ -114,7 +114,7 @@ for tdf in ../testdata/* ; do {
   n=$(< in.md5)
   md5sum test.dec | awk -- '{print $1}' > out.md5
   o=$(< out.md5)
-  if test "$n" == "$o" ;
+  if test "$n" = "$o" ;
     then {
       echo -ne "Pass\n"
     } ;

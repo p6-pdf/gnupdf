@@ -75,8 +75,14 @@ typedef off_t pdf_off_t;
 /* Memory indexes (size_t) */
 typedef size_t pdf_size_t;
 
-/* PDF manages bytes with values in the range 0-255 */
-typedef unsigned char pdf_char_t;
+/* Characters.
+ *
+ * We provide two types here: a pdf_char_t that follow the signess of
+ * the system 'char' type, and a pdf_uchar_t that is like an unsigned
+ * char.
+ */
+typedef char pdf_char_t;
+typedef unsigned char pdf_uchar_t;
 
 /* 32-bit unsigned integer */
 typedef uint32_t pdf_u32_t;

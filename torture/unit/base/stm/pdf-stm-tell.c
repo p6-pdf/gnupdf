@@ -52,7 +52,7 @@ START_TEST (pdf_stm_tell_001)
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
-  strcpy ((char *) buf, "0123456789");
+  strcpy (buf, "0123456789");
 
   /* Create the stream */
   ret = pdf_stm_mem_new (buf,

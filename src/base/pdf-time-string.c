@@ -71,7 +71,7 @@ pdf_time_check_string_pdf (const pdf_char_t *time_str,
       return PDF_EBADDATA;
     }
   /* Check prefix */
-  if(strncmp((char *)time_str,"D:",2) != 0)
+  if(strncmp(time_str,"D:",2) != 0)
     {
       PDF_DEBUG_BASE("Invalid PDF time string (no prefix): '%s'",
                      time_str);
@@ -161,7 +161,7 @@ pdf_time_from_string_pdf (pdf_time_t time_var,
    */
   struct pdf_time_cal_s calendar;
   pdf_status_t ret_code;
-  pdf_size_t   time_str_length = strlen((char *)time_str);
+  pdf_size_t   time_str_length = strlen(time_str);
 
   ret_code = pdf_time_check_string_pdf (time_str,
                                         time_str_length,
@@ -368,7 +368,7 @@ pdf_time_from_string_utc_asn1(pdf_time_t time_var,
    *       years will be used to get the century.
    */
   struct pdf_time_cal_s calendar;
-  pdf_size_t time_str_length = strlen((char *)time_str);
+  pdf_size_t time_str_length = strlen(time_str);
 
   if(pdf_time_check_string_utc_asn1(time_str, time_str_length) != PDF_OK)
     {
@@ -469,7 +469,7 @@ pdf_time_from_string_generalized_asn1(pdf_time_t time_var,
    *
    */
   struct pdf_time_cal_s calendar;
-  pdf_size_t time_str_length = strlen((char *)time_str);
+  pdf_size_t time_str_length = strlen(time_str);
 
   /* Check minimum length */
   if(time_str_length < 4)
@@ -586,7 +586,7 @@ pdf_time_from_string_iso8601(pdf_time_t time_var,
    *
    */
   struct pdf_time_cal_s calendar;
-  pdf_size_t time_str_length = strlen((char *)time_str);
+  pdf_size_t time_str_length = strlen(time_str);
 
   /* Check minimum length */
   if(time_str_length < 4)
@@ -696,7 +696,7 @@ pdf_time_to_string_pdf (const pdf_time_t time_var,
               offset_hours = (((calendar.gmt_offset < 0) ? (-1) : (1)) * calendar.gmt_offset) / 3600;
               offset_minutes = (((calendar.gmt_offset < 0) ? (-1) : (1)) * calendar.gmt_offset) % 3600;
               offset_minutes /= 60; /* Get only full minutes */
-              sprintf((char *)str, "D:%4d%s%d%s%d%s%d%s%d%s%d%c%s%d'%s%d", \
+              sprintf(str, "D:%4d%s%d%s%d%s%d%s%d%s%d%c%s%d'%s%d", \
                       calendar.year,
                       (calendar.month < 10 ? "0" : ""), calendar.month,
                       (calendar.day < 10 ? "0" : ""), calendar.day,
@@ -715,7 +715,7 @@ pdf_time_to_string_pdf (const pdf_time_t time_var,
             }
           else
             {
-              sprintf((char *)str, "D:%4d%s%d%s%d%s%d%s%d%s%dZ", \
+              sprintf(str, "D:%4d%s%d%s%d%s%d%s%d%s%dZ", \
                       calendar.year,
                       (calendar.month < 10 ? "0" : ""), calendar.month,
                       (calendar.day < 10 ? "0" : ""), calendar.day,
@@ -767,7 +767,7 @@ pdf_time_to_string_utc_asn1(const pdf_time_t time_var)
               /* yymmddhhmmss+hhmm
                * yymmddhhmmss-hhmm
                */
-              sprintf((char *)str, "%s%d%s%d%s%d%s%d%s%d%s%d%c%s%d%s%d", \
+              sprintf(str, "%s%d%s%d%s%d%s%d%s%d%s%d%c%s%d%s%d", \
                       (smallyear < 10 ? "0" : ""), smallyear,
                       (calendar.month < 10 ? "0" : ""), calendar.month,
                       (calendar.day < 10 ? "0" : ""), calendar.day,
@@ -783,7 +783,7 @@ pdf_time_to_string_utc_asn1(const pdf_time_t time_var)
               /*
                * yymmddhhmmssZ
                */
-              sprintf((char *)str, "%s%d%s%d%s%d%s%d%s%d%s%dZ", \
+              sprintf(str, "%s%d%s%d%s%d%s%d%s%d%s%dZ", \
                       (smallyear < 10 ? "0" : ""), smallyear,
                       (calendar.month < 10 ? "0" : ""), calendar.month,
                       (calendar.day < 10 ? "0" : ""), calendar.day,
@@ -824,7 +824,7 @@ pdf_time_to_string_generalized_asn1(const pdf_time_t time_var)
               offset_hours = (((calendar.gmt_offset < 0) ? (-1) : (1)) * calendar.gmt_offset) / 3600;
               offset_minutes = (((calendar.gmt_offset < 0) ? (-1) : (1)) * calendar.gmt_offset) % 3600;
               offset_minutes /= 60;
-              sprintf((char *)str, "%4d%s%d%s%d%s%d%s%d%s%d%c%s%d%s%d", \
+              sprintf(str, "%4d%s%d%s%d%s%d%s%d%s%d%c%s%d%s%d", \
                       calendar.year,
                       (calendar.month < 10 ? "0" : ""), calendar.month,
                       (calendar.day < 10 ? "0" : ""), calendar.day,
@@ -837,7 +837,7 @@ pdf_time_to_string_generalized_asn1(const pdf_time_t time_var)
             }
           else
             {
-              sprintf((char *)str, "%4d%s%d%s%d%s%d%s%d%s%dZ", \
+              sprintf(str, "%4d%s%d%s%d%s%d%s%d%s%dZ", \
                       calendar.year,
                       (calendar.month < 10 ? "0" : ""), calendar.month,
                       (calendar.day < 10 ? "0" : ""), calendar.day,
@@ -878,7 +878,7 @@ pdf_time_to_string_iso8601(const pdf_time_t time_var)
               offset_hours = (((calendar.gmt_offset < 0) ? (-1) : (1)) * calendar.gmt_offset) / 3600;
               offset_minutes = (((calendar.gmt_offset < 0) ? (-1) : (1)) * calendar.gmt_offset) % 3600;
               offset_minutes /= 60; /* Get only full minutes */
-              sprintf((char *)str, "%4d-%s%d-%s%dT%s%d:%s%d:%s%d%c%s%d:%s%d", \
+              sprintf(str, "%4d-%s%d-%s%dT%s%d:%s%d:%s%d%c%s%d:%s%d", \
                       calendar.year,
                       (calendar.month < 10 ? "0" : ""), calendar.month,
                       (calendar.day < 10 ? "0" : ""), calendar.day,
@@ -891,7 +891,7 @@ pdf_time_to_string_iso8601(const pdf_time_t time_var)
             }
           else
             {
-              sprintf((char *)str, "%4d-%s%d-%s%dT%s%d:%s%d:%s%dZ", \
+              sprintf(str, "%4d-%s%d-%s%dT%s%d:%s%d:%s%dZ", \
                       calendar.year,
                       (calendar.month < 10 ? "0" : ""), calendar.month,
                       (calendar.day < 10 ? "0" : ""), calendar.day,

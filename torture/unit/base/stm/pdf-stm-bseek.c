@@ -51,7 +51,7 @@ START_TEST (pdf_stm_bseek_001)
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
-  strcpy ((char *) buf, "0123456789");
+  strcpy (buf, "0123456789");
 
   /* Create the stream */
   ret = pdf_stm_mem_new (buf,
@@ -110,7 +110,7 @@ START_TEST (pdf_stm_bseek_002)
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
-  strcpy ((char *) buf, "0123456789");
+  strcpy (buf, "0123456789");
 
   /* Create the stream */
   ret = pdf_stm_mem_new (buf,

@@ -59,7 +59,7 @@ pdf_text_filter_change_case(pdf_text_t text,
   /* Get text language ID. First, try to get it from the pdf_text_t element */
   language = pdf_text_get_language(text);
   /* If text element doesn't have a language ID, get it from the text context */
-  if(strlen((char *)language) == 0)
+  if(strlen(language) == 0)
     {
       language = pdf_text_context_get_host_language();
     }
@@ -250,7 +250,7 @@ pdf_text_substitute_line_ending(pdf_text_t text, const pdf_text_eol_t new_eol)
 
   /* Create text new pattern */
   if(pdf_text_new_from_unicode(new_eol->sequence,
-                               strlen((char *)new_eol->sequence),
+                               strlen(new_eol->sequence),
                                PDF_TEXT_UTF8,
                                &new_text_pattern) != PDF_OK)
     {
@@ -270,7 +270,7 @@ pdf_text_substitute_line_ending(pdf_text_t text, const pdf_text_eol_t new_eol)
 
       /* Create text old pattern */
       if(pdf_text_new_from_unicode(requested_eol->sequence,
-                                   strlen((char *)requested_eol->sequence),
+                                   strlen(requested_eol->sequence),
                                    PDF_TEXT_UTF8,
                                    &eols[i]) != PDF_OK)
         {

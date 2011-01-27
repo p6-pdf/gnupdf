@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2007, 2008, 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2007-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,9 @@ typedef enum
 
 struct pdf_stm_f_rl_s
 {
-  pdf_char_t curchar, rlchar, dec_count;
+  pdf_uchar_t curchar;
+  pdf_uchar_t rlchar;
+  pdf_uchar_t dec_count;
   pdf_i32_t rl;
   pdf_bool_t run_p, dec_p;
   pdf_stm_f_rl_enc_e enc_p;

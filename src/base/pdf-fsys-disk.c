@@ -328,7 +328,7 @@ __pdf_fsys_init_base_file_data(const pdf_text_t path_name)
 #ifdef PDF_HOST_WIN32
 #define PDF_FOPEN(f,m) _wfopen((wchar_t *)f,(wchar_t *)m)
 #else
-#define PDF_FOPEN(f,m) fopen_safer((char *)f,(char *)m)
+#define PDF_FOPEN(f,m) fopen_safer(f,m)
 #endif
 
 
@@ -492,7 +492,7 @@ pdf_fsys_disk_file_close (pdf_fsys_file_t file)
 #ifdef PDF_HOST_WIN32
 #define PDF_MKDIR(f,m) _wmkdir((const wchar_t *)f)
 #else
-#define PDF_MKDIR(f,m) mkdir((const char *)f,m)
+#define PDF_MKDIR(f,m) mkdir(f,m)
 #endif
 
 pdf_status_t
@@ -649,7 +649,7 @@ pdf_fsys_disk_get_parent (void *data,
 #ifdef PDF_HOST_WIN32
 #define PDF_RMDIR(f) _wrmdir((wchar_t *)f)
 #else
-#define PDF_RMDIR(f) rmdir((char *)f)
+#define PDF_RMDIR(f) rmdir(f)
 #endif
 
 pdf_status_t
@@ -691,7 +691,7 @@ pdf_fsys_disk_remove_folder (void *data,
 #ifdef PDF_HOST_WIN32
 #define PDF_ACCESS(f,m) _waccess((wchar_t *)f,m)
 #else
-#define PDF_ACCESS(f,m) access((char *)f,m)
+#define PDF_ACCESS(f,m) access(f,m)
 #endif
 
 
@@ -762,7 +762,7 @@ __pdf_fsys_disk_is_writable_from_host_path(const pdf_char_t *host_path,
 #define PDF_STAT(f,s) _wstat((wchar_t *)f,s)
 typedef struct _stat pdf_stat_s;
 #else
-#define PDF_STAT(f,s) stat((char *)f,s)
+#define PDF_STAT(f,s) stat(f,s)
 typedef struct stat pdf_stat_s;
 #endif
 
@@ -1019,7 +1019,7 @@ pdf_fsys_disk_file_get_url (pdf_fsys_file_t file)
       pdf_text_t url = NULL;
 #define PDF_DISK_URL_PREFIX  (pdf_char_t *)"file:/"
       if(pdf_text_new_from_unicode(PDF_DISK_URL_PREFIX,
-                                   strlen((char *) PDF_DISK_URL_PREFIX),
+                                   strlen(PDF_DISK_URL_PREFIX),
                                    PDF_TEXT_UTF8,
                                    &url) == PDF_OK)
         {
@@ -1343,7 +1343,7 @@ pdf_fsys_disk_file_cancel_ria (pdf_fsys_file_t file)
 #ifdef PDF_HOST_WIN32
 #define PDF_FREOPEN(f,m,s) _wfreopen((wchar_t *)f,(wchar_t *)m,s)
 #else
-#define PDF_FREOPEN(f,m,s) freopen_safer ((char *)f,(char *)m,s)
+#define PDF_FREOPEN(f,m,s) freopen_safer (f,m,s)
 #endif
 
 
@@ -1582,7 +1582,7 @@ __pdf_fsys_disk_win32_device_p (pdf_text_t path)
         (i < PDF_MAX_W32_DEVICE_NAMES))
     {
       pdf_text_new_from_unicode (device_names[i],
-                                 strlen ((char *)device_names[i]),
+                                 strlen (device_names[i]),
                                  PDF_TEXT_UTF8,
                                  &device_name);
       

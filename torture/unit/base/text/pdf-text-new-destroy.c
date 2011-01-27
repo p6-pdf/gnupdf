@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,10 +71,10 @@ START_TEST(pdf_text_new_destroy_002)
   fail_unless(pdf_text_empty_p(newtext) == PDF_TRUE);
   
   /* 3. The language code of the output object should be empty */
-  fail_unless(strlen((char *)pdf_text_get_language(newtext)) == 0);
+  fail_unless(strlen(pdf_text_get_language(newtext)) == 0);
   
   /* 4. The country code of the output object should be empty */
-  fail_unless(strlen((char *)pdf_text_get_country(newtext)) == 0);
+  fail_unless(strlen(pdf_text_get_country(newtext)) == 0);
   
   /* 5. The call to @code{pdf_text_destroy} should return PDF_OK. Again,
    *  probably this test is not that useful... */

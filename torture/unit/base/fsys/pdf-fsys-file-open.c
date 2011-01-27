@@ -51,7 +51,7 @@ START_TEST(pdf_fsys_file_open_001)
   fail_if( pdf_text_init() != PDF_OK );
 
   fail_if( pdf_text_new_from_unicode(pathname,
-                                     strlen((char *)pathname),
+                                     strlen(pathname),
                                      PDF_TEXT_UTF8,
                                      &path) != PDF_OK );
 
@@ -84,7 +84,7 @@ START_TEST(pdf_fsys_file_open_002)
   fail_if( pdf_text_init() != PDF_OK );
 
   fail_if( pdf_text_new_from_unicode(filename,
-                                     strlen((char *)filename),
+                                     strlen(filename),
                                      PDF_TEXT_UTF8,
                                      &path) != PDF_OK );
 
@@ -118,7 +118,7 @@ START_TEST(pdf_fsys_file_open_003)
   fail_if( pdf_text_init() != PDF_OK );
 
   fail_if( pdf_text_new_from_unicode(pathname,
-                                     strlen((char *)pathname),
+                                     strlen(pathname),
                                      PDF_TEXT_UTF8,
                                      &path) != PDF_OK );
 
@@ -152,7 +152,7 @@ START_TEST(pdf_fsys_file_open_004)
   fail_if( pdf_text_init() != PDF_OK );
 
   fail_if( pdf_text_new_from_unicode(pathname,
-                                     strlen((char *)pathname),
+                                     strlen(pathname),
                                      PDF_TEXT_UTF8,
                                      &path) != PDF_OK );
 

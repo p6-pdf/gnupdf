@@ -79,7 +79,7 @@ pdf_stm_f_jbig2dec_init (pdf_hash_t params,
                                                    (void *) filter_state);
 
       jbig2_data_in (filter_state->jbig2_context,
-                     global_stream_buffer,
+                     (pdf_uchar_t *) global_stream_buffer,
                      global_stream_size);
       filter_state->jbig2_global_context =
         jbig2_make_global_ctx (filter_state->jbig2_context);
@@ -166,7 +166,7 @@ pdf_stm_f_jbig2dec_apply (pdf_hash_t params,
       /* Write input into the decoder */
       bytes_to_copy = (in->wp - in->rp);
       jbig2_data_in (filter_state->jbig2_context,
-                     in->data + in->rp,
+                     (pdf_uchar_t *) (in->data + in->rp),
                      bytes_to_copy);
       if (filter_state->error_p == PDF_TRUE)
         {

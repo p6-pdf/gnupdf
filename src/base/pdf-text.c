@@ -462,7 +462,7 @@ pdf_text_new_from_u32 (const pdf_u32_t number,
   pdf_size_t n;
 
   /* Print number in temporal char array, and get number of output chars */
-  n = sprintf((char *)&temp[0],"%u",(unsigned int)number);
+  n = sprintf(&temp[0],"%u",(unsigned int)number);
 
   /* At least one char should have been printed! */
   if(n > 0)
@@ -498,7 +498,7 @@ pdf_text_set_country (pdf_text_t text,
                       const pdf_char_t *code)
 {
   if((code == NULL) || \
-     (strlen((char *)code) != (PDF_TEXT_CCL-1)))
+     (strlen(code) != (PDF_TEXT_CCL-1)))
     {
       return PDF_EBADDATA;
     }
@@ -516,7 +516,7 @@ pdf_text_set_language (pdf_text_t text,
                        const pdf_char_t *code)
 {
   if((code == NULL) || \
-     (strlen((char *)code) != (PDF_TEXT_CCL-1)))
+     (strlen(code) != (PDF_TEXT_CCL-1)))
     {
       return PDF_EBADDATA;
     }
@@ -550,7 +550,7 @@ pdf_text_check_host_encoding(const pdf_char_t *encoding_name,
                              pdf_text_host_encoding_t *p_encoding)
 {
   /* Check length of host encoding */
-  if(strlen((char *)encoding_name) >= PDF_TEXT_HENMAXL)
+  if(strlen(encoding_name) >= PDF_TEXT_HENMAXL)
     {
       PDF_DEBUG_BASE("Encoding name too long!");
       return PDF_EBADDATA;
@@ -558,8 +558,8 @@ pdf_text_check_host_encoding(const pdf_char_t *encoding_name,
 
   if(pdf_text_host_encoding_is_available(encoding_name) == PDF_OK)
     {
-      strcpy((char *)(&(p_encoding->name[0])), (char *)encoding_name);
-      p_encoding->name[strlen((char *)encoding_name)-1] = '\0';
+      strcpy(&(p_encoding->name[0]), encoding_name);
+      p_encoding->name[strlen(encoding_name)-1] = '\0';
       return PDF_OK;
     }
   else
@@ -916,7 +916,7 @@ pdf_text_set_pdfdocenc (pdf_text_t text,
       return PDF_EBADDATA;
     }
 
-  ret_code = pdf_text_pdfdocenc_to_utf32he (str, strlen((char *)str),
+  ret_code = pdf_text_pdfdocenc_to_utf32he (str, strlen(str),
                                             &temp_data, &temp_size);
   if(ret_code == PDF_OK)
     {
@@ -1000,13 +1000,13 @@ pdf_text_concat (pdf_text_t text1,
   if(!override_langinfo)
     {
       /* An error will be returned if lang code is different */
-      if(strcmp((char *)text1->lang, (char *)text2->lang) != 0)
+      if(strcmp(text1->lang, text2->lang) != 0)
         {
           return PDF_ETEXTENC;
         }
 
       /* An error will be returned if country code is different */
-      if(strcmp((char *)text1->country, (char *)text2->country) != 0)
+      if(strcmp(text1->country, text2->country) != 0)
         {
           return PDF_ETEXTENC;
         }
@@ -1048,7 +1048,7 @@ pdf_text_concat_ascii (pdf_text_t text1,
 {
   pdf_size_t len;
 
-  len = (pdf_size_t) strlen ((char*)ascii_str);
+  len = (pdf_size_t) strlen (ascii_str);
   if (!pdf_text_is_ascii7 (ascii_str, len))
     {
       return PDF_EBADDATA;
@@ -1346,9 +1346,9 @@ pdf_text_replace_ascii (pdf_text_t text,
 {
   /* Check if patterns are real ASCII-7 valid strings */
   if((!pdf_text_is_ascii7(old_pattern,
-                         (pdf_size_t)strlen((char *)old_pattern))) || \
+                         (pdf_size_t)strlen(old_pattern))) || \
      (!pdf_text_is_ascii7(new_pattern,
-                         (pdf_size_t)strlen((char *)new_pattern))))
+                         (pdf_size_t)strlen(new_pattern))))
     {
       PDF_DEBUG_BASE("At least one of the requested patterns is not "
                      "7-bit ASCII");
@@ -1363,7 +1363,7 @@ pdf_text_replace_ascii (pdf_text_t text,
 
       /* Create intermediate pdf_text_t variables */
       if(pdf_text_new_from_unicode(new_pattern,
-                                   (pdf_size_t) strlen ((char *) new_pattern),
+                                   (pdf_size_t) strlen (new_pattern),
                                    PDF_TEXT_UTF8,
                                    &new_pattern_text) != PDF_OK)
         {
@@ -1371,7 +1371,7 @@ pdf_text_replace_ascii (pdf_text_t text,
           return PDF_EBADTEXT;
         }
       if(pdf_text_new_from_unicode(old_pattern,
-                                   (pdf_size_t) strlen ((char *)old_pattern),
+                                   (pdf_size_t) strlen (old_pattern),
                                    PDF_TEXT_UTF8,
                                    &old_pattern_text) != PDF_OK)
         {
@@ -1855,12 +1855,12 @@ pdf_text_get_unicode_string_header(pdf_char_t header[PDF_TEXT_USHMAXL],
   lang_bytes = 0;
   if((enc == PDF_TEXT_UTF16_BE) && \
      (options & PDF_TEXT_UTF16BE_WITH_LANGCODE) && \
-     (strlen((char *)language) == 2))
+     (strlen(language) == 2))
     {
       /* At least language is available, but country may also be
        *  available */
-      lang_bytes = (strlen((char *)country) == 2) ? PDF_TEXT_LCMAXL: \
-                                                    PDF_TEXT_LCMINL;
+      lang_bytes = (strlen(country) == 2) ? PDF_TEXT_LCMAXL: \
+        PDF_TEXT_LCMINL;
     }
 
   /* Modify header array, if needed, to add Language/Country info and/or
@@ -1886,7 +1886,7 @@ pdf_text_get_unicode_string_header(pdf_char_t header[PDF_TEXT_USHMAXL],
           /* Language and Country */
           if(lang_bytes == PDF_TEXT_LCMAXL)
             {
-              sprintf((char *)walker, "%c%c%2s%2s%c%c",
+              sprintf(walker, "%c%c%2s%2s%c%c",
                       PDF_TEXT_LCI_0,PDF_TEXT_LCI_1,
                       language, country,
                       PDF_TEXT_LCI_0,PDF_TEXT_LCI_1);
@@ -1894,7 +1894,7 @@ pdf_text_get_unicode_string_header(pdf_char_t header[PDF_TEXT_USHMAXL],
           /* Language only */
           else
             {
-              sprintf((char *)walker, "%c%c%2s%c%c",
+              sprintf(walker, "%c%c%2s%c%c",
                       PDF_TEXT_LCI_0,PDF_TEXT_LCI_1,
                       language,
                       PDF_TEXT_LCI_0,PDF_TEXT_LCI_1);

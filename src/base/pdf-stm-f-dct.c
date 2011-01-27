@@ -68,7 +68,7 @@ struct pdf_stm_f_dctdec_s
 
   /* cache for output data */
   pdf_size_t row_stride;
-  pdf_char_t **row_buf;
+  pdf_uchar_t **row_buf;
   pdf_size_t row_valid_size;
   pdf_size_t row_copy_index;
   pdf_u32_t num_scanlines;
@@ -475,7 +475,7 @@ pdf_stm_f_dctdec_skip_input_data (j_decompress_ptr cinfo, long num_bytes)
       src->cache->rp += (pdf_size_t) sz_skiped;
       src->size_to_skip = num_bytes - sz_skiped;
     
-      src->pub.next_input_byte = src->cache->data + src->cache->rp;
+      src->pub.next_input_byte = (pdf_uchar_t *) (src->cache->data + src->cache->rp);
       src->pub.bytes_in_buffer = src->cache->wp - src->cache->rp;
     }
 }
@@ -524,8 +524,8 @@ pdf_stm_f_dctdec_src_fill (j_decompress_ptr cinfo, pdf_buffer_t in)
       src->cache->wp += bytes_to_copy;
     }
 
+  src->pub.next_input_byte = (pdf_uchar_t *) (src->cache->data + src->cache->rp);
   src->pub.bytes_in_buffer = src->cache->wp - src->cache->rp;
-  src->pub.next_input_byte = src->cache->data + src->cache->rp;
 
   return PDF_OK;
 }
@@ -546,8 +546,8 @@ pdf_stm_f_dctdec_src_fill_eoi (j_decompress_ptr cinfo)
       src->cache->data[1] = (JOCTET) JPEG_EOI;
     }
 
+  src->pub.next_input_byte = (pdf_uchar_t *) src->cache->data + src->cache->rp;
   src->pub.bytes_in_buffer = src->cache->wp - src->cache->rp;
-  src->pub.next_input_byte = src->cache->data + src->cache->rp;
 }
 
 static void
@@ -595,7 +595,7 @@ pdf_stm_f_dctdec_write_ppm_header (j_decompress_ptr cinfo, pdf_buffer_t out)
       {
         /* emit header for raw PGM format */
         
-        sprintf ((char *) header, "P5\n%ld %ld\n%d\n",
+        sprintf (header, "P5\n%ld %ld\n%d\n",
                  (long) cinfo->output_width, (long) cinfo->output_height,
                  PPM_MAXVAL);
         break;
@@ -603,7 +603,7 @@ pdf_stm_f_dctdec_write_ppm_header (j_decompress_ptr cinfo, pdf_buffer_t out)
   case JCS_RGB:
     {
       /* emit header for raw PPM format */
-      sprintf ((char *) header, "P6\n%ld %ld\n%d\n",
+      sprintf (header, "P6\n%ld %ld\n%d\n",
                (long) cinfo->output_width, (long) cinfo->output_height,
                PPM_MAXVAL);
       break;
@@ -614,7 +614,7 @@ pdf_stm_f_dctdec_write_ppm_header (j_decompress_ptr cinfo, pdf_buffer_t out)
     }
   }
 
-  hlen = strlen ((char *) header);
+  hlen = strlen (header);
   if (hlen > out->size-out->wp)
     {
       return PDF_ENOUTPUT;

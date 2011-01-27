@@ -65,8 +65,8 @@ pdf_stm_f_null_apply (pdf_hash_t params,
 
   if (bytes_to_copy != 0)
     {
-      memcpy ((char *) out->data,
-              (char *) in->data,
+      memcpy (out->data,
+              in->data,
               bytes_to_copy);
 
       in->rp = in->rp + bytes_to_copy;

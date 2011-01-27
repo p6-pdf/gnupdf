@@ -3563,7 +3563,7 @@ pdf_text_ucd_check_lang(const pdf_char_t *text,
 {
   if((text!=NULL) && \
      (context != NULL) && \
-     (strncmp((char *)text, (char *)(&context->locale[0]), 2) == 0))
+     (strncmp(text, &context->locale[0], 2) == 0))
     {
       return PDF_TRUE;
     }
@@ -3651,15 +3651,15 @@ pdf_text_ucd_special_case_check_single(const pdf_text_ucd_context_t *context,
   pdf_char_t *walker = (pdf_char_t *)condition;
 
   /* Check if it is a Negative condition (Preceded by 'Not_') */
-  if((strlen((char *)walker) > 4) && \
-     (strncmp((char *)walker, "Not_", 4) == 0))
+  if((strlen(walker) > 4) && \
+     (strncmp(walker, "Not_", 4) == 0))
     {
       negate_condition = PDF_TRUE;
       walker += 4;
     }
 
   /* Check if what we have is a LANGUAGE ID (2 characters) */
-  if(strlen((char *)walker) == 2)
+  if(strlen(walker) == 2)
     {
       pdf_bool_t condition_ok;
       condition_ok = pdf_text_ucd_check_lang(walker, context);
@@ -3674,7 +3674,7 @@ pdf_text_ucd_special_case_check_single(const pdf_text_ucd_context_t *context,
       short i = 0;
       while(i < UCD_SC_COND_N)
         {
-          if(strcmp((char *)walker,(char *)ucd_condition_list[i].cond_name)==0)
+          if(strcmp(walker,ucd_condition_list[i].cond_name)==0)
             {
               pdf_bool_t condition_ok;
               /* Condition found! */
@@ -3708,14 +3708,14 @@ pdf_text_ucd_special_case_conditions(const pdf_text_ucd_context_t *context,
   if((condition_list == NULL) || \
      (context == NULL) || \
      (context->unicode_point == NULL) || \
-     (strlen((char *)condition_list) == 0))
+     (strlen(condition_list) == 0))
     {
       return PDF_FALSE; /* Default is the condition not being fulfilled */
     }
 
   /* Copy condition list, as this function will modify it to create NUL
    * terminated strings per condition */
-  condition_list_size = strlen((char *)condition_list);
+  condition_list_size = strlen(condition_list);
   internal_condition_list = (pdf_char_t *)pdf_alloc(condition_list_size+1);
   if(internal_condition_list == NULL)
     {
@@ -3748,7 +3748,7 @@ pdf_text_ucd_special_case_conditions(const pdf_text_ucd_context_t *context,
         {
           /* Invalid condition!!! */
           PDF_DEBUG_BASE("Invalid condition in Special Case check: '%s'",
-                         (char *)walker);
+                         walker);
           return PDF_FALSE;
         }
       /* Check if single condition was fulfilled */
@@ -3810,9 +3810,9 @@ pdf_text_ucd_special_case(pdf_u32_t to_he[UCD_SC_MAX_EXPAND],
           condition_list = (pdf_char_t *)unicode_special_case_info[index_in_sc_array].condition_list;
 
           /* Check special case conditions */
-          if(((strlen((char *)condition_list)>0) && \
+          if(((strlen(condition_list)>0) && \
               (pdf_text_ucd_special_case_conditions(context, condition_list)))||
-             (strlen((char *)condition_list) == 0))
+             (strlen(condition_list) == 0))
             {
               pdf_u32_t *dest = NULL;
               /* If conditions fullfiled, or there was no condition.... */
@@ -4015,13 +4015,13 @@ pdf_text_ucd_create_case_context(pdf_text_ucd_context_t *context,
    *  bytes! */
   context->context_stop = (pdf_char_t *)&(word[length -4]);
   /* Set language code, if any */
-  if(strlen((char *)language) == 2)
+  if(strlen(language) == 2)
     {
-      strncpy((char *)&(context->locale[0]), (char *)language, 2);
+      strncpy(&(context->locale[0]), language, 2);
     }
   else
     {
-      strncpy((char *)&(context->locale[0]), "  ", 2);
+      strncpy(&(context->locale[0]), "  ", 2);
     }
 
   return PDF_OK;
@@ -4079,7 +4079,7 @@ pdf_text_ucd_word_change_case(pdf_char_t *destination_word,
       /* Store pointer to character within the context */
       context.unicode_point = (pdf_char_t *)(&origin_word[i]);
       /* Store language info in context */
-      if(strlen((char *)origin_lang) == 2)
+      if(strlen(origin_lang) == 2)
         {
           memcpy(&context.locale[0],origin_lang,2);
         }

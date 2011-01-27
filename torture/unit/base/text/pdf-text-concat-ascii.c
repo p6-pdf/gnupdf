@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2010 Free Software Foundation, Inc. */
+/* Copyright (C) 2010,2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,15 +61,15 @@ START_TEST(pdf_text_concat_ascii_001)
 
   /* 2. The contents of the output text object must be the expected ones. */
   fail_if(pdf_text_get_pdfdocenc(&output_data, text1) != PDF_OK);
-  fail_unless(strlen((char *)output_data) == strlen("GNU's not Unix"));
-  fail_unless(strcmp((char *)output_data, "GNU's not Unix") == 0);
+  fail_unless(strlen(output_data) == strlen("GNU's not Unix"));
+  fail_unless(strcmp(output_data, "GNU's not Unix") == 0);
   
   /* 3. The lang/country information in the output object must remain
    *    unchanged. */
-  fail_unless(strcmp((char *)pdf_text_get_language(text1),
-                     (char *)language) == 0);
-  fail_unless(strcmp((char *)pdf_text_get_country(text1),
-                     (char *)country) == 0);
+  fail_unless(strcmp(pdf_text_get_language(text1),
+                     language) == 0);
+  fail_unless(strcmp(pdf_text_get_country(text1),
+                     country) == 0);
   
   pdf_text_destroy(text1);
   pdf_dealloc(output_data);
@@ -104,12 +104,12 @@ START_TEST(pdf_text_concat_ascii_002)
   
   /* 2. The contents of the output text object must be the expected ones. */
   fail_if(pdf_text_get_pdfdocenc(&output_data, text1) != PDF_OK);
-  fail_unless(strlen((char *)output_data) == strlen("GNU's not Unix"));
-  fail_unless(strcmp((char *)output_data, "GNU's not Unix") == 0);
+  fail_unless(strlen(output_data) == strlen("GNU's not Unix"));
+  fail_unless(strcmp(output_data, "GNU's not Unix") == 0);
   
   /* 3. The lang/country information in the output object must be empty. */
-  fail_unless(strlen((char *)pdf_text_get_language(text1)) == 0);
-  fail_unless(strlen((char *)pdf_text_get_country(text1)) == 0);
+  fail_unless(strlen(pdf_text_get_language(text1)) == 0);
+  fail_unless(strlen(pdf_text_get_country(text1)) == 0);
   
   pdf_text_destroy(text1);
   pdf_dealloc(output_data);
@@ -148,15 +148,15 @@ START_TEST(pdf_text_concat_ascii_003)
   
   /* 2. The contents of the output text object should be empty. */
   fail_if(pdf_text_get_pdfdocenc(&output_data, text1) != PDF_OK);
-  fail_unless(strlen((char *)output_data) == strlen("GNU's not Unix"));
-  fail_unless(strcmp((char *)output_data, "GNU's not Unix") == 0);
+  fail_unless(strlen(output_data) == strlen("GNU's not Unix"));
+  fail_unless(strcmp(output_data, "GNU's not Unix") == 0);
   
   /* 3. The lang/country information in the output object must remain
    *    unchanged. */
-  fail_unless(strcmp((char *)pdf_text_get_language(text1),
-                     (char *)language) == 0);
-  fail_unless(strcmp((char *)pdf_text_get_country(text1),
-                     (char *)country) == 0);
+  fail_unless(strcmp(pdf_text_get_language(text1),
+                     language) == 0);
+  fail_unless(strcmp(pdf_text_get_country(text1),
+                     country) == 0);
   
   pdf_text_destroy(text1);
   pdf_dealloc(output_data);
@@ -194,14 +194,14 @@ START_TEST(pdf_text_concat_ascii_004)
   
   /* 2. The contents of the output text object should be empty. */
   fail_if(pdf_text_get_pdfdocenc(&output_data, text1) != PDF_OK);
-  fail_unless(strlen((char *)output_data) == 0);
+  fail_unless(strlen(output_data) == 0);
   
   /* 3. The lang/country information in the output object must remain
    *    unchanged. */
-  fail_unless(strcmp((char *)pdf_text_get_language(text1),
-                     (char *)language) == 0);
-  fail_unless(strcmp((char *)pdf_text_get_country(text1),
-                     (char *)country) == 0);
+  fail_unless(strcmp(pdf_text_get_language(text1),
+                     language) == 0);
+  fail_unless(strcmp(pdf_text_get_country(text1),
+                     country) == 0);
   
   pdf_text_destroy(text1);
   pdf_dealloc(output_data);

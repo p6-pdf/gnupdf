@@ -293,8 +293,8 @@ pdf_stm_be_mem_read (pdf_stm_be_t be,
   if (readed_bytes != 0)
     {
       /* Copy the data */
-      memcpy ((char *) buffer,
-              (char *) be->data.mem.buffer + be->data.mem.pos,
+      memcpy (buffer,
+              be->data.mem.buffer + be->data.mem.pos,
               readed_bytes);
 
       be->data.mem.pos += readed_bytes;
@@ -332,8 +332,8 @@ pdf_stm_be_mem_write (pdf_stm_be_t be,
   if (written_bytes != 0)
     {
       /* Copy the data */
-      memcpy ((char *) be->data.mem.buffer + be->data.mem.pos,
-              (char *) buffer,
+      memcpy (be->data.mem.buffer + be->data.mem.pos,
+              buffer,
               written_bytes);
 
       be->data.mem.pos += written_bytes;

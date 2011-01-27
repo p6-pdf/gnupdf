@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,7 +64,7 @@ START_TEST(pdf_text_get_hex_001)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
   
-  fail_if(pdf_text_new_from_unicode(utf8data, strlen((char *)utf8data),
+  fail_if(pdf_text_new_from_unicode(utf8data, strlen(utf8data),
                                     PDF_TEXT_UTF8,
                                     &text) != PDF_OK);
   
@@ -74,10 +74,10 @@ START_TEST(pdf_text_get_hex_001)
   fail_if(output_data == NULL);
   
   /* 2. The contents of the returned string must be the expected ones. */
-  fail_unless(memcmp(output_data, expected, strlen((char *)output_data)) == 0);
+  fail_unless(memcmp(output_data, expected, strlen(output_data)) == 0);
   
   /* 3. The length of the string must be non-zero.  */
-  fail_unless(strlen((char *)output_data) == strlen((char *)expected));
+  fail_unless(strlen(output_data) == strlen(expected));
   
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
@@ -111,7 +111,7 @@ START_TEST(pdf_text_get_hex_002)
   fail_if(output_data == NULL);
   
   /* 2. The length of the string must be zero. */
-  fail_unless(strlen((char *)output_data) == 0);
+  fail_unless(strlen(output_data) == 0);
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);

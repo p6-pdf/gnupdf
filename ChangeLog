@@ -1,3 +1,123 @@
+2011-01-27  Jose E. Marchesi  <jemarch@gnu.org>
+
+	syntax-check fixes.
+	* doc/Makefile.am: Use two spaces between help2man options and its
+	descriptions.
+
+	* .x-sc_space_tab: Add build-aux/pmccabe2html.
+
+	* torture/unit/pdf-stm-f-a85-tests.sh (FILTER_EXEC): Use "test x =
+	x" instead of "test x == x".
+
+	* utils/pdf-tokeniser.c (print_tok): Make the str variable a
+	non-constant pointer and make it possible to free the pointer
+	without additional checks.
+	Include xalloc.h.
+
+2011-01-27  Jose E. Marchesi  <jemarch@gnu.org>
+
+	Adapt the codebase to the new pdf_char_t semantics.
+	* src/base/pdf-fp-func.c: Remove now useless casts to 'char *' and 'char'.
+	* src/base/pdf-token-writer.c: Likewise.
+	* src/base/pdf-time-string.c: Likewise.
+	* src/base/pdf-text-ucd-case.c: Likewise.
+	* src/base/pdf-text-host-encoding.c: Likewise.
+	* src/base/pdf-text-filter.c: Likewise.
+	* src/base/pdf-text-context.c: Likewise.
+	* src/base/pdf-fsys-disk.c: Likewise.
+	* src/base/pdf-hash-helper.c: Likewise.
+	* src/base/pdf-stm-be.c: Likewise.
+	* src/base/pdf-text.c: Likewise.
+	* src/base/pdf-stm-f-null.c: Likewise.
+	* src/base/pdf-stm-f-dct.c: Likewise.
+	* src/base/pdf-stm.c: Likewise.
+	* torture/unit/base/text/pdf-text-set-country.c: Likewise.
+	* torture/unit/base/text/pdf-text-test-common.c: Likewise.
+	* torture/unit/base/text/pdf-text-set-unicode.c: Likewise.
+	* torture/unit/base/text/pdf-text-set-language.c: Likewise.
+	* torture/unit/base/text/pdf-text-set-host.c: Likewise.
+	* torture/unit/base/text/pdf-text-replace.c: Likewise.
+	* torture/unit/base/text/pdf-text-replace-ascii.c: Likewise.
+	* torture/unit/base/text/pdf-text-new-from-unicode.c: Likewise.
+	* torture/unit/base/text/pdf-text-new-from-pdf-string.c: Likewise.
+	* torture/unit/base/text/pdf-text-new-from-host.c: Likewise.
+	* torture/unit/base/text/pdf-text-new-destroy.c: Likewise.
+	* torture/unit/base/text/pdf-text-get-pdfdocenc.c: Likewise.
+	* torture/unit/base/text/pdf-text-get-language.c: Likewise.
+	* torture/unit/base/text/pdf-text-get-host-encoding.c: Likewise.
+	* torture/unit/base/text/pdf-text-get-host.c: Likewise.
+	* torture/unit/base/text/pdf-text-get-hex.c: Likewise.
+	* torture/unit/base/text/pdf-text-get-country.c: Likewise.
+	* torture/unit/base/text/pdf-text-get-best-encoding.c: Likewise.
+	* torture/unit/base/text/pdf-text-filter.c: Likewise.
+	* torture/unit/base/text/pdf-text-dup.c: Likewise.
+	* torture/unit/base/text/pdf-text-concat.c: Likewise.
+	* torture/unit/base/text/pdf-text-concat-ascii.c: Likewise.
+	* torture/unit/base/text/pdf-text-cmp.c: Likewise.
+	* torture/unit/base/text/pdf-text-check-host-encoding.c: Likewise.
+	* torture/unit/base/stm/pdf-stm-tell.c: Likewise.
+	* torture/unit/base/stm/pdf-stm-read-char.c: Likewise.
+	* torture/unit/base/stm/pdf-stm-read.c: Likewise.
+	* torture/unit/base/stm/pdf-stm-peek-char.c: Likewise.
+	* torture/unit/base/stm/pdf-stm-btell.c: Likewise.
+	* torture/unit/base/stm/pdf-stm-bseek.c: Likewise.
+	* torture/unit/base/fsys/pdf-fsys-file-open.c: Likewise.
+	* torture/unit/base/fsys/pdf-fsys-build-path.c: Likewise.
+
+	* utils/pdf-tokeniser.c (print_tok): Remove the const qualifier
+	from the str pointer if it is not constant.
+
+	* src/base/pdf-fp-func.h: Remove a commented out line of code.
+
+	* src/base/pdf-token-writer.c (scan_string): Cast the argument to
+	u8_check to a u8int_t *.
+
+	* src/base/pdf-stm-f-dct.c (struct pdf_stm_f_dctdec_s): Change the
+	type of row_buf to pdf_uchar_t**.
+	(pdf_stm_f_dctdec_skip_input_data): Cast to pdf_uchar_t *.
+	(pdf_stm_f_dctdec_src_fill): Likewise.
+	(pdf_stm_f_dctdec_src_fill_eoi): Likewise.
+
+	* src/base/pdf-stm-f-jbig2.c (pdf_stm_f_jbig2dec_init): Cast
+	an argument to 'jbig2_data_in' to a pointer to pdf_uchar_t.
+	(pdf_stm_f_jbig2dec_apply): Likewise.
+
+	* src/base/pdf-stm-f-flate.c (read_and_inflate): zstream fields
+	require pointers to Bytef values.
+	(deflate_inbuf): Likewise.
+
+	* src/base/pdf-fp-func.c (hash): Change casts to pdf_char_t
+	with casts to pdf_uchar_t.
+
+2011-01-27  Jose E. Marchesi  <jemarch@gnu.org>
+
+	manual: documentation for pdf_char_t and pdf_uchar_t.
+	* doc/gnupdf.texi (Character Types): New section.
+	(Character Types): Document type 'pdf_char_t'.
+	(Character Types): Document type 'pdf_uchar_t'.
+
+2011-01-27  Jose E. Marchesi  <jemarch@gnu.org>
+
+	pdf-types: change pdf_char_t to be an alias of 'char' and
+	introduce the new pdf_uchar_t type.
+	* src/base/pdf-stm-f-rl.h: Make the dec_count and rlchar members
+	of the struct pdf_stm_f_rl_s unsigned.
+
+	* torture/unit/base/text/pdf-text-set-unicode.c: Use pdf_size_t
+	instead of pdf_char_t to store string sizes.
+	* torture/unit/base/text/pdf-text-new-from-unicode.c: Likewise.
+
+	* src/base/pdf-types.h: pdf_char_t shall be signed or unsigned
+	depending on the default for the 'char' type in the running
+	platform.
+	New type pdf_uchar_t.
+
+	* src/base/pdf-text-encoding.c (pdf_text_utf8_to_utf32he): Cast
+	pdf_char_t values to pdf_uchar_t before using them as array
+	indexes.
+	(pdf_text_pdfdocenc_point_to_utf32he_point): Likewise.
+	(pdf_text_utf8_point_to_utf32he_point): Likewise.
+
 2011-01-25  Jose E. Marchesi  <jemarch@gnu.org>
 
 	manuals: get version.texi generated automatically by automake.

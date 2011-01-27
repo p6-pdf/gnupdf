@@ -57,11 +57,11 @@ START_TEST(pdf_fsys_build_path_001)
   fail_if(pdf_text_get_pdfdocenc(&output_data, result) != PDF_OK);
 
 #if FILE_SYSTEM_BACKSLASH_IS_FILE_NAME_SEPARATOR
-  fail_unless(strcmp((char *)output_data, "want\\some\\beer?" ) == 0);
-  fail_unless(strlen((char *)output_data) == strlen("want\\some\\beer?"));
+  fail_unless(strcmp(output_data, "want\\some\\beer?" ) == 0);
+  fail_unless(strlen(output_data) == strlen("want\\some\\beer?"));
 #else
-  fail_unless(strcmp((char *)output_data, "want/some/beer?" ) == 0);
-  fail_unless(strlen((char *)output_data) == strlen("want/some/beer?"));
+  fail_unless(strcmp(output_data, "want/some/beer?" ) == 0);
+  fail_unless(strlen(output_data) == strlen("want/some/beer?"));
 #endif /*  FILE_SYSTEM_BACKSLASH_IS_FILE_NAME_SEPARATOR */
 
 

@@ -121,8 +121,8 @@ pdf_text_convert_encoding_name_to_CP(const pdf_char_t *encoding_name,
    *  code page number (unsigned integer) obtained with GetACP() */
     
   /* So first of all, check windows host encoding */
-  if((strlen((char *)encoding_name) < 3) || \
-     (strncmp((char *)encoding_name,"CP",2) != 0))
+  if((strlen(encoding_name) < 3) || \
+     (strncmp(encoding_name,"CP",2) != 0))
     {
       PDF_DEBUG_BASE("Host encoding received seems not valid");
       return PDF_ETEXTENC;
@@ -130,7 +130,7 @@ pdf_text_convert_encoding_name_to_CP(const pdf_char_t *encoding_name,
 
   /* Get codepage as unsigned integer. `strtol' will return 0 if it was not
    *  able to correctly parse the string. BTW, 0 is not a valid code page. */
-  CodePage = (UINT) strtol ((char *)&encoding_name[2],
+  CodePage = (UINT) strtol (&encoding_name[2],
                             &end_char,
                             10);
   if(CodePage == 0)
@@ -170,7 +170,7 @@ pdf_text_host_encoding_is_available(const pdf_char_t *encoding_name)
     iconv_t check;
 
     /* Check conversion from Host Encoding to UTF-32HE */
-    check = iconv_open((char *)encoding_name, \
+    check = iconv_open(encoding_name, \
                        (PDF_IS_BIG_ENDIAN ? "UTF-32BE" : "UTF-32LE"));
     if(check == (iconv_t)-1)
       {
@@ -182,7 +182,7 @@ pdf_text_host_encoding_is_available(const pdf_char_t *encoding_name)
 
     /* Check conversion from UTF-32HE to Host Encoding */
     check = iconv_open((PDF_IS_BIG_ENDIAN ? "UTF-32BE" : "UTF-32LE"), \
-                       (char *)encoding_name);
+                       encoding_name);
     if(check == (iconv_t)-1)
       {
         PDF_DEBUG_BASE("Conversion from UTF-32HE to '%s' not available",
@@ -286,7 +286,7 @@ pdf_text_utf32he_to_host_win32(const pdf_char_t      *input_data,
                               dwFlags,      /* dwFlags */
                               (LPCWSTR)temp_data, /* lpWideCharStr */
                               (temp_size/sizeof(WCHAR)), /* cbWideChar */
-                              (char *)*p_output_data, /* lpMultiByteStr */
+                              *p_output_data, /* lpMultiByteStr */
                               *p_output_length, /* ccMultiByte */
                               NULL,            /* lpDefaultChar */
                               &default_used) != output_nmbyte) || \
@@ -339,7 +339,7 @@ pdf_text_utf32he_to_host_iconv(const pdf_char_t      *input_data,
   *  input encoding requested, iconv will expect the BOM by default, and
   *  we don't want it, so we specify directly the endianness required in the
     *  name of the encoding, depending on the host endianness */
-  to_host = iconv_open((char *)enc.name, \
+  to_host = iconv_open(enc.name, \
       (PDF_IS_BIG_ENDIAN ? "UTF-32BE" : "UTF-32LE"));
   if(to_host == (iconv_t)-1)
     {
@@ -359,8 +359,11 @@ pdf_text_utf32he_to_host_iconv(const pdf_char_t      *input_data,
       return PDF_ENOMEM;
     }
   n_out = worst_length;
-  in_str = (char *)input_data;
-  out_str = (char *)new_data;
+  in_str = (char *)input_data; /* This cast is legit because
+                                  iconv increments the pointer
+                                  but does not change the
+                                  pointed memory.  */
+  out_str = new_data;
   n_in = input_length;
 
   while(n_in > 0)
@@ -399,7 +402,7 @@ pdf_text_utf32he_to_host_iconv(const pdf_char_t      *input_data,
               /* The re-allocated new data does not have to be in the same
                *  memory place as the original one, so the `out_str' pointer
                *  must be reset */
-              out_str = (char *) &new_data[n_bytes_generated];
+              out_str =  &new_data[n_bytes_generated];
 
               /* The number of bytes available in the buffer must also be
                *  reset */
@@ -508,7 +511,7 @@ pdf_text_host_to_utf32he_win32(const pdf_char_t      *input_data,
       SetLastError(0);
       output_nwchars =  MultiByteToWideChar(CodePage,     /* CodePage */
                                             dwFlags,      /* dwFlags */
-                                            (char *)input_data, /* lpMultiByteStr */
+                                            input_data, /* lpMultiByteStr */
                                             input_length, /* cbMultiByte */
                                             NULL,         /* lpWideCharStr */
                                             0);           /* cchWideChar */
@@ -547,7 +550,7 @@ pdf_text_host_to_utf32he_win32(const pdf_char_t      *input_data,
       SetLastError(0);
       if(MultiByteToWideChar(CodePage,           /* CodePage */
                              dwFlags,            /* dwFlags */
-                             (char *)input_data, /* lpMultiByteStr */
+                             input_data, /* lpMultiByteStr */
                              input_length,       /* cbMultiByte */
                              (LPWSTR)temp_data,  /* lpWideCharStr */
                              output_nwchars) != output_nwchars) /* cchWideChar */
@@ -595,7 +598,7 @@ pdf_text_host_to_utf32he_iconv(const pdf_char_t      *input_data,
    *  we don't want it, so we specify directly the endianness required in the
    *  name of the encoding, depending on the host endianness */
   from_host = iconv_open((PDF_IS_BIG_ENDIAN ? "UTF-32BE" : "UTF-32LE"),
-                          (char *)enc.name);
+                          enc.name);
   if(from_host == (iconv_t)-1)
     {
       PDF_DEBUG_BASE("Conversion from '%s' to UTF-32 not available",
@@ -615,8 +618,11 @@ pdf_text_host_to_utf32he_iconv(const pdf_char_t      *input_data,
       return PDF_ENOMEM;
     }
   n_out = worst_length;
-  in_str = (char *)input_data;
-  out_str = (char *)new_data;
+  in_str = (char *)input_data; /* This cast is legit because
+                                  iconv increments the pointer
+                                  but does not change the
+                                  pointed memory.  */
+  out_str = new_data;
   n_in = input_length;
 
   while(n_in > 0)
@@ -658,7 +664,7 @@ pdf_text_host_to_utf32he_iconv(const pdf_char_t      *input_data,
               /* The re-allocated new data does not have to be in the same
                *  memory place as the original one, so the `out_str' pointer
                *  must be reset */
-              out_str = (char *) &new_data[n_bytes_generated];
+              out_str =  &new_data[n_bytes_generated];
 
               /* The number of bytes available in the buffer must also be
                *  reset */

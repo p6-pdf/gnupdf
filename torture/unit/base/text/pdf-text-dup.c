@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,10 +57,10 @@ START_TEST(pdf_text_dup_001)
   fail_unless(pdf_text_empty_p(duplicate) == PDF_TRUE);
   
   /* 3. The language code of the output object should be empty */
-  fail_unless(strlen((char *)pdf_text_get_language(duplicate)) == 0);
+  fail_unless(strlen(pdf_text_get_language(duplicate)) == 0);
   
   /* 4. The country code of the output object should be empty */
-  fail_unless(strlen((char *)pdf_text_get_country(duplicate)) == 0);
+  fail_unless(strlen(pdf_text_get_country(duplicate)) == 0);
 
   fail_if(pdf_text_destroy(text) != PDF_OK);
   fail_if(pdf_text_destroy(duplicate) != PDF_OK);
@@ -93,7 +93,7 @@ START_TEST(pdf_text_dup_002)
   /* Set some data contents */
   fail_unless(pdf_text_set_unicode(text,
                                    sample_utf8,
-                                   strlen((char *)sample_utf8),
+                                   strlen(sample_utf8),
                                    PDF_TEXT_UTF8) == PDF_OK);
   
   /* 1. The call to pdf_text_dup should not return a NULL pointer.*/
@@ -105,10 +105,10 @@ START_TEST(pdf_text_dup_002)
   fail_unless(pdf_text_cmp(text, duplicate, PDF_TRUE, NULL) == 0);
   
   /* 3. The language code of the output object should be empty */
-  fail_unless(strlen((char *)pdf_text_get_language(duplicate)) == 0);
+  fail_unless(strlen(pdf_text_get_language(duplicate)) == 0);
   
   /* 4. The country code of the output object should be empty */
-  fail_unless(strlen((char *)pdf_text_get_country(duplicate)) == 0);
+  fail_unless(strlen(pdf_text_get_country(duplicate)) == 0);
   
   fail_if(pdf_text_destroy(text) != PDF_OK);
   fail_if(pdf_text_destroy(duplicate) != PDF_OK);
@@ -143,7 +143,7 @@ START_TEST(pdf_text_dup_003)
   /* Set some data contents */
   fail_unless(pdf_text_set_unicode(text,
                                    sample_utf8,
-                                   strlen((char *)sample_utf8),
+                                   strlen(sample_utf8),
                                    PDF_TEXT_UTF8) == PDF_OK);
   
   /* Set language code */
@@ -159,11 +159,11 @@ START_TEST(pdf_text_dup_003)
   
   /* 3. The language code of the output object should be equal to the language
    *      code of the input object. */
-  fail_unless(strcmp((char *)pdf_text_get_language(duplicate),
-                     (char *)sample_lang) == 0);
+  fail_unless(strcmp(pdf_text_get_language(duplicate),
+                     sample_lang) == 0);
   
   /* 4. The country code of the output object should be empty */
-  fail_unless(strlen((char *)pdf_text_get_country(duplicate)) == 0);
+  fail_unless(strlen(pdf_text_get_country(duplicate)) == 0);
   
   fail_if(pdf_text_destroy(text) != PDF_OK);
   fail_if(pdf_text_destroy(duplicate) != PDF_OK);
@@ -200,7 +200,7 @@ START_TEST(pdf_text_dup_004)
   /* Set some data contents */
   fail_unless(pdf_text_set_unicode(text,
                                    sample_utf8,
-                                   strlen((char *)sample_utf8),
+                                   strlen(sample_utf8),
                                    PDF_TEXT_UTF8) == PDF_OK);
   
   /* Set language code */
@@ -219,12 +219,12 @@ START_TEST(pdf_text_dup_004)
   
   /* 3. The language code of the output object should be equal to the language
    *      code of the input object. */
-  fail_unless(strcmp((char *)pdf_text_get_language(duplicate),
-                     (char *)sample_lang) == 0);
+  fail_unless(strcmp(pdf_text_get_language(duplicate),
+                     sample_lang) == 0);
   
   /* 4. The country code of the output object should be empty */
-  fail_unless(strcmp((char *)pdf_text_get_country(duplicate),
-                     (char *)sample_country) == 0);
+  fail_unless(strcmp(pdf_text_get_country(duplicate),
+                     sample_country) == 0);
   
   fail_if(pdf_text_destroy(text) != PDF_OK);
   fail_if(pdf_text_destroy(duplicate) != PDF_OK);

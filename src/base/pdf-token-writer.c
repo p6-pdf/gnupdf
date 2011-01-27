@@ -292,7 +292,7 @@ encode_buffer_number (pdf_token_writer_t writer, int len)
   buf->wp = buf->rp = 0;
   while (buf->rp < len)
     {
-      char ch = (char)buf->data[buf->rp];
+      char ch = buf->data[buf->rp];
       if (ch == '-')
         {
           ++buf->rp;
@@ -329,7 +329,7 @@ write_integer_token (pdf_token_writer_t writer, pdf_token_t token)
       case 0:
         {
           pdf_i32_t value = pdf_token_get_integer_value (token);
-          int len = snprintf ((char*)writer->buffer->data,
+          int len = snprintf (writer->buffer->data,
                               writer->buffer->size, "%"PRId32, value);
           if (!encode_buffer_number (writer, len)) return PDF_ERROR;
         }
@@ -360,7 +360,7 @@ write_real_token (pdf_token_writer_t writer, pdf_token_t token)
             return PDF_EBADDATA;
 
           /* The '#' flag forces snprintf to write a decimal point. */
-          int len = snprintf ((char*)buf->data,
+          int len = snprintf (buf->data,
                               buf->size, "%#f", (double)value);
           if (!encode_buffer_number (writer, len)) return PDF_ERROR;
 
@@ -460,7 +460,7 @@ scan_string (pdf_token_writer_t writer, pdf_u32_t flags,
 
   /* Determine the size of the escaped string. */
   writer->utf8 = (flags & PDF_TOKEN_READABLE_STRINGS)
-                   && (u8_check (data, len) == NULL);
+    && (u8_check ((uint8_t *) data, len) == NULL);
   pdf_size_t enc_bytes = 0;
   for (i = 0; i < len; ++i)
     {

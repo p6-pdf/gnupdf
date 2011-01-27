@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@
 START_TEST(pdf_text_cmp_001)
 {
   const pdf_char_t *input_data = (pdf_char_t *) "GNU's Not Unix. ";
-  pdf_size_t input_size = strlen((char *)input_data);
+  pdf_size_t input_size = strlen(input_data);
   pdf_text_t text1;
   pdf_text_t text2;
   pdf_status_t ret_code;
@@ -88,7 +88,7 @@ START_TEST(pdf_text_cmp_002)
 
 
   const pdf_char_t *input_data = (pdf_char_t *) "GNU's Not Unix. ";
-  pdf_size_t input_size = strlen((char *)input_data);
+  pdf_size_t input_size = strlen(input_data);
   pdf_text_t text1;
   pdf_text_t text2;
   pdf_status_t ret_code;
@@ -116,7 +116,7 @@ START_TEST(pdf_text_cmp_002)
       internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_cmp_002:1:Text1> '%s' (%ld)\n",
-             internal_hex, (long)strlen((char *)internal_hex));
+             internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
   if(INTERACTIVE_DEBUG)
@@ -129,7 +129,7 @@ START_TEST(pdf_text_cmp_002)
       internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
       fail_if(internal_hex == NULL);
       printf("pdf_text_cmp_002:1:Text2> '%s' (%ld)\n",
-             internal_hex, (long)strlen((char *)internal_hex));
+             internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
 
@@ -159,7 +159,7 @@ START_TEST(pdf_text_cmp_003)
 {
   const pdf_char_t *upper_data = (pdf_char_t *) "GNU'S NOT UNIX. ";
   const pdf_char_t *lower_data = (pdf_char_t *) "gnu's not unix. ";
-  pdf_size_t input_size = strlen((char *)lower_data);
+  pdf_size_t input_size = strlen(lower_data);
   pdf_text_t text1;
   pdf_text_t text2;
   pdf_status_t ret_code;
@@ -201,7 +201,7 @@ START_TEST(pdf_text_cmp_004)
 {
   const pdf_char_t *upper_data = (pdf_char_t *) "GNU'S NOT UNIX. ";
   const pdf_char_t *lower_data = (pdf_char_t *) "gnu's not unix. ";
-  pdf_size_t input_size = strlen((char *)lower_data);
+  pdf_size_t input_size = strlen(lower_data);
   pdf_text_t text1;
   pdf_text_t text2;
   pdf_status_t ret_code;
@@ -243,8 +243,8 @@ START_TEST(pdf_text_cmp_005)
 {
   const pdf_char_t *input_data1 = (pdf_char_t *) "GNU's Not Unix. ";
   const pdf_char_t *input_data2 = (pdf_char_t *) "Bad Vista. ";
-  pdf_size_t input_size1 = strlen((char *)input_data1);
-  pdf_size_t input_size2 = strlen((char *)input_data2);
+  pdf_size_t input_size1 = strlen(input_data1);
+  pdf_size_t input_size2 = strlen(input_data2);
   pdf_text_t text1;
   pdf_text_t text2;
   pdf_status_t ret_code;
@@ -285,8 +285,8 @@ START_TEST(pdf_text_cmp_006)
 {
   const pdf_char_t *input_data1 = (pdf_char_t *) "GNU's Not Unix. ";
   const pdf_char_t *input_data2 = (pdf_char_t *) "Bad Vista. ";
-  pdf_size_t input_size1 = strlen((char *)input_data1);
-  pdf_size_t input_size2 = strlen((char *)input_data2);
+  pdf_size_t input_size1 = strlen(input_data1);
+  pdf_size_t input_size2 = strlen(input_data2);
   pdf_text_t text1;
   pdf_text_t text2;
   pdf_status_t ret_code;

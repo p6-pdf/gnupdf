@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,7 +77,7 @@ START_TEST(pdf_text_get_pdfdocenc_001)
 
       /* 2. The returned string must be the expected one, and NUL terminated */
       fail_if(data == NULL);
-      size = strlen((char *)data);
+      size = strlen(data);
       fail_unless(size == expected_size);
       fail_unless(memcmp(expected_data, data, size) == 0);
       
@@ -125,7 +125,7 @@ START_TEST(pdf_text_get_pdfdocenc_002)
   
   /* 2. The returned string must be the expected one, and NUL terminated */
   fail_if(output_data == NULL);
-  size = strlen((char *)output_data);
+  size = strlen(output_data);
   fail_unless(size == expected_size);
   fail_unless(memcmp(expected_data, output_data, size) == 0);
   

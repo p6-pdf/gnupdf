@@ -31,6 +31,7 @@
 #include <string.h>
 #include <getopt.h>
 #include <errno.h>
+#include <xalloc.h>
 #include <pdf.h>
 
 #include <pdf-utils.h>
@@ -122,7 +123,8 @@ static void
 print_tok (pdf_token_t token)
 {
   char tmpbuf[256];
-  const char *typ, *str = NULL;
+  const char *typ;
+  char *str = NULL;
   int strsize = -1;
   pdf_size_t i;
 
@@ -131,36 +133,36 @@ print_tok (pdf_token_t token)
     case PDF_TOKEN_INTEGER:
       typ = "INTEGER";
       snprintf(tmpbuf, sizeof(tmpbuf), "%d", pdf_token_get_integer_value(token));
-      str = tmpbuf;
+      str = xstrdup (tmpbuf);
       break;
 
     case PDF_TOKEN_REAL:
       typ = "REAL";
       snprintf(tmpbuf, sizeof(tmpbuf), "%f", pdf_token_get_real_value(token));
-      str = tmpbuf;
+      str = xstrdup (tmpbuf);
       break;
 
     case PDF_TOKEN_STRING:
       typ = "STRING";
-      str = pdf_token_get_string_data(token);
+      str = xstrdup (pdf_token_get_string_data(token));
       strsize = pdf_token_get_string_size(token);
       break;
 
     case PDF_TOKEN_NAME:
       typ = "NAME";
-      str = pdf_token_get_name_data(token);
+      str = xstrdup (pdf_token_get_name_data(token));
       strsize = pdf_token_get_name_size(token);
       break;
 
     case PDF_TOKEN_COMMENT:
       typ = "COMMENT";
-      str = pdf_token_get_comment_data(token);
+      str = xstrdup (pdf_token_get_comment_data(token));
       strsize = pdf_token_get_comment_size(token);
       break;
 
     case PDF_TOKEN_KEYWORD:
       typ = "KEYWORD";
-      str = pdf_token_get_keyword_data(token);
+      str = xstrdup (pdf_token_get_keyword_data(token));
       strsize = pdf_token_get_keyword_size(token);
       break;
 
@@ -186,7 +188,7 @@ print_tok (pdf_token_t token)
     default:
       typ = "[unknown]";
       sprintf(tmpbuf, "%d", pdf_token_get_type(token));
-      str = tmpbuf;
+      str = xstrdup (tmpbuf);
     }
 
   if (str == NULL)
@@ -196,10 +198,7 @@ print_tok (pdf_token_t token)
     }
   if (str != tmpbuf) str = fmtbin(str, strsize);
   printf("%s(%s)\n", typ, str);
-  if (str != tmpbuf)
-    {
-      free(str);
-    }
+  free(str);
 };
 
 void

@@ -246,10 +246,10 @@ static pdf_status_t read_and_inflate (pdf_stm_f_flate_t st, pdf_buffer_t in,
 
   /* we inflate and write to out */
   st->stream.avail_in = st->incnt;
-  st->stream.next_in = st->inbuf;
+  st->stream.next_in = (Bytef *) st->inbuf;
   do {
     st->stream.avail_out = PDF_STM_F_FLATE_CHUNK;
-    st->stream.next_out = st->outbuf;
+    st->stream.next_out = (Bytef *) st->outbuf;
     st->outcnt = 0;
 
     st->zret = inflate(&(st->stream), Z_NO_FLUSH);
@@ -308,10 +308,10 @@ deflate_inbuf (pdf_stm_f_flate_t st, pdf_buffer_t out, int flush)
     }
 
   st->stream.avail_in = st->incnt;
-  st->stream.next_in = st->inbuf;
+  st->stream.next_in = (Bytef *) st->inbuf;
   do {
     st->stream.avail_out = PDF_STM_F_FLATE_CHUNK;
-    st->stream.next_out = st->outbuf;
+    st->stream.next_out = (Bytef *) st->outbuf;
     st->outcnt = 0;
 
     st->zret = deflate(&(st->stream), flush);

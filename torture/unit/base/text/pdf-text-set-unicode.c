@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1241,7 +1241,7 @@ START_TEST(pdf_text_set_unicode_015)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -1262,7 +1262,7 @@ START_TEST(pdf_text_set_unicode_015)
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
-      fail_unless(strcmp((char *)output_data, (char *)previous_string) == 0);
+      fail_unless(strcmp(output_data, previous_string) == 0);
       
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
@@ -1274,7 +1274,7 @@ START_TEST(pdf_text_set_unicode_015)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -1295,7 +1295,7 @@ START_TEST(pdf_text_set_unicode_015)
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
-      fail_unless(strcmp((char *)output_data, (char *)previous_string) == 0);
+      fail_unless(strcmp(output_data, previous_string) == 0);
       
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
@@ -1330,7 +1330,7 @@ START_TEST(pdf_text_set_unicode_016)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -1351,7 +1351,7 @@ START_TEST(pdf_text_set_unicode_016)
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
-      fail_unless(strcmp((char *)output_data, (char *)previous_string) == 0);
+      fail_unless(strcmp(output_data, previous_string) == 0);
       
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
@@ -1386,7 +1386,7 @@ START_TEST(pdf_text_set_unicode_017)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -1407,7 +1407,7 @@ START_TEST(pdf_text_set_unicode_017)
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
-      fail_unless(strcmp((char *)output_data, (char *)previous_string) == 0);
+      fail_unless(strcmp(output_data, previous_string) == 0);
       
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
@@ -1441,7 +1441,7 @@ START_TEST(pdf_text_set_unicode_018)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -1462,7 +1462,7 @@ START_TEST(pdf_text_set_unicode_018)
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
-      fail_unless(strcmp((char *)output_data, (char *)previous_string) == 0);
+      fail_unless(strcmp(output_data, previous_string) == 0);
       
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
@@ -1496,7 +1496,7 @@ START_TEST(pdf_text_set_unicode_019)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -1517,7 +1517,7 @@ START_TEST(pdf_text_set_unicode_019)
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
-      fail_unless(strcmp((char *)output_data, (char *)previous_string) == 0);
+      fail_unless(strcmp(output_data, previous_string) == 0);
       
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
@@ -1551,7 +1551,7 @@ START_TEST(pdf_text_set_unicode_020)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -1572,7 +1572,7 @@ START_TEST(pdf_text_set_unicode_020)
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
-      fail_unless(strcmp((char *)output_data, (char *)previous_string) == 0);
+      fail_unless(strcmp(output_data, previous_string) == 0);
       
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
@@ -1606,7 +1606,7 @@ START_TEST(pdf_text_set_unicode_021)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -1627,7 +1627,7 @@ START_TEST(pdf_text_set_unicode_021)
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
-      fail_unless(strcmp((char *)output_data, (char *)previous_string) == 0);
+      fail_unless(strcmp(output_data, previous_string) == 0);
       
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
@@ -1664,7 +1664,7 @@ START_TEST(pdf_text_set_unicode_022)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -1689,7 +1689,7 @@ START_TEST(pdf_text_set_unicode_022)
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
-      fail_unless(strcmp((char *)output_data, (char *)previous_string) == 0);
+      fail_unless(strcmp(output_data, previous_string) == 0);
       
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
@@ -1702,9 +1702,9 @@ START_TEST(pdf_text_set_unicode_022)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
-      const pdf_char_t *previous_string = (pdf_char_t *)"a";
+      const pdf_char_t *previous_string = "a";
       
       fail_if(pdf_text_new (&text) != PDF_OK);
       
@@ -1727,7 +1727,7 @@ START_TEST(pdf_text_set_unicode_022)
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
-      fail_unless(strcmp((char *)output_data, (char *)previous_string) == 0);
+      fail_unless(strcmp(output_data, previous_string) == 0);
       
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
@@ -1764,7 +1764,7 @@ START_TEST(pdf_text_set_unicode_023)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -1789,7 +1789,7 @@ START_TEST(pdf_text_set_unicode_023)
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
-      fail_unless(strcmp((char *)output_data, (char *)previous_string) == 0);
+      fail_unless(strcmp(output_data, previous_string) == 0);
       
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
@@ -1826,7 +1826,7 @@ START_TEST(pdf_text_set_unicode_024)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -1851,7 +1851,7 @@ START_TEST(pdf_text_set_unicode_024)
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
-      fail_unless(strcmp((char *)output_data, (char *)previous_string) == 0);
+      fail_unless(strcmp(output_data, previous_string) == 0);
       
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
@@ -1896,7 +1896,7 @@ START_TEST(pdf_text_set_unicode_025)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -1921,7 +1921,7 @@ START_TEST(pdf_text_set_unicode_025)
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
-      fail_unless(strcmp((char *)output_data, (char *)previous_string) == 0);
+      fail_unless(strcmp(output_data, previous_string) == 0);
       
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
@@ -1957,7 +1957,7 @@ START_TEST(pdf_text_set_unicode_026)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -1982,7 +1982,7 @@ START_TEST(pdf_text_set_unicode_026)
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
-      fail_unless(strcmp((char *)output_data, (char *)previous_string) == 0);
+      fail_unless(strcmp(output_data, previous_string) == 0);
       
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
@@ -2018,7 +2018,7 @@ START_TEST(pdf_text_set_unicode_027)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -2043,7 +2043,7 @@ START_TEST(pdf_text_set_unicode_027)
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
-      fail_unless(strcmp((char *)output_data, (char *)previous_string) == 0);
+      fail_unless(strcmp(output_data, previous_string) == 0);
       
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
@@ -2088,7 +2088,7 @@ START_TEST(pdf_text_set_unicode_028)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -2113,7 +2113,7 @@ START_TEST(pdf_text_set_unicode_028)
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
-      fail_unless(strcmp((char *)output_data, (char *)previous_string) == 0);
+      fail_unless(strcmp(output_data, previous_string) == 0);
       
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
@@ -2242,10 +2242,10 @@ START_TEST(pdf_text_set_unicode_029)
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
       
       /* 3. The language code must be empty. */
-      fail_if(strlen((char *)pdf_text_get_language(text)) != 0);
+      fail_if(strlen(pdf_text_get_language(text)) != 0);
       
       /* 4. The country code must be empty. */
-      fail_if(strlen((char *)pdf_text_get_country(text)) != 0);      
+      fail_if(strlen(pdf_text_get_country(text)) != 0);      
       
       fail_if(pdf_text_destroy(text) != PDF_OK);
       pdf_dealloc(expected_data);
@@ -2375,10 +2375,10 @@ START_TEST(pdf_text_set_unicode_030)
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
       
       /* 3. The language code must be empty */
-      fail_if(strlen((char *)pdf_text_get_language(text)) != 0);
+      fail_if(strlen(pdf_text_get_language(text)) != 0);
       
       /* 4. The country code must be empty */
-      fail_if(strlen((char *)pdf_text_get_country(text)) != 0);      
+      fail_if(strlen(pdf_text_get_country(text)) != 0);      
       
       fail_if(pdf_text_destroy(text) != PDF_OK);
       pdf_dealloc(expected_data);

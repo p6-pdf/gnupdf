@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,7 +78,7 @@ pdf_text_test_big_endian_system(void)
     char c[2];
   } test;
   test.i = 0x6162;
-  return ((strncmp((char *)&test.c[0],"ab",2)==0) ? 1 : 0); 
+  return ((strncmp(&test.c[0],"ab",2)==0) ? 1 : 0); 
 }
 
 

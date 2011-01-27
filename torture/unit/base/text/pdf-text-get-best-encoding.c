@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,7 +62,7 @@ START_TEST(pdf_text_get_best_encoding_001)
   /* 1. The call to pdf_text_get_best_encoding should return a non-empty 
    *      pdf_text_host_encoding_t variable.*/
   host_enc = pdf_text_get_best_encoding(text, host_enc);
-  fail_unless(strlen((char *)host_enc.name) > 0);
+  fail_unless(strlen(host_enc.name) > 0);
   
   pdf_text_destroy(text);
 }
