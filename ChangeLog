@@ -1,5 +1,10 @@
 2011-01-27  Aleksander Morgado  <aleksander@gnu.org>
 
+	base/error: Getters of pdf_error_t receive a constant variable.
+	* src/base/pdf-error.[h|c]
+
+2011-01-27  Aleksander Morgado  <aleksander@gnu.org>
+
 	base/error: Implemented new pdf_error_t object
 	* src/base/pdf-error.[h|c]
 

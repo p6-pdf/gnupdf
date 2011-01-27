@@ -121,7 +121,7 @@
   ERROR_ENTRY (PDF_EBADNAME,    "invalid path name"),                   \
   ERROR_ENTRY (PDF_EAGAIN,      "operation can't be performed now, maybe later"), \
   ERROR_ENTRY (PDF_ENOSPC,      "no space left on device"),             \
-  ERROR_ENTRY (PDF_EBADCONTEXT, "text module global context not initialized"),    \
+  ERROR_ENTRY (PDF_EBADCONTEXT, "global context not initialized"),      \
   ERROR_ENTRY (PDF_ENOTEMPTY,   "operation requires some entity be empty"), \
   ERROR_ENTRY (PDF_ENINPUT,     "filter needs more input"),             \
   ERROR_ENTRY (PDF_ENOUTPUT,    "filter needs more output room"),       \
@@ -162,6 +162,7 @@ extern const pdf_char_t * pdf_error_stlist [];
 
 
 #define PDF_ERROR_DOMAIN_LIST                                           \
+   ERROR_ENTRY (PDF_EDOMAIN_UNDEFINED,       "[Undefined]"),            \
    ERROR_ENTRY (PDF_EDOMAIN_BASE_BASIC,      "[Base] Basic Types"),     \
    ERROR_ENTRY (PDF_EDOMAIN_BASE_HT,         "[Base] Hash Tables"),     \
    ERROR_ENTRY (PDF_EDOMAIN_BASE_LIST,       "[Base] Lists"),           \
@@ -207,11 +208,11 @@ pdf_error_t *pdf_error_new (pdf_error_domain_t  domain,
                             const pdf_char_t   *format,
                             ...);
 
-pdf_status_t pdf_error_get_status (pdf_error_t *error);
+pdf_status_t pdf_error_get_status (const pdf_error_t *error);
 
-pdf_error_domain_t pdf_error_get_domain  (pdf_error_t *error);
+pdf_error_domain_t pdf_error_get_domain  (const pdf_error_t *error);
 
-const pdf_char_t *pdf_error_get_message (pdf_error_t *error);
+const pdf_char_t *pdf_error_get_message (const pdf_error_t *error);
 
 void pdf_error_destroy (pdf_error_t *error);
 

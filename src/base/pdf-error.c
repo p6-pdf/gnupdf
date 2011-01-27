@@ -139,19 +139,19 @@ pdf_error_new (pdf_error_domain_t  domain,
 }
 
 pdf_status_t
-pdf_error_get_status (pdf_error_t *error)
+pdf_error_get_status (const pdf_error_t *error)
 {
   return error->status;
 }
 
 pdf_error_domain_t
-pdf_error_get_domain (pdf_error_t *error)
+pdf_error_get_domain (const pdf_error_t *error)
 {
   return error->domain;
 }
 
 const pdf_char_t *
-pdf_error_get_message (pdf_error_t *error)
+pdf_error_get_message (const pdf_error_t *error)
 {
   return error->message;
 }
@@ -173,6 +173,8 @@ pdf_set_error (pdf_error_t        **err,
   if (err != NULL)
     {
       va_list args;
+
+      PDF_ASSERT_BASE (*err != NULL);
 
       va_start (args, format);
       *err = error_new_valist (domain,
