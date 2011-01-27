@@ -1,3 +1,66 @@
+2011-01-27  Aleksander Morgado  <aleksander@gnu.org>
+
+	base/error: No longer need the cast to pdf_char_t.
+	* src/base/pdf-error.c
+
+2011-01-27  Aleksander Morgado  <aleksander@gnu.org>
+
+	base/error: Use pdf_char_t type instead of just char
+	* src/base/pdf-error.[h|c]: Use pdf_char_t when possible. Also
+	indentation fixes.
+	* src/pdf-global.c: Likewise.
+
+	* src/Makefile.am (PUBLIC_HDRS): Include first pdf-types.h, and only
+	then pdf-error.h.
+
+2011-01-27  Aleksander Morgado  <aleksander@gnu.org>
+
+	base/types: Move progress monitor API to separate file
+	* src/base/pdf-types-pmon.h: New file.
+	* src/base/pdf-types.h: Moved progress monitor API to the new
+	pdf-types-pmon.h file
+
+	* src/Makefile.am (PUBLIC_HDRS, TYPES_MODULE_SOURCES): Added new
+	pdf-types-pmon.h file to compilation.
+
+2011-01-27  Aleksander Morgado  <aleksander@gnu.org>
+
+	base/types: Move all buffer implementation to separate files
+	* src/base/pdf-types-buffer.[h|c]: New files.
+	* src/base/pdf-types.h: Moved all buffer implementation to the new
+	pdf-types-64.[c|h] files
+	* src/base/pdf-types.c: File removed.
+
+	* src/base/pdf-stm.h: Include pdf-types-buffer.h
+	* src/base/pdf-stm-f-v2.h: Likewise.
+	* src/base/pdf-stm-f-rl.h: Likewise.
+	* src/base/pdf-stm-f-null.h: Likewise.
+	* src/base/pdf-stm-f-md5.h: Likewise.
+	* src/base/pdf-stm-f-lzw.h: Likewise.
+	* src/base/pdf-stm-f-jbig2.h: Likewise.
+	* src/base/pdf-stm-filter.h: Likewise.
+	* src/base/pdf-stm-f-flate.h: Likewise.
+	* src/base/pdf-stm-f-dct.h: Likewise.
+	* src/base/pdf-stm-f-ahex.h: Likewise.
+	* src/base/pdf-stm-f-aesv2.h: Likewise.
+	* src/base/pdf-stm-f-a85.h: Likewise.
+	* src/base/pdf-base.h: Likewise.
+
+	* src/Makefile.am (PUBLIC_HDRS, TYPES_MODULE_SOURCES): Added new
+	pdf-types-buffer.[c|h] files to compilation.
+
+2011-01-27  Aleksander Morgado  <aleksander@gnu.org>
+
+	base/types: Move all bignum implementation to separate files
+	* src/base/pdf-types-64.[h|c]: New files.
+	* src/base/pdf-types.[h|c]: Moved all bignum implementation to the new
+	pdf-types-64.[c|h] files
+
+	* src/base/pdf-time.h: Include new pdf-types-64.h header.
+
+	* src/Makefile.am (PUBLIC_HDRS, TYPES_MODULE_SOURCES): Added new
+	pdf-types-64.[c|h] files to compilation.
+
 2011-01-27  Jose E. Marchesi  <jemarch@gnu.org>
 
 	syntax-check fixes.

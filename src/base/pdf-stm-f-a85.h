@@ -29,6 +29,7 @@
 
 #include <config.h>
 #include <pdf-types.h>
+#include <pdf-types-buffer.h>
 #include <pdf-hash.h>
 
 /* If something goes wrong in writing out data, 5 bytes could be leftover */

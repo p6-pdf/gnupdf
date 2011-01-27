@@ -28,6 +28,7 @@
 
 #include <config.h>
 
+#include <pdf-types.h>
 
 /* BEGIN PUBLIC */
 
@@ -159,16 +160,20 @@ enum pdf_status_e
 
 typedef enum pdf_status_e pdf_status_t;
 
-extern const char * pdf_error_stlist [];
+extern const pdf_char_t * pdf_error_stlist [];
 
 /* Print a message with `fprintf (fd, FORMAT, ...)';
    if status is nonzero, print the corresponding message. */
-extern void pdf_error (const pdf_status_t status, FILE * fd, const char *format, ...);
+extern void pdf_error (const pdf_status_t  status,
+                       FILE               *fd,
+                       const pdf_char_t   *format,
+                       ...);
 
 /* Print the message corresponding to 'status' to stderr
  * followed by 'str'.
  */
-extern void pdf_perror (const pdf_status_t status, const char *str);
+extern void pdf_perror (const pdf_status_t  status,
+                        const pdf_char_t   *str);
 
 
 /* END PUBLIC */

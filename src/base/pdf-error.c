@@ -32,25 +32,28 @@
 #include <pdf-global.h>
 #include <pdf-error.h>
 
-extern char *pdf_library_name;
+extern pdf_char_t *pdf_library_name;
 
 /* Update this list according to pdf_status_t. */
 #define ERROR_ENTRY(id, string) string
-const char * pdf_error_stlist [] =
+const pdf_char_t * pdf_error_stlist [] =
   {
     PDF_ERROR_LIST
   };
 #undef ERROR_ENTRY
 
 void
-pdf_perror (const pdf_status_t status, const char *str)
-{ 
+pdf_perror (const pdf_status_t  status,
+            const pdf_char_t   *str)
+{
   pdf_error ((int) status, stderr, str);
 }
 
-
 void
-pdf_error (const pdf_status_t status, FILE * fd, const char *format, ...)
+pdf_error (const pdf_status_t  status,
+           FILE               *fd,
+           const pdf_char_t   *format,
+           ...)
 {
   va_list args;
   int errnum;
@@ -61,7 +64,7 @@ pdf_error (const pdf_status_t status, FILE * fd, const char *format, ...)
     {
       fd = stderr;
     }
-  
+
   fprintf (fd, "%s", pdf_library_name);
 
   if (format != NULL)
@@ -74,7 +77,7 @@ pdf_error (const pdf_status_t status, FILE * fd, const char *format, ...)
 
   if (errnum >  0 && errnum < PDF_STATUS_ITEMS)
     fprintf (fd, ": %s", pdf_error_stlist[errnum-1]);
-  
+
   fprintf (fd, ".\n");
   fflush (fd);
 
