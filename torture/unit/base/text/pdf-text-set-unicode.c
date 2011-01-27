@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1241,7 +1241,7 @@ START_TEST(pdf_text_set_unicode_015)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -1274,7 +1274,7 @@ START_TEST(pdf_text_set_unicode_015)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -1330,7 +1330,7 @@ START_TEST(pdf_text_set_unicode_016)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -1386,7 +1386,7 @@ START_TEST(pdf_text_set_unicode_017)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -1441,7 +1441,7 @@ START_TEST(pdf_text_set_unicode_018)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -1496,7 +1496,7 @@ START_TEST(pdf_text_set_unicode_019)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -1551,7 +1551,7 @@ START_TEST(pdf_text_set_unicode_020)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -1606,7 +1606,7 @@ START_TEST(pdf_text_set_unicode_021)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -1664,7 +1664,7 @@ START_TEST(pdf_text_set_unicode_022)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -1702,9 +1702,9 @@ START_TEST(pdf_text_set_unicode_022)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
-      const pdf_char_t *previous_string = (pdf_char_t *)"a";
+      const pdf_char_t *previous_string = "a";
       
       fail_if(pdf_text_new (&text) != PDF_OK);
       
@@ -1764,7 +1764,7 @@ START_TEST(pdf_text_set_unicode_023)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -1826,7 +1826,7 @@ START_TEST(pdf_text_set_unicode_024)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -1896,7 +1896,7 @@ START_TEST(pdf_text_set_unicode_025)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -1957,7 +1957,7 @@ START_TEST(pdf_text_set_unicode_026)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -2018,7 +2018,7 @@ START_TEST(pdf_text_set_unicode_027)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       
@@ -2088,7 +2088,7 @@ START_TEST(pdf_text_set_unicode_028)
     {
       pdf_text_t text = NULL;
       pdf_char_t *input_data = NULL;
-      pdf_char_t input_size = 0;
+      pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
       

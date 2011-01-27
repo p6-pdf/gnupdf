@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -157,7 +157,7 @@ static pdf_text_utf32_char_t
 pdf_text_pdfdocenc_point_to_utf32he_point(const pdf_char_t pdfdocenc_val)
 {
   pdf_text_utf32_char_t utf32val;
-  utf32val.i =  pdfdocenc_map[(int)pdfdocenc_val];
+  utf32val.i =  pdfdocenc_map[(pdf_uchar_t)pdfdocenc_val];
   return utf32val;
 }
 
@@ -820,10 +820,10 @@ pdf_text_utf8_point_to_utf32he_point(const pdf_text_utf8_char_t utf8val[4],
          ((c != 0) && ((utf8val[c]  < 0x80) || (utf8val[c]  > 0xBF))))
         {
           PDF_DEBUG_BASE("Invalid UTF-8 character: %.2X:%.2X:%.2X:%.2X",
-                         (int)utf8val[0],
-                         ((n_bytes>1)?((int)utf8val[1]):0),
-                         ((n_bytes>2)?((int)utf8val[2]):0),
-                         ((n_bytes>3)?((int)utf8val[3]):0));
+                         (pdf_uchar_t)utf8val[0],
+                         ((n_bytes>1)?((pdf_uchar_t)utf8val[1]):0),
+                         ((n_bytes>2)?((pdf_uchar_t)utf8val[2]):0),
+                         ((n_bytes>3)?((pdf_uchar_t)utf8val[3]):0));
           return 0;
         }
     }
@@ -902,7 +902,7 @@ pdf_text_utf8_to_utf32he(const pdf_char_t    *input_data,
       pdf_text_utf8_char_t utf8val[4];
 
       /* Check number of bytes needed for the UTF-8 char */
-      delta_in_utf8 = n_bytes_in_utf8_char[(int)input_data[i]];
+      delta_in_utf8 = n_bytes_in_utf8_char[(pdf_uchar_t)input_data[i]];
       
       /* Check validity of first byte in UTF-8 */
       /* Check if the required bytes are outside the input data stream */

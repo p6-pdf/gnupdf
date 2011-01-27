@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1000,7 +1000,7 @@ START_TEST (pdf_stm_write_016)
   /* Test some data */
   ret = pdf_stm_write (mem_stm_fixture.stm, encoded, 9, &tmp);
   fail_if (ret == PDF_ERROR);
-  fail_if (pdf_stm_flush (mem_stm_fixture.stm, PDF_TRUE, &tmp) == PDF_ERROR);  
+  fail_if (pdf_stm_flush (mem_stm_fixture.stm, PDF_TRUE, &tmp) == PDF_ERROR);
   fail_if (memcmp (mem_stm_fixture.buf, decoded, 10) != 0);
   
   /* Cleanup */

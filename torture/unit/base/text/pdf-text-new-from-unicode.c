@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1365,7 +1365,7 @@ START_TEST(pdf_text_new_from_unicode_015)
   extern const test_string_t utf32be_strings[];
   pdf_text_t text = NULL;
   pdf_char_t *input_data = NULL;
-  pdf_char_t input_size = 0;
+  pdf_size_t input_size = 0;
   int i;
 
   /* Always INIT! Check runs each test in a different process */
@@ -1426,7 +1426,7 @@ START_TEST(pdf_text_new_from_unicode_016)
   extern const test_string_t utf8_strings[];
   pdf_text_t text = NULL;
   pdf_char_t *input_data = NULL;
-  pdf_char_t input_size = 0;
+  pdf_size_t input_size = 0;
   int i;
   
   /* Always INIT! Check runs each test in a different process */
@@ -1469,7 +1469,7 @@ START_TEST(pdf_text_new_from_unicode_017)
   extern const test_string_t utf8_strings[];
   pdf_text_t text = NULL;
   pdf_char_t *input_data = NULL;
-  pdf_char_t input_size = 0;
+  pdf_size_t input_size = 0;
   int i;
   
   /* Always INIT! Check runs each test in a different process */
@@ -1511,7 +1511,7 @@ START_TEST(pdf_text_new_from_unicode_018)
   extern const test_string_t utf8_strings[];
   pdf_text_t text = NULL;
   pdf_char_t *input_data = NULL;
-  pdf_char_t input_size = 0;
+  pdf_size_t input_size = 0;
   int i;
   
   /* Always INIT! Check runs each test in a different process */
@@ -1553,7 +1553,7 @@ START_TEST(pdf_text_new_from_unicode_019)
   extern const test_string_t utf8_strings[];
   pdf_text_t text = NULL;
   pdf_char_t *input_data = NULL;
-  pdf_char_t input_size = 0;
+  pdf_size_t input_size = 0;
   int i;
   
   /* Always INIT! Check runs each test in a different process */
@@ -1595,7 +1595,7 @@ START_TEST(pdf_text_new_from_unicode_020)
   extern const test_string_t utf8_strings[];
   pdf_text_t text = NULL;
   pdf_char_t *input_data = NULL;
-  pdf_char_t input_size = 0;
+  pdf_size_t input_size = 0;
   int i;
   
   /* Always INIT! Check runs each test in a different process */
@@ -1637,7 +1637,7 @@ START_TEST(pdf_text_new_from_unicode_021)
   extern const test_string_t utf8_strings[];
   pdf_text_t text = NULL;
   pdf_char_t *input_data = NULL;
-  pdf_char_t input_size = 0;
+  pdf_size_t input_size = 0;
   int i;
   
   /* Always INIT! Check runs each test in a different process */

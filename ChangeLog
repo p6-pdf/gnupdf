@@ -1,3 +1,25 @@
+2011-01-27  Jose E. Marchesi  <jemarch@gnu.org>
+
+	pdf-types: change pdf_char_t to be an alias of 'char' and
+	introduce the new pdf_uchar_t type.
+	* src/base/pdf-stm-f-rl.h: Make the dec_count and rlchar members
+	of the struct pdf_stm_f_rl_s unsigned.
+
+	* torture/unit/base/text/pdf-text-set-unicode.c: Use pdf_size_t
+	instead of pdf_char_t to store string sizes.
+	* torture/unit/base/text/pdf-text-new-from-unicode.c: Likewise.
+
+	* src/base/pdf-types.h: pdf_char_t shall be signed or unsigned
+	depending on the default for the 'char' type in the running
+	platform.
+	New type pdf_uchar_t.
+
+	* src/base/pdf-text-encoding.c (pdf_text_utf8_to_utf32he): Cast
+	pdf_char_t values to pdf_uchar_t before using them as array
+	indexes.
+	(pdf_text_pdfdocenc_point_to_utf32he_point): Likewise.
+	(pdf_text_utf8_point_to_utf32he_point): Likewise.
+
 2011-01-25  Jose E. Marchesi  <jemarch@gnu.org>
 
 	manuals: get version.texi generated automatically by automake.
