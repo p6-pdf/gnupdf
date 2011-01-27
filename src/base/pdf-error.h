@@ -35,75 +35,7 @@
 #include <stdio.h>  /* Included again for the public header */
 
 
-#ifdef PDF_HAVE_DEBUG_BASE
-#define PDF_DEBUG_BASE(message, ...) \
-  pdf_error (0, stderr, "***DEBUG BASE***:%s:%d: " message, \
-  __FILE__, __LINE__, ##__VA_ARGS__)
-#else
-#define PDF_DEBUG_BASE(...)
-#endif /* PDF_HAVE_DEBUG_BASE */
-
-#ifdef PDF_HAVE_DEBUG_OBJECT
-#define PDF_DEBUG_OBJECT(message, ...) \
-  pdf_error (0, stderr, "***DEBUG OBJECT***:%s:%d: " message, \
-  __FILE__, __LINE__, ##__VA_ARGS__)
-#else
-#define PDF_DEBUG_OBJECT(...)
-#endif /* PDF_HAVE_DEBUG_OBJECT */
-
-#ifdef PDF_HAVE_DEBUG_DOCUMENT
-#define PDF_DEBUG_DOCUMENT(message, ...) \
-  pdf_error (0, stderr, "***DEBUG DOCUMENT***:%s:%d: " message, \
-  __FILE__, __LINE__, ##__VA_ARGS__)
-#else
-#define PDF_DEBUG_DOCUMENT(...)
-#endif /* PDF_HAVE_DEBUG_DOCUMENT */
-
-#ifdef PDF_HAVE_DEBUG_PAGE
-#define PDF_DEBUG_PAGE(message, ...) \
-  pdf_error (0, stderr, "***DEBUG PAGE***:%s:%d: " message, \
-  __FILE__, __LINE__, ##__VA_ARGS__)
-#else
-#define PDF_DEBUG_PAGE(...)
-#endif /* PDF_HAVE_DEBUG_PAGE */
-
-
-#define PDF_ASSERT_BASE(condition)                                      \
-  do                                                                    \
-    {                                                                   \
-      if (!(condition))                                                 \
-        {                                                               \
-          PDF_DEBUG_BASE("the assert `%s' failed", #condition);         \
-        }                                                               \
-    } while(0)
-
-#define PDF_ASSERT_OBJECT(condition)                                    \
-  do                                                                    \
-    {                                                                   \
-      if (!(condition))                                                 \
-        {                                                               \
-          PDF_DEBUG_OBJECT("the assert `%s' failed", #condition);       \
-        }                                                               \
-    } while(0)
-
-#define PDF_ASSERT_DOCUMENT(condition)                                  \
-  do                                                                    \
-    {                                                                   \
-      if (!(condition))                                                 \
-        {                                                               \
-          PDF_DEBUG_DOCUMENT("the assert `%s' failed", #condition);     \
-        }                                                               \
-    } while(0)
-
-#define PDF_ASSERT_PAGE(condition)                                      \
-  do                                                                    \
-    {                                                                   \
-      if (!(condition))                                                 \
-        {                                                               \
-          PDF_DEBUG_PAGE("the assert `%s' failed", #condition);         \
-        }                                                               \
-    } while(0)
-
+/* --------------------- Error Data Types ------------------------- */
 
 
 #define PDF_ERROR_LIST                                                  \
@@ -184,23 +116,10 @@ enum pdf_error_domain_e
 #undef ERROR_ENTRY
 extern const pdf_char_t * pdf_error_domain_stlist [];
 
-
-/* Print a message with `fprintf (fd, FORMAT, ...)';
-   if status is nonzero, print the corresponding message. */
-extern void pdf_error (const pdf_status_t  status,
-                       FILE               *fd,
-                       const pdf_char_t   *format,
-                       ...);
-
-/* Print the message corresponding to 'status' to stderr
- * followed by 'str'.
- */
-extern void pdf_perror (const pdf_status_t  status,
-                        const pdf_char_t   *str);
-
-
 /* The PDF error object */
 typedef struct pdf_error_s pdf_error_t;
+
+/* --------------------- Error Reporting procedures ------------------------- */
 
 /* Basic new()/destroy() and getters */
 pdf_error_t *pdf_error_new (pdf_error_domain_t  domain,
@@ -231,6 +150,99 @@ void pdf_clear_error (pdf_error_t **err);
 /* If dest is NULL, free src; otherwise moves src into *dest. */
 void pdf_propagate_error (pdf_error_t **dest,
                           pdf_error_t  *src);
+
+
+/* --------------------- Error Printing procedures ------------------------- */
+
+
+/* Print a message with `fprintf (fd, FORMAT, ...)';
+   if status is nonzero, print the corresponding message. */
+void pdf_error (const pdf_status_t  status,
+                FILE               *fd,
+                const pdf_char_t   *format,
+                ...);
+
+/* Print the message corresponding to 'status' to stderr
+ * followed by 'str'.
+ */
+void pdf_perror (const pdf_status_t  status,
+                 const pdf_char_t   *str);
+
+
+/* --------------------- Debugging procedures ------------------------- */
+
+
+#ifdef PDF_HAVE_DEBUG_BASE
+#define PDF_DEBUG_BASE(message, ...) \
+  pdf_error (0, stderr, "***DEBUG BASE***:%s:%d: " message, \
+  __FILE__, __LINE__, ##__VA_ARGS__)
+#else
+#define PDF_DEBUG_BASE(...)
+#endif /* PDF_HAVE_DEBUG_BASE */
+
+#ifdef PDF_HAVE_DEBUG_OBJECT
+#define PDF_DEBUG_OBJECT(message, ...) \
+  pdf_error (0, stderr, "***DEBUG OBJECT***:%s:%d: " message, \
+  __FILE__, __LINE__, ##__VA_ARGS__)
+#else
+#define PDF_DEBUG_OBJECT(...)
+#endif /* PDF_HAVE_DEBUG_OBJECT */
+
+#ifdef PDF_HAVE_DEBUG_DOCUMENT
+#define PDF_DEBUG_DOCUMENT(message, ...) \
+  pdf_error (0, stderr, "***DEBUG DOCUMENT***:%s:%d: " message, \
+  __FILE__, __LINE__, ##__VA_ARGS__)
+#else
+#define PDF_DEBUG_DOCUMENT(...)
+#endif /* PDF_HAVE_DEBUG_DOCUMENT */
+
+#ifdef PDF_HAVE_DEBUG_PAGE
+#define PDF_DEBUG_PAGE(message, ...) \
+  pdf_error (0, stderr, "***DEBUG PAGE***:%s:%d: " message, \
+  __FILE__, __LINE__, ##__VA_ARGS__)
+#else
+#define PDF_DEBUG_PAGE(...)
+#endif /* PDF_HAVE_DEBUG_PAGE */
+
+
+#define PDF_ASSERT_BASE(condition)                                      \
+  do                                                                    \
+    {                                                                   \
+      if (!(condition))                                                 \
+        {                                                               \
+          PDF_DEBUG_BASE("the assert `%s' failed", #condition);         \
+        }                                                               \
+    } while(0)
+
+#define PDF_ASSERT_OBJECT(condition)                                    \
+  do                                                                    \
+    {                                                                   \
+      if (!(condition))                                                 \
+        {                                                               \
+          PDF_DEBUG_OBJECT("the assert `%s' failed", #condition);       \
+        }                                                               \
+    } while(0)
+
+#define PDF_ASSERT_DOCUMENT(condition)                                  \
+  do                                                                    \
+    {                                                                   \
+      if (!(condition))                                                 \
+        {                                                               \
+          PDF_DEBUG_DOCUMENT("the assert `%s' failed", #condition);     \
+        }                                                               \
+    } while(0)
+
+#define PDF_ASSERT_PAGE(condition)                                      \
+  do                                                                    \
+    {                                                                   \
+      if (!(condition))                                                 \
+        {                                                               \
+          PDF_DEBUG_PAGE("the assert `%s' failed", #condition);         \
+        }                                                               \
+    } while(0)
+
+
+
 
 /* END PUBLIC */
 
