@@ -35,7 +35,7 @@
 extern pdf_char_t *pdf_library_name;
 
 /* Update this list according to pdf_status_t. */
-#define ERROR_ENTRY(id, string) (pdf_char_t *)string
+#define ERROR_ENTRY(id, string) string
 const pdf_char_t * pdf_error_stlist [] =
   {
     PDF_ERROR_LIST
