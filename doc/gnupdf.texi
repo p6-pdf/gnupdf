@@ -117,18 +117,20 @@ other modules (such as allocation or error functions).
 The Error module provides procedures for error reporting to the
 client as well as for error tracing (via debug messages) to
 developers. Here we also define status types returned by most
-procedures (there are exceptions though).
+procedures (there are exceptions though), as well as a generic
+error data type.
 
 @menu
-* Status types::               Status values returned by the functions
+* Types::                      Status values returned by the functions
                                 of this library.
-* Error Reporting procedures:: Printing the textual description of an
-                                error code.
+* Error Reporting procedures:: Reporting errors in the library.
+* Error Printing procedures::  Printing the textual description of
+                                errors and error codes.
 * Debugging procedures::       Tracing support.
 @end menu
 
-@node Status types
-@subsection Status types
+@node Types
+@subsection Types
 
 @deftp {Data Type} pdf_status_t
 A status variable. This type of variable is returned by many library
@@ -181,9 +183,314 @@ No matching found
 
 This list will grow as we get closer to a mature state of development.
 
+@deftp {Data Type} pdf_error_domain_t
+An enumerated value which represents a submodule of the library.
+@end deftp
+
+The following constants define the valid values to be held in a
+@code{pdf_error_domain_t} variable:
+
+@deftp {Constant} PDF_EDOMAIN_UNDEFINED
+The domain is undefined.
+@end deftp
+
+@deftp {Constant} PDF_EDOMAIN_BASE_BASIC
+The Basic Types submodule in the Base layer.
+@end deftp
+
+@deftp {Constant} PDF_EDOMAIN_BASE_HT
+The Hash Tables module in the Base layer.
+@end deftp
+
+@deftp {Constant} PDF_EDOMAIN_BASE_LISTS
+The Lists module in the Base layer.
+@end deftp
+
+@deftp {Constant} PDF_EDOMAIN_BASE_STREAM
+The Streams module in the Base layer.
+@end deftp
+
+@deftp {Constant} PDF_EDOMAIN_BASE_FP
+The Floating Points module in the Base layer.
+@end deftp
+
+@deftp {Constant} PDF_EDOMAIN_BASE_TEXT
+The Text module in the Base layer.
+@end deftp
+
+@deftp {Constant} PDF_EDOMAIN_BASE_FS
+The FileSystem module in the Base layer.
+@end deftp
+
+@deftp {Constant} PDF_EDOMAIN_BASE_TOKENISER
+The Tokeniser module in the Base layer.
+@end deftp
+
+@deftp {Constant} PDF_EDOMAIN_BASE_ENCRYPTION
+The Encryption module in the Base layer.
+@end deftp
+
+
+@deftp {Data Type} pdf_error_t
+An opaque data type, representing a generic error. This variable holds where the
+error was originally reported (a @code{pdf_error_domain_t}), which kind of error
+it is (a @code{pdf_status_t}) as well as a text message with more information on
+the issue.
+@end deftp
+
 
 @node Error Reporting procedures
 @subsection Error Reporting procedures
+
+@deftypefun pdf_error_t pdf_error_new (pdf_error_domain_t @var{domain}, pdf_status_t @var{status}, const pdf_char_t *@var{format}, @var{...})
+
+Creates a new @code{pdf_error_t} variable.
+
+@table @strong
+@item Parameters
+@table @var
+@item domain
+error domain
+@item status
+status code
+@item format
+string format for the message
+@item ...
+format's arguments
+@end table
+@item Returns
+a newly created pdf_error_t
+@item Usage example
+@example
+pdf_error_t *error;
+
+error = pdf_error_new (PDF_EDOMAIN_TEXT,
+                       PDF_EBADCONTEXT,
+                       "Context was not properly initialized");
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_status_t pdf_error_get_status (const pdf_error_t *@var{error})
+
+Returns the status code in @var{error}.
+
+@table @strong
+@item Parameters
+@table @var
+@item error
+a pdf_error_t
+@end table
+@item Returns
+a pdf_status_t
+@item Usage example
+@example
+pdf_error_t *error;
+
+error = pdf_error_new (PDF_EDOMAIN_TEXT,
+                       PDF_EBADCONTEXT,
+                       "Context was not properly initialized");
+
+if (pdf_error_get_status (error) != PDF_EBADCONTEXT)
+  @{
+        /* Won't happen */
+  @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_error_domain_t pdf_error_get_domain (const pdf_error_t *@var{error})
+
+Returns the error domain in @var{error}.
+
+@table @strong
+@item Parameters
+@table @var
+@item error
+a pdf_error_t
+@end table
+@item Returns
+a pdf_error_domain_t
+@item Usage example
+@example
+pdf_error_t *error;
+
+error = pdf_error_new (PDF_EDOMAIN_TEXT,
+                       PDF_EBADCONTEXT,
+                       "Context was not properly initialized");
+
+if (pdf_error_get_domain (error) != PDF_EDOMAIN_TEXT)
+  @{
+        /* Won't happen */
+  @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun const pdf_char_t *pdf_error_get_message (const pdf_error_t *@var{error})
+
+Returns the message in @var{error}.
+
+@table @strong
+@item Parameters
+@table @var
+@item error
+a pdf_error_t
+@end table
+@item Returns
+a pdf_error_domain_t
+@item Usage example
+@example
+pdf_error_t *error;
+
+error = pdf_error_new (PDF_EDOMAIN_TEXT,
+                       PDF_EBADCONTEXT,
+                       "Context was not properly initialized");
+
+pdf_perror (pdf_error_get_status (error),
+            pdf_error_get_domain (error));
+@end example
+@end table
+@end deftypefun
+
+@deftypefun void pdf_error_destroy (pdf_error_t *@var{error})
+
+Disposes @var{error} and its contents.
+
+@table @strong
+@item Parameters
+@table @var
+@item error
+a pdf_error_t
+@end table
+@item Usage example
+@example
+pdf_error_t *error;
+
+error = pdf_error_new (PDF_EDOMAIN_TEXT,
+                       PDF_EBADCONTEXT,
+                       "Context was not properly initialized");
+
+pdf_error_destroy (error);
+@end example
+@end table
+@end deftypefun
+
+
+@deftypefun void pdf_set_error (pdf_error_t **@var{err})
+
+Does nothing if @var{err} is @code{NULL}. If @var{err} is not @code{NULL},
+then *@var{err} must be NULL. It will create a new @code{pdf_error_t} and place
+it in *@var{err}.
+
+@table @strong
+@item Parameters
+@table @var
+@item err
+a pointer to a pdf_error_t
+@end table
+@item Usage example
+@example
+pdf_bool_t
+pdf_magic (pdf_char_t   *spell,
+           pdf_error_t **error)
+@{
+  if (!pdf_magic_is_spell_known (spell))
+    @{
+      pdf_set_error (error,
+                     PDF_EDOMAIN_UNDEFINED,
+                     PDF_EBADDATA,
+                     "Wrong or unknown spell: '%s'",
+                     spell);
+      return PDF_FALSE;
+    @}
+
+  /* Magic goes here */
+  return PDF_TRUE;
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun void pdf_clear_error (pdf_error_t **@var{err})
+
+Does nothing if @var{err} is @code{NULL}. If @var{err} is not @code{NULL},
+then it will dispose the @code{pdf_error_t} in *@var{err}, if any; and
+set *@var{err} to @code{NULL}.
+
+@table @strong
+@item Parameters
+@table @var
+@item err
+a pointer to a pdf_error_t
+@end table
+@item Usage example
+@example
+pdf_bool_t
+pdf_magic (pdf_char_t   *spell,
+           pdf_error_t **error)
+@{
+  /* Yes, it is a weird example, I know */
+  pdf_set_error (error,
+                 PDF_EDOMAIN_UNDEFINED,
+                 PDF_EBADDATA,
+                 "Wrong or unknown spell: '%s'",
+                 spell);
+
+  if (pdf_magic_is_spell_known (spell))
+    @{
+      pdf_clear_error (error);
+
+      /* Magic goes here */
+      return PDF_TRUE;
+    @}
+
+  return PDF_FALSE;
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun void pdf_propagate_error (pdf_error_t **@var{dest}, pdf_error_t *@var{src})
+
+If @var{dest} is @code{NULL}, it will dispose @var{src}. Otherwise, moves
+@var{src} to *@var{dest}.
+
+@table @strong
+@item Parameters
+@table @var
+@item dest
+a pointer to a pdf_error_t
+@item src
+a pdf_error_t
+@end table
+@item Usage example
+@example
+pdf_bool_t
+pdf_magic (pdf_char_t   *spell,
+           pdf_error_t **error)
+@{
+  pdf_error_t *inner_error = NULL;
+
+  if (!pdf_magic_execute (spell, &inner_error))
+    @{
+      /* Report up all errors except for PDF_EAGAIN... */
+      if (pdf_error_get_status (inner_error) != PDF_EAGAIN)
+        @{
+          pdf_propagate_error (error, inner_error);
+          return PDF_FALSE;
+        @}
+      pdf_error_destroy (inner_error);
+    @}
+
+  return PDF_TRUE;
+@}
+@end example
+@end table
+@end deftypefun
+
+@node Error Printing procedures
+@subsection Error Printing procedures
 
 @deftypefun void pdf_perror (const pdf_status_t @var{status}, const char *@var{str})
 
@@ -438,7 +745,7 @@ pdf_dealloc (p);
 @section Basic Types
 
 @menu
-* Boolean Types::       The true/false boolean operators.    
+* Boolean Types::       The true/false boolean operators.
 * Numeric Types::       Signed and unsigned 32bit integers.
 * Character Types::     Signed and unsigned bytes.
 * Big Numbers::         Signed 64bit integers.
@@ -1038,7 +1345,7 @@ operation. If it is @code{NULL} then this parameter is ignored.
 @item Returns
 A PDF status value:
 @table @code
-@item PDF_OK 
+@item PDF_OK
 Operation successful
 @item PDF_EBADDATA
 @code{NULL} value in @var{dest}.
