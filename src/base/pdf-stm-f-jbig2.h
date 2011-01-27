@@ -31,6 +31,7 @@
 #include <jbig2.h>
 
 #include <pdf-types.h>
+#include <pdf-types-buffer.h>
 #include <pdf-hash.h>
 
 /* Internal state */

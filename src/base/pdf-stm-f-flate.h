@@ -31,6 +31,7 @@
 #include <zlib.h>
 
 #include <pdf-types.h>
+#include <pdf-types-buffer.h>
 #include <pdf-hash.h>
 
 #define PDF_STM_F_FLATE_CHUNK 16384

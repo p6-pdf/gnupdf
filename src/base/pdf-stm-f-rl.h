@@ -29,6 +29,7 @@
 #include <config.h>
 
 #include <pdf-types.h>
+#include <pdf-types-buffer.h>
 #include <pdf-hash.h>
 
 typedef enum

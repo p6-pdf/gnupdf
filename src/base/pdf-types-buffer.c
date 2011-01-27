@@ -1,13 +1,13 @@
 /* -*- mode: C -*-
  *
- *       File:         pdf-types.c
- *       Date:         Sun Feb 10 21:33:44 2008
+ *       File:         pdf-types-buffer.c
+ *       Date:         Wed Jan 26 17:35:27 2011
  *
- *       GNU PDF Library - Basic Types Module
+ *       GNU PDF Library - Basic Types, Simple memory buffers
  *
  */
 
-/* Copyright (C) 2008, 2009, 2010 Free Software Foundation, Inc */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
 
 #include <config.h>
 
-#include <pdf-types.h>
+#include <pdf-types-buffer.h>
 #include <pdf-alloc.h>
 
 pdf_buffer_t
@@ -68,9 +68,11 @@ pdf_buffer_eob_p (pdf_buffer_t buffer)
 
 
 pdf_status_t
-pdf_buffer_resize (pdf_buffer_t buffer, pdf_size_t newsize)
+pdf_buffer_resize (pdf_buffer_t buffer,
+                   pdf_size_t   newsize)
 {
   pdf_char_t *newdata = pdf_realloc (buffer->data, newsize);
+
   if (!newdata)
     return PDF_ENOMEM;
 
@@ -81,7 +83,6 @@ pdf_buffer_resize (pdf_buffer_t buffer, pdf_size_t newsize)
   return PDF_OK;
 }
 
-
 pdf_status_t
 pdf_buffer_rewind (pdf_buffer_t buffer)
 {
@@ -91,5 +92,4 @@ pdf_buffer_rewind (pdf_buffer_t buffer)
   return PDF_OK;
 }
 
-
-/* End of pdf-types.c */
+/* End of pdf-buffer.c */

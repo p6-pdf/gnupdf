@@ -105,27 +105,6 @@ typedef char pdf_i8_t;
 /* Boolean type */
 typedef bool pdf_bool_t;
 
-/********************** Simple memory buffers **************************/
-
-struct pdf_buffer_s
-{
-  pdf_char_t *data;    /* Buffer contents */
-  pdf_size_t size;     /* Size of the buffer in octects */
-  pdf_size_t rp;       /* Read pointer */
-  pdf_size_t wp;       /* Write pointer */
-};
-
-typedef struct pdf_buffer_s *pdf_buffer_t;
-
-pdf_buffer_t pdf_buffer_new (pdf_size_t size);
-pdf_status_t pdf_buffer_destroy (pdf_buffer_t buffer);
-
-pdf_bool_t pdf_buffer_full_p (pdf_buffer_t buffer);
-pdf_bool_t pdf_buffer_eob_p (pdf_buffer_t buffer);
-
-pdf_status_t pdf_buffer_resize (pdf_buffer_t buffer,
-                                pdf_size_t newsize);
-pdf_status_t pdf_buffer_rewind (pdf_buffer_t buffer);
 
 /********************** progress monitors **************************/
 

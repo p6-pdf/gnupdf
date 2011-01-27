@@ -31,6 +31,7 @@
 #include <stdio.h>
 
 #include <pdf-types.h>
+#include <pdf-types-buffer.h>
 #include <pdf-hash.h>
 #include <pdf-alloc.h>
 #include <pdf-crypt.h>
