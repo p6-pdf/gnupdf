@@ -32,7 +32,8 @@ ALLOC_MODULE_SOURCES = base/pdf-alloc.c base/pdf-alloc.h
 
 TYPES_MODULE_SOURCES = base/pdf-types.h \
                        base/pdf-types-64.c base/pdf-types-64.h \
-                       base/pdf-types-buffer.c base/pdf-types-buffer.h
+                       base/pdf-types-buffer.c base/pdf-types-buffer.h \
+                       base/pdf-types-pmon.h
 
 ERROR_MODULE_SOURCES = base/pdf-error.c base/pdf-error.h
 
@@ -149,6 +150,7 @@ PUBLIC_HDRS = pdf-config.h \
               base/pdf-types.h \
               base/pdf-types-64.h \
               base/pdf-types-buffer.h \
+              base/pdf-types-pmon.h \
               base/pdf-fp.h \
               base/pdf-alloc.h \
               base/pdf-list.h \

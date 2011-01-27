@@ -28,8 +28,6 @@
 
 #include <config.h>
 
-#include <pdf-error.h>
-
 /* BEGIN PUBLIC */
 #include <sys/types.h> /* for off_t.  */
 #include <stdint.h>    /* for uint32_t and others, from gnulib.  */
@@ -63,7 +61,7 @@
 #define PDF_U8_DIV (UINT8_MAX + 1)
 
 
-/* A variable of type `pdf_off_t' contain a byte-offset relative to
+/* A variable of type `pdf_off_t' contains a byte-offset relative to
    the beginning of a stream object.
 
    Please be careful manipulating `pdf_off_t' values. Its value is
@@ -105,27 +103,6 @@ typedef char pdf_i8_t;
 /* Boolean type */
 typedef bool pdf_bool_t;
 
-
-/********************** progress monitors **************************/
-
-typedef pdf_status_t (*pdf_pm_begin_operation_fn_t) (void *client_data);
-typedef pdf_status_t (*pdf_pm_end_operation_fn_t) (void *client_data);
-typedef pdf_status_t (*pdf_pm_get_duration_fn_t) (void *client_data, void *duration);
-typedef pdf_status_t (*pdf_pm_set_duration_fn_t) (void *client_data, void *duration);
-typedef pdf_status_t (*pdf_pm_get_current_value_fn_t) (void *client_data, void *duration);
-typedef pdf_status_t (*pdf_pm_set_current_value_fn_t) (void *client_data, void *duration);
-typedef pdf_status_t (*pdf_pm_set_text_fn_t) (void *client_data, void *text);
-
-struct pdf_pm_s
-{
-  pdf_pm_begin_operation_fn_t begin_operation_fn;
-  pdf_pm_end_operation_fn_t end_operation_fn;
-  pdf_pm_get_duration_fn_t get_duration_fn;
-  pdf_pm_set_duration_fn_t set_duration_fn;
-  pdf_pm_get_current_value_fn_t get_current_value_fn_t;
-  pdf_pm_set_current_value_fn_t set_current_value_fn_t;
-  pdf_pm_set_text_fn_t set_text_fn;
-};
 
 /* END PUBLIC */
 

@@ -1,5 +1,15 @@
 2011-01-27  Aleksander Morgado  <aleksander@gnu.org>
 
+	base/types: Move progress monitor API to separate file
+	* src/base/pdf-types-pmon.h: New file.
+	* src/base/pdf-types.h: Moved progress monitor API to the new
+	pdf-types-pmon.h file
+
+	* src/Makefile.am (PUBLIC_HDRS, TYPES_MODULE_SOURCES): Added new
+	pdf-types-pmon.h file to compilation.
+
+2011-01-27  Aleksander Morgado  <aleksander@gnu.org>
+
 	base/types: Move all buffer implementation to separate files
 	* src/base/pdf-types-buffer.[h|c]: New files.
 	* src/base/pdf-types.h: Moved all buffer implementation to the new
