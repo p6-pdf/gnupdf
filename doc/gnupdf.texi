@@ -468,12 +468,30 @@ Logical false.
 @node Numeric Types
 @subsection Numeric Types
 
+The library provides scalar types of 16, 32 and 64 bits.
+
+@deftp {Data Type} pdf_i16_t
+Signed 16 bits integer.
+@end deftp
+
+@deftp {Data Type} pdf_u16_t
+Unsigned 16 bits integer.
+@end deftp
+
 @deftp {Data Type} pdf_i32_t
 Signed 32 bits integer.
 @end deftp
 
 @deftp {Data Type} pdf_u32_t
 Unsigned 32 bits integer.
+@end deftp
+
+@deftp {Data Type} pdf_i64_t
+Signed 64 bits integer.
+@end deftp
+
+@deftp {Data Type} pdf_u64_t
+Unsigned 64 bits integer.
 @end deftp
 
 The following constants specify the valid ranges for these data types:
@@ -492,6 +510,22 @@ Maximum value able to be stored in a @code{pdf_u32_t} variable.
 
 @deftp {Constant} PDF_U32_MIN
 Minimum value able to be stored in a @code{pdf_u32_t} variable.
+@end deftp
+
+@deftp {Constant} PDF_I64_MAX
+Maximum value able to be stored in a @code{pdf_u64_t} variable.
+@end deftp
+
+@deftp {Constant} PDF_I64_MIN
+Minimum value able to be stored in a @code{pdf_u64_t} variable.
+@end deftp
+
+@deftp {Constant} PDF_U64_MAX
+Maximum value able to be stored in a @code{pdf_u64_t} variable.
+@end deftp
+
+@deftp {Constant} PDF_U64_MIN
+Minimum value able to be stored in a @code{pdf_u64_t} variable.
 @end deftp
 
 @node Character Types
@@ -8172,7 +8206,7 @@ pdf_time_span_destroy (span);
 @node Managing Time Span Values
 @subsection Managing Time Span Values
 
-@deftypefun pdf_status_t pdf_time_span_set (pdf_time_span_t *@var{p_span}, const pdf_i32_t @var{high_value}, const pdf_u32_t @var{low_value})
+@deftypefun pdf_status_t pdf_time_span_set (pdf_time_span_t *@var{p_span}, const pdf_i64_t @var{value})
 
 Set the value of a time span. The internal representation of the time
 span is 64 bits long (signed).
@@ -8183,10 +8217,8 @@ span is 64 bits long (signed).
 @table @var
 @item p_span
 A pointer to a properly created time span variable.
-@item high_value
-The high (signed) part of the time span value.
-@item low_value
-The low (unsigned) part of the time span value.
+@item value
+The signed 64 bits value to set.
 @end table
 
 @item Returns
@@ -8201,38 +8233,7 @@ The operation successfully finished.
 pdf_time_span_t span;
 
 span = pdf_time_span_new ();
-pdf_time_span_set (&span, (1 << 31), 10); /* The span is -10 seconds long */
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_time_span_set_from_i32 (pdf_time_span_t *@var{p_span}, const pdf_i32_t @var{seconds})
-
-Set the value of a time span from a 32 bits signed number.
-
-@table @strong
-@item Parameters
-
-@table @var
-@item p_span
-A pointer to a properly created time span variable.
-@item seconds
-A signed 32 bits number.
-@end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@end table
-
-@item Usage example
-@example
-pdf_time_span_t span;
-
-span = pdf_time_span_create ();
-pdf_time_span_set_from_i32 (&span, -10); /* The span is -10 seconds long */
+pdf_time_span_set (&span, -10); /* The span is -10 seconds long */
 @end example
 @end table
 @end deftypefun

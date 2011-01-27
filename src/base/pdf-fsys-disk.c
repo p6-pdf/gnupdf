@@ -144,7 +144,7 @@ pdf_fsys_disk_get_free_space (void *data,
   pdf_char_t *utf16le_path = NULL;
   pdf_u32_t utf16le_path_size = 0;
   ULARGE_INTEGER free_bytes;
-  pdf_i64_t result = pdf_i64_new((32 << 1),1); /* (-1) */
+  pdf_i64_t result = -1;
 
   /* Note that as we get the string as UTF-16LE with LAST NUL suffix,
    *  it's equivalent to a wchar_t in windows environments */
@@ -182,12 +182,7 @@ pdf_fsys_disk_get_free_space (void *data,
                                NULL,
                                &free_bytes))
         {
-          pdf_status_t i64_ret_code;
-          /* Assign the number of bytes in the pdf_i64_t */
-          pdf_i64_assign(&result,
-                         free_bytes.HighPart,
-                         free_bytes.LowPart,
-                         &i64_ret_code);
+          result = ((pdf_i64_t)free_bytes << 32) + free_bytes.LowPart;
         }
 
       /* Cleanup */
@@ -204,7 +199,7 @@ pdf_i64_t
 pdf_fsys_disk_get_free_space (void *data,
                               pdf_text_t path_name)
 {
-  pdf_i64_t result = pdf_i64_new((32 << 1),1); /* (-1) */
+  pdf_i64_t result = -1;
 
   /* Safety check that path_name is a valid pointer */
   if(path_name != NULL)
@@ -226,25 +221,8 @@ pdf_fsys_disk_get_free_space (void *data,
           PDF_DEBUG_BASE("Getting free bytes of FS at path '%s'...", host_path);
           if (statfs ((const char *) host_path, &fs_stats) == 0)
             {
-              pdf_status_t i64_ret_code = PDF_OK;
-              /* Compute the number of bytes in the pdf_i64_t */
-              pdf_i64_assign_quick(&result,
-                                   fs_stats.f_bfree,
-                                   &i64_ret_code);  
-              /* Only continue operation if assign is OK */
-              if(i64_ret_code == PDF_OK)
-                {
-                  pdf_i64_mult_i32(&result,
-                                   result,
-                                   fs_stats.f_bsize,
-                                   &i64_ret_code);
-                }
-              /* If any of the previous failed, reset return value */
-              if(i64_ret_code != PDF_OK)
-                {
-                  PDF_DEBUG_BASE("Couldn't compute bfree*bsize");
-                  pdf_i64_assign_quick(&result, -1, &i64_ret_code); /* (-1) */
-                }
+              result = fs_stats.f_bfree;
+              result *= fs_stats.f_bsize;
             }
           else
             {

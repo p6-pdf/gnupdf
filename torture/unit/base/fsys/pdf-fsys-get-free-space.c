@@ -50,10 +50,10 @@ START_TEST(pdf_fsys_get_free_space_001)
                                      PDF_TEXT_UTF8,
                                      &path) != PDF_OK );
 
-  error = pdf_i64_new((32 << 1), 1);
+  error = -1;
 
   free_space = pdf_fsys_get_free_space(NULL, path);
-  fail_if( pdf_i64_cmp(free_space, error) == 0 );
+  fail_if(free_space == error);
 
   pdf_text_destroy(path);
 }
@@ -81,10 +81,10 @@ START_TEST(pdf_fsys_get_free_space_002)
                                      PDF_TEXT_UTF8,
                                      &path) != PDF_OK );
 
-  error = pdf_i64_new((32 << 1), 1);
+  error = -1;
 
   free_space = pdf_fsys_get_free_space(NULL, path);
-  fail_if( pdf_i64_cmp(free_space, error) != 0 );
+  fail_if (free_space != error);
 
   pdf_text_destroy(path);
 }

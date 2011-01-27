@@ -1,3 +1,78 @@
+2011-01-28  Jose E. Marchesi  <jemarch@gnu.org>
+
+	Remove the bignums implementation and adapt the codebase.
+	* configure.ac: Don't check for the need of using bignums.
+
+	* src/base/pdf-types-64.h: Removed.
+	* src/base/pdf-types-64.c: Removed.
+
+	* torture/unit/base/types/tsuite-types.c (tsuite_types): Don't
+	include 64bit related tests.
+	* torture/unit/Makefile.am (TEST_SUITE_TYPES): Likewise.
+
+	* src/base/pdf-time.h: Include pdf-error.h (for pdf_status_t).
+
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_get_free_space): Stop
+	using the pdf_i64_* functions.
+	(pdf_fsys_disk_get_free_space): Likewise.
+	(pdf_fsys_disk_get_free_space): Likewise.
+
+	* src/base/pdf-base.h: Don't include pdf-types-64.h.
+
+	* torture/unit/base/time/pdf-time-span-set.c (START_TEST): Don't
+	use bignums.
+
+	* torture/unit/Makefile.am (TEST_SUITE_TIME):
+	pdf-time-span-set-from-i32.c removed from list.
+
+	* torture/unit/base/time/pdf-time-span-set-from-i32.c: Removed.
+
+	* src/base/pdf-time.c (pdf_time_get_cal): Stop using the
+	pdf_i64_* functions.
+	(pdf_time_new): Likewise.
+	(pdf_time_set_from_u32): Likewise.
+	(pdf_time_set_from_i64): Likewise.
+	(pdf_time_copy): Likewise.
+	(pdf_time_clear): Likewise.
+	(pdf_time_add_span): Likewise.
+	(pdf_time_sub_span): Likewise.
+	(pdf_time_from_cal): Likewise.
+	(pdf_time_diff): Likewise.
+	(pdf_time_cmp): Likewise.
+	(pdf_time_set_to_current_utc_time): Likewise.
+	(pdf_time_span_new): Likewise.
+	(pdf_time_span_set): Likewise.
+	(pdf_time_span_negate): Likewise.
+	(pdf_time_span_add): Likewise.
+	(pdf_time_span_copy): Likewise.
+	(pdf_time_span_diff): Likewise.
+	(pdf_time_span_cmp): Likewise.
+
+	* doc/gnupdf.texi (Managing Time Span Values): Modify the
+	description of pdf_time_span_set to reflect the new API.
+	Description of pdf_time_span_set_from_i32 removed.
+
+	* src/base/pdf-time.h: Make pdf_time_span_set to get a signed 64
+	bits scalar.
+	Remove pdf_time_span_set_from_i32.
+	* src/base/pdf-time.c (pdf_time_span_set): Likewise.
+	* src/base/pdf-time.c (pdf_time_span_set_from_i32): Likewise.
+
+	* src/base/pdf-time.h: Don't include pdf-types-64.h.
+
+	* src/Makefile.am (TYPES_MODULE_SOURCES): pdf-types-64.[ch]
+	removed from list.
+
+	* src/base/pdf-types.h: Define 'INT64_MAX', 'INT64_MIN',
+	'UINT64_MAX' and 'UINT64_MIN'.
+
+	* doc/gnupdf.texi (Numeric Types): Document the types 'pdf_i16_t',
+	'pdf_u16_t', 'pdf_i64_t' and 'pdf_u64_t'.  Document 'PDF_I64_MAX',
+	'PDF_I64_MIN', 'PDF_U64_MAX' and 'PDF_U64_MIN'.
+
+	* src/base/pdf-types.h: New types 'pdf_u64_t' and 'pdf_i64_t'
+	defined in terms of 'uint64_t' and 'int64_t'.
+
 2011-01-27  Aleksander Morgado  <aleksander@gnu.org>
 
 	base/error: No longer need the cast to pdf_char_t.

@@ -24,6 +24,7 @@
  */
 
 #include <config.h>
+#include <stdint.h>
 #include <check.h>
 #include <pdf.h>
 #include <stdlib.h>
@@ -54,7 +55,7 @@ START_TEST (pdf_time_copy_001)
   fail_if(status != PDF_OK);
   fail_if(time2 == NULL);
 
-  seconds = pdf_i64_new(0x12345678,0x9ABCDEF0);
+  seconds = INT64_C(0x123456789ABCDEF0);
 
   status = pdf_time_set_from_i64(time1, seconds);
   fail_if(status != PDF_OK);

@@ -161,7 +161,6 @@ pdf_time_get_cal (const pdf_time_t time_var,
   pdf_i32_t years;
   pdf_i32_t months;
   pdf_time_t new_time_var;
-  pdf_status_t p_status = PDF_OK;
   
   /* Duplicate time var */
   new_time_var = pdf_time_dup(time_var);
@@ -175,20 +174,18 @@ pdf_time_get_cal (const pdf_time_t time_var,
       pdf_time_span_t delta;
       /* Modify time in the time object */
       delta = pdf_time_span_new();
-      pdf_time_span_set_from_i32(&delta, time_var->gmt_offset);
+      pdf_time_span_set (&delta, (pdf_i64_t) time_var->gmt_offset);
       pdf_time_add_span(new_time_var, delta);
       pdf_time_span_destroy(&delta);
     }
   
-  aux64 = pdf_i64_new(0,0);
+  aux64 = 0;
 
 
   /* Get date as days */
-  pdf_i64_div_i32_divisor(&aux64, new_time_var->seconds, PDF_SECS_PER_DAY, &p_status);
-  days = pdf_i64_to_i32(aux64);
+  days = (pdf_i32_t) (new_time_var->seconds / PDF_SECS_PER_DAY);
   /* Get time in seconds */
-  pdf_i64_mod_i32_divisor(&aux64, new_time_var->seconds, PDF_SECS_PER_DAY, &p_status);
-  remaining = pdf_i64_to_i32(aux64);
+  remaining = (pdf_i32_t) (new_time_var->seconds % PDF_SECS_PER_DAY);
   /* Get hours */
   p_cal_time->hour = remaining / PDF_SECS_PER_HOUR;
   /* Get remaining */
@@ -501,8 +498,7 @@ pdf_time_new (pdf_time_t *element)
       return PDF_ENOMEM;
     }
 
-  /* Create pdf_i64_t */
-  (*element)->seconds = pdf_i64_new(0,0);
+  (*element)->seconds = 0;
   pdf_time_clear(*element);
 
   /* Success */
@@ -541,9 +537,8 @@ pdf_status_t
 pdf_time_set_from_u32 (pdf_time_t time_var,
                        pdf_u32_t seconds)
 {
-  pdf_status_t ret_code;
-  pdf_i64_assign(&(time_var->seconds), 0, seconds, &ret_code);
-  return ret_code;  
+  time_var->seconds = seconds;
+  return PDF_OK;
 }
 
 
@@ -552,9 +547,8 @@ pdf_status_t
 pdf_time_set_from_i64 (pdf_time_t time_var,
                        pdf_i64_t  seconds)
 {
-  pdf_status_t ret_code;
-  pdf_i64_copy(seconds, &(time_var->seconds), &ret_code);
-  return ret_code;
+  time_var->seconds = seconds;
+  return PDF_OK;
 }
 
 #ifdef PDF_HOST_WIN32
@@ -629,7 +623,7 @@ pdf_time_copy (const pdf_time_t orig,
                pdf_time_t copy)
 {
   pdf_status_t p_status = PDF_OK;
-  pdf_i64_copy (orig->seconds, &(copy->seconds), &p_status);
+  copy->seconds = orig->seconds;
   copy->gmt_offset = orig->gmt_offset;
   return p_status;
 }
@@ -640,7 +634,7 @@ pdf_time_clear (pdf_time_t time_var)
 {
   pdf_status_t p_status = PDF_OK;
   /* Set time as January 1st, 1970 */
-  pdf_i64_assign_quick(&time_var->seconds, 0, &p_status);
+  time_var->seconds = 0;
   /* UTC */
   time_var->gmt_offset = 0;
   return p_status;
@@ -685,7 +679,7 @@ pdf_time_add_cal_span_with_sign (pdf_time_t time_var,
           pdf_time_calendar_add_hours(&calendar,    sign * p_cal_span->hours);
           pdf_time_calendar_add_minutes(&calendar,  sign * p_cal_span->minutes);
           pdf_time_calendar_add_seconds(&calendar,  sign * p_cal_span->seconds);
-          
+
           status = pdf_time_from_cal(time_var, &calendar);
         }
     }
@@ -716,9 +710,8 @@ pdf_time_add_span (pdf_time_t time_var,
                    const pdf_time_span_t time_span)
 {
   pdf_status_t p_status = PDF_OK;
-  pdf_i64_add ((&time_var->seconds),
-               time_var->seconds,
-               time_span, &p_status);
+
+  time_var->seconds += time_span;
   return p_status;
 }
 
@@ -729,9 +722,8 @@ pdf_time_sub_span (pdf_time_t time_var,
                    const pdf_time_span_t time_span)
 {
   pdf_status_t p_status = PDF_OK;
-  pdf_i64_subtraction ((&time_var->seconds),
-                       time_var->seconds,
-                       time_span, &p_status);
+
+  time_var->seconds -= time_span;
   return p_status;
 }
 
@@ -762,7 +754,6 @@ pdf_time_from_cal (pdf_time_t time_var,
 {
   pdf_i64_t aux;
   pdf_i32_t walker;
-  pdf_status_t p_status = PDF_OK;
 
   if( (time_var == NULL) || \
       (! pdf_time_is_valid_cal_p(p_cal_time)) )
@@ -770,42 +761,36 @@ pdf_time_from_cal (pdf_time_t time_var,
       PDF_DEBUG_BASE("Invalid arguments received");
       return PDF_EBADDATA;
     }
-  
-  /* Initialize days to 0 */
-  aux = pdf_i64_new(0,0);
+ 
 
   /* Add days per year until the current year in the calendar */
+  aux = 0;
   walker = 1970;
   while(walker < p_cal_time->year)
     {
-      pdf_i64_add_i32(&aux, aux, \
-                      (pdf_time_is_leap_year_p(walker) ? \
-                       PDF_DAYS_IN_LEAP_YEAR : PDF_DAYS_IN_YEAR), &p_status);
+      aux += (pdf_time_is_leap_year_p(walker) ?
+              PDF_DAYS_IN_LEAP_YEAR : PDF_DAYS_IN_YEAR);
       walker++;
     }
 
   /* Add days per month until the current month in the calendar */
-  pdf_i64_add_i32(&aux, aux, pdf_time_get_days_before_month(p_cal_time->year,
-                                                            p_cal_time->month), &p_status);
+  aux += pdf_time_get_days_before_month (p_cal_time->year,
+                                         p_cal_time->month);
 
   /* Add days in current month until the current required day */
-  pdf_i64_add_i32(&aux, aux, p_cal_time->day -1, &p_status);
+  aux += (p_cal_time->day - 1);
 
   /* Set date as seconds in the output variable */
-  pdf_i64_mult_i32(&(time_var->seconds), aux, PDF_SECS_PER_DAY, &p_status);
+  time_var->seconds = aux * PDF_SECS_PER_DAY;
 
   /* Add hours as seconds */
-  pdf_i64_add_i32(&(time_var->seconds), \
-                  (time_var->seconds), \
-                  p_cal_time->hour * PDF_SECS_PER_HOUR, &p_status);
+  time_var->seconds += (p_cal_time->hour * PDF_SECS_PER_HOUR);
+
   /* Add minutes as seconds */
-  pdf_i64_add_i32(&(time_var->seconds), \
-                  (time_var->seconds), \
-                  p_cal_time->minute * PDF_SECS_PER_MIN, &p_status);
+  time_var->seconds += (p_cal_time->minute * PDF_SECS_PER_MIN);
+
   /* Finally, add seconds */
-  pdf_i64_add_i32(&(time_var->seconds), \
-                  (time_var->seconds), \
-                  p_cal_time->second, &p_status);
+  time_var->seconds += p_cal_time->second;
   
   /* Set specific GMT offset if any */
   if(p_cal_time->gmt_offset != 0)
@@ -813,7 +798,7 @@ pdf_time_from_cal (pdf_time_t time_var,
       /* Remove it from the time value (calendar comes in local time, so
        *  we must remove the offset to get the pdf_time_t->seconds in UTC. */
       pdf_time_span_t delta = pdf_time_span_new();
-      pdf_time_span_set_from_i32(&delta, p_cal_time->gmt_offset);
+      pdf_time_span_set (&delta, (pdf_i64_t) p_cal_time->gmt_offset);
       pdf_time_sub_span(time_var, delta);
       pdf_time_span_destroy(&delta);
     }
@@ -912,7 +897,8 @@ pdf_time_diff (const pdf_time_t time1,
                pdf_time_span_t  *p_time_span)
 { 
   pdf_status_t p_status = PDF_OK;
-  pdf_i64_subtraction(p_time_span, time1->seconds, time2->seconds, &p_status);
+  
+  *p_time_span = time1->seconds - time2->seconds;
   return p_status;
 }
 
@@ -924,7 +910,10 @@ pdf_i32_t
 pdf_time_cmp (const pdf_time_t time1,
               const pdf_time_t time2)
 {
-  return (pdf_i32_t)pdf_i64_cmp(time1->seconds, time2->seconds);
+  return (pdf_i32_t)
+    ((time1->seconds > time2->seconds) ?
+     1 :
+     ((time1->seconds < time2->seconds) ? -1 : 0));
 }
 
 
@@ -1009,7 +998,7 @@ pdf_time_set_to_current_utc_time (pdf_time_t time_var)
     {
       /* At least until 2038 this call will work correctly, even in systems with
        *  a 32bit time_t */
-      pdf_i64_assign_quick(&(time_var->seconds), (pdf_i32_t)time_now, &p_status);
+      time_var->seconds = (pdf_i32_t) time_now;
       time_var->gmt_offset = 0;
     }
   return p_status;
@@ -1025,7 +1014,7 @@ pdf_time_set_to_current_utc_time (pdf_time_t time_var)
 pdf_time_span_t
 pdf_time_span_new (void)
 {
-  return pdf_i64_new(0,0);
+  return 0;
 }
 
 
@@ -1053,22 +1042,10 @@ pdf_time_span_destroy (pdf_time_span_t *p_span)
 /* Set the value of a time span from a 64 bits signed number */
 pdf_status_t
 pdf_time_span_set (pdf_time_span_t *p_span,
-                   const pdf_i32_t high_value,
-                   const pdf_u32_t low_value)
+                   const pdf_i64_t value)
 {
   pdf_status_t p_status = PDF_OK;
-  pdf_i64_assign(p_span, high_value, low_value, &p_status);
-  return p_status;
-}
-
-
-/* Set the value of a time span from a 32 bits signed number. */
-pdf_status_t
-pdf_time_span_set_from_i32 (pdf_time_span_t *p_span,
-                            const pdf_i32_t seconds)
-{
-  pdf_status_t p_status = PDF_OK;
-  pdf_i64_assign_quick(p_span, seconds, &p_status);
+  *p_span = value;
   return p_status;
 }
 
@@ -1080,10 +1057,9 @@ pdf_time_span_negate (pdf_time_span_t *p_span)
   pdf_status_t p_status = PDF_OK;
   if (p_span == NULL)
     return PDF_ERROR;
-  pdf_i64_neg(p_span, *p_span, &p_status);
+  *p_span = *p_span * -1;
   return p_status;
 }
-
 
 /* Add two time spans and store the result in another time span. */
 pdf_status_t
@@ -1092,7 +1068,14 @@ pdf_time_span_add (const pdf_time_span_t span1,
                    pdf_time_span_t *p_result)
 {
   pdf_status_t p_status = PDF_OK;
-  pdf_i64_add((pdf_i64_t *)p_result, span1, span2, &p_status);
+  if (p_result == NULL)
+    {
+      p_status = PDF_EBADDATA;
+    }
+  else
+    {
+      *p_result = span1 + span2;
+    }
   return p_status;
 }
 
@@ -1102,7 +1085,14 @@ pdf_time_span_copy (const pdf_time_span_t orig,
                     pdf_time_span_t *p_dest)
 {
   pdf_status_t p_status = PDF_OK;
-  pdf_i64_copy(orig, (pdf_i64_t *)p_dest, &p_status);
+  if (p_dest == NULL)
+    {
+      p_status = PDF_EBADDATA;
+    }
+  else
+    {
+      *p_dest = orig;
+    }
   return p_status;
 }
 
@@ -1114,7 +1104,14 @@ pdf_time_span_diff (const pdf_time_span_t span1,
                     pdf_time_span_t *p_result)
 {
   pdf_status_t p_status= PDF_OK;
-  pdf_i64_subtraction(p_result, span1, span2, &p_status);
+  if (p_result == NULL)
+    {
+      p_status = PDF_EBADDATA;
+    }
+  else
+    {
+      *p_result = span1 - span2;
+    }
   return p_status;
 }
 
@@ -1133,7 +1130,10 @@ pdf_i32_t
 pdf_time_span_cmp (const pdf_time_span_t span1,
                    const pdf_time_span_t span2)
 {
-  return (pdf_i64_cmp(span1, span2));
+  return (pdf_i32_t)
+    ((span1 > span2) ?
+     1 :
+     ((span1 < span2) ? -1 : 0));
 }
 
 

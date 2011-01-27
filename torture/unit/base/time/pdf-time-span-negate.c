@@ -51,7 +51,7 @@ START_TEST (pdf_time_span_negate_001)
     span=pdf_time_span_new();
 
     seconds = 0x77234567;
-    status = pdf_time_span_set_from_i32(&span,seconds);
+    status = pdf_time_span_set (&span,seconds);
     fail_if(status != PDF_OK);
 
     status = pdf_time_span_negate(&span);
@@ -59,7 +59,7 @@ START_TEST (pdf_time_span_negate_001)
     seconds = 0 - seconds;
 
     seconds2 = pdf_time_span_to_secs(span);
-    fail_unless(pdf_i64_cmp_i32(seconds2,seconds) == 0);
+    fail_unless(seconds2 == seconds);
 
 }
 END_TEST
@@ -87,7 +87,7 @@ START_TEST (pdf_time_span_negate_002)
     span=pdf_time_span_new();
 
     seconds = -0x01234567;   //negative number
-    status = pdf_time_span_set_from_i32(&span,seconds);
+    status = pdf_time_span_set (&span,seconds);
     fail_if(status != PDF_OK);
 
     status = pdf_time_span_negate(&span);
@@ -95,7 +95,7 @@ START_TEST (pdf_time_span_negate_002)
     seconds = 0 - seconds;
 
     seconds2 = pdf_time_span_to_secs(span);
-    fail_unless(pdf_i64_cmp_i32(seconds2,seconds) == 0);
+    fail_unless(seconds2 == seconds);
 
 }
 END_TEST

@@ -24,6 +24,7 @@
  */
 
 #include <config.h>
+#include <stdint.h>
 #include <check.h>
 #include <pdf.h>
 #include <stdlib.h>
@@ -47,8 +48,8 @@ START_TEST (pdf_time_span_cmp_001)
   span1 = pdf_time_span_new();
   span2 = pdf_time_span_new();
 
-  pdf_time_span_set(&span1,0x01234567,0x89ABCDEF);
-  pdf_time_span_set(&span2,0x01234567,0x89ABCDEF);
+  pdf_time_span_set(&span1, INT64_C(0x0123456789ABCDEF));
+  pdf_time_span_set(&span2, INT64_C(0x0123456789ABCDEF));
 
   fail_unless (pdf_time_span_cmp(span1, span2) == 0);
 
@@ -81,8 +82,8 @@ START_TEST (pdf_time_span_cmp_002)
   span1 = pdf_time_span_new();
   span2 = pdf_time_span_new();
 
-  pdf_time_span_set(&span1,0x01234567,0x89ABCDEF);
-  pdf_time_span_set(&span2,-0x01234567,0x89ABCDEF);
+  pdf_time_span_set(&span1,INT64_C(0x0123456789ABCDEF));
+  pdf_time_span_set(&span2,INT64_C(-0x0123456789ABCDEF));
 
   fail_unless (pdf_time_span_cmp(span1, span2) == 1);
 
@@ -115,8 +116,8 @@ START_TEST (pdf_time_span_cmp_003)
   span1 = pdf_time_span_new();
   span2 = pdf_time_span_new();
 
-  pdf_time_span_set(&span1,-0x01234567,0x89ABCDEF);
-  pdf_time_span_set(&span2,0x01234567,0x89ABCDEF);
+  pdf_time_span_set(&span1,INT64_C(-0x0123456789ABCDEF));
+  pdf_time_span_set(&span2,INT64_C(0x0123456789ABCDEF));
 
   fail_unless (pdf_time_span_cmp(span1, span2) == -1);
 

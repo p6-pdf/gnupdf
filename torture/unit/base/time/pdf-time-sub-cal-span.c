@@ -40,12 +40,12 @@
  *   that object. Returned time object schould
  *   points to 1970-01-01:00:00:00
  *
- *Success condition:
- * 1. Function pdf_time_new schould return PDF_OK
- * 2. Function pdf_time_set_from_u32 schould return
- * PDF_OK.
- * 3. Function pdf_time_sub_cal_span schould return
- * expected time.
+ * Success condition:
+ *  1. Function pdf_time_new schould return PDF_OK
+ *  2. Function pdf_time_set_from_u32 schould return
+ *     PDF_OK.
+ *  3. Function pdf_time_sub_cal_span schould return
+ *     expected time.
  *
  */
 START_TEST (pdf_time_sub_cal_span_001)
@@ -71,7 +71,6 @@ START_TEST (pdf_time_sub_cal_span_001)
 
   status = pdf_time_new(&time2);
   fail_if(status != PDF_OK);
-
 
   calspan.sign = PDF_FALSE;
 

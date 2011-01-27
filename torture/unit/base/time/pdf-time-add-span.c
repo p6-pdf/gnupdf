@@ -24,6 +24,7 @@
  */
 
 #include <config.h>
+#include <stdint.h>
 #include <check.h>
 #include <pdf.h>
 #include <stdlib.h>
@@ -62,8 +63,8 @@ START_TEST (pdf_time_add_span_001)
 
   span = pdf_time_span_new();
 
-  pdf_time_span_set(&span, 0x01234567,0xAABBCCDD);
-  num64=pdf_i64_new(0x01234567,0xAABBCCDD);
+  num64 = INT64_C(0x01234567AABBCCDD);
+  pdf_time_span_set(&span, num64);
 
   status = pdf_time_add_span(time1, span);
   fail_if(status != PDF_OK);

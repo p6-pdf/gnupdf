@@ -64,7 +64,7 @@ START_TEST (pdf_time_set_from_u32_001)
   span = pdf_time_span_new();
 
   sec = 0xF2345678;
-  status = pdf_time_span_set(&span,0,sec);
+  status = pdf_time_span_set(&span,sec);
   fail_if(status != PDF_OK);
 
   status = pdf_time_set_from_u32(time, sec);

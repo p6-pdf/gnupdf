@@ -24,6 +24,7 @@
  */
 
 #include <config.h>
+#include <stdint.h>
 #include <check.h>
 #include <pdf.h>
 #include <stdlib.h>
@@ -50,7 +51,7 @@ START_TEST (pdf_time_span_copy_001)
   span1 = pdf_time_span_new();
   span2 = pdf_time_span_new();
 
-  pdf_time_span_set(&span1,0x01234567,0x89ABCDEF);
+  pdf_time_span_set(&span1,INT64_C(0x0123456789ABCDEF));
 
   status = pdf_time_span_copy(span1, &span2);
   fail_if(status != PDF_OK);
@@ -87,7 +88,7 @@ START_TEST (pdf_time_span_copy_002)
   span1 = pdf_time_span_new();
   span2 = NULL;
 
-  pdf_time_span_set(&span1,0x01234567,0x89ABCDEF);
+  pdf_time_span_set(&span1,INT64_C(0x0123456789ABCDEF));
 
   status = pdf_time_span_copy(span1, span2);
   fail_if(status != PDF_EBADDATA);

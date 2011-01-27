@@ -54,15 +54,15 @@ START_TEST (pdf_time_span_diff_001)
 
   
 
-  pdf_time_span_set_from_i32(&span1,0x00FFFF11);
-  pdf_time_span_set_from_i32(&span2,-0x00FFFF12);
+  pdf_time_span_set (&span1,0x00FFFF11);
+  pdf_time_span_set (&span2,-0x00FFFF12);
 
   status = pdf_time_span_diff(span1,span2,&result);
   fail_if(status != PDF_OK);
 
   sec = pdf_time_span_to_secs(result);
 
-  fail_if(pdf_i64_cmp_i32(sec,0x1FFFE23) != 0);
+  fail_if(sec != 0x1FFFE23);
 
   status = pdf_time_span_destroy(&span1);
   fail_if(status != PDF_OK);
@@ -98,8 +98,8 @@ START_TEST (pdf_time_span_diff_002)
   span2 = pdf_time_span_new();
   result = NULL; 
 
-  pdf_time_span_set_from_i32(&span1,0x00FFFF11);
-  pdf_time_span_set_from_i32(&span2,-0x00FFFF12);
+  pdf_time_span_set (&span1,0x00FFFF11);
+  pdf_time_span_set (&span2,-0x00FFFF12);
 
   status = pdf_time_span_diff(span1,span2,result);
   fail_if(status != PDF_EBADDATA);

@@ -24,6 +24,7 @@
  */
 
 #include <config.h>
+#include <stdint.h>
 #include <check.h>
 #include <pdf.h>
 #include <stdlib.h>
@@ -56,7 +57,7 @@ START_TEST (pdf_time_diff_001)
   status = pdf_time_new(&time2);
   fail_if(status != PDF_OK);
 
-  sec2 = pdf_i64_new(0x01234567, 0x89ABCDEF);
+  sec2 = INT64_C(0x0123456789ABCDEF);
   status = pdf_time_set_from_i64(time1, sec2);
   fail_if(status != PDF_OK);
   status = pdf_time_set_from_i64(time2, sec2);
@@ -67,7 +68,7 @@ START_TEST (pdf_time_diff_001)
   fail_if(status != PDF_OK);
   
   sec = pdf_time_span_to_secs(span);
-  sec2 = pdf_i64_new(0,0);
+  sec2 = 0;
   fail_unless(memcmp(&sec,&sec2, sizeof(pdf_i64_t)) == 0);
 
   status = pdf_time_span_destroy(&span);
