@@ -440,6 +440,7 @@ pdf_dealloc (p);
 @menu
 * Boolean Types::       The true/false boolean operators.    
 * Numeric Types::       Signed and unsigned 32bit integers.
+* Character Types::     Signed and unsigned bytes.
 * Big Numbers::         Signed 64bit integers.
 * Memory Buffers::      Operations on simple memory buffers.
 * Progress Monitors::   Following the progress of operations.
@@ -491,6 +492,23 @@ Maximum value able to be stored in a @code{pdf_u32_t} variable.
 
 @deftp {Constant} PDF_U32_MIN
 Minimum value able to be stored in a @code{pdf_u32_t} variable.
+@end deftp
+
+@node Character Types
+@subsection Character Types
+
+The library provides two types intended to hold character codes.
+
+@deftp {Data Type} pdf_char_t
+A character code.
+@end deftp
+
+Note that @code{pdf_char_t} values may be signed or unsigned depending
+on the system running in the host, and they shall not be manipulated
+numerically.  The following type shall be used instead in those cases.
+
+@deftp {Data Type} pdf_uchar_t
+A character code in the range @code{0..255}.
 @end deftp
 
 @node Big Numbers

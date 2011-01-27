@@ -1,5 +1,12 @@
 2011-01-27  Jose E. Marchesi  <jemarch@gnu.org>
 
+	manual: documentation for pdf_char_t and pdf_uchar_t.
+	* doc/gnupdf.texi (Character Types): New section.
+	(Character Types): Document type 'pdf_char_t'.
+	(Character Types): Document type 'pdf_uchar_t'.
+
+2011-01-27  Jose E. Marchesi  <jemarch@gnu.org>
+
 	pdf-types: change pdf_char_t to be an alias of 'char' and
 	introduce the new pdf_uchar_t type.
 	* src/base/pdf-stm-f-rl.h: Make the dec_count and rlchar members
