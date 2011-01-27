@@ -39,7 +39,7 @@
 #include <stdio.h>
 
 #include <pdf-types.h>
-
+#include <pdf-types-64.h>
 
 /* A variable of type pdf_time_t contains information about a particular date
  *  and time. It is stored in seconds since 1 January 1970 (UTC). Additionally

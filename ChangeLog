@@ -1,3 +1,15 @@
+2011-01-27  Aleksander Morgado  <aleksander@gnu.org>
+
+	base/types: Move all bignum implementation to separate files
+	* src/base/pdf-types-64.[h|c]: New files.
+	* src/base/pdf-types.[h|c]: Moved all bignum implementation to the new
+	pdf-types-64.[c|h] files
+
+	* src/base/pdf-time.h: Include new pdf-types-64.h header.
+
+	* src/Makefile.am (PUBLIC_HDRS, TYPES_MODULE_SOURCES): Added new
+	pdf-types-64.[c|h] files to compilation.
+
 2011-01-27  Jose E. Marchesi  <jemarch@gnu.org>
 
 	syntax-check fixes.
