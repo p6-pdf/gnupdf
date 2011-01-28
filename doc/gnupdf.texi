@@ -8821,8 +8821,7 @@ directory).
 @item pdf_bool_t is_writable
 @item pdf_time_t creation_date
 @item pdf_time_t modification_date
-@item pdf_u32_t file_size_high
-@item pdf_u32_t file_size_low
+@item pdf_i64_t file_size
 @item pdf_u32_t folder_size
 @end table
 @end deftp
@@ -9306,7 +9305,6 @@ created if it does not exist.
 @item PDF_FSYS_OPEN_MODE_RW
 The file is opened in read/write mode. The file should exist in the
 filesystem.
-@item
 @end table
 @end deftp
 
@@ -9361,8 +9359,8 @@ XXX
 Create a temporary file in @var{filesystem} and open it.
 
 The temporary file is opened with mode @code{PDF_FSYS_OPEN_MODE_RW}
-and stored in @var{file}.  The file will be automatically deleted with
-it is closed.
+and stored in @var{file}.  The file will be automatically deleted
+after it gets closed.
 
 Note that while the filesystem implementation may also delete the file
 when the client application exits, it is not guaranteed.
@@ -9408,7 +9406,7 @@ pdf_fsys_file_close (tmpfile);
 The following functions provides access to several properties of open
 files.
 
-@deftypefun pdf_size_t pdf_fsys_file_get_size (pdf_fsys_file_t @var{file})
+@deftypefun pdf_i64_t pdf_fsys_file_get_size (pdf_fsys_file_t @var{file})
 
 Get the size (in number of octects) of a given open file.
 
@@ -9435,7 +9433,7 @@ Get the filesystem associated with a given open file.
 @item Parameters
 @table @var
 @item file
-An open fiile.
+An open file.
 @end table
 @item Returns
 The filesystem associated with @var{file}.
@@ -9591,7 +9589,7 @@ ret = pdf_fsys_file_same_p (file, other_path);
 The following functions allow to move the input/output pointer of a
 buffer file (its ``current position'').
 
-@deftypefun pdf_status_t pdf_fsys_file_get_pos (pdf_fsys_file_t @var{file}, pdf_size_t *@var{pos})
+@deftypefun pdf_status_t pdf_fsys_file_get_pos (pdf_fsys_file_t @var{file}, pdf_off_t *@var{pos})
 
 Get the current position (in octects) in a given open file.
 
@@ -9601,7 +9599,7 @@ Get the current position (in octects) in a given open file.
 @item file
 An open file.
 @item pos
-The address of a @code{pdf_size_t} variable.
+The address of a @code{pdf_off_t} variable.
 @end table
 @item Returns
 A PDF status variable:
@@ -9623,13 +9621,13 @@ status = pdf_text_new_from_unicode ("/path/to/foo",
                                     &path);
 ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, file);
 
-pdf_size_t pos = 20;
+pdf_off_t pos = 20;
 ret = pdf_fsys_file_get_pos(file, pos);
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fsys_file_set_pos (pdf_fsys_file_t @var{file}, pdf_size_t @var{new_pos})
+@deftypefun pdf_status_t pdf_fsys_file_set_pos (pdf_fsys_file_t @var{file}, pdf_off_t @var{new_pos})
 
 Set the current position in a given open file.
 
@@ -9664,7 +9662,7 @@ status = pdf_text_new_from_unicode ("/path/to/foo",
                                     &path);
 ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, file);
 
-pdf_size_t pos = 20;
+pdf_off_t pos = 20;
 ret = pdf_fsys_file_set_pos(file, pos);
 @end example
 @end table
@@ -9674,7 +9672,7 @@ ret = pdf_fsys_file_set_pos(file, pos);
 @subsubsection Changing the Size of a File
 
 
-@deftypefun pdf_bool_t pdf_fsys_file_can_set_size_p (pdf_fsys_file_t @var{file}, pdf_size_t @var{size})
+@deftypefun pdf_bool_t pdf_fsys_file_can_set_size_p (pdf_fsys_file_t @var{file}, pdf_i64_t @var{size})
 
 Determine if a given open file is resizeable to a given size.
 
@@ -9701,7 +9699,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fsys_file_set_size (pdf_fsys_file_t @var{file}, pdf_size_t @var{size})
+@deftypefun pdf_status_t pdf_fsys_file_set_size (pdf_fsys_file_t @var{file}, pdf_i64_t @var{size})
 
 Resize a given file to a given new size measured in octects.
 
@@ -9716,8 +9714,8 @@ the file is augmented to that size. If it is shorter than the previous
 size then the file gets truncated.
 @end table
 @item Returns
-A PDF size value indicating the new size of the file. It should match
-the requested new size, or is @code{0} if there is an error.
+A value indicating the new size of the file. It should match the
+requested new size, or is @code{0} if there is an error.
 @item Usage example
 @example
 XXX
@@ -9840,7 +9838,7 @@ XXX
 When working with slow filesystems (such as network filesystems) it is
 useful to be able to request parts of the file in advance.
 
-@deftypefun pdf_status_t pdf_fsys_file_request_ria (pdf_fsys_file_t @var{file}, pdf_size_t @var{offset}, pdf_size_t @var{count})
+@deftypefun pdf_status_t pdf_fsys_file_request_ria (pdf_fsys_file_t @var{file}, pdf_off_t @var{offset}, pdf_size_t @var{count})
 
 Request a Read-In-Advance operation in a given open file.
 
@@ -10151,7 +10149,7 @@ This callback is called by the @code{pdf_fsys_get_item_props}
 filesystem interface function.
 @end deftp
 
-@deftp {Data Type} {pdf_size_t (*pdf_fsys_get_free_space_fn_t) (pdf_text_t @var{path_name})}
+@deftp {Data Type} {pdf_i64_t (*pdf_fsys_get_free_space_fn_t) (pdf_text_t @var{path_name})}
 
 Filesystem callback used to get the free storage space in the volume
 containing @var{path_name}.
@@ -10208,7 +10206,7 @@ system interface function.
 The following callbacks are defined to provide access to several file
 properties.
 
-@deftp {Data Type} {pdf_bool_t (*pdf_fsys_file_can_set_size_fn_t) (pdf_fsys_file_t @var{file}, pdf_size_t @var{pos})}
+@deftp {Data Type} {pdf_bool_t (*pdf_fsys_file_can_set_size_fn_t) (pdf_fsys_file_t @var{file}, pdf_i64_t @var{pos})}
 
 Filesystem callback used to determine if it is possible to set the
 size of a given file to an especified value.
@@ -10217,7 +10215,7 @@ The callback should return a PDF bool value specifying if it is
 possible to perform the operation.
 @end deftp
 
-@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_get_size_fn_t) (pdf_fsys_file_t @var{file}, pdf_size_t @var{pos})}
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_get_size_fn_t) (pdf_fsys_file_t @var{file}, pdf_i64_t *@var{pos})}
 
 Filesystem callback used to get the logical size of a file (in
 octects).
@@ -10233,7 +10231,7 @@ The client does not have enough permissions to get the logical size of
 @end table
 @end deftp
 
-@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_set_size_fn_t) (pdf_fsys_file_t @var{file}, pdf_size_t @var{pos})}
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_set_size_fn_t) (pdf_fsys_file_t @var{file}, pdf_i64_t @var{pos})}
 
 Filesystem callback used to set the logical size of a file (in
 octects).
@@ -10249,7 +10247,7 @@ The client does not have enough permissions to set the logical size of
 @end table
 @end deftp
 
-@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_get_pos_fn_t) (pdf_fsys_file_t @var{file}, pdf_size_t *@var{pos})}
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_get_pos_fn_t) (pdf_fsys_file_t @var{file}, pdf_off_t *@var{pos})}
 
 Filesystem callback used to get the current position in a given file.
 
@@ -10264,7 +10262,7 @@ This callback is called by the @code{pdf_fsys_file_get_pos} file
 interface function.
 @end deftp
 
-@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_set_pos_fn_t) (pdf_fsys_file_t @var{file}, pdf_size_t @var{pos})}
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_set_pos_fn_t) (pdf_fsys_file_t @var{file}, pdf_off_t @var{pos})}
 
 Filesystem callback used to set the current position in a given file.
 
@@ -10313,7 +10311,7 @@ This callback is called by the @code{pdf_fsys_file_same_p} file
 interface function.
 @end deftp
 
-@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_request_ria_fn_t) (pdf_fsys_file_t @var{file}, pdf_size_t @var{offset}, pdf_size_t @var{count})}
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_request_ria_fn_t) (pdf_fsys_file_t @var{file}, pdf_off_t @var{offset}, pdf_size_t @var{count})}
 
 Filesystem callback used to request a Read-In-Advance operation in a
 given open file.

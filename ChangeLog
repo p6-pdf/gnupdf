@@ -1,5 +1,35 @@
 2011-01-28  Jose E. Marchesi  <jemarch@gnu.org>
 
+	manual: fsys api changed to support 64 bits file sizes, and to use
+	pdf_off_t instead of pdf_size_t.
+	* doc/gnupdf.texi (Filesystem Data Types): Document the new
+	file_size field.
+	(File Properties Management): pdf_fsys_file_get_size returns a
+	pdf_u64_t value.
+	(Managing File Positions): pdf_fsys_file_get_pos returns a
+	pdf_off_t value.
+	pdf_fsys_file_set_pos gets a pdf_off_t value.
+	(Changing the Size of a File): pdf_fsys_file_set_size gets
+	pdf_u64_t values.
+	(Read in Advance): parameter offset of pdf_fsys_file_request_ria
+	is a pdf_off_t value.
+	(File System Interface Implementation):
+	pdf_fsys_get_free_space_fn_t callback returns a pdf_i64_t value.
+	(Getting File System Properties): pdf_fsys_get_free_space returns
+	a pdf_i64_t value.
+	(File System Interface Implementation):
+	pdf_fsys_get_free_space_fn_t returns a pdf_i64_t value.
+	(File Interface Implementation): pdf_fsys_file_can_set_size_fn_t
+	callback gets a pdf_i64_t value.
+	pdf_fsys_file_get_size_fn_t returns a pdf_i64_t value.
+	pdf_fsys_file_set_size_fn_t gets a pdf_i64_t value.
+	pdf_fsys_file_get_pos_fn_t returns a pdf_off_t value.
+	pdf_fsys_file_set_pos_fn_t gets a pdf_off_t value.
+	pdf_fsys_file_request_ria_fn_t gets a pdf_off_t value as the
+	offset.
+
+2011-01-28  Jose E. Marchesi  <jemarch@gnu.org>
+
 	Remove the bignums implementation and adapt the codebase.
 	* configure.ac: Don't check for the need of using bignums.
 
