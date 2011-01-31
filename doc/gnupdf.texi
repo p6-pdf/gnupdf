@@ -8821,7 +8821,7 @@ directory).
 @item pdf_bool_t is_writable
 @item pdf_time_t creation_date
 @item pdf_time_t modification_date
-@item pdf_i64_t file_size
+@item pdf_off_t file_size
 @item pdf_u32_t folder_size
 @end table
 @end deftp
@@ -9406,7 +9406,7 @@ pdf_fsys_file_close (tmpfile);
 The following functions provides access to several properties of open
 files.
 
-@deftypefun pdf_i64_t pdf_fsys_file_get_size (pdf_fsys_file_t @var{file})
+@deftypefun pdf_off_t pdf_fsys_file_get_size (pdf_fsys_file_t @var{file})
 
 Get the size (in number of octects) of a given open file.
 
@@ -9672,7 +9672,7 @@ ret = pdf_fsys_file_set_pos(file, pos);
 @subsubsection Changing the Size of a File
 
 
-@deftypefun pdf_bool_t pdf_fsys_file_can_set_size_p (pdf_fsys_file_t @var{file}, pdf_i64_t @var{size})
+@deftypefun pdf_bool_t pdf_fsys_file_can_set_size_p (pdf_fsys_file_t @var{file}, pdf_off_t @var{size})
 
 Determine if a given open file is resizeable to a given size.
 
@@ -9699,7 +9699,7 @@ XXX
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fsys_file_set_size (pdf_fsys_file_t @var{file}, pdf_i64_t @var{size})
+@deftypefun pdf_status_t pdf_fsys_file_set_size (pdf_fsys_file_t @var{file}, pdf_off_t @var{size})
 
 Resize a given file to a given new size measured in octects.
 
@@ -10206,7 +10206,7 @@ system interface function.
 The following callbacks are defined to provide access to several file
 properties.
 
-@deftp {Data Type} {pdf_bool_t (*pdf_fsys_file_can_set_size_fn_t) (pdf_fsys_file_t @var{file}, pdf_i64_t @var{pos})}
+@deftp {Data Type} {pdf_bool_t (*pdf_fsys_file_can_set_size_fn_t) (pdf_fsys_file_t @var{file}, pdf_off_t @var{pos})}
 
 Filesystem callback used to determine if it is possible to set the
 size of a given file to an especified value.
@@ -10215,7 +10215,7 @@ The callback should return a PDF bool value specifying if it is
 possible to perform the operation.
 @end deftp
 
-@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_get_size_fn_t) (pdf_fsys_file_t @var{file}, pdf_i64_t *@var{pos})}
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_get_size_fn_t) (pdf_fsys_file_t @var{file}, pdf_off_t *@var{pos})}
 
 Filesystem callback used to get the logical size of a file (in
 octects).
@@ -10231,7 +10231,7 @@ The client does not have enough permissions to get the logical size of
 @end table
 @end deftp
 
-@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_set_size_fn_t) (pdf_fsys_file_t @var{file}, pdf_i64_t @var{pos})}
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_set_size_fn_t) (pdf_fsys_file_t @var{file}, pdf_off_t @var{pos})}
 
 Filesystem callback used to set the logical size of a file (in
 octects).

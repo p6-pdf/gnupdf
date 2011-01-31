@@ -1,3 +1,11 @@
+2011-01-31  Jose E. Marchesi  <jemarch@gnu.org>
+
+	manual: use pdf_off_t instead of pdf_i64_t in file size related
+	functions and callbacks.
+	* doc/gnupdf.texi: Make fsys functions managing file sizes to
+	get/return pdf_off_t variables instead of pdf_i64_t.
+	pdf_fsys_get_free_space is an exception.
+
 2011-01-28  Jose E. Marchesi  <jemarch@gnu.org>
 
 	manual: fsys api changed to support 64 bits file sizes, and to use
