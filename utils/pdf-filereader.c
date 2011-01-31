@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2011-01-22 21:53:14 jemarch"
+/* -*- mode: C -*- Time-stamp: "2011-01-31 21:35:47 jemarch"
  *
  *       File:         pdf-filereader.c
  *       Date:         Thu Dec 2 23:35:55 2010
@@ -8,7 +8,7 @@
  *
  */
 
-/* Copyright (C) 2010 Free Software Foundation, Inc. */
+/* Copyright (C) 2010, 2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -365,8 +365,7 @@ struct pdf_fsys_item_props_s
   pdf_bool_t is_writable;
   pdf_time_t creation_date;
   pdf_time_t modification_date;
-  pdf_u32_t file_size_high;
-  pdf_u32_t file_size_low;
+  pdf_off_t file_size_high;
   pdf_u32_t folder_size;
 };
 */
@@ -385,9 +384,7 @@ struct pdf_fsys_item_props_s
         
         fprintf (stderr, "modification_date: Not displayed\n");
         
-        fprintf (stderr, "file_size_high: %d\n", p_props->file_size_high);
-
-        fprintf (stderr, "file_size_low: %d\n", p_props->file_size_low);
+        fprintf (stderr, "file_size: %d\n", p_props->file_size);
 
         fprintf (stderr, "folder_size: %d\n", p_props->folder_size);
 
@@ -395,3 +392,5 @@ struct pdf_fsys_item_props_s
 
     return;
 }
+
+/* End of pdf-filereader.c */

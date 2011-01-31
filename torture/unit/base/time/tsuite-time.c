@@ -47,7 +47,6 @@ extern TCase *test_pdf_time_span_new (void);
 extern TCase *test_pdf_time_span_dup (void);
 extern TCase *test_pdf_time_span_destroy (void);
 extern TCase *test_pdf_time_span_set (void);
-extern TCase *test_pdf_time_span_set_from_i32 (void);
 extern TCase *test_pdf_time_span_negate (void);
 extern TCase *test_pdf_time_span_add (void);
 extern TCase *test_pdf_time_span_cmp (void);
@@ -94,7 +93,6 @@ tsuite_time ()
 	suite_add_tcase (s, test_pdf_time_span_dup ());
 	suite_add_tcase (s, test_pdf_time_span_destroy ());
 	suite_add_tcase (s, test_pdf_time_span_set ());
-	suite_add_tcase (s, test_pdf_time_span_set_from_i32 ());
 	suite_add_tcase (s, test_pdf_time_span_negate ());
 	suite_add_tcase (s, test_pdf_time_span_add ());
 	suite_add_tcase (s, test_pdf_time_span_cmp ());

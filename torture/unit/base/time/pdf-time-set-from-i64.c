@@ -24,6 +24,7 @@
  */
 
 #include <config.h>
+#include <stdint.h>
 #include <check.h>
 #include <pdf.h>
 #include <stdlib.h>
@@ -60,7 +61,7 @@ START_TEST (pdf_time_set_from_i64_001)
   status = pdf_time_new(&time2);
   fail_if(status != PDF_OK);
 
-  seconds = pdf_i64_new(0, 0xF1234567);
+  seconds = 0xF1234567;
 
   status = pdf_time_set_from_u32(time1, 0xF1234567);
   fail_if(status != PDF_OK);
@@ -117,8 +118,8 @@ START_TEST (pdf_time_set_from_i64_002)
 
   span = pdf_time_span_new();
 
-  sec = pdf_i64_new(0x12345678, 0x9ABCDEEF);
-  status = pdf_time_span_set(&span,0x12345678, 0x9ABCDEEF);
+  sec = INT64_C(0x123456789ABCDEEF);
+  status = pdf_time_span_set(&span, sec);
   fail_if(status != PDF_OK);
 
   status = pdf_time_set_from_i64(time, sec);

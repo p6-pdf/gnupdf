@@ -76,12 +76,6 @@ AC_CHECK_HEADERS(malloc.h)
 dnl Search for data types
 AC_CHECK_TYPE(size_t, unsigned)
 AC_CHECK_TYPE(off_t, long)
-AC_TYPE_INT64_T
-
-if test "x$ac_cv_c_int64_t" = "xyes"; then
-  AC_DEFINE([PDF_HAVE_INT64_T], [1], [Define to 1 if the system has the type `int64_t'.])
-fi
-
 
 dnl Search for functions
 AC_FUNC_FSEEKO
@@ -308,22 +302,6 @@ fi
 AM_CONDITIONAL([FSYS_HTTP],
                [test "x$fsys_http" != "xno" && test "x$HAVE_LIBCURL" = "xyes"])
 
-dnl bignums forced?
-AC_ARG_ENABLE([bignum-forcing],
-              AS_HELP_STRING([--enable-bignum-forcing],
-                             [Force the usage of the 64bits bignum implementation even if the system support a suitable native type]),
-              [force_bignums=$enableval], [force_bignums=no])
-if test "x$force_bignums" = "xyes"; then
-   AC_DEFINE([PDF_FORCE_BIGNUMS],[1],[Force the usage of the 64bits bignum implementation even if the system support a suitable native type])
-fi
-
-if test "x$ac_cv_c_int64_t" != "xyes" || test "x$force_bignums" != "xyes"; then
-  bignum_implementation="built-in"
-else
-  bignum_implementation="gnupdf"
-fi
-
-
 dnl nocheck (simple replacement of Check framework when this is not available)
 AC_ARG_ENABLE([nocheck],
               AS_HELP_STRING([--enable-nocheck],
@@ -492,7 +470,6 @@ Configured for \`${canonical}'.
   Using FlateDecode filter?                 ${have_zlib}
   Using JBIG2 decoder filter?               ${HAVE_LIBJBIG2DEC}
   Using DCT filter?                         ${HAVE_LIBJPEG}
-  Bignum implementation?                    ${bignum_implementation}
   With http filesystem support?             ${http_implementation}
   With unit tests support?                  ${ut_support} ${ut_framework}
   Program to build html manuals             ${texihtmlprogram}

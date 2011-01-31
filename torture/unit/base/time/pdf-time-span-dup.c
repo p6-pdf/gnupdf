@@ -50,12 +50,7 @@ START_TEST (pdf_time_span_dup_001)
 
     span1 = pdf_time_span_new();
 
-#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
-    span1.low = 5;
-    span1.high =4;
-#else
     span1 = 0x55667788;
-#endif
 
     span2 = pdf_time_span_dup(span1);
 

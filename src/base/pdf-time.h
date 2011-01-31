@@ -38,8 +38,8 @@
 
 #include <stdio.h>
 
+#include <pdf-error.h>
 #include <pdf-types.h>
-#include <pdf-types-64.h>
 
 /* A variable of type pdf_time_t contains information about a particular date
  *  and time. It is stored in seconds since 1 January 1970 (UTC). Additionally
@@ -60,8 +60,6 @@ struct pdf_time_s {
  *  time zone (GMT offset) and so on. */
 pdf_status_t
 pdf_time_init(void);
-
-
 
 /* BEGIN PUBLIC */
 
@@ -282,15 +280,7 @@ pdf_time_span_destroy (pdf_time_span_t *p_span);
 
 /* Set the value of a time span from a 64 bits signed number */
 pdf_status_t
-pdf_time_span_set (pdf_time_span_t *p_span,
-                   const pdf_i32_t high_value,
-                   const pdf_u32_t low_value);
-
-
-/* Set the value of a time span from a 32 bits signed number. */
-pdf_status_t
-pdf_time_span_set_from_i32 (pdf_time_span_t *p_span,
-                            const pdf_i32_t seconds);
+pdf_time_span_set (pdf_time_span_t *p_span, const pdf_i64_t value);
 
 
 /* Change sign of time span */

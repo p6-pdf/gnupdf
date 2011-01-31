@@ -30,7 +30,6 @@
 
 #include <pdf-alloc.h>
 #include <pdf-types.h>
-#include <pdf-types-64.h>
 #include <pdf-types-buffer.h>
 #include <pdf-error.h>
 #include <pdf-list.h>

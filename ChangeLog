@@ -1,3 +1,203 @@
+2011-01-31  Jose E. Marchesi  <jemarch@gnu.org>
+
+	pdf-fsys: use pdf_off_t values for file sizes and offsets.
+	* src/base/pdf-stm-be.h: Missing legal terms added.
+	* src/base/pdf-stm-be.c: Likewise.
+
+	* src/base/pdf-stm-be.c (pdf_stm_be_file_read): Use pdf_off_t
+	values in fsys_file_get_pos and fsys_file_set_pos.
+	(pdf_stm_be_file_write): Likewise.
+	(pdf_stm_be_cfile_seek): Use ftello instead of ftell.
+	(pdf_stm_be_cfile_seek): Use fseeko instead of fseek.
+
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_file_get_pos): Use
+	ftello instead of ftell.
+	(pdf_fsys_disk_file_set_pos): Use fseeko instead of fseek.
+
+	* utils/pdf-filereader.c (printout_fsys_props): Print
+	item_props->file_size instead of file_size_high and file_size_low.
+	Add an end-of-file comment.
+
+	* src/base/pdf-fsys-http.c (pdf_fsys_http_file_can_set_size_p):
+	Use pdf_off_t values to specify file sizes and offsets.
+	(pdf_fsys_http_file_open): Likewise.
+	(pdf_fsys_http_file_get_size): Likewise.
+	(pdf_fsys_http_file_set_size): Likewise.
+	(pdf_fsys_http_file_get_pos): Likewise.
+	(pdf_fsys_http_file_set_pos): Likewise.
+	(pdf_fsys_http_file_request_ria): Likewise.
+
+	* src/base/pdf-fsys-http.h (struct pdf_fsys_http_file_s):
+	read_idx, write_idx and temp_file_size are now of pdf_off_t type.
+	(pdf_fsys_http_file_can_set_size_p): Use pdf_off_t values to
+	specify file sizes and offsets.
+	(pdf_fsys_http_file_get_size): Likewise.
+	(pdf_fsys_http_file_set_size): Likewise.
+	(pdf_fsys_http_file_get_pos): Likewise.
+	(pdf_fsys_http_file_set_pos): Likewise.
+	(pdf_fsys_http_file_request_ria): Likewise.
+
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_get_item_props): Set
+	file_size instead of file_size_high and file_size_low.
+	(pdf_fsys_disk_file_get_pos): Use pdf_off_t values to specify file
+	sizes and offsets.
+	(pdf_fsys_disk_file_set_pos): Likewise.
+	(pdf_fsys_disk_file_can_set_size_p): Likewise.
+	(pdf_fsys_disk_file_get_size): Likewise.
+	(pdf_fsys_disk_file_set_size): Likewise.
+	(pdf_fsys_disk_file_request_ria): Likewise.
+
+	* src/base/pdf-fsys-disk.h (pdf_fsys_disk_file_get_pos): Use
+	pdf_off_t values to specify file sizes and offsets.
+	(pdf_fsys_disk_file_set_pos): Likewise.
+	(pdf_fsys_disk_file_can_set_size_p): Likewise.
+	(pdf_fsys_disk_file_get_size): Likewise.
+	(pdf_fsys_disk_file_set_size): Likewise.
+	(pdf_fsys_disk_file_request_ria): Likewise.
+
+	* src/base/pdf-fsys.c (pdf_fsys_item_props_to_hash): Store
+	file_size in the hash instead of file_size_high and file_size_low.
+	(pdf_fsys_file_get_pos): Use pdf_off_t values to specify file
+	sizes and offsets.
+	(pdf_fsys_file_set_pos): Likewise.
+	(pdf_fsys_file_can_set_size_p): Likewise.
+	(pdf_fsys_file_get_size): Likewise.
+	(pdf_fsys_file_set_size): Likewise.
+	(pdf_fsys_file_request_ria): Likewise.
+
+	* doc/gnupdf.texi (Getting File System Item Properties): Document
+	the fileSize entry in the file properties hash.
+
+	* src/base/pdf-fsys.h (struct pdf_fsys_item_props_s): Use a single
+	files_size field of type pdf_off_t instead of file_size_high and
+	file_size_low.
+	(pdf_fsys_file_can_set_size_p_fn_t): Use pdf_off_t values to
+	specify file sizes and offsets.
+	(pdf_fsys_file_get_size_fn_t): Likewise.
+	(pdf_fsys_file_set_size_fn_t): Likewise.
+	(pdf_fsys_file_get_pos_fn_t): Likewise.
+	(pdf_fsys_file_set_pos_fn_t): Likewise.
+	(pdf_fsys_file_request_ria_fn_t): Likewise.
+	(pdf_fsys_file_get_pos): Likewise.
+	(pdf_fsys_file_set_pos): Likewise.
+	(pdf_fsys_file_can_set_size_p): Likewise.
+	(pdf_fsys_file_get_size): Likewise.
+	(pdf_fsys_file_set_size): Likewise.
+	(pdf_fsys_file_request_ria): Likewise.
+
+2011-01-31  Jose E. Marchesi  <jemarch@gnu.org>
+
+	manual: use pdf_off_t instead of pdf_i64_t in file size related
+	functions and callbacks.
+	* doc/gnupdf.texi: Make fsys functions managing file sizes to
+	get/return pdf_off_t variables instead of pdf_i64_t.
+	pdf_fsys_get_free_space is an exception.
+
+2011-01-28  Jose E. Marchesi  <jemarch@gnu.org>
+
+	manual: fsys api changed to support 64 bits file sizes, and to use
+	pdf_off_t instead of pdf_size_t.
+	* doc/gnupdf.texi (Filesystem Data Types): Document the new
+	file_size field.
+	(File Properties Management): pdf_fsys_file_get_size returns a
+	pdf_u64_t value.
+	(Managing File Positions): pdf_fsys_file_get_pos returns a
+	pdf_off_t value.
+	pdf_fsys_file_set_pos gets a pdf_off_t value.
+	(Changing the Size of a File): pdf_fsys_file_set_size gets
+	pdf_u64_t values.
+	(Read in Advance): parameter offset of pdf_fsys_file_request_ria
+	is a pdf_off_t value.
+	(File System Interface Implementation):
+	pdf_fsys_get_free_space_fn_t callback returns a pdf_i64_t value.
+	(Getting File System Properties): pdf_fsys_get_free_space returns
+	a pdf_i64_t value.
+	(File System Interface Implementation):
+	pdf_fsys_get_free_space_fn_t returns a pdf_i64_t value.
+	(File Interface Implementation): pdf_fsys_file_can_set_size_fn_t
+	callback gets a pdf_i64_t value.
+	pdf_fsys_file_get_size_fn_t returns a pdf_i64_t value.
+	pdf_fsys_file_set_size_fn_t gets a pdf_i64_t value.
+	pdf_fsys_file_get_pos_fn_t returns a pdf_off_t value.
+	pdf_fsys_file_set_pos_fn_t gets a pdf_off_t value.
+	pdf_fsys_file_request_ria_fn_t gets a pdf_off_t value as the
+	offset.
+
+2011-01-28  Jose E. Marchesi  <jemarch@gnu.org>
+
+	Remove the bignums implementation and adapt the codebase.
+	* configure.ac: Don't check for the need of using bignums.
+
+	* src/base/pdf-types-64.h: Removed.
+	* src/base/pdf-types-64.c: Removed.
+
+	* torture/unit/base/types/tsuite-types.c (tsuite_types): Don't
+	include 64bit related tests.
+	* torture/unit/Makefile.am (TEST_SUITE_TYPES): Likewise.
+
+	* src/base/pdf-time.h: Include pdf-error.h (for pdf_status_t).
+
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_get_free_space): Stop
+	using the pdf_i64_* functions.
+	(pdf_fsys_disk_get_free_space): Likewise.
+	(pdf_fsys_disk_get_free_space): Likewise.
+
+	* src/base/pdf-base.h: Don't include pdf-types-64.h.
+
+	* torture/unit/base/time/pdf-time-span-set.c (START_TEST): Don't
+	use bignums.
+
+	* torture/unit/Makefile.am (TEST_SUITE_TIME):
+	pdf-time-span-set-from-i32.c removed from list.
+
+	* torture/unit/base/time/pdf-time-span-set-from-i32.c: Removed.
+
+	* src/base/pdf-time.c (pdf_time_get_cal): Stop using the
+	pdf_i64_* functions.
+	(pdf_time_new): Likewise.
+	(pdf_time_set_from_u32): Likewise.
+	(pdf_time_set_from_i64): Likewise.
+	(pdf_time_copy): Likewise.
+	(pdf_time_clear): Likewise.
+	(pdf_time_add_span): Likewise.
+	(pdf_time_sub_span): Likewise.
+	(pdf_time_from_cal): Likewise.
+	(pdf_time_diff): Likewise.
+	(pdf_time_cmp): Likewise.
+	(pdf_time_set_to_current_utc_time): Likewise.
+	(pdf_time_span_new): Likewise.
+	(pdf_time_span_set): Likewise.
+	(pdf_time_span_negate): Likewise.
+	(pdf_time_span_add): Likewise.
+	(pdf_time_span_copy): Likewise.
+	(pdf_time_span_diff): Likewise.
+	(pdf_time_span_cmp): Likewise.
+
+	* doc/gnupdf.texi (Managing Time Span Values): Modify the
+	description of pdf_time_span_set to reflect the new API.
+	Description of pdf_time_span_set_from_i32 removed.
+
+	* src/base/pdf-time.h: Make pdf_time_span_set to get a signed 64
+	bits scalar.
+	Remove pdf_time_span_set_from_i32.
+	* src/base/pdf-time.c (pdf_time_span_set): Likewise.
+	* src/base/pdf-time.c (pdf_time_span_set_from_i32): Likewise.
+
+	* src/base/pdf-time.h: Don't include pdf-types-64.h.
+
+	* src/Makefile.am (TYPES_MODULE_SOURCES): pdf-types-64.[ch]
+	removed from list.
+
+	* src/base/pdf-types.h: Define 'INT64_MAX', 'INT64_MIN',
+	'UINT64_MAX' and 'UINT64_MIN'.
+
+	* doc/gnupdf.texi (Numeric Types): Document the types 'pdf_i16_t',
+	'pdf_u16_t', 'pdf_i64_t' and 'pdf_u64_t'.  Document 'PDF_I64_MAX',
+	'PDF_I64_MIN', 'PDF_U64_MAX' and 'PDF_U64_MIN'.
+
+	* src/base/pdf-types.h: New types 'pdf_u64_t' and 'pdf_i64_t'
+	defined in terms of 'uint64_t' and 'int64_t'.
+
 2011-01-27  Aleksander Morgado  <aleksander@gnu.org>
 
 	doc: Fix section title.

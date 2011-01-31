@@ -50,7 +50,10 @@
 #define PDF_MAX(i1, i2) \
   (((i1) > (i2)) ? (i1) : (i2))
 
-/* Definitions used in the operations of the pdf_i64_t type. */
+#define PDF_I64_MAX INT64_MAX
+#define PDF_I64_MIN INT64_MIN
+#define PDF_U64_MAX UINT64_MAX
+#define PDF_U64_MIN UINT64_MIN
 #define PDF_I32_MAX INT32_MAX
 #define PDF_I32_MIN (-PDF_I32_MAX)
 #define PDF_I32_DIV (PDF_I32_MAX + 1)
@@ -81,6 +84,12 @@ typedef size_t pdf_size_t;
  */
 typedef char pdf_char_t;
 typedef unsigned char pdf_uchar_t;
+
+/* 64-bit unsigned integer */
+typedef uint64_t pdf_u64_t;
+
+/* 64-bit signed integer */
+typedef int64_t pdf_i64_t;
 
 /* 32-bit unsigned integer */
 typedef uint32_t pdf_u32_t;

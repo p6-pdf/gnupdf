@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009, 2010 Free Software Foundation, Inc. */
+/* Copyright (C) 2009, 2010, 2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -946,7 +946,7 @@ pdf_fsys_http_file_flush (pdf_fsys_file_t file)
 /* Read-Only filesystem - cannot set size */
 pdf_bool_t
 pdf_fsys_http_file_can_set_size_p (pdf_fsys_file_t file,
-                                   pdf_size_t pos)
+                                   pdf_off_t pos)
 {
   return PDF_FALSE;
 }
@@ -1069,38 +1069,17 @@ pdf_fsys_http_file_open (void *data,
       
       if (len_avail)
         { /* content len was available - set size now */
-          
-          /* test if requested file is too large for this build: */
-          if ((sizeof (pdf_size_t) <= 4)
-              && (0 != item_props.file_size_high))
+
+          http_file->temp_file_size = item_props.file_size;
+
+          /* set temp file size */
+          rv = pdf_fsys_file_set_size (http_file->temp_file, 
+                                       http_file->temp_file_size);
+              
+          /* set http_file->temp_file_sized */
+          if (PDF_OK == rv)
             {
-              /* 32-bit size_t: Unable to handle file > 4GB
-                 A 64-bit build should not fail here. */
-              rv = PDF_EOVERFLOW;
-            }
-          else
-            {
-              /* Always use the low 32-bits from libcurl */
-              http_file->temp_file_size = item_props.file_size_low;
-              
-              /* if we're 64-bit on size_t then assign size_high also */
-              if ((sizeof (pdf_size_t) == 8)
-                  && (0 != item_props.file_size_high))
-                {
-                  /* cast _high to 64-bit then left shift 32 bits. */
-                  http_file->temp_file_size |= 
-                    (((pdf_size_t)item_props.file_size_high) << 32);
-                }
-              
-              /* set temp file size */
-              rv = pdf_fsys_file_set_size (http_file->temp_file, 
-                                           http_file->temp_file_size);
-              
-              /* set http_file->temp_file_sized */
-              if (PDF_OK == rv)
-                {
-                  http_file->temp_file_sized = PDF_TRUE;
-                }
+              http_file->temp_file_sized = PDF_TRUE;
             }
         }
       else /* len not available. */
@@ -1192,13 +1171,13 @@ pdf_fsys_http_file_open_tmp (void *data,
 
 
 /* return file size information if known */
-pdf_size_t
+pdf_off_t
 pdf_fsys_http_file_get_size (pdf_fsys_file_t file)
 {
   /* TODO: Implement me! */
 #warning "_get_size interface _must_ change to return pdf_status_t"
   /* This will allow us to return "I do not know" */
-  pdf_size_t rv = 0;
+  pdf_off_t rv = 0;
 
   if (PDF_OK == __pdf_fsys_http_valid ( file ) )
     {
@@ -1216,7 +1195,7 @@ pdf_fsys_http_file_get_size (pdf_fsys_file_t file)
 
 pdf_status_t
 pdf_fsys_http_file_set_size (pdf_fsys_file_t file,
-                             pdf_size_t pos)
+                             pdf_off_t pos)
 {
   /* Read Only filesystem - Not able to resize */
   return PDF_EBADPERMS;
@@ -1226,7 +1205,7 @@ pdf_fsys_http_file_set_size (pdf_fsys_file_t file,
 /* Get pos */
 pdf_status_t
 pdf_fsys_http_file_get_pos (pdf_fsys_file_t file,
-                            pdf_size_t *pos)
+                            pdf_off_t *pos)
 {
   pdf_status_t rv = PDF_ERROR;
   pdf_fsys_http_file_t http_file = NULL;
@@ -1250,7 +1229,7 @@ pdf_fsys_http_file_get_pos (pdf_fsys_file_t file,
 /* Set pos */
 pdf_status_t
 pdf_fsys_http_file_set_pos (pdf_fsys_file_t file,
-                            pdf_size_t pos)
+                            pdf_off_t pos)
 {
   pdf_status_t rv = PDF_ERROR;
   pdf_fsys_http_file_t http_file = NULL;
@@ -1392,7 +1371,7 @@ pdf_fsys_http_file_same_p (pdf_fsys_file_t file,
 
 pdf_status_t
 pdf_fsys_http_file_request_ria (pdf_fsys_file_t file,
-                                pdf_size_t offset,
+                                pdf_off_t offset,
                                 pdf_size_t count)
 {
   /* TODO: implement me! */

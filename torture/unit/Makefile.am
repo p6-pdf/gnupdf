@@ -158,18 +158,7 @@ TEST_SUITE_TEXT = base/text/pdf-text-test-common.h \
                   base/text/pdf-text-cmp.c
 
 # Unit tests for the Types Module test suite
-TEST_SUITE_TYPES = base/types/pdf-i64-new.c \
-		   base/types/pdf-i64-assign.c \
-		   base/types/pdf-i64-assign-quick.c \
-		   base/types/pdf-i64-copy.c \
-		   base/types/pdf-i64-add.c \
-		   base/types/pdf-i64-abs.c \
-		   base/types/pdf-i64-neg.c \
-		   base/types/pdf-i64-cmp.c \
-		   base/types/pdf-i64-mult.c \
-		   base/types/pdf-i64-div.c \
-		   base/types/pdf-i64-mod.c \
-		   base/types/pdf-i64-subtraction.c
+TEST_SUITE_TYPES =
 
 TEST_SUITE_TIME =  base/time/pdf-time-new.c \
 		   base/time/pdf-time-dup.c \
@@ -191,7 +180,6 @@ TEST_SUITE_TIME =  base/time/pdf-time-new.c \
 		   base/time/pdf-time-span-dup.c \
 		   base/time/pdf-time-span-destroy.c \
 		   base/time/pdf-time-span-set.c \
-                   base/time/pdf-time-span-set-from-i32.c \
                    base/time/pdf-time-span-negate.c \
                    base/time/pdf-time-span-add.c \
                    base/time/pdf-time-span-cmp.c \

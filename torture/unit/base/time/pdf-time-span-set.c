@@ -46,41 +46,21 @@ START_TEST (pdf_time_span_set_001)
     pdf_status_t status;
  //   extern struct pdf_time_cal_span_s day_time_span[];
     pdf_time_span_t span;
-    pdf_i64_t seconds;
-    pdf_i64_t seconds2;
+    pdf_i32_t seconds;
 
     pdf_init();
 
     span=pdf_time_span_new();
 
-#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
-    seconds.low = 0x44556677;
-    seconds.high =0x00112233;
-    status = pdf_time_span_set(&span,seconds.high,seconds.low);
-#else
-    seconds =  0x556677;
-    status = pdf_time_span_set(&span,(pdf_i32_t)(seconds>>32),(pdf_u32_t)seconds);
-#endif
-    fail_if(status != PDF_OK);
+    status = pdf_time_span_set (&span, 10);
+    fail_if (status != PDF_OK);
 
-    seconds2 = pdf_time_span_to_secs(span);
-    fail_unless(pdf_i64_cmp(seconds2,seconds) == 0);
+    seconds = pdf_time_span_to_secs(span);
+    fail_unless (pdf_time_span_to_secs (span) == 10);
 
-    /* Try negate span */
-#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
-    seconds.low = 0x55667788;
-    seconds.high =0x11223344;
-    status = pdf_time_span_set(&span,seconds.high,seconds.low);
-#else
-    seconds =  0x55667788;
-    status = pdf_time_span_set(&span,(pdf_i32_t)(seconds>>32),(pdf_u32_t)seconds);
-#endif
-    fail_if(status != PDF_OK);
-
-    seconds2 = pdf_time_span_to_secs(span);
-    fail_if(status != PDF_OK);
-
-    fail_unless(pdf_i64_cmp(seconds2,seconds) == 0);
+    status = pdf_time_span_set (&span, -10);
+    fail_if (status != PDF_OK);
+    fail_unless(pdf_time_span_to_secs (span) == -10);
 }
 END_TEST
 
