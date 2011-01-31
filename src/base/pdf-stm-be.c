@@ -7,6 +7,22 @@
  *
  */
 
+/* Copyright (C) 2009, 2010, 2011 Free Software Foundation, Inc. */
+
+/* This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include <config.h>
 
 #include <string.h>
@@ -349,7 +365,7 @@ pdf_stm_be_file_read (pdf_stm_be_t be,
                       pdf_size_t bytes)
 {
   pdf_size_t readed_bytes;
-  pdf_size_t current_pos;
+  pdf_off_t current_pos;
   pdf_status_t ret;
 
   /* Seek in the file */
@@ -387,7 +403,7 @@ pdf_stm_be_file_write (pdf_stm_be_t be,
                        pdf_size_t bytes)
 {
   pdf_size_t written_bytes;
-  pdf_size_t current_pos;
+  pdf_off_t current_pos;
   pdf_status_t ret;
 
   /* Seek in the file */
@@ -483,7 +499,7 @@ pdf_stm_be_cfile_seek (pdf_stm_be_t be,
   pdf_off_t max_pos;
   
   fseek (be->data.cfile.file, 0, SEEK_END);
-  max_pos = ftell (be->data.cfile.file);
+  max_pos = ftello (be->data.cfile.file);
 
   /* Check the requested position */
   if (pos < 0)
@@ -496,9 +512,9 @@ pdf_stm_be_cfile_seek (pdf_stm_be_t be,
     }
 
   be->data.cfile.pos = pos;
-  fseek (be->data.cfile.file,
-	 be->data.cfile.pos,
-	 SEEK_SET);
+  fseeko (be->data.cfile.file,
+          be->data.cfile.pos,
+          SEEK_SET);
 
   return pos;
 }

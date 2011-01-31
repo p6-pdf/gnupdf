@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008, 2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -160,8 +160,7 @@ pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s item_props,
   pdf_bool_t *is_hidden;
   pdf_bool_t *is_readable;
   pdf_bool_t *is_writable;
-  pdf_u32_t *file_size_high;
-  pdf_u32_t *file_size_low;
+  pdf_off_t *file_size;
   pdf_u32_t *folder_size;
   pdf_char_t *creation_date_str;
   pdf_char_t *mod_date_str;
@@ -170,16 +169,14 @@ pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s item_props,
   is_hidden = (pdf_bool_t *) pdf_alloc (sizeof(pdf_bool_t));
   is_readable = (pdf_bool_t *) pdf_alloc (sizeof(pdf_bool_t));
   is_writable = (pdf_bool_t *) pdf_alloc (sizeof(pdf_bool_t));
-  file_size_high = (pdf_u32_t*) pdf_alloc (sizeof(pdf_u32_t));
-  file_size_low = (pdf_u32_t*) pdf_alloc (sizeof(pdf_u32_t));
+  file_size = (pdf_off_t*) pdf_alloc (sizeof(pdf_off_t));
   folder_size = (pdf_u32_t*) pdf_alloc (sizeof(pdf_u32_t));
 
   /* Get the values from the props structure */
   *is_hidden = item_props.is_hidden;
   *is_readable = item_props.is_readable;
   *is_writable = item_props.is_writable;
-  *file_size_high = item_props.file_size_high;
-  *file_size_low = item_props.file_size_low;
+  *file_size = item_props.file_size;
   *folder_size = item_props.folder_size;
   creation_date_str = pdf_time_to_string (item_props.creation_date,
                                           PDF_TIME_FORMAT_PDF,
@@ -219,13 +216,7 @@ pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s item_props,
     {
       return PDF_ERROR;
     }
-  if (pdf_hash_add (props_hash, "fileSizeHigh", (void *) file_size_high,
-                    pdf_hash_element_dealloc_fn) !=
-      PDF_OK)
-    {
-      return PDF_ERROR;
-    }
-  if (pdf_hash_add (props_hash, "fileSizeLow", (void *) file_size_low,
+  if (pdf_hash_add (props_hash, "fileSize", (void *) file_size,
                     pdf_hash_element_dealloc_fn) !=
       PDF_OK)
     {
@@ -472,7 +463,7 @@ pdf_fsys_file_same_p (pdf_fsys_file_t file,
 
 pdf_status_t
 pdf_fsys_file_get_pos (pdf_fsys_file_t file,
-                       pdf_size_t *pos)
+                       pdf_off_t *pos)
 {
   if(file == NULL)
     return PDF_EBADDATA;
@@ -491,7 +482,7 @@ pdf_fsys_file_get_pos (pdf_fsys_file_t file,
 
 pdf_status_t
 pdf_fsys_file_set_pos (pdf_fsys_file_t file,
-                       pdf_size_t new_pos)
+                       pdf_off_t new_pos)
 {
   if(file == NULL)
     return PDF_EBADDATA;
@@ -511,7 +502,7 @@ pdf_fsys_file_set_pos (pdf_fsys_file_t file,
 
 pdf_bool_t
 pdf_fsys_file_can_set_size_p (pdf_fsys_file_t file,
-                              pdf_size_t size)
+                              pdf_off_t size)
 {
   if(file == NULL)
     return PDF_EBADDATA;
@@ -529,7 +520,7 @@ pdf_fsys_file_can_set_size_p (pdf_fsys_file_t file,
     }
 }
 
-pdf_size_t
+pdf_off_t
 pdf_fsys_file_get_size (pdf_fsys_file_t file)
 {
   if(file == NULL)
@@ -549,7 +540,7 @@ pdf_fsys_file_get_size (pdf_fsys_file_t file)
 
 pdf_status_t
 pdf_fsys_file_set_size (pdf_fsys_file_t file,
-                        pdf_size_t size)
+                        pdf_off_t size)
 {
   if(file == NULL)
     return PDF_EBADDATA;
@@ -632,7 +623,7 @@ pdf_fsys_file_flush (pdf_fsys_file_t file)
 
 pdf_status_t
 pdf_fsys_file_request_ria (pdf_fsys_file_t file,
-                           pdf_size_t offset,
+                           pdf_off_t offset,
                            pdf_size_t count)
 {
   if(file == NULL)

@@ -9049,10 +9049,8 @@ Boolean value.
 Text value containing a PDF style date string.
 @item modDate
 Text value containing a PDF style date string.
-@item fileSizeHigh
-32bit unsigned integer value.
-@item fileSizeLow
-32bit unsigned integer value.
+@item fileSize
+pdf_off_t signed integer value.
 @item folderSize
 32bit unsigned integer value.
 @item creatorCode

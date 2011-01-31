@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008, 2009, 2010 Free Software Foundation, Inc. */
+/* Copyright (C) 2008, 2009, 2010, 2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,8 +49,7 @@ struct pdf_fsys_item_props_s
   pdf_bool_t is_writable;
   pdf_time_t creation_date;
   pdf_time_t modification_date;
-  pdf_u32_t file_size_high;
-  pdf_u32_t file_size_low;
+  pdf_off_t file_size;
   pdf_u32_t folder_size;
 };
 
@@ -141,20 +140,20 @@ typedef pdf_status_t
 
 typedef pdf_status_t (*pdf_fsys_file_flush_fn_t) (pdf_fsys_file_t file);
 typedef pdf_bool_t (*pdf_fsys_file_can_set_size_p_fn_t) (pdf_fsys_file_t file,
-                                                       pdf_size_t pos);
+                                                         pdf_off_t pos);
 typedef pdf_status_t (*pdf_fsys_file_open_fn_t) (void *data,
                                                  pdf_text_t path_name,
                                                  enum pdf_fsys_file_mode_e mode,
                                                  pdf_fsys_file_t *p_file);
 typedef pdf_status_t (*pdf_fsys_file_open_tmp_fn_t) (void *data,
                                                      pdf_fsys_file_t *p_file);
-typedef pdf_size_t (*pdf_fsys_file_get_size_fn_t) (pdf_fsys_file_t file);
+typedef pdf_off_t (*pdf_fsys_file_get_size_fn_t) (pdf_fsys_file_t file);
 typedef pdf_status_t (*pdf_fsys_file_set_size_fn_t) (pdf_fsys_file_t file,
-                                                     pdf_size_t pos);
+                                                     pdf_off_t pos);
 typedef pdf_status_t (*pdf_fsys_file_get_pos_fn_t) (pdf_fsys_file_t file,
-                                                    pdf_size_t *pos);
+                                                    pdf_off_t *pos);
 typedef pdf_status_t (*pdf_fsys_file_set_pos_fn_t) (pdf_fsys_file_t file,
-                                                    pdf_size_t pos);
+                                                    pdf_off_t pos);
 typedef enum pdf_fsys_file_mode_e (*pdf_fsys_file_get_mode_fn_t) (pdf_fsys_file_t file);
 typedef pdf_status_t (*pdf_fsys_file_set_mode_fn_t) (pdf_fsys_file_t file,
                                                      enum pdf_fsys_file_mode_e new_mode);
@@ -162,7 +161,7 @@ typedef pdf_text_t (*pdf_fsys_file_get_url_fn_t) (pdf_fsys_file_t file);
 typedef pdf_bool_t (*pdf_fsys_file_same_p_fn_t) (pdf_fsys_file_t file,
                                                  pdf_text_t path_name);
 typedef pdf_status_t (*pdf_fsys_file_request_ria_fn_t) (pdf_fsys_file_t file,
-                                                        pdf_size_t offset,
+                                                        pdf_off_t offset,
                                                         pdf_size_t count);
 typedef pdf_bool_t (*pdf_fsys_file_has_ria_fn_t) (pdf_fsys_file_t file);
 typedef pdf_status_t (*pdf_fsys_file_cancel_ria_fn_t) (pdf_fsys_file_t file);
@@ -261,14 +260,14 @@ pdf_status_t pdf_fsys_file_set_mode (pdf_fsys_file_t file,
 pdf_bool_t pdf_fsys_file_same_p (pdf_fsys_file_t file,
                                  pdf_text_t path);
 pdf_status_t pdf_fsys_file_get_pos (pdf_fsys_file_t file,
-                                    pdf_size_t *pos);
+                                    pdf_off_t *pos);
 pdf_status_t pdf_fsys_file_set_pos (pdf_fsys_file_t file,
-                                    pdf_size_t new_pos);
+                                    pdf_off_t new_pos);
 pdf_bool_t pdf_fsys_file_can_set_size_p (pdf_fsys_file_t file,
-                                         pdf_size_t size);
-pdf_size_t pdf_fsys_file_get_size (pdf_fsys_file_t file);
+                                         pdf_off_t size);
+pdf_off_t pdf_fsys_file_get_size (pdf_fsys_file_t file);
 pdf_status_t pdf_fsys_file_set_size (pdf_fsys_file_t file,
-                                     pdf_size_t size);
+                                     pdf_off_t size);
 
 pdf_status_t pdf_fsys_file_read (pdf_fsys_file_t file, pdf_char_t *buf,
                                  pdf_size_t bytes, pdf_size_t *read_bytes);
@@ -278,7 +277,7 @@ pdf_status_t pdf_fsys_file_write (pdf_fsys_file_t file, pdf_char_t *buf,
 
 pdf_status_t pdf_fsys_file_flush (pdf_fsys_file_t file);
 pdf_status_t pdf_fsys_file_request_ria (pdf_fsys_file_t file,
-                                        pdf_size_t offset,
+                                        pdf_off_t offset,
                                         pdf_size_t count);
 pdf_bool_t pdf_fsys_file_has_ria (pdf_fsys_file_t file);
 pdf_status_t pdf_fsys_file_cancel_ria (pdf_fsys_file_t file);

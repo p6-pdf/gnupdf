@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009, 2010 Free Software Foundation, Inc. */
+/* Copyright (C) 2009, 2010, 2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,11 +48,11 @@ struct pdf_fsys_http_file_s
   pdf_char_t     *host_path;       /* Path name used to open the file, host
                                       encoded version */
   pdf_size_t      host_path_size;  /* Size of the host encoded path */
-  pdf_size_t      write_idx;       /* write index for temp_file */
-  pdf_size_t      read_idx;        /* read index for temp_file */
+  pdf_off_t       write_idx;       /* write index for temp_file */
+  pdf_off_t       read_idx;        /* read index for temp_file */
   pdf_fsys_file_t temp_file;       /* temp file for downloaded data */
   pdf_bool_t      temp_file_sized; /* temp file size has been set */
-  pdf_size_t      temp_file_size;  /* size that temp file has been set to */
+  pdf_off_t       temp_file_size;  /* size that temp file has been set to */
   pdf_bool_t      downloading;     /* libcurl is actively downloading the file */
   pdf_bool_t      open;            /* This pdf_fsys_http_file_s is open */
   CURL            *curl;           /* The libcurl object associated with file */
@@ -156,7 +156,7 @@ pdf_fsys_http_file_flush (pdf_fsys_file_t file);
 
 pdf_bool_t
 pdf_fsys_http_file_can_set_size_p (pdf_fsys_file_t file,
-                                   pdf_size_t pos);
+                                   pdf_off_t pos);
 
 pdf_status_t
 pdf_fsys_http_file_open (void *data,
@@ -168,20 +168,20 @@ pdf_status_t
 pdf_fsys_http_file_open_tmp (void *data,
                              pdf_fsys_file_t *p_file);
 
-pdf_size_t
+pdf_off_t
 pdf_fsys_http_file_get_size (pdf_fsys_file_t file);
 
 pdf_status_t
 pdf_fsys_http_file_set_size (pdf_fsys_file_t file,
-                             pdf_size_t pos);
+                             pdf_off_t pos);
 
 pdf_status_t
 pdf_fsys_http_file_get_pos (pdf_fsys_file_t file,
-                            pdf_size_t *pos);
+                            pdf_off_t *pos);
 
 pdf_status_t
 pdf_fsys_http_file_set_pos (pdf_fsys_file_t file,
-                            pdf_size_t pos);
+                            pdf_off_t pos);
 
 enum pdf_fsys_file_mode_e
 pdf_fsys_http_file_get_mode (pdf_fsys_file_t file);
@@ -196,7 +196,7 @@ pdf_fsys_http_file_same_p (pdf_fsys_file_t file,
 
 pdf_status_t
 pdf_fsys_http_file_request_ria (pdf_fsys_file_t file,
-                                pdf_size_t offset,
+                                pdf_off_t offset,
                                 pdf_size_t count);
 
 pdf_bool_t

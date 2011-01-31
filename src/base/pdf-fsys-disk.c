@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008, 2010 Free Software Foundation, Inc. */
+/* Copyright (C) 2008, 2010, 2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -107,7 +107,7 @@ __pdf_fsys_disk_is_readable_from_host_path(const pdf_char_t *host_path,
                                            pdf_bool_t *p_result);
 static pdf_status_t
 __pdf_fsys_disk_file_get_size_from_host_path(const pdf_char_t *host_path,
-                                             pdf_size_t *p_result);
+                                             pdf_off_t *p_result);
 static const pdf_char_t *
 __pdf_fsys_disk_get_mode_string(const enum pdf_fsys_file_mode_e mode);
 
@@ -211,8 +211,8 @@ pdf_fsys_disk_get_free_space (void *data,
 
       /* We get the string in HOST-encoding (with NUL-suffix) */
       if (__pdf_fsys_disk_get_host_path (path_name,
-                                       &host_path,
-                                       &host_path_size) != PDF_OK)
+                                         &host_path,
+                                         &host_path_size) != PDF_OK)
         {
           PDF_DEBUG_BASE("Couldn't get host-encoded path");
         }
@@ -746,7 +746,7 @@ typedef struct stat pdf_stat_s;
 
 static pdf_status_t
 __pdf_fsys_disk_file_get_size_from_host_path(const pdf_char_t *host_path,
-                                             pdf_size_t *p_result)
+                                             pdf_off_t *p_result)
 {
   pdf_status_t ret_code = PDF_EBADDATA;
   /* Check if file can be written */
@@ -818,13 +818,12 @@ pdf_fsys_disk_get_item_props (void *data,
   /* Get file size */
   if(ret_code == PDF_OK)
     {
-      pdf_size_t size;
+      pdf_off_t size;
 
       ret_code = __pdf_fsys_disk_file_get_size_from_host_path(host_path, &size);
       if(ret_code == PDF_OK)
         {
-          item_props->file_size_high = 0;
-          item_props->file_size_low = size;
+          item_props->file_size = size;
         }
     }
 
@@ -1086,13 +1085,13 @@ pdf_fsys_disk_file_same_p (pdf_fsys_file_t file,
 
 pdf_status_t
 pdf_fsys_disk_file_get_pos (pdf_fsys_file_t file,
-                            pdf_size_t *pos)
+                            pdf_off_t *pos)
 {
   if((file != NULL) && \
      (pos != NULL))
     {
       long cpos;
-      cpos = ftell (((pdf_fsys_disk_file_t)file->data)->file_descriptor);
+      cpos = ftello (((pdf_fsys_disk_file_t)file->data)->file_descriptor);
       if (cpos<0)
         {
           return __pdf_fsys_disk_get_status_from_errno (errno);
@@ -1111,13 +1110,13 @@ pdf_fsys_disk_file_get_pos (pdf_fsys_file_t file,
 
 pdf_status_t
 pdf_fsys_disk_file_set_pos (pdf_fsys_file_t file,
-                            pdf_size_t new_pos)
+                            pdf_off_t new_pos)
 {
   if(file != NULL)
     {
       int st;
-      st = fseek (((pdf_fsys_disk_file_t)file->data)->file_descriptor,
-                 new_pos, SEEK_SET);
+      st = fseeko (((pdf_fsys_disk_file_t)file->data)->file_descriptor,
+                   new_pos, SEEK_SET);
       if (st < 0)
         {
           return __pdf_fsys_disk_get_status_from_errno (errno);
@@ -1135,16 +1134,16 @@ pdf_fsys_disk_file_set_pos (pdf_fsys_file_t file,
 
 pdf_bool_t
 pdf_fsys_disk_file_can_set_size_p (pdf_fsys_file_t file,
-                                   pdf_size_t size)
+                                   pdf_off_t size)
 {
   /* FIXME: Please implement me XD */
   return PDF_TRUE;
 }
 
-pdf_size_t
+pdf_off_t
 pdf_fsys_disk_file_get_size (pdf_fsys_file_t file)
 {
-  pdf_size_t size;
+  pdf_off_t size;
   if(__pdf_fsys_disk_file_get_size_from_host_path(((pdf_fsys_disk_file_t)file->data)->host_path,
                                                   &size) == PDF_OK)
     {
@@ -1159,7 +1158,7 @@ pdf_fsys_disk_file_get_size (pdf_fsys_file_t file)
 
 pdf_status_t
 pdf_fsys_disk_file_set_size (pdf_fsys_file_t file,
-                             pdf_size_t size)
+                             pdf_off_t size)
 {
   /* FIXME: Please implement me :D */
   return PDF_OK;
@@ -1289,7 +1288,7 @@ pdf_fsys_disk_file_flush (pdf_fsys_file_t file)
 
 pdf_status_t
 pdf_fsys_disk_file_request_ria (pdf_fsys_file_t file,
-                                pdf_size_t offset,
+                                pdf_off_t offset,
                                 pdf_size_t count)
 {
   /* This filesystem implementation do not provide Read-In-Advance
