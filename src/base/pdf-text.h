@@ -68,7 +68,7 @@ enum pdf_text_unicode_encoding_e {
 
 /* Enumeration of possible options when getting data in UNICODE format.
  *  Note that some options are only applicable to some UNICODE formats.
- *  Each of these enumerations is a Mask of Bits, so that multiple options 
+ *  Each of these enumerations is a Mask of Bits, so that multiple options
  *  can be set at the same time */
 enum pdf_text_unicode_options_e {
   PDF_TEXT_UNICODE_NO_OPTION       = 0x00,
@@ -79,7 +79,7 @@ enum pdf_text_unicode_options_e {
 
 
 /* Enumeration of supported filters in encoded text objects.
- *  Each of these enumerations is a Mask of Bits, so that multiple options 
+ *  Each of these enumerations is a Mask of Bits, so that multiple options
  *  can be set at the same time */
 enum pdf_text_filter_type_e {
   PDF_TEXT_FILTER_IDENTITY              = 0x00, /* No-op */
@@ -201,7 +201,7 @@ pdf_text_host_encoding_t
 pdf_text_get_host_encoding(void);
 
 
-/* Check if a given encoding is available in the system, and return a 
+/* Check if a given encoding is available in the system, and return a
  *  pdf_text_host_encoding_t variable with the host encoding ID if available*/
 pdf_status_t
 pdf_text_check_host_encoding(const pdf_char_t *encoding_name,
@@ -323,7 +323,7 @@ pdf_text_cmp (const pdf_text_t text1,
 
 /* END PUBLIC */
 
-/* Common Code Length for both country and language codes 
+/* Common Code Length for both country and language codes
  *  (including last NUL char) */
 #define PDF_TEXT_CCL     3
 
@@ -332,17 +332,17 @@ pdf_text_cmp (const pdf_text_t text1,
 struct pdf_text_s {
   pdf_char_t *data;                 /* Contents in UTF-32HE */
   pdf_size_t size;                  /* Number of Bytes */
-  pdf_list_t word_boundaries;       /* List of Word boundaries (optional) */
+  pdf_list_t *word_boundaries;       /* List of Word boundaries (optional) */
   pdf_char_t lang[PDF_TEXT_CCL];    /* Associated language code (optional) */
   pdf_char_t country[PDF_TEXT_CCL]; /* Associated country code (optional) */
   pdf_bool_t modified;  /* set to PDF_TRUE each time the data is modified */
-  pdf_char_t * printable;
+  pdf_char_t *printable;
 };
 
 /* Structure containing the word boundary information */
 struct pdf_text_wb_s {
   /* Pointer to the FIRST byte of the first UTF-32 code point */
-  pdf_char_t *word_start; 
+  pdf_char_t *word_start;
   /* Pointer to the FIRST byte of the last UTF-32 code point */
   pdf_char_t *word_stop;
   /* Length of the word, in BYTES */
@@ -361,14 +361,13 @@ pdf_text_clean_contents(pdf_text_t text);
 
 
 /* Generate Word Boundaries list from text object (if not already done) */
-pdf_status_t
-pdf_text_generate_word_boundaries(pdf_text_t text);
+pdf_status_t pdf_text_generate_word_boundaries (pdf_text_t    text,
+                                                pdf_error_t **error);
 /* Create empty Word Boundaries list */
-pdf_status_t
-pdf_text_create_word_boundaries_list(pdf_list_t *p_word_boundaries);
+pdf_list_t *pdf_text_create_word_boundaries_list (pdf_error_t **error);
 /* Destroy Word Boundaries list */
-pdf_status_t
-pdf_text_destroy_word_boundaries_list(pdf_list_t *p_word_boundaries);
+pdf_bool_t pdf_text_destroy_word_boundaries_list (pdf_list_t  **p_word_boundaries,
+                                                  pdf_error_t **error);
 
 
 

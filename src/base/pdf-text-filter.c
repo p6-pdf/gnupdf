@@ -46,7 +46,8 @@ pdf_text_filter_change_case(pdf_text_t text,
   pdf_size_t new_length;
   pdf_char_t *new_data;
   pdf_list_t new_wb_list;
-  
+  pdf_error_t *inner_error = NULL;
+
   const pdf_char_t *language;
 
   /* Generate original word boundaries list, if not already done */
@@ -55,7 +56,7 @@ pdf_text_filter_change_case(pdf_text_t text,
       PDF_DEBUG_BASE("Couldn't create list of word boundaries");
       return PDF_ETEXTENC;
     }
-  
+
   /* Get text language ID. First, try to get it from the pdf_text_t element */
   language = pdf_text_get_language(text);
   /* If text element doesn't have a language ID, get it from the text context */
@@ -63,7 +64,7 @@ pdf_text_filter_change_case(pdf_text_t text,
     {
       language = pdf_text_context_get_host_language();
     }
-  
+
   /* Worst length will be having 3 output UTF-32 characters per each input
    *  UTF-32 character. First of all, allocate memory for the worst length */
   worst_length = text->size * UCD_SC_MAX_EXPAND;
@@ -72,12 +73,15 @@ pdf_text_filter_change_case(pdf_text_t text,
     {
       return PDF_ENOMEM;
     }
-  
+
   /* Create new empty word boundaries list */
-  if(pdf_text_create_word_boundaries_list(&new_wb_list) != PDF_OK)
+  new_wb_list = pdf_text_create_word_boundaries_list (&inner_error);
+  if (new_wb_list == NULL)
     {
+      /* TODO: Propagate error */
+      pdf_error_destroy (inner_error);
       PDF_DEBUG_BASE("Unable to create empty list");
-      pdf_dealloc(new_data);
+      pdf_dealloc (new_data);
       return PDF_ETEXTENC;
     }
 
@@ -135,25 +139,30 @@ pdf_text_filter_change_case(pdf_text_t text,
       new_length += new_word_length;
     }
 
-  
+
   /* Finally, reset the buffer length to its correct size */
-  if(new_length != worst_length)
+  if (new_length != worst_length)
     {
-      new_data = (pdf_char_t *)pdf_realloc(new_data,new_length);
-      if(new_data == NULL)
+      new_data = (pdf_char_t *) pdf_realloc (new_data, new_length);
+      if (new_data == NULL)
         {
-          pdf_text_destroy_word_boundaries_list(&new_wb_list);
+          pdf_text_destroy_word_boundaries_list (&new_wb_list, NULL);
           return PDF_ENOMEM;
         }
     }
-  
+
   /* Replace contents (data and word boundary list) */
   pdf_dealloc(text->data);
   text->data = new_data;
   text->size = new_length;
-  pdf_text_destroy_word_boundaries_list(&(text->word_boundaries));
+  if (!pdf_text_destroy_word_boundaries_list (&(text->word_boundaries),
+                                              &inner_error))
+    {
+      /* TODO: Propagate error */
+      pdf_error_destroy (&inner_error);
+    }
   text->word_boundaries = new_wb_list;
-  
+
   return PDF_OK;
 }
 
