@@ -6,6 +6,7 @@ config.log
 config.status
 config.sub
 config.guess
+config.cache
 configure
 libgnupdf.pc
 libtool
