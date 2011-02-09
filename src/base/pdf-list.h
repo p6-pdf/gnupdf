@@ -39,7 +39,8 @@
 #define PDF_LIST_ITERATOR_SIZE 12
 
 /* Fixed size struct */
-struct pdf_list_iterator_s {
+struct pdf_list_iterator_s
+{
   void *gl_iterator[PDF_LIST_ITERATOR_SIZE];
 };
 typedef struct pdf_list_iterator_s pdf_list_iterator_t;
@@ -190,7 +191,7 @@ pdf_size_t pdf_list_sorted_indexof (const pdf_list_t              *list,
                                     const void                    *element,
                                     pdf_error_t                  **error);
 
-pdf_size_t pdf_list_sorted_indexof_from_to (const pdf_list_t               *list,
+pdf_size_t pdf_list_sorted_indexof_from_to (const pdf_list_t              *list,
                                             pdf_list_element_compar_fn_t   compar_fn,
                                             const pdf_size_t               start_index,
                                             const pdf_size_t               end_index,
