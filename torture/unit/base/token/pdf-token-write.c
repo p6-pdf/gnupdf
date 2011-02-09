@@ -136,7 +136,7 @@ START_TEST(pdf_token_write_real_positive)
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
-                   "10.2", 3, 100);
+                   "10.2", 4, 100);
 }
 END_TEST
 
