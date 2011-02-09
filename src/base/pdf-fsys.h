@@ -77,7 +77,7 @@ struct pdf_fsys_file_s
 typedef struct pdf_fsys_file_s *pdf_fsys_file_t;
 
 /* File modes */
-enum pdf_fsys_file_mode_e 
+enum pdf_fsys_file_mode_e
   {
     /* First valid element of the enum, useful for iterating */
     PDF_FSYS_OPEN_MODE_FIRST = 0,
@@ -106,9 +106,9 @@ typedef pdf_status_t (*pdf_fsys_cleanup_fn_t) (void *data);
 /* Filesystem implementation callbacks */
 typedef pdf_status_t (*pdf_fsys_create_folder_fn_t) (void *data,
                                                      pdf_text_t path_name);
-typedef pdf_status_t (*pdf_fsys_get_folder_contents_fn_t) (void *data,
-                                                           pdf_text_t path_name,
-                                                           pdf_list_t item_list);
+typedef pdf_status_t (*pdf_fsys_get_folder_contents_fn_t) (void       *data,
+                                                           pdf_text_t  path_name,
+                                                           pdf_list_t *item_list);
 typedef pdf_status_t (*pdf_fsys_get_parent_fn_t) (void *data,
                                                   pdf_text_t path_name,
                                                   pdf_text_t parent_path);
@@ -125,10 +125,10 @@ typedef pdf_bool_t (*pdf_fsys_item_readable_p_fn_t) (void *data,
                                                      pdf_text_t path_name);
 typedef pdf_bool_t (*pdf_fsys_item_writable_p_fn_t) (void *data,
                                                      pdf_text_t path_name);
-typedef pdf_status_t (*pdf_fsys_build_path_fn_t) (void * data,
-                                                  pdf_text_t * output,
-                                                  pdf_text_t first_element,
-                                                  pdf_list_t rest);
+typedef pdf_status_t (*pdf_fsys_build_path_fn_t) (void       *data,
+                                                  pdf_text_t *output,
+                                                  pdf_text_t  first_element,
+                                                  pdf_list_t *rest);
 
 typedef pdf_status_t
 (*pdf_fsys_file_read_fn_t) (pdf_fsys_file_t file, pdf_char_t *buf,
@@ -220,9 +220,9 @@ pdf_i64_t pdf_fsys_get_free_space (pdf_fsys_t filesystem,
                                    pdf_text_t path_name);
 pdf_status_t pdf_fsys_create_folder (const pdf_fsys_t filesystem,
                                      const pdf_text_t path_name);
-pdf_status_t pdf_fsys_get_folder_contents (const pdf_fsys_t filesystem,
-                                           const pdf_text_t path_name,
-                                           pdf_list_t item_list);
+pdf_status_t pdf_fsys_get_folder_contents (const pdf_fsys_t  filesystem,
+                                           const pdf_text_t  path_name,
+                                           pdf_list_t       *item_list);
 pdf_status_t pdf_fsys_get_parent (const pdf_fsys_t filesystem,
                                   const pdf_text_t path_name,
                                   pdf_text_t parent_path);

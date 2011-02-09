@@ -44,12 +44,12 @@ pdf_fsys_get_free_space (pdf_fsys_t filesystem,
   if (filesystem == NULL)
     {
       /* Use the default filesystem */
-      return 
+      return
         pdf_fsys_def_get_free_space(path_name);
     }
   else
     {
-      return 
+      return
         filesystem->implementation->get_free_space_fn (filesystem->data,
                                                        path_name);
     }
@@ -57,7 +57,7 @@ pdf_fsys_get_free_space (pdf_fsys_t filesystem,
 
 
 
-pdf_status_t 
+pdf_status_t
 pdf_fsys_create_folder (const pdf_fsys_t filesystem,
                         const pdf_text_t path_name)
 {
@@ -69,21 +69,21 @@ pdf_fsys_create_folder (const pdf_fsys_t filesystem,
     }
   else
     {
-      return 
+      return
         filesystem->implementation->create_folder_fn (filesystem->data,
                                                       path_name);
     }
 }
 
 pdf_status_t
-pdf_fsys_get_folder_contents (const pdf_fsys_t filesystem,
-                              const pdf_text_t path_name,
-                              pdf_list_t item_list)
+pdf_fsys_get_folder_contents (const pdf_fsys_t  filesystem,
+                              const pdf_text_t  path_name,
+                              pdf_list_t       *item_list)
 {
   if (filesystem == NULL)
     {
       /* Use the default filesystem */
-      return 
+      return
         pdf_fsys_def_get_folder_contents(path_name, item_list);
     }
   else
@@ -115,7 +115,7 @@ pdf_fsys_get_parent (const pdf_fsys_t filesystem,
     }
 }
 
-pdf_status_t 
+pdf_status_t
 pdf_fsys_remove_folder (const pdf_fsys_t filesystem,
                         const pdf_text_t path_name)
 {
@@ -127,13 +127,13 @@ pdf_fsys_remove_folder (const pdf_fsys_t filesystem,
     }
   else
     {
-      return 
+      return
         filesystem->implementation->remove_folder_fn (filesystem->data,
                                                       path_name);
     }
 }
 
-pdf_status_t 
+pdf_status_t
 pdf_fsys_get_item_props (pdf_fsys_t filesystem,
                          pdf_text_t path_name,
                          struct pdf_fsys_item_props_s *item_props)
@@ -245,7 +245,7 @@ pdf_fsys_item_p (pdf_fsys_t filesystem,
     }
   else
     {
-      return 
+      return
         filesystem->implementation->item_p_fn (filesystem->data,
                                                path_name);
     }
@@ -292,13 +292,17 @@ pdf_status_t pdf_fsys_build_path (pdf_fsys_t filesystem,
                                   pdf_text_t first_element, ...)
 {
   va_list args;
-  pdf_list_t rest;
+  pdf_list_t *rest;
   pdf_status_t st;
   pdf_text_t next;
+  pdf_error_t *inner_error = NULL;
 
-  st = pdf_list_new (NULL,NULL,PDF_TRUE,&rest);
-  if (st != PDF_OK)
+  rest = pdf_list_new (NULL, NULL, PDF_TRUE, &inner_error);
+  if (!rest)
     {
+      /* TODO: Propagate error */
+      st = pdf_error_get_status (inner_error);
+      pdf_error_destroy (inner_error);
       return st;
     }
 
@@ -307,9 +311,10 @@ pdf_status_t pdf_fsys_build_path (pdf_fsys_t filesystem,
   next = va_arg (args, pdf_text_t);
   while (next != NULL)
     {
-      st = pdf_list_add_last (rest, next, NULL);
-      if (st != PDF_OK)
+      if (pdf_list_add_last (rest, next, &inner_error) == NULL)
         {
+          /* TODO: Propagate error */
+          st = pdf_error_get_status (inner_error);
           pdf_list_destroy (rest);
           va_end (args);
           return st;
@@ -377,7 +382,7 @@ pdf_fsys_file_open_tmp (const pdf_fsys_t filesystem,
     }
 }
 
-pdf_fsys_t 
+pdf_fsys_t
 pdf_fsys_file_get_filesystem (pdf_fsys_file_t file)
 {
   if(file == NULL)
@@ -399,7 +404,7 @@ pdf_fsys_file_get_mode (pdf_fsys_file_t file)
     }
   else
     {
-      return 
+      return
         (file->fs->implementation->file_get_mode_fn) (file);
     }
 }
@@ -442,7 +447,7 @@ pdf_fsys_file_set_mode (pdf_fsys_file_t file,
     }
 }
 
-pdf_bool_t 
+pdf_bool_t
 pdf_fsys_file_same_p (pdf_fsys_file_t file,
                       pdf_text_t path)
 {
@@ -494,7 +499,7 @@ pdf_fsys_file_set_pos (pdf_fsys_file_t file,
     }
   else
     {
-      return 
+      return
         (file->fs->implementation->file_set_pos_fn) (file,
                                                      new_pos);
     }
@@ -643,7 +648,7 @@ pdf_fsys_file_request_ria (pdf_fsys_file_t file,
     }
 }
 
-pdf_bool_t 
+pdf_bool_t
 pdf_fsys_file_has_ria (pdf_fsys_file_t file)
 {
   if(file == NULL)
@@ -731,7 +736,7 @@ pdf_fsys_create (struct pdf_fsys_impl_s implementation)
   filesystem = pdf_fsys_alloc ();
 
   /* Allocate a new implementation structure and assign it to the FS */
-  own_implementation = (struct pdf_fsys_impl_s *) 
+  own_implementation = (struct pdf_fsys_impl_s *)
     pdf_alloc (sizeof(struct pdf_fsys_impl_s));
 
   filesystem->implementation = own_implementation;
@@ -768,8 +773,8 @@ static pdf_fsys_t
 pdf_fsys_alloc (void)
 {
   pdf_fsys_t filesystem;
-  
-  filesystem = 
+
+  filesystem =
     (pdf_fsys_t) pdf_alloc (sizeof(struct pdf_fsys_s));
   return filesystem;
 }
