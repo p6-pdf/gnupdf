@@ -45,14 +45,16 @@ pdf_text_filter_change_case(pdf_text_t text,
   pdf_size_t worst_length;
   pdf_size_t new_length;
   pdf_char_t *new_data;
-  pdf_list_t new_wb_list;
+  pdf_list_t *new_wb_list;
   pdf_error_t *inner_error = NULL;
 
   const pdf_char_t *language;
 
   /* Generate original word boundaries list, if not already done */
-  if(pdf_text_generate_word_boundaries(text) != PDF_OK)
+  if (pdf_text_generate_word_boundaries (text, &inner_error) != PDF_OK)
     {
+      /* TODO: Propagate error */
+      pdf_error_destroy (inner_error);
       PDF_DEBUG_BASE("Couldn't create list of word boundaries");
       return PDF_ETEXTENC;
     }
@@ -103,12 +105,13 @@ pdf_text_filter_change_case(pdf_text_t text,
         }
 
       /* Get word to process from list of words */
-      if(pdf_list_get_at(text->word_boundaries, \
-                         i, \
-                         (const void **)&p_word) != PDF_OK)
+      p_word = pdf_list_get_at (text->word_boundaries, i, &inner_error);
+      if (!p_word)
         {
-          pdf_dealloc(new_data);
-          pdf_list_destroy(new_wb_list);
+          /* TODO: Propagate error */
+          pdf_error_destroy (inner_error);
+          pdf_dealloc (new_data);
+          pdf_list_destroy (new_wb_list);
           return PDF_ETEXTENC;
         }
 
@@ -159,7 +162,7 @@ pdf_text_filter_change_case(pdf_text_t text,
                                               &inner_error))
     {
       /* TODO: Propagate error */
-      pdf_error_destroy (&inner_error);
+      pdf_error_destroy (inner_error);
     }
   text->word_boundaries = new_wb_list;
 

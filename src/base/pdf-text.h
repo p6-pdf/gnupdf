@@ -361,8 +361,8 @@ pdf_text_clean_contents(pdf_text_t text);
 
 
 /* Generate Word Boundaries list from text object (if not already done) */
-pdf_status_t pdf_text_generate_word_boundaries (pdf_text_t    text,
-                                                pdf_error_t **error);
+pdf_bool_t pdf_text_generate_word_boundaries (pdf_text_t    text,
+                                              pdf_error_t **error);
 /* Create empty Word Boundaries list */
 pdf_list_t *pdf_text_create_word_boundaries_list (pdf_error_t **error);
 /* Destroy Word Boundaries list */
