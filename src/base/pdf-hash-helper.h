@@ -36,53 +36,69 @@
 
 /* BEGIN PUBLIC */
 
-pdf_status_t
-pdf_hash_add_text (pdf_hash_t table, const char *key, const pdf_text_t *elt);
+pdf_status_t pdf_hash_add_text (pdf_hash_t        table,
+                                const pdf_char_t *key,
+                                const pdf_text_t *elt);
 
-pdf_status_t
-pdf_hash_get_text (pdf_hash_t table, const char *key, pdf_text_t *elt);
+pdf_status_t pdf_hash_get_text (pdf_hash_t        table,
+                                const pdf_char_t *key,
+                                pdf_text_t       *elt);
 
-pdf_status_t
-pdf_hash_add_time (pdf_hash_t table, const char *key, const pdf_time_t *elt);
+pdf_status_t pdf_hash_add_time (pdf_hash_t        table,
+                                const pdf_char_t *key,
+                                const pdf_time_t *elt);
 
-pdf_status_t
-pdf_hash_get_time (pdf_hash_t table, const char *key, pdf_time_t *elt);
+pdf_status_t pdf_hash_get_time (pdf_hash_t        table,
+                                const pdf_char_t *key,
+                                pdf_time_t       *elt);
 
-pdf_status_t
-pdf_hash_add_list (pdf_hash_t table, const char *key, const pdf_list_t *elt);
+pdf_status_t pdf_hash_add_list (pdf_hash_t        table,
+                                const pdf_char_t *key,
+                                const pdf_list_t *elt);
 
-pdf_status_t
-pdf_hash_get_list (pdf_hash_t table, const char *key, pdf_list_t *elt);
+pdf_status_t pdf_hash_get_list (pdf_hash_t        table,
+                                const pdf_char_t *key,
+                                pdf_list_t       *elt);
 
-pdf_status_t
-pdf_hash_add_hash (pdf_hash_t table, const char *key, const pdf_hash_t *elt);
+pdf_status_t pdf_hash_add_hash (pdf_hash_t        table,
+                                const pdf_char_t *key,
+                                const pdf_hash_t *elt);
 
-pdf_status_t
-pdf_hash_get_hash (pdf_hash_t table, const char *key, pdf_hash_t *elt);
+pdf_status_t pdf_hash_get_hash (pdf_hash_t        table,
+                                const pdf_char_t *key,
+                                pdf_hash_t       *elt);
 
-pdf_status_t
-pdf_hash_add_stm (pdf_hash_t table, const char *key, const pdf_stm_t *elt);
+pdf_status_t pdf_hash_add_stm (pdf_hash_t        table,
+                               const pdf_char_t *key,
+                               const pdf_stm_t  *elt);
 
-pdf_status_t
-pdf_hash_get_stm (pdf_hash_t table, const char *key, pdf_stm_t *elt);
+pdf_status_t pdf_hash_get_stm (pdf_hash_t        table,
+                               const pdf_char_t *key,
+                               pdf_stm_t        *elt);
 
-pdf_status_t
-pdf_hash_add_size (pdf_hash_t table, const char *key, const pdf_size_t elt);
+pdf_status_t pdf_hash_add_size (pdf_hash_t        table,
+                                const pdf_char_t *key,
+                                const pdf_size_t  elt);
 
-pdf_status_t
-pdf_hash_get_size (pdf_hash_t table, const char *key, pdf_size_t *elt);
+pdf_status_t pdf_hash_get_size (pdf_hash_t        table,
+                                const pdf_char_t *key,
+                                pdf_size_t       *elt);
 
-pdf_status_t
-pdf_hash_add_bool (pdf_hash_t table, const char *key, const pdf_bool_t elt);
+pdf_status_t pdf_hash_add_bool (pdf_hash_t        table,
+                                const pdf_char_t *key,
+                                const pdf_bool_t  elt);
 
-pdf_status_t
-pdf_hash_get_bool (pdf_hash_t table, const char *key, pdf_bool_t *elt);
+pdf_status_t pdf_hash_get_bool (pdf_hash_t        table,
+                                const pdf_char_t *key,
+                                pdf_bool_t       *elt);
 
-pdf_status_t
-pdf_hash_add_string (pdf_hash_t table, const char *key, const pdf_char_t *elt);
+pdf_status_t pdf_hash_add_string (pdf_hash_t        table,
+                                  const pdf_char_t *key,
+                                  const pdf_char_t *elt);
 
-pdf_status_t
-pdf_hash_get_string (pdf_hash_t table, const char *key, pdf_char_t **elt);
+pdf_status_t pdf_hash_get_string (pdf_hash_t         table,
+                                  const pdf_char_t  *key,
+                                  pdf_char_t       **elt);
 
 
 /* END PUBLIC */

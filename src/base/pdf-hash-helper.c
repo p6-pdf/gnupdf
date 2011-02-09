@@ -36,69 +36,91 @@ static void stm_dispose_fn (const void *elt);
 
 
 pdf_status_t
-pdf_hash_add_text (pdf_hash_t table, const char *key, const pdf_text_t *elt)
+pdf_hash_add_text (pdf_hash_t        table,
+                   const pdf_char_t *key,
+                   const pdf_text_t *elt)
 {
-  return (pdf_hash_add(table,key,elt,text_dispose_fn));
+  return (pdf_hash_add (table, key, elt, text_dispose_fn));
 }
 
 pdf_status_t
-pdf_hash_get_text (pdf_hash_t table, const char *key, pdf_text_t *elt)
-{
-  return pdf_hash_get (table, key, (const void **) &elt);
-}
-
-pdf_status_t
-pdf_hash_add_time (pdf_hash_t table, const char *key, const pdf_time_t *elt)
-{
-  return (pdf_hash_add(table,key,elt,time_dispose_fn));
-}
-
-pdf_status_t
-pdf_hash_get_time (pdf_hash_t table, const char *key, pdf_time_t *elt)
-{
-  return pdf_hash_get (table, key, (const void **) &elt);
-}
-
-
-pdf_status_t
-pdf_hash_add_list (pdf_hash_t table, const char *key, const pdf_list_t *elt)
-{
-  return (pdf_hash_add(table,key,elt,list_dispose_fn));
-}
-
-pdf_status_t
-pdf_hash_get_list (pdf_hash_t table, const char *key, pdf_list_t *elt)
+pdf_hash_get_text (pdf_hash_t        table,
+                   const pdf_char_t *key,
+                   pdf_text_t       *elt)
 {
   return pdf_hash_get (table, key, (const void **) &elt);
 }
 
 pdf_status_t
-pdf_hash_add_hash (pdf_hash_t table, const char *key, const pdf_hash_t *elt)
+pdf_hash_add_time (pdf_hash_t        table,
+                   const pdf_char_t *key,
+                   const pdf_time_t *elt)
 {
-  return (pdf_hash_add(table,key,elt,hash_dispose_fn));
+  return (pdf_hash_add (table, key, elt, time_dispose_fn));
 }
 
 pdf_status_t
-pdf_hash_get_hash (pdf_hash_t table, const char *key, pdf_hash_t *elt)
+pdf_hash_get_time (pdf_hash_t        table,
+                   const pdf_char_t *key,
+                   pdf_time_t       *elt)
 {
   return pdf_hash_get (table, key, (const void **) &elt);
 }
 
 
 pdf_status_t
-pdf_hash_add_stm (pdf_hash_t table, const char *key, const pdf_stm_t *elt)
+pdf_hash_add_list (pdf_hash_t        table,
+                   const pdf_char_t *key,
+                   const pdf_list_t *elt)
 {
-  return (pdf_hash_add(table,key,elt,stm_dispose_fn));
+  return (pdf_hash_add (table, key, elt, list_dispose_fn));
 }
 
 pdf_status_t
-pdf_hash_get_stm (pdf_hash_t table, const char *key, pdf_stm_t *elt)
+pdf_hash_get_list (pdf_hash_t        table,
+                   const pdf_char_t *key,
+                   pdf_list_t       *elt)
 {
   return pdf_hash_get (table, key, (const void **) &elt);
 }
 
 pdf_status_t
-pdf_hash_add_bool (pdf_hash_t table, const char *key, const pdf_bool_t elt)
+pdf_hash_add_hash (pdf_hash_t        table,
+                   const pdf_char_t *key,
+                   const pdf_hash_t *elt)
+{
+  return (pdf_hash_add (table, key, elt, hash_dispose_fn));
+}
+
+pdf_status_t
+pdf_hash_get_hash (pdf_hash_t        table,
+                   const pdf_char_t *key,
+                   pdf_hash_t       *elt)
+{
+  return pdf_hash_get (table, key, (const void **) &elt);
+}
+
+
+pdf_status_t
+pdf_hash_add_stm (pdf_hash_t        table,
+                  const pdf_char_t *key,
+                  const pdf_stm_t  *elt)
+{
+  return (pdf_hash_add (table, key, elt, stm_dispose_fn));
+}
+
+pdf_status_t
+pdf_hash_get_stm (pdf_hash_t        table,
+                  const pdf_char_t *key,
+                  pdf_stm_t        *elt)
+{
+  return pdf_hash_get (table, key, (const void **) &elt);
+}
+
+pdf_status_t
+pdf_hash_add_bool (pdf_hash_t        table,
+                   const pdf_char_t *key,
+                   const pdf_bool_t  elt)
 {
   pdf_bool_t *vbool;
 
@@ -114,7 +136,9 @@ pdf_hash_add_bool (pdf_hash_t table, const char *key, const pdf_bool_t elt)
 }
 
 pdf_status_t
-pdf_hash_get_bool (pdf_hash_t table, const char *key, pdf_bool_t *elt)
+pdf_hash_get_bool (pdf_hash_t        table,
+                   const pdf_char_t *key,
+                   pdf_bool_t       *elt)
 {
   pdf_status_t ret;
   pdf_bool_t *vbool;
@@ -129,7 +153,9 @@ pdf_hash_get_bool (pdf_hash_t table, const char *key, pdf_bool_t *elt)
 }
 
 pdf_status_t
-pdf_hash_add_size (pdf_hash_t table, const char *key, const pdf_size_t elt)
+pdf_hash_add_size (pdf_hash_t        table,
+                   const pdf_char_t *key,
+                   const pdf_size_t  elt)
 {
   pdf_size_t *size;
 
@@ -145,7 +171,9 @@ pdf_hash_add_size (pdf_hash_t table, const char *key, const pdf_size_t elt)
 }
 
 pdf_status_t
-pdf_hash_get_size (pdf_hash_t table, const char *key, pdf_size_t *elt)
+pdf_hash_get_size (pdf_hash_t        table,
+                   const pdf_char_t *key,
+                   pdf_size_t       *elt)
 {
   pdf_status_t ret;
   pdf_size_t *size;
@@ -159,7 +187,9 @@ pdf_hash_get_size (pdf_hash_t table, const char *key, pdf_size_t *elt)
 }
 
 pdf_status_t
-pdf_hash_add_string (pdf_hash_t table, const char *key, const pdf_char_t *elt)
+pdf_hash_add_string (pdf_hash_t        table,
+                     const pdf_char_t *key,
+                     const pdf_char_t *elt)
 {
   pdf_char_t *string;
   pdf_size_t string_size;
@@ -177,7 +207,9 @@ pdf_hash_add_string (pdf_hash_t table, const char *key, const pdf_char_t *elt)
 }
 
 pdf_status_t
-pdf_hash_get_string (pdf_hash_t table, const char *key, pdf_char_t **elt)
+pdf_hash_get_string (pdf_hash_t         table,
+                     const pdf_char_t  *key,
+                     pdf_char_t       **elt)
 {
   return pdf_hash_get (table, key, (const void **) elt);
 }
@@ -185,28 +217,28 @@ pdf_hash_get_string (pdf_hash_t table, const char *key, pdf_char_t **elt)
 static void
 text_dispose_fn (const void *elt)
 {
-  pdf_text_t *destroyed = (pdf_text_t*) elt;
-  pdf_text_destroy(*destroyed);
+  pdf_text_t *destroyed = (pdf_text_t *) elt;
+  pdf_text_destroy (*destroyed);
 }
 
 static void
 time_dispose_fn (const void *elt)
 {
-  pdf_time_t * destroyed = (pdf_time_t*) elt;
-  pdf_time_destroy(*destroyed);
+  pdf_time_t * destroyed = (pdf_time_t *) elt;
+  pdf_time_destroy (*destroyed);
 }
 
 static void
 list_dispose_fn (const void *elt)
 {
-  pdf_list_t * destroyed = (pdf_list_t*) elt;
-  pdf_list_destroy(*destroyed);
+  pdf_list_t * destroyed = (pdf_list_t *) elt;
+  pdf_list_destroy (*destroyed);
 }
 
 static void
 hash_dispose_fn (const void *elt)
 {
-  pdf_hash_destroy (*((pdf_hash_t*)elt));
+  pdf_hash_destroy (*((pdf_hash_t *)elt));
 }
 
 static void
@@ -214,10 +246,9 @@ stm_dispose_fn (const void *elt)
 {
   pdf_size_t flushed_bytes;
 
-  pdf_stm_t * stm = (pdf_stm_t*) elt;
+  pdf_stm_t *stm = (pdf_stm_t *) elt;
   pdf_stm_flush (*stm, PDF_TRUE, &flushed_bytes);
   pdf_stm_destroy (*stm);
 }
-
 
 /* End of pdf-hash-helper.c */
