@@ -51,48 +51,16 @@ write_and_check (pdf_token_t token,
 
   /* Create the token writer.  */
   fail_if (pdf_token_writer_new (stm, &writer) != PDF_OK);
-
+  
   /* Write the token.  */
   fail_if (pdf_token_write (writer, flags, token) != PDF_OK);
-
+  
   /* Destroy writer and stream.  */
   fail_if (pdf_token_writer_destroy (writer));
   fail_if (pdf_stm_destroy (stm) != PDF_OK);
 
   /* Compare results.  */
-  /*fail_unless (strncmp (buffer, expected, expected_size) == 0,
-               "strncmp (\"%s\", \"%s\", %ld ) != 0",
-               buffer, expected, (long) expected_size);*/
-
-  /* Compare results.  */
-  {
-    int len = expected_size;
-    char s[2][1000];
-    int be;
-    for (be=0; be<2; be++)
-      {
-        char *src = (be==0) ? buffer : expected;
-        int ind;
-        for (ind=0; ind<=len; ind+=2)
-          {
-            char ch = src[ind];
-            sprintf (s[be]+ind, "%02x", (unsigned int) ch);
-            /*
-            if ( ch > 32 && ch < 127 )
-              {
-                s[be][ind] = ch;
-              }
-            else
-              {
-                s[be][ind] = ' ';
-              }
-            */
-          }
-        s[be][ind] = '\0';
-      }
-    fail ("\"%.*3$s\", \"%.*3$s\", %d",
-        s[0], s[1], len+3);
-  }
+  fail_unless (strncmp (buffer, expected, expected_size) == 0);
 }
 
 /*
@@ -577,7 +545,7 @@ START_TEST(pdf_token_write_string_octal)
   pdf_init ();
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("a\007c", 3, &token)
+  fail_if (pdf_token_string_new ("a\0007c", 3, &token)
            != PDF_OK);
 
   /* Check.  */
@@ -603,39 +571,13 @@ START_TEST(pdf_token_write_string_octal_readable)
   pdf_init ();
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("a\007c", 3, &token)
+  fail_if (pdf_token_string_new ("a\0007c", 3, &token)
            != PDF_OK);
 
   /* Check.  */
   write_and_check (token,
                    PDF_TOKEN_READABLE_STRINGS,  /* Flags.  */
-                   "(a\\7c)", 7, 100);
-}
-END_TEST
-
-/*
- * Test: pdf_token_write_string_octal_readable_digit
- * Description:
- *   Write a string token containing non-printable octal characters
- *   into an in-memory stream using the readable format, and check
- *   whether the resulting textual representation is the expected one.
- * Success condition:
- *   The written representation of the token is correct.
- */
-START_TEST(pdf_token_write_string_octal_readable_digit)
-{
-  pdf_token_t token;
-
-  pdf_init ();
-
-  /* Create the token.  */
-  fail_if (pdf_token_string_new ("a\0073", 3, &token)
-           != PDF_OK);
-
-  /* Check.  */
-  write_and_check (token,
-                   PDF_TOKEN_READABLE_STRINGS,  /* Flags.  */
-                   "(a\\0073)", 9, 100);  /* must be \0073, not \73 */
+                   "(a\\007c)", 9, 100);
 }
 END_TEST
 
@@ -967,7 +909,6 @@ test_pdf_token_write (void)
   tcase_add_test (tc, pdf_token_write_string_rs);
   tcase_add_test (tc, pdf_token_write_string_octal);
   tcase_add_test (tc, pdf_token_write_string_octal_readable);
-  tcase_add_test (tc, pdf_token_write_string_octal_readable_digit);
   tcase_add_test (tc, pdf_token_write_string_null);
   tcase_add_test (tc, pdf_token_write_name_nonempty);
   tcase_add_test (tc, pdf_token_write_name_empty);
