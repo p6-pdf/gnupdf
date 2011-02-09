@@ -51,10 +51,10 @@ write_and_check (pdf_token_t token,
 
   /* Create the token writer.  */
   fail_if (pdf_token_writer_new (stm, &writer) != PDF_OK);
-  
+
   /* Write the token.  */
   fail_if (pdf_token_write (writer, flags, token) != PDF_OK);
-  
+
   /* Destroy writer and stream.  */
   fail_if (pdf_token_writer_destroy (writer));
   fail_if (pdf_stm_destroy (stm) != PDF_OK);
