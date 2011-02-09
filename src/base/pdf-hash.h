@@ -54,8 +54,7 @@ typedef void (*pdf_hash_value_dispose_fn_t) (const void *value);
 
 pdf_hash_t *pdf_hash_new (pdf_error_t **error);
 
-pdf_bool_t pdf_hash_destroy (pdf_hash_t   *table,
-                             pdf_error_t **error);
+void pdf_hash_destroy (pdf_hash_t *table);
 
 
 /* --------------------- Hash Property Management --------------------------- */

@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,45 +36,45 @@
 
 /* BEGIN PUBLIC */
 
-pdf_status_t pdf_hash_add_text (pdf_hash_t        table,
-                                const pdf_char_t *key,
-                                const pdf_text_t *elt);
+/* pdf_status_t pdf_hash_add_text (pdf_hash_t        table, */
+/*                                 const pdf_char_t *key, */
+/*                                 const pdf_text_t *elt); */
 
-pdf_status_t pdf_hash_get_text (pdf_hash_t        table,
-                                const pdf_char_t *key,
-                                pdf_text_t       *elt);
+/* pdf_status_t pdf_hash_get_text (pdf_hash_t        table, */
+/*                                 const pdf_char_t *key, */
+/*                                 pdf_text_t       *elt); */
 
-pdf_status_t pdf_hash_add_time (pdf_hash_t        table,
-                                const pdf_char_t *key,
-                                const pdf_time_t *elt);
+/* pdf_status_t pdf_hash_add_time (pdf_hash_t        table, */
+/*                                 const pdf_char_t *key, */
+/*                                 const pdf_time_t *elt); */
 
-pdf_status_t pdf_hash_get_time (pdf_hash_t        table,
-                                const pdf_char_t *key,
-                                pdf_time_t       *elt);
+/* pdf_status_t pdf_hash_get_time (pdf_hash_t        table, */
+/*                                 const pdf_char_t *key, */
+/*                                 pdf_time_t       *elt); */
 
 pdf_status_t pdf_hash_add_list (pdf_hash_t        table,
                                 const pdf_char_t *key,
-                                const pdf_list_t *elt);
+                                const pdf_list_t *value);
 
-pdf_status_t pdf_hash_get_list (pdf_hash_t        table,
-                                const pdf_char_t *key,
-                                pdf_list_t       *elt);
+pdf_status_t pdf_hash_get_list (pdf_hash_t         table,
+                                const pdf_char_t  *key,
+                                pdf_list_t       **value);
 
 pdf_status_t pdf_hash_add_hash (pdf_hash_t        table,
                                 const pdf_char_t *key,
-                                const pdf_hash_t *elt);
+                                const pdf_hash_t *value);
 
-pdf_status_t pdf_hash_get_hash (pdf_hash_t        table,
-                                const pdf_char_t *key,
-                                pdf_hash_t       *elt);
+pdf_status_t pdf_hash_get_hash (pdf_hash_t         table,
+                                const pdf_char_t  *key,
+                                pdf_hash_t       **value);
 
-pdf_status_t pdf_hash_add_stm (pdf_hash_t        table,
-                               const pdf_char_t *key,
-                               const pdf_stm_t  *elt);
+/* pdf_status_t pdf_hash_add_stm (pdf_hash_t        table, */
+/*                                const pdf_char_t *key, */
+/*                                const pdf_stm_t  *elt); */
 
-pdf_status_t pdf_hash_get_stm (pdf_hash_t        table,
-                               const pdf_char_t *key,
-                               pdf_stm_t        *elt);
+/* pdf_status_t pdf_hash_get_stm (pdf_hash_t        table, */
+/*                                const pdf_char_t *key, */
+/*                                pdf_stm_t        *elt); */
 
 pdf_status_t pdf_hash_add_size (pdf_hash_t        table,
                                 const pdf_char_t *key,
@@ -98,7 +98,7 @@ pdf_status_t pdf_hash_add_string (pdf_hash_t        table,
 
 pdf_status_t pdf_hash_get_string (pdf_hash_t         table,
                                   const pdf_char_t  *key,
-                                  pdf_char_t       **elt);
+                                  const pdf_char_t **elt);
 
 
 /* END PUBLIC */
