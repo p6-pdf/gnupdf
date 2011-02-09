@@ -34,7 +34,21 @@
 
 
 /* BEGIN PUBLIC */
+
+#define PDF_HASH_ITERATOR_SIZE 12
+
 typedef void (*pdf_hash_element_dispose_fn_t) (const void *elt);
+typedef void (*pdf_hash_key_dispose_fn_t) (const void *key);
+
+struct pdf_hash_iterator_s
+{
+  void *gl_itr[PDF_HASH_ITERATOR_SIZE];
+};
+
+typedef struct pdf_hash_s pdf_hash_t;
+typedef struct pdf_hash_element_s pdf_hash_element_t;
+typedef struct pdf_hash_iterator_s pdf_hash_iterator_t;
+
 /* END PUBLIC */
 
 struct pdf_hash_element_s
@@ -44,87 +58,79 @@ struct pdf_hash_element_s
   pdf_hash_element_dispose_fn_t disp_fn;
 };
 
-typedef struct pdf_hash_element_s pdf_hash_element_t;
-
-/* BEGIN PUBLIC */
-
-#define PDF_HASH_ITERATOR_SIZE 12
-
-typedef void (*pdf_hash_key_dispose_fn_t) (const void *key);
-
 struct pdf_hash_s
 {
-  /* Both are gl_lists */
-  void *elements, *keys;
+  /* Both are pdf_list_t */
+  pdf_list_t *keys;
+  pdf_list_t *elements;
 };
 
-struct pdf_hash_iterator_s
-{
-  void *gl_itr[PDF_HASH_ITERATOR_SIZE];
-};
 
-typedef struct pdf_hash_s pdf_hash_t;
-typedef struct pdf_hash_iterator_s pdf_hash_iterator_t;
 
 
 /* Creating and Destroying Hash Tables */
 
-pdf_status_t
-pdf_hash_new (pdf_hash_key_dispose_fn_t dispose_key_fn, pdf_hash_t *table);
+pdf_hash_t *pdf_hash_new (pdf_hash_key_dispose_fn_t   dispose_key_fn,
+                          pdf_error_t               **error);
 
-pdf_status_t
-pdf_hash_destroy (pdf_hash_t table);
+pdf_bool_t pdf_hash_destroy (pdf_hash_t   *table,
+                             pdf_error_t **error);
 
 
 /* Hash Table properties */
 
-pdf_size_t
-pdf_hash_size (const pdf_hash_t table);
+pdf_size_t pdf_hash_size (const pdf_hash_t *table);
 
 
 /* Working with keys */
 
-pdf_bool_t
-pdf_hash_key_p (const pdf_hash_t table, const char *key);
+pdf_bool_t pdf_hash_key_p (const pdf_hash_t  *table,
+                           const pdf_char_t  *key,
+                           pdf_error_t      **error);
 
-pdf_status_t
-pdf_hash_rename (pdf_hash_t table, const char *key, const char *new_key);
+pdf_bool_t pdf_hash_rename_key (pdf_hash_t        *table,
+                                const pdf_char_t  *key,
+                                const pdf_char_t  *new_key,
+                                pdf_error_t      **error);
 
 
  /* Adding and removing elements */
 
-pdf_status_t
-pdf_hash_add (pdf_hash_t table, const char *key, const void *element,
-              pdf_hash_element_dispose_fn_t disp_fn);
+pdf_bool_t pdf_hash_add (pdf_hash_t                     *table,
+                         const pdf_char_t               *key,
+                         const void                     *element,
+                         pdf_hash_element_dispose_fn_t   disp_fn,
+                         pdf_error_t                   **error);
 
-pdf_status_t
-pdf_hash_remove (pdf_hash_t table, const char *key);
+pdf_bool_t pdf_hash_remove (pdf_hash_t        *table,
+                            const pdf_char_t  *key,
+                            pdf_error_t      **error);
 
 
 /* Searching elements */
 
-pdf_status_t
-pdf_hash_get (const pdf_hash_t table, const char *key, const void **elem_pointer);
+const void *pdf_hash_get (const pdf_hash_t  *table,
+                          const pdf_char_t  *key,
+                          pdf_error_t      **error);
 
 
 /* Working with iterators  */
 
-pdf_status_t
-pdf_hash_iterator_new (const pdf_hash_t table, pdf_hash_iterator_t *iterator);
+pdf_bool_t pdf_hash_iterator_init (pdf_hash_iterator_t  *itr,
+                                   const pdf_hash_t     *table,
+                                   pdf_error_t         **error);
 
-pdf_status_t
-pdf_hash_iterator_next (pdf_hash_iterator_t iterator, const char **key);
+pdf_bool_t pdf_hash_iterator_next (pdf_hash_iterator_t  *itr,
+                                   const pdf_char_t    **key,
+                                   pdf_error_t         **error);
 
-pdf_status_t
-pdf_hash_iterator_destroy (pdf_hash_iterator_t iterator);
+void pdf_hash_iterator_deinit (pdf_hash_iterator_t *itr);
 
 /* Basic dispose functions */
 
-void
-pdf_hash_element_dealloc_fn (const void * elt);
+void pdf_hash_element_dealloc_fn (const void * elt);
 
-void
-pdf_hash_key_dealloc_fn (const void * elt);
+void pdf_hash_key_dealloc_fn (const void * elt);
 
 
 
