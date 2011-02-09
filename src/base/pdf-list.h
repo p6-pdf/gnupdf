@@ -203,11 +203,11 @@ pdf_bool_t pdf_list_iterator_init (pdf_list_iterator_t  *itr,
                                    const pdf_list_t     *list,
                                    pdf_error_t         **error);
 
-pdf_status_t pdf_list_iterator_init_from_to (pdf_list_iterator_t  *itr,
-                                             const pdf_list_t     *list,
-                                             const pdf_size_t      start_index,
-                                             const pdf_size_t      end_index,
-                                             pdf_error_t         **error);
+pdf_bool_t pdf_list_iterator_init_from_to (pdf_list_iterator_t  *itr,
+                                           const pdf_list_t     *list,
+                                           const pdf_size_t      start_index,
+                                           const pdf_size_t      end_index,
+                                           pdf_error_t         **error);
 
 pdf_bool_t pdf_list_iterator_next (pdf_list_iterator_t  *itr,
                                    const void          **element_pointer,
@@ -856,7 +856,7 @@ pdf_list_iterator_init (pdf_list_iterator_t  *itr,
   return PDF_TRUE;
 }
 
-STATIC_INLINE pdf_status_t
+STATIC_INLINE pdf_bool_t
 pdf_list_iterator_init_from_to (pdf_list_iterator_t  *itr,
                                 const pdf_list_t     *list,
                                 const pdf_size_t      start_index,
