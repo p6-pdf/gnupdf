@@ -52,7 +52,7 @@
 char *program_name;  /* Initialized in main() */
 
 /*
- * Command line options management 
+ * Command line options management
  */
 
 enum
@@ -209,21 +209,28 @@ Filter properties\n"
 \n"
   PDF_UTILS_HELP_FOOTER_DOC ("pdf-filter");
 
-static pdf_stm_t
-create_stream (int argc, char* argv[], pdf_bool_t* mode, int* last_ci,
-               pdf_bool_t * read_pdf_fsys, pdf_bool_t * write_pdf_fsys,
-               pdf_stm_t * fsys_stm);
+static pdf_stm_t create_stream (int         argc,
+                                char       *argv[],
+                                pdf_bool_t *mode,
+                                int        *last_ci,
+                                pdf_bool_t *read_pdf_fsys,
+                                pdf_bool_t *write_pdf_fsys,
+                                pdf_stm_t  *fsys_stm);
 
-static void
-install_filters (int argc, char* argv[], pdf_stm_t stm, int ci);
+static void install_filters (int        argc,
+                             char      *argv[],
+                             pdf_stm_t  stm,
+                             int        ci);
 
-static void
-process_stream (pdf_stm_t, pdf_bool_t mode, pdf_bool_t read_pdf_fsys,
-                pdf_bool_t write_pdf_fsys, pdf_stm_t fsys_stm);
+static void process_stream (pdf_stm_t  stm,
+                            pdf_bool_t read_mode,
+                            pdf_bool_t read_pdf_fsys,
+                            pdf_bool_t write_pdf_fsys,
+                            pdf_stm_t  fsys_stm);
 
-static
-open_file (pdf_char_t * name, pdf_fsys_file_t * file,
-           enum pdf_fsys_file_mode_e mode);
+static void open_file (pdf_char_t                *name,
+                       pdf_fsys_file_t           *file,
+                       enum pdf_fsys_file_mode_e  mode);
 
 int
 main (int argc, char *argv[])
@@ -257,21 +264,23 @@ main (int argc, char *argv[])
           exit (EXIT_FAILURE);
         }
     }
- 
+
   return 0;
 }
 
-static void
-process_stream (pdf_stm_t stm, pdf_bool_t read_mode, pdf_bool_t read_pdf_fsys,
-                pdf_bool_t write_pdf_fsys, pdf_stm_t fsys_stm)
+static void process_stream (pdf_stm_t  stm,
+                            pdf_bool_t read_mode,
+                            pdf_bool_t read_pdf_fsys,
+                            pdf_bool_t write_pdf_fsys,
+                            pdf_stm_t  fsys_stm)
 {
 #define BUF_SIZE 256
-  
+
   pdf_status_t ret;
   pdf_size_t read_bytes;
   pdf_size_t written_bytes;
   pdf_char_t buf [BUF_SIZE];
-  
+
   if (read_mode)
     {
       /* Read from the buffer which will process anything on stdin
@@ -283,7 +292,7 @@ process_stream (pdf_stm_t stm, pdf_bool_t read_mode, pdf_bool_t read_pdf_fsys,
             {
               pdf_error (ret, stderr, "reading from stream");
               exit (EXIT_FAILURE);
-            }            
+            }
 
           if (write_pdf_fsys)
             {
@@ -317,7 +326,7 @@ process_stream (pdf_stm_t stm, pdf_bool_t read_mode, pdf_bool_t read_pdf_fsys,
                 {
                   pdf_error (ret, stderr, "reading from stream");
                   exit (EXIT_FAILURE);
-                }            
+                }
 
             }
           else
@@ -329,7 +338,7 @@ process_stream (pdf_stm_t stm, pdf_bool_t read_mode, pdf_bool_t read_pdf_fsys,
             {
               pdf_error (ret, stderr, "writing to stream");
               exit (EXIT_FAILURE);
-            }            
+            }
 
         }
       while (read_bytes == BUF_SIZE);
@@ -339,9 +348,13 @@ process_stream (pdf_stm_t stm, pdf_bool_t read_mode, pdf_bool_t read_pdf_fsys,
 }
 
 static pdf_stm_t
-create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
-	       int* last_ci, pdf_bool_t * read_pdf_fsys,
-               pdf_bool_t * write_pdf_fsys, pdf_stm_t * fsys_stm)
+create_stream (int         argc,
+               char       *argv[],
+               pdf_bool_t *read_mode,
+               int        *last_ci,
+               pdf_bool_t *read_pdf_fsys,
+               pdf_bool_t *write_pdf_fsys,
+               pdf_stm_t  *fsys_stm)
 {
   int ci;
   char c;
@@ -355,13 +368,13 @@ create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
 
   finish = PDF_FALSE;
   cache_size = 0;
-  *read_mode = PDF_FALSE; 
-    
+  *read_mode = PDF_FALSE;
+
   while (!finish &&
 	 (ci = getopt_long (argc,
 			     argv,
 			     "i:o:",
-			     GNU_longOptions, 
+			     GNU_longOptions,
 			     NULL)) != -1)
     {
       c = ci;
@@ -388,7 +401,7 @@ create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
 	case CACHE_ARG:
 	  {
 	    cache_size = strtol (optarg, (char **) &endptr, 10);
-            
+
             if ((endptr != NULL) && (*endptr != '\0'))
               {
                 /* Error parsing the number */
@@ -440,7 +453,7 @@ create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
     {
       ret = pdf_stm_cfile_new (*read_mode ? stdin : stdout,
 			       0,
-			       cache_size, 
+			       cache_size,
 			       *read_mode ? PDF_STM_READ : PDF_STM_WRITE,
 			       &stm);
       if (ret != PDF_OK)
@@ -503,17 +516,21 @@ create_stream (int argc, char* argv[], pdf_bool_t* read_mode,
 }
 
 static void
-install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
+install_filters (int        argc,
+                 char      *argv[],
+                 pdf_stm_t  stm,
+                 int        ci)
 {
   char c;
   pdf_status_t ret;
-  pdf_hash_t filter_params;
+  pdf_hash_t *filter_params;
   FILE *file;
   char *jbig2dec_global_segments = NULL;
   char *key = NULL;
   pdf_size_t jbig2dec_global_segments_size = 0;
   pdf_status_t status;
   pdf_bool_t lzw_earlychange = PDF_FALSE;
+  pdf_error_t *error = NULL;
 
   /* Initialize the crypt module */
   if (pdf_crypt_init () != PDF_OK)
@@ -527,14 +544,17 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
     {
       c = ci;
       switch (c)
-	{
-	  /* FILTER INSTALLERS */
+        {
+          /* FILTER INSTALLERS */
         case NULL_FILTER_ARG:
           {
-            ret = pdf_hash_new (NULL, &filter_params);
-            if (ret != PDF_OK)
+            filter_params = pdf_hash_new (&error);
+            if (filter_params == NULL)
               {
-                pdf_error (ret, stderr, "while creating the null filter parameters hash table");
+                pdf_error (pdf_error_get_status (error),
+                           stderr,
+                           "Couldn't create hash table: '%s'",
+                           pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
 
@@ -551,10 +571,13 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
           }
         case ASCIIHEXDEC_FILTER_ARG:
           {
-            ret = pdf_hash_new (NULL, &filter_params);
-            if (ret != PDF_OK)
+            filter_params = pdf_hash_new (&error);
+            if (filter_params == NULL)
               {
-                pdf_error (ret, stderr, "while creating the ahexdec filter parameters hash table");
+                pdf_error (pdf_error_get_status (error),
+                           stderr,
+                           "Couldn't create hash table: '%s'",
+                           pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
 
@@ -571,10 +594,13 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
           }
         case ASCIIHEXENC_FILTER_ARG:
           {
-            ret = pdf_hash_new (NULL, &filter_params);
-            if (ret != PDF_OK)
+            filter_params = pdf_hash_new (&error);
+            if (filter_params == NULL)
               {
-                pdf_error (ret, stderr, "while creating the ahexenc filter parameters hash table");
+                pdf_error (pdf_error_get_status (error),
+                           stderr,
+                           "Couldn't create hash table: '%s'",
+                           pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
 
@@ -592,16 +618,20 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
 #ifdef PDF_HAVE_LIBJPEG
         case DCTDEC_FILTER_ARG:
           {
-            ret = pdf_hash_new (NULL, &filter_params);
-            if (ret != PDF_OK)
+            filter_params = pdf_hash_new (&error);
+            if (filter_params == NULL)
               {
-                pdf_error (ret, stderr, "while creating the dctdec filter parameters hash table");
+                pdf_error (pdf_error_get_status (error),
+                           stderr,
+                           "Couldn't create hash table: '%s'",
+                           pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
+
             pdf_stm_install_filter (stm,
                                     PDF_STM_FILTER_DCT_DEC,
                                     filter_params);
-            
+
             /* Note that a reference to this memory remains into the
              *  stream */
             jbig2dec_global_segments = NULL;
@@ -613,10 +643,13 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
 
         case ASCII85DEC_FILTER_ARG:
           {
-            ret = pdf_hash_new (NULL, &filter_params);
-            if (ret != PDF_OK)
+            filter_params = pdf_hash_new (&error);
+            if (filter_params == NULL)
               {
-                pdf_error (ret, stderr, "while creating the a85dec filter parameters hash table");
+                pdf_error (pdf_error_get_status (error),
+                           stderr,
+                           "Couldn't create hash table: '%s'",
+                           pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
 
@@ -633,10 +666,13 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
           }
         case ASCII85ENC_FILTER_ARG:
           {
-            ret = pdf_hash_new (NULL, &filter_params);
-            if (ret != PDF_OK)
+            filter_params = pdf_hash_new (&error);
+            if (filter_params == NULL)
               {
-                pdf_error (ret, stderr, "while creating the a85enc filter parameters hash table");
+                pdf_error (pdf_error_get_status (error),
+                           stderr,
+                           "Couldn't create hash table: '%s'",
+                           pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
 
@@ -686,16 +722,26 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
             lzw_earlychange = PDF_TRUE;
             break;
           }
-	case LZWENC_FILTER_ARG:
+        case LZWENC_FILTER_ARG:
           {
-            ret = pdf_hash_new (NULL, &filter_params);
-            if (ret != PDF_OK)
+            filter_params = pdf_hash_new (&error);
+            if (filter_params == NULL)
               {
-                pdf_error (ret, stderr, "while creating the lzwenc filter parameters hash table");
+                pdf_error (pdf_error_get_status (error),
+                           stderr,
+                           "Couldn't create hash table: '%s'",
+                           pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
 
-            pdf_hash_add_bool (filter_params, "EarlyChange", lzw_earlychange);
+            if (!pdf_hash_add_bool (filter_params, "EarlyChange", lzw_earlychange, &error))
+              {
+                pdf_error (pdf_error_get_status (error),
+                           stderr,
+                           "while creating the LZW encoder filter: '%s'",
+                           pdf_error_get_message (error));
+                exit (EXIT_FAILURE);
+              }
 
             status = pdf_stm_install_filter (stm,
                                              PDF_STM_FILTER_LZW_ENC,
@@ -711,14 +757,24 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
           }
         case LZWDEC_FILTER_ARG:
           {
-            ret = pdf_hash_new (NULL, &filter_params);
-            if (ret != PDF_OK)
+            filter_params = pdf_hash_new (&error);
+            if (filter_params == NULL)
               {
-                pdf_error (ret, stderr, "while creating the lzwdec filter parameters hash table");
+                pdf_error (pdf_error_get_status (error),
+                           stderr,
+                           "Couldn't create hash table: '%s'",
+                           pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
 
-            pdf_hash_add_bool (filter_params, "EarlyChange", lzw_earlychange);
+            if (!pdf_hash_add_bool (filter_params, "EarlyChange", lzw_earlychange, &error))
+              {
+                pdf_error (pdf_error_get_status (error),
+                           stderr,
+                           "while creating the LZW decoder filter: '%s'",
+                           pdf_error_get_message (error));
+                exit (EXIT_FAILURE);
+              }
 
             status = pdf_stm_install_filter (stm,
                                              PDF_STM_FILTER_LZW_DEC,
@@ -735,10 +791,13 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
 #ifdef PDF_HAVE_LIBZ
         case FLATEDEC_FILTER_ARG:
           {
-            ret = pdf_hash_new (NULL, &filter_params);
-            if (ret != PDF_OK)
+            filter_params = pdf_hash_new (&error);
+            if (filter_params == NULL)
               {
-                pdf_error (ret, stderr, "while creating the flatedec filter parameters hash table");
+                pdf_error (pdf_error_get_status (error),
+                           stderr,
+                           "Couldn't create hash table: '%s'",
+                           pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
 
@@ -755,10 +814,13 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
           }
         case FLATEENC_FILTER_ARG:
           {
-            ret = pdf_hash_new (NULL, &filter_params);
-            if (ret != PDF_OK)
+            filter_params = pdf_hash_new (&error);
+            if (filter_params == NULL)
               {
-                pdf_error (ret, stderr, "while creating the flateenc filter parameters hash table");
+                pdf_error (pdf_error_get_status (error),
+                           stderr,
+                           "Couldn't create hash table: '%s'",
+                           pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
 
@@ -776,10 +838,13 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
 #endif /* PDF_HAVE_LIBZ */
         case RUNLENGTHDEC_FILTER_ARG:
           {
-            ret = pdf_hash_new (NULL, &filter_params);
-            if (ret != PDF_OK)
+            filter_params = pdf_hash_new (&error);
+            if (filter_params == NULL)
               {
-                pdf_error (ret, stderr, "while creating the rldec filter parameters hash table");
+                pdf_error (pdf_error_get_status (error),
+                           stderr,
+                           "Couldn't create hash table: '%s'",
+                           pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
 
@@ -797,10 +862,13 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
           }
         case RUNLENGTHENC_FILTER_ARG:
           {
-            ret = pdf_hash_new (NULL, &filter_params);
-            if (ret != PDF_OK)
+            filter_params = pdf_hash_new (&error);
+            if (filter_params == NULL)
               {
-                pdf_error (ret, stderr, "while creating the rlenc filter parameters hash table");
+                pdf_error (pdf_error_get_status (error),
+                           stderr,
+                           "Couldn't create hash table: '%s'",
+                           pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
 
@@ -820,7 +888,6 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
         case JBIG2DEC_GLOBAL_SEGMENTS_ARG:
           {
             struct stat fstats;
-
 
             stat (optarg, &fstats);
 
@@ -846,19 +913,35 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
           }
         case JBIG2DEC_FILTER_ARG:
           {
-            ret = pdf_hash_new (NULL, &filter_params);
-            if (ret != PDF_OK)
+            filter_params = pdf_hash_new (&error);
+            if (filter_params == NULL)
               {
-                pdf_error (ret, stderr, "while creating the jbig2dec filter parameters hash table");
+                pdf_error (pdf_error_get_status (error),
+                           stderr,
+                           "Couldn't create hash table: '%s'",
+                           pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
 
             if (jbig2dec_global_segments != NULL)
               {
-                pdf_hash_add_string (filter_params, "GlobalStreamsBuffer", jbig2dec_global_segments);
-                pdf_hash_add_size (filter_params, "GlobalStreamsSize", strlen (jbig2dec_global_segments) + 1);
+                if (!pdf_hash_add_string (filter_params, "GlobalStreamsBuffer", jbig2dec_global_segments, &error))
+                  {
+                    pdf_error (pdf_error_get_status (error),
+                               stderr,
+                               "Couldn't add new GlobalStreamsBuffer hash: '%s'",
+                               pdf_error_get_message (error));
+                    exit (EXIT_FAILURE);
+                  }
+                if (!pdf_hash_add_size (filter_params, "GlobalStreamsSize", strlen (jbig2dec_global_segments) + 1, &error))
+                  {
+                    pdf_error (pdf_error_get_status (error),
+                               stderr,
+                               "Couldn't add new GlobalStreamsSize hash: '%s'",
+                               pdf_error_get_message (error));
+                    exit (EXIT_FAILURE);
+                  }
               }
-
 
             status = pdf_stm_install_filter (stm,
                                              PDF_STM_FILTER_JBIG2_DEC,
@@ -880,10 +963,13 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
 #endif /* PDF_HAVE_LIBJBIG2DEC */
         case MD5ENC_FILTER_ARG:
           {
-            ret = pdf_hash_new (NULL, &filter_params);
-            if (ret != PDF_OK)
+            filter_params = pdf_hash_new (&error);
+            if (filter_params == NULL)
               {
-                pdf_error (ret, stderr, "while creating the md5enc filter parameters hash table");
+                pdf_error (pdf_error_get_status (error),
+                           stderr,
+                           "Couldn't create hash table: '%s'",
+                           pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
 
@@ -912,17 +998,34 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
           }
         case AESENC_FILTER_ARG:
           {
-            ret = pdf_hash_new (NULL, &filter_params);
-            if (ret != PDF_OK)
+            filter_params = pdf_hash_new (&error);
+            if (filter_params == NULL)
               {
-                pdf_error (ret, stderr, "while creating the aesenc filter parameters hash table");
+                pdf_error (pdf_error_get_status (error),
+                           stderr,
+                           "Couldn't create hash table: '%s'",
+                           pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
 
             if (key != NULL)
               {
-                pdf_hash_add_string (filter_params, "Key", key);
-                pdf_hash_add_size (filter_params, "KeySize", strlen (key));
+                if (!pdf_hash_add_string (filter_params, "Key", key, &error))
+                  {
+                    pdf_error (pdf_error_get_status (error),
+                               stderr,
+                               "Couldn't add new Key hash: '%s'",
+                               pdf_error_get_message (error));
+                    exit (EXIT_FAILURE);
+                  }
+                if (!pdf_hash_add_size (filter_params, "KeySize", strlen (key), &error))
+                  {
+                    pdf_error (pdf_error_get_status (error),
+                               stderr,
+                               "Couldn't add new KeySize hash: '%s'",
+                               pdf_error_get_message (error));
+                    exit (EXIT_FAILURE);
+                  }
               }
             else
               {
@@ -930,7 +1033,7 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
                 exit (EXIT_FAILURE);
               }
 
-            
+
             status = pdf_stm_install_filter (stm,
                                              PDF_STM_FILTER_AESV2_ENC,
                                              filter_params);
@@ -945,17 +1048,34 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
           }
         case AESDEC_FILTER_ARG:
           {
-            ret = pdf_hash_new (NULL, &filter_params);
-            if (ret != PDF_OK)
+            filter_params = pdf_hash_new (&error);
+            if (filter_params == NULL)
               {
-                pdf_error (ret, stderr, "while creating the aesdec filter parameters hash table");
+                pdf_error (pdf_error_get_status (error),
+                           stderr,
+                           "Couldn't create hash table: '%s'",
+                           pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
 
             if (key != NULL)
               {
-                pdf_hash_add_string (filter_params, "Key", key);
-                pdf_hash_add_size (filter_params, "KeySize", strlen (key));
+                if (!pdf_hash_add_string (filter_params, "Key", key, &error))
+                  {
+                    pdf_error (pdf_error_get_status (error),
+                               stderr,
+                               "Couldn't add new Key hash: '%s'",
+                               pdf_error_get_message (error));
+                    exit (EXIT_FAILURE);
+                  }
+                if (!pdf_hash_add_size (filter_params, "KeySize", strlen (key), &error))
+                  {
+                    pdf_error (pdf_error_get_status (error),
+                               stderr,
+                               "Couldn't add new KeySize hash: '%s'",
+                               pdf_error_get_message (error));
+                    exit (EXIT_FAILURE);
+                  }
               }
             else
               {
@@ -963,7 +1083,6 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
                 exit (EXIT_FAILURE);
               }
 
-            
             status = pdf_stm_install_filter (stm,
                                              PDF_STM_FILTER_AESV2_DEC,
                                              filter_params);
@@ -978,17 +1097,34 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
           }
         case V2ENC_FILTER_ARG:
           {
-            ret = pdf_hash_new (NULL, &filter_params);
-            if (ret != PDF_OK)
+            filter_params = pdf_hash_new (&error);
+            if (filter_params == NULL)
               {
-                pdf_error (ret, stderr, "while creating the v2enc filter parameters hash table");
+                pdf_error (pdf_error_get_status (error),
+                           stderr,
+                           "Couldn't create hash table: '%s'",
+                           pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
 
             if (key != NULL)
               {
-                pdf_hash_add_string (filter_params, "Key", key);
-                pdf_hash_add_size (filter_params, "KeySize", strlen (key));
+                if (!pdf_hash_add_string (filter_params, "Key", key, &error))
+                  {
+                    pdf_error (pdf_error_get_status (error),
+                               stderr,
+                               "Couldn't add new Key hash: '%s'",
+                               pdf_error_get_message (error));
+                    exit (EXIT_FAILURE);
+                  }
+                if (!pdf_hash_add_size (filter_params, "KeySize", strlen (key), &error))
+                  {
+                    pdf_error (pdf_error_get_status (error),
+                               stderr,
+                               "Couldn't add new KeySize hash: '%s'",
+                               pdf_error_get_message (error));
+                    exit (EXIT_FAILURE);
+                  }
               }
             else
               {
@@ -996,10 +1132,9 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
                 exit (EXIT_FAILURE);
               }
 
-            
             status = pdf_stm_install_filter (stm,
                                              PDF_STM_FILTER_V2_ENC,
-                                             filter_params); 
+                                             filter_params);
 
             if (status != PDF_OK)
               {
@@ -1011,17 +1146,34 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
           }
         case V2DEC_FILTER_ARG:
           {
-            ret = pdf_hash_new (NULL, &filter_params);
-            if (ret != PDF_OK)
+            filter_params = pdf_hash_new (&error);
+            if (filter_params == NULL)
               {
-                pdf_error (ret, stderr, "while creating the v2dec filter parameters hash table");
+                pdf_error (pdf_error_get_status (error),
+                           stderr,
+                           "Couldn't create hash table: '%s'",
+                           pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
 
             if (key != NULL)
               {
-                pdf_hash_add_string (filter_params, "Key", key);
-                pdf_hash_add_size (filter_params, "KeySize", strlen (key));
+                if (!pdf_hash_add_string (filter_params, "Key", key, &error))
+                  {
+                    pdf_error (pdf_error_get_status (error),
+                               stderr,
+                               "Couldn't add new Key hash: '%s'",
+                               pdf_error_get_message (error));
+                    exit (EXIT_FAILURE);
+                  }
+                if (!pdf_hash_add_size (filter_params, "KeySize", strlen (key), &error))
+                  {
+                    pdf_error (pdf_error_get_status (error),
+                               stderr,
+                               "Couldn't add new KeySize hash: '%s'",
+                               pdf_error_get_message (error));
+                    exit (EXIT_FAILURE);
+                  }
               }
             else
               {
@@ -1029,10 +1181,9 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
                 exit (EXIT_FAILURE);
               }
 
-            
             status = pdf_stm_install_filter (stm,
                                              PDF_STM_FILTER_V2_DEC,
-                                             filter_params); 
+                                             filter_params);
 
             if (status != PDF_OK)
               {
@@ -1057,21 +1208,26 @@ install_filters (int argc, char* argv[], pdf_stm_t stm, int ci)
   while ((ci = getopt_long (argc,
                             argv,
                             "",
-                            GNU_longOptions, 
+                            GNU_longOptions,
                             NULL)) != -1);
 
 }
 
-static
-open_file (pdf_char_t * name, pdf_fsys_file_t * file,
-           enum pdf_fsys_file_mode_e mode)
+static void
+open_file (pdf_char_t                *name,
+           pdf_fsys_file_t           *file,
+           enum pdf_fsys_file_mode_e  mode)
 {
   pdf_status_t ret;
   pdf_text_t path;
   pdf_char_t * rem;
   pdf_size_t rem_len;
 
-  ret = pdf_text_new_from_pdf_string(name, strlen(name), &rem, &rem_len, &path);
+  ret = pdf_text_new_from_pdf_string (name,
+                                      strlen(name),
+                                      &rem,
+                                      &rem_len,
+                                      &path);
   if (ret != PDF_OK)
     {
       pdf_error (ret, stderr, "while creating pdf text path");
@@ -1083,7 +1239,7 @@ open_file (pdf_char_t * name, pdf_fsys_file_t * file,
     {
       pdf_error (ret, stderr, "while opening file '%s'", name);
       exit (EXIT_FAILURE);
-    } 
+    }
 }
 
 /* End of pdf_filter.c */
