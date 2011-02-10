@@ -139,9 +139,9 @@ pdf_stm_f_dctdec_init (pdf_hash_t  *params,
       jpeg_create_decompress(dctdec_state->cinfo);
 
       dctdec_state->param_color_transform = NULL;
-      if( pdf_hash_key_p (params, DCTDecode_param_name, NULL))
+      if (pdf_hash_key_p (params, DCTDecode_param_name, NULL))
         {
-          pdf_hash_get(params, DCTDecode_param_name, (const void**)&dctdec_state->param_color_transform);
+          dctdec_state->param_color_transform = pdf_hash_get_value (params, DCTDecode_param_name, NULL);
         }
 
       dctdec_state->state = DCTDEC_STATE_INIT;
