@@ -51,13 +51,13 @@ typedef struct pdf_stm_f_jbig2dec_s *pdf_stm_f_jbig2dec_t;
 
 /* Filters implementation API */
 
-pdf_status_t pdf_stm_f_jbig2dec_init (pdf_hash_t params,
-                                      void **state);
-pdf_status_t pdf_stm_f_jbig2dec_apply (pdf_hash_t params,
-                                       void *state,
-                                       pdf_buffer_t in,
-                                       pdf_buffer_t out,
-                                       pdf_bool_t finish_p);
+pdf_status_t pdf_stm_f_jbig2dec_init (pdf_hash_t  *params,
+                                      void       **state);
+pdf_status_t pdf_stm_f_jbig2dec_apply (pdf_hash_t   *params,
+                                       void         *state,
+                                       pdf_buffer_t  in,
+                                       pdf_buffer_t  out,
+                                       pdf_bool_t    finish_p);
 pdf_status_t pdf_stm_f_jbig2dec_dealloc_state (void *state);
 
 #endif /* pdf-stm-f-jbig2.h */

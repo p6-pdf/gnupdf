@@ -77,28 +77,28 @@ typedef struct pdf_stm_f_dctdec_s *pdf_stm_f_dctdec_t;
 
 #define PPM_MAXVAL 255
 
-static void         pdf_stm_f_dctdec_jpeg_cache_src (j_decompress_ptr cinfo, 
+static void         pdf_stm_f_dctdec_jpeg_cache_src (j_decompress_ptr cinfo,
                                                      pdf_buffer_t cache);
-static pdf_status_t pdf_stm_f_dctdec_src_fill(j_decompress_ptr cinfo, 
+static pdf_status_t pdf_stm_f_dctdec_src_fill(j_decompress_ptr cinfo,
                                               pdf_buffer_t in);
-static pdf_status_t pdf_stm_f_dctdec_write_ppm_header(j_decompress_ptr cinfo, 
+static pdf_status_t pdf_stm_f_dctdec_write_ppm_header(j_decompress_ptr cinfo,
                                                       pdf_buffer_t out);
-static void         pdf_stm_f_dctdec_set_djpeg_param(j_decompress_ptr cinfo, 
+static void         pdf_stm_f_dctdec_set_djpeg_param(j_decompress_ptr cinfo,
                                                      pdf_stm_f_dctdec_t filter_state);
 
 pdf_status_t
-pdf_stm_f_dctenc_init (pdf_hash_t params,
-                       void **state)
+pdf_stm_f_dctenc_init (pdf_hash_t  *params,
+                       void       **state)
 {
   return PDF_OK;
 }
 
 pdf_status_t
-pdf_stm_f_dctenc_apply (pdf_hash_t params,
-                        void *state,
-                        pdf_buffer_t in,
-                        pdf_buffer_t out,
-                        pdf_bool_t finish_p)
+pdf_stm_f_dctenc_apply (pdf_hash_t   *params,
+                        void         *state,
+                        pdf_buffer_t  in,
+                        pdf_buffer_t  out,
+                        pdf_bool_t    finish_p)
 {
   pdf_status_t ret = PDF_OK;
   return ret;
@@ -113,8 +113,8 @@ pdf_stm_f_dctenc_dealloc_state (void *state)
 static const char *DCTDecode_param_name = "ColorTransform";
 
 pdf_status_t
-pdf_stm_f_dctdec_init (pdf_hash_t params,
-                       void **state)
+pdf_stm_f_dctdec_init (pdf_hash_t  *params,
+                       void       **state)
 {
   pdf_stm_f_dctdec_t dctdec_state;
   pdf_status_t ret;
@@ -139,7 +139,7 @@ pdf_stm_f_dctdec_init (pdf_hash_t params,
       jpeg_create_decompress(dctdec_state->cinfo);
 
       dctdec_state->param_color_transform = NULL;
-      if( pdf_hash_key_p(params, DCTDecode_param_name))
+      if( pdf_hash_key_p (params, DCTDecode_param_name, NULL))
         {
           pdf_hash_get(params, DCTDecode_param_name, (const void**)&dctdec_state->param_color_transform);
         }
@@ -159,18 +159,18 @@ pdf_stm_f_dctdec_init (pdf_hash_t params,
 #define PDF_DJPEG_CACHE_SIZE (1024)
 
 pdf_status_t
-pdf_stm_f_dctdec_apply (pdf_hash_t params,
-                        void *state,
-                        pdf_buffer_t in,
-                        pdf_buffer_t out,
-                        pdf_bool_t finish_p)
+pdf_stm_f_dctdec_apply (pdf_hash_t   *params,
+                        void         *state,
+                        pdf_buffer_t  in,
+                        pdf_buffer_t  out,
+                        pdf_bool_t    finish_p)
 {
   pdf_status_t ret = PDF_OK;
   pdf_i32_t iret;
   pdf_stm_f_dctdec_t filter_state = (pdf_stm_f_dctdec_t)state;
   struct jpeg_decompress_struct *pcinfo = filter_state->cinfo;
 
-  if (finish_p 
+  if (finish_p
       && ((in->wp - in->rp) < 1 )
       && (pcinfo->output_scanline == pcinfo->output_height)
       && (0 == filter_state->row_valid_size - filter_state->row_copy_index))
@@ -256,20 +256,20 @@ pdf_stm_f_dctdec_apply (pdf_hash_t params,
             ((j_common_ptr) pcinfo, JPOOL_IMAGE, filter_state->row_stride, 1);
           filter_state->row_valid_size = 0;
           filter_state->row_copy_index = 0;
-          filter_state->state = DCTDEC_STATE_WRITEHDR;  
+          filter_state->state = DCTDEC_STATE_WRITEHDR;
         }
 
       if (DCTDEC_STATE_WRITEHDR == filter_state->state)
         {
           ret = pdf_stm_f_dctdec_write_ppm_header (pcinfo, out);
-          if (PDF_OK != ret) 
+          if (PDF_OK != ret)
             {
               break;
             }
 
           filter_state->state = DCTDEC_STATE_SCANLINE;
         }
-    
+
       if (DCTDEC_STATE_OUTPUTLINE == filter_state->state)
         {
           if ((filter_state->row_valid_size > 0)
@@ -316,13 +316,13 @@ pdf_stm_f_dctdec_apply (pdf_hash_t params,
       if(DCTDEC_STATE_SCANLINE == filter_state->state)
         {
           ret = PDF_OK;
-          if (pcinfo->output_scanline < pcinfo->output_height) 
+          if (pcinfo->output_scanline < pcinfo->output_height)
             {
               pdf_i32_t scannum;
 
               scannum = jpeg_read_scanlines (pcinfo,
                                              filter_state->row_buf,
-                                             1);  
+                                             1);
               if(scannum == 0)
                 {
                   filter_state->backup_state = filter_state->state;
@@ -382,7 +382,7 @@ pdf_stm_f_dctdec_dealloc_state (void *state)
 /* Private functions */
 
 static void
-pdf_stm_f_dctdec_set_djpeg_param (j_decompress_ptr cinfo, 
+pdf_stm_f_dctdec_set_djpeg_param (j_decompress_ptr cinfo,
                                   pdf_stm_f_dctdec_t filter_state )
 {
   /* set color transfor according to DCTDecode dictionary. */
@@ -393,7 +393,7 @@ pdf_stm_f_dctdec_set_djpeg_param (j_decompress_ptr cinfo,
       return;
     }
 
-  switch (cinfo->num_components) 
+  switch (cinfo->num_components)
     {
     case 3:
       {
@@ -407,7 +407,7 @@ pdf_stm_f_dctdec_set_djpeg_param (j_decompress_ptr cinfo,
         else
           {
             /* no transform, so jpeg color space should be rgb.*/
-            cinfo->jpeg_color_space = JCS_RGB; 
+            cinfo->jpeg_color_space = JCS_RGB;
           }
         break;
       }
@@ -417,7 +417,7 @@ pdf_stm_f_dctdec_set_djpeg_param (j_decompress_ptr cinfo,
             && (1 == *filter_state->param_color_transform))
           {
             /* do transform only if the dictionary value is one.*/
-            cinfo->jpeg_color_space = JCS_YCCK; 
+            cinfo->jpeg_color_space = JCS_YCCK;
           }
         else
           {
@@ -460,7 +460,7 @@ pdf_stm_f_dctdec_fill_input_buffer (j_decompress_ptr cinfo)
 static void
 pdf_stm_f_dctdec_skip_input_data (j_decompress_ptr cinfo, long num_bytes)
 {
-  if (num_bytes > 0) 
+  if (num_bytes > 0)
     {
       pdf_stm_f_dct_cache_source_mgr_t src =
         (pdf_stm_f_dct_cache_source_mgr_t ) cinfo->src;
@@ -474,7 +474,7 @@ pdf_stm_f_dctdec_skip_input_data (j_decompress_ptr cinfo, long num_bytes)
 
       src->cache->rp += (pdf_size_t) sz_skiped;
       src->size_to_skip = num_bytes - sz_skiped;
-    
+
       src->pub.next_input_byte = (pdf_uchar_t *) (src->cache->data + src->cache->rp);
       src->pub.bytes_in_buffer = src->cache->wp - src->cache->rp;
     }
@@ -492,7 +492,7 @@ pdf_stm_f_dctdec_src_fill (j_decompress_ptr cinfo, pdf_buffer_t in)
   pdf_stm_f_dct_cache_source_mgr_t src =
     (pdf_stm_f_dct_cache_source_mgr_t ) cinfo->src;
 
-  pdf_size_t bytes_to_copy; 
+  pdf_size_t bytes_to_copy;
 
   if (src->size_to_skip > in->wp - in->rp)
     {
@@ -530,7 +530,7 @@ pdf_stm_f_dctdec_src_fill (j_decompress_ptr cinfo, pdf_buffer_t in)
   return PDF_OK;
 }
 
-void 
+void
 pdf_stm_f_dctdec_src_fill_eoi (j_decompress_ptr cinfo)
 {
   pdf_stm_f_dct_cache_source_mgr_t src =
@@ -556,7 +556,7 @@ pdf_stm_f_dctdec_jpeg_cache_src (j_decompress_ptr cinfo, pdf_buffer_t cache)
   pdf_stm_f_dct_cache_source_mgr_t src =
     (pdf_stm_f_dct_cache_source_mgr_t ) cinfo->src;
 
-  if (cinfo->src == NULL) 
+  if (cinfo->src == NULL)
     {
       /* first time for this JPEG object? */
       cinfo->src = (struct jpeg_source_mgr *)
@@ -577,7 +577,7 @@ pdf_stm_f_dctdec_jpeg_cache_src (j_decompress_ptr cinfo, pdf_buffer_t cache)
   src->pub.next_input_byte = NULL; /* until buffer loaded */
 }
 
-static pdf_status_t 
+static pdf_status_t
 pdf_stm_f_dctdec_write_ppm_header (j_decompress_ptr cinfo, pdf_buffer_t out)
 {
   pdf_char_t header[64];
@@ -594,7 +594,7 @@ pdf_stm_f_dctdec_write_ppm_header (j_decompress_ptr cinfo, pdf_buffer_t out)
     case JCS_GRAYSCALE:
       {
         /* emit header for raw PGM format */
-        
+
         sprintf (header, "P5\n%ld %ld\n%d\n",
                  (long) cinfo->output_width, (long) cinfo->output_height,
                  PPM_MAXVAL);
@@ -620,8 +620,8 @@ pdf_stm_f_dctdec_write_ppm_header (j_decompress_ptr cinfo, pdf_buffer_t out)
       return PDF_ENOUTPUT;
     }
 
-  memcpy (out->data + out->wp, header, hlen); 
-  out->wp += hlen; 
+  memcpy (out->data + out->wp, header, hlen);
+  out->wp += hlen;
   return PDF_OK;
 }
 

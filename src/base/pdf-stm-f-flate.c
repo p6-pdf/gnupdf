@@ -45,7 +45,8 @@ static pdf_status_t deflate_inbuf_return (pdf_stm_f_flate_t st,
                                           pdf_bool_t finish_p);
 
 pdf_status_t
-pdf_stm_f_flateenc_init (pdf_hash_t params, void **state)
+pdf_stm_f_flateenc_init (pdf_hash_t  *params,
+                         void       **state)
 {
   pdf_status_t ret;
   pdf_stm_f_flate_t filter_state;
@@ -88,7 +89,8 @@ pdf_stm_f_flateenc_init (pdf_hash_t params, void **state)
 
 
 pdf_status_t
-pdf_stm_f_flatedec_init (pdf_hash_t params, void **state)
+pdf_stm_f_flatedec_init (pdf_hash_t  *params,
+                         void       **state)
 {
   pdf_status_t ret;
   pdf_stm_f_flate_t filter_state;
@@ -134,8 +136,11 @@ pdf_stm_f_flatedec_init (pdf_hash_t params, void **state)
 
 
 pdf_status_t
-pdf_stm_f_flateenc_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
-                          pdf_buffer_t out, pdf_bool_t finish_p)
+pdf_stm_f_flateenc_apply (pdf_hash_t   *params,
+                          void         *state,
+                          pdf_buffer_t  in,
+                          pdf_buffer_t  out,
+                          pdf_bool_t    finish_p)
 {
   pdf_stm_f_flate_t st;
   pdf_status_t ret;
@@ -151,13 +156,16 @@ pdf_stm_f_flateenc_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
 
 
 pdf_status_t
-pdf_stm_f_flatedec_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
-                          pdf_buffer_t out, pdf_bool_t finish_p)
+pdf_stm_f_flatedec_apply (pdf_hash_t   *params,
+                          void         *state,
+                          pdf_buffer_t  in,
+                          pdf_buffer_t  out,
+                          pdf_bool_t    finish_p)
 {
   pdf_stm_f_flate_t st;
   pdf_status_t ret;
   st = (pdf_stm_f_flate_t) state;
-  
+
   ret = read_and_inflate (st, in, out);
   while (ret == PDF_OK)
     {
@@ -207,11 +215,11 @@ static pdf_status_t read_and_deflate (pdf_stm_f_flate_t st, pdf_buffer_t in,
           return PDF_ENINPUT;
         }
     }
-    
-  /* 
+
+  /*
    * Now we have the input CHUNK full or finish_p is set,
    * we deflate and write to out.
-   */ 
+   */
   return (deflate_inbuf_return (st, out, finish_p));
 }
 
@@ -299,7 +307,7 @@ deflate_inbuf (pdf_stm_f_flate_t st, pdf_buffer_t out, int flush)
 {
   if (st->writing_p)
     {
-      /* 
+      /*
        * Not nice, but keeps the writing process code clear.
        * Notice that the labeled code is inside a while loop,
        * so I feel that avoiding this goto won't bring us better code.

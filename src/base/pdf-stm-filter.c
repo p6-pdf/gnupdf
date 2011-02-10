@@ -37,31 +37,31 @@ static pdf_size_t pdf_stm_filter_get_input (pdf_stm_filter_t filter,
  */
 
 pdf_status_t
-pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
-                    pdf_hash_t params,
-                    pdf_size_t buffer_size,
-                    enum pdf_stm_filter_mode_e mode,
-                    pdf_stm_filter_t *filter)
+pdf_stm_filter_new (enum pdf_stm_filter_type_e  type,
+                    pdf_hash_t                 *params,
+                    pdf_size_t                  buffer_size,
+                    enum pdf_stm_filter_mode_e  mode,
+                    pdf_stm_filter_t           *filter)
 {
   pdf_status_t init_ret = PDF_ERROR;
   pdf_stm_filter_t new;
 
   /* Allocate the filter structure */
-  new = (pdf_stm_filter_t) 
+  new = (pdf_stm_filter_t)
     pdf_alloc (sizeof(struct pdf_stm_filter_s));
 
   if (new)
     {
       /* Initialisation */
       new->type = type;
-      
+
       /* Data sources */
       new->next = NULL;
       new->backend = NULL;
-      
+
       /* Operation mode */
       new->mode = mode;
-      
+
       /* Input buffer */
       new->in = pdf_buffer_new (buffer_size);
       if (!new->in)
@@ -70,10 +70,10 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e type,
           pdf_dealloc (new);
           goto exit;
         }
-      
+
       /* Output buffer */
       new->out = NULL;
-      
+
       /* Install the appropriate implementation */
       switch (new->type)
         {
@@ -335,10 +335,10 @@ pdf_stm_filter_apply (pdf_stm_filter_t filter,
               ret = filter->status;
               break;
             }
-          else if ((ret_in == PDF_EEOF) 
+          else if ((ret_in == PDF_EEOF)
                    && (pdf_buffer_eob_p (filter->in)))
             {
-              if (((filter->mode == PDF_STM_FILTER_MODE_WRITE) 
+              if (((filter->mode == PDF_STM_FILTER_MODE_WRITE)
                    && ((finish_p) && (!filter->really_finish_p))) ||
                   ((filter->mode == PDF_STM_FILTER_MODE_READ)
                    && (!filter->really_finish_p)))

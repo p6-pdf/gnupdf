@@ -79,7 +79,7 @@ pdf_bool_t
 pdf_hash_add_list (pdf_hash_t        *table,
                    const pdf_char_t  *key,
                    const pdf_list_t  *value,
-                   pdf_errot_t      **error)
+                   pdf_error_t      **error)
 {
   return pdf_hash_add (table,
                        key,
@@ -100,7 +100,7 @@ pdf_bool_t
 pdf_hash_add_hash (pdf_hash_t        *table,
                    const pdf_char_t  *key,
                    const pdf_hash_t  *value,
-                   pdf_errot_t      **error)
+                   pdf_error_t      **error)
 {
   return pdf_hash_add (table,
                        key,
@@ -139,7 +139,7 @@ pdf_hash_get_stm (pdf_hash_t        *table,
 }
 
 pdf_bool_t
-pdf_hash_add_bool (pdf_hash_t        table,
+pdf_hash_add_bool (pdf_hash_t       *table,
                    const pdf_char_t *key,
                    const pdf_bool_t  value,
                    pdf_error_t      **error)
@@ -152,7 +152,7 @@ pdf_hash_add_bool (pdf_hash_t        table,
 }
 
 pdf_bool_t
-pdf_hash_get_bool (pdf_hash_t         table,
+pdf_hash_get_bool (pdf_hash_t        *table,
                    const pdf_char_t  *key,
                    pdf_error_t      **error)
 {

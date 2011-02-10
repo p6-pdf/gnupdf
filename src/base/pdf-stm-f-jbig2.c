@@ -37,8 +37,8 @@ static int jbig2dec_error_cb (void *data,
 
 
 pdf_status_t
-pdf_stm_f_jbig2dec_init (pdf_hash_t params,
-                         void **state)
+pdf_stm_f_jbig2dec_init (pdf_hash_t  *params,
+                         void       **state)
 {
   pdf_stm_f_jbig2dec_t filter_state;
   pdf_char_t *global_stream_buffer;
@@ -60,16 +60,16 @@ pdf_stm_f_jbig2dec_init (pdf_hash_t params,
   filter_state->error_p = PDF_FALSE;
 
   /* Get the global stream contents, if any */
-  if ((pdf_hash_key_p (params, "GlobalStreamsBuffer") == PDF_TRUE) &&
-      (pdf_hash_key_p (params, "GlobalStreamsSize") == PDF_TRUE))
+  if ((pdf_hash_key_p (params, "GlobalStreamsBuffer", NULL) == PDF_TRUE) &&
+      (pdf_hash_key_p (params, "GlobalStreamsSize", NULL) == PDF_TRUE))
     {
       /* Get the parameters from the hash table */
-      pdf_hash_get_string (params,
-                           "GlobalStreamsBuffer",
-                           &global_stream_buffer);
-      pdf_hash_get_size (params,
-                         "GlobalStreamsSize",
-                         &global_stream_size);
+      global_stream_buffer = pdf_hash_get_string (params,
+                                                  "GlobalStreamsBuffer",
+                                                  NULL);
+      global_stream_size = pdf_hash_get_size (params,
+                                              "GlobalStreamsSize",
+                                              NULL);
 
       /* Initialize the global context */
       filter_state->jbig2_context = jbig2_ctx_new (filter_state->jbig2_allocator,
@@ -101,11 +101,11 @@ pdf_stm_f_jbig2dec_init (pdf_hash_t params,
 }
 
 pdf_status_t
-pdf_stm_f_jbig2dec_apply (pdf_hash_t params,
-                          void *state,
-                          pdf_buffer_t in,
-                          pdf_buffer_t out,
-                          pdf_bool_t finish_p)
+pdf_stm_f_jbig2dec_apply (pdf_hash_t   *params,
+                          void         *state,
+                          pdf_buffer_t  in,
+                          pdf_buffer_t  out,
+                          pdf_bool_t    finish_p)
 {
   pdf_status_t ret;
   pdf_stm_f_jbig2dec_t filter_state;
@@ -135,11 +135,11 @@ pdf_stm_f_jbig2dec_apply (pdf_hash_t params,
               bytes_to_copy = ((filter_state->jbig2_page->height * filter_state->jbig2_page->stride)
                                - filter_state->index);
             }
-          
+
           memcpy (out->data + out->wp,
                   filter_state->jbig2_page->data + filter_state->index,
                   bytes_to_copy);
-          
+
           out->wp += bytes_to_copy;
           filter_state->index += bytes_to_copy;
 
@@ -189,7 +189,7 @@ pdf_stm_f_jbig2dec_dealloc_state (void *state)
 
   jbig2_ctx_free (filter_state->jbig2_context);
   pdf_dealloc (filter_state);
-  
+
   return PDF_OK;
 }
 
@@ -197,7 +197,7 @@ pdf_stm_f_jbig2dec_dealloc_state (void *state)
  * Private functions
  */
 
-static int 
+static int
 jbig2dec_error_cb (void *data,
                    const char *msg,
                    Jbig2Severity severity,

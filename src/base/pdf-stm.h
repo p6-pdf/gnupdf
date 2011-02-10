@@ -24,7 +24,7 @@
  */
 
 /* This library module implement stream objects capable to front-end
-   to several backends: 
+   to several backends:
 
    - Open files implemented by the filesystem module (see pdf-fsys.h).
    - A memory buffer.
@@ -33,7 +33,7 @@
    reading and writing. Many filters can be used in a single stream
    (are applied in order when writing or reading).
 
- 
+
                                +----------+
                                |          |<-----> pdf_fsys_file
       <--read----(filtering)---|          |
@@ -80,7 +80,7 @@ enum pdf_stm_type_e
 
 typedef struct pdf_stm_s *pdf_stm_t;
 
-/* 
+/*
  * Stream API
  */
 
@@ -134,7 +134,7 @@ pdf_off_t pdf_stm_tell (pdf_stm_t stm);
 
 pdf_status_t pdf_stm_install_filter (pdf_stm_t stm,
                                      enum pdf_stm_filter_type_e filter_type,
-                                     pdf_hash_t filter_params);
+                                     pdf_hash_t *filter_params);
 /* END PUBLIC */
 
 /* Stream data type */

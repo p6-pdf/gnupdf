@@ -231,8 +231,8 @@ pdf_status_t pdf_fsys_remove_folder (const pdf_fsys_t filesystem,
 pdf_status_t pdf_fsys_get_item_props (pdf_fsys_t filesystem,
                                       pdf_text_t path_name,
                                       struct pdf_fsys_item_props_s *item_props);
-pdf_status_t pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s item_props,
-                                          pdf_hash_t props_hash);
+pdf_status_t pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s  item_props,
+                                          pdf_hash_t                         *props_hash);
 pdf_bool_t pdf_fsys_item_p (pdf_fsys_t filesystem,
                             pdf_text_t path_name);
 pdf_bool_t pdf_fsys_item_readable_p (pdf_fsys_t filesystem,

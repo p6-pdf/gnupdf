@@ -102,7 +102,7 @@ pdf_stm_mem_new (pdf_char_t *buffer,
   (*stm)->backend = pdf_stm_be_new_mem (buffer,
                                         size,
                                         0);
-  
+
   /* Initialize the common parts */
   return pdf_stm_init (cache_size,
                        mode,
@@ -190,7 +190,7 @@ pdf_stm_read (pdf_stm_t stm,
           memcpy ((buf + *read_bytes),
                   stm->cache->data + stm->cache->rp,
                   to_copy_bytes);
-          
+
           *read_bytes += to_copy_bytes;
           stm->cache->rp += to_copy_bytes;
         }
@@ -285,7 +285,7 @@ pdf_stm_write (pdf_stm_t stm,
 
   /* Update the sequential counter */
   stm->seq_counter += *written_bytes;
-  
+
   return ret;
 }
 
@@ -325,7 +325,7 @@ pdf_stm_flush (pdf_stm_t stm,
       /* Update the number of flushed bytes */
       *flushed_bytes += tail_size
         - (tail_buffer->wp - tail_buffer->rp);
-      
+
       if ((ret == PDF_EEOF)
           && (pdf_buffer_eob_p (stm->cache)))
         {
@@ -357,9 +357,9 @@ pdf_stm_flush (pdf_stm_t stm,
 }
 
 pdf_status_t
-pdf_stm_install_filter (pdf_stm_t stm,
-                        enum pdf_stm_filter_type_e filter_type,
-                        pdf_hash_t filter_params)
+pdf_stm_install_filter (pdf_stm_t                   stm,
+                        enum pdf_stm_filter_type_e  filter_type,
+                        pdf_hash_t                 *filter_params)
 {
   pdf_status_t ret;
   pdf_stm_filter_t filter;
@@ -499,21 +499,28 @@ pdf_stm_init (pdf_size_t cache_size,
               enum pdf_stm_mode_e mode,
               pdf_stm_t stm)
 {
-  pdf_hash_t null_filter_params;
+  pdf_hash_t *null_filter_params;
   enum pdf_stm_filter_mode_e filter_mode;
   pdf_status_t ret;
+  pdf_error_t *inner_error = NULL;
 
   if (cache_size == 0)
     {
       /* Use the default cache size */
       cache_size = PDF_STM_DEFAULT_CACHE_SIZE;
-    } 
+    }
 
   /* The sequential counter is initially 0 */
   stm->seq_counter = 0;
 
   /* Initialize the null filter */
-  pdf_hash_new (NULL, &null_filter_params);
+  null_filter_params = pdf_hash_new (&inner_error);
+  if (null_filter_params == NULL)
+    {
+      /* TODO: Propagate error */
+      pdf_error_drestroy (inner_error);
+      return PDF_ERROR;
+    }
 
   if (stm->mode == PDF_STM_READ)
     {
@@ -534,7 +541,7 @@ pdf_stm_init (pdf_size_t cache_size,
     {
       /* Initialize the filter cache */
       stm->cache = pdf_buffer_new (cache_size);
-      
+
       /* Configure the filter */
       stm->mode = mode;
       if (stm->mode == PDF_STM_READ)
@@ -543,19 +550,19 @@ pdf_stm_init (pdf_size_t cache_size,
            *
            *  <cache> <--- <null-filter> <--- <backend>
            */
-          
-          pdf_stm_filter_set_out (stm->filter, 
+
+          pdf_stm_filter_set_out (stm->filter,
                                   stm->cache);
           pdf_stm_filter_set_be (stm->filter,
                                  stm->backend);
-        } 
+        }
       else
         {
           /* Configuration for a writing stream
            *
            * <null-filter> --> <cache> --> <backend>
            */
-          
+
           pdf_stm_filter_set_out (stm->filter,
                                   stm->cache);
         }
@@ -594,7 +601,7 @@ pdf_stm_read_peek_char (pdf_stm_t stm,
   else
     {
       /* Read a character from the cache */
-      *c = 
+      *c =
         (pdf_u32_t) stm->cache->data[stm->cache->rp];
 
       if (!peek_p)
@@ -614,7 +621,7 @@ pdf_stm_read_peek_char (pdf_stm_t stm,
       /* Update the sequential counter */
       stm->seq_counter++;
     }
-  
+
   return ret;
 }
 

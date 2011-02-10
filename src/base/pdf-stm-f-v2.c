@@ -48,13 +48,14 @@ typedef enum pdf_stm_f_v2_mode_e pdf_stm_f_v2_mode_t;
 
 
 static inline pdf_status_t
-pdf_stm_f_v2_init (pdf_hash_t params, void **state)
+pdf_stm_f_v2_init (pdf_hash_t  *params,
+                   void       **state)
 {
   pdf_status_t ret;
   pdf_stm_f_v2_t filter_state;
-  
+
   filter_state = pdf_alloc (sizeof (struct pdf_stm_f_v2_s));
-  
+
   if (filter_state == NULL)
     {
       ret = PDF_ENOMEM;
@@ -66,16 +67,16 @@ pdf_stm_f_v2_init (pdf_hash_t params, void **state)
     }
   else
     {
-      pdf_char_t *key;
-      pdf_size_t keysize;
-      pdf_crypt_cipher_t cipher;
-      
       /* We demand all parameters are present */
-      if ((( pdf_hash_key_p (params, "Key")     == PDF_TRUE))
-          && pdf_hash_key_p (params, "KeySize") == PDF_TRUE)
+      if ((( pdf_hash_key_p (params, "Key", NULL)     == PDF_TRUE))
+          && pdf_hash_key_p (params, "KeySize", NULL) == PDF_TRUE)
         {
-          pdf_hash_get_string (params, "Key", &key);
-          pdf_hash_get_size (params, "KeySize", &keysize);
+          pdf_crypt_cipher_t cipher;
+          const pdf_char_t *key;
+          pdf_size_t keysize;
+
+          key = pdf_hash_get_string (params, "Key", NULL);
+          keysize = pdf_hash_get_size (params, "KeySize", NULL);
 
           ret = pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &cipher);
           if (ret == PDF_OK)
@@ -105,12 +106,15 @@ pdf_stm_f_v2_init (pdf_hash_t params, void **state)
 
 
 static inline pdf_status_t
-pdf_stm_f_v2_apply (pdf_stm_f_v2_mode_t mode,
-                    pdf_hash_t params, void *state, pdf_buffer_t in,
-                    pdf_buffer_t out, pdf_bool_t finish_p)
+pdf_stm_f_v2_apply (pdf_stm_f_v2_mode_t  mode,
+                    pdf_hash_t          *params,
+                    void                *state,
+                    pdf_buffer_t         in,
+                    pdf_buffer_t         out,
+                    pdf_bool_t           finish_p)
 {
   pdf_stm_f_v2_t filter_state = state;
-  
+
   pdf_size_t in_size;
   pdf_size_t out_size;
   pdf_size_t bytes_to_copy;
@@ -161,7 +165,7 @@ pdf_stm_f_v2_apply (pdf_stm_f_v2_mode_t mode,
       /* We can process more input */
       ret = PDF_ENINPUT;
     }
-  
+
   return ret;
 }
 
@@ -180,14 +184,18 @@ pdf_stm_f_v2_dealloc_state (void *state)
 /* Encode filter */
 
 pdf_status_t
-pdf_stm_f_v2enc_init (pdf_hash_t params, void **state)
+pdf_stm_f_v2enc_init (pdf_hash_t  *params,
+                      void       **state)
 {
   return pdf_stm_f_v2_init (params, state);
 }
 
 pdf_status_t
-pdf_stm_f_v2enc_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
-                           pdf_buffer_t out, pdf_bool_t finish_p)
+pdf_stm_f_v2enc_apply (pdf_hash_t   *params,
+                       void         *state,
+                       pdf_buffer_t  in,
+                       pdf_buffer_t  out,
+                       pdf_bool_t    finish_p)
 {
   return pdf_stm_f_v2_apply (PDF_STM_F_V2_MODE_ENCODE,
                              params, state, in, out, finish_p);
@@ -203,15 +211,19 @@ pdf_stm_f_v2enc_dealloc_state (void *state)
 /* Decode filter  */
 
 pdf_status_t
-pdf_stm_f_v2dec_init (pdf_hash_t params, void **state)
+pdf_stm_f_v2dec_init (pdf_hash_t  *params,
+                      void       **state)
 {
   return pdf_stm_f_v2_init (params, state);
 }
 
 
 pdf_status_t
-pdf_stm_f_v2dec_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
-                        pdf_buffer_t out, pdf_bool_t finish_p)
+pdf_stm_f_v2dec_apply (pdf_hash_t   *params,
+                       void         *state,
+                       pdf_buffer_t  in,
+                       pdf_buffer_t  out,
+                       pdf_bool_t    finish_p)
 {
   return pdf_stm_f_v2_apply (PDF_STM_F_V2_MODE_DECODE,
                              params, state, in, out, finish_p);

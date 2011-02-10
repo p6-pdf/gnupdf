@@ -28,6 +28,7 @@
 #include <pdf-alloc.h>
 #include <pdf-fsys.h>
 #include <pdf-fsys-def.h>
+#include <pdf-hash-helper.h>
 
 /* Private procedures declaration */
 static pdf_fsys_t pdf_fsys_alloc (void);
@@ -154,30 +155,14 @@ pdf_fsys_get_item_props (pdf_fsys_t filesystem,
 }
 
 pdf_status_t
-pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s item_props,
-                             pdf_hash_t props_hash)
+pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s  item_props,
+                             pdf_hash_t                         *props_hash)
 {
-  pdf_bool_t *is_hidden;
-  pdf_bool_t *is_readable;
-  pdf_bool_t *is_writable;
-  pdf_off_t *file_size;
-  pdf_u32_t *folder_size;
   pdf_char_t *creation_date_str;
   pdf_char_t *mod_date_str;
-
-  /* Allocate memory for the hash values */
-  is_hidden = (pdf_bool_t *) pdf_alloc (sizeof(pdf_bool_t));
-  is_readable = (pdf_bool_t *) pdf_alloc (sizeof(pdf_bool_t));
-  is_writable = (pdf_bool_t *) pdf_alloc (sizeof(pdf_bool_t));
-  file_size = (pdf_off_t*) pdf_alloc (sizeof(pdf_off_t));
-  folder_size = (pdf_u32_t*) pdf_alloc (sizeof(pdf_u32_t));
+  pdf_error_t *inner_error = NULL;
 
   /* Get the values from the props structure */
-  *is_hidden = item_props.is_hidden;
-  *is_readable = item_props.is_readable;
-  *is_writable = item_props.is_writable;
-  *file_size = item_props.file_size;
-  *folder_size = item_props.folder_size;
   creation_date_str = pdf_time_to_string (item_props.creation_date,
                                           PDF_TIME_FORMAT_PDF,
                                           PDF_TRUE);
@@ -186,48 +171,45 @@ pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s item_props,
                                      PDF_TRUE);
 
   /* Associate values with hash keys */
-  if (pdf_hash_add (props_hash, "isHidden", (void *) is_hidden,
-                    pdf_hash_element_dealloc_fn) !=
-      PDF_OK)
+  if ((!pdf_hash_add_bool (props_hash,
+                           "isHidden",
+                           item_props.is_hidden,
+                           &inner_error)) ||
+      (!pdf_hash_add_bool (props_hash,
+                           "isReadable",
+                           item_props.is_readable,
+                           &inner_error)) ||
+      (!pdf_hash_add_bool (props_hash,
+                           "isWritable",
+                           item_props.is_writable,
+                           &inner_error)) ||
+      (!pdf_hash_add_string (props_hash,
+                             "creationDate",
+                             creation_date_str,
+                             &inner_error)) ||
+      (!pdf_hash_add_string (props_hash,
+                             "modDate",
+                             mod_date_str,
+                             &inner_error)) ||
+      (!pdf_hash_add_size (props_hash,
+                           "fileSize",
+                           (pdf_size_t) item_props.file_size,
+                           &inner_error)) ||
+      (!pdf_hash_add_size (props_hash,
+                           "folderSize",
+                           (pdf_size_t) item_props.folder_size,
+                           &inner_error)))
     {
+      pdf_dealloc (creation_date_str);
+      pdf_dealloc (mod_date_str);
+
+      /* TODO: Propagate error */
+      pdf_error_destroy (inner_error);
       return PDF_ERROR;
     }
-  if (pdf_hash_add (props_hash, "isReadable", (void *) is_readable,
-                    pdf_hash_element_dealloc_fn) !=
-      PDF_OK)
-    {
-      return PDF_ERROR;
-    }
-  if (pdf_hash_add (props_hash, "isWritable", (void *) is_writable,
-                    pdf_hash_element_dealloc_fn) !=
-      PDF_OK)
-    {
-      return PDF_ERROR;
-    }
-  if (pdf_hash_add (props_hash, "creationDate", (void *) creation_date_str,
-                    pdf_hash_element_dealloc_fn) !=
-      PDF_OK)
-    {
-      return PDF_ERROR;
-    }
-  if (pdf_hash_add (props_hash, "modDate", (void *) mod_date_str,
-                    pdf_hash_element_dealloc_fn) !=
-      PDF_OK)
-    {
-      return PDF_ERROR;
-    }
-  if (pdf_hash_add (props_hash, "fileSize", (void *) file_size,
-                    pdf_hash_element_dealloc_fn) !=
-      PDF_OK)
-    {
-      return PDF_ERROR;
-    }
-  if (pdf_hash_add (props_hash, "folderSize", (void *) folder_size,
-                    pdf_hash_element_dealloc_fn) !=
-      PDF_OK)
-    {
-      return PDF_ERROR;
-    }
+
+  pdf_dealloc (creation_date_str);
+  pdf_dealloc (mod_date_str);
 
   /* Done */
   return PDF_OK;
