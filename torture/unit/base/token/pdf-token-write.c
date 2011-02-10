@@ -60,7 +60,15 @@ write_and_check (pdf_token_t token,
   fail_if (pdf_stm_destroy (stm) != PDF_OK);
 
   /* Compare results.  */
-  fail_unless (strncmp (buffer, expected, expected_size) == 0);
+  fail_unless (strncmp (buffer, expected, expected_size) == 0,
+               "Assertion 'strncmp"
+                 " (\"%.*s\" /*buffer*/, \"%.*s\" /*expected*/, %d)"
+                 " == 0' failed",
+               (int) expected_size,
+               (char*) buffer,
+               (int) expected_size,
+               (char*) expected,
+               (int) expected_size);
 }
 
 /*
@@ -571,13 +579,13 @@ START_TEST(pdf_token_write_string_octal_readable)
   pdf_init ();
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("a\0007c", 3, &token)
+  fail_if (pdf_token_string_new ("a\007c", 3, &token)
            != PDF_OK);
 
   /* Check.  */
   write_and_check (token,
                    PDF_TOKEN_READABLE_STRINGS,  /* Flags.  */
-                   "(a\\007c)", 9, 100);
+                   "(a\\7c)", 6, 100);
 }
 END_TEST
 
