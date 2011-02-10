@@ -62,12 +62,12 @@ static pdf_bool_t hash_element_equal (const pdf_hash_element_t *elt1,
 static pdf_size_t hash_element_pjw (const pdf_hash_element_t *elt);
 
 /* Dispose a hash element */
-static void hash_element_dispose (pdf_hash_element *elt);
+static void hash_element_dispose (pdf_hash_element_t *elt);
 
 /* Find a hash element by key in the hash table */
-static pdf_hash_element *hash_search_key (pdf_hash_t       *table,
-                                          const pdf_char_t *key,
-                                          gl_list_node_t   *p_node);
+static pdf_hash_element_t *hash_search_key (const pdf_hash_t *table,
+                                            const pdf_char_t *key,
+                                            gl_list_node_t   *p_node);
 
 pdf_hash_t *
 pdf_hash_new (pdf_error_t **error)
@@ -96,7 +96,7 @@ pdf_hash_destroy (pdf_hash_t *table)
 }
 
 pdf_size_t
-pdf_hash_size (const pdf_hash_t table)
+pdf_hash_size (const pdf_hash_t *table)
 {
   return (table != NULL ?
           gl_list_size ((gl_list_t) table) :
@@ -162,7 +162,7 @@ pdf_hash_rename_key (pdf_hash_t        *table,
   if (!pdf_hash_add (table,
                      new_key,
                      elt->value,
-                     elt->disp_fn,
+                     elt->value_disp_fn,
                      &inner_error))
     {
       pdf_propagate_error (error, inner_error);
@@ -221,7 +221,7 @@ pdf_hash_add (pdf_hash_t                   *table,
 
   /* Add to the list */
   if (!gl_sortedlist_nx_add ((gl_list_t) table,
-                             hash_element_compare,
+                             (gl_listelement_compar_fn) hash_element_compare,
                              elt))
     {
       pdf_set_error (error,
@@ -241,9 +241,7 @@ pdf_hash_remove (pdf_hash_t        *table,
                  const pdf_char_t  *key,
                  pdf_error_t      **error)
 {
-  pdf_hash_element_t *elt;
   gl_list_node_t node = NULL;
-  pdf_error_t *inner_error = NULL;
 
   /* Check input arguments */
   if (table == NULL || key == NULL)
@@ -275,7 +273,6 @@ pdf_hash_get_value (const pdf_hash_t  *table,
                     pdf_error_t      **error)
 {
   pdf_hash_element_t *elt;
-  pdf_error_t *inner_error = NULL;
 
   /* Check input arguments */
   if (table == NULL || key == NULL)
@@ -363,8 +360,8 @@ pdf_hash_iterator_deinit (pdf_hash_iterator_t *itr)
     gl_list_iterator_free ((gl_list_iterator_t *) itr);
 }
 
-static pdf_hash_element *
-hash_search_key (pdf_hash_t       *table,
+static pdf_hash_element_t *
+hash_search_key (const pdf_hash_t *table,
                  const pdf_char_t *key,
                  gl_list_node_t   *p_node)
 {
@@ -380,7 +377,7 @@ hash_search_key (pdf_hash_t       *table,
     *p_node = node;
 
   return (pdf_hash_element_t *) (*p_node != NULL ?
-                                 gl_list_node_value ((gl_list_t) table, node),
+                                 gl_list_node_value ((gl_list_t) table, node) :
                                  NULL);
 }
 
@@ -397,7 +394,7 @@ hash_element_pjw (const pdf_hash_element_t *elt)
 }
 
 static void
-hash_element_dispose (const pdf_hash_element_t *elt)
+hash_element_dispose (pdf_hash_element_t *elt)
 {
   if (elt)
     {

@@ -102,6 +102,7 @@ pdf_bool_t pdf_hash_iterator_init (pdf_hash_iterator_t  *itr,
 
 pdf_bool_t pdf_hash_iterator_next (pdf_hash_iterator_t  *itr,
                                    const pdf_char_t    **key,
+                                   const void          **value,
                                    pdf_error_t         **error);
 
 void pdf_hash_iterator_deinit (pdf_hash_iterator_t *itr);
