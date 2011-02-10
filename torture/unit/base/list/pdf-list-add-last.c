@@ -32,26 +32,73 @@
 /*
  * Test: pdf_list_add_last_001
  * Description:
- *   Try to add some elements.
+ *   Try to add an element at the end of the list.
  * Success condition:
  *   We get the right pdf_list_size().
  */
 START_TEST (pdf_list_add_last_001)
 {
-  pdf_list_t list;
+  pdf_list_node_t *node;
+  pdf_list_t *list;
   int elem, elem2;
+  pdf_error_t *error = NULL;
 
-  elem = 12345;
-  elem2 = 4567;
+  elem = 5123;
+  elem2 = 5431;
 
-  pdf_init();
+  pdf_init ();
 
-  pdf_list_new (NULL, NULL, 0, &list);
+  list = pdf_list_new (l_comp, NULL, PDF_FALSE, NULL);
 
-  pdf_list_add_last (list, &elem, NULL);
+  node = pdf_list_add_last (list, &elem, &error);
+  fail_if (node == NULL);
+  fail_if (error != NULL);
   fail_if (pdf_list_size(list) != 1);
 
-  pdf_list_add_last (list, &elem2, NULL);
+  /* Should fail as duplicates not allowed */
+  node = pdf_list_add_last (list, &elem, &error);
+  fail_if (node != NULL);
+  fail_if (error == NULL);
+  fail_if (pdf_error_get_status (error) != PDF_EEXIST);
+  fail_if (pdf_list_size(list) != 1);
+
+  node = pdf_list_add_last (list, &elem2, &error);
+  fail_if (node == NULL);
+  fail_if (error != NULL);
+  fail_if (pdf_list_size(list) != 2);
+
+  pdf_list_destroy (list);
+}
+END_TEST
+
+/*
+ * Test: pdf_list_add_last_002
+ * Description:
+ *   Try to add an element at the end of the list allowing duplicates.
+ * Success condition:
+ *   We get the right pdf_list_size().
+ */
+START_TEST (pdf_list_add_last_002)
+{
+  pdf_list_node_t *node;
+  pdf_list_t *list;
+  int elem;
+  pdf_error_t *error = NULL;
+
+  elem = 5123;
+
+  pdf_init ();
+
+  list = pdf_list_new (l_comp, NULL, PDF_FALSE, NULL);
+
+  node = pdf_list_add_last (list, &elem, &error);
+  fail_if (node == NULL);
+  fail_if (error != NULL);
+  fail_if (pdf_list_size(list) != 1);
+
+  node = pdf_list_add_last (list, &elem, &error);
+  fail_if (node == NULL);
+  fail_if (error != NULL);
   fail_if (pdf_list_size(list) != 2);
 
   pdf_list_destroy (list);
@@ -64,8 +111,10 @@ END_TEST
 TCase *
 test_pdf_list_add_last (void)
 {
-  TCase *tc = tcase_create("pdf_list_add_last");
-  tcase_add_test(tc, pdf_list_add_last_001);
+  TCase *tc = tcase_create ("pdf_list_add_last");
+
+  tcase_add_test (tc, pdf_list_add_last_001);
+  tcase_add_test (tc, pdf_list_add_last_002);
 
   return tc;
 }

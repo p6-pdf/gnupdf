@@ -94,7 +94,9 @@ TEST_SUITE_HASH = base/hash/pdf-hash-new.c \
 		  base/hash/pdf-hash-iterator-next.c \
 		  base/hash/pdf-hash-iterator-destroy.c
 
-TEST_SUITE_LIST = base/list/pdf-list-add-first.c \
+TEST_SUITE_LIST = base/list/pdf-list-test-common.h \
+                  base/list/pdf-list-test-common.c \
+                  base/list/pdf-list-add-first.c \
                   base/list/pdf-list-add-at.c \
                   base/list/pdf-list-add-last.c \
                   base/list/pdf-list-size.c \

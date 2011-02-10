@@ -40,7 +40,7 @@ START_TEST (pdf_list_get_at_001)
   pdf_list_t list;
   int elem, *val;
   pdf_status_t st;
-  
+
   elem = 2212;
 
   pdf_init();
@@ -50,7 +50,7 @@ START_TEST (pdf_list_get_at_001)
   pdf_list_add_last (list, &elem, NULL);
 
   st = pdf_list_get_at (list, 0, (void*)&val);
-  
+
   fail_if (st != PDF_OK);
 
   pdf_list_destroy (list);
@@ -79,7 +79,7 @@ START_TEST (pdf_list_get_at_002)
   pdf_list_add_last (list, &elem, NULL);
 
   st = pdf_list_get_at (list, 0, NULL);
-  
+
   fail_if (st != PDF_EBADDATA);
 
   pdf_list_destroy (list);
@@ -108,14 +108,12 @@ START_TEST (pdf_list_get_at_003)
   pdf_list_add_last (list, &elem, NULL);
 
   st = pdf_list_get_at (list, 4, (void*)&val);
-  
+
   fail_if (st != PDF_EINVRANGE);
 
   pdf_list_destroy (list);
 }
 END_TEST
-
-
 
 /*
  * Test case creation function
@@ -123,11 +121,12 @@ END_TEST
 TCase *
 test_pdf_list_get_at (void)
 {
-  TCase *tc = tcase_create("pdf_list_get_at");
-  tcase_add_test(tc, pdf_list_get_at_001);
-  tcase_add_test(tc, pdf_list_get_at_002);
-  tcase_add_test(tc, pdf_list_get_at_003);
-  
+  TCase *tc = tcase_create ("pdf_list_get_at");
+
+  tcase_add_test (tc, pdf_list_get_at_001);
+  tcase_add_test (tc, pdf_list_get_at_002);
+  tcase_add_test (tc, pdf_list_get_at_003);
+
   return tc;
 }
 

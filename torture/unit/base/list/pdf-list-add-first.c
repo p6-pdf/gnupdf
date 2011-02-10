@@ -30,7 +30,7 @@
 #include <pdf.h>
 #include <check.h>
 
-extern pdf_bool_t l_comp (const void * elemb, const void * elema);
+#include "pdf-list-test-common.h"
 
 /*
  * Test: pdf_list_add_first_001
@@ -41,23 +41,35 @@ extern pdf_bool_t l_comp (const void * elemb, const void * elema);
  */
 START_TEST (pdf_list_add_first_001)
 {
-  pdf_list_t list;
+  pdf_list_node_t *node;
+  pdf_list_t *list;
   int elem, elem2;
+  pdf_error_t *error = NULL;
 
   elem = 5123;
   elem2 = 5431;
 
-  pdf_init();
+  pdf_init ();
 
-  pdf_list_new (l_comp, NULL, 0, &list);
+  list = pdf_list_new (l_comp, NULL, PDF_FALSE, NULL);
 
-  pdf_list_add_first (list, &elem, NULL);
-  pdf_list_add_first (list, &elem, NULL);
+  node = pdf_list_add_first (list, &elem, &error);
+  fail_if (node == NULL);
+  fail_if (error != NULL);
   fail_if (pdf_list_size(list) != 1);
 
-  pdf_list_add_first (list, &elem2, NULL);
+  /* Should fail as duplicates not allowed */
+  node = pdf_list_add_first (list, &elem, &error);
+  fail_if (node != NULL);
+  fail_if (error == NULL);
+  fail_if (pdf_error_get_status (error) != PDF_EEXIST);
+  fail_if (pdf_list_size(list) != 1);
+
+  node = pdf_list_add_first (list, &elem2, &error);
+  fail_if (node == NULL);
+  fail_if (error != NULL);
   fail_if (pdf_list_size(list) != 2);
-  
+
   pdf_list_destroy (list);
 }
 END_TEST
@@ -71,16 +83,25 @@ END_TEST
  */
 START_TEST (pdf_list_add_first_002)
 {
-  pdf_list_t list;
+  pdf_list_node_t *node;
+  pdf_list_t *list;
   int elem;
+  pdf_error_t *error = NULL;
 
   elem = 5123;
 
-  pdf_init();
+  pdf_init ();
 
-  pdf_list_new (l_comp, NULL, 1, &list);
-  pdf_list_add_first (list, &elem, NULL);
-  pdf_list_add_first (list, &elem, NULL);
+  list = pdf_list_new (l_comp, NULL, PDF_FALSE, NULL);
+
+  node = pdf_list_add_first (list, &elem, &error);
+  fail_if (node == NULL);
+  fail_if (error != NULL);
+  fail_if (pdf_list_size(list) != 1);
+
+  node = pdf_list_add_first (list, &elem, &error);
+  fail_if (node == NULL);
+  fail_if (error != NULL);
   fail_if (pdf_list_size(list) != 2);
 
   pdf_list_destroy (list);
@@ -94,9 +115,10 @@ END_TEST
 TCase *
 test_pdf_list_add_first (void)
 {
-  TCase *tc = tcase_create("pdf_list_add_first");
-  tcase_add_test(tc, pdf_list_add_first_001);
-  tcase_add_test(tc, pdf_list_add_first_002);
+  TCase *tc = tcase_create ("pdf_list_add_first");
+
+  tcase_add_test (tc, pdf_list_add_first_001);
+  tcase_add_test (tc, pdf_list_add_first_002);
 
   return tc;
 }

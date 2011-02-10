@@ -38,14 +38,28 @@
  */
 START_TEST (pdf_list_destroy_001)
 {
-  pdf_list_t list;
-  
-  pdf_init();
+  pdf_list_t *list;
 
-  pdf_list_new (NULL, NULL, 0, &list);
+  pdf_init ();
 
-  fail_if (pdf_list_destroy (list) != PDF_OK);
+  list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
 
+  pdf_list_destroy (list);
+}
+END_TEST
+
+/*
+ * Test: pdf_list_destroy_002
+ * Description:
+ *   Try to destroy a NULL list
+ * Success condition:
+ *   Returns PDF_OK
+ */
+START_TEST (pdf_list_destroy_002)
+{
+  pdf_init ();
+
+  pdf_list_destroy (NULL);
 }
 END_TEST
 
@@ -56,8 +70,11 @@ END_TEST
 TCase *
 test_pdf_list_destroy (void)
 {
-  TCase *tc = tcase_create("pdf_list_destroy");
-  tcase_add_test(tc, pdf_list_destroy_001);
+  TCase *tc = tcase_create ("pdf_list_destroy");
+
+  tcase_add_test (tc, pdf_list_destroy_001);
+  tcase_add_test (tc, pdf_list_destroy_002);
+
   return tc;
 }
 
