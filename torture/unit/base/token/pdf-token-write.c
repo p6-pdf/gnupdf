@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2010-09-23 20:13:28 jemarch"
+/* -*- mode: C -*- Time-stamp: "2011-02-11 03:56:53 EET mivael"
  *
  *       File:         pdf-token-write.c
  *       Date:         Tue Sep 21 21:08:07 2010
