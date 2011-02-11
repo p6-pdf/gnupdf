@@ -2,6 +2,9 @@
 
 	* torture/unit/base/token/pdf-token-write.c: Time-stamp fixed.
 
+	* torture/unit/base/token/pdf-token-write.c: Copyright years
+	fixed.
+
 2011-02-10  Michael V. Antosha  <Michael.Antosha@gmail.com>
 
 	Bug fixes and minor improvements in token writer unit tests.

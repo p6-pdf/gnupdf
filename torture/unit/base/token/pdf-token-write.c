@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2011-02-11 03:56:53 EET mivael"
+/* -*- mode: C -*- Time-stamp: "2011-02-11 12:54:59 EET mivael"
  *
  *       File:         pdf-token-write.c
  *       Date:         Tue Sep 21 21:08:07 2010
@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2010 Free Software Foundation, Inc. */
+/* Copyright (C) 2010, 2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
