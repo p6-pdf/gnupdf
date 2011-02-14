@@ -106,10 +106,10 @@ TEST_SUITE_LIST = base/list/pdf-list-test-common.h \
                   base/list/pdf-list-indexof.c \
                   base/list/pdf-list-indexof-from.c \
                   base/list/pdf-list-indexof-from-to.c \
-                  base/list/pdf-list-iterator.c \
-                  base/list/pdf-list-iterator-from-to.c \
+                  base/list/pdf-list-iterator-init.c \
+                  base/list/pdf-list-iterator-init-from-to.c \
                   base/list/pdf-list-iterator-next.c \
-                  base/list/pdf-list-iterator-free.c \
+                  base/list/pdf-list-iterator-deinit.c \
                   base/list/pdf-list-next-node.c \
                   base/list/pdf-list-node-value.c \
                   base/list/pdf-list-previous-node.c \

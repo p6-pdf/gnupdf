@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,8 @@
 #include <pdf.h>
 #include <check.h>
 
+#include "pdf-list-test-common.h"
+
 /*
  * Test: pdf_list_iterator_next_001
  * Description:
@@ -37,59 +39,67 @@
  */
 START_TEST (pdf_list_iterator_next_001)
 {
-  pdf_list_t list;
+  pdf_list_t *list;
   pdf_list_iterator_t itr;
   int elem, *next;
-  pdf_status_t st;
-  
+  pdf_list_node_t *next_node;
+  pdf_error_t *error = NULL;
+
   elem = 222;
 
-  
-  pdf_init();
+  pdf_init ();
 
-  pdf_list_new (NULL, NULL, 0, &list);
+  list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
   pdf_list_add_last (list, &elem, NULL);
-  pdf_list_iterator (list, &itr);
 
-  st = pdf_list_iterator_next (&itr, (const void **) &next, NULL);
+  pdf_list_iterator_init (&itr, list, NULL);
 
-  fail_if (st != PDF_OK);
+  fail_if (pdf_list_iterator_next (&itr,
+                                   (const void **) &next,
+                                   &next_node,
+                                   &error) != PDF_TRUE);
+  fail_if (error != NULL);
+  fail_if (next == NULL);
+  fail_if (next_node == NULL);
 
   pdf_list_destroy (list);
-  pdf_list_iterator_free(&itr);
+  pdf_list_iterator_deinit (&itr);
 }
 END_TEST
-
 
 /*
  * Test: pdf_list_iterator_next_002
  * Description:
  *   Try to get the next element using an iterator from an empty list.
  * Success condition:
- *   Returns PDF_ENONODE
+ *   Returns PDF_FALSE and no next element
  */
 START_TEST (pdf_list_iterator_next_002)
 {
-  pdf_list_t list;
+  pdf_list_t *list;
   pdf_list_iterator_t itr;
-  pdf_status_t st;
   int *next;
+  pdf_list_node_t *next_node;
+  pdf_error_t *error = NULL;
 
-  pdf_init();
+  pdf_init ();
 
-  pdf_list_new (NULL, NULL, 0, &list);
-  pdf_list_iterator (list, &itr);
+  list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
 
-  st = pdf_list_iterator_next (&itr, (const void **) &next, NULL);
+  pdf_list_iterator_init (&itr, list, NULL);
 
-  fail_if (st != PDF_ENONODE);
+  fail_if (pdf_list_iterator_next (&itr,
+                                   (const void **) &next,
+                                   &next_node,
+                                   &error) == PDF_TRUE);
+  fail_if (error != NULL);
+  fail_if (next != NULL);
+  fail_if (next_node != NULL);
 
   pdf_list_destroy (list);
-  pdf_list_iterator_free(&itr);
+  pdf_list_iterator_deinit (&itr);
 }
 END_TEST
-
-
 
 /*
  * Test case creation function
@@ -97,9 +107,10 @@ END_TEST
 TCase *
 test_pdf_list_iterator_next (void)
 {
-  TCase *tc = tcase_create("pdf_list_iterator_next");
-  tcase_add_test(tc, pdf_list_iterator_next_001);
-  tcase_add_test(tc, pdf_list_iterator_next_002);
+  TCase *tc = tcase_create ("pdf_list_iterator_next");
+
+  tcase_add_test (tc, pdf_list_iterator_next_001);
+  tcase_add_test (tc, pdf_list_iterator_next_002);
 
   return tc;
 }

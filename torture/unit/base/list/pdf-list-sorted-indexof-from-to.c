@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,10 +28,7 @@
 #include <pdf.h>
 #include <check.h>
 
-
-extern int l_comp_desc (const void *elema, const void * elemb);
-extern int l_comp_asc (const void *elema, const void * elemb);
-
+#include "pdf-list-test-common.h"
 
 /*
  * Test: pdf_list_sorted_indexof_from_to_001
@@ -46,13 +43,13 @@ START_TEST (pdf_list_sorted_indexof_from_to_001)
   int elem;
   pdf_size_t pos;
   pdf_status_t st;
-  
+
   elem = 2121;
 
   pdf_init();
 
   pdf_list_new (NULL, NULL, 0, &list);
-  
+
   pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
 
   st = pdf_list_sorted_indexof_from_to (list, l_comp_asc, 0, 1, &elem, &pos);
@@ -78,13 +75,13 @@ START_TEST (pdf_list_sorted_indexof_from_to_002)
   int elem;
   pdf_size_t pos;
   pdf_status_t st;
-  
+
   elem = 2121;
 
   pdf_init();
 
   pdf_list_new (NULL, NULL, 0, &list);
-  
+
   pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
 
   st = pdf_list_sorted_indexof_from_to (list, l_comp_asc, 0, 2, &elem, &pos);
@@ -113,13 +110,13 @@ START_TEST (pdf_list_sorted_indexof_from_to_003)
   pdf_list_t list;
   int elem;
   pdf_status_t st;
-  
+
   elem = 2121;
 
   pdf_init();
 
   pdf_list_new (NULL, NULL, 0, &list);
-  
+
   pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
 
   st = pdf_list_sorted_indexof_from_to (list, l_comp_asc, 0, 1, &elem, NULL);
@@ -143,14 +140,14 @@ START_TEST (pdf_list_sorted_indexof_from_to_004)
   int elem, elem2;
   pdf_size_t pos;
   pdf_status_t st;
-  
+
   elem = 2121;
   elem2 = 2222;
-  
+
   pdf_init();
 
   pdf_list_new (NULL, NULL, 0, &list);
-  
+
   pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
 
   st = pdf_list_sorted_indexof_from_to (list, l_comp_asc, 0, 1, &elem2, &pos);
@@ -175,13 +172,13 @@ START_TEST (pdf_list_sorted_indexof_from_to_005)
   int elem;
   pdf_size_t pos;
   pdf_status_t st;
-  
+
   elem = 2121;
 
   pdf_init();
 
   pdf_list_new (NULL, NULL, 0, &list);
-  
+
   pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
 
   st = pdf_list_sorted_indexof_from_to (list, NULL, 0, 1, &elem, &pos);

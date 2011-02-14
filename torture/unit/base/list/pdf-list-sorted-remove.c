@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,15 +24,11 @@
  */
 
 #include <config.h>
-
-
 #include <stdio.h>
 #include <pdf.h>
 #include <check.h>
 
-extern pdf_bool_t l_comp (const void * elemb, const void * elema);
-extern int l_comp_desc (const void *elema, const void * elemb);
-extern int l_comp_asc (const void *elema, const void * elemb);
+#include "pdf-list-test-common.h"
 
 /*
  * Test: pdf_list_sorted_remove_001
@@ -43,19 +39,20 @@ extern int l_comp_asc (const void *elema, const void * elemb);
  */
 START_TEST (pdf_list_sorted_remove_001)
 {
-  pdf_list_t list;
+  pdf_list_t *list;
   int elem;
-  pdf_status_t st;
+  pdf_error_t *error = NULL;
 
-  elem = 1212;
+  elem = 5123;
 
-  pdf_init();
+  pdf_init ();
 
-  pdf_list_new (NULL, NULL, 0, &list);
-  pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
-  st = pdf_list_sorted_remove (list, l_comp_asc, &elem);
+  list = pdf_list_new (l_comp, NULL, PDF_FALSE, NULL);
 
-  fail_if (st != PDF_OK);
+  pdf_list_sorted_add (list, l_comp_asc, &elem, &error);
+
+  fail_if (pdf_list_sorted_remove (list, l_comp_asc, &elem, &error) != PDF_TRUE);
+  fail_if (error != NULL);
 
   pdf_list_destroy (list);
 }
@@ -71,25 +68,25 @@ END_TEST
  */
 START_TEST (pdf_list_sorted_remove_002)
 {
-  pdf_list_t list;
-  int elem,elem2;
-  pdf_status_t st;
+  pdf_list_t *list;
+  int elem, elem2;
+  pdf_error_t *error = NULL;
 
-  elem = 1212;
+  elem = 5123;
   elem2 = 3333;
-  
-  pdf_init();
 
-  pdf_list_new (l_comp, NULL, 0, &list);
-  pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
-  st = pdf_list_sorted_remove (list, l_comp_asc, &elem2);
+  pdf_init ();
 
-  fail_if (st != PDF_ENONODE);
+  list = pdf_list_new (l_comp, NULL, PDF_FALSE, NULL);
+
+  pdf_list_sorted_add (list, l_comp_asc, &elem, &error);
+
+  fail_if (pdf_list_sorted_remove (list, l_comp_asc, &elem2, &error) == PDF_TRUE);
+  fail_if (error != NULL);
 
   pdf_list_destroy (list);
 }
 END_TEST
-
 
 /*
  * Test: pdf_list_sorted_remove_003
@@ -100,19 +97,21 @@ END_TEST
  */
 START_TEST (pdf_list_sorted_remove_003)
 {
-  pdf_list_t list;
+  pdf_list_t *list;
   int elem;
-  pdf_status_t st;
+  pdf_error_t *error = NULL;
 
-  elem = 1212;
-  
-  pdf_init();
+  elem = 5123;
 
-  pdf_list_new (l_comp, NULL, 0, &list);
-  pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
-  st = pdf_list_sorted_remove (list, NULL, &elem);
+  pdf_init ();
 
-  fail_if (st != PDF_EBADDATA);
+  list = pdf_list_new (l_comp, NULL, PDF_FALSE, NULL);
+
+  pdf_list_sorted_add (list, l_comp_asc, &elem, &error);
+
+  fail_if (pdf_list_sorted_remove (list, NULL, &elem, &error) != PDF_TRUE);
+  fail_if (error == NULL);
+  fail_if (pdf_error_get_status (error) != PDF_EBADDATA);
 
   pdf_list_destroy (list);
 }
@@ -125,10 +124,11 @@ END_TEST
 TCase *
 test_pdf_list_sorted_remove (void)
 {
-  TCase *tc = tcase_create("pdf_list_sorted_remove");
-  tcase_add_test(tc, pdf_list_sorted_remove_001);
-  tcase_add_test(tc, pdf_list_sorted_remove_002);
-  tcase_add_test(tc, pdf_list_sorted_remove_003);
+  TCase *tc = tcase_create ("pdf_list_sorted_remove");
+
+  tcase_add_test (tc, pdf_list_sorted_remove_001);
+  tcase_add_test (tc, pdf_list_sorted_remove_002);
+  tcase_add_test (tc, pdf_list_sorted_remove_003);
 
   return tc;
 }

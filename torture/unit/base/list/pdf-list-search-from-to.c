@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
 #include <pdf.h>
 #include <check.h>
 
-extern pdf_bool_t l_comp (const void * elemb, const void * elema);
+#include "pdf-list-test-common.h"
 
 /*
  * Test: pdf_list_search_from_to_001
@@ -40,21 +40,22 @@ extern pdf_bool_t l_comp (const void * elemb, const void * elema);
  */
 START_TEST (pdf_list_search_from_to_001)
 {
-  pdf_list_t list;
+  pdf_list_t *list;
   int elem;
-  pdf_status_t st;
-  pdf_list_node_t node;
+  pdf_list_node_t *node;
+  pdf_error_t *error = NULL;
 
   elem = 2232;
-  
-  pdf_init();
 
-  pdf_list_new (l_comp, NULL, 0, &list);
+  pdf_init ();
+
+  list = pdf_list_new (l_comp, NULL, 0, NULL);
+
   pdf_list_add_last (list, &elem, NULL);
 
-  st = pdf_list_search_from_to (list, 0, 1, &elem, &node);
-
-  fail_if (st != PDF_OK);
+  node = pdf_list_search_from_to (list, 0, 1, &elem, &error);
+  fail_if (node == NULL);
+  fail_if (error != NULL);
 
   pdf_list_destroy (list);
 }
@@ -69,21 +70,23 @@ END_TEST
  */
 START_TEST (pdf_list_search_from_to_002)
 {
-  pdf_list_t list;
+  pdf_list_t *list;
   int elem;
-  pdf_status_t st;
-  pdf_list_node_t node;
+  pdf_list_node_t *node;
+  pdf_error_t *error = NULL;
 
   elem = 2232;
-  
-  pdf_init();
 
-  pdf_list_new (l_comp, NULL, 0, &list);
+  pdf_init ();
+
+  list = pdf_list_new (l_comp, NULL, 0, NULL);
+
   pdf_list_add_last (list, &elem, NULL);
 
-  st = pdf_list_search_from_to (list, 0, 5, &elem, &node);
-
-  fail_if (st != PDF_EINVRANGE);
+  node = pdf_list_search_from_to (list, 0, 3, &elem, &error);
+  fail_if (node == NULL);
+  fail_if (error == NULL);
+  fail_if (pdf_error_get_status (error) != PDF_EINVRANGE);
 
   pdf_list_destroy (list);
 }
@@ -98,55 +101,27 @@ END_TEST
  */
 START_TEST (pdf_list_search_from_to_003)
 {
-  pdf_list_t list;
+  pdf_list_t *list;
   int elem, elem2;
-  pdf_status_t st;
-  pdf_list_node_t node;
+  pdf_list_node_t *node;
+  pdf_error_t *error = NULL;
 
   elem = 2232;
-  elem2 = 232323;
+  elem2 = 1223;
 
-  pdf_init();
+  pdf_init ();
 
-  pdf_list_new (l_comp, NULL, 0, &list);
+  list = pdf_list_new (l_comp, NULL, 0, NULL);
+
   pdf_list_add_last (list, &elem, NULL);
 
-  st = pdf_list_search_from_to (list, 0, 1, &elem2, &node);
-
-  fail_if (st != PDF_ENONODE);
+  node = pdf_list_search_from_to (list, 0, 1, &elem2, &error);
+  fail_if (node != NULL);
+  fail_if (error != NULL);
 
   pdf_list_destroy (list);
 }
 END_TEST
-
-/*
- * Test: pdf_list_search_from_to_004
- * Description:
- *   Try search an element given a NULL node pointer.
- * Success condition:
- *   Returns PDF_EBADDATA
- */
-START_TEST (pdf_list_search_from_to_004)
-{
-  pdf_list_t list;
-  int elem;
-  pdf_status_t st;
-
-  elem = 2232;
-  
-  pdf_init();
-
-  pdf_list_new (l_comp, NULL, 0, &list);
-  pdf_list_add_last (list, &elem, NULL);
-
-  st = pdf_list_search_from_to (list, 0, 1, &elem, NULL);
-
-  fail_if (st != PDF_EBADDATA);
-
-  pdf_list_destroy (list);
-}
-END_TEST
-
 
 /*
  * Test case creation function
@@ -154,11 +129,11 @@ END_TEST
 TCase *
 test_pdf_list_search_from_to (void)
 {
-  TCase *tc = tcase_create("pdf_list_search_from_to");
-  tcase_add_test(tc, pdf_list_search_from_to_001);
-  tcase_add_test(tc, pdf_list_search_from_to_002);
-  tcase_add_test(tc, pdf_list_search_from_to_003);
-  tcase_add_test(tc, pdf_list_search_from_to_004);
+  TCase *tc = tcase_create ("pdf_list_search_from_to");
+
+  tcase_add_test (tc, pdf_list_search_from_to_001);
+  tcase_add_test (tc, pdf_list_search_from_to_002);
+  tcase_add_test (tc, pdf_list_search_from_to_003);
 
   return tc;
 }

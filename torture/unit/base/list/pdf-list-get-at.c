@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,8 @@
 #include <pdf.h>
 #include <check.h>
 
+#include "pdf-list-test-common.h"
+
 /*
  * Test: pdf_list_get_at_001
  * Description:
@@ -37,21 +39,24 @@
  */
 START_TEST (pdf_list_get_at_001)
 {
-  pdf_list_t list;
-  int elem, *val;
-  pdf_status_t st;
+  pdf_list_t *list;
+  int elem;
+  const int *val;
+  pdf_error_t *error = NULL;
 
   elem = 2212;
 
   pdf_init();
 
-  pdf_list_new (NULL, NULL, 0, &list);
+  list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
 
-  pdf_list_add_last (list, &elem, NULL);
+  pdf_list_add_last (list, &elem, &error);
+  fail_if (error != NULL);
 
-  st = pdf_list_get_at (list, 0, (void*)&val);
+  val = pdf_list_get_at (list, 0, &error);
 
-  fail_if (st != PDF_OK);
+  fail_if (val == NULL);
+  fail_if (error != NULL);
 
   pdf_list_destroy (list);
 }
@@ -60,56 +65,30 @@ END_TEST
 /*
  * Test: pdf_list_get_at_002
  * Description:
- *   Try to get a node value given a NULL value pointer.
- * Success condition:
- *   Returns PDF_EBADDATA
- */
-START_TEST (pdf_list_get_at_002)
-{
-  pdf_list_t list;
-  int elem;
-  pdf_status_t st;
-
-  elem = 2212;
-
-  pdf_init();
-
-  pdf_list_new (NULL, NULL, 0, &list);
-
-  pdf_list_add_last (list, &elem, NULL);
-
-  st = pdf_list_get_at (list, 0, NULL);
-
-  fail_if (st != PDF_EBADDATA);
-
-  pdf_list_destroy (list);
-}
-END_TEST
-
-/*
- * Test: pdf_list_get_at_003
- * Description:
  *   Try to get a node value at an invalid position.
  * Success condition:
  *   Returns EINVRANGE
  */
-START_TEST (pdf_list_get_at_003)
+START_TEST (pdf_list_get_at_002)
 {
-  pdf_list_t list;
-  int elem, *val;
-  pdf_status_t st;
+  pdf_list_t *list;
+  int elem;
+  const int *val;
+  pdf_error_t *error = NULL;
 
   elem = 2212;
 
   pdf_init();
 
-  pdf_list_new (NULL, NULL, 0, &list);
+  list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
 
-  pdf_list_add_last (list, &elem, NULL);
+  pdf_list_add_last (list, &elem, &error);
+  fail_if (error != NULL);
 
-  st = pdf_list_get_at (list, 4, (void*)&val);
-
-  fail_if (st != PDF_EINVRANGE);
+  val = pdf_list_get_at (list, 0, &error);
+  fail_if (val != NULL);
+  fail_if (error == NULL);
+  fail_if (pdf_error_get_status (error) != PDF_EINVRANGE);
 
   pdf_list_destroy (list);
 }
@@ -125,7 +104,6 @@ test_pdf_list_get_at (void)
 
   tcase_add_test (tc, pdf_list_get_at_001);
   tcase_add_test (tc, pdf_list_get_at_002);
-  tcase_add_test (tc, pdf_list_get_at_003);
 
   return tc;
 }
