@@ -95,7 +95,6 @@ pdf_list_node_t *pdf_list_search_from_to (const pdf_list_t  *list,
 
 pdf_list_node_t *pdf_list_next_node (const pdf_list_t       *list,
                                      const pdf_list_node_t  *node,
-                                     pdf_list_node_t        *next,
                                      pdf_error_t           **error);
 
 pdf_list_node_t *pdf_list_previous_node (const pdf_list_t       *list,
