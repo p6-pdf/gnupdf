@@ -39,22 +39,22 @@
  */
 START_TEST (pdf_list_sorted_indexof_from_to_001)
 {
-  pdf_list_t list;
+  pdf_list_t *list;
   int elem;
+  pdf_error_t *error = NULL;
   pdf_size_t pos;
-  pdf_status_t st;
 
-  elem = 2121;
+  elem = 2232;
 
-  pdf_init();
+  pdf_init ();
 
-  pdf_list_new (NULL, NULL, 0, &list);
+  list = pdf_list_new (l_comp, NULL, PDF_FALSE, NULL);
 
   pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
 
-  st = pdf_list_sorted_indexof_from_to (list, l_comp_asc, 0, 1, &elem, &pos);
-
-  fail_if (st != PDF_OK);
+  pos = pdf_list_sorted_indexof_from_to (list, l_comp_asc, 0, 1, &elem, &error);
+  fail_if (pos == (pdf_size_t)-1);
+  fail_if (error != NULL);
 
   pdf_list_destroy (list);
 }
@@ -71,118 +71,90 @@ END_TEST
  */
 START_TEST (pdf_list_sorted_indexof_from_to_002)
 {
-  pdf_list_t list;
+  pdf_list_t *list;
   int elem;
+  pdf_error_t *error = NULL;
   pdf_size_t pos;
-  pdf_status_t st;
 
-  elem = 2121;
+  elem = 2232;
 
-  pdf_init();
+  pdf_init ();
 
-  pdf_list_new (NULL, NULL, 0, &list);
+  list = pdf_list_new (l_comp, NULL, PDF_FALSE, NULL);
 
   pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
 
-  st = pdf_list_sorted_indexof_from_to (list, l_comp_asc, 0, 2, &elem, &pos);
-  fail_if (st != PDF_EINVRANGE);
+  pos = pdf_list_sorted_indexof_from_to (list, l_comp_asc, 0, 2, &elem, &error);
+  fail_if (pos != (pdf_size_t)-1);
+  fail_if (error == NULL);
+  fail_if (pdf_error_get_status (error) != PDF_EINVRANGE);
 
-  st = pdf_list_sorted_indexof_from_to (list, l_comp_asc, -2, 1, &elem, &pos);
-  fail_if (st != PDF_EINVRANGE);
-
-  st = pdf_list_sorted_indexof_from_to (list, l_comp_asc, 1, -1, &elem, &pos);
-  fail_if (st != PDF_EINVRANGE);
+  pos = pdf_list_sorted_indexof_from_to (list, l_comp_asc, 2, 0, &elem, &error);
+  fail_if (pos != (pdf_size_t)-1);
+  fail_if (error == NULL);
+  fail_if (pdf_error_get_status (error) != PDF_EINVRANGE);
 
   pdf_list_destroy (list);
 }
 END_TEST
-
 
 /*
  * Test: pdf_list_sorted_indexof_from_to_003
- * Description:
- *   Try to get the index of a existent element given a NULL position pointer.
- * Success condition:
- *   Returns PDF_EBADDATA
- */
-START_TEST (pdf_list_sorted_indexof_from_to_003)
-{
-  pdf_list_t list;
-  int elem;
-  pdf_status_t st;
-
-  elem = 2121;
-
-  pdf_init();
-
-  pdf_list_new (NULL, NULL, 0, &list);
-
-  pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
-
-  st = pdf_list_sorted_indexof_from_to (list, l_comp_asc, 0, 1, &elem, NULL);
-  fail_if (st != PDF_EBADDATA);
-
-  pdf_list_destroy (list);
-}
-END_TEST
-
-
-/*
- * Test: pdf_list_sorted_indexof_from_to_004
  * Description:
  *   Try to get the index of a non-existent element.
  * Success condition:
  *   Returns PDF_ENONODE
  */
-START_TEST (pdf_list_sorted_indexof_from_to_004)
+START_TEST (pdf_list_sorted_indexof_from_to_003)
 {
-  pdf_list_t list;
+  pdf_list_t *list;
   int elem, elem2;
+  pdf_error_t *error = NULL;
   pdf_size_t pos;
-  pdf_status_t st;
 
-  elem = 2121;
-  elem2 = 2222;
+  elem = 2232;
+  elem2 = 1234;
 
-  pdf_init();
+  pdf_init ();
 
-  pdf_list_new (NULL, NULL, 0, &list);
+  list = pdf_list_new (l_comp, NULL, PDF_FALSE, NULL);
 
   pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
 
-  st = pdf_list_sorted_indexof_from_to (list, l_comp_asc, 0, 1, &elem2, &pos);
-  fail_if (st != PDF_ENONODE);
+  pos = pdf_list_sorted_indexof_from_to (list, l_comp_asc, 0, 1, &elem2, &error);
+  fail_if (pos != (pdf_size_t)-1);
+  fail_if (error != NULL);
 
   pdf_list_destroy (list);
 }
 END_TEST
 
-
-
 /*
- * Test: pdf_list_sorted_indexof_from_to_005
+ * Test: pdf_list_sorted_indexof_from_to_004
  * Description:
  *   Try to get the index of a existent element given a NULL compar_fn.
  * Success condition:
  *   Returns PDF_EBADDATA
  */
-START_TEST (pdf_list_sorted_indexof_from_to_005)
+START_TEST (pdf_list_sorted_indexof_from_to_004)
 {
-  pdf_list_t list;
+  pdf_list_t *list;
   int elem;
+  pdf_error_t *error = NULL;
   pdf_size_t pos;
-  pdf_status_t st;
 
-  elem = 2121;
+  elem = 2232;
 
-  pdf_init();
+  pdf_init ();
 
-  pdf_list_new (NULL, NULL, 0, &list);
+  list = pdf_list_new (l_comp, NULL, PDF_FALSE, NULL);
 
   pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
 
-  st = pdf_list_sorted_indexof_from_to (list, NULL, 0, 1, &elem, &pos);
-  fail_if (st != PDF_EBADDATA);
+  pos = pdf_list_sorted_indexof_from_to (list, NULL, 0, 1, &elem, &error);
+  fail_if (pos != (pdf_size_t)-1);
+  fail_if (error == NULL);
+  fail_if (pdf_error_get_status (error) != PDF_EBADDATA);
 
   pdf_list_destroy (list);
 }
@@ -197,12 +169,12 @@ END_TEST
 TCase *
 test_pdf_list_sorted_indexof_from_to (void)
 {
-  TCase *tc = tcase_create("pdf_list_sorted_indexof_from_to");
-  tcase_add_test(tc, pdf_list_sorted_indexof_from_to_001);
-  tcase_add_test(tc, pdf_list_sorted_indexof_from_to_002);
-  tcase_add_test(tc, pdf_list_sorted_indexof_from_to_003);
-  tcase_add_test(tc, pdf_list_sorted_indexof_from_to_004);
-  tcase_add_test(tc, pdf_list_sorted_indexof_from_to_005);
+  TCase *tc = tcase_create ("pdf_list_sorted_indexof_from_to");
+
+  tcase_add_test (tc, pdf_list_sorted_indexof_from_to_001);
+  tcase_add_test (tc, pdf_list_sorted_indexof_from_to_002);
+  tcase_add_test (tc, pdf_list_sorted_indexof_from_to_003);
+  tcase_add_test (tc, pdf_list_sorted_indexof_from_to_004);
 
   return tc;
 }
