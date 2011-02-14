@@ -432,6 +432,10 @@ pdf_list_indexof (const pdf_list_t  *list,
       return (pdf_size_t)-1;
     }
 
+  /* No need to look for elements in empty lists */
+  if (pdf_list_size (list) == 0)
+    return (pdf_size_t)-1;
+
   return (pdf_size_t) gl_list_indexof ((gl_list_t) list,
                                        element);
 }
@@ -442,6 +446,8 @@ pdf_list_indexof_from (const pdf_list_t  *list,
                        const void        *element,
                        pdf_error_t      **error)
 {
+  pdf_size_t list_size;
+
   /* Check input arguments */
   if (list == NULL)
     {
@@ -453,8 +459,14 @@ pdf_list_indexof_from (const pdf_list_t  *list,
       return (pdf_size_t)-1;
     }
 
+  list_size = pdf_list_size (list);
+
+  /* No need to look for elements in empty lists */
+  if (list_size == 0)
+    return (pdf_size_t)-1;
+
   /* Check range */
-  if (start_index >= pdf_list_size (list))
+  if (start_index >= list_size)
     {
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_LIST,
@@ -493,6 +505,11 @@ pdf_list_indexof_from_to (const pdf_list_t  *list,
 
   /* Check range */
   list_size = pdf_list_size (list);
+
+  /* No need to look for elements in empty lists */
+  if (list_size == 0)
+    return (pdf_size_t)-1;
+
   if ((start_index >= list_size) ||
       (end_index >= list_size) ||
       (start_index >= end_index))
