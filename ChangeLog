@@ -1,3 +1,15 @@
+2011-02-15  Jose E. Marchesi  <jemarch@gnu.org>
+
+	manual: changes to the object API.
+	* doc/gnupdf.texi (Name Objects): API updates.
+	(Name Objects): pdf_obj_name_size is no longer needed.
+	(Name Objects): pdf_obj_name_value renamed to pdf_obj_name.
+	(String Objects): API updates.
+	(String Objects): pdf_obj_string_size is no longer needed.
+	(String Objects): pdf_obj_string_value renamed to pdf_obj_string.
+	(Array Objects): API updates.
+	(Array Objects): pdf_obj_array_size is no longer needed.
+
 2011-02-14  Jose E. Marchesi  <jemarch@gnu.org>
 
 	manual: changes to the object API and typos fixed.
