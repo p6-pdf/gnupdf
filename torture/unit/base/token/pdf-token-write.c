@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2010-09-23 20:13:28 jemarch"
+/* -*- mode: C -*- Time-stamp: "2011-02-11 12:54:59 EET mivael"
  *
  *       File:         pdf-token-write.c
  *       Date:         Tue Sep 21 21:08:07 2010
@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2010 Free Software Foundation, Inc. */
+/* Copyright (C) 2010, 2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,16 +51,24 @@ write_and_check (pdf_token_t token,
 
   /* Create the token writer.  */
   fail_if (pdf_token_writer_new (stm, &writer) != PDF_OK);
-  
+
   /* Write the token.  */
   fail_if (pdf_token_write (writer, flags, token) != PDF_OK);
-  
+
   /* Destroy writer and stream.  */
   fail_if (pdf_token_writer_destroy (writer));
   fail_if (pdf_stm_destroy (stm) != PDF_OK);
 
   /* Compare results.  */
-  fail_unless (strncmp (buffer, expected, expected_size) == 0);
+  fail_unless (strncmp (buffer, expected, expected_size) == 0,
+               "Assertion 'strncmp"
+                 " (\"%.*s\" /*buffer*/, \"%.*s\" /*expected*/, %d)"
+                 " == 0' failed",
+               (int) expected_size,
+               (char*) buffer,
+               (int) expected_size,
+               (char*) expected,
+               (int) expected_size);
 }
 
 /*
@@ -136,7 +144,7 @@ START_TEST(pdf_token_write_real_positive)
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
-                   "10.2", 3, 100);
+                   "10.2", 4, 100);
 }
 END_TEST
 
@@ -571,13 +579,13 @@ START_TEST(pdf_token_write_string_octal_readable)
   pdf_init ();
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("a\0007c", 3, &token)
+  fail_if (pdf_token_string_new ("a\007c", 3, &token)
            != PDF_OK);
 
   /* Check.  */
   write_and_check (token,
                    PDF_TOKEN_READABLE_STRINGS,  /* Flags.  */
-                   "(a\\007c)", 9, 100);
+                   "(a\\7c)", 6, 100);
 }
 END_TEST
 

@@ -15,6 +15,28 @@
 
 	* doc/gnupdf.texi: Several function prototypes reworked.
 
+2011-02-11  Michael V. Antosha  <Michael.Antosha@gmail.com>
+
+	* torture/unit/base/token/pdf-token-read.c (ok_for_escaped_char):
+	False-fail result fixed in unit test
+	pdf_token_regular_char_as_number.
+
+	* torture/unit/base/token/pdf-token-write.c: Time-stamp fixed.
+
+	* torture/unit/base/token/pdf-token-write.c: Copyright years
+	fixed.
+
+2011-02-10  Michael V. Antosha  <Michael.Antosha@gmail.com>
+
+	Bug fixes and minor improvements in token writer unit tests.
+	* torture/unit/base/token/pdf-token-write.c (write_and_check):
+	Give more details when test fails (result string, expected string,
+	number of characters compared).
+	(pdf_token_write_string_octal_readable): Bug fixed (FS#124).
+	(write_and_check): Some trailing space removed.
+	(pdf_token_write_real_positive): Number of compared char's
+	increased to prevent false-pass result.
+
 2011-01-31  Jose E. Marchesi  <jemarch@gnu.org>
 
 	pdf-fsys: use pdf_off_t values for file sizes and offsets.
