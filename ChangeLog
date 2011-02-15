@@ -1,3 +1,20 @@
+2011-02-14  Jose E. Marchesi  <jemarch@gnu.org>
+
+	manual: changes to the object API and typos fixed.
+	* doc/gnupdf.texi (Object Layer Overview): Typos fixed.
+	(Object Data Types): pdf_obj_cb_fn_t removed, since the API is now
+	returning lists instead of relying on callbacks.
+	(Generic Functions to Manipulate Objects): pdf_obj_copy renamed to
+	pdf_obj_dup.
+	(Generic Functions to Manipulate Objects): pdf_obj_enum renamed to
+	pdf_obj_get_objs.
+	(Generic Functions to Manipulate Objects): Documentation for new
+	function pdf_obj_size.
+	(Object Collections): pdf_obj_col_enum renamed to
+	pdf_obj_col_get_objs.
+
+	* doc/gnupdf.texi: Several function prototypes reworked.
+
 2011-02-11  Michael V. Antosha  <Michael.Antosha@gmail.com>
 
 	* torture/unit/base/token/pdf-token-read.c (ok_for_escaped_char):
