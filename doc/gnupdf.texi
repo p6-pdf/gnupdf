@@ -13385,10 +13385,9 @@ if (boolean_obj != PDF_OBJ_NULL)
 A PDF name object is an atomic symbol uniquely defined by a sequence
 of regular characters.  It does not have internal structure.
 
-@deftypefun pdf_status_t pdf_obj_name_new (pdf_obj_doc_t @var{doc}, pdf_bool_t @var{indirect_p}, pdf_char_t *@var{value}, pdf_obj_t *@var{obj})
+@deftypefun pdf_obj_t pdf_obj_name_new (pdf_obj_doc_t *@var{doc}, pdf_bool_t @var{indirect_p}, pdf_char_t *@var{value})
 
-Create a new Name object in the given document @var{doc} and store it
-in @var{obj}.
+Create a new Name object in an object document.
 
 @table @strong
 @item Parameters
@@ -13399,37 +13398,26 @@ A document object.
 A boolean value indicating whether to create an indirect object.
 @item value
 The null-terminated string value for the object.
-@item obj
-A pointer to a @code{pdf_obj_t} variable to store the newly created
-object.
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-A new name object was successfully created in @var{doc} and stored in
-@var{obj}.
-@item PDF_EBADDATA
-Invalid value in @var{value}.
-@item PDF_ERROR
-An error prevented the operation to complete.  The value in @var{doc}
-shall be considered invalid.
-@end table
+The newly created object, or @code{PDF_OBJ_NULL} if there is not
+enough memory to perform the operation, or the data in @var{value} is
+not correct.
 @item Usage example
 @example
-pdf_obj_doc_t doc;
+pdf_obj_doc_t *doc;
 pdf_obj_t name_obj_1;
 pdf_obj_t name_obj_2;
 
 /* Create some Name objects */
-if (pdf_obj_name_new (doc, PDF_FALSE, "FooBar", &name_obj_1)
-    != PDF_OK)
+name_obj_1 = pdf_obj_name_new (doc, PDF_FALSE, "FooBar");
+if (name_obj_1 == PDF_OBJ_NULL)
 @{
    /* Error creating name object */
 @}
 
-if (pdf_obj_name_new (doc, PDF_FALSE, "BazFoo", &name_obj_2)
-    != PDF_OK)
+name_obj_2 = pdf_obj_name_new (doc, PDF_FALSE, "BazFoo");
+if (name_obj_2 == PDF_OBJ_NULL)
 @{
    /* Error creating name object */
 @}
@@ -13437,57 +13425,9 @@ if (pdf_obj_name_new (doc, PDF_FALSE, "BazFoo", &name_obj_2)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_name_size (pdf_obj_t @var{obj}, pdf_size_t *@var{size})
+@deftypefun const pdf_char_t *pdf_obj_name (pdf_obj_t @var{obj})
 
-Return the size of the PDF name @var{obj} (i.e. the number of
-characters composing it).
-
-Note that the initial slash character (@code{/}) is not included in
-the count.
-
-The size of the @code{/} name (without any character after the slash)
-is @code{0}.
-@table @strong
-@item Parameters
-@table @var
-@item obj
-A PDF name object.
-@item size
-A pointer to a @var{pdf_size_t} variable to hold the size of
-@var{obj} in octects.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The size of @var{obj} was stored in @var{size}.
-@item PDF_EINVOBJ
-@var{obj} is not a name object.  The value in @var{size} is
-unchenged.
-@item PDF_ERROR
-Some error prevented the operation to complete.  The value in
-@var{size} shall be considered invalid.
-@end table
-@item Usage example
-@example
-pdf_obj_doc_t doc;
-pdf_obj_t name;
-
-...
-
-
-pdf_obj_name_new (doc, PDF_FALSE, "Foo", &name);
-pdf_obj_name_size (name); /* Should return 3 */
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_name_value (pdf_obj_t @var{obj}, pdf_char_t *@var{buf})
-
-Get the value of a PDF Name object in the buffer pointed by
-@var{buf}.  There should be enough space in @var{buf} to hold the
-value (the user can get the size of the name object using
-@code{pdf_obj_name_size}).
+Get the value of a PDF Name object.
 
 The value of the name object does not include the ``/'' prefix.
 
@@ -13496,45 +13436,24 @@ The value of the name object does not include the ``/'' prefix.
 @table @var
 @item obj
 A PDF name object.
-@item buf
-A memory buffer to store the result.
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The string representing the name value of @var{obj} was successfully
-stored in @var{value}.
-@item PDF_EINVOBJ
-The object @var{obj} is not a name object.
-@item PDF_ERROR
-Some error prevented the operation to complete.  The value in
-@var{buf} shall be considered invalid.
-@end table
+A pointer to a @code{NULL}-terminated string containing the printable
+characters composing the PDF name, or @code{NULL} if the object is not
+a name object.
+
+The user shall not modify nor free the returned memory.
 @item Usage example
 @example
-pdf_obj_doc_t doc;
+pdf_obj_doc_t *doc;
 pdf_obj_t name_obj;
-pdf_char_t *name;
+const pdf_char_t *name;
 
-if (pdf_obj_name_new (doc, PDF_FALSE, "FooBar", &name_obj)
-    != PDF_OK)
+name_obj = pdf_obj_name_new (doc, PDF_FALSE, "FooBar");
+if (name_obj != PDF_OBJ_NULL)
 @{
-   /* Error creating Name object */
-@}
-else
-@{
-   name = malloc (pdf_obj_name_size (name_obj));
-
-   if (pdf_obj_name_value (name_obj, name)
-       != PDF_OK)
-   @{
-      /* Error getting the Name value */
-   @}
-   else
-   @{
-      /* 'name' equals to "FooBar" */
-   @}
+   name = pdf_obj_name (name_obj);
+   /* 'name' points to "FooBar" */
 @}
 @end example
 @end table
@@ -13546,10 +13465,9 @@ else
 A PDF string object is a sequence of bytes in the range @code{0-255}.
 They are not @code{NULL}-terminated.
 
-@deftypefun pdf_status_t pdf_obj_string_new (pdf_obj_doc_t @var{doc}, pdf_bool_t @var{indirect_p}, pdf_char_t *@var{str}, pdf_size_t @var{str_size}, pdf_obj_t *@var{obj})
+@deftypefun pdf_obj_t pdf_obj_string_new (pdf_obj_doc_t *@var{doc}, pdf_bool_t @var{indirect_p}, pdf_char_t *@var{str}, pdf_size_t @var{str_size})
 
-Create a new String object in the given document @var{doc} and store it
-in @var{obj}.
+Create a new String object in an object document.
 
 @table @strong
 @item Parameters
@@ -13559,33 +13477,24 @@ A document object.
 @item indirect_p
 A boolean value indicating whether to create an indirect object.
 @item str
-The string value. Note that this is not a @code{NULL} terminated
+The string value. Note that this is not a @code{NULL}-terminated
 string, since PDF strings can held arbitrary binary data. The data
 pointed by @var{str} is copied internally.
 @item str_size
 The size of @var{str}, in bytes.
-@item obj
-A pointer to a @code{pdf_obj_t} variable to store the newly created
-object.
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-A new string object was successfully created in @var{doc} and stored
-in @var{obj}.
-@item PDF_ERROR
-An error prevented the operation to complete.  The value in @var{obj}
-shall be considered invalid.
-@end table
+A pointer to the newly created object, or @code{PDF_OBJ_NULL} if there
+is not enough memory to perform the operation, @var{str} contains bad
+data or @var{str_size} equals to @code{0}.
 @item Usage example
 @example
-pdf_obj_doc_t doc;
+pdf_obj_doc_t *doc;
 pdf_obj_t str;
 
 /* Create a new String PDF object */
-if (pdf_obj_string_new (doc, PDF_FALSE, "f\233o", 3, &str)
-    != PDF_OK)
+str = pdf-obj_string_new (doc, PDF_FALSE, "f\233o", 3);
+if (str == PDF_OBJ_NULL)
 @{
    /* Error creating the String object */
 @}
@@ -13593,10 +13502,9 @@ if (pdf_obj_string_new (doc, PDF_FALSE, "f\233o", 3, &str)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_string_size (pdf_obj_t @var{obj}, pdf_size_t *@var{size})
+@deftypefun const char *pdf_obj_string (pdf_obj_t @var{obj}, pdf_size_t *@var{size})
 
-Return the size of the PDF string @var{obj} (i.e. the number of
-octects composing it).
+Get the value of a PDF String object.
 
 @table @strong
 @item Parameters
@@ -13604,84 +13512,26 @@ octects composing it).
 @item obj
 A PDF string object.
 @item size
-A pointer to a @var{pdf_size_t} variable to hold the size of
-@var{obj}.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The size of @var{obj} in octects was stored in @var{size}.
-@item PDF_EINVOBJ
-@var{obj} is not a string object.
-@item PDF_ERROR
-An error prevented the operation to complete.  The value in @var{size}
-is undefined and shall not be used.
-@end table
-@item Usage example
-@example
-pdf_obj_doc_t doc;
-pdf_obj_t str_obj;
-
-...
-
-pdf_obj_string_new (doc, PDF_FALSE, "foo", 3, &str_obj);
-pdf_obj_string_size (str_obj); /* Returns 3 */
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_string_value (pdf_obj_t @var{obj}, pdf_char_t *@var{buf})
-
-Get the value of a PDF String object in the buffer pointed by
-@var{buf}.  There should be enough space in @var{buf} to hold the
-value (the user can get the size of the string using
-@code{pdf_obj_string_size}).
-
-@table @strong
-@item Parameters
-@table @var
-@item obj
-A PDF string object.
-@item buf
-A memory buffer to store the result.
+A pointer to a @code{pdf_size_t} variable.
 @item
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The value of the string object was successfully stored in @var{buf}.
-@item PDF_EINVOBJ
-The object @var{obj} is not a String object.
-@item PDF_ERROR
-Some error prevented the operation to complete.  The value in
-@var{buf} shall be considered invalid.
-@end table
+A pointer to a constant buffer containing the contents of the string
+object, or @code{NULL} if the object is not a string.
+
+The user shall not modify nor free the returned memory.
 @item Usage example
 @example
-pdf_obj_doc_t doc;
+pdf_obj_doc_t *doc;
 pdf_obj_t str_obj;
-pdf_char_t *str;
+const pdf_char_t *str;
+pdf_size_t size;
 
-if (pdf_obj_string_new (doc, PDF_FALSE, "foo bar baz", 11, &name_obj)
-    != PDF_OK)
+str_obj = pdf_obj_string_new (doc, PDF_FALSE, "foo bar baz", 11);
+if (str_obj != PDF_OBJ_NULL)
 @{
-   /* Error creating the String object */
-@}
-else
-@{
-   str = malloc (pdf_obj_string_size (str_obj));
-
-   if (pdf_obj_string_value (str_obj, str)
-       != PDF_OK)
-   @{
-      /* Error getting the String value */
-   @}
-   else
-   @{
-      /* 'str' contains "foo bar baz" */
-   @}
+   str = pdf_obj_string_value (str_obj, &size);
+   /* 'str' points to "foo bar baz" */
 @}
 @end example
 @end table
@@ -13765,10 +13615,9 @@ pdf_obj_string_hex_set (!pdf_obj_string_hex_p (str));
 A PDF array is a one-dimensional collection of objects arranged
 sequentially.  The objects can be of any type.
 
-@deftypefun pdf_status_t pdf_obj_array_new (pdf_obj_doc_t @var{doc}, pdf_bool_t @var{indirect_p}, pdf_size_t @var{array_size}, pdf_obj_t *@var{obj})
+@deftypefun pdf_obj_t pdf_obj_array_new (pdf_obj_doc_t @var{doc}, pdf_bool_t @var{indirect_p}, pdf_size_t @var{array_size})
 
-Create a new Array object in the given object document @var{doc} and
-store it in @var{obj}.
+Create a new Array object in an object document.
 
 @table @strong
 @item Parameters
@@ -13779,44 +13628,31 @@ A document object.
 A boolean value indicating whether to create an indirect object.
 @item array_size
 The number of elements of the new array.
-@item obj
-A pointer to a @code{pdf_obj_t} variable to store the newly created
-object.
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The array object was created and stored into @var{obj}.
-@item PDF_ENOMEM
-Not enough memory.  The value of @var{obj} shall be considered
-invalid.
-@item PDF_ERROR
-Some error prevented the operation to complete.  The value of
-@var{obj} shall be considered invalid.
-@end table
+The newly created object, or @code{PDF_OBJ_NULL} if there is not
+enough memory to perform the operation.
 @item Usage example
 @example
-pdf_obj_doc_t doc;
+pdf_obj_doc_t *doc;
 pdf_obj_t array;
 
 ...
 
 /* Create an indirect array object to initially
    held 10 elements */
-if (pdf_obj_array_new (doc, PDF_TRUE, 10, &array)
-    == PDF_OK)
+array = pdf_obj_array_new (doc, PDF_TRUE, 10);
+if (array == PDF_OBJ_NULL)
 @{
-   /* The object was successfully created */
+   /* Error creating the object.  */
 @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_array_get (pdf_obj_t @var{array}, pdf_size_t @var{index}, pdf_obj_t *@var{obj})
+@deftypefun pdf_obj_t pdf_obj_array_get (pdf_obj_t @var{array}, pdf_size_t @var{index})
 
-Get the @var{index}th element of the given array and store it into
-@var{obj}.
+Get the @var{index}th element of the given array.
 
 @table @strong
 @item Parameters
@@ -13825,21 +13661,10 @@ Get the @var{index}th element of the given array and store it into
 A PDF array.
 @item index
 An index into the array.
-@item obj
-A pointer to a @code{pdf_obj_t} variable to store the result.
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The @var{index}th object was stored into @var{obj}.
-@item PDF_EBADDATA
-The specified @var{index} is invalid.  The value of @var{obj} is
-untouched.
-@item PDF_ERROR
-Some error prevented the operation to complete.  The value of
-@var{obj} shall be considered invalid.
-@end table
+The object at the @var{index}th position in @var{array}, or
+@var{PDF_OBJ_NULL} if the index it out of bounds.
 @item Usage example
 @example
 pdf_obj_t array;
@@ -13851,11 +13676,8 @@ pdf_size_t index;
 /* Iterate through the first 5 objects of 'array' */
 for (index = 0; index < 5; index++)
 @{
-   if (pdf_obj_array_get (array, index, &elem)
-       == PDF_OK)
-   @{
-      /* Use 'elem' */
-   @}
+   elem = pdf_obj_array_get (array, index);
+   /* Use 'elem' */
 @}
 @end example
 @end table
@@ -13868,11 +13690,12 @@ Set the @var{index}th element of the array to the given object
 associated with the same object document.  A non-scalar direct object
 cannot be inserted in more than one container.
 
-If @var{index} equals to the array size then the object is inserted at
+If @var{index} equals to the array size then the object is appended at
 the end.
 
-The previous object occupying the @var{index}th position is no longer
-referenced by the array.
+If the object previously contained in the @var{index}th position is a
+direct object then it is destroyed.  Otherwise it is no longer
+referenced.
 
 @table @strong
 @item Parameters
@@ -13898,7 +13721,7 @@ The specified @var{index} is invalid.
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t doc;
+pdf_obj_doc_t *doc;
 pdf_obj_t array;
 pdf_obj_t elem;
 pdf_size_t index;
@@ -13908,58 +13731,14 @@ pdf_size_t index;
 /* Insert numbers as the first 10 elements of the array */
 for (index = 0; index < 10; index++)
 @{
-   pdf_obj_integer_new (doc,
-                        PDF_FALSE,
-                        (pdf_u32_t) index,
-                        &elem);
+   elem =  pdf_obj_integer_new (doc,
+                                PDF_FALSE,
+                                (pdf_u32_t) index);
 
    if (pdf_obj_array_set (array, index, elem) == PDF_OK)
    @{
       /* Element inserted into the array. */
    @}
-@}
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_array_size (pdf_obj_t @var{array}, pdf_size_t *@var{size})
-
-Get the number of elements contained in @var{array}.
-
-@table @strong
-@item Parameters
-@table @var
-@item array
-A PDF array.
-@item size
-A pointer to a PDF size variable to hold the number of objects
-contained in @var{array}.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The size of @var{array} was stored in @var{size}.
-@item PDF_EINVOBJ
-@var{array} is not an array object.  The value in @var{size} is left
-untouched.
-@item PDF_ERROR
-Some error prevented the operation to complete.  The value in
-@var{size} is undefined.
-@end table
-@item Usage example
-@example
-pdf_obj_t array;
-pdf_size_t array_size;
-pdf_size_t index;
-
-...
-
-/* Iterate through the element of the array */
-pdf_obj_array_size (array, &array_size);
-for (index = 0; index < array_size; index++)
-@{
-   /* Do something */
 @}
 @end example
 @end table
@@ -14001,7 +13780,7 @@ pdf_size_t array_size;
 ...
 
 /* Determine if some element of array has a weak reference */
-pdf_obj_array_size (array, &array_size);
+array_size = pdf_obj_size (array);
 for (index = 0; index < array_size; index++)
 @{
    if (pdf_obj_array_weak_p (array, index))
@@ -14054,7 +13833,7 @@ pdf_size_t array_size;
 ...
 
 /* Remove any weak reference in 'array' */
-pdf_obj_array_size (array, &array_size);
+array_size = pdf_obj_size (array);
 for (index = 0; index < array_size; index++)
 @{
    pdf_obj_array_weak_set (array, index, PDF_FALSE);
@@ -14067,9 +13846,6 @@ for (index = 0; index < array_size; index++)
 
 Find the first element equal to @var{obj} and remove it from the
 array.
-
-Note that it is not safe to call @code{pdf_obj_array_remove} while
-executing a @code{pdf_obj_enum}.
 
 @table @strong
 @item Parameters
@@ -14099,7 +13875,7 @@ pdf_obj_t elem;
 ...
 
 /* Remove the third element of the array */
-pdf_obj_array_get (array, 2, &elem);
+elem = pdf_obj_array_get (array, 2);
 if (pdf_obj_array_remove (array, elem) == PDF_OK)
 @{
    /* The element was removed from the array */
@@ -14111,9 +13887,6 @@ if (pdf_obj_array_remove (array, elem) == PDF_OK)
 @deftypefun pdf_status_t pdf_obj_array_remove_at (pdf_obj_t @var{array}, pdf_size_t @var{index})
 
 Find the @var{index}th element and remove it from the array.
-
-Note that it not safe to call @code{pdf_obj_array_remove_at} while
-executing a @code{pdf_obj_enum}.
 
 @table @strong
 @item Parameters
