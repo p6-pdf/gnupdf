@@ -1,5 +1,7 @@
 2011-02-16  Michael V. Antosha  <Michael.Antosha@gmail.com>
 
+	* torture/unit/base/token/pdf-token-write.c (pdf_token_write_string_octal): Bug fix in test.
+
 	* doc/gnupdf-hg.texi (Using gdb to debug check tests): Practical
 	example using gdb with failing unit tests.
 

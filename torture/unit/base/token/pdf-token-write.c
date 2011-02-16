@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2011-02-11 12:54:59 EET mivael"
+/* -*- mode: C -*- Time-stamp: "2011-02-16 16:31:41 EET mivael"
  *
  *       File:         pdf-token-write.c
  *       Date:         Tue Sep 21 21:08:07 2010
@@ -553,13 +553,13 @@ START_TEST(pdf_token_write_string_octal)
   pdf_init ();
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("a\0007c", 3, &token)
+  fail_if (pdf_token_string_new ("a\007c", 3, &token)
            != PDF_OK);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
-                   "(a\0007c)", 5, 100);
+                   "(a\007c)", 5, 100);
 }
 END_TEST
 
