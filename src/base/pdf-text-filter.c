@@ -54,7 +54,8 @@ pdf_text_filter_change_case(pdf_text_t text,
   if (pdf_text_generate_word_boundaries (text, &inner_error) != PDF_OK)
     {
       /* TODO: Propagate error */
-      pdf_error_destroy (inner_error);
+      if (inner_error)
+        pdf_error_destroy (inner_error);
       PDF_DEBUG_BASE("Couldn't create list of word boundaries");
       return PDF_ETEXTENC;
     }
@@ -81,7 +82,8 @@ pdf_text_filter_change_case(pdf_text_t text,
   if (new_wb_list == NULL)
     {
       /* TODO: Propagate error */
-      pdf_error_destroy (inner_error);
+      if (inner_error)
+        pdf_error_destroy (inner_error);
       PDF_DEBUG_BASE("Unable to create empty list");
       pdf_dealloc (new_data);
       return PDF_ETEXTENC;
@@ -109,7 +111,8 @@ pdf_text_filter_change_case(pdf_text_t text,
       if (!p_word)
         {
           /* TODO: Propagate error */
-          pdf_error_destroy (inner_error);
+          if (inner_error)
+            pdf_error_destroy (inner_error);
           pdf_dealloc (new_data);
           pdf_list_destroy (new_wb_list);
           return PDF_ETEXTENC;
@@ -162,7 +165,8 @@ pdf_text_filter_change_case(pdf_text_t text,
                                               &inner_error))
     {
       /* TODO: Propagate error */
-      pdf_error_destroy (inner_error);
+      if (inner_error)
+        pdf_error_destroy (inner_error);
     }
   text->word_boundaries = new_wb_list;
 

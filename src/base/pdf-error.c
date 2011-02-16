@@ -159,8 +159,11 @@ pdf_error_get_message (const pdf_error_t *error)
 void
 pdf_error_destroy (pdf_error_t *error)
 {
-  pdf_dealloc (error->message);
-  pdf_dealloc (error);
+  if (error != NULL)
+    {
+      pdf_dealloc (error->message);
+      pdf_dealloc (error);
+    }
 }
 
 void

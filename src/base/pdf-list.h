@@ -353,7 +353,7 @@ pdf_list_search_from_to (const pdf_list_t  *list,
   /* Check range */
   list_size = pdf_list_size (list);
   if ((start_index >= list_size) ||
-      (end_index >= list_size) ||
+      (end_index > list_size) ||
       (start_index >= end_index))
     {
       pdf_set_error (error,
@@ -510,7 +510,7 @@ pdf_list_indexof_from_to (const pdf_list_t  *list,
     return (pdf_size_t)-1;
 
   if ((start_index >= list_size) ||
-      (end_index >= list_size) ||
+      (end_index > list_size) ||
       (start_index >= end_index))
     {
       pdf_set_error (error,
@@ -740,7 +740,7 @@ pdf_list_add_at (pdf_list_t        *list,
     }
 
   /* Check range */
-  if (position >= pdf_list_size (list))
+  if (position > pdf_list_size (list))
     {
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_LIST,
@@ -897,8 +897,8 @@ pdf_list_iterator_init_from_to (pdf_list_iterator_t  *itr,
   /* Check range */
   list_size = pdf_list_size (list);
   if ((start_index >= list_size) ||
-      (end_index >= list_size) ||
-      (start_index >= end_index))
+      (end_index > list_size) ||
+      (start_index > end_index))
     {
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_LIST,
@@ -1067,7 +1067,7 @@ pdf_list_sorted_search_from_to (const pdf_list_t              *list,
   /* Check range */
   list_size = pdf_list_size (list);
   if ((start_index >= list_size) ||
-      (end_index >= list_size) ||
+      (end_index > list_size) ||
       (start_index >= end_index))
     {
       pdf_set_error (error,
@@ -1136,7 +1136,7 @@ pdf_list_sorted_indexof_from_to (const pdf_list_t               *list,
   /* Check range */
   list_size = pdf_list_size (list);
   if ((start_index >= list_size) ||
-      (end_index >= list_size) ||
+      (end_index > list_size) ||
       (start_index >= end_index))
     {
       pdf_set_error (error,

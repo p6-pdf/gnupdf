@@ -170,8 +170,9 @@ pdf_text_new (pdf_text_t *text)
       if (inner_error)
         pdf_error_destroy (inner_error);
 
-      pdf_dealloc (*text);
+      pdf_text_destroy (*text);
       *text = NULL;
+      return PDF_ENOMEM;
     }
 
   /* Success! */
@@ -201,7 +202,8 @@ pdf_text_destroy (pdf_text_t text)
                                               &inner_error))
     {
       /* TODO: Propagate error */
-      pdf_error_destroy (inner_error);
+      if (inner_error)
+        pdf_error_destroy (inner_error);
       pdf_dealloc (text);
       return PDF_ERROR;
     }
@@ -1748,7 +1750,8 @@ pdf_text_clean_contents (pdf_text_t text)
                                            &inner_error))
     {
       /* TODO: Propagate error */
-      pdf_error_destroy (inner_error);
+      if (inner_error)
+        pdf_error_destroy (inner_error);
     }
 
   /* Clean country and language info */

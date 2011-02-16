@@ -927,8 +927,13 @@ pdf_fsys_disk_build_path (void       *data,
   if (!pdf_list_iterator_init (&itr, rest, &inner_error))
     {
       /* TODO: Propagate error */
-      st = pdf_error_get_status (inner_error);
-      pdf_error_destroy (inner_error);
+      if (inner_error)
+        {
+          st = pdf_error_get_status (inner_error);
+          pdf_error_destroy (inner_error);
+        }
+      else
+        st = PDF_ERROR;
       return st;
     }
 

@@ -518,7 +518,8 @@ pdf_stm_init (pdf_size_t cache_size,
   if (null_filter_params == NULL)
     {
       /* TODO: Propagate error */
-      pdf_error_destroy (inner_error);
+      if (inner_error)
+        pdf_error_destroy (inner_error);
       return PDF_ERROR;
     }
 

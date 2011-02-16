@@ -90,7 +90,7 @@ END_TEST
  * Description:
  *   Try to add key/NULL pair to an empty table.
  * Success condition:
- *   Returns PDF_EBADDATA
+ *   Returns PDF_OK
  */
 START_TEST (pdf_hash_add_003)
 {
@@ -104,9 +104,8 @@ START_TEST (pdf_hash_add_003)
   fail_if (pdf_hash_add (table,
                          "key",
                          NULL, NULL,
-                         &error) == PDF_TRUE);
-  fail_if (error == NULL);
-  fail_if (pdf_error_get_status (error) != PDF_EBADDATA);
+                         &error) != PDF_TRUE);
+  fail_if (error != NULL);
 
   pdf_hash_destroy (table);
 }

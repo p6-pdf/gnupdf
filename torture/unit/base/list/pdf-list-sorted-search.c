@@ -114,7 +114,7 @@ START_TEST (pdf_list_sorted_search_003)
   pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
 
   node = pdf_list_sorted_search (list, NULL, &elem, &error);
-  fail_if (node == NULL);
+  fail_if (node != NULL);
   fail_if (error == NULL);
   fail_if (pdf_error_get_status (error) != PDF_EBADDATA);
 

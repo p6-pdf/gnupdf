@@ -123,7 +123,7 @@ START_TEST (pdf_list_indexof_from_003)
   fail_if (error != NULL);
 
   pos = pdf_list_indexof_from (list, 0, &elem1, &error);
-  fail_if (pos == (pdf_size_t)-1);
+  fail_if (pos != (pdf_size_t)-1);
   fail_if (error != NULL);
 
   pdf_list_destroy (list);

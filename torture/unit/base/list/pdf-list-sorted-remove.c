@@ -109,7 +109,7 @@ START_TEST (pdf_list_sorted_remove_003)
 
   pdf_list_sorted_add (list, l_comp_asc, &elem, &error);
 
-  fail_if (pdf_list_sorted_remove (list, NULL, &elem, &error) != PDF_TRUE);
+  fail_if (pdf_list_sorted_remove (list, NULL, &elem, &error) == PDF_TRUE);
   fail_if (error == NULL);
   fail_if (pdf_error_get_status (error) != PDF_EBADDATA);
 

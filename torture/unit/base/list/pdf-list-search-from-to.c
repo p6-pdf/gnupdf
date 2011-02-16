@@ -84,7 +84,7 @@ START_TEST (pdf_list_search_from_to_002)
   pdf_list_add_last (list, &elem, NULL);
 
   node = pdf_list_search_from_to (list, 0, 3, &elem, &error);
-  fail_if (node == NULL);
+  fail_if (node != NULL);
   fail_if (error == NULL);
   fail_if (pdf_error_get_status (error) != PDF_EINVRANGE);
 

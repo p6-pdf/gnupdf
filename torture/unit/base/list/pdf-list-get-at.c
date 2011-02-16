@@ -85,7 +85,7 @@ START_TEST (pdf_list_get_at_002)
   pdf_list_add_last (list, &elem, &error);
   fail_if (error != NULL);
 
-  val = pdf_list_get_at (list, 0, &error);
+  val = pdf_list_get_at (list, 5, &error);
   fail_if (val != NULL);
   fail_if (error == NULL);
   fail_if (pdf_error_get_status (error) != PDF_EINVRANGE);

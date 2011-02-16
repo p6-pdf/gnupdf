@@ -376,7 +376,7 @@ hash_search_key (const pdf_hash_t *table,
   if (p_node)
     *p_node = node;
 
-  return (pdf_hash_element_t *) (*p_node != NULL ?
+  return (pdf_hash_element_t *) (node != NULL ?
                                  gl_list_node_value ((gl_list_t) table, node) :
                                  NULL);
 }

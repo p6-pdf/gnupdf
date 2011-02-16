@@ -63,6 +63,8 @@ START_TEST (pdf_list_add_last_001)
   fail_if (pdf_error_get_status (error) != PDF_EEXIST);
   fail_if (pdf_list_size(list) != 1);
 
+  pdf_clear_error (&error);
+
   node = pdf_list_add_last (list, &elem2, &error);
   fail_if (node == NULL);
   fail_if (error != NULL);
@@ -90,7 +92,7 @@ START_TEST (pdf_list_add_last_002)
 
   pdf_init ();
 
-  list = pdf_list_new (l_comp, NULL, PDF_FALSE, NULL);
+  list = pdf_list_new (l_comp, NULL, PDF_TRUE, NULL);
 
   node = pdf_list_add_last (list, &elem, &error);
   fail_if (node == NULL);

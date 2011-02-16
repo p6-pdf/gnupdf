@@ -204,7 +204,8 @@ pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s  item_props,
       pdf_dealloc (mod_date_str);
 
       /* TODO: Propagate error */
-      pdf_error_destroy (inner_error);
+      if (inner_error)
+        pdf_error_destroy (inner_error);
       return PDF_ERROR;
     }
 
@@ -283,8 +284,13 @@ pdf_status_t pdf_fsys_build_path (pdf_fsys_t filesystem,
   if (!rest)
     {
       /* TODO: Propagate error */
-      st = pdf_error_get_status (inner_error);
-      pdf_error_destroy (inner_error);
+      if (inner_error)
+        {
+          st = pdf_error_get_status (inner_error);
+          pdf_error_destroy (inner_error);
+        }
+      else
+        st = PDF_ERROR;
       return st;
     }
 
