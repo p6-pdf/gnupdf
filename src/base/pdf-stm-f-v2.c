@@ -75,7 +75,8 @@ pdf_stm_f_v2_init (pdf_hash_t  *params,
           const pdf_char_t *key;
           pdf_size_t keysize;
 
-          key = pdf_hash_get_string (params, "Key", NULL);
+          /* Key may NOT be NUL-terminated */
+          key = pdf_hash_get_value (params, "Key", NULL);
           keysize = pdf_hash_get_size (params, "KeySize", NULL);
 
           ret = pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &cipher);

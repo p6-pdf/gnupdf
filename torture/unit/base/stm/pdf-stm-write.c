@@ -564,7 +564,7 @@ START_TEST (pdf_stm_write_009)
 
   params = pdf_hash_new (NULL);
   pdf_hash_add (params, "Key", key, NULL, NULL);
-  pdf_hash_add (params, "KeySize", &keysize, NULL, NULL);
+  pdf_hash_add_size (params, "KeySize", keysize, NULL);
 
   fail_if ( pdf_stm_install_filter (stm, PDF_STM_FILTER_V2_ENC, params) != PDF_OK);
 
@@ -641,7 +641,7 @@ START_TEST (pdf_stm_write_010)
 
   params = pdf_hash_new (NULL);
   pdf_hash_add (params, "Key", key, NULL, NULL);
-  pdf_hash_add (params, "KeySize", &keysize, NULL, NULL);
+  pdf_hash_add_size (params, "KeySize", keysize, NULL);
 
   fail_if ( pdf_stm_mem_new (out, sizeof(out), 0, PDF_STM_WRITE, &stm) != PDF_OK);
   fail_if ( pdf_stm_install_filter (stm, PDF_STM_FILTER_AESV2_ENC, params) != PDF_OK);
@@ -765,7 +765,7 @@ START_TEST (pdf_stm_write_012)
 
   params = pdf_hash_new (NULL);
   pdf_hash_add (params, "Key", key, NULL, NULL);
-  pdf_hash_add (params, "KeySize", &keysize, NULL, NULL);
+  pdf_hash_add_size (params, "KeySize", keysize, NULL);
 
   fail_if ( pdf_stm_mem_new (out, sizeof(out), 0, PDF_STM_WRITE, &stm) != PDF_OK);
   fail_if ( pdf_stm_install_filter (stm, PDF_STM_FILTER_AESV2_ENC, params) != PDF_OK);

@@ -686,18 +686,18 @@ START_TEST (pdf_stm_read_011)
   pdf_char_t plaintext[] = "Attack at dawn";
   pdf_size_t read;
 
-  pdf_init();
+  pdf_init ();
 
   fail_if ( pdf_stm_mem_new (in, in_size, 0, PDF_STM_READ, &stm) != PDF_OK);
 
   params = pdf_hash_new (NULL);
   pdf_hash_add (params, "Key", key, NULL, NULL);
-  pdf_hash_add (params, "KeySize", &keysize, NULL, NULL);
+  pdf_hash_add_size (params, "KeySize", keysize, NULL);
 
   fail_if ( pdf_stm_install_filter (stm, PDF_STM_FILTER_V2_DEC, params) != PDF_OK);
 
   ret = pdf_stm_read (stm, out, out_size, &read);
-  fail_if(ret == PDF_ERROR);
+  fail_if (ret == PDF_ERROR);
   fail_if (read != out_size);
 
   fail_if (memcmp (out, plaintext, read) != 0);
@@ -759,7 +759,7 @@ START_TEST (pdf_stm_read_012)
 
   params = pdf_hash_new (NULL);
   pdf_hash_add (params, "Key", key, NULL, NULL);
-  pdf_hash_add (params, "KeySize", &keysize, NULL, NULL);
+  pdf_hash_add_size (params, "KeySize", keysize, NULL);
 
   fail_if ( pdf_stm_mem_new (ciphered, sizeof(ciphered), 0, PDF_STM_READ, &stm) != PDF_OK);
   fail_if ( pdf_stm_install_filter (stm, PDF_STM_FILTER_AESV2_DEC, params) != PDF_OK);

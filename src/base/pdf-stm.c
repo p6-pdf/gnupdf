@@ -176,7 +176,7 @@ pdf_stm_read (pdf_stm_t stm,
       /* If the cache is empty, refill it with filtered data */
       if (pdf_buffer_eob_p (stm->cache))
         {
-	  pdf_buffer_rewind (stm->cache);
+          pdf_buffer_rewind (stm->cache);
           ret = pdf_stm_filter_apply (stm->filter, PDF_FALSE);
         }
 

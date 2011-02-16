@@ -48,7 +48,7 @@ START_TEST (pdf_hash_rename_key_001)
 
   pdf_hash_add (table, "key", "val", NULL, NULL);
 
-  fail_if (pdf_hash_rename_key (table, "key", "ke", &error) != PDF_OK);
+  fail_if (pdf_hash_rename_key (table, "key", "ke", &error) != PDF_TRUE);
   fail_if (error != NULL);
 
   fail_if (pdf_hash_key_p (table, "key", &error) == PDF_TRUE);
@@ -76,7 +76,7 @@ START_TEST (pdf_hash_rename_key_002)
 
   pdf_hash_add (table, "key", "val", NULL, NULL);
 
-  fail_if (pdf_hash_rename_key (table, "ke", "key", &error) == PDF_OK);
+  fail_if (pdf_hash_rename_key (table, "ke", "key", &error) == PDF_TRUE);
   fail_if (error != NULL);
 
   pdf_hash_destroy (table);
@@ -101,7 +101,7 @@ START_TEST (pdf_hash_rename_key_003)
 
   pdf_hash_add (table, "key", "val", NULL, NULL);
 
-  fail_if (pdf_hash_rename_key (table, NULL, "key", &error) == PDF_OK);
+  fail_if (pdf_hash_rename_key (table, NULL, "key", &error) == PDF_TRUE);
   fail_if (error == NULL);
   fail_if (pdf_error_get_status (error) != PDF_EBADDATA);
 
@@ -127,7 +127,7 @@ START_TEST (pdf_hash_rename_key_004)
 
   pdf_hash_add (table, "key", "val", NULL, NULL);
 
-  fail_if (pdf_hash_rename_key (table, "key", NULL, &error) == PDF_OK);
+  fail_if (pdf_hash_rename_key (table, "key", NULL, &error) == PDF_TRUE);
   fail_if (error == NULL);
   fail_if (pdf_error_get_status (error) != PDF_EBADDATA);
 

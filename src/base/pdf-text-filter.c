@@ -51,12 +51,16 @@ pdf_text_filter_change_case(pdf_text_t text,
   const pdf_char_t *language;
 
   /* Generate original word boundaries list, if not already done */
-  if (pdf_text_generate_word_boundaries (text, &inner_error) != PDF_OK)
+  if (pdf_text_generate_word_boundaries (text, &inner_error) != PDF_TRUE)
     {
+      PDF_DEBUG_BASE("Couldn't create list of word boundaries: %s",
+                     (inner_error ?
+                      pdf_error_get_message (inner_error) :
+                      "Unknown error"));
+
       /* TODO: Propagate error */
       if (inner_error)
         pdf_error_destroy (inner_error);
-      PDF_DEBUG_BASE("Couldn't create list of word boundaries");
       return PDF_ETEXTENC;
     }
 
