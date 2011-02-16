@@ -47,7 +47,7 @@ static void
 mem_stm_fixture_setup ()
 {
   pdf_status_t ret;
-  
+
   mem_stm_fixture.buf = pdf_alloc (MEM_STM_FIXTURE_BUFFER_SIZE);
   fail_if (mem_stm_fixture.buf == NULL);
 
@@ -56,7 +56,7 @@ mem_stm_fixture_setup ()
                          MEM_STM_FIXTURE_CACHE_SIZE,
                          PDF_STM_WRITE,
                          &mem_stm_fixture.stm);
-  fail_if (ret != PDF_OK);  
+  fail_if (ret != PDF_OK);
 }
 
 static void
@@ -132,7 +132,7 @@ START_TEST (pdf_stm_write_002)
   pdf_char_t *buf;
   pdf_size_t buf_size;
   pdf_size_t written_bytes;
-  pdf_hash_t null_filter_params;
+  pdf_hash_t *null_filter_params;
 
   /* Create a buffer */
   buf_size = 10;
@@ -150,7 +150,7 @@ START_TEST (pdf_stm_write_002)
   fail_if(ret != PDF_OK);
 
   /* Install a new filter in the chain */
-  pdf_hash_new (NULL, &null_filter_params);
+  null_filter_params = pdf_hash_new (NULL);
   fail_if(pdf_stm_install_filter (stm,
                                   PDF_STM_FILTER_NULL,
                                   null_filter_params) != PDF_OK);
@@ -239,7 +239,7 @@ START_TEST (pdf_stm_write_004)
   pdf_char_t *buf;
   pdf_size_t buf_size;
   pdf_size_t written_bytes;
-  pdf_hash_t ahexenc_filter_parameters;
+  pdf_hash_t *ahexenc_filter_parameters;
 
   /* Create a buffer */
   buf_size = 10;
@@ -257,7 +257,7 @@ START_TEST (pdf_stm_write_004)
   fail_if(ret != PDF_OK);
 
   /* Install an ASCII Hex encoder in the stream */
-  ret = pdf_hash_new (NULL, &ahexenc_filter_parameters);
+  ahexenc_filter_parameters = pdf_hash_new (NULL);
   fail_if(ret != PDF_OK);
 
   ret = pdf_stm_install_filter (stm,
@@ -297,7 +297,7 @@ END_TEST
 START_TEST (pdf_stm_write_005)
 {
   pdf_status_t ret;
-  pdf_hash_t params;
+  pdf_hash_t *params;
   pdf_stm_t stm;
   pdf_size_t flushed_bytes;
   pdf_char_t *buf, *decoded="122333444455555666666777777788888888999999999";
@@ -358,7 +358,7 @@ START_TEST (pdf_stm_write_006)
   pdf_char_t *buf;
   pdf_size_t buf_size;
   pdf_size_t written_bytes;
-  pdf_hash_t ahexenc_filter_parameters;
+  pdf_hash_t *ahexenc_filter_parameters;
 
   /* Create a buffer */
   buf_size = 100;
@@ -376,7 +376,7 @@ START_TEST (pdf_stm_write_006)
   fail_if(ret != PDF_OK);
 
   /* Install an ASCII Hex encoder in the stream */
-  ret = pdf_hash_new (NULL, &ahexenc_filter_parameters);
+  ahexenc_filter_parameters = pdf_hash_new (NULL);
   fail_if(ret != PDF_OK);
 
   ret = pdf_stm_install_filter (stm,
@@ -422,7 +422,7 @@ END_TEST
 START_TEST (pdf_stm_write_007)
 {
   pdf_status_t ret;
-  pdf_hash_t params;
+  pdf_hash_t *params;
   pdf_stm_t stm;
   pdf_size_t buf_size, total,written;
   pdf_size_t flushed_bytes;
@@ -507,17 +507,17 @@ END_TEST
 START_TEST (pdf_stm_write_008)
 {
   pdf_stm_t stm;
-  pdf_hash_t params;
+  pdf_hash_t *params;
   pdf_char_t buffer[16];
   pdf_status_t ret;
-  
+
   pdf_init();
 
   ret = pdf_stm_mem_new (buffer, sizeof(buffer), 0, PDF_STM_WRITE, &stm);
   fail_if (ret != PDF_OK);
 
-  pdf_hash_new (NULL, &params);
-  
+  params = pdf_hash_new (NULL);
+
   ret = pdf_stm_install_filter (stm, PDF_STM_FILTER_V2_ENC, params);
   fail_if (ret == PDF_OK);
 
@@ -540,7 +540,7 @@ START_TEST (pdf_stm_write_009)
 {
   pdf_status_t ret;
   pdf_stm_t stm;
-  pdf_hash_t params;
+  pdf_hash_t *params;
 
   pdf_size_t flushed_bytes;
   pdf_char_t out[14];
@@ -550,21 +550,21 @@ START_TEST (pdf_stm_write_009)
   pdf_size_t in_size = sizeof(in);
   pdf_char_t key[6] = "Secret"; /* not trailing '\0' */
   pdf_size_t keysize = sizeof(key);
-  
+
   pdf_char_t ciphered[] = {
     0x45, 0xA0, 0x1F, 0x64, 0x5F, 0xC3, 0x5B,
     0x38, 0x35, 0x52, 0x54, 0x4B, 0x9B, 0xF5
   };
 
   pdf_size_t written;
-  
+
   pdf_init();
 
   fail_if ( pdf_stm_mem_new (out, out_size, 0, PDF_STM_WRITE, &stm) != PDF_OK);
 
-  pdf_hash_new (NULL, &params);
-  pdf_hash_add (params, "Key", key, NULL);
-  pdf_hash_add (params, "KeySize", &keysize, NULL);
+  params = pdf_hash_new (NULL);
+  pdf_hash_add (params, "Key", key, NULL, NULL);
+  pdf_hash_add (params, "KeySize", &keysize, NULL, NULL);
 
   fail_if ( pdf_stm_install_filter (stm, PDF_STM_FILTER_V2_ENC, params) != PDF_OK);
 
@@ -595,7 +595,7 @@ START_TEST (pdf_stm_write_010)
   pdf_status_t ret;
   pdf_size_t written;
   pdf_stm_t stm;
-  pdf_hash_t params;
+  pdf_hash_t *params;
   pdf_size_t flushed_bytes;
   pdf_char_t out[96];
   pdf_char_t key[16] =
@@ -626,22 +626,22 @@ START_TEST (pdf_stm_write_010)
     {
       0x8c, 0xe8, 0x2e, 0xef, 0xbe, 0xa0, 0xda, 0x3c, /* iv vector */
       0x44, 0x69, 0x9e, 0xd7, 0xdb, 0x51, 0xb7, 0xd9,
-      
+
       0xc3, 0x0e, 0x32, 0xff, 0xed, 0xc0, 0x77, 0x4e,
       0x6a, 0xff, 0x6a, 0xf0, 0x86, 0x9f, 0x71, 0xaa,
       0x0f, 0x3a, 0xf0, 0x7a, 0x9a, 0x31, 0xa9, 0xc6,
-      0x84, 0xdb, 0x20, 0x7e, 0xb0, 0xef, 0x8e, 0x4e, 
+      0x84, 0xdb, 0x20, 0x7e, 0xb0, 0xef, 0x8e, 0x4e,
       0x35, 0x90, 0x7a, 0xa6, 0x32, 0xc3, 0xff, 0xdf,
-      0x86, 0x8b, 0xb7, 0xb2, 0x9d, 0x3d, 0x46, 0xad, 
+      0x86, 0x8b, 0xb7, 0xb2, 0x9d, 0x3d, 0x46, 0xad,
       0x83, 0xce, 0x9f, 0x9a, 0x10, 0x2e, 0xe9, 0x9d,
       0x49, 0xa5, 0x3e, 0x87, 0xf4, 0xc3, 0xda, 0x55,
     };
 
   pdf_init();
 
-  pdf_hash_new (NULL, &params);
-  pdf_hash_add (params, "Key", key, NULL);
-  pdf_hash_add (params, "KeySize", &keysize, NULL);
+  params = pdf_hash_new (NULL);
+  pdf_hash_add (params, "Key", key, NULL, NULL);
+  pdf_hash_add (params, "KeySize", &keysize, NULL, NULL);
 
   fail_if ( pdf_stm_mem_new (out, sizeof(out), 0, PDF_STM_WRITE, &stm) != PDF_OK);
   fail_if ( pdf_stm_install_filter (stm, PDF_STM_FILTER_AESV2_ENC, params) != PDF_OK);
@@ -681,7 +681,7 @@ START_TEST (pdf_stm_write_011)
   pdf_status_t ret;
   pdf_size_t written;
   pdf_stm_t stm;
-  pdf_hash_t params;
+  pdf_hash_t *params;
   pdf_size_t flushed_bytes;
   pdf_char_t in[26] = "abcdefghijklmnopqrstuvwxyz";
   pdf_char_t out[16];
@@ -695,7 +695,7 @@ START_TEST (pdf_stm_write_011)
 
   pdf_init();
 
-  pdf_hash_new (NULL, &params);
+  params = pdf_hash_new (NULL);
 
   fail_if ( pdf_stm_mem_new (out, sizeof(out), 0, PDF_STM_WRITE, &stm) != PDF_OK);
   fail_if ( pdf_stm_install_filter (stm, PDF_STM_FILTER_MD5_ENC, params) != PDF_OK);
@@ -727,10 +727,10 @@ START_TEST (pdf_stm_write_012)
   pdf_status_t ret;
   pdf_size_t written;
   pdf_stm_t stm;
-  pdf_hash_t params;
+  pdf_hash_t *params;
   pdf_size_t flushed_bytes;
   pdf_char_t out[48];
-  
+
   pdf_char_t key[] =
     {
       0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
@@ -763,9 +763,9 @@ START_TEST (pdf_stm_write_012)
 
   pdf_init();
 
-  pdf_hash_new (NULL, &params);
-  pdf_hash_add (params, "Key", key, NULL);
-  pdf_hash_add (params, "KeySize", &keysize, NULL);
+  params = pdf_hash_new (NULL);
+  pdf_hash_add (params, "Key", key, NULL, NULL);
+  pdf_hash_add (params, "KeySize", &keysize, NULL, NULL);
 
   fail_if ( pdf_stm_mem_new (out, sizeof(out), 0, PDF_STM_WRITE, &stm) != PDF_OK);
   fail_if ( pdf_stm_install_filter (stm, PDF_STM_FILTER_AESV2_ENC, params) != PDF_OK);
@@ -809,7 +809,7 @@ START_TEST (pdf_stm_write_013)
   fail_if (ret != PDF_OK);
 
   /* Open new file */
-  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, &file); 
+  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, &file);
   fail_if (ret != PDF_OK);
 
   /* Create the stream */
@@ -833,7 +833,7 @@ START_TEST (pdf_stm_write_013)
   pdf_fsys_file_close (file);
 
   /* Read file data and compare */
-  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, &file); 
+  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, &file);
   fail_if (ret != PDF_OK);
 
   ret = pdf_fsys_file_read (file, data, 3, &read);
@@ -864,7 +864,7 @@ START_TEST (pdf_stm_write_014)
   pdf_status_t ret;
   pdf_stm_t stm;
   pdf_size_t read,written_bytes;
-  pdf_hash_t null_filter_params;
+  pdf_hash_t *null_filter_params;
 
   pdf_fsys_file_t file;
   char data[4];
@@ -879,7 +879,7 @@ START_TEST (pdf_stm_write_014)
   fail_if (ret != PDF_OK);
 
   /* Open new file */
-  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, &file); 
+  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, &file);
   fail_if (ret != PDF_OK);
 
   /* Create the stream */
@@ -892,7 +892,7 @@ START_TEST (pdf_stm_write_014)
 
 
   /* Install a new filter in the chain */
-  pdf_hash_new (NULL, &null_filter_params);
+  null_filter_params = pdf_hash_new (NULL);
   fail_if(pdf_stm_install_filter (stm,
                                   PDF_STM_FILTER_NULL,
                                   null_filter_params) != PDF_OK);
@@ -911,7 +911,7 @@ START_TEST (pdf_stm_write_014)
   pdf_fsys_file_close (file);
 
   /* Read file data and compare */
-  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, &file); 
+  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, &file);
   fail_if (ret != PDF_OK);
 
   ret = pdf_fsys_file_read (file, data, 3, &read);
@@ -940,9 +940,9 @@ END_TEST
 START_TEST (pdf_stm_write_015)
 {
   pdf_status_t ret;
-  pdf_hash_t params;
+  pdf_hash_t *params;
   pdf_size_t tmp = 0;
-  
+
   pdf_char_t *decoded =
     "-----A---B";
   pdf_char_t *encoded =
@@ -952,7 +952,7 @@ START_TEST (pdf_stm_write_015)
   /* Create the filter */
   pdf_init();
 
-  pdf_hash_new (NULL, &params);
+  params = pdf_hash_new (NULL);
   fail_if (pdf_stm_install_filter (mem_stm_fixture.stm,
                                    PDF_STM_FILTER_LZW_ENC,
                                    params)
@@ -980,7 +980,7 @@ END_TEST
 START_TEST (pdf_stm_write_016)
 {
   pdf_status_t ret;
-  pdf_hash_t params;
+  pdf_hash_t *params;
   pdf_size_t tmp = 0;
 
   pdf_char_t *encoded =
@@ -991,7 +991,7 @@ START_TEST (pdf_stm_write_016)
   /* Create the filter */
   pdf_init();
 
-  pdf_hash_new (NULL, &params);
+  params = pdf_hash_new (NULL);
   fail_if (pdf_stm_install_filter (mem_stm_fixture.stm,
                                    PDF_STM_FILTER_LZW_DEC,
                                    params)
@@ -1002,7 +1002,7 @@ START_TEST (pdf_stm_write_016)
   fail_if (ret == PDF_ERROR);
   fail_if (pdf_stm_flush (mem_stm_fixture.stm, PDF_TRUE, &tmp) == PDF_ERROR);
   fail_if (memcmp (mem_stm_fixture.buf, decoded, 10) != 0);
-  
+
   /* Cleanup */
   pdf_hash_destroy (params);
 }
@@ -1019,18 +1019,18 @@ END_TEST
 START_TEST (pdf_stm_write_017)
 {
   pdf_status_t ret;
-  pdf_hash_t params;
+  pdf_hash_t *params;
   pdf_size_t tmp = 0;
 
-  pdf_char_t *unencoded = 
+  pdf_char_t *unencoded =
     "\x00\x01\x02\x03\x00\x00\x00\x00\x04\x05\x06\x07\x08\x09\x0A\x0B";
-  pdf_char_t *encoded = 
+  pdf_char_t *encoded =
     "!!\x2A\x2D\x27z\x22\x39\x65\x75\x37\x23\x52\x4C\x68\x47~>";
 
   /* Create the filter */
   pdf_init ();
 
-  pdf_hash_new (NULL, &params);
+  params = pdf_hash_new (NULL);
   fail_if (pdf_stm_install_filter (mem_stm_fixture.stm,
                                    PDF_STM_FILTER_A85_ENC,
                                    params)
@@ -1039,9 +1039,9 @@ START_TEST (pdf_stm_write_017)
   /* Test some data */
   ret = pdf_stm_write (mem_stm_fixture.stm, unencoded, 16, &tmp);
   fail_if (ret == PDF_ERROR);
-  fail_if (pdf_stm_flush (mem_stm_fixture.stm, PDF_TRUE, &tmp) == PDF_ERROR);  
+  fail_if (pdf_stm_flush (mem_stm_fixture.stm, PDF_TRUE, &tmp) == PDF_ERROR);
   fail_if (memcmp (mem_stm_fixture.buf, encoded, 18) != 0);
-  
+
   /* Cleanup */
   pdf_hash_destroy (params);
 }
@@ -1059,7 +1059,7 @@ END_TEST
 START_TEST (pdf_stm_write_018)
 {
   pdf_status_t ret;
-  pdf_hash_t params;
+  pdf_hash_t *params;
   pdf_size_t tmp = 0;
 
   pdf_char_t *unencoded = "\x00";
@@ -1068,7 +1068,7 @@ START_TEST (pdf_stm_write_018)
   /* Create the filter */
   pdf_init ();
 
-  pdf_hash_new (NULL, &params);
+  params = pdf_hash_new (NULL);
   fail_if (pdf_stm_install_filter (mem_stm_fixture.stm,
                                    PDF_STM_FILTER_A85_ENC,
                                    params)
@@ -1077,9 +1077,9 @@ START_TEST (pdf_stm_write_018)
   /* Test some data */
   ret = pdf_stm_write (mem_stm_fixture.stm, unencoded, 1, &tmp);
   fail_if (ret == PDF_ERROR);
-  fail_if (pdf_stm_flush (mem_stm_fixture.stm, PDF_TRUE, &tmp) == PDF_ERROR);  
+  fail_if (pdf_stm_flush (mem_stm_fixture.stm, PDF_TRUE, &tmp) == PDF_ERROR);
   fail_if (memcmp (mem_stm_fixture.buf, encoded, 4) != 0);
-  
+
   /* Cleanup */
   pdf_hash_destroy (params);
 }
@@ -1096,7 +1096,7 @@ END_TEST
 START_TEST (pdf_stm_write_019)
 {
   pdf_status_t ret;
-  pdf_hash_t params;
+  pdf_hash_t *params;
   pdf_size_t tmp = 0;
 
   pdf_char_t *unencoded = "\x00\x00";
@@ -1105,7 +1105,7 @@ START_TEST (pdf_stm_write_019)
   /* Create the filter */
   pdf_init();
 
-  pdf_hash_new (NULL, &params);
+  params = pdf_hash_new (NULL);
   fail_if (pdf_stm_install_filter (mem_stm_fixture.stm,
                                    PDF_STM_FILTER_A85_ENC,
                                    params)
@@ -1114,9 +1114,9 @@ START_TEST (pdf_stm_write_019)
   /* Test some data */
   ret = pdf_stm_write (mem_stm_fixture.stm, unencoded, 2, &tmp);
   fail_if (ret == PDF_ERROR);
-  fail_if (pdf_stm_flush (mem_stm_fixture.stm, PDF_TRUE, &tmp) == PDF_ERROR);  
+  fail_if (pdf_stm_flush (mem_stm_fixture.stm, PDF_TRUE, &tmp) == PDF_ERROR);
   fail_if (memcmp (mem_stm_fixture.buf, encoded, 5) != 0);
-  
+
   /* Cleanup */
   pdf_hash_destroy (params);
 }
@@ -1133,7 +1133,7 @@ END_TEST
 START_TEST (pdf_stm_write_020)
 {
   pdf_status_t ret;
-  pdf_hash_t params;
+  pdf_hash_t *params;
   pdf_size_t tmp = 0;
 
   pdf_char_t *unencoded = "\x00\x00\x00";
@@ -1142,7 +1142,7 @@ START_TEST (pdf_stm_write_020)
   /* Create the filter */
   pdf_init ();
 
-  pdf_hash_new (NULL, &params);
+  params = pdf_hash_new (NULL);
   fail_if (pdf_stm_install_filter (mem_stm_fixture.stm,
                                    PDF_STM_FILTER_A85_ENC,
                                    params)
@@ -1151,9 +1151,9 @@ START_TEST (pdf_stm_write_020)
   /* Test some data */
   ret = pdf_stm_write (mem_stm_fixture.stm, unencoded, 3, &tmp);
   fail_if (ret == PDF_ERROR);
-  fail_if (pdf_stm_flush (mem_stm_fixture.stm, PDF_TRUE, &tmp) == PDF_ERROR);  
+  fail_if (pdf_stm_flush (mem_stm_fixture.stm, PDF_TRUE, &tmp) == PDF_ERROR);
   fail_if (memcmp (mem_stm_fixture.buf, encoded, 6) != 0);
-  
+
   /* Cleanup */
   pdf_hash_destroy (params);
 }
@@ -1170,7 +1170,7 @@ END_TEST
 START_TEST (pdf_stm_write_021)
 {
   pdf_status_t ret;
-  pdf_hash_t params;
+  pdf_hash_t *params;
   pdf_size_t tmp = 0;
 
   pdf_char_t *unencoded = "\x00\x00\x00\x00";
@@ -1179,7 +1179,7 @@ START_TEST (pdf_stm_write_021)
   /* Create the filter */
   pdf_init ();
 
-  pdf_hash_new (NULL, &params);
+  params = pdf_hash_new (NULL);
   fail_if (pdf_stm_install_filter (mem_stm_fixture.stm,
                                    PDF_STM_FILTER_A85_ENC,
                                    params)
@@ -1188,9 +1188,9 @@ START_TEST (pdf_stm_write_021)
   /* Test some data */
   ret = pdf_stm_write (mem_stm_fixture.stm, unencoded, 4, &tmp);
   fail_if (ret == PDF_ERROR);
-  fail_if (pdf_stm_flush (mem_stm_fixture.stm, PDF_TRUE, &tmp) == PDF_ERROR);  
+  fail_if (pdf_stm_flush (mem_stm_fixture.stm, PDF_TRUE, &tmp) == PDF_ERROR);
   fail_if (memcmp (mem_stm_fixture.buf, encoded, 3) != 0);
-  
+
   /* Cleanup */
   pdf_hash_destroy (params);
 }
@@ -1209,7 +1209,7 @@ test_pdf_stm_write (void)
   tcase_add_checked_fixture(tc,
                             mem_stm_fixture_setup,
                             mem_stm_fixture_teardown);
-  
+
   tcase_add_test(tc, pdf_stm_write_001);
   tcase_add_test(tc, pdf_stm_write_002);
   tcase_add_test(tc, pdf_stm_write_003);
