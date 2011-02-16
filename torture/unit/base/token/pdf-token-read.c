@@ -1,4 +1,4 @@
-/* -*- mode: C -*-
+/* -*- mode: C -*- Time-stamp: "2011-02-11 20:30:55 EET mivael"
  *
  *       File:         pdf-token-read.c
  *       Date:         Wed Jan 14 05:44:48 2009
@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2010 Free Software Foundation, Inc. */
+/* Copyright (C) 2010, 2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -165,7 +165,9 @@ ok_for_escaped_char (pdf_char_t ch)
   if ('\0' == ch)
     return;
 
-  sprintf (stream_buf, "/#%02x", ch);
+  sprintf (stream_buf,
+           "/#%02hhx", /* assuming 'char' is always one byte in size */
+           (unsigned char) ch);
   INIT_STM_STR (&stm, stream_buf);
   INIT_TOKR (&tokr, stm);
 
