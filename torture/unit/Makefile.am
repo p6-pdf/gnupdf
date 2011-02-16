@@ -62,7 +62,7 @@ TESTS_ENVIRONMENT = top_srcdir=$(top_srcdir) \
                     WINE=$(WINE)
 
 TEST_SUITE_ERROR = base/error/pdf-error.c \
-		   base/error/pdf-perror.c
+                   base/error/pdf-perror.c
 
 # Unit tests for the Stream Module test suite
 TEST_SUITE_STM = base/stm/pdf-stm-mem-new.c \
@@ -74,25 +74,22 @@ TEST_SUITE_STM = base/stm/pdf-stm-mem-new.c \
                  base/stm/pdf-stm-btell.c \
                  base/stm/pdf-stm-tell.c \
                  base/stm/pdf-stm-write.c \
-		 base/stm/pdf-stm-flush.c \
+                 base/stm/pdf-stm-flush.c \
                  base/stm/pdf-stm-get-mode.c
 
 TEST_SUITE_HASH = base/hash/pdf-hash-new.c \
-		  base/hash/pdf-hash-destroy.c \
-		  base/hash/pdf-hash-add.c \
-		  base/hash/pdf-hash-add-time.c \
-		  base/hash/pdf-hash-add-hash.c \
-		  base/hash/pdf-hash-add-list.c \
-		  base/hash/pdf-hash-add-stm.c \
-		  base/hash/pdf-hash-add-text.c \
-		  base/hash/pdf-hash-remove.c \
-		  base/hash/pdf-hash-size.c \
-		  base/hash/pdf-hash-get.c \
-		  base/hash/pdf-hash-key-p.c \
-		  base/hash/pdf-hash-rename.c \
-		  base/hash/pdf-hash-iterator-new.c \
-		  base/hash/pdf-hash-iterator-next.c \
-		  base/hash/pdf-hash-iterator-destroy.c
+                  base/hash/pdf-hash-add.c \
+                  base/hash/pdf-hash-add-time.c \
+                  base/hash/pdf-hash-add-hash.c \
+                  base/hash/pdf-hash-add-list.c \
+                  base/hash/pdf-hash-add-stm.c \
+                  base/hash/pdf-hash-add-text.c \
+                  base/hash/pdf-hash-size.c \
+                  base/hash/pdf-hash-get-value.c \
+                  base/hash/pdf-hash-key-p.c \
+                  base/hash/pdf-hash-rename-key.c \
+                  base/hash/pdf-hash-iterator-init.c \
+                  base/hash/pdf-hash-iterator-next.c
 
 TEST_SUITE_LIST = base/list/pdf-list-test-common.h \
                   base/list/pdf-list-test-common.c \
@@ -163,53 +160,53 @@ TEST_SUITE_TEXT = base/text/pdf-text-test-common.h \
 TEST_SUITE_TYPES =
 
 TEST_SUITE_TIME =  base/time/pdf-time-new.c \
-		   base/time/pdf-time-dup.c \
-		   base/time/pdf-time-destroy.c \
-		   base/time/pdf-time-copy.c \
-		   base/time/pdf-time-clear.c \
-		   base/time/pdf-time-set-from-u32.c \
-		   base/time/pdf-time-set-from-i64.c \
-		   base/time/pdf-time-add-cal-span.c \
-		   base/time/pdf-time-sub-cal-span.c \
-		   base/time/pdf-time-add-span.c \
-		   base/time/pdf-time-sub-span.c \
-		   base/time/pdf-time-get-local-cal.c \
-		   base/time/pdf-time-get-utc-cal.c \
-		   base/time/pdf-time-from-cal.c \
-		   base/time/pdf-time-set-local-offset.c \
-		   base/time/pdf-time-from-string.c \
-		   base/time/pdf-time-span-new.c \
-		   base/time/pdf-time-span-dup.c \
-		   base/time/pdf-time-span-destroy.c \
-		   base/time/pdf-time-span-set.c \
+                   base/time/pdf-time-dup.c \
+                   base/time/pdf-time-destroy.c \
+                   base/time/pdf-time-copy.c \
+                   base/time/pdf-time-clear.c \
+                   base/time/pdf-time-set-from-u32.c \
+                   base/time/pdf-time-set-from-i64.c \
+                   base/time/pdf-time-add-cal-span.c \
+                   base/time/pdf-time-sub-cal-span.c \
+                   base/time/pdf-time-add-span.c \
+                   base/time/pdf-time-sub-span.c \
+                   base/time/pdf-time-get-local-cal.c \
+                   base/time/pdf-time-get-utc-cal.c \
+                   base/time/pdf-time-from-cal.c \
+                   base/time/pdf-time-set-local-offset.c \
+                   base/time/pdf-time-from-string.c \
+                   base/time/pdf-time-span-new.c \
+                   base/time/pdf-time-span-dup.c \
+                   base/time/pdf-time-span-destroy.c \
+                   base/time/pdf-time-span-set.c \
                    base/time/pdf-time-span-negate.c \
                    base/time/pdf-time-span-add.c \
                    base/time/pdf-time-span-cmp.c \
                    base/time/pdf-time-span-copy.c \
                    base/time/pdf-time-span-diff.c \
                    base/time/pdf-time-span-to-secs.c \
-		   base/time/pdf-time-testdata.c \
-		   base/time/pdf-time-test-common.c \
-		   base/time/pdf-time-diff-cal.c \
-		   base/time/pdf-time-set-to-current-local-time.c \
-		   base/time/pdf-time-set-to-current-utc-time.c \
-		   base/time/pdf-time-diff.c \
-		   base/time/pdf-time-to-string.c \
-		   base/time/pdf-time-cal-span-cmp.c \
-		   base/time/pdf-time-cal-span-diff.c \
-		   base/time/pdf-time-add-cal-span-with-base.c \
-		   base/time/pdf-time-w32-set-from-filetime.c \
+                   base/time/pdf-time-testdata.c \
+                   base/time/pdf-time-test-common.c \
+                   base/time/pdf-time-diff-cal.c \
+                   base/time/pdf-time-set-to-current-local-time.c \
+                   base/time/pdf-time-set-to-current-utc-time.c \
+                   base/time/pdf-time-diff.c \
+                   base/time/pdf-time-to-string.c \
+                   base/time/pdf-time-cal-span-cmp.c \
+                   base/time/pdf-time-cal-span-diff.c \
+                   base/time/pdf-time-add-cal-span-with-base.c \
+                   base/time/pdf-time-w32-set-from-filetime.c \
                    base/time/pdf-time-test-common.h
 
 TEST_SUITE_CRYPT = base/crypt/pdf-crypt-cipher-new.c \
-		   base/crypt/pdf-crypt-cipher-setkey.c \
-		   base/crypt/pdf-crypt-cipher-destroy.c \
-		   base/crypt/pdf-crypt-cipher-encrypt.c \
-		   base/crypt/pdf-crypt-cipher-decrypt.c \
-		   base/crypt/pdf-crypt-md-new.c \
-		   base/crypt/pdf-crypt-md-write.c \
-		   base/crypt/pdf-crypt-md-read.c \
-		   base/crypt/pdf-crypt-md-destroy.c
+                   base/crypt/pdf-crypt-cipher-setkey.c \
+                   base/crypt/pdf-crypt-cipher-destroy.c \
+                   base/crypt/pdf-crypt-cipher-encrypt.c \
+                   base/crypt/pdf-crypt-cipher-decrypt.c \
+                   base/crypt/pdf-crypt-md-new.c \
+                   base/crypt/pdf-crypt-md-write.c \
+                   base/crypt/pdf-crypt-md-read.c \
+                   base/crypt/pdf-crypt-md-destroy.c
 
 TEST_SUITE_ALLOC = base/alloc/pdf-alloc.c \
                    base/alloc/pdf-realloc.c \

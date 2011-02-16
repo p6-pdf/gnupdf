@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,47 +40,27 @@
  */
 START_TEST (pdf_hash_iterator_next_001)
 {
-  pdf_hash_t table;
+  pdf_hash_t *table;
   pdf_hash_iterator_t itr;
-  char *key;
-  
-  pdf_init();
+  const pdf_char_t *key;
+  const pdf_char_t *value;
+  pdf_error_t *error = NULL;
 
-  pdf_hash_new (NULL, &table);
-  pdf_hash_add (table, "key", "val",NULL);
-  pdf_hash_iterator_new (table, &itr);
+  pdf_init ();
 
-  fail_if (pdf_hash_iterator_next (itr, (void *) &key) != PDF_OK);
+  table = pdf_hash_new (NULL);
+  pdf_hash_add (table, "key", "val", NULL, NULL);
+  pdf_hash_iterator_init (&itr, table, NULL);
 
-  pdf_hash_destroy (table);
-  pdf_hash_iterator_destroy (itr);
+  fail_if (pdf_hash_iterator_next (&itr, &key, (const void **)&value, &error) != PDF_TRUE);
+  fail_if (error != NULL);
+  fail_if (pdf_hash_iterator_next (&itr, &key, (const void **)&value, &error) == PDF_TRUE);
+  fail_if (error != NULL);
 
-}
-END_TEST
-
-/*
- * Test: pdf_hash_iterator_next_003
- * Description:
- *   Try to iterate over an iterator given a NULL key pointer.
- * Success condition:
- *   Returns PDF_EBADDATA
- */
-START_TEST (pdf_hash_iterator_next_003)
-{
-  pdf_hash_t table;
-  pdf_hash_iterator_t itr;
- 
-  pdf_hash_new (NULL, &table);
-  pdf_hash_add (table, "key", "val",NULL);
-  pdf_hash_iterator_new (table, &itr);
-
-  fail_if (pdf_hash_iterator_next (itr, NULL) != PDF_EBADDATA);
-
-  pdf_hash_iterator_destroy (itr);
+  pdf_hash_iterator_deinit (&itr);
   pdf_hash_destroy (table);
 }
 END_TEST
-
 
 /*
  * Test case creation function
@@ -88,9 +68,9 @@ END_TEST
 TCase *
 test_pdf_hash_iterator_next (void)
 {
-  TCase *tc = tcase_create("pdf_hash_iterator_next");
-  tcase_add_test(tc, pdf_hash_iterator_next_001);
-  tcase_add_test(tc, pdf_hash_iterator_next_003);
+  TCase *tc = tcase_create ("pdf_hash_iterator_next");
+
+  tcase_add_test (tc, pdf_hash_iterator_next_001);
   return tc;
 }
 

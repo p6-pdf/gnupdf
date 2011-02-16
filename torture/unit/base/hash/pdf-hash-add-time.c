@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,14 +40,21 @@
  */
 START_TEST (pdf_hash_add_time_001)
 {
-  pdf_hash_t table;
+  pdf_hash_t *table;
   pdf_time_t inner;
+  pdf_error_t *error = NULL;
 
-  pdf_init();
+  pdf_init ();
 
-  fail_if (pdf_hash_new (NULL, &table) != PDF_OK);
+  table = pdf_hash_new (NULL);
+
   fail_if (pdf_time_new (&inner) != PDF_OK);
-  fail_if (pdf_hash_add_time (table, "theKey", &inner) != PDF_OK);
+
+  fail_if (pdf_hash_add_time (table,
+                              "theKey",
+                              inner,
+                              &error) != PDF_TRUE);
+  fail_if (error != NULL);
 
   pdf_hash_destroy (table);
 }
@@ -60,8 +67,9 @@ END_TEST
 TCase *
 test_pdf_hash_add_time (void)
 {
-  TCase *tc = tcase_create("pdf_hash_add_time");
-  tcase_add_test(tc, pdf_hash_add_time_001);
+  TCase *tc = tcase_create ("pdf_hash_add_time");
+
+  tcase_add_test (tc, pdf_hash_add_time_001);
   return tc;
 }
 

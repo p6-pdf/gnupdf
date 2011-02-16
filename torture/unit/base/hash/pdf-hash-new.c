@@ -1,13 +1,13 @@
 /* -*- mode: C -*-
  *
- *       File:         pdf-hash-create.c
+ *       File:         pdf-hash-new.c
  *       Date:         Wed Mar  12 12:43:00 2008
  *
  *       GNU PDF Library - Unit tests for pdf_hash_new
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,6 @@
 #include <pdf.h>
 #include <check.h>
 
-
 /*
  * Test: pdf_hash_new_001
  * Description:
@@ -40,29 +39,18 @@
  */
 START_TEST (pdf_hash_new_001)
 {
-  pdf_hash_t table;
+  pdf_hash_t *table;
+  pdf_error_t *error = NULL;
 
-  pdf_init();
+  pdf_init ();
 
-  fail_if (pdf_hash_new (NULL, &table) != PDF_OK);
+  table = pdf_hash_new (&error);
+  fail_if (table == NULL);
+  fail_if (error != NULL);
 
   pdf_hash_destroy (table);
 }
 END_TEST
-
-/*
- * Test: pdf_hash_new_002
- * Description:
- *   Try to create an empty hash with a NULL pointer.
- * Success condition:
- *   Returns PDF_EBADDATA
- */
-START_TEST (pdf_hash_new_002)
-{
-  fail_if (pdf_hash_new (NULL, NULL) != PDF_EBADDATA);
-}
-END_TEST
-
 
 /*
  * Test case creation function
@@ -70,10 +58,10 @@ END_TEST
 TCase *
 test_pdf_hash_new (void)
 {
-  TCase *tc = tcase_create("pdf_hash_new");
-  tcase_add_test(tc, pdf_hash_new_001);
-  tcase_add_test(tc, pdf_hash_new_002);
+  TCase *tc = tcase_create ("pdf_hash_new");
+
+  tcase_add_test (tc, pdf_hash_new_001);
   return tc;
 }
 
-/* End of pdf-hash-create.c */
+/* End of pdf-hash-new.c */

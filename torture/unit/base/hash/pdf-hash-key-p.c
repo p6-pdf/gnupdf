@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,19 +39,21 @@
  */
 START_TEST (pdf_hash_key_p_001)
 {
-  pdf_hash_t table;
+  pdf_hash_t *table;
+  pdf_error_t *error = NULL;
 
-  pdf_init();
+  pdf_init ();
 
-  pdf_hash_new (NULL, &table);
-  pdf_hash_add (table, "key", "val", NULL);
- 
-  fail_if (pdf_hash_key_p (table, "key") != PDF_TRUE);
+  table = pdf_hash_new (NULL);
+
+  pdf_hash_add (table, "key", "val", NULL, NULL);
+
+  fail_if (pdf_hash_key_p (table, "key", &error) != PDF_TRUE);
+  fail_if (error != NULL);
 
   pdf_hash_destroy (table);
 }
 END_TEST
-
 
 /*
  * Test: pdf_hash_key_p_002
@@ -62,17 +64,21 @@ END_TEST
  */
 START_TEST (pdf_hash_key_p_002)
 {
-  pdf_hash_t table;
+  pdf_hash_t *table;
+  pdf_error_t *error = NULL;
 
-  pdf_hash_new (NULL, &table);
-  pdf_hash_add (table, "key", "val", NULL);
- 
-  fail_if (pdf_hash_key_p (table, "ke") != PDF_FALSE);
+  pdf_init ();
+
+  table = pdf_hash_new (NULL);
+
+  pdf_hash_add (table, "key", "val", NULL, NULL);
+
+  fail_if (pdf_hash_key_p (table, "ke", &error) == PDF_TRUE);
+  fail_if (error != NULL);
 
   pdf_hash_destroy (table);
 }
 END_TEST
-
 
 /*
  * Test case creation function
@@ -80,9 +86,10 @@ END_TEST
 TCase *
 test_pdf_hash_key_p (void)
 {
-  TCase *tc = tcase_create("pdf_hash_key_p");
-  tcase_add_test(tc, pdf_hash_key_p_001);
-  tcase_add_test(tc, pdf_hash_key_p_002);
+  TCase *tc = tcase_create ("pdf_hash_key_p");
+
+  tcase_add_test (tc, pdf_hash_key_p_001);
+  tcase_add_test (tc, pdf_hash_key_p_002);
   return tc;
 }
 
