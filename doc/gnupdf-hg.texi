@@ -1289,13 +1289,73 @@ exec "$progdir/$program" $@{1+"$@@"@}
 and change it to something like:
 
 @example
-exec "gdb $progdir/$program"
+exec gdb --return-child-result --quiet --args "$progdir/$program" $@{1+"$@@"@}
 @end example
+
+Note that you need to repeat this change every time
+@file{torture/unit/runtests} is rebuilt by @command{make}.
 
 The second alternative is to run gdb on the real binary using:
 
 @example
 $ LD_LIBRARY_PATH=/path/to/libgnupdf/src/.libs:$LD_LIBRARY_PATH gdb torture/unit/.libs/runtests
+@end example
+
+When debugging failing tests you may find it useful to set breakpoint
+to @code{_fail_unless} function:
+
+@example
+$ @strong{( export CK_FORK='no'; make check )}   # you can use 'make check FUNCTION=...' as well
+...
+(gdb) @strong{break _fail_unless}
+Breakpoint 1 at 0x804ac44
+(gdb) @strong{run}
+...
+Breakpoint 1, _fail_unless (result=1, file=0x80b2f94 "base/alloc/pdf-alloc.c",
+    line=47, expr=0x80aac30 "Failure 'data == NULL' occured") at check.c:237
+237       send_loc_info (file, line);
+...
+(gdb) @strong{list}
+232     void _fail_unless (int result, const char *file,
+233                        int line, const char *expr, ...)
+234     @{
+235       const char *msg;
+236
+237       send_loc_info (file, line);
+@strong{238       if (!result) @{}
+239         va_list ap;
+240         char buf[BUFSIZ];
+241
+(gdb) @strong{break check.c:238 if (!result)}
+Breakpoint 2 at 0xb7ea4a7c: file check.c, line 238.
+(gdb) @strong{delete 1}
+(gdb) @strong{continue}
+Continuing.
+...
+Breakpoint 2, _fail_unless (result=0,
+    file=0x80a7ef8 "base/text/pdf-text-new-destroy.c", line=44,
+    expr=0x80a7f1c "Assertion 'pdf_text_new (&newtext) == PDF_EBADCONTEXT' failed")
+    at check.c:238
+238       if (!result) @{
+(gdb) @strong{finish}
+Run till exit from #0  _fail_unless (result=0,
+    file=0x80a7ef8 "base/text/pdf-text-new-destroy.c", line=44,
+    expr=0x80a7f1c "Assertion 'pdf_text_new (&newtext) == PDF_EBADCONTEXT' failed")
+    at check.c:238
+pdf_text_new_destroy_001 (_i=0) at base/text/pdf-text-new-destroy.c:46
+46      END_TEST
+(gdb) @strong{list}
+41      @{
+42        pdf_text_t newtext = NULL;
+43
+44        fail_unless(pdf_text_new (&newtext) == PDF_EBADCONTEXT);
+45      @}
+46      END_TEST
+47
+48      /*
+49       * Test: pdf_text_new_destroy_002
+50       * Description:
+(gdb) ...
 @end example
 
 @node Test Data Files

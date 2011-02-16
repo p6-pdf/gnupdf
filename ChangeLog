@@ -1,3 +1,8 @@
+2011-02-16  Michael V. Antosha  <Michael.Antosha@gmail.com>
+
+	* doc/gnupdf-hg.texi (Using gdb to debug check tests): Practical
+	example using gdb with failing unit tests.
+
 2011-02-15  Jose E. Marchesi  <jemarch@gnu.org>
 
 	manual: changes to the object API.
