@@ -46,7 +46,7 @@ START_TEST (pdf_list_iterator_deinit_001)
 
   list = pdf_list_new (NULL, NULL, 0, NULL);
 
-  pdf_list_iterator (&itr, list, NULL);
+  pdf_list_iterator_init (&itr, list, NULL);
 
   pdf_list_iterator_deinit (&itr);
   pdf_list_destroy (list);

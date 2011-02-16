@@ -49,7 +49,7 @@ extern TCase *test_pdf_list_previous_node (void);
 extern TCase *test_pdf_list_next_node (void);
 extern TCase *test_pdf_list_iterator_init (void);
 extern TCase *test_pdf_list_iterator_deinit (void);
-extern TCase *test_pdf_list_iterator_from_to (void);
+extern TCase *test_pdf_list_iterator_init_from_to (void);
 extern TCase *test_pdf_list_iterator_next (void);
 extern TCase *test_pdf_list_sorted_add (void);
 extern TCase *test_pdf_list_sorted_remove (void);
@@ -87,7 +87,7 @@ tsuite_list ()
   suite_add_tcase (s, test_pdf_list_previous_node ());
   suite_add_tcase (s, test_pdf_list_next_node ());
   suite_add_tcase (s, test_pdf_list_iterator_init ());
-  suite_add_tcase (s, test_pdf_list_iterator_from_to ());
+  suite_add_tcase (s, test_pdf_list_iterator_init_from_to ());
   suite_add_tcase (s, test_pdf_list_iterator_next ());
   suite_add_tcase (s, test_pdf_list_iterator_deinit ());
   suite_add_tcase (s, test_pdf_list_sorted_add ());

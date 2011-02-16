@@ -39,17 +39,18 @@
  */
 START_TEST (pdf_hash_remove_001)
 {
-  pdf_hash_t table;
+  pdf_hash_t *table;
+  pdf_error_t *error = NULL;
 
-  pdf_init();
+  pdf_init ();
 
-  pdf_hash_new (NULL, &table);
-  pdf_hash_add (table, "key", "val",NULL);
+  table = pdf_hash_new (NULL);
 
-  fail_if (pdf_hash_remove (table, "key") != PDF_OK);
+  pdf_hash_add (table, "key", "val", NULL, NULL);
+  fail_if (pdf_hash_remove (table, "key", &error) != PDF_TRUE);
+  fail_if (error != NULL);
 
   pdf_hash_destroy (table);
-
 }
 END_TEST
 
@@ -63,17 +64,18 @@ END_TEST
  */
 START_TEST (pdf_hash_remove_002)
 {
-  pdf_hash_t table;
+  pdf_hash_t *table;
+  pdf_error_t *error = NULL;
 
-  pdf_init();
+  pdf_init ();
 
-  pdf_hash_new (NULL, &table);
-  pdf_hash_add (table, "key", "val",NULL);
+  table = pdf_hash_new (NULL);
 
-  fail_if (pdf_hash_remove (table, "ke") != PDF_ERROR);
+  pdf_hash_add (table, "key", "val", NULL, NULL);
+  fail_if (pdf_hash_remove (table, "ke", &error) == PDF_TRUE);
+  fail_if (error != NULL);
 
   pdf_hash_destroy (table);
-
 }
 END_TEST
 
@@ -86,17 +88,19 @@ END_TEST
  */
 START_TEST (pdf_hash_remove_003)
 {
-  pdf_hash_t table;
+  pdf_hash_t *table;
+  pdf_error_t *error = NULL;
 
-  pdf_init();
+  pdf_init ();
 
-  pdf_hash_new (NULL, &table);
-  pdf_hash_add (table, "key", "val",NULL);
+  table = pdf_hash_new (NULL);
 
-  fail_if (pdf_hash_remove (table, NULL) != PDF_EBADDATA);
+  pdf_hash_add (table, "key", "val", NULL, NULL);
+  fail_if (pdf_hash_remove (table, NULL, &error) == PDF_TRUE);
+  fail_if (error == NULL);
+  fail_if (pdf_error_get_status (error) != PDF_EBADDATA);
 
   pdf_hash_destroy (table);
-
 }
 END_TEST
 
@@ -107,10 +111,11 @@ END_TEST
 TCase *
 test_pdf_hash_remove (void)
 {
-  TCase *tc = tcase_create("pdf_hash_remove");
-  tcase_add_test(tc, pdf_hash_remove_001);
-  tcase_add_test(tc, pdf_hash_remove_002);
-  tcase_add_test(tc, pdf_hash_remove_003);
+  TCase *tc = tcase_create ("pdf_hash_remove");
+
+  tcase_add_test (tc, pdf_hash_remove_001);
+  tcase_add_test (tc, pdf_hash_remove_002);
+  tcase_add_test (tc, pdf_hash_remove_003);
   return tc;
 }
 
