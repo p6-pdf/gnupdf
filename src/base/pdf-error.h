@@ -181,9 +181,9 @@ void pdf_perror (const pdf_status_t  status,
   pdf_error (0, stdout, "***DEBUG %s***:%s:%d: " message,   \
              layer, __FILE__, __LINE__, ##__VA_ARGS__)
 
-#define PDF_ASSERT_TRACE(layer, condition)                              \
-  pdf_error (0, stderr, "***ASSERT %s***:%s:%d: assertion `%s' failed",	\
-             layer, __FILE__, __LINE__, #condition)
+#define PDF_ASSERT_TRACE(condition)					\
+  pdf_error (0, stderr, "***ASSERT***:%s:%d: assertion `%s' failed",	\
+             __FILE__, __LINE__, #condition)
 
 #ifdef PDF_HAVE_DEBUG_BASE
 #define PDF_DEBUG_BASE(message, ...)                        \
@@ -213,24 +213,24 @@ void pdf_perror (const pdf_status_t  status,
 #define PDF_DEBUG_PAGE(...)
 #endif /* PDF_HAVE_DEBUG_PAGE */
 
-#define PDF_ASSERT(layer, condition)                                    \
+#define PDF_ASSERT(condition)                                           \
   do                                                                    \
     {                                                                   \
       if (!(condition))                                                 \
-        PDF_ASSERT_TRACE (layer, condition);                            \
+        PDF_ASSERT_TRACE (condition);                                   \
     } while(0)
 
-#define PDF_ASSERT_RETURN(layer, condition)                             \
+#define PDF_ASSERT_RETURN(condition)                                    \
   do                                                                    \
     {                                                                   \
       if (!(condition))                                                 \
         {                                                               \
-          PDF_ASSERT_TRACE (layer, condition);                          \
+          PDF_ASSERT_TRACE (condition);                                 \
           return;                                                       \
         }                                                               \
     } while(0)
 
-#define PDF_ASSERT_RETURN_VAL(layer, condition, value)                  \
+#define PDF_ASSERT_RETURN_VAL(condition, value)                         \
   do                                                                    \
     {                                                                   \
       if (!(condition))                                                 \
@@ -240,32 +240,12 @@ void pdf_perror (const pdf_status_t  status,
         }                                                               \
     } while(0)
 
-#define PDF_ASSERT_BASE(condition)              \
-  PDF_ASSERT (LAYER_NAME_BASE, condition)
-#define PDF_ASSERT_OBJECT(condition)            \
-  PDF_ASSERT (LAYER_NAME_OBJECT, condition)
-#define PDF_ASSERT_DOCUMENT(condition)          \
-  PDF_ASSERT (LAYER_NAME_DOCUMENT, condition)
-#define PDF_ASSERT_PAGE(condition)              \
-  PDF_ASSERT (LAYER_NAME_PAGE, condition)
-
-#define PDF_ASSERT_BASE_RETURN(condition)           \
-  PDF_ASSERT_RETURN (LAYER_NAME_BASE, condition)
-#define PDF_ASSERT_OBJECT_RETURN(condition)         \
-  PDF_ASSERT_RETURN (LAYER_NAME_OBJECT, condition)
-#define PDF_ASSERT_DOCUMENT_RETURN(condition)           \
-  PDF_ASSERT_RETURN (LAYER_NAME_DOCUMENT, condition)
-#define PDF_ASSERT_PAGE_RETURN(condition)           \
-  PDF_ASSERT_RETURN (LAYER_NAME_PAGE, condition)
-
-#define PDF_ASSERT_BASE_RETURN_VAL(condition, val)          \
-  PDF_ASSERT_RETURN_VAL (LAYER_NAME_BASE, condition, val)
-#define PDF_ASSERT_OBJECT_RETURN_VAL(condition, val)        \
-  PDF_ASSERT_RETURN_VAL (LAYER_NAME_OBJECT, condition, val)
-#define PDF_ASSERT_DOCUMENT_RETURN_VAL(condition, val)          \
-  PDF_ASSERT_RETURN_VAL (LAYER_NAME_DOCUMENT, condition, val)
-#define PDF_ASSERT_PAGE_RETURN_VAL(condition, val)          \
-  PDF_ASSERT_RETURN_VAL (LAYER_NAME_PAGE, condition, val)
+#define PDF_ASSERT_POINTER(pointer)             \
+  PDF_ASSERT (pointer != NULL)
+#define PDF_ASSERT_POINTER_RETURN(pointer)      \
+  PDF_ASSERT_RETURN (pointer != NULL)
+#define PDF_ASSERT_POINTER_RETURN_VAL(pointer)	\
+  PDF_ASSERT_RETURN_VAL (pointer != NULL)
 
 #endif /* PDF_ERROR_H */
 

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2011-01-26 22:16:04 jemarch"
+/* -*- mode: C -*- Time-stamp: "2011-02-17 19:52:19 aleksander"
  *
  *       File:         pdf-fp-func.c
  *       Date:         Sun Nov 30 18:46:06 2008
@@ -169,7 +169,7 @@ pdf_fp_func_0_new (pdf_u32_t m,
 
   /* Specific data */
   f->u.t0.size = size;
-  
+
   /* Get the number of samples */
   nsamples = 1;
   nsamples_limit = 1U<<28/f->n; /* insane values */
@@ -212,7 +212,7 @@ pdf_fp_func_0_new (pdf_u32_t m,
     {
       return PDF_EMTOOBIG;
     }
-  
+
   f->u.t0.y = read_type0_sample_table (samples,
                                        samples_size,
                                        bps,
@@ -440,7 +440,7 @@ pdf_fp_func_4_new (pdf_u32_t m,
       ret = PDF_ERROR;
       goto fail;
     }
-      
+
   if (pdf_token_reader_new (reader_stm, &reader) != PDF_OK)
     {
       /* FIXME: REFINE */
@@ -483,7 +483,7 @@ pdf_fp_func_4_new (pdf_u32_t m,
         {
           ret = PDF_EEOF;
           goto fail;
-        }	
+        }
       switch ((PDF_TYPE4_OPC)opc)
         {
         case OPC_lit_i:
@@ -492,7 +492,7 @@ pdf_fp_func_4_new (pdf_u32_t m,
             debug_off[debug_size][0] = at;
             debug_off[debug_size][1] = beg_pos;
             debug_size++;
-            
+
             op[at++] = opc;
             memcpy (op+at, &lit, sizeof(lit));
             at += sizeof (lit);
@@ -511,7 +511,7 @@ pdf_fp_func_4_new (pdf_u32_t m,
 
             op[at] = OPC_begin; /* OPC_error */
             at += 1+sizeof(at);
-            
+
             break;
           }
         case OPC_end:
@@ -560,7 +560,7 @@ pdf_fp_func_4_new (pdf_u32_t m,
                 f->u.t4.n_opcodes = at;
                 f->u.t4.debug_off = debug_off;
                 f->u.t4.debug_size = debug_size;
-                
+
                 f->eval = pdf_eval_type4;
 
                 goto success;
@@ -578,7 +578,7 @@ pdf_fp_func_4_new (pdf_u32_t m,
             debug_off[debug_size][0] = --bsp;
             debug_off[debug_size][1] = beg_pos;
             debug_size++;
-            
+
             op[off[bsp]] = OPC_jnt;
             to = at - 1;
             memcpy(op+1+off[bsp],&to,sizeof(to));
@@ -633,7 +633,7 @@ pdf_fp_func_4_new (pdf_u32_t m,
  fail:
   pdf_dealloc (op);
   pdf_dealloc (debug_off);
-  
+
   if (error_at != NULL)
     {
       *error_at = beg_pos;
@@ -689,7 +689,7 @@ pdf_fp_func_destroy (pdf_fp_func_t t)
       pdf_dealloc (t->u.t0.y);
       pdf_dealloc (t->u.t0.y1);
       pdf_dealloc (t->u.t0.r);
-		
+
       pdf_dealloc (t->u.t0.wm);
       pdf_dealloc (t->u.t0.w0);
       pdf_dealloc (t->u.t0.w1);
@@ -774,8 +774,7 @@ setmap(double map[2], const pdf_real_t to[2] , const pdf_real_t from[2])
 
 
 static pdf_real_t
-eval_spline(
-            pdf_real_t x,
+eval_spline(pdf_real_t x,
             pdf_u32_t nsamples,
             const pdf_real_t y[],
             const pdf_real_t y1[])
@@ -788,12 +787,12 @@ eval_spline(
     return y[0];
   else if (x >= nsamples-1)
     return y[nsamples-1];
-	
+
   t = pdf_fp_floor (x);
   i = (pdf_u32_t)t;
   t = x-t;
 
-  PDF_ASSERT_BASE (i < nsamples);
+  PDF_ASSERT (i < nsamples);
 
   if (nsamples < 4)
     {
@@ -880,7 +879,7 @@ static void pdf_spline_init(struct pdf_func0_s *p)
   p->d = pdf_alloc (max * sizeof(p->d[0]));
 
   p->y1 = pdf_alloc (sizeof(p->y1[0]) * p->n * p->nsamples);
-	
+
   l = p->nsamples/p->size[0];
 
   p->r  = pdf_alloc (2*sizeof(p->r[0]) * l);
@@ -915,7 +914,7 @@ pdf_eval_spline (pdf_fp_func_t fun,
   r1 = p->r + l;
 
   for (j = 0; j < p->n; j++)
-    {	
+    {
       k = 0;
       x = p->encode[0] * t[0] + p->encode[1];
       for (i = 0; i < l; i++)
@@ -943,7 +942,7 @@ pdf_eval_spline (pdf_fp_func_t fun,
 
       y = r[0];
       y = fun->u.t0.decode[2*j] * y + fun->u.t0.decode[2*j+1];
-			
+
       if (fun->range)
         y = clip(y,fun->range+2*j);
       out[j] = y;
@@ -979,7 +978,7 @@ pdf_eval_linear (pdf_fp_func_t fun,
   p = &fun->u.t0;
   m = fun->m;
 
-  PDF_ASSERT_BASE (m <= TYPE0_MAX_DIM);
+  PDF_ASSERT (m <= TYPE0_MAX_DIM);
 
   xcp = 0;
   i0 = 0;
@@ -1041,7 +1040,7 @@ pdf_eval_linear (pdf_fp_func_t fun,
 
       y = p->r[0];
       y = fun->u.t0.decode[2*j] * y + fun->u.t0.decode[2*j+1];
-			
+
       if (fun->range)
         y = clip(y,fun->range+2*j);
 
@@ -1051,7 +1050,7 @@ pdf_eval_linear (pdf_fp_func_t fun,
   return PDF_OK;
 }
 
-#endif	
+#endif
 /* TRUE_C2_NOT_A_KNOT_SPLINES */
 
 
@@ -1074,7 +1073,7 @@ linear_interpolation(pdf_u32_t i,
 
   if (w1[i]) /* zero indicates a possibly invalid array index */
     {
-      PDF_ASSERT_BASE (j+1 < size[i]);
+      PDF_ASSERT (j+1 < size[i]);
       if (i == 0)
         return w0[i] * y[j] + w1[i] * y[j+1];
       else
@@ -1228,7 +1227,7 @@ pdf_eval_spline (pdf_fp_func_t fun,
             }
           else if (t > 0)
             {
-              PDF_ASSERT_BASE (fun->u.t0.k[i] == 0);
+              PDF_ASSERT (fun->u.t0.k[i] == 0);
               fun->u.t0.wm[i] = 0;
               fun->u.t0.w0[i] = (0.5*v-1.5)*v +1;
               fun->u.t0.w1[i] = (2-v)*v;
@@ -1306,8 +1305,8 @@ pdf_eval_stitch (pdf_fp_func_t t,
   pdf_u32_t lo,hi;
   pdf_u32_t i;
 
-  PDF_ASSERT_BASE (t->domain[0] == t->u.t3.bounds[0]);
-  PDF_ASSERT_BASE (t->domain[1] == t->u.t3.bounds[t->u.t3.k]);
+  PDF_ASSERT (t->domain[0] == t->u.t3.bounds[0]);
+  PDF_ASSERT (t->domain[1] == t->u.t3.bounds[t->u.t3.k]);
 
   x = in[0];
 
@@ -1345,7 +1344,7 @@ pdf_eval_stitch (pdf_fp_func_t t,
       if (lo > hi)
         {
           return PDF_ERROR;
-        }	
+        }
     }
 
   x = x * t->u.t3.encode[2*i] + t->u.t3.encode[2*i+1];
@@ -1455,7 +1454,7 @@ pdf_eval_type4 (pdf_fp_func_t t,
   pdf_i32_t pc;
   pdf_fp_func_debug_t debug_info;
   pdf_i32_t aux;
-  
+
   op  = t->u.t4.opcodes;
   n   = t->u.t4.n_opcodes;
 
@@ -1630,7 +1629,7 @@ pdf_eval_type4 (pdf_fp_func_t t,
                 sp++;
               }
             break;
-          }	
+          }
         case OPC_roll:
           {
             pdf_i32_t n,s,j;
@@ -1655,7 +1654,7 @@ pdf_eval_type4 (pdf_fp_func_t t,
                 memcpy(&stack[sp-n+1],pp,n*sizeof(stack[0]));
               }
             break;
-          }	
+          }
         case OPC_cvr:
           if (sp < 0) goto stack_underflow;
           if (!P_NUM(stack[sp])) goto type_error;
@@ -1664,7 +1663,7 @@ pdf_eval_type4 (pdf_fp_func_t t,
         case OPC_add:
           if (sp < 1) goto stack_underflow;
           if (!P_NUM(stack[sp-1]) || !P_NUM(stack[sp])) goto type_error;
-          if (isinf(tmp = pdf_fp_add(stack[sp-1].v, stack[sp].v))) 
+          if (isinf(tmp = pdf_fp_add(stack[sp-1].v, stack[sp].v)))
             goto limit_error;
           stack[sp-1].v = tmp;
           stack[sp-1].t = NUM_TYPE(stack[sp-1], stack[sp]);
@@ -1673,7 +1672,7 @@ pdf_eval_type4 (pdf_fp_func_t t,
         case OPC_sub:
           if (sp < 1) goto stack_underflow;
           if (!P_NUM(stack[sp-1]) || !P_NUM(stack[sp])) goto type_error;
-          if (isinf(tmp = pdf_fp_sub(stack[sp-1].v, stack[sp].v))) 
+          if (isinf(tmp = pdf_fp_sub(stack[sp-1].v, stack[sp].v)))
             goto limit_error;
           stack[sp-1].v = tmp;
           stack[sp-1].t = NUM_TYPE(stack[sp-1], stack[sp]);
@@ -1682,7 +1681,7 @@ pdf_eval_type4 (pdf_fp_func_t t,
         case OPC_mul:
           if (sp < 1) goto stack_underflow;
           if (!P_NUM(stack[sp-1]) || !P_NUM(stack[sp])) goto type_error;
-          if (isinf(tmp = pdf_fp_mul(stack[sp-1].v, stack[sp].v))) 
+          if (isinf(tmp = pdf_fp_mul(stack[sp-1].v, stack[sp].v)))
             goto limit_error;
           stack[sp-1].v = tmp;
           stack[sp-1].t = NUM_TYPE(stack[sp-1], stack[sp]);
@@ -1692,7 +1691,7 @@ pdf_eval_type4 (pdf_fp_func_t t,
           if (sp < 1) goto stack_underflow;
           if (!P_NUM(stack[sp-1]) || !P_NUM(stack[sp])) goto type_error;
           if (stack[sp].v == 0) goto math_error;
-          if (isinf(tmp = pdf_fp_div(stack[sp-1].v, stack[sp].v))) 
+          if (isinf(tmp = pdf_fp_div(stack[sp-1].v, stack[sp].v)))
             goto limit_error;
           stack[sp-1].v = tmp;
           stack[sp-1].t = NUM_TYPE(stack[sp-1], stack[sp]);
@@ -1701,7 +1700,7 @@ pdf_eval_type4 (pdf_fp_func_t t,
         case OPC_atan:
           if (sp < 1) goto stack_underflow;
           if (!P_NUM(stack[sp-1]) || !P_NUM(stack[sp])) goto type_error;
-          stack[sp-1].v = (180/PDF_PI) * 
+          stack[sp-1].v = (180/PDF_PI) *
                           pdf_fp_atan2 (stack[sp-1].v, stack[sp].v);
           stack[sp-1].t = REAL;
           /* check against Ghostscript */
@@ -1722,7 +1721,7 @@ pdf_eval_type4 (pdf_fp_func_t t,
           sp--;
           break;
         case OPC_and:
-          if (sp < 1) goto stack_underflow; 
+          if (sp < 1) goto stack_underflow;
           if (P_INT(stack[sp-1]) && P_INT(stack[sp]))
             stack[sp-1].v = INT(stack[sp-1].v) & INT(stack[sp].v);
           else if (P_BOOL(stack[sp-1]) && P_BOOL(stack[sp]))
@@ -1738,7 +1737,7 @@ pdf_eval_type4 (pdf_fp_func_t t,
           {
             pdf_i32_t x;
             pdf_i32_t i = INT(stack[sp].v);
-            if ((stack[sp].v > PDF_I32_MAX) || 
+            if ((stack[sp].v > PDF_I32_MAX) ||
                 (stack[sp].v < PDF_I32_MIN))
               goto limit_error;
             x = INT(stack[sp-1].v);
