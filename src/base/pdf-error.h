@@ -235,7 +235,7 @@ void pdf_perror (const pdf_status_t  status,
     {                                                                   \
       if (!(condition))                                                 \
         {                                                               \
-          PDF_ASSERT_TRACE (layer, condition);                          \
+          PDF_ASSERT_TRACE (condition);                                 \
           return value;                                                 \
         }                                                               \
     } while(0)
@@ -244,8 +244,8 @@ void pdf_perror (const pdf_status_t  status,
   PDF_ASSERT (pointer != NULL)
 #define PDF_ASSERT_POINTER_RETURN(pointer)      \
   PDF_ASSERT_RETURN (pointer != NULL)
-#define PDF_ASSERT_POINTER_RETURN_VAL(pointer)	\
-  PDF_ASSERT_RETURN_VAL (pointer != NULL)
+#define PDF_ASSERT_POINTER_RETURN_VAL(pointer, value)	\
+  PDF_ASSERT_RETURN_VAL (pointer != NULL, value)
 
 #endif /* PDF_ERROR_H */
 

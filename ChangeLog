@@ -1,5 +1,10 @@
 2011-02-17  Aleksander Morgado  <aleksander@gnu.org>
 
+	base/error: Fix some issues with the new assertion macros
+	* src/base/pdf-error.h
+
+2011-02-17  Aleksander Morgado  <aleksander@gnu.org>
+
 	base/error: New macros for assertions, and API cleanup
 	* src/base/pdf-error.h: Remove debugging procedures from the public API.
 	Added new assertion macros to be used to check input arguments of API
