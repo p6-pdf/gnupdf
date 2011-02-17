@@ -172,75 +172,100 @@ void pdf_perror (const pdf_status_t  status,
 
 /* --------------------- Debugging procedures ------------------------- */
 
+#define LAYER_NAME_BASE     "BASE"
+#define LAYER_NAME_OBJECT   "OBJECT"
+#define LAYER_NAME_DOCUMENT "DOCUMENT"
+#define LAYER_NAME_PAGE     "PAGE"
+
+#define PDF_DEBUG_TRACE(layer, message, ...)                \
+  pdf_error (0, stdout, "***DEBUG %s***:%s:%d: " message,   \
+             layer, __FILE__, __LINE__, ##__VA_ARGS__)
+
+#define PDF_ASSERT_TRACE(layer, condition)                              \
+  pdf_error (0, stderr, "\n***ASSERT %s***:%s:%d: assertion `%s' failed",	\
+             layer, #condition, __FILE__, __LINE__)
 
 #ifdef PDF_HAVE_DEBUG_BASE
-#define PDF_DEBUG_BASE(message, ...) \
-  pdf_error (0, stderr, "***DEBUG BASE***:%s:%d: " message, \
-  __FILE__, __LINE__, ##__VA_ARGS__)
+#define PDF_DEBUG_BASE(message, ...)                        \
+  PDF_DEBUG_TRACE(LAYER_NAME_BASE, message, ##__VA_ARGS__)
 #else
 #define PDF_DEBUG_BASE(...)
 #endif /* PDF_HAVE_DEBUG_BASE */
 
 #ifdef PDF_HAVE_DEBUG_OBJECT
-#define PDF_DEBUG_OBJECT(message, ...) \
-  pdf_error (0, stderr, "***DEBUG OBJECT***:%s:%d: " message, \
-  __FILE__, __LINE__, ##__VA_ARGS__)
+#define PDF_DEBUG_OBJECT(message, ...)                          \
+  PDF_DEBUG_TRACE(LAYER_NAME_OBJECT, message, ##__VA_ARGS__)
 #else
 #define PDF_DEBUG_OBJECT(...)
 #endif /* PDF_HAVE_DEBUG_OBJECT */
 
 #ifdef PDF_HAVE_DEBUG_DOCUMENT
-#define PDF_DEBUG_DOCUMENT(message, ...) \
-  pdf_error (0, stderr, "***DEBUG DOCUMENT***:%s:%d: " message, \
-  __FILE__, __LINE__, ##__VA_ARGS__)
+#define PDF_DEBUG_DOCUMENT(message, ...)                        \
+  PDF_DEBUG_TRACE(LAYER_NAME_DOCUMENT, message, ##__VA_ARGS__)
 #else
 #define PDF_DEBUG_DOCUMENT(...)
 #endif /* PDF_HAVE_DEBUG_DOCUMENT */
 
 #ifdef PDF_HAVE_DEBUG_PAGE
-#define PDF_DEBUG_PAGE(message, ...) \
-  pdf_error (0, stderr, "***DEBUG PAGE***:%s:%d: " message, \
-  __FILE__, __LINE__, ##__VA_ARGS__)
+#define PDF_DEBUG_PAGE(message, ...)                        \
+  PDF_DEBUG_TRACE(LAYER_NAME_PAGE, message, ##__VA_ARGS__)
 #else
 #define PDF_DEBUG_PAGE(...)
 #endif /* PDF_HAVE_DEBUG_PAGE */
 
+#define PDF_ASSERT(layer, condition)                                    \
+  do                                                                    \
+    {                                                                   \
+      if (!(condition))                                                 \
+        PDF_ASSERT_TRACE (layer, #condition);                           \
+    } while(0)
 
-#define PDF_ASSERT_BASE(condition)                                      \
+#define PDF_ASSERT_RETURN(layer, condition)                             \
   do                                                                    \
     {                                                                   \
       if (!(condition))                                                 \
         {                                                               \
-          PDF_DEBUG_BASE("the assert `%s' failed", #condition);         \
+          PDF_ASSERT_TRACE (layer, #condition);                         \
+          return;                                                       \
         }                                                               \
     } while(0)
 
-#define PDF_ASSERT_OBJECT(condition)                                    \
+#define PDF_ASSERT_RETURN_VAL(layer, condition, value)                  \
   do                                                                    \
     {                                                                   \
       if (!(condition))                                                 \
         {                                                               \
-          PDF_DEBUG_OBJECT("the assert `%s' failed", #condition);       \
+          PDF_ASSERT_TRACE (layer, #condition);                         \
+          return value;                                                 \
         }                                                               \
     } while(0)
 
-#define PDF_ASSERT_DOCUMENT(condition)                                  \
-  do                                                                    \
-    {                                                                   \
-      if (!(condition))                                                 \
-        {                                                               \
-          PDF_DEBUG_DOCUMENT("the assert `%s' failed", #condition);     \
-        }                                                               \
-    } while(0)
+#define PDF_ASSERT_BASE(condition)              \
+  PDF_ASSERT (LAYER_NAME_BASE, condition)
+#define PDF_ASSERT_OBJECT(condition)            \
+  PDF_ASSERT (LAYER_NAME_OBJECT, condition)
+#define PDF_ASSERT_DOCUMENT(condition)          \
+  PDF_ASSERT (LAYER_NAME_DOCUMENT, condition)
+#define PDF_ASSERT_PAGE(condition)              \
+  PDF_ASSERT (LAYER_NAME_PAGE, condition)
 
-#define PDF_ASSERT_PAGE(condition)                                      \
-  do                                                                    \
-    {                                                                   \
-      if (!(condition))                                                 \
-        {                                                               \
-          PDF_DEBUG_PAGE("the assert `%s' failed", #condition);         \
-        }                                                               \
-    } while(0)
+#define PDF_ASSERT_BASE_RETURN(condition)           \
+  PDF_ASSERT_RETURN (LAYER_NAME_BASE, condition)
+#define PDF_ASSERT_OBJECT_RETURN(condition)         \
+  PDF_ASSERT_RETURN (LAYER_NAME_OBJECT, condition)
+#define PDF_ASSERT_DOCUMENT_RETURN(condition)           \
+  PDF_ASSERT_RETURN (LAYER_NAME_DOCUMENT, condition)
+#define PDF_ASSERT_PAGE_RETURN(condition)           \
+  PDF_ASSERT_RETURN (LAYER_NAME_PAGE, condition)
+
+#define PDF_ASSERT_BASE_RETURN_VAL(condition, val)          \
+  PDF_ASSERT_RETURN_VAL (LAYER_NAME_BASE, condition, val)
+#define PDF_ASSERT_OBJECT_RETURN_VAL(condition, val)        \
+  PDF_ASSERT_RETURN_VAL (LAYER_NAME_OBJECT, condition, val)
+#define PDF_ASSERT_DOCUMENT_RETURN_VAL(condition, val)          \
+  PDF_ASSERT_RETURN_VAL (LAYER_NAME_DOCUMENT, condition, val)
+#define PDF_ASSERT_PAGE_RETURN_VAL(condition, val)          \
+  PDF_ASSERT_RETURN_VAL (LAYER_NAME_PAGE, condition, val)
 
 #endif /* PDF_ERROR_H */
 
