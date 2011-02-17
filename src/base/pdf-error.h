@@ -168,6 +168,7 @@ void pdf_error (const pdf_status_t  status,
 void pdf_perror (const pdf_status_t  status,
                  const pdf_char_t   *str);
 
+/* END PUBLIC */
 
 /* --------------------- Debugging procedures ------------------------- */
 
@@ -240,11 +241,6 @@ void pdf_perror (const pdf_status_t  status,
           PDF_DEBUG_PAGE("the assert `%s' failed", #condition);         \
         }                                                               \
     } while(0)
-
-
-
-
-/* END PUBLIC */
 
 #endif /* PDF_ERROR_H */
 
