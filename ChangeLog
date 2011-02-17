@@ -1,3 +1,13 @@
+2011-02-17  Aleksander Morgado  <aleksander@gnu.org>
+
+	base/error: New macros for assertions, and API cleanup
+	* src/base/pdf-error.h: Remove debugging procedures from the public API,
+	and added new assertion macros to be used to check input arguments of
+	API methods.
+
+	* doc/gnupdf.texi: Removed debugging procedures section from the
+	documentation. All those macros are only for internal purposes.
+
 2011-02-15  Jose E. Marchesi  <jemarch@gnu.org>
 
 	manual: changes to the object API.
