@@ -182,8 +182,8 @@ void pdf_perror (const pdf_status_t  status,
              layer, __FILE__, __LINE__, ##__VA_ARGS__)
 
 #define PDF_ASSERT_TRACE(layer, condition)                              \
-  pdf_error (0, stderr, "\n***ASSERT %s***:%s:%d: assertion `%s' failed",	\
-             layer, #condition, __FILE__, __LINE__)
+  pdf_error (0, stderr, "***ASSERT %s***:%s:%d: assertion `%s' failed",	\
+             layer, __FILE__, __LINE__, #condition)
 
 #ifdef PDF_HAVE_DEBUG_BASE
 #define PDF_DEBUG_BASE(message, ...)                        \
@@ -217,7 +217,7 @@ void pdf_perror (const pdf_status_t  status,
   do                                                                    \
     {                                                                   \
       if (!(condition))                                                 \
-        PDF_ASSERT_TRACE (layer, #condition);                           \
+        PDF_ASSERT_TRACE (layer, condition);                            \
     } while(0)
 
 #define PDF_ASSERT_RETURN(layer, condition)                             \
@@ -225,7 +225,7 @@ void pdf_perror (const pdf_status_t  status,
     {                                                                   \
       if (!(condition))                                                 \
         {                                                               \
-          PDF_ASSERT_TRACE (layer, #condition);                         \
+          PDF_ASSERT_TRACE (layer, condition);                          \
           return;                                                       \
         }                                                               \
     } while(0)
@@ -235,7 +235,7 @@ void pdf_perror (const pdf_status_t  status,
     {                                                                   \
       if (!(condition))                                                 \
         {                                                               \
-          PDF_ASSERT_TRACE (layer, #condition);                         \
+          PDF_ASSERT_TRACE (layer, condition);                          \
           return value;                                                 \
         }                                                               \
     } while(0)
