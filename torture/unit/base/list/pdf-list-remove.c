@@ -36,13 +36,12 @@
  * Description:
  *   Try to remove an existing element in a list.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns PDF_TRUE
  */
 START_TEST (pdf_list_remove_001)
 {
   pdf_list_t *list;
   int elem;
-  pdf_error_t *error = NULL;
 
   elem = 1212;
 
@@ -52,8 +51,7 @@ START_TEST (pdf_list_remove_001)
 
   pdf_list_add_first (list, &elem, NULL);
 
-  fail_if (pdf_list_remove (list, &elem, &error) != PDF_TRUE);
-  fail_if (error != NULL);
+  fail_if (pdf_list_remove (list, &elem) != PDF_TRUE);
 
   pdf_list_destroy (list);
 }
@@ -65,13 +63,12 @@ END_TEST
  * Description:
  *   Try to remove an non-existent element.
  * Success condition:
- *   Returns PDF_ENONODE
+ *   Returns PDF_FALSE
  */
 START_TEST (pdf_list_remove_002)
 {
   pdf_list_t *list;
   int elem, elem2;
-  pdf_error_t *error = NULL;
 
   elem = 1212;
   elem2 = 3333;
@@ -82,8 +79,7 @@ START_TEST (pdf_list_remove_002)
 
   pdf_list_add_first (list, &elem, NULL);
 
-  fail_if (pdf_list_remove (list, &elem2, &error) == PDF_TRUE);
-  fail_if (error != NULL);
+  fail_if (pdf_list_remove (list, &elem2) == PDF_TRUE);
 
   pdf_list_destroy (list);
 }

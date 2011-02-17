@@ -37,7 +37,8 @@
  * Description:
  *   Try to add an element at the beginning of the list.
  * Success condition:
- *   We get the right pdf_list_size().
+ *   We get valid nodes created and the right pdf_list_size().
+ *   Duplicated elements cannot be added.
  */
 START_TEST (pdf_list_add_first_001)
 {
@@ -56,21 +57,21 @@ START_TEST (pdf_list_add_first_001)
   node = pdf_list_add_first (list, &elem, &error);
   fail_if (node == NULL);
   fail_if (error != NULL);
-  fail_if (pdf_list_size(list) != 1);
+  fail_if (pdf_list_size (list) != 1);
 
   /* Should fail as duplicates not allowed */
   node = pdf_list_add_first (list, &elem, &error);
   fail_if (node != NULL);
   fail_if (error == NULL);
   fail_if (pdf_error_get_status (error) != PDF_EEXIST);
-  fail_if (pdf_list_size(list) != 1);
+  fail_if (pdf_list_size (list) != 1);
 
   pdf_clear_error (&error);
 
   node = pdf_list_add_first (list, &elem2, &error);
   fail_if (node == NULL);
   fail_if (error != NULL);
-  fail_if (pdf_list_size(list) != 2);
+  fail_if (pdf_list_size (list) != 2);
 
   pdf_list_destroy (list);
 }
@@ -81,7 +82,8 @@ END_TEST
  * Description:
  *   Try to add an element at the beginning of the list allowing duplicates.
  * Success condition:
- *   We get the right pdf_list_size().
+ *   We get valid nodes created and the right pdf_list_size().
+ *   Duplicated elements can be added.
  */
 START_TEST (pdf_list_add_first_002)
 {

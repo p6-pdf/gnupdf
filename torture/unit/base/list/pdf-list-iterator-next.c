@@ -35,7 +35,7 @@
  * Description:
  *   Try to get the next element using an iterator.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns PDF_TRUE
  */
 START_TEST (pdf_list_iterator_next_001)
 {
@@ -43,7 +43,6 @@ START_TEST (pdf_list_iterator_next_001)
   pdf_list_iterator_t itr;
   int elem, *next;
   pdf_list_node_t *next_node;
-  pdf_error_t *error = NULL;
 
   elem = 222;
 
@@ -52,18 +51,16 @@ START_TEST (pdf_list_iterator_next_001)
   list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
   pdf_list_add_last (list, &elem, NULL);
 
-  pdf_list_iterator_init (&itr, list, NULL);
+  pdf_list_iterator_init (&itr, list);
 
   fail_if (pdf_list_iterator_next (&itr,
                                    (const void **) &next,
-                                   &next_node,
-                                   &error) != PDF_TRUE);
-  fail_if (error != NULL);
+                                   &next_node) != PDF_TRUE);
   fail_if (next == NULL);
   fail_if (next_node == NULL);
 
-  pdf_list_destroy (list);
   pdf_list_iterator_deinit (&itr);
+  pdf_list_destroy (list);
 }
 END_TEST
 
@@ -80,24 +77,21 @@ START_TEST (pdf_list_iterator_next_002)
   pdf_list_iterator_t itr;
   int *next;
   pdf_list_node_t *next_node;
-  pdf_error_t *error = NULL;
 
   pdf_init ();
 
   list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
 
-  pdf_list_iterator_init (&itr, list, NULL);
+  pdf_list_iterator_init (&itr, list);
 
   fail_if (pdf_list_iterator_next (&itr,
                                    (const void **) &next,
-                                   &next_node,
-                                   &error) == PDF_TRUE);
-  fail_if (error != NULL);
+                                   &next_node) == PDF_TRUE);
   fail_if (next != NULL);
   fail_if (next_node != NULL);
 
-  pdf_list_destroy (list);
   pdf_list_iterator_deinit (&itr);
+  pdf_list_destroy (list);
 }
 END_TEST
 
@@ -111,7 +105,6 @@ test_pdf_list_iterator_next (void)
 
   tcase_add_test (tc, pdf_list_iterator_next_001);
   tcase_add_test (tc, pdf_list_iterator_next_002);
-
   return tc;
 }
 

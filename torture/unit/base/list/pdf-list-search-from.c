@@ -35,7 +35,7 @@
  * Description:
  *   Try to search an existent element in the correct range.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns the node.
  */
 START_TEST (pdf_list_search_from_001)
 {
@@ -87,6 +87,7 @@ START_TEST (pdf_list_search_from_002)
   fail_if (error == NULL);
   fail_if (pdf_error_get_status (error) != PDF_EINVRANGE);
 
+  pdf_error_destroy (error);
   pdf_list_destroy (list);
 }
 END_TEST
@@ -96,7 +97,7 @@ END_TEST
  * Description:
  *   Try to search a non-existent element in a list.
  * Success condition:
- *   Returns PDF_ENONODE.
+ *   Returns NULL.
  */
 START_TEST (pdf_list_search_from_003)
 {
@@ -133,7 +134,6 @@ test_pdf_list_search_from (void)
   tcase_add_test (tc, pdf_list_search_from_001);
   tcase_add_test (tc, pdf_list_search_from_002);
   tcase_add_test (tc, pdf_list_search_from_003);
-
   return tc;
 }
 

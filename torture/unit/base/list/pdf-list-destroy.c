@@ -36,17 +36,13 @@
  * Description:
  *   Try to destroy an empty list.
  * Success condition:
- *   Returns PDF_OK
+ *   Doesn't crash.
  */
 START_TEST (pdf_list_destroy_001)
 {
-  pdf_list_t *list;
-
   pdf_init ();
 
-  list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
-
-  pdf_list_destroy (list);
+  pdf_list_destroy (pdf_list_new (NULL, NULL, PDF_FALSE, NULL));
 }
 END_TEST
 
@@ -55,7 +51,7 @@ END_TEST
  * Description:
  *   Try to destroy a NULL list
  * Success condition:
- *   Returns PDF_OK
+ *   Doesn't crash
  */
 START_TEST (pdf_list_destroy_002)
 {
@@ -64,7 +60,6 @@ START_TEST (pdf_list_destroy_002)
   pdf_list_destroy (NULL);
 }
 END_TEST
-
 
 /*
  * Test case creation function

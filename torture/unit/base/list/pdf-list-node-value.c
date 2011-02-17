@@ -42,7 +42,6 @@ START_TEST (pdf_list_node_value_001)
   pdf_list_t *list;
   pdf_list_node_t *node;
   int elem;
-  pdf_error_t *error = NULL;
 
   elem = 2212;
 
@@ -52,8 +51,7 @@ START_TEST (pdf_list_node_value_001)
 
   node = pdf_list_add_last (list, &elem, NULL);
 
-  fail_if ( *((int*) pdf_list_node_value (list, node, &error)) != 2212);
-  fail_if (error != NULL);
+  fail_if ( *((int*) pdf_list_node_value (list, node)) != 2212);
 
   pdf_list_destroy (list);
 }

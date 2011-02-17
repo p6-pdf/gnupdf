@@ -35,7 +35,8 @@
  * Description:
  *   Try to add an element at the end of the list.
  * Success condition:
- *   We get the right pdf_list_size().
+ *   We get valid nodes created and the right pdf_list_size().
+ *   Duplicated elements cannot be added.
  */
 START_TEST (pdf_list_add_last_001)
 {
@@ -79,7 +80,8 @@ END_TEST
  * Description:
  *   Try to add an element at the end of the list allowing duplicates.
  * Success condition:
- *   We get the right pdf_list_size().
+ *   We get valid nodes created and the right pdf_list_size().
+ *   Duplicated elements can be added.
  */
 START_TEST (pdf_list_add_last_002)
 {

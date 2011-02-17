@@ -35,7 +35,7 @@
  * Description:
  *   Try to add a new element at the 0 position.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns a valid new node created.
  */
 START_TEST (pdf_list_add_at_001)
 {
@@ -85,6 +85,7 @@ START_TEST (pdf_list_add_at_002)
   fail_if (error == NULL);
   fail_if (pdf_error_get_status (error) != PDF_EINVRANGE);
 
+  pdf_error_destroy (error);
   pdf_list_destroy (list);
 }
 END_TEST

@@ -35,7 +35,7 @@
  * Description:
  *   Try to get a node value.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns the node value at the given position.
  */
 START_TEST (pdf_list_get_at_001)
 {
@@ -54,7 +54,6 @@ START_TEST (pdf_list_get_at_001)
   fail_if (error != NULL);
 
   val = pdf_list_get_at (list, 0, &error);
-
   fail_if (val == NULL);
   fail_if (error != NULL);
 
@@ -90,6 +89,7 @@ START_TEST (pdf_list_get_at_002)
   fail_if (error == NULL);
   fail_if (pdf_error_get_status (error) != PDF_EINVRANGE);
 
+  pdf_error_destroy (error);
   pdf_list_destroy (list);
 }
 END_TEST

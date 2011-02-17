@@ -35,7 +35,7 @@
  * Description:
  *   Try to get an iterator in a given range.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns PDF_TRUE and no error.
  */
 START_TEST (pdf_list_iterator_init_from_to_001)
 {
@@ -90,62 +90,14 @@ START_TEST (pdf_list_iterator_init_from_to_002)
   fail_if (error == NULL);
   fail_if (pdf_error_get_status (error) != PDF_EINVRANGE);
 
+  pdf_clear_error (&error);
+
   fail_if (pdf_list_iterator_init_from_to (&itr, list, 3, 0, &error) == PDF_TRUE);
   fail_if (error == NULL);
   fail_if (pdf_error_get_status (error) != PDF_EINVRANGE);
 
+  pdf_error_destroy (error);
   pdf_list_destroy (list);
-}
-END_TEST
-
-/*
- * Test: pdf_list_iterator_init_from_to_003
- * Description:
- *   Try to get an iterator given a NULL iterator pointer.
- * Success condition:
- *   Returns PDF_EBADDATA
- */
-START_TEST (pdf_list_iterator_init_from_to_003)
-{
-  pdf_list_t *list;
-  int elem, elem2;
-  pdf_error_t *error = NULL;
-
-  elem = 123;
-  elem2 = 321;
-
-  pdf_init ();
-
-  list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
-
-  pdf_list_add_last (list, &elem, NULL);
-  pdf_list_add_last (list, &elem2, NULL);
-
-  fail_if (pdf_list_iterator_init_from_to (NULL, list, 0, 2, &error) == PDF_TRUE);
-  fail_if (error == NULL);
-  fail_if (pdf_error_get_status (error) != PDF_EBADDATA);
-
-  pdf_list_destroy (list);
-}
-END_TEST
-
-/*
- * Test: pdf_list_iterator_init_from_to_004
- * Description:
- *   Try to get an iterator given a NULL list pointer.
- * Success condition:
- *   Returns PDF_EBADDATA
- */
-START_TEST (pdf_list_iterator_init_from_to_004)
-{
-  pdf_list_iterator_t itr;
-  pdf_error_t *error = NULL;
-
-  pdf_init ();
-
-  fail_if (pdf_list_iterator_init_from_to (&itr, NULL, 0, 2, &error) == PDF_TRUE);
-  fail_if (error == NULL);
-  fail_if (pdf_error_get_status (error) != PDF_EBADDATA);
 }
 END_TEST
 
@@ -159,7 +111,6 @@ test_pdf_list_iterator_init_from_to (void)
 
   tcase_add_test (tc, pdf_list_iterator_init_from_to_001);
   tcase_add_test (tc, pdf_list_iterator_init_from_to_002);
-  tcase_add_test (tc, pdf_list_iterator_init_from_to_003);
 
   return tc;
 }

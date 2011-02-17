@@ -36,88 +36,38 @@
  * Description:
  *   Try to create an iterator from list.
  * Success condition:
- *   Returns PDF_OK
+ *   Doesn't crash.
  */
 START_TEST (pdf_list_iterator_init_001)
 {
   pdf_list_t *list;
   pdf_list_iterator_t itr;
-  pdf_error_t *error = NULL;
 
   pdf_init ();
 
   list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
 
-  fail_if (pdf_list_iterator_init (&itr, list, &error) != PDF_TRUE);
-  fail_if (error != NULL);
+  pdf_list_iterator_init (&itr, list);;
 
   pdf_list_iterator_deinit (&itr);
   pdf_list_destroy (list);
 }
 END_TEST
 
-
 /*
  * Test: pdf_list_iterator_init_002
- * Description:
- *   Try to create an iterator given a NULL iterator pointer.
- * Success condition:
- *   Returns PDF_EBADDATA
- */
-START_TEST (pdf_list_iterator_init_002)
-{
-  pdf_list_t *list;
-  pdf_error_t *error = NULL;
-
-  pdf_init ();
-
-  list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
-
-  fail_if (pdf_list_iterator_init (NULL, list, &error) == PDF_TRUE);
-  fail_if (error == NULL);
-  fail_if (pdf_error_get_status (error) != PDF_EBADDATA);
-
-  pdf_list_destroy (list);
-}
-END_TEST
-
-/*
- * Test: pdf_list_iterator_init_003
- * Description:
- *   Try to create an iterator given a NULL list pointer.
- * Success condition:
- *   Returns PDF_EBADDATA
- */
-START_TEST (pdf_list_iterator_init_003)
-{
-  pdf_list_iterator_t itr;
-  pdf_error_t *error = NULL;
-
-  pdf_init ();
-
-  fail_if (pdf_list_iterator_init (&itr, NULL, &error) == PDF_TRUE);
-  fail_if (error == NULL);
-  fail_if (pdf_error_get_status (error) != PDF_EBADDATA);
-}
-END_TEST
-
-
-/*
- * Test: pdf_list_iterator_init_004
  * Description:
  *   Iterator size check.
  * Success condition:
  *   The pdf list iterator size is greater or equal than the gl list one.
  */
-START_TEST (pdf_list_iterator_init_004)
+START_TEST (pdf_list_iterator_init_002)
 {
   pdf_init ();
 
   fail_if (sizeof (pdf_list_iterator_t) < sizeof (gl_list_iterator_t));
 }
 END_TEST
-
-
 
 /*
  * Test case creation function
@@ -126,10 +76,9 @@ TCase *
 test_pdf_list_iterator_init (void)
 {
   TCase *tc = tcase_create ("pdf_list_iterator_init");
+
   tcase_add_test (tc, pdf_list_iterator_init_001);
   tcase_add_test (tc, pdf_list_iterator_init_002);
-  tcase_add_test (tc, pdf_list_iterator_init_003);
-  tcase_add_test (tc, pdf_list_iterator_init_004);
 
   return tc;
 }

@@ -35,14 +35,13 @@
  * Description:
  *   Try to search for an existing element in a list.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns the node.
  */
 START_TEST (pdf_list_search_001)
 {
   pdf_list_t *list;
   int elem;
   pdf_list_node_t *node;
-  pdf_error_t *error = NULL;
 
   elem = 2232;
 
@@ -52,9 +51,8 @@ START_TEST (pdf_list_search_001)
 
   pdf_list_add_last (list, &elem, NULL);
 
-  node = pdf_list_search (list, &elem, &error);
+  node = pdf_list_search (list, &elem);
   fail_if (node == NULL);
-  fail_if (error != NULL);
 
   pdf_list_destroy (list);
 }
@@ -65,14 +63,13 @@ END_TEST
  * Description:
  *   Try to search for a non-existent element in a list.
  * Success condition:
- *   Returns PDF_ENONODE
+ *   Returns NULL
  */
 START_TEST (pdf_list_search_002)
 {
   pdf_list_t *list;
   int elem, elem2;
   pdf_list_node_t *node;
-  pdf_error_t *error = NULL;
 
   elem = 2232;
   elem2 = 1223;
@@ -83,9 +80,8 @@ START_TEST (pdf_list_search_002)
 
   pdf_list_add_last (list, &elem, NULL);
 
-  node = pdf_list_search (list, &elem2, &error);
+  node = pdf_list_search (list, &elem2);
   fail_if (node != NULL);
-  fail_if (error != NULL);
 
   pdf_list_destroy (list);
 }
@@ -103,7 +99,6 @@ test_pdf_list_search (void)
 
   tcase_add_test (tc, pdf_list_search_001);
   tcase_add_test (tc, pdf_list_search_002);
-
   return tc;
 }
 

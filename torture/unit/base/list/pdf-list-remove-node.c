@@ -42,7 +42,6 @@ START_TEST (pdf_list_remove_node_001)
   pdf_list_t *list;
   pdf_list_node_t *node;
   int elem;
-  pdf_error_t *error = NULL;
 
   elem = 2212;
 
@@ -51,8 +50,7 @@ START_TEST (pdf_list_remove_node_001)
   list = pdf_list_new (NULL, NULL, 0, NULL);
 
   node = pdf_list_add_last (list, &elem, NULL);
-  fail_if (pdf_list_remove_node (list, node, &error) != PDF_TRUE);
-  fail_if (error != NULL);
+  fail_if (pdf_list_remove_node (list, node) != PDF_TRUE);
 
   fail_if (pdf_list_size (list) != 0);
 

@@ -36,14 +36,14 @@
  * Description:
  *   Try to create an empty list.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns a valid list.
  */
 START_TEST (pdf_list_new_001)
 {
   pdf_list_t *list;
   pdf_error_t *error = NULL;
 
-  pdf_init();
+  pdf_init ();
 
   list = pdf_list_new (l_comp, l_disp, PDF_FALSE, &error);
   fail_if (list == NULL);
@@ -54,13 +54,13 @@ START_TEST (pdf_list_new_001)
 END_TEST
 
 /*
- * Test: pdf_list_new_003
+ * Test: pdf_list_new_002
  * Description:
  *   Try to create an empty list allowing duplicates.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns a valid list.
  */
-START_TEST (pdf_list_new_003)
+START_TEST (pdf_list_new_002)
 {
   pdf_list_t *list;
   pdf_error_t *error = NULL;
@@ -75,16 +75,15 @@ START_TEST (pdf_list_new_003)
 }
 END_TEST
 
-
 /*
  * Test case creation function
  */
 TCase *
 test_pdf_list_new (void)
 {
-  TCase *tc = tcase_create("pdf_list_new");
-  tcase_add_test(tc, pdf_list_new_001);
-  tcase_add_test(tc, pdf_list_new_003);
+  TCase *tc = tcase_create ("pdf_list_new");
+  tcase_add_test (tc, pdf_list_new_001);
+  tcase_add_test (tc, pdf_list_new_002);
 
   return tc;
 }

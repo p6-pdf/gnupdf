@@ -35,7 +35,7 @@
  * Description:
  *   Try to replace a node value in a list.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns the newly created node.
  */
 START_TEST (pdf_list_set_at_001)
 {
@@ -66,7 +66,7 @@ END_TEST
  * Description:
  *   Try to replace a node value at an invalid position.
  * Success condition:
- *   Returns PDF_INVRANGE
+ *   Returns PDF_EINVRANGE
  */
 START_TEST (pdf_list_set_at_002)
 {
@@ -89,11 +89,10 @@ START_TEST (pdf_list_set_at_002)
   fail_if (error == NULL);
   fail_if (pdf_error_get_status (error) != PDF_EINVRANGE);
 
+  pdf_error_destroy (error);
   pdf_list_destroy (list);
 }
 END_TEST
-
-
 
 /*
  * Test case creation function
@@ -105,7 +104,6 @@ test_pdf_list_set_at (void)
 
   tcase_add_test (tc, pdf_list_set_at_001);
   tcase_add_test (tc, pdf_list_set_at_002);
-
   return tc;
 }
 

@@ -35,14 +35,13 @@
  * Description:
  *   Try to get the previous node given another node.
  * Success condition:
- *   Returns PDF_OK.
+ *   Returns the previous node.
  */
 START_TEST (pdf_list_previous_node_001)
 {
   pdf_list_t *list;
   pdf_list_node_t *node, *prev;
   int elem, elem2;
-  pdf_error_t *error = NULL;
 
   elem = 222;
   elem2 = 333;
@@ -54,31 +53,27 @@ START_TEST (pdf_list_previous_node_001)
   pdf_list_add_last (list, &elem, NULL);
   node = pdf_list_add_last (list, &elem2, NULL);
 
-  prev = pdf_list_previous_node (list, node, &error);
+  prev = pdf_list_previous_node (list, node);
   fail_if (prev == NULL);
-  fail_if (error != NULL);
 
-  fail_if (*((int*) pdf_list_node_value (list, prev, &error)) != 222);
-  fail_if (error != NULL);
+  fail_if (*((int*) pdf_list_node_value (list, prev)) != 222);
 
   pdf_list_destroy (list);
 }
 END_TEST
-
 
 /*
  * Test: pdf_list_previous_node_002
  * Description:
  *   Try to get the previous node given the first node.
  * Success condition:
- *   Returns PDF_ENONODE.
+ *   Returns NULL
  */
 START_TEST (pdf_list_previous_node_002)
 {
   pdf_list_t *list;
   pdf_list_node_t *node, *prev;
   int elem;
-  pdf_error_t *error = NULL;
 
   elem = 222;
 
@@ -88,9 +83,8 @@ START_TEST (pdf_list_previous_node_002)
 
   node = pdf_list_add_last (list, &elem, NULL);
 
-  prev = pdf_list_previous_node (list, node, &error);
+  prev = pdf_list_previous_node (list, node);
   fail_if (prev != NULL);
-  fail_if (error != NULL);
 
   pdf_list_destroy (list);
 }

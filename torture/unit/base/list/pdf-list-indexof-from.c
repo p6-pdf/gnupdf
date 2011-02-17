@@ -35,7 +35,7 @@
  * Description:
  *   Try to get the index of a existent element from position '0'.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns the expected index.
  */
 START_TEST (pdf_list_indexof_from_001)
 {
@@ -54,7 +54,7 @@ START_TEST (pdf_list_indexof_from_001)
   fail_if (error != NULL);
 
   pos = pdf_list_indexof_from (list, 0, &elem, &error);
-  fail_if (pos == (pdf_size_t)-1);
+  fail_if (pos != 0);
   fail_if (error != NULL);
 
   pdf_list_destroy (list);
@@ -91,6 +91,7 @@ START_TEST (pdf_list_indexof_from_002)
   fail_if (error == NULL);
   fail_if (pdf_error_get_status (error) != PDF_EINVRANGE);
 
+  pdf_error_destroy (error);
   pdf_list_destroy (list);
 }
 END_TEST
@@ -130,17 +131,17 @@ START_TEST (pdf_list_indexof_from_003)
 }
 END_TEST
 
-
 /*
  * Test case creation function
  */
 TCase *
 test_pdf_list_indexof_from (void)
 {
-  TCase *tc = tcase_create("pdf_list_indexof_from");
-  tcase_add_test(tc, pdf_list_indexof_from_001);
-  tcase_add_test(tc, pdf_list_indexof_from_002);
-  tcase_add_test(tc, pdf_list_indexof_from_003);
+  TCase *tc = tcase_create ("pdf_list_indexof_from");
+
+  tcase_add_test (tc, pdf_list_indexof_from_001);
+  tcase_add_test (tc, pdf_list_indexof_from_002);
+  tcase_add_test (tc, pdf_list_indexof_from_003);
 
   return tc;
 }

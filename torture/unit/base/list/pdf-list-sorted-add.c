@@ -35,7 +35,7 @@
  * Description:
  *   Try to add an element at the beginning of the list.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns the newly added node.
  */
 START_TEST (pdf_list_sorted_add_001)
 {
@@ -59,35 +59,6 @@ START_TEST (pdf_list_sorted_add_001)
 END_TEST
 
 /*
- * Test: pdf_list_sorted_add_002
- * Description:
- *   Try to add an element at the beginning of the list with NULL compar_fn.
- * Success condition:
- *   Returns PDF_EBADDATA
- */
-START_TEST (pdf_list_sorted_add_002)
-{
-  pdf_list_t *list;
-  int elem;
-  pdf_error_t *error = NULL;
-  pdf_list_node_t *node;
-
-  elem = 5123;
-
-  pdf_init ();
-
-  list = pdf_list_new (l_comp, NULL, PDF_FALSE, NULL);
-
-  node = pdf_list_sorted_add (list, NULL, &elem, &error);
-  fail_if (node != NULL);
-  fail_if (error == NULL);
-  fail_if (pdf_error_get_status (error) != PDF_EBADDATA);
-
-  pdf_list_destroy (list);
-}
-END_TEST
-
-/*
  * Test case creation function
  */
 TCase *
@@ -96,8 +67,6 @@ test_pdf_list_sorted_add (void)
   TCase *tc = tcase_create ("pdf_list_sorted_add");
 
   tcase_add_test (tc, pdf_list_sorted_add_001);
-  tcase_add_test (tc, pdf_list_sorted_add_002);
-
   return tc;
 }
 
