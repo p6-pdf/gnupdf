@@ -366,8 +366,7 @@ pdf_bool_t pdf_text_generate_word_boundaries (pdf_text_t    text,
 /* Create empty Word Boundaries list */
 pdf_list_t *pdf_text_create_word_boundaries_list (pdf_error_t **error);
 /* Destroy Word Boundaries list */
-pdf_bool_t pdf_text_destroy_word_boundaries_list (pdf_list_t  **p_word_boundaries,
-                                                  pdf_error_t **error);
+void pdf_text_destroy_word_boundaries_list (pdf_list_t **p_word_boundaries);
 
 
 

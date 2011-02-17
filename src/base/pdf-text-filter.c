@@ -156,7 +156,7 @@ pdf_text_filter_change_case(pdf_text_t text,
       new_data = (pdf_char_t *) pdf_realloc (new_data, new_length);
       if (new_data == NULL)
         {
-          pdf_text_destroy_word_boundaries_list (&new_wb_list, NULL);
+          pdf_text_destroy_word_boundaries_list (&new_wb_list);
           return PDF_ENOMEM;
         }
     }
@@ -165,13 +165,7 @@ pdf_text_filter_change_case(pdf_text_t text,
   pdf_dealloc(text->data);
   text->data = new_data;
   text->size = new_length;
-  if (!pdf_text_destroy_word_boundaries_list (&(text->word_boundaries),
-                                              &inner_error))
-    {
-      /* TODO: Propagate error */
-      if (inner_error)
-        pdf_error_destroy (inner_error);
-    }
+  pdf_text_destroy_word_boundaries_list (&(text->word_boundaries));
   text->word_boundaries = new_wb_list;
 
   return PDF_OK;

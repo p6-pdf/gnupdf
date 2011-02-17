@@ -183,30 +183,15 @@ pdf_text_new (pdf_text_t *text)
 pdf_status_t
 pdf_text_destroy (pdf_text_t text)
 {
-  pdf_error_t *inner_error = NULL;
-
   /* Dealloc memory */
   if (text->data != NULL)
-    {
-      pdf_dealloc(text->data);
-      text->data = NULL;
-    }
+    pdf_dealloc (text->data);
 
   if (text->printable != NULL)
-    {
-      pdf_dealloc (text->printable);
-    }
+    pdf_dealloc (text->printable);
 
   /* Destroy word boundaries list */
-  if (!pdf_text_destroy_word_boundaries_list (&text->word_boundaries,
-                                              &inner_error))
-    {
-      /* TODO: Propagate error */
-      if (inner_error)
-        pdf_error_destroy (inner_error);
-      pdf_dealloc (text);
-      return PDF_ERROR;
-    }
+  pdf_text_destroy_word_boundaries_list (&text->word_boundaries);
 
   pdf_dealloc (text);
 
@@ -1968,26 +1953,15 @@ pdf_text_generate_word_boundaries (pdf_text_t    text,
   return PDF_TRUE;
 }
 
-pdf_bool_t
-pdf_text_destroy_word_boundaries_list (pdf_list_t  **p_word_boundaries,
-                                       pdf_error_t **error)
+void
+pdf_text_destroy_word_boundaries_list (pdf_list_t **p_word_boundaries)
 {
   pdf_list_iterator_t itr;
   const void *element;
-  pdf_error_t *inner_error = NULL;
 
-  if (!pdf_list_iterator_init (&itr,
-                               *p_word_boundaries,
-                               &inner_error))
-    {
-      pdf_propagate_error (error, inner_error);
-      return PDF_FALSE;
-    }
+  pdf_list_iterator_init (&itr, *p_word_boundaries);
 
-  while (pdf_list_iterator_next (&itr,
-                                 &element,
-                                 NULL,
-                                 &inner_error))
+  while (pdf_list_iterator_next (&itr, &element, NULL))
     {
       /* Dealloc word (pointed by the list element) */
       pdf_dealloc (element);
@@ -1995,19 +1969,10 @@ pdf_text_destroy_word_boundaries_list (pdf_list_t  **p_word_boundaries,
 
   pdf_list_iterator_deinit (&itr);
 
-  if (inner_error)
-    {
-      pdf_propagate_error (error, inner_error);
-      return PDF_FALSE;
-    }
-
   /* Destroy list */
   pdf_list_destroy (*p_word_boundaries);
   *p_word_boundaries = NULL;
-
-  return PDF_TRUE;
 }
-
 
 /* Create empty Word Boundaries list */
 pdf_list_t *
@@ -2031,8 +1996,7 @@ pdf_text_clean_word_boundaries_list (pdf_list_t  **p_word_boundaries,
     return PDF_TRUE;
 
   /* Destroy element contents */
-  if (!pdf_text_destroy_word_boundaries_list (p_word_boundaries, error))
-    return PDF_FALSE;
+  pdf_text_destroy_word_boundaries_list (p_word_boundaries);
 
   /* Create empty list */
   *p_word_boundaries = pdf_text_create_word_boundaries_list (error);
