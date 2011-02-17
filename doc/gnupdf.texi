@@ -126,7 +126,6 @@ error data type.
 * Error Reporting procedures:: Reporting errors in the library.
 * Error Printing procedures::  Printing the textual description of
                                 errors and error codes.
-* Debugging procedures::       Tracing support.
 @end menu
 
 @node Types
@@ -552,62 +551,6 @@ if (st != PDF_OK)
 @end example
 @end table
 @end deftypefun
-
-@node Debugging procedures
-@subsection Debugging procedures
-
-For each layer there is a macro procedure defined. The file name and
-the line number at which the error ocurred is printed to stderr
-followed by @var{message}.
-
-@defmac PDF_DEBUG_BASE (message, ...)
-@end defmac
-@defmac PDF_DEBUG_OBJECT (message, ...)
-@end defmac
-@defmac PDF_DEBUG_DOCUMENT (message, ...)
-@end defmac
-@defmac PDF_DEBUG_PAGE (message, ...)
-@end defmac
-
-@table @strong
-@item Parameters
-@table @var
-@item message
-a 'const char*' string
-@item ...
-message's arguments
-@end table
-@item Returns
-nothing
-@item Usage example
-@example
-PDF_DEBUG_BASE("Testing macro '%s' '%d' '%lf'", "string", 7, 10.1);
-@end example
-@end table
-
-
-In addition, this module provides a assert macro for each layer.
-
-@defmac PDF_ASSERT_BASE (condition)
-@end defmac
-@defmac PDF_ASSERT_OBJECT (condition)
-@end defmac
-@defmac PDF_ASSERT_DOCUMENT (condition)
-@end defmac
-@defmac PDF_ASSERT_PAGE (condition)
-@end defmac
-
-@table @strong
-@item Parameters
-@table @var
-@item condition
-a C expression.
-@end table
-@item Usage example
-@example
-PDF_ASSERT_BASE (1 == 1);
-@end example
-@end table
 
 
 @subheading Output format
@@ -12341,7 +12284,7 @@ pdf_obj_t obj2;
 obj2 = pdf_obj_dup (obj1, doc, PDF_TRUE);
 if (!obj2)
 @{
-   /* Error copying the object.  */ 
+   /* Error copying the object.  */
 @}
 @end example
 @end table
