@@ -79,8 +79,7 @@ pdf_size_t pdf_list_size (const pdf_list_t *list);
 /* --------------------- List Search Methods -------------------------------- */
 
 pdf_list_node_t *pdf_list_search (const pdf_list_t  *list,
-                                  const void        *element,
-                                  pdf_error_t      **error);
+                                  const void        *element);
 
 pdf_list_node_t *pdf_list_search_from (const pdf_list_t  *list,
                                        const pdf_size_t   start_index,
@@ -94,16 +93,13 @@ pdf_list_node_t *pdf_list_search_from_to (const pdf_list_t  *list,
                                           pdf_error_t      **error);
 
 pdf_list_node_t *pdf_list_next_node (const pdf_list_t       *list,
-                                     const pdf_list_node_t  *node,
-                                     pdf_error_t           **error);
+                                     const pdf_list_node_t  *node);
 
 pdf_list_node_t *pdf_list_previous_node (const pdf_list_t       *list,
-                                         const pdf_list_node_t  *node,
-                                         pdf_error_t           **error);
+                                         const pdf_list_node_t  *node);
 
 pdf_size_t pdf_list_indexof (const pdf_list_t  *list,
-                             const void        *element,
-                             pdf_error_t      **error);
+                             const void        *element);
 
 pdf_size_t pdf_list_indexof_from (const pdf_list_t *list,
                                   const pdf_size_t  start_index,
@@ -120,8 +116,7 @@ pdf_size_t pdf_list_indexof_from_to (const pdf_list_t  *list,
 /* --------------------- List Setters/Getters ------------------------------- */
 
 const void *pdf_list_node_value (const pdf_list_t       *list,
-                                 const pdf_list_node_t  *node,
-                                 pdf_error_t           **error);
+                                 const pdf_list_node_t  *node);
 
 const void *pdf_list_get_at (const pdf_list_t  *list,
                              const pdf_size_t   position,
@@ -149,16 +144,14 @@ pdf_list_node_t *pdf_list_add_at (pdf_list_t        *list,
                                   pdf_error_t      **error);
 
 pdf_bool_t pdf_list_remove_node (pdf_list_t       *list,
-                                 pdf_list_node_t  *node,
-                                 pdf_error_t     **error);
+                                 pdf_list_node_t  *node);
 
 pdf_bool_t pdf_list_remove_at (pdf_list_t        *list,
                                const pdf_size_t   position,
                                pdf_error_t      **error);
 
-pdf_bool_t pdf_list_remove (pdf_list_t   *list,
-                            const void   *element,
-                            pdf_error_t **error);
+pdf_bool_t pdf_list_remove (pdf_list_t *list,
+                            const void *element);
 
 
 /* ------------------------- Sorted List Methods ---------------------------- */
@@ -168,15 +161,13 @@ pdf_list_node_t *pdf_list_sorted_add (pdf_list_t                    *list,
                                       const void                    *element,
                                       pdf_error_t                  **error);
 
-pdf_bool_t pdf_list_sorted_remove (pdf_list_t                    *list,
-                                   pdf_list_element_compar_fn_t   compar_fn,
-                                   const void                    *element,
-                                   pdf_error_t                  **error);
+pdf_bool_t pdf_list_sorted_remove (pdf_list_t                   *list,
+                                   pdf_list_element_compar_fn_t  compar_fn,
+                                   const void                   *element);
 
 pdf_list_node_t *pdf_list_sorted_search (const pdf_list_t              *list,
                                          pdf_list_element_compar_fn_t   compar_fn,
-                                         const void                    *element,
-                                         pdf_error_t                  **error);
+                                         const void                    *element);
 
 pdf_list_node_t *pdf_list_sorted_search_from_to (const pdf_list_t              *list,
                                                  pdf_list_element_compar_fn_t   compar_fn,
@@ -185,10 +176,9 @@ pdf_list_node_t *pdf_list_sorted_search_from_to (const pdf_list_t              *
                                                  const void                    *element,
                                                  pdf_error_t                  **error);
 
-pdf_size_t pdf_list_sorted_indexof (const pdf_list_t              *list,
-                                    pdf_list_element_compar_fn_t   compar_fn,
-                                    const void                    *element,
-                                    pdf_error_t                  **error);
+pdf_size_t pdf_list_sorted_indexof (const pdf_list_t             *list,
+                                    pdf_list_element_compar_fn_t  compar_fn,
+                                    const void                   *element);
 
 pdf_size_t pdf_list_sorted_indexof_from_to (const pdf_list_t              *list,
                                             pdf_list_element_compar_fn_t   compar_fn,
@@ -200,8 +190,7 @@ pdf_size_t pdf_list_sorted_indexof_from_to (const pdf_list_t              *list,
 /* --------------------- List Element Iterator Methods ---------------------- */
 
 pdf_bool_t pdf_list_iterator_init (pdf_list_iterator_t  *itr,
-                                   const pdf_list_t     *list,
-                                   pdf_error_t         **error);
+                                   const pdf_list_t     *list);
 
 pdf_bool_t pdf_list_iterator_init_from_to (pdf_list_iterator_t  *itr,
                                            const pdf_list_t     *list,
@@ -211,8 +200,7 @@ pdf_bool_t pdf_list_iterator_init_from_to (pdf_list_iterator_t  *itr,
 
 pdf_bool_t pdf_list_iterator_next (pdf_list_iterator_t  *itr,
                                    const void          **element_pointer,
-                                   pdf_list_node_t     **node_pointer,
-                                   pdf_error_t         **error);
+                                   pdf_list_node_t     **node_pointer);
 
 void pdf_list_iterator_deinit (pdf_list_iterator_t *itr);
 
@@ -275,20 +263,10 @@ pdf_list_size (const pdf_list_t *list)
 
 STATIC_INLINE pdf_list_node_t *
 pdf_list_search (const pdf_list_t  *list,
-                 const void        *element,
-                 pdf_error_t      **error)
+                 const void        *element)
 {
-  /* Check input arguments */
-  if (list == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_LIST,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: list (%p), element (%p)",
-                     list,
-                     element);
-      return NULL;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (list, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (element, NULL);
 
   return (pdf_list_node_t *) gl_list_search ((gl_list_t) list,
                                              element);
@@ -300,17 +278,8 @@ pdf_list_search_from (const pdf_list_t  *list,
                       const void        *element,
                       pdf_error_t      **error)
 {
-  /* Check input arguments */
-  if (list == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_LIST,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: list (%p), element (%p)",
-                     list,
-                     element);
-      return NULL;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (list, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (element, NULL);
 
   /* Check range */
   if (start_index >= pdf_list_size (list))
@@ -338,17 +307,8 @@ pdf_list_search_from_to (const pdf_list_t  *list,
 {
   pdf_size_t list_size;
 
-  /* Check input arguments */
-  if (list == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_LIST,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: list (%p), element (%p)",
-                     list,
-                     element);
-      return NULL;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (list, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (element, NULL);
 
   /* Check range */
   list_size = pdf_list_size (list);
@@ -375,20 +335,10 @@ pdf_list_search_from_to (const pdf_list_t  *list,
 
 STATIC_INLINE pdf_list_node_t *
 pdf_list_next_node (const pdf_list_t       *list,
-                    const pdf_list_node_t  *node,
-                    pdf_error_t           **error)
+                    const pdf_list_node_t  *node)
 {
-  /* Check input arguments */
-  if (list == NULL || node == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_LIST,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: list (%p), node (%p)",
-                     list,
-                     node);
-      return NULL;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (list, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (node, NULL);
 
   return (pdf_list_node_t *) gl_list_next_node ((gl_list_t) list,
                                                 (gl_list_node_t) node);
@@ -396,20 +346,10 @@ pdf_list_next_node (const pdf_list_t       *list,
 
 STATIC_INLINE pdf_list_node_t *
 pdf_list_previous_node (const pdf_list_t       *list,
-                        const pdf_list_node_t  *node,
-                        pdf_error_t           **error)
+                        const pdf_list_node_t  *node)
 {
-  /* Check input arguments */
-  if (list == NULL || node == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_LIST,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: list (%p), node (%p)",
-                     list,
-                     node);
-      return NULL;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (list, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (node, NULL);
 
   return (pdf_list_node_t *) gl_list_previous_node ((gl_list_t) list,
                                                     (gl_list_node_t) node);
@@ -417,19 +357,10 @@ pdf_list_previous_node (const pdf_list_t       *list,
 
 STATIC_INLINE pdf_size_t
 pdf_list_indexof (const pdf_list_t  *list,
-                  const void        *element,
-                  pdf_error_t      **error)
+                  const void        *element)
 {
-  /* Check input arguments */
-  if (list == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_LIST,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: list (%p)",
-                     list);
-      return (pdf_size_t)-1;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (list, (pdf_size_t)-1);
+  PDF_ASSERT_POINTER_RETURN_VAL (element, (pdf_size_t)-1);
 
   /* No need to look for elements in empty lists */
   if (pdf_list_size (list) == 0)
@@ -447,16 +378,8 @@ pdf_list_indexof_from (const pdf_list_t  *list,
 {
   pdf_size_t list_size;
 
-  /* Check input arguments */
-  if (list == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_LIST,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: list (%p)",
-                     list);
-      return (pdf_size_t)-1;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (list, (pdf_size_t)-1);
+  PDF_ASSERT_POINTER_RETURN_VAL (element, (pdf_size_t)-1);
 
   list_size = pdf_list_size (list);
 
@@ -490,17 +413,8 @@ pdf_list_indexof_from_to (const pdf_list_t  *list,
 {
   pdf_size_t list_size;
 
-  /* Check input arguments */
-  if (list == NULL || element == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_LIST,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: list (%p), element (%p)",
-                     list,
-                     element);
-      return (pdf_size_t)-1;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (list, (pdf_size_t)-1);
+  PDF_ASSERT_POINTER_RETURN_VAL (element, (pdf_size_t)-1);
 
   /* Check range */
   list_size = pdf_list_size (list);
@@ -534,20 +448,10 @@ pdf_list_indexof_from_to (const pdf_list_t  *list,
 
 STATIC_INLINE const void *
 pdf_list_node_value (const pdf_list_t       *list,
-                     const pdf_list_node_t  *node,
-                     pdf_error_t           **error)
+                     const pdf_list_node_t  *node)
 {
-  /* Check input arguments */
-  if (list == NULL || node == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_LIST,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: list (%p), node (%p)",
-                     list,
-                     node);
-      return NULL;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (list, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (node, NULL);
 
   return gl_list_node_value ((gl_list_t) list,
                              (gl_list_node_t) node);
@@ -559,16 +463,7 @@ pdf_list_get_at (const pdf_list_t  *list,
                  const pdf_size_t   position,
                  pdf_error_t      **error)
 {
-  /* Check input arguments */
-  if (list == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_LIST,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: list (%p)",
-                     list);
-      return NULL;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (list, NULL);
 
   /* Check range */
   if (position >= pdf_list_size (list))
@@ -593,16 +488,7 @@ pdf_list_set_at (pdf_list_t        *list,
                  const void        *element,
                  pdf_error_t      **error)
 {
-  /* Check input arguments */
-  if (list == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_LIST,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: list (%p)",
-                     list);
-      return NULL;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (list, NULL);
 
   /* Check range */
   if (position >= pdf_list_size (list))
@@ -643,16 +529,8 @@ pdf_list_add_first (pdf_list_t   *list,
 {
   pdf_list_node_t *node;
 
-  /* Check input arguments */
-  if (list == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_LIST,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: list (%p)",
-                     list);
-      return NULL;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (list, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (element, NULL);
 
   /* If duplicates not allowed, check if element already in list */
   if ((!((const struct gl_list_impl_base *) list)->allow_duplicates) &&
@@ -685,16 +563,8 @@ pdf_list_add_last (pdf_list_t   *list,
 {
   pdf_list_node_t *node;
 
-  /* Check input arguments */
-  if (list == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_LIST,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: list (%p)",
-                     list);
-      return NULL;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (list, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (element, NULL);
 
   /* If duplicates not allowed, check if element already in list */
   if ((!((const struct gl_list_impl_base *) list)->allow_duplicates) &&
@@ -728,16 +598,8 @@ pdf_list_add_at (pdf_list_t        *list,
 {
   pdf_list_node_t *node;
 
-  /* Check input arguments */
-  if (list == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_LIST,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: list (%p)",
-                     list);
-      return NULL;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (list, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (element, NULL);
 
   /* Check range */
   if (position > pdf_list_size (list))
@@ -778,19 +640,10 @@ pdf_list_add_at (pdf_list_t        *list,
 
 STATIC_INLINE pdf_bool_t
 pdf_list_remove_node (pdf_list_t       *list,
-                      pdf_list_node_t  *node,
-                      pdf_error_t     **error)
+                      pdf_list_node_t  *node)
 {
-  /* Check input arguments */
-  if (list == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_LIST,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: list (%p)",
-                     list);
-      return PDF_FALSE;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (list, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (node, PDF_FALSE);
 
   return (gl_list_remove_node ((gl_list_t) list,
                                (gl_list_node_t) node) ?
@@ -802,16 +655,7 @@ pdf_list_remove_at (pdf_list_t        *list,
                     const pdf_size_t   position,
                     pdf_error_t      **error)
 {
-  /* Check input arguments */
-  if (list == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_LIST,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: list (%p)",
-                     list);
-      return PDF_FALSE;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (list, PDF_FALSE);
 
   /* Check range */
   if (position >= pdf_list_size (list))
@@ -831,19 +675,10 @@ pdf_list_remove_at (pdf_list_t        *list,
 
 STATIC_INLINE pdf_bool_t
 pdf_list_remove (pdf_list_t   *list,
-                 const void   *element,
-                 pdf_error_t **error)
+                 const void   *element)
 {
-  /* Check input arguments */
-  if (list == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_LIST,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: list (%p)",
-                     list);
-      return PDF_FALSE;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (list, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (element, PDF_FALSE);
 
   return (gl_list_remove ((gl_list_t) list, element) ?
           PDF_TRUE : PDF_FALSE);
@@ -852,21 +687,11 @@ pdf_list_remove (pdf_list_t   *list,
 /* Element iterator functions */
 
 STATIC_INLINE pdf_bool_t
-pdf_list_iterator_init (pdf_list_iterator_t  *itr,
-                        const pdf_list_t     *list,
-                        pdf_error_t         **error)
+pdf_list_iterator_init (pdf_list_iterator_t *itr,
+                        const pdf_list_t    *list)
 {
-  /* Check input arguments */
-  if (itr == NULL || list == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_LIST,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: itr (%p), list (%p)",
-                     itr,
-                     list);
-      return PDF_FALSE;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (itr, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (list, PDF_FALSE);
 
   *((gl_list_iterator_t *)itr) = gl_list_iterator ((gl_list_t) list);
 
@@ -882,17 +707,8 @@ pdf_list_iterator_init_from_to (pdf_list_iterator_t  *itr,
 {
   pdf_size_t list_size;
 
-  /* Check input arguments */
-  if (itr == NULL || list == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_LIST,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: itr (%p), list (%p)",
-                     itr,
-                     list);
-      return PDF_FALSE;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (itr, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (list, PDF_FALSE);
 
   /* Check range */
   list_size = pdf_list_size (list);
@@ -920,22 +736,12 @@ pdf_list_iterator_init_from_to (pdf_list_iterator_t  *itr,
 STATIC_INLINE pdf_bool_t
 pdf_list_iterator_next (pdf_list_iterator_t  *itr,
                         const void          **element_pointer,
-                        pdf_list_node_t     **node_pointer,
-                        pdf_error_t         **error)
+                        pdf_list_node_t     **node_pointer)
 {
   const void *element;
   gl_list_node_t node;
 
-  /* Check input arguments */
-  if (itr == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_LIST,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: itr (%p)",
-                     itr);
-      return PDF_FALSE;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (itr, PDF_FALSE);
 
   if (!gl_list_iterator_next (((gl_list_iterator_t *) itr),
                               &element,
@@ -971,17 +777,9 @@ pdf_list_sorted_add (pdf_list_t                    *list,
 {
   pdf_list_node_t *node;
 
-  /* Check input arguments */
-  if (list == NULL || compar_fn == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_LIST,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: list (%p), compar_fn (%p)",
-                     list,
-                     compar_fn);
-      return NULL;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (list, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (compar_fn, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (element, NULL);
 
   node = gl_sortedlist_nx_add ((gl_list_t) list,
                                compar_fn,
@@ -996,22 +794,12 @@ pdf_list_sorted_add (pdf_list_t                    *list,
 }
 
 STATIC_INLINE pdf_bool_t
-pdf_list_sorted_remove (pdf_list_t                    *list,
-                        pdf_list_element_compar_fn_t   compar_fn,
-                        const void                    *element,
-                        pdf_error_t                  **error)
+pdf_list_sorted_remove (pdf_list_t                   *list,
+                        pdf_list_element_compar_fn_t  compar_fn,
+                        const void                   *element)
 {
-  /* Check input arguments */
-  if (list == NULL || compar_fn == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_LIST,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: list (%p), compar_fn (%p)",
-                     list,
-                     compar_fn);
-      return PDF_FALSE;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (list, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (compar_fn, PDF_FALSE);
 
   return (gl_sortedlist_remove ((gl_list_t) list,
                                 compar_fn,
@@ -1020,22 +808,13 @@ pdf_list_sorted_remove (pdf_list_t                    *list,
 }
 
 STATIC_INLINE pdf_list_node_t *
-pdf_list_sorted_search (const pdf_list_t              *list,
-                        pdf_list_element_compar_fn_t   compar_fn,
-                        const void                    *element,
-                        pdf_error_t                  **error)
+pdf_list_sorted_search (const pdf_list_t             *list,
+                        pdf_list_element_compar_fn_t  compar_fn,
+                        const void                   *element)
 {
-  /* Check input arguments */
-  if (list == NULL || compar_fn == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_LIST,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: list (%p), compar_fn (%p)",
-                     list,
-                     compar_fn);
-      return PDF_FALSE;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (list, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (compar_fn, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (element, NULL);
 
   return (pdf_list_node_t *) gl_sortedlist_search ((gl_list_t) list,
                                                    compar_fn,
@@ -1052,17 +831,9 @@ pdf_list_sorted_search_from_to (const pdf_list_t              *list,
 {
   pdf_size_t list_size;
 
-  /* Check input arguments */
-  if (list == NULL || compar_fn == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_LIST,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: list (%p), compar_fn (%p)",
-                     list,
-                     compar_fn);
-      return PDF_FALSE;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (list, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (compar_fn, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (element, NULL);
 
   /* Check range */
   list_size = pdf_list_size (list);
@@ -1089,22 +860,13 @@ pdf_list_sorted_search_from_to (const pdf_list_t              *list,
 }
 
 STATIC_INLINE pdf_size_t
-pdf_list_sorted_indexof (const pdf_list_t              *list,
-                         pdf_list_element_compar_fn_t   compar_fn,
-                         const void                    *element,
-                         pdf_error_t                  **error)
+pdf_list_sorted_indexof (const pdf_list_t             *list,
+                         pdf_list_element_compar_fn_t  compar_fn,
+                         const void                   *element)
 {
-  /* Check input arguments */
-  if (list == NULL || compar_fn == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_LIST,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: list (%p), compar_fn (%p)",
-                     list,
-                     compar_fn);
-      return (pdf_size_t)-1;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (list, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (compar_fn, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (element, NULL);
 
   return (pdf_size_t) gl_sortedlist_indexof ((gl_list_t) list,
                                              compar_fn,
@@ -1121,17 +883,9 @@ pdf_list_sorted_indexof_from_to (const pdf_list_t               *list,
 {
   pdf_size_t list_size;
 
-  /* Check input arguments */
-  if (list == NULL || compar_fn == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_LIST,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: list (%p), compar_fn (%p)",
-                     list,
-                     compar_fn);
-      return (pdf_size_t)-1;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (list, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (compar_fn, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (element, NULL);
 
   /* Check range */
   list_size = pdf_list_size (list);
