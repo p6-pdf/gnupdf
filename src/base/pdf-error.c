@@ -177,7 +177,7 @@ pdf_set_error (pdf_error_t        **err,
     {
       va_list args;
 
-      PDF_ASSERT_POINTER_RETURN (*err);
+      PDF_ASSERT_RETURN (*err == NULL);
 
       va_start (args, format);
       *err = error_new_valist (domain,
