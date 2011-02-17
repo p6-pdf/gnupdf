@@ -189,8 +189,8 @@ pdf_size_t pdf_list_sorted_indexof_from_to (const pdf_list_t              *list,
 
 /* --------------------- List Element Iterator Methods ---------------------- */
 
-pdf_bool_t pdf_list_iterator_init (pdf_list_iterator_t  *itr,
-                                   const pdf_list_t     *list);
+void pdf_list_iterator_init (pdf_list_iterator_t  *itr,
+                             const pdf_list_t     *list);
 
 pdf_bool_t pdf_list_iterator_init_from_to (pdf_list_iterator_t  *itr,
                                            const pdf_list_t     *list,
@@ -686,16 +686,14 @@ pdf_list_remove (pdf_list_t   *list,
 
 /* Element iterator functions */
 
-STATIC_INLINE pdf_bool_t
+STATIC_INLINE void
 pdf_list_iterator_init (pdf_list_iterator_t *itr,
                         const pdf_list_t    *list)
 {
-  PDF_ASSERT_POINTER_RETURN_VAL (itr, PDF_FALSE);
-  PDF_ASSERT_POINTER_RETURN_VAL (list, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN (itr);
+  PDF_ASSERT_POINTER_RETURN (list);
 
   *((gl_list_iterator_t *)itr) = gl_list_iterator ((gl_list_t) list);
-
-  return PDF_TRUE;
 }
 
 STATIC_INLINE pdf_bool_t

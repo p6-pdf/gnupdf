@@ -922,20 +922,8 @@ pdf_fsys_disk_build_path (void       *data,
   pdf_list_iterator_t itr;
   pdf_text_t next, text_sep;
   pdf_status_t st, st2;
-  pdf_error_t *inner_error = NULL;
 
-  if (!pdf_list_iterator_init (&itr, rest, &inner_error))
-    {
-      /* TODO: Propagate error */
-      if (inner_error)
-        {
-          st = pdf_error_get_status (inner_error);
-          pdf_error_destroy (inner_error);
-        }
-      else
-        st = PDF_ERROR;
-      return st;
-    }
+  pdf_list_iterator_init (&itr, rest);
 
   *output = pdf_text_dup (first_element);
   if (*output == NULL)
@@ -958,7 +946,7 @@ pdf_fsys_disk_build_path (void       *data,
     }
 
   /* Concatenate separator and next text object */
-  while (pdf_list_iterator_next (&itr, (const void **) &next, NULL, &inner_error))
+  while (pdf_list_iterator_next (&itr, (const void **) &next, NULL))
     {
       st2 = pdf_text_concat (*output, text_sep, PDF_TRUE);
       if (st2 != PDF_OK)
@@ -977,12 +965,6 @@ pdf_fsys_disk_build_path (void       *data,
           pdf_text_destroy (text_sep);
           return st2;
         }
-    }
-
-  if (inner_error)
-    {
-      /* TODO: Propagate error... */
-      pdf_error_destroy (inner_error);
     }
 
   pdf_list_iterator_deinit (&itr);
