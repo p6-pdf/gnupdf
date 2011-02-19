@@ -44,7 +44,6 @@ struct pdf_hash_iterator_s
 };
 
 typedef void pdf_hash_t;
-typedef struct pdf_hash_element_s pdf_hash_element_t;
 typedef struct pdf_hash_iterator_s pdf_hash_iterator_t;
 
 typedef void (*pdf_hash_value_dispose_fn_t) (const void *value);

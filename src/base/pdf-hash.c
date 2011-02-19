@@ -47,6 +47,8 @@ struct pdf_hash_element_s
   pdf_hash_value_dispose_fn_t value_disp_fn;
 };
 
+typedef struct pdf_hash_element_s pdf_hash_element_t;
+
 /* Returns <0,=0,>0 if key1 is <,==, or > than key2 */
 static int hash_element_compare (const pdf_hash_element_t *elt1,
                                  const pdf_hash_element_t *elt2);

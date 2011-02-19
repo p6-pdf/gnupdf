@@ -2280,56 +2280,49 @@ NULL-terminated string.
 An iterator over the keys of a Hash Table.
 @end deftp
 
-@deftp {Data Type} void (*pdf_hash_element_dispose_fn_t) (const void *elt)
-A function type for disposing hash elements.
-@end deftp
-
-@deftp {Data Type} void (*pdf_hash_key_dispose_fn_t) (const void *key)
-A function type for disposing hash keys.
+@deftp {Data Type} void (*pdf_hash_value_dispose_fn_t) (const void *value)
+A function type for disposing the values added to the hash table.
 @end deftp
 
 @node Creating and Destroying Hash Tables
 @subsection Creating and Destroying Hash Tables
 
-@deftypefun pdf_status_t pdf_hash_new (pdf_hash_key_dispose_fn_t @var{dispose_key_fn}, pdf_hash_t @var{*table})
+@deftypefun pdf_hash_t *pdf_hash_new (pdf_error_t @var{*error})
 
-Create a new empty hash table. When some element is removed @var{dispose_key_fn} are called, can be NULL.
+Create a new empty hash table.
 
 @table @strong
 @item Parameters
 @table @var
-@item dispose_key_fn
-A pointer to a hash table element key dispose function or NULL.
-@item table
-A pointer to a hash table.
-@end table
-@item Returns
-A pdf status value:
+@item error
+A pdf_error_t to report errors.
 @table @code
-@item PDF_OK
-The operation succeeded.
 @item PDF_ENOMEM
 Not enough memory.
-@item PDF_EBADDATA
-Invalid @var{table} pointer.
 @end table
+@end table
+@item Returns
+The newly created pdf_hash_t
 @item Usage example
 @example
-pdf_hash_t hash;
+pdf_hash_t *hash;
+pdf_error_t *error = NULL;
 
-/* Create an instance of a hash without a disposal
-   function */
-if (pdf_hash_new (NULL, &hash) != PDF_OK)
+/* Create an instance of a hash table */
+hash = pdf_hash_new (&error);
+if (!hash)
    @{
-      /* Error creating the hash table */
+     /* Error creating the hash table */
+     if (error)
+       pdf_error_destroy (error);
    @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_hash_destroy (pdf_hash_t @var{table})
+@deftypefun void pdf_hash_destroy (pdf_hash_t @var{*table})
 
-Destroy a hash table. The elements of the table are disposed first.
+Destroy a hash table. The elements and keys of the table are disposed first.
 
 @table @strong
 @item Parameters
@@ -2337,24 +2330,15 @@ Destroy a hash table. The elements of the table are disposed first.
 @item table
 A hash table.
 @end table
-@item Returns
-A pdf status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
-@end table
 @item Usage example
 @example
-pdf_hash_t hash;
+pdf_hash_t *hash;
+pdf_error_t *error = NULL;
 
-if (pdf_hash_new (NULL, &hash) == PDF_OK)
+hash = pdf_hash_new (&error);
+if (hash)
    @{
-      /* Destroy the hash */
-      pdf_hash_destroy (hash);
-   @}
-else
-   @{
-      /* Error creating the hash table */
+     pdf_hash_destroy (hash);
    @}
 @end example
 @end table
