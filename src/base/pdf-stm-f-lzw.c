@@ -366,9 +366,9 @@ pdf_stm_f_lzwenc_init (pdf_hash_t  *params,
 
   state->early_change = 1; /* set default */
 
-  if (pdf_hash_key_p (params, "EarlyChange", NULL) == PDF_TRUE)
+  if (pdf_hash_key_p (params, "EarlyChange"))
     {
-      early_change_str = pdf_hash_get_string (params, "EarlyChange", NULL);
+      early_change_str = pdf_hash_get_string (params, "EarlyChange");
       if (early_change_str[0] == '0')
         {
           state->early_change = 0;
@@ -528,9 +528,9 @@ pdf_stm_f_lzwdec_init (pdf_hash_t  *params,
 
   state->early_change = 1; /* set default */
 
-  if (pdf_hash_key_p (params, "EarlyChange", NULL) == PDF_TRUE)
+  if (pdf_hash_key_p (params, "EarlyChange"))
     {
-      early_change_str = pdf_hash_get_string (params, "EarlyChange", NULL);
+      early_change_str = pdf_hash_get_string (params, "EarlyChange");
       if (early_change_str[0] == '0')
         {
           state->early_change = 0;

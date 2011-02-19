@@ -35,75 +35,44 @@
  * Description:
  *   Try to remove an existent element.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns PDF_TRUE
  */
 START_TEST (pdf_hash_remove_001)
 {
   pdf_hash_t *table;
-  pdf_error_t *error = NULL;
 
   pdf_init ();
 
   table = pdf_hash_new (NULL);
 
   pdf_hash_add (table, "key", "val", NULL, NULL);
-  fail_if (pdf_hash_remove (table, "key", &error) != PDF_TRUE);
-  fail_if (error != NULL);
+  fail_if (pdf_hash_remove (table, "key") != PDF_TRUE);
 
   pdf_hash_destroy (table);
 }
 END_TEST
-
 
 /*
  * Test: pdf_hash_remove_002
  * Description:
  *   Try to remove a non-existent element.
  * Success condition:
- *   Returns PDF_ERROR
+ *   Returns PDF_FALSE
  */
 START_TEST (pdf_hash_remove_002)
 {
   pdf_hash_t *table;
-  pdf_error_t *error = NULL;
 
   pdf_init ();
 
   table = pdf_hash_new (NULL);
 
   pdf_hash_add (table, "key", "val", NULL, NULL);
-  fail_if (pdf_hash_remove (table, "ke", &error) == PDF_TRUE);
-  fail_if (error != NULL);
+  fail_if (pdf_hash_remove (table, "ke") == PDF_TRUE);
 
   pdf_hash_destroy (table);
 }
 END_TEST
-
-/*
- * Test: pdf_hash_remove_003
- * Description:
- *   Try to remove a element given a NULL key.
- * Success condition:
- *   Returns PDF_EBADDATA
- */
-START_TEST (pdf_hash_remove_003)
-{
-  pdf_hash_t *table;
-  pdf_error_t *error = NULL;
-
-  pdf_init ();
-
-  table = pdf_hash_new (NULL);
-
-  pdf_hash_add (table, "key", "val", NULL, NULL);
-  fail_if (pdf_hash_remove (table, NULL, &error) == PDF_TRUE);
-  fail_if (error == NULL);
-  fail_if (pdf_error_get_status (error) != PDF_EBADDATA);
-
-  pdf_hash_destroy (table);
-}
-END_TEST
-
 
 /*
  * Test case creation function
@@ -115,7 +84,6 @@ test_pdf_hash_remove (void)
 
   tcase_add_test (tc, pdf_hash_remove_001);
   tcase_add_test (tc, pdf_hash_remove_002);
-  tcase_add_test (tc, pdf_hash_remove_003);
   return tc;
 }
 

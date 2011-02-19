@@ -40,7 +40,6 @@
 START_TEST (pdf_hash_key_p_001)
 {
   pdf_hash_t *table;
-  pdf_error_t *error = NULL;
 
   pdf_init ();
 
@@ -48,8 +47,7 @@ START_TEST (pdf_hash_key_p_001)
 
   pdf_hash_add (table, "key", "val", NULL, NULL);
 
-  fail_if (pdf_hash_key_p (table, "key", &error) != PDF_TRUE);
-  fail_if (error != NULL);
+  fail_if (pdf_hash_key_p (table, "key") != PDF_TRUE);
 
   pdf_hash_destroy (table);
 }
@@ -65,7 +63,6 @@ END_TEST
 START_TEST (pdf_hash_key_p_002)
 {
   pdf_hash_t *table;
-  pdf_error_t *error = NULL;
 
   pdf_init ();
 
@@ -73,8 +70,7 @@ START_TEST (pdf_hash_key_p_002)
 
   pdf_hash_add (table, "key", "val", NULL, NULL);
 
-  fail_if (pdf_hash_key_p (table, "ke", &error) == PDF_TRUE);
-  fail_if (error != NULL);
+  fail_if (pdf_hash_key_p (table, "ke") == PDF_TRUE);
 
   pdf_hash_destroy (table);
 }

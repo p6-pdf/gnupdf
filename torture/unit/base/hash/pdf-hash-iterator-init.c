@@ -36,20 +36,18 @@
  * Description:
  *   Try to create an iterator.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns PDF_TRUE
  */
 START_TEST (pdf_hash_iterator_init_001)
 {
   pdf_hash_t *table;
   pdf_hash_iterator_t itr;
-  pdf_error_t *error = NULL;
 
   pdf_init ();
 
   table = pdf_hash_new (NULL);
 
-  fail_if (pdf_hash_iterator_init (&itr, table, &error) != PDF_TRUE);
-  fail_if (error != NULL);
+  fail_if (pdf_hash_iterator_init (&itr, table) != PDF_TRUE);
 
   pdf_hash_iterator_deinit (&itr);
   pdf_hash_destroy (table);

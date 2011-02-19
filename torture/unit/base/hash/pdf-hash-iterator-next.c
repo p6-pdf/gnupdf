@@ -36,7 +36,7 @@
  * Description:
  *   Try to iterate over an iterator.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns PDF_TRUE
  */
 START_TEST (pdf_hash_iterator_next_001)
 {
@@ -44,18 +44,15 @@ START_TEST (pdf_hash_iterator_next_001)
   pdf_hash_iterator_t itr;
   const pdf_char_t *key;
   const pdf_char_t *value;
-  pdf_error_t *error = NULL;
 
   pdf_init ();
 
   table = pdf_hash_new (NULL);
   pdf_hash_add (table, "key", "val", NULL, NULL);
-  pdf_hash_iterator_init (&itr, table, NULL);
+  pdf_hash_iterator_init (&itr, table);
 
-  fail_if (pdf_hash_iterator_next (&itr, &key, (const void **)&value, &error) != PDF_TRUE);
-  fail_if (error != NULL);
-  fail_if (pdf_hash_iterator_next (&itr, &key, (const void **)&value, &error) == PDF_TRUE);
-  fail_if (error != NULL);
+  fail_if (pdf_hash_iterator_next (&itr, &key, (const void **)&value) != PDF_TRUE);
+  fail_if (pdf_hash_iterator_next (&itr, &key, (const void **)&value) == PDF_TRUE);
 
   pdf_hash_iterator_deinit (&itr);
   pdf_hash_destroy (table);

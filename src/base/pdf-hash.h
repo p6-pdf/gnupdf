@@ -64,9 +64,8 @@ pdf_size_t pdf_hash_size (const pdf_hash_t *table);
 
 /* ------------------------- Hash Key Management ---------------------------- */
 
-pdf_bool_t pdf_hash_key_p (const pdf_hash_t  *table,
-                           const pdf_char_t  *key,
-                           pdf_error_t      **error);
+pdf_bool_t pdf_hash_key_p (const pdf_hash_t *table,
+                           const pdf_char_t *key);
 
 pdf_bool_t pdf_hash_rename_key (pdf_hash_t        *table,
                                 const pdf_char_t  *key,
@@ -82,28 +81,24 @@ pdf_bool_t pdf_hash_add (pdf_hash_t                   *table,
                          pdf_hash_value_dispose_fn_t   value_disp_fn,
                          pdf_error_t                 **error);
 
-pdf_bool_t pdf_hash_remove (pdf_hash_t        *table,
-                            const pdf_char_t  *key,
-                            pdf_error_t      **error);
+pdf_bool_t pdf_hash_remove (pdf_hash_t       *table,
+                            const pdf_char_t *key);
 
 
 /* --------------------- Hash Search Methods -------------------------------- */
 
-const void *pdf_hash_get_value (const pdf_hash_t  *table,
-                                const pdf_char_t  *key,
-                                pdf_error_t      **error);
+const void *pdf_hash_get_value (const pdf_hash_t *table,
+                                const pdf_char_t *key);
 
 
 /* ----------------------- Hash Iterator Methods ---------------------------- */
 
-pdf_bool_t pdf_hash_iterator_init (pdf_hash_iterator_t  *itr,
-                                   const pdf_hash_t     *table,
-                                   pdf_error_t         **error);
+pdf_bool_t pdf_hash_iterator_init (pdf_hash_iterator_t *itr,
+                                   const pdf_hash_t    *table);
 
 pdf_bool_t pdf_hash_iterator_next (pdf_hash_iterator_t  *itr,
                                    const pdf_char_t    **key,
-                                   const void          **value,
-                                   pdf_error_t         **error);
+                                   const void          **value);
 
 void pdf_hash_iterator_deinit (pdf_hash_iterator_t *itr);
 

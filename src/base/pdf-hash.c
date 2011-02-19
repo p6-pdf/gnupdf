@@ -104,28 +104,14 @@ pdf_hash_size (const pdf_hash_t *table)
 }
 
 pdf_bool_t
-pdf_hash_key_p (const pdf_hash_t  *table,
-                const pdf_char_t  *key,
-                pdf_error_t      **error)
+pdf_hash_key_p (const pdf_hash_t *table,
+                const pdf_char_t *key)
 {
-  /* Check input arguments */
-  if (table == NULL || key == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_HASH,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: table (%p), key (%p)",
-                     table,
-                     key);
-      return PDF_FALSE;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (table, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (key, PDF_FALSE);
 
-  if (hash_search_key (table, key, NULL) != NULL)
-    {
-      return PDF_TRUE;
-    }
-
-  return PDF_FALSE;
+  return (hash_search_key (table, key, NULL) != NULL ?
+          PDF_TRUE : PDF_FALSE);
 }
 
 pdf_bool_t
@@ -138,19 +124,9 @@ pdf_hash_rename_key (pdf_hash_t        *table,
   gl_list_node_t node = NULL;
   pdf_error_t *inner_error = NULL;
 
-  /* Check input arguments */
-  if (table == NULL || key == NULL || new_key == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_HASH,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: "
-                     "table (%p), key (%p), new_key (%p)",
-                     table,
-                     key,
-                     new_key);
-      return PDF_FALSE;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (table, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (key, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (new_key, PDF_FALSE);
 
   elt = hash_search_key (table, key, &node);
 
@@ -185,18 +161,8 @@ pdf_hash_add (pdf_hash_t                   *table,
   pdf_hash_element_t *elt;
   pdf_char_t *key_dup;
 
-  /* Check input arguments */
-  if (table == NULL || key == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_HASH,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: "
-                     "table (%p), key (%p)",
-                     table,
-                     key);
-      return PDF_FALSE;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (table, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (key, PDF_FALSE);
 
   /* New hash table element */
   elt = pdf_alloc (sizeof (*elt));
@@ -237,24 +203,13 @@ pdf_hash_add (pdf_hash_t                   *table,
 }
 
 pdf_bool_t
-pdf_hash_remove (pdf_hash_t        *table,
-                 const pdf_char_t  *key,
-                 pdf_error_t      **error)
+pdf_hash_remove (pdf_hash_t       *table,
+                 const pdf_char_t *key)
 {
   gl_list_node_t node = NULL;
 
-  /* Check input arguments */
-  if (table == NULL || key == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_HASH,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: "
-                     "table (%p), key (%p)",
-                     table,
-                     key);
-      return PDF_FALSE;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (table, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (key, PDF_FALSE);
 
   if (hash_search_key (table, key, &node))
     {
@@ -268,24 +223,13 @@ pdf_hash_remove (pdf_hash_t        *table,
 }
 
 const void *
-pdf_hash_get_value (const pdf_hash_t  *table,
-                    const pdf_char_t  *key,
-                    pdf_error_t      **error)
+pdf_hash_get_value (const pdf_hash_t *table,
+                    const pdf_char_t *key)
 {
   pdf_hash_element_t *elt;
 
-  /* Check input arguments */
-  if (table == NULL || key == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_HASH,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: "
-                     "table (%p), key (%p)",
-                     table,
-                     key);
-      return PDF_FALSE;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (table, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (key, NULL);
 
   elt = hash_search_key (table, key, NULL);
 
@@ -293,22 +237,11 @@ pdf_hash_get_value (const pdf_hash_t  *table,
 }
 
 pdf_bool_t
-pdf_hash_iterator_init (pdf_hash_iterator_t  *itr,
-                        const pdf_hash_t     *table,
-                        pdf_error_t         **error)
+pdf_hash_iterator_init (pdf_hash_iterator_t *itr,
+                        const pdf_hash_t    *table)
 {
-  /* Check input arguments */
-  if (itr == NULL || table == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_HASH,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: "
-                     "itr (%p), table (%p)",
-                     itr,
-                     table);
-      return PDF_FALSE;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (itr, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (table, PDF_FALSE);
 
   *((gl_list_iterator_t *)itr) = gl_list_iterator ((gl_list_t) table);
 
@@ -318,22 +251,12 @@ pdf_hash_iterator_init (pdf_hash_iterator_t  *itr,
 pdf_bool_t
 pdf_hash_iterator_next (pdf_hash_iterator_t  *itr,
                         const pdf_char_t    **key,
-                        const void          **value,
-                        pdf_error_t         **error)
+                        const void          **value)
 {
   const pdf_hash_element_t *element;
   gl_list_node_t node;
 
-  /* Check input arguments */
-  if (itr == NULL)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_HASH,
-                     PDF_EBADDATA,
-                     "Wrong input arguments: itr (%p)",
-                     itr);
-      return PDF_FALSE;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (itr, PDF_FALSE);
 
   if (!gl_list_iterator_next (((gl_list_iterator_t *) itr),
                               (const void **)&element,

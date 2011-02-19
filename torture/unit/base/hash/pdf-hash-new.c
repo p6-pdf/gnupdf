@@ -35,7 +35,7 @@
  * Description:
  *   Try to create an empty hash.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns the newly created hash.
  */
 START_TEST (pdf_hash_new_001)
 {

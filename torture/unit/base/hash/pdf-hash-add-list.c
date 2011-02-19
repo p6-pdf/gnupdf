@@ -35,7 +35,7 @@
  * Description:
  *   Try to add a list inside a hash table.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns PDF_TRUE
  */
 START_TEST (pdf_hash_add_list_001)
 {

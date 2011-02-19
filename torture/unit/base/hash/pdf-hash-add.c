@@ -35,7 +35,7 @@
  * Description:
  *   Try to add key/value pair to an empty table.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns PDF_TRUE
  */
 START_TEST (pdf_hash_add_001)
 {
@@ -56,43 +56,14 @@ START_TEST (pdf_hash_add_001)
 }
 END_TEST
 
-
 /*
  * Test: pdf_hash_add_002
  * Description:
- *   Try to add NULL/value pair to an empty table.
- * Success condition:
- *   Returns PDF_EBADDATA
- */
-START_TEST (pdf_hash_add_002)
-{
-  pdf_hash_t *table;
-  pdf_error_t *error = NULL;
-
-  pdf_init ();
-
-  table = pdf_hash_new (NULL);
-
-  fail_if (pdf_hash_add (table,
-                         NULL,
-                         "val", NULL,
-                         &error) == PDF_TRUE);
-  fail_if (error == NULL);
-  fail_if (pdf_error_get_status (error) != PDF_EBADDATA);
-
-  pdf_hash_destroy (table);
-}
-END_TEST
-
-
-/*
- * Test: pdf_hash_add_003
- * Description:
  *   Try to add key/NULL pair to an empty table.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns PDF_TRUE
  */
-START_TEST (pdf_hash_add_003)
+START_TEST (pdf_hash_add_002)
 {
   pdf_hash_t *table;
   pdf_error_t *error = NULL;
@@ -122,7 +93,6 @@ test_pdf_hash_add (void)
 
   tcase_add_test (tc, pdf_hash_add_001);
   tcase_add_test (tc, pdf_hash_add_002);
-  tcase_add_test (tc, pdf_hash_add_003);
   return tc;
 }
 

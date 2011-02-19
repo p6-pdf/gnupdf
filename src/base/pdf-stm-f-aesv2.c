@@ -75,16 +75,16 @@ pdf_stm_f_aesv2_init (pdf_hash_t  *params,
   else
     {
       /* We demand all parameters are present */
-      if ((pdf_hash_key_p (params, "Key", NULL) == PDF_TRUE) &&
-          (pdf_hash_key_p (params, "KeySize", NULL) == PDF_TRUE))
+      if ((pdf_hash_key_p (params, "Key")) &&
+          (pdf_hash_key_p (params, "KeySize")))
         {
           const pdf_char_t *key;
           pdf_size_t keysize;
           pdf_crypt_cipher_t cipher;
 
           /* Key may NOT be NUL-terminated */
-          key = pdf_hash_get_value (params, "Key", NULL);
-          keysize = pdf_hash_get_size (params, "KeySize", NULL);
+          key = pdf_hash_get_value (params, "Key");
+          keysize = pdf_hash_get_size (params, "KeySize");
 
           ret = pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
           if (ret == PDF_OK)

@@ -45,7 +45,6 @@ START_TEST (pdf_hash_get_value_001)
 {
   pdf_hash_t *table;
   const pdf_char_t *val;
-  pdf_error_t *error = NULL;
 
   pdf_init ();
 
@@ -55,18 +54,15 @@ START_TEST (pdf_hash_get_value_001)
   pdf_hash_add (table, "key2", val2, NULL, NULL);
   pdf_hash_add (table, "key3", val3, NULL, NULL);
 
-  val = pdf_hash_get_value (table, "key1", &error);
+  val = pdf_hash_get_value (table, "key1");
   fail_if (val != val1);
-  fail_if (error != NULL);
 
 
-  val = pdf_hash_get_value (table, "key2", &error);
+  val = pdf_hash_get_value (table, "key2");
   fail_if (val != val2);
-  fail_if (error != NULL);
 
-  val = pdf_hash_get_value (table, "key3", &error);
+  val = pdf_hash_get_value (table, "key3");
   fail_if (val != val3);
-  fail_if (error != NULL);
 
   pdf_hash_destroy (table);
 
@@ -84,7 +80,6 @@ START_TEST (pdf_hash_get_value_002)
 {
   pdf_hash_t *table;
   const pdf_char_t *val;
-  pdf_error_t *error = NULL;
 
   pdf_init ();
 
@@ -94,39 +89,8 @@ START_TEST (pdf_hash_get_value_002)
   pdf_hash_add (table, "key2", val2, NULL, NULL);
   pdf_hash_add (table, "key3", val3, NULL, NULL);
 
-  val = pdf_hash_get_value (table, "ke", &error);
+  val = pdf_hash_get_value (table, "ke");
   fail_if (val != NULL);
-  fail_if (error != NULL);
-
-  pdf_hash_destroy (table);
-}
-END_TEST
-
-/*
- * Test: pdf_hash_get_value_003
- * Description:
- *   Try to search an element given a NULL key.
- * Success condition:
- *   Returns PDF_EBADDATA
- */
-START_TEST (pdf_hash_get_value_003)
-{
-  pdf_hash_t *table;
-  const pdf_char_t *val;
-  pdf_error_t *error = NULL;
-
-  pdf_init ();
-
-  table = pdf_hash_new (NULL);
-
-  pdf_hash_add (table, "key1", val1, NULL, NULL);
-  pdf_hash_add (table, "key2", val2, NULL, NULL);
-  pdf_hash_add (table, "key3", val3, NULL, NULL);
-
-  val = pdf_hash_get_value (table, NULL, &error);
-  fail_if (val != NULL);
-  fail_if (error == NULL);
-  fail_if (pdf_error_get_status (error) != PDF_EBADDATA);
 
   pdf_hash_destroy (table);
 }
@@ -142,7 +106,6 @@ test_pdf_hash_get_value (void)
 
   tcase_add_test (tc, pdf_hash_get_value_001);
   tcase_add_test (tc, pdf_hash_get_value_002);
-  tcase_add_test (tc, pdf_hash_get_value_003);
   return tc;
 }
 
