@@ -181,7 +181,7 @@ pdf_hash_add_string (pdf_hash_t        *table,
 {
   return pdf_hash_add (table,
                        key,
-                       strdup (value),
+                       (void *)value,
                        pdf_dealloc,
                        error);
 }

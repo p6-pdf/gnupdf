@@ -2263,9 +2263,9 @@ This section describes how to work with unsorted and sorted lists.
 * Adding and Removing List Nodes in Unsorted Lists::
 * Adding and Removing List Nodes in Sorted Lists::
 * Setting and Getting Values from List Nodes::
-* Searching List Elements::
-* Working with Sorted Lists::
-* Working with Iterators::
+* Searching List Elements in Unsorted Lists::
+* Searching List Elements in Sorted Lists::
+* Iterating Lists::
 @end menu
 
 @node List Data Types
@@ -2927,8 +2927,8 @@ if (list != NULL)
 @end table
 @end deftypefun
 
-@node Searching List Elements
-@subsection Searching List Elements
+@node Searching List Elements in Unsorted Lists
+@subsection Searching List Elements in Unsorted Lists
 
 @deftypefun {pdf_list_node_t *}pdf_list_search (const pdf_list_t @var{*list}, const void @var{*element})
 
@@ -2940,7 +2940,7 @@ Search whether an element is already in the list.
 @item list
 A list.
 @item element
-The element to search for.
+The element to look for.
 @end table
 @item Returns
 A valid pdf_list_node_t if the element is found in the list, NULL otherwise.
@@ -2962,7 +2962,7 @@ if (list != NULL)
       /* Insert an element into the list */
       pdf_list_add_first (list, (void *) &elem, NULL);
 
-      /* Search for that element into the list */
+      /* Look for that element into the list */
       node = pdf_list_search (list, (void *) &elem);
       if (node != NULL)
          @{
@@ -2984,6 +2984,8 @@ Search whether an element is already in the list, at a position >= @var{start_in
 A list.
 @item start_index
 Index indicating the begin of the search.
+@item element
+The element to look for.
 @item error
 A pdf_error_t to report errors or NULL.
 @table @code
@@ -3014,7 +3016,7 @@ if (list != NULL)
       pdf_list_add_last (list, (void *) &elem2, NULL);
       pdf_list_add_last (list, (void *) &elem3, NULL);
 
-      /* Search for an element into the list */
+      /* look for an element into the list */
       node = pdf_list_search_from (list,
                                    (void *) &elem1,
                                    1,
@@ -3045,7 +3047,7 @@ Index to the first list position to be searched.
 @item end_index
 Index to the last list position to be searched.
 @item element
-The element to search for.
+The element to look for.
 @item error
 A pdf_error_t to report errors or NULL.
 @table @code
@@ -3078,7 +3080,7 @@ if (list != NULL)
       pdf_list_add_last (list, (void *) &elem3, NULL);
       pdf_list_add_last (list, (void *) &elem4, NULL);
 
-      /* Search for an element into the list */
+      /* look for an element into the list */
       node = pdf_list_search_from_to (list,
                                       (void *) &elem4,
                                       1, 3,
@@ -3192,7 +3194,7 @@ Search whether an element is already in the list, and return its position if fou
 @item list
 A list.
 @item element
-A pointer to user data.
+The element to look for.
 @end table
 @item Returns
 The element position if found, or (pdf_size_t)-1 otherwise.
@@ -3236,7 +3238,7 @@ A list.
 @item start_index
 An index to a position in @var{list}.
 @item element
-The element to search for.
+The element to look for.
 @item error
 A pdf_error_t to report errors or NULL.
 @table @code
@@ -3299,7 +3301,7 @@ A position in @var{list}.
 @item end_index
 A position in @var{list}.
 @item element
-A pointer to some user data.
+The element to look for.
 @item error
 A pdf_error_t to report errors or NULL.
 @table @code
@@ -3348,12 +3350,12 @@ if (list != NULL)
 @end table
 @end deftypefun
 
-@node Working with Sorted Lists
-@subsection Working with Sorted Lists
+@node Searching List Elements in Sorted Lists
+@subsection Searching List Elements in Sorted Lists
 
-@deftypefun pdf_status_t pdf_list_sorted_search (const pdf_list_t @var{list}, pdf_list_element_compar_fn_t @var{compar_fn}, const void* @var{element}, pdf_list_node_t @var{*node})
+@deftypefun {pdf_list_node_t *}pdf_list_sorted_search (const pdf_list_t @var{*list}, pdf_list_element_compar_fn_t @var{compar_fn}, const void @var{*element})
 
-Search whether an element is already in the list.
+Search whether an element is already in the sorted list.
 
 @table @strong
 @item Parameters
@@ -3361,32 +3363,54 @@ Search whether an element is already in the list.
 @item list
 A list.
 @item compar_fn
-A comparision function.
+A comparison function.
 @item element
-The element to search for.
-@item node
-The searched node if it was found.
+The element to look for.
 @end table
 @item Returns
-A pdf status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
-@item PDF_ENONODE
-@var{element} not found.
-@item PDF_EBADDATA
-Invalid @var{node} pointer or @var{compar_fn}.
-@end table
+A valid pdf_list_node_t if the element is found in the list, NULL otherwise.
 @item Usage example
 @example
-XXX
+int
+element_compare_fn (const void *elt1, const void *elt2)
+@{
+  return *((int *)elt1) - *((int *)elt2);
+@}
+
+int main (int argc, char **argv)
+@{
+  pdf_list_node_t *node;
+  pdf_list_t *list;
+  pdf_error_t *error = NULL;
+  int a = 1;
+  int b = 2;
+
+  /* Create the list and add some elements to it...  */
+  list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
+
+  if (pdf_list_sorted_add (list,
+                           element_compare_fn,
+                           (void *)&b,
+                           &error) != NULL && /* (b) */
+      pdf_list_sorted_add (list,
+                           element_compare_fn,
+                           (void *)&a,
+                           &error) != NULL) /* (a b) */
+  @{
+    node = pdf_list_sorted_search (list, element_compare_fn, (void *)&b);
+    if (node != NULL &&
+        b == *((int *)pdf_list_node_value (list, node)))
+      @{
+        /* Execution should reach this point */
+      @}
+  @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_sorted_search_from_to (const pdf_list_t @var{list}, pdf_list_element_compar_fn_t @var{compar_fn}, const pdf_size_t @var{start_index}, const pdf_size_t @var{end_index}, const void* @var{element}, pdf_list_node_t @var{*node})
+@deftypefun {pdf_list_node_t *}pdf_list_sorted_search_from_to (const pdf_list_t @var{*list}, pdf_list_element_compar_fn_t @var{compar_fn}, const pdf_size_t @var{start_index}, const pdf_size_t @var{end_index}, const void @var{*element}, pdf_error_t @var{**error})
 
-Search whether an element is already in the list, at a position >=
+Search whether an element is already in the sorted list, at a position >=
 @var{start_index} and < @var{end_index}.
 
 @table @strong
@@ -3395,38 +3419,66 @@ Search whether an element is already in the list, at a position >=
 @item list
 A list.
 @item compar_fn
-A comparision function.
+A comparison function.
 @item start_index
 Index to the first list position to be searched.
 @item end_index
 Index to the last list position to be searched.
 @item element
-The element to search for.
-@item node
-The seached node if it was found.
+The element to look for.
+@item error
+A pdf_error_t to report errors or NULL.
+@table @code
+@item PDF_EINVRANGE
+@var{start_index} and/or @var{end_index} are greater than the list size.
+@end table
 @end table
 @item Returns
-A pdf status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
-@item PDF_ENONODE
-@var{element} not found.
-@item PDF_EBADDATA
-Invalid @var{node} pointer or @var{compar_fn}.
-@item PDF_EINVRANGE
-@var{start_index} or @var{end_index} is greater than the list size or less than 0.
-@end table
+A valid pdf_list_node_t if the element is found in the list, NULL otherwise.
 @item Usage example
 @example
-XXX
+int
+element_compare_fn (const void *elt1, const void *elt2)
+@{
+  return *((int *)elt1) - *((int *)elt2);
+@}
+
+int main (int argc, char **argv)
+@{
+  pdf_list_node_t *node;
+  pdf_list_t *list;
+  pdf_error_t *error = NULL;
+  int a = 1;
+  int b = 2;
+
+  /* Create the list and add some elements to it...  */
+  list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
+
+  if (pdf_list_sorted_add (list,
+                           element_compare_fn,
+                           (void *)&b,
+                           &error) != NULL && /* (b) */
+      pdf_list_sorted_add (list,
+                           element_compare_fn,
+                           (void *)&a,
+                           &error) != NULL) /* (a b) */
+  @{
+    node = pdf_list_sorted_search_from_to (list,
+                                           element_compare_fn,
+                                           0, 1,
+                                           (void *)&b);
+    if (node == NULL)
+      @{
+        /* Execution should reach this point */
+      @}
+  @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_sorted_indexof (const pdf_list_t @var{list}, pdf_list_element_compar_fn_t @var{compar_fn}, const void* @var{element}, pdf_size_t @var{*position})
+@deftypefun pdf_size_t pdf_list_sorted_indexof (const pdf_list_t @var{*list}, pdf_list_element_compar_fn_t @var{compar_fn}, const void @var{*element})
 
-Search whether an element is already in the list.
+Search whether an element is already in the list, and return its position if found.
 
 @table @strong
 @item Parameters
@@ -3436,30 +3488,55 @@ A list.
 @item compar_fn
 A comparision function.
 @item element
-A pointer to user data.
-@item position
-A pointer where the element position will be saved.
+The element to look for.
 @end table
 @item Returns
-A pdf status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
-@item PDF_ENONODE
-@var{element} not found.
-@item PDF_EBADDATA
-Invalid or NULL pointers.
-@end table
+The element position if found, or (pdf_size_t)-1 otherwise.
 @item Usage Example
 @example
-XXX
+int
+element_compare_fn (const void *elt1, const void *elt2)
+@{
+  return *((int *)elt1) - *((int *)elt2);
+@}
+
+int main (int argc, char **argv)
+@{
+  pdf_list_node_t *node;
+  pdf_list_t *list;
+  pdf_error_t *error = NULL;
+  int a = 1;
+  int b = 2;
+
+  /* Create the list and add some elements to it...  */
+  list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
+
+  if (pdf_list_sorted_add (list,
+                           element_compare_fn,
+                           (void *)&b,
+                           &error) != NULL && /* (b) */
+      pdf_list_sorted_add (list,
+                           element_compare_fn,
+                           (void *)&a,
+                           &error) != NULL) /* (a b) */
+  @{
+    pdf_size_t index_of_a;
+
+    /* Get the index of 'a' */
+    index_of_a = pdf_list_sorted_indexof (list,
+                                          element_compare_fn,
+                                          &a);
+
+    /* Now index_of_a contains 0 */
+  @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_sorted_indexof_from_to (const pdf_list_t @var{list}, pdf_list_element_compar_fn_t @var{compar_fn}, const pdf_size_t @var{start_index}, const pdf_size_t @var{end_index}, const void* @var{element}, pdf_size_t @var{*position})
+@deftypefun pdf_size_t pdf_list_sorted_indexof_from_to (const pdf_list_t @var{*list}, pdf_list_element_compar_fn_t @var{compar_fn}, const pdf_size_t @var{start_index}, const pdf_size_t @var{end_index}, const void @var{*element}, pdf_error_t @var{**error})
 
-Search whether an element is already in the list, at a position >= @var{start_index} and < @var{end_index}.
+Search whether an element is already in the list, at a position
+>= @var{start_index} and < @var{end_index}.
 
 @table @strong
 @item Parameters
@@ -3473,36 +3550,65 @@ A position in @var{list}.
 @item end_index
 A position in @var{list}.
 @item element
-A pointer to some user data.
-@item position
-A pointer where the element position will be saved.
+The element to look for.
+@item error
+A pdf_error_t to report errors or NULL.
+@table @code
+@item PDF_EINVRANGE
+@var{start_index} and/or @var{end_index} are greater than the list size.
+@end table
 @end table
 @item Returns
-A pdf status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
-@item PDF_ENONODE
-@var{element} not found.
-@item PDF_EBADDATA
-Invalid or NULL pointers.
-@item PDF_EINVRANGE
-@var{start_index} or @var{end_index} is greater than the list size or less than 0.
-@end table
+The element position if found, or (pdf_size_t)-1 otherwise.
 @item Usage example
 @example
-XXX
+int
+element_compare_fn (const void *elt1, const void *elt2)
+@{
+  return *((int *)elt1) - *((int *)elt2);
+@}
+
+int main (int argc, char **argv)
+@{
+  pdf_list_node_t *node;
+  pdf_list_t *list;
+  pdf_error_t *error = NULL;
+  int a = 1;
+  int b = 2;
+
+  /* Create the list and add some elements to it...  */
+  list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
+
+  if (pdf_list_sorted_add (list,
+                           element_compare_fn,
+                           (void *)&b,
+                           &error) != NULL && /* (b) */
+      pdf_list_sorted_add (list,
+                           element_compare_fn,
+                           (void *)&a,
+                           &error) != NULL) /* (a b) */
+  @{
+    pdf_size_t index_of_a;
+
+    /* Get the index of 'a' */
+    index_of_a = pdf_list_sorted_indexof_from_to (list,
+                                                  element_compare_fn,
+                                                  1, 2,
+                                                  &a);
+
+    /* Now index_of_a contains (pdf_size_t)-1 */
+  @}
 @end example
 @end table
 @end deftypefun
 
 
-@node Working with Iterators
-@subsection Working with Iterators
+@node Iterating Lists
+@subsection Iterating Lists
 
-@deftypefun pdf_status_t pdf_list_iterator (const pdf_list_t @var{list}, pdf_list_iterator_t @var{*itr})
+@deftypefun void pdf_list_iterator_init (pdf_list_iterator_t @var{*itr}, const pdf_list_t @var{*list})
 
-Create an iterator traversing a list.
+Create an iterator traversing @var{list}.
 
 The list contents must not be modified while the iterator is in use,
 except for replacing or removing the last returned element.
@@ -3510,39 +3616,27 @@ except for replacing or removing the last returned element.
 @table @strong
 @item Parameters
 @table @var
+@item itr
+The address of an iterator to get initialized.
 @item list
 A list.
-@item itr
-A pointer to where the new iterator will be saved.
-@end table
-@item Returns
-A status variable:
-@table @code
-@item PDF_OK
-@var{itr} contains a new iterator for @var{list}.
-@item PDF_EBADDATA
-@var{itr} points to NULL.
 @end table
 @item Usage example
 @example
-pdf_list_t list;
+pdf_list_t *list;
 pdf_list_iterator_t iter;
 
 /* Create a list and insert some elements into it...  */
 
-/* Get an iterator.  */
-if (pdf_list_iterator (list, &iter) != PDF_OK)
-@{
-    /* Error creating the iterator.  */
-@}
+/* Initialize the iterator.  */
+pdf_list_iterator_init (&iter, list);
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_iterator_from_to (const pdf_list_t @var{list}, const pdf_size_t @var{start_index}, const pdf_size_t @var{end_index}, pdf_list_iterator_t @var{*itr})
+@deftypefun pdf_bool_t pdf_list_iterator_init_from_to (pdf_list_iterator_t @var{*itr}, const pdf_list_t @var{*list}, const pdf_size_t @var{start_index}, const pdf_size_t @var{end_index}, pdf_error_t @var{**error})
 
-Create an iterator traversing the element with indices @code{i},
-@code{start_index <= i < end_index}, of a list.
+Create an iterator traversing the list from nodes @var{start_index} to @var{end_index}.
 
 The list contents must not be modified while the iterator is in use,
 except for replacing or removing the last returned element.
@@ -3550,34 +3644,33 @@ except for replacing or removing the last returned element.
 @table @strong
 @item Parameters
 @table @var
+@item itr
+The address of an iterator to get initialized.
 @item list
 A list.
 @item start_index
 A position in @var{list}.
 @item end_index
 A position in @var{list}.
-@item itr
-A pointer to an iterator where the new one will be saved.
-@end table
-@item Returns
-A status variable:
+@item error
+A pdf_error_t to report errors or NULL.
 @table @code
-@item PDF_OK
-@var{itr} contains a new iterator for @var{list} pointing to @var{start_index}.
 @item PDF_EINVRANGE
 @var{start_index} or @var{end_index} is greater than the list size or less than 0.
-@item PDF_EBADDATA
-@var{itr} points to NULL.
 @end table
+@end table
+@item Returns
+PDF_TRUE if the iterator was properly initialized, PDF_FALSE otherwise.
 @item Usage example
 @example
-pdf_list_t list;
+pdf_list_t *list;
 pdf_list_iterator_t iter;
+pdf_error_t *error = NULL;
 
 /* Create a list containing 10 elements...  */
 
 /* Get an iterator to traverse the last 5 elements.  */
-if (pdf_list_iterator_from_to (list, 4, 9, &iter) != PDF_OK)
+if (pdf_list_iterator_init_from_to (&iter, list, 4, 9, &error) != PDF_TRUE)
 @{
     /* Error creating the iterator.  */
 @}
@@ -3585,90 +3678,71 @@ if (pdf_list_iterator_from_to (list, 4, 9, &iter) != PDF_OK)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_iterator_next (pdf_list_iterator_t *@var{iterator}, const void **@var{element_pointer}, pdf_list_node_t *@var{node_pointer})
+@deftypefun void pdf_list_iterator_deinit (pdf_list_iterator_t *@var{itr})
 
-If there is a next element, store the next element in
-@var{*element_pointer}, store its node in @var{*node_pointer} if it is
-non-@code{NULL}, and advance the iterator.
+Deinitializes the iterator releasing any used resource.
 
 @table @strong
 @item Parameters
 @table @var
-@item iterator
-A list iterator.
-@item element_pointer
-A pointer to a pointer to user data.
-@item node_pointer
-A pointer to a list node.
-@end table
-@item Returns
-A pdf status value:
-@table @code
-@item PDF_OK
-There is a next element.
-@item PDF_ERROR
-There is not a next element.
+@item itr
+A valid list iterator.
 @end table
 @item Usage example
 @example
-pdf_list_t mylist;
+pdf_list_t *mylist;
+pdf_list_iterator_t iter;
+
+/* ... Create and initialize mylist. */
+
+pdf_list_iterator_init (&iter, mylist);
+
+/* Work with the iterator.  */
+
+/* Destroy the iterator.  */
+pdf_list_iterator_deinit (&iter);
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_list_iterator_next (pdf_list_iterator_t *@var{itr}, const void @var{**element_pointer}, pdf_list_node_t @var{**node_pointer})
+
+If there is a next node, advance the iterator and store the node address in
+@var{node_pointer} (if given) and store the node value in @var{element_pointer}
+if given.
+
+@table @strong
+@item Parameters
+@table @var
+@item itr
+A valid list iterator.
+@item element_pointer
+A pointer where to store the value stored in the next node, or NULL if not needed.
+@item node_pointer
+A pointer where to store the address of the next node, or NULL if not needed.
+@end table
+@item Returns
+PDF_TRUE if a next node is available, PDF_FALSE otherwise.
+@item Usage example
+@example
+pdf_list_t *mylist;
 pdf_list_iterator_t iter;
 void *elem;
 
 /* ... create and initialize mylist. */
 
-if (pdf_list_iterator (mylist, &iter) != PDF_OK)
-@{
-   /* Error creating the iterator.  */
-@}
+pdf_list_iterator_init (&iter, mylist);
 
-while (pdf_list_iterator_next (&iter, &elem, NULL)
-       == PDF_OK)
-@{
-   /* Process element.  */
-@}
+while (pdf_list_iterator_next (&iter, &elem, NULL))
+  @{
+     /* Process element.  */
+  @}
 
-/* Destroy the iterator.  */
-pdf_list_iterator_free (iter);
+/* Deinitialize the iterator.  */
+pdf_list_iterator_deinit (&iter);
 @end example
 @end table
 @end deftypefun
-
-@deftypefun pdf_status_t pdf_list_iterator_free (pdf_list_iterator_t *@var{iterator})
-
-Free an iterator releasing any used resource.
-
-@table @strong
-@item Parameters
-@table @var
-@item iterator
-A list iterator.
-@end table
-@item Returns
-A pdf status value:
-@table @code
-@item PDF_OK
-@end table
-@item Usage example
-@example
-pdf_list_t mylist;
-pdf_list_iterator_t iter;
-
-/* ... Create and initialize mylist. */
-
-if (pdf_list_iterator (mylist, &iter) != PDF_OK)
-@{
-   /* Error creating the iterator.  */
-@}
-
-/* Work with the iterator.  */
-
-/* Destroy the iterator.  */
-pdf_list_iterator_free (iter);
-@end example
-@end table
-@end deftypefun
-
 
 @node Hash Tables
 @section Hash Tables
@@ -3676,12 +3750,12 @@ pdf_list_iterator_free (iter);
 @menu
 * Hash Table Types::
 * Creating and Destroying Hash Tables::
-* Hash Table properties::
-* Adding and removing elements::
-* Working with keys::
-* Searching elements::
-* Working with iterators::
-* Hash helper functions::
+* Hash Table Properties::
+* Adding and Removing Elements::
+* Working with Keys::
+* Searching Elements::
+* Iterating Hash Tables::
+* Helper Functions::
 @end menu
 
 @node Hash Table Types
@@ -3762,8 +3836,8 @@ if (hash)
 @end table
 @end deftypefun
 
-@node Hash Table properties
-@subsection Hash Table properties
+@node Hash Table Properties
+@subsection Hash Table Properties
 
 @deftypefun pdf_size_t pdf_hash_size (const pdf_hash_t @var{*table})
 
@@ -3803,8 +3877,8 @@ if (hash != NULL)
 @end table
 @end deftypefun
 
-@node Adding and removing elements
-@subsection Adding and removing elements
+@node Adding and Removing Elements
+@subsection Adding and Removing Elements
 
 @deftypefun pdf_bool_t pdf_hash_add (pdf_hash_t @var{*table}, const pdf_char_t @var{*key}, const void @var{*value}, pdf_hash_value_dispose_fn_t @var{value_disp_fn}, pdf_error_t @var{**error}))
 
@@ -3891,8 +3965,8 @@ if (hash != NULL)
 @end table
 @end deftypefun
 
-@node Working with keys
-@subsection Working with keys
+@node Working with Keys
+@subsection Working with Keys
 
 @deftypefun pdf_bool_t pdf_hash_key_p (const pdf_hash_t @var{*table}, const pdf_char_t *@var{key})
 
@@ -3985,10 +4059,10 @@ if ((hash != NULL) &&
 @end table
 @end deftypefun
 
-@node Searching elements
-@subsection Searching elements
+@node Searching Elements
+@subsection Searching Elements
 
-@deftypefun const void *pdf_hash_get_value (const pdf_hash_t @var{*table}, const pdf_char_t @var{*key})
+@deftypefun {const void *}pdf_hash_get_value (const pdf_hash_t @var{*table}, const pdf_char_t @var{*key})
 
 Returns the value of the element associated with the given @var{key} in @var{table}.
 
@@ -4025,8 +4099,8 @@ if (hash != NULL)
 @end table
 @end deftypefun
 
-@node Working with iterators
-@subsection Working with iterators
+@node Iterating Hash Tables
+@subsection Iterating Hash Tables
 
 @deftypefun pdf_bool_t pdf_hash_iterator_init (pdf_hash_iterator_t @var{*itr}, const pdf_hash_t @var{*table})
 
@@ -4036,7 +4110,7 @@ Initializes the @var{itr} iterator over the keys of @var{table}. Keys are return
 @item Parameters
 @table @var
 @item itr
-A pointer to an iterator.
+The address of an iterator to get initialized.
 @item table
 A hash table.
 @end table
@@ -4079,7 +4153,7 @@ Retrieves the next key and value from @var{itr}.
 @item Parameters
 @table @var
 @item itr
-A Hash Table iterator pointer.
+A valid iterator.
 @item key
 A pointer where to save the key.
 @item value
@@ -4123,7 +4197,7 @@ if (hash != NULL)
 @end table
 @end deftypefun
 
-@deftypefun void pdf_hash_iterator_destroy (pdf_hash_iterator_t @var{*itr})
+@deftypefun void pdf_hash_iterator_deinit (pdf_hash_iterator_t @var{*itr})
 
 Free all resources used by @var{itr}.
 
@@ -4131,7 +4205,7 @@ Free all resources used by @var{itr}.
 @item Parameters
 @table @var
 @item itr
-A Hash Table iterator pointer.
+A valid iterator.
 @end table
 @item Usage example
 @example
@@ -4151,8 +4225,8 @@ if (hash)
 @end table
 @end deftypefun
 
-@node Hash helper functions
-@subsection Hash helper functions
+@node Helper Functions
+@subsection Helper Functions
 
 These are specific functions for adding and getting different types of
 elements (types defined by the library). They guarantee that when an
@@ -4162,9 +4236,10 @@ disposal function is called.
 NOTE: If you are going to use the element after the table containing
 the element is destroyed, in that case don't use these functions.
 
+
 @deftypefun pdf_bool_t pdf_hash_add_text (pdf_hash_t @var{*table}, const pdf_char_t @var{*key}, const pdf_text_t @var{value}, pdf_error_t @var{**error})
 
-Adds the @var{value} text with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done.
+Adds the @var{value} text with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The text will be owned by the hash table, and disposed when the hash table is destroyed.
 
 @table @strong
 @item Parameters
@@ -4303,7 +4378,7 @@ time = pdf_hash_get_time (table, "a-key");
 
 @deftypefun pdf_bool_t pdf_hash_add_list (pdf_hash_t @var{*table}, const pdf_char_t @var{*key}, const pdf_list_t @var{*value}, pdf_error_t @var{**error})
 
-Adds the @var{value} list with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done.
+Adds the @var{value} list with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The list will be owned by the hash table, and disposed when the hash table is destroyed.
 
 @table @strong
 @item Parameters
@@ -4372,7 +4447,7 @@ list = pdf_hash_get_list (table, "a-key");
 
 @deftypefun pdf_bool_t pdf_hash_add_hash (pdf_hash_t @var{*table}, const pdf_char_t @var{*key}, const pdf_hash_t @var{*value}, pdf_error_t @var{**error})
 
-Adds the @var{value} hash with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done.
+Adds the @var{value} hash with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The added hash table will be owned by the parent hash table, and disposed when the parent hash table is destroyed.
 
 @table @strong
 @item Parameters
@@ -4441,7 +4516,7 @@ hash = pdf_hash_get_hash (table, "a-key");
 
 @deftypefun pdf_bool_t pdf_hash_add_stm (pdf_hash_t @var{*table}, const pdf_char_t @var{*key}, const pdf_stm_t @var{value}, pdf_error_t @var{**error})
 
-Adds the @var{value} stream with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done.
+Adds the @var{value} stream with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The stream will be owned by the hash table, and disposed when the hash table is destroyed.
 
 @table @strong
 @item Parameters
@@ -4586,10 +4661,9 @@ size = pdf_hash_get_size (table, "a-key");
 @end deftypefun
 
 
-
 @deftypefun pdf_bool_t pdf_hash_add_string (pdf_hash_t @var{*table}, const pdf_char_t @var{*key}, const pdf_char_t @var{*value}, pdf_error_t @var{**error})
 
-Adds the @var{value} stream with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done.
+Adds the heap-allocated @var{value} string with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The string will be owned by the hash table, and disposed when the hash table is destroyed.
 
 @table @strong
 @item Parameters
@@ -4599,7 +4673,7 @@ A hash table.
 @item key
 A valid NUL-terminated string key.
 @item value
-A valid NUL-terminated string value.
+A valid NUL-terminated heap-allocated string value.
 @item error
 A pdf_error_t to report errors or NULL.
 @end table
@@ -4614,15 +4688,13 @@ pdf_error_t *error = NULL;
 hash = pdf_hash_new (NULL);
 if (hash != NULL)
    @{
-      if (pdf_hash_add_size (hash, "a-key", "a-value", &error))
+      if (pdf_hash_add_string (hash, "a-key", strdup ("a-value"), &error))
          @{
             pdf_error_destroy (error);
          @}
 
       /* Destroy the hash */
       pdf_hash_destroy (hash);
-      /* Destroy the memory buffer */
-      pdf_dealloc (buf);
    @}
 @end example
 @end table
@@ -4630,7 +4702,7 @@ if (hash != NULL)
 
 @deftypefun {const pdf_char_t *}pdf_hash_get_string (pdf_hash_t @var{*table}, const pdf_char_t *@var{key})
 
-Get a string variable from a hash table.
+Get a string variable from a hash table. Output string is not duplicated.
 
 @table @strong
 @item Parameters
@@ -4644,7 +4716,7 @@ A valid NUL-terminated string key.
 The string associated with @var{key}.
 @item Usage example
 @example
-pdf_char_t *str;
+const pdf_char_t *str;
 
 /* ... insert a string variable into the hash ... */
 
