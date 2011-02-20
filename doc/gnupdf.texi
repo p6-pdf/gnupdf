@@ -2254,16 +2254,17 @@ if (pdf_uuid_equal_p (uuid1, uuid2))
 @node Lists
 @section Lists
 
-This section describes how to work with unsorted and sorted lists. In case you're going to work with a sorted list, you should use the sorted version of each function if it's available. @xref{Working with sorted lists}.
+This section describes how to work with unsorted and sorted lists.
 
 @menu
 * List Data Types::
 * Creating and Destroying Lists::
 * Managing List Properties::
-* Searching for List Elements::
-* Setting and Getting List Elements::
-* Adding and Removing List Elements::
-* Working with sorted lists::
+* Adding and Removing List Nodes in Unsorted Lists::
+* Adding and Removing List Nodes in Sorted Lists::
+* Setting and Getting Values from List Nodes::
+* Searching List Elements::
+* Working with Sorted Lists::
 * Working with Iterators::
 @end menu
 
@@ -2275,27 +2276,26 @@ A list composed by zero or more nodes.
 @end deftp
 
 @deftp {Data Type} pdf_list_node_t
-A list node. Each node is able to contain a data structure via a void
-npointer.
+A list node. Each node is able to contain a single value.
 @end deftp
 
 @deftp {Data Type} pdf_list_iterator_t
 A list iterator.
 @end deftp
 
-@deftp {Data Type} pdf_bool_t (*pdf_list_element_equals_fn_t) (const void *elt1, const void *elt2)
+@deftp {Data Type} {pdf_bool_t (*pdf_list_element_equals_fn_t) (const void *elt1, const void *elt2)}
 A function type for comparing list elements equality. Should return PDF_TRUE in case they are equal and PDF_FALSE otherwise.
 @end deftp
 
-@deftp {Data Type} void (*pdf_list_element_dispose_fn_t) (const void *elt)
+@deftp {Data Type} {void (*pdf_list_element_dispose_fn_t) (const void *elt)}
 A function type for disposing list elements.
 @end deftp
 
-@deftp {Data Type} int (*pdf_list_element_compar_fn_t) (const void *elt1, const void *elt2)
+@deftp {Data Type} {int (*pdf_list_element_compar_fn_t) (const void *elt1, const void *elt2)}
 A function type for comparing list elements. Should return an integer less than, equal to, or greater than zero corresponding to whether the first element is considered less than, equal to, or greater than the second element.
 @end deftp
 
-@deftp {Data Type} pdf_size_t (*pdf_list_element_hashcode_fn_t) (const void *elt)
+@deftp {Data Type} {pdf_size_t (*pdf_list_element_hashcode_fn_t) (const void *elt)}
 A function type for calculating a Hash code given a list element. Should return the corresponding hash code.
 @end deftp
 
@@ -2303,7 +2303,7 @@ A function type for calculating a Hash code given a list element. Should return 
 @node Creating and Destroying Lists
 @subsection Creating and Destroying Lists
 
-@deftypefun pdf_status_t pdf_list_new (pdf_list_element_equals_fn_t @var{equals_fn}, pdf_list_element_dispose_fn_t @var{dispose_fn}, const pdf_bool_t @var{allow_duplicates}, pdf_list_t @var{*list})
+@deftypefun {pdf_list_t *}pdf_list_new (pdf_list_element_equals_fn_t @var{equals_fn}, pdf_list_element_dispose_fn_t @var{dispose_fn}, const pdf_bool_t @var{allow_duplicates}, pdf_error_t @var{**error})
 
 Create a new list containing no elements.
 
@@ -2320,34 +2320,34 @@ It is used when destroying list elements.
 This parameter indicate if the list is allowed to contain duplicate
 elements (elements for which @var{equals_fn} evaluate to
 @code{PDF_TRUE}).
-@item list
-A pointer to a list where the new one will be saved.
-@end table
-@item Returns
-A status variable:
+@item error
+A pdf_error_t to report errors or NULL.
 @table @code
-@item PDF_OK
-@var{list} contains a new empty list.
-@item PDF_EBADDATA
-@var{list} points to NULL.
 @item PDF_ENOMEM
 Not enough memory to create the list.
 @end table
+@end table
+@item Returns
+A newly allocated list.
 @item Usage example
 @example
-pdf_list_t mylist;
+pdf_list_t *mylist;
+pdf_error_t *error = NULL;
 
-if (pdf_list_new (list_element_equal_p, list_element_destroy,
-                  PDF_FALSE,
-                  &mylist) != PDF_OK)
+mylist = pdf_list_new (list_element_equal_p,
+                       list_element_destroy,
+                       PDF_FALSE,
+                       &error);
+if (list == NULL)
   @{
     /* manage the error... */
+    pdf_error_destroy (error);
   @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_destroy (pdf_list_t @var{list})
+@deftypefun void pdf_list_destroy (pdf_list_t @var{*list})
 
 Destroy a list freeing all used resources.
 The elements of the list are disposed first.
@@ -2358,19 +2358,13 @@ The elements of the list are disposed first.
 @item list
 The list to be destroyed.
 @end table
-@item Returns
-A pdf status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
-@end table
 @item Usage example
 @example
-pdf_list_t mylist;
+pdf_list_t *mylist;
 
-/* ...create `mylist'... */
-
-pdf_list_destroy (mylist);
+mylist = pdf_list_new (NULL, NULL, PDF_TRUE, NULL);
+if (mylist)
+  pdf_list_destroy (mylist);
 @end example
 @end table
 @end deftypefun
@@ -2378,7 +2372,7 @@ pdf_list_destroy (mylist);
 @node Managing List Properties
 @subsection Managing List Properties
 
-@deftypefun pdf_size_t pdf_list_size (const pdf_list_t @var{list})
+@deftypefun pdf_size_t pdf_list_size (const pdf_list_t @var{*list})
 
 Get the number of elements contained into a given list.
 
@@ -2392,305 +2386,22 @@ A list.
 The number of elements inside @var{list}.
 @item Usage example
 @example
-pdf_list_t mylist;
+pdf_list_t *mylist;
 pdf_size_t num_elm;
 
 /* ...insert some elements into `mylist'... */
+
 num_elm = pdf_list_size (mylist);
 @end example
 @end table
 @end deftypefun
 
-@node Searching for List Elements
-@subsection Searching for List Elements
+@node Adding and Removing List Nodes in Unsorted Lists
+@subsection Adding and Removing List Nodes in Unsorted Lists
 
-@deftypefun pdf_status_t pdf_list_search (const pdf_list_t @var{list}, const void* @var{element}, pdf_list_node_t @var{*node})
+@deftypefun {pdf_list_node_t *}pdf_list_add_first (pdf_list_t @var{*list}, const void @var{*element}, pdf_error_t @var{**error})
 
-Search whether an element is already in the list.
-
-@table @strong
-@item Parameters
-@table @var
-@item list
-A list.
-@item element
-The element to search for.
-@item node
-The searched node if it was found.
-@end table
-@item Returns
-A pdf status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
-@item PDF_ENONODE
-@var{element} not found.
-@item PDF_EBADDATA
-Invalid @var{node} pointer.
-@end table
-@item Usage example
-@example
-pdf_list_t list;
-pdf_list_node_t node;
-int elem;
-
-/* Create the list */
-if (pdf_list_new (list_element_equal_p,
-                  list_element_destroy,
-                  PDF_FALSE,  /* Allow duplicates */
-                  &list) == PDF_OK)
-   @{
-      /* Insert an element into the list */
-      pdf_list_add_first (list, (void *) &elem, NULL);
-
-      /* Search for that element into the list */
-      if (pdf_list_search (list, (void *) &elem, &node)
-          == PDF_OK)
-         @{
-            /* The program should reach this place */
-         @}
-   @}
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_list_search_from (const pdf_list_t @var{list}, const pdf_size_t @var{start_index}, const void* @var{element}, pdf_list_node_t @var{*node})
-
-Search whether an element is already in the list, at a position >= @var{start_index}.
-
-@table @strong
-@item Parameters
-@table @var
-@item list
-A list.
-@item start_index
-Index indicating the begin of the search.
-@item node
-The searched node if it was found.
-@end table
-@item Returns
-A pdf status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
-@item PDF_ENONODE
-@var{element} not found.
-@item PDF_EBADDATA
-Invalid @var{node} pointer.
-@item PDF_EINVRANGE
-@var{start_index} is greater than the list size or less than 0.
-@end table
-@item Usage example
-@example
-pdf_list_t list;
-pdf_list_node_t node;
-int elem1;
-int elem2;
-int elem3;
-
-if (pdf_list_new (list_element_equal_p,
-                  list_element_destroy,
-                  PDF_FALSE,  /* Allow duplicates */
-                  &list) == PDF_OK)
-   @{
-      /* Insert several elements into the list */
-      pdf_list_add_last (list, (void *) &elem1, NULL);
-      pdf_list_add_last (list, (void *) &elem2, NULL);
-      pdf_list_add_last (list, (void *) &elem3, NULL);
-
-
-      /* Search for an element into the list */
-      if (pdf_list_search_from (list,
-                                (void *) &elem1,
-                                1,
-                                &node) == PDF_OK)
-         @{
-            /* The program should never reach this place,
-               since elem1 occupies the first position (0)
-               in the list */
-         @}
-   @}
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_list_search_from_to (const pdf_list_t @var{list}, const pdf_size_t @var{start_index}, const pdf_size_t @var{end_index}, const void* @var{element}, pdf_list_node_t @var{*node})
-
-Search whether an element is already in the list, at a position >=
-@var{start_index} and < @var{end_index}.
-
-@table @strong
-@item Parameters
-@table @var
-@item list
-A list.
-@item start_index
-Index to the first list position to be searched.
-@item end_index
-Index to the last list position to be searched.
-@item element
-The element to search for.
-@item node
-The seached node if it was found.
-@end table
-@item Returns
-A pdf status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
-@item PDF_ENONODE
-@var{element} not found.
-@item PDF_EBADDATA
-Invalid @var{node} pointer.
-@item PDF_EINVRANGE
-@var{start_index} or @var{end_index} is greater than the list size or less than 0.
-@end table
-@item Usage example
-@example
-pdf_list_t list;
-pdf_list_node_t node;
-int elem1;
-int elem2;
-int elem3;
-int elem4;
-
-if (pdf_list_new (list_element_equal_p,
-                  list_element_destroy,
-                  PDF_FALSE,  /* Allow duplicates */
-                  &list) == PDF_OK)
-   @{
-      /* Insert several elements into the list */
-      pdf_list_add_last (list, (void *) &elem1, NULL);
-      pdf_list_add_last (list, (void *) &elem2, NULL);
-      pdf_list_add_last (list, (void *) &elem3, NULL);
-      pdf_list_add_last (list, (void *) &elem4, NULL);
-
-      /* Search for an element into the list */
-      if (pdf_list_search_from_to (list,
-                                   (void *) &elem4,
-                                   1, 3,
-                                   &node) == PDF_OK)
-         @{
-            /* The program should never reach this place,
-               since elem4 occupies the last position (3)
-               in the list */
-         @}
-   @}
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_list_next_node (const pdf_list_t @var{list}, const pdf_list_node_t @var{node}, pdf_list_node_t @var{*next})
-
-Return the node immediately after the given node in the list.
-
-@table @strong
-@item Parameters
-@table @var
-@item list
-A list.
-@item node
-A node contained in @var{list}.
-@item prev
-A pointer where the next node will be saved.
-@end table
-@item Returns
-A pdf status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
-@item PDF_ENONODE
-Next node not found.
-@item PDF_EBADDATA
-Invalid @var{next} pointer.
-@end table
-@item Usage example
-@example
-pdf_list_t list;
-pdf_list_node_t node_first;
-pdf_list_node_t node_second;
-int elem1;
-int elem2;
-
-if (pdf_list_new (list_element_equal_p,
-                  list_element_destroy,
-                  PDF_FALSE,  /* Allow duplicates */
-                  &list) == PDF_OK)
-   @{
-      /* Insert several elements into the list */
-      pdf_list_add_last (list, (void *) &elem1, NULL);
-      pdf_list_add_last (list, (void *) &elem2, NULL);
-
-      /* Get the node containing "elem1" */
-      pdf_list_search (list, (void *) &elem1,
-                       &node_first);
-
-      /* Get the next node in the list */
-      pdf_list_next_node (list, first_node,
-                          &node_second);
-
-      /* Now node_second is the node containing elem2 */
-   @}
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_list_previous_node (const pdf_list_t @var{list}, const pdf_list_node_t @var{node}, pdf_list_node_t @var{*prev})
-
-Return the node immediately before the given node in the list.
-
-@table @strong
-@item Parameters
-@table @var
-@item list
-A list.
-@item node
-A node contained in @var{list}.
-@item prev
-A pointer where the previous node will be saved.
-@end table
-@item Returns
-A pdf status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
-@item PDF_ENONODE
-Previous node not found.
-@item PDF_EBADDATA
-Invalid @var{prev} pointer.
-@end table
-@item Usage example
-@example
-pdf_list_t list;
-pdf_list_node_t node_first;
-pdf_list_node_t node_second;
-int elem1;
-int elem2;
-
-if (pdf_list_new (list_element_equal_p,
-                  list_element_destroy,
-                  PDF_FALSE,  /* Allow duplicates */
-                  &list) == PDF_OK)
-   @{
-      /* Insert several elements into the list */
-      pdf_list_add_last (list, (void *) &elem1, NULL);
-      pdf_list_add_last (list, (void *) &elem2, NULL);
-
-      /* Get the node containing "elem2" */
-      pdf_list_search (list, (void *) &elem2, &node_second);
-
-      /* Get the previous node in the list */
-      pdf_list_previous_node (list, second_node, &node_first);
-
-      /* Now node_first is the node containing elem2 */
-   @}
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_list_indexof (const pdf_list_t @var{list}, const void* @var{element}, pdf_size_t @var{*position})
-
-Search whether an element is already in the list.
+Add an element as the first element of the list.
 
 @table @strong
 @item Parameters
@@ -2698,181 +2409,381 @@ Search whether an element is already in the list.
 @item list
 A list.
 @item element
-A pointer to user data.
+The value to be stored as a list element.
+@item error
+A pdf_error_t to report errors or NULL.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to perform the operation.
+@end table
+@end table
+@item Returns
+A valid pdf_list_node_t if the element was correctly added to the list, NULL otherwise.
+@item Usage example
+@example
+pdf_list_t *list;
+pdf_list_t *sublist;
+pdf_error_t *error = NULL;
+
+/* Create empty lists.  */
+list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
+sublist = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
+
+/* Set the sublist as the first element of the list.  */
+if (pdf_list_add_first (list, (void *) &sublist, &error) != NULL)
+  @{
+    /* Error adding the element to the list.  */
+    if (error)
+      pdf_error_destroy (error);
+  @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun {pdf_list_node_t *}pdf_list_add_last (pdf_list_t @var{*list}, const void @var{*element}, pdf_error_t @var{**error})
+
+Add an element as the last element of the list.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item element
+The value to be stored as a list element.
+@item error
+A pdf_error_t to report errors or NULL.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to perform the operation.
+@end table
+@end table
+@item Usage example
+@example
+pdf_list_t *list;
+my_t *my_var;
+pdf_error_t *error = NULL;
+
+/* Append my_var to 'list'.  */
+if (pdf_list_add_last (list, (void *) my_var, &error) != NULL)
+  @{
+    /* Error appending the element to the list.  */
+    if (error)
+      pdf_error_destroy (error);
+  @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun {pdf_list_node_t *}pdf_list_add_at (pdf_list_t @var{*list}, const pdf_size_t @var{position}, const void @var{*element}, pdf_error_t @var{**error})
+
+Add an element at a given position in the list, shifting one position all next elements.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
 @item position
-A pointer where the element position will be saved.
-@end table
-@item Returns
-A pdf status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
-@item PDF_ENONODE
-@var{element} not found.
-@item PDF_EBADDATA
-Invalid or NULL pointers.
-@end table
-@item Usage Example
-@example
-pdf_list_t list;
-pdf_list_node_t node_first;
-pdf_list_node_t node_second;
-int elem1;
-int elem2;
-pdf_size_t index_of_elem2;
-
-if (pdf_list_new (list_element_equal_p,
-                  list_element_destroy,
-                  PDF_FALSE,  /* Allow duplicates */
-                  &list) == PDF_OK)
-   @{
-      /* Insert several elements into the list */
-      pdf_list_add_last (list, (void *) &elem1, NULL);
-      pdf_list_add_last (list, (void *) &elem2, NULL);
-
-      /* Get the index of elem2 */
-      pdf_list_indexof (list, (void *) &elem2, &size_of_elem2);
-
-      /* Now size_of_elem2 contains 1 */
-   @}
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_list_indexof_from (const pdf_list_t @var{list}, const pdf_size_t @var{start_index}, const void* @var{element}, pdf_size_t @var{*position})
-
-Search whether an element is already in the list, at a position >= @var{start_index}.
-
-@table @strong
-@item Parameters
-@table @var
-@item list
-A list.
-@item start_index
-An index to a position in @var{list}.
+A position in the list.
+Should be @code{>= 0} and @code{<= pdf_list_size (list)}.
 @item element
-The element to search for.
-@item position
-A pointer where the element position will be saved.
+The value to be stored as a list element.
+@item error
+A pdf_error_t to report errors or NULL.
+@table @code
+@item PDF_EINVRANGE
+Invalid range of given @var{position}.
+@item PDF_ENOMEM
+Not enough memory to perform the operation.
+@end table
 @end table
 @item Returns
-A pdf status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
-@item PDF_ENONODE
-@var{element} not found.
-@item PDF_EBADDATA
-Invalid or NULL pointers.
-@item PDF_EINVRANGE
-@var{start_index} or @var{end_index} is greater than the list size or less than 0.
-@end table
+A valid pdf_list_node_t if the element was correctly added to the list, NULL otherwise.
 @item Usage example
 @example
-pdf_list_t list;
-pdf_list_node_t node_first;
-pdf_list_node_t node_second;
-int elem1;
-int elem2;
-int elem3;
-int elem4;
-pdf_size_t index_of_elem1;
+pdf_list_t *list;
+pdf_error_t *error = NULL;
+int a = 1, b = 2, c = 3;
 
-if (pdf_list_new (list_element_equal_p,
-                  list_element_destroy,
-                  PDF_FALSE,  /* Allow duplicates */
-                  &list) == PDF_OK)
-   @{
-      /* Insert several elements into the list */
-      pdf_list_add_last (list, (void *) &elem1, NULL);
-      pdf_list_add_last (list, (void *) &elem2, NULL);
-      pdf_list_add_last (list, (void *) &elem3, NULL);
-      pdf_list_add_last (list, (void *) &elem4, NULL);
+/* Create the list and add some elements to it...  */
+list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
 
-      /* Get the index of elem1 */
-      if (pdf_list_indexof_from (list,
-                                 1,
-                                 (void *) &elem1,
-                                 &size_of_elem1) == PDF_ENONODE)
-         @{
-            /* The program reaches this point, since elem1 occupies
-               the first position into the list */
-         @}
-   @}
+if (pdf_list_add_at (list, 0, (void *) &a, &error) == NULL || /* (a) */
+    pdf_list_add_at (list, 1, (void *) &c, &error) == NULL || /* (a c) */
+    pdf_list_add_at (list, 1, (void *) &b, &error) == NULL)   /* (a b c) */
+  @{
+    /* Error adding the element to the list.  */
+    if (error)
+      pdf_error_destroy (error);
+  @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_indexof_from_to (const pdf_list_t @var{list}, const pdf_size_t @var{start_index}, const pdf_size_t @var{end_index}, const void* @var{element}, pdf_size_t @var{*position})
 
-Search whether an element is already in the list, at a position >= @var{start_index} and < @var{end_index}.
+@deftypefun pdf_bool_t pdf_list_remove_node (pdf_list_t @var{*list}, const pdf_list_node_t @var{*node})
+
+Remove a node from the list.
 
 @table @strong
 @item Parameters
 @table @var
 @item list
 A list.
-@item start_index
+@item node
+The node to be removed.
+@end table
+@item Returns
+PDF_TRUE if the node was correctly removed, PDF_FALSE otherwise.
+@item Usage example
+@example
+pdf_list_t *list;
+pdf_list_node_t *node;
+int elem1 = 1;
+int elem2 = 2;
+int elem3 = 3;
+
+list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
+if (list != NULL)
+ @{
+   /* Add some elements to the list.  */
+   pdf_list_add_last (list, (void *) &elem1, NULL);
+   pdf_list_add_last (list, (void *) &elem2, NULL);
+   pdf_list_add_last (list, (void *) &elem3, NULL);
+
+   /* Remove the element containing 'elem2' from 'list'.  */
+   node = pdf_list_search (list, (void *) &elem2);
+   if (pdf_list_remove_node (list, node) != PDF_TRUE)
+     @{
+       /* Error removing the node from the list.  */
+     @}
+ @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_list_remove_at (pdf_list_t @var{*list}, const pdf_size_t @var{position}, pdf_error_t @var{**error})
+
+Remove the node at a given position from the list.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item position
 A position in @var{list}.
-@item end_index
-A position in @var{list}.
-@item element
-A pointer to some user data.
-@item position
-A pointer where the element position will be saved.
+Must be @code{>= 0} and @code{< pdf_list_size (list)}.
+@item error
+A pdf_error_t to report errors or NULL.
+@table @code
+@item PDF_EINVRANGE
+Invalid @var{position} range.
+@end table
 @end table
 @item Returns
-A pdf status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
-@item PDF_ENONODE
-@var{element} not found.
-@item PDF_EBADDATA
-Invalid or NULL pointers.
-@item PDF_EINVRANGE
-@var{start_index} or @var{end_index} is greater than the list size or less than 0.
-@end table
+PDF_TRUE if the node was correctly removed, PDF_FALSE otherwise.
 @item Usage example
 @example
-pdf_list_t list;
-pdf_list_node_t node_first;
-pdf_list_node_t node_second;
-int elem1;
-int elem2;
-int elem3;
-int elem4;
-pdf_size_t index_of_elem4;
+pdf_error_t *error = NULL;
+pdf_list_t *list;
+int elem1 = 1;
+int elem2 = 2;
+int elem3 = 3;
 
-if (pdf_list_new (list_element_equal_p,
-                  list_element_destroy,
-                  PDF_FALSE,  /* Allow duplicates */
-                  &list) == PDF_OK)
-   @{
-      /* Insert several elements into the list */
-      pdf_list_add_last (list, (void *) &elem1, NULL);
-      pdf_list_add_last (list, (void *) &elem2, NULL);
-      pdf_list_add_last (list, (void *) &elem3, NULL);
-      pdf_list_add_last (list, (void *) &elem4, NULL);
+list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
+if (list != NULL)
+  @{
+    /* Add some elements to the list.  */
+    pdf_list_add_last (list, (void *) &elem1, NULL);
+    pdf_list_add_last (list, (void *) &elem2, NULL);
+    pdf_list_add_last (list, (void *) &elem3, NULL);
 
-      /* Get the index of elem4 */
-      if (pdf_list_indexof_from_to (list,
-                                    1, 3,
-                                    (void *) &elem1,
-                                    &size_of_elem4) == PDF_ENONODE)
-         @{
-            /* The program reaches this point, since elem4 occupies
-               the last position (3) into the list */
-         @}
-   @}
+    /* Remove the element containing 'elem2' from 'list'.  */
+    if (pdf_list_remove_at (list, 1, &error) != PDF_TRUE)
+    @{
+      /* Error removing the node from the list.  */
+    @}
+  @}
 @end example
 @end table
 @end deftypefun
 
-@node Setting and Getting List Elements
-@subsection Setting and Getting List Elements
+@deftypefun pdf_bool_t pdf_list_remove (pdf_list_t @var{*list}, const void @var{**element})
 
-@deftypefun {void *} pdf_list_node_value (const pdf_list_t @var{list}, const pdf_list_node_t @var{node})
+Search a node given its value, and remove it from the list.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item element
+The value of the node to be removed.
+@end table
+@item Returns
+PDF_TRUE if the node was correctly removed, PDF_FALSE otherwise.
+@item Usage example
+@example
+pdf_list_t *list;
+int elem1 = 1;
+int elem2 = 2;
+int elem3 = 3;
+
+list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
+if (list != NULL)
+@{
+  /* Add some elements to the list.  */
+  pdf_list_add_last (list, (void *) &elem1, NULL);
+  pdf_list_add_last (list, (void *) &elem2, NULL);
+  pdf_list_add_last (list, (void *) &elem3, NULL);
+
+  /* Remove the element containing 'elem2' from 'list'.  */
+  if (pdf_list_remove (list, (void *) &elem2) != PDF_TRUE)
+  @{
+    /* Error removing the node from the list.  */
+  @}
+@}
+@end example
+@end table
+@end deftypefun
+
+@node Adding and Removing List Nodes in Sorted Lists
+@subsection Adding and Removing List Nodes in Sorted Lists
+
+@deftypefun {pdf_list_node_t *}pdf_list_sorted_add (pdf_list_t @var{*list}, pdf_list_element_compar_fn_t @var{compar_fn}, const void @var{*element}, pdf_error_t @var{**error})
+
+Add an element to the sorted list.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item compar_fn
+A comparison function.
+@item element
+The value to be stored as a list element.
+@item element_node
+A pointer where the added element node will be saved. Can be NULL.
+@item error
+A pdf_error_t to report errors or NULL.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to perform the operation.
+@end table
+@end table
+@item Returns
+A valid pdf_list_node_t if the element was correctly added to the list, NULL otherwise.
+@item Usage example
+@example
+int
+element_compare_fn (const void *elt1, const void *elt2)
+@{
+  return *((int *)elt1) - *((int *)elt2);
+@}
+
+int main (int argc, char **argv)
+@{
+  pdf_list_t *list;
+  pdf_error_t *error = NULL;
+  int a = 1;
+  int b = 2;
+  int c = 3;
+
+  /* Create the list and add some elements to it...  */
+  list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
+
+  if (pdf_list_sorted_add (list,
+                           element_compare_fn,
+                           (void *) &b,
+                           &error) == NULL || /* (b) */
+      pdf_list_sorted_add (list,
+                           element_compare_fn,
+                           (void *) &a,
+                           &error) == NULL || /* (a b) */
+      pdf_list_sorted_add (list,
+                           element_compare_fn,
+                           (void *) &c,
+                           &error) == NULL)   /* (a b c) */
+  @{
+    /* Error adding the element to the list.  */
+    if (error)
+      pdf_error_destroy (error);
+  @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_list_sorted_remove (pdf_list_t @var{*list}, pdf_list_element_compar_fn_t @var{compar_fn}, const void @var{*element})
+
+Search a node given its value, and remove it from the list.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item compar_fn
+A comparison function.
+@item element
+The value of the node to be removed.
+@end table
+@item Returns
+PDF_TRUE if the node was correctly removed, PDF_FALSE otherwise.
+@item Usage example
+@example
+int
+element_compare_fn (const void *elt1, const void *elt2)
+@{
+  return *((int *)elt1) - *((int *)elt2);
+@}
+
+int main (int argc, char **argv)
+@{
+  pdf_list_t *list;
+  pdf_error_t *error = NULL;
+  int a = 1;
+  int b = 2;
+  int c = 3;
+
+  /* Create the list and add some elements to it...  */
+  list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
+
+  if (pdf_list_sorted_add (list,
+                           element_compare_fn,
+                           (void *) &b,
+                           &error) == NULL || /* (b) */
+      pdf_list_sorted_add (list,
+                           element_compare_fn,
+                           (void *) &a,
+                           &error) == NULL || /* (a b) */
+      pdf_list_sorted_add (list,
+                           element_compare_fn,
+                           (void *) &c,
+                           &error) == NULL)   /* (a b c) */
+  @{
+    /* Error adding the element to the list.  */
+    if (error)
+      pdf_error_destroy (error);
+  @}
+
+  if (pdf_list_sorted_remove (list,
+                              element_compare_fn,
+                              (void *)&b) != PDF_TRUE)
+  @{
+    /* Error removing the element to the list.  */
+  @}
+
+@end example
+@end table
+@end deftypefun
+
+@node Setting and Getting Values from List Nodes
+@subsection Setting and Getting Values from List Nodes
+
+@deftypefun {void *} pdf_list_node_value (const pdf_list_t @var{*list}, const pdf_list_node_t @var{*node})
 
 Get the element value represented by a list node.
 
@@ -2888,21 +2799,23 @@ A node of @var{list}.
 The element value represented by @var{node}.
 @item Usage example
 @example
-pdf_list_t list;
-pdf_list_node_t node;
-int elem1;
+pdf_list_t *list;
+int elem1 = 1;
 int *pointer_to_elem1;
 
-if (pdf_list_new (list_element_equal_p,
-                  list_element_destroy,
-                  PDF_FALSE,  /* Allow duplicates */
-                  &list) == PDF_OK)
+list = pdf_list_new (list_element_equal_p,
+                     list_element_destroy,
+                     PDF_FALSE,  /* Allow duplicates */
+                     NULL);
+if (list != NULL)
    @{
+      pdf_list_node_t *node;
+
       /* Insert an element into the list */
       pdf_list_add_last (list, (void *) &elem1, NULL);
 
       /* Get the node of the element of the list */
-      pdf_list_search (list, (void *) &elem1, &node);
+      node = pdf_list_search (list, (void *) &elem1);
 
       /* Get the value out of the node */
       pointer_to_elem1 = (int *) pdf_list_node_value (list, node);
@@ -2911,9 +2824,9 @@ if (pdf_list_new (list_element_equal_p,
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_get_at (const pdf_list_t @var{list}, const pdf_size_t @var{position}, const void @var{**value})
+@deftypefun {const void *} pdf_list_get_at (const pdf_list_t @var{*list}, const pdf_size_t @var{position}, pdf_error_t @var{**error})
 
-Get the element at a given position in the list.
+Get the element value at a given position in the list.
 
 @table @strong
 @item Parameters
@@ -2921,43 +2834,41 @@ Get the element at a given position in the list.
 @item list
 A list.
 @item position
-A position in @var{list}.
+A valid position in @var{list}.
 Must be @code{>= 0} and @code{< pdf_list_size (list)}.
-@item value
-A pointer to which the element will be saved.
-@end table
-@item Returns
-A pdf status value:
+@item error
+A pdf_error_t to report errors or NULL.
 @table @code
-@item PDF_OK
-The operation succeeded.
 @item PDF_EINVRANGE
 Invalid @var{position}
-@item PDF_EBADDATA
-Invalid @var{value} pointer.
 @end table
+@end table
+@item Returns
+The element value at @var{position}
+
 @item Usage example
 @example
-pdf_list_t list;
-int elem1;
+pdf_list_t *list;
+int elem1 = 1;
 int *pointer_to_elem1;
 
-if (pdf_list_new (list_element_equal_p,
-                  list_element_destroy,
-                  PDF_FALSE,  /* Allow duplicates */
-                  &list) == PDF_OK)
+list = pdf_list_new (list_element_equal_p,
+                     list_element_destroy,
+                     PDF_FALSE,  /* Allow duplicates */
+                     NULL);
+if (list != NULL)
    @{
       /* Insert an element into the list */
       pdf_list_add_last (list, (void *) &elem1, NULL);
 
       /* Get the first element of the list */
-      pdf_list_get_at (list, 0, &pointer_to_elem_1);
+      pointer_to_elem_1 = pdf_list_get_at (list, 0);
    @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_set_at (pdf_list_t @var{list}, const pdf_size_t @var{position}, const void* @var{element}, pdf_list_node_t @var{*node})
+@deftypefun {pdf_list_node_t *}pdf_list_set_at (pdf_list_t @var{*list}, const pdf_size_t @var{position}, const void @var{*element}, pdf_error_t @var{**error})
 
 Replace the element at a given position in a list.
 
@@ -2970,36 +2881,33 @@ A list.
 A position in @var{list}.
 Must be @code{>= 0} and @code{< pdf_list_size (list)}.
 @item element
-The new element.
-@item node
-A pointer to save the node containing the replaced element or NULL.
-@end table
-@item Returns
-A pdf status value:
+The new element value.
+@item error
+A pdf_error_t to report errors or NULL.
 @table @code
-@item PDF_OK
-The operation succeeded.
 @item PDF_EINVRANGE
-Invalid @var{position} range.
-@item PDF_BADDATA
-The list does not allow duplicated values and already contain
+Invalid @var{position}.
 @var{element}.
 @item PDF_ENOMEM
 Not enough memory to perform the operation.
 @end table
+@end table
+@item Returns
+The pdf_list_node_t if correctly replaced or NULL otherwise.
 @item Usage example
 @example
-pdf_list_t list;
-pdf_u32_t a;
-pdf_u32_t b;
-pdf_u32_t c;
-pdf_u32_t x;
+pdf_list_t *list;
+pdf_u32_t a = 1;
+pdf_u32_t b = 2;
+pdf_u32_t c = 3;
+pdf_u32_t x = 100;
 
-/* Create a list of integers */
-if (pdf_list_new (NULL,
-                  NULL,
-                  PDF_FALSE, /* Allow duplicates */
-                  &list) == PDF_OK)
+/* Create a list of integer addresses */
+list = pdf_list_new (NULL,
+                     NULL,
+                     PDF_FALSE, /* Allow duplicates */
+                     NULL);
+if (list != NULL)
    @{
       /* Insert the elements into the list */
       pdf_list_add_last (list, (void *) &a, NULL);
@@ -3008,21 +2916,23 @@ if (pdf_list_new (NULL,
 
       /* Now the list contains abc */
 
-      pdf_list_set_at (list, 1, (void *) &x, NULL);
-
-      /* Now the list contains axc */
+      if (pdf_list_set_at (list, 1, (void *) &x, &error) == NULL)
+         @{
+            /* Handle error */
+            if (error)
+               pdf_error_destroy (error);
+         @}
    @}
 @end example
 @end table
 @end deftypefun
 
-@node Adding and Removing List Elements
-@subsection Adding and Removing List Elements
+@node Searching List Elements
+@subsection Searching List Elements
 
-@deftypefun pdf_status_t pdf_list_add_first (pdf_list_t @var{list}, const void* @var{element}, pdf_list_node_t *@var{node})
+@deftypefun {pdf_list_node_t *}pdf_list_search (const pdf_list_t @var{*list}, const void @var{*element})
 
-Add an element as the first element of the list. If @var{node} is not
-NULL then a reference to the newly created node is copied to it.
+Search whether an element is already in the list.
 
 @table @strong
 @item Parameters
@@ -3030,129 +2940,163 @@ NULL then a reference to the newly created node is copied to it.
 @item list
 A list.
 @item element
-A pointer to the user data to be stored as a list element.
-@item node
-If non NULL, a list node variable used to contain the added element.
+The element to search for.
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The element was inserted successfully.
-@item PDF_EBADDATA
-The list does not allow duplicated values and already contain
-@var{element}.
-@item PDF_ENOMEM
-Not enough memory to perform the operation.
-@end table
+A valid pdf_list_node_t if the element is found in the list, NULL otherwise.
 @item Usage example
 @example
-pdf_list_t list;
-pdf_list_t sublist;
+pdf_list_t *list;
+pdf_error_t *error = NULL;
+int elem = 34;
 
-/* Create empty lists.  */
-pdf_list_new (NULL, NULL, PDF_FALSE, &list);
-pdf_list_new (NULL, NULL, PDF_FALSE, &sublist);
+/* Create the list */
+list = pdf_list_new (list_element_equal_p,
+                     list_element_destroy,
+                     PDF_FALSE,  /* Allow duplicates */
+                     &error);
+if (list != NULL)
+   @{
+      pdf_list_node_t *node;
 
-/* Set the sublist as the first element of the list.  */
-if (pdf_list_add_first (list, (void *) &sublist, NULL)
-    != PDF_OK)
-@{
-   /* Error adding the element to the list.  */
-@}
+      /* Insert an element into the list */
+      pdf_list_add_first (list, (void *) &elem, NULL);
+
+      /* Search for that element into the list */
+      node = pdf_list_search (list, (void *) &elem);
+      if (node != NULL)
+         @{
+            /* The program should reach this place */
+         @}
+   @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_add_last (pdf_list_t @var{list}, const void* @var{element}, pdf_list_node_t *@var{node})
+@deftypefun {pdf_list_node_t *} pdf_list_search_from (const pdf_list_t @var{*list}, const pdf_size_t @var{start_index}, const void @var{*element}, pdf_error_t @var{**error})
 
-Add an element as the last element of the list. If @var{node} is not
-NULL then a reference to the newly created node is copied to it.
-
-@table @strong
-@item Parameters
-@table @var
-@item list
-A list.
-@item element
-A pointer to the user data to be stored as a list element.
-@item node
-If non NULL, a list node variable used to contain the added element.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The element was inserted successfully.
-@item PDF_EBADDATA
-The list does not allow duplicated values and already contain
-@var{element}.
-@item PDF_ENOMEM
-Not enough memory to perform the operation.
-@end table
-@item Usage example
-@example
-pdf_list_t list;
-my_t my_var;
-
-/* Append my_var to 'list'.  */
-if (pdf_list_add_last (list, (void *) &my_var, NULL)
-    != PDF_OK)
-@{
-   /* Error appending the element to the list.  */
-@}
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_list_add_at (pdf_list_t @var{list}, const pdf_size_t @var{position}, const void* @var{element}, pdf_list_node_t @var{*node})
-
-Add an element at a given position in the list.
+Search whether an element is already in the list, at a position >= @var{start_index}.
 
 @table @strong
 @item Parameters
 @table @var
 @item list
 A list.
-@item position
-A position in the list.
-Should be @code{>= 0} and @code{<= pdf_list_size (list)}.
-@item element
-A pointer to the user data to be stored as a list element.
-@item node
-A pointer to the node where the given element was stored or NULL.
-@end table
-@item Returns
-A pdf status value:
+@item start_index
+Index indicating the begin of the search.
+@item error
+A pdf_error_t to report errors or NULL.
 @table @code
-@item PDF_OK
-The operation succeeded.
 @item PDF_EINVRANGE
-Invalid range of given @var{position}.
-@item PDF_BADDATA
-The list does not allow duplicated values and already contain
-@var{element}.
-@item PDF_ENOMEM
-Not enough memory to perform the operation.
+@var{start_index} is greater than the list size.
 @end table
+@end table
+@item Returns
+A valid pdf_list_node_t if the element is found in the list, NULL otherwise.
 @item Usage example
 @example
-pdf_list_t list;
-int a, b, c;
+pdf_list_t *list;
+pdf_error_t *error = NULL;
+int elem1 = 1;
+int elem2 = 2;
+int elem3 = 3;
 
-/* Create the list and add some elements to it...  */
-pdf_list_new (NULL, NULL, PDF_FALSE, &list);
+list = pdf_list_new (list_element_equal_p,
+                     list_element_destroy,
+                     PDF_FALSE,  /* Allow duplicates */
+                     NULL);
+if (list != NULL)
+   @{
+      pdf_list_node_t *node;
 
-pdf_list_add_at (list, 0, (void *) &a); /* (a) */
-pdf_list_add_at (list, 1, (void *) &c); /* (a c) */
-pdf_list_add_at (list, 1, (void *) &b); /* (a b c) */
+      /* Insert several elements into the list */
+      pdf_list_add_last (list, (void *) &elem1, NULL);
+      pdf_list_add_last (list, (void *) &elem2, NULL);
+      pdf_list_add_last (list, (void *) &elem3, NULL);
+
+      /* Search for an element into the list */
+      node = pdf_list_search_from (list,
+                                   (void *) &elem1,
+                                   1,
+                                   &error);
+      if (node != NULL)
+         @{
+            /* The program should never reach this place,
+               since elem1 occupies the first position (0)
+               in the list */
+         @}
+   @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_remove_node (pdf_list_t @var{list}, const pdf_list_node_t @var{node})
+@deftypefun {pdf_list_node_t *}pdf_list_search_from_to (const pdf_list_t @var{*list}, const pdf_size_t @var{start_index}, const pdf_size_t @var{end_index}, const void @var{*element}, pdf_error_t @var{**error})
 
-Remove an element from the list.
+Search whether an element is already in the list, at a position >=
+@var{start_index} and < @var{end_index}.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item start_index
+Index to the first list position to be searched.
+@item end_index
+Index to the last list position to be searched.
+@item element
+The element to search for.
+@item error
+A pdf_error_t to report errors or NULL.
+@table @code
+@item PDF_EINVRANGE
+@var{start_index} and/or @var{end_index} are greater than the list size.
+@end table
+@end table
+@item Returns
+A valid pdf_list_node_t if the element is found in the list, NULL otherwise.
+@item Usage example
+@example
+pdf_list_t *list;
+pdf_error_t *error;
+int elem1 = 1;
+int elem2 = 2;
+int elem3 = 3;
+int elem4 = 4;
+
+list = pdf_list_new (list_element_equal_p,
+                     list_element_destroy,
+                     PDF_FALSE,  /* Allow duplicates */
+                     NULL);
+if (list != NULL)
+   @{
+      pdf_list_node_t *node;
+
+      /* Insert several elements into the list */
+      pdf_list_add_last (list, (void *) &elem1, NULL);
+      pdf_list_add_last (list, (void *) &elem2, NULL);
+      pdf_list_add_last (list, (void *) &elem3, NULL);
+      pdf_list_add_last (list, (void *) &elem4, NULL);
+
+      /* Search for an element into the list */
+      node = pdf_list_search_from_to (list,
+                                      (void *) &elem4,
+                                      1, 3,
+                                      &error);
+      if (node != NULL)
+         @{
+            /* The program should never reach this place,
+               since elem4 occupies the last position (3)
+               in the list */
+         @}
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun {pdf_list_node_t *}pdf_list_next_node (const pdf_list_t @var{*list}, const pdf_list_node_t @var{*node})
+
+Return the node immediately after the given node in the list, or NULL if it is the last one.
 
 @table @strong
 @item Parameters
@@ -3160,201 +3104,252 @@ Remove an element from the list.
 @item list
 A list.
 @item node
-The node to be removed.
+A node contained in @var{list}.
 @end table
 @item Returns
-A pdf status value:
-@table @code
-@item PDF_OK
-@end table
+A valid pdf_list_node_t or NULL if there are no more elements in the list.
 @item Usage example
 @example
-pdf_list_t list;
-pdf_list_node_t node;
-int elem1;
-int elem2;
-int elem3;
+pdf_list_t *list;
+pdf_list_node_t *node_first;
+pdf_list_node_t *node_second;
+int elem1 = 1;
+int elem2 = 2;
 
-if (pdf_list_new (NULL, NULL,
-                  PDF_FALSE, /* Allow duplicates.  */
-                  &list) == PDF_OK)
-@{
-   /* Add some elements to the list.  */
-   pdf_list_add_last (list, (void *) &elem1, NULL);
-   pdf_list_add_last (list, (void *) &elem2, NULL);
-   pdf_list_add_last (list, (void *) &elem3, NULL);
+list = pdf_list_new (list_element_equal_p,
+                     list_element_destroy,
+                     PDF_FALSE,  /* Allow duplicates */
+                     NULL);
+if (list != NULL)
+   @{
+      /* Insert several elements into the list */
+      pdf_list_add_last (list, (void *) &elem1, NULL);
+      pdf_list_add_last (list, (void *) &elem2, NULL);
 
-  /* Remove the element containing 'elem2' from 'list'.  */
-  pdf_list_search (list, (void *) &elem2, &node);
-  if (pdf_list_remove_node (list, node) != PDF_OK)
-  @{
-     /* Error removing the node from the list.  */
-  @}
-@}
+      /* Get the node containing "elem1" */
+      node_first = pdf_list_search (list, (void *) &elem1);
+
+      /* Get the next node in the list */
+      node_second = pdf_list_next_node (list, first_node);
+
+      /* Now node_second is the node containing elem2 */
+   @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_list_remove_at (pdf_list_t @var{list}, const pdf_size_t @var{position})
+@deftypefun {pdf_list_node_t *}pdf_list_previous_node (const pdf_list_t @var{*list}, const pdf_list_node_t @var{*node})
 
-Remove an element at a given position from the list.
+Return the node immediately before the given node in the list, or NULL if is the first one.
 
 @table @strong
 @item Parameters
 @table @var
 @item list
 A list.
-@item position
+@item node
+A node contained in @var{list}.
+@end table
+@item Returns
+A valid pdf_list_node_t or NULL if there are no more previous elements in the list.
+@item Usage example
+@example
+pdf_list_t *list;
+pdf_list_node_t *node_first;
+pdf_list_node_t *node_second;
+int elem1 = 1;
+int elem2 = 2;
+
+list = pdf_list_new (list_element_equal_p,
+                     list_element_destroy,
+                     PDF_FALSE,  /* Allow duplicates */
+                     NULL);
+if (list != NULL)
+   @{
+      /* Insert several elements into the list */
+      pdf_list_add_last (list, (void *) &elem1, NULL);
+      pdf_list_add_last (list, (void *) &elem2, NULL);
+
+      /* Get the node containing "elem2" */
+      node_second = pdf_list_search (list, (void *) &elem2);
+
+      /* Get the previous node in the list */
+      node_first = pdf_list_previous_node (list, second_node);
+
+      /* Now node_first is the node containing elem2 */
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_size_t pdf_list_indexof (const pdf_list_t @var{*list}, const void @var{*element})
+
+Search whether an element is already in the list, and return its position if found.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item element
+A pointer to user data.
+@end table
+@item Returns
+The element position if found, or (pdf_size_t)-1 otherwise.
+@item Usage Example
+@example
+pdf_list_t *list;
+pdf_list_node_t *node_first;
+pdf_list_node_t *node_second;
+int elem1 = 1;
+int elem2 = 2;
+pdf_size_t index_of_elem2;
+
+list = pdf_list_new (list_element_equal_p,
+                     list_element_destroy,
+                     PDF_FALSE,  /* Allow duplicates */
+                     NULL);
+if (list != NULL)
+   @{
+      /* Insert several elements into the list */
+      pdf_list_add_last (list, (void *) &elem1, NULL);
+      pdf_list_add_last (list, (void *) &elem2, NULL);
+
+      /* Get the index of elem2 */
+      index_of_elem2 = pdf_list_indexof (list, (void *) &elem2);
+
+      /* Now index_of_elem2 contains 1 */
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_size_t pdf_list_indexof_from (const pdf_list_t @var{*list}, const pdf_size_t @var{start_index}, const void @var{*element}, pdf_error_t @var{**error})
+
+Search whether an element is already in the list, at a position >= @var{start_index}.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item start_index
+An index to a position in @var{list}.
+@item element
+The element to search for.
+@item error
+A pdf_error_t to report errors or NULL.
+@table @code
+@item PDF_EINVRANGE
+@var{start_index} or @var{end_index} is greater than the list size.
+@end table
+@end table
+@item Returns
+The element position if found, or (pdf_size_t)-1 otherwise.
+@item Usage example
+@example
+pdf_list_t *list;
+pdf_list_node_t *node_first;
+pdf_list_node_t *node_second;
+int elem1 = 1;
+int elem2 = 2;
+int elem3 = 3;
+int elem4 = 4;
+pdf_size_t index_of_elem1;
+pdf_error_t *error = NULL;
+
+list = pdf_list_new (list_element_equal_p,
+                     list_element_destroy,
+                     PDF_FALSE,  /* Allow duplicates */
+                     NULL);
+if (list != NULL)
+   @{
+      /* Insert several elements into the list */
+      pdf_list_add_last (list, (void *) &elem1, NULL);
+      pdf_list_add_last (list, (void *) &elem2, NULL);
+      pdf_list_add_last (list, (void *) &elem3, NULL);
+      pdf_list_add_last (list, (void *) &elem4, NULL);
+
+      /* Get the index of elem1 */
+      index_of_elem1 = pdf_list_indexof_from (list,
+                                              1,
+                                              (void *) &elem1,
+                                              &error);
+      if (index_of_elem1 != (pdf_size_t)-1)
+         @{
+            /* The program reaches this point, since elem1 occupies
+               the first position into the list */
+         @}
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_size_t pdf_list_indexof_from_to (const pdf_list_t @var{*list}, const pdf_size_t @var{start_index}, const pdf_size_t @var{end_index}, const void @var{*element}, pdf_error_t @var{**error})
+
+Search whether an element is already in the list, at a position >= @var{start_index} and < @var{end_index}.
+
+@table @strong
+@item Parameters
+@table @var
+@item list
+A list.
+@item start_index
 A position in @var{list}.
-Must be @code{>= 0} and @code{< pdf_list_size (list)}.
-@end table
-@item Returns
-A pdf status value:
+@item end_index
+A position in @var{list}.
+@item element
+A pointer to some user data.
+@item error
+A pdf_error_t to report errors or NULL.
 @table @code
-@item PDF_OK
-The operation succeeded.
 @item PDF_EINVRANGE
-Invalid @var{position} range.
+@var{start_index} or @var{end_index} is greater than the list size or less than 0.
 @end table
-@item Usage example
-@example
-pdf_list_t list;
-int elem1;
-int elem2;
-int elem3;
-
-if (pdf_list_new (NULL, NULL,
-                  PDF_FALSE, /* Allow duplicates.  */
-                  &list) == PDF_OK)
-@{
-   /* Add some elements to the list.  */
-   pdf_list_add_last (list, (void *) &elem1, NULL);
-   pdf_list_add_last (list, (void *) &elem2, NULL);
-   pdf_list_add_last (list, (void *) &elem3, NULL);
-
-  /* Remove the element containing 'elem2' from 'list'.  */
-  if (pdf_list_remove_at (list, 1) != PDF_OK)
-  @{
-     /* Error removing the node from the list.  */
-  @}
-@}
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_list_remove (pdf_list_t @var{list}, const void * @var{element})
-
-Search and remove an element from the lsit.
-
-@table @strong
-@item Parameters
-@table @var
-@item list
-A list.
-@item element
-The element to be removed.
 @end table
 @item Returns
-A pdf status value:
-@table @code
-@item PDF_OK
-@var{element} was found in the list and was removed.
-@item PDF_EBADDATA
-@var{element} was not found in the list.
-@end table
+The element position if found, or (pdf_size_t)-1 otherwise.
 @item Usage example
 @example
-pdf_list_t list;
-int elem1;
-int elem2;
-int elem3;
+pdf_list_t *list;
+pdf_list_node_t *node_first;
+pdf_list_node_t *node_second;
+int elem1 = 1;
+int elem2 = 2;
+int elem3 = 3;
+int elem4 = 4;
+pdf_size_t index_of_elem4;
+pdf_error_t *error = NULL;
 
-if (pdf_list_new (NULL, NULL,
-                  PDF_FALSE, /* Allow duplicates.  */
-                  &list) == PDF_OK)
-@{
-   /* Add some elements to the list.  */
-   pdf_list_add_last (list, (void *) &elem1, NULL);
-   pdf_list_add_last (list, (void *) &elem2, NULL);
-   pdf_list_add_last (list, (void *) &elem3, NULL);
+list = pdf_list_new (list_element_equal_p,
+                     list_element_destroy,
+                     PDF_FALSE,  /* Allow duplicates */
+                     NULL);
+if (list != NULL)
+   @{
+      /* Insert several elements into the list */
+      pdf_list_add_last (list, (void *) &elem1, NULL);
+      pdf_list_add_last (list, (void *) &elem2, NULL);
+      pdf_list_add_last (list, (void *) &elem3, NULL);
+      pdf_list_add_last (list, (void *) &elem4, NULL);
 
-  /* Remove the element containing 'elem2' from 'list'.  */
-  if (pdf_list_remove (list, (void *) &elem2) != PDF_OK)
-  @{
-     /* Error removing the node from the list.  */
-  @}
-@}
+      /* Get the index of elem4 */
+      index_of_elem4 = pdf_list_indexof_from_to (list,
+                                                 1, 3,
+                                                 (void *) &elem1,
+                                                 &error);
+      if (index_of_elem4 != (pdf_size_t)-1)
+         @{
+            /* The program reaches this point, since elem4 occupies
+               the last position (3) into the list */
+         @}
+   @}
 @end example
 @end table
 @end deftypefun
 
-
-@node Working with sorted lists
-@subsection Working with sorted lists
-
-@deftypefun pdf_status_t pdf_list_sorted_add (pdf_list_t @var{list}, pdf_list_element_compar_fn_t @var{compar_fn}, const void* @var{element}, pdf_list_node_t @var{* element_node})
-
-Add an element to the list.
-
-@table @strong
-@item Parameters
-@table @var
-@item list
-A list.
-@item compar_fn
-A comparision function.
-@item element
-A pointer to the user data to be stored as a list element.
-@item element_node
-A pointer where the added element node will be saved. Can be NULL.
-@end table
-@item Returns
-A pdf status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
-@item PDF_EBADDATA
-Invalid @var{compar_fn} pointer.
-@item PDF_ENOMEM
-Not enough memory to perform the operation.
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_list_sorted_remove (pdf_list_t @var{list}, pdf_list_element_compar_fn_t @var{compar_fn}, const void * @var{element})
-
-Search and remove an element from the list.
-
-@table @strong
-@item Parameters
-@table @var
-@item list
-A list.
-@item compar_fn
-A comparision function.
-@item element
-The element to be removed.
-@end table
-@item Returns
-A pdf status value:
-@table @code
-@item PDF_OK
-@var{element} was found in the list and was removed.
-@item PDF_ENONODE
-@var{element} was not found in the list.
-@item PDF_EBADDATA
-Invalid @var{compar_fn}.
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
+@node Working with Sorted Lists
+@subsection Working with Sorted Lists
 
 @deftypefun pdf_status_t pdf_list_sorted_search (const pdf_list_t @var{list}, pdf_list_element_compar_fn_t @var{compar_fn}, const void* @var{element}, pdf_list_node_t @var{*node})
 
@@ -3718,7 +3713,7 @@ Create a new empty hash table.
 @item Parameters
 @table @var
 @item error
-A pdf_error_t to report errors, or NULL.
+A pdf_error_t to report errors or NULL.
 @table @code
 @item PDF_ENOMEM
 Not enough memory.
@@ -3827,7 +3822,7 @@ A pointer to the value being added.
 @item value_disp_fn
 A function called when @var{value} should be disposed. If NULL is given nothing is done.
 @item error
-A pdf_error_t to report errors, or NULL.
+A pdf_error_t to report errors or NULL.
 @table @code
 @item PDF_ENOMEM
 Not enough memory.
@@ -3956,7 +3951,7 @@ A valid NUL-terminated string key.
 @item new_key
 A valid NUL-terminated string key.
 @item error
-A pdf_error_t to report errors, or NULL.
+A pdf_error_t to report errors or NULL.
 @table @code
 @item PDF_ENOMEM
 Not enough memory to perform the operation.
@@ -4181,7 +4176,7 @@ A valid NUL-terminated string key.
 @item value
 A valid pdf_text_t.
 @item error
-A pdf_error_t to report errors, or NULL.
+A pdf_error_t to report errors or NULL.
 @end table
 @item Returns
 PDF_TRUE if correctly added, PDF_FALSE otherwise.
@@ -4251,7 +4246,7 @@ A valid NUL-terminated string key.
 @item value
 A valid pdf_time_t.
 @item error
-A pdf_error_t to report errors, or NULL.
+A pdf_error_t to report errors or NULL.
 @end table
 @item Returns
 PDF_TRUE if correctly added, PDF_FALSE otherwise.
@@ -4320,7 +4315,7 @@ A valid NUL-terminated string key.
 @item value
 A valid pdf_list_t.
 @item error
-A pdf_error_t to report errors, or NULL.
+A pdf_error_t to report errors or NULL.
 @end table
 @item Returns
 PDF_TRUE if correctly added, PDF_FALSE otherwise.
@@ -4389,7 +4384,7 @@ A valid NUL-terminated string key.
 @item value
 A valid pdf_hash_t.
 @item error
-A pdf_error_t to report errors, or NULL.
+A pdf_error_t to report errors or NULL.
 @end table
 @item Returns
 PDF_TRUE if correctly added, PDF_FALSE otherwise.
@@ -4458,7 +4453,7 @@ A valid NUL-terminated string key.
 @item value
 A valid pdf_stm_t.
 @item error
-A pdf_error_t to report errors, or NULL.
+A pdf_error_t to report errors or NULL.
 @end table
 @item Returns
 PDF_TRUE if correctly added, PDF_FALSE otherwise.
@@ -4537,7 +4532,7 @@ A valid NUL-terminated string key.
 @item value
 A valid pdf_size_t.
 @item error
-A pdf_error_t to report errors, or NULL.
+A pdf_error_t to report errors or NULL.
 @end table
 @item Returns
 PDF_TRUE if correctly added, PDF_FALSE otherwise.
@@ -4606,7 +4601,7 @@ A valid NUL-terminated string key.
 @item value
 A valid NUL-terminated string value.
 @item error
-A pdf_error_t to report errors, or NULL.
+A pdf_error_t to report errors or NULL.
 @end table
 @item Returns
 PDF_TRUE if correctly added, PDF_FALSE otherwise.
