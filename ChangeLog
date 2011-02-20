@@ -22,6 +22,26 @@
 
 	* src/base/pdf-error.c: Idem.
 
+2011-02-17  Michael V. Antosha  <Michael.Antosha@gmail.com>
+
+	* torture/unit/base/token/pdf-token-write.c (string_to_printable):
+	New function. Prints octal escape sequences for nonprintable
+	characters. Used for displaying detailed info about tests that
+	failed in write_and_check.
+	(write_and_check): Two more string buffers allocated, call to
+	string_to_printable arranged.
+	(write_and_check): Using memcmp instead of strncmp
+	now. Explanation added in comments. Needed for
+	pdf_token_write_string_null bug fix, in particular.
+	(pdf_token_write_string_null): False-pass fixed.
+
+2011-02-16  Michael V. Antosha  <Michael.Antosha@gmail.com>
+
+	* torture/unit/base/token/pdf-token-write.c (pdf_token_write_string_octal): Bug fix in test.
+
+	* doc/gnupdf-hg.texi (Using gdb to debug check tests): Practical
+	example using gdb with failing unit tests.
+
 2011-02-15  Jose E. Marchesi  <jemarch@gnu.org>
 
 	manual: changes to the object API.
