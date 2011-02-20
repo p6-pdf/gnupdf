@@ -1,3 +1,13 @@
+2011-02-20  Jose E. Marchesi  <jemarch@gnu.org>
+
+	manual: changes to the object API.
+	* doc/gnupdf.texi (Dictionary Objects): API updates.
+	(Stream Objects): Likewise.
+	(Stream Objects): Documentation for pdf_obj_stream_length removed.
+	(Null Object): API updates.
+	(Null Object): New constant PDF_OBJ_NULL.
+	(Null Object): Documentation for pdf_obj_null_new removed.
+
 2011-02-19  Aleksander Morgado  <aleksander@gnu.org>
 
 	doc: Removed bignums section

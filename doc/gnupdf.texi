@@ -12963,9 +12963,9 @@ second object in the pair is unrestricted.
 A dictionary entry whose value is null is equivalent to an absent
 entry.
 
-@deftypefun pdf_status_t pdf_obj_dict_new (pdf_obj_doc_t @var{doc}, pdf_bool_t @var{indirect_p}, pdf_obj_t *@var{obj})
+@deftypefun pdf_obj_t pdf_obj_dict_new (pdf_obj_doc_t *@var{doc}, pdf_bool_t @var{indirect_p})
 
-Create a new PDF Dictionary object.
+Create a  PDF Dictionary object in an object document.
 
 @table @strong
 @table @var
@@ -12973,42 +12973,30 @@ Create a new PDF Dictionary object.
 An object document.
 @item indirect_p
 A boolean value indicating whether to create an indirect object.
-@item obj
-A pointer to a @code{pdf_obj_t} variable to store the newly created
-object.
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-An empty dictionary object was created and stored in @var{obj}.
-@item PDF_ENOMEM
-Not enough memory to create the object.
-@item PDF_ERROR
-Some error prevented the operation to complete.  The value of
-@var{obj} shall be considered undefined.
-@end table
+The newly created object, or @code{PDF_OBJ_NULL} if there is no enough
+memory to perform the operation.
 @item Usage example
 @example
-pdf_obj_doc_t doc;
+pdf_obj_doc_t *doc;
 pdf_obj_t dict;
 
 ...
 
 /* Create an empty dictionary object */
-if (pdf_obj_dict_new (doc, PDF_TRUE, &dict)
-    == PDF_OK)
+dict = pdf_obj_dict_new (doc, PDF_TRUE);
+if (dict == PDF_OBJ_NULL)
 @{
-   /* Dictionary object created and stored in 'dict'. */
+   /* Not enough memory to create the object */
 @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_dict_get (pdf_obj_t @var{dict}, pdf_obj_t @var{key}, pdf_obj_t *@var{obj})
+@deftypefun pdf_obj_t pdf_obj_dict_get (pdf_obj_t @var{dict}, pdf_obj_t @var{key})
 
-Get the value associated with @var{key} in @var{dict} and store it in
-@var{obj}.
+Get an object stored in a PDF dictionary.
 
 @table @strong
 @item Parameters
@@ -13017,27 +13005,17 @@ Get the value associated with @var{key} in @var{dict} and store it in
 A PDF dictionary object.
 @item key
 A PDF name object.
-@item obj
-A pointer to @code{pdf_obj_t} to store the value associated with
-@var{key}.
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-A copy of the value associated with @var{key} was stored in @var{obj}.
-@item PDF_EINVOBJ
-@var{key} is not a name object or @var{dict} is not a dictionary
-object.
-@item PDF_EBADDATA
-@var{key} is not in the dictionary or it is not a name object.
-@item PDF_ERROR
-An error prevented the operation to complete.  The value in @var{obj}
-shall be considered undefined.
-@end table
+The object associated with @var{key} in @var{dict}, or
+@var{PDF_OBJ_NULL} if there is not an entry in the dictionary with
+@var{key}.
+
+If @var{dict} is not a dictionary or @var{key} is not a name object,
+this function returns @var{PDF_OBJ_NULL}.
 @item Usage example
 @example
-pdf_obj_doc_t doc;
+pdf_obj_doc_t *doc;
 pdf_obj_t dict;
 pdf_obj_t key;
 pdf_obj_t value;
@@ -13045,11 +13023,13 @@ pdf_obj_t value;
 ...
 
 /* Get the value associated with "/Foo" */
-pdf_obj_name_new (doc, PDF_FALSE, "Foo", &key);
-if (pdf_obj_dict_get (dict, key, &value) == PDF_OK)
+key = pdf_obj_name_new (doc, PDF_FALSE, "Foo");
+value = pdf_obj_dict_get (dict, key);
+
+if (value != PDF_OBJ_NULL)
 @{
    /* The object associated with "/Foo" in the dictionary is
-      now in 'foo'. */
+      now in 'value'. */
 @}
 @end example
 @end table
@@ -13057,8 +13037,7 @@ if (pdf_obj_dict_get (dict, key, &value) == PDF_OK)
 
 @deftypefun pdf_status_t pdf_obj_dict_get_str (pdf_obj_t @var{dict}, pdf_char_t *@var{key}, pdf_obj_t *@var{obj})
 
-Get the value associated with @var{key} in @var{dict} and store it in
-@var{obj}.
+Get an object stored in a PDF dictionary given a string.
 
 @table @strong
 @item Parameters
@@ -13068,34 +13047,28 @@ A PDF dictionary object.
 @item key
 A string containing the name of the key, without the preceding slash
 character.
-@item obj
-A pointer to @code{pdf_obj_t} to store the value associated with
-@var{key}.
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-A copy of the value associated with @var{key} was stored in @var{obj}.
-@item PDF_EBADDATA
-@var{key} is not in the dictionary.
-@item PDF_ERROR
-An error prevented the operation to complete.  The value in @var{obj}
-shall be considered undefined.
-@end table
+The object associated with @var{str} in @var{dict}, or
+@var{PDF_OBJ_NULL} if there is not an entry in the dictionary with
+a key having that value.
+
+If @var{dict} is not a dictionary this function returns
+@var{PDF_OBJ_NULL}.
 @item Usage example
 @example
-pdf_obj_doc_t doc;
+pdf_obj_doc_t *doc;
 pdf_obj_t dict;
 pdf_obj_t value;
 
 ...
 
 /* Get the value associated with "/Foo" */
-if (pdf_obj_dict_get (dict, "Foo", &value) == PDF_OK)
+value = pdf_obj_dict_get (dict, "Foo");
+if (value != PDF_OBJ_NULL)
 @{
    /* The object associated with "/Foo" in the dictionary is
-      now in 'foo'. */
+      now in 'value'. */
 @}
 @end example
 @end table
@@ -13103,10 +13076,7 @@ if (pdf_obj_dict_get (dict, "Foo", &value) == PDF_OK)
 
 @deftypefun pdf_status_t pdf_obj_dict_set (pdf_obj_t @var{dict}, pdf_obj_t @var{key}, pdf_obj_t @var{val})
 
-Set @var{val} as the new value for @var{key} in the PDF dictionary
-@var{dict}.
-
-If the entry do not exist then it is added.
+Insert an entry in a PDF dictionary, or replace an existing entry.
 
 @table @strong
 @item Parameters
@@ -13133,7 +13103,7 @@ Some error prevented the operation to complete.  The value in
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t doc;
+pdf_obj_doc_t *doc;
 pdf_obj_t dict;
 pdf_obj_t key;
 pdf_obj_t value;
@@ -13142,10 +13112,10 @@ pdf_obj_t value;
 
 /* Create a dictionary and insert a key-value pair
    into it: /Age -> 29. */
-pdf_obj_dict_new (doc, PDF_TRUE, &dict);
+dict = pdf_obj_dict_new (doc, PDF_TRUE);
 
-pdf_obj_name_new (doc, PDF_FALSE, "Age", &key);
-pdf_obj_integer_new (doc, PDF_FALSE, 29, &value);
+key = pdf_obj_name_new (doc, PDF_FALSE, "Age");
+value = pdf_obj_integer_new (doc, PDF_FALSE, 29);
 
 if (pdf_obj_dict_set (dict, key, value) == PDF_OK)
 @{
@@ -13157,10 +13127,8 @@ if (pdf_obj_dict_set (dict, key, value) == PDF_OK)
 
 @deftypefun pdf_status_t pdf_obj_dict_set_str (pdf_obj_t @var{dict}, pdf_char_t *@var{key}, pdf_obj_t @var{val})
 
-Set @var{val} as the new value for @var{key} in the PDF dictionary
-@var{dict}.
-
-If the entry do not exist then it is added.
+Insert an entry in a PDF dictionary using a string, or replace an
+existing entry.
 
 @table @strong
 @item Parameters
@@ -13186,7 +13154,7 @@ Some error prevented the operation to complete.  The value in
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t doc;
+pdf_obj_doc_t *doc;
 pdf_obj_t root_dict;
 pdf_obj_t pages_dict;
 
@@ -13194,8 +13162,9 @@ pdf_obj_t pages_dict;
 
 /* Create a /Pages entry in the root dictionary, as an indirect
    object, containing an empty dictionary. */
-pdf_obj_doc_get_root (doc, &root_dir);
-pdf_obj_dict_new (doc, PDF_TRUE, &pages_dict);
+
+root_dict = pdf_obj_doc_get_root (doc);
+pages_dict = pdf_obj_dict_new (doc, PDF_TRUE);
 
 if (pdf_obj_dict_set_str (root_dir, "/Pages", pages_dict)
     != PDF_ERROR)
@@ -13210,8 +13179,8 @@ if (pdf_obj_dict_set_str (root_dir, "/Pages", pages_dict)
 
 @deftypefun pdf_status_t pdf_obj_dict_remove (pdf_obj_t @var{dict}, pdf_obj_t @var{key})
 
-Remove a key-value pair from a dictionary. If @var{key} is not found
-in @var{dict} then this is a no-op.
+Remove a key-value pair from a dictionary. If the key does not exist
+in the dictionary then this is a no-op.
 
 @table @strong
 @item Parameters
@@ -13234,14 +13203,14 @@ An error prevented the operation to complete.
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t doc;
+pdf_obj_doc_t *doc;
 pdf_obj_t dict;
 pdf_obj_t key;
 
 ...
 
 /* Remove the "/Foo" entry from 'dict', if it exists */
-pdf_obj_name_new (doc, PDF_FALSE, "Foo", &key);
+key = pdf_obj_name_new (doc, PDF_FALSE, "Foo");
 
 if (pdf_obj_dict_remove (dict, key) == PDF_OK)
 @{
@@ -13254,8 +13223,8 @@ if (pdf_obj_dict_remove (dict, key) == PDF_OK)
 
 @deftypefun pdf_status_t pdf_obj_dict_remove_str (pdf_obj_t @var{dict}, pdf_char_t *@var{key})
 
-Remove a key-value pair from a dictionary. If @var{key} is not found
-in @var{dict} then this is a no-op.
+Remove a key-value pair from a dictionary.  If the key does nto exist
+in the dictionary then this is a no-op.
 
 @table @strong
 @item Parameters
@@ -13277,7 +13246,7 @@ An error prevented the operation to complete.
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t doc;
+pdf_obj_doc_t *doc;
 pdf_obj_t dict;
 
 ...
@@ -13294,7 +13263,7 @@ if (pdf_obj_dict_remove (dict, "Foo") == PDF_OK)
 
 @deftypefun pdf_bool_t pdf_obj_dict_key_p (pdf_obj_t @var{dict}, pdf_obj_t @var{key})
 
-Determine if a given name object is a key into @var{dict}.
+Determine whether an entry exists in a PDF dictionary.
 
 @table @strong
 @item Parameters
@@ -13315,14 +13284,14 @@ is not a dictionary object, or @var{key} is not a name object.
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t doc;
+pdf_obj_doc_t *doc;
 pdf_obj_t dict;
 pdf_obj_t key;
 pdf_obj_t value;
 
 ...
 
-pdf_obj_integer_new (doc, PDF_FALSE, 10, &value);
+value = pdf_obj_integer_new (doc, PDF_FALSE, 10);
 pdf_obj_dict_set_str (dict, "Foo", value);
 
 pdf_obj_dict_key_str_p (dict, "Foo", value); /* Returns PDF_TRUE */
@@ -13332,7 +13301,7 @@ pdf_obj_dict_key_str_p (dict, "Foo", value); /* Returns PDF_TRUE */
 
 @deftypefun pdf_bool_t pdf_obj_dict_key_str_p (pdf_obj_t @var{dict}, pdf_char_t *@var{key})
 
-Determine if a given @var{key} string is a key into @var{dict}.
+Determine whether an entry exists in a PDF dictionary.
 
 @table @strong
 @item Parameters
@@ -13353,13 +13322,13 @@ not a dictionary object.
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t doc;
+pdf_obj_doc_t *doc;
 pdf_obj_t dict;
 pdf_obj_t value;
 
 ...
 
-pdf_obj_integer_new (doc, PDF_FALSE, 10, &value);
+value = pdf_obj_integer_new (doc, PDF_FALSE, 10);
 
 pdf_obj_dict_set_str (dict, "Foo", value);
 
@@ -13371,7 +13340,7 @@ pdf_obj_dict_key_p (dict, value, key); /* Returns PDF_FALSE */
 
 @deftypefun pdf_bool_t pdf_obj_dict_weak_p (pdf_obj_t @var{dict}, pdf_obj_t @var{key})
 
-Determine if a given @var{key} object is a weak reference in @var{dict}.
+Determine whether an entry in a PDF dictionary is a weak entry.
 
 @table @strong
 @item Parameters
@@ -13393,14 +13362,14 @@ or @var{key} is not a name object.
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t doc;
+pdf_obj_doc_t *doc;
 pdf_obj_t dict;
 pdf_obj_t key;
 
 ...
 
 /* Determine if the entry "/Foo" has a weak reference in 'dict' */
-pdf_obj_name_new (doc, PDF_FALSE, "Foo", &key);
+key = pdf_obj_name_new (doc, PDF_FALSE, "Foo");
 
 pdf_obj_dict_weak_p (dict, key);
 @end example
@@ -13409,7 +13378,7 @@ pdf_obj_dict_weak_p (dict, key);
 
 @deftypefun pdf_bool_t pdf_obj_dict_weak_str_p (pdf_obj_t @var{dict}, pdf_char_t *@var{key})
 
-Determine if a given @var{key} object is a weak reference in @var{dict}.
+Determine whether an entry in a PDF dictionary is a weak entry.
 
 @table @strong
 @item Parameters
@@ -13430,7 +13399,7 @@ not exist in the dictionary, or @var{dict} is not a dictionary object.
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t doc;
+pdf_obj_doc_t *doc;
 pdf_obj_t dict;
 pdf_obj_t key;
 
@@ -13444,8 +13413,7 @@ pdf_obj_dict_weak_p (dict, "Foo");
 
 @deftypefun pdf_status_t pdf_obj_dict_weak_set (pdf_obj_t @var{dict}, pdf_obj_t @var{key}, pdf_bool_t @var{weak_p})
 
-Set the @var{weak_p} attribute of @var{key} in @var{dict}.  Any
-key-value pair with @code{weak_p == PDF_TRUE} has a weak reference.
+Set an entry in a PDF dictionary as a weak entry.
 @xref{Garbage collection in object documents}.
 
 @table @strong
@@ -13471,7 +13439,7 @@ Some error prevented the operation to complete.
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t doc;
+pdf_obj_doc_t *doc;
 pdf_obj_t dict;
 pdf_obj_t key;
 
@@ -13479,8 +13447,7 @@ pdf_obj_t key;
 
 /* Set the weak attribute of the key-value pair in
    'dict' with key "/Foo". */
-pdf_obj_name_new (doc, PDF_FALSE, "Foo", &key);
-
+key = pdf_obj_name_new (doc, PDF_FALSE, "Foo");
 pdf_obj_dict_weak_set (dict, key, PDF_TRUE);
 @end example
 @end table
@@ -13488,8 +13455,7 @@ pdf_obj_dict_weak_set (dict, key, PDF_TRUE);
 
 @deftypefun pdf_status_t pdf_obj_dict_weak_set_str (pdf_obj_t @var{dict}, pdf_char_t *@var{key}, pdf_bool_t @var{weak_p})
 
-Set the @var{weak_p} attribute of @var{key} in @var{dict}. Any
-key-value pair with @code{weak_p == PDF_TRUE} has a weak reference.
+Set an entry in a PDF dictionary as a weak entry.
 @xref{Garbage collection in object documents}.
 
 @table @strong
@@ -13514,7 +13480,7 @@ An error prevented the operation to complete.
 @end table
 @item Usage example
 @example
-pdf_obj_doc_t doc;
+pdf_obj_doc_t *doc;
 pdf_obj_t dict;
 
 ...
@@ -13537,12 +13503,12 @@ stream in the PDF file.
 Unlike strings, a stream can be read incrementally and can be of
 unlimited length.
 
-All streams must be indirect objects while the dictionary describing
-the stream must be a direct object.
+All streams must be indirect objects.  Dictionaries describing streams
+must be direct objects.
 
-@deftypefun pdf_status_t pdf_obj_stream_new (pdf_obj_doc_t @var{doc}, pdf_stm_t @var{stm}, pdf_size_t @var{size}, pdf_obj_t @var{attrs_dict}, pdf_obj_t *@var{obj})
+@deftypefun pdf_obj_t pdf_obj_stream_new (pdf_obj_doc_t @var{doc}, pdf_stm_t @var{stm}, pdf_off_t @var{size}, pdf_obj_t @var{attrs_dict})
 
-Create a new PDF Stream object.
+Create a PDF Stream object in an object document.
 
 @table @strong
 @item Parameters
@@ -13562,32 +13528,22 @@ describing the newly created stream. If this dictionary
 contains a list of filters then those filters are applied in inverse
 order to the data read from @var{stm}.
 
-Note that any @code{/Length} key present in @var{stm} will be ignored.
+Note that any @code{/Length} key present in @var{stm} will be ignored
+and replaced by a recalculated entry.
+
+If this parameter is @code{PDF_OBJ_NULL} then it is interpreted as an
+empty dictionary.
 
 See the PDF specification for the expected content of the stream
 dictionary.
-@item obj
-A pointer to a @code{pdf_obj_t} variable to store the newly created
-object.
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The stream object was successfully created, and a reference to it was
-stored in @var{obj}.
-@item PDF_EINVOBJ
-@var{stm} is not a stream object or @var{attr_dict} is not a
-dictionary object.
-@item PDF_ENOMEM
-Not enough memory to create the object.
-@item PDF_ERROR
-Some error prevented the creation of the stream object.  The reference
-stored @var{obj} shall be considered invalid.
-@end table
+The newly created object, or @var{PDF_OBJ_NULL} if there is not enough
+memory to perform the operation, or if @var{attrs_dict} is not a
+dictionary or the null object.
 @item Usage example
 @example
-pdf_obj_doc_t doc;
+pdf_obj_doc_t *doc;
 pdf_obj_t dict;
 pdf_obj_t stream;
 pdf_obj_t filter_array;
@@ -13597,16 +13553,15 @@ pdf_stm_t stm;
 
 ...
 
-/* Create a filter array */
-pdf_obj_string_new (doc, PDF_FALSE, "ASCII85Decode");
-pdf_obj_string_new (doc, PDF_FALSE, "LZWDecode");
-
-pdf_obj_array_new (doc, PDF_FALSE, 2, &filter_array);
-pdf_obj_array_set (filter_array, 0, ascii85_label);
-pdf_obj_array_set (filter_array, 1, lzw_label);
+/* Create an arry of filters.  */
+filter_array = pdf_obj_array_new (doc, PDF_FALSE, 2);
+pdf_obj_array_set (filter_array, 0,
+                   pdf_obj_string_new (doc, PDF_FALSE, "ASCII85Decode"));
+pdf_obj_array_set (filter_array, 1,
+                   pdf_obj_string_new (doc, PDF_FALSE, "LZWDecode"););
 
 /* Create the dictionary */
-pdf_obj_dict_new (doc, PDF_FALSE, &dict);
+dict = pdf_obj_dict_new (doc, PDF_FALSE);
 pdf_obj_dict_set_str (dict, "Filter", filter_array);
 
 /* Open a filtered stream to a file containing the data to be
@@ -13614,7 +13569,7 @@ pdf_obj_dict_set_str (dict, "Filter", filter_array);
 pdf_text_new_from_unicode ("/path/to/data",
                            14, PDF_TEXT_UTF8,
                            &data_file_path);
-pdf_fsys_file_open (NULL, data_file_path, PDF_FSYS_OPEN_MODE_READ, data_file);
+pdf_fsys_file_open (NULL, data_file_path, PDF_FSYS_OPEN_MODE_READ, &data_file);
 pdf_stm_file_new (data_file,
                   0,
                   0, /* Use the default cache size */
@@ -13622,11 +13577,11 @@ pdf_stm_file_new (data_file,
                   &stm);
 
 /* Create the stream object */
-if (pdf_obj_stream_new (doc,
-                        stm,
-                        0, /* Exhaust the stream */
-                        dict,
-                        &stream) != PDF_OK)
+stream = pdf_obj_stream_new (doc,
+                             stm,
+                             0, /* Exhaust the stream */
+                             dict);
+if (stream == PDF_OBJ_NULL)
 @{
    /* Some error prevented the creation of the stream */
 @}
@@ -13634,78 +13589,27 @@ if (pdf_obj_stream_new (doc,
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_stream_dict (pdf_obj_t @var{stream}, pdf_obj_t *@var{dict})
+@deftypefun pdf_obj_t pdf_obj_stream_dict (pdf_obj_t @var{stream})
 
-Get the stream dictionary associated with @var{stream}.
+Get the stream dictionary associated with a PDF stream.
 
 @table @strong
 @item Parameters
 @table @var
 @item stream
 A stream object.
-@item dict
-A pointer to a @code{pdf_obj_t} variable to store the newly created
-object.  The returned object shall not be destroyed nor modified by
-the caller.
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The dictionary describing @var{stream} is now stored in @var{obj}.
-@item PDF_EINVOBJ
-@var{stream} is not a stream object.
-@item PDF_ERROR
-An error prevented the operation to complete.  The value of @var{dict}
-shall be considered invalid.
-@end table
+The stream dictionary, or @var{PDF_OBJ_NULL} if @var{stream} is not a
+stream object.
 @item Usage example
 @example
 pdf_obj_t stream;
-pdf_obj_t stream_dict;
+pdf_obj_t dict;
 
 /* Create a stream object... */
 
-if (pdf_obj_stream_dict (stream, &stream_dict) != PDF_OK)
-@{
-   /* Error getting the stream dictionary */
-@}
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_obj_stream_length (pdf_obj_t @var{stream}, pdf_off_t *@var{length})
-
-Get the size of the encoded stream in octects.
-
-@table @strong
-@item Parameters
-@table @var
-@item stream
-A stream object.
-@item length
-A pointer to a @var{pdf_size_t} variable to hold the returned value.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The length of the encoded stream is stored in @var{length}.
-@item PDF_EINVOBJ
-@var{stream} is not a stream object.
-@item PDF_ERROR
-An error prevented the operation to complete.  The value of
-@var{length} shall be considered invalid.
-@end table
-@item Usage example
-@example
-pdf_obj_t stream;
-pdf_off_t stream_length;
-
-...
-
-/* Get the length of the stream, in octects */
-pdf_obj_stream_length (stream, &stream_length);
+dict = pdf_obj_stream_dict (stream);
 @end example
 @end table
 @end deftypefun
@@ -13729,7 +13633,7 @@ position just after the @code{stream} keyword.  If the returned number
 is @code{0} then an error occurred.
 @item Usage example
 @example
-pdf_obj_doc_t doc;
+pdf_obj_doc_t *doc;
 pdf_obj_t stream;
 pdf_off_t stream_offset;
 
@@ -13756,7 +13660,7 @@ if (stream_offset (stream) == 0)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_stream_open (pdf_obj_t @var{stream}, enum pdf_obj_stm_open_mode_e @var{mode}, pdf_stm_t *@var{stm})
+@deftypefun pdf_obj_t pdf_obj_stream_open (pdf_obj_t @var{stream}, enum pdf_obj_stm_open_mode_e @var{mode})
 
 Create a base layer stream to read the contents of
 @var{stream}. The base layer stream @var{stm} is positioning at the
@@ -13773,23 +13677,12 @@ The client is responsible to close the stream @var{stm}.
 A Stream object.
 @item mode
 Mode used to open the stream. @xref{Object Data Types}.
-@item stm
-A pointer to a @var{pdf_stm_t} variable holding the returned base
-layer stream.
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-A filtered stream was opened to read the contents of @var{stream}.
-@item PDF_EINVOBJ
-@var{stream} is not a stream object.
-@item PDF_ENOMEM
-Not enough memory to perform the operation.
-@item PDF_ERROR
-An error prevented the operation to complete.  The value of @var{stm}
-shall be considered invalid.
-@end table
+A newly created base layer stream from which the decoded data stored
+in the stream can be read, or @var{PDF_OBJ_NULL} if there is not
+enough memory to perform the operation, or @var{stream} is not a
+stream object.
 @item Usage example
 @example
 pdf_obj_t stream;
@@ -13799,9 +13692,9 @@ pdf_stm_t stm;
 
 /* Get a filtered stream to read the contents
    of 'stream' */
-if (pdf_obj_stream_open (stream,
-                         PDF_OBJ_STM_OPEN_MODE_FILTERED,
-                         &stm) != PDF_OK)
+stm = pdf_obj_stream_opn (stream,
+                          PDF_OBJ_STM_OPEN_MODE_FILTERED);
+if (stm == PDF_OBJ_NULL)
 @{
    /* Error opening the stream */
 @}
@@ -13814,32 +13707,11 @@ if (pdf_obj_stream_open (stream,
 
 A PDF null object has a type and a value that are unequal to those of
 any other object.  There is only one possible value for this object
-type: the @code{null} keyword.
+type: the @code{PDF_OBJ_NULL} constant.
 
-An indirect object reference to a nonexistant object is a reference to
-the null object.
-
-@deftypefun pdf_status_t pdf_obj_null_new (pdf_obj_t *@var{obj})
-
-Create a direct Null object.
-
-@table @strong
-@table @var
-@item obj
-A pointer to a @code{pdf_obj_t} variable to store the newly created
-object.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
+@deftp {Constant} PDF_OBJ_NULL
+The null object.
+@end deftp
 
 @node Object Documents
 @section Object Documents
