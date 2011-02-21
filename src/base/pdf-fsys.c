@@ -162,14 +162,6 @@ pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s  item_props,
   pdf_char_t *mod_date_str;
   pdf_error_t *inner_error = NULL;
 
-  /* Get the values from the props structure */
-  creation_date_str = pdf_time_to_string (item_props.creation_date,
-                                          PDF_TIME_FORMAT_PDF,
-                                          PDF_TRUE);
-  mod_date_str = pdf_time_to_string (item_props.modification_date,
-                                     PDF_TIME_FORMAT_PDF,
-                                     PDF_TRUE);
-
   /* Associate values with hash keys */
   if ((!pdf_hash_add_bool (props_hash,
                            "isHidden",
@@ -183,14 +175,6 @@ pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s  item_props,
                            "isWritable",
                            item_props.is_writable,
                            &inner_error)) ||
-      (!pdf_hash_add_string (props_hash,
-                             "creationDate",
-                             creation_date_str,
-                             &inner_error)) ||
-      (!pdf_hash_add_string (props_hash,
-                             "modDate",
-                             mod_date_str,
-                             &inner_error)) ||
       (!pdf_hash_add_size (props_hash,
                            "fileSize",
                            (pdf_size_t) item_props.file_size,
@@ -200,8 +184,22 @@ pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s  item_props,
                            (pdf_size_t) item_props.folder_size,
                            &inner_error)))
     {
+      /* TODO: Propagate error */
+      if (inner_error)
+        pdf_error_destroy (inner_error);
+      return PDF_ERROR;
+    }
+
+  /* Get creation time from the props structure */
+  creation_date_str = pdf_time_to_string (item_props.creation_date,
+                                          PDF_TIME_FORMAT_PDF,
+                                          PDF_TRUE);
+  if (!pdf_hash_add_string (props_hash,
+                            "creationDate",
+                            creation_date_str,
+                            &inner_error))
+    {
       pdf_dealloc (creation_date_str);
-      pdf_dealloc (mod_date_str);
 
       /* TODO: Propagate error */
       if (inner_error)
@@ -209,8 +207,22 @@ pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s  item_props,
       return PDF_ERROR;
     }
 
-  pdf_dealloc (creation_date_str);
-  pdf_dealloc (mod_date_str);
+  /* Get mtime from the props structure */
+  mod_date_str = pdf_time_to_string (item_props.modification_date,
+                                     PDF_TIME_FORMAT_PDF,
+                                     PDF_TRUE);
+  if (!pdf_hash_add_string (props_hash,
+                            "modDate",
+                             mod_date_str,
+                             &inner_error))
+    {
+      pdf_dealloc (mod_date_str);
+
+      /* TODO: Propagate error */
+      if (inner_error)
+        pdf_error_destroy (inner_error);
+      return PDF_ERROR;
+    }
 
   /* Done */
   return PDF_OK;
