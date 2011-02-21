@@ -379,7 +379,7 @@ pdf_error_destroy (error);
 @deftypefun void pdf_set_error (pdf_error_t **@var{err})
 
 Does nothing if @var{err} is @code{NULL}. If @var{err} is not @code{NULL},
-then *@var{err} must be NULL. It will create a new @code{pdf_error_t} and place
+then *@var{err} must be @code{NULL}. It will create a new @code{pdf_error_t} and place
 it in *@var{err}.
 
 @table @strong
@@ -1371,7 +1371,7 @@ A list iterator.
 @end deftp
 
 @deftp {Data Type} {pdf_bool_t (*pdf_list_element_equals_fn_t) (const void *elt1, const void *elt2)}
-A function type for comparing list elements equality. Should return PDF_TRUE in case they are equal and PDF_FALSE otherwise.
+A function type for comparing list elements equality. Should return PDF_TRUE in case they are equal and @code{PDF_FALSE} otherwise.
 @end deftp
 
 @deftp {Data Type} {void (*pdf_list_element_dispose_fn_t) (const void *elt)}
@@ -1408,14 +1408,14 @@ This parameter indicate if the list is allowed to contain duplicate
 elements (elements for which @var{equals_fn} evaluate to
 @code{PDF_TRUE}).
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
 @item PDF_ENOMEM
 Not enough memory to create the list.
 @end table
 @end table
 @item Returns
-A newly allocated list.
+A newly allocated @code{pdf_list_t}.
 @item Usage example
 @example
 pdf_list_t *mylist;
@@ -1498,14 +1498,14 @@ A list.
 @item element
 The value to be stored as a list element.
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
 @item PDF_ENOMEM
 Not enough memory to perform the operation.
 @end table
 @end table
 @item Returns
-A valid pdf_list_node_t if the element was correctly added to the list, NULL otherwise.
+A valid @code{pdf_list_node_t} if the element was correctly added to the list, @code{NULL} otherwise.
 @item Usage example
 @example
 pdf_list_t *list;
@@ -1539,12 +1539,14 @@ A list.
 @item element
 The value to be stored as a list element.
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
 @item PDF_ENOMEM
 Not enough memory to perform the operation.
 @end table
 @end table
+@item Returns
+A valid @code{pdf_list_node_t} if the element was correctly added to the list, @code{NULL} otherwise.
 @item Usage example
 @example
 pdf_list_t *list;
@@ -1577,7 +1579,7 @@ Should be @code{>= 0} and @code{<= pdf_list_size (list)}.
 @item element
 The value to be stored as a list element.
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
 @item PDF_EINVRANGE
 Invalid range of given @var{position}.
@@ -1586,7 +1588,7 @@ Not enough memory to perform the operation.
 @end table
 @end table
 @item Returns
-A valid pdf_list_node_t if the element was correctly added to the list, NULL otherwise.
+A valid @code{pdf_list_node_t} if the element was correctly added to the list, @code{NULL} otherwise.
 @item Usage example
 @example
 pdf_list_t *list;
@@ -1622,7 +1624,7 @@ A list.
 The node to be removed.
 @end table
 @item Returns
-PDF_TRUE if the node was correctly removed, PDF_FALSE otherwise.
+@code{PDF_TRUE} if the node was correctly removed, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
 pdf_list_t *list;
@@ -1663,14 +1665,14 @@ A list.
 A position in @var{list}.
 Must be @code{>= 0} and @code{< pdf_list_size (list)}.
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
 @item PDF_EINVRANGE
 Invalid @var{position} range.
 @end table
 @end table
 @item Returns
-PDF_TRUE if the node was correctly removed, PDF_FALSE otherwise.
+@code{PDF_TRUE} if the node was correctly removed, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
 pdf_error_t *error = NULL;
@@ -1710,7 +1712,7 @@ A list.
 The value of the node to be removed.
 @end table
 @item Returns
-PDF_TRUE if the node was correctly removed, PDF_FALSE otherwise.
+@code{PDF_TRUE} if the node was correctly removed, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
 pdf_list_t *list;
@@ -1752,17 +1754,15 @@ A list.
 A comparison function.
 @item element
 The value to be stored as a list element.
-@item element_node
-A pointer where the added element node will be saved. Can be NULL.
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
 @item PDF_ENOMEM
 Not enough memory to perform the operation.
 @end table
 @end table
 @item Returns
-A valid pdf_list_node_t if the element was correctly added to the list, NULL otherwise.
+A valid @code{pdf_list_node_t} if the element was correctly added to the list, @code{NULL} otherwise.
 @item Usage example
 @example
 int
@@ -1818,7 +1818,7 @@ A comparison function.
 The value of the node to be removed.
 @end table
 @item Returns
-PDF_TRUE if the node was correctly removed, PDF_FALSE otherwise.
+@code{PDF_TRUE} if the node was correctly removed, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
 int
@@ -1924,7 +1924,7 @@ A list.
 A valid position in @var{list}.
 Must be @code{>= 0} and @code{< pdf_list_size (list)}.
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
 @item PDF_EINVRANGE
 Invalid @var{position}
@@ -1970,7 +1970,7 @@ Must be @code{>= 0} and @code{< pdf_list_size (list)}.
 @item element
 The new element value.
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
 @item PDF_EINVRANGE
 Invalid @var{position}.
@@ -1980,7 +1980,7 @@ Not enough memory to perform the operation.
 @end table
 @end table
 @item Returns
-The pdf_list_node_t if correctly replaced or NULL otherwise.
+The @code{pdf_list_node_t} if correctly replaced or @code{NULL} otherwise.
 @item Usage example
 @example
 pdf_list_t *list;
@@ -2030,7 +2030,7 @@ A list.
 The element to look for.
 @end table
 @item Returns
-A valid pdf_list_node_t if the element is found in the list, NULL otherwise.
+A valid @code{pdf_list_node_t} if the element is found in the list, @code{NULL} otherwise.
 @item Usage example
 @example
 pdf_list_t *list;
@@ -2074,14 +2074,14 @@ Index indicating the begin of the search.
 @item element
 The element to look for.
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
 @item PDF_EINVRANGE
 @var{start_index} is greater than the list size.
 @end table
 @end table
 @item Returns
-A valid pdf_list_node_t if the element is found in the list, NULL otherwise.
+A valid @code{pdf_list_node_t} if the element is found in the list, @code{NULL} otherwise.
 @item Usage example
 @example
 pdf_list_t *list;
@@ -2136,14 +2136,14 @@ Index to the last list position to be searched.
 @item element
 The element to look for.
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
 @item PDF_EINVRANGE
 @var{start_index} and/or @var{end_index} are greater than the list size.
 @end table
 @end table
 @item Returns
-A valid pdf_list_node_t if the element is found in the list, NULL otherwise.
+A valid @code{pdf_list_node_t} if the element is found in the list, @code{NULL} otherwise.
 @item Usage example
 @example
 pdf_list_t *list;
@@ -2185,7 +2185,7 @@ if (list != NULL)
 
 @deftypefun {pdf_list_node_t *}pdf_list_next_node (const pdf_list_t *@var{list}, const pdf_list_node_t *@var{node})
 
-Return the node immediately after the given node in the list, or NULL if it is the last one.
+Return the node immediately after the given node in the list, or @code{NULL} if it is the last one.
 
 @table @strong
 @item Parameters
@@ -2196,7 +2196,7 @@ A list.
 A node contained in @var{list}.
 @end table
 @item Returns
-A valid pdf_list_node_t or NULL if there are no more elements in the list.
+A valid @code{pdf_list_node_t}, or @code{NULL} if there are no more elements in the list.
 @item Usage example
 @example
 pdf_list_t *list;
@@ -2229,7 +2229,7 @@ if (list != NULL)
 
 @deftypefun {pdf_list_node_t *}pdf_list_previous_node (const pdf_list_t *@var{list}, const pdf_list_node_t *@var{node})
 
-Return the node immediately before the given node in the list, or NULL if is the first one.
+Return the node immediately before the given node in the list, or @code{NULL} if is the first one.
 
 @table @strong
 @item Parameters
@@ -2240,7 +2240,7 @@ A list.
 A node contained in @var{list}.
 @end table
 @item Returns
-A valid pdf_list_node_t or NULL if there are no more previous elements in the list.
+A valid @code{pdf_list_node_t}, or @code{NULL} if there are no more previous elements in the list.
 @item Usage example
 @example
 pdf_list_t *list;
@@ -2284,7 +2284,7 @@ A list.
 The element to look for.
 @end table
 @item Returns
-The element position if found, or (pdf_size_t)-1 otherwise.
+The element position if found, or @code{(pdf_size_t)-1} otherwise.
 @item Usage Example
 @example
 pdf_list_t *list;
@@ -2327,14 +2327,14 @@ An index to a position in @var{list}.
 @item element
 The element to look for.
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
 @item PDF_EINVRANGE
 @var{start_index} or @var{end_index} is greater than the list size.
 @end table
 @end table
 @item Returns
-The element position if found, or (pdf_size_t)-1 otherwise.
+The element position if found, or @code{(pdf_size_t)-1} otherwise.
 @item Usage example
 @example
 pdf_list_t *list;
@@ -2390,14 +2390,14 @@ A position in @var{list}.
 @item element
 The element to look for.
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
 @item PDF_EINVRANGE
 @var{start_index} or @var{end_index} is greater than the list size or less than 0.
 @end table
 @end table
 @item Returns
-The element position if found, or (pdf_size_t)-1 otherwise.
+The element position if found, or @code{(pdf_size_t)-1} otherwise.
 @item Usage example
 @example
 pdf_list_t *list;
@@ -2455,7 +2455,7 @@ A comparison function.
 The element to look for.
 @end table
 @item Returns
-A valid pdf_list_node_t if the element is found in the list, NULL otherwise.
+A valid @code{pdf_list_node_t} if the element is found in the list, @code{NULL} otherwise.
 @item Usage example
 @example
 int
@@ -2514,14 +2514,14 @@ Index to the last list position to be searched.
 @item element
 The element to look for.
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
 @item PDF_EINVRANGE
 @var{start_index} and/or @var{end_index} are greater than the list size.
 @end table
 @end table
 @item Returns
-A valid pdf_list_node_t if the element is found in the list, NULL otherwise.
+A valid @code{pdf_list_node_t} if the element is found in the list, @code{NULL} otherwise.
 @item Usage example
 @example
 int
@@ -2578,7 +2578,7 @@ A comparision function.
 The element to look for.
 @end table
 @item Returns
-The element position if found, or (pdf_size_t)-1 otherwise.
+The element position if found, or @code{(pdf_size_t)-1} otherwise.
 @item Usage Example
 @example
 int
@@ -2639,14 +2639,14 @@ A position in @var{list}.
 @item element
 The element to look for.
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
 @item PDF_EINVRANGE
 @var{start_index} and/or @var{end_index} are greater than the list size.
 @end table
 @end table
 @item Returns
-The element position if found, or (pdf_size_t)-1 otherwise.
+The element position if found, or @code{(pdf_size_t)-1} otherwise.
 @item Usage example
 @example
 int
@@ -2740,14 +2740,14 @@ A position in @var{list}.
 @item end_index
 A position in @var{list}.
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
 @item PDF_EINVRANGE
 @var{start_index} or @var{end_index} is greater than the list size or less than 0.
 @end table
 @end table
 @item Returns
-PDF_TRUE if the iterator was properly initialized, PDF_FALSE otherwise.
+@code{PDF_TRUE} if the iterator was properly initialized, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
 pdf_list_t *list;
@@ -2804,12 +2804,12 @@ if given.
 @item itr
 A valid list iterator.
 @item element_pointer
-A pointer where to store the value stored in the next node, or NULL if not needed.
+A pointer where to store the value stored in the next node, or @code{NULL} if not needed.
 @item node_pointer
-A pointer where to store the address of the next node, or NULL if not needed.
+A pointer where to store the address of the next node, or @code{NULL} if not needed.
 @end table
 @item Returns
-PDF_TRUE if a next node is available, PDF_FALSE otherwise.
+@code{PDF_TRUE} if a next node is available, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
 pdf_list_t *mylist;
@@ -2874,14 +2874,14 @@ Create a new empty hash table.
 @item Parameters
 @table @var
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
 @item PDF_ENOMEM
 Not enough memory.
 @end table
 @end table
 @item Returns
-The newly created pdf_hash_t
+A newly allocated @code{pdf_hash_t}
 @item Usage example
 @example
 pdf_hash_t *hash;
@@ -2977,13 +2977,13 @@ Adds the element @var{value} with the associated key @var{key} to @var{table}. I
 @item table
 A hash table.
 @item key
-A valid NUL-terminated string key.
+A valid @code{NUL}-terminated string key.
 @item value
 A pointer to the value being added.
 @item value_disp_fn
-A function called when @var{value} should be disposed. If NULL is given nothing is done.
+A function called when @var{value} should be disposed. If @code{NULL} is given nothing is done.
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
 @item PDF_ENOMEM
 Not enough memory.
@@ -2992,7 +2992,7 @@ The @var{key} already exists in @var{table}.
 @end table
 @end table
 @item Returns
-PDF_TRUE if the new item was correctly added, PDF_FALSE otherwise.
+@code{PDF_TRUE} if the new item was correctly added, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
 pdf_hash_t *hash;
@@ -3027,20 +3027,20 @@ Adds the element @var{value} with the associated key @var{key} to @var{table}. I
 @item table
 A hash table.
 @item key
-A valid NUL-terminated string key.
+A valid @code{NUL}-terminated string key.
 @item value
 A pointer to the value being added.
 @item value_disp_fn
 A function called when @var{value} should be disposed. If NULL is given nothing is done.
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
 @item PDF_ENOMEM
 Not enough memory.
 @end table
 @end table
 @item Returns
-PDF_TRUE if the new item was correctly added, PDF_FALSE otherwise.
+@code{PDF_TRUE} if the new item was correctly added, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
 pdf_hash_t *hash;
@@ -3076,10 +3076,10 @@ element is disposed first.
 @item table
 A hash table.
 @item key
-A valid NUL-terminated string key.
+A valid @code{NUL}-terminated string key.
 @end table
 @item Returns
-PDF_TRUE if the element was correctly removed, PDF_FALSE otherwise.
+@code{PDF_TRUE} if the element was correctly removed, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
 pdf_hash_t *hash;
@@ -3116,16 +3116,10 @@ Returns a boolean value indicating whether an element with key
 @item table
 A hash table.
 @item key
-A valid NUL-terminated string key.
+A valid @code{NUL}-terminated string key.
 @end table
 @item Returns
-A boolean value:
-@table @code
-@item PDF_TRUE
-An element associated with @var{key} exists.
-@item PDF_FALSE
-There is no element associated with @var{key}.
-@end table
+@code{PDF_TRUE} if the element associated with @var{key} exists, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
 pdf_hash_t *hash;
@@ -3158,18 +3152,18 @@ Renames the key @var{key} to @var{new_key} in @var{table}.
 @item table
 A hash table.
 @item key
-A valid NUL-terminated string key.
+A valid @code{NUL}-terminated string key.
 @item new_key
-A valid NUL-terminated string key.
+A valid @code{NUL}-terminated string key.
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
 @item PDF_ENOMEM
 Not enough memory to perform the operation.
 @end table
 @end table
 @item Returns
-PDF_TRUE if correctly renamed, PDF_FALSE otherwise.
+@code{PDF_TRUE} if correctly renamed, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
 pdf_hash_t *hash;
@@ -3209,10 +3203,10 @@ Returns the value of the element associated with the given @var{key} in @var{tab
 @item table
 A hash table.
 @item key
-A valid NUL-terminated string key.
+A valid @code{NUL}-terminated string key.
 @end table
 @item Returns
-The value associated to @var{key}, or NULL if not found.
+The value associated to @var{key}, or @code{NULL} if not found.
 @item Usage example
 @example
 pdf_hash_t *hash;
@@ -3252,7 +3246,7 @@ The address of an iterator to get initialized.
 A hash table.
 @end table
 @item Returns
-PDF_TRUE if iterator correctly initialized, PDF_FALSE otherwise.
+@code{PDF_TRUE} if iterator is correctly initialized, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
 pdf_hash_t *hash;
@@ -3297,7 +3291,7 @@ A pointer where to save the key.
 A pointer where to save the value.
 @end table
 @item Returns
-PDF_TRUE if a valid next element was found, PDF_FALSE otherwise.
+@code{PDF_TRUE} if a valid next element was found, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
 pdf_hash_t *hash;
@@ -3384,14 +3378,14 @@ Adds the @var{value} text with the associated key @var{key} to @var{table}. If @
 @item table
 A hash table.
 @item key
-A valid NUL-terminated string key.
+A valid @code{NUL}-terminated string key.
 @item value
-A valid pdf_text_t.
+A valid @code{pdf_text_t}.
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @end table
 @item Returns
-PDF_TRUE if correctly added, PDF_FALSE otherwise.
+@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
 pdf_hash_t *hash;
@@ -3428,10 +3422,10 @@ Get a text variable from a hash table.
 @item table
 The hash table to get the value from.
 @item key
-A valid NUL-terminated string key.
+A valid @code{NUL}-terminated string key.
 @end table
 @item Returns
-The pdf_text_t associated with @var{key}.
+The @code{pdf_text_t} associated with @var{key}.
 @item Usage example
 @example
 pdf_text_t text;
@@ -3454,14 +3448,14 @@ Adds the @var{value} time with the associated key @var{key} to @var{table}. If @
 @item table
 A hash table.
 @item key
-A valid NUL-terminated string key.
+A valid @code{NUL}-terminated string key.
 @item value
-A valid pdf_time_t.
+A valid @code{pdf_time_t}.
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @end table
 @item Returns
-PDF_TRUE if correctly added, PDF_FALSE otherwise.
+@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
 pdf_hash_t *hash;
@@ -3496,10 +3490,10 @@ Get a time variable from a hash table.
 @item table
 The hash table to get the value from.
 @item key
-A valid NUL-terminated string key.
+A valid @code{NUL}-terminated string key.
 @end table
 @item Returns
-The pdf_time_t associated with @var{key}.
+The @code{pdf_time_t} associated with @var{key}.
 @item Usage example
 @example
 pdf_time_t time;
@@ -3523,14 +3517,14 @@ Adds the @var{value} list with the associated key @var{key} to @var{table}. If @
 @item table
 A hash table.
 @item key
-A valid NUL-terminated string key.
+A valid @code{NUL}-terminated string key.
 @item value
-A valid pdf_list_t.
+A valid @code{pdf_list_t}.
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @end table
 @item Returns
-PDF_TRUE if correctly added, PDF_FALSE otherwise.
+@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
 pdf_hash_t *hash;
@@ -3565,10 +3559,10 @@ Get a list variable from a hash table.
 @item table
 The hash table to get the value from.
 @item key
-A valid NUL-terminated string key.
+A valid @code{NUL}-terminated string key.
 @end table
 @item Returns
-The pdf_list_t associated with @var{key}.
+The @code{pdf_list_t} associated with @var{key}.
 @item Usage example
 @example
 pdf_list_t *list;
@@ -3592,14 +3586,14 @@ Adds the @var{value} hash with the associated key @var{key} to @var{table}. If @
 @item table
 A hash table.
 @item key
-A valid NUL-terminated string key.
+A valid @code{NUL}-terminated string key.
 @item value
-A valid pdf_hash_t.
+A valid @code{pdf_hash_t}.
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @end table
 @item Returns
-PDF_TRUE if correctly added, PDF_FALSE otherwise.
+@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
 pdf_hash_t *hash;
@@ -3634,10 +3628,10 @@ Get a hash variable from a hash table.
 @item table
 The hash table to get the value from.
 @item key
-A valid NUL-terminated string key.
+A valid @code{NUL}-terminated string key.
 @end table
 @item Returns
-The pdf_hash_t associated with @var{key}.
+The @code{pdf_hash_t} associated with @var{key}.
 @item Usage example
 @example
 pdf_hash_t *hash;
@@ -3661,14 +3655,14 @@ Adds the @var{value} stream with the associated key @var{key} to @var{table}. If
 @item table
 A hash table.
 @item key
-A valid NUL-terminated string key.
+A valid @code{NUL}-terminated string key.
 @item value
-A valid pdf_stm_t.
+A valid @code{pdf_stm_t}.
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @end table
 @item Returns
-PDF_TRUE if correctly added, PDF_FALSE otherwise.
+@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
 pdf_hash_t *hash;
@@ -3712,10 +3706,10 @@ Get a stm variable from a hash table.
 @item table
 The hash table to get the value from.
 @item key
-A valid NUL-terminated string key.
+A valid @code{NUL}-terminated string key.
 @end table
 @item Returns
-The pdf_stm_t associated with @var{key}.
+The @code{pdf_stm_t} associated with @var{key}.
 @item Usage example
 @example
 pdf_stm_t stm;
@@ -3740,14 +3734,14 @@ Adds the @var{value} stream with the associated key @var{key} to @var{table}. If
 @item table
 A hash table.
 @item key
-A valid NUL-terminated string key.
+A valid @code{NUL}-terminated string key.
 @item value
-A valid pdf_size_t.
+A valid @code{pdf_size_t}.
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @end table
 @item Returns
-PDF_TRUE if correctly added, PDF_FALSE otherwise.
+@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
 pdf_hash_t *hash;
@@ -3781,10 +3775,10 @@ Get a size variable from a hash table.
 @item table
 The hash table to get the value from.
 @item key
-A valid NUL-terminated string key.
+A valid @code{NUL}-terminated string key.
 @end table
 @item Returns
-The pdf_size_t associated with @var{key}.
+The @code{pdf_size_t} associated with @var{key}.
 @item Usage example
 @example
 pdf_size_t size;
@@ -3808,14 +3802,14 @@ Adds the heap-allocated @var{value} string with the associated key @var{key} to 
 @item table
 A hash table.
 @item key
-A valid NUL-terminated string key.
+A valid @code{NUL}-terminated string key.
 @item value
-A valid NUL-terminated heap-allocated string value.
+A valid @code{NUL}-terminated heap-allocated string value.
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @end table
 @item Returns
-PDF_TRUE if correctly added, PDF_FALSE otherwise.
+@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
 pdf_hash_t *hash;
@@ -3847,14 +3841,14 @@ Duplicates @var{value} in heap and adds it with the associated key @var{key} to 
 @item table
 A hash table.
 @item key
-A valid NUL-terminated string key.
+A valid @code{NUL}-terminated string key.
 @item value
-A valid NUL-terminated string value.
+A valid @code{NUL}-terminated string value.
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @end table
 @item Returns
-PDF_TRUE if correctly added, PDF_FALSE otherwise.
+@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
 pdf_hash_t *hash;
@@ -3886,14 +3880,14 @@ Adds the static and constant @var{value} string with the associated key @var{key
 @item table
 A hash table.
 @item key
-A valid NUL-terminated string key.
+A valid @code{NUL}-terminated string key.
 @item value
-A valid static and constant NUL-terminated string value.
+A valid static and constant @code{NUL}-terminated string value.
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @end table
 @item Returns
-PDF_TRUE if correctly added, PDF_FALSE otherwise.
+@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
 pdf_hash_t *hash;
@@ -3926,7 +3920,7 @@ Get a string variable from a hash table. Output string is not duplicated.
 @item table
 The hash table to get the value from.
 @item key
-A valid NUL-terminated string key.
+A valid @code{NUL}-terminated string key.
 @end table
 @item Returns
 The string associated with @var{key}.
@@ -5792,7 +5786,7 @@ if(ret_code != PDF_OK)
 @deftypefun {const pdf_char_t *} pdf_text_get_country (const pdf_text_t @var{text})
 
 Return the `ISO-3166-1 alpha-2' country code associated with a text variable, as a
-NUL-terminated string. The returned string should not be modified, as it is
+@code{NUL}-terminated string. The returned string should not be modified, as it is
 managed by the `pdf_text_t' data type.
 
 @table @strong
@@ -5818,7 +5812,7 @@ code = pdf_text_get_country (text);
 @deftypefun {const pdf_char_t *} pdf_text_get_language (const pdf_text_t @var{text})
 
 Return the `ISO-639-1' language code associated with a text variable, as a
-NUL-terminated string. The returned string should not be modified, as it is
+@code{NUL}-terminated string. The returned string should not be modified, as it is
 managed by the `pdf_text_t' data type.
 
 @table @strong
@@ -5969,7 +5963,7 @@ pdf_dealloc(str);
 @deftypefun pdf_status_t pdf_text_get_pdfdocenc (pdf_char_t **@var{contents}, const pdf_text_t @var{text})
 
 Get the contents of a text variable encoded in PDF Doc Encoding,
-and NUL-terminated.
+and @code{NUL}-terminated.
 
 @table @strong
 @item Parameters
@@ -6056,7 +6050,7 @@ A text variable
 A single ASCII char used as delimiter
 @end table
 @item Returns
-A NUL-terminated string with the contents of the text object in hexadecimal representation. The string must be deallocated by the caller.
+A @code{NUL}-terminated string with the contents of the text object in hexadecimal representation. The string must be deallocated by the caller.
 @item Usage Example
 @example
 pdf_text_t text;
