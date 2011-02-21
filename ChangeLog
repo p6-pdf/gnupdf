@@ -1,3 +1,7 @@
+2011-02-21  Aleksander Morgado <aleksander@gnu.org>
+
+	gnulib: updated. Replaced deprecated 'malloc' module with 'malloc-gnu'.
+
 2011-02-20  Jose E. Marchesi  <jemarch@gnu.org>
 
 	manual: changes to the object API.
