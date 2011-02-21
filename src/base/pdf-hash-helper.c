@@ -186,6 +186,32 @@ pdf_hash_add_string (pdf_hash_t        *table,
                        error);
 }
 
+pdf_bool_t
+pdf_hash_add_duplicated_string (pdf_hash_t        *table,
+                                const pdf_char_t  *key,
+                                const pdf_char_t  *value,
+                                pdf_error_t      **error)
+{
+  return pdf_hash_add (table,
+                       key,
+                       (void *)strdup (value),
+                       pdf_dealloc,
+                       error);
+}
+
+pdf_bool_t
+pdf_hash_add_static_string (pdf_hash_t        *table,
+                            const pdf_char_t  *key,
+                            const pdf_char_t  *value,
+                            pdf_error_t      **error)
+{
+  return pdf_hash_add (table,
+                       key,
+                       (void *)value,
+                       NULL,
+                       error);
+}
+
 const pdf_char_t *
 pdf_hash_get_string (pdf_hash_t       *table,
                      const pdf_char_t *key)

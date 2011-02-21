@@ -4700,6 +4700,85 @@ if (hash != NULL)
 @end table
 @end deftypefun
 
+@deftypefun pdf_bool_t pdf_hash_add_duplicated_string (pdf_hash_t @var{*table}, const pdf_char_t @var{*key}, const pdf_char_t @var{*value}, pdf_error_t @var{**error})
+
+Duplicates @var{value} in heap and adds it with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The internally duplicated string will be owned by the hash table, and disposed when the hash table is destroyed.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid NUL-terminated string key.
+@item value
+A valid NUL-terminated string value.
+@item error
+A pdf_error_t to report errors or NULL.
+@end table
+@item Returns
+PDF_TRUE if correctly added, PDF_FALSE otherwise.
+@item Usage example
+@example
+pdf_hash_t *hash;
+pdf_error_t *error = NULL;
+
+/* Create a new hash */
+hash = pdf_hash_new (NULL);
+if (hash != NULL)
+   @{
+      if (pdf_hash_add_duplicated_string (hash, "a-key", "a-value", &error))
+         @{
+            pdf_error_destroy (error);
+         @}
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_hash_add_static_string (pdf_hash_t @var{*table}, const pdf_char_t @var{*key}, const pdf_char_t @var{*value}, pdf_error_t @var{**error})
+
+Adds the static and constant @var{value} string with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. Only use this method if @var{value} will always exist. It can be used with statically allocated strings in the main program, but not with statically allocated strings in dynamically loadable modules (as they may be unloaded during the program execution).
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid NUL-terminated string key.
+@item value
+A valid static and constant NUL-terminated string value.
+@item error
+A pdf_error_t to report errors or NULL.
+@end table
+@item Returns
+PDF_TRUE if correctly added, PDF_FALSE otherwise.
+@item Usage example
+@example
+pdf_hash_t *hash;
+pdf_error_t *error = NULL;
+static const pdf_char_t *a_value = "a-value";
+
+/* Create a new hash */
+hash = pdf_hash_new (NULL);
+if (hash != NULL)
+   @{
+      if (pdf_hash_add_static_string (hash, "a-key", a_value, &error))
+         @{
+            pdf_error_destroy (error);
+         @}
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+   @}
+@end example
+@end table
+@end deftypefun
+
 @deftypefun {const pdf_char_t *}pdf_hash_get_string (pdf_hash_t @var{*table}, const pdf_char_t *@var{key})
 
 Get a string variable from a hash table. Output string is not duplicated.
