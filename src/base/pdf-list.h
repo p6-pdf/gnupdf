@@ -862,9 +862,9 @@ pdf_list_sorted_indexof (const pdf_list_t             *list,
                          pdf_list_element_compar_fn_t  compar_fn,
                          const void                   *element)
 {
-  PDF_ASSERT_POINTER_RETURN_VAL (list, NULL);
-  PDF_ASSERT_POINTER_RETURN_VAL (compar_fn, NULL);
-  PDF_ASSERT_POINTER_RETURN_VAL (element, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (list, (pdf_size_t)-1);
+  PDF_ASSERT_POINTER_RETURN_VAL (compar_fn, (pdf_size_t)-1);
+  PDF_ASSERT_POINTER_RETURN_VAL (element, (pdf_size_t)-1);
 
   return (pdf_size_t) gl_sortedlist_indexof ((gl_list_t) list,
                                              compar_fn,
@@ -881,9 +881,9 @@ pdf_list_sorted_indexof_from_to (const pdf_list_t               *list,
 {
   pdf_size_t list_size;
 
-  PDF_ASSERT_POINTER_RETURN_VAL (list, NULL);
-  PDF_ASSERT_POINTER_RETURN_VAL (compar_fn, NULL);
-  PDF_ASSERT_POINTER_RETURN_VAL (element, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (list, (pdf_size_t)-1);
+  PDF_ASSERT_POINTER_RETURN_VAL (compar_fn, (pdf_size_t)-1);
+  PDF_ASSERT_POINTER_RETURN_VAL (element, (pdf_size_t)-1);
 
   /* Check range */
   list_size = pdf_list_size (list);
