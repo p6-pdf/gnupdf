@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,104 +28,66 @@
 #include <pdf.h>
 #include <check.h>
 
+#include "pdf-list-test-common.h"
+
 /*
  * Test: pdf_list_next_node_001
  * Description:
  *   Try to get the next node given another node.
  * Success condition:
- *   Returns PDF_OK.
+ *   Returns the next node.
  */
 START_TEST (pdf_list_next_node_001)
 {
-  pdf_list_t list;
-  pdf_list_node_t node,next;
+  pdf_list_t *list;
+  pdf_list_node_t *node, *next;
   int elem, elem2;
-  pdf_status_t st;
-  
+
   elem = 222;
   elem2 = 333;
 
-  pdf_init();
+  pdf_init ();
 
-  pdf_list_new (NULL, NULL, 0, &list);
+  list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
 
-  pdf_list_add_last (list, &elem, &node);
+  node = pdf_list_add_last (list, &elem, NULL);
   pdf_list_add_last (list, &elem2, NULL);
 
-  st = pdf_list_next_node (list, node, &next);
+  next = pdf_list_next_node (list, node);
+  fail_if (next == NULL);
 
-  fail_if (st != PDF_OK);
-  fail_if (*((int*) pdf_list_node_value (list, next)) != 333);
+  fail_if (*((int *) pdf_list_node_value (list, next)) != 333);
 
   pdf_list_destroy (list);
 }
 END_TEST
-
 
 /*
  * Test: pdf_list_next_node_002
  * Description:
  *   Try to get the next node given the last node in the list.
  * Success condition:
- *   Returns PDF_ENONODE
+ *   Returns NULL.
  */
 START_TEST (pdf_list_next_node_002)
 {
-  pdf_list_t list;
-  pdf_list_node_t node, next;
+  pdf_list_t *list;
+  pdf_list_node_t *node;
   int elem;
-  pdf_status_t st;
-  
+
   elem = 222;
 
-  pdf_init();
+  pdf_init ();
 
-  pdf_list_new (NULL, NULL, 0, &list);
+  list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
 
-  pdf_list_add_first (list, &elem, &node);
+  node = pdf_list_add_first (list, &elem, NULL);
 
-  st = pdf_list_next_node (list, node, &next);
-  fail_if (st != PDF_ENONODE);
+  fail_if (pdf_list_next_node (list, node) != NULL);
 
   pdf_list_destroy (list);
 }
 END_TEST
-
-
-
-/*
- * Test: pdf_list_next_node_003
- * Description:
- *   Try to get the next node given a NULL next pointer.
- * Success condition:
- *   Returns PDF_EBADDATA.
- */
-START_TEST (pdf_list_next_node_003)
-{
-  pdf_list_t list;
-  pdf_list_node_t node;
-  int elem;
-  pdf_status_t st;
-  
-  elem = 222;
-
-  pdf_init();
-
-  pdf_list_new (NULL, NULL, 0, &list);
-
-  pdf_list_add_last (list, &elem, &node);
-
-
-  st = pdf_list_next_node (list, node, NULL);
-
-  fail_if (st != PDF_EBADDATA);
-
-  pdf_list_destroy (list);
-}
-END_TEST
-
-
-
 
 /*
  * Test case creation function
@@ -133,10 +95,10 @@ END_TEST
 TCase *
 test_pdf_list_next_node (void)
 {
-  TCase *tc = tcase_create("pdf_list_next_node");
-  tcase_add_test(tc, pdf_list_next_node_001);
-  tcase_add_test(tc, pdf_list_next_node_002);
-  tcase_add_test(tc, pdf_list_next_node_003);
+  TCase *tc = tcase_create ("pdf_list_next_node");
+
+  tcase_add_test (tc, pdf_list_next_node_001);
+  tcase_add_test (tc, pdf_list_next_node_002);
 
   return tc;
 }

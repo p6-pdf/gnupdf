@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,68 +24,39 @@
  */
 
 #include <config.h>
-
 #include <stdio.h>
 #include <pdf.h>
 #include <check.h>
 
-extern pdf_bool_t l_comp (const void * elemb, const void * elema);
-extern int l_comp_desc (const void *elema, const void * elemb);
-extern int l_comp_asc (const void *elema, const void * elemb);
-
+#include "pdf-list-test-common.h"
 
 /*
  * Test: pdf_list_sorted_add_001
  * Description:
  *   Try to add an element at the beginning of the list.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns the newly added node.
  */
 START_TEST (pdf_list_sorted_add_001)
 {
-  pdf_list_t list;
+  pdf_list_t *list;
   int elem;
-  pdf_status_t st;
-  
+  pdf_error_t *error = NULL;
+  pdf_list_node_t *node;
+
   elem = 5123;
 
-  pdf_init();
+  pdf_init ();
 
-  pdf_list_new (l_comp, NULL, 0, &list);
-  st = pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
-  fail_if (st != PDF_OK);
+  list = pdf_list_new (l_comp, NULL, PDF_FALSE, NULL);
+
+  node = pdf_list_sorted_add (list, l_comp_asc, &elem, &error);
+  fail_if (node == NULL);
+  fail_if (error != NULL);
 
   pdf_list_destroy (list);
 }
 END_TEST
-
-
-/*
- * Test: pdf_list_sorted_add_002
- * Description:
- *   Try to add an element at the beginning of the list with NULL compar_fn.
- * Success condition:
- *   Returns PDF_EBADDATA
- */
-START_TEST (pdf_list_sorted_add_002)
-{
-  pdf_list_t list;
-  int elem;
-  pdf_status_t st;
-  
-  elem = 5123;
-
-  pdf_init();
-
-  pdf_list_new (l_comp, NULL, 0, &list);
-  st = pdf_list_sorted_add (list, NULL, &elem, NULL);
-  fail_if (st != PDF_EBADDATA);
-
-  pdf_list_destroy (list);
-}
-END_TEST
-
-
 
 /*
  * Test case creation function
@@ -93,10 +64,9 @@ END_TEST
 TCase *
 test_pdf_list_sorted_add (void)
 {
-  TCase *tc = tcase_create("pdf_list_sorted_add");
-  tcase_add_test(tc, pdf_list_sorted_add_001);
-  tcase_add_test(tc, pdf_list_sorted_add_002);
+  TCase *tc = tcase_create ("pdf_list_sorted_add");
 
+  tcase_add_test (tc, pdf_list_sorted_add_001);
   return tc;
 }
 

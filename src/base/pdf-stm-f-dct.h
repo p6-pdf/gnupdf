@@ -33,22 +33,22 @@
 
 /* Filters implementation API */
 
-pdf_status_t pdf_stm_f_dctdec_init (pdf_hash_t params,
-                                     void **state);
-pdf_status_t pdf_stm_f_dctdec_apply (pdf_hash_t params,
-                                      void *state,
-                                      pdf_buffer_t in,
-                                      pdf_buffer_t out,
-                                      pdf_bool_t finish_p);
+pdf_status_t pdf_stm_f_dctdec_init (pdf_hash_t  *params,
+                                    void       **state);
+pdf_status_t pdf_stm_f_dctdec_apply (pdf_hash_t    *params,
+                                      void         *state,
+                                      pdf_buffer_t  in,
+                                      pdf_buffer_t  out,
+                                      pdf_bool_t    finish_p);
 pdf_status_t pdf_stm_f_dctdec_dealloc_state (void *state);
 
-pdf_status_t pdf_stm_f_dctenc_init (pdf_hash_t params,
-                                     void **state);
-pdf_status_t pdf_stm_f_dctenc_apply (pdf_hash_t params,
-                                      void *state,
-                                      pdf_buffer_t in,
-                                      pdf_buffer_t out,
-                                      pdf_bool_t finish_p);
+pdf_status_t pdf_stm_f_dctenc_init (pdf_hash_t  *params,
+                                     void      **state);
+pdf_status_t pdf_stm_f_dctenc_apply (pdf_hash_t   *params,
+                                     void         *state,
+                                     pdf_buffer_t  in,
+                                     pdf_buffer_t  out,
+                                     pdf_bool_t    finish_p);
 pdf_status_t pdf_stm_f_dctenc_dealloc_state (void *state);
 
 #endif /* pdf_stm_f_dct.h */

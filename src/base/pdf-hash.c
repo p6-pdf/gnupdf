@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,478 +33,359 @@
 #include <pdf-global.h>
 #include <pdf-error.h>
 #include <pdf-alloc.h>
-#include <gl_array_list.h>
-#include <gl_linkedhash_list.h>
+#include <gl_rbtreehash_list.h>
 
 #include <pdf-hash.h>
 
 #define SIZE_BITS (sizeof (size_t) * CHAR_BIT)
 
+struct pdf_hash_element_s
+{
+  const pdf_char_t *key;
+  const void *value;
+  pdf_hash_value_dispose_fn_t value_disp_fn;
+};
+
+typedef struct pdf_hash_element_s pdf_hash_element_t;
+
+/* Returns <0,=0,>0 if key1 is <,==, or > than key2 */
+static int hash_element_compare (const pdf_hash_element_t *elt1,
+                                 const pdf_hash_element_t *elt2);
+
+/* Returns true if both keys in the elements are equal */
+static pdf_bool_t hash_element_equal (const pdf_hash_element_t *elt1,
+                                      const pdf_hash_element_t *elt2);
+
 /* Compute a hash code for a NUL-terminated string starting at X,
-   and return the hash code.
-   The result is platform dependent: it depends on the size of the 'size_t'
-   type and on the signedness of the 'char' type.  */
-static size_t hash_pjw (const void *x);
+ * and return the hash code.
+ * The result is platform dependent: it depends on the size of the 'size_t'
+ * type and on the signedness of the 'char' type.  */
+static pdf_size_t hash_element_pjw (const pdf_hash_element_t *elt);
 
-/* Returns true if both element string keys are equal */
-static bool elem_key_equal (const void *elt1, const void *elt2);
+/* Dispose a hash element */
+static void hash_element_dispose (pdf_hash_element_t *elt);
 
-/* Returns true if both string keys are equal */
-static bool key_equal (const void *key1, const void *key2);
+/* Find a hash element by key in the hash table */
+static pdf_hash_element_t *hash_search_key (const pdf_hash_t *table,
+                                            const pdf_char_t *key,
+                                            gl_list_node_t   *p_node);
 
-/* Returns 1 if str is only composed by numbers, 0 otherwise. */
-static int key_numeric_p (const char *str);
-
-/* Returns <0,=0,>0 if key1 is <,==, or > than key2 */
-static int key_numeric_cmp (const char *key1, const char *key2);
-
-/* Returns <0,=0,>0 if key1 is <,==, or > than key2 */
-static int key_compare (const void *key1, const void *key2);
-
-pdf_status_t
-pdf_hash_new (pdf_hash_key_dispose_fn_t dispose_key_fn, pdf_hash_t *table)
+pdf_hash_t *
+pdf_hash_new (pdf_error_t **error)
 {
-  pdf_status_t st;
+  gl_list_t list;
 
-  st = PDF_OK;
+  list = gl_list_nx_create_empty (GL_RBTREEHASH_LIST,
+                                  (gl_listelement_equals_fn) hash_element_equal,
+                                  (gl_listelement_hashcode_fn) hash_element_pjw,
+                                  (gl_listelement_dispose_fn) hash_element_dispose,
+                                  PDF_FALSE);
+  if (list == NULL)
+    pdf_set_error (error,
+                   PDF_EDOMAIN_BASE_HASH,
+                   PDF_ENOMEM,
+                   "not enough memory: couldn't create new hash table");
 
+  return (pdf_hash_t *)list;
+}
+
+void
+pdf_hash_destroy (pdf_hash_t *table)
+{
   if (table != NULL)
-    {
-      table->elements = gl_list_nx_create_empty (GL_LINKEDHASH_LIST,
-                                                 elem_key_equal, hash_pjw,
-                                                 NULL, 0);
-
-      if (table->elements != NULL)
-        {
-          table->keys = gl_list_nx_create_empty (GL_ARRAY_LIST, key_equal, NULL,
-                                                 dispose_key_fn, 0);
-
-          if (table->keys == NULL)
-            {
-              st = PDF_ENOMEM;
-            }
-        }
-      else
-        {
-          st = PDF_ENOMEM;
-        }
-    }
-  else
-    {
-      st = PDF_EBADDATA;
-    }
-
-  return st;
+    gl_list_free ((gl_list_t) table);
 }
-
-
-pdf_status_t
-pdf_hash_destroy (pdf_hash_t table)
-{
-  gl_list_iterator_t itr;
-  const void *elt;
-
-  if (table.elements != NULL && table.keys != NULL)
-    {
-      itr = gl_list_iterator ((gl_list_t)table.elements);
-      while (gl_list_iterator_next (&itr, &elt, NULL))
-        {
-          if (((pdf_hash_element_t*)elt)->disp_fn != NULL)
-            {
-              ((pdf_hash_element_t*)elt)->
-                disp_fn ((void*) ((pdf_hash_element_t*)elt)->value);
-            }
-          pdf_dealloc((pdf_hash_element_t*)elt);
-        }
-      gl_list_iterator_free (&itr);
-  
-      gl_list_free((gl_list_t)table.elements);
-      gl_list_free((gl_list_t)table.keys);
-    }
-  
-  return PDF_OK;
-}
-
 
 pdf_size_t
-pdf_hash_size (const pdf_hash_t table)
+pdf_hash_size (const pdf_hash_t *table)
 {
-  return (gl_list_size ((gl_list_t) table.keys));
+  return (table != NULL ?
+          gl_list_size ((gl_list_t) table) :
+          0);;
 }
 
+pdf_bool_t
+pdf_hash_key_p (const pdf_hash_t *table,
+                const pdf_char_t *key)
+{
+  PDF_ASSERT_POINTER_RETURN_VAL (table, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (key, PDF_FALSE);
+
+  return (hash_search_key (table, key, NULL) != NULL ?
+          PDF_TRUE : PDF_FALSE);
+}
 
 pdf_bool_t
-pdf_hash_key_p (const pdf_hash_t table, const char *key)
+pdf_hash_rename_key (pdf_hash_t        *table,
+                     const pdf_char_t  *key,
+                     const pdf_char_t  *new_key,
+                     pdf_error_t      **error)
 {
-  if (gl_sortedlist_search ((gl_list_t) table.keys, key_compare,
-                      (const void*) key) != NULL)
+  pdf_hash_element_t *elt;
+  gl_list_node_t node = NULL;
+  pdf_error_t *inner_error = NULL;
+
+  PDF_ASSERT_POINTER_RETURN_VAL (table, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (key, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (new_key, PDF_FALSE);
+
+  elt = hash_search_key (table, key, &node);
+
+  /* If element not found, return */
+  if (elt == NULL)
+    return PDF_FALSE;
+
+  /* Add the same element with the new key */
+  if (!pdf_hash_add (table,
+                     new_key,
+                     elt->value,
+                     elt->value_disp_fn,
+                     &inner_error))
     {
+      pdf_propagate_error (error, inner_error);
+      return PDF_FALSE;
+    }
+
+  /* Remove the element with the old key */
+  gl_list_remove_node ((gl_list_t) table, node);
+
+  return PDF_TRUE;
+}
+
+static pdf_bool_t
+hash_add (pdf_hash_t                   *table,
+          const pdf_char_t             *key,
+          const void                   *value,
+          pdf_hash_value_dispose_fn_t   value_disp_fn,
+          pdf_bool_t                    allow_replace,
+          pdf_error_t                 **error)
+{
+  gl_list_node_t node = NULL;
+  pdf_hash_element_t *elt;
+  pdf_char_t *key_dup;
+
+  /* Look for an element with same key */
+  if (hash_search_key (table, key, &node))
+    {
+      /* Key already exists. */
+      if (!allow_replace)
+        {
+          pdf_set_error (error,
+                         PDF_EDOMAIN_BASE_HASH,
+                         PDF_EEXIST,
+                         "key '%s' already exits, cannot add it again",
+                         key);
+          return PDF_FALSE;
+        }
+
+      /* Remove the previous element */
+      gl_list_remove_node ((gl_list_t) table, node);
+    }
+
+  /* New hash table element */
+  elt = pdf_alloc (sizeof (*elt));
+  key_dup = strdup (key);
+  if (elt == NULL || key_dup == NULL)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_HASH,
+                     PDF_ENOMEM,
+                     "not enough memory: couldn't add new hash table item");
+      if (elt)
+        pdf_dealloc (elt);
+      if (key_dup)
+        pdf_dealloc (key_dup);
+      return PDF_FALSE;
+    }
+
+  /* Set new element contents */
+  elt->key = key_dup;
+  elt->value = value;
+  elt->value_disp_fn = value_disp_fn;
+
+  /* Add to the list */
+  if (!gl_sortedlist_nx_add ((gl_list_t) table,
+                             (gl_listelement_compar_fn) hash_element_compare,
+                             elt))
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_HASH,
+                     PDF_ENOMEM,
+                     "not enough memory: "
+                     "couldn't add new element to the hash table");
+      hash_element_dispose (elt);
+      return PDF_FALSE;
+    }
+
+  return PDF_TRUE;
+}
+
+pdf_bool_t
+pdf_hash_add (pdf_hash_t                   *table,
+              const pdf_char_t             *key,
+              const void                   *value,
+              pdf_hash_value_dispose_fn_t   value_disp_fn,
+              pdf_error_t                 **error)
+{
+  PDF_ASSERT_POINTER_RETURN_VAL (table, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (key, PDF_FALSE);
+
+  return hash_add (table, key, value, value_disp_fn, PDF_FALSE, error);
+}
+
+pdf_bool_t
+pdf_hash_replace (pdf_hash_t                   *table,
+                  const pdf_char_t             *key,
+                  const void                   *value,
+                  pdf_hash_value_dispose_fn_t   value_disp_fn,
+                  pdf_error_t                 **error)
+{
+  PDF_ASSERT_POINTER_RETURN_VAL (table, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (key, PDF_FALSE);
+
+  return hash_add (table, key, value, value_disp_fn, PDF_TRUE, error);
+}
+
+pdf_bool_t
+pdf_hash_remove (pdf_hash_t       *table,
+                 const pdf_char_t *key)
+{
+  gl_list_node_t node = NULL;
+
+  PDF_ASSERT_POINTER_RETURN_VAL (table, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (key, PDF_FALSE);
+
+  if (hash_search_key (table, key, &node))
+    {
+      /* Remove the element  */
+      gl_list_remove_node ((gl_list_t) table, node);
       return PDF_TRUE;
     }
-  
+
+  /* Not found */
   return PDF_FALSE;
 }
 
-
-pdf_status_t
-pdf_hash_rename (pdf_hash_t table, const char *key, const char *new_key)
+const void *
+pdf_hash_get_value (const pdf_hash_t *table,
+                    const pdf_char_t *key)
 {
-  pdf_status_t st;
-  gl_list_node_t knode, vnode, tnode;
-  pdf_hash_element_t elem, *updated;
-  
-  st = PDF_OK;
+  pdf_hash_element_t *elt;
 
-  if (key != NULL && new_key != NULL)
-    {
-      knode = gl_sortedlist_search ((gl_list_t) table.keys, key_compare, key);
-      if (knode != NULL)
-        {
-          /* get the node from key and update its key*/
-          elem.key = key;
-          vnode = gl_list_search ((gl_list_t)table.elements, &elem);
-          updated = (pdf_hash_element_t*)
-            gl_list_node_value ((gl_list_t)table.elements, vnode);
-          updated->key = new_key;
+  PDF_ASSERT_POINTER_RETURN_VAL (table, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (key, NULL);
 
-          /* update the lists */
-          tnode = gl_list_nx_add_first ((gl_list_t) table.elements, updated);
-          if (tnode != NULL)
-            {
-              gl_list_remove_node ((gl_list_t)table.elements, vnode);
-          
-              if (gl_sortedlist_nx_add ((gl_list_t)table.keys, key_compare, new_key)
-                  != NULL)
-                {
-                  gl_sortedlist_remove ((gl_list_t)table.keys, key_compare, key);
-                }
-              else
-                {
-                  gl_list_remove_node ((gl_list_t) table.elements, tnode);
-                  st = PDF_ENOMEM;
-                }
-            }
-          else
-            {
-              st = PDF_ENOMEM;
-            }
-        }
-      else
-        {
-          st = PDF_ERROR;
-        }
-    }
-  else
-    {
-      st = PDF_EBADDATA;
-    }
+  elt = hash_search_key (table, key, NULL);
 
-  return st;
-
+  return (elt != NULL ? elt->value : NULL);
 }
 
-
-pdf_status_t
-pdf_hash_add (pdf_hash_t table, const char *key, const void *element,
-              pdf_hash_element_dispose_fn_t disp_fn)
+pdf_bool_t
+pdf_hash_iterator_init (pdf_hash_iterator_t *itr,
+                        const pdf_hash_t    *table)
 {
-  pdf_status_t st;
-  pdf_hash_element_t *newelt;
-  gl_list_node_t tnode;
-  st = PDF_OK;
+  PDF_ASSERT_POINTER_RETURN_VAL (itr, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (table, PDF_FALSE);
 
-  if (key != NULL && element != NULL)
-    {
-      newelt = pdf_alloc (sizeof (pdf_hash_element_t));
-      if (newelt != NULL)
-        {
-          newelt->key = key;
-          newelt->value = element;
-          newelt->disp_fn = disp_fn;
-          tnode = gl_list_nx_add_first ((gl_list_t) table.elements, newelt);
-          if (tnode != NULL)
-            {
-              if (gl_sortedlist_nx_add ((gl_list_t) table.keys, key_compare, key)
-                  == NULL)
-                {
-                  gl_list_remove_node ((gl_list_t) table.elements, tnode);
-                  st = PDF_ENOMEM;
-                }
-            }
-          else
-            {
-              pdf_dealloc (newelt);
-              st = PDF_ENOMEM;
-            }
-        }
-      else
-        {
-          st = PDF_ENOMEM;
-        }
-    }
-  else
-    {
-      st = PDF_EBADDATA;
-    }
-  
+  *((gl_list_iterator_t *)itr) = gl_list_iterator ((gl_list_t) table);
 
-  return st;
-
+  return PDF_TRUE;
 }
 
-
-pdf_status_t
-pdf_hash_remove (pdf_hash_t table, const char *key)
+pdf_bool_t
+pdf_hash_iterator_next (pdf_hash_iterator_t  *itr,
+                        const pdf_char_t    **key,
+                        const void          **value)
 {
-  pdf_status_t st;
-  pdf_hash_element_t elt;
+  const pdf_hash_element_t *element;
   gl_list_node_t node;
-  
-  st = PDF_OK;
 
-  if (key != NULL)
+  PDF_ASSERT_POINTER_RETURN_VAL (itr, PDF_FALSE);
+
+  if (!gl_list_iterator_next (((gl_list_iterator_t *) itr),
+                              (const void **)&element,
+                              &node))
     {
-      elt.key = key;
-      node = gl_list_search ((gl_list_t)table.elements, &elt);
-      if (node != NULL)
-        {
-          pdf_hash_element_t *removed;
-          removed = (pdf_hash_element_t*)
-                    gl_list_node_value((gl_list_t)table.elements, node);
-
-          if (removed->disp_fn != NULL)
-            {
-              removed->disp_fn (removed->value);
-            }
-
-          pdf_dealloc(removed);
-          gl_list_remove_node ((gl_list_t)table.elements, node);
-          gl_sortedlist_remove ((gl_list_t)table.keys, key_compare, key);
-        }
-      else
-        {
-          st = PDF_ERROR;
-        }
+      if (key)
+        *key = NULL;
+      if (value)
+        *value = NULL;
+      return PDF_FALSE;
     }
-  else
-    {
-      st = PDF_EBADDATA;
-    }
-  
 
-  return st;
-
+  if (key)
+    *key = element->key;
+  if (value)
+    *value = element->value;
+  return PDF_TRUE;
 }
 
-
-pdf_status_t
-pdf_hash_get (const pdf_hash_t table, const char *key, const void **elem_pointer)
+void
+pdf_hash_iterator_deinit (pdf_hash_iterator_t *itr)
 {
-  pdf_status_t st;
+  if (itr)
+    gl_list_iterator_free ((gl_list_iterator_t *) itr);
+}
+
+static pdf_hash_element_t *
+hash_search_key (const pdf_hash_t *table,
+                 const pdf_char_t *key,
+                 gl_list_node_t   *p_node)
+{
   gl_list_node_t node;
-  pdf_hash_element_t elem, *searched;
+  pdf_hash_element_t aux;
 
-  st = PDF_OK;
+  /* Setup aux element in stack to use during search comparisons */
+  aux.key = key;
+  node = gl_sortedlist_search ((gl_list_t) table,
+                               (gl_listelement_compar_fn) hash_element_compare,
+                               (const void *) &aux);
+  if (p_node)
+    *p_node = node;
 
-  if (key != NULL && elem_pointer != NULL)
-    {
-      elem.key = key;
-      node = gl_list_search ((gl_list_t)table.elements, &elem);
-      if (node != NULL)
-        {
-          searched = (pdf_hash_element_t*)
-            gl_list_node_value ((gl_list_t)table.elements, node);
-          *elem_pointer = searched->value;
-        }
-      else
-        {
-          st = PDF_ERROR;
-        }
-    }
-  else
-    {
-      st = PDF_EBADDATA;
-    }  
-
-  return st;
-
+  return (pdf_hash_element_t *) (node != NULL ?
+                                 gl_list_node_value ((gl_list_t) table, node) :
+                                 NULL);
 }
 
-
-pdf_status_t
-pdf_hash_iterator_new (const pdf_hash_t table, pdf_hash_iterator_t *iterator)
+static pdf_size_t
+hash_element_pjw (const pdf_hash_element_t *elt)
 {
-  pdf_status_t st;
+  const pdf_char_t *s;
+  pdf_size_t h = 0;
 
-  st = PDF_OK;
-
-  if (iterator != NULL)
-    {
-      *((gl_list_iterator_t*)iterator->gl_itr) =
-        gl_list_iterator ((gl_list_t)table.keys);
-    }
-  else
-    {
-      st = PDF_EBADDATA;
-    }
-
-  return st;
-
-}
-
-
-pdf_status_t
-pdf_hash_iterator_next (pdf_hash_iterator_t iterator, const char **key)
-{
-  pdf_status_t st;
-
-  st = PDF_OK;
-
-  if (key != NULL)
-    {
-      if (!gl_list_iterator_next((gl_list_iterator_t*)iterator.gl_itr,
-                                 (const void**)key, NULL))
-        {
-          st = PDF_ERROR;
-        }    
-    }
-  else
-    {
-      st = PDF_EBADDATA;
-    }
-
-  return st;
-}
-
-
-pdf_status_t
-pdf_hash_iterator_destroy (pdf_hash_iterator_t iterator)
-{
-
-  if (iterator.gl_itr != NULL)
-    {
-      gl_list_iterator_free ((gl_list_iterator_t*)iterator.gl_itr);
-    }
-
-  return PDF_OK;
-}
-
-
-
-
-
-static size_t
-hash_pjw (const void *elt)
-{
-  const pdf_hash_element_t *hashelem;
-  const char *s;
-  size_t h = 0;
-
-  hashelem = (const pdf_hash_element_t*) elt;
-
-  for (s = hashelem->key; *s; s++)
+  for (s = elt->key; *s; s++)
     h = *s + ((h << 9) | (h >> (SIZE_BITS - 9)));
 
   return h;
 }
 
-
-void
-pdf_hash_element_dealloc_fn (const void * elt)
+static void
+hash_element_dispose (pdf_hash_element_t *elt)
 {
-  pdf_dealloc(elt);
+  if (elt)
+    {
+      if (elt->key)
+        pdf_dealloc (elt->key);
+      if (elt->value_disp_fn)
+        elt->value_disp_fn (elt->value);
+      pdf_dealloc (elt);
+    }
 }
-
-
-void
-pdf_hash_key_dealloc_fn (const void * elt)
-{
-  pdf_dealloc(elt);
-}
-
-
-static bool
-elem_key_equal (const void *elt1, const void *elt2)
-{
-  const char *key1, *key2;
-
-  key1 = ((pdf_hash_element_t*)elt1)->key;
-  key2 = ((pdf_hash_element_t*)elt2)->key;
-  
-  return (!strcmp(key1,key2));
-}
-
-
-static bool
-key_equal (const void *key1, const void *key2)
-{
-  return (!strcmp((const char*)key1,(const char*)key2));
-}
-
 
 static int
-key_numeric_p (const char *str)
+hash_element_compare (const pdf_hash_element_t *elt1,
+                      const pdf_hash_element_t *elt2)
 {
-  if (str != NULL && *str != '\0')
-    {
-      while (*str != '\0')
-        {
-          if (*str < '0' || *str > '9')
-            {
-              return 0;
-            }  
-          str++;
-        }
-
-      return 1;
-    }
-
-  return 0;
+  return strcmp (elt1->key, elt2->key);
 }
 
-
-static int
-key_numeric_cmp (const char *key1, const char *key2)
+static pdf_bool_t
+hash_element_equal (const pdf_hash_element_t *elt1,
+                    const pdf_hash_element_t *elt2)
 {
-  unsigned int num1, num2;
-  char *end_char;
-
-  /* Note that no error checking is made here */
-  num1 = (int) strtol (key1, &end_char, 10);
-  num2 = (int) strtol (key2, &end_char, 10);
-
-  if (num1 > num2)
-    {
-      return 1;
-    }
-  else if (num1 < num2)
-    {
-      return -1;
-    }
-  return 0;
+  return (hash_element_compare (elt1, elt2) == 0 ?
+          PDF_TRUE : PDF_FALSE);
 }
-
-
-static int
-key_compare (const void *key1, const void *key2)
-{
-  if (key_numeric_p(key1))
-    {
-      if (key_numeric_p(key2))
-        {
-          return (key_numeric_cmp(key1, key2));
-        }
-      /* key2 is non-numeric so key1 > key2 */
-      return 1;
-    }
-  /* key1 non-numeric */
-  if (key_numeric_p(key2))
-    {
-      return -1;
-    }
-  /* both are non-numeric */
-  return (strcmp((const char*)key1,(const char*)key2));
-}
-
 
 /* End of pdf-hash.c */

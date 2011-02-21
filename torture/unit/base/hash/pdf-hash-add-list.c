@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,29 +30,33 @@
 #include <pdf.h>
 #include <check.h>
 
-
 /*
  * Test: pdf_hash_add_list_001
  * Description:
- *   Try to add a list inside a hash table.   
+ *   Try to add a list inside a hash table.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns PDF_TRUE
  */
 START_TEST (pdf_hash_add_list_001)
 {
-  pdf_hash_t table;
-  pdf_list_t inner;
+  pdf_hash_t *table;
+  pdf_list_t *inner;
+  pdf_error_t *error = NULL;
 
-  pdf_init();
+  pdf_init ();
 
-  fail_if (pdf_hash_new (NULL, &table) != PDF_OK);
-  fail_if (pdf_list_new (NULL,NULL, 0, &inner) != PDF_OK);
-  fail_if (pdf_hash_add_list (table, "theKey", &inner) != PDF_OK);
+  table = pdf_hash_new (NULL);
+  inner = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
+
+  fail_if (pdf_hash_add_list (table,
+                              "theKey",
+                              inner,
+                              &error) != PDF_TRUE);
+  fail_if (error != NULL);
 
   pdf_hash_destroy (table);
 }
 END_TEST
-
 
 /*
  * Test case creation function
@@ -60,8 +64,9 @@ END_TEST
 TCase *
 test_pdf_hash_add_list (void)
 {
-  TCase *tc = tcase_create("pdf_hash_add_list");
-  tcase_add_test(tc, pdf_hash_add_list_001);
+  TCase *tc = tcase_create ("pdf_hash_add_list");
+
+  tcase_add_test (tc, pdf_hash_add_list_001);
   return tc;
 }
 

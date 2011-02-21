@@ -28,6 +28,7 @@
 #include <pdf-alloc.h>
 #include <pdf-fsys.h>
 #include <pdf-fsys-def.h>
+#include <pdf-hash-helper.h>
 
 /* Private procedures declaration */
 static pdf_fsys_t pdf_fsys_alloc (void);
@@ -44,12 +45,12 @@ pdf_fsys_get_free_space (pdf_fsys_t filesystem,
   if (filesystem == NULL)
     {
       /* Use the default filesystem */
-      return 
+      return
         pdf_fsys_def_get_free_space(path_name);
     }
   else
     {
-      return 
+      return
         filesystem->implementation->get_free_space_fn (filesystem->data,
                                                        path_name);
     }
@@ -57,7 +58,7 @@ pdf_fsys_get_free_space (pdf_fsys_t filesystem,
 
 
 
-pdf_status_t 
+pdf_status_t
 pdf_fsys_create_folder (const pdf_fsys_t filesystem,
                         const pdf_text_t path_name)
 {
@@ -69,21 +70,21 @@ pdf_fsys_create_folder (const pdf_fsys_t filesystem,
     }
   else
     {
-      return 
+      return
         filesystem->implementation->create_folder_fn (filesystem->data,
                                                       path_name);
     }
 }
 
 pdf_status_t
-pdf_fsys_get_folder_contents (const pdf_fsys_t filesystem,
-                              const pdf_text_t path_name,
-                              pdf_list_t item_list)
+pdf_fsys_get_folder_contents (const pdf_fsys_t  filesystem,
+                              const pdf_text_t  path_name,
+                              pdf_list_t       *item_list)
 {
   if (filesystem == NULL)
     {
       /* Use the default filesystem */
-      return 
+      return
         pdf_fsys_def_get_folder_contents(path_name, item_list);
     }
   else
@@ -115,7 +116,7 @@ pdf_fsys_get_parent (const pdf_fsys_t filesystem,
     }
 }
 
-pdf_status_t 
+pdf_status_t
 pdf_fsys_remove_folder (const pdf_fsys_t filesystem,
                         const pdf_text_t path_name)
 {
@@ -127,13 +128,13 @@ pdf_fsys_remove_folder (const pdf_fsys_t filesystem,
     }
   else
     {
-      return 
+      return
         filesystem->implementation->remove_folder_fn (filesystem->data,
                                                       path_name);
     }
 }
 
-pdf_status_t 
+pdf_status_t
 pdf_fsys_get_item_props (pdf_fsys_t filesystem,
                          pdf_text_t path_name,
                          struct pdf_fsys_item_props_s *item_props)
@@ -154,78 +155,72 @@ pdf_fsys_get_item_props (pdf_fsys_t filesystem,
 }
 
 pdf_status_t
-pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s item_props,
-                             pdf_hash_t props_hash)
+pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s  item_props,
+                             pdf_hash_t                         *props_hash)
 {
-  pdf_bool_t *is_hidden;
-  pdf_bool_t *is_readable;
-  pdf_bool_t *is_writable;
-  pdf_off_t *file_size;
-  pdf_u32_t *folder_size;
   pdf_char_t *creation_date_str;
   pdf_char_t *mod_date_str;
+  pdf_error_t *inner_error = NULL;
 
-  /* Allocate memory for the hash values */
-  is_hidden = (pdf_bool_t *) pdf_alloc (sizeof(pdf_bool_t));
-  is_readable = (pdf_bool_t *) pdf_alloc (sizeof(pdf_bool_t));
-  is_writable = (pdf_bool_t *) pdf_alloc (sizeof(pdf_bool_t));
-  file_size = (pdf_off_t*) pdf_alloc (sizeof(pdf_off_t));
-  folder_size = (pdf_u32_t*) pdf_alloc (sizeof(pdf_u32_t));
+  /* Associate values with hash keys */
+  if ((!pdf_hash_add_bool (props_hash,
+                           "isHidden",
+                           item_props.is_hidden,
+                           &inner_error)) ||
+      (!pdf_hash_add_bool (props_hash,
+                           "isReadable",
+                           item_props.is_readable,
+                           &inner_error)) ||
+      (!pdf_hash_add_bool (props_hash,
+                           "isWritable",
+                           item_props.is_writable,
+                           &inner_error)) ||
+      (!pdf_hash_add_size (props_hash,
+                           "fileSize",
+                           (pdf_size_t) item_props.file_size,
+                           &inner_error)) ||
+      (!pdf_hash_add_size (props_hash,
+                           "folderSize",
+                           (pdf_size_t) item_props.folder_size,
+                           &inner_error)))
+    {
+      /* TODO: Propagate error */
+      if (inner_error)
+        pdf_error_destroy (inner_error);
+      return PDF_ERROR;
+    }
 
-  /* Get the values from the props structure */
-  *is_hidden = item_props.is_hidden;
-  *is_readable = item_props.is_readable;
-  *is_writable = item_props.is_writable;
-  *file_size = item_props.file_size;
-  *folder_size = item_props.folder_size;
+  /* Get creation time from the props structure */
   creation_date_str = pdf_time_to_string (item_props.creation_date,
                                           PDF_TIME_FORMAT_PDF,
                                           PDF_TRUE);
+  if (!pdf_hash_add_string (props_hash,
+                            "creationDate",
+                            creation_date_str,
+                            &inner_error))
+    {
+      pdf_dealloc (creation_date_str);
+
+      /* TODO: Propagate error */
+      if (inner_error)
+        pdf_error_destroy (inner_error);
+      return PDF_ERROR;
+    }
+
+  /* Get mtime from the props structure */
   mod_date_str = pdf_time_to_string (item_props.modification_date,
                                      PDF_TIME_FORMAT_PDF,
                                      PDF_TRUE);
+  if (!pdf_hash_add_string (props_hash,
+                            "modDate",
+                             mod_date_str,
+                             &inner_error))
+    {
+      pdf_dealloc (mod_date_str);
 
-  /* Associate values with hash keys */
-  if (pdf_hash_add (props_hash, "isHidden", (void *) is_hidden,
-                    pdf_hash_element_dealloc_fn) !=
-      PDF_OK)
-    {
-      return PDF_ERROR;
-    }
-  if (pdf_hash_add (props_hash, "isReadable", (void *) is_readable,
-                    pdf_hash_element_dealloc_fn) !=
-      PDF_OK)
-    {
-      return PDF_ERROR;
-    }
-  if (pdf_hash_add (props_hash, "isWritable", (void *) is_writable,
-                    pdf_hash_element_dealloc_fn) !=
-      PDF_OK)
-    {
-      return PDF_ERROR;
-    }
-  if (pdf_hash_add (props_hash, "creationDate", (void *) creation_date_str,
-                    pdf_hash_element_dealloc_fn) !=
-      PDF_OK)
-    {
-      return PDF_ERROR;
-    }
-  if (pdf_hash_add (props_hash, "modDate", (void *) mod_date_str,
-                    pdf_hash_element_dealloc_fn) !=
-      PDF_OK)
-    {
-      return PDF_ERROR;
-    }
-  if (pdf_hash_add (props_hash, "fileSize", (void *) file_size,
-                    pdf_hash_element_dealloc_fn) !=
-      PDF_OK)
-    {
-      return PDF_ERROR;
-    }
-  if (pdf_hash_add (props_hash, "folderSize", (void *) folder_size,
-                    pdf_hash_element_dealloc_fn) !=
-      PDF_OK)
-    {
+      /* TODO: Propagate error */
+      if (inner_error)
+        pdf_error_destroy (inner_error);
       return PDF_ERROR;
     }
 
@@ -245,7 +240,7 @@ pdf_fsys_item_p (pdf_fsys_t filesystem,
     }
   else
     {
-      return 
+      return
         filesystem->implementation->item_p_fn (filesystem->data,
                                                path_name);
     }
@@ -292,13 +287,22 @@ pdf_status_t pdf_fsys_build_path (pdf_fsys_t filesystem,
                                   pdf_text_t first_element, ...)
 {
   va_list args;
-  pdf_list_t rest;
+  pdf_list_t *rest;
   pdf_status_t st;
   pdf_text_t next;
+  pdf_error_t *inner_error = NULL;
 
-  st = pdf_list_new (NULL,NULL,PDF_TRUE,&rest);
-  if (st != PDF_OK)
+  rest = pdf_list_new (NULL, NULL, PDF_TRUE, &inner_error);
+  if (!rest)
     {
+      /* TODO: Propagate error */
+      if (inner_error)
+        {
+          st = pdf_error_get_status (inner_error);
+          pdf_error_destroy (inner_error);
+        }
+      else
+        st = PDF_ERROR;
       return st;
     }
 
@@ -307,9 +311,10 @@ pdf_status_t pdf_fsys_build_path (pdf_fsys_t filesystem,
   next = va_arg (args, pdf_text_t);
   while (next != NULL)
     {
-      st = pdf_list_add_last (rest, next, NULL);
-      if (st != PDF_OK)
+      if (pdf_list_add_last (rest, next, &inner_error) == NULL)
         {
+          /* TODO: Propagate error */
+          st = pdf_error_get_status (inner_error);
           pdf_list_destroy (rest);
           va_end (args);
           return st;
@@ -377,7 +382,7 @@ pdf_fsys_file_open_tmp (const pdf_fsys_t filesystem,
     }
 }
 
-pdf_fsys_t 
+pdf_fsys_t
 pdf_fsys_file_get_filesystem (pdf_fsys_file_t file)
 {
   if(file == NULL)
@@ -399,7 +404,7 @@ pdf_fsys_file_get_mode (pdf_fsys_file_t file)
     }
   else
     {
-      return 
+      return
         (file->fs->implementation->file_get_mode_fn) (file);
     }
 }
@@ -442,7 +447,7 @@ pdf_fsys_file_set_mode (pdf_fsys_file_t file,
     }
 }
 
-pdf_bool_t 
+pdf_bool_t
 pdf_fsys_file_same_p (pdf_fsys_file_t file,
                       pdf_text_t path)
 {
@@ -494,7 +499,7 @@ pdf_fsys_file_set_pos (pdf_fsys_file_t file,
     }
   else
     {
-      return 
+      return
         (file->fs->implementation->file_set_pos_fn) (file,
                                                      new_pos);
     }
@@ -643,7 +648,7 @@ pdf_fsys_file_request_ria (pdf_fsys_file_t file,
     }
 }
 
-pdf_bool_t 
+pdf_bool_t
 pdf_fsys_file_has_ria (pdf_fsys_file_t file)
 {
   if(file == NULL)
@@ -731,7 +736,7 @@ pdf_fsys_create (struct pdf_fsys_impl_s implementation)
   filesystem = pdf_fsys_alloc ();
 
   /* Allocate a new implementation structure and assign it to the FS */
-  own_implementation = (struct pdf_fsys_impl_s *) 
+  own_implementation = (struct pdf_fsys_impl_s *)
     pdf_alloc (sizeof(struct pdf_fsys_impl_s));
 
   filesystem->implementation = own_implementation;
@@ -768,8 +773,8 @@ static pdf_fsys_t
 pdf_fsys_alloc (void)
 {
   pdf_fsys_t filesystem;
-  
-  filesystem = 
+
+  filesystem =
     (pdf_fsys_t) pdf_alloc (sizeof(struct pdf_fsys_s));
   return filesystem;
 }

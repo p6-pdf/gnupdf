@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,6 @@
 
 extern TCase *test_pdf_list_new (void);
 extern TCase *test_pdf_list_destroy (void);
-extern TCase *test_pdf_list_iterator_free (void);
 extern TCase *test_pdf_list_size (void);
 extern TCase *test_pdf_list_add_first (void);
 extern TCase *test_pdf_list_add_at (void);
@@ -48,8 +47,9 @@ extern TCase *test_pdf_list_indexof_from_to (void);
 extern TCase *test_pdf_list_node_value (void);
 extern TCase *test_pdf_list_previous_node (void);
 extern TCase *test_pdf_list_next_node (void);
-extern TCase *test_pdf_list_iterator (void);
-extern TCase *test_pdf_list_iterator_from_to (void);
+extern TCase *test_pdf_list_iterator_init (void);
+extern TCase *test_pdf_list_iterator_deinit (void);
+extern TCase *test_pdf_list_iterator_init_from_to (void);
 extern TCase *test_pdf_list_iterator_next (void);
 extern TCase *test_pdf_list_sorted_add (void);
 extern TCase *test_pdf_list_sorted_remove (void);
@@ -59,14 +59,13 @@ extern TCase *test_pdf_list_sorted_indexof (void);
 extern TCase *test_pdf_list_sorted_indexof_from_to (void);
 
 
-
 Suite *
 tsuite_list ()
 {
   Suite *s;
 
   s = suite_create("list");
-  
+
   suite_add_tcase (s, test_pdf_list_new ());
   suite_add_tcase (s, test_pdf_list_destroy ());
   suite_add_tcase (s, test_pdf_list_size ());
@@ -87,10 +86,10 @@ tsuite_list ()
   suite_add_tcase (s, test_pdf_list_indexof_from_to ());
   suite_add_tcase (s, test_pdf_list_previous_node ());
   suite_add_tcase (s, test_pdf_list_next_node ());
-  suite_add_tcase (s, test_pdf_list_iterator ());
-  suite_add_tcase (s, test_pdf_list_iterator_from_to ());
+  suite_add_tcase (s, test_pdf_list_iterator_init ());
+  suite_add_tcase (s, test_pdf_list_iterator_init_from_to ());
   suite_add_tcase (s, test_pdf_list_iterator_next ());
-  suite_add_tcase (s, test_pdf_list_iterator_free ());
+  suite_add_tcase (s, test_pdf_list_iterator_deinit ());
   suite_add_tcase (s, test_pdf_list_sorted_add ());
   suite_add_tcase (s, test_pdf_list_sorted_remove ());
   suite_add_tcase (s, test_pdf_list_sorted_search ());

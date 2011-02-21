@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,17 +36,23 @@
  * Description:
  *   Try to add a hash table inside a hash table.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns PDF_TRUE
  */
 START_TEST (pdf_hash_add_hash_001)
 {
-  pdf_hash_t table, inner;
+  pdf_hash_t *table, *inner;
+  pdf_error_t *error = NULL;
 
-  pdf_init();
+  pdf_init ();
 
-  fail_if (pdf_hash_new (NULL, &table) != PDF_OK);
-  fail_if (pdf_hash_new (NULL, &inner) != PDF_OK);
-  fail_if (pdf_hash_add_hash (table, "theKey", &inner) != PDF_OK);
+  table = pdf_hash_new (NULL);
+  inner = pdf_hash_new (NULL);
+
+  fail_if (pdf_hash_add_hash (table,
+                              "theKey",
+                              inner,
+                              &error) != PDF_TRUE);
+  fail_if (error != NULL);
 
   pdf_hash_destroy (table);
 }
@@ -59,8 +65,9 @@ END_TEST
 TCase *
 test_pdf_hash_add_hash (void)
 {
-  TCase *tc = tcase_create("pdf_hash_add_hash");
-  tcase_add_test(tc, pdf_hash_add_hash_001);
+  TCase *tc = tcase_create ("pdf_hash_add_hash");
+
+  tcase_add_test (tc, pdf_hash_add_hash_001);
   return tc;
 }
 

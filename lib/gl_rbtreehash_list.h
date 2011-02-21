@@ -1,4 +1,4 @@
-/* Sequential list data type implemented by a hash table with a linked list.
+/* Sequential list data type implemented by a hash table with a binary tree.
    Copyright (C) 2006, 2009-2011 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2006.
 
@@ -15,8 +15,8 @@
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
-#ifndef _GL_LINKEDHASH_LIST_H
-#define _GL_LINKEDHASH_LIST_H
+#ifndef _GL_RBTREEHASH_LIST_H
+#define _GL_RBTREEHASH_LIST_H
 
 #include "gl_list.h"
 
@@ -24,11 +24,11 @@
 extern "C" {
 #endif
 
-extern const struct gl_list_implementation gl_linkedhash_list_implementation;
-#define GL_LINKEDHASH_LIST &gl_linkedhash_list_implementation
+extern const struct gl_list_implementation gl_rbtreehash_list_implementation;
+#define GL_RBTREEHASH_LIST &gl_rbtreehash_list_implementation
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _GL_LINKEDHASH_LIST_H */
+#endif /* _GL_RBTREEHASH_LIST_H */

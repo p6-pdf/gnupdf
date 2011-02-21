@@ -159,8 +159,11 @@ pdf_error_get_message (const pdf_error_t *error)
 void
 pdf_error_destroy (pdf_error_t *error)
 {
-  pdf_dealloc (error->message);
-  pdf_dealloc (error);
+  if (error != NULL)
+    {
+      pdf_dealloc (error->message);
+      pdf_dealloc (error);
+    }
 }
 
 void
@@ -174,7 +177,7 @@ pdf_set_error (pdf_error_t        **err,
     {
       va_list args;
 
-      PDF_ASSERT_POINTER_RETURN (*err);
+      PDF_ASSERT_RETURN (*err == NULL);
 
       va_start (args, format);
       *err = error_new_valist (domain,

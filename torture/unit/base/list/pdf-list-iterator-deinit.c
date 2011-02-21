@@ -1,13 +1,13 @@
 /* -*- mode: C -*-
  *
- *       File:         pdf-list-iterator-free.c
+ *       File:         pdf-list-iterator-deinit.c
  *       Date:         Wed Mar  12 12:43:00 2008
  *
  *       GNU PDF Library - Unit tests for pdf_list_iterator_free
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,42 +28,58 @@
 #include <pdf.h>
 #include <check.h>
 
+#include "pdf-list-test-common.h"
+
 /*
- * Test: pdf_list_iterator_free_001
+ * Test: pdf_list_iterator_deinit_001
  * Description:
  *   Try to destroy an iterator.
  * Success condition:
- *   Returns PDF_OK
+ *   Doesn't crash,
  */
-START_TEST (pdf_list_iterator_free_001)
+START_TEST (pdf_list_iterator_deinit_001)
 {
-  pdf_list_t list;
+  pdf_list_t *list;
   pdf_list_iterator_t itr;
 
-  pdf_init();
+  pdf_init ();
 
-  pdf_list_new (NULL, NULL, 0, &list);
+  list = pdf_list_new (NULL, NULL, 0, NULL);
 
-  pdf_list_iterator (list, &itr);
+  pdf_list_iterator_init (&itr, list);
 
-  fail_if (pdf_list_iterator_free (&itr) != PDF_OK);
-
+  pdf_list_iterator_deinit (&itr);
   pdf_list_destroy (list);
 }
 END_TEST
 
+/*
+ * Test: pdf_list_iterator_deinit_002
+ * Description:
+ *   Try to destroy a NULL iterator.
+ * Success condition:
+ *   Doesn't crash.
+ */
+START_TEST (pdf_list_iterator_deinit_002)
+{
+  pdf_init ();
 
+  pdf_list_iterator_deinit (NULL);
+}
+END_TEST
 
 /*
  * Test case creation function
  */
 TCase *
-test_pdf_list_iterator_free (void)
+test_pdf_list_iterator_deinit (void)
 {
-  TCase *tc = tcase_create("pdf_list_iterator_free");
-  tcase_add_test(tc, pdf_list_iterator_free_001);
+  TCase *tc = tcase_create ("pdf_list_iterator_deinit");
+
+  tcase_add_test (tc, pdf_list_iterator_deinit_001);
+  tcase_add_test (tc, pdf_list_iterator_deinit_001);
 
   return tc;
 }
 
-/* End of pdf-list-iterator-free.c */
+/* End of pdf-list-iterator-deinit.c */

@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,101 +32,80 @@
 
 #include <pdf-list.h>
 
-
 /* BEGIN PUBLIC */
-typedef void (*pdf_hash_element_dispose_fn_t) (const void *elt);
-/* END PUBLIC */
 
-struct pdf_hash_element_s
-{
-  const char * key;
-  const void * value;
-  pdf_hash_element_dispose_fn_t disp_fn;
-};
-
-typedef struct pdf_hash_element_s pdf_hash_element_t;
-
-/* BEGIN PUBLIC */
+/* --------------------- Hash Data Types ------------------------- */
 
 #define PDF_HASH_ITERATOR_SIZE 12
-
-typedef void (*pdf_hash_key_dispose_fn_t) (const void *key);
-
-struct pdf_hash_s
-{
-  /* Both are gl_lists */
-  void *elements, *keys;
-};
 
 struct pdf_hash_iterator_s
 {
   void *gl_itr[PDF_HASH_ITERATOR_SIZE];
 };
 
-typedef struct pdf_hash_s pdf_hash_t;
+typedef void pdf_hash_t;
 typedef struct pdf_hash_iterator_s pdf_hash_iterator_t;
 
-
-/* Creating and Destroying Hash Tables */
-
-pdf_status_t
-pdf_hash_new (pdf_hash_key_dispose_fn_t dispose_key_fn, pdf_hash_t *table);
-
-pdf_status_t
-pdf_hash_destroy (pdf_hash_t table);
+typedef void (*pdf_hash_value_dispose_fn_t) (const void *value);
 
 
-/* Hash Table properties */
+/* --------------------- Hash Creation and Destruction ---------------------- */
 
-pdf_size_t
-pdf_hash_size (const pdf_hash_t table);
+pdf_hash_t *pdf_hash_new (pdf_error_t **error);
 
-
-/* Working with keys */
-
-pdf_bool_t
-pdf_hash_key_p (const pdf_hash_t table, const char *key);
-
-pdf_status_t
-pdf_hash_rename (pdf_hash_t table, const char *key, const char *new_key);
+void pdf_hash_destroy (pdf_hash_t *table);
 
 
- /* Adding and removing elements */
+/* --------------------- Hash Property Management --------------------------- */
 
-pdf_status_t
-pdf_hash_add (pdf_hash_t table, const char *key, const void *element,
-              pdf_hash_element_dispose_fn_t disp_fn);
-
-pdf_status_t
-pdf_hash_remove (pdf_hash_t table, const char *key);
+pdf_size_t pdf_hash_size (const pdf_hash_t *table);
 
 
-/* Searching elements */
+/* ------------------------- Hash Key Management ---------------------------- */
 
-pdf_status_t
-pdf_hash_get (const pdf_hash_t table, const char *key, const void **elem_pointer);
+pdf_bool_t pdf_hash_key_p (const pdf_hash_t *table,
+                           const pdf_char_t *key);
 
-
-/* Working with iterators  */
-
-pdf_status_t
-pdf_hash_iterator_new (const pdf_hash_t table, pdf_hash_iterator_t *iterator);
-
-pdf_status_t
-pdf_hash_iterator_next (pdf_hash_iterator_t iterator, const char **key);
-
-pdf_status_t
-pdf_hash_iterator_destroy (pdf_hash_iterator_t iterator);
-
-/* Basic dispose functions */
-
-void
-pdf_hash_element_dealloc_fn (const void * elt);
-
-void
-pdf_hash_key_dealloc_fn (const void * elt);
+pdf_bool_t pdf_hash_rename_key (pdf_hash_t        *table,
+                                const pdf_char_t  *key,
+                                const pdf_char_t  *new_key,
+                                pdf_error_t      **error);
 
 
+/* --------------------- Hash Add/Remove Methods ---------------------------- */
+
+pdf_bool_t pdf_hash_add (pdf_hash_t                   *table,
+                         const pdf_char_t             *key,
+                         const void                   *value,
+                         pdf_hash_value_dispose_fn_t   value_disp_fn,
+                         pdf_error_t                 **error);
+
+pdf_bool_t pdf_hash_replace (pdf_hash_t                   *table,
+                             const pdf_char_t             *key,
+                             const void                   *value,
+                             pdf_hash_value_dispose_fn_t   value_disp_fn,
+                             pdf_error_t                 **error);
+
+pdf_bool_t pdf_hash_remove (pdf_hash_t       *table,
+                            const pdf_char_t *key);
+
+
+/* --------------------- Hash Search Methods -------------------------------- */
+
+const void *pdf_hash_get_value (const pdf_hash_t *table,
+                                const pdf_char_t *key);
+
+
+/* ----------------------- Hash Iterator Methods ---------------------------- */
+
+pdf_bool_t pdf_hash_iterator_init (pdf_hash_iterator_t *itr,
+                                   const pdf_hash_t    *table);
+
+pdf_bool_t pdf_hash_iterator_next (pdf_hash_iterator_t  *itr,
+                                   const pdf_char_t    **key,
+                                   const void          **value);
+
+void pdf_hash_iterator_deinit (pdf_hash_iterator_t *itr);
 
 /* END PUBLIC */
 

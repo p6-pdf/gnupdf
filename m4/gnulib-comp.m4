@@ -28,7 +28,6 @@ AC_DEFUN([gl_EARLY],
   AC_REQUIRE([AC_PROG_RANLIB])
   AC_REQUIRE([AM_PROG_CC_C_O])
   # Code from module arg-nonnull:
-  # Code from module array-list:
   # Code from module autobuild:
   AB_INIT
   # Code from module binary-io:
@@ -70,7 +69,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module include_next:
   # Code from module inline:
   # Code from module intprops:
-  # Code from module linkedhash-list:
+  # Code from module linked-list:
   # Code from module list:
   # Code from module localcharset:
   # Code from module localename:
@@ -84,9 +83,12 @@ AC_DEFUN([gl_EARLY],
   # Code from module mkdir:
   # Code from module multiarch:
   # Code from module open:
+  # Code from module oset:
   # Code from module pathmax:
   # Code from module pmccabe2html:
   # Code from module progname:
+  # Code from module rbtree-oset:
+  # Code from module rbtreehash-list:
   # Code from module realloc-posix:
   # Code from module rmdir:
   # Code from module size_max:
@@ -137,7 +139,6 @@ AC_DEFUN([gl_INIT],
   gl_COMMON
   gl_source_base='lib'
   # Code from module arg-nonnull:
-  # Code from module array-list:
   # Code from module autobuild:
   # Code from module binary-io:
   # Code from module c++defs:
@@ -229,7 +230,7 @@ AC_DEFUN([gl_INIT],
   # Code from module inline:
   gl_INLINE
   # Code from module intprops:
-  # Code from module linkedhash-list:
+  # Code from module linked-list:
   # Code from module list:
   gl_LIST
   # Code from module localcharset:
@@ -264,6 +265,8 @@ AC_DEFUN([gl_INIT],
   # Code from module open:
   gl_FUNC_OPEN
   gl_FCNTL_MODULE_INDICATOR([open])
+  # Code from module oset:
+  gl_LIST
   # Code from module pathmax:
   gl_PATHMAX
   # Code from module pmccabe2html:
@@ -271,6 +274,8 @@ AC_DEFUN([gl_INIT],
   # Code from module progname:
   AC_CHECK_DECLS([program_invocation_name], [], [], [#include <errno.h>])
   AC_CHECK_DECLS([program_invocation_short_name], [], [], [#include <errno.h>])
+  # Code from module rbtree-oset:
+  # Code from module rbtreehash-list:
   # Code from module realloc-posix:
   gl_FUNC_REALLOC_POSIX
   gl_STDLIB_MODULE_INDICATOR([realloc-posix])
@@ -523,12 +528,23 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/gl_anyhash_list2.h
   lib/gl_anylinked_list1.h
   lib/gl_anylinked_list2.h
-  lib/gl_array_list.c
-  lib/gl_array_list.h
-  lib/gl_linkedhash_list.c
-  lib/gl_linkedhash_list.h
+  lib/gl_anyrbtree_list1.h
+  lib/gl_anyrbtree_list2.h
+  lib/gl_anytree_list1.h
+  lib/gl_anytree_list2.h
+  lib/gl_anytree_oset.h
+  lib/gl_anytreehash_list1.h
+  lib/gl_anytreehash_list2.h
+  lib/gl_linked_list.c
+  lib/gl_linked_list.h
   lib/gl_list.c
   lib/gl_list.h
+  lib/gl_oset.c
+  lib/gl_oset.h
+  lib/gl_rbtree_oset.c
+  lib/gl_rbtree_oset.h
+  lib/gl_rbtreehash_list.c
+  lib/gl_rbtreehash_list.h
   lib/glthread/lock.c
   lib/glthread/lock.h
   lib/glthread/threadlib.c

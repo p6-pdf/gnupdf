@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,26 +29,37 @@
 #include <pdf.h>
 #include <check.h>
 
+#include "pdf-list-test-common.h"
+
 /*
  * Test: pdf_list_destroy_001
  * Description:
  *   Try to destroy an empty list.
  * Success condition:
- *   Returns PDF_OK
+ *   Doesn't crash.
  */
 START_TEST (pdf_list_destroy_001)
 {
-  pdf_list_t list;
-  
-  pdf_init();
+  pdf_init ();
 
-  pdf_list_new (NULL, NULL, 0, &list);
-
-  fail_if (pdf_list_destroy (list) != PDF_OK);
-
+  pdf_list_destroy (pdf_list_new (NULL, NULL, PDF_FALSE, NULL));
 }
 END_TEST
 
+/*
+ * Test: pdf_list_destroy_002
+ * Description:
+ *   Try to destroy a NULL list
+ * Success condition:
+ *   Doesn't crash
+ */
+START_TEST (pdf_list_destroy_002)
+{
+  pdf_init ();
+
+  pdf_list_destroy (NULL);
+}
+END_TEST
 
 /*
  * Test case creation function
@@ -56,8 +67,11 @@ END_TEST
 TCase *
 test_pdf_list_destroy (void)
 {
-  TCase *tc = tcase_create("pdf_list_destroy");
-  tcase_add_test(tc, pdf_list_destroy_001);
+  TCase *tc = tcase_create ("pdf_list_destroy");
+
+  tcase_add_test (tc, pdf_list_destroy_001);
+  tcase_add_test (tc, pdf_list_destroy_002);
+
   return tc;
 }
 

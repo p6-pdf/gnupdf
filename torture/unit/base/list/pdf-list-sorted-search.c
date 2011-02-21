@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,136 +24,68 @@
  */
 
 #include <config.h>
-
 #include <stdio.h>
 #include <pdf.h>
 #include <check.h>
 
-extern pdf_bool_t l_comp (const void * elemb, const void * elema);
-extern int l_comp_desc (const void *elema, const void * elemb);
-extern int l_comp_asc (const void *elema, const void * elemb);
+#include "pdf-list-test-common.h"
 
 /*
  * Test: pdf_list_sorted_search_001
  * Description:
  *   Try to search for an existing element in a list.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns PDF_TRUE
  */
 START_TEST (pdf_list_sorted_search_001)
 {
-  pdf_list_t list;
+  pdf_list_t *list;
   int elem;
-  pdf_status_t st;
-  pdf_list_node_t node;
+  pdf_list_node_t *node;
 
   elem = 2232;
-  
-  pdf_init();
 
-  pdf_list_new (l_comp, NULL, 0, &list);
+  pdf_init ();
+
+  list = pdf_list_new (l_comp, NULL, PDF_FALSE, NULL);
+
   pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
 
-  st = pdf_list_sorted_search (list, l_comp_asc, &elem, &node);
-
-  fail_if (st != PDF_OK);
+  node = pdf_list_sorted_search (list, l_comp_asc, &elem);
+  fail_if (node == NULL);
 
   pdf_list_destroy (list);
 }
 END_TEST
-
-
 
 /*
  * Test: pdf_list_sorted_search_002
  * Description:
- *   Try to search an existent element given a NULL node pointer.
+ *   Try to search for a non-existent element in a list.
  * Success condition:
- *   Returns PDF_EBADDATA
+ *   Returns PDF_FALSE
  */
 START_TEST (pdf_list_sorted_search_002)
 {
-  pdf_list_t list;
-  int elem;
-  pdf_status_t st;
-
-  elem = 2232;
-  
-  pdf_init();
-
-  pdf_list_new (l_comp, NULL, 0, &list);
-  pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
-
-  st = pdf_list_sorted_search (list, l_comp_asc, &elem, NULL);
-
-  fail_if (st != PDF_EBADDATA);
-
-  pdf_list_destroy (list);
-}
-END_TEST
-
-
-/*
- * Test: pdf_list_sorted_search_003
- * Description:
- *   Try to search for a non-existent element in a list.
- * Success condition:
- *   Returns PDF_ENONODE
- */
-START_TEST (pdf_list_sorted_search_003)
-{
-  pdf_list_t list;
+  pdf_list_t *list;
   int elem, elem2;
-  pdf_list_node_t node;
-  pdf_status_t st;
+  pdf_list_node_t *node;
 
   elem = 2232;
   elem2 = 1223;
-  
-  pdf_init();
 
-  pdf_list_new (l_comp, NULL, 0, &list);
+  pdf_init ();
+
+  list = pdf_list_new (l_comp, NULL, PDF_FALSE, NULL);
+
   pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
 
-  st = pdf_list_sorted_search (list, l_comp_asc, &elem2, &node);
-
-  fail_if (st != PDF_ENONODE);
+  node = pdf_list_sorted_search (list, l_comp_asc, &elem2);
+  fail_if (node != NULL);
 
   pdf_list_destroy (list);
 }
 END_TEST
-
-
-
-/*
- * Test: pdf_list_sorted_search_004
- * Description:
- *   Try to search an existent element given a NULL compar_fn.
- * Success condition:
- *   Returns PDF_EBADDATA
- */
-START_TEST (pdf_list_sorted_search_004)
-{
-  pdf_list_t list;
-  int elem;
-  pdf_status_t st;
-  pdf_list_node_t node;
-
-  elem = 2232;
-  
-  pdf_init();
-
-  pdf_list_new (l_comp, NULL, 0, &list);
-  pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
-
-  st = pdf_list_sorted_search (list, NULL, &elem, &node);
-
-  fail_if (st != PDF_EBADDATA);
-
-  pdf_list_destroy (list);
-}
-END_TEST
-
 
 /*
  * Test case creation function
@@ -161,12 +93,10 @@ END_TEST
 TCase *
 test_pdf_list_sorted_search (void)
 {
-  TCase *tc = tcase_create("pdf_list_sorted_search");
-  tcase_add_test(tc, pdf_list_sorted_search_001);
-  tcase_add_test(tc, pdf_list_sorted_search_002);
-  tcase_add_test(tc, pdf_list_sorted_search_003);
-  tcase_add_test(tc, pdf_list_sorted_search_004);
+  TCase *tc = tcase_create ("pdf_list_sorted_search");
 
+  tcase_add_test (tc, pdf_list_sorted_search_001);
+  tcase_add_test (tc, pdf_list_sorted_search_002);
   return tc;
 }
 

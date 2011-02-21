@@ -58,7 +58,8 @@ pdf_stm_f_a85_flush_outbuff (pdf_buffer_t out, pdf_stm_f_a85_t filter_state);
  */
 
 pdf_status_t
-pdf_stm_f_a85enc_init (pdf_hash_t params, void **state)
+pdf_stm_f_a85enc_init (pdf_hash_t  *params,
+                       void       **state)
 {
 
   pdf_stm_f_a85_t filter_state;
@@ -213,7 +214,7 @@ pdf_stm_f_a85enc_wr_tuple (pdf_u32_t tuple,
       retval = pdf_stm_f_a85_write_out ('z', out, filter_state);
       /*
        * PDF_ERROR from pdf_stm_f_a85_write_out means full buffer
-       * This should never happen because buffer should have been 
+       * This should never happen because buffer should have been
        * flushed before starting this set of output data. All
        * subsequent calls to _write_out will fail with PDF_ERROR
        * also, so it is reasonable to ignore the pass or fail
@@ -255,8 +256,11 @@ pdf_stm_f_a85enc_wr_tuple (pdf_u32_t tuple,
 }
 
 pdf_status_t
-pdf_stm_f_a85enc_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
-                        pdf_buffer_t out, pdf_bool_t finish_p)
+pdf_stm_f_a85enc_apply (pdf_hash_t   *params,
+                        void         *state,
+                        pdf_buffer_t  in,
+                        pdf_buffer_t  out,
+                        pdf_bool_t    finish_p)
 {
   pdf_size_t in_size;
   pdf_stm_f_a85_t filter_state;
@@ -449,7 +453,7 @@ pdf_stm_f_a85enc_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
           tuple = tuple | buf[2] << 8;
           tuple = tuple | buf[3];
 
-          retval = 
+          retval =
             pdf_stm_f_a85enc_wr_tuple (tuple, in_size, filter_state, out);
 
 
@@ -588,7 +592,8 @@ pdf_stm_f_a85dec_wr_quad (const pdf_char_t * quint, const pdf_size_t outcount,
 
 
 pdf_status_t
-pdf_stm_f_a85dec_init (pdf_hash_t params, void **state)
+pdf_stm_f_a85dec_init (pdf_hash_t  *params,
+                       void       **state)
 {
 
   pdf_stm_f_a85_t filter_state;
@@ -644,8 +649,11 @@ pdf_stm_f_a85dec_getnext (pdf_buffer_t in, pdf_char_t * pc)
 #define A85_INVALID_TERM_IDX 255
 
 pdf_status_t
-pdf_stm_f_a85dec_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
-                        pdf_buffer_t out, pdf_bool_t finish_p)
+pdf_stm_f_a85dec_apply (pdf_hash_t   *params,
+                        void         *state,
+                        pdf_buffer_t  in,
+                        pdf_buffer_t  out,
+                        pdf_bool_t    finish_p)
 {
   pdf_stm_f_a85_t filter_state;
   pdf_char_t quint[5];

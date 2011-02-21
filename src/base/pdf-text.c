@@ -100,29 +100,27 @@ static enum pdf_text_unicode_encoding_e
 pdf_text_transform_he_to_unicode_encoding(enum pdf_text_unicode_encoding_e enc);
 
 /* Function to compare two given words */
-static pdf_i32_t
-pdf_text_compare_words(const pdf_char_t *word1,
-                       const pdf_size_t size1,
-                       const pdf_char_t *word2,
-                       const pdf_size_t size2,
-                       const pdf_char_t *language1,
-                       const pdf_char_t *language2,
-                       pdf_status_t *p_ret_code);
+static pdf_i32_t pdf_text_compare_words (const pdf_char_t  *word1,
+                                         const pdf_size_t   size1,
+                                         const pdf_char_t  *word2,
+                                         const pdf_size_t   size2,
+                                         const pdf_char_t  *language1,
+                                         const pdf_char_t  *language2,
+                                         pdf_error_t      **error);
 
 /* Non-Case sensitive comparison of text objects */
-static pdf_i32_t
-pdf_text_cmp_non_case_sensitive(pdf_text_t text1,
-                                pdf_text_t text2,
-                                pdf_status_t *p_ret_code);
+static pdf_i32_t pdf_text_cmp_non_case_sensitive (pdf_text_t    text1,
+                                                  pdf_text_t    text2,
+                                                  pdf_error_t **error);
 
 /* Clean (destroy and create empty) Word Boundaries list */
-static pdf_status_t
-pdf_text_clean_word_boundaries_list(pdf_list_t *p_word_boundaries);
+static pdf_bool_t pdf_text_clean_word_boundaries_list (pdf_list_t  **p_word_boundaries,
+                                                       pdf_error_t **error);
 /* Fill in the Word Boundaries list using the given data */
-static pdf_status_t
-pdf_text_fill_word_boundaries_list(pdf_list_t word_boundaries,
-                                   const pdf_char_t *data,
-                                   const pdf_size_t size);
+static pdf_bool_t pdf_text_fill_word_boundaries_list (pdf_list_t        *word_boundaries,
+                                                      const pdf_char_t  *data,
+                                                      const pdf_size_t   size,
+                                                      pdf_error_t      **error);
 
 
 /* ----------------------------- Public functions ----------------------------*/
@@ -140,6 +138,8 @@ pdf_text_init(void)
 pdf_status_t
 pdf_text_new (pdf_text_t *text)
 {
+  pdf_error_t *inner_error = NULL;
+
   /* The text global state should be initialized! */
   if (pdf_text_context_initialized () == PDF_FALSE)
     {
@@ -163,11 +163,16 @@ pdf_text_new (pdf_text_t *text)
   memset(&((*text)->country[0]), 0, PDF_TEXT_CCL);
 
   /* Create empty word boundaries list */
-  if(pdf_text_create_word_boundaries_list(&((*text)->word_boundaries)) != \
-     PDF_OK)
+  (*text)->word_boundaries = pdf_text_create_word_boundaries_list (&inner_error);
+  if ((*text)->word_boundaries == NULL)
     {
-      pdf_dealloc(*text);
+      /* TODO: Propagate inner_error when we change the API */
+      if (inner_error)
+        pdf_error_destroy (inner_error);
+
+      pdf_text_destroy (*text);
       *text = NULL;
+      return PDF_ENOMEM;
     }
 
   /* Success! */
@@ -179,22 +184,16 @@ pdf_status_t
 pdf_text_destroy (pdf_text_t text)
 {
   /* Dealloc memory */
-  if(text->data != NULL)
-    {
-      pdf_dealloc(text->data);
-      text->data = NULL;
-    }
+  if (text->data != NULL)
+    pdf_dealloc (text->data);
 
   if (text->printable != NULL)
-    {
-      pdf_dealloc (text->printable);
-    }
+    pdf_dealloc (text->printable);
 
   /* Destroy word boundaries list */
-  pdf_text_destroy_word_boundaries_list(&text->word_boundaries);
+  pdf_text_destroy_word_boundaries_list (&text->word_boundaries);
 
-  /* Finally, clear full structure */
-  pdf_dealloc(text);
+  pdf_dealloc (text);
 
   return PDF_OK;
 }
@@ -1067,7 +1066,7 @@ pdf_text_concat_ascii (pdf_text_t text1,
       if (ret != PDF_OK)
         {
           return ret;
-        }     
+        }
 
       newbuf = (pdf_char_t *)pdf_realloc (text1->data, text1->size + tmp_size);
       if (newbuf == NULL)
@@ -1454,7 +1453,7 @@ pdf_text_filter (pdf_text_t text,
     }
 
   /* 0x01000000 */
-  if ((filter & PDF_TEXT_FILTER_REMOVE_LINE_ENDINGS) && 
+  if ((filter & PDF_TEXT_FILTER_REMOVE_LINE_ENDINGS) &&
      (pdf_text_filter_remove_line_endings (text) != PDF_OK))
     {
       PDF_DEBUG_BASE ("Error applying Line Ending Removal filter");
@@ -1493,12 +1492,12 @@ pdf_text_get_printable (pdf_text_t text)
 
 
 pdf_i32_t
-pdf_text_cmp (const pdf_text_t text1,
-              const pdf_text_t text2,
-              const pdf_bool_t case_sensitive,
-              pdf_status_t *p_ret_code)
+pdf_text_cmp (const pdf_text_t  text1,
+              const pdf_text_t  text2,
+              const pdf_bool_t  case_sensitive,
+              pdf_status_t     *p_ret_code)
 {
-  if(p_ret_code != NULL)
+  if (p_ret_code != NULL)
     {
       *p_ret_code = PDF_OK;
     }
@@ -1515,7 +1514,17 @@ pdf_text_cmp (const pdf_text_t text1,
     }
   else
     {
-      return pdf_text_cmp_non_case_sensitive(text1, text2, p_ret_code);
+      pdf_i32_t res;
+      pdf_error_t *inner_error = NULL;
+
+      res = pdf_text_cmp_non_case_sensitive (text1, text2, &inner_error);
+      if (inner_error)
+        {
+          /* TODO: Propagate error */
+          *p_ret_code = pdf_error_get_status (inner_error);
+          pdf_error_destroy (inner_error);
+        }
+      return res;
     }
 }
 
@@ -1523,206 +1532,212 @@ pdf_text_cmp (const pdf_text_t text1,
 /* -------------------------- Private functions ----------------------------- */
 
 static pdf_i32_t
-pdf_text_cmp_non_case_sensitive(pdf_text_t text1,
-                                pdf_text_t text2,
-                                pdf_status_t *p_ret_code)
+pdf_text_cmp_non_case_sensitive(pdf_text_t    text1,
+                                pdf_text_t    text2,
+                                pdf_error_t **error)
 {
+  pdf_error_t *inner_error = NULL;
+  pdf_size_t size1;
+  pdf_size_t size2;
+  int n;
+
   /* Generate word boundaries list, if not already done */
-  if((pdf_text_fill_word_boundaries_list(text1->word_boundaries, \
-                                         text1->data, \
-                                         text1->size) == PDF_OK) && \
-     (pdf_text_fill_word_boundaries_list(text2->word_boundaries, \
-                                         text2->data, \
-                                         text2->size) == PDF_OK))
+  if ((!pdf_text_fill_word_boundaries_list (text1->word_boundaries,
+                                            text1->data,
+                                            text1->size,
+                                            &inner_error)) ||
+      (!pdf_text_fill_word_boundaries_list (text2->word_boundaries,
+                                            text2->data,
+                                            text2->size,
+                                            &inner_error)))
     {
-      pdf_size_t size1;
-      pdf_size_t size2;
-
-      size1 = pdf_list_size(text1->word_boundaries);
-      size2 = pdf_list_size(text2->word_boundaries);
-      /* First, compare number of words in each text */
-      if(size1 != size2)
-        {
-          PDF_DEBUG_BASE("Different sizes...");
-          return ((size1 > size2) ? 1 : -1);
-        }
-      else
-        {
-          /* Perform a word-per-word lower case comparison! */
-          int n;
-
-          /* Get word from both texts */
-          n = 0;
-          while(n < size1)
-            {
-              struct pdf_text_wb_s *p_word1;
-              struct pdf_text_wb_s *p_word2;
-              pdf_i32_t ret_num;
-
-              if(pdf_list_get_at(text1->word_boundaries, \
-                                 n, \
-                                 (const void **)&p_word1) != PDF_OK)
-                {
-                  *p_ret_code = PDF_ETEXTENC;
-                  PDF_DEBUG_BASE("Error getting word '%d' from text1", n);
-                  /* An error happened computing word boundaries! */
-                  return -1;
-                }
-
-              if(pdf_list_get_at(text2->word_boundaries,
-                                 n,
-                                 (const void **)&p_word2) != PDF_OK)
-                {
-                  *p_ret_code = PDF_ETEXTENC;
-                  PDF_DEBUG_BASE("Error getting word '%d' from text2", n);
-                  /* An error happened computing word boundaries! */
-                  return -1;
-                }
-
-              ret_num = pdf_text_compare_words(p_word1->word_start,
-                                               p_word1->word_size,
-                                               p_word2->word_start,
-                                               p_word2->word_size,
-                                               pdf_text_get_language(text1),
-                                               pdf_text_get_language(text2),
-                                               p_ret_code);
-              /* If words are not equal, return the code */
-              if(ret_num != 0)
-                {
-                  PDF_DEBUG_BASE("Words are not equal...");
-                  return ret_num;
-                }
-              ++n;
-            }
-          /* If arrived here, the strings are completely equal */
-          return 0;
-        }
-    }
-  else
-    {
-      if(p_ret_code != NULL)
-        {
-          *p_ret_code = PDF_ETEXTENC;
-        }
       PDF_DEBUG_BASE("Problem computing word boundaries. Comparison is not"
                      " valid");
+      pdf_propagate_error (error, inner_error);
       return -1; /* An error happened computing word boundaries! */
     }
+
+  size1 = pdf_list_size (text1->word_boundaries);
+  size2 = pdf_list_size (text2->word_boundaries);
+
+  /* First, compare number of words in each text */
+  if(size1 != size2)
+    {
+      PDF_DEBUG_BASE("Different sizes...");
+      return ((size1 > size2) ? 1 : -1);
+    }
+
+  /* Perform a word-per-word lower case comparison! */
+  n = 0;
+  while (n < size1)
+    {
+      struct pdf_text_wb_s *p_word1;
+      struct pdf_text_wb_s *p_word2;
+      pdf_i32_t ret_num;
+
+      p_word1 = (struct pdf_text_wb_s *) pdf_list_get_at (text1->word_boundaries,
+                                                          n,
+                                                          &inner_error);
+      if (p_word1 == NULL)
+        {
+          PDF_DEBUG_BASE("Error getting word '%d' from text1", n);
+          /* An error happened computing word boundaries! */
+          pdf_propagate_error (error, inner_error);
+          return -1;
+        }
+
+      p_word2 = (struct pdf_text_wb_s *) pdf_list_get_at (text2->word_boundaries,
+                                                          n,
+                                                          &inner_error);
+      if (p_word2 == NULL)
+        {
+          PDF_DEBUG_BASE("Error getting word '%d' from text2", n);
+          /* An error happened computing word boundaries! */
+          pdf_propagate_error (error, inner_error);
+          return -1;
+        }
+
+      ret_num = pdf_text_compare_words (p_word1->word_start,
+                                        p_word1->word_size,
+                                        p_word2->word_start,
+                                        p_word2->word_size,
+                                        pdf_text_get_language(text1),
+                                        pdf_text_get_language(text2),
+                                        &inner_error);
+      if (inner_error)
+        {
+          PDF_DEBUG_BASE ("Error comparing words...");
+          pdf_propagate_error (error, inner_error);
+          return -1;
+        }
+
+      /* If words are not equal, return the code */
+      if (ret_num != 0)
+        {
+          PDF_DEBUG_BASE("Words are not equal...");
+          return ret_num;
+        }
+      ++n;
+    }
+
+  /* If arrived here, the strings are completely equal */
   return 0;
 }
 
-
 static pdf_i32_t
-pdf_text_compare_words(const pdf_char_t *word1,
-                       const pdf_size_t size1,
-                       const pdf_char_t *word2,
-                       const pdf_size_t size2,
-                       const pdf_char_t *language1,
-                       const pdf_char_t *language2,
-                       pdf_status_t *p_ret_code)
+pdf_text_compare_words(const pdf_char_t  *word1,
+                       const pdf_size_t   size1,
+                       const pdf_char_t  *word2,
+                       const pdf_size_t   size2,
+                       const pdf_char_t  *language1,
+                       const pdf_char_t  *language2,
+                       pdf_error_t      **error)
 {
   pdf_char_t *lower1;
   pdf_char_t *lower2;
   pdf_size_t new_size1;
   pdf_size_t new_size2;
   pdf_size_t worst_size;
-
-  if(p_ret_code != NULL)
-    {
-      *p_ret_code = PDF_OK;
-    }
+  pdf_i32_t ret_val;
 
   /* Compare sizes of words */
-  if(size1 != size2)
-    {
-      return ((size1 > size2) ? 1 : -1);
-    }
+  if (size1 != size2)
+    return ((size1 > size2) ? 1 : -1);
 
   /* Compute new worst word length */
   worst_size = size1 * UCD_SC_MAX_EXPAND;
 
   /* Allocate memory for lowercases */
-  lower1 = (pdf_char_t *)pdf_alloc(worst_size);
-  lower2 = (pdf_char_t *)pdf_alloc(worst_size);
-  if((lower1 == NULL) || \
-     (lower2 == NULL))
+  lower1 = (pdf_char_t *) pdf_alloc (worst_size);
+  lower2 = (pdf_char_t *) pdf_alloc (worst_size);
+
+  if ((lower1 == NULL) || (lower2 == NULL))
     {
       PDF_DEBUG_BASE("Unable to compare words");
-      if(p_ret_code != NULL)
-        {
-          *p_ret_code = PDF_ENOMEM;
-        }
-      if(lower1 != NULL)
-        {
-          pdf_dealloc(lower1);
-        }
-      if(lower2 != NULL)
-        {
-          pdf_dealloc(lower2);
-        }
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_TEXT,
+                     PDF_ENOMEM,
+                     "Couldn't allocate 2 chunks of %lu bytes",
+                     (unsigned long) worst_size);
+
+      if (lower1 != NULL)
+        pdf_dealloc (lower1);
+      if (lower2 != NULL)
+        pdf_dealloc (lower2);
       return -1;
     }
 
   /* Lowercase words */
-  if(pdf_text_ucd_word_change_case(lower1, &new_size1,
-                                   UNICODE_CASE_INFO_LOWER_CASE,
-                                   word1, size1, language1)!= PDF_OK)
+  if (pdf_text_ucd_word_change_case (lower1,
+                                     &new_size1,
+                                     UNICODE_CASE_INFO_LOWER_CASE,
+                                     word1,
+                                     size1,
+                                     language1) != PDF_OK)
     {
-      PDF_DEBUG_BASE("Problem lowercasing word 1");
-      pdf_dealloc(lower1);
-      pdf_dealloc(lower2);
-      if(p_ret_code != NULL)
-        {
-          *p_ret_code = PDF_ETEXTENC;
-        }
+      PDF_DEBUG_BASE ("Problem lowercasing word 1");
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_TEXT,
+                     PDF_ETEXTENC,
+                     "Couldn't lowercase word");
+      pdf_dealloc (lower1);
+      pdf_dealloc (lower2);
       return -1;
     }
-  if(pdf_text_ucd_word_change_case(lower2, &new_size2,
-                                   UNICODE_CASE_INFO_LOWER_CASE,
-                                   word2, size2, language2)!= PDF_OK)
+
+  if (pdf_text_ucd_word_change_case (lower2,
+                                     &new_size2,
+                                     UNICODE_CASE_INFO_LOWER_CASE,
+                                     word2,
+                                     size2,
+                                     language2) != PDF_OK)
     {
-      PDF_DEBUG_BASE("Problem lowercasing word 2");
-      pdf_dealloc(lower1);
-      pdf_dealloc(lower2);
-      if(p_ret_code != NULL)
-        {
-          *p_ret_code = PDF_ETEXTENC;
-        }
+      PDF_DEBUG_BASE ("Problem lowercasing word 2");
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_TEXT,
+                     PDF_ETEXTENC,
+                     "Couldn't lowercase word");
+      pdf_dealloc (lower1);
+      pdf_dealloc (lower2);
       return -1;
     }
 
   /* Compare NEW sizes of words */
-  if(new_size1 != new_size2)
+  if (new_size1 != new_size2)
     {
-      pdf_dealloc(lower1);
-      pdf_dealloc(lower2);
+      pdf_dealloc (lower1);
+      pdf_dealloc (lower2);
       return ((new_size1 > new_size2) ? 1 : -1);
     }
-  else
-    {
-      /* Compare contents of words */
-      pdf_i32_t ret_val;
-      ret_val = memcmp(lower1, lower2, new_size1);
-      pdf_dealloc(lower1);
-      pdf_dealloc(lower2);
-      return ret_val;
-    }
-}
 
+  /* Compare contents of words */
+  ret_val = memcmp (lower1, lower2, new_size1);
+  pdf_dealloc (lower1);
+  pdf_dealloc (lower2);
+  return ret_val;
+}
 
 /* Function to clean all contents of a given pdf_text_t variable */
 void
-pdf_text_clean_contents(pdf_text_t text)
+pdf_text_clean_contents (pdf_text_t text)
 {
+  pdf_error_t *inner_error = NULL;
+
   /* Clear all contents */
-  if(text->data != NULL)
+  if (text->data != NULL)
     {
       pdf_dealloc(text->data);
       text->data = NULL;
     }
 
   /* Clean list of word breaks (destroy and create empty) */
-  pdf_text_clean_word_boundaries_list(&(text->word_boundaries));
+  if (pdf_text_clean_word_boundaries_list (&(text->word_boundaries),
+                                           &inner_error))
+    {
+      /* TODO: Propagate error */
+      if (inner_error)
+        pdf_error_destroy (inner_error);
+    }
 
   /* Clean country and language info */
   memset(&(text->lang[0]), 0, PDF_TEXT_CCL);
@@ -1731,13 +1746,12 @@ pdf_text_clean_contents(pdf_text_t text)
   text->size = 0;
 
   text->modified = PDF_FALSE;
-  if (text->printable != NULL){
-    pdf_dealloc (text->printable);
-    text->printable = NULL;
-  }
+  if (text->printable != NULL)
+    {
+      pdf_dealloc (text->printable);
+      text->printable = NULL;
+    }
 }
-
-
 
 static pdf_status_t
 pdf_text_get_lang_from_utf16be(pdf_text_t element,
@@ -1923,98 +1937,95 @@ pdf_text_is_ascii7(const pdf_char_t *utf8data, const pdf_size_t size)
 
 
 /* Generate Word Boundaries list from text object */
-pdf_status_t
-pdf_text_generate_word_boundaries(pdf_text_t text)
+pdf_bool_t
+pdf_text_generate_word_boundaries (pdf_text_t    text,
+                                   pdf_error_t **error)
 {
-  if(pdf_list_size(text->word_boundaries) == 0)
+  if (pdf_list_size (text->word_boundaries) == 0)
     {
-      return pdf_text_fill_word_boundaries_list(text->word_boundaries,
-                                                text->data, text->size);
+      return pdf_text_fill_word_boundaries_list (text->word_boundaries,
+                                                 text->data,
+                                                 text->size,
+                                                 error);
     }
-  else
-    {
-      /* List already created */
-      return PDF_OK;
-    }
+
+  /* List already created */
+  return PDF_TRUE;
 }
 
-pdf_status_t
-pdf_text_destroy_word_boundaries_list(pdf_list_t *p_word_boundaries)
+void
+pdf_text_destroy_word_boundaries_list (pdf_list_t **p_word_boundaries)
 {
-  pdf_size_t n_words;
-  pdf_size_t i;
-  /* Walk list of words */
-  n_words = pdf_list_size(*p_word_boundaries);
-  for(i = 0; i < n_words; ++i)
-    {
-      struct pdf_text_wb_s *p_word = NULL;
+  pdf_list_iterator_t itr;
+  const void *element;
 
-      /* Get word to process from list of words */
-      if(pdf_list_get_at(*p_word_boundaries, \
-                         i, \
-                         (const void **)&p_word) != PDF_OK)
-        {
-          return PDF_ETEXTENC;
-        }
+  pdf_list_iterator_init (&itr, *p_word_boundaries);
+
+  while (pdf_list_iterator_next (&itr, &element, NULL))
+    {
       /* Dealloc word (pointed by the list element) */
-      pdf_dealloc(p_word);
+      pdf_dealloc (element);
     }
-  /* Destroy list */
-  pdf_list_destroy(*p_word_boundaries);
-  return PDF_OK;
-}
 
+  pdf_list_iterator_deinit (&itr);
+
+  /* Destroy list */
+  pdf_list_destroy (*p_word_boundaries);
+  *p_word_boundaries = NULL;
+}
 
 /* Create empty Word Boundaries list */
-pdf_status_t
-pdf_text_create_word_boundaries_list(pdf_list_t *p_word_boundaries)
+pdf_list_t *
+pdf_text_create_word_boundaries_list (pdf_error_t **error)
 {
-  pdf_list_t temp_list;
   /* Initialize word boundaries list */
-  if(pdf_list_new (NULL, NULL, PDF_TRUE, &temp_list) != PDF_OK)
-    {
-      return PDF_ETEXTENC;
-    }
-
-  /* Set output if everything went ok */
-  *p_word_boundaries = temp_list;
-  return PDF_OK;
+  return pdf_list_new (NULL,
+                       NULL,
+                       PDF_TRUE,
+                       error);
 }
 
 /* Clean (destroy and create empty) Word Boundaries list */
-static pdf_status_t
-pdf_text_clean_word_boundaries_list(pdf_list_t *p_word_boundaries)
+static pdf_bool_t
+pdf_text_clean_word_boundaries_list (pdf_list_t  **p_word_boundaries,
+                                     pdf_error_t **error)
 {
   /* Only destroy+create if list is not empty! */
-  if(pdf_list_size(*p_word_boundaries) != 0)
-    {
-      /* Destroy element contents */
-      pdf_text_destroy_word_boundaries_list(p_word_boundaries);
-      /* Create empty list */
-      return pdf_text_create_word_boundaries_list(p_word_boundaries);
-    }
-  else
-    {
-      /* List is already empty */
-      return PDF_OK;
-    }
+  if (pdf_list_size (*p_word_boundaries) == 0)
+    /* List is already empty */
+    return PDF_TRUE;
+
+  /* Destroy element contents */
+  pdf_text_destroy_word_boundaries_list (p_word_boundaries);
+
+  /* Create empty list */
+  *p_word_boundaries = pdf_text_create_word_boundaries_list (error);
+
+  return (*p_word_boundaries != NULL ?
+          PDF_TRUE : PDF_FALSE);
 }
 
 
 /* Fill in the Word Boundaries list using the given data */
-static pdf_status_t
-pdf_text_fill_word_boundaries_list(pdf_list_t word_boundaries,
-                                   const pdf_char_t *data,
-                                   const pdf_size_t size)
+static pdf_bool_t
+pdf_text_fill_word_boundaries_list (pdf_list_t        *word_boundaries,
+                                    const pdf_char_t  *data,
+                                    const pdf_size_t   size,
+                                    pdf_error_t      **error)
 {
   /* Perform a basic check of data length */
-  if(size % 4 != 0)
+  if (size % 4 != 0)
     {
-      return PDF_EBADDATA;
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_TEXT,
+                     PDF_EBADDATA,
+                     "Wrong stream size (%lu): Must be multiple of 4",
+                     (unsigned long) size);
+      return PDF_FALSE;
     }
 
   /* Only try to find word boundaries if length is greater than 0! */
-  if(size > 0)
+  if (size > 0)
     {
       pdf_char_t *walker;
       pdf_size_t n_bytes_left;
@@ -2023,40 +2034,55 @@ pdf_text_fill_word_boundaries_list(pdf_list_t word_boundaries,
       walker = (pdf_char_t *)data;
       n_bytes_left = size;
 
-      while(n_bytes_left > 0)
+      while (n_bytes_left > 0)
         {
-          struct pdf_text_wb_s *p_word = NULL;
+          struct pdf_text_wb_s *p_word;
 
           /* Allocate new word */
-          p_word = (struct pdf_text_wb_s *)pdf_alloc(sizeof(struct pdf_text_wb_s));
-          if(p_word == NULL)
+          p_word = (struct pdf_text_wb_s *)
+            pdf_alloc (sizeof (struct pdf_text_wb_s));
+          if (p_word == NULL)
             {
-              return PDF_ENOMEM;
+              pdf_set_error (error,
+                             PDF_EDOMAIN_BASE_TEXT,
+                             PDF_ENOMEM,
+                             "Not enough memory: Couldn't create word "
+                             "boundaries struct");
+              return PDF_FALSE;
             }
 
           /* RULE WB1: Break at the start of text ( SOT % ) */
           p_word->word_start = walker;
 
-          if(pdf_text_ucd_wb_detect_next(walker,
-                                         n_bytes_left,
-                                         &(p_word->word_stop),
-                                         &n_bytes_left)!= PDF_OK)
+          if(pdf_text_ucd_wb_detect_next (walker,
+                                          n_bytes_left,
+                                          &(p_word->word_stop),
+                                          &n_bytes_left)!= PDF_OK)
             {
-              return PDF_ETEXTENC;
+              pdf_set_error (error,
+                             PDF_EDOMAIN_BASE_TEXT,
+                             PDF_ETEXTENC,
+                             "Couldn't detect next word break");
+              return PDF_FALSE;
             }
 
           /* Compute word size in bytes */
           p_word->word_size = (p_word->word_stop - p_word->word_start) + 4;
 
           /* Add new word boundary to list */
-          pdf_list_add_last(word_boundaries, p_word, NULL);
+          if (pdf_list_add_last (word_boundaries,
+                                 p_word,
+                                 error) == NULL)
+            {
+              return PDF_FALSE;
+            }
 
           /* Update walker */
           walker = p_word->word_stop + 4;
         }
     }
 
-  return PDF_OK;
+  return PDF_TRUE;
 }
 
 

@@ -58,25 +58,27 @@ typedef struct pdf_stm_f_a85_s *pdf_stm_f_a85_t;
 
 /* Filter implementation API */
 
-pdf_status_t
-pdf_stm_f_a85enc_init (pdf_hash_t params, void **state);
+pdf_status_t pdf_stm_f_a85enc_init (pdf_hash_t  *params,
+                                    void       **state);
 
-pdf_status_t
-pdf_stm_f_a85enc_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
-                        pdf_buffer_t out, pdf_bool_t finish_p);
+pdf_status_t pdf_stm_f_a85enc_apply (pdf_hash_t   *params,
+                                     void         *state,
+                                     pdf_buffer_t  in,
+                                     pdf_buffer_t  out,
+                                     pdf_bool_t    finish_p);
 
-pdf_status_t
-pdf_stm_f_a85enc_dealloc_state (void *state);
+pdf_status_t pdf_stm_f_a85enc_dealloc_state (void *state);
 
-pdf_status_t
-pdf_stm_f_a85dec_init (pdf_hash_t params, void **state);
+pdf_status_t pdf_stm_f_a85dec_init (pdf_hash_t  *params,
+                                    void       **state);
 
-pdf_status_t
-pdf_stm_f_a85dec_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
-                        pdf_buffer_t out, pdf_bool_t finish_p);
+pdf_status_t pdf_stm_f_a85dec_apply (pdf_hash_t   *params,
+                                     void         *state,
+                                     pdf_buffer_t  in,
+                                     pdf_buffer_t  out,
+                                     pdf_bool_t    finish_p);
 
-pdf_status_t
-pdf_stm_f_a85dec_dealloc_state (void *state);
+pdf_status_t pdf_stm_f_a85dec_dealloc_state (void *state);
 
 
 #endif /* !PDF_STM_F_A85_H */

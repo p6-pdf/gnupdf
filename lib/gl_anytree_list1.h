@@ -1,4 +1,4 @@
-/* Sequential list data type implemented by an array.
+/* Sequential list data type implemented by a binary tree.
    Copyright (C) 2006, 2009-2011 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2006.
 
@@ -15,20 +15,27 @@
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
-#ifndef _GL_ARRAY_LIST_H
-#define _GL_ARRAY_LIST_H
+/* Common code of gl_avltree_list.c, gl_rbtree_list.c,
+                  gl_avltreehash_list.c, gl_rbtreehash_list.c.  */
 
-#include "gl_list.h"
+/* An item on the stack used for iterating across the elements.  */
+typedef struct
+{
+  gl_list_node_t node;
+  size_t rightp;
+} iterstack_item_t;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+/* A stack used for iterating across the elements.  */
+typedef iterstack_item_t iterstack_t[MAXHEIGHT];
 
-extern const struct gl_list_implementation gl_array_list_implementation;
-#define GL_ARRAY_LIST &gl_array_list_implementation
-
-#ifdef __cplusplus
+/* Free a non-empty subtree recursively.
+   This function is recursive and therefore not very fast.  */
+static void
+free_subtree (gl_list_node_t node)
+{
+  if (node->left != NULL)
+    free_subtree (node->left);
+  if (node->right != NULL)
+    free_subtree (node->right);
+  free (node);
 }
-#endif
-
-#endif /* _GL_ARRAY_LIST_H */

@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,8 @@
 #include <pdf.h>
 #include <check.h>
 
+#include "pdf-list-test-common.h"
+
 /*
  * Test: pdf_list_remove_node_001
  * Description:
@@ -37,22 +39,22 @@
  */
 START_TEST (pdf_list_remove_node_001)
 {
-  pdf_list_t list;
-  pdf_list_node_t node;
+  pdf_list_t *list;
+  pdf_list_node_t *node;
   int elem;
 
   elem = 2212;
 
-  pdf_init();
+  pdf_init ();
 
-  pdf_list_new (NULL, NULL, 0, &list);
+  list = pdf_list_new (NULL, NULL, 0, NULL);
 
-  pdf_list_add_last (list, &elem, &node);
-  pdf_list_remove_node (list, node);
+  node = pdf_list_add_last (list, &elem, NULL);
+  fail_if (pdf_list_remove_node (list, node) != PDF_TRUE);
 
   fail_if (pdf_list_size (list) != 0);
 
-  pdf_list_destroy (list);  
+  pdf_list_destroy (list);
 }
 END_TEST
 
@@ -62,8 +64,9 @@ END_TEST
 TCase *
 test_pdf_list_remove_node (void)
 {
-  TCase *tc = tcase_create("pdf_list_remove_node");
-  tcase_add_test(tc, pdf_list_remove_node_001);
+  TCase *tc = tcase_create ("pdf_list_remove_node");
+
+  tcase_add_test (tc, pdf_list_remove_node_001);
 
   return tc;
 }

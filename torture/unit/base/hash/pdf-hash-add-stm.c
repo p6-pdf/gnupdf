@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,30 +30,35 @@
 #include <pdf.h>
 #include <check.h>
 
-
 /*
  * Test: pdf_hash_add_stm_001
  * Description:
  *   Try to add a stream inside a hash table.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns PDF_TRUE
  */
 START_TEST (pdf_hash_add_stm_001)
 {
-  pdf_hash_t table;
+  pdf_hash_t *table;
   pdf_stm_t inner;
   char mem[4];
+  pdf_error_t *error = NULL;
 
-  pdf_init();
+  pdf_init ();
 
-  fail_if (pdf_hash_new (NULL, &table) != PDF_OK);
-  fail_if (pdf_stm_mem_new (mem, 4, 0, PDF_STM_READ, &inner) != PDF_OK);
-  fail_if (pdf_hash_add_stm (table, "theKey", &inner) != PDF_OK);
+  table = pdf_hash_new (NULL);
+
+  pdf_stm_mem_new (mem, 4, 0, PDF_STM_READ, &inner);
+
+  fail_if (pdf_hash_add_stm (table,
+                             "theKey",
+                             inner,
+                             &error) != PDF_TRUE);
+  fail_if (error != NULL);
 
   pdf_hash_destroy (table);
 }
 END_TEST
-
 
 /*
  * Test case creation function
@@ -61,8 +66,9 @@ END_TEST
 TCase *
 test_pdf_hash_add_stm (void)
 {
-  TCase *tc = tcase_create("pdf_hash_add_stm");
-  tcase_add_test(tc, pdf_hash_add_stm_001);
+  TCase *tc = tcase_create ("pdf_hash_add_stm");
+
+  tcase_add_test (tc, pdf_hash_add_stm_001);
   return tc;
 }
 

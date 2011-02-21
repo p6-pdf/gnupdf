@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,100 +24,64 @@
  */
 
 #include <config.h>
-
-
 #include <stdio.h>
 #include <pdf.h>
 #include <check.h>
 
-extern pdf_bool_t l_comp (const void * elemb, const void * elema);
-extern int l_comp_desc (const void *elema, const void * elemb);
-extern int l_comp_asc (const void *elema, const void * elemb);
+#include "pdf-list-test-common.h"
 
 /*
  * Test: pdf_list_sorted_remove_001
  * Description:
  *   Try to remove an existing element in a list.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns PDF_TRUE
  */
 START_TEST (pdf_list_sorted_remove_001)
 {
-  pdf_list_t list;
+  pdf_list_t *list;
   int elem;
-  pdf_status_t st;
 
-  elem = 1212;
+  elem = 5123;
 
-  pdf_init();
+  pdf_init ();
 
-  pdf_list_new (NULL, NULL, 0, &list);
+  list = pdf_list_new (l_comp, NULL, PDF_FALSE, NULL);
+
   pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
-  st = pdf_list_sorted_remove (list, l_comp_asc, &elem);
 
-  fail_if (st != PDF_OK);
+  fail_if (pdf_list_sorted_remove (list, l_comp_asc, &elem) != PDF_TRUE);
 
   pdf_list_destroy (list);
 }
 END_TEST
-
 
 /*
  * Test: pdf_list_sorted_remove_002
  * Description:
  *   Try to remove an non-existent element.
  * Success condition:
- *   Returns PDF_ENONODE
+ *   Returns PDF_FALSE
  */
 START_TEST (pdf_list_sorted_remove_002)
 {
-  pdf_list_t list;
-  int elem,elem2;
-  pdf_status_t st;
+  pdf_list_t *list;
+  int elem, elem2;
 
-  elem = 1212;
+  elem = 5123;
   elem2 = 3333;
-  
-  pdf_init();
 
-  pdf_list_new (l_comp, NULL, 0, &list);
+  pdf_init ();
+
+  list = pdf_list_new (l_comp, NULL, PDF_FALSE, NULL);
+
   pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
-  st = pdf_list_sorted_remove (list, l_comp_asc, &elem2);
 
-  fail_if (st != PDF_ENONODE);
+  fail_if (pdf_list_sorted_remove (list, l_comp_asc, &elem2) == PDF_TRUE);
 
   pdf_list_destroy (list);
 }
 END_TEST
-
-
-/*
- * Test: pdf_list_sorted_remove_003
- * Description:
- *   Try to remove an element with a NULL compar_fn.
- * Success condition:
- *   Returns PDF_EBADDATA
- */
-START_TEST (pdf_list_sorted_remove_003)
-{
-  pdf_list_t list;
-  int elem;
-  pdf_status_t st;
-
-  elem = 1212;
-  
-  pdf_init();
-
-  pdf_list_new (l_comp, NULL, 0, &list);
-  pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
-  st = pdf_list_sorted_remove (list, NULL, &elem);
-
-  fail_if (st != PDF_EBADDATA);
-
-  pdf_list_destroy (list);
-}
-END_TEST
-
 
 /*
  * Test case creation function
@@ -125,11 +89,10 @@ END_TEST
 TCase *
 test_pdf_list_sorted_remove (void)
 {
-  TCase *tc = tcase_create("pdf_list_sorted_remove");
-  tcase_add_test(tc, pdf_list_sorted_remove_001);
-  tcase_add_test(tc, pdf_list_sorted_remove_002);
-  tcase_add_test(tc, pdf_list_sorted_remove_003);
+  TCase *tc = tcase_create ("pdf_list_sorted_remove");
 
+  tcase_add_test (tc, pdf_list_sorted_remove_001);
+  tcase_add_test (tc, pdf_list_sorted_remove_002);
   return tc;
 }
 

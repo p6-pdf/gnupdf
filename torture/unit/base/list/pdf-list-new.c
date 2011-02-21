@@ -1,13 +1,13 @@
 /* -*- mode: C -*-
  *
- *       File:         pdf-list-create.c
+ *       File:         pdf-list-new.c
  *       Date:         Wed Mar  12 12:43:00 2008
  *
  *       GNU PDF Library - Unit tests for pdf_list_new
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,121 +29,51 @@
 #include <pdf.h>
 #include <check.h>
 
-
-pdf_bool_t l_comp (const void * elemb, const void * elema)
-{
-  int *elem1, *elem2;
-  elem1 = (int*) elema;
-  elem2 = (int*) elemb;
-        
-  if (*elem1 == *elem2)
-    {
-      return 1;
-    }
-  return 0;
-}
-
-void l_disp (const void * elema)
-{
-}
-
-
-int l_comp_desc (const void *elema, const void * elemb)
-{
-  int *elem1, *elem2;
-  elem1 = (int*) elema;
-  elem2 = (int*) elemb;
-        
-  if (*elem1 > *elem2)
-    {
-      return -1;
-    }
-  else if (*elem1 < *elem2)
-    {
-      return 1;
-    }
-  else
-    {
-      return 0;
-    }
-}
-
-int l_comp_asc (const void *elema, const void * elemb)
-{
-  int *elem1, *elem2;
-  elem1 = (int*) elema;
-  elem2 = (int*) elemb;
-           
-  if (*elem1 > *elem2)
-    {
-      return 1;
-    }
-  else if (*elem1 < *elem2)
-    {
-      return -1;
-    }
-  else
-    {
-      return 0;
-    }       
-}
-
+#include "pdf-list-test-common.h"
 
 /*
  * Test: pdf_list_new_001
  * Description:
  *   Try to create an empty list.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns a valid list.
  */
 START_TEST (pdf_list_new_001)
 {
-  pdf_list_t list;
-  
-  pdf_init();
+  pdf_list_t *list;
+  pdf_error_t *error = NULL;
 
-  fail_if (pdf_list_new (l_comp, l_disp, 0, &list) != PDF_OK);
+  pdf_init ();
+
+  list = pdf_list_new (l_comp, l_disp, PDF_FALSE, &error);
+  fail_if (list == NULL);
+  fail_if (error != NULL);
 
   pdf_list_destroy (list);
 }
 END_TEST
-
 
 /*
  * Test: pdf_list_new_002
  * Description:
- *   Try to create an empty list given a NULL list pointer.
+ *   Try to create an empty list allowing duplicates.
  * Success condition:
- *   Returns PDF_EBADDATA
+ *   Returns a valid list.
  */
 START_TEST (pdf_list_new_002)
 {
+  pdf_list_t *list;
+  pdf_error_t *error = NULL;
+
   pdf_init();
 
-  fail_if (pdf_list_new (l_comp, l_disp, 0, NULL) != PDF_EBADDATA);
-}
-END_TEST
-
-
-/*
- * Test: pdf_list_new_003
- * Description:
- *   Try to create an empty list allowing duplicates.
- * Success condition:
- *   Returns PDF_OK
- */
-START_TEST (pdf_list_new_003)
-{
-  pdf_list_t list;
-  
-  pdf_init();
-
-  fail_if (pdf_list_new (l_comp, l_disp, 1, &list) != PDF_OK);
+  list = pdf_list_new (l_comp, l_disp, PDF_TRUE, &error);
+  fail_if (list == NULL);
+  fail_if (error != NULL);
 
   pdf_list_destroy (list);
 }
 END_TEST
-
 
 /*
  * Test case creation function
@@ -151,12 +81,11 @@ END_TEST
 TCase *
 test_pdf_list_new (void)
 {
-  TCase *tc = tcase_create("pdf_list_new");
-  tcase_add_test(tc, pdf_list_new_001);
-  tcase_add_test(tc, pdf_list_new_002);
-  tcase_add_test(tc, pdf_list_new_003);
+  TCase *tc = tcase_create ("pdf_list_new");
+  tcase_add_test (tc, pdf_list_new_001);
+  tcase_add_test (tc, pdf_list_new_002);
 
   return tc;
 }
 
-/* End of pdf-list-create.c */
+/* End of pdf-list-new.c */

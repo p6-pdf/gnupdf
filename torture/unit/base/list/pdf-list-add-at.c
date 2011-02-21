@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,35 +28,36 @@
 #include <pdf.h>
 #include <check.h>
 
+#include "pdf-list-test-common.h"
+
 /*
  * Test: pdf_list_add_at_001
  * Description:
  *   Try to add a new element at the 0 position.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns a valid new node created.
  */
 START_TEST (pdf_list_add_at_001)
 {
-  pdf_list_t list;
+  pdf_list_t *list;
   int elem;
-  pdf_list_node_t node;
+  pdf_list_node_t *node;
   pdf_status_t st;
+  pdf_error_t *error = NULL;
 
   elem = 333;
 
-  pdf_init();
+  pdf_init ();
 
-  pdf_list_new (NULL, NULL, 0, &list);
+  list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
 
-  st = pdf_list_add_at (list, 0, &elem, &node);
+  node = pdf_list_add_at (list, 0, &elem, &error);
+  fail_if (node == NULL);
+  fail_if (error != NULL);
 
-  fail_if (st != PDF_OK);
-  
   pdf_list_destroy (list);
 }
 END_TEST
-
-
 
 /*
  * Test: pdf_list_add_at_002
@@ -67,20 +68,24 @@ END_TEST
  */
 START_TEST (pdf_list_add_at_002)
 {
-  pdf_list_t list;
+  pdf_list_t *list;
   int elem;
-  pdf_list_node_t node;
+  pdf_list_node_t *node;
   pdf_status_t st;
-  elem = 321;
+  pdf_error_t *error = NULL;
 
-  pdf_init();
+  elem = 333;
 
-  pdf_list_new (NULL, NULL, 0, &list);
+  pdf_init ();
 
-  st = pdf_list_add_at (list, 1, &elem, &node);
+  list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
 
-  fail_if (st != PDF_EINVRANGE);
+  node = pdf_list_add_at (list, 1, &elem, &error);
+  fail_if (node != NULL);
+  fail_if (error == NULL);
+  fail_if (pdf_error_get_status (error) != PDF_EINVRANGE);
 
+  pdf_error_destroy (error);
   pdf_list_destroy (list);
 }
 END_TEST
@@ -92,9 +97,10 @@ END_TEST
 TCase *
 test_pdf_list_add_at (void)
 {
-  TCase *tc = tcase_create("pdf_list_add_at");
-  tcase_add_test(tc, pdf_list_add_at_001);
-  tcase_add_test(tc, pdf_list_add_at_002);
+  TCase *tc = tcase_create ("pdf_list_add_at");
+
+  tcase_add_test (tc, pdf_list_add_at_001);
+  tcase_add_test (tc, pdf_list_add_at_002);
 
   return tc;
 }

@@ -33,8 +33,8 @@ static pdf_u32_t pdf_stm_f_ahex_hex2int (pdf_u32_t hex);
 static pdf_char_t pdf_stm_f_ahex_int2hex (pdf_u32_t n);
 
 pdf_status_t
-pdf_stm_f_ahexenc_init (pdf_hash_t params,
-                        void **state)
+pdf_stm_f_ahexenc_init (pdf_hash_t  *params,
+                        void       **state)
 {
   pdf_stm_f_ahexenc_t filter_state;
 
@@ -45,7 +45,7 @@ pdf_stm_f_ahexenc_init (pdf_hash_t params,
     {
       return PDF_ERROR;
     }
-  
+
   /* Initialize fields */
   filter_state->last_nibble = -1;
   filter_state->written_bytes = 0;
@@ -58,11 +58,11 @@ pdf_stm_f_ahexenc_init (pdf_hash_t params,
 #define PDF_STM_F_AHEX_LINE_WIDTH 60
 
 pdf_status_t
-pdf_stm_f_ahexenc_apply (pdf_hash_t params,
-                         void *state,
-                         pdf_buffer_t in,
-                         pdf_buffer_t out,
-                         pdf_bool_t finish_p)
+pdf_stm_f_ahexenc_apply (pdf_hash_t   *params,
+                         void         *state,
+                         pdf_buffer_t  in,
+                         pdf_buffer_t  out,
+                         pdf_bool_t    finish_p)
 {
   pdf_stm_f_ahexenc_t filter_state;
   pdf_char_t first_nibble;
@@ -79,7 +79,7 @@ pdf_stm_f_ahexenc_apply (pdf_hash_t params,
     }
 
   filter_state = (pdf_stm_f_ahexenc_t) state;
-  
+
   ret = PDF_OK;
   while (!pdf_buffer_full_p (out))
     {
@@ -95,7 +95,7 @@ pdf_stm_f_ahexenc_apply (pdf_hash_t params,
 
       /* Write down any pending nibble, if needed, without consuming
          any input byte */
-      if (filter_state->last_nibble != -1) 
+      if (filter_state->last_nibble != -1)
         {
           out->data[out->wp] = filter_state->last_nibble;
           out->wp++;
@@ -110,7 +110,7 @@ pdf_stm_f_ahexenc_apply (pdf_hash_t params,
           /* For each byte in the input we should generate two bytes in the
              output. */
           in_char = in->data[in->rp];
-          
+
           /* Determine the hex digits to write for this input character */
           if (filter_state->last_nibble != -1)
             {
@@ -126,12 +126,12 @@ pdf_stm_f_ahexenc_apply (pdf_hash_t params,
 
           /* Write the hex digits into the output buffer, if
              possible */
-          
+
           /* First nibble */
           out->data[out->wp] = first_nibble;
           out->wp++;
           filter_state->written_bytes++;
-          
+
           /* Maybe write the second nibble */
           if (pdf_buffer_full_p (out))
             {
@@ -175,8 +175,8 @@ pdf_stm_f_ahexenc_dealloc_state (void *state)
 }
 
 pdf_status_t
-pdf_stm_f_ahexdec_init (pdf_hash_t params,
-                        void **state)
+pdf_stm_f_ahexdec_init (pdf_hash_t  *params,
+                        void       **state)
 {
   pdf_stm_f_ahexdec_t ahexdec_state;
   pdf_status_t ret;
@@ -201,11 +201,11 @@ pdf_stm_f_ahexdec_init (pdf_hash_t params,
 }
 
 pdf_status_t
-pdf_stm_f_ahexdec_apply (pdf_hash_t params,
-                         void *state,
-                         pdf_buffer_t in,
-                         pdf_buffer_t out,
-                         pdf_bool_t finish_p)
+pdf_stm_f_ahexdec_apply (pdf_hash_t   *params,
+                         void         *state,
+                         pdf_buffer_t  in,
+                         pdf_buffer_t  out,
+                         pdf_bool_t    finish_p)
 {
   pdf_status_t ret;
   pdf_stm_f_ahexdec_t filter_state;
@@ -256,14 +256,14 @@ pdf_stm_f_ahexdec_apply (pdf_hash_t params,
                   break;
                 }
             }
-          
+
           /* Detect an invalid character */
           if (!pdf_stm_f_ahex_hex_p ((pdf_u32_t) in->data[in->rp]))
             {
               ret = PDF_ERROR;
               break;
             }
-          
+
           /* Process this character. This is the first or the second part
              of a mibble. */
           if (filter_state->last_nibble == -1)
@@ -290,7 +290,7 @@ pdf_stm_f_ahexdec_apply (pdf_hash_t params,
             }
         }
     }
-  
+
   if (ret == PDF_OK)
     {
       if (pdf_buffer_eob_p (in))

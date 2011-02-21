@@ -71,9 +71,9 @@ pdf_fsys_disk_create_folder (void *data,
 
 /* Get folder contents from disk (list files in disk) */
 pdf_status_t
-pdf_fsys_disk_get_folder_contents (void *data,
-                                   const pdf_text_t path_name,
-                                   pdf_list_t item_list);
+pdf_fsys_disk_get_folder_contents (void             *data,
+                                   const pdf_text_t  path_name,
+                                   pdf_list_t       *item_list);
 
 /* Get path name of the father of a given item in the filesystem */
 pdf_status_t
@@ -108,10 +108,10 @@ pdf_fsys_disk_item_writable_p (void *data,
                                pdf_text_t path_name);
 
 pdf_status_t
-pdf_fsys_disk_build_path (void *data,
-                          pdf_text_t * output,
-                          pdf_text_t first_element,
-                          pdf_list_t rest);
+pdf_fsys_disk_build_path (void       *data,
+                          pdf_text_t *output,
+                          pdf_text_t  first_element,
+                          pdf_list_t *rest);
 
 /* --------------------- File interface ------------------------- */
 
@@ -140,7 +140,7 @@ pdf_status_t
 pdf_fsys_disk_file_set_mode (pdf_fsys_file_t file,
                              enum pdf_fsys_file_mode_e new_mode);
 
-/* Check if paths are same/equivalent */ 
+/* Check if paths are same/equivalent */
 pdf_bool_t
 pdf_fsys_disk_file_same_p (pdf_fsys_file_t file,
                            pdf_text_t path);

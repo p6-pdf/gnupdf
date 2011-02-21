@@ -1,4 +1,4 @@
-/* Sequential list data type implemented by a hash table with a linked list.
+/* Sequential list data type implemented by a linked list.
    Copyright (C) 2006, 2008-2011 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2006.
 
@@ -18,78 +18,18 @@
 #include <config.h>
 
 /* Specification.  */
-#include "gl_linkedhash_list.h"
+#include "gl_linked_list.h"
 
-#include <stdint.h> /* for SIZE_MAX */
 #include <stdlib.h>
-
-#include "xsize.h"
-
-#ifndef uintptr_t
-# define uintptr_t unsigned long
-#endif
-
-#define WITH_HASHTABLE 1
 
 /* -------------------------- gl_list_t Data Type -------------------------- */
 
-/* Generic hash-table code.  */
-#include "gl_anyhash_list1.h"
-
 /* Generic linked list code.  */
 #include "gl_anylinked_list1.h"
-
-/* Generic hash-table code.  */
-#include "gl_anyhash_list2.h"
-
-/* Resize the hash table if needed, after list->count was incremented.  */
-static inline void
-hash_resize_after_add (gl_list_t list)
-{
-  size_t count = list->count;
-  size_t estimate = xsum (count, count / 2); /* 1.5 * count */
-  if (estimate > list->table_size)
-    hash_resize (list, estimate);
-}
-
-/* Add a node to the hash table structure.  */
-static inline void
-add_to_bucket (gl_list_t list, gl_list_node_t node)
-{
-  size_t bucket = node->h.hashcode % list->table_size;
-
-  node->h.hash_next = list->table[bucket];
-  list->table[bucket] = &node->h;
-}
-/* Tell all compilers that the return value is 0.  */
-#define add_to_bucket(list,node)  ((add_to_bucket) (list, node), 0)
-
-/* Remove a node from the hash table structure.  */
-static inline void
-remove_from_bucket (gl_list_t list, gl_list_node_t node)
-{
-  size_t bucket = node->h.hashcode % list->table_size;
-  gl_hash_entry_t *p;
-
-  for (p = &list->table[bucket]; ; p = &(*p)->hash_next)
-    {
-      if (*p == &node->h)
-        {
-          *p = node->h.hash_next;
-          break;
-        }
-      if (*p == NULL)
-        /* node is not in the right bucket.  Did the hash codes
-           change inadvertently?  */
-        abort ();
-    }
-}
-
-/* Generic linked list code.  */
 #include "gl_anylinked_list2.h"
 
 
-const struct gl_list_implementation gl_linkedhash_list_implementation =
+const struct gl_list_implementation gl_linked_list_implementation =
   {
     gl_linked_nx_create_empty,
     gl_linked_nx_create,

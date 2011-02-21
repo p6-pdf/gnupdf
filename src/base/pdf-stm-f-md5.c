@@ -44,13 +44,14 @@ typedef struct pdf_stm_f_md5_s * pdf_stm_f_md5_t;
 
 
 pdf_status_t
-pdf_stm_f_md5enc_init (pdf_hash_t params, void **state)
+pdf_stm_f_md5enc_init (pdf_hash_t  *params,
+                       void       **state)
 {
   pdf_status_t ret;
   pdf_stm_f_md5_t filter_state;
-  
+
   filter_state = pdf_alloc (sizeof (struct pdf_stm_f_md5_s));
-  
+
   if (filter_state == NULL)
     {
       ret = PDF_ENOMEM;
@@ -63,12 +64,12 @@ pdf_stm_f_md5enc_init (pdf_hash_t params, void **state)
   else
     {
       pdf_crypt_md_t md;
-      
+
       if (pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md) == PDF_OK)
         {
           filter_state->md = md;
           filter_state->cache = pdf_buffer_new (MD5_OUTPUT_SIZE);
-          
+
           if (filter_state->cache == NULL)
             {
               pdf_dealloc (filter_state);
@@ -88,20 +89,23 @@ pdf_stm_f_md5enc_init (pdf_hash_t params, void **state)
     }
   return ret;
 }
-  
+
 
 
 pdf_status_t
-pdf_stm_f_md5enc_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
-                        pdf_buffer_t out, pdf_bool_t finish_p)
+pdf_stm_f_md5enc_apply (pdf_hash_t   *params,
+                        void         *state,
+                        pdf_buffer_t  in,
+                        pdf_buffer_t  out,
+                        pdf_bool_t    finish_p)
 {
   pdf_stm_f_md5_t filter_state = state;
   pdf_buffer_t cache = filter_state->cache;
   pdf_size_t in_size;
   pdf_status_t ret;
-  
+
   in_size = in->wp - in->rp;
-  
+
   pdf_crypt_md_write (filter_state->md, in->data, in_size);
   in->rp += in_size;
   ret = PDF_ENINPUT;

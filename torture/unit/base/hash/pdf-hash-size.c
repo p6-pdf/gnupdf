@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,11 +39,11 @@
  */
 START_TEST (pdf_hash_size_001)
 {
-  pdf_hash_t table;
+  pdf_hash_t *table;
 
-  pdf_init();
+  pdf_init ();
 
-  pdf_hash_new (NULL, &table);
+  table = pdf_hash_new (NULL);
 
   fail_if (pdf_hash_size (table) != 0);
 
@@ -51,15 +51,15 @@ START_TEST (pdf_hash_size_001)
 }
 END_TEST
 
-
 /*
  * Test case creation function
  */
 TCase *
 test_pdf_hash_size (void)
 {
-  TCase *tc = tcase_create("pdf_hash_size");
-  tcase_add_test(tc, pdf_hash_size_001);
+  TCase *tc = tcase_create ("pdf_hash_size");
+
+  tcase_add_test (tc, pdf_hash_size_001);
   return tc;
 }
 

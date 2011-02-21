@@ -39,7 +39,8 @@ static int copy_next_bytes (pdf_stm_f_rl_t st, pdf_buffer_t in,
 
 
 pdf_status_t
-pdf_stm_f_rlenc_init (pdf_hash_t params, void **state)
+pdf_stm_f_rlenc_init (pdf_hash_t  *params,
+                      void       **state)
 {
   pdf_status_t ret;
   pdf_stm_f_rl_t filter_state;
@@ -74,15 +75,19 @@ pdf_stm_f_rlenc_init (pdf_hash_t params, void **state)
 
 
 pdf_status_t
-pdf_stm_f_rldec_init (pdf_hash_t params, void **state)
+pdf_stm_f_rldec_init (pdf_hash_t  *params,
+                      void       **state)
 {
-  return pdf_stm_f_rlenc_init (params,state);
+  return pdf_stm_f_rlenc_init (params, state);
 }
 
 
 pdf_status_t
-pdf_stm_f_rlenc_apply (pdf_hash_t params, void * state, pdf_buffer_t in,
-                       pdf_buffer_t out, pdf_bool_t finish_p)
+pdf_stm_f_rlenc_apply (pdf_hash_t   *params,
+                       void         *state,
+                       pdf_buffer_t  in,
+                       pdf_buffer_t  out,
+                       pdf_bool_t    finish_p)
 {
   pdf_stm_f_rl_t st;
 
@@ -97,7 +102,7 @@ pdf_stm_f_rlenc_apply (pdf_hash_t params, void * state, pdf_buffer_t in,
         {
           st->rlchar = st->curchar;
           st->run_p = PDF_TRUE;
-          st->rl++; 
+          st->rl++;
           in->rp++;
         }
       /* we're encoding some character now */
@@ -106,7 +111,7 @@ pdf_stm_f_rlenc_apply (pdf_hash_t params, void * state, pdf_buffer_t in,
           st->rl++;
           in->rp++;
         }
-      /* 
+      /*
        * the rl code is too long or the rl char is different,
        * so we write what we encoded so far.
        */
@@ -121,7 +126,7 @@ pdf_stm_f_rlenc_apply (pdf_hash_t params, void * state, pdf_buffer_t in,
         }
     }
 
-  /* 
+  /*
    * we may have finished with some history, we save it if needed,
    * then we add the EOD.
    */
@@ -159,8 +164,11 @@ pdf_stm_f_rlenc_dealloc_state (void *state)
 }
 
 pdf_status_t
-pdf_stm_f_rldec_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
-                       pdf_buffer_t out, pdf_bool_t finish_p)
+pdf_stm_f_rldec_apply (pdf_hash_t   *params,
+                       void         *state,
+                       pdf_buffer_t  in,
+                       pdf_buffer_t  out,
+                       pdf_bool_t    finish_p)
 {
   pdf_stm_f_rl_t st;
   pdf_status_t copied;
@@ -231,7 +239,7 @@ encode_rl_char (pdf_stm_f_rl_t st, pdf_buffer_t out)
         {
           return -1;
         }
-      out->data[out->wp++] = (st->rl == 0) ? 0 : 256 - st->rl;    
+      out->data[out->wp++] = (st->rl == 0) ? 0 : 256 - st->rl;
       st->enc_p = PDF_STM_F_RL_WRL;
     }
 

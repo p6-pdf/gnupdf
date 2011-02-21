@@ -75,7 +75,7 @@ START_TEST (pdf_stm_read_001)
 
   /* Check for the result */
   fail_if(strcmp("0123456789", ret_buf) != 0);
-  
+
   /* Destroy data */
   pdf_dealloc (buf);
   pdf_dealloc (ret_buf);
@@ -132,7 +132,7 @@ START_TEST (pdf_stm_read_002)
 
   /* Check for the result */
   fail_if(strcmp("0123456789", ret_buf) != 0);
-  
+
   /* Destroy data */
   pdf_dealloc (buf);
   pdf_dealloc (ret_buf);
@@ -242,7 +242,7 @@ START_TEST (pdf_stm_read_003)
 
   /* Check for the result */
   fail_if(ret_buf[0] != 0);
-  
+
   /* Destroy data */
   pdf_dealloc (buf);
   pdf_dealloc (ret_buf);
@@ -266,7 +266,7 @@ START_TEST (pdf_stm_read_004)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t null_filter_params;
+  pdf_hash_t *null_filter_params;
 
   /* Create a buffer with some contents */
   buf_size = 11;
@@ -289,7 +289,7 @@ START_TEST (pdf_stm_read_004)
   fail_if(ret != PDF_OK);
 
   /* Install a new filter in the chain */
-  pdf_hash_new (NULL, &null_filter_params);
+  null_filter_params = pdf_hash_new (NULL);
   fail_if(pdf_stm_install_filter (stm,
                                   PDF_STM_FILTER_NULL,
                                   null_filter_params) != PDF_OK);
@@ -305,7 +305,7 @@ START_TEST (pdf_stm_read_004)
 
   /* Check for the result */
   fail_if(strcmp("0123456789", ret_buf) != 0);
-  
+
   /* Destroy data */
   pdf_dealloc (buf);
   pdf_dealloc (ret_buf);
@@ -325,7 +325,7 @@ END_TEST
 START_TEST (pdf_stm_read_005)
 {
   pdf_status_t ret;
-  pdf_hash_t params;
+  pdf_hash_t *params;
   pdf_stm_t stm;
   pdf_char_t *buf, *decoded="122333444455555666666777777788888888999999999";
   pdf_size_t buf_size, total=46,read;
@@ -387,7 +387,7 @@ START_TEST (pdf_stm_read_006)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t ahexdec_filter_parameters;
+  pdf_hash_t *ahexdec_filter_parameters;
 
   /* Create the buffers */
   buf_size = 10;
@@ -409,8 +409,7 @@ START_TEST (pdf_stm_read_006)
   fail_if(ret != PDF_OK);
 
   /* Install an ASCII Hex decoder in the stream */
-  ret = pdf_hash_new (NULL, &ahexdec_filter_parameters);
-  fail_if(ret != PDF_OK);
+  ahexdec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
                                 PDF_STM_FILTER_AHEX_DEC,
@@ -455,7 +454,7 @@ START_TEST (pdf_stm_read_007)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t ahexdec_filter_parameters;
+  pdf_hash_t *ahexdec_filter_parameters;
 
   /* Create the buffers */
   buf_size = 20;
@@ -477,8 +476,7 @@ START_TEST (pdf_stm_read_007)
   fail_if(ret != PDF_OK);
 
   /* Install an ASCII Hex decoder in the stream */
-  ret = pdf_hash_new (NULL, &ahexdec_filter_parameters);
-  fail_if(ret != PDF_OK);
+  ahexdec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
                                 PDF_STM_FILTER_AHEX_DEC,
@@ -525,7 +523,7 @@ START_TEST (pdf_stm_read_008)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t ahexdec_filter_parameters;
+  pdf_hash_t *ahexdec_filter_parameters;
 
   /* Create the buffers */
   buf_size = 20;
@@ -547,8 +545,7 @@ START_TEST (pdf_stm_read_008)
   fail_if(ret != PDF_OK);
 
   /* Install an ASCII Hex decoder in the stream */
-  ret = pdf_hash_new (NULL, &ahexdec_filter_parameters);
-  fail_if(ret != PDF_OK);
+  ahexdec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
                                 PDF_STM_FILTER_AHEX_DEC,
@@ -591,7 +588,7 @@ END_TEST
 START_TEST (pdf_stm_read_009)
 {
   pdf_status_t ret;
-  pdf_hash_t params;
+  pdf_hash_t *params;
   pdf_stm_t stm;
   pdf_size_t buf_size, total=1059,read;
   pdf_char_t *buf, *decoded=
@@ -673,7 +670,7 @@ START_TEST (pdf_stm_read_011)
 {
   pdf_status_t ret;
   pdf_stm_t stm;
-  pdf_hash_t params;
+  pdf_hash_t *params;
 
   pdf_char_t out[14];
 
@@ -688,19 +685,19 @@ START_TEST (pdf_stm_read_011)
   pdf_size_t keysize = sizeof(key);
   pdf_char_t plaintext[] = "Attack at dawn";
   pdf_size_t read;
-  
-  pdf_init();
+
+  pdf_init ();
 
   fail_if ( pdf_stm_mem_new (in, in_size, 0, PDF_STM_READ, &stm) != PDF_OK);
 
-  pdf_hash_new (NULL, &params);
-  pdf_hash_add (params, "Key", key, NULL);
-  pdf_hash_add (params, "KeySize", &keysize, NULL);
+  params = pdf_hash_new (NULL);
+  pdf_hash_add (params, "Key", key, NULL, NULL);
+  pdf_hash_add_size (params, "KeySize", keysize, NULL);
 
   fail_if ( pdf_stm_install_filter (stm, PDF_STM_FILTER_V2_DEC, params) != PDF_OK);
 
   ret = pdf_stm_read (stm, out, out_size, &read);
-  fail_if(ret == PDF_ERROR);
+  fail_if (ret == PDF_ERROR);
   fail_if (read != out_size);
 
   fail_if (memcmp (out, plaintext, read) != 0);
@@ -723,11 +720,11 @@ END_TEST
 START_TEST (pdf_stm_read_012)
 {
   pdf_stm_t stm;
-  pdf_hash_t params;
+  pdf_hash_t *params;
   pdf_char_t out[48];
   pdf_size_t out_size;
   pdf_status_t ret;
-  
+
   pdf_char_t key[] =
     {
       0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
@@ -760,9 +757,9 @@ START_TEST (pdf_stm_read_012)
 
   pdf_init();
 
-  pdf_hash_new (NULL, &params);
-  pdf_hash_add (params, "Key", key, NULL);
-  pdf_hash_add (params, "KeySize", &keysize, NULL);
+  params = pdf_hash_new (NULL);
+  pdf_hash_add (params, "Key", key, NULL, NULL);
+  pdf_hash_add_size (params, "KeySize", keysize, NULL);
 
   fail_if ( pdf_stm_mem_new (ciphered, sizeof(ciphered), 0, PDF_STM_READ, &stm) != PDF_OK);
   fail_if ( pdf_stm_install_filter (stm, PDF_STM_FILTER_AESV2_DEC, params) != PDF_OK);
@@ -806,7 +803,7 @@ START_TEST (pdf_stm_read_013)
   fail_if (ret != PDF_OK);
 
   /* Open new file */
-  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, &file); 
+  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, &file);
   fail_if (ret != PDF_OK);
 
   ret = pdf_fsys_file_write (file, "GNU", 3, &written);
@@ -814,7 +811,7 @@ START_TEST (pdf_stm_read_013)
   fail_if (written != 3);
   pdf_fsys_file_close (file);
 
-  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, &file); 
+  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, &file);
   fail_if (ret != PDF_OK);
   /* Create the stream */
   ret = pdf_stm_file_new (file,
@@ -860,7 +857,7 @@ START_TEST (pdf_stm_read_014)
   pdf_text_t path;
   pdf_char_t * remain;
   pdf_size_t remain_length;
-  pdf_hash_t null_filter_params;
+  pdf_hash_t *null_filter_params;
 
   /* Create the file path */
   pdf_init();
@@ -869,7 +866,7 @@ START_TEST (pdf_stm_read_014)
   fail_if (ret != PDF_OK);
 
   /* Open new file */
-  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, &file); 
+  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, &file);
   fail_if (ret != PDF_OK);
 
   ret = pdf_fsys_file_write (file, "GNU", 3, &written);
@@ -877,7 +874,7 @@ START_TEST (pdf_stm_read_014)
   fail_if (written != 3);
   pdf_fsys_file_close (file);
 
-  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, &file); 
+  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, &file);
   fail_if (ret != PDF_OK);
   /* Create the stream */
   ret = pdf_stm_file_new (file,
@@ -889,7 +886,7 @@ START_TEST (pdf_stm_read_014)
 
 
   /* Install a new filter in the chain */
-  pdf_hash_new (NULL, &null_filter_params);
+  null_filter_params = pdf_hash_new (NULL);
   fail_if(pdf_stm_install_filter (stm,
                                   PDF_STM_FILTER_NULL,
                                   null_filter_params) != PDF_OK);
@@ -926,11 +923,11 @@ START_TEST (pdf_stm_read_015)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
-  pdf_char_t *unencoded = 
+  pdf_char_t *unencoded =
     "\x00\x01\x02\x03\x00\x00\x00\x00\x04\x05\x06\x07\x08\x09\x0A\x0B";
-  pdf_char_t *encoded = 
+  pdf_char_t *encoded =
     "!!\x2A\x2D\x27z\x22\x39\x65\x75\x37\x23\x52\x4C\x68\x47~>";
 
 
@@ -951,8 +948,7 @@ START_TEST (pdf_stm_read_015)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
                                 PDF_STM_FILTER_A85_DEC,
@@ -996,7 +992,7 @@ START_TEST (pdf_stm_read_016)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded = "\x00";
   pdf_char_t *encoded =   "!!~>";
@@ -1019,8 +1015,7 @@ START_TEST (pdf_stm_read_016)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
                                 PDF_STM_FILTER_A85_DEC,
@@ -1063,7 +1058,7 @@ START_TEST (pdf_stm_read_017)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded = "\x00\x00";
   pdf_char_t *encoded = "!!!~>";
@@ -1086,7 +1081,7 @@ START_TEST (pdf_stm_read_017)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
   fail_if (ret != PDF_OK);
 
   ret = pdf_stm_install_filter (stm,
@@ -1119,23 +1114,23 @@ END_TEST
  * The following is the spec from the gnupdf site for the ASCII85 filter
  * I have placed within this text requirement identifiers in the form **(#n)**
  * to identify requirements coverage in the test cases.
- *  
+ *
  * From gnupdf.org:
  *
- * The ASCII85Decode filter decodes data that has been encoded in ASCII 
- * base-85 encoding and produces binary data. The following paragraphs 
- * describe the process for encoding binary data in ASCII base-85; the 
+ * The ASCII85Decode filter decodes data that has been encoded in ASCII
+ * base-85 encoding and produces binary data. The following paragraphs
+ * describe the process for encoding binary data in ASCII base-85; the
  * ASCII85Decode filter reverses this process.
  *
- * The ASCII base-85 encoding uses the characters ! through u and the 
+ * The ASCII base-85 encoding uses the characters ! through u and the
  * character z, with the 2-character sequence ~> as its EOD marker. The
- * ASCII85Decode filter ignores all white-space characters **(#1)**. Any other 
- * characters **(#2)**, and any character sequences that represent impossible 
+ * ASCII85Decode filter ignores all white-space characters **(#1)**. Any other
+ * characters **(#2)**, and any character sequences that represent impossible
  * combinations in the ASCII base-85 encoding **(#3)**, cause an error.
  *
  * Specifically, ASCII base-85 encoding produces 5 ASCII characters for
- * every 4 bytes of binary data. Each group of 4binary input bytes, 
- * `(b1 b2 b3 b4)`, is converted to a group of 5 output bytes, 
+ * every 4 bytes of binary data. Each group of 4binary input bytes,
+ * `(b1 b2 b3 b4)`, is converted to a group of 5 output bytes,
  * `(c1 c2 c3 c4 c5)`, using the relation:
  *
  * (b1 * 256^3) + (b2 * 256^2) + (b3 * 256^1) + b4 =
@@ -1144,23 +1139,23 @@ END_TEST
  *
  * In other words, 4 bytes of binary data are interpreted as a base-256
  * number and then converted to a base-85 number. The five bytes of the
- * base-85 number are then converted to ASCII characters by adding 33 
- * (the ASCII code for the character !) to each. The resulting encoded 
- * data contains only printable ASCII characters with codes in the 
+ * base-85 number are then converted to ASCII characters by adding 33
+ * (the ASCII code for the character !) to each. The resulting encoded
+ * data contains only printable ASCII characters with codes in the
  * range 33 (!) to 117 (u). As a special case, if all five bytes are 0,
- * they are represented by the character with code 122 (z) **(#4)** instead of 
+ * they are represented by the character with code 122 (z) **(#4)** instead of
  * by five exclamation points (!!!!!).
  *
- * If the length of the binary data to be encoded is not a multiple of 
- * 4 bytes, the last, partial group of 4 is used to produce a last, 
- * partial group of 5 output  characters. Given n (1, 2 or 3) bytes of 
- * binary data, the encoder first appends 4 - n zero bytes to make a 
- * complete group of 4. It then encodes this group in the usual way, 
+ * If the length of the binary data to be encoded is not a multiple of
+ * 4 bytes, the last, partial group of 4 is used to produce a last,
+ * partial group of 5 output  characters. Given n (1, 2 or 3) bytes of
+ * binary data, the encoder first appends 4 - n zero bytes to make a
+ * complete group of 4. It then encodes this group in the usual way,
  * but without applying the special z case **(#5)**. Finally, it writes only the
  * first n + 1 characters of the resulting group of 5 **(#6)**. These characters
  * are immediately followed by the ~> EOD marker.
  *
- * The following conditions (which never occur in a correctly encoded 
+ * The following conditions (which never occur in a correctly encoded
  * byte sequence) cause errors during decoding:
  *
  *  * The value represented by a group of 5 characters is >= 2^32 **(#7)**.
@@ -1184,7 +1179,7 @@ START_TEST (pdf_stm_read_018)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded = "\x00\x00\x00";
   pdf_char_t *encoded = "!!!!~>";
@@ -1207,8 +1202,7 @@ START_TEST (pdf_stm_read_018)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
                                 PDF_STM_FILTER_A85_DEC,
@@ -1251,7 +1245,7 @@ START_TEST (pdf_stm_read_019)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded = "\x00\x00\x00\x00";
   pdf_char_t *encoded = "z~>";
@@ -1274,8 +1268,7 @@ START_TEST (pdf_stm_read_019)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
                                 PDF_STM_FILTER_A85_DEC,
@@ -1318,7 +1311,7 @@ START_TEST (pdf_stm_read_020)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded = "\x00\x00\x00\x00";
   pdf_char_t *encoded = "z~>";
@@ -1338,8 +1331,7 @@ START_TEST (pdf_stm_read_020)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
 				PDF_STM_FILTER_A85_DEC,
@@ -1380,7 +1372,7 @@ START_TEST (pdf_stm_read_021)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded = "\x00\x00\x00\x00";
   pdf_char_t *encoded = " z\t~\n>       ";
@@ -1400,8 +1392,7 @@ START_TEST (pdf_stm_read_021)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
 				PDF_STM_FILTER_A85_DEC,
@@ -1442,7 +1433,7 @@ START_TEST (pdf_stm_read_022)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded = "\x00";
   pdf_char_t *encoded = "!!~>";
@@ -1462,8 +1453,7 @@ START_TEST (pdf_stm_read_022)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
 				PDF_STM_FILTER_A85_DEC,
@@ -1504,7 +1494,7 @@ START_TEST (pdf_stm_read_023)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded = "\x00\x00";
   pdf_char_t *encoded = "!!!~>";
@@ -1524,8 +1514,7 @@ START_TEST (pdf_stm_read_023)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
 				PDF_STM_FILTER_A85_DEC,
@@ -1566,7 +1555,7 @@ START_TEST (pdf_stm_read_024)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded = "\x00\x00\x00";
   pdf_char_t *encoded = "!!!!~>";
@@ -1582,12 +1571,11 @@ START_TEST (pdf_stm_read_024)
 
   /* Create the stream */
   ret = pdf_stm_mem_new (encoded, 6, 0,	/* Use the default cache size */
-			 PDF_STM_READ, &stm);
+                         PDF_STM_READ, &stm);
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
 				PDF_STM_FILTER_A85_DEC,
@@ -1628,7 +1616,7 @@ START_TEST (pdf_stm_read_025)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded =
     "\x00\x01\x02\x03\x00\x00\x00\x00\x04\x05\x06\x07\x08\x09\x0A\x0B";
@@ -1650,8 +1638,7 @@ START_TEST (pdf_stm_read_025)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
 				PDF_STM_FILTER_A85_DEC,
@@ -1692,7 +1679,7 @@ START_TEST (pdf_stm_read_026)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded =
     "\x00\x01\x02\x03\x00\x00\x00\x00\x04\x05\x06\x07\x08\x09\x0A\x0B\x0C";
@@ -1714,8 +1701,7 @@ START_TEST (pdf_stm_read_026)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
 				PDF_STM_FILTER_A85_DEC,
@@ -1756,7 +1742,7 @@ START_TEST (pdf_stm_read_027)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded =
     "\x00\x01\x02\x03\x00\x00\x00\x00\x04\x05\x06\x07\x08\x09\x0A\x0B";
@@ -1778,8 +1764,7 @@ START_TEST (pdf_stm_read_027)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
 				PDF_STM_FILTER_A85_DEC,
@@ -1820,7 +1805,7 @@ START_TEST (pdf_stm_read_028)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded =
     "\x00\x01\x02\x03\x00\x00\x00\x00\x04\x05\x06\x07\x08\x09\x0A\x0B";
@@ -1842,8 +1827,7 @@ START_TEST (pdf_stm_read_028)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
 				PDF_STM_FILTER_A85_DEC,
@@ -1884,7 +1868,7 @@ START_TEST (pdf_stm_read_029)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded =
     "\x00\x01\x02\x03\x00\x00\x00\x00\x04\x05\x06\x07\x08\x09\x0A\x0B\x0C";
@@ -1906,8 +1890,7 @@ START_TEST (pdf_stm_read_029)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
 				PDF_STM_FILTER_A85_DEC,
@@ -1948,7 +1931,7 @@ START_TEST (pdf_stm_read_030)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded =
     "\x00\x01\x02\x03\x00\x00\x00\x00\x04\x05\x06\x07\x08\x09\x0A\x0B\x0C\x0D";
@@ -1970,8 +1953,7 @@ START_TEST (pdf_stm_read_030)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
 				PDF_STM_FILTER_A85_DEC,
@@ -2012,7 +1994,7 @@ START_TEST (pdf_stm_read_031)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded =
     "\x00\x01\x02\x03\x00\x00\x00\x00\x04\x05\x06\x07\x08\x09\x0A\x0B";
@@ -2034,8 +2016,7 @@ START_TEST (pdf_stm_read_031)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
 				PDF_STM_FILTER_A85_DEC,
@@ -2074,7 +2055,7 @@ START_TEST (pdf_stm_read_032)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded =
     "\x00\x01\x02\x03\x00\x00\x00\x00\x04\x05\x06\x07\x08\x09\x0A\x0B";
@@ -2096,8 +2077,7 @@ START_TEST (pdf_stm_read_032)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
 				PDF_STM_FILTER_A85_DEC,
@@ -2136,7 +2116,7 @@ START_TEST (pdf_stm_read_033)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded =
     "\x00\x01\x02\x03\x00\x00\x00\x00\x04\x05\x06\x07\x08\x09\x0A\x0B";
@@ -2158,8 +2138,7 @@ START_TEST (pdf_stm_read_033)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
 				PDF_STM_FILTER_A85_DEC,
@@ -2198,7 +2177,7 @@ START_TEST (pdf_stm_read_034)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded =
     "\x00\x01\x02\x03\x00\x00\x00\x00\x04\x05\x06\x07\x08\x09\x0A\x0B";
@@ -2220,8 +2199,7 @@ START_TEST (pdf_stm_read_034)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
 				PDF_STM_FILTER_A85_DEC,
@@ -2260,7 +2238,7 @@ START_TEST (pdf_stm_read_035)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded =
     "\x00\x01\x02\x03\x00\x00\x00\x00\x04\x05\x06\x07\x08\x09\x0A\x0B";
@@ -2282,8 +2260,7 @@ START_TEST (pdf_stm_read_035)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
 				PDF_STM_FILTER_A85_DEC,
@@ -2322,7 +2299,7 @@ START_TEST (pdf_stm_read_036)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded =
     "\x00\x01\x02\x03\x00\x00\x00\x00\x04\x05\x06\x07\x08\x09\x0A\x0B";
@@ -2344,8 +2321,7 @@ START_TEST (pdf_stm_read_036)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
 				PDF_STM_FILTER_A85_DEC,
@@ -2384,7 +2360,7 @@ START_TEST (pdf_stm_read_037)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded =
     "\x00\x01\x02\x03\x00\x00\x00\x00\x04\x05\x06\x07\x08\x09\x0A\x0B";
@@ -2406,8 +2382,7 @@ START_TEST (pdf_stm_read_037)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
 				PDF_STM_FILTER_A85_DEC,
@@ -2446,7 +2421,7 @@ START_TEST (pdf_stm_read_038)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded =
     "\x00\x01\x02\x03\x00\x00\x00\x00\x04\x05\x06\x07\x08\x09\x0A\x0B";
@@ -2468,8 +2443,7 @@ START_TEST (pdf_stm_read_038)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
 				PDF_STM_FILTER_A85_DEC,
@@ -2508,7 +2482,7 @@ START_TEST (pdf_stm_read_039)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded =
     "\x00\x01\x02\x03\x00\x00\x00\x00\x04\x05\x06\x07\x08\x09\x0A\x0B";
@@ -2530,8 +2504,7 @@ START_TEST (pdf_stm_read_039)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
 				PDF_STM_FILTER_A85_DEC,
@@ -2570,7 +2543,7 @@ START_TEST (pdf_stm_read_040)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded =
     "\x00\x01\x02\x03\x00\x00\x00\x00\x04\x05\x06\x07\x08\x09\x0A\x0B";
@@ -2592,8 +2565,7 @@ START_TEST (pdf_stm_read_040)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
 				PDF_STM_FILTER_A85_DEC,
@@ -2632,7 +2604,7 @@ START_TEST (pdf_stm_read_041)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded =
     "\x00\x01\x02\x03\x00\x00\x00\x00\x04\x05\x06\x07\x08\x09\x0A\x0B";
@@ -2654,8 +2626,7 @@ START_TEST (pdf_stm_read_041)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
 				PDF_STM_FILTER_A85_DEC,
@@ -2694,7 +2665,7 @@ START_TEST (pdf_stm_read_042)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded =
     "\x00\x01\x02\x03\x00\x00\x00\x00\x04\x05\x06\x07\x08\x09\x0A\x0B";
@@ -2716,8 +2687,7 @@ START_TEST (pdf_stm_read_042)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
 				PDF_STM_FILTER_A85_DEC,
@@ -2756,7 +2726,7 @@ START_TEST (pdf_stm_read_043)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded =
     "\x00\x01\x02\x03\x00\x00\x00\x00\x04\x05\x06\x07\x08\x09\x0A\x0B";
@@ -2778,8 +2748,7 @@ START_TEST (pdf_stm_read_043)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
 				PDF_STM_FILTER_A85_DEC,
@@ -2818,7 +2787,7 @@ START_TEST (pdf_stm_read_044)
   pdf_char_t *ret_buf;
   pdf_size_t buf_size;
   pdf_size_t read_bytes;
-  pdf_hash_t a85dec_filter_parameters;
+  pdf_hash_t *a85dec_filter_parameters;
 
   pdf_char_t *unencoded =
     "\x00\x01\x02\x03\x00\x00\x00\x00\x04\x05\x06\x07\x08\x09\x0A\x0B";
@@ -2840,8 +2809,7 @@ START_TEST (pdf_stm_read_044)
   fail_if (ret != PDF_OK);
 
   /* Install an A85 decoder in the stream */
-  ret = pdf_hash_new (NULL, &a85dec_filter_parameters);
-  fail_if (ret != PDF_OK);
+  a85dec_filter_parameters = pdf_hash_new (NULL);
 
   ret = pdf_stm_install_filter (stm,
 				PDF_STM_FILTER_A85_DEC,

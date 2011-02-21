@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,127 +28,64 @@
 #include <pdf.h>
 #include <check.h>
 
-extern int l_comp_desc (const void *elema, const void * elemb);
-extern int l_comp_asc (const void *elema, const void * elemb);
-
+#include "pdf-list-test-common.h"
 
 /*
  * Test: pdf_list_sorted_indexof_001
  * Description:
  *   Try to get the index of an existent element.
  * Success condition:
- *   Returns PDF_OK
+ *   Returns the correct index.
  */
 START_TEST (pdf_list_sorted_indexof_001)
 {
-  pdf_list_t list;
+  pdf_list_t *list;
   int elem;
   pdf_size_t pos;
-  pdf_status_t st;
-  
-  elem = 2121;
 
-  pdf_init();
+  elem = 2232;
 
-  pdf_list_new (NULL, NULL, 0, &list);
-  
+  pdf_init ();
+
+  list = pdf_list_new (l_comp, NULL, PDF_FALSE, NULL);
+
   pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
 
-  st = pdf_list_sorted_indexof (list, l_comp_asc, &elem, &pos);
-
-  fail_if (st != PDF_OK);
+  pos = pdf_list_sorted_indexof (list, l_comp_asc, &elem);
+  fail_if (pos == (pdf_size_t)-1);
 
   pdf_list_destroy (list);
 }
 END_TEST
-
 
 /*
  * Test: pdf_list_sorted_indexof_002
  * Description:
  *   Try to get the index of a non-existent element.
  * Success condition:
- *   Returns PDF_ENONODE
+ *   Returns (pdf_size_t)-1
  */
 START_TEST (pdf_list_sorted_indexof_002)
 {
-  pdf_list_t list;
-  int elem;
+  pdf_list_t *list;
+  int elem, elem2;
   pdf_size_t pos;
-  pdf_status_t st;
-  
-  elem = 2121;
 
-  pdf_init();
+  elem = 2232;
+  elem2 = 1234;
 
-  pdf_list_new (NULL, NULL, 0, &list);
-  
-  st = pdf_list_sorted_indexof (list, l_comp_asc, &elem, &pos);
+  pdf_init ();
 
-  fail_if (st != PDF_ENONODE);
+  list = pdf_list_new (l_comp, NULL, PDF_FALSE, NULL);
 
-  pdf_list_destroy (list);
-}
-END_TEST
+  pdf_list_sorted_add (list, l_comp_asc, &elem, NULL);
 
-
-/*
- * Test: pdf_list_sorted_indexof_003
- * Description:
- *   Try to get the index of an element given a NULL position pointer.
- * Success condition:
- *   Returns PDF_EBADDATA
- */
-START_TEST (pdf_list_sorted_indexof_003)
-{
-  pdf_list_t list;
-  int elem;
-  pdf_status_t st;
-  
-  elem = 2121;
-
-  pdf_init();
-
-  pdf_list_new (NULL, NULL, 0, &list);
-  
-  st = pdf_list_sorted_indexof (list, l_comp_asc, &elem, NULL);
-
-  fail_if (st != PDF_EBADDATA);
+  pos = pdf_list_sorted_indexof (list, l_comp_asc, &elem2);
+  fail_if (pos != (pdf_size_t)-1);
 
   pdf_list_destroy (list);
 }
 END_TEST
-
-
-/*
- * Test: pdf_list_sorted_indexof_004
- * Description:
- *   Try to get the index of an element given a NULL compar_fn.
- * Success condition:
- *   Returns PDF_EBADDATA
- */
-START_TEST (pdf_list_sorted_indexof_004)
-{
-  pdf_list_t list;
-  int elem;
-  pdf_size_t pos;
-  pdf_status_t st;
-  
-  elem = 2121;
-
-  pdf_init();
-
-  pdf_list_new (NULL, NULL, 0, &list);
-  
-  st = pdf_list_sorted_indexof (list, NULL, &elem, &pos);
-
-  fail_if (st != PDF_EBADDATA);
-
-  pdf_list_destroy (list);
-}
-END_TEST
-
-
 
 /*
  * Test case creation function
@@ -156,12 +93,10 @@ END_TEST
 TCase *
 test_pdf_list_sorted_indexof (void)
 {
-  TCase *tc = tcase_create("pdf_list_sorted_indexof");
-  tcase_add_test(tc, pdf_list_sorted_indexof_001);
-  tcase_add_test(tc, pdf_list_sorted_indexof_002);
-  tcase_add_test(tc, pdf_list_sorted_indexof_003);
-  tcase_add_test(tc, pdf_list_sorted_indexof_004);
+  TCase *tc = tcase_create ("pdf_list_sorted_indexof");
 
+  tcase_add_test (tc, pdf_list_sorted_indexof_001);
+  tcase_add_test (tc, pdf_list_sorted_indexof_002);
   return tc;
 }
 

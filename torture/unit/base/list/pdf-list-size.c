@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,8 @@
 #include <pdf.h>
 #include <check.h>
 
+#include "pdf-list-test-common.h"
+
 /*
  * Test: pdf_list_size_001
  * Description:
@@ -37,12 +39,12 @@
  */
 START_TEST (pdf_list_size_001)
 {
-  pdf_list_t list;
+  pdf_list_t *list;
   pdf_size_t size;
-  
-  pdf_init();
 
-  pdf_list_new (NULL, NULL, 0, &list);
+  pdf_init ();
+
+  list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
   size = pdf_list_size (list);
 
   fail_if (size != 0);
@@ -57,8 +59,9 @@ END_TEST
 TCase *
 test_pdf_list_size (void)
 {
-  TCase *tc = tcase_create("pdf_list_size");
-  tcase_add_test(tc, pdf_list_size_001);
+  TCase *tc = tcase_create ("pdf_list_size");
+
+  tcase_add_test (tc, pdf_list_size_001);
 
   return tc;
 }

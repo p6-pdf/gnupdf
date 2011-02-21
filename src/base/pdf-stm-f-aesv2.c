@@ -55,13 +55,14 @@ typedef enum pdf_stm_f_aesv2_mode_e pdf_stm_f_aesv2_mode_t;
 
 
 static inline pdf_status_t
-pdf_stm_f_aesv2_init (pdf_hash_t params, void **state)
+pdf_stm_f_aesv2_init (pdf_hash_t  *params,
+                      void       **state)
 {
   pdf_status_t ret;
   pdf_stm_f_aesv2_t filter_state;
-  
+
   filter_state = pdf_alloc (sizeof (struct pdf_stm_f_aesv2_s));
-  
+
   if (filter_state == NULL)
     {
       ret = PDF_ENOMEM;
@@ -73,16 +74,17 @@ pdf_stm_f_aesv2_init (pdf_hash_t params, void **state)
     }
   else
     {
-      pdf_char_t *key;
-      pdf_size_t keysize;
-      pdf_crypt_cipher_t cipher;
-      
       /* We demand all parameters are present */
-      if ((( pdf_hash_key_p (params, "Key")     == PDF_TRUE))
-          && pdf_hash_key_p (params, "KeySize") == PDF_TRUE)
+      if ((pdf_hash_key_p (params, "Key")) &&
+          (pdf_hash_key_p (params, "KeySize")))
         {
-          pdf_hash_get_string (params, "Key", &key);
-          pdf_hash_get_size (params, "KeySize", &keysize);
+          const pdf_char_t *key;
+          pdf_size_t keysize;
+          pdf_crypt_cipher_t cipher;
+
+          /* Key may NOT be NUL-terminated */
+          key = pdf_hash_get_value (params, "Key");
+          keysize = pdf_hash_get_size (params, "KeySize");
 
           ret = pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
           if (ret == PDF_OK)
@@ -91,11 +93,11 @@ pdf_stm_f_aesv2_init (pdf_hash_t params, void **state)
               if (ret == PDF_OK)
                 {
                   filter_state->cipher = cipher;
-                  
+
                   /* Initialize cache buffers */
                   filter_state->in_cache  = pdf_buffer_new (AESV2_CACHE_SIZE);
                   filter_state->out_cache = pdf_buffer_new (AESV2_CACHE_SIZE);
-                  
+
                   if (filter_state->in_cache == NULL || filter_state->out_cache == NULL)
                     {
                       ret = PDF_ERROR;
@@ -118,7 +120,7 @@ pdf_stm_f_aesv2_init (pdf_hash_t params, void **state)
           pdf_dealloc (filter_state);
         }
     }
-  
+
   return ret;
 }
 
@@ -126,15 +128,18 @@ pdf_stm_f_aesv2_init (pdf_hash_t params, void **state)
 
 
 static inline pdf_status_t
-pdf_stm_f_aesv2_apply (pdf_stm_f_aesv2_mode_t mode,
-                       pdf_hash_t params, void *state, pdf_buffer_t in,
-                       pdf_buffer_t out, pdf_bool_t finish_p)
+pdf_stm_f_aesv2_apply (pdf_stm_f_aesv2_mode_t  mode,
+                       pdf_hash_t             *params,
+                       void                   *state,
+                       pdf_buffer_t            in,
+                       pdf_buffer_t            out,
+                       pdf_bool_t              finish_p)
 {
   pdf_stm_f_aesv2_t filter_state = state;
   pdf_crypt_cipher_t cipher   = filter_state->cipher;
   pdf_buffer_t in_cache   = filter_state->in_cache;
   pdf_buffer_t out_cache  = filter_state->out_cache;
-  
+
   while(1)
     {
       pdf_size_t in_size;
@@ -163,7 +168,7 @@ pdf_stm_f_aesv2_apply (pdf_stm_f_aesv2_mode_t mode,
           if (finish_p && mode == PDF_STM_F_AESV2_MODE_DECODE
               && in_cache->wp > 0)
             return PDF_ERROR;
-          
+
           /* ...pad the cache if we have reached EOD */
           if (finish_p
               && !pdf_buffer_full_p (in_cache)
@@ -171,11 +176,11 @@ pdf_stm_f_aesv2_apply (pdf_stm_f_aesv2_mode_t mode,
             {
               pdf_size_t padding;
               padding = in_cache->size - in_cache->wp;
-          
+
               memset (in_cache->data + in_cache->wp,
                       padding,
                       padding);
-              
+
               in_cache->wp += padding;
             }
           else
@@ -200,7 +205,7 @@ pdf_stm_f_aesv2_apply (pdf_stm_f_aesv2_mode_t mode,
                                         in_cache->size,
                                         NULL);
               break;
-              
+
             case PDF_STM_F_AESV2_MODE_DECODE:
               pdf_crypt_cipher_decrypt (cipher,
                                         out_cache->data,
@@ -240,7 +245,7 @@ pdf_stm_f_aesv2_apply (pdf_stm_f_aesv2_mode_t mode,
           else
             return PDF_ENINPUT;
         }
-          
+
 
       /* Finally, we fill the OUT buffer */
       out_size = out->size - out->wp;
@@ -289,14 +294,18 @@ pdf_stm_f_aesv2_dealloc_state (void *state)
 /* Encode filter */
 
 pdf_status_t
-pdf_stm_f_aesv2enc_init (pdf_hash_t params, void **state)
+pdf_stm_f_aesv2enc_init (pdf_hash_t  *params,
+                         void       **state)
 {
   return pdf_stm_f_aesv2_init (params, state);
 }
 
 pdf_status_t
-pdf_stm_f_aesv2enc_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
-                          pdf_buffer_t out, pdf_bool_t finish_p)
+pdf_stm_f_aesv2enc_apply (pdf_hash_t   *params,
+                          void         *state,
+                          pdf_buffer_t  in,
+                          pdf_buffer_t  out,
+                          pdf_bool_t    finish_p)
 {
   return pdf_stm_f_aesv2_apply (PDF_STM_F_AESV2_MODE_ENCODE,
                                 params, state, in, out, finish_p);
@@ -313,15 +322,19 @@ pdf_stm_f_aesv2enc_dealloc_state (void *state)
 /* Decode filter  */
 
 pdf_status_t
-pdf_stm_f_aesv2dec_init (pdf_hash_t params, void **state)
+pdf_stm_f_aesv2dec_init (pdf_hash_t  *params,
+                         void       **state)
 {
   return pdf_stm_f_aesv2_init (params, state);
 }
 
 
 pdf_status_t
-pdf_stm_f_aesv2dec_apply (pdf_hash_t params, void *state, pdf_buffer_t in,
-                          pdf_buffer_t out, pdf_bool_t finish_p)
+pdf_stm_f_aesv2dec_apply (pdf_hash_t   *params,
+                          void         *state,
+                          pdf_buffer_t  in,
+                          pdf_buffer_t  out,
+                          pdf_bool_t    finish_p)
 {
   return pdf_stm_f_aesv2_apply (PDF_STM_F_AESV2_MODE_DECODE,
                                 params, state, in, out, finish_p);
