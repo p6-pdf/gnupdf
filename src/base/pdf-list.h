@@ -216,7 +216,7 @@ void pdf_list_iterator_deinit (pdf_list_iterator_t *itr);
 # define STATIC_INLINE static inline
 #endif /* COMPILING_PDF_LIST */
 
-#include <gl_array_list.h>
+#include <gl_linked_list.h>
 
 /* Creation and destruction functions */
 
@@ -228,7 +228,7 @@ pdf_list_new (pdf_list_element_equals_fn_t    equals_fn,
 {
   gl_list_t list;
 
-  list = gl_list_nx_create_empty (GL_ARRAY_LIST,
+  list = gl_list_nx_create_empty (GL_LINKED_LIST,
                                   equals_fn,
                                   NULL,
                                   dispose_fn,

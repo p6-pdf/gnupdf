@@ -28,7 +28,6 @@ AC_DEFUN([gl_EARLY],
   AC_REQUIRE([AC_PROG_RANLIB])
   AC_REQUIRE([AM_PROG_CC_C_O])
   # Code from module arg-nonnull:
-  # Code from module array-list:
   # Code from module autobuild:
   AB_INIT
   # Code from module binary-io:
@@ -70,6 +69,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module include_next:
   # Code from module inline:
   # Code from module intprops:
+  # Code from module linked-list:
   # Code from module linkedhash-list:
   # Code from module list:
   # Code from module localcharset:
@@ -137,7 +137,6 @@ AC_DEFUN([gl_INIT],
   gl_COMMON
   gl_source_base='lib'
   # Code from module arg-nonnull:
-  # Code from module array-list:
   # Code from module autobuild:
   # Code from module binary-io:
   # Code from module c++defs:
@@ -229,6 +228,7 @@ AC_DEFUN([gl_INIT],
   # Code from module inline:
   gl_INLINE
   # Code from module intprops:
+  # Code from module linked-list:
   # Code from module linkedhash-list:
   # Code from module list:
   gl_LIST
@@ -523,8 +523,8 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/gl_anyhash_list2.h
   lib/gl_anylinked_list1.h
   lib/gl_anylinked_list2.h
-  lib/gl_array_list.c
-  lib/gl_array_list.h
+  lib/gl_linked_list.c
+  lib/gl_linked_list.h
   lib/gl_linkedhash_list.c
   lib/gl_linkedhash_list.h
   lib/gl_list.c
