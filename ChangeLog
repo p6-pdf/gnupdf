@@ -1,6 +1,139 @@
 2011-02-21  Aleksander Morgado <aleksander@gnu.org>
 
-	gnulib: updated. Replaced deprecated 'malloc' module with 'malloc-gnu'.
+	gnulib: Replaced `array-list' module with `linked-list' module.
+	* lib/gl_array_list.c: File removed.
+	* lib/gl_array_list.h: File removed.
+	* lib/gl_linked_list.c: File added.
+	* lib/gl_linked_list.h: File added.
+
+	gnulib: Replaced `linkedhash-list' module with `rbtreehash-list' module.
+	* lib/gl_linkedhash_list.c: File removed.
+	* lib/gl_linkedhash_list.h: File removed.
+	* lib/gl_anyrbtree_list1.h: File added.
+	* lib/gl_anyrbtree_list2.h: File added.
+	* lib/gl_anytree_list1.h: File added.
+	* lib/gl_anytree_list2.h: File added.
+	* lib/gl_anytree_oset.h: File added.
+	* lib/gl_anytreehash_list1.h: File added.
+	* lib/gl_anytreehash_list2.h: File added.
+	* lib/gl_rbtree_oset.c: File added.
+	* lib/gl_rbtree_oset.h: File added.
+	* lib/gl_rbtreehash_list.c: File added.
+	* lib/gl_rbtreehash_list.h: File added.
+	* lib/gl_oset.c: File added.
+	* lib/gl_oset.h: File added.
+
+	* src/base/pdf-error.c: Hash error domain identified as
+	PDF_EDOMAIN_BASE_HASH
+
+	* src/base/pdf-error.h: Fix crash when disposing pdf_error_t.
+
+	base/list: List API refactored, now based on `linked-list' backend.
+	* src/base/pdf-list.[h|c]
+
+	base/hash: Hash API refactored, now based on `rbtreehash-list' backend.
+	* src/base/pdf-hash.[h|c]
+	* src/base/pdf-hash-helper.[h|c]
+
+	* doc/gnupdf.texi: Documented new list and hash API.
+
+	base/fsys: Port filesystem module to new list and hash API.
+	* src/base/pdf-fsys.[h|c]
+	* src/base/pdf-fsys-disk.[h|c]
+
+	base/fsys: Port stream module to the new list and hash API.
+	* src/base/pdf-stm.[h|c]: Port stream module.
+	* src/base/pdf-stm-f-a85.[h|c]
+	* src/base/pdf-stm-f-aesv2.[h|c]
+	* src/base/pdf-stm-f-ahex.[h|c]
+	* src/base/pdf-stm-f-dct.[h|c]
+	* src/base/pdf-stm-f-flate.[h|c]
+	* src/base/pdf-stm-f-jbig2.[h|c]
+	* src/base/pdf-stm-f-lzw.[h|c]
+	* src/base/pdf-stm-f-md5.[h|c]
+	* src/base/pdf-stm-f-null.[h|c]
+	* src/base/pdf-stm-f-rl.[h|c]
+	* src/base/pdf-stm-f-v2.[h|c]
+	* src/base/pdf-stm-filter.[h|c]
+
+	base/text: Port text module to the new list and hash API.
+	* src/base/pdf-text.[h|c]
+	* src/base/pdf-text-filter.c
+
+	torture/list: Port all list unit tests to the new list API.
+	* torture/unit/base/list/pdf-list-test-common.[h|c]: Files added.
+	* torture/unit/base/list/pdf-list-iterator-deinit.c: Renamed from
+	`pdf-list-iterator-free.c'.
+	* torture/unit/base/list/pdf-list-iterator-init-from-to.c: Renamed from
+	`pdf-list-iterator-from-to.c'.
+	* torture/unit/base/list/pdf-list-iterator-init.c: Renamed from
+	`pdf-list-iterator.c'.
+	* torture/unit/base/list/pdf-list-add-at.c
+	* torture/unit/base/list/pdf-list-add-first.c
+	* torture/unit/base/list/pdf-list-add-last.c
+	* torture/unit/base/list/pdf-list-destroy.c
+	* torture/unit/base/list/pdf-list-get-at.c
+	* torture/unit/base/list/pdf-list-indexof-from-to.c
+	* torture/unit/base/list/pdf-list-indexof-from.c
+	* torture/unit/base/list/pdf-list-indexof.c
+	* torture/unit/base/list/pdf-list-iterator-next.c
+	* torture/unit/base/list/pdf-list-new.c
+	* torture/unit/base/list/pdf-list-next-node.c
+	* torture/unit/base/list/pdf-list-node-value.c
+	* torture/unit/base/list/pdf-list-previous-node.c
+	* torture/unit/base/list/pdf-list-remove-at.c
+	* torture/unit/base/list/pdf-list-remove-node.c
+	* torture/unit/base/list/pdf-list-remove.c
+	* torture/unit/base/list/pdf-list-search-from-to.c
+	* torture/unit/base/list/pdf-list-search-from.c
+	* torture/unit/base/list/pdf-list-search.c
+	* torture/unit/base/list/pdf-list-set-at.c
+	* torture/unit/base/list/pdf-list-size.c
+	* torture/unit/base/list/pdf-list-sorted-add.c
+	* torture/unit/base/list/pdf-list-sorted-indexof-from-to.c
+	* torture/unit/base/list/pdf-list-sorted-indexof.c
+	* torture/unit/base/list/pdf-list-sorted-remove.c
+	* torture/unit/base/list/pdf-list-sorted-search-from-to.c
+	* torture/unit/base/list/pdf-list-sorted-search.c
+	* torture/unit/base/list/tsuite-list.c
+
+	torture/hash: Port all hash unit tests to the new hash API.
+	* torture/unit/base/hash/pdf-hash-destroy.c: File removed.
+	* torture/unit/base/hash/pdf-hash-iterator-destroy.c: File removed.
+	* torture/unit/base/hash/pdf-hash-replace.c: File added.
+	* torture/unit/base/hash/pdf-hash-get-value.c: Renamed from
+	`pdf-hash-get.c'
+	* torture/unit/base/hash/pdf-hash-iterator-init.c: Renamed from
+	`pdf-hash-iterator-new.c'.
+	* torture/unit/base/hash/pdf-hash-rename-key.c: Renamed from
+	`pdf-hash-rename.c'
+	* torture/unit/base/hash/pdf-hash-add-hash.c
+	* torture/unit/base/hash/pdf-hash-add-list.c
+	* torture/unit/base/hash/pdf-hash-add-stm.c
+	* torture/unit/base/hash/pdf-hash-add-text.c
+	* torture/unit/base/hash/pdf-hash-add-time.c
+	* torture/unit/base/hash/pdf-hash-add.c
+	* torture/unit/base/hash/pdf-hash-iterator-next.c
+	* torture/unit/base/hash/pdf-hash-key-p.c
+	* torture/unit/base/hash/pdf-hash-new.c
+	* torture/unit/base/hash/pdf-hash-remove.c
+	* torture/unit/base/hash/pdf-hash-size.c
+	* torture/unit/base/hash/tsuite-hash.c
+
+	torture/stm: Port unit tests to the new hash API.
+	* torture/unit/base/stm/pdf-stm-read.c
+	* torture/unit/base/stm/pdf-stm-write.c
+
+	* torture/unit/Makefile.am: Updated to add/remove files from the unit
+	test updates.
+
+	* torture/unit/base/fp/pdf-fp-func-eval.c: Indentation fixes.
+
+	* utils/pdf-filter.c: Port to the new list and hash API.
+
+2011-02-21  Aleksander Morgado <aleksander@gnu.org>
+
+	gnulib: updated. Replaced deprecated `malloc' module with `malloc-gnu'.
 
 2011-02-20  Jose E. Marchesi  <jemarch@gnu.org>
 
