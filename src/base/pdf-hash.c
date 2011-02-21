@@ -33,7 +33,7 @@
 #include <pdf-global.h>
 #include <pdf-error.h>
 #include <pdf-alloc.h>
-#include <gl_linkedhash_list.h>
+#include <gl_rbtreehash_list.h>
 
 #include <pdf-hash.h>
 
@@ -75,7 +75,7 @@ pdf_hash_new (pdf_error_t **error)
 {
   gl_list_t list;
 
-  list = gl_list_nx_create_empty (GL_LINKEDHASH_LIST,
+  list = gl_list_nx_create_empty (GL_RBTREEHASH_LIST,
                                   (gl_listelement_equals_fn) hash_element_equal,
                                   (gl_listelement_hashcode_fn) hash_element_pjw,
                                   (gl_listelement_dispose_fn) hash_element_dispose,
