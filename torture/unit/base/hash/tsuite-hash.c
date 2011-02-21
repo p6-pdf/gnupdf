@@ -32,6 +32,7 @@ extern TCase *test_pdf_hash_key_p (void);
 extern TCase *test_pdf_hash_rename_key (void);
 extern TCase *test_pdf_hash_size (void);
 extern TCase *test_pdf_hash_add (void);
+extern TCase *test_pdf_hash_replace (void);
 extern TCase *test_pdf_hash_add_time (void);
 extern TCase *test_pdf_hash_add_hash (void);
 extern TCase *test_pdf_hash_add_text (void);
@@ -52,6 +53,7 @@ tsuite_hash ()
   suite_add_tcase (s, test_pdf_hash_new ());
   suite_add_tcase (s, test_pdf_hash_size ());
   suite_add_tcase (s, test_pdf_hash_add ());
+  suite_add_tcase (s, test_pdf_hash_replace ());
   suite_add_tcase (s, test_pdf_hash_remove ());
   suite_add_tcase (s, test_pdf_hash_get_value ());
   suite_add_tcase (s, test_pdf_hash_key_p ());

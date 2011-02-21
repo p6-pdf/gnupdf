@@ -152,18 +152,35 @@ pdf_hash_rename_key (pdf_hash_t        *table,
   return PDF_TRUE;
 }
 
-pdf_bool_t
-pdf_hash_add (pdf_hash_t                   *table,
-              const pdf_char_t             *key,
-              const void                   *value,
-              pdf_hash_value_dispose_fn_t   value_disp_fn,
-              pdf_error_t                 **error)
+static pdf_bool_t
+hash_add (pdf_hash_t                   *table,
+          const pdf_char_t             *key,
+          const void                   *value,
+          pdf_hash_value_dispose_fn_t   value_disp_fn,
+          pdf_bool_t                    allow_replace,
+          pdf_error_t                 **error)
 {
+  gl_list_node_t node = NULL;
   pdf_hash_element_t *elt;
   pdf_char_t *key_dup;
 
-  PDF_ASSERT_POINTER_RETURN_VAL (table, PDF_FALSE);
-  PDF_ASSERT_POINTER_RETURN_VAL (key, PDF_FALSE);
+  /* Look for an element with same key */
+  if (hash_search_key (table, key, &node))
+    {
+      /* Key already exists. */
+      if (!allow_replace)
+        {
+          pdf_set_error (error,
+                         PDF_EDOMAIN_BASE_HASH,
+                         PDF_EEXIST,
+                         "Key '%s' already exits, cannot add it again",
+                         key);
+          return PDF_FALSE;
+        }
+
+      /* Remove the previous element */
+      gl_list_remove_node ((gl_list_t) table, node);
+    }
 
   /* New hash table element */
   elt = pdf_alloc (sizeof (*elt));
@@ -201,6 +218,32 @@ pdf_hash_add (pdf_hash_t                   *table,
     }
 
   return PDF_TRUE;
+}
+
+pdf_bool_t
+pdf_hash_add (pdf_hash_t                   *table,
+              const pdf_char_t             *key,
+              const void                   *value,
+              pdf_hash_value_dispose_fn_t   value_disp_fn,
+              pdf_error_t                 **error)
+{
+  PDF_ASSERT_POINTER_RETURN_VAL (table, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (key, PDF_FALSE);
+
+  return hash_add (table, key, value, value_disp_fn, PDF_FALSE, error);
+}
+
+pdf_bool_t
+pdf_hash_replace (pdf_hash_t                   *table,
+                  const pdf_char_t             *key,
+                  const void                   *value,
+                  pdf_hash_value_dispose_fn_t   value_disp_fn,
+                  pdf_error_t                 **error)
+{
+  PDF_ASSERT_POINTER_RETURN_VAL (table, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (key, PDF_FALSE);
+
+  return hash_add (table, key, value, value_disp_fn, PDF_TRUE, error);
 }
 
 pdf_bool_t

@@ -80,6 +80,12 @@ pdf_bool_t pdf_hash_add (pdf_hash_t                   *table,
                          pdf_hash_value_dispose_fn_t   value_disp_fn,
                          pdf_error_t                 **error);
 
+pdf_bool_t pdf_hash_replace (pdf_hash_t                   *table,
+                             const pdf_char_t             *key,
+                             const void                   *value,
+                             pdf_hash_value_dispose_fn_t   value_disp_fn,
+                             pdf_error_t                 **error);
+
 pdf_bool_t pdf_hash_remove (pdf_hash_t       *table,
                             const pdf_char_t *key);
 

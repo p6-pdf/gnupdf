@@ -2987,6 +2987,8 @@ A pdf_error_t to report errors or NULL.
 @table @code
 @item PDF_ENOMEM
 Not enough memory.
+@item PDF_EEXIST
+The @var{key} already exists in @var{table}.
 @end table
 @end table
 @item Returns
@@ -3010,6 +3012,54 @@ if (hash != NULL)
                     strdup ("second-value"),
                     (pdf_hash_value_dispose_fn_t) pdf_dealloc,
                     NULL);
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_hash_replace (pdf_hash_t @var{*table}, const pdf_char_t @var{*key}, const void @var{*value}, pdf_hash_value_dispose_fn_t @var{value_disp_fn}, pdf_error_t @var{**error}))
+
+Adds the element @var{value} with the associated key @var{key} to @var{table}. If @var{key} already exists, the previous element is removed before the new one added.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid NUL-terminated string key.
+@item value
+A pointer to the value being added.
+@item value_disp_fn
+A function called when @var{value} should be disposed. If NULL is given nothing is done.
+@item error
+A pdf_error_t to report errors or NULL.
+@table @code
+@item PDF_ENOMEM
+Not enough memory.
+@end table
+@end table
+@item Returns
+PDF_TRUE if the new item was correctly added, PDF_FALSE otherwise.
+@item Usage example
+@example
+pdf_hash_t *hash;
+
+/* Create a new hash */
+hash = pdf_hash_new (NULL);
+if (hash != NULL)
+   @{
+      /* Add some elements to the hash */
+      pdf_hash_add (hash,
+                    "magic-key",
+                    strdup ("first-value"),
+                    (pdf_hash_value_dispose_fn_t) pdf_dealloc,
+                    NULL);
+      pdf_hash_replace (hash,
+                        "magic-key",
+                        strdup ("second-value"),
+                        (pdf_hash_value_dispose_fn_t) pdf_dealloc,
+                        NULL);
    @}
 @end example
 @end table
