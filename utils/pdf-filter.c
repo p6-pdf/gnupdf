@@ -553,7 +553,7 @@ install_filters (int        argc,
               {
                 pdf_error (pdf_error_get_status (error),
                            stderr,
-                           "Couldn't create hash table: '%s'",
+                           "couldn't create hash table: '%s'",
                            pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
@@ -576,7 +576,7 @@ install_filters (int        argc,
               {
                 pdf_error (pdf_error_get_status (error),
                            stderr,
-                           "Couldn't create hash table: '%s'",
+                           "couldn't create hash table: '%s'",
                            pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
@@ -599,7 +599,7 @@ install_filters (int        argc,
               {
                 pdf_error (pdf_error_get_status (error),
                            stderr,
-                           "Couldn't create hash table: '%s'",
+                           "couldn't create hash table: '%s'",
                            pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
@@ -623,7 +623,7 @@ install_filters (int        argc,
               {
                 pdf_error (pdf_error_get_status (error),
                            stderr,
-                           "Couldn't create hash table: '%s'",
+                           "couldn't create hash table: '%s'",
                            pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
@@ -648,7 +648,7 @@ install_filters (int        argc,
               {
                 pdf_error (pdf_error_get_status (error),
                            stderr,
-                           "Couldn't create hash table: '%s'",
+                           "couldn't create hash table: '%s'",
                            pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
@@ -671,7 +671,7 @@ install_filters (int        argc,
               {
                 pdf_error (pdf_error_get_status (error),
                            stderr,
-                           "Couldn't create hash table: '%s'",
+                           "couldn't create hash table: '%s'",
                            pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
@@ -729,7 +729,7 @@ install_filters (int        argc,
               {
                 pdf_error (pdf_error_get_status (error),
                            stderr,
-                           "Couldn't create hash table: '%s'",
+                           "couldn't create hash table: '%s'",
                            pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
@@ -762,7 +762,7 @@ install_filters (int        argc,
               {
                 pdf_error (pdf_error_get_status (error),
                            stderr,
-                           "Couldn't create hash table: '%s'",
+                           "couldn't create hash table: '%s'",
                            pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
@@ -796,7 +796,7 @@ install_filters (int        argc,
               {
                 pdf_error (pdf_error_get_status (error),
                            stderr,
-                           "Couldn't create hash table: '%s'",
+                           "couldn't create hash table: '%s'",
                            pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
@@ -819,7 +819,7 @@ install_filters (int        argc,
               {
                 pdf_error (pdf_error_get_status (error),
                            stderr,
-                           "Couldn't create hash table: '%s'",
+                           "couldn't create hash table: '%s'",
                            pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
@@ -843,7 +843,7 @@ install_filters (int        argc,
               {
                 pdf_error (pdf_error_get_status (error),
                            stderr,
-                           "Couldn't create hash table: '%s'",
+                           "couldn't create hash table: '%s'",
                            pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
@@ -867,7 +867,7 @@ install_filters (int        argc,
               {
                 pdf_error (pdf_error_get_status (error),
                            stderr,
-                           "Couldn't create hash table: '%s'",
+                           "couldn't create hash table: '%s'",
                            pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
@@ -918,7 +918,7 @@ install_filters (int        argc,
               {
                 pdf_error (pdf_error_get_status (error),
                            stderr,
-                           "Couldn't create hash table: '%s'",
+                           "couldn't create hash table: '%s'",
                            pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
@@ -929,7 +929,7 @@ install_filters (int        argc,
                   {
                     pdf_error (pdf_error_get_status (error),
                                stderr,
-                               "Couldn't add new GlobalStreamsBuffer hash: '%s'",
+                               "couldn't add new GlobalStreamsBuffer hash: '%s'",
                                pdf_error_get_message (error));
                     exit (EXIT_FAILURE);
                   }
@@ -937,7 +937,7 @@ install_filters (int        argc,
                   {
                     pdf_error (pdf_error_get_status (error),
                                stderr,
-                               "Couldn't add new GlobalStreamsSize hash: '%s'",
+                               "couldn't add new GlobalStreamsSize hash: '%s'",
                                pdf_error_get_message (error));
                     exit (EXIT_FAILURE);
                   }
@@ -968,7 +968,7 @@ install_filters (int        argc,
               {
                 pdf_error (pdf_error_get_status (error),
                            stderr,
-                           "Couldn't create hash table: '%s'",
+                           "couldn't create hash table: '%s'",
                            pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
@@ -1003,7 +1003,7 @@ install_filters (int        argc,
               {
                 pdf_error (pdf_error_get_status (error),
                            stderr,
-                           "Couldn't create hash table: '%s'",
+                           "couldn't create hash table: '%s'",
                            pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
@@ -1014,7 +1014,7 @@ install_filters (int        argc,
                   {
                     pdf_error (pdf_error_get_status (error),
                                stderr,
-                               "Couldn't add new Key hash: '%s'",
+                               "couldn't add new Key hash: '%s'",
                                pdf_error_get_message (error));
                     exit (EXIT_FAILURE);
                   }
@@ -1022,7 +1022,7 @@ install_filters (int        argc,
                   {
                     pdf_error (pdf_error_get_status (error),
                                stderr,
-                               "Couldn't add new KeySize hash: '%s'",
+                               "couldn't add new KeySize hash: '%s'",
                                pdf_error_get_message (error));
                     exit (EXIT_FAILURE);
                   }
@@ -1053,7 +1053,7 @@ install_filters (int        argc,
               {
                 pdf_error (pdf_error_get_status (error),
                            stderr,
-                           "Couldn't create hash table: '%s'",
+                           "couldn't create hash table: '%s'",
                            pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
@@ -1064,7 +1064,7 @@ install_filters (int        argc,
                   {
                     pdf_error (pdf_error_get_status (error),
                                stderr,
-                               "Couldn't add new Key hash: '%s'",
+                               "couldn't add new Key hash: '%s'",
                                pdf_error_get_message (error));
                     exit (EXIT_FAILURE);
                   }
@@ -1072,7 +1072,7 @@ install_filters (int        argc,
                   {
                     pdf_error (pdf_error_get_status (error),
                                stderr,
-                               "Couldn't add new KeySize hash: '%s'",
+                               "couldn't add new KeySize hash: '%s'",
                                pdf_error_get_message (error));
                     exit (EXIT_FAILURE);
                   }
@@ -1102,7 +1102,7 @@ install_filters (int        argc,
               {
                 pdf_error (pdf_error_get_status (error),
                            stderr,
-                           "Couldn't create hash table: '%s'",
+                           "couldn't create hash table: '%s'",
                            pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
@@ -1113,7 +1113,7 @@ install_filters (int        argc,
                   {
                     pdf_error (pdf_error_get_status (error),
                                stderr,
-                               "Couldn't add new Key hash: '%s'",
+                               "couldn't add new Key hash: '%s'",
                                pdf_error_get_message (error));
                     exit (EXIT_FAILURE);
                   }
@@ -1121,7 +1121,7 @@ install_filters (int        argc,
                   {
                     pdf_error (pdf_error_get_status (error),
                                stderr,
-                               "Couldn't add new KeySize hash: '%s'",
+                               "couldn't add new KeySize hash: '%s'",
                                pdf_error_get_message (error));
                     exit (EXIT_FAILURE);
                   }
@@ -1151,7 +1151,7 @@ install_filters (int        argc,
               {
                 pdf_error (pdf_error_get_status (error),
                            stderr,
-                           "Couldn't create hash table: '%s'",
+                           "couldn't create hash table: '%s'",
                            pdf_error_get_message (error));
                 exit (EXIT_FAILURE);
               }
@@ -1162,7 +1162,7 @@ install_filters (int        argc,
                   {
                     pdf_error (pdf_error_get_status (error),
                                stderr,
-                               "Couldn't add new Key hash: '%s'",
+                               "couldn't add new Key hash: '%s'",
                                pdf_error_get_message (error));
                     exit (EXIT_FAILURE);
                   }
@@ -1170,7 +1170,7 @@ install_filters (int        argc,
                   {
                     pdf_error (pdf_error_get_status (error),
                                stderr,
-                               "Couldn't add new KeySize hash: '%s'",
+                               "couldn't add new KeySize hash: '%s'",
                                pdf_error_get_message (error));
                     exit (EXIT_FAILURE);
                   }
