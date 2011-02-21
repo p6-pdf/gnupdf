@@ -84,7 +84,7 @@ pdf_hash_new (pdf_error_t **error)
     pdf_set_error (error,
                    PDF_EDOMAIN_BASE_HASH,
                    PDF_ENOMEM,
-                   "Not enough memory: Couldn't create new hash table");
+                   "not enough memory: couldn't create new hash table");
 
   return (pdf_hash_t *)list;
 }
@@ -173,7 +173,7 @@ hash_add (pdf_hash_t                   *table,
           pdf_set_error (error,
                          PDF_EDOMAIN_BASE_HASH,
                          PDF_EEXIST,
-                         "Key '%s' already exits, cannot add it again",
+                         "key '%s' already exits, cannot add it again",
                          key);
           return PDF_FALSE;
         }
@@ -190,7 +190,7 @@ hash_add (pdf_hash_t                   *table,
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_HASH,
                      PDF_ENOMEM,
-                     "Not enough memory: Couldn't add new hash table item");
+                     "not enough memory: couldn't add new hash table item");
       if (elt)
         pdf_dealloc (elt);
       if (key_dup)
@@ -211,8 +211,8 @@ hash_add (pdf_hash_t                   *table,
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_HASH,
                      PDF_ENOMEM,
-                     "Not enough memory: "
-                     "Couldn't add new element to the hash table");
+                     "not enough memory: "
+                     "couldn't add new element to the hash table");
       hash_element_dispose (elt);
       return PDF_FALSE;
     }

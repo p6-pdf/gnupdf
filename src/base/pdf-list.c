@@ -49,7 +49,7 @@ pdf_list_new (pdf_list_element_equals_fn_t    equals_fn,
     pdf_set_error (error,
                    PDF_EDOMAIN_BASE_LIST,
                    PDF_ENOMEM,
-                   "Not enough memory: Couldn't create new list");
+                   "not enough memory: couldn't create new list");
 
   return (pdf_list_t *) list;
 }
@@ -99,7 +99,7 @@ pdf_list_search_from (const pdf_list_t  *list,
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_LIST,
                      PDF_EINVRANGE,
-                     "Invalid range: start index (%lu), list size (%lu)",
+                     "invalid range: start index (%lu), list size (%lu)",
                      (unsigned long) start_index,
                      (unsigned long) pdf_list_size (list));
       return NULL;
@@ -131,7 +131,7 @@ pdf_list_search_from_to (const pdf_list_t  *list,
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_LIST,
                      PDF_EINVRANGE,
-                     "Invalid range: start index (%lu), "
+                     "invalid range: start index (%lu), "
                      "end index (%lu), list size (%lu),",
                      (unsigned long) start_index,
                      (unsigned long) end_index,
@@ -205,7 +205,7 @@ pdf_list_indexof_from (const pdf_list_t  *list,
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_LIST,
                      PDF_EINVRANGE,
-                     "Invalid range: start index (%lu), list size (%lu)",
+                     "invalid range: start index (%lu), list size (%lu)",
                      (unsigned long) start_index,
                      (unsigned long) pdf_list_size (list));
       return (pdf_size_t)-1;
@@ -242,7 +242,7 @@ pdf_list_indexof_from_to (const pdf_list_t  *list,
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_LIST,
                      PDF_EINVRANGE,
-                     "Invalid range: start index (%lu), "
+                     "invalid range: start index (%lu), "
                      "end index (%lu), list size (%lu),",
                      (unsigned long) start_index,
                      (unsigned long) end_index,
@@ -283,7 +283,7 @@ pdf_list_get_at (const pdf_list_t  *list,
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_LIST,
                      PDF_EINVRANGE,
-                     "Invalid range: position (%lu), list size (%lu)",
+                     "invalid range: position (%lu), list size (%lu)",
                      (unsigned long) position,
                      (unsigned long) pdf_list_size (list));
       return NULL;
@@ -308,7 +308,7 @@ pdf_list_set_at (pdf_list_t        *list,
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_LIST,
                      PDF_EINVRANGE,
-                     "Invalid range: position (%lu), list size (%lu)",
+                     "invalid range: position (%lu), list size (%lu)",
                      (unsigned long) position,
                      (unsigned long) pdf_list_size (list));
       return NULL;
@@ -321,8 +321,8 @@ pdf_list_set_at (pdf_list_t        *list,
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_LIST,
                      PDF_EEXIST,
-                     "Duplicates not allowed: "
-                     "Element %p already exists in list",
+                     "duplicates not allowed: "
+                     "element %p already exists in list",
                      element);
       return NULL;
     }
@@ -351,8 +351,8 @@ pdf_list_add_first (pdf_list_t   *list,
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_LIST,
                      PDF_EEXIST,
-                     "Duplicates not allowed: "
-                     "Element %p already exists in list",
+                     "duplicates not allowed: "
+                     "element %p already exists in list",
                      element);
       return NULL;
     }
@@ -363,7 +363,7 @@ pdf_list_add_first (pdf_list_t   *list,
     pdf_set_error (error,
                    PDF_EDOMAIN_BASE_LIST,
                    PDF_ENOMEM,
-                   "Not enough memory: Couldn't add new list item");
+                   "not enough memory: couldn't add new list item");
 
   return node;
 }
@@ -385,8 +385,8 @@ pdf_list_add_last (pdf_list_t   *list,
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_LIST,
                      PDF_EEXIST,
-                     "Duplicates not allowed: "
-                     "Element %p already exists in list",
+                     "duplicates not allowed: "
+                     "element %p already exists in list",
                      element);
       return NULL;
     }
@@ -397,7 +397,7 @@ pdf_list_add_last (pdf_list_t   *list,
     pdf_set_error (error,
                    PDF_EDOMAIN_BASE_LIST,
                    PDF_ENOMEM,
-                   "Not enough memory: Couldn't add new list item");
+                   "not enough memory: couldn't add new list item");
 
   return node;
 }
@@ -419,7 +419,7 @@ pdf_list_add_at (pdf_list_t        *list,
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_LIST,
                      PDF_EINVRANGE,
-                     "Invalid range: position (%lu), list size (%lu)",
+                     "invalid range: position (%lu), list size (%lu)",
                      (unsigned long) position,
                      (unsigned long) pdf_list_size (list));
       return NULL;
@@ -432,8 +432,8 @@ pdf_list_add_at (pdf_list_t        *list,
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_LIST,
                      PDF_EEXIST,
-                     "Duplicates not allowed: "
-                     "Element %p already exists in list",
+                     "duplicates not allowed: "
+                     "element %p already exists in list",
                      element);
       return NULL;
     }
@@ -445,7 +445,7 @@ pdf_list_add_at (pdf_list_t        *list,
     pdf_set_error (error,
                    PDF_EDOMAIN_BASE_LIST,
                    PDF_ENOMEM,
-                   "Not enough memory: Couldn't add new list item");
+                   "not enough memory: couldn't add new list item");
 
   return node;
 }
@@ -475,7 +475,7 @@ pdf_list_remove_at (pdf_list_t        *list,
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_LIST,
                      PDF_EINVRANGE,
-                     "Invalid range: position (%lu), list size (%lu)",
+                     "invalid range: position (%lu), list size (%lu)",
                      (unsigned long) position,
                      (unsigned long) pdf_list_size (list));
       return PDF_FALSE;
@@ -529,7 +529,7 @@ pdf_list_iterator_init_from_to (pdf_list_iterator_t  *itr,
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_LIST,
                      PDF_EINVRANGE,
-                     "Invalid range: start index (%lu), "
+                     "invalid range: start index (%lu), "
                      "end index (%lu), list size (%lu),",
                      (unsigned long) start_index,
                      (unsigned long) end_index,
@@ -598,7 +598,7 @@ pdf_list_sorted_add (pdf_list_t                    *list,
     pdf_set_error (error,
                    PDF_EDOMAIN_BASE_LIST,
                    PDF_ENOMEM,
-                   "Not enough memory: Couldn't add new list item");
+                   "not enough memory: couldn't add new list item");
 
   return node;
 }
@@ -654,7 +654,7 @@ pdf_list_sorted_search_from_to (const pdf_list_t              *list,
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_LIST,
                      PDF_EINVRANGE,
-                     "Invalid range: start index (%lu), "
+                     "invalid range: start index (%lu), "
                      "end index (%lu), list size (%lu),",
                      (unsigned long) start_index,
                      (unsigned long) end_index,
@@ -706,7 +706,7 @@ pdf_list_sorted_indexof_from_to (const pdf_list_t               *list,
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_LIST,
                      PDF_EINVRANGE,
-                     "Invalid range: start index (%lu), "
+                     "invalid range: start index (%lu), "
                      "end index (%lu), list size (%lu),",
                      (unsigned long) start_index,
                      (unsigned long) end_index,
