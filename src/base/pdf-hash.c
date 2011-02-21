@@ -33,7 +33,6 @@
 #include <pdf-global.h>
 #include <pdf-error.h>
 #include <pdf-alloc.h>
-#include <gl_array_list.h>
 #include <gl_linkedhash_list.h>
 
 #include <pdf-hash.h>
