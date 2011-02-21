@@ -78,7 +78,6 @@ AC_DEFUN([gl_EARLY],
   # Code from module lseek:
   # Code from module lstat:
   # Code from module maintainer-makefile:
-  # Code from module malloc:
   # Code from module malloc-gnu:
   # Code from module malloc-posix:
   # Code from module math:
@@ -118,7 +117,6 @@ AC_DEFUN([gl_EARLY],
   # Code from module useless-if-before-free:
   # Code from module vc-list-files:
   # Code from module warn-on-use:
-  # Code from module wchar:
   # Code from module xalloc:
   # Code from module xalloc-die:
   # Code from module xsize:
@@ -251,7 +249,6 @@ AC_DEFUN([gl_INIT],
   # Code from module maintainer-makefile:
   AC_CONFIG_COMMANDS_PRE([m4_ifdef([AH_HEADER],
     [AC_SUBST([CONFIG_INCLUDE], m4_defn([AH_HEADER]))])])
-  # Code from module malloc:
   # Code from module malloc-gnu:
   gl_FUNC_MALLOC_GNU
   gl_MODULE_INDICATOR([malloc-gnu])
@@ -335,8 +332,6 @@ AC_DEFUN([gl_INIT],
   # Code from module useless-if-before-free:
   # Code from module vc-list-files:
   # Code from module warn-on-use:
-  # Code from module wchar:
-  gl_WCHAR_H
   # Code from module xalloc:
   gl_XALLOC
   # Code from module xalloc-die:
@@ -586,7 +581,6 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/unistr.in.h
   lib/unistr/u8-check.c
   lib/unitypes.in.h
-  lib/wchar.in.h
   lib/xalloc-die.c
   lib/xalloc.h
   lib/xmalloc.c
@@ -666,9 +660,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/unistd-safer.m4
   m4/unistd_h.m4
   m4/warn-on-use.m4
-  m4/wchar_h.m4
   m4/wchar_t.m4
-  m4/wint_t.m4
   m4/xalloc.m4
   m4/xsize.m4
   top/GNUmakefile

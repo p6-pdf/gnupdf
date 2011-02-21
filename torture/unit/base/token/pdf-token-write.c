@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2011-02-11 12:54:59 EET mivael"
+/* -*- mode: C -*- Time-stamp: "2011-02-17 02:58:53 EET mivael"
  *
  *       File:         pdf-token-write.c
  *       Date:         Tue Sep 21 21:08:07 2010
@@ -32,6 +32,69 @@
 #include <pdf.h>
 
 
+/* Process src_len characters in src.  For every processed character
+   either copy it to dst (if printable except for backslash) or
+   translate the non-printable character to octal escape sequence \ddd
+   and write the sequence to dst.  Backslash is processed specially --
+   corresponding output sequence contains two backslashes.  The
+   resulting string in dst is always zero-terminated.  Not more than
+   dst_size characters are written to dst (including terminating
+   '\0').  If dst_size is not enough to process src_len characters
+   then trailing characters in src are ignored.  Returns dst. */
+static char*
+string_to_printable(char *dst,
+                    int dst_size,
+                    char *src,
+                    int src_len)
+{
+  int src_ind, dst_ind;
+
+  dst_size--; /* reserve one char in dst for '\0' */
+
+  for (src_ind = dst_ind = 0;
+       dst_ind < dst_size && src_ind < src_len;
+       src_ind++)
+    {
+      unsigned char ch = src[src_ind];
+
+      if ( ch == '\\' )
+        {
+          if ( dst_size - dst_ind >= 2 )
+            {
+              dst[dst_ind++] = '\\';
+              dst[dst_ind++] = '\\';
+            }
+          else
+              /* prevent processing the next character from src */
+              dst_size = dst_ind;
+        }
+      else if ( ch > 32 && ch < 127 ) /* if printable except for '\\' */
+        {
+          dst[dst_ind++] = ch;
+        }
+      else /* non-printable */
+        {
+          const int seq_len = 4;
+
+          if ( dst_size - dst_ind >= seq_len )
+            {
+              /* must write exactly seq_len characters (not counting
+                 the '\0' character) */
+              sprintf( dst + dst_ind, "\\%03hho", ch );
+
+              dst_ind += seq_len;
+            }
+          else
+              /* prevent processing the next character from src */
+              dst_size = dst_ind;
+        }
+    }
+
+  dst[dst_ind] = '\0';
+
+  return dst;
+}
+
 /* Write a token in an in-memory buffer and compare results.  */
 static void
 write_and_check (pdf_token_t token,
@@ -43,6 +106,12 @@ write_and_check (pdf_token_t token,
   pdf_stm_t stm;
   pdf_char_t *buffer;
   pdf_token_writer_t writer;
+  char *buffer_printable;
+  char *expected_printable;
+
+  /* Allocate memory for printable strings.  */
+  fail_if ((buffer_printable = pdf_alloc (max_size)) == NULL);
+  fail_if ((expected_printable = pdf_alloc (max_size)) == NULL);
 
   /* Create the in-memory stream.  */
   fail_if ((buffer = pdf_alloc (max_size)) == NULL);
@@ -60,15 +129,24 @@ write_and_check (pdf_token_t token,
   fail_if (pdf_stm_destroy (stm) != PDF_OK);
 
   /* Compare results.  */
-  fail_unless (strncmp (buffer, expected, expected_size) == 0,
-               "Assertion 'strncmp"
-                 " (\"%.*s\" /*buffer*/, \"%.*s\" /*expected*/, %d)"
+  fail_unless (memcmp (buffer, expected, expected_size) == 0,
+               "Assertion 'memcmp"
+                 " (\"%s\" /*buffer*/, \"%s\" /*expected*/, %d)"
                  " == 0' failed",
-               (int) expected_size,
-               (char*) buffer,
-               (int) expected_size,
-               (char*) expected,
+               string_to_printable(buffer_printable,
+                                   max_size,
+                                   buffer,
+                                   expected_size),
+               string_to_printable(expected_printable,
+                                   max_size,
+                                   expected,
+                                   expected_size),
                (int) expected_size);
+  /* Note that memcmp is used here instead of strncmp. It is necessary
+     for tests of "nonreadable" PDF literal strings, when there is
+     '\0' char inside pdf string.  Thus, pdf_token_write_string_null
+     test may result in false-pass when using strncmp here. See also
+     7.3.4.2 Literal Strings in the PDF spec. */
 }
 
 /*
@@ -553,13 +631,13 @@ START_TEST(pdf_token_write_string_octal)
   pdf_init ();
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("a\0007c", 3, &token)
+  fail_if (pdf_token_string_new ("a\007c", 3, &token)
            != PDF_OK);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
-                   "(a\0007c)", 5, 100);
+                   "(a\007c)", 5, 100);
 }
 END_TEST
 
@@ -604,13 +682,13 @@ START_TEST(pdf_token_write_string_null)
   pdf_init ();
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("a\0000c", 3, &token)
+  fail_if (pdf_token_string_new ("a\000c", 3, &token)
            != PDF_OK);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
-                   "(a\00000c)", 9, 100);
+                   "(a\000c)", 5, 100);
 }
 END_TEST
 

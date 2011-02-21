@@ -126,8 +126,13 @@ syntax-check-rules := $(sort $(shell sed -n 's/^\(sc_[a-zA-Z0-9_-]*\):.*/\1/p' \
 			$(srcdir)/$(ME) $(_cfg_mk)))
 .PHONY: $(syntax-check-rules)
 
-local-checks-available = \
-  $(syntax-check-rules)
+ifeq ($(shell $(VC_LIST) >/dev/null 2>&1; echo $$?),0)
+local-checks-available += $(syntax-check-rules)
+else
+local-checks-available += no-vc-detected
+no-vc-detected:
+	@echo "No version control files detected; skipping syntax check"
+endif
 .PHONY: $(local-checks-available)
 
 # Arrange to print the name of each syntax-checking rule just before running it.
@@ -569,6 +574,13 @@ _intprops_syms_re = $(subst $(_sp),|,$(strip $(_intprops_names)))
 sc_prohibit_intprops_without_use:
 	@h='"intprops.h"'						\
 	re='\<($(_intprops_syms_re)) *\('				\
+	  $(_sc_header_without_use)
+
+_stddef_syms_re = NULL|offsetof|ptrdiff_t|size_t|wchar_t
+# Prohibit the inclusion of stddef.h without an actual use.
+sc_prohibit_stddef_without_use:
+	@h='<stddef.h>'							\
+	re='\<($(_stddef_syms_re)) *\('					\
 	  $(_sc_header_without_use)
 
 sc_obsolete_symbols:
