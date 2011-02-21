@@ -60,16 +60,12 @@ pdf_stm_f_jbig2dec_init (pdf_hash_t  *params,
   filter_state->error_p = PDF_FALSE;
 
   /* Get the global stream contents, if any */
-  if ((pdf_hash_key_p (params, "GlobalStreamsBuffer", NULL) == PDF_TRUE) &&
-      (pdf_hash_key_p (params, "GlobalStreamsSize", NULL) == PDF_TRUE))
+  if ((pdf_hash_key_p (params, "GlobalStreamsBuffer") == PDF_TRUE) &&
+      (pdf_hash_key_p (params, "GlobalStreamsSize") == PDF_TRUE))
     {
       /* Get the parameters from the hash table */
-      global_stream_buffer = pdf_hash_get_string (params,
-                                                  "GlobalStreamsBuffer",
-                                                  NULL);
-      global_stream_size = pdf_hash_get_size (params,
-                                              "GlobalStreamsSize",
-                                              NULL);
+      global_stream_buffer = (pdf_char_t *) pdf_hash_get_string (params, "GlobalStreamsBuffer");
+      global_stream_size = pdf_hash_get_size (params, "GlobalStreamsSize");
 
       /* Initialize the global context */
       filter_state->jbig2_context = jbig2_ctx_new (filter_state->jbig2_allocator,
