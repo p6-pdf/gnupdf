@@ -1,3 +1,23 @@
+2011-02-21  Jose E. Marchesi  <jemarch@gnu.org>
+
+	manual: changes to the object API.
+	* doc/gnupdf.texi (Object Layer): Make sure that functions
+	returning a pointer are correctly sectioned in the @deftypefun
+	entries.
+	(Null Object): Note that it is possible to directly assign the
+	PDF_OBJ_NULL constant to a pdf_obj_t variable.
+	(Opening and Closing Object Documents): API updates.
+	(Managing Object Document Properties): pdf_obj_doc_get_id renamed
+	to pdf_obj_doc_id.
+	(Managing Object Document Properties): API updates.
+	(Managing Object Document Properties): New function
+	pdf_obj_doc_dirty.
+	(Retrieving and Storing Objects): pdf_obj_doc_get_info_dict
+	renamed to pdf_obj_doc_info_dict.
+	(Retrieving and Storing Objects): pdf_obj_doc_get_root renamed to
+	pdf_obj_doc_root.
+	(Garbage collection in object documents): API updates.
+
 2011-02-21  Aleksander Morgado <aleksander@gnu.org>
 
 	gnulib: Replaced `array-list' module with `linked-list' module.
