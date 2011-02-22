@@ -1,3 +1,19 @@
+2011-02-22  Jose E. Marchesi  <jemarch@gnu.org>
+
+        pdf-obj: module interface and type structures.
+	* src/object/pdf-obj.h: Copyright year update.
+	(pdf_obj_t): New type.
+	(enum pdf_obj_type_e): New type.
+	(pdf_obj_id_t): New type.
+	(pdf_obj_gen_t): New type.
+	Include pdf-obj-doc.h.
+
+	* src/object/pdf-obj.c: Copyright year update.
+	Don't include malloc.h.
+	Old contents removed.
+
+	* src/base/pdf-base.h: Include fsys.h.
+
 2011-02-21  Jose E. Marchesi  <jemarch@gnu.org>
 
 	manual: changes to the object API.

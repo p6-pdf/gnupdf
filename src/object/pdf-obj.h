@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2007, 2008, 2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,288 +23,210 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* This library module implement the basic objects that compound a PDF
-   document:
-
-      - Null object (PDF_NULL_OBJECT)
-      - Boolean value (pdf_boolean_t)
-      - Integer number (pdf_integer_t)
-      - Real number (pdf_real_t)
-      - String (pdf_string_t)
-      - Name (pdf_name_t)
-      - Array (pdf_array_t)
-      - Dictionary (pdf_dict_t)
-      - Indirect object (pdf_indirect_t)
-      - Stream object
-
-   A generic data type capable to contain any kind of PDF object is
-   also included (pdf_obj_t). */
-
 #ifndef PDF_OBJ_H
 #define PDF_OBJ_H
 
 #include <config.h>
-#include <pdf-list.h>
 #include <pdf-base.h>
-#include <pdf-stm.h>
+#include <pdf-obj-doc.h>
 
-/* The PDF NULL object has a type and a value that are unequal to
-   those of any other object. There is only one possible value for
-   this object type: null.
+/* BEGIN PUBLIC */
 
-   There is not a `pdf_null_t' type. In order to reflect a PDF null
-   object we use `pdf_obj_t'. */
-
-
-/* PDF_TRUE and PDF_FALSE (from `pdf_base.h') should be used as the values of
-   boolean variables. 
-
-   Can be used as: 
-   
-   - Values of array elements
-   - Values of dict entries
-   - Values in PostScript calculator functions
-*/
-
-typedef int pdf_boolean_t;
-
-/* NOTE: PDF integers and reals are implemented in pdf_base.h */
-
-/* According to the PDF reference, a PDF name object is an atomic
-   symbol uniquely defined by a sequence of regular characters. It has
-   no internal structure.
-
-   In the practice, PDF uses name objects in order to store
-   information (such as font names). In that situation, it is
-   recommended to code such information in UTF-8. Due to this
-   stupidity we should store the entire byte sequence that conform the
-   name. */
-
-struct pdf_name_s
-{
-  unsigned char *data;
-  int size;
-}; 
-
-typedef struct pdf_name_s *pdf_name_t;
-
-/* A PDF string is a sequence of bytes, in the range of 0-255. In
-   particular it may contain NULL characters (code 0 in the ASCII
-   CCS). 
-
-   Corollary: NEVER NEVER NEVER EVER use a PDF string as an input
-   expecting null-terminated strings. You have been warned. */
- 
-struct pdf_string_s
-{
-  unsigned char *data;
-  int size;
-};
-
-typedef struct pdf_string_s *pdf_string_t;
-
-/* A PDF array object is a one-dimensional collection of objects
-   arranged sequentially. 
-   
-   Note that the list of objects is heterogeneous, so we must use
-   `pdf_obj_s'. */
-
-struct pdf_array_s
-{
-  pdf_list_t objs;
-};
-
-typedef struct pdf_array_s *pdf_array_t;
-
-/* A PDF dictionary object is an associative table containing pairs of
-   objects. The first element of the pair is the `key' and the second
-   element is the `value'.
-
-   Any `key' object should be a name pdf object. On the other hand,
-   the values may have any pdf object type. */
-
-struct pdf_obj_s; /* Forward reference */
-
-struct pdf_dict_entry_s
-{
-  struct pdf_obj_s *key;
-  struct pdf_obj_s *value;
-};
-
-typedef struct pdf_dict_entry_s *pdf_dict_entry_t;
-
-struct pdf_dict_s
-{
-  pdf_list_t entries;
-};
-
-typedef struct pdf_dict_s *pdf_dict_t;
-
-/* A PDF indirect object is composed by:
-
-   - Object number (positive integer)
-   - Generation number (non-negative integer) */
-
-struct pdf_indirect_s
-{
-  /* Object number (cannot be 0) */
-  unsigned int on;
-
-  /* Generation number */
-  unsigned int gn;
-};
-
-typedef struct pdf_indirect_s *pdf_indirect_t;
-
-/* A PDF stream object is composed by a dictionary describing the
-   stream, a reference to a stm structure, and a pointer (octects
-   offset) that point to the beginning of the stream data in the stm
-   backend.
-
-   Note that the actual data of the stream may dont be stored in
-   memory. It depends on the backend type of the stm. */
-
-struct pdf_obj_s;
-
-struct pdf_stream_s 
-{
-  struct pdf_obj_s *dict;
-  pdf_stm_t stm;
-  pdf_stm_pos_t data;
-};
-
-typedef struct pdf_stream_s *pdf_stream_t;
-
-enum pdf_obj_type_t
-{
-  PDF_NULL_OBJ = 0,
-  PDF_BOOLEAN_OBJ,
-  PDF_INT_OBJ,
-  PDF_REAL_OBJ,
-  PDF_STRING_OBJ,
-  PDF_NAME_OBJ,
-  PDF_ARRAY_OBJ,
-  PDF_DICT_OBJ,
-  PDF_INDIRECT_OBJ,
-  PDF_STREAM_OBJ
-};
-
-/* A `pdf_obj_s' structure stores a PDF object. The object may be of
-   any type (including NULL). */
+/* Note that pdf_obj_t is an opaque type, even if we are including the
+   definition of struct pdf_obj_s here for stack allocation
+   purposes. */
 
 struct pdf_obj_s
 {
-  enum pdf_obj_type_t type;
-  
-  union
-  {
-
-    pdf_boolean_t boolean;
-    pdf_integer_t integer;
-    pdf_real_t real;
-    struct pdf_string_s string;
-    struct pdf_name_s name;
-    struct pdf_array_s array;
-    struct pdf_dict_s dict;
-    struct pdf_indirect_s indirect;
-    struct pdf_stream_s stream;
-
-  } value;
+  pdf_u32_t f;
+  pdf_i32_t v;
+  void     *p;
 };
 
-typedef struct pdf_obj_s *pdf_obj_t;
+typedef struct pdf_obj_s pdf_obj_t;
 
-/* Accessing macros */
+/* The PDF NULL object has a type and a value that are unequal to
+   those of any other object. There is only one possible value for
+   this object type: PDF_OBJ_NULL. */
 
-#define IS_NULL(obj) \
-  ((obj)->type == PDF_NULL_OBJ)
-#define IS_BOOL(obj) \
-  ((obj)->type == PDF_BOOLEAN_OBJ)
-#define IS_INT(obj) \
-  ((obj)->type == PDF_INT_OBJ)
-#define IS_REAL(obj) \
-  ((obj)->type == PDF_REAL_OBJ)
-#define IS_NUMBER(obj) \
-  (IS_REAL((obj)) || IS_INT((obj)))
-#define IS_STRING(obj) \
-  ((obj)->type == PDF_STRING_OBJ)
-#define IS_NAME(obj) \
-  ((obj)->type == PDF_NAME_OBJ)
-#define IS_ARRAY(obj) \
-  ((obj)->type == PDF_ARRAY_OBJ)
-#define IS_DICT(obj) \
-  ((obj)->type == PDF_DICT_OBJ)
-#define IS_INDIRECT(obj) \
-  ((obj)->type == PDF_INDIRECT_OBJ)
-#define IS_STREAM(obj) \
-  ((obj)->type == PDF_STREAM_OBJ)
+const pdf_obj_t PDF_OBJ_NULL = {0, 0, NULL};
 
-/* The following macros references values */
-#define GET_BOOL(obj) \
-  ((obj)->value.boolean)
-#define GET_INT(obj) \
-  ((obj)->value.integer)
-#define GET_REAL(obj) \
-  ((obj)->value.real)
+/* A pdf_obj_t variable can be of any of the following types.  */
 
-/* 
- * Forward declarations
- */
+enum pdf_obj_type_e
+{
+  PDF_OBJ_REAL,
+  PDF_OBJ_INTEGER,
+  PDF_OBJ_BOOLEAN,
+  PDF_OBJ_NAME,
+  PDF_OBJ_STRING,
+  PDF_OBJ_ARRAY,
+  PDF_OBJ_DICT,
+  PDF_OBJ_STREAM,
+  PDF_OBJ_NULL
+};
 
-/* Object creation */
-pdf_obj_t pdf_create_null (void);
-pdf_obj_t pdf_create_boolean (int value);
-pdf_obj_t pdf_create_integer (int value);
-pdf_obj_t pdf_create_real (float value);
-pdf_obj_t pdf_create_string (unsigned char *value, int size);
-pdf_obj_t pdf_create_name (unsigned char *value, int size);
-pdf_obj_t pdf_create_array (void);
-pdf_obj_t pdf_create_dict (void);
-pdf_obj_t pdf_create_indirect (unsigned int on, unsigned int gn);
-pdf_obj_t pdf_create_stream (pdf_obj_t dict, pdf_stm_t stm, pdf_stm_pos_t data);
-pdf_obj_t pdf_obj_dup (pdf_obj_t obj);
+/* The ID of an object is a positive integer (> 0).  It uniquely
+   represents an object into an object document.  */
 
-/* Object destruction */
-int pdf_destroy_obj (pdf_obj_t obj);
+typedef pdf_u32_t pdf_obj_id_t;
 
-/* Testing for equality */
-int pdf_obj_equal_p (pdf_obj_t obj1, pdf_obj_t obj2);
+/* The generation number of an object is a non-negative integer.  */
 
-/* Managing objects of basic types */
-int pdf_get_bool (pdf_obj_t obj);
-void pdf_set_bool (pdf_obj_t obj, int value);
-int pdf_get_int (pdf_obj_t obj);
-void pdf_set_int (pdf_obj_t obj, int value);
-pdf_real_t pdf_get_real (pdf_obj_t obj);
-void pdf_set_real (pdf_obj_t obj, pdf_real_t value);
+typedef pdf_u32_t pdf_obj_gen_t;
 
-/* Managing strings */
-int pdf_get_string_size (pdf_obj_t obj);
-char *pdf_get_string_data (pdf_obj_t obj);
 
-/* Managing names */
-int pdf_get_name_size (pdf_obj_t obj);
-char *pdf_get_name_data (pdf_obj_t obj);
+/* ---------- Generic functions to manipulate objects ----------- */
 
-/* Managing arrays */
-int pdf_get_array_size (pdf_obj_t obj);
-int pdf_remove_array_elt (pdf_obj_t obj, int index);
-pdf_obj_t pdf_get_array_elt (pdf_obj_t obj, int index);
-int pdf_set_array_elt (pdf_obj_t obj, int index, pdf_obj_t elt);
-int pdf_add_array_elt (pdf_obj_t obj, int index, pdf_obj_t elt);
-int pdf_append_array_elt (pdf_obj_t obj, pdf_obj_t elt);
+pdf_obj_t      pdf_obj_dup          (pdf_obj_t      obj,
+                                     pdf_obj_doc_t *dest_doc,
+                                     pdf_bool_t     copy_indirect);
 
-/* Managing dictionaries */
-int pdf_get_dict_size (pdf_obj_t obj);
-int pdf_dict_key_p (pdf_obj_t obj, pdf_obj_t key);
-pdf_obj_t pdf_get_dict_entry (pdf_obj_t obj, pdf_obj_t key);
-int pdf_remove_dict_entry (pdf_obj_t obj, pdf_obj_t key);
-int pdf_create_dict_entry (pdf_obj_t obj, pdf_obj_t key, pdf_obj_t value);
+pdf_bool_t     pdf_obj_equal_p      (pdf_obj_t obj1,
+                                     pdf_obj_t obj2)
 
-/* Managing streams */
-pdf_obj_t pdf_get_stream_dict (pdf_obj_t stream);
-pdf_stm_t pdf_get_stream_stm (pdf_obj_t stream);
-pdf_stm_pos_t pdf_get_stream_data (pdf_obj_t stream);
+enum pdf_obj_type_e pdf_obj_get_type (pdf_obj_t obj);;
+
+pdf_obj_t      pdf_obj_destroy      (pdf_obj_t obj);
+pdf_list_t    *pdf_obj_get_objs     (pdf-obj_t obj);
+pdf_obj_doc_t *pdf_obj_get_doc      (pdf_obj_t obj);
+pdf_obj_gen_t  pdf_obj_get_gen      (pdf_obj_t obj);
+pdf_obj_id_t   pdf_obj_get_id       (pdf_obj_t obj);
+pdf_bool_t     pdf_obj_compressed_p (pdf_obj_t obj);
+pdf_bool_t     pdf_obj_indirect_p   (pdf_obj_t obj);
+pdf_size_t     pdf_obj_size         (pdf_obj_t obj);
+
+/* --------------------- strong references ---------------------- */
+
+void pdf_obj_acquire (pdf_obj_t obj);
+void pdf_obj_release (pdf_obj_t obj);
+
+/* --------------------- compressed objects --------------------- */
+
+pdf_bool_t pdf_obj_get_compressibility (pdf_obj_t  obj);
+pdf_bool_t pdf_obj_set_compressibility (pdf_obj_t  obj,
+                                        pdf_bool_t compressible);
+
+/* --------------------- real objects --------------------------- */
+
+pdf_obj_t  pdf_obj_real_new   (pdf_obj_doc_t *doc,
+                               pdf_bool_t     indirect,
+                               pdf_real_t     value);
+
+pdf_real_t pdf_obj_real_value (pdf_obj_t real);
+
+/* --------------------- integer objects ------------------------ */
+
+pdf_obj_t pdf_obj_integer_new (pdf_obj_doc_t *doc,
+                               pdf_bool_t     indirect,
+                               pdf_i32_t      value);
+
+pdf_i32_t pdf_obj_integer_value (pdf_obj_t integer);
+
+/* --------------------- boolean objects ------------------------ */
+
+pdf_obj_t pdf_obj_boolean_new (pdf_obj_doc_t *doc,
+                               pdf_bool_t     indirect,
+                               pdf_bool_t     value);
+
+pdf_bool_t pdf_obj_boolean_value (pdf_obj_t boolean);
+
+/* --------------------- name objects --------------------------- */
+
+pdf_obj_t pdf_obj_name_new (pdf_obj_doc_t *doc,
+                            pdf_bool_t     indirect,
+                            pdf_char_t    *value);
+
+const pdf_char_t *pdf_obj_name (pdf_obj_t name);
+
+/* --------------------- string objects ------------------------- */
+
+pdf_obj_t pdf_obj_string_new (pdf_obj_doc_t *doc,
+                              pdf_bool_t     indirect,
+                              pdf_char_t    *str,
+                              pdf_size_t     size);
+
+const pdf_chart *pdf_obj_string (pdf_obj_t   str,
+                                 pdf_size_t *size);
+
+pdf_bool_t pdf_obj_string_hex_p   (pdf_obj str);
+pdf_bool_t pdf_obj_string_hex_set (pdf_obj_t  str,
+                                   pdf_bool_t hex);
+
+
+/* --------------------- array objects -------------------------- */
+
+pdf_obj_t    pdf_obj_array_new  (pdf_obj_doc_t *doc,
+                                 pdf_bool_t     indirect,
+                                 pdf_size_t     size);
+
+pdf_obj_t    pdf_obj_array_get  (pdf_obj_t array,
+                                 pdf_size_t index);
+pdf_status_t pdf_obj_array_set  (pdf_obj_t  array,
+                                 pdf_size_t index,
+                                 pdf_obj_t  obj);
+
+pdf_bool_t   pdf_obj_array_weak_p   (pdf_obj_t  array,
+                                     pdf_size_t index);
+pdf_bool_t   pdf_obj_array_weak_set (pdf_obj_t  array,
+                                     pdf_size_t index,
+                                     pdf_bool_t weak);
+
+pdf_status_t pdf_obj_array_remove   (pdf_obj_t array,
+                                     pdf_obj_t obj);
+pdf_status_t pdf_obj_array_remove_t (pdf_obj_t  array,
+                                     pdf_size_t index);
+
+/* --------------------- dictionary objects --------------------- */
+
+pdf_obj_t pdf_obj_dict_new (pdf_obj_doc_t *doc,
+                            pdf_bool_t     indirect);
+
+
+pdf_obj_t    pdf_obj_dict_get     (pdf_obj_t dict, pdf_obj_t key);
+pdf_obj_t    pdf_obj_dict_get_str (pdf_obj_t dict,
+                                   const pdf_char_t *key);
+
+pdf_status_t pdf_obj_dict_set     (pdf_obj_t dict,
+                                   pdf_obj_t key,
+                                   pdf_obj_t value);
+pdf_status_t pdf_obj_dict_set_str (pdf_obj_t dict,
+                                   const pdf_char_t *key,
+                                   pdf_obj_t  value);
+
+pdf_status_t pdf_obj_dict_remove     (pdf_obj_t dict, pdf_obj_t key);
+pdf_status_t pdf_obj_dict_remove_str (pdf_obj_t dict,
+                                      const pdf_char_t *key);
+
+pdf_bool_t   pdf_obj_dict_key_p     (pdf_obj_t dict, pdf_obj_t key);
+pdf_bool_t   pdf_obj_dict_key_str_p (pdf_obj_t dict,
+                                     const pdf_char_t *key);
+
+pdf_bool_t   pdf_obj_dict_weak_p     (pdf_obj_t dict, pdf_obj_t key);
+pdf_bool_t   pdf_obj_dict_weak_str_p (pdf_obj_t dict,
+                                      const pdf_char_t *key);
+
+pdf_staus_t  pdf_obj_dict_weak_set     (pdf_obj_t  dict,
+                                        pdf_obj_t  key,
+                                        pdf_bool_t weak);
+pdf_status_t pdf_obj_dict_weak_set_str (pdf_obj_t         dict,
+                                        const pdf_char_t *key,
+                                        pdf_bool_t        weak);
+
+/* --------------------- stream objects ------------------------- */
+
+pdf_obj_t pdf_obj_stream_new (pdf_obj_doc_t *doc,
+                              pdf_stm_t      stm,
+                              pdf_off_t      size,
+                              pdf_obj_t      attrs_dict);
+
+pdf_obj_t pdf_obj_stream_dict (pdf_obj_t stream);
+pdf_off_t pdf_obj_stream_pos  (pdf_obj_t stream);
+pdf_obj_t pdf_obj_stream_open (pdf_obj_t stream,
+                               enum pdf_obj_stm_open_mode_e mode);
+
+
+/* END PUBLIC */
 
 #endif /* pdf_obj.h */
 

@@ -37,6 +37,7 @@
 #include <pdf-stm.h>
 #include <pdf-fp.h>
 #include <pdf-text.h>
+#include <pdf-fsys.h>
 
 #endif /* !PDF_BASE_H */
 
