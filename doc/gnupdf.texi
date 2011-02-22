@@ -12762,7 +12762,7 @@ for (index = 0; index < array_size; index++)
 @end table
 @end deftypefun
 
-@deftypefun pdf_bool_t pdf_obj_array_weak_set (pdf_obj_t @var{array}, pdf_size_t @var{index}, pdf_bool_t @var{weak_p})
+@deftypefun void pdf_obj_array_weak_set (pdf_obj_t @var{array}, pdf_size_t @var{index}, pdf_bool_t @var{weak_p})
 
 Set if the @var{index}th element of @var{array} is a weak reference.
 
@@ -12770,6 +12770,9 @@ The effect of this call when @var{weak_p} is @code{PDF_FALSE} is to
 remove the effect of a previous call with @var{weak_p} set to
 @code{PDF_TRUE}.  In particular it does not set a strong reference to
 the object occupying the @var{index}th position in the array.
+
+This function is a no-operation if either @var{array} is not an
+array object or @var{index} is not found in the array.
 
 @table @strong
 @item Parameters
@@ -13351,10 +13354,13 @@ pdf_obj_dict_weak_p (dict, "Foo");
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_dict_weak_set (pdf_obj_t @var{dict}, pdf_obj_t @var{key}, pdf_bool_t @var{weak_p})
+@deftypefun void pdf_obj_dict_weak_set (pdf_obj_t @var{dict}, pdf_obj_t @var{key}, pdf_bool_t @var{weak_p})
 
 Set an entry in a PDF dictionary as a weak entry.
 @xref{Garbage collection in object documents}.
+
+This function is a no-operation if either @var{dict} is not a
+dictionary object or @var{key} is not found in the dictionary.
 
 @table @strong
 @item Parameters
@@ -13393,10 +13399,13 @@ pdf_obj_dict_weak_set (dict, key, PDF_TRUE);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_obj_dict_weak_set_str (pdf_obj_t @var{dict}, pdf_char_t *@var{key}, pdf_bool_t @var{weak_p})
+@deftypefun void pdf_obj_dict_weak_set_str (pdf_obj_t @var{dict}, pdf_char_t *@var{key}, pdf_bool_t @var{weak_p})
 
 Set an entry in a PDF dictionary as a weak entry.
 @xref{Garbage collection in object documents}.
+
+This function is a no-operation if either @var{dict} is not a
+dictionary object or @var{key} is not found in the dictionary.
 
 @table @strong
 @item Parameters
@@ -13446,7 +13455,7 @@ unlimited length.
 All streams must be indirect objects.  Dictionaries describing streams
 must be direct objects.
 
-@deftypefun pdf_obj_t pdf_obj_stream_new (pdf_obj_doc_t @var{doc}, pdf_stm_t @var{stm}, pdf_off_t @var{size}, pdf_obj_t @var{attrs_dict})
+@deftypefun pdf_obj_t pdf_obj_stream_new (pdf_obj_doc_t *@var{doc}, pdf_stm_t @var{stm}, pdf_off_t @var{size}, pdf_obj_t @var{attrs_dict})
 
 Create a PDF Stream object in an object document.
 

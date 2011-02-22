@@ -168,7 +168,7 @@ pdf_status_t pdf_obj_array_set  (pdf_obj_t  array,
 
 pdf_bool_t   pdf_obj_array_weak_p   (pdf_obj_t  array,
                                      pdf_size_t index);
-pdf_bool_t   pdf_obj_array_weak_set (pdf_obj_t  array,
+void         pdf_obj_array_weak_set (pdf_obj_t  array,
                                      pdf_size_t index,
                                      pdf_bool_t weak);
 
@@ -206,12 +206,12 @@ pdf_bool_t   pdf_obj_dict_weak_p     (pdf_obj_t dict, pdf_obj_t key);
 pdf_bool_t   pdf_obj_dict_weak_str_p (pdf_obj_t dict,
                                       const pdf_char_t *key);
 
-pdf_staus_t  pdf_obj_dict_weak_set     (pdf_obj_t  dict,
-                                        pdf_obj_t  key,
-                                        pdf_bool_t weak);
-pdf_status_t pdf_obj_dict_weak_set_str (pdf_obj_t         dict,
-                                        const pdf_char_t *key,
-                                        pdf_bool_t        weak);
+void  pdf_obj_dict_weak_set     (pdf_obj_t  dict,
+                                 pdf_obj_t  key,
+                                 pdf_bool_t weak);
+void pdf_obj_dict_weak_set_str (pdf_obj_t         dict,
+                                const pdf_char_t *key,
+                                pdf_bool_t        weak);
 
 /* --------------------- stream objects ------------------------- */
 

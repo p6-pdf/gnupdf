@@ -1,5 +1,14 @@
 2011-02-22  Jose E. Marchesi  <jemarch@gnu.org>
 
+	manual: object setters that cannot fail return void.
+	* doc/gnupdf.texi (Stream Objects): pdf_obj_stream_new gets a
+	pointer to a document, not a pdf_obj_doc_t.
+	(Dictionary Objects): pdf_obj_dict_weak_set and
+	pdf_obj_dict_weak_set_str return void.
+	(Array Objects): Likewise for pdf_obj_array_weak_set.
+
+2011-02-22  Jose E. Marchesi  <jemarch@gnu.org>
+
         pdf-obj: module interface and type structures.
 	* src/object/pdf-obj.h: Copyright year update.
 	(pdf_obj_t): New type.
