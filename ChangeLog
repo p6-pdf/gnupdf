@@ -1,3 +1,27 @@
+2011-02-23  Jose E. Marchesi  <jemarch@gnu.org>
+
+	lib: add missing headers to pdf-base.h, and document its usage in
+	the hackers guide.
+	* src/base/pdf-token.h: Likewise.
+
+	* src/base/pdf-stm-f-pred.c: Likewise.
+
+	* src/base/pdf-stm-f-fax.h: Don't include pdf-base.h
+
+	* src/base/pdf-token.h: Include pdf-error.h
+	Include pdf-fp.h.
+
+	* doc/gnupdf-hg.texi (Using definitions from other library
+	layers): New section.
+
+	* src/base/pdf-base.h: Include pdf-types-buffer.h.
+	Include pdf-token-writer.h.
+	Include pdf-token-reader.h.
+	Include pdf-token.h.
+	Include pdf-time.h.
+	Include pdf-crypt.h.
+	Comment added about the purpose of the file.
+
 2011-02-22  Jose E. Marchesi  <jemarch@gnu.org>
 
 	manual: object setters that cannot fail return void.

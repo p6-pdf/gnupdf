@@ -434,6 +434,7 @@ a good level of coherence in the codebase.
 * Spaces vs. Tabs::
 * Naming Functions::
 * Abstract Data Types::
+* The layer header files::
 @end menu
 
 @node File Headers
@@ -812,6 +813,38 @@ struct pdf_foo_s
 
 ...
 @end example
+
+@node The layer header files
+@section The layer header files
+
+Each layer in the library provides a header file that gathers the
+public headers of its modules.  The header is named after the layer.
+@code{pdf-LAYER.h} would contain:
+
+@example
+#include <pdf-MODULE1.h>
+#include <pdf-MODULE2.h>
+...
+@end example
+
+@code{pdf-MODULEn.h} being the header files of the modules composing
+the layer having @code{BEGIN_PUBLIC}, @code{END_PUBLIC} sections.
+
+The rules regarding those header files are:
+
+@itemize @minus
+@item Never use @code{pdf-LAYER.h} in a module of the same layer.
+@item Always use @code{pdf-LAYER.h} in modules of another layer.
+@end itemize
+
+The second rule avoids the propagation of problems when we make
+changes in the module structure of a given layer.  As long as it is
+stated that the object layer provides @code{pdf_obj_t}, for example,
+it does not matter which specific module provides it.
+
+For example, if we wanted to use the tokeniser @code{pdf_token_read_t}
+in the object layer, we would include @code{pdf-base.h} instead of
+@code{pdf-token-read.h}.
 
 @node Writing Documentation
 @chapter Writing Documentation

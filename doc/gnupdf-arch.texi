@@ -124,7 +124,7 @@ Some remarks:
 @node The base layer
 @chapter The base layer
 
-The base layer of the GNU PDF Library provide system-independent
+The base layer of the GNU PDF Library provides system-independent
 access to several facilities used by the upper layers of the library.
 The modules in this layer are quite generic, and are available to the
 user of the library.
@@ -148,7 +148,7 @@ user of the library.
 @node Base layer overview
 @section Base layer overview
 
-The base layer of the GNU PDF Library provide system-independent
+The base layer of the GNU PDF Library provides system-independent
 access to several facilities.
 
 Some modules within the base layer make use of the facilities implemented in

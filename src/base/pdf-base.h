@@ -23,15 +23,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*
+ * The purpose of this file is to provide the symbols exported from
+ * the base modules to other library layers.  By using this header we
+ * can change the structure of modules without impacting files in
+ * other layers.
+ */
+
 #ifndef PDF_BASE_H
 #define PDF_BASE_H
 
 #include <config.h>
 
 #include <pdf-alloc.h>
+#include <pdf-error.h>
 #include <pdf-types.h>
 #include <pdf-types-buffer.h>
-#include <pdf-error.h>
+#include <pdf-token.h>
+#include <pdf-token-writer.h>
+#include <pdf-token-reader.h>
+#include <pdf-time.h>
+#include <pdf-crypt.h>
 #include <pdf-list.h>
 #include <pdf-hash.h>
 #include <pdf-stm.h>

@@ -28,8 +28,6 @@
 
 #include <config.h>
 
-#include <pdf-base.h>
-
 /* Configuration data */
 
 /* BEGIN PUBLIC */

@@ -30,7 +30,6 @@
 #include <string.h>
 
 #include <pdf-alloc.h>
-#include <pdf-base.h>
 #include <pdf-stm-f-pred.h>
 
 #define PNG_ENC_PREDICTOR_P(pred)                      \

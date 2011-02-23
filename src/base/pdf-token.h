@@ -45,8 +45,9 @@
 
 #include <config.h>
 
+#include <pdf-error.h>
+#include <pdf-fp.h>
 #include <pdf-types.h>
-#include <pdf-base.h>
 
 /* BEGIN PUBLIC */
 /* pdf-token.h */
