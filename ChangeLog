@@ -1,5 +1,11 @@
 2011-02-23  Jose E. Marchesi  <jemarch@gnu.org>
 
+	object: create the layer header file.
+	* src/object/pdf-object.h: New file.
+	Include pdf-obj.h.
+
+2011-02-23  Jose E. Marchesi  <jemarch@gnu.org>
+
 	lib: add missing headers to pdf-base.h, and document its usage in
 	the hackers guide.
 	* src/base/pdf-token.h: Likewise.
