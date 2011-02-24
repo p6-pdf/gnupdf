@@ -127,13 +127,12 @@ static pdf_bool_t pdf_text_fill_word_boundaries_list (pdf_list_t        *word_bo
 
 
 
-pdf_status_t
-pdf_text_init(void)
+pdf_bool_t
+pdf_text_init (pdf_error_t **error)
 {
   /* Initiate Text module context */
-  return pdf_text_context_init();
+  return pdf_text_context_init (error);
 }
-
 
 pdf_status_t
 pdf_text_new (pdf_text_t *text)

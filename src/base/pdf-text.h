@@ -40,8 +40,7 @@
  *  the program starts. It will be in charge of detecting currently configured
  *  locale, host encoding... in GNU/Linux and UNIX-like systems
  *  (Mac OS X included) */
-pdf_status_t
-pdf_text_init(void);
+pdf_bool_t pdf_text_init (pdf_error_t **error);
 
 
 

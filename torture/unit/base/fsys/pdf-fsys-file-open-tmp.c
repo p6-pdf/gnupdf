@@ -43,8 +43,6 @@ START_TEST (pdf_fsys_file_open_tmp_001)
 {
   pdf_fsys_file_t file;
 
-  fail_if( pdf_text_init() != PDF_OK);
-
   fail_if( pdf_fsys_file_open_tmp (NULL, &file) != PDF_OK );
 
   pdf_fsys_file_close(file);

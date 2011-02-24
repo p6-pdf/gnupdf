@@ -47,8 +47,6 @@ START_TEST (pdf_fsys_file_close_001)
   pathname = tortu_get_data_file_path(filename);
   file = (pdf_fsys_file_t)pdf_alloc(sizeof(struct pdf_fsys_file_s));
 
-  fail_if( pdf_text_init() != PDF_OK );
-
   fail_if( pdf_text_new_from_unicode(pathname,
                                      strlen((char*) pathname),
                                      PDF_TEXT_UTF8,

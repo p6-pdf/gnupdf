@@ -48,8 +48,6 @@ START_TEST (pdf_fsys_file_open_001)
   pathname = tortu_get_data_file_path(filename);
   file = (pdf_fsys_file_t)pdf_alloc(sizeof(struct pdf_fsys_file_s));
 
-  fail_if( pdf_text_init() != PDF_OK );
-
   fail_if( pdf_text_new_from_unicode(pathname,
                                      strlen(pathname),
                                      PDF_TEXT_UTF8,
@@ -80,8 +78,6 @@ START_TEST (pdf_fsys_file_open_002)
   pdf_char_t filename[] = "DOESNTEXIST";
 
   file = (pdf_fsys_file_t)pdf_alloc(sizeof(struct pdf_fsys_file_s));
-
-  fail_if( pdf_text_init() != PDF_OK );
 
   fail_if( pdf_text_new_from_unicode(filename,
                                      strlen(filename),
@@ -115,8 +111,6 @@ START_TEST (pdf_fsys_file_open_003)
   pathname = tortu_get_data_file_path(filename);
   file = (pdf_fsys_file_t)pdf_alloc(sizeof(struct pdf_fsys_file_s));
 
-  fail_if( pdf_text_init() != PDF_OK );
-
   fail_if( pdf_text_new_from_unicode(pathname,
                                      strlen(pathname),
                                      PDF_TEXT_UTF8,
@@ -148,8 +142,6 @@ START_TEST (pdf_fsys_file_open_004)
 
   pathname = tortu_get_data_file_path(filename);
   file = (pdf_fsys_file_t)pdf_alloc(sizeof(struct pdf_fsys_file_s));
-
-  fail_if( pdf_text_init() != PDF_OK );
 
   fail_if( pdf_text_new_from_unicode(pathname,
                                      strlen(pathname),

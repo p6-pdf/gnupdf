@@ -43,8 +43,6 @@ START_TEST (pdf_fsys_get_free_space_001)
   pdf_text_t path;
   pdf_char_t pathname[] = ".";
 
-  fail_if( pdf_text_init() != PDF_OK );
-
   fail_if( pdf_text_new_from_unicode(pathname,
                                      strlen((char*) pathname),
                                      PDF_TEXT_UTF8,
@@ -73,8 +71,6 @@ START_TEST (pdf_fsys_get_free_space_002)
   pdf_i64_t free_space, error;
   pdf_text_t path;
   pdf_char_t pathname[] = "DOESNTEXIST";
-
-  fail_if( pdf_text_init() != PDF_OK );
 
   fail_if( pdf_text_new_from_unicode(pathname,
                                      strlen((char*) pathname),
