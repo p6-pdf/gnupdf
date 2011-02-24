@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2011-01-31 21:35:47 jemarch"
+/* -*- mode: C -*- Time-stamp: "2011-02-24 23:45:17 aleksander"
  *
  *       File:         pdf-filereader.c
  *       Date:         Thu Dec 2 23:35:55 2010
@@ -26,6 +26,7 @@
 
 #include <config.h>
 
+#include <locale.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <getopt.h>
@@ -35,7 +36,7 @@
 #include <pdf.h>
 
 /*
- * Command line options management 
+ * Command line options management
  */
 
 enum
@@ -116,7 +117,7 @@ pdf_filereader_args_t reader_args;
 void
 parse_args (int argc, char *argv[]);
 
-void 
+void
 printout_fsys_props (struct pdf_fsys_item_props_s *p_props);
 
 int
@@ -145,19 +146,19 @@ main (int argc, char *argv[])
 
   set_program_name (argv[0]);
 
+#if defined HAVE_SETLOCALE
+  /* Initialize locale in the program */
+  setlocale (LC_ALL, "");
+#endif /* HAVE_SETLOCALE */
+
+  pdf_init ();
+
   /* Initialized global vars */
   reader_args.program_name = strdup (argv[0]);
   reader_args.in_fname = NULL;
   reader_args.out_fname = NULL;
   reader_args.print_props = PDF_FALSE;
   reader_args.use_disk_fs = PDF_FALSE;
-
-  ret_stat = pdf_text_init ();
-  
-  if (PDF_OK != ret_stat)
-    {
-      fprintf (stderr, "ERROR: pdf_text_init failed: %d\n", ret_stat);
-    }
 
   parse_args (argc, argv);
 
@@ -166,7 +167,7 @@ main (int argc, char *argv[])
 #if PDF_FSYS_HTTP
       if (reader_args.use_disk_fs)
 #endif
-        { 
+        {
           use_this_fsys = pdf_fsys_create (pdf_fsys_disk_implementation);
         }
 #if PDF_FSYS_HTTP
@@ -194,7 +195,7 @@ main (int argc, char *argv[])
                                           pdf_text_get_host_encoding (),
                                           &input_path);
 
-      if (PDF_OK == ret_stat) 
+      if (PDF_OK == ret_stat)
         {
           if (NULL == input_path)
             {
@@ -206,7 +207,7 @@ main (int argc, char *argv[])
             {
               memset (&path_props, 0, sizeof (struct pdf_fsys_item_props_s));
 
-              ret_stat = pdf_fsys_get_item_props (use_this_fsys, input_path, 
+              ret_stat = pdf_fsys_get_item_props (use_this_fsys, input_path,
                                                   &path_props);
               if (PDF_OK != ret_stat)
                 {
@@ -234,8 +235,8 @@ main (int argc, char *argv[])
         }
 
       /* get item props succeeded - now open file! */
-      
-      ret_stat = pdf_fsys_file_open (use_this_fsys, input_path, 
+
+      ret_stat = pdf_fsys_file_open (use_this_fsys, input_path,
                                      PDF_FSYS_OPEN_MODE_READ, &the_file);
 
       if (PDF_OK == ret_stat)
@@ -243,27 +244,27 @@ main (int argc, char *argv[])
 
           f = fopen (reader_args.out_fname, "w");
 
-          do 
+          do
             {
-              
+
               len = 0;
-              
+
               ret_stat = pdf_fsys_file_read (the_file, buff, BUF_LEN, &len);
-              
-              if ((PDF_OK == ret_stat) 
+
+              if ((PDF_OK == ret_stat)
                   || ((PDF_EEOF == ret_stat) && (0 != len)))
                 {
                   fwrite (buff, 1, len, f);
                 }
               else
                 {
-                  fprintf (stderr, "\nERROR: file_read: %d/%d -- len:%d\n", 
+                  fprintf (stderr, "\nERROR: file_read: %d/%d -- len:%d\n",
                            ret_stat, PDF_EEOF, len);
                   rv = ret_stat;
                 }
 
             } while (PDF_OK == ret_stat);
-          
+
           fclose (f);
           pdf_fsys_file_close (the_file);
 
@@ -277,7 +278,7 @@ main (int argc, char *argv[])
     }
   else
     { /* Print usage message */
-      fprintf (stdout, "%s\n", pdf_filereader_usage_msg);      
+      fprintf (stdout, "%s\n", pdf_filereader_usage_msg);
     }
 
   return rv;
@@ -298,7 +299,7 @@ parse_args (int argc, char *argv[])
 	 (ret = getopt_long (argc,
 			     argv,
 			     "i:o:",
-			     GNU_longOptions, 
+			     GNU_longOptions,
 			     NULL)) != -1)
     {
       c = ret;
@@ -350,10 +351,10 @@ parse_args (int argc, char *argv[])
         }
 
     } /* end of while getopt_long */
-  
+
 }
 
-void 
+void
 printout_fsys_props (struct pdf_fsys_item_props_s *p_props)
 {
 /* Filesystem item properties */
@@ -371,19 +372,19 @@ struct pdf_fsys_item_props_s
 */
     if (NULL != p_props)
       {
-        fprintf (stderr, "is_hidden: %s\n", 
+        fprintf (stderr, "is_hidden: %s\n",
                  p_props->is_hidden ? "TRUE" : "FALSE");
 
-        fprintf (stderr, "is_readable: %s\n", 
+        fprintf (stderr, "is_readable: %s\n",
                  p_props->is_readable ? "TRUE" : "FALSE");
 
-        fprintf (stderr, "is_writable: %s\n", 
+        fprintf (stderr, "is_writable: %s\n",
                  p_props->is_writable ? "TRUE" : "FALSE");
 
         fprintf (stderr, "creation_date: Not displayed\n");
-        
+
         fprintf (stderr, "modification_date: Not displayed\n");
-        
+
         fprintf (stderr, "file_size: %d\n", p_props->file_size);
 
         fprintf (stderr, "folder_size: %d\n", p_props->folder_size);

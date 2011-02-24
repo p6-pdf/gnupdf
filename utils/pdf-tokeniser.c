@@ -303,6 +303,13 @@ main (int argc, char **argv)
 
   set_program_name (argv[0]);
 
+#if defined HAVE_SETLOCALE
+  /* Initialize locale in the program */
+  setlocale (LC_ALL, "");
+#endif /* HAVE_SETLOCALE */
+
+  pdf_init ();
+
   while ((c = getopt_long (argc,
                            argv,
                            "",
