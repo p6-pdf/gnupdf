@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include <string.h>
 #include <check.h>
 #include <pdf.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_fsys_get_free_space_001
  * Description:
@@ -37,7 +37,7 @@
  *   The call to pdf_fsys_get_free_space should not return an error
  */
 
-START_TEST(pdf_fsys_get_free_space_001)
+START_TEST (pdf_fsys_get_free_space_001)
 {
   pdf_i64_t free_space, error;
   pdf_text_t path;
@@ -68,7 +68,7 @@ END_TEST
  *   error.
  */
 
-START_TEST(pdf_fsys_get_free_space_002)
+START_TEST (pdf_fsys_get_free_space_002)
 {
   pdf_i64_t free_space, error;
   pdf_text_t path;
@@ -101,6 +101,9 @@ test_pdf_fsys_get_free_space (void)
   TCase *tc = tcase_create("pdf_fsys_get_free_space");
   tcase_add_test(tc, pdf_fsys_get_free_space_001);
   tcase_add_test(tc, pdf_fsys_get_free_space_002);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

@@ -28,7 +28,7 @@
 #include <string.h>
 #include <pdf.h>
 #include <check.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_text_check_host_encoding_001
  * Description:
@@ -38,12 +38,12 @@
  * Success conditions:
  *   1. The call to pdf_text_check_host_encoding should return PDF_OK.
  *   2. A non-empty pdf_text_host_encoding_t variable should be returned as
- *      well. 
+ *      well.
  */
-START_TEST(pdf_text_check_host_encoding_001)
+START_TEST (pdf_text_check_host_encoding_001)
 {
   pdf_text_host_encoding_t host_enc;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
 
@@ -72,17 +72,17 @@ END_TEST
  *   1. The call to pdf_text_check_host_encoding should NOT return PDF_OK.
  *   2. The pdf_text_host_encoding_t variable should remain unchanged.
  */
-START_TEST(pdf_text_check_host_encoding_002)
+START_TEST (pdf_text_check_host_encoding_002)
 {
   pdf_text_host_encoding_t host_enc;
 
   /* Set old host encoding name */
   strncpy((&(host_enc.name[0])),"ascii",5);
   host_enc.name[5] = '\0';
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* 1. The call to pdf_text_check_host_encoding should NOT return PDF_OK. */
 #ifdef PDF_HOST_WIN32
   fail_unless(pdf_text_check_host_encoding((pdf_char_t *)"CP17",
@@ -91,7 +91,7 @@ START_TEST(pdf_text_check_host_encoding_002)
   fail_unless(pdf_text_check_host_encoding((pdf_char_t *)"invalid_host_encoding",
                                            &host_enc) != PDF_OK);
 #endif
-  
+
   /* 2. The pdf_text_host_encoding_t variable should remain unchanged. */
   fail_unless(strcmp(host_enc.name, "ascii") == 0);
 }
@@ -108,6 +108,9 @@ test_pdf_text_check_host_encoding (void)
   tcase_add_test(tc, pdf_text_check_host_encoding_001);
   tcase_add_test(tc, pdf_text_check_host_encoding_002);
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

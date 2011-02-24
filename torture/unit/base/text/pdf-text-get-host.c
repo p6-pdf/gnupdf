@@ -29,16 +29,16 @@
 #include <pdf.h>
 #include <check.h>
 #include <base/text/pdf-text-test-common.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_text_get_host_001
  * Description:
- *   Get the contents of a text object in a valid host encoding 
+ *   Get the contents of a text object in a valid host encoding
  * Success conditions:
  *    1. The call to  pdf_text_get_host should return PDF_OK.
- *    2. The returned string must be the expected one. 
+ *    2. The returned string must be the expected one.
  */
-START_TEST(pdf_text_get_host_001)
+START_TEST (pdf_text_get_host_001)
 {
   extern const test_string_t ascii_strings[];
   pdf_text_host_encoding_t host_enc;
@@ -46,14 +46,14 @@ START_TEST(pdf_text_get_host_001)
 
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create, without using the API, a valid pdf_text_host_encoding_t */
 #ifdef PDF_HOST_WIN32
   strcpy((&(host_enc.name[0])), "CP20127"); /* us-ascii */
 #else
   strcpy((&(host_enc.name[0])), "us-ascii");
 #endif
-  
+
   i = 0;
   while(ascii_strings[i].data != NULL)
     {
@@ -62,7 +62,7 @@ START_TEST(pdf_text_get_host_001)
       pdf_size_t size = 0;
       const pdf_char_t *expected_data;
       pdf_size_t expected_size;
-      
+
       /* Set expected data and size */
       expected_data = (pdf_char_t *)ascii_strings[i].data;
       expected_size = ascii_strings[i].size;
@@ -73,18 +73,18 @@ START_TEST(pdf_text_get_host_001)
                                         ascii_strings[i].utf32be_size,
                                         PDF_TEXT_UTF32_BE,
                                         &text) != PDF_OK);
-      
-      
+
+
       /* 1. The call to  pdf_text_get_host should return PDF_OK. */
       fail_unless(pdf_text_get_host(&data, &size,
                                     text,
                                     host_enc) == PDF_OK);
-      
+
       fail_if(data == NULL);
       /* 2. The returned string must be the expected one. */
       fail_unless(size == expected_size);
       fail_unless(memcmp(expected_data, data, size) == 0);
-      
+
       pdf_text_destroy(text);
       pdf_dealloc(data);
 
@@ -98,26 +98,26 @@ END_TEST
 /*
  * Test: pdf_text_get_host_002
  * Description:
- *   Get the contents of a text object in an invalid host encoding 
+ *   Get the contents of a text object in an invalid host encoding
  * Success conditions:
  *    1. The call to  pdf_text_get_host should NOT return PDF_OK.
  */
-START_TEST(pdf_text_get_host_002)
+START_TEST (pdf_text_get_host_002)
 {
   extern const test_string_t ascii_strings[];
   pdf_text_host_encoding_t host_enc;
   int i;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create, without using the API, an invalid pdf_text_host_encoding_t */
 #ifdef PDF_HOST_WIN32
   strcpy((&(host_enc.name[0])), "CP17"); /* us-ascii */
 #else
   strcpy((&(host_enc.name[0])), "invalid_host_enc");
 #endif
-  
+
   i = 0;
   while(ascii_strings[i].data != NULL)
     {
@@ -126,24 +126,24 @@ START_TEST(pdf_text_get_host_002)
       pdf_size_t size = 0;
       const pdf_char_t *expected_data;
       pdf_size_t expected_size;
-      
+
       /* Set expected data and size */
       expected_data = (pdf_char_t *)ascii_strings[i].data;
       expected_size = ascii_strings[i].size;
-      
+
       fail_if(pdf_text_new_from_unicode((pdf_char_t *) \
                                         ascii_strings[i].utf32be_data,
                                         (pdf_size_t) \
                                         ascii_strings[i].utf32be_size,
                                         PDF_TEXT_UTF32_BE,
                                         &text) != PDF_OK);
-      
-      
+
+
       /* 1. The call to  pdf_text_get_host should NOT return PDF_OK. */
       fail_unless(pdf_text_get_host(&data, &size,
                                     text,
                                     host_enc) != PDF_OK);
-      
+
       fail_if(data != NULL);
       fail_if(size != 0);
 
@@ -151,7 +151,7 @@ START_TEST(pdf_text_get_host_002)
 
       ++i;
     }
-  
+
 }
 END_TEST
 
@@ -164,8 +164,11 @@ test_pdf_text_get_host (void)
 {
   TCase *tc = tcase_create("pdf_text_get_host");
   tcase_add_test(tc, pdf_text_get_host_001);
-  tcase_add_test(tc, pdf_text_get_host_002);  
-  
+  tcase_add_test(tc, pdf_text_get_host_002);
+
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

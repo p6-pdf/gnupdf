@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 
 #include <check.h>
 #include <pdf.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_stm_mem_new_001
  * Description:
@@ -73,6 +73,9 @@ test_pdf_stm_mem_new (void)
 
   tcase_add_test(tc, pdf_stm_mem_new_001);
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

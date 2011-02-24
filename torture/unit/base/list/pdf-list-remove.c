@@ -28,7 +28,7 @@
 #include <stdio.h>
 #include <pdf.h>
 #include <check.h>
-
+#include <pdf-test-common.h>
 #include "pdf-list-test-common.h"
 
 /*
@@ -96,6 +96,9 @@ test_pdf_list_remove (void)
   tcase_add_test (tc, pdf_list_remove_001);
   tcase_add_test (tc, pdf_list_remove_002);
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

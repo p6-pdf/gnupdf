@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008, 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2008, 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_stm_flush_001
  * Description:
@@ -47,7 +47,7 @@ START_TEST (pdf_stm_flush_001)
   pdf_char_t *buf;
   pdf_size_t buf_size;
   pdf_size_t flushed_bytes;
-  
+
   /* Create a memory buffer */
   buf_size = 10;
   pdf_init();
@@ -66,7 +66,7 @@ START_TEST (pdf_stm_flush_001)
   flushed_bytes = 0;
   ret =  pdf_stm_flush(stm, PDF_TRUE, &flushed_bytes);
   fail_unless(ret == PDF_OK);
-  
+
   /* There schould be 0 flushed bytes */
   fail_if(flushed_bytes > 0);
 
@@ -97,7 +97,7 @@ START_TEST (pdf_stm_flush_002)
   pdf_size_t buf_size;
   pdf_size_t flushed_bytes;
   pdf_size_t written_bytes;
-  
+
   /* Create a memory buffer */
   buf_size = 40;
   pdf_init();
@@ -108,7 +108,7 @@ START_TEST (pdf_stm_flush_002)
   /* Create the stream */
   ret = pdf_stm_mem_new (buf,
                          buf_size,
-                         5, 
+                         5,
                          PDF_STM_WRITE,
                          &stm);
   fail_if(ret != PDF_OK);
@@ -138,7 +138,7 @@ END_TEST
 /*
  * Test: pdf_stm_flush_003
  * Description:
- * Test mem stream with option PDF_STM_WRITE. 
+ * Test mem stream with option PDF_STM_WRITE.
  * Write more bytes then stream cache size, but less then
  * buffer size.
  * Success condition:
@@ -159,7 +159,7 @@ START_TEST (pdf_stm_flush_003)
   pdf_size_t flushed_bytes;
   pdf_size_t written_bytes;
  // pdf_stm_filter_t tail_filter;
-  
+
   /* Create a memory buffer */
   buf_size = 40;
   pdf_init();
@@ -170,7 +170,7 @@ START_TEST (pdf_stm_flush_003)
   /* Create the stream */
   ret = pdf_stm_mem_new (buf,
                          buf_size,
-                         5, 
+                         5,
                          PDF_STM_WRITE,
                          &stm);
   fail_if(ret != PDF_OK);
@@ -204,7 +204,7 @@ END_TEST
 /*
  * Test: pdf_stm_flush_004
  * Description:
- * Test mem stream with option PDF_STM_WRITE. 
+ * Test mem stream with option PDF_STM_WRITE.
  * Write to stream as much bytes as output buffer size plus
  * stream cache size, and half of null-filter input buffer.
  * Success condition:
@@ -212,7 +212,7 @@ END_TEST
  * 2. Function pdf_stm_flush schould return PDF_EEOF.
  * 3. Flushed bytes is 0.
  * 4. In output buffer is expected string.
- * 5. 
+ * 5.
  * 2. In stm
  * 2. Numer of flushed bytes schould be m - k.
  */
@@ -237,7 +237,7 @@ START_TEST (pdf_stm_flush_004)
   /* Create the stream */
   ret = pdf_stm_mem_new (buf,
                          buf_size,
-                         4, 
+                         4,
                          PDF_STM_WRITE,
                          &stm);
   fail_if(ret != PDF_OK);
@@ -291,6 +291,9 @@ test_pdf_stm_flush (void)
 
 
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

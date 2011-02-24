@@ -7,13 +7,13 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -27,12 +27,12 @@
 #include <check.h>
 #include <pdf.h>
 #include <stdlib.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_time_destroy_001
  * Description:
  *   Create new pdf_time_t and destroy it.
- *   
+ *
  *Success condition:
  * 1. Function pdf_time_new schould return PDF_OK
  * 4. Fuction pdf_time_destroy schould return PDF_OK
@@ -65,6 +65,9 @@ test_pdf_time_destroy (void)
 
   tcase_add_test(tc, pdf_time_destroy_001);
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

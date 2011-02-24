@@ -1,13 +1,13 @@
 /* -*- mode: C -*-
  *
- *       File:         tsuite-error.c
- *       Date:         Wed Mar  12 12:43:00 2008
+ *       File:         pdf-text-common.h
+ *       Date:         Thu Feb 24 22:53:03 2011
  *
- *       GNU PDF Library - Testcase definition for the Error module
+ *       GNU PDF Library - Common utilities to test the Text Module
  *
  */
 
-/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
+/* Copyright (C) 2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,25 +23,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
+#ifndef _PDF_TEST_COMMON_H
+#define _PDF_TEST_COMMON_H
 
-#include <check.h>
-#include <pdf-test-common.h>
-extern TCase *test_pdf_error (void);
-extern TCase *test_pdf_perror (void);
+#include <stdio.h>
+#include <pdf.h>
 
-Suite *
-tsuite_error ()
-{
-  Suite *s;
+void pdf_test_setup (void);
 
-  s = suite_create("error");
+void pdf_test_teardown (void);
 
-  suite_add_tcase (s, test_pdf_perror ());
-  suite_add_tcase (s, test_pdf_error ());
+#endif /* _PDF_TEST_COMMON_H */
 
-  return s;
-}
-
-
-/* End of tsuite-error.c */
+/* End of pdf-test-common.h */

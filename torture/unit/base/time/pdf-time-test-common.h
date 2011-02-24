@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 #define PDF_TIME_TEST_COMMON_H
 
 #include <pdf.h>
-
+#include <pdf-test-common.h>
 /* Size of pdf_time_cal_span_s calspan[] table */
 #define DAY_TIME_SPAN_SIZE 24
 #define YEAR_MONTH_SIZE 30

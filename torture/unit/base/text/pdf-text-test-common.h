@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
 #include <config.h>
 #include <stdio.h>
 #include <pdf.h>
-
+#include <pdf-test-common.h>
 /* Basic structure to store the test strings */
 typedef struct test_string_s {
   char *data;

@@ -29,28 +29,28 @@
 #include <pdf.h>
 #include <check.h>
 #include <base/text/pdf-text-test-common.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_text_get_pdfdocenc_001
  * Description:
  *   Get the contents of a text object in PDF Doc Encoding. The contents of the
  *   text object can all be transformed to PDF Doc Encoding without loss of
- *   information. 
+ *   information.
  * Success conditions:
  *    1. The call to  pdf_text_get_pdfdocenc should return PDF_OK.
  *    2. The returned string must be the expected one, and NUL terminated
  */
 START_TEST(pdf_text_get_pdfdocenc_001)
 {
-  
+
 
 
   extern const test_string_t pdf_doc_encoding_strings[];
   int i;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   i = 0;
   while(pdf_doc_encoding_strings[i].data != NULL)
     {
@@ -59,19 +59,19 @@ START_TEST(pdf_text_get_pdfdocenc_001)
       pdf_size_t size = 0;
       const pdf_char_t *expected_data;
       pdf_size_t expected_size;
-      
+
       /* Set expected data and size */
       expected_data = (pdf_char_t *)pdf_doc_encoding_strings[i].data;
       expected_size = pdf_doc_encoding_strings[i].size;
-      
+
       fail_if(pdf_text_new_from_unicode((pdf_char_t *) \
                                       pdf_doc_encoding_strings[i].utf32be_data,
                                         (pdf_size_t) \
                                       pdf_doc_encoding_strings[i].utf32be_size,
                                         PDF_TEXT_UTF32_BE,
                                         &text) != PDF_OK);
-      
-      
+
+
       /* 1. The call to  pdf_text_get_pdfdocenc should return PDF_OK. */
       fail_unless(pdf_text_get_pdfdocenc(&data, text) == PDF_OK);
 
@@ -80,13 +80,13 @@ START_TEST(pdf_text_get_pdfdocenc_001)
       size = strlen(data);
       fail_unless(size == expected_size);
       fail_unless(memcmp(expected_data, data, size) == 0);
-      
+
       pdf_text_destroy(text);
       pdf_dealloc(data);
-      
+
       ++i;
     }
-  
+
 }
 END_TEST
 
@@ -97,7 +97,7 @@ END_TEST
  *   Get the contents of a text object in PDF Doc Encoding. The contents of the
  *   text object cannot be transformed to PDF Doc Encoding without loss of
  *   information. A default character must be used for those characters that
- *   cannot be represented in PDF Doc Encoding. 
+ *   cannot be represented in PDF Doc Encoding.
  * Success conditions:
  *    1. The call to  pdf_text_get_pdfdocenc should return PDF_OK.
  *    2. The returned string must be the expected one, and NUL terminated
@@ -112,23 +112,23 @@ START_TEST(pdf_text_get_pdfdocenc_002)
   pdf_size_t size = 12;
   pdf_char_t *expected_data = (pdf_char_t *)"?z?";
   pdf_size_t expected_size = 3;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   fail_if(pdf_text_new_from_unicode(data, size,
                                     PDF_TEXT_UTF32_BE,
                                     &text) != PDF_OK);
-  
+
   /* 1. The call to  pdf_text_get_pdfdocenc should return PDF_OK. */
   fail_unless(pdf_text_get_pdfdocenc(&output_data, text) == PDF_OK);
-  
+
   /* 2. The returned string must be the expected one, and NUL terminated */
   fail_if(output_data == NULL);
   size = strlen(output_data);
   fail_unless(size == expected_size);
   fail_unless(memcmp(expected_data, output_data, size) == 0);
-  
+
   pdf_text_destroy(text);
   pdf_dealloc(output_data);
 }
@@ -143,8 +143,11 @@ test_pdf_text_get_pdfdocenc (void)
 {
   TCase *tc = tcase_create("pdf_text_get_pdfdocenc");
   tcase_add_test(tc, pdf_text_get_pdfdocenc_001);
-  tcase_add_test(tc, pdf_text_get_pdfdocenc_002);  
-  
+  tcase_add_test(tc, pdf_text_get_pdfdocenc_002);
+
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

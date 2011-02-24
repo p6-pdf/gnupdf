@@ -26,6 +26,7 @@
 
 #include <config.h>
 
+#include <locale.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -241,6 +242,13 @@ main (int argc, char *argv[])
   pdf_status_t destroy_ret;
 
   set_program_name (argv[0]);
+
+#if defined HAVE_SETLOCALE
+  /* Initialize locale in the program */
+  setlocale (LC_ALL, "");
+#endif /* HAVE_SETLOCALE */
+
+  pdf_init ();
 
   stm = create_stream (argc, argv, &read_mode, &last_ci, &read_pdf_fsys,
                        &write_pdf_fsys, &fsys_stm);

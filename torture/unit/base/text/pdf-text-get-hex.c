@@ -28,19 +28,19 @@
 #include <string.h>
 #include <pdf.h>
 #include <check.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_text_get_hex_001
  * Description:
  *   Get the contents of a non-empty text object in Hexadecimal representation
  *   in ASCII
  * Success conditions:
- *   1. The call to  pdf_text_get_hex should return a valid string, NUL 
+ *   1. The call to  pdf_text_get_hex should return a valid string, NUL
  *      terminated.
- *   2. The contents of the returned string must be the expected ones. 
- *   3. The length of the string must be non-zero. 
+ *   2. The contents of the returned string must be the expected ones.
+ *   3. The length of the string must be non-zero.
  */
-START_TEST(pdf_text_get_hex_001)
+START_TEST (pdf_text_get_hex_001)
 {
   pdf_text_t text;
   pdf_char_t *utf8data = (pdf_char_t *)"ab";
@@ -49,7 +49,7 @@ START_TEST(pdf_text_get_hex_001)
   pdf_char_t *expected_utf32be = (pdf_char_t *)"00:00:00:61:" \
                                                "00:00:00:62";
   pdf_char_t *expected;
-  
+
   if(!pdf_text_test_big_endian_system())
     {
       expected = expected_utf32le;
@@ -63,22 +63,22 @@ START_TEST(pdf_text_get_hex_001)
 
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   fail_if(pdf_text_new_from_unicode(utf8data, strlen(utf8data),
                                     PDF_TEXT_UTF8,
                                     &text) != PDF_OK);
-  
-  /* 1. The call to  pdf_text_get_hex should return a valid string, NUL 
+
+  /* 1. The call to  pdf_text_get_hex should return a valid string, NUL
    *      terminated. */
   output_data = pdf_text_get_hex(text,':');
   fail_if(output_data == NULL);
-  
+
   /* 2. The contents of the returned string must be the expected ones. */
   fail_unless(memcmp(output_data, expected, strlen(output_data)) == 0);
-  
+
   /* 3. The length of the string must be non-zero.  */
   fail_unless(strlen(output_data) == strlen(expected));
-  
+
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
 }
@@ -91,25 +91,25 @@ END_TEST
  *   Get the contents of an empty text object in Hexadecimal representation in
  *   ASCII
  * Success conditions:
- *   1. The call to  pdf_text_get_hex should return a valid string, NUL 
+ *   1. The call to  pdf_text_get_hex should return a valid string, NUL
  *      terminated.
- *   2. The length of the string must be zero. 
+ *   2. The length of the string must be zero.
  */
-START_TEST(pdf_text_get_hex_002)
+START_TEST (pdf_text_get_hex_002)
 {
   pdf_text_t text;
   pdf_char_t *output_data = NULL;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   fail_if(pdf_text_new (&text) != PDF_OK);
-  
-  /* 1. The call to  pdf_text_get_hex should return a valid string, NUL 
+
+  /* 1. The call to  pdf_text_get_hex should return a valid string, NUL
    *      terminated. */
   output_data = pdf_text_get_hex(text,':');
   fail_if(output_data == NULL);
-  
+
   /* 2. The length of the string must be zero. */
   fail_unless(strlen(output_data) == 0);
 
@@ -128,6 +128,9 @@ test_pdf_text_get_hex(void)
   TCase *tc = tcase_create("pdf_text_get_hex");
   tcase_add_test(tc, pdf_text_get_hex_001);
   tcase_add_test(tc, pdf_text_get_hex_002);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

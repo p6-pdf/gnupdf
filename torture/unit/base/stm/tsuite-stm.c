@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2007, 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 #include <config.h>
 
 #include <check.h>
-
+#include <pdf-test-common.h>
 extern TCase *test_pdf_stm_mem_new (void);
 extern TCase *test_pdf_stm_file_new (void);
 extern TCase *test_pdf_stm_read (void);
@@ -45,7 +45,7 @@ tsuite_stm ()
   Suite *s;
 
   s = suite_create("stm");
-  
+
   suite_add_tcase (s, test_pdf_stm_mem_new ());
   suite_add_tcase (s, test_pdf_stm_file_new ());
   suite_add_tcase (s, test_pdf_stm_read ());

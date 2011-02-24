@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
 #include <time.h>
 #include <string.h>
 #include <base/time/pdf-time-test-common.h>
-
+#include <pdf-test-common.h>
 
 /*
  * Test: pdf_time_diff_cal_001
@@ -66,7 +66,7 @@ START_TEST (pdf_time_diff_cal_001)
   struct pdf_time_cal_span_s calspan, calspan2;
 
   pdf_init();
-  
+
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
 
@@ -95,13 +95,13 @@ START_TEST (pdf_time_diff_cal_001)
         seconds += day_time_span[j].hours * 3600;
         seconds += day_time_span[j].minutes * 60;
         seconds += day_time_span[j].seconds;
-        
+
 
         status = pdf_time_set_from_u32(time1, seconds);
         fail_if(status != PDF_OK);
         status = pdf_time_diff_cal(time2, time1, &calspan2);
         fail_if(status != PDF_OK);
-     
+
         fail_unless(memcmp(&calspan, &calspan2, sizeof(struct pdf_time_cal_span_s)) == 0 );
 
 
@@ -133,6 +133,9 @@ test_pdf_time_diff_cal (void)
   tcase_add_test(tc, pdf_time_diff_cal_001);
 
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

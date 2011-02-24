@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
 #include <string.h>
 #include <pdf.h>
 #include <check.h>
-
+#include <pdf-test-common.h>
 
 /*
  * Test: pdf_crypt_md_read_001
@@ -55,10 +55,10 @@ START_TEST (pdf_crypt_md_read_001)
   pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md);
 
   pdf_crypt_md_write (md, in, 0);
-  
+
   fail_if (pdf_crypt_md_read (md, out, sizeof(out)) != PDF_OK);
   fail_if (memcmp (real_out, out, sizeof(out)));
-  
+
   pdf_crypt_md_destroy (md);
 }
 END_TEST
@@ -92,7 +92,7 @@ START_TEST (pdf_crypt_md_read_002)
 
   fail_if (pdf_crypt_md_read (md, out, sizeof(out)) != PDF_OK);
   fail_if (memcmp (real_out, out, sizeof(out)));
-  
+
   pdf_crypt_md_destroy (md);
 }
 END_TEST
@@ -126,7 +126,7 @@ START_TEST (pdf_crypt_md_read_003)
 
   fail_if (pdf_crypt_md_read (md, out, sizeof(out)) != PDF_OK);
   fail_if (memcmp (real_out, out, sizeof(out)));
-  
+
   pdf_crypt_md_destroy (md);
 }
 END_TEST
@@ -197,6 +197,9 @@ test_pdf_crypt_md_read (void)
   tcase_add_test(tc, pdf_crypt_md_read_003);
   tcase_add_test(tc, pdf_crypt_md_read_004);
   tcase_add_test(tc, pdf_crypt_md_read_005);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 #include <config.h>
 #include <check.h>
 #include <pdf.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_fp_func_4_new_001
  * Description:
@@ -35,7 +35,7 @@
  *   Return PDF_ENOWRAP and the offset of the error is correct.
  */
 
-START_TEST(pdf_fp_func_4_new_001)
+START_TEST (pdf_fp_func_4_new_001)
 {
   pdf_fp_func_t func;
   pdf_size_t prog_size;
@@ -53,7 +53,7 @@ START_TEST(pdf_fp_func_4_new_001)
   pdf_real_t out[1];
   pdf_size_t error_at;
   pdf_status_t ret;
-  
+
   pdf_init();
 
   prog_size = sizeof(prog);
@@ -66,7 +66,7 @@ START_TEST(pdf_fp_func_4_new_001)
                            prog_size,
                            &error_at,
                            &func);
-  
+
   fail_if (ret != PDF_ENOWRAP);
   fail_if (error_at != 58);
 }
@@ -82,7 +82,7 @@ END_TEST
  *   Return PDF_ENOWRAP and the offset of the error is correct.
  */
 
-START_TEST(pdf_fp_func_4_new_002)
+START_TEST (pdf_fp_func_4_new_002)
 {
   pdf_fp_func_t func;
   pdf_size_t prog_size;
@@ -95,7 +95,7 @@ START_TEST(pdf_fp_func_4_new_002)
   pdf_real_t out[1];
   pdf_size_t error_at;
   pdf_status_t ret;
-  
+
   pdf_init();
 
   prog_size = sizeof(prog);
@@ -108,7 +108,7 @@ START_TEST(pdf_fp_func_4_new_002)
                            prog_size,
                            &error_at,
                            &func);
-  
+
   fail_if (ret != PDF_ENOWRAP);
   fail_if (error_at != 8);
 }
@@ -123,7 +123,7 @@ END_TEST
  *   Return PDF_ENOWRAP and the offset of the error is correct.
  */
 
-START_TEST(pdf_fp_func_4_new_003)
+START_TEST (pdf_fp_func_4_new_003)
 {
   pdf_fp_func_t func;
   pdf_size_t prog_size;
@@ -136,7 +136,7 @@ START_TEST(pdf_fp_func_4_new_003)
   pdf_real_t out[1];
   pdf_size_t error_at;
   pdf_status_t ret;
-  
+
   pdf_init();
 
   prog_size = sizeof(prog);
@@ -149,7 +149,7 @@ START_TEST(pdf_fp_func_4_new_003)
                            prog_size,
                            &error_at,
                            &func);
-  
+
   fail_if (ret != PDF_ENOWRAP);
   fail_if (error_at != 0);
 }
@@ -164,7 +164,7 @@ END_TEST
  *   Return PDF_EMISSIF and the offset of the error is correct.
  */
 
-START_TEST(pdf_fp_func_4_new_004)
+START_TEST (pdf_fp_func_4_new_004)
 {
   pdf_fp_func_t func;
   pdf_size_t prog_size;
@@ -177,9 +177,9 @@ START_TEST(pdf_fp_func_4_new_004)
   pdf_real_t out[1];
   pdf_size_t error_at;
   pdf_status_t ret;
-  
+
   pdf_init();
-  
+
   prog_size = sizeof(prog);
 
   /* Create the function */
@@ -190,7 +190,7 @@ START_TEST(pdf_fp_func_4_new_004)
                            prog_size,
                            &error_at,
                            &func);
-  
+
   fail_if (ret != PDF_EMISSIF);
   fail_if (error_at != 8);
 }
@@ -205,7 +205,7 @@ END_TEST
  *   Return PDF_EMISSBODY and the offset of the error is correct.
  */
 
-START_TEST(pdf_fp_func_4_new_005)
+START_TEST (pdf_fp_func_4_new_005)
 {
   pdf_fp_func_t func;
   pdf_size_t prog_size;
@@ -218,7 +218,7 @@ START_TEST(pdf_fp_func_4_new_005)
   pdf_real_t out[1];
   pdf_size_t error_at;
   pdf_status_t ret;
-  
+
   pdf_init();
 
   prog_size = sizeof(prog);
@@ -231,7 +231,7 @@ START_TEST(pdf_fp_func_4_new_005)
                            prog_size,
                            &error_at,
                            &func);
-  
+
   fail_if (ret != PDF_EMISSBODY);
   fail_if (error_at != 4);
 }
@@ -252,6 +252,9 @@ test_pdf_fp_func_4_new (void)
   tcase_add_test(tc, pdf_fp_func_4_new_003);
   tcase_add_test(tc, pdf_fp_func_4_new_004);
   tcase_add_test(tc, pdf_fp_func_4_new_005);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

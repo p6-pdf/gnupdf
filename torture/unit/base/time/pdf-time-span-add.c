@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 #include <check.h>
 #include <pdf.h>
 #include <stdlib.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_time_span_add_001
  * Description:
@@ -45,7 +45,7 @@ START_TEST (pdf_time_span_add_001)
   pdf_time_span_t span1;
   pdf_time_span_t span2;
   pdf_time_span_t result;
-/*!!!!!!! 
+/*!!!!!!!
  * W pdf_time_span_add ustawić poprawnie wartość
  * pdf_status_t */
 
@@ -55,7 +55,7 @@ START_TEST (pdf_time_span_add_001)
   span2 = pdf_time_span_new();
   result = pdf_time_span_new();
 
-  
+
 
   pdf_time_span_set (&span1,0x00FFFF11);
   pdf_time_span_set (&span2,-0x00FFFF12);
@@ -100,7 +100,7 @@ START_TEST (pdf_time_span_add_002)
 
   span1 = pdf_time_span_new();
   span2 = pdf_time_span_new();
-  result = NULL; 
+  result = NULL;
 
   pdf_time_span_set (&span1,0x00FFFF11);
   pdf_time_span_set (&span2,-0x00FFFF12);
@@ -130,6 +130,9 @@ test_pdf_time_span_add (void)
   tcase_add_test(tc, pdf_time_span_add_002);
 
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

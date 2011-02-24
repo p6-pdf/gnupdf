@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <base/time/pdf-time-test-common.h>
-
+#include <pdf-test-common.h>
 #define INTERACTIVE_DEBUG 0
 
 
@@ -104,7 +104,7 @@ START_TEST (pdf_time_to_string_001)
             }
             fail_unless(strcmp(testString, dateString) == 0);
 
-            
+
             pdf_dealloc(dateString);
         }
   }
@@ -118,7 +118,7 @@ END_TEST
  * Test: pdf_time_to_string_002
  * Description:
  *   Get string representation of pdf_time_t object in
- *   PDF format: 
+ *   PDF format:
  *   D:YYYYMMDDHHmmSSOHH'mm'
  *Success condition:
  * 1. Function pdf_time_to_string schould return
@@ -183,12 +183,12 @@ START_TEST (pdf_time_to_string_002)
                     ((gmt < 0) ? '-' : '+'),
                     offset_hours, offset_minutes);
 
-            
-            if (INTERACTIVE_DEBUG) 
+
+            if (INTERACTIVE_DEBUG)
                 printf("pdf_time_from_string_002 > %s \n", testString);
 
             dateString = pdf_time_to_string (time1, PDF_TIME_FORMAT_PDF, PDF_TRUE);
-    
+
 
             if (gmt == 0){
                 /** Test D:YYYYMMDDHHmmSSZ format **/
@@ -199,7 +199,7 @@ START_TEST (pdf_time_to_string_002)
             fail_unless(strcmp(testString, dateString) == 0);
 
             dateString = pdf_time_to_string (time1, PDF_TIME_FORMAT_PDF, PDF_FALSE);
-    
+
 
             if (gmt == 0){
                 /** Test D:YYYYMMDDHHmmSSZ format **/
@@ -259,7 +259,7 @@ START_TEST (pdf_time_to_string_003)
           for (gmt =-12*60; gmt <=12*60; gmt+=51){  /* Set various gmt_offsets. */
 
             memset(&testString[0], 0, 20);
-            
+
             calendar.year = dates[i].year;
             calendar.month = dates[i].month;
             calendar.day = dates[i].day;
@@ -284,7 +284,7 @@ START_TEST (pdf_time_to_string_003)
 
 
             dateString = pdf_time_to_string (time1, PDF_TIME_FORMAT_GENERALIZED_ASN1, PDF_FALSE);
-    
+
 
             if (gmt == 0){
                 /** Test YYYYMMDDhhmmssZ format **/
@@ -358,7 +358,7 @@ START_TEST (pdf_time_to_string_004)
 
             offset_hours = (((gmt < 0) ? (-1) : (1)) * gmt) / 60;
             offset_minutes = (((gmt < 0) ? (-1) : (1)) *gmt ) % 60;
-            
+
             int year = dates[i].year;
             if (dates[i].year <2000) year -=1900;
             else year -=2000;
@@ -371,7 +371,7 @@ START_TEST (pdf_time_to_string_004)
 
             dateString = pdf_time_to_string (time1,  PDF_TIME_FORMAT_UTC_ASN1, PDF_FALSE);
             fail_if(status != PDF_OK);
-    
+
 
             if (gmt == 0){
                 /** Test yymmddhhmmssZ format **/
@@ -404,6 +404,9 @@ test_pdf_time_to_string (void)
   tcase_add_test(tc, pdf_time_to_string_003);
   tcase_add_test(tc, pdf_time_to_string_004);
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

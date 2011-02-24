@@ -28,7 +28,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <base/text/pdf-text-test-common.h>
-
+#include <pdf-test-common.h>
 
 pdf_char_t *
 pdf_text_test_change_utf32_endianness(const pdf_char_t *str_in,
@@ -78,7 +78,7 @@ pdf_text_test_big_endian_system(void)
     char c[2];
   } test;
   test.i = 0x6162;
-  return ((strncmp(&test.c[0],"ab",2)==0) ? 1 : 0); 
+  return ((strncmp(&test.c[0],"ab",2)==0) ? 1 : 0);
 }
 
 
@@ -91,7 +91,7 @@ pdf_text_test_get_hex (const pdf_char_t *data,
 {
   int i;
   int j;
-  unsigned int new_str_length; 
+  unsigned int new_str_length;
   pdf_char_t *new_str;
   char new_hex_char [3];
 
@@ -101,11 +101,11 @@ pdf_text_test_get_hex (const pdf_char_t *data,
    * - N-1 bytes for the separator ':'
    * So... a total of (1+2N+N-1) = 3N bytes are needed... */
   new_str_length =  3 * size;
-  
+
   /* Allocate memory for new array and initialize contents to NUL */
   new_str = (pdf_char_t *)pdf_alloc(new_str_length);
   memset(new_str, 0, new_str_length);
-  
+
   /* Print hexadecimal representation of each byte... */
   for(i=0, j=0; i<size; i++, j+=3)
     {
@@ -121,7 +121,7 @@ pdf_text_test_get_hex (const pdf_char_t *data,
           new_str[j+2] = delimiter;
         }
     }
-  
+
   /* Set output string */
   return new_str;
 }

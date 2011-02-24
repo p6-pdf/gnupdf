@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
 #include <pdf.h>
 #include <check.h>
 #include <base/text/pdf-text-test-common.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_text_set_pdfdocenc_001
  * Description:
@@ -39,17 +39,17 @@
  *   1. The call to  pdf_text_set_pdfdocenc should return PDF_OK.
  *   2. The contents of the text object must be the expected ones.
  */
-START_TEST(pdf_text_set_pdfdocenc_001)
+START_TEST (pdf_text_set_pdfdocenc_001)
 {
-  
+
 
 
   extern const test_string_t pdf_doc_encoding_strings[];
   int i;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   i = 0;
   while(pdf_doc_encoding_strings[i].data != NULL)
     {
@@ -59,7 +59,7 @@ START_TEST(pdf_text_set_pdfdocenc_001)
       pdf_size_t input_size = 0;
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
-      
+
       /* Set input data, NUL terminated!!!!! */
       input_size = (pdf_size_t)pdf_doc_encoding_strings[i].size + 1;
       input_data = (pdf_char_t *)pdf_alloc(input_size);
@@ -67,7 +67,7 @@ START_TEST(pdf_text_set_pdfdocenc_001)
       memcpy(input_data, pdf_doc_encoding_strings[i].data, (input_size-1));
       input_data[input_size-1] = '\0';
 
-      
+
       /* Set expected data */
       expected_data = (pdf_char_t *)pdf_doc_encoding_strings[i].utf32be_data;
       expected_size = (pdf_size_t)pdf_doc_encoding_strings[i].utf32be_size;
@@ -80,13 +80,13 @@ START_TEST(pdf_text_set_pdfdocenc_001)
           /* Just in case... */
           fail_if(expected_data == NULL);
         }
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* 1. The call to pdf_text_set_pdfdocenc should return PDF_OK. */
       fail_if(pdf_text_set_pdfdocenc(text,
                                      input_data) != PDF_OK);
-            
+
       /* 2. The contents of the text object must be the expected ones. */
 
       pdf_size_t actual_size;
@@ -95,9 +95,9 @@ START_TEST(pdf_text_set_pdfdocenc_001)
                                        PDF_TEXT_UTF32_HE,0) == PDF_OK);
       fail_unless(actual_size == expected_size);
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
-      
+
       fail_if(pdf_text_destroy(text) != PDF_OK);
-      
+
       if(expected_free)
         {
           pdf_dealloc(expected_data);
@@ -118,23 +118,23 @@ END_TEST
  *   1. The call to  pdf_text_set_pdfdocenc should return PDF_OK.
  *   2. The contents of the text object must be empty.
  */
-START_TEST(pdf_text_set_pdfdocenc_002)
+START_TEST (pdf_text_set_pdfdocenc_002)
 {
   pdf_text_t text = NULL;
   pdf_char_t *remaining_str = NULL;
   pdf_size_t remaining_length = 0;
-    
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   fail_if(pdf_text_new (&text) != PDF_OK);
-  
+
   /* 1. The call to  pdf_text_new_from_host should return PDF_OK. */
   fail_unless(pdf_text_set_pdfdocenc(text, (pdf_char_t *)"") == PDF_OK);
-  
+
   /* 2. The contents of the text object must be empty. */
   fail_unless(pdf_text_empty_p(text) == PDF_TRUE);
-  
+
   fail_if(pdf_text_destroy(text) != PDF_OK);
 }
 END_TEST
@@ -148,23 +148,23 @@ END_TEST
  * Success conditions:
  *   1. The call to  pdf_text_set_pdfdocenc should NOT return PDF_OK.
  */
-START_TEST(pdf_text_set_pdfdocenc_003)
+START_TEST (pdf_text_set_pdfdocenc_003)
 {
   pdf_text_t text = NULL;
   pdf_char_t *remaining_str = NULL;
   pdf_size_t remaining_length = 0;
-  
+
   /* 0x9F is Undefined in PDF Doc Encoding */
   const pdf_char_t *invalid_pdfdocenc = (pdf_char_t *)"\x9D\x9E\x9F\x00";
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   fail_if(pdf_text_new (&text) != PDF_OK);
-  
+
   /* 1. The call to  pdf_text_set_pdfdocenc should NOT return PDF_OK. */
   fail_unless(pdf_text_set_pdfdocenc(text, invalid_pdfdocenc)!=PDF_OK);
-  
+
   fail_if(pdf_text_destroy(text) != PDF_OK);
 }
 END_TEST
@@ -181,6 +181,9 @@ test_pdf_text_set_pdfdocenc (void)
   tcase_add_test(tc, pdf_text_set_pdfdocenc_001);
   tcase_add_test(tc, pdf_text_set_pdfdocenc_002);
   tcase_add_test(tc, pdf_text_set_pdfdocenc_003);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include <string.h>
 #include <pdf.h>
 #include <check.h>
-
+#include <pdf-test-common.h>
 
 
 #define INTERACTIVE_DEBUG 0
@@ -41,7 +41,7 @@
  * Success conditions:
  * The call should produce a -1
  */
-START_TEST(pdf_i64_cmp_001)
+START_TEST (pdf_i64_cmp_001)
 {
   pdf_status_t p_status = PDF_OK;
   int cmp_res;
@@ -55,8 +55,8 @@ START_TEST(pdf_i64_cmp_001)
   cmp_res = pdf_i64_cmp( k, j );
   fail_if(cmp_res != -1);
 #endif
-  
-  
+
+
 
 }
 END_TEST
@@ -71,7 +71,7 @@ END_TEST
  * The call should produce a 1
  */
 
-START_TEST(pdf_i64_cmp_002)
+START_TEST (pdf_i64_cmp_002)
 {
   pdf_status_t p_status = PDF_OK;
   int cmp_res;
@@ -84,8 +84,8 @@ START_TEST(pdf_i64_cmp_002)
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
   cmp_res = pdf_i64_cmp( j, k );
   fail_if(cmp_res != 1);
-#endif  
-  
+#endif
+
 }
 END_TEST
 
@@ -97,7 +97,7 @@ END_TEST
  * Success conditions:
  * The call should produce a 0
  */
-START_TEST(pdf_i64_cmp_003)
+START_TEST (pdf_i64_cmp_003)
 {
   pdf_status_t p_status = PDF_OK;
   int cmp_res;
@@ -110,8 +110,8 @@ START_TEST(pdf_i64_cmp_003)
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
   cmp_res = pdf_i64_cmp( j, k );
   fail_if(cmp_res != 0);
-#endif  
-  
+#endif
+
 
 }
 END_TEST
@@ -131,6 +131,9 @@ test_pdf_i64_cmp (void)
   tcase_add_test(tc, pdf_i64_cmp_001);
   tcase_add_test(tc, pdf_i64_cmp_002);
   tcase_add_test(tc, pdf_i64_cmp_003);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

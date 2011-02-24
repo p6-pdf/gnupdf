@@ -1,3 +1,19 @@
+2011-02-24  Aleksander Morgado  <aleksander@gnu.org>
+
+	base: library should never initialize the locale.
+	* src/base/pdf-text-context.c (pdf_text_context_init): The library
+	shouldn't setlocale()
+
+	* utils/pdf-tokeniser.c: Setup locale at startup.
+	* utils/pdf-filter.c: Idem.
+	* utils/pdf-filereader.c: Idem.
+
+	* torture/unit/pdf-test-common.[c|h]: New files including common setup
+	and teardown fixtures for all unit tests.
+
+	* torture/unit/base/*.[c|h]: Modify all tests to enable the setup and
+	teardown fixtures.
+
 2011-02-23  Jose E. Marchesi  <jemarch@gnu.org>
 
 	object: create the layer header file.

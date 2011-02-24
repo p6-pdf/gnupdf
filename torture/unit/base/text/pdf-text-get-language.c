@@ -28,6 +28,7 @@
 #include <string.h>
 #include <pdf.h>
 #include <check.h>
+#include <pdf-test-common.h>
 
 /*
  * Test: pdf_text_get_language_001
@@ -35,33 +36,33 @@
  *   Get language ID when the stored country ID is valid
  * Success conditions:
  *   1. The call to pdf_text_get_language should return a valid pointer.
- *   2. The length of the returned string should be 2. 
+ *   2. The length of the returned string should be 2.
  */
-START_TEST(pdf_text_get_language_001)
+START_TEST (pdf_text_get_language_001)
 {
-  
+
 
 
   pdf_text_t text;
   const pdf_char_t *language = NULL;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   fail_if(pdf_text_new (&text) != PDF_OK);
-  
+
   /* Store language ID without using the API */
   fail_if(pdf_text_set_language(text, "en") != PDF_OK);
-  
+
   /* Get country ID */
   language = pdf_text_get_language(text);
-  
+
   /* 1. The call to pdf_text_get_language should return a valid pointer. */
   fail_if(language == NULL);
-  
+
   /* 2. The length of the returned string should be 2. */
   fail_unless(strlen(language) == 2);
-  
+
   pdf_text_destroy(text);
 
 }
@@ -74,27 +75,27 @@ END_TEST
  *   Get language ID when the stored country ID is invalid
  * Success conditions:
  *   1. The call to pdf_text_get_language should return a valid pointer.
- *   2. The length of the returned string should be 0. 
+ *   2. The length of the returned string should be 0.
  */
-START_TEST(pdf_text_get_language_002)
+START_TEST (pdf_text_get_language_002)
 {
   pdf_text_t text;
   const pdf_char_t *language = NULL;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   fail_if(pdf_text_new (&text) != PDF_OK);
-  
+
   /* Get language ID */
   language = pdf_text_get_language(text);
-  
+
   /* 1. The call to pdf_text_get_language should return a valid pointer. */
   fail_if(language == NULL);
-  
+
   /* 2. The length of the returned string should be 2. */
   fail_unless(strlen(language) == 0);
-  
+
   pdf_text_destroy(text);
 }
 END_TEST
@@ -109,6 +110,9 @@ test_pdf_text_get_language (void)
   TCase *tc = tcase_create("pdf_text_get_language");
   tcase_add_test(tc, pdf_text_get_language_001);
   tcase_add_test(tc, pdf_text_get_language_002);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

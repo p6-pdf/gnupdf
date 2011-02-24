@@ -29,7 +29,7 @@
 #include <pdf.h>
 #include <check.h>
 #include <base/text/pdf-text-test-common.h>
-
+#include <pdf-test-common.h>
 #define INTERACTIVE_DEBUG 0
 
 
@@ -40,11 +40,11 @@
  *   different types of line endings.
  * Success conditions:
  *   1. The call to  pdf_text_filter should return PDF_OK.
- *   2. The contents of the output text object must be the expected ones. 
+ *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_001)
+START_TEST (pdf_text_filter_001)
 {
-  
+
 
 
   pdf_text_t text;
@@ -70,11 +70,11 @@ START_TEST(pdf_text_filter_001)
 
   input_size = (long)strlen(input_data);
   expected_size = (long)strlen(expected_data);
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
 
-      
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
@@ -92,10 +92,10 @@ START_TEST(pdf_text_filter_001)
              internal_hex, (long)(long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_LINE_ENDINGS) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -109,7 +109,7 @@ START_TEST(pdf_text_filter_001)
              internal_hex, (long)(long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
@@ -134,11 +134,11 @@ END_TEST
  *   Apply the `Normalize line endings' filter to an empty text object.
  * Success conditions:
  *   1. The call to  pdf_text_filter should return PDF_OK.
- *   2. The contents of the output text object must remain unchanged. 
+ *   2. The contents of the output text object must remain unchanged.
  */
-START_TEST(pdf_text_filter_002)
+START_TEST (pdf_text_filter_002)
 {
-  
+
 
 
   pdf_text_t text;
@@ -148,10 +148,10 @@ START_TEST(pdf_text_filter_002)
   pdf_size_t expected_size = 0;
   pdf_char_t *output_data = NULL;
   pdf_size_t output_size = 0;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
@@ -169,10 +169,10 @@ START_TEST(pdf_text_filter_002)
              internal_hex, (long)(long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_LINE_ENDINGS) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -186,18 +186,18 @@ START_TEST(pdf_text_filter_002)
              internal_hex, (long)(long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF8,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must remain unchanged. */
   fail_unless(output_size == expected_size);
   fail_unless(output_data == NULL);
-  
+
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
 
@@ -212,11 +212,11 @@ END_TEST
  *   different types of line endings.
  * Success conditions:
  *   1. The call to  pdf_text_filter should return PDF_OK.
- *   2. The contents of the output text object must be the expected ones. 
+ *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_003)
+START_TEST (pdf_text_filter_003)
 {
-  
+
 
 
   pdf_text_t text;
@@ -232,14 +232,14 @@ START_TEST(pdf_text_filter_003)
   pdf_size_t expected_size;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   input_size = (long)strlen(input_data);
   expected_size = (long)strlen(expected_data);
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
-  
+
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
@@ -257,11 +257,11 @@ START_TEST(pdf_text_filter_003)
              internal_hex, (long)(long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text,
                               PDF_TEXT_FILTER_REMOVE_LINE_ENDINGS) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -275,14 +275,14 @@ START_TEST(pdf_text_filter_003)
              internal_hex, (long)(long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF8,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -300,11 +300,11 @@ END_TEST
  *   Apply the `Remove line endings' filter to an empty text object.
  * Success conditions:
  *   1. The call to  pdf_text_filter should return PDF_OK.
- *   2. The contents of the output text object must remain unchanged. 
+ *   2. The contents of the output text object must remain unchanged.
  */
-START_TEST(pdf_text_filter_004)
+START_TEST (pdf_text_filter_004)
 {
-  
+
 
 
   pdf_text_t text;
@@ -314,10 +314,10 @@ START_TEST(pdf_text_filter_004)
   pdf_size_t expected_size = 0;
   pdf_char_t *output_data = NULL;
   pdf_size_t output_size = 0;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
@@ -335,11 +335,11 @@ START_TEST(pdf_text_filter_004)
              internal_hex, (long)(long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text,
                               PDF_TEXT_FILTER_REMOVE_LINE_ENDINGS) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -353,14 +353,14 @@ START_TEST(pdf_text_filter_004)
              internal_hex, (long)(long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF8,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must remain unchanged. */
   fail_unless(output_size == expected_size);
   fail_unless(output_data == NULL);
@@ -379,11 +379,11 @@ END_TEST
  *   single and double ampersands.
  * Success conditions:
  *   1. The call to  pdf_text_filter should return PDF_OK.
- *   2. The contents of the output text object must be the expected ones. 
+ *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_005)
+START_TEST (pdf_text_filter_005)
 {
-  
+
 
 
   pdf_text_t text;
@@ -393,13 +393,13 @@ START_TEST(pdf_text_filter_005)
   pdf_size_t expected_size;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   input_size = (long)strlen(input_data);
   expected_size = (long)strlen(expected_data);
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
@@ -417,7 +417,7 @@ START_TEST(pdf_text_filter_005)
              internal_hex, (long)(long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_REMOVE_AMP) == PDF_OK);
 
@@ -434,14 +434,14 @@ START_TEST(pdf_text_filter_005)
              internal_hex, (long)(long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF8,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -459,11 +459,11 @@ END_TEST
  *   Apply the `Remove ampersands' filter to an empty text object.
  * Success conditions:
  *   1. The call to  pdf_text_filter should return PDF_OK.
- *   2. The contents of the output text object must remain unchanged. 
+ *   2. The contents of the output text object must remain unchanged.
  */
-START_TEST(pdf_text_filter_006)
+START_TEST (pdf_text_filter_006)
 {
-  
+
 
 
   pdf_text_t text;
@@ -473,10 +473,10 @@ START_TEST(pdf_text_filter_006)
   pdf_size_t expected_size = 0;
   pdf_char_t *output_data = NULL;
   pdf_size_t output_size = 0;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
@@ -494,10 +494,10 @@ START_TEST(pdf_text_filter_006)
              internal_hex, (long)(long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_REMOVE_AMP) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -511,14 +511,14 @@ START_TEST(pdf_text_filter_006)
              internal_hex, (long)(long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF8,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must remain unchanged. */
   fail_unless(output_size == expected_size);
   fail_unless(output_data == NULL);
@@ -538,11 +538,11 @@ END_TEST
  *   code points that have a valid full width representation.
  * Success conditions:
  *   1. The call to  pdf_text_filter should return PDF_OK.
- *   2. The contents of the output text object must be the expected ones. 
+ *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_007)
+START_TEST (pdf_text_filter_007)
 {
-  
+
 
 
   pdf_text_t text;
@@ -560,10 +560,10 @@ START_TEST(pdf_text_filter_007)
   pdf_size_t expected_size = 20;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
@@ -581,11 +581,11 @@ START_TEST(pdf_text_filter_007)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text,
                               PDF_TEXT_FILTER_NORM_WITH_FULL_WIDTH) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -599,14 +599,14 @@ START_TEST(pdf_text_filter_007)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -625,11 +625,11 @@ END_TEST
  *   code points that have a valid full width representation.
  * Success conditions:
  *   1. The call to  pdf_text_filter should return PDF_OK.
- *   2. The contents of the output text object must be the expected ones. 
+ *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_008)
+START_TEST (pdf_text_filter_008)
 {
-  
+
 
 
   pdf_text_t text;
@@ -641,10 +641,10 @@ START_TEST(pdf_text_filter_008)
   pdf_size_t expected_size = input_size;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
@@ -662,11 +662,11 @@ START_TEST(pdf_text_filter_008)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text,
                               PDF_TEXT_FILTER_NORM_WITH_FULL_WIDTH) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -680,14 +680,14 @@ START_TEST(pdf_text_filter_008)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -705,11 +705,11 @@ END_TEST
  *   Apply the `Normalize with full width' filter to an empty text object.
  * Success conditions:
  *   1. The call to  pdf_text_filter should return PDF_OK.
- *   2. The contents of the output text object must remain unchanged. 
+ *   2. The contents of the output text object must remain unchanged.
  */
-START_TEST(pdf_text_filter_009)
+START_TEST (pdf_text_filter_009)
 {
-  
+
 
 
   pdf_text_t text;
@@ -719,10 +719,10 @@ START_TEST(pdf_text_filter_009)
   pdf_size_t expected_size = 0;
   pdf_char_t *output_data = NULL;
   pdf_size_t output_size = 0;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
@@ -740,11 +740,11 @@ START_TEST(pdf_text_filter_009)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
-  fail_unless(pdf_text_filter(text, 
+  fail_unless(pdf_text_filter(text,
                               PDF_TEXT_FILTER_NORM_WITH_FULL_WIDTH) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -758,14 +758,14 @@ START_TEST(pdf_text_filter_009)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF8,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must remain unchanged. */
   fail_unless(output_size == expected_size);
   fail_unless(output_data == NULL);
@@ -788,9 +788,9 @@ END_TEST
  *   3. The length of the output text must be equal to the length of the
  *      input text.
  */
-START_TEST(pdf_text_filter_010)
+START_TEST (pdf_text_filter_010)
 {
-  
+
 
 
   pdf_text_t text;
@@ -808,10 +808,10 @@ START_TEST(pdf_text_filter_010)
   pdf_size_t expected_size = input_size;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
@@ -829,10 +829,10 @@ START_TEST(pdf_text_filter_010)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_UPPER_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -846,18 +846,18 @@ START_TEST(pdf_text_filter_010)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 3. The length of the output text must be equal to the length of the
    *      input text. */
   fail_unless(output_size == expected_size);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
 
@@ -877,9 +877,9 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_011)
+START_TEST (pdf_text_filter_011)
 {
-  
+
 
 
   pdf_text_t text;
@@ -897,10 +897,10 @@ START_TEST(pdf_text_filter_011)
   pdf_size_t expected_size = 36;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
@@ -918,10 +918,10 @@ START_TEST(pdf_text_filter_011)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_UPPER_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -935,14 +935,14 @@ START_TEST(pdf_text_filter_011)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -961,11 +961,11 @@ END_TEST
  *   special-case-conversion characters with Final_Sigma context condition.
  * Success conditions:
  *   1. The call to  pdf_text_filter should return PDF_OK.
- *   2. The contents of the output text object must be the expected ones. 
+ *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_012)
+START_TEST (pdf_text_filter_012)
 {
-  
+
 
 
   /* Final_Sigma condition in Special Case algorithms
@@ -978,13 +978,13 @@ START_TEST(pdf_text_filter_012)
    * - 0x03A3 point is the one with the Final_Sigma condition
    * - 0x0055 point is the cased point
    * - 0x003A point is the case-ignorable point (MidLetter WB property)
-   * - 0x0020 point (whitespace) is used as word separator to have three 
+   * - 0x0020 point (whitespace) is used as word separator to have three
    *    different words.
    * If condition is fulfilled, expected uppercase character for 0x03A3 is
    *  the same 0x03A3.
    */
-  
-  
+
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
 
@@ -1008,10 +1008,10 @@ START_TEST(pdf_text_filter_012)
     fail_if(pdf_text_new_from_unicode(input_data,
                                       input_size,
                                       PDF_TEXT_UTF32_BE, &text) != PDF_OK);
-    
+
     /* 1. The call to  pdf_text_filter should return PDF_OK. */
     fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_UPPER_CASE) == PDF_OK);
-    
+
     if(INTERACTIVE_DEBUG)
       {
         pdf_char_t *internal_hex = NULL;
@@ -1024,14 +1024,14 @@ START_TEST(pdf_text_filter_012)
         printf("pdf_text_filter:12:1:Internal> '%s'\n", internal_hex);
         pdf_dealloc(internal_hex);
       }
-    
+
     /* Get output as UTF-32BE */
     fail_unless(pdf_text_get_unicode(&output_data,
                                      &output_size,
                                      text,
                                      PDF_TEXT_UTF32_BE,
                                      PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-    
+
     /* 2. The contents of the output text object must be the expected ones. */
     fail_unless(output_size == input_size);
     fail_unless(memcmp(output_data, expected_data, input_size) == 0);
@@ -1039,7 +1039,7 @@ START_TEST(pdf_text_filter_012)
     pdf_dealloc(output_data);
     pdf_text_destroy(text);
   }
-  
+
   /* 2nd check, the sequence of previous case-ignorable points is NOT empty */
   if(1)
     {
@@ -1055,15 +1055,15 @@ START_TEST(pdf_text_filter_012)
       pdf_char_t *output_data;
       pdf_size_t output_size;
       pdf_text_t text;
-      
+
       /* Create text object with given contents */
       fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
                                         PDF_TEXT_UTF32_BE, &text) != PDF_OK);
-      
+
       /* 1. The call to  pdf_text_filter should return PDF_OK. */
       fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_UPPER_CASE) == PDF_OK);
-      
+
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
@@ -1076,14 +1076,14 @@ START_TEST(pdf_text_filter_012)
           printf("pdf_text_filter:12:2:Internal> '%s'\n", internal_hex);
           pdf_dealloc(internal_hex);
         }
-      
+
       /* Get output as UTF-32BE */
       fail_unless(pdf_text_get_unicode(&output_data,
                                        &output_size,
                                        text,
                                        PDF_TEXT_UTF32_BE,
                                        PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-      
+
       /* 2. The contents of the output text object must be the expected ones. */
       fail_unless(output_size == input_size);
       fail_unless(memcmp(output_data, expected_data, input_size) == 0);
@@ -1105,9 +1105,9 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_013)
+START_TEST (pdf_text_filter_013)
 {
-  
+
 
 
   /* 0307; 0307; ; ; lt After_Soft_Dotted; # COMBINING DOT ABOVE */
@@ -1115,25 +1115,25 @@ START_TEST(pdf_text_filter_013)
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00" "i"
                                                 "\x00\x00\x03\x07";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00" "I";
   pdf_size_t input_size = 12;
   pdf_size_t expected_size = 8;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'lt' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"lt") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -1147,10 +1147,10 @@ START_TEST(pdf_text_filter_013)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_UPPER_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -1164,14 +1164,14 @@ START_TEST(pdf_text_filter_013)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -1191,9 +1191,9 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_014)
+START_TEST (pdf_text_filter_014)
 {
-  
+
 
 
   /* Code:0049; Lower:0069 0307; Title:0049; Upper:0049;
@@ -1203,7 +1203,7 @@ START_TEST(pdf_text_filter_014)
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00\x49"
                                                 "\x00\x00\x03\x0B";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00\x49"
                                                    "\x00\x00\x03\x0B";
@@ -1211,18 +1211,18 @@ START_TEST(pdf_text_filter_014)
   pdf_size_t expected_size = 12;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'lt' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"lt") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -1236,10 +1236,10 @@ START_TEST(pdf_text_filter_014)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_UPPER_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -1253,14 +1253,14 @@ START_TEST(pdf_text_filter_014)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -1282,7 +1282,7 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_015)
+START_TEST (pdf_text_filter_015)
 {
   /* NOTE: Actually there is no special condition involving "Before_Dot" as is
    *       (there are a couple of conditions involving the negated one:
@@ -1303,19 +1303,19 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_016)
+START_TEST (pdf_text_filter_016)
 {
-  
+
 
 
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00""I" \
                                                 "\x00\x00\x03\x07";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00""I" \
                                                    "\x00\x00\x03\x07";
@@ -1323,18 +1323,18 @@ START_TEST(pdf_text_filter_016)
   pdf_size_t expected_size = 12;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -1348,10 +1348,10 @@ START_TEST(pdf_text_filter_016)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_UPPER_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -1365,14 +1365,14 @@ START_TEST(pdf_text_filter_016)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -1394,36 +1394,36 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_017)
+START_TEST (pdf_text_filter_017)
 {
-  
+
 
 
   /* # When uppercasing, i turns into a dotted capital I
    * 0069; 0069; 0130; 0130; tr; # LATIN SMALL LETTER I */
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00\x69";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x01\x30";
   pdf_size_t input_size = 8;
   pdf_size_t expected_size = 8;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -1437,10 +1437,10 @@ START_TEST(pdf_text_filter_017)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_UPPER_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -1454,14 +1454,14 @@ START_TEST(pdf_text_filter_017)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -1485,19 +1485,19 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_018)
+START_TEST (pdf_text_filter_018)
 {
-  
+
 
 
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00""I" \
                                                 "\x00\x00\x03\x07";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00""I" \
                                                    "\x00\x00\x03\x07";
@@ -1505,18 +1505,18 @@ START_TEST(pdf_text_filter_018)
   pdf_size_t expected_size = 12;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -1530,10 +1530,10 @@ START_TEST(pdf_text_filter_018)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_UPPER_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -1547,14 +1547,14 @@ START_TEST(pdf_text_filter_018)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -1578,20 +1578,20 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_019)
+START_TEST (pdf_text_filter_019)
 {
-  
+
 
 
   /* # When lowercasing, unless an I is before a dot_above, it turns into a
    *   dotless i.
    * 0049; 0131; 0049; 0049; tr Not_Before_Dot; # LATIN CAPITAL LETTER I */
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00\x49" \
                                                 "\x00\x00\x00\x50";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00\x49" \
                                                    "\x00\x00\x00\x50";
@@ -1599,18 +1599,18 @@ START_TEST(pdf_text_filter_019)
   pdf_size_t expected_size = 12;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -1624,10 +1624,10 @@ START_TEST(pdf_text_filter_019)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_UPPER_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -1641,17 +1641,17 @@ START_TEST(pdf_text_filter_019)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
-  fail_unless(memcmp(output_data, expected_data, expected_size) == 0);  
+  fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
@@ -1667,11 +1667,11 @@ END_TEST
  *   where the condition is not fulfilled.
  * Success conditions:
  *   1. The call to  pdf_text_filter should return PDF_OK.
- *   2. The contents of the output text object must be the expected ones. 
+ *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_020)
+START_TEST (pdf_text_filter_020)
 {
-  
+
 
 
   /* Final_Sigma condition in Special Case algorithms
@@ -1684,21 +1684,21 @@ START_TEST(pdf_text_filter_020)
    * The condition won't be fulfilled because:
    *  1st check. The previous cased point is not available
    *  2nd check. A next cased point is available
-   * 
+   *
    * - 0x03A3 point is the one with the Final_Sigma condition
    * - 0x0055 point is the cased point
    * - 0x0027 point is the case-ignorable point
-   * - 0x0020 point (whitespace) is used as word separator to have three 
+   * - 0x0020 point (whitespace) is used as word separator to have three
    *    different words.
    *
    * If condition is not fulfilled, expected uppercase character for 0x03A3 is
    *  the same 0x03A3.
    */
-  
-  
+
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* 1st check, the previous cased point is not available */
   if(1)
     {
@@ -1714,15 +1714,15 @@ START_TEST(pdf_text_filter_020)
       pdf_char_t *output_data;
       pdf_size_t output_size;
       pdf_text_t text;
-      
+
       /* Create text object with given contents */
       fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
                                         PDF_TEXT_UTF32_BE, &text) != PDF_OK);
-      
+
       /* 1. The call to  pdf_text_filter should return PDF_OK. */
       fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_UPPER_CASE) == PDF_OK);
-      
+
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
@@ -1735,14 +1735,14 @@ START_TEST(pdf_text_filter_020)
           printf("pdf_text_filter:20:1:Internal> '%s'\n", internal_hex);
           pdf_dealloc(internal_hex);
         }
-      
+
       /* Get output as UTF-32BE */
       fail_unless(pdf_text_get_unicode(&output_data,
                                        &output_size,
                                        text,
                                        PDF_TEXT_UTF32_BE,
                                        PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-      
+
       /* 2. The contents of the output text object must be the expected ones. */
       fail_unless(output_size == input_size);
       fail_unless(memcmp(output_data, expected_data, input_size) == 0);
@@ -1750,7 +1750,7 @@ START_TEST(pdf_text_filter_020)
       pdf_dealloc(output_data);
       pdf_text_destroy(text);
     }
-  
+
   /* 2nd check, the sequence of previous case-ignorable points is NOT empty */
   if(1)
     {
@@ -1767,15 +1767,15 @@ START_TEST(pdf_text_filter_020)
       pdf_char_t *output_data;
       pdf_size_t output_size;
       pdf_text_t text;
-      
+
       /* Create text object with given contents */
       fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
                                         PDF_TEXT_UTF32_BE, &text) != PDF_OK);
-      
+
       /* 1. The call to  pdf_text_filter should return PDF_OK. */
       fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_UPPER_CASE) == PDF_OK);
-      
+
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
@@ -1788,14 +1788,14 @@ START_TEST(pdf_text_filter_020)
           printf("pdf_text_filter:20:2:Internal> '%s'\n", internal_hex);
           pdf_dealloc(internal_hex);
         }
-      
+
       /* Get output as UTF-32BE */
       fail_unless(pdf_text_get_unicode(&output_data,
                                        &output_size,
                                        text,
                                        PDF_TEXT_UTF32_BE,
                                        PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-      
+
       /* 2. The contents of the output text object must be the expected ones. */
       fail_unless(output_size == input_size);
       fail_unless(memcmp(output_data, expected_data, input_size) == 0);
@@ -1818,9 +1818,9 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_021)
+START_TEST (pdf_text_filter_021)
 {
-  
+
 
 
   /* 0x030C has combining class 230, so condition should not be fulfilled */
@@ -1829,7 +1829,7 @@ START_TEST(pdf_text_filter_021)
                                                 "\x00\x00\x00" "i" \
                                                 "\x00\x00\x03\x0C" \
                                                 "\x00\x00\x03\x07";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00" "I" \
                                                    "\x00\x00\x03\x0C" \
@@ -1838,18 +1838,18 @@ START_TEST(pdf_text_filter_021)
   pdf_size_t expected_size = 16;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'lt' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"lt") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -1863,10 +1863,10 @@ START_TEST(pdf_text_filter_021)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_UPPER_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -1880,14 +1880,14 @@ START_TEST(pdf_text_filter_021)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -1908,21 +1908,21 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_022)
+START_TEST (pdf_text_filter_022)
 {
-  
+
 
 
   /* Code:0049; Lower:0069 0307; Title:0049; Upper:0049;
    * lt More_Above; # LATIN CAPITAL LETTER I
    * As 0xC0 has combining class 0, the condition must not be fullfilled*/
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00\x49" \
                                                 "\x00\x00\x00\xC0" \
                                                 "\x00\x00\x03\x0B";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00\x49" \
                                                    "\x00\x00\x00\xC0" \
@@ -1931,18 +1931,18 @@ START_TEST(pdf_text_filter_022)
   pdf_size_t expected_size = 16;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'lt' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"lt") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -1956,10 +1956,10 @@ START_TEST(pdf_text_filter_022)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_UPPER_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -1973,14 +1973,14 @@ START_TEST(pdf_text_filter_022)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -2002,7 +2002,7 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_023)
+START_TEST (pdf_text_filter_023)
 {
   /* NOTE: Actually there is no special condition involving "Before_Dot" as is
    *       (there are a couple of conditions involving the negated one:
@@ -2024,21 +2024,21 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_024)
+START_TEST (pdf_text_filter_024)
 {
-  
+
 
 
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   /* 0x030C has combining class 230, so condition should not be fulfilled */
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00""I" \
                                                 "\x00\x00\x03\x0C" \
                                                 "\x00\x00\x03\x07";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00""I" \
                                                    "\x00\x00\x03\x0C" \
@@ -2047,18 +2047,18 @@ START_TEST(pdf_text_filter_024)
   pdf_size_t expected_size = 16;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -2072,10 +2072,10 @@ START_TEST(pdf_text_filter_024)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_UPPER_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -2089,14 +2089,14 @@ START_TEST(pdf_text_filter_024)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -2118,36 +2118,36 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_025)
+START_TEST (pdf_text_filter_025)
 {
-  
+
 
 
   /* # When uppercasing, i turns into a dotted capital I
    * 0069; 0069; 0130; 0130; tr; # LATIN SMALL LETTER I */
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00""i";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00""I";
   pdf_size_t input_size = 8;
   pdf_size_t expected_size = 8;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'en' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"en") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -2161,10 +2161,10 @@ START_TEST(pdf_text_filter_025)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_UPPER_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -2178,14 +2178,14 @@ START_TEST(pdf_text_filter_025)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -2210,21 +2210,21 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_026)
+START_TEST (pdf_text_filter_026)
 {
-  
+
 
 
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   /* 0x030C has combining class 230, so condition should not be fulfilled */
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00""I" \
                                                 "\x00\x00\x03\x0C" \
                                                 "\x00\x00\x03\x07";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00""I" \
                                                    "\x00\x00\x03\x0C" \
@@ -2233,18 +2233,18 @@ START_TEST(pdf_text_filter_026)
   pdf_size_t expected_size = 16;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -2258,10 +2258,10 @@ START_TEST(pdf_text_filter_026)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_UPPER_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -2275,14 +2275,14 @@ START_TEST(pdf_text_filter_026)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -2307,22 +2307,22 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_027)
+START_TEST (pdf_text_filter_027)
 {
-  
+
 
 
   /* # When lowercasing, unless an I is before a dot_above, it turns into a
    *   dotless i.
    * 0049; 0131; 0049; 0049; tr Not_Before_Dot; # LATIN CAPITAL LETTER I
    * Not Not_Before_Dot... is equal to Before_Dot :-) */
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00\x49" \
                                                 "\x00\x00\x03\x07" \
                                                 "\x00\x00\x00\x50";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00\x49" \
                                                    "\x00\x00\x03\x07" \
@@ -2331,18 +2331,18 @@ START_TEST(pdf_text_filter_027)
   pdf_size_t expected_size = 16;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -2356,10 +2356,10 @@ START_TEST(pdf_text_filter_027)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_UPPER_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -2373,17 +2373,17 @@ START_TEST(pdf_text_filter_027)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
-  fail_unless(memcmp(output_data, expected_data, expected_size) == 0);  
+  fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
@@ -2404,9 +2404,9 @@ END_TEST
  *   3. The length of the output text must be equal to the length of the
  *      input text.
  */
-START_TEST(pdf_text_filter_028)
+START_TEST (pdf_text_filter_028)
 {
-  
+
 
 
   pdf_text_t text;
@@ -2424,10 +2424,10 @@ START_TEST(pdf_text_filter_028)
   pdf_size_t expected_size = input_size;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
@@ -2445,10 +2445,10 @@ START_TEST(pdf_text_filter_028)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_LOWER_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -2462,18 +2462,18 @@ START_TEST(pdf_text_filter_028)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 3. The length of the output text must be equal to the length of the
    *      input text. */
   fail_unless(output_size == expected_size);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
 
@@ -2493,9 +2493,9 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_029)
+START_TEST (pdf_text_filter_029)
 {
-  
+
 
 
   pdf_text_t text;
@@ -2507,10 +2507,10 @@ START_TEST(pdf_text_filter_029)
   pdf_size_t expected_size = 12;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
@@ -2528,10 +2528,10 @@ START_TEST(pdf_text_filter_029)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_LOWER_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -2545,14 +2545,14 @@ START_TEST(pdf_text_filter_029)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -2572,11 +2572,11 @@ END_TEST
  *   special-case-conversion characters with Final_Sigma context condition.
  * Success conditions:
  *   1. The call to  pdf_text_filter should return PDF_OK.
- *   2. The contents of the output text object must be the expected ones. 
+ *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_030)
+START_TEST (pdf_text_filter_030)
 {
-  
+
 
 
   /* Final_Sigma condition in Special Case algorithms
@@ -2589,16 +2589,16 @@ START_TEST(pdf_text_filter_030)
    * - 0x03A3 point is the one with the Final_Sigma condition
    * - 0x0055 point is the cased point
    * - 0x003A point is the case-ignorable point (MidLetter WB property)
-   * - 0x0020 point (whitespace) is used as word separator to have three 
+   * - 0x0020 point (whitespace) is used as word separator to have three
    *    different words.
    * If condition is fulfilled, expected smallcase character for 0x03A3 is
    *  different: 0x03C2.
    */
-  
-  
+
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* 1st check, the sequence of previous case-ignorable points is empty */
   if(1)
     {
@@ -2620,12 +2620,12 @@ START_TEST(pdf_text_filter_030)
       pdf_char_t *output_data;
       pdf_size_t output_size;
       pdf_text_t text;
-      
+
       /* Create text object with given contents */
       fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
                                         PDF_TEXT_UTF32_BE, &text) != PDF_OK);
-      
+
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
@@ -2638,10 +2638,10 @@ START_TEST(pdf_text_filter_030)
           printf("pdf_text_filter:30:1:Before> '%s'\n", internal_hex);
           pdf_dealloc(internal_hex);
         }
-      
+
       /* 1. The call to  pdf_text_filter should return PDF_OK. */
       fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_LOWER_CASE) == PDF_OK);
-      
+
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
@@ -2654,14 +2654,14 @@ START_TEST(pdf_text_filter_030)
           printf("pdf_text_filter:30:1:After> '%s'\n", internal_hex);
           pdf_dealloc(internal_hex);
         }
-      
+
       /* Get output as UTF-32BE */
       fail_unless(pdf_text_get_unicode(&output_data,
                                        &output_size,
                                        text,
                                        PDF_TEXT_UTF32_BE,
                                        PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-      
+
       /* 2. The contents of the output text object must be the expected ones. */
       fail_unless(output_size == input_size);
       fail_unless(memcmp(output_data, expected_data, input_size) == 0);
@@ -2669,7 +2669,7 @@ START_TEST(pdf_text_filter_030)
       pdf_dealloc(output_data);
       pdf_text_destroy(text);
     }
-  
+
   /* 2nd check, the sequence of previous case-ignorable points is NOT empty */
   if(1)
     {
@@ -2691,7 +2691,7 @@ START_TEST(pdf_text_filter_030)
       pdf_char_t *output_data;
       pdf_size_t output_size;
       pdf_text_t text;
-      
+
       /* Create text object with given contents */
       fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
@@ -2708,10 +2708,10 @@ START_TEST(pdf_text_filter_030)
           printf("pdf_text_filter:30:2:Before> '%s'\n", internal_hex);
           pdf_dealloc(internal_hex);
         }
-      
+
       /* 1. The call to  pdf_text_filter should return PDF_OK. */
       fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_LOWER_CASE) == PDF_OK);
-      
+
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
@@ -2724,14 +2724,14 @@ START_TEST(pdf_text_filter_030)
           printf("pdf_text_filter:30:2:After> '%s'\n", internal_hex);
           pdf_dealloc(internal_hex);
         }
-      
+
       /* Get output as UTF-32BE */
       fail_unless(pdf_text_get_unicode(&output_data,
                                        &output_size,
                                        text,
                                        PDF_TEXT_UTF32_BE,
                                        PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-      
+
       /* 2. The contents of the output text object must be the expected ones. */
       fail_unless(output_size == input_size);
       fail_unless(memcmp(output_data, expected_data, input_size) == 0);
@@ -2754,16 +2754,16 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_031)
+START_TEST (pdf_text_filter_031)
 {
-  
+
 
 
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00" "i" \
                                                 "\x00\x00\x03\x07";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00" "i" \
                                                    "\x00\x00\x03\x07";
@@ -2771,18 +2771,18 @@ START_TEST(pdf_text_filter_031)
   pdf_size_t expected_size = 12;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'lt' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"lt") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -2796,10 +2796,10 @@ START_TEST(pdf_text_filter_031)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_LOWER_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -2813,14 +2813,14 @@ START_TEST(pdf_text_filter_031)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -2840,19 +2840,19 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_032)
+START_TEST (pdf_text_filter_032)
 {
-  
+
 
 
   /* Code:0049; Lower:0069 0307; Title:0049; Upper:0049;
    * lt More_Above; # LATIN CAPITAL LETTER I */
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00\x49"
                                                 "\x00\x00\x03\x0B";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                               "\x00\x00\x00\x69\x00\x00\x03\x07"
                                                    "\x00\x00\x03\x0B";
@@ -2860,18 +2860,18 @@ START_TEST(pdf_text_filter_032)
   pdf_size_t expected_size = 16;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'lt' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"lt") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -2885,10 +2885,10 @@ START_TEST(pdf_text_filter_032)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_LOWER_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -2902,14 +2902,14 @@ START_TEST(pdf_text_filter_032)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -2930,7 +2930,7 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_033)
+START_TEST (pdf_text_filter_033)
 {
   /* NOTE: Actually there is no special condition involving "Before_Dot" as is
    *       (there are a couple of conditions involving the negated one:
@@ -2951,37 +2951,37 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_034)
+START_TEST (pdf_text_filter_034)
 {
-  
+
 
 
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00""I" \
                                                 "\x00\x00\x03\x07";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00""i";
   pdf_size_t input_size = 12;
   pdf_size_t expected_size = 8;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -2995,10 +2995,10 @@ START_TEST(pdf_text_filter_034)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_LOWER_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -3012,14 +3012,14 @@ START_TEST(pdf_text_filter_034)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -3041,35 +3041,35 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_035)
+START_TEST (pdf_text_filter_035)
 {
-  
+
 
 
   /* 00CC; 0069 0307 0300; 00CC; 00CC; lt; # LATIN CAPITAL LETTER I WITH GRAVE*/
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00\xCC";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                   "\x00\x00\x00\x69\x00\x00\x03\x07\x00\x00\x03\x00";
   pdf_size_t input_size = 8;
   pdf_size_t expected_size = 16;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'lt' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"lt") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -3083,10 +3083,10 @@ START_TEST(pdf_text_filter_035)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_LOWER_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -3100,14 +3100,14 @@ START_TEST(pdf_text_filter_035)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -3131,37 +3131,37 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_036)
+START_TEST (pdf_text_filter_036)
 {
-  
+
 
 
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00""I" \
                                                 "\x00\x00\x03\x07";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00""i";
   pdf_size_t input_size = 12;
   pdf_size_t expected_size = 8;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -3175,10 +3175,10 @@ START_TEST(pdf_text_filter_036)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_LOWER_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -3192,14 +3192,14 @@ START_TEST(pdf_text_filter_036)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -3223,20 +3223,20 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_037)
+START_TEST (pdf_text_filter_037)
 {
-  
+
 
 
   /* # When lowercasing, unless an I is before a dot_above, it turns into a
    *   dotless i.
    * 0049; 0131; 0049; 0049; tr Not_Before_Dot; # LATIN CAPITAL LETTER I */
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00\x49" \
                                                 "\x00\x00\x00\x50";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x01\x31" \
                                                    "\x00\x00\x00\x70";
@@ -3244,18 +3244,18 @@ START_TEST(pdf_text_filter_037)
   pdf_size_t expected_size = 12;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -3269,10 +3269,10 @@ START_TEST(pdf_text_filter_037)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_LOWER_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -3286,17 +3286,17 @@ START_TEST(pdf_text_filter_037)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
-  fail_unless(memcmp(output_data, expected_data, expected_size) == 0);  
+  fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
@@ -3313,11 +3313,11 @@ END_TEST
  *   where the condition is not fulfilled.
  * Success conditions:
  *   1. The call to  pdf_text_filter should return PDF_OK.
- *   2. The contents of the output text object must be the expected ones. 
+ *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_038)
+START_TEST (pdf_text_filter_038)
 {
-  
+
 
 
   /* Final_Sigma condition in Special Case algorithms
@@ -3330,21 +3330,21 @@ START_TEST(pdf_text_filter_038)
    * The condition won't be fulfilled because:
    *  1st check. The previous cased point is not available
    *  2nd check. A next cased point is available
-   * 
+   *
    * - 0x03A3 point is the one with the Final_Sigma condition
    * - 0x0055 point is the cased point
    * - 0x0027 point is the case-ignorable point
-   * - 0x0020 point (whitespace) is used as word separator to have three 
+   * - 0x0020 point (whitespace) is used as word separator to have three
    *    different words.
    *
    * If condition is not fulfilled, expected lowercase character for 0x03A3 is
    *  the non-final lowercase sigma 0x03C3.
    */
-  
-  
+
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* 1st check, the previous cased point is not available */
   if(1)
     {
@@ -3366,15 +3366,15 @@ START_TEST(pdf_text_filter_038)
       pdf_char_t *output_data;
       pdf_size_t output_size;
       pdf_text_t text;
-      
+
       /* Create text object with given contents */
       fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
                                         PDF_TEXT_UTF32_BE, &text) != PDF_OK);
-      
+
       /* 1. The call to  pdf_text_filter should return PDF_OK. */
       fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_LOWER_CASE) == PDF_OK);
-      
+
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
@@ -3387,14 +3387,14 @@ START_TEST(pdf_text_filter_038)
           printf("pdf_text_filter:38:1:Internal> '%s'\n", internal_hex);
           pdf_dealloc(internal_hex);
         }
-      
+
       /* Get output as UTF-32BE */
       fail_unless(pdf_text_get_unicode(&output_data,
                                        &output_size,
                                        text,
                                        PDF_TEXT_UTF32_BE,
                                        PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-      
+
       /* 2. The contents of the output text object must be the expected ones. */
       fail_unless(output_size == input_size);
       fail_unless(memcmp(output_data, expected_data, input_size) == 0);
@@ -3402,7 +3402,7 @@ START_TEST(pdf_text_filter_038)
       pdf_dealloc(output_data);
       pdf_text_destroy(text);
     }
-  
+
   /* 2nd check, a next cased point is available */
   if(1)
     {
@@ -3426,15 +3426,15 @@ START_TEST(pdf_text_filter_038)
       pdf_char_t *output_data;
       pdf_size_t output_size;
       pdf_text_t text;
-      
+
       /* Create text object with given contents */
       fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
                                         PDF_TEXT_UTF32_BE, &text) != PDF_OK);
-      
+
       /* 1. The call to  pdf_text_filter should return PDF_OK. */
       fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_LOWER_CASE) == PDF_OK);
-      
+
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
@@ -3447,14 +3447,14 @@ START_TEST(pdf_text_filter_038)
           printf("pdf_text_filter:38:2:Internal> '%s'\n", internal_hex);
           pdf_dealloc(internal_hex);
         }
-      
+
       /* Get output as UTF-32BE */
       fail_unless(pdf_text_get_unicode(&output_data,
                                        &output_size,
                                        text,
                                        PDF_TEXT_UTF32_BE,
                                        PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-      
+
       /* 2. The contents of the output text object must be the expected ones. */
       fail_unless(output_size == input_size);
       fail_unless(memcmp(output_data, expected_data, input_size) == 0);
@@ -3478,9 +3478,9 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_039)
+START_TEST (pdf_text_filter_039)
 {
-  
+
 
 
   /* 0x030C has combining class 230, so condition should not be fulfilled */
@@ -3489,7 +3489,7 @@ START_TEST(pdf_text_filter_039)
                                                 "\x00\x00\x00" "i" \
                                                 "\x00\x00\x03\x0C" \
                                                 "\x00\x00\x03\x07";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00" "i" \
                                                    "\x00\x00\x03\x0C" \
@@ -3498,18 +3498,18 @@ START_TEST(pdf_text_filter_039)
   pdf_size_t expected_size = 16;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'lt' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"lt") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -3523,10 +3523,10 @@ START_TEST(pdf_text_filter_039)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_LOWER_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -3540,14 +3540,14 @@ START_TEST(pdf_text_filter_039)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -3569,21 +3569,21 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_040)
+START_TEST (pdf_text_filter_040)
 {
-  
+
 
 
   /* Code:0049; Lower:0069 0307; Title:0049; Upper:0049;
    * lt More_Above; # LATIN CAPITAL LETTER I
    * As 0xC0 has combining class 0, the condition must not be fullfilled */
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00\x49" \
                                                 "\x00\x00\x00\xC0" \
                                                 "\x00\x00\x03\x0B";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00\x69" \
                                                    "\x00\x00\x00\xE0" \
@@ -3592,18 +3592,18 @@ START_TEST(pdf_text_filter_040)
   pdf_size_t expected_size = 16;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'lt' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"lt") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -3617,10 +3617,10 @@ START_TEST(pdf_text_filter_040)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_LOWER_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -3634,14 +3634,14 @@ START_TEST(pdf_text_filter_040)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -3663,7 +3663,7 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_041)
+START_TEST (pdf_text_filter_041)
 {
   /* NOTE: Actually there is no special condition involving "Before_Dot" as is
    *       (there are a couple of conditions involving the negated one:
@@ -3685,21 +3685,21 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_042)
+START_TEST (pdf_text_filter_042)
 {
-  
+
 
 
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   /* 0x030C has combining class 230, so condition should not be fulfilled */
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00""I" \
                                                 "\x00\x00\x03\x0C" \
                                                 "\x00\x00\x03\x07";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x01\x31" \
                                                    "\x00\x00\x03\x0C" \
@@ -3708,18 +3708,18 @@ START_TEST(pdf_text_filter_042)
   pdf_size_t expected_size = 16;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -3733,10 +3733,10 @@ START_TEST(pdf_text_filter_042)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_LOWER_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -3750,14 +3750,14 @@ START_TEST(pdf_text_filter_042)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -3779,36 +3779,36 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_043)
+START_TEST (pdf_text_filter_043)
 {
-  
 
 
-  /* 00CC; 0069 0307 0300; 00CC; 00CC; lt; # LATIN CAPITAL LETTER I WITH GRAVE 
+
+  /* 00CC; 0069 0307 0300; 00CC; 00CC; lt; # LATIN CAPITAL LETTER I WITH GRAVE
    * If condition not fulfilled, simple lowercase gives: 00EC */
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00\xCC";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00\xEC";
   pdf_size_t input_size = 8;
   pdf_size_t expected_size = 8;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'en' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"en") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -3822,10 +3822,10 @@ START_TEST(pdf_text_filter_043)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_LOWER_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -3839,14 +3839,14 @@ START_TEST(pdf_text_filter_043)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -3871,21 +3871,21 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_044)
+START_TEST (pdf_text_filter_044)
 {
-  
+
 
 
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   /* 0x030C has combining class 230, so condition should not be fulfilled */
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00""I" \
                                                 "\x00\x00\x03\x0C" \
                                                 "\x00\x00\x03\x07";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x01\x31" \
                                                    "\x00\x00\x03\x0C" \
@@ -3894,18 +3894,18 @@ START_TEST(pdf_text_filter_044)
   pdf_size_t expected_size = 16;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -3919,10 +3919,10 @@ START_TEST(pdf_text_filter_044)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_LOWER_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -3936,14 +3936,14 @@ START_TEST(pdf_text_filter_044)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -3968,22 +3968,22 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_045)
+START_TEST (pdf_text_filter_045)
 {
-  
+
 
 
   /* # When lowercasing, unless an I is before a dot_above, it turns into a
    *   dotless i.
    * 0049; 0131; 0049; 0049; tr Not_Before_Dot; # LATIN CAPITAL LETTER I
    * Not Not_Before_Dot... is equal to Before_Dot :-) */
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00\x49" \
                                                 "\x00\x00\x03\x07" \
                                                 "\x00\x00\x00\x50";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00\x69" \
                                                    "\x00\x00\x00\x70";
@@ -3991,18 +3991,18 @@ START_TEST(pdf_text_filter_045)
   pdf_size_t expected_size = 12;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -4016,10 +4016,10 @@ START_TEST(pdf_text_filter_045)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_LOWER_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -4033,17 +4033,17 @@ START_TEST(pdf_text_filter_045)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
-  fail_unless(memcmp(output_data, expected_data, expected_size) == 0);  
+  fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
@@ -4064,9 +4064,9 @@ END_TEST
  *   3. The length of the output text must be equal to the length of the
  *      input text.
  */
-START_TEST(pdf_text_filter_046)
+START_TEST (pdf_text_filter_046)
 {
-  
+
 
 
   pdf_text_t text;
@@ -4084,10 +4084,10 @@ START_TEST(pdf_text_filter_046)
   pdf_size_t expected_size = input_size;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
@@ -4105,10 +4105,10 @@ START_TEST(pdf_text_filter_046)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_TITLE_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -4122,18 +4122,18 @@ START_TEST(pdf_text_filter_046)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 3. The length of the output text must be equal to the length of the
    *      input text. */
   fail_unless(output_size == expected_size);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
 
@@ -4153,9 +4153,9 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_047)
+START_TEST (pdf_text_filter_047)
 {
-  
+
 
 
   pdf_text_t text;
@@ -4169,10 +4169,10 @@ START_TEST(pdf_text_filter_047)
   pdf_size_t expected_size = 16;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
@@ -4190,10 +4190,10 @@ START_TEST(pdf_text_filter_047)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_TITLE_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -4207,14 +4207,14 @@ START_TEST(pdf_text_filter_047)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -4234,11 +4234,11 @@ END_TEST
  *   special-case-conversion characters with Final_Sigma context condition.
  * Success conditions:
  *   1. The call to  pdf_text_filter should return PDF_OK.
- *   2. The contents of the output text object must be the expected ones. 
+ *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_048)
+START_TEST (pdf_text_filter_048)
 {
-  
+
 
 
   /* Final_Sigma condition in Special Case algorithms
@@ -4251,7 +4251,7 @@ START_TEST(pdf_text_filter_048)
    * - 0x03A3 point is the one with the Final_Sigma condition
    * - 0x0055 point is the cased point
    * - 0x003A point is the case-ignorable point (MidLetter WB property)
-   * - 0x0020 point (whitespace) is used as word separator to have three 
+   * - 0x0020 point (whitespace) is used as word separator to have three
    *    different words.
    * If condition is fulfilled, expected titlecase character for 0x03A3 is
    *  the same 0x03A3. But WARNING!!! Only the first character in the word
@@ -4260,11 +4260,11 @@ START_TEST(pdf_text_filter_048)
    *  so the title case option will probably be NEVER used. In this case, the
    *  finalsigma lowercase unicode point will be used (0x03C2) !!.
    */
-  
-  
+
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* 1st check, the sequence of previous case-ignorable points is empty */
   if(1)
     {
@@ -4286,15 +4286,15 @@ START_TEST(pdf_text_filter_048)
       pdf_char_t *output_data;
       pdf_size_t output_size;
       pdf_text_t text;
-      
+
       /* Create text object with given contents */
       fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
                                         PDF_TEXT_UTF32_BE, &text) != PDF_OK);
-      
+
       /* 1. The call to  pdf_text_filter should return PDF_OK. */
       fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_TITLE_CASE) == PDF_OK);
-      
+
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
@@ -4307,14 +4307,14 @@ START_TEST(pdf_text_filter_048)
           printf("pdf_text_filter:48:1:Internal> '%s'\n", internal_hex);
           pdf_dealloc(internal_hex);
         }
-      
+
       /* Get output as UTF-32BE */
       fail_unless(pdf_text_get_unicode(&output_data,
                                        &output_size,
                                        text,
                                        PDF_TEXT_UTF32_BE,
                                        PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-      
+
       /* 2. The contents of the output text object must be the expected ones. */
       fail_unless(output_size == input_size);
       fail_unless(memcmp(output_data, expected_data, input_size) == 0);
@@ -4322,7 +4322,7 @@ START_TEST(pdf_text_filter_048)
       pdf_dealloc(output_data);
       pdf_text_destroy(text);
     }
-  
+
   /* 2nd check, the sequence of previous case-ignorable points is NOT empty */
   if(1)
     {
@@ -4340,20 +4340,20 @@ START_TEST(pdf_text_filter_048)
                                         "\x00\x00\x03\xC2" "\x00\x00\x00"" " \
                                         "\x00\x00\x00""G" "\x00\x00\x00""n" \
                                         "\x00\x00\x00""u";
-      
+
       const pdf_size_t input_size = 44;
       pdf_char_t *output_data;
       pdf_size_t output_size;
       pdf_text_t text;
-      
+
       /* Create text object with given contents */
       fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
                                         PDF_TEXT_UTF32_BE, &text) != PDF_OK);
-      
+
       /* 1. The call to  pdf_text_filter should return PDF_OK. */
       fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_TITLE_CASE) == PDF_OK);
-      
+
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
@@ -4366,14 +4366,14 @@ START_TEST(pdf_text_filter_048)
           printf("pdf_text_filter:48:2:Internal> '%s'\n", internal_hex);
           pdf_dealloc(internal_hex);
         }
-      
+
       /* Get output as UTF-32BE */
       fail_unless(pdf_text_get_unicode(&output_data,
                                        &output_size,
                                        text,
                                        PDF_TEXT_UTF32_BE,
                                        PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-      
+
       /* 2. The contents of the output text object must be the expected ones. */
       fail_unless(output_size == input_size);
       fail_unless(memcmp(output_data, expected_data, input_size) == 0);
@@ -4396,16 +4396,16 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_049)
+START_TEST (pdf_text_filter_049)
 {
-  
+
 
 
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00" "i" \
                                                 "\x00\x00\x03\x07";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00" "I" \
                                                    "\x00\x00\x03\x07";
@@ -4413,18 +4413,18 @@ START_TEST(pdf_text_filter_049)
   pdf_size_t expected_size = 12;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'lt' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"lt") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -4438,10 +4438,10 @@ START_TEST(pdf_text_filter_049)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_TITLE_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -4455,14 +4455,14 @@ START_TEST(pdf_text_filter_049)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -4482,20 +4482,20 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_050)
+START_TEST (pdf_text_filter_050)
 {
-  
+
 
 
   /* Code:0049; Lower:0069 0307; Title:0049; Upper:0049;
    * lt More_Above; # LATIN CAPITAL LETTER I */
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00""a" \
                                                 "\x00\x00\x00\x49"
                                                 "\x00\x00\x03\x0B";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00""A" \
                                                 "\x00\x00\x00\x69\x00\x00\x03\x07"
@@ -4504,18 +4504,18 @@ START_TEST(pdf_text_filter_050)
   pdf_size_t expected_size = 20;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'lt' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"lt") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -4529,10 +4529,10 @@ START_TEST(pdf_text_filter_050)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_TITLE_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -4546,14 +4546,14 @@ START_TEST(pdf_text_filter_050)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -4574,7 +4574,7 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_051)
+START_TEST (pdf_text_filter_051)
 {
   /* NOTE: Actually there is no special condition involving "Before_Dot" as is
    *       (there are a couple of conditions involving the negated one:
@@ -4595,20 +4595,20 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_052)
+START_TEST (pdf_text_filter_052)
 {
-  
+
 
 
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00""a" \
                                                 "\x00\x00\x00""I" \
                                                 "\x00\x00\x03\x07";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00""A" \
                                                    "\x00\x00\x00""i";
@@ -4616,18 +4616,18 @@ START_TEST(pdf_text_filter_052)
   pdf_size_t expected_size = 12;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -4641,10 +4641,10 @@ START_TEST(pdf_text_filter_052)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_TITLE_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -4658,14 +4658,14 @@ START_TEST(pdf_text_filter_052)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -4687,18 +4687,18 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_053)
+START_TEST (pdf_text_filter_053)
 {
-  
+
 
 
   /* 00CC; 0069 0307 0300; 00CC; 00CC; lt; # LATIN CAPITAL LETTER I WITH GRAVE*/
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00""a" \
                                                 "\x00\x00\x00\xCC";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00""A" \
                                   "\x00\x00\x00\x69\x00\x00\x03\x07\x00\x00\x03\x00";
@@ -4706,18 +4706,18 @@ START_TEST(pdf_text_filter_053)
   pdf_size_t expected_size = 20;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'lt' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"lt") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -4731,10 +4731,10 @@ START_TEST(pdf_text_filter_053)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_TITLE_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -4748,14 +4748,14 @@ START_TEST(pdf_text_filter_053)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -4779,20 +4779,20 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_054)
+START_TEST (pdf_text_filter_054)
 {
-  
+
 
 
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00""a" \
                                                 "\x00\x00\x00""I" \
                                                 "\x00\x00\x03\x07";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00""A" \
                                                    "\x00\x00\x00""i";
@@ -4800,18 +4800,18 @@ START_TEST(pdf_text_filter_054)
   pdf_size_t expected_size = 12;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -4825,10 +4825,10 @@ START_TEST(pdf_text_filter_054)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_TITLE_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -4842,14 +4842,14 @@ START_TEST(pdf_text_filter_054)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -4873,21 +4873,21 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_055)
+START_TEST (pdf_text_filter_055)
 {
-  
+
 
 
   /* # When lowercasing, unless an I is before a dot_above, it turns into a
    *   dotless i.
    * 0049; 0131; 0049; 0049; tr Not_Before_Dot; # LATIN CAPITAL LETTER I */
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00""a" \
                                                 "\x00\x00\x00\x49" \
                                                 "\x00\x00\x00\x50";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00""A" \
                                                    "\x00\x00\x01\x31" \
@@ -4896,18 +4896,18 @@ START_TEST(pdf_text_filter_055)
   pdf_size_t expected_size = 16;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -4921,10 +4921,10 @@ START_TEST(pdf_text_filter_055)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_TITLE_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -4938,17 +4938,17 @@ START_TEST(pdf_text_filter_055)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
-  fail_unless(memcmp(output_data, expected_data, expected_size) == 0);  
+  fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
@@ -4965,11 +4965,11 @@ END_TEST
  *   where the condition is not fulfilled.
  * Success conditions:
  *   1. The call to  pdf_text_filter should return PDF_OK.
- *   2. The contents of the output text object must be the expected ones. 
+ *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_056)
+START_TEST (pdf_text_filter_056)
 {
-  
+
 
 
   /* Final_Sigma condition in Special Case algorithms
@@ -4982,11 +4982,11 @@ START_TEST(pdf_text_filter_056)
    * The condition won't be fulfilled because:
    *  1st check. The previous cased point is not available
    *  2nd check. A next cased point is available
-   * 
+   *
    * - 0x03A3 point is the one with the Final_Sigma condition
    * - 0x0055 point is the cased point
    * - 0x003A point is the case-ignorable point (MidLetter WB property)
-   * - 0x0020 point (whitespace) is used as word separator to have three 
+   * - 0x0020 point (whitespace) is used as word separator to have three
    *    different words.
    *
    * If condition is not fulfilled, expected titlecase character for 0x03A3 is
@@ -4996,11 +4996,11 @@ START_TEST(pdf_text_filter_056)
    *  so the title case option will probably be NEVER used. In this case, the
    *  non-final lowercase sigma nd uppercase unicode points will be used!!.
    */
-  
-  
+
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* 1st check, the previous cased point is not available (so word starts in
    *  the sigma --> uppercase sigma */
   if(1)
@@ -5023,15 +5023,15 @@ START_TEST(pdf_text_filter_056)
       pdf_char_t *output_data;
       pdf_size_t output_size;
       pdf_text_t text;
-      
+
       /* Create text object with given contents */
       fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
                                         PDF_TEXT_UTF32_BE, &text) != PDF_OK);
-      
+
       /* 1. The call to  pdf_text_filter should return PDF_OK. */
       fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_TITLE_CASE) == PDF_OK);
-      
+
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
@@ -5044,14 +5044,14 @@ START_TEST(pdf_text_filter_056)
           printf("pdf_text_filter:56:1:Internal> '%s'\n", internal_hex);
           pdf_dealloc(internal_hex);
         }
-      
+
       /* Get output as UTF-32BE */
       fail_unless(pdf_text_get_unicode(&output_data,
                                        &output_size,
                                        text,
                                        PDF_TEXT_UTF32_BE,
                                        PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-      
+
       /* 2. The contents of the output text object must be the expected ones. */
       fail_unless(output_size == input_size);
       fail_unless(memcmp(output_data, expected_data, input_size) == 0);
@@ -5059,7 +5059,7 @@ START_TEST(pdf_text_filter_056)
       pdf_dealloc(output_data);
       pdf_text_destroy(text);
     }
-  
+
   /* 2nd check, the sequence of previous case-ignorable points is NOT empty, but
    *  the previous cased point is available --> non-final lowercase sigma is
    *  used */
@@ -5085,15 +5085,15 @@ START_TEST(pdf_text_filter_056)
       pdf_char_t *output_data;
       pdf_size_t output_size;
       pdf_text_t text;
-      
+
       /* Create text object with given contents */
       fail_if(pdf_text_new_from_unicode(input_data,
                                         input_size,
                                         PDF_TEXT_UTF32_BE, &text) != PDF_OK);
-      
+
       /* 1. The call to  pdf_text_filter should return PDF_OK. */
       fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_TITLE_CASE) == PDF_OK);
-      
+
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
@@ -5106,14 +5106,14 @@ START_TEST(pdf_text_filter_056)
           printf("pdf_text_filter:56:2:Internal> '%s'\n", internal_hex);
           pdf_dealloc(internal_hex);
         }
-      
+
       /* Get output as UTF-32BE */
       fail_unless(pdf_text_get_unicode(&output_data,
                                        &output_size,
                                        text,
                                        PDF_TEXT_UTF32_BE,
                                        PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-      
+
       /* 2. The contents of the output text object must be the expected ones. */
       fail_unless(output_size == input_size);
       fail_unless(memcmp(output_data, expected_data, input_size) == 0);
@@ -5136,9 +5136,9 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_057)
+START_TEST (pdf_text_filter_057)
 {
-  
+
 
 
   /* 0x030C has combining class 230, so condition should not be fulfilled */
@@ -5148,7 +5148,7 @@ START_TEST(pdf_text_filter_057)
                                                 "\x00\x00\x00" "i" \
                                                 "\x00\x00\x03\x0C" \
                                                 "\x00\x00\x03\x07";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00" "A" \
                                                    "\x00\x00\x00" "i" \
@@ -5158,18 +5158,18 @@ START_TEST(pdf_text_filter_057)
   pdf_size_t expected_size = 20;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'lt' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"lt") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -5183,10 +5183,10 @@ START_TEST(pdf_text_filter_057)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_TITLE_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -5200,14 +5200,14 @@ START_TEST(pdf_text_filter_057)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -5229,22 +5229,22 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_058)
+START_TEST (pdf_text_filter_058)
 {
-  
+
 
 
   /* Code:0049; Lower:0069 0307; Title:0049; Upper:0049;
    * lt More_Above; # LATIN CAPITAL LETTER I
    * As 0xC0 has combining class 0, the condition must not be fullfilled */
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00""a" \
                                                 "\x00\x00\x00\x49" \
                                                 "\x00\x00\x00\xC0" \
                                                 "\x00\x00\x03\x0B";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00""A" \
                                                    "\x00\x00\x00\x69" \
@@ -5254,18 +5254,18 @@ START_TEST(pdf_text_filter_058)
   pdf_size_t expected_size = 20;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'lt' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"lt") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -5279,10 +5279,10 @@ START_TEST(pdf_text_filter_058)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_TITLE_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -5296,14 +5296,14 @@ START_TEST(pdf_text_filter_058)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -5325,7 +5325,7 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_059)
+START_TEST (pdf_text_filter_059)
 {
   /* NOTE: Actually there is no special condition involving "Before_Dot" as is
    *       (there are a couple of conditions involving the negated one:
@@ -5347,22 +5347,22 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_060)
+START_TEST (pdf_text_filter_060)
 {
-  
+
 
 
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   /* 0x030C has combining class 230, so condition should not be fulfilled */
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00""a" \
                                                 "\x00\x00\x00""I" \
                                                 "\x00\x00\x03\x0C" \
                                                 "\x00\x00\x03\x07";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00""A" \
                                                    "\x00\x00\x01\x31" \
@@ -5372,18 +5372,18 @@ START_TEST(pdf_text_filter_060)
   pdf_size_t expected_size = 20;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -5397,10 +5397,10 @@ START_TEST(pdf_text_filter_060)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_TITLE_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -5414,14 +5414,14 @@ START_TEST(pdf_text_filter_060)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -5444,19 +5444,19 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_061)
+START_TEST (pdf_text_filter_061)
 {
-  
 
 
-  /* 00CC; 0069 0307 0300; 00CC; 00CC; lt; # LATIN CAPITAL LETTER I WITH GRAVE 
+
+  /* 00CC; 0069 0307 0300; 00CC; 00CC; lt; # LATIN CAPITAL LETTER I WITH GRAVE
    * If condition not fulfilled, simple lowercase gives: 00EC */
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00""a" \
                                                 "\x00\x00\x00\xCC";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00""A" \
                                                    "\x00\x00\x00\xEC";
@@ -5464,18 +5464,18 @@ START_TEST(pdf_text_filter_061)
   pdf_size_t expected_size = 12;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'en' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"en") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -5489,10 +5489,10 @@ START_TEST(pdf_text_filter_061)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_TITLE_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -5506,14 +5506,14 @@ START_TEST(pdf_text_filter_061)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -5538,22 +5538,22 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_062)
+START_TEST (pdf_text_filter_062)
 {
-  
+
 
 
   /* Code: 0307;Lower: ; Title: 0307; Upper: 0307;
    * tr After_I; # COMBINING DOT ABOVE */
   /* 0x030C has combining class 230, so condition should not be fulfilled */
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00""a" \
                                                 "\x00\x00\x00""I" \
                                                 "\x00\x00\x03\x0C" \
                                                 "\x00\x00\x03\x07";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00""A" \
                                                    "\x00\x00\x01\x31" \
@@ -5563,18 +5563,18 @@ START_TEST(pdf_text_filter_062)
   pdf_size_t expected_size = 20;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -5588,10 +5588,10 @@ START_TEST(pdf_text_filter_062)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_TITLE_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -5605,14 +5605,14 @@ START_TEST(pdf_text_filter_062)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
   fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
@@ -5637,22 +5637,22 @@ END_TEST
  *   1. The call to  pdf_text_filter should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_filter_063)
+START_TEST (pdf_text_filter_063)
 {
-  
+
 
 
   /* # When lowercasing, unless an I is before a dot_above, it turns into a
    *   dotless i.
    * 0049; 0131; 0049; 0049; tr Not_Before_Dot; # LATIN CAPITAL LETTER I
    * Not Not_Before_Dot... is equal to Before_Dot :-) */
-  
+
   pdf_text_t text;
   const pdf_char_t *input_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                 "\x00\x00\x00""a" \
                                                 "\x00\x00\x00\x49" \
                                                 "\x00\x00\x03\x07";
-  
+
   const pdf_char_t *expected_data = (pdf_char_t *) "\x00\x00\x00\x20" \
                                                    "\x00\x00\x00""A" \
                                                    "\x00\x00\x00\x69";
@@ -5660,18 +5660,18 @@ START_TEST(pdf_text_filter_063)
   pdf_size_t expected_size = 12;
   pdf_char_t *output_data;
   pdf_size_t output_size;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
                                     PDF_TEXT_UTF32_BE, &text) != PDF_OK);
   /* This test needs another context condition: 'tr' language code */
   fail_if(pdf_text_set_language(text,(pdf_char_t *)"tr") != PDF_OK);
-  
-  
+
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -5685,10 +5685,10 @@ START_TEST(pdf_text_filter_063)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_TITLE_CASE) == PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -5702,17 +5702,17 @@ START_TEST(pdf_text_filter_063)
              internal_hex, (long)strlen(internal_hex));
       pdf_dealloc(internal_hex);
     }
-  
+
   /* Get output as UTF-32BE */
   fail_unless(pdf_text_get_unicode(&output_data,
                                    &output_size,
                                    text,
                                    PDF_TEXT_UTF32_BE,
                                    PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_unless(output_size == expected_size);
-  fail_unless(memcmp(output_data, expected_data, expected_size) == 0);  
+  fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
 
   pdf_dealloc(output_data);
   pdf_text_destroy(text);
@@ -5729,7 +5729,7 @@ TCase *
 test_pdf_text_filter (void)
 {
   TCase *tc = tcase_create("pdf_text_filter");
-  
+
   tcase_add_test(tc, pdf_text_filter_001); /* Normalize line endings */
   tcase_add_test(tc, pdf_text_filter_002); /* Normalize line endings */
 
@@ -5802,7 +5802,10 @@ test_pdf_text_filter (void)
   tcase_add_test(tc, pdf_text_filter_061); /* Title-Special Not 'tr'  */
   tcase_add_test(tc, pdf_text_filter_062); /* Title-Special Not After_I and 'tr'  */
   tcase_add_test(tc, pdf_text_filter_063); /* Title-Special Not Not_Before_Dot  */
-  
+
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

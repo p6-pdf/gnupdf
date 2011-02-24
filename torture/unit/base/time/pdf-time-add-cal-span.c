@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include <pdf.h>
 #include <stdlib.h>
 #include <base/time/pdf-time-test-common.h>
-
+#include <pdf-test-common.h>
 #define INTERACTIVE_DEBUG 0
 
 /*
@@ -100,7 +100,7 @@ START_TEST (pdf_time_add_cal_span_001)
         fail_if(status != PDF_OK);
         status = pdf_time_add_cal_span(time2, &calspan);
         fail_if(status != PDF_OK);
-    
+
 
         fail_unless(pdf_time_cmp(time1,time2) == 0);
         if (INTERACTIVE_DEBUG ){
@@ -190,7 +190,7 @@ START_TEST (pdf_time_add_cal_span_002)
   calspan.days=30;
   pdf_time_add_cal_span(time30, &calspan);
 
-    
+
   if(INTERACTIVE_DEBUG){
       pdf_time_get_utc_cal(time28, &cal);
       printf("pdf_time_add_cal_span_002 %d-%d-%d %d:%d:%d\n",calspan.years, calspan.months, calspan.days,
@@ -229,6 +229,9 @@ test_pdf_time_add_cal_span (void)
   tcase_add_test(tc, pdf_time_add_cal_span_001);
   tcase_add_test(tc, pdf_time_add_cal_span_002);
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

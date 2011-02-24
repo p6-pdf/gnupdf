@@ -7,13 +7,13 @@
  *
  */
 
-/* Copyright (C) 2008, 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2008, 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ *#include <pdf-test-common.h>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -29,7 +29,7 @@
 #include <string.h>
 #include <pdf.h>
 #include <check.h>
-
+#include <pdf-test-common.h>
 
 /*
  * Test: pdf_crypt_md_write_001
@@ -59,6 +59,9 @@ test_pdf_crypt_md_write (void)
 {
   TCase *tc = tcase_create("pdf_crypt_md_write");
   tcase_add_test(tc, pdf_crypt_md_write_001);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

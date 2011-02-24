@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,11 +27,11 @@
 #include <check.h>
 #include <pdf.h>
 #include <stdlib.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_time_clear_001
  * Description:
- * Create new pdf_time_t object and initialize it with 
+ * Create new pdf_time_t object and initialize it with
  * value diffrent to zero.
  * Then clear that object and compare it with
  * newly created empty pdf_time_t.
@@ -65,7 +65,7 @@ START_TEST (pdf_time_clear_001)
 
   status = pdf_time_destroy(time);
   fail_if(status != PDF_OK);
- 
+
   status = pdf_time_destroy(zeroTime);
   fail_if(status != PDF_OK);
 
@@ -75,7 +75,7 @@ END_TEST
 /*
  * Test: pdf_time_clear_002
  * Description:
- * Create new pdf_time_t object and initialize it with 
+ * Create new pdf_time_t object and initialize it with
  * pdf_time_cal diferent from default one.
  * Then clear that object and compare it with
  * newly created empty pdf_time_t.
@@ -94,7 +94,7 @@ START_TEST (pdf_time_clear_002)
   struct pdf_time_cal_s caltime;
 
   pdf_init();
-  
+
   status = pdf_time_new(&time);
   fail_if(status != PDF_OK);
 
@@ -109,9 +109,9 @@ START_TEST (pdf_time_clear_002)
   caltime.hour = 11;
   caltime.minute = 34;
   caltime.second = 12;
-  
+
   caltime.gmt_offset = 2;
-  
+
   status = pdf_time_from_cal (time, &caltime);
   fail_if(status != PDF_OK);
 
@@ -123,7 +123,7 @@ START_TEST (pdf_time_clear_002)
 
   status = pdf_time_destroy(time);
   fail_if(status != PDF_OK);
- 
+
   status = pdf_time_destroy(zeroTime);
   fail_if(status != PDF_OK);
 
@@ -143,6 +143,9 @@ test_pdf_time_clear (void)
   tcase_add_test(tc, pdf_time_clear_002);
 
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include <string.h>
 #include <pdf.h>
 #include <check.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_realloc_001
  * Description:
@@ -37,17 +37,15 @@
  *   1. The call should not produce an error.
  *   2. The previous contents of the buffer should still be there.
  */
-START_TEST(pdf_realloc_001)
+START_TEST (pdf_realloc_001)
 {
 #define PDF_REALLOC_001_STRING "0123456789"
   char *data;
 
-  pdf_init();
-  
   /* Allocate some memory */
   data = pdf_alloc (strlen(PDF_REALLOC_001_STRING) + 1);
   fail_if (data == NULL);
-  
+
   /* Set the contents of the memory */
   strcpy (data, PDF_REALLOC_001_STRING);
 
@@ -60,6 +58,7 @@ START_TEST(pdf_realloc_001)
   fail_if (strncmp (data,
                     PDF_REALLOC_001_STRING,
                     strlen (PDF_REALLOC_001_STRING)));
+  pdf_dealloc (data);
 }
 END_TEST
 
@@ -69,20 +68,18 @@ END_TEST
  *   Reduce the size of a memory buffer.
  * Success conditions:
  *   1. The call should not produce an error.
- *   2. The truncated previous contents of the buffer should 
+ *   2. The truncated previous contents of the buffer should
  *      still be there.
  */
-START_TEST(pdf_realloc_002)
+START_TEST (pdf_realloc_002)
 {
 #define PDF_REALLOC_001_STRING "0123456789"
   char *data;
 
-  pdf_init();
-  
   /* Allocate some memory */
   data = pdf_alloc (strlen(PDF_REALLOC_001_STRING) + 1);
   fail_if (data == NULL);
-  
+
   /* Set the contents of the memory */
   strcpy (data, PDF_REALLOC_001_STRING);
 
@@ -95,6 +92,7 @@ START_TEST(pdf_realloc_002)
   fail_if (strncmp (data,
                     PDF_REALLOC_001_STRING,
                     strlen (PDF_REALLOC_001_STRING) - 1));
+  pdf_dealloc (data);
 }
 END_TEST
 
@@ -104,9 +102,13 @@ END_TEST
 TCase *
 test_pdf_realloc (void)
 {
-  TCase *tc = tcase_create("pdf_realloc");
-  tcase_add_test (tc, pdf_realloc_001);
+  TCase *tc;
 
+  tc = tcase_create ("pdf_realloc");
+  tcase_add_test (tc, pdf_realloc_001);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

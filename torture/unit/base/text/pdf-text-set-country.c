@@ -28,7 +28,7 @@
 #include <string.h>
 #include <pdf.h>
 #include <check.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_text_set_country_001
  * Description:
@@ -36,28 +36,28 @@
  * Success conditions:
  *   1. The call to pdf_text_set_country should return PDF_OK.
  *   2. The contents of the internal country ID representation should be the
- *      expected ones. 
+ *      expected ones.
  */
-START_TEST(pdf_text_set_country_001)
+START_TEST (pdf_text_set_country_001)
 {
-  
+
 
 
   pdf_text_t text;
   const pdf_char_t *country = (pdf_char_t *)"GB";
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   fail_if(pdf_text_new (&text) != PDF_OK);
-  
+
   /* 1. The call to pdf_text_set_country should return PDF_OK. */
   fail_if(pdf_text_set_country(text, country) != PDF_OK);
-  
+
   /* 2. The contents of the internal country ID representation should be the
    *      expected ones. */
   fail_unless(strcmp(pdf_text_get_country(text), country)==0);
-  
+
   pdf_text_destroy(text);
 
 }
@@ -69,21 +69,21 @@ END_TEST
  * Description:
  *   Set an invalid one-character country ID
  * Success conditions:
- *   1. The call to pdf_text_set_country should NOT return PDF_OK. 
+ *   1. The call to pdf_text_set_country should NOT return PDF_OK.
  */
-START_TEST(pdf_text_set_country_002)
+START_TEST (pdf_text_set_country_002)
 {
   pdf_text_t text;
   const pdf_char_t *country = (pdf_char_t *)"a";
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   fail_if(pdf_text_new (&text) != PDF_OK);
-  
+
   /* 1. The call to pdf_text_set_country should NOT return PDF_OK. */
   fail_if(pdf_text_set_country(text, country) == PDF_OK);
-  
+
   pdf_text_destroy(text);
 }
 END_TEST
@@ -94,21 +94,21 @@ END_TEST
  * Description:
  *   Set an invalid empty country ID
  * Success conditions:
- *   1. The call to pdf_text_set_country should NOT return PDF_OK. 
+ *   1. The call to pdf_text_set_country should NOT return PDF_OK.
  */
-START_TEST(pdf_text_set_country_003)
+START_TEST (pdf_text_set_country_003)
 {
   pdf_text_t text;
   const pdf_char_t *country = (pdf_char_t *)"";
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   fail_if(pdf_text_new (&text) != PDF_OK);
-  
+
   /* 1. The call to pdf_text_set_country should NOT return PDF_OK. */
   fail_if(pdf_text_set_country(text, country) == PDF_OK);
-  
+
   pdf_text_destroy(text);
 }
 END_TEST
@@ -124,6 +124,9 @@ test_pdf_text_set_country (void)
   tcase_add_test(tc, pdf_text_set_country_002);
   tcase_add_test(tc, pdf_text_set_country_003);
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

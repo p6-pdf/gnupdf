@@ -29,7 +29,7 @@
 #include <config.h>
 #include <stdio.h>
 #include <pdf.h>
-
+#include <pdf-test-common.h>
 pdf_bool_t l_comp (const void * elemb,
                    const void * elema);
 void l_disp (const void *elema);

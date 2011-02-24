@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include <string.h>
 #include <pdf.h>
 #include <check.h>
-
+#include <pdf-test-common.h>
 
 
 #define INTERACTIVE_DEBUG 0
@@ -40,7 +40,7 @@
  * Success conditions:
  * The call should produce a negative number from a positive
  */
-START_TEST(pdf_i64_neg_001)
+START_TEST (pdf_i64_neg_001)
 {
   pdf_status_t p_status = PDF_OK;
   int cmp_res;
@@ -49,9 +49,9 @@ START_TEST(pdf_i64_neg_001)
   pdf_init();
 
   pdf_i64_assign(&k,0,2,&p_status); /*2*/
-  
 
-#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
+
+#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
   pdf_i64_neg( &j, k ,&p_status);
   fail_if( p_status != PDF_OK);
   fail_if(j.high != 0xFFFFFFFF);
@@ -60,8 +60,8 @@ START_TEST(pdf_i64_neg_001)
   pdf_i64_neg( &j, k ,&p_status);
   fail_if(j != -2);
 #endif
-  
-  
+
+
 
 }
 END_TEST
@@ -75,7 +75,7 @@ END_TEST
  * The call should produce a positive number from a negative
  */
 
-START_TEST(pdf_i64_neg_002)
+START_TEST (pdf_i64_neg_002)
 {
   pdf_status_t p_status = PDF_OK;
   int cmp_res;
@@ -84,19 +84,19 @@ START_TEST(pdf_i64_neg_002)
 
   pdf_i64_assign(&k,0xFFFFFFFF,0xFFFFFFFE,&p_status); /*-2*/
 
-  
-  
- 
+
+
+
 #ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
-  pdf_i64_neg( &j, k ,&p_status); 
-  fail_if( p_status != PDF_OK);  
+  pdf_i64_neg( &j, k ,&p_status);
+  fail_if( p_status != PDF_OK);
   fail_if(j.high != 0);
   fail_if(j.low != 2);
 #else
   pdf_i64_neg( &j, k, &p_status );
   fail_if(j != 2);
 #endif
-  
+
 }
 END_TEST
 
@@ -108,7 +108,7 @@ END_TEST
  * Success conditions:
  * The call should return PDF_ERROR
  */
-START_TEST(pdf_i64_neg_003)
+START_TEST (pdf_i64_neg_003)
 {
   pdf_status_t p_status = PDF_OK;
   pdf_i64_t src;
@@ -138,6 +138,9 @@ test_pdf_i64_neg (void)
   tcase_add_test(tc, pdf_i64_neg_001);
   tcase_add_test(tc, pdf_i64_neg_002);
   tcase_add_test(tc, pdf_i64_neg_003);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

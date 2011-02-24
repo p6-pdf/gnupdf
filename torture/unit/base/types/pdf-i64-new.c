@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include <string.h>
 #include <pdf.h>
 #include <check.h>
-
+#include <pdf-test-common.h>
 
 
 #define INTERACTIVE_DEBUG 0
@@ -39,7 +39,7 @@
  *   Checks if the pdf_i64_new function properly assigns
  *  the high and low values to a pdf_i64_t type
  */
-START_TEST(pdf_i64_new_001)
+START_TEST (pdf_i64_new_001)
 {
 
   pdf_i64_t k;
@@ -48,13 +48,13 @@ START_TEST(pdf_i64_new_001)
 
   k = pdf_i64_new(4,5);
 
-#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
+#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
   fail_if(k.low != 5);
   fail_if(k.high != 4);
 #else
   fail_if(k != 0x400000005LL);
 #endif
-  
+
 
 }
 END_TEST
@@ -70,6 +70,9 @@ test_pdf_i64_new (void)
 {
   TCase *tc = tcase_create("pdf_i64_new");
   tcase_add_test(tc, pdf_i64_new_001);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

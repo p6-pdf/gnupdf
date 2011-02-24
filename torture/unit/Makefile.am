@@ -211,8 +211,7 @@ TEST_SUITE_CRYPT = base/crypt/pdf-crypt-cipher-new.c \
                    base/crypt/pdf-crypt-md-destroy.c
 
 TEST_SUITE_ALLOC = base/alloc/pdf-alloc.c \
-                   base/alloc/pdf-realloc.c \
-                   base/alloc/pdf-dealloc.c
+                   base/alloc/pdf-realloc.c
 
 TEST_SUITE_FP = base/fp/pdf-fp-func-eval.c \
                 base/fp/pdf-fp-func-4-new.c
@@ -262,6 +261,8 @@ runtests_SOURCES = $(NOCHECK_SRC) \
                    $(TORTUTILS_FILES) \
                    $(TSUITE_FILES) \
                    $(TEST_FILES) \
+                   pdf-test-common.h \
+                   pdf-test-common.c \
                    runtests.c
 
 check_PROGRAMS = runtests

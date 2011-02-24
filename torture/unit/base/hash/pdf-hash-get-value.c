@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include <pdf.h>
 #include <check.h>
-
+#include <pdf-test-common.h>
 static const pdf_char_t *val1 = "val1";
 static const pdf_char_t *val2 = "val2";
 static const pdf_char_t *val3 = "val3";
@@ -106,6 +106,9 @@ test_pdf_hash_get_value (void)
 
   tcase_add_test (tc, pdf_hash_get_value_001);
   tcase_add_test (tc, pdf_hash_get_value_002);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

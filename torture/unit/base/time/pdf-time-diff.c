@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include <check.h>
 #include <pdf.h>
 #include <stdlib.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_time_diff_001
  * Description:
@@ -53,7 +53,7 @@ START_TEST (pdf_time_diff_001)
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
-  
+
   status = pdf_time_new(&time2);
   fail_if(status != PDF_OK);
 
@@ -66,7 +66,7 @@ START_TEST (pdf_time_diff_001)
   span = pdf_time_span_new();
   status = pdf_time_diff(time1, time2, &span);
   fail_if(status != PDF_OK);
-  
+
   sec = pdf_time_span_to_secs(span);
   sec2 = 0;
   fail_unless(memcmp(&sec,&sec2, sizeof(pdf_i64_t)) == 0);
@@ -87,6 +87,9 @@ test_pdf_time_diff (void)
 
   tcase_add_test(tc, pdf_time_diff_001);
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

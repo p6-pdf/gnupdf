@@ -26,7 +26,7 @@
 #include <config.h>
 
 #include <check.h>
-
+#include <pdf-test-common.h>
 extern TCase *test_pdf_hash_new (void);
 extern TCase *test_pdf_hash_key_p (void);
 extern TCase *test_pdf_hash_rename_key (void);

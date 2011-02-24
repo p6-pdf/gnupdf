@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,13 +28,13 @@
 #include <pdf.h>
 #include <stdlib.h>
 #include <base/time/pdf-time-test-common.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_time_span_set_001
  * Description:
  *   Create new pdf_time_span_t object and init it
  *   with positive and negative number.
- *   
+ *
  *Success condition:
  * 1. Function pdf_time_span_new schould return PDF_OK
  * 2. Function pdf_time_span_set schould return PDF_OK
@@ -74,6 +74,9 @@ test_pdf_time_span_set (void)
 
   tcase_add_test(tc, pdf_time_span_set_001);
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

@@ -29,7 +29,7 @@
 #include <pdf.h>
 #include <check.h>
 #include <base/text/pdf-text-test-common.h>
-
+#include <pdf-test-common.h>
 
 #define INTERACTIVE_DEBUG   0
 
@@ -39,16 +39,16 @@
  *   Create a text object with an input valid host-encoded string
  * Success conditions:
  *    1. The call to  pdf_text_new_from_host should return PDF_OK.
- *    2. The contents of the text object must be the expected ones. 
+ *    2. The contents of the text object must be the expected ones.
  */
-START_TEST(pdf_text_new_from_host_001)
+START_TEST (pdf_text_new_from_host_001)
 {
-  
+
 
 
   extern const test_string_t ascii_strings[];
   int i;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
 
@@ -80,7 +80,7 @@ START_TEST(pdf_text_new_from_host_001)
           /* Just in case... */
           fail_if(expected_data == NULL);
         }
-  
+
 
       /* Create, without using the API, a valid pdf_text_host_encoding_t */
 #ifdef PDF_HOST_WIN32
@@ -88,7 +88,7 @@ START_TEST(pdf_text_new_from_host_001)
 #else
       strcpy((&(host_enc.name[0])), "us-ascii");
 #endif
-  
+
       /* 1. The call to  pdf_text_new_from_host should return PDF_OK. */
       fail_unless(pdf_text_new_from_host(input_data,
                                          input_size,
@@ -104,7 +104,7 @@ START_TEST(pdf_text_new_from_host_001)
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
 
       pdf_text_destroy(text);
-      
+
       if(expected_free)
         {
           pdf_dealloc(expected_data);
@@ -125,15 +125,15 @@ END_TEST
  * Success conditions:
  *    1. The call to  pdf_text_new_from_host should NOT return PDF_OK.
  */
-START_TEST(pdf_text_new_from_host_002)
+START_TEST (pdf_text_new_from_host_002)
 {
   pdf_text_t text = NULL;
   pdf_text_host_encoding_t host_enc;
   const pdf_char_t *sample_utf8 = (pdf_char_t *)"\342\202\254"; /* EURO SIGN */
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create, without using the API, a valid pdf_text_host_encoding_t */
 #ifdef PDF_HOST_WIN32
       strcpy((&(host_enc.name[0])), "CP20127"); /* us-ascii */
@@ -157,17 +157,17 @@ END_TEST
  *   Create a text object with an input string encoded in an invalid host
  *   encoding
  * Success conditions:
- *    1. The call to  pdf_text_new_from_host should NOT return PDF_OK. 
+ *    1. The call to  pdf_text_new_from_host should NOT return PDF_OK.
  */
-START_TEST(pdf_text_new_from_host_003)
+START_TEST (pdf_text_new_from_host_003)
 {
   pdf_text_t text = NULL;
   pdf_text_host_encoding_t host_enc;
   const pdf_char_t *sample_usascii = (pdf_char_t *)"GNU's not Unix";
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create, without using the API, an invalid pdf_text_host_encoding_t */
 #ifdef PDF_HOST_WIN32
   strcpy((&(host_enc.name[0])), "CP17"); /* us-ascii */
@@ -176,7 +176,7 @@ START_TEST(pdf_text_new_from_host_003)
 #endif
 
 
-  
+
   /* 1. The call to  pdf_text_new_from_host should NOT return PDF_OK. */
   fail_unless(pdf_text_new_from_host(sample_usascii,
                                      strlen((char*)sample_usascii),
@@ -193,7 +193,7 @@ END_TEST
  * Success conditions:
  *    1. The call to  pdf_text_new_from_host should return PDF_EBADDATA
  */
-START_TEST(pdf_text_new_from_host_004)
+START_TEST (pdf_text_new_from_host_004)
 {
   pdf_text_t text = NULL;
   pdf_text_host_encoding_t host_enc;
@@ -221,7 +221,7 @@ END_TEST
  * Success conditions:
  *    1. The call to  pdf_text_new_from_host should return PDF_EBADDATA
  */
-START_TEST(pdf_text_new_from_host_005)
+START_TEST (pdf_text_new_from_host_005)
 {
   pdf_text_t text = NULL;
   pdf_text_host_encoding_t host_enc;
@@ -255,6 +255,9 @@ test_pdf_text_new_from_host(void)
   tcase_add_test(tc, pdf_text_new_from_host_003);
   tcase_add_test(tc, pdf_text_new_from_host_004);
   tcase_add_test(tc, pdf_text_new_from_host_005);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

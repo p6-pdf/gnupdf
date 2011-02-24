@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,14 +29,14 @@
 #include <stdlib.h>
 #include <time.h>
 #include <base/time/pdf-time-test-common.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_time_get_utc_cal_001
  * Description:
  *   Create new pdf_time_t and initialize it with a
  *   date in utc. Returned localcal schould be
  *   expected one.
- *   
+ *
  *Success condition:
  * 1. Function pdf_time_new schould return PDF_OK
  * 2. Function pdf_time_set_from_u32 schould return
@@ -61,18 +61,18 @@ START_TEST (pdf_time_get_utc_cal_001)
 
   fail_if(status != PDF_OK);
   fail_if(time1==NULL);
-    
+
   for (i = 0;i < DATES_SIZE; i++){
       status = pdf_time_set_from_u32(time1, datesInSeconds[i]);
       fail_if(status != PDF_OK);
-    
+
       status = pdf_time_get_utc_cal(time1, &localcal);
       fail_if(status != PDF_OK);
-      
+
       fail_unless(memcmp(&localcal, &dates[i],sizeof(struct pdf_time_cal_s)) == 0);
 
   }
-  
+
   status = pdf_time_destroy(time1);
   fail_if(status != PDF_OK);
 }
@@ -85,7 +85,7 @@ END_TEST
  *   Create new pdf_time_t and initialize it with
  *   28857600 seconds that is 1970-12-01 in utc.
  *   Returned calendar schould be expected one.
- *   
+ *
  *Success condition:
  * 1. Function pdf_time_new schould return PDF_OK
  * 2. Function pdf_time_set_from_u32 schould return
@@ -108,8 +108,8 @@ START_TEST (pdf_time_get_utc_cal_002)
 
   fail_if(status != PDF_OK);
   fail_if(time1==NULL);
-    
-  status = pdf_time_set_from_u32(time1, 28857600); 
+
+  status = pdf_time_set_from_u32(time1, 28857600);
   fail_if(status != PDF_OK);
   expected_cal.year = 1970;
   expected_cal.month = 12;
@@ -120,12 +120,12 @@ START_TEST (pdf_time_get_utc_cal_002)
   expected_cal.second = 0;
   expected_cal.gmt_offset = 0;
 
-    
+
   status = pdf_time_get_utc_cal(time1, &utccal);
   fail_if(status != PDF_OK);
-      
+
   fail_unless(memcmp(&utccal, &expected_cal,sizeof(struct pdf_time_cal_s)) == 0);
-  
+
   status = pdf_time_destroy(time1);
   fail_if(status != PDF_OK);
 }
@@ -144,6 +144,9 @@ test_pdf_time_get_utc_cal (void)
   tcase_add_test(tc, pdf_time_get_utc_cal_002);
 
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

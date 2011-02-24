@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 
 #include <check.h>
 #include <pdf.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_stm_get_mode_001
  * Description:
@@ -114,10 +114,13 @@ TCase *
 test_pdf_stm_get_mode (void)
 {
   TCase *tc = tcase_create ("pdf_stm_get_mode");
-  
+
   tcase_add_test (tc, pdf_stm_get_mode_001);
   tcase_add_test (tc, pdf_stm_get_mode_002);
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 #include <check.h>
 #include <pdf.h>
 #include <stdlib.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_time_span_new_001
  * Description:
@@ -49,10 +49,10 @@ START_TEST (pdf_time_span_new_001)
   pdf_init();
 
   span = pdf_time_span_new();
-  
+
   sec = pdf_time_span_to_secs(span);
   sec2 = 0;
-  
+
   fail_unless(memcmp(&sec,&sec2, sizeof(pdf_i64_t)) == 0);
 
   status = pdf_time_span_destroy(&span);
@@ -71,6 +71,9 @@ test_pdf_time_span_new (void)
 
   tcase_add_test(tc, pdf_time_span_new_001);
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

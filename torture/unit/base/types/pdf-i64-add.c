@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include <string.h>
 #include <pdf.h>
 #include <check.h>
-
+#include <pdf-test-common.h>
 
 
 #define INTERACTIVE_DEBUG 0
@@ -40,7 +40,7 @@
  * Success conditions:
  * The call should not produce an error
  */
-START_TEST(pdf_i64_add_001)
+START_TEST (pdf_i64_add_001)
 {
   pdf_status_t p_status = PDF_OK;
   pdf_i64_t add1,add2,dest;
@@ -49,7 +49,7 @@ START_TEST(pdf_i64_add_001)
   add1 = pdf_i64_new(0,0xFFFFFFFF);
   add2 = pdf_i64_new(2147483646,1);
 
-#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT  
+#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
   pdf_i64_add(&dest,add1,add2, &p_status);
   fail_if(p_status != PDF_OK);
   fail_if(dest.low != 0);
@@ -71,25 +71,25 @@ END_TEST
  * The call should produce an error
  */
 
-START_TEST(pdf_i64_add_002)
+START_TEST (pdf_i64_add_002)
 {
   pdf_status_t p_status = PDF_OK;
   pdf_i64_t add1,add2;
-  
+
   pdf_init();
 
   add1 = pdf_i64_new(0,4);
   add2 = pdf_i64_new(5,0);
 
-  
 
-#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
+
+#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
   pdf_i64_t *dest = NULL;
-  pdf_i64_add(dest,add1,add2, &p_status); 
+  pdf_i64_add(dest,add1,add2, &p_status);
   fail_if(p_status != PDF_EBADDATA);
 #endif
-  
-  
+
+
 }
 END_TEST
 
@@ -100,20 +100,20 @@ END_TEST
  * Success conditions:
  * The call should not produce an error
  */
-START_TEST(pdf_i64_add_003)
+START_TEST (pdf_i64_add_003)
 {
   pdf_status_t p_status = PDF_OK;
   pdf_i64_t add1, add2, dest;
 
-#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
+#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
   pdf_init();
 
   add1 = pdf_i64_new(0xFFFFFFFF,0xFFFFFFFE); /*-2*/
   add2 = pdf_i64_new(0,3);
   pdf_i64_add(&dest, add1, add2, &p_status);
-  
+
   fail_if(p_status != PDF_OK);
-  
+
   fail_if(dest.low != 1);
   fail_if(dest.high != 0);
 #else
@@ -122,7 +122,7 @@ START_TEST(pdf_i64_add_003)
   pdf_i64_add(&dest, add1, add2, &p_status);
   fail_if(dest != 1);
 #endif
- 
+
 
 }
 END_TEST
@@ -136,21 +136,21 @@ END_TEST
  * Success conditions:
  * The call should not produce an error
  */
-START_TEST(pdf_i64_add_004)
+START_TEST (pdf_i64_add_004)
 {
 
   pdf_i64_t add1, add2, dest;
   pdf_status_t p_status = PDF_OK;
-#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
+#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
   pdf_init();
 
   add1 = pdf_i64_new(0xFFFFFFFF,0xFFFFFFFE); /*-2*/
   add2 = pdf_i64_new(0xFFFFFFFF,0xFFFFFFFE); /*-2*/
 
   pdf_i64_add(&dest, add1, add2, &p_status);
-  
+
   fail_if(p_status != PDF_OK);
-  
+
   fail_if(dest.low !=  0xFFFFFFFC); /*-4*/
   fail_if(dest.high != 0xFFFFFFFF);
 #else
@@ -176,6 +176,9 @@ test_pdf_i64_add (void)
   tcase_add_test(tc, pdf_i64_add_002);
   tcase_add_test(tc, pdf_i64_add_003);
   tcase_add_test(tc, pdf_i64_add_004);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 
