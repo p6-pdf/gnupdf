@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include <check.h>
 #include <pdf.h>
 #include <stdlib.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_time_copy_001
  * Description:
@@ -89,7 +89,7 @@ START_TEST (pdf_time_copy_002)
   time2 = NULL;
 
   pdf_init();
-  
+
   status =  pdf_time_new(&time1);
   fail_if(status != PDF_OK);
   status  = pdf_time_copy(time1, time2);
@@ -109,6 +109,9 @@ test_pdf_time_copy (void)
   tcase_add_test(tc, pdf_time_copy_001);
 //  tcase_add_test(tc, pdf_time_copy_002);
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

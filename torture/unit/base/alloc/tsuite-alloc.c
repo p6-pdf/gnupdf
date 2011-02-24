@@ -8,7 +8,7 @@
  *
  */
 
-/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2007-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,10 +27,9 @@
 #include <config.h>
 
 #include <check.h>
-
+#include <pdf-test-common.h>
 extern TCase *test_pdf_alloc (void);
 extern TCase *test_pdf_realloc (void);
-extern TCase *test_pdf_dealloc (void);
 
 Suite *
 tsuite_alloc ()
@@ -40,8 +39,6 @@ tsuite_alloc ()
   s = suite_create("alloc");
   suite_add_tcase (s, test_pdf_alloc());
   suite_add_tcase (s, test_pdf_realloc());
-  suite_add_tcase (s, test_pdf_dealloc());
-
   return s;
 }
 

@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 
 #include <pdf.h>
 #include <base/time/pdf-time-test-common.h>
-
+#include <pdf-test-common.h>
 /* Table with time spans */
  struct pdf_time_cal_span_s day_time_span[DAY_TIME_SPAN_SIZE] ={
     {PDF_FALSE,0,0,0,0,0,0},        /* Zero seconds */
@@ -118,7 +118,7 @@ pdf_u32_t daysInSeconds[YEAR_MONTH_SIZE] = {
     (31 + 28 + 31)*SEC_IN_DAY,
     SEC_IN_NOLEEP_YEAR - 31*SEC_IN_DAY, /* 0 year and 11 months */
 //0,
-    
+
 
     SEC_IN_NOLEEP_YEAR,                               /* 1 year and 0 months */
     SEC_IN_NOLEEP_YEAR + 31*SEC_IN_DAY,               /* 1 year and 1 month */
@@ -128,7 +128,7 @@ pdf_u32_t daysInSeconds[YEAR_MONTH_SIZE] = {
 //0,
 
     2*SEC_IN_NOLEEP_YEAR,
-    2*SEC_IN_NOLEEP_YEAR +31*SEC_IN_DAY, 
+    2*SEC_IN_NOLEEP_YEAR +31*SEC_IN_DAY,
     2*SEC_IN_NOLEEP_YEAR +(31+29)*SEC_IN_DAY,
     2*SEC_IN_NOLEEP_YEAR +(31+29+31)*SEC_IN_DAY,
     2*SEC_IN_NOLEEP_YEAR + SEC_IN_LEEP_YEAR -31*SEC_IN_DAY,

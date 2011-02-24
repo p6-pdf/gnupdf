@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
 #include <pdf.h>
 #include <stdlib.h>
 #include <base/time/pdf-time-test-common.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_time_dup_001
  * Description:
@@ -62,7 +62,7 @@ START_TEST (pdf_time_dup_001)
   fail_if(time2 == NULL);
   fail_unless(pdf_time_cmp(time1, time2) == 0);
 
-  
+
   status = pdf_time_destroy(time1);
   fail_if(status !=PDF_OK);
 
@@ -83,6 +83,9 @@ test_pdf_time_dup (void)
 
   tcase_add_test(tc, pdf_time_dup_001);
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

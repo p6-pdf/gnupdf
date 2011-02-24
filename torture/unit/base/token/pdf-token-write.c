@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2011-02-17 02:58:53 EET mivael"
+/* -*- mode: C -*- Time-stamp: "2011-02-24 23:32:00 aleksander"
  *
  *       File:         pdf-token-write.c
  *       Date:         Tue Sep 21 21:08:07 2010
@@ -30,7 +30,7 @@
 #include <stdlib.h>
 
 #include <pdf.h>
-
+#include <pdf-test-common.h>
 
 /* Process src_len characters in src.  For every processed character
    either copy it to dst (if printable except for backslash) or
@@ -158,7 +158,7 @@ write_and_check (pdf_token_t token,
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_integer_positive)
+START_TEST (pdf_token_write_integer_positive)
 {
   pdf_token_t token;
 
@@ -184,7 +184,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_integer_negative)
+START_TEST (pdf_token_write_integer_negative)
 {
   pdf_token_t token;
 
@@ -209,7 +209,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_real_positive)
+START_TEST (pdf_token_write_real_positive)
 {
   pdf_token_t token;
 
@@ -234,7 +234,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_real_round)
+START_TEST (pdf_token_write_real_round)
 {
   pdf_token_t token;
 
@@ -259,7 +259,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_real_negative)
+START_TEST (pdf_token_write_real_negative)
 {
   pdf_token_t token;
 
@@ -285,7 +285,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_string_nonempty)
+START_TEST (pdf_token_write_string_nonempty)
 {
   pdf_token_t token;
 
@@ -311,7 +311,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_string_empty)
+START_TEST (pdf_token_write_string_empty)
 {
   pdf_token_t token;
 
@@ -337,7 +337,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_string_nonempty_hex)
+START_TEST (pdf_token_write_string_nonempty_hex)
 {
   pdf_token_t token;
 
@@ -363,7 +363,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_string_empty_hex)
+START_TEST (pdf_token_write_string_empty_hex)
 {
   pdf_token_t token;
 
@@ -389,7 +389,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_string_lf)
+START_TEST (pdf_token_write_string_lf)
 {
   pdf_token_t token;
 
@@ -415,7 +415,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_string_cr)
+START_TEST (pdf_token_write_string_cr)
 {
   pdf_token_t token;
 
@@ -441,7 +441,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_string_ht)
+START_TEST (pdf_token_write_string_ht)
 {
   pdf_token_t token;
 
@@ -467,7 +467,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_string_ht_readable)
+START_TEST (pdf_token_write_string_ht_readable)
 {
   pdf_token_t token;
 
@@ -493,7 +493,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_string_ff)
+START_TEST (pdf_token_write_string_ff)
 {
   pdf_token_t token;
 
@@ -520,7 +520,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_string_ff_readable)
+START_TEST (pdf_token_write_string_ff_readable)
 {
   pdf_token_t token;
 
@@ -546,7 +546,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_string_leftp)
+START_TEST (pdf_token_write_string_leftp)
 {
   pdf_token_t token;
 
@@ -572,7 +572,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_string_rightp)
+START_TEST (pdf_token_write_string_rightp)
 {
   pdf_token_t token;
 
@@ -598,7 +598,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_string_rs)
+START_TEST (pdf_token_write_string_rs)
 {
   pdf_token_t token;
 
@@ -624,7 +624,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_string_octal)
+START_TEST (pdf_token_write_string_octal)
 {
   pdf_token_t token;
 
@@ -650,7 +650,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_string_octal_readable)
+START_TEST (pdf_token_write_string_octal_readable)
 {
   pdf_token_t token;
 
@@ -675,7 +675,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_string_null)
+START_TEST (pdf_token_write_string_null)
 {
   pdf_token_t token;
 
@@ -700,7 +700,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_name_nonempty)
+START_TEST (pdf_token_write_name_nonempty)
 {
   pdf_token_t token;
 
@@ -725,7 +725,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_name_empty)
+START_TEST (pdf_token_write_name_empty)
 {
   pdf_token_t token;
 
@@ -750,7 +750,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_name_nonregular)
+START_TEST (pdf_token_write_name_nonregular)
 {
   pdf_token_t token;
 
@@ -775,7 +775,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_name_alphanum)
+START_TEST (pdf_token_write_name_alphanum)
 {
   pdf_token_t token;
 
@@ -800,7 +800,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_name_long)
+START_TEST (pdf_token_write_name_long)
 {
   pdf_token_t token;
 
@@ -825,7 +825,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_name_various)
+START_TEST (pdf_token_write_name_various)
 {
   pdf_token_t token;
 
@@ -850,7 +850,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_name_real)
+START_TEST (pdf_token_write_name_real)
 {
   pdf_token_t token;
 
@@ -875,7 +875,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_name_dollars)
+START_TEST (pdf_token_write_name_dollars)
 {
   pdf_token_t token;
 
@@ -900,7 +900,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_name_at)
+START_TEST (pdf_token_write_name_at)
 {
   pdf_token_t token;
 
@@ -925,7 +925,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_name_dot)
+START_TEST (pdf_token_write_name_dot)
 {
   pdf_token_t token;
 
@@ -951,7 +951,7 @@ END_TEST
  * Success condition:
  *   The written representation of the token is correct.
  */
-START_TEST(pdf_token_write_name_ns)
+START_TEST (pdf_token_write_name_ns)
 {
   pdf_token_t token;
 
@@ -1008,6 +1008,9 @@ test_pdf_token_write (void)
   tcase_add_test (tc, pdf_token_write_name_dot);
   tcase_add_test (tc, pdf_token_write_name_ns);
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

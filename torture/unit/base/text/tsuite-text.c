@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 #include <config.h>
 
 #include <check.h>
-
+#include <pdf-test-common.h>
 extern TCase *test_pdf_text_new_destroy (void);
 extern TCase *test_pdf_text_dup (void);
 extern TCase *test_pdf_text_new_from_host (void);
@@ -59,7 +59,7 @@ Suite *
 tsuite_text ()
 {
   Suite *s;
-  
+
   s = suite_create("text");
 
   suite_add_tcase (s, test_pdf_text_new_destroy());

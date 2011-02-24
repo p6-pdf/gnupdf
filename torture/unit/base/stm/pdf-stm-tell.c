@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,13 +28,13 @@
 #include <string.h>
 #include <check.h>
 #include <pdf.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_stm_tell_001
  * Description:
  *   Tell in an initialized reading memory stream.
  * Sucess condition:
- *   The tell operation should report the first position 
+ *   The tell operation should report the first position
  *   in the stream (0).
  */
 START_TEST (pdf_stm_tell_001)
@@ -84,6 +84,9 @@ test_pdf_stm_tell (void)
 
   tcase_add_test(tc, pdf_stm_tell_001);
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,13 +27,13 @@
 
 #include <base/time/pdf-time-test-common.h>
 #include <pdf.h>
-
+#include <pdf-test-common.h>
 void print_pdf_time_cal(pdf_time_t time, pdf_char_t *info){
     struct  pdf_time_cal_s cal;
 
     pdf_time_from_cal(time, &cal);
 
-    printf("%s %d-%d-%d %d:%d:%d +%d | dow %d\n", info, cal.year, cal.month, cal.day, cal.hour, cal.minute, cal.second, cal.gmt_offset, cal.dow); 
+    printf("%s %d-%d-%d %d:%d:%d +%d | dow %d\n", info, cal.year, cal.month, cal.day, cal.hour, cal.minute, cal.second, cal.gmt_offset, cal.dow);
 
 
 }

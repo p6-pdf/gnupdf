@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 #include <check.h>
 #include <pdf.h>
 #include <stdlib.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_time_span_negate_001
  * Description:
@@ -103,7 +103,7 @@ END_TEST
 /*
  * Test: pdf_time_span_negate_003
  * Description:
- *   Try to get invoke pdf_time_span_negate where 
+ *   Try to get invoke pdf_time_span_negate where
  *   argument pointer is NUL.
  *Success condition:
  * 1. Function pdf_time_span_negate schould return PDF_ERROR
@@ -134,6 +134,9 @@ test_pdf_time_span_negate (void)
   tcase_add_test(tc, pdf_time_span_negate_003);
 
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

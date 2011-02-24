@@ -30,7 +30,7 @@
 #include <check.h>
 
 #include <pdf.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_fsys_file_open_tmp_001
  * Description:
@@ -39,7 +39,7 @@
  *   The call to pdf_fsys_file_open_tmp should return PDF_OK.
  */
 
-START_TEST(pdf_fsys_file_open_tmp_001)
+START_TEST (pdf_fsys_file_open_tmp_001)
 {
   pdf_fsys_file_t file;
 
@@ -59,8 +59,11 @@ TCase *
 test_pdf_fsys_file_open_tmp (void)
 {
   TCase *tc = tcase_create ("pdf_fsys_file_open_tmp");
-  
+
   tcase_add_test (tc, pdf_fsys_file_open_tmp_001);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

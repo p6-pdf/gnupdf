@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 #include <config.h>
 
 #include <check.h>
-
+#include <pdf-test-common.h>
 extern TCase *test_pdf_fsys_get_free_space (void);
 extern TCase *test_pdf_fsys_file_open (void);
 extern TCase *test_pdf_fsys_file_open_tmp (void);
@@ -39,7 +39,7 @@ tsuite_fsys ()
   Suite *s;
 
   s = suite_create("fsys");
-  
+
   suite_add_tcase (s, test_pdf_fsys_get_free_space ());
   suite_add_tcase (s, test_pdf_fsys_file_open ());
   suite_add_tcase (s, test_pdf_fsys_file_open_tmp ());

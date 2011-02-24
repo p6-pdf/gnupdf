@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include <pdf.h>
 #include <stdlib.h>
 #include <base/time/pdf-time-test-common.h>
-
+#include <pdf-test-common.h>
 
 
 /*
@@ -42,8 +42,8 @@
  *Success condition:
  * 1. Function pdf_time_add_cal_span_with_base schould return
  * PDF_OK
- * 2. Function pdf_time_add_cal_span schould return 
- * PDF_OK 
+ * 2. Function pdf_time_add_cal_span schould return
+ * PDF_OK
  * 3. Function pdf_time_cmp schould return 0
  */
 START_TEST (pdf_time_add_cal_span_with_base_001)
@@ -71,7 +71,7 @@ START_TEST (pdf_time_add_cal_span_with_base_001)
   fail_if(status != PDF_OK);
 
 
-  
+
   for(i=0; i<DAY_TIME_SPAN_SIZE; i++){
     i2=i;
     for(j=0, j2=0 ; j<YEAR_MONTH_SIZE; j++){
@@ -82,7 +82,7 @@ START_TEST (pdf_time_add_cal_span_with_base_001)
          span1.hours = day_time_span[i].hours;
          span1.minutes = day_time_span[i].minutes;
          span1.seconds = day_time_span[i].seconds;
-      
+
          span2.sign = PDF_FALSE;
          span2.years = 0;
          span2.months = 0;
@@ -99,7 +99,7 @@ START_TEST (pdf_time_add_cal_span_with_base_001)
                 (span1.hours + span2.hours)*3600 +
                 (span1.minutes + span2.minutes)*60 +
                 (span1.seconds + span2.seconds);
-        
+
         status = pdf_time_set_from_u32(mytime, sec);
         fail_if(status != PDF_OK);
         status = pdf_time_add_cal_span(resulttime, &result);
@@ -138,6 +138,9 @@ test_pdf_time_add_cal_span_with_base (void)
   tcase_add_test(tc, pdf_time_add_cal_span_with_base_001);
 
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

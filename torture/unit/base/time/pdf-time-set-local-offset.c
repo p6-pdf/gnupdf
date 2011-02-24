@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,14 +28,14 @@
 #include <pdf.h>
 #include <stdlib.h>
 #include <time.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_time_set_local_offset_001
  * Description:
  * Invoke pdf_time_set_local_offset on newly created
  * pdf_time_t object. Than compare its gmt_offset
  * with offset taken from system.
- *   
+ *
  *Success condition:
  * 1. Function pdf_time_new schould return PDF_OK
  * 2. Function pdf_time_set_local_offset schould return
@@ -54,7 +54,7 @@ START_TEST (pdf_time_set_local_offset_001)
   pdf_u32_t localgmt;
   time_t tloc;
   struct tm* time_struct;
-    
+
   pdf_init();
 
   time(&tloc);
@@ -68,7 +68,7 @@ START_TEST (pdf_time_set_local_offset_001)
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
-  
+
   status = pdf_time_set_local_offset(time1);
   fail_if(status != PDF_OK);
 
@@ -76,7 +76,7 @@ START_TEST (pdf_time_set_local_offset_001)
   fail_if(status != PDF_OK);
 
   fail_if(utccal.gmt_offset != localgmt);
- 
+
   status = pdf_time_destroy(time1);
   fail_if(status != PDF_OK);
 }
@@ -93,6 +93,9 @@ test_pdf_time_set_local_offset (void)
   tcase_add_test(tc, pdf_time_set_local_offset_001);
 
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

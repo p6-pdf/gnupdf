@@ -30,7 +30,7 @@
 #include <check.h>
 
 #include <pdf.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_fsys_build_path_001
  * Description:
@@ -39,7 +39,7 @@
  *   The call to pdf_fsys_build_path should return PDF_OK
  */
 
-START_TEST(pdf_fsys_build_path_001)
+START_TEST (pdf_fsys_build_path_001)
 {
   pdf_text_t text1,text2,text3,result;
   pdf_char_t *first="want",*dir="some",*dirr="beer?", *output_data=NULL;
@@ -81,6 +81,9 @@ test_pdf_fsys_build_path (void)
 {
   TCase *tc = tcase_create("pdf_fsys_build_path");
   tcase_add_test(tc, pdf_fsys_build_path_001);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

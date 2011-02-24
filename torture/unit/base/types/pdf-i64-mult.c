@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include <string.h>
 #include <pdf.h>
 #include <check.h>
-
+#include <pdf-test-common.h>
 
 
 #define INTERACTIVE_DEBUG 0
@@ -36,12 +36,12 @@
 /*
  * Test: pdf_i64_mult_001
  * Description:
- *   Checks if the multiplication of two positive numbers 
+ *   Checks if the multiplication of two positive numbers
  *   is carried out properly
  * Success conditions:
  * The call should not produce an error
  */
-START_TEST(pdf_i64_mult_001)
+START_TEST (pdf_i64_mult_001)
 {
   pdf_status_t p_status = PDF_OK;
   pdf_i64_t mult1,mult2,dest;
@@ -50,9 +50,9 @@ START_TEST(pdf_i64_mult_001)
   mult1 = pdf_i64_new(0,2);
   mult2 = pdf_i64_new(0,2);
 
-  
 
-#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT  
+
+#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
   pdf_i64_mult(&dest,mult1,mult2, &p_status);
   fail_if(p_status != PDF_OK);
   fail_if(dest.low != 4);
@@ -74,25 +74,25 @@ END_TEST
  * The call should produce an error
  */
 
-START_TEST(pdf_i64_mult_002)
+START_TEST (pdf_i64_mult_002)
 {
   pdf_status_t p_status = PDF_OK;
   pdf_i64_t mult1,mult2;
-  
+
   pdf_init();
 
   mult1 = pdf_i64_new(0,4);
   mult2 = pdf_i64_new(5,0);
 
-  
 
-#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
+
+#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
   pdf_i64_t *dest = NULL;
-  pdf_i64_mult(dest,mult1,mult2, &p_status); 
+  pdf_i64_mult(dest,mult1,mult2, &p_status);
   fail_if(p_status != PDF_EBADDATA);
 #endif
-  
-  
+
+
 }
 END_TEST
 
@@ -103,20 +103,20 @@ END_TEST
  * Success conditions:
  * The call should not produce an error
  */
-START_TEST(pdf_i64_mult_003)
+START_TEST (pdf_i64_mult_003)
 {
   pdf_status_t p_status = PDF_OK;
   pdf_i64_t mult1, mult2, dest;
 
-#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
+#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
   pdf_init();
 
   mult1 = pdf_i64_new(0xFFFFFFFF,0xFFFFFFFE); /*-2*/
   mult2 = pdf_i64_new(0,3);
   pdf_i64_mult(&dest, mult1, mult2, &p_status);
-  
+
   fail_if(p_status != PDF_OK);
- 
+
   fail_if(dest.low != 0xFFFFFFFA); /*-6*/
   fail_if(dest.high != 0xFFFFFFFF);
 #else
@@ -125,7 +125,7 @@ START_TEST(pdf_i64_mult_003)
   pdf_i64_mult(&dest, mult1, mult2, &p_status);
   fail_if(dest != -6);
 #endif
- 
+
 
 }
 END_TEST
@@ -139,21 +139,21 @@ END_TEST
  * Success conditions:
  * The call should not produce an error
  */
-START_TEST(pdf_i64_mult_004)
+START_TEST (pdf_i64_mult_004)
 {
 
   pdf_i64_t mult1, mult2, dest;
   pdf_status_t p_status = PDF_OK;
-#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
+#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
   pdf_init();
 
   mult1 = pdf_i64_new(0xFFFFFFFF,0xFFFFFFFE); /*-2*/
   mult2 = pdf_i64_new(0xFFFFFFFF,0xFFFFFFFE); /*-2*/
 
   pdf_i64_mult(&dest, mult1, mult2, &p_status);
-  
+
   fail_if(p_status != PDF_OK);
-  
+
   fail_if(dest.low !=  4);
   fail_if(dest.high != 0);
 #else
@@ -179,6 +179,9 @@ test_pdf_i64_mult (void)
   tcase_add_test(tc, pdf_i64_mult_002);
   tcase_add_test(tc, pdf_i64_mult_003);
   tcase_add_test(tc, pdf_i64_mult_004);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

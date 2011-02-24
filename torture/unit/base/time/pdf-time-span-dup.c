@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,14 +27,14 @@
 #include <check.h>
 #include <pdf.h>
 #include <stdlib.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_time_span_dup_001
  * Description:
- *   Create pdf_time_span_t and initialize it. 
+ *   Create pdf_time_span_t and initialize it.
  *   Create duplicate  and compare with first
  *   object.
- *   
+ *
  *Success condition:
  * 1. Function memcmp schould return 0 if object are
  * equal.
@@ -54,7 +54,7 @@ START_TEST (pdf_time_span_dup_001)
 
     span2 = pdf_time_span_dup(span1);
 
-    fail_unless(memcmp(&span1, &span2, sizeof(pdf_time_span_t)) == 0); 
+    fail_unless(memcmp(&span1, &span2, sizeof(pdf_time_span_t)) == 0);
 
     status = pdf_time_span_destroy(&span1);
     fail_if(status != PDF_OK);
@@ -76,6 +76,9 @@ test_pdf_time_span_dup (void)
 
   tcase_add_test(tc, pdf_time_span_dup_001);
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

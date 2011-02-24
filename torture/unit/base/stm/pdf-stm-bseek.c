@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include <string.h>
 #include <check.h>
 #include <pdf.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_stm_bseek_001
  * Description:
@@ -78,7 +78,7 @@ START_TEST (pdf_stm_bseek_001)
   ret = pdf_stm_read_char (stm, &ret_char);
   fail_if(ret != PDF_OK);
   fail_if(ret_char != '8');
-  
+
   /* Destroy data */
   pdf_dealloc (buf);
   pdf_stm_destroy (stm);
@@ -88,7 +88,7 @@ END_TEST
 /*
  * Test: pdf_stm_bseek_002
  * Description:
- *   Bseek to a position beyond the size of the stream 
+ *   Bseek to a position beyond the size of the stream
  *   into a memory read stream.
  * Success condition:
  *   The bseek operation should success and the bseek
@@ -128,7 +128,7 @@ START_TEST (pdf_stm_bseek_002)
   ret = pdf_stm_read_char (stm, &ret_char);
   fail_if(ret != PDF_OK);
   fail_if(ret_char != '9');
-  
+
   /* Destroy data */
   pdf_dealloc (buf);
   pdf_stm_destroy (stm);
@@ -163,7 +163,7 @@ START_TEST (pdf_stm_bseek_003)
   fail_if (ret != PDF_OK);
 
   /* Open new file */
-  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, &file); 
+  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, &file);
   fail_if (ret != PDF_OK);
 
   ret = pdf_fsys_file_write (file, "0123456789", 10, &written);
@@ -171,7 +171,7 @@ START_TEST (pdf_stm_bseek_003)
   fail_if (written != 10);
   pdf_fsys_file_close (file);
 
-  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, &file); 
+  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, &file);
   fail_if (ret != PDF_OK);
   /* Create the stream */
   ret = pdf_stm_file_new (file,
@@ -198,7 +198,7 @@ START_TEST (pdf_stm_bseek_003)
   ret = pdf_stm_read_char (stm, &ret_char);
   fail_if(ret != PDF_OK);
   fail_if(ret_char != '8');
-  
+
   /* Destroy data */
   pdf_stm_destroy (stm);
   pdf_fsys_file_close (file);
@@ -210,7 +210,7 @@ END_TEST
 /*
  * Test: pdf_stm_bseek_004
  * Description:
- *   Bseek to a position beyond the size of the stream 
+ *   Bseek to a position beyond the size of the stream
  *   into a file read stream.
  * Success condition:
  *   The bseek operation should success and the bseek
@@ -237,7 +237,7 @@ START_TEST (pdf_stm_bseek_004)
   fail_if (ret != PDF_OK);
 
   /* Open new file */
-  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, &file); 
+  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, &file);
   fail_if (ret != PDF_OK);
 
   ret = pdf_fsys_file_write (file, "0123456789", 10, &written);
@@ -246,7 +246,7 @@ START_TEST (pdf_stm_bseek_004)
   pdf_fsys_file_close (file);
 
 
-  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, &file); 
+  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, &file);
   fail_if (ret != PDF_OK);
   /* Create the stream */
   ret = pdf_stm_file_new (file,
@@ -287,6 +287,9 @@ test_pdf_stm_bseek (void)
   tcase_add_test(tc, pdf_stm_bseek_003);
   tcase_add_test(tc, pdf_stm_bseek_004);
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

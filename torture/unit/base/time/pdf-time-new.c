@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,12 +28,12 @@
 #include <pdf.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_time_new_001
  * Description:
  *   Create new pdf_time_t.
- *   
+ *
  *Success condition:
  * 1. Function pdf_time_new schould return PDF_OK
  * 2. New pdf_time_t object is not NUL
@@ -54,7 +54,7 @@ START_TEST (pdf_time_new_001)
   fail_if(status != PDF_OK);
   fail_if(time1==NULL);
 
-  
+
   time_str1 = pdf_time_to_string(time1, PDF_TIME_FORMAT_ISO_8601, PDF_FALSE);
 
   fail_unless(memcmp(time_str1, expected_time, strlen(expected_time)) == 0);
@@ -75,6 +75,9 @@ test_pdf_time_new (void)
 
   tcase_add_test(tc, pdf_time_new_001);
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

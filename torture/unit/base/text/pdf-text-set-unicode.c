@@ -29,7 +29,7 @@
 #include <pdf.h>
 #include <check.h>
 #include <base/text/pdf-text-test-common.h>
-
+#include <pdf-test-common.h>
 #define INTERACTIVE_DEBUG   0
 
 /*
@@ -41,17 +41,17 @@
  *   1. The call to pdf_text_set_unicode should return PDF_OK.
  *   2. The contents of the text object must be the expected ones (without BOM).
  */
-START_TEST(pdf_text_set_unicode_001)
+START_TEST (pdf_text_set_unicode_001)
 {
-  
+
 
 
   extern const test_string_t utf8_strings[];
   int i;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   i = 0;
   while(utf8_strings[i].data != NULL)
     {
@@ -61,13 +61,13 @@ START_TEST(pdf_text_set_unicode_001)
       pdf_size_t input_size = 0;
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set input data */
       input_data = (pdf_char_t *)&(utf8_strings[i].data[3]);
       input_size = (pdf_size_t)utf8_strings[i].size -3;
-      
+
       /* Set expected data */
       expected_data = (pdf_char_t *)utf8_strings[i].utf32be_data;
       expected_size = (pdf_size_t)utf8_strings[i].utf32be_size;
@@ -80,13 +80,13 @@ START_TEST(pdf_text_set_unicode_001)
           /* Just in case... */
           fail_if(expected_data == NULL);
         }
-      
+
       /* 1. The call to pdf_text_set_unicode should return PDF_OK. */
       fail_if(pdf_text_set_unicode(text,
                                    input_data,
                                    input_size,
                                    PDF_TEXT_UTF8) != PDF_OK);
-      
+
       /* 2. The contents of the text object must be the expected ones
        *    (without BOM). */
 
@@ -96,15 +96,15 @@ START_TEST(pdf_text_set_unicode_001)
                                        PDF_TEXT_UTF32_HE,0) == PDF_OK);
       fail_unless(actual_size == expected_size);
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
-      
+
       fail_if(pdf_text_destroy(text) != PDF_OK);
-      
+
       if(expected_free)
         {
           pdf_dealloc(expected_data);
         }
       ++i;
-    }  
+    }
 
 }
 END_TEST
@@ -113,23 +113,23 @@ END_TEST
 /*
  * Test: pdf_text_set_unicode_002
  * Description:
- *   Set the contents of a text object with an input valid UTF-16BE encoded 
+ *   Set the contents of a text object with an input valid UTF-16BE encoded
  *    string (16-bit and 32-bit code points!) without BOM
  * Success conditions:
  *   1. The call to pdf_text_set_unicode should return PDF_OK.
  *   2. The contents of the text object must be the expected ones (without BOM).
  */
-START_TEST(pdf_text_set_unicode_002)
+START_TEST (pdf_text_set_unicode_002)
 {
-  
+
 
 
   extern const test_string_t utf16be_strings[];
   int i;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   i = 0;
   while(utf16be_strings[i].data != NULL)
     {
@@ -139,13 +139,13 @@ START_TEST(pdf_text_set_unicode_002)
       pdf_size_t input_size = 0;
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set input data */
       input_data = (pdf_char_t *)&(utf16be_strings[i].data[2]);
       input_size = (pdf_size_t)utf16be_strings[i].size -2;
-      
+
       /* Set expected data */
       expected_data = (pdf_char_t *)utf16be_strings[i].utf32be_data;
       expected_size = (pdf_size_t)utf16be_strings[i].utf32be_size;
@@ -158,13 +158,13 @@ START_TEST(pdf_text_set_unicode_002)
           /* Just in case... */
           fail_if(expected_data == NULL);
         }
-      
+
       /* 1. The call to pdf_text_new_from_unicode should return PDF_OK. */
       fail_if(pdf_text_set_unicode(text,
                                    input_data,
                                    input_size,
                                    PDF_TEXT_UTF16_BE) != PDF_OK);
-      
+
       /* 2. The contents of the text object must be the expected ones. */
 
       pdf_size_t actual_size;
@@ -173,15 +173,15 @@ START_TEST(pdf_text_set_unicode_002)
                                        PDF_TEXT_UTF32_HE,0) == PDF_OK);
       fail_unless(actual_size == expected_size);
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
-      
+
       fail_if(pdf_text_destroy(text) != PDF_OK);
-      
+
       if(expected_free)
         {
           pdf_dealloc(expected_data);
         }
       ++i;
-    }  
+    }
 
 }
 END_TEST
@@ -190,23 +190,23 @@ END_TEST
 /*
  * Test: pdf_text_set_unicode_003
  * Description:
- *   Set the contents of a text object with an input valid UTF-16LE encoded 
+ *   Set the contents of a text object with an input valid UTF-16LE encoded
  *    string (16-bit and 32-bit code points!) without BOM
  * Success conditions:
  *   1. The call to pdf_text_set_unicode should return PDF_OK.
  *   2. The contents of the text object must be the expected ones (without BOM).
  */
-START_TEST(pdf_text_set_unicode_003)
+START_TEST (pdf_text_set_unicode_003)
 {
-  
+
 
 
   extern const test_string_t utf16be_strings[];
   int i;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   i = 0;
   while(utf16be_strings[i].data != NULL)
     {
@@ -216,15 +216,15 @@ START_TEST(pdf_text_set_unicode_003)
       pdf_size_t input_size = 0;
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set input data (change endiannes to input UTF-16BE string) */
       input_size = (pdf_size_t)utf16be_strings[i].size -2;
       input_data=pdf_text_test_change_utf16_endianness((pdf_char_t *) \
                                                        &utf16be_strings[i].data[2],
                                                        input_size);
-      
+
       /* Set expected data */
       expected_data = (pdf_char_t *)utf16be_strings[i].utf32be_data;
       expected_size = (pdf_size_t)utf16be_strings[i].utf32be_size;
@@ -237,13 +237,13 @@ START_TEST(pdf_text_set_unicode_003)
           /* Just in case... */
           fail_if(expected_data == NULL);
         }
-      
+
       /* 1. The call to pdf_text_set_unicode should return PDF_OK. */
       fail_if(pdf_text_set_unicode(text,
                                    input_data,
                                    input_size,
                                    PDF_TEXT_UTF16_LE) != PDF_OK);
-            
+
       /* 2. The contents of the text object must be the expected ones. */
 
       pdf_size_t actual_size;
@@ -252,9 +252,9 @@ START_TEST(pdf_text_set_unicode_003)
                                        PDF_TEXT_UTF32_HE,0) == PDF_OK);
       fail_unless(actual_size == expected_size);
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
-      
+
       fail_if(pdf_text_destroy(text) != PDF_OK);
-      
+
       if(expected_free)
         {
           pdf_dealloc(expected_data);
@@ -269,23 +269,23 @@ END_TEST
 /*
  * Test: pdf_text_set_unicode_004
  * Description:
- *   Set the contents of a text object with an input valid UTF-16HE encoded 
+ *   Set the contents of a text object with an input valid UTF-16HE encoded
  *    string (16-bit and 32-bit code points!) without BOM
  * Success conditions:
  *   1. The call to pdf_text_set_unicode should return PDF_OK.
  *   2. The contents of the text object must be the expected ones (without BOM).
  */
-START_TEST(pdf_text_set_unicode_004)
+START_TEST (pdf_text_set_unicode_004)
 {
-  
+
 
 
   extern const test_string_t utf16be_strings[];
   int i;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   i = 0;
   while(utf16be_strings[i].data != NULL)
     {
@@ -296,9 +296,9 @@ START_TEST(pdf_text_set_unicode_004)
       pdf_size_t input_size = 0;
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set input data (change endiannes to input UTF-16BE string if required)
        */
       input_size = (pdf_size_t)utf16be_strings[i].size -2;
@@ -315,7 +315,7 @@ START_TEST(pdf_text_set_unicode_004)
         {
           input_data = (pdf_char_t *)&utf16be_strings[i].data[2];
         }
-      
+
       /* Set expected data */
       expected_data = (pdf_char_t *)utf16be_strings[i].utf32be_data;
       expected_size = (pdf_size_t)utf16be_strings[i].utf32be_size;
@@ -328,13 +328,13 @@ START_TEST(pdf_text_set_unicode_004)
           /* Just in case... */
           fail_if(expected_data == NULL);
         }
-      
+
       /* 1. The call to pdf_text_set_unicode should return PDF_OK. */
       fail_if(pdf_text_set_unicode(text,
                                    input_data,
                                    input_size,
                                    PDF_TEXT_UTF16_HE) != PDF_OK);
-      
+
       /* 2. The contents of the text object must be the expected ones. */
 
       pdf_size_t actual_size;
@@ -343,9 +343,9 @@ START_TEST(pdf_text_set_unicode_004)
                                        PDF_TEXT_UTF32_HE,0) == PDF_OK);
       fail_unless(actual_size == expected_size);
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
-      
+
       fail_if(pdf_text_destroy(text) != PDF_OK);
-      
+
       if(expected_free)
         {
           pdf_dealloc(expected_data);
@@ -355,7 +355,7 @@ START_TEST(pdf_text_set_unicode_004)
           pdf_dealloc(input_data);
         }
       ++i;
-    }  
+    }
 
 }
 END_TEST
@@ -364,23 +364,23 @@ END_TEST
 /*
  * Test: pdf_text_set_unicode_005
  * Description:
- *   Set the contents of a text object with an input valid UTF-32BE encoded 
+ *   Set the contents of a text object with an input valid UTF-32BE encoded
  *    string without BOM
  * Success conditions:
  *   1. The call to pdf_text_set_unicode should return PDF_OK.
  *   2. The contents of the text object must be the expected ones (without BOM).
  */
-START_TEST(pdf_text_set_unicode_005)
+START_TEST (pdf_text_set_unicode_005)
 {
-  
+
 
 
   extern const test_string_t utf32be_strings[];
   int i;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   i = 0;
   while(utf32be_strings[i].data != NULL)
     {
@@ -390,13 +390,13 @@ START_TEST(pdf_text_set_unicode_005)
       pdf_size_t input_size = 0;
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set input data */
       input_size = (pdf_size_t)utf32be_strings[i].size -4;
       input_data = (pdf_char_t *)&utf32be_strings[i].data[4];
-      
+
       /* Set expected data */
       expected_data = (pdf_char_t *)utf32be_strings[i].utf32be_data;
       expected_size = (pdf_size_t)utf32be_strings[i].utf32be_size;
@@ -409,13 +409,13 @@ START_TEST(pdf_text_set_unicode_005)
           /* Just in case... */
           fail_if(expected_data == NULL);
         }
-      
+
       /* 1. The call to pdf_text_set_unicode should return PDF_OK. */
       fail_if(pdf_text_set_unicode(text,
                                    input_data,
                                    input_size,
                                    PDF_TEXT_UTF32_BE) != PDF_OK);
-      
+
       /* 2. The contents of the text object must be the expected ones. */
 
       pdf_size_t actual_size;
@@ -424,15 +424,15 @@ START_TEST(pdf_text_set_unicode_005)
                                        PDF_TEXT_UTF32_HE,0) == PDF_OK);
       fail_unless(actual_size == expected_size);
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
-      
+
       fail_if(pdf_text_destroy(text) != PDF_OK);
-      
+
       if(expected_free)
         {
           pdf_dealloc(expected_data);
         }
       ++i;
-    }  
+    }
 
 }
 END_TEST
@@ -441,23 +441,23 @@ END_TEST
 /*
  * Test: pdf_text_set_unicode_006
  * Description:
- *   Set the contents of a text object with an input valid UTF-32LE encoded 
+ *   Set the contents of a text object with an input valid UTF-32LE encoded
  *    string without BOM
  * Success conditions:
  *   1. The call to pdf_text_set_unicode should return PDF_OK.
  *   2. The contents of the text object must be the expected ones (without BOM).
  */
-START_TEST(pdf_text_set_unicode_006)
+START_TEST (pdf_text_set_unicode_006)
 {
-  
+
 
 
   extern const test_string_t utf32be_strings[];
   int i;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   i = 0;
   while(utf32be_strings[i].data != NULL)
     {
@@ -467,15 +467,15 @@ START_TEST(pdf_text_set_unicode_006)
       pdf_size_t input_size = 0;
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set input data */
       input_size = (pdf_size_t)utf32be_strings[i].size -4;
       input_data = pdf_text_test_change_utf32_endianness((pdf_char_t *) \
                                                          &utf32be_strings[i].data[4],
                                                          input_size);
-      
+
       /* Set expected data */
       expected_data = (pdf_char_t *)utf32be_strings[i].utf32be_data;
       expected_size = (pdf_size_t)utf32be_strings[i].utf32be_size;
@@ -488,13 +488,13 @@ START_TEST(pdf_text_set_unicode_006)
           /* Just in case... */
           fail_if(expected_data == NULL);
         }
-      
+
       /* 1. The call to pdf_text_set_unicode should return PDF_OK. */
       fail_if(pdf_text_set_unicode(text,
                                    input_data,
                                    input_size,
                                    PDF_TEXT_UTF32_LE) != PDF_OK);
-      
+
       /* 2. The contents of the text object must be the expected ones. */
 
       pdf_size_t actual_size;
@@ -505,14 +505,14 @@ START_TEST(pdf_text_set_unicode_006)
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
 
       fail_if(pdf_text_destroy(text) != PDF_OK);
-      
+
       if(expected_free)
         {
           pdf_dealloc(expected_data);
         }
       pdf_dealloc(input_data);
       ++i;
-    }  
+    }
 
 }
 END_TEST
@@ -521,23 +521,23 @@ END_TEST
 /*
  * Test: pdf_text_set_unicode_007
  * Description:
- *   Set the contents of a text object with an input valid UTF-32HE encoded 
+ *   Set the contents of a text object with an input valid UTF-32HE encoded
  *    string without BOM
  * Success conditions:
  *   1. The call to pdf_text_set_unicode should return PDF_OK.
  *   2. The contents of the text object must be the expected ones (without BOM).
  */
-START_TEST(pdf_text_set_unicode_007)
+START_TEST (pdf_text_set_unicode_007)
 {
-  
+
 
 
   extern const test_string_t utf32be_strings[];
   int i;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   i = 0;
   while(utf32be_strings[i].data != NULL)
     {
@@ -548,9 +548,9 @@ START_TEST(pdf_text_set_unicode_007)
       pdf_size_t input_size = 0;
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set input data (UTF-32HE) */
       input_size = (pdf_size_t)utf32be_strings[i].size -4;
       if(!pdf_text_test_big_endian_system())
@@ -566,7 +566,7 @@ START_TEST(pdf_text_set_unicode_007)
         {
           input_data = (pdf_char_t *)&utf32be_strings[i].data[4];
         }
-      
+
       /* Set expected data */
       expected_data = (pdf_char_t *)utf32be_strings[i].utf32be_data;
       expected_size = (pdf_size_t)utf32be_strings[i].utf32be_size;
@@ -579,13 +579,13 @@ START_TEST(pdf_text_set_unicode_007)
           /* Just in case... */
           fail_if(expected_data == NULL);
         }
-      
+
       /* 1. The call to pdf_text_set_unicode should return PDF_OK. */
       fail_if(pdf_text_set_unicode(text,
                                    input_data,
                                    input_size,
                                    PDF_TEXT_UTF32_HE) != PDF_OK);
-      
+
       /* 2. The contents of the text object must be the expected ones. */
 
       pdf_size_t actual_size;
@@ -596,7 +596,7 @@ START_TEST(pdf_text_set_unicode_007)
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
 
       fail_if(pdf_text_destroy(text) != PDF_OK);
-      
+
       if(expected_free)
         {
           pdf_dealloc(expected_data);
@@ -606,7 +606,7 @@ START_TEST(pdf_text_set_unicode_007)
           pdf_dealloc(input_data);
         }
       ++i;
-    }  
+    }
 
 }
 END_TEST
@@ -620,17 +620,17 @@ END_TEST
  *   1. The call to pdf_text_set_unicode should return PDF_OK.
  *   2. The contents of the text object must be the expected ones (without BOM).
  */
-START_TEST(pdf_text_set_unicode_008)
+START_TEST (pdf_text_set_unicode_008)
 {
-  
+
 
 
   extern const test_string_t utf8_strings[];
   int i;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   i = 0;
   while(utf8_strings[i].data != NULL)
     {
@@ -640,13 +640,13 @@ START_TEST(pdf_text_set_unicode_008)
       pdf_size_t input_size = 0;
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set input data */
       input_data = (pdf_char_t *)&(utf8_strings[i].data[0]);
       input_size = (pdf_size_t)utf8_strings[i].size;
-      
+
       /* Set expected data */
       expected_data = (pdf_char_t *)utf8_strings[i].utf32be_data;
       expected_size = (pdf_size_t)utf8_strings[i].utf32be_size;
@@ -659,13 +659,13 @@ START_TEST(pdf_text_set_unicode_008)
           /* Just in case... */
           fail_if(expected_data == NULL);
         }
-      
+
       /* 1. The call to pdf_text_set_unicode should return PDF_OK. */
       fail_if(pdf_text_set_unicode(text,
                                    input_data,
                                    input_size,
                                    PDF_TEXT_UTF8) != PDF_OK);
-      
+
       /* 2. The contents of the text object must be the expected ones. */
 
       pdf_size_t actual_size;
@@ -674,15 +674,15 @@ START_TEST(pdf_text_set_unicode_008)
                                        PDF_TEXT_UTF32_HE,0) == PDF_OK);
       fail_unless(actual_size == expected_size);
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
-      
+
       fail_if(pdf_text_destroy(text) != PDF_OK);
-      
+
       if(expected_free)
         {
           pdf_dealloc(expected_data);
         }
       ++i;
-    }  
+    }
 
 }
 END_TEST
@@ -691,23 +691,23 @@ END_TEST
 /*
  * Test: pdf_text_set_unicode_009
  * Description:
- *   Set the contents of a text object with an input valid UTF-16BE encoded 
+ *   Set the contents of a text object with an input valid UTF-16BE encoded
  *    string (16-bit and 32-bit code points!) with BOM
  * Success conditions:
  *   1. The call to pdf_text_set_unicode should return PDF_OK.
  *   2. The contents of the text object must be the expected ones (without BOM).
  */
-START_TEST(pdf_text_set_unicode_009)
+START_TEST (pdf_text_set_unicode_009)
 {
-  
+
 
 
   extern const test_string_t utf16be_strings[];
   int i;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   i = 0;
   while(utf16be_strings[i].data != NULL)
     {
@@ -717,13 +717,13 @@ START_TEST(pdf_text_set_unicode_009)
       pdf_size_t input_size = 0;
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set input data */
       input_data = (pdf_char_t *)&(utf16be_strings[i].data[0]);
       input_size = (pdf_size_t)utf16be_strings[i].size;
-      
+
       /* Set expected data */
       expected_data = (pdf_char_t *)utf16be_strings[i].utf32be_data;
       expected_size = (pdf_size_t)utf16be_strings[i].utf32be_size;
@@ -736,13 +736,13 @@ START_TEST(pdf_text_set_unicode_009)
           /* Just in case... */
           fail_if(expected_data == NULL);
         }
-      
+
       /* 1. The call to pdf_text_new_from_unicode should return PDF_OK. */
       fail_if(pdf_text_set_unicode(text,
                                    input_data,
                                    input_size,
                                    PDF_TEXT_UTF16_BE) != PDF_OK);
-      
+
       /* 2. The contents of the text object must be the expected ones. */
 
       pdf_size_t actual_size;
@@ -751,15 +751,15 @@ START_TEST(pdf_text_set_unicode_009)
                                        PDF_TEXT_UTF32_HE,0) == PDF_OK);
       fail_unless(actual_size == expected_size);
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
-      
+
       fail_if(pdf_text_destroy(text) != PDF_OK);
-      
+
       if(expected_free)
         {
           pdf_dealloc(expected_data);
         }
       ++i;
-    }  
+    }
 
 }
 END_TEST
@@ -768,23 +768,23 @@ END_TEST
 /*
  * Test: pdf_text_set_unicode_010
  * Description:
- *   Set the contents of a text object with an input valid UTF-16LE encoded 
+ *   Set the contents of a text object with an input valid UTF-16LE encoded
  *    string (16-bit and 32-bit code points!) with BOM
  * Success conditions:
  *   1. The call to pdf_text_set_unicode should return PDF_OK.
  *   2. The contents of the text object must be the expected ones (without BOM).
  */
-START_TEST(pdf_text_set_unicode_010)
+START_TEST (pdf_text_set_unicode_010)
 {
-  
+
 
 
   extern const test_string_t utf16be_strings[];
   int i;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   i = 0;
   while(utf16be_strings[i].data != NULL)
     {
@@ -794,15 +794,15 @@ START_TEST(pdf_text_set_unicode_010)
       pdf_size_t input_size = 0;
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set input data (change endiannes to input UTF-16BE string) */
       input_size = (pdf_size_t)utf16be_strings[i].size;
       input_data=pdf_text_test_change_utf16_endianness((pdf_char_t *) \
                                                        &utf16be_strings[i].data[0],
                                                        input_size);
-      
+
       /* Set expected data */
       expected_data = (pdf_char_t *)utf16be_strings[i].utf32be_data;
       expected_size = (pdf_size_t)utf16be_strings[i].utf32be_size;
@@ -815,13 +815,13 @@ START_TEST(pdf_text_set_unicode_010)
           /* Just in case... */
           fail_if(expected_data == NULL);
         }
-      
+
       /* 1. The call to pdf_text_new_from_unicode should return PDF_OK. */
       fail_if(pdf_text_set_unicode(text,
                                    input_data,
                                    input_size,
                                    PDF_TEXT_UTF16_LE) != PDF_OK);
-      
+
       /* 2. The contents of the text object must be the expected ones. */
 
       pdf_size_t actual_size;
@@ -830,16 +830,16 @@ START_TEST(pdf_text_set_unicode_010)
                                        PDF_TEXT_UTF32_HE,0) == PDF_OK);
       fail_unless(actual_size == expected_size);
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
-      
+
       fail_if(pdf_text_destroy(text) != PDF_OK);
-      
+
       if(expected_free)
         {
           pdf_dealloc(expected_data);
         }
       pdf_dealloc(input_data);
       ++i;
-    }  
+    }
 
 }
 END_TEST
@@ -847,23 +847,23 @@ END_TEST
 /*
  * Test: pdf_text_set_unicode_011
  * Description:
- *   Set the contents of a text object with an input valid UTF-16HE encoded 
+ *   Set the contents of a text object with an input valid UTF-16HE encoded
  *    string (16-bit and 32-bit code points!) with BOM
  * Success conditions:
  *   1. The call to pdf_text_set_unicode should return PDF_OK.
  *   2. The contents of the text object must be the expected ones (without BOM).
  */
-START_TEST(pdf_text_set_unicode_011)
+START_TEST (pdf_text_set_unicode_011)
 {
-  
+
 
 
   extern const test_string_t utf16be_strings[];
   int i;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   i = 0;
   while(utf16be_strings[i].data != NULL)
     {
@@ -874,9 +874,9 @@ START_TEST(pdf_text_set_unicode_011)
       pdf_size_t input_size = 0;
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set input data (change endiannes to input UTF-16BE string if required)
        */
       input_size = (pdf_size_t)utf16be_strings[i].size;
@@ -893,7 +893,7 @@ START_TEST(pdf_text_set_unicode_011)
         {
           input_data = (pdf_char_t *)&utf16be_strings[i].data[0];
         }
-      
+
       /* Set expected data */
       expected_data = (pdf_char_t *)utf16be_strings[i].utf32be_data;
       expected_size = (pdf_size_t)utf16be_strings[i].utf32be_size;
@@ -906,13 +906,13 @@ START_TEST(pdf_text_set_unicode_011)
           /* Just in case... */
           fail_if(expected_data == NULL);
         }
-      
+
       /* 1. The call to pdf_text_new_from_unicode should return PDF_OK. */
       fail_if(pdf_text_set_unicode(text,
                                    input_data,
                                    input_size,
                                    PDF_TEXT_UTF16_HE) != PDF_OK);
-      
+
       /* 2. The contents of the text object must be the expected ones. */
 
       pdf_size_t actual_size;
@@ -921,9 +921,9 @@ START_TEST(pdf_text_set_unicode_011)
                                        PDF_TEXT_UTF32_HE,0) == PDF_OK);
       fail_unless(actual_size == expected_size);
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
-      
+
       fail_if(pdf_text_destroy(text) != PDF_OK);
-      
+
       if(expected_free)
         {
           pdf_dealloc(expected_data);
@@ -942,23 +942,23 @@ END_TEST
 /*
  * Test: pdf_text_set_unicode_012
  * Description:
- *   Set the contents of a text object with an input valid UTF-32BE encoded 
+ *   Set the contents of a text object with an input valid UTF-32BE encoded
  *    string with BOM
  * Success conditions:
  *   1. The call to pdf_text_set_unicode should return PDF_OK.
  *   2. The contents of the text object must be the expected ones (without BOM).
  */
-START_TEST(pdf_text_set_unicode_012)
+START_TEST (pdf_text_set_unicode_012)
 {
-  
+
 
 
   extern const test_string_t utf32be_strings[];
   int i;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   i = 0;
   while(utf32be_strings[i].data != NULL)
     {
@@ -968,13 +968,13 @@ START_TEST(pdf_text_set_unicode_012)
       pdf_size_t input_size = 0;
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set input data */
       input_size = (pdf_size_t)utf32be_strings[i].size;
       input_data = (pdf_char_t *)&utf32be_strings[i].data[0];
-      
+
       /* Set expected data */
       expected_data = (pdf_char_t *)utf32be_strings[i].utf32be_data;
       expected_size = (pdf_size_t)utf32be_strings[i].utf32be_size;
@@ -987,13 +987,13 @@ START_TEST(pdf_text_set_unicode_012)
           /* Just in case... */
           fail_if(expected_data == NULL);
         }
-      
+
       /* 1. The call to pdf_text_set_unicode should return PDF_OK. */
       fail_if(pdf_text_set_unicode(text,
                                    input_data,
                                    input_size,
                                    PDF_TEXT_UTF32_BE) != PDF_OK);
-      
+
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *input_hex = NULL;
@@ -1019,7 +1019,7 @@ START_TEST(pdf_text_set_unicode_012)
           pdf_dealloc(internal_hex);
           pdf_dealloc(expected_hex);
         }
-      
+
       /* 2. The contents of the text object must be the expected ones. */
 
       pdf_size_t actual_size;
@@ -1030,13 +1030,13 @@ START_TEST(pdf_text_set_unicode_012)
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
 
       fail_if(pdf_text_destroy(text) != PDF_OK);
-      
+
       if(expected_free)
         {
           pdf_dealloc(expected_data);
         }
       ++i;
-    }  
+    }
 
 }
 END_TEST
@@ -1045,23 +1045,23 @@ END_TEST
 /*
  * Test: pdf_text_set_unicode_013
  * Description:
- *   Set the contents of a text object with an input valid UTF-32LE encoded 
+ *   Set the contents of a text object with an input valid UTF-32LE encoded
  *    string with BOM
  * Success conditions:
  *   1. The call to pdf_text_set_unicode should return PDF_OK.
  *   2. The contents of the text object must be the expected ones (without BOM).
  */
-START_TEST(pdf_text_set_unicode_013)
+START_TEST (pdf_text_set_unicode_013)
 {
-  
+
 
 
   extern const test_string_t utf32be_strings[];
   int i;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   i = 0;
   while(utf32be_strings[i].data != NULL)
     {
@@ -1071,15 +1071,15 @@ START_TEST(pdf_text_set_unicode_013)
       pdf_size_t input_size = 0;
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set input data */
       input_size = (pdf_size_t)utf32be_strings[i].size;
       input_data = pdf_text_test_change_utf32_endianness((pdf_char_t *) \
                                                          &utf32be_strings[i].data[0],
                                                          input_size);
-      
+
       /* Set expected data */
       expected_data = (pdf_char_t *)utf32be_strings[i].utf32be_data;
       expected_size = (pdf_size_t)utf32be_strings[i].utf32be_size;
@@ -1092,13 +1092,13 @@ START_TEST(pdf_text_set_unicode_013)
           /* Just in case... */
           fail_if(expected_data == NULL);
         }
-      
+
       /* 1. The call to pdf_text_set_unicode should return PDF_OK. */
       fail_if(pdf_text_set_unicode(text,
                                    input_data,
                                    input_size,
                                    PDF_TEXT_UTF32_LE) != PDF_OK);
-            
+
       /* 2. The contents of the text object must be the expected ones. */
 
       pdf_size_t actual_size;
@@ -1107,16 +1107,16 @@ START_TEST(pdf_text_set_unicode_013)
                                        PDF_TEXT_UTF32_HE,0) == PDF_OK);
       fail_unless(actual_size == expected_size);
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
-      
+
       fail_if(pdf_text_destroy(text) != PDF_OK);
-      
+
       if(expected_free)
         {
           pdf_dealloc(expected_data);
         }
       pdf_dealloc(input_data);
       ++i;
-    }  
+    }
 
 }
 END_TEST
@@ -1125,23 +1125,23 @@ END_TEST
 /*
  * Test: pdf_text_set_unicode_014
  * Description:
- *   Set the contents of a text object with an input valid UTF-32HE encoded 
+ *   Set the contents of a text object with an input valid UTF-32HE encoded
  *    string with BOM
  * Success conditions:
  *   1. The call to pdf_text_set_unicode should return PDF_OK.
  *   2. The contents of the text object must be the expected ones (without BOM).
  */
-START_TEST(pdf_text_set_unicode_014)
+START_TEST (pdf_text_set_unicode_014)
 {
-  
+
 
 
   extern const test_string_t utf32be_strings[];
   int i;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   i = 0;
   while(utf32be_strings[i].data != NULL)
     {
@@ -1152,9 +1152,9 @@ START_TEST(pdf_text_set_unicode_014)
       pdf_size_t input_size = 0;
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set input data (UTF-32HE) */
       input_size = (pdf_size_t)utf32be_strings[i].size;
       if(!pdf_text_test_big_endian_system())
@@ -1170,7 +1170,7 @@ START_TEST(pdf_text_set_unicode_014)
         {
           input_data = (pdf_char_t *)&utf32be_strings[i].data[0];
         }
-      
+
       /* Set expected data */
       expected_data = (pdf_char_t *)utf32be_strings[i].utf32be_data;
       expected_size = (pdf_size_t)utf32be_strings[i].utf32be_size;
@@ -1183,13 +1183,13 @@ START_TEST(pdf_text_set_unicode_014)
           /* Just in case... */
           fail_if(expected_data == NULL);
         }
-      
+
       /* 1. The call to pdf_text_new_from_unicode should return PDF_OK. */
       fail_if(pdf_text_set_unicode(text,
                                    input_data,
                                    input_size,
                                    PDF_TEXT_UTF32_HE) != PDF_OK);
-      
+
       /* 2. The contents of the text object must be the expected ones. */
 
       pdf_size_t actual_size;
@@ -1198,9 +1198,9 @@ START_TEST(pdf_text_set_unicode_014)
                                        PDF_TEXT_UTF32_HE,0) == PDF_OK);
       fail_unless(actual_size == expected_size);
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
-      
+
       fail_if(pdf_text_destroy(text) != PDF_OK);
-      
+
       if(expected_free)
         {
           pdf_dealloc(expected_data);
@@ -1210,7 +1210,7 @@ START_TEST(pdf_text_set_unicode_014)
           pdf_dealloc(input_data);
         }
       ++i;
-    }  
+    }
 
 }
 END_TEST
@@ -1225,16 +1225,16 @@ END_TEST
  *   1. The call to pdf_text_set_unicode should NOT return PDF_OK.
  *   2. The contents of the text object must remain unchanged.
  */
-START_TEST(pdf_text_set_unicode_015)
+START_TEST (pdf_text_set_unicode_015)
 {
   extern const test_string_t utf16be_strings[];
   extern const test_string_t utf32be_strings[];
   int i;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
-  
+
+
   /* Try UTF-16BE strings */
   i = 0;
   while(utf16be_strings[i].data != NULL)
@@ -1244,26 +1244,26 @@ START_TEST(pdf_text_set_unicode_015)
       pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set previous string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
-      
+
       input_data = (pdf_char_t *)utf16be_strings[i].data;
       input_size = (pdf_size_t)utf16be_strings[i].size;
-      
+
       /* 1. The call to  pdf_text_set_unicode should NOT return PDF_OK. */
       fail_unless(pdf_text_set_unicode(text,
                                        input_data,
                                        input_size,
                                        PDF_TEXT_UTF8) != PDF_OK);
-      
+
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
       fail_unless(strcmp(output_data, previous_string) == 0);
-      
+
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
       ++i;
@@ -1277,29 +1277,29 @@ START_TEST(pdf_text_set_unicode_015)
       pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set previous string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
-      
+
       input_data = (pdf_char_t *)utf32be_strings[i].data;
       input_size = (pdf_size_t)utf32be_strings[i].size;
-      
+
       /* 1. The call to  pdf_text_set_unicode should NOT return PDF_OK. */
       fail_unless(pdf_text_set_unicode(text,
                                        input_data,
                                        input_size,
                                        PDF_TEXT_UTF8) != PDF_OK);
-      
+
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
       fail_unless(strcmp(output_data, previous_string) == 0);
-      
+
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
-      
+
       ++i;
     }
 }
@@ -1315,15 +1315,15 @@ END_TEST
  *   1. The call to pdf_text_set_unicode should NOT return PDF_OK.
  *   2. The contents of the text object must remain unchanged.
  */
-START_TEST(pdf_text_set_unicode_016)
+START_TEST (pdf_text_set_unicode_016)
 {
   extern const test_string_t utf8_strings[];
   int i;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
-  
+
+
   /* Try UTF-8 strings */
   i = 0;
   while(utf8_strings[i].data != NULL)
@@ -1333,29 +1333,29 @@ START_TEST(pdf_text_set_unicode_016)
       pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set previous string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
-      
+
       input_data = (pdf_char_t *)utf8_strings[i].data;
       input_size = (pdf_size_t)utf8_strings[i].size;
-      
+
       /* 1. The call to  pdf_text_set_unicode should NOT return PDF_OK. */
       fail_unless(pdf_text_set_unicode(text,
                                        input_data,
                                        input_size,
                                        PDF_TEXT_UTF16_BE) != PDF_OK);
-      
+
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
       fail_unless(strcmp(output_data, previous_string) == 0);
-      
+
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
-      
+
       ++i;
     }
 }
@@ -1371,15 +1371,15 @@ END_TEST
  *   1. The call to pdf_text_set_unicode should NOT return PDF_OK.
  *   2. The contents of the text object must remain unchanged.
  */
-START_TEST(pdf_text_set_unicode_017)
+START_TEST (pdf_text_set_unicode_017)
 {
   extern const test_string_t utf8_strings[];
   int i;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
-  
+
+
   /* Try UTF-8 strings */
   i = 0;
   while(utf8_strings[i].data != NULL)
@@ -1389,29 +1389,29 @@ START_TEST(pdf_text_set_unicode_017)
       pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set previous string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
-      
+
       input_data = (pdf_char_t *)utf8_strings[i].data;
       input_size = (pdf_size_t)utf8_strings[i].size;
-      
+
       /* 1. The call to  pdf_text_set_unicode should NOT return PDF_OK. */
       fail_unless(pdf_text_set_unicode(text,
                                        input_data,
                                        input_size,
                                        PDF_TEXT_UTF16_LE) != PDF_OK);
-      
+
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
       fail_unless(strcmp(output_data, previous_string) == 0);
-      
+
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
-      
+
       ++i;
     }
 }
@@ -1426,15 +1426,15 @@ END_TEST
  *   1. The call to pdf_text_set_unicode should NOT return PDF_OK.
  *   2. The contents of the text object must remain unchanged.
  */
-START_TEST(pdf_text_set_unicode_018)
+START_TEST (pdf_text_set_unicode_018)
 {
   extern const test_string_t utf8_strings[];
   int i;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
-  
+
+
   /* Try UTF-8 strings */
   i = 0;
   while(utf8_strings[i].data != NULL)
@@ -1444,29 +1444,29 @@ START_TEST(pdf_text_set_unicode_018)
       pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set previous string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
-      
+
       input_data = (pdf_char_t *)utf8_strings[i].data;
       input_size = (pdf_size_t)utf8_strings[i].size;
-      
+
       /* 1. The call to  pdf_text_set_unicode should NOT return PDF_OK. */
       fail_unless(pdf_text_set_unicode(text,
                                        input_data,
                                        input_size,
                                        PDF_TEXT_UTF16_HE) != PDF_OK);
-      
+
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
       fail_unless(strcmp(output_data, previous_string) == 0);
-      
+
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
-      
+
       ++i;
     }
 }
@@ -1481,15 +1481,15 @@ END_TEST
  *   1. The call to pdf_text_set_unicode should NOT return PDF_OK.
  *   2. The contents of the text object must remain unchanged.
  */
-START_TEST(pdf_text_set_unicode_019)
+START_TEST (pdf_text_set_unicode_019)
 {
   extern const test_string_t utf8_strings[];
   int i;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
-  
+
+
   /* Try UTF-8 strings */
   i = 0;
   while(utf8_strings[i].data != NULL)
@@ -1499,29 +1499,29 @@ START_TEST(pdf_text_set_unicode_019)
       pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set previous string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
-      
+
       input_data = (pdf_char_t *)utf8_strings[i].data;
       input_size = (pdf_size_t)utf8_strings[i].size;
-      
+
       /* 1. The call to  pdf_text_set_unicode should NOT return PDF_OK. */
       fail_unless(pdf_text_set_unicode(text,
                                        input_data,
                                        input_size,
                                        PDF_TEXT_UTF32_BE) != PDF_OK);
-      
+
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
       fail_unless(strcmp(output_data, previous_string) == 0);
-      
+
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
-      
+
       ++i;
     }
 }
@@ -1536,15 +1536,15 @@ END_TEST
  *   1. The call to pdf_text_set_unicode should NOT return PDF_OK.
  *   2. The contents of the text object must remain unchanged.
  */
-START_TEST(pdf_text_set_unicode_020)
+START_TEST (pdf_text_set_unicode_020)
 {
   extern const test_string_t utf8_strings[];
   int i;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
-  
+
+
   /* Try UTF-8 strings */
   i = 0;
   while(utf8_strings[i].data != NULL)
@@ -1554,29 +1554,29 @@ START_TEST(pdf_text_set_unicode_020)
       pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set previous string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
-      
+
       input_data = (pdf_char_t *)utf8_strings[i].data;
       input_size = (pdf_size_t)utf8_strings[i].size;
-      
+
       /* 1. The call to  pdf_text_set_unicode should NOT return PDF_OK. */
       fail_unless(pdf_text_set_unicode(text,
                                        input_data,
                                        input_size,
                                        PDF_TEXT_UTF32_LE) != PDF_OK);
-      
+
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
       fail_unless(strcmp(output_data, previous_string) == 0);
-      
+
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
-      
+
       ++i;
     }
 }
@@ -1591,15 +1591,15 @@ END_TEST
  *   1. The call to pdf_text_set_unicode should NOT return PDF_OK.
  *   2. The contents of the text object must remain unchanged.
  */
-START_TEST(pdf_text_set_unicode_021)
+START_TEST (pdf_text_set_unicode_021)
 {
   extern const test_string_t utf8_strings[];
   int i;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
-  
+
+
   /* Try UTF-8 strings */
   i = 0;
   while(utf8_strings[i].data != NULL)
@@ -1609,29 +1609,29 @@ START_TEST(pdf_text_set_unicode_021)
       pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set previous string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
-      
+
       input_data = (pdf_char_t *)utf8_strings[i].data;
       input_size = (pdf_size_t)utf8_strings[i].size;
-      
+
       /* 1. The call to  pdf_text_set_unicode should NOT return PDF_OK. */
       fail_unless(pdf_text_set_unicode(text,
                                        input_data,
                                        input_size,
                                        PDF_TEXT_UTF32_HE) != PDF_OK);
-      
+
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
       fail_unless(strcmp(output_data, previous_string) == 0);
-      
+
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
-      
+
       ++i;
     }
 }
@@ -1646,18 +1646,18 @@ END_TEST
  *   1. The call to pdf_text_set_unicode should NOT return PDF_OK.
  *   2. The contents of the text object must remain unchanged.
  */
-START_TEST(pdf_text_set_unicode_022)
+START_TEST (pdf_text_set_unicode_022)
 {
   extern const test_string_t utf16be_strings[];
   extern const test_string_t utf32be_strings[];
   int i;
   const pdf_char_t *bom_data = (pdf_char_t *)"\xEF\xBB\xBF";
   pdf_size_t bom_size = 3;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
-  
+
+
   /* Try UTF-16BE strings */
   i = 0;
   while(utf16be_strings[i].data != NULL)
@@ -1667,30 +1667,30 @@ START_TEST(pdf_text_set_unicode_022)
       pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set previous string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
-      
+
       input_size = (pdf_size_t)utf16be_strings[i].size + bom_size;
       input_data = (pdf_char_t *)pdf_alloc(input_size);
       memcpy(&input_data[0], bom_data, bom_size);
       memcpy(&input_data[bom_size -1],
              utf16be_strings[i].data,
              utf16be_strings[i].size);
-      
+
       /* 1. The call to  pdf_text_set_unicode should NOT return PDF_OK. */
       fail_unless(pdf_text_set_unicode(text,
                                        input_data,
                                        input_size,
                                        PDF_TEXT_UTF8) != PDF_OK);
-      
+
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
       fail_unless(strcmp(output_data, previous_string) == 0);
-      
+
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
       pdf_dealloc(input_data);
@@ -1705,30 +1705,30 @@ START_TEST(pdf_text_set_unicode_022)
       pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = "a";
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set previous string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
-      
+
       input_size = (pdf_size_t)utf32be_strings[i].size + bom_size;
       input_data = (pdf_char_t *)pdf_alloc(input_size);
       memcpy(&input_data[0], bom_data, bom_size);
       memcpy(&input_data[bom_size -1],
              utf32be_strings[i].data,
              utf32be_strings[i].size);
-      
+
       /* 1. The call to  pdf_text_set_unicode should NOT return PDF_OK. */
       fail_unless(pdf_text_set_unicode(text,
                                        input_data,
                                        input_size,
                                        PDF_TEXT_UTF8) != PDF_OK);
-      
+
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
       fail_unless(strcmp(output_data, previous_string) == 0);
-      
+
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
       pdf_dealloc(input_data);
@@ -1747,17 +1747,17 @@ END_TEST
  *   1. The call to pdf_text_set_unicode should NOT return PDF_OK.
  *   2. The contents of the text object must remain unchanged.
  */
-START_TEST(pdf_text_set_unicode_023)
+START_TEST (pdf_text_set_unicode_023)
 {
   extern const test_string_t utf8_strings[];
   int i;
   const pdf_char_t *bom_data = (pdf_char_t *)"\xFE\xFF";
   pdf_size_t bom_size = 2;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
-  
+
+
   /* Try UTF-8 strings */
   i = 0;
   while(utf8_strings[i].data != NULL)
@@ -1767,30 +1767,30 @@ START_TEST(pdf_text_set_unicode_023)
       pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set previous string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
-      
+
       input_size = (pdf_size_t)utf8_strings[i].size + bom_size;
       input_data = (pdf_char_t *)pdf_alloc(input_size);
       memcpy(&input_data[0], bom_data, bom_size);
       memcpy(&input_data[bom_size -1],
              utf8_strings[i].data,
              utf8_strings[i].size);
-      
+
       /* 1. The call to  pdf_text_set_unicode should NOT return PDF_OK. */
       fail_unless(pdf_text_set_unicode(text,
                                        input_data,
                                        input_size,
                                        PDF_TEXT_UTF16_BE) != PDF_OK);
-      
+
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
       fail_unless(strcmp(output_data, previous_string) == 0);
-      
+
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
       pdf_dealloc(input_data);
@@ -1809,17 +1809,17 @@ END_TEST
  *   1. The call to pdf_text_set_unicode should NOT return PDF_OK.
  *   2. The contents of the text object must remain unchanged.
  */
-START_TEST(pdf_text_set_unicode_024)
+START_TEST (pdf_text_set_unicode_024)
 {
   extern const test_string_t utf8_strings[];
   int i;
   const pdf_char_t *bom_data = (pdf_char_t *)"\xFF\xFE";
   pdf_size_t bom_size = 2;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
-  
+
+
   /* Try UTF-8 strings */
   i = 0;
   while(utf8_strings[i].data != NULL)
@@ -1829,30 +1829,30 @@ START_TEST(pdf_text_set_unicode_024)
       pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set empty string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
-      
+
       input_size = (pdf_size_t)utf8_strings[i].size + bom_size;
       input_data = (pdf_char_t *)pdf_alloc(input_size);
       memcpy(&input_data[0], bom_data, bom_size);
       memcpy(&input_data[bom_size -1],
              utf8_strings[i].data,
              utf8_strings[i].size);
-      
+
       /* 1. The call to  pdf_text_set_unicode should NOT return PDF_OK. */
       fail_unless(pdf_text_set_unicode(text,
                                        input_data,
                                        input_size,
                                        PDF_TEXT_UTF16_LE) != PDF_OK);
-      
+
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
       fail_unless(strcmp(output_data, previous_string) == 0);
-      
+
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
       pdf_dealloc(input_data);
@@ -1870,13 +1870,13 @@ END_TEST
  *   1. The call to pdf_text_set_unicode should NOT return PDF_OK.
  *   2. The contents of the text object must remain unchanged.
  */
-START_TEST(pdf_text_set_unicode_025)
+START_TEST (pdf_text_set_unicode_025)
 {
   extern const test_string_t utf8_strings[];
   int i;
   const pdf_char_t *bom_data;
   pdf_size_t bom_size = 2;
-  
+
   if(pdf_text_test_big_endian_system())
     {
       bom_data = (pdf_char_t *)"\xFE\xFF";
@@ -1885,11 +1885,11 @@ START_TEST(pdf_text_set_unicode_025)
     {
       bom_data = (pdf_char_t *)"\xFF\xFE";
     }
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
-  
+
+
   /* Try UTF-8 strings */
   i = 0;
   while(utf8_strings[i].data != NULL)
@@ -1899,30 +1899,30 @@ START_TEST(pdf_text_set_unicode_025)
       pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set empty string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
-      
+
       input_size = (pdf_size_t)utf8_strings[i].size + bom_size;
       input_data = (pdf_char_t *)pdf_alloc(input_size);
       memcpy(&input_data[0], bom_data, bom_size);
       memcpy(&input_data[bom_size -1],
              utf8_strings[i].data,
              utf8_strings[i].size);
-      
+
       /* 1. The call to  pdf_text_set_unicode should NOT return PDF_OK. */
       fail_unless(pdf_text_set_unicode(text,
                                        input_data,
                                        input_size,
                                        PDF_TEXT_UTF16_HE) != PDF_OK);
-      
+
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
       fail_unless(strcmp(output_data, previous_string) == 0);
-      
+
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
       pdf_dealloc(input_data);
@@ -1940,7 +1940,7 @@ END_TEST
  *   1. The call to pdf_text_set_unicode should NOT return PDF_OK.
  *   2. The contents of the text object must remain unchanged.
  */
-START_TEST(pdf_text_set_unicode_026)
+START_TEST (pdf_text_set_unicode_026)
 {
   extern const test_string_t utf8_strings[];
   int i;
@@ -1949,8 +1949,8 @@ START_TEST(pdf_text_set_unicode_026)
 
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
-  
+
+
   /* Try UTF-8 strings */
   i = 0;
   while(utf8_strings[i].data != NULL)
@@ -1960,30 +1960,30 @@ START_TEST(pdf_text_set_unicode_026)
       pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set empty string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
-      
+
       input_size = (pdf_size_t)utf8_strings[i].size + bom_size;
       input_data = (pdf_char_t *)pdf_alloc(input_size);
       memcpy(&input_data[0], bom_data, bom_size);
       memcpy(&input_data[bom_size -1],
              utf8_strings[i].data,
              utf8_strings[i].size);
-      
+
       /* 1. The call to  pdf_text_set_unicode should NOT return PDF_OK. */
       fail_unless(pdf_text_set_unicode(text,
                                        input_data,
                                        input_size,
                                        PDF_TEXT_UTF32_BE) != PDF_OK);
-      
+
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
       fail_unless(strcmp(output_data, previous_string) == 0);
-      
+
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
       pdf_dealloc(input_data);
@@ -2001,17 +2001,17 @@ END_TEST
  *   1. The call to pdf_text_set_unicode should NOT return PDF_OK.
  *   2. The contents of the text object must remain unchanged.
  */
-START_TEST(pdf_text_set_unicode_027)
+START_TEST (pdf_text_set_unicode_027)
 {
   extern const test_string_t utf8_strings[];
   int i;
   const pdf_char_t *bom_data = (pdf_char_t *)"\xFF\xFE\x00\x00";
   pdf_size_t bom_size = 4;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
-  
+
+
   /* Try UTF-8 strings */
   i = 0;
   while(utf8_strings[i].data != NULL)
@@ -2021,30 +2021,30 @@ START_TEST(pdf_text_set_unicode_027)
       pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set empty string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
-      
+
       input_size = (pdf_size_t)utf8_strings[i].size + bom_size;
       input_data = (pdf_char_t *)pdf_alloc(input_size);
       memcpy(&input_data[0], bom_data, bom_size);
       memcpy(&input_data[bom_size -1],
              utf8_strings[i].data,
              utf8_strings[i].size);
-      
+
       /* 1. The call to  pdf_text_set_unicode should NOT return PDF_OK. */
       fail_unless(pdf_text_set_unicode(text,
                                        input_data,
                                        input_size,
                                        PDF_TEXT_UTF32_LE) != PDF_OK);
-      
+
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
       fail_unless(strcmp(output_data, previous_string) == 0);
-      
+
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
       pdf_dealloc(input_data);
@@ -2062,13 +2062,13 @@ END_TEST
  *   1. The call to pdf_text_set_unicode should NOT return PDF_OK.
  *   2. The contents of the text object must remain unchanged.
  */
-START_TEST(pdf_text_set_unicode_028)
+START_TEST (pdf_text_set_unicode_028)
 {
   extern const test_string_t utf8_strings[];
   int i;
   const pdf_char_t *bom_data;
   pdf_size_t bom_size = 4;
-  
+
   if(pdf_text_test_big_endian_system())
     {
       bom_data = (pdf_char_t *)"\x00\x00\xFE\xFF";
@@ -2077,11 +2077,11 @@ START_TEST(pdf_text_set_unicode_028)
     {
       bom_data = (pdf_char_t *)"\xFF\xFE\x00\x00";
     }
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
-  
+
+
   /* Try UTF-8 strings */
   i = 0;
   while(utf8_strings[i].data != NULL)
@@ -2091,12 +2091,12 @@ START_TEST(pdf_text_set_unicode_028)
       pdf_size_t input_size = 0;
       pdf_char_t *output_data;
       const pdf_char_t *previous_string = (pdf_char_t *)"a";
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set previous string */
       fail_if(pdf_text_set_pdfdocenc(text, previous_string) != PDF_OK);
-      
+
       input_size = (pdf_size_t)utf8_strings[i].size + bom_size;
       input_data = (pdf_char_t *)pdf_alloc(input_size);
       memcpy(&input_data[0], bom_data, bom_size);
@@ -2109,12 +2109,12 @@ START_TEST(pdf_text_set_unicode_028)
                                        input_data,
                                        input_size,
                                        PDF_TEXT_UTF32_HE) != PDF_OK);
-      
+
       /* 2. The contents of the text object must remain unchanged. */
       fail_if(pdf_text_get_pdfdocenc(&output_data, text) != PDF_OK);
       fail_if(output_data == NULL);
       fail_unless(strcmp(output_data, previous_string) == 0);
-      
+
       pdf_text_destroy(text);
       pdf_dealloc(output_data);
       pdf_dealloc(input_data);
@@ -2135,19 +2135,19 @@ END_TEST
  *   3. The language code must be empty.
  *   4. The country code must be empty.
  */
-START_TEST(pdf_text_set_unicode_029)
+START_TEST (pdf_text_set_unicode_029)
 {
-  
+
 
 
   extern const test_string_t utf16be_strings[];
   int i;
   const pdf_char_t *language_code = (pdf_char_t *)"en";
   const pdf_char_t *country_code = (pdf_char_t *)"US";
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   i = 0;
   while(utf16be_strings[i].data != NULL)
     {
@@ -2159,14 +2159,14 @@ START_TEST(pdf_text_set_unicode_029)
       pdf_char_t *expected_data = NULL;
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set input data with LANGUAGE code and BOM */
       input_size = (pdf_size_t)utf16be_strings[i].size + 8;
       input_data = (pdf_char_t *)pdf_alloc(input_size);
       fail_if(input_data == NULL);
-      
+
       /* Store BOM */
       memcpy(input_data, utf16be_strings[i].data, 2);
       /* Store language code */
@@ -2175,10 +2175,10 @@ START_TEST(pdf_text_set_unicode_029)
       memcpy(&input_data[6], country_code, 2);
       memcpy(&input_data[8], "\x00\x1B", 2);
       /* Store remaining string contents */
-      memcpy(&input_data[10], 
+      memcpy(&input_data[10],
              &utf16be_strings[i].data[2],
              (pdf_size_t)utf16be_strings[i].size -2);
-      
+
       /* Set expected data */
       expected_size = utf16be_strings[i].utf32be_size + 16;
       expected_data = (pdf_char_t *)pdf_alloc(expected_size);
@@ -2197,7 +2197,7 @@ START_TEST(pdf_text_set_unicode_029)
         {
           pdf_char_t *temp;
           /* Must change endianness of expected_data */
-          
+
           temp = pdf_text_test_change_utf32_endianness(expected_data,
                                                        expected_size);
           pdf_dealloc(expected_data);
@@ -2205,13 +2205,13 @@ START_TEST(pdf_text_set_unicode_029)
           /* Just in case... */
           fail_if(expected_data == NULL);
         }
-      
+
       /* 1. The call to pdf_text_set_unicode should return PDF_OK. */
       fail_if(pdf_text_set_unicode(text,
                                    input_data,
                                    input_size,
                                    PDF_TEXT_UTF16_BE) != PDF_OK);
-      
+
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
@@ -2223,7 +2223,7 @@ START_TEST(pdf_text_set_unicode_029)
           internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           expected_hex = pdf_text_test_get_hex(expected_data,expected_size,':');
           fail_if(internal_hex == NULL);
-          fail_if(expected_hex == NULL);          
+          fail_if(expected_hex == NULL);
           printf("pdf_text_get_unicode_029:%d:Internal> '%s'\n",
                  i, internal_hex);
           printf("pdf_text_get_unicode_029:%d:Expected> '%s'\n",
@@ -2231,7 +2231,7 @@ START_TEST(pdf_text_set_unicode_029)
           pdf_dealloc(internal_hex);
           pdf_dealloc(expected_hex);
         }
-      
+
       /* 2. The contents of the text object must be the expected ones */
 
       pdf_size_t actual_size;
@@ -2240,13 +2240,13 @@ START_TEST(pdf_text_set_unicode_029)
                                        PDF_TEXT_UTF32_HE,0) == PDF_OK);
       fail_unless(actual_size == expected_size);
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
-      
+
       /* 3. The language code must be empty. */
       fail_if(strlen(pdf_text_get_language(text)) != 0);
-      
+
       /* 4. The country code must be empty. */
-      fail_if(strlen(pdf_text_get_country(text)) != 0);      
-      
+      fail_if(strlen(pdf_text_get_country(text)) != 0);
+
       fail_if(pdf_text_destroy(text) != PDF_OK);
       pdf_dealloc(expected_data);
       pdf_dealloc(input_data);
@@ -2270,19 +2270,19 @@ END_TEST
  *   3. The language code must be empty.
  *   4. The country code must be empty.
  */
-START_TEST(pdf_text_set_unicode_030)
+START_TEST (pdf_text_set_unicode_030)
 {
-  
+
 
 
   extern const test_string_t utf16be_strings[];
   int i;
   const pdf_char_t *language_code = (pdf_char_t *)"en";
   const pdf_char_t *country_code = (pdf_char_t *)"US";
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   i = 0;
   while(utf16be_strings[i].data != NULL)
     {
@@ -2294,24 +2294,24 @@ START_TEST(pdf_text_set_unicode_030)
       pdf_char_t *expected_data = NULL;
       pdf_size_t expected_size = 0;
       pdf_text_t text = NULL;
-      
+
       fail_if(pdf_text_new (&text) != PDF_OK);
-      
+
       /* Set input data with LANGUAGE code WITHOUT BOM */
       input_size = (pdf_size_t)utf16be_strings[i].size + 8 - 2;
       input_data = (pdf_char_t *)pdf_alloc(input_size);
       fail_if(input_data == NULL);
-      
+
       /* Store language code */
       memcpy(&input_data[0], "\x00\x1B", 2);
       memcpy(&input_data[2], language_code, 2);
       memcpy(&input_data[4], country_code, 2);
       memcpy(&input_data[6], "\x00\x1B", 2);
       /* Store remaining string contents */
-      memcpy(&input_data[8], 
+      memcpy(&input_data[8],
              &utf16be_strings[i].data[2],
              (pdf_size_t)utf16be_strings[i].size -2);
-      
+
       /* Set expected data */
       expected_size = utf16be_strings[i].utf32be_size + 16;
       expected_data = (pdf_char_t *)pdf_alloc(expected_size);
@@ -2325,12 +2325,12 @@ START_TEST(pdf_text_set_unicode_030)
       memcpy(&expected_data[16],
              utf16be_strings[i].utf32be_data,
              utf16be_strings[i].utf32be_size);
-      
+
       if(!pdf_text_test_big_endian_system())
         {
           pdf_char_t *temp;
           /* Must change endianness of expected_data */
-          
+
           temp = pdf_text_test_change_utf32_endianness(expected_data,
                                                        expected_size);
           pdf_dealloc(expected_data);
@@ -2338,13 +2338,13 @@ START_TEST(pdf_text_set_unicode_030)
           /* Just in case... */
           fail_if(expected_data == NULL);
         }
-      
+
       /* 1. The call to pdf_text_set_unicode should return PDF_OK. */
       fail_if(pdf_text_set_unicode(text,
                                    input_data,
                                    input_size,
                                    PDF_TEXT_UTF16_BE) != PDF_OK);
-      
+
       if(INTERACTIVE_DEBUG)
         {
           pdf_char_t *internal_hex = NULL;
@@ -2356,7 +2356,7 @@ START_TEST(pdf_text_set_unicode_030)
           internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
           expected_hex = pdf_text_test_get_hex(expected_data,expected_size,':');
           fail_if(internal_hex == NULL);
-          fail_if(expected_hex == NULL);          
+          fail_if(expected_hex == NULL);
           printf("pdf_text_get_unicode_030:%d:Internal> '%s'\n",
                  i, internal_hex);
           printf("pdf_text_get_unicode_030:%d:Expected> '%s'\n",
@@ -2364,7 +2364,7 @@ START_TEST(pdf_text_set_unicode_030)
           pdf_dealloc(internal_hex);
           pdf_dealloc(expected_hex);
         }
-      
+
       /* 2. The contents of the text object must be the expected ones */
 
       pdf_size_t actual_size;
@@ -2373,17 +2373,17 @@ START_TEST(pdf_text_set_unicode_030)
                                        PDF_TEXT_UTF32_HE,0) == PDF_OK);
       fail_unless(actual_size == expected_size);
       fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
-      
+
       /* 3. The language code must be empty */
       fail_if(strlen(pdf_text_get_language(text)) != 0);
-      
+
       /* 4. The country code must be empty */
-      fail_if(strlen(pdf_text_get_country(text)) != 0);      
-      
+      fail_if(strlen(pdf_text_get_country(text)) != 0);
+
       fail_if(pdf_text_destroy(text) != PDF_OK);
       pdf_dealloc(expected_data);
       pdf_dealloc(input_data);
-      
+
       ++i;
     }
 
@@ -2428,6 +2428,9 @@ test_pdf_text_set_unicode (void)
   tcase_add_test(tc, pdf_text_set_unicode_029);
   tcase_add_test(tc, pdf_text_set_unicode_030);
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

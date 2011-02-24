@@ -1,13 +1,13 @@
 /* -*- mode: C -*-
  *
- *       File:         tsuite-error.c
- *       Date:         Wed Mar  12 12:43:00 2008
+ *       File:         pdf-text-common.c
+ *       Date:         Thu Feb 24 22:53:57 2011
  *
- *       GNU PDF Library - Testcase definition for the Error module
+ *       GNU PDF Library - Common utilities for the unit tests
  *
  */
 
-/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
+/* Copyright (C) 2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,24 +24,27 @@
  */
 
 #include <config.h>
-
-#include <check.h>
+#include <locale.h>
 #include <pdf-test-common.h>
-extern TCase *test_pdf_error (void);
-extern TCase *test_pdf_perror (void);
 
-Suite *
-tsuite_error ()
+void
+pdf_test_setup (void)
 {
-  Suite *s;
+#if defined HAVE_SETLOCALE
+  /* Initialize locale in the program.
+   * We really need to fix a given locale, so that the unit tests
+   * don't depend on where they are run */
+  setlocale (LC_ALL, "en_US.utf8");
+#endif /* HAVE_SETLOCALE */
 
-  s = suite_create("error");
-
-  suite_add_tcase (s, test_pdf_perror ());
-  suite_add_tcase (s, test_pdf_error ());
-
-  return s;
+  /* Initialize the PDF library */
+  pdf_init ();
 }
 
+void
+pdf_test_teardown (void)
+{
+  pdf_finish ();
+}
 
-/* End of tsuite-error.c */
+/* End of pdf-test-common.c */

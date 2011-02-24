@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include <string.h>
 #include <pdf.h>
 #include <check.h>
-
+#include <pdf-test-common.h>
 
 
 #define INTERACTIVE_DEBUG 0
@@ -36,23 +36,23 @@
 /*
  * Test: pdf_i64_copy_001
  * Description:
- *   Checks if the pdf_i64_copy copies the values of one 
+ *   Checks if the pdf_i64_copy copies the values of one
  * pdf_i64_t variable into another
  */
-START_TEST(pdf_i64_copy_001)
+START_TEST (pdf_i64_copy_001)
 {
   pdf_status_t p_status = PDF_OK;
   pdf_i64_t orig;
   pdf_i64_t copy;
-  
+
   pdf_init();
 
   orig = pdf_i64_new(4,5);
 
 
-  
 
-#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
+
+#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
   pdf_i64_copy(orig,&copy,&p_status);
   fail_if( p_status != PDF_OK);
   fail_if(copy.low != 5);
@@ -61,7 +61,7 @@ START_TEST(pdf_i64_copy_001)
   pdf_i64_copy(orig,&copy,&p_status);
   fail_if(copy != 0x0000000400000005LL);
 #endif
-  
+
 
 }
 END_TEST
@@ -74,22 +74,22 @@ END_TEST
  *  the target pointer is not properly initialised
  */
 
-START_TEST(pdf_i64_copy_002)
+START_TEST (pdf_i64_copy_002)
 {
   pdf_status_t p_status = PDF_OK;
   pdf_i64_t orig;
-  
-  
+
+
   pdf_init();
 
   orig = pdf_i64_new(4,5);
-  
-#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
+
+#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
   pdf_i64_t *copy = NULL;
   pdf_i64_copy(orig,copy,&p_status);
   fail_if( p_status != PDF_EBADDATA);
 #endif
-  
+
 }
 END_TEST
 
@@ -104,6 +104,9 @@ test_pdf_i64_copy (void)
   TCase *tc = tcase_create("pdf_i64_copy");
   tcase_add_test(tc, pdf_i64_copy_001);
   tcase_add_test(tc, pdf_i64_copy_002);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

@@ -29,7 +29,7 @@
 #include <pdf.h>
 #include <check.h>
 #include <base/text/pdf-text-test-common.h>
-
+#include <pdf-test-common.h>
 
 #define INTERACTIVE_DEBUG 0
 
@@ -41,7 +41,7 @@
  *   1. The call to  pdf_text_cmp should return 0.
  *   2. The returned status in  p_ret_code should be PDF_OK.
  */
-START_TEST(pdf_text_cmp_001)
+START_TEST (pdf_text_cmp_001)
 {
   const pdf_char_t *input_data = (pdf_char_t *) "GNU's Not Unix. ";
   pdf_size_t input_size = strlen(input_data);
@@ -51,7 +51,7 @@ START_TEST(pdf_text_cmp_001)
 
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text objects with same contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
@@ -61,7 +61,7 @@ START_TEST(pdf_text_cmp_001)
                                     input_size,
                                     PDF_TEXT_UTF8,
                                     &text2) != PDF_OK);
-  
+
   /* 1. The call to  pdf_text_cmp should return 0. */
   fail_unless(pdf_text_cmp(text1, text2, PDF_TRUE, &ret_code) == 0);
 
@@ -82,9 +82,9 @@ END_TEST
  *   1. The call to  pdf_text_cmp should return 0.
  *   2. The returned status in  p_ret_code should be PDF_OK.
  */
-START_TEST(pdf_text_cmp_002)
+START_TEST (pdf_text_cmp_002)
 {
-  
+
 
 
   const pdf_char_t *input_data = (pdf_char_t *) "GNU's Not Unix. ";
@@ -92,10 +92,10 @@ START_TEST(pdf_text_cmp_002)
   pdf_text_t text1;
   pdf_text_t text2;
   pdf_status_t ret_code;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text objects with same contents */
   fail_if(pdf_text_new_from_unicode(input_data,
                                     input_size,
@@ -105,7 +105,7 @@ START_TEST(pdf_text_cmp_002)
                                     input_size,
                                     PDF_TEXT_UTF8,
                                     &text2) != PDF_OK);
-  
+
   if(INTERACTIVE_DEBUG)
     {
       pdf_char_t *internal_hex = NULL;
@@ -135,10 +135,10 @@ START_TEST(pdf_text_cmp_002)
 
   /* 1. The call to  pdf_text_cmp should return 0. */
   fail_unless(pdf_text_cmp(text1, text2, PDF_FALSE, &ret_code) == 0);
-  
+
   /* 2. The returned status in  p_ret_code should be PDF_OK. */
   fail_unless(ret_code == PDF_OK);
-  
+
   pdf_text_destroy(text1);
   pdf_text_destroy(text2);
 
@@ -155,7 +155,7 @@ END_TEST
  *   1. The call to  pdf_text_cmp should NOT return 0.
  *   2. The returned status in  p_ret_code should be PDF_OK.
  */
-START_TEST(pdf_text_cmp_003)
+START_TEST (pdf_text_cmp_003)
 {
   const pdf_char_t *upper_data = (pdf_char_t *) "GNU'S NOT UNIX. ";
   const pdf_char_t *lower_data = (pdf_char_t *) "gnu's not unix. ";
@@ -163,10 +163,10 @@ START_TEST(pdf_text_cmp_003)
   pdf_text_t text1;
   pdf_text_t text2;
   pdf_status_t ret_code;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text objects with same contents */
   fail_if(pdf_text_new_from_unicode(upper_data,
                                     input_size,
@@ -176,13 +176,13 @@ START_TEST(pdf_text_cmp_003)
                                     input_size,
                                     PDF_TEXT_UTF8,
                                     &text2) != PDF_OK);
-  
+
   /* 1. The call to  pdf_text_cmp should NOT return 0. */
   fail_unless(pdf_text_cmp(text1, text2, PDF_TRUE, &ret_code) != 0);
-  
+
   /* 2. The returned status in  p_ret_code should be PDF_OK. */
   fail_unless(ret_code == PDF_OK);
-  
+
   pdf_text_destroy(text1);
   pdf_text_destroy(text2);
 }
@@ -197,7 +197,7 @@ END_TEST
  *   1. The call to  pdf_text_cmp should return 0.
  *   2. The returned status in  p_ret_code should be PDF_OK.
  */
-START_TEST(pdf_text_cmp_004)
+START_TEST (pdf_text_cmp_004)
 {
   const pdf_char_t *upper_data = (pdf_char_t *) "GNU'S NOT UNIX. ";
   const pdf_char_t *lower_data = (pdf_char_t *) "gnu's not unix. ";
@@ -205,10 +205,10 @@ START_TEST(pdf_text_cmp_004)
   pdf_text_t text1;
   pdf_text_t text2;
   pdf_status_t ret_code;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text objects with same contents */
   fail_if(pdf_text_new_from_unicode(upper_data,
                                     input_size,
@@ -218,13 +218,13 @@ START_TEST(pdf_text_cmp_004)
                                     input_size,
                                     PDF_TEXT_UTF8,
                                     &text2) != PDF_OK);
-  
+
   /* 1. The call to  pdf_text_cmp should return 0. */
   fail_unless(pdf_text_cmp(text1, text2, PDF_FALSE, &ret_code) == 0);
-  
+
   /* 2. The returned status in  p_ret_code should be PDF_OK. */
   fail_unless(ret_code == PDF_OK);
-  
+
   pdf_text_destroy(text1);
   pdf_text_destroy(text2);
 }
@@ -239,7 +239,7 @@ END_TEST
  *   1. The call to  pdf_text_cmp should NOT return 0.
  *   2. The returned status in  p_ret_code should be PDF_OK.
  */
-START_TEST(pdf_text_cmp_005)
+START_TEST (pdf_text_cmp_005)
 {
   const pdf_char_t *input_data1 = (pdf_char_t *) "GNU's Not Unix. ";
   const pdf_char_t *input_data2 = (pdf_char_t *) "Bad Vista. ";
@@ -248,10 +248,10 @@ START_TEST(pdf_text_cmp_005)
   pdf_text_t text1;
   pdf_text_t text2;
   pdf_status_t ret_code;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text objects with same contents */
   fail_if(pdf_text_new_from_unicode(input_data1,
                                     input_size1,
@@ -261,13 +261,13 @@ START_TEST(pdf_text_cmp_005)
                                     input_size2,
                                     PDF_TEXT_UTF8,
                                     &text2) != PDF_OK);
-  
+
   /* 1. The call to  pdf_text_cmp should NOT return 0. */
   fail_unless(pdf_text_cmp(text1, text2, PDF_TRUE, &ret_code) != 0);
-  
+
   /* 2. The returned status in  p_ret_code should be PDF_OK. */
   fail_unless(ret_code == PDF_OK);
-  
+
   pdf_text_destroy(text1);
   pdf_text_destroy(text2);
 }
@@ -281,7 +281,7 @@ END_TEST
  *   1. The call to  pdf_text_cmp should NOT return 0.
  *   2. The returned status in  p_ret_code should be PDF_OK.
  */
-START_TEST(pdf_text_cmp_006)
+START_TEST (pdf_text_cmp_006)
 {
   const pdf_char_t *input_data1 = (pdf_char_t *) "GNU's Not Unix. ";
   const pdf_char_t *input_data2 = (pdf_char_t *) "Bad Vista. ";
@@ -290,10 +290,10 @@ START_TEST(pdf_text_cmp_006)
   pdf_text_t text1;
   pdf_text_t text2;
   pdf_status_t ret_code;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   /* Create text objects with same contents */
   fail_if(pdf_text_new_from_unicode(input_data1,
                                     input_size1,
@@ -303,13 +303,13 @@ START_TEST(pdf_text_cmp_006)
                                     input_size2,
                                     PDF_TEXT_UTF8,
                                     &text2) != PDF_OK);
-  
+
   /* 1. The call to  pdf_text_cmp should NOT return 0. */
   fail_unless(pdf_text_cmp(text1, text2, PDF_FALSE, &ret_code) != 0);
-  
+
   /* 2. The returned status in  p_ret_code should be PDF_OK. */
   fail_unless(ret_code == PDF_OK);
-  
+
   pdf_text_destroy(text1);
   pdf_text_destroy(text2);
 }
@@ -328,6 +328,9 @@ test_pdf_text_cmp (void)
   tcase_add_test(tc, pdf_text_cmp_004);
   tcase_add_test(tc, pdf_text_cmp_005);
   tcase_add_test(tc, pdf_text_cmp_006);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

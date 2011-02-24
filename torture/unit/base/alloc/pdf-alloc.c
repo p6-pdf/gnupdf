@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,8 @@
 #include <pdf.h>
 #include <check.h>
 
+#include <pdf-test-common.h>
+
 /*
  * Test: pdf_alloc_001
  * Description:
@@ -36,15 +38,15 @@
  * Success conditions:
  *   1. The call should not produce an error.
  */
-START_TEST(pdf_alloc_001)
+START_TEST (pdf_alloc_001)
 {
   char *data;
 
-  pdf_init();
-  
   /* Allocate some memory */
   data = pdf_alloc (100);
   fail_if (data == NULL);
+  /* Deallocate it */
+  pdf_dealloc (data);
 }
 END_TEST
 
@@ -55,9 +57,13 @@ END_TEST
 TCase *
 test_pdf_alloc (void)
 {
-  TCase *tc = tcase_create("pdf_alloc");
-  tcase_add_test (tc, pdf_alloc_001);
+  TCase *tc;
 
+  tc = tcase_create ("pdf_alloc");
+  tcase_add_test (tc, pdf_alloc_001);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

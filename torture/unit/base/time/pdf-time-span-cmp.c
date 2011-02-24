@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,11 +28,11 @@
 #include <check.h>
 #include <pdf.h>
 #include <stdlib.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_time_span_cmp_001
  * Description:
- *   Create two pdf_time_span_t equal objects. 
+ *   Create two pdf_time_span_t equal objects.
  *Success condition:
  * 1. Function pdf_time_span_cmp schould return 1
  */
@@ -66,7 +66,7 @@ END_TEST
  * Test: pdf_time_span_cmp_002
  * Description:
  *   Create two pdf_time_span_t, first is argument
- *   is bigger. 
+ *   is bigger.
  *Success condition:
  * 1. Function pdf_time_span_cmp schould return -1
  */
@@ -100,7 +100,7 @@ END_TEST
  * Test: pdf_time_span_cmp_003
  * Description:
  *   Create two pdf_time_span_t, first is argument
- *   is smaller than second one. 
+ *   is smaller than second one.
  *Success condition:
  * 1. Function pdf_time_span_cmp schould return 0
  */
@@ -146,6 +146,9 @@ test_pdf_time_span_cmp (void)
 
 
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

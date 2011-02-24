@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include <check.h>
 #include <pdf.h>
 #include <stdlib.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_time_sub_span
  * Description:
@@ -75,7 +75,7 @@ START_TEST (pdf_time_sub_span_001)
 
 
   fail_unless(pdf_time_cmp(time1, time2) == 0);
- 
+
 
   status = pdf_time_destroy(time1);
   fail_if(status != PDF_OK);
@@ -95,6 +95,9 @@ test_pdf_time_sub_span (void)
 
   tcase_add_test(tc, pdf_time_sub_span_001);
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

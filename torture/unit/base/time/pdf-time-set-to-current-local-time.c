@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_time_set_to_current_local_time
  * Description:
@@ -52,7 +52,7 @@ START_TEST (pdf_time_set_to_current_local_time_001)
   struct pdf_time_cal_s localcal, mycal;
   time_t tloc;
   struct tm* time_struct;
-    
+
   time(&tloc);
   time_struct = localtime(&tloc);
 
@@ -61,7 +61,7 @@ START_TEST (pdf_time_set_to_current_local_time_001)
 #else
   localgmt = time_struct->tm_gmtoff;
 #endif
-    
+
   pdf_init();
 
   status =  pdf_time_new(&localTime);
@@ -93,7 +93,7 @@ START_TEST (pdf_time_set_to_current_local_time_001)
 
 
   fail_unless(memcmp(&localcal, &mycal, sizeof(struct pdf_time_cal_s)) == 0);
-  
+
   status = pdf_time_destroy(localTime);
   fail_if(status != PDF_OK);
   status = pdf_time_destroy(mytime);
@@ -112,6 +112,9 @@ test_pdf_time_set_to_current_local_time (void)
 
   tcase_add_test(tc, pdf_time_set_to_current_local_time_001);
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

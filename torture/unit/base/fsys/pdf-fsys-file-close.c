@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
 #include <string.h>
 
 #include <tortutils.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_fsys_file_close_001
  * Description:
@@ -38,7 +38,7 @@
  *   The call to pdf_fsys_file_close should return PDF_OK
  */
 
-START_TEST(pdf_fsys_file_close_001)
+START_TEST (pdf_fsys_file_close_001)
 {
   pdf_fsys_file_t file;
   pdf_text_t path;
@@ -54,9 +54,9 @@ START_TEST(pdf_fsys_file_close_001)
                                      PDF_TEXT_UTF8,
                                      &path) != PDF_OK );
 
-  fail_if( pdf_fsys_file_open(NULL, 
-                              path, 
-                              PDF_FSYS_OPEN_MODE_READ, 
+  fail_if( pdf_fsys_file_open(NULL,
+                              path,
+                              PDF_FSYS_OPEN_MODE_READ,
                               &file) != PDF_OK );
 
   fail_if( pdf_fsys_file_close(file) != PDF_OK );
@@ -72,7 +72,7 @@ END_TEST
  *   The call to pdf_fsys_file_close should return PDF_EBADDATA
  */
 
-START_TEST(pdf_fsys_file_close_002)
+START_TEST (pdf_fsys_file_close_002)
 {
   fail_if( pdf_fsys_file_close( NULL ) != PDF_EBADDATA );
 }
@@ -87,6 +87,9 @@ test_pdf_fsys_file_close (void)
   TCase *tc = tcase_create("pdf_fsys_file_close");
   tcase_add_test(tc, pdf_fsys_file_close_001);
   tcase_add_test(tc, pdf_fsys_file_close_002);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

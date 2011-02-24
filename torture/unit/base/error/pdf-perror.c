@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include <stdio.h>
 #include <pdf.h>
 #include <check.h>
-
+#include <pdf-test-common.h>
 
 /*
  * Test: pdf_perror_001
@@ -70,6 +70,9 @@ test_pdf_perror (void)
   TCase *tc = tcase_create("pdf_perror");
   tcase_add_test(tc, pdf_perror_001);
   tcase_add_test(tc, pdf_perror_002);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

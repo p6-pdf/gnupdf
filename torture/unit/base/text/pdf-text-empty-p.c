@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include <string.h>
 #include <pdf.h>
 #include <check.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_text_empty_p_001
  * Description:
@@ -36,18 +36,18 @@
  * Success conditions:
  *   1. The call to pdf_text_empty_p should return PDF_TRUE.
  */
-START_TEST(pdf_text_empty_p_001)
+START_TEST (pdf_text_empty_p_001)
 {
   pdf_text_t text;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   fail_if(pdf_text_new (&text) != PDF_OK);
 
   /* 1. The call to pdf_text_empty_p should return PDF_TRUE. */
   fail_unless(pdf_text_empty_p(text) == PDF_TRUE);
-  
+
   pdf_text_destroy(text);
 }
 END_TEST
@@ -60,21 +60,21 @@ END_TEST
  * Success conditions:
  *   1. The call to pdf_text_empty_p should return PDF_FALSE.
  */
-START_TEST(pdf_text_empty_p_002)
+START_TEST (pdf_text_empty_p_002)
 {
   pdf_text_t text;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   fail_if(pdf_text_new_from_unicode((pdf_char_t *)"GNU", 3,
                                     PDF_TEXT_UTF8,
                                     &text) != PDF_OK);
   fail_if(text == NULL);
-  
+
   /* 1. The call to pdf_text_empty_p should return PDF_FALSE. */
   fail_unless(pdf_text_empty_p(text) == PDF_FALSE);
-  
+
   pdf_text_destroy(text);
 }
 END_TEST
@@ -88,6 +88,9 @@ test_pdf_text_empty_p (void)
   TCase *tc = tcase_create("pdf_text_empty_p");
   tcase_add_test(tc, pdf_text_empty_p_001);
   tcase_add_test(tc, pdf_text_empty_p_002);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

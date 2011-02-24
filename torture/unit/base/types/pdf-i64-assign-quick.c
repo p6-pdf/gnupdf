@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include <string.h>
 #include <pdf.h>
 #include <check.h>
-
+#include <pdf-test-common.h>
 
 
 #define INTERACTIVE_DEBUG 0
@@ -41,17 +41,17 @@
  * Success conditions:
  * The call should not produce an error
  */
-START_TEST(pdf_i64_assign_quick_001)
+START_TEST (pdf_i64_assign_quick_001)
 {
 
   pdf_i64_t k;
   pdf_status_t p_status = PDF_OK;
- 
-#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
+
+#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
   pdf_init();
 
   pdf_i64_assign_quick(&k,5,&p_status);
-  fail_if(p_status != PDF_OK);  
+  fail_if(p_status != PDF_OK);
   fail_if(k.low != 5);
   fail_if(k.high != 0);
 #else
@@ -70,18 +70,18 @@ END_TEST
  * Success conditions:
  * The call should produce an error
  */
-START_TEST(pdf_i64_assign_quick_002)
+START_TEST (pdf_i64_assign_quick_002)
 {
   pdf_status_t p_status = PDF_OK;
-  
-#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT 
+
+#ifndef PDF_USE_BUILTIN_64BIT_SUPPORT
   pdf_i64_t* k = NULL;
   pdf_init();
 
   pdf_i64_assign_quick(k,5,&p_status);
   fail_if( p_status != PDF_EBADDATA);
 #endif
-  
+
 }
 END_TEST
 
@@ -96,6 +96,9 @@ test_pdf_i64_assign_quick (void)
   TCase *tc = tcase_create("pdf_i64_assign_quick");
   tcase_add_test(tc, pdf_i64_assign_quick_001);
   tcase_add_test(tc, pdf_i64_assign_quick_002);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

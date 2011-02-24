@@ -72,7 +72,7 @@ Report runtests bugs to pdf-devel@gnu.org\n\
 GNU PDF home page: <http://www.gnupdf.org/>\n\
 General help using GNU software: <http://www.gnu.org/gethelp/>\
 ";
-  
+
 int
 main (int argc, char **argv)
 {
@@ -82,7 +82,7 @@ main (int argc, char **argv)
   char c, ret;
 
   set_program_name (argv[0]);
-  
+
   sname = NULL;
   tcname = NULL;
 
@@ -140,7 +140,7 @@ main (int argc, char **argv)
   srunner_add_suite (sr, tsuite_error ());
   srunner_add_suite (sr, tsuite_stm ());
   srunner_add_suite (sr, tsuite_fp ());
-  srunner_add_suite (sr, tsuite_token ()); 
+  srunner_add_suite (sr, tsuite_token ());
   srunner_add_suite (sr, tsuite_fsys());
 
   /* Set log file */
@@ -150,7 +150,7 @@ main (int argc, char **argv)
   srunner_run (sr, sname, tcname, CK_ENV);
   failures = srunner_ntests_failed (sr);
   srunner_free (sr);
-  
+
   return (failures == 0) ? 0 : 1;
 }
 

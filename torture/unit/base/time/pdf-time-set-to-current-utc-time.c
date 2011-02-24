@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_time_set_to_current_utc_time
  * Description:
@@ -49,7 +49,7 @@ START_TEST (pdf_time_set_to_current_utc_time_001)
   pdf_status_t status;
   pdf_time_t utcTime, mytime;
   struct pdf_time_cal_s utccal, mycal;
-    
+
   status = pdf_init();
   fail_if(status != PDF_OK);
 
@@ -80,7 +80,7 @@ START_TEST (pdf_time_set_to_current_utc_time_001)
 
 
   fail_unless(memcmp(&utccal, &mycal, sizeof(struct pdf_time_cal_s)) == 0);
-  
+
   status = pdf_time_destroy(utcTime);
   fail_if(status != PDF_OK);
   status = pdf_time_destroy(mytime);
@@ -99,6 +99,9 @@ test_pdf_time_set_to_current_utc_time (void)
 
   tcase_add_test(tc, pdf_time_set_to_current_utc_time_001);
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

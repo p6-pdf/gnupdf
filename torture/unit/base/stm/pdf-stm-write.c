@@ -28,7 +28,7 @@
 #include <string.h>
 #include <check.h>
 #include <pdf.h>
-
+#include <pdf-test-common.h>
 /*
  * Fixture: mem_stm_fixture.
  * Description:
@@ -1235,6 +1235,9 @@ test_pdf_stm_write (void)
   tcase_add_test(tc, pdf_stm_write_020);
   tcase_add_test(tc, pdf_stm_write_021);
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

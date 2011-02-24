@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <pdf.h>
 #include <check.h>
-
+#include <pdf-test-common.h>
 #include "pdf-list-test-common.h"
 
 /*
@@ -112,6 +112,9 @@ test_pdf_list_iterator_init_from_to (void)
   tcase_add_test (tc, pdf_list_iterator_init_from_to_001);
   tcase_add_test (tc, pdf_list_iterator_init_from_to_002);
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

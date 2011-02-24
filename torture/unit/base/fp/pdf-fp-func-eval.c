@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2011-02-16 23:09:43 aleksander"
+/* -*- mode: C -*- Time-stamp: "2011-02-24 23:50:29 aleksander"
  *
  *       File:         pdf-fp-func-eval.c
  *       Date:         Tue Dec  2 20:11:38 2008
@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008, 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2008, 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
 #include <check.h>
 #include <pdf.h>
 #include <float.h>
-
+#include <pdf-test-common.h>
 #define ABS_ERROR (0.00001)
 #define DEG2RAD(N) ((N) * (180.0/PDF_PI))
 #define TRUNC(x) ((x) < 0 ? pdf_fp_ceil(x) : pdf_fp_floor(x))
@@ -117,7 +117,7 @@ simple_dot (pdf_real_t x, pdf_real_t y)
   return (1 - ((x * x) + (y * y)));
 }
 
-START_TEST(pdf_fp_func_eval_001)
+START_TEST (pdf_fp_func_eval_001)
 {
   pdf_fp_func_t func;
   pdf_size_t prog_size;
@@ -190,7 +190,7 @@ inverted_simple_dot (pdf_real_t x, pdf_real_t y)
   return (((x * x) + (y * y)) - 1);
 }
 
-START_TEST(pdf_fp_func_eval_002)
+START_TEST (pdf_fp_func_eval_002)
 {
   pdf_fp_func_t func;
   pdf_size_t prog_size;
@@ -264,7 +264,7 @@ double_dot (pdf_real_t x, pdf_real_t y)
           ((pdf_fp_sin (DEG2RAD(360 * y)) / 2)));
 }
 
-START_TEST(pdf_fp_func_eval_003)
+START_TEST (pdf_fp_func_eval_003)
 {
   pdf_fp_func_t func;
   pdf_size_t prog_size;
@@ -342,7 +342,7 @@ inverted_double_dot (pdf_real_t x, pdf_real_t y)
                 ((sinf (DEG2RAD(360 * y)) / 2))));
 }
 
-START_TEST(pdf_fp_func_eval_004)
+START_TEST (pdf_fp_func_eval_004)
 {
   pdf_fp_func_t func;
   pdf_size_t prog_size;
@@ -422,7 +422,7 @@ cosine_dot (pdf_real_t x, pdf_real_t y)
            ((pdf_fp_cos (DEG2RAD(180 * y)) / 2))));
 }
 
-START_TEST(pdf_fp_func_eval_005)
+START_TEST (pdf_fp_func_eval_005)
 {
   pdf_fp_func_t func;
   pdf_size_t prog_size;
@@ -500,7 +500,7 @@ double_f (pdf_real_t x, pdf_real_t y)
           (sinf (DEG2RAD(360 * y)) / 2));
 }
 
-START_TEST(pdf_fp_func_eval_006)
+START_TEST (pdf_fp_func_eval_006)
 {
   pdf_fp_func_t func;
   pdf_size_t prog_size;
@@ -580,7 +580,7 @@ inverted_double (pdf_real_t x, pdf_real_t y)
                 (sinf (DEG2RAD(360 * y)) / 2)));
 }
 
-START_TEST(pdf_fp_func_eval_007)
+START_TEST (pdf_fp_func_eval_007)
 {
   pdf_fp_func_t func;
   pdf_size_t prog_size;
@@ -660,7 +660,7 @@ line (pdf_real_t x, pdf_real_t y)
   return (- 1 * pdf_fp_abs(y));
 }
 
-START_TEST(pdf_fp_func_eval_008)
+START_TEST (pdf_fp_func_eval_008)
 {
   pdf_fp_func_t func;
   pdf_size_t prog_size;
@@ -733,7 +733,7 @@ line_x (pdf_real_t x, pdf_real_t y)
   return (x);
 }
 
-START_TEST(pdf_fp_func_eval_009)
+START_TEST (pdf_fp_func_eval_009)
 {
   pdf_fp_func_t func;
   pdf_size_t prog_size;
@@ -806,7 +806,7 @@ line_y (pdf_real_t x, pdf_real_t y)
   return (y);
 }
 
-START_TEST(pdf_fp_func_eval_010)
+START_TEST (pdf_fp_func_eval_010)
 {
   pdf_fp_func_t func;
   pdf_size_t prog_size;
@@ -894,7 +894,7 @@ round_f (pdf_real_t x, pdf_real_t y)
   return res;
 }
 
-START_TEST(pdf_fp_func_eval_011)
+START_TEST (pdf_fp_func_eval_011)
 {
   pdf_fp_func_t func;
   pdf_size_t prog_size;
@@ -1001,7 +1001,7 @@ ellipse_f (pdf_real_t x, pdf_real_t y)
   return ret;
 }
 
-START_TEST(pdf_fp_func_eval_012)
+START_TEST (pdf_fp_func_eval_012)
 {
   pdf_fp_func_t func;
   pdf_size_t prog_size;
@@ -1086,7 +1086,7 @@ ellipse_a (pdf_real_t x, pdf_real_t y)
   return (1 - ((x * x) + 0.9 * (y * y)));
 }
 
-START_TEST(pdf_fp_func_eval_013)
+START_TEST (pdf_fp_func_eval_013)
 {
   pdf_fp_func_t func;
   pdf_size_t prog_size;
@@ -1165,7 +1165,7 @@ inverted_ellipse_a (pdf_real_t x, pdf_real_t y)
   return ((x * x) + 0.9 * (y * y) - 1);
 }
 
-START_TEST(pdf_fp_func_eval_014)
+START_TEST (pdf_fp_func_eval_014)
 {
   pdf_fp_func_t func;
   pdf_size_t prog_size;
@@ -1244,7 +1244,7 @@ ellipse_b (pdf_real_t x, pdf_real_t y)
   return (1 - pdf_fp_sqrt ((x * x) + (5.0/8.0) * (y * y)));
 }
 
-START_TEST(pdf_fp_func_eval_015)
+START_TEST (pdf_fp_func_eval_015)
 {
   pdf_fp_func_t func;
   pdf_size_t prog_size;
@@ -1323,7 +1323,7 @@ ellipse_c (pdf_real_t x, pdf_real_t y)
   return (1 - (0.9 * (x * x) + (y * y)));
 }
 
-START_TEST(pdf_fp_func_eval_016)
+START_TEST (pdf_fp_func_eval_016)
 {
   pdf_fp_func_t func;
   pdf_size_t prog_size;
@@ -1402,7 +1402,7 @@ inverted_ellipse_c (pdf_real_t x, pdf_real_t y)
   return (0.9 * (x * x) + (y * y) - 1);
 }
 
-START_TEST(pdf_fp_func_eval_017)
+START_TEST (pdf_fp_func_eval_017)
 {
   pdf_fp_func_t func;
   pdf_size_t prog_size;
@@ -1481,7 +1481,7 @@ square_f (pdf_real_t x, pdf_real_t y)
   return (-1 * PDF_MAX(pdf_fp_abs(x),pdf_fp_abs(y)));
 }
 
-START_TEST(pdf_fp_func_eval_018)
+START_TEST (pdf_fp_func_eval_018)
 {
   pdf_fp_func_t func;
   pdf_size_t prog_size;
@@ -1563,7 +1563,7 @@ cross_f (pdf_real_t x, pdf_real_t y)
   return (-1 * PDF_MIN(pdf_fp_abs(x),pdf_fp_abs(y)));
 }
 
-START_TEST(pdf_fp_func_eval_019)
+START_TEST (pdf_fp_func_eval_019)
 {
   pdf_fp_func_t func;
   pdf_size_t prog_size;
@@ -1645,7 +1645,7 @@ rhomboid_f (pdf_real_t x, pdf_real_t y)
   return ((0.9 * pdf_fp_abs(x) + pdf_fp_abs(y)) / 2);
 }
 
-START_TEST(pdf_fp_func_eval_020)
+START_TEST (pdf_fp_func_eval_020)
 {
   pdf_fp_func_t func;
   pdf_size_t prog_size;
@@ -1743,7 +1743,7 @@ diamond_f (pdf_real_t x, pdf_real_t y)
   return ret;
 }
 
-START_TEST(pdf_fp_func_eval_021)
+START_TEST (pdf_fp_func_eval_021)
 {
   pdf_fp_func_t func;
   pdf_size_t prog_size;
@@ -1829,7 +1829,7 @@ END_TEST
  *   Return PDF_ETYPE4, set PDF_EBADTYPE in the debug information
  *   and the offset of the error is correct.
  */
-START_TEST(pdf_fp_func_eval_101)
+START_TEST (pdf_fp_func_eval_101)
 {
   char *ops[] = { "add", "sub", "mul", "div", "atan", "exp", "gt",
                   "ge", "lt", "le", "idiv", "mod", "bitshift" };
@@ -1881,7 +1881,7 @@ END_TEST
  *   Return PDF_ETYPE4, set PDF_EBADTYPE in the debug information
  *   and the offset of the error is correct.
  */
-START_TEST(pdf_fp_func_eval_102)
+START_TEST (pdf_fp_func_eval_102)
 {
   char *ops[] = { "neg", "abs", "ceiling", "floor", "round", "truncate",
                   "sqrt", "sin", "cos", "ln", "log", "cvi", "cvr" };
@@ -1928,7 +1928,7 @@ END_TEST
  *   Return PDF_ETYPE4, set PDF_EBADTYPE in the debug information
  *   and the offset of the error is correct.
  */
-START_TEST(pdf_fp_func_eval_103)
+START_TEST (pdf_fp_func_eval_103)
 {
   pdf_fp_func_t func;
   pdf_fp_func_debug_t debug;
@@ -1967,7 +1967,7 @@ END_TEST
  *   Return PDF_ETYPE4, set PDF_EBADTYPE in the debug information
  *   and the offset of the error is correct.
  */
-START_TEST(pdf_fp_func_eval_104)
+START_TEST (pdf_fp_func_eval_104)
 {
   char *ops[] = { "and", "or", "xor", "bitshift", "idiv", "mod" };
   char *progstrs[] = { "{ 1 %s }", "{ 1 exch %s }" };
@@ -2030,7 +2030,7 @@ END_TEST
  * Success condition:
  *   The evaluation does not return an error.
  */
-START_TEST(pdf_fp_func_eval_201)
+START_TEST (pdf_fp_func_eval_201)
 {
   char *ops[] = { "add", "sub", "mul", "idiv", "mod", "bitshift",
                   "and", "or", "xor" };
@@ -2075,7 +2075,7 @@ END_TEST
  * Success condition:
  *   Return PDF_ETYPE4, set PDF_EBADTYPE in the debug information,
  */
-START_TEST(pdf_fp_func_eval_202)
+START_TEST (pdf_fp_func_eval_202)
 {
   char *ops[] = { "idiv", "atan", "exp" };
   int o;
@@ -2121,7 +2121,7 @@ END_TEST
  * Success condition:
  *   The evaluation does not return an error.
  */
-START_TEST(pdf_fp_func_eval_203)
+START_TEST (pdf_fp_func_eval_203)
 {
   char *ops[] = { "eq", "ne", "gt", "ge", "lt", "le" };
   int o;
@@ -2176,7 +2176,7 @@ END_TEST
  * Success condition:
  *   The evaluation does not return an error.
  */
-START_TEST(pdf_fp_func_eval_204)
+START_TEST (pdf_fp_func_eval_204)
 {
   char *ops[] = { "and", "or", "xor" };
   int o;
@@ -2219,7 +2219,7 @@ END_TEST
  * Success condition:
  *   The evaluation does not return an error.
  */
-START_TEST(pdf_fp_func_eval_205)
+START_TEST (pdf_fp_func_eval_205)
 {
   char *ops[] = { "not" };
   int o;
@@ -2262,7 +2262,7 @@ END_TEST
  * Success condition:
  *   Return PDF_ETYPE4, set PDF_EBADTYPE in the debug information,
  */
-START_TEST(pdf_fp_func_eval_206)
+START_TEST (pdf_fp_func_eval_206)
 {
   char *ops[] = { "add", "mul", "sub", "div", "atan", "exp" };
   int o;
@@ -2309,7 +2309,7 @@ END_TEST
  * Success condition:
  *   The evaluation does not return an error.
  */
-START_TEST(pdf_fp_func_eval_207)
+START_TEST (pdf_fp_func_eval_207)
 {
   char *ops[] = { "neg", "abs", "ceiling", "floor", "round", "truncate",
                   "cvi", "not" };
@@ -2353,7 +2353,7 @@ END_TEST
  * Success condition:
  *   Return PDF_ETYPE4, set PDF_EBADTYPE in the debug information,
  */
-START_TEST(pdf_fp_func_eval_208)
+START_TEST (pdf_fp_func_eval_208)
 {
   char *ops[] = { "neg", "abs", "ceiling", "floor", "round", "truncate",
                   "sqrt", "sin", "cos", "ln", "log", "cvr" };
@@ -2443,7 +2443,7 @@ round2_f(pdf_real_t x)
 {
     return pdf_fp_floor(0.5 +x);
 }
-START_TEST(pdf_fp_func_eval_301)
+START_TEST (pdf_fp_func_eval_301)
 {
     struct t_sample_elem
     {
@@ -2544,7 +2544,7 @@ log_f(pdf_real_t x)
 {
     return pdf_fp_log10(x);
 }
-START_TEST(pdf_fp_func_eval_302)
+START_TEST (pdf_fp_func_eval_302)
 {
     struct t_sample_elem
     {
@@ -2641,7 +2641,7 @@ atan_f(pdf_real_t x, pdf_real_t y)
 {
     return DEG2RAD(pdf_fp_atan2(x, y));
 }
-START_TEST(pdf_fp_func_eval_303)
+START_TEST (pdf_fp_func_eval_303)
 {
     struct t_sample_elem
     {
@@ -2762,7 +2762,7 @@ xor_i_f (pdf_real_t x, pdf_real_t y)
 {
     return INT(x) ^ INT(y);
 }
-START_TEST(pdf_fp_func_eval_304)
+START_TEST (pdf_fp_func_eval_304)
 {
     struct t_sample_elem
     {
@@ -2872,7 +2872,7 @@ le_f(pdf_real_t x, pdf_real_t y)
 {
     return (x <= y) ? 1 : 0;
 }
-START_TEST(pdf_fp_func_eval_305)
+START_TEST (pdf_fp_func_eval_305)
 {
     struct t_sample_elem
     {
@@ -2978,7 +2978,7 @@ xor_b_f(pdf_real_t x, pdf_real_t y)
     return ((x == 1) && (y != 1)) ||
         ((x != 1) && (y == 1));
 }
-START_TEST(pdf_fp_func_eval_306)
+START_TEST (pdf_fp_func_eval_306)
 {
     struct t_sample_elem
     {
@@ -3064,7 +3064,7 @@ not_b_f(pdf_real_t x)
 {
     return !x;
 }
-START_TEST(pdf_fp_func_eval_307)
+START_TEST (pdf_fp_func_eval_307)
 {
     pdf_fp_func_t func;
     pdf_fp_func_debug_t debug;
@@ -3112,7 +3112,7 @@ not_i_f(pdf_real_t x)
 {
     return ~INT(x);
 }
-START_TEST(pdf_fp_func_eval_308)
+START_TEST (pdf_fp_func_eval_308)
 {
     pdf_fp_func_t func;
     pdf_fp_func_debug_t debug;
@@ -3160,7 +3160,7 @@ END_TEST
  * Success condition:
  *   The result of the evaluations should be correct.
  */
-START_TEST(pdf_fp_func_eval_309)
+START_TEST (pdf_fp_func_eval_309)
 {
     pdf_fp_func_t func;
     pdf_fp_func_debug_t debug;
@@ -3199,7 +3199,7 @@ END_TEST
  * Success condition:
  *   The result of the evaluations should be correct.
  */
-START_TEST(pdf_fp_func_eval_310)
+START_TEST (pdf_fp_func_eval_310)
 {
     pdf_fp_func_t func;
     pdf_fp_func_debug_t debug;
@@ -3239,7 +3239,7 @@ END_TEST
  * Success condition:
  *   The result of the evaluations should be correct.
  */
-START_TEST(pdf_fp_func_eval_311)
+START_TEST (pdf_fp_func_eval_311)
 {
     pdf_fp_func_t func;
     pdf_fp_func_debug_t debug;
@@ -3278,7 +3278,7 @@ END_TEST
  * Success condition:
  *   The result of the evaluations should be correct.
  */
-START_TEST(pdf_fp_func_eval_312)
+START_TEST (pdf_fp_func_eval_312)
 {
     pdf_fp_func_t func;
     pdf_fp_func_debug_t debug;
@@ -3323,7 +3323,7 @@ END_TEST
  * Success condition:
  *   The result of the evaluations should be correct.
  */
-START_TEST(pdf_fp_func_eval_313)
+START_TEST (pdf_fp_func_eval_313)
 {
     pdf_fp_func_t func;
     pdf_fp_func_debug_t debug;
@@ -3367,7 +3367,7 @@ END_TEST
  * Success condition:
  *   The result of the evaluations should be correct.
  */
-START_TEST(pdf_fp_func_eval_314)
+START_TEST (pdf_fp_func_eval_314)
 {
     pdf_fp_func_t func;
     pdf_fp_func_debug_t debug;
@@ -3439,7 +3439,7 @@ END_TEST
  * Success condition:
  *   Return PDF_ETYPE4, set PDF_EMATH in the debug information,
  */
-START_TEST(pdf_fp_func_eval_401)
+START_TEST (pdf_fp_func_eval_401)
 {
   char *ops[] = { "div", "idiv", "mod" };
 
@@ -3486,7 +3486,7 @@ END_TEST
  *   Return PDF_ETYPE4, set PDF_EINVRANGE in the debug information,
  */
 
-START_TEST(pdf_fp_func_eval_402)
+START_TEST (pdf_fp_func_eval_402)
 {
     pdf_fp_func_t func;
     pdf_fp_func_debug_t debug;
@@ -3522,7 +3522,7 @@ END_TEST
  * Success condition:
  *   Return PDF_ETYPE4, set PDF_EINVRANGE in the debug information,
  */
-START_TEST(pdf_fp_func_eval_403)
+START_TEST (pdf_fp_func_eval_403)
 {
   char *ops[] = { "log", "ln" };
 
@@ -3572,7 +3572,7 @@ END_TEST
  * Success condition:
  *   Return PDF_ETYPE4, set PDF_EINVRANGE in the debug information,
  */
-START_TEST(pdf_fp_func_eval_404)
+START_TEST (pdf_fp_func_eval_404)
 {
     pdf_fp_func_t func;
     pdf_fp_func_debug_t debug;
@@ -3637,7 +3637,7 @@ END_TEST
  * Success condition:
  *   Return PDF_ETYPE4, set PDF_EBADTYPE in the debug information.
  */
-START_TEST(pdf_fp_func_eval_501)
+START_TEST (pdf_fp_func_eval_501)
 {
   pdf_fp_func_t func;
   pdf_fp_func_debug_t debug;
@@ -3673,7 +3673,7 @@ END_TEST
  * Success condition:
  *   The result of the evaluations should be correct.
  */
-START_TEST(pdf_fp_func_eval_502)
+START_TEST (pdf_fp_func_eval_502)
 {
   pdf_fp_func_t func;
   pdf_fp_func_debug_t debug;
@@ -3719,7 +3719,7 @@ END_TEST
  * Success condition:
  *   The result of the evaluations should be correct.
  */
-START_TEST(pdf_fp_func_eval_503)
+START_TEST (pdf_fp_func_eval_503)
 {
   pdf_fp_func_t func;
   pdf_fp_func_debug_t debug;
@@ -3762,7 +3762,7 @@ END_TEST
  * Success condition:
  *   The result of the evaluations should be correct.
  */
-START_TEST(pdf_fp_func_eval_504)
+START_TEST (pdf_fp_func_eval_504)
 {
   pdf_fp_func_t func;
   pdf_fp_func_debug_t debug;
@@ -3804,7 +3804,7 @@ END_TEST
  * Success condition:
  *   Return PDF_ETYPE4, set PDF_EINVRANGE in the debug information.
  */
-START_TEST(pdf_fp_func_eval_505)
+START_TEST (pdf_fp_func_eval_505)
 {
   pdf_fp_func_t func;
   pdf_fp_func_debug_t debug;
@@ -3842,7 +3842,7 @@ END_TEST
  * Success condition:
  *   Return PDF_ETYPE4, set PDF_EUNDERFLOW in the debug information.
  */
-START_TEST(pdf_fp_func_eval_506)
+START_TEST (pdf_fp_func_eval_506)
 {
   pdf_fp_func_t func;
   pdf_fp_func_debug_t debug;
@@ -3879,7 +3879,7 @@ END_TEST
  * Success condition:
  *   Return PDF_ETYPE4, set PDF_EOVERFLOW in the debug information.
  */
-START_TEST(pdf_fp_func_eval_507)
+START_TEST (pdf_fp_func_eval_507)
 {
   pdf_fp_func_t func;
   pdf_fp_func_debug_t debug;
@@ -3917,7 +3917,7 @@ END_TEST
  * Success condition:
  *   Return PDF_ETYPE4, set PDF_EIMPLLIMIT in the debug information.
  */
-START_TEST(pdf_fp_func_eval_508)
+START_TEST (pdf_fp_func_eval_508)
 {
   pdf_fp_func_t func;
   pdf_fp_func_debug_t debug;
@@ -4014,6 +4014,9 @@ test_pdf_fp_func_eval (void)
   tcase_add_test(tc, pdf_fp_func_eval_506);
   tcase_add_test(tc, pdf_fp_func_eval_507);
   tcase_add_test(tc, pdf_fp_func_eval_508);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

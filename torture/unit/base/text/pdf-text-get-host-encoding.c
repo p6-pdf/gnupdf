@@ -28,7 +28,7 @@
 #include <string.h>
 #include <pdf.h>
 #include <check.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_text_get_host_encoding_001
  * Description:
@@ -39,15 +39,15 @@
  *   1. The call to pdf_text_get_host_encoding should return a non-empty
  *      pdf_text_host_encoding_t variable.
  */
-START_TEST(pdf_text_get_host_encoding_001)
+START_TEST (pdf_text_get_host_encoding_001)
 {
   pdf_text_host_encoding_t host_enc;
 
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   host_enc = pdf_text_get_host_encoding();
-  
+
   /* 1. The call to pdf_text_get_host_encoding should return a non-empty
    *  pdf_text_host_encoding_t variable. */
   fail_unless(strlen(host_enc.name) > 0);
@@ -64,6 +64,9 @@ test_pdf_text_get_host_encoding (void)
 {
   TCase *tc = tcase_create("pdf_text_get_host_encoding");
   tcase_add_test(tc, pdf_text_get_host_encoding_001);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

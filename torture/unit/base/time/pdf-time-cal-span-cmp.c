@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 #include <check.h>
 #include <pdf.h>
 #include <stdlib.h>
-
+#include <pdf-test-common.h>
 
 /*
  * Test: pdf_time_cal_span_cmp_001
@@ -38,11 +38,11 @@
  *      1. Call pdf_time_cal_span_cmp
  *      2. swap arguments in pdf_time_cal_span_cmp
  *      2. Assign years field of first object to the
- *      value of the second object. 
+ *      value of the second object.
  *      3. until all fields are equal goto step1.
  *Success condition:
  * 1. Function pdf_time_cal_span_cmp schould return 1
- * 2. Function pdf_time_cal_span_cmp schould return -1 
+ * 2. Function pdf_time_cal_span_cmp schould return -1
  *    after swapping arguments.
  * 3. Function pdf_time_cal_span_cmp schould return 0
  *    When both objects have all fields equal.
@@ -149,6 +149,9 @@ test_pdf_time_cal_span_cmp (void)
   tcase_add_test(tc, pdf_time_cal_span_cmp_001);
 
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

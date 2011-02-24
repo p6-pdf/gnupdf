@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include <string.h>
 #include <check.h>
 #include <pdf.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_stm_btell_001
  * Description:
@@ -100,7 +100,7 @@ START_TEST (pdf_stm_btell_002)
   fail_if (ret != PDF_OK);
 
   /* Open new file */
-  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, &file); 
+  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, &file);
   fail_if (ret != PDF_OK);
 
   ret = pdf_fsys_file_write (file, "0123456789", 10, &written);
@@ -108,7 +108,7 @@ START_TEST (pdf_stm_btell_002)
   fail_if (written != 10);
   pdf_fsys_file_close (file);
 
-  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, &file); 
+  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, &file);
   fail_if (ret != PDF_OK);
   /* Create the stream */
   ret = pdf_stm_file_new (file,
@@ -143,6 +143,9 @@ test_pdf_stm_btell (void)
   tcase_add_test(tc, pdf_stm_btell_001);
   tcase_add_test(tc, pdf_stm_btell_002);
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

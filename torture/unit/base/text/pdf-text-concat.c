@@ -28,7 +28,7 @@
 #include <string.h>
 #include <pdf.h>
 #include <check.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_text_concat_001
  * Description:
@@ -39,17 +39,17 @@
  *   2. The contents of the output text object must be the expected ones.
  *   3. The lang/country information in the output object must remain unchanged.
  */
-START_TEST(pdf_text_concat_001)
+START_TEST (pdf_text_concat_001)
 {
   pdf_char_t *output_data = NULL;
   pdf_text_t text1 = NULL;
   pdf_text_t text2 = NULL;
   pdf_char_t *country = (pdf_char_t *)"GB";
   pdf_char_t *language = (pdf_char_t *)"en";
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   fail_if(pdf_text_new (&text1) != PDF_OK);
   fail_if(pdf_text_new (&text2) != PDF_OK);
 
@@ -67,14 +67,14 @@ START_TEST(pdf_text_concat_001)
   fail_if(pdf_text_get_pdfdocenc(&output_data, text1) != PDF_OK);
   fail_unless(strlen(output_data) == strlen("GNU's not Unix"));
   fail_unless(strcmp(output_data, "GNU's not Unix") == 0);
-  
+
   /* 3. The lang/country information in the output object must remain
    *    unchanged. */
   fail_unless(strcmp(pdf_text_get_language(text1),
                      language) == 0);
   fail_unless(strcmp(pdf_text_get_country(text1),
                      country) == 0);
-  
+
   pdf_text_destroy(text1);
   pdf_text_destroy(text2);
   pdf_dealloc(output_data);
@@ -92,33 +92,33 @@ END_TEST
  *   2. The contents of the output text object must be the expected ones.
  *   3. The lang/country information in the output object must be empty.
  */
-START_TEST(pdf_text_concat_002)
+START_TEST (pdf_text_concat_002)
 {
   pdf_char_t *output_data = NULL;
   pdf_text_t text1 = NULL;
   pdf_text_t text2 = NULL;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   fail_if(pdf_text_new (&text1) != PDF_OK);
   fail_if(pdf_text_new (&text2) != PDF_OK);
-  
+
   fail_if(pdf_text_set_pdfdocenc(text1, (pdf_char_t *)"GNU's not") != PDF_OK);
   fail_if(pdf_text_set_pdfdocenc(text2, (pdf_char_t *)" Unix") != PDF_OK);
-  
+
   /* 1. The call to  pdf_text_concat should return PDF_OK. */
   fail_unless(pdf_text_concat(text1, text2, PDF_FALSE) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_if(pdf_text_get_pdfdocenc(&output_data, text1) != PDF_OK);
   fail_unless(strlen(output_data) == strlen("GNU's not Unix"));
   fail_unless(strcmp(output_data, "GNU's not Unix") == 0);
-  
+
   /* 3. The lang/country information in the output object must be empty. */
   fail_unless(strlen(pdf_text_get_language(text1)) == 0);
   fail_unless(strlen(pdf_text_get_country(text1)) == 0);
-  
+
   pdf_text_destroy(text1);
   pdf_text_destroy(text2);
   pdf_dealloc(output_data);
@@ -135,7 +135,7 @@ END_TEST
  *   1. The call to  pdf_text_concat should NOT return PDF_OK.
  *   2. The contents of the output text object must remain unchanged.
  */
-START_TEST(pdf_text_concat_003)
+START_TEST (pdf_text_concat_003)
 {
   pdf_char_t *output_data = NULL;
   pdf_text_t text1 = NULL;
@@ -145,23 +145,23 @@ START_TEST(pdf_text_concat_003)
   pdf_char_t *country2 = (pdf_char_t *)"FR";
   pdf_char_t *language2 = (pdf_char_t *)"fr";
 
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   fail_if(pdf_text_new (&text1) != PDF_OK);
   fail_if(pdf_text_new (&text2) != PDF_OK);
-  
+
   fail_if(pdf_text_set_pdfdocenc(text1, (pdf_char_t *)"GNU's not") != PDF_OK);
   fail_if(pdf_text_set_pdfdocenc(text2, (pdf_char_t *)" Unix") != PDF_OK);
   fail_if(pdf_text_set_language(text1, language1) != PDF_OK);
   fail_if(pdf_text_set_language(text2, language2) != PDF_OK);
   fail_if(pdf_text_set_country(text1, country1) != PDF_OK);
   fail_if(pdf_text_set_country(text2, country2) != PDF_OK);
-  
+
   /* 1. The call to  pdf_text_concat should NOT return PDF_OK. */
   fail_unless(pdf_text_concat(text1, text2, PDF_FALSE) != PDF_OK);
-  
+
   /* 2. The contents of the output text object must remain unchanged. */
   fail_if(pdf_text_get_pdfdocenc(&output_data, text1) != PDF_OK);
   fail_unless(strlen(output_data) == strlen("GNU's not"));
@@ -170,7 +170,7 @@ START_TEST(pdf_text_concat_003)
                      language1) == 0);
   fail_unless(strcmp(pdf_text_get_country(text1),
                      country1) == 0);
-  
+
   pdf_text_destroy(text1);
   pdf_text_destroy(text2);
   pdf_dealloc(output_data);
@@ -187,41 +187,41 @@ END_TEST
  *   2. The contents of the output text object should be empty.
  *   3. The lang/country information in the output object must remain unchanged.
  */
-START_TEST(pdf_text_concat_004)
+START_TEST (pdf_text_concat_004)
 {
   pdf_char_t *output_data = NULL;
   pdf_text_t text1 = NULL;
   pdf_text_t text2 = NULL;
   pdf_char_t *country = (pdf_char_t *)"GB";
   pdf_char_t *language = (pdf_char_t *)"en";
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   fail_if(pdf_text_new (&text1) != PDF_OK);
   fail_if(pdf_text_new (&text2) != PDF_OK);
-  
+
   fail_if(pdf_text_set_pdfdocenc(text1, (pdf_char_t *)"") != PDF_OK);
   fail_if(pdf_text_set_pdfdocenc(text2, (pdf_char_t *)"") != PDF_OK);
   fail_if(pdf_text_set_language(text1, language) != PDF_OK);
   fail_if(pdf_text_set_language(text2, language) != PDF_OK);
   fail_if(pdf_text_set_country(text1, country) != PDF_OK);
   fail_if(pdf_text_set_country(text2, country) != PDF_OK);
-  
+
   /* 1. The call to  pdf_text_concat should return PDF_OK. */
   fail_unless(pdf_text_concat(text1, text2, PDF_FALSE) == PDF_OK);
-  
+
   /* 2. The contents of the output text object should be empty. */
   fail_if(pdf_text_get_pdfdocenc(&output_data, text1) != PDF_OK);
   fail_unless(strlen(output_data) == 0);
-  
+
   /* 3. The lang/country information in the output object must remain
    *    unchanged. */
   fail_unless(strcmp(pdf_text_get_language(text1),
                      language) == 0);
   fail_unless(strcmp(pdf_text_get_country(text1),
                      country) == 0);
-  
+
   pdf_text_destroy(text1);
   pdf_text_destroy(text2);
   pdf_dealloc(output_data);
@@ -239,32 +239,32 @@ END_TEST
  *   2. The contents of the output text object should be empty.
  *   3. The lang/country information in the output object must be empty.
  */
-START_TEST(pdf_text_concat_005)
+START_TEST (pdf_text_concat_005)
 {
   pdf_char_t *output_data = NULL;
   pdf_text_t text1 = NULL;
   pdf_text_t text2 = NULL;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   fail_if(pdf_text_new (&text1) != PDF_OK);
   fail_if(pdf_text_new (&text2) != PDF_OK);
-  
+
   fail_if(pdf_text_set_pdfdocenc(text1, (pdf_char_t *)"") != PDF_OK);
   fail_if(pdf_text_set_pdfdocenc(text2, (pdf_char_t *)"") != PDF_OK);
-  
+
   /* 1. The call to  pdf_text_concat should return PDF_OK. */
   fail_unless(pdf_text_concat(text1, text2, PDF_FALSE) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_if(pdf_text_get_pdfdocenc(&output_data, text1) != PDF_OK);
   fail_unless(strlen(output_data) == 0);
-  
+
   /* 3. The lang/country information in the output object must be empty. */
   fail_unless(strlen(pdf_text_get_language(text1)) == 0);
   fail_unless(strlen(pdf_text_get_country(text1)) == 0);
-  
+
   pdf_text_destroy(text1);
   pdf_text_destroy(text2);
   pdf_dealloc(output_data);
@@ -281,7 +281,7 @@ END_TEST
  *   1. The call to  pdf_text_concat should NOT return PDF_OK.
  *   2. The contents of the output text object must remain unchanged.
  */
-START_TEST(pdf_text_concat_006)
+START_TEST (pdf_text_concat_006)
 {
   pdf_char_t *output_data = NULL;
   pdf_text_t text1 = NULL;
@@ -290,24 +290,24 @@ START_TEST(pdf_text_concat_006)
   pdf_char_t *language1 = (pdf_char_t *)"en";
   pdf_char_t *country2 = (pdf_char_t *)"FR";
   pdf_char_t *language2 = (pdf_char_t *)"fr";
-  
-  
+
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   fail_if(pdf_text_new (&text1) != PDF_OK);
   fail_if(pdf_text_new (&text2) != PDF_OK);
-  
+
   fail_if(pdf_text_set_pdfdocenc(text1, (pdf_char_t *)"") != PDF_OK);
   fail_if(pdf_text_set_pdfdocenc(text2, (pdf_char_t *)"") != PDF_OK);
   fail_if(pdf_text_set_language(text1, language1) != PDF_OK);
   fail_if(pdf_text_set_language(text2, language2) != PDF_OK);
   fail_if(pdf_text_set_country(text1, country1) != PDF_OK);
   fail_if(pdf_text_set_country(text2, country2) != PDF_OK);
-  
+
   /* 1. The call to  pdf_text_concat should NOT return PDF_OK. */
   fail_unless(pdf_text_concat(text1, text2, PDF_FALSE) != PDF_OK);
-  
+
   /* 2. The contents of the output text object must remain unchanged. */
   fail_if(pdf_text_get_pdfdocenc(&output_data, text1) != PDF_OK);
   fail_unless(strlen(output_data) == 0);
@@ -315,7 +315,7 @@ START_TEST(pdf_text_concat_006)
                      language1) == 0);
   fail_unless(strcmp(pdf_text_get_country(text1),
                      country1) == 0);
-  
+
   pdf_text_destroy(text1);
   pdf_text_destroy(text2);
   pdf_dealloc(output_data);
@@ -333,42 +333,42 @@ END_TEST
  *   2. The contents of the output text object must be the expected ones.
  *   3. The lang/country information in the output object must remain unchanged.
  */
-START_TEST(pdf_text_concat_007)
+START_TEST (pdf_text_concat_007)
 {
   pdf_char_t *output_data = NULL;
   pdf_text_t text1 = NULL;
   pdf_text_t text2 = NULL;
   pdf_char_t *country = (pdf_char_t *)"GB";
   pdf_char_t *language = (pdf_char_t *)"en";
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   fail_if(pdf_text_new (&text1) != PDF_OK);
   fail_if(pdf_text_new (&text2) != PDF_OK);;
-  
+
   fail_if(pdf_text_set_pdfdocenc(text1, (pdf_char_t *)"GNU's not") != PDF_OK);
   fail_if(pdf_text_set_pdfdocenc(text2, (pdf_char_t *)" Unix") != PDF_OK);
   fail_if(pdf_text_set_language(text1, language) != PDF_OK);
   fail_if(pdf_text_set_language(text2, language) != PDF_OK);
   fail_if(pdf_text_set_country(text1, country) != PDF_OK);
   fail_if(pdf_text_set_country(text2, country) != PDF_OK);
-  
+
   /* 1. The call to  pdf_text_concat should return PDF_OK. */
   fail_unless(pdf_text_concat(text1, text2, PDF_TRUE) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_if(pdf_text_get_pdfdocenc(&output_data, text1) != PDF_OK);
   fail_unless(strlen(output_data) == strlen("GNU's not Unix"));
   fail_unless(strcmp(output_data, "GNU's not Unix") == 0);
-  
+
   /* 3. The lang/country information in the output object must remain
    *    unchanged. */
   fail_unless(strcmp(pdf_text_get_language(text1),
                      language) == 0);
   fail_unless(strcmp(pdf_text_get_country(text1),
                      country) == 0);
-  
+
   pdf_text_destroy(text1);
   pdf_text_destroy(text2);
   pdf_dealloc(output_data);
@@ -386,33 +386,33 @@ END_TEST
  *   2. The contents of the output text object must be the expected ones.
  *   3. The lang/country information in the output object must be empty.
  */
-START_TEST(pdf_text_concat_008)
+START_TEST (pdf_text_concat_008)
 {
   pdf_char_t *output_data = NULL;
   pdf_text_t text1 = NULL;
   pdf_text_t text2 = NULL;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   fail_if(pdf_text_new (&text1) != PDF_OK);
   fail_if(pdf_text_new (&text2) != PDF_OK);
-  
+
   fail_if(pdf_text_set_pdfdocenc(text1, (pdf_char_t *)"GNU's not") != PDF_OK);
   fail_if(pdf_text_set_pdfdocenc(text2, (pdf_char_t *)" Unix") != PDF_OK);
-  
+
   /* 1. The call to  pdf_text_concat should return PDF_OK. */
   fail_unless(pdf_text_concat(text1, text2, PDF_TRUE) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_if(pdf_text_get_pdfdocenc(&output_data, text1) != PDF_OK);
   fail_unless(strlen(output_data) == strlen("GNU's not Unix"));
   fail_unless(strcmp(output_data, "GNU's not Unix") == 0);
-  
+
   /* 3. The lang/country information in the output object must be empty. */
   fail_unless(strlen(pdf_text_get_language(text1)) == 0);
   fail_unless(strlen(pdf_text_get_country(text1)) == 0);
-  
+
   pdf_text_destroy(text1);
   pdf_text_destroy(text2);
   pdf_dealloc(output_data);
@@ -430,7 +430,7 @@ END_TEST
  *   2. The contents of the output text object must be the expected ones.
  *   3. The lang/country information in the output object must remain unchanged.
  */
-START_TEST(pdf_text_concat_009)
+START_TEST (pdf_text_concat_009)
 {
   pdf_char_t *output_data = NULL;
   pdf_text_t text1 = NULL;
@@ -439,36 +439,36 @@ START_TEST(pdf_text_concat_009)
   pdf_char_t *language1 = (pdf_char_t *)"en";
   pdf_char_t *country2 = (pdf_char_t *)"FR";
   pdf_char_t *language2 = (pdf_char_t *)"fr";
-  
-  
+
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   fail_if(pdf_text_new (&text1) != PDF_OK);
   fail_if(pdf_text_new (&text2) != PDF_OK);
-  
+
   fail_if(pdf_text_set_pdfdocenc(text1, (pdf_char_t *)"GNU's not") != PDF_OK);
   fail_if(pdf_text_set_pdfdocenc(text2, (pdf_char_t *)" Unix") != PDF_OK);
   fail_if(pdf_text_set_language(text1, language1) != PDF_OK);
   fail_if(pdf_text_set_language(text2, language2) != PDF_OK);
   fail_if(pdf_text_set_country(text1, country1) != PDF_OK);
   fail_if(pdf_text_set_country(text2, country2) != PDF_OK);
-  
+
   /* 1. The call to  pdf_text_concat should return PDF_OK. */
   fail_unless(pdf_text_concat(text1, text2, PDF_TRUE) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_if(pdf_text_get_pdfdocenc(&output_data, text1) != PDF_OK);
   fail_unless(strlen(output_data) == strlen("GNU's not Unix"));
   fail_unless(strcmp(output_data, "GNU's not Unix") == 0);
-  
+
   /* 3. The lang/country information in the output object must remain
    *    unchanged. */
   fail_unless(strcmp(pdf_text_get_language(text1),
                      language1) == 0);
   fail_unless(strcmp(pdf_text_get_country(text1),
                      country1) == 0);
-  
+
   pdf_text_destroy(text1);
   pdf_text_destroy(text2);
   pdf_dealloc(output_data);
@@ -485,41 +485,41 @@ END_TEST
  *   2. The contents of the output text object should be empty.
  *   3. The lang/country information in the output object must remain unchanged.
  */
-START_TEST(pdf_text_concat_010)
+START_TEST (pdf_text_concat_010)
 {
   pdf_char_t *output_data = NULL;
   pdf_text_t text1 = NULL;
   pdf_text_t text2 = NULL;
   pdf_char_t *country = (pdf_char_t *)"GB";
   pdf_char_t *language = (pdf_char_t *)"en";
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   fail_if(pdf_text_new (&text1) != PDF_OK);
   fail_if(pdf_text_new (&text2) != PDF_OK);
-  
+
   fail_if(pdf_text_set_pdfdocenc(text1, (pdf_char_t *)"") != PDF_OK);
   fail_if(pdf_text_set_pdfdocenc(text2, (pdf_char_t *)"") != PDF_OK);
   fail_if(pdf_text_set_language(text1, language) != PDF_OK);
   fail_if(pdf_text_set_language(text2, language) != PDF_OK);
   fail_if(pdf_text_set_country(text1, country) != PDF_OK);
   fail_if(pdf_text_set_country(text2, country) != PDF_OK);
-  
+
   /* 1. The call to  pdf_text_concat should return PDF_OK. */
   fail_unless(pdf_text_concat(text1, text2, PDF_TRUE) == PDF_OK);
-  
+
   /* 2. The contents of the output text object should be empty. */
   fail_if(pdf_text_get_pdfdocenc(&output_data, text1) != PDF_OK);
   fail_unless(strlen(output_data) == 0);
-  
+
   /* 3. The lang/country information in the output object must remain
    *    unchanged. */
   fail_unless(strcmp(pdf_text_get_language(text1),
                      language) == 0);
   fail_unless(strcmp(pdf_text_get_country(text1),
                      country) == 0);
-  
+
   pdf_text_destroy(text1);
   pdf_text_destroy(text2);
   pdf_dealloc(output_data);
@@ -537,32 +537,32 @@ END_TEST
  *   2. The contents of the output text object should be empty.
  *   3. The lang/country information in the output object must be empty.
  */
-START_TEST(pdf_text_concat_011)
+START_TEST (pdf_text_concat_011)
 {
   pdf_char_t *output_data = NULL;
   pdf_text_t text1 = NULL;
   pdf_text_t text2 = NULL;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   fail_if(pdf_text_new (&text1) != PDF_OK);
   fail_if(pdf_text_new (&text2) != PDF_OK);
-  
+
   fail_if(pdf_text_set_pdfdocenc(text1, (pdf_char_t *)"") != PDF_OK);
   fail_if(pdf_text_set_pdfdocenc(text2, (pdf_char_t *)"") != PDF_OK);
-  
+
   /* 1. The call to  pdf_text_concat should return PDF_OK. */
   fail_unless(pdf_text_concat(text1, text2, PDF_TRUE) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_if(pdf_text_get_pdfdocenc(&output_data, text1) != PDF_OK);
   fail_unless(strlen(output_data) == 0);
-  
+
   /* 3. The lang/country information in the output object must be empty. */
   fail_unless(strlen(pdf_text_get_language(text1)) == 0);
   fail_unless(strlen(pdf_text_get_country(text1)) == 0);
-  
+
   pdf_text_destroy(text1);
   pdf_text_destroy(text2);
   pdf_dealloc(output_data);
@@ -581,7 +581,7 @@ END_TEST
  *   3. The lang/country information in the output object must remain
  *      unchanged.
  */
-START_TEST(pdf_text_concat_012)
+START_TEST (pdf_text_concat_012)
 {
   pdf_char_t *output_data = NULL;
   pdf_text_t text1 = NULL;
@@ -590,35 +590,35 @@ START_TEST(pdf_text_concat_012)
   pdf_char_t *language1 = (pdf_char_t *)"en";
   pdf_char_t *country2 = (pdf_char_t *)"FR";
   pdf_char_t *language2 = (pdf_char_t *)"fr";
-  
-  
+
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   fail_if(pdf_text_new (&text1) != PDF_OK);
   fail_if(pdf_text_new (&text2) != PDF_OK);
-  
+
   fail_if(pdf_text_set_pdfdocenc(text1, (pdf_char_t *)"") != PDF_OK);
   fail_if(pdf_text_set_pdfdocenc(text2, (pdf_char_t *)"") != PDF_OK);
   fail_if(pdf_text_set_language(text1, language1) != PDF_OK);
   fail_if(pdf_text_set_language(text2, language2) != PDF_OK);
   fail_if(pdf_text_set_country(text1, country1) != PDF_OK);
   fail_if(pdf_text_set_country(text2, country2) != PDF_OK);
-  
+
   /* 1. The call to  pdf_text_concat should return PDF_OK. */
   fail_unless(pdf_text_concat(text1, text2, PDF_FALSE) != PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_if(pdf_text_get_pdfdocenc(&output_data, text1) != PDF_OK);
   fail_unless(strlen(output_data) == 0);
-  
+
   /* 3. The lang/country information in the output object must remain
    *    unchanged. */
   fail_unless(strcmp(pdf_text_get_language(text1),
                      language1) == 0);
   fail_unless(strcmp(pdf_text_get_country(text1),
                      country1) == 0);
-  
+
   pdf_text_destroy(text1);
   pdf_text_destroy(text2);
   pdf_dealloc(output_data);
@@ -646,6 +646,9 @@ test_pdf_text_concat (void)
   tcase_add_test(tc, pdf_text_concat_010);
   tcase_add_test(tc, pdf_text_concat_011);
   tcase_add_test(tc, pdf_text_concat_012);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

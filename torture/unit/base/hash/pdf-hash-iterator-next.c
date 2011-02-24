@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include <pdf.h>
 #include <check.h>
-
+#include <pdf-test-common.h>
 
 /*
  * Test: pdf_hash_iterator_next_001
@@ -68,6 +68,9 @@ test_pdf_hash_iterator_next (void)
   TCase *tc = tcase_create ("pdf_hash_iterator_next");
 
   tcase_add_test (tc, pdf_hash_iterator_next_001);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

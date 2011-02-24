@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include <pdf.h>
 #include <check.h>
-
+#include <pdf-test-common.h>
 
 /*
  * Test: pdf_crypt_cipher_new_001
@@ -75,6 +75,9 @@ test_pdf_crypt_cipher_new (void)
   TCase *tc = tcase_create("pdf_crypt_cipher_new");
   tcase_add_test(tc, pdf_crypt_cipher_new_001);
   tcase_add_test(tc, pdf_crypt_cipher_new_002);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2011-02-11 20:30:55 EET mivael"
+/* -*- mode: C -*- Time-stamp: "2011-02-24 23:32:00 aleksander"
  *
  *       File:         pdf-token-read.c
  *       Date:         Wed Jan 14 05:44:48 2009
@@ -31,7 +31,7 @@
 #include <assert.h>
 
 #include <pdf.h>
-
+#include <pdf-test-common.h>
 #define STR_AND_LEN(s) (pdf_char_t*)(s),(sizeof(s)-1)
 
 /* Initialize an in-memory reader stream (pdf_stm_t *stm)
@@ -227,7 +227,7 @@ fail_for_raw_char (pdf_char_t ch)
  *   Each token matches the expected one (according to pdf_token_equal_p),
  *   and no tokens remain afterwards.
  */
-START_TEST(pdf_token_read_toktypes)
+START_TEST (pdf_token_read_toktypes)
 {
   pdf_stm_t stm;
   pdf_token_reader_t tokr;
@@ -270,7 +270,7 @@ END_TEST
  *   The stream should be positioned after the '\n' character (at '<'), and
  *   the token reader should act as if it reached the end of the input file.
  */
-START_TEST(pdf_token_read_eos)
+START_TEST (pdf_token_read_eos)
 {
   pdf_stm_t stm;
   pdf_token_reader_t tokr;
@@ -299,7 +299,7 @@ END_TEST
  * Success condition:
  *   A token containing the string should be produced.
  */
-START_TEST(pdf_token_read_longstring)
+START_TEST (pdf_token_read_longstring)
 {
   const pdf_size_t filesize = 42000;
   pdf_char_t *file;
@@ -792,6 +792,9 @@ test_pdf_token_read (void)
   tcase_add_test (tc, pdf_token_regular_chars_outside_range);
   tcase_add_test (tc, pdf_token_empty_name);
 
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

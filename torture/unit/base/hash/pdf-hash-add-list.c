@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include <pdf.h>
 #include <check.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_hash_add_list_001
  * Description:
@@ -67,6 +67,9 @@ test_pdf_hash_add_list (void)
   TCase *tc = tcase_create ("pdf_hash_add_list");
 
   tcase_add_test (tc, pdf_hash_add_list_001);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <base/text/pdf-text-test-common.h>
-
+#include <pdf-test-common.h>
 
 
 /* ASCII-7 strings for encoding tests */
@@ -96,11 +96,11 @@ const test_string_t pdf_doc_encoding_strings[] = {
     "\x00\x00\x00" "-" "\x00\x00\x00" "_",
     24
   },
-  
+
   /*
    { "\x24\x25\x26\x27\x28\x29\x30\x31",
    8,
-   
+
    },
    { (pdf_char_t []) {120,121,122,123,124,125,126,127}, 8},
    { (pdf_char_t []) {128,129,130,131,132,133,134,135}, 8},

@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
 #include <check.h>
 
 #include <pdf.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_fsys_file_open_001
  * Description:
@@ -39,7 +39,7 @@
  *   The call to pdf_fsys_file_open should return PDF_OK
  */
 
-START_TEST(pdf_fsys_file_open_001)
+START_TEST (pdf_fsys_file_open_001)
 {
   pdf_fsys_file_t file;
   pdf_text_t path;
@@ -55,9 +55,9 @@ START_TEST(pdf_fsys_file_open_001)
                                      PDF_TEXT_UTF8,
                                      &path) != PDF_OK );
 
-  fail_if( pdf_fsys_file_open(NULL, 
-                              path, 
-                              PDF_FSYS_OPEN_MODE_READ, 
+  fail_if( pdf_fsys_file_open(NULL,
+                              path,
+                              PDF_FSYS_OPEN_MODE_READ,
                               &file) != PDF_OK );
 
   pdf_fsys_file_close(file);
@@ -73,7 +73,7 @@ END_TEST
  *   The call to pdf_fsys_file_open should return PDF_EBADNAME
  */
 
-START_TEST(pdf_fsys_file_open_002)
+START_TEST (pdf_fsys_file_open_002)
 {
   pdf_fsys_file_t file;
   pdf_text_t path;
@@ -88,12 +88,12 @@ START_TEST(pdf_fsys_file_open_002)
                                      PDF_TEXT_UTF8,
                                      &path) != PDF_OK );
 
-  fail_if( pdf_fsys_file_open(NULL, 
-                              path, 
-                              PDF_FSYS_OPEN_MODE_READ, 
+  fail_if( pdf_fsys_file_open(NULL,
+                              path,
+                              PDF_FSYS_OPEN_MODE_READ,
                               &file) != PDF_EBADNAME );
-  
-  pdf_dealloc(file); 
+
+  pdf_dealloc(file);
   pdf_text_destroy(path);
 }
 END_TEST
@@ -106,7 +106,7 @@ END_TEST
  *   The call to pdf_fsys_file_open should return PDF_EBADPERMS
  */
 
-START_TEST(pdf_fsys_file_open_003)
+START_TEST (pdf_fsys_file_open_003)
 {
   pdf_fsys_file_t file;
   pdf_text_t path;
@@ -122,9 +122,9 @@ START_TEST(pdf_fsys_file_open_003)
                                      PDF_TEXT_UTF8,
                                      &path) != PDF_OK );
 
-  fail_if( pdf_fsys_file_open(NULL, 
-                              path, 
-                              PDF_FSYS_OPEN_MODE_WRITE, 
+  fail_if( pdf_fsys_file_open(NULL,
+                              path,
+                              PDF_FSYS_OPEN_MODE_WRITE,
                               &file) != PDF_EBADPERMS );
 
   pdf_dealloc(file);
@@ -140,7 +140,7 @@ END_TEST
  *   The call to pdf_fsys_file_open should return PDF_OK
  */
 
-START_TEST(pdf_fsys_file_open_004)
+START_TEST (pdf_fsys_file_open_004)
 {
   pdf_fsys_file_t file;
   pdf_text_t path;
@@ -156,9 +156,9 @@ START_TEST(pdf_fsys_file_open_004)
                                      PDF_TEXT_UTF8,
                                      &path) != PDF_OK );
 
-  fail_if( pdf_fsys_file_open(NULL, 
-                              path, 
-                              PDF_FSYS_OPEN_MODE_WRITE, 
+  fail_if( pdf_fsys_file_open(NULL,
+                              path,
+                              PDF_FSYS_OPEN_MODE_WRITE,
                               &file) != PDF_OK );
 
   pdf_fsys_file_close(file);
@@ -177,6 +177,9 @@ test_pdf_fsys_file_open (void)
   tcase_add_test(tc, pdf_fsys_file_open_002);
   tcase_add_test(tc, pdf_fsys_file_open_003);
   tcase_add_test(tc, pdf_fsys_file_open_004);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

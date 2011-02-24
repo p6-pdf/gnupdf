@@ -28,7 +28,7 @@
 #include <string.h>
 #include <pdf.h>
 #include <check.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_text_get_best_encoding_001
  * Description:
@@ -38,17 +38,17 @@
  *   has configured in the system, the unit test will only check that a
  *   non-empty host encoding is returned.
  * Success conditions:
- *   1. The call to pdf_text_get_best_encoding should return a non-empty 
- *      pdf_text_host_encoding_t variable. 
+ *   1. The call to pdf_text_get_best_encoding should return a non-empty
+ *      pdf_text_host_encoding_t variable.
  */
-START_TEST(pdf_text_get_best_encoding_001)
+START_TEST (pdf_text_get_best_encoding_001)
 {
   pdf_text_host_encoding_t host_enc;
   pdf_text_t text;
 
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
+
   fail_if(pdf_text_new (&text) != PDF_OK);
 
 #ifdef PDF_HOST_WIN32
@@ -59,11 +59,11 @@ START_TEST(pdf_text_get_best_encoding_001)
                                            &host_enc) == PDF_OK);
 #endif
 
-  /* 1. The call to pdf_text_get_best_encoding should return a non-empty 
+  /* 1. The call to pdf_text_get_best_encoding should return a non-empty
    *      pdf_text_host_encoding_t variable.*/
   host_enc = pdf_text_get_best_encoding(text, host_enc);
   fail_unless(strlen(host_enc.name) > 0);
-  
+
   pdf_text_destroy(text);
 }
 END_TEST
@@ -77,7 +77,10 @@ test_pdf_text_get_best_encoding (void)
 {
   TCase *tc = tcase_create("pdf_text_get_best_encoding");
   tcase_add_test(tc, pdf_text_get_best_encoding_001);
-  
+
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

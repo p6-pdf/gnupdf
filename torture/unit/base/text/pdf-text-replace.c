@@ -28,7 +28,7 @@
 #include <string.h>
 #include <pdf.h>
 #include <check.h>
-
+#include <pdf-test-common.h>
 /*
  * Test: pdf_text_replace_001
  * Description:
@@ -38,7 +38,7 @@
  *   1. The call to  pdf_text_replace should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_replace_001)
+START_TEST (pdf_text_replace_001)
 {
   pdf_text_t text;
   pdf_text_t new_pattern;
@@ -54,7 +54,7 @@ START_TEST(pdf_text_replace_001)
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
 
-  
+
   fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen(input_string),
                                        NULL, NULL,
@@ -76,7 +76,7 @@ START_TEST(pdf_text_replace_001)
   fail_if(output_string == NULL);
   fail_if(strlen(output_string) != strlen(expected_string));
   fail_if(strcmp(output_string, expected_string) != 0);
-  
+
   pdf_text_destroy(text);
   pdf_text_destroy(new_pattern);
   pdf_text_destroy(old_pattern);
@@ -94,7 +94,7 @@ END_TEST
  *   1. The call to  pdf_text_replace should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_replace_002)
+START_TEST (pdf_text_replace_002)
 {
   pdf_text_t text;
   pdf_text_t new_pattern;
@@ -107,11 +107,11 @@ START_TEST(pdf_text_replace_002)
                                       "GNU/Linux rules GNU/Linux rules "
                                       "GNU/Linux";
   pdf_char_t *output_string = NULL;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
-  
+
+
   fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen(input_string),
                                        NULL, NULL,
@@ -124,16 +124,16 @@ START_TEST(pdf_text_replace_002)
                                        strlen(new_pattern_ascii),
                                        NULL, NULL,
                                        &new_pattern) != PDF_OK);
-  
+
   /* 1. The call to  pdf_text_replace should return PDF_OK. */
   fail_unless(pdf_text_replace(text, new_pattern, old_pattern) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_if(pdf_text_get_pdfdocenc(&output_string, text) != PDF_OK);
   fail_if(output_string == NULL);
   fail_if(strlen(output_string) != strlen(expected_string));
   fail_if(strcmp(output_string, expected_string) != 0);
-  
+
   pdf_text_destroy(text);
   pdf_text_destroy(new_pattern);
   pdf_text_destroy(old_pattern);
@@ -151,7 +151,7 @@ END_TEST
  *   1. The call to  pdf_text_replace should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_replace_003)
+START_TEST (pdf_text_replace_003)
 {
   pdf_text_t text;
   pdf_text_t new_pattern;
@@ -159,15 +159,15 @@ START_TEST(pdf_text_replace_003)
   const pdf_char_t *old_pattern_ascii = (pdf_char_t *)"Windows";
   const pdf_char_t *new_pattern_ascii = (pdf_char_t *)"FreeBSD";
   const pdf_char_t *input_string = (pdf_char_t *) \
-                                   "Windows rules Windows rules Windows"; 
+                                   "Windows rules Windows rules Windows";
   const pdf_char_t *expected_string = (pdf_char_t *) \
                                    "FreeBSD rules FreeBSD rules FreeBSD";
   pdf_char_t *output_string = NULL;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
-  
+
+
   fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen(input_string),
                                        NULL, NULL,
@@ -180,16 +180,16 @@ START_TEST(pdf_text_replace_003)
                                        strlen(new_pattern_ascii),
                                        NULL, NULL,
                                        &new_pattern) != PDF_OK);
-  
+
   /* 1. The call to  pdf_text_replace should return PDF_OK. */
   fail_unless(pdf_text_replace(text, new_pattern, old_pattern) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_if(pdf_text_get_pdfdocenc(&output_string, text) != PDF_OK);
   fail_if(output_string == NULL);
   fail_if(strlen(output_string) != strlen(expected_string));
   fail_if(strcmp(output_string, expected_string) != 0);
-  
+
   pdf_text_destroy(text);
   pdf_text_destroy(new_pattern);
   pdf_text_destroy(old_pattern);
@@ -207,21 +207,21 @@ END_TEST
  *   1. The call to  pdf_text_replace should return PDF_OK.
  *   2. The contents of the output text object must be the expected ones.
  */
-START_TEST(pdf_text_replace_004)
+START_TEST (pdf_text_replace_004)
 {
   pdf_text_t text;
   pdf_text_t new_pattern;
   pdf_text_t old_pattern;
   const pdf_char_t *old_pattern_ascii = (pdf_char_t *)"GNU";
   const pdf_char_t *new_pattern_ascii = (pdf_char_t *)"";
-  const pdf_char_t *input_string = (pdf_char_t *) "GNU rules GNU rules GNU"; 
-  const pdf_char_t *expected_string = (pdf_char_t *) " rules  rules "; 
+  const pdf_char_t *input_string = (pdf_char_t *) "GNU rules GNU rules GNU";
+  const pdf_char_t *expected_string = (pdf_char_t *) " rules  rules ";
   pdf_char_t *output_string = NULL;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
-  
+
+
   fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen(input_string),
                                        NULL, NULL,
@@ -234,16 +234,16 @@ START_TEST(pdf_text_replace_004)
                                        strlen(new_pattern_ascii),
                                        NULL, NULL,
                                        &new_pattern) != PDF_OK);
-  
+
   /* 1. The call to  pdf_text_replace should return PDF_OK. */
   fail_unless(pdf_text_replace(text, new_pattern, old_pattern) == PDF_OK);
-  
+
   /* 2. The contents of the output text object must be the expected ones. */
   fail_if(pdf_text_get_pdfdocenc(&output_string, text) != PDF_OK);
   fail_if(output_string == NULL);
   fail_if(strlen(output_string) != strlen(expected_string));
   fail_if(strcmp(output_string, expected_string) != 0);
-  
+
   pdf_text_destroy(text);
   pdf_text_destroy(new_pattern);
   pdf_text_destroy(old_pattern);
@@ -261,7 +261,7 @@ END_TEST
  *   1. The call to  pdf_text_replace should return PDF_OK.
  *   2. The contents of the output text object remain unchanged.
  */
-START_TEST(pdf_text_replace_005)
+START_TEST (pdf_text_replace_005)
 {
   pdf_text_t text;
   pdf_text_t new_pattern;
@@ -273,11 +273,11 @@ START_TEST(pdf_text_replace_005)
   const pdf_char_t *expected_string = (pdf_char_t *) \
                                       "Simple test string with no old pattern";
   pdf_char_t *output_string = NULL;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
-  
+
+
   fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen(input_string),
                                        NULL, NULL,
@@ -290,16 +290,16 @@ START_TEST(pdf_text_replace_005)
                                        strlen(new_pattern_ascii),
                                        NULL, NULL,
                                        &new_pattern) != PDF_OK);
-  
+
   /* 1. The call to  pdf_text_replace should return PDF_OK. */
   fail_unless(pdf_text_replace(text, new_pattern, old_pattern) == PDF_OK);
-  
+
   /* 2. The contents of the output text object remain unchanged. */
   fail_if(pdf_text_get_pdfdocenc(&output_string, text) != PDF_OK);
   fail_if(output_string == NULL);
   fail_if(strlen(output_string) != strlen(expected_string));
   fail_if(strcmp(output_string, expected_string) != 0);
-  
+
   pdf_text_destroy(text);
   pdf_text_destroy(new_pattern);
   pdf_text_destroy(old_pattern);
@@ -317,7 +317,7 @@ END_TEST
  *   1. The call to  pdf_text_replace should return PDF_OK.
  *   2. The contents of the output text object remain unchanged.
  */
-START_TEST(pdf_text_replace_006)
+START_TEST (pdf_text_replace_006)
 {
   pdf_text_t text;
   pdf_text_t new_pattern;
@@ -329,11 +329,11 @@ START_TEST(pdf_text_replace_006)
   const pdf_char_t *expected_string = (pdf_char_t *) \
                                       "Simple test string with no old pattern";
   pdf_char_t *output_string = NULL;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
-  
+
+
   fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen(input_string),
                                        NULL, NULL,
@@ -346,16 +346,16 @@ START_TEST(pdf_text_replace_006)
                                        strlen(new_pattern_ascii),
                                        NULL, NULL,
                                        &new_pattern) != PDF_OK);
-  
+
   /* 1. The call to  pdf_text_replace should return PDF_OK. */
   fail_unless(pdf_text_replace(text, new_pattern, old_pattern) == PDF_OK);
-  
+
   /* 2. The contents of the output text object remain unchanged. */
   fail_if(pdf_text_get_pdfdocenc(&output_string, text) != PDF_OK);
   fail_if(output_string == NULL);
   fail_if(strlen(output_string) != strlen(expected_string));
   fail_if(strcmp(output_string, expected_string) != 0);
-  
+
   pdf_text_destroy(text);
   pdf_text_destroy(new_pattern);
   pdf_text_destroy(old_pattern);
@@ -373,7 +373,7 @@ END_TEST
  *   1. The call to  pdf_text_replace should return PDF_OK.
  *   2. The contents of the output text object remain unchanged.
  */
-START_TEST(pdf_text_replace_007)
+START_TEST (pdf_text_replace_007)
 {
   pdf_text_t text;
   pdf_text_t new_pattern;
@@ -385,11 +385,11 @@ START_TEST(pdf_text_replace_007)
   const pdf_char_t *expected_string = (pdf_char_t *) \
                                    "Simple test string with no old pattern";
   pdf_char_t *output_string = NULL;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
-  
+
+
   fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen(input_string),
                                        NULL, NULL,
@@ -402,16 +402,16 @@ START_TEST(pdf_text_replace_007)
                                        strlen(new_pattern_ascii),
                                        NULL, NULL,
                                        &new_pattern) != PDF_OK);
-  
+
   /* 1. The call to  pdf_text_replace should return PDF_OK. */
   fail_unless(pdf_text_replace(text, new_pattern, old_pattern) == PDF_OK);
-  
+
   /* 2. The contents of the output text object remain unchanged. */
   fail_if(pdf_text_get_pdfdocenc(&output_string, text) != PDF_OK);
   fail_if(output_string == NULL);
   fail_if(strlen(output_string) != strlen(expected_string));
   fail_if(strcmp(output_string, expected_string) != 0);
-  
+
   pdf_text_destroy(text);
   pdf_text_destroy(new_pattern);
   pdf_text_destroy(old_pattern);
@@ -429,7 +429,7 @@ END_TEST
  *   1. The call to  pdf_text_replace should return PDF_OK.
  *   2. The contents of the output text object remain unchanged.
  */
-START_TEST(pdf_text_replace_008)
+START_TEST (pdf_text_replace_008)
 {
   pdf_text_t text;
   pdf_text_t new_pattern;
@@ -441,11 +441,11 @@ START_TEST(pdf_text_replace_008)
   const pdf_char_t *expected_string = (pdf_char_t *) \
                                       "Simple test string with no old pattern";
   pdf_char_t *output_string = NULL;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
-  
+
+
   fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen(input_string),
                                        NULL, NULL,
@@ -458,16 +458,16 @@ START_TEST(pdf_text_replace_008)
                                        strlen(new_pattern_ascii),
                                        NULL, NULL,
                                        &new_pattern) != PDF_OK);
-  
+
   /* 1. The call to  pdf_text_replace should return PDF_OK. */
   fail_unless(pdf_text_replace(text, new_pattern, old_pattern) == PDF_OK);
-  
+
   /* 2. The contents of the output text object remain unchanged. */
   fail_if(pdf_text_get_pdfdocenc(&output_string, text) != PDF_OK);
   fail_if(output_string == NULL);
   fail_if(strlen(output_string) != strlen(expected_string));
   fail_if(strcmp(output_string, expected_string) != 0);
-  
+
   pdf_text_destroy(text);
   pdf_text_destroy(new_pattern);
   pdf_text_destroy(old_pattern);
@@ -484,7 +484,7 @@ END_TEST
  * Success conditions:
  *   1. The call to  pdf_text_replace should NOT return PDF_OK.
  */
-START_TEST(pdf_text_replace_009)
+START_TEST (pdf_text_replace_009)
 {
   pdf_text_t text;
   pdf_text_t new_pattern;
@@ -496,8 +496,8 @@ START_TEST(pdf_text_replace_009)
 
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
-  
+
+
   fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen(input_string),
                                        NULL, NULL,
@@ -510,7 +510,7 @@ START_TEST(pdf_text_replace_009)
                                        strlen(new_pattern_ascii),
                                        NULL, NULL,
                                        &new_pattern) != PDF_OK);
-  
+
   /* 1. The call to  pdf_text_replace should NOT return PDF_OK. */
   fail_unless(pdf_text_replace(text, new_pattern, old_pattern) != PDF_OK);
 
@@ -530,7 +530,7 @@ END_TEST
  *   1. The call to  pdf_text_replace should return PDF_OK.
  *   2. The contents of the output text object remain empty.
  */
-START_TEST(pdf_text_replace_010)
+START_TEST (pdf_text_replace_010)
 {
   pdf_text_t text;
   pdf_text_t new_pattern;
@@ -539,11 +539,11 @@ START_TEST(pdf_text_replace_010)
   const pdf_char_t *new_pattern_ascii = (pdf_char_t *)"GNU/Linux";
   const pdf_char_t *input_string = (pdf_char_t *) "";
   pdf_char_t *output_string = NULL;
-  
+
   /* Always INIT! Check runs each test in a different process */
   fail_if(pdf_init() != PDF_OK);
-  
-  
+
+
   fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen(input_string),
                                        NULL, NULL,
@@ -556,15 +556,15 @@ START_TEST(pdf_text_replace_010)
                                        strlen(new_pattern_ascii),
                                        NULL, NULL,
                                        &new_pattern) != PDF_OK);
-  
+
   /* 1. The call to  pdf_text_replace should return PDF_OK. */
   fail_unless(pdf_text_replace(text, new_pattern, old_pattern) == PDF_OK);
-  
+
   /* 2. The contents of the output text object remain empty. */
   fail_if(pdf_text_get_pdfdocenc(&output_string, text) != PDF_OK);
   fail_if(output_string == NULL);
   fail_if(strlen(output_string) != 0);
-  
+
   pdf_text_destroy(text);
   pdf_text_destroy(new_pattern);
   pdf_text_destroy(old_pattern);
@@ -590,6 +590,9 @@ test_pdf_text_replace (void)
   tcase_add_test(tc, pdf_text_replace_008);
   tcase_add_test(tc, pdf_text_replace_009);
   tcase_add_test(tc, pdf_text_replace_010);
+  tcase_add_checked_fixture (tc,
+                             pdf_test_setup,
+                             pdf_test_teardown);
   return tc;
 }
 

@@ -26,7 +26,7 @@
 #include <config.h>
 
 #include <check.h>
-
+#include <pdf-test-common.h>
 extern TCase *test_pdf_list_new (void);
 extern TCase *test_pdf_list_destroy (void);
 extern TCase *test_pdf_list_size (void);
