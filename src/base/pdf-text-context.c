@@ -196,15 +196,6 @@ pdf_text_context_init (void)
 {
   pdf_status_t ret_code = PDF_OK;
   
-#if defined HAVE_SETLOCALE
-  /* Set all categories of the locale */
-  if(setlocale(LC_ALL, "") == NULL)
-    {
-      PDF_DEBUG_BASE("Error setting locale information in the process");
-      return PDF_ETEXTENC;
-    }
-#endif
-  
   /* Get system endianness */
   ret_code = pdf_text_detect_host_endianness();
   if(ret_code != PDF_OK)
