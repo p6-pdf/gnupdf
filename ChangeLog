@@ -1,5 +1,21 @@
 2011-02-24  Aleksander Morgado  <aleksander@gnu.org>
 
+	torture: Removed no longer used bignum tests.
+	* torture/unit/base/types/pdf-i64-abs.c
+	* torture/unit/base/types/pdf-i64-add.c
+	* torture/unit/base/types/pdf-i64-assign-quick.c
+	* torture/unit/base/types/pdf-i64-assign.c
+	* torture/unit/base/types/pdf-i64-cmp.c
+	* torture/unit/base/types/pdf-i64-copy.c
+	* torture/unit/base/types/pdf-i64-div.c
+	* torture/unit/base/types/pdf-i64-mod.c
+	* torture/unit/base/types/pdf-i64-mult.c
+	* torture/unit/base/types/pdf-i64-neg.c
+	* torture/unit/base/types/pdf-i64-new.c
+	* torture/unit/base/types/pdf-i64-subtraction.c
+
+2011-02-24  Aleksander Morgado  <aleksander@gnu.org>
+
 	base: library should never initialize the locale.
 	* src/base/pdf-text-context.c (pdf_text_context_init): The library
 	shouldn't setlocale()
