@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,15 +28,7 @@
 
 #include <config.h>
 
-#include <limits.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdint.h>
-#ifdef HAVE_MALLOC_H
-#include <malloc.h>
-#endif /* HAVE_MALLOC_H */
-
-#include <pdf-text.h>
+#include <pdf-types.h>
 
 /*************** START OF SELF-GENERATED DATA *********************************/
 
