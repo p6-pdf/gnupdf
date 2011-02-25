@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,15 +28,7 @@
 
 #include <config.h>
 
-#include <limits.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdint.h>
-#ifdef HAVE_MALLOC_H
-#include <malloc.h>
-#endif /* HAVE_MALLOC_H */
-
-#include <pdf-text.h>
+#include <pdf-types.h>
 
 /*************** START OF SELF-GENERATED DATA *********************************/
 
@@ -78,14 +70,11 @@ enum pdf_text_ucd_proplist_e {
 
 /***************** END OF SELF-GENERATED DATA *********************************/
 
-
-
 /* Returns true if the given UTF-32HE unicode point has the Soft_Dotted
  *  property */
-pdf_bool_t
-pdf_text_ucd_pl_is_Soft_Dotted(pdf_u32_t character);
+pdf_bool_t pdf_text_ucd_pl_is_Soft_Dotted (pdf_u32_t character);
 
-/* NOTE: If needed, other properties can also be questioned like in 
+/* NOTE: If needed, other properties can also be questioned like in
  *  `pdf_text_ucd_pl_is_Soft_Dotted'. By now, this is not necessary. */
 
 #endif

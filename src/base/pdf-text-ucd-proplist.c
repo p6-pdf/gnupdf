@@ -11,7 +11,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,8 @@
 
 #include <config.h>
 
+#include <string.h>
+
 #include <pdf-text-ucd-proplist.h>
 
 typedef struct _unicode_proplist_info_s {
@@ -37,140 +39,138 @@ typedef struct _unicode_proplist_info_s {
   enum pdf_text_ucd_proplist_e proplist;
 } unicode_proplist_info_t;
 
-
 /*************** START OF SELF-GENERATED DATA *********************************/
 
 /* Indexes of intervals in array */
 /* Index of first 'WHITE_SPACE' interval */
-#define UCD_PL_WHITE_SPACE_F 0 
+#define UCD_PL_WHITE_SPACE_F 0
 /* Index of last 'WHITE_SPACE' interval */
-#define UCD_PL_WHITE_SPACE_L 11 
+#define UCD_PL_WHITE_SPACE_L 11
 /* Index of first 'BIDI_CONTROL' interval */
-#define UCD_PL_BIDI_CONTROL_F 12 
+#define UCD_PL_BIDI_CONTROL_F 12
 /* Index of last 'BIDI_CONTROL' interval */
-#define UCD_PL_BIDI_CONTROL_L 13 
+#define UCD_PL_BIDI_CONTROL_L 13
 /* Index of first 'JOIN_CONTROL' interval */
-#define UCD_PL_JOIN_CONTROL_F 14 
+#define UCD_PL_JOIN_CONTROL_F 14
 /* Index of last 'JOIN_CONTROL' interval */
-#define UCD_PL_JOIN_CONTROL_L 14 
+#define UCD_PL_JOIN_CONTROL_L 14
 /* Index of first 'DASH' interval */
-#define UCD_PL_DASH_F 15 
+#define UCD_PL_DASH_F 15
 /* Index of last 'DASH' interval */
-#define UCD_PL_DASH_L 32 
+#define UCD_PL_DASH_L 32
 /* Index of first 'HYPHEN' interval */
-#define UCD_PL_HYPHEN_F 33 
+#define UCD_PL_HYPHEN_F 33
 /* Index of last 'HYPHEN' interval */
-#define UCD_PL_HYPHEN_L 42 
+#define UCD_PL_HYPHEN_L 42
 /* Index of first 'QUOTATION_MARK' interval */
-#define UCD_PL_QUOTATION_MARK_F 43 
+#define UCD_PL_QUOTATION_MARK_F 43
 /* Index of last 'QUOTATION_MARK' interval */
-#define UCD_PL_QUOTATION_MARK_L 69 
+#define UCD_PL_QUOTATION_MARK_L 69
 /* Index of first 'TERMINAL_PUNCTUATION' interval */
-#define UCD_PL_TERMINAL_PUNCTUATION_F 70 
+#define UCD_PL_TERMINAL_PUNCTUATION_F 70
 /* Index of last 'TERMINAL_PUNCTUATION' interval */
-#define UCD_PL_TERMINAL_PUNCTUATION_L 124 
+#define UCD_PL_TERMINAL_PUNCTUATION_L 124
 /* Index of first 'OTHER_MATH' interval */
-#define UCD_PL_OTHER_MATH_F 125 
+#define UCD_PL_OTHER_MATH_F 125
 /* Index of last 'OTHER_MATH' interval */
-#define UCD_PL_OTHER_MATH_L 262 
+#define UCD_PL_OTHER_MATH_L 262
 /* Index of first 'HEX_DIGIT' interval */
-#define UCD_PL_HEX_DIGIT_F 263 
+#define UCD_PL_HEX_DIGIT_F 263
 /* Index of last 'HEX_DIGIT' interval */
-#define UCD_PL_HEX_DIGIT_L 268 
+#define UCD_PL_HEX_DIGIT_L 268
 /* Index of first 'ASCII_HEX_DIGIT' interval */
-#define UCD_PL_ASCII_HEX_DIGIT_F 269 
+#define UCD_PL_ASCII_HEX_DIGIT_F 269
 /* Index of last 'ASCII_HEX_DIGIT' interval */
-#define UCD_PL_ASCII_HEX_DIGIT_L 271 
+#define UCD_PL_ASCII_HEX_DIGIT_L 271
 /* Index of first 'OTHER_ALPHABETIC' interval */
-#define UCD_PL_OTHER_ALPHABETIC_F 272 
+#define UCD_PL_OTHER_ALPHABETIC_F 272
 /* Index of last 'OTHER_ALPHABETIC' interval */
-#define UCD_PL_OTHER_ALPHABETIC_L 457 
+#define UCD_PL_OTHER_ALPHABETIC_L 457
 /* Index of first 'IDEOGRAPHIC' interval */
-#define UCD_PL_IDEOGRAPHIC_F 458 
+#define UCD_PL_IDEOGRAPHIC_F 458
 /* Index of last 'IDEOGRAPHIC' interval */
-#define UCD_PL_IDEOGRAPHIC_L 468 
+#define UCD_PL_IDEOGRAPHIC_L 468
 /* Index of first 'DIACRITIC' interval */
-#define UCD_PL_DIACRITIC_F 469 
+#define UCD_PL_DIACRITIC_F 469
 /* Index of last 'DIACRITIC' interval */
-#define UCD_PL_DIACRITIC_L 588 
+#define UCD_PL_DIACRITIC_L 588
 /* Index of first 'EXTENDER' interval */
-#define UCD_PL_EXTENDER_F 589 
+#define UCD_PL_EXTENDER_F 589
 /* Index of last 'EXTENDER' interval */
-#define UCD_PL_EXTENDER_L 604 
+#define UCD_PL_EXTENDER_L 604
 /* Index of first 'OTHER_LOWERCASE' interval */
-#define UCD_PL_OTHER_LOWERCASE_F 605 
+#define UCD_PL_OTHER_LOWERCASE_F 605
 /* Index of last 'OTHER_LOWERCASE' interval */
-#define UCD_PL_OTHER_LOWERCASE_L 617 
+#define UCD_PL_OTHER_LOWERCASE_L 617
 /* Index of first 'OTHER_UPPERCASE' interval */
-#define UCD_PL_OTHER_UPPERCASE_F 618 
+#define UCD_PL_OTHER_UPPERCASE_F 618
 /* Index of last 'OTHER_UPPERCASE' interval */
-#define UCD_PL_OTHER_UPPERCASE_L 619 
+#define UCD_PL_OTHER_UPPERCASE_L 619
 /* Index of first 'NONCHARACTER_CODE_POINT' interval */
-#define UCD_PL_NONCHARACTER_CODE_POINT_F 620 
+#define UCD_PL_NONCHARACTER_CODE_POINT_F 620
 /* Index of last 'NONCHARACTER_CODE_POINT' interval */
-#define UCD_PL_NONCHARACTER_CODE_POINT_L 637 
+#define UCD_PL_NONCHARACTER_CODE_POINT_L 637
 /* Index of first 'OTHER_GRAPHEME_EXTEND' interval */
-#define UCD_PL_OTHER_GRAPHEME_EXTEND_F 638 
+#define UCD_PL_OTHER_GRAPHEME_EXTEND_F 638
 /* Index of last 'OTHER_GRAPHEME_EXTEND' interval */
-#define UCD_PL_OTHER_GRAPHEME_EXTEND_L 653 
+#define UCD_PL_OTHER_GRAPHEME_EXTEND_L 653
 /* Index of first 'IDS_BINARY_OPERATOR' interval */
-#define UCD_PL_IDS_BINARY_OPERATOR_F 654 
+#define UCD_PL_IDS_BINARY_OPERATOR_F 654
 /* Index of last 'IDS_BINARY_OPERATOR' interval */
-#define UCD_PL_IDS_BINARY_OPERATOR_L 655 
+#define UCD_PL_IDS_BINARY_OPERATOR_L 655
 /* Index of first 'IDS_TRINARY_OPERATOR' interval */
-#define UCD_PL_IDS_TRINARY_OPERATOR_F 656 
+#define UCD_PL_IDS_TRINARY_OPERATOR_F 656
 /* Index of last 'IDS_TRINARY_OPERATOR' interval */
-#define UCD_PL_IDS_TRINARY_OPERATOR_L 656 
+#define UCD_PL_IDS_TRINARY_OPERATOR_L 656
 /* Index of first 'RADICAL' interval */
-#define UCD_PL_RADICAL_F 657 
+#define UCD_PL_RADICAL_F 657
 /* Index of last 'RADICAL' interval */
-#define UCD_PL_RADICAL_L 659 
+#define UCD_PL_RADICAL_L 659
 /* Index of first 'UNIFIED_IDEOGRAPH' interval */
-#define UCD_PL_UNIFIED_IDEOGRAPH_F 660 
+#define UCD_PL_UNIFIED_IDEOGRAPH_F 660
 /* Index of last 'UNIFIED_IDEOGRAPH' interval */
-#define UCD_PL_UNIFIED_IDEOGRAPH_L 669 
+#define UCD_PL_UNIFIED_IDEOGRAPH_L 669
 /* Index of first 'OTHER_DEFAULT_IGNORABLE_CODE_POINT' interval */
-#define UCD_PL_OTHER_DEFAULT_IGNORABLE_CODE_POINT_F 670 
+#define UCD_PL_OTHER_DEFAULT_IGNORABLE_CODE_POINT_F 670
 /* Index of last 'OTHER_DEFAULT_IGNORABLE_CODE_POINT' interval */
-#define UCD_PL_OTHER_DEFAULT_IGNORABLE_CODE_POINT_L 679 
+#define UCD_PL_OTHER_DEFAULT_IGNORABLE_CODE_POINT_L 679
 /* Index of first 'DEPRECATED' interval */
-#define UCD_PL_DEPRECATED_F 680 
+#define UCD_PL_DEPRECATED_F 680
 /* Index of last 'DEPRECATED' interval */
-#define UCD_PL_DEPRECATED_L 685 
+#define UCD_PL_DEPRECATED_L 685
 /* Index of first 'SOFT_DOTTED' interval */
-#define UCD_PL_SOFT_DOTTED_F 686 
+#define UCD_PL_SOFT_DOTTED_F 686
 /* Index of last 'SOFT_DOTTED' interval */
-#define UCD_PL_SOFT_DOTTED_L 716 
+#define UCD_PL_SOFT_DOTTED_L 716
 /* Index of first 'LOGICAL_ORDER_EXCEPTION' interval */
-#define UCD_PL_LOGICAL_ORDER_EXCEPTION_F 717 
+#define UCD_PL_LOGICAL_ORDER_EXCEPTION_F 717
 /* Index of last 'LOGICAL_ORDER_EXCEPTION' interval */
-#define UCD_PL_LOGICAL_ORDER_EXCEPTION_L 718 
+#define UCD_PL_LOGICAL_ORDER_EXCEPTION_L 718
 /* Index of first 'OTHER_ID_START' interval */
-#define UCD_PL_OTHER_ID_START_F 719 
+#define UCD_PL_OTHER_ID_START_F 719
 /* Index of last 'OTHER_ID_START' interval */
-#define UCD_PL_OTHER_ID_START_L 721 
+#define UCD_PL_OTHER_ID_START_L 721
 /* Index of first 'OTHER_ID_CONTINUE' interval */
-#define UCD_PL_OTHER_ID_CONTINUE_F 722 
+#define UCD_PL_OTHER_ID_CONTINUE_F 722
 /* Index of last 'OTHER_ID_CONTINUE' interval */
-#define UCD_PL_OTHER_ID_CONTINUE_L 724 
+#define UCD_PL_OTHER_ID_CONTINUE_L 724
 /* Index of first 'STERM' interval */
-#define UCD_PL_STERM_F 725 
+#define UCD_PL_STERM_F 725
 /* Index of last 'STERM' interval */
-#define UCD_PL_STERM_L 761 
+#define UCD_PL_STERM_L 761
 /* Index of first 'VARIATION_SELECTOR' interval */
-#define UCD_PL_VARIATION_SELECTOR_F 762 
+#define UCD_PL_VARIATION_SELECTOR_F 762
 /* Index of last 'VARIATION_SELECTOR' interval */
-#define UCD_PL_VARIATION_SELECTOR_L 764 
+#define UCD_PL_VARIATION_SELECTOR_L 764
 /* Index of first 'PATTERN_WHITE_SPACE' interval */
-#define UCD_PL_PATTERN_WHITE_SPACE_F 765 
+#define UCD_PL_PATTERN_WHITE_SPACE_F 765
 /* Index of last 'PATTERN_WHITE_SPACE' interval */
-#define UCD_PL_PATTERN_WHITE_SPACE_L 770 
+#define UCD_PL_PATTERN_WHITE_SPACE_L 770
 /* Index of first 'PATTERN_SYNTAX' interval */
-#define UCD_PL_PATTERN_SYNTAX_F 771 
+#define UCD_PL_PATTERN_SYNTAX_F 771
 /* Index of last 'PATTERN_SYNTAX' interval */
-#define UCD_PL_PATTERN_SYNTAX_L 1037 
+#define UCD_PL_PATTERN_SYNTAX_L 1037
 #define UCD_PL_INFO_N   1038  /* Maximum number of elements in array    */
-
 
 static unicode_proplist_info_t unicode_proplist_info[UCD_PL_INFO_N] = {
   { 0x0009, 0x000D, PDF_TEXT_UCD_PL_White_Space  }, /* 0 */
@@ -1213,21 +1213,19 @@ static unicode_proplist_info_t unicode_proplist_info[UCD_PL_INFO_N] = {
   { 0xFE45, 0xFE46, PDF_TEXT_UCD_PL_Pattern_Syntax  }, /* 1037 */
 };
 
-
 /***************** END OF SELF-GENERATED DATA *********************************/
 
-
 static pdf_bool_t
-pdf_text_ucd_pl_in_interval(pdf_u32_t character,
-                            pdf_u32_t first_interval,
-                            pdf_u32_t last_interval)
+pdf_text_ucd_pl_in_interval (pdf_u32_t character,
+                             pdf_u32_t first_interval,
+                             pdf_u32_t last_interval)
 {
   int i;
-  
-  for(i=first_interval; i<=last_interval; ++i)
+
+  for (i = first_interval; i <= last_interval; ++i)
     {
-      if((character >= unicode_proplist_info[i].interval_start) && \
-         (character <= unicode_proplist_info[i].interval_stop))
+      if ((character >= unicode_proplist_info[i].interval_start) &&
+          (character <= unicode_proplist_info[i].interval_stop))
         {
           return PDF_TRUE;
         }
@@ -1235,18 +1233,17 @@ pdf_text_ucd_pl_in_interval(pdf_u32_t character,
   return PDF_FALSE;
 }
 
-
 /* Returns true if the given UTF-32HE unicode point has the Soft_Dotted
  *  property */
 pdf_bool_t
-pdf_text_ucd_pl_is_Soft_Dotted(pdf_u32_t character)
+pdf_text_ucd_pl_is_Soft_Dotted (pdf_u32_t character)
 {
-  return pdf_text_ucd_pl_in_interval(character,
-                                     UCD_PL_SOFT_DOTTED_F, \
-                                     UCD_PL_SOFT_DOTTED_L);
+  return pdf_text_ucd_pl_in_interval (character,
+                                      UCD_PL_SOFT_DOTTED_F,
+                                      UCD_PL_SOFT_DOTTED_L);
 }
 
-
-/* NOTE: If needed, other properties can also be questioned like in 
+/* NOTE: If needed, other properties can also be questioned like in
  *  `pdf_text_ucd_pl_is_Soft_Dotted'. By now, this is not necessary. */
 
+/* End of pdf-text-ucd-proplist.c */
