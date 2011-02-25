@@ -1624,13 +1624,13 @@ pdf_text_cmp_non_case_sensitive(pdf_text_t    text1,
 }
 
 static pdf_i32_t
-pdf_text_compare_words(const pdf_char_t  *word1,
-                       const pdf_size_t   size1,
-                       const pdf_char_t  *word2,
-                       const pdf_size_t   size2,
-                       const pdf_char_t  *language1,
-                       const pdf_char_t  *language2,
-                       pdf_error_t      **error)
+pdf_text_compare_words (const pdf_char_t  *word1,
+                        const pdf_size_t   size1,
+                        const pdf_char_t  *word2,
+                        const pdf_size_t   size2,
+                        const pdf_char_t  *language1,
+                        const pdf_char_t  *language2,
+                        pdf_error_t      **error)
 {
   pdf_char_t *lower1;
   pdf_char_t *lower2;
@@ -1647,17 +1647,16 @@ pdf_text_compare_words(const pdf_char_t  *word1,
   worst_size = size1 * UCD_SC_MAX_EXPAND;
 
   /* Allocate memory for lowercases */
-  lower1 = (pdf_char_t *) pdf_alloc (worst_size);
-  lower2 = (pdf_char_t *) pdf_alloc (worst_size);
+  lower1 = (pdf_char_t *)pdf_alloc (worst_size);
+  lower2 = (pdf_char_t *)pdf_alloc (worst_size);
 
   if ((lower1 == NULL) || (lower2 == NULL))
     {
-      PDF_DEBUG_BASE("Unable to compare words");
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_TEXT,
                      PDF_ENOMEM,
                      "Couldn't allocate 2 chunks of %lu bytes",
-                     (unsigned long) worst_size);
+                     (unsigned long)worst_size);
 
       if (lower1 != NULL)
         pdf_dealloc (lower1);
@@ -1667,35 +1666,27 @@ pdf_text_compare_words(const pdf_char_t  *word1,
     }
 
   /* Lowercase words */
-  if (pdf_text_ucd_word_change_case (lower1,
-                                     &new_size1,
-                                     UNICODE_CASE_INFO_LOWER_CASE,
-                                     word1,
-                                     size1,
-                                     language1) != PDF_OK)
+  if (!pdf_text_ucd_word_change_case (lower1,
+                                      &new_size1,
+                                      UNICODE_CASE_INFO_LOWER_CASE,
+                                      word1,
+                                      size1,
+                                      language1,
+                                      error))
     {
-      PDF_DEBUG_BASE ("Problem lowercasing word 1");
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_TEXT,
-                     PDF_ETEXTENC,
-                     "Couldn't lowercase word");
       pdf_dealloc (lower1);
       pdf_dealloc (lower2);
       return -1;
     }
 
-  if (pdf_text_ucd_word_change_case (lower2,
-                                     &new_size2,
-                                     UNICODE_CASE_INFO_LOWER_CASE,
-                                     word2,
-                                     size2,
-                                     language2) != PDF_OK)
+  if (!pdf_text_ucd_word_change_case (lower2,
+                                      &new_size2,
+                                      UNICODE_CASE_INFO_LOWER_CASE,
+                                      word2,
+                                      size2,
+                                      language2,
+                                      error))
     {
-      PDF_DEBUG_BASE ("Problem lowercasing word 2");
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_TEXT,
-                     PDF_ETEXTENC,
-                     "Couldn't lowercase word");
       pdf_dealloc (lower1);
       pdf_dealloc (lower2);
       return -1;

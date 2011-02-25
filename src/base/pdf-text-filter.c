@@ -99,9 +99,8 @@ pdf_text_filter_change_case(pdf_text_t text,
   for(i = 0; i < n_words; ++i)
     {
       struct pdf_text_wb_s *p_new_word;
-      struct pdf_text_wb_s *p_word;
+      const struct pdf_text_wb_s *p_word;
       pdf_size_t new_word_length = 0;
-      pdf_status_t ret_code;
 
       /* Allocate new word */
       p_new_word = (struct pdf_text_wb_s *)pdf_alloc(sizeof(struct pdf_text_wb_s));
@@ -123,18 +122,18 @@ pdf_text_filter_change_case(pdf_text_t text,
         }
 
       /* Apply the case algorithm to the full word */
-      if((ret_code = pdf_text_ucd_word_change_case(&new_data[new_length],
-                                                   &new_word_length,
-                                                   new_case,
-                                                   p_word->word_start,
-                                                   p_word->word_size,
-                                                   language)) != PDF_OK)
+      if (!pdf_text_ucd_word_change_case (&new_data[new_length],
+                                          &new_word_length,
+                                          new_case,
+                                          p_word->word_start,
+                                          p_word->word_size,
+                                          language,
+                                          &inner_error))
         {
-          PDF_DEBUG_BASE("Problem x-casing full word");
-          pdf_list_destroy(new_wb_list);
-          pdf_dealloc(new_data);
-          pdf_dealloc(p_new_word);
-          return ret_code;
+          pdf_list_destroy (new_wb_list);
+          pdf_dealloc (new_data);
+          pdf_dealloc (p_new_word);
+          return PDF_ERROR;
         }
 
       /* Create new word info */
