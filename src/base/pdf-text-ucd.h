@@ -41,7 +41,6 @@
 /* Include propertly-list related algorithms */
 #include <pdf-text-ucd-proplist.h>
 
-
 #endif
 
 /* End of pdf-text-ucd.h */

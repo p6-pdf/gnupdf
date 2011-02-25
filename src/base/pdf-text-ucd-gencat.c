@@ -19848,29 +19848,28 @@ static unicode_gencat_interval_t unicode_gencat_interval[UCD_GENCAT_INT_N] = {
 
 /***************** END OF SELF-GENERATED DATA *********************************/
 
-
 enum unicode_gencat_info_enum
-pdf_text_ucd_get_general_category(const pdf_u32_t character)
+pdf_text_ucd_get_general_category (const pdf_u32_t character)
 {
   pdf_bool_t found;
   int index;
   long delta = 0;
-  
+
   /* Look for input unicode point in intervals */
   index = 0;
   found = PDF_FALSE;
-  while((!found) && \
-        (index < UCD_GENCAT_INT_N))
+  while ((!found) &&
+         (index < UCD_GENCAT_INT_N))
     {
       /* First, check if the input point is not within the interval, but between
        *  two given intervals */
-      if(character < unicode_gencat_interval[index].interval_start)
+      if (character < unicode_gencat_interval[index].interval_start)
         {
           /* Ok, no general category information for this point. Force
            *  loop exit without having found the point */
           index = UCD_GENCAT_INT_N;
         }
-      else if(character <= unicode_gencat_interval[index].interval_stop)
+      else if (character <= unicode_gencat_interval[index].interval_stop)
         {
           /* Found!! Set deltaToIndex */
           found = PDF_TRUE;
@@ -19881,17 +19880,10 @@ pdf_text_ucd_get_general_category(const pdf_u32_t character)
           index++;
         }
     }
-  
-  if(found)
-    {
-      /* Delta is the good one! */
-      return (unicode_gencat_info[character - delta].gencat);
-    }
-  else
-    {
-      /* Return unknown ID */
-      return UNICODE_GENCAT_Unknown;
-    }
+
+  return (found ?
+          (unicode_gencat_info[character - delta].gencat) :
+          UNICODE_GENCAT_Unknown);
 }
 
 /* End of pdf-text-ucd-gencat.c */
