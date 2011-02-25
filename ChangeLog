@@ -1,3 +1,9 @@
+2011-02-25  Aleksander Morgado  <aleksander@gnu.org>
+
+	base,error: assume pdf_error_t allocation may fail.
+	* src/base/pdf-error.c: If allocating a new pdf_error_t fails, use a
+	backup constant static pdf_error_t which reports ENOMEM.
+
 2011-02-24  Aleksander Morgado  <aleksander@gnu.org>
 
 	torture: Removed no longer used bignum tests.

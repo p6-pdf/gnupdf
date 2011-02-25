@@ -58,6 +58,14 @@ struct pdf_error_s {
   pdf_char_t *message;
 };
 
+/* This static constant structure is used as backup when setting a new error and
+ * memory allocation of the new error fails. */
+static const pdf_error_t static_enomem_error = {
+  .domain = PDF_EDOMAIN_UNDEFINED,
+  .status = PDF_ENOMEM,
+  .message = "memory allocation failed"
+};
+
 void
 pdf_perror (const pdf_status_t  status,
             const pdf_char_t   *str)
@@ -107,15 +115,19 @@ error_new_valist (pdf_error_domain_t  domain,
   pdf_error_t *error;
 
   error = pdf_alloc (sizeof (struct pdf_error_s));
-  if (error != NULL)
+  if ((error != NULL) &&
+      (vasprintf (&(error->message), format, args) >= 0) &&
+      (error->message != NULL))
     {
-      if (vasprintf (&(error->message), format, args) < 0)
-        {
-          pdf_dealloc (error);
-          return NULL;
-        }
       error->status = status;
       error->domain = domain;
+    }
+  else
+    {
+      if (error)
+        pdf_dealloc (error);
+      /* Set backup enomem error */
+      error = &static_enomem_error;
     }
   return error;
 }
@@ -159,7 +171,8 @@ pdf_error_get_message (const pdf_error_t *error)
 void
 pdf_error_destroy (pdf_error_t *error)
 {
-  if (error != NULL)
+  if (error != NULL &&
+      error != &static_enomem_error)
     {
       pdf_dealloc (error->message);
       pdf_dealloc (error);
