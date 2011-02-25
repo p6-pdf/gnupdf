@@ -29,28 +29,22 @@
 #include <pdf-text.h>
 
 /* Function to convert from Host Encoding to UTF-32HE */
-pdf_status_t
-pdf_text_host_to_utf32he(const pdf_char_t      *input_data,
-                         const pdf_size_t      input_length,
-                         const pdf_text_host_encoding_t enc,
-                         pdf_char_t            **p_output_data,
-                         pdf_size_t            *p_output_length);
-
+pdf_status_t pdf_text_host_to_utf32he (const pdf_char_t       *input_data,
+                                       const pdf_size_t        input_length,
+                                       const pdf_text_host_encoding_t enc,
+                                       pdf_char_t            **p_output_data,
+                                       pdf_size_t             *p_output_length);
 
 /* Function to convert from UTF-32HE to Host Encoding */
-pdf_status_t
-pdf_text_utf32he_to_host(const pdf_char_t      *input_data,
-                         const pdf_size_t      input_length,
-                         const pdf_text_host_encoding_t enc,
-                         pdf_char_t            **p_output_data,
-                         pdf_size_t            *p_output_length);
-
+pdf_status_t pdf_text_utf32he_to_host (const pdf_char_t       *input_data,
+                                       const pdf_size_t        input_length,
+                                       const pdf_text_host_encoding_t enc,
+                                       pdf_char_t            **p_output_data,
+                                       pdf_size_t             *p_output_length);
 
 /* Check if a given Host Encoding is available in the system */
-pdf_status_t
-pdf_text_host_encoding_is_available(const pdf_char_t *encoding_name);
-
-
+pdf_bool_t pdf_text_host_encoding_is_available (const pdf_char_t  *encoding_name,
+                                                pdf_error_t      **error);
 
 #endif /* _PDF_TEXT_HOST_ENCODING_H */
 

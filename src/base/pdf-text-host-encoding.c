@@ -51,37 +51,37 @@
  * int iconv_close (iconv_t cd);
  */
 
-
-/* 
+/*
  * WINDOWS API
  * -------------
- * int MultiByteToWideChar(UINT CodePage, 
- *                         DWORD dwFlags,         
- *                         LPCSTR lpMultiByteStr, 
- *                         int cbMultiByte,       
- *                         LPWSTR lpWideCharStr,  
+ * int MultiByteToWideChar(UINT CodePage,
+ *                         DWORD dwFlags,
+ *                         LPCSTR lpMultiByteStr,
+ *                         int cbMultiByte,
+ *                         LPWSTR lpWideCharStr,
  *                         int cchWideChar);
  *
- * int WideCharToMultiByte(UINT CodePage, 
- *                         DWORD dwFlags, 
+ * int WideCharToMultiByte(UINT CodePage,
+ *                         DWORD dwFlags,
  *                         LPCWSTR lpWideCharStr,
- *                         int cchWideChar, 
- *                         LPSTR lpMultiByteStr, 
+ *                         int cchWideChar,
+ *                         LPSTR lpMultiByteStr,
  *                         int cbMultiByte,
- *                         LPCSTR lpDefaultChar,    
+ *                         LPCSTR lpDefaultChar,
  *                         LPBOOL lpUsedDefaultChar);
- * 
+ *
  * UINT GetACP(void);
  *
  */
 
 #ifdef PDF_HOST_WIN32
 static DWORD
-pdf_text_get_dwflags_for_cp(UINT CodePage, DWORD def_dwflags)
+pdf_text_get_dwflags_for_cp (UINT  CodePage,
+                             DWORD def_dwflags)
 {
   /* dwFlags has some restrictions */
   switch(CodePage)
-  {
+    {
     case 50220:
     case 50221:
     case 50222:
@@ -105,13 +105,13 @@ pdf_text_get_dwflags_for_cp(UINT CodePage, DWORD def_dwflags)
       return 0;
     default:
       return def_dwflags;
-  }
+    }
 }
 
-
-pdf_status_t
-pdf_text_convert_encoding_name_to_CP(const pdf_char_t *encoding_name,
-                                     UINT *pCP)
+static pdf_bool_t
+pdf_text_convert_encoding_name_to_CP (const pdf_char_t  *encoding_name,
+                                      UINT              *pCP,
+                                      pdf_error_t      **error)
 {
   UINT CodePage;
   char *end_char;
@@ -119,13 +119,17 @@ pdf_text_convert_encoding_name_to_CP(const pdf_char_t *encoding_name,
   /* In windows, the charset name stored in the pdf_text_host_encoding_t
    *  element will be in the following format: "CPn", where 'n' is the
    *  code page number (unsigned integer) obtained with GetACP() */
-    
+
   /* So first of all, check windows host encoding */
-  if((strlen(encoding_name) < 3) || \
-     (strncmp(encoding_name,"CP",2) != 0))
+  if ((strlen (encoding_name) < 3) ||
+      (strncmp (encoding_name, "CP", 2) != 0))
     {
-      PDF_DEBUG_BASE("Host encoding received seems not valid");
-      return PDF_ETEXTENC;
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_TEXT,
+                     PDF_EBADDATA,
+                     "host encoding received (%s) seems not valid",
+                     encoding_name);
+      return PDF_FALSE;
     }
 
   /* Get codepage as unsigned integer. `strtol' will return 0 if it was not
@@ -133,69 +137,76 @@ pdf_text_convert_encoding_name_to_CP(const pdf_char_t *encoding_name,
   CodePage = (UINT) strtol (&encoding_name[2],
                             &end_char,
                             10);
-  if(CodePage == 0)
+  if (CodePage == 0)
     {
-      PDF_DEBUG_BASE("Problem converting input CP value '%s'",
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_TEXT,
+                     PDF_ETEXTENC,
+                     "Problem converting input CP value '%s'",
                      encoding_name);
-      return PDF_ETEXTENC;
+      return PDF_FALSE;
     }
-  else
-    {
-      *pCP = CodePage;
-      return PDF_OK;
-    }
+
+  *pCP = CodePage;
+  return PDF_TRUE;
 }
 
-#endif
-
-
-pdf_status_t
-pdf_text_host_encoding_is_available(const pdf_char_t *encoding_name)
+pdf_bool_t
+pdf_text_host_encoding_is_available (const pdf_char_t  *encoding_name,
+                                     pdf_error_t      **error)
 {
-#ifdef PDF_HOST_WIN32
-  {
-    UINT CodePage;
+  UINT CodePage;
 
-    if(pdf_text_convert_encoding_name_to_CP(encoding_name, &CodePage) != PDF_OK)
-      {
-        PDF_DEBUG_BASE("Invalid windows encoding name received...");
-        return PDF_ETEXTENC;
-      }
+  if (!pdf_text_convert_encoding_name_to_CP (encoding_name,
+                                             &CodePage,
+                                             error))
+    {
+      return PDF_FALSE;
+    }
 
-    /* Check given code page in the system */
-    return ((IsValidCodePage(CodePage)) ? PDF_OK : PDF_ETEXTENC);
-  }
-#else
-  {
-    iconv_t check;
-
-    /* Check conversion from Host Encoding to UTF-32HE */
-    check = iconv_open(encoding_name, \
-                       (PDF_IS_BIG_ENDIAN ? "UTF-32BE" : "UTF-32LE"));
-    if(check == (iconv_t)-1)
-      {
-        PDF_DEBUG_BASE("Conversion from '%s' to UTF-32HE not available",
-                       encoding_name);
-        return PDF_ETEXTENC;
-      }
-    iconv_close(check);
-
-    /* Check conversion from UTF-32HE to Host Encoding */
-    check = iconv_open((PDF_IS_BIG_ENDIAN ? "UTF-32BE" : "UTF-32LE"), \
-                       encoding_name);
-    if(check == (iconv_t)-1)
-      {
-        PDF_DEBUG_BASE("Conversion from UTF-32HE to '%s' not available",
-                       encoding_name);
-        return PDF_ETEXTENC;
-      }
-    iconv_close(check);
-    
-    return PDF_OK;
-  }
-#endif
+  /* Check given code page in the system */
+  return ((IsValidCodePage (CodePage)) ? PDF_TRUE : PDF_FALSE);
 }
 
+#else
+
+pdf_bool_t
+pdf_text_host_encoding_is_available (const pdf_char_t  *encoding_name,
+                                     pdf_error_t      **error)
+{
+  iconv_t check;
+
+  /* Check conversion from Host Encoding to UTF-32HE */
+  check = iconv_open (encoding_name,
+                      (PDF_IS_BIG_ENDIAN ? "UTF-32BE" : "UTF-32LE"));
+  if (check == (iconv_t)-1)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_TEXT,
+                     PDF_ETEXTENC,
+                     "Conversion from '%s' to UTF-32HE not available",
+                     encoding_name);
+        return PDF_FALSE;
+    }
+  iconv_close (check);
+
+  /* Check conversion from UTF-32HE to Host Encoding */
+  check = iconv_open ((PDF_IS_BIG_ENDIAN ? "UTF-32BE" : "UTF-32LE"),
+                      encoding_name);
+  if (check == (iconv_t)-1)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_TEXT,
+                     PDF_ETEXTENC,
+                     "Conversion from UTF-32HE to '%s' not available",
+                     encoding_name);
+      return PDF_FALSE;
+    }
+  iconv_close (check);
+
+  return PDF_TRUE;
+}
+#endif /* PDF_HOST_WIN32 */
 
 #ifdef PDF_HOST_WIN32
 static pdf_status_t
@@ -349,7 +360,7 @@ pdf_text_utf32he_to_host_iconv(const pdf_char_t      *input_data,
     }
 
   /* Prepare lengths and locations.
-   *  The worst length is computed as having one single output byte for each 
+   *  The worst length is computed as having one single output byte for each
    *  input single byte */
   worst_length = input_length+4;
   new_data = (pdf_char_t *)pdf_alloc(worst_length);

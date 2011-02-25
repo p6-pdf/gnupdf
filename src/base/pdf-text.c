@@ -547,23 +547,27 @@ pdf_status_t
 pdf_text_check_host_encoding(const pdf_char_t *encoding_name,
                              pdf_text_host_encoding_t *p_encoding)
 {
+  pdf_error_t *inner_error = NULL;
+
   /* Check length of host encoding */
-  if(strlen(encoding_name) >= PDF_TEXT_HENMAXL)
+  if (strlen (encoding_name) >= PDF_TEXT_HENMAXL)
     {
-      PDF_DEBUG_BASE("Encoding name too long!");
+      PDF_DEBUG_BASE ("Encoding name too long!");
       return PDF_EBADDATA;
     }
 
-  if(pdf_text_host_encoding_is_available(encoding_name) == PDF_OK)
+  if (pdf_text_host_encoding_is_available (encoding_name,
+                                           &inner_error))
     {
-      strcpy(&(p_encoding->name[0]), encoding_name);
+      strcpy (&(p_encoding->name[0]), encoding_name);
       p_encoding->name[strlen(encoding_name)-1] = '\0';
       return PDF_OK;
     }
-  else
-    {
-      return PDF_ETEXTENC;
-    }
+
+  /* TODO: Propagate error */
+  pdf_error_destroy (inner_error);
+
+  return PDF_ETEXTENC;
 }
 
 
