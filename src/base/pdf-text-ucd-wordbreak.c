@@ -40,53 +40,53 @@ typedef struct _unicode_wordbreak_info_s {
 /*************** START OF SELF-GENERATED DATA *********************************/
 
 /* Index of first 'CR' interval */
-#define UCD_WB_CR_F 0 
+#define UCD_WB_CR_F 0
 /* Index of last 'CR' interval */
-#define UCD_WB_CR_L 0 
+#define UCD_WB_CR_L 0
 /* Index of first 'LF' interval */
-#define UCD_WB_LF_F 1 
+#define UCD_WB_LF_F 1
 /* Index of last 'LF' interval */
-#define UCD_WB_LF_L 1 
+#define UCD_WB_LF_L 1
 /* Index of first 'NEWLINE' interval */
-#define UCD_WB_NEWLINE_F 2 
+#define UCD_WB_NEWLINE_F 2
 /* Index of last 'NEWLINE' interval */
-#define UCD_WB_NEWLINE_L 5 
+#define UCD_WB_NEWLINE_L 5
 /* Index of first 'EXTEND' interval */
-#define UCD_WB_EXTEND_F 6 
+#define UCD_WB_EXTEND_F 6
 /* Index of last 'EXTEND' interval */
-#define UCD_WB_EXTEND_L 257 
+#define UCD_WB_EXTEND_L 257
 /* Index of first 'FORMAT' interval */
-#define UCD_WB_FORMAT_F 258 
+#define UCD_WB_FORMAT_F 258
 /* Index of last 'FORMAT' interval */
-#define UCD_WB_FORMAT_L 272 
+#define UCD_WB_FORMAT_L 272
 /* Index of first 'KATAKANA' interval */
-#define UCD_WB_KATAKANA_F 273 
+#define UCD_WB_KATAKANA_F 273
 /* Index of last 'KATAKANA' interval */
-#define UCD_WB_KATAKANA_L 284 
+#define UCD_WB_KATAKANA_L 284
 /* Index of first 'ALETTER' interval */
-#define UCD_WB_ALETTER_F 285 
+#define UCD_WB_ALETTER_F 285
 /* Index of last 'ALETTER' interval */
-#define UCD_WB_ALETTER_L 668 
+#define UCD_WB_ALETTER_L 668
 /* Index of first 'MIDLETTER' interval */
-#define UCD_WB_MIDLETTER_F 669 
+#define UCD_WB_MIDLETTER_F 669
 /* Index of last 'MIDLETTER' interval */
-#define UCD_WB_MIDLETTER_L 676 
+#define UCD_WB_MIDLETTER_L 676
 /* Index of first 'MIDNUM' interval */
-#define UCD_WB_MIDNUM_F 677 
+#define UCD_WB_MIDNUM_F 677
 /* Index of last 'MIDNUM' interval */
-#define UCD_WB_MIDNUM_L 690 
+#define UCD_WB_MIDNUM_L 690
 /* Index of first 'MIDNUMLET' interval */
-#define UCD_WB_MIDNUMLET_F 691 
+#define UCD_WB_MIDNUMLET_F 691
 /* Index of last 'MIDNUMLET' interval */
-#define UCD_WB_MIDNUMLET_L 698 
+#define UCD_WB_MIDNUMLET_L 698
 /* Index of first 'NUMERIC' interval */
-#define UCD_WB_NUMERIC_F 699 
+#define UCD_WB_NUMERIC_F 699
 /* Index of last 'NUMERIC' interval */
-#define UCD_WB_NUMERIC_L 731 
+#define UCD_WB_NUMERIC_L 731
 /* Index of first 'EXTENDNUMLET' interval */
-#define UCD_WB_EXTENDNUMLET_F 732 
+#define UCD_WB_EXTENDNUMLET_F 732
 /* Index of last 'EXTENDNUMLET' interval */
-#define UCD_WB_EXTENDNUMLET_L 737 
+#define UCD_WB_EXTENDNUMLET_L 737
 #define UCD_WB_INFO_N   738  /* Maximum number of elements in array    */
 
 
@@ -833,18 +833,17 @@ static unicode_wordbreak_info_t unicode_wordbreak_info[UCD_WB_INFO_N] = {
 
 /***************** END OF SELF-GENERATED DATA *********************************/
 
-
 static pdf_bool_t
-pdf_text_ucd_wb_in_interval(pdf_u32_t character,
-                            pdf_u32_t first_interval,
-                            pdf_u32_t last_interval)
+pdf_text_ucd_wb_in_interval (pdf_u32_t character,
+                             pdf_u32_t first_interval,
+                             pdf_u32_t last_interval)
 {
   int i;
-  
-  for(i=first_interval; i<=last_interval; ++i)
+
+  for (i=first_interval; i<=last_interval; ++i)
     {
-      if((character >= unicode_wordbreak_info[i].interval_start) && \
-         (character <= unicode_wordbreak_info[i].interval_stop))
+      if ((character >= unicode_wordbreak_info[i].interval_start) &&
+          (character <= unicode_wordbreak_info[i].interval_stop))
         {
           return PDF_TRUE;
         }
@@ -852,185 +851,156 @@ pdf_text_ucd_wb_in_interval(pdf_u32_t character,
   return PDF_FALSE;
 }
 
-
 /* Returns true if the given UTF-32HE unicode point has the CR value
  *  in the WordBreak property */
 pdf_bool_t
-pdf_text_ucd_wb_is_cr(pdf_u32_t character)
+pdf_text_ucd_wb_is_cr (pdf_u32_t character)
 {
-  return pdf_text_ucd_wb_in_interval(character, UCD_WB_CR_F, \
-                                     UCD_WB_CR_L);
+  return pdf_text_ucd_wb_in_interval (character,
+                                      UCD_WB_CR_F,
+                                      UCD_WB_CR_L);
 }
-
 
 /* Returns true if the given UTF-32HE unicode point has the LF value
  *  in the WordBreak property */
 pdf_bool_t
-pdf_text_ucd_wb_is_lf(pdf_u32_t character)
+pdf_text_ucd_wb_is_lf (pdf_u32_t character)
 {
-  return pdf_text_ucd_wb_in_interval(character, UCD_WB_LF_F, \
-                                     UCD_WB_LF_L);
+  return pdf_text_ucd_wb_in_interval (character,
+                                      UCD_WB_LF_F,
+                                      UCD_WB_LF_L);
 }
-
 
 /* Returns true if the given UTF-32HE unicode point has the Newline value
  *  in the WordBreak property */
 pdf_bool_t
-pdf_text_ucd_wb_is_newline(pdf_u32_t character)
+pdf_text_ucd_wb_is_newline (pdf_u32_t character)
 {
-  return pdf_text_ucd_wb_in_interval(character, UCD_WB_NEWLINE_F, \
-                                     UCD_WB_NEWLINE_L);
+  return pdf_text_ucd_wb_in_interval (character,
+                                      UCD_WB_NEWLINE_F,
+                                      UCD_WB_NEWLINE_L);
 }
-
 
 /* Returns true if the given UTF-32HE unicode point has the Extend value
  *  in the WordBreak property */
 pdf_bool_t
-pdf_text_ucd_wb_is_extend(pdf_u32_t character)
+pdf_text_ucd_wb_is_extend (pdf_u32_t character)
 {
-  return pdf_text_ucd_wb_in_interval(character, UCD_WB_EXTEND_F, \
-                                     UCD_WB_EXTEND_L);
+  return pdf_text_ucd_wb_in_interval (character,
+                                      UCD_WB_EXTEND_F,
+                                      UCD_WB_EXTEND_L);
 }
-
 
 /* Returns true if the given UTF-32HE unicode point has the Format value
  *  in the WordBreak property */
 pdf_bool_t
-pdf_text_ucd_wb_is_format(pdf_u32_t character)
+pdf_text_ucd_wb_is_format (pdf_u32_t character)
 {
-  return pdf_text_ucd_wb_in_interval(character, UCD_WB_FORMAT_F, \
-                                     UCD_WB_FORMAT_L);
+  return pdf_text_ucd_wb_in_interval (character,
+                                      UCD_WB_FORMAT_F,
+                                      UCD_WB_FORMAT_L);
 }
-
 
 /* Returns true if the given UTF-32HE unicode point has the Katakana value
  *  in the WordBreak property */
 pdf_bool_t
-pdf_text_ucd_wb_is_katakana(pdf_u32_t character)
+pdf_text_ucd_wb_is_katakana (pdf_u32_t character)
 {
-  return pdf_text_ucd_wb_in_interval(character, UCD_WB_KATAKANA_F, \
-                                     UCD_WB_KATAKANA_L);
+  return pdf_text_ucd_wb_in_interval (character,
+                                      UCD_WB_KATAKANA_F,
+                                      UCD_WB_KATAKANA_L);
 }
-
 
 /* Returns true if the given UTF-32HE unicode point has the ALetter value
  *  in the WordBreak property */
 pdf_bool_t
-pdf_text_ucd_wb_is_aletter(pdf_u32_t character)
+pdf_text_ucd_wb_is_aletter (pdf_u32_t character)
 {
-  return pdf_text_ucd_wb_in_interval(character, UCD_WB_ALETTER_F, \
-                                     UCD_WB_ALETTER_L);
+  return pdf_text_ucd_wb_in_interval (character,
+                                      UCD_WB_ALETTER_F,
+                                      UCD_WB_ALETTER_L);
 }
-
-
 
 /* Returns true if the given UTF-32HE unicode point has the MidLetter value
  *  in the WordBreak property */
 pdf_bool_t
-pdf_text_ucd_wb_is_midletter(pdf_u32_t character)
+pdf_text_ucd_wb_is_midletter (pdf_u32_t character)
 {
-  return pdf_text_ucd_wb_in_interval(character, UCD_WB_MIDLETTER_F, \
-                                     UCD_WB_MIDLETTER_L);
+  return pdf_text_ucd_wb_in_interval (character,
+                                      UCD_WB_MIDLETTER_F,
+                                      UCD_WB_MIDLETTER_L);
 }
-
 
 /* Returns true if the given UTF-32HE unicode point has the MidNum value
  *  in the WordBreak property */
 pdf_bool_t
-pdf_text_ucd_wb_is_midnum(pdf_u32_t character)
+pdf_text_ucd_wb_is_midnum (pdf_u32_t character)
 {
-  return pdf_text_ucd_wb_in_interval(character, UCD_WB_MIDNUM_F, \
-                                     UCD_WB_MIDNUM_L);
+  return pdf_text_ucd_wb_in_interval (character,
+                                      UCD_WB_MIDNUM_F,
+                                      UCD_WB_MIDNUM_L);
 }
-
 
 /* Returns true if the given UTF-32HE unicode point has the MidNumLet value
  *  in the WordBreak property */
 pdf_bool_t
-pdf_text_ucd_wb_is_midnumlet(pdf_u32_t character)
+pdf_text_ucd_wb_is_midnumlet (pdf_u32_t character)
 {
-  return pdf_text_ucd_wb_in_interval(character, UCD_WB_MIDNUMLET_F, \
-                                     UCD_WB_MIDNUMLET_L);
+  return pdf_text_ucd_wb_in_interval (character,
+                                      UCD_WB_MIDNUMLET_F,
+                                      UCD_WB_MIDNUMLET_L);
 }
-
 
 /* Returns true if the given UTF-32HE unicode point has the Numeric value
  *  in the WordBreak property */
 pdf_bool_t
-pdf_text_ucd_wb_is_numeric(pdf_u32_t character)
+pdf_text_ucd_wb_is_numeric (pdf_u32_t character)
 {
-  return pdf_text_ucd_wb_in_interval(character, UCD_WB_NUMERIC_F, \
-                                     UCD_WB_NUMERIC_L);
+  return pdf_text_ucd_wb_in_interval (character,
+                                      UCD_WB_NUMERIC_F,
+                                      UCD_WB_NUMERIC_L);
 }
-
 
 /* Returns true if the given UTF-32HE unicode point has the ExtendNumLet value
  *  in the WordBreak property */
 pdf_bool_t
-pdf_text_ucd_wb_is_extendnumlet(pdf_u32_t character)
+pdf_text_ucd_wb_is_extendnumlet (pdf_u32_t character)
 {
-  return pdf_text_ucd_wb_in_interval(character, UCD_WB_EXTENDNUMLET_F, \
-                                     UCD_WB_EXTENDNUMLET_L);
+  return pdf_text_ucd_wb_in_interval (character,
+                                      UCD_WB_EXTENDNUMLET_F,
+                                      UCD_WB_EXTENDNUMLET_L);
 }
 
 
 enum pdf_text_ucd_wb_property_e
-pdf_text_ucd_wb_get_property(pdf_u32_t character)
+pdf_text_ucd_wb_get_property (pdf_u32_t character)
 {
-  if(pdf_text_ucd_wb_is_aletter(character))
-    {
-      return PDF_TEXT_UCD_WBP_ALetter;
-    }
-  else if(pdf_text_ucd_wb_is_midletter(character))
-    {
-      return PDF_TEXT_UCD_WBP_MidLetter;
-    }
-  else if(pdf_text_ucd_wb_is_numeric(character))
-    {
-      return PDF_TEXT_UCD_WBP_Numeric;
-    }
-  else if(pdf_text_ucd_wb_is_midnum(character))
-    {
-      return PDF_TEXT_UCD_WBP_MidNum;
-    }
-  else if(pdf_text_ucd_wb_is_midnumlet(character))
-    {
-      return PDF_TEXT_UCD_WBP_MidNumLet;
-    }
-  else if(pdf_text_ucd_wb_is_format(character))
-    {
-      return PDF_TEXT_UCD_WBP_Format;
-    }
-  else if(pdf_text_ucd_wb_is_cr(character))
-    {
-      return PDF_TEXT_UCD_WBP_CR;
-    }
-  else if(pdf_text_ucd_wb_is_lf(character))
-    {
-      return PDF_TEXT_UCD_WBP_LF;
-    }
-  else if(pdf_text_ucd_wb_is_newline(character))
-    {
-      return PDF_TEXT_UCD_WBP_Newline;
-    }
-  else if(pdf_text_ucd_wb_is_extend(character))
-    {
-      return PDF_TEXT_UCD_WBP_Extend;
-    }
-  else if(pdf_text_ucd_wb_is_katakana(character))
-    {
-      return PDF_TEXT_UCD_WBP_Katakana;
-    }
-  else if(pdf_text_ucd_wb_is_extendnumlet(character))
-    {
-      return PDF_TEXT_UCD_WBP_ExtendNumLet;
-    }
-  else
-    {
-      return PDF_TEXT_UCD_WBP_None;
-    }
+  if (pdf_text_ucd_wb_is_aletter (character))
+    return PDF_TEXT_UCD_WBP_ALetter;
+  if (pdf_text_ucd_wb_is_midletter (character))
+    return PDF_TEXT_UCD_WBP_MidLetter;
+  if (pdf_text_ucd_wb_is_numeric (character))
+    return PDF_TEXT_UCD_WBP_Numeric;
+  if (pdf_text_ucd_wb_is_midnum (character))
+    return PDF_TEXT_UCD_WBP_MidNum;
+  if (pdf_text_ucd_wb_is_midnumlet (character))
+    return PDF_TEXT_UCD_WBP_MidNumLet;
+  if (pdf_text_ucd_wb_is_format (character))
+    return PDF_TEXT_UCD_WBP_Format;
+  if (pdf_text_ucd_wb_is_cr (character))
+    return PDF_TEXT_UCD_WBP_CR;
+  if (pdf_text_ucd_wb_is_lf (character))
+    return PDF_TEXT_UCD_WBP_LF;
+  if (pdf_text_ucd_wb_is_newline (character))
+    return PDF_TEXT_UCD_WBP_Newline;
+  if (pdf_text_ucd_wb_is_extend (character))
+    return PDF_TEXT_UCD_WBP_Extend;
+  if (pdf_text_ucd_wb_is_katakana (character))
+    return PDF_TEXT_UCD_WBP_Katakana;
+  if (pdf_text_ucd_wb_is_extendnumlet (character))
+    return PDF_TEXT_UCD_WBP_ExtendNumLet;
+  return PDF_TEXT_UCD_WBP_None;
 }
-
 
 /* Maximum number of code points needed for a word break check */
 #define PDF_TEXT_UCD_MWBCP  4
@@ -1038,180 +1008,187 @@ pdf_text_ucd_wb_get_property(pdf_u32_t character)
 /* Word break property information */
 typedef struct pdf_text_ucd_wb_s {
   pdf_char_t *walker;
-  pdf_u32_t  utf32val;
+  pdf_u32_t utf32val;
   enum pdf_text_ucd_wb_property_e wbp;
 } pdf_text_ucd_wb_t;
 
-
 /* RULE WB3: Do not break within CRLF (CR x LF) */
 static pdf_bool_t
-pdf_text_ucd_wb_rule_3(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
+pdf_text_ucd_wb_rule_3 (const pdf_text_ucd_wb_t buffer[PDF_TEXT_UCD_MWBCP])
 {
-  return (((buffer[1].wbp == PDF_TEXT_UCD_WBP_CR) && \
-          (buffer[2].wbp == PDF_TEXT_UCD_WBP_LF)) ? PDF_TRUE : PDF_FALSE);
+  return (((buffer[1].wbp == PDF_TEXT_UCD_WBP_CR) &&
+          (buffer[2].wbp == PDF_TEXT_UCD_WBP_LF)) ?
+          PDF_TRUE : PDF_FALSE);
 }
 
 /* RULE WB3a: Break before and after Newlines (including CR and LF) */
 static pdf_bool_t
-pdf_text_ucd_wb_rule_3a(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
+pdf_text_ucd_wb_rule_3a (const pdf_text_ucd_wb_t buffer[PDF_TEXT_UCD_MWBCP])
 {
-  return (((buffer[1].wbp == PDF_TEXT_UCD_WBP_CR) || \
-           (buffer[1].wbp == PDF_TEXT_UCD_WBP_LF) || \
-           (buffer[1].wbp == PDF_TEXT_UCD_WBP_Newline)) ? PDF_TRUE : PDF_FALSE);
+  return (((buffer[1].wbp == PDF_TEXT_UCD_WBP_CR) ||
+           (buffer[1].wbp == PDF_TEXT_UCD_WBP_LF) ||
+           (buffer[1].wbp == PDF_TEXT_UCD_WBP_Newline)) ?
+          PDF_TRUE : PDF_FALSE);
 }
 
 /* RULE WB3b: Break before and after Newlines (including CR and LF) */
 static pdf_bool_t
-pdf_text_ucd_wb_rule_3b(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
+pdf_text_ucd_wb_rule_3b (const pdf_text_ucd_wb_t buffer[PDF_TEXT_UCD_MWBCP])
 {
-  return (((buffer[2].wbp == PDF_TEXT_UCD_WBP_CR) || \
-           (buffer[2].wbp == PDF_TEXT_UCD_WBP_LF) || \
-           (buffer[2].wbp == PDF_TEXT_UCD_WBP_Newline)) ? PDF_TRUE : PDF_FALSE);
+  return (((buffer[2].wbp == PDF_TEXT_UCD_WBP_CR) ||
+           (buffer[2].wbp == PDF_TEXT_UCD_WBP_LF) ||
+           (buffer[2].wbp == PDF_TEXT_UCD_WBP_Newline)) ?
+          PDF_TRUE : PDF_FALSE);
 }
 
 /* RULE WB4: Ignore Format and Extend characters, except when they appear at
  *  the beginning of a region of text. */
 static pdf_bool_t
-pdf_text_ucd_wb_rule_4(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
+pdf_text_ucd_wb_rule_4 (const pdf_text_ucd_wb_t buffer[PDF_TEXT_UCD_MWBCP])
 {
-  return (((buffer[2].wbp == PDF_TEXT_UCD_WBP_Extend) || \
-           (buffer[2].wbp == PDF_TEXT_UCD_WBP_Format)) ? PDF_TRUE : PDF_FALSE);
+  return (((buffer[2].wbp == PDF_TEXT_UCD_WBP_Extend) ||
+           (buffer[2].wbp == PDF_TEXT_UCD_WBP_Format)) ?
+          PDF_TRUE : PDF_FALSE);
 }
 
 /* RULE WB5: Do not break between most letters (ALetter X ALetter) */
 static pdf_bool_t
-pdf_text_ucd_wb_rule_5(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
+pdf_text_ucd_wb_rule_5 (const pdf_text_ucd_wb_t buffer[PDF_TEXT_UCD_MWBCP])
 {
-  return (((buffer[1].wbp == PDF_TEXT_UCD_WBP_ALetter) && \
-           (buffer[2].wbp == PDF_TEXT_UCD_WBP_ALetter)) ? PDF_TRUE : PDF_FALSE);
-}
-    
-/* RULE WB6: Do not break letters across certain puntuation 
- *  (ALetter X MidLetter ALetter) */
-static pdf_bool_t
-pdf_text_ucd_wb_rule_6(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
-{
-  return (((buffer[1].wbp == PDF_TEXT_UCD_WBP_ALetter) && \
-           (buffer[2].wbp == PDF_TEXT_UCD_WBP_MidLetter) && \
-           (buffer[3].wbp == PDF_TEXT_UCD_WBP_ALetter)) ? PDF_TRUE : PDF_FALSE);
+  return (((buffer[1].wbp == PDF_TEXT_UCD_WBP_ALetter) &&
+           (buffer[2].wbp == PDF_TEXT_UCD_WBP_ALetter)) ?
+          PDF_TRUE : PDF_FALSE);
 }
 
+/* RULE WB6: Do not break letters across certain puntuation
+ *  (ALetter X MidLetter ALetter) */
+static pdf_bool_t
+pdf_text_ucd_wb_rule_6 (const pdf_text_ucd_wb_t buffer[PDF_TEXT_UCD_MWBCP])
+{
+  return (((buffer[1].wbp == PDF_TEXT_UCD_WBP_ALetter) &&
+           (buffer[2].wbp == PDF_TEXT_UCD_WBP_MidLetter) &&
+           (buffer[3].wbp == PDF_TEXT_UCD_WBP_ALetter)) ?
+          PDF_TRUE : PDF_FALSE);
+}
 
 /* RULE WB7: Do not break letters across certain punctuation
  *  (ALetter MidLetter X ALetter) */
 static pdf_bool_t
-pdf_text_ucd_wb_rule_7(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
+pdf_text_ucd_wb_rule_7 (const pdf_text_ucd_wb_t buffer[PDF_TEXT_UCD_MWBCP])
 {
-  return (((buffer[0].wbp == PDF_TEXT_UCD_WBP_ALetter) && \
-           (buffer[1].wbp == PDF_TEXT_UCD_WBP_MidLetter) && \
-           (buffer[2].wbp == PDF_TEXT_UCD_WBP_ALetter)) ? PDF_TRUE : PDF_FALSE);
+  return (((buffer[0].wbp == PDF_TEXT_UCD_WBP_ALetter) &&
+           (buffer[1].wbp == PDF_TEXT_UCD_WBP_MidLetter) &&
+           (buffer[2].wbp == PDF_TEXT_UCD_WBP_ALetter)) ?
+          PDF_TRUE : PDF_FALSE);
 }
-
 
 /* RULE WB8: Do not break within sequences of digits, or digits adjacent
  *  to letters (Numeric X Numeric) */
 static pdf_bool_t
-pdf_text_ucd_wb_rule_8(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
+pdf_text_ucd_wb_rule_8 (const pdf_text_ucd_wb_t buffer[PDF_TEXT_UCD_MWBCP])
 {
-  return (((buffer[1].wbp == PDF_TEXT_UCD_WBP_Numeric) && \
-           (buffer[2].wbp == PDF_TEXT_UCD_WBP_Numeric)) ? PDF_TRUE : PDF_FALSE);
+  return (((buffer[1].wbp == PDF_TEXT_UCD_WBP_Numeric) &&
+           (buffer[2].wbp == PDF_TEXT_UCD_WBP_Numeric)) ?
+          PDF_TRUE : PDF_FALSE);
 }
 
 /* RULE WB9: Do not break within sequences of digits, or digits adjacent
  *  to letters (ALetter X Numeric) */
 static pdf_bool_t
-pdf_text_ucd_wb_rule_9(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
+pdf_text_ucd_wb_rule_9 (const pdf_text_ucd_wb_t buffer[PDF_TEXT_UCD_MWBCP])
 {
-  return (((buffer[1].wbp == PDF_TEXT_UCD_WBP_ALetter) && \
-           (buffer[2].wbp == PDF_TEXT_UCD_WBP_Numeric)) ? PDF_TRUE : PDF_FALSE);
+  return (((buffer[1].wbp == PDF_TEXT_UCD_WBP_ALetter) &&
+           (buffer[2].wbp == PDF_TEXT_UCD_WBP_Numeric)) ?
+          PDF_TRUE : PDF_FALSE);
 }
-
 
 /* RULE WB10: Do not break within sequences of digits, or digits adjacent
  *  to letters (Numeric X ALetter) */
 static pdf_bool_t
-pdf_text_ucd_wb_rule_10(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
+pdf_text_ucd_wb_rule_10 (const pdf_text_ucd_wb_t buffer[PDF_TEXT_UCD_MWBCP])
 {
-  return (((buffer[0].wbp == PDF_TEXT_UCD_WBP_Numeric) && \
+  return (((buffer[0].wbp == PDF_TEXT_UCD_WBP_Numeric) &&
            (buffer[1].wbp == PDF_TEXT_UCD_WBP_ALetter)) ? PDF_TRUE : PDF_FALSE);
 }
-
 
 /* RULE WB11: Do not break within sequences such as "3.2"
  *  (Numeric MidNum X Numeric) */
 static pdf_bool_t
-pdf_text_ucd_wb_rule_11(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
+pdf_text_ucd_wb_rule_11 (const pdf_text_ucd_wb_t buffer[PDF_TEXT_UCD_MWBCP])
 {
-  return (((buffer[0].wbp == PDF_TEXT_UCD_WBP_Numeric) && \
-           (buffer[1].wbp == PDF_TEXT_UCD_WBP_MidNum) && \
-           (buffer[2].wbp == PDF_TEXT_UCD_WBP_Numeric)) ? PDF_TRUE : PDF_FALSE);
+  return (((buffer[0].wbp == PDF_TEXT_UCD_WBP_Numeric) &&
+           (buffer[1].wbp == PDF_TEXT_UCD_WBP_MidNum) &&
+           (buffer[2].wbp == PDF_TEXT_UCD_WBP_Numeric)) ?
+          PDF_TRUE : PDF_FALSE);
 }
 
 /* RULE WB12: Do not break within sequences such as "3.2"
  *  (Numeric X MidNum Numeric) */
 static pdf_bool_t
-pdf_text_ucd_wb_rule_12(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
+pdf_text_ucd_wb_rule_12 (const pdf_text_ucd_wb_t buffer[PDF_TEXT_UCD_MWBCP])
 {
-  return (((buffer[1].wbp == PDF_TEXT_UCD_WBP_Numeric) && \
-           (buffer[2].wbp == PDF_TEXT_UCD_WBP_MidNum) && \
-           (buffer[3].wbp == PDF_TEXT_UCD_WBP_Numeric)) ? PDF_TRUE : PDF_FALSE);
+  return (((buffer[1].wbp == PDF_TEXT_UCD_WBP_Numeric) &&
+           (buffer[2].wbp == PDF_TEXT_UCD_WBP_MidNum) &&
+           (buffer[3].wbp == PDF_TEXT_UCD_WBP_Numeric)) ?
+          PDF_TRUE : PDF_FALSE);
 }
 
 /* RULE WB13: Do not break between Katakana */
 static pdf_bool_t
-pdf_text_ucd_wb_rule_13(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
+pdf_text_ucd_wb_rule_13 (const pdf_text_ucd_wb_t buffer[PDF_TEXT_UCD_MWBCP])
 {
-  return (((buffer[1].wbp == PDF_TEXT_UCD_WBP_Katakana) && \
-           (buffer[2].wbp == PDF_TEXT_UCD_WBP_Katakana)) ? PDF_TRUE :PDF_FALSE);
+  return (((buffer[1].wbp == PDF_TEXT_UCD_WBP_Katakana) &&
+           (buffer[2].wbp == PDF_TEXT_UCD_WBP_Katakana)) ?
+          PDF_TRUE :PDF_FALSE);
 }
 
 /* RULE WB13a: Do not break from extenders
  *  ((ALetter | Numeric | Katakana | ExtendNumLet) X ExtendNumLet) */
 static pdf_bool_t
-pdf_text_ucd_wb_rule_13a(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
+pdf_text_ucd_wb_rule_13a (const pdf_text_ucd_wb_t buffer[PDF_TEXT_UCD_MWBCP])
 {
-  return ((((buffer[1].wbp == PDF_TEXT_UCD_WBP_ALetter) || \
-            (buffer[1].wbp == PDF_TEXT_UCD_WBP_Numeric) || \
-            (buffer[1].wbp == PDF_TEXT_UCD_WBP_Katakana) || \
-            (buffer[1].wbp == PDF_TEXT_UCD_WBP_ExtendNumLet)) && \
-           (buffer[2].wbp == PDF_TEXT_UCD_WBP_ExtendNumLet)) ? \
+  return ((((buffer[1].wbp == PDF_TEXT_UCD_WBP_ALetter) ||
+            (buffer[1].wbp == PDF_TEXT_UCD_WBP_Numeric) ||
+            (buffer[1].wbp == PDF_TEXT_UCD_WBP_Katakana) ||
+            (buffer[1].wbp == PDF_TEXT_UCD_WBP_ExtendNumLet)) &&
+           (buffer[2].wbp == PDF_TEXT_UCD_WBP_ExtendNumLet)) ?
           PDF_TRUE : PDF_FALSE);
 }
 
 /* RULE WB13b: Do not break from extenders
  *  (ExtendNumLet) X (ALetter | Numeric | Katakana ) */
 static pdf_bool_t
-pdf_text_ucd_wb_rule_13b(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
+pdf_text_ucd_wb_rule_13b (const pdf_text_ucd_wb_t buffer[PDF_TEXT_UCD_MWBCP])
 {
-  return (((buffer[1].wbp == PDF_TEXT_UCD_WBP_ExtendNumLet) && \
-           ((buffer[2].wbp == PDF_TEXT_UCD_WBP_ALetter) || \
-            (buffer[2].wbp == PDF_TEXT_UCD_WBP_Numeric) || \
-            (buffer[2].wbp == PDF_TEXT_UCD_WBP_Katakana))) ? \
+  return (((buffer[1].wbp == PDF_TEXT_UCD_WBP_ExtendNumLet) &&
+           ((buffer[2].wbp == PDF_TEXT_UCD_WBP_ALetter) ||
+            (buffer[2].wbp == PDF_TEXT_UCD_WBP_Numeric) ||
+            (buffer[2].wbp == PDF_TEXT_UCD_WBP_Katakana))) ?
           PDF_TRUE : PDF_FALSE);
 }
 
 /* Check rules and stop if any of them is true (meaning that shouldn't be a
  *  word break) */
 static pdf_bool_t
-pdf_text_ucd_wb_check_rules(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
+pdf_text_ucd_wb_check_rules (const pdf_text_ucd_wb_t buffer[PDF_TEXT_UCD_MWBCP])
 {
-  return (((pdf_text_ucd_wb_rule_3(buffer)) || \
-           (pdf_text_ucd_wb_rule_3a(buffer)) || \
-           (pdf_text_ucd_wb_rule_3b(buffer)) || \
-           (pdf_text_ucd_wb_rule_4(buffer)) || \
-           (pdf_text_ucd_wb_rule_5(buffer)) || \
-           (pdf_text_ucd_wb_rule_6(buffer)) || \
-           (pdf_text_ucd_wb_rule_7(buffer)) || \
-           (pdf_text_ucd_wb_rule_8(buffer)) || \
-           (pdf_text_ucd_wb_rule_9(buffer)) || \
-           (pdf_text_ucd_wb_rule_10(buffer)) || \
-           (pdf_text_ucd_wb_rule_11(buffer)) || \
-           (pdf_text_ucd_wb_rule_12(buffer)) || \
-           (pdf_text_ucd_wb_rule_13(buffer)) || \
-           (pdf_text_ucd_wb_rule_13a(buffer)) || \
-           (pdf_text_ucd_wb_rule_13b(buffer))) ? PDF_TRUE : PDF_FALSE);
+  return (((pdf_text_ucd_wb_rule_3(buffer)) ||
+           (pdf_text_ucd_wb_rule_3a(buffer)) ||
+           (pdf_text_ucd_wb_rule_3b(buffer)) ||
+           (pdf_text_ucd_wb_rule_4(buffer)) ||
+           (pdf_text_ucd_wb_rule_5(buffer)) ||
+           (pdf_text_ucd_wb_rule_6(buffer)) ||
+           (pdf_text_ucd_wb_rule_7(buffer)) ||
+           (pdf_text_ucd_wb_rule_8(buffer)) ||
+           (pdf_text_ucd_wb_rule_9(buffer)) ||
+           (pdf_text_ucd_wb_rule_10(buffer)) ||
+           (pdf_text_ucd_wb_rule_11(buffer)) ||
+           (pdf_text_ucd_wb_rule_12(buffer)) ||
+           (pdf_text_ucd_wb_rule_13(buffer)) ||
+           (pdf_text_ucd_wb_rule_13a(buffer)) ||
+           (pdf_text_ucd_wb_rule_13b(buffer))) ?
+          PDF_TRUE : PDF_FALSE);
 }
-
 
 /* Word boundary search algorithm, based on Unicode Standard Annex #29
  *  "Text Boundaries".
@@ -1220,11 +1197,11 @@ pdf_text_ucd_wb_check_rules(const pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP])
  * - `next' will point to the previous byte before the next word break (so it
  *    points to the LAST byte of the word).
  */
-pdf_status_t
-pdf_text_ucd_wb_detect_next(const pdf_char_t *current,
-                            const pdf_size_t n_bytes_left_in,
-                            pdf_char_t **next,
-                            pdf_size_t *n_bytes_left_out)
+pdf_bool_t
+pdf_text_ucd_wb_detect_next (const pdf_char_t  *current,
+                             const pdf_size_t   n_bytes_left_in,
+                             pdf_char_t       **next,
+                             pdf_size_t        *n_bytes_left_out)
 {
   /* Buffer to store the unicode points as they are being parsed in the
    *  algorithm. Indexes are treated as follows:
@@ -1236,36 +1213,34 @@ pdf_text_ucd_wb_detect_next(const pdf_char_t *current,
    *   the left, so that code point in [0] disappears and a new code point
    *   enters in [3], and the word break is again checked between [1] and [2].
    */
-  pdf_text_ucd_wb_t buffer [PDF_TEXT_UCD_MWBCP];
+  pdf_text_ucd_wb_t buffer[PDF_TEXT_UCD_MWBCP];
 
   pdf_u32_t i;
   pdf_size_t n_bytes;
   pdf_bool_t found;
-  
+
   /* Check validity of input number of bytes */
-  if(n_bytes_left_in % 4 != 0)
-    {
-      return PDF_EBADDATA;
-    }
-  
+  if (n_bytes_left_in % 4 != 0)
+    return PDF_FALSE;
+
   /* Check if the string is just one character long */
-  if(n_bytes_left_in == 4)
+  if (n_bytes_left_in == 4)
     {
       *n_bytes_left_out = 0;
       *next = (pdf_char_t *)current;
-      return PDF_OK;
+      return PDF_TRUE;
     }
-  
+
   /* Initialize buffer with first 3 unicode points, stored in [1],[2],[3] */
-  for(i=0; i<PDF_TEXT_UCD_MWBCP; ++i)
+  for (i = 0; i < PDF_TEXT_UCD_MWBCP; ++i)
     {
-      if((i>0) && \
-         (n_bytes_left_in >= (4*i)))
+      if ((i > 0) &&
+          (n_bytes_left_in >= (4*i)))
         {
           /* Store pointer */
           buffer[i].walker = (pdf_char_t *)(&current[4*(i-1)]);
           /* Store unsigned 32-bit number */
-          memcpy(&(buffer[i].utf32val), buffer[i].walker, 4);
+          memcpy (&(buffer[i].utf32val), buffer[i].walker, 4);
           /* Get Word-Break property value from character */
           buffer[i].wbp = pdf_text_ucd_wb_get_property(buffer[i].utf32val);
         }
@@ -1276,36 +1251,36 @@ pdf_text_ucd_wb_detect_next(const pdf_char_t *current,
           buffer[i].wbp = PDF_TEXT_UCD_WBP_None;
         }
     }
-  
+
   n_bytes = n_bytes_left_in;
   found = 0;
 
   /* Start walking the unicode points. At each loop at least 2 unicode points
    *  (8 bytes) must be available to check the word break!!!! */
-  while((!found) && \
-        (n_bytes >= 8))
+  while ((!found) &&
+         (n_bytes >= 8))
     {
       /* If any of the rules returns true, don't break word */
-      if(pdf_text_ucd_wb_check_rules(buffer))
+      if (pdf_text_ucd_wb_check_rules (buffer))
         {
           /* If word break is not found, continue with next UTF-32 point */
           /* Update number of bytes pending */
           n_bytes -= 4;
 
           /* Shift left contents of the buffer */
-          for(i=1; i<PDF_TEXT_UCD_MWBCP; ++i)
+          for (i = 1; i < PDF_TEXT_UCD_MWBCP; ++i)
             {
               buffer[i-1] = buffer[i];
             }
-          
+
           /* Insert new buffer element in position [3], if available */
-          if(n_bytes >= 12)
+          if (n_bytes >= 12)
             {
               buffer[3].walker = buffer[2].walker + 4;
               /* Store unsigned 32-bit number */
-              memcpy(&(buffer[3].utf32val), buffer[3].walker, 4);
+              memcpy (&(buffer[3].utf32val), buffer[3].walker, 4);
               /* Get Word-Break property value from character */
-              buffer[3].wbp =pdf_text_ucd_wb_get_property(buffer[3].utf32val);
+              buffer[3].wbp = pdf_text_ucd_wb_get_property (buffer[3].utf32val);
             }
         }
       else
@@ -1315,7 +1290,7 @@ pdf_text_ucd_wb_detect_next(const pdf_char_t *current,
           found = 1;
         }
     }
- 
+
   /* The exit of the loop could be due to two different reasons:
    *  1. A word break was found in the loop. If it is found, the contents of
    *    the buffer remain unchanged, so the word break is between [1] and [2],
@@ -1328,8 +1303,8 @@ pdf_text_ucd_wb_detect_next(const pdf_char_t *current,
 
   *next = buffer[1].walker;
   *n_bytes_left_out = n_bytes - 4;
-  
-  return PDF_OK;
+
+  return PDF_TRUE;
 }
 
 /* End of pdf-text-ucd-wordbreak.c */

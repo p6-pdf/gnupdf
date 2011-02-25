@@ -2053,10 +2053,10 @@ pdf_text_fill_word_boundaries_list (pdf_list_t        *word_boundaries,
           /* RULE WB1: Break at the start of text ( SOT % ) */
           p_word->word_start = walker;
 
-          if(pdf_text_ucd_wb_detect_next (walker,
-                                          n_bytes_left,
-                                          &(p_word->word_stop),
-                                          &n_bytes_left)!= PDF_OK)
+          if (pdf_text_ucd_wb_detect_next (walker,
+                                           n_bytes_left,
+                                           &(p_word->word_stop),
+                                           &n_bytes_left) != PDF_TRUE)
             {
               pdf_set_error (error,
                              PDF_EDOMAIN_BASE_TEXT,
