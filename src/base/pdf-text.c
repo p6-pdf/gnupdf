@@ -604,19 +604,27 @@ pdf_text_get_best_encoding (pdf_text_t text,
   return preferred_encoding;
 }
 
-
-
 pdf_status_t
 pdf_text_get_host (pdf_char_t **contents,
                    pdf_size_t *length,
                    const pdf_text_t text,
                    const pdf_text_host_encoding_t enc)
 {
+  pdf_error_t *inner_error = NULL;
 
-  return pdf_text_utf32he_to_host (text->data, text->size, enc,
-                                   contents, length);
+  if (!pdf_text_utf32he_to_host (text->data,
+                                 text->size,
+                                 enc,
+                                 contents,
+                                 length,
+                                 &inner_error))
+    {
+      /* TODO: propagate error */
+      pdf_error_destroy (inner_error);
+      return PDF_ERROR;
+    }
+  return PDF_OK;
 }
-
 
 /* Get the contents of a text variable encoded in PDFDocEncoding, as a NUL
  *  terminated string */
@@ -880,27 +888,34 @@ pdf_text_set_host (pdf_text_t text,
                    const pdf_size_t size,
                    const pdf_text_host_encoding_t enc)
 {
-  pdf_status_t ret_code;
   pdf_char_t *temp_data;
   pdf_size_t temp_size;
+  pdf_error_t *inner_error = NULL;
 
   if(str == NULL)
     {
       return PDF_EBADDATA;
     }
 
-  ret_code = pdf_text_host_to_utf32he (str, size, enc,
-                                       &temp_data, &temp_size);
-  if(ret_code == PDF_OK)
+  if (pdf_text_host_to_utf32he (str,
+                                size,
+                                enc,
+                                &temp_data,
+                                &temp_size,
+                                &inner_error))
     {
       /* Destroy previous contents of text variable, if any */
-      pdf_text_clean_contents(text);
+      pdf_text_clean_contents (text);
 
       /* Really set contents */
       text->data = temp_data;
       text->size = temp_size;
+      return PDF_OK;
     }
-  return ret_code;
+
+  /* TODO: Propagate error */
+  pdf_error_destroy (inner_error);
+  return PDF_ERROR;
 }
 
 
