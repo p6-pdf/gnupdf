@@ -255,8 +255,8 @@ pdf_text_utf32he_to_host_win32 (const pdf_char_t  *input_data,
                      PDF_EDOMAIN_BASE_TEXT,
                      PDF_ENOMEM,
                      "cannot convert to host encoding: "
-                     "couldn't allocate %u bytes",
-                     *p_output_length);
+                     "couldn't allocate %lu bytes",
+                     (unsigned long)*p_output_length);
       pdf_dealloc (temp_data);
       return PDF_FALSE;
     }
@@ -387,8 +387,8 @@ pdf_text_host_to_utf32he_win32 (const pdf_char_t  *input_data,
                      PDF_EDOMAIN_BASE_TEXT,
                      PDF_ENOMEM,
                      "cannot convert from host encoding: "
-                     "couldn't allocate %u bytes",
-                     temp_size);
+                     "couldn't allocate %lu bytes",
+                     (unsigned long)temp_size);
       return PDF_FALSE;
     }
 
@@ -514,8 +514,8 @@ pdf_text_utf32he_to_host_iconv (const pdf_char_t  *input_data,
                      PDF_EDOMAIN_BASE_TEXT,
                      PDF_ENOMEM,
                      "cannot convert to host encoding: "
-                     "couldn't allocate %u bytes",
-                     worst_length);
+                     "couldn't allocate %lu bytes",
+                     (unsigned long)worst_length);
       iconv_close (to_host);
       return PDF_FALSE;
     }
@@ -567,8 +567,8 @@ pdf_text_utf32he_to_host_iconv (const pdf_char_t  *input_data,
                                  PDF_EDOMAIN_BASE_TEXT,
                                  PDF_ENOMEM,
                                  "cannot convert to host encoding: "
-                                 "couldn't rellocate '%u' bytes",
-                                 worst_length);
+                                 "couldn't rellocate '%lu' bytes",
+                                 (unsigned long)worst_length);
                   return PDF_FALSE;
                 }
 
@@ -609,8 +609,8 @@ pdf_text_utf32he_to_host_iconv (const pdf_char_t  *input_data,
                          PDF_EDOMAIN_BASE_TEXT,
                          PDF_ENOMEM,
                          "cannot convert to host encoding: "
-                         "couldn't rellocate '%u' bytes",
-                         new_length);
+                         "couldn't rellocate '%lu' bytes",
+                         (unsigned long)new_length);
           return PDF_FALSE;
         }
     }
@@ -670,8 +670,8 @@ pdf_text_host_to_utf32he_iconv (const pdf_char_t  *input_data,
                      PDF_EDOMAIN_BASE_TEXT,
                      PDF_ENOMEM,
                      "cannot convert from host encoding: "
-                     "couldn't allocate %u bytes",
-                     worst_length);
+                     "couldn't allocate %lu bytes",
+                     (unsigned long)worst_length);
       iconv_close (from_host);
       return PDF_FALSE;
     }
@@ -724,8 +724,8 @@ pdf_text_host_to_utf32he_iconv (const pdf_char_t  *input_data,
                                  PDF_EDOMAIN_BASE_TEXT,
                                  PDF_ENOMEM,
                                  "cannot convert from host encoding: "
-                                 "couldn't allocate %u bytes",
-                                 worst_length);
+                                 "couldn't allocate %lu bytes",
+                                 (unsigned long)worst_length);
                   iconv_close (from_host);
                   return PDF_FALSE;
                 }
@@ -776,8 +776,8 @@ pdf_text_host_to_utf32he_iconv (const pdf_char_t  *input_data,
                          PDF_EDOMAIN_BASE_TEXT,
                          PDF_ENOMEM,
                          "cannot convert from host encoding: "
-                         "couldn't rellocate '%u' bytes",
-                         new_length);
+                         "couldn't rellocate '%lu' bytes",
+                         (unsigned long)new_length);
           return PDF_FALSE;
         }
     }
