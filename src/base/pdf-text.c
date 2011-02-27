@@ -1512,69 +1512,82 @@ pdf_status_t
 pdf_text_filter (pdf_text_t text,
                  const pdf_u32_t filter)
 {
+  pdf_error_t *inner_error = NULL;
+
   /* More than one filter at the same time can be requested! But Caution!
    *  UpperCase filter, LowerCase filter and TitleCase filter are mutually
    *  exclusive (at most only one of them must be enabled) */
 
-  if((((filter & PDF_TEXT_FILTER_UPPER_CASE) ? 1 : 0) + \
-      ((filter & PDF_TEXT_FILTER_LOWER_CASE) ? 1 : 0) + \
-      ((filter & PDF_TEXT_FILTER_TITLE_CASE) ? 1 : 0)) > 1)
+  if ((((filter & PDF_TEXT_FILTER_UPPER_CASE) ? 1 : 0) +
+       ((filter & PDF_TEXT_FILTER_LOWER_CASE) ? 1 : 0) +
+       ((filter & PDF_TEXT_FILTER_TITLE_CASE) ? 1 : 0)) > 1)
     {
-      PDF_DEBUG_BASE("At most only one case conversion filter can be applied");
+      pdf_set_error (&inner_error,
+                     PDF_EDOMAIN_BASE_TEXT,
+                     PDF_ENOMEM,
+                     "cannot apply filters to text: "
+                     "at most only one case conversion filter can be applied");
       return PDF_EBADDATA;
     }
 
   /* 0x00000001 */
-  if((filter & PDF_TEXT_FILTER_LINE_ENDINGS) && \
-     (pdf_text_filter_normalize_line_endings(text) != PDF_OK))
+  if ((filter & PDF_TEXT_FILTER_LINE_ENDINGS) &&
+      (!pdf_text_filter_normalize_line_endings (text, &inner_error)))
     {
-      PDF_DEBUG_BASE("Error applying Line Ending normalization filter");
+      /* TODO: propagate error */
+      pdf_error_destroy (inner_error);
       return PDF_ETEXTENC;
     }
 
   /* 0x00000010 */
-  if((filter & PDF_TEXT_FILTER_UPPER_CASE) && \
-     (pdf_text_filter_upper_case(text) != PDF_OK))
+  if ((filter & PDF_TEXT_FILTER_UPPER_CASE) &&
+      (!pdf_text_filter_upper_case (text, &inner_error)))
     {
-      PDF_DEBUG_BASE("Error applying Upper Case filter");
+      /* TODO: propagate error */
+      pdf_error_destroy (inner_error);
       return PDF_ETEXTENC;
     }
   /* 0x00000100 */
-  else if((filter & PDF_TEXT_FILTER_LOWER_CASE) && \
-          (pdf_text_filter_lower_case(text) != PDF_OK))
+  else if ((filter & PDF_TEXT_FILTER_LOWER_CASE) &&
+           (!pdf_text_filter_lower_case (text, &inner_error)))
     {
-      PDF_DEBUG_BASE("Error applying Lower Case filter");
+      /* TODO: propagate error */
+      pdf_error_destroy (inner_error);
       return PDF_ETEXTENC;
     }
   /* 0x00001000 */
-  else if((filter & PDF_TEXT_FILTER_TITLE_CASE) && \
-           (pdf_text_filter_title_case(text) != PDF_OK))
+  else if ((filter & PDF_TEXT_FILTER_TITLE_CASE) &&
+           (!pdf_text_filter_title_case (text, &inner_error)))
     {
-      PDF_DEBUG_BASE("Error applying Title Case filter");
+      /* TODO: propagate error */
+      pdf_error_destroy (inner_error);
       return PDF_ETEXTENC;
     }
 
   /* 0x00010000 */
-  if((filter & PDF_TEXT_FILTER_REMOVE_AMP) && \
-     (pdf_text_filter_remove_amp(text) != PDF_OK))
+  if ((filter & PDF_TEXT_FILTER_REMOVE_AMP) &&
+      (!pdf_text_filter_remove_amp (text, &inner_error)))
     {
-      PDF_DEBUG_BASE("Error applying Ampersand Removal filter");
+      /* TODO: propagate error */
+      pdf_error_destroy (inner_error);
       return PDF_ETEXTENC;
     }
 
   /* 0x00100000 */
-  if((filter & PDF_TEXT_FILTER_NORM_WITH_FULL_WIDTH) && \
-     (pdf_text_filter_normalize_full_width_ascii(text) != PDF_OK))
+  if ((filter & PDF_TEXT_FILTER_NORM_WITH_FULL_WIDTH) &&
+      (!pdf_text_filter_normalize_full_width_ascii (text, &inner_error)))
     {
-      PDF_DEBUG_BASE("Error applying FullWidth Normalization filter");
+      /* TODO: propagate error */
+      pdf_error_destroy (inner_error);
       return PDF_ETEXTENC;
     }
 
   /* 0x01000000 */
   if ((filter & PDF_TEXT_FILTER_REMOVE_LINE_ENDINGS) &&
-     (pdf_text_filter_remove_line_endings (text) != PDF_OK))
+      (!pdf_text_filter_remove_line_endings (text, &inner_error)))
     {
-      PDF_DEBUG_BASE ("Error applying Line Ending Removal filter");
+      /* TODO: propagate error */
+      pdf_error_destroy (inner_error);
       return PDF_ETEXTENC;
     }
 
