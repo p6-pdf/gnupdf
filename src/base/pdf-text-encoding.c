@@ -184,7 +184,7 @@ pdf_text_pdfdocenc_to_utf32he (const pdf_char_t  *input_data,
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_TEXT,
                      PDF_ENOMEM,
-                     "cannot convert PDF doc encoding to UTF32-HE: "
+                     "cannot convert PDF doc encoding to UTF-32HE: "
                      "couldn't allocate %lu bytes",
                      (unsigned long)new_length);
       return PDF_FALSE;
@@ -202,7 +202,7 @@ pdf_text_pdfdocenc_to_utf32he (const pdf_char_t  *input_data,
           pdf_set_error (error,
                          PDF_EDOMAIN_BASE_TEXT,
                          PDF_EBADDATA,
-                         "cannot convert PDF doc encoding to UTF32-HE: "
+                         "cannot convert PDF doc encoding to UTF-32HE: "
                          "input byte '%d' is undefined in PDF Doc encoding",
                          input_data[i]);
           return PDF_FALSE;
@@ -294,7 +294,7 @@ pdf_text_utf32he_to_pdfdocenc (const pdf_char_t  *input_data,
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_TEXT,
                      PDF_EBADDATA,
-                     "cannot convert from UTF32-HE to PDF Doc encoding: "
+                     "cannot convert from UTF-32HE to PDF Doc encoding: "
                      "invalid input data length: %lu",
                      (unsigned long)input_length);
       return PDF_FALSE;
@@ -310,7 +310,7 @@ pdf_text_utf32he_to_pdfdocenc (const pdf_char_t  *input_data,
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_TEXT,
                      PDF_ENOMEM,
-                     "cannot convert from UTF32-HE to PDF Doc encoding: "
+                     "cannot convert from UTF-32HE to PDF Doc encoding: "
                      "couldn't allocate %lu bytes",
                      (unsigned long)*p_output_length);
       return PDF_FALSE;
@@ -331,7 +331,7 @@ pdf_text_utf32he_to_pdfdocenc (const pdf_char_t  *input_data,
 
 /*********************** UTF-32 to UTF-32 conversions *************************/
 
-/* Function to convert from UTF32-HE to UTF32-HE, lossless */
+/* Function to convert from UTF-32HE to UTF-32HE, lossless */
 pdf_bool_t
 pdf_text_utf32he_to_utf32he (const pdf_char_t  *input_data,
                              const pdf_size_t   input_length,
@@ -520,7 +520,7 @@ pdf_text_utf16he_point_to_utf32he_point (pdf_text_utf16_char_t   utf16val[2],
   return n_bytes;
 }
 
-/* Function to convert from UTF16-HE to UTF32-HE, lossless */
+/* Function to convert from UTF-16HE to UTF-32HE, lossless */
 pdf_bool_t
 pdf_text_utf16he_to_utf32he (const pdf_char_t  *input_data,
                              const pdf_size_t   input_length,
@@ -582,7 +582,7 @@ pdf_text_utf16he_to_utf32he (const pdf_char_t  *input_data,
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_TEXT,
                      PDF_ENOMEM,
-                     "cannot convert from UTF16-HE to UTF32-HE: "
+                     "cannot convert from UTF-16HE to UTF-32HE: "
                      "couldn't allocate %lu bytes",
                      (unsigned long)new_string_length_worst);
       return PDF_FALSE;
@@ -700,7 +700,7 @@ pdf_text_utf16he_to_utf32he (const pdf_char_t  *input_data,
           pdf_set_error (error,
                          PDF_EDOMAIN_BASE_TEXT,
                          PDF_ENOMEM,
-                         "cannot convert from UTF16-HE to UTF32-HE: "
+                         "cannot convert from UTF-16HE to UTF-32HE: "
                          "couldn't reallocate %lu bytes",
                          (unsigned long)new_string_length);
           return PDF_FALSE;
@@ -780,23 +780,13 @@ pdf_text_utf32he_point_to_utf16he_point (pdf_text_utf32_char_t   utf32val,
 
 /* Function to convert from UTF-32HE to UTF-16, lossless */
 pdf_bool_t
-pdf_text_utf32he_to_utf16he(const pdf_char_t  *input_data,
-                            const pdf_size_t   input_length,
-                            pdf_char_t       **p_output_data,
-                            pdf_size_t        *p_output_length,
-                            pdf_bool_t         swap,
-                            pdf_error_t      **error)
+pdf_text_utf32he_to_utf16he (const pdf_char_t  *input_data,
+                             const pdf_size_t   input_length,
+                             pdf_char_t       **p_output_data,
+                             pdf_size_t        *p_output_length,
+                             pdf_bool_t         swap,
+                             pdf_error_t      **error)
 {
-
-
-
-
-
-
-
-
-
-
   /* Note: UTF-16BE has either 16 or 32 bits per character.
    This means that, if length of origin string is 4N bytes, the number of
    required bytes for the UTF16BE representation of the string is 4N in
@@ -814,42 +804,47 @@ pdf_text_utf32he_to_utf16he(const pdf_char_t  *input_data,
   /* Get new string length (worst case)... */
   new_string_length_worst = input_length;
   /* Create destination string with correct size (but empty!) */
-  data = (pdf_char_t *)pdf_alloc(new_string_length_worst);
-  if(data == NULL)
+  data = (pdf_char_t *) pdf_alloc (new_string_length_worst);
+  if (data == NULL)
     {
-      return PDF_ENOMEM;
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_TEXT,
+                     PDF_ENOMEM,
+                     "cannot convert UTF-32HE to UTF-16HE: "
+                     "couldn't allocate %lu bytes",
+                     (unsigned long)new_string_length_worst);
+      return PDF_FALSE;
     }
 
   /* Initiate real string length, without considering marker bytes */
   new_string_length = 0;
 
-  for( i = 0, j = 0; i < input_length; i += 4, j += delta_in_utf16be )
+  for (i = 0, j = 0; i < input_length; i += 4, j += delta_in_utf16be)
     {
       /* Get UCS4 char, as a direct memory copy from the input array */
-      memcpy(&utf32val, &(input_data[i]), 4);
+      memcpy (&utf32val, &(input_data[i]), 4);
 
-      delta_in_utf16be = pdf_text_utf32he_point_to_utf16he_point(utf32val,
-                                                                 utf16val);
-
-      if(delta_in_utf16be == 0)
+      delta_in_utf16be = pdf_text_utf32he_point_to_utf16he_point (utf32val,
+                                                                  utf16val,
+                                                                  error);
+      if (delta_in_utf16be == 0)
         {
           /* Oops, invalid UTF-16HE point found! */
-          pdf_dealloc(data);
-          PDF_DEBUG_BASE("Conversion from UTF-32HE to UTF-16 stopped");
-          return PDF_EBADTEXT;
+          pdf_dealloc (data);
+          return PDF_FALSE;
         }
 
       /* Change endianness of each output word if required */
-      if(swap)
+      if (swap)
         {
           /* Change to BE */
-          (utf16val[0]).i = PDF_TEXT_CHANGE_ENDIANNESS_16BIT((utf16val[0]).i);
-          (utf16val[1]).i = PDF_TEXT_CHANGE_ENDIANNESS_16BIT((utf16val[1]).i);
+          (utf16val[0]).i = PDF_TEXT_CHANGE_ENDIANNESS_16BIT ((utf16val[0]).i);
+          (utf16val[1]).i = PDF_TEXT_CHANGE_ENDIANNESS_16BIT ((utf16val[1]).i);
         }
 
       /* Finally, store the UTF16BE representation of the char in the output
        * string... */
-      memcpy(&(data[j]), &utf16val[0], delta_in_utf16be);
+      memcpy (&(data[j]), &utf16val[0], delta_in_utf16be);
       /* Update new string legth... */
       new_string_length += delta_in_utf16be;
     }
@@ -861,20 +856,25 @@ pdf_text_utf32he_to_utf16he(const pdf_char_t  *input_data,
 
   /* If the real required string length is not equal to the initial worst length
    * then update string with correct length. */
-  if(new_string_length != new_string_length_worst)
+  if (new_string_length != new_string_length_worst)
     {
       /* Recreate object with correct smaller size... */
-      *p_output_data = (pdf_char_t *)pdf_realloc(*p_output_data,
-                                                 new_string_length);
-      if(*p_output_data == NULL)
+      *p_output_data = (pdf_char_t *) pdf_realloc (*p_output_data,
+                                                   new_string_length);
+      if (*p_output_data == NULL)
         {
-          return PDF_ENOMEM;
+          pdf_set_error (error,
+                         PDF_EDOMAIN_BASE_TEXT,
+                         PDF_ENOMEM,
+                         "cannot convert from UTF-16HE to UTF-32HE: "
+                         "couldn't allocate %lu bytes",
+                         (unsigned long)new_string_length);
+          return PDF_FALSE;
         }
     }
 
-  return PDF_OK;
+  return PDF_TRUE;
 }
-
 
 /************************ UTF-8 to UTF-32 conversions *************************/
 
@@ -882,21 +882,27 @@ pdf_text_utf32he_to_utf16he(const pdf_char_t  *input_data,
  * of bytes used in the input UTF-8 point is returned (or 0 if the UTF-8 point
  * is not valid */
 static pdf_size_t
-pdf_text_utf8_point_to_utf32he_point(const pdf_uchar_t utf8val[4],
-                                     const pdf_size_t n_bytes,
-                                     pdf_text_utf32_char_t *p_utf32val)
+pdf_text_utf8_point_to_utf32he_point (const pdf_uchar_t       utf8val[4],
+                                      const pdf_size_t        n_bytes,
+                                      pdf_text_utf32_char_t  *p_utf32val,
+                                      pdf_error_t           **error)
 {
   int c;  /* index for the utf-8 representation of every char */
 
   /* Check validity of the UTF-8 bytes:
    *  - First byte can be neither 0xFF nor 0xFE
    *  - The following bytes must be in the [80-BF] range! (10xxxxxx) */
-  for(c=0; c<n_bytes; c++)
+  for (c = 0; c < n_bytes; c++)
     {
-      if(((c == 0) && ((utf8val[0] == 0xFF) || (utf8val[0] == 0xFE))) || \
-         ((c != 0) && ((utf8val[c]  < 0x80) || (utf8val[c]  > 0xBF))))
+      if (((c == 0) && ((utf8val[0] == 0xFF) || (utf8val[0] == 0xFE))) ||
+          ((c != 0) && ((utf8val[c]  < 0x80) || (utf8val[c]  > 0xBF))))
         {
-          PDF_DEBUG_BASE("Invalid UTF-8 character: %.2X:%.2X:%.2X:%.2X",
+          pdf_set_error (error,
+                         PDF_EDOMAIN_BASE_TEXT,
+                         PDF_EBADTEXT,
+                         "cannot convert from UTF-8 to UTF-32HE: "
+                         "invalid input code point: "
+                         "%.2X:%.2X:%.2X:%.2X",
                          (pdf_uchar_t)utf8val[0],
                          ((n_bytes>1)?((pdf_uchar_t)utf8val[1]):0),
                          ((n_bytes>2)?((pdf_uchar_t)utf8val[2]):0),
@@ -906,40 +912,42 @@ pdf_text_utf8_point_to_utf32he_point(const pdf_uchar_t utf8val[4],
     }
 
   /* Load all the bytes of the UTF-8 representation in the UTF-32HE var */
-  switch(n_bytes)
-  {
+  switch (n_bytes)
+    {
     case 1:
-      (*p_utf32val).i = (utf8val[0] & 0x7F);            /* 0111 1111 */
+      (*p_utf32val).i = (utf8val[0] & 0x7F);          /* 0111 1111 */
       break;
     case 2:
-      (*p_utf32val).i = ((utf8val[0] & 0x1F) << 6) +    /* 0001 1111 */
-                        (utf8val[1] & 0x3F);          /* 0011 1111 */
+      (*p_utf32val).i = ((utf8val[0] & 0x1F) << 6) +  /* 0001 1111 */
+        (utf8val[1] & 0x3F);          /* 0011 1111 */
       break;
     case 3:
-      (*p_utf32val).i = ((utf8val[0] & 0x0F) << 12) +   /* 0000 1111 */
+      (*p_utf32val).i = ((utf8val[0] & 0x0F) << 12) + /* 0000 1111 */
                         ((utf8val[1] & 0x3F) << 6) +  /* 0011 1111 */
                         (utf8val[2] & 0x3F);          /* 0011 1111 */
       break;
     case 4:
-      (*p_utf32val).i = ((utf8val[0] & 0x07) << 18) +   /* 0000 1111 */
+      (*p_utf32val).i = ((utf8val[0] & 0x07) << 18) +  /* 0000 1111 */
                         ((utf8val[1] & 0x3F) << 12) +  /* 0000 1111 */
                         ((utf8val[2] & 0x3F) << 6) +   /* 0011 1111 */
                         (utf8val[3] & 0x3F);           /* 0011 1111 */
       break;
     default:
       /* Should never happen! */
+      PDF_ASSERT_TRACE_NOT_REACHED ();
       return 0;
-  }
+    }
 
   return n_bytes;
 }
 
 /* Function to convert from UTF-8 to UTF-32HE, lossless */
-pdf_status_t
-pdf_text_utf8_to_utf32he(const pdf_char_t    *input_data,
-                         const pdf_size_t    input_length,
-                         pdf_char_t          **p_output_data,
-                         pdf_size_t          *p_output_length)
+pdf_bool_t
+pdf_text_utf8_to_utf32he (const pdf_char_t  *input_data,
+                          const pdf_size_t   input_length,
+                          pdf_char_t       **p_output_data,
+                          pdf_size_t        *p_output_length,
+                          pdf_error_t      **error)
 {
   /* Note: PDF Doc Encoding has always 8 bits per character.
    *  This means that, if length of origin string is N bytes, the number of
@@ -951,12 +959,11 @@ pdf_text_utf8_to_utf32he(const pdf_char_t    *input_data,
   int i;  /* index for the origin string data */
   int j;  /* index for the destination string data */
   pdf_size_t delta_in_utf8;
-
   pdf_char_t *data;
 
   /* Check if BOM is present... and skip it if so */
   bom_bytes = 0;
-  if(pdf_text_check_unicode_bom (input_data, input_length, PDF_TEXT_UTF8, 0))
+  if (pdf_text_check_unicode_bom (input_data, input_length, PDF_TEXT_UTF8, 0))
     {
       /* Skip BOM in UTF-8 */
       bom_bytes = 3;
@@ -966,14 +973,20 @@ pdf_text_utf8_to_utf32he(const pdf_char_t    *input_data,
   new_string_length_worst = 4 * (input_length - bom_bytes);
 
   /* Create destination string with worst size (but empty!) */
-  data = (pdf_char_t *)pdf_alloc(new_string_length_worst);
-  if(data == NULL)
+  data = (pdf_char_t *) pdf_alloc (new_string_length_worst);
+  if (data == NULL)
     {
-      return PDF_ENOMEM;
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_TEXT,
+                     PDF_ENOMEM,
+                     "cannot convert from UTF-8 to UTF-32HE: "
+                     "couldn't allocate %lu bytes",
+                     (unsigned long)new_string_length_worst);
+      return PDF_FALSE;
     }
 
   new_string_length = 0;
-  for(i = bom_bytes, j = 0; i < input_length; i+=delta_in_utf8, j+=4)
+  for (i = bom_bytes, j = 0; i < input_length; i += delta_in_utf8, j += 4)
     {
       pdf_text_utf32_char_t utf32val;
       pdf_uchar_t utf8val[4];
@@ -983,30 +996,35 @@ pdf_text_utf8_to_utf32he(const pdf_char_t    *input_data,
 
       /* Check validity of first byte in UTF-8 */
       /* Check if the required bytes are outside the input data stream */
-      if((delta_in_utf8 == 0) || \
-         ((input_length - i) < delta_in_utf8))
+      if ((delta_in_utf8 == 0) ||
+          ((input_length - i) < delta_in_utf8))
         {
-          PDF_DEBUG_BASE("Wrong UTF-8 data received (UTF-8 length: %d, "
-                         "Remaining length: %d", delta_in_utf8,
+          pdf_dealloc (data);
+          pdf_set_error (error,
+                         PDF_EDOMAIN_BASE_TEXT,
+                         PDF_EBADDATA,
+                         "cannot convert UTF-8 to UTF-32HE: "
+                         "wrong UTF-8 data received (UTF-8 length: %d, "
+                         "remaining length: %d)",
+                         delta_in_utf8,
                          (input_length - i));
-          pdf_dealloc(data);
-          return PDF_EBADDATA;
+          return PDF_FALSE;
         }
 
       /* Store data in intermediate UTF-8 variable */
-      memcpy(&utf8val[0], &input_data[i], delta_in_utf8);
+      memcpy (&utf8val[0], &input_data[i], delta_in_utf8);
 
-      if(pdf_text_utf8_point_to_utf32he_point(utf8val,
-                                              delta_in_utf8,
-                                              &utf32val) == 0)
+      if (pdf_text_utf8_point_to_utf32he_point (utf8val,
+                                                delta_in_utf8,
+                                                &utf32val,
+                                                error) == 0)
         {
-          PDF_DEBUG_BASE("Problem decoding UTF-8 string");
-          pdf_dealloc(data);
-          return PDF_EBADDATA;
+          pdf_dealloc (data);
+          return PDF_FALSE;
         }
 
       /* Copy converted value (in UTF-32HE) to output */
-      memcpy(&(data[j]), &(utf32val), 4);
+      memcpy (&(data[j]), &(utf32val), 4);
 
       /* Update new string length */
       new_string_length += 4;
@@ -1019,20 +1037,25 @@ pdf_text_utf8_to_utf32he(const pdf_char_t    *input_data,
 
   /* If the real required string length is not equal to the initial worst length
    * then update string with correct length. */
-  if(new_string_length != new_string_length_worst)
+  if (new_string_length != new_string_length_worst)
     {
       /* Recreate object with correct smaller size... */
-      *p_output_data = (pdf_char_t *)pdf_realloc(*p_output_data,
-                                                 new_string_length);
-      if(*p_output_data == NULL)
+      *p_output_data = (pdf_char_t *) pdf_realloc (*p_output_data,
+                                                   new_string_length);
+      if (*p_output_data == NULL)
         {
-          return PDF_ENOMEM;
+          pdf_set_error (error,
+                         PDF_EDOMAIN_BASE_TEXT,
+                         PDF_ENOMEM,
+                         "cannot convert from UTF-8 to UTF-32HE: "
+                         "couldn't reallocate %lu bytes",
+                         (unsigned long)new_string_length);
+          return PDF_FALSE;
         }
     }
 
-  return PDF_OK;
+  return PDF_TRUE;
 }
-
 
 /************************ UTF-32 to UTF-8 conversions *************************/
 
@@ -1040,27 +1063,28 @@ pdf_text_utf8_to_utf32he(const pdf_char_t    *input_data,
  * of bytes used in the output UTF-8 point is returned (or 0 if the UTF-8 point
  * is not valid */
 static pdf_size_t
-pdf_text_utf32he_point_to_utf8_point(const pdf_text_utf32_char_t utf32val,
-                                     pdf_uchar_t utf8val[4])
+pdf_text_utf32he_point_to_utf8_point (const pdf_text_utf32_char_t   utf32val,
+                                      pdf_uchar_t                   utf8val[4],
+                                      pdf_error_t                 **error)
 {
   pdf_size_t n_bytes;
 
-  if(utf32val.i < 0x80)
+  if (utf32val.i < 0x80)
     {
       /* Output is 1 byte */
       n_bytes = 1;
-      utf8val[0] = (pdf_uchar_t) utf32val.i;
+      utf8val[0] = (pdf_uchar_t)utf32val.i;
     }
-  else if(utf32val.i < 0x800)
+  else if (utf32val.i < 0x800)
     {
       /* Output is 2 bytes */
       n_bytes = 2;
       /* Get first byte, using upper 5 bits --> 110xxxxx */
-      utf8val[0] = ((pdf_uchar_t) (utf32val.i >> 6)) | 0xC0;
+      utf8val[0] = ((pdf_uchar_t)(utf32val.i >> 6)) | 0xC0;
       /* Get second byte, using lower 6 bits --> 10xxxxxx */
-      utf8val[1] = ((pdf_uchar_t) (utf32val.i & 0x3F)) | 0x80;
+      utf8val[1] = ((pdf_uchar_t)(utf32val.i & 0x3F)) | 0x80;
     }
-  else if(utf32val.i < 0x10000)
+  else if (utf32val.i < 0x10000)
     {
       /* Output is 3 bytes */
       n_bytes = 3;
@@ -1071,7 +1095,7 @@ pdf_text_utf32he_point_to_utf8_point(const pdf_text_utf32_char_t utf32val,
       /* Get third byte, using lower 6 bits --> 10xxxxxx */
       utf8val[2] = ((pdf_uchar_t)(utf32val.i & 0x3F)) | 0x80;
     }
-  else if(utf32val.i < 0x0010FFFF)
+  else if (utf32val.i < 0x0010FFFF)
     {
       /* Output is 4 bytes */
       n_bytes = 4;
@@ -1086,20 +1110,29 @@ pdf_text_utf32he_point_to_utf8_point(const pdf_text_utf32_char_t utf32val,
     }
   else
     {
-      /* Invalid input UTF-32 val */
-      PDF_DEBUG_BASE("Wrong UTF-32BE value! '0x%.2X 0x%.2X 0x%.2X 0x%.2X'",
-                     utf32val.c[0],utf32val.c[1],utf32val.c[2],utf32val.c[3]);
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_TEXT,
+                     PDF_EBADTEXT,
+                     "cannot convert from UTF-32HE to UTF-8: "
+                     "invalid input code point: "
+                     "%.2X:%.2X:%.2X:%.2X",
+                     utf32val.c[0],
+                     utf32val.c[1],
+                     utf32val.c[2],
+                     utf32val.c[3]);
       n_bytes = 0;
     }
+
   return n_bytes;
 }
 
 /* Function to convert from UTF-32HE to UTF-8, lossless */
-pdf_status_t
-pdf_text_utf32he_to_utf8(const pdf_char_t      *input_data,
-                         const pdf_size_t      input_length,
-                         pdf_char_t            **p_output_data,
-                         pdf_size_t            *p_output_length)
+pdf_bool_t
+pdf_text_utf32he_to_utf8 (const pdf_char_t  *input_data,
+                          const pdf_size_t   input_length,
+                          pdf_char_t       **p_output_data,
+                          pdf_size_t        *p_output_length,
+                          pdf_error_t      **error)
 {
   /* Note: UTF-8 has either 8, 16, 24 or 32 bits per character.
    This means that, if length of origin string is 4N bytes, the number of
@@ -1116,33 +1149,40 @@ pdf_text_utf32he_to_utf8(const pdf_char_t      *input_data,
   /* Get new string length (worst case)... */
   new_string_length_worst = input_length;
   /* Create destination string with correct size (but empty!) */
-  data = (pdf_char_t *)pdf_alloc(new_string_length_worst);
-  if(data == NULL)
+  data = (pdf_char_t *) pdf_alloc (new_string_length_worst);
+  if (data == NULL)
     {
-      return PDF_ENOMEM;
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_TEXT,
+                     PDF_ENOMEM,
+                     "cannot convert UTF-32HE to UTF-8: "
+                     "couldn't allocate %lu bytes",
+                     (unsigned long)new_string_length_worst);
+      return PDF_FALSE;
     }
 
   /* Initiate real string length, without considering marker bytes */
   new_string_length = 0;
 
-  for( i = 0, j = 0; i < input_length; i += 4, j += delta_in_utf8 )
+  for (i = 0, j = 0; i < input_length; i += 4, j += delta_in_utf8)
     {
       pdf_text_utf32_char_t utf32val;
       pdf_uchar_t utf8val[4];
 
       /* Get UTF-32 char, as a direct memory copy from the input array */
-      memcpy(&utf32val, &(input_data[i]), 4);
+      memcpy (&utf32val, &(input_data[i]), 4);
 
-      delta_in_utf8 = pdf_text_utf32he_point_to_utf8_point(utf32val,utf8val);
-      if(delta_in_utf8 == 0)
+      delta_in_utf8 = pdf_text_utf32he_point_to_utf8_point (utf32val,
+                                                            utf8val,
+                                                            error);
+      if (delta_in_utf8 == 0)
         {
-          PDF_DEBUG_BASE("Problem encoding UTF-8 string");
-          pdf_dealloc(data);
-          return PDF_EBADTEXT;
+          pdf_dealloc (data);
+          return PDF_FALSE;
         }
 
       /* Store UTF-8 val in output array */
-      memcpy(&data[j], &(utf8val[0]), delta_in_utf8);
+      memcpy (&data[j], &(utf8val[0]), delta_in_utf8);
 
       /* Update new_string_length, depending on the bytes used to represent
        *  this character in UTF-8 */
@@ -1156,59 +1196,64 @@ pdf_text_utf32he_to_utf8(const pdf_char_t      *input_data,
 
   /* If the real required string length is not equal to the initial worst length
    * then update string with correct length. */
-  if(new_string_length != new_string_length_worst)
+  if (new_string_length != new_string_length_worst)
     {
       /* Recreate object with correct smaller size... */
-      *p_output_data = (pdf_char_t *)pdf_realloc(*p_output_data,
-                                                 new_string_length);
-      if(*p_output_data == NULL)
+      *p_output_data = (pdf_char_t *) pdf_realloc (*p_output_data,
+                                                   new_string_length);
+      if (*p_output_data == NULL)
         {
-          return PDF_ENOMEM;
+          pdf_set_error (error,
+                         PDF_EDOMAIN_BASE_TEXT,
+                         PDF_ENOMEM,
+                         "cannot convert from UTF-32HE to UTF-8: "
+                         "couldn't allocate %lu bytes",
+                         (unsigned long)new_string_length);
+          return PDF_FALSE;
         }
     }
 
-  return PDF_OK;
+  return PDF_TRUE;
 }
-
 
 /*************************** BOM-related functions ****************************/
 
-
 inline pdf_text_bom_t
-pdf_text_get_unicode_bom(enum pdf_text_unicode_encoding_e unicode_encoding)
+pdf_text_get_unicode_bom (enum pdf_text_unicode_encoding_e unicode_encoding)
 {
   return unicode_bom[unicode_encoding];
 }
 
-
 pdf_bool_t
 pdf_text_check_unicode_bom (const pdf_char_t *data,
-                            const pdf_size_t size,
+                            const pdf_size_t  size,
                             enum pdf_text_unicode_encoding_e enc,
-                            int swap)
+                            int               swap)
 {
   switch(enc)
-  {
+    {
     case PDF_TEXT_UTF16_HE:
     case PDF_TEXT_UTF32_HE:
-    {
-      enc += ((PDF_IS_BIG_ENDIAN ^ swap) ? PDF_TEXT_HE_TO_BE:PDF_TEXT_HE_TO_LE);
-    }
+      {
+        enc += ((PDF_IS_BIG_ENDIAN ^ swap) ? PDF_TEXT_HE_TO_BE:PDF_TEXT_HE_TO_LE);
+      }
     case PDF_TEXT_UTF8:
     case PDF_TEXT_UTF16_BE:
     case PDF_TEXT_UTF16_LE:
     case PDF_TEXT_UTF32_BE:
     case PDF_TEXT_UTF32_LE:
-    {
-      if((size >= unicode_bom[enc].bom_bytes) && \
-         (memcmp(data,unicode_bom[enc].bom_data,unicode_bom[enc].bom_bytes)==0))
-        {
-          return PDF_TRUE;
-        }
-    }
+      {
+        if ((size >= unicode_bom[enc].bom_bytes) &&
+            (memcmp (data,
+                     unicode_bom[enc].bom_data,
+                     unicode_bom[enc].bom_bytes) == 0))
+          {
+            return PDF_TRUE;
+          }
+      }
     default:
       return PDF_FALSE;
-  }
+    }
 }
 
 /* End of pdf-text-encoding.c */

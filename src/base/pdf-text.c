@@ -346,6 +346,7 @@ pdf_text_new_from_pdf_string (const pdf_char_t *str,
     {
       pdf_char_t *string_start = (pdf_char_t *)str;
       pdf_size_t string_length = size;
+      pdf_error_t *inner_error = NULL;
 
       /* Skip 2-bytes BOM */
       if(bom_found)
@@ -366,16 +367,28 @@ pdf_text_new_from_pdf_string (const pdf_char_t *str,
         }
 
       /* And finally convert to UTF-32... */
-      ret_code = pdf_text_utf16be_to_utf32he(string_start,
-                                             string_length,
-                                             &(element->data),
-                                             &(element->size),
-                                             remaining_str,
-                                             remaining_length);
+      if (pdf_text_utf16be_to_utf32he (string_start,
+                                       string_length,
+                                       &(element->data),
+                                       &(element->size),
+                                       remaining_str,
+                                       remaining_length,
+                                       &inner_error) != PDF_TRUE)
+        {
+          /* TODO: Propagate error */
+          ret_code = pdf_error_get_status (inner_error);
+          pdf_error_destroy (inner_error);
+        }
+      else
+        {
+          ret_code = PDF_OK;
+        }
     }
   /* Else, process PDF string as encoded in PDF Doc Encoding */
   else
     {
+      pdf_error_t *inner_error = NULL;
+
       /* We already know that this string will be fully stored, without
        *  splitting in chunks */
       if(remaining_length != NULL)
@@ -387,10 +400,20 @@ pdf_text_new_from_pdf_string (const pdf_char_t *str,
           *remaining_str = NULL;
         }
       /* And perform the conversion */
-      ret_code = pdf_text_pdfdocenc_to_utf32he(str,
-                                               size,
-                                               &(element->data),
-                                               &(element->size));
+      if (pdf_text_pdfdocenc_to_utf32he (str,
+                                         size,
+                                         &(element->data),
+                                         &(element->size),
+                                         &inner_error) != PDF_TRUE)
+        {
+          /* TODO: Propagate error */
+          ret_code = pdf_error_get_status (inner_error);
+          pdf_error_destroy (inner_error);
+        }
+      else
+        {
+          ret_code = PDF_OK;
+        }
     }
 
   /* Only store in the output element if and only if everything went ok */
@@ -635,9 +658,22 @@ pdf_text_get_pdfdocenc (pdf_char_t **contents,
   pdf_status_t ret_code;
   pdf_char_t *data = NULL;
   pdf_size_t size = -1;
+  pdf_error_t *inner_error = NULL;
 
-  ret_code = pdf_text_utf32he_to_pdfdocenc(text->data, text->size,
-                                           &data, &size);
+  if (pdf_text_utf32he_to_pdfdocenc (text->data,
+                                     text->size,
+                                     &data,
+                                     &size,
+                                     &inner_error) != PDF_TRUE)
+    {
+      /* TODO: Propagate error */
+      ret_code = pdf_error_get_status (inner_error);
+      pdf_error_destroy (inner_error);
+    }
+  else
+    {
+      ret_code = PDF_OK;
+    }
 
   /* Now, if conversion went ok... */
   if(ret_code == PDF_OK)
@@ -699,32 +735,61 @@ pdf_text_get_unicode (pdf_char_t **contents,
     }
   else
     {
+      pdf_error_t *inner_error = NULL;
+      pdf_bool_t ret;
+
       /* Perform conversion */
-      switch(new_enc)
-      {
+      switch (new_enc)
+        {
         case PDF_TEXT_UTF8: /* UTF-8 */
-          ret_code = pdf_text_utf32he_to_utf8(text->data, text->size,
-                                              &out_data, &out_length);
+          ret = pdf_text_utf32he_to_utf8 (text->data,
+                                          text->size,
+                                          &out_data,
+                                          &out_length,
+                                          &inner_error);
           break;
         case PDF_TEXT_UTF16_LE: /* UTF-16LE */
-          ret_code = pdf_text_utf32he_to_utf16le(text->data, text->size,
-                                                 &out_data, &out_length);
+          ret = pdf_text_utf32he_to_utf16le (text->data,
+                                             text->size,
+                                             &out_data,
+                                             &out_length,
+                                             &inner_error);
           break;
         case PDF_TEXT_UTF16_BE: /* UTF-16BE */
-          ret_code = pdf_text_utf32he_to_utf16be(text->data, text->size,
-                                                 &out_data, &out_length);
+          ret = pdf_text_utf32he_to_utf16be (text->data,
+                                             text->size,
+                                             &out_data,
+                                             &out_length,
+                                             &inner_error);
           break;
         case PDF_TEXT_UTF32_LE: /* UTF-32LE */
-          ret_code = pdf_text_utf32he_to_utf32le(text->data, text->size,
-                                                 &out_data, &out_length);
+          ret = pdf_text_utf32he_to_utf32le (text->data,
+                                             text->size,
+                                             &out_data,
+                                             &out_length,
+                                             &inner_error);
           break;
         case PDF_TEXT_UTF32_BE: /* UTF-32BE */
-          ret_code = pdf_text_utf32he_to_utf32be(text->data, text->size,
-                                                 &out_data, &out_length);
+          ret = pdf_text_utf32he_to_utf32be (text->data,
+                                             text->size,
+                                             &out_data,
+                                             &out_length,
+                                             &inner_error);
           break;
         default:
-          ret_code = PDF_ETEXTENC;
+          ret = PDF_FALSE;
       }
+
+      if (!ret)
+        {
+          /* TODO: Propagate error */
+          ret_code = pdf_error_get_status (inner_error);
+          pdf_error_destroy (inner_error);
+        }
+      else
+        {
+          ret_code = PDF_OK;
+        }
     }
 
   /* Check if specific options were requested */
@@ -927,23 +992,30 @@ pdf_text_set_pdfdocenc (pdf_text_t text,
   pdf_status_t ret_code;
   pdf_char_t *temp_data;
   pdf_size_t temp_size;
+  pdf_error_t *inner_error = NULL;
 
   if(str == NULL)
     {
       return PDF_EBADDATA;
     }
 
-  ret_code = pdf_text_pdfdocenc_to_utf32he (str, strlen(str),
-                                            &temp_data, &temp_size);
-  if(ret_code == PDF_OK)
+  if (pdf_text_pdfdocenc_to_utf32he (str,
+                                     strlen (str),
+                                     &temp_data,
+                                     &temp_size,
+                                     &inner_error))
     {
       /* Destroy previous contents of text variable, if any */
-      pdf_text_clean_contents(text);
+      pdf_text_clean_contents (text);
 
       /* Really set contents */
       text->data = temp_data;
       text->size = temp_size;
+      return PDF_OK;
     }
+
+  ret_code = pdf_error_get_status (inner_error);
+  pdf_error_destroy (inner_error);
   return ret_code;
 }
 
@@ -958,6 +1030,8 @@ pdf_text_set_unicode (pdf_text_t text,
   pdf_char_t *temp_data;
   pdf_size_t temp_size;
   enum pdf_text_unicode_encoding_e new_enc;
+  pdf_error_t *inner_error = NULL;
+  pdf_bool_t ret;
 
   if((str == NULL) || \
      (size == 0))
@@ -968,42 +1042,62 @@ pdf_text_set_unicode (pdf_text_t text,
   /* If host endianness required, check it and convert input encoding */
   new_enc = pdf_text_transform_he_to_unicode_encoding(enc);
 
-  switch(new_enc)
-  {
+  switch (new_enc)
+    {
     case PDF_TEXT_UTF8: /* UTF-8 */
-      ret_code = pdf_text_utf8_to_utf32he(str, size,
-                                          &temp_data, &temp_size);
+      ret = pdf_text_utf8_to_utf32he (str,
+                                      size,
+                                      &temp_data,
+                                      &temp_size,
+                                      &inner_error);
       break;
     case PDF_TEXT_UTF16_LE: /* UTF-16LE */
-      ret_code = pdf_text_utf16le_to_utf32he(str, size,
-                                             &temp_data, &temp_size);
+      ret = pdf_text_utf16le_to_utf32he (str,
+                                         size,
+                                         &temp_data,
+                                         &temp_size,
+                                         &inner_error);
       break;
     case PDF_TEXT_UTF16_BE: /* UTF-16BE */
-      ret_code = pdf_text_utf16be_to_utf32he(str, size,
-                                             &temp_data, &temp_size,
-                                             NULL, NULL);
+      ret = pdf_text_utf16be_to_utf32he (str,
+                                         size,
+                                         &temp_data,
+                                         &temp_size,
+                                         NULL,
+                                         NULL,
+                                         &inner_error);
       break;
     case PDF_TEXT_UTF32_LE: /* UTF-32LE */
-      ret_code = pdf_text_utf32le_to_utf32he(str, size,
-                                             &temp_data, &temp_size);
+      ret = pdf_text_utf32le_to_utf32he (str,
+                                         size,
+                                         &temp_data,
+                                         &temp_size,
+                                         &inner_error);
       break;
     case PDF_TEXT_UTF32_BE: /* UTF-32BE */
-      ret_code = pdf_text_utf32be_to_utf32he(str, size,
-                                             &temp_data, &temp_size);
+      ret = pdf_text_utf32be_to_utf32he (str,
+                                         size,
+                                         &temp_data,
+                                         &temp_size,
+                                         &inner_error);
       break;
     default:
-      ret_code = PDF_EBADDATA;
+      ret = PDF_TRUE;
   }
 
-  if(ret_code == PDF_OK)
+  if (ret)
     {
       /* Destroy previous contents of text variable, if any */
-      pdf_text_clean_contents(text);
+      pdf_text_clean_contents (text);
 
       /* Really set contents */
       text->data = temp_data;
       text->size = temp_size;
+      return PDF_OK;
     }
+
+  ret_code = pdf_error_get_status (inner_error);
+  pdf_error_destroy (inner_error);
   return ret_code;
 }
 
@@ -1078,11 +1172,17 @@ pdf_text_concat_ascii (pdf_text_t text1,
       pdf_status_t ret;
       pdf_char_t *tmp_data;
       pdf_size_t tmp_size;
+      pdf_error_t *inner_error = NULL;
 
       /* ascii string is valid utf8 */
-      ret = pdf_text_utf8_to_utf32he (ascii_str, len, &tmp_data, &tmp_size);
-      if (ret != PDF_OK)
+      if (!pdf_text_utf8_to_utf32he (ascii_str,
+                                     len,
+                                     &tmp_data,
+                                     &tmp_size,
+                                     &inner_error))
         {
+          ret = pdf_error_get_status (inner_error);
+          pdf_error_destroy (inner_error);
           return ret;
         }
 
