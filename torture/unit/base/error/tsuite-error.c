@@ -29,6 +29,7 @@
 #include <pdf-test-common.h>
 extern TCase *test_pdf_error (void);
 extern TCase *test_pdf_perror (void);
+extern TCase *test_pdf_error_new (void);
 
 Suite *
 tsuite_error ()
@@ -39,6 +40,7 @@ tsuite_error ()
 
   suite_add_tcase (s, test_pdf_perror ());
   suite_add_tcase (s, test_pdf_error ());
+  suite_add_tcase (s, test_pdf_error_new ());
 
   return s;
 }
