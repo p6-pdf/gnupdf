@@ -160,6 +160,8 @@ pdf_finish (void)
       pthread_mutex_unlock (&(pdf_globals.init_mutex));
     }
 #endif // PDF_FSYS_HTTP
+
+  pdf_text_deinit ();
 }
 
 /* End of pdf.c */

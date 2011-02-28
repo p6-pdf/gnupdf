@@ -34,7 +34,7 @@
 
 /* Change Case of text */
 static pdf_bool_t
-pdf_text_filter_change_case (pdf_text_t               text,
+pdf_text_filter_change_case (pdf_text_t              *text,
                              enum unicode_case_type   new_case,
                              pdf_error_t            **error)
 {
@@ -168,7 +168,7 @@ pdf_text_filter_change_case (pdf_text_t               text,
 
 /* Make all text Upper Case */
 pdf_bool_t
-pdf_text_filter_upper_case (pdf_text_t    text,
+pdf_text_filter_upper_case (pdf_text_t   *text,
                             pdf_error_t **error)
 {
   return pdf_text_filter_change_case (text,
@@ -178,7 +178,7 @@ pdf_text_filter_upper_case (pdf_text_t    text,
 
 /* Make all text Lower Case */
 pdf_bool_t
-pdf_text_filter_lower_case (pdf_text_t    text,
+pdf_text_filter_lower_case (pdf_text_t   *text,
                             pdf_error_t **error)
 {
   return pdf_text_filter_change_case (text,
@@ -188,7 +188,7 @@ pdf_text_filter_lower_case (pdf_text_t    text,
 
 /* Make all text Title Case */
 pdf_bool_t
-pdf_text_filter_title_case (pdf_text_t    text,
+pdf_text_filter_title_case (pdf_text_t   *text,
                             pdf_error_t **error)
 {
   return pdf_text_filter_change_case (text,
@@ -198,11 +198,11 @@ pdf_text_filter_title_case (pdf_text_t    text,
 
 /* Remove all single ampersands, and turn ' && ' into ' & ' */
 pdf_bool_t
-pdf_text_filter_remove_amp (pdf_text_t    text,
+pdf_text_filter_remove_amp (pdf_text_t   *text,
                             pdf_error_t **error)
 {
-  return (((pdf_text_replace_ascii (text, " ", " & ") != PDF_OK) ||
-           (pdf_text_replace_ascii(text, " & ", " && ") != PDF_OK)) ?
+  return (((!pdf_text_replace_ascii (text, " ", " & ", error)) ||
+           (!pdf_text_replace_ascii (text, " & ", " && ", error))) ?
           PDF_FALSE : PDF_TRUE);
 }
 
@@ -214,7 +214,7 @@ pdf_text_filter_remove_amp (pdf_text_t    text,
  *   parentheses in the range U+2985-U+2986
  */
 pdf_bool_t
-pdf_text_filter_normalize_full_width_ascii (pdf_text_t    text,
+pdf_text_filter_normalize_full_width_ascii (pdf_text_t   *text,
                                             pdf_error_t **error)
 {
   pdf_size_t i;
@@ -248,17 +248,17 @@ pdf_text_filter_normalize_full_width_ascii (pdf_text_t    text,
 
 /* Substitute line endings with a given UTF-8 pattern. */
 static pdf_bool_t
-pdf_text_substitute_line_ending (pdf_text_t             text,
+pdf_text_substitute_line_ending (pdf_text_t            *text,
                                  const pdf_text_eol_t   new_eol,
                                  pdf_error_t          **error)
 {
-  pdf_status_t ret_code;
+  pdf_bool_t ret;
   int i;
-  pdf_text_t new_text_pattern;
-  pdf_text_t *eols;
+  pdf_text_t *new_text_pattern;
+  pdf_text_t **eols;
 
   /* Allocate memory for pdf_text_t old eols */
-  eols = (pdf_text_t *) pdf_alloc (PDF_TEXT_EOLMAX * sizeof (pdf_text_t));
+  eols = (pdf_text_t **) pdf_alloc (PDF_TEXT_EOLMAX * sizeof (pdf_text_t *));
   if (!eols)
     {
       pdf_set_error (error,
@@ -271,12 +271,12 @@ pdf_text_substitute_line_ending (pdf_text_t             text,
     }
 
   /* Create text new pattern */
-  if (pdf_text_new_from_unicode (new_eol->sequence,
-                                 strlen (new_eol->sequence),
-                                 PDF_TEXT_UTF8,
-                                 &new_text_pattern) != PDF_OK)
+  new_text_pattern = pdf_text_new_from_unicode (new_eol->sequence,
+                                                strlen (new_eol->sequence),
+                                                PDF_TEXT_UTF8,
+                                                error);
+  if (!new_text_pattern)
     {
-      /* TODO: Get an error and propagate */
       pdf_dealloc (eols);
       return PDF_FALSE;
     }
@@ -290,39 +290,41 @@ pdf_text_substitute_line_ending (pdf_text_t             text,
       requested_eol = pdf_text_context_get_host_eol ((enum pdf_text_eol_types)i);
 
       /* Create text old pattern */
-      if (pdf_text_new_from_unicode (requested_eol->sequence,
-                                     strlen (requested_eol->sequence),
-                                     PDF_TEXT_UTF8,
-                                     &eols[i]) != PDF_OK)
+      eols[i] = pdf_text_new_from_unicode (requested_eol->sequence,
+                                           strlen (requested_eol->sequence),
+                                           PDF_TEXT_UTF8,
+                                           error);
+      if (!eols[i])
         {
-          /* TODO: Get an error and propagate */
-          pdf_text_destroy (new_text_pattern);
-          pdf_dealloc (eols);
+          int j;
 
+          pdf_text_destroy (new_text_pattern);
+          for (j = 0; j < i; ++j)
+            pdf_text_destroy (eols[j]);
+          pdf_dealloc (eols);
           return PDF_FALSE;
         }
     }
 
   /* Perform the replacement */
-  ret_code = pdf_text_replace_multiple (text,
-                                        new_text_pattern,
-                                        eols,
-                                        PDF_TEXT_EOLMAX);
+  ret = pdf_text_replace_multiple (text,
+                                   new_text_pattern,
+                                   eols,
+                                   PDF_TEXT_EOLMAX,
+                                   error);
 
   /* Destroy used patterns */
   for (i = PDF_TEXT_EOL_WINDOWS; i < PDF_TEXT_EOLMAX; i++)
-    {
-      pdf_text_destroy (eols[i]);
-    }
+    pdf_text_destroy (eols[i]);
   pdf_dealloc (eols);
   pdf_text_destroy (new_text_pattern);
 
-  return (ret_code == PDF_OK ? PDF_TRUE : PDF_FALSE);
+  return ret;
 }
 
 /* Normalize all EOL sequences to the default host EOL */
 pdf_bool_t
-pdf_text_filter_normalize_line_endings (pdf_text_t    text,
+pdf_text_filter_normalize_line_endings (pdf_text_t   *text,
                                         pdf_error_t **error)
 {
   pdf_text_eol_t host_eol;
@@ -337,7 +339,7 @@ pdf_text_filter_normalize_line_endings (pdf_text_t    text,
 
 /* Replace EOL sequences with white spaces */
 pdf_bool_t
-pdf_text_filter_remove_line_endings (pdf_text_t    text,
+pdf_text_filter_remove_line_endings (pdf_text_t   *text,
                                      pdf_error_t **error)
 {
   const struct pdf_text_eol_s empty_eol =  { { 0x00, 0x00, 0x00 } };

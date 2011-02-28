@@ -116,9 +116,9 @@ pdf_text_convert_encoding_name_to_CP (const pdf_char_t  *encoding_name,
   UINT CodePage;
   char *end_char;
 
-  /* In windows, the charset name stored in the pdf_text_host_encoding_t
-   *  element will be in the following format: "CPn", where 'n' is the
-   *  code page number (unsigned integer) obtained with GetACP() */
+  /* In windows, the charset name is stored as a string, in the following
+   * format: "CPn", where 'n' is the code page number (unsigned integer)
+   * obtained with GetACP() */
 
   /* So first of all, check windows host encoding */
   if ((strlen (encoding_name) < 3) ||
@@ -169,7 +169,7 @@ pdf_text_host_encoding_is_available (const pdf_char_t  *encoding_name,
 static pdf_bool_t
 pdf_text_utf32he_to_host_win32 (const pdf_char_t  *input_data,
                                 const pdf_size_t   input_length,
-                                const pdf_text_host_encoding_t enc,
+                                const pdf_char_t  *enc,
                                 pdf_char_t       **p_output_data,
                                 pdf_size_t        *p_output_length,
                                 pdf_error_t      **error)
@@ -196,12 +196,8 @@ pdf_text_utf32he_to_host_win32 (const pdf_char_t  *input_data,
       return PDF_FALSE;
     }
 
-  /* In windows, the charset name stored in the pdf_text_host_encoding_t
-   *  element will be in the following format: "CPn", where 'n' is the
-   *  code page number (unsigned integer) obtained with GetACP() */
-
   /* So check windows host encoding */
-  if (!pdf_text_convert_encoding_name_to_CP (enc.name,
+  if (!pdf_text_convert_encoding_name_to_CP (enc,
                                              &CodePage,
                                              error))
     {
@@ -304,7 +300,7 @@ pdf_text_utf32he_to_host_win32 (const pdf_char_t  *input_data,
 static pdf_bool_t
 pdf_text_host_to_utf32he_win32 (const pdf_char_t  *input_data,
                                 const pdf_size_t   input_length,
-                                const pdf_text_host_encoding_t enc,
+                                const pdf_char_t  *enc,
                                 pdf_char_t       **p_output_data,
                                 pdf_size_t        *p_output_length,
                                 pdf_error_t      **error)
@@ -315,12 +311,8 @@ pdf_text_host_to_utf32he_win32 (const pdf_char_t  *input_data,
   pdf_char_t *temp_data;
   pdf_size_t temp_size;
 
-  /* In windows, the charset name stored in the pdf_text_host_encoding_t
-   *  element will be in the following format: "CPn", where 'n' is the
-   *  code page number (unsigned integer) obtained with GetACP() */
-
   /* So first of all, check windows host encoding */
-  if (!pdf_text_convert_encoding_name_to_CP (enc.name,
+  if (!pdf_text_convert_encoding_name_to_CP (enc,
                                              &CodePage,
                                              error))
     return PDF_FALSE;
@@ -441,11 +433,7 @@ pdf_text_host_encoding_is_available (const pdf_char_t  *encoding_name,
                       (PDF_IS_BIG_ENDIAN ? "UTF-32BE" : "UTF-32LE"));
   if (check == (iconv_t)-1)
     {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_TEXT,
-                     PDF_ETEXTENC,
-                     "Conversion from '%s' to UTF-32HE not available",
-                     encoding_name);
+      /* No need to set any error here */
       return PDF_FALSE;
     }
   iconv_close (check);
@@ -455,11 +443,7 @@ pdf_text_host_encoding_is_available (const pdf_char_t  *encoding_name,
                       encoding_name);
   if (check == (iconv_t)-1)
     {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_TEXT,
-                     PDF_ETEXTENC,
-                     "Conversion from UTF-32HE to '%s' not available",
-                     encoding_name);
+      /* No need to set any error here */
       return PDF_FALSE;
     }
   iconv_close (check);
@@ -470,7 +454,7 @@ pdf_text_host_encoding_is_available (const pdf_char_t  *encoding_name,
 static pdf_bool_t
 pdf_text_utf32he_to_host_iconv (const pdf_char_t  *input_data,
                                 const pdf_size_t   input_length,
-                                const pdf_text_host_encoding_t enc,
+                                const pdf_char_t  *enc,
                                 pdf_char_t       **p_output_data,
                                 pdf_size_t        *p_output_length,
                                 pdf_error_t      **error)
@@ -489,7 +473,7 @@ pdf_text_utf32he_to_host_iconv (const pdf_char_t  *input_data,
    *  input encoding requested, iconv will expect the BOM by default, and
    *  we don't want it, so we specify directly the endianness required in the
    *  name of the encoding, depending on the host endianness */
-  to_host = iconv_open (enc.name,
+  to_host = iconv_open (enc,
                         (PDF_IS_BIG_ENDIAN ? "UTF-32BE" : "UTF-32LE"));
   if (to_host == (iconv_t)-1)
     {
@@ -498,7 +482,7 @@ pdf_text_utf32he_to_host_iconv (const pdf_char_t  *input_data,
                      PDF_ETEXTENC,
                      "cannot convert to host encoding: "
                      "conversion from UTF-32 to '%s' not available: '%s'",
-                     enc.name,
+                     enc,
                      strerror (errno));
       return PDF_FALSE;
     }
@@ -626,7 +610,7 @@ pdf_text_utf32he_to_host_iconv (const pdf_char_t  *input_data,
 static pdf_bool_t
 pdf_text_host_to_utf32he_iconv (const pdf_char_t  *input_data,
                                 const pdf_size_t   input_length,
-                                const pdf_text_host_encoding_t enc,
+                                const pdf_char_t  *enc,
                                 pdf_char_t       **p_output_data,
                                 pdf_size_t        *p_output_length,
                                 pdf_error_t      **error)
@@ -646,7 +630,7 @@ pdf_text_host_to_utf32he_iconv (const pdf_char_t  *input_data,
    *  we don't want it, so we specify directly the endianness required in the
    *  name of the encoding, depending on the host endianness */
   from_host = iconv_open ((PDF_IS_BIG_ENDIAN ? "UTF-32BE" : "UTF-32LE"),
-                          enc.name);
+                          enc);
   if (from_host == (iconv_t)-1)
     {
       pdf_set_error (error,
@@ -654,7 +638,7 @@ pdf_text_host_to_utf32he_iconv (const pdf_char_t  *input_data,
                      PDF_ETEXTENC,
                      "cannot convert from host encoding: "
                      "conversion from '%s' to UTF-32 not available",
-                     enc.name);
+                     enc);
       return PDF_FALSE;
     }
 
@@ -795,7 +779,7 @@ pdf_text_host_to_utf32he_iconv (const pdf_char_t  *input_data,
 pdf_bool_t
 pdf_text_utf32he_to_host (const pdf_char_t  *input_data,
                           const pdf_size_t   input_length,
-                          const pdf_text_host_encoding_t enc,
+                          const pdf_char_t  *enc,
                           pdf_char_t       **p_output_data,
                           pdf_size_t        *p_output_length,
                           pdf_error_t      **error)
@@ -820,7 +804,7 @@ pdf_text_utf32he_to_host (const pdf_char_t  *input_data,
 pdf_bool_t
 pdf_text_host_to_utf32he (const pdf_char_t  *input_data,
                           const pdf_size_t   input_length,
-                          const pdf_text_host_encoding_t enc,
+                          const pdf_char_t  *enc,
                           pdf_char_t       **p_output_data,
                           pdf_size_t        *p_output_length,
                           pdf_error_t      **error)

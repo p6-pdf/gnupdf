@@ -60,6 +60,10 @@ enum pdf_text_eol_types {
  *  Not thread-safe! */
 pdf_bool_t pdf_text_context_init (pdf_error_t **error);
 
+/* Deinitializes text context, can be done when program is about to end,
+ * if a clean exit is wanted */
+void pdf_text_context_deinit (void);
+
 /* Is the text context initialized? */
 pdf_bool_t pdf_text_context_initialized (void);
 
@@ -67,7 +71,7 @@ pdf_bool_t pdf_text_context_initialized (void);
 enum pdf_endianness_e pdf_text_context_get_host_endianness (void);
 
 /* Returns the host encoding */
-pdf_text_host_encoding_t pdf_text_context_get_host_encoding (void);
+const pdf_char_t *pdf_text_context_get_host_encoding (void);
 
 /* Returns the host language */
 const pdf_char_t *pdf_text_context_get_host_language (void);

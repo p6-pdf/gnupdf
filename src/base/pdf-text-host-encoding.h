@@ -31,7 +31,7 @@
 /* Function to convert from Host Encoding to UTF-32HE */
 pdf_bool_t pdf_text_host_to_utf32he (const pdf_char_t  *input_data,
                                      const pdf_size_t   input_length,
-                                     const pdf_text_host_encoding_t enc,
+                                     const pdf_char_t  *enc,
                                      pdf_char_t       **p_output_data,
                                      pdf_size_t        *p_output_length,
                                      pdf_error_t      **error);
@@ -39,7 +39,7 @@ pdf_bool_t pdf_text_host_to_utf32he (const pdf_char_t  *input_data,
 /* Function to convert from UTF-32HE to Host Encoding */
 pdf_bool_t pdf_text_utf32he_to_host (const pdf_char_t  *input_data,
                                      const pdf_size_t   input_length,
-                                     const pdf_text_host_encoding_t enc,
+                                     const pdf_char_t  *enc,
                                      pdf_char_t       **p_output_data,
                                      pdf_size_t        *p_output_length,
                                      pdf_error_t      **error);

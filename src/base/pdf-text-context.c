@@ -43,15 +43,15 @@
  *  Encoding Module */
 typedef struct pdf_text_context_s {
   /* Host encoding configured in the system */
-  pdf_text_host_encoding_t  host_encoding;
+  pdf_char_t *host_encoding;
   /* 2-character LANG ID */
-  pdf_char_t                host_language_id[PDF_TEXT_HLL];
+  pdf_char_t host_language_id[PDF_TEXT_HLL];
   /* 2-character Country ID */
-  pdf_char_t                host_country_id[PDF_TEXT_HLL];
+  pdf_char_t host_country_id[PDF_TEXT_HLL];
   /* System endianness */
-  enum pdf_endianness_e     host_endianness;
+  enum pdf_endianness_e host_endianness;
   /* Default EOL character in the system */
-  pdf_text_eol_t            host_eol;
+  pdf_text_eol_t host_eol;
 } pdf_text_context_t;
 
 
@@ -89,15 +89,10 @@ static pdf_bool_t
 pdf_text_detect_host_encoding (pdf_error_t **error)
 {
   const pdf_char_t *charset;
-  pdf_size_t length;
-
-  /* Initialize contents of structure */
-  memset (&(text_context.host_encoding.name[0]), 0, PDF_TEXT_HENMAXL);
 
   /* Get host encoding and check it */
   charset = locale_charset ();
-  if(!charset ||
-     (length = strlen (charset)) < 3)
+  if (!charset || (strlen (charset) < 3))
     {
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_TEXT,
@@ -108,13 +103,10 @@ pdf_text_detect_host_encoding (pdf_error_t **error)
       return PDF_FALSE;
     }
 
-  /* Limit length to maximum length, just in case */
-  length = (length > (PDF_TEXT_HENMAXL - 1) ?
-            (PDF_TEXT_HENMAXL - 1) : length);
-  strncpy (&(text_context.host_encoding.name[0]), charset, length);
+  text_context.host_encoding = strdup (charset);
 
   PDF_DEBUG_BASE ("TextContext: Host Encoding is '%s'",
-                  text_context.host_encoding.name);
+                  text_context.host_encoding);
 
   return PDF_TRUE;
 }
@@ -191,6 +183,13 @@ pdf_text_detect_host_eol (void)
 #endif
 }
 
+void
+pdf_text_context_deinit (void)
+{
+  pdf_dealloc (text_context.host_encoding);
+  text_context_initialized = PDF_FALSE;
+}
+
 pdf_bool_t
 pdf_text_context_init (pdf_error_t **error)
 {
@@ -226,7 +225,7 @@ pdf_text_context_get_host_endianness (void)
   return text_context.host_endianness;
 }
 
-pdf_text_host_encoding_t
+const pdf_char_t *
 pdf_text_context_get_host_encoding (void)
 {
   return text_context.host_encoding;
