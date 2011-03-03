@@ -1218,7 +1218,7 @@ pdf_text_utf32he_to_utf8 (const pdf_char_t  *input_data,
 
 /*************************** BOM-related functions ****************************/
 
-inline pdf_text_bom_t
+pdf_text_bom_t
 pdf_text_get_unicode_bom (enum pdf_text_unicode_encoding_e unicode_encoding)
 {
   return unicode_bom[unicode_encoding];

@@ -309,7 +309,7 @@ pdf_text_substitute_line_ending (pdf_text_t            *text,
   /* Perform the replacement */
   ret = pdf_text_replace_multiple (text,
                                    new_text_pattern,
-                                   eols,
+                                   (const pdf_text_t **)eols,
                                    PDF_TEXT_EOLMAX,
                                    error);
 

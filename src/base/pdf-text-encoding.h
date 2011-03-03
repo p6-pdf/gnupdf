@@ -45,7 +45,7 @@ typedef union {
 
 /* Specific type to hold UNICODE Byte Order Marker (BOM) information */
 typedef struct {
-  const pdf_uchar_t bom_data[4];
+  pdf_uchar_t bom_data[4];
   pdf_size_t bom_bytes;
 } pdf_text_bom_t;
 

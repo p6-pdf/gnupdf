@@ -153,7 +153,7 @@ pdf_bool_t pdf_text_empty_p (const pdf_text_t *text);
 pdf_bool_t pdf_text_replace_multiple (pdf_text_t        *text,
                                       const pdf_text_t  *new_pattern,
                                       const pdf_text_t **p_old_patterns,
-                                      const int          n_old_patterns,
+                                      int                n_old_patterns,
                                       pdf_error_t      **error);
 
 /* ------------------------ Host Encoding Management ------------------------ */
@@ -163,7 +163,7 @@ const pdf_char_t *pdf_text_get_host_encoding (void);
 
 /* Check if a given encoding is available in the system */
 pdf_bool_t pdf_text_check_host_encoding (const pdf_char_t  *encoding_name,
-					 pdf_error_t      **error);
+                                         pdf_error_t      **error);
 
 /* Get Best Host Encoding to encode the given text object */
 const pdf_char_t *pdf_text_get_best_encoding (const pdf_text_t *text,
@@ -172,11 +172,10 @@ const pdf_char_t *pdf_text_get_best_encoding (const pdf_text_t *text,
 /* ------------------------- Text Content Management ------------------------ */
 
 /* Get the contents of a text variable encoded in a given host encoding */
-pdf_bool_t pdf_text_get_host (const pdf_text_t  *text,
-                              const pdf_char_t  *enc,
-                              pdf_char_t       **contents,
-                              pdf_size_t        *length,
-                              pdf_error_t      **error);
+pdf_char_t *pdf_text_get_host (const pdf_text_t  *text,
+                               const pdf_char_t  *enc,
+                               pdf_size_t        *length,
+                               pdf_error_t      **error);
 
 /* Get the contents of a text variable encoded in PDFDocEncoding, as a NUL
  *  terminated string */
@@ -187,12 +186,11 @@ pdf_char_t *pdf_text_get_pdfdocenc (const pdf_text_t  *text,
 /* Get the contents of a text variable encoded in the given UNICODE encoding.
  *  In addition to the specific encoding required, extra options can be set,
  *  in the following way: OPTION1 | OPTION2 | OPTION3 */
-pdf_bool_t pdf_text_get_unicode (const pdf_text_t  *text,
-                                 enum pdf_text_unicode_encoding_e enc,
-                                 const pdf_u32_t    options,
-                                 pdf_char_t       **contents,
-                                 pdf_size_t        *length,
-                                 pdf_error_t      **error);
+pdf_char_t *pdf_text_get_unicode (const pdf_text_t  *text,
+                                  enum pdf_text_unicode_encoding_e enc,
+                                  const pdf_u32_t    options,
+                                  pdf_size_t        *length,
+                                  pdf_error_t      **error);
 
 /* Get the contents of a text variable in hexadecimal representation as a NUL
  *  terminated string. */
@@ -299,7 +297,8 @@ pdf_bool_t pdf_text_is_ascii7 (const pdf_char_t *utf8data,
                                pdf_size_t        size);
 
 /* Clean contents of the text element */
-void pdf_text_clean_contents (pdf_text_t *text);
+pdf_bool_t pdf_text_clean_contents (pdf_text_t   *text,
+                                    pdf_error_t **error);
 
 
 /* Generate Word Boundaries list from text object (if not already done) */
