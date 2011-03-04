@@ -146,8 +146,8 @@ void pdf_set_error (pdf_error_t        **err,
 /* Does nothing if err is NULL; if err is non-NULL but *err is NULL, also does
  * nothing. Otherwise, prefixes the error string with the new given string. */
 void pdf_prefix_error (pdf_error_t        **err,
-		       const pdf_char_t    *format,
-		       ...);
+                       const pdf_char_t    *format,
+                       ...);
 
 /* Does nothing if err is NULL; if err is non-NULL, then destroys the
  * pdf_error_t in *err. */
