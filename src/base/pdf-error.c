@@ -204,8 +204,8 @@ pdf_set_error (pdf_error_t        **err,
 
 void
 pdf_prefix_error (pdf_error_t        **err,
-		  const pdf_char_t    *format,
-		  ...)
+                  const pdf_char_t    *format,
+                  ...)
 {
   if ((err != NULL) &&
       (*err != NULL) &&
@@ -217,41 +217,41 @@ pdf_prefix_error (pdf_error_t        **err,
 
       va_start (args, format);
       if ((vasprintf (&new_message, format, args) >= 0) &&
-	  (new_message != NULL))
-	{
-	  pdf_char_t *prefixed;
-	  pdf_size_t new_message_len;
+          (new_message != NULL))
+        {
+          pdf_char_t *prefixed;
+          pdf_size_t new_message_len;
 
-	  new_message_len = (strlen (new_message) +
-			     strlen ((*err)->message) +
-			     strlen (": "));
-	  prefixed = pdf_realloc (new_message, new_message_len);
-	  if (!prefixed)
-	    {
-	      pdf_dealloc (new_message);
-	      enomem = PDF_TRUE;
-	    }
-	  else
-	    {
-	      strcat (prefixed, ": ");
-	      strcat (prefixed, (*err)->message);
-	      prefixed[new_message_len] = '\0';
-	      pdf_dealloc ((*err)->message);
-	      (*err)->message = prefixed;
-	    }
-	}
+          new_message_len = (strlen (new_message) +
+                             strlen ((*err)->message) +
+                             strlen (": "));
+          prefixed = pdf_realloc (new_message, new_message_len);
+          if (!prefixed)
+            {
+              pdf_dealloc (new_message);
+              enomem = PDF_TRUE;
+            }
+          else
+            {
+              strcat (prefixed, ": ");
+              strcat (prefixed, (*err)->message);
+              prefixed[new_message_len] = '\0';
+              pdf_dealloc ((*err)->message);
+              (*err)->message = prefixed;
+            }
+        }
       else
-	enomem = PDF_TRUE;
+        enomem = PDF_TRUE;
 
       if (enomem)
-	{
-	  /* Oops, ENOMEM */
-	  if (new_message)
-	    pdf_dealloc (new_message);
-	  pdf_error_destroy (*err);
-	  /* Set backup enomem error */
-	  *err = (pdf_char_t *)&static_enomem_error;
-	}
+        {
+          /* Oops, ENOMEM */
+          if (new_message)
+            pdf_dealloc (new_message);
+          pdf_error_destroy (*err);
+          /* Set backup enomem error */
+          *err = (pdf_error_t *)&static_enomem_error;
+        }
       va_end (args);
     }
 }
