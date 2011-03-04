@@ -39,119 +39,71 @@ static void pdf_fsys_dealloc (pdf_fsys_t filesystem);
  */
 
 pdf_i64_t
-pdf_fsys_get_free_space (pdf_fsys_t filesystem,
-                         pdf_text_t path_name)
+pdf_fsys_get_free_space (pdf_fsys_t  filesystem,
+                         pdf_text_t *path_name)
 {
-  if (filesystem == NULL)
-    {
-      /* Use the default filesystem */
-      return
-        pdf_fsys_def_get_free_space(path_name);
-    }
-  else
-    {
-      return
-        filesystem->implementation->get_free_space_fn (filesystem->data,
-                                                       path_name);
-    }
+  return (!filesystem ?
+          pdf_fsys_def_get_free_space (path_name) :
+          filesystem->implementation->get_free_space_fn (filesystem->data,
+                                                         path_name));
 }
 
 
 
 pdf_status_t
 pdf_fsys_create_folder (const pdf_fsys_t filesystem,
-                        const pdf_text_t path_name)
+                        const pdf_text_t *path_name)
 {
-  if (filesystem == NULL)
-    {
-      /* Use the default filesystem */
-      return
-        pdf_fsys_def_create_folder(path_name);
-    }
-  else
-    {
-      return
-        filesystem->implementation->create_folder_fn (filesystem->data,
-                                                      path_name);
-    }
+  return (!filesystem ?
+          pdf_fsys_def_create_folder (path_name) :
+          filesystem->implementation->create_folder_fn (filesystem->data,
+                                                        path_name));
 }
 
 pdf_status_t
 pdf_fsys_get_folder_contents (const pdf_fsys_t  filesystem,
-                              const pdf_text_t  path_name,
+                              const pdf_text_t *path_name,
                               pdf_list_t       *item_list)
 {
-  if (filesystem == NULL)
-    {
-      /* Use the default filesystem */
-      return
-        pdf_fsys_def_get_folder_contents(path_name, item_list);
-    }
-  else
-    {
-      return
-        filesystem->implementation->get_folder_contents_fn (filesystem->data,
-                                                            path_name,
-                                                            item_list);
-    }
+  return (!filesystem ?
+          pdf_fsys_def_get_folder_contents (path_name, item_list) :
+          filesystem->implementation->get_folder_contents_fn (filesystem->data,
+                                                              path_name,
+                                                              item_list));
 }
 
 pdf_status_t
 pdf_fsys_get_parent (const pdf_fsys_t filesystem,
-                     const pdf_text_t path_name,
-                     pdf_text_t parent_path)
+                     const pdf_text_t *path_name,
+                     pdf_text_t       *parent_path)
 {
-  if (filesystem == NULL)
-    {
-      /* Use the default filesystem */
-      return
-        pdf_fsys_def_get_parent(path_name, parent_path);
-    }
-  else
-    {
-      return
-        filesystem->implementation->get_parent_fn (filesystem->data,
-                                                   path_name,
-                                                   parent_path);
-    }
+  return (!filesystem ?
+          pdf_fsys_def_get_parent (path_name, parent_path) :
+          filesystem->implementation->get_parent_fn (filesystem->data,
+                                                     path_name,
+                                                     parent_path));
 }
 
 pdf_status_t
-pdf_fsys_remove_folder (const pdf_fsys_t filesystem,
-                        const pdf_text_t path_name)
+pdf_fsys_remove_folder (const pdf_fsys_t  filesystem,
+                        const pdf_text_t *path_name)
 {
-  if (filesystem == NULL)
-    {
-      /* Use the default filesystem */
-      return
-        pdf_fsys_def_remove_folder(path_name);
-    }
-  else
-    {
-      return
-        filesystem->implementation->remove_folder_fn (filesystem->data,
-                                                      path_name);
-    }
+  return (!filesystem ?
+          pdf_fsys_def_remove_folder (path_name) :
+          filesystem->implementation->remove_folder_fn (filesystem->data,
+                                                        path_name));
 }
 
 pdf_status_t
-pdf_fsys_get_item_props (pdf_fsys_t filesystem,
-                         pdf_text_t path_name,
+pdf_fsys_get_item_props (pdf_fsys_t  filesystem,
+                         pdf_text_t *path_name,
                          struct pdf_fsys_item_props_s *item_props)
 {
-  if (filesystem == NULL)
-    {
-      /* Use the default filesystem */
-      return
-        pdf_fsys_def_get_item_props(path_name, item_props);
-    }
-  else
-    {
-      return
-        filesystem->implementation->get_item_props_fn (filesystem->data,
-                                                       path_name,
-                                                       item_props);
-    }
+  return (!filesystem ?
+          pdf_fsys_def_get_item_props (path_name, item_props) :
+          filesystem->implementation->get_item_props_fn (filesystem->data,
+                                                         path_name,
+                                                         item_props));
 }
 
 pdf_status_t
@@ -229,67 +181,45 @@ pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s  item_props,
 }
 
 pdf_bool_t
-pdf_fsys_item_p (pdf_fsys_t filesystem,
-                 pdf_text_t path_name)
+pdf_fsys_item_p (pdf_fsys_t  filesystem,
+                 pdf_text_t *path_name)
 {
-  if (filesystem == NULL)
-    {
-      /* Use the default filesystem */
-      return
-        pdf_fsys_def_item_p(path_name);
-    }
-  else
-    {
-      return
-        filesystem->implementation->item_p_fn (filesystem->data,
-                                               path_name);
-    }
+  return (!filesystem ?
+          pdf_fsys_def_item_p (path_name) :
+          filesystem->implementation->item_p_fn (filesystem->data,
+                                                 path_name));
 }
 
 pdf_bool_t
-pdf_fsys_item_readable_p (pdf_fsys_t filesystem,
-                          pdf_text_t path_name)
+pdf_fsys_item_readable_p (pdf_fsys_t  filesystem,
+                          pdf_text_t *path_name)
 {
-  if (filesystem == NULL)
-    {
-      /* Use the default filesystem */
-      return
-        pdf_fsys_def_item_readable_p(path_name);
-    }
-  else
-    {
-      return
-        filesystem->implementation->item_readable_p_fn (filesystem->data,
-                                                        path_name);
-    }
+  return (!filesystem ?
+          pdf_fsys_def_item_readable_p (path_name) :
+          filesystem->implementation->item_readable_p_fn (filesystem->data,
+                                                          path_name));
 }
 
 pdf_bool_t
-pdf_fsys_item_writable_p (pdf_fsys_t filesystem,
-                          pdf_text_t path_name)
+pdf_fsys_item_writable_p (pdf_fsys_t  filesystem,
+                          pdf_text_t *path_name)
 {
-  if (filesystem == NULL)
-    {
-      /* Use the default filesystem */
-      return
-        pdf_fsys_def_item_writable_p(path_name);
-    }
-  else
-    {
-      return
-        filesystem->implementation->item_writable_p_fn (filesystem->data,
-                                                        path_name);
-    }
+  return (!filesystem ?
+          pdf_fsys_def_item_writable_p (path_name) :
+          filesystem->implementation->item_writable_p_fn (filesystem->data,
+                                                          path_name));
 }
 
-pdf_status_t pdf_fsys_build_path (pdf_fsys_t filesystem,
-                                  pdf_text_t * output,
-                                  pdf_text_t first_element, ...)
+pdf_status_t
+pdf_fsys_build_path (pdf_fsys_t   filesystem,
+                     pdf_text_t **output,
+                     pdf_text_t  *first_element,
+                     ...)
 {
   va_list args;
   pdf_list_t *rest;
   pdf_status_t st;
-  pdf_text_t next;
+  pdf_text_t **next;
   pdf_error_t *inner_error = NULL;
 
   rest = pdf_list_new (NULL, NULL, PDF_TRUE, &inner_error);
@@ -308,7 +238,7 @@ pdf_status_t pdf_fsys_build_path (pdf_fsys_t filesystem,
 
   /* Save the rest text objects */
   va_start (args, first_element);
-  next = va_arg (args, pdf_text_t);
+  next = va_arg (args, pdf_text_t **);
   while (next != NULL)
     {
       if (pdf_list_add_last (rest, next, &inner_error) == NULL)
@@ -320,7 +250,7 @@ pdf_status_t pdf_fsys_build_path (pdf_fsys_t filesystem,
           return st;
         }
 
-      next = va_arg (args, pdf_text_t);
+      next = va_arg (args, pdf_text_t **);
     }
   va_end (args);
 
@@ -409,22 +339,15 @@ pdf_fsys_file_get_mode (pdf_fsys_file_t file)
     }
 }
 
-pdf_text_t
+pdf_text_t *
 pdf_fsys_file_get_url (pdf_fsys_file_t file)
 {
-  if(file == NULL)
+  if (!file)
     return NULL;
 
-  if (file->fs == NULL)
-    {
-      /* Use the default filesystem */
-      return pdf_fsys_def_file_get_url(file);
-    }
-  else
-    {
-      return
-        (file->fs->implementation->file_get_url_fn) (file);
-    }
+  return (!file->fs ?
+          pdf_fsys_def_file_get_url (file) :
+          file->fs->implementation->file_get_url_fn (file));
 }
 
 pdf_status_t

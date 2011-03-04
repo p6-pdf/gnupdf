@@ -61,8 +61,8 @@ pdf_status_t pdf_fsys_disk_cleanup (void *data);
 
 /* Get the free storage space in the volume containing path_name */
 pdf_i64_t
-pdf_fsys_disk_get_free_space (void *data,
-                              pdf_text_t path_name);
+pdf_fsys_disk_get_free_space (void       *data,
+                              pdf_text_t *path_name);
 
 /* Create folder in disk */
 pdf_status_t
@@ -132,7 +132,7 @@ enum pdf_fsys_file_mode_e
 pdf_fsys_disk_file_get_mode (pdf_fsys_file_t file);
 
 /* Get URL from file */
-pdf_text_t
+pdf_text_t *
 pdf_fsys_disk_file_get_url (pdf_fsys_file_t file);
 
 /* Set file mode info */

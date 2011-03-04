@@ -138,8 +138,8 @@ pdf_fsys_disk_cleanup (void *data)
 #ifdef PDF_HOST_WIN32
 
 pdf_i64_t
-pdf_fsys_disk_get_free_space (void *data,
-                              pdf_text_t path_name)
+pdf_fsys_disk_get_free_space (void       *data,
+                              pdf_text_t *path_name)
 {
   pdf_char_t *utf16le_path = NULL;
   pdf_u32_t utf16le_path_size = 0;
@@ -196,8 +196,8 @@ pdf_fsys_disk_get_free_space (void *data,
 #else
 
 pdf_i64_t
-pdf_fsys_disk_get_free_space (void *data,
-                              pdf_text_t path_name)
+pdf_fsys_disk_get_free_space (void       *data,
+                              pdf_text_t *path_name)
 {
   pdf_i64_t result = -1;
 
@@ -980,41 +980,51 @@ pdf_fsys_disk_build_path (void       *data,
 enum pdf_fsys_file_mode_e
 pdf_fsys_disk_file_get_mode (pdf_fsys_file_t file)
 {
-  return (((file != NULL) && (file->data != NULL)) ?        \
-          (((pdf_fsys_disk_file_t)file->data)->file_mode) : \
+  return (((file != NULL) && (file->data != NULL)) ?
+          (((pdf_fsys_disk_file_t)file->data)->file_mode) :
           PDF_FSYS_OPEN_MODE_INVALID);
 }
 
-pdf_text_t
+pdf_text_t *
 pdf_fsys_disk_file_get_url (pdf_fsys_file_t file)
 {
-  if((file != NULL) && (file->data != NULL))
+  pdf_error_t *inner_error = NULL;
+
+  if ((file != NULL) && (file->data != NULL))
     {
 #ifdef PDF_HOST_WIN32
       /* In W32, we just copy the path string */
-      return pdf_text_dup((((pdf_fsys_disk_file_t)file->data)->unicode_path));
+      return pdf_text_dup ((((pdf_fsys_disk_file_t)file->data)->unicode_path));
 #else
       /* In POSIX, we return file:/ plus the path string */
-      pdf_text_t url = NULL;
+      pdf_text_t *url;
+
 #define PDF_DISK_URL_PREFIX  (pdf_char_t *)"file:/"
-      if(pdf_text_new_from_unicode(PDF_DISK_URL_PREFIX,
-                                   strlen(PDF_DISK_URL_PREFIX),
-                                   PDF_TEXT_UTF8,
-                                   &url) == PDF_OK)
+
+      url = pdf_text_new_from_unicode (PDF_DISK_URL_PREFIX,
+                                       strlen (PDF_DISK_URL_PREFIX),
+                                       PDF_TEXT_UTF8,
+                                       &inner_error);
+      if (!url)
         {
-          if(pdf_text_concat(url,
-                             (((pdf_fsys_disk_file_t)file->data)->unicode_path),
-                             PDF_TRUE) == PDF_OK)
-            {
-              return url;
-            }
+          /* TODO: Propagate error */
+          pdf_error_destroy (&inner_error);
+          return NULL;
         }
+
+      if (!pdf_text_concat (url,
+                            (((pdf_fsys_disk_file_t)file->data)->unicode_path),
+                            PDF_TRUE,
+                            &inner_error))
+        {
+          /* TODO: Propagate error */
+          pdf_text_destroy (url);
+          pdf_error_destroy (&inner_error);
+          return NULL;
+        }
+
+      return url;
 #undef PDF_DISK_URL_PREFIX
-      if(url != NULL)
-        {
-          pdf_text_destroy(url);
-        }
-      return NULL;
 #endif
     }
   else
