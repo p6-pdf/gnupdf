@@ -47,7 +47,6 @@ START_TEST (pdf_list_iterator_init_from_to_001)
   elem = 123;
   elem2 = 321;
 
-  pdf_init ();
 
   list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
 
@@ -79,7 +78,6 @@ START_TEST (pdf_list_iterator_init_from_to_002)
   elem = 123;
   elem2 = 321;
 
-  pdf_init ();
 
   list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
 

@@ -45,7 +45,6 @@ START_TEST (pdf_stm_get_mode_001)
 
   /* Create a memory buffer */
   buf_size = 100;
-  pdf_init();
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
@@ -85,7 +84,6 @@ START_TEST (pdf_stm_get_mode_002)
 
   /* Create a memory buffer */
   buf_size = 100;
-  pdf_init();
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);

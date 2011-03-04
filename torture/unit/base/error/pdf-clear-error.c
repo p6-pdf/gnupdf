@@ -42,7 +42,6 @@ START_TEST (pdf_clear_error_001)
   const pdf_char_t *format = "Hello this is an error";
   pdf_error_t *error;
 
-  pdf_init ();
 
   error = pdf_error_new (PDF_EDOMAIN_BASE_BASIC,
                          PDF_EAGAIN,
@@ -62,7 +61,6 @@ END_TEST
  */
 START_TEST (pdf_clear_error_002)
 {
-  pdf_init ();
 
   pdf_clear_error (NULL);
 }

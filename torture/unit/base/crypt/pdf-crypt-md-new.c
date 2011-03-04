@@ -41,8 +41,7 @@
 START_TEST (pdf_crypt_md_new_001)
 {
   pdf_crypt_md_t md;
-  pdf_init();
-  fail_if ( pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md) != PDF_OK);
+    fail_if ( pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md) != PDF_OK);
   pdf_crypt_md_destroy (md);
 }
 END_TEST
@@ -57,8 +56,7 @@ END_TEST
 START_TEST (pdf_crypt_md_new_002)
 {
   pdf_char_t buffer[16];
-  pdf_init();
-  fail_if (pdf_crypt_nonce (buffer, sizeof(buffer)) != PDF_OK);
+    fail_if (pdf_crypt_nonce (buffer, sizeof(buffer)) != PDF_OK);
 }
 END_TEST
 

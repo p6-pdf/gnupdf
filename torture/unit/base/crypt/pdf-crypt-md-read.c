@@ -50,7 +50,6 @@ START_TEST (pdf_crypt_md_read_001)
     0xec, 0xf8, 0x42, 0x7e
   };
 
-  pdf_init();
 
   pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md);
 
@@ -84,7 +83,6 @@ START_TEST (pdf_crypt_md_read_002)
     0x69, 0x77, 0x26, 0x61
   };
 
-  pdf_init();
 
   pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md);
 
@@ -118,7 +116,6 @@ START_TEST (pdf_crypt_md_read_003)
     0xCA, 0x67, 0xE1, 0x3B
   };
 
-  pdf_init();
 
   pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md);
 
@@ -151,7 +148,6 @@ START_TEST (pdf_crypt_md_read_004)
     0xec, 0xf8, 0x42, 0x7e
   };
 
-  pdf_init();
 
   pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md);
 
@@ -177,7 +173,6 @@ START_TEST (pdf_crypt_md_read_005)
   pdf_char_t out[20];
   pdf_crypt_md_t md;
 
-  pdf_init();
 
   fail_unless (pdf_crypt_md_new (PDF_CRYPT_MD_MD5 + 1, &md) == PDF_EBADDATA);
 }

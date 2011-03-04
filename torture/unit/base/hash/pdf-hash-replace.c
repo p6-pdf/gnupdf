@@ -44,7 +44,6 @@ START_TEST (pdf_hash_replace_001)
   int n1 = 1;
   const int *n;
 
-  pdf_init ();
 
   table = pdf_hash_new (NULL);
 
@@ -74,7 +73,6 @@ START_TEST (pdf_hash_replace_002)
   pdf_hash_t *table;
   pdf_error_t *error = NULL;
 
-  pdf_init ();
 
   table = pdf_hash_new (NULL);
 
@@ -103,7 +101,6 @@ START_TEST (pdf_hash_replace_003)
   int n2 = 2;
   const int *n;
 
-  pdf_init ();
 
   table = pdf_hash_new (NULL);
 

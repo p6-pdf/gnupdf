@@ -44,7 +44,6 @@ START_TEST (pdf_hash_add_time_001)
   pdf_time_t inner;
   pdf_error_t *error = NULL;
 
-  pdf_init ();
 
   table = pdf_hash_new (NULL);
 

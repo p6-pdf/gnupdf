@@ -50,7 +50,6 @@ START_TEST (pdf_time_span_to_secs_001)
   pdf_i64_t sec2;
   pdf_time_span_t span;
 
-  pdf_init();
 
   span = pdf_time_span_new();
   status = pdf_time_span_set(&span, INT64_C(0x0123456789ABCDEF));

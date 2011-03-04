@@ -60,7 +60,6 @@ START_TEST (pdf_time_cal_span_diff_001)
   extern struct pdf_time_cal_span_s years_months[];
   extern pdf_u32_t daysInSeconds[];
 
-  pdf_init();
 
   status =  pdf_time_new(&basetime);
   fail_if(status != PDF_OK);

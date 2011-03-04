@@ -46,7 +46,6 @@ START_TEST (pdf_list_next_node_001)
   elem = 222;
   elem2 = 333;
 
-  pdf_init ();
 
   list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
 
@@ -77,7 +76,6 @@ START_TEST (pdf_list_next_node_002)
 
   elem = 222;
 
-  pdf_init ();
 
   list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
 

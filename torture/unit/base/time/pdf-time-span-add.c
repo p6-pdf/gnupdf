@@ -49,7 +49,6 @@ START_TEST (pdf_time_span_add_001)
  * W pdf_time_span_add ustawić poprawnie wartość
  * pdf_status_t */
 
-  pdf_init();
 
   span1 = pdf_time_span_new();
   span2 = pdf_time_span_new();
@@ -96,7 +95,6 @@ START_TEST (pdf_time_span_add_002)
   pdf_time_span_t span2;
   pdf_time_span_t *result;
 
-  pdf_init();
 
   span1 = pdf_time_span_new();
   span2 = pdf_time_span_new();

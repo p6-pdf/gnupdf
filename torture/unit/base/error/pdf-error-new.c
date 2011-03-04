@@ -43,7 +43,6 @@ START_TEST (pdf_error_new_001)
   const pdf_char_t *format = "Hello this is an error";
   pdf_error_t *error;
 
-  pdf_init ();
 
   error = pdf_error_new (PDF_EDOMAIN_BASE_BASIC,
                          PDF_EAGAIN,
@@ -81,7 +80,6 @@ START_TEST (pdf_error_new_002)
     "This is a message with a string: STRING and "
     "a number: -1234, and another unsigned long number: 123456789";
 
-  pdf_init ();
 
   error = pdf_error_new (PDF_EDOMAIN_BASE_BASIC,
                          PDF_EAGAIN,

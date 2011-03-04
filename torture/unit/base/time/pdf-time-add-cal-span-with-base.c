@@ -61,7 +61,6 @@ START_TEST (pdf_time_add_cal_span_with_base_001)
   extern pdf_u32_t daysInSeconds[];
 
 
-  pdf_init();
 
   status =  pdf_time_new(&basetime);
   fail_if(status != PDF_OK);

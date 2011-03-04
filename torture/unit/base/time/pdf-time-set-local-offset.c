@@ -55,7 +55,6 @@ START_TEST (pdf_time_set_local_offset_001)
   time_t tloc;
   struct tm* time_struct;
 
-  pdf_init();
 
   time(&tloc);
   time_struct = localtime(&tloc);

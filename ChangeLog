@@ -1,5 +1,11 @@
 2011-03-05  Aleksander Morgado  <aleksander@gnu.org>
 
+	torture,base: Don't call pdf_init() in each unit test.
+	* torture/unit/base/*.[c|h]: Avoid calling pdf_init() in each unit
+	test, already done in the test setup fixture.
+
+2011-03-05  Aleksander Morgado  <aleksander@gnu.org>
+
 	Added new unit tests for the pdf_error_t API
 	* torture/unit/base/error/pdf-error-new.c: New file with new unit tests.
 	* torture/unit/base/error/pdf-set-error.c: Idem.

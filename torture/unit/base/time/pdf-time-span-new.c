@@ -46,7 +46,6 @@ START_TEST (pdf_time_span_new_001)
   pdf_i64_t sec2;
   pdf_time_span_t span;
 
-  pdf_init();
 
   span = pdf_time_span_new();
 

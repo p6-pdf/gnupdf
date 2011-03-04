@@ -44,7 +44,6 @@ START_TEST (pdf_list_sorted_remove_001)
 
   elem = 5123;
 
-  pdf_init ();
 
   list = pdf_list_new (l_comp, NULL, PDF_FALSE, NULL);
 
@@ -71,7 +70,6 @@ START_TEST (pdf_list_sorted_remove_002)
   elem = 5123;
   elem2 = 3333;
 
-  pdf_init ();
 
   list = pdf_list_new (l_comp, NULL, PDF_FALSE, NULL);
 

@@ -42,8 +42,7 @@ START_TEST (pdf_crypt_md_write_001)
 {
   pdf_char_t * in;
   pdf_crypt_md_t md;
-  pdf_init();
-  pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md);
+    pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md);
   fail_if (pdf_crypt_md_write (md, in, 0) != PDF_OK);
   pdf_crypt_md_destroy (md);
 }

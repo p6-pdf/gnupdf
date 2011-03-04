@@ -43,7 +43,6 @@ START_TEST (pdf_propagate_error_001)
   pdf_error_t *error;
   pdf_error_t *propagated = NULL;
 
-  pdf_init ();
 
   error = pdf_error_new (PDF_EDOMAIN_BASE_BASIC,
                          PDF_EAGAIN,
@@ -72,7 +71,6 @@ START_TEST (pdf_propagate_error_002)
   const pdf_char_t *format = "Hello this is an error";
   pdf_error_t *error;
 
-  pdf_init ();
 
   error = pdf_error_new (PDF_EDOMAIN_BASE_BASIC,
                          PDF_EAGAIN,

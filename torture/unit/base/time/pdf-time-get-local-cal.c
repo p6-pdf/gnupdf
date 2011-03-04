@@ -57,7 +57,6 @@ START_TEST (pdf_time_get_local_cal_001)
   extern pdf_u32_t datesInSeconds[];
   extern struct pdf_time_cal_s dates[];
 
-  pdf_init();
 
   status = pdf_time_new(&time1);
 
@@ -107,8 +106,7 @@ START_TEST (pdf_time_get_local_cal_002)
   time_t tloc;
   struct tm* time_struct;
 
-  pdf_init();
-  time(&tloc);
+    time(&tloc);
   time_struct = localtime(&tloc);
 
 #if defined PDF_HOST_WIN32

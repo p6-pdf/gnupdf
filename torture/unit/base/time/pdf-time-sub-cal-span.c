@@ -64,7 +64,6 @@ START_TEST (pdf_time_sub_cal_span_001)
 
 
 
-  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);

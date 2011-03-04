@@ -39,8 +39,7 @@
  */
 START_TEST (pdf_error_001)
 {
-  pdf_init();
-  pdf_error (PDF_OK, NULL, "test");
+    pdf_error (PDF_OK, NULL, "test");
 }
 END_TEST
 
@@ -54,8 +53,7 @@ END_TEST
  */
 START_TEST (pdf_error_002)
 {
-  pdf_init();
-  pdf_error (PDF_OK, stdout, NULL);
+    pdf_error (PDF_OK, stdout, NULL);
 }
 END_TEST
 
@@ -69,8 +67,7 @@ END_TEST
  */
 START_TEST (pdf_error_003)
 {
-  pdf_init();
-  pdf_error (PDF_OK, stdout, "test");
+    pdf_error (PDF_OK, stdout, "test");
 }
 END_TEST
 
@@ -84,8 +81,7 @@ END_TEST
  */
 START_TEST (pdf_error_004)
 {
-  pdf_init();
-  pdf_error (PDF_ERROR, stdout, "test");
+    pdf_error (PDF_ERROR, stdout, "test");
 }
 END_TEST
 
@@ -99,8 +95,7 @@ END_TEST
  */
 START_TEST (pdf_error_005)
 {
-  pdf_init();
-  pdf_error (PDF_EBADDATA, stdout, "test");
+    pdf_error (PDF_EBADDATA, stdout, "test");
 }
 END_TEST
 
@@ -114,8 +109,7 @@ END_TEST
  */
 START_TEST (pdf_error_006)
 {
-  pdf_init();
-  pdf_error (PDF_ENOMEM, stdout, "test");
+    pdf_error (PDF_ENOMEM, stdout, "test");
 }
 END_TEST
 
@@ -129,8 +123,7 @@ END_TEST
  */
 START_TEST (pdf_error_007)
 {
-  pdf_init();
-  pdf_error (PDF_EEOF, stdout, "test");
+    pdf_error (PDF_EEOF, stdout, "test");
 }
 END_TEST
 
@@ -144,8 +137,7 @@ END_TEST
  */
 START_TEST (pdf_error_008)
 {
-  pdf_init();
-  pdf_error (PDF_EDIVBYZERO, stdout, "test");
+    pdf_error (PDF_EDIVBYZERO, stdout, "test");
 }
 END_TEST
 
@@ -159,8 +151,7 @@ END_TEST
  */
 START_TEST (pdf_error_009)
 {
-  pdf_init();
-  pdf_error (PDF_ENONODE, stdout, "test");
+    pdf_error (PDF_ENONODE, stdout, "test");
 }
 END_TEST
 
@@ -174,8 +165,7 @@ END_TEST
  */
 START_TEST (pdf_error_010)
 {
-  pdf_init();
-  pdf_error (PDF_EINVRANGE, stdout, "test");
+    pdf_error (PDF_EINVRANGE, stdout, "test");
 }
 END_TEST
 
@@ -189,8 +179,7 @@ END_TEST
  */
 START_TEST (pdf_error_011)
 {
-  pdf_init();
-  pdf_error (PDF_ETEXTENC, stdout, "test");
+    pdf_error (PDF_ETEXTENC, stdout, "test");
 }
 END_TEST
 
@@ -204,8 +193,7 @@ END_TEST
  */
 START_TEST (pdf_error_012)
 {
-  pdf_init();
-  pdf_error (PDF_ENOMATCH, stdout, "test");
+    pdf_error (PDF_ENOMATCH, stdout, "test");
 }
 END_TEST
 
@@ -219,8 +207,7 @@ END_TEST
  */
 START_TEST (pdf_error_013)
 {
-  pdf_init();
-  pdf_error (PDF_EBADPERMS, stdout, "test");
+    pdf_error (PDF_EBADPERMS, stdout, "test");
 }
 END_TEST
 
@@ -234,8 +221,7 @@ END_TEST
  */
 START_TEST (pdf_error_014)
 {
-  pdf_init();
-  pdf_error (PDF_EBADNAME, stdout, "test");
+    pdf_error (PDF_EBADNAME, stdout, "test");
 }
 END_TEST
 
@@ -249,8 +235,7 @@ END_TEST
  */
 START_TEST (pdf_error_015)
 {
-  pdf_init();
-  pdf_error (PDF_EAGAIN, stdout, "test");
+    pdf_error (PDF_EAGAIN, stdout, "test");
 }
 END_TEST
 
@@ -264,8 +249,7 @@ END_TEST
  */
 START_TEST (pdf_error_016)
 {
-  pdf_init();
-  pdf_error (PDF_ENOSPC, stdout, "test");
+    pdf_error (PDF_ENOSPC, stdout, "test");
 }
 END_TEST
 
@@ -279,8 +263,7 @@ END_TEST
  */
 START_TEST (pdf_error_017)
 {
-  pdf_init();
-  pdf_error (PDF_ENOTEMPTY, stdout, "test");
+    pdf_error (PDF_ENOTEMPTY, stdout, "test");
 }
 END_TEST
 
@@ -295,8 +278,7 @@ END_TEST
  */
 START_TEST (pdf_error_018)
 {
-  pdf_init();
-  pdf_error (PDF_STATUS_ITEMS, stdout, "test");
+    pdf_error (PDF_STATUS_ITEMS, stdout, "test");
 }
 END_TEST
 

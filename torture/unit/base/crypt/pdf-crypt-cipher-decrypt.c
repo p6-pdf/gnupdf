@@ -79,7 +79,6 @@ START_TEST (pdf_crypt_cipher_decrypt_001)
       0xbe, 0x77, 0x18, 0x1a
     };
 
-  pdf_init();
 
   pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
   pdf_crypt_cipher_setkey (cipher, key, sizeof(key));
@@ -113,7 +112,6 @@ START_TEST (pdf_crypt_cipher_decrypt_002)
 
   ciphered_size = 0;
 
-  pdf_init();
 
   pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &cipher);
   pdf_crypt_cipher_setkey (cipher, NULL, 0);
@@ -182,7 +180,6 @@ START_TEST (pdf_crypt_cipher_decrypt_003)
       0x49, 0xa5, 0x3e, 0x87, 0xf4, 0xc3, 0xda, 0x55,
     };
 
-  pdf_init();
 
   pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
   pdf_crypt_cipher_setkey (cipher, key, sizeof(key));
@@ -248,7 +245,6 @@ START_TEST (pdf_crypt_cipher_decrypt_004)
       0x49, 0xa5, 0x3e, 0x87, 0xf4, 0xc3, 0xda, 0x55,
     };
 
-  pdf_init();
 
   pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
   pdf_crypt_cipher_setkey (cipher, key, sizeof(key));

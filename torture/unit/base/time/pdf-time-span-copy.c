@@ -46,7 +46,6 @@ START_TEST (pdf_time_span_copy_001)
   pdf_time_span_t span1;
   pdf_time_span_t span2;
 
-  pdf_init();
 
   span1 = pdf_time_span_new();
   span2 = pdf_time_span_new();
@@ -83,7 +82,6 @@ START_TEST (pdf_time_span_copy_002)
   pdf_time_span_t span1;
   pdf_time_span_t* span2;
 
-  pdf_init();
 
   span1 = pdf_time_span_new();
   span2 = NULL;

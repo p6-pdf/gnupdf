@@ -43,7 +43,6 @@ START_TEST (pdf_hash_add_list_001)
   pdf_list_t *inner;
   pdf_error_t *error = NULL;
 
-  pdf_init ();
 
   table = pdf_hash_new (NULL);
   inner = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);

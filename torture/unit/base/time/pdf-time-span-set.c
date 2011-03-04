@@ -48,7 +48,6 @@ START_TEST (pdf_time_span_set_001)
     pdf_time_span_t span;
     pdf_i32_t seconds;
 
-    pdf_init();
 
     span=pdf_time_span_new();
 

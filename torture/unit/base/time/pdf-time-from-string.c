@@ -64,7 +64,6 @@ START_TEST (pdf_time_from_string_001)
   struct pdf_time_cal_s calendar;
 
 
-  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
@@ -149,7 +148,6 @@ START_TEST (pdf_time_from_string_002)
   struct pdf_time_cal_s calendar;
 
 
-  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
@@ -231,7 +229,6 @@ START_TEST (pdf_time_from_string_003)
   extern pdf_u32_t datesInSeconds[];
 
 
-  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
@@ -294,7 +291,6 @@ START_TEST (pdf_time_from_string_004)
   extern pdf_u32_t datesInSeconds[];
 
 
-  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
@@ -360,7 +356,6 @@ START_TEST (pdf_time_from_string_005)
   extern pdf_u32_t datesInSeconds[];
 
 
-  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
@@ -428,7 +423,6 @@ START_TEST (pdf_time_from_string_006)
   struct pdf_time_cal_s calendar;
 
 
-  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
@@ -544,7 +538,6 @@ START_TEST (pdf_time_from_string_007)
   struct pdf_time_cal_s calendar;
 
 
-  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
@@ -630,7 +623,6 @@ START_TEST (pdf_time_from_string_008)
   struct pdf_time_cal_s calendar;
 
 
-  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
@@ -713,7 +705,6 @@ START_TEST (pdf_time_from_string_009)
   extern pdf_u32_t datesInSeconds[];
 
 
-  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
@@ -775,7 +766,6 @@ START_TEST (pdf_time_from_string_010)
   extern pdf_u32_t datesInSeconds[];
 
 
-  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
@@ -840,7 +830,6 @@ START_TEST (pdf_time_from_string_011)
   extern pdf_u32_t datesInSeconds[];
 
 
-  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
@@ -909,7 +898,6 @@ START_TEST (pdf_time_from_string_012)
   struct pdf_time_cal_s calendar;
 
 
-  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
@@ -995,7 +983,6 @@ START_TEST (pdf_time_from_string_013)
   struct pdf_time_cal_s calendar;
 
 
-  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);

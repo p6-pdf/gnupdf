@@ -43,7 +43,6 @@ START_TEST (pdf_list_iterator_init_001)
   pdf_list_t *list;
   pdf_list_iterator_t itr;
 
-  pdf_init ();
 
   list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
 
@@ -63,7 +62,6 @@ END_TEST
  */
 START_TEST (pdf_list_iterator_init_002)
 {
-  pdf_init ();
 
   fail_if (sizeof (pdf_list_iterator_t) < sizeof (gl_list_iterator_t));
 }

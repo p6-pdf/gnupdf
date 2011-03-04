@@ -46,7 +46,6 @@ START_TEST (pdf_list_iterator_next_001)
 
   elem = 222;
 
-  pdf_init ();
 
   list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
   pdf_list_add_last (list, &elem, NULL);
@@ -78,7 +77,6 @@ START_TEST (pdf_list_iterator_next_002)
   int *next;
   pdf_list_node_t *next_node;
 
-  pdf_init ();
 
   list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
 

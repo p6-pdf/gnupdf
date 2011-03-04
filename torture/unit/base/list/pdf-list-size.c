@@ -42,7 +42,6 @@ START_TEST (pdf_list_size_001)
   pdf_list_t *list;
   pdf_size_t size;
 
-  pdf_init ();
 
   list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
   size = pdf_list_size (list);

@@ -43,7 +43,6 @@ START_TEST (pdf_set_error_001)
   const pdf_char_t *format = "Hello this is an error";
   pdf_error_t *error = NULL;
 
-  pdf_init ();
 
   pdf_set_error (&error,
                  PDF_EDOMAIN_BASE_BASIC,
@@ -69,7 +68,6 @@ START_TEST (pdf_set_error_002)
 {
   const pdf_char_t *format = "Hello this is an error";
 
-  pdf_init ();
 
   pdf_set_error (NULL,
                  PDF_EDOMAIN_BASE_BASIC,
@@ -102,7 +100,6 @@ START_TEST (pdf_set_error_003)
     "This is a message with a string: STRING and "
     "a number: -1234, and another unsigned long number: 123456789";
 
-  pdf_init ();
 
   pdf_set_error (&error,
                  PDF_EDOMAIN_BASE_BASIC,
@@ -138,7 +135,6 @@ START_TEST (pdf_set_error_004)
   int number = -1234;
   unsigned long ulong = 123456789;
 
-  pdf_init ();
 
   pdf_set_error (NULL,
                  PDF_EDOMAIN_BASE_BASIC,

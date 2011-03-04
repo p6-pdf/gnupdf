@@ -46,7 +46,6 @@ START_TEST (pdf_list_sorted_add_001)
 
   elem = 5123;
 
-  pdf_init ();
 
   list = pdf_list_new (l_comp, NULL, PDF_FALSE, NULL);
 

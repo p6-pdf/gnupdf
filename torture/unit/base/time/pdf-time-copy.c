@@ -45,7 +45,6 @@ START_TEST (pdf_time_copy_001)
   pdf_time_t time2;
   pdf_i64_t seconds;
 
-  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
@@ -88,7 +87,6 @@ START_TEST (pdf_time_copy_002)
   pdf_time_t time2;
   time2 = NULL;
 
-  pdf_init();
 
   status =  pdf_time_new(&time1);
   fail_if(status != PDF_OK);

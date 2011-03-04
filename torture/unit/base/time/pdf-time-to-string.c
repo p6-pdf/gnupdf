@@ -60,7 +60,6 @@ START_TEST (pdf_time_to_string_001)
   struct pdf_time_cal_s calendar;
 
 
-  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
@@ -141,7 +140,6 @@ START_TEST (pdf_time_to_string_002)
   struct pdf_time_cal_s calendar;
 
 
-  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
@@ -246,7 +244,6 @@ START_TEST (pdf_time_to_string_003)
   struct pdf_time_cal_s calendar;
 
 
-  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
@@ -330,7 +327,6 @@ START_TEST (pdf_time_to_string_004)
   struct pdf_time_cal_s calendar;
 
 
-  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);

@@ -54,7 +54,6 @@ START_TEST (pdf_fp_func_4_new_001)
   pdf_size_t error_at;
   pdf_status_t ret;
 
-  pdf_init();
 
   prog_size = sizeof(prog);
 
@@ -96,7 +95,6 @@ START_TEST (pdf_fp_func_4_new_002)
   pdf_size_t error_at;
   pdf_status_t ret;
 
-  pdf_init();
 
   prog_size = sizeof(prog);
 
@@ -137,7 +135,6 @@ START_TEST (pdf_fp_func_4_new_003)
   pdf_size_t error_at;
   pdf_status_t ret;
 
-  pdf_init();
 
   prog_size = sizeof(prog);
 
@@ -178,7 +175,6 @@ START_TEST (pdf_fp_func_4_new_004)
   pdf_size_t error_at;
   pdf_status_t ret;
 
-  pdf_init();
 
   prog_size = sizeof(prog);
 
@@ -219,7 +215,6 @@ START_TEST (pdf_fp_func_4_new_005)
   pdf_size_t error_at;
   pdf_status_t ret;
 
-  pdf_init();
 
   prog_size = sizeof(prog);
 

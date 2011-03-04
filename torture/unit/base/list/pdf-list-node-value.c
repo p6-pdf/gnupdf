@@ -45,7 +45,6 @@ START_TEST (pdf_list_node_value_001)
 
   elem = 2212;
 
-  pdf_init ();
 
   list = pdf_list_new (NULL, NULL, 0, NULL);
 

@@ -46,7 +46,6 @@ START_TEST (pdf_prefix_error_001)
     "Prefixing error string: Hello this is an error";
   pdf_error_t *error;
 
-  pdf_init ();
 
   error = pdf_error_new (PDF_EDOMAIN_BASE_BASIC,
                          PDF_EAGAIN,
@@ -73,7 +72,6 @@ START_TEST (pdf_prefix_error_002)
 {
   const pdf_char_t *prefix = "Prefixing error string: ";
 
-  pdf_init ();
 
   pdf_prefix_error (NULL, prefix);
 }
@@ -105,7 +103,6 @@ START_TEST (pdf_prefix_error_003)
     "a number: -1234, and another unsigned long number: 123456789: "
     "Hello this is an error";
 
-  pdf_init ();
 
   error = pdf_error_new (PDF_EDOMAIN_BASE_BASIC,
                          PDF_EAGAIN,
@@ -142,7 +139,6 @@ START_TEST (pdf_prefix_error_004)
   int number = -1234;
   unsigned long ulong = 123456789;
 
-  pdf_init ();
 
   pdf_prefix_error (NULL,
                     format,

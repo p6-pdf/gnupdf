@@ -39,8 +39,7 @@
  */
 START_TEST (pdf_perror_001)
 {
-  pdf_init();
-  pdf_perror (PDF_OK, NULL);
+    pdf_perror (PDF_OK, NULL);
 }
 END_TEST
 
@@ -54,8 +53,7 @@ END_TEST
  */
 START_TEST (pdf_perror_002)
 {
-  pdf_init();
-  pdf_perror (PDF_OK, "test");
+    pdf_perror (PDF_OK, "test");
 }
 END_TEST
 

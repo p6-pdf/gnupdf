@@ -46,7 +46,6 @@ START_TEST (pdf_list_indexof_001)
 
   elem = 2121;
 
-  pdf_init ();
 
   list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
 
@@ -78,7 +77,6 @@ START_TEST (pdf_list_indexof_002)
   elem2 = 1234;
   elem3 = 9876;
 
-  pdf_init ();
 
   list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
 

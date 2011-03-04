@@ -43,7 +43,6 @@ START_TEST (pdf_hash_iterator_init_001)
   pdf_hash_t *table;
   pdf_hash_iterator_t itr;
 
-  pdf_init ();
 
   table = pdf_hash_new (NULL);
 

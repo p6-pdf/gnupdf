@@ -49,8 +49,6 @@ START_TEST (pdf_time_diff_001)
   pdf_i64_t sec2;
   pdf_time_span_t span;
 
-  pdf_init();
-
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
 

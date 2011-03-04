@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2011-02-24 23:32:00 aleksander"
+/* -*- mode: C -*- Time-stamp: "2011-03-05 00:50:22 aleksander"
  *
  *       File:         pdf-token-read.c
  *       Date:         Wed Jan 14 05:44:48 2009
@@ -232,7 +232,6 @@ START_TEST (pdf_token_read_toktypes)
   pdf_stm_t stm;
   pdf_token_reader_t tokr;
 
-  pdf_init();
 
   INIT_STM_STR(&stm, "abc}{/kw/k#20w%com\n"
       "]1 2.0[>><4142434a4F4>"
@@ -276,7 +275,6 @@ START_TEST (pdf_token_read_eos)
   pdf_token_reader_t tokr;
   pdf_char_t ch;
 
-  pdf_init();
 
   INIT_STM_STR(&stm, "stream    \r\t  %com  \n"
       ">UNPARSABLE DATA IN STREAM\n\n\n\n\n\nx");
@@ -284,7 +282,6 @@ START_TEST (pdf_token_read_eos)
 
   EXPECT_KEYWORD( tokr, 0, "stream" );
   fail_unless( tokr_eof(tokr, PDF_TOKEN_END_AT_STREAM) );
-  pdf_init();
 
   fail_unless( PDF_OK==pdf_stm_peek_char(stm, &ch) );
   fail_unless( ch == '>' );
@@ -309,7 +306,6 @@ START_TEST (pdf_token_read_longstring)
   pdf_status_t rv;
   pdf_size_t i, j;
 
-  pdf_init();
 
   /* make long string '(XX'...'XX)' */
   file = nonnull(pdf_alloc(filesize));
@@ -350,8 +346,7 @@ START_TEST (pdf_token_comments)
   pdf_stm_t stm;
   pdf_token_reader_t tokr;
 
-  pdf_init ();
-  INIT_STM_STR (&stm, "12% foo\n"
+    INIT_STM_STR (&stm, "12% foo\n"
       "34");
   INIT_TOKR (&tokr, stm);
 
@@ -382,8 +377,7 @@ START_TEST (pdf_token_reverse_solidus)
   pdf_stm_t stm;
   pdf_token_reader_t tokr;
 
-  pdf_init ();
-  INIT_STM_STR (&stm, "(1 \\x 2 \\9 3 \\% 4)");
+    INIT_STM_STR (&stm, "(1 \\x 2 \\9 3 \\% 4)");
   INIT_TOKR (&tokr, stm);
 
   EXPECT_STRING (tokr, 0, "1 x 2 9 3 % 4");
@@ -410,8 +404,7 @@ START_TEST (pdf_token_solidus_eol)
   pdf_stm_t stm;
   pdf_token_reader_t tokr;
 
-  pdf_init ();
-  INIT_STM_STR (&stm, "(simple \\\n"
+    INIT_STM_STR (&stm, "(simple \\\n"
     "multi-\\\r"
     "line \\\r\n"
     "string)");
@@ -442,8 +435,7 @@ START_TEST (pdf_token_eol)
   pdf_stm_t stm;
   pdf_token_reader_t tokr;
 
-  pdf_init ();
-  INIT_STM_STR (&stm, "(this \n is \r a \r\n string)");
+    INIT_STM_STR (&stm, "(this \n is \r a \r\n string)");
   INIT_TOKR (&tokr, stm);
 
   EXPECT_STRING (tokr, 0, "this \n is \n a \n string");
@@ -472,8 +464,7 @@ START_TEST (pdf_token_octal_overflow)
   pdf_stm_t stm;
   pdf_token_reader_t tokr;
 
-  pdf_init ();
-  /* simple string: hello
+    /* simple string: hello
      octal codes of chars: 150, 145, 154, 154, 157
      codes with added bits: 350, 545, 754, 554, 357
    */
@@ -504,8 +495,7 @@ START_TEST (pdf_token_octals)
   pdf_stm_t stm;
   pdf_token_reader_t tokr;
 
-  pdf_init ();
-  INIT_STM_STR (&stm, "(1\0623\64 \06567\70)");
+    INIT_STM_STR (&stm, "(1\0623\64 \06567\70)");
   INIT_TOKR (&tokr, stm);
 
   EXPECT_STRING (tokr, 0, "1234 5678");
@@ -532,7 +522,6 @@ START_TEST (pdf_token_hex_string)
   pdf_stm_t stm;
   pdf_token_reader_t tokr;
 
-  pdf_init ();
 
   /* h e l l o -> 68 65 6c 6c 6f */
   INIT_STM_STR (&stm, "<68 \t 65 \r 6c \n 6c \f 6f>");
@@ -564,7 +553,6 @@ START_TEST (pdf_token_odd_hex_string)
   pdf_stm_t stm;
   pdf_token_reader_t tokr;
 
-  pdf_init ();
 
   /* 4 3 2 1 0 -> 34 33 32 31 30 -> 343332313 */
   INIT_STM_STR (&stm, "<343332313>");
@@ -593,8 +581,7 @@ START_TEST (pdf_token_number_sign)
   pdf_stm_t stm;
   pdf_token_reader_t tokr;
 
-  pdf_init ();
-  INIT_STM_STR (&stm, "/The_Key_of_F#23_Minor");
+    INIT_STM_STR (&stm, "/The_Key_of_F#23_Minor");
   INIT_TOKR (&tokr, stm);
 
   EXPECT_NAME (tokr, 0, "The_Key_of_F#_Minor");
@@ -618,7 +605,6 @@ START_TEST (pdf_token_regular_char_as_number)
 {
   pdf_char_t regular_chars[256 - sizeof (non_regular_chars)];
 
-  pdf_init ();
 
   init_regular_chars_array (regular_chars);
   test_char_array (&ok_for_escaped_char, regular_chars,
@@ -670,7 +656,6 @@ START_TEST (pdf_token_regular_chars_inside_range)
 {
   pdf_char_t regular_chars[256 - sizeof (non_regular_chars)];
 
-  pdf_init ();
 
   init_regular_chars_array (regular_chars);
   test_char_array (&test_ok_inside_range, regular_chars,
@@ -692,7 +677,6 @@ END_TEST
  */
 START_TEST (pdf_token_non_regular_chars)
 {
-  pdf_init ();
 
   /* verify that tokens that contain non-regular chars written
      as numbers are valid */
@@ -731,7 +715,6 @@ START_TEST (pdf_token_regular_chars_outside_range)
 {
   pdf_char_t regular_chars[256 - sizeof (non_regular_chars)];
 
-  pdf_init ();
 
   init_regular_chars_array (regular_chars);
   test_char_array (&test_fail_outside_range, regular_chars,
@@ -755,8 +738,7 @@ START_TEST (pdf_token_empty_name)
   pdf_stm_t stm;
   pdf_token_reader_t tokr;
 
-  pdf_init ();
-  INIT_STM_STR (&stm, "/");
+    INIT_STM_STR (&stm, "/");
   INIT_TOKR (&tokr, stm);
 
   EXPECT_NAME (tokr, 0, "");

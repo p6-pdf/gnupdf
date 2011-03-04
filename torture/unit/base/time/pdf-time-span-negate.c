@@ -46,7 +46,6 @@ START_TEST (pdf_time_span_negate_001)
     pdf_i32_t seconds;
     pdf_i64_t seconds2;
 
-    pdf_init();
 
     span=pdf_time_span_new();
 
@@ -82,7 +81,6 @@ START_TEST (pdf_time_span_negate_002)
     pdf_i32_t seconds;
     pdf_i64_t seconds2;
 
-    pdf_init();
 
     span=pdf_time_span_new();
 
@@ -111,7 +109,6 @@ END_TEST
 START_TEST (pdf_time_span_negate_003)
 {
     pdf_status_t status;
-    pdf_init();
 
     status = pdf_time_span_negate((pdf_time_span_t *) NULL);
     fail_if(status != PDF_ERROR);

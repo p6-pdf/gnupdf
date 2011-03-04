@@ -56,7 +56,6 @@ START_TEST (pdf_time_cal_span_cmp_001)
   struct pdf_time_cal_span_s span1;
   struct pdf_time_cal_span_s span2;
 
-  pdf_init();
 
   status =  pdf_time_new(&basetime);
   fail_if(status != PDF_OK);

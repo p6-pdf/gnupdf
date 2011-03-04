@@ -48,7 +48,6 @@ START_TEST (pdf_time_new_001)
   pdf_char_t *time_str1;
   pdf_char_t *expected_time = "1970-01-01T00:00:00Z";
 
-  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);

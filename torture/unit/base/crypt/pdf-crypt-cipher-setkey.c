@@ -41,8 +41,7 @@
 START_TEST (pdf_crypt_cipher_setkey_001)
 {
   pdf_crypt_cipher_t cipher;
-  pdf_init();
-  pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
+    pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
   fail_if (pdf_crypt_cipher_setkey (cipher, "0123456789abcdef", 16) != PDF_OK);
   pdf_crypt_cipher_destroy (cipher);
 }
@@ -59,8 +58,7 @@ END_TEST
 START_TEST (pdf_crypt_cipher_setkey_002)
 {
   pdf_crypt_cipher_t cipher;
-  pdf_init();
-  pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
+    pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
   fail_if (pdf_crypt_cipher_setkey (cipher, "GNU", 3) == PDF_OK);
   pdf_crypt_cipher_destroy (cipher);
 }
@@ -77,8 +75,7 @@ END_TEST
 START_TEST (pdf_crypt_cipher_setkey_003)
 {
   pdf_crypt_cipher_t cipher;
-  pdf_init();
-  pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &cipher);
+    pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &cipher);
   fail_if (pdf_crypt_cipher_setkey (cipher, "GNUGNU", 6) != PDF_OK);
   pdf_crypt_cipher_destroy (cipher);
 }
