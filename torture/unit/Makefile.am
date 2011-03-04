@@ -65,7 +65,8 @@ TEST_SUITE_ERROR = base/error/pdf-error.c \
                    base/error/pdf-perror.c \
                    base/error/pdf-error-new.c \
                    base/error/pdf-set-error.c \
-                   base/error/pdf-clear-error.c
+                   base/error/pdf-clear-error.c \
+                   base/error/pdf-propagate-error.c
 
 # Unit tests for the Stream Module test suite
 TEST_SUITE_STM = base/stm/pdf-stm-mem-new.c \
