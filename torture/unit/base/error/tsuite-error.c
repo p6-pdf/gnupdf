@@ -31,6 +31,7 @@ extern TCase *test_pdf_error (void);
 extern TCase *test_pdf_perror (void);
 extern TCase *test_pdf_error_new (void);
 extern TCase *test_pdf_set_error (void);
+extern TCase *test_pdf_clear_error (void);
 
 Suite *
 tsuite_error ()
@@ -43,7 +44,7 @@ tsuite_error ()
   suite_add_tcase (s, test_pdf_error ());
   suite_add_tcase (s, test_pdf_error_new ());
   suite_add_tcase (s, test_pdf_set_error ());
-
+  suite_add_tcase (s, test_pdf_clear_error ());
   return s;
 }
 
