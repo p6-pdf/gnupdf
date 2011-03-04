@@ -222,9 +222,7 @@ pdf_prefix_error (pdf_error_t        **err,
           pdf_char_t *prefixed;
           pdf_size_t new_message_len;
 
-          new_message_len = (strlen (new_message) +
-                             strlen ((*err)->message) +
-                             strlen (": "));
+          new_message_len = (strlen (new_message) + strlen ((*err)->message));
           prefixed = pdf_realloc (new_message, new_message_len);
           if (!prefixed)
             {
@@ -233,7 +231,6 @@ pdf_prefix_error (pdf_error_t        **err,
             }
           else
             {
-              strcat (prefixed, ": ");
               strcat (prefixed, (*err)->message);
               prefixed[new_message_len] = '\0';
               pdf_dealloc ((*err)->message);
