@@ -38,8 +38,8 @@
 
    Some flags are stored in the 'f' field:
 
-   - Bit 31:     0 => Direct object.  1 => Indirect object.
-   - Bits 15..0: Type of the object:
+   - Bit 0:     0 => Direct object.  1 => Indirect object.
+   - Bits 15..1: Type of the object:
      + 0 => Null.
      + 1 => Boolean.
      + 2 => Integer.
@@ -49,6 +49,7 @@
      + 6 => Array.
      + 7 => Dictionary.
      + 8 => Stream.
+   - Bits 31..16: Unused.
 
    The null object contains {0, 0, NULL}.
 
@@ -60,6 +61,34 @@
 
    Direct non-scalar objects (names, strings, arrays, dictionaries and
    streams) are stored in pdf_obj_*_s structures, pointed by 'p'. */
+
+#define OBJ_IND_P(obj)    ((obj).f & ~0x1)
+#define OBJ_SET_IND(obj,val) ((obj).f = ((val) ?                        \
+                              ((obj).f | 0x1) : ((obj).f & ~0x1))
+
+#define OBJ_TYPE(obj)     ((obj).f >> 1) 
+#define OBJ_SET_TYPE(obj) ((obj).f)
+
+#define OBJ_DOC(obj)         ((pdf_obj_doc_t) (obj).p)
+#define OBJ_SET_DOC(obj,val) ((obj).p = (void *) val)
+
+#define OBJ_INT(obj)         ((obj).v)
+#define OBJ_SET_INT(obj,val) ((obj).v = (val))
+
+#define OBJ_BOOL(obj)         ((obj).v)
+#define OBJ_SET_BOOL(obj,val) ((obj).v = (val))
+
+#define OBJ_REAL(obj)         ((obj).v)
+#define OBJ_SET_REAL(obj,val) ((obj).v = (val))
+
+#define OBJ_ARRAY(obj)         ((struct pdf_obj_array_s *) (obj).p)
+#define OBJ_SET_ARRAY(obj,val) ((obj).p = (void *) val)
+
+#define OBJ_DICT(obj)         ((struct pdf_obj_dict_s *) (obj).p)
+#define OBJ_SET_DICT(obj,val) ((obj).p = (void *) val)
+
+#define OBJ_STREAM(obj)         ((struct pdf_obj_stream_s *) (obj).p)
+#define OBJ_SET_STREAM(obj,val) ((obj).p = (void *) val)
 
 /* A PDF name object is an atomic symbol uniquely defined by a
    sequence of regular characters. It has no internal structure. */

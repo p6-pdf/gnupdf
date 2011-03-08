@@ -62,6 +62,14 @@
 
 2011-02-23  Jose E. Marchesi  <jemarch@gnu.org>
 
+	pdf-obj: new macros to access pdf_obj_s structures.
+	* src/object/pdf-obj.c: New macros OBJ_IND_P, OBJ_SET_IND,
+	OBJ_TYPE, OBJ_SET_TYPE, OBJ_DOC, OBJ_SET_DOC, OBJ_INT,
+	OBJ_SET_INT, OBJ_BOOL, OBJ_SET_BOOL, OBJ_REAL, OBJ_SET_REAL,
+	OBJ_ARRAY, OBJ_SET_ARRAY, OBJ_STREAM, OBJ_SET_STREAM.
+
+2011-02-23  Jose E. Marchesi  <jemarch@gnu.org>
+
 	object: create the layer header file.
 	* src/object/pdf-object.h: New file.
 	Include pdf-obj.h.
