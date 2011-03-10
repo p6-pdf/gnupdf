@@ -62,7 +62,6 @@ START_TEST (pdf_time_set_to_current_local_time_001)
   localgmt = time_struct->tm_gmtoff;
 #endif
 
-  pdf_init();
 
   status =  pdf_time_new(&localTime);
   fail_if(status != PDF_OK);

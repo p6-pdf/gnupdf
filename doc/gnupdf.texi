@@ -376,7 +376,7 @@ pdf_error_destroy (error);
 @end deftypefun
 
 
-@deftypefun void pdf_set_error (pdf_error_t **@var{err})
+@deftypefun void pdf_set_error (pdf_error_t **@var{err}, pdf_error_domain_t @var{domain}, pdf_status_t @var{status}, const pdf_char_t *@var{format}, @var{...})
 
 Does nothing if @var{err} is @code{NULL}. If @var{err} is not @code{NULL},
 then *@var{err} must be @code{NULL}. It will create a new @code{pdf_error_t} and place
@@ -387,6 +387,14 @@ it in *@var{err}.
 @table @var
 @item err
 a pointer to a pdf_error_t
+@item domain
+a valid error domain
+@item status
+a valid error status
+@item format
+string format for the message
+@item ...
+format's arguments
 @end table
 @item Usage example
 @example
@@ -410,6 +418,44 @@ pdf_magic (pdf_char_t   *spell,
 @end example
 @end table
 @end deftypefun
+
+
+@deftypefun void pdf_prefix_error (pdf_error_t **@var{err}, const pdf_char_t *@var{format}, @var{...})
+
+Does nothing if @var{err} is @code{NULL}. Also does nothing if @var{err} is not @code{NULL}
+but *@var{err} is @code{NULL}. Otherwise, prepends the new message to the existing one.
+
+@table @strong
+@item Parameters
+@table @var
+@item err
+a pointer to a pdf_error_t
+@item format
+string format for the message
+@item ...
+format's arguments
+@end table
+@item Usage example
+@example
+pdf_bool_t
+pdf_magic (pdf_char_t   *spell,
+           pdf_error_t **error)
+@{
+  if (!pdf_magic_is_spell_known (spell, error))
+    @{
+      pdf_prefix_error (error,
+                        "couldn't run spell: '%s'",
+                        spell);
+      return PDF_FALSE;
+    @}
+
+  /* Magic goes here */
+  return PDF_TRUE;
+@}
+@end example
+@end table
+@end deftypefun
+
 
 @deftypefun void pdf_clear_error (pdf_error_t **@var{err})
 

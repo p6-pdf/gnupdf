@@ -43,7 +43,6 @@ START_TEST (pdf_list_new_001)
   pdf_list_t *list;
   pdf_error_t *error = NULL;
 
-  pdf_init ();
 
   list = pdf_list_new (l_comp, l_disp, PDF_FALSE, &error);
   fail_if (list == NULL);
@@ -65,7 +64,6 @@ START_TEST (pdf_list_new_002)
   pdf_list_t *list;
   pdf_error_t *error = NULL;
 
-  pdf_init();
 
   list = pdf_list_new (l_comp, l_disp, PDF_TRUE, &error);
   fail_if (list == NULL);

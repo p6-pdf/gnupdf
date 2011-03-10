@@ -48,7 +48,6 @@ START_TEST (pdf_stm_tell_001)
   /* Create a buffer with some contents */
   buf_size = 11;
 
-  pdf_init();
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);

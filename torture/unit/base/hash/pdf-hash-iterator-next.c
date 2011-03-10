@@ -45,7 +45,6 @@ START_TEST (pdf_hash_iterator_next_001)
   const pdf_char_t *key;
   const pdf_char_t *value;
 
-  pdf_init ();
 
   table = pdf_hash_new (NULL);
   pdf_hash_add (table, "key", "val", NULL, NULL);

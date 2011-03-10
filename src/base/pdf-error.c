@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <string.h>
 
 #include <pdf-alloc.h>
 #include <pdf-global.h>
@@ -56,6 +57,14 @@ struct pdf_error_s {
   pdf_error_domain_t domain;
   pdf_status_t status;
   pdf_char_t *message;
+};
+
+/* This static constant structure is used as backup when setting a new error and
+ * memory allocation of the new error fails. */
+static const pdf_error_t static_enomem_error = {
+  .domain = PDF_EDOMAIN_UNDEFINED,
+  .status = PDF_ENOMEM,
+  .message = "memory allocation failed"
 };
 
 void
@@ -107,15 +116,19 @@ error_new_valist (pdf_error_domain_t  domain,
   pdf_error_t *error;
 
   error = pdf_alloc (sizeof (struct pdf_error_s));
-  if (error != NULL)
+  if ((error != NULL) &&
+      (vasprintf (&(error->message), format, args) >= 0) &&
+      (error->message != NULL))
     {
-      if (vasprintf (&(error->message), format, args) < 0)
-        {
-          pdf_dealloc (error);
-          return NULL;
-        }
       error->status = status;
       error->domain = domain;
+    }
+  else
+    {
+      if (error)
+        pdf_dealloc (error);
+      /* Set backup enomem error */
+      error = (pdf_error_t *)&static_enomem_error;
     }
   return error;
 }
@@ -159,7 +172,8 @@ pdf_error_get_message (const pdf_error_t *error)
 void
 pdf_error_destroy (pdf_error_t *error)
 {
-  if (error != NULL)
+  if (error != NULL &&
+      error != &static_enomem_error)
     {
       pdf_dealloc (error->message);
       pdf_dealloc (error);
@@ -184,6 +198,57 @@ pdf_set_error (pdf_error_t        **err,
                                status,
                                format,
                                args);
+      va_end (args);
+    }
+}
+
+void
+pdf_prefix_error (pdf_error_t        **err,
+                  const pdf_char_t    *format,
+                  ...)
+{
+  if ((err != NULL) &&
+      (*err != NULL) &&
+      (*err != &static_enomem_error))
+    {
+      pdf_char_t *new_message = NULL;
+      va_list args;
+      pdf_bool_t enomem = PDF_FALSE;
+
+      va_start (args, format);
+      if ((vasprintf (&new_message, format, args) >= 0) &&
+          (new_message != NULL))
+        {
+          pdf_char_t *prefixed;
+          pdf_size_t new_message_len;
+
+          new_message_len = (strlen (new_message) + strlen ((*err)->message));
+          prefixed = pdf_realloc (new_message, new_message_len);
+          if (!prefixed)
+            {
+              pdf_dealloc (new_message);
+              enomem = PDF_TRUE;
+            }
+          else
+            {
+              strcat (prefixed, (*err)->message);
+              prefixed[new_message_len] = '\0';
+              pdf_dealloc ((*err)->message);
+              (*err)->message = prefixed;
+            }
+        }
+      else
+        enomem = PDF_TRUE;
+
+      if (enomem)
+        {
+          /* Oops, ENOMEM */
+          if (new_message)
+            pdf_dealloc (new_message);
+          pdf_error_destroy (*err);
+          /* Set backup enomem error */
+          *err = (pdf_error_t *)&static_enomem_error;
+        }
       va_end (args);
     }
 }

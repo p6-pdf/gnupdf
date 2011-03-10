@@ -42,7 +42,6 @@ START_TEST (pdf_hash_new_001)
   pdf_hash_t *table;
   pdf_error_t *error = NULL;
 
-  pdf_init ();
 
   table = pdf_hash_new (&error);
   fail_if (table == NULL);

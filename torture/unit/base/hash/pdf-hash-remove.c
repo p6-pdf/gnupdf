@@ -41,7 +41,6 @@ START_TEST (pdf_hash_remove_001)
 {
   pdf_hash_t *table;
 
-  pdf_init ();
 
   table = pdf_hash_new (NULL);
 
@@ -63,7 +62,6 @@ START_TEST (pdf_hash_remove_002)
 {
   pdf_hash_t *table;
 
-  pdf_init ();
 
   table = pdf_hash_new (NULL);
 

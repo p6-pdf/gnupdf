@@ -43,7 +43,6 @@ START_TEST (pdf_hash_add_text_001)
   pdf_text_t inner;
   pdf_error_t *error = NULL;
 
-  pdf_init ();
 
   table = pdf_hash_new (NULL);
 

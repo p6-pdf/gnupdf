@@ -41,7 +41,6 @@ START_TEST (pdf_hash_size_001)
 {
   pdf_hash_t *table;
 
-  pdf_init ();
 
   table = pdf_hash_new (NULL);
 

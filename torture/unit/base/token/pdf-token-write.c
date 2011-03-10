@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2011-02-24 23:32:00 aleksander"
+/* -*- mode: C -*- Time-stamp: "2011-03-05 00:50:03 aleksander"
  *
  *       File:         pdf-token-write.c
  *       Date:         Tue Sep 21 21:08:07 2010
@@ -162,7 +162,6 @@ START_TEST (pdf_token_write_integer_positive)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_integer_new (10, &token)
@@ -188,7 +187,6 @@ START_TEST (pdf_token_write_integer_negative)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_integer_new (-10, &token)
@@ -213,7 +211,6 @@ START_TEST (pdf_token_write_real_positive)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_real_new (10.2, &token)
@@ -238,7 +235,6 @@ START_TEST (pdf_token_write_real_round)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_real_new (10.0, &token)
@@ -263,7 +259,6 @@ START_TEST (pdf_token_write_real_negative)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_real_new (-10.0, &token)
@@ -289,7 +284,6 @@ START_TEST (pdf_token_write_string_nonempty)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_string_new ("abc", 3, &token)
@@ -315,7 +309,6 @@ START_TEST (pdf_token_write_string_empty)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_string_new ("", 0, &token)
@@ -341,7 +334,6 @@ START_TEST (pdf_token_write_string_nonempty_hex)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_string_new ("abc", 3, &token)
@@ -367,7 +359,6 @@ START_TEST (pdf_token_write_string_empty_hex)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_string_new ("", 0, &token)
@@ -393,7 +384,6 @@ START_TEST (pdf_token_write_string_lf)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_string_new ("a\nb\nc", 5, &token)
@@ -419,7 +409,6 @@ START_TEST (pdf_token_write_string_cr)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_string_new ("a\rb\rc", 5, &token)
@@ -445,7 +434,6 @@ START_TEST (pdf_token_write_string_ht)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_string_new ("a\tb\tc", 5, &token)
@@ -471,7 +459,6 @@ START_TEST (pdf_token_write_string_ht_readable)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_string_new ("a\tb\tc", 5, &token)
@@ -497,7 +484,6 @@ START_TEST (pdf_token_write_string_ff)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_string_new ("a\fb\fc", 5, &token)
@@ -524,7 +510,6 @@ START_TEST (pdf_token_write_string_ff_readable)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_string_new ("a\fb\fc", 5, &token)
@@ -550,7 +535,6 @@ START_TEST (pdf_token_write_string_leftp)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_string_new ("a(b(c", 5, &token)
@@ -576,7 +560,6 @@ START_TEST (pdf_token_write_string_rightp)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_string_new ("a)b)c", 5, &token)
@@ -602,7 +585,6 @@ START_TEST (pdf_token_write_string_rs)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_string_new ("a\\b\\c", 5, &token)
@@ -628,7 +610,6 @@ START_TEST (pdf_token_write_string_octal)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_string_new ("a\007c", 3, &token)
@@ -654,7 +635,6 @@ START_TEST (pdf_token_write_string_octal_readable)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_string_new ("a\007c", 3, &token)
@@ -679,7 +659,6 @@ START_TEST (pdf_token_write_string_null)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_string_new ("a\000c", 3, &token)
@@ -704,7 +683,6 @@ START_TEST (pdf_token_write_name_nonempty)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_name_new ("abc", 3, &token)
@@ -729,7 +707,6 @@ START_TEST (pdf_token_write_name_empty)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_name_new ("", 0, &token)
@@ -754,7 +731,6 @@ START_TEST (pdf_token_write_name_nonregular)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_name_new ("a\nb", 3, &token)
@@ -779,7 +755,6 @@ START_TEST (pdf_token_write_name_alphanum)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_name_new ("Name1", 5, &token)
@@ -804,7 +779,6 @@ START_TEST (pdf_token_write_name_long)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_name_new ("ASomewhatLongerName", 19, &token)
@@ -829,7 +803,6 @@ START_TEST (pdf_token_write_name_various)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_name_new ("A;Name_With-Various***Characters?", 33, &token)
@@ -854,7 +827,6 @@ START_TEST (pdf_token_write_name_real)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_name_new ("1.2", 3, &token)
@@ -879,7 +851,6 @@ START_TEST (pdf_token_write_name_dollars)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_name_new ("$$", 2, &token)
@@ -904,7 +875,6 @@ START_TEST (pdf_token_write_name_at)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_name_new ("@pattern", 8, &token)
@@ -929,7 +899,6 @@ START_TEST (pdf_token_write_name_dot)
 {
   pdf_token_t token;
 
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_name_new (".notdef", 7, &token)
@@ -954,8 +923,6 @@ END_TEST
 START_TEST (pdf_token_write_name_ns)
 {
   pdf_token_t token;
-
-  pdf_init ();
 
   /* Create the token.  */
   fail_if (pdf_token_name_new ("The_Key_of_F#_Minor", 19, &token)

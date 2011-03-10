@@ -40,7 +40,6 @@
  */
 START_TEST (pdf_list_destroy_001)
 {
-  pdf_init ();
 
   pdf_list_destroy (pdf_list_new (NULL, NULL, PDF_FALSE, NULL));
 }
@@ -55,7 +54,6 @@ END_TEST
  */
 START_TEST (pdf_list_destroy_002)
 {
-  pdf_init ();
 
   pdf_list_destroy (NULL);
 }

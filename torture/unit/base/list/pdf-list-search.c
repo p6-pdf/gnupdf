@@ -45,7 +45,6 @@ START_TEST (pdf_list_search_001)
 
   elem = 2232;
 
-  pdf_init ();
 
   list = pdf_list_new (l_comp, NULL, 0, NULL);
 
@@ -74,7 +73,6 @@ START_TEST (pdf_list_search_002)
   elem = 2232;
   elem2 = 1223;
 
-  pdf_init ();
 
   list = pdf_list_new (l_comp, NULL, 0, NULL);
 

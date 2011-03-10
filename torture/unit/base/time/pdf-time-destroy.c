@@ -43,7 +43,6 @@ START_TEST (pdf_time_destroy_001)
   pdf_time_t time1;
   pdf_char_t *time_str1;
 
-  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);

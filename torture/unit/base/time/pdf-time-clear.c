@@ -47,7 +47,6 @@ START_TEST (pdf_time_clear_001)
   pdf_time_t time;
   pdf_time_t zeroTime;
 
-  pdf_init();
 
   status = pdf_time_new(&time);
   fail_if(status != PDF_OK);
@@ -93,7 +92,6 @@ START_TEST (pdf_time_clear_002)
   pdf_time_t zeroTime;
   struct pdf_time_cal_s caltime;
 
-  pdf_init();
 
   status = pdf_time_new(&time);
   fail_if(status != PDF_OK);

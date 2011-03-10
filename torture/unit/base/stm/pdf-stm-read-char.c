@@ -46,7 +46,6 @@ START_TEST (pdf_stm_read_char_001)
 
   /* Create a buffer with some contents */
   buf_size = 11;
-  pdf_init();
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
@@ -88,7 +87,6 @@ START_TEST (pdf_stm_read_char_002)
 
   /* Create a buffer with some contents */
   buf_size = 2;
-  pdf_init();
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
@@ -144,7 +142,6 @@ START_TEST (pdf_stm_read_char_003)
   pdf_size_t remain_length;
 
   /* Create the file path */
-  pdf_init();
 
   ret = pdf_text_new_from_pdf_string ("tmp.test", 8, &remain, &remain_length, &path);
   fail_if (ret != PDF_OK);
@@ -200,7 +197,6 @@ START_TEST (pdf_stm_read_char_004)
 
   /* Create a buffer with some contents */
   buf_size = 42000;
-  pdf_init();
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);

@@ -46,7 +46,6 @@ START_TEST (pdf_list_sorted_indexof_from_to_001)
 
   elem = 2232;
 
-  pdf_init ();
 
   list = pdf_list_new (l_comp, NULL, PDF_FALSE, NULL);
 
@@ -76,7 +75,6 @@ START_TEST (pdf_list_sorted_indexof_from_to_002)
 
   elem = 2232;
 
-  pdf_init ();
 
   list = pdf_list_new (l_comp, NULL, PDF_FALSE, NULL);
 
@@ -116,7 +114,6 @@ START_TEST (pdf_list_sorted_indexof_from_to_003)
   elem = 2232;
   elem2 = 1234;
 
-  pdf_init ();
 
   list = pdf_list_new (l_comp, NULL, PDF_FALSE, NULL);
 

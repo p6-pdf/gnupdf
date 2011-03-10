@@ -41,8 +41,7 @@
 START_TEST (pdf_crypt_cipher_destroy_001)
 {
   pdf_crypt_cipher_t cipher;
-  pdf_init();
-  pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
+    pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
   fail_if (pdf_crypt_cipher_destroy (cipher) != PDF_OK);
 }
 END_TEST
@@ -58,8 +57,7 @@ END_TEST
 START_TEST (pdf_crypt_cipher_destroy_002)
 {
   pdf_crypt_cipher_t cipher;
-  pdf_init();
-  pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &cipher);
+    pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &cipher);
   fail_if (pdf_crypt_cipher_destroy (cipher) != PDF_OK);
 }
 END_TEST

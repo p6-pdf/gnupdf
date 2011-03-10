@@ -44,7 +44,6 @@ START_TEST (pdf_hash_add_stm_001)
   char mem[4];
   pdf_error_t *error = NULL;
 
-  pdf_init ();
 
   table = pdf_hash_new (NULL);
 

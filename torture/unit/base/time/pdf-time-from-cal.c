@@ -51,7 +51,6 @@ START_TEST (pdf_time_from_cal_001)
   extern pdf_u32_t datesInSeconds[];
   struct pdf_time_cal_s calendar;
 
-  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);

@@ -52,7 +52,6 @@ START_TEST (pdf_time_w32_set_from_filetime_001)
   pdf_time_t time2;
   struct pdf_time_cal_s calendar;
 
-  pdf_init();
 
   status = pdf_time_new(&time);
   fail_if(status != PDF_OK);

@@ -46,7 +46,6 @@ START_TEST (pdf_time_span_dup_001)
     pdf_time_span_t span1;
     pdf_time_span_t span2;
 
-    pdf_init();
 
     span1 = pdf_time_span_new();
 

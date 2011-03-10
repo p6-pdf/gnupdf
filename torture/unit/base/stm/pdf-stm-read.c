@@ -47,7 +47,6 @@ START_TEST (pdf_stm_read_001)
 
   /* Create a buffer with some contents */
   buf_size = 11;
-  pdf_init();
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
@@ -103,7 +102,6 @@ START_TEST (pdf_stm_read_002)
 
   /* Create a buffer with some contents */
   buf_size = 11;
-  pdf_init();
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
@@ -159,7 +157,6 @@ START_TEST (pdf_stm_read_003)
 
   /* Create a buffer with some contents */
   buf_size = 11;
-  pdf_init();
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
@@ -270,7 +267,6 @@ START_TEST (pdf_stm_read_004)
 
   /* Create a buffer with some contents */
   buf_size = 11;
-  pdf_init();
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
@@ -336,7 +332,6 @@ START_TEST (pdf_stm_read_005)
   /* Writing stream */
   /* Create a memory buffer */
   buf_size = 100;
-  pdf_init();
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
@@ -391,7 +386,6 @@ START_TEST (pdf_stm_read_006)
 
   /* Create the buffers */
   buf_size = 10;
-  pdf_init();
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
@@ -458,7 +452,6 @@ START_TEST (pdf_stm_read_007)
 
   /* Create the buffers */
   buf_size = 20;
-  pdf_init();
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
@@ -527,7 +520,6 @@ START_TEST (pdf_stm_read_008)
 
   /* Create the buffers */
   buf_size = 20;
-  pdf_init();
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
@@ -623,7 +615,6 @@ START_TEST (pdf_stm_read_009)
   /* Writing stream */
   /* Create a memory buffer */
   buf_size = 2000;
-  pdf_init();
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
@@ -686,7 +677,6 @@ START_TEST (pdf_stm_read_011)
   pdf_char_t plaintext[] = "Attack at dawn";
   pdf_size_t read;
 
-  pdf_init ();
 
   fail_if ( pdf_stm_mem_new (in, in_size, 0, PDF_STM_READ, &stm) != PDF_OK);
 
@@ -755,7 +745,6 @@ START_TEST (pdf_stm_read_012)
       0x8c, 0xb8, 0x4c, 0x23, 0x59, 0xd0, 0xe0, 0x36,
     };
 
-  pdf_init();
 
   params = pdf_hash_new (NULL);
   pdf_hash_add (params, "Key", key, NULL, NULL);
@@ -797,7 +786,6 @@ START_TEST (pdf_stm_read_013)
   pdf_size_t remain_length;
 
   /* Create the file path */
-  pdf_init();
 
   ret = pdf_text_new_from_pdf_string ("tmp.test", 8, &remain, &remain_length, &path);
   fail_if (ret != PDF_OK);
@@ -860,7 +848,6 @@ START_TEST (pdf_stm_read_014)
   pdf_hash_t *null_filter_params;
 
   /* Create the file path */
-  pdf_init();
 
   ret = pdf_text_new_from_pdf_string ("tmp.test", 8, &remain, &remain_length, &path);
   fail_if (ret != PDF_OK);
@@ -933,7 +920,6 @@ START_TEST (pdf_stm_read_015)
 
   /* Create the buffers */
   buf_size = 20;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -1000,7 +986,6 @@ START_TEST (pdf_stm_read_016)
 
   /* Create the buffers */
   buf_size = 20;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -1066,7 +1051,6 @@ START_TEST (pdf_stm_read_017)
 
   /* Create the buffers */
   buf_size = 20;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -1187,7 +1171,6 @@ START_TEST (pdf_stm_read_018)
 
   /* Create the buffers */
   buf_size = 20;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -1253,7 +1236,6 @@ START_TEST (pdf_stm_read_019)
 
   /* Create the buffers */
   buf_size = 20;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -1319,7 +1301,6 @@ START_TEST (pdf_stm_read_020)
 
   /* Create the buffers */
   buf_size = 20;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -1380,7 +1361,6 @@ START_TEST (pdf_stm_read_021)
 
   /* Create the buffers */
   buf_size = 20;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -1441,7 +1421,6 @@ START_TEST (pdf_stm_read_022)
 
   /* Create the buffers */
   buf_size = 20;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -1502,7 +1481,6 @@ START_TEST (pdf_stm_read_023)
 
   /* Create the buffers */
   buf_size = 20;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -1563,7 +1541,6 @@ START_TEST (pdf_stm_read_024)
 
   /* Create the buffers */
   buf_size = 20;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -1626,7 +1603,6 @@ START_TEST (pdf_stm_read_025)
 
   /* Create the buffers */
   buf_size = 20;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -1689,7 +1665,6 @@ START_TEST (pdf_stm_read_026)
 
   /* Create the buffers */
   buf_size = 30;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -1752,7 +1727,6 @@ START_TEST (pdf_stm_read_027)
 
   /* Create the buffers */
   buf_size = 30;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -1815,7 +1789,6 @@ START_TEST (pdf_stm_read_028)
 
   /* Create the buffers */
   buf_size = 30;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -1878,7 +1851,6 @@ START_TEST (pdf_stm_read_029)
 
   /* Create the buffers */
   buf_size = 30;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -1941,7 +1913,6 @@ START_TEST (pdf_stm_read_030)
 
   /* Create the buffers */
   buf_size = 30;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -2004,7 +1975,6 @@ START_TEST (pdf_stm_read_031)
 
   /* Create the buffers */
   buf_size = 20;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -2065,7 +2035,6 @@ START_TEST (pdf_stm_read_032)
 
   /* Create the buffers */
   buf_size = 20;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -2126,7 +2095,6 @@ START_TEST (pdf_stm_read_033)
 
   /* Create the buffers */
   buf_size = 20;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -2187,7 +2155,6 @@ START_TEST (pdf_stm_read_034)
 
   /* Create the buffers */
   buf_size = 20;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -2248,7 +2215,6 @@ START_TEST (pdf_stm_read_035)
 
   /* Create the buffers */
   buf_size = 20;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -2309,7 +2275,6 @@ START_TEST (pdf_stm_read_036)
 
   /* Create the buffers */
   buf_size = 20;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -2370,7 +2335,6 @@ START_TEST (pdf_stm_read_037)
 
   /* Create the buffers */
   buf_size = 20;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -2431,7 +2395,6 @@ START_TEST (pdf_stm_read_038)
 
   /* Create the buffers */
   buf_size = 20;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -2492,7 +2455,6 @@ START_TEST (pdf_stm_read_039)
 
   /* Create the buffers */
   buf_size = 20;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -2553,7 +2515,6 @@ START_TEST (pdf_stm_read_040)
 
   /* Create the buffers */
   buf_size = 20;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -2614,7 +2575,6 @@ START_TEST (pdf_stm_read_041)
 
   /* Create the buffers */
   buf_size = 20;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -2675,7 +2635,6 @@ START_TEST (pdf_stm_read_042)
 
   /* Create the buffers */
   buf_size = 20;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -2736,7 +2695,6 @@ START_TEST (pdf_stm_read_043)
 
   /* Create the buffers */
   buf_size = 20;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);
@@ -2797,7 +2755,6 @@ START_TEST (pdf_stm_read_044)
 
   /* Create the buffers */
   buf_size = 20;
-  pdf_init ();
 
   ret_buf = pdf_alloc (buf_size);
   fail_if (ret_buf == NULL);

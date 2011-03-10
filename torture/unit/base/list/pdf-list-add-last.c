@@ -48,7 +48,6 @@ START_TEST (pdf_list_add_last_001)
   elem = 5123;
   elem2 = 5431;
 
-  pdf_init ();
 
   list = pdf_list_new (l_comp, NULL, PDF_FALSE, NULL);
 
@@ -92,7 +91,6 @@ START_TEST (pdf_list_add_last_002)
 
   elem = 5123;
 
-  pdf_init ();
 
   list = pdf_list_new (l_comp, NULL, PDF_TRUE, NULL);
 

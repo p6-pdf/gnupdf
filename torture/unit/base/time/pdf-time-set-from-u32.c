@@ -54,7 +54,6 @@ START_TEST (pdf_time_set_from_u32_001)
   pdf_time_span_t span;
   pdf_u32_t sec;
 
-  pdf_init();
 
   status = pdf_time_new(&time);
   fail_if(status != PDF_OK);

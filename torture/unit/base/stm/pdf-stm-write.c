@@ -84,7 +84,6 @@ START_TEST (pdf_stm_write_001)
 
   /* Create a buffer */
   buf_size = 10;
-  pdf_init();
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
@@ -136,7 +135,6 @@ START_TEST (pdf_stm_write_002)
 
   /* Create a buffer */
   buf_size = 10;
-  pdf_init();
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
@@ -193,7 +191,6 @@ START_TEST (pdf_stm_write_003)
 
   /* Create a buffer */
   buf_size = 10;
-  pdf_init();
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
@@ -243,7 +240,6 @@ START_TEST (pdf_stm_write_004)
 
   /* Create a buffer */
   buf_size = 10;
-  pdf_init();
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
@@ -309,7 +305,6 @@ START_TEST (pdf_stm_write_005)
   /* Writing stream */
   /* Create a memory buffer */
   buf_size = 100;
-  pdf_init();
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
@@ -362,7 +357,6 @@ START_TEST (pdf_stm_write_006)
 
   /* Create a buffer */
   buf_size = 100;
-  pdf_init();
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
@@ -458,7 +452,6 @@ START_TEST (pdf_stm_write_007)
   /* Writing stream */
   /* Create a memory buffer */
   buf_size = 100;
-  pdf_init();
 
   buf = pdf_alloc (buf_size);
   fail_if(buf == NULL);
@@ -511,7 +504,6 @@ START_TEST (pdf_stm_write_008)
   pdf_char_t buffer[16];
   pdf_status_t ret;
 
-  pdf_init();
 
   ret = pdf_stm_mem_new (buffer, sizeof(buffer), 0, PDF_STM_WRITE, &stm);
   fail_if (ret != PDF_OK);
@@ -558,7 +550,6 @@ START_TEST (pdf_stm_write_009)
 
   pdf_size_t written;
 
-  pdf_init();
 
   fail_if ( pdf_stm_mem_new (out, out_size, 0, PDF_STM_WRITE, &stm) != PDF_OK);
 
@@ -637,7 +628,6 @@ START_TEST (pdf_stm_write_010)
       0x49, 0xa5, 0x3e, 0x87, 0xf4, 0xc3, 0xda, 0x55,
     };
 
-  pdf_init();
 
   params = pdf_hash_new (NULL);
   pdf_hash_add (params, "Key", key, NULL, NULL);
@@ -693,7 +683,6 @@ START_TEST (pdf_stm_write_011)
     0xCA, 0x67, 0xE1, 0x3B
   };
 
-  pdf_init();
 
   params = pdf_hash_new (NULL);
 
@@ -761,7 +750,6 @@ START_TEST (pdf_stm_write_012)
       0x8c, 0xb8, 0x4c, 0x23, 0x59, 0xd0, 0xe0, 0x36,
     };
 
-  pdf_init();
 
   params = pdf_hash_new (NULL);
   pdf_hash_add (params, "Key", key, NULL, NULL);
@@ -803,7 +791,6 @@ START_TEST (pdf_stm_write_013)
   pdf_size_t remain_length;
 
   /* Create the file path */
-  pdf_init();
 
   ret = pdf_text_new_from_pdf_string ("tmp.test", 8, &remain, &remain_length, &path);
   fail_if (ret != PDF_OK);
@@ -873,7 +860,6 @@ START_TEST (pdf_stm_write_014)
   pdf_size_t remain_length;
 
   /* Create the file path */
-  pdf_init();
 
   ret = pdf_text_new_from_pdf_string ("tmp.test", 8, &remain, &remain_length, &path);
   fail_if (ret != PDF_OK);
@@ -950,7 +936,6 @@ START_TEST (pdf_stm_write_015)
 
 
   /* Create the filter */
-  pdf_init();
 
   params = pdf_hash_new (NULL);
   fail_if (pdf_stm_install_filter (mem_stm_fixture.stm,
@@ -989,7 +974,6 @@ START_TEST (pdf_stm_write_016)
     "-----A---B";
 
   /* Create the filter */
-  pdf_init();
 
   params = pdf_hash_new (NULL);
   fail_if (pdf_stm_install_filter (mem_stm_fixture.stm,
@@ -1028,7 +1012,6 @@ START_TEST (pdf_stm_write_017)
     "!!\x2A\x2D\x27z\x22\x39\x65\x75\x37\x23\x52\x4C\x68\x47~>";
 
   /* Create the filter */
-  pdf_init ();
 
   params = pdf_hash_new (NULL);
   fail_if (pdf_stm_install_filter (mem_stm_fixture.stm,
@@ -1066,7 +1049,6 @@ START_TEST (pdf_stm_write_018)
   pdf_char_t *encoded = "!!~>";
 
   /* Create the filter */
-  pdf_init ();
 
   params = pdf_hash_new (NULL);
   fail_if (pdf_stm_install_filter (mem_stm_fixture.stm,
@@ -1103,7 +1085,6 @@ START_TEST (pdf_stm_write_019)
   pdf_char_t *encoded = "!!!~>";
 
   /* Create the filter */
-  pdf_init();
 
   params = pdf_hash_new (NULL);
   fail_if (pdf_stm_install_filter (mem_stm_fixture.stm,
@@ -1140,7 +1121,6 @@ START_TEST (pdf_stm_write_020)
   pdf_char_t *encoded = "!!!!~>";
 
   /* Create the filter */
-  pdf_init ();
 
   params = pdf_hash_new (NULL);
   fail_if (pdf_stm_install_filter (mem_stm_fixture.stm,
@@ -1177,7 +1157,6 @@ START_TEST (pdf_stm_write_021)
   pdf_char_t *encoded = "z~>";
 
   /* Create the filter */
-  pdf_init ();
 
   params = pdf_hash_new (NULL);
   fail_if (pdf_stm_install_filter (mem_stm_fixture.stm,

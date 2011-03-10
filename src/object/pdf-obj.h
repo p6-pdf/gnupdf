@@ -34,7 +34,10 @@
 
 /* Note that pdf_obj_t is an opaque type, even if we are including the
    definition of struct pdf_obj_s here for stack allocation
-   purposes. */
+   purposes.
+
+   See pdf-obj.c for a full description of the purpose of the fields
+   of pdf_obj_s. */
 
 struct pdf_obj_s
 {

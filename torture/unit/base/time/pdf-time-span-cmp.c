@@ -43,7 +43,6 @@ START_TEST (pdf_time_span_cmp_001)
   pdf_time_span_t span1;
   pdf_time_span_t span2;
 
-  pdf_init();
 
   span1 = pdf_time_span_new();
   span2 = pdf_time_span_new();
@@ -77,7 +76,6 @@ START_TEST (pdf_time_span_cmp_002)
   pdf_time_span_t span1;
   pdf_time_span_t span2;
 
-  pdf_init();
 
   span1 = pdf_time_span_new();
   span2 = pdf_time_span_new();
@@ -111,7 +109,6 @@ START_TEST (pdf_time_span_cmp_003)
   pdf_time_span_t span1;
   pdf_time_span_t span2;
 
-  pdf_init();
 
   span1 = pdf_time_span_new();
   span2 = pdf_time_span_new();

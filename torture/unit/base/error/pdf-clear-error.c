@@ -1,13 +1,13 @@
 /* -*- mode: C -*-
  *
- *       File:         pdf-perror.c
- *       Date:         Wed Mar  12 12:43:00 2008
+ *       File:         pdf-clear-error.c
+ *       Date:         Fri Mar 04 23:57:00 2011
  *
- *       GNU PDF Library - Unit tests for pdf_perror
+ *       GNU PDF Library - Unit tests for pdf_clear_error()
  *
  */
 
-/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
+/* Copyright (C) 2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,47 +31,54 @@
 #include <pdf-test-common.h>
 
 /*
- * Test: pdf_perror_001
+ * Test: pdf_clear_error_001
  * Description:
- *   Try to trigger an error code with NULL string.
+ *   Clear a valid error.
  * Success condition:
- *   The program doesn't crash.
+ *   After clearing, error is NULL.
  */
-START_TEST (pdf_perror_001)
+START_TEST (pdf_clear_error_001)
 {
-    pdf_perror (PDF_OK, NULL);
+  const pdf_char_t *format = "Hello this is an error";
+  pdf_error_t *error;
+
+
+  error = pdf_error_new (PDF_EDOMAIN_BASE_BASIC,
+                         PDF_EAGAIN,
+                         format);
+  pdf_clear_error (&error);
+
+  fail_if (error != NULL);
 }
 END_TEST
-
 
 /*
- * Test: pdf_perror_002
+ * Test: pdf_clear_error_002
  * Description:
- *   Try to trigger an error code with valid string.
+ *   Try to clear an error, but no error pointer given.
  * Success condition:
- *   The program doesn't crash.
+ *   Doesn't crash.
  */
-START_TEST (pdf_perror_002)
+START_TEST (pdf_clear_error_002)
 {
-    pdf_perror (PDF_OK, "test");
+
+  pdf_clear_error (NULL);
 }
 END_TEST
-
-
 
 /*
  * Test case creation function
  */
 TCase *
-test_pdf_perror (void)
+test_pdf_clear_error (void)
 {
-  TCase *tc = tcase_create("pdf_perror");
-  tcase_add_test(tc, pdf_perror_001);
-  tcase_add_test(tc, pdf_perror_002);
-  tcase_add_checked_fixture (tc,
-                             pdf_test_setup,
-                             pdf_test_teardown);
+  TCase *tc;
+
+  tc = tcase_create("pdf_clear_error");
+
+  tcase_add_test(tc, pdf_clear_error_001);
+  tcase_add_test(tc, pdf_clear_error_002);
   return tc;
 }
 
-/* End of pdf-perror.c */
+/* End of pdf-clear-error.c */

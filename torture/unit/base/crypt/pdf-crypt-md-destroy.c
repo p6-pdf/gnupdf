@@ -41,8 +41,7 @@
 START_TEST (pdf_crypt_md_destroy_001)
 {
   pdf_crypt_md_t md;
-  pdf_init();
-  pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md);
+    pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md);
   fail_if (pdf_crypt_md_destroy (md));
 }
 END_TEST

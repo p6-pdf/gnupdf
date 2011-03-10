@@ -50,9 +50,6 @@ START_TEST (pdf_time_set_to_current_utc_time_001)
   pdf_time_t utcTime, mytime;
   struct pdf_time_cal_s utccal, mycal;
 
-  status = pdf_init();
-  fail_if(status != PDF_OK);
-
   status =  pdf_time_new(&utcTime);
   fail_if(status != PDF_OK);
 

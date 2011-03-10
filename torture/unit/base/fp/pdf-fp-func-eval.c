@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2011-02-24 23:50:29 aleksander"
+/* -*- mode: C -*- Time-stamp: "2011-03-05 00:44:20 aleksander"
  *
  *       File:         pdf-fp-func-eval.c
  *       Date:         Tue Dec  2 20:11:38 2008
@@ -88,7 +88,6 @@ pdf_fp_func_4_tmake (pdf_u32_t m,
         code = np;
     }
 
-  pdf_init();
 
   prog_size = size;
   ret = pdf_fp_func_4_new (m, n,
@@ -131,7 +130,6 @@ START_TEST (pdf_fp_func_eval_001)
   pdf_real_t in[2];
   pdf_real_t out[1];
 
-  pdf_init();
 
   prog_size = strlen (prog);
 
@@ -206,7 +204,6 @@ START_TEST (pdf_fp_func_eval_002)
 
   prog_size = strlen (prog);
 
-  pdf_init();
 
   /* Create the function */
   fail_if(pdf_fp_func_4_new (2, 1,
@@ -284,7 +281,6 @@ START_TEST (pdf_fp_func_eval_003)
 
   prog_size = strlen (prog);
 
-  pdf_init();
 
   /* Create the function */
   fail_if(pdf_fp_func_4_new (2, 1,
@@ -363,7 +359,6 @@ START_TEST (pdf_fp_func_eval_004)
 
   prog_size = strlen (prog);
 
-  pdf_init();
 
   /* Create the function */
   fail_if(pdf_fp_func_4_new (2, 1,
@@ -442,7 +437,6 @@ START_TEST (pdf_fp_func_eval_005)
 
   prog_size = strlen (prog);
 
-  pdf_init();
 
   /* Create the function */
   fail_if(pdf_fp_func_4_new (2, 1,
@@ -522,7 +516,6 @@ START_TEST (pdf_fp_func_eval_006)
 
   prog_size = strlen (prog);
 
-  pdf_init();
 
   /* Create the function */
   fail_if(pdf_fp_func_4_new (2, 1,
@@ -603,7 +596,6 @@ START_TEST (pdf_fp_func_eval_007)
 
   prog_size = strlen (prog);
 
-  pdf_init();
 
   /* Create the function */
   fail_if(pdf_fp_func_4_new (2, 1,
@@ -676,7 +668,6 @@ START_TEST (pdf_fp_func_eval_008)
 
   prog_size = strlen (prog);
 
-  pdf_init();
 
   /* Create the function */
   fail_if(pdf_fp_func_4_new (2, 1,
@@ -749,7 +740,6 @@ START_TEST (pdf_fp_func_eval_009)
 
   prog_size = strlen (prog);
 
-  pdf_init();
 
   /* Create the function */
   fail_if(pdf_fp_func_4_new (2, 1,
@@ -822,7 +812,6 @@ START_TEST (pdf_fp_func_eval_010)
 
   prog_size = strlen (prog);
 
-  pdf_init();
 
   /* Create the function */
   fail_if(pdf_fp_func_4_new (2, 1,
@@ -914,7 +903,6 @@ START_TEST (pdf_fp_func_eval_011)
 
   prog_size = strlen (prog);
 
-  pdf_init();
 
   /* Create the function */
   fail_if(pdf_fp_func_4_new (2, 1,
@@ -1023,7 +1011,6 @@ START_TEST (pdf_fp_func_eval_012)
 
   prog_size = strlen (prog);
 
-  pdf_init();
 
   /* Create the function */
   fail_if(pdf_fp_func_4_new (2, 1,
@@ -1102,7 +1089,6 @@ START_TEST (pdf_fp_func_eval_013)
 
   prog_size = strlen (prog);
 
-  pdf_init();
 
   /* Create the function */
   fail_if(pdf_fp_func_4_new (2, 1,
@@ -1181,7 +1167,6 @@ START_TEST (pdf_fp_func_eval_014)
 
   prog_size = strlen (prog);
 
-  pdf_init();
 
   /* Create the function */
   fail_if(pdf_fp_func_4_new (2, 1,
@@ -1260,7 +1245,6 @@ START_TEST (pdf_fp_func_eval_015)
 
   prog_size = strlen (prog);
 
-  pdf_init();
 
   /* Create the function */
   fail_if(pdf_fp_func_4_new (2, 1,
@@ -1339,7 +1323,6 @@ START_TEST (pdf_fp_func_eval_016)
 
   prog_size = strlen (prog);
 
-  pdf_init();
 
   /* Create the function */
   fail_if(pdf_fp_func_4_new (2, 1,
@@ -1418,7 +1401,6 @@ START_TEST (pdf_fp_func_eval_017)
 
   prog_size = strlen (prog);
 
-  pdf_init();
 
   /* Create the function */
   fail_if(pdf_fp_func_4_new (2, 1,
@@ -1500,7 +1482,6 @@ START_TEST (pdf_fp_func_eval_018)
 
   prog_size = strlen (prog);
 
-  pdf_init();
 
   /* Create the function */
   fail_if(pdf_fp_func_4_new (2, 1,
@@ -1582,7 +1563,6 @@ START_TEST (pdf_fp_func_eval_019)
 
   prog_size = strlen (prog);
 
-  pdf_init();
 
   /* Create the function */
   fail_if(pdf_fp_func_4_new (2, 1,
@@ -1661,7 +1641,6 @@ START_TEST (pdf_fp_func_eval_020)
 
   prog_size = strlen (prog);
 
-  pdf_init();
 
   /* Create the function */
   fail_if(pdf_fp_func_4_new (2, 1,
@@ -1765,7 +1744,6 @@ START_TEST (pdf_fp_func_eval_021)
 
   prog_size = strlen (prog);
 
-  pdf_init();
 
   /* Create the function */
   fail_if(pdf_fp_func_4_new (2, 1,

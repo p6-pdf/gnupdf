@@ -1,3 +1,33 @@
+2011-03-05  Aleksander Morgado  <aleksander@gnu.org>
+
+	torture,base: Don't call pdf_init() in each unit test.
+	* torture/unit/base/*.[c|h]: Avoid calling pdf_init() in each unit
+	test, already done in the test setup fixture.
+
+2011-03-05  Aleksander Morgado  <aleksander@gnu.org>
+
+	Added new unit tests for the pdf_error_t API
+	* torture/unit/base/error/pdf-error-new.c: New file with new unit tests.
+	* torture/unit/base/error/pdf-set-error.c: Idem.
+	* torture/unit/base/error/pdf-clear-error.c: Idem.
+	* torture/unit/base/error/pdf-propagate-error.c: Idem.
+	* torture/unit/base/error/pdf-prefix-error.c: Idem.
+	* torture/unit/base/error/tsuite-error.c: Files enabled in execution.
+	* torture/unit/Makefile.am (TEST_SUITE_ERROR): Files added in
+	compilation.
+
+2011-03-05  Aleksander Morgado  <aleksander@gnu.org>
+
+	New `pdf_prefix_error()' method.
+	* src/base/pdf-error.[h|c]: New method implemented.
+	* doc/gnupdf.texi (Error Reporting procedures): New method documented.
+
+2011-02-25  Aleksander Morgado  <aleksander@gnu.org>
+
+	base,error: assume pdf_error_t allocation may fail.
+	* src/base/pdf-error.c: If allocating a new pdf_error_t fails, use a
+	backup constant static pdf_error_t which reports ENOMEM.
+
 2011-02-24  Aleksander Morgado  <aleksander@gnu.org>
 
 	torture: Removed no longer used bignum tests.
@@ -29,6 +59,14 @@
 
 	* torture/unit/base/*.[c|h]: Modify all tests to enable the setup and
 	teardown fixtures.
+
+2011-02-23  Jose E. Marchesi  <jemarch@gnu.org>
+
+	pdf-obj: new macros to access pdf_obj_s structures.
+	* src/object/pdf-obj.c: New macros OBJ_IND_P, OBJ_SET_IND,
+	OBJ_TYPE, OBJ_SET_TYPE, OBJ_DOC, OBJ_SET_DOC, OBJ_INT,
+	OBJ_SET_INT, OBJ_BOOL, OBJ_SET_BOOL, OBJ_REAL, OBJ_SET_REAL,
+	OBJ_ARRAY, OBJ_SET_ARRAY, OBJ_STREAM, OBJ_SET_STREAM.
 
 2011-02-23  Jose E. Marchesi  <jemarch@gnu.org>
 

@@ -45,7 +45,6 @@ START_TEST (pdf_stm_file_new_001)
   pdf_size_t remain_length;
 
   /* Create the file path */
-  pdf_init();
 
   ret = pdf_text_new_from_pdf_string ("tmp.test", 8, &remain, &remain_length, &path);
   fail_if (ret != PDF_OK);

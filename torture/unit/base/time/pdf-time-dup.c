@@ -47,7 +47,6 @@ START_TEST (pdf_time_dup_001)
   pdf_i64_t seconds;
   pdf_u32_t i,j,sec;
 
-  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);

@@ -45,7 +45,6 @@ START_TEST (pdf_list_remove_001)
 
   elem = 1212;
 
-  pdf_init ();
 
   list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
 
@@ -73,7 +72,6 @@ START_TEST (pdf_list_remove_002)
   elem = 1212;
   elem2 = 3333;
 
-  pdf_init ();
 
   list = pdf_list_new (NULL, NULL, PDF_FALSE, NULL);
 

@@ -55,7 +55,6 @@ START_TEST (pdf_time_get_utc_cal_001)
   extern pdf_u32_t datesInSeconds[];
   extern struct pdf_time_cal_s dates[];
 
-  pdf_init();
 
   status = pdf_time_new(&time1);
 
@@ -102,7 +101,6 @@ START_TEST (pdf_time_get_utc_cal_002)
   struct pdf_time_cal_s utccal;
   struct pdf_time_cal_s expected_cal;
 
-  pdf_init();
 
   status = pdf_time_new(&time1);
 

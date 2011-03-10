@@ -65,7 +65,6 @@ START_TEST (pdf_time_diff_cal_001)
   extern pdf_u32_t daysInSeconds[];
   struct pdf_time_cal_span_s calspan, calspan2;
 
-  pdf_init();
 
   status = pdf_time_new(&time1);
   fail_if(status != PDF_OK);
