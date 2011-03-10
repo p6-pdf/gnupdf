@@ -57,8 +57,8 @@ START_TEST (pdf_text_new_from_u32_001)
       expected_data = expected_data_be;
     }
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* 1. The call to pdf_text_new_from_u32 should return PDF_OK. */
   fail_unless(pdf_text_new_from_u32(number, &text) == PDF_OK);
@@ -117,8 +117,8 @@ START_TEST (pdf_text_new_from_u32_002)
       expected_data = expected_data_be;
     }
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* 1. The call to pdf_text_new_from_u32 should return PDF_OK. */
   fail_unless(pdf_text_new_from_u32(number, &text) == PDF_OK);

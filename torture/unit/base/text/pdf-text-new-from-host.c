@@ -49,8 +49,8 @@ START_TEST (pdf_text_new_from_host_001)
   extern const test_string_t ascii_strings[];
   int i;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Test ASCII host encoding */
   i=0;
@@ -131,8 +131,8 @@ START_TEST (pdf_text_new_from_host_002)
   pdf_text_host_encoding_t host_enc;
   const pdf_char_t *sample_utf8 = (pdf_char_t *)"\342\202\254"; /* EURO SIGN */
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create, without using the API, a valid pdf_text_host_encoding_t */
 #ifdef PDF_HOST_WIN32
@@ -165,8 +165,8 @@ START_TEST (pdf_text_new_from_host_003)
   pdf_text_host_encoding_t host_enc;
   const pdf_char_t *sample_usascii = (pdf_char_t *)"GNU's not Unix";
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create, without using the API, an invalid pdf_text_host_encoding_t */
 #ifdef PDF_HOST_WIN32

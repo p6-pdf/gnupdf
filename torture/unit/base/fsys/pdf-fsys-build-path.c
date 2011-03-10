@@ -44,9 +44,6 @@ START_TEST (pdf_fsys_build_path_001)
   pdf_text_t text1,text2,text3,result;
   pdf_char_t *first="want",*dir="some",*dirr="beer?", *output_data=NULL;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
-
   fail_if(pdf_text_new_from_unicode(first, 4, PDF_TEXT_UTF8, &text1) != PDF_OK);
   fail_if(pdf_text_new_from_unicode(dir, 4, PDF_TEXT_UTF8, &text2) != PDF_OK);
   fail_if(pdf_text_new_from_unicode(dirr, 5, PDF_TEXT_UTF8, &text3) != PDF_OK);

@@ -51,10 +51,6 @@ START_TEST (pdf_text_replace_001)
                                       "GNU rules GNU rules GNU";
   pdf_char_t *output_string = NULL;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
-
-
   fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen(input_string),
                                        NULL, NULL,
@@ -108,10 +104,6 @@ START_TEST (pdf_text_replace_002)
                                       "GNU/Linux";
   pdf_char_t *output_string = NULL;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
-
-
   fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen(input_string),
                                        NULL, NULL,
@@ -164,10 +156,6 @@ START_TEST (pdf_text_replace_003)
                                    "FreeBSD rules FreeBSD rules FreeBSD";
   pdf_char_t *output_string = NULL;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
-
-
   fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen(input_string),
                                        NULL, NULL,
@@ -217,10 +205,6 @@ START_TEST (pdf_text_replace_004)
   const pdf_char_t *input_string = (pdf_char_t *) "GNU rules GNU rules GNU";
   const pdf_char_t *expected_string = (pdf_char_t *) " rules  rules ";
   pdf_char_t *output_string = NULL;
-
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
-
 
   fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen(input_string),
@@ -274,10 +258,6 @@ START_TEST (pdf_text_replace_005)
                                       "Simple test string with no old pattern";
   pdf_char_t *output_string = NULL;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
-
-
   fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen(input_string),
                                        NULL, NULL,
@@ -329,10 +309,6 @@ START_TEST (pdf_text_replace_006)
   const pdf_char_t *expected_string = (pdf_char_t *) \
                                       "Simple test string with no old pattern";
   pdf_char_t *output_string = NULL;
-
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
-
 
   fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen(input_string),
@@ -386,10 +362,6 @@ START_TEST (pdf_text_replace_007)
                                    "Simple test string with no old pattern";
   pdf_char_t *output_string = NULL;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
-
-
   fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen(input_string),
                                        NULL, NULL,
@@ -442,10 +414,6 @@ START_TEST (pdf_text_replace_008)
                                       "Simple test string with no old pattern";
   pdf_char_t *output_string = NULL;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
-
-
   fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen(input_string),
                                        NULL, NULL,
@@ -494,10 +462,6 @@ START_TEST (pdf_text_replace_009)
   const pdf_char_t *input_string = (pdf_char_t *) \
                                    "Simple test string with no old pattern";
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
-
-
   fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen(input_string),
                                        NULL, NULL,
@@ -539,10 +503,6 @@ START_TEST (pdf_text_replace_010)
   const pdf_char_t *new_pattern_ascii = (pdf_char_t *)"GNU/Linux";
   const pdf_char_t *input_string = (pdf_char_t *) "";
   pdf_char_t *output_string = NULL;
-
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
-
 
   fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen(input_string),

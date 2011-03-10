@@ -44,8 +44,8 @@ START_TEST (pdf_text_dup_001)
   pdf_text_t text = NULL;
   pdf_text_t duplicate = NULL;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   fail_if(pdf_text_new (&text) != PDF_OK);
 
@@ -85,8 +85,8 @@ START_TEST (pdf_text_dup_002)
   pdf_text_t duplicate = NULL;
   const pdf_char_t *sample_utf8 = (pdf_char_t *)"GNU's not Unix";
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   fail_if(pdf_text_new (&text) != PDF_OK);
 
@@ -135,8 +135,8 @@ START_TEST (pdf_text_dup_003)
   const pdf_char_t *sample_utf8 = (pdf_char_t *)"GNU's not Unix";
   const pdf_char_t *sample_lang = (pdf_char_t *)"en";
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   fail_if(pdf_text_new (&text) != PDF_OK);
 
@@ -192,8 +192,8 @@ START_TEST (pdf_text_dup_004)
   const pdf_char_t *sample_lang = (pdf_char_t *)"en";
   const pdf_char_t *sample_country = (pdf_char_t *)"gb";
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   fail_if(pdf_text_new (&text) != PDF_OK);
 

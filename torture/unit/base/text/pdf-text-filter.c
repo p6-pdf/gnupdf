@@ -71,8 +71,8 @@ START_TEST (pdf_text_filter_001)
   input_size = (long)strlen(input_data);
   expected_size = (long)strlen(expected_data);
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
 
   /* Create text object with given contents */
@@ -149,8 +149,8 @@ START_TEST (pdf_text_filter_002)
   pdf_char_t *output_data = NULL;
   pdf_size_t output_size = 0;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -236,8 +236,8 @@ START_TEST (pdf_text_filter_003)
   input_size = (long)strlen(input_data);
   expected_size = (long)strlen(expected_data);
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
 
   /* Create text object with given contents */
@@ -315,8 +315,8 @@ START_TEST (pdf_text_filter_004)
   pdf_char_t *output_data = NULL;
   pdf_size_t output_size = 0;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -397,8 +397,8 @@ START_TEST (pdf_text_filter_005)
   input_size = (long)strlen(input_data);
   expected_size = (long)strlen(expected_data);
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -474,8 +474,8 @@ START_TEST (pdf_text_filter_006)
   pdf_char_t *output_data = NULL;
   pdf_size_t output_size = 0;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -561,8 +561,8 @@ START_TEST (pdf_text_filter_007)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -642,8 +642,8 @@ START_TEST (pdf_text_filter_008)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -720,8 +720,8 @@ START_TEST (pdf_text_filter_009)
   pdf_char_t *output_data = NULL;
   pdf_size_t output_size = 0;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -809,8 +809,8 @@ START_TEST (pdf_text_filter_010)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -898,8 +898,8 @@ START_TEST (pdf_text_filter_011)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -985,8 +985,8 @@ START_TEST (pdf_text_filter_012)
    */
 
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* 1st check, the sequence of previous case-ignorable points is empty */
   if(1)
@@ -1123,8 +1123,8 @@ START_TEST (pdf_text_filter_013)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -1212,8 +1212,8 @@ START_TEST (pdf_text_filter_014)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -1324,8 +1324,8 @@ START_TEST (pdf_text_filter_016)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -1413,8 +1413,8 @@ START_TEST (pdf_text_filter_017)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -1506,8 +1506,8 @@ START_TEST (pdf_text_filter_018)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -1600,8 +1600,8 @@ START_TEST (pdf_text_filter_019)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -1696,8 +1696,8 @@ START_TEST (pdf_text_filter_020)
    */
 
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* 1st check, the previous cased point is not available */
   if(1)
@@ -1839,8 +1839,8 @@ START_TEST (pdf_text_filter_021)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -1932,8 +1932,8 @@ START_TEST (pdf_text_filter_022)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -2048,8 +2048,8 @@ START_TEST (pdf_text_filter_024)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -2137,8 +2137,8 @@ START_TEST (pdf_text_filter_025)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -2234,8 +2234,8 @@ START_TEST (pdf_text_filter_026)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -2332,8 +2332,8 @@ START_TEST (pdf_text_filter_027)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -2425,8 +2425,8 @@ START_TEST (pdf_text_filter_028)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -2508,8 +2508,8 @@ START_TEST (pdf_text_filter_029)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -2596,8 +2596,8 @@ START_TEST (pdf_text_filter_030)
    */
 
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* 1st check, the sequence of previous case-ignorable points is empty */
   if(1)
@@ -2772,8 +2772,8 @@ START_TEST (pdf_text_filter_031)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -2861,8 +2861,8 @@ START_TEST (pdf_text_filter_032)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -2971,8 +2971,8 @@ START_TEST (pdf_text_filter_034)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -3059,8 +3059,8 @@ START_TEST (pdf_text_filter_035)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -3151,8 +3151,8 @@ START_TEST (pdf_text_filter_036)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -3245,8 +3245,8 @@ START_TEST (pdf_text_filter_037)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -3342,8 +3342,8 @@ START_TEST (pdf_text_filter_038)
    */
 
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* 1st check, the previous cased point is not available */
   if(1)
@@ -3499,8 +3499,8 @@ START_TEST (pdf_text_filter_039)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -3593,8 +3593,8 @@ START_TEST (pdf_text_filter_040)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -3709,8 +3709,8 @@ START_TEST (pdf_text_filter_042)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -3798,8 +3798,8 @@ START_TEST (pdf_text_filter_043)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -3895,8 +3895,8 @@ START_TEST (pdf_text_filter_044)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -3992,8 +3992,8 @@ START_TEST (pdf_text_filter_045)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -4085,8 +4085,8 @@ START_TEST (pdf_text_filter_046)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -4170,8 +4170,8 @@ START_TEST (pdf_text_filter_047)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -4262,8 +4262,8 @@ START_TEST (pdf_text_filter_048)
    */
 
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* 1st check, the sequence of previous case-ignorable points is empty */
   if(1)
@@ -4414,8 +4414,8 @@ START_TEST (pdf_text_filter_049)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -4505,8 +4505,8 @@ START_TEST (pdf_text_filter_050)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -4617,8 +4617,8 @@ START_TEST (pdf_text_filter_052)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -4707,8 +4707,8 @@ START_TEST (pdf_text_filter_053)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -4801,8 +4801,8 @@ START_TEST (pdf_text_filter_054)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -4897,8 +4897,8 @@ START_TEST (pdf_text_filter_055)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -4998,8 +4998,8 @@ START_TEST (pdf_text_filter_056)
    */
 
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* 1st check, the previous cased point is not available (so word starts in
    *  the sigma --> uppercase sigma */
@@ -5159,8 +5159,8 @@ START_TEST (pdf_text_filter_057)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -5255,8 +5255,8 @@ START_TEST (pdf_text_filter_058)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -5373,8 +5373,8 @@ START_TEST (pdf_text_filter_060)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -5465,8 +5465,8 @@ START_TEST (pdf_text_filter_061)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -5564,8 +5564,8 @@ START_TEST (pdf_text_filter_062)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
@@ -5661,8 +5661,8 @@ START_TEST (pdf_text_filter_063)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   /* Create text object with given contents */
   fail_if(pdf_text_new_from_unicode(input_data,
