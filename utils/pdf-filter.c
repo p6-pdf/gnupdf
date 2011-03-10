@@ -1227,18 +1227,19 @@ open_file (pdf_char_t                *name,
            enum pdf_fsys_file_mode_e  mode)
 {
   pdf_status_t ret;
-  pdf_text_t path;
-  pdf_char_t * rem;
-  pdf_size_t rem_len;
+  pdf_text_t *path;
+  pdf_error_t *error = NULL;
 
-  ret = pdf_text_new_from_pdf_string (name,
-                                      strlen(name),
-                                      &rem,
-                                      &rem_len,
-                                      &path);
-  if (ret != PDF_OK)
+  path = pdf_text_new_from_host (name,
+				 strlen (name),
+				 pdf_text_get_host_encoding (),
+				 &error);
+  if (!path)
     {
-      pdf_error (ret, stderr, "while creating pdf text path");
+      pdf_error (pdf_error_get_status (error),
+		 stderr,
+		 "couldn't create new text path: %s",
+		 pdf_error_get_message (error));
       exit (EXIT_FAILURE);
     }
 
