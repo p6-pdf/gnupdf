@@ -66,12 +66,12 @@ typedef struct pdf_fsys_http_file_s *pdf_fsys_http_file_t;
 
 struct pdf_fsys_http_data_s
 {
-  pdf_status_t           init_stat; 
+  pdf_status_t           init_stat;
   pthread_t              worker;
   CURLM                 *curlm;
   pthread_mutex_t        mutex;     /* mutex to lock the file_list
                                        object. */
-  pdf_list_t             file_list;
+  pdf_list_t            *file_list;
   int                    running_handles;
   volatile pdf_bool_t    terminate; /* volatile so never cached in a
                                        register */
@@ -83,135 +83,104 @@ typedef struct pdf_fsys_http_data_s *pdf_fsys_http_data_t;
 /* --------------------- Filesystem interface ------------------------- */
 
 /* Filesystem initialization and cleanup */
-pdf_status_t
-pdf_fsys_http_init (void **data);
+pdf_status_t pdf_fsys_http_init (void **data);
 
-pdf_status_t
-pdf_fsys_http_cleanup (void *data);
+pdf_status_t pdf_fsys_http_cleanup (void *data);
 
 /* Filesystem implementation */
-pdf_status_t
-pdf_fsys_http_create_folder (void *data,
-                             pdf_text_t path_name);
+pdf_status_t pdf_fsys_http_create_folder (void       *data,
+                                          pdf_text_t *path_name);
 
-pdf_status_t
-pdf_fsys_http_get_folder_contents (void *data,
-                                   pdf_text_t path_name,
-                                   pdf_list_t item_list);
+pdf_status_t pdf_fsys_http_get_folder_contents (void       *data,
+                                                pdf_text_t *path_name,
+                                                pdf_list_t *item_list);
 
-pdf_status_t
-pdf_fsys_http_get_parent (void *data,
-                          pdf_text_t path_name,
-                          pdf_text_t parent_path);
+pdf_status_t pdf_fsys_http_get_parent (void        *data,
+                                       pdf_text_t  *path_name,
+                                       pdf_text_t **parent_path);
 
-pdf_status_t
-pdf_fsys_http_remove_folder (void *data,
-                             pdf_text_t path_name);
+pdf_status_t pdf_fsys_http_remove_folder (void       *data,
+                                          pdf_text_t *path_name);
 
-pdf_status_t
-pdf_fsys_http_get_item_props (void *data,
-                              pdf_text_t path_name,
-                              struct pdf_fsys_item_props_s *props);
+pdf_status_t pdf_fsys_http_get_item_props (void                         *data,
+                                           pdf_text_t                   *path_name,
+                                           struct pdf_fsys_item_props_s *props);
 
-pdf_i64_t
-pdf_fsys_http_get_free_space (void *data,
-                              pdf_text_t path_name);
+pdf_i64_t pdf_fsys_http_get_free_space (void              *data,
+                                        const pdf_text_t  *path_name);
 
-pdf_bool_t
-pdf_fsys_http_item_p (void *data,
-                      pdf_text_t path_name);
+pdf_bool_t pdf_fsys_http_item_p (void       *data,
+                                 pdf_text_t *path_name);
 
-pdf_bool_t
-pdf_fsys_http_item_readable_p (void *data,
-                               pdf_text_t path_name);
+pdf_bool_t pdf_fsys_http_item_readable_p (void       *data,
+                                          pdf_text_t *path_name);
 
-pdf_bool_t
-pdf_fsys_http_item_writable_p (void *data,
-                               pdf_text_t path_name);
+pdf_bool_t pdf_fsys_http_item_writable_p (void       *data,
+                                          pdf_text_t *path_name);
 
-pdf_text_t
-pdf_fsys_http_file_get_url (pdf_fsys_file_t file);
+pdf_text_t *pdf_fsys_http_file_get_url (pdf_fsys_file_t file);
 
-pdf_status_t pdf_fsys_http_build_path (void * data,
-                                       pdf_text_t * output,
-                                       pdf_text_t first_element,
-                                       pdf_list_t rest);
+pdf_status_t pdf_fsys_http_build_path (void        *data,
+                                       pdf_text_t **output,
+                                       pdf_text_t  *first_element,
+                                       pdf_list_t **rest);
 
 /* --------------------- File interface ------------------------- */
 
-pdf_status_t
-pdf_fsys_http_file_read (pdf_fsys_file_t file, 
-                         pdf_char_t *buf,
-                         pdf_size_t bytes, 
-                         pdf_size_t *read_bytes);
+pdf_status_t pdf_fsys_http_file_read (pdf_fsys_file_t  file,
+                                      pdf_char_t      *buf,
+                                      pdf_size_t       bytes,
+                                      pdf_size_t      *read_bytes);
 
-pdf_status_t
-pdf_fsys_http_file_write (pdf_fsys_file_t file, 
-                          pdf_char_t *buf,
-                          pdf_size_t bytes, 
-                          pdf_size_t *written_bytes);
+pdf_status_t pdf_fsys_http_file_write (pdf_fsys_file_t  file,
+                                       pdf_char_t      *buf,
+                                       pdf_size_t       bytes,
+                                       pdf_size_t      *written_bytes);
 
-pdf_status_t
-pdf_fsys_http_file_flush (pdf_fsys_file_t file);
+pdf_status_t pdf_fsys_http_file_flush (pdf_fsys_file_t file);
 
-pdf_bool_t
-pdf_fsys_http_file_can_set_size_p (pdf_fsys_file_t file,
-                                   pdf_off_t pos);
+pdf_bool_t pdf_fsys_http_file_can_set_size_p (pdf_fsys_file_t file,
+                                              pdf_off_t       pos);
 
-pdf_status_t
-pdf_fsys_http_file_open (void *data,
-                         pdf_text_t path_name,
-                         enum pdf_fsys_file_mode_e mode,
-                         pdf_fsys_file_t *p_file);
+pdf_status_t pdf_fsys_http_file_open (void                      *data,
+                                      pdf_text_t                *path_name,
+                                      enum pdf_fsys_file_mode_e  mode,
+                                      pdf_fsys_file_t           *p_file);
 
-pdf_status_t
-pdf_fsys_http_file_open_tmp (void *data,
-                             pdf_fsys_file_t *p_file);
+pdf_status_t pdf_fsys_http_file_open_tmp (void            *data,
+                                          pdf_fsys_file_t *p_file);
 
-pdf_off_t
-pdf_fsys_http_file_get_size (pdf_fsys_file_t file);
+pdf_off_t pdf_fsys_http_file_get_size (pdf_fsys_file_t file);
 
-pdf_status_t
-pdf_fsys_http_file_set_size (pdf_fsys_file_t file,
-                             pdf_off_t pos);
+pdf_status_t pdf_fsys_http_file_set_size (pdf_fsys_file_t file,
+                                          pdf_off_t       pos);
 
-pdf_status_t
-pdf_fsys_http_file_get_pos (pdf_fsys_file_t file,
-                            pdf_off_t *pos);
+pdf_status_t pdf_fsys_http_file_get_pos (pdf_fsys_file_t  file,
+                                         pdf_off_t       *pos);
 
-pdf_status_t
-pdf_fsys_http_file_set_pos (pdf_fsys_file_t file,
-                            pdf_off_t pos);
+pdf_status_t pdf_fsys_http_file_set_pos (pdf_fsys_file_t file,
+                                         pdf_off_t       pos);
 
-enum pdf_fsys_file_mode_e
-pdf_fsys_http_file_get_mode (pdf_fsys_file_t file);
+enum pdf_fsys_file_mode_e pdf_fsys_http_file_get_mode (pdf_fsys_file_t file);
 
-pdf_status_t
-pdf_fsys_http_file_set_mode (pdf_fsys_file_t file,
-                             enum pdf_fsys_file_mode_e new_mode);
+pdf_status_t pdf_fsys_http_file_set_mode (pdf_fsys_file_t           file,
+                                          enum pdf_fsys_file_mode_e new_mode);
 
-pdf_bool_t
-pdf_fsys_http_file_same_p (pdf_fsys_file_t file,
-                           pdf_text_t path_name);
+pdf_bool_t pdf_fsys_http_file_same_p (pdf_fsys_file_t  file,
+                                      pdf_text_t      *path_name);
 
-pdf_status_t
-pdf_fsys_http_file_request_ria (pdf_fsys_file_t file,
-                                pdf_off_t offset,
-                                pdf_size_t count);
+pdf_status_t pdf_fsys_http_file_request_ria (pdf_fsys_file_t file,
+                                             pdf_off_t       offset,
+                                             pdf_size_t      count);
 
-pdf_bool_t
-pdf_fsys_http_file_has_ria (pdf_fsys_file_t file);
+pdf_bool_t pdf_fsys_http_file_has_ria (pdf_fsys_file_t file);
 
-pdf_status_t
-pdf_fsys_http_file_cancel_ria (pdf_fsys_file_t file);
+pdf_status_t pdf_fsys_http_file_cancel_ria (pdf_fsys_file_t file);
 
-pdf_status_t
-pdf_fsys_http_file_close (pdf_fsys_file_t file);
+pdf_status_t pdf_fsys_http_file_close (pdf_fsys_file_t file);
 
-pdf_status_t
-pdf_fsys_http_file_reopen (pdf_fsys_file_t file,
-                           enum pdf_fsys_file_mode_e mode);
-
+pdf_status_t pdf_fsys_http_file_reopen (pdf_fsys_file_t           file,
+                                        enum pdf_fsys_file_mode_e mode);
 
 #endif /* !PDF_FSYS_HTTP_H */
 
