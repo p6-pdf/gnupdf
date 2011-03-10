@@ -42,7 +42,6 @@ struct pdf_fsys_disk_file_s
                                  Unicode version */
   pdf_char_t *host_path;      /* Path name used to open the file, host
                                  encoded version */
-  pdf_size_t host_path_size;  /* Size of the host encoded path */
 
   enum pdf_fsys_file_mode_e file_mode; /* file mode set when file
                                           was opened */
@@ -81,25 +80,25 @@ pdf_status_t pdf_fsys_disk_remove_folder (void             *data,
 
 /* Get item properties */
 pdf_status_t pdf_fsys_disk_get_item_props (void                         *data,
-                                           pdf_text_t                   *path_name,
+                                           const pdf_text_t             *path_name,
                                            struct pdf_fsys_item_props_s *item_props);
 
 /* Check if file exists in disk */
-pdf_bool_t pdf_fsys_disk_item_p (void       *data,
-                                 pdf_text_t *path_name);
+pdf_bool_t pdf_fsys_disk_item_p (void             *data,
+                                 const pdf_text_t *path_name);
 
 /* Check if file is readable in disk */
-pdf_bool_t pdf_fsys_disk_item_readable_p (void       *data,
-                                          pdf_text_t *path_name);
+pdf_bool_t pdf_fsys_disk_item_readable_p (void             *data,
+                                          const pdf_text_t *path_name);
 
 /* Check if file is writable in disk */
-pdf_bool_t pdf_fsys_disk_item_writable_p (void       *data,
-                                          pdf_text_t *path_name);
+pdf_bool_t pdf_fsys_disk_item_writable_p (void             *data,
+                                          const pdf_text_t *path_name);
 
-pdf_status_t pdf_fsys_disk_build_path (void        *data,
-                                       pdf_text_t **output,
-                                       pdf_text_t  *first_element,
-                                       pdf_list_t **rest);
+pdf_status_t pdf_fsys_disk_build_path (void              *data,
+                                       pdf_text_t       **output,
+                                       const pdf_text_t  *first_element,
+                                       const pdf_list_t  *rest);
 
 /* --------------------- File interface ------------------------- */
 
@@ -124,8 +123,8 @@ pdf_status_t pdf_fsys_disk_file_set_mode (pdf_fsys_file_t           file,
                                           enum pdf_fsys_file_mode_e new_mode);
 
 /* Check if paths are same/equivalent */
-pdf_bool_t pdf_fsys_disk_file_same_p (pdf_fsys_file_t  file,
-                                      pdf_text_t      *path);
+pdf_bool_t pdf_fsys_disk_file_same_p (pdf_fsys_file_t   file,
+                                      const pdf_text_t *path);
 
 /* Get pos */
 pdf_status_t pdf_fsys_disk_file_get_pos (pdf_fsys_file_t  file,

@@ -91,8 +91,8 @@ const struct pdf_fsys_impl_s pdf_fsys_disk_implementation =
 
 static pdf_status_t __pdf_fsys_disk_get_status_from_errno (int _errno);
 
-static pdf_char_t *__pdf_fsys_disk_get_host_path (pdf_text_t   *path,
-                                                  pdf_error_t **error);
+static pdf_char_t *__pdf_fsys_disk_get_host_path (const pdf_text_t  *path,
+                                                  pdf_error_t      **error);
 
 static pdf_text_t *__pdf_fsys_disk_set_host_path (const pdf_char_t *host_path,
                                                   const pdf_size_t  host_path_size,
@@ -101,7 +101,8 @@ static pdf_text_t *__pdf_fsys_disk_set_host_path (const pdf_char_t *host_path,
 static const pdf_char_t *__pdf_fsys_disk_get_mode_string (const enum pdf_fsys_file_mode_e mode);
 
 #ifdef PDF_HOST_WIN32
-static pdf_bool_t __pdf_fsys_disk_win32_device_p (pdf_text_t *path);
+static pdf_bool_t __pdf_fsys_disk_win32_device_p (const pdf_text_t  *path,
+						  pdf_error_t      **error);
 #endif
 
 /*
@@ -272,7 +273,6 @@ __pdf_fsys_init_base_file_data (const pdf_text_t  *path_name,
 
   /* Get the host encoded path */
   file_data->host_path = __pdf_fsys_disk_get_host_path (file_data->unicode_path,
-                                                        &(file_data->host_path_size),
                                                         error);
   if (!file_data->host_path)
     {
@@ -320,8 +320,8 @@ pdf_fsys_disk_file_open (void                            *data,
     {
       pdf_dealloc (file);
       /* TODO: Propagate error */
-      pdf_error_destroy (&inner_error);
-      return PDF_ENOMEM:
+      pdf_error_destroy (inner_error);
+      return PDF_ENOMEM;
     };
 
   /* Open the file */
@@ -389,10 +389,10 @@ pdf_fsys_disk_file_open_tmp (void            *data,
   if (!file_data)
     {
       pdf_dealloc (file);
-      pdf_error_destroy (path_name);
+      pdf_text_destroy (path_name);
       /* TODO: Propagate error */
-      pdf_error_destroy (&inner_error);
-      return PDF_ENOMEM:
+      pdf_error_destroy (inner_error);
+      return PDF_ENOMEM;
     };
 
   file->fs = NULL; /* Default filesystem.  */
@@ -422,8 +422,6 @@ pdf_fsys_disk_file_open_tmp (void            *data,
 pdf_status_t
 pdf_fsys_disk_file_close (pdf_fsys_file_t file)
 {
-  pdf_error_t *inner_error = NULL;
-
   PDF_ASSERT_POINTER_RETURN_VAL (file, PDF_EBADDATA);
   PDF_ASSERT_POINTER_RETURN_VAL (file->data, PDF_EBADDATA);
 
@@ -456,13 +454,11 @@ pdf_fsys_disk_create_folder (void             *data,
 {
   pdf_error_t *inner_error = NULL;
   pdf_char_t *host_path;
-  pdf_size_t host_path_size;
 
   PDF_ASSERT_POINTER_RETURN_VAL (path_name, PDF_EBADDATA);
 
   /* Get a host-encoded version of the path name */
   host_path = __pdf_fsys_disk_get_host_path (path_name,
-                                             &host_path_size,
                                              &inner_error);
   if (!host_path)
     {
@@ -521,7 +517,6 @@ pdf_fsys_disk_get_folder_contents (void             *data,
   pdf_error_t *inner_error = NULL;
   PDF_DIR *dir_stream;
   pdf_char_t *host_path;
-  pdf_size_t host_path_size = 0;
   pdf_text_t *entry_text;
   pdf_u32_t name_length;
   struct pdf_dirent_s *dir_entry;
@@ -530,7 +525,6 @@ pdf_fsys_disk_get_folder_contents (void             *data,
 
   /* Get the pathname in the host encoding */
   host_path = __pdf_fsys_disk_get_host_path (path_name,
-                                             &host_path_size,
                                              &inner_error);
   if (!host_path)
     {
@@ -613,14 +607,13 @@ pdf_status_t
 pdf_fsys_disk_remove_folder (void             *data,
                              const pdf_text_t *path_name)
 {
+  pdf_error_t *inner_error = NULL;
   pdf_char_t *host_path;
-  pdf_size_t host_path_size;
 
   PDF_ASSERT_POINTER_RETURN_VAL (path_name, PDF_EBADDATA);
 
   /* Get the pathname in the host encoding */
   host_path = __pdf_fsys_disk_get_host_path (path_name,
-                                             &host_path_size,
                                              &inner_error);
   if (!host_path)
     {
@@ -668,7 +661,7 @@ __pdf_fsys_disk_is_readable_from_host_path (const pdf_char_t  *host_path,
 }
 
 static pdf_bool_t
-__pdf_fsys_disk_is_writeble_from_host_path (const pdf_char_t  *host_path,
+__pdf_fsys_disk_is_writable_from_host_path (const pdf_char_t  *host_path,
                                             pdf_error_t      **error)
 {
   if (PDF_ACCESS (host_path, W_OK) < 0)
@@ -716,19 +709,17 @@ __pdf_fsys_disk_file_get_size_from_host_path (const pdf_char_t *host_path,
 
 pdf_status_t
 pdf_fsys_disk_get_item_props (void                         *data,
-                              pdf_text_t                   *path_name,
+                              const pdf_text_t             *path_name,
                               struct pdf_fsys_item_props_s *item_props)
 {
   pdf_error_t *inner_error = NULL;
   pdf_char_t* host_path;
-  pdf_size_t host_path_size = 0;
 
   PDF_ASSERT_POINTER_RETURN_VAL (path_name, PDF_EBADDATA);
   PDF_ASSERT_POINTER_RETURN_VAL (item_props, PDF_EBADDATA);
 
   /* Get the pathname in the host encoding */
   host_path = __pdf_fsys_disk_get_host_path (path_name,
-                                             &host_path_size,
                                              &inner_error);
   if (!host_path)
     {
@@ -785,8 +776,8 @@ pdf_fsys_disk_get_item_props (void                         *data,
 }
 
 pdf_bool_t
-pdf_fsys_disk_item_p (void       *data,
-                      pdf_text_t *path_name)
+pdf_fsys_disk_item_p (void             *data,
+                      const pdf_text_t *path_name)
 {
   struct pdf_fsys_item_props_s item_props;
 
@@ -806,12 +797,11 @@ pdf_fsys_disk_item_p (void       *data,
 }
 
 pdf_bool_t
-pdf_fsys_disk_item_readable_p (void       *data,
-                               pdf_text_t *path_name)
+pdf_fsys_disk_item_readable_p (void             *data,
+                               const pdf_text_t *path_name)
 {
   pdf_error_t *inner_error = NULL;
   pdf_char_t* host_path;
-  pdf_size_t host_path_size = 0;
   pdf_bool_t readable;
 
   PDF_ASSERT_POINTER_RETURN_VAL (path_name, PDF_FALSE);
@@ -840,12 +830,11 @@ pdf_fsys_disk_item_readable_p (void       *data,
 }
 
 pdf_bool_t
-pdf_fsys_disk_item_writable_p (void       *data,
-                               pdf_text_t *path_name)
+pdf_fsys_disk_item_writable_p (void             *data,
+                               const pdf_text_t *path_name)
 {
   pdf_error_t *inner_error = NULL;
   pdf_char_t* host_path;
-  pdf_size_t host_path_size = 0;
   pdf_bool_t writable;
 
   PDF_ASSERT_POINTER_RETURN_VAL (path_name, PDF_FALSE);
@@ -874,10 +863,10 @@ pdf_fsys_disk_item_writable_p (void       *data,
 }
 
 pdf_status_t
-pdf_fsys_disk_build_path (void        *data,
-                          pdf_text_t **output,
-                          pdf_text_t  *first_element,
-                          pdf_list_t  *rest)
+pdf_fsys_disk_build_path (void              *data,
+                          pdf_text_t       **output,
+                          const pdf_text_t  *first_element,
+                          const pdf_list_t  *rest)
 {
   pdf_error_t *inner_error = NULL;
   pdf_list_iterator_t itr;
@@ -889,9 +878,10 @@ pdf_fsys_disk_build_path (void        *data,
 
   pdf_list_iterator_init (&itr, rest);
 
-  *output = pdf_text_dup (first_element);
+  *output = pdf_text_dup (first_element, &inner_error);
   if (!*output)
     {
+      /* TODO: Propagate error */
       pdf_list_iterator_deinit (&itr);
       return PDF_ENOMEM;
     }
@@ -923,7 +913,7 @@ pdf_fsys_disk_build_path (void        *data,
           return PDF_ERROR;
         }
 
-      if (!pdf_text_concat (*output, sep, PDF_TRUE, &inner_error))
+      if (!pdf_text_concat (*output, text_sep, PDF_TRUE, &inner_error))
         {
           pdf_list_iterator_deinit (&itr);
           pdf_text_destroy (*output);
@@ -954,41 +944,12 @@ pdf_fsys_disk_file_get_mode (pdf_fsys_file_t file)
 pdf_text_t *
 pdf_fsys_disk_file_get_url (pdf_fsys_file_t file)
 {
-  pdf_text_t *url;
-  pdf_error_t *inner_error = NULL;
-
   PDF_ASSERT_POINTER_RETURN_VAL (file, NULL);
   PDF_ASSERT_POINTER_RETURN_VAL (file->data, NULL);
 
-#ifdef PDF_HOST_WIN32
-  /* In W32, we just copy the path string */
-  url = pdf_text_dup ((((pdf_fsys_disk_file_t)file->data)->unicode_path));
-#else
-      /* In POSIX, we return file:/ plus the path string in UTF-8*/
-  url = pdf_text_new_from_unicode ("file:/",
-                                   6,
-                                   PDF_TEXT_UTF8,
-                                   &inner_error);
-  if (!url)
-    {
-      /* TODO: Propagate error */
-      pdf_error_destroy (&inner_error);
-      return NULL;
-    }
+#warning Correctly implement this, see FS#126
 
-  if (!pdf_text_concat (url,
-                        (((pdf_fsys_disk_file_t)file->data)->unicode_path),
-                        PDF_TRUE,
-                        &inner_error))
-    {
-      /* TODO: Propagate error */
-      pdf_text_destroy (url);
-      pdf_error_destroy (&inner_error);
-      return NULL;
-    }
-#endif
-
-  return url;
+  return NULL;
 }
 
 pdf_status_t
@@ -998,7 +959,7 @@ pdf_fsys_disk_file_set_mode (pdf_fsys_file_t           file,
   pdf_fsys_disk_file_t file_data;
 
   PDF_ASSERT_POINTER_RETURN_VAL (file, PDF_EBADDATA);
-  PDF_ASSERT_POINTER_RETURN_VAL (file->, PDF_ECLOSED);
+  PDF_ASSERT_POINTER_RETURN_VAL (file->data, PDF_ECLOSED);
 
   file_data = (pdf_fsys_disk_file_t)file->data;
 
@@ -1009,8 +970,8 @@ pdf_fsys_disk_file_set_mode (pdf_fsys_file_t           file,
 }
 
 pdf_bool_t
-pdf_fsys_disk_file_same_p (pdf_fsys_file_t  file,
-                           pdf_text_t      *path)
+pdf_fsys_disk_file_same_p (pdf_fsys_file_t   file,
+                           const pdf_text_t *path)
 {
   pdf_error_t *inner_error = NULL;
   pdf_i32_t ret;
@@ -1317,23 +1278,24 @@ pdf_fsys_disk_file_reopen (pdf_fsys_file_t           file,
  */
 
 static pdf_char_t *
-__pdf_fsys_disk_get_host_path (pdf_text_t   *path,
-                               pdf_size_t   *host_length,
-                               pdf_error_t **error)
+__pdf_fsys_disk_get_host_path (const pdf_text_t  *path,
+                               pdf_error_t      **error)
 {
 #ifdef PDF_HOST_WIN32
+  pdf_size_t length;
+
   /* For W32, we will always use widechar functions, so Windows' wchar_t
    * implementation should be used (UTF-16LE) */
   return pdf_text_get_unicode (path,
                                PDF_TEXT_UTF16_LE,
                                PDF_TEXT_UNICODE_WITH_NUL_SUFFIX,
-                               host_length,
+                               &length,
                                error);
 #else
   /* Call the pdf_text module to get a host-encoded version of the
    *  given path */
   pdf_char_t *str;
-  pdf_char_t *nul_sufixed;
+  pdf_char_t *nul_suffixed;
   pdf_size_t length = 0;
 
   str = pdf_text_get_host (path,
@@ -1358,8 +1320,6 @@ __pdf_fsys_disk_get_host_path (pdf_text_t   *path,
       return NULL;
     }
   nul_suffixed[length - 1] = '\0';
-
-  *host_length = length;
   return nul_suffixed;
 #endif
 }
@@ -1449,8 +1409,8 @@ static const pdf_char_t *device_names[PDF_MAX_W32_DEVICE_NAMES] = {
 };
 
 static pdf_bool_t
-__pdf_fsys_disk_win32_device_p (pdf_text_t   *path,
-                                pdf_error_t **error)
+__pdf_fsys_disk_win32_device_p (const pdf_text_t  *path,
+                                pdf_error_t      **error)
 {
   /* The following special "files", which access devices, exist in all
      directories, case-insensitively, and with all possible endings

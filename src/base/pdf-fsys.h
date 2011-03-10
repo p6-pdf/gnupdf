@@ -105,40 +105,40 @@ typedef pdf_status_t (*pdf_fsys_init_fn_t) (void **data);
 typedef pdf_status_t (*pdf_fsys_cleanup_fn_t) (void *data);
 
 /* Filesystem implementation callbacks */
-typedef pdf_status_t (*pdf_fsys_create_folder_fn_t) (void       *data,
-                                                     pdf_text_t *path_name);
+typedef pdf_status_t (*pdf_fsys_create_folder_fn_t) (void             *data,
+                                                     const pdf_text_t *path_name);
 
-typedef pdf_status_t (*pdf_fsys_get_folder_contents_fn_t) (void       *data,
-                                                           pdf_text_t *path_name,
-                                                           pdf_list_t *item_list);
+typedef pdf_status_t (*pdf_fsys_get_folder_contents_fn_t) (void             *data,
+                                                           const pdf_text_t *path_name,
+                                                           pdf_list_t       *item_list);
 
-typedef pdf_status_t (*pdf_fsys_get_parent_fn_t) (void       *data,
-                                                  pdf_text_t *path_name,
-                                                  pdf_text_t *parent_path);
+typedef pdf_status_t (*pdf_fsys_get_parent_fn_t) (void              *data,
+                                                  const pdf_text_t  *path_name,
+                                                  pdf_text_t       **parent_path);
 
-typedef pdf_status_t (*pdf_fsys_remove_folder_fn_t) (void       *data,
-                                                     pdf_text_t *path_name);
+typedef pdf_status_t (*pdf_fsys_remove_folder_fn_t) (void             *data,
+                                                     const pdf_text_t *path_name);
 
-typedef pdf_status_t (*pdf_fsys_get_item_props_fn_t) (void       *data,
-                                                      pdf_text_t *path_name,
+typedef pdf_status_t (*pdf_fsys_get_item_props_fn_t) (void                         *data,
+                                                      const pdf_text_t             *path_name,
                                                       struct pdf_fsys_item_props_s *props);
 
 typedef pdf_i64_t (*pdf_fsys_get_free_space_fn_t) (void             *data,
                                                    const pdf_text_t *path_name);
 
-typedef pdf_bool_t (*pdf_fsys_item_p_fn_t) (void       *data,
-                                            pdf_text_t *path_name);
+typedef pdf_bool_t (*pdf_fsys_item_p_fn_t) (void             *data,
+                                            const pdf_text_t *path_name);
 
-typedef pdf_bool_t (*pdf_fsys_item_readable_p_fn_t) (void       *data,
-                                                     pdf_text_t *path_name);
+typedef pdf_bool_t (*pdf_fsys_item_readable_p_fn_t) (void             *data,
+                                                     const pdf_text_t *path_name);
 
-typedef pdf_bool_t (*pdf_fsys_item_writable_p_fn_t) (void       *data,
-                                                     pdf_text_t *path_name);
+typedef pdf_bool_t (*pdf_fsys_item_writable_p_fn_t) (void             *data,
+                                                     const pdf_text_t *path_name);
 
-typedef pdf_status_t (*pdf_fsys_build_path_fn_t) (void       *data,
-                                                  pdf_text_t **output,
-                                                  pdf_text_t *first_element,
-                                                  pdf_list_t *rest);
+typedef pdf_status_t (*pdf_fsys_build_path_fn_t) (void              *data,
+                                                  pdf_text_t       **output,
+                                                  const pdf_text_t  *first_element,
+                                                  const pdf_list_t  *rest);
 
 typedef pdf_status_t (*pdf_fsys_file_read_fn_t) (pdf_fsys_file_t  file,
 						 pdf_char_t      *buf,
@@ -156,7 +156,7 @@ typedef pdf_bool_t (*pdf_fsys_file_can_set_size_p_fn_t) (pdf_fsys_file_t file,
                                                          pdf_off_t       pos);
 
 typedef pdf_status_t (*pdf_fsys_file_open_fn_t) (void                      *data,
-                                                 pdf_text_t                *path_name,
+                                                 const pdf_text_t          *path_name,
                                                  enum pdf_fsys_file_mode_e  mode,
                                                  pdf_fsys_file_t           *p_file);
 
@@ -181,8 +181,8 @@ typedef pdf_status_t (*pdf_fsys_file_set_mode_fn_t) (pdf_fsys_file_t           f
 
 typedef pdf_text_t *(*pdf_fsys_file_get_url_fn_t) (pdf_fsys_file_t file);
 
-typedef pdf_bool_t (*pdf_fsys_file_same_p_fn_t) (pdf_fsys_file_t  file,
-                                                 pdf_text_t      *path_name);
+typedef pdf_bool_t (*pdf_fsys_file_same_p_fn_t) (pdf_fsys_file_t   file,
+                                                 const pdf_text_t *path_name);
 
 typedef pdf_status_t (*pdf_fsys_file_request_ria_fn_t) (pdf_fsys_file_t file,
                                                         pdf_off_t       offset,
@@ -254,28 +254,28 @@ pdf_status_t pdf_fsys_get_folder_contents (const pdf_fsys_t  filesystem,
                                            const pdf_text_t *path_name,
                                            pdf_list_t       *item_list);
 
-pdf_status_t pdf_fsys_get_parent (const pdf_fsys_t  filesystem,
-                                  const pdf_text_t *path_name,
-                                  pdf_text_t       *parent_path);
+pdf_status_t pdf_fsys_get_parent (const pdf_fsys_t   filesystem,
+                                  const pdf_text_t  *path_name,
+                                  pdf_text_t       **parent_path);
 
 pdf_status_t pdf_fsys_remove_folder (const pdf_fsys_t  filesystem,
                                      const pdf_text_t *path_name);
 
 pdf_status_t pdf_fsys_get_item_props (pdf_fsys_t                    filesystem,
-                                      pdf_text_t                   *path_name,
+                                      const pdf_text_t             *path_name,
                                       struct pdf_fsys_item_props_s *item_props);
 
 pdf_status_t pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s  item_props,
                                           pdf_hash_t                         *props_hash);
 
-pdf_bool_t pdf_fsys_item_p (pdf_fsys_t  filesystem,
-                            pdf_text_t *path_name);
+pdf_bool_t pdf_fsys_item_p (pdf_fsys_t        filesystem,
+                            const pdf_text_t *path_name);
 
-pdf_bool_t pdf_fsys_item_readable_p (pdf_fsys_t  filesystem,
-                                     pdf_text_t *path_name);
+pdf_bool_t pdf_fsys_item_readable_p (pdf_fsys_t        filesystem,
+                                     const pdf_text_t *path_name);
 
-pdf_bool_t pdf_fsys_item_writable_p (pdf_fsys_t  filesystem,
-                                     pdf_text_t *path_name);
+pdf_bool_t pdf_fsys_item_writable_p (pdf_fsys_t        filesystem,
+                                     const pdf_text_t *path_name);
 
 pdf_status_t pdf_fsys_build_path (pdf_fsys_t   filesystem,
                                   pdf_text_t **output,
@@ -299,8 +299,8 @@ pdf_text_t *pdf_fsys_file_get_url (pdf_fsys_file_t file);
 pdf_status_t pdf_fsys_file_set_mode (pdf_fsys_file_t           file,
                                      enum pdf_fsys_file_mode_e new_mode);
 
-pdf_bool_t pdf_fsys_file_same_p (pdf_fsys_file_t  file,
-                                 pdf_text_t      *path);
+pdf_bool_t pdf_fsys_file_same_p (pdf_fsys_file_t   file,
+                                 const pdf_text_t *path);
 
 pdf_status_t pdf_fsys_file_get_pos (pdf_fsys_file_t  file,
                                     pdf_off_t       *pos);

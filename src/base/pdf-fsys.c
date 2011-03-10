@@ -71,9 +71,9 @@ pdf_fsys_get_folder_contents (const pdf_fsys_t  filesystem,
 }
 
 pdf_status_t
-pdf_fsys_get_parent (const pdf_fsys_t  filesystem,
-                     const pdf_text_t *path_name,
-                     pdf_text_t       *parent_path)
+pdf_fsys_get_parent (const pdf_fsys_t   filesystem,
+                     const pdf_text_t  *path_name,
+                     pdf_text_t       **parent_path)
 {
   return (!filesystem ?
           pdf_fsys_def_get_parent (path_name, parent_path) :
@@ -94,7 +94,7 @@ pdf_fsys_remove_folder (const pdf_fsys_t  filesystem,
 
 pdf_status_t
 pdf_fsys_get_item_props (pdf_fsys_t                    filesystem,
-                         pdf_text_t                   *path_name,
+                         const pdf_text_t             *path_name,
                          struct pdf_fsys_item_props_s *item_props)
 {
   return (!filesystem ?
@@ -179,8 +179,8 @@ pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s  item_props,
 }
 
 pdf_bool_t
-pdf_fsys_item_p (pdf_fsys_t  filesystem,
-                 pdf_text_t *path_name)
+pdf_fsys_item_p (pdf_fsys_t        filesystem,
+                 const pdf_text_t *path_name)
 {
   return (!filesystem ?
           pdf_fsys_def_item_p (path_name) :
@@ -189,8 +189,8 @@ pdf_fsys_item_p (pdf_fsys_t  filesystem,
 }
 
 pdf_bool_t
-pdf_fsys_item_readable_p (pdf_fsys_t  filesystem,
-                          pdf_text_t *path_name)
+pdf_fsys_item_readable_p (pdf_fsys_t        filesystem,
+                          const pdf_text_t *path_name)
 {
   return (!filesystem ?
           pdf_fsys_def_item_readable_p (path_name) :
@@ -199,8 +199,8 @@ pdf_fsys_item_readable_p (pdf_fsys_t  filesystem,
 }
 
 pdf_bool_t
-pdf_fsys_item_writable_p (pdf_fsys_t  filesystem,
-                          pdf_text_t *path_name)
+pdf_fsys_item_writable_p (pdf_fsys_t        filesystem,
+                          const pdf_text_t *path_name)
 {
   return (!filesystem ?
           pdf_fsys_def_item_writable_p (path_name) :
@@ -343,8 +343,8 @@ pdf_fsys_file_set_mode (pdf_fsys_file_t           file,
 }
 
 pdf_bool_t
-pdf_fsys_file_same_p (pdf_fsys_file_t  file,
-                      pdf_text_t      *path)
+pdf_fsys_file_same_p (pdf_fsys_file_t   file,
+                      const pdf_text_t *path)
 {
   if (!file)
     return PDF_EBADDATA;
