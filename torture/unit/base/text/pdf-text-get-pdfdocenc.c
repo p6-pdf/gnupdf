@@ -48,8 +48,8 @@ START_TEST(pdf_text_get_pdfdocenc_001)
   extern const test_string_t pdf_doc_encoding_strings[];
   int i;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   i = 0;
   while(pdf_doc_encoding_strings[i].data != NULL)
@@ -113,8 +113,8 @@ START_TEST(pdf_text_get_pdfdocenc_002)
   pdf_char_t *expected_data = (pdf_char_t *)"?z?";
   pdf_size_t expected_size = 3;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   fail_if(pdf_text_new_from_unicode(data, size,
                                     PDF_TEXT_UTF32_BE,

@@ -46,9 +46,6 @@ START_TEST (pdf_text_get_language_001)
   pdf_text_t text;
   const pdf_char_t *language = NULL;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
-
   fail_if(pdf_text_new (&text) != PDF_OK);
 
   /* Store language ID without using the API */
@@ -81,9 +78,6 @@ START_TEST (pdf_text_get_language_002)
 {
   pdf_text_t text;
   const pdf_char_t *language = NULL;
-
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
 
   fail_if(pdf_text_new (&text) != PDF_OK);
 

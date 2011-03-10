@@ -45,8 +45,8 @@ START_TEST (pdf_text_get_country_001)
   pdf_text_t text;
   const pdf_char_t *country = NULL;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   fail_if(pdf_text_new (&text) != PDF_OK);
 
@@ -81,8 +81,8 @@ START_TEST (pdf_text_get_country_002)
   pdf_text_t text;
   const pdf_char_t *country = NULL;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   fail_if(pdf_text_new (&text) != PDF_OK);
 

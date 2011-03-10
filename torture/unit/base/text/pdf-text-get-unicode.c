@@ -420,7 +420,7 @@ static void test_one_string(struct test_params params, int empty, const test_str
 
 static void common_test(int test_index)
 {
-  /* Always INIT! Check runs each test in a different process */
+
   fail_if(pdf_text_init() != PDF_OK);
 
   /* Get test params */

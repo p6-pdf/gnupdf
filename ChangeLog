@@ -1,3 +1,10 @@
+2011-03-10  Aleksander Morgado  <aleksander@gnu.org>
+
+	torture,base: Don't call pdf_init() in the text module unit tests.
+	* torture/unit/base/text/*.c: Avoid calling pdf_init() in each unit
+	test, already done in the test setup fixture. Not sure why I didn't
+	change the text module tests in my previous commmit.
+
 2011-03-05  Aleksander Morgado  <aleksander@gnu.org>
 
 	torture,base: Don't call pdf_init() in each unit test.

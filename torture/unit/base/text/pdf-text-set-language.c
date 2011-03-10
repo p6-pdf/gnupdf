@@ -46,8 +46,8 @@ START_TEST (pdf_text_set_language_001)
   pdf_text_t text;
   const pdf_char_t *language = (pdf_char_t *)"es";
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   fail_if(pdf_text_new (&text) != PDF_OK);
 
@@ -76,8 +76,8 @@ START_TEST (pdf_text_set_language_002)
   pdf_text_t text;
   const pdf_char_t *language = (pdf_char_t *)"a";
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   fail_if(pdf_text_new (&text) != PDF_OK);
 
@@ -101,8 +101,8 @@ START_TEST (pdf_text_set_language_003)
   pdf_text_t text;
   const pdf_char_t *language = (pdf_char_t *)"";
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   fail_if(pdf_text_new (&text) != PDF_OK);
 

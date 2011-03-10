@@ -44,9 +44,6 @@ START_TEST (pdf_text_get_host_001)
   pdf_text_host_encoding_t host_enc;
   int i;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
-
   /* Create, without using the API, a valid pdf_text_host_encoding_t */
 #ifdef PDF_HOST_WIN32
   strcpy((&(host_enc.name[0])), "CP20127"); /* us-ascii */
@@ -107,9 +104,6 @@ START_TEST (pdf_text_get_host_002)
   extern const test_string_t ascii_strings[];
   pdf_text_host_encoding_t host_enc;
   int i;
-
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
 
   /* Create, without using the API, an invalid pdf_text_host_encoding_t */
 #ifdef PDF_HOST_WIN32

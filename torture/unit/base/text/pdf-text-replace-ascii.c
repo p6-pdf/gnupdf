@@ -51,8 +51,8 @@ START_TEST (pdf_text_replace_ascii_001)
                                    "GNU rules GNU rules GNU";
   pdf_char_t *output_string = NULL;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
 
   fail_if(pdf_text_new_from_pdf_string(input_string,
@@ -121,8 +121,8 @@ START_TEST (pdf_text_replace_ascii_002)
                                       "GNU/Linux";
   pdf_char_t *output_string = NULL;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen(input_string),
@@ -166,8 +166,8 @@ START_TEST (pdf_text_replace_ascii_003)
                                       "FreeBSD rules FreeBSD rules FreeBSD";
   pdf_char_t *output_string = NULL;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen(input_string),
@@ -209,8 +209,8 @@ START_TEST (pdf_text_replace_ascii_004)
   const pdf_char_t *expected_string = (pdf_char_t *) " rules  rules ";
   pdf_char_t *output_string = NULL;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen(input_string),
@@ -254,8 +254,8 @@ START_TEST (pdf_text_replace_ascii_005)
                                       "Simple test string with no old pattern";
   pdf_char_t *output_string = NULL;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
 
   fail_if(pdf_text_new_from_pdf_string(input_string,
@@ -300,8 +300,8 @@ START_TEST (pdf_text_replace_ascii_006)
                                       "Simple test string with no old pattern";
   pdf_char_t *output_string = NULL;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
 
   fail_if(pdf_text_new_from_pdf_string(input_string,
@@ -346,8 +346,8 @@ START_TEST (pdf_text_replace_ascii_007)
                                       "Simple test string with no old pattern";
   pdf_char_t *output_string = NULL;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
 
   fail_if(pdf_text_new_from_pdf_string(input_string,
@@ -392,8 +392,8 @@ START_TEST (pdf_text_replace_ascii_008)
                                       "Simple test string with no old pattern";
   pdf_char_t *output_string = NULL;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
 
   fail_if(pdf_text_new_from_pdf_string(input_string,
@@ -434,8 +434,8 @@ START_TEST (pdf_text_replace_ascii_009)
   const pdf_char_t *input_string = (pdf_char_t *) \
                                    "Simple test string with no old pattern";
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
 
   fail_if(pdf_text_new_from_pdf_string(input_string,
@@ -470,8 +470,8 @@ START_TEST (pdf_text_replace_ascii_010)
   const pdf_char_t *input_string = (pdf_char_t *) "";
   pdf_char_t *output_string = NULL;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   fail_if(pdf_text_new_from_pdf_string(input_string,
                                        strlen(input_string),

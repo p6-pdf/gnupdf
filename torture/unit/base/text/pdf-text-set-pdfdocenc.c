@@ -47,8 +47,8 @@ START_TEST (pdf_text_set_pdfdocenc_001)
   extern const test_string_t pdf_doc_encoding_strings[];
   int i;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   i = 0;
   while(pdf_doc_encoding_strings[i].data != NULL)
@@ -124,8 +124,8 @@ START_TEST (pdf_text_set_pdfdocenc_002)
   pdf_char_t *remaining_str = NULL;
   pdf_size_t remaining_length = 0;
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   fail_if(pdf_text_new (&text) != PDF_OK);
 
@@ -157,8 +157,8 @@ START_TEST (pdf_text_set_pdfdocenc_003)
   /* 0x9F is Undefined in PDF Doc Encoding */
   const pdf_char_t *invalid_pdfdocenc = (pdf_char_t *)"\x9D\x9E\x9F\x00";
 
-  /* Always INIT! Check runs each test in a different process */
-  fail_if(pdf_init() != PDF_OK);
+
+
 
   fail_if(pdf_text_new (&text) != PDF_OK);
 
