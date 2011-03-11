@@ -29,6 +29,7 @@
 #include <pdf.h>
 #include <check.h>
 #include <pdf-test-common.h>
+
 /*
  * Test: pdf_text_get_best_encoding_001
  * Description:
@@ -39,35 +40,34 @@
  *   non-empty host encoding is returned.
  * Success conditions:
  *   1. The call to pdf_text_get_best_encoding should return a non-empty
- *      pdf_text_host_encoding_t variable.
+ *      string
  */
 START_TEST (pdf_text_get_best_encoding_001)
 {
-  pdf_text_host_encoding_t host_enc;
-  pdf_text_t text;
+  const pdf_char_t *host_enc;
+  pdf_text_t *text;
+  pdf_error_t *error = NULL;
 
-
-
-
-  fail_if(pdf_text_new (&text) != PDF_OK);
+  text = pdf_text_new_from_unicode ("GNU",
+                                    3,
+                                    PDF_TEXT_UTF8,
+                                    &error);
+  fail_unless (text != NULL);
+  fail_if (error != NULL);
 
 #ifdef PDF_HOST_WIN32
-  fail_unless(pdf_text_check_host_encoding((pdf_char_t *)"CP20127",
-                                           &host_enc) == PDF_OK);
+  host_enc = pdf_text_get_best_encoding (text, "CP20127");
 #else
-  fail_unless(pdf_text_check_host_encoding((pdf_char_t *)"ascii",
-                                           &host_enc) == PDF_OK);
+  host_enc = pdf_text_get_best_encoding (text, "ascii");
 #endif
 
   /* 1. The call to pdf_text_get_best_encoding should return a non-empty
-   *      pdf_text_host_encoding_t variable.*/
-  host_enc = pdf_text_get_best_encoding(text, host_enc);
-  fail_unless(strlen(host_enc.name) > 0);
+   *    string */
+  fail_unless (strlen (host_enc) > 0);
 
-  pdf_text_destroy(text);
+  pdf_text_destroy (text);
 }
 END_TEST
-
 
 /*
  * Test case creation function
@@ -75,9 +75,9 @@ END_TEST
 TCase *
 test_pdf_text_get_best_encoding (void)
 {
-  TCase *tc = tcase_create("pdf_text_get_best_encoding");
-  tcase_add_test(tc, pdf_text_get_best_encoding_001);
+  TCase *tc = tcase_create ("pdf_text_get_best_encoding");
 
+  tcase_add_test (tc, pdf_text_get_best_encoding_001);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);

@@ -39,34 +39,30 @@
  */
 START_TEST (pdf_text_get_country_001)
 {
+  pdf_text_t *text;
+  const pdf_char_t *country;
+  pdf_error_t *error = NULL;
 
-
-
-  pdf_text_t text;
-  const pdf_char_t *country = NULL;
-
-
-
-
-  fail_if(pdf_text_new (&text) != PDF_OK);
+  text = pdf_text_new (&error);
+  fail_unless (text != NULL);
+  fail_if (error != NULL);
 
   /* Store country ID without using the API */
-  fail_if(pdf_text_set_country(text, "FR") != PDF_OK);
+  pdf_text_set_country (text, "FR");
 
   /* Get country ID */
-  country = pdf_text_get_country(text);
+  country = pdf_text_get_country (text);
 
   /* 1. The call to pdf_text_get_country should return a valid pointer. */
-  fail_if(country == NULL);
+  fail_if (country == NULL);
 
   /* 2. The length of the returned string should be 2. */
-  fail_unless(strlen(country) == 2);
+  fail_unless (strlen (country) == 2);
+  fail_unles (strcmp (country, "FR") == 0);
 
-  pdf_text_destroy(text);
-
+  pdf_text_destroy (text);
 }
 END_TEST
-
 
 /*
  * Test: pdf_text_get_country_002
@@ -78,27 +74,26 @@ END_TEST
  */
 START_TEST (pdf_text_get_country_002)
 {
-  pdf_text_t text;
-  const pdf_char_t *country = NULL;
+  pdf_text_t *text;
+  const pdf_char_t *country;
+  pdf_error_t *error = NULL;
 
-
-
-
-  fail_if(pdf_text_new (&text) != PDF_OK);
+  text = pdf_text_new (&error);
+  fail_unless (text != NULL);
+  fail_if (error != NULL);
 
   /* Get country ID */
-  country = pdf_text_get_country(text);
+  country = pdf_text_get_country (text);
 
   /* 1. The call to pdf_text_get_country should return a valid pointer. */
-  fail_if(country == NULL);
+  fail_if (country == NULL);
 
-  /* 2. The length of the returned string should be 2. */
-  fail_unless(strlen(country) == 0);
+  /* 2. The length of the returned string should be 0. */
+  fail_unless (strlen (country) == 0);
 
-  pdf_text_destroy(text);
+  pdf_text_destroy (text);
 }
 END_TEST
-
 
 /*
  * Test case creation function
@@ -106,9 +101,10 @@ END_TEST
 TCase *
 test_pdf_text_get_country (void)
 {
-  TCase *tc = tcase_create("pdf_text_get_country");
-  tcase_add_test(tc, pdf_text_get_country_001);
-  tcase_add_test(tc, pdf_text_get_country_002);
+  TCase *tc = tcase_create ("pdf_text_get_country");
+
+  tcase_add_test (tc, pdf_text_get_country_001);
+  tcase_add_test (tc, pdf_text_get_country_002);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);

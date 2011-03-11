@@ -464,7 +464,7 @@ pdf_text_set_country (pdf_text_t       *text,
 {
   PDF_ASSERT_POINTER_RETURN (text);
   PDF_ASSERT_POINTER_RETURN (code);
-  PDF_ASSERT_RETURN (strlen(code) == (PDF_TEXT_CCL - 1));
+  PDF_ASSERT_RETURN (strlen (code) == (PDF_TEXT_CCL - 1));
 
   memcpy (&(text->country[0]), code, PDF_TEXT_CCL - 1);
   /* Make sure that last byte is NUL */
@@ -478,7 +478,7 @@ pdf_text_set_language (pdf_text_t       *text,
 {
   PDF_ASSERT_POINTER_RETURN (text);
   PDF_ASSERT_POINTER_RETURN (code);
-  PDF_ASSERT_RETURN (strlen(code) == (PDF_TEXT_CCL - 1));
+  PDF_ASSERT_RETURN (strlen (code) == (PDF_TEXT_CCL - 1));
 
   memcpy (&(text->lang[0]), code, PDF_TEXT_CCL - 1);
   /* Make sure that last byte is NUL */
@@ -530,6 +530,12 @@ pdf_text_get_best_encoding (const pdf_text_t *text,
     (pdf_char_t *) "UTF-32"
   };
 #endif
+
+  PDF_ASSERT_POINTER_RETURN_VAL (text, NULL);
+
+  /* TODO: In the case of win32, we could actually check if all characters
+   * in the text are ASCII-7, and if so, return for example CP1252 instead
+   * of UTF-16. */
 
   PDF_ASSERT_POINTER_RETURN_VAL (text, NULL);
 

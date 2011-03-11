@@ -38,45 +38,40 @@
  */
 START_TEST (pdf_text_new_from_u32_001)
 {
-
-
-
-  pdf_text_t text;
-  pdf_u32_t number = 0;
   const pdf_char_t *expected_data_be = (pdf_char_t *)"\x00\x00\x00" "0";
   const pdf_char_t *expected_data_le = (pdf_char_t *)"0" "\x00\x00\x00";
   const pdf_char_t *expected_data;
   pdf_size_t expected_size = 4;
+  pdf_char_t *actual_data;
+  pdf_size_t actual_size;
+  pdf_error_t *error = NULL;
+  pdf_u32_t number = 0;
+  pdf_text_t *text;
 
-  if(!pdf_text_test_big_endian_system())
-    {
-      expected_data = expected_data_le;
-    }
-  else
-    {
-      expected_data = expected_data_be;
-    }
-
-
-
+  expected_data = (!pdf_text_test_big_endian_system () ?
+                   expected_data_le :
+                   expected_data_be);
 
   /* 1. The call to pdf_text_new_from_u32 should return PDF_OK. */
-  fail_unless(pdf_text_new_from_u32(number, &text) == PDF_OK);
+  text = pdf_text_new_from_u32 (number, &error);
+  fail_unless (text != NULL);
+  fail_if (error != NULL);
 
   /* 2. The contents of the text object must be the expected ones. */
-  pdf_size_t actual_size;
-  pdf_char_t *actual_data;
-  fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
-                                   PDF_TEXT_UTF32_HE,0) == PDF_OK);
-  fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
+  actual_data = pdf_text_get_unicode (text,
+                                      PDF_TEXT_UTF32_HE,
+                                      PDF_TEXT_UNICODE_NO_OPTION,
+                                      &actual_size,
+                                      &error);
+  fail_unless (actual_data != NULL);
+  fail_if (error != NULL);
+  fail_unless (actual_size == expected_size);
+  fail_unless (memcmp (actual_data, expected_data, expected_size) == 0);
 
-
-  pdf_text_destroy(text);
-
-
+  pdf_text_destroy (text);
+  pdf_dealloc (actual_data);
 }
 END_TEST
-
 
 /*
  * Test: pdf_text_new_from_u32_002
@@ -88,11 +83,6 @@ END_TEST
  */
 START_TEST (pdf_text_new_from_u32_002)
 {
-
-
-
-  pdf_text_t text;
-  pdf_u32_t number = 123450;
   const pdf_char_t *expected_data_be = (pdf_char_t *)"\x00\x00\x00" "1" \
                                                      "\x00\x00\x00" "2" \
                                                      "\x00\x00\x00" "3" \
@@ -107,37 +97,36 @@ START_TEST (pdf_text_new_from_u32_002)
                                                      "0" "\x00\x00\x00";
   const pdf_char_t *expected_data;
   pdf_size_t expected_size = 24;
+  pdf_char_t *actual_data;
+  pdf_size_t actual_size;
+  pdf_error_t *error = NULL;
+  pdf_u32_t number = 123450;
+  pdf_text_t *text;
 
-  if(!pdf_text_test_big_endian_system())
-    {
-      expected_data = expected_data_le;
-    }
-  else
-    {
-      expected_data = expected_data_be;
-    }
-
-
-
+  expected_data = (!pdf_text_test_big_endian_system () ?
+                   expected_data_le :
+                   expected_data_be);
 
   /* 1. The call to pdf_text_new_from_u32 should return PDF_OK. */
-  fail_unless(pdf_text_new_from_u32(number, &text) == PDF_OK);
+  text = pdf_text_new_from_u32 (number, &error);
+  fail_unless (text != NULL);
+  fail_if (error != NULL);
 
   /* 2. The contents of the text object must be the expected ones. */
-  pdf_size_t actual_size;
-  pdf_char_t *actual_data;
-  fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
-                                   PDF_TEXT_UTF32_HE,0) == PDF_OK);
-  fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
+  actual_data = pdf_text_get_unicode (text,
+                                      PDF_TEXT_UTF32_HE,
+                                      PDF_TEXT_UNICODE_NO_OPTION,
+                                      &actual_size,
+                                      &error);
+  fail_unless (actual_data != NULL);
+  fail_if (error != NULL);
+  fail_unless (actual_size == expected_size);
+  fail_unless (memcmp (actual_data, expected_data, expected_size) == 0);
 
-
-  pdf_text_destroy(text);
-
-
+  pdf_text_destroy (text);
+  pdf_dealloc (actual_data);
 }
 END_TEST
-
-
 
 /*
  * Test case creation function
@@ -145,9 +134,10 @@ END_TEST
 TCase *
 test_pdf_text_new_from_u32 (void)
 {
-  TCase *tc = tcase_create("pdf_text_new_from_u32");
-  tcase_add_test(tc, pdf_text_new_from_u32_001);
-  tcase_add_test(tc, pdf_text_new_from_u32_002);
+  TCase *tc = tcase_create ("pdf_text_new_from_u32");
+
+  tcase_add_test (tc, pdf_text_new_from_u32_001);
+  tcase_add_test (tc, pdf_text_new_from_u32_002);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);

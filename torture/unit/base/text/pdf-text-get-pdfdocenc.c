@@ -30,6 +30,7 @@
 #include <check.h>
 #include <base/text/pdf-text-test-common.h>
 #include <pdf-test-common.h>
+
 /*
  * Test: pdf_text_get_pdfdocenc_001
  * Description:
@@ -42,21 +43,16 @@
  */
 START_TEST(pdf_text_get_pdfdocenc_001)
 {
-
-
-
   extern const test_string_t pdf_doc_encoding_strings[];
   int i;
 
-
-
-
   i = 0;
-  while(pdf_doc_encoding_strings[i].data != NULL)
+  while (pdf_doc_encoding_strings[i].data)
     {
-      pdf_text_t text;
-      pdf_char_t *data = NULL;
-      pdf_size_t size = 0;
+      pdf_error_t *error = NULL;
+      pdf_text_t *text;
+      pdf_char_t *data;
+      pdf_size_t size;
       const pdf_char_t *expected_data;
       pdf_size_t expected_size;
 
@@ -64,32 +60,30 @@ START_TEST(pdf_text_get_pdfdocenc_001)
       expected_data = (pdf_char_t *)pdf_doc_encoding_strings[i].data;
       expected_size = pdf_doc_encoding_strings[i].size;
 
-      fail_if(pdf_text_new_from_unicode((pdf_char_t *) \
-                                      pdf_doc_encoding_strings[i].utf32be_data,
-                                        (pdf_size_t) \
-                                      pdf_doc_encoding_strings[i].utf32be_size,
+      text = pdf_text_new_from_unicode ((pdf_char_t *) pdf_doc_encoding_strings[i].utf32be_data,
+                                        (pdf_size_t) pdf_doc_encoding_strings[i].utf32be_size,
                                         PDF_TEXT_UTF32_BE,
-                                        &text) != PDF_OK);
-
+                                        &error);
+      fail_unless (text != NULL);
+      fail_if (error != NULL);
 
       /* 1. The call to  pdf_text_get_pdfdocenc should return PDF_OK. */
-      fail_unless(pdf_text_get_pdfdocenc(&data, text) == PDF_OK);
+      data = pdf_text_get_pdfdocenc (text, &error);
+      fail_unless (data != NULL);
+      fail_if (error != NULL);
 
       /* 2. The returned string must be the expected one, and NUL terminated */
-      fail_if(data == NULL);
-      size = strlen(data);
-      fail_unless(size == expected_size);
-      fail_unless(memcmp(expected_data, data, size) == 0);
+      size = strlen (data);
+      fail_unless (size == expected_size);
+      fail_unless (memcmp (expected_data, data, size) == 0);
 
       pdf_text_destroy(text);
-      pdf_dealloc(data);
+      pdf_dealloc (data);
 
       ++i;
     }
-
 }
 END_TEST
-
 
 /*
  * Test: pdf_text_get_pdfdocenc_002
@@ -104,36 +98,32 @@ END_TEST
  */
 START_TEST(pdf_text_get_pdfdocenc_002)
 {
-  pdf_text_t text;
-  const pdf_char_t *data = (pdf_char_t *) "\x00\x00\x6C\x34" \
-                                          "\x00\x00\x00\x7A" \
-                                          "\x00\x01\xD1\x1E";
-  pdf_char_t *output_data = NULL;
+  pdf_error_t *error = NULL;
+  pdf_text_t *text;
+  const pdf_char_t *data = (pdf_char_t *) "\x00\x00\x6C\x34" "\x00\x00\x00\x7A" "\x00\x01\xD1\x1E";
   pdf_size_t size = 12;
   pdf_char_t *expected_data = (pdf_char_t *)"?z?";
   pdf_size_t expected_size = 3;
+  pdf_char_t *output_data;
 
-
-
-
-  fail_if(pdf_text_new_from_unicode(data, size,
-                                    PDF_TEXT_UTF32_BE,
-                                    &text) != PDF_OK);
+  text = pdf_text_new_from_unicode (data, size, PDF_TEXT_UTF32_BE, &error);
+  fail_unless (text != NULL);
+  fail_if (error != NULL);
 
   /* 1. The call to  pdf_text_get_pdfdocenc should return PDF_OK. */
-  fail_unless(pdf_text_get_pdfdocenc(&output_data, text) == PDF_OK);
+  output_data = pdf_text_get_pdfdocenc (text, &error);
+  fail_unless (output_data != NULL);
+  fail_if (error != NULL);
 
   /* 2. The returned string must be the expected one, and NUL terminated */
-  fail_if(output_data == NULL);
-  size = strlen(output_data);
-  fail_unless(size == expected_size);
-  fail_unless(memcmp(expected_data, output_data, size) == 0);
+  size = strlen (output_data);
+  fail_unless (size == expected_size);
+  fail_unless (memcmp (expected_data, output_data, size) == 0);
 
-  pdf_text_destroy(text);
-  pdf_dealloc(output_data);
+  pdf_text_destroy (text);
+  pdf_dealloc (output_data);
 }
 END_TEST
-
 
 /*
  * Test case creation function
@@ -141,10 +131,10 @@ END_TEST
 TCase *
 test_pdf_text_get_pdfdocenc (void)
 {
-  TCase *tc = tcase_create("pdf_text_get_pdfdocenc");
-  tcase_add_test(tc, pdf_text_get_pdfdocenc_001);
-  tcase_add_test(tc, pdf_text_get_pdfdocenc_002);
+  TCase *tc = tcase_create ("pdf_text_get_pdfdocenc");
 
+  tcase_add_test (tc, pdf_text_get_pdfdocenc_001);
+  tcase_add_test (tc, pdf_text_get_pdfdocenc_002);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);

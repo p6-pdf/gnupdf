@@ -66,8 +66,7 @@ struct test_params {
    combinations.  Getting unicode data with bundled lang&country
    information is only supported for UTF-16BE, so the function will
    not return PDF_OK in that case for all other encodings. */
-struct test_params
-tests_params[] = {
+struct test_params tests_params[] = {
   /* UTF-8, no NUL */
   /*	No	Encoding		BOM	Empty	Lang	Country	NUL	PDF_OK? */
   {	1,	PDF_TEXT_UTF8,		0,	0,	0,	0,	0,	1 },
@@ -202,265 +201,260 @@ extern const test_string_t utf8_strings[];
 extern const test_string_t utf16be_strings[];
 extern const test_string_t utf32be_strings[];
 
-static void test_one_string(struct test_params params, int empty, const test_string_t* test_string)
+static void
+test_one_string (struct test_params params,
+                 int empty,
+                 const test_string_t *test_string)
 {
-  /* Fabricate text object */
-  pdf_text_t text;
-  pdf_char_t* initial_utf_data = NULL;
+  pdf_error_t *error = NULL;
+  pdf_text_t *text;
+  pdf_char_t *initial_utf_data = NULL;
   pdf_size_t  initial_utf_data_size = 0;
-
-  /* - from strings if non-empty */
-  if (!params.empty)
-    {
-      /* Set expected data and size (without BOM) */
-      int initial_utf_bom_size = 0;
-      if (params.enc == PDF_TEXT_UTF8)
-	initial_utf_bom_size = 3;
-      else if (params.enc == PDF_TEXT_UTF16_BE || params.enc == PDF_TEXT_UTF16_LE)
-	initial_utf_bom_size = 2;
-      else if (params.enc == PDF_TEXT_UTF32_BE || params.enc == PDF_TEXT_UTF32_LE)
-	initial_utf_bom_size = 4;
-
-      initial_utf_data_size = test_string->size - initial_utf_bom_size;
-      pdf_char_t *source = (pdf_char_t *)&(test_string->data[initial_utf_bom_size]);
-      /* change endianness if needed */
-      if (params.enc == PDF_TEXT_UTF16_LE)
-	{
-	  initial_utf_data = pdf_text_test_change_utf16_endianness(source,
-								   initial_utf_data_size);
-	}
-      else if (params.enc == PDF_TEXT_UTF32_LE)
-	{
-	  initial_utf_data = pdf_text_test_change_utf32_endianness(source,
-								   initial_utf_data_size);
-	}
-      else
-	{
-	  /* just strdup, this eases freeing memory at the end of the test */
-	  initial_utf_data = pdf_alloc(initial_utf_data_size);
-	  memcpy(initial_utf_data, source, initial_utf_data_size);
-	}
-
-      fail_if(pdf_text_new_from_unicode(test_string->utf32be_data, test_string->utf32be_size,
-                                        PDF_TEXT_UTF32_BE, &text) != PDF_OK);
-    }
-  /* - from scratch if empty */
-  else
-    {
-      fail_if(pdf_text_new(&text) != PDF_OK);
-    }
-
-  /* Lang/country information */
   const pdf_char_t *language = (pdf_char_t *)"en";
   const pdf_char_t *country = (pdf_char_t *)"GB";
   pdf_char_t langcode[8];
   pdf_char_t langcode_size = 0;
+  pdf_char_t *data = NULL;
+  pdf_size_t size = 0;
+  pdf_u32_t options = PDF_TEXT_UNICODE_NO_OPTION;
+  int expected_size = 0;
+  int bom_size = 0;
+  int nul_size = 0;
+
+  /* - from strings if non-empty */
+  if (!params.empty)
+    {
+      pdf_char_t *source;
+      int initial_utf_bom_size = 0;
+
+      if (params.enc == PDF_TEXT_UTF8)
+        initial_utf_bom_size = 3;
+      else if (params.enc == PDF_TEXT_UTF16_BE || params.enc == PDF_TEXT_UTF16_LE)
+        initial_utf_bom_size = 2;
+      else if (params.enc == PDF_TEXT_UTF32_BE || params.enc == PDF_TEXT_UTF32_LE)
+        initial_utf_bom_size = 4;
+
+      initial_utf_data_size = test_string->size - initial_utf_bom_size;
+      source = (pdf_char_t *)&(test_string->data[initial_utf_bom_size]);
+      /* change endianness if needed */
+      if (params.enc == PDF_TEXT_UTF16_LE)
+        {
+          initial_utf_data = pdf_text_test_change_utf16_endianness (source,
+                                                                    initial_utf_data_size);
+        }
+      else if (params.enc == PDF_TEXT_UTF32_LE)
+        {
+          initial_utf_data = pdf_text_test_change_utf32_endianness (source,
+                                                                    initial_utf_data_size);
+        }
+      else
+        {
+          /* just strdup, this eases freeing memory at the end of the test */
+          initial_utf_data = pdf_alloc (initial_utf_data_size);
+          memcpy (initial_utf_data, source, initial_utf_data_size);
+        }
+
+      text = pdf_text_new_from_unicode (test_string->utf32be_data,
+                                        test_string->utf32be_size,
+                                        PDF_TEXT_UTF32_BE,
+                                        &error);
+    }
+  /* - from scratch if empty */
+  else
+    {
+      text = pdf_text_new (&error);
+    }
+
+  fail_unless (text != NULL);
+  fail_if (error != NULL);
+
+  /* Lang/country information */
   if (params.lang || params.country)
     {
       if (params.lang)
-	fail_if(pdf_text_set_language(text, language) != PDF_OK);
+        pdf_text_set_language (text, language);
       if (params.country)
-	fail_if(pdf_text_set_country(text, country) != PDF_OK);
+        pdf_text_set_country (text, country);
 
-      memcpy(&langcode[langcode_size], "\x00\x1B", 2);
+      memcpy (&langcode[langcode_size], "\x00\x1B", 2);
       langcode_size += 2;
       if (params.lang) {
-	memcpy(&langcode[langcode_size], "en", 2);
-	langcode_size += 2;
+        memcpy (&langcode[langcode_size], "en", 2);
+        langcode_size += 2;
       }
       if (params.country) {
-	memcpy(&langcode[langcode_size], "GB", 2);
-	langcode_size += 2;
+        memcpy (&langcode[langcode_size], "GB", 2);
+        langcode_size += 2;
       }
-      memcpy(&langcode[langcode_size], "\x00\x1B", 2);
+      memcpy (&langcode[langcode_size], "\x00\x1B", 2);
       langcode_size += 2;
     }
 
-
   /* Get unicode from text object */
-  pdf_char_t *data = NULL;
-  pdf_size_t size = 0;
-  {
-    pdf_u32_t options = PDF_TEXT_UNICODE_NO_OPTION;
-    if (params.bom)
-      options |= PDF_TEXT_UNICODE_WITH_BOM;
-    if (params.lang || params.country)
-      options |= PDF_TEXT_UTF16BE_WITH_LANGCODE;
-    if (params.nul)
-      options |= PDF_TEXT_UNICODE_WITH_NUL_SUFFIX;
+  if (params.bom)
+    options |= PDF_TEXT_UNICODE_WITH_BOM;
+  if (params.lang || params.country)
+    options |= PDF_TEXT_UTF16BE_WITH_LANGCODE;
+  if (params.nul)
+    options |= PDF_TEXT_UNICODE_WITH_NUL_SUFFIX;
 
+  /***********************************
+   * THE 'pdf_text_get_unicode' CALL *
+   *                                 *
+   ***********************************/
+  data = pdf_text_get_unicode (text,
+                               params.enc,
+                               options,
+                               &size,
+                               &error);
 
-    /***********************************
-     * THE 'pdf_text_get_unicode' CALL *
-     *                                 *
-     ***********************************/
-    pdf_status_t result =
-      pdf_text_get_unicode(&data, &size, text, params.enc, options);
-
-
-    /* 1. Fail depending on pdf_ok_p */
-    if (params.pdf_ok_p)
-      fail_if(result != PDF_OK);
-    else
-      fail_if(result == PDF_OK);
-
-    /* - Stop if expected result is !PDF_OK */
-    if (!params.pdf_ok_p)
-      return;
-    /* - Stop if empty && !bom && !lang */
-    if (params.empty && !params.bom && !params.lang)
-      return;
-  }
-
-  /* 2. The returned string must be the expected one */
-  fail_if(data == NULL);
-
-  if(INTERACTIVE_DEBUG)
+  /* 1. Fail depending on pdf_ok_p */
+  if (params.pdf_ok_p)
     {
-      pdf_char_t *internal_hex = NULL;
-      pdf_char_t *expected_hex = NULL;
-      pdf_size_t actual_size;
-      pdf_char_t *actual_data;
-      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
-				       PDF_TEXT_UTF32_HE,0) == PDF_OK);
-      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
-      expected_hex = pdf_text_test_get_hex(initial_utf_data,initial_utf_data_size,':');
-      fail_if(expected_hex == NULL);
-      fail_if(internal_hex == NULL);
-      printf("pdf_text_get_unicode_032:%d:Initial > '%s'\n", params.idx, expected_hex);
-      printf("pdf_text_get_unicode_032:%d:Internal> '%s'\n", params.idx, internal_hex);
-      pdf_dealloc(actual_data);
-      pdf_dealloc(internal_hex);
-      pdf_dealloc(expected_hex);
+      fail_unless (data != NULL);
+      fail_if (error != NULL);
+    }
+  else
+    {
+      fail_if (data != NULL);
+      fail_unless (error != NULL);
+      pdf_error_destroy (error);
     }
 
-  int expected_size = 0;
+  /* - Stop if expected result is !PDF_OK */
+  if (!params.pdf_ok_p)
+    return;
+  /* - Stop if empty && !bom && !lang */
+  if (params.empty && !params.bom && !params.lang)
+    return;
+
+  /* 2. The returned string must be the expected one */
+  PRINT_CONTENTS (params.idx,
+                  text,
+                  initial_utf_data,
+                  initial_utf_data_size,
+                  0);
 
   /* - verify BOM if present */
-  int bom_size = 0;
   if (params.bom)
     {
       if (params.enc == PDF_TEXT_UTF8)
-	{
-	  bom_size = 3;
-	  fail_unless(memcmp(&data[0], "\xEF\xBB\xBF", bom_size) == 0);
-	}
+        {
+          bom_size = 3;
+          fail_unless (memcmp (&data[0], "\xEF\xBB\xBF", bom_size) == 0);
+        }
       else if (params.enc == PDF_TEXT_UTF16_BE)
-	{
-	  bom_size = 2;
-	  fail_unless(memcmp(&data[0], "\xFE\xFF", bom_size) == 0);
-	}
+        {
+          bom_size = 2;
+          fail_unless (memcmp(&data[0], "\xFE\xFF", bom_size) == 0);
+        }
       else if (params.enc == PDF_TEXT_UTF16_LE)
-	{
-	  bom_size = 2;
-	  fail_unless(memcmp(&data[0], "\xFF\xFE", bom_size) == 0);
-	}
+        {
+          bom_size = 2;
+          fail_unless (memcmp(&data[0], "\xFF\xFE", bom_size) == 0);
+        }
       else if (params.enc == PDF_TEXT_UTF32_BE)
-	{
-	  bom_size = 4;
-	  fail_unless(memcmp(&data[0], "\x00\x00\xFE\xFF", bom_size) == 0);
-	}
+        {
+          bom_size = 4;
+          fail_unless (memcmp(&data[0], "\x00\x00\xFE\xFF", bom_size) == 0);
+        }
       else if (params.enc == PDF_TEXT_UTF32_LE)
-	{
-	  bom_size = 4;
-	  fail_unless(memcmp(&data[0], "\xFF\xFE\x00\x00", bom_size) == 0);
-	}
+        {
+          bom_size = 4;
+          fail_unless (memcmp(&data[0], "\xFF\xFE\x00\x00", bom_size) == 0);
+        }
     }
   expected_size += bom_size;
 
-
   /* - verify country/lang if present */
-  fail_unless(memcmp(&data[bom_size], langcode, langcode_size) == 0);
+  fail_unless (memcmp (&data[bom_size], langcode, langcode_size) == 0);
   expected_size += langcode_size;
-
 
   /* - the returned string must be the expected one */
   /*  printf("test(%02d): bom_size = %d, langcode_size = %d\n", params.idx, bom_size, langcode_size); */
-  fail_unless(memcmp(&data[bom_size + langcode_size],
-		     initial_utf_data,
-		     initial_utf_data_size) == 0);
+  fail_unless (memcmp (&data[bom_size + langcode_size],
+                       initial_utf_data,
+                       initial_utf_data_size) == 0);
   expected_size += initial_utf_data_size;
-
 
   /* - verify NUL if present */
   /*   Last NUL has different sizes depending the encoding: */
   /*   - 1 NUL byte for UTF-8 */
   /*   - 2 NUL bytes for all the UTF-16 encodings */
   /*   - 4 NUL bytes for all the UTF-32 encodings */
-  int nul_size = 0;
+
   if (params.nul)
     {
       if (params.enc == PDF_TEXT_UTF8)
-	{
-	  nul_size = 1;
-	  fail_unless(data[size-1] == '\0');
-	}
+        {
+          nul_size = 1;
+          fail_unless (data[size - 1] == '\0');
+        }
       else if (params.enc == PDF_TEXT_UTF16_BE || params.enc == PDF_TEXT_UTF16_LE)
-	{
-	  nul_size = 2;
-	  fail_unless(memcmp(&data[size-nul_size], "\x00\x00", nul_size) == 0);
-	}
+        {
+          nul_size = 2;
+          fail_unless (memcmp (&data[size - nul_size], "\x00\x00", nul_size) == 0);
+        }
       else if (params.enc == PDF_TEXT_UTF32_BE || params.enc == PDF_TEXT_UTF32_LE)
-	{
-	  nul_size = 4;
-	  fail_unless(memcmp(&data[size-nul_size], "\x00\x00\x00\x00", nul_size) == 0);
-	}
+        {
+          nul_size = 4;
+          fail_unless (memcmp (&data[size - nul_size], "\x00\x00\x00\x00", nul_size) == 0);
+        }
     }
   expected_size += nul_size;
 
-
   /* 3. The returned length must be the expected one. */
-  fail_unless(size == expected_size);
+  fail_unless (size == expected_size);
 
   /* Clean-up */
-  pdf_text_destroy(text);
-  pdf_dealloc(data);
-  pdf_dealloc(initial_utf_data);
+  pdf_text_destroy (text);
+  pdf_dealloc (data);
+  pdf_dealloc (initial_utf_data);
 }
 
-static void common_test(int test_index)
+static void
+common_test (int test_index)
 {
   /* Get test params */
-  struct test_params params = tests_params[test_index-1];
-  fail_if(params.idx != test_index);
+  struct test_params params = tests_params[test_index - 1];
+
+  fail_if (params.idx != test_index);
 
   if (params.empty)
     {
       /* Testing the empty text - only 1 possible test */
-      test_one_string(params, 1, NULL);
+      test_one_string (params, 1, NULL);
     }
   else
     {
       /* Tests all strings from pdf-text-test-data.c */
       int i = 0;
       if (params.enc == PDF_TEXT_UTF8)
-	{
-	  while(utf8_strings[i].data != NULL)
-	    {
-	      test_one_string(params, 0, &utf8_strings[i]);
-	      i++;
-	    }
-	}
+        {
+          while (utf8_strings[i].data)
+            {
+              test_one_string (params, 0, &utf8_strings[i]);
+              i++;
+            }
+        }
       else if (params.enc == PDF_TEXT_UTF16_BE || params.enc == PDF_TEXT_UTF16_LE)
-	{
-	  while(utf16be_strings[i].data != NULL)
-	    {
-	      test_one_string(params, 0, &utf16be_strings[i]);
-	      i++;
-	    }
-	}
+        {
+          while (utf16be_strings[i].data)
+            {
+              test_one_string (params, 0, &utf16be_strings[i]);
+              i++;
+            }
+        }
       else /* if (params.enc == PDF_TEXT_UTF32_BE || params.enc == PDF_TEXT_UTF32_LE) */
-	{
-	  while(utf32be_strings[i].data != NULL)
-	    {
-	      test_one_string(params, 0, &utf32be_strings[i]);
-	      i++;
-	    }
-	}
+        {
+          while (utf32be_strings[i].data)
+            {
+              test_one_string (params, 0, &utf32be_strings[i]);
+              i++;
+            }
+        }
     }
 }
-
-
 
 START_TEST (pdf_text_get_unicode_001) { common_test(  1); } END_TEST
 START_TEST (pdf_text_get_unicode_002) { common_test(  2); } END_TEST
@@ -587,126 +581,126 @@ START_TEST (pdf_text_get_unicode_108) { common_test(108); } END_TEST
 TCase *
 test_pdf_text_get_unicode (void)
 {
-  TCase *tc = tcase_create("pdf_text_get_unicode");
+  TCase *tc = tcase_create ("pdf_text_get_unicode");
 
-  tcase_add_test(tc, pdf_text_get_unicode_001);
-  tcase_add_test(tc, pdf_text_get_unicode_002);
-  tcase_add_test(tc, pdf_text_get_unicode_003);
-  tcase_add_test(tc, pdf_text_get_unicode_004);
-  tcase_add_test(tc, pdf_text_get_unicode_005);
-  tcase_add_test(tc, pdf_text_get_unicode_006);
+  tcase_add_test (tc, pdf_text_get_unicode_001);
+  tcase_add_test (tc, pdf_text_get_unicode_002);
+  tcase_add_test (tc, pdf_text_get_unicode_003);
+  tcase_add_test (tc, pdf_text_get_unicode_004);
+  tcase_add_test (tc, pdf_text_get_unicode_005);
+  tcase_add_test (tc, pdf_text_get_unicode_006);
 
-  tcase_add_test(tc, pdf_text_get_unicode_007);
-  tcase_add_test(tc, pdf_text_get_unicode_008);
-  tcase_add_test(tc, pdf_text_get_unicode_009);
-  tcase_add_test(tc, pdf_text_get_unicode_010);
-  tcase_add_test(tc, pdf_text_get_unicode_011);
-  tcase_add_test(tc, pdf_text_get_unicode_012);
-  tcase_add_test(tc, pdf_text_get_unicode_013);
-  tcase_add_test(tc, pdf_text_get_unicode_014);
-  tcase_add_test(tc, pdf_text_get_unicode_015);
-  tcase_add_test(tc, pdf_text_get_unicode_016);
-  tcase_add_test(tc, pdf_text_get_unicode_017);
-  tcase_add_test(tc, pdf_text_get_unicode_018);
+  tcase_add_test (tc, pdf_text_get_unicode_007);
+  tcase_add_test (tc, pdf_text_get_unicode_008);
+  tcase_add_test (tc, pdf_text_get_unicode_009);
+  tcase_add_test (tc, pdf_text_get_unicode_010);
+  tcase_add_test (tc, pdf_text_get_unicode_011);
+  tcase_add_test (tc, pdf_text_get_unicode_012);
+  tcase_add_test (tc, pdf_text_get_unicode_013);
+  tcase_add_test (tc, pdf_text_get_unicode_014);
+  tcase_add_test (tc, pdf_text_get_unicode_015);
+  tcase_add_test (tc, pdf_text_get_unicode_016);
+  tcase_add_test (tc, pdf_text_get_unicode_017);
+  tcase_add_test (tc, pdf_text_get_unicode_018);
 
-  tcase_add_test(tc, pdf_text_get_unicode_019);
-  tcase_add_test(tc, pdf_text_get_unicode_020);
-  tcase_add_test(tc, pdf_text_get_unicode_021);
-  tcase_add_test(tc, pdf_text_get_unicode_022);
-  tcase_add_test(tc, pdf_text_get_unicode_023);
-  tcase_add_test(tc, pdf_text_get_unicode_024);
-  tcase_add_test(tc, pdf_text_get_unicode_025);
-  tcase_add_test(tc, pdf_text_get_unicode_026);
-  tcase_add_test(tc, pdf_text_get_unicode_027);
-  tcase_add_test(tc, pdf_text_get_unicode_028);
-  tcase_add_test(tc, pdf_text_get_unicode_029);
-  tcase_add_test(tc, pdf_text_get_unicode_030);
+  tcase_add_test (tc, pdf_text_get_unicode_019);
+  tcase_add_test (tc, pdf_text_get_unicode_020);
+  tcase_add_test (tc, pdf_text_get_unicode_021);
+  tcase_add_test (tc, pdf_text_get_unicode_022);
+  tcase_add_test (tc, pdf_text_get_unicode_023);
+  tcase_add_test (tc, pdf_text_get_unicode_024);
+  tcase_add_test (tc, pdf_text_get_unicode_025);
+  tcase_add_test (tc, pdf_text_get_unicode_026);
+  tcase_add_test (tc, pdf_text_get_unicode_027);
+  tcase_add_test (tc, pdf_text_get_unicode_028);
+  tcase_add_test (tc, pdf_text_get_unicode_029);
+  tcase_add_test (tc, pdf_text_get_unicode_030);
 
-  tcase_add_test(tc, pdf_text_get_unicode_031);
-  tcase_add_test(tc, pdf_text_get_unicode_032);
-  tcase_add_test(tc, pdf_text_get_unicode_033);
-  tcase_add_test(tc, pdf_text_get_unicode_034);
-  tcase_add_test(tc, pdf_text_get_unicode_035);
-  tcase_add_test(tc, pdf_text_get_unicode_036);
-  tcase_add_test(tc, pdf_text_get_unicode_037);
-  tcase_add_test(tc, pdf_text_get_unicode_038);
-  tcase_add_test(tc, pdf_text_get_unicode_039);
-  tcase_add_test(tc, pdf_text_get_unicode_040);
-  tcase_add_test(tc, pdf_text_get_unicode_041);
-  tcase_add_test(tc, pdf_text_get_unicode_042);
+  tcase_add_test (tc, pdf_text_get_unicode_031);
+  tcase_add_test (tc, pdf_text_get_unicode_032);
+  tcase_add_test (tc, pdf_text_get_unicode_033);
+  tcase_add_test (tc, pdf_text_get_unicode_034);
+  tcase_add_test (tc, pdf_text_get_unicode_035);
+  tcase_add_test (tc, pdf_text_get_unicode_036);
+  tcase_add_test (tc, pdf_text_get_unicode_037);
+  tcase_add_test (tc, pdf_text_get_unicode_038);
+  tcase_add_test (tc, pdf_text_get_unicode_039);
+  tcase_add_test (tc, pdf_text_get_unicode_040);
+  tcase_add_test (tc, pdf_text_get_unicode_041);
+  tcase_add_test (tc, pdf_text_get_unicode_042);
 
-  tcase_add_test(tc, pdf_text_get_unicode_043);
-  tcase_add_test(tc, pdf_text_get_unicode_044);
-  tcase_add_test(tc, pdf_text_get_unicode_045);
-  tcase_add_test(tc, pdf_text_get_unicode_046);
-  tcase_add_test(tc, pdf_text_get_unicode_047);
-  tcase_add_test(tc, pdf_text_get_unicode_048);
-  tcase_add_test(tc, pdf_text_get_unicode_049);
-  tcase_add_test(tc, pdf_text_get_unicode_050);
-  tcase_add_test(tc, pdf_text_get_unicode_051);
-  tcase_add_test(tc, pdf_text_get_unicode_052);
-  tcase_add_test(tc, pdf_text_get_unicode_053);
-  tcase_add_test(tc, pdf_text_get_unicode_054);
+  tcase_add_test (tc, pdf_text_get_unicode_043);
+  tcase_add_test (tc, pdf_text_get_unicode_044);
+  tcase_add_test (tc, pdf_text_get_unicode_045);
+  tcase_add_test (tc, pdf_text_get_unicode_046);
+  tcase_add_test (tc, pdf_text_get_unicode_047);
+  tcase_add_test (tc, pdf_text_get_unicode_048);
+  tcase_add_test (tc, pdf_text_get_unicode_049);
+  tcase_add_test (tc, pdf_text_get_unicode_050);
+  tcase_add_test (tc, pdf_text_get_unicode_051);
+  tcase_add_test (tc, pdf_text_get_unicode_052);
+  tcase_add_test (tc, pdf_text_get_unicode_053);
+  tcase_add_test (tc, pdf_text_get_unicode_054);
 
 
-  tcase_add_test(tc, pdf_text_get_unicode_055);
-  tcase_add_test(tc, pdf_text_get_unicode_056);
-  tcase_add_test(tc, pdf_text_get_unicode_057);
-  tcase_add_test(tc, pdf_text_get_unicode_058);
-  tcase_add_test(tc, pdf_text_get_unicode_059);
-  tcase_add_test(tc, pdf_text_get_unicode_060);
+  tcase_add_test (tc, pdf_text_get_unicode_055);
+  tcase_add_test (tc, pdf_text_get_unicode_056);
+  tcase_add_test (tc, pdf_text_get_unicode_057);
+  tcase_add_test (tc, pdf_text_get_unicode_058);
+  tcase_add_test (tc, pdf_text_get_unicode_059);
+  tcase_add_test (tc, pdf_text_get_unicode_060);
 
-  tcase_add_test(tc, pdf_text_get_unicode_061);
-  tcase_add_test(tc, pdf_text_get_unicode_062);
-  tcase_add_test(tc, pdf_text_get_unicode_063);
-  tcase_add_test(tc, pdf_text_get_unicode_064);
-  tcase_add_test(tc, pdf_text_get_unicode_065);
-  tcase_add_test(tc, pdf_text_get_unicode_066);
-  tcase_add_test(tc, pdf_text_get_unicode_067);
-  tcase_add_test(tc, pdf_text_get_unicode_068);
-  tcase_add_test(tc, pdf_text_get_unicode_069);
-  tcase_add_test(tc, pdf_text_get_unicode_070);
-  tcase_add_test(tc, pdf_text_get_unicode_071);
-  tcase_add_test(tc, pdf_text_get_unicode_072);
+  tcase_add_test (tc, pdf_text_get_unicode_061);
+  tcase_add_test (tc, pdf_text_get_unicode_062);
+  tcase_add_test (tc, pdf_text_get_unicode_063);
+  tcase_add_test (tc, pdf_text_get_unicode_064);
+  tcase_add_test (tc, pdf_text_get_unicode_065);
+  tcase_add_test (tc, pdf_text_get_unicode_066);
+  tcase_add_test (tc, pdf_text_get_unicode_067);
+  tcase_add_test (tc, pdf_text_get_unicode_068);
+  tcase_add_test (tc, pdf_text_get_unicode_069);
+  tcase_add_test (tc, pdf_text_get_unicode_070);
+  tcase_add_test (tc, pdf_text_get_unicode_071);
+  tcase_add_test (tc, pdf_text_get_unicode_072);
 
-  tcase_add_test(tc, pdf_text_get_unicode_073);
-  tcase_add_test(tc, pdf_text_get_unicode_074);
-  tcase_add_test(tc, pdf_text_get_unicode_075);
-  tcase_add_test(tc, pdf_text_get_unicode_076);
-  tcase_add_test(tc, pdf_text_get_unicode_077);
-  tcase_add_test(tc, pdf_text_get_unicode_078);
-  tcase_add_test(tc, pdf_text_get_unicode_079);
-  tcase_add_test(tc, pdf_text_get_unicode_080);
-  tcase_add_test(tc, pdf_text_get_unicode_081);
-  tcase_add_test(tc, pdf_text_get_unicode_082);
-  tcase_add_test(tc, pdf_text_get_unicode_083);
-  tcase_add_test(tc, pdf_text_get_unicode_084);
+  tcase_add_test (tc, pdf_text_get_unicode_073);
+  tcase_add_test (tc, pdf_text_get_unicode_074);
+  tcase_add_test (tc, pdf_text_get_unicode_075);
+  tcase_add_test (tc, pdf_text_get_unicode_076);
+  tcase_add_test (tc, pdf_text_get_unicode_077);
+  tcase_add_test (tc, pdf_text_get_unicode_078);
+  tcase_add_test (tc, pdf_text_get_unicode_079);
+  tcase_add_test (tc, pdf_text_get_unicode_080);
+  tcase_add_test (tc, pdf_text_get_unicode_081);
+  tcase_add_test (tc, pdf_text_get_unicode_082);
+  tcase_add_test (tc, pdf_text_get_unicode_083);
+  tcase_add_test (tc, pdf_text_get_unicode_084);
 
-  tcase_add_test(tc, pdf_text_get_unicode_085);
-  tcase_add_test(tc, pdf_text_get_unicode_086);
-  tcase_add_test(tc, pdf_text_get_unicode_087);
-  tcase_add_test(tc, pdf_text_get_unicode_088);
-  tcase_add_test(tc, pdf_text_get_unicode_089);
-  tcase_add_test(tc, pdf_text_get_unicode_090);
-  tcase_add_test(tc, pdf_text_get_unicode_091);
-  tcase_add_test(tc, pdf_text_get_unicode_092);
-  tcase_add_test(tc, pdf_text_get_unicode_093);
-  tcase_add_test(tc, pdf_text_get_unicode_094);
-  tcase_add_test(tc, pdf_text_get_unicode_095);
-  tcase_add_test(tc, pdf_text_get_unicode_096);
+  tcase_add_test (tc, pdf_text_get_unicode_085);
+  tcase_add_test (tc, pdf_text_get_unicode_086);
+  tcase_add_test (tc, pdf_text_get_unicode_087);
+  tcase_add_test (tc, pdf_text_get_unicode_088);
+  tcase_add_test (tc, pdf_text_get_unicode_089);
+  tcase_add_test (tc, pdf_text_get_unicode_090);
+  tcase_add_test (tc, pdf_text_get_unicode_091);
+  tcase_add_test (tc, pdf_text_get_unicode_092);
+  tcase_add_test (tc, pdf_text_get_unicode_093);
+  tcase_add_test (tc, pdf_text_get_unicode_094);
+  tcase_add_test (tc, pdf_text_get_unicode_095);
+  tcase_add_test (tc, pdf_text_get_unicode_096);
 
-  tcase_add_test(tc, pdf_text_get_unicode_097);
-  tcase_add_test(tc, pdf_text_get_unicode_098);
-  tcase_add_test(tc, pdf_text_get_unicode_099);
-  tcase_add_test(tc, pdf_text_get_unicode_100);
-  tcase_add_test(tc, pdf_text_get_unicode_101);
-  tcase_add_test(tc, pdf_text_get_unicode_102);
-  tcase_add_test(tc, pdf_text_get_unicode_103);
-  tcase_add_test(tc, pdf_text_get_unicode_104);
-  tcase_add_test(tc, pdf_text_get_unicode_105);
-  tcase_add_test(tc, pdf_text_get_unicode_106);
-  tcase_add_test(tc, pdf_text_get_unicode_107);
-  tcase_add_test(tc, pdf_text_get_unicode_108);
+  tcase_add_test (tc, pdf_text_get_unicode_097);
+  tcase_add_test (tc, pdf_text_get_unicode_098);
+  tcase_add_test (tc, pdf_text_get_unicode_099);
+  tcase_add_test (tc, pdf_text_get_unicode_100);
+  tcase_add_test (tc, pdf_text_get_unicode_101);
+  tcase_add_test (tc, pdf_text_get_unicode_102);
+  tcase_add_test (tc, pdf_text_get_unicode_103);
+  tcase_add_test (tc, pdf_text_get_unicode_104);
+  tcase_add_test (tc, pdf_text_get_unicode_105);
+  tcase_add_test (tc, pdf_text_get_unicode_106);
+  tcase_add_test (tc, pdf_text_get_unicode_107);
+  tcase_add_test (tc, pdf_text_get_unicode_108);
 
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,

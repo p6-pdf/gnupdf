@@ -29,6 +29,7 @@
 #include <pdf.h>
 #include <check.h>
 #include <pdf-test-common.h>
+
 /*
  * Test: pdf_text_set_country_001
  * Description:
@@ -40,76 +41,22 @@
  */
 START_TEST (pdf_text_set_country_001)
 {
-
-
-
-  pdf_text_t text;
+  pdf_error_t *error = NULL;
+  pdf_text_t *text;
   const pdf_char_t *country = (pdf_char_t *)"GB";
 
-
-
-
-  fail_if(pdf_text_new (&text) != PDF_OK);
+  text = pdf_text_new (&error);
+  fail_unless (text != NULL);
+  fail_if (error != NULL);
 
   /* 1. The call to pdf_text_set_country should return PDF_OK. */
-  fail_if(pdf_text_set_country(text, country) != PDF_OK);
+  pdf_text_set_country (text, country);
 
   /* 2. The contents of the internal country ID representation should be the
    *      expected ones. */
-  fail_unless(strcmp(pdf_text_get_country(text), country)==0);
+  fail_unless (strcmp (pdf_text_get_country (text), country) == 0);
 
-  pdf_text_destroy(text);
-
-}
-END_TEST
-
-
-/*
- * Test: pdf_text_set_country_002
- * Description:
- *   Set an invalid one-character country ID
- * Success conditions:
- *   1. The call to pdf_text_set_country should NOT return PDF_OK.
- */
-START_TEST (pdf_text_set_country_002)
-{
-  pdf_text_t text;
-  const pdf_char_t *country = (pdf_char_t *)"a";
-
-
-
-
-  fail_if(pdf_text_new (&text) != PDF_OK);
-
-  /* 1. The call to pdf_text_set_country should NOT return PDF_OK. */
-  fail_if(pdf_text_set_country(text, country) == PDF_OK);
-
-  pdf_text_destroy(text);
-}
-END_TEST
-
-
-/*
- * Test: pdf_text_set_country_003
- * Description:
- *   Set an invalid empty country ID
- * Success conditions:
- *   1. The call to pdf_text_set_country should NOT return PDF_OK.
- */
-START_TEST (pdf_text_set_country_003)
-{
-  pdf_text_t text;
-  const pdf_char_t *country = (pdf_char_t *)"";
-
-
-
-
-  fail_if(pdf_text_new (&text) != PDF_OK);
-
-  /* 1. The call to pdf_text_set_country should NOT return PDF_OK. */
-  fail_if(pdf_text_set_country(text, country) == PDF_OK);
-
-  pdf_text_destroy(text);
+  pdf_text_destroy (text);
 }
 END_TEST
 
@@ -119,15 +66,13 @@ END_TEST
 TCase *
 test_pdf_text_set_country (void)
 {
-  TCase *tc = tcase_create("pdf_text_set_country");
-  tcase_add_test(tc, pdf_text_set_country_001);
-  tcase_add_test(tc, pdf_text_set_country_002);
-  tcase_add_test(tc, pdf_text_set_country_003);
+  TCase *tc = tcase_create ("pdf_text_set_country");
 
+  tcase_add_test (tc, pdf_text_set_country_001);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);
   return tc;
 }
 
-/* End of pdf-text-get-country.c */
+/* End of pdf-text-set-country.c */
