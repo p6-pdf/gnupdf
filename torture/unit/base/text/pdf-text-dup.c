@@ -29,6 +29,7 @@
 #include <pdf.h>
 #include <check.h>
 #include <pdf-test-common.h>
+
 /*
  * Test: pdf_text_dup_001
  * Description:
@@ -41,32 +42,32 @@
  */
 START_TEST (pdf_text_dup_001)
 {
-  pdf_text_t text = NULL;
-  pdf_text_t duplicate = NULL;
+  pdf_error_t *error = NULL;
+  pdf_text_t *text;
+  pdf_text_t *duplicate;
 
-
-
-
-  fail_if(pdf_text_new (&text) != PDF_OK);
+  text = pdf_text_new (&error);
+  fail_unless (text != NULL);
+  fail_if (error != NULL);
 
   /* 1. The call to pdf_text_dup should not return a NULL pointer.*/
-  duplicate = pdf_text_dup(text);
-  fail_if(duplicate == NULL);
+  duplicate = pdf_text_dup (text, &error);
+  fail_unless (duplicate != NULL);
+  fail_if (error != NULL);
 
   /* 2. The text data of the created object should be empty. */
-  fail_unless(pdf_text_empty_p(duplicate) == PDF_TRUE);
+  fail_unless (pdf_text_empty_p (duplicate) == PDF_TRUE);
 
   /* 3. The language code of the output object should be empty */
-  fail_unless(strlen(pdf_text_get_language(duplicate)) == 0);
+  fail_unless (strlen (pdf_text_get_language (duplicate)) == 0);
 
   /* 4. The country code of the output object should be empty */
-  fail_unless(strlen(pdf_text_get_country(duplicate)) == 0);
+  fail_unless (strlen (pdf_text_get_country (duplicate)) == 0);
 
-  fail_if(pdf_text_destroy(text) != PDF_OK);
-  fail_if(pdf_text_destroy(duplicate) != PDF_OK);
+  pdf_text_destroy (text);
+  pdf_text_destroy (duplicate);
 }
 END_TEST
-
 
 /*
  * Test: pdf_text_dup_002
@@ -81,40 +82,43 @@ END_TEST
  */
 START_TEST (pdf_text_dup_002)
 {
-  pdf_text_t text = NULL;
-  pdf_text_t duplicate = NULL;
+  pdf_error_t *error = NULL;
+  pdf_text_t *text;
+  pdf_text_t *duplicate;
   const pdf_char_t *sample_utf8 = (pdf_char_t *)"GNU's not Unix";
 
-
-
-
-  fail_if(pdf_text_new (&text) != PDF_OK);
+  text = pdf_text_new (&error);
+  fail_unless (text != NULL);
+  fail_if (error != NULL);
 
   /* Set some data contents */
-  fail_unless(pdf_text_set_unicode(text,
-                                   sample_utf8,
-                                   strlen(sample_utf8),
-                                   PDF_TEXT_UTF8) == PDF_OK);
+  fail_unless (pdf_text_set_unicode (text,
+				     sample_utf8,
+				     strlen (sample_utf8),
+				     PDF_TEXT_UTF8,
+				     &error));
+  fail_if (error != NULL);
 
   /* 1. The call to pdf_text_dup should not return a NULL pointer.*/
-  duplicate = pdf_text_dup(text);
-  fail_if(duplicate == NULL);
+  duplicate = pdf_text_dup (text, &error);
+  fail_unless (duplicate != NULL);
+  fail_if (error != NULL);
 
   /* 2. The text data of the output object should be equal to the text data
    *     of the input object. */
-  fail_unless(pdf_text_cmp(text, duplicate, PDF_TRUE, NULL) == 0);
+  fail_unless (pdf_text_cmp (text, duplicate, PDF_TRUE, &error) == 0);
+  fail_if (error != NULL);
 
   /* 3. The language code of the output object should be empty */
-  fail_unless(strlen(pdf_text_get_language(duplicate)) == 0);
+  fail_unless (strlen (pdf_text_get_language (duplicate)) == 0);
 
   /* 4. The country code of the output object should be empty */
-  fail_unless(strlen(pdf_text_get_country(duplicate)) == 0);
+  fail_unless (strlen (pdf_text_get_country (duplicate)) == 0);
 
-  fail_if(pdf_text_destroy(text) != PDF_OK);
-  fail_if(pdf_text_destroy(duplicate) != PDF_OK);
+  pdf_text_destroy (text);
+  pdf_text_destroy (duplicate);
 }
 END_TEST
-
 
 /*
  * Test: pdf_text_dup_003
@@ -130,46 +134,48 @@ END_TEST
  */
 START_TEST (pdf_text_dup_003)
 {
-  pdf_text_t text = NULL;
-  pdf_text_t duplicate = NULL;
+  pdf_error_t *error = NULL;
+  pdf_text_t *text;
+  pdf_text_t *duplicate;
   const pdf_char_t *sample_utf8 = (pdf_char_t *)"GNU's not Unix";
   const pdf_char_t *sample_lang = (pdf_char_t *)"en";
 
-
-
-
-  fail_if(pdf_text_new (&text) != PDF_OK);
+  text = pdf_text_new (&error);
+  fail_unless (text != NULL);
+  fail_if (error != NULL);
 
   /* Set some data contents */
-  fail_unless(pdf_text_set_unicode(text,
-                                   sample_utf8,
-                                   strlen(sample_utf8),
-                                   PDF_TEXT_UTF8) == PDF_OK);
+  fail_unless (pdf_text_set_unicode (text,
+				     sample_utf8,
+				     strlen (sample_utf8),
+				     PDF_TEXT_UTF8,
+				     &error));
+  fail_if (error != NULL);
 
   /* Set language code */
-  fail_unless(pdf_text_set_language(text, sample_lang) == PDF_OK);
+  pdf_text_set_language (text, sample_lang);
 
   /* 1. The call to pdf_text_dup should not return a NULL pointer.*/
-  duplicate = pdf_text_dup(text);
-  fail_if(duplicate == NULL);
+  duplicate = pdf_text_dup (text, &error);
+  fail_unless (duplicate != NULL);
+  fail_if (error != NULL);
 
   /* 2. The text data of the output object should be equal to the text data
    *     of the input object. */
-  fail_unless(pdf_text_cmp(text, duplicate, PDF_TRUE, NULL) == 0);
+  fail_unless (pdf_text_cmp (text, duplicate, PDF_TRUE, &error) == 0);
+  fail_if (error != NULL);
 
   /* 3. The language code of the output object should be equal to the language
    *      code of the input object. */
-  fail_unless(strcmp(pdf_text_get_language(duplicate),
-                     sample_lang) == 0);
+  fail_unless (strcmp (pdf_text_get_language (duplicate), sample_lang) == 0);
 
   /* 4. The country code of the output object should be empty */
-  fail_unless(strlen(pdf_text_get_country(duplicate)) == 0);
+  fail_unless (strlen (pdf_text_get_country (duplicate)) == 0);
 
-  fail_if(pdf_text_destroy(text) != PDF_OK);
-  fail_if(pdf_text_destroy(duplicate) != PDF_OK);
+  pdf_text_destroy (text);
+  pdf_text_destroy (duplicate);
 }
 END_TEST
-
 
 /*
  * Test: pdf_text_dup_004
@@ -186,61 +192,50 @@ END_TEST
  */
 START_TEST (pdf_text_dup_004)
 {
-  pdf_text_t text = NULL;
-  pdf_text_t duplicate = NULL;
+  pdf_error_t *error = NULL;
+  pdf_text_t *text;
+  pdf_text_t *duplicate;
   const pdf_char_t *sample_utf8 = (pdf_char_t *)"GNU's not Unix";
   const pdf_char_t *sample_lang = (pdf_char_t *)"en";
   const pdf_char_t *sample_country = (pdf_char_t *)"gb";
 
-
-
-
-  fail_if(pdf_text_new (&text) != PDF_OK);
+  text = pdf_text_new (&error);
+  fail_unless (text != NULL);
+  fail_if (error != NULL);
 
   /* Set some data contents */
-  fail_unless(pdf_text_set_unicode(text,
-                                   sample_utf8,
-                                   strlen(sample_utf8),
-                                   PDF_TEXT_UTF8) == PDF_OK);
+  fail_unless (pdf_text_set_unicode (text,
+				     sample_utf8,
+				     strlen (sample_utf8),
+				     PDF_TEXT_UTF8,
+				     &error));
+  fail_if (error != NULL);
 
   /* Set language code */
-  fail_unless(pdf_text_set_language(text, sample_lang) == PDF_OK);
+  pdf_text_set_language (text, sample_lang);
 
   /* Set country code */
-  fail_unless(pdf_text_set_country(text, sample_country) == PDF_OK);
+  pdf_text_set_country (text, sample_country);
 
   /* 1. The call to pdf_text_dup should not return a NULL pointer.*/
-  duplicate = pdf_text_dup(text);
-  fail_if(duplicate == NULL);
+  duplicate = pdf_text_dup (text, &error);
+  fail_unless (duplicate != NULL);
+  fail_if (error != NULL);
 
   /* 2. The text data of the output object should be equal to the text data
    *     of the input object. */
-  fail_unless(pdf_text_cmp(text, duplicate, PDF_TRUE, NULL) == 0);
+  fail_unless (pdf_text_cmp (text, duplicate, PDF_TRUE, &error) == 0);
+  fail_if (error != NULL);
 
   /* 3. The language code of the output object should be equal to the language
    *      code of the input object. */
-  fail_unless(strcmp(pdf_text_get_language(duplicate),
-                     sample_lang) == 0);
+  fail_unless (strcmp (pdf_text_get_language (duplicate), sample_lang) == 0);
 
   /* 4. The country code of the output object should be empty */
-  fail_unless(strcmp(pdf_text_get_country(duplicate),
-                     sample_country) == 0);
+  fail_unless (strcmp (pdf_text_get_country (duplicate), sample_country) == 0);
 
-  fail_if(pdf_text_destroy(text) != PDF_OK);
-  fail_if(pdf_text_destroy(duplicate) != PDF_OK);
-}
-END_TEST
-
-/*
- * Test: pdf_text_dup_005
- * Description:
- *   Duplicate text without initializing the context
- * Success conditions:
- *   1. The call to @code{pdf_text_dup} should return a null pointer
- */
-START_TEST (pdf_text_dup_005)
-{
-  fail_unless(pdf_text_dup ((pdf_text_t) NULL) == NULL);
+  pdf_text_destroy (text);
+  pdf_text_destroy (duplicate);
 }
 END_TEST
 
@@ -251,11 +246,11 @@ TCase *
 test_pdf_text_dup (void)
 {
   TCase *tc = tcase_create("pdf_text_dup");
+
   tcase_add_test(tc, pdf_text_dup_001);
   tcase_add_test(tc, pdf_text_dup_002);
   tcase_add_test(tc, pdf_text_dup_003);
   tcase_add_test(tc, pdf_text_dup_004);
-  tcase_add_test(tc, pdf_text_dup_005);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);

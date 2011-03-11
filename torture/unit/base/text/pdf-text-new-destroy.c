@@ -35,34 +35,35 @@
  * Description:
  *   Create an empty text object and destroy it
  * Success conditions:
- *   1. The call to @code{pdf_text_new} should not return a  @code{NULL} pointer.
+ *   1. The call to @code{pdf_text_new} should not return a @code{NULL} pointer.
  *   2. The text data of the created object should be empty.
  *   3. The language code of the output object should be empty
  *   4. The country code of the output object should be empty
- *   5. The call to @code{pdf_text_destroy} should return PDF_OK;
+ *   5. The call to @code{pdf_text_destroy} should succeed.
  */
 START_TEST (pdf_text_new_destroy_001)
 {
-  pdf_text_t newtext = NULL;
-
-
+  pdf_error_t *error = NULL;
+  pdf_text_t *newtext;
 
   /* 1. The call to @code{pdf_text_new} should not return an error
      code. */
-  fail_if(pdf_text_new (&newtext) != PDF_OK);
+  newtext = pdf_text_new (&error);
+  fail_unless (newtext != NULL);
+  fail_if (error != NULL);
 
   /* 2. The text data of the created object should be empty. */
-  fail_unless(pdf_text_empty_p(newtext) == PDF_TRUE);
+  fail_unless (pdf_text_empty_p (newtext) == PDF_TRUE);
 
   /* 3. The language code of the output object should be empty */
-  fail_unless(strlen(pdf_text_get_language(newtext)) == 0);
+  fail_unless (strlen (pdf_text_get_language (newtext)) == 0);
 
   /* 4. The country code of the output object should be empty */
-  fail_unless(strlen(pdf_text_get_country(newtext)) == 0);
+  fail_unless (strlen (pdf_text_get_country (newtext)) == 0);
 
-  /* 5. The call to @code{pdf_text_destroy} should return PDF_OK. Again,
+  /* 5. The call to @code{pdf_text_destroy} should succeed. Again,
    *  probably this test is not that useful... */
-  fail_if(pdf_text_destroy(newtext) != PDF_OK);
+  pdf_text_destroy (newtext);
 }
 END_TEST
 
@@ -73,8 +74,9 @@ END_TEST
 TCase *
 test_pdf_text_new_destroy (void)
 {
-  TCase *tc = tcase_create("pdf_text_new_destroy");
-  tcase_add_test(tc, pdf_text_new_destroy_001);
+  TCase *tc = tcase_create ("pdf_text_new_destroy");
+
+  tcase_add_test (tc, pdf_text_new_destroy_001);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);

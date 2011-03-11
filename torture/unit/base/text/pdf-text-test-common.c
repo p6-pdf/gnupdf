@@ -32,62 +32,64 @@
 
 pdf_char_t *
 pdf_text_test_change_utf32_endianness(const pdf_char_t *str_in,
-                                      pdf_size_t size)
+                                      pdf_size_t        size)
 {
   pdf_char_t *str_out;
-  str_out = (pdf_char_t *)pdf_alloc(size);
-  if(str_out != NULL)
+
+  str_out = (pdf_char_t *) pdf_alloc (size);
+  if (str_out)
     {
       pdf_size_t i;
-      for(i=0; i<size; i+=4)
+
+      for (i = 0; i < size; i += 4)
         {
-          str_out[i+3] = str_in[i+0];
-          str_out[i+2] = str_in[i+1];
-          str_out[i+1] = str_in[i+2];
-          str_out[i+0] = str_in[i+3];
+          str_out[i + 3] = str_in[i + 0];
+          str_out[i + 2] = str_in[i + 1];
+          str_out[i + 1] = str_in[i + 2];
+          str_out[i + 0] = str_in[i + 3];
         }
     }
   return str_out;
 }
-
 
 pdf_char_t *
 pdf_text_test_change_utf16_endianness(const pdf_char_t *str_in,
-                                      pdf_size_t size)
+                                      pdf_size_t        size)
 {
   pdf_char_t *str_out;
-  str_out = (pdf_char_t *)pdf_alloc(size);
-  if(str_out != NULL)
+
+  str_out = (pdf_char_t *) pdf_alloc (size);
+  if (str_out)
     {
       pdf_size_t i;
-      for(i=0; i<size; i+=2)
+
+      for (i = 0; i < size; i += 2)
         {
-          str_out[i+1] = str_in[i+0];
-          str_out[i+0] = str_in[i+1];
+          str_out[i + 1] = str_in[i + 0];
+          str_out[i + 0] = str_in[i + 1];
         }
     }
   return str_out;
 }
 
-
-short
-pdf_text_test_big_endian_system(void)
+pdf_bool_t
+pdf_text_test_big_endian_system (void)
 {
   union {
     uint16_t i;
     char c[2];
   } test;
   test.i = 0x6162;
-  return ((strncmp(&test.c[0],"ab",2)==0) ? 1 : 0);
-}
 
+  return ((strncmp (&test.c[0], "ab", 2) == 0) ? PDF_TRUE : PDF_FALSE);
+}
 
 /* Function quite similar to `pdf_text_get_hex', but using an array of bytes
  *  as input. */
 pdf_char_t *
 pdf_text_test_get_hex (const pdf_char_t *data,
-                       const pdf_size_t size,
-                       const pdf_char_t delimiter)
+                       const pdf_size_t  size,
+                       const pdf_char_t  delimiter)
 {
   int i;
   int j;
@@ -103,28 +105,25 @@ pdf_text_test_get_hex (const pdf_char_t *data,
   new_str_length =  3 * size;
 
   /* Allocate memory for new array and initialize contents to NUL */
-  new_str = (pdf_char_t *)pdf_alloc(new_str_length);
-  memset(new_str, 0, new_str_length);
+  new_str = (pdf_char_t *) pdf_alloc (new_str_length);
+  memset (new_str, 0, new_str_length);
 
   /* Print hexadecimal representation of each byte... */
-  for(i=0, j=0; i<size; i++, j+=3)
+  for (i = 0, j = 0; i < size; i++, j += 3)
     {
       /* Clear helper array... */
-      memset(&new_hex_char[0], 0, 3);
+      memset (&new_hex_char[0], 0, 3);
       /* Print character in helper array... */
-      sprintf( new_hex_char, "%02X", (unsigned int)data[i]);
+      sprintf (new_hex_char, "%02X", (unsigned int)data[i]);
       /* Copy to output string... */
-      memcpy(&new_str[j],&new_hex_char[0],2);
+      memcpy (&new_str[j], &new_hex_char[0], 2);
       /* And if needed, add separator */
-      if(i != (size-1) )
-        {
-          new_str[j+2] = delimiter;
-        }
+      if (i != (size - 1))
+	new_str[j+2] = delimiter;
     }
 
   /* Set output string */
   return new_str;
 }
-
 
 /* End of pdf-text-test-common.c */

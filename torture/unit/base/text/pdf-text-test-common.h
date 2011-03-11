@@ -30,35 +30,31 @@
 #include <stdio.h>
 #include <pdf.h>
 #include <pdf-test-common.h>
+
 /* Basic structure to store the test strings */
 typedef struct test_string_s {
-  char *data;
-  int  size;
-  char *utf32be_data;
-  int  utf32be_size;
+  pdf_char_t *data;
+  pdf_size_t  size;
+  pdf_char_t *utf32be_data;
+  pdf_size_t  utf32be_size;
 } test_string_t;
 
-
 /* Test if the system is Big Endian */
-short
-pdf_text_test_big_endian_system(void);
+pdf_bool_t pdf_text_test_big_endian_system (void);
 
 /* Change UTF-32BE string to UTF-32LE and viceversa */
-pdf_char_t *
-pdf_text_test_change_utf32_endianness(const pdf_char_t *str_in,
-                                      pdf_size_t size);
+pdf_char_t *pdf_text_test_change_utf32_endianness (const pdf_char_t *str_in,
+						   pdf_size_t        size);
 
 /* Change UTF-16BE string to UTF-16LE and viceversa */
-pdf_char_t *
-pdf_text_test_change_utf16_endianness(const pdf_char_t *str_in,
-                                      pdf_size_t size);
+pdf_char_t *pdf_text_test_change_utf16_endianness (const pdf_char_t *str_in,
+						   pdf_size_t        size);
 
 /* Function quite similar to `pdf_text_get_hex', but using an array of bytes
  *  as input. */
-pdf_char_t *
-pdf_text_test_get_hex (const pdf_char_t *data,
-                       const pdf_size_t size,
-                       const pdf_char_t delimiter);
+pdf_char_t *pdf_text_test_get_hex (const pdf_char_t *data,
+				   const pdf_size_t  size,
+				   const pdf_char_t  delimiter);
 
 #endif /* _PDF_TEXT_TEST_COMMON_H */
 
