@@ -53,12 +53,12 @@ enum pdf_text_unicode_encoding_e {
   PDF_TEXT_HE_TO_BE = -2, /* Delta to convert HE to BE */
   PDF_TEXT_HE_TO_LE = -1, /* Delta to convert HE to LE */
   PDF_TEXT_UTF8     =  0, /* UTF-8 encoding */
-  PDF_TEXT_UTF16_BE,      /* Big Endian UTF-16 encoding */
-  PDF_TEXT_UTF16_LE,      /* Little Endian UTF-16 encoding */
-  PDF_TEXT_UTF16_HE,      /* Host Endian UTF-16 encoding (LE or BE) */
-  PDF_TEXT_UTF32_BE,      /* Big Endian UTF-32 encoding */
-  PDF_TEXT_UTF32_LE,      /* Little Endian UTF-32 encoding */
-  PDF_TEXT_UTF32_HE,      /* Host Endian UTF-32 encoding (LE or BE) */
+  PDF_TEXT_UTF16_BE =  1, /* Big Endian UTF-16 encoding */
+  PDF_TEXT_UTF16_LE =  2, /* Little Endian UTF-16 encoding */
+  PDF_TEXT_UTF16_HE =  3, /* Host Endian UTF-16 encoding (LE or BE) */
+  PDF_TEXT_UTF32_BE =  4, /* Big Endian UTF-32 encoding */
+  PDF_TEXT_UTF32_LE =  5, /* Little Endian UTF-32 encoding */
+  PDF_TEXT_UTF32_HE =  6, /* Host Endian UTF-32 encoding (LE or BE) */
   PDF_TEXT_MAX_UNICODE_ENC
 };
 

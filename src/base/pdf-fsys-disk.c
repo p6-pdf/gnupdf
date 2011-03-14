@@ -873,6 +873,8 @@ pdf_fsys_disk_build_path (void              *data,
   pdf_text_t *next;
   pdf_text_t *text_sep;
 
+  printf ("BUILDING PATH...\n");
+
   PDF_ASSERT_POINTER_RETURN_VAL (output, PDF_EBADDATA);
   PDF_ASSERT_POINTER_RETURN_VAL (first_element, PDF_EBADDATA);
 
@@ -913,7 +915,7 @@ pdf_fsys_disk_build_path (void              *data,
           return PDF_ERROR;
         }
 
-      if (!pdf_text_concat (*output, text_sep, PDF_TRUE, &inner_error))
+      if (!pdf_text_concat (*output, next, PDF_TRUE, &inner_error))
         {
           pdf_list_iterator_deinit (&itr);
           pdf_text_destroy (*output);

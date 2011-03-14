@@ -429,7 +429,7 @@ pdf_text_new_from_u32 (const pdf_u32_t   number,
                        pdf_error_t     **error)
 {
   /* Longest number to hold in 32bit: 2^32 = 4294967296 (10 chars) */
-  pdf_char_t temp[10 + 1];
+  pdf_char_t temp[11];
   int n;
 
   /* Print number in temporal char array, and get number of output chars */
@@ -645,57 +645,60 @@ pdf_text_get_unicode (const pdf_text_t  *text,
   if ((text->data == NULL) ||
       (text->size == 0))
     {
+      ret = PDF_TRUE;
+      out_data = NULL;
       *length = 0;
-      return NULL;
     }
-
-  /* Perform conversion */
-  switch (enc)
+  else
     {
-    case PDF_TEXT_UTF8: /* UTF-8 */
-      ret = pdf_text_utf32he_to_utf8 (text->data,
-                                      text->size,
-                                      &out_data,
-                                      &out_length,
-                                      error);
-      break;
-    case PDF_TEXT_UTF16_LE: /* UTF-16LE */
-      ret = pdf_text_utf32he_to_utf16le (text->data,
-                                         text->size,
-                                         &out_data,
-                                         &out_length,
-                                         error);
-      break;
-    case PDF_TEXT_UTF16_BE: /* UTF-16BE */
-      ret = pdf_text_utf32he_to_utf16be (text->data,
-                                         text->size,
-                                         &out_data,
-                                         &out_length,
-                                         error);
-      break;
-    case PDF_TEXT_UTF32_LE: /* UTF-32LE */
-      ret = pdf_text_utf32he_to_utf32le (text->data,
-                                         text->size,
-                                         &out_data,
-                                         &out_length,
-                                         error);
-      break;
-    case PDF_TEXT_UTF32_BE: /* UTF-32BE */
-      ret = pdf_text_utf32he_to_utf32be (text->data,
-                                         text->size,
-                                         &out_data,
-                                         &out_length,
-                                         error);
-      break;
-    default:
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_TEXT,
-                     PDF_ETEXTENC,
-                     "couldn't get text contents in the given unicode "
-                     "encoding (%d)",
-                     enc);
-      ret = PDF_FALSE;
-      break;
+      /* Perform conversion */
+      switch (enc)
+        {
+        case PDF_TEXT_UTF8: /* UTF-8 */
+          ret = pdf_text_utf32he_to_utf8 (text->data,
+                                          text->size,
+                                          &out_data,
+                                          &out_length,
+                                          error);
+          break;
+        case PDF_TEXT_UTF16_LE: /* UTF-16LE */
+          ret = pdf_text_utf32he_to_utf16le (text->data,
+                                             text->size,
+                                             &out_data,
+                                             &out_length,
+                                             error);
+          break;
+        case PDF_TEXT_UTF16_BE: /* UTF-16BE */
+          ret = pdf_text_utf32he_to_utf16be (text->data,
+                                             text->size,
+                                             &out_data,
+                                             &out_length,
+                                             error);
+          break;
+        case PDF_TEXT_UTF32_LE: /* UTF-32LE */
+          ret = pdf_text_utf32he_to_utf32le (text->data,
+                                             text->size,
+                                             &out_data,
+                                             &out_length,
+                                             error);
+          break;
+        case PDF_TEXT_UTF32_BE: /* UTF-32BE */
+          ret = pdf_text_utf32he_to_utf32be (text->data,
+                                             text->size,
+                                             &out_data,
+                                             &out_length,
+                                             error);
+          break;
+        default:
+          pdf_set_error (error,
+                         PDF_EDOMAIN_BASE_TEXT,
+                         PDF_ETEXTENC,
+                         "couldn't get text contents in the given unicode "
+                         "encoding (%d)",
+                         enc);
+          ret = PDF_FALSE;
+          break;
+        }
     }
 
   if (!ret)
@@ -793,7 +796,9 @@ pdf_text_get_unicode (const pdf_text_t  *text,
         }
     }
 
-  *length = out_length;
+  /* Length is optional because you can ask for unicode output with NUL trailer */
+  if (length)
+    *length = out_length;
   return out_data;
 }
 

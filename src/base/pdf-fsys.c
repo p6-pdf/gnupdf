@@ -260,7 +260,8 @@ pdf_fsys_build_path (pdf_fsys_t   filesystem,
   else
     {
       st = filesystem->implementation->build_path_fn (filesystem->data,
-                                                      output, first_element,
+                                                      output,
+                                                      first_element,
                                                       rest);
     }
 
