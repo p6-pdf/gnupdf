@@ -31,6 +31,7 @@
 
 #include <pdf.h>
 #include <pdf-test-common.h>
+
 /*
  * Test: pdf_fsys_file_open_001
  * Description:
@@ -38,28 +39,30 @@
  * Success condition:
  *   The call to pdf_fsys_file_open should return PDF_OK
  */
-
 START_TEST (pdf_fsys_file_open_001)
 {
+  pdf_error_t *error = NULL;
   pdf_fsys_file_t file;
-  pdf_text_t path;
+  pdf_text_t *path;
   pdf_char_t filename[] = "TD00005", *pathname;
 
-  pathname = tortu_get_data_file_path(filename);
-  file = (pdf_fsys_file_t)pdf_alloc(sizeof(struct pdf_fsys_file_s));
+  pathname = tortu_get_data_file_path (filename);
+  file = (pdf_fsys_file_t) pdf_alloc (sizeof (struct pdf_fsys_file_s));
 
-  fail_if( pdf_text_new_from_unicode(pathname,
-                                     strlen(pathname),
-                                     PDF_TEXT_UTF8,
-                                     &path) != PDF_OK );
+  path = pdf_text_new_from_unicode (pathname,
+                                    strlen (pathname),
+                                    PDF_TEXT_UTF8,
+                                    &error);
+  fail_unless (path != NULL);
+  fail_if (error != NULL);
 
-  fail_if( pdf_fsys_file_open(NULL,
-                              path,
-                              PDF_FSYS_OPEN_MODE_READ,
-                              &file) != PDF_OK );
+  fail_if (pdf_fsys_file_open (NULL,
+                               path,
+                               PDF_FSYS_OPEN_MODE_READ,
+                               &file) != PDF_OK);
 
-  pdf_fsys_file_close(file);
-  pdf_text_destroy(path);
+  pdf_fsys_file_close (file);
+  pdf_text_destroy (path);
 }
 END_TEST
 
@@ -70,27 +73,29 @@ END_TEST
  * Success condition:
  *   The call to pdf_fsys_file_open should return PDF_EBADNAME
  */
-
 START_TEST (pdf_fsys_file_open_002)
 {
+  pdf_error_t *error = NULL;
   pdf_fsys_file_t file;
-  pdf_text_t path;
+  pdf_text_t *path;
   pdf_char_t filename[] = "DOESNTEXIST";
 
-  file = (pdf_fsys_file_t)pdf_alloc(sizeof(struct pdf_fsys_file_s));
+  file = (pdf_fsys_file_t) pdf_alloc (sizeof (struct pdf_fsys_file_s));
 
-  fail_if( pdf_text_new_from_unicode(filename,
-                                     strlen(filename),
-                                     PDF_TEXT_UTF8,
-                                     &path) != PDF_OK );
+  path = pdf_text_new_from_unicode (filename,
+                                    strlen (filename),
+                                    PDF_TEXT_UTF8,
+                                    &error);
+  fail_unless (path != NULL);
+  fail_if (error != NULL);
 
-  fail_if( pdf_fsys_file_open(NULL,
-                              path,
-                              PDF_FSYS_OPEN_MODE_READ,
-                              &file) != PDF_EBADNAME );
+  fail_if (pdf_fsys_file_open (NULL,
+                               path,
+                               PDF_FSYS_OPEN_MODE_READ,
+                               &file) != PDF_EBADNAME);
 
-  pdf_dealloc(file);
-  pdf_text_destroy(path);
+  pdf_dealloc (file);
+  pdf_text_destroy (path);
 }
 END_TEST
 
@@ -101,28 +106,30 @@ END_TEST
  * Success condition:
  *   The call to pdf_fsys_file_open should return PDF_EBADPERMS
  */
-
 START_TEST (pdf_fsys_file_open_003)
 {
+  pdf_error_t *error = NULL;
   pdf_fsys_file_t file;
-  pdf_text_t path;
+  pdf_text_t *path;
   pdf_char_t filename[] = "TD00005", *pathname;
 
-  pathname = tortu_get_data_file_path(filename);
-  file = (pdf_fsys_file_t)pdf_alloc(sizeof(struct pdf_fsys_file_s));
+  pathname = tortu_get_data_file_path (filename);
+  file = (pdf_fsys_file_t) pdf_alloc (sizeof (struct pdf_fsys_file_s));
 
-  fail_if( pdf_text_new_from_unicode(pathname,
-                                     strlen(pathname),
-                                     PDF_TEXT_UTF8,
-                                     &path) != PDF_OK );
+  path = pdf_text_new_from_unicode (pathname,
+                                    strlen (pathname),
+                                    PDF_TEXT_UTF8,
+                                    &error);
+  fail_unless (path != NULL);
+  fail_if (error != NULL);
 
-  fail_if( pdf_fsys_file_open(NULL,
-                              path,
-                              PDF_FSYS_OPEN_MODE_WRITE,
-                              &file) != PDF_EBADPERMS );
+  fail_if (pdf_fsys_file_open (NULL,
+                               path,
+                               PDF_FSYS_OPEN_MODE_WRITE,
+                               &file) != PDF_EBADPERMS);
 
-  pdf_dealloc(file);
-  pdf_text_destroy(path);
+  pdf_dealloc (file);
+  pdf_text_destroy (path);
 }
 END_TEST
 
@@ -133,28 +140,30 @@ END_TEST
  * Success condition:
  *   The call to pdf_fsys_file_open should return PDF_OK
  */
-
 START_TEST (pdf_fsys_file_open_004)
 {
+  pdf_error_t *error = NULL;
   pdf_fsys_file_t file;
-  pdf_text_t path;
+  pdf_text_t *path;
   pdf_char_t filename[] = "TD00004", *pathname;
 
-  pathname = tortu_get_data_file_path(filename);
-  file = (pdf_fsys_file_t)pdf_alloc(sizeof(struct pdf_fsys_file_s));
+  pathname = tortu_get_data_file_path (filename);
+  file = (pdf_fsys_file_t) pdf_alloc (sizeof (struct pdf_fsys_file_s));
 
-  fail_if( pdf_text_new_from_unicode(pathname,
-                                     strlen(pathname),
-                                     PDF_TEXT_UTF8,
-                                     &path) != PDF_OK );
+  path = pdf_text_new_from_unicode (pathname,
+                                    strlen (pathname),
+                                    PDF_TEXT_UTF8,
+                                    &error);
+  fail_unless (path != NULL);
+  fail_if (error != NULL);
 
-  fail_if( pdf_fsys_file_open(NULL,
-                              path,
-                              PDF_FSYS_OPEN_MODE_WRITE,
-                              &file) != PDF_OK );
+  fail_if (pdf_fsys_file_open (NULL,
+                               path,
+                               PDF_FSYS_OPEN_MODE_WRITE,
+                               &file) != PDF_OK);
 
-  pdf_fsys_file_close(file);
-  pdf_text_destroy(path);
+  pdf_fsys_file_close (file);
+  pdf_text_destroy (path);
 }
 END_TEST
 
@@ -164,16 +173,15 @@ END_TEST
 TCase *
 test_pdf_fsys_file_open (void)
 {
-  TCase *tc = tcase_create("pdf_fsys_file_open");
-  tcase_add_test(tc, pdf_fsys_file_open_001);
-  tcase_add_test(tc, pdf_fsys_file_open_002);
-  tcase_add_test(tc, pdf_fsys_file_open_003);
-  tcase_add_test(tc, pdf_fsys_file_open_004);
+  TCase *tc = tcase_create ("pdf_fsys_file_open");
+  tcase_add_test (tc, pdf_fsys_file_open_001);
+  tcase_add_test (tc, pdf_fsys_file_open_002);
+  tcase_add_test (tc, pdf_fsys_file_open_003);
+  tcase_add_test (tc, pdf_fsys_file_open_004);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);
   return tc;
 }
-
 
 /* End of pdf-fsys-file-open.c */

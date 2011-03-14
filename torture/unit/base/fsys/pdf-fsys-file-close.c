@@ -40,25 +40,26 @@
 
 START_TEST (pdf_fsys_file_close_001)
 {
+  pdf_error_t *error = NULL;
   pdf_fsys_file_t file;
-  pdf_text_t path;
+  pdf_text_t *path;
   pdf_char_t filename[] = "TD00005", *pathname;
 
-  pathname = tortu_get_data_file_path(filename);
-  file = (pdf_fsys_file_t)pdf_alloc(sizeof(struct pdf_fsys_file_s));
+  pathname = tortu_get_data_file_path (filename);
+  file = (pdf_fsys_file_t) pdf_alloc (sizeof(struct pdf_fsys_file_s));
 
-  fail_if( pdf_text_new_from_unicode(pathname,
-                                     strlen((char*) pathname),
-                                     PDF_TEXT_UTF8,
-                                     &path) != PDF_OK );
+  path = pdf_text_new_from_unicode (pathname,
+                                    strlen (pathname),
+                                    PDF_TEXT_UTF8,
+                                    &error);
 
-  fail_if( pdf_fsys_file_open(NULL,
-                              path,
-                              PDF_FSYS_OPEN_MODE_READ,
-                              &file) != PDF_OK );
+  fail_if (pdf_fsys_file_open (NULL,
+                               path,
+                               PDF_FSYS_OPEN_MODE_READ,
+                               &file) != PDF_OK);
 
-  fail_if( pdf_fsys_file_close(file) != PDF_OK );
-  pdf_text_destroy(path);
+  fail_if (pdf_fsys_file_close (file) != PDF_OK);
+  pdf_text_destroy (path);
 }
 END_TEST
 
@@ -72,7 +73,7 @@ END_TEST
 
 START_TEST (pdf_fsys_file_close_002)
 {
-  fail_if( pdf_fsys_file_close( NULL ) != PDF_EBADDATA );
+  fail_if (pdf_fsys_file_close (NULL) != PDF_EBADDATA);
 }
 END_TEST
 
@@ -82,9 +83,10 @@ END_TEST
 TCase *
 test_pdf_fsys_file_close (void)
 {
-  TCase *tc = tcase_create("pdf_fsys_file_close");
-  tcase_add_test(tc, pdf_fsys_file_close_001);
-  tcase_add_test(tc, pdf_fsys_file_close_002);
+  TCase *tc = tcase_create ("pdf_fsys_file_close");
+
+  tcase_add_test (tc, pdf_fsys_file_close_001);
+  tcase_add_test (tc, pdf_fsys_file_close_002);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);

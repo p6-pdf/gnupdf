@@ -40,13 +40,13 @@
 START_TEST (pdf_hash_add_text_001)
 {
   pdf_hash_t *table;
-  pdf_text_t inner;
+  pdf_text_t *inner;
   pdf_error_t *error = NULL;
 
 
   table = pdf_hash_new (NULL);
 
-  pdf_text_new (&inner);
+  inner = pdf_text_new (&error);
 
   fail_if (pdf_hash_add_text (table,
                               "theKey",

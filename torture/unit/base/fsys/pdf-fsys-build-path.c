@@ -31,6 +31,7 @@
 
 #include <pdf.h>
 #include <pdf-test-common.h>
+
 /*
  * Test: pdf_fsys_build_path_001
  * Description:
@@ -38,29 +39,42 @@
  * Success condition:
  *   The call to pdf_fsys_build_path should return PDF_OK
  */
-
 START_TEST (pdf_fsys_build_path_001)
 {
-  pdf_text_t text1,text2,text3,result;
-  pdf_char_t *first="want",*dir="some",*dirr="beer?", *output_data=NULL;
+  pdf_error_t *error = NULL;
+  pdf_text_t *text1, *text2, *text3, *result;
+  const pdf_char_t *first = "want", *dir = "some", *dirr = "beer?";
+  pdf_char_t *output_data = NULL;
 
-  fail_if(pdf_text_new_from_unicode(first, 4, PDF_TEXT_UTF8, &text1) != PDF_OK);
-  fail_if(pdf_text_new_from_unicode(dir, 4, PDF_TEXT_UTF8, &text2) != PDF_OK);
-  fail_if(pdf_text_new_from_unicode(dirr, 5, PDF_TEXT_UTF8, &text3) != PDF_OK);
+  text1 = pdf_text_new_from_unicode (first, 4, PDF_TEXT_UTF8, &error);
+  fail_unless (text1 != NULL);
+  fail_if (error != NULL);
 
-  fail_if(pdf_fsys_build_path (NULL, &result, text1, text2, text3, NULL)
-          != PDF_OK);
+  text2 = pdf_text_new_from_unicode (dir, 4, PDF_TEXT_UTF8, &error);
+  fail_unless (text2 != NULL);
+  fail_if (error != NULL);
 
-  fail_if(pdf_text_get_pdfdocenc(&output_data, result) != PDF_OK);
+  text3 = pdf_text_new_from_unicode (dirr, 5, PDF_TEXT_UTF8, &error);
+  fail_unless (text3 != NULL);
+  fail_if (error != NULL);
+
+  fail_if (pdf_fsys_build_path (NULL, &result, text1, text2, text3, NULL) != PDF_OK);
+
+  output_data = pdf_text_get_unicode (result,
+                                      PDF_TEXT_UTF8,
+                                      PDF_TEXT_UNICODE_WITH_NUL_SUFFIX,
+                                      NULL,
+                                      &error);
+  fail_unless (output_data != NULL);
+  fail_if (error != NULL);
 
 #if FILE_SYSTEM_BACKSLASH_IS_FILE_NAME_SEPARATOR
-  fail_unless(strcmp(output_data, "want\\some\\beer?" ) == 0);
-  fail_unless(strlen(output_data) == strlen("want\\some\\beer?"));
+  fail_unless (strcmp (output_data, "want\\some\\beer?" ) == 0);
+  fail_unless (strlen (output_data) == strlen ("want\\some\\beer?"));
 #else
-  fail_unless(strcmp(output_data, "want/some/beer?" ) == 0);
-  fail_unless(strlen(output_data) == strlen("want/some/beer?"));
+  fail_unless (strcmp (output_data, "want/some/beer?" ) == 0);
+  fail_unless (strlen (output_data) == strlen ("want/some/beer?"));
 #endif /*  FILE_SYSTEM_BACKSLASH_IS_FILE_NAME_SEPARATOR */
-
 
   pdf_text_destroy (text1);
   pdf_text_destroy (text2);
@@ -69,20 +83,19 @@ START_TEST (pdf_fsys_build_path_001)
 }
 END_TEST
 
-
 /*
  * Test case creation function
  */
 TCase *
 test_pdf_fsys_build_path (void)
 {
-  TCase *tc = tcase_create("pdf_fsys_build_path");
-  tcase_add_test(tc, pdf_fsys_build_path_001);
+  TCase *tc = tcase_create ("pdf_fsys_build_path");
+
+  tcase_add_test (tc, pdf_fsys_build_path_001);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);
   return tc;
 }
-
 
 /* End of pdf-fsys-build-path.c */
