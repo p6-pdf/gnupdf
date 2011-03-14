@@ -59,7 +59,7 @@ START_TEST (pdf_text_get_language_001)
 
   /* 2. The length of the returned string should be 2. */
   fail_unless (strlen (language) == 2);
-  fail_unles (strcmp (language, "en") == 0);
+  fail_unless (strcmp (language, "en") == 0);
 
   pdf_text_destroy (text);
 }

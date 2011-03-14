@@ -56,9 +56,13 @@ pdf_char_t *pdf_text_test_get_hex (const pdf_char_t *data,
                                    const pdf_size_t  size,
                                    const pdf_char_t  delimiter);
 
+/* Get BOM for a given unicode encoding */
+const pdf_char_t *pdf_text_test_get_bom (enum pdf_text_unicode_encoding_e  enc,
+                                         int                              *bom_size);
+
 #ifdef TEXT_MODULE_ADDITIONAL_TEST_TRACES
 # warning Additional test traces enabled in text module unit tests
-# define PRINT_CONTENTS(index,text,expected,expected_size,remaining_size) { \
+# define PRINT_CONTENTS(function,index,text,expected,expected_size,remaining_size) { \
     pdf_char_t *expected_hex;                                           \
     pdf_char_t *actual;                                                 \
     pdf_size_t actual_size;                                             \
@@ -68,7 +72,7 @@ pdf_char_t *pdf_text_test_get_hex (const pdf_char_t *data,
                                    PDF_TEXT_UNICODE_NO_OPTION,          \
                                    &actual_size,                        \
                                    NULL);                               \
-    printf ("%s:%d\n", __FUNCTION__, i);                                \
+    printf ("%s:%d\n", function, index);                                \
     if (!actual)                                                        \
       printf ("  Error while retrieving internal data\n");              \
     else                                                                \
@@ -88,7 +92,7 @@ pdf_char_t *pdf_text_test_get_hex (const pdf_char_t *data,
   }
 #else
 # define PRINT_CONTENTS(...)
-#endif /* INTERACTIVE_DEBUG */
+#endif /* TEXT_MODULE_ADDITIONAL_TEST_TRACES */
 
 #endif /* _PDF_TEXT_TEST_COMMON_H */
 

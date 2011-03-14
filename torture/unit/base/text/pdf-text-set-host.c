@@ -30,36 +30,38 @@
 #include <check.h>
 #include <base/text/pdf-text-test-common.h>
 #include <pdf-test-common.h>
+
 /*
  * Test: pdf_text_set_host_001
  * Description:
  *   Set the contents of a text object with an input valid host-encoded string
  * Success conditions:
- *   1. The call to  pdf_text_set_host should return PDF_OK.
+ *   1. The call to  pdf_text_set_host should return PDF_TRUE.
  *   2. The contents of the text object must be the expected ones.
  */
 START_TEST (pdf_text_set_host_001)
 {
-
-
-
   extern const test_string_t ascii_strings[];
   int i;
 
-
-
-
   /* Test ASCII host encoding */
-  i=0;
-  while(ascii_strings[i].data != NULL)
+  i = 0;
+  while (ascii_strings[i].data)
     {
-      pdf_text_t text = NULL;
-      pdf_text_host_encoding_t host_enc;
+      pdf_error_t *error = NULL;
+      pdf_text_t *text;
       const pdf_char_t *input_data;
       pdf_size_t input_size;
       pdf_char_t *expected_data;
       pdf_size_t expected_size;
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
       pdf_bool_t expected_free = PDF_FALSE;
+#ifdef PDF_HOST_WIN32
+      const pdf_char_t *host_enc = "CP20127"; /* us-ascii */
+#else
+      const pdf_char_t *host_enc = "us-ascii";
+#endif
 
       /* Set input data */
       input_data = (pdf_char_t *)ascii_strings[i].data;
@@ -68,89 +70,87 @@ START_TEST (pdf_text_set_host_001)
       /* Set expected data */
       expected_data = (pdf_char_t *)ascii_strings[i].utf32be_data;
       expected_size = ascii_strings[i].utf32be_size;
-      if(!pdf_text_test_big_endian_system())
+      if (!pdf_text_test_big_endian_system ())
         {
           /* Must change endianness of expected_data */
           expected_free = PDF_TRUE;
-          expected_data = pdf_text_test_change_utf32_endianness(expected_data,
-                                                                expected_size);
+          expected_data = pdf_text_test_change_utf32_endianness (expected_data,
+                                                                 expected_size);
           /* Just in case... */
-          fail_if(expected_data == NULL);
+          fail_unless (expected_data != NULL);
         }
 
+      text = pdf_text_new (&error);
+      fail_unless (text != NULL);
+      fail_if (error != NULL);
 
-      /* Create, without using the API, a valid pdf_text_host_encoding_t */
-#ifdef PDF_HOST_WIN32
-      strcpy((&(host_enc.name[0])), "CP20127"); /* us-ascii */
-#else
-      strcpy((&(host_enc.name[0])), "us-ascii");
-#endif
-
-      fail_if(pdf_text_new (&text) != PDF_OK);
-
-      /* 1. The call to  pdf_text_set_host should return PDF_OK. */
-      fail_unless(pdf_text_set_host(text,
-                                    input_data,
-                                    input_size,
-                                    host_enc) == PDF_OK);
+      /* 1. The call to  pdf_text_set_host should return PDF_TRUE. */
+      fail_unless (pdf_text_set_host (text,
+                                      input_data,
+                                      input_size,
+                                      host_enc,
+                                      &error) == PDF_TRUE);
+      fail_if (error != NULL);
 
       /* 2. The contents of the text object must be the expected ones. */
+      actual_data = pdf_text_get_unicode (text,
+                                          PDF_TEXT_UTF32_HE,
+                                          PDF_TEXT_UNICODE_NO_OPTION,
+                                          &actual_size,
+                                          &error);
+      fail_unless (actual_data != NULL);
+      fail_if (error != NULL);
 
-      pdf_size_t actual_size;
-      pdf_char_t *actual_data;
-      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
-                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
-      fail_unless(actual_size == expected_size);
-      fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
+      PRINT_CONTENTS (__FUNCTION__, i, text, expected_data, expected_size, 0);
 
-      fail_if(pdf_text_destroy(text) != PDF_OK);
+      fail_unless (actual_size == expected_size);
+      fail_unless (memcmp (actual_data, expected_data, expected_size) == 0);
 
-      if(expected_free)
-        {
-          pdf_dealloc(expected_data);
-        }
+      pdf_text_destroy (text);
+
+      if (expected_free)
+        pdf_dealloc (expected_data);
+      pdf_dealloc (actual_data);
 
       ++i;
     }
-
 }
 END_TEST
-
 
 /*
  * Test: pdf_text_set_host_002
  * Description:
  *   Set the contents of a text object with an input invalid host-encoded string
  * Success conditions:
- *    1. The call to  pdf_text_set_host should NOT return PDF_OK.
+ *    1. The call to  pdf_text_set_host should NOT return PDF_TRUE.
  */
 START_TEST (pdf_text_set_host_002)
 {
-  pdf_text_t text = NULL;
-  pdf_text_host_encoding_t host_enc;
-  const pdf_char_t *sample_utf8 = (pdf_char_t *)"\342\202\254"; /* EURO SIGN */
-
-
-
-
-  /* Create, without using the API, a valid pdf_text_host_encoding_t */
+  const pdf_char_t *sample_utf8 = "\342\202\254"; /* EURO SIGN */
 #ifdef PDF_HOST_WIN32
-  strcpy((&(host_enc.name[0])), "CP20127"); /* us-ascii */
+  const pdf_char_t *host_enc = "CP20127"; /* us-ascii */
 #else
-  strcpy((&(host_enc.name[0])), "us-ascii");
+  const pdf_char_t *host_enc = "us-ascii";
 #endif
+  pdf_error_t *error = NULL;
+  pdf_text_t *text;
 
-  fail_if(pdf_text_new (&text) != PDF_OK);
+  text = pdf_text_new (&error);
+  fail_unless (text != NULL);
+  fail_if (error != NULL);
 
-  /* 1. The call to  pdf_text_set_host should NOT return PDF_OK. */
-  fail_unless(pdf_text_set_host(text, sample_utf8,
-                                strlen((char*)sample_utf8),
-                                host_enc) != PDF_OK);
+  /* 1. The call to  pdf_text_set_host should NOT return PDF_TRUE. */
+  fail_if (pdf_text_set_host (text,
+                              sample_utf8,
+                              strlen (sample_utf8),
+                              host_enc,
+                              &error) == PDF_TRUE);
+  fail_unless (error != NULL);
 
-  fail_if(pdf_text_destroy(text) != PDF_OK);
+  pdf_error_destroy (error);
+  pdf_text_destroy (text);
 }
 END_TEST
-
 
 /*
  * Test: pdf_text_set_host_003
@@ -162,45 +162,47 @@ END_TEST
  */
 START_TEST (pdf_text_set_host_003)
 {
-  pdf_text_t text = NULL;
-  pdf_text_host_encoding_t host_enc;
   const pdf_char_t *sample_usascii = (pdf_char_t *)"GNU's not Unix";
-
-
-
-
-  /* Create, without using the API, an invalid pdf_text_host_encoding_t */
 #ifdef PDF_HOST_WIN32
-  strcpy((&(host_enc.name[0])), "CP17"); /* us-ascii */
+  const pdf_char_t *host_enc = "CP17"; /* invalid */
 #else
-  strcpy((&(host_enc.name[0])), "invalid_host_enc");
+  const pdf_char_t *host_enc = "invalid_host_enc";
 #endif
+  pdf_error_t *error = NULL;
+  pdf_text_t *text;
 
-  fail_if(pdf_text_new (&text) != PDF_OK);
+  text = pdf_text_new (&error);
+  fail_unless (text != NULL);
+  fail_if (error != NULL);
 
-  /* 1. The call to  pdf_text_set_host should NOT return PDF_OK. */
-  fail_unless(pdf_text_set_host(text, sample_usascii,
-                                strlen((char*)sample_usascii),
-                                host_enc) != PDF_OK);
-  fail_if(pdf_text_destroy(text) != PDF_OK);
+  /* 1. The call to  pdf_text_set_host should NOT return PDF_TRUE. */
+  fail_if (pdf_text_set_host (text,
+                              sample_usascii,
+                              strlen (sample_usascii),
+                              host_enc,
+                              &error) == PDF_TRUE);
+  fail_unless (error != NULL);
+
+  pdf_error_destroy (error);
+  pdf_text_destroy (text);
 }
 END_TEST
-
 
 /*
  * Test case creation function
  */
 TCase *
-test_pdf_text_set_host(void)
+test_pdf_text_set_host (void)
 {
-  TCase *tc = tcase_create("pdf_text_set_host");
-  tcase_add_test(tc, pdf_text_set_host_001);
-  tcase_add_test(tc, pdf_text_set_host_002);
-  tcase_add_test(tc, pdf_text_set_host_003);
+  TCase *tc = tcase_create ("pdf_text_set_host");
+
+  tcase_add_test (tc, pdf_text_set_host_001);
+  tcase_add_test (tc, pdf_text_set_host_002);
+  tcase_add_test (tc, pdf_text_set_host_003);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);
   return tc;
 }
 
-/* End of pdf-text-set-pdfdocenc.c */
+/* End of pdf-text-set-host.c */

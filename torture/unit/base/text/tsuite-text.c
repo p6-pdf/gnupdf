@@ -83,12 +83,12 @@ tsuite_text ()
   suite_add_tcase (s, test_pdf_text_set_host());
   suite_add_tcase (s, test_pdf_text_set_pdfdocenc());
   suite_add_tcase (s, test_pdf_text_set_unicode());
-  suite_add_tcase (s, test_pdf_text_concat());
-  suite_add_tcase (s, test_pdf_text_concat_ascii());
-  suite_add_tcase (s, test_pdf_text_replace());
-  suite_add_tcase (s, test_pdf_text_replace_ascii());
-  suite_add_tcase (s, test_pdf_text_filter());
-  suite_add_tcase (s, test_pdf_text_cmp());
+  /* suite_add_tcase (s, test_pdf_text_concat()); */
+  /* suite_add_tcase (s, test_pdf_text_concat_ascii()); */
+  /* suite_add_tcase (s, test_pdf_text_replace()); */
+  /* suite_add_tcase (s, test_pdf_text_replace_ascii()); */
+  /* suite_add_tcase (s, test_pdf_text_filter()); */
+  /* suite_add_tcase (s, test_pdf_text_cmp()); */
 
   return s;
 }

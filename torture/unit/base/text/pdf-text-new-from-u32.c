@@ -27,7 +27,9 @@
 #include <stdio.h>
 #include <pdf.h>
 #include <check.h>
+#include <base/text/pdf-text-test-common.h>
 #include <pdf-test-common.h>
+
 /*
  * Test: pdf_text_new_from_u32_001
  * Description:
@@ -65,6 +67,9 @@ START_TEST (pdf_text_new_from_u32_001)
                                       &error);
   fail_unless (actual_data != NULL);
   fail_if (error != NULL);
+
+  PRINT_CONTENTS (__FUNCTION__, 0, text, expected_data, expected_size, 0);
+
   fail_unless (actual_size == expected_size);
   fail_unless (memcmp (actual_data, expected_data, expected_size) == 0);
 
@@ -120,6 +125,9 @@ START_TEST (pdf_text_new_from_u32_002)
                                       &error);
   fail_unless (actual_data != NULL);
   fail_if (error != NULL);
+
+  PRINT_CONTENTS (__FUNCTION__, 0, text, expected_data, expected_size, 0);
+
   fail_unless (actual_size == expected_size);
   fail_unless (memcmp (actual_data, expected_data, expected_size) == 0);
 

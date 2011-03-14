@@ -126,4 +126,50 @@ pdf_text_test_get_hex (const pdf_char_t *data,
   return new_str;
 }
 
+static const pdf_char_t *utf8_bom =    "\xEF\xBB\xBF";
+static const pdf_char_t *utf16be_bom = "\xFE\xFF";
+static const pdf_char_t *utf16le_bom = "\xFF\xFE";
+static const pdf_char_t *utf16he_bom;
+static const pdf_char_t *utf32be_bom = "\x00\x00\xFE\xFF";
+static const pdf_char_t *utf32le_bom = "\xFF\xFE\x00\x00";
+static const pdf_char_t *utf32he_bom;
+
+const pdf_char_t *
+pdf_text_test_get_bom (enum pdf_text_unicode_encoding_e  enc,
+                       int                              *bom_size)
+{
+  switch (enc)
+    {
+    case PDF_TEXT_UTF8:
+      *bom_size = 3;
+      return utf8_bom;
+    case PDF_TEXT_UTF16_BE:
+      *bom_size = 2;
+      return utf16be_bom;
+    case PDF_TEXT_UTF16_LE:
+      *bom_size = 2;
+      return utf16le_bom;
+    case PDF_TEXT_UTF16_HE:
+      *bom_size = 2;
+      if (utf16he_bom == NULL)
+        utf16he_bom = (pdf_text_test_big_endian_system () ?
+                       utf16be_bom : utf16le_bom);
+      return utf16he_bom;
+    case PDF_TEXT_UTF32_BE:
+      *bom_size = 4;
+      return utf32be_bom;
+    case PDF_TEXT_UTF32_LE:
+      *bom_size = 4;
+      return utf32le_bom;
+    case PDF_TEXT_UTF32_HE:
+      *bom_size = 4;
+      if (utf32he_bom == NULL)
+        utf32he_bom = (pdf_text_test_big_endian_system () ?
+                       utf32be_bom : utf32le_bom);
+      return utf32he_bom;
+    default:
+      return NULL;
+    }
+}
+
 /* End of pdf-text-test-common.c */

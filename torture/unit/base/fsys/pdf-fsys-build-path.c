@@ -42,7 +42,8 @@
 START_TEST (pdf_fsys_build_path_001)
 {
   pdf_error_t *error = NULL;
-  pdf_text_t *text1, *text2, *text3, *result;
+  pdf_text_t *text1, *text2, *text3;
+  pdf_text_t *result = NULL;
   const pdf_char_t *first = "want", *dir = "some", *dirr = "beer?";
   pdf_char_t *output_data = NULL;
 
@@ -59,6 +60,7 @@ START_TEST (pdf_fsys_build_path_001)
   fail_if (error != NULL);
 
   fail_if (pdf_fsys_build_path (NULL, &result, text1, text2, text3, NULL) != PDF_OK);
+  fail_unless (result != NULL);
 
   output_data = pdf_text_get_unicode (result,
                                       PDF_TEXT_UTF8,

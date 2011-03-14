@@ -93,10 +93,10 @@ START_TEST (pdf_text_dup_002)
 
   /* Set some data contents */
   fail_unless (pdf_text_set_unicode (text,
-				     sample_utf8,
-				     strlen (sample_utf8),
-				     PDF_TEXT_UTF8,
-				     &error));
+                                     sample_utf8,
+                                     strlen (sample_utf8),
+                                     PDF_TEXT_UTF8,
+                                     &error));
   fail_if (error != NULL);
 
   /* 1. The call to pdf_text_dup should not return a NULL pointer.*/
@@ -146,10 +146,10 @@ START_TEST (pdf_text_dup_003)
 
   /* Set some data contents */
   fail_unless (pdf_text_set_unicode (text,
-				     sample_utf8,
-				     strlen (sample_utf8),
-				     PDF_TEXT_UTF8,
-				     &error));
+                                     sample_utf8,
+                                     strlen (sample_utf8),
+                                     PDF_TEXT_UTF8,
+                                     &error));
   fail_if (error != NULL);
 
   /* Set language code */
@@ -205,10 +205,10 @@ START_TEST (pdf_text_dup_004)
 
   /* Set some data contents */
   fail_unless (pdf_text_set_unicode (text,
-				     sample_utf8,
-				     strlen (sample_utf8),
-				     PDF_TEXT_UTF8,
-				     &error));
+                                     sample_utf8,
+                                     strlen (sample_utf8),
+                                     PDF_TEXT_UTF8,
+                                     &error));
   fail_if (error != NULL);
 
   /* Set language code */

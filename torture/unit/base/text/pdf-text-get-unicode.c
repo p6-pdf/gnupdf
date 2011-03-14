@@ -30,20 +30,19 @@
 #include <check.h>
 #include <base/text/pdf-text-test-common.h>
 #include <pdf-test-common.h>
-#define INTERACTIVE_DEBUG   0
 
 struct test_params {
   /* Test index */
   int idx;
   /* pdf_text_get_unicode params: */
   enum pdf_text_unicode_encoding_e enc;
-  unsigned char bom;
-  unsigned empty;
-  unsigned lang;
-  unsigned country;
-  unsigned nul;
+  pdf_bool_t bom;
+  pdf_bool_t empty;
+  pdf_bool_t lang;
+  pdf_bool_t country;
+  pdf_bool_t nul;
   /* Test goal */
-  unsigned pdf_ok_p;
+  pdf_bool_t pdf_ok_p;
 };
 
 /*
@@ -66,145 +65,143 @@ struct test_params {
    combinations.  Getting unicode data with bundled lang&country
    information is only supported for UTF-16BE, so the function will
    not return PDF_OK in that case for all other encodings. */
-struct test_params tests_params[] = {
+static const struct test_params tests_params[] = {
   /* UTF-8, no NUL */
-  /*	No	Encoding		BOM	Empty	Lang	Country	NUL	PDF_OK? */
-  {	1,	PDF_TEXT_UTF8,		0,	0,	0,	0,	0,	1 },
-  {	2,	PDF_TEXT_UTF8,		1,	0,	0,	0,	0,	1 },
-  {	3,	PDF_TEXT_UTF8,		0,	1,	0,	0,	0,	1 },
-  {	4,	PDF_TEXT_UTF8,		1,	1,	0,	0,	0,	1 },
-  {	5,	PDF_TEXT_UTF8,		0,	0,	1,	1,	0,	0 },
-  {	6,	PDF_TEXT_UTF8,		1,	0,	1,	1,	0,	0 },
+  /* No   Encoding           BOM Empty Lang Country NUL PDF_OK? */
+  {	 1,   PDF_TEXT_UTF8,     0,  0,    0,   0,      0,  1 },
+  {	 2,   PDF_TEXT_UTF8,     1,  0,    0,   0,      0,  1 },
+  {	 3,   PDF_TEXT_UTF8,     0,  1,    0,   0,      0,  1 },
+  {	 4,   PDF_TEXT_UTF8,     1,  1,    0,   0,      0,  1 },
+  {	 5,   PDF_TEXT_UTF8,     0,  0,    1,   1,      0,  0 },
+  {	 6,   PDF_TEXT_UTF8,     1,  0,    1,   1,      0,  0 },
 
   /* UTF-16, no NUL */
-  /*	No	Encoding		BOM	Empty	Lang	Country	NUL	PDF_OK? */
-  {	7,	PDF_TEXT_UTF16_BE,	0,	0,	0,	0,	0,	1 },
-  {	8,	PDF_TEXT_UTF16_BE,	1,	0,	0,	0,	0,	1 },
-  {	9,	PDF_TEXT_UTF16_BE,	0,	1,	0,	0,	0,	1 },
-  {	10,	PDF_TEXT_UTF16_BE,	1,	1,	0,	0,	0,	1 },
-  {	11,	PDF_TEXT_UTF16_BE,	0,	0,	1,	1,	0,	1 },
-  {	12,	PDF_TEXT_UTF16_BE,	0,	0,	1,	0,	0,	1 },
-  {	13,	PDF_TEXT_UTF16_BE,	0,	1,	1,	1,	0,	1 },
-  {	14,	PDF_TEXT_UTF16_BE,	0,	1,	1,	0,	0,	1 },
-  {	15,	PDF_TEXT_UTF16_BE,	1,	0,	1,	1,	0,	1 },
-  {	16,	PDF_TEXT_UTF16_BE,	1,	0,	1,	0,	0,	1 },
-  {	17,	PDF_TEXT_UTF16_BE,	1,	1,	1,	1,	0,	1 },
-  {	18,	PDF_TEXT_UTF16_BE,	1,	1,	1,	0,	0,	1 },
+  /* No   Encoding           BOM Empty Lang Country NUL PDF_OK? */
+  {  7,   PDF_TEXT_UTF16_BE, 0,  0,    0,   0,      0,  1 },
+  {	 8,   PDF_TEXT_UTF16_BE, 1,  0,    0,   0,      0,  1 },
+  {	 9,   PDF_TEXT_UTF16_BE, 0,  1,    0,   0,      0,  1 },
+  {	 10,  PDF_TEXT_UTF16_BE, 1,  1,    0,   0,      0,  1 },
+  {	 11,  PDF_TEXT_UTF16_BE, 0,  0,    1,   1,      0,  1 },
+  {	 12,  PDF_TEXT_UTF16_BE, 0,  0,    1,   0,      0,  1 },
+  {	 13,  PDF_TEXT_UTF16_BE, 0,  1,    1,   1,      0,  1 },
+  {	 14,  PDF_TEXT_UTF16_BE, 0,  1,    1,   0,      0,  1 },
+  {	 15,  PDF_TEXT_UTF16_BE, 1,  0,    1,   1,      0,  1 },
+  {	 16,  PDF_TEXT_UTF16_BE, 1,  0,    1,   0,      0,  1 },
+  {	 17,  PDF_TEXT_UTF16_BE, 1,  1,    1,   1,      0,  1 },
+  {	 18,  PDF_TEXT_UTF16_BE, 1,  1,    1,   0,      0,  1 },
 
-  {	19,	PDF_TEXT_UTF16_LE,	0,	0,	0,	0,	0,	1 },
-  {	20,	PDF_TEXT_UTF16_LE,	1,	0,	0,	0,	0,	1 },
-  {	21,	PDF_TEXT_UTF16_LE,	0,	1,	0,	0,	0,	1 },
-  {	22,	PDF_TEXT_UTF16_LE,	1,	1,	0,	0,	0,	1 },
-  {	23,	PDF_TEXT_UTF16_LE,	0,	0,	1,	1,	0,	0 },
-  {	24,	PDF_TEXT_UTF16_LE,	0,	0,	1,	0,	0,	0 },
-  {	25,	PDF_TEXT_UTF16_LE,	0,	1,	1,	1,	0,	0 },
-  {	26,	PDF_TEXT_UTF16_LE,	0,	1,	1,	0,	0,	0 },
-  {	27,	PDF_TEXT_UTF16_LE,	1,	0,	1,	1,	0,	0 },
-  {	28,	PDF_TEXT_UTF16_LE,	1,	0,	1,	0,	0,	0 },
-  {	29,	PDF_TEXT_UTF16_LE,	1,	1,	1,	1,	0,	0 },
-  {	30,	PDF_TEXT_UTF16_LE,	1,	1,	1,	0,	0,	0 },
+  {	 19,  PDF_TEXT_UTF16_LE, 0,  0,    0,   0,      0,  1 },
+  {	 20,  PDF_TEXT_UTF16_LE, 1,  0,    0,   0,      0,  1 },
+  {	 21,  PDF_TEXT_UTF16_LE, 0,  1,    0,   0,      0,  1 },
+  {	 22,  PDF_TEXT_UTF16_LE, 1,  1,    0,   0,      0,  1 },
+  {	 23,  PDF_TEXT_UTF16_LE, 0,  0,    1,   1,      0,  0 },
+  {	 24,  PDF_TEXT_UTF16_LE, 0,  0,    1,   0,      0,  0 },
+  {	 25,  PDF_TEXT_UTF16_LE, 0,  1,    1,   1,      0,  0 },
+  {	 26,  PDF_TEXT_UTF16_LE, 0,  1,    1,   0,      0,  0 },
+  {	 27,  PDF_TEXT_UTF16_LE, 1,  0,    1,   1,      0,  0 },
+  {	 28,  PDF_TEXT_UTF16_LE, 1,  0,    1,   0,      0,  0 },
+  {	 29,  PDF_TEXT_UTF16_LE, 1,  1,    1,   1,      0,  0 },
+  {	 30,  PDF_TEXT_UTF16_LE, 1,  1,    1,   0,      0,  0 },
 
   /* UTF-32, no NUL */
-  /*	No	Encoding		BOM	Empty	Lang	Country	NUL	PDF_OK? */
-  {	31,	PDF_TEXT_UTF32_BE,	0,	0,	0,	0,	0,	1 },
-  {	32,	PDF_TEXT_UTF32_BE,	1,	0,	0,	0,	0,	1 },
-  {	33,	PDF_TEXT_UTF32_BE,	0,	1,	0,	0,	0,	1 },
-  {	34,	PDF_TEXT_UTF32_BE,	1,	1,	0,	0,	0,	1 },
-  {	35,	PDF_TEXT_UTF32_BE,	0,	0,	1,	1,	0,	0 },
-  {	36,	PDF_TEXT_UTF32_BE,	0,	0,	1,	0,	0,	0 },
-  {	37,	PDF_TEXT_UTF32_BE,	0,	1,	1,	1,	0,	0 },
-  {	38,	PDF_TEXT_UTF32_BE,	0,	1,	1,	0,	0,	0 },
-  {	39,	PDF_TEXT_UTF32_BE,	1,	0,	1,	1,	0,	0 },
-  {	40,	PDF_TEXT_UTF32_BE,	1,	0,	1,	0,	0,	0 },
-  {	41,	PDF_TEXT_UTF32_BE,	1,	1,	1,	1,	0,	0 },
-  {	42,	PDF_TEXT_UTF32_BE,	1,	1,	1,	0,	0,	0 },
+  /* No   Encoding           BOM Empty Lang Country NUL PDF_OK? */
+  {  31,  PDF_TEXT_UTF32_BE, 0,  0,    0,   0,      0,  1 },
+  {  32,  PDF_TEXT_UTF32_BE, 1,  0,    0,   0,      0,  1 },
+  {  33,  PDF_TEXT_UTF32_BE, 0,  1,    0,   0,      0,  1 },
+  {  34,  PDF_TEXT_UTF32_BE, 1,  1,    0,   0,      0,  1 },
+  {  35,  PDF_TEXT_UTF32_BE, 0,  0,    1,   1,      0,  0 },
+  {  36,  PDF_TEXT_UTF32_BE, 0,  0,    1,   0,      0,  0 },
+  {  37,  PDF_TEXT_UTF32_BE, 0,  1,    1,   1,      0,  0 },
+  {  38,  PDF_TEXT_UTF32_BE, 0,  1,    1,   0,      0,  0 },
+  {  39,  PDF_TEXT_UTF32_BE, 1,  0,    1,   1,      0,  0 },
+  {  40,  PDF_TEXT_UTF32_BE, 1,  0,    1,   0,      0,  0 },
+  {  41,  PDF_TEXT_UTF32_BE, 1,  1,    1,   1,      0,  0 },
+  {  42,  PDF_TEXT_UTF32_BE, 1,  1,    1,   0,      0,  0 },
 
-  {	43,	PDF_TEXT_UTF32_LE,	0,	0,	0,	0,	0,	1 },
-  {	44,	PDF_TEXT_UTF32_LE,	1,	0,	0,	0,	0,	1 },
-  {	45,	PDF_TEXT_UTF32_LE,	0,	1,	0,	0,	0,	1 },
-  {	46,	PDF_TEXT_UTF32_LE,	1,	1,	0,	0,	0,	1 },
-  {	47,	PDF_TEXT_UTF32_LE,	0,	0,	1,	1,	0,	0 },
-  {	48,	PDF_TEXT_UTF32_LE,	0,	0,	1,	0,	0,	0 },
-  {	49,	PDF_TEXT_UTF32_LE,	0,	1,	1,	1,	0,	0 },
-  {	50,	PDF_TEXT_UTF32_LE,	0,	1,	1,	0,	0,	0 },
-  {	51,	PDF_TEXT_UTF32_LE,	1,	0,	1,	1,	0,	0 },
-  {	52,	PDF_TEXT_UTF32_LE,	1,	0,	1,	0,	0,	0 },
-  {	53,	PDF_TEXT_UTF32_LE,	1,	1,	1,	1,	0,	0 },
-  {	54,	PDF_TEXT_UTF32_LE,	1,	1,	1,	0,	0,	0 },
+  {  43,  PDF_TEXT_UTF32_LE, 0,  0,    0,   0,      0,  1 },
+  {  44,  PDF_TEXT_UTF32_LE, 1,  0,    0,   0,      0,  1 },
+  {  45,  PDF_TEXT_UTF32_LE, 0,  1,    0,   0,      0,  1 },
+  {  46,  PDF_TEXT_UTF32_LE, 1,  1,    0,   0,      0,  1 },
+  {  47,  PDF_TEXT_UTF32_LE, 0,  0,    1,   1,      0,  0 },
+  {  48,  PDF_TEXT_UTF32_LE, 0,  0,    1,   0,      0,  0 },
+  {  49,  PDF_TEXT_UTF32_LE, 0,  1,    1,   1,      0,  0 },
+  {  50,  PDF_TEXT_UTF32_LE, 0,  1,    1,   0,      0,  0 },
+  {  51,  PDF_TEXT_UTF32_LE, 1,  0,    1,   1,      0,  0 },
+  {  52,  PDF_TEXT_UTF32_LE, 1,  0,    1,   0,      0,  0 },
+  {  53,  PDF_TEXT_UTF32_LE, 1,  1,    1,   1,      0,  0 },
+  {  54,  PDF_TEXT_UTF32_LE, 1,  1,    1,   0,      0,  0 },
 
   /* UTF-8, with NUL */
-  /*	No	Encoding		BOM	Empty	Lang	Country	NUL	PDF_OK? */
-  {	55,	PDF_TEXT_UTF8,		0,	0,	0,	0,	1,	1 },
-  {	56,	PDF_TEXT_UTF8,		1,	0,	0,	0,	1,	1 },
-  {	57,	PDF_TEXT_UTF8,		0,	1,	0,	0,	1,	1 },
-  {	58,	PDF_TEXT_UTF8,		1,	1,	0,	0,	1,	1 },
-  {	59,	PDF_TEXT_UTF8,		0,	0,	1,	1,	1,	0 },
-  {	60,	PDF_TEXT_UTF8,		1,	0,	1,	1,	1,	0 },
+  /* No   Encoding           BOM Empty Lang Country NUL PDF_OK? */
+  {  55,  PDF_TEXT_UTF8,     0,  0,    0,   0,      1,  1 },
+  {  56,  PDF_TEXT_UTF8,     1,  0,    0,   0,      1,  1 },
+  {  57,  PDF_TEXT_UTF8,     0,  1,    0,   0,      1,  1 },
+  {  58,  PDF_TEXT_UTF8,     1,  1,    0,   0,      1,  1 },
+  {  59,  PDF_TEXT_UTF8,     0,  0,    1,   1,      1,  0 },
+  {  60,  PDF_TEXT_UTF8,     1,  0,    1,   1,      1,  0 },
 
   /* UTF-16, with NUL */
-  /*	No	Encoding		BOM	Empty	Lang	Country	NUL	PDF_OK? */
-  {	61,	PDF_TEXT_UTF16_BE,	0,	0,	0,	0,	1,	1 },
-  {	62,	PDF_TEXT_UTF16_BE,	1,	0,	0,	0,	1,	1 },
-  {	63,	PDF_TEXT_UTF16_BE,	0,	1,	0,	0,	1,	1 },
-  {	64,	PDF_TEXT_UTF16_BE,	1,	1,	0,	0,	1,	1 },
-  {	65,	PDF_TEXT_UTF16_BE,	0,	0,	1,	1,	1,	1 },
-  {	66,	PDF_TEXT_UTF16_BE,	0,	0,	1,	0,	1,	1 },
-  {	67,	PDF_TEXT_UTF16_BE,	0,	1,	1,	1,	1,	1 },
-  {	68,	PDF_TEXT_UTF16_BE,	0,	1,	1,	0,	1,	1 },
-  {	69,	PDF_TEXT_UTF16_BE,	1,	0,	1,	1,	1,	1 },
-  {	70,	PDF_TEXT_UTF16_BE,	1,	0,	1,	0,	1,	1 },
-  {	71,	PDF_TEXT_UTF16_BE,	1,	1,	1,	1,	1,	1 },
-  {	72,	PDF_TEXT_UTF16_BE,	1,	1,	1,	0,	1,	1 },
+  /* No   Encoding           BOM Empty Lang Country NUL PDF_OK? */
+  {  61,  PDF_TEXT_UTF16_BE, 0,  0,    0,   0,      1,  1 },
+  {  62,  PDF_TEXT_UTF16_BE, 1,  0,    0,   0,      1,  1 },
+  {  63,  PDF_TEXT_UTF16_BE, 0,  1,    0,   0,      1,  1 },
+  {  64,  PDF_TEXT_UTF16_BE, 1,  1,    0,   0,      1,  1 },
+  {  65,  PDF_TEXT_UTF16_BE, 0,  0,    1,   1,      1,  1 },
+  {  66,  PDF_TEXT_UTF16_BE, 0,  0,    1,   0,      1,  1 },
+  {  67,  PDF_TEXT_UTF16_BE, 0,  1,    1,   1,      1,  1 },
+  {  68,  PDF_TEXT_UTF16_BE, 0,  1,    1,   0,      1,  1 },
+  {  69,  PDF_TEXT_UTF16_BE, 1,  0,    1,   1,      1,  1 },
+  {  70,  PDF_TEXT_UTF16_BE, 1,  0,    1,   0,      1,  1 },
+  {  71,  PDF_TEXT_UTF16_BE, 1,  1,    1,   1,      1,  1 },
+  {  72,  PDF_TEXT_UTF16_BE, 1,  1,    1,   0,      1,  1 },
 
-  {	73,	PDF_TEXT_UTF16_LE,	0,	0,	0,	0,	1,	1 },
-  {	74,	PDF_TEXT_UTF16_LE,	1,	0,	0,	0,	1,	1 },
-  {	75,	PDF_TEXT_UTF16_LE,	0,	1,	0,	0,	1,	1 },
-  {	76,	PDF_TEXT_UTF16_LE,	1,	1,	0,	0,	1,	1 },
-  {	77,	PDF_TEXT_UTF16_LE,	0,	0,	1,	1,	1,	0 },
-  {	78,	PDF_TEXT_UTF16_LE,	0,	0,	1,	0,	1,	0 },
-  {	79,	PDF_TEXT_UTF16_LE,	0,	1,	1,	1,	1,	0 },
-  {	80,	PDF_TEXT_UTF16_LE,	0,	1,	1,	0,	1,	0 },
-  {	81,	PDF_TEXT_UTF16_LE,	1,	0,	1,	1,	1,	0 },
-  {	82,	PDF_TEXT_UTF16_LE,	1,	0,	1,	0,	1,	0 },
-  {	83,	PDF_TEXT_UTF16_LE,	1,	1,	1,	1,	1,	0 },
-  {	84,	PDF_TEXT_UTF16_LE,	1,	1,	1,	0,	1,	0 },
+  {  73,  PDF_TEXT_UTF16_LE, 0,  0,    0,   0,      1,  1 },
+  {  74,  PDF_TEXT_UTF16_LE, 1,  0,    0,   0,      1,  1 },
+  {  75,  PDF_TEXT_UTF16_LE, 0,  1,    0,   0,      1,  1 },
+  {  76,  PDF_TEXT_UTF16_LE, 1,  1,    0,   0,      1,  1 },
+  {  77,  PDF_TEXT_UTF16_LE, 0,  0,    1,   1,      1,  0 },
+  {  78,  PDF_TEXT_UTF16_LE, 0,  0,    1,   0,      1,  0 },
+  {  79,  PDF_TEXT_UTF16_LE, 0,  1,    1,   1,      1,  0 },
+  {  80,  PDF_TEXT_UTF16_LE, 0,  1,    1,   0,      1,  0 },
+  {  81,  PDF_TEXT_UTF16_LE, 1,  0,    1,   1,      1,  0 },
+  {  82,  PDF_TEXT_UTF16_LE, 1,  0,    1,   0,      1,  0 },
+  {  83,  PDF_TEXT_UTF16_LE, 1,  1,    1,   1,      1,  0 },
+  {  84,  PDF_TEXT_UTF16_LE, 1,  1,    1,   0,      1,  0 },
 
   /* UTF-32, with NUL */
-  /*	No	Encoding		BOM	Empty	Lang	Country	NUL	PDF_OK? */
-  {	85,	PDF_TEXT_UTF32_BE,	0,	0,	0,	0,	1,	1 },
-  {	86,	PDF_TEXT_UTF32_BE,	1,	0,	0,	0,	1,	1 },
-  {	87,	PDF_TEXT_UTF32_BE,	0,	1,	0,	0,	1,	1 },
-  {	88,	PDF_TEXT_UTF32_BE,	1,	1,	0,	0,	1,	1 },
-  {	89,	PDF_TEXT_UTF32_BE,	0,	0,	1,	1,	1,	0 },
-  {	90,	PDF_TEXT_UTF32_BE,	0,	0,	1,	0,	1,	0 },
-  {	91,	PDF_TEXT_UTF32_BE,	0,	1,	1,	1,	1,	0 },
-  {	92,	PDF_TEXT_UTF32_BE,	0,	1,	1,	0,	1,	0 },
-  {	93,	PDF_TEXT_UTF32_BE,	1,	0,	1,	1,	1,	0 },
-  {	94,	PDF_TEXT_UTF32_BE,	1,	0,	1,	0,	1,	0 },
-  {	95,	PDF_TEXT_UTF32_BE,	1,	1,	1,	1,	1,	0 },
-  {	96,	PDF_TEXT_UTF32_BE,	1,	1,	1,	0,	1,	0 },
+  /* No   Encoding           BOM Empty Lang Country NUL PDF_OK? */
+  {  85,  PDF_TEXT_UTF32_BE, 0,  0,    0,   0,      1,  1 },
+  {  86,  PDF_TEXT_UTF32_BE, 1,  0,    0,   0,      1,  1 },
+  {  87,  PDF_TEXT_UTF32_BE, 0,  1,    0,   0,      1,  1 },
+  {  88,  PDF_TEXT_UTF32_BE, 1,  1,    0,   0,      1,  1 },
+  {  89,  PDF_TEXT_UTF32_BE, 0,  0,    1,   1,      1,  0 },
+  {  90,  PDF_TEXT_UTF32_BE, 0,  0,    1,   0,      1,  0 },
+  {  91,  PDF_TEXT_UTF32_BE, 0,  1,    1,   1,      1,  0 },
+  {  92,  PDF_TEXT_UTF32_BE, 0,  1,    1,   0,      1,  0 },
+  {  93,  PDF_TEXT_UTF32_BE, 1,  0,    1,   1,      1,  0 },
+  {  94,  PDF_TEXT_UTF32_BE, 1,  0,    1,   0,      1,  0 },
+  {  95,  PDF_TEXT_UTF32_BE, 1,  1,    1,   1,      1,  0 },
+  {  96,  PDF_TEXT_UTF32_BE, 1,  1,    1,   0,      1,  0 },
 
-  {	97,	PDF_TEXT_UTF32_LE,	0,	0,	0,	0,	1,	1 },
-  {	98,	PDF_TEXT_UTF32_LE,	1,	0,	0,	0,	1,	1 },
-  {	99,	PDF_TEXT_UTF32_LE,	0,	1,	0,	0,	1,	1 },
-  {	100,	PDF_TEXT_UTF32_LE,	1,	1,	0,	0,	1,	1 },
-  {	101,	PDF_TEXT_UTF32_LE,	0,	0,	1,	1,	1,	0 },
-  {	102,	PDF_TEXT_UTF32_LE,	0,	0,	1,	0,	1,	0 },
-  {	103,	PDF_TEXT_UTF32_LE,	0,	1,	1,	1,	1,	0 },
-  {	104,	PDF_TEXT_UTF32_LE,	0,	1,	1,	0,	1,	0 },
-  {	105,	PDF_TEXT_UTF32_LE,	1,	0,	1,	1,	1,	0 },
-  {	106,	PDF_TEXT_UTF32_LE,	1,	0,	1,	0,	1,	0 },
-  {	107,	PDF_TEXT_UTF32_LE,	1,	1,	1,	1,	1,	0 },
-  {	108,	PDF_TEXT_UTF32_LE,	1,	1,	1,	0,	1,	0 }};
-
-extern const test_string_t utf8_strings[];
-extern const test_string_t utf16be_strings[];
-extern const test_string_t utf32be_strings[];
+  {  97,  PDF_TEXT_UTF32_LE, 0,  0,    0,   0,      1,  1 },
+  {  98,  PDF_TEXT_UTF32_LE, 1,  0,    0,   0,      1,  1 },
+  {  99,  PDF_TEXT_UTF32_LE, 0,  1,    0,   0,      1,  1 },
+  {  100, PDF_TEXT_UTF32_LE, 1,  1,    0,   0,      1,  1 },
+  {  101, PDF_TEXT_UTF32_LE, 0,  0,    1,   1,      1,  0 },
+  {  102, PDF_TEXT_UTF32_LE, 0,  0,    1,   0,      1,  0 },
+  {  103, PDF_TEXT_UTF32_LE, 0,  1,    1,   1,      1,  0 },
+  {  104, PDF_TEXT_UTF32_LE, 0,  1,    1,   0,      1,  0 },
+  {  105, PDF_TEXT_UTF32_LE, 1,  0,    1,   1,      1,  0 },
+  {  106, PDF_TEXT_UTF32_LE, 1,  0,    1,   0,      1,  0 },
+  {  107, PDF_TEXT_UTF32_LE, 1,  1,    1,   1,      1,  0 },
+  {  108, PDF_TEXT_UTF32_LE, 1,  1,    1,   0,      1,  0 }};
 
 static void
-test_one_string (struct test_params params,
-                 int empty,
-                 const test_string_t *test_string)
+test_one_string (struct test_params   params,
+                 pdf_bool_t           empty,
+                 const test_string_t *test_string,
+                 const pdf_char_t    *function_name,
+                 pdf_u32_t            i)
 {
   pdf_error_t *error = NULL;
   pdf_text_t *text;
@@ -311,7 +308,10 @@ test_one_string (struct test_params params,
   /* 1. Fail depending on pdf_ok_p */
   if (params.pdf_ok_p)
     {
-      fail_unless (data != NULL);
+      if (params.empty && !params.bom && !params.lang && !params.nul)
+        fail_unless (data == NULL);
+      else
+        fail_unless (data != NULL);
       fail_if (error != NULL);
     }
   else
@@ -329,7 +329,8 @@ test_one_string (struct test_params params,
     return;
 
   /* 2. The returned string must be the expected one */
-  PRINT_CONTENTS (params.idx,
+  PRINT_CONTENTS (function_name,
+                  params.idx,
                   text,
                   initial_utf_data,
                   initial_utf_data_size,
@@ -413,8 +414,13 @@ test_one_string (struct test_params params,
 }
 
 static void
-common_test (int test_index)
+common_test (const pdf_char_t *function_name,
+             int               test_index)
 {
+  extern const test_string_t utf8_strings[];
+  extern const test_string_t utf16be_strings[];
+  extern const test_string_t utf32be_strings[];
+
   /* Get test params */
   struct test_params params = tests_params[test_index - 1];
 
@@ -423,17 +429,18 @@ common_test (int test_index)
   if (params.empty)
     {
       /* Testing the empty text - only 1 possible test */
-      test_one_string (params, 1, NULL);
+      test_one_string (params, 1, NULL, function_name, 0);
     }
   else
     {
       /* Tests all strings from pdf-text-test-data.c */
       int i = 0;
+
       if (params.enc == PDF_TEXT_UTF8)
         {
           while (utf8_strings[i].data)
             {
-              test_one_string (params, 0, &utf8_strings[i]);
+              test_one_string (params, 0, &utf8_strings[i], function_name, i);
               i++;
             }
         }
@@ -441,7 +448,7 @@ common_test (int test_index)
         {
           while (utf16be_strings[i].data)
             {
-              test_one_string (params, 0, &utf16be_strings[i]);
+              test_one_string (params, 0, &utf16be_strings[i], function_name, i);
               i++;
             }
         }
@@ -449,131 +456,121 @@ common_test (int test_index)
         {
           while (utf32be_strings[i].data)
             {
-              test_one_string (params, 0, &utf32be_strings[i]);
+              test_one_string (params, 0, &utf32be_strings[i], function_name, i);
               i++;
             }
         }
     }
 }
 
-START_TEST (pdf_text_get_unicode_001) { common_test(  1); } END_TEST
-START_TEST (pdf_text_get_unicode_002) { common_test(  2); } END_TEST
-START_TEST (pdf_text_get_unicode_003) { common_test(  3); } END_TEST
-START_TEST (pdf_text_get_unicode_004) { common_test(  4); } END_TEST
-START_TEST (pdf_text_get_unicode_005) { common_test(  5); } END_TEST
-START_TEST (pdf_text_get_unicode_006) { common_test(  6); } END_TEST
-
-START_TEST (pdf_text_get_unicode_007) { common_test(  7); } END_TEST
-START_TEST (pdf_text_get_unicode_008) { common_test(  8); } END_TEST
-START_TEST (pdf_text_get_unicode_009) { common_test(  9); } END_TEST
-START_TEST (pdf_text_get_unicode_010) { common_test( 10); } END_TEST
-START_TEST (pdf_text_get_unicode_011) { common_test( 11); } END_TEST
-START_TEST (pdf_text_get_unicode_012) { common_test( 12); } END_TEST
-START_TEST (pdf_text_get_unicode_013) { common_test( 13); } END_TEST
-START_TEST (pdf_text_get_unicode_014) { common_test( 14); } END_TEST
-START_TEST (pdf_text_get_unicode_015) { common_test( 15); } END_TEST
-START_TEST (pdf_text_get_unicode_016) { common_test( 16); } END_TEST
-START_TEST (pdf_text_get_unicode_017) { common_test( 17); } END_TEST
-START_TEST (pdf_text_get_unicode_018) { common_test( 18); } END_TEST
-
-START_TEST (pdf_text_get_unicode_019) { common_test( 19); } END_TEST
-START_TEST (pdf_text_get_unicode_020) { common_test( 20); } END_TEST
-START_TEST (pdf_text_get_unicode_021) { common_test( 21); } END_TEST
-START_TEST (pdf_text_get_unicode_022) { common_test( 22); } END_TEST
-START_TEST (pdf_text_get_unicode_023) { common_test( 23); } END_TEST
-START_TEST (pdf_text_get_unicode_024) { common_test( 24); } END_TEST
-START_TEST (pdf_text_get_unicode_025) { common_test( 25); } END_TEST
-START_TEST (pdf_text_get_unicode_026) { common_test( 26); } END_TEST
-START_TEST (pdf_text_get_unicode_027) { common_test( 27); } END_TEST
-START_TEST (pdf_text_get_unicode_028) { common_test( 28); } END_TEST
-START_TEST (pdf_text_get_unicode_029) { common_test( 29); } END_TEST
-START_TEST (pdf_text_get_unicode_030) { common_test( 30); } END_TEST
-
-START_TEST (pdf_text_get_unicode_031) { common_test( 31); } END_TEST
-START_TEST (pdf_text_get_unicode_032) { common_test( 32); } END_TEST
-START_TEST (pdf_text_get_unicode_033) { common_test( 33); } END_TEST
-START_TEST (pdf_text_get_unicode_034) { common_test( 34); } END_TEST
-START_TEST (pdf_text_get_unicode_035) { common_test( 35); } END_TEST
-START_TEST (pdf_text_get_unicode_036) { common_test( 36); } END_TEST
-START_TEST (pdf_text_get_unicode_037) { common_test( 37); } END_TEST
-START_TEST (pdf_text_get_unicode_038) { common_test( 38); } END_TEST
-START_TEST (pdf_text_get_unicode_039) { common_test( 39); } END_TEST
-START_TEST (pdf_text_get_unicode_040) { common_test( 40); } END_TEST
-START_TEST (pdf_text_get_unicode_041) { common_test( 41); } END_TEST
-START_TEST (pdf_text_get_unicode_042) { common_test( 42); } END_TEST
-
-START_TEST (pdf_text_get_unicode_043) { common_test( 43); } END_TEST
-START_TEST (pdf_text_get_unicode_044) { common_test( 44); } END_TEST
-START_TEST (pdf_text_get_unicode_045) { common_test( 45); } END_TEST
-START_TEST (pdf_text_get_unicode_046) { common_test( 46); } END_TEST
-START_TEST (pdf_text_get_unicode_047) { common_test( 47); } END_TEST
-START_TEST (pdf_text_get_unicode_048) { common_test( 48); } END_TEST
-START_TEST (pdf_text_get_unicode_049) { common_test( 49); } END_TEST
-START_TEST (pdf_text_get_unicode_050) { common_test( 50); } END_TEST
-START_TEST (pdf_text_get_unicode_051) { common_test( 51); } END_TEST
-START_TEST (pdf_text_get_unicode_052) { common_test( 52); } END_TEST
-START_TEST (pdf_text_get_unicode_053) { common_test( 53); } END_TEST
-START_TEST (pdf_text_get_unicode_054) { common_test( 54); } END_TEST
-
-
-START_TEST (pdf_text_get_unicode_055) { common_test( 55); } END_TEST
-START_TEST (pdf_text_get_unicode_056) { common_test( 56); } END_TEST
-START_TEST (pdf_text_get_unicode_057) { common_test( 57); } END_TEST
-START_TEST (pdf_text_get_unicode_058) { common_test( 58); } END_TEST
-START_TEST (pdf_text_get_unicode_059) { common_test( 59); } END_TEST
-START_TEST (pdf_text_get_unicode_060) { common_test( 60); } END_TEST
-
-START_TEST (pdf_text_get_unicode_061) { common_test( 61); } END_TEST
-START_TEST (pdf_text_get_unicode_062) { common_test( 62); } END_TEST
-START_TEST (pdf_text_get_unicode_063) { common_test( 63); } END_TEST
-START_TEST (pdf_text_get_unicode_064) { common_test( 64); } END_TEST
-START_TEST (pdf_text_get_unicode_065) { common_test( 65); } END_TEST
-START_TEST (pdf_text_get_unicode_066) { common_test( 66); } END_TEST
-START_TEST (pdf_text_get_unicode_067) { common_test( 67); } END_TEST
-START_TEST (pdf_text_get_unicode_068) { common_test( 68); } END_TEST
-START_TEST (pdf_text_get_unicode_069) { common_test( 69); } END_TEST
-START_TEST (pdf_text_get_unicode_070) { common_test( 70); } END_TEST
-START_TEST (pdf_text_get_unicode_071) { common_test( 71); } END_TEST
-START_TEST (pdf_text_get_unicode_072) { common_test( 72); } END_TEST
-
-START_TEST (pdf_text_get_unicode_073) { common_test( 73); } END_TEST
-START_TEST (pdf_text_get_unicode_074) { common_test( 74); } END_TEST
-START_TEST (pdf_text_get_unicode_075) { common_test( 75); } END_TEST
-START_TEST (pdf_text_get_unicode_076) { common_test( 76); } END_TEST
-START_TEST (pdf_text_get_unicode_077) { common_test( 77); } END_TEST
-START_TEST (pdf_text_get_unicode_078) { common_test( 78); } END_TEST
-START_TEST (pdf_text_get_unicode_079) { common_test( 79); } END_TEST
-START_TEST (pdf_text_get_unicode_080) { common_test( 80); } END_TEST
-START_TEST (pdf_text_get_unicode_081) { common_test( 81); } END_TEST
-START_TEST (pdf_text_get_unicode_082) { common_test( 82); } END_TEST
-START_TEST (pdf_text_get_unicode_083) { common_test( 83); } END_TEST
-START_TEST (pdf_text_get_unicode_084) { common_test( 84); } END_TEST
-
-START_TEST (pdf_text_get_unicode_085) { common_test( 85); } END_TEST
-START_TEST (pdf_text_get_unicode_086) { common_test( 86); } END_TEST
-START_TEST (pdf_text_get_unicode_087) { common_test( 87); } END_TEST
-START_TEST (pdf_text_get_unicode_088) { common_test( 88); } END_TEST
-START_TEST (pdf_text_get_unicode_089) { common_test( 89); } END_TEST
-START_TEST (pdf_text_get_unicode_090) { common_test( 90); } END_TEST
-START_TEST (pdf_text_get_unicode_091) { common_test( 91); } END_TEST
-START_TEST (pdf_text_get_unicode_092) { common_test( 92); } END_TEST
-START_TEST (pdf_text_get_unicode_093) { common_test( 93); } END_TEST
-START_TEST (pdf_text_get_unicode_094) { common_test( 94); } END_TEST
-START_TEST (pdf_text_get_unicode_095) { common_test( 95); } END_TEST
-START_TEST (pdf_text_get_unicode_096) { common_test( 96); } END_TEST
-
-START_TEST (pdf_text_get_unicode_097) { common_test( 97); } END_TEST
-START_TEST (pdf_text_get_unicode_098) { common_test( 98); } END_TEST
-START_TEST (pdf_text_get_unicode_099) { common_test( 99); } END_TEST
-START_TEST (pdf_text_get_unicode_100) { common_test(100); } END_TEST
-START_TEST (pdf_text_get_unicode_101) { common_test(101); } END_TEST
-START_TEST (pdf_text_get_unicode_102) { common_test(102); } END_TEST
-START_TEST (pdf_text_get_unicode_103) { common_test(103); } END_TEST
-START_TEST (pdf_text_get_unicode_104) { common_test(104); } END_TEST
-START_TEST (pdf_text_get_unicode_105) { common_test(105); } END_TEST
-START_TEST (pdf_text_get_unicode_106) { common_test(106); } END_TEST
-START_TEST (pdf_text_get_unicode_107) { common_test(107); } END_TEST
-START_TEST (pdf_text_get_unicode_108) { common_test(108); } END_TEST
+START_TEST (pdf_text_get_unicode_001) { common_test(__FUNCTION__,  1); } END_TEST
+START_TEST (pdf_text_get_unicode_002) { common_test(__FUNCTION__,  2); } END_TEST
+START_TEST (pdf_text_get_unicode_003) { common_test(__FUNCTION__,  3); } END_TEST
+START_TEST (pdf_text_get_unicode_004) { common_test(__FUNCTION__,  4); } END_TEST
+START_TEST (pdf_text_get_unicode_005) { common_test(__FUNCTION__,  5); } END_TEST
+START_TEST (pdf_text_get_unicode_006) { common_test(__FUNCTION__,  6); } END_TEST
+START_TEST (pdf_text_get_unicode_007) { common_test(__FUNCTION__,  7); } END_TEST
+START_TEST (pdf_text_get_unicode_008) { common_test(__FUNCTION__,  8); } END_TEST
+START_TEST (pdf_text_get_unicode_009) { common_test(__FUNCTION__,  9); } END_TEST
+START_TEST (pdf_text_get_unicode_010) { common_test(__FUNCTION__, 10); } END_TEST
+START_TEST (pdf_text_get_unicode_011) { common_test(__FUNCTION__, 11); } END_TEST
+START_TEST (pdf_text_get_unicode_012) { common_test(__FUNCTION__, 12); } END_TEST
+START_TEST (pdf_text_get_unicode_013) { common_test(__FUNCTION__, 13); } END_TEST
+START_TEST (pdf_text_get_unicode_014) { common_test(__FUNCTION__, 14); } END_TEST
+START_TEST (pdf_text_get_unicode_015) { common_test(__FUNCTION__, 15); } END_TEST
+START_TEST (pdf_text_get_unicode_016) { common_test(__FUNCTION__, 16); } END_TEST
+START_TEST (pdf_text_get_unicode_017) { common_test(__FUNCTION__, 17); } END_TEST
+START_TEST (pdf_text_get_unicode_018) { common_test(__FUNCTION__, 18); } END_TEST
+START_TEST (pdf_text_get_unicode_019) { common_test(__FUNCTION__, 19); } END_TEST
+START_TEST (pdf_text_get_unicode_020) { common_test(__FUNCTION__, 20); } END_TEST
+START_TEST (pdf_text_get_unicode_021) { common_test(__FUNCTION__, 21); } END_TEST
+START_TEST (pdf_text_get_unicode_022) { common_test(__FUNCTION__, 22); } END_TEST
+START_TEST (pdf_text_get_unicode_023) { common_test(__FUNCTION__, 23); } END_TEST
+START_TEST (pdf_text_get_unicode_024) { common_test(__FUNCTION__, 24); } END_TEST
+START_TEST (pdf_text_get_unicode_025) { common_test(__FUNCTION__, 25); } END_TEST
+START_TEST (pdf_text_get_unicode_026) { common_test(__FUNCTION__, 26); } END_TEST
+START_TEST (pdf_text_get_unicode_027) { common_test(__FUNCTION__, 27); } END_TEST
+START_TEST (pdf_text_get_unicode_028) { common_test(__FUNCTION__, 28); } END_TEST
+START_TEST (pdf_text_get_unicode_029) { common_test(__FUNCTION__, 29); } END_TEST
+START_TEST (pdf_text_get_unicode_030) { common_test(__FUNCTION__, 30); } END_TEST
+START_TEST (pdf_text_get_unicode_031) { common_test(__FUNCTION__, 31); } END_TEST
+START_TEST (pdf_text_get_unicode_032) { common_test(__FUNCTION__, 32); } END_TEST
+START_TEST (pdf_text_get_unicode_033) { common_test(__FUNCTION__, 33); } END_TEST
+START_TEST (pdf_text_get_unicode_034) { common_test(__FUNCTION__, 34); } END_TEST
+START_TEST (pdf_text_get_unicode_035) { common_test(__FUNCTION__, 35); } END_TEST
+START_TEST (pdf_text_get_unicode_036) { common_test(__FUNCTION__, 36); } END_TEST
+START_TEST (pdf_text_get_unicode_037) { common_test(__FUNCTION__, 37); } END_TEST
+START_TEST (pdf_text_get_unicode_038) { common_test(__FUNCTION__, 38); } END_TEST
+START_TEST (pdf_text_get_unicode_039) { common_test(__FUNCTION__, 39); } END_TEST
+START_TEST (pdf_text_get_unicode_040) { common_test(__FUNCTION__, 40); } END_TEST
+START_TEST (pdf_text_get_unicode_041) { common_test(__FUNCTION__, 41); } END_TEST
+START_TEST (pdf_text_get_unicode_042) { common_test(__FUNCTION__, 42); } END_TEST
+START_TEST (pdf_text_get_unicode_043) { common_test(__FUNCTION__, 43); } END_TEST
+START_TEST (pdf_text_get_unicode_044) { common_test(__FUNCTION__, 44); } END_TEST
+START_TEST (pdf_text_get_unicode_045) { common_test(__FUNCTION__, 45); } END_TEST
+START_TEST (pdf_text_get_unicode_046) { common_test(__FUNCTION__, 46); } END_TEST
+START_TEST (pdf_text_get_unicode_047) { common_test(__FUNCTION__, 47); } END_TEST
+START_TEST (pdf_text_get_unicode_048) { common_test(__FUNCTION__, 48); } END_TEST
+START_TEST (pdf_text_get_unicode_049) { common_test(__FUNCTION__, 49); } END_TEST
+START_TEST (pdf_text_get_unicode_050) { common_test(__FUNCTION__, 50); } END_TEST
+START_TEST (pdf_text_get_unicode_051) { common_test(__FUNCTION__, 51); } END_TEST
+START_TEST (pdf_text_get_unicode_052) { common_test(__FUNCTION__, 52); } END_TEST
+START_TEST (pdf_text_get_unicode_053) { common_test(__FUNCTION__, 53); } END_TEST
+START_TEST (pdf_text_get_unicode_054) { common_test(__FUNCTION__, 54); } END_TEST
+START_TEST (pdf_text_get_unicode_055) { common_test(__FUNCTION__, 55); } END_TEST
+START_TEST (pdf_text_get_unicode_056) { common_test(__FUNCTION__, 56); } END_TEST
+START_TEST (pdf_text_get_unicode_057) { common_test(__FUNCTION__, 57); } END_TEST
+START_TEST (pdf_text_get_unicode_058) { common_test(__FUNCTION__, 58); } END_TEST
+START_TEST (pdf_text_get_unicode_059) { common_test(__FUNCTION__, 59); } END_TEST
+START_TEST (pdf_text_get_unicode_060) { common_test(__FUNCTION__, 60); } END_TEST
+START_TEST (pdf_text_get_unicode_061) { common_test(__FUNCTION__, 61); } END_TEST
+START_TEST (pdf_text_get_unicode_062) { common_test(__FUNCTION__, 62); } END_TEST
+START_TEST (pdf_text_get_unicode_063) { common_test(__FUNCTION__, 63); } END_TEST
+START_TEST (pdf_text_get_unicode_064) { common_test(__FUNCTION__, 64); } END_TEST
+START_TEST (pdf_text_get_unicode_065) { common_test(__FUNCTION__, 65); } END_TEST
+START_TEST (pdf_text_get_unicode_066) { common_test(__FUNCTION__, 66); } END_TEST
+START_TEST (pdf_text_get_unicode_067) { common_test(__FUNCTION__, 67); } END_TEST
+START_TEST (pdf_text_get_unicode_068) { common_test(__FUNCTION__, 68); } END_TEST
+START_TEST (pdf_text_get_unicode_069) { common_test(__FUNCTION__, 69); } END_TEST
+START_TEST (pdf_text_get_unicode_070) { common_test(__FUNCTION__, 70); } END_TEST
+START_TEST (pdf_text_get_unicode_071) { common_test(__FUNCTION__, 71); } END_TEST
+START_TEST (pdf_text_get_unicode_072) { common_test(__FUNCTION__, 72); } END_TEST
+START_TEST (pdf_text_get_unicode_073) { common_test(__FUNCTION__, 73); } END_TEST
+START_TEST (pdf_text_get_unicode_074) { common_test(__FUNCTION__, 74); } END_TEST
+START_TEST (pdf_text_get_unicode_075) { common_test(__FUNCTION__, 75); } END_TEST
+START_TEST (pdf_text_get_unicode_076) { common_test(__FUNCTION__, 76); } END_TEST
+START_TEST (pdf_text_get_unicode_077) { common_test(__FUNCTION__, 77); } END_TEST
+START_TEST (pdf_text_get_unicode_078) { common_test(__FUNCTION__, 78); } END_TEST
+START_TEST (pdf_text_get_unicode_079) { common_test(__FUNCTION__, 79); } END_TEST
+START_TEST (pdf_text_get_unicode_080) { common_test(__FUNCTION__, 80); } END_TEST
+START_TEST (pdf_text_get_unicode_081) { common_test(__FUNCTION__, 81); } END_TEST
+START_TEST (pdf_text_get_unicode_082) { common_test(__FUNCTION__, 82); } END_TEST
+START_TEST (pdf_text_get_unicode_083) { common_test(__FUNCTION__, 83); } END_TEST
+START_TEST (pdf_text_get_unicode_084) { common_test(__FUNCTION__, 84); } END_TEST
+START_TEST (pdf_text_get_unicode_085) { common_test(__FUNCTION__, 85); } END_TEST
+START_TEST (pdf_text_get_unicode_086) { common_test(__FUNCTION__, 86); } END_TEST
+START_TEST (pdf_text_get_unicode_087) { common_test(__FUNCTION__, 87); } END_TEST
+START_TEST (pdf_text_get_unicode_088) { common_test(__FUNCTION__, 88); } END_TEST
+START_TEST (pdf_text_get_unicode_089) { common_test(__FUNCTION__, 89); } END_TEST
+START_TEST (pdf_text_get_unicode_090) { common_test(__FUNCTION__, 90); } END_TEST
+START_TEST (pdf_text_get_unicode_091) { common_test(__FUNCTION__, 91); } END_TEST
+START_TEST (pdf_text_get_unicode_092) { common_test(__FUNCTION__, 92); } END_TEST
+START_TEST (pdf_text_get_unicode_093) { common_test(__FUNCTION__, 93); } END_TEST
+START_TEST (pdf_text_get_unicode_094) { common_test(__FUNCTION__, 94); } END_TEST
+START_TEST (pdf_text_get_unicode_095) { common_test(__FUNCTION__, 95); } END_TEST
+START_TEST (pdf_text_get_unicode_096) { common_test(__FUNCTION__, 96); } END_TEST
+START_TEST (pdf_text_get_unicode_097) { common_test(__FUNCTION__, 97); } END_TEST
+START_TEST (pdf_text_get_unicode_098) { common_test(__FUNCTION__, 98); } END_TEST
+START_TEST (pdf_text_get_unicode_099) { common_test(__FUNCTION__, 99); } END_TEST
+START_TEST (pdf_text_get_unicode_100) { common_test(__FUNCTION__,100); } END_TEST
+START_TEST (pdf_text_get_unicode_101) { common_test(__FUNCTION__,101); } END_TEST
+START_TEST (pdf_text_get_unicode_102) { common_test(__FUNCTION__,102); } END_TEST
+START_TEST (pdf_text_get_unicode_103) { common_test(__FUNCTION__,103); } END_TEST
+START_TEST (pdf_text_get_unicode_104) { common_test(__FUNCTION__,104); } END_TEST
+START_TEST (pdf_text_get_unicode_105) { common_test(__FUNCTION__,105); } END_TEST
+START_TEST (pdf_text_get_unicode_106) { common_test(__FUNCTION__,106); } END_TEST
+START_TEST (pdf_text_get_unicode_107) { common_test(__FUNCTION__,107); } END_TEST
+START_TEST (pdf_text_get_unicode_108) { common_test(__FUNCTION__,108); } END_TEST
 
 /*
  * Test case creation function

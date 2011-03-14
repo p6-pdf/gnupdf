@@ -58,7 +58,7 @@ START_TEST (pdf_text_get_country_001)
 
   /* 2. The length of the returned string should be 2. */
   fail_unless (strlen (country) == 2);
-  fail_unles (strcmp (country, "FR") == 0);
+  fail_unless (strcmp (country, "FR") == 0);
 
   pdf_text_destroy (text);
 }

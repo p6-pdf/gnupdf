@@ -873,8 +873,6 @@ pdf_fsys_disk_build_path (void              *data,
   pdf_text_t *next;
   pdf_text_t *text_sep;
 
-  printf ("BUILDING PATH...\n");
-
   PDF_ASSERT_POINTER_RETURN_VAL (output, PDF_EBADDATA);
   PDF_ASSERT_POINTER_RETURN_VAL (first_element, PDF_EBADDATA);
 

@@ -92,7 +92,7 @@ START_TEST (pdf_text_new_from_pdf_string_001)
       fail_unless (text != NULL);
       fail_if (error != NULL);
 
-      PRINT_CONTENTS (i, text, expected_data, expected_size, remaining_size);
+      PRINT_CONTENTS (__FUNCTION__, i, text, expected_data, expected_size, remaining_size);
 
       /* 3. The contents of the text object must be the expected ones. */
       actual_data = pdf_text_get_unicode (text,
@@ -220,7 +220,7 @@ START_TEST (pdf_text_new_from_pdf_string_003)
       fail_unless (text != NULL);
       fail_if (error != NULL);
 
-      PRINT_CONTENTS (i, text, expected_data, expected_size, remaining_size);
+      PRINT_CONTENTS (__FUNCTION__, i, text, expected_data, expected_size, remaining_size);
 
       /* 3. The contents of the text object must be the expected ones. */
       actual_data = pdf_text_get_unicode (text,
@@ -286,7 +286,7 @@ START_TEST (pdf_text_new_from_pdf_string_004)
       /* 1. The call to pdf_text_new_from_pdf_string should NOT return
        *  PDF_OK. */
       text = pdf_text_new_from_pdf_string (input_data,
-                                           strlen (input_data),
+                                           input_size,
                                            &remaining_data,
                                            &remaining_size,
                                            &error);
@@ -339,7 +339,7 @@ START_TEST (pdf_text_new_from_pdf_string_005)
       /* 1. The call to pdf_text_new_from_pdf_string should NOT return
        *  PDF_OK. */
       text = pdf_text_new_from_pdf_string (input_data,
-                                           strlen (input_data),
+                                           input_size,
                                            &remaining_data,
                                            &remaining_size,
                                            &error);
@@ -429,7 +429,7 @@ START_TEST (pdf_text_new_from_pdf_string_006)
       fail_unless (text != NULL);
       fail_if (error != NULL);
 
-      PRINT_CONTENTS (i, text, expected_data, expected_size, remaining_size);
+      PRINT_CONTENTS (__FUNCTION__, i, text, expected_data, expected_size, remaining_size);
 
       /* 3. The contents of the text object must be the expected ones. */
       actual_data = pdf_text_get_unicode (text,
@@ -545,7 +545,7 @@ START_TEST (pdf_text_new_from_pdf_string_007)
       fail_unless (text != NULL);
       fail_if (error != NULL);
 
-      PRINT_CONTENTS (i, text, expected_data, expected_size, remaining_size);
+      PRINT_CONTENTS (__FUNCTION__, i, text, expected_data, expected_size, remaining_size);
 
       /* 3. The contents of the text object must be the expected ones. */
       actual_data = pdf_text_get_unicode (text,
@@ -653,8 +653,8 @@ START_TEST (pdf_text_new_from_pdf_string_008)
 
       /* Set input data with LANGUAGE code and BOM */
       input_size = (pdf_size_t)utf16be_strings[i].size - 2 +
-                   (pdf_size_t)utf16be_strings[i + 1].size - 2 +
-                   (pdf_size_t)utf16be_strings[i + 2].size - 2 + 20;
+                   (pdf_size_t)utf16be_strings[i+1].size - 2 +
+                   (pdf_size_t)utf16be_strings[i+2].size - 2 + 20;
       input_data = (pdf_char_t *)pdf_alloc (input_size);
       fail_unless (input_data != NULL);
 
@@ -697,10 +697,10 @@ START_TEST (pdf_text_new_from_pdf_string_008)
       /* Set expected data */
       expected_data1 = (pdf_char_t *)utf16be_strings[i].utf32be_data;
       expected_size1 = utf16be_strings[i].utf32be_size;
-      expected_data2 = (pdf_char_t *)utf16be_strings[i + 1].utf32be_data;
-      expected_size2 = utf16be_strings[i + 1].utf32be_size;
-      expected_data3 = (pdf_char_t *)utf16be_strings[i + 2].utf32be_data;
-      expected_size3 = utf16be_strings[i + 2].utf32be_size;
+      expected_data2 = (pdf_char_t *)utf16be_strings[i+1].utf32be_data;
+      expected_size2 = utf16be_strings[i+1].utf32be_size;
+      expected_data3 = (pdf_char_t *)utf16be_strings[i+2].utf32be_data;
+      expected_size3 = utf16be_strings[i+2].utf32be_size;
       if (!pdf_text_test_big_endian_system ())
         {
           /* Must change endianness of expected_data */
@@ -729,7 +729,7 @@ START_TEST (pdf_text_new_from_pdf_string_008)
       fail_unless (text1 != NULL);
       fail_if (error != NULL);
 
-      PRINT_CONTENTS (i, text1, expected_data1, expected_size1, remaining_size);
+      PRINT_CONTENTS (__FUNCTION__, i, text1, expected_data1, expected_size1, remaining_size);
 
       /* 3. The contents of the first text object must be the expected ones. */
       actual_data = pdf_text_get_unicode (text1,
@@ -767,7 +767,7 @@ START_TEST (pdf_text_new_from_pdf_string_008)
       fail_unless (text2 != NULL);
       fail_if (error != NULL);
 
-      PRINT_CONTENTS (i, text2, expected_data2, expected_size2, remaining_size);
+      PRINT_CONTENTS (__FUNCTION__, i, text2, expected_data2, expected_size2, remaining_size);
 
       /* 9. The contents of the second text object must be the expected ones. */
       pdf_dealloc (actual_data);
@@ -806,7 +806,7 @@ START_TEST (pdf_text_new_from_pdf_string_008)
       fail_unless (text3 != NULL);
       fail_if (error != NULL);
 
-      PRINT_CONTENTS (i, text3, expected_data3, expected_size3, remaining_size);
+      PRINT_CONTENTS (__FUNCTION__, i, text3, expected_data3, expected_size3, remaining_size);
 
       /* 15. The contents of the third text object must be the expected ones. */
       pdf_dealloc (actual_data);
@@ -924,9 +924,9 @@ START_TEST (pdf_text_new_from_pdf_string_009)
 
       /* Set input data with LANGUAGE code and BOM */
       input_size = (pdf_size_t)utf16be_strings[i].size - 2 +
-                   (pdf_size_t)utf16be_strings[i + 1].size - 2 +
-                   (pdf_size_t)utf16be_strings[i + 2].size - 2 + 20;
-      input_data = (pdf_char_t *)pdf_alloc (input_size);
+                   (pdf_size_t)utf16be_strings[i+1].size - 2 +
+                   (pdf_size_t)utf16be_strings[i+2].size - 2 + 26;
+      input_data = (pdf_char_t *) pdf_alloc (input_size);
       fail_unless (input_data != NULL);
 
       /* Store BOM (2 bytes) */
@@ -955,7 +955,7 @@ START_TEST (pdf_text_new_from_pdf_string_009)
       memcpy (&str_walker[8],
               &utf16be_strings[i+1].data[2], /* Skipping bom */
               (pdf_size_t)utf16be_strings[i+1].size - 2);
-      str_walker = &str_walker[8 + utf16be_strings[i + 1].size - 2];
+      str_walker = &str_walker[8 + utf16be_strings[i+1].size - 2];
 
       /* Store THIRD language and country codes (8 bytes) */
       memcpy (str_walker, "\x00\x1B", 2);
@@ -966,15 +966,15 @@ START_TEST (pdf_text_new_from_pdf_string_009)
       /* Store THIRD string */
       memcpy (&str_walker[8],
               &utf16be_strings[i+2].data[2], /* Skipping bom */
-              (pdf_size_t)utf16be_strings[i + 2].size - 2);
+              (pdf_size_t)utf16be_strings[i+2].size - 2);
 
       /* Set expected data */
       expected_data1 = (pdf_char_t *)utf16be_strings[i].utf32be_data;
       expected_size1 = utf16be_strings[i].utf32be_size;
-      expected_data2 = (pdf_char_t *)utf16be_strings[i + 1].utf32be_data;
-      expected_size2 = utf16be_strings[i + 1].utf32be_size;
-      expected_data3 = (pdf_char_t *)utf16be_strings[i + 2].utf32be_data;
-      expected_size3 = utf16be_strings[i + 2].utf32be_size;
+      expected_data2 = (pdf_char_t *)utf16be_strings[i+1].utf32be_data;
+      expected_size2 = utf16be_strings[i+1].utf32be_size;
+      expected_data3 = (pdf_char_t *)utf16be_strings[i+2].utf32be_data;
+      expected_size3 = utf16be_strings[i+2].utf32be_size;
       if (!pdf_text_test_big_endian_system ())
         {
           /* Must change endianness of expected_data */
@@ -1004,7 +1004,7 @@ START_TEST (pdf_text_new_from_pdf_string_009)
       fail_unless (text1 != NULL);
       fail_if (error != NULL);
 
-      PRINT_CONTENTS (i, text1, expected_data1, expected_size1, remaining_size);
+      PRINT_CONTENTS (__FUNCTION__, i, text1, expected_data1, expected_size1, remaining_size);
 
       /* 3. The contents of the first text object must be the expected ones. */
       actual_data = pdf_text_get_unicode (text1,
@@ -1043,7 +1043,7 @@ START_TEST (pdf_text_new_from_pdf_string_009)
       fail_unless (text2 != NULL);
       fail_if (error != NULL);
 
-      PRINT_CONTENTS (i, text2, expected_data2, expected_size2, remaining_size);
+      PRINT_CONTENTS (__FUNCTION__, i, text2, expected_data2, expected_size2, remaining_size);
 
       /* 9. The contents of the second text object must be the expected ones. */
       pdf_dealloc (actual_data);
@@ -1084,7 +1084,7 @@ START_TEST (pdf_text_new_from_pdf_string_009)
       fail_unless (text3 != NULL);
       fail_if (error != NULL);
 
-      PRINT_CONTENTS (i, text3, expected_data3, expected_size3, remaining_size);
+      PRINT_CONTENTS (__FUNCTION__, i, text3, expected_data3, expected_size3, remaining_size);
 
       /* 15. The contents of the third text object must be the expected ones. */
       pdf_dealloc (actual_data);
