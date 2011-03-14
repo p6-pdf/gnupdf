@@ -115,13 +115,19 @@ test_one_string (struct test_params   params,
 
   if (params.enc == PDF_TEXT_UTF16_HE)
     {
-      enc = (pdf_text_test_big_endian_system () ?
-              PDF_TEXT_UTF16_BE : PDF_TEXT_UTF16_LE);
+#if (PDF_IS_BIG_ENDIAN)
+      enc = PDF_TEXT_UTF16_BE;
+#else
+      enc = PDF_TEXT_UTF16_LE;
+#endif /* PDF_IS_BIG_ENDIAN */
     }
   else if (params.enc == PDF_TEXT_UTF32_HE)
     {
-      enc = (pdf_text_test_big_endian_system () ?
-             PDF_TEXT_UTF32_BE : PDF_TEXT_UTF32_LE);
+#if (PDF_IS_BIG_ENDIAN)
+      enc = PDF_TEXT_UTF32_BE;
+#else
+      enc = PDF_TEXT_UTF32_LE;
+#endif /* PDF_IS_BIG_ENDIAN */
     }
   else
     {
@@ -193,18 +199,16 @@ test_one_string (struct test_params   params,
 
   /* Set expected data */
   expected_size = test_string->utf32be_size;
-  if (!pdf_text_test_big_endian_system ())
-    {
-      expected_data = pdf_text_test_change_utf32_endianness (test_string->utf32be_data,
-                                                             expected_size);
-      fail_unless (expected_data != NULL);
-    }
-  else
-    {
-      expected_data = pdf_alloc (expected_size);
-      fail_unless (expected_data != NULL);
-      memcpy (expected_data, test_string->utf32be_data, expected_size);
-    }
+
+#if (PDF_IS_BIG_ENDIAN)
+  expected_data = pdf_alloc (expected_size);
+  fail_unless (expected_data != NULL);
+  memcpy (expected_data, test_string->utf32be_data, expected_size);
+#else
+  expected_data = pdf_text_test_change_utf32_endianness (test_string->utf32be_data,
+                                                         expected_size);
+  fail_unless (expected_data != NULL);
+#endif /* PDF_IS_BIG_ENDIAN */
 
   PRINT_CONTENTS (function_name, i, text, expected_data, expected_size, 0);
 
@@ -405,18 +409,19 @@ START_TEST (pdf_text_set_unicode_029)
               utf16be_strings[i].utf32be_data,
               utf16be_strings[i].utf32be_size);
 
-      if (!pdf_text_test_big_endian_system ())
-        {
-          pdf_char_t *temp;
+#if (!PDF_IS_BIG_ENDIAN)
+      {
+        pdf_char_t *temp;
 
-          /* Must change endianness of expected_data */
-          temp = pdf_text_test_change_utf32_endianness (expected_data,
-                                                        expected_size);
-          pdf_dealloc (expected_data);
-          expected_data = temp;
-          /* Just in case... */
-          fail_unless (expected_data != NULL);
-        }
+        /* Must change endianness of expected_data */
+        temp = pdf_text_test_change_utf32_endianness (expected_data,
+                                                      expected_size);
+        pdf_dealloc (expected_data);
+        expected_data = temp;
+        /* Just in case... */
+        fail_unless (expected_data != NULL);
+      }
+#endif /* !PDF_IS_BIG_ENDIAN */
 
       /* 1. The call to pdf_text_set_unicode should return PDF_OK. */
       fail_if (pdf_text_set_unicode (text,
@@ -520,18 +525,19 @@ START_TEST (pdf_text_set_unicode_030)
               utf16be_strings[i].utf32be_data,
               utf16be_strings[i].utf32be_size);
 
-      if (!pdf_text_test_big_endian_system ())
-        {
-          pdf_char_t *temp;
+#if (!PDF_IS_BIG_ENDIAN)
+      {
+        pdf_char_t *temp;
 
-          /* Must change endianness of expected_data */
-          temp = pdf_text_test_change_utf32_endianness (expected_data,
-                                                        expected_size);
-          pdf_dealloc (expected_data);
-          expected_data = temp;
-          /* Just in case... */
-          fail_unless (expected_data != NULL);
-        }
+        /* Must change endianness of expected_data */
+        temp = pdf_text_test_change_utf32_endianness (expected_data,
+                                                      expected_size);
+        pdf_dealloc (expected_data);
+        expected_data = temp;
+        /* Just in case... */
+        fail_unless (expected_data != NULL);
+      }
+#endif /* !PDF_IS_BIG_ENDIAN */
 
       /* 1. The call to pdf_text_set_unicode should return PDF_OK. */
       fail_if (pdf_text_set_unicode (text,

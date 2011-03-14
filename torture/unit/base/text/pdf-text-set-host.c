@@ -70,15 +70,15 @@ START_TEST (pdf_text_set_host_001)
       /* Set expected data */
       expected_data = (pdf_char_t *)ascii_strings[i].utf32be_data;
       expected_size = ascii_strings[i].utf32be_size;
-      if (!pdf_text_test_big_endian_system ())
-        {
-          /* Must change endianness of expected_data */
-          expected_free = PDF_TRUE;
-          expected_data = pdf_text_test_change_utf32_endianness (expected_data,
-                                                                 expected_size);
-          /* Just in case... */
-          fail_unless (expected_data != NULL);
-        }
+
+#if (!PDF_IS_BIG_ENDIAN)
+      /* Must change endianness of expected_data */
+      expected_free = PDF_TRUE;
+      expected_data = pdf_text_test_change_utf32_endianness (expected_data,
+                                                             expected_size);
+      /* Just in case... */
+      fail_unless (expected_data != NULL);
+#endif /* !PDF_IS_BIG_ENDIAN */
 
       text = pdf_text_new (&error);
       fail_unless (text != NULL);

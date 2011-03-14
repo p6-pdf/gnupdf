@@ -39,9 +39,6 @@ typedef struct test_string_s {
   pdf_size_t  utf32be_size;
 } test_string_t;
 
-/* Test if the system is Big Endian */
-pdf_bool_t pdf_text_test_big_endian_system (void);
-
 /* Change UTF-32BE string to UTF-32LE and viceversa */
 pdf_char_t *pdf_text_test_change_utf32_endianness (const pdf_char_t *str_in,
                                                    pdf_size_t        size);

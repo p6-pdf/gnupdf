@@ -71,15 +71,15 @@ START_TEST (pdf_text_new_from_pdf_string_001)
       /* Set expected data */
       expected_data = (pdf_char_t *)pdf_doc_encoding_strings[i].utf32be_data;
       expected_size = (pdf_size_t)pdf_doc_encoding_strings[i].utf32be_size;
-      if (!pdf_text_test_big_endian_system ())
-        {
-          /* Must change endianness of expected_data */
-          expected_free = PDF_TRUE;
-          expected_data = pdf_text_test_change_utf32_endianness (expected_data,
-                                                                 expected_size);
-          /* Just in case... */
-          fail_if (expected_data == NULL);
-        }
+
+#if (!PDF_IS_BIG_ENDIAN)
+      /* Must change endianness of expected_data */
+      expected_free = PDF_TRUE;
+      expected_data = pdf_text_test_change_utf32_endianness (expected_data,
+                                                             expected_size);
+      /* Just in case... */
+      fail_unless (expected_data != NULL);
+#endif /* !PDF_IS_BIG_ENDIAN */
 
       /* 1. The call to pdf_text_new_from_pdf_string should return PDF_OK. */
       text = pdf_text_new_from_pdf_string (input_data,
@@ -200,15 +200,15 @@ START_TEST (pdf_text_new_from_pdf_string_003)
       /* Set expected data */
       expected_data = (pdf_char_t *)utf16be_strings[i].utf32be_data;
       expected_size = utf16be_strings[i].utf32be_size;
-      if (!pdf_text_test_big_endian_system ())
-        {
-          /* Must change endianness of expected_data */
-          expected_free = PDF_TRUE;
-          expected_data = pdf_text_test_change_utf32_endianness (expected_data,
-                                                                 expected_size);
-          /* Just in case... */
-          fail_if (expected_data == NULL);
-        }
+
+#if (!PDF_IS_BIG_ENDIAN)
+      /* Must change endianness of expected_data */
+      expected_free = PDF_TRUE;
+      expected_data = pdf_text_test_change_utf32_endianness (expected_data,
+                                                             expected_size);
+      /* Just in case... */
+      fail_unless (expected_data != NULL);
+#endif /* !PDF_IS_BIG_ENDIAN */
 
       /* 1. The call to pdf_text_new_from_pdf_string should return PDF_OK. */
       text = pdf_text_new_from_pdf_string (input_data,
@@ -408,15 +408,15 @@ START_TEST (pdf_text_new_from_pdf_string_006)
       /* Set expected data */
       expected_data = (pdf_char_t *)utf16be_strings[i].utf32be_data;
       expected_size = utf16be_strings[i].utf32be_size;
-      if (!pdf_text_test_big_endian_system ())
-        {
-          /* Must change endianness of expected_data */
-          expected_free = PDF_TRUE;
-          expected_data = pdf_text_test_change_utf32_endianness (expected_data,
-                                                                 expected_size);
-          /* Just in case... */
-          fail_unless (expected_data != NULL);
-        }
+
+#if (!PDF_IS_BIG_ENDIAN)
+      /* Must change endianness of expected_data */
+      expected_free = PDF_TRUE;
+      expected_data = pdf_text_test_change_utf32_endianness (expected_data,
+                                                             expected_size);
+      /* Just in case... */
+      fail_unless (expected_data != NULL);
+#endif /* !PDF_IS_BIG_ENDIAN */
 
       /* 1. The call to pdf_text_new_from_pdf_string should return PDF_OK. */
       text = pdf_text_new_from_pdf_string (input_data,
@@ -524,15 +524,15 @@ START_TEST (pdf_text_new_from_pdf_string_007)
       /* Set expected data */
       expected_data = (pdf_char_t *)utf16be_strings[i].utf32be_data;
       expected_size = utf16be_strings[i].utf32be_size;
-      if (!pdf_text_test_big_endian_system ())
-        {
-          /* Must change endianness of expected_data */
-          expected_free = PDF_TRUE;
-          expected_data = pdf_text_test_change_utf32_endianness (expected_data,
-                                                                 expected_size);
-          /* Just in case... */
-          fail_unless (expected_data != NULL);
-        }
+
+#if (!PDF_IS_BIG_ENDIAN)
+      /* Must change endianness of expected_data */
+      expected_free = PDF_TRUE;
+      expected_data = pdf_text_test_change_utf32_endianness (expected_data,
+                                                             expected_size);
+      /* Just in case... */
+      fail_unless (expected_data != NULL);
+#endif /* !PDF_IS_BIG_ENDIAN */
 
       /* 1. The call to pdf_text_new_from_pdf_string should return PDF_OK. */
       text = pdf_text_new_from_pdf_string (input_data,
@@ -701,21 +701,21 @@ START_TEST (pdf_text_new_from_pdf_string_008)
       expected_size2 = utf16be_strings[i+1].utf32be_size;
       expected_data3 = (pdf_char_t *)utf16be_strings[i+2].utf32be_data;
       expected_size3 = utf16be_strings[i+2].utf32be_size;
-      if (!pdf_text_test_big_endian_system ())
-        {
-          /* Must change endianness of expected_data */
-          expected_free = PDF_TRUE;
-          expected_data1 = pdf_text_test_change_utf32_endianness (expected_data1,
-                                                                  expected_size1);
-          expected_data2 = pdf_text_test_change_utf32_endianness (expected_data2,
-                                                                  expected_size2);
-          expected_data3 = pdf_text_test_change_utf32_endianness (expected_data3,
-                                                                  expected_size3);
-          /* Just in case... */
-          fail_unless (expected_data1 != NULL);
-          fail_unless (expected_data2 != NULL);
-          fail_unless (expected_data3 != NULL);
-        }
+
+#if (!PDF_IS_BIG_ENDIAN)
+      /* Must change endianness of expected_data */
+      expected_free = PDF_TRUE;
+      expected_data1 = pdf_text_test_change_utf32_endianness (expected_data1,
+                                                              expected_size1);
+      expected_data2 = pdf_text_test_change_utf32_endianness (expected_data2,
+                                                              expected_size2);
+      expected_data3 = pdf_text_test_change_utf32_endianness (expected_data3,
+                                                              expected_size3);
+      /* Just in case... */
+      fail_unless (expected_data1 != NULL);
+      fail_unless (expected_data2 != NULL);
+      fail_unless (expected_data3 != NULL);
+#endif /* !PDF_IS_BIG_ENDIAN */
 
       /* 1. The call to pdf_text_new_from_pdf_string should return PDF_OK.
        */
@@ -975,22 +975,21 @@ START_TEST (pdf_text_new_from_pdf_string_009)
       expected_size2 = utf16be_strings[i+1].utf32be_size;
       expected_data3 = (pdf_char_t *)utf16be_strings[i+2].utf32be_data;
       expected_size3 = utf16be_strings[i+2].utf32be_size;
-      if (!pdf_text_test_big_endian_system ())
-        {
-          /* Must change endianness of expected_data */
-          expected_free = PDF_TRUE;
-          expected_data1 = pdf_text_test_change_utf32_endianness (expected_data1,
-                                                                  expected_size1);
-          expected_data2 = pdf_text_test_change_utf32_endianness (expected_data2,
-                                                                  expected_size2);
-          expected_data3 = pdf_text_test_change_utf32_endianness (expected_data3,
-                                                                  expected_size3);
-          /* Just in case... */
-          fail_unless (expected_data1 != NULL);
-          fail_unless (expected_data2 != NULL);
-          fail_unless (expected_data3 != NULL);
-        }
 
+#if (!PDF_IS_BIG_ENDIAN)
+      /* Must change endianness of expected_data */
+      expected_free = PDF_TRUE;
+      expected_data1 = pdf_text_test_change_utf32_endianness (expected_data1,
+                                                              expected_size1);
+      expected_data2 = pdf_text_test_change_utf32_endianness (expected_data2,
+                                                              expected_size2);
+      expected_data3 = pdf_text_test_change_utf32_endianness (expected_data3,
+                                                              expected_size3);
+      /* Just in case... */
+      fail_unless (expected_data1 != NULL);
+      fail_unless (expected_data2 != NULL);
+      fail_unless (expected_data3 != NULL);
+#endif /* !PDF_IS_BIG_ENDIAN */
 
       /* 1. The call to pdf_text_new_from_pdf_string should return PDF_OK.
        */

@@ -72,18 +72,6 @@ pdf_text_test_change_utf16_endianness(const pdf_char_t *str_in,
   return str_out;
 }
 
-pdf_bool_t
-pdf_text_test_big_endian_system (void)
-{
-  union {
-    uint16_t i;
-    char c[2];
-  } test;
-  test.i = 0x6162;
-
-  return ((strncmp (&test.c[0], "ab", 2) == 0) ? PDF_TRUE : PDF_FALSE);
-}
-
 /* Function quite similar to `pdf_text_get_hex', but using an array of bytes
  *  as input. */
 pdf_char_t *
@@ -129,10 +117,8 @@ pdf_text_test_get_hex (const pdf_char_t *data,
 static const pdf_char_t *utf8_bom =    "\xEF\xBB\xBF";
 static const pdf_char_t *utf16be_bom = "\xFE\xFF";
 static const pdf_char_t *utf16le_bom = "\xFF\xFE";
-static const pdf_char_t *utf16he_bom;
 static const pdf_char_t *utf32be_bom = "\x00\x00\xFE\xFF";
 static const pdf_char_t *utf32le_bom = "\xFF\xFE\x00\x00";
-static const pdf_char_t *utf32he_bom;
 
 const pdf_char_t *
 pdf_text_test_get_bom (enum pdf_text_unicode_encoding_e  enc,
@@ -151,10 +137,11 @@ pdf_text_test_get_bom (enum pdf_text_unicode_encoding_e  enc,
       return utf16le_bom;
     case PDF_TEXT_UTF16_HE:
       *bom_size = 2;
-      if (utf16he_bom == NULL)
-        utf16he_bom = (pdf_text_test_big_endian_system () ?
-                       utf16be_bom : utf16le_bom);
-      return utf16he_bom;
+#if (PDF_IS_BIG_ENDIAN)
+      return utf16be_bom;
+#else
+      return utf16le_bom;
+#endif /* PDF_IS_BIG_ENDIAN */
     case PDF_TEXT_UTF32_BE:
       *bom_size = 4;
       return utf32be_bom;
@@ -163,10 +150,11 @@ pdf_text_test_get_bom (enum pdf_text_unicode_encoding_e  enc,
       return utf32le_bom;
     case PDF_TEXT_UTF32_HE:
       *bom_size = 4;
-      if (utf32he_bom == NULL)
-        utf32he_bom = (pdf_text_test_big_endian_system () ?
-                       utf32be_bom : utf32le_bom);
-      return utf32he_bom;
+#if (PDF_IS_BIG_ENDIAN)
+      return utf32be_bom;
+#else
+      return utf32le_bom;
+#endif /* PDF_IS_BIG_ENDIAN */
     default:
       return NULL;
     }

@@ -40,19 +40,17 @@
  */
 START_TEST (pdf_text_new_from_u32_001)
 {
-  const pdf_char_t *expected_data_be = (pdf_char_t *)"\x00\x00\x00" "0";
-  const pdf_char_t *expected_data_le = (pdf_char_t *)"0" "\x00\x00\x00";
-  const pdf_char_t *expected_data;
+#if (!PDF_IS_BIG_ENDIAN)
+  const pdf_char_t *expected_data = (pdf_char_t *)"0" "\x00\x00\x00";
+#else
+  const pdf_char_t *expected_data = (pdf_char_t *)"\x00\x00\x00" "0";
+#endif /* !PDF_IS_BIG_ENDIAN */
   pdf_size_t expected_size = 4;
   pdf_char_t *actual_data;
   pdf_size_t actual_size;
   pdf_error_t *error = NULL;
   pdf_u32_t number = 0;
   pdf_text_t *text;
-
-  expected_data = (!pdf_text_test_big_endian_system () ?
-                   expected_data_le :
-                   expected_data_be);
 
   /* 1. The call to pdf_text_new_from_u32 should return PDF_OK. */
   text = pdf_text_new_from_u32 (number, &error);
@@ -88,29 +86,27 @@ END_TEST
  */
 START_TEST (pdf_text_new_from_u32_002)
 {
-  const pdf_char_t *expected_data_be = (pdf_char_t *)"\x00\x00\x00" "1" \
-                                                     "\x00\x00\x00" "2" \
-                                                     "\x00\x00\x00" "3" \
-                                                     "\x00\x00\x00" "4" \
-                                                     "\x00\x00\x00" "5" \
-                                                     "\x00\x00\x00" "0";
-  const pdf_char_t *expected_data_le = (pdf_char_t *)"1" "\x00\x00\x00" \
-                                                     "2" "\x00\x00\x00" \
-                                                     "3" "\x00\x00\x00" \
-                                                     "4" "\x00\x00\x00" \
-                                                     "5" "\x00\x00\x00" \
-                                                     "0" "\x00\x00\x00";
-  const pdf_char_t *expected_data;
+#if (!PDF_IS_BIG_ENDIAN)
+  const pdf_char_t *expected_data = (pdf_char_t *)"1" "\x00\x00\x00"
+                                                  "2" "\x00\x00\x00"
+                                                  "3" "\x00\x00\x00"
+                                                  "4" "\x00\x00\x00"
+                                                  "5" "\x00\x00\x00"
+                                                  "0" "\x00\x00\x00";
+#else
+  const pdf_char_t *expected_data = (pdf_char_t *)"\x00\x00\x00" "1"
+                                                  "\x00\x00\x00" "2"
+                                                  "\x00\x00\x00" "3"
+                                                  "\x00\x00\x00" "4"
+                                                  "\x00\x00\x00" "5"
+                                                  "\x00\x00\x00" "0";
+#endif /* !PDF_IS_BIG_ENDIAN */
   pdf_size_t expected_size = 24;
   pdf_char_t *actual_data;
   pdf_size_t actual_size;
   pdf_error_t *error = NULL;
   pdf_u32_t number = 123450;
   pdf_text_t *text;
-
-  expected_data = (!pdf_text_test_big_endian_system () ?
-                   expected_data_le :
-                   expected_data_be);
 
   /* 1. The call to pdf_text_new_from_u32 should return PDF_OK. */
   text = pdf_text_new_from_u32 (number, &error);

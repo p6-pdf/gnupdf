@@ -46,14 +46,12 @@ START_TEST (pdf_text_get_hex_001)
   pdf_error_t *error = NULL;
   pdf_text_t *text;
   pdf_char_t *utf8data = (pdf_char_t *)"ab";
-  pdf_char_t *expected_utf32le = (pdf_char_t *)"61:00:00:00:" "62:00:00:00";
-  pdf_char_t *expected_utf32be = (pdf_char_t *)"00:00:00:61:" "00:00:00:62";
-  pdf_char_t *expected;
   pdf_char_t *output_data;
-
-  expected = (!pdf_text_test_big_endian_system () ?
-              expected_utf32le :
-              expected_utf32be);
+#if (!PDF_IS_BIG_ENDIAN)
+  const pdf_char_t *expected = (pdf_char_t *)"61:00:00:00:" "62:00:00:00";
+#else
+  const pdf_char_t *expected = (pdf_char_t *)"00:00:00:61:" "00:00:00:62";
+#endif /* !PDF_IS_BIG_ENDIAN */
 
   text = pdf_text_new_from_unicode (utf8data,
                                     strlen (utf8data),
