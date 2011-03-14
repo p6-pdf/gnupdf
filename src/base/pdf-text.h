@@ -200,9 +200,9 @@ pdf_char_t *pdf_text_get_hex (const pdf_text_t  *text,
 
 /* Set a string encoded with some host encoding. */
 pdf_bool_t pdf_text_set_host (pdf_text_t        *text,
-                              const pdf_char_t  *enc,
                               const pdf_char_t  *str,
                               pdf_size_t         size,
+                              const pdf_char_t  *enc,
                               pdf_error_t      **error);
 
 /* Set a PDFDocEncoding encoded string. Input data MUST be NUL terminated. */

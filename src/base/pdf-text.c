@@ -275,7 +275,7 @@ pdf_text_new_from_host (const pdf_char_t  *str,
     return NULL;
 
   /* Set Host Encoding contents */
-  if (!pdf_text_set_host (element, enc, str, size, error))
+  if (!pdf_text_set_host (element, str, size, enc, error))
     {
       /* Conversion went wrong... so destroy object contents */
       pdf_text_destroy (element);
@@ -625,10 +625,18 @@ pdf_text_get_unicode (const pdf_text_t  *text,
   pdf_bool_t ret;
 
   PDF_ASSERT_POINTER_RETURN_VAL (text, NULL);
+
   /* Lang/Country info only available for UTF-16BE */
-  PDF_ASSERT_RETURN_VAL (!(options & PDF_TEXT_UTF16BE_WITH_LANGCODE) ||
-                         (enc != PDF_TEXT_UTF16_BE),
-                         NULL);
+  if ((options & PDF_TEXT_UTF16BE_WITH_LANGCODE) &&
+      (enc != PDF_TEXT_UTF16_BE))
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_TEXT,
+                     PDF_ETEXTENC,
+                     "cannot get text contents unicode encoded: "
+                     "language-code request only possible for UTF-16BE");
+      return NULL;
+    }
 
   /* If host endianness required, check it and convert input encoding */
   enc = pdf_text_transform_he_to_unicode_encoding (enc);
@@ -862,9 +870,9 @@ pdf_text_get_hex (const pdf_text_t *text,
 
 pdf_bool_t
 pdf_text_set_host (pdf_text_t        *text,
-                   const pdf_char_t  *enc,
                    const pdf_char_t  *str,
                    pdf_size_t         size,
+                   const pdf_char_t  *enc,
                    pdf_error_t      **error)
 {
   pdf_char_t *temp_data;
