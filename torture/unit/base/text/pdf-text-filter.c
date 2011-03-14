@@ -30,8 +30,6 @@
 #include <check.h>
 #include <base/text/pdf-text-test-common.h>
 #include <pdf-test-common.h>
-#define INTERACTIVE_DEBUG 0
-
 
 /*
  * Test: pdf_text_filter_001
@@ -44,89 +42,62 @@
  */
 START_TEST (pdf_text_filter_001)
 {
-
-
-
-  pdf_text_t text;
-  const pdf_char_t *input_data = (pdf_char_t *) "GNU's Not Unix" "\r""\n" \
-                                                "GNU's Not Unix" "\r" \
-                                                "GNU's Not Unix" "\n" \
-                                                "GNU's Not Unix" "\xC2\x85";
+  pdf_error_t *error = NULL;
+  pdf_text_t *text;
+  const pdf_char_t *input_data = "GNU's Not Unix" "\r""\n"
+                                 "GNU's Not Unix" "\r"
+                                 "GNU's Not Unix" "\n"
+                                 "GNU's Not Unix" "\xC2\x85";
 #ifdef PDF_HOST_WIN32
-  const pdf_char_t *expected_data = (pdf_char_t *) "GNU's Not Unix" "\r""\n" \
-                                                   "GNU's Not Unix" "\r""\n" \
-                                                   "GNU's Not Unix" "\r""\n" \
-                                                   "GNU's Not Unix" "\r""\n";
+  const pdf_char_t *expected_data = "GNU's Not Unix" "\r""\n"
+                                    "GNU's Not Unix" "\r""\n"
+                                    "GNU's Not Unix" "\r""\n"
+                                    "GNU's Not Unix" "\r""\n";
 #else
-  const pdf_char_t *expected_data = (pdf_char_t *) "GNU's Not Unix" "\n" \
-                                                   "GNU's Not Unix" "\n" \
-                                                   "GNU's Not Unix" "\n" \
-                                                   "GNU's Not Unix" "\n";
+  const pdf_char_t *expected_data = "GNU's Not Unix" "\n"
+                                    "GNU's Not Unix" "\n"
+                                    "GNU's Not Unix" "\n"
+                                    "GNU's Not Unix" "\n";
 #endif
   pdf_size_t input_size;
   pdf_size_t expected_size;
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  input_size = (long)strlen(input_data);
-  expected_size = (long)strlen(expected_data);
-
-
-
-
+  input_size = strlen (input_data);
+  expected_size = strlen (expected_data);
 
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(input_data,
+  text = pdf_text_new_from_unicode (input_data,
                                     input_size,
-                                    PDF_TEXT_UTF8, &text) != PDF_OK);
-  if(INTERACTIVE_DEBUG)
-    {
-      pdf_char_t *internal_hex = NULL;
-      pdf_size_t actual_size;
-      pdf_char_t *actual_data;
-      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
-                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
-      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
-      fail_if(internal_hex == NULL);
-      printf("pdf_text_filter_001:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, (long)(long)strlen(internal_hex));
-      pdf_dealloc(internal_hex);
-    }
+                                    PDF_TEXT_UTF8,
+                                    &error);
+  fail_unless (text != NULL);
+  fail_if (error != NULL);
 
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
-  fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_LINE_ENDINGS) == PDF_OK);
-
-  if(INTERACTIVE_DEBUG)
-    {
-      pdf_char_t *internal_hex = NULL;
-      pdf_size_t actual_size;
-      pdf_char_t *actual_data;
-      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
-                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
-      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
-      fail_if(internal_hex == NULL);
-      printf("pdf_text_filter_001:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, (long)(long)strlen(internal_hex));
-      pdf_dealloc(internal_hex);
-    }
+  fail_unless (pdf_text_filter (text,
+                                PDF_TEXT_FILTER_LINE_ENDINGS,
+                                &error) == PDF_TRUE);
+  fail_if (error != NULL);
 
   /* Get output as UTF-32BE */
-  fail_unless(pdf_text_get_unicode(&output_data,
-                                   &output_size,
-                                   text,
-                                   PDF_TEXT_UTF8,
-                                   PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
+  output_data = pdf_text_get_unicode (text,
+                                      PDF_TEXT_UTF8,
+                                      PDF_TEXT_UNICODE_NO_OPTION,
+                                      &output_size,
+                                      &error);
+  fail_unless (output_data != NULL);
+  fail_if (error != NULL);
 
   /* 2. The contents of the output text object must be the expected ones. */
-  fail_unless(output_size == expected_size);
-  fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
+  fail_unless (output_size == expected_size);
+  fail_unless (memcmp (output_data, expected_data, expected_size) == 0);
 
-  pdf_dealloc(output_data);
-  pdf_text_destroy(text);
-
+  pdf_dealloc (output_data);
+  pdf_text_destroy (text);
 }
 END_TEST
-
 
 /*
  * Test: pdf_text_filter_002
@@ -138,72 +109,36 @@ END_TEST
  */
 START_TEST (pdf_text_filter_002)
 {
+  pdf_error_t *error = NULL;
+  pdf_text_t *text;
+  pdf_char_t *output_data;
+  pdf_size_t output_size;
 
-
-
-  pdf_text_t text;
-  const pdf_char_t *input_data = (pdf_char_t *) "";
-  const pdf_char_t *expected_data = input_data;
-  pdf_size_t input_size = 0;
-  pdf_size_t expected_size = 0;
-  pdf_char_t *output_data = NULL;
-  pdf_size_t output_size = 0;
-
-
-
-
-  /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(input_data,
-                                    input_size,
-                                    PDF_TEXT_UTF8, &text) != PDF_OK);
-  if(INTERACTIVE_DEBUG)
-    {
-      pdf_char_t *internal_hex = NULL;
-      pdf_size_t actual_size;
-      pdf_char_t *actual_data;
-      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
-                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
-      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
-      fail_if(internal_hex == NULL);
-      printf("pdf_text_filter_002:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, (long)(long)strlen(internal_hex));
-      pdf_dealloc(internal_hex);
-    }
+  /* Create empty text object */
+  text = pdf_text_new (&error);
+  fail_unless (text != NULL);
+  fail_if (error != NULL);
 
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
-  fail_unless(pdf_text_filter(text, PDF_TEXT_FILTER_LINE_ENDINGS) == PDF_OK);
-
-  if(INTERACTIVE_DEBUG)
-    {
-      pdf_char_t *internal_hex = NULL;
-      pdf_size_t actual_size;
-      pdf_char_t *actual_data;
-      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
-                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
-      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
-      fail_if(internal_hex == NULL);
-      printf("pdf_text_filter_002:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, (long)(long)strlen(internal_hex));
-      pdf_dealloc(internal_hex);
-    }
+  fail_unless (pdf_text_filter (text,
+                                PDF_TEXT_FILTER_LINE_ENDINGS,
+                                &error) == PDF_TRUE);
+  fail_if (error != NULL);
 
   /* Get output as UTF-32BE */
-  fail_unless(pdf_text_get_unicode(&output_data,
-                                   &output_size,
-                                   text,
-                                   PDF_TEXT_UTF8,
-                                   PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
+  output_data = pdf_text_get_unicode (text,
+                                      PDF_TEXT_UTF8,
+                                      PDF_TEXT_UNICODE_NO_OPTION,
+                                      &output_size,
+                                      &error);
+  fail_unless (output_data == NULL);
+  fail_unless (output_size == 0);
+  fail_if (error != NULL);
 
-  /* 2. The contents of the output text object must remain unchanged. */
-  fail_unless(output_size == expected_size);
-  fail_unless(output_data == NULL);
-
-  pdf_dealloc(output_data);
-  pdf_text_destroy(text);
-
+  pdf_dealloc (output_data);
+  pdf_text_destroy (text);
 }
 END_TEST
-
 
 /*
  * Test: pdf_text_filter_003
@@ -216,10 +151,8 @@ END_TEST
  */
 START_TEST (pdf_text_filter_003)
 {
-
-
-
-  pdf_text_t text;
+  pdf_error_t *error = NULL;
+  pdf_text_t *text;
   const pdf_char_t *input_data = (pdf_char_t *) "GNU's Not Unix. " "\r""\n" \
                                                 "GNU's Not Unix. " "\r" \
                                                 "GNU's Not Unix. " "\n" \
@@ -233,66 +166,40 @@ START_TEST (pdf_text_filter_003)
   pdf_char_t *output_data;
   pdf_size_t output_size;
 
-  input_size = (long)strlen(input_data);
-  expected_size = (long)strlen(expected_data);
-
-
-
+  input_size = strlen (input_data);
+  expected_size = strlen (expected_data);
 
 
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(input_data,
+  text = pdf_text_new_from_unicode (input_data,
                                     input_size,
-                                    PDF_TEXT_UTF8, &text) != PDF_OK);
-  if(INTERACTIVE_DEBUG)
-    {
-      pdf_char_t *internal_hex = NULL;
-      pdf_size_t actual_size;
-      pdf_char_t *actual_data;
-      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
-                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
-      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
-      fail_if(internal_hex == NULL);
-      printf("pdf_text_filter_003:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, (long)(long)strlen(internal_hex));
-      pdf_dealloc(internal_hex);
-    }
+                                    PDF_TEXT_UTF8,
+                                    &error);
+  fail_unless (text != NULL);
+  fail_if (error != NULL);
 
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
-  fail_unless(pdf_text_filter(text,
-                              PDF_TEXT_FILTER_REMOVE_LINE_ENDINGS) == PDF_OK);
-
-  if(INTERACTIVE_DEBUG)
-    {
-      pdf_char_t *internal_hex = NULL;
-      pdf_size_t actual_size;
-      pdf_char_t *actual_data;
-      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
-                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
-      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
-      fail_if(internal_hex == NULL);
-      printf("pdf_text_filter_003:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, (long)(long)strlen(internal_hex));
-      pdf_dealloc(internal_hex);
-    }
+  fail_unless (pdf_text_filter (text,
+                                PDF_TEXT_FILTER_REMOVE_LINE_ENDINGS,
+                                &error) == PDF_TRUE);
 
   /* Get output as UTF-32BE */
-  fail_unless(pdf_text_get_unicode(&output_data,
-                                   &output_size,
-                                   text,
-                                   PDF_TEXT_UTF8,
-                                   PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
+  output_data = pdf_text_get_unicode (text,
+                                      PDF_TEXT_UTF8,
+                                      PDF_TEXT_UNICODE_NO_OPTION,
+                                      &output_size,
+                                      &error);
+  fail_unless (output_data != NULL);
+  fail_if (error != NULL);
 
   /* 2. The contents of the output text object must be the expected ones. */
-  fail_unless(output_size == expected_size);
-  fail_unless(memcmp(output_data, expected_data, expected_size) == 0);
+  fail_unless (output_size == expected_size);
+  fail_unless (memcmp (output_data, expected_data, expected_size) == 0);
 
-  pdf_dealloc(output_data);
-  pdf_text_destroy(text);
-
+  pdf_dealloc (output_data);
+  pdf_text_destroy (text);
 }
 END_TEST
-
 
 /*
  * Test: pdf_text_filter_004
@@ -304,73 +211,35 @@ END_TEST
  */
 START_TEST (pdf_text_filter_004)
 {
-
-
-
-  pdf_text_t text;
-  const pdf_char_t *input_data = (pdf_char_t *) "";
-  const pdf_char_t *expected_data = input_data;
-  pdf_size_t input_size = 0;
-  pdf_size_t expected_size = 0;
-  pdf_char_t *output_data = NULL;
-  pdf_size_t output_size = 0;
-
-
-
+  pdf_error_t *error = NULL;
+  pdf_text_t *text;
+  pdf_char_t *output_data;
+  pdf_size_t output_size;
 
   /* Create text object with given contents */
-  fail_if(pdf_text_new_from_unicode(input_data,
-                                    input_size,
-                                    PDF_TEXT_UTF8, &text) != PDF_OK);
-  if(INTERACTIVE_DEBUG)
-    {
-      pdf_char_t *internal_hex = NULL;
-      pdf_size_t actual_size;
-      pdf_char_t *actual_data;
-      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
-                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
-      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
-      fail_if(internal_hex == NULL);
-      printf("pdf_text_filter_004:1:BeforeInternal> '%s' (%ld)\n",
-             internal_hex, (long)(long)strlen(internal_hex));
-      pdf_dealloc(internal_hex);
-    }
+  text = pdf_text_new (&error);
+  fail_unless (text != NULL);
+  fail_if (error != NULL);
 
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
-  fail_unless(pdf_text_filter(text,
-                              PDF_TEXT_FILTER_REMOVE_LINE_ENDINGS) == PDF_OK);
-
-  if(INTERACTIVE_DEBUG)
-    {
-      pdf_char_t *internal_hex = NULL;
-      pdf_size_t actual_size;
-      pdf_char_t *actual_data;
-      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
-                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
-      internal_hex = pdf_text_test_get_hex(actual_data,actual_size,':');
-      fail_if(internal_hex == NULL);
-      printf("pdf_text_filter_004:1:AfterInternal> '%s' (%ld)\n",
-             internal_hex, (long)(long)strlen(internal_hex));
-      pdf_dealloc(internal_hex);
-    }
+  fail_unless (pdf_text_filter (text,
+                                PDF_TEXT_FILTER_REMOVE_LINE_ENDINGS,
+                                &error) == PDF_TRUE);
 
   /* Get output as UTF-32BE */
-  fail_unless(pdf_text_get_unicode(&output_data,
-                                   &output_size,
-                                   text,
-                                   PDF_TEXT_UTF8,
-                                   PDF_TEXT_UNICODE_NO_OPTION) == PDF_OK);
+  output_data = pdf_text_get_unicode (text,
+                                      PDF_TEXT_UTF8,
+                                      PDF_TEXT_UNICODE_NO_OPTION,
+                                      &output_size,
+                                      &error);
+  fail_unless (output_data == NULL);
+  fail_unless (output_size == 0);
+  fail_if (error != NULL);
 
-  /* 2. The contents of the output text object must remain unchanged. */
-  fail_unless(output_size == expected_size);
-  fail_unless(output_data == NULL);
-
-  pdf_dealloc(output_data);
-  pdf_text_destroy(text);
-
+  pdf_dealloc (output_data);
+  pdf_text_destroy (text);
 }
 END_TEST
-
 
 /*
  * Test: pdf_text_filter_005
