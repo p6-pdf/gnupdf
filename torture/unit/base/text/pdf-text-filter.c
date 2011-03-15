@@ -38,10 +38,15 @@ struct test_params {
   /* Test parameters */
   pdf_u32_t filters;
 
+  /* Some tests need a specific language */
+  const pdf_char_t *language;
+
+  /* Input string setup */
   const pdf_char_t *input;
   long input_size; /* -1 if NUL-terminated */
   enum pdf_text_unicode_encoding_e input_enc;
 
+  /* Expected string setup */
   const pdf_char_t *expected;
   long expected_size; /* -1 if NUL-terminated */
   enum pdf_text_unicode_encoding_e expected_enc;
@@ -67,6 +72,7 @@ static const struct test_params tests[] = {
   {
     1,
     PDF_TEXT_FILTER_LINE_ENDINGS,
+    NULL,
     "GNU's Not Unix\r\nGNU's Not Unix\rGNU's Not Unix\nGNU's Not Unix\xC2\x85",
     -1,
     PDF_TEXT_UTF8,
@@ -80,13 +86,14 @@ static const struct test_params tests[] = {
   },
 
   /* Apply the `Normalize line endings' filter to an empty text object. */
-  { 2, PDF_TEXT_FILTER_LINE_ENDINGS, NULL, 0, PDF_TEXT_UTF8, NULL, 0, PDF_TEXT_UTF8 },
+  { 2, PDF_TEXT_FILTER_LINE_ENDINGS, NULL, NULL, 0, PDF_TEXT_UTF8, NULL, 0, PDF_TEXT_UTF8 },
 
   /* Apply the `Remove line endings' filter to a text object which contains
    * different types of line endings. */
   {
     3,
     PDF_TEXT_FILTER_REMOVE_LINE_ENDINGS,
+    NULL,
     "GNU's Not Unix. \r\nGNU's Not Unix. \rGNU's Not Unix. \nGNU's Not Unix. \xC2\x85",
     -1,
     PDF_TEXT_UTF8,
@@ -96,13 +103,14 @@ static const struct test_params tests[] = {
   },
 
   /* Apply the `Remove line endings' filter to an empty text object. */
-  { 4, PDF_TEXT_FILTER_REMOVE_LINE_ENDINGS, NULL, 0, PDF_TEXT_UTF8, NULL, 0, PDF_TEXT_UTF8 },
+  { 4, PDF_TEXT_FILTER_REMOVE_LINE_ENDINGS, NULL, NULL, 0, PDF_TEXT_UTF8, NULL, 0, PDF_TEXT_UTF8 },
 
   /* Apply the `Remove ampersands' filter to a text object which contains
    *single and double ampersands. */
   {
     5,
     PDF_TEXT_FILTER_REMOVE_AMP,
+    NULL,
     "GNU & GNU && GNU",
     -1,
     PDF_TEXT_UTF8,
@@ -112,13 +120,14 @@ static const struct test_params tests[] = {
   },
 
   /* Apply the `Remove ampersands' filter to an empty text object. */
-  { 6, PDF_TEXT_FILTER_REMOVE_AMP, NULL, 0, PDF_TEXT_UTF8, NULL, 0, PDF_TEXT_UTF8 },
+  { 6, PDF_TEXT_FILTER_REMOVE_AMP, NULL, NULL, 0, PDF_TEXT_UTF8, NULL, 0, PDF_TEXT_UTF8 },
 
   /* Apply the `Normalize with full width' filter to a text object that contains
    * code points that have a valid full width representation. */
   {
     7,
     PDF_TEXT_FILTER_NORM_WITH_FULL_WIDTH,
+    NULL,
     "\x00\x00\x00 \x00\x00\x00G\x00\x00\x00N\x00\x00\x00U\x00\x00\x00 ",
     20,
     PDF_TEXT_UTF32_BE,
@@ -132,6 +141,7 @@ static const struct test_params tests[] = {
   {
     8,
     PDF_TEXT_FILTER_NORM_WITH_FULL_WIDTH,
+    NULL,
     "\x00\x00\x6C\x34\x00\x00\x00 \x00\x01\xD1\x1E",
     12,
     PDF_TEXT_UTF32_BE,
@@ -141,13 +151,14 @@ static const struct test_params tests[] = {
   },
 
   /* Apply the `Normalize with full width' filter to an empty text object. */
-  { 9, PDF_TEXT_FILTER_NORM_WITH_FULL_WIDTH, NULL, 0, PDF_TEXT_UTF8, NULL, 0, PDF_TEXT_UTF8 },
+  { 9, PDF_TEXT_FILTER_NORM_WITH_FULL_WIDTH, NULL, NULL, 0, PDF_TEXT_UTF8, NULL, 0, PDF_TEXT_UTF8 },
 
   /* Apply the `Upper case' filter to a text object that contains
    * simple-case-conversion characters. */
   {
     10,
     PDF_TEXT_FILTER_UPPER_CASE,
+    NULL,
     "\x00\x00\x00 \x00\x00\x00g\x00\x00\x00n\x00\x00\x00u\x00\x00\x00 ",
     20,
     PDF_TEXT_UTF32_BE,
@@ -161,6 +172,7 @@ static const struct test_params tests[] = {
   {
     11,
     PDF_TEXT_FILTER_UPPER_CASE,
+    NULL,
     "\x00\x00\x00\x20\x00\x00\x1E\x98\x00\x00\x1F\xE4\x00\x00\x1F\x80\x00\x00\x1F\xC4",
     20,
     PDF_TEXT_UTF32_BE,
@@ -191,6 +203,7 @@ static const struct test_params tests[] = {
     /* 1st check, the sequence of previous case-ignorable points is empty */
     12,
     PDF_TEXT_FILTER_UPPER_CASE,
+    NULL,
     "\x00\x00\x00\x47\x00\x00\x00\x4E\x00\x00\x00\x55\x00\x00\x00\x20\x00\x00\x00\x55\x00\x00\x03\xA3\x00\x00\x00\x20\x00\x00\x00\x47\x00\x00\x00\x4E\x00\x00\x00\x55",
     40,
     PDF_TEXT_UTF32_BE,
@@ -202,6 +215,7 @@ static const struct test_params tests[] = {
     /* 2nd check, the sequence of previous case-ignorable points is NOT empty */
     13,
     PDF_TEXT_FILTER_UPPER_CASE,
+    NULL,
     "\x00\x00\x00\x47\x00\x00\x00\x4E\x00\x00\x00\x55\x00\x00\x00\x20\x00\x00\x00\x55\x00\x00\x00\x3A\x00\x00\x03\xA3\x00\x00\x00\x20\x00\x00\x00\x47\x00\x00\x00\x4E\x00\x00\x00\x55",
     44,
     PDF_TEXT_UTF32_BE,
@@ -219,6 +233,7 @@ static const struct test_params tests[] = {
   {
     14,
     PDF_TEXT_FILTER_UPPER_CASE,
+    "lt",
     "\x00\x00\x00\x20\x00\x00\x00i\x00\x00\x03\x07",
     12,
     PDF_TEXT_UTF32_BE,
@@ -235,6 +250,7 @@ static const struct test_params tests[] = {
   {
     15,
     PDF_TEXT_FILTER_UPPER_CASE,
+    "lt",
     "\x00\x00\x00\x20\x00\x00\x00\x49\x00\x00\x03\x0B",
     12,
     PDF_TEXT_UTF32_BE,
@@ -253,7 +269,7 @@ static const struct test_params tests[] = {
    *       the test, just in case in future updates of the Unicode standard
    *       one of this type appears
   */
-  { 16, PDF_TEXT_FILTER_UPPER_CASE, NULL, 0, PDF_TEXT_UTF32_BE, NULL, 0, PDF_TEXT_UTF32_BE },
+  { 16, PDF_TEXT_FILTER_UPPER_CASE, NULL, NULL, 0, PDF_TEXT_UTF32_BE, NULL, 0, PDF_TEXT_UTF32_BE },
 
   /*
    * Apply the `Upper case' filter to a text object that contains
@@ -264,6 +280,7 @@ static const struct test_params tests[] = {
   {
     17,
     PDF_TEXT_FILTER_UPPER_CASE,
+    "tr",
     "\x00\x00\x00\x20\x00\x00\x00I\x00\x00\x03\x07",
     12,
     PDF_TEXT_UTF32_BE,
@@ -283,6 +300,7 @@ static const struct test_params tests[] = {
   {
     18,
     PDF_TEXT_FILTER_UPPER_CASE,
+    "tr",
     "\x00\x00\x00\x20\x00\x00\x00\x69",
     8,
     PDF_TEXT_UTF32_BE,
@@ -304,6 +322,7 @@ static const struct test_params tests[] = {
   {
     19,
     PDF_TEXT_FILTER_UPPER_CASE,
+    "tr",
     "\x00\x00\x00\x20\x00\x00\x00I\x00\x00\x03\x07",
     12,
     PDF_TEXT_UTF32_BE,
@@ -325,6 +344,7 @@ static const struct test_params tests[] = {
   {
     20,
     PDF_TEXT_FILTER_UPPER_CASE,
+    "tr",
     "\x00\x00\x00\x20\x00\x00\x00\x49\x00\x00\x00\x50",
     12,
     PDF_TEXT_UTF32_BE,
@@ -362,6 +382,7 @@ static const struct test_params tests[] = {
     /* 1st check, the previous cased point is not available */
     21,
     PDF_TEXT_FILTER_UPPER_CASE,
+    NULL,
     "\x00\x00\x00\x47\x00\x00\x00\x4E\x00\x00\x00\x55\x00\x00\x00\x20\x00\x00\x00\x27\x00\x00\x03\xA3\x00\x00\x00\x20\x00\x00\x00\x47\x00\x00\x00\x4E\x00\x00\x00\x55",
     40,
     PDF_TEXT_UTF32_BE,
@@ -373,6 +394,7 @@ static const struct test_params tests[] = {
     /* 2nd check, the sequence of previous case-ignorable points is NOT empty */
     22,
     PDF_TEXT_FILTER_UPPER_CASE,
+    NULL,
     "\x00\x00\x00\x47\x00\x00\x00\x4E\x00\x00\x00\x55\x00\x00\x00\x20\x00\x00\x00\x55\x00\x00\x00\x27\x00\x00\x03\xA3\x00\x00\x00\x55\x00\x00\x00\x20\x00\x00\x00\x47\x00\x00\x00\x4E\x00\x00\x00\x55",
     48,
     PDF_TEXT_UTF32_BE,
@@ -391,10 +413,11 @@ static const struct test_params tests[] = {
   {
     23,
     PDF_TEXT_FILTER_UPPER_CASE,
+    "lt",
     "\x00\x00\x00\x20\x00\x00\x00i\x00\x00\x03\x0C\x00\x00\x03\x07",
     16,
     PDF_TEXT_UTF32_BE,
-    "\x00\x00\x00\x20\x00\x00\x00i\x00\x00\x03\x0C\x00\x00\x03\x07",
+    "\x00\x00\x00\x20\x00\x00\x00I\x00\x00\x03\x0C\x00\x00\x03\x07",
     16,
     PDF_TEXT_UTF32_BE
   },
@@ -411,6 +434,7 @@ static const struct test_params tests[] = {
   {
     24,
     PDF_TEXT_FILTER_UPPER_CASE,
+    NULL,
     "\x00\x00\x00\x20\x00\x00\x00\x49\x00\x00\x00\xC0\x00\x00\x03\x0B",
     16,
     PDF_TEXT_UTF32_BE,
@@ -430,7 +454,7 @@ static const struct test_params tests[] = {
    *       the test, just in case in future updates of the Unicode standard
    *       one of this type appears
   */
-  { 25, PDF_TEXT_FILTER_UPPER_CASE, NULL, 0, PDF_TEXT_UTF32_BE, NULL, 0, PDF_TEXT_UTF32_BE },
+  { 25, PDF_TEXT_FILTER_UPPER_CASE, NULL, NULL, 0, PDF_TEXT_UTF32_BE, NULL, 0, PDF_TEXT_UTF32_BE },
 
   /*
    * Apply the `Upper case' filter to a text object that contains
@@ -443,6 +467,7 @@ static const struct test_params tests[] = {
   {
     26,
     PDF_TEXT_FILTER_UPPER_CASE,
+    NULL,
     "\x00\x00\x00\x20\x00\x00\x00I\x00\x00\x03\x0C\x00\x00\x03\x07",
     16,
     PDF_TEXT_UTF32_BE,
@@ -462,6 +487,7 @@ static const struct test_params tests[] = {
   {
     27,
     PDF_TEXT_FILTER_UPPER_CASE,
+    NULL,
     "\x00\x00\x00\x20\x00\x00\x00i",
     8,
     PDF_TEXT_UTF32_BE,
@@ -485,6 +511,7 @@ static const struct test_params tests[] = {
   {
     28,
     PDF_TEXT_FILTER_UPPER_CASE,
+    NULL,
     "\x00\x00\x00\x20\x00\x00\x00I\x00\x00\x03\x0C\x00\x00\x03\x07",
     16,
     PDF_TEXT_UTF32_BE,
@@ -508,6 +535,7 @@ static const struct test_params tests[] = {
   {
     29,
     PDF_TEXT_FILTER_UPPER_CASE,
+    "tr",
     "\x00\x00\x00\x20\x00\x00\x00\x49\x00\x00\x03\x07\x00\x00\x00\x50",
     16,
     PDF_TEXT_UTF32_BE,
@@ -523,6 +551,7 @@ static const struct test_params tests[] = {
   {
     30,
     PDF_TEXT_FILTER_LOWER_CASE,
+    NULL,
     "\x00\x00\x00 \x00\x00\x00G\x00\x00\x00N\x00\x00\x00U\x00\x00\x00 ",
     20,
     PDF_TEXT_UTF32_BE,
@@ -538,6 +567,7 @@ static const struct test_params tests[] = {
   {
     31,
     PDF_TEXT_FILTER_LOWER_CASE,
+    NULL,
     "\x00\x00\x00\x20\x00\x00\x01\x30",
     8,
     PDF_TEXT_UTF32_BE,
@@ -569,6 +599,7 @@ static const struct test_params tests[] = {
     /* 1st check, the sequence of previous case-ignorable points is empty */
     32,
     PDF_TEXT_FILTER_LOWER_CASE,
+    NULL,
     "\x00\x00\x00G\x00\x00\x00N\x00\x00\x00U\x00\x00\x00 \x00\x00\x00G\x00\x00\x03\xA3\x00\x00\x00 \x00\x00\x00G\x00\x00\x00N\x00\x00\x00U",
     40,
     PDF_TEXT_UTF32_BE,
@@ -580,6 +611,7 @@ static const struct test_params tests[] = {
   {
     33,
     PDF_TEXT_FILTER_LOWER_CASE,
+    NULL,
     "\x00\x00\x00G\x00\x00\x00N\x00\x00\x00U\x00\x00\x00 \x00\x00\x00G\x00\x00\x00\x3A\x00\x00\x03\xA3\x00\x00\x00 \x00\x00\x00G\x00\x00\x00N\x00\x00\x00U",
     44,
     PDF_TEXT_UTF32_BE,
@@ -596,6 +628,7 @@ static const struct test_params tests[] = {
   {
     34,
     PDF_TEXT_FILTER_LOWER_CASE,
+    "lt",
     "\x00\x00\x00\x20\x00\x00\x00i\x00\x00\x03\x07",
     12,
     PDF_TEXT_UTF32_BE,
@@ -614,6 +647,7 @@ static const struct test_params tests[] = {
   {
     35,
     PDF_TEXT_FILTER_LOWER_CASE,
+    "lt",
     "\x00\x00\x00\x20\x00\x00\x00\x49\x00\x00\x03\x0B",
     12,
     PDF_TEXT_UTF32_BE,
@@ -632,7 +666,7 @@ static const struct test_params tests[] = {
    *       the test, just in case in future updates of the Unicode standard
    *       one of this type appears
    */
-  { 36, PDF_TEXT_FILTER_LOWER_CASE, NULL, 0, PDF_TEXT_UTF32_BE, NULL, 0, PDF_TEXT_UTF32_BE },
+  { 36, PDF_TEXT_FILTER_LOWER_CASE, NULL, NULL, 0, PDF_TEXT_UTF32_BE, NULL, 0, PDF_TEXT_UTF32_BE },
 
   /*
    * Apply the `Lower case' filter to a text object that contains
@@ -644,6 +678,7 @@ static const struct test_params tests[] = {
   {
     37,
     PDF_TEXT_FILTER_LOWER_CASE,
+    "tr",
     "\x00\x00\x00\x20\x00\x00\x00I\x00\x00\x03\x07",
     12,
     PDF_TEXT_UTF32_BE,
@@ -662,6 +697,7 @@ static const struct test_params tests[] = {
   {
     38,
     PDF_TEXT_FILTER_LOWER_CASE,
+    "lt",
     "\x00\x00\x00\x20\x00\x00\x00\xCC",
     8,
     PDF_TEXT_UTF32_BE,
@@ -683,6 +719,7 @@ static const struct test_params tests[] = {
   {
     39,
     PDF_TEXT_FILTER_LOWER_CASE,
+    "tr",
     "\x00\x00\x00\x20\x00\x00\x00I\x00\x00\x03\x07",
     12,
     PDF_TEXT_UTF32_BE,
@@ -704,6 +741,7 @@ static const struct test_params tests[] = {
   {
     40,
     PDF_TEXT_FILTER_LOWER_CASE,
+    "tr",
     "\x00\x00\x00\x20\x00\x00\x00\x49\x00\x00\x00\x50",
     12,
     PDF_TEXT_UTF32_BE,
@@ -741,6 +779,7 @@ static const struct test_params tests[] = {
     /* 1st check, the previous cased point is not available */
     41,
     PDF_TEXT_FILTER_LOWER_CASE,
+    NULL,
     "\x00\x00\x00G\x00\x00\x00N\x00\x00\x00U\x00\x00\x00 \x00\x00\x00\x27\x00\x00\x03\xA3\x00\x00\x00 \x00\x00\x00G\x00\x00\x00N\x00\x00\x00U",
     40,
     PDF_TEXT_UTF32_BE,
@@ -752,6 +791,7 @@ static const struct test_params tests[] = {
     /* 2nd check, a next cased point is available */
     42,
     PDF_TEXT_FILTER_LOWER_CASE,
+    NULL,
     "\x00\x00\x00G\x00\x00\x00N\x00\x00\x00U\x00\x00\x00 \x00\x00\x00G\x00\x00\x00\x27\x00\x00\x03\xA3\x00\x00\x00G\x00\x00\x00 \x00\x00\x00G\x00\x00\x00N\x00\x00\x00U",
     48,
     PDF_TEXT_UTF32_BE,
@@ -770,6 +810,7 @@ static const struct test_params tests[] = {
   {
     43,
     PDF_TEXT_FILTER_LOWER_CASE,
+    "lt",
     "\x00\x00\x00\x20\x00\x00\x00i\x00\x00\x03\x0C\x00\x00\x03\x07",
     16,
     PDF_TEXT_UTF32_BE,
@@ -790,6 +831,7 @@ static const struct test_params tests[] = {
   {
     44,
     PDF_TEXT_FILTER_LOWER_CASE,
+    NULL,
     "\x00\x00\x00\x20\x00\x00\x00\x49\x00\x00\x00\xC0\x00\x00\x03\x0B",
     16,
     PDF_TEXT_UTF32_BE,
@@ -809,7 +851,7 @@ static const struct test_params tests[] = {
    *       the test, just in case in future updates of the Unicode standard
    *       one of this type appears
    */
-  { 45, PDF_TEXT_FILTER_LOWER_CASE, NULL, 0, PDF_TEXT_UTF32_BE, NULL, 0, PDF_TEXT_UTF32_BE },
+  { 45, PDF_TEXT_FILTER_LOWER_CASE, NULL, NULL, 0, PDF_TEXT_UTF32_BE, NULL, 0, PDF_TEXT_UTF32_BE },
 
   /*
    * Apply the `Lower case' filter to a text object that contains
@@ -823,6 +865,7 @@ static const struct test_params tests[] = {
   {
     46,
     PDF_TEXT_FILTER_LOWER_CASE,
+    "tr",
     "\x00\x00\x00\x20\x00\x00\x00I\x00\x00\x03\x0C\x00\x00\x03\x07",
     16,
     PDF_TEXT_UTF32_BE,
@@ -842,6 +885,7 @@ static const struct test_params tests[] = {
   {
     47,
     PDF_TEXT_FILTER_LOWER_CASE,
+    NULL,
     "\x00\x00\x00\x20\x00\x00\x00\xCC",
     8,
     PDF_TEXT_UTF32_BE,
@@ -865,6 +909,7 @@ static const struct test_params tests[] = {
   {
     48,
     PDF_TEXT_FILTER_LOWER_CASE,
+    "tr",
     "\x00\x00\x00\x20\x00\x00\x00I\x00\x00\x03\x0C\x00\x00\x03\x07",
     16,
     PDF_TEXT_UTF32_BE,
@@ -888,6 +933,7 @@ static const struct test_params tests[] = {
   {
     49,
     PDF_TEXT_FILTER_LOWER_CASE,
+    "tr",
     "\x00\x00\x00\x20\x00\x00\x00\x49\x00\x00\x03\x07\x00\x00\x00\x50",
     16,
     PDF_TEXT_UTF32_BE,
@@ -932,6 +978,10 @@ common_test (const pdf_char_t *function_name,
 
   fail_unless (text != NULL);
   fail_if (error != NULL);
+
+  /* Set language if any to be set */
+  if (params->language)
+    pdf_text_set_language (text, params->language);
 
   /* 1. The call to  pdf_text_filter should return PDF_OK. */
   fail_unless (pdf_text_filter (text,
