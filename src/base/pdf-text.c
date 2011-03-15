@@ -407,7 +407,7 @@ pdf_text_new_from_unicode (const pdf_char_t  *str,
   pdf_text_t *element;
 
   PDF_ASSERT_POINTER_RETURN_VAL (str, NULL);
-  PDF_ASSERT_RETURN_VAL (size > 0, NULL);
+  /* size == 0 is actually valid */
 
   /* Allocate and initialize element */
   element = pdf_text_new (error);
@@ -415,7 +415,8 @@ pdf_text_new_from_unicode (const pdf_char_t  *str,
     return NULL;
 
   /* Set Unicode contents */
-  if (!pdf_text_set_unicode (element, str, size, enc, error))
+  if (size > 0 &&
+      !pdf_text_set_unicode (element, str, size, enc, error))
     {
       pdf_text_destroy (element);
       return NULL;
@@ -1160,6 +1161,10 @@ pdf_text_replace (pdf_text_t        *text,
                   const pdf_text_t  *old_pattern,
                   pdf_error_t      **error)
 {
+  PDF_ASSERT_POINTER_RETURN_VAL (text, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (new_pattern, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (old_pattern, PDF_FALSE);
+
   return pdf_text_replace_multiple (text,
                                     new_pattern,
                                     &old_pattern,
@@ -1635,7 +1640,7 @@ pdf_text_cmp_non_case_sensitive (const pdf_text_t  *text1,
   /* First, compare number of words in each text */
   if (size1 != size2)
     {
-      PDF_DEBUG_BASE("Different sizes...");
+      PDF_DEBUG_BASE ("Different sizes...");
       return ((size1 > size2) ? 1 : -1);
     }
 
@@ -1648,15 +1653,19 @@ pdf_text_cmp_non_case_sensitive (const pdf_text_t  *text1,
       pdf_i32_t ret_num;
       pdf_error_t *inner_error = NULL;
 
+      /* TODO: pdf_list_get_at() is not optimal, we've got a list, not an array.
+       * Setup a list iterator here */
+
       p_word1 = (struct pdf_text_wb_s *) pdf_list_get_at (text1->word_boundaries,
                                                           n,
                                                           &inner_error);
-      PDF_ASSERT_TRACE (p_word1 != NULL);
+      printf ("word: %p at %d, size: %llu\n", p_word1, n, (unsigned long long)size1);
+      PDF_ASSERT (p_word1 != NULL);
 
       p_word2 = (struct pdf_text_wb_s *) pdf_list_get_at (text2->word_boundaries,
                                                           n,
                                                           &inner_error);
-      PDF_ASSERT_TRACE (p_word2 != NULL);
+      PDF_ASSERT (p_word2 != NULL);
 
       ret_num = pdf_text_compare_words (p_word1->word_start,
                                         p_word1->word_size,
