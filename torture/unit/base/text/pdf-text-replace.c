@@ -120,13 +120,13 @@ START_TEST (pdf_text_replace_001)
                                                strlen (test_strings[i].old_pattern),
                                                PDF_TEXT_UTF8,
                                                &error);
-      fail_unless (text != NULL);
+      fail_unless (old_pattern != NULL);
       fail_if (error != NULL);
       new_pattern = pdf_text_new_from_unicode (test_strings[i].new_pattern,
                                                strlen (test_strings[i].new_pattern),
                                                PDF_TEXT_UTF8,
                                                &error);
-      fail_unless (text != NULL);
+      fail_unless (new_pattern != NULL);
       fail_if (error != NULL);
 
       /* 1. The call to  pdf_text_replace should return PDF_OK. */

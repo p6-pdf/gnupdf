@@ -183,7 +183,7 @@ START_TEST (pdf_text_cmp_004)
   fail_if (error != NULL);
 
   /* 1. The call to  pdf_text_cmp should return 0. */
-  fail_unless (pdf_text_cmp (text1, text2, PDF_TRUE, &error) == 0);
+  fail_unless (pdf_text_cmp (text1, text2, PDF_FALSE, &error) == 0);
   fail_if (error != NULL);
 
   pdf_text_destroy (text1);

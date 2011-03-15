@@ -57,7 +57,7 @@ START_TEST (pdf_text_concat_001)
   fail_unless (text2 != NULL);
   fail_if (error != NULL);
 
-  fail_unless (pdf_text_set_pdfdocenc (text1, (pdf_char_t *)"GNU's not", &error) == PDF_TRUE);
+  fail_unless (pdf_text_set_pdfdocenc (text1, (pdf_char_t *)"GNU's not ", &error) == PDF_TRUE);
   fail_if (error != NULL);
   fail_unless (pdf_text_set_pdfdocenc (text2, (pdf_char_t *)"Unix", &error) == PDF_TRUE);
   fail_if (error != NULL);
@@ -113,7 +113,7 @@ START_TEST (pdf_text_concat_002)
   fail_unless (text2 != NULL);
   fail_if (error != NULL);
 
-  fail_unless (pdf_text_set_pdfdocenc (text1, (pdf_char_t *)"GNU's not", &error) == PDF_TRUE);
+  fail_unless (pdf_text_set_pdfdocenc (text1, (pdf_char_t *)"GNU's not ", &error) == PDF_TRUE);
   fail_if (error != NULL);
   fail_unless (pdf_text_set_pdfdocenc (text2, (pdf_char_t *)"Unix", &error) == PDF_TRUE);
   fail_if (error != NULL);
@@ -365,7 +365,7 @@ START_TEST (pdf_text_concat_007)
   fail_unless (text2 != NULL);
   fail_if (error != NULL);
 
-  fail_unless (pdf_text_set_pdfdocenc (text1, (pdf_char_t *)"GNU's not", &error) == PDF_TRUE);
+  fail_unless (pdf_text_set_pdfdocenc (text1, (pdf_char_t *)"GNU's not ", &error) == PDF_TRUE);
   fail_if (error != NULL);
   fail_unless (pdf_text_set_pdfdocenc (text2, (pdf_char_t *)"Unix", &error) == PDF_TRUE);
   fail_if (error != NULL);
@@ -421,7 +421,7 @@ START_TEST (pdf_text_concat_008)
   fail_unless (text2 != NULL);
   fail_if (error != NULL);
 
-  fail_unless (pdf_text_set_pdfdocenc (text1, (pdf_char_t *)"GNU's not", &error) == PDF_TRUE);
+  fail_unless (pdf_text_set_pdfdocenc (text1, (pdf_char_t *)"GNU's not ", &error) == PDF_TRUE);
   fail_if (error != NULL);
   fail_unless (pdf_text_set_pdfdocenc (text2, (pdf_char_t *)"Unix", &error) == PDF_TRUE);
   fail_if (error != NULL);
@@ -474,7 +474,7 @@ START_TEST (pdf_text_concat_009)
   fail_unless (text2 != NULL);
   fail_if (error != NULL);
 
-  fail_unless (pdf_text_set_pdfdocenc (text1, (pdf_char_t *)"GNU's not", &error) == PDF_TRUE);
+  fail_unless (pdf_text_set_pdfdocenc (text1, (pdf_char_t *)"GNU's not ", &error) == PDF_TRUE);
   fail_if (error != NULL);
   fail_unless (pdf_text_set_pdfdocenc (text2, (pdf_char_t *)"Unix", &error) == PDF_TRUE);
   fail_if (error != NULL);
