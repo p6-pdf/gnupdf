@@ -1659,7 +1659,6 @@ pdf_text_cmp_non_case_sensitive (const pdf_text_t  *text1,
       p_word1 = (struct pdf_text_wb_s *) pdf_list_get_at (text1->word_boundaries,
                                                           n,
                                                           &inner_error);
-      printf ("word: %p at %d, size: %llu\n", p_word1, n, (unsigned long long)size1);
       PDF_ASSERT (p_word1 != NULL);
 
       p_word2 = (struct pdf_text_wb_s *) pdf_list_get_at (text2->word_boundaries,
