@@ -211,6 +211,9 @@ pdf_bool_t pdf_text_check_unicode_bom (const pdf_char_t *data,
                                        enum pdf_text_unicode_encoding_e enc,
                                        int               swap);
 
+/* Function to get the name of a given Unicode encoding */
+const pdf_char_t *pdf_text_get_unicode_encoding_name (enum pdf_text_unicode_encoding_e unicode_encoding);
+
 #endif /* _PDF_TEXT_ENCODING_H */
 
 /* End of pdf-text-encoding.h */

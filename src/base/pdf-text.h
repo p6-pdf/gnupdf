@@ -122,7 +122,7 @@ pdf_text_t *pdf_text_new_from_pdf_string (const pdf_char_t  *str,
  *  unicode encoding. Status of the conversion is returned. */
 pdf_text_t *pdf_text_new_from_unicode (const pdf_char_t  *str,
                                        pdf_size_t         size,
-                                       const enum pdf_text_unicode_encoding_e enc,
+                                       enum pdf_text_unicode_encoding_e enc,
                                        pdf_error_t      **error);
 
 /* Create a new text variable containing the textual representation of a
@@ -148,13 +148,6 @@ void pdf_text_set_language (pdf_text_t       *text,
 
 /* Determine if a given text variable is empty (contains no text) */
 pdf_bool_t pdf_text_empty_p (const pdf_text_t *text);
-
-/* Replace a given set of old patterns with a single new pattern */
-pdf_bool_t pdf_text_replace_multiple (pdf_text_t        *text,
-                                      const pdf_text_t  *new_pattern,
-                                      const pdf_text_t **p_old_patterns,
-                                      int                n_old_patterns,
-                                      pdf_error_t      **error);
 
 /* ------------------------ Host Encoding Management ------------------------ */
 
@@ -188,7 +181,7 @@ pdf_char_t *pdf_text_get_pdfdocenc (const pdf_text_t  *text,
  *  in the following way: OPTION1 | OPTION2 | OPTION3 */
 pdf_char_t *pdf_text_get_unicode (const pdf_text_t  *text,
                                   enum pdf_text_unicode_encoding_e enc,
-                                  const pdf_u32_t    options,
+                                  pdf_u32_t          options,
                                   pdf_size_t        *length,
                                   pdf_error_t      **error);
 
@@ -267,7 +260,7 @@ pdf_i32_t pdf_text_cmp (const pdf_text_t *text1,
 
 /* Common Code Length for both country and language codes
  *  (including last NUL char) */
-#define PDF_TEXT_CCL     3
+#define PDF_TEXT_CCL 3
 
 /* Structure defining the basic text type. Contents are always stored internally
  *  in UNICODE UTF32-HE encoding */
@@ -291,6 +284,13 @@ struct pdf_text_wb_s {
   /* Length of the word, in BYTES */
   pdf_size_t word_size;
 };
+
+/* Replace a given set of old patterns with a single new pattern */
+pdf_bool_t pdf_text_replace_multiple (pdf_text_t        *text,
+                                      const pdf_text_t  *new_pattern,
+                                      const pdf_text_t **p_old_patterns,
+                                      int                n_old_patterns,
+                                      pdf_error_t      **error);
 
 /* Returns PDF_TRUE is UTF-8 data is ASCII-7 */
 pdf_bool_t pdf_text_is_ascii7 (const pdf_char_t *utf8data,

@@ -186,8 +186,14 @@ pdf_text_detect_host_eol (void)
 void
 pdf_text_context_deinit (void)
 {
-  pdf_dealloc (text_context.host_encoding);
+  if (text_context.host_encoding)
+    {
+      pdf_dealloc (text_context.host_encoding);
+      text_context.host_encoding = NULL;
+    }
+
   text_context_initialized = PDF_FALSE;
+  PDF_DEBUG_BASE ("Text context correctly deinitialized...");
 }
 
 pdf_bool_t
@@ -210,6 +216,7 @@ pdf_text_context_init (pdf_error_t **error)
   /* Mark the context as initialized */
   text_context_initialized = PDF_TRUE;
 
+  PDF_DEBUG_BASE ("Text context correctly initialized...");
   return PDF_TRUE;
 }
 

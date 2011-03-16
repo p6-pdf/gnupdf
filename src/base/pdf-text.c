@@ -224,7 +224,10 @@ pdf_text_dup (const pdf_text_t  *text,
   /* Allocate and initialize element */
   element = pdf_text_new (error);
   if (!element)
-    return NULL;
+    {
+      pdf_prefix_error (error, "cannot duplicate text object: ");
+      return NULL;
+    }
 
   /* Duplicate size */
   element->size = text->size;
@@ -272,11 +275,21 @@ pdf_text_new_from_host (const pdf_char_t  *str,
   /* Allocate and initialize element */
   element = pdf_text_new (error);
   if (!element)
-    return NULL;
+    {
+      pdf_prefix_error (error,
+                        "cannot create text object from string "
+                        "encoded in '%s' host encoding: ",
+                        enc);
+      return NULL;
+    }
 
   /* Set Host Encoding contents */
   if (!pdf_text_set_host (element, str, size, enc, error))
     {
+      pdf_prefix_error (error,
+                        "cannot create text object from string "
+                        "encoded in '%s' host encoding: ",
+                        enc);
       /* Conversion went wrong... so destroy object contents */
       pdf_text_destroy (element);
       return NULL;
@@ -302,7 +315,12 @@ pdf_text_new_from_pdf_string (const pdf_char_t  *str,
   /* Allocate and initialize element */
   element = pdf_text_new (error);
   if (!element)
-    return NULL;
+    {
+      pdf_prefix_error (error,
+                        "cannot create text object "
+                        "from PDF string: ");
+      return NULL;
+    }
 
   /* First of all, check first two bytes to detect UTF-16BE BOM or lang/country
    *  code initializer.
@@ -354,6 +372,9 @@ pdf_text_new_from_pdf_string (const pdf_char_t  *str,
                                             &string_length,
                                             error)))
         {
+          pdf_prefix_error (error,
+                            "cannot create text object "
+                            "from PDF string: ");
           pdf_text_destroy (element);
           return NULL;
         }
@@ -367,6 +388,9 @@ pdf_text_new_from_pdf_string (const pdf_char_t  *str,
                                         remaining_length,
                                         error))
         {
+          pdf_prefix_error (error,
+                            "cannot create text object "
+                            "from PDF string: ");
           pdf_text_destroy (element);
           return NULL;
         }
@@ -391,6 +415,9 @@ pdf_text_new_from_pdf_string (const pdf_char_t  *str,
                                       &(element->size),
                                       error))
     {
+      pdf_prefix_error (error,
+                        "cannot create text object "
+                        "from PDF string: ");
       pdf_text_destroy (element);
       return NULL;
     }
@@ -408,16 +435,28 @@ pdf_text_new_from_unicode (const pdf_char_t  *str,
 
   PDF_ASSERT_POINTER_RETURN_VAL (str, NULL);
   /* size == 0 is actually valid */
+  PDF_ASSERT_RETURN_VAL (enc >= PDF_TEXT_UTF8, NULL);
+  PDF_ASSERT_RETURN_VAL (enc < PDF_TEXT_MAX_UNICODE_ENC, NULL);
 
   /* Allocate and initialize element */
   element = pdf_text_new (error);
   if (!element)
-    return NULL;
+    {
+      pdf_prefix_error (error,
+                        "cannot create text object "
+                        "from '%s' encoded Unicode string: ",
+                        pdf_text_get_unicode_encoding_name (enc));
+      return NULL;
+    }
 
   /* Set Unicode contents */
   if (size > 0 &&
       !pdf_text_set_unicode (element, str, size, enc, error))
     {
+      pdf_prefix_error (error,
+                        "cannot create text object "
+                        "from '%s' encoded Unicode string: ",
+                        pdf_text_get_unicode_encoding_name (enc));
       pdf_text_destroy (element);
       return NULL;
     }
@@ -429,6 +468,9 @@ pdf_text_t *
 pdf_text_new_from_u32 (const pdf_u32_t   number,
                        pdf_error_t     **error)
 {
+  pdf_error_t *inner_error = NULL;
+  pdf_text_t *element;
+
   /* Longest number to hold in 32bit: 2^32 = 4294967296 (10 chars) */
   pdf_char_t temp[11];
   int n;
@@ -437,7 +479,19 @@ pdf_text_new_from_u32 (const pdf_u32_t   number,
   n = sprintf (&temp[0], "%u", (unsigned int)number);
 
   /* Treat the generated string as UTF-8 encoded (just numbers in ASCII) */
-  return pdf_text_new_from_unicode (&temp[0], n, PDF_TEXT_UTF8, error);
+  element = pdf_text_new_from_unicode (&temp[0], n, PDF_TEXT_UTF8, &inner_error);
+  if (!element)
+    {
+      /* We should never get a PDF_ETEXTENC error */
+      PDF_ASSERT (pdf_error_get_status (inner_error) != PDF_ETEXTENC);
+      pdf_propagate_error (error, inner_error);
+      pdf_prefix_error (error,
+                        "cannot create text object "
+                        "from u32 (%u): ",
+                        (unsigned int)number);
+      return NULL;
+    }
+  return element;
 }
 
 /* Return the country associated with a text variable */
@@ -565,13 +619,20 @@ pdf_text_get_host (const pdf_text_t  *text,
   /* You should really get and check the length of the returned string */
   PDF_ASSERT_POINTER_RETURN_VAL (length, NULL);
 
-  return (pdf_text_utf32he_to_host (text->data,
-                                    text->size,
-                                    enc,
-                                    &contents,
-                                    length,
-                                    error) ?
-          contents : NULL);
+  if (!pdf_text_utf32he_to_host (text->data,
+                                 text->size,
+                                 enc,
+                                 &contents,
+                                 length,
+                                 error))
+    {
+      pdf_prefix_error (error,
+                        "cannot get contents encoded in "
+                        "'%s' host encoding: ",
+                        enc);
+      return NULL;
+    }
+  return contents;
 }
 
 /* Get the contents of a text variable encoded in PDFDocEncoding, as a NUL
@@ -592,6 +653,9 @@ pdf_text_get_pdfdocenc (const pdf_text_t  *text,
                                       &size,
                                       error))
     {
+      pdf_prefix_error (error,
+                        "cannot get contents encoded in "
+                        "PDF Doc Encoding: ");
       return NULL;
     }
 
@@ -603,7 +667,8 @@ pdf_text_get_pdfdocenc (const pdf_text_t  *text,
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_TEXT,
                      PDF_ENOMEM,
-                     "cannot get text contents PDF Doc encoded: "
+                     "cannot get contents encoded in "
+                     "PDF Doc Encoding: "
                      "couldn't reallocate %lu bytes",
                      (unsigned long)(size + 1));
       return NULL;
@@ -617,7 +682,7 @@ pdf_text_get_pdfdocenc (const pdf_text_t  *text,
 pdf_char_t *
 pdf_text_get_unicode (const pdf_text_t  *text,
                       enum pdf_text_unicode_encoding_e enc,
-                      const pdf_u32_t    options,
+                      pdf_u32_t          options,
                       pdf_size_t        *length,
                       pdf_error_t      **error)
 {
@@ -626,6 +691,8 @@ pdf_text_get_unicode (const pdf_text_t  *text,
   pdf_bool_t ret;
 
   PDF_ASSERT_POINTER_RETURN_VAL (text, NULL);
+  PDF_ASSERT_RETURN_VAL (enc >= PDF_TEXT_UTF8, NULL);
+  PDF_ASSERT_RETURN_VAL (enc < PDF_TEXT_MAX_UNICODE_ENC, NULL);
 
   /* Lang/Country info only available for UTF-16BE */
   if ((options & PDF_TEXT_UTF16BE_WITH_LANGCODE) &&
@@ -804,11 +871,13 @@ pdf_text_get_unicode (const pdf_text_t  *text,
 }
 
 pdf_char_t *
-pdf_text_get_hex (const pdf_text_t *text,
-                  const pdf_char_t  delimiter,
+pdf_text_get_hex (const pdf_text_t  *text,
+                  const pdf_char_t   delimiter,
                   pdf_error_t      **error)
 {
   pdf_char_t *new_str;
+
+  PDF_ASSERT_POINTER_RETURN_VAL (text, NULL);
 
   if (text->size > 0)
     {
@@ -894,11 +963,21 @@ pdf_text_set_host (pdf_text_t        *text,
                                  &temp_data,
                                  &temp_size,
                                  error))
-    return PDF_FALSE;
+    {
+      pdf_prefix_error (error,
+                        "cannot set string encoded in "
+                        "'%s' host encoding: ",
+                        enc);
+      return PDF_FALSE;
+    }
 
   /* Destroy previous contents of text variable, if any */
   if (!pdf_text_clean_contents (text, error))
     {
+      pdf_prefix_error (error,
+                        "cannot set string encoded in "
+                        "'%s' host encoding: ",
+                        enc);
       pdf_dealloc (temp_data);
       return PDF_FALSE;
     }
@@ -927,11 +1006,19 @@ pdf_text_set_pdfdocenc (pdf_text_t        *text,
                                       &temp_data,
                                       &temp_size,
                                       error))
-    return PDF_FALSE;
+    {
+      pdf_prefix_error (error,
+                        "cannot set string encoded in "
+                        "PDF Doc Encoding: ");
+      return PDF_FALSE;
+    }
 
   /* Destroy previous contents of text variable, if any */
   if (!pdf_text_clean_contents (text, error))
     {
+      pdf_prefix_error (error,
+                        "cannot set string encoded in "
+                        "PDF Doc Encoding: ");
       pdf_dealloc (temp_data);
       return PDF_FALSE;
     }
@@ -956,6 +1043,8 @@ pdf_text_set_unicode (pdf_text_t        *text,
   PDF_ASSERT_POINTER_RETURN_VAL (text, PDF_FALSE);
   PDF_ASSERT_POINTER_RETURN_VAL (str, PDF_FALSE);
   PDF_ASSERT_RETURN_VAL (size > 0, PDF_FALSE);
+  PDF_ASSERT_RETURN_VAL (enc >= PDF_TEXT_UTF8, NULL);
+  PDF_ASSERT_RETURN_VAL (enc < PDF_TEXT_MAX_UNICODE_ENC, NULL);
 
   /* If host endianness required, check it and convert input encoding */
   enc = pdf_text_transform_he_to_unicode_encoding (enc);
@@ -1117,7 +1206,7 @@ pdf_text_concat_ascii (pdf_text_t        *text1,
     {
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_TEXT,
-                     PDF_EBADDATA,
+                     PDF_ETEXTENC,
                      "cannot concatenate ASCII string: "
                      "not an ASCII input string");
       return PDF_FALSE;
@@ -1384,7 +1473,10 @@ pdf_text_replace_multiple (pdf_text_t        *text,
                                             n_old_patterns,
                                             &minimum_old_pattern_size,
                                             error))
-    return PDF_FALSE;
+    {
+      pdf_prefix_error (error, "cannot replace text pattern: ");
+      return PDF_FALSE;
+    }
 
   /* If input text is shorter than the smallest old pattern, there is no
    *  replacement to be done */
@@ -1404,7 +1496,10 @@ pdf_text_replace_multiple (pdf_text_t        *text,
                                           p_old_patterns,
                                           n_old_patterns,
                                           error))
-    return PDF_FALSE;
+    {
+      pdf_prefix_error (error, "cannot replace text pattern: ");
+      return PDF_FALSE;
+    }
 
   /* Now, really perform replacements, if required */
   if (n_replacements > 0)
@@ -1417,7 +1512,10 @@ pdf_text_replace_multiple (pdf_text_t        *text,
                                           rep_ptrs,
                                           n_replacements,
                                           error))
-        return PDF_FALSE;
+        {
+          pdf_prefix_error (error, "cannot replace text pattern: ");
+          return PDF_FALSE;
+        }
 
       /* Dealloc list of pointers to replacements */
       if (rep_ptrs)
@@ -1452,9 +1550,9 @@ pdf_text_replace_ascii (pdf_text_t        *text,
     {
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_TEXT,
-                     PDF_EBADDATA,
-                     "cannot replace ASCII string: "
-                     "at least one of the requested patterns is not ASCII");
+                     PDF_ETEXTENC,
+                     "cannot replace ASCII pattern: "
+                     "at least one of the requested patterns is not ASCII-7");
       return PDF_FALSE;
     }
 
@@ -1466,7 +1564,10 @@ pdf_text_replace_ascii (pdf_text_t        *text,
                                                 PDF_TEXT_UTF8,
                                                 error);
   if (!new_pattern_text)
-    return PDF_FALSE;
+    {
+      pdf_prefix_error (error, "cannot replace ASCII pattern: ");
+      return PDF_FALSE;
+    }
 
   old_pattern_text = pdf_text_new_from_unicode (old_pattern,
                                                 (pdf_size_t) strlen (old_pattern),
@@ -1474,6 +1575,7 @@ pdf_text_replace_ascii (pdf_text_t        *text,
                                                 error);
   if (!old_pattern_text)
     {
+      pdf_prefix_error (error, "cannot replace ASCII pattern: ");
       pdf_text_destroy (new_pattern_text);
       return PDF_FALSE;
     }
@@ -1483,6 +1585,10 @@ pdf_text_replace_ascii (pdf_text_t        *text,
                                new_pattern_text,
                                old_pattern_text,
                                error);
+  if (!ret_code)
+    {
+      pdf_prefix_error (error, "cannot replace ASCII pattern: ");
+    }
 
   /* Destroy used intermediate variables */
   pdf_text_destroy (new_pattern_text);
@@ -1517,35 +1623,56 @@ pdf_text_filter (pdf_text_t   *text,
   /* 0x00000001 */
   if ((filter & PDF_TEXT_FILTER_LINE_ENDINGS) &&
       (!pdf_text_filter_normalize_line_endings (text, error)))
-    return PDF_FALSE;
+    {
+      pdf_prefix_error (error, "cannot apply filters to text: ");
+      return PDF_FALSE;
+    }
 
   /* 0x00000010 */
   if ((filter & PDF_TEXT_FILTER_UPPER_CASE) &&
       (!pdf_text_filter_upper_case (text, error)))
-    return PDF_FALSE;
+    {
+      pdf_prefix_error (error, "cannot apply filters to text: ");
+      return PDF_FALSE;
+    }
   /* 0x00000100 */
   else if ((filter & PDF_TEXT_FILTER_LOWER_CASE) &&
            (!pdf_text_filter_lower_case (text, error)))
-    return PDF_FALSE;
+    {
+      pdf_prefix_error (error, "cannot apply filters to text: ");
+      return PDF_FALSE;
+    }
   /* 0x00001000 */
   else if ((filter & PDF_TEXT_FILTER_TITLE_CASE) &&
            (!pdf_text_filter_title_case (text, error)))
-    return PDF_FALSE;
+    {
+      pdf_prefix_error (error, "cannot apply filters to text: ");
+      return PDF_FALSE;
+    }
 
   /* 0x00010000 */
   if ((filter & PDF_TEXT_FILTER_REMOVE_AMP) &&
       (!pdf_text_filter_remove_amp (text, error)))
-    return PDF_FALSE;
+    {
+      pdf_prefix_error (error, "cannot apply filters to text: ");
+      return PDF_FALSE;
+    }
 
   /* 0x00100000 */
   if ((filter & PDF_TEXT_FILTER_NORM_WITH_FULL_WIDTH) &&
       (!pdf_text_filter_normalize_full_width_ascii (text, error)))
-    return PDF_FALSE;
+    {
+      pdf_prefix_error (error, "cannot apply filters to text: ");
+      return PDF_FALSE;
+    }
 
   /* 0x01000000 */
   if ((filter & PDF_TEXT_FILTER_REMOVE_LINE_ENDINGS) &&
       (!pdf_text_filter_remove_line_endings (text, error)))
-    return PDF_FALSE;
+    {
+      pdf_prefix_error (error, "cannot apply filters to text: ");
+      return PDF_FALSE;
+    }
 
   text->modified = PDF_TRUE;
   return PDF_TRUE;
@@ -1592,6 +1719,9 @@ pdf_text_cmp (const pdf_text_t *text1,
               pdf_bool_t        case_sensitive,
               pdf_error_t      **error)
 {
+  pdf_error_t *inner_error = NULL;
+  pdf_i32_t ret;
+
   PDF_ASSERT_POINTER_RETURN_VAL (text1, -1);
   PDF_ASSERT_POINTER_RETURN_VAL (text2, -1);
 
@@ -1602,7 +1732,13 @@ pdf_text_cmp (const pdf_text_t *text1,
   if (case_sensitive)
     return memcmp (text1->data, text2->data, text1->size);
 
-  return pdf_text_cmp_non_case_sensitive (text1, text2, error);
+  ret = pdf_text_cmp_non_case_sensitive (text1, text2, &inner_error);
+  if (inner_error)
+    {
+      pdf_propagate_error (error, inner_error);
+      pdf_prefix_error (error, "cannot compare text objects: ");
+    }
+  return ret;
 }
 
 /* -------------------------- Private functions ----------------------------- */
@@ -1626,11 +1762,8 @@ pdf_text_cmp_non_case_sensitive (const pdf_text_t  *text1,
                                             text2->size,
                                             error)))
     {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_TEXT,
-                     PDF_ETEXTENC,
-                     "cannot compare text non-case-sensitive: "
-                     "couldn't compute word boundaries");
+      pdf_prefix_error (error,
+                        "cannot compare text non-case-sensitive: ");
       return -1; /* An error happened computing word boundaries! */
     }
 
@@ -1676,6 +1809,8 @@ pdf_text_cmp_non_case_sensitive (const pdf_text_t  *text1,
       if (inner_error)
         {
           pdf_propagate_error (error, inner_error);
+          pdf_prefix_error (error,
+                            "cannot compare text non-case-sensitive: ");
           return -1;
         }
 

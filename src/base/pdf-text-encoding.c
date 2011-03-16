@@ -145,6 +145,17 @@ static const pdf_text_bom_t unicode_bom[PDF_TEXT_MAX_UNICODE_ENC] = {
   { {  0,  0,  0,  0}, 0 }     /* N/A (UTF-32HE)  */
 };
 
+/* Name of the different Unicode encodings */
+static const pdf_char_t *unicode_encoding_name[PDF_TEXT_MAX_UNICODE_ENC] = {
+  "UTF-8",    /* PDF_TEXT_UTF8 */
+  "UTF-16BE", /* PDF_TEXT_UTF16_BE */
+  "UTF-16LE", /* PDF_TEXT_UTF16_LE */
+  "UTF-16HE", /* PDF_TEXT_UTF16_HE */
+  "UTF-32BE", /* PDF_TEXT_UTF32_BE */
+  "UTF-32LE", /* PDF_TEXT_UTF32_LE */
+  "UTF-32HE"  /* PDF_TEXT_UTF32_HE */
+};
+
 /******************** PDF Doc Encoding to UTF-32 conversion *******************/
 
 static pdf_text_utf32_char_t
@@ -1254,6 +1265,14 @@ pdf_text_check_unicode_bom (const pdf_char_t *data,
     default:
       return PDF_FALSE;
     }
+}
+
+/*************************** Other helper functions ****************************/
+
+const pdf_char_t *
+pdf_text_get_unicode_encoding_name (enum pdf_text_unicode_encoding_e unicode_encoding)
+{
+  return unicode_encoding_name[unicode_encoding];
 }
 
 /* End of pdf-text-encoding.c */

@@ -570,7 +570,7 @@ pdf_text_utf32he_to_host_iconv (const pdf_char_t  *input_data,
               iconv_close (to_host);
               pdf_set_error (error,
                              PDF_EDOMAIN_BASE_TEXT,
-                             PDF_EBADTEXT,
+                             PDF_ETEXTENC,
                              "cannot convert to host encoding: "
                              "invalid data to convert to host encoding, '%s'",
                              strerror (errno));
