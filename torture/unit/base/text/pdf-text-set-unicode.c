@@ -100,7 +100,7 @@ test_one_string (struct test_params   params,
   pdf_char_t *expected_data;
   pdf_size_t expected_size;
   pdf_char_t *actual_data;
-  pdf_size_t actual_size;
+  pdf_size_t actual_size = 0;
   pdf_text_t *text;
   const pdf_char_t *bom;
   int bom_size = 0;

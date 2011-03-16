@@ -67,7 +67,6 @@ START_TEST (pdf_text_new_destroy_001)
 }
 END_TEST
 
-
 /*
  * Test case creation function
  */
@@ -77,6 +76,7 @@ test_pdf_text_new_destroy (void)
   TCase *tc = tcase_create ("pdf_text_new_destroy");
 
   tcase_add_test (tc, pdf_text_new_destroy_001);
+
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);
