@@ -191,7 +191,13 @@ pdf_set_error (pdf_error_t        **err,
     {
       va_list args;
 
-      PDF_ASSERT_RETURN (*err == NULL);
+      PDF_ASSERT (*err == NULL);
+
+#ifdef PDF_HAVE_DEBUG_BASE
+      if (*err != NULL)
+        PDF_DEBUG_BASE ("  Previous error contents: %s",
+                        (*err)->message);
+#endif /* PDF_HAVE_DEBUG_BASE */
 
       va_start (args, format);
       *err = error_new_valist (domain,
@@ -222,7 +228,7 @@ pdf_prefix_error (pdf_error_t        **err,
           pdf_char_t *prefixed;
           pdf_size_t new_message_len;
 
-          new_message_len = (strlen (new_message) + strlen ((*err)->message));
+          new_message_len = (strlen (new_message) + strlen ((*err)->message) + 1);
           prefixed = pdf_realloc (new_message, new_message_len);
           if (!prefixed)
             {
@@ -232,7 +238,7 @@ pdf_prefix_error (pdf_error_t        **err,
           else
             {
               strcat (prefixed, (*err)->message);
-              prefixed[new_message_len] = '\0';
+              prefixed[new_message_len - 1] = '\0';
               pdf_dealloc ((*err)->message);
               (*err)->message = prefixed;
             }

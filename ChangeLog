@@ -1,3 +1,9 @@
+2011-03-17  Aleksander Morgado  <aleksander@gnu.org>
+
+	base,error: Fix invalid memory write.
+	* src/base/pdf-error.c (pdf_prefix_error): Fix size of reallocated
+	memory.
+
 2011-03-10  Aleksander Morgado  <aleksander@gnu.org>
 
 	torture,base: Don't call pdf_init() in the text module unit tests.
