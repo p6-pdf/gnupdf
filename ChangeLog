@@ -1,3 +1,10 @@
+2011-03-18  Jose E. Marchesi  <jemarch@gnu.org>
+
+	manual: little clarification added for pdf_error_new.
+	* doc/gnupdf.texi (Error Reporting procedures): Note added
+	stating the fact that pdf_error_new does not allocate memory if
+	it is created using PDF_ENOMEM.
+
 2011-03-17  Aleksander Morgado  <aleksander@gnu.org>
 
 	base,error: Fix invalid memory write.
