@@ -1,3 +1,17 @@
+2011-03-22  Jose E. Marchesi  <jemarch@gnu.org>
+
+	manual: several fixes in the object collections documentation.
+	* doc/gnupdf.texi (Object Collections): Improve the description of
+	object collections.
+	(Object Collections): Xref to Compressibility of Objects added.
+	(Object Collections): Clarify that the pointers returned by
+	pdf_obj_col_new are stored in the object document, and that they
+	become invalid if the containing document gets destroyed.
+	(Object Collections): Make pdf_obj_col_new to get a pointer to an
+	object document as its argument.
+	(Object Collections): Note that pdf_obj_col_get_objs can return an
+	empty list.
+
 2011-03-18  Jose E. Marchesi  <jemarch@gnu.org>
 
 	manual: little clarification added for pdf_error_new.

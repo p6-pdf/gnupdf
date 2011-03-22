@@ -245,8 +245,9 @@ the issue.
 
 Creates a new @code{pdf_error_t} variable.
 
-Note that no memory is allocated by this function if @var{status} is
-@code{PDF_ENOMEM}.  For any other error it shall be assumed it does.
+Note that the status of the newly created error will be set to
+@code{PDF_ENOMEM} if there is not enough memory to create the error
+object.
 
 @table @strong
 @item Parameters
@@ -11917,34 +11918,45 @@ pdf_obj_set_compressibility (obj, PDF_FALSE);
 @subsection Object Collections
 
 Sometimes a group of objects are related in a way they acquire
-``locality'', meaning that if one of those objects is read it is very
-likely that the other objects will be read as well.  An example is the
-collection of objects containing the contents of a page: you need to
-read them all to render the page.
+``locality'', meaning that if one of those objects is accessed it is
+very likely that the other objects will be accessed as well.  An
+example of tightly related objects is the collection of objects
+containing the contents of a page: you need to read them all to render
+the page.
 
-It is possible to pack several PDF objects in a compressed stream in
-the object document on disk.  An @dfn{object collection} can be
-translated into one or several of such compressed streams.
+A common practice in PDF files is to pack tightly related PDF objects
+in a compressed stream in the object document.  That greatly reduces
+the space occupied by the objects, since it is possible to use
+compression filter in the object stream.
 
-An object can be declared as part of one (and just one) object
-collection.  Only compressible objects can be added to a collection.
+An @dfn{object collection} is automatically translated into one or
+several of such compressed streams by the library.  It follows that an
+object can be declared as part of one (and just one) object
+collection.
 
-@deftypefun {pdf_obj_col_t *}pdf_obj_col_new (pdf_obj_doc_t @var{doc})
+Only compressible objects can be added to a collection.
+@xref{Compressibility of Objects}.
+
+@deftypefun {pdf_obj_col_t *}pdf_obj_col_new (pdf_obj_doc_t *@var{doc})
 
 Create a new object collection in an object document.
+
+The returned pointer is internally stored in @var{doc}, so the caller
+does not need to save it.  If the document is destroyed the pointers
+to its stored collections become invalid.
 
 @table @strong
 @item Parameters
 @table @var
 @item doc
-An object document.
+A pointer to an object document.
 @end table
 @item Returns
 A pointer to a newly created object collection, or @code{NULL} if
 there is not enough memory to perform the operation.
 @item Usage example
 @example
-pdf_obj_doc_t doc;
+pdf_obj_doc_t *doc;
 pdf_obj_col_t *col1;
 pdf_obj_col_t *col2;
 
@@ -11959,8 +11971,11 @@ col2 = pdf_obj_col_new (doc);
 
 @deftypefun {pdf_list_t *}pdf_obj_col_get_objs (pdf_obj_col_t @var{col})
 
-Return a list with all the PDF objects contained in an object
+Return a list containing the PDF objects contained in a given object
 collection.
+
+Note that the returned list can be empty if the object collection does
+not contain objects.
 
 @table @strong
 @item Parameters
