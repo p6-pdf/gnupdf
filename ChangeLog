@@ -1,3 +1,93 @@
+2011-03-22  Aleksander Morgado  <aleksander@gnu.org>
+
+	base/text: Text module refactored.
+	* src/base/pdf-text.[h|c]
+	* src/base/pdf-text-context.[h|c]
+	* src/base/pdf-text-encoding.[h|c]
+	* src/base/pdf-text-filter.[h|c]
+	* src/base/pdf-text-host-encoding.[h|c]
+	* src/base/pdf-text-ucd.h
+	* src/base/pdf-text-ucd-case.[h|c]
+	* src/base/pdf-text-ucd-combclass.[h|c]
+	* src/base/pdf-text-ucd-gencat.[h|c]
+	* src/base/pdf-text-ucd-proplist.[h|c]
+	* src/base/pdf-text-ucd-wordbreak.[h|c]
+	* doc/gnupdf.texi: Documented new text API.
+	* src/Makefile.am: Compile text module before fsys and stm modules.
+
+	base/fsys: Ported filesystem module to the new text API.
+	* src/base/pdf-fsys.[h|c]
+	* src/base/pdf-fsys-def.h
+	* src/base/pdf-fsys-disk.[h|c]
+	* src/base/pdf-fsys-http.[h|c]
+
+	base/hash: Ported hash helpers to the new text API.
+	* src/base/pdf-hash-helper.c
+	* src/base/pdf-hash-helper.h
+
+	base/error: Improved error traces.
+	* src/base/pdf-error.h: New PDF_ASSERT_TRACE_NOT_REACHED() macro.
+
+	Improved global context.
+	* src/pdf-global.[h|c]: Make context information private to the library.
+
+	torture/text: Ported all unit tests to the new text API.
+	* torture/unit/Makefile.am: Run `pdf_text_cmp()' tests before
+	`pdf_text_filter()' ones.
+	* torture/unit/base/text/tsuite-text.c
+	* torture/unit/base/text/pdf-text-test-common.[h|c]
+	* torture/unit/base/text/pdf-text-test-data.c
+	* torture/unit/base/text/pdf-text-check-host-encoding.c
+	* torture/unit/base/text/pdf-text-cmp.c
+	* torture/unit/base/text/pdf-text-concat-ascii.c
+	* torture/unit/base/text/pdf-text-concat.c
+	* torture/unit/base/text/pdf-text-dup.c
+	* torture/unit/base/text/pdf-text-empty-p.c
+	* torture/unit/base/text/pdf-text-filter.c
+	* torture/unit/base/text/pdf-text-get-best-encoding.c
+	* torture/unit/base/text/pdf-text-get-country.c
+	* torture/unit/base/text/pdf-text-get-hex.c
+	* torture/unit/base/text/pdf-text-get-host-encoding.c
+	* torture/unit/base/text/pdf-text-get-host.c
+	* torture/unit/base/text/pdf-text-get-language.c
+	* torture/unit/base/text/pdf-text-get-pdfdocenc.c
+	* torture/unit/base/text/pdf-text-get-unicode.c
+	* torture/unit/base/text/pdf-text-new-destroy.c
+	* torture/unit/base/text/pdf-text-new-from-host.c
+	* torture/unit/base/text/pdf-text-new-from-pdf-string.c
+	* torture/unit/base/text/pdf-text-new-from-u32.c
+	* torture/unit/base/text/pdf-text-new-from-unicode.c
+	* torture/unit/base/text/pdf-text-replace-ascii.c
+	* torture/unit/base/text/pdf-text-replace.c
+	* torture/unit/base/text/pdf-text-set-country.c
+	* torture/unit/base/text/pdf-text-set-host.c
+	* torture/unit/base/text/pdf-text-set-language.c
+	* torture/unit/base/text/pdf-text-set-pdfdocenc.c
+	* torture/unit/base/text/pdf-text-set-unicode.c
+
+	torture/fsys: Ported all unit tests to the new text API.
+	* torture/unit/base/fsys/pdf-fsys-build-path.c
+	* torture/unit/base/fsys/pdf-fsys-file-close.c
+	* torture/unit/base/fsys/pdf-fsys-file-open-tmp.c
+	* torture/unit/base/fsys/pdf-fsys-file-open.c
+	* torture/unit/base/fsys/pdf-fsys-get-free-space.c
+
+	torture/hash: Ported hash helper unit tests to the new text API.
+	* torture/unit/base/hash/pdf-hash-add-text.c
+
+	torture/stm: Ported stream unit tests to the new text API.
+	* torture/unit/base/stm/pdf-stm-bseek.c
+	* torture/unit/base/stm/pdf-stm-btell.c
+	* torture/unit/base/stm/pdf-stm-file-new.c
+	* torture/unit/base/stm/pdf-stm-peek-char.c
+	* torture/unit/base/stm/pdf-stm-read-char.c
+	* torture/unit/base/stm/pdf-stm-read.c
+	* torture/unit/base/stm/pdf-stm-write.c
+
+	utils: Ported to the new text API.
+	* utils/pdf-filereader.c
+	* utils/pdf-filter.c
+
 2011-03-18  Jose E. Marchesi  <jemarch@gnu.org>
 
 	manual: little clarification added for pdf_error_new.
