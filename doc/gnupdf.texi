@@ -245,6 +245,9 @@ the issue.
 
 Creates a new @code{pdf_error_t} variable.
 
+Note that no memory is allocated by this function if @var{status} is
+@code{PDF_ENOMEM}.  For any other error it shall be assumed it does.
+
 @table @strong
 @item Parameters
 @table @var
