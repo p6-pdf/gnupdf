@@ -33,7 +33,7 @@
   pdf_fsys_disk_init ((DATA))
 #define pdf_fsys_def_cleanup(DATA) \
   pdf_fsys_disk_cleanup ((DATA))
-#define pdf_fsys_def_get_free_space(path_name) \
+#define pdf_fsys_def_get_free_space(path_name)   \
   pdf_fsys_disk_get_free_space (NULL, (path_name))
 #define pdf_fsys_def_create_folder(path_name) \
   pdf_fsys_disk_create_folder (NULL, (path_name))

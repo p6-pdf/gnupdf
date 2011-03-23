@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 
 #include <pdf-text.h>
 
-/* Enumeration defining the types of system endianness */ 
+/* Enumeration defining the types of system endianness */
 enum pdf_endianness_e {
   PDF_TEXT_BIG_ENDIAN      =  0,
   PDF_TEXT_LITTLE_ENDIAN   =  1
@@ -56,39 +56,31 @@ enum pdf_text_eol_types {
   PDF_TEXT_EOLMAX
 };
 
-
 /* Initialize text context. Must be done only once at program startup!.
  *  Not thread-safe! */
-pdf_status_t
-pdf_text_context_init(void);
+pdf_bool_t pdf_text_context_init (pdf_error_t **error);
+
+/* Deinitializes text context, can be done when program is about to end,
+ * if a clean exit is wanted */
+void pdf_text_context_deinit (void);
 
 /* Is the text context initialized? */
 pdf_bool_t pdf_text_context_initialized (void);
 
 /* Returns the host endianess */
-enum pdf_endianness_e
-pdf_text_context_get_host_endianness(void);
-
+enum pdf_endianness_e pdf_text_context_get_host_endianness (void);
 
 /* Returns the host encoding */
-pdf_text_host_encoding_t
-pdf_text_context_get_host_encoding(void);
-
+const pdf_char_t *pdf_text_context_get_host_encoding (void);
 
 /* Returns the host language */
-const pdf_char_t *
-pdf_text_context_get_host_language(void);
-
+const pdf_char_t *pdf_text_context_get_host_language (void);
 
 /* Returns the host country */
-const pdf_char_t *
-pdf_text_context_get_host_country(void);
-
+const pdf_char_t *pdf_text_context_get_host_country (void);
 
 /* Returns the host EOL */
-pdf_text_eol_t
-pdf_text_context_get_host_eol(enum pdf_text_eol_types eol_type);
-
+pdf_text_eol_t pdf_text_context_get_host_eol (enum pdf_text_eol_types eol_type);
 
 #endif /* _PDF_TEXT_CONTEXT_H */
 

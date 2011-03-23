@@ -29,6 +29,7 @@
 #include <pdf.h>
 #include <check.h>
 #include <pdf-test-common.h>
+
 /*
  * Test: pdf_text_empty_p_001
  * Description:
@@ -38,20 +39,19 @@
  */
 START_TEST (pdf_text_empty_p_001)
 {
-  pdf_text_t text;
+  pdf_text_t *text;
+  pdf_error_t *error = NULL;
 
-
-
-
-  fail_if(pdf_text_new (&text) != PDF_OK);
+  text = pdf_text_new (&error);
+  fail_unless (text != NULL);
+  fail_if (error != NULL);
 
   /* 1. The call to pdf_text_empty_p should return PDF_TRUE. */
-  fail_unless(pdf_text_empty_p(text) == PDF_TRUE);
+  fail_unless (pdf_text_empty_p (text) == PDF_TRUE);
 
-  pdf_text_destroy(text);
+  pdf_text_destroy (text);
 }
 END_TEST
-
 
 /*
  * Test: pdf_text_empty_p_002
@@ -62,20 +62,20 @@ END_TEST
  */
 START_TEST (pdf_text_empty_p_002)
 {
-  pdf_text_t text;
+  pdf_text_t *text;
+  pdf_error_t *error = NULL;
 
-
-
-
-  fail_if(pdf_text_new_from_unicode((pdf_char_t *)"GNU", 3,
+  text = pdf_text_new_from_unicode ("GNU",
+                                    3,
                                     PDF_TEXT_UTF8,
-                                    &text) != PDF_OK);
-  fail_if(text == NULL);
+                                    &error);
+  fail_unless (text != NULL);
+  fail_if (error != NULL);
 
   /* 1. The call to pdf_text_empty_p should return PDF_FALSE. */
-  fail_unless(pdf_text_empty_p(text) == PDF_FALSE);
+  fail_unless (pdf_text_empty_p (text) == PDF_FALSE);
 
-  pdf_text_destroy(text);
+  pdf_text_destroy (text);
 }
 END_TEST
 
@@ -85,13 +85,14 @@ END_TEST
 TCase *
 test_pdf_text_empty_p (void)
 {
-  TCase *tc = tcase_create("pdf_text_empty_p");
-  tcase_add_test(tc, pdf_text_empty_p_001);
-  tcase_add_test(tc, pdf_text_empty_p_002);
+  TCase *tc = tcase_create ("pdf_text_empty_p");
+
+  tcase_add_test (tc, pdf_text_empty_p_001);
+  tcase_add_test (tc, pdf_text_empty_p_002);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);
   return tc;
 }
 
-/* End of pdf-text-get-empty-p.c */
+/* End of pdf-text-empty-p.c */

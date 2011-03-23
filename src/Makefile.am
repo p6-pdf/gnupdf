@@ -98,13 +98,13 @@ BASE_LAYER_SOURCES = base/pdf-base.c base/pdf-base.h \
                      $(ALLOC_MODULE_SOURCES) \
                      $(TYPES_MODULE_SOURCES) \
                      $(FP_MODULE_SOURCES) \
-                     $(FILESYSTEM_MODULE_SOURCES) \
-                     $(STM_MODULE_SOURCES) \
                      $(ERROR_MODULE_SOURCES) \
                      $(LIST_MODULE_SOURCES) \
                      $(TEXT_MODULE_SOURCES) \
                      $(HASH_MODULE_SOURCES) \
                      $(TIME_MODULE_SOURCES) \
+                     $(FILESYSTEM_MODULE_SOURCES) \
+                     $(STM_MODULE_SOURCES) \
                      $(CRYPT_MODULE_SOURCES) \
                      $(TOKEN_MODULE_SOURCES)
 
@@ -164,8 +164,11 @@ PUBLIC_HDRS = pdf-config.h \
               base/pdf-token.h \
               base/pdf-token-reader.h \
               base/pdf-token-writer.h \
-              base/pdf-fsys-disk.h \
-              base/pdf-fsys-http.h
+              base/pdf-fsys-disk.h
+
+if FSYS_HTTP
+PUBLIC_HDRS += base/pdf-fsys-http.h
+endif
 
 
 EXTRA_DIST = header-autogen

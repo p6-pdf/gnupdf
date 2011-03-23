@@ -29,6 +29,7 @@
 #include <pdf.h>
 #include <check.h>
 #include <pdf-test-common.h>
+
 /*
  * Test: pdf_text_get_hex_001
  * Description:
@@ -42,48 +43,39 @@
  */
 START_TEST (pdf_text_get_hex_001)
 {
-  pdf_text_t text;
+  pdf_error_t *error = NULL;
+  pdf_text_t *text;
   pdf_char_t *utf8data = (pdf_char_t *)"ab";
-  pdf_char_t *expected_utf32le = (pdf_char_t *)"61:00:00:00:" \
-                                               "62:00:00:00";
-  pdf_char_t *expected_utf32be = (pdf_char_t *)"00:00:00:61:" \
-                                               "00:00:00:62";
-  pdf_char_t *expected;
+  pdf_char_t *output_data;
+#if (!PDF_IS_BIG_ENDIAN)
+  const pdf_char_t *expected = (pdf_char_t *)"61:00:00:00:" "62:00:00:00";
+#else
+  const pdf_char_t *expected = (pdf_char_t *)"00:00:00:61:" "00:00:00:62";
+#endif /* !PDF_IS_BIG_ENDIAN */
 
-  if(!pdf_text_test_big_endian_system())
-    {
-      expected = expected_utf32le;
-    }
-  else
-    {
-      expected = expected_utf32be;
-    }
-
-  pdf_char_t *output_data = NULL;
-
-
-
-
-  fail_if(pdf_text_new_from_unicode(utf8data, strlen(utf8data),
+  text = pdf_text_new_from_unicode (utf8data,
+                                    strlen (utf8data),
                                     PDF_TEXT_UTF8,
-                                    &text) != PDF_OK);
+                                    &error);
+  fail_unless (text != NULL);
+  fail_if (error != NULL);
 
   /* 1. The call to  pdf_text_get_hex should return a valid string, NUL
    *      terminated. */
-  output_data = pdf_text_get_hex(text,':');
-  fail_if(output_data == NULL);
+  output_data = pdf_text_get_hex (text, ':', &error);
+  fail_unless (output_data != NULL);
+  fail_if (error != NULL);
 
   /* 2. The contents of the returned string must be the expected ones. */
-  fail_unless(memcmp(output_data, expected, strlen(output_data)) == 0);
+  fail_unless (memcmp (output_data, expected, strlen (output_data)) == 0);
 
   /* 3. The length of the string must be non-zero.  */
-  fail_unless(strlen(output_data) == strlen(expected));
+  fail_unless (strlen (output_data) == strlen (expected));
 
-  pdf_dealloc(output_data);
-  pdf_text_destroy(text);
+  pdf_dealloc (output_data);
+  pdf_text_destroy (text);
 }
 END_TEST
-
 
 /*
  * Test: pdf_text_get_hex_002
@@ -97,27 +89,25 @@ END_TEST
  */
 START_TEST (pdf_text_get_hex_002)
 {
-  pdf_text_t text;
-  pdf_char_t *output_data = NULL;
+  pdf_error_t *error = NULL;
+  pdf_text_t *text;
+  pdf_char_t *output_data;
 
-
-
-
-  fail_if(pdf_text_new (&text) != PDF_OK);
+  text = pdf_text_new (&error);
 
   /* 1. The call to  pdf_text_get_hex should return a valid string, NUL
    *      terminated. */
-  output_data = pdf_text_get_hex(text,':');
-  fail_if(output_data == NULL);
+  output_data = pdf_text_get_hex (text, ':', &error);
+  fail_unless (output_data != NULL);
+  fail_if (error != NULL);
 
   /* 2. The length of the string must be zero. */
-  fail_unless(strlen(output_data) == 0);
+  fail_unless (strlen (output_data) == 0);
 
-  pdf_dealloc(output_data);
-  pdf_text_destroy(text);
+  pdf_dealloc (output_data);
+  pdf_text_destroy (text);
 }
 END_TEST
-
 
 /*
  * Test case creation function
@@ -125,13 +115,14 @@ END_TEST
 TCase *
 test_pdf_text_get_hex(void)
 {
-  TCase *tc = tcase_create("pdf_text_get_hex");
-  tcase_add_test(tc, pdf_text_get_hex_001);
-  tcase_add_test(tc, pdf_text_get_hex_002);
+  TCase *tc = tcase_create ("pdf_text_get_hex");
+
+  tcase_add_test (tc, pdf_text_get_hex_001);
+  tcase_add_test (tc, pdf_text_get_hex_002);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);
   return tc;
 }
 
-/* End of pdf-text-set-pdfdocenc.c */
+/* End of pdf-text-get-hex.c */

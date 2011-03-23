@@ -40,31 +40,30 @@
  */
 START_TEST (pdf_text_get_language_001)
 {
+  pdf_text_t *text;
+  const pdf_char_t *language;
+  pdf_error_t *error = NULL;
 
-
-
-  pdf_text_t text;
-  const pdf_char_t *language = NULL;
-
-  fail_if(pdf_text_new (&text) != PDF_OK);
+  text = pdf_text_new (&error);
+  fail_unless (text != NULL);
+  fail_if (error != NULL);
 
   /* Store language ID without using the API */
-  fail_if(pdf_text_set_language(text, "en") != PDF_OK);
+  pdf_text_set_language (text, "en");
 
-  /* Get country ID */
-  language = pdf_text_get_language(text);
+  /* Get language ID */
+  language = pdf_text_get_language (text);
 
   /* 1. The call to pdf_text_get_language should return a valid pointer. */
-  fail_if(language == NULL);
+  fail_if (language == NULL);
 
   /* 2. The length of the returned string should be 2. */
-  fail_unless(strlen(language) == 2);
+  fail_unless (strlen (language) == 2);
+  fail_unless (strcmp (language, "en") == 0);
 
-  pdf_text_destroy(text);
-
+  pdf_text_destroy (text);
 }
 END_TEST
-
 
 /*
  * Test: pdf_text_get_language_002
@@ -76,24 +75,26 @@ END_TEST
  */
 START_TEST (pdf_text_get_language_002)
 {
-  pdf_text_t text;
-  const pdf_char_t *language = NULL;
+  pdf_text_t *text;
+  const pdf_char_t *language;
+  pdf_error_t *error = NULL;
 
-  fail_if(pdf_text_new (&text) != PDF_OK);
+  text = pdf_text_new (&error);
+  fail_unless (text != NULL);
+  fail_if (error != NULL);
 
   /* Get language ID */
-  language = pdf_text_get_language(text);
+  language = pdf_text_get_language (text);
 
   /* 1. The call to pdf_text_get_language should return a valid pointer. */
-  fail_if(language == NULL);
+  fail_if (language == NULL);
 
-  /* 2. The length of the returned string should be 2. */
-  fail_unless(strlen(language) == 0);
+  /* 2. The length of the returned string should be 0. */
+  fail_unless (strlen (language) == 0);
 
-  pdf_text_destroy(text);
+  pdf_text_destroy (text);
 }
 END_TEST
-
 
 /*
  * Test case creation function
@@ -101,9 +102,10 @@ END_TEST
 TCase *
 test_pdf_text_get_language (void)
 {
-  TCase *tc = tcase_create("pdf_text_get_language");
-  tcase_add_test(tc, pdf_text_get_language_001);
-  tcase_add_test(tc, pdf_text_get_language_002);
+  TCase *tc = tcase_create ("pdf_text_get_language");
+
+  tcase_add_test (tc, pdf_text_get_language_001);
+  tcase_add_test (tc, pdf_text_get_language_002);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);

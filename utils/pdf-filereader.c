@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2011-02-24 23:45:17 aleksander"
+/* -*- mode: C -*- Time-stamp: "2011-03-10 20:40:15 aleksander"
  *
  *       File:         pdf-filereader.c
  *       Date:         Thu Dec 2 23:35:55 2010
@@ -134,7 +134,7 @@ int
 main (int argc, char *argv[])
 {
   pdf_status_t ret_stat;
-  pdf_text_t input_path = NULL;
+  pdf_text_t *input_path = NULL;
   int rv = 0;
   struct pdf_fsys_item_props_s path_props;
   pdf_fsys_t use_this_fsys = NULL;
@@ -186,48 +186,44 @@ main (int argc, char *argv[])
   if ((PDF_OK == ret_stat)
       && (NULL != reader_args.in_fname)
       && (NULL != reader_args.out_fname))
-    { /* Input and Output filename given. Proceed. */
+    {
+      pdf_error_t *error = NULL;
+
+      /* Input and Output filename given. Proceed. */
 
       /* Convert in_fname to pdf_text_t */
-
-      ret_stat = pdf_text_new_from_host ( (pdf_char_t *)reader_args.in_fname,
-                                          strlen (reader_args.in_fname),
-                                          pdf_text_get_host_encoding (),
-                                          &input_path);
-
-      if (PDF_OK == ret_stat)
+      input_path = pdf_text_new_from_host (reader_args.in_fname,
+					   strlen (reader_args.in_fname),
+					   pdf_text_get_host_encoding (),
+					   &error);
+      if (!input_path)
         {
-          if (NULL == input_path)
-            {
-              ret_stat = PDF_ERROR;
-              rv = PDF_ERROR;
-              fprintf (stderr, "\nERROR: NULL input_path!\n");
-            }
-          else
-            {
-              memset (&path_props, 0, sizeof (struct pdf_fsys_item_props_s));
-
-              ret_stat = pdf_fsys_get_item_props (use_this_fsys, input_path,
-                                                  &path_props);
-              if (PDF_OK != ret_stat)
-                {
-                  if (PDF_EBADNAME == ret_stat)
-                    {
-                      fprintf (stderr, "\nERROR: invalid path name given.\n");
-                    }
-                  else
-                    {
-                      fprintf (stderr, "\nERROR: get_item_props returned %d\n",
-                               ret_stat);
-                    }
-                }
-            }
-        }
+	  rv = pdf_error_get_status (error);
+          fprintf (stderr,
+		   "\nERROR: pdf_text_new_from_host: %s\n",
+		   pdf_error_get_message (error));
+	  pdf_clear_error (&error);
+	}
       else
-        {
-          fprintf (stderr, "\nERROR: pdf_text_new_from_host: %d\n", ret_stat);
-          rv = ret_stat;
-        }
+	{
+	  memset (&path_props, 0, sizeof (struct pdf_fsys_item_props_s));
+
+	  ret_stat = pdf_fsys_get_item_props (use_this_fsys,
+					      input_path,
+					      &path_props);
+	  if (PDF_OK != ret_stat)
+	    {
+	      if (PDF_EBADNAME == ret_stat)
+		{
+		  fprintf (stderr, "\nERROR: invalid path name given.\n");
+		}
+	      else
+		{
+		  fprintf (stderr, "\nERROR: get_item_props returned %d\n",
+			   ret_stat);
+		}
+	    }
+	}
 
       if ((PDF_OK == ret_stat) && (reader_args.print_props))
         {
@@ -236,8 +232,10 @@ main (int argc, char *argv[])
 
       /* get item props succeeded - now open file! */
 
-      ret_stat = pdf_fsys_file_open (use_this_fsys, input_path,
-                                     PDF_FSYS_OPEN_MODE_READ, &the_file);
+      ret_stat = pdf_fsys_file_open (use_this_fsys,
+				     input_path,
+                                     PDF_FSYS_OPEN_MODE_READ,
+				     &the_file);
 
       if (PDF_OK == ret_stat)
         {
@@ -385,7 +383,8 @@ struct pdf_fsys_item_props_s
 
         fprintf (stderr, "modification_date: Not displayed\n");
 
-        fprintf (stderr, "file_size: %d\n", p_props->file_size);
+        fprintf (stderr, "file_size: %llu\n",
+		 (unsigned long long)p_props->file_size);
 
         fprintf (stderr, "folder_size: %d\n", p_props->folder_size);
 

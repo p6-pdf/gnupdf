@@ -29,7 +29,6 @@
 #include <base/text/pdf-text-test-common.h>
 #include <pdf-test-common.h>
 
-
 /* ASCII-7 strings for encoding tests */
 const test_string_t ascii_strings[] = {
   { "GNU's not Unix",
@@ -97,21 +96,8 @@ const test_string_t pdf_doc_encoding_strings[] = {
     24
   },
 
-  /*
-   { "\x24\x25\x26\x27\x28\x29\x30\x31",
-   8,
-
-   },
-   { (pdf_char_t []) {120,121,122,123,124,125,126,127}, 8},
-   { (pdf_char_t []) {128,129,130,131,132,133,134,135}, 8},
-   { (pdf_char_t []) {136,137,138,139,140,141,142,143}, 8},
-   { (pdf_char_t []) {144,145,146,147,148,149,150,151}, 8},
-   { (pdf_char_t []) {152,153,154,155,156,157,158,159}, 8},
-   { (pdf_char_t []) {160,161,162,163,164,165,166,167}, 8}, */
   { NULL, 0, NULL, 0 }
 };
-
-
 
 /* UTF-8 VALID strings for encoding tests */
 const test_string_t utf8_strings[] = {
@@ -164,8 +150,6 @@ const test_string_t utf8_strings[] = {
   },
   { NULL, 0, NULL, 0 }
 };
-
-
 
 /* UTF-16BE strings for encoding tests (WITH 16-bit BOM!!!) */
 const test_string_t utf16be_strings[] = {
@@ -223,7 +207,6 @@ const test_string_t utf16be_strings[] = {
   },
   { NULL, 0, NULL, 0 }
 };
-
 
 /* UTF-32BE strings for encoding tests (WITH 32-bit BOM!!!) */
 const test_string_t utf32be_strings[] = {

@@ -30,6 +30,7 @@
 #include <check.h>
 #include <base/text/pdf-text-test-common.h>
 #include <pdf-test-common.h>
+
 /*
  * Test: pdf_text_get_host_001
  * Description:
@@ -40,23 +41,21 @@
  */
 START_TEST (pdf_text_get_host_001)
 {
+#ifdef PDF_HOST_WIN32
+  const pdf_char_t *host_enc = "CP20127"; /* us-ascii */
+#else
+  const pdf_char_t *host_enc = "us-ascii";
+#endif
   extern const test_string_t ascii_strings[];
-  pdf_text_host_encoding_t host_enc;
   int i;
 
-  /* Create, without using the API, a valid pdf_text_host_encoding_t */
-#ifdef PDF_HOST_WIN32
-  strcpy((&(host_enc.name[0])), "CP20127"); /* us-ascii */
-#else
-  strcpy((&(host_enc.name[0])), "us-ascii");
-#endif
-
   i = 0;
-  while(ascii_strings[i].data != NULL)
+  while (ascii_strings[i].data)
     {
-      pdf_text_t text;
-      pdf_char_t *data = NULL;
-      pdf_size_t size = 0;
+      pdf_error_t *error = NULL;
+      pdf_text_t *text;
+      pdf_char_t *data;
+      pdf_size_t size;
       const pdf_char_t *expected_data;
       pdf_size_t expected_size;
 
@@ -64,30 +63,29 @@ START_TEST (pdf_text_get_host_001)
       expected_data = (pdf_char_t *)ascii_strings[i].data;
       expected_size = ascii_strings[i].size;
 
-      fail_if(pdf_text_new_from_unicode((pdf_char_t *) \
-                                        ascii_strings[i].utf32be_data,
-                                        (pdf_size_t) \
-                                        ascii_strings[i].utf32be_size,
+      text = pdf_text_new_from_unicode ((pdf_char_t *) ascii_strings[i].utf32be_data,
+                                        (pdf_size_t) ascii_strings[i].utf32be_size,
                                         PDF_TEXT_UTF32_BE,
-                                        &text) != PDF_OK);
-
+                                        &error);
+      fail_unless (text != NULL);
+      fail_if (error != NULL);
 
       /* 1. The call to  pdf_text_get_host should return PDF_OK. */
-      fail_unless(pdf_text_get_host(&data, &size,
-                                    text,
-                                    host_enc) == PDF_OK);
+      data = pdf_text_get_host (text,
+                                host_enc,
+                                &size,
+                                &error);
+      fail_unless (data != NULL);
 
-      fail_if(data == NULL);
       /* 2. The returned string must be the expected one. */
-      fail_unless(size == expected_size);
-      fail_unless(memcmp(expected_data, data, size) == 0);
+      fail_unless (size == expected_size);
+      fail_unless (memcmp (expected_data, data, size) == 0);
 
-      pdf_text_destroy(text);
-      pdf_dealloc(data);
+      pdf_text_destroy (text);
+      pdf_dealloc (data);
 
       ++i;
     }
-
 }
 END_TEST
 
@@ -101,23 +99,21 @@ END_TEST
  */
 START_TEST (pdf_text_get_host_002)
 {
+#ifdef PDF_HOST_WIN32
+  const pdf_char_t *host_enc = "CP17";
+#else
+  const pdf_char_t *host_enc = "invalid_host_enc";
+#endif
   extern const test_string_t ascii_strings[];
-  pdf_text_host_encoding_t host_enc;
   int i;
 
-  /* Create, without using the API, an invalid pdf_text_host_encoding_t */
-#ifdef PDF_HOST_WIN32
-  strcpy((&(host_enc.name[0])), "CP17"); /* us-ascii */
-#else
-  strcpy((&(host_enc.name[0])), "invalid_host_enc");
-#endif
-
   i = 0;
-  while(ascii_strings[i].data != NULL)
+  while (ascii_strings[i].data)
     {
-      pdf_text_t text;
-      pdf_char_t *data = NULL;
-      pdf_size_t size = 0;
+      pdf_error_t *error = NULL;
+      pdf_text_t *text;
+      pdf_char_t *data;
+      pdf_size_t size;
       const pdf_char_t *expected_data;
       pdf_size_t expected_size;
 
@@ -125,30 +121,28 @@ START_TEST (pdf_text_get_host_002)
       expected_data = (pdf_char_t *)ascii_strings[i].data;
       expected_size = ascii_strings[i].size;
 
-      fail_if(pdf_text_new_from_unicode((pdf_char_t *) \
-                                        ascii_strings[i].utf32be_data,
-                                        (pdf_size_t) \
-                                        ascii_strings[i].utf32be_size,
+      text = pdf_text_new_from_unicode ((pdf_char_t *) ascii_strings[i].utf32be_data,
+                                        (pdf_size_t) ascii_strings[i].utf32be_size,
                                         PDF_TEXT_UTF32_BE,
-                                        &text) != PDF_OK);
+                                        &error);
+      fail_unless (text != NULL);
+      fail_if (error != NULL);
 
+      /* 1. The call to  pdf_text_get_host should return PDF_OK. */
+      data = pdf_text_get_host (text,
+                                host_enc,
+                                &size,
+                                &error);
+      fail_if (data != NULL);
+      fail_unless (error != NULL);
 
-      /* 1. The call to  pdf_text_get_host should NOT return PDF_OK. */
-      fail_unless(pdf_text_get_host(&data, &size,
-                                    text,
-                                    host_enc) != PDF_OK);
-
-      fail_if(data != NULL);
-      fail_if(size != 0);
-
-      pdf_text_destroy(text);
+      pdf_text_destroy (text);
+      pdf_error_destroy (error);
 
       ++i;
     }
-
 }
 END_TEST
-
 
 /*
  * Test case creation function
@@ -156,15 +150,14 @@ END_TEST
 TCase *
 test_pdf_text_get_host (void)
 {
-  TCase *tc = tcase_create("pdf_text_get_host");
-  tcase_add_test(tc, pdf_text_get_host_001);
-  tcase_add_test(tc, pdf_text_get_host_002);
+  TCase *tc = tcase_create ("pdf_text_get_host");
 
+  tcase_add_test (tc, pdf_text_get_host_001);
+  tcase_add_test (tc, pdf_text_get_host_002);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);
   return tc;
 }
-
 
 /* End of pdf-text-get-host.c */

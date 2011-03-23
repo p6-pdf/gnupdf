@@ -3418,7 +3418,7 @@ NOTE: If you are going to use the element after the table containing
 the element is destroyed, in that case don't use these functions.
 
 
-@deftypefun pdf_bool_t pdf_hash_add_text (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_text_t @var{value}, pdf_error_t **@var{error})
+@deftypefun pdf_bool_t pdf_hash_add_text (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_text_t *@var{value}, pdf_error_t **@var{error})
 
 Adds the @var{value} text with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The text will be owned by the hash table, and disposed when the hash table is destroyed.
 
@@ -3439,7 +3439,7 @@ A @code{pdf_error_t} to report errors or @code{NULL}.
 @item Usage example
 @example
 pdf_hash_t *hash;
-pdf_text_t elem;
+pdf_text_t *elem;
 pdf_error_t *error = NULL;
 
 /* Create a new hash */
@@ -3447,11 +3447,14 @@ hash = pdf_hash_new (NULL);
 if (hash != NULL)
    @{
       /* Create the element for the hash */
-      pdf_text_new_from_unicode ("abc", 3,
-                                 PDF_TEXT_UTF8,
-                                 &hash);
-
-      if (pdf_hash_add_text (hash, "a-key", elem, &error))
+      text = pdf_text_new_from_unicode ("abc", 3,
+                                        PDF_TEXT_UTF8,
+                                        &error);
+      if (!text)
+         @{
+            pdf_error_destroy (error);
+         @}
+      else if (pdf_hash_add_text (hash, "a-key", elem, &error))
          @{
             pdf_error_destroy (error);
          @}
@@ -3462,7 +3465,7 @@ if (hash != NULL)
 @end table
 @end deftypefun
 
-@deftypefun {const pdf_text_t} pdf_hash_get_text (pdf_hash_t *@var{table}, const pdf_char_t *@var{key})
+@deftypefun {const pdf_text_t *} pdf_hash_get_text (pdf_hash_t *@var{table}, const pdf_char_t *@var{key})
 
 Get a text variable from a hash table.
 
@@ -3478,7 +3481,7 @@ A valid @code{NUL}-terminated string key.
 The @code{pdf_text_t} associated with @var{key}.
 @item Usage example
 @example
-pdf_text_t text;
+pdf_text_t *text;
 
 /* ... insert a text variable into the hash ... */
 
@@ -5511,50 +5514,39 @@ This data type must be initialized before being used, and destroyed afterwards.
 
 @end deftp
 
-@deftp {Data Type} pdf_text_host_encoding_t
-
-This data type identifies an encoding used in a host (all the possible values
-are host-dependent). There is no initialization/destruction requirement for
-this data type.
-
-@end deftp
-
 @node Creating and Destroying Text
 @subsection Creating and Destroying Text
 
-@deftypefun pdf_status_t pdf_text_new (pdf_text_t *text)
+@deftypefun pdf_text_t *pdf_text_new (pdf_error_t **@var{error})
 
-Create a new text object containing no text.
+Create a new empty text object.
 
 @table @strong
 @item Parameters
 @table @var
-@item text
-A pointer to the new instance of text object.
-@end table
-@item Returns
-A pdf status value:
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-The text object was successfully created.
 @item PDF_ENOMEM
 Not enough memory to create the text object.
 @item PDF_EBADCONTEXT
 The global context of the text module was not initialized.
-@item PDF_ERROR
-Other error.
 @end table
+@end table
+@item Returns
+A newly created @code{pdf_text_t}, or @code{NULL} if any error happened.
 @item Usage Example
 @example
-pdf_text_t mytext;
+pdf_error_t *error = NULL;
+pdf_text_t *text;
 
-pdf_text_new (&mytext);
+text = pdf_text_new (&error);
 @end example
 @end table
 @end deftypefun
 
 
-@deftypefun pdf_status_t pdf_text_destroy (pdf_text_t text)
+@deftypefun void pdf_text_destroy (pdf_text_t *@var{text})
 
 Destroy a text object and its contents.
 
@@ -5564,105 +5556,109 @@ Destroy a text object and its contents.
 @item text
 A properly created text object.
 @end table
-@item Returns
-The status of the destruction
 @item Usage Example
 @example
-pdf_text_t mytext;
+pdf_text_t *text;
 
-mytext = pdf_text_new ();
-pdf_text_destroy(mytext);
-
+text = pdf_text_new (NULL);
+if (text)
+  @{
+    pdf_text_destroy (text);
+  @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_text_t pdf_text_dup (const pdf_text_t @var{text})
+@deftypefun pdf_text_t *pdf_text_dup (const pdf_text_t *@var{text}, pdf_error_t **@var{error})
 
-Dup a new text object from a existing one.
+Duplicates a text object.
 
 @table @strong
 @item Parameters
 @table @var
 @item text
 A properly created text object.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to create the text object.
+@item PDF_EBADCONTEXT
+The global context of the text module was not initialized.
+@end table
 @end table
 @item Returns
-A pointer to the newly created text object.
+A newly created @code{pdf_text_t}, or @code{NULL} if any error happened.
 @item Usage Example
 @example
-pdf_text_t text1;
-pdf_text_t text2;
+pdf_text_t *text1;
+pdf_text_t *text2;
 
-text1 = pdf_text_new ();
-text2 = pdf_text_dup (text1);
+text1 = pdf_text_new (NULL);
+if (text1)
+  @{
+    text2 = pdf_text_dup (text1, NULL);
+  @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_text_new_from_host (const pdf_char_t *@var{str}, const pdf_size_t @var{size}, const pdf_text_host_encoding_t @var{enc}, pdf_text_t *@var{text})
+@deftypefun pdf_text_t *pdf_text_new_from_host (const pdf_char_t *@var{str}, const pdf_size_t @var{size}, const pdf_char_t *@var{enc}, pdf_error_t **@var{error})
 
-Create a new text object and initialize it with a given host encoded
-string.
+Create a new text object and initialize it with a given host encoded string.
 
 @table @strong
 @item Parameters
 @table @var
 @item str
-A multybyte string in some host encoding.
+A string in some host encoding.
 @item size
 The length of @var{str}, in bytes.
 @item enc
 The host encoding with which @var{str} is encoded.
-@item text
-A pointer to the output text object
-@end table
-@item Returns
-A pdf status value:
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-The operation succeeded.
 @item PDF_ENOMEM
-Out of memory condition.
+Not enough memory to create the text object.
 @item PDF_EBADCONTEXT
-The global context for the text module is not initialized.
+The global context of the text module was not initialized.
 @item PDF_ETEXTENC
 Invalid data in the input string (encoding error).
-@item PDF_EBADDATA
-Invalid parameters.
 @end table
+@end table
+@item Returns
+A newly created @code{pdf_text_t}, or @code{NULL} if any error happened.
 @item Usage Example
 @example
-
-pdf_text_t text;
-pdf_char_t *he_string;
+pdf_error_t *error = NULL;
+pdf_text_t *text;
+const pdf_char_t *he_string = "hello";
 pdf_size_t  he_string_size;
-pdf_text_host_encoding_t encoding;
-pdf_status_t ret_code;
 
 /* Obtain host encoding and text... */
 
 /* And create text object with those contents */
-ret_code = pdf_text_new_from_host(he_string, he_string_size,
-                                  encoding,
-                                  &text);
-if(ret_code != PDF_OK)
+text = pdf_text_new_from_host (he_string,
+                               strlen (he_string),
+                               "usascii",
+                               &error);
+if (!text)
   @{
     /* Something bad happened */
   @}
-
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_text_new_from_pdf_string (const pdf_char_t *@var{str}, const pdf_size_t @var{size}, pdf_char_t **@var{remaining_str}, pdf_size_t *@var{remaining_length}, pdf_text_t *@var{text})
+@deftypefun pdf_text_t *pdf_text_new_from_pdf_string (const pdf_char_t *@var{str}, const pdf_size_t @var{size}, pdf_char_t **@var{remaining_str}, pdf_size_t *@var{remaining_length}, pdf_error_t **@var{error})
 
 Create a new text object and initialize it with a given `PDF string'
 text representation. This `PDF string' can be either encoded in UTF-16BE, with
 BOM and optional Country/Language code information, or in PDF Doc Encoding.
 
 The Country/Language code marker is treated as end-of-text marker, so that a text object
-handles only a given pair of country and language codes. This function must be used
+handles only a given pair of country and language codes. This function should be used
 inside a loop, so that the input string of data is splitted in chunks if more than
 one language/code is available in the text (only if PDF string is encoded in
 UTF-16BE).
@@ -5671,39 +5667,34 @@ UTF-16BE).
 @item Parameters
 @table @var
 @item str
-A text representation of a PDF string.
+A valid `PDF string'
 @item size
 The length of @var{str} in bytes
 @item remaining_str
 Returned pointer to the next chunk of data to process, if any.
 @item remaining_length
 Length of @var{remaining_str} in bytes
-@item text
-A pointer to the newly created text object.
-@end table
-@item Returns
-A pdf status value:
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-The operation succeeded.
 @item PDF_ENOMEM
-Out of memory condition.
+Not enough memory to create the text object.
 @item PDF_EBADCONTEXT
-The global context for the text module is not initialized.
+The global context of the text module was not initialized.
 @item PDF_ETEXTENC
 Invalid data in the input string (encoding error).
-@item PDF_EBADDATA
-Invalid parameters.
 @end table
+@end table
+@item Returns
+A newly created @code{pdf_text_t}, or @code{NULL} if any error happened.
 @item Usage Example
 @example
-
-pdf_text_t text;
+pdf_error_t *error = NULL;
+pdf_text_t *text;
 pdf_char_t *pdf_string;
 pdf_size_t  pdf_string_size;
 pdf_char_t *remaining_str;
-pdf_size_t remaining_size;
-pdf_status_t ret_code;
+pdf_size_t  remaining_size;
 
 /* Obtain PDF string... */
 
@@ -5711,27 +5702,27 @@ pdf_status_t ret_code;
 remaining_str = pdf_string;
 remaining_length = pdf_string_size;
 do
-@{
-  ret_code = pdf_text_new_from_host(remaining_str, remaining_length,
-                                    &remaining_str, &remaining_length,
-                                    &text);
-
-  /* Do something with the chunk of string */
-
-  pdf_text_destroy(text);
-@}
-while((ret_code == PDF_OK) && (remaining_length > 0));
-
-
+  @{
+    text = pdf_text_new_from_pdf_string (remaining_str,
+                                         remaining_length,
+                                         &remaining_str,
+                                         &remaining_length,
+                                         &error);
+    if (text)
+      @{
+        /* Do something with the newly created text object */
+      @}
+  @}
+while (!error && remaining_length > 0);
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_text_new_from_unicode (const pdf_char_t *@var{str}, const pdf_size_t @var{size}, const enum pdf_text_unicode_encoding_e @var{enc}, pdf_text_t *@var{text})
+@deftypefun pdf_text_t *pdf_text_new_from_unicode (const pdf_char_t *@var{str}, pdf_size_t @var{size}, enum pdf_text_unicode_encoding_e @var{enc}, pdf_text_t **@var{error})
 
 Create a new text object from a string of Unicode characters in a
 given unicode encoding. The Unicode string can be given with or without BOM,
-and there mustn't be any language/code information embedded in the string.
+and there must not be any language/code information embedded in the string.
 
 Note that for UTF-16BE strings two options are possible to create the
 pdf_text_t object: treating it as a PDF string (so BOM is mandatory and
@@ -5746,46 +5737,40 @@ A Unicode string.
 @item size
 The length of @var{str} in bytes.
 @item enc
-The Unicode encoding used by @var{str}.
-@item text
-A pointer to the newly created text object.
-@end table
-@item Returns
-A pdf status value:
-@item PDF_OK
-The operation succeeded.
+The Unicode encoding used in @var{str}.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
 @item PDF_ENOMEM
-Out of memory condition.
+Not enough memory to create the text object.
 @item PDF_EBADCONTEXT
-The global context for the text module is not initialized.
+The global context of the text module was not initialized.
 @item PDF_ETEXTENC
 Invalid data in the input string (encoding error).
-@item PDF_EBADDATA
-Invalid parameters.
+@end table
+@end table
+@item Returns
+A newly created @code{pdf_text_t}, or @code{NULL} if any error happened.
 @item Usage Example
 @example
-
-pdf_text_t text;
-pdf_char_t *unicode_string;
-pdf_size_t  unicode_string_size;
-pdf_status_t ret_code;
-
-/* Obtain unicode text... */
+pdf_error_t *error = NULL;
+pdf_text_t *text;
+pdf_char_t *unicode_string = "hello this is utf-8";
 
 /* And create text object with those contents */
-ret_code = pdf_text_new_from_unicode(unicode_string, unicode_string_size,
-                                     PDF_TEXT_UTF16_BE,
-                                     &text);
-if(ret_code != PDF_OK)
+text = pdf_text_new_from_unicode (unicode_string,
+                                  strlen (unicode_string),
+                                  PDF_TEXT_UTF8,
+                                  &error);
+if (!error)
   @{
     /* Something bad happened */
   @}
-
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_text_new_from_u32 (const pdf_u32_t @var{number}, pdf_text_t *text)
+@deftypefun pdf_text_t *pdf_text_new_from_u32 (const pdf_u32_t @var{number}, pdf_error_t **@var{error})
 
 Create a new text variable containing the textual representation of a
 given integer.
@@ -5795,37 +5780,27 @@ given integer.
 @table @var
 @item number
 An unsigned 32 bit number.
-@item text
-A pointer to the newly created text object.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to create the text object.
+@item PDF_EBADCONTEXT
+The global context of the text module was not initialized.
+@end table
 @end table
 @item Returns
-A pdf status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
-@item PDF_ENOMEM
-Out of memory condition.
-@item PDF_EBADCONTEXT
-The global context for the text module is not initialized.
-@item PDF_ETEXTENC
-Invalid data in the input string (encoding error).
-@item PDF_EBADDATA
-Invalid parameters.
-@end table
+A newly created @code{pdf_text_t}, or @code{NULL} if any error happened.
 @item Usage Example
 @example
-pdf_text_t text;
-pdf_u32_t number;
-pdf_status_t ret_code;
+pdf_error_t *error = NULL;
+pdf_text_t *text;
 
-number = 24;
-ret_code = pdf_text_new_from_u32 (number, &text);
-
-if(ret_code != PDF_OK)
+text = pdf_text_new_from_u32 (12345, &error);
+if (!text)
   @{
     /* Something bad happened */
   @}
-
 @end example
 @end table
 @end deftypefun
@@ -5833,7 +5808,7 @@ if(ret_code != PDF_OK)
 @node Managing Text Properties
 @subsection Managing Text Properties
 
-@deftypefun {const pdf_char_t *} pdf_text_get_country (const pdf_text_t @var{text})
+@deftypefun {const pdf_char_t *} pdf_text_get_country (const pdf_text_t *@var{text})
 
 Return the `ISO-3166-1 alpha-2' country code associated with a text variable, as a
 @code{NUL}-terminated string. The returned string should not be modified, as it is
@@ -5849,7 +5824,7 @@ A text variable.
 The code of the country associated with @var{text}.
 @item Usage Example
 @example
-pdf_text_t text;
+pdf_text_t *text;
 pdf_char_t *code;
 
 /* ...create and manipulate `text' */
@@ -5859,7 +5834,7 @@ code = pdf_text_get_country (text);
 @end table
 @end deftypefun
 
-@deftypefun {const pdf_char_t *} pdf_text_get_language (const pdf_text_t @var{text})
+@deftypefun {const pdf_char_t *} pdf_text_get_language (const pdf_text_t *@var{text})
 
 Return the `ISO-639-1' language code associated with a text variable, as a
 @code{NUL}-terminated string. The returned string should not be modified, as it is
@@ -5875,7 +5850,7 @@ A text variable.
 The code of the language associated with @var{text}.
 @item Usage Example
 @example
-pdf_text_t text;
+pdf_text_t *text;
 pdf_char_t *code;
 
 /* ...create and manipulate `text' */
@@ -5885,36 +5860,9 @@ code = pdf_text_get_language (text);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_text_set_country (pdf_text_t @var{text}, const pdf_char_t *@var{code})
+@deftypefun void pdf_text_set_country (pdf_text_t *@var{text}, const pdf_char_t *@var{code})
 
-Associate a text variable with a `ISO-3166-1 alpha-2' country code.
-
-@table @strong
-@item Parameters
-@table @var
-@item text
-A text variable.
-@item code
-A country code.
-@end table
-@item Returns
-The status of the assignment.
-@item Usage Example
-@example
-pdf_text_t text;
-pdf_status_t ret_code;
-
-/* ...create and manipulate `text' */
-
-ret_code = pdf_text_set_country (text, "27");
-
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_text_set_language (pdf_text_t @var{text}, const pdf_char_t *@var{code})
-
-Associate a text variable with a `ISO-639-1' language code.
+Associate a text variable with a 2-digit `ISO-3166-1 alpha-2' country code.
 
 @table @strong
 @item Parameters
@@ -5922,23 +5870,43 @@ Associate a text variable with a `ISO-639-1' language code.
 @item text
 A text variable.
 @item code
-A language code.
+A 2-digit country code.
 @end table
-@item Returns
-The status of the assignment.
 @item Usage Example
 @example
-pdf_text_t text;
-pdf_status_t ret_code;
+pdf_text_t *text;
 
 /* ...create and manipulate `text' */
 
-ret_code = pdf_text_set_language (text, "10");
+pdf_text_set_country (text, "GB");
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_bool_t pdf_text_empty_p (const pdf_text_t @var{text})
+@deftypefun void pdf_text_set_language (pdf_text_t *@var{text}, const pdf_char_t *@var{code})
+
+Associate a text variable with a 2-digit `ISO-639-1' language code.
+
+@table @strong
+@item Parameters
+@table @var
+@item text
+A text variable.
+@item code
+A 2-digit language code.
+@end table
+@item Usage Example
+@example
+pdf_text_t *text;
+
+/* ...create and manipulate `text' */
+
+pdf_text_set_language (text, "en");
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_text_empty_p (const pdf_text_t *@var{text})
 
 Determine if a given text variable is empty (contains no text).
 
@@ -5949,23 +5917,17 @@ Determine if a given text variable is empty (contains no text).
 A text variable.
 @end table
 @item Returns
-A boolean value:
-@table @code
-@item PDF_TRUE
-The text variable contain no text.
-@item PDF_FALSE
-The text variable contain some text.
-@end table
+@code{PDF_TRUE} if @var{text} is empty, @code{PDF_FALSE} otherwise.
 @item Usage Example
 @example
-pdf_text_t text;
+pdf_text_t *text;
 
 /* ...initialize and manipulate `text'... */
 
 if (pdf_text_empty_p (text))
-@{
-  /* `text' contains no text */
-@}
+  @{
+    /* `text' contains no text */
+  @}
 @end example
 @end table
 @end deftypefun
@@ -5974,43 +5936,56 @@ if (pdf_text_empty_p (text))
 @node Managing Text Contents
 @subsection Managing Text Contents
 
-@deftypefun pdf_status_t pdf_text_get_host (pdf_char_t **@var{contents}, pdf_size_t *@var{length}, const pdf_text_t @var{text}, const pdf_text_host_encoding_t @var{enc})
+@deftypefun pdf_char_t *pdf_text_get_host (const pdf_text_t *@var{text}, const pdf_char_t *@var{enc}, pdf_size_t *@var{length}, pdf_error_t **@var{error})
 
 Get the contents of a text variable encoded in a given host encoding.
+
+Note that the host encoding may be multibyte and thus the output string may
+contain NUL bytes.
 
 @table @strong
 @item Parameters
 @table @var
-@item contents
-Output array of bytes (May contain NUL bytes). Must be freed afterwards.
-@item length
-Output length of @var{contents}
 @item text
 A text variable.
 @item enc
 A host encoding supported by the host.
+@item length
+Output length, in bytes, of the returned string.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to create the output string.
+@item PDF_ETEXTENC
+Error when trying to encode the text contents in the requested encoding.
+@end table
 @end table
 @item Returns
-The status of the conversion.
+A newly allocated string encoded in the given @var{enc} host encoding.
 @item Usage Example
 @example
-pdf_text_t text;
-pdf_text_host_encoding_t encoding;
+pdf_error_t *error = NULL;
 pdf_char_t *str;
-pdf_size_t str_length;
-pdf_status_t ret_code;
+pdf_size_t str_size;
+pdf_text_t *text;
 
 /* ...initialize and manipulate `text'... */
 
-ret_code = pdf_text_get_host (&str, &str_length, text, encoding);
-
-pdf_dealloc(str);
-
+str = pdf_text_get_host (text,
+                         "us-ascii",
+                         &str_size,
+                         &error);
+if (str)
+  @{
+    /* Do something with the string */
+    pdf_dealloc (str);
+  @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_text_get_pdfdocenc (pdf_char_t **@var{contents}, const pdf_text_t @var{text})
+@deftypefun pdf_char_t *pdf_text_get_pdfdocenc (const pdf_text_t *@var{text}, pdf_error_t **@var{error})
 
 Get the contents of a text variable encoded in PDF Doc Encoding,
 and @code{NUL}-terminated.
@@ -6018,78 +5993,100 @@ and @code{NUL}-terminated.
 @table @strong
 @item Parameters
 @table @var
-@item contents
-Output array of bytes (Can't contain NUL bytes). Must be freed afterwards.
 @item text
 A text variable.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to create the output string.
+@item PDF_ETEXTENC
+Error when trying to encode the text contents in PDF Doc Encoding.
+@end table
 @end table
 @item Returns
-The status of the conversion.
+A newly allocated @code{NUL}-terminated string encoded in PDF Doc Encoding.
+The string must be deallocated by the caller.
 @item Usage Example
 @example
-pdf_text_t text;
+pdf_error_t *error = NULL;
+pdf_text_t *text;
 pdf_char_t *str;
-pdf_status_t ret_code;
 
 /* ...initialize and manipulate `text'... */
 
-ret_code = pdf_text_get_pdfdocenc (&str, text);
-
-pdf_dealloc(str);
-
+str = pdf_text_get_pdfdocenc (text, &error);
+if (str)
+  @{
+    /* Do something with the string */
+    pdf_dealloc (str);
+  @}
 @end example
 @end table
 @end deftypefun
 
 
-@deftypefun pdf_status_t pdf_text_get_unicode (pdf_char_t **@var{contents}, pdf_size_t *@var{length}, const pdf_text_t @var{text}, const enum pdf_text_unicode_encoding_e @var{enc}, const pdf_u32_t @var{options})
+@deftypefun pdf_char_t *pdf_text_get_unicode (const pdf_text_t *@var{text}, enum pdf_text_unicode_encoding_e @var{enc}, pdf_u32_t @var{options}, pdf_size_t *@var{length}, pdf_error_t **@var{error})
 
 Get the contents of a text variable encoded in the specified
 Unicode encoding. Additional options can be set in the request.
 
+Note that the output string may contain NUL bytes if the requested encoding is
+not UTF-8.
+
 @table @strong
 @item Parameters
 @table @var
-@item contents
-Output array of bytes (May contain NUL bytes). Must be freed afterwards.
-@item length
-Output length of @var{contents}
 @item text
 A text variable.
 @item enc
-A given UNICODE encoding, specifying requested endianness.
+A given Unicode encoding, specifying requested endianness if applicable.
 @item options
-Additional options that can be set, in the way: OPTION_1 | OPTION_2 | OPTION_3.
+Mask of additional option flags, set as: OPTION_1 | OPTION_2 | OPTION_3.
 (see @code{pdf_text_unicode_options_e} data type)
+@item length
+Output length, in bytes, of the returned string.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to create the output string.
+@item PDF_ETEXTENC
+Error when trying to encode the text contents in the requested encoding.
+@end table
 @end table
 @item Returns
-The status of the conversion.
+A newly allocated string encoded in the given @var{enc} Unicode encoding.
+The string must be deallocated by the caller.
 @item Usage Example
 @example
-pdf_text_t text;
+pdf_error_t *error = NULL;
+pdf_text_t *text;
 pdf_char_t *str;
 pdf_size_t str_length;
-pdf_status_t ret_code;
 
 /* ...initialize and manipulate `text'... */
 
-ret_code = pdf_text_get_unicode (&str, &str_length,
-                                 text,
-                                 PDF_TEXT_UTF16_BE,
-                                 (PDF_TEXT_UNICODE_WITH_BOM | PDF_TEXT_UTF16BE_WITH_LANGCODE));
-
-pdf_dealloc(str);
-
+str = pdf_text_get_unicode (text,
+                            PDF_TEXT_UTF16_BE,
+                            (PDF_TEXT_UNICODE_WITH_BOM | PDF_TEXT_UTF16BE_WITH_LANGCODE),
+                            &str_length,
+                            &error);
+if (str)
+  @{
+    /* Do something with the string */
+    pdf_dealloc (str);
+  @}
 @end example
 @end table
 @end deftypefun
 
 
+@deftypefun {pdf_char_t *} pdf_text_get_hex (const pdf_text_t *@var{text}, pdf_char_t @var{delimiter}, pdf_error_t **@var{error})
 
+Get the contents of a text variable as a string which includes the hexadecimal representation of each byte stored in the internal string of the text variable, separated by the character given in @var{delimiter} (usually ':').
 
-@deftypefun {pdf_char_t *} pdf_text_get_hex (const pdf_text_t @var{text}, const pdf_char_t @var{delimiter})
-
-Get the contents of a text variable encoded in ASCII format and represented in Hexadecimal format, separated by the character given in @var{delimiter} (usually ':').
+For debugging purposes only.
 
 @table @strong
 @item Parameters
@@ -6098,31 +6095,35 @@ Get the contents of a text variable encoded in ASCII format and represented in H
 A text variable
 @item delimiter
 A single ASCII char used as delimiter
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to create the output string.
+@end table
 @end table
 @item Returns
-A @code{NUL}-terminated string with the contents of the text object in hexadecimal representation. The string must be deallocated by the caller.
+A newly allocated @code{NUL}-terminated string with the contents of the text object in hexadecimal representation. The string must be deallocated by the caller.
 @item Usage Example
 @example
-pdf_text_t text;
+pdf_text_t *text;
 pdf_char_t *str;
-pdf_status_t ret_code;
 
 /* ...initialize and manipulate `text'... */
 
-str = pdf_text_get_hex (text, ':');
-
-PDF_DEBUG_BASE("Internal representation of the string is: '%s'",str);
-
-pdf_dealloc(str);
-
+str = pdf_text_get_hex (text, ':', NULL);
+if (str)
+  @{
+    PDF_DEBUG_BASE("Internal representation of the string is: '%s'", str);
+    pdf_dealloc (str);
+  @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_text_set_host (pdf_text_t @var{text}, const pdf_char_t *@var{str}, const pdf_size_t @var{size}, const pdf_text_host_encoding_t @var{enc})
+@deftypefun pdf_bool_t pdf_text_set_host (pdf_text_t *@var{text}, const pdf_char_t *@var{str}, pdf_size_t @var{size}, const pdf_char_t *@var{enc}, pdf_error_t **@var{error})
 
-Set a string encoded with some host encoding as the value of a text
-variable.
+Set a string encoded with some host encoding as the value of a text variable.
 
 @table @strong
 @item Parameters
@@ -6135,26 +6136,38 @@ A string encoded with some host encoding.
 The length of @var{str}, in bytes.
 @item enc
 The host encoding used to encode @var{str}.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to create the output string.
+@item PDF_ETEXTENC
+Invalid data in the input string (encoding error).
+@end table
 @end table
 @item Returns
-The status of the conversion.
+@code{PDF_TRUE} if the operation succeeded, @code{PDF_FALSE} otherwise.
 @item Usage Example
 @example
-pdf_text_t text;
-pdf_text_host_encoding_t encoding;
-pdf_char_t *str;
-pdf_size_t length;
+pdf_error_t *error = NULL;
+pdf_char_t *str = "string in ascii-7, a.k.a. us-ascii";
+pdf_text_t *text;
 
-/* ...initialize and manipulate `text', `encoding' and `str'... */
-if (pdf_text_set_host (text, str, length, enc) != PDF_OK)
-@{
-  /* `str' contains bad data */
-@}
+/* ...initialize and manipulate `text' */
+
+if (!pdf_text_set_host (text,
+                        str,
+                        strlen (str),
+                        "us-ascii",
+                        &error))
+  @{
+    /* An error happened */
+  @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_text_set_pdfdocenc (pdf_text_t @var{text}, const pdf_char_t *@var{str})
+@deftypefun pdf_bool_t pdf_text_set_pdfdocenc (pdf_text_t *@var{text}, const pdf_char_t *@var{str}, pdf_error_t **@var{error})
 
 Set a PDF Doc Encoding encoded string as the value of a text variable.
 
@@ -6164,25 +6177,34 @@ Set a PDF Doc Encoding encoded string as the value of a text variable.
 @item text
 A text variable.
 @item str
-A string encoded with PDF Doc Encoding, NUL terminated.
+A string encoded with PDF Doc Encoding, @code{NUL} terminated.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to create the output string.
+@item PDF_ETEXTENC
+Invalid data in the input string (encoding error).
+@end table
 @end table
 @item Returns
-The status of the conversion.
+@code{PDF_TRUE} if the operation succeeded, @code{PDF_FALSE} otherwise.
 @item Usage Example
 @example
-pdf_text_t text;
-pdf_char_t *str;
+pdf_error_t *error = NULL;
+pdf_char_t *str = "PDF doc encoded string!";
+pdf_text_t *text;
 
 /* ...initialize and manipulate `text' and `str'... */
-if (pdf_text_set_pdfdocenc (text, str) != PDF_OK)
-@{
-  /* `str' contains bad data */
-@}
+if (!pdf_text_set_pdfdocenc (text, str, &error))
+  @{
+    /* An error happened */
+  @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_text_set_unicode (pdf_text_t @var{text}, const pdf_char_t *@var{str}, const pdf_size_t @var{size}, const enum pdf_text_unicode_encoding_e @var{enc})
+@deftypefun pdf_bool_t pdf_text_set_unicode (pdf_text_t *@var{text}, const pdf_char_t *@var{str}, pdf_size_t @var{size}, enum pdf_text_unicode_encoding_e @var{enc}, pdf_error_t **@var{error})
 
 Set a Unicode encoded string as the value of a text variable.
 
@@ -6196,35 +6218,47 @@ A Unicode string without country/language data embedded.
 @item size
 The length of @var{str}, in bytes.
 @item enc
-The used Unicode encoding in @var{str}.
+The Unicode encoding used in @var{str}.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to create the output string.
+@item PDF_ETEXTENC
+Invalid data in the input string (encoding error).
+@end table
 @end table
 @item Returns
-The status of the conversion.
+@code{PDF_TRUE} if the operation succeeded, @code{PDF_FALSE} otherwise.
 @item Usage Example
 @example
-pdf_text_t text;
-pdf_char_t *str;
-pdf_size_t length;
-enum pdf_text_unicode_encoding_e enc;
+pdf_error_t *error = NULL;
+pdf_text_t *text;
 
-/* ...initialize and manipulate `text', `str' and `enc'... */
-if (pdf_text_set_unicode (text, str, length, enc) != PDF_OK)
-@{
-  /* `str' contains bad data */
-@}
+/* ...initialize  `text'... */
+
+if (!pdf_text_set_unicode (text,
+                           "\x00\x00\x00\x20\x00\x00\x00\x69",
+                           8,
+                           PDF_TEXT_UTF32_BE,
+                           &error))
+  @{
+    /* An error happened */
+  @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_text_concat (pdf_text_t @var{text1}, const pdf_text_t @var{text2}, const pdf_bool_t @var{override_langinfo})
+@deftypefun pdf_bool_t pdf_text_concat (pdf_text_t *@var{text1}, const pdf_text_t *@var{text2}, const pdf_bool_t @var{override_langinfo}, pdf_error_t *@var{error})
 
 Concatenate the contents of two text variables (@var{text1} first,
-then @var{text2}) and store the result in @var{text}.
+then @var{text2}) and store the result in @var{text1}.
 
-Warning! @var{override_langinfo} is not set and different country/language
+Warning! If @var{override_langinfo} is not set and different country/language
 codes are found within the text variables an error will be returned
 (concatenation not possible). If @var{override_langinfo} is set, the country
- and language information is not checked.
+and language information is not checked, and the one in @var{text1} is left
+untouched.
 
 @table @strong
 @item Parameters
@@ -6238,25 +6272,38 @@ are left unchanged.
 @item override_langinfo
 Flag to indicate if the language and country information must be checked
 before performing the concatenation.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to create the output string.
+@item PDF_ETEXTENC
+Failed language/country information check.
+@end table
 @end table
 @item Returns
-The status of the operation.
+@code{PDF_TRUE} if the operation succeeded, @code{PDF_FALSE} otherwise.
 @item Usage Example
 @example
-pdf_text_t text1;
-pdf_text_t text2;
+pdf_error_t *error = NULL;
+pdf_text_t *text1;
+pdf_text_t *text2;
 
 /* ...initialize `text1' and `text2'... */
-if (pdf_text_concat (text1, text2, PDF_FALSE) != PDF_OK)
-@{
-   /* Manage the error */
-@}
+
+if (!pdf_text_concat (text1,
+                      text2,
+                      PDF_FALSE,
+                      &error))
+  @{
+    /* Manage the error */
+  @}
 @end example
 @end table
 @end deftypefun
 
 
-@deftypefun pdf_status_t pdf_text_concat_ascii (pdf_text_t @var{text1}, const pdf_char_t * @var{ascii_str})
+@deftypefun pdf_bool_t pdf_text_concat_ascii (pdf_text_t *@var{text1}, const pdf_char_t * @var{ascii_str}, pdf_error_t **@var{error})
 
 Concatenate the contents of text variable @var{text1} with ASCII string @var{ascii_str},
 and store the result in @var{text1}.
@@ -6270,25 +6317,34 @@ are modified with the output of the concatenation.
 @item ascii_str
 The ascii string to concatenate. The contents of this variable
 are left unchanged.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to create the output string.
+@item PDF_ETEXTENC
+Input string @var{ascii_str} is not ASCII-7.
+@end table
 @end table
 @item Returns
-The status of the operation.
+@code{PDF_TRUE} if the operation succeeded, @code{PDF_FALSE} otherwise.
 @item Usage Example
 @example
-pdf_text_t text1;
-pdf_char_t * str;
+pdf_error_t *error = NULL;
+pdf_text_t *text1;
 
-/* ...initialize `text1' and `str... */
-if (pdf_text_concat_ascii (text1, str) != PDF_OK)
-@{
-   /* Manage the error */
-@}
+/* ...initialize `text1'... */
+
+if (!pdf_text_concat_ascii (text1, "some ascii to append", &error))
+  @{
+    /* Manage the error */
+  @}
 @end example
 @end table
 @end deftypefun
 
 
-@deftypefun pdf_status_t pdf_text_replace (pdf_text_t @var{text}, const pdf_text_t @var{new_pattern}, const pdf_text_t @var{old_pattern})
+@deftypefun pdf_bool_t pdf_text_replace (pdf_text_t *@var{text}, const pdf_text_t *@var{new_pattern}, const pdf_text_t *@var{old_pattern}, pdf_error_t **@var{error})
 
 Replace a fixed pattern in the content of a given text variable.
 
@@ -6301,25 +6357,38 @@ A text variable.
 The replacement text.
 @item old_pattern
 The text to be replaced. Any occurrence of this text is replaced with @var{new_pattern}.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to handle the replace.
+@item PDF_ETEXTENC
+Invalid input pattern.
+@end table
 @end table
 @item Returns
-The status of the operation
+@code{PDF_TRUE} if the operation succeeded, @code{PDF_FALSE} otherwise.
 @item Usage Example
 @example
-pdf_text_t text;
-pdf_text_t new_pattern;
-pdf_text_t old_pattern;
+pdf_error_t *error = NULL;
+pdf_text_t *text;
+pdf_text_t *new_pattern;
+pdf_text_t *old_pattern;
 
 /* ...initialize `text', `new_pattern' and `old_pattern'... */
-if (pdf_text_replace (text, new_pattern, new_pattern) != PDF_OK)
-@{
-  /* Manage the error */
-@}
+
+if (!pdf_text_replace (text,
+                       new_pattern,
+                       old_pattern,
+                       &error))
+  @{
+    /* Manage the error */
+  @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_text_replace_ascii (pdf_text_t @var{text}, const pdf_char_t *@var{new_pattern}, const pdf_char_t *@var{old_pattern})
+@deftypefun pdf_bool_t pdf_text_replace_ascii (pdf_text_t *@var{text}, const pdf_char_t *@var{new_pattern}, const pdf_char_t *@var{old_pattern}, pdf_error_t **@var{error})
 
 Replace a fixed ASCII pattern in the content of a given text variable.
 
@@ -6332,25 +6401,37 @@ A text variable.
 The replacement ASCII string.
 @item old_pattern
 The text to be replaced. Any occurrence of this text is replaced with @var{new_pattern}.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to handle the replace.
+@item PDF_ETEXTENC
+Invalid input pattern.
+@end table
 @end table
 @item Returns
-The status of the operation
+@code{PDF_TRUE} if the operation succeeded, @code{PDF_FALSE} otherwise.
 @item Usage Example
 @example
-pdf_text_t text;
+pdf_text_t *text;
 const pdf_char_t *new_pattern = "GNU/Linux";
 const pdf_char_t *old_pattern = "Linux";
 
 /* ...initialize `text'... */
-if (pdf_text_replace_ascii (text, new_pattern, old_pattern) != PDF_OK)
-@{
-  /* Manage the error */
-@}
+
+if (!pdf_text_replace_ascii (text,
+                             new_pattern,
+                             old_pattern,
+                             &error))
+  @{
+    /* Manage the error */
+  @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_text_filter (pdf_text_t @var{text}, const pdf_u32_t @var{filter})
+@deftypefun pdf_bool_t pdf_text_filter (pdf_text_t *@var{text}, const pdf_u32_t @var{filter}, pdf_error_t **@var{error})
 
 Filter the contents of a text variable.
 
@@ -6360,23 +6441,33 @@ Filter the contents of a text variable.
 @item text
 A text variable.
 @item filter
-Filter to be run in @var{text}, in the way: FILTER_1 | FILTER_2 | FILTER_3.
+Mask of flags specifying what filters to be run, as: FILTER_1 | FILTER_2 | FILTER_3.
 (see @code{pdf_text_filter_type_e} data type).
-
 Warning!! At most one case-related filter can be applied at a time.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to handle the filter operation.
+@item PDF_ETEXTENC
+Invalid input filter setup.
+@end table
 @end table
 @item Returns
-The status of the operation
+@code{PDF_TRUE} if the operation succeeded, @code{PDF_FALSE} otherwise.
 @item Usage Example
 @example
-pdf_text_t text;
+pdf_error_t *error = NULL;
+pdf_text_t *text;
 
 /* ...initialize `text'... */
 
-if (pdf_text_filter (text, (PDF_TEXT_FILTER_LOWER_CASE | PDF_TEXT_FILTER_REMOVE_AMP)) != PDF_OK)
-@{
-  /* Manage error */
-@}
+if (!pdf_text_filter (text,
+                      (PDF_TEXT_FILTER_LOWER_CASE | PDF_TEXT_FILTER_REMOVE_AMP)),
+                      &error)
+  @{
+    /* Manage error */
+  @}
 @end example
 @end table
 @end deftypefun
@@ -6385,7 +6476,7 @@ if (pdf_text_filter (text, (PDF_TEXT_FILTER_LOWER_CASE | PDF_TEXT_FILTER_REMOVE_
 @node Comparing Text Variables
 @subsection Comparing Text Variables
 
-@deftypefun pdf_i32_t pdf_text_cmp (const pdf_text_t @var{text1}, const pdf_text_t @var{text2}, const pdf_bool_t @var{case_sensitive}, pdf_status_t *@var{p_ret_code})
+@deftypefun pdf_i32_t pdf_text_cmp (const pdf_text_t *@var{text1}, const pdf_text_t *@var{text2}, const pdf_bool_t @var{case_sensitive}, pdf_error_t **@var{error})
 
 Compare the contents of two text variables.
 
@@ -6397,16 +6488,15 @@ A text variable.
 @item text2
 A text variable.
 @item case_sensitive
-A boolean value indicating if the comparison is case-sensitive:
+A boolean value indicating if the comparison is case-sensitive.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_TRUE
-Case sensitive.
-@item PDF_FALSE
-Case insensitive.
+@item PDF_ENOMEM
+Not enough memory to handle the filter operation.
+@item PDF_ETEXTENC
+Internal error when doing case-insensitive comparison.
 @end table
-@item p_ret_code
-Pointer to store the status of the comparison (an internal error could happen).
-NULL can be passed, so that the return status is not considered.
 @end table
 @item Returns
 An integer:
@@ -6420,29 +6510,35 @@ If text1 > text2
 @end table
 @item Usage Example
 @example
-pdf_text_t text1;
-pdf_text_t text2;
+pdf_error_t *error = NULL;
+pdf_text_t *text1;
+pdf_text_t *text2;
+pdf_i32_t cmp;
 
 /* ...initialize `text1' and `text2'... */
 
-switch (pdf_text_cmp (text1, text2, PDF_FALSE))
-@{
- case -1:
- @{
-   /* XXX */
-   break;
- @}
- case 0:
- @{
-   /* XXX */
-   break;
- @}
- case +1:
- @{
-   /* XXX */
-   break;
- @}
-@}
+cmp = pdf_text_cmp (text1, text2, PDF_FALSE, &error);
+if (!error)
+  @{
+    switch (cmp)
+    @{
+    case -1:
+      @{
+        /* XXX */
+        break;
+      @}
+    case 0:
+      @{
+         /* XXX */
+         break;
+      @}
+    case +1:
+      @{
+         /* XXX */
+         break;
+      @}
+    @}
+  @}
 @end example
 @end table
 @end deftypefun
@@ -6450,55 +6546,70 @@ switch (pdf_text_cmp (text1, text2, PDF_FALSE))
 @node Managing Host Encodings
 @subsection Managing Host Encodings
 
-@deftypefun pdf_text_host_encoding_t pdf_text_get_host_encoding (void)
+@deftypefun const pdf_char_t *pdf_text_get_host_encoding (void)
 
-Return the host encoding configured by the user/system in the locale.
+Return the host encoding configured by the user in the locale.
 
 @table @strong
 @item Parameters
 None
 @item Returns
-The host encoding configured in the user's locale.
+A string with the host encoding configured in the user's locale.
+The returned string shouldn't be modified by the caller.
 @item Usage Example
 @example
-pdf_text_host_encoding enc;
 
-enc = pdf_text_get_host_encoding();
+print ("Current host encoding is: '%s'\n",
+       pdf_text_get_host_encoding ());
 
 @end example
 @end table
 @end deftypefun
 
+@deftypefun pdf_bool_t pdf_text_check_host_encoding (const pdf_char_t *@var{encoding_name}, pdf_error_t **@var{error})
 
-@deftypefun pdf_status_t pdf_text_check_host_encoding (const pdf_char_t *@var{encoding_name}, pdf_text_host_encoding_t *@var{p_encoding})
-
-Check if a given encoding is available in the system as a host-encoding. If available, it will return PDF_OK and will fill in the pdf_text_host_encoding_t variable passed by reference.
+Check if a given encoding is available in the system.
 
 @table @strong
 @item Parameters
 @table @var
 @item encoding_name
 Name of the encoding to check for.
-@item p_encoding
-Pointer to a pdf_text_host_encoding_t variable.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to check if encoding is available.
+@end table
 @end table
 @item Returns
-Returns PDF_OK if the encoding is available in the system as a host-encoding.
+@code{PDF_TRUE} if @var{encoding_name} is available in the system, @code{PDF_FALSE} otherwise.
 @item Usage Example
 @example
-pdf_text_host_encoding enc;
+pdf_error_t *error = NULL;
 
-if(pdf_text_check_host_encoding((pdf_char_t *)"ascii-us",&enc) == PDF_OK)
+if (!pdf_text_check_host_encoding ("ascii-us", &error))
   @{
-    /* XXX */
+    if (!error)
+    @{
+      /* Host encoding not available */
+    @}
+    else
+    @{
+      /* An error happened when trying to check
+       * if host encoding available */
+    @}
   @}
-
+else
+  @{
+    /* Host encoding is available */
+  @}
 @end example
 @end table
 @end deftypefun
 
 
-@deftypefun pdf_text_host_encoding_t pdf_text_get_best_encoding (const pdf_text_t @var{text}, const pdf_text_host_encoding_t @var{preferred_encoding})
+@deftypefun const pdf_char_t *pdf_text_get_best_encoding (const pdf_text_t *@var{text}, const pdf_char_t *@var{preferred_encoding})
 
 Return the best available host encoding to encode the contents of a
 given text variable. A specified preferred encoding is selected if
@@ -6519,13 +6630,12 @@ A text encoding supported by the host.
 The best host encoding available to encode the contents of @var{text}.
 @item Usage Example
 @example
-pdf_text_t text;
-pdf_text_host_encoding pref;
-pdf_text_host_encoding enc;
+pdf_text_t *text;
+const pdf_char_t *best;
 
 /* ...create and manipulate `text'... */
 
-enc = pdf_text_get_best_encoding (text, pref);
+best = pdf_text_get_best_encoding (text, "UTF-8");
 
 @end example
 @end table

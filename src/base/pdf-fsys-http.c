@@ -72,53 +72,43 @@ const struct pdf_fsys_impl_s pdf_fsys_http_implementation =
     pdf_fsys_http_file_reopen
   };
 
-
-
-
-
-
 /******************************************************************************/
 /************   Private Function Prototypes   *********************************/
 /******************************************************************************/
-static pdf_status_t
-__pdf_fsys_http_valid ( pdf_fsys_file_t file );
 
-static void *
-__pdf_fsys_http_proc (void *datum);
+static pdf_status_t __pdf_fsys_http_valid (pdf_fsys_file_t file);
 
-static void
-__pdf_fsys_http_multi_perform (pdf_fsys_http_data_t data);
+static void *__pdf_fsys_http_proc (void *datum);
 
-static pdf_status_t
-__pdf_fsys_http_get_host_path (pdf_text_t path, pdf_char_t **host_path,
-                               pdf_size_t *host_path_size);
+static void __pdf_fsys_http_multi_perform (pdf_fsys_http_data_t data);
 
-static void 
-__pdf_fsys_http_init_props (struct pdf_fsys_item_props_s *item_props);
+static pdf_char_t *__pdf_fsys_http_get_url (const pdf_text_t  *path,
+					    pdf_error_t      **error);
 
-static void
-__pdf_fsys_http_add_file_to_list (pdf_fsys_http_data_t data, 
-                                  pdf_fsys_file_t file);
+static void __pdf_fsys_http_init_props (struct pdf_fsys_item_props_s *item_props);
 
-static pdf_fsys_http_file_t
-__pdf_fsys_http_get_file_by_easy (pdf_fsys_http_data_t data, CURL *easy);
+static void __pdf_fsys_http_add_file_to_list (pdf_fsys_http_data_t data,
+					      pdf_fsys_file_t      file);
 
-static size_t
-__pdf_fsys_http_readlim (pdf_fsys_http_file_t http_file, size_t bytes);
+static pdf_fsys_http_file_t __pdf_fsys_http_get_file_by_easy (pdf_fsys_http_data_t  data,
+							      CURL                 *easy);
 
-static size_t
-__pdf_fsys_http_libcurl_writefunc (void *ptr, size_t size, size_t nmemb, 
-                                   void *stream);
+static size_t __pdf_fsys_http_readlim (pdf_fsys_http_file_t http_file,
+				       size_t               bytes);
+
+static size_t __pdf_fsys_http_libcurl_writefunc (void   *ptr,
+						 size_t  size,
+						 size_t  nmemb,
+						 void   *stream);
 
 /******************************************************************************/
 /************   Private Functions   *******************************************/
 /******************************************************************************/
 
-
 /* This function is used to check that file represents an http filesystem file
  * that is valid and safe to work with */
 static pdf_status_t
-__pdf_fsys_http_valid ( pdf_fsys_file_t file )
+__pdf_fsys_http_valid (pdf_fsys_file_t file)
 {
   pdf_status_t rv = PDF_OK;
 
@@ -183,8 +173,8 @@ __pdf_fsys_http_proc (void *datum)
 
       pthread_mutex_lock (&(data->mutex));
       {
-        crv = curl_multi_fdset (data->curlm, &read_fd_set, &write_fd_set, 
-                                &exc_fd_set, &max_fd); 
+        crv = curl_multi_fdset (data->curlm, &read_fd_set, &write_fd_set,
+                                &exc_fd_set, &max_fd);
       }
       pthread_mutex_unlock (&(data->mutex));
 
@@ -228,7 +218,7 @@ __pdf_fsys_http_proc (void *datum)
           /* failure of curl_multi_fdset. */
           sleep (1); /* try again in a second. */
         }
-      
+
     }
 
   pthread_exit (NULL);
@@ -251,7 +241,7 @@ __pdf_fsys_http_multi_perform (pdf_fsys_http_data_t data)
 
   pdf_fsys_http_file_t http_file;
 
-  do 
+  do
     {
       pthread_mutex_lock (&(data->mutex));
       {
@@ -331,68 +321,27 @@ __pdf_fsys_http_multi_perform (pdf_fsys_http_data_t data)
   return;
 }
 
-
-static pdf_status_t
-__pdf_fsys_http_get_host_path (pdf_text_t path, pdf_char_t **host_path,
-                               pdf_size_t *host_path_size)
+static pdf_char_t *
+__pdf_fsys_http_get_url (const pdf_text_t  *path,
+			 pdf_error_t      **error)
 {
-#ifdef PDF_HOST_WIN32
-  /* For W32, we will always use widechar functions, so Windows' wchar_t
-   * implementation should be used (UTF-16LE) */
-  pdf_char_t *data = NULL;
-  pdf_size_t size = 0;
-
-  if (pdf_text_get_unicode (&data,
-                            &size,
-                            path,
-                            PDF_TEXT_UTF16_LE,
-                            PDF_TEXT_UNICODE_WITH_NUL_SUFFIX) == PDF_OK)
-    {
-      *host_path = data;
-      *host_path_size = size;
-      return PDF_OK;
-    }
-  else
-    return PDF_ERROR;
-#else
-  /* Call the pdf_text module to get a host-encoded version of the
-   *  given path */
-  pdf_char_t *padded = NULL;
-  pdf_size_t padded_size = 0;
-
-  if (pdf_text_get_host (&padded,
-                         &padded_size,
-                         path,
-                         pdf_text_get_host_encoding ()) == PDF_OK)
-    {
-      *host_path = pdf_realloc (padded, padded_size+2);
-      if (*host_path != NULL)
-        {
-          *host_path_size = padded_size + 1;
-          (*host_path)[(*host_path_size)-1] = '\0'; 
-          return PDF_OK;
-        }
-      else
-        return PDF_ENOMEM;
-    }
-  else
-    return PDF_ERROR;
-#endif
+#warning Correctly implement this, see FS#126
+  return NULL;
 }
 
 
-static void 
+static void
 __pdf_fsys_http_init_props (struct pdf_fsys_item_props_s *item_props)
 {
   memset (item_props, 0, sizeof (struct pdf_fsys_item_props_s));
-  
+
   return;
 }
 
 
 static void
-__pdf_fsys_http_add_file_to_list (pdf_fsys_http_data_t data, 
-                                  pdf_fsys_file_t file)
+__pdf_fsys_http_add_file_to_list (pdf_fsys_http_data_t data,
+                                  pdf_fsys_file_t      file)
 {
   if ((NULL == data) ||
       (NULL == file))
@@ -410,8 +359,8 @@ __pdf_fsys_http_add_file_to_list (pdf_fsys_http_data_t data,
 }
 
 static pdf_fsys_http_file_t
-__pdf_fsys_http_get_file_by_easy (pdf_fsys_http_data_t data,
-                                  CURL *easy)
+__pdf_fsys_http_get_file_by_easy (pdf_fsys_http_data_t  data,
+                                  CURL                 *easy)
 {
   pdf_size_t           i;
   pdf_size_t           n;
@@ -423,7 +372,7 @@ __pdf_fsys_http_get_file_by_easy (pdf_fsys_http_data_t data,
   {
 
     n = pdf_list_size (data->file_list);
-    
+
     for (i=0; i<n; i++)
       {
         if (pdf_list_get_at (data->file_list, i, (const void**)&file)
@@ -446,7 +395,7 @@ __pdf_fsys_http_get_file_by_easy (pdf_fsys_http_data_t data,
               }
           }
       }
-    
+
   }
   pthread_mutex_unlock (&(data->mutex));
 
@@ -455,7 +404,8 @@ __pdf_fsys_http_get_file_by_easy (pdf_fsys_http_data_t data,
 
 
 static size_t
-__pdf_fsys_http_readlim (pdf_fsys_http_file_t http_file, size_t bytes)
+__pdf_fsys_http_readlim (pdf_fsys_http_file_t http_file,
+			 size_t               bytes)
 {
   size_t rv;
   size_t avail;
@@ -463,7 +413,7 @@ __pdf_fsys_http_readlim (pdf_fsys_http_file_t http_file, size_t bytes)
 #warning "This will have to be significantly reworked to support RIA."
 
   avail = http_file->write_idx - http_file->read_idx;
-  
+
   rv = (avail < bytes) ? avail : bytes;
 
   return rv;
@@ -471,8 +421,10 @@ __pdf_fsys_http_readlim (pdf_fsys_http_file_t http_file, size_t bytes)
 
 
 static size_t
-__pdf_fsys_http_libcurl_writefunc (void *ptr, size_t size, size_t nmemb, 
-                                   void *stream)
+__pdf_fsys_http_libcurl_writefunc (void   *ptr,
+				   size_t  size,
+				   size_t  nmemb,
+                                   void   *stream)
 {
   pdf_size_t written = 0;
   pdf_size_t to_write;
@@ -486,7 +438,7 @@ __pdf_fsys_http_libcurl_writefunc (void *ptr, size_t size, size_t nmemb,
     {
       return 0;
     }
-  
+
   http_file = (pdf_fsys_http_file_t) stream;
 
   /* write to http_file->temp_file */
@@ -500,7 +452,7 @@ __pdf_fsys_http_libcurl_writefunc (void *ptr, size_t size, size_t nmemb,
 
     pdf_fsys_file_set_pos (http_file->temp_file, http_file->write_idx);
 
-    wrv = pdf_fsys_file_write (http_file->temp_file, ptr, 
+    wrv = pdf_fsys_file_write (http_file->temp_file, ptr,
                                to_write, &written);
 
     http_file->write_idx += written;
@@ -532,14 +484,14 @@ pdf_fsys_http_init (void **data)
   int prv;
   pdf_status_t ret_code = PDF_OK;
   pdf_fsys_http_data_t pdf_fsys_http_data;
-  
+
 
   if (NULL == data)
     {
       return PDF_ERROR;
     }
 
-  pdf_fsys_http_data = 
+  pdf_fsys_http_data =
     (pdf_fsys_http_data_t) pdf_alloc (sizeof (struct pdf_fsys_http_data_s));
 
   if (NULL != pdf_fsys_http_data)
@@ -561,7 +513,7 @@ pdf_fsys_http_init (void **data)
     }
   else
     {
-      ret_code = pdf_list_new (NULL, NULL, PDF_TRUE, 
+      ret_code = pdf_list_new (NULL, NULL, PDF_TRUE,
                                &(pdf_fsys_http_data->file_list) );
     }
 
@@ -569,7 +521,7 @@ pdf_fsys_http_init (void **data)
     {
       /* create worker thread. */
 
-      prv = pthread_create (&(pdf_fsys_http_data->worker), NULL, 
+      prv = pthread_create (&(pdf_fsys_http_data->worker), NULL,
                             __pdf_fsys_http_proc, pdf_fsys_http_data);
     }
 
@@ -611,14 +563,14 @@ pdf_fsys_http_cleanup (void *data)
           if (NULL != http_file->curl)
             {
               /* Remove any leftover easy handles from multi handle */
-              curl_multi_remove_handle (pdf_fsys_http_data->curlm, 
+              curl_multi_remove_handle (pdf_fsys_http_data->curlm,
                                         http_file->curl);
               /* and cleanup each easy handle */
               curl_easy_cleanup (http_file->curl);
             }
           /* close temp file if open */
           pdf_fsys_file_close (http_file->temp_file);
-          
+
           if (NULL != http_file->host_path)
             {
               /* delete host_path */
@@ -647,8 +599,8 @@ pdf_fsys_http_cleanup (void *data)
 
 /* Create folder - function must exist for interface - not supported - RO */
 pdf_status_t
-pdf_fsys_http_create_folder (void *data,
-                             pdf_text_t path_name)
+pdf_fsys_http_create_folder (void             *data,
+                             const pdf_text_t *path_name)
 {
   /* Read Only filesystem - Not able to create */
   return PDF_EBADPERMS;
@@ -657,9 +609,9 @@ pdf_fsys_http_create_folder (void *data,
 
 /* Get folder contents (list files) */
 pdf_status_t
-pdf_fsys_http_get_folder_contents (void *data,
-                                   pdf_text_t path_name,
-                                   pdf_list_t item_list)
+pdf_fsys_http_get_folder_contents (void             *data,
+                                   const pdf_text_t *path_name,
+                                   pdf_list_t       *item_list)
 {
   /* Not possible AFAIK to get a standard directory listing, even if listings */
   /* are allowed for a particular directory */
@@ -671,9 +623,9 @@ pdf_fsys_http_get_folder_contents (void *data,
 
 /* Get path name of the father of a given item in the filesystem */
 pdf_status_t
-pdf_fsys_http_get_parent (void *data,
-                          pdf_text_t path_name,
-                          pdf_text_t parent_path)
+pdf_fsys_http_get_parent (void        *data,
+                          pdf_text_t  *path_name,
+                          pdf_text_t **parent_path)
 {
   /* No clear meaning for URL request. */
   return PDF_ERROR;
@@ -682,8 +634,8 @@ pdf_fsys_http_get_parent (void *data,
 
 /* Remove folder - function must exist for interface - not supported - RO */
 pdf_status_t
-pdf_fsys_http_remove_folder (void *data,
-                             pdf_text_t path_name)
+pdf_fsys_http_remove_folder (void             *data,
+                             const pdf_text_t *path_name)
 {
   /* Read Only filesystem - Not able to delete */
   return PDF_EBADPERMS;
@@ -692,8 +644,8 @@ pdf_fsys_http_remove_folder (void *data,
 
 /* Get item properties */
 pdf_status_t
-pdf_fsys_http_get_item_props (void *data,
-                              pdf_text_t path_name,
+pdf_fsys_http_get_item_props (void                         *data,
+                              const pdf_text_t             *path_name,
                               struct pdf_fsys_item_props_s *props)
 {
   /* Use HTTP HEAD request to retrieve content length, and verify readability */
@@ -705,20 +657,19 @@ pdf_fsys_http_get_item_props (void *data,
   double   file_len;
   double   temp_d;
 
-  pdf_char_t* host_path = NULL;
-  pdf_size_t host_path_len = 0;
+  pdf_char_t* url = NULL;
 
   pdf_status_t ret_code = PDF_EBADDATA;
 
 
   curl = curl_easy_init ();
-  
+
   if ((curl) && (NULL != props))
     {
+#warning This is wrong, curl expects always a URI as per RFC2396
       /* convert path_name into host-encoding for curl */
-      ret_code = __pdf_fsys_http_get_host_path (path_name,
-                                                &host_path,
-                                                &host_path_len);
+      url = __pdf_fsys_http_get_url (path_name);
+      ret_code = (url ? PDF_OK : PDF_ERROR);
     }
 
   if (PDF_OK == ret_code)
@@ -732,7 +683,7 @@ pdf_fsys_http_get_item_props (void *data,
       else
         { /* This is the head request (NO BODY = HEAD) */
           res = curl_easy_setopt (curl, CURLOPT_NOBODY, 1L);
-          
+
           if (CURLE_OK != res)
             {
               ret_code = PDF_ERROR;
@@ -742,17 +693,17 @@ pdf_fsys_http_get_item_props (void *data,
 
   if (PDF_OK == ret_code)
     {
-      
+
       res = curl_easy_perform (curl);
-          
+
       if (CURLE_OK == res)
         {
-          res = curl_easy_getinfo (curl, CURLINFO_RESPONSE_CODE, 
+          res = curl_easy_getinfo (curl, CURLINFO_RESPONSE_CODE,
                                    &http_res_code);
-          
+
           if (CURLE_OK == res)
             {
-              
+
               if (200 == http_res_code)
                 {
                   __pdf_fsys_http_init_props (props);
@@ -760,16 +711,16 @@ pdf_fsys_http_get_item_props (void *data,
                   props->is_readable = PDF_TRUE;
                   props->is_writable = PDF_FALSE;
                   memset (&(props->creation_date), 0, sizeof (pdf_time_t));
-                  memset (&(props->modification_date), 0, 
+                  memset (&(props->modification_date), 0,
                           sizeof (pdf_time_t));
                   props->file_size_high = (pdf_u32_t)UINT32_MAX;
                   props->file_size_low = (pdf_u32_t)UINT32_MAX;
                   props->folder_size = (pdf_u32_t)0;
-                  
-                  res = curl_easy_getinfo (curl, 
-                                           CURLINFO_CONTENT_LENGTH_DOWNLOAD, 
+
+                  res = curl_easy_getinfo (curl,
+                                           CURLINFO_CONTENT_LENGTH_DOWNLOAD,
                                            &file_len);
-                  
+
                   if ((CURLE_OK == res) && (file_len >= 0.0))
                     {
                       /* convert double into file_size_high and file_size_low */
@@ -781,7 +732,7 @@ pdf_fsys_http_get_item_props (void *data,
                       /* cast temp_d to assign high */
                       props->file_size_high = (pdf_u32_t)temp_d;
                       /* move back to double domain to calculate low */
-                      temp_d = file_len - (((double)props->file_size_high) 
+                      temp_d = file_len - (((double)props->file_size_high)
                                            * TWO_RAISED_TO_32_AS_DOUBLE);
                       /* cast temp_d to assign low */
                       props->file_size_low = (pdf_u32_t)temp_d;
@@ -793,7 +744,7 @@ pdf_fsys_http_get_item_props (void *data,
                 }
               else
                 {
-                  props->is_readable = PDF_FALSE;                      
+                  props->is_readable = PDF_FALSE;
                 }
             }
           else
@@ -816,24 +767,22 @@ pdf_fsys_http_get_item_props (void *data,
   return ret_code;
 }
 
-
 /* Get the free storage space in the volume containing path_name */
 pdf_i64_t
-pdf_fsys_http_get_free_space (void *data,
-                              pdf_text_t path_name)
+pdf_fsys_http_get_free_space (void             *data,
+                              const pdf_text_t *path_name)
 {
   /* Read-Only filesystem - no free space */
   return (pdf_i64_t)0;
 }
 
-
 /* Check if file exists */
 pdf_bool_t
-pdf_fsys_http_item_p (void *data,
-                      pdf_text_t path_name)
+pdf_fsys_http_item_p (void             *data,
+                      const pdf_text_t *path_name)
 {
   pdf_bool_t rv;
-  
+
   /* In HTTP filesystem an item exists if it is readable */
   rv = pdf_fsys_http_item_readable_p (data, path_name);
 
@@ -843,8 +792,8 @@ pdf_fsys_http_item_p (void *data,
 
 /* Check if file is readable */
 pdf_bool_t
-pdf_fsys_http_item_readable_p (void *data,
-                               pdf_text_t path_name)
+pdf_fsys_http_item_readable_p (void             *data,
+                               const pdf_text_t *path_name)
 {
   struct pdf_fsys_item_props_s item_props;
   pdf_status_t ret_code;
@@ -867,8 +816,8 @@ pdf_fsys_http_item_readable_p (void *data,
 
 /* Check if file is writable - Read Only (RO) filesystem - op. not supported */
 pdf_bool_t
-pdf_fsys_http_item_writable_p (void *data,
-                               pdf_text_t path_name)
+pdf_fsys_http_item_writable_p (void             *data,
+                               const pdf_text_t *path_name)
 {
   return PDF_FALSE;
 }
@@ -876,9 +825,9 @@ pdf_fsys_http_item_writable_p (void *data,
 /* --------------------- File interface ------------------------------------- */
 
 pdf_status_t
-pdf_fsys_http_file_read (pdf_fsys_file_t file, 
+pdf_fsys_http_file_read (pdf_fsys_file_t file,
                          pdf_char_t *buf,
-                         pdf_size_t bytes, 
+                         pdf_size_t bytes,
                          pdf_size_t *read_bytes)
 {
   pdf_status_t rv = PDF_OK;
@@ -906,7 +855,7 @@ pdf_fsys_http_file_read (pdf_fsys_file_t file,
         /* bytes = __pdf_fsys_http_readlim (http_file, bytes); */
 
         rv = pdf_fsys_file_read ( http_file->temp_file, buf, bytes, read_bytes);
-        
+
         /* we are not really at the EOF until downloading is complete. */
         if ((PDF_EEOF == rv) && (http_file->downloading))
           {
@@ -925,9 +874,9 @@ pdf_fsys_http_file_read (pdf_fsys_file_t file,
 
 /* write data to file - Read Only filesystem - Not able to write */
 pdf_status_t
-pdf_fsys_http_file_write (pdf_fsys_file_t file, 
+pdf_fsys_http_file_write (pdf_fsys_file_t file,
                           pdf_char_t *buf,
-                          pdf_size_t bytes, 
+                          pdf_size_t bytes,
                           pdf_size_t *written_bytes)
 {
   /* Read Only filesystem - Not able to write */
@@ -952,10 +901,10 @@ pdf_fsys_http_file_can_set_size_p (pdf_fsys_file_t file,
 }
 
 pdf_status_t
-pdf_fsys_http_file_open (void *data,
-                         pdf_text_t path_name,
-                         enum pdf_fsys_file_mode_e mode,
-                         pdf_fsys_file_t *p_file)
+pdf_fsys_http_file_open (void                      *data,
+                         const pdf_text_t          *path_name,
+                         enum pdf_fsys_file_mode_e  mode,
+                         pdf_fsys_file_t           *p_file)
 {
   struct pdf_fsys_item_props_s item_props;
   pdf_fsys_http_data_t pdf_fsys_http_data;
@@ -982,7 +931,7 @@ pdf_fsys_http_file_open (void *data,
     }
 
   if (PDF_OK == rv)
-    { 
+    {
       /* get properties so that we know size and readability, etc. */
       rv = pdf_fsys_http_get_item_props (data, path_name, &item_props);
     }
@@ -990,7 +939,7 @@ pdf_fsys_http_file_open (void *data,
   if (PDF_OK == rv)
     {
       /* we now have item props: */
-      
+
       if (!item_props.is_readable)
         {
           rv = PDF_EBADPERMS;
@@ -1010,10 +959,10 @@ pdf_fsys_http_file_open (void *data,
     }
 
   if (PDF_OK == rv)
-    { 
+    {
       /* all conditions are in place to initiate download of requested
          item. */
-      
+
       /* allocate a pdf_fsys_http_file_s and assign path items */
       http_file = NULL;
       http_file = pdf_alloc (sizeof (struct pdf_fsys_http_file_s));
@@ -1038,7 +987,7 @@ pdf_fsys_http_file_open (void *data,
           *p_file = file;
         }
     }
-     
+
   if (PDF_OK == rv)
     {
       /* docs say "always returns 0", so don't bother catching rv */
@@ -1047,17 +996,17 @@ pdf_fsys_http_file_open (void *data,
 
   if (PDF_OK == rv)
     {
-      
+
       rv = __pdf_fsys_http_get_host_path (path_name,
                                           &(http_file->host_path),
                                           &(http_file->host_path_size));
-      
+
       fsys->implementation = &pdf_fsys_http_implementation;
       file->fs = fsys;
       file->data = http_file;
-      
+
       /* now http_file is partially filled-out */
-      
+
       /* open a temporary file on disk for storage of downloaded data */
       rv = pdf_fsys_file_open_tmp (NULL,
                                    &http_file->temp_file);
@@ -1066,16 +1015,16 @@ pdf_fsys_http_file_open (void *data,
 
   if (PDF_OK == rv)
     { /* temp file is open - now to set the size: */
-      
+
       if (len_avail)
         { /* content len was available - set size now */
 
           http_file->temp_file_size = item_props.file_size;
 
           /* set temp file size */
-          rv = pdf_fsys_file_set_size (http_file->temp_file, 
+          rv = pdf_fsys_file_set_size (http_file->temp_file,
                                        http_file->temp_file_size);
-              
+
           /* set http_file->temp_file_sized */
           if (PDF_OK == rv)
             {
@@ -1083,7 +1032,7 @@ pdf_fsys_http_file_open (void *data,
             }
         }
       else /* len not available. */
-        { 
+        {
           /* file size will be set if an RIA request is successful */
           http_file->temp_file_sized = PDF_FALSE;
         }
@@ -1097,9 +1046,9 @@ pdf_fsys_http_file_open (void *data,
 
       if (http_file->curl)
         {
-          res = curl_easy_setopt (http_file->curl, 
+          res = curl_easy_setopt (http_file->curl,
                                   CURLOPT_URL, http_file->host_path);
-          
+
           if (CURLE_OK != res)
             {
               rv = PDF_ERROR;
@@ -1107,7 +1056,7 @@ pdf_fsys_http_file_open (void *data,
 
           /* set the callback function that will do the writing to temp file: */
           res = curl_easy_setopt (http_file->curl,
-                                  CURLOPT_WRITEFUNCTION, 
+                                  CURLOPT_WRITEFUNCTION,
                                   __pdf_fsys_http_libcurl_writefunc);
 
           if (CURLE_OK != res)
@@ -1122,7 +1071,7 @@ pdf_fsys_http_file_open (void *data,
             {
               rv = PDF_ERROR;
             }
-          
+
           http_file->downloading = PDF_TRUE;
 
           if (PDF_OK == rv)
@@ -1131,8 +1080,8 @@ pdf_fsys_http_file_open (void *data,
               pthread_mutex_lock (&(pdf_fsys_http_data->mutex));
               {
                 pdf_fsys_http_data->running_handles++;
-                
-                cmc = curl_multi_add_handle (pdf_fsys_http_data->curlm, 
+
+                cmc = curl_multi_add_handle (pdf_fsys_http_data->curlm,
                                              http_file->curl);
 
                 if (CURLE_OK != cmc)
@@ -1282,77 +1231,80 @@ pdf_fsys_http_file_set_mode (pdf_fsys_file_t file,
 
 
 /* Get URL from file */
-pdf_text_t
+pdf_text_t *
 pdf_fsys_http_file_get_url (pdf_fsys_file_t file)
 {
-  /* return URL that initially pointed to file */
-  pdf_text_t text_rv = NULL;
+#warning Correctly implement this, see FS#126
 
-  pdf_fsys_http_file_t phttp_file;
-  pdf_fsys_t pfsys;
+  return NULL;
+  /* /\* return URL that initially pointed to file *\/ */
+  /* pdf_text_t text_rv = NULL; */
 
-  pdf_status_t rs;
-  pdf_text_host_encoding_t encoding;
+  /* pdf_fsys_http_file_t phttp_file; */
+  /* pdf_fsys_t pfsys; */
 
-
-  if (PDF_OK != __pdf_fsys_http_valid ( file ) )
-    {
-      /* not ok to work with */
-      return NULL;
-    }
+  /* pdf_status_t rs; */
+  /* pdf_text_host_encoding_t encoding; */
 
 
-  phttp_file = (pdf_fsys_http_file_t)file->data;
-  pfsys = file->fs;
-  
-  if ( &pdf_fsys_http_implementation == pfsys->implementation )
-    {
-      if ( NULL != phttp_file )
-        {
-          rs = pdf_text_new_from_host ( phttp_file->host_path, 
-                                        phttp_file->host_path_size,
-                                        encoding,
-                                        &text_rv );
+  /* if (PDF_OK != __pdf_fsys_http_valid ( file ) ) */
+  /*   { */
+  /*     /\* not ok to work with *\/ */
+  /*     return NULL; */
+  /*   } */
 
-          if ( PDF_OK != rs )
-            {
-              /* something bad happened */
-              text_rv = NULL;
-            }
-          else
-            {
-              /* text_rv was initialized successfully and will be returned. */
-            }
-        }
-      else
-        { 
-          /* error - no http_file data associated with file */
-          text_rv = NULL;
-        }
-    }
-  else
-    {
-      /* file isn't from HTTP filesys - no URL.*/
-      text_rv = NULL;
-    }
 
-  return text_rv;
+  /* phttp_file = (pdf_fsys_http_file_t)file->data; */
+  /* pfsys = file->fs; */
+
+  /* if ( &pdf_fsys_http_implementation == pfsys->implementation ) */
+  /*   { */
+  /*     if ( NULL != phttp_file ) */
+  /*       { */
+  /*         rs = pdf_text_new_from_host ( phttp_file->host_path, */
+  /*                                       phttp_file->host_path_size, */
+  /*                                       encoding, */
+  /*                                       &text_rv ); */
+
+  /*         if ( PDF_OK != rs ) */
+  /*           { */
+  /*             /\* something bad happened *\/ */
+  /*             text_rv = NULL; */
+  /*           } */
+  /*         else */
+  /*           { */
+  /*             /\* text_rv was initialized successfully and will be returned. *\/ */
+  /*           } */
+  /*       } */
+  /*     else */
+  /*       { */
+  /*         /\* error - no http_file data associated with file *\/ */
+  /*         text_rv = NULL; */
+  /*       } */
+  /*   } */
+  /* else */
+  /*   { */
+  /*     /\* file isn't from HTTP filesys - no URL.*\/ */
+  /*     text_rv = NULL; */
+  /*   } */
+
+  /* return text_rv; */
 }
 
-pdf_status_t pdf_fsys_http_build_path (void * data,
-                                       pdf_text_t * output,
-                                       pdf_text_t first_element,
-                                       pdf_list_t rest)
+pdf_status_t pdf_fsys_http_build_path (void        *data,
+                                       pdf_text_t **output,
+                                       pdf_text_t  *first_element,
+                                       pdf_list_t  *rest)
 {
   /* TODO: Implement me! */
   return PDF_ERROR;
 }
 
 
-/* Check if paths are same/equivalent */ 
+/* Check if paths are same/equivalent */
 pdf_bool_t
 pdf_fsys_http_file_same_p (pdf_fsys_file_t file,
-                           pdf_text_t path_name)
+                           pdf_text_t      *path_name)
 {
   /* TODO: Implement me! */
 #warning "pdf_fsys_http_file_same_p is not yet implemented."
@@ -1424,7 +1376,7 @@ pdf_fsys_http_file_close (pdf_fsys_file_t file)
 
   http_file = (pdf_fsys_http_file_t)file->data;
   pfsys = file->fs;
-  
+
   if ( &pdf_fsys_http_implementation == pfsys->implementation )
     {
       /* we have a file reference from this http
@@ -1436,11 +1388,11 @@ pdf_fsys_http_file_close (pdf_fsys_file_t file)
           {
             rv = pdf_fsys_file_close ( http_file->temp_file );
             http_file->open = PDF_FALSE;
-            
+
             /* file is now closed. */
 
 #warning "Probably the file resources need to be deallocated now."
-            
+
           }
       }
       pthread_mutex_unlock (&(http_file->mutex));

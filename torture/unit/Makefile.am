@@ -21,7 +21,7 @@
 if COMPILE_UT
 
 
-#Check for Check and No-Check :-)
+# Check for Check and No-Check :-)
 if NOCHECK
   NOCHECK_SRC = nocheck/check.h \
                 nocheck/check.c
@@ -29,8 +29,6 @@ if NOCHECK
 else
   CHECK_LIBS = -lcheck
 endif #NOCHECK
-
-
 
 # Check for external GNU libiconv library
 if ICONV
@@ -160,8 +158,9 @@ TEST_SUITE_TEXT = base/text/pdf-text-test-common.h \
                   base/text/pdf-text-concat-ascii.c \
                   base/text/pdf-text-replace.c \
                   base/text/pdf-text-replace-ascii.c \
-                  base/text/pdf-text-filter.c \
-                  base/text/pdf-text-cmp.c
+                  base/text/pdf-text-cmp.c \
+                  base/text/pdf-text-filter.c
+
 
 # Unit tests for the Types Module test suite
 TEST_SUITE_TYPES =

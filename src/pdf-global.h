@@ -1,4 +1,4 @@
-/* -*- mode: C -*- 
+/* -*- mode: C -*-
  *
  *       File:         pdf-global.h
  *       Date:         Thu Jul  5 19:52:48 2007
@@ -31,27 +31,10 @@
 
 /* BEGIN PUBLIC */
 
-#include <pthread.h>
-
-/* Macro to access the global state of the library pdf_globals */
-#define PDF_GLOBALS extern struct pdf_globals_s pdf_globals;
-
-/* This structure contains global data used by the library. A variable
-   of this type, called `pdf_globals', is defined in pdf.c. The
-   contents of this structure are initialized in the `pdf_init'
-   function. */
-
-struct pdf_globals_s
-{
-  int initialized;
-  pthread_mutex_t init_mutex;
-};
-
-
 /* API of the library */
 
-int pdf_init (void);
-int pdf_finish (void);
+int  pdf_init   (void);
+void pdf_finish (void);
 
 /* END PUBLIC */
 

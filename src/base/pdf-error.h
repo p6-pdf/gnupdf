@@ -187,9 +187,13 @@ void pdf_perror (const pdf_status_t  status,
   pdf_error (0, stdout, "***DEBUG %s***:%s:%d: " message,   \
              layer, __FILE__, __LINE__, ##__VA_ARGS__)
 
-#define PDF_ASSERT_TRACE(condition)					\
+#define PDF_ASSERT_TRACE(condition)                                     \
   pdf_error (0, stderr, "***ASSERT***:%s:%d: assertion `%s' failed",	\
              __FILE__, __LINE__, #condition)
+
+#define PDF_ASSERT_TRACE_NOT_REACHED()                                  \
+  pdf_error (0, stderr, "***ASSERT***:%s:%d: code should not be reached", \
+             __FILE__, __LINE__)
 
 #ifdef PDF_HAVE_DEBUG_BASE
 #define PDF_DEBUG_BASE(message, ...)                        \

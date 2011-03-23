@@ -31,8 +31,6 @@
 #include <base/text/pdf-text-test-common.h>
 #include <pdf-test-common.h>
 
-#define INTERACTIVE_DEBUG   0
-
 /*
  * Test: pdf_text_new_from_host_001
  * Description:
@@ -43,23 +41,24 @@
  */
 START_TEST (pdf_text_new_from_host_001)
 {
-
-
-
+#ifdef PDF_HOST_WIN32
+  const pdf_char_t *host_encoding = "CP20127"; /* us-ascii */
+#else
+  const pdf_char_t *host_encoding = "us-ascii";
+#endif
   extern const test_string_t ascii_strings[];
   int i;
 
-
-
-
   /* Test ASCII host encoding */
-  i=0;
-  while(ascii_strings[i].data != NULL)
+  i = 0;
+  while (ascii_strings[i].data != NULL)
     {
-      pdf_text_t text = NULL;
-      pdf_text_host_encoding_t host_enc;
+      pdf_error_t *error = NULL;
+      pdf_text_t *text;
       const pdf_char_t *input_data;
       pdf_size_t input_size;
+      pdf_size_t actual_size;
+      pdf_char_t *actual_data;
       pdf_char_t *expected_data;
       pdf_size_t expected_size;
       pdf_bool_t expected_free = PDF_FALSE;
@@ -71,51 +70,44 @@ START_TEST (pdf_text_new_from_host_001)
       /* Set expected data */
       expected_data = (pdf_char_t *)ascii_strings[i].utf32be_data;
       expected_size = ascii_strings[i].utf32be_size;
-      if(!pdf_text_test_big_endian_system())
-        {
-          /* Must change endianness of expected_data */
-          expected_free = PDF_TRUE;
-          expected_data = pdf_text_test_change_utf32_endianness(expected_data,
-                                                                expected_size);
-          /* Just in case... */
-          fail_if(expected_data == NULL);
-        }
 
-
-      /* Create, without using the API, a valid pdf_text_host_encoding_t */
-#ifdef PDF_HOST_WIN32
-      strcpy((&(host_enc.name[0])), "CP20127"); /* us-ascii */
-#else
-      strcpy((&(host_enc.name[0])), "us-ascii");
-#endif
+#if (!PDF_IS_BIG_ENDIAN)
+      /* Must change endianness of expected_data */
+      expected_free = PDF_TRUE;
+      expected_data = pdf_text_test_change_utf32_endianness (expected_data,
+                                                             expected_size);
+      /* Just in case... */
+      fail_if (expected_data == NULL);
+#endif /* !PDF_IS_BIG_ENDIAN */
 
       /* 1. The call to  pdf_text_new_from_host should return PDF_OK. */
-      fail_unless(pdf_text_new_from_host(input_data,
-                                         input_size,
-                                         host_enc,
-                                         &text) == PDF_OK);
+      text = pdf_text_new_from_host (input_data,
+				     input_size,
+				     host_encoding,
+				     &error);
+      fail_unless (text != NULL);
+      fail_if (error != NULL);
 
       /* 2. The contents of the text object must be the expected ones. */
-      pdf_size_t actual_size;
-      pdf_char_t *actual_data;
-      fail_unless(pdf_text_get_unicode(&actual_data, &actual_size, text,
-                                       PDF_TEXT_UTF32_HE,0) == PDF_OK);
-      fail_unless(actual_size == expected_size);
-      fail_unless(memcmp(actual_data, expected_data, expected_size)==0);
+      actual_data = pdf_text_get_unicode (text,
+					  PDF_TEXT_UTF32_HE,
+					  PDF_TEXT_UNICODE_NO_OPTION,
+					  &actual_size,
+					  &error);
+      fail_unless (actual_data != NULL);
+      fail_if (error != NULL);
+      fail_unless (actual_size == expected_size);
+      fail_unless (memcmp (actual_data, expected_data, expected_size) == 0);
 
-      pdf_text_destroy(text);
+      pdf_text_destroy (text);
 
-      if(expected_free)
-        {
-          pdf_dealloc(expected_data);
-        }
+      if (expected_free)
+	pdf_dealloc (expected_data);
 
       ++i;
     }
-
 }
 END_TEST
-
 
 /*
  * Test: pdf_text_new_from_host_002
@@ -123,33 +115,30 @@ END_TEST
  *   Create a text object with an input invalid host-encoded string (test
  *    an UTF-8 encoded string as if it were US-ASCII)
  * Success conditions:
- *    1. The call to  pdf_text_new_from_host should NOT return PDF_OK.
+ *    1. The call to pdf_text_new_from_host should NOT return a valid text
+ *       object.
  */
 START_TEST (pdf_text_new_from_host_002)
 {
-  pdf_text_t text = NULL;
-  pdf_text_host_encoding_t host_enc;
+#ifdef PDF_HOST_WIN32
+  const pdf_char_t *host_encoding = "CP20127"; /* us-ascii */
+#else
+  const pdf_char_t *host_encoding = "us-ascii";
+#endif
+  pdf_error_t *error = NULL;
+  pdf_text_t *text;
   const pdf_char_t *sample_utf8 = (pdf_char_t *)"\342\202\254"; /* EURO SIGN */
 
-
-
-
-  /* Create, without using the API, a valid pdf_text_host_encoding_t */
-#ifdef PDF_HOST_WIN32
-      strcpy((&(host_enc.name[0])), "CP20127"); /* us-ascii */
-#else
-      strcpy((&(host_enc.name[0])), "us-ascii");
-#endif
-
   /* 1. The call to  pdf_text_new_from_host should NOT return PDF_OK. */
-  fail_if(pdf_text_new_from_host(sample_utf8,
-                                 strlen((char*)sample_utf8),
-                                 host_enc,
-                                 &text) == PDF_OK);
-
+  text = pdf_text_new_from_host (sample_utf8,
+                                 strlen (sample_utf8),
+                                 host_encoding,
+                                 &error);
+  fail_if (text != NULL);
+  fail_unless (error != NULL);
+  pdf_error_destroy (error);
 }
 END_TEST
-
 
 /*
  * Test: pdf_text_new_from_host_003
@@ -161,87 +150,25 @@ END_TEST
  */
 START_TEST (pdf_text_new_from_host_003)
 {
-  pdf_text_t text = NULL;
-  pdf_text_host_encoding_t host_enc;
-  const pdf_char_t *sample_usascii = (pdf_char_t *)"GNU's not Unix";
-
-
-
-
-  /* Create, without using the API, an invalid pdf_text_host_encoding_t */
 #ifdef PDF_HOST_WIN32
-  strcpy((&(host_enc.name[0])), "CP17"); /* us-ascii */
+  const pdf_char_t *host_encoding = "CP17";
 #else
-  strcpy((&(host_enc.name[0])), "invalid_host_enc");
+  const pdf_char_t *host_encoding = "invalid_host_enc";
 #endif
-
-
+  pdf_error_t *error = NULL;
+  pdf_text_t *text;
+  const pdf_char_t *sample_usascii = (pdf_char_t *)"GNU's not Unix";
 
   /* 1. The call to  pdf_text_new_from_host should NOT return PDF_OK. */
-  fail_unless(pdf_text_new_from_host(sample_usascii,
-                                     strlen((char*)sample_usascii),
-                                     host_enc,
-                                     &text) != PDF_OK);
-
+  text = pdf_text_new_from_host (sample_usascii,
+                                 strlen (sample_usascii),
+                                 host_encoding,
+                                 &error);
+  fail_if (text != NULL);
+  fail_unless (error != NULL);
+  pdf_error_destroy (error);
 }
 END_TEST
-
-/*
- * Test: pdf_text_new_from_host_004
- * Description:
- *   Create a text object with invalid input string
- * Success conditions:
- *    1. The call to  pdf_text_new_from_host should return PDF_EBADDATA
- */
-START_TEST (pdf_text_new_from_host_004)
-{
-  pdf_text_t text = NULL;
-  pdf_text_host_encoding_t host_enc;
-  const pdf_char_t *sample_usascii = NULL;
-
-  /* Create, without using the API, a valid pdf_text_host_encoding_t */
-#ifdef PDF_HOST_WIN32
-  strcpy((&(host_enc.name[0])), "CP20127"); /* us-ascii */
-#else
-  strcpy((&(host_enc.name[0])), "us-ascii");
-#endif
-
-  fail_unless(pdf_text_new_from_host(sample_usascii,
-                                     1,
-                                     host_enc,
-                                     &text) == PDF_EBADDATA);
-
-}
-END_TEST
-
-/*
- * Test: pdf_text_new_from_host_005
- * Description:
- *   Create a text object with invalid input string length
- * Success conditions:
- *    1. The call to  pdf_text_new_from_host should return PDF_EBADDATA
- */
-START_TEST (pdf_text_new_from_host_005)
-{
-  pdf_text_t text = NULL;
-  pdf_text_host_encoding_t host_enc;
-  const pdf_char_t *sample_usascii = (pdf_char_t *)"GNU's not Unix";
-
-  /* Create, without using the API, a valid pdf_text_host_encoding_t */
-#ifdef PDF_HOST_WIN32
-  strcpy((&(host_enc.name[0])), "CP20127"); /* us-ascii */
-#else
-  strcpy((&(host_enc.name[0])), "us-ascii");
-#endif
-
-  fail_unless(pdf_text_new_from_host(sample_usascii,
-                                     0,
-                                     host_enc,
-                                     &text) == PDF_EBADDATA);
-
-}
-END_TEST
-
 
 /*
  * Test case creation function
@@ -250,11 +177,10 @@ TCase *
 test_pdf_text_new_from_host(void)
 {
   TCase *tc = tcase_create("pdf_text_new_from_host");
+
   tcase_add_test(tc, pdf_text_new_from_host_001);
   tcase_add_test(tc, pdf_text_new_from_host_002);
   tcase_add_test(tc, pdf_text_new_from_host_003);
-  tcase_add_test(tc, pdf_text_new_from_host_004);
-  tcase_add_test(tc, pdf_text_new_from_host_005);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);

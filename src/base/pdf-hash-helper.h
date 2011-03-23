@@ -38,9 +38,9 @@
 
 pdf_bool_t        pdf_hash_add_text   (pdf_hash_t        *table,
                                        const pdf_char_t  *key,
-                                       const pdf_text_t   value,
+                                       const pdf_text_t  *value,
                                        pdf_error_t      **error);
-const pdf_text_t  pdf_hash_get_text   (pdf_hash_t        *table,
+const pdf_text_t *pdf_hash_get_text   (pdf_hash_t        *table,
                                        const pdf_char_t  *key);
 
 pdf_bool_t        pdf_hash_add_time   (pdf_hash_t        *table,

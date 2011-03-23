@@ -28,7 +28,6 @@
 #include <pdf-hash-helper.h>
 
 
-static void text_dispose_fn (const pdf_text_t elt);
 static void time_dispose_fn (const pdf_time_t elt);
 static void stm_dispose_fn  (const pdf_stm_t elt);
 
@@ -36,21 +35,21 @@ static void stm_dispose_fn  (const pdf_stm_t elt);
 pdf_bool_t
 pdf_hash_add_text (pdf_hash_t        *table,
                    const pdf_char_t  *key,
-                   const pdf_text_t   value,
+                   const pdf_text_t  *value,
                    pdf_error_t      **error)
 {
   return pdf_hash_add (table,
                        key,
                        value,
-                       (pdf_hash_value_dispose_fn_t) text_dispose_fn,
+                       (pdf_hash_value_dispose_fn_t) pdf_text_destroy,
                        error);
 }
 
-const pdf_text_t
+const pdf_text_t *
 pdf_hash_get_text (pdf_hash_t       *table,
                    const pdf_char_t *key)
 {
-  return (const pdf_text_t) pdf_hash_get_value (table, key);
+  return (const pdf_text_t *) pdf_hash_get_value (table, key);
 }
 
 pdf_bool_t
@@ -217,12 +216,6 @@ pdf_hash_get_string (pdf_hash_t       *table,
                      const pdf_char_t *key)
 {
   return (pdf_char_t *) pdf_hash_get_value (table, key);
-}
-
-static void
-text_dispose_fn (const pdf_text_t elt)
-{
-  pdf_text_destroy (elt);
 }
 
 static void

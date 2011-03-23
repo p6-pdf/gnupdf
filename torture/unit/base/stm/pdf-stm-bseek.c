@@ -143,21 +143,21 @@ END_TEST
  */
 START_TEST (pdf_stm_bseek_003)
 {
+  pdf_error_t *error = NULL;
   pdf_status_t ret;
   pdf_stm_t stm;
   pdf_char_t ret_char;
   pdf_off_t pos;
 
   pdf_fsys_file_t file;
-  pdf_text_t path;
+  pdf_text_t *path;
   pdf_char_t * remain;
   pdf_size_t remain_length,written;
 
   /* Create the file path */
-
-  ret = pdf_text_new_from_pdf_string ("tmp.test", 8, &remain, &remain_length,
-                                      &path);
-  fail_if (ret != PDF_OK);
+  path = pdf_text_new_from_pdf_string ("tmp.test", 8, &remain, &remain_length, &error);
+  fail_unless (path != NULL);
+  fail_if (error != NULL);
 
   /* Open new file */
   ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, &file);
@@ -216,21 +216,21 @@ END_TEST
  */
 START_TEST (pdf_stm_bseek_004)
 {
+  pdf_error_t *error = NULL;
   pdf_status_t ret;
   pdf_stm_t stm;
   pdf_char_t ret_char;
   pdf_off_t pos;
 
   pdf_fsys_file_t file;
-  pdf_text_t path;
+  pdf_text_t *path;
   pdf_char_t * remain;
   pdf_size_t remain_length,written;
 
   /* Create the file path */
-
-  ret = pdf_text_new_from_pdf_string ("tmp.test", 8, &remain, &remain_length,
-                                      &path);
-  fail_if (ret != PDF_OK);
+  path = pdf_text_new_from_pdf_string ("tmp.test", 8, &remain, &remain_length, &error);
+  fail_unless (path != NULL);
+  fail_if (error != NULL);
 
   /* Open new file */
   ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, &file);

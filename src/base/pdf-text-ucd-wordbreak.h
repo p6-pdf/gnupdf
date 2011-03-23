@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,15 +28,7 @@
 
 #include <config.h>
 
-#include <limits.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdint.h>
-#ifdef HAVE_MALLOC_H
-#include <malloc.h>
-#endif /* HAVE_MALLOC_H */
-
-#include <pdf-text.h>
+#include <pdf-types.h>
 
 /*************** START OF SELF-GENERATED DATA *********************************/
 
@@ -59,89 +51,61 @@ enum pdf_text_ucd_wb_property_e {
 /***************** END OF SELF-GENERATED DATA *********************************/
 
 /* Return the WordBreak Property of the given UTF-32HE unicode point */
-enum pdf_text_ucd_wb_property_e
-pdf_text_ucd_wb_get_property(pdf_u32_t character);
-
+enum pdf_text_ucd_wb_property_e pdf_text_ucd_wb_get_property (pdf_u32_t character);
 
 /* Returns true if the given UTF-32HE unicode point has the CR value
  *  in the WordBreak property */
-pdf_bool_t
-pdf_text_ucd_wb_is_cr(pdf_u32_t character);
-
+pdf_bool_t pdf_text_ucd_wb_is_cr (pdf_u32_t character);
 
 /* Returns true if the given UTF-32HE unicode point has the LF value
  *  in the WordBreak property */
-pdf_bool_t
-pdf_text_ucd_wb_is_lf(pdf_u32_t character);
-
+pdf_bool_t pdf_text_ucd_wb_is_lf (pdf_u32_t character);
 
 /* Returns true if the given UTF-32HE unicode point has the Newline value
  *  in the WordBreak property */
-pdf_bool_t
-pdf_text_ucd_wb_is_newline(pdf_u32_t character);
-
+pdf_bool_t pdf_text_ucd_wb_is_newline (pdf_u32_t character);
 
 /* Returns true if the given UTF-32HE unicode point has the Extend value
  *  in the WordBreak property */
-pdf_bool_t
-pdf_text_ucd_wb_is_extend(pdf_u32_t character);
-
+pdf_bool_t pdf_text_ucd_wb_is_extend (pdf_u32_t character);
 
 /* Returns true if the given UTF-32HE unicode point has the Format value
  *  in the WordBreak property */
-pdf_bool_t
-pdf_text_ucd_wb_is_format(pdf_u32_t character);
-
+pdf_bool_t pdf_text_ucd_wb_is_format (pdf_u32_t character);
 
 /* Returns true if the given UTF-32HE unicode point has the Katakana value
  *  in the WordBreak property */
-pdf_bool_t
-pdf_text_ucd_wb_is_katakana(pdf_u32_t character);
-
+pdf_bool_t pdf_text_ucd_wb_is_katakana (pdf_u32_t character);
 
 /* Returns true if the given UTF-32HE unicode point has the ALetter value
  *  in the WordBreak property */
-pdf_bool_t
-pdf_text_ucd_wb_is_aletter(pdf_u32_t character);
-
+pdf_bool_t pdf_text_ucd_wb_is_aletter (pdf_u32_t character);
 
 /* Returns true if the given UTF-32HE unicode point has the MidLetter value
  *  in the WordBreak property */
-pdf_bool_t
-pdf_text_ucd_wb_is_midletter(pdf_u32_t character);
-
+pdf_bool_t pdf_text_ucd_wb_is_midletter (pdf_u32_t character);
 
 /* Returns true if the given UTF-32HE unicode point has the Numeric value
  *  in the WordBreak property */
-pdf_bool_t
-pdf_text_ucd_wb_is_numeric(pdf_u32_t character);
-
+pdf_bool_t pdf_text_ucd_wb_is_numeric (pdf_u32_t character);
 
 /* Returns true if the given UTF-32HE unicode point has the MidNum value
  *  in the WordBreak property */
-pdf_bool_t
-pdf_text_ucd_wb_is_midnum(pdf_u32_t character);
-
+pdf_bool_t pdf_text_ucd_wb_is_midnum (pdf_u32_t character);
 
 /* Returns true if the given UTF-32HE unicode point has the MidNumLet value
  *  in the WordBreak property */
-pdf_bool_t
-pdf_text_ucd_wb_is_midnumlet(pdf_u32_t character);
-
+pdf_bool_t pdf_text_ucd_wb_is_midnumlet (pdf_u32_t character);
 
 /* Returns true if the given UTF-32HE unicode point has the ExtendNumLet value
  *  in the WordBreak property */
-pdf_bool_t
-pdf_text_ucd_wb_is_extendnumlet(pdf_u32_t character);
-
+pdf_bool_t pdf_text_ucd_wb_is_extendnumlet (pdf_u32_t character);
 
 /* Detect next Word Break in UTF-32HE string */
-pdf_status_t
-pdf_text_ucd_wb_detect_next(const pdf_char_t *current,
-                            const pdf_size_t n_bytes_left_in,
-                            pdf_char_t **next,
-                            pdf_size_t *n_bytes_left_out);
-
+pdf_bool_t pdf_text_ucd_wb_detect_next (const pdf_char_t  *current,
+                                        const pdf_size_t   n_bytes_left_in,
+                                        pdf_char_t       **next,
+                                        pdf_size_t        *n_bytes_left_out);
 
 #endif
 

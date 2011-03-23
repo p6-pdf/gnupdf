@@ -36,32 +36,22 @@
  *   is considered as the host encoding that every system should at least have,
  *   so the test will check for it.
  * Success conditions:
- *   1. The call to pdf_text_check_host_encoding should return PDF_OK.
- *   2. A non-empty pdf_text_host_encoding_t variable should be returned as
- *      well.
+ *   1. The call to pdf_text_check_host_encoding should return PDF_TRUE.
  */
 START_TEST (pdf_text_check_host_encoding_001)
 {
-  pdf_text_host_encoding_t host_enc;
+  pdf_error_t *error = NULL;
 
-
-
-
-  /* 1. The call to pdf_text_check_host_encoding should return PDF_OK. */
+  /* 1. The call to pdf_text_check_host_encoding should return PDF_TRUE. */
 #ifdef PDF_HOST_WIN32
-  fail_unless(pdf_text_check_host_encoding((pdf_char_t *)"CP20127",
-                                           &host_enc) == PDF_OK);
+  fail_unless (pdf_text_check_host_encoding ("CP20127", &error) == PDF_TRUE);
 #else
-  fail_unless(pdf_text_check_host_encoding((pdf_char_t *)"ascii",
-                                           &host_enc) == PDF_OK);
+  fail_unless (pdf_text_check_host_encoding ("ascii", &error) == PDF_TRUE);
 #endif
 
-  /* 2. A non-empty pdf_text_host_encoding_t variable should be returned as
-   *      well. */
-  fail_unless(strlen(host_enc.name) > 0);
+  fail_if (error != NULL);
 }
 END_TEST
-
 
 /*
  * Test: pdf_text_check_host_encoding_002
@@ -69,34 +59,22 @@ END_TEST
  *   Check if a given invalid host encoding is available in the system. An
  *   inexistent host encoding will be requested.
  * Success conditions:
- *   1. The call to pdf_text_check_host_encoding should NOT return PDF_OK.
- *   2. The pdf_text_host_encoding_t variable should remain unchanged.
+ *   1. The call to pdf_text_check_host_encoding should NOT return PDF_TRUE.
  */
 START_TEST (pdf_text_check_host_encoding_002)
 {
-  pdf_text_host_encoding_t host_enc;
-
-  /* Set old host encoding name */
-  strncpy((&(host_enc.name[0])),"ascii",5);
-  host_enc.name[5] = '\0';
-
-
-
+  pdf_error_t *error = NULL;
 
   /* 1. The call to pdf_text_check_host_encoding should NOT return PDF_OK. */
 #ifdef PDF_HOST_WIN32
-  fail_unless(pdf_text_check_host_encoding((pdf_char_t *)"CP17",
-                                           &host_enc) != PDF_OK);
+  fail_if (pdf_text_check_host_encoding ("CP17", &error) == PDF_TRUE);
 #else
-  fail_unless(pdf_text_check_host_encoding((pdf_char_t *)"invalid_host_encoding",
-                                           &host_enc) != PDF_OK);
+  fail_if (pdf_text_check_host_encoding ("invalid_host_encoding", &error) == PDF_TRUE);
 #endif
 
-  /* 2. The pdf_text_host_encoding_t variable should remain unchanged. */
-  fail_unless(strcmp(host_enc.name, "ascii") == 0);
+  fail_if (error != NULL);
 }
 END_TEST
-
 
 /*
  * Test case creation function
@@ -104,14 +82,14 @@ END_TEST
 TCase *
 test_pdf_text_check_host_encoding (void)
 {
-  TCase *tc = tcase_create("pdf_text_check_host_encoding");
-  tcase_add_test(tc, pdf_text_check_host_encoding_001);
-  tcase_add_test(tc, pdf_text_check_host_encoding_002);
+  TCase *tc = tcase_create ("pdf_text_check_host_encoding");
 
+  tcase_add_test (tc, pdf_text_check_host_encoding_001);
+  tcase_add_test (tc, pdf_text_check_host_encoding_002);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);
   return tc;
 }
 
-/* End of pdf-text-get-host-encoding.c */
+/* End of pdf-text-check-host-encoding.c */
