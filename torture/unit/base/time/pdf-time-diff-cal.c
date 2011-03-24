@@ -54,72 +54,58 @@
  */
 START_TEST (pdf_time_diff_cal_001)
 {
-  pdf_status_t status;
-  pdf_time_t time1;
-  pdf_time_t time2;
-  pdf_u32_t i,j;
-  pdf_u32_t seconds;
-
   extern struct pdf_time_cal_span_s day_time_span[];
   extern  struct pdf_time_cal_span_s years_months[];
-  extern pdf_u32_t daysInSeconds[];
-  struct pdf_time_cal_span_s calspan, calspan2;
+  extern pdf_u32_t days_in_seconds[];
+  pdf_u32_t i;
 
 
-  status = pdf_time_new(&time1);
-  fail_if(status != PDF_OK);
+  for (i = 0; i < YEAR_MONTH_SIZE; i++)
+    {
+      pdf_u32_t j;
 
-  status = pdf_time_new(&time2);
-  fail_if(status != PDF_OK);
-
-
-  calspan.sign = PDF_TRUE;
-  memset(&calspan,0,sizeof(struct pdf_time_cal_span_s));
-  memset(&calspan2,0,sizeof(struct pdf_time_cal_span_s));
-
-  for (i=0;i<YEAR_MONTH_SIZE;i++){
-    for(j=0;j<DAY_TIME_SPAN_SIZE; j++){
-
-        calspan.years = years_months[i].years;
-        calspan.months = years_months[i].months;
-
-        calspan.days = day_time_span[j].days;
-        calspan.hours = day_time_span[j].hours;
-        calspan.minutes = day_time_span[j].minutes;
-        calspan.seconds = day_time_span[j].seconds;
+      for(j = 0; j < DAY_TIME_SPAN_SIZE; j++)
+        {
+          pdf_time_t time1;
+          pdf_time_t time2;
+          struct pdf_time_cal_span_s calspan = { 0 };
+          struct pdf_time_cal_span_s calspan2 = { 0 };
+          pdf_u32_t seconds;
 
 
-        seconds = daysInSeconds[i];
-        seconds += day_time_span[j].days* SEC_IN_DAY;
-        seconds += day_time_span[j].hours * 3600;
-        seconds += day_time_span[j].minutes * 60;
-        seconds += day_time_span[j].seconds;
+          pdf_time_init (&time1);
+          pdf_time_init (&time2);
 
 
-        status = pdf_time_set_from_u32(time1, seconds);
-        fail_if(status != PDF_OK);
-        status = pdf_time_diff_cal(time2, time1, &calspan2);
-        fail_if(status != PDF_OK);
+          calspan.sign = PDF_TRUE;
 
-        fail_unless(memcmp(&calspan, &calspan2, sizeof(struct pdf_time_cal_span_s)) == 0 );
+          calspan.years = years_months[i].years;
+          calspan.months = years_months[i].months;
 
+          calspan.days = day_time_span[j].days;
+          calspan.hours = day_time_span[j].hours;
+          calspan.minutes = day_time_span[j].minutes;
+          calspan.seconds = day_time_span[j].seconds;
 
-        status = pdf_time_clear(time2);
-        fail_if(status != PDF_OK);
+          seconds = days_in_seconds[i];
+          seconds += day_time_span[j].days* SEC_IN_DAY;
+          seconds += day_time_span[j].hours * 3600;
+          seconds += day_time_span[j].minutes * 60;
+          seconds += day_time_span[j].seconds;
 
+          pdf_time_set_utc (&time1, seconds);
+          pdf_time_diff_cal (&time2, &time1, &calspan2);
+
+          fail_unless (memcmp (&calspan,
+                               &calspan2,
+                               sizeof (struct pdf_time_cal_span_s)) == 0);
+
+          pdf_time_deinit (&time1);
+          pdf_time_deinit (&time2);
+        }
     }
-  }
-
-  status = pdf_time_destroy(time1);
-  fail_if(status != PDF_OK);
-
-  status = pdf_time_destroy(time2);
-  fail_if(status != PDF_OK);
-
-
 }
 END_TEST
-
 
 /*
  * Test case creation function
@@ -129,9 +115,7 @@ test_pdf_time_diff_cal (void)
 {
   TCase *tc = tcase_create ("pdf_time_diff_cal");
 
-  tcase_add_test(tc, pdf_time_diff_cal_001);
-
-
+  tcase_add_test (tc, pdf_time_diff_cal_001);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);

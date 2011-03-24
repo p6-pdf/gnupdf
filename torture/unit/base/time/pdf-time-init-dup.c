@@ -1,13 +1,13 @@
 /* -*- mode: C -*-
  *
- *       File:         pdf-time-span_new.c
- *       Date:         Fri Feb 27 17:35:31 2009
+ *       File:         pdf-time-init_dup.c
+ *       Date:         Thu Mar 24 21:48:07 2011
  *
- *       GNU PDF Library - Unit tests for pdf_time_span_destroy
+ *       GNU PDF Library - Unit tests for pdf_time_init_dup
  *
  */
 
-/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
+/* Copyright (C) 2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,32 +28,29 @@
 #include <pdf.h>
 #include <stdlib.h>
 #include <pdf-test-common.h>
+
 /*
- * Test: pdf_time_span_destroy_001
+ * Test: pdf_time_init_dup_001
  * Description:
- *   Create new pdf_time_span_t and destroy it.
+ *   Duplicate initialized pdf_time_t object
  *Success condition:
- * 1. Function pdf_time_span_new schould return PDF_OK
- * 2. Fuction pdf_time_span_destroy schould return PDF_OK
+ * 1. Function pdf_time_init should return PDF_OK
+ * 2. Function pdf_time_init_dup should return pdf_time_t object.
+ * 3. Structures pdf_time_s should have the same data.
  */
-START_TEST (pdf_time_span_destroy_001)
+START_TEST (pdf_time_init_dup_001)
 {
-  pdf_status_t status;
-  pdf_i64_t sec;
-  pdf_i64_t sec2;
-  pdf_time_span_t span;
+  pdf_time_t time1;
+  pdf_time_t time2;
 
+  pdf_time_init (&time1);
+  pdf_time_set_utc (&time1, 1234567890);
+  pdf_time_init_dup (&time2, &time1);
 
-  span = pdf_time_span_new();
+  fail_unless (pdf_time_cmp (&time1, &time2) == 0);
 
-  sec = pdf_time_span_to_secs(span);
-  sec2 = 0;
-
-  fail_unless(memcmp(&sec, &sec2, sizeof(pdf_i64_t)) == 0);
-
-  status = pdf_time_span_destroy(&span);
-  fail_if(status != PDF_OK);
-
+  pdf_time_deinit (&time1);
+  pdf_time_deinit (&time2);
 }
 END_TEST
 
@@ -61,16 +58,15 @@ END_TEST
  * Test case creation function
  */
 TCase *
-test_pdf_time_span_destroy (void)
+test_pdf_time_init_dup (void)
 {
-  TCase *tc = tcase_create ("pdf_time_span_destroy");
+  TCase *tc = tcase_create ("pdf_time_init_dup");
 
-  tcase_add_test(tc, pdf_time_span_destroy_001);
-
+  tcase_add_test (tc, pdf_time_init_dup_001);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);
   return tc;
 }
 
-/* End of pdf-time-span-destroy.c */
+/* End of pdf-time-init_dup.c */

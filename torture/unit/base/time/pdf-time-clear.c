@@ -1,6 +1,6 @@
 /* -*- mode: C -*-
  *
- *       File:         pdf-time-dup.c
+ *       File:         pdf-time-clear.c
  *       Date:         Fri Feb 27 17:35:31 2008
  *
  *       GNU PDF Library - Unit tests for pdf_time_clear
@@ -28,6 +28,7 @@
 #include <pdf.h>
 #include <stdlib.h>
 #include <pdf-test-common.h>
+
 /*
  * Test: pdf_time_clear_001
  * Description:
@@ -42,92 +43,23 @@
  */
 START_TEST (pdf_time_clear_001)
 {
-  pdf_status_t status;
+  pdf_error_t *error = NULL;
+  pdf_time_t time_var;
+  pdf_time_t zero_time;
 
-  pdf_time_t time;
-  pdf_time_t zeroTime;
+  pdf_time_init (&time_var);
+  pdf_time_init (&zero_time);
 
+  pdf_time_set_to_current_local_time (&time_var);
 
-  status = pdf_time_new(&time);
-  fail_if(status != PDF_OK);
+  pdf_time_clear (&time_var);
 
-  status = pdf_time_new(&zeroTime);
-  fail_if(status != PDF_OK);
+  fail_unless (pdf_time_cmp (&time_var, &zero_time) == 0);
 
-  status = pdf_time_set_to_current_local_time(time);
-
-  fail_if(status != PDF_OK);
-
-  status = pdf_time_clear(time);
-
-  fail_if(pdf_time_cmp(time, zeroTime) != 0);
-
-  status = pdf_time_destroy(time);
-  fail_if(status != PDF_OK);
-
-  status = pdf_time_destroy(zeroTime);
-  fail_if(status != PDF_OK);
-
+  pdf_time_deinit (&time_var);
+  pdf_time_deinit (&zero_time);
 }
 END_TEST
-
-/*
- * Test: pdf_time_clear_002
- * Description:
- * Create new pdf_time_t object and initialize it with
- * pdf_time_cal diferent from default one.
- * Then clear that object and compare it with
- * newly created empty pdf_time_t.
- *Success condition:
- * 1. Function pdf_time_new schould return PDF_OK
- * 2. Function pdf_time_from_cal schould return PDF_OK.
- * 3. Function pdf_time_clear schould return PDF_OK.
- * 4. Function pdf_time_cmo schould return 0.
- */
-START_TEST (pdf_time_clear_002)
-{
-  pdf_status_t status;
-
-  pdf_time_t time;
-  pdf_time_t zeroTime;
-  struct pdf_time_cal_s caltime;
-
-
-  status = pdf_time_new(&time);
-  fail_if(status != PDF_OK);
-
-  status = pdf_time_new(&zeroTime);
-  fail_if(status != PDF_OK);
-
-
-  caltime.year = 2009;
-  caltime.month = 3;
-  caltime.day = 12;
-  caltime.dow = 2;
-  caltime.hour = 11;
-  caltime.minute = 34;
-  caltime.second = 12;
-
-  caltime.gmt_offset = 2;
-
-  status = pdf_time_from_cal (time, &caltime);
-  fail_if(status != PDF_OK);
-
-
-  status = pdf_time_clear(time);
-  fail_if(status != PDF_OK);
-
-  fail_if(pdf_time_cmp(time, zeroTime) != 0);
-
-  status = pdf_time_destroy(time);
-  fail_if(status != PDF_OK);
-
-  status = pdf_time_destroy(zeroTime);
-  fail_if(status != PDF_OK);
-
-}
-END_TEST
-
 
 /*
  * Test case creation function
@@ -137,10 +69,7 @@ test_pdf_time_clear (void)
 {
   TCase *tc = tcase_create ("pdf_time_clear");
 
-  tcase_add_test(tc, pdf_time_clear_001);
-  tcase_add_test(tc, pdf_time_clear_002);
-
-
+  tcase_add_test (tc, pdf_time_clear_001);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);

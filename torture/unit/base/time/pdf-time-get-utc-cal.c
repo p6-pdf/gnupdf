@@ -30,6 +30,7 @@
 #include <time.h>
 #include <base/time/pdf-time-test-common.h>
 #include <pdf-test-common.h>
+
 /*
  * Test: pdf_time_get_utc_cal_001
  * Description:
@@ -47,36 +48,27 @@
  */
 START_TEST (pdf_time_get_utc_cal_001)
 {
-  pdf_status_t status;
-
-  pdf_time_t time1;
-  struct pdf_time_cal_s localcal;
-  pdf_u32_t i;
-  extern pdf_u32_t datesInSeconds[];
+  extern pdf_u32_t dates_in_seconds[];
   extern struct pdf_time_cal_s dates[];
+  pdf_time_t time1;
+  pdf_u32_t i;
 
+  pdf_time_init (&time1);
 
-  status = pdf_time_new(&time1);
+  for (i = 0; i < DATES_SIZE; i++)
+    {
+      struct pdf_time_cal_s utccal;
 
-  fail_if(status != PDF_OK);
-  fail_if(time1==NULL);
+      pdf_time_set_utc (&time1, dates_in_seconds[i]);
+      pdf_time_get_utc_cal (&time1, &utccal);
+      fail_unless (memcmp (&utccal,
+                           &dates[i],
+                           sizeof (struct pdf_time_cal_s)) == 0);
+    }
 
-  for (i = 0;i < DATES_SIZE; i++){
-      status = pdf_time_set_from_u32(time1, datesInSeconds[i]);
-      fail_if(status != PDF_OK);
-
-      status = pdf_time_get_utc_cal(time1, &localcal);
-      fail_if(status != PDF_OK);
-
-      fail_unless(memcmp(&localcal, &dates[i],sizeof(struct pdf_time_cal_s)) == 0);
-
-  }
-
-  status = pdf_time_destroy(time1);
-  fail_if(status != PDF_OK);
+  pdf_time_deinit (&time1);
 }
 END_TEST
-
 
 /*
  * Test: pdf_time_get_utc_cal_002
@@ -95,20 +87,13 @@ END_TEST
  */
 START_TEST (pdf_time_get_utc_cal_002)
 {
-  pdf_status_t status;
-
   pdf_time_t time1;
   struct pdf_time_cal_s utccal;
   struct pdf_time_cal_s expected_cal;
 
+  pdf_time_init (&time1);
+  pdf_time_set_utc (&time1, 28857600);
 
-  status = pdf_time_new(&time1);
-
-  fail_if(status != PDF_OK);
-  fail_if(time1==NULL);
-
-  status = pdf_time_set_from_u32(time1, 28857600);
-  fail_if(status != PDF_OK);
   expected_cal.year = 1970;
   expected_cal.month = 12;
   expected_cal.day = 1;
@@ -118,17 +103,12 @@ START_TEST (pdf_time_get_utc_cal_002)
   expected_cal.second = 0;
   expected_cal.gmt_offset = 0;
 
+  pdf_time_get_utc_cal (&time1, &utccal);
+  fail_unless (memcmp (&utccal, &expected_cal, sizeof (struct pdf_time_cal_s)) == 0);
 
-  status = pdf_time_get_utc_cal(time1, &utccal);
-  fail_if(status != PDF_OK);
-
-  fail_unless(memcmp(&utccal, &expected_cal,sizeof(struct pdf_time_cal_s)) == 0);
-
-  status = pdf_time_destroy(time1);
-  fail_if(status != PDF_OK);
+  pdf_time_deinit (&time1);
 }
 END_TEST
-
 
 /*
  * Test case creation function
@@ -138,10 +118,8 @@ test_pdf_time_get_utc_cal (void)
 {
   TCase *tc = tcase_create ("pdf_time_get_utc_cal");
 
-  tcase_add_test(tc, pdf_time_get_utc_cal_001);
-  tcase_add_test(tc, pdf_time_get_utc_cal_002);
-
-
+  tcase_add_test (tc, pdf_time_get_utc_cal_001);
+  tcase_add_test (tc, pdf_time_get_utc_cal_002);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);

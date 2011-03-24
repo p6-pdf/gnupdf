@@ -165,34 +165,23 @@ TEST_SUITE_TEXT = base/text/pdf-text-test-common.h \
 # Unit tests for the Types Module test suite
 TEST_SUITE_TYPES =
 
-TEST_SUITE_TIME =  base/time/pdf-time-new.c \
+TEST_SUITE_TIME =  base/time/pdf-time-test-common.h \
+                   base/time/pdf-time-testdata.c \
+                   base/time/pdf-time-new.c \
+                   base/time/pdf-time-init.c \
                    base/time/pdf-time-dup.c \
-                   base/time/pdf-time-destroy.c \
+                   base/time/pdf-time-init-dup.c \
                    base/time/pdf-time-copy.c \
                    base/time/pdf-time-clear.c \
-                   base/time/pdf-time-set-from-u32.c \
-                   base/time/pdf-time-set-from-i64.c \
+                   base/time/pdf-time-set-utc.c \
                    base/time/pdf-time-add-cal-span.c \
                    base/time/pdf-time-sub-cal-span.c \
                    base/time/pdf-time-add-span.c \
                    base/time/pdf-time-sub-span.c \
                    base/time/pdf-time-get-local-cal.c \
                    base/time/pdf-time-get-utc-cal.c \
-                   base/time/pdf-time-from-cal.c \
+                   base/time/pdf-time-set-from-cal.c \
                    base/time/pdf-time-set-local-offset.c \
-                   base/time/pdf-time-from-string.c \
-                   base/time/pdf-time-span-new.c \
-                   base/time/pdf-time-span-dup.c \
-                   base/time/pdf-time-span-destroy.c \
-                   base/time/pdf-time-span-set.c \
-                   base/time/pdf-time-span-negate.c \
-                   base/time/pdf-time-span-add.c \
-                   base/time/pdf-time-span-cmp.c \
-                   base/time/pdf-time-span-copy.c \
-                   base/time/pdf-time-span-diff.c \
-                   base/time/pdf-time-span-to-secs.c \
-                   base/time/pdf-time-testdata.c \
-                   base/time/pdf-time-test-common.c \
                    base/time/pdf-time-diff-cal.c \
                    base/time/pdf-time-set-to-current-local-time.c \
                    base/time/pdf-time-set-to-current-utc-time.c \
@@ -202,7 +191,7 @@ TEST_SUITE_TIME =  base/time/pdf-time-new.c \
                    base/time/pdf-time-cal-span-diff.c \
                    base/time/pdf-time-add-cal-span-with-base.c \
                    base/time/pdf-time-w32-set-from-filetime.c \
-                   base/time/pdf-time-test-common.h
+                   base/time/pdf-time-from-string.c
 
 TEST_SUITE_CRYPT = base/crypt/pdf-crypt-cipher-new.c \
                    base/crypt/pdf-crypt-cipher-setkey.c \

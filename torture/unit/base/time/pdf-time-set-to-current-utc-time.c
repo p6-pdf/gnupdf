@@ -46,43 +46,31 @@
  */
 START_TEST (pdf_time_set_to_current_utc_time_001)
 {
-  pdf_status_t status;
-  pdf_time_t utcTime, mytime;
+  pdf_time_t utc_time, mytime;
   struct pdf_time_cal_s utccal, mycal;
 
-  status =  pdf_time_new(&utcTime);
-  fail_if(status != PDF_OK);
-
-  status =  pdf_time_new(&mytime);
-  fail_if(status != PDF_OK);
+  pdf_time_init (&utc_time);
+  pdf_time_init (&mytime);
 
   /* Clear pdf_time_cal_s structures */
-  memset(&mycal,0, sizeof(struct pdf_time_cal_s));
-  memset(&utccal,0, sizeof(struct pdf_time_cal_s));
-
+  memset (&mycal, 0, sizeof (struct pdf_time_cal_s));
+  memset (&utccal, 0, sizeof (struct pdf_time_cal_s));
 
   /** Set mytime object with current system time in utc */
-  status = pdf_time_set_from_u32(mytime, (pdf_u32_t)time(NULL));
-  fail_if(status != PDF_OK);
+  pdf_time_set_utc (&mytime, time (NULL));
 
-
-  status = pdf_time_get_utc_cal(mytime, &mycal);
-  fail_if(status != PDF_OK);
+  pdf_time_get_utc_cal (&mytime, &mycal);
 
   /* get utctime in pdf_time_t and pdf_time_cal_s objects */
-  status = pdf_time_set_to_current_utc_time(utcTime);
-  fail_if(status != PDF_OK);
-  status = pdf_time_get_utc_cal(utcTime, &utccal);
-  fail_if(status != PDF_OK);
+  pdf_time_set_to_current_utc_time (&utc_time);
+  pdf_time_get_utc_cal (&utc_time, &utccal);
 
+  fail_unless (memcmp (&utccal,
+                       &mycal,
+                       sizeof (struct pdf_time_cal_s)) == 0);
 
-  fail_unless(memcmp(&utccal, &mycal, sizeof(struct pdf_time_cal_s)) == 0);
-
-  status = pdf_time_destroy(utcTime);
-  fail_if(status != PDF_OK);
-  status = pdf_time_destroy(mytime);
-  fail_if(status != PDF_OK);
-
+  pdf_time_deinit (&utc_time);
+  pdf_time_deinit (&mytime);
 }
 END_TEST
 
@@ -94,8 +82,7 @@ test_pdf_time_set_to_current_utc_time (void)
 {
   TCase *tc = tcase_create ("pdf_time_set_to_current_utc_time");
 
-  tcase_add_test(tc, pdf_time_set_to_current_utc_time_001);
-
+  tcase_add_test (tc, pdf_time_set_to_current_utc_time_001);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);

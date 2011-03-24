@@ -86,6 +86,7 @@ struct pdf_time_cal_s {
 /* This structure holds information about a time span represented in calendar
  *  items: years, months, days, hours, minutes and seconds. */
 struct pdf_time_cal_span_s {
+  pdf_bool_t sign;
   pdf_u16_t years;
   pdf_u16_t months;
   pdf_u32_t days;
@@ -140,8 +141,8 @@ void pdf_time_deinit (pdf_time_t *time_var);
 /* ------------------------- Managing Time Values --------------------------- */
 
 /* Copy the contents of a given pdf_time_t object */
-void pdf_time_copy (const pdf_time_t *orig,
-                    pdf_time_t       *copy);
+void pdf_time_copy (pdf_time_t       *copy,
+                    const pdf_time_t *orig);
 
 /* Clear contents of the pdf_time_t object */
 void pdf_time_clear (pdf_time_t *time_var);
@@ -183,7 +184,7 @@ void pdf_time_get_local_cal (const pdf_time_t      *time_var,
 
 /* Get the UTC calendar time of a given time variable. */
 void pdf_time_get_utc_cal (const pdf_time_t      *time_var,
-                           struct pdf_time_cal_s *p_utc_cal);
+                           struct pdf_time_cal_s *utc_cal);
 
 /* Set the value of a time variable to a given calendar time. */
 void pdf_time_set_from_cal (pdf_time_t                  *time_var,

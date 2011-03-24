@@ -30,7 +30,6 @@
 #include <time.h>
 #include <base/time/pdf-time-test-common.h>
 #include <pdf-test-common.h>
-#define INTERACTIVE_DEBUG 0
 
 /*
  * Test: pdf_time_get_local_cal_001
@@ -49,32 +48,25 @@
  */
 START_TEST (pdf_time_get_local_cal_001)
 {
-  pdf_status_t status;
-
-  pdf_time_t time1;
-  struct pdf_time_cal_s localcal;
-  pdf_u32_t i;
-  extern pdf_u32_t datesInSeconds[];
+  extern pdf_u32_t dates_in_seconds[];
   extern struct pdf_time_cal_s dates[];
+  pdf_time_t time1;
+  pdf_u32_t i;
 
+  pdf_time_init (&time1);
 
-  status = pdf_time_new(&time1);
+  for (i = 0; i < DATES_SIZE; i++)
+    {
+      struct pdf_time_cal_s localcal;
 
-  fail_if(status != PDF_OK);
-  fail_if(time1==NULL);
+      pdf_time_set_utc (&time1, dates_in_seconds[i]);
+      pdf_time_get_local_cal (&time1, &localcal);
+      fail_unless (memcmp (&localcal,
+                           &dates[i],
+                           sizeof (struct pdf_time_cal_s)) == 0);
+    }
 
-  for (i = 0;i < DATES_SIZE; i++){
-      status = pdf_time_set_from_u32(time1, datesInSeconds[i]);
-      fail_if(status != PDF_OK);
-
-      status = pdf_time_get_local_cal(time1, &localcal);
-      fail_if(status != PDF_OK);
-      fail_unless(memcmp(&localcal, &dates[i], sizeof(struct pdf_time_cal_s)) == 0);
-  }
-
-
-  status = pdf_time_destroy(time1);
-  fail_if(status != PDF_OK);
+  pdf_time_deinit (&time1);
 }
 END_TEST
 
@@ -95,19 +87,17 @@ END_TEST
  */
 START_TEST (pdf_time_get_local_cal_002)
 {
-  pdf_status_t status;
-
-  pdf_time_t time1;
-  struct pdf_time_cal_s localcal, utccal;
-  pdf_u32_t i, localgmt;
-  extern pdf_u32_t datesInSeconds[];
+  extern pdf_u32_t dates_in_seconds[];
   extern struct pdf_time_cal_s dates[];
-
+  pdf_time_t time1;
+  struct tm *time_struct;
   time_t tloc;
-  struct tm* time_struct;
+  pdf_i32_t localgmt;
+  pdf_u32_t i;
 
-    time(&tloc);
-  time_struct = localtime(&tloc);
+
+  time (&tloc);
+  time_struct = localtime (&tloc);
 
 #if defined PDF_HOST_WIN32
   localgmt = _timezone;
@@ -115,31 +105,29 @@ START_TEST (pdf_time_get_local_cal_002)
   localgmt = time_struct->tm_gmtoff;
 #endif
 
+  pdf_time_init (&time1);
 
-  status = pdf_time_new(&time1);
-  fail_if(status != PDF_OK);
-  fail_if(time1==NULL);
+  for (i = 0; i < DATES_SIZE; i++)
+    {
+      struct pdf_time_cal_s localcal;
 
-  for (i = 0;i < DATES_SIZE; i++){
-      if (datesInSeconds[i] < localgmt ) continue;
-      status = pdf_time_set_from_u32(time1, datesInSeconds[i] - localgmt); // - localgmt
-      fail_if(status != PDF_OK);
+      if (dates_in_seconds[i] < localgmt)
+        continue;
 
-      status = pdf_time_set_local_offset(time1);
-      fail_if(status != PDF_OK);
+      pdf_time_set_utc (&time1,
+                        dates_in_seconds[i] - localgmt);
+      pdf_time_set_local_offset (&time1);
 
-      status = pdf_time_get_local_cal(time1, &localcal);
-      fail_if(status != PDF_OK);
+      pdf_time_get_local_cal (&time1, &localcal);
 
+      fail_unless (localcal.gmt_offset == localgmt);
+      fail_unless (memcmp (&localcal,
+                           &dates[i],
+                           sizeof (struct pdf_time_cal_s)) == 0);
 
-      fail_unless(localcal.gmt_offset == localgmt);
-      localcal.gmt_offset = 0;
-      fail_unless(memcmp(&localcal, &dates[i],sizeof(struct pdf_time_cal_s)) == 0);
+    }
 
-  }
-
-  status = pdf_time_destroy(time1);
-  fail_if(status != PDF_OK);
+  pdf_time_deinit (&time1);
 }
 END_TEST
 
@@ -151,10 +139,8 @@ test_pdf_time_get_local_cal (void)
 {
   TCase *tc = tcase_create ("pdf_time_get_local_cal");
 
-  tcase_add_test(tc, pdf_time_get_local_cal_001);
-  tcase_add_test(tc, pdf_time_get_local_cal_002);
-
-
+  tcase_add_test (tc, pdf_time_get_local_cal_001);
+  tcase_add_test (tc, pdf_time_get_local_cal_002);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);

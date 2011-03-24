@@ -480,7 +480,7 @@ pdf_time_dup (const pdf_time_t  *time_var_orig,
 
   time_var = pdf_time_allocate (error);
   if (time_var)
-    pdf_time_copy (time_var_orig, time_var);
+    pdf_time_copy (time_var, time_var_orig);
 
   return time_var;
 }
@@ -512,7 +512,7 @@ pdf_time_init_dup (pdf_time_t       *time_var,
   PDF_ASSERT_POINTER_RETURN (time_var_orig);
   PDF_ASSERT_POINTER_RETURN (time_var);
 
-  pdf_time_copy (time_var_orig, time_var);
+  pdf_time_copy (time_var, time_var_orig);
 }
 
 void
@@ -525,8 +525,8 @@ pdf_time_deinit (pdf_time_t *time_var)
 
 /* Copy the contents of a given pdf_time_t object */
 void
-pdf_time_copy (const pdf_time_t *orig,
-               pdf_time_t       *copy)
+pdf_time_copy (pdf_time_t       *copy,
+               const pdf_time_t *orig)
 {
   PDF_ASSERT_POINTER_RETURN (orig);
   PDF_ASSERT_POINTER_RETURN (copy);
@@ -863,11 +863,13 @@ pdf_time_diff_cal (const pdf_time_t           *time1,
   /* Check which of the dates is bigger */
   if (pdf_time_cmp (time1, time2) > 0)
     {
+      cal_span->sign = PDF_TRUE;
       p_big = &calendar1;
       p_small = &calendar2;
     }
   else
     {
+      cal_span->sign = PDF_FALSE;
       p_big = &calendar2;
       p_small = &calendar1;
     }

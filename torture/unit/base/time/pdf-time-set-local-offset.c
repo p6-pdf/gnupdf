@@ -29,6 +29,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <pdf-test-common.h>
+
 /*
  * Test: pdf_time_set_local_offset_001
  * Description:
@@ -47,17 +48,14 @@
  */
 START_TEST (pdf_time_set_local_offset_001)
 {
-  pdf_status_t status;
-
-  pdf_time_t time1;
   struct pdf_time_cal_s utccal;
+  pdf_time_t time1;
   pdf_u32_t localgmt;
   time_t tloc;
-  struct tm* time_struct;
+  struct tm *time_struct;
 
-
-  time(&tloc);
-  time_struct = localtime(&tloc);
+  time (&tloc);
+  time_struct = localtime (&tloc);
 
 #if defined PDF_HOST_WIN32
   localgmt = _timezone;
@@ -65,19 +63,14 @@ START_TEST (pdf_time_set_local_offset_001)
   localgmt = time_struct->tm_gmtoff;
 #endif
 
-  status = pdf_time_new(&time1);
-  fail_if(status != PDF_OK);
+  pdf_time_init (&time1);
 
-  status = pdf_time_set_local_offset(time1);
-  fail_if(status != PDF_OK);
+  pdf_time_set_local_offset (&time1);
+  pdf_time_get_utc_cal (&time1, &utccal);
 
-  status = pdf_time_get_utc_cal(time1, &utccal);
-  fail_if(status != PDF_OK);
+  fail_if (utccal.gmt_offset != localgmt);
 
-  fail_if(utccal.gmt_offset != localgmt);
-
-  status = pdf_time_destroy(time1);
-  fail_if(status != PDF_OK);
+  pdf_time_deinit (&time1);
 }
 END_TEST
 
@@ -89,9 +82,7 @@ test_pdf_time_set_local_offset (void)
 {
   TCase *tc = tcase_create ("pdf_time_set_local_offset");
 
-  tcase_add_test(tc, pdf_time_set_local_offset_001);
-
-
+  tcase_add_test (tc, pdf_time_set_local_offset_001);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);

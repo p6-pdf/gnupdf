@@ -30,44 +30,36 @@
 #include <stdlib.h>
 #include <base/time/pdf-time-test-common.h>
 #include <pdf-test-common.h>
+
 /*
  * Test: pdf_time_dup_001
  * Description:
  *   Duplicate initialized pdf_time_t object
  *Success condition:
- * 1. Function pdf_time_new schould return PDF_OK
- * 2. Function pdf_time_dup schould return pdf_time_t object.
- * 3. Structures pdf_time_s schould have the same data.
+ * 1. Function pdf_time_new should return PDF_OK
+ * 2. Function pdf_time_dup should return pdf_time_t object.
+ * 3. Structures pdf_time_s should have the same data.
  */
 START_TEST (pdf_time_dup_001)
 {
-  pdf_status_t status;
-  pdf_time_t time1;
-  pdf_time_t time2;
-  pdf_i64_t seconds;
-  pdf_u32_t i,j,sec;
+  pdf_error_t *error = NULL;
+  pdf_time_t *time1;
+  pdf_time_t *time2;
 
+  time1 = pdf_time_new (&error);
+  fail_unless (time1 != NULL);
+  fail_if (error != NULL);
 
-  status = pdf_time_new(&time1);
-  fail_if(status != PDF_OK);
-  fail_if(time1 == NULL);
+  pdf_time_set_utc (time1, 1234567890);
 
-  seconds = INT64_C(0x123456789ABCDEF0);
+  time2 = pdf_time_dup (time1, &error);
+  fail_unless (time2 != NULL);
+  fail_if (error != NULL);
 
-  status = pdf_time_set_from_i64(time1, seconds);
-  fail_if(status != PDF_OK);
+  fail_unless (pdf_time_cmp (time1, time2) == 0);
 
-  time2 = pdf_time_dup(time1);
-  fail_if(time2 == NULL);
-  fail_unless(pdf_time_cmp(time1, time2) == 0);
-
-
-  status = pdf_time_destroy(time1);
-  fail_if(status !=PDF_OK);
-
-  status = pdf_time_destroy(time2);
-  fail_if(status !=PDF_OK);
-
+  pdf_time_destroy (time1);
+  pdf_time_destroy (time2);
 }
 END_TEST
 
@@ -80,8 +72,7 @@ test_pdf_time_dup (void)
 {
   TCase *tc = tcase_create ("pdf_time_dup");
 
-  tcase_add_test(tc, pdf_time_dup_001);
-
+  tcase_add_test (tc, pdf_time_dup_001);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);

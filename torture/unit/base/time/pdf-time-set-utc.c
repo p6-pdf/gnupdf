@@ -1,9 +1,9 @@
 /* -*- mode: C -*-
  *
- *       File:         pdf-time-set-from-u32.c
+ *       File:         pdf-time-set-utc.c
  *       Date:         Sun Sep 21 16:37:27 2008
  *
- *       GNU PDF Library - Unit tests for pdf_time_set_from_u32
+ *       GNU PDF Library - Unit tests for pdf_time_set_utc
  *
  */
 
@@ -30,7 +30,7 @@
 #include <pdf-test-common.h>
 
 /*
- * Test: pdf_time_set_from_u32_001
+ * Test: pdf_time_set_utc_001
  * Description:
  *   Create pdf_time_t and pdf_time_span_t objects
  *   and initialize them to with the same number of
@@ -39,51 +39,32 @@
  *
  *Success condition:
  * 1. Function pdf_time_new schould return PDF_OK
- * 2. Function pdf_time_set_from_u32 schould return
+ * 2. Function pdf_time_set_utc schould return
  * PDF_OK.
  * 3. Function pdf_time_sub_span schould return
  * PDF_OK.
  * 4. pdf_time_t object is equal to 0.
  *
  */
-START_TEST (pdf_time_set_from_u32_001)
+START_TEST (pdf_time_set_utc_001)
 {
-  pdf_status_t status;
-  pdf_time_t time;
+  pdf_time_t time_var;
   pdf_time_t zero;
-  pdf_time_span_t span;
-  pdf_u32_t sec;
+  pdf_i32_t sec;
 
 
-  status = pdf_time_new(&time);
-  fail_if(status != PDF_OK);
+  pdf_time_init (&time_var);
+  pdf_time_init (&zero);
 
-  status = pdf_time_new(&zero);
-  fail_if(status != PDF_OK);
+  sec = 1234567890;
 
+  pdf_time_set_utc (&time_var, sec);
+  pdf_time_sub_span (&time_var, sec);
 
-  span = pdf_time_span_new();
+  fail_unless (pdf_time_cmp (&time_var, &zero) == 0);
 
-  sec = 0xF2345678;
-  status = pdf_time_span_set(&span,sec);
-  fail_if(status != PDF_OK);
-
-  status = pdf_time_set_from_u32(time, sec);
-  fail_if(status != PDF_OK);
-
-  status =  pdf_time_sub_span(time, span);
-
-  fail_unless(pdf_time_cmp(time, zero) == 0 );
-
-
-  status = pdf_time_destroy(time);
-  fail_if(status != PDF_OK);
-
-  status = pdf_time_destroy(zero);
-  fail_if(status != PDF_OK);
-
-  status = pdf_time_span_destroy(&span);
-  fail_if(status != PDF_OK);
+  pdf_time_deinit (&time_var);
+  pdf_time_deinit (&zero);
 }
 END_TEST
 
@@ -91,16 +72,15 @@ END_TEST
  * Test case creation function
  */
 TCase *
-test_pdf_time_set_from_u32 (void)
+test_pdf_time_set_utc (void)
 {
-  TCase *tc = tcase_create ("pdf_time_set_from_u32");
+  TCase *tc = tcase_create ("pdf_time_set_utc");
 
-  tcase_add_test(tc, pdf_time_set_from_u32_001);
-
+  tcase_add_test (tc, pdf_time_set_utc_001);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);
   return tc;
 }
 
-/* End of pdf-time-set-from-u32.c */
+/* End of pdf-time-set-utc.c */

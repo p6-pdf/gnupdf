@@ -29,6 +29,7 @@
 #include <pdf.h>
 #include <stdlib.h>
 #include <pdf-test-common.h>
+
 /*
  * Test: pdf_time_sub_span
  * Description:
@@ -44,43 +45,19 @@
  */
 START_TEST (pdf_time_sub_span_001)
 {
-  pdf_status_t status;
-
   pdf_time_t time1;
   pdf_time_t time2;
 
-  pdf_time_span_t span;
-  pdf_i64_t num64;
+  pdf_time_init (&time1);
+  pdf_time_init (&time2);
 
+  pdf_time_set_utc (&time1, 1234567890);
+  pdf_time_sub_span (&time1, 1234567890);
 
-  status = pdf_time_new(&time1);
-  fail_if(status != PDF_OK);
+  fail_unless (pdf_time_cmp (&time1, &time2) == 0);
 
-  status = pdf_time_new(&time2);
-  fail_if(status != PDF_OK);
-
-
-  span = pdf_time_span_new();
-
-  num64= INT64_C(0x01234567AABBCCDD);
-  pdf_time_span_set(&span, num64);
-
-
-  status = pdf_time_set_from_i64(time1, num64);
-  fail_if(status != PDF_OK);
-
-  status = pdf_time_sub_span(time1, span);
-  fail_if(status != PDF_OK);
-
-
-  fail_unless(pdf_time_cmp(time1, time2) == 0);
-
-
-  status = pdf_time_destroy(time1);
-  fail_if(status != PDF_OK);
-
-  status = pdf_time_destroy(time2);
-  fail_if(status != PDF_OK);
+  pdf_time_deinit (&time1);
+  pdf_time_deinit (&time2);
 }
 END_TEST
 
@@ -92,8 +69,7 @@ test_pdf_time_sub_span (void)
 {
   TCase *tc = tcase_create ("pdf_time_sub_span");
 
-  tcase_add_test(tc, pdf_time_sub_span_001);
-
+  tcase_add_test (tc, pdf_time_sub_span_001);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);

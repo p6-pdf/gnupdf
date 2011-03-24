@@ -27,7 +27,9 @@
 
 #include <check.h>
 #include <pdf-test-common.h>
+
 extern TCase *test_pdf_time_new (void);
+extern TCase *test_pdf_time_init (void);
 extern TCase *test_pdf_time_dup (void);
 extern TCase *test_pdf_time_destroy (void);
 extern TCase *test_pdf_time_copy (void);
@@ -40,19 +42,9 @@ extern TCase *test_pdf_time_add_span (void);
 extern TCase *test_pdf_time_sub_span (void);
 extern TCase *test_pdf_time_get_local_cal (void);
 extern TCase *test_pdf_time_get_utc_cal (void);
-extern TCase *test_pdf_time_from_cal (void);
+extern TCase *test_pdf_time_set_from_cal (void);
 extern TCase *test_pdf_time_set_local_offset (void);
 extern TCase *test_pdf_time_from_string (void);
-extern TCase *test_pdf_time_span_new (void);
-extern TCase *test_pdf_time_span_dup (void);
-extern TCase *test_pdf_time_span_destroy (void);
-extern TCase *test_pdf_time_span_set (void);
-extern TCase *test_pdf_time_span_negate (void);
-extern TCase *test_pdf_time_span_add (void);
-extern TCase *test_pdf_time_span_cmp (void);
-extern TCase *test_pdf_time_span_copy (void);
-extern TCase *test_pdf_time_span_diff (void);
-extern TCase *test_pdf_time_span_to_secs (void);
 extern TCase *test_pdf_time_diff_cal (void);
 extern TCase *test_pdf_time_set_to_current_local_time (void);
 extern TCase *test_pdf_time_set_to_current_utc_time (void);

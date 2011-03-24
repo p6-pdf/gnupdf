@@ -1,6 +1,6 @@
 /* -*- mode: C -*-
  *
- *       File:         pdf-time-add-cal-span.c
+ *       File:         pdf-time-sub-cal-span.c
  *       Date:         Sun Sep 21 16:37:27 2008
  *
  *       GNU PDF Library - Unit tests for pdf_time_sub_cal_span
@@ -29,7 +29,6 @@
 #include <stdlib.h>
 #include <base/time/pdf-time-test-common.h>
 #include <pdf-test-common.h>
-#define INTERACTIVE_DEBUG 0
 
 /*
  * Test: pdf_time_sub_cal_span_001
@@ -50,85 +49,53 @@
  */
 START_TEST (pdf_time_sub_cal_span_001)
 {
-  pdf_status_t status;
+  extern struct pdf_time_cal_span_s day_time_span[];
+  extern struct pdf_time_cal_span_s years_months[];
+  extern pdf_u32_t days_in_seconds[];
+
   pdf_time_t time1;
   pdf_time_t time2;
-
-  pdf_u32_t i,j;
+  pdf_u32_t i;
   pdf_u32_t seconds;
 
-  extern struct pdf_time_cal_span_s day_time_span[];
-  extern  struct pdf_time_cal_span_s years_months[];
-  extern pdf_u32_t daysInSeconds[];
-  struct pdf_time_cal_span_s calspan;
+  pdf_time_init (&time1);
+  pdf_time_init (&time2);
+
+  for (i = 0; i < YEAR_MONTH_SIZE; i++)
+    {
+      pdf_u32_t j;
+
+      for (j = 0; j < DAY_TIME_SPAN_SIZE; j++)
+        {
+          struct pdf_time_cal_span_s calspan;
+
+          calspan.sign = PDF_FALSE;
+
+          calspan.years = years_months[i].years;
+          calspan.months = years_months[i].months;
+
+          calspan.days = day_time_span[j].days;
+          calspan.hours = day_time_span[j].hours;
+          calspan.minutes = day_time_span[j].minutes;
+          calspan.seconds = day_time_span[j].seconds;
+
+          seconds = days_in_seconds[i];
+          seconds += day_time_span[j].days* SEC_IN_DAY;
+          seconds += day_time_span[j].hours * 3600;
+          seconds += day_time_span[j].minutes * 60;
+          seconds += day_time_span[j].seconds;
 
 
+          pdf_time_set_utc (&time1, seconds);
+          pdf_time_clear (&time2);
+          pdf_time_sub_cal_span (&time2, &calspan);
 
-
-  status = pdf_time_new(&time1);
-  fail_if(status != PDF_OK);
-
-  status = pdf_time_new(&time2);
-  fail_if(status != PDF_OK);
-
-  calspan.sign = PDF_FALSE;
-
-  for (i=0;i<YEAR_MONTH_SIZE;i++){
-    for(j=0;j<1; j++){
-        calspan.years = years_months[i].years;
-        calspan.months = years_months[i].months;
-
-        calspan.days = day_time_span[j].days;
-        calspan.hours = day_time_span[j].hours;
-        calspan.minutes = day_time_span[j].minutes;
-        calspan.seconds = day_time_span[j].seconds;
-
-
-        seconds = daysInSeconds[i];
-        seconds += day_time_span[j].days* SEC_IN_DAY;
-        seconds += day_time_span[j].hours * 3600;
-        seconds += day_time_span[j].minutes * 60;
-        seconds += day_time_span[j].seconds;
-
-
-        status = pdf_time_set_from_u32(time1, seconds);
-        fail_if(status != PDF_OK);
-
-        struct pdf_time_cal_s cal;
-        if (INTERACTIVE_DEBUG){
-            printf("pdf_time_sub_cal_span_001 %d %d\n",i, j);
-            printf("pdf_time_sub_cal_span_001 seconds=%d , calspan: %d-%d-%dT%d:%d:%d\n",seconds,
-                    calspan.years, calspan.months, calspan.days, calspan.hours, calspan.minutes, calspan.seconds);
-
-
-            pdf_time_get_utc_cal(time1, &cal);
-            printf("pdf_time_sub_cal_span_001 time1 calendar %d-%d-%dT%d:%d:%d\n",
-                    cal.year, cal.month, cal.day, cal.hour, cal.minute, cal.second);
+          fail_unless (pdf_time_cmp (&time1, &time2) == 0);
         }
-
-        status = pdf_time_sub_cal_span(time1, &calspan);
-        fail_if(status != PDF_OK);
-
-        if(INTERACTIVE_DEBUG){
-            pdf_time_get_utc_cal(time1, &cal);
-            printf("pdf_time_sub_cal_span_001 time1 after sub %d-%d-%dT%d:%d:%d\n",
-                    cal.year, cal.month, cal.day, cal.hour, cal.minute, cal.second);
-        }
-
-        fail_unless(pdf_time_cmp(time1, time2) == 0);
-
-        status = pdf_time_clear(time1);
-        fail_if(status != PDF_OK);
     }
-  }
 
-  status = pdf_time_destroy(time1);
-  fail_if(status != PDF_OK);
-
-  status = pdf_time_destroy(time2);
-  fail_if(status != PDF_OK);
-
-
+  pdf_time_deinit (&time1);
+  pdf_time_deinit (&time2);
 }
 END_TEST
 
@@ -140,8 +107,7 @@ test_pdf_time_sub_cal_span (void)
 {
   TCase *tc = tcase_create ("pdf_time_sub_cal_span");
 
-  tcase_add_test(tc, pdf_time_sub_cal_span_001);
-
+  tcase_add_test (tc, pdf_time_sub_cal_span_001);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);
