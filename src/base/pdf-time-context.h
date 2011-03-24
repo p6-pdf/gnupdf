@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,22 +27,17 @@
 #define PDF_TIME_CONTEXT_H
 
 #include <stdio.h>
-
 #include <pdf-time.h>
 
+/* Initialize time context */
+pdf_bool_t pdf_time_context_init (pdf_error_t **error);
 
-/* Initialize time context. Must be done only once at program startup!.
- *  Not thread-safe! */
-pdf_status_t
-pdf_time_context_init(void);
-
+/* Deinitialize time context */
+void pdf_time_context_deinit (void);
 
 /* Get the GMT offset of the local time configuration. The offset is obtained as
  *  minutes west of GMT */
-pdf_i32_t
-pdf_time_context_get_gmt_offset(void);
-
-
+pdf_i32_t pdf_time_context_get_gmt_offset (void);
 
 #endif /* PDF_TIME_CONTEXT_H */
 

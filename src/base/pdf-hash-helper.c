@@ -27,10 +27,7 @@
 
 #include <pdf-hash-helper.h>
 
-
-static void time_dispose_fn (const pdf_time_t elt);
 static void stm_dispose_fn  (const pdf_stm_t elt);
-
 
 pdf_bool_t
 pdf_hash_add_text (pdf_hash_t        *table,
@@ -53,23 +50,36 @@ pdf_hash_get_text (pdf_hash_t       *table,
 }
 
 pdf_bool_t
-pdf_hash_add_time (pdf_hash_t        *table,
-                   const pdf_char_t  *key,
-                   const pdf_time_t   value,
-                   pdf_error_t      **error)
+pdf_hash_add_duplicated_time (pdf_hash_t        *table,
+                              const pdf_char_t  *key,
+                              const pdf_time_t  *value,
+                              pdf_error_t      **error)
+{
+  return pdf_hash_add (table,
+                       key,
+                       pdf_time_dup (value, NULL),
+                       (pdf_hash_value_dispose_fn_t) pdf_time_destroy,
+                       error);
+}
+
+pdf_bool_t
+pdf_hash_add_static_time (pdf_hash_t        *table,
+                          const pdf_char_t  *key,
+                          const pdf_time_t  *value,
+                          pdf_error_t      **error)
 {
   return pdf_hash_add (table,
                        key,
                        value,
-                       (pdf_hash_value_dispose_fn_t) time_dispose_fn,
+                       NULL,
                        error);
 }
 
-const pdf_time_t
+const pdf_time_t *
 pdf_hash_get_time (pdf_hash_t       *table,
                    const pdf_char_t *key)
 {
-  return (const pdf_time_t) pdf_hash_get_value (table, key);
+  return (const pdf_time_t *) pdf_hash_get_value (table, key);
 }
 
 pdf_bool_t
@@ -216,12 +226,6 @@ pdf_hash_get_string (pdf_hash_t       *table,
                      const pdf_char_t *key)
 {
   return (pdf_char_t *) pdf_hash_get_value (table, key);
-}
-
-static void
-time_dispose_fn (const pdf_time_t elt)
-{
-  pdf_time_destroy (elt);
 }
 
 static void

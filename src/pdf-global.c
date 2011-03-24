@@ -82,15 +82,13 @@ pdf_init (void)
                                        PDF_ERROR,
                                        "couldn't initialize crypt module");
         }
-      else if (pdf_text_init (&inner_error) != PDF_TRUE)
+      else if (!pdf_text_init (&inner_error))
         {
           /* Inner error already set here */
         }
-      else if (pdf_time_init () != PDF_OK)
+      else if (!pdf_time_module_init (&inner_error))
         {
-          inner_error = pdf_error_new (PDF_EDOMAIN_BASE_TIME,
-                                       PDF_ERROR,
-                                       "couldn't initialize time module");
+          /* Inner error already set here */
         }
       else
         {

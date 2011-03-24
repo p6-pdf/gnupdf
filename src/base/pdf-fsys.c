@@ -141,9 +141,18 @@ pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s  item_props,
     }
 
   /* Get creation time from the props structure */
-  creation_date_str = pdf_time_to_string (item_props.creation_date,
-                                          PDF_TIME_FORMAT_PDF,
-                                          PDF_TRUE);
+  creation_date_str = pdf_time_to_string (&item_props.creation_date,
+                                          PDF_TIME_STRING_FORMAT_PDF,
+                                          PDF_TIME_STRING_TRAILING_APOSTROPHE,
+                                          &inner_error);
+  if (!creation_date_str)
+    {
+      /* TODO: Propagate error */
+      if (inner_error)
+        pdf_error_destroy (inner_error);
+      return PDF_ERROR;
+    }
+
   if (!pdf_hash_add_string (props_hash,
                             "creationDate",
                             creation_date_str,
@@ -158,9 +167,18 @@ pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s  item_props,
     }
 
   /* Get mtime from the props structure */
-  mod_date_str = pdf_time_to_string (item_props.modification_date,
-                                     PDF_TIME_FORMAT_PDF,
-                                     PDF_TRUE);
+  mod_date_str = pdf_time_to_string (&item_props.modification_date,
+                                     PDF_TIME_STRING_FORMAT_PDF,
+                                     PDF_TIME_STRING_TRAILING_APOSTROPHE,
+                                     &inner_error);
+  if (!mod_date_str)
+    {
+      /* TODO: Propagate error */
+      if (inner_error)
+        pdf_error_destroy (inner_error);
+      return PDF_ERROR;
+    }
+
   if (!pdf_hash_add_string (props_hash,
                             "modDate",
                             mod_date_str,
