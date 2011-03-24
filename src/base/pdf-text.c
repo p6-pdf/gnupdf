@@ -654,8 +654,8 @@ pdf_text_get_pdfdocenc (const pdf_text_t  *text,
                                       error))
     {
       pdf_prefix_error (error,
-                        "cannot get contents encoded in "
-                        "PDF Doc Encoding: ");
+                        "cannot get contents encoded in"
+                        " PDF Doc Encoding: ");
       return NULL;
     }
 
@@ -667,8 +667,8 @@ pdf_text_get_pdfdocenc (const pdf_text_t  *text,
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_TEXT,
                      PDF_ENOMEM,
-                     "cannot get contents encoded in "
-                     "PDF Doc Encoding: "
+                     "cannot get contents encoded in""
+                     " PDF Doc Encoding: "
                      "couldn't reallocate %lu bytes",
                      (unsigned long)(size + 1));
       return NULL;
@@ -1008,8 +1008,8 @@ pdf_text_set_pdfdocenc (pdf_text_t        *text,
                                       error))
     {
       pdf_prefix_error (error,
-                        "cannot set string encoded in "
-                        "PDF Doc Encoding: ");
+                        "cannot set string encoded in"
+                        " PDF Doc Encoding: ");
       return PDF_FALSE;
     }
 
@@ -1017,8 +1017,8 @@ pdf_text_set_pdfdocenc (pdf_text_t        *text,
   if (!pdf_text_clean_contents (text, error))
     {
       pdf_prefix_error (error,
-                        "cannot set string encoded in "
-                        "PDF Doc Encoding: ");
+                        "cannot set string encoded in"
+                        " PDF Doc Encoding: ");
       pdf_dealloc (temp_data);
       return PDF_FALSE;
     }
