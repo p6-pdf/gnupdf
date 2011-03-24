@@ -1336,25 +1336,31 @@ uuid = uuid_generate (PDF_UUID_NAME);
 @end table
 @end deftypefun
 
-@deftypefun {const char *} pdf_uuid_string (pdf_uuid_t @var{uuid})
+@deftypefun {pdf_char_t *} pdf_uuid_string (pdf_uuid_t @var{uuid}, pdf_char_t * @var{buffer}, pdf_size_t buffer_size)
 
-Return an ASCII string with the printed representation of @var{uuid}.
+Set and return an ASCII string with the printed representation of @var{uuid}.
 
 @table @strong
 @item Parameters
 @table @var
 @item uuid
 A previously generated UUID.
+@item buffer
+A pointer to the output buffer. The given buffer should have at least PDF_UUID_SIZE (46) bytes.
+@item buffer_size
+Size of @var{buffer}.
 @end table
 @item Returns
-A null-terminated buffer containing the printed representation of
-@var{uuid}.
+A null-terminated buffer containing the printed representation of @var{uuid}.
 @item Usage example
+@example
 pdf_uuid_t uuid;
+pdf_char_t uuid_str[PDF_UUID_SIZE];
 
 uuid = pdf_uuid_generate (PDF_UUID_TIME);
 printf ("The generated UUID: %s\n",
-        pdf_uuid_string (uuid));
+        pdf_uuid_string (uuid, uuid_str, PDF_UUID_SIZE);
+@end example
 @end table
 @end deftypefun
 

@@ -1,3 +1,11 @@
+2011-03-24  Albert Meroño Peñuela  <albert.merono@est.fib.upc.edu>
+
+	base/types: UUID module implementation.
+	* src/base/pdf-types-uuid.[h|c]
+	* src/Makefile.am: Compile UUID module within types.
+	* configure.ac: Added libuuid dependencies.
+	* doc/gnupdf.texi: Documented changes in UUID API.
+
 2011-03-23  Jose E. Marchesi  <jemarch@gnu.org>
 
 	readme: added note about year intervals in the copyrights.

@@ -3,6 +3,9 @@ Foundation's distribution of the GNU PDF Library.  To show our
 appreciation for their public spirit, we list here in
 alphabetical order a condensed list of their contributions.
 
+Albert Meroño Peñuela: changed configure.ac gnupdf.texi pdf-types-uuid.c
+  pdf-types-uuid.h
+
 Aleksander Morgado: changed gnupdf.texi pdf-text.c pdf-text-ucd-case.c
   pdf-text-filter.c pdf-time.c pdf-time-string.c gnupdf-tsd.texi
   pdf-text-generate-ucd.c pdf-text-host-encoding.c pdf-time.h pdf-types.h
