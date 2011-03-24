@@ -39,8 +39,8 @@
 
 /* Global variables */
 
-pdf_char_t *pdf_library_name = "libgnupdf";
-pdf_char_t *pdf_version = "0.1";
+const pdf_char_t *pdf_library_name = "libgnupdf";
+const pdf_char_t *pdf_version = "0.1";
 
 /* This structure contains global data used by the library. A variable
    of this type, called `pdf_globals', is defined in pdf.c. The
