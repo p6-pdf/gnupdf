@@ -1,3 +1,8 @@
+2011-03-28  Aleksander Morgado  <aleksander@gnu.org>
+
+	text: fix compilation
+	* src/base/pdf-text.c (pdf_text_get_pdfdocenc)
+
 2011-03-24  Jose E. Marchesi  <jemarch@gnu.org>
 
 	text: avoid false positives in a syntax check.

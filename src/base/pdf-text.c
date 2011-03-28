@@ -667,7 +667,7 @@ pdf_text_get_pdfdocenc (const pdf_text_t  *text,
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_TEXT,
                      PDF_ENOMEM,
-                     "cannot get contents encoded in""
+                     "cannot get contents encoded in"
                      " PDF Doc Encoding: "
                      "couldn't reallocate %lu bytes",
                      (unsigned long)(size + 1));
