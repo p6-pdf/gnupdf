@@ -182,15 +182,15 @@ TEST_SUITE_TIME =  base/time/pdf-time-test-common.h \
                    base/time/pdf-time-get-utc-cal.c \
                    base/time/pdf-time-set-from-cal.c \
                    base/time/pdf-time-set-local-offset.c \
+                   base/time/pdf-time-w32-set-from-filetime.c \
                    base/time/pdf-time-diff-cal.c \
                    base/time/pdf-time-set-to-current-local-time.c \
                    base/time/pdf-time-set-to-current-utc-time.c \
                    base/time/pdf-time-diff.c \
-                   base/time/pdf-time-to-string.c \
+                   base/time/pdf-time-add-cal-span-with-base.c \
                    base/time/pdf-time-cal-span-cmp.c \
                    base/time/pdf-time-cal-span-diff.c \
-                   base/time/pdf-time-add-cal-span-with-base.c \
-                   base/time/pdf-time-w32-set-from-filetime.c \
+                   base/time/pdf-time-to-string.c \
                    base/time/pdf-time-from-string.c
 
 TEST_SUITE_CRYPT = base/crypt/pdf-crypt-cipher-new.c \

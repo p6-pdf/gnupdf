@@ -31,8 +31,6 @@
 #include <string.h>
 #include <base/time/pdf-time-test-common.h>
 #include <pdf-test-common.h>
-#define INTERACTIVE_DEBUG 0
-
 
 /*
  * Test: pdf_time_from_string_001
@@ -252,10 +250,8 @@ START_TEST (pdf_time_from_string_003)
                       dates[i].year, dates[i].month, dates[i].day);
 
 
-        if (INTERACTIVE_DEBUG)
-           printf("pdf_time_from_string_003 %s %i\n",dateString,i);
         status = pdf_time_from_string(time2,dateString, PDF_TIME_FORMAT_ISO_8601, PDF_FALSE);
-       fail_if(status != PDF_OK);
+        fail_if(status != PDF_OK);
 
 
        fail_unless(pdf_time_cmp(time1, time2) == 0);
@@ -316,8 +312,6 @@ START_TEST (pdf_time_from_string_004)
                             dates[i].year, dates[i].month);
 
 
-            if (INTERACTIVE_DEBUG)
-                printf("pdf_time_from_string_004 %s %i\n",dateString,i);
             status = pdf_time_from_string (time2,dateString, PDF_TIME_FORMAT_ISO_8601, PDF_FALSE);
             fail_if(status != PDF_OK);
 
@@ -376,8 +370,6 @@ START_TEST (pdf_time_from_string_005)
     pdf_time_set_from_u32(time1,seconds);
 
     sprintf(&dateString[0],"%d",1970+i);
-    if (INTERACTIVE_DEBUG)
-        printf("pdf_time_from_string_005 %s %d %d\n",dateString,i, seconds);
 
     status = pdf_time_from_string (time2,dateString, PDF_TIME_FORMAT_ISO_8601, PDF_FALSE);
     fail_if(status != PDF_OK);
@@ -461,9 +453,6 @@ START_TEST (pdf_time_from_string_006)
 
           fail_if(PDF_OK != PDF_OK);
 
-          if (INTERACTIVE_DEBUG)
-            printf("pdf_time_from_string_006 > %s \n", dateString);
-
           status = pdf_time_from_string (time2, dateString, PDF_TIME_FORMAT_PDF, PDF_FALSE);
           fail_if(status != PDF_EBADDATA);
 
@@ -476,9 +465,6 @@ START_TEST (pdf_time_from_string_006)
            * (From ISO 32000)
            * */
           dateString[22]='\0';
-
-          if (INTERACTIVE_DEBUG)
-            printf("pdf_time_from_string_006 > %s \n", dateString);
 
           status = pdf_time_from_string (time2, dateString, PDF_TIME_FORMAT_PDF, PDF_TRUE);
           fail_if(status != PDF_EBADDATA);
@@ -789,8 +775,6 @@ START_TEST (pdf_time_from_string_010)
         sprintf(&dateString[0],"%d%02d",
                       dates[i].year, dates[i].month);
 
-        if (INTERACTIVE_DEBUG)
-            printf("pdf_time_from_string_010 %s %i\n",dateString,i);
         status = pdf_time_from_string (time2,dateString, PDF_TIME_FORMAT_GENERALIZED_ASN1, PDF_FALSE);
         fail_if(status != PDF_OK);
 
@@ -850,9 +834,6 @@ START_TEST (pdf_time_from_string_011)
     pdf_time_set_from_u32(time1,seconds);
 
     sprintf(&dateString[0],"%d",1970+i);
-    if (INTERACTIVE_DEBUG)
-        printf("pdf_time_from_string_011 %s %d %d\n",dateString,i, seconds);
-
 
     status = pdf_time_from_string(time2,dateString, PDF_TIME_FORMAT_GENERALIZED_ASN1, PDF_FALSE);
     fail_if(status != PDF_OK);
@@ -1046,21 +1027,19 @@ test_pdf_time_from_string (void)
 {
   TCase *tc = tcase_create ("pdf_time_from_string");
 
-  tcase_add_test(tc, pdf_time_from_string_001);
-  tcase_add_test(tc, pdf_time_from_string_002);
-  tcase_add_test(tc, pdf_time_from_string_003);
-  tcase_add_test(tc, pdf_time_from_string_004);
-  tcase_add_test(tc, pdf_time_from_string_005);
-  tcase_add_test(tc, pdf_time_from_string_006);
-  tcase_add_test(tc, pdf_time_from_string_007);
-  tcase_add_test(tc, pdf_time_from_string_008);
-  tcase_add_test(tc, pdf_time_from_string_009);
-  tcase_add_test(tc, pdf_time_from_string_010);
-  tcase_add_test(tc, pdf_time_from_string_011);
-  tcase_add_test(tc, pdf_time_from_string_012);
-  tcase_add_test(tc, pdf_time_from_string_013);
-
-
+  tcase_add_test (tc, pdf_time_from_string_001);
+  tcase_add_test (tc, pdf_time_from_string_002);
+  tcase_add_test (tc, pdf_time_from_string_003);
+  tcase_add_test (tc, pdf_time_from_string_004);
+  tcase_add_test (tc, pdf_time_from_string_005);
+  tcase_add_test (tc, pdf_time_from_string_006);
+  tcase_add_test (tc, pdf_time_from_string_007);
+  tcase_add_test (tc, pdf_time_from_string_008);
+  tcase_add_test (tc, pdf_time_from_string_009);
+  tcase_add_test (tc, pdf_time_from_string_010);
+  tcase_add_test (tc, pdf_time_from_string_011);
+  tcase_add_test (tc, pdf_time_from_string_012);
+  tcase_add_test (tc, pdf_time_from_string_013);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);
