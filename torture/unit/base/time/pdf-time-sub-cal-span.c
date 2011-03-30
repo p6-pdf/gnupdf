@@ -69,26 +69,51 @@ START_TEST (pdf_time_sub_cal_span_001)
         {
           struct pdf_time_cal_span_s calspan;
 
-          calspan.sign = PDF_FALSE;
-
-          calspan.years = years_months[i].years;
-          calspan.months = years_months[i].months;
-
-          calspan.days = day_time_span[j].days;
-          calspan.hours = day_time_span[j].hours;
-          calspan.minutes = day_time_span[j].minutes;
-          calspan.seconds = day_time_span[j].seconds;
-
           seconds = days_in_seconds[i];
           seconds += day_time_span[j].days* SEC_IN_DAY;
           seconds += day_time_span[j].hours * 3600;
           seconds += day_time_span[j].minutes * 60;
           seconds += day_time_span[j].seconds;
-
-
+          calspan.sign = PDF_FALSE;
+          calspan.years = years_months[i].years;
+          calspan.months = years_months[i].months;
+          calspan.days = day_time_span[j].days;
+          calspan.hours = day_time_span[j].hours;
+          calspan.minutes = day_time_span[j].minutes;
+          calspan.seconds = day_time_span[j].seconds;
           pdf_time_set_utc (&time1, seconds);
+          pdf_time_sub_cal_span (&time1, &calspan);
+
           pdf_time_clear (&time2);
-          pdf_time_sub_cal_span (&time2, &calspan);
+
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+            {
+              struct pdf_time_cal_s cal1;
+              struct pdf_time_cal_s cal2;
+
+              pdf_time_get_utc_cal (&time1, &cal1);
+              pdf_time_get_utc_cal (&time2, &cal2);
+
+              printf ("\n"
+                      "pdf_time_sub_cal_span_001[%u,%u] (seconds) %d\n",
+                      i, j, seconds);
+
+              printf ("pdf_time_sub_cal_span_001[%u,%u] (cal1)    %d-%d-%d %d:%d:%d\n",
+                      i, j,
+                      cal1.year, cal1.month, cal1.day,
+                      cal1.hour, cal1.minute, cal1.second);
+
+              printf ("pdf_time_sub_cal_span_001[%u,%u] (calspan) %d-%d-%d %d:%d:%d\n",
+                      i, j,
+                      calspan.years, calspan.months, calspan.days,
+                      calspan.hours, calspan.minutes, calspan.seconds);
+              printf ("pdf_time_sub_cal_span_001[%u,%u] (cal2)    %d-%d-%d %d:%d:%d\n",
+                      i, j,
+                      cal2.year, cal2.month, cal2.day,
+                      cal2.hour, cal2.minute, cal2.second);
+              fflush (stdout);
+            }
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
 
           fail_unless (pdf_time_cmp (&time1, &time2) == 0);
         }
