@@ -49,7 +49,7 @@ START_TEST (pdf_time_cal_span_diff_001)
 {
   extern struct pdf_time_cal_span_s day_time_span[];
   extern struct pdf_time_cal_span_s years_months[];
-  extern pdf_u32_t daysInSeconds[];
+  extern pdf_u32_t days_in_seconds[];
 
   pdf_u32_t i, j, i2, j2;
 
@@ -88,7 +88,7 @@ START_TEST (pdf_time_cal_span_diff_001)
 
           pdf_time_cal_span_diff (&span1, &span2, &basetime, &result);
 
-          sec = (daysInSeconds[j] - daysInSeconds[j2]+
+          sec = (days_in_seconds[j] - days_in_seconds[j2]+
                  (span1.days - span2.days) * 24 * 3600 +
                  (span1.hours - span2.hours) * 3600 +
                  (span1.minutes - span2.minutes) * 60 +

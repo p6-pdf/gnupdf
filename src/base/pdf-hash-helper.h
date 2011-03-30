@@ -47,7 +47,7 @@ pdf_bool_t        pdf_hash_add_duplicated_time (pdf_hash_t        *table,
                                                 const pdf_char_t  *key,
                                                 const pdf_time_t  *value,
                                                 pdf_error_t      **error);
-pdf_bool_t        pdf_hash_add_duplicated_time (pdf_hash_t        *table,
+pdf_bool_t        pdf_hash_add_static_time     (pdf_hash_t        *table,
                                                 const pdf_char_t  *key,
                                                 const pdf_time_t  *value,
                                                 pdf_error_t      **error);

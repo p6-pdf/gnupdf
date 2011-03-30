@@ -49,7 +49,7 @@ START_TEST (pdf_time_add_cal_span_with_base_001)
 {
   extern struct pdf_time_cal_span_s day_time_span[];
   extern struct pdf_time_cal_span_s years_months[];
-  extern pdf_u32_t daysInSeconds[];
+  extern pdf_u32_t days_in_seconds[];
 
   pdf_u32_t i, j, i2, j2;
 
@@ -91,7 +91,7 @@ START_TEST (pdf_time_add_cal_span_with_base_001)
                                            &basetime,
                                            &result);
 
-          sec = (daysInSeconds[j] +
+          sec = (days_in_seconds[j] +
                  (span1.days + span2.days) * 24 * 3600 +
                  (span1.hours + span2.hours) * 3600 +
                  (span1.minutes + span2.minutes) * 60 +

@@ -44,21 +44,19 @@ START_TEST (pdf_hash_add_time_001)
   pdf_time_t inner;
   pdf_error_t *error = NULL;
 
-
   table = pdf_hash_new (NULL);
 
-  fail_if (pdf_time_new (&inner) != PDF_OK);
+  pdf_time_init (&inner);
 
-  fail_if (pdf_hash_add_time (table,
-                              "theKey",
-                              inner,
-                              &error) != PDF_TRUE);
+  fail_if (pdf_hash_add_duplicated_time (table,
+                                         "theKey",
+                                         &inner,
+                                         &error) != PDF_TRUE);
   fail_if (error != NULL);
 
   pdf_hash_destroy (table);
 }
 END_TEST
-
 
 /*
  * Test case creation function
