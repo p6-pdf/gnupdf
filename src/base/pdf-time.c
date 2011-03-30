@@ -223,17 +223,25 @@ static void
 pdf_time_calendar_add_years (struct pdf_time_cal_s *p_calendar,
                              const pdf_i32_t        delta_years)
 {
+  pdf_i32_t years;
+
+  if (delta_years == 0)
+    return;
+
   /* ADD years */
-  p_calendar->year += delta_years;
+  years = p_calendar->year + delta_years;
 
   /* The only thing to normalize is in case we reach Feb.29 in a non-leap
    *  year */
-  if ((!IS_LEAP_YEAR (p_calendar->year)) &&
+  if ((!IS_LEAP_YEAR (years)) &&
       (p_calendar->month == PDF_TIME_FEBRUARY) &&
       (p_calendar->day == 29))
     {
       p_calendar->day = 28;
     }
+
+  PDF_ASSERT (years >= 0);
+  p_calendar->year = years;
 }
 
 /* Function to normalize a given date after having added MONTHS */
@@ -241,6 +249,9 @@ static void
 pdf_time_calendar_add_months (struct pdf_time_cal_s *p_calendar,
                               const pdf_i32_t        delta_months)
 {
+  if (delta_months == 0)
+    return;
+
   if (delta_months > 0)
     {
       p_calendar->month += delta_months;
@@ -250,14 +261,20 @@ pdf_time_calendar_add_months (struct pdf_time_cal_s *p_calendar,
           p_calendar->year++;
         }
     }
-  else if (delta_months < 0)
+  else
     {
-      p_calendar->month += delta_months;
-      while (p_calendar->month < 1)
+      pdf_i32_t months;
+
+      months = p_calendar->month + delta_months;
+      while (months < 1)
         {
-          p_calendar->month += 12;
+          months += 12;
           p_calendar->year--;
         }
+
+      PDF_ASSERT (months >= 1);
+      PDF_ASSERT (months <= 12);
+      p_calendar->month = months;
     }
 
   /* After having added months, we could need to normalize the days */
@@ -267,6 +284,9 @@ pdf_time_calendar_add_months (struct pdf_time_cal_s *p_calendar,
       p_calendar->day = pdf_time_get_days_in_month (p_calendar->year,
                                                     p_calendar->month);
     }
+
+  PDF_ASSERT (p_calendar->month >= 1);
+  PDF_ASSERT (p_calendar->month <= 12);
 }
 
 /* Function to normalize a given date after having added DAYS */
@@ -275,6 +295,9 @@ pdf_time_calendar_add_days (struct pdf_time_cal_s *p_calendar,
                             const pdf_i32_t        delta_days)
 {
   pdf_i32_t delta = delta_days;
+
+  if (delta_days == 0)
+    return;
 
   /* ADD days */
   if (delta_days > 0)
@@ -291,7 +314,7 @@ pdf_time_calendar_add_days (struct pdf_time_cal_s *p_calendar,
           pdf_time_calendar_add_months (p_calendar, 1);
 
           /* Update remaining delta and new days_in_month */
-          delta -= (days_in_month - p_calendar->day +1);
+          delta -= (days_in_month - p_calendar->day + 1);
           days_in_month = pdf_time_get_days_in_month (p_calendar->year,
                                                       (enum pdf_time_month_e)p_calendar->month);
         }
@@ -299,7 +322,7 @@ pdf_time_calendar_add_days (struct pdf_time_cal_s *p_calendar,
       p_calendar->day += delta;
     }
   /* SUBSTRACT days */
-  else if (delta_days < 0)
+  else
     {
       pdf_i32_t days_in_month;
 
@@ -321,6 +344,9 @@ pdf_time_calendar_add_days (struct pdf_time_cal_s *p_calendar,
       delta += days_in_month;
       p_calendar->day += delta;
     }
+
+  PDF_ASSERT (p_calendar->month >= 1);
+  PDF_ASSERT (p_calendar->month <= 12);
 }
 
 /* Function to normalize a given date after having added HOURS */
@@ -328,29 +354,38 @@ static void
 pdf_time_calendar_add_hours (struct pdf_time_cal_s *p_calendar,
                              const pdf_i32_t        delta_hours)
 {
+  pdf_i32_t hours;
   pdf_i32_t days;
   pdf_i32_t remaining_hours;
+
+  if (delta_hours == 0)
+    return;
 
   /* No real problem with hours, as 1 day is always 24h */
   days = delta_hours / PDF_HOURS_PER_DAY;
   remaining_hours = delta_hours % PDF_HOURS_PER_DAY;
 
   /* Add remaining hours */
-  p_calendar->hour += remaining_hours;
+  hours = p_calendar->hour + remaining_hours;
+
   /* If we went back to the previous day, correct time and add 1 day more
    * to remove */
-  if (p_calendar->hour < 0)
+  if (hours < 0)
     {
-      p_calendar->hour += PDF_HOURS_PER_DAY;
+      hours += PDF_HOURS_PER_DAY;
       days--;
     }
   /* If we went forward to the next day, correct time and add 1 day more
    * to add */
-  else if (p_calendar->hour >= PDF_HOURS_PER_DAY)
+  else if (hours >= PDF_HOURS_PER_DAY)
     {
-      p_calendar->hour -= PDF_HOURS_PER_DAY;
+      hours -= PDF_HOURS_PER_DAY;
       days++;
     }
+
+  PDF_ASSERT (hours >= 0);
+  PDF_ASSERT (hours < 24);
+  p_calendar->hour = hours;
 
   /* Add/Remove days... */
   pdf_time_calendar_add_days (p_calendar, days);
@@ -361,30 +396,38 @@ static void
 pdf_time_calendar_add_minutes (struct pdf_time_cal_s *p_calendar,
                                const pdf_i32_t        delta_minutes)
 {
+  pdf_i32_t minutes;
   pdf_i32_t hours;
   pdf_i32_t remaining_minutes;
+
+  if (delta_minutes == 0)
+    return;
 
   /* No real problem with minutes, as 1 hour is always 60minutes */
   hours = delta_minutes / PDF_MINS_PER_HOUR;
   remaining_minutes = delta_minutes % PDF_MINS_PER_HOUR;
 
   /* Add remaining minutes */
-  p_calendar->minute += remaining_minutes;
+  minutes = p_calendar->minute + remaining_minutes;
 
   /* If we went back to the previous hour, correct time and add 1 hour more
    * to remove */
-  if (p_calendar->minute < 0)
+  if (minutes < 0)
     {
-      p_calendar->minute += PDF_MINS_PER_HOUR;
+      minutes += PDF_MINS_PER_HOUR;
       hours--;
     }
   /* If we went forward to the next day, correct time and add 1 hour more
    * to add */
-  else if (p_calendar->minute >= PDF_MINS_PER_HOUR)
+  else if (minutes >= PDF_MINS_PER_HOUR)
     {
-      p_calendar->minute -= PDF_MINS_PER_HOUR;
+      minutes -= PDF_MINS_PER_HOUR;
       hours++;
     }
+
+  PDF_ASSERT (minutes >= 0);
+  PDF_ASSERT (minutes < 60);
+  p_calendar->minute = minutes;
 
   /* Add/Remove hours... */
   pdf_time_calendar_add_hours (p_calendar, hours);
@@ -395,30 +438,38 @@ static void
 pdf_time_calendar_add_seconds (struct pdf_time_cal_s *p_calendar,
                                const pdf_i32_t        delta_seconds)
 {
+  pdf_i32_t seconds;
   pdf_i32_t minutes;
   pdf_i32_t remaining_seconds;
+
+  if (delta_seconds == 0)
+    return;
 
   /* No real problem with minutes, as 1 hour is always 60minutes */
   minutes = delta_seconds / PDF_SECS_PER_MIN;
   remaining_seconds = delta_seconds % PDF_SECS_PER_MIN;
 
   /* Add remaining seconds */
-  p_calendar->second += remaining_seconds;
+  seconds = p_calendar->second + remaining_seconds;
 
   /* If we went back to the previous minute, correct time and add 1 minute more
    * to remove */
-  if (p_calendar->second < 0)
+  if (seconds < 0)
     {
-      p_calendar->second += PDF_SECS_PER_MIN;
+      seconds += PDF_SECS_PER_MIN;
       minutes--;
     }
   /* If we went forward to the next minute, correct time and add 1 minute more
    * to add */
-  else if (p_calendar->second >= PDF_SECS_PER_MIN)
+  else if (seconds >= PDF_SECS_PER_MIN)
     {
-      p_calendar->second -= PDF_SECS_PER_MIN;
+      seconds -= PDF_SECS_PER_MIN;
       minutes++;
     }
+
+  PDF_ASSERT (seconds >= 0);
+  PDF_ASSERT (seconds < 60);
+  p_calendar->second = seconds;
 
   /* Add/Remove minutes... */
   pdf_time_calendar_add_minutes (p_calendar, minutes);
@@ -668,7 +719,7 @@ pdf_time_add_cal_span_with_sign (pdf_time_t                       *time_var,
   pdf_time_calendar_add_seconds (&calendar,  sign * cal_span->seconds);
 
   /* Check for possible underflow condition */
-  if (cal_span->years < 1970)
+  if (calendar.year < 1970)
     {
       /* If underflow, reset the time to Unix time origin */
       pdf_time_clear (time_var);
@@ -757,14 +808,15 @@ pdf_time_get_utc_cal (const pdf_time_t      *time_var,
 
 /* Set the value of a time variable to a given calendar time. */
 void
-pdf_time_set_from_cal (pdf_time_t                   *time_var,
-                       const struct pdf_time_cal_s  *cal)
+pdf_time_set_from_cal (pdf_time_t                  *time_var,
+                       const struct pdf_time_cal_s *cal)
 {
   pdf_u64_t aux;
   pdf_i32_t walker;
 
   PDF_ASSERT_POINTER_RETURN (time_var);
   PDF_ASSERT_POINTER_RETURN (cal);
+
   /* Wrong calendar contents are treated as programmer errors */
   PDF_ASSERT_RETURN (cal->year >= 1970);
   PDF_ASSERT_RETURN (cal->month >= 1);
