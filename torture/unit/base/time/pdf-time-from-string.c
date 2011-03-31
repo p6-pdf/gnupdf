@@ -38,11 +38,11 @@
  *   Get pdf_time_t object from string in full ISO_8601:
  *   YYYY-MM-DDThh:mm:ss+hh:mm.
  *Success condition:
- * 1. Function pdf_time_from_string schould return
+ * 1. Function pdf_time_from_string should return
  * PDF_OK.
- * 2. pdf_time_t object schould point the same time
+ * 2. pdf_time_t object should point the same time
  * as pdf_time_t object created by pdf_time_from_u32_t.
- * 3. pdf_time_cmp schould return PDF_OK
+ * 3. pdf_time_cmp should return PDF_OK
  */
 START_TEST (pdf_time_from_string_001)
 {
@@ -55,18 +55,18 @@ START_TEST (pdf_time_from_string_001)
     {
       pdf_i32_t gmt;
 
-      for (gmt = -12 * 60; gmt <= 12 * 60; gmt += 51)
+      for (gmt = -12 * 60; gmt <= 12 * 60; gmt += 30)
         {
           pdf_error_t *error = NULL;
           pdf_time_t time1;
           pdf_time_t time2;
           pdf_i32_t offset_hours;
           pdf_i32_t offset_minutes;
-          pdf_i32_t seconds;
+          pdf_i64_t seconds;
           pdf_char_t *date_string;
 
           /* Set various gmt_offsets. */
-          seconds = dates_in_seconds[i] - gmt * 60;
+          seconds = (pdf_i64_t)dates_in_seconds[i] - gmt * 60;
           if (seconds < 0)
             continue;
 
@@ -95,6 +95,12 @@ START_TEST (pdf_time_from_string_001)
                                              PDF_TIME_STRING_NO_OPTION,
                                              &error) != PDF_TRUE);
           fail_if (error != NULL);
+
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("pdf_time_from_string_001 [%u,%+.3d] '%s'\n",
+                  i, gmt, date_string);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
+
           fail_unless (pdf_time_cmp (&time1, &time2) == 0);
 
           if (gmt == 0)
@@ -102,6 +108,11 @@ START_TEST (pdf_time_from_string_001)
               /** Test YYYY-MM-DDThh:mm:ssZ format **/
                 date_string[19] = 'Z';
                 date_string[20] = '\0';
+
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+              printf ("                         [%u,%+.3d] '%s'\n",
+                      i, gmt, date_string);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
 
                 fail_if (pdf_time_set_from_string (&time2,
                                                    date_string,
@@ -127,11 +138,11 @@ END_TEST
  *   with format YYYY-MM-DDThh:mm+hh:mm(without
  *   seconds)
  *Success condition:
- * 1. Function pdf_time_from_string schould return
+ * 1. Function pdf_time_from_string should return
  * PDF_OK.
- * 2. pdf_time_t object schould point the same time
+ * 2. pdf_time_t object should point the same time
  * as pdf_time_t object created by pdf_time_from_u32_t.
- * 3. pdf_time_cmp schould return PDF_OK
+ * 3. pdf_time_cmp should return PDF_OK
  */
 START_TEST (pdf_time_from_string_002)
 {
@@ -144,18 +155,20 @@ START_TEST (pdf_time_from_string_002)
     {
       pdf_i32_t gmt;
 
-      for (gmt = -12 * 60; gmt <= 12 * 60; gmt += 51)
+      for (gmt = -12 * 60; gmt <= 12 * 60; gmt += 30)
         {
           pdf_error_t *error = NULL;
           pdf_time_t time1;
           pdf_time_t time2;
           pdf_i32_t offset_hours;
           pdf_i32_t offset_minutes;
-          pdf_i32_t seconds;
+          pdf_i64_t seconds;
           pdf_char_t *date_string;
 
           /* Set various gmt_offsets. */
-          seconds = dates_in_seconds[i] - gmt * 60;
+          seconds = ((pdf_i64_t)dates_in_seconds[i] -
+                     (pdf_i64_t)dates[i].second -
+                     gmt * 60);
           if (seconds < 0)
             continue;
 
@@ -184,21 +197,32 @@ START_TEST (pdf_time_from_string_002)
                                              PDF_TIME_STRING_NO_OPTION,
                                              &error) != PDF_TRUE);
           fail_if (error != NULL);
+
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("pdf_time_from_string_002 [%u,%+.3d] '%s'\n",
+                  i, gmt, date_string);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
+
           fail_unless (pdf_time_cmp (&time1, &time2) == 0);
 
           if (gmt == 0)
             {
               /** Test YYYY-MM-DDThh:mm:ssZ format **/
-                date_string[16] = 'Z';
-                date_string[17] = '\0';
+              date_string[16] = 'Z';
+              date_string[17] = '\0';
 
-                fail_if (pdf_time_set_from_string (&time2,
-                                                   date_string,
-                                                   PDF_TIME_STRING_FORMAT_ISO_8601,
-                                                   PDF_TIME_STRING_NO_OPTION,
-                                                   &error) != PDF_TRUE);
-                fail_if (error != NULL);
-                fail_unless (pdf_time_cmp (&time1, &time2) == 0);
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+              printf ("                         [%u,%+.3d] '%s'\n",
+                      i, gmt, date_string);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
+
+              fail_if (pdf_time_set_from_string (&time2,
+                                                 date_string,
+                                                 PDF_TIME_STRING_FORMAT_ISO_8601,
+                                                 PDF_TIME_STRING_NO_OPTION,
+                                                 &error) != PDF_TRUE);
+              fail_if (error != NULL);
+              fail_unless (pdf_time_cmp (&time1, &time2) == 0);
             }
 
           pdf_dealloc (date_string);
@@ -215,11 +239,11 @@ END_TEST
  *   Get pdf_time_t object from string in ISO_8601
  *   with format YYYY-MM-DD(without time)
  *Success condition:
- * 1. Function pdf_time_from_string schould return
+ * 1. Function pdf_time_from_string should return
  * PDF_OK.
- * 2. pdf_time_t object schould point the same time
+ * 2. pdf_time_t object should point the same time
  * as pdf_time_t object created by pdf_time_from_u32_t.
- * 3. pdf_time_cmp schould return PDF_OK
+ * 3. pdf_time_cmp should return PDF_OK
  */
 START_TEST (pdf_time_from_string_003)
 {
@@ -233,13 +257,13 @@ START_TEST (pdf_time_from_string_003)
       pdf_error_t *error = NULL;
       pdf_time_t time1;
       pdf_time_t time2;
-      pdf_i32_t seconds;
+      pdf_i64_t seconds;
       pdf_char_t *date_string;
 
-      seconds = (dates_in_seconds[i] -
-                 dates[i].hour * 3600 -
-                 dates[i].minute * 60 -
-                 dates[i].second);
+      seconds = ((pdf_i64_t)dates_in_seconds[i] -
+                 (pdf_i64_t)dates[i].hour * 3600 -
+                 (pdf_i64_t)dates[i].minute * 60 -
+                 (pdf_i64_t)dates[i].second);
       if (seconds < 0)
         continue;
 
@@ -262,6 +286,12 @@ START_TEST (pdf_time_from_string_003)
                                          PDF_TIME_STRING_NO_OPTION,
                                          &error) != PDF_TRUE);
       fail_if (error != NULL);
+
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+      printf ("pdf_time_from_string_003 [%u] '%s'\n",
+              i, date_string);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
+
       fail_unless (pdf_time_cmp (&time1, &time2) == 0);
 
       pdf_dealloc (date_string);
@@ -277,11 +307,11 @@ END_TEST
  *   Get pdf_time_t object from string in ISO_8601
  *   with format YYYY-MM(without time and day)
  *Success condition:
- * 1. Function pdf_time_from_string schould return
+ * 1. Function pdf_time_from_string should return
  * PDF_OK.
- * 2. pdf_time_t object schould point the same time
+ * 2. pdf_time_t object should point the same time
  * as pdf_time_t object created by pdf_time_from_u32_t.
- * 3. pdf_time_cmp schould return PDF_OK
+ * 3. pdf_time_cmp should return PDF_OK
  */
 START_TEST (pdf_time_from_string_004)
 {
@@ -295,16 +325,16 @@ START_TEST (pdf_time_from_string_004)
       pdf_error_t *error = NULL;
       pdf_time_t time1;
       pdf_time_t time2;
-      pdf_i32_t seconds;
+      pdf_i64_t seconds;
       pdf_char_t *date_string;
 
       if (dates[i].day != 1)
         continue;
 
-      seconds = (dates_in_seconds[i] -
-                 dates[i].hour * 3600 -
-                 dates[i].minute * 60 -
-                 dates[i].second);
+      seconds = ((pdf_i64_t)dates_in_seconds[i] -
+                 (pdf_i64_t)dates[i].hour * 3600 -
+                 (pdf_i64_t)dates[i].minute * 60 -
+                 (pdf_i64_t)dates[i].second);
       if (seconds < 0)
         continue;
 
@@ -324,6 +354,12 @@ START_TEST (pdf_time_from_string_004)
                                          PDF_TIME_STRING_NO_OPTION,
                                          &error) != PDF_TRUE);
       fail_if (error != NULL);
+
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+      printf ("pdf_time_from_string_004 [%u] '%s'\n",
+              i, date_string);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
+
       fail_unless (pdf_time_cmp (&time1, &time2) == 0);
 
       pdf_dealloc (date_string);
@@ -339,16 +375,16 @@ END_TEST
  *   Get pdf_time_t object from string in ISO_8601
  *   with format YYYY(only year)
  *Success condition:
- * 1. Function pdf_time_from_string schould return
+ * 1. Function pdf_time_from_string should return
  * PDF_OK.
- * 2. pdf_time_t object schould point the same time
+ * 2. pdf_time_t object should point the same time
  * as pdf_time_t object created by pdf_time_from_u32_t.
- * 3. pdf_time_cmp schould return PDF_OK
+ * 3. pdf_time_cmp should return PDF_OK
  */
 START_TEST (pdf_time_from_string_005)
 {
   pdf_u32_t i;
-  pdf_i32_t seconds;
+  pdf_i64_t seconds;
 
   extern struct pdf_time_cal_s dates[];
   extern pdf_u32_t dates_in_seconds[];
@@ -383,6 +419,12 @@ START_TEST (pdf_time_from_string_005)
                                          PDF_TIME_STRING_NO_OPTION,
                                          &error) != PDF_TRUE);
       fail_if (error != NULL);
+
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+      printf ("pdf_time_from_string_005 [%u] '%s'\n",
+              i, date_string);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
+
       fail_unless (pdf_time_cmp (&time1, &time2) == 0);
 
       pdf_dealloc (date_string);
@@ -402,9 +444,9 @@ END_TEST
  *   D:YYYYMMDDHHmmSSZ when gmt_offset == 0
  *Success condition:
  * 1. Function pdf_time_from_string should return PDF_OK.
- * 2. Returned pdf_time_t object schould point the same time
+ * 2. Returned pdf_time_t object should point the same time
  * as pdf_time_t object created by pdf_time_from_u32_t.
- * 3. pdf_time_cmp schould return PDF_OK
+ * 3. pdf_time_cmp should return PDF_OK
  */
 START_TEST (pdf_time_from_string_006)
 {
@@ -417,17 +459,17 @@ START_TEST (pdf_time_from_string_006)
     {
       pdf_i32_t gmt;
 
-      for (gmt = -12 * 60; gmt <= 12 * 60; gmt += 51)
+      for (gmt = -12 * 60; gmt <= 12 * 60; gmt += 30)
         {
           pdf_error_t *error = NULL;
           pdf_i32_t offset_hours;
           pdf_i32_t offset_minutes;
-          pdf_i32_t seconds;
+          pdf_i64_t seconds;
           pdf_char_t *date_string;
           pdf_time_t time1;
           pdf_time_t time2;
 
-          seconds = dates_in_seconds[i] - gmt * 60;
+          seconds = (pdf_i64_t)dates_in_seconds[i] - gmt * 60;
           if (seconds < 0)
             continue;
 
@@ -450,12 +492,18 @@ START_TEST (pdf_time_from_string_006)
                    ((gmt < 0) ? '-' : '+'),
                    offset_hours, offset_minutes);
 
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("pdf_time_from_string_006 [%u,%+.3d] '%s'\n",
+                  i, gmt, date_string);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
+
           fail_if (pdf_time_set_from_string (&time2,
                                              date_string,
                                              PDF_TIME_STRING_FORMAT_PDF,
                                              PDF_TIME_STRING_NO_OPTION,
-                                             &error) != PDF_TRUE);
-          fail_if (error != NULL);
+                                             &error) == PDF_TRUE);
+          fail_if (error == NULL);
+          pdf_clear_error (&error);
           fail_if (pdf_time_set_from_string (&time2,
                                              date_string,
                                              PDF_TIME_STRING_FORMAT_PDF,
@@ -469,6 +517,11 @@ START_TEST (pdf_time_from_string_006)
            * */
           date_string[22] = '\0';
 
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("                         [%u,%+.3d] '%s'\n",
+                  i, gmt, date_string);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
+
           fail_if (pdf_time_set_from_string (&time2,
                                              date_string,
                                              PDF_TIME_STRING_FORMAT_PDF,
@@ -479,8 +532,10 @@ START_TEST (pdf_time_from_string_006)
                                              date_string,
                                              PDF_TIME_STRING_FORMAT_PDF,
                                              PDF_TIME_STRING_TRAILING_APOSTROPHE,
-                                             &error) != PDF_TRUE);
-          fail_if (error != NULL);
+                                             &error) == PDF_TRUE);
+          fail_if (error == NULL);
+          pdf_clear_error (&error);
+
           fail_unless (pdf_time_cmp (&time1, &time2) == 0);
 
           if (gmt == 0)
@@ -489,10 +544,15 @@ START_TEST (pdf_time_from_string_006)
               date_string[16] = 'Z';
               date_string[17] = '\0';
 
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("                         [%u,%+.3d] '%s'\n",
+                  i, gmt, date_string);
+#endif /* MODULE_ADDITIONAL_TEST_TRACES */
+
               fail_if (pdf_time_set_from_string (&time2,
                                                  date_string,
                                                  PDF_TIME_STRING_FORMAT_PDF,
-                                                 PDF_TIME_STRING_TRAILING_APOSTROPHE,
+                                                 PDF_TIME_STRING_NO_OPTION,
                                                  &error) != PDF_TRUE);
               fail_if (error != NULL);
               fail_unless (pdf_time_cmp (&time1, &time2) == 0);
@@ -513,11 +573,11 @@ END_TEST
  *   PDF_TIME_STRING_FORMAT_GENERALIZED_ASN1:
  *   YYYYMMDDhhmmssTZD.
  *Success condition:
- * 1. Function pdf_time_from_string schould return
+ * 1. Function pdf_time_from_string should return
  * PDF_OK.
- * 2. pdf_time_t object schould point the same time
+ * 2. pdf_time_t object should point the same time
  * as pdf_time_t object created by pdf_time_from_u32_t.
- * 3. pdf_time_cmp schould return PDF_OK
+ * 3. pdf_time_cmp should return PDF_OK
  */
 START_TEST (pdf_time_from_string_007)
 {
@@ -530,18 +590,18 @@ START_TEST (pdf_time_from_string_007)
     {
       pdf_i32_t gmt;
 
-      for (gmt = -12 * 60; gmt <= 12 * 60; gmt += 51)
+      for (gmt = -12 * 60; gmt <= 12 * 60; gmt += 30)
         {
           pdf_error_t *error = NULL;
           pdf_i32_t offset_hours;
           pdf_i32_t offset_minutes;
-          pdf_i32_t seconds;
+          pdf_i64_t seconds;
           pdf_char_t *date_string;
           pdf_time_t time1;
           pdf_time_t time2;
 
           /* Set various gmt_offsets. */
-          seconds = dates_in_seconds[i] - gmt * 60;
+          seconds = (pdf_i64_t)dates_in_seconds[i] - gmt * 60;
           if (seconds < 0)
             continue;
 
@@ -564,6 +624,11 @@ START_TEST (pdf_time_from_string_007)
                    ((gmt < 0) ? '-' : '+'),
                    offset_hours, offset_minutes);
 
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("pdf_time_from_string_007 [%u,%+.3d] '%s'\n",
+                  i, gmt, date_string);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
+
           fail_if (pdf_time_set_from_string (&time2,
                                              date_string,
                                              PDF_TIME_STRING_FORMAT_GENERALIZED_ASN1,
@@ -577,6 +642,12 @@ START_TEST (pdf_time_from_string_007)
               /** Test YYYYMMDDhhmmssZ format **/
               date_string[14] = 'Z';
               date_string[15] = '\0';
+
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("                         [%u,%+.3d] '%s'\n",
+                  i, gmt, date_string);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
+
               fail_if (pdf_time_set_from_string (&time2,
                                                  date_string,
                                                  PDF_TIME_STRING_FORMAT_GENERALIZED_ASN1,
@@ -601,11 +672,11 @@ END_TEST
  *   PDF_TIME_STRING_FORMAT_GENERALIZED_ASN1:
  *   YYYYMMDDhhmmTZD. (without sconds)
  *Success condition:
- * 1. Function pdf_time_from_string schould return
+ * 1. Function pdf_time_from_string should return
  * PDF_OK.
- * 2. pdf_time_t object schould point the same time
+ * 2. pdf_time_t object should point the same time
  * as pdf_time_t object created by pdf_time_from_u32_t.
- * 3. pdf_time_cmp schould return PDF_OK
+ * 3. pdf_time_cmp should return PDF_OK
  */
 START_TEST (pdf_time_from_string_008)
 {
@@ -618,17 +689,19 @@ START_TEST (pdf_time_from_string_008)
     {
       pdf_i32_t gmt;
 
-      for (gmt = -12 * 60; gmt <= 12 * 60; gmt += 51)
+      for (gmt = -12 * 60; gmt <= 12 * 60; gmt += 30)
         {
           pdf_error_t *error = NULL;
           pdf_i32_t offset_hours;
           pdf_i32_t offset_minutes;
-          pdf_i32_t seconds;
+          pdf_i64_t seconds;
           pdf_char_t *date_string;
           pdf_time_t time1;
           pdf_time_t time2;
 
-          seconds = dates_in_seconds[i] - dates[i].second - gmt * 60;
+          seconds = ((pdf_i64_t)dates_in_seconds[i] -
+                     (pdf_i64_t)dates[i].second -
+                     gmt * 60);
           if (seconds < 0)
             continue;
 
@@ -651,6 +724,11 @@ START_TEST (pdf_time_from_string_008)
                    ((gmt < 0) ? '-' : '+'),
                    offset_hours, offset_minutes);
 
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("pdf_time_from_string_008 [%u,%+.3d] '%s'\n",
+                  i, gmt, date_string);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
+
           fail_if (pdf_time_set_from_string (&time2,
                                              date_string,
                                              PDF_TIME_STRING_FORMAT_GENERALIZED_ASN1,
@@ -664,6 +742,12 @@ START_TEST (pdf_time_from_string_008)
               /** Test YYYYMMDDhhmmZ format **/
               date_string[12] = 'Z';
               date_string[13] = '\0';
+
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("                         [%u,%+.3d] '%s'\n",
+                  i, gmt, date_string);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
+
               fail_if (pdf_time_set_from_string (&time2,
                                                  date_string,
                                                  PDF_TIME_STRING_FORMAT_GENERALIZED_ASN1,
@@ -689,11 +773,11 @@ END_TEST
  *   YYYYMMDD. (without time)
  *
  *Success condition:
- * 1. Function pdf_time_from_string schould return
+ * 1. Function pdf_time_from_string should return
  * PDF_OK.
- * 2. pdf_time_t object schould point the same time
+ * 2. pdf_time_t object should point the same time
  * as pdf_time_t object created by pdf_time_from_u32_t.
- * 3. pdf_time_cmp schould return PDF_OK
+ * 3. pdf_time_cmp should return PDF_OK
  */
 START_TEST (pdf_time_from_string_009)
 {
@@ -707,13 +791,13 @@ START_TEST (pdf_time_from_string_009)
       pdf_error_t *error = NULL;
       pdf_time_t time1;
       pdf_time_t time2;
-      pdf_i32_t seconds;
+      pdf_i64_t seconds;
       pdf_char_t *date_string;
 
-      seconds = (dates_in_seconds[i] -
-                 dates[i].hour * 3600 -
-                 dates[i].minute * 60 -
-                 dates[i].second);
+      seconds = ((pdf_i64_t)dates_in_seconds[i] -
+                 (pdf_i64_t)dates[i].hour * 3600 -
+                 (pdf_i64_t)dates[i].minute * 60 -
+                 (pdf_i64_t)dates[i].second);
       if (seconds < 0)
         continue;
 
@@ -726,6 +810,11 @@ START_TEST (pdf_time_from_string_009)
       sprintf (&date_string[0],
                "%d%02d%02d",
                dates[i].year, dates[i].month, dates[i].day);
+
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("pdf_time_from_string_009 [%u] '%s'\n",
+                  i, date_string);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
 
       fail_if (pdf_time_set_from_string (&time2,
                                          date_string,
@@ -749,11 +838,11 @@ END_TEST
  *   PDF_TIME_STRING_FORMAT_GENERALIZED_ASN1:
  *   YYYYMM. (without time and day)
  *Success condition:
- * 1. Function pdf_time_from_string schould return
+ * 1. Function pdf_time_from_string should return
  * PDF_OK.
- * 2. pdf_time_t object schould point the same time
+ * 2. pdf_time_t object should point the same time
  * as pdf_time_t object created by pdf_time_from_u32_t.
- * 3. pdf_time_cmp schould return PDF_OK
+ * 3. pdf_time_cmp should return PDF_OK
  */
 START_TEST (pdf_time_from_string_010)
 {
@@ -767,17 +856,17 @@ START_TEST (pdf_time_from_string_010)
       pdf_error_t *error = NULL;
       pdf_time_t time1;
       pdf_time_t time2;
-      pdf_i32_t seconds;
+      pdf_i64_t seconds;
       pdf_char_t *date_string;
 
       if (dates[i].day != 1)
         continue;
 
-      seconds = (dates_in_seconds[i] -
-                 (dates[i].day - 1) * 24 * 3600 -
-                 dates[i].hour * 3600 -
-                 dates[i].minute * 60 -
-                 dates[i].second);
+      seconds = ((pdf_i64_t)dates_in_seconds[i] -
+                 ((pdf_i64_t)dates[i].day - 1) * 24 * 3600 -
+                 (pdf_i64_t)dates[i].hour * 3600 -
+                 (pdf_i64_t)dates[i].minute * 60 -
+                 (pdf_i64_t)dates[i].second);
       if (seconds < 0)
         continue;
 
@@ -790,6 +879,11 @@ START_TEST (pdf_time_from_string_010)
       sprintf(&date_string[0],
               "%d%02d",
               dates[i].year, dates[i].month);
+
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("pdf_time_from_string_010 [%u] '%s'\n",
+                  i, date_string);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
 
       fail_if (pdf_time_set_from_string (&time2,
                                          date_string,
@@ -813,15 +907,15 @@ END_TEST
  *   PDF_TIME_STRING_FORMAT_GENERALIZED_ASN1:
  *   YYYY. (only year)
   *Success condition:
- * 1. Function pdf_time_from_string schould return
+ * 1. Function pdf_time_from_string should return
  * PDF_OK.
- * 2. pdf_time_t object schould point the same time
+ * 2. pdf_time_t object should point the same time
  * as pdf_time_t object created by pdf_time_from_u32_t.
- * 3. pdf_time_cmp schould return PDF_OK
+ * 3. pdf_time_cmp should return PDF_OK
  */
 START_TEST (pdf_time_from_string_011)
 {
-  pdf_i32_t seconds;
+  pdf_i64_t seconds;
   pdf_u32_t i;
 
   for (i = 0, seconds = 0;
@@ -847,6 +941,11 @@ START_TEST (pdf_time_from_string_011)
                "%d",
                1970 + i);
 
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("pdf_time_from_string_011 [%u] '%s'\n",
+                  i, date_string);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
+
       fail_if (pdf_time_set_from_string (&time2,
                                          date_string,
                                          PDF_TIME_STRING_FORMAT_GENERALIZED_ASN1,
@@ -862,7 +961,6 @@ START_TEST (pdf_time_from_string_011)
 }
 END_TEST
 
-
 /*
  * Test: pdf_time_from_string_012
  * Description:
@@ -870,11 +968,11 @@ END_TEST
  *   PDF_TIME_STRING_FORMAT_UTC_ASN1:
  *   yymmddhhmmss+hhmm
  *Success condition:
- * 1. Function pdf_time_from_string schould return
+ * 1. Function pdf_time_from_string should return
  * PDF_OK.
- * 2. pdf_time_t object schould point the same time
+ * 2. pdf_time_t object should point the same time
  * as pdf_time_t object created by pdf_time_from_u32_t.
- * 3. pdf_time_cmp schould return PDF_OK
+ * 3. pdf_time_cmp should return PDF_OK
  */
 START_TEST (pdf_time_from_string_012)
 {
@@ -887,18 +985,18 @@ START_TEST (pdf_time_from_string_012)
     {
       pdf_i32_t gmt;
 
-      for (gmt = -12 * 60; gmt <= 12 * 60; gmt += 51)
+      for (gmt = -12 * 60; gmt <= 12 * 60; gmt += 30)
         {
           pdf_error_t *error = NULL;
           pdf_time_t time1;
           pdf_time_t time2;
           pdf_i32_t offset_hours;
           pdf_i32_t offset_minutes;
-          pdf_i32_t seconds;
+          pdf_i64_t seconds;
           pdf_char_t *date_string;
 
           /* Set various gmt_offsets. */
-          seconds = dates_in_seconds[i] - gmt * 60;
+          seconds = (pdf_i64_t)dates_in_seconds[i] - gmt * 60;
           if (seconds < 0)
             continue;
 
@@ -921,8 +1019,13 @@ START_TEST (pdf_time_from_string_012)
                    ((gmt < 0) ? '-' : '+'),
                    offset_hours, offset_minutes);
 
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("pdf_time_from_string_012 [%u,%+.3d] '%s'\n",
+                  i, gmt, &date_string[2]);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
+
           fail_if (pdf_time_set_from_string (&time2,
-                                             date_string,
+                                             &date_string[2],
                                              PDF_TIME_STRING_FORMAT_UTC_ASN1,
                                              PDF_TIME_STRING_NO_OPTION,
                                              &error) != PDF_TRUE);
@@ -934,8 +1037,14 @@ START_TEST (pdf_time_from_string_012)
               /** Test yymmddhhmmssZ format **/
               date_string[14] = 'Z';
               date_string[15] = '\0';
+
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("                         [%u,%+.3d] '%s'\n",
+                  i, gmt, &date_string[2]);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
+
               fail_if (pdf_time_set_from_string (&time2,
-                                                 date_string,
+                                                 &date_string[2],
                                                  PDF_TIME_STRING_FORMAT_UTC_ASN1,
                                                  PDF_TIME_STRING_NO_OPTION,
                                                  &error) != PDF_TRUE);
@@ -958,11 +1067,11 @@ END_TEST
  *   PDF_TIME_STRING_FORMAT_UTC_ASN1:
  *   YYYYMMDDhhmmTZD. (without sconds)
  *Success condition:
- * 1. Function pdf_time_from_string schould return
+ * 1. Function pdf_time_from_string should return
  * PDF_OK.
- * 2. pdf_time_t object schould point the same time
+ * 2. pdf_time_t object should point the same time
  * as pdf_time_t object created by pdf_time_from_u32_t.
- * 3. pdf_time_cmp schould return PDF_OK
+ * 3. pdf_time_cmp should return PDF_OK
  */
 START_TEST (pdf_time_from_string_013)
 {
@@ -975,17 +1084,19 @@ START_TEST (pdf_time_from_string_013)
     {
       pdf_i32_t gmt;
 
-      for (gmt = -12 * 60; gmt <= 12 * 60; gmt += 51)
+      for (gmt = -12 * 60; gmt <= 12 * 60; gmt += 30)
         {
           pdf_error_t *error = NULL;
           pdf_time_t time1;
           pdf_time_t time2;
           pdf_i32_t offset_hours;
           pdf_i32_t offset_minutes;
-          pdf_i32_t seconds;
+          pdf_i64_t seconds;
           pdf_char_t *date_string;
 
-          seconds = dates_in_seconds[i] - dates[i].second - gmt * 60;
+          seconds = ((pdf_i64_t)dates_in_seconds[i] -
+                     (pdf_i64_t)dates[i].second -
+                     gmt * 60);
           if (seconds < 0)
             continue;
 
@@ -1008,8 +1119,13 @@ START_TEST (pdf_time_from_string_013)
                    ((gmt < 0) ? '-' : '+'),
                    offset_hours, offset_minutes);
 
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("pdf_time_from_string_013 [%u,%+.3d] '%s'\n",
+                  i, gmt, &date_string[2]);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
+
           fail_if (pdf_time_set_from_string (&time2,
-                                             date_string,
+                                             &date_string[2],
                                              PDF_TIME_STRING_FORMAT_UTC_ASN1,
                                              PDF_TIME_STRING_NO_OPTION,
                                              &error) != PDF_TRUE);
@@ -1021,8 +1137,14 @@ START_TEST (pdf_time_from_string_013)
               /** Test YYMMDDhhmmZ format **/
               date_string[12] = 'Z';
               date_string[13] = '\0';
+
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("                         [%u,%+.3d] '%s'\n",
+                  i, gmt, &date_string[2]);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
+
               fail_if (pdf_time_set_from_string (&time2,
-                                                 date_string,
+                                                 &date_string[2],
                                                  PDF_TIME_STRING_FORMAT_UTC_ASN1,
                                                  PDF_TIME_STRING_NO_OPTION,
                                                  &error) != PDF_TRUE);

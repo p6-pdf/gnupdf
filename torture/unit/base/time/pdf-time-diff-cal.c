@@ -59,7 +59,6 @@ START_TEST (pdf_time_diff_cal_001)
   extern pdf_u32_t days_in_seconds[];
   pdf_u32_t i;
 
-
   for (i = 0; i < YEAR_MONTH_SIZE; i++)
     {
       pdf_u32_t j;
@@ -70,31 +69,40 @@ START_TEST (pdf_time_diff_cal_001)
           pdf_time_t time2;
           struct pdf_time_cal_span_s calspan = { 0 };
           struct pdf_time_cal_span_s calspan2 = { 0 };
-          pdf_u32_t seconds;
-
+          pdf_i64_t seconds;
 
           pdf_time_init (&time1);
           pdf_time_init (&time2);
 
-
-          calspan.sign = PDF_TRUE;
-
-          calspan.years = years_months[i].years;
-          calspan.months = years_months[i].months;
-
-          calspan.days = day_time_span[j].days;
-          calspan.hours = day_time_span[j].hours;
+          calspan.sign    = PDF_FALSE;
+          calspan.years   = years_months[i].years;
+          calspan.months  = years_months[i].months;
+          calspan.days    = day_time_span[j].days;
+          calspan.hours   = day_time_span[j].hours;
           calspan.minutes = day_time_span[j].minutes;
           calspan.seconds = day_time_span[j].seconds;
 
-          seconds = days_in_seconds[i];
-          seconds += day_time_span[j].days* SEC_IN_DAY;
-          seconds += day_time_span[j].hours * 3600;
-          seconds += day_time_span[j].minutes * 60;
-          seconds += day_time_span[j].seconds;
+          seconds = ((pdf_i64_t)days_in_seconds[i] +
+                     (pdf_i64_t)day_time_span[j].days * SEC_IN_DAY +
+                     (pdf_i64_t)day_time_span[j].hours * 3600 +
+                     (pdf_i64_t)day_time_span[j].minutes * 60 +
+                     (pdf_i64_t)day_time_span[j].seconds);
 
           pdf_time_set_utc (&time1, seconds);
           pdf_time_diff_cal (&time2, &time1, &calspan2);
+
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("pdf_time_diff_cal_001 [%u,%u] (seconds)  %lld\n",
+                  i, j, (long long)seconds);
+          printf ("                      [%u,%u] (calspan1) %d-%d-%d %d:%d:%d\n",
+                  i, j,
+                  calspan.years, calspan.months, calspan.days,
+                  calspan.hours, calspan.minutes, calspan.seconds);
+          printf ("                      [%u,%u] (calspan2) %d-%d-%d %d:%d:%d\n",
+                  i, j,
+                  calspan2.years, calspan2.months, calspan2.days,
+                  calspan2.hours, calspan2.minutes, calspan2.seconds);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
 
           fail_unless (memcmp (&calspan,
                                &calspan2,

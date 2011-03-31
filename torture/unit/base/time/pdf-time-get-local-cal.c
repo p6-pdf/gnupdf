@@ -120,7 +120,11 @@ START_TEST (pdf_time_get_local_cal_002)
 
       pdf_time_get_local_cal (&time1, &localcal);
 
+      /* Compare offsets */
       fail_unless (localcal.gmt_offset == localgmt);
+
+      /* Reset offset and compare structs */
+      localcal.gmt_offset = 0;
       fail_unless (memcmp (&localcal,
                            &dates[i],
                            sizeof (struct pdf_time_cal_s)) == 0);
