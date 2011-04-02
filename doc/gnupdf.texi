@@ -3603,10 +3603,10 @@ hash = pdf_hash_new (NULL);
 if (hash != NULL)
    @{
       /* Create the element for the hash */
-      time = pdf_text_new_from_unicode ("abc", 3,
+      elem = pdf_text_new_from_unicode ("abc", 3,
                                         PDF_TEXT_UTF8,
                                         &error);
-      if (!time)
+      if (!elem)
          @{
             pdf_error_destroy (error);
          @}
@@ -5740,6 +5740,10 @@ pdf_error_t *error = NULL;
 pdf_text_t *text;
 
 text = pdf_text_new (&error);
+if (!text)
+   @{
+      /* Error! */
+   @}
 @end example
 @end table
 @end deftypefun
@@ -6852,9 +6856,6 @@ best = pdf_text_get_best_encoding (text, "UTF-8");
 * Time Comparison::
 * Time Printing and Parsing::
 * Getting the Current Time::
-* Time Span Creation and Destruction::
-* Managing Time Span Values::
-* Time Span Comparison::
 * Calendar Spans Management::
 * Platform-specific functions::
 @end menu
@@ -6864,17 +6865,13 @@ best = pdf_text_get_best_encoding (text, "UTF-8");
 
 @deftp {Data Type} pdf_time_t
 A variable of type @code{pdf_time_t} contains information about a
-particular date and time.
+particular date and time, including GMT offset information.
 
-Note that leap seconds are not considered.
+The size of the @code{pdf_time_t} variable is known, and therefore these variables
+can be created and initialized in stack.
 @end deftp
 
-@deftp {Data Type} pdf_time_span_t
-A variable of type @code{pdf_time_span_t} represents a span of time.
-
-@end deftp
-
-@deftp {Data Type} struct pdf_time_cal_s
+@deftp {Data Type} {struct pdf_time_cal_s}
 This structure holds information about a specific time represented in
 calendar items: years, months, days, day of week, hours, minutes,
 seconds and the relative offset with GMT.
@@ -6884,32 +6881,33 @@ offset is zero, the calendar fields come in UTC; if not zero, the calendar
 fields come in a given local time.
 
 @table @code
-@item pdf_i32_t year
-A year number. Negative values may be supported in some systems.
-@item pdf_u32_t month
+@item pdf_u16_t year
+A year number.
+@item pdf_u8_t month
 A month number. The valid range is @code{1..12}.
-@item pdf_u32_t day
+@item pdf_u8_t day
 A day number. The valid range is @code{1..31}.
-@item pdf_u32_t dow
+@item pdf_u8_t dow
 Day of the week. The valid range is @code{1..7} (Monday to Sunday).
-@item pdf_u32_t hour
+@item pdf_u8_t hour
 An hour. The valid range is @code{0..23}.
-@item pdf_u32_t minute
+@item pdf_u8_t minute
 A minute. The valid range is @code{0..59}.
-@item pdf_u32_t sec
+@item pdf_u8_t sec
 A second. The valid range is @code{0..59}.
 @item pdf_i32_t gmt_offset
 A GMT offset, in seconds west of GMT.
 @end table
 @end deftp
 
-@deftp {Data Type} struct pdf_time_cal_span_s
+@deftp {Data Type} {struct pdf_time_cal_span_s}
 This structure holds information about a time span represented in
 calendar items: years, months, days, hours, minutes and seconds.
 
 @table @code
-@item pdf_u32_t years
-@item pdf_u32_t months
+@item pdf_bool_t sign
+@item pdf_u16_t years
+@item pdf_u16_t months
 @item pdf_u32_t days
 @item pdf_u32_t hours
 @item pdf_u32_t minutes
@@ -6917,110 +6915,194 @@ calendar items: years, months, days, hours, minutes and seconds.
 @end table
 @end deftp
 
-@deftp {Data Type} {enum pdf_time_format_e}
-Enumeration containing the several supported time formats used to
+@deftp {Data Type} {enum pdf_time_string_format_e}
+Enumeration containing the several supported formats used to
 convert a time to a string representation or to parse a time from a
 string representation.
 
 @table @code
-@item PDF_TIME_FORMAT_PDF
+@item PDF_TIME_STRING_FORMAT_PDF
 PDF date strings.
-@item PDF_TIME_FORMAT_ISO_8601
+@item PDF_TIME_STRING_FORMAT_ISO_8601
 ISO 8601 date and time strings.
-@item PDF_TIME_FORMAT_UTC_ASN1
+@item PDF_TIME_STRING_FORMAT_UTC_ASN1
 UTC ASN1 date.
-@item PDF_TIME_FORMAT_GENERALIZED_ASN1
+@item PDF_TIME_STRING_FORMAT_GENERALIZED_ASN1
 Generalized ASN1 date.
+@end table
+@end deftp
+
+@deftp {Data Type} {enum pdf_time_string_options_e}
+Enumeration containing the options available when converting times to
+strings or strings to times.
+
+@table @code
+@item PDF_TIME_STRING_NO_OPTION
+No option.
+@item PDF_TIME_STRING_TRAILING_APOSTROPHE
+PDF-formatted time strings may (PDF reference 1.7) or may not (ISO 32000) include a trailing apostrophe.
 @end table
 @end deftp
 
 @node Time Creation and Destruction
 @subsection Time Creation and Destruction
 
-@deftypefun pdf_status_t pdf_time_new (pdf_time_t *@var{time})
-Create a new time and set it to the Epoch: Jan 1 1970-01-01 00:00:00 UTC
+@deftypefun pdf_time_t *pdf_time_new (pdf_error_t *@var{error})
+Creates a heap-allocated time object and sets it to the Epoch: Jan 1 1970-01-01 00:00:00 UTC
 
 @table @strong
 @item Parameters
 @table @var
-@item time
-The time object that will contain the newly created instance.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to create the time object.
+@item PDF_EBADCONTEXT
+The global context of the time module was not initialized.
+@end table
 @end table
 @item Returns
-A pdf status value:
-@table @code
-@item PDF_OK
-The time object was successfully instantiated.
-@item PDF_ENOMEM
-Not enough memory to perform the requested operation.
-@end table
-@item Usage example
+A newly created @code{pdf_time_t}, or @code{NULL} if any error happened.
+@item Usage Example
 @example
-pdf_time_t mytime;
+pdf_error_t *error = NULL;
+pdf_time_t *mytime;
 
-if (pdf_time_new (&mytime) != PDF_OK)
+mytime = pdf_time_new (&error);
+if (!mytime)
    @{
-     /* Error */
+      /* Error! */
    @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_time_t pdf_time_dup (const pdf_time_t @var{orig})
-Dup a new time variable from a given one, allocating memory.
+
+@deftypefun pdf_time_t *pdf_time_dup (const pdf_time_t *@var{time_var}, pdf_error_t **@var{error})
+Duplicates in heap a time variable.
 
 @table @strong
 @item Parameters
 
 @table @var
-@item orig
-The time variable to be dupped. Should be a properly created time
-variable.
+@item time_var
+A time variable.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to create the text object.
+@item PDF_EBADCONTEXT
+The global context of the text module was not initialized.
+@end table
 @end table
 @item Returns
-A new time variable containing a copy of @var{orig} values.
-@code{NULL} if there is an error.
+A newly heap-allocated @code{pdf_time_t}, or @code{NULL} if any error happened.
 @item Usage example
 @example
-pdf_time_t orig;
-pdf_time_t new_time;
+pdf_time_t *orig;
+pdf_time_t *new_time;
 
-orig = pdf_time_new ();
-new_time = pdf_time_dup (orig);
-
-if (new_time == NULL)
-@{
-  /* Error */
-@}
+orig = pdf_time_new (NULL);
+if (orig)
+  @{
+      new_time = pdf_time_dup (orig, NULL);
+      if (!new_time)
+         @{
+           /* Error */
+         @}
+   @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_destroy (pdf_time_t @var{time_var})
-Destroy @var{time_var} and free all used memory.
+
+@deftypefun void pdf_time_destroy (pdf_time_t *@var{time_var})
+Destroy the heap-allocated @var{time_var} and free all used memory. @var{time_var} should have been previously allocated with @code{pdf_time_new()} or @code{pdf_time_dup()}.
 
 @table @strong
 @item Parameters
 @table @var
 @item time_var
-The time variable to be destroyed. Should be a properly created time
-variable.
+The heap-allocated time variable to be destroyed.
 @end table
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
+@item Usage example
+@example
+pdf_time_t *mytime;
+
+mytime = pdf_time_new (NULL);
+if (mytime)
+   pdf_time_destroy (mytime);
+@end example
+@end table
+@end deftypefun
+
+
+@deftypefun void pdf_time_init (pdf_time_t *@var{time_var})
+Initializes a preallocated time object and sets it to the Epoch: Jan 1 1970-01-01 00:00:00 UTC
+
+Use this method to initialize time objects in the stack.
+@table @strong
+@item Parameters
+@table @var
+@item time_var
+The time object to be initialized.
+@end table
+@item Usage Example
+@example
+pdf_time_t mytime;
+
+pdf_time_init (&mytime);
+@end example
+@end table
+@end deftypefun
+
+
+@deftypefun void pdf_time_init_dup (pdf_time_t *@var{time_var}, const pdf_time_t *@var{time_var_orig}, pdf_error_t **@var{error})
+Initializes the preallocated @var{time_var} object and sets it to the same time as @var{time_var_orig}.
+
+Use this method to initialize time objects in the stack.
+@table @strong
+@item Parameters
+
+@table @var
+@item time_var
+A time variable to initialize.
+@item time_var_orig
+A time variable.
+@end table
+@item Usage example
+@example
+pdf_time_t orig;
+pdf_time_t new_time;
+
+pdf_time_init (&orig);
+pdf_time_init_dup (&new_time, &orig);
+@end example
+@end table
+@end deftypefun
+
+
+@deftypefun void pdf_time_deinit (pdf_time_t *@var{time_var})
+Deinitializes @var{time_var}, which should have been previously initialized with @code{pdf_time_init()} or @code{pdf_time_init_dup()}.
+
+@table @strong
+@item Parameters
+@table @var
+@item time_var
+The time variable to be deinitialized.
 @end table
 @item Usage example
 @example
 pdf_time_t mytime;
 
-mytime = pdf_time_new ();
-pdf_time_destroy (mytime);
+pdf_time_init (&mytime);
+pdf_time_deinit (&mytime);
 @end example
 @end table
 @end deftypefun
+
 
 @node Managing Time Values
 @subsection Managing Time Values
@@ -7753,351 +7835,6 @@ pdf_time_t mytime;
 mytime = pdf_time_new ();
 
 pdf_time_set_to_current_utc_time (mytime);
-@end example
-@end table
-@end deftypefun
-
-@node Time Span Creation and Destruction
-@subsection Time Span Creation and Destruction
-
-@deftypefun pdf_time_span_t pdf_time_span_new (void)
-
-Allocate and return a new time span variable. The time span is
-initialized with a zero value (zero seconds).
-
-@table @strong
-@item Parameters
-
-None.
-
-@item Returns
-The newly created time span variable or @code{NULL} if there is an
-error.
-@item Usage example
-@example
-pdf_time_span_t span;
-
-span = pdf_time_span_new ();
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_time_span_t pdf_time_span_dup (const pdf_time_span_t @var{span})
-
-Allocate and dup a new time span from an existing one. The new time
-span has the same value as the base time span.
-
-@table @strong
-@item Parameters
-
-@table @var
-@item span
-A properly created time span variable.
-@end table
-
-@item Returns
-The newly created time span variable.
-@item Usage example
-@example
-pdf_time_span_t span;
-pdf_time_span_t new_span;
-
-/* ...create and manipulate `span'... */
-
-new_span = pdf_time_span_dup (span);
-@end example
-@end table
-@end deftypefun
-
-
-@deftypefun pdf_status_t pdf_time_span_destroy (pdf_time_span_t *@var{p_span})
-
-Destroy a time span variable freeing all used memory.
-
-@table @strong
-@item Parameters
-
-@table @var
-@item p_span
-The pointer to the time span variable to be destroyed.
-@end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@end table
-@item Usage example
-@example
-pdf_time_span_t span;
-
-/* ...create and manipulate `span'... */
-
-pdf_time_span_destroy (span);
-@end example
-@end table
-@end deftypefun
-
-@node Managing Time Span Values
-@subsection Managing Time Span Values
-
-@deftypefun pdf_status_t pdf_time_span_set (pdf_time_span_t *@var{p_span}, const pdf_i64_t @var{value})
-
-Set the value of a time span. The internal representation of the time
-span is 64 bits long (signed).
-
-@table @strong
-@item Parameters
-
-@table @var
-@item p_span
-A pointer to a properly created time span variable.
-@item value
-The signed 64 bits value to set.
-@end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@end table
-
-@item Usage exaple
-@example
-pdf_time_span_t span;
-
-span = pdf_time_span_new ();
-pdf_time_span_set (&span, -10); /* The span is -10 seconds long */
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_time_span_negate (pdf_time_span_t *@var{p_span})
-
-Make a positive time span into a negative one or make a negative time
-span into a positive one.
-
-@table @strong
-@item Parameters
-
-@table @var
-@item span
-A pointer to a properly created time span variable.
-@end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@end table
-
-@item Usage example
-@example
-pdf_time_span_t span;
-
-/* ...create and manipulate `span'... */
-
-pdf_time_span_negate (span);
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_time_span_add (const pdf_time_span_t @var{span1}, const pdf_time_span_t @var{span2}, pdf_time_span_t *@var{p_result})
-
-Add two time spans and store the result in another time span.
-
-@table @strong
-@item Parameters
-
-@table @var
-@item span1
-The first time span to add.
-@item span2
-The second time span to add.
-@item p_result
-The pointer to the time span holding the result of the add operation. Any previous
-content is lost.
-@end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@item PDF_EBADDATA
-@var{p_result} is not a valid pointer.
-@end table
-
-@item Usage example
-@example
-pdf_time_span_t span1;
-pdf_time_span_t span2;
-pdf_time_span_t result;
-
-/* ...create and manipulate `span1', `span2' and `result'... */
-pdf_time_span_add (span1, span2, &result);
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_time_span_copy (const pdf_time_span_t @var{orig}, pdf_time_span_t *@var{p_dest})
-
-Copy the value of a time span into another time span.
-
-@table @strong
-@item Parameters
-
-@table @var
-@item orig
-The origin time span.
-@item p_dest
-The pointer to the time span variable that will hold the value of @var{orig}. Any
-previous value is lost.
-@end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@item PDF_EBADDATA
-@var{p_dest} is not a valid pointer.
-@end table
-
-@item Usage example
-@example
-pdf_time_span_t span_orig;
-pdf_time_span_t span_dest;
-
-/* ...create and manipulate `span_orig' and `span_dest'... */
-
-pdf_time_span_copy (span_orig, span_dest);
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_time_span_diff (const pdf_time_span_t @var{span1}, const pdf_time_span_t @var{span2}, pdf_time_span_t *@var{p_result})
-
-Difference two time spans and store the result (maybe negative) into
-another time span.
-
-@table @strong
-@item Parameters
-
-@table @var
-@item span1
-The first time span to diff.
-@item span2
-The second time span to diff.
-@item p_result
-The result of the diff operation. Any previous value of the time span
-is lost.
-@end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@item PDF_EBADDATA
-@var{p_result} is not a valid pointer.
-@end table
-
-@item Usage example
-@example
-pdf_time_span_t span1;
-pdf_time_span_t span2;
-pdf_time_span_t span_diff;
-
-/* ...create and manipulate `span1', `span2' and `span3' */
-
-pdf_time_span_diff (span1, span2, span_diff);
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_i64_t pdf_time_span_to_secs (const pdf_time_span_t @var{span})
-
-Get the value of a time span in seconds.
-
-@table @strong
-@item Parameters
-
-@table @var
-@item span
-A properly created time span variable.
-@end table
-
-@item Returns
-The value of the time span in seconds.
-A negative value is returned if the time span is negative.
-@item Usage example
-@example
-pdf_time_span_t span;
-pdf_i32_t num_seconds;
-
-/* ...create and manipulate `span'... */
-
-num_seconds = pdf_time_span_to_secs (span);
-@end example
-@end table
-@end deftypefun
-
-@node Time Span Comparison
-@subsection Time Span Comparison
-
-@deftypefun pdf_i32_t pdf_time_span_cmp (const pdf_time_span_t @var{span1}, const pdf_time_span_t @var{span2})
-
-Compare the length two time spans.
-
-@table @strong
-@item Parameters
-
-@table @var
-@item span1
-The first time span to compare.
-@item span2
-The second time span to compare.
-@end table
-
-@item Returns
-A status value:
-@table @code
-@item -1
-The length of @var{span1} is shorter than the length of @var{span2}.
-@item 0
-The lengts of @var{span1} and @var{span2} are equal.
-@item +1
-The length of @var{span1} is greater than the length of @var{span2}.
-@end table
-
-@item Usage example
-@example
-pdf_time_span_t span1;
-pdf_time_span_t span2;
-
-/* ...create and manipulate `span1' and `span2'... */
-switch (pdf_time_span_cmp (span1, span2))
-@{
-  case -1:
-  @{
-    /* The length of `span1' is shorter than the length of `span2' */
-    break;
-  @}
-  case 0:
-  @{
-    /* The length of `span1' is equal to the length of `span2' */
-    break;
-  @}
-  case 1:
-  @{
-    /* The length of `span1' is greater than the length of `span2' */
-    break;
-  @}
-@}
 @end example
 @end table
 @end deftypefun
