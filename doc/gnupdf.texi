@@ -3410,444 +3410,23 @@ if (hash)
 @subsection Helper Functions
 
 These are specific functions for adding and getting different types of
-elements (types defined by the library). They guarantee that when an
-element of one of these types is removed from a hash table the correct
-disposal function is called.
-
-NOTE: If you are going to use the element after the table containing
-the element is destroyed, in that case don't use these functions.
-
-
-@deftypefun pdf_bool_t pdf_hash_add_text (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_text_t *@var{value}, pdf_error_t **@var{error})
-
-Adds the @var{value} text with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The text will be owned by the hash table, and disposed when the hash table is destroyed.
-
+elements (types defined by the library). Three different kind of functions are
+provided:
 @table @strong
-@item Parameters
-@table @var
-@item table
-A hash table.
-@item key
-A valid @code{NUL}-terminated string key.
-@item value
-A valid @code{pdf_text_t}.
-@item error
-A @code{pdf_error_t} to report errors or @code{NULL}.
+@item Standard
+The hash table takes ownership of the variables received as argument, and guarantees that the correct disposal function is called when the items are removed or the hash table fully destroyed.
+@item Duplicated
+The hash table duplicates the input variable, and keeps ownership of the heap-allocated duplicated variable.
+@item Static
+The hash table stores the input variable, which should be valid as long as the hash table exists. For example, use this method to add static constant variables in stack.
 @end table
-@item Returns
-@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
-@item Usage example
-@example
-pdf_hash_t *hash;
-pdf_text_t *elem;
-pdf_error_t *error = NULL;
-
-/* Create a new hash */
-hash = pdf_hash_new (NULL);
-if (hash != NULL)
-   @{
-      /* Create the element for the hash */
-      text = pdf_text_new_from_unicode ("abc", 3,
-                                        PDF_TEXT_UTF8,
-                                        &error);
-      if (!text)
-         @{
-            pdf_error_destroy (error);
-         @}
-      else if (pdf_hash_add_text (hash, "a-key", elem, &error))
-         @{
-            pdf_error_destroy (error);
-         @}
-      /* Destroy the hash */
-      pdf_hash_destroy (hash);
-   @}
-@end example
-@end table
-@end deftypefun
-
-@deftypefun {const pdf_text_t *} pdf_hash_get_text (pdf_hash_t *@var{table}, const pdf_char_t *@var{key})
-
-Get a text variable from a hash table.
-
-@table @strong
-@item Parameters
-@table @var
-@item table
-The hash table to get the value from.
-@item key
-A valid @code{NUL}-terminated string key.
-@end table
-@item Returns
-The @code{pdf_text_t} associated with @var{key}.
-@item Usage example
-@example
-pdf_text_t *text;
-
-/* ... insert a text variable into the hash ... */
-
-text = pdf_hash_get_text (table, "a-key");
-
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_bool_t pdf_hash_add_time (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_time_t @var{value}, pdf_error_t **@var{error})
-
-Adds the @var{value} time with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done.
-
-@table @strong
-@item Parameters
-@table @var
-@item table
-A hash table.
-@item key
-A valid @code{NUL}-terminated string key.
-@item value
-A valid @code{pdf_time_t}.
-@item error
-A @code{pdf_error_t} to report errors or @code{NULL}.
-@end table
-@item Returns
-@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
-@item Usage example
-@example
-pdf_hash_t *hash;
-pdf_time_t elem;
-pdf_error_t *error = NULL;
-
-/* Create a new hash */
-hash = pdf_hash_new (NULL);
-if (hash != NULL)
-   @{
-      /* Create the element for the hash */
-      pdf_time_new (&elem);
-
-      if (pdf_hash_add_time (hash, "a-key", elem, &error))
-         @{
-            pdf_error_destroy (error);
-         @}
-      /* Destroy the hash */
-      pdf_hash_destroy (hash);
-   @}
-@end example
-@end table
-@end deftypefun
-
-@deftypefun {const pdf_time_t} pdf_hash_get_time (pdf_hash_t *@var{table}, const pdf_char_t *@var{key})
-
-Get a time variable from a hash table.
-
-@table @strong
-@item Parameters
-@table @var
-@item table
-The hash table to get the value from.
-@item key
-A valid @code{NUL}-terminated string key.
-@end table
-@item Returns
-The @code{pdf_time_t} associated with @var{key}.
-@item Usage example
-@example
-pdf_time_t time;
-
-/* ... insert a time variable into the hash ... */
-
-time = pdf_hash_get_time (table, "a-key");
-
-@end example
-@end table
-@end deftypefun
-
-
-@deftypefun pdf_bool_t pdf_hash_add_list (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_list_t *@var{value}, pdf_error_t **@var{error})
-
-Adds the @var{value} list with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The list will be owned by the hash table, and disposed when the hash table is destroyed.
-
-@table @strong
-@item Parameters
-@table @var
-@item table
-A hash table.
-@item key
-A valid @code{NUL}-terminated string key.
-@item value
-A valid @code{pdf_list_t}.
-@item error
-A @code{pdf_error_t} to report errors or @code{NULL}.
-@end table
-@item Returns
-@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
-@item Usage example
-@example
-pdf_hash_t *hash;
-pdf_list_t *elem;
-pdf_error_t *error = NULL;
-
-/* Create a new hash */
-hash = pdf_hash_new (NULL);
-if (hash != NULL)
-   @{
-      /* Create the element for the hash */
-      elem = pdf_list_new (NULL);
-
-      if (pdf_hash_add_list (hash, "a-key", elem, &error))
-         @{
-            pdf_error_destroy (error);
-         @}
-      /* Destroy the hash */
-      pdf_hash_destroy (hash);
-   @}
-@end example
-@end table
-@end deftypefun
-
-@deftypefun {const pdf_list_t *}pdf_hash_get_list (pdf_hash_t *@var{table}, const pdf_char_t *@var{key})
-
-Get a list variable from a hash table.
-
-@table @strong
-@item Parameters
-@table @var
-@item table
-The hash table to get the value from.
-@item key
-A valid @code{NUL}-terminated string key.
-@end table
-@item Returns
-The @code{pdf_list_t} associated with @var{key}.
-@item Usage example
-@example
-pdf_list_t *list;
-
-/* ... insert a list variable into the hash ... */
-
-list = pdf_hash_get_list (table, "a-key");
-
-@end example
-@end table
-@end deftypefun
-
-
-@deftypefun pdf_bool_t pdf_hash_add_hash (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_hash_t *@var{value}, pdf_error_t **@var{error})
-
-Adds the @var{value} hash with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The added hash table will be owned by the parent hash table, and disposed when the parent hash table is destroyed.
-
-@table @strong
-@item Parameters
-@table @var
-@item table
-A hash table.
-@item key
-A valid @code{NUL}-terminated string key.
-@item value
-A valid @code{pdf_hash_t}.
-@item error
-A @code{pdf_error_t} to report errors or @code{NULL}.
-@end table
-@item Returns
-@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
-@item Usage example
-@example
-pdf_hash_t *hash;
-pdf_hash_t *elem;
-pdf_error_t *error = NULL;
-
-/* Create a new hash */
-hash = pdf_hash_new (NULL);
-if (hash != NULL)
-   @{
-      /* Create the element for the hash */
-      elem = pdf_hash_new (NULL);
-
-      if (pdf_hash_add_hash (hash, "a-key", elem, &error))
-         @{
-            pdf_error_destroy (error);
-         @}
-      /* Destroy the hash */
-      pdf_hash_destroy (hash);
-   @}
-@end example
-@end table
-@end deftypefun
-
-@deftypefun {const pdf_hash_t *}pdf_hash_get_hash (pdf_hash_t *@var{table}, const pdf_char_t *@var{key})
-
-Get a hash variable from a hash table.
-
-@table @strong
-@item Parameters
-@table @var
-@item table
-The hash table to get the value from.
-@item key
-A valid @code{NUL}-terminated string key.
-@end table
-@item Returns
-The @code{pdf_hash_t} associated with @var{key}.
-@item Usage example
-@example
-pdf_hash_t *hash;
-
-/* ... insert a hash variable into the hash ... */
-
-hash = pdf_hash_get_hash (table, "a-key");
-
-@end example
-@end table
-@end deftypefun
-
-
-@deftypefun pdf_bool_t pdf_hash_add_stm (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_stm_t @var{value}, pdf_error_t **@var{error})
-
-Adds the @var{value} stream with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The stream will be owned by the hash table, and disposed when the hash table is destroyed.
-
-@table @strong
-@item Parameters
-@table @var
-@item table
-A hash table.
-@item key
-A valid @code{NUL}-terminated string key.
-@item value
-A valid @code{pdf_stm_t}.
-@item error
-A @code{pdf_error_t} to report errors or @code{NULL}.
-@end table
-@item Returns
-@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
-@item Usage example
-@example
-pdf_hash_t *hash;
-pdf_stm_t elem;
-pdf_char_t *buf;
-pdf_error_t *error = NULL;
-
-/* Create a new hash */
-hash = pdf_hash_new (NULL);
-if (hash != NULL)
-   @{
-      /* Create the element for the hash */
-      buf = pdf_alloc (10);
-      pdf_stm_mem_new (buf,
-                       10,
-                       0, /* Use default cache size */
-                       PDF_STM_READ,
-                       &stm);
-
-      if (pdf_hash_add_stm (hash, "a-key", stm, &error))
-         @{
-            pdf_error_destroy (error);
-         @}
-
-      /* Destroy the hash */
-      pdf_hash_destroy (hash);
-      /* Destroy the memory buffer */
-      pdf_dealloc (buf);
-   @}
-@end example
-@end table
-@end deftypefun
-
-@deftypefun {const pdf_stm_t} pdf_hash_get_stm (pdf_hash_t *@var{table}, const pdf_char_t *@var{key})
-
-Get a stm variable from a hash table.
-
-@table @strong
-@item Parameters
-@table @var
-@item table
-The hash table to get the value from.
-@item key
-A valid @code{NUL}-terminated string key.
-@end table
-@item Returns
-The @code{pdf_stm_t} associated with @var{key}.
-@item Usage example
-@example
-pdf_stm_t stm;
-
-/* ... insert a stm variable into the hash ... */
-
-stm = pdf_hash_get_stm (table, "a-key");
-
-@end example
-@end table
-@end deftypefun
-
-
-
-@deftypefun pdf_bool_t pdf_hash_add_size (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_size_t @var{value}, pdf_error_t **@var{error})
-
-Adds the @var{value} stream with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done.
-
-@table @strong
-@item Parameters
-@table @var
-@item table
-A hash table.
-@item key
-A valid @code{NUL}-terminated string key.
-@item value
-A valid @code{pdf_size_t}.
-@item error
-A @code{pdf_error_t} to report errors or @code{NULL}.
-@end table
-@item Returns
-@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
-@item Usage example
-@example
-pdf_hash_t *hash;
-pdf_error_t *error = NULL;
-
-/* Create a new hash */
-hash = pdf_hash_new (NULL);
-if (hash != NULL)
-   @{
-      if (pdf_hash_add_size (hash, "a-key", (pdf_size_t)5, &error))
-         @{
-            pdf_error_destroy (error);
-         @}
-
-      /* Destroy the hash */
-      pdf_hash_destroy (hash);
-      /* Destroy the memory buffer */
-      pdf_dealloc (buf);
-   @}
-@end example
-@end table
-@end deftypefun
-
-@deftypefun {const pdf_size_t} pdf_hash_get_size (pdf_hash_t *@var{table}, const pdf_char_t *@var{key})
-
-Get a size variable from a hash table.
-
-@table @strong
-@item Parameters
-@table @var
-@item table
-The hash table to get the value from.
-@item key
-A valid @code{NUL}-terminated string key.
-@end table
-@item Returns
-The @code{pdf_size_t} associated with @var{key}.
-@item Usage example
-@example
-pdf_size_t size;
-
-/* ... insert a size variable into the hash ... */
-
-size = pdf_hash_get_size (table, "a-key");
-
-@end example
-@end table
-@end deftypefun
 
 
 @deftypefun pdf_bool_t pdf_hash_add_string (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_char_t *@var{value}, pdf_error_t **@var{error})
 
-Adds the heap-allocated @var{value} string with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The string will be owned by the hash table, and disposed when the hash table is destroyed.
+Adds the @var{value} string with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The string will be owned by the hash table, and disposed when the hash table is destroyed.
+
+Note: @var{value} must have been heap-allocated.
 
 @table @strong
 @item Parameters
@@ -3872,7 +3451,10 @@ pdf_error_t *error = NULL;
 hash = pdf_hash_new (NULL);
 if (hash != NULL)
    @{
-      if (pdf_hash_add_string (hash, "a-key", strdup ("a-value"), &error))
+      if (pdf_hash_add_string (hash,
+                               "a-key",
+                               strdup ("a-value"),
+                               &error))
          @{
             pdf_error_destroy (error);
          @}
@@ -3911,7 +3493,10 @@ pdf_error_t *error = NULL;
 hash = pdf_hash_new (NULL);
 if (hash != NULL)
    @{
-      if (pdf_hash_add_duplicated_string (hash, "a-key", "a-value", &error))
+      if (pdf_hash_add_duplicated_string (hash,
+                                          "a-key",
+                                          "a-value",
+                                          &error))
          @{
             pdf_error_destroy (error);
          @}
@@ -3989,6 +3574,620 @@ str = pdf_hash_get_string (table, "a-key");
 @end table
 @end deftypefun
 
+@deftypefun pdf_bool_t pdf_hash_add_text (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_text_t *@var{value}, pdf_error_t **@var{error})
+
+Adds the @var{value} text with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The text will be owned by the hash table, and disposed when the hash table is destroyed.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@item value
+A valid @code{pdf_text_t}.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@end table
+@item Returns
+@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
+@item Usage example
+@example
+pdf_hash_t *hash;
+pdf_text_t *elem;
+pdf_error_t *error = NULL;
+
+/* Create a new hash */
+hash = pdf_hash_new (NULL);
+if (hash != NULL)
+   @{
+      /* Create the element for the hash */
+      time = pdf_text_new_from_unicode ("abc", 3,
+                                        PDF_TEXT_UTF8,
+                                        &error);
+      if (!time)
+         @{
+            pdf_error_destroy (error);
+         @}
+      else if (!pdf_hash_add_text (hash,
+                                   "a-key",
+                                   elem,
+                                   &error))
+         @{
+            pdf_text_destroy (&elem);
+            pdf_error_destroy (error);
+         @}
+      else
+         @{
+            /* The text is now owned by the hash */
+         @}
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_hash_add_duplicated_text (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_text_t *@var{value}, pdf_error_t **@var{error})
+
+Duplicates the @var{value} text in heap and adds it with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The internally duplicated text will be owned by the hash table, and disposed when the hash table is destroyed.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@item value
+A valid @code{pdf_text_t}.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@end table
+@item Returns
+@code{PDF_TRUE} if correctly duplicated and added, @code{PDF_FALSE} otherwise.
+@item Usage example
+@example
+pdf_hash_t *hash;
+pdf_text_t *elem;
+pdf_error_t *error = NULL;
+
+/* Create a new hash */
+hash = pdf_hash_new (NULL);
+if (hash != NULL)
+   @{
+      /* Create the element */
+      elem = pdf_text_new_from_unicode ("abc", 3,
+                                        PDF_TEXT_UTF8,
+                                        &error);
+      if (!elem)
+         @{
+            pdf_error_destroy (error);
+         @}
+      else if (pdf_hash_add_duplicated_text (hash,
+                                             "a-key",
+                                             elem,
+                                             &error))
+         @{
+            pdf_error_destroy (error);
+         @}
+
+      /* The hash has a duplicated text,
+       * we should destroy the original text */
+      pdf_text_destroy (elem);
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun {const pdf_text_t *} pdf_hash_get_text (pdf_hash_t *@var{table}, const pdf_char_t *@var{key})
+
+Get a text variable from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+The hash table to get the value from.
+@item key
+A valid @code{NUL}-terminated string key.
+@end table
+@item Returns
+The @code{pdf_text_t} associated with @var{key}.
+@item Usage example
+@example
+pdf_text_t *text;
+
+/* ... insert a text variable into the hash ... */
+
+text = pdf_hash_get_text (table, "a-key");
+
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_hash_add_time (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_time_t *@var{value}, pdf_error_t **@var{error})
+
+Adds the @var{value} time with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The time will be owned by the hash table, and disposed when the hash table is destroyed.
+
+Note: @var{value} must have been created with pdf_time_new(), this is, available in heap.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@item value
+A valid @code{pdf_time_t}.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@end table
+@item Returns
+@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
+@item Usage example
+@example
+pdf_hash_t *hash;
+pdf_time_t *elem;
+pdf_error_t *error = NULL;
+
+/* Create a new hash */
+hash = pdf_hash_new (NULL);
+if (hash != NULL)
+   @{
+      /* Create the element for the hash */
+      elem = pdf_time_new (&error);
+      if (!elem)
+         @{
+            pdf_error_destroy (&error);
+         @}
+      else if (pdf_hash_add_time (hash,
+                                  "a-key",
+                                  elem,
+                                  &error))
+         @{
+            pdf_time_destroy (&elem);
+            pdf_error_destroy (error);
+         @}
+      else
+         @{
+            /* The time is now owned by the hash */
+         @}
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_hash_add_duplicated_time (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_time_t *@var{value}, pdf_error_t **@var{error})
+
+Duplicates the @var{value} time in heap and adds it with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The internally duplicated time will be owned by the hash table, and disposed when the hash table is destroyed.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@item value
+A valid @code{pdf_time_t}.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@end table
+@item Returns
+@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
+@item Usage example
+@example
+pdf_hash_t *hash;
+pdf_time_t *elem;
+pdf_error_t *error = NULL;
+
+/* Create a new hash */
+hash = pdf_hash_new (NULL);
+if (hash != NULL)
+   @{
+      /* Create the element */
+      elem = pdf_time_new (&error);
+      if (!elem)
+         @{
+            pdf_error_destroy (&error);
+         @}
+      else if (pdf_hash_add_duplicated_time (hash,
+                                             "a-key",
+                                             elem,
+                                             &error))
+         @{
+            pdf_error_destroy (error);
+         @}
+
+      /* The hash has a duplicated time,
+       * we should destroy the original time */
+      pdf_time_destroy (elem);
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_hash_add_static_time (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_time_t *@var{value}, pdf_error_t **@var{error})
+
+Adds the static and constant @var{value} time with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. Only use this method if @var{value} will always exist. It can be used with statically allocated time objects in the main program, but not with statically allocated time objects in dynamically loadable modules (as they may be unloaded during the program execution).
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@item value
+A valid static and constant @code{pdf_time_t}.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@end table
+@item Returns
+@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
+@item Usage example
+@example
+pdf_hash_t *hash;
+static pdf_time_t elem;
+pdf_error_t *error = NULL;
+
+/* Create a new hash */
+hash = pdf_hash_new (NULL);
+if (hash != NULL)
+   @{
+      /* Initialize time object in stack */
+      pdf_time_init (&elem);
+
+      if (pdf_hash_add_static_time (hash,
+                                    "a-key",
+                                    elem,
+                                    &error))
+         @{
+            pdf_error_destroy (error);
+         @}
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun {const pdf_time_t} pdf_hash_get_time (pdf_hash_t *@var{table}, const pdf_char_t *@var{key})
+
+Get a time variable from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+The hash table to get the value from.
+@item key
+A valid @code{NUL}-terminated string key.
+@end table
+@item Returns
+The @code{pdf_time_t} associated with @var{key}.
+@item Usage example
+@example
+pdf_time_t time;
+
+/* ... insert a time variable into the hash ... */
+
+time = pdf_hash_get_time (table, "a-key");
+
+@end example
+@end table
+@end deftypefun
+
+
+@deftypefun pdf_bool_t pdf_hash_add_list (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_list_t *@var{value}, pdf_error_t **@var{error})
+
+Adds the @var{value} list with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The list will be owned by the hash table, and disposed when the hash table is destroyed.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@item value
+A valid @code{pdf_list_t}.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@end table
+@item Returns
+@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
+@item Usage example
+@example
+pdf_hash_t *hash;
+pdf_list_t *elem;
+pdf_error_t *error = NULL;
+
+/* Create a new hash */
+hash = pdf_hash_new (NULL);
+if (hash != NULL)
+   @{
+      /* Create the element for the hash */
+      elem = pdf_list_new (NULL);
+
+      if (pdf_hash_add_list (hash,
+                             "a-key",
+                             elem,
+                             &error))
+         @{
+            pdf_error_destroy (error);
+         @}
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun {const pdf_list_t *}pdf_hash_get_list (pdf_hash_t *@var{table}, const pdf_char_t *@var{key})
+
+Get a list variable from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+The hash table to get the value from.
+@item key
+A valid @code{NUL}-terminated string key.
+@end table
+@item Returns
+The @code{pdf_list_t} associated with @var{key}.
+@item Usage example
+@example
+pdf_list_t *list;
+
+/* ... insert a list variable into the hash ... */
+
+list = pdf_hash_get_list (table, "a-key");
+
+@end example
+@end table
+@end deftypefun
+
+
+@deftypefun pdf_bool_t pdf_hash_add_hash (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_hash_t *@var{value}, pdf_error_t **@var{error})
+
+Adds the @var{value} hash with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The added hash table will be owned by the parent hash table, and disposed when the parent hash table is destroyed.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@item value
+A valid @code{pdf_hash_t}.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@end table
+@item Returns
+@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
+@item Usage example
+@example
+pdf_hash_t *hash;
+pdf_hash_t *elem;
+pdf_error_t *error = NULL;
+
+/* Create a new hash */
+hash = pdf_hash_new (NULL);
+if (hash != NULL)
+   @{
+      /* Create the element for the hash */
+      elem = pdf_hash_new (NULL);
+
+      if (pdf_hash_add_hash (hash,
+                             "a-key",
+                             elem,
+                             &error))
+         @{
+            pdf_error_destroy (error);
+         @}
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun {const pdf_hash_t *}pdf_hash_get_hash (pdf_hash_t *@var{table}, const pdf_char_t *@var{key})
+
+Get a hash variable from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+The hash table to get the value from.
+@item key
+A valid @code{NUL}-terminated string key.
+@end table
+@item Returns
+The @code{pdf_hash_t} associated with @var{key}.
+@item Usage example
+@example
+pdf_hash_t *hash;
+
+/* ... insert a hash variable into the hash ... */
+
+hash = pdf_hash_get_hash (table, "a-key");
+
+@end example
+@end table
+@end deftypefun
+
+
+@deftypefun pdf_bool_t pdf_hash_add_stm (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_stm_t @var{value}, pdf_error_t **@var{error})
+
+Adds the @var{value} stream with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The stream will be owned by the hash table, and disposed when the hash table is destroyed.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@item value
+A valid @code{pdf_stm_t}.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@end table
+@item Returns
+@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
+@item Usage example
+@example
+pdf_hash_t *hash;
+pdf_stm_t elem;
+pdf_char_t *buf;
+pdf_error_t *error = NULL;
+
+/* Create a new hash */
+hash = pdf_hash_new (NULL);
+if (hash != NULL)
+   @{
+      /* Create the element for the hash */
+      buf = pdf_alloc (10);
+      pdf_stm_mem_new (buf,
+                       10,
+                       0, /* Use default cache size */
+                       PDF_STM_READ,
+                       &stm);
+
+      if (pdf_hash_add_stm (hash,
+                            "a-key",
+                            stm,
+                            &error))
+         @{
+            pdf_error_destroy (error);
+         @}
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+      /* Destroy the memory buffer */
+      pdf_dealloc (buf);
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun {const pdf_stm_t} pdf_hash_get_stm (pdf_hash_t *@var{table}, const pdf_char_t *@var{key})
+
+Get a stm variable from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+The hash table to get the value from.
+@item key
+A valid @code{NUL}-terminated string key.
+@end table
+@item Returns
+The @code{pdf_stm_t} associated with @var{key}.
+@item Usage example
+@example
+pdf_stm_t stm;
+
+/* ... insert a stm variable into the hash ... */
+
+stm = pdf_hash_get_stm (table, "a-key");
+
+@end example
+@end table
+@end deftypefun
+
+
+
+@deftypefun pdf_bool_t pdf_hash_add_size (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_size_t @var{value}, pdf_error_t **@var{error})
+
+Adds the @var{value} stream with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@item value
+A valid @code{pdf_size_t}.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@end table
+@item Returns
+@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
+@item Usage example
+@example
+pdf_hash_t *hash;
+pdf_error_t *error = NULL;
+
+/* Create a new hash */
+hash = pdf_hash_new (NULL);
+if (hash != NULL)
+   @{
+      if (pdf_hash_add_size (hash,
+                             "a-key",
+                             (pdf_size_t)5,
+                             &error))
+         @{
+            pdf_error_destroy (error);
+         @}
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+      /* Destroy the memory buffer */
+      pdf_dealloc (buf);
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun {const pdf_size_t} pdf_hash_get_size (pdf_hash_t *@var{table}, const pdf_char_t *@var{key})
+
+Get a size variable from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+The hash table to get the value from.
+@item key
+A valid @code{NUL}-terminated string key.
+@end table
+@item Returns
+The @code{pdf_size_t} associated with @var{key}.
+@item Usage example
+@example
+pdf_size_t size;
+
+/* ... insert a size variable into the hash ... */
+
+size = pdf_hash_get_size (table, "a-key");
+
+@end example
+@end table
+@end deftypefun
 
 @node Filtered Streams
 @section Filtered Streams
