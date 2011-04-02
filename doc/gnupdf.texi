@@ -93,7 +93,7 @@ Indices
                                  filtering support.
 * Floating Point Maths::        Working with real numbers.
 * Encoded Text::                Manipulating encoded strings.
-* Time Management::             Calendars and time spans.
+* Time Management::             Times and calendars.
 * The Filesystem Module::       An abstract file system interface and
                                  open files.
 * The Tokeniser::               Decomposing a PDF document in tokens.
@@ -742,7 +742,7 @@ pdf_dealloc (p);
 * Numeric Types::       Signed and unsigned 32bit integers.
 * Character Types::     Signed and unsigned bytes.
 * Memory Buffers::      Operations on simple memory buffers.
-* Progress Monitors::   Following the progress of operations.
+@comment * Progress Monitors::   Following the progress of operations.
 * UUIDs::               Universal Unique Identifiers.
 @end menu
 
@@ -1096,160 +1096,160 @@ my_buffer->wp += 3;
 @end table
 @end deftypefun
 
-@node Progress Monitors
-@subsection Progress Monitors
-
-The client application of the library may want to monitor the progress
-of some operations, such as the saving of a document. The @code{struct
-pdf_pm_s} structure provides a way for the client application to
-specify callbacks implemented by a progress monitor.
-
-@deftp {Data Type} {struct pdf_pm_s}
-
-Structure containing several callbacks to be called as an operation
-progress.
-
-@table @code
-@item pdf_pm_begin_operation_fn_t begin_operation_fn
-@item pdf_pm_end_operation_fn_t end_operation_fn
-@item pdf_pm_get_duration_fn_t get_duration_fn
-@item pdf_pm_set_duration_fn_t set_duration_fn
-@item pdf_pm_get_current_value_fn_t get_current_value_fn_t
-@item pdf_pm_set_current_value_fn_t set_current_value_fn_t
-@item pdf_pm_set_text_fn_t set_text_fn
-@end table
-@end deftp
-
-The type definitions for the callbacks follows.
-
-@deftp {Data Type} {pdf_status_t (*pdf_pm_begin_operation_fn_t) (void *@var{client_data})}
-Callback implemented by a progress monitor that initializes it to a
-current value of @code{0}.
-
-@table @strong
-@item Parameters
-@table @var
-@item client_data
-User supplied data.
-@end table
-@item Returns
-This callback should return @code{PDF_OK} to the caller.
-@end table
-@end deftp
-
-@deftp {Data Type} {pdf_status_t (*pdf_pm_end_operation_fn_t) (void *@var{client_data})}
-Callback implemented by a progress monitor. This callback is called at
-the end of the operation.
-
-@table @strong
-@item Parameters
-@table @var
-@item client_data
-User supplied data.
-@end table
-@item Returns
-This callback should return @code{PDF_OK} to the caller.
-@end table
-@end deftp
-
-@deftp {Data Type} {pdf_status_t (*pdf_pm_get_duration_fn_t) (void *@var{client_data}, void *@var{duration})}
-
-Callback implemented by a progress monitor.
-
-This callback is called to get the current value of the progress
-monitor duration.
-@table @strong
-@item Parameters
-@table @var
-@item client_data
-User supplied data.
-@item duration
-A pointer to a @var{pdf_time_span_t} variable to store the current
-duration of the progress monitor.
-@end table
-@item Returns
-This callback should return @code{PDF_OK} to the caller.
-@end table
-@end deftp
-
-@deftp {Data Type} {pdf_status_t (*pdf_pm_set_duration_fn_t) (void *@var{client_data}, void *@var{duration})}
-
-Callback implemented by a progress monitor.
-
-This callback is called to set the current value of the progress
-monitor duration.
-@table @strong
-@item Parameters
-@table @var
-@item client_data
-User supplied data.
-@item duration
-A pointer to a time span variable containing the new duration for the
-progress monitor.
-@end table
-@item Returns
-This callback should return @code{PDF_OK} to the caller.
-@end table
-@end deftp
-
-@deftp {Data Type} {pdf_status_t (*pdf_pm_get_current_value_fn_t) (void *@var{client_data}, void *@var{duration})}
-
-Callback implemented by a progress monitor.
-
-This callback is called to get the current value of the progress
-monitor duration.
-@table @strong
-@item Parameters
-@table @var
-@item client_data
-User supplied data.
-@item duration
-A pointer to a @var{pdf_time_span_t} variable to store the current
-duration of the progress monitor.
-@end table
-@item Returns
-This callback should return @code{PDF_OK} to the caller.
-@end table
-@end deftp
-
-@deftp {Data Type} {pdf_status_t (*pdf_pm_set_current_value_fn_t) (void *@var{client_data}, void *@var{duration})}
-
-Callback implemented by a progress monitor.
-
-This callback is called to set the current value of the progress
-monitor duration.
-@table @strong
-@item Parameters
-@table @var
-@item client_data
-User supplied data.
-@item duration
-A time span variable containing the new duration for the progress
-monitor.
-@end table
-@item Returns
-This callback should return @code{PDF_OK} to the caller.
-@end table
-@end deftp
-
-@deftp {Data Type} {pdf_status_t (*pdf_pm_set_text_fn_t) (void *@var{client_data}, void *@var{text})}
-
-Callback implemented by a progress monitor.
-
-This callback is called to set the description of the current status
-of the operation to the progress monitor.
-@table @strong
-@item Parameters
-@table @var
-@item client_data
-User supplied data.
-@item text
-A text variable containing the new description.
-@end table
-@item Returns
-This callback should return @code{PDF_OK} to the caller.
-@end table
-@end deftp
+@comment @node Progress Monitors
+@comment @subsection Progress Monitors
+@comment
+@comment The client application of the library may want to monitor the progress
+@comment of some operations, such as the saving of a document. The @code{struct
+@comment pdf_pm_s} structure provides a way for the client application to
+@comment specify callbacks implemented by a progress monitor.
+@comment
+@comment @deftp {Data Type} {struct pdf_pm_s}
+@comment
+@comment Structure containing several callbacks to be called as an operation
+@comment progress.
+@comment
+@comment @table @code
+@comment @item pdf_pm_begin_operation_fn_t begin_operation_fn
+@comment @item pdf_pm_end_operation_fn_t end_operation_fn
+@comment @item pdf_pm_get_duration_fn_t get_duration_fn
+@comment @item pdf_pm_set_duration_fn_t set_duration_fn
+@comment @item pdf_pm_get_current_value_fn_t get_current_value_fn_t
+@comment @item pdf_pm_set_current_value_fn_t set_current_value_fn_t
+@comment @item pdf_pm_set_text_fn_t set_text_fn
+@comment @end table
+@comment @end deftp
+@comment
+@comment The type definitions for the callbacks follows.
+@comment
+@comment @deftp {Data Type} {pdf_status_t (*pdf_pm_begin_operation_fn_t) (void *@var{client_data})}
+@comment Callback implemented by a progress monitor that initializes it to a
+@comment current value of @code{0}.
+@comment
+@comment @table @strong
+@comment @item Parameters
+@comment @table @var
+@comment @item client_data
+@comment User supplied data.
+@comment @end table
+@comment @item Returns
+@comment This callback should return @code{PDF_OK} to the caller.
+@comment @end table
+@comment @end deftp
+@comment
+@comment @deftp {Data Type} {pdf_status_t (*pdf_pm_end_operation_fn_t) (void *@var{client_data})}
+@comment Callback implemented by a progress monitor. This callback is called at
+@comment the end of the operation.
+@comment
+@comment @table @strong
+@comment @item Parameters
+@comment @table @var
+@comment @item client_data
+@comment User supplied data.
+@comment @end table
+@comment @item Returns
+@comment This callback should return @code{PDF_OK} to the caller.
+@comment @end table
+@comment @end deftp
+@comment
+@comment @deftp {Data Type} {pdf_status_t (*pdf_pm_get_duration_fn_t) (void *@var{client_data}, void *@var{duration})}
+@comment
+@comment Callback implemented by a progress monitor.
+@comment
+@comment This callback is called to get the current value of the progress
+@comment monitor duration.
+@comment @table @strong
+@comment @item Parameters
+@comment @table @var
+@comment @item client_data
+@comment User supplied data.
+@comment @item duration
+@comment A pointer to a @var{pdf_time_span_t} variable to store the current
+@comment duration of the progress monitor.
+@comment @end table
+@comment @item Returns
+@comment This callback should return @code{PDF_OK} to the caller.
+@comment @end table
+@comment @end deftp
+@comment
+@comment @deftp {Data Type} {pdf_status_t (*pdf_pm_set_duration_fn_t) (void *@var{client_data}, void *@var{duration})}
+@comment
+@comment Callback implemented by a progress monitor.
+@comment
+@comment This callback is called to set the current value of the progress
+@comment monitor duration.
+@comment @table @strong
+@comment @item Parameters
+@comment @table @var
+@comment @item client_data
+@comment User supplied data.
+@comment @item duration
+@comment A pointer to a time span variable containing the new duration for the
+@comment progress monitor.
+@comment @end table
+@comment @item Returns
+@comment This callback should return @code{PDF_OK} to the caller.
+@comment @end table
+@comment @end deftp
+@comment
+@comment @deftp {Data Type} {pdf_status_t (*pdf_pm_get_current_value_fn_t) (void *@var{client_data}, void *@var{duration})}
+@comment
+@comment Callback implemented by a progress monitor.
+@comment
+@comment This callback is called to get the current value of the progress
+@comment monitor duration.
+@comment @table @strong
+@comment @item Parameters
+@comment @table @var
+@comment @item client_data
+@comment User supplied data.
+@comment @item duration
+@comment A pointer to a @var{pdf_time_span_t} variable to store the current
+@comment duration of the progress monitor.
+@comment @end table
+@comment @item Returns
+@comment This callback should return @code{PDF_OK} to the caller.
+@comment @end table
+@comment @end deftp
+@comment
+@comment @deftp {Data Type} {pdf_status_t (*pdf_pm_set_current_value_fn_t) (void *@var{client_data}, void *@var{duration})}
+@comment
+@comment Callback implemented by a progress monitor.
+@comment
+@comment This callback is called to set the current value of the progress
+@comment monitor duration.
+@comment @table @strong
+@comment @item Parameters
+@comment @table @var
+@comment @item client_data
+@comment User supplied data.
+@comment @item duration
+@comment A time span variable containing the new duration for the progress
+@comment monitor.
+@comment @end table
+@comment @item Returns
+@comment This callback should return @code{PDF_OK} to the caller.
+@comment @end table
+@comment @end deftp
+@comment
+@comment @deftp {Data Type} {pdf_status_t (*pdf_pm_set_text_fn_t) (void *@var{client_data}, void *@var{text})}
+@comment
+@comment Callback implemented by a progress monitor.
+@comment
+@comment This callback is called to set the description of the current status
+@comment of the operation to the progress monitor.
+@comment @table @strong
+@comment @item Parameters
+@comment @table @var
+@comment @item client_data
+@comment User supplied data.
+@comment @item text
+@comment A text variable containing the new description.
+@comment @end table
+@comment @item Returns
+@comment This callback should return @code{PDF_OK} to the caller.
+@comment @end table
+@comment @end deftp
 
 @node UUIDs
 @subsection Universal Unique Identifiers
