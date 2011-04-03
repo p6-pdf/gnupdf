@@ -1,3 +1,85 @@
+2011-04-03  Aleksander Morgado  <aleksander@gnu.org>
+
+	base,time: Time module refactored.
+	* src/base/pdf-time.[h|c]
+	* src/base/pdf-time-context.[h|c]
+	* src/base/pdf-time-string.[h|c]
+	* doc/gnupdf.texi: Updated with new API.
+
+	base,fsys: Port filesystem module to new Time module API.
+	* src/base/pdf-fsys.c
+
+	base,hash: Port hash helpers to new Time module API.
+	* src/base/pdf-hash-helper.[h|c]
+	(pdf_hash_add_time): Updated to new Time module API.
+	(pdf_hash_get_time): Likewise.
+
+	global: Use time module initialization.
+	* src/pdf-global.c
+
+	torture,time: Unit tests ported to the new Time module API.
+	* torture/unit/base/hash/pdf-hash-add-time.c
+	* torture/unit/base/time/pdf-time-add-cal-span-with-base.c
+	* torture/unit/base/time/pdf-time-add-cal-span.c
+	* torture/unit/base/time/pdf-time-add-span.c
+	* torture/unit/base/time/pdf-time-cal-span-cmp.c
+	* torture/unit/base/time/pdf-time-cal-span-diff.c
+	* torture/unit/base/time/pdf-time-clear.c
+	* torture/unit/base/time/pdf-time-copy.c
+	* torture/unit/base/time/pdf-time-diff-cal.c
+	* torture/unit/base/time/pdf-time-diff.c
+	* torture/unit/base/time/pdf-time-dup.c
+	* torture/unit/base/time/pdf-time-from-string.c
+	* torture/unit/base/time/pdf-time-get-local-cal.c
+	* torture/unit/base/time/pdf-time-get-utc-cal.c
+	* torture/unit/base/time/pdf-time-new.c
+	* torture/unit/base/time/pdf-time-set-local-offset.c
+	* torture/unit/base/time/pdf-time-set-to-current-local-time.c
+	* torture/unit/base/time/pdf-time-set-to-current-utc-time.c
+	* torture/unit/base/time/pdf-time-sub-cal-span.c
+	* torture/unit/base/time/pdf-time-sub-span.c
+	* torture/unit/base/time/pdf-time-test-common.h
+	* torture/unit/base/time/pdf-time-testdata.c
+	* torture/unit/base/time/pdf-time-to-string.c
+	* torture/unit/base/time/pdf-time-w32-set-from-filetime.c
+	* torture/unit/base/time/tsuite-time.c
+	* torture/unit/base/time/pdf-time-init-dup.c
+	* torture/unit/base/time/pdf-time-set-from-cal.c
+	* torture/unit/base/time/pdf-time-set-utc.c
+	* torture/unit/base/time/pdf-time-init.c: New file to test the new
+	`pdf_time_init()' API.
+	* torture/unit/base/time/pdf-time-init-dup.c: Likewise.
+	* torture/unit/base/time/pdf-time-set-from-cal.c: Renamed from
+	torture/unit/base/time/pdf-time-from-cal.c
+	* torture/unit/base/time/pdf-time-set-utc.c: Renamed from
+	torture/unit/base/time/pdf-time-set-from-u32.c
+	* torture/unit/base/time/pdf-time-set-from-i64.c: File removed, no
+	longer needed as API method was removed.
+	* torture/unit/base/time/pdf-time-span-add.c: Likewise.
+	* torture/unit/base/time/pdf-time-span-cmp.c: Likewise.
+	* torture/unit/base/time/pdf-time-span-copy.c: Likewise.
+	* torture/unit/base/time/pdf-time-span-destroy.c: Likewise.
+	* torture/unit/base/time/pdf-time-span-diff.c: Likewise.
+	* torture/unit/base/time/pdf-time-span-dup.c: Likewise.
+	* torture/unit/base/time/pdf-time-span-negate.c: Likewise.
+	* torture/unit/base/time/pdf-time-span-new.c: Likewise.
+	* torture/unit/base/time/pdf-time-span-set.c: Likewise.
+	* torture/unit/base/time/pdf-time-span-to-secs.c: Likewise.
+	* torture/unit/base/time/pdf-time-test-common.c: Likewise.
+	* torture/unit/base/time/pdf-time-destroy.c: File removed, useless test.
+	* torture/unit/Makefile.am: Updated unit tests compilation to add new
+	files, and remove the deleted ones.
+
+	base,hash: new hash helper methods.
+	* src/base/pdf-hash-helper.[h|c]
+	(pdf_hash_add_duplicated_text): New method.
+	(pdf_hash_add_duplicated_time): Likewise.
+	(pdf_hash_add_static_time): Likewise.
+	* doc/gnupdf.texi (Helper Functions): Added API of new helper methods.
+
+	progress-monitors: comment out the API.
+	* doc/gnupdf.texi (Progress Monitors)
+
 2011-03-28  Aleksander Morgado  <aleksander@gnu.org>
 
 	text: fix compilation
