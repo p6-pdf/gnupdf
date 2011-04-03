@@ -102,6 +102,9 @@ dnl
 dnl Some of the libraries are mandatory, and some are optional.  See
 dnl the section "Report errors" below.
 
+dnl libuuid
+AC_LIB_HAVE_LINKFLAGS([uuid])
+
 dnl libpthread
 AC_LIB_HAVE_LINKFLAGS([pthread])
 
@@ -393,6 +396,10 @@ fi
 if test "x$HAVE_LIBPTHREAD" != "xyes"; then
    missing_libs="$missing_libs
    libpthread"
+fi
+if test "x$HAVE_LIBUUID" != "xyes"; then
+   missing_libs="$missing_libs
+   libuuid"
 fi
 if test "x$HAVE_LIBGPG_ERROR" != "xyes"; then
    missing_libs="$missing_libs

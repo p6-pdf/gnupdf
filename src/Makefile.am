@@ -32,7 +32,8 @@ ALLOC_MODULE_SOURCES = base/pdf-alloc.c base/pdf-alloc.h
 
 TYPES_MODULE_SOURCES = base/pdf-types.h \
                        base/pdf-types-buffer.c base/pdf-types-buffer.h \
-                       base/pdf-types-pmon.h
+                       base/pdf-types-pmon.h \
+                       base/pdf-types-uuid.c base/pdf-types-uuid.h
 
 ERROR_MODULE_SOURCES = base/pdf-error.c base/pdf-error.h
 
@@ -118,7 +119,7 @@ if COMPILE_BASE_LAYER
 endif
 
 libgnupdf_la_LDFLAGS = $(top_builddir)/lib/libgnu.la \
-                       $(LTLIBPTHREAD) $(LTLIBM) \
+                       $(LTLIBUUID) $(LTLIBPTHREAD) $(LTLIBM) \
                        $(LTLIBJBIG2DEC) $(LTLIBJPEG) $(LTLIBCURL) \
                        $(LIBGCRYPT_LIBS) $(LTLIBGPG_ERROR) $(LTLIBGCRYPT) \
                        $(LTLIBCHECK) $(LTLIBICONV)
@@ -149,6 +150,7 @@ PUBLIC_HDRS = pdf-config.h \
               base/pdf-error.h \
               base/pdf-types-buffer.h \
               base/pdf-types-pmon.h \
+              base/pdf-types-uuid.h \
               base/pdf-fp.h \
               base/pdf-alloc.h \
               base/pdf-list.h \
