@@ -7375,7 +7375,9 @@ pdf_time_t mytime;
 sruct pdf_time_cal_s cal_time;
 
 pdf_time_init (&mytime);
+
 pdf_time_get_utc_cal (&mytime, &cal_time);
+
 pdf_time_deinit (&mytime);
 @end example
 @end table
@@ -7424,7 +7426,6 @@ operating system.
 
 @table @strong
 @item Parameters
-
 @table @var
 @item time
 A properly created time variable.
@@ -7434,7 +7435,10 @@ A properly created time variable.
 pdf_time_t mytime;
 
 pdf_time_init (&mytime);
+
+pdf_time_set_utc (&mytime, 1234567890);
 pdf_time_set_local_offset (&mytime);
+
 pdf_time_deinit (&mytime);
 @end example
 @end table
@@ -7462,13 +7466,27 @@ goes between @var{time1} and @var{time2}.
 @end table
 @item Usage example
 @example
-pdf_time_t time_begin;
-pdf_time_t time_end;
-struct pdf_time_cal_span_s cal_span;
+pdf_time_t time1;
+pdf_time_t time2;
+struct pdf_time_cal_span_s diff;
 
-/* ...create and manipulate `time_begin' and `time_end' */
+pdf_time_init (&time1);
+pdf_time_init (&time2);
 
-pdf_time_diff (&time_begin, &time_end, &cal_span);
+pdf_time_set_utc (&time1, 1234567890);
+pdf_time_set_utc (&time2, 1300000000);
+
+pdf_time_diff (&time1, &time2, &diff);
+printf ("Time between times is: %d-%d-%d %d:%d:%d\n",
+        diff.years,
+        diff.months,
+        diff.days,
+        diff.hours,
+        diff.minutes,
+        diff.seconds);
+
+pdf_time_deinit (&time1);
+pdf_time_deinit (&time2);
 @end example
 @end table
 @end deftypefun
@@ -7494,9 +7512,18 @@ pdf_time_t time1;
 pdf_time_t time2;
 pdf_i64_t diff;
 
-/* ...create and manipulate `time1', `time2' and `time_span'... */
+pdf_time_init (&time1);
+pdf_time_init (&time2);
+
+pdf_time_set_utc (&time1, 1234567890);
+pdf_time_set_utc (&time2, 1300000000);
 
 diff = pdf_time_diff (&time1, &time2);
+printf ("Time between times is: %lld\n",
+        (long long) diff);
+
+pdf_time_deinit (&time1);
+pdf_time_deinit (&time2);
 @end example
 @end table
 @end deftypefun
@@ -7538,8 +7565,10 @@ pdf_time_t *time2;
 time1 = pdf_time_new ();
 time2 = pdf_time_new ();
 
-/* ...manipulate `time1' and `time2'... */
+pdf_time_set_utc (time1, 1234567890);
+pdf_time_set_utc (time1, 1300000000);
 
+/* As `time1' is before `time2', it will return -1 */
 switch (pdf_time_cmp (time1, time2))
    @{
    case -1:
@@ -7549,7 +7578,7 @@ switch (pdf_time_cmp (time1, time2))
      @}
    case 0:
       @{
-         /* `time1' contain the same time than `time2' */
+         /* `time1' contain the same time as `time2' */
          break;
       @}
    case 1:
@@ -7591,24 +7620,31 @@ The string representation of @var{time} which must be deallocated by the caller 
 
 @item Usage example
 @example
+pdf_error_t *error = NULL;
 pdf_time_t mytime;
 pdf_char_t *mytime_str;
 
-/* ...create and manipulate `mytime'... */
+pdf_time_init (&mytime);
+pdf_time_set_utc (&mytime, 1234567890);
 
 mytime_str = pdf_time_to_string (&mytime,
                                  PDF_TIME_STRING_FORMAT_PDF,
                                  PDF_TIME_STRING_NO_OPTION,
-                                 NULL);
+                                 &error);
+if (!mytime_str)
+   @{
+      /* Error! */
+      pdf_error_destroy (error);
+   @}
 
 pdf_dealloc (mytime_str);
+pdf_time_deinit (&mytime);
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_from_string (pdf_time_t @var{time_var}, const pdf_char_t *@var{time_str}, const enum pdf_time_format_e @var{time_format}, pdf_bool_t @var{require_trailing_apostrophe})
-Get a string containing a time specification in some format and fill a
-time variable with the parsed values.
+@deftypefun pdf_bool_t pdf_time_set_from_string (pdf_time_t *@var{time_var}, const pdf_char_t *@var{time_str}, const enum pdf_time_format_e @var{time_format}, pdf_u32_t @var{options}, pdf_error_t **@var{error})
+Set the contents of a time variable from a string in specific time format.
 
 @table @strong
 @item Parameters
@@ -7621,36 +7657,37 @@ A properly created time variable.
 A null-terminated string representation of a time.
 @item time_format
 The format indicating how to parse @var{time_str}.
-@item require_trailing_apostrophe
-If this argument is @code{PDF_TRUE} a PDF date specification
-containing minutes should be followed by an APOSTROPHE character (').
-
-If @var{time_format} is not @code{PDF_TIME_FORMAT_PDF} then this
-argument is ignored.
-@end table
-
-@item Returns
-A status value:
+@item options
+Options to use when parsing the string representation of the time.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-The operation succeeded.
 @item PDF_EBADDATA
-Error while parsing @var{time_str} according to @var{time_format}.
+@var{time_str} in not properly formatted according to @var{time_format}
 @end table
+@end table
+@item Returns
+@code{PDF_TRUE} if the time was properly set, @code{PDF_FALSE} otherwise.
 
 @item Usage example
 @example
-pdf_time_t mytime;
-char time_str[] = "D:20090813210000+00'00"; /* 13-August-2009, 21:00
-                                               GMT 0 */
+pdf_time_t *mytime;
+pdf_error_t *error = NULL;
+const pdf_char_t *time_str = "D:20090813210000+00'00";
 
-mytime = pdf_time_new ();
-if (pdf_time_from_string (mytime,
-                          time_str,
-                          PDF_TIME_FORMAT_PDF) == PDF_EBADDATA)
-@{
-  /* Error while parsing `time_str' according to `PDF_TIME_FORMAT_PDF' */
-@}
+mytime = pdf_time_new (NULL);
+if (!pdf_time_from_string (mytime,
+                           time_str,
+                           PDF_TIME_STRING_FORMAT_PDF,
+                           PDF_TIME_STRING_NO_OPTION,
+                           &error))
+   @{
+      /* Error while parsing `time_str' according to
+       * `PDF_TIME_STRING_FORMAT_PDF' */
+      pdf_error_destroy (error);
+   @}
+
+pdf_time_destroy (mytime);
 @end example
 @end table
 @end deftypefun
@@ -7658,61 +7695,46 @@ if (pdf_time_from_string (mytime,
 @node Getting the Current Time
 @subsection Getting the Current Time
 
-@deftypefun pdf_status_t pdf_time_set_to_current_local_time (pdf_time_t @var{time_var})
-Set the value of @var{time_var} to the current local time used by the
-operating system.
+@deftypefun void pdf_time_set_to_current_local_time (pdf_time_t *@var{time_var})
+Set the value of @var{time_var} to the current local time used by the operating system.
 
 @table @strong
 @item Parameters
-
 @table @var
 @item time_var
 A properly created time variable.
 @end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@end table
-
 @item Usage example
 @example
-pdf_time_t mytime;
+pdf_time_t *mytime;
 
-mytime = pdf_time_new ();
+mytime = pdf_time_new (NULL);
 
 pdf_time_set_to_current_local_time (mytime);
+
+pdf_time_destroy (mytime);
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_set_to_current_utc_time (pdf_time_t @var{time_var})
+@deftypefun void pdf_time_set_to_current_utc_time (pdf_time_t *@var{time_var})
 Set the value of @var{time_var} to the current UTC time used by the operating system.
 
 @table @strong
 @item Parameters
-
 @table @var
 @item time_var
 A properly created time variable.
 @end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@end table
-
 @item Usage example
 @example
-pdf_time_t mytime;
+pdf_time_t *mytime;
 
-mytime = pdf_time_new ();
+mytime = pdf_time_new (NULL);
 
 pdf_time_set_to_current_utc_time (mytime);
+
+pdf_time_destroy (mytime);
 @end example
 @end table
 @end deftypefun
@@ -7720,7 +7742,7 @@ pdf_time_set_to_current_utc_time (mytime);
 @node Calendar Spans Management
 @subsection  Calendar Spans Management
 
-@deftypefun pdf_status_t pdf_time_add_cal_span_with_base (const struct pdf_time_cal_span_s *@var{p_span1}, const struct pdf_time_cal_span_s *@var{p_span2}, const pdf_time_t @var{base_time}, struct pdf_time_cal_span_s *@var{p_result})
+@deftypefun void pdf_time_add_cal_span_with_base (const struct pdf_time_cal_span_s *@var{span1}, const struct pdf_time_cal_span_s *@var{span2}, const pdf_time_t *@var{base_time}, struct pdf_time_cal_span_s *@var{result})
 
 Add two calendar spans. Since the calendar spans are relative (some
 years has more days than another) the calendar spans are first
@@ -7728,51 +7750,53 @@ resolved from a base time.
 
 @table @strong
 @item Parameters
-
 @table @var
-@item p_span1
+@item span1
 The pointer to the first calendar span to add.
-@item p_span2
+@item span2
 The pointer to the second calendar span to add.
 @item base_time
 The base time to use.
-@item p_result
+@item result
 Pointer to the calendar span to store the result of the add operation.
 @end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@item PDF_EBADDATA
-There is invalid data in @var{span1} or @var{span2}.
-@end table
-
 @item Usage example
 @example
-pdf_time_t mytime;
-struct pdf_time_cal_span_s cal_span1;
-struct pdf_time_cal_span_s cal_span2;
-struct pdf_time_cal_span_s cal_result;
+pdf_time_t base;
+struct pdf_time_cal_span_s span1 = @{ 0 @};
+struct pdf_time_cal_span_s span2 = @{ 0 @};
+struct pdf_time_cal_span_s result = @{ 0 @};
 
-/* ...create and initialize `mytime', `cal_span1'
- *    and `cal_span2'...
- */
+/* Base time the Unix epoch */
+pdf_time_init (&base);
 
-if (pdf_time_add_cal_span_with_base (&cal_span1,
-                                     &cal_span2,
-                                     mytime,
-                                     &cal_result) == PDF_EBADDATA)
-@{
-  /* Invalid data in `cal_span1' or `cal_span2' */
-@}
+span1.years = 12;
+span1.months = 1;
+span1.days = 23;
+
+span2.hours = 12;
+span2.minutes = 30;
+span2.seconds = 15;
+
+pdf_time_add_cal_span_with_base (&span1,
+                                 &span2,
+                                 &base,
+                                 &result);
+printf ("(result) %d-%d-%d %d:%d:%d\n",
+        result.years,
+        result.months,
+        result.days,
+        result.hours,
+        result.minutes,
+        result.seconds);
+
+pdf_time_deinit (&base);
 @end example
 @end table
 @end deftypefun
 
 
-@deftypefun pdf_i32_t pdf_time_cal_span_cmp (const struct pdf_time_cal_span_s *@var{p_span1}, const struct pdf_time_cal_span_s *@var{p_span2}, const pdf_time_t @var{base_time}, pdf_status_t *p_ret_code)
+@deftypefun pdf_i8_t pdf_time_cal_span_cmp (const struct pdf_time_cal_span_s *@var{span1}, const struct pdf_time_cal_span_s *@var{span2}, const pdf_time_t *@var{base_time})
 
 Compare two calendar spans previously resolved with a given base time.
 
@@ -7780,61 +7804,76 @@ Compare two calendar spans previously resolved with a given base time.
 @item Parameters
 
 @table @var
-@item p_span1
+@item span1
 The pointer to the first calendar span to be compared.
-@item p_span2
+@item span2
 The pointer to the second calendar span to be compared.
 @item base_time
 The used base time. Should be a correctly created time variable.
-@item p_ret_code
-Pointer to a status variable to store any error happened in the function.
 @end table
-
 @item Returns
-
 @table @code
 @item -1
-Given the base time, the time interval defined by @var{p_span2} is
-greater in length than the time interval defined by @var{p_span1}.
+Given the base time, the time interval defined by @var{span2} is
+greater in length than the time interval defined by @var{span1}.
 @item 0
-Given the base time, the time inveral defined by @var{p_span1} is equal
-in length than the time interval defined by @var{p_span2}.
+Given the base time, the time inveral defined by @var{span1} is equal
+in length than the time interval defined by @var{span2}.
 @item +1
-Given the base time, the time interval defined by @var{p_span1} is
-greater in length than the time interval defined by @var{p_span2}.
+Given the base time, the time interval defined by @var{span1} is
+greater in length than the time interval defined by @var{span2}.
 @end table
-
 @item Usage example
 @example
-pdf_time_t mytime;
-struct pdf_time_cal_span_s span1;
-struct pdf_time_cal_span_s span2;
+pdf_time_t base;
+struct pdf_time_cal_span_s span1 = @{ 0 @};
+struct pdf_time_cal_span_s span2 = @{ 0 @};
+struct pdf_time_cal_span_s result = @{ 0 @};
 
-/* ...create and manipulate `mytime', `span1' and `span2'... */
+/* Base time the Unix epoch */
+pdf_time_init (&base);
 
-switch (pdf_time_cal_span_cmp (&span1, &span2, mytime))
-@{
-  case -1:
-  @{
-    /* The length of `span1' is shorter than the length of `span2' */
-    break;
-  @}
-  case 0:
-  @{
-    /* The length of `span1' is equal than the length of `span2' */
-    break;
-  @}
-  case 1:
-  @{
-    /* The length of `span1' is greater than the length of `span2' */
-    break;
-  @}
-@}
+span1.years = 12;
+span1.months = 1;
+span1.days = 23;
+
+span2.years = 12;
+span2.months = 1;
+span2.days = 23;
+span2.hours = 12;
+span2.minutes = 30;
+span2.seconds = 15;
+
+/* `span2' is longer than `span1', so it should
+ * return -1 */
+switch (pdf_time_cal_span_cmp (&span1, &span2, &base))
+   @{
+   case -1:
+      @{
+         /* The length of `span1' is shorter than the
+          * length of `span2' */
+         break;
+      @}
+   case 0:
+      @{
+         /* The length of `span1' is equal than the
+          * length of `span2' */
+         break;
+      @}
+   case 1:
+      @{
+         /* The length of `span1' is greater than the
+          * length of `span2' */
+         break;
+      @}
+   @}
+
+pdf_time_deinit (&base);
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_cal_span_diff (const struct pdf_time_cal_span_s *@var{p_span1}, const struct pdf_time_cal_span_s *@var{p_span2}, const pdf_time_t @var{base_time}, struct pdf_time_cal_span_s *@var{p_result})
+@deftypefun void pdf_time_cal_span_diff (const struct pdf_time_cal_span_s *@var{span1}, const struct pdf_time_cal_span_s *@var{span2}, const pdf_time_t *@var{base_time}, struct pdf_time_cal_span_s *@var{result})
 
 Compute the difference between two calendar spans relative to a given
 base time and store it in a given calendar span.
@@ -7843,43 +7882,49 @@ base time and store it in a given calendar span.
 @item Parameters
 
 @table @var
-@item p_span1
+@item span1
 The pointer to the first calendar span to diff.
-@item p_span2
+@item span2
 The pointer to the second calendar span to diff.
 @item base_time
 The base time. Should be a correctly created time variable.
-@item p_result
+@item result
 Pointer to the calendar structure holding the result of the difference.
 @end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@item PDF_EBADDATA
-There is invalid data in @var{span1} or @var{span2}.
-@end table
-
 @item Usage example
 @example
-pdf_time_t mytime;
-struct pdf_time_cal_span_s span1;
-struct pdf_time_cal_span_s span2;
-struct pdf_time_cal_span_s result;
+pdf_time_t base;
+struct pdf_time_cal_span_s span1 = @{ 0 @};
+struct pdf_time_cal_span_s span2 = @{ 0 @};
+struct pdf_time_cal_span_s result = @{ 0 @};
 
-/* ...create and manipulate `span1', `span2' and
- *    `result'...
- */
+/* Base time the Unix epoch */
+pdf_time_init (&base);
 
-if (pdf_time_cal_span_diff (&span1,
-                            &span2,
-                            mytime,
-                            &result) == PDF_EBADDATA)
-@{
-  /* Invalid data in `span1' or `span2' */
-@}
+span1.years = 12;
+span1.months = 1;
+span1.days = 23;
+
+span2.years = 12;
+span2.months = 1;
+span2.days = 23;
+span2.hours = 12;
+span2.minutes = 30;
+span2.seconds = 15;
+
+pdf_time_cal_span_diff (&span1,
+                        &span2,
+                        &base,
+                        &result);
+printf ("(result) %d-%d-%d %d:%d:%d\n",
+        result.years,
+        result.months,
+        result.days,
+        result.hours,
+        result.minutes,
+        result.seconds);
+
+pdf_time_deinit (&base);
 @end example
 @end table
 @end deftypefun
@@ -7922,6 +7967,7 @@ pdf_time_init (&mytime);
 
 pdf_time_w32_set_from_filetime (&mytime, &filetime);
 
+pdf_time_deinit (&mytime);
 @end example
 @end table
 @end deftypefun
