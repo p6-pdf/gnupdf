@@ -177,7 +177,7 @@ pdf_fsys_disk_get_free_space (void              *data,
       /*                __pdf_fsys_disk_get_status_from_errno (errno), */
       /*                "cannot get free disk space: got error code %u", */
       /*                (uint)GetLastError ()); */
-      pdf_dealloc (host_path);
+      pdf_dealloc (utf16le_path);
       return -1;
     }
 
