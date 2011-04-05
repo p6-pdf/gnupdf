@@ -1,13 +1,13 @@
 /* -*- mode: C -*-
  *
- *       File:         pdf-time-new.c
- *       Date:         Fri Feb 27 17:35:31 2008
+ *       File:         pdf-time-init.c
+ *       Date:         Thu Mar 24 21:47:59 2011
  *
- *       GNU PDF Library - Unit tests for pdf_time_new
+ *       GNU PDF Library - Unit tests for pdf_time_init
  *
  */
 
-/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
+/* Copyright (C) 2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,29 +31,27 @@
 #include <pdf-test-common.h>
 
 /*
- * Test: pdf_time_new_001
+ * Test: pdf_time_init_001
  * Description:
- *   Create new pdf_time_t.
+ *   Create init pdf_time_t.
  *
  *Success condition:
- * 1. Function pdf_time_new should return a valid object
- * 2. New pdf_time_t object is not NUL
+ * 1. Function pdf_time_init should return a valid object
+ * 2. Init pdf_time_t object is not NUL
  * 3. pdf_time_t is set to 1970-01-01 00:00:00 UTC
  */
-START_TEST (pdf_time_new_001)
+START_TEST (pdf_time_init_001)
 {
   const pdf_char_t *expected_time = "1970-01-01T00:00:00Z";
   pdf_char_t *time_str;
   pdf_error_t *error = NULL;
-  pdf_time_t *time_var;
+  pdf_time_t time_var;
 
-  time_var = pdf_time_new (&error);
-  fail_unless (time_var != NULL);
-  fail_if (error != NULL);
+  pdf_time_init (&time_var);
 
   /* Yeah, I know we shouldn't be using this here before unit-testing it, but
    * anyway... */
-  time_str = pdf_time_to_string (time_var,
+  time_str = pdf_time_to_string (&time_var,
                                  PDF_TIME_STRING_FORMAT_ISO_8601,
                                  PDF_TIME_STRING_NO_OPTION,
                                  &error);
@@ -63,7 +61,7 @@ START_TEST (pdf_time_new_001)
   fail_unless (memcmp (time_str, expected_time, strlen (expected_time)) == 0);
 
   pdf_dealloc (time_str);
-  pdf_time_destroy (time_var);
+  pdf_time_deinit (&time_var);
 }
 END_TEST
 
@@ -71,15 +69,15 @@ END_TEST
  * Test case creation function
  */
 TCase *
-test_pdf_time_new (void)
+test_pdf_time_init (void)
 {
-  TCase *tc = tcase_create ("pdf_time_new");
+  TCase *tc = tcase_create ("pdf_time_init");
 
-  tcase_add_test (tc, pdf_time_new_001);
+  tcase_add_test (tc, pdf_time_init_001);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);
   return tc;
 }
 
-/* End of pdf-time-new.c */
+/* End of pdf-time-init.c */

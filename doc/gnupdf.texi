@@ -93,7 +93,7 @@ Indices
                                  filtering support.
 * Floating Point Maths::        Working with real numbers.
 * Encoded Text::                Manipulating encoded strings.
-* Time Management::             Calendars and time spans.
+* Time Management::             Times and calendars.
 * The Filesystem Module::       An abstract file system interface and
                                  open files.
 * The Tokeniser::               Decomposing a PDF document in tokens.
@@ -742,7 +742,7 @@ pdf_dealloc (p);
 * Numeric Types::       Signed and unsigned 32bit integers.
 * Character Types::     Signed and unsigned bytes.
 * Memory Buffers::      Operations on simple memory buffers.
-* Progress Monitors::   Following the progress of operations.
+@comment * Progress Monitors::   Following the progress of operations.
 * UUIDs::               Universal Unique Identifiers.
 @end menu
 
@@ -1096,160 +1096,160 @@ my_buffer->wp += 3;
 @end table
 @end deftypefun
 
-@node Progress Monitors
-@subsection Progress Monitors
-
-The client application of the library may want to monitor the progress
-of some operations, such as the saving of a document. The @code{struct
-pdf_pm_s} structure provides a way for the client application to
-specify callbacks implemented by a progress monitor.
-
-@deftp {Data Type} {struct pdf_pm_s}
-
-Structure containing several callbacks to be called as an operation
-progress.
-
-@table @code
-@item pdf_pm_begin_operation_fn_t begin_operation_fn
-@item pdf_pm_end_operation_fn_t end_operation_fn
-@item pdf_pm_get_duration_fn_t get_duration_fn
-@item pdf_pm_set_duration_fn_t set_duration_fn
-@item pdf_pm_get_current_value_fn_t get_current_value_fn_t
-@item pdf_pm_set_current_value_fn_t set_current_value_fn_t
-@item pdf_pm_set_text_fn_t set_text_fn
-@end table
-@end deftp
-
-The type definitions for the callbacks follows.
-
-@deftp {Data Type} {pdf_status_t (*pdf_pm_begin_operation_fn_t) (void *@var{client_data})}
-Callback implemented by a progress monitor that initializes it to a
-current value of @code{0}.
-
-@table @strong
-@item Parameters
-@table @var
-@item client_data
-User supplied data.
-@end table
-@item Returns
-This callback should return @code{PDF_OK} to the caller.
-@end table
-@end deftp
-
-@deftp {Data Type} {pdf_status_t (*pdf_pm_end_operation_fn_t) (void *@var{client_data})}
-Callback implemented by a progress monitor. This callback is called at
-the end of the operation.
-
-@table @strong
-@item Parameters
-@table @var
-@item client_data
-User supplied data.
-@end table
-@item Returns
-This callback should return @code{PDF_OK} to the caller.
-@end table
-@end deftp
-
-@deftp {Data Type} {pdf_status_t (*pdf_pm_get_duration_fn_t) (void *@var{client_data}, void *@var{duration})}
-
-Callback implemented by a progress monitor.
-
-This callback is called to get the current value of the progress
-monitor duration.
-@table @strong
-@item Parameters
-@table @var
-@item client_data
-User supplied data.
-@item duration
-A pointer to a @var{pdf_time_span_t} variable to store the current
-duration of the progress monitor.
-@end table
-@item Returns
-This callback should return @code{PDF_OK} to the caller.
-@end table
-@end deftp
-
-@deftp {Data Type} {pdf_status_t (*pdf_pm_set_duration_fn_t) (void *@var{client_data}, void *@var{duration})}
-
-Callback implemented by a progress monitor.
-
-This callback is called to set the current value of the progress
-monitor duration.
-@table @strong
-@item Parameters
-@table @var
-@item client_data
-User supplied data.
-@item duration
-A pointer to a time span variable containing the new duration for the
-progress monitor.
-@end table
-@item Returns
-This callback should return @code{PDF_OK} to the caller.
-@end table
-@end deftp
-
-@deftp {Data Type} {pdf_status_t (*pdf_pm_get_current_value_fn_t) (void *@var{client_data}, void *@var{duration})}
-
-Callback implemented by a progress monitor.
-
-This callback is called to get the current value of the progress
-monitor duration.
-@table @strong
-@item Parameters
-@table @var
-@item client_data
-User supplied data.
-@item duration
-A pointer to a @var{pdf_time_span_t} variable to store the current
-duration of the progress monitor.
-@end table
-@item Returns
-This callback should return @code{PDF_OK} to the caller.
-@end table
-@end deftp
-
-@deftp {Data Type} {pdf_status_t (*pdf_pm_set_current_value_fn_t) (void *@var{client_data}, void *@var{duration})}
-
-Callback implemented by a progress monitor.
-
-This callback is called to set the current value of the progress
-monitor duration.
-@table @strong
-@item Parameters
-@table @var
-@item client_data
-User supplied data.
-@item duration
-A time span variable containing the new duration for the progress
-monitor.
-@end table
-@item Returns
-This callback should return @code{PDF_OK} to the caller.
-@end table
-@end deftp
-
-@deftp {Data Type} {pdf_status_t (*pdf_pm_set_text_fn_t) (void *@var{client_data}, void *@var{text})}
-
-Callback implemented by a progress monitor.
-
-This callback is called to set the description of the current status
-of the operation to the progress monitor.
-@table @strong
-@item Parameters
-@table @var
-@item client_data
-User supplied data.
-@item text
-A text variable containing the new description.
-@end table
-@item Returns
-This callback should return @code{PDF_OK} to the caller.
-@end table
-@end deftp
+@comment @node Progress Monitors
+@comment @subsection Progress Monitors
+@comment
+@comment The client application of the library may want to monitor the progress
+@comment of some operations, such as the saving of a document. The @code{struct
+@comment pdf_pm_s} structure provides a way for the client application to
+@comment specify callbacks implemented by a progress monitor.
+@comment
+@comment @deftp {Data Type} {struct pdf_pm_s}
+@comment
+@comment Structure containing several callbacks to be called as an operation
+@comment progress.
+@comment
+@comment @table @code
+@comment @item pdf_pm_begin_operation_fn_t begin_operation_fn
+@comment @item pdf_pm_end_operation_fn_t end_operation_fn
+@comment @item pdf_pm_get_duration_fn_t get_duration_fn
+@comment @item pdf_pm_set_duration_fn_t set_duration_fn
+@comment @item pdf_pm_get_current_value_fn_t get_current_value_fn_t
+@comment @item pdf_pm_set_current_value_fn_t set_current_value_fn_t
+@comment @item pdf_pm_set_text_fn_t set_text_fn
+@comment @end table
+@comment @end deftp
+@comment
+@comment The type definitions for the callbacks follows.
+@comment
+@comment @deftp {Data Type} {pdf_status_t (*pdf_pm_begin_operation_fn_t) (void *@var{client_data})}
+@comment Callback implemented by a progress monitor that initializes it to a
+@comment current value of @code{0}.
+@comment
+@comment @table @strong
+@comment @item Parameters
+@comment @table @var
+@comment @item client_data
+@comment User supplied data.
+@comment @end table
+@comment @item Returns
+@comment This callback should return @code{PDF_OK} to the caller.
+@comment @end table
+@comment @end deftp
+@comment
+@comment @deftp {Data Type} {pdf_status_t (*pdf_pm_end_operation_fn_t) (void *@var{client_data})}
+@comment Callback implemented by a progress monitor. This callback is called at
+@comment the end of the operation.
+@comment
+@comment @table @strong
+@comment @item Parameters
+@comment @table @var
+@comment @item client_data
+@comment User supplied data.
+@comment @end table
+@comment @item Returns
+@comment This callback should return @code{PDF_OK} to the caller.
+@comment @end table
+@comment @end deftp
+@comment
+@comment @deftp {Data Type} {pdf_status_t (*pdf_pm_get_duration_fn_t) (void *@var{client_data}, void *@var{duration})}
+@comment
+@comment Callback implemented by a progress monitor.
+@comment
+@comment This callback is called to get the current value of the progress
+@comment monitor duration.
+@comment @table @strong
+@comment @item Parameters
+@comment @table @var
+@comment @item client_data
+@comment User supplied data.
+@comment @item duration
+@comment A pointer to a @var{pdf_time_span_t} variable to store the current
+@comment duration of the progress monitor.
+@comment @end table
+@comment @item Returns
+@comment This callback should return @code{PDF_OK} to the caller.
+@comment @end table
+@comment @end deftp
+@comment
+@comment @deftp {Data Type} {pdf_status_t (*pdf_pm_set_duration_fn_t) (void *@var{client_data}, void *@var{duration})}
+@comment
+@comment Callback implemented by a progress monitor.
+@comment
+@comment This callback is called to set the current value of the progress
+@comment monitor duration.
+@comment @table @strong
+@comment @item Parameters
+@comment @table @var
+@comment @item client_data
+@comment User supplied data.
+@comment @item duration
+@comment A pointer to a time span variable containing the new duration for the
+@comment progress monitor.
+@comment @end table
+@comment @item Returns
+@comment This callback should return @code{PDF_OK} to the caller.
+@comment @end table
+@comment @end deftp
+@comment
+@comment @deftp {Data Type} {pdf_status_t (*pdf_pm_get_current_value_fn_t) (void *@var{client_data}, void *@var{duration})}
+@comment
+@comment Callback implemented by a progress monitor.
+@comment
+@comment This callback is called to get the current value of the progress
+@comment monitor duration.
+@comment @table @strong
+@comment @item Parameters
+@comment @table @var
+@comment @item client_data
+@comment User supplied data.
+@comment @item duration
+@comment A pointer to a @var{pdf_time_span_t} variable to store the current
+@comment duration of the progress monitor.
+@comment @end table
+@comment @item Returns
+@comment This callback should return @code{PDF_OK} to the caller.
+@comment @end table
+@comment @end deftp
+@comment
+@comment @deftp {Data Type} {pdf_status_t (*pdf_pm_set_current_value_fn_t) (void *@var{client_data}, void *@var{duration})}
+@comment
+@comment Callback implemented by a progress monitor.
+@comment
+@comment This callback is called to set the current value of the progress
+@comment monitor duration.
+@comment @table @strong
+@comment @item Parameters
+@comment @table @var
+@comment @item client_data
+@comment User supplied data.
+@comment @item duration
+@comment A time span variable containing the new duration for the progress
+@comment monitor.
+@comment @end table
+@comment @item Returns
+@comment This callback should return @code{PDF_OK} to the caller.
+@comment @end table
+@comment @end deftp
+@comment
+@comment @deftp {Data Type} {pdf_status_t (*pdf_pm_set_text_fn_t) (void *@var{client_data}, void *@var{text})}
+@comment
+@comment Callback implemented by a progress monitor.
+@comment
+@comment This callback is called to set the description of the current status
+@comment of the operation to the progress monitor.
+@comment @table @strong
+@comment @item Parameters
+@comment @table @var
+@comment @item client_data
+@comment User supplied data.
+@comment @item text
+@comment A text variable containing the new description.
+@comment @end table
+@comment @item Returns
+@comment This callback should return @code{PDF_OK} to the caller.
+@comment @end table
+@comment @end deftp
 
 @node UUIDs
 @subsection Universal Unique Identifiers
@@ -3416,444 +3416,23 @@ if (hash)
 @subsection Helper Functions
 
 These are specific functions for adding and getting different types of
-elements (types defined by the library). They guarantee that when an
-element of one of these types is removed from a hash table the correct
-disposal function is called.
-
-NOTE: If you are going to use the element after the table containing
-the element is destroyed, in that case don't use these functions.
-
-
-@deftypefun pdf_bool_t pdf_hash_add_text (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_text_t *@var{value}, pdf_error_t **@var{error})
-
-Adds the @var{value} text with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The text will be owned by the hash table, and disposed when the hash table is destroyed.
-
+elements (types defined by the library). Three different kind of functions are
+provided:
 @table @strong
-@item Parameters
-@table @var
-@item table
-A hash table.
-@item key
-A valid @code{NUL}-terminated string key.
-@item value
-A valid @code{pdf_text_t}.
-@item error
-A @code{pdf_error_t} to report errors or @code{NULL}.
+@item Standard
+The hash table takes ownership of the variables received as argument, and guarantees that the correct disposal function is called when the items are removed or the hash table fully destroyed.
+@item Duplicated
+The hash table duplicates the input variable, and keeps ownership of the heap-allocated duplicated variable.
+@item Static
+The hash table stores the input variable, which should be valid as long as the hash table exists. For example, use this method to add static constant variables in stack.
 @end table
-@item Returns
-@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
-@item Usage example
-@example
-pdf_hash_t *hash;
-pdf_text_t *elem;
-pdf_error_t *error = NULL;
-
-/* Create a new hash */
-hash = pdf_hash_new (NULL);
-if (hash != NULL)
-   @{
-      /* Create the element for the hash */
-      text = pdf_text_new_from_unicode ("abc", 3,
-                                        PDF_TEXT_UTF8,
-                                        &error);
-      if (!text)
-         @{
-            pdf_error_destroy (error);
-         @}
-      else if (pdf_hash_add_text (hash, "a-key", elem, &error))
-         @{
-            pdf_error_destroy (error);
-         @}
-      /* Destroy the hash */
-      pdf_hash_destroy (hash);
-   @}
-@end example
-@end table
-@end deftypefun
-
-@deftypefun {const pdf_text_t *} pdf_hash_get_text (pdf_hash_t *@var{table}, const pdf_char_t *@var{key})
-
-Get a text variable from a hash table.
-
-@table @strong
-@item Parameters
-@table @var
-@item table
-The hash table to get the value from.
-@item key
-A valid @code{NUL}-terminated string key.
-@end table
-@item Returns
-The @code{pdf_text_t} associated with @var{key}.
-@item Usage example
-@example
-pdf_text_t *text;
-
-/* ... insert a text variable into the hash ... */
-
-text = pdf_hash_get_text (table, "a-key");
-
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_bool_t pdf_hash_add_time (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_time_t @var{value}, pdf_error_t **@var{error})
-
-Adds the @var{value} time with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done.
-
-@table @strong
-@item Parameters
-@table @var
-@item table
-A hash table.
-@item key
-A valid @code{NUL}-terminated string key.
-@item value
-A valid @code{pdf_time_t}.
-@item error
-A @code{pdf_error_t} to report errors or @code{NULL}.
-@end table
-@item Returns
-@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
-@item Usage example
-@example
-pdf_hash_t *hash;
-pdf_time_t elem;
-pdf_error_t *error = NULL;
-
-/* Create a new hash */
-hash = pdf_hash_new (NULL);
-if (hash != NULL)
-   @{
-      /* Create the element for the hash */
-      pdf_time_new (&elem);
-
-      if (pdf_hash_add_time (hash, "a-key", elem, &error))
-         @{
-            pdf_error_destroy (error);
-         @}
-      /* Destroy the hash */
-      pdf_hash_destroy (hash);
-   @}
-@end example
-@end table
-@end deftypefun
-
-@deftypefun {const pdf_time_t} pdf_hash_get_time (pdf_hash_t *@var{table}, const pdf_char_t *@var{key})
-
-Get a time variable from a hash table.
-
-@table @strong
-@item Parameters
-@table @var
-@item table
-The hash table to get the value from.
-@item key
-A valid @code{NUL}-terminated string key.
-@end table
-@item Returns
-The @code{pdf_time_t} associated with @var{key}.
-@item Usage example
-@example
-pdf_time_t time;
-
-/* ... insert a time variable into the hash ... */
-
-time = pdf_hash_get_time (table, "a-key");
-
-@end example
-@end table
-@end deftypefun
-
-
-@deftypefun pdf_bool_t pdf_hash_add_list (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_list_t *@var{value}, pdf_error_t **@var{error})
-
-Adds the @var{value} list with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The list will be owned by the hash table, and disposed when the hash table is destroyed.
-
-@table @strong
-@item Parameters
-@table @var
-@item table
-A hash table.
-@item key
-A valid @code{NUL}-terminated string key.
-@item value
-A valid @code{pdf_list_t}.
-@item error
-A @code{pdf_error_t} to report errors or @code{NULL}.
-@end table
-@item Returns
-@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
-@item Usage example
-@example
-pdf_hash_t *hash;
-pdf_list_t *elem;
-pdf_error_t *error = NULL;
-
-/* Create a new hash */
-hash = pdf_hash_new (NULL);
-if (hash != NULL)
-   @{
-      /* Create the element for the hash */
-      elem = pdf_list_new (NULL);
-
-      if (pdf_hash_add_list (hash, "a-key", elem, &error))
-         @{
-            pdf_error_destroy (error);
-         @}
-      /* Destroy the hash */
-      pdf_hash_destroy (hash);
-   @}
-@end example
-@end table
-@end deftypefun
-
-@deftypefun {const pdf_list_t *}pdf_hash_get_list (pdf_hash_t *@var{table}, const pdf_char_t *@var{key})
-
-Get a list variable from a hash table.
-
-@table @strong
-@item Parameters
-@table @var
-@item table
-The hash table to get the value from.
-@item key
-A valid @code{NUL}-terminated string key.
-@end table
-@item Returns
-The @code{pdf_list_t} associated with @var{key}.
-@item Usage example
-@example
-pdf_list_t *list;
-
-/* ... insert a list variable into the hash ... */
-
-list = pdf_hash_get_list (table, "a-key");
-
-@end example
-@end table
-@end deftypefun
-
-
-@deftypefun pdf_bool_t pdf_hash_add_hash (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_hash_t *@var{value}, pdf_error_t **@var{error})
-
-Adds the @var{value} hash with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The added hash table will be owned by the parent hash table, and disposed when the parent hash table is destroyed.
-
-@table @strong
-@item Parameters
-@table @var
-@item table
-A hash table.
-@item key
-A valid @code{NUL}-terminated string key.
-@item value
-A valid @code{pdf_hash_t}.
-@item error
-A @code{pdf_error_t} to report errors or @code{NULL}.
-@end table
-@item Returns
-@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
-@item Usage example
-@example
-pdf_hash_t *hash;
-pdf_hash_t *elem;
-pdf_error_t *error = NULL;
-
-/* Create a new hash */
-hash = pdf_hash_new (NULL);
-if (hash != NULL)
-   @{
-      /* Create the element for the hash */
-      elem = pdf_hash_new (NULL);
-
-      if (pdf_hash_add_hash (hash, "a-key", elem, &error))
-         @{
-            pdf_error_destroy (error);
-         @}
-      /* Destroy the hash */
-      pdf_hash_destroy (hash);
-   @}
-@end example
-@end table
-@end deftypefun
-
-@deftypefun {const pdf_hash_t *}pdf_hash_get_hash (pdf_hash_t *@var{table}, const pdf_char_t *@var{key})
-
-Get a hash variable from a hash table.
-
-@table @strong
-@item Parameters
-@table @var
-@item table
-The hash table to get the value from.
-@item key
-A valid @code{NUL}-terminated string key.
-@end table
-@item Returns
-The @code{pdf_hash_t} associated with @var{key}.
-@item Usage example
-@example
-pdf_hash_t *hash;
-
-/* ... insert a hash variable into the hash ... */
-
-hash = pdf_hash_get_hash (table, "a-key");
-
-@end example
-@end table
-@end deftypefun
-
-
-@deftypefun pdf_bool_t pdf_hash_add_stm (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_stm_t @var{value}, pdf_error_t **@var{error})
-
-Adds the @var{value} stream with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The stream will be owned by the hash table, and disposed when the hash table is destroyed.
-
-@table @strong
-@item Parameters
-@table @var
-@item table
-A hash table.
-@item key
-A valid @code{NUL}-terminated string key.
-@item value
-A valid @code{pdf_stm_t}.
-@item error
-A @code{pdf_error_t} to report errors or @code{NULL}.
-@end table
-@item Returns
-@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
-@item Usage example
-@example
-pdf_hash_t *hash;
-pdf_stm_t elem;
-pdf_char_t *buf;
-pdf_error_t *error = NULL;
-
-/* Create a new hash */
-hash = pdf_hash_new (NULL);
-if (hash != NULL)
-   @{
-      /* Create the element for the hash */
-      buf = pdf_alloc (10);
-      pdf_stm_mem_new (buf,
-                       10,
-                       0, /* Use default cache size */
-                       PDF_STM_READ,
-                       &stm);
-
-      if (pdf_hash_add_stm (hash, "a-key", stm, &error))
-         @{
-            pdf_error_destroy (error);
-         @}
-
-      /* Destroy the hash */
-      pdf_hash_destroy (hash);
-      /* Destroy the memory buffer */
-      pdf_dealloc (buf);
-   @}
-@end example
-@end table
-@end deftypefun
-
-@deftypefun {const pdf_stm_t} pdf_hash_get_stm (pdf_hash_t *@var{table}, const pdf_char_t *@var{key})
-
-Get a stm variable from a hash table.
-
-@table @strong
-@item Parameters
-@table @var
-@item table
-The hash table to get the value from.
-@item key
-A valid @code{NUL}-terminated string key.
-@end table
-@item Returns
-The @code{pdf_stm_t} associated with @var{key}.
-@item Usage example
-@example
-pdf_stm_t stm;
-
-/* ... insert a stm variable into the hash ... */
-
-stm = pdf_hash_get_stm (table, "a-key");
-
-@end example
-@end table
-@end deftypefun
-
-
-
-@deftypefun pdf_bool_t pdf_hash_add_size (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_size_t @var{value}, pdf_error_t **@var{error})
-
-Adds the @var{value} stream with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done.
-
-@table @strong
-@item Parameters
-@table @var
-@item table
-A hash table.
-@item key
-A valid @code{NUL}-terminated string key.
-@item value
-A valid @code{pdf_size_t}.
-@item error
-A @code{pdf_error_t} to report errors or @code{NULL}.
-@end table
-@item Returns
-@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
-@item Usage example
-@example
-pdf_hash_t *hash;
-pdf_error_t *error = NULL;
-
-/* Create a new hash */
-hash = pdf_hash_new (NULL);
-if (hash != NULL)
-   @{
-      if (pdf_hash_add_size (hash, "a-key", (pdf_size_t)5, &error))
-         @{
-            pdf_error_destroy (error);
-         @}
-
-      /* Destroy the hash */
-      pdf_hash_destroy (hash);
-      /* Destroy the memory buffer */
-      pdf_dealloc (buf);
-   @}
-@end example
-@end table
-@end deftypefun
-
-@deftypefun {const pdf_size_t} pdf_hash_get_size (pdf_hash_t *@var{table}, const pdf_char_t *@var{key})
-
-Get a size variable from a hash table.
-
-@table @strong
-@item Parameters
-@table @var
-@item table
-The hash table to get the value from.
-@item key
-A valid @code{NUL}-terminated string key.
-@end table
-@item Returns
-The @code{pdf_size_t} associated with @var{key}.
-@item Usage example
-@example
-pdf_size_t size;
-
-/* ... insert a size variable into the hash ... */
-
-size = pdf_hash_get_size (table, "a-key");
-
-@end example
-@end table
-@end deftypefun
 
 
 @deftypefun pdf_bool_t pdf_hash_add_string (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_char_t *@var{value}, pdf_error_t **@var{error})
 
-Adds the heap-allocated @var{value} string with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The string will be owned by the hash table, and disposed when the hash table is destroyed.
+Adds the @var{value} string with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The string will be owned by the hash table, and disposed when the hash table is destroyed.
+
+Note: @var{value} must have been heap-allocated.
 
 @table @strong
 @item Parameters
@@ -3878,7 +3457,10 @@ pdf_error_t *error = NULL;
 hash = pdf_hash_new (NULL);
 if (hash != NULL)
    @{
-      if (pdf_hash_add_string (hash, "a-key", strdup ("a-value"), &error))
+      if (pdf_hash_add_string (hash,
+                               "a-key",
+                               strdup ("a-value"),
+                               &error))
          @{
             pdf_error_destroy (error);
          @}
@@ -3917,7 +3499,10 @@ pdf_error_t *error = NULL;
 hash = pdf_hash_new (NULL);
 if (hash != NULL)
    @{
-      if (pdf_hash_add_duplicated_string (hash, "a-key", "a-value", &error))
+      if (pdf_hash_add_duplicated_string (hash,
+                                          "a-key",
+                                          "a-value",
+                                          &error))
          @{
             pdf_error_destroy (error);
          @}
@@ -3995,6 +3580,620 @@ str = pdf_hash_get_string (table, "a-key");
 @end table
 @end deftypefun
 
+@deftypefun pdf_bool_t pdf_hash_add_text (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_text_t *@var{value}, pdf_error_t **@var{error})
+
+Adds the @var{value} text with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The text will be owned by the hash table, and disposed when the hash table is destroyed.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@item value
+A valid @code{pdf_text_t}.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@end table
+@item Returns
+@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
+@item Usage example
+@example
+pdf_hash_t *hash;
+pdf_text_t *elem;
+pdf_error_t *error = NULL;
+
+/* Create a new hash */
+hash = pdf_hash_new (NULL);
+if (hash != NULL)
+   @{
+      /* Create the element for the hash */
+      elem = pdf_text_new_from_unicode ("abc", 3,
+                                        PDF_TEXT_UTF8,
+                                        &error);
+      if (!elem)
+         @{
+            pdf_error_destroy (error);
+         @}
+      else if (!pdf_hash_add_text (hash,
+                                   "a-key",
+                                   elem,
+                                   &error))
+         @{
+            pdf_text_destroy (&elem);
+            pdf_error_destroy (error);
+         @}
+      else
+         @{
+            /* The text is now owned by the hash */
+         @}
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_hash_add_duplicated_text (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_text_t *@var{value}, pdf_error_t **@var{error})
+
+Duplicates the @var{value} text in heap and adds it with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The internally duplicated text will be owned by the hash table, and disposed when the hash table is destroyed.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@item value
+A valid @code{pdf_text_t}.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@end table
+@item Returns
+@code{PDF_TRUE} if correctly duplicated and added, @code{PDF_FALSE} otherwise.
+@item Usage example
+@example
+pdf_hash_t *hash;
+pdf_text_t *elem;
+pdf_error_t *error = NULL;
+
+/* Create a new hash */
+hash = pdf_hash_new (NULL);
+if (hash != NULL)
+   @{
+      /* Create the element */
+      elem = pdf_text_new_from_unicode ("abc", 3,
+                                        PDF_TEXT_UTF8,
+                                        &error);
+      if (!elem)
+         @{
+            pdf_error_destroy (error);
+         @}
+      else if (pdf_hash_add_duplicated_text (hash,
+                                             "a-key",
+                                             elem,
+                                             &error))
+         @{
+            pdf_error_destroy (error);
+         @}
+
+      /* The hash has a duplicated text,
+       * we should destroy the original text */
+      pdf_text_destroy (elem);
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun {const pdf_text_t *} pdf_hash_get_text (pdf_hash_t *@var{table}, const pdf_char_t *@var{key})
+
+Get a text variable from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+The hash table to get the value from.
+@item key
+A valid @code{NUL}-terminated string key.
+@end table
+@item Returns
+The @code{pdf_text_t} associated with @var{key}.
+@item Usage example
+@example
+pdf_text_t *text;
+
+/* ... insert a text variable into the hash ... */
+
+text = pdf_hash_get_text (table, "a-key");
+
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_hash_add_time (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_time_t *@var{value}, pdf_error_t **@var{error})
+
+Adds the @var{value} time with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The time will be owned by the hash table, and disposed when the hash table is destroyed.
+
+Note: @var{value} must have been created with pdf_time_new(), this is, available in heap.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@item value
+A valid @code{pdf_time_t}.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@end table
+@item Returns
+@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
+@item Usage example
+@example
+pdf_hash_t *hash;
+pdf_time_t *elem;
+pdf_error_t *error = NULL;
+
+/* Create a new hash */
+hash = pdf_hash_new (NULL);
+if (hash != NULL)
+   @{
+      /* Create the element for the hash */
+      elem = pdf_time_new (&error);
+      if (!elem)
+         @{
+            pdf_error_destroy (&error);
+         @}
+      else if (pdf_hash_add_time (hash,
+                                  "a-key",
+                                  elem,
+                                  &error))
+         @{
+            pdf_time_destroy (&elem);
+            pdf_error_destroy (error);
+         @}
+      else
+         @{
+            /* The time is now owned by the hash */
+         @}
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_hash_add_duplicated_time (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_time_t *@var{value}, pdf_error_t **@var{error})
+
+Duplicates the @var{value} time in heap and adds it with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The internally duplicated time will be owned by the hash table, and disposed when the hash table is destroyed.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@item value
+A valid @code{pdf_time_t}.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@end table
+@item Returns
+@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
+@item Usage example
+@example
+pdf_hash_t *hash;
+pdf_time_t *elem;
+pdf_error_t *error = NULL;
+
+/* Create a new hash */
+hash = pdf_hash_new (NULL);
+if (hash != NULL)
+   @{
+      /* Create the element */
+      elem = pdf_time_new (&error);
+      if (!elem)
+         @{
+            pdf_error_destroy (&error);
+         @}
+      else if (pdf_hash_add_duplicated_time (hash,
+                                             "a-key",
+                                             elem,
+                                             &error))
+         @{
+            pdf_error_destroy (error);
+         @}
+
+      /* The hash has a duplicated time,
+       * we should destroy the original time */
+      pdf_time_destroy (elem);
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_hash_add_static_time (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_time_t *@var{value}, pdf_error_t **@var{error})
+
+Adds the static and constant @var{value} time with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. Only use this method if @var{value} will always exist. It can be used with statically allocated time objects in the main program, but not with statically allocated time objects in dynamically loadable modules (as they may be unloaded during the program execution).
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@item value
+A valid static and constant @code{pdf_time_t}.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@end table
+@item Returns
+@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
+@item Usage example
+@example
+pdf_hash_t *hash;
+static pdf_time_t elem;
+pdf_error_t *error = NULL;
+
+/* Create a new hash */
+hash = pdf_hash_new (NULL);
+if (hash != NULL)
+   @{
+      /* Initialize time object in stack */
+      pdf_time_init (&elem);
+
+      if (pdf_hash_add_static_time (hash,
+                                    "a-key",
+                                    elem,
+                                    &error))
+         @{
+            pdf_error_destroy (error);
+         @}
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun {const pdf_time_t} pdf_hash_get_time (pdf_hash_t *@var{table}, const pdf_char_t *@var{key})
+
+Get a time variable from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+The hash table to get the value from.
+@item key
+A valid @code{NUL}-terminated string key.
+@end table
+@item Returns
+The @code{pdf_time_t} associated with @var{key}.
+@item Usage example
+@example
+pdf_time_t time;
+
+/* ... insert a time variable into the hash ... */
+
+time = pdf_hash_get_time (table, "a-key");
+
+@end example
+@end table
+@end deftypefun
+
+
+@deftypefun pdf_bool_t pdf_hash_add_list (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_list_t *@var{value}, pdf_error_t **@var{error})
+
+Adds the @var{value} list with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The list will be owned by the hash table, and disposed when the hash table is destroyed.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@item value
+A valid @code{pdf_list_t}.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@end table
+@item Returns
+@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
+@item Usage example
+@example
+pdf_hash_t *hash;
+pdf_list_t *elem;
+pdf_error_t *error = NULL;
+
+/* Create a new hash */
+hash = pdf_hash_new (NULL);
+if (hash != NULL)
+   @{
+      /* Create the element for the hash */
+      elem = pdf_list_new (NULL);
+
+      if (pdf_hash_add_list (hash,
+                             "a-key",
+                             elem,
+                             &error))
+         @{
+            pdf_error_destroy (error);
+         @}
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun {const pdf_list_t *}pdf_hash_get_list (pdf_hash_t *@var{table}, const pdf_char_t *@var{key})
+
+Get a list variable from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+The hash table to get the value from.
+@item key
+A valid @code{NUL}-terminated string key.
+@end table
+@item Returns
+The @code{pdf_list_t} associated with @var{key}.
+@item Usage example
+@example
+pdf_list_t *list;
+
+/* ... insert a list variable into the hash ... */
+
+list = pdf_hash_get_list (table, "a-key");
+
+@end example
+@end table
+@end deftypefun
+
+
+@deftypefun pdf_bool_t pdf_hash_add_hash (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_hash_t *@var{value}, pdf_error_t **@var{error})
+
+Adds the @var{value} hash with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The added hash table will be owned by the parent hash table, and disposed when the parent hash table is destroyed.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@item value
+A valid @code{pdf_hash_t}.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@end table
+@item Returns
+@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
+@item Usage example
+@example
+pdf_hash_t *hash;
+pdf_hash_t *elem;
+pdf_error_t *error = NULL;
+
+/* Create a new hash */
+hash = pdf_hash_new (NULL);
+if (hash != NULL)
+   @{
+      /* Create the element for the hash */
+      elem = pdf_hash_new (NULL);
+
+      if (pdf_hash_add_hash (hash,
+                             "a-key",
+                             elem,
+                             &error))
+         @{
+            pdf_error_destroy (error);
+         @}
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun {const pdf_hash_t *}pdf_hash_get_hash (pdf_hash_t *@var{table}, const pdf_char_t *@var{key})
+
+Get a hash variable from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+The hash table to get the value from.
+@item key
+A valid @code{NUL}-terminated string key.
+@end table
+@item Returns
+The @code{pdf_hash_t} associated with @var{key}.
+@item Usage example
+@example
+pdf_hash_t *hash;
+
+/* ... insert a hash variable into the hash ... */
+
+hash = pdf_hash_get_hash (table, "a-key");
+
+@end example
+@end table
+@end deftypefun
+
+
+@deftypefun pdf_bool_t pdf_hash_add_stm (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_stm_t @var{value}, pdf_error_t **@var{error})
+
+Adds the @var{value} stream with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The stream will be owned by the hash table, and disposed when the hash table is destroyed.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@item value
+A valid @code{pdf_stm_t}.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@end table
+@item Returns
+@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
+@item Usage example
+@example
+pdf_hash_t *hash;
+pdf_stm_t elem;
+pdf_char_t *buf;
+pdf_error_t *error = NULL;
+
+/* Create a new hash */
+hash = pdf_hash_new (NULL);
+if (hash != NULL)
+   @{
+      /* Create the element for the hash */
+      buf = pdf_alloc (10);
+      pdf_stm_mem_new (buf,
+                       10,
+                       0, /* Use default cache size */
+                       PDF_STM_READ,
+                       &stm);
+
+      if (pdf_hash_add_stm (hash,
+                            "a-key",
+                            stm,
+                            &error))
+         @{
+            pdf_error_destroy (error);
+         @}
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+      /* Destroy the memory buffer */
+      pdf_dealloc (buf);
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun {const pdf_stm_t} pdf_hash_get_stm (pdf_hash_t *@var{table}, const pdf_char_t *@var{key})
+
+Get a stm variable from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+The hash table to get the value from.
+@item key
+A valid @code{NUL}-terminated string key.
+@end table
+@item Returns
+The @code{pdf_stm_t} associated with @var{key}.
+@item Usage example
+@example
+pdf_stm_t stm;
+
+/* ... insert a stm variable into the hash ... */
+
+stm = pdf_hash_get_stm (table, "a-key");
+
+@end example
+@end table
+@end deftypefun
+
+
+
+@deftypefun pdf_bool_t pdf_hash_add_size (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_size_t @var{value}, pdf_error_t **@var{error})
+
+Adds the @var{value} stream with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@item value
+A valid @code{pdf_size_t}.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@end table
+@item Returns
+@code{PDF_TRUE} if correctly added, @code{PDF_FALSE} otherwise.
+@item Usage example
+@example
+pdf_hash_t *hash;
+pdf_error_t *error = NULL;
+
+/* Create a new hash */
+hash = pdf_hash_new (NULL);
+if (hash != NULL)
+   @{
+      if (pdf_hash_add_size (hash,
+                             "a-key",
+                             (pdf_size_t)5,
+                             &error))
+         @{
+            pdf_error_destroy (error);
+         @}
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+      /* Destroy the memory buffer */
+      pdf_dealloc (buf);
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun {const pdf_size_t} pdf_hash_get_size (pdf_hash_t *@var{table}, const pdf_char_t *@var{key})
+
+Get a size variable from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+The hash table to get the value from.
+@item key
+A valid @code{NUL}-terminated string key.
+@end table
+@item Returns
+The @code{pdf_size_t} associated with @var{key}.
+@item Usage example
+@example
+pdf_size_t size;
+
+/* ... insert a size variable into the hash ... */
+
+size = pdf_hash_get_size (table, "a-key");
+
+@end example
+@end table
+@end deftypefun
 
 @node Filtered Streams
 @section Filtered Streams
@@ -5547,6 +5746,10 @@ pdf_error_t *error = NULL;
 pdf_text_t *text;
 
 text = pdf_text_new (&error);
+if (!text)
+   @{
+      /* Error! */
+   @}
 @end example
 @end table
 @end deftypefun
@@ -6659,9 +6862,6 @@ best = pdf_text_get_best_encoding (text, "UTF-8");
 * Time Comparison::
 * Time Printing and Parsing::
 * Getting the Current Time::
-* Time Span Creation and Destruction::
-* Managing Time Span Values::
-* Time Span Comparison::
 * Calendar Spans Management::
 * Platform-specific functions::
 @end menu
@@ -6671,17 +6871,13 @@ best = pdf_text_get_best_encoding (text, "UTF-8");
 
 @deftp {Data Type} pdf_time_t
 A variable of type @code{pdf_time_t} contains information about a
-particular date and time.
+particular date and time, including GMT offset information.
 
-Note that leap seconds are not considered.
+The size of the @code{pdf_time_t} variable is known, and therefore these variables
+can be created and initialized in stack.
 @end deftp
 
-@deftp {Data Type} pdf_time_span_t
-A variable of type @code{pdf_time_span_t} represents a span of time.
-
-@end deftp
-
-@deftp {Data Type} struct pdf_time_cal_s
+@deftp {Data Type} {struct pdf_time_cal_s}
 This structure holds information about a specific time represented in
 calendar items: years, months, days, day of week, hours, minutes,
 seconds and the relative offset with GMT.
@@ -6691,32 +6887,33 @@ offset is zero, the calendar fields come in UTC; if not zero, the calendar
 fields come in a given local time.
 
 @table @code
-@item pdf_i32_t year
-A year number. Negative values may be supported in some systems.
-@item pdf_u32_t month
+@item pdf_u16_t year
+A year number.
+@item pdf_u8_t month
 A month number. The valid range is @code{1..12}.
-@item pdf_u32_t day
+@item pdf_u8_t day
 A day number. The valid range is @code{1..31}.
-@item pdf_u32_t dow
+@item pdf_u8_t dow
 Day of the week. The valid range is @code{1..7} (Monday to Sunday).
-@item pdf_u32_t hour
+@item pdf_u8_t hour
 An hour. The valid range is @code{0..23}.
-@item pdf_u32_t minute
+@item pdf_u8_t minute
 A minute. The valid range is @code{0..59}.
-@item pdf_u32_t sec
+@item pdf_u8_t sec
 A second. The valid range is @code{0..59}.
 @item pdf_i32_t gmt_offset
 A GMT offset, in seconds west of GMT.
 @end table
 @end deftp
 
-@deftp {Data Type} struct pdf_time_cal_span_s
+@deftp {Data Type} {struct pdf_time_cal_span_s}
 This structure holds information about a time span represented in
 calendar items: years, months, days, hours, minutes and seconds.
 
 @table @code
-@item pdf_u32_t years
-@item pdf_u32_t months
+@item pdf_bool_t sign
+@item pdf_u16_t years
+@item pdf_u16_t months
 @item pdf_u32_t days
 @item pdf_u32_t hours
 @item pdf_u32_t minutes
@@ -6724,154 +6921,229 @@ calendar items: years, months, days, hours, minutes and seconds.
 @end table
 @end deftp
 
-@deftp {Data Type} {enum pdf_time_format_e}
-Enumeration containing the several supported time formats used to
+@deftp {Data Type} {enum pdf_time_string_format_e}
+Enumeration containing the several supported formats used to
 convert a time to a string representation or to parse a time from a
 string representation.
 
 @table @code
-@item PDF_TIME_FORMAT_PDF
+@item PDF_TIME_STRING_FORMAT_PDF
 PDF date strings.
-@item PDF_TIME_FORMAT_ISO_8601
+@item PDF_TIME_STRING_FORMAT_ISO_8601
 ISO 8601 date and time strings.
-@item PDF_TIME_FORMAT_UTC_ASN1
+@item PDF_TIME_STRING_FORMAT_UTC_ASN1
 UTC ASN1 date.
-@item PDF_TIME_FORMAT_GENERALIZED_ASN1
+@item PDF_TIME_STRING_FORMAT_GENERALIZED_ASN1
 Generalized ASN1 date.
+@end table
+@end deftp
+
+@deftp {Data Type} {enum pdf_time_string_options_e}
+Enumeration containing the options available when converting times to
+strings or strings to times.
+
+@table @code
+@item PDF_TIME_STRING_NO_OPTION
+No option.
+@item PDF_TIME_STRING_TRAILING_APOSTROPHE
+PDF-formatted time strings may (PDF reference 1.7) or may not (ISO 32000) include a trailing apostrophe.
 @end table
 @end deftp
 
 @node Time Creation and Destruction
 @subsection Time Creation and Destruction
 
-@deftypefun pdf_status_t pdf_time_new (pdf_time_t *@var{time})
-Create a new time and set it to the Epoch: Jan 1 1970-01-01 00:00:00 UTC
+@deftypefun pdf_time_t *pdf_time_new (pdf_error_t *@var{error})
+Creates a heap-allocated time object and sets it to the Epoch: Jan 1 1970-01-01 00:00:00 UTC
 
 @table @strong
 @item Parameters
 @table @var
-@item time
-The time object that will contain the newly created instance.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to create the time object.
+@item PDF_EBADCONTEXT
+The global context of the time module was not initialized.
+@end table
 @end table
 @item Returns
-A pdf status value:
-@table @code
-@item PDF_OK
-The time object was successfully instantiated.
-@item PDF_ENOMEM
-Not enough memory to perform the requested operation.
-@end table
-@item Usage example
+A newly created @code{pdf_time_t}, or @code{NULL} if any error happened.
+@item Usage Example
 @example
-pdf_time_t mytime;
+pdf_error_t *error = NULL;
+pdf_time_t *mytime;
 
-if (pdf_time_new (&mytime) != PDF_OK)
+mytime = pdf_time_new (&error);
+if (!mytime)
    @{
-     /* Error */
+      /* Error! */
    @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_time_t pdf_time_dup (const pdf_time_t @var{orig})
-Dup a new time variable from a given one, allocating memory.
+
+@deftypefun pdf_time_t *pdf_time_dup (const pdf_time_t *@var{time_var}, pdf_error_t **@var{error})
+Duplicates in heap a time variable.
 
 @table @strong
 @item Parameters
 
 @table @var
-@item orig
-The time variable to be dupped. Should be a properly created time
-variable.
+@item time_var
+A time variable.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to create the text object.
+@item PDF_EBADCONTEXT
+The global context of the text module was not initialized.
+@end table
 @end table
 @item Returns
-A new time variable containing a copy of @var{orig} values.
-@code{NULL} if there is an error.
+A newly heap-allocated @code{pdf_time_t}, or @code{NULL} if any error happened.
 @item Usage example
 @example
-pdf_time_t orig;
-pdf_time_t new_time;
+pdf_time_t *orig;
+pdf_time_t *new_time;
 
-orig = pdf_time_new ();
-new_time = pdf_time_dup (orig);
-
-if (new_time == NULL)
-@{
-  /* Error */
-@}
+orig = pdf_time_new (NULL);
+if (orig)
+  @{
+      new_time = pdf_time_dup (orig, NULL);
+      if (!new_time)
+         @{
+           /* Error */
+         @}
+   @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_destroy (pdf_time_t @var{time_var})
-Destroy @var{time_var} and free all used memory.
+
+@deftypefun void pdf_time_destroy (pdf_time_t *@var{time_var})
+Destroy the heap-allocated @var{time_var} and free all used memory. @var{time_var} should have been previously allocated with @code{pdf_time_new()} or @code{pdf_time_dup()}.
 
 @table @strong
 @item Parameters
 @table @var
 @item time_var
-The time variable to be destroyed. Should be a properly created time
-variable.
+The heap-allocated time variable to be destroyed.
 @end table
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
+@item Usage example
+@example
+pdf_time_t *mytime;
+
+mytime = pdf_time_new (NULL);
+if (mytime)
+   pdf_time_destroy (mytime);
+@end example
+@end table
+@end deftypefun
+
+
+@deftypefun void pdf_time_init (pdf_time_t *@var{time_var})
+Initializes a preallocated time object and sets it to the Epoch: Jan 1 1970-01-01 00:00:00 UTC
+
+Use this method to initialize time objects in the stack.
+@table @strong
+@item Parameters
+@table @var
+@item time_var
+The time object to be initialized.
+@end table
+@item Usage Example
+@example
+pdf_time_t mytime;
+
+pdf_time_init (&mytime);
+@end example
+@end table
+@end deftypefun
+
+
+@deftypefun void pdf_time_init_dup (pdf_time_t *@var{time_var}, const pdf_time_t *@var{time_var_orig}, pdf_error_t **@var{error})
+Initializes the preallocated @var{time_var} object and sets it to the same time as @var{time_var_orig}.
+
+Use this method to initialize time objects in the stack.
+@table @strong
+@item Parameters
+
+@table @var
+@item time_var
+A time variable to initialize.
+@item time_var_orig
+A time variable.
+@end table
+@item Usage example
+@example
+pdf_time_t orig;
+pdf_time_t new_time;
+
+pdf_time_init (&orig);
+pdf_time_init_dup (&new_time, &orig);
+@end example
+@end table
+@end deftypefun
+
+
+@deftypefun void pdf_time_deinit (pdf_time_t *@var{time_var})
+Deinitializes @var{time_var}, which should have been previously initialized with @code{pdf_time_init()} or @code{pdf_time_init_dup()}.
+
+@table @strong
+@item Parameters
+@table @var
+@item time_var
+The time variable to be deinitialized.
 @end table
 @item Usage example
 @example
 pdf_time_t mytime;
 
-mytime = pdf_time_new ();
-pdf_time_destroy (mytime);
+pdf_time_init (&mytime);
+pdf_time_deinit (&mytime);
 @end example
 @end table
 @end deftypefun
 
+
 @node Managing Time Values
 @subsection Managing Time Values
 
-@deftypefun pdf_status_t pdf_time_copy (const pdf_time_t @var{orig}, pdf_time_t @var{copy})
-Copies the data from @var{orig} to @var{copy}.
+@deftypefun void pdf_time_copy (const pdf_time_t *@var{copy}, pdf_time_t *@var{orig})
+Copies @var{orig} into @var{copy}.
 
 @table @strong
 @item Parameters
 @table @var
-@item orig
-The time whose data is to be copied. Should be a properly created time variable.
 @item copy
 The time to receive the data from @var{orig}. Should be a properly
 created time variable.
 
-Note that any previous data is destroyed.
-@end table
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
+Note that any previous data in @var{copy} is destroyed.
+@item orig
+The time whose data is to be copied. Should be a properly created time variable.
 @end table
 @item Usage example
 @example
 pdf_time_t orig;
 pdf_time_t copy;
 
-orig = pdf_time_new ();
-copy = pdf_time_new ();
+pdf_time_init (&orig);
+pdf_time_init (&copy);
 
-if (!pdf_time_copy (orig, copy))
-@{
-  /* Error */
-@}
+pdf_time_copy (&copy, &orig);
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_clear (pdf_time_t @var{time_var})
-Reset @var{time_var} to the newly created state. After this call
+@deftypefun void pdf_time_clear (pdf_time_t *@var{time_var})
+Reset @var{time_var} to the initialized state. After this call
 @var{time_var} will contain the same date as if returned by
-@code{pdf_time_new}.
+@code{pdf_time_new()} or @code{pdf_time_init()}.
 
 @table @strong
 @item Parameters
@@ -6879,89 +7151,68 @@ Reset @var{time_var} to the newly created state. After this call
 @item time_var
 The time variable to clear. Should be a properly create time variable.
 @end table
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
-@end table
 @item Usage example
 @example
 pdf_time_t mytime;
 
-mytime = pdf_time_new ();
+pdf_time_init (&mytime);
 
 /* ...manipulate `mytime'... */
 
-pdf_time_clear (mytime);
+pdf_time_clear (&mytime);
 @end example
 @end table
 @end deftypefun
 
 
-@deftypefun pdf_status_t pdf_time_set_from_u32 (pdf_time_t @var{time_var}, pdf_u32_t @var{seconds})
+@deftypefun void pdf_time_set_utc (pdf_time_t *@var{time_var}, pdf_i64_t @var{utc_seconds})
 This function will initialize @var{time_var} to the given Unix time (seconds since January 1st 1970) in UTC timescale.
-The time is represented as a 32-bit unsigned integer.
 
 @table @strong
 @item Parameters
 @table @var
 @item time_var
 The time variable to set. Should be a properly create time variable.
-@item seconds
-Seconds since January 1st 1970, 32-bit unsigned value.
-@end table
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
+@item utc_seconds
+Seconds since January 1st 1970.
 @end table
 @item Usage example
 @example
 pdf_time_t mytime;
 
-mytime = pdf_time_new ();
-
-pdf_time_set_from_u32(mytime, 1217009657);
-
+pdf_time_init (&mytime);
+pdf_time_set_utc (&mytime, 1234567890);
+pdf_time_deinit (&mytime);
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_set_from_i64 (pdf_time_t @var{time_var}, pdf_i64_t @var{seconds})
-This function will initialize @var{time_var} to the given Unix time (seconds since January 1st 1970) in UTC timescale.
-The time is represented as a pdf_i64_t integer.
+@deftypefun void pdf_time_set_local (pdf_time_t *@var{time_var}, pdf_i64_t @var{local_seconds}, pdf_i32_t @var{local_gmt_offset})
+This function will initialize @var{time_var} to the given Unix time (seconds since January 1st 1970) in a local timescale represented by the GMT offset given in @var{local_gmt_offset}.
 
 @table @strong
 @item Parameters
 @table @var
 @item time_var
 The time variable to set. Should be a properly create time variable.
-@item seconds
-Seconds since January 1st 1970, pdf_i64_t variable.
-@end table
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
+@item local_seconds
+Seconds since January 1st 1970.
+@item local_gmt_offset
+Seconds west of GMT.
 @end table
 @item Usage example
 @example
 pdf_time_t mytime;
-pdf_i64_t  epoch = pdf_i64_new(0,1217009657);
-mytime = pdf_time_new ();
 
-pdf_time_set_from_i64(mytime, epoch);
-
+pdf_time_init (&mytime);
+pdf_time_set_local (&mytime, 1234567890, -3600);
+pdf_time_deinit (&mytime);
 @end example
 @end table
 @end deftypefun
 
 
-
-@deftypefun pdf_status_t pdf_time_add_cal_span (pdf_time_t @var{time_var}, const struct pdf_time_cal_span_s *@var{p_cal_span})
+@deftypefun void pdf_time_add_cal_span (pdf_time_t *@var{time_var}, const struct pdf_time_cal_span_s *@var{p_cal_span})
 Add the time span represented by the calendar span under the address in @var{p_cal_span} to @var{time_var}.
 
 @table @strong
@@ -6973,43 +7224,29 @@ A properly created time variable.
 @item p_cal_span
 A pointer to a calendar span with valid values.
 @end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@item PDF_EBADDATA
-The data in *@var{p_cal_span} is invalid.
-@end table
-
 @item Usage example
 @example
 pdf_time_t mytime;
-struct pdf_time_cal_span_s cal_span;
+struct pdf_time_cal_span_s cal_span = @{ 0 @};
 
-mytime = pdf_time_new (); /* Initialized to Jan 1 1970-01-01 00:00:00 */
+/* Initialized to Jan 1 1970-01-01 00:00:00 */
+pdf_time_init (&mytime);
 
 cal_span.year = 30;
 cal_span.month = 7;
 cal_span.day = 20;
 cal_span.hour = 21;
-cal_span.minute = 0;
-cal_span.second = 0;
 
-if (pdf_time_add_cal_span (mytime, &cal_span) == PDF_EBADDATA)
-@{
-  /* Bad data in `cal_span' */
-@}
-else
-@{
-  /* `time' now contains Aug 21 2000-08-21 21:00:00 */
-@}
+pdf_time_add_cal_span (&mytime, &cal_span);
+
+/* `time' now contains Aug 21 2000-08-21 21:00:00 */
+
+pdf_time_deinit (&time);
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_sub_cal_span (pdf_time_t @var{time_var}, const struct pdf_time_cal_span_s *@var{p_cal_span})
+@deftypefun void pdf_time_sub_cal_span (pdf_time_t *@var{time_var}, const struct pdf_time_cal_span_s *@var{p_cal_span})
 Subtract the time span represented by the calendar span under the address in @var{p_cal_span} to @var{time_var}.
 
 @table @strong
@@ -7021,54 +7258,35 @@ A properly created time variable.
 @item p_cal_span
 A pointer to a calendar span with valid values.
 @end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@item PDF_EBADDATA
-The data in @var{cal_span} is invalid.
-@end table
-
 @item Usage example
 @example
 pdf_time_t mytime;
-struct pdf_time_cal_span_s cal_span;
+struct pdf_time_cal_span_s cal_span = @{ 0 @};
 
-mytime = pdf_time_new (); /* Initialized to Jan 1 1970-01-01 00:00:00 */
+/* Initialized to Jan 1 1970-01-01 00:00:00 */
+pdf_time_init (&mytime);
 
 cal_span.year = 30;
 cal_span.month = 7;
 cal_span.day = 20;
 cal_span.hour = 21;
-cal_span.minute = 0;
-cal_span.second = 0;
 
-if (pdf_time_add_cal_span (mytime, &cal_span) == PDF_EBADDATA)
-@{
-  /* Bad data in `cal_span' */
-@}
-else
-@{
-  /* `time' now contains Aug 21 2000-08-21 21:00:00 */
-@}
+pdf_time_add_cal_span (&mytime, &cal_span);
 
-if (pdf_time_sub_cal_span (mytime, cal_span) == PDF_EBADDATA)
-@{
-  /* Bad data in `cal_span' */
-@}
-else
-@{
-  /* `time' now contains Jan 1 1970-01-01 00:00:00 */
-@}
+/* `time' now contains Aug 21 2000-08-21 21:00:00 */
+
+pdf_time_sub_cal_span (&mytime, &cal_span);
+
+/* `time' now contains Jan 1 1970-01-01 00:00:00 */
+
+pdf_time_deinit (&mytime);
 @end example
 @end table
 @end deftypefun
 
 
-@deftypefun pdf_status_t pdf_time_add_span (pdf_time_t @var{time_var}, const pdf_time_span_t @var{time_span})
-Add the time span contained in @var{time_span} to @var{time_var}.
+@deftypefun void pdf_time_add_span (pdf_time_t *@var{time_var}, pdf_i32_t @var{time_span})
+Add @var{time_span} seconds to @var{time_var}.
 
 @table @strong
 @item Parameters
@@ -7077,32 +7295,23 @@ Add the time span contained in @var{time_span} to @var{time_var}.
 @item time_var
 A properly created time variable.
 @item time_span
-A properly created time span.
+Number of seconds to add to the time variable.
 @end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@end table
-
 @item Usage example
 @example
-pdf_time_t mytime;
-pdf_time_span_t myspan;
+pdf_time_t *mytime;
 
-mytime = pdf_time_new ();
+mytime = pdf_time_new (NULL);
 
-/* ...create and initialize `myspan'... */
+pdf_time_add_span (mytime, 86400);
 
-pdf_time_add_span (mytime, myspan);
+pdf_time_destroy (mytime);
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_sub_span (pdf_time_t @var{time_var}, const pdf_time_span_t @var{time_span})
-Subtract the time span contained in @var{time_span} to @var{time_var}.
+@deftypefun void pdf_time_sub_span (pdf_time_t *@var{time_var}, pdf_i32_t @var{time_span})
+Subtract @var{time_span} seconds from @var{time_var}.
 
 @table @strong
 @item Parameters
@@ -7111,32 +7320,25 @@ Subtract the time span contained in @var{time_span} to @var{time_var}.
 @item time_var
 A properly created time variable.
 @item time_span
-A properly created time span.
+Number of seconds to substract from the time variable.
 @end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@end table
-
 @item Usage example
 @example
 pdf_time_t mytime;
 pdf_time_span_t myspan;
 
-mytime = pdf_time_new ();
+mytime = pdf_time_new (NULL);
 
-/* ...create and initialize `myspan'... */
+pdf_time_add_span (mytime, 86400);
+pdf_time_sub_span (mytime, 86400);
 
-pdf_time_sub_span (mytime, myspan);
+pdf_time_destroy (mytime);
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_get_local_cal (const pdf_time_t @var{time_var}, struct pdf_time_cal_s *@var{p_local_cal})
-Fill @var{p_local_cal} with the local calendar time of @var{time_var}.
+@deftypefun void pdf_time_get_local_cal (const pdf_time_t *@var{time_var}, struct pdf_time_cal_s *@var{local_cal})
+Fill @var{local_cal} with the local calendar time of @var{time_var}.
 
 @table @strong
 @item Parameters
@@ -7144,16 +7346,9 @@ Fill @var{p_local_cal} with the local calendar time of @var{time_var}.
 @table @var
 @item time_var
 A properly created time variable.
-@item p_local_cal
+@item local_cal
 A pointer to the time calendar structure that will hold the local time
 of @var{time_var}.
-@end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
 @end table
 
 @item Usage example
@@ -7161,14 +7356,14 @@ The operation successfully finished.
 pdf_time_t mytime;
 struct pdf_time_cal_s cal;
 
-/* ...create and manipulate `mytime'... */
-
-pdf_time_get_local_cal (mytime, &cal);
+pdf_time_init (&mytime);
+pdf_time_get_local_cal (&mytime, &cal);
+pdf_time_deinit (&mytime);
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_get_utc_cal (const pdf_time_t @var{time_var}, struct pdf_time_cal_s *@var{p_utc_cal})
+@deftypefun void pdf_time_get_utc_cal (const pdf_time_t *@var{time_var}, struct pdf_time_cal_s *@var{utc_cal})
 Get the UTC calendar time of a given time variable.
 
 @table @strong
@@ -7180,97 +7375,77 @@ A properly created time variable.
 @item p_cal_time
 A pointer to the calendar time structure that will hold the UTC time of @var{time_var}.
 @end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@end table
-
 @item Usage example
 @example
 pdf_time_t mytime;
 sruct pdf_time_cal_s cal_time;
 
-/* ...create and manipulate `mytime'... */
+pdf_time_init (&mytime);
 
-pdf_time_get_utc_cal (mytime, &cal_time);
+pdf_time_get_utc_cal (&mytime, &cal_time);
+
+pdf_time_deinit (&mytime);
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_from_cal (pdf_time_t @var{time_var}, const struct pdf_time_cal_s *@var{p_cal_time})
-Set the value of a time variable to a given calendar time.
+@deftypefun void pdf_time_set_from_cal (pdf_time_t *@var{time_var}, const struct pdf_time_cal_s *@var{cal})
+Set the value of a time variable from a given calendar time.
 
 @table @strong
 @item Parameters
 
 @table @var
 @item time_var
-A properl created time variable.
-@item p_cal_time
+A properly created time variable.
+@item cal
 A pointer to a calendar time structure.
 @end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@item PDF_EBADDATA
-There is invalid data in the calendar structure @var{cal_time}.
-@end table
-
 @item Usage example
 @example
-pdf_time_t mytime;
+pdf_time_t *mytime;
 struct pdf_time_cal_s mycaltime;
 
-mytime = pdf_time_new ();
+mytime = pdf_time_new (NULL);
 
 mycaltime.year = 2000;
 mycaltime.month = 8;
 mycaltime.day = 10;
-mycaltime.dow = 0; /* This field is ignored by `pdf_time_from_cal' */
 mycaltime.hour = 0;
 mycaltime.minute = 0;
 mycaltime.sec = 0;
 mycaltime.gmt_offset = 1;
 
-if (pdf_time_from_cal (mytime, &mycaltime) == PDF_EBADDATA)
-@{
-  /* Bad data in `mycaltime' */
-@}
+/* This field is ignored by `pdf_time_from_cal' */
+mycaltime.dow = 0;
+
+pdf_time_set_from_cal (&mytime, &mycaltime);
+
+pdf_time_destroy (mytime);
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_set_local_offset (pdf_time_t @var{time_var})
+@deftypefun void pdf_time_set_local_offset (pdf_time_t *@var{time_var})
 Set the local time offset of @var{time_var} to the one used by the
 operating system.
 
 @table @strong
 @item Parameters
-
 @table @var
 @item time
 A properly created time variable.
 @end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@end table
-
 @item Usage example
 @example
 pdf_time_t mytime;
 
-mytime = pdf_time_new ();
-pdf_time_set_local_offset (time);
+pdf_time_init (&mytime);
+
+pdf_time_set_utc (&mytime, 1234567890);
+pdf_time_set_local_offset (&mytime);
+
+pdf_time_deinit (&mytime);
 @end example
 @end table
 @end deftypefun
@@ -7278,7 +7453,7 @@ pdf_time_set_local_offset (time);
 @node Getting Time Intervals
 @subsection Getting Time Intervals
 
-@deftypefun pdf_status_t pdf_time_diff_cal (const pdf_time_t @var{time1}, const pdf_time_t @var{time2}, struct pdf_time_cal_span_s *@var{p_cal_span})
+@deftypefun void pdf_time_diff_cal (const pdf_time_t *@var{time1}, const pdf_time_t *@var{time2}, struct pdf_time_cal_span_s *@var{p_cal_span})
 Calculate the time span that goes from @var{time1} to @var{time2} and
 store it in @var{p_cal_span}.
 
@@ -7295,28 +7470,34 @@ The end of the time interval (exclusive).
 Pointer to the calendar time span structure that will hold the time span that
 goes between @var{time1} and @var{time2}.
 @end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@end table
-
 @item Usage example
 @example
-pdf_time_t time_begin;
-pdf_time_t time_end;
-struct pdf_time_cal_span_s cal_span;
+pdf_time_t time1;
+pdf_time_t time2;
+struct pdf_time_cal_span_s diff;
 
-/* ...create and manipulate `time_begin' and `time_end' */
+pdf_time_init (&time1);
+pdf_time_init (&time2);
 
-pdf_time_diff (time_begin, time_end, &cal_span);
+pdf_time_set_utc (&time1, 1234567890);
+pdf_time_set_utc (&time2, 1300000000);
+
+pdf_time_diff (&time1, &time2, &diff);
+printf ("Time between times is: %d-%d-%d %d:%d:%d\n",
+        diff.years,
+        diff.months,
+        diff.days,
+        diff.hours,
+        diff.minutes,
+        diff.seconds);
+
+pdf_time_deinit (&time1);
+pdf_time_deinit (&time2);
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_diff (const pdf_time_t @var{time1}, const pdf_time_t @var{time2}, pdf_time_span_t *@var{p_time_span})
+@deftypefun pdf_i64_t pdf_time_diff (const pdf_time_t *@var{time1}, const pdf_time_t *@var{time2})
 Calculate the time span between two dates.
 
 @table @strong
@@ -7327,28 +7508,28 @@ Calculate the time span between two dates.
 The beginning time. Should be a properly created time.
 @item time2
 The ending time. Should be a properly created time.
-@item p_time_span
-The pointer to the time span variable that will hold the difference between
-@var{time1} and @var{time2}. Should be a properly created time
-span. Any previous content of *@var{p_time_span} will be destroyed.
 @end table
 
 @item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@end table
-
+The number of seconds betweeen @var{time1} and @var{time2}.
 @item Usage example
 @example
 pdf_time_t time1;
 pdf_time_t time2;
-pdf_time_span_t time_span;
+pdf_i64_t diff;
 
-/* ...create and manipulate `time1', `time2' and `time_span'... */
+pdf_time_init (&time1);
+pdf_time_init (&time2);
 
-pdf_time_diff (time1, time2, &time_span);
+pdf_time_set_utc (&time1, 1234567890);
+pdf_time_set_utc (&time2, 1300000000);
+
+diff = pdf_time_diff (&time1, &time2);
+printf ("Time between times is: %lld\n",
+        (long long) diff);
+
+pdf_time_deinit (&time1);
+pdf_time_deinit (&time2);
 @end example
 @end table
 @end deftypefun
@@ -7356,7 +7537,7 @@ pdf_time_diff (time1, time2, &time_span);
 @node Time Comparison
 @subsection Time Comparison
 
-@deftypefun pdf_i32_t pdf_time_cmp (const pdf_time_t @var{time1}, const pdf_time_t @var{time2})
+@deftypefun pdf_i8_t pdf_time_cmp (const pdf_time_t *@var{time1}, const pdf_time_t *@var{time2})
 Compares two times.
 
 @table @strong
@@ -7384,32 +7565,34 @@ If @var{time2} precedes @var{time1}.
 
 @item Usage example
 @example
-pdf_time_t time1;
-pdf_time_t time2;
+pdf_time_t *time1;
+pdf_time_t *time2;
 
 time1 = pdf_time_new ();
 time2 = pdf_time_new ();
 
-/* ...manipulate `time1' and `time2'... */
+pdf_time_set_utc (time1, 1234567890);
+pdf_time_set_utc (time1, 1300000000);
 
+/* As `time1' is before `time2', it will return -1 */
 switch (pdf_time_cmp (time1, time2))
-@{
-  case -1:
-  @{
-    /* `time1' precedes `time2' */
-    break;
-  @}
-  case 0:
-  @{
-    /* `time1' contain the same time than `time2' */
-    break;
-  @}
-  case 1:
-  @{
-    /* `time2' precedes `time1' */
-    break;
-  @}
-@}
+   @{
+   case -1:
+     @{
+        /* `time1' precedes `time2' */
+        break;
+     @}
+   case 0:
+      @{
+         /* `time1' contain the same time as `time2' */
+         break;
+      @}
+   case 1:
+      @{
+         /* `time2' precedes `time1' */
+         break;
+      @}
+   @}
 @end example
 @end table
 @end deftypefun
@@ -7417,7 +7600,7 @@ switch (pdf_time_cmp (time1, time2))
 @node Time Printing and Parsing
 @subsection Time Printing and Parsing
 
-@deftypefun pdf_char_t* pdf_time_to_string (const pdf_time_t @var{time_var}, const enum pdf_time_format_e @var{time_format}, pdf_bool_t @var{include_trailing_apostrophe})
+@deftypefun pdf_char_t* pdf_time_to_string (const pdf_time_t *@var{time_var}, const enum pdf_time_format_e @var{time_format}, pdf_u32_t @var{options}, pdf_error_t **@var{error})
 Create a string representation of a given time.
 
 @table @strong
@@ -7429,33 +7612,45 @@ A properly created time variable.
 @item time_format
 The format to use when creating the string representation of
 @var{time}.
-@item include_trailing_apostrophe
-Append an apostrophe after the GMT offset minutes field, if
-present.  Note that this parameter is ignored if @var{time_format} is
-not @code{PDF_TIME_FORMAT_PDF}.
+@item options
+Options to use when creating the string representation of the time.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to perform the operation.
 @end table
-
+@end table
 @item Returns
-The string representation of @var{time}. Must be deallocated by the caller of the function explicitly with pdf_dealloc().
-@code{NULL} if there is an error.
+The string representation of @var{time} which must be deallocated by the caller of the function explicitly with pdf_dealloc(), or @code{NULL} if there is an error.
 
 @item Usage example
 @example
+pdf_error_t *error = NULL;
 pdf_time_t mytime;
 pdf_char_t *mytime_str;
 
-/* ...create and manipulate `mytime'... */
+pdf_time_init (&mytime);
+pdf_time_set_utc (&mytime, 1234567890);
 
-mytime_str = pdf_time_to_string (mytime, PDF_TIME_FORMAT_PDF);
+mytime_str = pdf_time_to_string (&mytime,
+                                 PDF_TIME_STRING_FORMAT_PDF,
+                                 PDF_TIME_STRING_NO_OPTION,
+                                 &error);
+if (!mytime_str)
+   @{
+      /* Error! */
+      pdf_error_destroy (error);
+   @}
 
-pdf_dealloc(mytime_str);
+pdf_dealloc (mytime_str);
+pdf_time_deinit (&mytime);
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_from_string (pdf_time_t @var{time_var}, const pdf_char_t *@var{time_str}, const enum pdf_time_format_e @var{time_format}, pdf_bool_t @var{require_trailing_apostrophe})
-Get a string containing a time specification in some format and fill a
-time variable with the parsed values.
+@deftypefun pdf_bool_t pdf_time_set_from_string (pdf_time_t *@var{time_var}, const pdf_char_t *@var{time_str}, const enum pdf_time_format_e @var{time_format}, pdf_u32_t @var{options}, pdf_error_t **@var{error})
+Set the contents of a time variable from a string in specific time format.
 
 @table @strong
 @item Parameters
@@ -7468,36 +7663,37 @@ A properly created time variable.
 A null-terminated string representation of a time.
 @item time_format
 The format indicating how to parse @var{time_str}.
-@item require_trailing_apostrophe
-If this argument is @code{PDF_TRUE} a PDF date specification
-containing minutes should be followed by an APOSTROPHE character (').
-
-If @var{time_format} is not @code{PDF_TIME_FORMAT_PDF} then this
-argument is ignored.
-@end table
-
-@item Returns
-A status value:
+@item options
+Options to use when parsing the string representation of the time.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-The operation succeeded.
 @item PDF_EBADDATA
-Error while parsing @var{time_str} according to @var{time_format}.
+@var{time_str} in not properly formatted according to @var{time_format}
 @end table
+@end table
+@item Returns
+@code{PDF_TRUE} if the time was properly set, @code{PDF_FALSE} otherwise.
 
 @item Usage example
 @example
-pdf_time_t mytime;
-char time_str[] = "D:20090813210000+00'00"; /* 13-August-2009, 21:00
-                                               GMT 0 */
+pdf_time_t *mytime;
+pdf_error_t *error = NULL;
+const pdf_char_t *time_str = "D:20090813210000+00'00";
 
-mytime = pdf_time_new ();
-if (pdf_time_from_string (mytime,
-                          time_str,
-                          PDF_TIME_FORMAT_PDF) == PDF_EBADDATA)
-@{
-  /* Error while parsing `time_str' according to `PDF_TIME_FORMAT_PDF' */
-@}
+mytime = pdf_time_new (NULL);
+if (!pdf_time_from_string (mytime,
+                           time_str,
+                           PDF_TIME_STRING_FORMAT_PDF,
+                           PDF_TIME_STRING_NO_OPTION,
+                           &error))
+   @{
+      /* Error while parsing `time_str' according to
+       * `PDF_TIME_STRING_FORMAT_PDF' */
+      pdf_error_destroy (error);
+   @}
+
+pdf_time_destroy (mytime);
 @end example
 @end table
 @end deftypefun
@@ -7505,406 +7701,46 @@ if (pdf_time_from_string (mytime,
 @node Getting the Current Time
 @subsection Getting the Current Time
 
-@deftypefun pdf_status_t pdf_time_set_to_current_local_time (pdf_time_t @var{time_var})
-Set the value of @var{time_var} to the current local time used by the
-operating system.
+@deftypefun void pdf_time_set_to_current_local_time (pdf_time_t *@var{time_var})
+Set the value of @var{time_var} to the current local time used by the operating system.
 
 @table @strong
 @item Parameters
-
 @table @var
 @item time_var
 A properly created time variable.
 @end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@end table
-
 @item Usage example
 @example
-pdf_time_t mytime;
+pdf_time_t *mytime;
 
-mytime = pdf_time_new ();
+mytime = pdf_time_new (NULL);
 
 pdf_time_set_to_current_local_time (mytime);
+
+pdf_time_destroy (mytime);
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_set_to_current_utc_time (pdf_time_t @var{time_var})
+@deftypefun void pdf_time_set_to_current_utc_time (pdf_time_t *@var{time_var})
 Set the value of @var{time_var} to the current UTC time used by the operating system.
 
 @table @strong
 @item Parameters
-
 @table @var
 @item time_var
 A properly created time variable.
 @end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@end table
-
 @item Usage example
 @example
-pdf_time_t mytime;
+pdf_time_t *mytime;
 
-mytime = pdf_time_new ();
+mytime = pdf_time_new (NULL);
 
 pdf_time_set_to_current_utc_time (mytime);
-@end example
-@end table
-@end deftypefun
 
-@node Time Span Creation and Destruction
-@subsection Time Span Creation and Destruction
-
-@deftypefun pdf_time_span_t pdf_time_span_new (void)
-
-Allocate and return a new time span variable. The time span is
-initialized with a zero value (zero seconds).
-
-@table @strong
-@item Parameters
-
-None.
-
-@item Returns
-The newly created time span variable or @code{NULL} if there is an
-error.
-@item Usage example
-@example
-pdf_time_span_t span;
-
-span = pdf_time_span_new ();
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_time_span_t pdf_time_span_dup (const pdf_time_span_t @var{span})
-
-Allocate and dup a new time span from an existing one. The new time
-span has the same value as the base time span.
-
-@table @strong
-@item Parameters
-
-@table @var
-@item span
-A properly created time span variable.
-@end table
-
-@item Returns
-The newly created time span variable.
-@item Usage example
-@example
-pdf_time_span_t span;
-pdf_time_span_t new_span;
-
-/* ...create and manipulate `span'... */
-
-new_span = pdf_time_span_dup (span);
-@end example
-@end table
-@end deftypefun
-
-
-@deftypefun pdf_status_t pdf_time_span_destroy (pdf_time_span_t *@var{p_span})
-
-Destroy a time span variable freeing all used memory.
-
-@table @strong
-@item Parameters
-
-@table @var
-@item p_span
-The pointer to the time span variable to be destroyed.
-@end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@end table
-@item Usage example
-@example
-pdf_time_span_t span;
-
-/* ...create and manipulate `span'... */
-
-pdf_time_span_destroy (span);
-@end example
-@end table
-@end deftypefun
-
-@node Managing Time Span Values
-@subsection Managing Time Span Values
-
-@deftypefun pdf_status_t pdf_time_span_set (pdf_time_span_t *@var{p_span}, const pdf_i64_t @var{value})
-
-Set the value of a time span. The internal representation of the time
-span is 64 bits long (signed).
-
-@table @strong
-@item Parameters
-
-@table @var
-@item p_span
-A pointer to a properly created time span variable.
-@item value
-The signed 64 bits value to set.
-@end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@end table
-
-@item Usage exaple
-@example
-pdf_time_span_t span;
-
-span = pdf_time_span_new ();
-pdf_time_span_set (&span, -10); /* The span is -10 seconds long */
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_time_span_negate (pdf_time_span_t *@var{p_span})
-
-Make a positive time span into a negative one or make a negative time
-span into a positive one.
-
-@table @strong
-@item Parameters
-
-@table @var
-@item span
-A pointer to a properly created time span variable.
-@end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@end table
-
-@item Usage example
-@example
-pdf_time_span_t span;
-
-/* ...create and manipulate `span'... */
-
-pdf_time_span_negate (span);
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_time_span_add (const pdf_time_span_t @var{span1}, const pdf_time_span_t @var{span2}, pdf_time_span_t *@var{p_result})
-
-Add two time spans and store the result in another time span.
-
-@table @strong
-@item Parameters
-
-@table @var
-@item span1
-The first time span to add.
-@item span2
-The second time span to add.
-@item p_result
-The pointer to the time span holding the result of the add operation. Any previous
-content is lost.
-@end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@item PDF_EBADDATA
-@var{p_result} is not a valid pointer.
-@end table
-
-@item Usage example
-@example
-pdf_time_span_t span1;
-pdf_time_span_t span2;
-pdf_time_span_t result;
-
-/* ...create and manipulate `span1', `span2' and `result'... */
-pdf_time_span_add (span1, span2, &result);
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_time_span_copy (const pdf_time_span_t @var{orig}, pdf_time_span_t *@var{p_dest})
-
-Copy the value of a time span into another time span.
-
-@table @strong
-@item Parameters
-
-@table @var
-@item orig
-The origin time span.
-@item p_dest
-The pointer to the time span variable that will hold the value of @var{orig}. Any
-previous value is lost.
-@end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@item PDF_EBADDATA
-@var{p_dest} is not a valid pointer.
-@end table
-
-@item Usage example
-@example
-pdf_time_span_t span_orig;
-pdf_time_span_t span_dest;
-
-/* ...create and manipulate `span_orig' and `span_dest'... */
-
-pdf_time_span_copy (span_orig, span_dest);
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_time_span_diff (const pdf_time_span_t @var{span1}, const pdf_time_span_t @var{span2}, pdf_time_span_t *@var{p_result})
-
-Difference two time spans and store the result (maybe negative) into
-another time span.
-
-@table @strong
-@item Parameters
-
-@table @var
-@item span1
-The first time span to diff.
-@item span2
-The second time span to diff.
-@item p_result
-The result of the diff operation. Any previous value of the time span
-is lost.
-@end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@item PDF_EBADDATA
-@var{p_result} is not a valid pointer.
-@end table
-
-@item Usage example
-@example
-pdf_time_span_t span1;
-pdf_time_span_t span2;
-pdf_time_span_t span_diff;
-
-/* ...create and manipulate `span1', `span2' and `span3' */
-
-pdf_time_span_diff (span1, span2, span_diff);
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_i64_t pdf_time_span_to_secs (const pdf_time_span_t @var{span})
-
-Get the value of a time span in seconds.
-
-@table @strong
-@item Parameters
-
-@table @var
-@item span
-A properly created time span variable.
-@end table
-
-@item Returns
-The value of the time span in seconds.
-A negative value is returned if the time span is negative.
-@item Usage example
-@example
-pdf_time_span_t span;
-pdf_i32_t num_seconds;
-
-/* ...create and manipulate `span'... */
-
-num_seconds = pdf_time_span_to_secs (span);
-@end example
-@end table
-@end deftypefun
-
-@node Time Span Comparison
-@subsection Time Span Comparison
-
-@deftypefun pdf_i32_t pdf_time_span_cmp (const pdf_time_span_t @var{span1}, const pdf_time_span_t @var{span2})
-
-Compare the length two time spans.
-
-@table @strong
-@item Parameters
-
-@table @var
-@item span1
-The first time span to compare.
-@item span2
-The second time span to compare.
-@end table
-
-@item Returns
-A status value:
-@table @code
-@item -1
-The length of @var{span1} is shorter than the length of @var{span2}.
-@item 0
-The lengts of @var{span1} and @var{span2} are equal.
-@item +1
-The length of @var{span1} is greater than the length of @var{span2}.
-@end table
-
-@item Usage example
-@example
-pdf_time_span_t span1;
-pdf_time_span_t span2;
-
-/* ...create and manipulate `span1' and `span2'... */
-switch (pdf_time_span_cmp (span1, span2))
-@{
-  case -1:
-  @{
-    /* The length of `span1' is shorter than the length of `span2' */
-    break;
-  @}
-  case 0:
-  @{
-    /* The length of `span1' is equal to the length of `span2' */
-    break;
-  @}
-  case 1:
-  @{
-    /* The length of `span1' is greater than the length of `span2' */
-    break;
-  @}
-@}
+pdf_time_destroy (mytime);
 @end example
 @end table
 @end deftypefun
@@ -7912,7 +7748,7 @@ switch (pdf_time_span_cmp (span1, span2))
 @node Calendar Spans Management
 @subsection  Calendar Spans Management
 
-@deftypefun pdf_status_t pdf_time_add_cal_span_with_base (const struct pdf_time_cal_span_s *@var{p_span1}, const struct pdf_time_cal_span_s *@var{p_span2}, const pdf_time_t @var{base_time}, struct pdf_time_cal_span_s *@var{p_result})
+@deftypefun void pdf_time_add_cal_span_with_base (const struct pdf_time_cal_span_s *@var{span1}, const struct pdf_time_cal_span_s *@var{span2}, const pdf_time_t *@var{base_time}, struct pdf_time_cal_span_s *@var{result})
 
 Add two calendar spans. Since the calendar spans are relative (some
 years has more days than another) the calendar spans are first
@@ -7920,51 +7756,53 @@ resolved from a base time.
 
 @table @strong
 @item Parameters
-
 @table @var
-@item p_span1
+@item span1
 The pointer to the first calendar span to add.
-@item p_span2
+@item span2
 The pointer to the second calendar span to add.
 @item base_time
 The base time to use.
-@item p_result
+@item result
 Pointer to the calendar span to store the result of the add operation.
 @end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@item PDF_EBADDATA
-There is invalid data in @var{span1} or @var{span2}.
-@end table
-
 @item Usage example
 @example
-pdf_time_t mytime;
-struct pdf_time_cal_span_s cal_span1;
-struct pdf_time_cal_span_s cal_span2;
-struct pdf_time_cal_span_s cal_result;
+pdf_time_t base;
+struct pdf_time_cal_span_s span1 = @{ 0 @};
+struct pdf_time_cal_span_s span2 = @{ 0 @};
+struct pdf_time_cal_span_s result = @{ 0 @};
 
-/* ...create and initialize `mytime', `cal_span1'
- *    and `cal_span2'...
- */
+/* Base time the Unix epoch */
+pdf_time_init (&base);
 
-if (pdf_time_add_cal_span_with_base (&cal_span1,
-                                     &cal_span2,
-                                     mytime,
-                                     &cal_result) == PDF_EBADDATA)
-@{
-  /* Invalid data in `cal_span1' or `cal_span2' */
-@}
+span1.years = 12;
+span1.months = 1;
+span1.days = 23;
+
+span2.hours = 12;
+span2.minutes = 30;
+span2.seconds = 15;
+
+pdf_time_add_cal_span_with_base (&span1,
+                                 &span2,
+                                 &base,
+                                 &result);
+printf ("(result) %d-%d-%d %d:%d:%d\n",
+        result.years,
+        result.months,
+        result.days,
+        result.hours,
+        result.minutes,
+        result.seconds);
+
+pdf_time_deinit (&base);
 @end example
 @end table
 @end deftypefun
 
 
-@deftypefun pdf_i32_t pdf_time_cal_span_cmp (const struct pdf_time_cal_span_s *@var{p_span1}, const struct pdf_time_cal_span_s *@var{p_span2}, const pdf_time_t @var{base_time}, pdf_status_t *p_ret_code)
+@deftypefun pdf_i8_t pdf_time_cal_span_cmp (const struct pdf_time_cal_span_s *@var{span1}, const struct pdf_time_cal_span_s *@var{span2}, const pdf_time_t *@var{base_time})
 
 Compare two calendar spans previously resolved with a given base time.
 
@@ -7972,61 +7810,76 @@ Compare two calendar spans previously resolved with a given base time.
 @item Parameters
 
 @table @var
-@item p_span1
+@item span1
 The pointer to the first calendar span to be compared.
-@item p_span2
+@item span2
 The pointer to the second calendar span to be compared.
 @item base_time
 The used base time. Should be a correctly created time variable.
-@item p_ret_code
-Pointer to a status variable to store any error happened in the function.
 @end table
-
 @item Returns
-
 @table @code
 @item -1
-Given the base time, the time interval defined by @var{p_span2} is
-greater in length than the time interval defined by @var{p_span1}.
+Given the base time, the time interval defined by @var{span2} is
+greater in length than the time interval defined by @var{span1}.
 @item 0
-Given the base time, the time inveral defined by @var{p_span1} is equal
-in length than the time interval defined by @var{p_span2}.
+Given the base time, the time inveral defined by @var{span1} is equal
+in length than the time interval defined by @var{span2}.
 @item +1
-Given the base time, the time interval defined by @var{p_span1} is
-greater in length than the time interval defined by @var{p_span2}.
+Given the base time, the time interval defined by @var{span1} is
+greater in length than the time interval defined by @var{span2}.
 @end table
-
 @item Usage example
 @example
-pdf_time_t mytime;
-struct pdf_time_cal_span_s span1;
-struct pdf_time_cal_span_s span2;
+pdf_time_t base;
+struct pdf_time_cal_span_s span1 = @{ 0 @};
+struct pdf_time_cal_span_s span2 = @{ 0 @};
+struct pdf_time_cal_span_s result = @{ 0 @};
 
-/* ...create and manipulate `mytime', `span1' and `span2'... */
+/* Base time the Unix epoch */
+pdf_time_init (&base);
 
-switch (pdf_time_cal_span_cmp (&span1, &span2, mytime))
-@{
-  case -1:
-  @{
-    /* The length of `span1' is shorter than the length of `span2' */
-    break;
-  @}
-  case 0:
-  @{
-    /* The length of `span1' is equal than the length of `span2' */
-    break;
-  @}
-  case 1:
-  @{
-    /* The length of `span1' is greater than the length of `span2' */
-    break;
-  @}
-@}
+span1.years = 12;
+span1.months = 1;
+span1.days = 23;
+
+span2.years = 12;
+span2.months = 1;
+span2.days = 23;
+span2.hours = 12;
+span2.minutes = 30;
+span2.seconds = 15;
+
+/* `span2' is longer than `span1', so it should
+ * return -1 */
+switch (pdf_time_cal_span_cmp (&span1, &span2, &base))
+   @{
+   case -1:
+      @{
+         /* The length of `span1' is shorter than the
+          * length of `span2' */
+         break;
+      @}
+   case 0:
+      @{
+         /* The length of `span1' is equal than the
+          * length of `span2' */
+         break;
+      @}
+   case 1:
+      @{
+         /* The length of `span1' is greater than the
+          * length of `span2' */
+         break;
+      @}
+   @}
+
+pdf_time_deinit (&base);
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_time_cal_span_diff (const struct pdf_time_cal_span_s *@var{p_span1}, const struct pdf_time_cal_span_s *@var{p_span2}, const pdf_time_t @var{base_time}, struct pdf_time_cal_span_s *@var{p_result})
+@deftypefun void pdf_time_cal_span_diff (const struct pdf_time_cal_span_s *@var{span1}, const struct pdf_time_cal_span_s *@var{span2}, const pdf_time_t *@var{base_time}, struct pdf_time_cal_span_s *@var{result})
 
 Compute the difference between two calendar spans relative to a given
 base time and store it in a given calendar span.
@@ -8035,43 +7888,49 @@ base time and store it in a given calendar span.
 @item Parameters
 
 @table @var
-@item p_span1
+@item span1
 The pointer to the first calendar span to diff.
-@item p_span2
+@item span2
 The pointer to the second calendar span to diff.
 @item base_time
 The base time. Should be a correctly created time variable.
-@item p_result
+@item result
 Pointer to the calendar structure holding the result of the difference.
 @end table
-
-@item Returns
-A status value:
-@table @code
-@item PDF_OK
-The operation successfully finished.
-@item PDF_EBADDATA
-There is invalid data in @var{span1} or @var{span2}.
-@end table
-
 @item Usage example
 @example
-pdf_time_t mytime;
-struct pdf_time_cal_span_s span1;
-struct pdf_time_cal_span_s span2;
-struct pdf_time_cal_span_s result;
+pdf_time_t base;
+struct pdf_time_cal_span_s span1 = @{ 0 @};
+struct pdf_time_cal_span_s span2 = @{ 0 @};
+struct pdf_time_cal_span_s result = @{ 0 @};
 
-/* ...create and manipulate `span1', `span2' and
- *    `result'...
- */
+/* Base time the Unix epoch */
+pdf_time_init (&base);
 
-if (pdf_time_cal_span_diff (&span1,
-                            &span2,
-                            mytime,
-                            &result) == PDF_EBADDATA)
-@{
-  /* Invalid data in `span1' or `span2' */
-@}
+span1.years = 12;
+span1.months = 1;
+span1.days = 23;
+
+span2.years = 12;
+span2.months = 1;
+span2.days = 23;
+span2.hours = 12;
+span2.minutes = 30;
+span2.seconds = 15;
+
+pdf_time_cal_span_diff (&span1,
+                        &span2,
+                        &base,
+                        &result);
+printf ("(result) %d-%d-%d %d:%d:%d\n",
+        result.years,
+        result.months,
+        result.days,
+        result.hours,
+        result.minutes,
+        result.seconds);
+
+pdf_time_deinit (&base);
 @end example
 @end table
 @end deftypefun
@@ -8079,11 +7938,10 @@ if (pdf_time_cal_span_diff (&span1,
 @node Platform-specific functions
 @subsection Platform-specific functions
 
-@deftypefun pdf_status_t pdf_time_w32_set_from_filetime (pdf_time_t @var{time_var}, const FILETIME *@var{p_filetime})
+@deftypefun pdf_bool_t pdf_time_w32_set_from_filetime (pdf_time_t *@var{time_var}, const FILETIME *@var{p_filetime}, pdf_error_t **@var{error})
 This function will initialize @var{time_var} to the given Filetime epoch in UTC timescale.
 
 This function is only available in Windows OS.
-
 @table @strong
 @item Parameters
 @table @var
@@ -8091,6 +7949,12 @@ This function is only available in Windows OS.
 The time variable to set. Should be a properly create time variable.
 @item p_filetime
 Pointer to a valid FILETIME structure, containing 100-nanosecond intervals since 1 January 1601.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ERROR
+Generic error reported by the Windows-specific underlying method.
+@end table
 @end table
 @item Returns
 A status value:
@@ -8102,16 +7966,17 @@ The operation succeeded.
 @example
 pdf_time_t mytime;
 FILETIME filetime;
-mytime = pdf_time_new ();
+
+pdf_time_init (&mytime);
 
 /* do stuff to get the FILETIME */
 
-pdf_time_w32_set_from_filetime(mytime, &filetime);
+pdf_time_w32_set_from_filetime (&mytime, &filetime);
 
+pdf_time_deinit (&mytime);
 @end example
 @end table
 @end deftypefun
-
 
 
 @node The Filesystem Module

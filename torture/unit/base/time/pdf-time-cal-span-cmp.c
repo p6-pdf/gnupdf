@@ -49,7 +49,6 @@
  */
 START_TEST (pdf_time_cal_span_cmp_001)
 {
-  pdf_status_t status;
   pdf_i64_t sec;
   pdf_u32_t i,j;
   pdf_time_t basetime;
@@ -57,10 +56,9 @@ START_TEST (pdf_time_cal_span_cmp_001)
   struct pdf_time_cal_span_s span2;
 
 
-  status =  pdf_time_new(&basetime);
-  fail_if(status != PDF_OK);
+  pdf_time_init (&basetime);
 
-  pdf_time_set_from_u32(basetime, 0x012FBBCC);
+  pdf_time_set_utc (&basetime, 0x012FBBCC);
 
   span1.sign = PDF_FALSE;
   span1.years = 2;
@@ -78,62 +76,47 @@ START_TEST (pdf_time_cal_span_cmp_001)
   span2.minutes = 30;
   span2.seconds = 10;
 
-  fail_unless(pdf_time_cal_span_cmp(&span1, &span2, basetime, &status) == 1);
-  fail_if(status != PDF_OK);
+  fail_unless (pdf_time_cal_span_cmp (&span1, &span2, &basetime) > 0);
   /* Swap arguments */
-  fail_unless(pdf_time_cal_span_cmp(&span2, &span1, basetime, &status) == -1);
-  fail_if(status != PDF_OK);
+  fail_unless (pdf_time_cal_span_cmp (&span2, &span1, &basetime) < 0);
 
-  span2.years = span1.years;    /* Make years field equal */
-  fail_unless(pdf_time_cal_span_cmp(&span1, &span2, basetime, &status) == 1);
-  fail_if(status != PDF_OK);
+  /* Make years field equal */
+  span2.years = span1.years;
+  fail_unless (pdf_time_cal_span_cmp(&span1, &span2, &basetime) > 0);
   /* Swap arguments */
-  fail_unless(pdf_time_cal_span_cmp(&span2, &span1, basetime, &status) == -1);
-  fail_if(status != PDF_OK);
+  fail_unless (pdf_time_cal_span_cmp(&span2, &span1, &basetime) < 0);
 
-
-  span2.months = span1.months;  /* Make months field equal */
-  fail_unless(pdf_time_cal_span_cmp(&span1, &span2, basetime, &status) == 1);
-  fail_if(status != PDF_OK);
+  /* Make months field equal */
+  span2.months = span1.months;
+  fail_unless (pdf_time_cal_span_cmp (&span1, &span2, &basetime) > 0);
   /* Swap arguments */
-  fail_unless(pdf_time_cal_span_cmp(&span2, &span1, basetime, &status) == -1);
-  fail_if(status != PDF_OK);
+  fail_unless (pdf_time_cal_span_cmp (&span2, &span1, &basetime) < 0);
 
-
-  span2.days = span1.days;      /* Make days field equal */
-  fail_unless(pdf_time_cal_span_cmp(&span1, &span2, basetime, &status) == 1);
-  fail_if(status != PDF_OK);
+  /* Make days field equal */
+  span2.days = span1.days;
+  fail_unless (pdf_time_cal_span_cmp (&span1, &span2, &basetime) > 0);
   /* Swap arguments */
-  fail_unless(pdf_time_cal_span_cmp(&span2, &span1, basetime, &status) == -1);
-  fail_if(status != PDF_OK);
+  fail_unless (pdf_time_cal_span_cmp (&span2, &span1, &basetime) < 0);
 
-
-  span2.hours = span1.hours;    /* Make hours field equal */
-
-  fail_unless(pdf_time_cal_span_cmp(&span1, &span2, basetime, &status) == 1);
-  fail_if(status != PDF_OK);
+  /* Make hours field equal */
+  span2.hours = span1.hours;
+  fail_unless (pdf_time_cal_span_cmp (&span1, &span2, &basetime) > 0);
   /* Swap arguments */
-  fail_unless(pdf_time_cal_span_cmp(&span2, &span1, basetime, &status) == -1);
-  fail_if(status != PDF_OK);
+  fail_unless (pdf_time_cal_span_cmp (&span2, &span1, &basetime) < 0);
 
-  span2.minutes = span1.minutes; /* Make minutes field equal */
-
-  fail_unless(pdf_time_cal_span_cmp(&span1, &span2, basetime, &status) == 1);
-  fail_if(status != PDF_OK);
+  /* Make minutes field equal */
+  span2.minutes = span1.minutes;
+  fail_unless (pdf_time_cal_span_cmp (&span1, &span2, &basetime) > 0);
   /* Swap arguments */
-  fail_unless(pdf_time_cal_span_cmp(&span2, &span1, basetime, &status) == -1);
-  fail_if(status != PDF_OK);
+  fail_unless (pdf_time_cal_span_cmp (&span2, &span1, &basetime) < 0);
 
-  span2.seconds = span1.seconds; /* Make seconds field equal, pdf_time_cal_span_s objects are equal now */
-  fail_unless(pdf_time_cal_span_cmp(&span1, &span2, basetime, &status) == 0);
-  fail_if(status != PDF_OK);
+  /* Make seconds field equal, pdf_time_cal_span_s objects are equal now */
+  span2.seconds = span1.seconds;
+  fail_unless (pdf_time_cal_span_cmp (&span1, &span2, &basetime) == 0);
   /* Swap arguments */
-  fail_unless(pdf_time_cal_span_cmp(&span2, &span1, basetime, &status) == 0);
-  fail_if(status != PDF_OK);
+  fail_unless (pdf_time_cal_span_cmp (&span2, &span1, &basetime) == 0);
 
-
-  status = pdf_time_destroy(basetime);
-  fail_if(status != PDF_OK);
+  pdf_time_deinit (&basetime);
 }
 END_TEST
 
@@ -145,9 +128,7 @@ test_pdf_time_cal_span_cmp (void)
 {
   TCase *tc = tcase_create ("pdf_time_cal_span_cmp");
 
-  tcase_add_test(tc, pdf_time_cal_span_cmp_001);
-
-
+  tcase_add_test (tc, pdf_time_cal_span_cmp_001);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);

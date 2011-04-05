@@ -34,47 +34,36 @@
 
 
 /* Set time object contents based on Date in PDF format */
-pdf_status_t
-pdf_time_from_string_pdf (pdf_time_t time_var,
-                          const pdf_char_t *time_str,
-                          pdf_bool_t allow_trailing_apostrophe);
-
-
+pdf_bool_t pdf_time_from_string_pdf (pdf_time_t        *time_var,
+                                     const pdf_char_t  *time_str,
+                                     pdf_bool_t         require_trailing_apostrophe,
+                                     pdf_error_t      **error);
 /* Set time object contents based on Date in ASN1 format */
-pdf_status_t
-pdf_time_from_string_utc_asn1(pdf_time_t time_var,
-                              const pdf_char_t *time_str);
-
+pdf_bool_t pdf_time_from_string_utc_asn1 (pdf_time_t        *time_var,
+                                          const pdf_char_t  *time_str,
+                                          pdf_error_t      **error);
 /* Set time object contents based on Date in Generalized ASN1 format */
-pdf_status_t
-pdf_time_from_string_generalized_asn1(pdf_time_t time_var,
-                                     const pdf_char_t *time_str);
-
+pdf_bool_t pdf_time_from_string_generalized_asn1 (pdf_time_t        *time_var,
+                                                  const pdf_char_t  *time_str,
+                                                  pdf_error_t      **error);
 /* Set time object contents based on Date in ISO-8601 format */
-pdf_status_t
-pdf_time_from_string_iso8601(pdf_time_t time_var,
-                             const pdf_char_t *time_str);
-
-
+pdf_bool_t pdf_time_from_string_iso8601 (pdf_time_t        *time_var,
+                                         const pdf_char_t  *time_str,
+                                         pdf_error_t      **error);
 
 /* Get Date as a string in PDF format */
-pdf_char_t *
-pdf_time_to_string_pdf (const pdf_time_t time_var,
-                        pdf_bool_t include_trailing_apostrophe);
-
-
+pdf_char_t *pdf_time_to_string_pdf (const pdf_time_t  *time_var,
+                                    pdf_bool_t         include_trailing_apostrophe,
+                                    pdf_error_t      **error);
 /* Get Date as a string in UTC-ASN1 format */
-pdf_char_t *
-pdf_time_to_string_utc_asn1(const pdf_time_t time_var);
-
+pdf_char_t *pdf_time_to_string_utc_asn1 (const pdf_time_t  *time_var,
+                                         pdf_error_t      **error);
 /* Get Date as a string in Generalized ASN1 format */
-pdf_char_t *
-pdf_time_to_string_generalized_asn1(const pdf_time_t time_var);
-
+pdf_char_t *pdf_time_to_string_generalized_asn1 (const pdf_time_t  *time_var,
+                                                 pdf_error_t      **error);
 /* Get Date as a string in ISO8601 format */
-pdf_char_t *
-pdf_time_to_string_iso8601(const pdf_time_t time_var);
-
+pdf_char_t *pdf_time_to_string_iso8601 (const pdf_time_t  *time_var,
+                                        pdf_error_t      **error);
 
 #endif /* PDF_TIME_STRING_H */
 

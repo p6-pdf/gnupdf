@@ -31,8 +31,6 @@
 #include <string.h>
 #include <base/time/pdf-time-test-common.h>
 #include <pdf-test-common.h>
-#define INTERACTIVE_DEBUG 0
-
 
 /*
  * Test: pdf_time_to_string_001
@@ -46,72 +44,96 @@
  */
 START_TEST (pdf_time_to_string_001)
 {
-  pdf_status_t status;
-  pdf_time_t time1;
   pdf_u32_t i;
-  pdf_i32_t gmt;
-  pdf_i32_t offset_hours;
-  pdf_i32_t offset_minutes;
-
-  pdf_char_t *testString;
-  pdf_char_t *dateString;
 
   extern struct pdf_time_cal_s dates[];
   struct pdf_time_cal_s calendar;
 
+  for (i = 0; i < DATES_SIZE; i++)
+    {
+      pdf_i32_t gmt;
 
+      /* We won't test with strings in 1970-01-01 */
+      if (dates[i].year == 1970 &&
+          dates[i].month == 1 &&
+          dates[i].day == 1)
+        continue;
 
-  status = pdf_time_new(&time1);
-  fail_if(status != PDF_OK);
-  fail_if(time1 == NULL);
+      for (gmt = -12 * 60; gmt <= 12 * 60; gmt += 30)
+        {
+          pdf_error_t *error = NULL;
+          pdf_i32_t offset_hours;
+          pdf_i32_t offset_minutes;
+          pdf_time_t time1;
+          pdf_char_t *test_string;
+          pdf_char_t *date_string;
 
+          pdf_time_init (&time1);
 
-  testString = pdf_alloc(26); /* YYYY-MM-DDThh:mm:ss+hh:mm  - lenght = 26  */
+          /* YYYY-MM-DDThh:mm:ss+hh:mm  - lenght = 26  */
+          test_string = pdf_alloc (26);
+          memset (&test_string[0], 0, 26);
 
-  for (i=0; i<DATES_SIZE; i++){
-          for (gmt =-12*60; gmt <=12*60; gmt+=51){  /* Set various gmt_offsets. */
-            calendar.year = dates[i].year;
-            calendar.month = dates[i].month;
-            calendar.day = dates[i].day;
-            calendar.hour = dates[i].hour;
-            calendar.minute = dates[i].minute;
-            calendar.second = dates[i].second;
-            calendar.dow = dates[i].dow;
-            calendar.gmt_offset = gmt*60;
+          calendar.year = dates[i].year;
+          calendar.month = dates[i].month;
+          calendar.day = dates[i].day;
+          calendar.hour = dates[i].hour;
+          calendar.minute = dates[i].minute;
+          calendar.second = dates[i].second;
+          calendar.dow = dates[i].dow;
+          calendar.gmt_offset = gmt * 60;
 
-            memset(&testString[0], 0, 26);
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("pdf_time_to_string_001 [%u,%+.3d] '%d-%d-%d %d:%d:%d'\n",
+                  i, gmt,
+                  calendar.year, calendar.month, calendar.day,
+                  calendar.hour, calendar.minute, calendar.second);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
 
-            pdf_time_from_cal(time1, &calendar);
+          pdf_time_set_from_cal (&time1, &calendar);
 
-            offset_hours = (((gmt < 0) ? (-1) : (1)) * gmt) / 60;
-            offset_minutes = (((gmt < 0) ? (-1) : (1)) *gmt ) % 60;
+          offset_hours = (((gmt < 0) ? (-1) : (1)) * gmt) / 60;
+          offset_minutes = (((gmt < 0) ? (-1) : (1)) *gmt ) % 60;
 
-            sprintf(&testString[0],"%d-%02d-%02dT%02d:%02d:%02d%c%02d:%02d",
-                            dates[i].year, dates[i].month, dates[i].day,
-                            dates[i].hour, dates[i].minute, dates[i].second,
-                            ((gmt < 0) ? '-' : '+'),
-                            offset_hours, offset_minutes);
+          sprintf (&test_string[0],
+                   "%d-%02d-%02dT%02d:%02d:%02d%c%02d:%02d",
+                   dates[i].year, dates[i].month, dates[i].day,
+                   dates[i].hour, dates[i].minute, dates[i].second,
+                   ((gmt < 0) ? '-' : '+'),
+                   offset_hours, offset_minutes);
 
-
-            dateString = pdf_time_to_string (time1, PDF_TIME_FORMAT_ISO_8601, PDF_FALSE);
-
-
-            if (gmt == 0){
-                /** Test YYYY-MM-DDThh:mm:ssZ format **/
-                testString[19]='Z';
-                testString[20]='\0';
+          if (gmt == 0)
+            {
+              /** Test YYYY-MM-DDThh:mm:ssZ format **/
+              test_string[19] = 'Z';
+              test_string[20] = '\0';
             }
-            fail_unless(strcmp(testString, dateString) == 0);
 
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("                       [%u,%+.3d] '%s'\n",
+                  i, gmt, &test_string[0]);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
 
-            pdf_dealloc(dateString);
+          date_string = pdf_time_to_string (&time1,
+                                            PDF_TIME_STRING_FORMAT_ISO_8601,
+                                            PDF_TIME_STRING_NO_OPTION,
+                                            &error);
+          fail_unless (date_string != NULL);
+          fail_if (error != NULL);
+
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("                       [%u,%+.3d] '%s'\n",
+                  i, gmt, &date_string[0]);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
+
+          fail_unless (strcmp (test_string, date_string) == 0);
+
+          pdf_dealloc (date_string);
+          pdf_dealloc (test_string);
         }
-  }
-
-  pdf_dealloc(testString);
+    }
 }
 END_TEST
-
 
 /*
  * Test: pdf_time_to_string_002
@@ -126,94 +148,137 @@ END_TEST
  */
 START_TEST (pdf_time_to_string_002)
 {
-  pdf_status_t status;
-  pdf_time_t time1;
   pdf_u32_t i;
-  pdf_i32_t gmt;
-  pdf_i32_t offset_hours;
-  pdf_i32_t offset_minutes;
-  pdf_char_t *dateString;
-  pdf_char_t *testString;
-  pdf_char_t *testStringNA;
 
   extern struct pdf_time_cal_s dates[];
   struct pdf_time_cal_s calendar;
 
+  for (i = 0; i < DATES_SIZE; i++)
+    {
+      pdf_i32_t gmt;
 
+      /* We won't test with strings in 1970-01-01 */
+      if (dates[i].year == 1970 &&
+          dates[i].month == 1 &&
+          dates[i].day == 1)
+        continue;
 
-  status = pdf_time_new(&time1);
-  fail_if(status != PDF_OK);
-  fail_if(time1 == NULL);
+      for (gmt = -12 * 60; gmt <= 12 * 60; gmt += 30)
+        {
+          pdf_error_t *error = NULL;
+          pdf_i32_t offset_hours;
+          pdf_i32_t offset_minutes;
+          pdf_time_t time1;
+          pdf_char_t *date_string;
+          pdf_char_t *date_string_na;
+          pdf_char_t *test_string;
+          pdf_char_t *test_string_na;
 
+          pdf_time_init (&time1);
 
-  testString = pdf_alloc(24); /* D:YYYYMMDDHHmmSSOHH'mm'  - lenght = 24  */
-  testStringNA = pdf_alloc(23); /* D:YYYYMMDDHHmmSSOHH'mm - length = 23 */
+          /* D:YYYYMMDDHHmmSSOHH'mm' - lenght = 24  */
+          test_string = pdf_alloc (24);
+          memset (&test_string[0], 0, 24);
 
-  for (i=0; i<DATES_SIZE; i++){
-          for (gmt =-12*60; gmt <=12*60; gmt+=51){  /* Set various gmt_offsets. */
+          /* D:YYYYMMDDHHmmSSOHH'mm - length = 23 */
+          test_string_na = pdf_alloc (23);
+          memset (&test_string_na[0], 0, 23);
 
-            memset(&testString[0], 0, 24);
-            memset(&testStringNA[0], 0, 23);
+          calendar.year = dates[i].year;
+          calendar.month = dates[i].month;
+          calendar.day = dates[i].day;
+          calendar.hour = dates[i].hour;
+          calendar.minute = dates[i].minute;
+          calendar.second = dates[i].second;
+          calendar.dow = dates[i].dow;
+          calendar.gmt_offset = gmt * 60;
 
-            calendar.year = dates[i].year;
-            calendar.month = dates[i].month;
-            calendar.day = dates[i].day;
-            calendar.hour = dates[i].hour;
-            calendar.minute = dates[i].minute;
-            calendar.second = dates[i].second;
-            calendar.dow = dates[i].dow;
-            calendar.gmt_offset = gmt*60;
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("pdf_time_to_string_002 [%u,%+.3d] '%d-%d-%d %d:%d:%d'\n",
+                  i, gmt,
+                  calendar.year, calendar.month, calendar.day,
+                  calendar.hour, calendar.minute, calendar.second);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
 
-            status = pdf_time_from_cal(time1, &calendar);
-            fail_if(status != PDF_OK);
+          pdf_time_set_from_cal (&time1, &calendar);
 
-            offset_hours = (((gmt < 0) ? (-1) : (1)) * gmt) / 60;
-            offset_minutes = (((gmt < 0) ? (-1) : (1)) *gmt ) % 60;
+          offset_hours = (((gmt < 0) ? (-1) : (1)) * gmt) / 60;
+          offset_minutes = (((gmt < 0) ? (-1) : (1)) *gmt ) % 60;
 
-            sprintf(&testString[0],"D:%d%02d%02d%02d%02d%02d%c%02d'%02d'",
-                    dates[i].year, dates[i].month, dates[i].day,
-                    dates[i].hour, dates[i].minute, dates[i].second,
-                    ((gmt < 0) ? '-' : '+'),
-                    offset_hours, offset_minutes);
-            sprintf(&testStringNA[0],"D:%d%02d%02d%02d%02d%02d%c%02d'%02d",
-                    dates[i].year, dates[i].month, dates[i].day,
-                    dates[i].hour, dates[i].minute, dates[i].second,
-                    ((gmt < 0) ? '-' : '+'),
-                    offset_hours, offset_minutes);
+          sprintf (&test_string[0],
+                   "D:%d%02d%02d%02d%02d%02d%c%02d'%02d'",
+                   dates[i].year, dates[i].month, dates[i].day,
+                   dates[i].hour, dates[i].minute, dates[i].second,
+                   ((gmt < 0) ? '-' : '+'),
+                   offset_hours, offset_minutes);
 
-
-            if (INTERACTIVE_DEBUG)
-                printf("pdf_time_from_string_002 > %s \n", testString);
-
-            dateString = pdf_time_to_string (time1, PDF_TIME_FORMAT_PDF, PDF_TRUE);
-
-
-            if (gmt == 0){
-                /** Test D:YYYYMMDDHHmmSSZ format **/
-                testString[16]='Z';
-                testString[17]='\0';
+          if (gmt == 0)
+            {
+              /** Test D:YYYYMMDDHHmmSSZ format **/
+              test_string[16] = 'Z';
+              test_string[17] = '\0';
             }
 
-            fail_unless(strcmp(testString, dateString) == 0);
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("                       [%u,%+.3d] '%s'\n",
+                  i, gmt, &test_string[0]);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
 
-            dateString = pdf_time_to_string (time1, PDF_TIME_FORMAT_PDF, PDF_FALSE);
+          date_string = pdf_time_to_string (&time1,
+                                            PDF_TIME_STRING_FORMAT_PDF,
+                                            PDF_TIME_STRING_TRAILING_APOSTROPHE,
+                                            &error);
+          fail_unless (date_string != NULL);
+          fail_if (error != NULL);
 
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("                       [%u,%+.3d] '%s'\n",
+                  i, gmt, &date_string[0]);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
 
-            if (gmt == 0){
-                /** Test D:YYYYMMDDHHmmSSZ format **/
-                testString[16]='Z';
-                testString[17]='\0';
+          fail_unless (strcmp (test_string, date_string) == 0);
+
+          sprintf (&test_string_na[0],
+                   "D:%d%02d%02d%02d%02d%02d%c%02d'%02d",
+                   dates[i].year, dates[i].month, dates[i].day,
+                   dates[i].hour, dates[i].minute, dates[i].second,
+                   ((gmt < 0) ? '-' : '+'),
+                   offset_hours, offset_minutes);
+
+          if (gmt == 0)
+            {
+              /** Test D:YYYYMMDDHHmmSSZ format **/
+              test_string_na[16] = 'Z';
+              test_string_na[17] = '\0';
             }
 
-            fail_unless(strcmp(testStringNA, dateString) == 0);
-            pdf_dealloc(dateString);
-         }
-  }
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("                       [%u,%+.3d] '%s'\n",
+                  i, gmt, &test_string_na[0]);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
 
-  pdf_dealloc(testString);
+          date_string_na = pdf_time_to_string (&time1,
+                                               PDF_TIME_STRING_FORMAT_PDF,
+                                               PDF_TIME_STRING_NO_OPTION,
+                                               &error);
+          fail_unless (date_string_na != NULL);
+          fail_if (error != NULL);
+
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("                       [%u,%+.3d] '%s'\n",
+                  i, gmt, &date_string_na[0]);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
+
+          fail_unless (strcmp (test_string_na, date_string_na) == 0);
+
+          pdf_dealloc (date_string);
+          pdf_dealloc (date_string_na);
+          pdf_dealloc (test_string);
+          pdf_dealloc (test_string_na);
+        }
+    }
 }
 END_TEST
-
 
 /*
  * Test: pdf_time_to_string_003
@@ -229,75 +294,96 @@ END_TEST
  */
 START_TEST (pdf_time_to_string_003)
 {
-  pdf_status_t status;
-  pdf_time_t time1;
   pdf_u32_t i;
-  pdf_i32_t gmt;
-  pdf_i32_t offset_hours;
-  pdf_i32_t offset_minutes;
-
-  pdf_i32_t seconds;
-  pdf_char_t *dateString;
-  pdf_char_t *testString;
 
   extern struct pdf_time_cal_s dates[];
   struct pdf_time_cal_s calendar;
 
+  for (i = 0; i < DATES_SIZE; i++)
+    {
+      pdf_i32_t gmt;
 
+      /* We won't test with strings in 1970-01-01 */
+      if (dates[i].year == 1970 &&
+          dates[i].month == 1 &&
+          dates[i].day == 1)
+        continue;
 
-  status = pdf_time_new(&time1);
-  fail_if(status != PDF_OK);
-  fail_if(time1 == NULL);
+      for (gmt = -12 * 60; gmt <= 12 * 60; gmt += 30)
+        {
+          pdf_error_t *error = NULL;
+          pdf_i32_t offset_hours;
+          pdf_i32_t offset_minutes;
+          pdf_time_t time1;
+          pdf_char_t *test_string;
+          pdf_char_t *date_string;
 
+          pdf_time_init (&time1);
 
-  testString = pdf_alloc(20); /* YYYYMMDDhhmmss+hhmm  - lenght = 20 */
+          /* YYYYMMDDhhmmss+hhmm  - lenght = 20 */
+          test_string = pdf_alloc (20);
+          memset (&test_string[0], 0, 20);
 
-  for (i=0; i<DATES_SIZE; i++){
-          for (gmt =-12*60; gmt <=12*60; gmt+=51){  /* Set various gmt_offsets. */
+          calendar.year = dates[i].year;
+          calendar.month = dates[i].month;
+          calendar.day = dates[i].day;
+          calendar.hour = dates[i].hour;
+          calendar.minute = dates[i].minute;
+          calendar.second = dates[i].second;
+          calendar.dow = dates[i].dow;
+          calendar.gmt_offset = gmt * 60;
 
-            memset(&testString[0], 0, 20);
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("pdf_time_to_string_003 [%u,%+.3d] '%d-%d-%d %d:%d:%d'\n",
+                  i, gmt,
+                  calendar.year, calendar.month, calendar.day,
+                  calendar.hour, calendar.minute, calendar.second);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
 
-            calendar.year = dates[i].year;
-            calendar.month = dates[i].month;
-            calendar.day = dates[i].day;
-            calendar.hour = dates[i].hour;
-            calendar.minute = dates[i].minute;
-            calendar.second = dates[i].second;
-            calendar.dow = dates[i].dow;
-            calendar.gmt_offset = gmt*60;
+          pdf_time_set_from_cal (&time1, &calendar);
 
-            status = pdf_time_from_cal(time1, &calendar);
-            fail_if(status != PDF_OK);
+          offset_hours = (((gmt < 0) ? (-1) : (1)) * gmt) / 60;
+          offset_minutes = (((gmt < 0) ? (-1) : (1)) *gmt ) % 60;
 
+          sprintf (&test_string[0],
+                   "%d%02d%02d%02d%02d%02d%c%02d%02d",
+                   dates[i].year, dates[i].month, dates[i].day,
+                   dates[i].hour, dates[i].minute,dates[i].second,
+                   ((gmt < 0) ? '-' : '+'),
+                   offset_hours, offset_minutes);
 
-            offset_hours = (((gmt < 0) ? (-1) : (1)) * gmt) / 60;
-            offset_minutes = (((gmt < 0) ? (-1) : (1)) *gmt ) % 60;
-
-            sprintf(&testString[0],"%d%02d%02d%02d%02d%02d%c%02d%02d",
-                            dates[i].year, dates[i].month, dates[i].day,
-                            dates[i].hour, dates[i].minute,dates[i].second,
-                            ((gmt < 0) ? '-' : '+'),
-                            offset_hours, offset_minutes);
-
-
-            dateString = pdf_time_to_string (time1, PDF_TIME_FORMAT_GENERALIZED_ASN1, PDF_FALSE);
-
-
-            if (gmt == 0){
+          if (gmt == 0)
+            {
                 /** Test YYYYMMDDhhmmssZ format **/
-                testString[14]='Z';
-                testString[15]='\0';
+                test_string[14] = 'Z';
+                test_string[15] = '\0';
             }
 
-            fail_unless(strcmp(dateString, testString) == 0);
-            pdf_dealloc(dateString);
-        }
-  }
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("pdf_time_to_string_003 [%u,%+.3d] '%s'\n",
+                  i, gmt, &test_string[0]);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
 
-  pdf_dealloc(testString);
+          date_string = pdf_time_to_string (&time1,
+                                            PDF_TIME_STRING_FORMAT_GENERALIZED_ASN1,
+                                            PDF_TIME_STRING_NO_OPTION,
+                                            &error);
+          fail_unless (date_string != NULL);
+          fail_if (error != NULL);
+
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("                       [%u,%+.3d] '%s'\n",
+                  i, gmt, &date_string[0]);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
+
+          fail_unless (strcmp (test_string, date_string) == 0);
+
+          pdf_dealloc (date_string);
+          pdf_dealloc (test_string);
+        }
+    }
 }
 END_TEST
-
 
 /*
  * Test: pdf_time_to_string_004
@@ -312,80 +398,103 @@ END_TEST
  */
 START_TEST (pdf_time_to_string_004)
 {
-  pdf_status_t status;
-  pdf_time_t time1;
   pdf_u32_t i;
-  pdf_i32_t gmt;
-  pdf_i32_t offset_hours;
-  pdf_i32_t offset_minutes;
-
-  pdf_i32_t seconds;
-  pdf_char_t *dateString;
-  pdf_char_t *testString;
 
   extern struct pdf_time_cal_s dates[];
   struct pdf_time_cal_s calendar;
 
+  for (i = 0; i < DATES_SIZE; i++)
+    {
+      pdf_i32_t gmt;
 
+      /* We won't test with strings in 1970-01-01 */
+      if (dates[i].year == 1970 &&
+          dates[i].month == 1 &&
+          dates[i].day == 1)
+        continue;
 
-  status = pdf_time_new(&time1);
-  fail_if(status != PDF_OK);
-  fail_if(time1 == NULL);
+      for (gmt = -12 * 60; gmt <= 12 * 60; gmt += 30)
+        {
+          pdf_error_t *error = NULL;
+          pdf_i32_t offset_hours;
+          pdf_i32_t offset_minutes;
+          pdf_time_t time1;
+          pdf_char_t *test_string;
+          pdf_char_t *date_string;
+          int year;
 
-  testString = pdf_alloc(18); /* yymmddhhmmss+hhmm  - lenght = 18 */
+          pdf_time_init (&time1);
 
-  for (i=0; i<DATES_SIZE; i++){
-          for (gmt =-12*60; gmt <=12*60; gmt+=51){  /* Set various gmt_offsets. */
+          /* yymmddhhmmss+hhmm  - lenght = 18 */
+          test_string = pdf_alloc (18);
+          memset (&test_string[0], 0, 18);
 
-            memset(&testString[0], 0, 20);
+          calendar.year   = dates[i].year;
+          calendar.month  = dates[i].month;
+          calendar.day    = dates[i].day;
+          calendar.hour   = dates[i].hour;
+          calendar.minute = dates[i].minute;
+          calendar.second = dates[i].second;
+          calendar.dow    = dates[i].dow;
+          calendar.gmt_offset = gmt * 60;
 
-            calendar.year = dates[i].year;
-            calendar.month = dates[i].month;
-            calendar.day = dates[i].day;
-            calendar.hour = dates[i].hour;
-            calendar.minute = dates[i].minute;
-            calendar.second = dates[i].second;
-            calendar.dow = dates[i].dow;
-            calendar.gmt_offset = gmt*60;
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("pdf_time_to_string_004 [%u,%+.3d] '%d-%d-%d %d:%d:%d'\n",
+                  i, gmt,
+                  calendar.year, calendar.month, calendar.day,
+                  calendar.hour, calendar.minute, calendar.second);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
 
-            status = pdf_time_from_cal(time1, &calendar);
-            fail_if(status != PDF_OK);
+          pdf_time_set_from_cal (&time1, &calendar);
 
+          offset_hours = (((gmt < 0) ? (-1) : (1)) * gmt) / 60;
+          offset_minutes = (((gmt < 0) ? (-1) : (1)) *gmt ) % 60;
 
-            offset_hours = (((gmt < 0) ? (-1) : (1)) * gmt) / 60;
-            offset_minutes = (((gmt < 0) ? (-1) : (1)) *gmt ) % 60;
+          year = dates[i].year;
+          if (dates[i].year < 2000)
+            year -= 1900;
+          else
+            year -= 2000;
 
-            int year = dates[i].year;
-            if (dates[i].year <2000) year -=1900;
-            else year -=2000;
-            sprintf(&testString[0],"%02d%02d%02d%02d%02d%02d%c%02d%02d",
-                            year, dates[i].month, dates[i].day, dates[i].hour,
-                            dates[i].minute, dates[i].second,
-                            ((gmt < 0) ? '-' : '+'),
-                            offset_hours, offset_minutes);
+          sprintf (&test_string[0],
+                   "%02d%02d%02d%02d%02d%02d%c%02d%02d",
+                   year, dates[i].month, dates[i].day, dates[i].hour,
+                   dates[i].minute, dates[i].second,
+                   ((gmt < 0) ? '-' : '+'),
+                   offset_hours, offset_minutes);
 
-
-            dateString = pdf_time_to_string (time1,  PDF_TIME_FORMAT_UTC_ASN1, PDF_FALSE);
-            fail_if(status != PDF_OK);
-
-
-            if (gmt == 0){
+          if (gmt == 0)
+            {
                 /** Test yymmddhhmmssZ format **/
-                testString[12]='Z';
-                testString[13]='\0';
+                test_string[12] = 'Z';
+                test_string[13] = '\0';
             }
-            int w =strcmp(dateString, testString);
 
-            fail_unless(strcmp(dateString, testString) == 0);
-            pdf_dealloc(dateString);
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("                       [%u,%+.3d] '%s'\n",
+                  i, gmt, &test_string[0]);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
 
+          date_string = pdf_time_to_string (&time1,
+                                            PDF_TIME_STRING_FORMAT_UTC_ASN1,
+                                            PDF_TIME_STRING_NO_OPTION,
+                                            &error);
+          fail_unless (date_string != NULL);
+          fail_if (error != NULL);
+
+#ifdef TIME_MODULE_ADDITIONAL_TEST_TRACES
+          printf ("                       [%u,%+.3d] '%s'\n",
+                  i, gmt, &date_string[0]);
+#endif /* TIME_MODULE_ADDITIONAL_TEST_TRACES */
+
+          fail_unless (strcmp (test_string, date_string) == 0);
+
+          pdf_dealloc (date_string);
+          pdf_dealloc (test_string);
         }
-  }
-
-  pdf_dealloc(testString);
+    }
 }
 END_TEST
-
 
 /*
  * Test case creation function
@@ -395,11 +504,10 @@ test_pdf_time_to_string (void)
 {
   TCase *tc = tcase_create ("pdf_time_to_string");
 
-  tcase_add_test(tc, pdf_time_to_string_001);
-  tcase_add_test(tc, pdf_time_to_string_002);
-  tcase_add_test(tc, pdf_time_to_string_003);
-  tcase_add_test(tc, pdf_time_to_string_004);
-
+  tcase_add_test (tc, pdf_time_to_string_001);
+  tcase_add_test (tc, pdf_time_to_string_002);
+  tcase_add_test (tc, pdf_time_to_string_003);
+  tcase_add_test (tc, pdf_time_to_string_004);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);

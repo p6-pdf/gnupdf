@@ -47,25 +47,22 @@
 START_TEST (pdf_time_w32_set_from_filetime_001)
 {
 #ifdef PDF_HOST_WIN32
-  pdf_status_t status;
-  pdf_time_t time;
+  pdf_error_t *error = NULL;
+  FILETIME fileTime;
+  pdf_time_t time1;
   pdf_time_t time2;
   struct pdf_time_cal_s calendar;
 
+  pdf_time_init (&time1);
+  pdf_time_init (&time2);
 
-  status = pdf_time_new(&time);
-  fail_if(status != PDF_OK);
+  fileTime.dwLowDateTime = 0x8EA6C2F0;
+  fileTime.dwHighDateTime = 0x01C9B81D;
 
-  status = pdf_time_new(&time2);
-  fail_if(status != PDF_OK);
-
-
-  FILETIME fileTime;
-  fileTime.dwLowDateTime=0x8EA6C2F0;
-  fileTime.dwHighDateTime=0x01C9B81D;
-
-  status = pdf_time_w32_set_from_filetime(time, &fileTime);
-  fail_if(status != PDF_OK);
+  fail_unless (pdf_time_w32_set_from_filetime (&time1,
+                                               &fileTime,
+                                               &error) == PDF_TRUE);
+  fail_if (error != NULL);
 
   calendar.year = 2009;
   calendar.month = 4;
@@ -75,19 +72,13 @@ START_TEST (pdf_time_w32_set_from_filetime_001)
   calendar.minute = 42;
   calendar.second = 24;
   calendar.gmt_offset = 0;
+  pdf_time_set_from_cal (&time2, &calendar);
 
-  status = pdf_time_from_cal(time2, &calendar);
-  fail_if(status != PDF_OK);
+  fail_unless (pdf_time_cmp (&time, &time2) == 0);
 
-  fail_unless(pdf_time_cmp(time, time2) == 0);
-
-  status = pdf_time_destroy(time);
-  fail_if(status != PDF_OK);
-
-  status = pdf_time_destroy(time2);
-  fail_if(status != PDF_OK);
-
-#endif
+  pdf_time_deinit (&time1);
+  pdf_time_deinit (&time2);
+#endif /* PDF_HOST_WIN32 */
 }
 END_TEST
 
@@ -99,8 +90,7 @@ test_pdf_time_w32_set_from_filetime (void)
 {
   TCase *tc = tcase_create ("pdf_time_w32_set_from_filetime");
 
-  tcase_add_test(tc, pdf_time_w32_set_from_filetime_001);
-
+  tcase_add_test (tc, pdf_time_w32_set_from_filetime_001);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);

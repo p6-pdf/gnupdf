@@ -28,6 +28,7 @@
 
 #include <pdf.h>
 #include <pdf-test-common.h>
+
 /* Size of pdf_time_cal_span_s calspan[] table */
 #define DAY_TIME_SPAN_SIZE 24
 #define YEAR_MONTH_SIZE 30
@@ -45,8 +46,6 @@
 #define DATE_01_01_2009 1230768000
 #define DATE_01_12_2009 DATE_01_01_2009 + SEC_IN_NOLEEP_YEAR - 31*SEC_IN_DAY
 #define DATE_01_01_1950 -631152000
-
-//void print_pdf_time_cal(pdf_time_t t);
 
 #endif
 

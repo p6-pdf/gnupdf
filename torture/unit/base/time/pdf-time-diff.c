@@ -29,6 +29,7 @@
 #include <pdf.h>
 #include <stdlib.h>
 #include <pdf-test-common.h>
+
 /*
  * Test: pdf_time_diff_001
  * Description:
@@ -43,35 +44,19 @@
  */
 START_TEST (pdf_time_diff_001)
 {
-  pdf_status_t status;
-  pdf_time_t time1, time2;
-  pdf_i64_t sec;
-  pdf_i64_t sec2;
-  pdf_time_span_t span;
+  pdf_time_t time1;
+  pdf_time_t time2;
 
-  status = pdf_time_new(&time1);
-  fail_if(status != PDF_OK);
+  pdf_time_init (&time1);
+  pdf_time_init (&time2);
 
-  status = pdf_time_new(&time2);
-  fail_if(status != PDF_OK);
+  pdf_time_set_utc (&time1, 1234567890);
+  pdf_time_set_utc (&time2, 1234567890);
 
-  sec2 = INT64_C(0x0123456789ABCDEF);
-  status = pdf_time_set_from_i64(time1, sec2);
-  fail_if(status != PDF_OK);
-  status = pdf_time_set_from_i64(time2, sec2);
-  fail_if(status != PDF_OK);
+  fail_unless (pdf_time_diff (&time1, &time2) == 0);
 
-  span = pdf_time_span_new();
-  status = pdf_time_diff(time1, time2, &span);
-  fail_if(status != PDF_OK);
-
-  sec = pdf_time_span_to_secs(span);
-  sec2 = 0;
-  fail_unless(memcmp(&sec,&sec2, sizeof(pdf_i64_t)) == 0);
-
-  status = pdf_time_span_destroy(&span);
-  fail_if(status != PDF_OK);
-
+  pdf_time_deinit (&time1);
+  pdf_time_deinit (&time2);
 }
 END_TEST
 
@@ -83,8 +68,7 @@ test_pdf_time_diff (void)
 {
   TCase *tc = tcase_create ("pdf_time_diff");
 
-  tcase_add_test(tc, pdf_time_diff_001);
-
+  tcase_add_test (tc, pdf_time_diff_001);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);

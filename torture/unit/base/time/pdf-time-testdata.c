@@ -111,7 +111,7 @@ struct pdf_time_cal_span_s years_months[YEAR_MONTH_SIZE] ={
 
 };
 
-pdf_u32_t daysInSeconds[YEAR_MONTH_SIZE] = {
+pdf_u32_t days_in_seconds[YEAR_MONTH_SIZE] = {
     0,
     31*SEC_IN_DAY,
     (31 + 28)*SEC_IN_DAY,
@@ -191,7 +191,7 @@ struct pdf_time_cal_s dates[DATES_SIZE] ={
   };
 
 /* Seconds without time from 01.01.1970 to dates[i] */
-pdf_u32_t datesInSeconds[DATES_SIZE] ={
+pdf_u32_t dates_in_seconds[DATES_SIZE] ={
     0,1,33,
     59,60,60+1,
     60+35,60+59,33*60,
