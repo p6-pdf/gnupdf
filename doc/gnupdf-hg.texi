@@ -1419,7 +1419,7 @@ functions provided by the library.
 @node Updating the AUTHORS file
 @chapter Updating the AUTHORS file
 
-The @file{AUTHORS} file is automatically generated using Emas.  The
+The @file{AUTHORS} file is automatically generated using Emacs.  The
 @file{prmgt/authors.el} elisp file contains the implementation of the
 @code{author} function.
 

@@ -1,3 +1,13 @@
+2011-04-05  Jose E. Marchesi  <jemarch@gnu.org>
+
+	Minor fixes.
+	* doc/gnupdf-hg.texi (Updating the AUTHORS file): Typo Emas->Emacs
+	fixed.
+
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_get_free_space):
+	Make sure to free the memory used by utf16le_path in case of an
+	error.  Fix sent by Krishnan Parthasarathi.
+
 2011-03-28  Aleksander Morgado  <aleksander@gnu.org>
 
 	text: fix compilation
