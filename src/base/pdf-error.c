@@ -151,6 +151,14 @@ pdf_error_new (pdf_error_domain_t  domain,
   return error;
 }
 
+pdf_error_t *
+pdf_error_dup (const pdf_error_t *error)
+{
+  return pdf_error_new (error->domain,
+                        error->status,
+                        error->message);
+}
+
 pdf_status_t
 pdf_error_get_status (const pdf_error_t *error)
 {
@@ -278,6 +286,14 @@ pdf_propagate_error (pdf_error_t **dest,
     pdf_error_destroy (src);
   else
     *dest = src;
+}
+
+void
+pdf_propagate_error_dup (pdf_error_t       **dest,
+                         const pdf_error_t  *src)
+{
+  if (dest)
+    *dest = pdf_error_dup (src);
 }
 
 /* End of pdf-error.c */

@@ -1,5 +1,11 @@
 2011-04-18  Aleksander Morgado  <aleksander@gnu.org>
 
+	base,error: New methods using duplicated errors
+	* src/base/pdf-error.c (pdf_error_dup, pdf_propagate_error_dup)
+	* doc/gnupdf.texi (Error Reporting procedures)
+
+2011-04-18  Aleksander Morgado  <aleksander@gnu.org>
+
 	base,error: Fix documentation
 	* doc/gnupdf.texi (Error Reporting procedures)
 

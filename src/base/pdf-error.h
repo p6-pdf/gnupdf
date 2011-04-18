@@ -135,6 +135,8 @@ const pdf_char_t *pdf_error_get_message (const pdf_error_t *error);
 
 void pdf_error_destroy (pdf_error_t *error);
 
+pdf_error_t *pdf_error_dup (const pdf_error_t *error);
+
 /* Does nothing if err is NULL; if err is non-NULL, then *err must be
  * NULL. A new pdf_error_t is created and assigned to *err. */
 void pdf_set_error (pdf_error_t        **err,
@@ -156,6 +158,10 @@ void pdf_clear_error (pdf_error_t **err);
 /* If dest is NULL, free src; otherwise moves src into *dest. */
 void pdf_propagate_error (pdf_error_t **dest,
                           pdf_error_t  *src);
+
+/* If dest is NULL, do nothing; otherwise copy src into *dest */
+void pdf_propagate_error_dup (pdf_error_t       **dest,
+                              const pdf_error_t  *src);
 
 
 /* --------------------- Error Printing procedures ------------------------- */

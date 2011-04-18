@@ -274,6 +274,32 @@ error = pdf_error_new (PDF_EDOMAIN_TEXT,
 @end table
 @end deftypefun
 
+@deftypefun {pdf_error_t *}pdf_error_dup (const pdf_error_t *@var{error})
+
+Duplicates a @code{pdf_error_t} variable.
+
+@table @strong
+@item Parameters
+@table @var
+@item error
+A @code{pdf_error_t} to duplicate
+@end table
+@item Returns
+a newly created @code{pdf_error_t}
+@item Usage example
+@example
+pdf_error_t *error;
+pdf_error_t *dup;
+
+error = pdf_error_new (PDF_EDOMAIN_TEXT,
+                       PDF_EBADCONTEXT,
+                       "Context was not properly initialized");
+
+dup = pdf_error_dup (error);
+@end example
+@end table
+@end deftypefun
+
 @deftypefun pdf_status_t pdf_error_get_status (const pdf_error_t *@var{error})
 
 Returns the status code in @var{error}.
@@ -530,6 +556,37 @@ pdf_magic (pdf_char_t   *spell,
           return PDF_FALSE;
         @}
       pdf_error_destroy (inner_error);
+    @}
+
+  return PDF_TRUE;
+@}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun void pdf_propagate_error_dup (pdf_error_t **@var{dest}, const pdf_error_t *@var{src})
+
+If @var{dest} is @code{NULL}, nothing is done. Otherwise, duplicates @var{src} in *@var{dest}.
+
+@table @strong
+@item Parameters
+@table @var
+@item dest
+a pointer to a @code{pdf_error_t}
+@item src
+a constant @code{pdf_error_t}
+@end table
+@item Usage example
+@example
+pdf_bool_t
+pdf_magic (pdf_something_t  *spell,
+           pdf_error_t     **error)
+@{
+  if (spell->error)
+    @{
+      /* Propagate a copy of an internally stored error */
+      pdf_propagate_error_dup (error, spell->error);
+      return PDF_FALSE;
     @}
 
   return PDF_TRUE;
