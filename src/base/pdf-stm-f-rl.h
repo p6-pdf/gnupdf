@@ -58,8 +58,8 @@ pdf_status_t pdf_stm_f_rldec_init (pdf_hash_t  *params,
 
 pdf_status_t pdf_stm_f_rldec_apply (pdf_hash_t   *params,
                                     void         *state,
-                                    pdf_buffer_t  in,
-                                    pdf_buffer_t  out,
+                                    pdf_buffer_t *in,
+                                    pdf_buffer_t *out,
                                     pdf_bool_t    finish_p);
 pdf_status_t pdf_stm_f_rldec_dealloc_state (void *state);
 
@@ -68,8 +68,8 @@ pdf_status_t pdf_stm_f_rlenc_init (pdf_hash_t  *params,
 
 pdf_status_t pdf_stm_f_rlenc_apply (pdf_hash_t   *params,
                                     void         *state,
-                                    pdf_buffer_t  in,
-                                    pdf_buffer_t  out,
+                                    pdf_buffer_t *in,
+                                    pdf_buffer_t *out,
                                     pdf_bool_t    finish_p);
 pdf_status_t pdf_stm_f_rlenc_dealloc_state (void *state);
 

@@ -52,13 +52,13 @@ static INLINE pdf_status_t handle_hexstring_char (pdf_token_reader_t reader,
                                                   pdf_u32_t flags,
                                                   pdf_char_t ch,
                                                   pdf_token_t *token);
-static int recognise_number (pdf_buffer_t buffer, int *int_value);
-static INLINE int parse_integer (pdf_buffer_t buffer, int *int_value,
+static int recognise_number (pdf_buffer_t *buffer, int *int_value);
+static INLINE int parse_integer (pdf_buffer_t *buffer, int *int_value,
                                  int *int_state);
-static INLINE pdf_status_t parse_real (pdf_buffer_t buffer,
+static INLINE pdf_status_t parse_real (pdf_buffer_t *buffer,
                                        char *locale_dec_pt,
                                        double *value);
-static INLINE int validate_real (pdf_buffer_t buffer, int int_state);
+static INLINE int validate_real (pdf_buffer_t *buffer, int int_state);
 
 
 pdf_status_t
@@ -100,7 +100,8 @@ pdf_token_reader_new (pdf_stm_t stm, pdf_token_reader_t *reader)
    * size for keywords, names, numbers, etc.; strings and comments will
    * enlarge the buffer to whatever size is needed. */
   new_tokr->buffer_size_min = 32768;
-  new_tokr->buffer = pdf_buffer_new (new_tokr->buffer_size_min);
+  new_tokr->buffer = pdf_buffer_new (new_tokr->buffer_size_min, NULL);
+  /* TODO: get and propagate error */
   if (!new_tokr->buffer)
     goto fail;
 
@@ -128,7 +129,8 @@ reset_buffer (pdf_token_reader_t reader)
   if (reader->buffer->size > reader->buffer_size_min)
     {
       /* Try to shrink the buffer, but don't worry if it fails. */
-      pdf_buffer_resize (reader->buffer, reader->buffer_size_min);
+      pdf_buffer_resize (reader->buffer, reader->buffer_size_min, NULL);
+      /* TODO: get and propagate error */
     }
 }
 
@@ -373,7 +375,10 @@ enlarge_buffer (pdf_token_reader_t reader)
   if (newsize < size)
     return PDF_EIMPLLIMIT;
 
-  return pdf_buffer_resize (reader->buffer, newsize);
+  /* TODO: get and propagate error */
+  if (pdf_buffer_resize (reader->buffer, newsize, NULL))
+    return PDF_OK;
+  return PDF_ERROR;
 }
 
 static INLINE pdf_status_t
@@ -732,7 +737,7 @@ pdf_token_read (pdf_token_reader_t reader, pdf_u32_t flags, pdf_token_t *token)
           goto ret_token;
         }
       else if (rv != PDF_OK && rv != PDF_EAGAIN)
-        return rv;
+	return rv;
     }
 
   /* peek_char returned an error code (rv) */
@@ -762,7 +767,7 @@ pdf_token_reader_begin_pos (pdf_token_reader_t reader)
 }
 
 static INLINE int
-parse_integer (pdf_buffer_t buffer, int *int_value, int *int_state)
+parse_integer (pdf_buffer_t *buffer, int *int_value, int *int_state)
 {
   /* Parse an ASCII integer with the given radix, at the beginning of
    * the buffer (possibly leaving unread bytes at the end).
@@ -843,7 +848,7 @@ out:
 
 
 static INLINE int
-validate_real (pdf_buffer_t buffer, int int_state)
+validate_real (pdf_buffer_t *buffer, int int_state)
 {
   /* Determines whether the given number is a valid PS/PDF real number;
    * assumes the initial sign was already read (if present), and any data
@@ -892,7 +897,7 @@ validate_real (pdf_buffer_t buffer, int int_state)
  * double by translating it to the execution character set, replacing '.' with
  * the locale's decimal point, and calling strtod. */
 static INLINE pdf_status_t
-parse_real (pdf_buffer_t buffer, char *locale_dec_pt, double *value)
+parse_real (pdf_buffer_t *buffer, char *locale_dec_pt, double *value)
 {
   pdf_status_t ret;
   size_t tmplen, wpos, ptlen;
@@ -952,7 +957,7 @@ out:
  *   2 = real
  */
 static int
-recognise_number (pdf_buffer_t buffer, int *int_value)
+recognise_number (pdf_buffer_t *buffer, int *int_value)
 {
   int rv, tmpint = 0, int_state = 0;
 

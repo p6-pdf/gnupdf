@@ -124,7 +124,7 @@ struct pdf_token_reader_s {
   int substate;
   pdf_char_t charparam;
   int intparam;
-  pdf_buffer_t buffer;
+  pdf_buffer_t *buffer;
   /***/
   pdf_size_t buffer_size_min;
 };

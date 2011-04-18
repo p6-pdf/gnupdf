@@ -187,7 +187,6 @@ struct pdf_token_s
 
   union
   {
-
     struct pdf_token_buffer_s buffer;
     pdf_i32_t integer;
     pdf_real_t real;

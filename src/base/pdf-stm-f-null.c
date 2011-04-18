@@ -47,8 +47,8 @@ pdf_stm_f_null_init (pdf_hash_t  *params,
 pdf_status_t
 pdf_stm_f_null_apply (pdf_hash_t   *params,
                       void         *state,
-                      pdf_buffer_t  in,
-                      pdf_buffer_t  out,
+                      pdf_buffer_t *in,
+                      pdf_buffer_t *out,
                       pdf_bool_t    finish_p)
 {
   pdf_size_t in_size;

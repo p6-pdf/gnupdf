@@ -944,7 +944,7 @@ Current write pointer.
 Pointer to a @code{pdf_buffer_s} structure.
 @end deftp
 
-@deftypefun pdf_buffer_t pdf_buffer_new (pdf_size_t @var{size})
+@deftypefun {pdf_buffer_t *}pdf_buffer_new (pdf_size_t @var{size}, pdf_error_t **@var{error})
 
 Create a new memory buffer.
 
@@ -952,25 +952,32 @@ Create a new memory buffer.
 @item Parameters
 @table @var
 @item size
-The size of the new buffer, in octects.
+The size of the new buffer, in bytes.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to create the buffer.
+@end table
 @end table
 @item Returns
-A pointer to a @code{pdf_buffer_s} structure, or @code{NULL} if there
-is not enough memory to serve the petition.
+A newly created @code{pdf_buffer_t}, or @code{NULL} if an error happened.
 @item Usage example
 @example
-pdf_buffer_t my_buffer;
+pdf_buffer_t *buffer;
+pdf_error_t *error = NULL;
 
-my_buffer = pdf_buffer_new (1024);
-if (my_buffer == NULL)
-@{
-   /* Not enough memory */
-@}
+buffer = pdf_buffer_new (1024, &error);
+if (!buffer)
+  @{
+    /* Not enough memory */
+    pdf_error_destroy (error);
+  @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_buffer_destroy (pdf_buffer_t @var{buffer})
+@deftypefun void pdf_buffer_destroy (pdf_buffer_t *@var{buffer})
 
 Destroy a memory buffer.
 
@@ -978,25 +985,19 @@ Destroy a memory buffer.
 @item Parameters
 @table @var
 @item buffer
-A pointer to the buffer that will be destroyed.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The operation suceeded.
+A valid @code{pdf_buffer_t}.
 @end table
 @item Usage example
 @example
-pdf_buffer_t my_buffer;
+pdf_buffer_t *buffer;
 
-my_buffer = pdf_buffer_new (1024);
-pdf_buffer_destroy (my_buffer);
+buffer = pdf_buffer_new (1024, NULL);
+pdf_buffer_destroy (buffer);
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_bool_t pdf_buffer_full_p (pdf_buffer_t @var{buffer})
+@deftypefun pdf_bool_t pdf_buffer_full_p (pdf_buffer_t *@var{buffer})
 
 Determine whether a memory buffer is full.
 
@@ -1004,42 +1005,36 @@ Determine whether a memory buffer is full.
 @item Parameters
 @table @var
 @item buffer
-A pointer to a buffer.
+A valid @code{pdf_buffer_t}.
 @end table
 @item Returns
-A PDF boolean value:
-@table @code
-@item PDF_OK
-The buffer is full.
-@item PDF_FALSE
-The buffer is not full.
-@end table
+@code{PDF_TRUE} if buffer is full, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
 int i;
-pdf_buffer_t my_buffer;
+pdf_buffer_t *buffer;
 
 /* Create a new buffer */
-my_buffer = pdf_buffer_new (1024);
+buffer = pdf_buffer_new (1024, NULL);
 
 /* Fill the entire buffer */
 for (i = 0; i < 1024; i++)
-@{
-   my_buffer->data[my_buffer->wp++] = 'a';
-@}
+  @{
+    buffer->data[buffer->wp++] = 'a';
+  @}
 
 /* The buffer should be full now */
-if (pdf_buffer_full_p (my_buffer))
-@{
-   /* Buffer full */
-@}
+if (pdf_buffer_full_p (buffer))
+  @{
+    /* Buffer full */
+  @}
 
-pdf_buffer_destroy (my_buffer);
+pdf_buffer_destroy (buffer);
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_bool_t pdf_buffer_eob_p (pdf_buffer_t @var{buffer})
+@deftypefun pdf_bool_t pdf_buffer_eob_p (pdf_buffer_t *@var{buffer})
 
 Determine whether a memory buffer is in an end-of-buffer state.
 
@@ -1047,39 +1042,32 @@ Determine whether a memory buffer is in an end-of-buffer state.
 @item Parameters
 @table @var
 @item buffer
-A pointer to a memory buffer.
+A valid @code{pdf_buffer_t}.
 @end table
 @item Returns
-A PDF boolean value:
-@table @code
-@item PDF_TRUE
-The buffer is in an end-of-buffer state.
-@item PDF_FALSE
-The buffer is not in an end-of-buffer state.
-@end table
+@code{PDF_TRUE} if the buffer is in an end-of-buffer state, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
-pdf_buffer_t my_buffer;
+pdf_buffer_t *buffer;
 pdf_char_t my_char;
 
 /* Create a new buffer */
-my_buffer = pdf_buffer_new (3);
+buffer = pdf_buffer_new (3, NULL);
 
-/* Copy some contents into the buffer, filling it
-   entirely */
-strncpy (my_buffer->data, "abc", 3);
-my_buffer->wp += 3;
+/* Copy some contents into the buffer, filling it entirely */
+strncpy (buffer->data, "abc", 3);
+buffer->wp += 3;
 
 /* Read data from the buffer until an eob condition */
-while (!pdf_buffer_eob_p (my_buffer))
-@{
-   my_char = my_buffer->data[my_buffer->rp++];
-@}
+while (!pdf_buffer_eob_p (buffer))
+  @{
+    my_char = buffer->data[buffer->rp++];
+  @}
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_buffer_resize (pdf_buffer_t @var{buffer}, pdf_size_t @var{newsize})
+@deftypefun pdf_bool_t pdf_buffer_resize (pdf_buffer_t *@var{buffer}, pdf_size_t @var{newsize}, pdf_error_t **@var{error})
 
 Resize a memory buffer.
 
@@ -1087,21 +1075,21 @@ Resize a memory buffer.
 @item Parameters
 @table @var
 @item buffer
-A pointer to a memory buffer.
+A valid @code{pdf_buffer_t}.
 @item newsize
-The new size (in octects) for the buffer.
+The new size (in bytes) for the buffer.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to resize the buffer.
+@end table
 @end table
 @item Returns
-A PDF status variable:
-@table @code
-@item PDF_OK
-The operation succeeded.
-@item PDF_ENOMEM
-Not enough memory to perform the operation.
-@end table
+@code{PDF_TRUE} if buffer properly resized, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
-pdf_buffer_t my_buffer;
+pdf_buffer_t *my_buffer;
 pdf_char_t my_char;
 pdf_char_t *my_string;
 pdf_size_t my_string_size;
@@ -1109,29 +1097,28 @@ pdf_size_t written_bytes;
 
 /* Create a string */
 my_string_size = 10;
-my_string = pdf_alloc (my_string_size);
+my_string = pdf_alloc (my_string_size + 1);
 strncpy (my_string, "0123456789", 10);
 my_string[10] = 0;
 
 /* Create a new buffer */
-my_buffer = pdf_buffer_new (4);
+my_buffer = pdf_buffer_new (4, NULL);
 
 /* Copy the contents of my_string into my_buffer
-   making it larger in chunks of 4 bytes */
+ * making it larger in chunks of 4 bytes */
 written_bytes = 0;
 while (written_bytes < my_string_size)
-@{
-   if (pdf_buffer_full_p (my_buffer))
-   @{
-      /* Grow the buffer */
-      pdf_buffer_resize (my_buffer,
-                         my_buffer->wp + 5);
-   @}
-
-   my_buffer->data[my_buffer->wp]
-     = my_string[my_buffer->wp];
-   my_buffer->wp++;
-@}
+  @{
+    if (pdf_buffer_full_p (my_buffer))
+      @{
+        /* Grow the buffer */
+        pdf_buffer_resize (my_buffer,
+                           my_buffer->wp + 5);
+      @}
+    my_buffer->data[my_buffer->wp] =
+      my_string[my_buffer->wp];
+    my_buffer->wp++;
+  @}
 
 /* Adjust the buffer size */
 pdf_buffer_resize (my_buffer, my_string_size);
@@ -1139,7 +1126,7 @@ pdf_buffer_resize (my_buffer, my_string_size);
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_buffer_rewind (pdf_buffer_t @var{buffer})
+@deftypefun void pdf_buffer_rewind (pdf_buffer_t *@var{buffer})
 
 Rewind a memory buffer.
 
@@ -1147,27 +1134,21 @@ Rewind a memory buffer.
 @item Parameters
 @table @var
 @item buffer
-A pointer to a memory buffer.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
+A valid @code{pdf_buffer_t}.
 @end table
 @item Usage example
 @example
-pdf_buffer_t my_buffer;
+pdf_buffer_t *buffer;
 
 /* Create a new buffer and initialize its contents */
-my_buffer = pdf_buffer_new (3);
-strncpy (my_buffer->data, "abc", 3);
-my_buffer->wp += 3;
+buffer = pdf_buffer_new (3, NULL);
+strncpy (buffer->data, "abc", 3);
+buffer->wp += 3;
 
 /* Replace the contents */
-pdf_buffer_rewind (my_buffer);
-strncpy (my_buffer->data, "ABC", 3);
-my_buffer->wp += 3;
+pdf_buffer_rewind (buffer);
+strncpy (buffer->data, "ABC", 3);
+buffer->wp += 3;
 @end example
 @end table
 @end deftypefun

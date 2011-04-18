@@ -63,7 +63,8 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e  type,
       new->mode = mode;
 
       /* Input buffer */
-      new->in = pdf_buffer_new (buffer_size);
+      new->in = pdf_buffer_new (buffer_size, NULL);
+      /* TODO: get and propagate error */
       if (!new->in)
         {
           /* Not enough memory. Retreat. */
@@ -270,14 +271,14 @@ pdf_stm_filter_set_be (pdf_stm_filter_t filter,
 }
 
 inline pdf_status_t
-pdf_stm_filter_set_out (pdf_stm_filter_t filter,
-                        pdf_buffer_t buffer)
+pdf_stm_filter_set_out (pdf_stm_filter_t  filter,
+                        pdf_buffer_t     *buffer)
 {
   filter->out = buffer;
   return PDF_OK;
 }
 
-inline pdf_buffer_t
+inline pdf_buffer_t *
 pdf_stm_filter_get_in (pdf_stm_filter_t filter)
 {
   return filter->in;

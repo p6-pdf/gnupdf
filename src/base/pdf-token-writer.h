@@ -63,7 +63,7 @@ struct pdf_token_writer_s {
   pdf_size_t pos;
   pdf_size_t paren_quoting_start, paren_quoting_end;
   pdf_bool_t utf8;
-  pdf_buffer_t buffer;
+  pdf_buffer_t *buffer;
 };
 
 /* PDF32000 7.5.1: "lines that are not part of stream object data

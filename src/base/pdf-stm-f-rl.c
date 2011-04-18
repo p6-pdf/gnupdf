@@ -32,10 +32,10 @@
 #include <pdf-stm-f-rl.h>
 
 
-static int encode_rl_char (pdf_stm_f_rl_t st, pdf_buffer_t out);
-static int decode_rl_char (pdf_stm_f_rl_t st, pdf_buffer_t out);
-static int copy_next_bytes (pdf_stm_f_rl_t st, pdf_buffer_t in,
-                            pdf_buffer_t out);
+static int encode_rl_char (pdf_stm_f_rl_t st, pdf_buffer_t *out);
+static int decode_rl_char (pdf_stm_f_rl_t st, pdf_buffer_t *out);
+static int copy_next_bytes (pdf_stm_f_rl_t st, pdf_buffer_t *in,
+                            pdf_buffer_t *out);
 
 
 pdf_status_t
@@ -85,8 +85,8 @@ pdf_stm_f_rldec_init (pdf_hash_t  *params,
 pdf_status_t
 pdf_stm_f_rlenc_apply (pdf_hash_t   *params,
                        void         *state,
-                       pdf_buffer_t  in,
-                       pdf_buffer_t  out,
+                       pdf_buffer_t *in,
+                       pdf_buffer_t *out,
                        pdf_bool_t    finish_p)
 {
   pdf_stm_f_rl_t st;
@@ -166,8 +166,8 @@ pdf_stm_f_rlenc_dealloc_state (void *state)
 pdf_status_t
 pdf_stm_f_rldec_apply (pdf_hash_t   *params,
                        void         *state,
-                       pdf_buffer_t  in,
-                       pdf_buffer_t  out,
+                       pdf_buffer_t *in,
+                       pdf_buffer_t *out,
                        pdf_bool_t    finish_p)
 {
   pdf_stm_f_rl_t st;
@@ -231,7 +231,7 @@ pdf_stm_f_rldec_dealloc_state (void *state)
 /* Private functions */
 
 static int
-encode_rl_char (pdf_stm_f_rl_t st, pdf_buffer_t out)
+encode_rl_char (pdf_stm_f_rl_t st, pdf_buffer_t *out)
 {
   if (st->enc_p == PDF_STM_F_RL_NONE)
     {
@@ -258,7 +258,7 @@ encode_rl_char (pdf_stm_f_rl_t st, pdf_buffer_t out)
 
 
 static int
-decode_rl_char (pdf_stm_f_rl_t st, pdf_buffer_t out)
+decode_rl_char (pdf_stm_f_rl_t st, pdf_buffer_t *out)
 {
   if (!st->dec_p)
     {
@@ -282,7 +282,7 @@ decode_rl_char (pdf_stm_f_rl_t st, pdf_buffer_t out)
 
 
 static int
-copy_next_bytes (pdf_stm_f_rl_t st, pdf_buffer_t in, pdf_buffer_t out)
+copy_next_bytes (pdf_stm_f_rl_t st, pdf_buffer_t *in, pdf_buffer_t *out)
 {
   if (!st->dec_p)
     {

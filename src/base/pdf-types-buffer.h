@@ -33,6 +33,8 @@
 
 /* BEGIN PUBLIC */
 
+/* --------------------- Buffers ------------------------- */
+
 struct pdf_buffer_s
 {
   pdf_char_t *data;    /* Buffer contents */
@@ -41,20 +43,28 @@ struct pdf_buffer_s
   pdf_size_t wp;       /* Write pointer */
 };
 
-typedef struct pdf_buffer_s *pdf_buffer_t;
+typedef struct pdf_buffer_s pdf_buffer_t;
 
-pdf_buffer_t pdf_buffer_new (pdf_size_t size);
+/* Create new buffer */
+pdf_buffer_t *pdf_buffer_new (pdf_size_t    size,
+                              pdf_error_t **error);
 
-pdf_status_t pdf_buffer_destroy (pdf_buffer_t buffer);
+/* Destroy a buffer */
+void pdf_buffer_destroy (pdf_buffer_t *buffer);
 
-pdf_bool_t pdf_buffer_full_p (pdf_buffer_t buffer);
+/* Check if buffer is full */
+pdf_bool_t pdf_buffer_full_p (pdf_buffer_t *buffer);
 
-pdf_bool_t pdf_buffer_eob_p (pdf_buffer_t buffer);
+/* Check if end-of-buffer reached */
+pdf_bool_t pdf_buffer_eob_p (pdf_buffer_t *buffer);
 
-pdf_status_t pdf_buffer_resize (pdf_buffer_t buffer,
-                                pdf_size_t   newsize);
+/* Resize the given buffer */
+pdf_bool_t pdf_buffer_resize (pdf_buffer_t  *buffer,
+                              pdf_size_t     newsize,
+                              pdf_error_t  **error);
 
-pdf_status_t pdf_buffer_rewind (pdf_buffer_t buffer);
+/* Rewind a buffer */
+void pdf_buffer_rewind (pdf_buffer_t *buffer);
 
 /* END PUBLIC */
 

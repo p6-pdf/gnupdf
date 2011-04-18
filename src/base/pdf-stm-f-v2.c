@@ -110,8 +110,8 @@ static inline pdf_status_t
 pdf_stm_f_v2_apply (pdf_stm_f_v2_mode_t  mode,
                     pdf_hash_t          *params,
                     void                *state,
-                    pdf_buffer_t         in,
-                    pdf_buffer_t         out,
+                    pdf_buffer_t        *in,
+                    pdf_buffer_t        *out,
                     pdf_bool_t           finish_p)
 {
   pdf_stm_f_v2_t filter_state = state;
@@ -194,8 +194,8 @@ pdf_stm_f_v2enc_init (pdf_hash_t  *params,
 pdf_status_t
 pdf_stm_f_v2enc_apply (pdf_hash_t   *params,
                        void         *state,
-                       pdf_buffer_t  in,
-                       pdf_buffer_t  out,
+                       pdf_buffer_t *in,
+                       pdf_buffer_t *out,
                        pdf_bool_t    finish_p)
 {
   return pdf_stm_f_v2_apply (PDF_STM_F_V2_MODE_ENCODE,
@@ -222,8 +222,8 @@ pdf_stm_f_v2dec_init (pdf_hash_t  *params,
 pdf_status_t
 pdf_stm_f_v2dec_apply (pdf_hash_t   *params,
                        void         *state,
-                       pdf_buffer_t  in,
-                       pdf_buffer_t  out,
+                       pdf_buffer_t *in,
+                       pdf_buffer_t *out,
                        pdf_bool_t    finish_p)
 {
   return pdf_stm_f_v2_apply (PDF_STM_F_V2_MODE_DECODE,

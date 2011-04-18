@@ -37,7 +37,7 @@
 struct pdf_stm_f_md5_s
 {
   pdf_crypt_md_t md;
-  pdf_buffer_t cache;
+  pdf_buffer_t *cache;
 };
 typedef struct pdf_stm_f_md5_s * pdf_stm_f_md5_t;
 
@@ -68,7 +68,8 @@ pdf_stm_f_md5enc_init (pdf_hash_t  *params,
       if (pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md) == PDF_OK)
         {
           filter_state->md = md;
-          filter_state->cache = pdf_buffer_new (MD5_OUTPUT_SIZE);
+          filter_state->cache = pdf_buffer_new (MD5_OUTPUT_SIZE, NULL);
+          /* TODO: get and propagate error */
 
           if (filter_state->cache == NULL)
             {
@@ -95,12 +96,12 @@ pdf_stm_f_md5enc_init (pdf_hash_t  *params,
 pdf_status_t
 pdf_stm_f_md5enc_apply (pdf_hash_t   *params,
                         void         *state,
-                        pdf_buffer_t  in,
-                        pdf_buffer_t  out,
+                        pdf_buffer_t *in,
+                        pdf_buffer_t *out,
                         pdf_bool_t    finish_p)
 {
   pdf_stm_f_md5_t filter_state = state;
-  pdf_buffer_t cache = filter_state->cache;
+  pdf_buffer_t *cache = filter_state->cache;
   pdf_size_t in_size;
   pdf_status_t ret;
 
