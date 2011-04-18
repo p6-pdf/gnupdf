@@ -102,8 +102,8 @@ struct pdf_stm_filter_impl_s
 
   pdf_status_t (*apply_fn) (pdf_hash_t   *params,
                             void         *state,
-                            pdf_buffer_t  in,
-                            pdf_buffer_t  out,
+                            pdf_buffer_t *in,
+                            pdf_buffer_t *out,
                             pdf_bool_t    finish_p);
   pdf_status_t (*dealloc_state_fn) (void *state);
 };
@@ -118,8 +118,8 @@ struct pdf_stm_filter_s
   pdf_stm_be_t backend;          /* Backend, or NULL */
 
   /* Input and output buffers */
-  pdf_buffer_t in;
-  pdf_buffer_t out;
+  pdf_buffer_t *in;
+  pdf_buffer_t *out;
 
   /* Filter-specific information */
   pdf_hash_t *params;
@@ -150,10 +150,10 @@ inline pdf_status_t pdf_stm_filter_set_next (pdf_stm_filter_t filter,
                                              pdf_stm_filter_t next_filter);
 inline pdf_status_t pdf_stm_filter_set_be (pdf_stm_filter_t filter,
                                            pdf_stm_be_t     be);
-inline pdf_status_t pdf_stm_filter_set_out (pdf_stm_filter_t filter,
-                                            pdf_buffer_t     buffer);
+inline pdf_status_t pdf_stm_filter_set_out (pdf_stm_filter_t  filter,
+                                            pdf_buffer_t     *buffer);
 pdf_stm_filter_t pdf_stm_filter_get_tail (pdf_stm_filter_t filter);
-inline pdf_buffer_t pdf_stm_filter_get_in (pdf_stm_filter_t filter);
+inline pdf_buffer_t *pdf_stm_filter_get_in (pdf_stm_filter_t filter);
 
 pdf_status_t pdf_stm_filter_apply (pdf_stm_filter_t filter,
                                    pdf_bool_t       finish_p);

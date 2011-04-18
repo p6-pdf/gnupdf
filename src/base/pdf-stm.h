@@ -145,7 +145,7 @@ struct pdf_stm_s
 
   pdf_stm_be_t backend;     /* Stream backend */
   pdf_stm_filter_t filter;  /* Filter chain */
-  pdf_buffer_t cache;       /* Stream cache */
+  pdf_buffer_t *cache;      /* Stream cache */
   pdf_off_t seq_counter;    /* Number of octects read/written in the
                                current sequential
                                operation. i.e. since the last bseek or

@@ -56,7 +56,7 @@ typedef unsigned lzw_code_t;
  */
 struct lzw_buffer_s
 {
-  pdf_buffer_t buf;
+  pdf_buffer_t *buf;
   pdf_char_t cache [LZW_CACHE_SIZE];
   pdf_size_t cache_rp;
   pdf_size_t cache_wp;
@@ -82,7 +82,7 @@ lzw_buffer_init (lzw_buffer_t b,
 
 static void
 lzw_buffer_set (lzw_buffer_t b,
-		pdf_buffer_t buf)
+		pdf_buffer_t *buf)
 {
   b->buf = buf;
 }
@@ -388,8 +388,8 @@ pdf_stm_f_lzwenc_init (pdf_hash_t  *params,
 pdf_status_t
 pdf_stm_f_lzwenc_apply (pdf_hash_t   *params,
                         void         *ext_state,
-                        pdf_buffer_t  in,
-                        pdf_buffer_t  out,
+                        pdf_buffer_t *in,
+                        pdf_buffer_t *out,
                         pdf_bool_t    finish_p)
 {
   pdf_status_t ret;
@@ -550,7 +550,7 @@ pdf_stm_f_lzwdec_init (pdf_hash_t  *params,
 }
 
 pdf_status_t
-lzwdec_put_decoded (lzwdec_state_t st, pdf_buffer_t out)
+lzwdec_put_decoded (lzwdec_state_t st, pdf_buffer_t *out)
 {
   pdf_status_t ret;
   pdf_size_t to_write;
@@ -578,7 +578,7 @@ lzwdec_put_decoded (lzwdec_state_t st, pdf_buffer_t out)
 
 pdf_status_t
 lzwdec_put_code (lzwdec_state_t st,
-		 pdf_buffer_t out,
+		 pdf_buffer_t *out,
 		 unsigned long  code)
 {
   if (pdf_buffer_full_p (out))
@@ -600,8 +600,8 @@ lzwdec_put_code (lzwdec_state_t st,
 pdf_status_t
 pdf_stm_f_lzwdec_apply (pdf_hash_t   *params,
                         void         *ext_state,
-                        pdf_buffer_t  in,
-                        pdf_buffer_t  out,
+                        pdf_buffer_t *in,
+                        pdf_buffer_t *out,
                         pdf_bool_t    finish_p)
 {
   lzwdec_state_t st;

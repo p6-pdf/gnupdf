@@ -33,15 +33,15 @@
 #include <pdf-stm-f-flate.h>
 
 
-static pdf_status_t read_and_inflate (pdf_stm_f_flate_t st, pdf_buffer_t in,
-                                      pdf_buffer_t out);
-static pdf_status_t read_and_deflate (pdf_stm_f_flate_t st, pdf_buffer_t in,
-                                      pdf_buffer_t out,
+static pdf_status_t read_and_inflate (pdf_stm_f_flate_t st, pdf_buffer_t *in,
+                                      pdf_buffer_t *out);
+static pdf_status_t read_and_deflate (pdf_stm_f_flate_t st, pdf_buffer_t *in,
+                                      pdf_buffer_t *out,
                                       pdf_bool_t finish_p);
-static int deflate_inbuf (pdf_stm_f_flate_t st, pdf_buffer_t out,
+static int deflate_inbuf (pdf_stm_f_flate_t st, pdf_buffer_t *out,
                           int flush);
 static pdf_status_t deflate_inbuf_return (pdf_stm_f_flate_t st,
-                                          pdf_buffer_t out,
+                                          pdf_buffer_t *out,
                                           pdf_bool_t finish_p);
 
 pdf_status_t
@@ -138,8 +138,8 @@ pdf_stm_f_flatedec_init (pdf_hash_t  *params,
 pdf_status_t
 pdf_stm_f_flateenc_apply (pdf_hash_t   *params,
                           void         *state,
-                          pdf_buffer_t  in,
-                          pdf_buffer_t  out,
+                          pdf_buffer_t *in,
+                          pdf_buffer_t *out,
                           pdf_bool_t    finish_p)
 {
   pdf_stm_f_flate_t st;
@@ -158,8 +158,8 @@ pdf_stm_f_flateenc_apply (pdf_hash_t   *params,
 pdf_status_t
 pdf_stm_f_flatedec_apply (pdf_hash_t   *params,
                           void         *state,
-                          pdf_buffer_t  in,
-                          pdf_buffer_t  out,
+                          pdf_buffer_t *in,
+                          pdf_buffer_t *out,
                           pdf_bool_t    finish_p)
 {
   pdf_stm_f_flate_t st;
@@ -196,8 +196,8 @@ pdf_stm_f_flateenc_dealloc_state (void *state)
 /* Private functions */
 
 
-static pdf_status_t read_and_deflate (pdf_stm_f_flate_t st, pdf_buffer_t in,
-                                      pdf_buffer_t out, pdf_bool_t finish_p)
+static pdf_status_t read_and_deflate (pdf_stm_f_flate_t st, pdf_buffer_t *in,
+                                      pdf_buffer_t *out, pdf_bool_t finish_p)
 {
 
   /* Fill the input CHUNK  */
@@ -224,8 +224,8 @@ static pdf_status_t read_and_deflate (pdf_stm_f_flate_t st, pdf_buffer_t in,
 }
 
 
-static pdf_status_t read_and_inflate (pdf_stm_f_flate_t st, pdf_buffer_t in,
-                                      pdf_buffer_t out)
+static pdf_status_t read_and_inflate (pdf_stm_f_flate_t st, pdf_buffer_t *in,
+                                      pdf_buffer_t *out)
 {
   /* Fill the input CHUNK */
   if (!st->writing_p)
@@ -303,7 +303,7 @@ static pdf_status_t read_and_inflate (pdf_stm_f_flate_t st, pdf_buffer_t in,
 
 
 static int
-deflate_inbuf (pdf_stm_f_flate_t st, pdf_buffer_t out, int flush)
+deflate_inbuf (pdf_stm_f_flate_t st, pdf_buffer_t *out, int flush)
 {
   if (st->writing_p)
     {
@@ -352,7 +352,7 @@ deflate_inbuf (pdf_stm_f_flate_t st, pdf_buffer_t out, int flush)
 
 
 static pdf_status_t
-deflate_inbuf_return (pdf_stm_f_flate_t st, pdf_buffer_t out,
+deflate_inbuf_return (pdf_stm_f_flate_t st, pdf_buffer_t *out,
                       pdf_bool_t finish_p)
 {
   int ret;

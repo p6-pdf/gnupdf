@@ -37,21 +37,21 @@
 
 static pdf_status_t
 pdf_stm_f_a85enc_wr_tuple (pdf_u32_t tuple, pdf_u8_t tuple_bytes,
-                           void *state, pdf_buffer_t out);
+                           void *state, pdf_buffer_t *out);
 
 static pdf_status_t
 pdf_stm_f_a85dec_wr_quad (const pdf_char_t * quint, const pdf_size_t outcount,
-                          pdf_buffer_t out, pdf_stm_f_a85_t filter_state);
+                          pdf_buffer_t *out, pdf_stm_f_a85_t filter_state);
 
 static pdf_status_t
-pdf_stm_f_a85dec_getnext (pdf_buffer_t in, pdf_char_t * pc);
+pdf_stm_f_a85dec_getnext (pdf_buffer_t *in, pdf_char_t * pc);
 
 static pdf_status_t
-pdf_stm_f_a85_write_out (pdf_char_t c, pdf_buffer_t out,
+pdf_stm_f_a85_write_out (pdf_char_t c, pdf_buffer_t *out,
                          pdf_stm_f_a85_t filter_state);
 
 static pdf_status_t
-pdf_stm_f_a85_flush_outbuff (pdf_buffer_t out, pdf_stm_f_a85_t filter_state);
+pdf_stm_f_a85_flush_outbuff (pdf_buffer_t *out, pdf_stm_f_a85_t filter_state);
 
 /*
  * Public functions
@@ -103,7 +103,7 @@ pdf_stm_f_a85enc_init (pdf_hash_t  *params,
  */
 
 static pdf_status_t
-pdf_stm_f_a85_write_out (pdf_char_t c, pdf_buffer_t out,
+pdf_stm_f_a85_write_out (pdf_char_t c, pdf_buffer_t *out,
                          pdf_stm_f_a85_t filter_state)
 {
   pdf_status_t retval = PDF_OK;
@@ -151,7 +151,7 @@ pdf_stm_f_a85_write_out (pdf_char_t c, pdf_buffer_t out,
  *
  */
 static pdf_status_t
-pdf_stm_f_a85_flush_outbuff (pdf_buffer_t out, pdf_stm_f_a85_t filter_state)
+pdf_stm_f_a85_flush_outbuff (pdf_buffer_t *out, pdf_stm_f_a85_t filter_state)
 {
   pdf_status_t retval = PDF_OK;
   pdf_size_t i;
@@ -197,7 +197,7 @@ static pdf_status_t
 pdf_stm_f_a85enc_wr_tuple (pdf_u32_t tuple,
                            pdf_u8_t tuple_bytes, /* always 4 for a full tuple */
                            void *state,
-                           pdf_buffer_t out)
+                           pdf_buffer_t *out)
 {
   pdf_status_t retval = PDF_OK;
   pdf_stm_f_a85_t filter_state;
@@ -258,8 +258,8 @@ pdf_stm_f_a85enc_wr_tuple (pdf_u32_t tuple,
 pdf_status_t
 pdf_stm_f_a85enc_apply (pdf_hash_t   *params,
                         void         *state,
-                        pdf_buffer_t  in,
-                        pdf_buffer_t  out,
+                        pdf_buffer_t *in,
+                        pdf_buffer_t *out,
                         pdf_bool_t    finish_p)
 {
   pdf_size_t in_size;
@@ -520,7 +520,7 @@ pdf_stm_f_a85enc_dealloc_state (void *state)
 /* Make certain that there is room in the output buffer before calling */
 static pdf_status_t
 pdf_stm_f_a85dec_wr_quad (const pdf_char_t * quint, const pdf_size_t outcount,
-                          pdf_buffer_t out, pdf_stm_f_a85_t filter_state)
+                          pdf_buffer_t *out, pdf_stm_f_a85_t filter_state)
 {
   pdf_status_t retval = PDF_OK;
   pdf_u32_t quad;
@@ -617,7 +617,7 @@ pdf_stm_f_a85dec_init (pdf_hash_t  *params,
 
 /* Get the next non-whitespace character */
 static pdf_status_t
-pdf_stm_f_a85dec_getnext (pdf_buffer_t in, pdf_char_t * pc)
+pdf_stm_f_a85dec_getnext (pdf_buffer_t *in, pdf_char_t * pc)
 {
   /* Get the next non-whitespace character */
   int done = PDF_FALSE;
@@ -651,8 +651,8 @@ pdf_stm_f_a85dec_getnext (pdf_buffer_t in, pdf_char_t * pc)
 pdf_status_t
 pdf_stm_f_a85dec_apply (pdf_hash_t   *params,
                         void         *state,
-                        pdf_buffer_t  in,
-                        pdf_buffer_t  out,
+                        pdf_buffer_t *in,
+                        pdf_buffer_t *out,
                         pdf_bool_t    finish_p)
 {
   pdf_stm_f_a85_t filter_state;

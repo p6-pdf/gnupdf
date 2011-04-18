@@ -220,7 +220,7 @@ pdf_stm_write (pdf_stm_t stm,
   pdf_size_t pending_bytes;
   pdf_size_t to_write_bytes;
   pdf_stm_filter_t tail_filter;
-  pdf_buffer_t tail_buffer;
+  pdf_buffer_t *tail_buffer;
   pdf_size_t tail_buffer_size;
   pdf_size_t flushed_bytes;
 
@@ -295,7 +295,7 @@ pdf_stm_flush (pdf_stm_t stm,
                pdf_size_t *flushed_bytes)
 {
   pdf_stm_filter_t tail_filter;
-  pdf_buffer_t tail_buffer;
+  pdf_buffer_t *tail_buffer;
   pdf_status_t ret;
   pdf_size_t cache_size;
   pdf_size_t written_bytes;
@@ -412,7 +412,7 @@ pdf_stm_bseek (pdf_stm_t stm,
   pdf_off_t cur_pos;
   pdf_off_t new_pos;
   pdf_stm_filter_t tail_filter;
-  pdf_buffer_t tail_buffer;
+  pdf_buffer_t *tail_buffer;
   pdf_size_t flushed_bytes;
 
   cur_pos = pdf_stm_tell (stm);
@@ -463,7 +463,7 @@ pdf_stm_btell (pdf_stm_t stm)
   pdf_off_t pos;
   pdf_size_t cache_size;
   pdf_stm_filter_t tail_filter;
-  pdf_buffer_t tail_buffer;
+  pdf_buffer_t *tail_buffer;
 
   if (stm->mode == PDF_STM_READ)
     {
@@ -541,7 +541,8 @@ pdf_stm_init (pdf_size_t cache_size,
   if (ret == PDF_OK)
     {
       /* Initialize the filter cache */
-      stm->cache = pdf_buffer_new (cache_size);
+      stm->cache = pdf_buffer_new (cache_size, NULL);
+      /* TODO: get and propagate error */
 
       /* Configure the filter */
       stm->mode = mode;

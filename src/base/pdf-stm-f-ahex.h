@@ -55,8 +55,8 @@ pdf_status_t pdf_stm_f_ahexdec_init (pdf_hash_t  *params,
                                      void       **state);
 pdf_status_t pdf_stm_f_ahexdec_apply (pdf_hash_t   *params,
                                       void         *state,
-                                      pdf_buffer_t  in,
-                                      pdf_buffer_t  out,
+                                      pdf_buffer_t *in,
+                                      pdf_buffer_t *out,
                                       pdf_bool_t    finish_p);
 pdf_status_t pdf_stm_f_ahexdec_dealloc_state (void *state);
 
@@ -64,8 +64,8 @@ pdf_status_t pdf_stm_f_ahexenc_init (pdf_hash_t  *params,
                                      void       **state);
 pdf_status_t pdf_stm_f_ahexenc_apply (pdf_hash_t   *params,
                                       void         *state,
-                                      pdf_buffer_t  in,
-                                      pdf_buffer_t  out,
+                                      pdf_buffer_t *in,
+                                      pdf_buffer_t *out,
                                       pdf_bool_t    finish_p);
 pdf_status_t pdf_stm_f_ahexenc_dealloc_state (void *state);
 

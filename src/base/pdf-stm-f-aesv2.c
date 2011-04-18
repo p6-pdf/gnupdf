@@ -38,8 +38,8 @@
 struct pdf_stm_f_aesv2_s
 {
   pdf_crypt_cipher_t cipher;
-  pdf_buffer_t in_cache;
-  pdf_buffer_t out_cache;
+  pdf_buffer_t *in_cache;
+  pdf_buffer_t *out_cache;
 };
 typedef struct pdf_stm_f_aesv2_s * pdf_stm_f_aesv2_t;
 
@@ -95,8 +95,9 @@ pdf_stm_f_aesv2_init (pdf_hash_t  *params,
                   filter_state->cipher = cipher;
 
                   /* Initialize cache buffers */
-                  filter_state->in_cache  = pdf_buffer_new (AESV2_CACHE_SIZE);
-                  filter_state->out_cache = pdf_buffer_new (AESV2_CACHE_SIZE);
+                  filter_state->in_cache  = pdf_buffer_new (AESV2_CACHE_SIZE, NULL);
+                  filter_state->out_cache = pdf_buffer_new (AESV2_CACHE_SIZE, NULL);
+                  /* TODO: get and propagate errors */
 
                   if (filter_state->in_cache == NULL || filter_state->out_cache == NULL)
                     {
@@ -131,14 +132,14 @@ static inline pdf_status_t
 pdf_stm_f_aesv2_apply (pdf_stm_f_aesv2_mode_t  mode,
                        pdf_hash_t             *params,
                        void                   *state,
-                       pdf_buffer_t            in,
-                       pdf_buffer_t            out,
+                       pdf_buffer_t           *in,
+                       pdf_buffer_t           *out,
                        pdf_bool_t              finish_p)
 {
   pdf_stm_f_aesv2_t filter_state = state;
   pdf_crypt_cipher_t cipher   = filter_state->cipher;
-  pdf_buffer_t in_cache   = filter_state->in_cache;
-  pdf_buffer_t out_cache  = filter_state->out_cache;
+  pdf_buffer_t *in_cache   = filter_state->in_cache;
+  pdf_buffer_t *out_cache  = filter_state->out_cache;
 
   while(1)
     {
@@ -303,8 +304,8 @@ pdf_stm_f_aesv2enc_init (pdf_hash_t  *params,
 pdf_status_t
 pdf_stm_f_aesv2enc_apply (pdf_hash_t   *params,
                           void         *state,
-                          pdf_buffer_t  in,
-                          pdf_buffer_t  out,
+                          pdf_buffer_t *in,
+                          pdf_buffer_t *out,
                           pdf_bool_t    finish_p)
 {
   return pdf_stm_f_aesv2_apply (PDF_STM_F_AESV2_MODE_ENCODE,
@@ -332,8 +333,8 @@ pdf_stm_f_aesv2dec_init (pdf_hash_t  *params,
 pdf_status_t
 pdf_stm_f_aesv2dec_apply (pdf_hash_t   *params,
                           void         *state,
-                          pdf_buffer_t  in,
-                          pdf_buffer_t  out,
+                          pdf_buffer_t *in,
+                          pdf_buffer_t *out,
                           pdf_bool_t    finish_p)
 {
   return pdf_stm_f_aesv2_apply (PDF_STM_F_AESV2_MODE_DECODE,

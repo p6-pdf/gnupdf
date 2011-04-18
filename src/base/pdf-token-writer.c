@@ -71,7 +71,8 @@ pdf_token_writer_new (pdf_stm_t stm, pdf_token_writer_t *writer)
   new_tokw->max_line_length = PDF_TOKW_MAX_LINE_LENGTH;
 
   err = PDF_ENOMEM;
-  new_tokw->buffer = pdf_buffer_new (PDF_TOKW_BUFFER_SIZE);
+  new_tokw->buffer = pdf_buffer_new (PDF_TOKW_BUFFER_SIZE, NULL);
+  /* TODO: get and propagate error */
   if (!new_tokw->buffer)
     goto fail;
 
@@ -180,7 +181,7 @@ write_data_using_pos (pdf_token_writer_t writer,
 static pdf_status_t
 flush_buffer (pdf_token_writer_t writer)
 {
-  pdf_buffer_t buf = writer->buffer;
+  pdf_buffer_t *buf = writer->buffer;
   pdf_size_t len;
   while ( (len = buf->wp - buf->rp) > 0 )
     {
@@ -193,7 +194,9 @@ flush_buffer (pdf_token_writer_t writer)
 
       buf->rp += written;
     }
-  return pdf_buffer_rewind (buf);
+
+  pdf_buffer_rewind (buf);
+  return PDF_OK;
 }
 
 /* Flush the buffer if there are less than 'len' bytes free. */
@@ -285,7 +288,7 @@ start_token (pdf_token_writer_t writer, pdf_bool_t need_wspace,
 static pdf_bool_t
 encode_buffer_number (pdf_token_writer_t writer, int len)
 {
-  pdf_buffer_t buf = writer->buffer;
+  pdf_buffer_t *buf = writer->buffer;
   if (len < 0 || len >= buf->size)
     return PDF_FALSE;  /* snprintf failed, or truncated its output. */
 
@@ -354,7 +357,7 @@ write_real_token (pdf_token_writer_t writer, pdf_token_t token)
     {
       case 0:
         {
-          pdf_buffer_t buf = writer->buffer;
+          pdf_buffer_t *buf = writer->buffer;
           pdf_real_t value = pdf_token_get_real_value (token);
           if (isnan(value) || isinf(value))
             return PDF_EBADDATA;

@@ -64,7 +64,7 @@ struct pdf_stm_f_dctdec_s
   pdf_i32_t *param_color_transform;
 
   /* image cache for input data */
-  pdf_buffer_t djpeg_in;
+  pdf_buffer_t *djpeg_in;
 
   /* cache for output data */
   pdf_size_t row_stride;
@@ -78,11 +78,11 @@ typedef struct pdf_stm_f_dctdec_s *pdf_stm_f_dctdec_t;
 #define PPM_MAXVAL 255
 
 static void         pdf_stm_f_dctdec_jpeg_cache_src (j_decompress_ptr cinfo,
-                                                     pdf_buffer_t cache);
+                                                     pdf_buffer_t *cache);
 static pdf_status_t pdf_stm_f_dctdec_src_fill(j_decompress_ptr cinfo,
-                                              pdf_buffer_t in);
+                                              pdf_buffer_t *in);
 static pdf_status_t pdf_stm_f_dctdec_write_ppm_header(j_decompress_ptr cinfo,
-                                                      pdf_buffer_t out);
+                                                      pdf_buffer_t *out);
 static void         pdf_stm_f_dctdec_set_djpeg_param(j_decompress_ptr cinfo,
                                                      pdf_stm_f_dctdec_t filter_state);
 
@@ -96,8 +96,8 @@ pdf_stm_f_dctenc_init (pdf_hash_t  *params,
 pdf_status_t
 pdf_stm_f_dctenc_apply (pdf_hash_t   *params,
                         void         *state,
-                        pdf_buffer_t  in,
-                        pdf_buffer_t  out,
+                        pdf_buffer_t *in,
+                        pdf_buffer_t *out,
                         pdf_bool_t    finish_p)
 {
   pdf_status_t ret = PDF_OK;
@@ -162,8 +162,8 @@ pdf_stm_f_dctdec_init (pdf_hash_t  *params,
 pdf_status_t
 pdf_stm_f_dctdec_apply (pdf_hash_t   *params,
                         void         *state,
-                        pdf_buffer_t  in,
-                        pdf_buffer_t  out,
+                        pdf_buffer_t *in,
+                        pdf_buffer_t *out,
                         pdf_bool_t    finish_p)
 {
   pdf_status_t ret = PDF_OK;
@@ -185,7 +185,8 @@ pdf_stm_f_dctdec_apply (pdf_hash_t   *params,
         {
           if (!filter_state->djpeg_in)
             {
-              filter_state->djpeg_in = pdf_buffer_new (PDF_DJPEG_CACHE_SIZE);
+              filter_state->djpeg_in = pdf_buffer_new (PDF_DJPEG_CACHE_SIZE, NULL);
+              /* TODO: get and propagate error */
               if(!filter_state->djpeg_in)
                 {
                   ret = PDF_ERROR;
@@ -439,7 +440,7 @@ struct pdf_stm_f_dct_cache_source_mgr_s
 {
   struct jpeg_source_mgr pub; /* public fields */
 
-  pdf_buffer_t cache;
+  pdf_buffer_t *cache;
   pdf_size_t size_to_skip;
 };
 
@@ -488,7 +489,7 @@ pdf_stm_f_dctdec_term_source (j_decompress_ptr cinfo)
 }
 
 pdf_status_t
-pdf_stm_f_dctdec_src_fill (j_decompress_ptr cinfo, pdf_buffer_t in)
+pdf_stm_f_dctdec_src_fill (j_decompress_ptr cinfo, pdf_buffer_t *in)
 {
   pdf_stm_f_dct_cache_source_mgr_t src =
     (pdf_stm_f_dct_cache_source_mgr_t ) cinfo->src;
@@ -552,7 +553,7 @@ pdf_stm_f_dctdec_src_fill_eoi (j_decompress_ptr cinfo)
 }
 
 static void
-pdf_stm_f_dctdec_jpeg_cache_src (j_decompress_ptr cinfo, pdf_buffer_t cache)
+pdf_stm_f_dctdec_jpeg_cache_src (j_decompress_ptr cinfo, pdf_buffer_t *cache)
 {
   pdf_stm_f_dct_cache_source_mgr_t src =
     (pdf_stm_f_dct_cache_source_mgr_t ) cinfo->src;
@@ -579,7 +580,7 @@ pdf_stm_f_dctdec_jpeg_cache_src (j_decompress_ptr cinfo, pdf_buffer_t cache)
 }
 
 static pdf_status_t
-pdf_stm_f_dctdec_write_ppm_header (j_decompress_ptr cinfo, pdf_buffer_t out)
+pdf_stm_f_dctdec_write_ppm_header (j_decompress_ptr cinfo, pdf_buffer_t *out)
 {
   pdf_char_t header[64];
   pdf_i32_t hlen;

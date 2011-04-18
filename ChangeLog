@@ -1,5 +1,33 @@
 2011-04-18  Aleksander Morgado  <aleksander@gnu.org>
 
+	base,types: Refactored pdf buffer type
+	* doc/gnupdf.texi (Types): API Documentation updated
+	* src/base/pdf-types-buffer.[h|c]
+
+	base,stm: Use new buffer API
+	* src/base/pdf-stm-f-a85.[h|c]
+	* src/base/pdf-stm-f-aesv2.[h|c]
+	* src/base/pdf-stm-f-ahex.[h|c]
+	* src/base/pdf-stm-f-dct.[h|c]
+	* src/base/pdf-stm-f-flate.[h|c]
+	* src/base/pdf-stm-f-jbig2.[h|c]
+	* src/base/pdf-stm-f-lzw.[h|c]
+	* src/base/pdf-stm-f-md5.[h|c]
+	* src/base/pdf-stm-f-null.[h|c]
+	* src/base/pdf-stm-f-rl.[h|c]
+	* src/base/pdf-stm-f-v2.[h|c]
+	* src/base/pdf-stm-filter.[h|c]
+	* src/base/pdf-stm.[h|c]
+
+	base,token: Use new buffer API
+	* src/base/pdf-token-reader.c
+	* src/base/pdf-token-reader.h
+	* src/base/pdf-token-writer.c
+	* src/base/pdf-token-writer.h
+	* src/base/pdf-token.h
+
+2011-04-18  Aleksander Morgado  <aleksander@gnu.org>
+
 	base,error: Stream domain ID renamed to `PDF_EDOMAIN_BASE_STM'
 	* src/base/pdf-error.h (PDF_ERROR_DOMAIN_LIST)
 	* doc/gnupdf.texi (Types)
