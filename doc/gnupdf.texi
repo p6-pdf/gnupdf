@@ -241,7 +241,7 @@ the issue.
 @node Error Reporting procedures
 @subsection Error Reporting procedures
 
-@deftypefun pdf_error_t pdf_error_new (pdf_error_domain_t @var{domain}, pdf_status_t @var{status}, const pdf_char_t *@var{format}, @var{...})
+@deftypefun {pdf_error_t *}pdf_error_new (pdf_error_domain_t @var{domain}, pdf_status_t @var{status}, const pdf_char_t *@var{format}, @var{...})
 
 Creates a new @code{pdf_error_t} variable.
 
@@ -253,16 +253,16 @@ object.
 @item Parameters
 @table @var
 @item domain
-error domain
+a valid error domain
 @item status
-status code
+a valid status code
 @item format
 string format for the message
 @item ...
 format's arguments
 @end table
 @item Returns
-a newly created pdf_error_t
+a newly created @code{pdf_error_t}
 @item Usage example
 @example
 pdf_error_t *error;
@@ -282,10 +282,10 @@ Returns the status code in @var{error}.
 @item Parameters
 @table @var
 @item error
-a pdf_error_t
+a @code{pdf_error_t}
 @end table
 @item Returns
-a pdf_status_t
+a @code{pdf_status_t}
 @item Usage example
 @example
 pdf_error_t *error;
@@ -310,10 +310,10 @@ Returns the error domain in @var{error}.
 @item Parameters
 @table @var
 @item error
-a pdf_error_t
+a @code{pdf_error_t}
 @end table
 @item Returns
-a pdf_error_domain_t
+a @code{pdf_error_domain_t}
 @item Usage example
 @example
 pdf_error_t *error;
@@ -338,10 +338,10 @@ Returns the message in @var{error}.
 @item Parameters
 @table @var
 @item error
-a pdf_error_t
+a @code{pdf_error_t}
 @end table
 @item Returns
-a pdf_error_domain_t
+a @code{pdf_error_domain_t}
 @item Usage example
 @example
 pdf_error_t *error;
@@ -364,7 +364,7 @@ Disposes @var{error} and its contents.
 @item Parameters
 @table @var
 @item error
-a pdf_error_t
+a @code{pdf_error_t}
 @end table
 @item Usage example
 @example
@@ -390,7 +390,7 @@ it in *@var{err}.
 @item Parameters
 @table @var
 @item err
-a pointer to a pdf_error_t
+a pointer to a @code{pdf_error_t}
 @item domain
 a valid error domain
 @item status
@@ -433,7 +433,7 @@ but *@var{err} is @code{NULL}. Otherwise, prepends the new message to the existi
 @item Parameters
 @table @var
 @item err
-a pointer to a pdf_error_t
+a pointer to a @code{pdf_error_t}
 @item format
 string format for the message
 @item ...
@@ -471,7 +471,7 @@ set *@var{err} to @code{NULL}.
 @item Parameters
 @table @var
 @item err
-a pointer to a pdf_error_t
+a pointer to a @code{pdf_error_t}
 @end table
 @item Usage example
 @example
@@ -509,9 +509,9 @@ If @var{dest} is @code{NULL}, it will dispose @var{src}. Otherwise, moves
 @item Parameters
 @table @var
 @item dest
-a pointer to a pdf_error_t
+a pointer to a @code{pdf_error_t}
 @item src
-a pdf_error_t
+a @code{pdf_error_t}
 @end table
 @item Usage example
 @example
