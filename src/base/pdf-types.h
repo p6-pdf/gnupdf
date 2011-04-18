@@ -73,8 +73,9 @@
 #define NO_POS -1
 typedef off_t pdf_off_t;
 
-/* Memory indexes (size_t) */
-typedef size_t pdf_size_t;
+/* Memory indexes */
+typedef size_t  pdf_size_t;  /* unsigned, size_t */
+typedef ssize_t pdf_ssize_t; /* signed, ssize_t */
 
 /* Characters.
  *

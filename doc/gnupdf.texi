@@ -738,12 +738,13 @@ pdf_dealloc (p);
 @section Basic Types
 
 @menu
-* Boolean Types::       The true/false boolean operators.
-* Numeric Types::       Signed and unsigned 32bit integers.
-* Character Types::     Signed and unsigned bytes.
-* Memory Buffers::      Operations on simple memory buffers.
+* Boolean Types::           The true/false boolean operators.
+* Numeric Types::           Signed and unsigned 32bit integers.
+* Size and Position Types:: Types to represent sizes and positions.
+* Character Types::         Signed and unsigned bytes.
+* Memory Buffers::          Operations on simple memory buffers.
 @comment * Progress Monitors::   Following the progress of operations.
-* UUIDs::               Universal Unique Identifiers.
+* UUIDs::                   Universal Unique Identifiers.
 @end menu
 
 @node Boolean Types
@@ -827,6 +828,24 @@ Maximum value able to be stored in a @code{pdf_u64_t} variable.
 Minimum value able to be stored in a @code{pdf_u64_t} variable.
 @end deftp
 
+@node Size and Position Types
+@subsection Size and Position Types
+
+The library provides several types intended to manage sizes and offsets
+
+@deftp {Data Type} pdf_size_t
+Unsigned size type
+@end deftp
+
+@deftp {Data Type} pdf_ssize_t
+Signed size type
+@end deftp
+
+@deftp {Data Type} pdf_off_t
+Type to represent a byte offset. It is assured to be a signed scalable one,
+but its size may be wider than a long.
+@end deftp
+
 @node Character Types
 @subsection Character Types
 
@@ -838,7 +857,7 @@ A character code.
 
 Note that @code{pdf_char_t} values may be signed or unsigned depending
 on the system running in the host, and they shall not be manipulated
-numerically.  The following type shall be used instead in those cases.
+numerically. The following type shall be used instead in those cases.
 
 @deftp {Data Type} pdf_uchar_t
 A character code in the range @code{0..255}.
