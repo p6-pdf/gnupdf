@@ -1,5 +1,11 @@
 2011-04-18  Aleksander Morgado  <aleksander@gnu.org>
 
+	base,error: Stream domain ID renamed to `PDF_EDOMAIN_BASE_STM'
+	* src/base/pdf-error.h (PDF_ERROR_DOMAIN_LIST)
+	* doc/gnupdf.texi (Types)
+
+2011-04-18  Aleksander Morgado  <aleksander@gnu.org>
+
 	base,error: New methods using duplicated errors
 	* src/base/pdf-error.c (pdf_error_dup, pdf_propagate_error_dup)
 	* doc/gnupdf.texi (Error Reporting procedures)

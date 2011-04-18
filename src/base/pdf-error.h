@@ -98,7 +98,7 @@ extern const pdf_char_t * pdf_error_stlist [];
    ERROR_ENTRY (PDF_EDOMAIN_BASE_BASIC,      "[Base] Basic Types"),     \
    ERROR_ENTRY (PDF_EDOMAIN_BASE_HASH,       "[Base] Hashes"),          \
    ERROR_ENTRY (PDF_EDOMAIN_BASE_LIST,       "[Base] Lists"),           \
-   ERROR_ENTRY (PDF_EDOMAIN_BASE_STREAM,     "[Base] Streams"),         \
+   ERROR_ENTRY (PDF_EDOMAIN_BASE_STM,        "[Base] Streams"),         \
    ERROR_ENTRY (PDF_EDOMAIN_BASE_FP,         "[Base] Floating Points"), \
    ERROR_ENTRY (PDF_EDOMAIN_BASE_TEXT,       "[Base] Text"),            \
    ERROR_ENTRY (PDF_EDOMAIN_BASE_TIME,       "[Base] Time"),            \

@@ -205,7 +205,7 @@ The Hash Tables module in the Base layer.
 The Lists module in the Base layer.
 @end deftp
 
-@deftp {Constant} PDF_EDOMAIN_BASE_STREAM
+@deftp {Constant} PDF_EDOMAIN_BASE_STM
 The Streams module in the Base layer.
 @end deftp
 
