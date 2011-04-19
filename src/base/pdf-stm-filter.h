@@ -115,7 +115,7 @@ struct pdf_stm_filter_s
 
   struct pdf_stm_filter_s *next; /* Next filter in the chain, or
                                     NULL */
-  pdf_stm_be_t backend;          /* Backend, or NULL */
+  pdf_stm_be_t *backend;         /* Backend, or NULL */
 
   /* Input and output buffers */
   pdf_buffer_t *in;
@@ -148,8 +148,8 @@ pdf_status_t pdf_stm_filter_new (enum pdf_stm_filter_type_e  type,
 pdf_status_t pdf_stm_filter_destroy (pdf_stm_filter_t filter);
 inline pdf_status_t pdf_stm_filter_set_next (pdf_stm_filter_t filter,
                                              pdf_stm_filter_t next_filter);
-inline pdf_status_t pdf_stm_filter_set_be (pdf_stm_filter_t filter,
-                                           pdf_stm_be_t     be);
+inline pdf_status_t pdf_stm_filter_set_be (pdf_stm_filter_t  filter,
+                                           pdf_stm_be_t     *be);
 inline pdf_status_t pdf_stm_filter_set_out (pdf_stm_filter_t  filter,
                                             pdf_buffer_t     *buffer);
 pdf_stm_filter_t pdf_stm_filter_get_tail (pdf_stm_filter_t filter);

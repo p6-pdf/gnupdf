@@ -263,8 +263,8 @@ pdf_stm_filter_set_next (pdf_stm_filter_t filter,
 }
 
 inline pdf_status_t
-pdf_stm_filter_set_be (pdf_stm_filter_t filter,
-                       pdf_stm_be_t be)
+pdf_stm_filter_set_be (pdf_stm_filter_t  filter,
+                       pdf_stm_be_t     *be)
 {
   filter->backend = be;
   return PDF_OK;
@@ -396,7 +396,6 @@ pdf_stm_filter_get_input (pdf_stm_filter_t filter,
                           pdf_bool_t finish_p)
 {
   pdf_status_t ret;
-  pdf_size_t read_bytes;
 
   /* The input buffer should be empty at this point */
   pdf_buffer_rewind (filter->in);
@@ -408,13 +407,24 @@ pdf_stm_filter_get_input (pdf_stm_filter_t filter,
     }
   else if (filter->backend != NULL)
     {
+      pdf_ssize_t read_bytes;
+
       read_bytes = pdf_stm_be_read (filter->backend,
                                     filter->in->data,
-                                    filter->in->size);
-      filter->in->wp = read_bytes;
-      if (read_bytes < filter->in->size)
+                                    filter->in->size,
+                                    NULL);
+      if (read_bytes < 0)
         {
-          ret = PDF_EEOF;
+          /* TODO: get and propagate error */
+          ret = PDF_ERROR;
+        }
+      else
+        {
+          filter->in->wp = (pdf_size_t)read_bytes;
+          if (read_bytes < filter->in->size)
+            {
+              ret = PDF_EEOF;
+            }
         }
     }
   else

@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2007, 2008 Free Software Foundation, Inc. */
+/* Copyright (C) 2007-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,10 @@
 
 #include <pdf-alloc.h>
 #include <pdf-stm.h>
+#include <pdf-stm-be.h>
+#include <pdf-stm-be-mem.h>
+#include <pdf-stm-be-cfile.h>
+#include <pdf-stm-be-file.h>
 
 /* Forward declarations */
 
@@ -46,18 +50,18 @@ static pdf_status_t pdf_stm_read_peek_char (pdf_stm_t stm, pdf_char_t *c, pdf_bo
 
 pdf_status_t
 pdf_stm_cfile_new (FILE* file,
-		   pdf_off_t offset,
-		   pdf_size_t cache_size,
-		   enum pdf_stm_mode_e mode,
-		   pdf_stm_t *stm)
+                   pdf_off_t offset,
+                   pdf_size_t cache_size,
+                   enum pdf_stm_mode_e mode,
+                   pdf_stm_t *stm)
 {
   /* Allocate memory for the new stream */
   *stm = pdf_stm_alloc ();
 
   /* Initialize a file stream */
   (*stm)->type = PDF_STM_FILE;
-  (*stm)->backend = pdf_stm_be_new_cfile (file,
-                                         offset);
+  (*stm)->backend = pdf_stm_be_new_cfile (file, offset, NULL);
+  /* TODO: get and propagate error */
 
   /* Initialize the common parts */
   return pdf_stm_init (cache_size,
@@ -78,8 +82,8 @@ pdf_stm_file_new (pdf_fsys_file_t file,
 
   /* Initialize a file stream */
   (*stm)->type = PDF_STM_FILE;
-  (*stm)->backend = pdf_stm_be_new_file (file,
-                                         offset);
+  (*stm)->backend = pdf_stm_be_new_file (file, offset, NULL);
+  /* TODO: get and propagate error */
 
   /* Initialize the common parts */
   return pdf_stm_init (cache_size,
@@ -99,9 +103,8 @@ pdf_stm_mem_new (pdf_char_t *buffer,
 
   /* Initialize a memory stream */
   (*stm)->type = PDF_STM_MEM;
-  (*stm)->backend = pdf_stm_be_new_mem (buffer,
-                                        size,
-                                        0);
+  (*stm)->backend = pdf_stm_be_new_mem (buffer, size, 0, NULL);
+  /* TODO: get and propagate error */
 
   /* Initialize the common parts */
   return pdf_stm_init (cache_size,
@@ -297,8 +300,6 @@ pdf_stm_flush (pdf_stm_t stm,
   pdf_stm_filter_t tail_filter;
   pdf_buffer_t *tail_buffer;
   pdf_status_t ret;
-  pdf_size_t cache_size;
-  pdf_size_t written_bytes;
   pdf_size_t tail_size;
 
   if (stm->mode != PDF_STM_WRITE)
@@ -313,6 +314,9 @@ pdf_stm_flush (pdf_stm_t stm,
   *flushed_bytes = 0;
   while (1)
     {
+      pdf_size_t cache_size;
+      pdf_ssize_t written_bytes;
+
       tail_size = tail_buffer->wp - tail_buffer->rp;
       ret = pdf_stm_filter_apply (stm->filter, finish_p);
 
@@ -338,13 +342,20 @@ pdf_stm_flush (pdf_stm_t stm,
       cache_size = stm->cache->wp - stm->cache->rp;
       written_bytes = pdf_stm_be_write (stm->backend,
                                         stm->cache->data + stm->cache->rp,
-                                        cache_size);
+                                        cache_size,
+                                        NULL);
+      if (written_bytes < 0)
+        {
+          /* TODO: Get and propagate error */
+          ret = PDF_ERROR;
+          break;
+        }
 
       if (written_bytes != cache_size)
         {
           /* Could not write all the contents of the cache buffer into
              the backend */
-          stm->cache->rp += written_bytes;
+          stm->cache->rp += (pdf_size_t)written_bytes;
           ret = PDF_EEOF;
           break;
         }

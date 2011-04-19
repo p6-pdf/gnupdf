@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2007, 2008, 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2007-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,10 +86,10 @@ typedef struct pdf_stm_s *pdf_stm_t;
 
 /* Creation and destruction */
 pdf_status_t pdf_stm_cfile_new (FILE* file,
-				pdf_off_t offset,
-				pdf_size_t cache_size,
-				enum pdf_stm_mode_e mode,
-				pdf_stm_t *stm);
+                                pdf_off_t offset,
+                                pdf_size_t cache_size,
+                                enum pdf_stm_mode_e mode,
+                                pdf_stm_t *stm);
 pdf_status_t pdf_stm_file_new (pdf_fsys_file_t file,
                                pdf_off_t offset,
                                pdf_size_t cache_size,
@@ -143,7 +143,7 @@ struct pdf_stm_s
   enum pdf_stm_type_e type;
   enum pdf_stm_mode_e mode;
 
-  pdf_stm_be_t backend;     /* Stream backend */
+  pdf_stm_be_t *backend;    /* Stream backend */
   pdf_stm_filter_t filter;  /* Filter chain */
   pdf_buffer_t *cache;      /* Stream cache */
   pdf_off_t seq_counter;    /* Number of octects read/written in the

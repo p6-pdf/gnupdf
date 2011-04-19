@@ -1,3 +1,19 @@
+2011-04-19  Aleksander Morgado  <aleksander@gnu.org>
+
+	base,stm: Refactored stream backends
+	* src/base/pdf-stm-be.c: File removed, backend implementations moved to
+	separate files.
+	* src/base/pdf-stm-be.h: New generic API for the stream backends.
+	* src/base/pdf-stm-be-cfile.[h|c]: New files with the implementation of
+	the C-File stream backend.
+	* src/base/pdf-stm-be-file.[h|c]: New files with the implementation of
+	the File stream backend.
+	* src/base/pdf-stm-be-mem.[h|c]: New files with the implementation of
+	the Memory stream backend.
+	* src/Makefile.am: Add/remove files from compilation.
+	* src/base/pdf-stm-filter.[h|c]: Use new stream backend API.
+	* src/base/pdf-stm.[h|c]: Idem.
+
 2011-04-18  Aleksander Morgado  <aleksander@gnu.org>
 
 	base,types: Refactored pdf buffer type
