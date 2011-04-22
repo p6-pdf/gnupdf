@@ -39,14 +39,13 @@
  *   same number with pdf_time_cal_span_s. Both
  *   objects schould be equal.
  *
- *Success condition:
- * 1. Function pdf_time_new schould return PDF_OK
- * 2. Function pdf_time_set_from_u32 schould return
- * PDF_OK.
- * 3. Function pdf_time_add_cal_span schould return
- * PDF_OK.
- * 4. pdf_time_t objects are equal.
- *
+ * Success conditions:
+ *   1. Function pdf_time_new schould return PDF_OK
+ *   2. Function pdf_time_set_from_u32 schould return
+ *      PDF_OK.
+ *   3. Function pdf_time_add_cal_span schould return
+ *      PDF_OK.
+ *   4. pdf_time_t objects are equal.
  */
 START_TEST (pdf_time_add_cal_span_001)
 {
@@ -132,13 +131,11 @@ END_TEST
  *   pdf_time_cap_span_s initialized to 1 month and
  *   27, 28, 29, 30 days.
  *   All objcts schould be equal.
- *
- *Success condition:
- * 1. Function pdf_time_new schould return PDF_OK
- * 2. Function pdf_time_add_cal_span schould return
- * PDF_OK.
- * 3. pdf_time_t objects are equal.
- *
+ * Success conditions:
+ *   1. Function pdf_time_new schould return PDF_OK
+ *   2. Function pdf_time_add_cal_span schould return
+ *      PDF_OK.
+ *   3. pdf_time_t objects are equal.
  */
 START_TEST (pdf_time_add_cal_span_002)
 {

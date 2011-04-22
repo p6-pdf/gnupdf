@@ -1957,7 +1957,8 @@ END_TEST
  * Description:
  *   Create a memory-based writing stream and attach an A85 filter
  *   decoder to it.
- * **FAIL** condition: Requirement **(#8)**
+ * Success condition:
+ *   Requirement **(#8)**
  *   The decoding should fail.
  */
 START_TEST (pdf_stm_read_031)
@@ -2017,7 +2018,7 @@ END_TEST
  * Description:
  *   Create a memory-based writing stream and attach an A85 filter
  *   decoder to it.
- * **FAIL** condition:
+ * Success condition:
  *   The decoding should fail.
  */
 START_TEST (pdf_stm_read_032)
@@ -2077,7 +2078,7 @@ END_TEST
  * Description:
  *   Create a memory-based writing stream and attach an A85 filter
  *   decoder to it.
- * **FAIL** condition:
+ * Success condition:
  *   The decoding should fail.
  */
 START_TEST (pdf_stm_read_033)
@@ -2137,7 +2138,7 @@ END_TEST
  * Description:
  *   Create a memory-based writing stream and attach an A85 filter
  *   decoder to it.
- * **FAIL** condition:
+ * Success condition:
  *   The decoding should fail.
  */
 START_TEST (pdf_stm_read_034)
@@ -2197,7 +2198,7 @@ END_TEST
  * Description:
  *   Create a memory-based writing stream and attach an A85 filter
  *   decoder to it. Requirement **(#9)**
- * **FAIL** condition:
+ * Success condition:
  *   The decoding should fail.
  */
 START_TEST (pdf_stm_read_035)
@@ -2257,7 +2258,7 @@ END_TEST
  * Description:
  *   Create a memory-based writing stream and attach an A85 filter
  *   decoder to it. Requirement **(#7)**
- * **FAIL** condition:
+ * Success condition:
  *   The decoding should fail.
  */
 START_TEST (pdf_stm_read_036)
@@ -2317,7 +2318,7 @@ END_TEST
  * Description:
  *   Create a memory-based writing stream and attach an A85 filter
  *   decoder to it.
- * **FAIL** condition:
+ * Success condition:
  *   The decoding should fail.
  */
 START_TEST (pdf_stm_read_037)
@@ -2377,7 +2378,7 @@ END_TEST
  * Description:
  *   Create a memory-based writing stream and attach an A85 filter
  *   decoder to it. Requirement **(#7)**
- * **FAIL** condition:
+ * Success condition:
  *   The decoding should fail.
  */
 START_TEST (pdf_stm_read_038)
@@ -2437,7 +2438,7 @@ END_TEST
  * Description:
  *   Create a memory-based writing stream and attach an A85 filter
  *   decoder to it.
- * **FAIL** condition:
+ * Success condition:
  *   The decoding should fail.
  */
 START_TEST (pdf_stm_read_039)
@@ -2497,7 +2498,7 @@ END_TEST
  * Description:
  *   Create a memory-based writing stream and attach an A85 filter
  *   decoder to it.
- * **FAIL** condition:
+ * Success condition:
  *   The decoding should fail.
  */
 START_TEST (pdf_stm_read_040)
@@ -2557,7 +2558,7 @@ END_TEST
  * Description:
  *   Create a memory-based writing stream and attach an A85 filter
  *   decoder to it.
- * **FAIL** condition:
+ * Success condition:
  *   The decoding should fail.
  */
 START_TEST (pdf_stm_read_041)
@@ -2617,7 +2618,7 @@ END_TEST
  * Description:
  *   Create a memory-based writing stream and attach an A85 filter
  *   decoder to it.
- * **FAIL** condition:
+ * Success condition:
  *   The decoding should fail.
  */
 START_TEST (pdf_stm_read_042)
@@ -2677,7 +2678,8 @@ END_TEST
  * Description:
  *   Create a memory-based writing stream and attach an A85 filter
  *   decoder to it.
- * **FAIL** condition: Requirement **(#2)** - invalid character
+ * Success condition:
+ *   Requirement **(#2)** - invalid character
  *   The decoding should fail.
  */
 START_TEST (pdf_stm_read_043)
@@ -2737,7 +2739,8 @@ END_TEST
  * Description:
  *   Create a memory-based writing stream and attach an A85 filter
  *   decoder to it.
- * **FAIL** condition: Requirement **(#3)** - invalid character
+ * Success condition:
+ *   Requirement **(#3)** - invalid character
  *   The decoding should fail.
  */
 START_TEST (pdf_stm_read_044)

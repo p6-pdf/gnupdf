@@ -37,10 +37,10 @@
  * Description:
  *   Get string representation of pdf_time_t object in
  *   ISO_8601 format:  YYYY-MM-DDThh:mm:ss+hh:mm.
- *Success condition:
- * 1. Function pdf_time_to_string schould return
- * string in right format.
- * 2. Returned string schould be expected one.
+ * Success condition:
+ *   1. Function pdf_time_to_string schould return
+ *      string in right format.
+ *   2. Returned string schould be expected one.
  */
 START_TEST (pdf_time_to_string_001)
 {
@@ -141,10 +141,10 @@ END_TEST
  *   Get string representation of pdf_time_t object in
  *   PDF format:
  *   D:YYYYMMDDHHmmSSOHH'mm'
- *Success condition:
- * 1. Function pdf_time_to_string schould return
- * string in right format.
- * 2. Returned string schould be expected one.
+ * Success condition:
+ *   1. Function pdf_time_to_string schould return
+ *      string in right format.
+ *   2. Returned string schould be expected one.
  */
 START_TEST (pdf_time_to_string_002)
 {
@@ -286,11 +286,10 @@ END_TEST
  *   Get string representation of pdf_time_t object in
  *   PDF_TIME_FORMAT_GENERALIZED_ASN1 format:
  *   YYYYMMDDhhmmssTZD.
- *Success condition:
- * 1. Function pdf_time_to_string schould return
- * string in right format.
- * 2. Returned string schould be expected one.
-
+ * Success condition:
+ *   1. Function pdf_time_to_string schould return
+ *      string in right format.
+ *   2. Returned string schould be expected one.
  */
 START_TEST (pdf_time_to_string_003)
 {
@@ -391,10 +390,10 @@ END_TEST
  *   Get string representation of pdf_time_t object in
  *   PDF_TIME_FORMAT_UTC_ASN1 format:
  *   yymmddhhmmss+hhmm
- *Success condition:
- * 1. Function pdf_time_to_string schould return
- * string in right format.
- * 2. Returned string schould be expected one.
+ * Success condition:
+ *   1. Function pdf_time_to_string schould return
+ *      string in right format.
+ *   2. Returned string schould be expected one.
  */
 START_TEST (pdf_time_to_string_004)
 {

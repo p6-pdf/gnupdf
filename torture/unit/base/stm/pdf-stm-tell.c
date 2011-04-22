@@ -29,11 +29,12 @@
 #include <check.h>
 #include <pdf.h>
 #include <pdf-test-common.h>
+
 /*
  * Test: pdf_stm_tell_001
  * Description:
  *   Tell in an initialized reading memory stream.
- * Sucess condition:
+ * Success condition:
  *   The tell operation should report the first position
  *   in the stream (0).
  */

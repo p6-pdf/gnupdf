@@ -34,11 +34,10 @@
  * Test: pdf_time_init_001
  * Description:
  *   Create init pdf_time_t.
- *
- *Success condition:
- * 1. Function pdf_time_init should return a valid object
- * 2. Init pdf_time_t object is not NUL
- * 3. pdf_time_t is set to 1970-01-01 00:00:00 UTC
+ * Success condition:
+ *   1. Function pdf_time_init should return a valid object
+ *   2. Init pdf_time_t object is not NUL
+ *   3. pdf_time_t is set to 1970-01-01 00:00:00 UTC
  */
 START_TEST (pdf_time_init_001)
 {

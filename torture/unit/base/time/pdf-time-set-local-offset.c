@@ -33,18 +33,17 @@
 /*
  * Test: pdf_time_set_local_offset_001
  * Description:
- * Invoke pdf_time_set_local_offset on newly created
- * pdf_time_t object. Than compare its gmt_offset
- * with offset taken from system.
- *
- *Success condition:
- * 1. Function pdf_time_new schould return PDF_OK
- * 2. Function pdf_time_set_local_offset schould return
- * PDF_OK.
- * 3. Function pdf_time_get_utc_cal schould return
- * PDF_OK.
- * 4. In returned utccal field gmt_offset must be
- * equal to offset returned by system.
+ *   Invoke pdf_time_set_local_offset on newly created
+ *   pdf_time_t object. Than compare its gmt_offset
+ *   with offset taken from system.
+ * Success condition:
+ *   1. Function pdf_time_new schould return PDF_OK
+ *   2. Function pdf_time_set_local_offset schould return
+ *      PDF_OK.
+ *   3. Function pdf_time_get_utc_cal schould return
+ *      PDF_OK.
+ *   4. In returned utccal field gmt_offset must be
+ *      equal to offset returned by system.
  */
 START_TEST (pdf_time_set_local_offset_001)
 {

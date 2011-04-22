@@ -37,14 +37,13 @@
  *   Create new pdf_time_t and initialize it with a
  *   date in utc. Returned localcal schould be
  *   expected one.
- *
- *Success condition:
- * 1. Function pdf_time_new schould return PDF_OK
- * 2. Function pdf_time_set_from_u32 schould return
- * PDF_OK.
- * 3. Function pdf_time_get_local_cal schould return
- * PDF_OK.
- * 4. Returned localcal must be expected one.
+ * Success condition:
+ *   1. Function pdf_time_new schould return PDF_OK
+ *   2. Function pdf_time_set_from_u32 schould return
+ *      PDF_OK.
+ *   3. Function pdf_time_get_local_cal schould return
+ *      PDF_OK.
+ *   4. Returned localcal must be expected one.
  */
 START_TEST (pdf_time_get_utc_cal_001)
 {
@@ -76,14 +75,13 @@ END_TEST
  *   Create new pdf_time_t and initialize it with
  *   28857600 seconds that is 1970-12-01 in utc.
  *   Returned calendar schould be expected one.
- *
- *Success condition:
- * 1. Function pdf_time_new schould return PDF_OK
- * 2. Function pdf_time_set_from_u32 schould return
- * PDF_OK.
- * 3. Function pdf_time_get_utc_cal schould return
- * PDF_OK.
- * 4. Returned localcal must be expected one.
+ * Success condition:
+ *   1. Function pdf_time_new schould return PDF_OK
+ *   2. Function pdf_time_set_from_u32 schould return
+ *      PDF_OK.
+ *   3. Function pdf_time_get_utc_cal schould return
+ *      PDF_OK.
+ *   4. Returned localcal must be expected one.
  */
 START_TEST (pdf_time_get_utc_cal_002)
 {

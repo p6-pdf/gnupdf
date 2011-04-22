@@ -37,11 +37,10 @@
  *   object with pdf_i64_t value.
  *   Then call pdf_time_sub_span and check if
  *   pdf_time_t object points to 1970-01-01.
- *
- *Success condition:
- * 1. Function pdf_time_sub_span schould return
- * PDF_OK.
- * 2. Function pdf_time_cmp schould return 0.
+ * Success condition:
+ *   1. Function pdf_time_sub_span schould return
+ *      PDF_OK.
+ *   2. Function pdf_time_cmp schould return 0.
  */
 START_TEST (pdf_time_sub_span_001)
 {

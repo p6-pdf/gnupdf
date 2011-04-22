@@ -33,12 +33,12 @@
 /*
  * Test: pdf_time_set_from_cal_001
  * Description:
- * Get pdf_time_t object from calendar object. Set
- * calendar date after 00:00:00 01.01.1970.
- *Success condition:
- * 1. pdf_time_set_from_u32 schould return PDF_OK.
- * 2. pdf_time_from_cal schould return PDF_OK.
- * 3. pdf_time_t objects schould be the same.
+ *   Get pdf_time_t object from calendar object. Set
+ *   calendar date after 00:00:00 01.01.1970.
+ * Success condition:
+ *   1. pdf_time_set_from_u32 schould return PDF_OK.
+ *   2. pdf_time_from_cal schould return PDF_OK.
+ *   3. pdf_time_t objects schould be the same.
  */
 START_TEST (pdf_time_set_from_cal_001)
 {

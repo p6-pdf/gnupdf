@@ -36,15 +36,13 @@
  *   and initialize them to with the same number of
  *   seconds. After calling pdf_time_sub_span pdf_time_t
  *   object schould be equal to 0.
- *
- *Success condition:
- * 1. Function pdf_time_new schould return PDF_OK
- * 2. Function pdf_time_set_utc schould return
- * PDF_OK.
- * 3. Function pdf_time_sub_span schould return
- * PDF_OK.
- * 4. pdf_time_t object is equal to 0.
- *
+ * Success condition:
+ *   1. Function pdf_time_new schould return PDF_OK
+ *   2. Function pdf_time_set_utc schould return
+ *      PDF_OK.
+ *   3. Function pdf_time_sub_span schould return
+ *      PDF_OK.
+ *   4. pdf_time_t object is equal to 0.
  */
 START_TEST (pdf_time_set_utc_001)
 {

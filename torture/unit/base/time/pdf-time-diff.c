@@ -36,11 +36,10 @@
  *   Create two pdf_time_t objects and initialize
  *   them with the same value.
  *   Returned pdf_time_diff_t schould be equal to 0.
- *
  * Success condition:
- * 1. Function pdf_time_set_from_i64 schould return PDF_OK.
- * 2. Function pdf_time_diff  schould return PDF_OK.
- * 3. Diff returned by pdf_time_diff schould be equal to 0.
+ *   1. Function pdf_time_set_from_i64 schould return PDF_OK.
+ *   2. Function pdf_time_diff  schould return PDF_OK.
+ *   3. Diff returned by pdf_time_diff schould be equal to 0.
  */
 START_TEST (pdf_time_diff_001)
 {

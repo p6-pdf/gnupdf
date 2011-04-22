@@ -37,11 +37,10 @@
  *   initialized by adding pdf_time_span_t and second one
  *   by pdf_i64_t value. Both pdf_time_t objects
  *   must be equal.
- *
- *Success condition:
- * 1. Function pdf_time_add_span schould return
- * PDF_OK.
- * 2. Function pdf_time_cmp schould return 0.
+ * Success condition:
+ *   1. Function pdf_time_add_span schould return
+ *      PDF_OK.
+ *   2. Function pdf_time_cmp schould return 0.
  */
 START_TEST (pdf_time_add_span_001)
 {

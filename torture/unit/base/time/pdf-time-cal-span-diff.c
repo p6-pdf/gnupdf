@@ -38,12 +38,12 @@
  *   add that cal_span to cleared pdf_time_t object
  *   and compare it with other object initialized
  *   with seconds.
- *Success condition:
- * 1. Function pdf_time_cal_span_diff schould return
- * PDF_OK
- * 2. Function pdf_time_add_cal_span schould return
- * PDF_OK
- * 3. Function pdf_time_cmp schould return 0
+ * Success condition:
+ *   1. Function pdf_time_cal_span_diff schould return
+ *      PDF_OK
+ *   2. Function pdf_time_add_cal_span schould return
+ *      PDF_OK
+ *   3. Function pdf_time_cmp schould return 0
  */
 START_TEST (pdf_time_cal_span_diff_001)
 {
