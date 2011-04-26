@@ -154,6 +154,8 @@ pdf_error_new (pdf_error_domain_t  domain,
 pdf_error_t *
 pdf_error_dup (const pdf_error_t *error)
 {
+  PDF_ASSERT_RETURN_VAL (error != NULL, NULL);
+
   return pdf_error_new (error->domain,
                         error->status,
                         error->message);
@@ -162,18 +164,24 @@ pdf_error_dup (const pdf_error_t *error)
 pdf_status_t
 pdf_error_get_status (const pdf_error_t *error)
 {
+  PDF_ASSERT_RETURN_VAL (error != NULL, PDF_EBADDATA);
+
   return error->status;
 }
 
 pdf_error_domain_t
 pdf_error_get_domain (const pdf_error_t *error)
 {
+  PDF_ASSERT_RETURN_VAL (error != NULL, PDF_EDOMAIN_UNDEFINED);
+
   return error->domain;
 }
 
 const pdf_char_t *
 pdf_error_get_message (const pdf_error_t *error)
 {
+  PDF_ASSERT_RETURN_VAL (error != NULL, NULL);
+
   return error->message;
 }
 
@@ -282,6 +290,8 @@ void
 pdf_propagate_error (pdf_error_t **dest,
                      pdf_error_t  *src)
 {
+  PDF_ASSERT_RETURN (src != NULL);
+
   if (dest == NULL)
     pdf_error_destroy (src);
   else
@@ -292,6 +302,8 @@ void
 pdf_propagate_error_dup (pdf_error_t       **dest,
                          const pdf_error_t  *src)
 {
+  PDF_ASSERT_RETURN (src != NULL);
+
   if (dest)
     *dest = pdf_error_dup (src);
 }
