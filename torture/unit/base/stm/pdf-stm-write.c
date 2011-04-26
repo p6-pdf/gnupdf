@@ -48,6 +48,8 @@ mem_stm_fixture_setup ()
 {
   pdf_status_t ret;
 
+  pdf_test_setup ();
+
   mem_stm_fixture.buf = pdf_alloc (MEM_STM_FIXTURE_BUFFER_SIZE);
   fail_if (mem_stm_fixture.buf == NULL);
 
@@ -64,6 +66,8 @@ mem_stm_fixture_teardown ()
 {
   pdf_stm_destroy (mem_stm_fixture.stm);
   pdf_dealloc (mem_stm_fixture.buf);
+
+  pdf_test_teardown ();
 }
 
 
@@ -1215,9 +1219,6 @@ test_pdf_stm_write (void)
   tcase_add_test(tc, pdf_stm_write_020);
   tcase_add_test(tc, pdf_stm_write_021);
 
-  tcase_add_checked_fixture (tc,
-                             pdf_test_setup,
-                             pdf_test_teardown);
   return tc;
 }
 
