@@ -1,3 +1,10 @@
+2011-04-26  Aleksander Morgado  <aleksander@gnu.org>
+
+	torture: pdf_test_get_hex() renamed from pdf_text_test_get_hex()
+	* torture/unit/pdf-test-common.[h|c] (pdf_test_get_hex): New method.
+	* torture/unit/base/text/pdf-text-test-common.[h|c]
+	(pdf_text_test_get_hex): Removed method.
+
 2011-04-19  Aleksander Morgado  <aleksander@gnu.org>
 
 	base,stm: Refactored stream backends

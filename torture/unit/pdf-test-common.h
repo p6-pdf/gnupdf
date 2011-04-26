@@ -3,7 +3,7 @@
  *       File:         pdf-text-common.h
  *       Date:         Thu Feb 24 22:53:03 2011
  *
- *       GNU PDF Library - Common utilities to test the Text Module
+ *       GNU PDF Library - Common utilities in the Unit Tests
  *
  */
 
@@ -32,6 +32,12 @@
 void pdf_test_setup (void);
 
 void pdf_test_teardown (void);
+
+/* Function quite similar to `pdf_text_get_hex', but using an array of bytes
+ *  as input. */
+pdf_char_t *pdf_test_get_hex (const pdf_uchar_t *data,
+                              const pdf_size_t   size,
+                              const pdf_char_t   delimiter);
 
 #endif /* _PDF_TEST_COMMON_H */
 
