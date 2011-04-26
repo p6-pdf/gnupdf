@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2007, 2008, 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2007-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,32 +28,12 @@
 
 #include <config.h>
 
-#include <pdf-types.h>
-#include <pdf-types-buffer.h>
-#include <pdf-hash.h>
+#include <pdf-stm-filter.h>
 
-/* Filter API implementation */
+const pdf_stm_filter_impl_t *pdf_stm_f_lzwenc_get (void);
 
-pdf_status_t pdf_stm_f_lzwenc_init (pdf_hash_t  *params,
-                                    void       **state);
-pdf_status_t pdf_stm_f_lzwenc_apply (pdf_hash_t   *params,
-                                     void         *state,
-                                     pdf_buffer_t *in,
-                                     pdf_buffer_t *out,
-                                     pdf_bool_t    finish_p);
+const pdf_stm_filter_impl_t *pdf_stm_f_lzwdec_get (void);
 
-pdf_status_t pdf_stm_f_lzwdec_init (pdf_hash_t  *params,
-                                    void       **state);
-pdf_status_t pdf_stm_f_lzwdec_apply (pdf_hash_t   *params,
-                                     void         *state,
-                                     pdf_buffer_t *in,
-                                     pdf_buffer_t *out,
-                                     pdf_bool_t    finish_p);
-
-pdf_status_t pdf_stm_f_lzwdec_dealloc_state (void *state);
-
-pdf_status_t pdf_stm_f_lzwenc_dealloc_state (void *state);
-
-#endif /* pdf_stm_f_lzw.h */
+#endif /* PDF_STM_F_LZW */
 
 /* End of pdf_stm_f_lzw.h */

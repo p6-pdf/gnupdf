@@ -1,5 +1,23 @@
 2011-04-26  Aleksander Morgado  <aleksander@gnu.org>
 
+	base,stm: Refactored stream filters
+	* src/base/pdf-stm-filter.[h|c]: New generic API for the filters
+	implementation.
+	* src/base/pdf-stm.[h|c]: Use the new filtes API.
+	* src/base/pdf-stm-f-a85.[h|c]: Ported to the new filter API.
+	* src/base/pdf-stm-f-aesv2.[h|c]: Idem.
+	* src/base/pdf-stm-f-ahex.[h|c]: Idem.
+	* src/base/pdf-stm-f-dct.[h|c]: Idem.
+	* src/base/pdf-stm-f-flate.[h|c]: Idem.
+	* src/base/pdf-stm-f-jbig2.[h|c]: Idem.
+	* src/base/pdf-stm-f-lzw.[h|c]: Idem.
+	* src/base/pdf-stm-f-md5.[h|c]: Idem.
+	* src/base/pdf-stm-f-null.[h|c]: Idem.
+	* src/base/pdf-stm-f-rl.[h|c]: Idem.
+	* src/base/pdf-stm-f-v2.[h|c]: Idem.
+
+2011-04-26  Aleksander Morgado  <aleksander@gnu.org>
+
 	torture: Avoid compilation warning
 	* torture/unit/pdf-test-common.c
 

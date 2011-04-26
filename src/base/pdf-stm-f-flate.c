@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2007, 2008, 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2007-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,191 +28,281 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <zlib.h>
+
 #include <pdf-alloc.h>
 #include <pdf-hash.h>
 #include <pdf-stm-f-flate.h>
+#include <pdf-types.h>
+#include <pdf-types-buffer.h>
+#include <pdf-hash.h>
 
+#define PDF_STM_F_FLATE_CHUNK 16384
 
-static pdf_status_t read_and_inflate (pdf_stm_f_flate_t st, pdf_buffer_t *in,
-                                      pdf_buffer_t *out);
-static pdf_status_t read_and_deflate (pdf_stm_f_flate_t st, pdf_buffer_t *in,
-                                      pdf_buffer_t *out,
-                                      pdf_bool_t finish_p);
-static int deflate_inbuf (pdf_stm_f_flate_t st, pdf_buffer_t *out,
-                          int flush);
-static pdf_status_t deflate_inbuf_return (pdf_stm_f_flate_t st,
-                                          pdf_buffer_t *out,
-                                          pdf_bool_t finish_p);
-
-pdf_status_t
-pdf_stm_f_flateenc_init (pdf_hash_t  *params,
-                         void       **state)
+struct pdf_stm_f_flate_s
 {
-  pdf_status_t ret;
-  pdf_stm_f_flate_t filter_state;
+  z_stream stream;
+  int zret;
+  pdf_size_t incnt;
+  pdf_size_t outcnt;
+  pdf_size_t to_write;
+  pdf_bool_t writing;
+  pdf_char_t inbuf[PDF_STM_F_FLATE_CHUNK];
+  pdf_char_t outbuf[PDF_STM_F_FLATE_CHUNK];
+};
 
+static pdf_bool_t stm_f_flateenc_init (pdf_hash_t   *params,
+                                       void        **state,
+                                       pdf_error_t **error);
+
+static void stm_f_flateenc_deinit (void *state);
+
+static enum pdf_stm_filter_apply_status_e stm_f_flateenc_apply (pdf_hash_t    *params,
+                                                               void          *state,
+                                                               pdf_buffer_t  *in,
+                                                               pdf_buffer_t  *out,
+                                                               pdf_bool_t     finish,
+                                                               pdf_error_t  **error);
+
+static pdf_bool_t stm_f_flatedec_init (pdf_hash_t   *params,
+                                       void        **state,
+                                       pdf_error_t **error);
+
+static void stm_f_flatedec_deinit (void *state);
+
+static enum pdf_stm_filter_apply_status_e stm_f_flatedec_apply (pdf_hash_t    *params,
+                                                               void          *state,
+                                                               pdf_buffer_t  *in,
+                                                               pdf_buffer_t  *out,
+                                                               pdf_bool_t     finish,
+                                                               pdf_error_t  **error);
+/* Filter implementations */
+
+static const pdf_stm_filter_impl_t enc_impl = {
+  .init_fn   = stm_f_flateenc_init,
+  .apply_fn  = stm_f_flateenc_apply,
+  .deinit_fn = stm_f_flateenc_deinit,
+};
+
+static const pdf_stm_filter_impl_t dec_impl = {
+  .init_fn   = stm_f_flatedec_init,
+  .apply_fn  = stm_f_flatedec_apply,
+  .deinit_fn = stm_f_flatedec_deinit,
+};
+
+const pdf_stm_filter_impl_t *
+pdf_stm_f_flateenc_get (void)
+{
+  return &enc_impl;
+}
+
+const pdf_stm_filter_impl_t *
+pdf_stm_f_flatedec_get (void)
+{
+  return &dec_impl;
+}
+
+/* Common implementation */
+
+static pdf_bool_t
+stm_f_flate_init (pdf_hash_t   *params,
+                  void        **state,
+                  pdf_error_t **error)
+{
+  struct pdf_stm_f_flate_s *filter_state;
+
+  /* Allocate the internal state structure */
   filter_state = pdf_alloc (sizeof (struct pdf_stm_f_flate_s));
-
-  if (state == NULL)
+  if (!filter_state)
     {
-      ret = PDF_EBADDATA;
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_STM,
+                     PDF_ENOMEM,
+                     "cannot create FLATE encoder/decoder internal state: "
+                     "couldn't allocate %lu bytes",
+                     (unsigned long)sizeof (struct pdf_stm_f_flate_s));
+      return PDF_FALSE;
     }
-  else if (filter_state == NULL)
+
+  /* Initialize common fields */
+  filter_state->stream.zalloc = Z_NULL;
+  filter_state->stream.zfree = Z_NULL;
+  filter_state->stream.opaque = Z_NULL;
+  filter_state->stream.next_in = Z_NULL;
+  filter_state->stream.avail_in = 0;
+  filter_state->writing = PDF_FALSE;
+  filter_state->to_write = 0;
+  filter_state->incnt = 0;
+  filter_state->outcnt = 0;
+  filter_state->zret = Z_OK;
+
+  *state = filter_state;
+
+  return PDF_TRUE;
+}
+
+static void
+stm_f_flate_deinit (void *state)
+{
+  pdf_dealloc (state);
+}
+
+static void
+set_error_from_zlib_ret (pdf_error_t **error,
+                         int           zlib_ret)
+{
+  const pdf_char_t *errmsg;
+
+  switch (zlib_ret)
     {
-      ret = PDF_ENOMEM;
+    case Z_STREAM_ERROR:
+      errmsg = "zlib error detected: invalid compression level";
+      break;
+    case Z_NEED_DICT:
+      errmsg = "zlib error detected: need dictionary";
+      break;
+    case Z_DATA_ERROR:
+      errmsg = "zlib error detected: invalid or incomplete deflate data";
+      break;
+    case Z_MEM_ERROR:
+      errmsg = "zlib error detected: out of memory";
+      break;
+    default:
+      errmsg = "zlib error detected";
+      break;
+    }
+
+  pdf_set_error (error,
+                 PDF_EDOMAIN_BASE_STM,
+                 PDF_ERROR,
+                 errmsg);
+}
+
+/* Encoder implementation */
+
+static pdf_bool_t
+stm_f_flateenc_init (pdf_hash_t   *params,
+                     void        **state,
+                     pdf_error_t **error)
+{
+  struct pdf_stm_f_flate_s *filter_state;
+
+  /* Initialize common stuff */
+  if (!stm_f_flate_init (params, state, error))
+    return PDF_FALSE;
+
+  filter_state = *state;
+  if (deflateInit (&(filter_state->stream),
+                   Z_DEFAULT_COMPRESSION) != Z_OK)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_STM,
+                     PDF_ERROR,
+                     "cannot create FLATE encoder internal state: "
+                     "couldn't initialize deflate");
+      stm_f_flate_deinit (filter_state);
+      return PDF_FALSE;
+    }
+
+  return PDF_TRUE;
+}
+
+static void
+stm_f_flateenc_deinit (void *state)
+{
+  struct pdf_stm_f_flate_s *filter_state = state;
+
+  deflateEnd (&(filter_state->stream));
+  stm_f_flate_deinit (state);
+}
+
+static enum pdf_stm_filter_apply_status_e
+deflate_inbuf (struct pdf_stm_f_flate_s  *st,
+               pdf_buffer_t              *out,
+               pdf_bool_t                 finish,
+               pdf_error_t              **error)
+{
+  if (st->writing)
+    {
+      /*
+       * Not nice, but keeps the writing process code clear.
+       * Notice that the labeled code is inside a while loop,
+       * so I feel that avoiding this goto won't bring us better code.
+       */
+      goto writing;
+    }
+
+  st->stream.avail_in = st->incnt;
+  st->stream.next_in = (Bytef *) st->inbuf;
+  do {
+    st->stream.avail_out = PDF_STM_F_FLATE_CHUNK;
+    st->stream.next_out = (Bytef *) st->outbuf;
+    st->outcnt = 0;
+
+    st->zret = deflate (&(st->stream),
+                        (finish ? Z_FINISH : Z_NO_FLUSH));
+    if (st->zret == Z_STREAM_ERROR)
+      {
+        set_error_from_zlib_ret (error, st->zret);
+        return PDF_STM_FILTER_APPLY_STATUS_ERROR;
+      }
+
+    st->to_write = PDF_STM_F_FLATE_CHUNK - st->stream.avail_out;
+
+  writing:
+
+    while (st->outcnt < st->to_write &&
+           !pdf_buffer_full_p (out))
+      {
+        out->data[out->wp++] = st->outbuf[st->outcnt];
+        st->outcnt++;
+      }
+
+    if (pdf_buffer_full_p (out))
+      {
+        st->writing = PDF_TRUE;
+        return PDF_STM_FILTER_APPLY_STATUS_NO_OUTPUT;
+      }
+  } while (st->stream.avail_out == 0);
+
+  st->writing = PDF_FALSE;
+
+  if (finish)
+    {
+      return PDF_STM_FILTER_APPLY_STATUS_EOF;
     }
   else
     {
-      /* Initialize fields */
-      filter_state->stream.zalloc = Z_NULL;
-      filter_state->stream.zfree = Z_NULL;
-      filter_state->stream.opaque = Z_NULL;
-      filter_state->writing_p = PDF_FALSE;
-      filter_state->to_write = 0;
-      filter_state->incnt = 0;
-      filter_state->outcnt = 0;
-      filter_state->zret = Z_OK;
-
-      if (deflateInit (&(filter_state->stream), Z_DEFAULT_COMPRESSION) != Z_OK)
-        {
-          ret = PDF_ERROR;
-        }
-      else
-        {
-          *state = (void *) filter_state;
-          ret = PDF_OK;
-        }
+      /* the input CHUNK now is empty */
+      st->incnt = 0;
+      /* ask for the input we couldn't read */
+      return PDF_STM_FILTER_APPLY_STATUS_OK;
     }
-
-  return ret;
 }
 
-
-pdf_status_t
-pdf_stm_f_flatedec_init (pdf_hash_t  *params,
-                         void       **state)
+static enum pdf_stm_filter_apply_status_e
+read_and_deflate (struct pdf_stm_f_flate_s  *st,
+                  pdf_buffer_t              *in,
+                  pdf_buffer_t              *out,
+                  pdf_bool_t                 finish,
+                  pdf_error_t              **error)
 {
-  pdf_status_t ret;
-  pdf_stm_f_flate_t filter_state;
-
-  filter_state = pdf_alloc (sizeof (struct pdf_stm_f_flate_s));
-
-  if (state == NULL)
-    {
-      ret = PDF_EBADDATA;
-    }
-  else if (filter_state == NULL)
-    {
-      ret = PDF_ENOMEM;
-    }
-  else
-    {
-      /* Initialize fields */
-      filter_state->stream.zalloc = Z_NULL;
-      filter_state->stream.zfree = Z_NULL;
-      filter_state->stream.opaque = Z_NULL;
-      filter_state->stream.avail_in = 0;
-      filter_state->stream.next_in = Z_NULL;
-      filter_state->writing_p = PDF_FALSE;
-      filter_state->to_write = 0;
-      filter_state->incnt = 0;
-      filter_state->outcnt = 0;
-      filter_state->zret = Z_OK;
-
-      if (inflateInit (&(filter_state->stream)) != Z_OK)
-        {
-          ret = PDF_ERROR;
-        }
-      else
-        {
-          *state = (void *) filter_state;
-          ret = PDF_OK;
-        }
-    }
-
-  return ret;
-
-}
-
-
-pdf_status_t
-pdf_stm_f_flateenc_apply (pdf_hash_t   *params,
-                          void         *state,
-                          pdf_buffer_t *in,
-                          pdf_buffer_t *out,
-                          pdf_bool_t    finish_p)
-{
-  pdf_stm_f_flate_t st;
-  pdf_status_t ret;
-  st = (pdf_stm_f_flate_t) state;
-
-  ret = read_and_deflate (st, in, out, finish_p);
-  while (ret == PDF_OK)
-    {
-      ret = read_and_deflate (st, in, out, finish_p);
-    }
-  return ret;
-}
-
-
-pdf_status_t
-pdf_stm_f_flatedec_apply (pdf_hash_t   *params,
-                          void         *state,
-                          pdf_buffer_t *in,
-                          pdf_buffer_t *out,
-                          pdf_bool_t    finish_p)
-{
-  pdf_stm_f_flate_t st;
-  pdf_status_t ret;
-  st = (pdf_stm_f_flate_t) state;
-
-  ret = read_and_inflate (st, in, out);
-  while (ret == PDF_OK)
-    {
-      ret = read_and_inflate (st, in, out);
-    }
-  return ret;
-}
-
-
-
-pdf_status_t
-pdf_stm_f_flatedec_dealloc_state (void *state)
-{
-  pdf_stm_f_flate_t st = state;
-  inflateEnd(&(st->stream));
-  pdf_dealloc (state);
-  return PDF_OK;
-}
-
-pdf_status_t
-pdf_stm_f_flateenc_dealloc_state (void *state)
-{
-  pdf_dealloc (state);
-  return PDF_OK;
-}
-
-
-/* Private functions */
-
-
-static pdf_status_t read_and_deflate (pdf_stm_f_flate_t st, pdf_buffer_t *in,
-                                      pdf_buffer_t *out, pdf_bool_t finish_p)
-{
-
   /* Fill the input CHUNK  */
-  if (!st->writing_p)
+  if (!st->writing)
     {
-      while (st->incnt < PDF_STM_F_FLATE_CHUNK && !pdf_buffer_eob_p(in))
+      while (st->incnt < PDF_STM_F_FLATE_CHUNK &&
+             !pdf_buffer_eob_p (in))
         {
           st->inbuf[st->incnt] = in->data[in->rp];
           st->incnt++;
           in->rp++;
         }
+
       /* If more data may come and the input CHUNK has space, ask for it. */
-      if (!finish_p && st->incnt < PDF_STM_F_FLATE_CHUNK)
+      if (!finish &&
+          st->incnt < PDF_STM_F_FLATE_CHUNK)
         {
-          return PDF_ENINPUT;
+          return PDF_STM_FILTER_APPLY_STATUS_NO_INPUT;
         }
     }
 
@@ -220,17 +310,78 @@ static pdf_status_t read_and_deflate (pdf_stm_f_flate_t st, pdf_buffer_t *in,
    * Now we have the input CHUNK full or finish_p is set,
    * we deflate and write to out.
    */
-  return (deflate_inbuf_return (st, out, finish_p));
+  return deflate_inbuf (st, out, finish, error);
 }
 
+static enum pdf_stm_filter_apply_status_e
+stm_f_flateenc_apply (pdf_hash_t    *params,
+                      void          *state,
+                      pdf_buffer_t  *in,
+                      pdf_buffer_t  *out,
+                      pdf_bool_t     finish,
+                      pdf_error_t  **error)
+{
+  struct pdf_stm_f_flate_s *st = state;
+  enum pdf_stm_filter_apply_status_e ret;
 
-static pdf_status_t read_and_inflate (pdf_stm_f_flate_t st, pdf_buffer_t *in,
-                                      pdf_buffer_t *out)
+  do
+    {
+      ret = read_and_deflate (st, in, out, finish, error);
+    }
+  while (ret == PDF_STM_FILTER_APPLY_STATUS_OK);
+
+  return ret;
+}
+
+/* Decoder implementation */
+
+static pdf_bool_t
+stm_f_flatedec_init (pdf_hash_t   *params,
+                     void        **state,
+                     pdf_error_t **error)
+{
+  struct pdf_stm_f_flate_s *filter_state;
+
+  /* Initialize common stuff */
+  if (!stm_f_flate_init (params, state, error))
+    return PDF_FALSE;
+
+  filter_state = *state;
+
+  if (inflateInit (&(filter_state->stream)) != Z_OK)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_STM,
+                     PDF_ERROR,
+                     "cannot create FLATE decoder internal state: "
+                     "couldn't initialize inflate");
+      stm_f_flate_deinit (filter_state);
+      return PDF_FALSE;
+    }
+
+  return PDF_TRUE;
+}
+
+static void
+stm_f_flatedec_deinit (void *state)
+{
+  struct pdf_stm_f_flate_s *filter_state = state;
+
+  inflateEnd (&filter_state->stream);
+  stm_f_flate_deinit (state);
+}
+
+static enum pdf_stm_filter_apply_status_e
+read_and_inflate (struct pdf_stm_f_flate_s  *st,
+                  pdf_buffer_t              *in,
+                  pdf_buffer_t              *out,
+                  pdf_error_t              **error)
 {
   /* Fill the input CHUNK */
-  if (!st->writing_p)
+  if (!st->writing)
     {
-      while (st->incnt < PDF_STM_F_FLATE_CHUNK && !pdf_buffer_eob_p(in))
+      while (st->incnt < PDF_STM_F_FLATE_CHUNK &&
+             !pdf_buffer_eob_p (in))
         {
           st->inbuf[st->incnt] = in->data[in->rp];
           st->incnt++;
@@ -248,9 +399,7 @@ static pdf_status_t read_and_inflate (pdf_stm_f_flate_t st, pdf_buffer_t *in,
     }
 
   if (st->incnt == 0)
-    {
-      return PDF_ENINPUT;
-    }
+    return PDF_STM_FILTER_APPLY_STATUS_NO_INPUT;
 
   /* we inflate and write to out */
   st->stream.avail_in = st->incnt;
@@ -260,133 +409,67 @@ static pdf_status_t read_and_inflate (pdf_stm_f_flate_t st, pdf_buffer_t *in,
     st->stream.next_out = (Bytef *) st->outbuf;
     st->outcnt = 0;
 
-    st->zret = inflate(&(st->stream), Z_NO_FLUSH);
-    if (st->zret == Z_STREAM_ERROR || st->zret == Z_NEED_DICT ||
-        st->zret == Z_DATA_ERROR || st->zret == Z_MEM_ERROR)
+    st->zret = inflate (&(st->stream),
+                        Z_NO_FLUSH);
+    if (st->zret == Z_STREAM_ERROR ||
+        st->zret == Z_NEED_DICT ||
+        st->zret == Z_DATA_ERROR ||
+        st->zret == Z_MEM_ERROR)
       {
-        /* should not be reached */
-        inflateEnd(&(st->stream));
-        return PDF_ERROR;
+        set_error_from_zlib_ret (error, st->zret);
+        return PDF_STM_FILTER_APPLY_STATUS_ERROR;
       }
 
     st->to_write = PDF_STM_F_FLATE_CHUNK - st->stream.avail_out;
 
   writing:
-    while (st->outcnt < st->to_write && !pdf_buffer_full_p(out))
+
+    while (st->outcnt < st->to_write &&
+           !pdf_buffer_full_p (out))
       {
         out->data[out->wp] = st->outbuf[st->outcnt];
         out->wp++;
         st->outcnt++;
       }
-    if (pdf_buffer_full_p(out))
+
+    if (pdf_buffer_full_p (out))
       {
-        st->writing_p = PDF_TRUE;
-        return PDF_ENOUTPUT;
+        st->writing = PDF_TRUE;
+        return PDF_STM_FILTER_APPLY_STATUS_NO_OUTPUT;
       }
   } while (st->stream.avail_out == 0);
 
   if (st->zret == Z_STREAM_END)
-    {
-      return PDF_EEOF;
-    }
+    return PDF_STM_FILTER_APPLY_STATUS_EOF;
+
   /* the input CHUNK now is empty, if needed, ask for input */
-  st->writing_p = PDF_FALSE;
+  st->writing = PDF_FALSE;
   st->incnt = 0;
-  if (pdf_buffer_eob_p(in))
-    {
-      return PDF_ENINPUT;
-    }
+  if (pdf_buffer_eob_p (in))
+    return PDF_STM_FILTER_APPLY_STATUS_NO_INPUT;
 
   /* ask for the input we couldn't read */
-  return PDF_OK;
+  return PDF_STM_FILTER_APPLY_STATUS_OK;
 }
 
-
-static int
-deflate_inbuf (pdf_stm_f_flate_t st, pdf_buffer_t *out, int flush)
+static enum pdf_stm_filter_apply_status_e
+stm_f_flatedec_apply (pdf_hash_t    *params,
+                      void          *state,
+                      pdf_buffer_t  *in,
+                      pdf_buffer_t  *out,
+                      pdf_bool_t     finish,
+                      pdf_error_t  **error)
 {
-  if (st->writing_p)
+  struct pdf_stm_f_flate_s *st = state;
+  enum pdf_stm_filter_apply_status_e ret;
+
+  do
     {
-      /*
-       * Not nice, but keeps the writing process code clear.
-       * Notice that the labeled code is inside a while loop,
-       * so I feel that avoiding this goto won't bring us better code.
-       */
-      goto writing;
+      ret = read_and_inflate (st, in, out, error);
     }
+  while (ret == PDF_STM_FILTER_APPLY_STATUS_OK);
 
-  st->stream.avail_in = st->incnt;
-  st->stream.next_in = (Bytef *) st->inbuf;
-  do {
-    st->stream.avail_out = PDF_STM_F_FLATE_CHUNK;
-    st->stream.next_out = (Bytef *) st->outbuf;
-    st->outcnt = 0;
-
-    st->zret = deflate(&(st->stream), flush);
-    if (st->zret == Z_STREAM_ERROR)
-      {
-        /* should not be reached */
-        deflateEnd (&(st->stream));
-        return -1;
-      }
-
-    st->to_write = PDF_STM_F_FLATE_CHUNK - st->stream.avail_out;
-
-  writing:
-
-    while (st->outcnt < st->to_write && !pdf_buffer_full_p(out))
-      {
-        out->data[out->wp++] = st->outbuf[st->outcnt];
-        st->outcnt++;
-      }
-    if (pdf_buffer_full_p(out))
-      {
-        st->writing_p = PDF_TRUE;
-        return 1;
-      }
-  } while (st->stream.avail_out == 0);
-
-  st->writing_p = PDF_FALSE;
-  return 0;
+  return ret;
 }
-
-
-static pdf_status_t
-deflate_inbuf_return (pdf_stm_f_flate_t st, pdf_buffer_t *out,
-                      pdf_bool_t finish_p)
-{
-  int ret;
-
-  if (finish_p)
-    {
-      ret = deflate_inbuf(st, out, Z_FINISH);
-    }
-  else
-    {
-      ret = deflate_inbuf(st, out, Z_NO_FLUSH);
-    }
-
-  if (ret < 0)
-    {
-      return PDF_ERROR;
-    }
-  else if (ret > 0)
-    {
-      return PDF_ENOUTPUT;
-    }
-  else if (finish_p)
-    {
-      deflateEnd (&(st->stream));
-      return PDF_EEOF;
-    }
-  else
-    {
-      /* the input CHUNK now is empty */
-      st->incnt = 0;
-      /* ask for the input we couldn't read */
-      return PDF_OK;
-    }
-}
-
 
 /* End of pdf_stm_f_flate.c */

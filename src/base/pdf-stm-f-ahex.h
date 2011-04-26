@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2007, 2008, 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2007-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,47 +28,12 @@
 
 #include <config.h>
 
-#include <pdf-types.h>
-#include <pdf-types-buffer.h>
-#include <pdf-hash.h>
+#include <pdf-stm-filter.h>
 
-/* Internal state */
-struct pdf_stm_f_ahexenc_s
-{
-  pdf_i32_t last_nibble;
-  pdf_size_t written_bytes;
-};
+const pdf_stm_filter_impl_t *pdf_stm_f_ahexdec_get (void);
 
-typedef struct pdf_stm_f_ahexenc_s *pdf_stm_f_ahexenc_t;
+const pdf_stm_filter_impl_t *pdf_stm_f_ahexenc_get (void);
 
-struct pdf_stm_f_ahexdec_s
-{
-  pdf_i32_t last_nibble;
-  pdf_size_t written_bytes;
-};
-
-typedef struct pdf_stm_f_ahexdec_s *pdf_stm_f_ahexdec_t;
-
-/* Filters implementation API */
-
-pdf_status_t pdf_stm_f_ahexdec_init (pdf_hash_t  *params,
-                                     void       **state);
-pdf_status_t pdf_stm_f_ahexdec_apply (pdf_hash_t   *params,
-                                      void         *state,
-                                      pdf_buffer_t *in,
-                                      pdf_buffer_t *out,
-                                      pdf_bool_t    finish_p);
-pdf_status_t pdf_stm_f_ahexdec_dealloc_state (void *state);
-
-pdf_status_t pdf_stm_f_ahexenc_init (pdf_hash_t  *params,
-                                     void       **state);
-pdf_status_t pdf_stm_f_ahexenc_apply (pdf_hash_t   *params,
-                                      void         *state,
-                                      pdf_buffer_t *in,
-                                      pdf_buffer_t *out,
-                                      pdf_bool_t    finish_p);
-pdf_status_t pdf_stm_f_ahexenc_dealloc_state (void *state);
-
-#endif /* pdf_stm_f_ahex.h */
+#endif /* !PDF_STM_F_AHEX_H */
 
 /* End of pdf_stm_f_ahex.h */

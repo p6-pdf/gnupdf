@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2007, 2008, 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2007-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,62 +25,136 @@
 
 #include <config.h>
 
+#include <pdf-types.h>
+#include <pdf-types-buffer.h>
+#include <pdf-hash.h>
 #include <pdf-stm-f-ahex.h>
 
-static pdf_u32_t pdf_stm_f_ahex_white_p (pdf_u32_t hex);
-static pdf_u32_t pdf_stm_f_ahex_hex_p (pdf_u32_t hex);
-static pdf_u32_t pdf_stm_f_ahex_hex2int (pdf_u32_t hex);
-static pdf_char_t pdf_stm_f_ahex_int2hex (pdf_u32_t n);
+#define PDF_STM_F_AHEX_LINE_WIDTH 60
 
-pdf_status_t
-pdf_stm_f_ahexenc_init (pdf_hash_t  *params,
-                        void       **state)
+/* Internal state, same for encoder and decoder */
+struct pdf_stm_f_ahex_s
 {
-  pdf_stm_f_ahexenc_t filter_state;
+  pdf_i32_t last_nibble;
+  pdf_size_t written_bytes;
+};
+
+static pdf_u32_t pdf_stm_f_ahex_white_p (pdf_u32_t hex);
+
+static pdf_u32_t pdf_stm_f_ahex_hex_p (pdf_u32_t hex);
+
+static pdf_u32_t pdf_stm_f_ahex_hex2int (pdf_u32_t hex);
+
+static pdf_uchar_t pdf_stm_f_ahex_int2hex (pdf_u32_t n);
+
+static pdf_bool_t stm_f_ahex_init (pdf_hash_t   *params,
+                                   void        **state,
+                                   pdf_error_t **error);
+
+static void stm_f_ahex_deinit (void *state);
+
+static enum pdf_stm_filter_apply_status_e stm_f_ahexenc_apply (pdf_hash_t    *params,
+                                                               void          *state,
+                                                               pdf_buffer_t  *in,
+                                                               pdf_buffer_t  *out,
+                                                               pdf_bool_t     finish,
+                                                               pdf_error_t  **error);
+
+static enum pdf_stm_filter_apply_status_e stm_f_ahexdec_apply (pdf_hash_t    *params,
+                                                               void          *state,
+                                                               pdf_buffer_t  *in,
+                                                               pdf_buffer_t  *out,
+                                                               pdf_bool_t     finish,
+                                                               pdf_error_t  **error);
+/* Filter implementations */
+
+static const pdf_stm_filter_impl_t enc_impl = {
+  .init_fn   = stm_f_ahex_init,
+  .apply_fn  = stm_f_ahexenc_apply,
+  .deinit_fn = stm_f_ahex_deinit,
+};
+
+static const pdf_stm_filter_impl_t dec_impl = {
+  .init_fn   = stm_f_ahex_init,
+  .apply_fn  = stm_f_ahexdec_apply,
+  .deinit_fn = stm_f_ahex_deinit,
+};
+
+const pdf_stm_filter_impl_t *
+pdf_stm_f_ahexenc_get (void)
+{
+  return &enc_impl;
+}
+
+const pdf_stm_filter_impl_t *
+pdf_stm_f_ahexdec_get (void)
+{
+  return &dec_impl;
+}
+
+/* Common implementation */
+
+static pdf_bool_t
+stm_f_ahex_init (pdf_hash_t   *params,
+                 void        **state,
+                 pdf_error_t **error)
+{
+  struct pdf_stm_f_ahex_s *filter_state;
 
   /* This filter uses no parameters */
   /* Allocate the internal state structure */
-  filter_state = pdf_alloc (sizeof (struct pdf_stm_f_ahexenc_s));
-  if (filter_state == NULL)
+  filter_state = pdf_alloc (sizeof (struct pdf_stm_f_ahex_s));
+  if (!filter_state)
     {
-      return PDF_ERROR;
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_STM,
+                     PDF_ENOMEM,
+                     "cannot create ASCII-Hex encoder/decoder internal state: "
+                     "couldn't allocate %lu bytes",
+                     (unsigned long)sizeof (struct pdf_stm_f_ahex_s));
+      return PDF_FALSE;
     }
 
   /* Initialize fields */
   filter_state->last_nibble = -1;
   filter_state->written_bytes = 0;
 
-  *state = (void *) filter_state;
+  *state = (void *)filter_state;
 
-  return PDF_OK;
+  return PDF_TRUE;
 }
 
-#define PDF_STM_F_AHEX_LINE_WIDTH 60
-
-pdf_status_t
-pdf_stm_f_ahexenc_apply (pdf_hash_t   *params,
-                         void         *state,
-                         pdf_buffer_t *in,
-                         pdf_buffer_t *out,
-                         pdf_bool_t    finish_p)
+static void
+stm_f_ahex_deinit (void *state)
 {
-  pdf_stm_f_ahexenc_t filter_state;
-  pdf_char_t first_nibble;
-  pdf_char_t second_nibble;
-  pdf_char_t in_char;
-  pdf_status_t ret;
+  pdf_dealloc (state);
+}
 
-  if (finish_p)
+/* Encoder implementation */
+
+static enum pdf_stm_filter_apply_status_e
+stm_f_ahexenc_apply (pdf_hash_t    *params,
+                     void          *state,
+                     pdf_buffer_t  *in,
+                     pdf_buffer_t  *out,
+                     pdf_bool_t     finish,
+                     pdf_error_t  **error)
+{
+  struct pdf_stm_f_ahex_s *filter_state;
+  pdf_uchar_t first_nibble;
+  pdf_uchar_t second_nibble;
+  pdf_uchar_t in_char;
+
+  if (finish)
     {
-      /* Assume that there is room in the output buffer to hold the
-         EOD marker */
+      if (pdf_buffer_full_p (out))
+        return PDF_STM_FILTER_APPLY_STATUS_NO_OUTPUT;
       out->data[out->wp++] = '>';
-      return PDF_EEOF;
+      return PDF_STM_FILTER_APPLY_STATUS_EOF;
     }
 
-  filter_state = (pdf_stm_f_ahexenc_t) state;
+  filter_state = (struct pdf_stm_f_ahex_s *) state;
 
-  ret = PDF_OK;
   while (!pdf_buffer_full_p (out))
     {
       if ((filter_state->written_bytes != 0) &&
@@ -114,7 +188,7 @@ pdf_stm_f_ahexenc_apply (pdf_hash_t   *params,
           /* Determine the hex digits to write for this input character */
           if (filter_state->last_nibble != -1)
             {
-              first_nibble = (pdf_char_t) filter_state->last_nibble;
+              first_nibble = (pdf_uchar_t) filter_state->last_nibble;
               second_nibble = pdf_stm_f_ahex_int2hex (in_char >> 4);
             }
           else
@@ -151,71 +225,26 @@ pdf_stm_f_ahexenc_apply (pdf_hash_t   *params,
         }
     }
 
-  if (pdf_buffer_full_p (out))
-    {
-      ret = PDF_ENOUTPUT;
-    }
-  else
-    {
-      ret = PDF_ENINPUT;
-    }
-
-  return ret;
+  return (pdf_buffer_full_p (out) ?
+          PDF_STM_FILTER_APPLY_STATUS_NO_OUTPUT :
+          PDF_STM_FILTER_APPLY_STATUS_NO_INPUT);
 }
 
-pdf_status_t
-pdf_stm_f_ahexenc_dealloc_state (void *state)
+static enum pdf_stm_filter_apply_status_e
+stm_f_ahexdec_apply (pdf_hash_t    *params,
+                     void          *state,
+                     pdf_buffer_t  *in,
+                     pdf_buffer_t  *out,
+                     pdf_bool_t     finish,
+                     pdf_error_t  **error)
 {
-  pdf_stm_f_ahexenc_t ahexenc_state;
-
-  ahexenc_state = (pdf_stm_f_ahexenc_t) state;
-  pdf_dealloc (ahexenc_state);
-
-  return PDF_OK;
-}
-
-pdf_status_t
-pdf_stm_f_ahexdec_init (pdf_hash_t  *params,
-                        void       **state)
-{
-  pdf_stm_f_ahexdec_t ahexdec_state;
-  pdf_status_t ret;
-
-  /* This filter uses no parameters */
-  /* Allocate the internal state structure */
-  ahexdec_state = pdf_alloc (sizeof(struct pdf_stm_f_ahexdec_s));
-  if (ahexdec_state != NULL)
-    {
-      ahexdec_state->last_nibble = -1;
-      ahexdec_state->written_bytes = 0;
-
-      *state = ahexdec_state;
-      ret = PDF_OK;
-    }
-  else
-    {
-      ret = PDF_ERROR;
-    }
-
-  return ret;
-}
-
-pdf_status_t
-pdf_stm_f_ahexdec_apply (pdf_hash_t   *params,
-                         void         *state,
-                         pdf_buffer_t *in,
-                         pdf_buffer_t *out,
-                         pdf_bool_t    finish_p)
-{
-  pdf_status_t ret;
-  pdf_stm_f_ahexdec_t filter_state;
+  struct pdf_stm_f_ahex_s *filter_state;
   pdf_u32_t first_nibble;
   pdf_u32_t second_nibble;
 
-  ret = PDF_OK;
   first_nibble = -1;
   second_nibble = -1;
-  filter_state = (pdf_stm_f_ahexdec_t) state;
+  filter_state = (struct pdf_stm_f_ahex_s *) state;
 
   while (!pdf_buffer_full_p (out))
     {
@@ -224,100 +253,79 @@ pdf_stm_f_ahexdec_apply (pdf_hash_t   *params,
           /* Need more input */
           break;
         }
-      else
+
+      /* Skip white characters */
+      if (pdf_stm_f_ahex_white_p ((pdf_u32_t) in->data[in->rp]))
         {
-          /* Skip white characters */
-          if (pdf_stm_f_ahex_white_p ((pdf_u32_t) in->data[in->rp]))
-            {
-              in->rp++;
-              continue;
-            }
+          in->rp++;
+          continue;
+        }
 
-          /* Detect the end of the hex data */
-          if (in->data[in->rp] == '>')
-            {
-              if (filter_state->last_nibble == -1)
-                {
-                  /* We are done :'D */
-                  in->rp++;
-                  ret = PDF_EEOF;
-                  break;
-                }
-              else
-                {
-                  /* Found an even number of hex digits. We assume that
-                     the second nibble is 0, so generate a byte of data
-                     and finish */
-                  out->data[out->wp] =
-                    pdf_stm_f_ahex_hex2int (filter_state->last_nibble) << 4;
-                  out->wp++;
-                  filter_state->last_nibble = -1;
-                  ret = PDF_EEOF;
-                  break;
-                }
-            }
-
-          /* Detect an invalid character */
-          if (!pdf_stm_f_ahex_hex_p ((pdf_u32_t) in->data[in->rp]))
-            {
-              ret = PDF_ERROR;
-              break;
-            }
-
-          /* Process this character. This is the first or the second part
-             of a mibble. */
+      /* Detect the end of the hex data */
+      if (in->data[in->rp] == '>')
+        {
           if (filter_state->last_nibble == -1)
             {
-              /* Get the first nibble */
-              first_nibble = (pdf_u32_t) in->data[in->rp];
+              /* We are done :'D */
               in->rp++;
-
-              filter_state->last_nibble = first_nibble;
             }
           else
             {
-              /* Get the second nibble */
-              second_nibble = (pdf_u32_t) in->data[in->rp];
-              in->rp++;
-
-              /* Generate one byte of data */
-              first_nibble = filter_state->last_nibble;
-              out->data[out->wp] = (pdf_stm_f_ahex_hex2int (first_nibble) << 4)
-                + pdf_stm_f_ahex_hex2int (second_nibble);
+              /* Found an even number of hex digits. We assume that
+                 the second nibble is 0, so generate a byte of data
+                 and finish */
+              out->data[out->wp] =
+                pdf_stm_f_ahex_hex2int (filter_state->last_nibble) << 4;
               out->wp++;
-
               filter_state->last_nibble = -1;
             }
-        }
-    }
 
-  if (ret == PDF_OK)
-    {
-      if (pdf_buffer_eob_p (in))
+          return PDF_STM_FILTER_APPLY_STATUS_EOF;
+        }
+
+      /* Detect an invalid character */
+      if (!pdf_stm_f_ahex_hex_p ((pdf_u32_t) in->data[in->rp]))
         {
-          ret = PDF_ENINPUT;
+          pdf_set_error (error,
+                         PDF_EDOMAIN_BASE_STM,
+                         PDF_ERROR,
+                         "Invalid character found in ASCII-Hex decoder: %u",
+                         (pdf_u32_t) in->data[in->rp]);
+          return PDF_STM_FILTER_APPLY_STATUS_ERROR;
+        }
+
+      /* Process this character. This is the first or the second part
+         of a mibble. */
+      if (filter_state->last_nibble == -1)
+        {
+          /* Get the first nibble */
+          first_nibble = (pdf_u32_t) in->data[in->rp];
+          in->rp++;
+
+          filter_state->last_nibble = first_nibble;
         }
       else
         {
-          ret = PDF_ENOUTPUT;
+          /* Get the second nibble */
+          second_nibble = (pdf_u32_t) in->data[in->rp];
+          in->rp++;
+
+          /* Generate one byte of data */
+          first_nibble = filter_state->last_nibble;
+          out->data[out->wp] = ((pdf_stm_f_ahex_hex2int (first_nibble) << 4)
+                                + pdf_stm_f_ahex_hex2int (second_nibble));
+          out->wp++;
+
+          filter_state->last_nibble = -1;
         }
     }
 
-  return ret;
+  return (pdf_buffer_eob_p (in) ?
+          PDF_STM_FILTER_APPLY_STATUS_NO_INPUT :
+          PDF_STM_FILTER_APPLY_STATUS_NO_OUTPUT);
 }
 
-pdf_status_t
-pdf_stm_f_ahexdec_dealloc_state (void *state)
-{
-  pdf_stm_f_ahexenc_t ahexenc_state;
-
-  ahexenc_state = (pdf_stm_f_ahexenc_t) state;
-  pdf_dealloc (ahexenc_state);
-
-  return PDF_OK;
-}
-
-/* Private functions */
+/* Helper functions */
 
 static pdf_u32_t
 pdf_stm_f_ahex_white_p (pdf_u32_t hex)
@@ -338,9 +346,9 @@ pdf_stm_f_ahex_hex_p (pdf_u32_t hex)
           ((hex >= '0') && (hex <= '9')));
 }
 
-static const pdf_char_t to_hex[16] = "0123456789ABCDEF";
+static const pdf_uchar_t to_hex[16] = "0123456789ABCDEF";
 
-static pdf_char_t
+static pdf_uchar_t
 pdf_stm_f_ahex_int2hex (pdf_u32_t hex)
 {
   return to_hex[hex & 0x0f];
@@ -350,17 +358,13 @@ static pdf_u32_t
 pdf_stm_f_ahex_hex2int (pdf_u32_t hex)
 {
   if ((hex >= 'a') && (hex <= 'f'))
-    {
-      return (hex - 'a') + 0xA;
-    }
+    return (hex - 'a') + 0xA;
+
   if ((hex >= 'A') && (hex <= 'F'))
-    {
-      return (hex - 'A') + 0xA;
-    }
+    return (hex - 'A') + 0xA;
+
   if ((hex >= '0') && (hex <= '9'))
-    {
-      return (hex - '0');
-    }
+    return (hex - '0');
 
   return -1;
 }

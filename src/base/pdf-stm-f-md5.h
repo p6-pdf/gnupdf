@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008, 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,36 +28,9 @@
 
 #include <config.h>
 
-#include <stdio.h>
+#include <pdf-stm-filter.h>
 
-#include <pdf-types.h>
-#include <pdf-types-buffer.h>
-#include <pdf-hash.h>
-#include <pdf-alloc.h>
-#include <pdf-crypt.h>
-
-/* Internal state of cipher filter */
-
-struct pdf_stm_f_md_s
-{
-  void *md;
-};
-
-
-/* Filter API implementation */
-
-pdf_status_t pdf_stm_f_md5enc_init (pdf_hash_t  *params,
-                                    void       **state);
-
-pdf_status_t pdf_stm_f_md5enc_apply (pdf_hash_t   *params,
-                                     void         *state,
-                                     pdf_buffer_t *in,
-                                     pdf_buffer_t *out,
-                                     pdf_bool_t    finish_p);
-
-pdf_status_t pdf_stm_f_md5enc_dealloc_state (void *state);
-
-
+const pdf_stm_filter_impl_t *pdf_stm_f_md5enc_get (void);
 
 #endif /* PDF_STM_F_MD5_H */
 

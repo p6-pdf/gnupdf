@@ -115,8 +115,8 @@ pdf_stm_mem_new (pdf_char_t *buffer,
 pdf_status_t
 pdf_stm_destroy (pdf_stm_t stm)
 {
-  pdf_stm_filter_t filter;
-  pdf_stm_filter_t filter_to_delete;
+  pdf_stm_filter_t *filter;
+  pdf_stm_filter_t *filter_to_delete;
   pdf_size_t flushed_bytes;
   pdf_status_t ret;
 
@@ -138,7 +138,7 @@ pdf_stm_destroy (pdf_stm_t stm)
   while (filter != NULL)
     {
       filter_to_delete = filter;
-      filter = filter->next;
+      filter = pdf_stm_filter_get_next (filter);
       pdf_stm_filter_destroy (filter_to_delete);
     }
 
@@ -179,16 +179,26 @@ pdf_stm_read (pdf_stm_t stm,
       /* If the cache is empty, refill it with filtered data */
       if (pdf_buffer_eob_p (stm->cache))
         {
+          pdf_error_t *inner_error = NULL;
+
           pdf_buffer_rewind (stm->cache);
-          ret = pdf_stm_filter_apply (stm->filter, PDF_FALSE);
+          if (!pdf_stm_filter_apply (stm->filter, PDF_FALSE, &inner_error))
+            {
+              ret = pdf_error_get_status (inner_error);
+              pdf_error_destroy (inner_error);
+            }
+          else
+            ret = PDF_OK;
         }
 
       if (ret != PDF_ERROR)
         {
+          PDF_ASSERT (stm->cache->wp >= stm->cache->rp);
+
           /* Read data from the cache */
           pending_bytes = bytes - *read_bytes;
           cache_size = stm->cache->wp - stm->cache->rp;
-          to_copy_bytes = PDF_MIN(pending_bytes, cache_size);
+          to_copy_bytes = PDF_MIN (pending_bytes, cache_size);
 
           memcpy ((buf + *read_bytes),
                   stm->cache->data + stm->cache->rp,
@@ -222,7 +232,7 @@ pdf_stm_write (pdf_stm_t stm,
   pdf_status_t ret;
   pdf_size_t pending_bytes;
   pdf_size_t to_write_bytes;
-  pdf_stm_filter_t tail_filter;
+  pdf_stm_filter_t *tail_filter;
   pdf_buffer_t *tail_buffer;
   pdf_size_t tail_buffer_size;
   pdf_size_t flushed_bytes;
@@ -297,7 +307,7 @@ pdf_stm_flush (pdf_stm_t stm,
                pdf_bool_t finish_p,
                pdf_size_t *flushed_bytes)
 {
-  pdf_stm_filter_t tail_filter;
+  pdf_stm_filter_t *tail_filter;
   pdf_buffer_t *tail_buffer;
   pdf_status_t ret;
   pdf_size_t tail_size;
@@ -316,9 +326,16 @@ pdf_stm_flush (pdf_stm_t stm,
     {
       pdf_size_t cache_size;
       pdf_ssize_t written_bytes;
+      pdf_error_t *inner_error = NULL;
 
       tail_size = tail_buffer->wp - tail_buffer->rp;
-      ret = pdf_stm_filter_apply (stm->filter, finish_p);
+      if (!pdf_stm_filter_apply (stm->filter, finish_p, &inner_error))
+        {
+          ret = pdf_error_get_status (inner_error);
+          pdf_error_destroy (inner_error);
+        }
+      else
+        ret = PDF_OK;
 
       if (ret == PDF_ERROR)
         {
@@ -373,8 +390,9 @@ pdf_stm_install_filter (pdf_stm_t                   stm,
                         pdf_hash_t                 *filter_params)
 {
   pdf_status_t ret;
-  pdf_stm_filter_t filter;
+  pdf_stm_filter_t *filter;
   enum pdf_stm_filter_mode_e filter_mode;
+  pdf_error_t *inner_error = NULL;
 
   if (stm->mode == PDF_STM_READ)
     {
@@ -386,19 +404,24 @@ pdf_stm_install_filter (pdf_stm_t                   stm,
     }
 
   /* Create the new filter */
-  ret = pdf_stm_filter_new (filter_type,
-                            filter_params,
-                            stm->cache->size,
-                            filter_mode,
-                            &filter);
-
-  if (filter != NULL)
+  filter = pdf_stm_filter_new (filter_type,
+                               filter_params,
+                               stm->cache->size,
+                               filter_mode,
+                               &inner_error);
+  if (!filter)
+    {
+      ret = pdf_error_get_status (inner_error);
+      pdf_error_destroy (inner_error);
+    }
+  else
     {
       /* Set the new filter as the new head of the filter chain */
       pdf_stm_filter_set_next (filter, stm->filter);
       pdf_stm_filter_set_out (filter, stm->cache);
       pdf_stm_filter_set_out (stm->filter, pdf_stm_filter_get_in (filter));
       stm->filter = filter;
+      ret = PDF_OK;
     }
 
   return ret;
@@ -422,7 +445,7 @@ pdf_stm_bseek (pdf_stm_t stm,
 {
   pdf_off_t cur_pos;
   pdf_off_t new_pos;
-  pdf_stm_filter_t tail_filter;
+  pdf_stm_filter_t *tail_filter;
   pdf_buffer_t *tail_buffer;
   pdf_size_t flushed_bytes;
 
@@ -473,7 +496,7 @@ pdf_stm_btell (pdf_stm_t stm)
 {
   pdf_off_t pos;
   pdf_size_t cache_size;
-  pdf_stm_filter_t tail_filter;
+  pdf_stm_filter_t *tail_filter;
   pdf_buffer_t *tail_buffer;
 
   if (stm->mode == PDF_STM_READ)
@@ -525,6 +548,7 @@ pdf_stm_init (pdf_size_t cache_size,
   stm->seq_counter = 0;
 
   /* Initialize the null filter */
+#warning this pdf_hash_t is never deallocated
   null_filter_params = pdf_hash_new (&inner_error);
   if (null_filter_params == NULL)
     {
@@ -543,11 +567,18 @@ pdf_stm_init (pdf_size_t cache_size,
       filter_mode = PDF_STM_FILTER_MODE_WRITE;
     }
 
-  ret = pdf_stm_filter_new (PDF_STM_FILTER_NULL,
-                            null_filter_params,
-                            cache_size,
-                            filter_mode,
-                            &(stm->filter));
+  stm->filter = pdf_stm_filter_new (PDF_STM_FILTER_NULL,
+                                    null_filter_params,
+                                    cache_size,
+                                    filter_mode,
+                                    &inner_error);
+  if (!stm->filter)
+    {
+      ret = pdf_error_get_status (inner_error);
+      pdf_error_destroy (inner_error);
+    }
+  else
+    ret = PDF_OK;
 
   if (ret == PDF_OK)
     {
@@ -603,8 +634,16 @@ pdf_stm_read_peek_char (pdf_stm_t stm,
   ret = PDF_OK;
   if (pdf_buffer_eob_p (stm->cache))
     {
+      pdf_error_t *inner_error = NULL;
+
       pdf_buffer_rewind (stm->cache);
-      ret = pdf_stm_filter_apply (stm->filter, PDF_FALSE);
+      if (!pdf_stm_filter_apply (stm->filter, PDF_FALSE, &inner_error))
+        {
+          ret = pdf_error_get_status (inner_error);
+          pdf_error_destroy (inner_error);
+        }
+      else
+        ret = PDF_OK;
     }
 
   if (pdf_buffer_eob_p (stm->cache))

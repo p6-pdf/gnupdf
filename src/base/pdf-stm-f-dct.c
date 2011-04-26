@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,9 +29,13 @@
 #include <jerror.h> /* For jpeglib.h */
 #include <jpeglib.h>
 
+#include <pdf-types.h>
+#include <pdf-types-buffer.h>
+#include <pdf-hash.h>
 #include <pdf-stm-f-dct.h>
 
-
+#define PPM_MAXVAL 255
+#define PDF_DJPEG_CACHE_SIZE (1024)
 
 enum pdf_stm_f_dctdec_state_t
   {
@@ -46,13 +50,6 @@ enum pdf_stm_f_dctdec_state_t
     DCTDEC_STATE_ERROR
   };
 
-/* Internal state */
-struct pdf_stm_f_dctenc_s
-{
-};
-
-typedef struct pdf_stm_f_dctenc_s *pdf_stm_f_dctenc_t;
-
 struct pdf_stm_f_dctdec_s
 {
   struct jpeg_decompress_struct *cinfo;
@@ -61,7 +58,7 @@ struct pdf_stm_f_dctdec_s
   enum pdf_stm_f_dctdec_state_t state;
   enum pdf_stm_f_dctdec_state_t backup_state;
   /* filter dictionary */
-  pdf_i32_t *param_color_transform;
+  pdf_i32_t param_color_transform;
 
   /* image cache for input data */
   pdf_buffer_t *djpeg_in;
@@ -73,319 +70,126 @@ struct pdf_stm_f_dctdec_s
   pdf_size_t row_copy_index;
   pdf_u32_t num_scanlines;
 };
-typedef struct pdf_stm_f_dctdec_s *pdf_stm_f_dctdec_t;
 
-#define PPM_MAXVAL 255
+static pdf_bool_t stm_f_dctdec_init (pdf_hash_t   *params,
+                                     void        **state,
+                                     pdf_error_t **error);
 
-static void         pdf_stm_f_dctdec_jpeg_cache_src (j_decompress_ptr cinfo,
-                                                     pdf_buffer_t *cache);
-static pdf_status_t pdf_stm_f_dctdec_src_fill(j_decompress_ptr cinfo,
-                                              pdf_buffer_t *in);
-static pdf_status_t pdf_stm_f_dctdec_write_ppm_header(j_decompress_ptr cinfo,
-                                                      pdf_buffer_t *out);
-static void         pdf_stm_f_dctdec_set_djpeg_param(j_decompress_ptr cinfo,
-                                                     pdf_stm_f_dctdec_t filter_state);
+static void stm_f_dctdec_deinit (void *state);
 
-pdf_status_t
-pdf_stm_f_dctenc_init (pdf_hash_t  *params,
-                       void       **state)
+static enum pdf_stm_filter_apply_status_e stm_f_dctdec_apply (pdf_hash_t    *params,
+                                                                void          *state,
+                                                                pdf_buffer_t  *in,
+                                                                pdf_buffer_t  *out,
+                                                                pdf_bool_t     finish,
+                                                                pdf_error_t  **error);
+
+/* Filter implementations */
+
+static const pdf_stm_filter_impl_t dec_impl = {
+  .init_fn   = stm_f_dctdec_init,
+  .apply_fn  = stm_f_dctdec_apply,
+  .deinit_fn = stm_f_dctdec_deinit,
+};
+
+const pdf_stm_filter_impl_t *
+pdf_stm_f_dctdec_get (void)
 {
-  return PDF_OK;
+  return &dec_impl;
 }
 
-pdf_status_t
-pdf_stm_f_dctenc_apply (pdf_hash_t   *params,
-                        void         *state,
-                        pdf_buffer_t *in,
-                        pdf_buffer_t *out,
-                        pdf_bool_t    finish_p)
-{
-  pdf_status_t ret = PDF_OK;
-  return ret;
-}
+static const pdf_char_t *DCTDecode_param_name = "ColorTransform";
 
-pdf_status_t
-pdf_stm_f_dctenc_dealloc_state (void *state)
+static pdf_bool_t
+stm_f_dctdec_init (pdf_hash_t   *params,
+                   void        **state,
+                   pdf_error_t **error)
 {
-  return PDF_OK;
-}
-
-static const char *DCTDecode_param_name = "ColorTransform";
-
-pdf_status_t
-pdf_stm_f_dctdec_init (pdf_hash_t  *params,
-                       void       **state)
-{
-  pdf_stm_f_dctdec_t dctdec_state;
-  pdf_status_t ret;
+  struct pdf_stm_f_dctdec_s *filter_state;
 
   /* Allocate the internal state structure */
-  dctdec_state = pdf_alloc (sizeof(struct pdf_stm_f_dctdec_s));
-  memset(dctdec_state, 0, sizeof(struct pdf_stm_f_dctdec_s));
-
-  if (dctdec_state != NULL)
+  filter_state = pdf_alloc (sizeof (struct pdf_stm_f_dctdec_s));
+  if (!filter_state)
     {
-      dctdec_state->cinfo = pdf_alloc(sizeof(struct jpeg_decompress_struct));
-      if(!dctdec_state->cinfo)
-        {
-          return PDF_ERROR;
-        }
-      dctdec_state->jerr = pdf_alloc(sizeof(struct jpeg_error_mgr));
-      if(!dctdec_state->jerr)
-        {
-          return PDF_ERROR;
-        }
-      dctdec_state->cinfo->err = jpeg_std_error(dctdec_state->jerr);
-      jpeg_create_decompress(dctdec_state->cinfo);
-
-      dctdec_state->param_color_transform = NULL;
-      if (pdf_hash_key_p (params, DCTDecode_param_name))
-        {
-          dctdec_state->param_color_transform = pdf_hash_get_value (params,
-                                                                    DCTDecode_param_name);
-        }
-
-      dctdec_state->state = DCTDEC_STATE_INIT;
-      *state = dctdec_state;
-      ret = PDF_OK;
-    }
-  else
-    {
-      ret = PDF_ERROR;
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_STM,
+                     PDF_ENOMEM,
+                     "cannot create DCT decoder internal state: "
+                     "couldn't allocate %lu bytes",
+                     (unsigned long)sizeof (struct pdf_stm_f_dctdec_s));
+      return PDF_FALSE;
     }
 
-  return ret;
+  memset (filter_state, 0, sizeof (struct pdf_stm_f_dctdec_s));
+
+  filter_state->cinfo = pdf_alloc (sizeof (struct jpeg_decompress_struct));
+  if(!filter_state->cinfo)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_STM,
+                     PDF_ENOMEM,
+                     "cannot create DCT decoder internal state: "
+                     "couldn't allocate %lu bytes",
+                     (unsigned long)sizeof (struct jpeg_decompress_struct));
+      pdf_dealloc (filter_state);
+      return PDF_FALSE;
+    }
+
+  filter_state->jerr = pdf_alloc (sizeof (struct jpeg_error_mgr));
+  if(!filter_state->jerr)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_STM,
+                     PDF_ENOMEM,
+                     "cannot create DCT decoder internal state: "
+                     "couldn't allocate %lu bytes",
+                     (unsigned long)sizeof (struct jpeg_error_mgr));
+      pdf_dealloc (filter_state->cinfo);
+      pdf_dealloc (filter_state);
+      return PDF_FALSE;
+    }
+
+  filter_state->cinfo->err = jpeg_std_error (filter_state->jerr);
+  jpeg_create_decompress (filter_state->cinfo);
+
+  filter_state->param_color_transform = -1;
+  if (pdf_hash_key_p (params, DCTDecode_param_name))
+    {
+      pdf_i32_t *ptr;
+
+      ptr = pdf_hash_get_value (params, DCTDecode_param_name);
+      filter_state->param_color_transform = *ptr;
+    }
+
+  filter_state->state = DCTDEC_STATE_INIT;
+  *state = filter_state;
+
+  return PDF_TRUE;
 }
-
-#define PDF_DJPEG_CACHE_SIZE (1024)
-
-pdf_status_t
-pdf_stm_f_dctdec_apply (pdf_hash_t   *params,
-                        void         *state,
-                        pdf_buffer_t *in,
-                        pdf_buffer_t *out,
-                        pdf_bool_t    finish_p)
-{
-  pdf_status_t ret = PDF_OK;
-  pdf_i32_t iret;
-  pdf_stm_f_dctdec_t filter_state = (pdf_stm_f_dctdec_t)state;
-  struct jpeg_decompress_struct *pcinfo = filter_state->cinfo;
-
-  if (finish_p
-      && ((in->wp - in->rp) < 1 )
-      && (pcinfo->output_scanline == pcinfo->output_height)
-      && (0 == filter_state->row_valid_size - filter_state->row_copy_index))
-    {
-      return PDF_EEOF;
-    }
-
-  while (ret == PDF_OK)
-    {
-      if (DCTDEC_STATE_INIT == filter_state->state)
-        {
-          if (!filter_state->djpeg_in)
-            {
-              filter_state->djpeg_in = pdf_buffer_new (PDF_DJPEG_CACHE_SIZE, NULL);
-              /* TODO: get and propagate error */
-              if(!filter_state->djpeg_in)
-                {
-                  ret = PDF_ERROR;
-                  break;
-                }
-            }
-
-          pdf_stm_f_dctdec_jpeg_cache_src (pcinfo, filter_state->djpeg_in);
-          filter_state->backup_state = DCTDEC_STATE_READHDR;
-          filter_state->state = DCTDEC_STATE_CACHE_IN;
-        }
-
-      if (DCTDEC_STATE_CACHE_IN == filter_state->state)
-        {
-          if (pdf_buffer_eob_p (in))
-            {
-              ret = PDF_ENINPUT;
-              break;
-            }
-
-          ret = pdf_stm_f_dctdec_src_fill (pcinfo, in);
-          if(PDF_OK != ret)
-            {
-              break;
-            }
-
-          filter_state->state = filter_state->backup_state;
-        }
-
-      if (DCTDEC_STATE_READHDR == filter_state->state)
-        {
-          iret = jpeg_read_header (pcinfo, TRUE);
-          if (iret == JPEG_SUSPENDED)
-            {
-              /* continue the loop, go into the "cache state" */
-              ret = PDF_OK;
-              filter_state->backup_state = filter_state->state;
-              filter_state->state = DCTDEC_STATE_CACHE_IN;
-              continue;
-            }
-
-          if (iret != JPEG_HEADER_OK)
-            {
-              ret = PDF_ERROR;
-              break;
-            }
-
-          pdf_stm_f_dctdec_set_djpeg_param (pcinfo, filter_state);
-          filter_state->state = DCTDEC_STATE_STARTDJP;
-        }
-
-      if(DCTDEC_STATE_STARTDJP == filter_state->state)
-        {
-          iret = jpeg_start_decompress (pcinfo);
-          if (iret == FALSE)
-            {
-              /* continue the loop, go into the "cache state" */
-              ret = PDF_OK;
-              filter_state->backup_state = filter_state->state;
-              filter_state->state = DCTDEC_STATE_CACHE_IN;
-              continue;
-            }
-
-          /* here we know the output size, so allocate memory for them. */
-          filter_state->row_stride = pcinfo->output_width * pcinfo->output_components;
-
-          /* Make a one-row-high sample array that will go away when done with image */
-          filter_state->row_buf = (*pcinfo->mem->alloc_sarray)
-            ((j_common_ptr) pcinfo, JPOOL_IMAGE, filter_state->row_stride, 1);
-          filter_state->row_valid_size = 0;
-          filter_state->row_copy_index = 0;
-          filter_state->state = DCTDEC_STATE_WRITEHDR;
-        }
-
-      if (DCTDEC_STATE_WRITEHDR == filter_state->state)
-        {
-          ret = pdf_stm_f_dctdec_write_ppm_header (pcinfo, out);
-          if (PDF_OK != ret)
-            {
-              break;
-            }
-
-          filter_state->state = DCTDEC_STATE_SCANLINE;
-        }
-
-      if (DCTDEC_STATE_OUTPUTLINE == filter_state->state)
-        {
-          if ((filter_state->row_valid_size > 0)
-              && (filter_state->row_valid_size > filter_state->row_copy_index))
-            {
-              if (pdf_buffer_full_p (out))
-                {
-                  ret = PDF_ENOUTPUT;
-                  break;
-                }
-              else
-                {
-                  pdf_size_t bytes_to_copy =
-                    PDF_MIN (filter_state->row_valid_size - filter_state->row_copy_index,
-                             out->size - out->wp);
-
-                  if (bytes_to_copy > 0)
-                    {
-                      memcpy (out->data+out->wp,
-                              filter_state->row_buf[0]+filter_state->row_copy_index,
-                              bytes_to_copy);
-                      out->wp += bytes_to_copy;
-                    }
-
-                  filter_state->row_copy_index += bytes_to_copy;
-                  if (filter_state->row_copy_index != filter_state->row_valid_size)
-                    {
-                      ret = PDF_ENOUTPUT;
-                      break;
-                    }
-                }
-
-              if ((PDF_OK == ret)
-                  && (pcinfo->output_scanline == pcinfo->output_height))
-                {
-                  ret = PDF_EEOF;
-                  break;
-                }
-            }
-
-          filter_state->state = DCTDEC_STATE_SCANLINE;
-        }
-
-      if(DCTDEC_STATE_SCANLINE == filter_state->state)
-        {
-          ret = PDF_OK;
-          if (pcinfo->output_scanline < pcinfo->output_height)
-            {
-              pdf_i32_t scannum;
-
-              scannum = jpeg_read_scanlines (pcinfo,
-                                             filter_state->row_buf,
-                                             1);
-              if(scannum == 0)
-                {
-                  filter_state->backup_state = filter_state->state;
-                  filter_state->state = DCTDEC_STATE_CACHE_IN;
-                  break;
-                }
-
-              if (scannum != 1)
-                {
-                  ret = PDF_ERROR;
-                  break;
-                }
-
-              filter_state->num_scanlines += scannum;
-              filter_state->row_valid_size = scannum * filter_state->row_stride;
-              filter_state->row_copy_index = 0;
-              filter_state->state = DCTDEC_STATE_OUTPUTLINE;
-            }
-        }
-    }
-
-  if (PDF_ENINPUT == ret && finish_p)
-    {
-      ret = PDF_EEOF;
-    }
-
-  return ret;
-}
-
-pdf_status_t
-pdf_stm_f_dctdec_dealloc_state (void *state)
-{
-  pdf_stm_f_dctdec_t dctdec_state = (pdf_stm_f_dctdec_t) state;
-
-  if (!dctdec_state)
-    {
-      return PDF_OK;
-    }
-
-  if (dctdec_state->cinfo)
-    {
-      jpeg_finish_decompress (dctdec_state->cinfo);
-      dctdec_state->cinfo->mem->free_pool ((j_common_ptr) dctdec_state->cinfo,
-                                           JPOOL_IMAGE);
-      jpeg_destroy_decompress (dctdec_state->cinfo);
-
-      pdf_buffer_destroy (dctdec_state->djpeg_in);
-      pdf_dealloc (dctdec_state->cinfo);
-      pdf_dealloc (dctdec_state->jerr);
-    }
-
-  pdf_dealloc (dctdec_state);
-
-  return PDF_OK;
-}
-
-/* Private functions */
 
 static void
-pdf_stm_f_dctdec_set_djpeg_param (j_decompress_ptr cinfo,
-                                  pdf_stm_f_dctdec_t filter_state )
+stm_f_dctdec_deinit (void *state)
+{
+  struct pdf_stm_f_dctdec_s *filter_state = state;
+
+  if (filter_state->cinfo)
+    {
+      jpeg_finish_decompress (filter_state->cinfo);
+      filter_state->cinfo->mem->free_pool ((j_common_ptr) filter_state->cinfo,
+                                           JPOOL_IMAGE);
+      jpeg_destroy_decompress (filter_state->cinfo);
+
+      pdf_buffer_destroy (filter_state->djpeg_in);
+      pdf_dealloc (filter_state->cinfo);
+      pdf_dealloc (filter_state->jerr);
+    }
+
+  pdf_dealloc (filter_state);
+}
+
+static void
+pdf_stm_f_dctdec_set_djpeg_param (j_decompress_ptr           cinfo,
+                                  struct pdf_stm_f_dctdec_s *filter_state)
 {
   /* set color transfor according to DCTDecode dictionary. */
   if (cinfo->saw_Adobe_marker)
@@ -399,8 +203,8 @@ pdf_stm_f_dctdec_set_djpeg_param (j_decompress_ptr cinfo,
     {
     case 3:
       {
-        if ((NULL == filter_state->param_color_transform)
-            || (1 == *filter_state->param_color_transform))
+        if ((filter_state->param_color_transform == -1) ||
+            (filter_state->param_color_transform == 1))
           {
             /* dictionary not present or value is 1, transform should
                be done.*/
@@ -415,8 +219,7 @@ pdf_stm_f_dctdec_set_djpeg_param (j_decompress_ptr cinfo,
       }
     case 4:
       {
-        if ((NULL != filter_state->param_color_transform)
-            && (1 == *filter_state->param_color_transform))
+        if (filter_state->param_color_transform == 1)
           {
             /* do transform only if the dictionary value is one.*/
             cinfo->jpeg_color_space = JCS_YCCK;
@@ -444,28 +247,27 @@ struct pdf_stm_f_dct_cache_source_mgr_s
   pdf_size_t size_to_skip;
 };
 
-typedef struct pdf_stm_f_dct_cache_source_mgr_s *pdf_stm_f_dct_cache_source_mgr_t;
-
 static void
-pdf_stm_f_dctdec_init_source (j_decompress_ptr cinfo)
+init_source (j_decompress_ptr cinfo)
 {
   /* This callback is intended to do nothing */
 }
 
 static boolean
-pdf_stm_f_dctdec_fill_input_buffer (j_decompress_ptr cinfo)
+fill_input_buffer (j_decompress_ptr cinfo)
 {
   /* suspending mode, just return false.*/
   return FALSE;
 }
 
 static void
-pdf_stm_f_dctdec_skip_input_data (j_decompress_ptr cinfo, long num_bytes)
+skip_input_data (j_decompress_ptr cinfo,
+                 long             num_bytes)
 {
   if (num_bytes > 0)
     {
-      pdf_stm_f_dct_cache_source_mgr_t src =
-        (pdf_stm_f_dct_cache_source_mgr_t ) cinfo->src;
+      struct pdf_stm_f_dct_cache_source_mgr_s *src =
+        (struct pdf_stm_f_dct_cache_source_mgr_s *)cinfo->src;
       long sz_skiped = src->cache->wp - src->cache->rp;
 
       if (sz_skiped > num_bytes)
@@ -483,24 +285,24 @@ pdf_stm_f_dctdec_skip_input_data (j_decompress_ptr cinfo, long num_bytes)
 }
 
 static void
-pdf_stm_f_dctdec_term_source (j_decompress_ptr cinfo)
+term_source (j_decompress_ptr cinfo)
 {
   /* This callback is intended to do nothing */
 }
 
-pdf_status_t
-pdf_stm_f_dctdec_src_fill (j_decompress_ptr cinfo, pdf_buffer_t *in)
+static enum pdf_stm_filter_apply_status_e
+src_fill (j_decompress_ptr  cinfo,
+          pdf_buffer_t     *in)
 {
-  pdf_stm_f_dct_cache_source_mgr_t src =
-    (pdf_stm_f_dct_cache_source_mgr_t ) cinfo->src;
-
+  struct pdf_stm_f_dct_cache_source_mgr_s *src =
+    (struct pdf_stm_f_dct_cache_source_mgr_s *)cinfo->src;
   pdf_size_t bytes_to_copy;
 
   if (src->size_to_skip > in->wp - in->rp)
     {
       src->size_to_skip -= in->wp - in->rp;
       in->rp = in->wp;
-      return PDF_ENINPUT;
+      return PDF_STM_FILTER_APPLY_STATUS_NO_INPUT;
     }
 
   in->rp += src->size_to_skip;
@@ -529,34 +331,15 @@ pdf_stm_f_dctdec_src_fill (j_decompress_ptr cinfo, pdf_buffer_t *in)
   src->pub.next_input_byte = (pdf_uchar_t *) (src->cache->data + src->cache->rp);
   src->pub.bytes_in_buffer = src->cache->wp - src->cache->rp;
 
-  return PDF_OK;
-}
-
-void
-pdf_stm_f_dctdec_src_fill_eoi (j_decompress_ptr cinfo)
-{
-  pdf_stm_f_dct_cache_source_mgr_t src =
-    (pdf_stm_f_dct_cache_source_mgr_t ) cinfo->src;
-
-  if (pdf_buffer_eob_p(src->cache)
-      && (src->cache->size > 1))
-    {
-      /* Insert a fake EOI marker */
-      src->cache->rp = 0;
-      src->cache->wp = 2;
-      src->cache->data[0] = (JOCTET) 0xFF;
-      src->cache->data[1] = (JOCTET) JPEG_EOI;
-    }
-
-  src->pub.next_input_byte = (pdf_uchar_t *) src->cache->data + src->cache->rp;
-  src->pub.bytes_in_buffer = src->cache->wp - src->cache->rp;
+  return PDF_STM_FILTER_APPLY_STATUS_OK;
 }
 
 static void
-pdf_stm_f_dctdec_jpeg_cache_src (j_decompress_ptr cinfo, pdf_buffer_t *cache)
+jpeg_cache_src (j_decompress_ptr  cinfo,
+                pdf_buffer_t     *cache)
 {
-  pdf_stm_f_dct_cache_source_mgr_t src =
-    (pdf_stm_f_dct_cache_source_mgr_t ) cinfo->src;
+  struct pdf_stm_f_dct_cache_source_mgr_s *src =
+    (struct pdf_stm_f_dct_cache_source_mgr_s *)cinfo->src;
 
   if (cinfo->src == NULL)
     {
@@ -565,30 +348,31 @@ pdf_stm_f_dctdec_jpeg_cache_src (j_decompress_ptr cinfo, pdf_buffer_t *cache)
         (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo,
                                     JPOOL_PERMANENT,
                                     sizeof (struct pdf_stm_f_dct_cache_source_mgr_s));
-      src = (pdf_stm_f_dct_cache_source_mgr_t) cinfo->src;
+      src = (struct pdf_stm_f_dct_cache_source_mgr_s *) cinfo->src;
     }
 
   src->cache = cache;
 
-  src->pub.init_source = pdf_stm_f_dctdec_init_source;
-  src->pub.fill_input_buffer = pdf_stm_f_dctdec_fill_input_buffer;
-  src->pub.skip_input_data = pdf_stm_f_dctdec_skip_input_data;
+  src->pub.init_source = init_source;
+  src->pub.fill_input_buffer = fill_input_buffer;
+  src->pub.skip_input_data = skip_input_data;
   src->pub.resync_to_restart = jpeg_resync_to_restart; /* use default method */
-  src->pub.term_source = pdf_stm_f_dctdec_term_source;
+  src->pub.term_source = term_source;
   src->pub.bytes_in_buffer = 0; /* forces fill_input_buffer on first read */
   src->pub.next_input_byte = NULL; /* until buffer loaded */
 }
 
-static pdf_status_t
-pdf_stm_f_dctdec_write_ppm_header (j_decompress_ptr cinfo, pdf_buffer_t *out)
+static enum pdf_stm_filter_apply_status_e
+write_ppm_header (j_decompress_ptr   cinfo,
+                  pdf_buffer_t      *out,
+                  pdf_error_t      **error)
 {
   pdf_char_t header[64];
   pdf_i32_t hlen;
 
+  PDF_ASSERT (out->size >= out->wp);
   if (out->size - out->wp < 64)
-    {
-      return PDF_ENOUTPUT;
-    }
+    return PDF_STM_FILTER_APPLY_STATUS_NO_OUTPUT;
 
   /* Emit file header */
   switch (cinfo->out_color_space)
@@ -596,7 +380,6 @@ pdf_stm_f_dctdec_write_ppm_header (j_decompress_ptr cinfo, pdf_buffer_t *out)
     case JCS_GRAYSCALE:
       {
         /* emit header for raw PGM format */
-
         sprintf (header, "P5\n%ld %ld\n%d\n",
                  (long) cinfo->output_width, (long) cinfo->output_height,
                  PPM_MAXVAL);
@@ -612,19 +395,218 @@ pdf_stm_f_dctdec_write_ppm_header (j_decompress_ptr cinfo, pdf_buffer_t *out)
     }
   default:
     {
-      return PDF_ERROR;
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_STM,
+                     PDF_ERROR,
+                     "unhandled out color space");
+      return PDF_STM_FILTER_APPLY_STATUS_ERROR;
     }
   }
 
   hlen = strlen (header);
   if (hlen > out->size-out->wp)
-    {
-      return PDF_ENOUTPUT;
-    }
+    return PDF_STM_FILTER_APPLY_STATUS_NO_OUTPUT;
 
   memcpy (out->data + out->wp, header, hlen);
   out->wp += hlen;
-  return PDF_OK;
+  return PDF_STM_FILTER_APPLY_STATUS_OK;
 }
 
-/* End of pdf_stm_f_ahex.c */
+static enum pdf_stm_filter_apply_status_e
+stm_f_dctdec_apply (pdf_hash_t    *params,
+                    void          *state,
+                    pdf_buffer_t  *in,
+                    pdf_buffer_t  *out,
+                    pdf_bool_t     finish,
+                    pdf_error_t  **error)
+{
+  struct pdf_stm_f_dctdec_s *filter_state = state;
+  struct jpeg_decompress_struct *pcinfo = filter_state->cinfo;
+  enum pdf_stm_filter_apply_status_e ret;
+  pdf_i32_t iret;
+
+  if (finish &&
+      ((in->wp - in->rp) < 1 ) &&
+      (pcinfo->output_scanline == pcinfo->output_height) &&
+      (0 == filter_state->row_valid_size - filter_state->row_copy_index))
+    {
+      return PDF_STM_FILTER_APPLY_STATUS_EOF;
+    }
+
+  ret = PDF_STM_FILTER_APPLY_STATUS_OK;
+  while (ret == PDF_STM_FILTER_APPLY_STATUS_OK)
+    {
+      if (filter_state->state == DCTDEC_STATE_INIT)
+        {
+          if (!filter_state->djpeg_in)
+            {
+              filter_state->djpeg_in = pdf_buffer_new (PDF_DJPEG_CACHE_SIZE, error);
+              if (!filter_state->djpeg_in)
+                {
+                  ret = PDF_STM_FILTER_APPLY_STATUS_ERROR;
+                  break;
+                }
+            }
+
+          jpeg_cache_src (pcinfo, filter_state->djpeg_in);
+          filter_state->backup_state = DCTDEC_STATE_READHDR;
+          filter_state->state = DCTDEC_STATE_CACHE_IN;
+        }
+
+      if (filter_state->state == DCTDEC_STATE_CACHE_IN)
+        {
+          if (pdf_buffer_eob_p (in))
+            {
+              ret = PDF_STM_FILTER_APPLY_STATUS_NO_INPUT;
+              break;
+            }
+
+          ret = src_fill (pcinfo, in);
+          if (ret != PDF_STM_FILTER_APPLY_STATUS_OK)
+            break;
+
+          filter_state->state = filter_state->backup_state;
+        }
+
+      if (filter_state->state == DCTDEC_STATE_READHDR)
+        {
+          iret = jpeg_read_header (pcinfo, TRUE);
+          if (iret == JPEG_SUSPENDED)
+            {
+              /* continue the loop, go into the "cache state" */
+              ret = PDF_STM_FILTER_APPLY_STATUS_OK;
+              filter_state->backup_state = filter_state->state;
+              filter_state->state = DCTDEC_STATE_CACHE_IN;
+              continue;
+            }
+
+          if (iret != JPEG_HEADER_OK)
+            {
+              pdf_set_error (error,
+                             PDF_EDOMAIN_BASE_STM,
+                             PDF_ERROR,
+                             "error reading JPEG header");
+              ret = PDF_STM_FILTER_APPLY_STATUS_ERROR;
+              break;
+            }
+
+          pdf_stm_f_dctdec_set_djpeg_param (pcinfo, filter_state);
+          filter_state->state = DCTDEC_STATE_STARTDJP;
+        }
+
+      if (filter_state->state == DCTDEC_STATE_STARTDJP)
+        {
+          iret = jpeg_start_decompress (pcinfo);
+          if (iret == FALSE)
+            {
+              /* continue the loop, go into the "cache state" */
+              ret = PDF_STM_FILTER_APPLY_STATUS_OK;
+              filter_state->backup_state = filter_state->state;
+              filter_state->state = DCTDEC_STATE_CACHE_IN;
+              continue;
+            }
+
+          /* here we know the output size, so allocate memory for them. */
+          filter_state->row_stride = pcinfo->output_width * pcinfo->output_components;
+
+          /* Make a one-row-high sample array that will go away when done with image */
+          filter_state->row_buf = (*pcinfo->mem->alloc_sarray)
+            ((j_common_ptr) pcinfo, JPOOL_IMAGE, filter_state->row_stride, 1);
+          filter_state->row_valid_size = 0;
+          filter_state->row_copy_index = 0;
+          filter_state->state = DCTDEC_STATE_WRITEHDR;
+        }
+
+      if (filter_state->state == DCTDEC_STATE_WRITEHDR)
+        {
+          ret = write_ppm_header (pcinfo, out, error);
+          if (ret != PDF_STM_FILTER_APPLY_STATUS_OK)
+            break;
+
+          filter_state->state = DCTDEC_STATE_SCANLINE;
+        }
+
+      if (filter_state->state == DCTDEC_STATE_OUTPUTLINE)
+        {
+          if ((filter_state->row_valid_size > 0) &&
+              (filter_state->row_valid_size > filter_state->row_copy_index))
+            {
+              if (pdf_buffer_full_p (out))
+                {
+                  ret = PDF_STM_FILTER_APPLY_STATUS_NO_OUTPUT;
+                  break;
+                }
+              else
+                {
+                  pdf_size_t bytes_to_copy =
+                    PDF_MIN (filter_state->row_valid_size - filter_state->row_copy_index,
+                             out->size - out->wp);
+
+                  if (bytes_to_copy > 0)
+                    {
+                      memcpy (out->data+out->wp,
+                              filter_state->row_buf[0]+filter_state->row_copy_index,
+                              bytes_to_copy);
+                      out->wp += bytes_to_copy;
+                    }
+
+                  filter_state->row_copy_index += bytes_to_copy;
+                  if (filter_state->row_copy_index != filter_state->row_valid_size)
+                    {
+                      ret = PDF_STM_FILTER_APPLY_STATUS_NO_OUTPUT;
+                      break;
+                    }
+                }
+
+              if ((ret == PDF_STM_FILTER_APPLY_STATUS_OK) &&
+                  (pcinfo->output_scanline == pcinfo->output_height))
+                {
+                  ret = PDF_STM_FILTER_APPLY_STATUS_EOF;
+                  break;
+                }
+            }
+
+          filter_state->state = DCTDEC_STATE_SCANLINE;
+        }
+
+      if (filter_state->state == DCTDEC_STATE_SCANLINE)
+        {
+          ret = PDF_STM_FILTER_APPLY_STATUS_OK;
+          if (pcinfo->output_scanline < pcinfo->output_height)
+            {
+              pdf_i32_t scannum;
+
+              scannum = jpeg_read_scanlines (pcinfo,
+                                             filter_state->row_buf,
+                                             1);
+              if (scannum == 0)
+                {
+                  filter_state->backup_state = filter_state->state;
+                  filter_state->state = DCTDEC_STATE_CACHE_IN;
+                  break;
+                }
+
+              if (scannum != 1)
+                {
+                  ret = PDF_STM_FILTER_APPLY_STATUS_ERROR;
+                  break;
+                }
+
+              filter_state->num_scanlines += scannum;
+              filter_state->row_valid_size = scannum * filter_state->row_stride;
+              filter_state->row_copy_index = 0;
+              filter_state->state = DCTDEC_STATE_OUTPUTLINE;
+            }
+        }
+    }
+
+  if (ret == PDF_STM_FILTER_APPLY_STATUS_NO_INPUT &&
+      finish)
+    {
+      ret = PDF_STM_FILTER_APPLY_STATUS_EOF;
+    }
+
+  return ret;
+}
+
+/* End of pdf-stm-f-dct.c */
