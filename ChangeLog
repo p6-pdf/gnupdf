@@ -1,5 +1,10 @@
 2011-04-26  Aleksander Morgado  <aleksander@gnu.org>
 
+	base,stm: Removed outdated fax filter skeleton
+	* src/base/pdf-stm-f-fax.[h|c]
+
+2011-04-26  Aleksander Morgado  <aleksander@gnu.org>
+
 	torture,stm: Do not setup two fixtures
 	* torture/unit/base/stm/pdf-stm-write.c
 
