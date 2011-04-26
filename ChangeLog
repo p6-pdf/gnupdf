@@ -1,3 +1,8 @@
+2011-04-26  Aleksander Morgado  <aleksander@gnu.org>
+
+	build: fix warnings reporting during configure
+	* configure.ac
+
 2011-04-22  Jose E. Marchesi  <jemarch@gnu.org>
 
 	torture: fixes in the test headers.
