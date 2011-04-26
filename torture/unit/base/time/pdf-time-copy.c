@@ -34,10 +34,10 @@
  * Test: pdf_time_copy_001
  * Description:
  *   Copy value of pdf_time_t object.
- *Success condition:
- * 1. Function pdf_time_new schould return PDF_OK.
- * 2. Function pdf_time_copy schould return PDF_OK.
- * 3. Structures pdf_time_s schould have the same data.
+ * Success condition:
+ *   1. Function pdf_time_new schould return PDF_OK.
+ *   2. Function pdf_time_copy schould return PDF_OK.
+ *   3. Structures pdf_time_s schould have the same data.
  */
 START_TEST (pdf_time_copy_001)
 {

@@ -37,12 +37,12 @@
  * Description:
  *   Get pdf_time_t object from string in full ISO_8601:
  *   YYYY-MM-DDThh:mm:ss+hh:mm.
- *Success condition:
- * 1. Function pdf_time_from_string should return
- * PDF_OK.
- * 2. pdf_time_t object should point the same time
- * as pdf_time_t object created by pdf_time_from_u32_t.
- * 3. pdf_time_cmp should return PDF_OK
+ * Success condition:
+ *   1. Function pdf_time_from_string should return
+ *      PDF_OK.
+ *   2. pdf_time_t object should point the same time
+ *      as pdf_time_t object created by pdf_time_from_u32_t.
+ *   3. pdf_time_cmp should return PDF_OK
  */
 START_TEST (pdf_time_from_string_001)
 {
@@ -137,12 +137,12 @@ END_TEST
  *   Get pdf_time_t object from string in ISO_8601
  *   with format YYYY-MM-DDThh:mm+hh:mm(without
  *   seconds)
- *Success condition:
- * 1. Function pdf_time_from_string should return
- * PDF_OK.
- * 2. pdf_time_t object should point the same time
- * as pdf_time_t object created by pdf_time_from_u32_t.
- * 3. pdf_time_cmp should return PDF_OK
+ * Success condition:
+ *   1. Function pdf_time_from_string should return
+ *      PDF_OK.
+ *   2. pdf_time_t object should point the same time
+ *      as pdf_time_t object created by pdf_time_from_u32_t.
+ *   3. pdf_time_cmp should return PDF_OK
  */
 START_TEST (pdf_time_from_string_002)
 {
@@ -238,12 +238,12 @@ END_TEST
  * Description:
  *   Get pdf_time_t object from string in ISO_8601
  *   with format YYYY-MM-DD(without time)
- *Success condition:
- * 1. Function pdf_time_from_string should return
- * PDF_OK.
- * 2. pdf_time_t object should point the same time
- * as pdf_time_t object created by pdf_time_from_u32_t.
- * 3. pdf_time_cmp should return PDF_OK
+ * Success condition:
+ *   1. Function pdf_time_from_string should return
+ *      PDF_OK.
+ *   2. pdf_time_t object should point the same time
+ *      as pdf_time_t object created by pdf_time_from_u32_t.
+ *   3. pdf_time_cmp should return PDF_OK
  */
 START_TEST (pdf_time_from_string_003)
 {
@@ -306,12 +306,12 @@ END_TEST
  * Description:
  *   Get pdf_time_t object from string in ISO_8601
  *   with format YYYY-MM(without time and day)
- *Success condition:
- * 1. Function pdf_time_from_string should return
- * PDF_OK.
- * 2. pdf_time_t object should point the same time
- * as pdf_time_t object created by pdf_time_from_u32_t.
- * 3. pdf_time_cmp should return PDF_OK
+ * Success condition:
+ *   1. Function pdf_time_from_string should return
+ *      PDF_OK.
+ *   2. pdf_time_t object should point the same time
+ *      as pdf_time_t object created by pdf_time_from_u32_t.
+ *   3. pdf_time_cmp should return PDF_OK
  */
 START_TEST (pdf_time_from_string_004)
 {
@@ -374,12 +374,12 @@ END_TEST
  * Description:
  *   Get pdf_time_t object from string in ISO_8601
  *   with format YYYY(only year)
- *Success condition:
- * 1. Function pdf_time_from_string should return
- * PDF_OK.
- * 2. pdf_time_t object should point the same time
- * as pdf_time_t object created by pdf_time_from_u32_t.
- * 3. pdf_time_cmp should return PDF_OK
+ * Success condition:
+ *   1. Function pdf_time_from_string should return
+ *      PDF_OK.
+ *   2. pdf_time_t object should point the same time
+ *      as pdf_time_t object created by pdf_time_from_u32_t.
+ *   3. pdf_time_cmp should return PDF_OK
  */
 START_TEST (pdf_time_from_string_005)
 {
@@ -442,11 +442,11 @@ END_TEST
  *   D:YYYYMMDDHHmmSSOHH'mm'
  *   D:YYYYMMDDHHmmSSOHH'mm
  *   D:YYYYMMDDHHmmSSZ when gmt_offset == 0
- *Success condition:
- * 1. Function pdf_time_from_string should return PDF_OK.
- * 2. Returned pdf_time_t object should point the same time
- * as pdf_time_t object created by pdf_time_from_u32_t.
- * 3. pdf_time_cmp should return PDF_OK
+ * Success condition:
+ *   1. Function pdf_time_from_string should return PDF_OK.
+ *   2. Returned pdf_time_t object should point the same time
+ *      as pdf_time_t object created by pdf_time_from_u32_t.
+ *   3. pdf_time_cmp should return PDF_OK
  */
 START_TEST (pdf_time_from_string_006)
 {
@@ -572,12 +572,12 @@ END_TEST
  *   Get pdf_time_t object from string in full
  *   PDF_TIME_STRING_FORMAT_GENERALIZED_ASN1:
  *   YYYYMMDDhhmmssTZD.
- *Success condition:
- * 1. Function pdf_time_from_string should return
- * PDF_OK.
- * 2. pdf_time_t object should point the same time
- * as pdf_time_t object created by pdf_time_from_u32_t.
- * 3. pdf_time_cmp should return PDF_OK
+ * Success condition:
+ *   1. Function pdf_time_from_string should return
+ *      PDF_OK.
+ *   2. pdf_time_t object should point the same time
+ *      as pdf_time_t object created by pdf_time_from_u32_t.
+ *   3. pdf_time_cmp should return PDF_OK
  */
 START_TEST (pdf_time_from_string_007)
 {
@@ -671,12 +671,12 @@ END_TEST
  *   Get pdf_time_t object from string in full
  *   PDF_TIME_STRING_FORMAT_GENERALIZED_ASN1:
  *   YYYYMMDDhhmmTZD. (without sconds)
- *Success condition:
- * 1. Function pdf_time_from_string should return
- * PDF_OK.
- * 2. pdf_time_t object should point the same time
- * as pdf_time_t object created by pdf_time_from_u32_t.
- * 3. pdf_time_cmp should return PDF_OK
+ * Success condition:
+ *   1. Function pdf_time_from_string should return
+ *      PDF_OK.
+ *   2. pdf_time_t object should point the same time
+ *      as pdf_time_t object created by pdf_time_from_u32_t.
+ *   3. pdf_time_cmp should return PDF_OK
  */
 START_TEST (pdf_time_from_string_008)
 {
@@ -771,13 +771,12 @@ END_TEST
  *   Get pdf_time_t object from string in full
  *   PDF_TIME_STRING_FORMAT_GENERALIZED_ASN1:
  *   YYYYMMDD. (without time)
- *
- *Success condition:
- * 1. Function pdf_time_from_string should return
- * PDF_OK.
- * 2. pdf_time_t object should point the same time
- * as pdf_time_t object created by pdf_time_from_u32_t.
- * 3. pdf_time_cmp should return PDF_OK
+ * Success condition:
+ *   1. Function pdf_time_from_string should return
+ *      PDF_OK.
+ *   2. pdf_time_t object should point the same time
+ *      as pdf_time_t object created by pdf_time_from_u32_t.
+ *   3. pdf_time_cmp should return PDF_OK
  */
 START_TEST (pdf_time_from_string_009)
 {
@@ -837,12 +836,12 @@ END_TEST
  *   Get pdf_time_t object from string in full
  *   PDF_TIME_STRING_FORMAT_GENERALIZED_ASN1:
  *   YYYYMM. (without time and day)
- *Success condition:
- * 1. Function pdf_time_from_string should return
- * PDF_OK.
- * 2. pdf_time_t object should point the same time
- * as pdf_time_t object created by pdf_time_from_u32_t.
- * 3. pdf_time_cmp should return PDF_OK
+ * Success condition:
+ *   1. Function pdf_time_from_string should return
+ *      PDF_OK.
+ *   2. pdf_time_t object should point the same time
+ *      as pdf_time_t object created by pdf_time_from_u32_t.
+ *   3. pdf_time_cmp should return PDF_OK
  */
 START_TEST (pdf_time_from_string_010)
 {
@@ -906,12 +905,12 @@ END_TEST
  *   Get pdf_time_t object from string in full
  *   PDF_TIME_STRING_FORMAT_GENERALIZED_ASN1:
  *   YYYY. (only year)
-  *Success condition:
- * 1. Function pdf_time_from_string should return
- * PDF_OK.
- * 2. pdf_time_t object should point the same time
- * as pdf_time_t object created by pdf_time_from_u32_t.
- * 3. pdf_time_cmp should return PDF_OK
+ * Success condition:
+ *   1. Function pdf_time_from_string should return
+ *      PDF_OK.
+ *   2. pdf_time_t object should point the same time
+ *      as pdf_time_t object created by pdf_time_from_u32_t.
+ *   3. pdf_time_cmp should return PDF_OK
  */
 START_TEST (pdf_time_from_string_011)
 {
@@ -967,12 +966,12 @@ END_TEST
  *   Get pdf_time_t object from string in full
  *   PDF_TIME_STRING_FORMAT_UTC_ASN1:
  *   yymmddhhmmss+hhmm
- *Success condition:
- * 1. Function pdf_time_from_string should return
- * PDF_OK.
- * 2. pdf_time_t object should point the same time
- * as pdf_time_t object created by pdf_time_from_u32_t.
- * 3. pdf_time_cmp should return PDF_OK
+ * Success condition:
+ *   1. Function pdf_time_from_string should return
+ *      PDF_OK.
+ *   2. pdf_time_t object should point the same time
+ *      as pdf_time_t object created by pdf_time_from_u32_t.
+ *   3. pdf_time_cmp should return PDF_OK
  */
 START_TEST (pdf_time_from_string_012)
 {
@@ -1066,12 +1065,12 @@ END_TEST
  *   Get pdf_time_t object from string in full
  *   PDF_TIME_STRING_FORMAT_UTC_ASN1:
  *   YYYYMMDDhhmmTZD. (without sconds)
- *Success condition:
- * 1. Function pdf_time_from_string should return
- * PDF_OK.
- * 2. pdf_time_t object should point the same time
- * as pdf_time_t object created by pdf_time_from_u32_t.
- * 3. pdf_time_cmp should return PDF_OK
+ * Success condition:
+ *   1. Function pdf_time_from_string should return
+ *      PDF_OK.
+ *   2. pdf_time_t object should point the same time
+ *      as pdf_time_t object created by pdf_time_from_u32_t.
+ *   3. pdf_time_cmp should return PDF_OK
  */
 START_TEST (pdf_time_from_string_013)
 {

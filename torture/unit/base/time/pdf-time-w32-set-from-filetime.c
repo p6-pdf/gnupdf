@@ -32,17 +32,15 @@
 /*
  * Test: pdf_time_w32_set_from_filetime_001
  * Description:
- * Invoke pdf_time_w32_set_from_filetime with
- * specialy prepared FILETIME structure and check if
- * returned pdf_time_t object points to right date.
- *
- *Success condition:
- * 1. Function pdf_time_w32_set_from_filetime
- * schould return PDF_OK.
- * 2. Function pdf_time_from_cal schould return
- * PDF_OK;
- * 3. Function pdf_time_cmp schould return 0.
- *
+ *   Invoke pdf_time_w32_set_from_filetime with
+ *   specialy prepared FILETIME structure and check if
+ *   returned pdf_time_t object points to right date.
+ * Success condition:
+ *   1. Function pdf_time_w32_set_from_filetime
+ *      schould return PDF_OK.
+ *   2. Function pdf_time_from_cal schould return
+ *      PDF_OK;
+ *   3. Function pdf_time_cmp schould return 0.
  */
 START_TEST (pdf_time_w32_set_from_filetime_001)
 {

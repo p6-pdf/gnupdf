@@ -64,6 +64,53 @@
 	* src/base/pdf-stm-filter.[h|c]: Use new stream backend API.
 	* src/base/pdf-stm.[h|c]: Idem.
 
+2011-04-26  Aleksander Morgado  <aleksander@gnu.org>
+
+	build: fix warnings reporting during configure
+	* configure.ac
+
+2011-04-22  Jose E. Marchesi  <jemarch@gnu.org>
+
+	torture: fixes in the test headers.
+	* doc/gnupdf-hg.texi (Syntax Check): Note added about running
+	generate-tsd.pl to make sure the headers are correct.
+
+	* torture/unit/base/stm/pdf-stm-tell.c: Header syntax fixes.
+	* torture/unit/base/time/pdf-time-add-cal-span-with-base.c:
+	Likewise.
+	* torture/unit/base/time/pdf-time-add-span.c: Likewise.
+	* torture/unit/base/time/pdf-time-w32-set-from-filetime.c:
+	Likewise.
+	* torture/unit/base/time/pdf-time-to-string.c: Likewise.
+	* torture/unit/base/time/pdf-time-sub-span.c: Likewise.
+	* torture/unit/base/time/pdf-time-sub-cal-span.c: Likewise.
+	* torture/unit/base/time/pdf-time-set-utc.c: Likewise.
+	* torture/unit/base/time/pdf-time-set-to-current-utc-time.c:
+	Likewise.
+	* torture/unit/base/time/pdf-time-set-to-current-local-time.c:
+	Likewise.
+	* torture/unit/base/time/pdf-time-set-local-offset.c: Likewise.
+	* torture/unit/base/time/pdf-time-set-from-cal.c: Likewise.
+	* torture/unit/base/time/pdf-time-new.c: Likewise.
+	* torture/unit/base/time/pdf-time-init-dup.c: Likewise.
+	* torture/unit/base/time/pdf-time-init.c: Likewise.
+	* torture/unit/base/time/pdf-time-get-utc-cal.c: Likewise.
+	* torture/unit/base/time/pdf-time-get-local-cal.c: Likewise.
+	* torture/unit/base/time/pdf-time-from-string.c: Likewise.
+	* torture/unit/base/time/pdf-time-dup.c: Likewise.
+	* torture/unit/base/time/pdf-time-diff-cal.c: Likewise.
+	* torture/unit/base/time/pdf-time-diff.c: Likewise.
+	* torture/unit/base/time/pdf-time-copy.c: Likewise.
+	* torture/unit/base/time/pdf-time-clear.c: Likewise.
+	* torture/unit/base/time/pdf-time-cal-span-diff.c: Likewise.
+	* torture/unit/base/time/pdf-time-cal-span-cmp.c: Likewise.
+
+	* torture/unit/base/stm/pdf-stm-read.c: Test headers fixed to
+	comply with the syntax understood by build-aux/generate-tsd.pl.
+
+	* torture/unit/base/time/pdf-time-add-cal-span.c: Likewise.
+>>>>>>> MERGE-SOURCE
+
 2011-04-18  Aleksander Morgado  <aleksander@gnu.org>
 
 	base,types: Refactored pdf buffer type

@@ -42,15 +42,13 @@
  *   pdf_time_set_from_i64.
  *   seconds.
  *   Both object must be equal.
- *
- *Success condition:
- * 1. Function pdf_time_new schould return PDF_OK
- * 2. Function pdf_time_set_from_u32 schould return
- * PDF_OK.
- * 3. Function pdf_time_set_from_i64 schould return
- * PDF_OK.
- * 4. pdf_time_t objects are equal.
- *
+ * Success condition:
+ *   1. Function pdf_time_new schould return PDF_OK
+ *   2. Function pdf_time_set_from_u32 schould return
+ *      PDF_OK.
+ *   3. Function pdf_time_set_from_i64 schould return
+ *      PDF_OK.
+ *   4. pdf_time_t objects are equal.
  */
 START_TEST (pdf_time_diff_cal_001)
 {

@@ -37,12 +37,12 @@
  *   pdf_time_set_to_current_utc_time on it. Then
  *   get utc calendar from it and compare it with
  *   manualy created calendar.
- *Success condition:
- * 1. Function pdf_time_set_to_current_utc_time
- * schould return PDF_OK.
- * 2. Get pdf_time_cal_s from that time recived in
- * point 1.
- * 3. Recived pdf_time_cal_s schould be equal to
+ * Success condition:
+ *   1. Function pdf_time_set_to_current_utc_time
+ *      schould return PDF_OK.
+ *   2. Get pdf_time_cal_s from that time recived in
+ *      point 1.
+ *   3. Received pdf_time_cal_s schould be equal to
  */
 START_TEST (pdf_time_set_to_current_utc_time_001)
 {

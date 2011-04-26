@@ -425,7 +425,7 @@ fi
 if test "x$AWK" = "x"; then
    missing_programs="$missing_programs
    awk"
-fi   
+fi
 
 if test -n "$missing_libs"; then
    echo ""
@@ -492,13 +492,13 @@ WARNING: you are going to build a library without FlateDecode support.
          That means you will not be able to process many PDF files."
 fi
 
-if test "x$ac_cv_lib_jbig2dec_jbig2_ctx_new" = "xno" ; then
+if test "x$HAVE_LIBJBIG2DEC" = "xno" ; then
 echo "
 WARNING: you are going to build a library without JBIG2Decode support.
          That means you will not be able to process many PDF files."
 fi
 
-if test "x$ac_cv_lib_jpeg_jpeg_std_error" = "xno" ; then
+if test "x$HAVE_LIBJPEG" = "xno" ; then
 echo "
 WARNING: you are going to build a library without JPEG support.
          That means you will not be able to process many PDF files."

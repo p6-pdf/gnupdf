@@ -35,10 +35,10 @@
  * Test: pdf_time_dup_001
  * Description:
  *   Duplicate initialized pdf_time_t object
- *Success condition:
- * 1. Function pdf_time_new should return PDF_OK
- * 2. Function pdf_time_dup should return pdf_time_t object.
- * 3. Structures pdf_time_s should have the same data.
+ * Success condition:
+ *   1. Function pdf_time_new should return PDF_OK
+ *   2. Function pdf_time_dup should return pdf_time_t object.
+ *   3. Structures pdf_time_s should have the same data.
  */
 START_TEST (pdf_time_dup_001)
 {

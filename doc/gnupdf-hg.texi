@@ -942,6 +942,17 @@ pitfalls on the source code and GCS conformance.
 Please do a make syntax-check before to send a patch, or alternatively
 use the Patch Safety Dispatcher (see the next section).
 
+Additionally, if you created more tests under 'torture/', please make
+sure the new test headers are correct by running:
+
+@example
+$ perl ../build-aux/generate-tsd.pl | grep "BAD FORMAT"
+@end example
+
+If the @code{BAD FORMAT} mark appears in the output it means that some
+of the headers were not properly processed by the
+@file{generate-tsd.pl} script.
+
 @menu
 * Skipping syntax tests::       Avoid passing tests in some files       
 @end menu

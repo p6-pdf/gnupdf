@@ -40,12 +40,12 @@
  *      2. Assign years field of first object to the
  *      value of the second object.
  *      3. until all fields are equal goto step1.
- *Success condition:
- * 1. Function pdf_time_cal_span_cmp schould return 1
- * 2. Function pdf_time_cal_span_cmp schould return -1
- *    after swapping arguments.
- * 3. Function pdf_time_cal_span_cmp schould return 0
- *    When both objects have all fields equal.
+ * Success condition:
+ *   1. Function pdf_time_cal_span_cmp schould return 1
+ *   2. Function pdf_time_cal_span_cmp schould return -1
+ *      after swapping arguments.
+ *   3. Function pdf_time_cal_span_cmp schould return 0
+ *      When both objects have all fields equal.
  */
 START_TEST (pdf_time_cal_span_cmp_001)
 {
