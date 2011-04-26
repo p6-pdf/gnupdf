@@ -1,5 +1,10 @@
 2011-04-26  Aleksander Morgado  <aleksander@gnu.org>
 
+	torture: Avoid compilation warning
+	* torture/unit/pdf-test-common.c
+
+2011-04-26  Aleksander Morgado  <aleksander@gnu.org>
+
 	base,stm: Removed outdated fax filter skeleton
 	* src/base/pdf-stm-f-fax.[h|c]
 

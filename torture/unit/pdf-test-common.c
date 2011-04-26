@@ -24,7 +24,10 @@
  */
 
 #include <config.h>
+
 #include <locale.h>
+#include <string.h>
+
 #include <pdf-test-common.h>
 
 void
