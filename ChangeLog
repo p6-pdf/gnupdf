@@ -1,5 +1,10 @@
 2011-04-26  Aleksander Morgado  <aleksander@gnu.org>
 
+	base,hash: Avoid compilation warning
+	* src/base/pdf-hash-helper.c
+
+2011-04-26  Aleksander Morgado  <aleksander@gnu.org>
+
 	base,error: Protect error object API for invalid arguments
 	* src/base/pdf-error.c
 

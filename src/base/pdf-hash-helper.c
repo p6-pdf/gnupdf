@@ -25,8 +25,9 @@
 
 #include <config.h>
 
-#include <pdf-hash-helper.h>
+#include <string.h>
 
+#include <pdf-hash-helper.h>
 
 /* Hash helpers to add/get texts */
 
@@ -281,9 +282,9 @@ pdf_hash_add_duplicated_string (pdf_hash_t        *table,
   if (!dup)
     {
       pdf_set_error (error,
-		     PDF_EDOMAIN_BASE_HASH,
-		     PDF_ENOMEM,
-		     "not enough memory: couldn't duplicate string");
+                     PDF_EDOMAIN_BASE_HASH,
+                     PDF_ENOMEM,
+                     "not enough memory: couldn't duplicate string");
       return PDF_FALSE;
     }
   memcpy (dup, value, len);
