@@ -47,11 +47,11 @@ struct pdf_stm_be_file_s
 typedef struct pdf_stm_be_file_s pdf_stm_be_file_t;
 
 static pdf_ssize_t stm_be_file_read    (pdf_stm_be_t *be,
-                                        pdf_char_t   *buffer,
+                                        pdf_uchar_t  *buffer,
                                         pdf_size_t    bytes,
                                         pdf_error_t **error);
 static pdf_ssize_t stm_be_file_write   (pdf_stm_be_t  *be,
-                                        pdf_char_t    *buffer,
+                                        pdf_uchar_t   *buffer,
                                         pdf_size_t     bytes,
                                         pdf_error_t  **error);
 static pdf_off_t   stm_be_file_seek    (pdf_stm_be_t *be,
@@ -131,7 +131,7 @@ stm_be_ensure_correct_offset (pdf_stm_be_file_t *file_be)
 
 static pdf_ssize_t
 stm_be_file_read (pdf_stm_be_t  *be,
-                  pdf_char_t    *buffer,
+                  pdf_uchar_t   *buffer,
                   pdf_size_t     bytes,
                   pdf_error_t  **error)
 {
@@ -156,7 +156,7 @@ stm_be_file_read (pdf_stm_be_t  *be,
 
   /* Read the requested number of bytes */
   ret = pdf_fsys_file_read (file_be->file,
-                            buffer,
+                            (pdf_char_t *)buffer,
                             bytes,
                             &read_bytes);
   /* Make sure EEOF is not treated as an error */
@@ -183,7 +183,7 @@ stm_be_file_read (pdf_stm_be_t  *be,
 
 static pdf_ssize_t
 stm_be_file_write (pdf_stm_be_t  *be,
-                   pdf_char_t    *buffer,
+                   pdf_uchar_t   *buffer,
                    pdf_size_t     bytes,
                    pdf_error_t  **error)
 {
@@ -207,7 +207,7 @@ stm_be_file_write (pdf_stm_be_t  *be,
 
   /* Write the requested number of bytes */
   if (pdf_fsys_file_write (file_be->file,
-                           buffer,
+                           (pdf_char_t *)buffer,
                            bytes,
                            &written_bytes) != PDF_OK)
     {

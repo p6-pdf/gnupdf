@@ -418,7 +418,7 @@ flush_token (pdf_token_reader_t reader, pdf_u32_t flags, pdf_token_t *token)
 {
   pdf_status_t rv;
   pdf_token_t new_tok;
-  pdf_char_t *data = reader->buffer->data;
+  pdf_char_t *data = (pdf_char_t *)reader->buffer->data;
   int datasize = reader->buffer->wp;
 
   switch (reader->state)
@@ -713,7 +713,7 @@ pdf_status_t
 pdf_token_read (pdf_token_reader_t reader, pdf_u32_t flags, pdf_token_t *token)
 {
   pdf_status_t rv;
-  pdf_char_t ch;
+  pdf_uchar_t ch;
   pdf_token_t new_token = NULL;
 
   if (!reader || !reader->stream || !token)
@@ -721,7 +721,7 @@ pdf_token_read (pdf_token_reader_t reader, pdf_u32_t flags, pdf_token_t *token)
 
   while ( (rv = pdf_stm_peek_char (reader->stream, &ch)) == PDF_OK )
     {
-      rv = handle_char (reader, flags, ch, &new_token);
+      rv = handle_char (reader, flags, (pdf_char_t)ch, &new_token);
       if (rv == PDF_OK)
         {
           /* The character we peeked at was accepted, so get rid of it. */

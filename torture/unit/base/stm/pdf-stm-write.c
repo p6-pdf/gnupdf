@@ -1,3 +1,4 @@
+
 /* -*- mode: C -*-
  *
  *       File:         pdf-stm-write.c

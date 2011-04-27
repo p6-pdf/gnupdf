@@ -47,11 +47,11 @@ struct pdf_stm_be_cfile_s
 typedef struct pdf_stm_be_cfile_s pdf_stm_be_cfile_t;
 
 static pdf_ssize_t stm_be_cfile_read    (pdf_stm_be_t *be,
-                                         pdf_char_t   *buffer,
+                                         pdf_uchar_t  *buffer,
                                          pdf_size_t    bytes,
                                          pdf_error_t **error);
 static pdf_ssize_t stm_be_cfile_write   (pdf_stm_be_t  *be,
-                                         pdf_char_t    *buffer,
+                                         pdf_uchar_t   *buffer,
                                          pdf_size_t     bytes,
                                          pdf_error_t  **error);
 static pdf_off_t   stm_be_cfile_seek    (pdf_stm_be_t *be,
@@ -130,7 +130,7 @@ stm_be_ensure_correct_offset (pdf_stm_be_cfile_t *cfile_be)
 
 static pdf_ssize_t
 stm_be_cfile_read  (pdf_stm_be_t  *be,
-                    pdf_char_t    *buffer,
+                    pdf_uchar_t   *buffer,
                     pdf_size_t     bytes,
                     pdf_error_t  **error)
 {
@@ -183,7 +183,7 @@ stm_be_cfile_read  (pdf_stm_be_t  *be,
 
 static pdf_ssize_t
 stm_be_cfile_write (pdf_stm_be_t  *be,
-                    pdf_char_t    *buffer,
+                    pdf_uchar_t   *buffer,
                     pdf_size_t     bytes,
                     pdf_error_t  **error)
 {

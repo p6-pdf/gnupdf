@@ -134,7 +134,7 @@ stm_f_v2_init (pdf_hash_t   *params,
 
   if (pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2,
                             &(filter_state->cipher)) != PDF_OK ||
-      pdf_crypt_cipher_setkey (filter_state->cipher, key, keysize) != PDF_OK)
+      pdf_crypt_cipher_setkey (filter_state->cipher, (pdf_char_t *)key, keysize) != PDF_OK)
     {
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_STM,
@@ -192,9 +192,9 @@ stm_f_v2_apply (pdf_stm_f_v2_mode_e   mode,
         case PDF_STM_F_V2_MODE_ENCODE:
           {
             pdf_crypt_cipher_encrypt (filter_state->cipher,
-                                      out->data,
+                                      (pdf_char_t *)out->data,
                                       out_size,
-                                      in->data,
+                                      (pdf_char_t *)in->data,
                                       in_size,
                                       &written);
             break;
@@ -202,9 +202,9 @@ stm_f_v2_apply (pdf_stm_f_v2_mode_e   mode,
         case PDF_STM_F_V2_MODE_DECODE:
           {
             pdf_crypt_cipher_decrypt (filter_state->cipher,
-                                      out->data,
+                                      (pdf_char_t *)out->data,
                                       out_size,
-                                      in->data,
+                                      (pdf_char_t *)in->data,
                                       in_size,
                                       &written);
             break;

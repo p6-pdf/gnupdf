@@ -95,7 +95,7 @@ pdf_status_t pdf_stm_file_new (pdf_fsys_file_t file,
                                pdf_size_t cache_size,
                                enum pdf_stm_mode_e mode,
                                pdf_stm_t *stm);
-pdf_status_t pdf_stm_mem_new (pdf_char_t *buffer,
+pdf_status_t pdf_stm_mem_new (pdf_uchar_t *buffer,
                               pdf_size_t size,
                               pdf_size_t cache_size,
                               enum pdf_stm_mode_e mode,
@@ -108,15 +108,15 @@ enum pdf_stm_mode_e pdf_stm_get_mode (pdf_stm_t stm);
 
 /* Reading and writing data */
 pdf_status_t pdf_stm_read (pdf_stm_t stm,
-                           pdf_char_t *buf,
+                           pdf_uchar_t *buf,
                            pdf_size_t bytes,
                            pdf_size_t *read_bytes);
 pdf_status_t pdf_stm_write (pdf_stm_t stm,
-                            const pdf_char_t *buf,
+                            const pdf_uchar_t *buf,
                             pdf_size_t bytes,
                             pdf_size_t *written_bytes);
-pdf_status_t pdf_stm_read_char (pdf_stm_t stm, pdf_char_t *c);
-pdf_status_t pdf_stm_peek_char (pdf_stm_t stm, pdf_char_t *c);
+pdf_status_t pdf_stm_read_char (pdf_stm_t stm, pdf_uchar_t *c);
+pdf_status_t pdf_stm_peek_char (pdf_stm_t stm, pdf_uchar_t *c);
 pdf_status_t pdf_stm_flush (pdf_stm_t stm,
                             pdf_bool_t finish_p,
                             pdf_size_t *flushed_bytes);

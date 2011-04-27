@@ -36,7 +36,7 @@ struct pdf_stm_be_mem_s
 {
   struct pdf_stm_be_s parent;
 
-  pdf_char_t *buffer;  /* Buffer contents */
+  pdf_uchar_t *buffer;  /* Buffer contents */
   pdf_size_t size;     /* Size of the buffer in octects */
   pdf_size_t pos;      /* Current position into the buffer */
 };
@@ -44,11 +44,11 @@ struct pdf_stm_be_mem_s
 typedef struct pdf_stm_be_mem_s pdf_stm_be_mem_t;
 
 static pdf_ssize_t stm_be_mem_read    (pdf_stm_be_t *be,
-                                       pdf_char_t   *buffer,
+                                       pdf_uchar_t  *buffer,
                                        pdf_size_t    bytes,
                                        pdf_error_t **error);
 static pdf_ssize_t stm_be_mem_write   (pdf_stm_be_t  *be,
-                                       pdf_char_t    *buffer,
+                                       pdf_uchar_t   *buffer,
                                        pdf_size_t     bytes,
                                        pdf_error_t  **error);
 static pdf_off_t   stm_be_mem_seek    (pdf_stm_be_t *be,
@@ -66,7 +66,7 @@ static const pdf_stm_be_vtable_t stm_be_vtable = {
 };
 
 pdf_stm_be_t *
-pdf_stm_be_new_mem (pdf_char_t   *buffer,
+pdf_stm_be_new_mem (pdf_uchar_t  *buffer,
                     pdf_size_t    size,
                     pdf_size_t    pos,
                     pdf_error_t **error)
@@ -104,7 +104,7 @@ stm_be_mem_destroy (pdf_stm_be_t *be)
 
 static pdf_ssize_t
 stm_be_mem_read (pdf_stm_be_t  *be,
-                 pdf_char_t    *buffer,
+                 pdf_uchar_t   *buffer,
                  pdf_size_t     bytes,
                  pdf_error_t  **error)
 {
@@ -138,7 +138,7 @@ stm_be_mem_read (pdf_stm_be_t  *be,
 
 static pdf_ssize_t
 stm_be_mem_write (pdf_stm_be_t  *be,
-                  pdf_char_t    *buffer,
+                  pdf_uchar_t   *buffer,
                   pdf_size_t     bytes,
                   pdf_error_t  **error)
 {

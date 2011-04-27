@@ -143,7 +143,7 @@ stm_f_md5enc_apply (pdf_hash_t    *params,
   PDF_ASSERT (in->wp >= in->rp);
   in_size = in->wp - in->rp;
 
-  pdf_crypt_md_write (filter_state->md, in->data, in_size);
+  pdf_crypt_md_write (filter_state->md, (pdf_char_t *)in->data, in_size);
   in->rp += in_size;
 
   if (!finish)
@@ -152,7 +152,7 @@ stm_f_md5enc_apply (pdf_hash_t    *params,
   if (pdf_buffer_eob_p (cache))
     {
       /* If we have reached the end, read the hash value in cache */
-      pdf_crypt_md_read (filter_state->md, cache->data, cache->size);
+      pdf_crypt_md_read (filter_state->md, (pdf_char_t *)cache->data, cache->size);
       cache->wp = cache->size;
     }
 

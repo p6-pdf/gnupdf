@@ -30,7 +30,7 @@
 
 #include <pdf-stm-be.h>
 
-pdf_stm_be_t *pdf_stm_be_new_mem (pdf_char_t   *buffer,
+pdf_stm_be_t *pdf_stm_be_new_mem (pdf_uchar_t  *buffer,
                                   pdf_size_t    size,
                                   pdf_size_t    pos,
                                   pdf_error_t **error);

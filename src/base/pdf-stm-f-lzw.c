@@ -111,7 +111,7 @@ enum lzw_special_codes_e {
 struct lzw_buffer_s
 {
   pdf_buffer_t *buf;
-  pdf_char_t cache [LZW_CACHE_SIZE];
+  pdf_uchar_t cache [LZW_CACHE_SIZE];
   pdf_size_t cache_rp;
   pdf_size_t cache_wp;
   lzw_code_t valbuf;
@@ -179,12 +179,12 @@ lzw_buffer_put_code (struct lzw_buffer_s *b,
       if (pdf_buffer_full_p (b->buf))
         {
           b->cache [b->cache_wp++] =
-            (pdf_char_t) (b->valbuf >> (LZW_CODE_SIZE - 8));
+            (pdf_uchar_t) (b->valbuf >> (LZW_CODE_SIZE - 8));
         }
       else
         {
           b->buf->data [b->buf->wp++] =
-            (pdf_char_t) (b->valbuf >> (LZW_CODE_SIZE - 8));
+            (pdf_uchar_t) (b->valbuf >> (LZW_CODE_SIZE - 8));
         }
       b->valbuf <<= 8;
       b->valbits -= 8;
@@ -237,7 +237,7 @@ lzw_buffer_set_bitsize (struct lzw_buffer_s *b,
 struct lzw_string_s
 {
   lzw_code_t prefix;   /* Prefix string code */
-  pdf_char_t suffix; /* Appended character */
+  pdf_uchar_t suffix; /* Appended character */
 
   lzw_code_t first; /* First string with the same prefix.  */
   lzw_code_t left;  /* Next string with smaller suffix and same prefix. */
@@ -267,7 +267,7 @@ lzw_dict_init (struct lzw_dict_s *d)
 
   for (i = 0; i < LZW_FIRST_CODE; i++)
     {
-      d->table[i].suffix = (pdf_char_t) (i & 0xFF);
+      d->table[i].suffix = (pdf_uchar_t) (i & 0xFF);
     }
 
   d->size = LZW_FIRST_CODE;
@@ -343,7 +343,7 @@ lzw_dict_reset (struct lzw_dict_s *dict)
 static void
 lzw_dict_fast_add (struct lzw_dict_s *d,
                    lzw_code_t         prefix,
-                   pdf_char_t         suffix)
+                   pdf_uchar_t        suffix)
 {
   d->table[d->size].prefix = prefix;
   d->table[d->size].suffix = suffix;
@@ -353,7 +353,7 @@ lzw_dict_fast_add (struct lzw_dict_s *d,
 static void
 lzw_dict_decode (struct lzw_dict_s  *d,
                  lzw_code_t          code,
-                 pdf_char_t        **decode,
+                 pdf_uchar_t       **decode,
                  pdf_size_t         *size)
 {
   *size = 0;
@@ -522,9 +522,9 @@ struct lzwdec_state_s
   pdf_i32_t early_change;
 
   /* state */
-  pdf_char_t  dec_buf [LZW_MAX_DICTSIZE];
-  pdf_char_t* decoded;
-  pdf_size_t  dec_size;
+  pdf_uchar_t  dec_buf [LZW_MAX_DICTSIZE];
+  pdf_uchar_t *decoded;
+  pdf_size_t   dec_size;
 
   lzw_code_t new_code;
   lzw_code_t old_code;
@@ -626,7 +626,7 @@ lzwdec_put_code (struct lzwdec_state_s *st,
   if (pdf_buffer_full_p (out))
     return PDF_FALSE;
 
-  out->data [out->wp++] = (pdf_char_t) (code & 0xFF);
+  out->data [out->wp++] = (pdf_uchar_t) (code & 0xFF);
   return PDF_TRUE;
 }
 

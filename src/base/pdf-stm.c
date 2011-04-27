@@ -42,7 +42,7 @@ static pdf_status_t pdf_stm_init (pdf_size_t buffer_size,
                                   pdf_stm_t stm);
 static inline pdf_stm_t pdf_stm_alloc (void);
 static inline void pdf_stm_dealloc (pdf_stm_t stm);
-static pdf_status_t pdf_stm_read_peek_char (pdf_stm_t stm, pdf_char_t *c, pdf_bool_t peek_p);
+static pdf_status_t pdf_stm_read_peek_char (pdf_stm_t stm, pdf_uchar_t *c, pdf_bool_t peek_p);
 
 /*
  * Public functions
@@ -92,7 +92,7 @@ pdf_stm_file_new (pdf_fsys_file_t file,
 }
 
 pdf_status_t
-pdf_stm_mem_new (pdf_char_t *buffer,
+pdf_stm_mem_new (pdf_uchar_t *buffer,
                  pdf_size_t size,
                  pdf_size_t cache_size,
                  enum pdf_stm_mode_e mode,
@@ -156,7 +156,7 @@ pdf_stm_get_mode (pdf_stm_t stm)
 
 pdf_status_t
 pdf_stm_read (pdf_stm_t stm,
-              pdf_char_t *buf,
+              pdf_uchar_t *buf,
               pdf_size_t bytes,
               pdf_size_t *read_bytes)
 {
@@ -225,7 +225,7 @@ pdf_stm_read (pdf_stm_t stm,
 
 pdf_status_t
 pdf_stm_write (pdf_stm_t stm,
-               const pdf_char_t *buf,
+               const pdf_uchar_t *buf,
                pdf_size_t bytes,
                pdf_size_t *written_bytes)
 {
@@ -428,13 +428,13 @@ pdf_stm_install_filter (pdf_stm_t                   stm,
 }
 
 pdf_status_t
-pdf_stm_read_char (pdf_stm_t stm, pdf_char_t *c)
+pdf_stm_read_char (pdf_stm_t stm, pdf_uchar_t *c)
 {
   return pdf_stm_read_peek_char (stm, c, PDF_FALSE);
 }
 
 pdf_status_t
-pdf_stm_peek_char (pdf_stm_t stm, pdf_char_t *c)
+pdf_stm_peek_char (pdf_stm_t stm, pdf_uchar_t *c)
 {
   return pdf_stm_read_peek_char (stm, c, PDF_TRUE);
 }
@@ -618,7 +618,7 @@ pdf_stm_init (pdf_size_t cache_size,
 
 static pdf_status_t
 pdf_stm_read_peek_char (pdf_stm_t stm,
-                        pdf_char_t *c,
+                        pdf_uchar_t *c,
                         pdf_bool_t peek_p)
 {
   pdf_status_t ret;

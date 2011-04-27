@@ -37,7 +37,7 @@
 
 struct pdf_buffer_s
 {
-  pdf_char_t *data;    /* Buffer contents */
+  pdf_uchar_t *data;   /* Buffer contents */
   pdf_size_t size;     /* Size of the buffer in octects */
   pdf_size_t rp;       /* Read pointer */
   pdf_size_t wp;       /* Write pointer */

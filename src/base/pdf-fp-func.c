@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2011-02-17 19:52:19 aleksander"
+/* -*- mode: C -*- Time-stamp: "2011-04-27 21:12:19 aleksander"
  *
  *       File:         pdf-fp-func.c
  *       Date:         Sun Nov 30 18:46:06 2008
@@ -430,7 +430,7 @@ pdf_fp_func_4_new (pdf_u32_t m,
   debug_off = pdf_alloc (sizeof(*debug_off) * debug_alloc);
 
   /* Initialize the token reader */
-  if (pdf_stm_mem_new (code,
+  if (pdf_stm_mem_new ((pdf_uchar_t *)code,
                        code_size,
                        code_size, /* Use the default cache size */
                        PDF_STM_READ,

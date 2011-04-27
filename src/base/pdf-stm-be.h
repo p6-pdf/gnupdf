@@ -36,12 +36,12 @@ typedef struct pdf_stm_be_s pdf_stm_be_t;
 typedef struct {
   /* Read operation in the backend */
   pdf_ssize_t (* read)    (pdf_stm_be_t  *be,
-                           pdf_char_t    *buffer,
+                           pdf_uchar_t   *buffer,
                            pdf_size_t     bytes,
                            pdf_error_t  **error);
   /* Write operation in the backend */
   pdf_ssize_t (* write)   (pdf_stm_be_t  *be,
-                           pdf_char_t    *buffer,
+                           pdf_uchar_t   *buffer,
                            pdf_size_t     bytes,
                            pdf_error_t  **error);
   /* Seek operation in the backend */

@@ -154,7 +154,7 @@ stm_f_aesv2_init (pdf_hash_t   *params,
   filter_state->cipher = NULL;
   if (pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2,
                             &(filter_state->cipher)) != PDF_OK ||
-      pdf_crypt_cipher_setkey (filter_state->cipher, key, keysize) != PDF_OK)
+      pdf_crypt_cipher_setkey (filter_state->cipher, (pdf_char_t *)key, keysize) != PDF_OK)
     {
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_STM,
@@ -269,18 +269,18 @@ stm_f_aesv2_apply (pdf_stm_f_aesv2_mode_e   mode,
             {
             case PDF_STM_F_AESV2_MODE_ENCODE:
               pdf_crypt_cipher_encrypt (cipher,
-                                        out_cache->data,
+                                        (pdf_char_t *)out_cache->data,
                                         out_cache->size,
-                                        in_cache->data,
+                                        (pdf_char_t *)in_cache->data,
                                         in_cache->size,
                                         NULL);
               break;
 
             case PDF_STM_F_AESV2_MODE_DECODE:
               pdf_crypt_cipher_decrypt (cipher,
-                                        out_cache->data,
+                                        (pdf_char_t *)out_cache->data,
                                         out_cache->size,
-                                        in_cache->data,
+                                        (pdf_char_t *)in_cache->data,
                                         in_cache->size,
                                         NULL);
               break;

@@ -1,3 +1,22 @@
+2011-04-27  Aleksander Morgado  <aleksander@gnu.org>
+
+	base,types: Make unsigned the data in the buffer. Fixes FS#125.
+	* src/base/pdf-types-buffer.[h|c]
+	* src/base/pdf-fp-func.c: Fix compilation warnings
+	* src/base/pdf-stm-be-cfile.c: Idem
+	* src/base/pdf-stm-be-file.c: Idem
+	* src/base/pdf-stm-be-mem.[h|c]: Idem
+	* src/base/pdf-stm-be.h: Idem
+	* src/base/pdf-stm-f-aesv2.c: Idem
+	* src/base/pdf-stm-f-lzw.c: Idem
+	* src/base/pdf-stm-f-md5.c: Idem
+	* src/base/pdf-stm-f-v2.c: Idem
+	* src/base/pdf-stm.[h|c]: Idem
+	* src/base/pdf-token-reader.c: Idem
+	* src/base/pdf-token-writer.c: Idem
+	* src/base/pdf-types-buffer.[h|c]: Idem
+	* torture/unit/base/stm/pdf-stm-write.c: Idem
+
 2011-04-26  Aleksander Morgado  <aleksander@gnu.org>
 
 	base,stm: Refactored stream filters
