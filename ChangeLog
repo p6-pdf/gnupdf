@@ -1,3 +1,17 @@
+2011-05-10  Jose E. Marchesi  <jemarch@gnu.org>
+
+	lib: avoid name clash with PDF_OBJ_IS_NULL and provide a quick
+	macro to determine whether a given object is the null object.
+	Problem reported by Jin Chen-Xin.
+	* doc/gnupdf.texi (Generic Functions to Manipulate Objects):
+	Document the new PDF_OBJ_IS_NULL macro.
+	Use the PDF_OBJ_IS_NULL macro in usage examples instead of
+	directly compare the structures.
+
+	* src/object/pdf-obj.h (_pdf_obj_null): Constant PDF_OBJ_NULL
+	renamed to _pdf_obj_null.
+	(PDF_OBJ_IS_NULL): New macro.
+
 2011-04-26  Aleksander Morgado  <aleksander@gnu.org>
 
 	build: fix warnings reporting during configure
