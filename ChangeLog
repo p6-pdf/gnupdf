@@ -1,3 +1,9 @@
+2011-05-17  Aleksander Morgado  <aleksander@gnu.org>
+
+	base,fsys: Use pdf_off_t internally
+	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_file_get_pos)
+	(pdf_fsys_disk_file_set_pos)
+
 2011-04-27  Aleksander Morgado  <aleksander@gnu.org>
 
 	base,types: Make unsigned the data in the buffer. Fixes FS#125.

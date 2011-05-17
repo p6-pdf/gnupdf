@@ -1012,13 +1012,13 @@ pdf_status_t
 pdf_fsys_disk_file_get_pos (pdf_fsys_file_t  file,
                             pdf_off_t       *pos)
 {
-  long cpos;
+  pdf_off_t cpos;
 
   PDF_ASSERT_POINTER_RETURN_VAL (file, PDF_EBADDATA);
   PDF_ASSERT_POINTER_RETURN_VAL (pos, PDF_EBADDATA);
 
   cpos = ftello (((pdf_fsys_disk_file_t)file->data)->file_descriptor);
-  if (cpos < 0)
+  if (cpos == (pdf_off_t)-1)
     {
       /* TODO: Propagate error */
       return __pdf_fsys_disk_get_status_from_errno (errno);
@@ -1032,18 +1032,16 @@ pdf_status_t
 pdf_fsys_disk_file_set_pos (pdf_fsys_file_t file,
                             pdf_off_t       new_pos)
 {
-  int st;
-
   PDF_ASSERT_POINTER_RETURN_VAL (file, PDF_EBADDATA);
 
-  st = fseeko (((pdf_fsys_disk_file_t)file->data)->file_descriptor,
-               new_pos,
-               SEEK_SET);
-  if (st < 0)
+  if (fseeko (((pdf_fsys_disk_file_t)file->data)->file_descriptor,
+              new_pos,
+              SEEK_SET) == (pdf_off_t)-1)
     {
       /* TODO: Propagate error */
       return __pdf_fsys_disk_get_status_from_errno (errno);
     }
+
   return PDF_OK;
 }
 
