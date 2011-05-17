@@ -1,5 +1,10 @@
 2011-05-18  Aleksander Morgado  <aleksander@gnu.org>
 
+	base,stm: Added IDs for missing encoder and decoder filters
+	* src/base/pdf-stm-filter.[h|c]
+
+2011-05-18  Aleksander Morgado  <aleksander@gnu.org>
+
 	unit: Fix hex getter in tests
 	* torture/unit/pdf-test-common.c
 

@@ -72,23 +72,32 @@ struct stm_filter_s {
 /* Same order as pdf_stm_filter_type_e */
 static const struct stm_filter_s filters[PDF_STM_FILTER_LAST] = {
   { "NULL",              pdf_stm_f_null_get     },
-  { "RunLength encoder", pdf_stm_f_rlenc_get    },
-  { "RunLength decoder", pdf_stm_f_rldec_get    },
-  { "FLATE encoder",     pdf_stm_f_flateenc_get },
-  { "FLATE decoder",     pdf_stm_f_flatedec_get },
-  { "JBI2 decoder",      pdf_stm_f_jbig2dec_get },
-  { "DCT decoder",       pdf_stm_f_dctdec_get   },
+
   { "ASCII-HEX encoder", pdf_stm_f_ahexenc_get  },
   { "ASCII-HEX decoder", pdf_stm_f_ahexdec_get  },
+  { "ASCII-85 encoder",  pdf_stm_f_a85enc_get   },
+  { "ASCII-85 decoder",  pdf_stm_f_a85dec_get   },
+  { "LZW encoder",       pdf_stm_f_lzwenc_get   },
+  { "LZW decoder",       pdf_stm_f_lzwdec_get   },
+  { "FLATE encoder",     pdf_stm_f_flateenc_get },
+  { "FLATE decoder",     pdf_stm_f_flatedec_get },
+  { "RunLength encoder", pdf_stm_f_rlenc_get    },
+  { "RunLength decoder", pdf_stm_f_rldec_get    },
+  { "CCITT Fax encoder", NULL                   },
+  { "CCITT Fax decoder", NULL                   },
+  { "JBIG2 encoder",     NULL                   },
+  { "JBIG2 decoder",     pdf_stm_f_jbig2dec_get },
+  { "DCT encoder",       NULL                   },
+  { "DCT decoder",       pdf_stm_f_dctdec_get   },
+  { "JPX encoder",       NULL                   },
+  { "JPX decoder",       NULL                   },
+
   { "AESv2 encoder",     pdf_stm_f_aesv2enc_get },
   { "AESv2 decoder",     pdf_stm_f_aesv2dec_get },
   { "V2 encoder",        pdf_stm_f_v2enc_get    },
   { "V2 decoder",        pdf_stm_f_v2enc_get    },
+
   { "MD5 encoder",       pdf_stm_f_md5enc_get   },
-  { "LZW encoder",       pdf_stm_f_lzwenc_get   },
-  { "LZW decoder",       pdf_stm_f_lzwdec_get   },
-  { "ASCII-85 encoder",  pdf_stm_f_a85enc_get   },
-  { "ASCII-85 decoder",  pdf_stm_f_a85dec_get   }
 };
 
 /* Filter data type */

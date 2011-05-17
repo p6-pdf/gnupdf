@@ -47,23 +47,35 @@ enum pdf_stm_filter_type_e
 {
   PDF_STM_FILTER_UNKNOWN = -1,
   PDF_STM_FILTER_NULL = 0,
-  PDF_STM_FILTER_RL_ENC,
-  PDF_STM_FILTER_RL_DEC,
-  PDF_STM_FILTER_FLATE_ENC, /* Only if libz available */
-  PDF_STM_FILTER_FLATE_DEC, /* Only if libz available */
-  PDF_STM_FILTER_JBIG2_DEC, /* Only if libjbig2dec available */
-  PDF_STM_FILTER_DCT_DEC,   /* Only if libjpeg available */
+
+  /* Standard filters */
   PDF_STM_FILTER_AHEX_ENC,
   PDF_STM_FILTER_AHEX_DEC,
+  PDF_STM_FILTER_A85_ENC,
+  PDF_STM_FILTER_A85_DEC,
+  PDF_STM_FILTER_LZW_ENC,
+  PDF_STM_FILTER_LZW_DEC,
+  PDF_STM_FILTER_FLATE_ENC, /* Only if libz available */
+  PDF_STM_FILTER_FLATE_DEC, /* Only if libz available */
+  PDF_STM_FILTER_RL_ENC,
+  PDF_STM_FILTER_RL_DEC,
+  PDF_STM_FILTER_CCITTFAX_ENC, /* TODO */
+  PDF_STM_FILTER_CCITTFAX_DEC, /* TODO */
+  PDF_STM_FILTER_JBIG2_ENC, /* TODO, see FS#100 */
+  PDF_STM_FILTER_JBIG2_DEC, /* Only if libjbig2dec available */
+  PDF_STM_FILTER_DCT_ENC,   /* TODO, see FS#73 */
+  PDF_STM_FILTER_DCT_DEC,   /* Only if libjpeg available */
+  PDF_STM_FILTER_JPX_ENC,
+  PDF_STM_FILTER_JPX_DEC,
+
+  /* Crypt filters */
   PDF_STM_FILTER_AESV2_ENC,
   PDF_STM_FILTER_AESV2_DEC,
   PDF_STM_FILTER_V2_ENC,
   PDF_STM_FILTER_V2_DEC,
+
+  /* Hash filters */
   PDF_STM_FILTER_MD5_ENC,
-  PDF_STM_FILTER_LZW_ENC,
-  PDF_STM_FILTER_LZW_DEC,
-  PDF_STM_FILTER_A85_ENC,
-  PDF_STM_FILTER_A85_DEC,
   PDF_STM_FILTER_LAST
 };
 
