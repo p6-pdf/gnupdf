@@ -1,5 +1,11 @@
 2011-05-17  Aleksander Morgado  <aleksander@gnu.org>
 
+	base,stm: New internal pdf_stm_filter_p() to check whether a given
+	filter is currently supported
+	* src/base/pdf-stm-filter.[h|c] (pdf_stm_filter_p)
+
+2011-05-17  Aleksander Morgado  <aleksander@gnu.org>
+
 	base,stm: Avoid going off limits in file and cfile backends
 	* src/base/pdf-stm-be-file.c
 	* src/base/pdf-stm-be-cfile.c

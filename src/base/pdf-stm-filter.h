@@ -104,6 +104,8 @@ typedef struct {
 
 typedef struct pdf_stm_filter_s pdf_stm_filter_t;
 
+pdf_bool_t pdf_stm_filter_p (enum pdf_stm_filter_type_e type);
+
 pdf_stm_filter_t *pdf_stm_filter_new (enum pdf_stm_filter_type_e   type,
                                       pdf_hash_t                  *params,
                                       pdf_size_t                   buffer_size,
