@@ -68,7 +68,7 @@ pdf_test_get_hex (const pdf_uchar_t *data,
    * - 2N bytes for hexadecimal char representation of each byte...
    * - N-1 bytes for the separator ':'
    * So... a total of (1+2N+N-1) = 3N bytes are needed... */
-  new_str_length =  3 * size;
+  new_str_length = (size > 0 ? (3 * size) : 1);
 
   /* Allocate memory for new array and initialize contents to NUL */
   new_str = (pdf_uchar_t *) pdf_alloc (new_str_length);
