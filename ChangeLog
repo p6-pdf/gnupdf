@@ -1,5 +1,10 @@
 2011-05-17  Aleksander Morgado  <aleksander@gnu.org>
 
+	base,types: Remove NO_POS from the public API
+	* src/base/pdf-types.h
+
+2011-05-17  Aleksander Morgado  <aleksander@gnu.org>
+
 	base,stm: New PDF_STM_FILTER_UNKNOWN id
 	* src/base/pdf-stm-filter.h
 
