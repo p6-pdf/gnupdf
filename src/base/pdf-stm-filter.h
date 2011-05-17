@@ -45,6 +45,7 @@
 */
 enum pdf_stm_filter_type_e
 {
+  PDF_STM_FILTER_UNKNOWN = -1,
   PDF_STM_FILTER_NULL = 0,
   PDF_STM_FILTER_RL_ENC,
   PDF_STM_FILTER_RL_DEC,

@@ -1,5 +1,10 @@
 2011-05-17  Aleksander Morgado  <aleksander@gnu.org>
 
+	base,stm: New PDF_STM_FILTER_UNKNOWN id
+	* src/base/pdf-stm-filter.h
+
+2011-05-17  Aleksander Morgado  <aleksander@gnu.org>
+
 	base,stm: New internal pdf_stm_filter_p() to check whether a given
 	filter is currently supported
 	* src/base/pdf-stm-filter.[h|c] (pdf_stm_filter_p)
