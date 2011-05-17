@@ -247,7 +247,7 @@ stm_be_cfile_seek (pdf_stm_be_t *be,
 
   /* Check the requested position */
   if (pos > max_pos)
-    pos = max_pos - 1;
+    pos = max_pos;
   else if (pos < 0)
     pos = 0;
 

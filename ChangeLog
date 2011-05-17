@@ -1,5 +1,11 @@
 2011-05-17  Aleksander Morgado  <aleksander@gnu.org>
 
+	base,stm: Avoid going off limits in file and cfile backends
+	* src/base/pdf-stm-be-file.c
+	* src/base/pdf-stm-be-cfile.c
+
+2011-05-17  Aleksander Morgado  <aleksander@gnu.org>
+
 	base,fsys: Use pdf_off_t internally
 	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_file_get_pos)
 	(pdf_fsys_disk_file_set_pos)

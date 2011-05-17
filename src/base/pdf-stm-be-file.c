@@ -235,7 +235,7 @@ stm_be_file_seek (pdf_stm_be_t *be,
                   pdf_off_t     pos)
 {
   pdf_stm_be_file_t *file_be = (pdf_stm_be_file_t *)be;
-  pdf_size_t file_size;
+  pdf_off_t file_size;
 
   file_size = pdf_fsys_file_get_size (file_be->file);
 
@@ -243,10 +243,9 @@ stm_be_file_seek (pdf_stm_be_t *be,
   if (pos < 0)
     pos = 0;
   if (pos >= file_size)
-    pos = file_size - 1;
+    pos = (file_size > 0 ? file_size - 1 : 0);
 
   file_be->pos = pos;
-
   return pos;
 }
 
