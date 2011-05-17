@@ -40,14 +40,16 @@
 START_TEST (pdf_hash_add_stm_001)
 {
   pdf_hash_t *table;
-  pdf_stm_t inner;
+  pdf_stm_t *inner;
   char mem[4];
   pdf_error_t *error = NULL;
 
 
   table = pdf_hash_new (NULL);
 
-  pdf_stm_mem_new (mem, 4, 0, PDF_STM_READ, &inner);
+  inner = pdf_stm_mem_new (mem, 4, 0, PDF_STM_READ, &error);
+  fail_unless (inner != NULL);
+  fail_if (error != NULL);
 
   fail_if (pdf_hash_add_stm (table,
                              "theKey",

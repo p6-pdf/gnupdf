@@ -132,6 +132,7 @@ pdf_stm_filter_t *pdf_stm_filter_get_tail (pdf_stm_filter_t *filter);
 
 pdf_bool_t pdf_stm_filter_apply (pdf_stm_filter_t  *filter,
                                  pdf_bool_t         finish,
+                                 pdf_bool_t        *eof,
                                  pdf_error_t      **error);
 
 pdf_bool_t pdf_stm_filter_reset (pdf_stm_filter_t  *filter,

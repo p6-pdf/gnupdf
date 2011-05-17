@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2011-03-05 00:50:03 aleksander"
+/* -*- mode: C -*-
  *
  *       File:         pdf-token-write.c
  *       Date:         Tue Sep 21 21:08:07 2010
@@ -103,11 +103,12 @@ write_and_check (pdf_token_t token,
                  pdf_size_t expected_size,
                  pdf_size_t max_size)
 {
-  pdf_stm_t stm;
+  pdf_stm_t *stm;
   pdf_char_t *buffer;
   pdf_token_writer_t writer;
   char *buffer_printable;
   char *expected_printable;
+  pdf_error_t *error = NULL;
 
   /* Allocate memory for printable strings.  */
   fail_if ((buffer_printable = pdf_alloc (max_size)) == NULL);
@@ -115,8 +116,9 @@ write_and_check (pdf_token_t token,
 
   /* Create the in-memory stream.  */
   fail_if ((buffer = pdf_alloc (max_size)) == NULL);
-  fail_if (pdf_stm_mem_new (buffer, max_size, 0, PDF_STM_WRITE, &stm)
-           != PDF_OK);
+  stm = pdf_stm_mem_new (buffer, max_size, 0, PDF_STM_WRITE, &error);
+  fail_unless (stm != NULL);
+  fail_if (error != NULL);
 
   /* Create the token writer.  */
   fail_if (pdf_token_writer_new (stm, &writer) != PDF_OK);
@@ -126,7 +128,7 @@ write_and_check (pdf_token_t token,
 
   /* Destroy writer and stream.  */
   fail_if (pdf_token_writer_destroy (writer));
-  fail_if (pdf_stm_destroy (stm) != PDF_OK);
+  pdf_stm_destroy (stm);
 
   /* Compare results.  */
   fail_unless (memcmp (buffer, expected, expected_size) == 0,

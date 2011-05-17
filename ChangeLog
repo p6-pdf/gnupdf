@@ -1,3 +1,63 @@
+2011-05-18  Aleksander Morgado  <aleksander@gnu.org>
+
+	base,stm: New stream module API
+	* src/base/pdf-stm.[h|c]: Refactored API and internals.
+	* src/base/pdf-stm-filter.[h|c] (pdf_stm_filter_apply): Added new eof
+	argument.
+
+	base,token: Use new stream API
+	* src/base/pdf-token-reader.[h|c]
+	* src/base/pdf-token-writer.[h|c]
+
+	base,hash: Use new stream API in hash helpers
+	* src/base/pdf-hash-helper.[h|c]
+
+	base,fp: Use new stream API
+	* src/base/pdf-fp-func.c (pdf_fp_func_4_new)
+
+	utils: Use new stream API
+	* utils/pdf-filter.c
+	* utils/pdf-tokeniser.c
+
+	torture,hash: Use new stream API
+	* torture/unit/base/hash/pdf-hash-add-stm.c
+
+	torture,token: Use new stream API
+	* torture/unit/base/token/pdf-token-read.c
+	* torture/unit/base/token/pdf-token-write.c
+
+	torture,stm: Tests refactored to work with the new stream API. Also
+	improved the way filters are tested.
+	* torture/unit/Makefile.am
+	* torture/unit/base/stm/tsuite-stm.c
+	* torture/unit/base/stm/pdf-stm-file-new.c
+	* torture/unit/base/stm/pdf-stm-mem-new.c
+	* torture/unit/base/stm/pdf-stm-tell.c
+	* torture/unit/base/stm/pdf-stm-bseek.c
+	* torture/unit/base/stm/pdf-stm-btell.c
+	* torture/unit/base/stm/pdf-stm-flush.c
+	* torture/unit/base/stm/pdf-stm-get-mode.c
+	* torture/unit/base/stm/pdf-stm-peek-char.c
+	* torture/unit/base/stm/pdf-stm-read-char.c
+	* torture/unit/base/stm/pdf-stm-rw-filter-a85.c: New file to include all
+	A85 filter related tests.
+	* torture/unit/base/stm/pdf-stm-rw-filter-aesv2.c: New file to include
+	all AESv2 filter related tests.
+	* torture/unit/base/stm/pdf-stm-rw-filter-ahex.c: New file to include
+	all AHEX filter related tests.
+	* torture/unit/base/stm/pdf-stm-rw-filter-flate.c: New file to include
+	all FLATE filter related tests.
+	* torture/unit/base/stm/pdf-stm-rw-filter-null.c: New file to include
+	all NULL filter related tests
+	* torture/unit/base/stm/pdf-stm-rw-filter-rl.c
+	* torture/unit/base/stm/pdf-stm-rw-filter-v2.c
+	* torture/unit/base/stm/pdf-stm-test-common.[h|c]: New file, common
+	methods to use in the stream unit tests.
+	* torture/unit/base/stm/pdf-stm-read.c: File removed, read tests now
+	included in per-filter-type files.
+	* torture/unit/base/stm/pdf-stm-write.c: File removed, write tests now
+	included in per-filter-type files.
+
 2011-05-17  Aleksander Morgado  <aleksander@gnu.org>
 
 	base,types: Remove NO_POS from the public API

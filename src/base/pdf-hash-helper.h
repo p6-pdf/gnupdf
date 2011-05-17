@@ -83,9 +83,9 @@ const pdf_hash_t *pdf_hash_get_hash   (pdf_hash_t        *table,
 /* Hash helpers to add/get streams */
 pdf_bool_t        pdf_hash_add_stm    (pdf_hash_t        *table,
                                        const pdf_char_t  *key,
-                                       const pdf_stm_t    value,
+                                       const pdf_stm_t   *value,
                                        pdf_error_t      **error);
-const pdf_stm_t   pdf_hash_get_stm    (pdf_hash_t        *table,
+const pdf_stm_t  *pdf_hash_get_stm    (pdf_hash_t        *table,
                                        const pdf_char_t  *key);
 
 /* Hash helpers to add/get booleans */

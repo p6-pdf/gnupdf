@@ -39,7 +39,7 @@
 struct pdf_token_writer_s;  /* opaque type */
 typedef struct pdf_token_writer_s *pdf_token_writer_t;
 
-pdf_status_t pdf_token_writer_new (pdf_stm_t stm, pdf_token_writer_t *writer);
+pdf_status_t pdf_token_writer_new (pdf_stm_t *stm, pdf_token_writer_t *writer);
 pdf_status_t pdf_token_writer_destroy (pdf_token_writer_t writer);
 pdf_status_t pdf_token_writer_reset (pdf_token_writer_t writer);
 pdf_status_t pdf_token_write (pdf_token_writer_t writer, pdf_u32_t flags,
@@ -49,7 +49,7 @@ pdf_status_t pdf_token_write (pdf_token_writer_t writer, pdf_u32_t flags,
 
 /* Internal state */
 struct pdf_token_writer_s {
-  pdf_stm_t stream;  /* stream to read bytes from */
+  pdf_stm_t *stream;  /* stream to read bytes from */
   char *decimal_point;
 
   pdf_bool_t in_keyword;

@@ -36,7 +36,7 @@
 #include <unistr.h>
 
 pdf_status_t
-pdf_token_writer_new (pdf_stm_t stm, pdf_token_writer_t *writer)
+pdf_token_writer_new (pdf_stm_t *stm, pdf_token_writer_t *writer)
 {
   pdf_status_t err;
   pdf_token_writer_t new_tokw;
@@ -127,14 +127,21 @@ write_data (pdf_token_writer_t writer, const pdf_uchar_t *data,
 {
   pdf_size_t i;
   pdf_status_t rv;
+  pdf_error_t *inner_error = NULL;
 
-  rv = pdf_stm_write (writer->stream, data, len, written);
-  if (rv != PDF_OK)
-    return rv;
+  if (!pdf_stm_write (writer->stream, data, len, written, &inner_error) &&
+      inner_error)
+    {
+      /* TODO: Propagate error */
+      rv = pdf_error_get_status (inner_error);
+      pdf_error_destroy (inner_error);
+      return rv;
+    }
 
   for (i = 0; i < *written; ++i)
     {
       pdf_uchar_t ch = data[i];
+
       ++writer->line_length;
       if (pdf_is_eol_char (ch))
         writer->line_length = 0;

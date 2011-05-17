@@ -28,6 +28,7 @@
 #include <check.h>
 #include <pdf.h>
 #include <pdf-test-common.h>
+
 /*
  * Test: pdf_stm_file_new_001
  * Description:
@@ -39,34 +40,41 @@ START_TEST (pdf_stm_file_new_001)
 {
   pdf_error_t *error = NULL;
   pdf_status_t ret;
-  pdf_stm_t stm;
+  pdf_stm_t *stm;
   pdf_fsys_file_t file;
   pdf_text_t *path;
   pdf_char_t * remain;
   pdf_size_t remain_length;
 
   /* Create the file path */
-  path = pdf_text_new_from_pdf_string ("tmp.test", 8, &remain, &remain_length, &error);
+  path = pdf_text_new_from_pdf_string ("tmp.test",
+                                       8,
+                                       &remain,
+                                       &remain_length,
+                                       &error);
   fail_unless (path != NULL);
   fail_if (error != NULL);
 
   /* Open new file */
-  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, &file);
+  ret = pdf_fsys_file_open (NULL,
+                            path,
+                            PDF_FSYS_OPEN_MODE_WRITE,
+                            &file);
   fail_if (ret != PDF_OK);
 
   /* Create the stream */
-  ret = pdf_stm_file_new (file,
+  stm = pdf_stm_file_new (file,
                           0,
                           0, /* Use the default cache size */
                           PDF_STM_WRITE,
-                          &stm);
-  fail_if(ret != PDF_OK);
+                          &error);
+  fail_unless (stm != NULL);
+  fail_if (error != NULL);
 
   /* Free all resources */
   pdf_stm_destroy (stm);
   pdf_fsys_file_close (file);
   pdf_text_destroy (path);
-
 }
 END_TEST
 
@@ -78,8 +86,7 @@ test_pdf_stm_file_new (void)
 {
   TCase *tc = tcase_create ("pdf_stm_file_new");
 
-  tcase_add_test(tc, pdf_stm_file_new_001);
-
+  tcase_add_test (tc, pdf_stm_file_new_001);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);

@@ -62,7 +62,7 @@ static INLINE int validate_real (pdf_buffer_t *buffer, int int_state);
 
 
 pdf_status_t
-pdf_token_reader_new (pdf_stm_t stm, pdf_token_reader_t *reader)
+pdf_token_reader_new (pdf_stm_t *stm, pdf_token_reader_t *reader)
 {
   pdf_status_t err;
   pdf_token_reader_t new_tokr;
@@ -715,17 +715,19 @@ pdf_token_read (pdf_token_reader_t reader, pdf_u32_t flags, pdf_token_t *token)
   pdf_status_t rv;
   pdf_uchar_t ch;
   pdf_token_t new_token = NULL;
+  pdf_error_t *inner_error = NULL;
 
   if (!reader || !reader->stream || !token)
     return PDF_EBADDATA;
 
-  while ( (rv = pdf_stm_peek_char (reader->stream, &ch)) == PDF_OK )
+  while (pdf_stm_peek_char (reader->stream, &ch, &inner_error))
     {
       rv = handle_char (reader, flags, (pdf_char_t)ch, &new_token);
       if (rv == PDF_OK)
         {
           /* The character we peeked at was accepted, so get rid of it. */
-          pdf_stm_read_char (reader->stream, &ch);
+          if (!pdf_stm_read_char (reader->stream, &ch, &inner_error))
+            break;
         }
 
       if (new_token)
@@ -737,12 +739,16 @@ pdf_token_read (pdf_token_reader_t reader, pdf_u32_t flags, pdf_token_t *token)
           goto ret_token;
         }
       else if (rv != PDF_OK && rv != PDF_EAGAIN)
-	return rv;
+        return rv;
     }
 
-  /* peek_char returned an error code (rv) */
-  if (rv != PDF_EEOF)
-    return rv;
+  if (inner_error)
+    {
+      /* TODO: Propagate error */
+      rv = pdf_error_get_status (inner_error);
+      pdf_error_destroy (inner_error);
+      return PDF_ERROR;
+    }
 
   rv = exit_state (reader, flags, &new_token);
   if (rv != PDF_OK)

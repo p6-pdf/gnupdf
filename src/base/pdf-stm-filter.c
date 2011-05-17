@@ -58,6 +58,7 @@
 
 static pdf_bool_t pdf_stm_filter_get_input (pdf_stm_filter_t  *filter,
                                             pdf_bool_t         finish,
+                                            pdf_bool_t        *eof,
                                             pdf_error_t      **error);
 
 /* Filter definition */
@@ -111,6 +112,7 @@ struct pdf_stm_filter_s
   /* Filter status */
   pdf_error_t *error;
   pdf_bool_t really_finish;
+  pdf_bool_t eof;
 
   /* Operation mode */
   enum pdf_stm_filter_mode_e mode;
@@ -149,6 +151,7 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e   type,
     }
 
   /* Initialisation */
+  PDF_ASSERT (type >= PDF_STM_FILTER_NULL);
   PDF_ASSERT (type < PDF_STM_FILTER_LAST);
   filter->type = type;
 
@@ -190,6 +193,7 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e   type,
   filter->params = params;
   filter->state = NULL;
   filter->error = NULL;
+  filter->eof = PDF_FALSE;
   filter->really_finish = PDF_FALSE;
 
   /* Error initializing the filter implementation? */
@@ -214,8 +218,13 @@ pdf_stm_filter_destroy (pdf_stm_filter_t *filter)
 
   if (filter->in)
     pdf_buffer_destroy (filter->in);
+
   if (filter->impl && filter->impl->deinit_fn)
     filter->impl->deinit_fn (filter->state);
+
+  if (filter->error)
+    pdf_error_destroy (filter->error);
+
   pdf_dealloc (filter);
 
   /* Note that the memory used by the params hash is NOT managed by the filter */
@@ -266,10 +275,10 @@ pdf_stm_filter_get_tail (pdf_stm_filter_t *filter)
 pdf_bool_t
 pdf_stm_filter_apply (pdf_stm_filter_t  *filter,
                       pdf_bool_t         finish,
+                      pdf_bool_t        *eof,
                       pdf_error_t      **error)
 {
-  /* If the filter is in an error state or it is in an eof state, just
-     communicate it to the caller */
+  /* If the filter is in an error state, just communicate it to the caller */
   if (filter->error)
     {
       /* The error is copied, the original is left untouched */
@@ -277,10 +286,16 @@ pdf_stm_filter_apply (pdf_stm_filter_t  *filter,
       return PDF_FALSE;
     }
 
+  /* If the filter is in EOF state, just communicate it to the caller */
+  *eof = filter->eof;
+  if (filter->eof)
+    return PDF_TRUE;
+
   while (!pdf_buffer_full_p (filter->out))
     {
       pdf_error_t *inner_error = NULL;
       enum pdf_stm_filter_apply_status_e filter_status;
+      pdf_bool_t input_eof;
 
       /* Generate output */
       filter_status = filter->impl->apply_fn (filter->params,
@@ -297,16 +312,12 @@ pdf_stm_filter_apply (pdf_stm_filter_t  *filter,
           return PDF_FALSE;
         }
 
-      /* TODO: Do not treat EOF as an error */
       if (filter_status == PDF_STM_FILTER_APPLY_STATUS_EOF)
         {
           /* The filter is now in an EOF condition. We should not call
-             this filter anymore without a previous reset */
-          filter->error = pdf_error_new (PDF_EDOMAIN_BASE_STM,
-                                         PDF_EEOF,
-                                         "EOF while applying filter");
-          pdf_propagate_error_dup (error, filter->error);
-          return PDF_FALSE;
+           * this filter anymore without a previous reset */
+          *eof = filter->eof = PDF_TRUE;
+          return PDF_TRUE;
         }
 
       if (filter_status == PDF_STM_FILTER_APPLY_STATUS_NO_OUTPUT)
@@ -318,39 +329,40 @@ pdf_stm_filter_apply (pdf_stm_filter_t  *filter,
 
       /* The filter needs more input, try to get the input buffer
        * filled with some data */
-      if (!pdf_stm_filter_get_input (filter, finish, &inner_error))
+      input_eof = PDF_FALSE;
+      if (!pdf_stm_filter_get_input (filter,
+                                     finish,
+                                     &input_eof,
+                                     &inner_error))
         {
-          /* Error getting input */
-          if (pdf_error_get_status (inner_error) == PDF_EEOF)
-            {
-              if (!pdf_buffer_eob_p (filter->in))
-                {
-                  /* We got EOF, but data is still available in the input,
-                   * so go on */
-                  continue;
-                }
-
-              if ((!filter->really_finish) &&
-                  ((filter->mode == PDF_STM_FILTER_MODE_WRITE &&
-                    finish) ||
-                   (filter->mode == PDF_STM_FILTER_MODE_READ)))
-                {
-                  filter->really_finish = PDF_TRUE;
-                  pdf_clear_error (&inner_error);
-                  continue;
-                }
-              else
-                {
-                  /* Propagate EOF error without storing it */
-                  pdf_propagate_error (error, inner_error);
-                  return PDF_FALSE;
-                }
-            }
-
-          /* Otherwise, store error and exit */
+          /* Error getting input, propagate */
           filter->error = inner_error;
           pdf_propagate_error_dup (error, filter->error);
           return PDF_FALSE;
+        }
+
+      /* EOF when getting input? */
+      if (input_eof)
+        {
+          if (!pdf_buffer_eob_p (filter->in))
+            {
+              /* We got EOF, but data is still available in the input,
+               * so go on */
+              continue;
+            }
+
+          if ((!filter->really_finish) &&
+              ((filter->mode == PDF_STM_FILTER_MODE_WRITE &&
+                finish) ||
+               (filter->mode == PDF_STM_FILTER_MODE_READ)))
+            {
+              filter->really_finish = PDF_TRUE;
+              continue;
+            }
+
+          /* Propagate EOF error without storing it */
+          *eof = PDF_TRUE;
+          return PDF_TRUE;
         }
 
       /* Filter got more input, continue */
@@ -366,6 +378,7 @@ pdf_stm_filter_reset (pdf_stm_filter_t  *filter,
 {
   pdf_clear_error (&(filter->error));
   filter->really_finish = PDF_FALSE;
+  filter->eof = PDF_FALSE;
 
   /* Deinit before re-init */
   if (filter->impl->deinit_fn)
@@ -386,14 +399,16 @@ pdf_stm_filter_reset (pdf_stm_filter_t  *filter,
 static pdf_bool_t
 pdf_stm_filter_get_input (pdf_stm_filter_t  *filter,
                           pdf_bool_t         finish,
+                          pdf_bool_t        *eof,
                           pdf_error_t      **error)
 {
   /* The input buffer should be empty at this point */
   pdf_buffer_rewind (filter->in);
 
   if (filter->next)
-    return pdf_stm_filter_apply (filter->next, finish, error);
+    return pdf_stm_filter_apply (filter->next, finish, eof, error);
 
+  *eof = PDF_FALSE;
   if (filter->backend)
     {
       pdf_ssize_t read_bytes;
@@ -412,11 +427,8 @@ pdf_stm_filter_get_input (pdf_stm_filter_t  *filter,
     }
   /* else, no backend */
 
-  pdf_set_error (error,
-                 PDF_EDOMAIN_BASE_STM,
-                 PDF_EEOF,
-                 "no more input");
-  return PDF_FALSE;
+  *eof = PDF_TRUE;
+  return PDF_TRUE;
 }
 
 /* End of pdf-stm-filter.c */

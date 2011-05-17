@@ -37,95 +37,159 @@
 
 /* Forward declarations */
 
-static pdf_status_t pdf_stm_init (pdf_size_t buffer_size,
-                                  enum pdf_stm_mode_e mode,
-                                  pdf_stm_t stm);
-static inline pdf_stm_t pdf_stm_alloc (void);
-static inline void pdf_stm_dealloc (pdf_stm_t stm);
-static pdf_status_t pdf_stm_read_peek_char (pdf_stm_t stm, pdf_uchar_t *c, pdf_bool_t peek_p);
+static pdf_bool_t pdf_stm_init (pdf_stm_t            *stm,
+                                pdf_size_t            cache_size,
+                                enum pdf_stm_mode_e   mode,
+                                pdf_error_t         **error);
+
+static pdf_bool_t pdf_stm_read_peek_char (pdf_stm_t     *stm,
+                                          pdf_uchar_t   *read_char,
+                                          pdf_bool_t     peek,
+                                          pdf_error_t  **error);
 
 /*
  * Public functions
  */
 
-pdf_status_t
-pdf_stm_cfile_new (FILE* file,
-                   pdf_off_t offset,
-                   pdf_size_t cache_size,
-                   enum pdf_stm_mode_e mode,
-                   pdf_stm_t *stm)
+pdf_stm_t *
+pdf_stm_cfile_new (FILE                 *file,
+                   pdf_off_t             offset,
+                   pdf_size_t            cache_size,
+                   enum pdf_stm_mode_e   mode,
+                   pdf_error_t         **error)
 {
+  pdf_stm_t *stm;
+
+  PDF_ASSERT_POINTER_RETURN_VAL (file, NULL);
+  /* Note: if cache_size == 0, we'll use the default one */
+
   /* Allocate memory for the new stream */
-  *stm = pdf_stm_alloc ();
+  stm = pdf_alloc (sizeof (struct pdf_stm_s));
+  if (!stm)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_STM,
+                     PDF_ENOMEM,
+                     "not enough memory to create a stream: "
+                     "couldn't allocate %lu bytes",
+                     (unsigned long) sizeof (struct pdf_stm_s));
+      return NULL;
+    }
 
   /* Initialize a file stream */
-  (*stm)->type = PDF_STM_FILE;
-  (*stm)->backend = pdf_stm_be_new_cfile (file, offset, NULL);
-  /* TODO: get and propagate error */
+  stm->type = PDF_STM_FILE;
+  stm->backend = pdf_stm_be_new_cfile (file, offset, error);
+  if (!stm->backend)
+    {
+      pdf_stm_destroy (stm);
+      return NULL;
+    }
 
   /* Initialize the common parts */
-  return pdf_stm_init (cache_size,
-                       mode,
-                       *stm);
+  if (!pdf_stm_init (stm, cache_size, mode, error))
+    {
+      pdf_stm_destroy (stm);
+      return NULL;
+    }
+  return stm;
 }
 
-
-pdf_status_t
-pdf_stm_file_new (pdf_fsys_file_t file,
-                  pdf_off_t offset,
-                  pdf_size_t cache_size,
-                  enum pdf_stm_mode_e mode,
-                  pdf_stm_t *stm)
+pdf_stm_t *
+pdf_stm_file_new (pdf_fsys_file_t       file,
+                  pdf_off_t             offset,
+                  pdf_size_t            cache_size,
+                  enum pdf_stm_mode_e   mode,
+                  pdf_error_t         **error)
 {
+  pdf_stm_t *stm;
+
+  PDF_ASSERT_POINTER_RETURN_VAL (file, NULL);
+  /* Note: if cache_size == 0, we'll use the default one */
+
   /* Allocate memory for the new stream */
-  *stm = pdf_stm_alloc ();
+  stm = pdf_alloc (sizeof (struct pdf_stm_s));
+  if (!stm)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_STM,
+                     PDF_ENOMEM,
+                     "not enough memory to create a stream: "
+                     "couldn't allocate %lu bytes",
+                     (unsigned long) sizeof (struct pdf_stm_s));
+      return NULL;
+    }
 
   /* Initialize a file stream */
-  (*stm)->type = PDF_STM_FILE;
-  (*stm)->backend = pdf_stm_be_new_file (file, offset, NULL);
-  /* TODO: get and propagate error */
+  stm->type = PDF_STM_FILE;
+  stm->backend = pdf_stm_be_new_file (file, offset, error);
+  if (!stm->backend)
+    {
+      pdf_stm_destroy (stm);
+      return NULL;
+    }
 
   /* Initialize the common parts */
-  return pdf_stm_init (cache_size,
-                       mode,
-                       *stm);
+  if (!pdf_stm_init (stm, cache_size, mode, error))
+    {
+      pdf_stm_destroy (stm);
+      return NULL;
+    }
+  return stm;
 }
 
-pdf_status_t
-pdf_stm_mem_new (pdf_uchar_t *buffer,
-                 pdf_size_t size,
-                 pdf_size_t cache_size,
-                 enum pdf_stm_mode_e mode,
-                 pdf_stm_t *stm)
+pdf_stm_t *
+pdf_stm_mem_new (pdf_uchar_t          *buffer,
+                 pdf_size_t            size,
+                 pdf_size_t            cache_size,
+                 enum pdf_stm_mode_e   mode,
+                 pdf_error_t         **error)
 {
+  pdf_stm_t *stm;
+
+  PDF_ASSERT_POINTER_RETURN_VAL (buffer, NULL);
+  PDF_ASSERT_RETURN_VAL (size > 0, NULL);
+  /* Note: if cache_size == 0, we'll use the default one */
+
   /* Allocate memory for the new stream */
-  *stm = pdf_stm_alloc ();
+  stm = pdf_alloc (sizeof (struct pdf_stm_s));
+  if (!stm)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_STM,
+                     PDF_ENOMEM,
+                     "not enough memory to create a stream: "
+                     "couldn't allocate %lu bytes",
+                     (unsigned long) sizeof (struct pdf_stm_s));
+      return NULL;
+    }
 
   /* Initialize a memory stream */
-  (*stm)->type = PDF_STM_MEM;
-  (*stm)->backend = pdf_stm_be_new_mem (buffer, size, 0, NULL);
-  /* TODO: get and propagate error */
+  stm->type = PDF_STM_MEM;
+  stm->backend = pdf_stm_be_new_mem (buffer, size, 0, error);
+  if (!stm->backend)
+    {
+      pdf_stm_destroy (stm);
+      return NULL;
+    }
 
   /* Initialize the common parts */
-  return pdf_stm_init (cache_size,
-                       mode,
-                       *stm);
+  if (!pdf_stm_init (stm, cache_size, mode, error))
+    {
+      pdf_stm_destroy (stm);
+      return NULL;
+    }
+  return stm;
 }
 
-pdf_status_t
-pdf_stm_destroy (pdf_stm_t stm)
+void
+pdf_stm_destroy (pdf_stm_t *stm)
 {
   pdf_stm_filter_t *filter;
-  pdf_stm_filter_t *filter_to_delete;
-  pdf_size_t flushed_bytes;
-  pdf_status_t ret;
+  pdf_size_t flushed_bytes = 0;
 
-  ret = PDF_OK;
+  /* Flush the cache ignoring any possible error, finishing the filters */
   if (stm->mode == PDF_STM_WRITE)
-    {
-      /* Flush the cache, finishing the filters */
-      ret = pdf_stm_flush (stm, PDF_TRUE, &flushed_bytes);
-    }
+    pdf_stm_flush (stm, PDF_TRUE, &flushed_bytes, NULL);
 
   /* Destroy the backend */
   pdf_stm_be_destroy (stm->backend);
@@ -137,221 +201,241 @@ pdf_stm_destroy (pdf_stm_t stm)
   filter = stm->filter;
   while (filter != NULL)
     {
+      pdf_stm_filter_t *filter_to_delete;
+
       filter_to_delete = filter;
       filter = pdf_stm_filter_get_next (filter);
       pdf_stm_filter_destroy (filter_to_delete);
     }
 
   /* Deallocate the stm structure */
-  pdf_stm_dealloc (stm);
-
-  return ret;
+  pdf_dealloc (stm);
 }
 
 enum pdf_stm_mode_e
-pdf_stm_get_mode (pdf_stm_t stm)
+pdf_stm_get_mode (pdf_stm_t *stm)
 {
+  PDF_ASSERT_POINTER_RETURN_VAL (stm, PDF_STM_UNKNOWN);
+
   return stm->mode;
 }
 
-pdf_status_t
-pdf_stm_read (pdf_stm_t stm,
-              pdf_uchar_t *buf,
-              pdf_size_t bytes,
-              pdf_size_t *read_bytes)
+pdf_bool_t
+pdf_stm_read (pdf_stm_t    *stm,
+              pdf_uchar_t  *buf,
+              pdf_size_t    bytes,
+              pdf_size_t   *read_bytes,
+              pdf_error_t **error)
 {
-  pdf_size_t pending_bytes;
-  pdf_size_t cache_size;
-  pdf_size_t to_copy_bytes;
-  pdf_status_t ret;
+  pdf_bool_t eof;
 
+  PDF_ASSERT_POINTER_RETURN_VAL (stm, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (buf, PDF_FALSE);
+  PDF_ASSERT_RETURN_VAL (bytes > 0, PDF_FALSE);
+
+  *read_bytes = 0;
+
+  /* Is this a read stream? */
   if (stm->mode != PDF_STM_READ)
     {
       /* Invalid operation */
-      return PDF_EINVOP;
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_STM,
+                     PDF_EINVOP,
+                     "cannot read from a write stream");
+      return PDF_FALSE;
     }
 
-  ret = PDF_OK;
-  *read_bytes = 0;
-  while ((*read_bytes < bytes) &&
-         (ret == PDF_OK))
+  eof = PDF_FALSE;
+  while (*read_bytes < bytes && !eof)
     {
+      pdf_size_t pending_bytes;
+      pdf_size_t to_copy_bytes;
+      pdf_size_t cache_size;
+
       /* If the cache is empty, refill it with filtered data */
       if (pdf_buffer_eob_p (stm->cache))
         {
           pdf_error_t *inner_error = NULL;
 
           pdf_buffer_rewind (stm->cache);
-          if (!pdf_stm_filter_apply (stm->filter, PDF_FALSE, &inner_error))
+
+          /* Break if apply fails */
+          if (!pdf_stm_filter_apply (stm->filter,
+                                     PDF_FALSE,
+                                     &eof,
+                                     &inner_error))
             {
-              ret = pdf_error_get_status (inner_error);
-              pdf_error_destroy (inner_error);
+              /* Report error */
+              pdf_propagate_error (error, inner_error);
+              return PDF_FALSE;
             }
-          else
-            ret = PDF_OK;
         }
 
-      if (ret != PDF_ERROR)
-        {
-          PDF_ASSERT (stm->cache->wp >= stm->cache->rp);
+      /* Read data from the cache */
+      PDF_ASSERT (stm->cache->wp >= stm->cache->rp);
+      pending_bytes = bytes - *read_bytes;
+      cache_size = stm->cache->wp - stm->cache->rp;
+      to_copy_bytes = PDF_MIN (pending_bytes, cache_size);
 
-          /* Read data from the cache */
-          pending_bytes = bytes - *read_bytes;
-          cache_size = stm->cache->wp - stm->cache->rp;
-          to_copy_bytes = PDF_MIN (pending_bytes, cache_size);
+      memcpy ((buf + *read_bytes),
+              stm->cache->data + stm->cache->rp,
+              to_copy_bytes);
 
-          memcpy ((buf + *read_bytes),
-                  stm->cache->data + stm->cache->rp,
-                  to_copy_bytes);
-
-          *read_bytes += to_copy_bytes;
-          stm->cache->rp += to_copy_bytes;
-        }
-    }
-
-  if ((*read_bytes == bytes) &&
-      (ret == PDF_EEOF))
-    {
-      /* Avoid a false PDF_EEOF in the current operation */
-      ret = PDF_OK;
+      *read_bytes += to_copy_bytes;
+      stm->cache->rp += to_copy_bytes;
     }
 
   /* Update the sequential counter */
   stm->seq_counter += *read_bytes;
 
-  return ret;
+  /* On EOF, we return PDF_FALSE without error */
+  return ((eof && *read_bytes < bytes) ? PDF_FALSE : PDF_TRUE);
 }
 
-
-pdf_status_t
-pdf_stm_write (pdf_stm_t stm,
+pdf_bool_t
+pdf_stm_write (pdf_stm_t         *stm,
                const pdf_uchar_t *buf,
-               pdf_size_t bytes,
-               pdf_size_t *written_bytes)
+               pdf_size_t         bytes,
+               pdf_size_t        *written_bytes,
+               pdf_error_t      **error)
 {
-  pdf_status_t ret;
-  pdf_size_t pending_bytes;
-  pdf_size_t to_write_bytes;
   pdf_stm_filter_t *tail_filter;
   pdf_buffer_t *tail_buffer;
-  pdf_size_t tail_buffer_size;
-  pdf_size_t flushed_bytes;
+  pdf_bool_t eof = PDF_FALSE;
 
+  PDF_ASSERT_POINTER_RETURN_VAL (stm, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (buf, PDF_FALSE);
+  PDF_ASSERT_RETURN_VAL (bytes > 0, PDF_FALSE);
+
+  *written_bytes = 0;
+
+  /* Is this a write stream? */
   if (stm->mode != PDF_STM_WRITE)
     {
       /* Invalid operation */
-      return PDF_EINVOP;
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_STM,
+                     PDF_EINVOP,
+                     "cannot write in a read stream");
+      return PDF_FALSE;
     }
 
   tail_filter = pdf_stm_filter_get_tail (stm->filter);
   tail_buffer = pdf_stm_filter_get_in (tail_filter);
 
-  ret = PDF_OK;
-  *written_bytes = 0;
-  while ((*written_bytes < bytes) &&
-         (ret == PDF_OK))
+  while (*written_bytes < bytes)
     {
+      pdf_size_t tail_buffer_size;
+      pdf_size_t to_write_bytes;
+      pdf_size_t pending_bytes;
+
       if ((pdf_buffer_full_p (tail_buffer)) &&
           (!pdf_buffer_eob_p (tail_buffer)))
         {
+          pdf_size_t flushed_bytes = 0;
+          pdf_error_t *inner_error = NULL;
+
           /* Flush the cache */
           tail_buffer_size = tail_buffer->wp - tail_buffer->rp;
+          if (!pdf_stm_flush (stm,
+                              PDF_FALSE,
+                              &flushed_bytes,
+                              &inner_error))
+            {
+              if (inner_error)
+                {
+                  /* Error flushing */
+                  pdf_propagate_error (error, inner_error);
+                  return PDF_FALSE;
+                }
 
-          if (pdf_stm_flush (stm, PDF_FALSE, &flushed_bytes)
-              == PDF_ERROR)
-            {
-              ret = PDF_ERROR;
+              /* flush returned PDF_FALSE without error: EOF */
+              eof = PDF_TRUE;
+              break;
             }
-          else if (flushed_bytes < tail_buffer_size)
-            {
-              ret = PDF_EEOF;
-            }
+
+          /* No flush needed, keep on */
         }
 
-      if (ret == PDF_OK)
+      /* Write the data into the tail buffer. Note that at this
+       * point the tail buffer should be empty */
+      tail_buffer_size = tail_buffer->size - tail_buffer->wp;
+      pending_bytes = bytes - *written_bytes;
+
+      to_write_bytes = PDF_MIN (pending_bytes, tail_buffer_size);
+
+      if (to_write_bytes != 0)
         {
-          /* Write the data into the tail buffer. Note that at this
-             point the tail buffer should be empty */
-          tail_buffer_size = tail_buffer->size - tail_buffer->wp;
-          pending_bytes = bytes - *written_bytes;
+          memcpy (tail_buffer->data + tail_buffer->wp,
+                  buf + *written_bytes,
+                  to_write_bytes);
 
-          to_write_bytes = PDF_MIN(pending_bytes, tail_buffer_size);
-
-          if (to_write_bytes != 0)
-            {
-              memcpy (tail_buffer->data + tail_buffer->wp,
-                      buf + *written_bytes,
-                      to_write_bytes);
-
-              *written_bytes += to_write_bytes;
-              tail_buffer->wp += to_write_bytes;
-            }
+          *written_bytes += to_write_bytes;
+          tail_buffer->wp += to_write_bytes;
         }
-    }
-
-  if ((*written_bytes == bytes) &&
-      (ret == PDF_EEOF))
-    {
-      /* Avoid a false PDF_EEOF in the current operation */
-      ret = PDF_OK;
     }
 
   /* Update the sequential counter */
   stm->seq_counter += *written_bytes;
 
-  return ret;
+  return ((eof && *written_bytes < bytes) ? PDF_FALSE : PDF_TRUE);
 }
 
-pdf_status_t
-pdf_stm_flush (pdf_stm_t stm,
-               pdf_bool_t finish_p,
-               pdf_size_t *flushed_bytes)
+pdf_bool_t
+pdf_stm_flush (pdf_stm_t    *stm,
+               pdf_bool_t    finish,
+               pdf_size_t   *flushed_bytes,
+               pdf_error_t **error)
 {
   pdf_stm_filter_t *tail_filter;
   pdf_buffer_t *tail_buffer;
-  pdf_status_t ret;
-  pdf_size_t tail_size;
+  pdf_error_t *inner_error = NULL;
+  pdf_bool_t eof = PDF_FALSE;
 
+  /* NOTE: NULL flushed_bytes is ALLOWED */
+
+  PDF_ASSERT_POINTER_RETURN_VAL (stm, -1);
+
+  /* Is this a write stream? */
   if (stm->mode != PDF_STM_WRITE)
     {
       /* Invalid operation */
-      return 0;
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_STM,
+                     PDF_EINVOP,
+                     "cannot write in a read stream");
+      return PDF_FALSE;
     }
 
   /* Apply the head filter until the filter chain gets empty */
   tail_filter = pdf_stm_filter_get_tail (stm->filter);
   tail_buffer = pdf_stm_filter_get_in (tail_filter);
-  *flushed_bytes = 0;
-  while (1)
+
+  if (flushed_bytes)
+    *flushed_bytes = 0;
+
+  while (PDF_TRUE)
     {
       pdf_size_t cache_size;
       pdf_ssize_t written_bytes;
-      pdf_error_t *inner_error = NULL;
+      pdf_size_t tail_size;
 
       tail_size = tail_buffer->wp - tail_buffer->rp;
-      if (!pdf_stm_filter_apply (stm->filter, finish_p, &inner_error))
-        {
-          ret = pdf_error_get_status (inner_error);
-          pdf_error_destroy (inner_error);
-        }
-      else
-        ret = PDF_OK;
 
-      if (ret == PDF_ERROR)
-        {
-          /* The filter chain is in error */
-          break;
-        }
+      /* Break only on error */
+      if (!pdf_stm_filter_apply (stm->filter, finish, &eof, &inner_error))
+        break;
 
       /* Update the number of flushed bytes */
-      *flushed_bytes += tail_size
-        - (tail_buffer->wp - tail_buffer->rp);
+      if (flushed_bytes)
+        *flushed_bytes += tail_size - (tail_buffer->wp - tail_buffer->rp);
 
-      if ((ret == PDF_EEOF)
-          && (pdf_buffer_eob_p (stm->cache)))
+      /* Avoid false EEOF error */
+      if (eof && pdf_buffer_eob_p (stm->cache))
         {
+          eof = PDF_FALSE;
           pdf_buffer_rewind (tail_buffer);
-          ret = PDF_OK;
           break;
         }
 
@@ -360,20 +444,16 @@ pdf_stm_flush (pdf_stm_t stm,
       written_bytes = pdf_stm_be_write (stm->backend,
                                         stm->cache->data + stm->cache->rp,
                                         cache_size,
-                                        NULL);
+                                        &inner_error);
       if (written_bytes < 0)
-        {
-          /* TODO: Get and propagate error */
-          ret = PDF_ERROR;
-          break;
-        }
+        break;
 
       if (written_bytes != cache_size)
         {
-          /* Could not write all the contents of the cache buffer into
-             the backend */
-          stm->cache->rp += (pdf_size_t)written_bytes;
-          ret = PDF_EEOF;
+          /* EOF, could not write all the contents of the cache buffer into
+           * the backend */
+          stm->cache->rp += written_bytes;
+          eof = PDF_TRUE;
           break;
         }
 
@@ -381,73 +461,88 @@ pdf_stm_flush (pdf_stm_t stm,
       pdf_buffer_rewind (stm->cache);
     }
 
-  return ret;
+  /* Propagate error */
+  if (inner_error)
+    {
+      pdf_propagate_error (error, inner_error);
+      return PDF_FALSE;
+    }
+
+  return (eof ? PDF_FALSE : PDF_TRUE);;
 }
 
-pdf_status_t
-pdf_stm_install_filter (pdf_stm_t                   stm,
-                        enum pdf_stm_filter_type_e  filter_type,
-                        pdf_hash_t                 *filter_params)
+pdf_bool_t
+pdf_stm_supported_filter_p (enum pdf_stm_filter_type_e filter_type)
 {
-  pdf_status_t ret;
+  PDF_ASSERT_RETURN_VAL (filter_type >= PDF_STM_FILTER_NULL, PDF_FALSE);
+  PDF_ASSERT_RETURN_VAL (filter_type < PDF_STM_FILTER_LAST, PDF_FALSE);
+
+  return pdf_stm_filter_p (filter_type);
+}
+
+pdf_bool_t
+pdf_stm_install_filter (pdf_stm_t                   *stm,
+                        enum pdf_stm_filter_type_e   filter_type,
+                        pdf_hash_t                  *filter_params,
+                        pdf_error_t                **error)
+{
   pdf_stm_filter_t *filter;
   enum pdf_stm_filter_mode_e filter_mode;
-  pdf_error_t *inner_error = NULL;
 
-  if (stm->mode == PDF_STM_READ)
-    {
-      filter_mode = PDF_STM_FILTER_MODE_READ;
-    }
-  else
-    {
-      filter_mode = PDF_STM_FILTER_MODE_WRITE;
-    }
+  PDF_ASSERT_POINTER_RETURN_VAL (stm, PDF_FALSE);
+
+  filter_mode = (stm->mode == PDF_STM_READ ?
+                 PDF_STM_FILTER_MODE_READ :
+                 PDF_STM_FILTER_MODE_WRITE);
 
   /* Create the new filter */
   filter = pdf_stm_filter_new (filter_type,
                                filter_params,
                                stm->cache->size,
                                filter_mode,
-                               &inner_error);
+                               error);
   if (!filter)
-    {
-      ret = pdf_error_get_status (inner_error);
-      pdf_error_destroy (inner_error);
-    }
-  else
-    {
-      /* Set the new filter as the new head of the filter chain */
-      pdf_stm_filter_set_next (filter, stm->filter);
-      pdf_stm_filter_set_out (filter, stm->cache);
-      pdf_stm_filter_set_out (stm->filter, pdf_stm_filter_get_in (filter));
-      stm->filter = filter;
-      ret = PDF_OK;
-    }
+    return PDF_FALSE;
 
-  return ret;
+  /* Set the new filter as the new head of the filter chain */
+  pdf_stm_filter_set_next (filter, stm->filter);
+  pdf_stm_filter_set_out (filter, stm->cache);
+  pdf_stm_filter_set_out (stm->filter, pdf_stm_filter_get_in (filter));
+  stm->filter = filter;
+
+  return PDF_TRUE;
 }
 
-pdf_status_t
-pdf_stm_read_char (pdf_stm_t stm, pdf_uchar_t *c)
+pdf_bool_t
+pdf_stm_read_char (pdf_stm_t    *stm,
+                   pdf_uchar_t  *read_char,
+                   pdf_error_t **error)
 {
-  return pdf_stm_read_peek_char (stm, c, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (stm, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (read_char, PDF_FALSE);
+
+  return pdf_stm_read_peek_char (stm, read_char, PDF_FALSE, error);
 }
 
-pdf_status_t
-pdf_stm_peek_char (pdf_stm_t stm, pdf_uchar_t *c)
+pdf_bool_t
+pdf_stm_peek_char (pdf_stm_t    *stm,
+                   pdf_uchar_t  *read_char,
+                   pdf_error_t **error)
 {
-  return pdf_stm_read_peek_char (stm, c, PDF_TRUE);
+  PDF_ASSERT_POINTER_RETURN_VAL (stm, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (read_char, PDF_FALSE);
+
+  return pdf_stm_read_peek_char (stm, read_char, PDF_TRUE, error);
 }
 
 pdf_off_t
-pdf_stm_bseek (pdf_stm_t stm,
-               pdf_off_t pos)
+pdf_stm_bseek (pdf_stm_t *stm,
+               pdf_off_t  pos)
 {
   pdf_off_t cur_pos;
   pdf_off_t new_pos;
-  pdf_stm_filter_t *tail_filter;
-  pdf_buffer_t *tail_buffer;
-  pdf_size_t flushed_bytes;
+
+  PDF_ASSERT_POINTER_RETURN_VAL (stm, (pdf_off_t)-1);
 
   cur_pos = pdf_stm_tell (stm);
 
@@ -459,26 +554,31 @@ pdf_stm_bseek (pdf_stm_t stm,
       /* Seek the backend */
       new_pos = pdf_stm_be_seek (stm->backend, pos);
     }
-  else
+  else /* Writing stream */
     {
-      /* Writing stream */
+      pdf_stm_filter_t *tail_filter;
+      pdf_buffer_t *tail_buffer;
 
       tail_filter = pdf_stm_filter_get_tail (stm->filter);
       tail_buffer = pdf_stm_filter_get_in (tail_filter);
+
       if (!pdf_buffer_eob_p (tail_buffer))
         {
+          pdf_error_t *inner_error = NULL;
+          pdf_size_t flushed_bytes = 0;
+
           /* Flush the stream */
-          if (pdf_stm_flush (stm, PDF_FALSE, &flushed_bytes)
-              == PDF_ERROR)
+          if (!pdf_stm_flush (stm, PDF_FALSE, &flushed_bytes, &inner_error) &&
+              inner_error)
             {
-              /* Error flushing the stream: return the current
-                 position */
+              /* Error flushing the stream: return the current position */
+              pdf_error_destroy (inner_error);
               return cur_pos;
             }
         }
 
       /* Note that if there is an EOF condition in the backend we are
-         going to loose data */
+       * going to loose data */
       pdf_buffer_rewind (tail_buffer);
 
       /* Seek the backend */
@@ -492,21 +592,22 @@ pdf_stm_bseek (pdf_stm_t stm,
 }
 
 pdf_off_t
-pdf_stm_btell (pdf_stm_t stm)
+pdf_stm_btell (pdf_stm_t *stm)
 {
   pdf_off_t pos;
   pdf_size_t cache_size;
-  pdf_stm_filter_t *tail_filter;
-  pdf_buffer_t *tail_buffer;
+
+  PDF_ASSERT_POINTER_RETURN_VAL (stm, (pdf_off_t)-1);
 
   if (stm->mode == PDF_STM_READ)
     {
       cache_size = stm->cache->wp - stm->cache->rp;
       pos = pdf_stm_be_tell (stm->backend) - cache_size;
     }
-  else
+  else /* Writing stream */
     {
-      /* Writing stream */
+      pdf_stm_filter_t *tail_filter;
+      pdf_buffer_t *tail_buffer;
 
       tail_filter = pdf_stm_filter_get_tail (stm->filter);
       tail_buffer = pdf_stm_filter_get_in (tail_filter);
@@ -519,8 +620,10 @@ pdf_stm_btell (pdf_stm_t stm)
 }
 
 pdf_off_t
-pdf_stm_tell (pdf_stm_t stm)
+pdf_stm_tell (pdf_stm_t *stm)
 {
+  PDF_ASSERT_POINTER_RETURN_VAL (stm, (pdf_off_t)-1);
+
   return stm->seq_counter;
 }
 
@@ -528,168 +631,116 @@ pdf_stm_tell (pdf_stm_t stm)
  * Private functions
  */
 
-static pdf_status_t
-pdf_stm_init (pdf_size_t cache_size,
-              enum pdf_stm_mode_e mode,
-              pdf_stm_t stm)
+static pdf_bool_t
+pdf_stm_init (pdf_stm_t            *stm,
+              pdf_size_t            cache_size,
+              enum pdf_stm_mode_e   mode,
+              pdf_error_t         **error)
 {
   pdf_hash_t *null_filter_params;
-  enum pdf_stm_filter_mode_e filter_mode;
-  pdf_status_t ret;
-  pdf_error_t *inner_error = NULL;
 
+  /* Use the default cache size */
   if (cache_size == 0)
-    {
-      /* Use the default cache size */
-      cache_size = PDF_STM_DEFAULT_CACHE_SIZE;
-    }
+    cache_size = PDF_STM_DEFAULT_CACHE_SIZE;
 
   /* The sequential counter is initially 0 */
   stm->seq_counter = 0;
 
   /* Initialize the null filter */
 #warning this pdf_hash_t is never deallocated
-  null_filter_params = pdf_hash_new (&inner_error);
-  if (null_filter_params == NULL)
-    {
-      /* TODO: Propagate error */
-      if (inner_error)
-        pdf_error_destroy (inner_error);
-      return PDF_ERROR;
-    }
-
-  if (stm->mode == PDF_STM_READ)
-    {
-      filter_mode = PDF_STM_FILTER_MODE_READ;
-    }
-  else
-    {
-      filter_mode = PDF_STM_FILTER_MODE_WRITE;
-    }
+  null_filter_params = pdf_hash_new (error);
+  if (!null_filter_params)
+    return PDF_FALSE;
 
   stm->filter = pdf_stm_filter_new (PDF_STM_FILTER_NULL,
                                     null_filter_params,
                                     cache_size,
-                                    filter_mode,
-                                    &inner_error);
+                                    (stm->mode == PDF_STM_READ ?
+                                     PDF_STM_FILTER_MODE_READ :
+                                     PDF_STM_FILTER_MODE_WRITE),
+                                    error);
   if (!stm->filter)
     {
-      ret = pdf_error_get_status (inner_error);
-      pdf_error_destroy (inner_error);
+      pdf_hash_destroy (null_filter_params);
+      return PDF_FALSE;
+    }
+
+  /* Initialize the filter cache */
+  stm->cache = pdf_buffer_new (cache_size, error);
+  if (!stm->cache)
+    return PDF_FALSE;
+
+  /* Configure the filter */
+  stm->mode = mode;
+  if (stm->mode == PDF_STM_READ)
+    {
+      /* Configuration for a reading stream
+       *
+       *  <cache> <--- <null-filter> <--- <backend>
+       */
+      pdf_stm_filter_set_out (stm->filter, stm->cache);
+      pdf_stm_filter_set_be (stm->filter, stm->backend);
     }
   else
-    ret = PDF_OK;
-
-  if (ret == PDF_OK)
     {
-      /* Initialize the filter cache */
-      stm->cache = pdf_buffer_new (cache_size, NULL);
-      /* TODO: get and propagate error */
-
-      /* Configure the filter */
-      stm->mode = mode;
-      if (stm->mode == PDF_STM_READ)
-        {
-          /* Configuration for a reading stream
-           *
-           *  <cache> <--- <null-filter> <--- <backend>
-           */
-
-          pdf_stm_filter_set_out (stm->filter,
-                                  stm->cache);
-          pdf_stm_filter_set_be (stm->filter,
-                                 stm->backend);
-        }
-      else
-        {
-          /* Configuration for a writing stream
-           *
-           * <null-filter> --> <cache> --> <backend>
-           */
-
-          pdf_stm_filter_set_out (stm->filter,
-                                  stm->cache);
-        }
+      /* Configuration for a writing stream
+       *
+       * <null-filter> --> <cache> --> <backend>
+       */
+      pdf_stm_filter_set_out (stm->filter, stm->cache);
     }
 
-  return ret;
+  return PDF_TRUE;
 }
 
-
-static pdf_status_t
-pdf_stm_read_peek_char (pdf_stm_t stm,
-                        pdf_uchar_t *c,
-                        pdf_bool_t peek_p)
+static pdf_bool_t
+pdf_stm_read_peek_char (pdf_stm_t    *stm,
+                        pdf_uchar_t  *read_char,
+                        pdf_bool_t    peek,
+                        pdf_error_t **error)
 {
-  pdf_status_t ret;
-
   /* Is this a read stream? */
   if (stm->mode != PDF_STM_READ)
     {
       /* Invalid operation */
-      return PDF_EINVOP;
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_STM,
+                     PDF_EINVOP,
+                     "cannot read from a write stream");
+      return PDF_FALSE;
     }
 
   /* Is the cache empty? */
-  ret = PDF_OK;
   if (pdf_buffer_eob_p (stm->cache))
     {
+      pdf_bool_t eof = PDF_FALSE;
       pdf_error_t *inner_error = NULL;
 
       pdf_buffer_rewind (stm->cache);
-      if (!pdf_stm_filter_apply (stm->filter, PDF_FALSE, &inner_error))
+      if (!pdf_stm_filter_apply (stm->filter,
+                                 PDF_FALSE,
+                                 &eof,
+                                 &inner_error))
         {
-          ret = pdf_error_get_status (inner_error);
-          pdf_error_destroy (inner_error);
+          pdf_propagate_error (error, inner_error);
+          return PDF_FALSE;
         }
-      else
-        ret = PDF_OK;
     }
 
+  /* If still empty, EOF */
   if (pdf_buffer_eob_p (stm->cache))
-    {
-      ret = PDF_EEOF;
-    }
-  else
-    {
-      /* Read a character from the cache */
-      *c =
-        (pdf_u32_t) stm->cache->data[stm->cache->rp];
+    return PDF_FALSE;
 
-      if (!peek_p)
-        {
-          stm->cache->rp++;
-        }
+  /* Read a character from the cache */
+  *read_char = (pdf_u32_t) stm->cache->data[stm->cache->rp];
 
-      if (ret == PDF_EEOF)
-        {
-          /* Avoid a false PDF_EEOF */
-          ret = PDF_OK;
-        }
-    }
-
-  if ((!peek_p) && (ret == PDF_OK))
+  if (!peek)
     {
-      /* Update the sequential counter */
+      stm->cache->rp++;
       stm->seq_counter++;
     }
 
-  return ret;
-}
-
-static inline pdf_stm_t
-pdf_stm_alloc (void)
-{
-  pdf_stm_t new;
-
-  new =  pdf_alloc (sizeof(struct pdf_stm_s));
-  return new;
-}
-
-static inline void
-pdf_stm_dealloc (pdf_stm_t stm)
-{
-  pdf_dealloc (stm);
+  return PDF_TRUE;
 }
 
 /* End of pdf_stm.c */

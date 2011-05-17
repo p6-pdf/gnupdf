@@ -180,33 +180,24 @@ pdf_hash_get_hash (pdf_hash_t       *table,
 
 /* Hash helpers to add/get stream */
 
-static void
-stm_dispose_fn (const pdf_stm_t elt)
-{
-  pdf_size_t flushed_bytes;
-
-  pdf_stm_flush (elt, PDF_TRUE, &flushed_bytes);
-  pdf_stm_destroy (elt);
-}
-
 pdf_bool_t
 pdf_hash_add_stm (pdf_hash_t        *table,
                   const pdf_char_t  *key,
-                  const pdf_stm_t    value,
+                  const pdf_stm_t   *value,
                   pdf_error_t      **error)
 {
   return pdf_hash_add (table,
                        key,
                        value,
-                       (pdf_hash_value_dispose_fn_t) stm_dispose_fn,
+                       (pdf_hash_value_dispose_fn_t) pdf_stm_destroy,
                        error);
 }
 
-const pdf_stm_t
+const pdf_stm_t *
 pdf_hash_get_stm (pdf_hash_t        *table,
                   const pdf_char_t  *key)
 {
-  return (const pdf_stm_t) pdf_hash_get_value (table, key);
+  return (const pdf_stm_t *) pdf_hash_get_value (table, key);
 }
 
 /* Hash helpers to add/get booleans */

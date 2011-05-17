@@ -59,14 +59,17 @@
 
 /* BEGIN PUBLIC */
 
+/* --------------------- Stream Module Initialization ------------------------- */
+
 /* Default size for the stream caches */
 #define PDF_STM_DEFAULT_CACHE_SIZE 4096
 
 /* Mode to use when opening a stream */
 enum pdf_stm_mode_e
 {
+  PDF_STM_UNKNOWN = -1,
   /* Reading stream */
-  PDF_STM_READ,
+  PDF_STM_READ = 0,
   /* Writing stream */
   PDF_STM_WRITE
 };
@@ -74,82 +77,105 @@ enum pdf_stm_mode_e
 /* Types of streams */
 enum pdf_stm_type_e
 {
+  /* File stream */
   PDF_STM_FILE,
+  /* Memory stream */
   PDF_STM_MEM
 };
 
-typedef struct pdf_stm_s *pdf_stm_t;
+/* The opaque stream object */
+typedef struct pdf_stm_s pdf_stm_t;
 
-/*
- * Stream API
- */
+/* --------------------- Stream Creation and Destruction -------------------- */
 
-/* Creation and destruction */
-pdf_status_t pdf_stm_cfile_new (FILE* file,
-                                pdf_off_t offset,
-                                pdf_size_t cache_size,
-                                enum pdf_stm_mode_e mode,
-                                pdf_stm_t *stm);
-pdf_status_t pdf_stm_file_new (pdf_fsys_file_t file,
-                               pdf_off_t offset,
-                               pdf_size_t cache_size,
-                               enum pdf_stm_mode_e mode,
-                               pdf_stm_t *stm);
-pdf_status_t pdf_stm_mem_new (pdf_uchar_t *buffer,
-                              pdf_size_t size,
-                              pdf_size_t cache_size,
-                              enum pdf_stm_mode_e mode,
-                              pdf_stm_t *stm);
-pdf_status_t pdf_stm_destroy (pdf_stm_t stm);
+/* Create a new file stream from a C file handler */
+pdf_stm_t *pdf_stm_cfile_new (FILE                 *file,
+                              pdf_off_t             offset,
+                              pdf_size_t            cache_size,
+                              enum pdf_stm_mode_e   mode,
+                              pdf_error_t         **error);
 
-/* Getting and setting properties */
+/* Create a new file stream from a file object */
+pdf_stm_t *pdf_stm_file_new (pdf_fsys_file_t       file,
+                             pdf_off_t             offset,
+                             pdf_size_t            cache_size,
+                             enum pdf_stm_mode_e   mode,
+                             pdf_error_t         **error);
 
-enum pdf_stm_mode_e pdf_stm_get_mode (pdf_stm_t stm);
+/* Create a new memory stream */
+pdf_stm_t *pdf_stm_mem_new (pdf_uchar_t          *buffer,
+                            pdf_size_t            size,
+                            pdf_size_t            cache_size,
+                            enum pdf_stm_mode_e   mode,
+                            pdf_error_t         **error);
 
-/* Reading and writing data */
-pdf_status_t pdf_stm_read (pdf_stm_t stm,
-                           pdf_uchar_t *buf,
-                           pdf_size_t bytes,
-                           pdf_size_t *read_bytes);
-pdf_status_t pdf_stm_write (pdf_stm_t stm,
-                            const pdf_uchar_t *buf,
-                            pdf_size_t bytes,
-                            pdf_size_t *written_bytes);
-pdf_status_t pdf_stm_read_char (pdf_stm_t stm, pdf_uchar_t *c);
-pdf_status_t pdf_stm_peek_char (pdf_stm_t stm, pdf_uchar_t *c);
-pdf_status_t pdf_stm_flush (pdf_stm_t stm,
-                            pdf_bool_t finish_p,
-                            pdf_size_t *flushed_bytes);
+/* Destroy the stream */
+void pdf_stm_destroy (pdf_stm_t *stm);
 
-/* Positioning */
+/* ------------------- Getting and Setting Stream properties ---------------- */
 
-pdf_off_t pdf_stm_bseek (pdf_stm_t stm,
-                         pdf_off_t pos);
-pdf_off_t pdf_stm_btell (pdf_stm_t stm);
+enum pdf_stm_mode_e pdf_stm_get_mode (pdf_stm_t *stm);
 
-pdf_off_t pdf_stm_tell (pdf_stm_t stm);
+/* ------------------- Reading and Writing data in the Streams -------------- */
+
+pdf_bool_t pdf_stm_read (pdf_stm_t     *stm,
+                         pdf_uchar_t   *buf,
+                         pdf_size_t     bytes,
+                         pdf_size_t    *read_bytes,
+                         pdf_error_t  **error);
+
+pdf_bool_t pdf_stm_write (pdf_stm_t          *stm,
+                          const pdf_uchar_t  *buf,
+                          pdf_size_t          bytes,
+                          pdf_size_t         *written_bytes,
+                          pdf_error_t       **error);
+
+pdf_bool_t pdf_stm_flush (pdf_stm_t    *stm,
+                          pdf_bool_t    finish,
+                          pdf_size_t   *flushed_bytes,
+                          pdf_error_t **error);
+
+pdf_bool_t pdf_stm_read_char (pdf_stm_t    *stm,
+                              pdf_uchar_t  *read_char,
+                              pdf_error_t **error);
+
+pdf_bool_t pdf_stm_peek_char (pdf_stm_t    *stm,
+                              pdf_uchar_t  *read_char,
+                              pdf_error_t **error);
+
+/* ------------------- Stream positionining -------------------------------- */
+
+pdf_off_t pdf_stm_bseek (pdf_stm_t *stm,
+                         pdf_off_t  pos);
+
+pdf_off_t pdf_stm_btell (pdf_stm_t *stm);
+
+pdf_off_t pdf_stm_tell (pdf_stm_t *stm);
 
 
-/* Management of the filter chain */
+/* ------------------- Management of the Stream filter chain --------------- */
 
-pdf_status_t pdf_stm_install_filter (pdf_stm_t stm,
-                                     enum pdf_stm_filter_type_e filter_type,
-                                     pdf_hash_t *filter_params);
+pdf_bool_t pdf_stm_install_filter     (pdf_stm_t                   *stm,
+                                       enum pdf_stm_filter_type_e   filter_type,
+                                       pdf_hash_t                  *filter_params,
+                                       pdf_error_t                **error);
+
+pdf_bool_t pdf_stm_supported_filter_p (enum pdf_stm_filter_type_e   filter_type);
 /* END PUBLIC */
 
-/* Stream data type */
+/* Stream data type, opaque object */
 struct pdf_stm_s
 {
   enum pdf_stm_type_e type;
   enum pdf_stm_mode_e mode;
 
-  pdf_stm_be_t *backend;    /* Stream backend */
-  pdf_stm_filter_t *filter; /* Filter chain */
-  pdf_buffer_t *cache;      /* Stream cache */
-  pdf_off_t seq_counter;    /* Number of octects read/written in the
-                               current sequential
-                               operation. i.e. since the last bseek or
-                               the creation of the stream */
+  pdf_stm_be_t     *backend;     /* Stream backend */
+  pdf_stm_filter_t *filter;      /* Filter chain */
+  pdf_buffer_t     *cache;       /* Stream cache */
+  pdf_off_t         seq_counter; /* Number of octects read/written in the
+                                  * current sequential
+                                  * operation. i.e. since the last bseek or
+                                  * the creation of the stream */
 };
 
 #endif /* pdf_stm.h */
