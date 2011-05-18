@@ -1,5 +1,11 @@
 2011-05-18  Aleksander Morgado  <aleksander@gnu.org>
 
+	base,stm,lzw: Make EarlyChange paramter a boolean in the hash table
+	* src/base/pdf-stm-f-lzw.c (stm_f_lzwenc_init)
+	(stm_f_lzwdec_init)
+
+2011-05-18  Aleksander Morgado  <aleksander@gnu.org>
+
 	base,stm: Do not store params hash table in filters
 	* src/base/pdf-stm.[h|c] (pdf_stm_install_filter): Made constant the
 	`params' argument.

@@ -408,12 +408,7 @@ stm_f_lzwenc_init (const pdf_hash_t  *params,
   if (params &&
       pdf_hash_key_p (params, "EarlyChange"))
     {
-      const pdf_char_t *early_change_str;
-
-      /* TODO: How come EarlyChange should be '0'? */
-      early_change_str = pdf_hash_get_string (params, "EarlyChange");
-      if (early_change_str[0] == '0')
-        filter_state->early_change = 0;
+      filter_state->early_change = pdf_hash_get_bool (params, "EarlyChange");
     }
 
   lzw_buffer_init (&filter_state->buffer, LZW_MIN_BITSIZE);
@@ -557,14 +552,10 @@ stm_f_lzwdec_init (const pdf_hash_t  *params,
   filter_state->early_change = 1; /* set default */
 
   /* EarlyChange is optional! */
-  if (pdf_hash_key_p (params, "EarlyChange"))
+  if (params &&
+      pdf_hash_key_p (params, "EarlyChange"))
     {
-      const pdf_char_t *early_change_str;
-
-      /* TODO: How come EarlyChange should be '0'? */
-      early_change_str = pdf_hash_get_string (params, "EarlyChange");
-      if (early_change_str[0] == '0')
-        filter_state->early_change = 0;
+      filter_state->early_change = pdf_hash_get_bool (params, "EarlyChange");
     }
 
   lzw_buffer_init (&filter_state->buffer, LZW_MIN_BITSIZE);
