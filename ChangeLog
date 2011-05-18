@@ -2,6 +2,7 @@
 
 	base,hash: Make constant the hash passed to the getters
 	* src/base/pdf-hash-helper.[h|c]
+	* doc/gnupdf.texi (Helper Functions)
 
 2011-05-18  Aleksander Morgado  <aleksander@gnu.org>
 
