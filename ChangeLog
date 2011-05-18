@@ -1,5 +1,25 @@
 2011-05-18  Aleksander Morgado  <aleksander@gnu.org>
 
+	base,stm: Do not store params hash table in filters
+	* src/base/pdf-stm.[h|c] (pdf_stm_install_filter): Made constant the
+	`params' argument.
+	* src/base/pdf-stm-filter.[h|c]: Changed the default filter
+	implementation structure so that params is only passed during init, not
+	during apply.
+	* src/base/pdf-stm-f-a85.c: Refactor to the new filter implementation.
+	* src/base/pdf-stm-f-aesv2.c: Idem.
+	* src/base/pdf-stm-f-ahex.c: Idem.
+	* src/base/pdf-stm-f-dct.c: Idem.
+	* src/base/pdf-stm-f-flate.c: Idem.
+	* src/base/pdf-stm-f-jbig2.c: Idem.
+	* src/base/pdf-stm-f-lzw.c: Idem.
+	* src/base/pdf-stm-f-md5.c: Idem.
+	* src/base/pdf-stm-f-null.c: Idem.
+	* src/base/pdf-stm-f-rl.c: Idem.
+	* src/base/pdf-stm-f-v2.c: Idem.
+
+2011-05-18  Aleksander Morgado  <aleksander@gnu.org>
+
 	base,stm: Added IDs for missing encoder and decoder filters
 	* src/base/pdf-stm-filter.[h|c]
 

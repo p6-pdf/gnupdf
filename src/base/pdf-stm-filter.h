@@ -99,13 +99,12 @@ enum pdf_stm_filter_apply_status_e
 /* Filter implementation */
 typedef struct {
   /* Initialize filter. */
-  pdf_bool_t (* init_fn) (pdf_hash_t   *params,
-                          void        **state,
-                          pdf_error_t **error);
+  pdf_bool_t (* init_fn) (const pdf_hash_t  *params,
+                          void             **state,
+                          pdf_error_t      **error);
 
   /* Apply filter. */
-  enum pdf_stm_filter_apply_status_e (* apply_fn) (pdf_hash_t    *params,
-                                                   void          *state,
+  enum pdf_stm_filter_apply_status_e (* apply_fn) (void          *state,
                                                    pdf_buffer_t  *in,
                                                    pdf_buffer_t  *out,
                                                    pdf_bool_t     finish,
@@ -120,7 +119,7 @@ typedef struct pdf_stm_filter_s pdf_stm_filter_t;
 pdf_bool_t pdf_stm_filter_p (enum pdf_stm_filter_type_e type);
 
 pdf_stm_filter_t *pdf_stm_filter_new (enum pdf_stm_filter_type_e   type,
-                                      pdf_hash_t                  *params,
+                                      const pdf_hash_t            *params,
                                       pdf_size_t                   buffer_size,
                                       enum pdf_stm_filter_mode_e   mode,
                                       pdf_error_t                **error);
@@ -148,6 +147,7 @@ pdf_bool_t pdf_stm_filter_apply (pdf_stm_filter_t  *filter,
                                  pdf_error_t      **error);
 
 pdf_bool_t pdf_stm_filter_reset (pdf_stm_filter_t  *filter,
+                                 const pdf_hash_t  *params,
                                  pdf_error_t      **error);
 
 #endif /* ! PDF_STM_FILTER_H */

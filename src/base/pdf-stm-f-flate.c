@@ -51,31 +51,29 @@ struct pdf_stm_f_flate_s
   pdf_char_t outbuf[PDF_STM_F_FLATE_CHUNK];
 };
 
-static pdf_bool_t stm_f_flateenc_init (pdf_hash_t   *params,
-                                       void        **state,
-                                       pdf_error_t **error);
+static pdf_bool_t stm_f_flateenc_init (const pdf_hash_t  *params,
+                                       void             **state,
+                                       pdf_error_t      **error);
 
 static void stm_f_flateenc_deinit (void *state);
 
-static enum pdf_stm_filter_apply_status_e stm_f_flateenc_apply (pdf_hash_t    *params,
-                                                               void          *state,
-                                                               pdf_buffer_t  *in,
-                                                               pdf_buffer_t  *out,
-                                                               pdf_bool_t     finish,
-                                                               pdf_error_t  **error);
+static enum pdf_stm_filter_apply_status_e stm_f_flateenc_apply (void          *state,
+                                                                pdf_buffer_t  *in,
+                                                                pdf_buffer_t  *out,
+                                                                pdf_bool_t     finish,
+                                                                pdf_error_t  **error);
 
-static pdf_bool_t stm_f_flatedec_init (pdf_hash_t   *params,
-                                       void        **state,
-                                       pdf_error_t **error);
+static pdf_bool_t stm_f_flatedec_init (const pdf_hash_t  *params,
+                                       void             **state,
+                                       pdf_error_t      **error);
 
 static void stm_f_flatedec_deinit (void *state);
 
-static enum pdf_stm_filter_apply_status_e stm_f_flatedec_apply (pdf_hash_t    *params,
-                                                               void          *state,
-                                                               pdf_buffer_t  *in,
-                                                               pdf_buffer_t  *out,
-                                                               pdf_bool_t     finish,
-                                                               pdf_error_t  **error);
+static enum pdf_stm_filter_apply_status_e stm_f_flatedec_apply (void          *state,
+                                                                pdf_buffer_t  *in,
+                                                                pdf_buffer_t  *out,
+                                                                pdf_bool_t     finish,
+                                                                pdf_error_t  **error);
 /* Filter implementations */
 
 static const pdf_stm_filter_impl_t enc_impl = {
@@ -105,9 +103,9 @@ pdf_stm_f_flatedec_get (void)
 /* Common implementation */
 
 static pdf_bool_t
-stm_f_flate_init (pdf_hash_t   *params,
-                  void        **state,
-                  pdf_error_t **error)
+stm_f_flate_init (const pdf_hash_t  *params,
+                  void             **state,
+                  pdf_error_t      **error)
 {
   struct pdf_stm_f_flate_s *filter_state;
 
@@ -181,9 +179,9 @@ set_error_from_zlib_ret (pdf_error_t **error,
 /* Encoder implementation */
 
 static pdf_bool_t
-stm_f_flateenc_init (pdf_hash_t   *params,
-                     void        **state,
-                     pdf_error_t **error)
+stm_f_flateenc_init (const pdf_hash_t  *params,
+                     void             **state,
+                     pdf_error_t      **error)
 {
   struct pdf_stm_f_flate_s *filter_state;
 
@@ -314,8 +312,7 @@ read_and_deflate (struct pdf_stm_f_flate_s  *st,
 }
 
 static enum pdf_stm_filter_apply_status_e
-stm_f_flateenc_apply (pdf_hash_t    *params,
-                      void          *state,
+stm_f_flateenc_apply (void          *state,
                       pdf_buffer_t  *in,
                       pdf_buffer_t  *out,
                       pdf_bool_t     finish,
@@ -336,9 +333,9 @@ stm_f_flateenc_apply (pdf_hash_t    *params,
 /* Decoder implementation */
 
 static pdf_bool_t
-stm_f_flatedec_init (pdf_hash_t   *params,
-                     void        **state,
-                     pdf_error_t **error)
+stm_f_flatedec_init (const pdf_hash_t  *params,
+                     void             **state,
+                     pdf_error_t      **error)
 {
   struct pdf_stm_f_flate_s *filter_state;
 
@@ -453,8 +450,7 @@ read_and_inflate (struct pdf_stm_f_flate_s  *st,
 }
 
 static enum pdf_stm_filter_apply_status_e
-stm_f_flatedec_apply (pdf_hash_t    *params,
-                      void          *state,
+stm_f_flatedec_apply (void          *state,
                       pdf_buffer_t  *in,
                       pdf_buffer_t  *out,
                       pdf_bool_t     finish,

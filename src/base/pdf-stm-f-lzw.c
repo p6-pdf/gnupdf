@@ -34,27 +34,25 @@
 #include <pdf-hash-helper.h>
 #include <pdf-stm-f-lzw.h>
 
-static pdf_bool_t stm_f_lzwenc_init (pdf_hash_t   *params,
-                                     void        **state,
-                                     pdf_error_t **error);
+static pdf_bool_t stm_f_lzwenc_init (const pdf_hash_t  *params,
+                                     void             **state,
+                                     pdf_error_t      **error);
 
 static void stm_f_lzwenc_deinit (void *state);
 
-static enum pdf_stm_filter_apply_status_e stm_f_lzwenc_apply (pdf_hash_t    *params,
-                                                              void          *state,
+static enum pdf_stm_filter_apply_status_e stm_f_lzwenc_apply (void          *state,
                                                               pdf_buffer_t  *in,
                                                               pdf_buffer_t  *out,
                                                               pdf_bool_t     finish,
                                                               pdf_error_t  **error);
 
-static pdf_bool_t stm_f_lzwdec_init (pdf_hash_t   *params,
-                                     void        **state,
-                                     pdf_error_t **error);
+static pdf_bool_t stm_f_lzwdec_init (const pdf_hash_t  *params,
+                                     void             **state,
+                                     pdf_error_t      **error);
 
 static void stm_f_lzwdec_deinit (void *state);
 
-static enum pdf_stm_filter_apply_status_e stm_f_lzwdec_apply (pdf_hash_t    *params,
-                                                              void          *state,
+static enum pdf_stm_filter_apply_status_e stm_f_lzwdec_apply (void          *state,
                                                               pdf_buffer_t  *in,
                                                               pdf_buffer_t  *out,
                                                               pdf_bool_t     finish,
@@ -386,9 +384,9 @@ struct lzwenc_state_s
 };
 
 static pdf_bool_t
-stm_f_lzwenc_init (pdf_hash_t   *params,
-                   void        **state,
-                   pdf_error_t **error)
+stm_f_lzwenc_init (const pdf_hash_t  *params,
+                   void             **state,
+                   pdf_error_t      **error)
 {
   struct lzwenc_state_s *filter_state;
 
@@ -407,7 +405,8 @@ stm_f_lzwenc_init (pdf_hash_t   *params,
   filter_state->early_change = 1; /* set default */
 
   /* EarlyChange is optional! */
-  if (pdf_hash_key_p (params, "EarlyChange"))
+  if (params &&
+      pdf_hash_key_p (params, "EarlyChange"))
     {
       const pdf_char_t *early_change_str;
 
@@ -428,8 +427,7 @@ stm_f_lzwenc_init (pdf_hash_t   *params,
 }
 
 static enum pdf_stm_filter_apply_status_e
-stm_f_lzwenc_apply (pdf_hash_t    *params,
-                    void          *state,
+stm_f_lzwenc_apply (void          *state,
                     pdf_buffer_t  *in,
                     pdf_buffer_t  *out,
                     pdf_bool_t     finish,
@@ -538,9 +536,9 @@ struct lzwdec_state_s
 };
 
 static pdf_bool_t
-stm_f_lzwdec_init (pdf_hash_t   *params,
-                   void        **state,
-                   pdf_error_t **error)
+stm_f_lzwdec_init (const pdf_hash_t  *params,
+                   void             **state,
+                   pdf_error_t      **error)
 {
   struct lzwdec_state_s *filter_state;
 
@@ -640,8 +638,7 @@ lzwdec_put_code (struct lzwdec_state_s *st,
   } while (0);
 
 static enum pdf_stm_filter_apply_status_e
-stm_f_lzwdec_apply (pdf_hash_t    *params,
-                    void          *state,
+stm_f_lzwdec_apply (void          *state,
                     pdf_buffer_t  *in,
                     pdf_buffer_t  *out,
                     pdf_bool_t     finish,

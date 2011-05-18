@@ -56,14 +56,13 @@ static int jbig2dec_error_cb (void          *data,
                               Jbig2Severity  severity,
                               int32_t        seg_idx);
 
-static pdf_bool_t stm_f_jbig2dec_init (pdf_hash_t   *params,
-                                       void        **state,
-                                       pdf_error_t **error);
+static pdf_bool_t stm_f_jbig2dec_init (const pdf_hash_t  *params,
+                                       void             **state,
+                                       pdf_error_t      **error);
 
 static void stm_f_jbig2dec_deinit (void *state);
 
-static enum pdf_stm_filter_apply_status_e stm_f_jbig2dec_apply (pdf_hash_t    *params,
-                                                                void          *state,
+static enum pdf_stm_filter_apply_status_e stm_f_jbig2dec_apply (void          *state,
                                                                 pdf_buffer_t  *in,
                                                                 pdf_buffer_t  *out,
                                                                 pdf_bool_t     finish,
@@ -84,9 +83,9 @@ pdf_stm_f_jbig2dec_get (void)
 }
 
 static pdf_bool_t
-stm_f_jbig2dec_init (pdf_hash_t   *params,
-                     void        **state,
-                     pdf_error_t **error)
+stm_f_jbig2dec_init (const pdf_hash_t  *params,
+                     void             **state,
+                     pdf_error_t      **error)
 {
   struct pdf_stm_f_jbig2dec_s *filter_state;
   pdf_char_t *global_stream_buffer;
@@ -113,8 +112,9 @@ stm_f_jbig2dec_init (pdf_hash_t   *params,
   filter_state->error_p = PDF_FALSE;
 
   /* Get the global stream contents, if any */
-  if ((pdf_hash_key_p (params, "GlobalStreamsBuffer") == PDF_TRUE) &&
-      (pdf_hash_key_p (params, "GlobalStreamsSize") == PDF_TRUE))
+  if (params &&
+      pdf_hash_key_p (params, "GlobalStreamsBuffer") == PDF_TRUE &&
+      pdf_hash_key_p (params, "GlobalStreamsSize") == PDF_TRUE)
     {
       /* Get the parameters from the hash table */
       global_stream_buffer = (pdf_char_t *) pdf_hash_get_string (params, "GlobalStreamsBuffer");
@@ -159,8 +159,7 @@ stm_f_jbig2dec_deinit (void *state)
 }
 
 static enum pdf_stm_filter_apply_status_e
-stm_f_jbig2dec_apply (pdf_hash_t    *params,
-                      void          *state,
+stm_f_jbig2dec_apply (void          *state,
                       pdf_buffer_t  *in,
                       pdf_buffer_t  *out,
                       pdf_bool_t     finish,

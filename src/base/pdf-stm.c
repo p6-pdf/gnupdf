@@ -483,7 +483,7 @@ pdf_stm_supported_filter_p (enum pdf_stm_filter_type_e filter_type)
 pdf_bool_t
 pdf_stm_install_filter (pdf_stm_t                   *stm,
                         enum pdf_stm_filter_type_e   filter_type,
-                        pdf_hash_t                  *filter_params,
+                        const pdf_hash_t            *filter_params,
                         pdf_error_t                **error)
 {
   pdf_stm_filter_t *filter;
@@ -495,7 +495,8 @@ pdf_stm_install_filter (pdf_stm_t                   *stm,
                  PDF_STM_FILTER_MODE_READ :
                  PDF_STM_FILTER_MODE_WRITE);
 
-  /* Create the new filter */
+  /* Create the new filter. Note that filter_params is passed directly to the
+   * filter implementation creator, and that it may well be NULL. */
   filter = pdf_stm_filter_new (filter_type,
                                filter_params,
                                stm->cache->size,
@@ -637,8 +638,6 @@ pdf_stm_init (pdf_stm_t            *stm,
               enum pdf_stm_mode_e   mode,
               pdf_error_t         **error)
 {
-  pdf_hash_t *null_filter_params;
-
   /* Use the default cache size */
   if (cache_size == 0)
     cache_size = PDF_STM_DEFAULT_CACHE_SIZE;
@@ -646,24 +645,15 @@ pdf_stm_init (pdf_stm_t            *stm,
   /* The sequential counter is initially 0 */
   stm->seq_counter = 0;
 
-  /* Initialize the null filter */
-#warning this pdf_hash_t is never deallocated
-  null_filter_params = pdf_hash_new (error);
-  if (!null_filter_params)
-    return PDF_FALSE;
-
   stm->filter = pdf_stm_filter_new (PDF_STM_FILTER_NULL,
-                                    null_filter_params,
+                                    NULL, /* No filter params needed */
                                     cache_size,
                                     (stm->mode == PDF_STM_READ ?
                                      PDF_STM_FILTER_MODE_READ :
                                      PDF_STM_FILTER_MODE_WRITE),
                                     error);
   if (!stm->filter)
-    {
-      pdf_hash_destroy (null_filter_params);
-      return PDF_FALSE;
-    }
+    return PDF_FALSE;
 
   /* Initialize the filter cache */
   stm->cache = pdf_buffer_new (cache_size, error);

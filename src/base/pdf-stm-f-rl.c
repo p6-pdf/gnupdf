@@ -62,21 +62,19 @@ static int copy_next_bytes (struct pdf_stm_f_rl_s *st,
                             pdf_buffer_t          *in,
                             pdf_buffer_t          *out);
 
-static pdf_bool_t stm_f_rl_init (pdf_hash_t   *params,
-                                 void        **state,
-                                 pdf_error_t **error);
+static pdf_bool_t stm_f_rl_init (const pdf_hash_t  *params,
+                                 void             **state,
+                                 pdf_error_t      **error);
 
 static void stm_f_rl_deinit (void *state);
 
-static enum pdf_stm_filter_apply_status_e stm_f_rlenc_apply (pdf_hash_t    *params,
-                                                             void          *state,
+static enum pdf_stm_filter_apply_status_e stm_f_rlenc_apply (void          *state,
                                                              pdf_buffer_t  *in,
                                                              pdf_buffer_t  *out,
                                                              pdf_bool_t     finish,
                                                              pdf_error_t  **error);
 
-static enum pdf_stm_filter_apply_status_e stm_f_rldec_apply (pdf_hash_t    *params,
-                                                             void          *state,
+static enum pdf_stm_filter_apply_status_e stm_f_rldec_apply (void          *state,
                                                              pdf_buffer_t  *in,
                                                              pdf_buffer_t  *out,
                                                              pdf_bool_t     finish,
@@ -110,9 +108,9 @@ pdf_stm_f_rldec_get (void)
 /* Common implementation */
 
 static pdf_bool_t
-stm_f_rl_init (pdf_hash_t   *params,
-               void        **state,
-               pdf_error_t **error)
+stm_f_rl_init (const pdf_hash_t  *params,
+               void             **state,
+               pdf_error_t      **error)
 {
   struct pdf_stm_f_rl_s *filter_state;
 
@@ -151,8 +149,7 @@ stm_f_rl_deinit (void *state)
 /* Encoder implementation */
 
 static enum pdf_stm_filter_apply_status_e
-stm_f_rlenc_apply (pdf_hash_t    *params,
-                   void          *state,
+stm_f_rlenc_apply (void          *state,
                    pdf_buffer_t  *in,
                    pdf_buffer_t  *out,
                    pdf_bool_t     finish,
@@ -221,8 +218,7 @@ stm_f_rlenc_apply (pdf_hash_t    *params,
 }
 
 static enum pdf_stm_filter_apply_status_e
-stm_f_rldec_apply (pdf_hash_t    *params,
-                   void          *state,
+stm_f_rldec_apply (void          *state,
                    pdf_buffer_t  *in,
                    pdf_buffer_t  *out,
                    pdf_bool_t     finish,

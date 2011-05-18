@@ -45,21 +45,19 @@ struct pdf_stm_f_v2_s
   pdf_crypt_cipher_t cipher;
 };
 
-static pdf_bool_t stm_f_v2_init (pdf_hash_t   *params,
-                                 void        **state,
-                                 pdf_error_t **error);
+static pdf_bool_t stm_f_v2_init (const pdf_hash_t  *params,
+                                 void             **state,
+                                 pdf_error_t      **error);
 
 static void stm_f_v2_deinit (void *state);
 
-static enum pdf_stm_filter_apply_status_e stm_f_v2enc_apply (pdf_hash_t    *params,
-                                                             void          *state,
+static enum pdf_stm_filter_apply_status_e stm_f_v2enc_apply (void          *state,
                                                              pdf_buffer_t  *in,
                                                              pdf_buffer_t  *out,
                                                              pdf_bool_t     finish,
                                                              pdf_error_t  **error);
 
-static enum pdf_stm_filter_apply_status_e stm_f_v2dec_apply (pdf_hash_t    *params,
-                                                             void          *state,
+static enum pdf_stm_filter_apply_status_e stm_f_v2dec_apply (void          *state,
                                                              pdf_buffer_t  *in,
                                                              pdf_buffer_t  *out,
                                                              pdf_bool_t     finish,
@@ -93,13 +91,28 @@ pdf_stm_f_v2dec_get (void)
 /* Common implementation */
 
 static pdf_bool_t
-stm_f_v2_init (pdf_hash_t   *params,
-               void        **state,
-               pdf_error_t **error)
+stm_f_v2_init (const pdf_hash_t  *params,
+               void             **state,
+               pdf_error_t      **error)
 {
   struct pdf_stm_f_v2_s *filter_state;
   const pdf_char_t *key;
   pdf_size_t keysize;
+
+  /* We demand all parameters are present */
+  if (!params ||
+      !pdf_hash_key_p (params, "Key") ||
+      !pdf_hash_key_p (params, "KeySize"))
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_STM,
+                     PDF_EBADDATA,
+                     "cannot initialize V2 encoder/decoder: "
+                     "parameters missing ('Key': %s, 'KeySize': %s)",
+                     (params && pdf_hash_key_p (params, "Key")) ? "available" : "missing",
+                     (params && pdf_hash_key_p (params, "KeySize")) ? "available" : "missing");
+      return PDF_FALSE;
+    }
 
   filter_state = pdf_alloc (sizeof (struct pdf_stm_f_v2_s));
   if (!filter_state)
@@ -114,19 +127,6 @@ stm_f_v2_init (pdf_hash_t   *params,
     }
 
   filter_state->cipher = NULL;
-
-  /* We demand all parameters are present */
-  if ((!pdf_hash_key_p (params, "Key")) ||
-      (!pdf_hash_key_p (params, "KeySize")))
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_STM,
-                     PDF_EBADDATA,
-                     "cannot initialize V2 encoder/decoder: "
-                     "'Key' or 'KeySize' parameters missing");
-      stm_f_v2_deinit (filter_state);
-      return PDF_FALSE;
-    }
 
   /* Note that Key may NOT be NUL-terminated */
   key = pdf_hash_get_value (params, "Key");
@@ -161,7 +161,6 @@ stm_f_v2_deinit (void *state)
 
 static enum pdf_stm_filter_apply_status_e
 stm_f_v2_apply (pdf_stm_f_v2_mode_e   mode,
-                pdf_hash_t           *params,
                 void                 *state,
                 pdf_buffer_t         *in,
                 pdf_buffer_t         *out,
@@ -223,15 +222,13 @@ stm_f_v2_apply (pdf_stm_f_v2_mode_e   mode,
 /* Encode filter */
 
 static enum pdf_stm_filter_apply_status_e
-stm_f_v2enc_apply (pdf_hash_t    *params,
-                   void          *state,
+stm_f_v2enc_apply (void          *state,
                    pdf_buffer_t  *in,
                    pdf_buffer_t  *out,
                    pdf_bool_t     finish,
                    pdf_error_t  **error)
 {
   return stm_f_v2_apply (PDF_STM_F_V2_MODE_ENCODE,
-                         params,
                          state,
                          in,
                          out,
@@ -242,15 +239,13 @@ stm_f_v2enc_apply (pdf_hash_t    *params,
 /* Decode filter  */
 
 static enum pdf_stm_filter_apply_status_e
-stm_f_v2dec_apply (pdf_hash_t    *params,
-                   void          *state,
+stm_f_v2dec_apply (void          *state,
                    pdf_buffer_t  *in,
                    pdf_buffer_t  *out,
                    pdf_bool_t     finish,
                    pdf_error_t  **error)
 {
   return stm_f_v2_apply (PDF_STM_F_V2_MODE_DECODE,
-                         params,
                          state,
                          in,
                          out,

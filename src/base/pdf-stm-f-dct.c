@@ -71,18 +71,17 @@ struct pdf_stm_f_dctdec_s
   pdf_u32_t num_scanlines;
 };
 
-static pdf_bool_t stm_f_dctdec_init (pdf_hash_t   *params,
-                                     void        **state,
-                                     pdf_error_t **error);
+static pdf_bool_t stm_f_dctdec_init (const pdf_hash_t  *params,
+                                     void             **state,
+                                     pdf_error_t      **error);
 
 static void stm_f_dctdec_deinit (void *state);
 
-static enum pdf_stm_filter_apply_status_e stm_f_dctdec_apply (pdf_hash_t    *params,
-                                                                void          *state,
-                                                                pdf_buffer_t  *in,
-                                                                pdf_buffer_t  *out,
-                                                                pdf_bool_t     finish,
-                                                                pdf_error_t  **error);
+static enum pdf_stm_filter_apply_status_e stm_f_dctdec_apply (void          *state,
+                                                              pdf_buffer_t  *in,
+                                                              pdf_buffer_t  *out,
+                                                              pdf_bool_t     finish,
+                                                              pdf_error_t  **error);
 
 /* Filter implementations */
 
@@ -101,9 +100,9 @@ pdf_stm_f_dctdec_get (void)
 static const pdf_char_t *DCTDecode_param_name = "ColorTransform";
 
 static pdf_bool_t
-stm_f_dctdec_init (pdf_hash_t   *params,
-                   void        **state,
-                   pdf_error_t **error)
+stm_f_dctdec_init (const pdf_hash_t  *params,
+                   void             **state,
+                   pdf_error_t      **error)
 {
   struct pdf_stm_f_dctdec_s *filter_state;
 
@@ -123,7 +122,7 @@ stm_f_dctdec_init (pdf_hash_t   *params,
   memset (filter_state, 0, sizeof (struct pdf_stm_f_dctdec_s));
 
   filter_state->cinfo = pdf_alloc (sizeof (struct jpeg_decompress_struct));
-  if(!filter_state->cinfo)
+  if (!filter_state->cinfo)
     {
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_STM,
@@ -136,7 +135,7 @@ stm_f_dctdec_init (pdf_hash_t   *params,
     }
 
   filter_state->jerr = pdf_alloc (sizeof (struct jpeg_error_mgr));
-  if(!filter_state->jerr)
+  if (!filter_state->jerr)
     {
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_STM,
@@ -153,7 +152,8 @@ stm_f_dctdec_init (pdf_hash_t   *params,
   jpeg_create_decompress (filter_state->cinfo);
 
   filter_state->param_color_transform = -1;
-  if (pdf_hash_key_p (params, DCTDecode_param_name))
+  if (params &&
+      pdf_hash_key_p (params, DCTDecode_param_name))
     {
       pdf_i32_t *ptr;
 
@@ -413,8 +413,7 @@ write_ppm_header (j_decompress_ptr   cinfo,
 }
 
 static enum pdf_stm_filter_apply_status_e
-stm_f_dctdec_apply (pdf_hash_t    *params,
-                    void          *state,
+stm_f_dctdec_apply (void          *state,
                     pdf_buffer_t  *in,
                     pdf_buffer_t  *out,
                     pdf_bool_t     finish,

@@ -52,21 +52,19 @@ struct pdf_stm_f_a85_s
   pdf_char_t output_buff[A85_OUTPUT_BUFF_LEN];
 };
 
-static pdf_bool_t stm_f_a85_init (pdf_hash_t   *params,
-                                  void        **state,
-                                  pdf_error_t **error);
+static pdf_bool_t stm_f_a85_init (const pdf_hash_t  *params,
+                                  void             **state,
+                                  pdf_error_t      **error);
 
 static void stm_f_a85_deinit (void *state);
 
-static enum pdf_stm_filter_apply_status_e stm_f_a85enc_apply (pdf_hash_t    *params,
-                                                              void          *state,
+static enum pdf_stm_filter_apply_status_e stm_f_a85enc_apply (void          *state,
                                                               pdf_buffer_t  *in,
                                                               pdf_buffer_t  *out,
                                                               pdf_bool_t     finish,
                                                               pdf_error_t  **error);
 
-static enum pdf_stm_filter_apply_status_e stm_f_a85dec_apply (pdf_hash_t    *params,
-                                                              void          *state,
+static enum pdf_stm_filter_apply_status_e stm_f_a85dec_apply (void          *state,
                                                               pdf_buffer_t  *in,
                                                               pdf_buffer_t  *out,
                                                               pdf_bool_t     finish,
@@ -100,9 +98,9 @@ pdf_stm_f_a85dec_get (void)
 /* Common implementation */
 
 static pdf_bool_t
-stm_f_a85_init (pdf_hash_t   *params,
-                 void        **state,
-                 pdf_error_t **error)
+stm_f_a85_init (const pdf_hash_t  *params,
+                void             **state,
+                pdf_error_t      **error)
 {
   struct pdf_stm_f_a85_s *filter_state;
 
@@ -307,8 +305,7 @@ stm_f_a85enc_wr_tuple (pdf_u32_t     tuple,
 }
 
 static pdf_status_t
-a85enc_apply (pdf_hash_t   *params,
-              void         *state,
+a85enc_apply (void         *state,
               pdf_buffer_t *in,
               pdf_buffer_t *out,
               pdf_bool_t    finish)
@@ -668,8 +665,7 @@ stm_f_a85dec_getnext (pdf_buffer_t *in,
 #define A85_INVALID_TERM_IDX 255
 
 static pdf_status_t
-a85dec_apply (pdf_hash_t   *params,
-              void         *state,
+a85dec_apply (void         *state,
               pdf_buffer_t *in,
               pdf_buffer_t *out,
               pdf_bool_t    finish)
@@ -885,8 +881,7 @@ a85dec_apply (pdf_hash_t   *params,
  * This method is just a helper method until the A85 filter is fully ported to
  * the new API */
 static enum pdf_stm_filter_apply_status_e
-stm_f_a85enc_apply (pdf_hash_t    *params,
-                    void          *state,
+stm_f_a85enc_apply (void          *state,
                     pdf_buffer_t  *in,
                     pdf_buffer_t  *out,
                     pdf_bool_t     finish,
@@ -894,8 +889,7 @@ stm_f_a85enc_apply (pdf_hash_t    *params,
 {
   pdf_status_t ret;
 
-  ret = a85enc_apply (params,
-                      state,
+  ret = a85enc_apply (state,
                       in,
                       out,
                       finish);
@@ -921,8 +915,7 @@ stm_f_a85enc_apply (pdf_hash_t    *params,
  * This method is just a helper method until the A85 filter is fully ported to
  * the new API */
 static enum pdf_stm_filter_apply_status_e
-stm_f_a85dec_apply (pdf_hash_t    *params,
-                    void          *state,
+stm_f_a85dec_apply (void          *state,
                     pdf_buffer_t  *in,
                     pdf_buffer_t  *out,
                     pdf_bool_t     finish,
@@ -930,8 +923,7 @@ stm_f_a85dec_apply (pdf_hash_t    *params,
 {
   pdf_status_t ret;
 
-  ret = a85dec_apply (params,
-                      state,
+  ret = a85dec_apply (state,
                       in,
                       out,
                       finish);

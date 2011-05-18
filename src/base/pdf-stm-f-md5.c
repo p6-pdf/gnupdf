@@ -43,14 +43,13 @@ struct pdf_stm_f_md5_s
   pdf_buffer_t *cache;
 };
 
-static pdf_bool_t stm_f_md5_init (pdf_hash_t   *params,
-                                  void        **state,
-                                  pdf_error_t **error);
+static pdf_bool_t stm_f_md5_init (const pdf_hash_t  *params,
+                                  void             **state,
+                                  pdf_error_t      **error);
 
 static void stm_f_md5_deinit (void *state);
 
-static enum pdf_stm_filter_apply_status_e stm_f_md5enc_apply (pdf_hash_t    *params,
-                                                              void          *state,
+static enum pdf_stm_filter_apply_status_e stm_f_md5enc_apply (void          *state,
                                                               pdf_buffer_t  *in,
                                                               pdf_buffer_t  *out,
                                                               pdf_bool_t     finish,
@@ -71,9 +70,9 @@ pdf_stm_f_md5enc_get (void)
 }
 
 static pdf_bool_t
-stm_f_md5_init (pdf_hash_t   *params,
-                void        **state,
-                pdf_error_t **error)
+stm_f_md5_init (const pdf_hash_t  *params,
+                void             **state,
+                pdf_error_t      **error)
 {
   struct pdf_stm_f_md5_s *filter_state;
 
@@ -126,8 +125,7 @@ stm_f_md5_deinit (void *state)
 }
 
 static enum pdf_stm_filter_apply_status_e
-stm_f_md5enc_apply (pdf_hash_t    *params,
-                    void          *state,
+stm_f_md5enc_apply (void          *state,
                     pdf_buffer_t  *in,
                     pdf_buffer_t  *out,
                     pdf_bool_t     finish,

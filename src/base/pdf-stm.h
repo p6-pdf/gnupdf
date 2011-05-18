@@ -157,7 +157,7 @@ pdf_off_t pdf_stm_tell (pdf_stm_t *stm);
 
 pdf_bool_t pdf_stm_install_filter     (pdf_stm_t                   *stm,
                                        enum pdf_stm_filter_type_e   filter_type,
-                                       pdf_hash_t                  *filter_params,
+                                       const pdf_hash_t            *filter_params,
                                        pdf_error_t                **error);
 
 pdf_bool_t pdf_stm_supported_filter_p (enum pdf_stm_filter_type_e   filter_type);

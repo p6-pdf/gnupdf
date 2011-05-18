@@ -32,8 +32,7 @@
 #include <pdf-stm-f-null.h>
 #include <pdf-hash.h>
 
-static enum pdf_stm_filter_apply_status_e stm_f_null_apply (pdf_hash_t    *params,
-                                                            void          *state,
+static enum pdf_stm_filter_apply_status_e stm_f_null_apply (void          *state,
                                                             pdf_buffer_t  *in,
                                                             pdf_buffer_t  *out,
                                                             pdf_bool_t     finish,
@@ -55,8 +54,7 @@ pdf_stm_f_null_get (void)
 }
 
 static enum pdf_stm_filter_apply_status_e
-stm_f_null_apply (pdf_hash_t    *params,
-                  void          *state,
+stm_f_null_apply (void          *state,
                   pdf_buffer_t  *in,
                   pdf_buffer_t  *out,
                   pdf_bool_t     finish,

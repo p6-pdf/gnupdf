@@ -115,7 +115,6 @@ struct pdf_stm_filter_s
   pdf_buffer_t *out;
 
   /* Filter-specific information */
-  pdf_hash_t *params;
   void *state;
 
   /* Filter status */
@@ -139,7 +138,7 @@ pdf_stm_filter_p (enum pdf_stm_filter_type_e type)
 
 pdf_stm_filter_t *
 pdf_stm_filter_new (enum pdf_stm_filter_type_e   type,
-                    pdf_hash_t                  *params,
+                    const pdf_hash_t            *params,
                     pdf_size_t                   buffer_size,
                     enum pdf_stm_filter_mode_e   mode,
                     pdf_error_t                **error)
@@ -199,7 +198,6 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e   type,
   filter->out = NULL;
 
   /* Initialization of the implementation */
-  filter->params = params;
   filter->state = NULL;
   filter->error = NULL;
   filter->eof = PDF_FALSE;
@@ -207,7 +205,9 @@ pdf_stm_filter_new (enum pdf_stm_filter_type_e   type,
 
   /* Error initializing the filter implementation? */
   if (filter->impl->init_fn &&
-      !filter->impl->init_fn (filter->params, &(filter->state), error))
+      !filter->impl->init_fn (params,
+                              &(filter->state),
+                              error))
     {
       /* Reset implementation before destroying, so that deinit() is not
        * called */
@@ -235,8 +235,6 @@ pdf_stm_filter_destroy (pdf_stm_filter_t *filter)
     pdf_error_destroy (filter->error);
 
   pdf_dealloc (filter);
-
-  /* Note that the memory used by the params hash is NOT managed by the filter */
 }
 
 void
@@ -307,8 +305,7 @@ pdf_stm_filter_apply (pdf_stm_filter_t  *filter,
       pdf_bool_t input_eof;
 
       /* Generate output */
-      filter_status = filter->impl->apply_fn (filter->params,
-                                              filter->state,
+      filter_status = filter->impl->apply_fn (filter->state,
                                               filter->in,
                                               filter->out,
                                               filter->really_finish,
@@ -381,8 +378,10 @@ pdf_stm_filter_apply (pdf_stm_filter_t  *filter,
   return PDF_TRUE;
 }
 
+/* NOTE: This method is not public and not used anywhere, do we need it? */
 pdf_bool_t
 pdf_stm_filter_reset (pdf_stm_filter_t  *filter,
+                      const pdf_hash_t  *params,
                       pdf_error_t      **error)
 {
   pdf_clear_error (&(filter->error));
@@ -395,7 +394,7 @@ pdf_stm_filter_reset (pdf_stm_filter_t  *filter,
 
   /* Re-init */
   return (filter->impl->init_fn ?
-          filter->impl->init_fn (filter->params,
+          filter->impl->init_fn (params,
                                  &(filter->state),
                                  error) :
           PDF_TRUE);
