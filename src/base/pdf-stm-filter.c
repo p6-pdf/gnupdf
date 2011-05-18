@@ -72,7 +72,7 @@ struct stm_filter_s {
 /* Same order as pdf_stm_filter_type_e */
 static const struct stm_filter_s filters[PDF_STM_FILTER_LAST] = {
   { "NULL",              pdf_stm_f_null_get     },
-
+  /* Standard filters */
   { "ASCII-HEX encoder", pdf_stm_f_ahexenc_get  },
   { "ASCII-HEX decoder", pdf_stm_f_ahexdec_get  },
   { "ASCII-85 encoder",  pdf_stm_f_a85enc_get   },
@@ -91,12 +91,15 @@ static const struct stm_filter_s filters[PDF_STM_FILTER_LAST] = {
   { "DCT decoder",       pdf_stm_f_dctdec_get   },
   { "JPX encoder",       NULL                   },
   { "JPX decoder",       NULL                   },
-
+  /* Predictors */
+  { "Predictor encoder", NULL                   },
+  { "Predictor decoder", NULL                   },
+  /* Crypt filters */
   { "AESv2 encoder",     pdf_stm_f_aesv2enc_get },
   { "AESv2 decoder",     pdf_stm_f_aesv2dec_get },
   { "V2 encoder",        pdf_stm_f_v2enc_get    },
   { "V2 decoder",        pdf_stm_f_v2enc_get    },
-
+  /* Hash filters */
   { "MD5 encoder",       pdf_stm_f_md5enc_get   },
 };
 

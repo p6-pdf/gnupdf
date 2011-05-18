@@ -68,6 +68,10 @@ enum pdf_stm_filter_type_e
   PDF_STM_FILTER_JPX_ENC,
   PDF_STM_FILTER_JPX_DEC,
 
+  /* Predictors */
+  PDF_STM_FILTER_PRED_ENC, /* TODO, see FS#48 */
+  PDF_STM_FILTER_PRED_DEC, /* TODO, see FS#48 */
+
   /* Crypt filters */
   PDF_STM_FILTER_AESV2_ENC,
   PDF_STM_FILTER_AESV2_DEC,
@@ -76,6 +80,7 @@ enum pdf_stm_filter_type_e
 
   /* Hash filters */
   PDF_STM_FILTER_MD5_ENC,
+
   PDF_STM_FILTER_LAST
 };
 

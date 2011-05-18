@@ -1,5 +1,10 @@
 2011-05-18  Aleksander Morgado  <aleksander@gnu.org>
 
+	base,stm: Added IDs for missing predictor encoder and decoder filters
+	* src/base/pdf-stm-filter.[h|c]
+
+2011-05-18  Aleksander Morgado  <aleksander@gnu.org>
+
 	utils,filter: No need to pass empty params hash when installing filter
 	* utils/pdf-filter.c
 
