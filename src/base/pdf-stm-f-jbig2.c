@@ -26,7 +26,6 @@
 
 #include <config.h>
 
-
 #include <string.h>
 #include <stdint.h>
 
@@ -37,6 +36,12 @@
 #include <pdf-types.h>
 #include <pdf-types-buffer.h>
 #include <pdf-hash.h>
+
+/* Define JBIG2 decoder */
+PDF_STM_FILTER_DEFINE (pdf_stm_f_jbig2dec_get,
+                       stm_f_jbig2dec_init,
+                       stm_f_jbig2dec_apply,
+                       stm_f_jbig2dec_deinit);
 
 /* Internal state */
 struct pdf_stm_f_jbig2dec_s
@@ -55,32 +60,6 @@ static int jbig2dec_error_cb (void          *data,
                               const char    *msg,
                               Jbig2Severity  severity,
                               int32_t        seg_idx);
-
-static pdf_bool_t stm_f_jbig2dec_init (const pdf_hash_t  *params,
-                                       void             **state,
-                                       pdf_error_t      **error);
-
-static void stm_f_jbig2dec_deinit (void *state);
-
-static enum pdf_stm_filter_apply_status_e stm_f_jbig2dec_apply (void          *state,
-                                                                pdf_buffer_t  *in,
-                                                                pdf_buffer_t  *out,
-                                                                pdf_bool_t     finish,
-                                                                pdf_error_t  **error);
-
-/* -- Filter implementations -- */
-
-static const pdf_stm_filter_impl_t dec_impl = {
-  .init_fn   = stm_f_jbig2dec_init,
-  .apply_fn  = stm_f_jbig2dec_apply,
-  .deinit_fn = stm_f_jbig2dec_deinit,
-};
-
-const pdf_stm_filter_impl_t *
-pdf_stm_f_jbig2dec_get (void)
-{
-  return &dec_impl;
-}
 
 static pdf_bool_t
 stm_f_jbig2dec_init (const pdf_hash_t  *params,

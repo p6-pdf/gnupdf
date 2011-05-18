@@ -121,6 +121,46 @@ typedef struct {
 
 typedef struct pdf_stm_filter_s pdf_stm_filter_t;
 
+/* Helper macros to define filters */
+#define PDF_STM_FILTER_DEFINE(GET,INIT,APPLY,DEINIT)                    \
+  static pdf_bool_t INIT (const pdf_hash_t  *params,                    \
+                          void             **state,                     \
+                          pdf_error_t      **error);                    \
+  static void DEINIT (void *state);                                     \
+  static enum pdf_stm_filter_apply_status_e APPLY (void          *state, \
+                                                   pdf_buffer_t  *in,   \
+                                                   pdf_buffer_t  *out,  \
+                                                   pdf_bool_t     finish, \
+                                                   pdf_error_t  **error); \
+  static const pdf_stm_filter_impl_t GET##_impl = {                     \
+    .init_fn   = INIT,                                                  \
+    .apply_fn  = APPLY,                                                 \
+    .deinit_fn = DEINIT,                                                \
+  };                                                                    \
+                                                                        \
+  const pdf_stm_filter_impl_t * GET (void)                              \
+  {                                                                     \
+    return &GET##_impl;                                                 \
+  }
+
+#define PDF_STM_FILTER_DEFINE_STATELESS(GET,APPLY)                      \
+  static enum pdf_stm_filter_apply_status_e APPLY (void          *state, \
+                                                   pdf_buffer_t  *in,   \
+                                                   pdf_buffer_t  *out,  \
+                                                   pdf_bool_t     finish, \
+                                                   pdf_error_t  **error); \
+  static const pdf_stm_filter_impl_t GET##_impl = {                     \
+    .init_fn   = NULL,                                                  \
+    .apply_fn  = APPLY,                                                 \
+    .deinit_fn = NULL,                                                  \
+  };                                                                    \
+                                                                        \
+  const pdf_stm_filter_impl_t * GET (void)                              \
+  {                                                                     \
+    return &GET##_impl;                                                 \
+  }
+
+
 pdf_bool_t pdf_stm_filter_p (enum pdf_stm_filter_type_e type);
 
 pdf_stm_filter_t *pdf_stm_filter_new (enum pdf_stm_filter_type_e   type,

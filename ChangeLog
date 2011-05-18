@@ -1,5 +1,23 @@
 2011-05-18  Aleksander Morgado  <aleksander@gnu.org>
 
+	base,stm: New helper macros to define stream filters
+	* src/base/pdf-stm-filter.h: Defined `PDF_STM_FILTER_DEFINE' and
+	`PDF_STM_FILTER_DEFINE_STATELESS' macros.
+	* src/base/pdf-stm-f-a85.c: Use the new `PDF_STM_FILTER_DEFINE' macro.
+	* src/base/pdf-stm-f-aesv2.c: Idem.
+	* src/base/pdf-stm-f-ahex.c: Idem.
+	* src/base/pdf-stm-f-dct.c: Idem.
+	* src/base/pdf-stm-f-flate.c: Idem.
+	* src/base/pdf-stm-f-jbig2.c: Idem.
+	* src/base/pdf-stm-f-lzw.c: Idem.
+	* src/base/pdf-stm-f-md5.c: Idem.
+	* src/base/pdf-stm-f-rl.c: Idem.
+	* src/base/pdf-stm-f-v2.c: Idem.
+	* src/base/pdf-stm-f-null.c: Use the new
+	`PDF_STM_FILTER_DEFINE_STATELESS' macro.
+
+2011-05-18  Aleksander Morgado  <aleksander@gnu.org>
+
 	base,stm: Added IDs for missing predictor encoder and decoder filters
 	* src/base/pdf-stm-filter.[h|c]
 

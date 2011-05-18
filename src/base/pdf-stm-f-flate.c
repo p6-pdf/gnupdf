@@ -37,6 +37,18 @@
 #include <pdf-types-buffer.h>
 #include <pdf-hash.h>
 
+/* Define FLATE encoder */
+PDF_STM_FILTER_DEFINE (pdf_stm_f_flateenc_get,
+                       stm_f_flateenc_init,
+                       stm_f_flateenc_apply,
+                       stm_f_flateenc_deinit);
+
+/* Define FLATE decoder */
+PDF_STM_FILTER_DEFINE (pdf_stm_f_flatedec_get,
+                       stm_f_flatedec_init,
+                       stm_f_flatedec_apply,
+                       stm_f_flatedec_deinit);
+
 #define PDF_STM_F_FLATE_CHUNK 16384
 
 struct pdf_stm_f_flate_s
@@ -50,55 +62,6 @@ struct pdf_stm_f_flate_s
   pdf_char_t inbuf[PDF_STM_F_FLATE_CHUNK];
   pdf_char_t outbuf[PDF_STM_F_FLATE_CHUNK];
 };
-
-static pdf_bool_t stm_f_flateenc_init (const pdf_hash_t  *params,
-                                       void             **state,
-                                       pdf_error_t      **error);
-
-static void stm_f_flateenc_deinit (void *state);
-
-static enum pdf_stm_filter_apply_status_e stm_f_flateenc_apply (void          *state,
-                                                                pdf_buffer_t  *in,
-                                                                pdf_buffer_t  *out,
-                                                                pdf_bool_t     finish,
-                                                                pdf_error_t  **error);
-
-static pdf_bool_t stm_f_flatedec_init (const pdf_hash_t  *params,
-                                       void             **state,
-                                       pdf_error_t      **error);
-
-static void stm_f_flatedec_deinit (void *state);
-
-static enum pdf_stm_filter_apply_status_e stm_f_flatedec_apply (void          *state,
-                                                                pdf_buffer_t  *in,
-                                                                pdf_buffer_t  *out,
-                                                                pdf_bool_t     finish,
-                                                                pdf_error_t  **error);
-/* Filter implementations */
-
-static const pdf_stm_filter_impl_t enc_impl = {
-  .init_fn   = stm_f_flateenc_init,
-  .apply_fn  = stm_f_flateenc_apply,
-  .deinit_fn = stm_f_flateenc_deinit,
-};
-
-static const pdf_stm_filter_impl_t dec_impl = {
-  .init_fn   = stm_f_flatedec_init,
-  .apply_fn  = stm_f_flatedec_apply,
-  .deinit_fn = stm_f_flatedec_deinit,
-};
-
-const pdf_stm_filter_impl_t *
-pdf_stm_f_flateenc_get (void)
-{
-  return &enc_impl;
-}
-
-const pdf_stm_filter_impl_t *
-pdf_stm_f_flatedec_get (void)
-{
-  return &dec_impl;
-}
 
 /* Common implementation */
 

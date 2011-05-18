@@ -34,6 +34,12 @@
 #include <pdf-crypt.h>
 #include <pdf-stm-f-md5.h>
 
+/* Define MD5 encoder */
+PDF_STM_FILTER_DEFINE (pdf_stm_f_md5enc_get,
+                       stm_f_md5enc_init,
+                       stm_f_md5enc_apply,
+                       stm_f_md5enc_deinit);
+
 #define MD5_OUTPUT_SIZE 16
 
 /* Internal state */
@@ -43,36 +49,10 @@ struct pdf_stm_f_md5_s
   pdf_buffer_t *cache;
 };
 
-static pdf_bool_t stm_f_md5_init (const pdf_hash_t  *params,
-                                  void             **state,
-                                  pdf_error_t      **error);
-
-static void stm_f_md5_deinit (void *state);
-
-static enum pdf_stm_filter_apply_status_e stm_f_md5enc_apply (void          *state,
-                                                              pdf_buffer_t  *in,
-                                                              pdf_buffer_t  *out,
-                                                              pdf_bool_t     finish,
-                                                              pdf_error_t  **error);
-
-/* Filter implementations */
-
-static const pdf_stm_filter_impl_t enc_impl = {
-  .init_fn   = stm_f_md5_init,
-  .apply_fn  = stm_f_md5enc_apply,
-  .deinit_fn = stm_f_md5_deinit,
-};
-
-const pdf_stm_filter_impl_t *
-pdf_stm_f_md5enc_get (void)
-{
-  return &enc_impl;
-}
-
 static pdf_bool_t
-stm_f_md5_init (const pdf_hash_t  *params,
-                void             **state,
-                pdf_error_t      **error)
+stm_f_md5enc_init (const pdf_hash_t  *params,
+                   void             **state,
+                   pdf_error_t      **error)
 {
   struct pdf_stm_f_md5_s *filter_state;
 
@@ -92,7 +72,7 @@ stm_f_md5_init (const pdf_hash_t  *params,
   filter_state->cache = pdf_buffer_new (MD5_OUTPUT_SIZE, error);
   if (!(filter_state->cache))
     {
-      stm_f_md5_deinit (filter_state);
+      stm_f_md5enc_deinit (filter_state);
       return PDF_FALSE;
     }
 
@@ -104,7 +84,7 @@ stm_f_md5_init (const pdf_hash_t  *params,
                      PDF_EBADDATA,
                      "cannot initialize MD5 encoder: "
                      "couldn't setup cipher");
-      stm_f_md5_deinit (filter_state);
+      stm_f_md5enc_deinit (filter_state);
       return PDF_FALSE;
     }
 
@@ -113,7 +93,7 @@ stm_f_md5_init (const pdf_hash_t  *params,
 }
 
 static void
-stm_f_md5_deinit (void *state)
+stm_f_md5enc_deinit (void *state)
 {
   struct pdf_stm_f_md5_s *filter_state = state;
 

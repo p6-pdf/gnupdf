@@ -32,6 +32,18 @@
 #include <pdf-types-buffer.h>
 #include <pdf-hash.h>
 
+/* Define A85 encoder */
+PDF_STM_FILTER_DEFINE (pdf_stm_f_a85enc_get,
+                       stm_f_a85_init,
+                       stm_f_a85enc_apply,
+                       stm_f_a85_deinit);
+
+/* Define A85 decoder */
+PDF_STM_FILTER_DEFINE (pdf_stm_f_a85dec_get,
+                       stm_f_a85_init,
+                       stm_f_a85dec_apply,
+                       stm_f_a85_deinit);
+
 /* If something goes wrong in writing out data, 5 bytes could be leftover */
 #define A85_SPARE_BYTES_LEN 5
 #define A85_OUTPUT_BUFF_LEN 8
@@ -51,49 +63,6 @@ struct pdf_stm_f_a85_s
   pdf_char_t spare_bytes[A85_SPARE_BYTES_LEN];
   pdf_char_t output_buff[A85_OUTPUT_BUFF_LEN];
 };
-
-static pdf_bool_t stm_f_a85_init (const pdf_hash_t  *params,
-                                  void             **state,
-                                  pdf_error_t      **error);
-
-static void stm_f_a85_deinit (void *state);
-
-static enum pdf_stm_filter_apply_status_e stm_f_a85enc_apply (void          *state,
-                                                              pdf_buffer_t  *in,
-                                                              pdf_buffer_t  *out,
-                                                              pdf_bool_t     finish,
-                                                              pdf_error_t  **error);
-
-static enum pdf_stm_filter_apply_status_e stm_f_a85dec_apply (void          *state,
-                                                              pdf_buffer_t  *in,
-                                                              pdf_buffer_t  *out,
-                                                              pdf_bool_t     finish,
-                                                              pdf_error_t  **error);
-/* Filter implementations */
-
-static const pdf_stm_filter_impl_t enc_impl = {
-  .init_fn   = stm_f_a85_init,
-  .apply_fn  = stm_f_a85enc_apply,
-  .deinit_fn = stm_f_a85_deinit,
-};
-
-static const pdf_stm_filter_impl_t dec_impl = {
-  .init_fn   = stm_f_a85_init,
-  .apply_fn  = stm_f_a85dec_apply,
-  .deinit_fn = stm_f_a85_deinit,
-};
-
-const pdf_stm_filter_impl_t *
-pdf_stm_f_a85enc_get (void)
-{
-  return &enc_impl;
-}
-
-const pdf_stm_filter_impl_t *
-pdf_stm_f_a85dec_get (void)
-{
-  return &dec_impl;
-}
 
 /* Common implementation */
 

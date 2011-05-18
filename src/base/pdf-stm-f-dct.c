@@ -34,6 +34,12 @@
 #include <pdf-hash.h>
 #include <pdf-stm-f-dct.h>
 
+/* Define DCT decoder */
+PDF_STM_FILTER_DEFINE (pdf_stm_f_dctdec_get,
+                       stm_f_dctdec_init,
+                       stm_f_dctdec_apply,
+                       stm_f_dctdec_deinit);
+
 #define PPM_MAXVAL 255
 #define PDF_DJPEG_CACHE_SIZE (1024)
 
@@ -70,32 +76,6 @@ struct pdf_stm_f_dctdec_s
   pdf_size_t row_copy_index;
   pdf_u32_t num_scanlines;
 };
-
-static pdf_bool_t stm_f_dctdec_init (const pdf_hash_t  *params,
-                                     void             **state,
-                                     pdf_error_t      **error);
-
-static void stm_f_dctdec_deinit (void *state);
-
-static enum pdf_stm_filter_apply_status_e stm_f_dctdec_apply (void          *state,
-                                                              pdf_buffer_t  *in,
-                                                              pdf_buffer_t  *out,
-                                                              pdf_bool_t     finish,
-                                                              pdf_error_t  **error);
-
-/* Filter implementations */
-
-static const pdf_stm_filter_impl_t dec_impl = {
-  .init_fn   = stm_f_dctdec_init,
-  .apply_fn  = stm_f_dctdec_apply,
-  .deinit_fn = stm_f_dctdec_deinit,
-};
-
-const pdf_stm_filter_impl_t *
-pdf_stm_f_dctdec_get (void)
-{
-  return &dec_impl;
-}
 
 static const pdf_char_t *DCTDecode_param_name = "ColorTransform";
 

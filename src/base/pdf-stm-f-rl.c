@@ -34,6 +34,18 @@
 #include <pdf-types-buffer.h>
 #include <pdf-hash.h>
 
+/* Define RL encoder */
+PDF_STM_FILTER_DEFINE (pdf_stm_f_rlenc_get,
+                       stm_f_rl_init,
+                       stm_f_rlenc_apply,
+                       stm_f_rl_deinit);
+
+/* Define RL decoder */
+PDF_STM_FILTER_DEFINE (pdf_stm_f_rldec_get,
+                       stm_f_rl_init,
+                       stm_f_rldec_apply,
+                       stm_f_rl_deinit);
+
 typedef enum
 {
   PDF_STM_F_RL_WRL,
@@ -61,49 +73,6 @@ static pdf_bool_t decode_rl_char (struct pdf_stm_f_rl_s *st,
 static int copy_next_bytes (struct pdf_stm_f_rl_s *st,
                             pdf_buffer_t          *in,
                             pdf_buffer_t          *out);
-
-static pdf_bool_t stm_f_rl_init (const pdf_hash_t  *params,
-                                 void             **state,
-                                 pdf_error_t      **error);
-
-static void stm_f_rl_deinit (void *state);
-
-static enum pdf_stm_filter_apply_status_e stm_f_rlenc_apply (void          *state,
-                                                             pdf_buffer_t  *in,
-                                                             pdf_buffer_t  *out,
-                                                             pdf_bool_t     finish,
-                                                             pdf_error_t  **error);
-
-static enum pdf_stm_filter_apply_status_e stm_f_rldec_apply (void          *state,
-                                                             pdf_buffer_t  *in,
-                                                             pdf_buffer_t  *out,
-                                                             pdf_bool_t     finish,
-                                                             pdf_error_t  **error);
-/* Filter implementations */
-
-static const pdf_stm_filter_impl_t enc_impl = {
-  .init_fn   = stm_f_rl_init,
-  .apply_fn  = stm_f_rlenc_apply,
-  .deinit_fn = stm_f_rl_deinit,
-};
-
-static const pdf_stm_filter_impl_t dec_impl = {
-  .init_fn   = stm_f_rl_init,
-  .apply_fn  = stm_f_rldec_apply,
-  .deinit_fn = stm_f_rl_deinit,
-};
-
-const pdf_stm_filter_impl_t *
-pdf_stm_f_rlenc_get (void)
-{
-  return &enc_impl;
-}
-
-const pdf_stm_filter_impl_t *
-pdf_stm_f_rldec_get (void)
-{
-  return &dec_impl;
-}
 
 /* Common implementation */
 

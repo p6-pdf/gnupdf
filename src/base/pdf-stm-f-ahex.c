@@ -30,6 +30,18 @@
 #include <pdf-hash.h>
 #include <pdf-stm-f-ahex.h>
 
+/* Define AHEX encoder */
+PDF_STM_FILTER_DEFINE (pdf_stm_f_ahexenc_get,
+                       stm_f_ahex_init,
+                       stm_f_ahexenc_apply,
+                       stm_f_ahex_deinit);
+
+/* Define AHEX decoder */
+PDF_STM_FILTER_DEFINE (pdf_stm_f_ahexdec_get,
+                       stm_f_ahex_init,
+                       stm_f_ahexdec_apply,
+                       stm_f_ahex_deinit);
+
 #define PDF_STM_F_AHEX_LINE_WIDTH 60
 
 /* Internal state, same for encoder and decoder */
@@ -46,49 +58,6 @@ static pdf_u32_t pdf_stm_f_ahex_hex_p (pdf_u32_t hex);
 static pdf_u32_t pdf_stm_f_ahex_hex2int (pdf_u32_t hex);
 
 static pdf_uchar_t pdf_stm_f_ahex_int2hex (pdf_u32_t n);
-
-static pdf_bool_t stm_f_ahex_init (const pdf_hash_t  *params,
-                                   void             **state,
-                                   pdf_error_t      **error);
-
-static void stm_f_ahex_deinit (void *state);
-
-static enum pdf_stm_filter_apply_status_e stm_f_ahexenc_apply (void          *state,
-                                                               pdf_buffer_t  *in,
-                                                               pdf_buffer_t  *out,
-                                                               pdf_bool_t     finish,
-                                                               pdf_error_t  **error);
-
-static enum pdf_stm_filter_apply_status_e stm_f_ahexdec_apply (void          *state,
-                                                               pdf_buffer_t  *in,
-                                                               pdf_buffer_t  *out,
-                                                               pdf_bool_t     finish,
-                                                               pdf_error_t  **error);
-/* Filter implementations */
-
-static const pdf_stm_filter_impl_t enc_impl = {
-  .init_fn   = stm_f_ahex_init,
-  .apply_fn  = stm_f_ahexenc_apply,
-  .deinit_fn = stm_f_ahex_deinit,
-};
-
-static const pdf_stm_filter_impl_t dec_impl = {
-  .init_fn   = stm_f_ahex_init,
-  .apply_fn  = stm_f_ahexdec_apply,
-  .deinit_fn = stm_f_ahex_deinit,
-};
-
-const pdf_stm_filter_impl_t *
-pdf_stm_f_ahexenc_get (void)
-{
-  return &enc_impl;
-}
-
-const pdf_stm_filter_impl_t *
-pdf_stm_f_ahexdec_get (void)
-{
-  return &dec_impl;
-}
 
 /* Common implementation */
 

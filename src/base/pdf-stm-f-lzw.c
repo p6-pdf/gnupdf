@@ -34,55 +34,17 @@
 #include <pdf-hash-helper.h>
 #include <pdf-stm-f-lzw.h>
 
-static pdf_bool_t stm_f_lzwenc_init (const pdf_hash_t  *params,
-                                     void             **state,
-                                     pdf_error_t      **error);
+/* Define LZW encoder */
+PDF_STM_FILTER_DEFINE (pdf_stm_f_lzwenc_get,
+                       stm_f_lzwenc_init,
+                       stm_f_lzwenc_apply,
+                       stm_f_lzwenc_deinit);
 
-static void stm_f_lzwenc_deinit (void *state);
-
-static enum pdf_stm_filter_apply_status_e stm_f_lzwenc_apply (void          *state,
-                                                              pdf_buffer_t  *in,
-                                                              pdf_buffer_t  *out,
-                                                              pdf_bool_t     finish,
-                                                              pdf_error_t  **error);
-
-static pdf_bool_t stm_f_lzwdec_init (const pdf_hash_t  *params,
-                                     void             **state,
-                                     pdf_error_t      **error);
-
-static void stm_f_lzwdec_deinit (void *state);
-
-static enum pdf_stm_filter_apply_status_e stm_f_lzwdec_apply (void          *state,
-                                                              pdf_buffer_t  *in,
-                                                              pdf_buffer_t  *out,
-                                                              pdf_bool_t     finish,
-                                                              pdf_error_t  **error);
-
-/* -- Filter implementations -- */
-
-static const pdf_stm_filter_impl_t enc_impl = {
-  .init_fn   = stm_f_lzwenc_init,
-  .apply_fn  = stm_f_lzwenc_apply,
-  .deinit_fn = stm_f_lzwenc_deinit,
-};
-
-static const pdf_stm_filter_impl_t dec_impl = {
-  .init_fn   = stm_f_lzwdec_init,
-  .apply_fn  = stm_f_lzwdec_apply,
-  .deinit_fn = stm_f_lzwdec_deinit,
-};
-
-const pdf_stm_filter_impl_t *
-pdf_stm_f_lzwenc_get (void)
-{
-  return &enc_impl;
-}
-
-const pdf_stm_filter_impl_t *
-pdf_stm_f_lzwdec_get (void)
-{
-  return &dec_impl;
-}
+/* Define LZW decoder */
+PDF_STM_FILTER_DEFINE (pdf_stm_f_lzwdec_get,
+                       stm_f_lzwdec_init,
+                       stm_f_lzwdec_apply,
+                       stm_f_lzwdec_deinit);
 
 /* -- LZW helper definitions -- */
 

@@ -32,26 +32,9 @@
 #include <pdf-stm-f-null.h>
 #include <pdf-hash.h>
 
-static enum pdf_stm_filter_apply_status_e stm_f_null_apply (void          *state,
-                                                            pdf_buffer_t  *in,
-                                                            pdf_buffer_t  *out,
-                                                            pdf_bool_t     finish,
-                                                            pdf_error_t  **error);
-
-/* Filter implementation
- * This filter does not use any parameters and does not hold any
- * internal state */
-static const pdf_stm_filter_impl_t impl = {
-  .init_fn   = NULL,
-  .apply_fn  = stm_f_null_apply,
-  .deinit_fn = NULL,
-};
-
-const pdf_stm_filter_impl_t *
-pdf_stm_f_null_get (void)
-{
-  return &impl;
-}
+/* Define NULL filter */
+PDF_STM_FILTER_DEFINE_STATELESS (pdf_stm_f_null_get,
+                                 stm_f_null_apply);
 
 static enum pdf_stm_filter_apply_status_e
 stm_f_null_apply (void          *state,

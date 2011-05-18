@@ -36,6 +36,18 @@
 #include <pdf-stm-f-aesv2.h>
 #include <pdf-hash-helper.h>
 
+/* Define AESv2 encoder */
+PDF_STM_FILTER_DEFINE (pdf_stm_f_aesv2enc_get,
+                       stm_f_aesv2_init,
+                       stm_f_aesv2enc_apply,
+                       stm_f_aesv2_deinit);
+
+/* Define AESv2 decoder */
+PDF_STM_FILTER_DEFINE (pdf_stm_f_aesv2dec_get,
+                       stm_f_aesv2_init,
+                       stm_f_aesv2dec_apply,
+                       stm_f_aesv2_deinit);
+
 #define AESV2_CACHE_SIZE 16
 
 /* Encryption and decryption  */
@@ -51,49 +63,6 @@ struct pdf_stm_f_aesv2_s
   pdf_buffer_t *in_cache;
   pdf_buffer_t *out_cache;
 };
-
-static pdf_bool_t stm_f_aesv2_init (const pdf_hash_t  *params,
-                                    void             **state,
-                                    pdf_error_t      **error);
-
-static void stm_f_aesv2_deinit (void *state);
-
-static enum pdf_stm_filter_apply_status_e stm_f_aesv2enc_apply (void          *state,
-                                                                pdf_buffer_t  *in,
-                                                                pdf_buffer_t  *out,
-                                                                pdf_bool_t     finish,
-                                                                pdf_error_t  **error);
-
-static enum pdf_stm_filter_apply_status_e stm_f_aesv2dec_apply (void          *state,
-                                                                pdf_buffer_t  *in,
-                                                                pdf_buffer_t  *out,
-                                                                pdf_bool_t     finish,
-                                                                pdf_error_t  **error);
-/* Filter implementations */
-
-static const pdf_stm_filter_impl_t enc_impl = {
-  .init_fn   = stm_f_aesv2_init,
-  .apply_fn  = stm_f_aesv2enc_apply,
-  .deinit_fn = stm_f_aesv2_deinit,
-};
-
-static const pdf_stm_filter_impl_t dec_impl = {
-  .init_fn   = stm_f_aesv2_init,
-  .apply_fn  = stm_f_aesv2dec_apply,
-  .deinit_fn = stm_f_aesv2_deinit,
-};
-
-const pdf_stm_filter_impl_t *
-pdf_stm_f_aesv2enc_get (void)
-{
-  return &enc_impl;
-}
-
-const pdf_stm_filter_impl_t *
-pdf_stm_f_aesv2dec_get (void)
-{
-  return &dec_impl;
-}
 
 /* Common implementation */
 
