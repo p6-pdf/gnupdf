@@ -1,5 +1,10 @@
 2011-05-18  Aleksander Morgado  <aleksander@gnu.org>
 
+	utils,filter: No need to pass empty params hash when installing filter
+	* utils/pdf-filter.c
+
+2011-05-18  Aleksander Morgado  <aleksander@gnu.org>
+
 	base,stm,lzw: Make EarlyChange paramter a boolean in the hash table
 	* src/base/pdf-stm-f-lzw.c (stm_f_lzwenc_init)
 	(stm_f_lzwdec_init)
