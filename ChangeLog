@@ -1,5 +1,10 @@
 2011-05-18  Aleksander Morgado  <aleksander@gnu.org>
 
+	base,hash: Make constant the hash passed to the getters
+	* src/base/pdf-hash-helper.[h|c]
+
+2011-05-18  Aleksander Morgado  <aleksander@gnu.org>
+
 	base,stm: New helper macros to define stream filters
 	* src/base/pdf-stm-filter.h: Defined `PDF_STM_FILTER_DEFINE' and
 	`PDF_STM_FILTER_DEFINE_STATELESS' macros.
