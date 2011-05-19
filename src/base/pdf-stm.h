@@ -74,15 +74,6 @@ enum pdf_stm_mode_e
   PDF_STM_WRITE
 };
 
-/* Types of streams */
-enum pdf_stm_type_e
-{
-  /* File stream */
-  PDF_STM_FILE,
-  /* Memory stream */
-  PDF_STM_MEM
-};
-
 /* The opaque stream object */
 typedef struct pdf_stm_s pdf_stm_t;
 
@@ -161,7 +152,17 @@ pdf_bool_t pdf_stm_install_filter     (pdf_stm_t                   *stm,
                                        pdf_error_t                **error);
 
 pdf_bool_t pdf_stm_supported_filter_p (enum pdf_stm_filter_type_e   filter_type);
+
 /* END PUBLIC */
+
+/* Types of streams. Not needed in the public API. */
+enum pdf_stm_type_e
+{
+  /* File stream */
+  PDF_STM_FILE,
+  /* Memory stream */
+  PDF_STM_MEM
+};
 
 /* Stream data type, opaque object */
 struct pdf_stm_s

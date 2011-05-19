@@ -1,3 +1,8 @@
+2011-05-19  Aleksander Morgado  <aleksander@gnu.org>
+
+	base,stm: Not needed the `pdf_stm_type_e' enum in the public API
+	* src/base/pdf-stm.h
+
 2011-05-18  Aleksander Morgado  <aleksander@gnu.org>
 
 	base,hash: Make constant the hash passed to the getters
