@@ -38,20 +38,17 @@
  */
 START_TEST (pdf_stm_file_new_001)
 {
+  const pdf_char_t *filename = "tmp.test";
   pdf_error_t *error = NULL;
   pdf_status_t ret;
   pdf_stm_t *stm;
   pdf_fsys_file_t file;
   pdf_text_t *path;
-  pdf_char_t * remain;
-  pdf_size_t remain_length;
 
   /* Create the file path */
-  path = pdf_text_new_from_pdf_string ("tmp.test",
-                                       8,
-                                       &remain,
-                                       &remain_length,
-                                       &error);
+  path = pdf_text_new_from_unicode (filename, strlen (filename),
+                                    PDF_TEXT_UTF8,
+                                    &error);
   fail_unless (path != NULL);
   fail_if (error != NULL);
 

@@ -1,5 +1,10 @@
 2011-05-19  Aleksander Morgado  <aleksander@gnu.org>
 
+	torture,stm: small fix, use pdf_text_new_from_unicode()
+	* torture/unit/base/stm/pdf-stm-file-new.c (pdf_stm_file_new_001)
+
+2011-05-19  Aleksander Morgado  <aleksander@gnu.org>
+
 	base,stm: Ensure AESv2 and V2 filters store a copy of the key
 	* src/base/pdf-stm-f-v2.c
 	* src/base/pdf-stm-f-aesv2.c
