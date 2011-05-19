@@ -66,9 +66,8 @@ struct pdf_stm_f_flate_s
 /* Common implementation */
 
 static pdf_bool_t
-stm_f_flate_init (const pdf_hash_t  *params,
-                  void             **state,
-                  pdf_error_t      **error)
+stm_f_flate_init (void        **state,
+                  pdf_error_t **error)
 {
   struct pdf_stm_f_flate_s *filter_state;
 
@@ -149,7 +148,7 @@ stm_f_flateenc_init (const pdf_hash_t  *params,
   struct pdf_stm_f_flate_s *filter_state;
 
   /* Initialize common stuff */
-  if (!stm_f_flate_init (params, state, error))
+  if (!stm_f_flate_init (state, error))
     return PDF_FALSE;
 
   filter_state = *state;
@@ -303,7 +302,7 @@ stm_f_flatedec_init (const pdf_hash_t  *params,
   struct pdf_stm_f_flate_s *filter_state;
 
   /* Initialize common stuff */
-  if (!stm_f_flate_init (params, state, error))
+  if (!stm_f_flate_init (state, error))
     return PDF_FALSE;
 
   filter_state = *state;

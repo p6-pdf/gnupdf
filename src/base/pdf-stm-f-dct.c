@@ -40,8 +40,9 @@ PDF_STM_FILTER_DEFINE (pdf_stm_f_dctdec_get,
                        stm_f_dctdec_apply,
                        stm_f_dctdec_deinit);
 
-#define PPM_MAXVAL 255
-#define PDF_DJPEG_CACHE_SIZE (1024)
+#define PPM_MAXVAL                255
+#define PDF_DJPEG_CACHE_SIZE      (1024)
+#define DCT_PARAM_COLOR_TRANSFORM "ColorTransform"
 
 enum pdf_stm_f_dctdec_state_t
   {
@@ -63,8 +64,9 @@ struct pdf_stm_f_dctdec_s
 
   enum pdf_stm_f_dctdec_state_t state;
   enum pdf_stm_f_dctdec_state_t backup_state;
-  /* filter dictionary */
-  pdf_i32_t param_color_transform;
+
+  /* if TRUE, color transformation is done */
+  pdf_bool_t param_color_transform;
 
   /* image cache for input data */
   pdf_buffer_t *djpeg_in;
@@ -76,8 +78,6 @@ struct pdf_stm_f_dctdec_s
   pdf_size_t row_copy_index;
   pdf_u32_t num_scanlines;
 };
-
-static const pdf_char_t *DCTDecode_param_name = "ColorTransform";
 
 static pdf_bool_t
 stm_f_dctdec_init (const pdf_hash_t  *params,
@@ -131,14 +131,13 @@ stm_f_dctdec_init (const pdf_hash_t  *params,
   filter_state->cinfo->err = jpeg_std_error (filter_state->jerr);
   jpeg_create_decompress (filter_state->cinfo);
 
-  filter_state->param_color_transform = -1;
+  /* By default, perform color transformation */
+  filter_state->param_color_transform = PDF_TRUE;
   if (params &&
-      pdf_hash_key_p (params, DCTDecode_param_name))
+      pdf_hash_key_p (params, DCT_PARAM_COLOR_TRANSFORM))
     {
-      pdf_i32_t *ptr;
-
-      ptr = pdf_hash_get_value (params, DCTDecode_param_name);
-      filter_state->param_color_transform = *ptr;
+      filter_state->param_color_transform = pdf_hash_get_bool (params,
+                                                               DCT_PARAM_COLOR_TRANSFORM);
     }
 
   filter_state->state = DCTDEC_STATE_INIT;
@@ -179,42 +178,15 @@ pdf_stm_f_dctdec_set_djpeg_param (j_decompress_ptr           cinfo,
       return;
     }
 
-  switch (cinfo->num_components)
+  if (cinfo->num_components == 3)
     {
-    case 3:
-      {
-        if ((filter_state->param_color_transform == -1) ||
-            (filter_state->param_color_transform == 1))
-          {
-            /* dictionary not present or value is 1, transform should
-               be done.*/
-            cinfo->jpeg_color_space = JCS_YCbCr; /* YCbCr */
-          }
-        else
-          {
-            /* no transform, so jpeg color space should be rgb.*/
-            cinfo->jpeg_color_space = JCS_RGB;
-          }
-        break;
-      }
-    case 4:
-      {
-        if (filter_state->param_color_transform == 1)
-          {
-            /* do transform only if the dictionary value is one.*/
-            cinfo->jpeg_color_space = JCS_YCCK;
-          }
-        else
-          {
-            /* no transform.*/
-            cinfo->jpeg_color_space = JCS_CMYK;
-          }
-        break;
-      }
-    default:
-      {
-        break;
-      }
+      cinfo->jpeg_color_space = (filter_state->param_color_transform ?
+                                 JCS_YCbCr : JCS_RGB);
+    }
+  else if (cinfo->num_components == 4)
+    {
+      cinfo->jpeg_color_space = (filter_state->param_color_transform ?
+                                 JCS_YCCK : JCS_CMYK);
     }
 }
 

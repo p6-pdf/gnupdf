@@ -46,6 +46,8 @@ PDF_STM_FILTER_DEFINE (pdf_stm_f_lzwdec_get,
                        stm_f_lzwdec_apply,
                        stm_f_lzwdec_deinit);
 
+#define LZW_PARAM_EARLY_CHANGE "EarlyChange"
+
 /* -- LZW helper definitions -- */
 
 typedef unsigned lzw_code_t;
@@ -368,9 +370,10 @@ stm_f_lzwenc_init (const pdf_hash_t  *params,
 
   /* EarlyChange is optional! */
   if (params &&
-      pdf_hash_key_p (params, "EarlyChange"))
+      pdf_hash_key_p (params, LZW_PARAM_EARLY_CHANGE))
     {
-      filter_state->early_change = pdf_hash_get_bool (params, "EarlyChange");
+      filter_state->early_change = pdf_hash_get_bool (params,
+                                                      LZW_PARAM_EARLY_CHANGE);
     }
 
   lzw_buffer_init (&filter_state->buffer, LZW_MIN_BITSIZE);
@@ -515,9 +518,9 @@ stm_f_lzwdec_init (const pdf_hash_t  *params,
 
   /* EarlyChange is optional! */
   if (params &&
-      pdf_hash_key_p (params, "EarlyChange"))
+      pdf_hash_key_p (params, LZW_PARAM_EARLY_CHANGE))
     {
-      filter_state->early_change = pdf_hash_get_bool (params, "EarlyChange");
+      filter_state->early_change = pdf_hash_get_bool (params, LZW_PARAM_EARLY_CHANGE);
     }
 
   lzw_buffer_init (&filter_state->buffer, LZW_MIN_BITSIZE);

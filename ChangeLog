@@ -1,5 +1,16 @@
 2011-05-19  Aleksander Morgado  <aleksander@gnu.org>
 
+	base,stm: Improve filter parameter handling
+	* src/base/pdf-stm-f-flate.c: No need to pass params to the specific
+	filter initializers.
+	* src/base/pdf-stm-f-dct.c: Let ColorTransform be a boolean. By default,
+	if not given within the params hash table, assume TRUE. Also make the
+	param key name a define.
+	* src/base/pdf-stm-f-jbig2.c: Make the param keys' names defines.
+	* src/base/pdf-stm-f-lzw.c: Idem.
+
+2011-05-19  Aleksander Morgado  <aleksander@gnu.org>
+
 	torture,stm: small fix, use pdf_text_new_from_unicode()
 	* torture/unit/base/stm/pdf-stm-file-new.c (pdf_stm_file_new_001)
 

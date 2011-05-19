@@ -43,6 +43,9 @@ PDF_STM_FILTER_DEFINE (pdf_stm_f_jbig2dec_get,
                        stm_f_jbig2dec_apply,
                        stm_f_jbig2dec_deinit);
 
+#define JBIG2_PARAM_GLOBAL_STREAMS_BUFFER "GlobalStreamsBuffer"
+#define JBIG2_PARAM_GLOBAL_STREAMS_SIZE   "GlobalStreamsSize"
+
 /* Internal state */
 struct pdf_stm_f_jbig2dec_s
 {
@@ -92,12 +95,14 @@ stm_f_jbig2dec_init (const pdf_hash_t  *params,
 
   /* Get the global stream contents, if any */
   if (params &&
-      pdf_hash_key_p (params, "GlobalStreamsBuffer") == PDF_TRUE &&
-      pdf_hash_key_p (params, "GlobalStreamsSize") == PDF_TRUE)
+      pdf_hash_key_p (params, JBIG2_PARAM_GLOBAL_STREAMS_BUFFER) == PDF_TRUE &&
+      pdf_hash_key_p (params, JBIG2_PARAM_GLOBAL_STREAMS_SIZE) == PDF_TRUE)
     {
       /* Get the parameters from the hash table */
-      global_stream_buffer = (pdf_char_t *) pdf_hash_get_string (params, "GlobalStreamsBuffer");
-      global_stream_size = pdf_hash_get_size (params, "GlobalStreamsSize");
+      global_stream_buffer = (pdf_char_t *) pdf_hash_get_string (params,
+                                                                 JBIG2_PARAM_GLOBAL_STREAMS_BUFFER);
+      global_stream_size = pdf_hash_get_size (params,
+                                              JBIG2_PARAM_GLOBAL_STREAMS_SIZE);
 
       /* Initialize the global context */
       filter_state->jbig2_context = jbig2_ctx_new (filter_state->jbig2_allocator,
@@ -106,6 +111,9 @@ stm_f_jbig2dec_init (const pdf_hash_t  *params,
                                                    filter_state->jbig2_error_cb_fn,
                                                    (void *) filter_state);
 
+      /* Note. The data passed in this global stream buffer is consumed right
+       * away, there is no need to ensure that the global_stream_buffer is kept
+       * alive as long as the filter lives */
       jbig2_data_in (filter_state->jbig2_context,
                      (pdf_uchar_t *) global_stream_buffer,
                      global_stream_size);
