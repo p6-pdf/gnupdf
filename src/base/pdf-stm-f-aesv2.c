@@ -48,7 +48,9 @@ PDF_STM_FILTER_DEFINE (pdf_stm_f_aesv2dec_get,
                        stm_f_aesv2dec_apply,
                        stm_f_aesv2_deinit);
 
-#define AESV2_CACHE_SIZE 16
+#define AESV2_CACHE_SIZE     16
+#define AESv2_PARAM_KEY      "Key"
+#define AESv2_PARAM_KEY_SIZE "KeySize"
 
 /* Encryption and decryption  */
 typedef enum {
@@ -60,8 +62,12 @@ typedef enum {
 struct pdf_stm_f_aesv2_s
 {
   pdf_crypt_cipher_t cipher;
+
   pdf_buffer_t *in_cache;
   pdf_buffer_t *out_cache;
+
+  pdf_char_t *key;
+  pdf_size_t keysize;
 };
 
 /* Common implementation */
@@ -77,16 +83,18 @@ stm_f_aesv2_init (const pdf_hash_t  *params,
 
   /* We demand all parameters are present */
   if (!params ||
-      !pdf_hash_key_p (params, "Key") ||
-      !pdf_hash_key_p (params, "KeySize"))
+      !pdf_hash_key_p (params, AESv2_PARAM_KEY) ||
+      !pdf_hash_key_p (params, AESv2_PARAM_KEY))
     {
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_STM,
                      PDF_EBADDATA,
                      "cannot initialize AESv2 encoder/decoder: "
                      "parameters missing ('Key': %s, 'KeySize': %s)",
-                     (params && pdf_hash_key_p (params, "Key")) ? "available" : "missing",
-                     (params && pdf_hash_key_p (params, "KeySize")) ? "available" : "missing");
+                     ((params && pdf_hash_key_p (params, AESv2_PARAM_KEY)) ?
+                      "available" : "missing"),
+                     ((params && pdf_hash_key_p (params, AESv2_PARAM_KEY_SIZE)) ?
+                      "available" : "missing"));
       return PDF_FALSE;
     }
 
@@ -117,15 +125,31 @@ stm_f_aesv2_init (const pdf_hash_t  *params,
     }
 
   /* Note that Key may NOT be NUL-terminated */
-  key = pdf_hash_get_value (params, "Key");
-  keysize = pdf_hash_get_size (params, "KeySize");
+  key = pdf_hash_get_value (params, AESv2_PARAM_KEY);
+  keysize = pdf_hash_get_size (params, AESv2_PARAM_KEY_SIZE);
+
+  /* Keep a copy of the key in the filter */
+  filter_state->key = (pdf_char_t *)pdf_alloc (keysize);
+  if (!filter_state->key)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_STM,
+                     PDF_ENOMEM,
+                     "cannot copy AESv2 key: "
+                     "couldn't allocate %lu bytes",
+                     (unsigned long)keysize);
+      stm_f_aesv2_deinit (filter_state);
+      return PDF_FALSE;
+    }
+  filter_state->keysize = keysize;
+  memcpy (filter_state->key, key, keysize);
 
   filter_state->cipher = NULL;
   if (pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2,
                             &(filter_state->cipher)) != PDF_OK ||
       pdf_crypt_cipher_setkey (filter_state->cipher,
-                               (pdf_char_t *)key,
-                               keysize) != PDF_OK)
+                               filter_state->key,
+                               filter_state->keysize) != PDF_OK)
     {
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_STM,
@@ -151,6 +175,8 @@ stm_f_aesv2_deinit (void *state)
     pdf_buffer_destroy (filter_state->in_cache);
   if (filter_state->out_cache)
     pdf_buffer_destroy (filter_state->out_cache);
+  if (filter_state->key)
+    pdf_dealloc (filter_state->key);
   pdf_dealloc (state);
 }
 

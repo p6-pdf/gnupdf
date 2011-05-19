@@ -45,6 +45,9 @@ PDF_STM_FILTER_DEFINE (pdf_stm_f_v2dec_get,
                        stm_f_v2dec_apply,
                        stm_f_v2_deinit);
 
+#define V2_PARAM_KEY      "Key"
+#define V2_PARAM_KEY_SIZE "KeySize"
+
 /* Encryption and decryption  */
 typedef enum {
   PDF_STM_F_V2_MODE_ENCODE,
@@ -55,6 +58,9 @@ typedef enum {
 struct pdf_stm_f_v2_s
 {
   pdf_crypt_cipher_t cipher;
+
+  pdf_char_t *key;
+  pdf_size_t keysize;
 };
 
 /* Common implementation */
@@ -70,16 +76,18 @@ stm_f_v2_init (const pdf_hash_t  *params,
 
   /* We demand all parameters are present */
   if (!params ||
-      !pdf_hash_key_p (params, "Key") ||
-      !pdf_hash_key_p (params, "KeySize"))
+      !pdf_hash_key_p (params, V2_PARAM_KEY) ||
+      !pdf_hash_key_p (params, V2_PARAM_KEY_SIZE))
     {
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_STM,
                      PDF_EBADDATA,
                      "cannot initialize V2 encoder/decoder: "
                      "parameters missing ('Key': %s, 'KeySize': %s)",
-                     (params && pdf_hash_key_p (params, "Key")) ? "available" : "missing",
-                     (params && pdf_hash_key_p (params, "KeySize")) ? "available" : "missing");
+                     ((params && pdf_hash_key_p (params, V2_PARAM_KEY)) ?
+                      "available" : "missing"),
+                     ((params && pdf_hash_key_p (params, V2_PARAM_KEY_SIZE)) ?
+                      "available" : "missing"));
       return PDF_FALSE;
     }
 
@@ -98,12 +106,30 @@ stm_f_v2_init (const pdf_hash_t  *params,
   filter_state->cipher = NULL;
 
   /* Note that Key may NOT be NUL-terminated */
-  key = pdf_hash_get_value (params, "Key");
-  keysize = pdf_hash_get_size (params, "KeySize");
+  key = pdf_hash_get_value (params, V2_PARAM_KEY);
+  keysize = pdf_hash_get_size (params, V2_PARAM_KEY_SIZE);
+
+  /* Keep a copy of the key in the filter */
+  filter_state->key = (pdf_char_t *)pdf_alloc (keysize);
+  if (!filter_state->key)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_STM,
+                     PDF_ENOMEM,
+                     "cannot copy V2 key: "
+                     "couldn't allocate %lu bytes",
+                     (unsigned long)keysize);
+      stm_f_v2_deinit (filter_state);
+      return PDF_FALSE;
+    }
+  filter_state->keysize = keysize;
+  memcpy (filter_state->key, key, keysize);
 
   if (pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2,
                             &(filter_state->cipher)) != PDF_OK ||
-      pdf_crypt_cipher_setkey (filter_state->cipher, (pdf_char_t *)key, keysize) != PDF_OK)
+      pdf_crypt_cipher_setkey (filter_state->cipher,
+                               filter_state->key,
+                               filter_state->keysize) != PDF_OK)
     {
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_STM,
@@ -125,6 +151,8 @@ stm_f_v2_deinit (void *state)
 
   if (filter_state->cipher)
     pdf_crypt_cipher_destroy (filter_state->cipher);
+  if (filter_state->key)
+    pdf_dealloc (filter_state->key);
   pdf_dealloc (state);
 }
 
