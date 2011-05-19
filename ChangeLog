@@ -1,5 +1,10 @@
 2011-05-19  Aleksander Morgado  <aleksander@gnu.org>
 
+	doc: Updated with new Stream module API.
+	* doc/gnupdf.texi (Filtered Streams)
+
+2011-05-19  Aleksander Morgado  <aleksander@gnu.org>
+
 	base,stm: Improve filter parameter handling
 	* src/base/pdf-stm-f-flate.c: No need to pass params to the specific
 	filter initializers.

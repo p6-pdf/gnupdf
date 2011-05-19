@@ -4100,7 +4100,7 @@ hash = pdf_hash_get_hash (table, "a-key");
 @end deftypefun
 
 
-@deftypefun pdf_bool_t pdf_hash_add_stm (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_stm_t @var{value}, pdf_error_t **@var{error})
+@deftypefun pdf_bool_t pdf_hash_add_stm (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_stm_t *@var{value}, pdf_error_t **@var{error})
 
 Adds the @var{value} stream with the associated key @var{key} to @var{table}. If @var{key} already exists nothing is done. The stream will be owned by the hash table, and disposed when the hash table is destroyed.
 
@@ -4121,7 +4121,7 @@ A @code{pdf_error_t} to report errors or @code{NULL}.
 @item Usage example
 @example
 pdf_hash_t *hash;
-pdf_stm_t elem;
+pdf_stm_t *elem;
 pdf_char_t *buf;
 pdf_error_t *error = NULL;
 
@@ -4131,16 +4131,20 @@ if (hash != NULL)
    @{
       /* Create the element for the hash */
       buf = pdf_alloc (10);
-      pdf_stm_mem_new (buf,
-                       10,
-                       0, /* Use default cache size */
-                       PDF_STM_READ,
-                       &stm);
+      stm = pdf_stm_mem_new (buf,
+                             10,
+                             0,
+                             PDF_STM_READ,
+                             &error);
 
-      if (pdf_hash_add_stm (hash,
-                            "a-key",
-                            stm,
-                            &error))
+      if (!stm)
+         @{
+            pdf_error_destroy (error);
+         @}
+      else if (pdf_hash_add_stm (hash,
+                                 "a-key",
+                                 stm,
+                                 &error))
          @{
             pdf_error_destroy (error);
          @}
@@ -4154,7 +4158,7 @@ if (hash != NULL)
 @end table
 @end deftypefun
 
-@deftypefun {const pdf_stm_t} pdf_hash_get_stm (const pdf_hash_t *@var{table}, const pdf_char_t *@var{key})
+@deftypefun {const pdf_stm_t *} pdf_hash_get_stm (const pdf_hash_t *@var{table}, const pdf_char_t *@var{key})
 
 Get a stm variable from a hash table.
 
@@ -4170,7 +4174,7 @@ A valid @code{NUL}-terminated string key.
 The @code{pdf_stm_t} associated with @var{key}.
 @item Usage example
 @example
-pdf_stm_t stm;
+pdf_stm_t *stm;
 
 /* ... insert a stm variable into the hash ... */
 
@@ -4179,8 +4183,6 @@ stm = pdf_hash_get_stm (table, "a-key");
 @end example
 @end table
 @end deftypefun
-
-
 
 @deftypefun pdf_bool_t pdf_hash_add_size (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_size_t @var{value}, pdf_error_t **@var{error})
 
@@ -4292,13 +4294,17 @@ buffering.
 @subsection Stream Types
 
 @deftp {Data Type} pdf_stm_t
-A stm variable.
+A stream object, used to read or write in file or memory buffers.
+
+This data type must be initialized before being used, and destroyed afterwards.
 @end deftp
 
 @deftp {Data Type} {enum pdf_stm_mode_e}
 The operation mode of a stm object.
 
 @table @code
+@item PDF_STM_UNKNOWN
+Unknown operation mode.
 @item PDF_STM_READ
 The stm will be used to read data from the open file or memory buffer.
 @item PDF_STM_WRITE
@@ -4311,17 +4317,43 @@ The several types of supported stream filters.
 
 @table @code
 @item PDF_STM_FILTER_AHEX_ENC
-ASCII Hex encoder.
+ASCII-Hex encoder.
 @item PDF_STM_FILTER_AHEX_DEC
-ASCII Hex decoder.
-@item PDF_STM_FILTER_RL_ENC
-Run-Length encoder.
-@item PDF_STM_FILTER_RL_DEC
-Run-Length decoder.
+ASCII-Hex decoder.
+@item PDF_STM_FILTER_A85_ENC
+ASCII-85 encoder.
+@item PDF_STM_FILTER_A85_DEC
+ASCII-85 decoder.
+@item PDF_STM_FILTER_LZW_ENC
+LZW encoder.
+@item PDF_STM_FILTER_LZW_DEC
+LZW decoder.
 @item PDF_STM_FILTER_FLATE_ENC
 Flate (zlib) encoder.
 @item PDF_STM_FILTER_FLATE_DEC
 Flate (zlib) decoder.
+@item PDF_STM_FILTER_RL_ENC
+Run-Length encoder.
+@item PDF_STM_FILTER_RL_DEC
+Run-Length decoder.
+@item PDF_STM_FILTER_CCITTFAX_ENC
+CCITT Fax encoder.
+@item PDF_STM_FILTER_CCITTFAX_DEC
+CCITT Fax decoder.
+@item PDF_STM_FILTER_JBIG2_ENC
+JBIG2 encoder.
+@item PDF_STM_FILTER_DCT_DEC
+DCT decoder.
+@item PDF_STM_FILTER_DCT_ENC
+DCT encoder.
+@item PDF_STM_FILTER_JPX_DEC
+JPX decoder.
+@item PDF_STM_FILTER_JPX_ENC
+JPX encoder.
+@item PDF_STM_FILTER_PRED_DEC
+Predictor decoder.
+@item PDF_STM_FILTER_PRED_ENC
+Predictor encoder.
 @item PDF_STM_FILTER_JBIG2_DEC
 JBIG2 decoder.
 @item PDF_STM_FILTER_AESV2_ENC
@@ -4340,15 +4372,15 @@ MD5 encoder.
 @node Creating and Destroying Streams
 @subsection Creating and Destroying Streams
 
-@deftypefun pdf_status_t pdf_stm_file_new (pdf_fsys_file_t @var{file}, pdf_off_t @var{offset}, pdf_size_t @var{cache_size}, enum pdf_stm_mode_e @var{mode}, pdf_stm_t *@var{stm})
+@deftypefun {pdf_stm_t *}pdf_stm_file_new (pdf_fsys_file_t @var{file}, pdf_off_t @var{offset}, pdf_size_t @var{cache_size}, enum pdf_stm_mode_e @var{mode}, pdf_error_t *@var{error})
 
-Create a new stream operating in a given open file.
+Create a new stream operating in a given file object.
 
 @table @strong
 @item Parameters
 @table @var
 @item file
-An open file.
+An open file. This file object must exist as long as the stream object exists.
 @item offset
 Position into the file.
 @item cache_size
@@ -4356,25 +4388,102 @@ The desired size for the stream cache, measured in octects. If it is
 @code{0} then the default size (4kb) is used.
 @item mode
 The operation mode for the stream.
-@item stm
-A pointer to the stm to be created.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to create the stream object.
+@end table
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The stream object was successfully created.
-@item PDF_ERROR
-There was an error and the stream was not created.
-@end table
+A newly created @code{pdf_stm_t}, or @code{NULL} if any error happened.
 @item Usage example
 @example
-XXX
+
+pdf_bool_t
+foo_get_write_stm_from_filepath (pdf_text_t       *path,
+                                 pdf_stm_t       **stm,
+                                 pdf_fsys_file_t **file,
+                                 pdf_error_t     **error)
+@{
+  /* Open new file */
+  *file = pdf_fsys_file_open (NULL,
+                              path,
+                              PDF_FSYS_OPEN_MODE_WRITE,
+                              error);
+  if (*file == NULL)
+    return PDF_FALSE;
+
+  /* Create the stream */
+  *stm = pdf_stm_file_new (file,
+                           0,
+                           0, /* Use the default cache size */
+                           PDF_STM_WRITE,
+                           error);
+
+  if (*stm == NULL)
+    @{
+      pdf_fsys_file_close (*file);
+      *file = NULL;
+    @}
+
+  /* Note that we return also the file object along with the
+   * stream object, so that we can control that the file is not
+   * closed until the stream is destroyed. */
+  return (*stm != NULL ? PDF_TRUE : PDF_FALSE);
+@}
+
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_stm_mem_new (pdf_char_t *@var{buffer}, pdf_size_t @var{size}, pdf_size_t @var{cache_size}, enum pdf_stm_mode_e @var{mode}, pdf_stm_t *@var{stm})
+@deftypefun {pdf_stm_t *}pdf_stm_cfile_new (FILE *@var{file}, pdf_off_t @var{offset}, pdf_size_t @var{cache_size}, enum pdf_stm_mode_e @var{mode}, pdf_error_t *@var{error})
+
+Create a new stream operating in a given C file handler.
+
+@table @strong
+@item Parameters
+@table @var
+@item file
+A C file handler.
+It must be kept open as long as the stream object exists.
+@item offset
+Position into the file.
+@item cache_size
+The desired size for the stream cache, measured in octects. If it is
+@code{0} then the default size (4kb) is used.
+@item mode
+The operation mode for the stream.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to create the stream object.
+@end table
+@end table
+@item Returns
+A newly created @code{pdf_stm_t}, or @code{NULL} if any error happened.
+@item Usage example
+@example
+
+pdf_bool_t
+foo_get_write_stm_from_stdout (pdf_stm_t   **stm,
+                               pdf_error_t **error)
+@{
+  /* Create the stream */
+  *stm = pdf_stm_cfile_new (stdout,
+                            0,
+                            0, /* Use the default cache size */
+                            PDF_STM_WRITE,
+                            error);
+  return (*stm != NULL ? PDF_TRUE : PDF_FALSE);
+@}
+
+@end example
+@end table
+@end deftypefun
+
+@deftypefun {pdf_stm_t *}pdf_stm_mem_new (pdf_char_t *@var{buffer}, pdf_size_t @var{size}, pdf_size_t @var{cache_size}, enum pdf_stm_mode_e @var{mode}, pdf_error_t *@var{error})
 
 Create a new stream operating in a memory buffer.
 
@@ -4383,6 +4492,7 @@ Create a new stream operating in a memory buffer.
 @table @var
 @item buffer
 Memory buffer where the information will be written-to or readed-from.
+This buffer must exist as long as the stream object exists.
 @item size
 The desired size for the memory buffer, measured in octects.
 @item cache_size
@@ -4390,25 +4500,40 @@ The desired size for the stream cache, measured in octects. If it is
 @code{0} then the default size (4kb) is used.
 @item mode
 The operation mode for the stream.
-@item stm
-A pointer to the stm to be created.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to create the stream object.
+@end table
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The stream was successfully created.
-@item PDF_ERROR
-There was an error and the stream was not created.
-@end table
+A newly created @code{pdf_stm_t}, or @code{NULL} if any error happened.
 @item Usage example
 @example
-XXX
+
+pdf_bool_t
+foo_get_read_stm_from_buffer (pdf_text_t   *path,
+                              pdf_char_t   *buffer,
+                              pdf_size_t    buffer_size,
+                              pdf_stm_t   **stm,
+                              pdf_error_t **error)
+@{
+  /* Create the stream */
+  *stm = pdf_stm_mem_new (buffer,
+                          buffer_size,
+                          0, /* Use the default cache size */
+                          PDF_STM_WRITE,
+                          error);
+
+  return (*stm != NULL ? PDF_TRUE : PDF_FALSE);
+@}
+
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_stm_destroy (pdf_stm_t @var{stm})
+@deftypefun void pdf_stm_destroy (pdf_stm_t *@var{stm})
 
 Destroy a stream freeing all the used resources.
 
@@ -4418,13 +4543,20 @@ Destroy a stream freeing all the used resources.
 @item stm
 A stream.
 @end table
-@item Returns
-A PDF status value. This is @code{PDF_OK} unless the closed stream is
-a writing stream. In that case the return code of @code{pdf_stm_flush}
-is returned.
 @item Usage example
 @example
-XXX
+
+pdf_stm_t *stm;
+
+/* Create the stream */
+stm = pdf_stm_cfile_new (stdout,
+                         0,
+                         0, /* Use the default cache size */
+                         PDF_STM_WRITE,
+                         error);
+if (stm)
+  pdf_stm_destroy (stm);
+
 @end example
 @end table
 @end deftypefun
@@ -4432,7 +4564,7 @@ XXX
 @node Getting and Setting Stream Properties
 @subsection Getting and Setting Stream Properties
 
-@deftypefun pdf_stm_get_mode (pdf_stm_t @var{stm})
+@deftypefun {enum pdf_stm_mode_e} pdf_stm_get_mode (pdf_stm_t *@var{stm})
 
 Return the mode of a given stream @var{stm}.
 
@@ -4446,15 +4578,20 @@ A stream.
 The mode of the stream.
 @item Usage example
 @example
-pdf_stm_t stm;
 
-pdf_stm_mem_new (buffer,
-                 2048,
-                 0,     /* Use the default cache size */
-                 PDF_STM_WRITE,
-                 &stm);
+pdf_stm_t *stm;
 
-pdf_stm_get_mode (stm); /* Returns PDF_STM_WRITE */
+stm = pdf_stm_mem_new (buffer,
+                       2048,
+                       0,     /* Use the default cache size */
+                       PDF_STM_WRITE,
+                       NULL);
+if (stm &&
+    pdf_stm_get_mode (stm) != PDF_STM_WRITE)
+  @{
+    /* Will never happen */
+  @}
+
 @end example
 @end table
 @end deftypefun
@@ -4465,9 +4602,35 @@ pdf_stm_get_mode (stm); /* Returns PDF_STM_WRITE */
 The following functions can be used to build the filter chain of a
 given stream.
 
-@deftypefun pdf_status_t pdf_stm_install_filter (pdf_stm_t @var{stm}, enum pdf_stm_filter_type_e @var{filter_type}, pdf_hash_t @var{filter_params})
+@deftypefun pdf_bool_t pdf_stm_supported_filter_p (enum pdf_stm_filter_type_e @var{filter_type})
 
-Install a fiter in the filter chain of a stream.
+Query whether a given filter type is supported by the current build.
+
+@table @strong
+@item Parameters
+@table @var
+@item filter_type
+Type of filter.
+@end table
+@item Returns
+@code{PDF_TRUE} if the filter type is supported, @code{PDF_FALSE} otherwise.
+@item Usage example
+@example
+
+if (!pdf_stm_supported_filter_p (PDF_STM_FILTER_JBIG2_ENC) ||
+    !pdf_stm_supported_filter_p (PDF_STM_FILTER_JBIG2_DEC))
+  @{
+    printf ("Sorry but you don't have full JBIG2 support\n");
+  @}
+
+@end example
+@end table
+@end deftypefun
+
+
+@deftypefun pdf_bool_t pdf_stm_install_filter (pdf_stm_t *@var{stm}, enum pdf_stm_filter_type_e @var{filter_type}, const pdf_hash_t *@var{filter_params}, pdf_error_t **@var{error})
+
+Install a new filter in the filter chain of a stream.
 
 @table @strong
 @item Parameters
@@ -4478,19 +4641,92 @@ A stream.
 The type of the filter to be installed.
 @item filter_params
 Hash table containing a set of key-value pairs with the parameters for
-the filter.
+the filter, or @code{NULL} if none needed.
+@table @code
+@item "Key" (AESv2 and V2)
+A memory buffer with the key to be used during encryption and decryption.
+Note that it may not be NUL-terminated.
+This buffer should exist as long as the stream holding the filter exists.
+Mandatory in the AESv2 and V2 encoder and decoder filters.
+@item "KeySize" (AESv2 and V2)
+Size of the key provided in "Key".
+Mandatory in the AESv2 and V2 encoder and decoder filters.
+@item "EarlyChange" (LZW)
+Boolean value, indicating when to increase the code length.
+If @code{PDF_FALSE}, code length increases are postponed as long as possible.
+If @code{PDF_TRUE} (default one if parameter not given), code length increases occur one code early.
+Optional in the LZW encoder and decoder filters.
+@item "ColorTransform" (DCT)
+Boolean value, indicating whether color transformation (RGB->YCbCr, CMYK->YCCK) should be done in the DCT filter
+when no Adobe marker is found. @code{PDF_TRUE} by default if parameter not given.
+Optional in the DCT decoder filter.
+@item "GlobalStreamsBuffer" (JBIG2)
+A memory buffer holding the global streams context for the JBIG2 decoder.
+The contents of this buffer are copied internally by the JBIG2 decoder module, so there is no need to keep this buffer existing as long as the stream holding the filter exists.
+Optional in the JBIG2 decoder filter.
+@item "GlobalStreamsSize" (JBIG2)
+Size of the buffer provided in "GlobalStreamsBuffer".
+Optional in the JBIG2 decoder filter.
+@end table
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to create the stream object.
+@end table
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The filter was successfully installed in the stream.
-@item PDF_ERROR
-There was an error and the filter was not installed in the stream.
-@end table
+@code{PDF_TRUE} if the filter was correctly installed, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
-XXX
+
+pdf_stm_t *
+foo_get_read_stm_from_stdin (const pdf_char_t  *key,
+                             pdf_size_t         keysize,
+                             pdf_error_t      **error)
+@{
+  pdf_stm_t *stm;
+  pdf_hash_t *filter_params;
+
+  /* Create reading stream from standard input */
+  stm = pdf_stm_cfile_new (stdin, 0, PDF_STM_READ, error);
+  if (!stm)
+    return NULL;
+
+  /* Create an empty hash table for filter parameters */
+  filter_params = pdf_hash_new (error);
+  if (!filter_params)
+    @{
+      pdf_stm_destroy (stm);
+      return NULL;
+    @}
+
+  /* Add the filter parameters to the hash table */
+  if (!pdf_hash_add (filter_params, "Key", key, NULL, error) ||
+      !pdf_hash_add_size (filter_params, "KeySize", keysize, error))
+    @{
+      pdf_hash_destroy (stm);
+      pdf_stm_destroy (stm);
+      return NULL;
+    @}
+
+  /* Install a new AESv2 Decoder filter */
+  if (!pdf_stm_install_filter (stm,
+                               PDF_STM_FILTER_AESV2_DEC,
+                               filter_params,
+                               &error))
+    @{
+      pdf_hash_destroy (stm);
+      pdf_stm_destroy (stm);
+      return NULL;
+    @}
+
+  /* Once installed, the hash table can be safely destroyed */
+  pdf_hash_destroy (stm);
+
+  return stm;
+@}
+
 @end example
 @end table
 @end deftypefun
@@ -4498,7 +4734,7 @@ XXX
 @node Reading and Writing Data
 @subsection Reading and Writing Data
 
-@deftypefun pdf_status_t pdf_stm_read (pdf_stm_t @var{stm}, pdf_char_t *@var{buf}, pdf_size_t @var{bytes}, pdf_size_t *@var{read_bytes})
+@deftypefun pdf_bool_t pdf_stm_read (pdf_stm_t *@var{stm}, pdf_uchar_t *@var{buf}, pdf_size_t @var{bytes}, pdf_size_t *@var{read_bytes}, pdf_error_t **@var{error})
 
 Read a chunk of data from a given stream.
 
@@ -4510,31 +4746,73 @@ A stream.
 @item buf
 The buffer to hold the read data.
 @item bytes
-The number of octects to read.
+The number of octects to be read.
 @item read_bytes
-The number of octects actually read. If this value is less than
-@var{bytes} then an end of file condition occurred.
+The number of octects actually read after the operation. May be less than @var{bytes} if an error is detected or on EOF condition.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_EINVOP
+Cannot read from a writing stream.
+@item PDF_EINVRANGE
+Invalid offset in the backend.
+@item PDF_ERROR
+Generic error while reading from the backend.
+@end table
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-All the requested bytes were successfully read into @var{buf}.
-@item PDF_EEOF
-An end of file condition occurred.
-@item PDF_EINVOP
-Reading was requested in a writing stream.
-@item PDF_ERROR
-An error prevented to read the bytes.
-@end table
+@code{PDF_TRUE} if all @var{bytes} were read. @code{PDF_FALSE} is returned both on EOF and upon detecting an error, but the @var{error} variable will not be set on EOF.
 @item Usage example
 @example
-XXX
+
+pdf_bool_t
+foo_read_from_buffer (const pdf_uchar_t  *input_buffer,
+                      pdf_size_t          input_buffer_size,
+                      pdf_uchar_t       **output_buffer,
+                      pdf_size_t         *output_buffer_size,
+                      pdf_error_t       **error)
+@{
+  pdf_uchar_t *buffer;
+  pdf_size_t read_bytes;
+  pdf_error_t *inner_error = NULL;
+
+  /* Create the memory stream */
+  stm = pdf_stm_mem_new (input_buffer,
+                         input_buffer_size,
+                         0, /* Use the default cache size */
+                         PDF_STM_READ,
+                         error);
+  if (!stm)
+    return PDF_FALSE;
+
+  /* Read up to 100 bytes from the input buffer */
+  output_buffer = pdf_alloc (100);
+  read_bytes = 0;
+  if (!pdf_stm_read (stm,
+                     output_buffer,
+                     100,
+                     &read_bytes,
+                     &inner_error) &&
+      inner_error)
+    @{
+      pdf_propagate_error (error, inner_error);
+      pdf_stm_destroy (stm);
+      return PDF_FALSE;
+    @}
+
+  pdf_stm_destroy (stm);
+
+  *output_buffer_size = read_bytes;
+  *output_buffer = buffer;
+
+  return PDF_TRUE;
+@}
+
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_stm_write (pdf_stm_t @var{stm}, const pdf_char_t *@var{buf}, pdf_size_t @var{bytes}, pdf_size_t *@var{written_bytes})
+@deftypefun pdf_bool_t pdf_stm_write (pdf_stm_t *@var{stm}, const pdf_uchar_t *@var{buf}, pdf_size_t @var{bytes}, pdf_size_t *@var{written_bytes}, pdf_error_t *@var{error})
 
 Write a chunk of data into a given stream.
 
@@ -4546,32 +4824,69 @@ A stream.
 @item buf
 The buffer containing the written information.
 @item bytes
-The number of bytes to write into the stream.
+The number of bytes to be written into the stream.
 @item written_bytes
-A pointer to a PDF size containing the number of octects actually
-written. If the returned value is less than @code{bytes} then a disk
-full condition has occured.
+The number of octects actually written after the operation. May be less than @var{bytes} if an error is detected or on EOF condition.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_EINVOP
+Cannot write into a reading stream.
+@item PDF_EINVRANGE
+Invalid offset in the backend.
+@item PDF_ERROR
+Generic error while writing into the backend.
+@end table
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-All the requested bytes were successfully written into @var{stm}.
-@item PDF_EEOF
-A disk full condition occurred.
-@item PDF_EINVOP
-Writting was requested in a read stream.
-@item PDF_ERROR
-An error prevented to write the bytes.
-@end table
+@code{PDF_TRUE} if all @var{bytes} were written. @code{PDF_FALSE} is returned both on EOF and upon detecting an error, but the @var{error} variable will not be set on EOF.
 @item Usage example
 @example
-XXX
+
+pdf_bool_t
+foo_write_to_buffer (const pdf_uchar_t  *input_buffer,
+                     pdf_size_t          input_buffer_size,
+                     pdf_uchar_t        *output_buffer,
+                     pdf_size_t          output_buffer_size,
+                     pdf_size_t         *written_bytes,
+                     pdf_error_t       **error)
+@{
+  pdf_error_t *inner_error = NULL;
+
+  /* Create the memory stream */
+  stm = pdf_stm_mem_new (output_buffer,
+                         output_buffer_size,
+                         0, /* Use the default cache size */
+                         PDF_STM_WRITE,
+                         error);
+  if (!stm)
+    return PDF_FALSE;
+
+  /* Write up to 100 bytes to the output buffer */
+  written_bytes = 0;
+  if (!pdf_stm_write (stm,
+                      input_buffer,
+                      (input_buffer_size > 100 ?
+                       100 : input_buffer_size),
+                      written_bytes,
+                      &inner_error) &&
+      inner_error)
+    @{
+      pdf_propagate_error (error, inner_error);
+      pdf_stm_destroy (stm);
+      return PDF_FALSE;
+    @}
+
+  pdf_stm_destroy (stm);
+
+  return PDF_TRUE;
+@}
+
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_stm_read_char (pdf_stm_t @var{stm}, pdf_char_t *@var{c})
+@deftypefun pdf_bool_t pdf_stm_read_char (pdf_stm_t *@var{stm}, pdf_uchar_t *@var{read_char}, pdf_error_t **@var{error})
 
 Read a character from a given stream.
 
@@ -4580,92 +4895,192 @@ Read a character from a given stream.
 @table @var
 @item stm
 A stream.
-@item c
-The address of a character.
+@item read_char
+The address of where to store the read character.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_EINVOP
+Cannot read from a writing stream.
+@item PDF_EINVRANGE
+Invalid offset in the backend.
+@item PDF_ERROR
+Generic error while reading from the backend.
+@end table
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-A character was successfully read into @var{c}.
-@item PDF_EEOF
-End of file.
-@item PDF_EINVOP
-Reading was requested in a writing stream.
-@item PDF_ERROR
-An error prevented to read the character.
-@end table
+@code{PDF_TRUE} if the character was properly read, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
-XXX
+
+pdf_bool_t
+foo_read_byte_per_byte (pdf_stm_t    *stm,
+                        pdf_error_t **error)
+@{
+  pdf_uchar_t c;
+  pdf_error_t *inner_error = NULL;
+
+  while (pdf_stm_read_char (stm, &c, &inner_error))
+    @{
+      printf ("Read char: '%c'\n", c);
+    @}
+
+  if (inner_error)
+    @{
+      printf ("Got error while reading: %s\n",
+              pdf_error_get_message (inner_error));
+      pdf_propagate_error (error, inner_error);
+      return PDF_FALSE;
+    @}
+
+  return PDF_TRUE;
+@}
+
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_stm_peek_char (pdf_stm_t @var{stm}, pdf_char_t *@var{c})
+@deftypefun pdf_bool_t pdf_stm_peek_char (pdf_stm_t *@var{stm}, pdf_char_t *@var{read_char}, pdf_error_t **@var{error})
 
-Peek a character from a given stream.
+Peek a character from a given stream. When peeking instead of reading, the offset in the stream is not changed. Two consecutive calls to @code{pdf_stm_peek_char()} will always return the same result.
 
 @table @strong
 @item Parameters
 @table @var
 @item stm
 A stream.
-@item c
-The address of a character.
+@item read_char
+The address of where to store the read character.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_EINVOP
+Cannot read from a writing stream.
+@item PDF_EINVRANGE
+Invalid offset in the backend.
+@item PDF_ERROR
+Generic error while reading from the backend.
+@end table
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-A character was successfully peek into @var{c}.
-@item PDF_EEOF
-End of file.
-@item PDF_EINVOP
-Peeking was requested in a writing stream.
-@item PDF_ERROR
-An error prevented to peek the character.
-@end table
+@code{PDF_TRUE} if the character was properly read, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
-XXX
+
+pdf_bool_t
+foo_read_byte_per_byte (pdf_stm_t    *stm,
+                        pdf_error_t **error)
+@{
+  pdf_error_t *inner_error = NULL;
+
+  while (PDF_TRUE)
+    @{
+      pdf_uchar_t c;
+
+      if (pdf_stm_peek_char (stm, &c, NULL))
+        printf ("Read char: '%c'\n", c);
+
+      /* Need to advance the offset now */
+      if (!pdf_stm_read_char (stm, &c, &inner_error))
+        break;
+    @}
+
+  if (inner_error)
+    @{
+      printf ("Got error while reading: %s\n",
+              pdf_error_get_message (inner_error));
+      pdf_propagate_error (error, inner_error);
+      return PDF_FALSE;
+    @}
+
+  return PDF_TRUE;
+@}
+
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_stm_flush (pdf_stm_t @var{stm}, pdf_bool_t @var{finish_p}, pdf_size_t *@var{flushed_bytes})
+@deftypefun pdf_bool_t pdf_stm_flush (pdf_stm_t *@var{stm}, pdf_bool_t @var{finish}, pdf_size_t *@var{flushed_bytes}, pdf_error_t **@var{error})
 
 Flush any pending writing data in a given stream.
 
-If @var{finish_p} equals to @code{PDF_TRUE} then the filters in the
-stream's filter chain are tell to generate any remaining output.
+If @var{finish} equals to @code{PDF_TRUE} then the filters in the
+stream's filter chain are told to generate any remaining output.
 
 @table @strong
 @item Parameters
 @table @var
 @item stm
 A stream.
-@item finish_p
+@item finish
 A boolean value indicating whether to finalize the filter chain.
 @item flushed_bytes
-A pointer to a @code{pdf_size_t} variable to hold the number of
-flushed bytes. May be @code{0}.
+The number of octects flushed after the operation.
+@code{NULL} may also be passed if this number is not needed.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_EINVOP
+Cannot write into a reading stream.
+@item PDF_EINVRANGE
+Invalid offset in the backend.
+@item PDF_ERROR
+Generic error while writing into the backend.
+@end table
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-All the requested bytes were successfully written into @var{stm}.
-@item PDF_EEOF
-A disk full condition occurred.
-@item PDF_EINVOP
-Writting was requested in a read stream.
-@item PDF_ERROR
-An error prevented to write the bytes.
-@end table
+@code{PDF_TRUE} if all pending bytes were flushed. @code{PDF_FALSE} is returned both on EOF and upon detecting an error, but the @var{error} variable will not be set on EOF.
 @item Usage example
 @example
-XXX
+
+pdf_bool_t
+foo_write_to_buffer_and_flush (const pdf_uchar_t  *input_buffer,
+                               pdf_size_t          input_buffer_size,
+                               pdf_uchar_t        *output_buffer,
+                               pdf_size_t          output_buffer_size,
+                               pdf_size_t         *written_bytes,
+                               pdf_error_t       **error)
+@{
+  pdf_error_t *inner_error = NULL;
+
+  /* Create the memory stream */
+  stm = pdf_stm_mem_new (output_buffer,
+                         output_buffer_size,
+                         0, /* Use the default cache size */
+                         PDF_STM_WRITE,
+                         error);
+  if (!stm)
+    return PDF_FALSE;
+
+  /* Write up to 100 bytes to the output buffer */
+  written_bytes = 0;
+  if (!pdf_stm_write (stm,
+                      input_buffer,
+                      (input_buffer_size > 100 ?
+                       100 : input_buffer_size),
+                      written_bytes,
+                      &inner_error) &&
+      inner_error)
+    @{
+      pdf_propagate_error (error, inner_error);
+      pdf_stm_destroy (stm);
+      return PDF_FALSE;
+    @}
+
+  /* Before returning, ensure everything gets flushed. */
+  if (!pdf_buffer_flush (stm, NULL, &inner_error) &&
+      inner_error)
+    @{
+      pdf_propagate_error (error, inner_error);
+      pdf_stm_destroy (stm);
+      return PDF_FALSE;
+    @}
+
+  pdf_stm_destroy (stm);
+
+  return PDF_TRUE;
+@}
+
 @end example
 @end table
 @end deftypefun
@@ -4673,7 +5088,7 @@ XXX
 @node Stream Positioning
 @subsection Stream Positioning
 
-@deftypefun pdf_off_t pdf_stm_bseek (pdf_stm_t @var{stm}, pdf_off_t @var{pos})
+@deftypefun pdf_off_t pdf_stm_bseek (pdf_stm_t *@var{stm}, pdf_off_t @var{pos})
 
 Seek into the backend of a given stream.
 
@@ -4687,16 +5102,61 @@ The position to seek, measured in octects from the beginning of the
 backend media.
 @end table
 @item Returns
-The new position of the stream read/write pointer. If it is equal to
-the current position then there was an error.
+The new position of the stream read/write pointer.
 @item Usage example
 @example
-XXX
+
+pdf_bool_t
+foo_read_backwards (const pdf_uchar_t  *input_buffer,
+                    pdf_size_t          input_buffer_size,
+                    pdf_error_t       **error)
+@{
+  pdf_error_t *inner_error = NULL;
+  pdf_stm_t *stm;
+  int i;
+
+  /* Create the stream */
+  stm = pdf_stm_mem_new (input_buffer,
+                         input_buffer_size,
+                         0, /* Use the default cache size */
+                         PDF_STM_READ,
+                         &error);
+  if (!stm)
+    return PDF_FALSE;
+
+  /* Read all characters from the stream, one by one, in reverse other
+   * by seeking in each loop */
+  for (i = (input_buffer_size - 1); i >= 0; i--)
+    @{
+      pdf_uchar_t ret_char;
+
+      /* Bseek into the stream */
+      if (pdf_stm_bseek (stm, i) != i)
+        @{
+          pdf_stm_destroy (stm);
+          return PDF_FALSE;
+        @}
+
+      /* Peek */
+      if (!pdf_stm_peek_char (stm, &ret_char, &error))
+        @{
+          pdf_stm_destroy (stm);
+          return PDF_FALSE;
+        @}
+
+      printf ("Char was read: %c\n", (pdf_char_t)ret_char);
+    @}
+
+  pdf_stm_destroy (stm);
+
+  return PDF_TRUE;
+@}
+
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_off_t pdf_stm_btell (pdf_stm_t @var{stm})
+@deftypefun pdf_off_t pdf_stm_btell (pdf_stm_t *@var{stm})
 
 Get the current position of the read/write pointer of the backend of a
 stream.
@@ -4712,12 +5172,23 @@ The current position (measured in octets from the beginning of the
 backend media) of the read/write pointer.
 @item Usage example
 @example
-XXX
+
+  stm = pdf_stm_mem_new (input_buffer,
+                         input_buffer_size,
+                         0, /* Use the default cache size */
+                         PDF_STM_READ,
+                         &error);
+  if (stm)
+    @{
+      printf ("Offset in stream is: %lu\n",
+              (unsigned long) pdf_stm_btell (stm));
+    @}
+
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_off_t pdf_stm_tell (pdf_stm_t @var{stm})
+@deftypefun pdf_off_t pdf_stm_tell (pdf_stm_t *@var{stm})
 
 Get the number of octects read/written from/to the stream since either
 the last @code{pdf_stm_bseek} operation or the creation of the
@@ -4733,7 +5204,18 @@ A stream.
 The current position (measured in octets) of the read/write pointer.
 @item Usage example
 @example
-XXX
+
+  stm = pdf_stm_mem_new (input_buffer,
+                         input_buffer_size,
+                         0, /* Use the default cache size */
+                         PDF_STM_READ,
+                         &error);
+  if (stm)
+    @{
+      printf ("Offset in stream is: %lu\n",
+              (unsigned long) pdf_stm_tell (stm));
+    @}
+
 @end example
 @end table
 @end deftypefun
