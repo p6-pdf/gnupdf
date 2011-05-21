@@ -4270,6 +4270,27 @@ A pdf_error_t to report errors or NULL.
 @end table
 @item Returns
 PDF_TRUE if correctly added, PDF_FALSE otherwise.
+@item Usage example
+@example
+pdf_hash_t *hash;
+pdf_error_t *error = NULL;
+
+/* Create a new hash */
+hash = pdf_hash_new (NULL);
+if (hash != NULL)
+   @{
+      if (pdf_hash_add_bool (hash,
+                             "a-key",
+                             PDF_TRUE,
+                             &error))
+         @{
+             pdf_error_destroy (error);
+         @}
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+   @}
+@end example
 @end table
 @end deftypefun
 
@@ -4287,6 +4308,14 @@ A valid @code{NUL}-terminated string key.
 @end table
 @item Returns
 The @code{pdf_bool_t} associated with @var{key}.
+@item Usage example
+@example
+pdf_bool_t bool;
+
+/* ... insert a boolean value into the hash ... */
+
+bool = pdf_hash_get_bool (table, "a-key"); 
+@end example
 @end table
 @end deftypefun
 
@@ -4309,6 +4338,27 @@ A @code{pdf_error_t} to report errors or NULL.
 @end table
 @item Returns
 PDF_TRUE if correctly added, PDF_FALSE otherwise.
+@item Usage example
+@example
+pdf_hash_t *hash;
+pdf_error_t *error = NULL;
+ 
+/* Create a new hash */
+hash = pdf_hash_new (NULL);
+if (hash != NULL)
+   @{
+      if (pdf_hash_add_i32 (hash,
+                            "a-key",
+                            (pdf_i32_t)-3,
+                            &error))
+         @{
+             pdf_error_destroy (error);
+         @}
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+    @}
+@end example
 @end table
 @end deftypefun
 
@@ -4326,6 +4376,14 @@ A valid @code{NUL}-terminated string key.
 @end table
 @item Returns
 The @code{pdf_i32_t} associated with @var{key}.
+@item Usage example
+@example
+pdf_i32_t i32;
+
+/* ... insert a signed 32 bits integer value into the hash ... */
+
+i32 = pdf_hash_get_i32 (table, "a-key");
+@end example
 @end table
 @end deftypefun
 
@@ -4347,6 +4405,28 @@ A @code{pdf_error_t} to report errors or NULL.
 @end table
 @item Returns
 PDF_TRUE if correctly added, PDF_FALSE otherwise.
+@item Usage example
+@example
+pdf_hash_t *hash;
+pdf_error_t *error = NULL;
+ 
+/* Create a new hash */
+hash = pdf_hash_new (NULL);
+if (hash != NULL)
+   @{
+      if (pdf_hash_add_u32 (hash,
+                            "a-key",
+                            (pdf_u32_t)3,
+                            &error))
+         @{
+             pdf_error_destroy (error);
+         @}
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+   @}
+
+@end example
 @end table
 @end deftypefun
 
@@ -4364,6 +4444,15 @@ A valid @code{NUL}-terminated string key.
 @end table
 @item Returns
 The @code{pdf_u32_t} associated with @var{key}.
+@item Usage example
+@example
+pdf_u32_t u32;
+
+/* ... insert an unsigned 32 bits value into the hash ... */
+
+u32 = pdf_hash_get_u32 (table, "a-key");
+
+@end example
 @end table
 @end deftypefun
 
