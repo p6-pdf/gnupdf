@@ -97,18 +97,18 @@ pdf_bool_t        pdf_hash_get_bool   (pdf_hash_t        *table,
                                        const pdf_char_t  *key);
 
 /* Hash helpers to add/get integer */
-pdf_bool_t        pdf_hash_add_i32    (pdf_hash_t        *table,
-                                       const pdf_char_t  *key,
-                                       const pdf_i32_t    value,
-                                       pdf_error_t      **error);
-pdf_i32_t         pdf_hash_get_i32    (pdf_hash_t       *table,
-                                       const pdf_char_t *key);
-pdf_bool_t        pdf_hash_add_u32    (pdf_hash_t        *table,
-                                       const pdf_char_t  *key,
-                                       const pdf_u32_t    value,
-                                       pdf_error_t      **error);
-pdf_u32_t         pdf_hash_get_u32    (pdf_hash_t       *table,
-                                       const pdf_char_t *key);
+pdf_bool_t        pdf_hash_add_i32   (pdf_hash_t        *table,
+                                      const pdf_char_t  *key,
+                                      const pdf_i32_t    value,
+                                      pdf_error_t      **error);
+pdf_i32_t         pdf_hash_get_i32   (pdf_hash_t       *table,
+                                      const pdf_char_t *key);
+pdf_bool_t        pdf_hash_add_u32   (pdf_hash_t        *table,
+                                      const pdf_char_t  *key,
+                                      const pdf_u32_t    value,
+                                      pdf_error_t      **error);
+pdf_u32_t         pdf_hash_get_u32   (pdf_hash_t       *table,
+                                      const pdf_char_t *key);
 
 /* Hash helpers to add/get sizes */
 pdf_bool_t        pdf_hash_add_size   (pdf_hash_t        *table,
