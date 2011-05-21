@@ -4264,7 +4264,7 @@ A hash table.
 @item key
 A valid @code{NUL}-terminated string key.
 @item value
-A boolean value
+A valid @code{pdf_bool_t}.
 @item error
 A pdf_error_t to report errors or NULL.
 @end table
@@ -4303,7 +4303,7 @@ A hash table.
 @item key
 A valid @code{NUL}-terminated string key.
 @item value
-A signed 32 bits integer.
+A valid @code{pdf_i32_t}.
 @item error
 A @code{pdf_error_t} to report errors or NULL.
 @end table
@@ -4341,7 +4341,7 @@ A hash table.
 @item key
 A valid @code{NUL}-terminated string key.
 @item value
-An unsigned 32 bits integer.
+A valid @code{pdf_u32_t}.
 @item error
 A @code{pdf_error_t} to report errors or NULL.
 @end table
