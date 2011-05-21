@@ -31,6 +31,8 @@ David Vazquez: changed gnupdf.texi pdf-crypt.h gnupdf-tsd.texi
   pdf-crypt-md-hash.c pdf-crypt-md-new.c pdf-crypt-md-write.c pdf-crypt.c
   pdf-fp-func-4-new.c and 10 other files
 
+Franck Lesage: changed pdf-hash-helper.c pdf-hash-helper.h gnupdf.texi
+
 Gerardo E. Gidoni: changed gnupdf.texi pdf-stm-read.c gnupdf-tsd.texi
   pdf-stm-write.c configure.ac pdf-filter.c pdf-stm-f-flate.h
   pdf-stm-f-rl.c check-api-doc-consistency.pl

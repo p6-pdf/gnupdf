@@ -4252,6 +4252,121 @@ size = pdf_hash_get_size (table, "a-key");
 @end table
 @end deftypefun
 
+@deftypefun {pdf_bool_t} pdf_hash_add_bool (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_bool_t @var{value}, pdf_error_t **@var{error});
+
+Adds the boolean @var{value} with the associated @var{key} to @var{table}. If @var{key} already exists nothing is done. The value is directly stored in the hash table and disposed when the hash table is destroyed.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@item value
+A boolean value
+@item error
+A pdf_error_t to report errors or NULL.
+@end table
+@item Returns
+PDF_TRUE if correctly added, PDF_FALSE otherwise.
+@end table
+@end deftypefun
+
+@deftypefun {pdf_bool_t} pdf_hash_get_bool (pdf_hash_t *@var{table}, const pdf_char_t *@var{key});
+
+Get a boolean value from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@end table
+@item Returns
+The @code{pdf_bool_t} associated with @var{key}.
+@end table
+@end deftypefun
+
+
+@deftypefun {pdf_bool_t} pdf_hash_add_i32 (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_i32_t @var{value}, pdf_error_t **@var{error});
+
+Adds the signed 32 bits integer @var{value} with the associated @var{key} to @var{table}. If @var{key} already exists nothing is done. The value is directly stored in the hash table and disposed when the hash table is destroyed. 
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@item value
+A signed 32 bits integer.
+@item error
+A @code{pdf_error_t} to report errors or NULL.
+@end table
+@item Returns
+PDF_TRUE if correctly added, PDF_FALSE otherwise.
+@end table
+@end deftypefun
+
+@deftypefun {pdf_i32_t} pdf_hash_get_i32 (pdf_hash_t *@var{table}, const pdf_char_t *@var{key});
+
+Get a signed 32 bits integer from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@end table
+@item Returns
+The @code{pdf_i32_t} associated with @var{key}.
+@end table
+@end deftypefun
+
+@deftypefun {pdf_bool_t} pdf_hash_add_u32 (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_u35_t @var{value}, pdf_error_t **@var{error});
+
+Adds the unsigned 32 bits integer @var{value} with the associated @var{key} to @var{table}. If @var{key} already exists nothing is done. The value is directly stored in the hash table and disposed when the hash table is destroyed.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@item value
+An unsigned 32 bits integer.
+@item error
+A @code{pdf_error_t} to report errors or NULL.
+@end table
+@item Returns
+PDF_TRUE if correctly added, PDF_FALSE otherwise.
+@end table
+@end deftypefun
+
+@deftypefun {pdf_u32_t} pdf_hash_get_u32 (pdf_hash_t *@var{table}, const pdf_char_t *@var{key});
+
+Get an unsigned 32 bits integer from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@end table
+@item Returns
+The @code{pdf_u32_t} associated with @var{key}.
+@end table
+@end deftypefun
+
 @node Filtered Streams
 @section Filtered Streams
 
