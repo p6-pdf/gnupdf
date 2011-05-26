@@ -8894,22 +8894,22 @@ Boolean value.
 Boolean value.
 @item creationDate
 Text value containing a PDF style date string.
-@item modDate
+@item modificationDate
 Text value containing a PDF style date string.
 @item fileSize
 pdf_off_t signed integer value.
 @item folderSize
 32bit unsigned integer value.
-@item creatorCode
-32bit unsigned integer value.
-@item versionMajor
-32bit unsigned integer value.
-@item versionMinor
-32bit unsigned integer value.
-@item isCheckedOut
-Boolean value.
-@item isPublished
-Boolean value.
+@comment @item creatorCode
+@comment 32bit unsigned integer value.
+@comment @item versionMajor
+@comment 32bit unsigned integer value.
+@comment @item versionMinor
+@comment 32bit unsigned integer value.
+@comment @item isCheckedOut
+@comment Boolean value.
+@comment @item isPublished
+@comment Boolean value.
 @end table
 
 @table @strong

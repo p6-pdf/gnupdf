@@ -102,7 +102,7 @@ extern const pdf_char_t * pdf_error_stlist [];
    ERROR_ENTRY (PDF_EDOMAIN_BASE_FP,         "[Base] Floating Points"), \
    ERROR_ENTRY (PDF_EDOMAIN_BASE_TEXT,       "[Base] Text"),            \
    ERROR_ENTRY (PDF_EDOMAIN_BASE_TIME,       "[Base] Time"),            \
-   ERROR_ENTRY (PDF_EDOMAIN_BASE_FS,         "[Base] Filesystem"),      \
+   ERROR_ENTRY (PDF_EDOMAIN_BASE_FSYS,       "[Base] Filesystem"),      \
    ERROR_ENTRY (PDF_EDOMAIN_BASE_TOKENISER,  "[Base] Tokeniser"),       \
    ERROR_ENTRY (PDF_EDOMAIN_BASE_ENCRYPTION, "[Base] Encryption")
 

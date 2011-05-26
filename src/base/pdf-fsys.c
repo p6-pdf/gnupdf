@@ -30,570 +30,286 @@
 #include <pdf-fsys-def.h>
 #include <pdf-hash-helper.h>
 
-/* Private procedures declaration */
-static pdf_fsys_t pdf_fsys_alloc (void);
-static void pdf_fsys_dealloc (pdf_fsys_t filesystem);
+/* Hash of filesystem implementations */
+pdf_hash_t *fsys_implementations;
+pthread_mutex_t fsys_implementations_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-/*
- * Filesystem Interface Implementation
- */
-
-pdf_i64_t
-pdf_fsys_get_free_space (pdf_fsys_t         filesystem,
-                         const pdf_text_t  *path_name)
+static pdf_bool_t
+validate_implementation (const struct pdf_fsys_impl_s  *implementation,
+                         pdf_error_t                  **error))
 {
-  return (!filesystem ?
-          pdf_fsys_def_get_free_space (path_name) :
-          filesystem->implementation->get_free_space_fn (filesystem->data,
-                                                         path_name));
+  /* Validate the implementation */
+#define VALIDATE_METHOD(method) do {                                    \
+    if (!implementation->##method)                                      \
+      {                                                                 \
+        pdf_set_error (error,                                           \
+                       PDF_EDOMAIN_BASE_FSYS,                           \
+                       PDF_ERROR,                                       \
+                       "Missing method '%s' in Filesystem '%s' implementation", \
+                       #method,                                         \
+                       id);                                             \
+        return PDF_FALSE;                                               \
+      }                                                                 \
+  } while (0)
+
+  VALIDATE_METHOD (create_folder_fn);
+  VALIDATE_METHOD (get_folder_contents_fn);
+  VALIDATE_METHOD (get_parent_fn);
+  VALIDATE_METHOD (remove_folder_fn);
+  VALIDATE_METHOD (get_item_props_fn);
+  VALIDATE_METHOD (get_free_space_fn);
+  VALIDATE_METHOD (item_p_fn);
+  VALIDATE_METHOD (item_readable_p_fn);
+  VALIDATE_METHOD (item_writable_p_fn);
+  VALIDATE_METHOD (build_path_fn);
+  VALIDATE_METHOD (get_url_from_path_fn);
+
+  VALIDATE_METHOD (file_open_fn);
+  VALIDATE_METHOD (file_open_tmp_fn);
+  VALIDATE_METHOD (file_reopen_fn);
+  VALIDATE_METHOD (file_close_fn);
+  VALIDATE_METHOD (file_read_fn);
+  VALIDATE_METHOD (file_write_fn);
+  VALIDATE_METHOD (file_flush_fn);
+  VALIDATE_METHOD (file_can_set_size_p_fn);
+  VALIDATE_METHOD (file_get_size_fn);
+  VALIDATE_METHOD (file_set_size_fn);
+  VALIDATE_METHOD (file_get_pos_fn);
+  VALIDATE_METHOD (file_set_pos_fn);
+  VALIDATE_METHOD (file_get_mode_fn);
+  VALIDATE_METHOD (file_set_mode_fn);
+  VALIDATE_METHOD (file_same_p_fn);
+  VALIDATE_METHOD (file_request_ria_fn);
+  VALIDATE_METHOD (file_has_ria_fn);
+  VALIDATE_METHOD (file_cancel_ria_fn);
+
+#undef VALIDATE_METHOD
+
+  return PDF_TRUE;
 }
 
-pdf_status_t
-pdf_fsys_create_folder (const pdf_fsys_t  filesystem,
-                        const pdf_text_t *path_name)
+pdf_bool_t
+pdf_fsys_add_implementation (const pdf_char_t              *id,
+                             const struct pdf_fsys_impl_s  *implementation,
+                             pdf_fsys_impl_deinit_fn_t      implementation_deinit,
+                             pdf_error_t                  **error)
 {
-  return (!filesystem ?
-          pdf_fsys_def_create_folder (path_name) :
-          filesystem->implementation->create_folder_fn (filesystem->data,
-                                                        path_name));
+  PDF_ASSERT_RETURN_VAL (implementation, PDF_FALSE);
+
+  if (!validate_implementation (implementation, error))
+    return PDF_FALSE;
+
+  pthread_mutex_lock (&fsys_implementations_mutex);
+
+  /* If first implementation, allocate new HT */
+  if (!fsys_implementations)
+    {
+      fsys_implementation = pdf_hash_new (error);
+      if (!fsys_implementation)
+        {
+          pthread_mutex_unlock (&fsys_implementations_mutex);
+          return PDF_FALSE;
+        }
+    }
+
+  /* Check if ID already exists */
+  if (pdf_hash_key_p (fsys_implementations, id))
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_FSYS,
+                     PDF_EEXIST,
+                     "Filesystem with ID '%s' already exists",
+                     id);
+      pthread_mutex_unlock (&fsys_implementations_mutex);
+      return PDF_FALSE;
+    }
+
+  /* Add the new implementation */
+  if (!pdf_hash_add (fsys_implementations,
+                     id,
+                     implementation,
+                     (pdf_hash_value_dispose_fn_t)implementation_deinit,
+                     error))
+    {
+      pthread_mutex_unlock (&fsys_implementations_mutex);
+      return PDF_FALSE;
+    }
+
+  pthread_mutex_unlock (&fsys_implementations_mutex);
+  return PDF_TRUE;
 }
 
-pdf_status_t
-pdf_fsys_get_folder_contents (const pdf_fsys_t  filesystem,
-                              const pdf_text_t *path_name,
-                              pdf_list_t       *item_list)
+void
+pdf_fsys_remove_implementation (const pdf_char_t *id)
 {
-  return (!filesystem ?
-          pdf_fsys_def_get_folder_contents (path_name, item_list) :
-          filesystem->implementation->get_folder_contents_fn (filesystem->data,
-                                                              path_name,
-                                                              item_list));
+  pthread_mutex_lock (&fsys_implementations_mutex);
+
+  if (fsys_implementations)
+    {
+      if (!pdf_hash_remove (fsys_implementations, id))
+        {
+          /* If the implementation was not removed is because it was not registered,
+           * and that is a programmer error */
+          PDF_ASSERT_TRACE_NOT_REACHED ();
+        }
+      else if (pdf_hash_size (fsys_implementations) == 0)
+        {
+          /* Remove hash if no contents */
+          pdf_hash_destroy (fsys_implementations);
+          fsys_implementations = NULL;
+        }
+    }
+
+  pthread_mutex_unlock (&fsys_implementations_mutex);
 }
 
-pdf_status_t
-pdf_fsys_get_parent (const pdf_fsys_t   filesystem,
-                     const pdf_text_t  *path_name,
-                     pdf_text_t       **parent_path)
+const pdf_fsys_t *
+pdf_fsys_get (const pdf_char_t *id)
 {
-  return (!filesystem ?
-          pdf_fsys_def_get_parent (path_name, parent_path) :
-          filesystem->implementation->get_parent_fn (filesystem->data,
-                                                     path_name,
-                                                     parent_path));
+  const pdf_fsys_t *impl;
+
+  pthread_mutex_lock (&fsys_implementations_mutex);
+
+  impl = pdf_hash_get_value (fsys_implementations, id);
+
+  pthread_mutex_unlock (&fsys_implementations_mutex);
+
+  return impl;
 }
 
-pdf_status_t
-pdf_fsys_remove_folder (const pdf_fsys_t  filesystem,
-                        const pdf_text_t *path_name)
+pdf_bool_t
+pdf_fsys_init (pdf_error_t **error)
 {
-  return (!filesystem ?
-          pdf_fsys_def_remove_folder (path_name) :
-          filesystem->implementation->remove_folder_fn (filesystem->data,
-                                                        path_name));
+  /* Init default DISK filesystem */
+  if (!pdf_fsys_disk_init (error))
+    return PDF_FALSE;
+
+  return PDF_TRUE;
 }
 
-pdf_status_t
-pdf_fsys_get_item_props (pdf_fsys_t                    filesystem,
-                         const pdf_text_t             *path_name,
-                         struct pdf_fsys_item_props_s *item_props)
+void
+pdf_fsys_deinit (void)
 {
-  return (!filesystem ?
-          pdf_fsys_def_get_item_props (path_name, item_props) :
-          filesystem->implementation->get_item_props_fn (filesystem->data,
-                                                         path_name,
-                                                         item_props));
+  /* Deinit DISK filesystem */
+  pdf_fsys_disk_deinit ();
 }
 
-pdf_status_t
-pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s  item_props,
-                             pdf_hash_t                         *props_hash)
+pdf_hash_t *
+pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s  *item_props,
+                             pdf_error_t                        **error)
 {
   pdf_char_t *creation_date_str;
   pdf_char_t *mod_date_str;
-  pdf_error_t *inner_error = NULL;
+  pdf_hash_t *props_hash;
+
+  /* Create new hash table */
+  props_hash = pdf_hash_new (error);
+  if (!props_hash)
+    return NULL;
 
   /* Associate values with hash keys */
   if ((!pdf_hash_add_bool (props_hash,
-                           "isHidden",
+                           PDF_FSYS_ITEM_IS_HIDDEN,
                            item_props.is_hidden,
-                           &inner_error)) ||
+                           error)) ||
       (!pdf_hash_add_bool (props_hash,
-                           "isReadable",
+                           PDF_FSYS_ITEM_IS_READABLE,
                            item_props.is_readable,
-                           &inner_error)) ||
+                           error)) ||
       (!pdf_hash_add_bool (props_hash,
-                           "isWritable",
+                           PDF_FSYS_ITEM_IS_WRITABLE,
                            item_props.is_writable,
-                           &inner_error)) ||
+                           error)) ||
       (!pdf_hash_add_size (props_hash,
-                           "fileSize",
+                           PDF_FSYS_ITEM_FILE_SIZE,
                            (pdf_size_t) item_props.file_size,
-                           &inner_error)) ||
+                           error)) ||
       (!pdf_hash_add_size (props_hash,
-                           "folderSize",
+                           PDF_FSYS_ITEM_FOLDER_SIZE,
                            (pdf_size_t) item_props.folder_size,
-                           &inner_error)))
+                           error)))
     {
-      /* TODO: Propagate error */
-      if (inner_error)
-        pdf_error_destroy (inner_error);
-      return PDF_ERROR;
+      pdf_hash_destroy (props_hash);
+      return NULL;
     }
 
   /* Get creation time from the props structure */
   creation_date_str = pdf_time_to_string (&item_props.creation_date,
                                           PDF_TIME_STRING_FORMAT_PDF,
                                           PDF_TIME_STRING_TRAILING_APOSTROPHE,
-                                          &inner_error);
+                                          error);
   if (!creation_date_str)
     {
-      /* TODO: Propagate error */
-      if (inner_error)
-        pdf_error_destroy (inner_error);
-      return PDF_ERROR;
+      pdf_hash_destroy (props_hash);
+      return NULL;
     }
 
   if (!pdf_hash_add_string (props_hash,
-                            "creationDate",
+                            PDF_FSYS_ITEM_CREATION_DATE,
                             creation_date_str,
-                            &inner_error))
+                            error))
     {
       pdf_dealloc (creation_date_str);
-
-      /* TODO: Propagate error */
-      if (inner_error)
-        pdf_error_destroy (inner_error);
-      return PDF_ERROR;
+      pdf_hash_destroy (props_hash);
+      return NULL;
     }
 
   /* Get mtime from the props structure */
   mod_date_str = pdf_time_to_string (&item_props.modification_date,
                                      PDF_TIME_STRING_FORMAT_PDF,
                                      PDF_TIME_STRING_TRAILING_APOSTROPHE,
-                                     &inner_error);
+                                     error);
   if (!mod_date_str)
     {
-      /* TODO: Propagate error */
-      if (inner_error)
-        pdf_error_destroy (inner_error);
-      return PDF_ERROR;
+      pdf_hash_destroy (props_hash);
+      return NULL;
     }
 
   if (!pdf_hash_add_string (props_hash,
-                            "modDate",
+                            PDF_FSYS_ITEM_MODIFICATION_DATE,
                             mod_date_str,
-                            &inner_error))
+                            error))
     {
       pdf_dealloc (mod_date_str);
-
-      /* TODO: Propagate error */
-      if (inner_error)
-        pdf_error_destroy (inner_error);
-      return PDF_ERROR;
+      pdf_hash_destroy (props_hash);
+      return NULL;
     }
 
   /* Done */
-  return PDF_OK;
+  return props_hash;
 }
 
 pdf_bool_t
-pdf_fsys_item_p (pdf_fsys_t        filesystem,
-                 const pdf_text_t *path_name)
+pdf_fsys_file_init_common (struct pdf_fsys_file_s     *common,
+                           struct pdf_fsys_s          *fsys,
+                           pdf_text_t                 *path,
+                           enum pdf_fsys_file_mode_e   mode,
+                           pdf_error_t               **error)
 {
-  return (!filesystem ?
-          pdf_fsys_def_item_p (path_name) :
-          filesystem->implementation->item_p_fn (filesystem->data,
-                                                 path_name));
-}
+  PDF_ASSERT_RETURN_VAL (common != NULL, PDF_FALSE);
 
-pdf_bool_t
-pdf_fsys_item_readable_p (pdf_fsys_t        filesystem,
-                          const pdf_text_t *path_name)
-{
-  return (!filesystem ?
-          pdf_fsys_def_item_readable_p (path_name) :
-          filesystem->implementation->item_readable_p_fn (filesystem->data,
-                                                          path_name));
-}
-
-pdf_bool_t
-pdf_fsys_item_writable_p (pdf_fsys_t        filesystem,
-                          const pdf_text_t *path_name)
-{
-  return (!filesystem ?
-          pdf_fsys_def_item_writable_p (path_name) :
-          filesystem->implementation->item_writable_p_fn (filesystem->data,
-                                                          path_name));
-}
-
-pdf_status_t
-pdf_fsys_build_path (pdf_fsys_t   filesystem,
-                     pdf_text_t **output,
-                     pdf_text_t  *first_element,
-                     ...)
-{
-  va_list args;
-  pdf_list_t *rest;
-  pdf_status_t st;
-  pdf_text_t **next;
-  pdf_error_t *inner_error = NULL;
-
-  rest = pdf_list_new (NULL, NULL, PDF_TRUE, &inner_error);
-  if (!rest)
+  if (path)
     {
-      /* TODO: Propagate error */
-      if (inner_error)
-        {
-          st = pdf_error_get_status (inner_error);
-          pdf_error_destroy (inner_error);
-        }
-      else
-        st = PDF_ERROR;
-      return st;
-    }
-
-  /* Save the rest text objects */
-  va_start (args, first_element);
-  next = va_arg (args, pdf_text_t **);
-  while (next != NULL)
-    {
-      if (pdf_list_add_last (rest, next, &inner_error) == NULL)
-        {
-          /* TODO: Propagate error */
-          st = pdf_error_get_status (inner_error);
-          pdf_list_destroy (rest);
-          va_end (args);
-          return st;
-        }
-
-      next = va_arg (args, pdf_text_t **);
-    }
-  va_end (args);
-
-  if (filesystem == NULL)
-    {
-      /* Use the default filesystem */
-      st = pdf_fsys_def_build_path (output, first_element, rest);
+      common->unicode_path = pdf_text_dup (path, error);
+      if (!common->unicode_path)
+        return PDF_FALSE;
     }
   else
-    {
-      st = filesystem->implementation->build_path_fn (filesystem->data,
-                                                      output,
-                                                      first_element,
-                                                      rest);
-    }
+    common->unicode_path = NULL;
 
-  pdf_list_destroy (rest);
-  return st;
+  common->fsys = fsys;
+  common->mode = mode;
+
+  return PDF_TRUE;
 }
 
-
-/*
- * File Interface Implementation
- */
-
-pdf_status_t
-pdf_fsys_file_open (const pdf_fsys_t                 filesystem,
-                    const pdf_text_t                *path_name,
-                    const enum pdf_fsys_file_mode_e  mode,
-                    pdf_fsys_file_t                 *p_file)
+void
+pdf_fsys_file_deinit_common (struct pdf_fsys_file_s *common)
 {
-  return (!filesystem ?
-          pdf_fsys_def_file_open (path_name, mode, p_file) :
-          filesystem->implementation->file_open_fn (filesystem->data,
-                                                    path_name,
-                                                    mode,
-                                                    p_file));
-}
+  PDF_ASSERT_RETURN (common != NULL);
 
-pdf_status_t
-pdf_fsys_file_open_tmp (const pdf_fsys_t  filesystem,
-                        pdf_fsys_file_t  *p_file)
-{
-  return (!filesystem ?
-          pdf_fsys_def_file_open_tmp (p_file) :
-          filesystem->implementation->file_open_tmp_fn (filesystem->data,
-                                                        p_file));
-}
-
-pdf_fsys_t
-pdf_fsys_file_get_filesystem (pdf_fsys_file_t file)
-{
-  if (!file)
-    return NULL;
-
-  /* May be NULL if it is the default filesystem */
-  return file->fs;
-}
-
-enum pdf_fsys_file_mode_e
-pdf_fsys_file_get_mode (pdf_fsys_file_t file)
-{
-  if (!file)
-    return PDF_FSYS_OPEN_MODE_INVALID;
-
-  return (!file->fs ?
-          pdf_fsys_def_file_get_mode (file) :
-          (file->fs->implementation->file_get_mode_fn) (file));
-}
-
-pdf_text_t *
-pdf_fsys_file_get_url (pdf_fsys_file_t file)
-{
-  if (!file)
-    return NULL;
-
-  return (!file->fs ?
-          pdf_fsys_def_file_get_url (file) :
-          file->fs->implementation->file_get_url_fn (file));
-}
-
-pdf_status_t
-pdf_fsys_file_set_mode (pdf_fsys_file_t           file,
-                        enum pdf_fsys_file_mode_e new_mode)
-{
-  if (!file)
-    return PDF_EBADDATA;
-
-  return (!file->fs ?
-          pdf_fsys_def_file_set_mode (file, new_mode) :
-          (file->fs->implementation->file_set_mode_fn) (file,
-                                                        new_mode));
-}
-
-pdf_bool_t
-pdf_fsys_file_same_p (pdf_fsys_file_t   file,
-                      const pdf_text_t *path)
-{
-  if (!file)
-    return PDF_EBADDATA;
-
-  return (!file->fs ?
-          pdf_fsys_def_file_same_p (file, path) :
-          (file->fs->implementation->file_same_p_fn) (file, path));
-}
-
-pdf_status_t
-pdf_fsys_file_get_pos (pdf_fsys_file_t  file,
-                       pdf_off_t       *pos)
-{
-  if (!file)
-    return PDF_EBADDATA;
-
-  return (!file->fs ?
-          pdf_fsys_def_file_get_pos (file, pos) :
-          (file->fs->implementation->file_get_pos_fn) (file, pos));
-}
-
-pdf_status_t
-pdf_fsys_file_set_pos (pdf_fsys_file_t file,
-                       pdf_off_t       new_pos)
-{
-  if (!file)
-    return PDF_EBADDATA;
-
-  return (!file->fs ?
-          pdf_fsys_def_file_set_pos (file, new_pos) :
-          (file->fs->implementation->file_set_pos_fn) (file, new_pos));
-}
-
-pdf_bool_t
-pdf_fsys_file_can_set_size_p (pdf_fsys_file_t file,
-                              pdf_off_t       size)
-{
-  if (!file)
-    return PDF_EBADDATA;
-
-  return (!file->fs ?
-          pdf_fsys_def_file_can_set_size_p (file, size) :
-          (file->fs->implementation->file_can_set_size_p_fn) (file, size));
-}
-
-pdf_off_t
-pdf_fsys_file_get_size (pdf_fsys_file_t file)
-{
-  if (!file)
-    return PDF_EBADDATA;
-
-  return (!file->fs ?
-          pdf_fsys_def_file_get_size (file) :
-          (file->fs->implementation->file_get_size_fn) (file));
-}
-
-pdf_status_t
-pdf_fsys_file_set_size (pdf_fsys_file_t file,
-                        pdf_off_t       size)
-{
-  if (!file)
-    return PDF_EBADDATA;
-
-  return (!file->fs ?
-          pdf_fsys_def_file_set_size (file, size) :
-          (file->fs->implementation->file_set_size_fn) (file, size));
-}
-
-pdf_status_t
-pdf_fsys_file_read (pdf_fsys_file_t  file,
-                    pdf_char_t      *buf,
-                    pdf_size_t       bytes,
-                    pdf_size_t      *read_bytes)
-{
-  if (!file)
-    return PDF_EBADDATA;
-
-  return (!file->fs ?
-          pdf_fsys_def_file_read (file, buf, bytes, read_bytes) :
-          (file->fs->implementation->file_read_fn) (file,
-                                                    buf,
-                                                    bytes,
-                                                    read_bytes));
-}
-
-pdf_status_t
-pdf_fsys_file_write (pdf_fsys_file_t  file,
-                     pdf_char_t      *buf,
-                     pdf_size_t       bytes,
-                     pdf_size_t      *written_bytes)
-{
-  if (!file)
-    return PDF_EBADDATA;
-
-  return (!file->fs ?
-          pdf_fsys_def_file_write (file, buf, bytes, written_bytes) :
-          (file->fs->implementation->file_write_fn) (file,
-                                                     buf,
-                                                     bytes,
-                                                     written_bytes));
-}
-
-pdf_status_t
-pdf_fsys_file_flush (pdf_fsys_file_t file)
-{
-  if (!file)
-    return PDF_EBADDATA;
-
-  return (!file->fs ?
-          pdf_fsys_def_file_flush (file) :
-          (file->fs->implementation->file_flush_fn) (file));
-}
-
-pdf_status_t
-pdf_fsys_file_request_ria (pdf_fsys_file_t file,
-                           pdf_off_t       offset,
-                           pdf_size_t      count)
-{
-  if (!file)
-    return PDF_EBADDATA;
-
-  return (!file->fs ?
-          pdf_fsys_def_file_request_ria (file, offset, count) :
-          (file->fs->implementation->file_request_ria_fn) (file,
-                                                           offset,
-                                                           count));
-}
-
-pdf_bool_t
-pdf_fsys_file_has_ria (pdf_fsys_file_t file)
-{
-  if (!file)
-    return PDF_FALSE;
-
-  return (!file->fs ?
-          pdf_fsys_def_file_has_ria (file) :
-          (file->fs->implementation->file_has_ria_fn) (file));
-}
-
-pdf_status_t
-pdf_fsys_file_cancel_ria (pdf_fsys_file_t file)
-{
-  if (!file)
-    return PDF_EBADDATA;
-
-  return (!file->fs ?
-          pdf_fsys_def_file_cancel_ria (file) :
-          (file->fs->implementation->file_cancel_ria_fn) (file));
-}
-
-pdf_status_t
-pdf_fsys_file_close (pdf_fsys_file_t file)
-{
-  if (!file)
-    return PDF_EBADDATA;
-
-  return (!file->fs ?
-          pdf_fsys_def_file_close (file) :
-          (file->fs->implementation->file_close_fn) (file));
-}
-
-pdf_status_t
-pdf_fsys_file_reopen (pdf_fsys_file_t           file,
-                      enum pdf_fsys_file_mode_e mode)
-{
-  if (!file)
-    return PDF_EBADDATA;
-
-  return (!file->fs ?
-          pdf_fsys_def_file_reopen (file, mode) :
-          (file->fs->implementation->file_reopen_fn) (file, mode));
-}
-
-/*
- * Filesystem Definition Interface Implementation
- */
-
-pdf_fsys_t
-pdf_fsys_create (struct pdf_fsys_impl_s implementation)
-{
-  pdf_fsys_t filesystem;
-  struct pdf_fsys_impl_s *own_implementation;
-
-  /* Allocate a new filesystem */
-  filesystem = pdf_fsys_alloc ();
-
-  /* Allocate a new implementation structure and assign it to the FS */
-  own_implementation = (struct pdf_fsys_impl_s *)
-    pdf_alloc (sizeof(struct pdf_fsys_impl_s));
-
-  filesystem->implementation = own_implementation;
-
-  /* Set its properties */
-  *(filesystem->implementation) = implementation;
-
-  /* Call the init_fn callback provided by the filesystem
-     implementation.  */
-  (filesystem->implementation->init_fn) (&filesystem->data);
-
-  return filesystem;
-}
-
-pdf_status_t
-pdf_fsys_destroy (pdf_fsys_t filesystem)
-{
-  /* Call the cleanup_fn callback provided by the filesystem
-     implementation.  */
-  (filesystem->implementation->cleanup_fn) (filesystem->data);
-
-  /* Deallocate all resources used by the filesystem implementation */
-  pdf_dealloc (filesystem->implementation);
-  pdf_fsys_dealloc (filesystem);
-
-  return PDF_OK;
-}
-
-/*
- * Private functions
- */
-
-static pdf_fsys_t
-pdf_fsys_alloc (void)
-{
-    return (pdf_fsys_t) pdf_alloc (sizeof(struct pdf_fsys_s));
-}
-
-static void
-pdf_fsys_dealloc (pdf_fsys_t filesystem)
-{
-  pdf_dealloc (filesystem);
+  if (common->unicode_path)
+    pdf_text_destroy (common->unicode_path);
 }
 
 /* End of pdf-fsys.c */

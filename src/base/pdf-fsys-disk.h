@@ -30,7 +30,11 @@
 
 /* BEGIN PUBLIC */
 
-extern const struct pdf_fsys_impl_s pdf_fsys_disk_implementation;
+#define PDF_FSYS_DISK "disk-fsys"
+
+pdf_bool_t pdf_fsys_disk_init (pdf_error_t **error);
+
+void pdf_fsys_disk_deinit (void);
 
 /* END PUBLIC */
 

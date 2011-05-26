@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008, 2009, 2010, 2011 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,11 +35,18 @@
 #include <pdf-text.h>
 #include <pdf-time.h>
 
-/*
- * Data Types
- */
+/* ------------------ Filesystem Module initialization ---------------------- */
+
+/* Initializes Filesystem module and all the built-in filesystem
+ * implementations */
+pdf_bool_t pdf_fsys_init (pdf_error_t **error);
+
+/* Deinitializes Filesystem Module, in case a clean exit is wanted */
+void pdf_fsys_deinit (void);
 
 /* BEGIN PUBLIC */
+
+/* -------------------------- Filesystem Data Types ------------------------- */
 
 /* Filesystem item properties */
 struct pdf_fsys_item_props_s
@@ -53,28 +60,14 @@ struct pdf_fsys_item_props_s
   pdf_u32_t folder_size;
 };
 
-/* Filesystem */
-struct pdf_fsys_impl_s;
-struct pdf_fsys_s
-{
-  struct pdf_fsys_impl_s *implementation; /* Implementation of the
-                                           * filesystem */
-
-  void *data; /* Private data used by the underlying filesystem
-                 implementation.  */
-};
-
-typedef struct pdf_fsys_s *pdf_fsys_t;
-
-/* Open files */
-struct pdf_fsys_file_s
-{
-  pdf_fsys_t fs; /* Underlying filesystem */
-  void *data;    /* Private data used by the underlying filesystem
-                  * implementation */
-};
-
-typedef struct pdf_fsys_file_s *pdf_fsys_file_t;
+/* Key names of filesystem item properties when available in a hash table */
+#define PDF_FSYS_ITEM_IS_HIDDEN         "isHidden"
+#define PDF_FSYS_ITEM_IS_READABLE       "isReadable"
+#define PDF_FSYS_ITEM_IS_WRITABLE       "isWritable"
+#define PDF_FSYS_ITEM_FILE_SIZE         "fileSize"
+#define PDF_FSYS_ITEM_FOLDER_SIZE       "folderSize"
+#define PDF_FSYS_ITEM_CREATION_DATE     "creationDate"
+#define PDF_FSYS_ITEM_MODIFICATION_DATE "modificationDate"
 
 /* File modes */
 enum pdf_fsys_file_mode_e
@@ -99,112 +92,131 @@ enum pdf_fsys_file_mode_e
     PDF_FSYS_OPEN_MODE_MAX,
   };
 
-/* Filesystem initialization and cleanup callbacks.  */
-typedef pdf_status_t (*pdf_fsys_init_fn_t) (void **data);
+/* ---------------------- Filesystem Implementation API --------------------- */
 
-typedef pdf_status_t (*pdf_fsys_cleanup_fn_t) (void *data);
+typedef struct pdf_fsys_s pdf_fsys_t;
+typedef struct pdf_fsys_file_s pdf_fsys_file_t;
 
-/* Filesystem implementation callbacks */
-typedef pdf_status_t (*pdf_fsys_create_folder_fn_t) (void             *data,
-                                                     const pdf_text_t *path_name);
+/* Filesystem interface methods */
 
-typedef pdf_status_t (*pdf_fsys_get_folder_contents_fn_t) (void             *data,
-                                                           const pdf_text_t *path_name,
-                                                           pdf_list_t       *item_list);
+typedef pdf_bool_t (*pdf_fsys_create_folder_fn_t) (pdf_fsys_t        *fsys,
+                                                   const pdf_text_t  *path_name,
+                                                   pdf_error_t      **error);
 
-typedef pdf_status_t (*pdf_fsys_get_parent_fn_t) (void              *data,
+typedef pdf_list_t * (*pdf_fsys_get_folder_contents_fn_t) (pdf_fsys_t        *fsys,
+                                                           const pdf_text_t  *path_name,
+                                                           pdf_error_t      **error);
+
+typedef pdf_text_t * (*pdf_fsys_get_parent_fn_t) (pdf_fsys_t        *fsys,
                                                   const pdf_text_t  *path_name,
-                                                  pdf_text_t       **parent_path);
+                                                  pdf_error_t      **error);
 
-typedef pdf_status_t (*pdf_fsys_remove_folder_fn_t) (void             *data,
-                                                     const pdf_text_t *path_name);
+typedef pdf_bool_t (*pdf_fsys_remove_folder_fn_t) (pdf_fsys_t        *fsys,
+                                                   const pdf_text_t  *path_name,
+                                                   pdf_error_t      **error);
 
-typedef pdf_status_t (*pdf_fsys_get_item_props_fn_t) (void                         *data,
-                                                      const pdf_text_t             *path_name,
-                                                      struct pdf_fsys_item_props_s *props);
+typedef pdf_bool_t (*pdf_fsys_get_item_props_fn_t) (pdf_fsys_t                    *fsys,
+                                                    const pdf_text_t              *path_name,
+                                                    struct pdf_fsys_item_props_s  *props,
+                                                    pdf_error_t                  **error);
 
-typedef pdf_i64_t (*pdf_fsys_get_free_space_fn_t) (void             *data,
-                                                   const pdf_text_t *path_name);
+typedef pdf_i64_t (*pdf_fsys_get_free_space_fn_t) (pdf_fsys_t        *fsys,
+                                                   const pdf_text_t  *path_name,
+                                                   pdf_error_t      **error);
 
-typedef pdf_bool_t (*pdf_fsys_item_p_fn_t) (void             *data,
+typedef pdf_bool_t (*pdf_fsys_item_p_fn_t) (pdf_fsys_t       *fsys,
                                             const pdf_text_t *path_name);
 
-typedef pdf_bool_t (*pdf_fsys_item_readable_p_fn_t) (void             *data,
+typedef pdf_bool_t (*pdf_fsys_item_readable_p_fn_t) (pdf_fsys_t       *fsys,
                                                      const pdf_text_t *path_name);
 
-typedef pdf_bool_t (*pdf_fsys_item_writable_p_fn_t) (void             *data,
+typedef pdf_bool_t (*pdf_fsys_item_writable_p_fn_t) (pdf_fsys_t       *fsys,
                                                      const pdf_text_t *path_name);
 
-typedef pdf_status_t (*pdf_fsys_build_path_fn_t) (void              *data,
-                                                  pdf_text_t       **output,
-                                                  const pdf_text_t  *first_element,
-                                                  const pdf_list_t  *rest);
+typedef pdf_text_t *(*pdf_fsys_build_path_fn_t) (pdf_fsys_t        *fsys,
+                                                 pdf_error_t      **error,
+                                                 const pdf_text_t  *first_element,
+                                                 ...);
 
-typedef pdf_status_t (*pdf_fsys_file_read_fn_t) (pdf_fsys_file_t  file,
-						 pdf_char_t      *buf,
-						 pdf_size_t       bytes,
-						 pdf_size_t      *read_bytes);
+typedef pdf_char_t *(*pdf_fsys_get_url_from_path_fn_t) (pdf_fsys_t   *fsys,
+                                                        pdf_char_t   *path,
+                                                        pdf_error_t **error);
 
-typedef pdf_status_t (*pdf_fsys_file_write_fn_t) (pdf_fsys_file_t  file,
-						  pdf_char_t      *buf,
-						  pdf_size_t       bytes,
-						  pdf_size_t      *written_bytes);
+/* File interface methods */
 
-typedef pdf_status_t (*pdf_fsys_file_flush_fn_t) (pdf_fsys_file_t file);
+typedef pdf_fsys_file_t * (*pdf_fsys_file_open_fn_t) (pdf_fsys_t                 *fsys,
+                                                      const pdf_text_t           *path_name,
+                                                      enum pdf_fsys_file_mode_e   mode,
+                                                      pdf_error_t               **error);
 
-typedef pdf_bool_t (*pdf_fsys_file_can_set_size_p_fn_t) (pdf_fsys_file_t file,
-                                                         pdf_off_t       pos);
+typedef pdf_fsys_file_t * (*pdf_fsys_file_open_tmp_fn_t) (pdf_fsys_t   *fsys,
+                                                          pdf_error_t **error);
 
-typedef pdf_status_t (*pdf_fsys_file_open_fn_t) (void                      *data,
-                                                 const pdf_text_t          *path_name,
-                                                 enum pdf_fsys_file_mode_e  mode,
-                                                 pdf_fsys_file_t           *p_file);
+typedef pdf_bool_t (*pdf_fsys_file_reopen_fn_t) (pdf_fsys_file_t            *file,
+                                                 enum pdf_fsys_file_mode_e   mode,
+                                                 pdf_error_t               **error);
 
-typedef pdf_status_t (*pdf_fsys_file_open_tmp_fn_t) (void            *data,
-                                                     pdf_fsys_file_t *p_file);
+typedef pdf_bool_t (*pdf_fsys_file_close_fn_t) (pdf_fsys_file_t  *file,
+                                                pdf_error_t     **error);
 
-typedef pdf_off_t (*pdf_fsys_file_get_size_fn_t) (pdf_fsys_file_t file);
+typedef pdf_bool_t (*pdf_fsys_file_read_fn_t) (pdf_fsys_file_t  *file,
+                                               pdf_char_t       *buf,
+                                               pdf_size_t        bytes,
+                                               pdf_size_t       *read_bytes,
+                                               pdf_error_t     **error);
 
-typedef pdf_status_t (*pdf_fsys_file_set_size_fn_t) (pdf_fsys_file_t file,
-                                                     pdf_off_t       pos);
+typedef pdf_bool_t (*pdf_fsys_file_write_fn_t) (pdf_fsys_file_t  *file,
+                                                pdf_char_t       *buf,
+                                                pdf_size_t        bytes,
+                                                pdf_size_t       *written_bytes,
+                                                pdf_error_t     **error);
 
-typedef pdf_status_t (*pdf_fsys_file_get_pos_fn_t) (pdf_fsys_file_t  file,
-                                                    pdf_off_t       *pos);
+typedef pdf_bool_t (*pdf_fsys_file_flush_fn_t) (pdf_fsys_file_t  *file,
+                                                pdf_error_t     **error);
 
-typedef pdf_status_t (*pdf_fsys_file_set_pos_fn_t) (pdf_fsys_file_t file,
-                                                    pdf_off_t       pos);
+typedef pdf_bool_t (*pdf_fsys_file_can_set_size_p_fn_t) (const pdf_fsys_file_t *file,
+                                                         pdf_off_t              size);
 
-typedef enum pdf_fsys_file_mode_e (*pdf_fsys_file_get_mode_fn_t) (pdf_fsys_file_t file);
+typedef pdf_off_t (*pdf_fsys_file_get_size_fn_t) (const pdf_fsys_file_t  *file,
+                                                  pdf_error_t           **error);
 
-typedef pdf_status_t (*pdf_fsys_file_set_mode_fn_t) (pdf_fsys_file_t           file,
-                                                     enum pdf_fsys_file_mode_e new_mode);
+typedef pdf_bool_t (*pdf_fsys_file_set_size_fn_t) (pdf_fsys_file_t  *file,
+                                                   pdf_off_t         pos,
+                                                   pdf_error_t     **error);
 
-typedef pdf_text_t *(*pdf_fsys_file_get_url_fn_t) (pdf_fsys_file_t file);
+typedef pdf_off_t (*pdf_fsys_file_get_pos_fn_t) (const pdf_fsys_file_t  *file,
+                                                 pdf_error_t           **error);
 
-typedef pdf_bool_t (*pdf_fsys_file_same_p_fn_t) (pdf_fsys_file_t   file,
-                                                 const pdf_text_t *path_name);
+typedef pdf_bool_t (*pdf_fsys_file_set_pos_fn_t) (pdf_fsys_file_t  *file,
+                                                  pdf_off_t         pos,
+                                                  pdf_error_t     **error);
 
-typedef pdf_status_t (*pdf_fsys_file_request_ria_fn_t) (pdf_fsys_file_t file,
-                                                        pdf_off_t       offset,
-                                                        pdf_size_t      count);
+typedef enum pdf_fsys_file_mode_e (*pdf_fsys_file_get_mode_fn_t) (const pdf_fsys_file_t *file);
 
-typedef pdf_bool_t (*pdf_fsys_file_has_ria_fn_t) (pdf_fsys_file_t file);
+typedef pdf_bool_t (*pdf_fsys_file_set_mode_fn_t) (pdf_fsys_file_t            *file,
+                                                   enum pdf_fsys_file_mode_e   new_mode,
+                                                   pdf_error_t               **error);
 
-typedef pdf_status_t (*pdf_fsys_file_cancel_ria_fn_t) (pdf_fsys_file_t file);
+typedef pdf_char_t *(*pdf_fsys_file_get_url_fn_t) (const pdf_fsys_file_t  *file,
+                                                   pdf_error_t           **error);
 
-typedef pdf_status_t (*pdf_fsys_file_close_fn_t) (pdf_fsys_file_t file);
+typedef pdf_bool_t (*pdf_fsys_file_same_p_fn_t) (const pdf_fsys_file_t *file,
+                                                 const pdf_text_t      *path_name);
 
-typedef pdf_status_t (*pdf_fsys_file_reopen_fn_t) (pdf_fsys_file_t           file,
-                                                   enum pdf_fsys_file_mode_e mode);
+typedef pdf_bool_t (*pdf_fsys_file_request_ria_fn_t) (pdf_fsys_file_t  *file,
+                                                      pdf_off_t         offset,
+                                                      pdf_size_t        count,
+                                                      pdf_error_t     **error);
+
+typedef pdf_bool_t (*pdf_fsys_file_has_ria_fn_t) (pdf_fsys_file_t *file);
+
+typedef pdf_bool_t (*pdf_fsys_file_cancel_ria_fn_t) (pdf_fsys_file_t  *file,
+                                                     pdf_error_t     **error);
 
 /* Filesystem implementation */
-struct pdf_fsys_impl_s
+struct pdf_fsys_s
 {
-  /* Initialization and cleanup callbacks.  */
-  pdf_fsys_init_fn_t init_fn;
-  pdf_fsys_cleanup_fn_t cleanup_fn;
-
-  /* Filesystem interface callbacks */
+  /* Filesystem interface methods */
   pdf_fsys_create_folder_fn_t create_folder_fn;
   pdf_fsys_get_folder_contents_fn_t get_folder_contents_fn;
   pdf_fsys_get_parent_fn_t get_parent_fn;
@@ -214,12 +226,14 @@ struct pdf_fsys_impl_s
   pdf_fsys_item_p_fn_t item_p_fn;
   pdf_fsys_item_readable_p_fn_t item_readable_p_fn;
   pdf_fsys_item_writable_p_fn_t item_writable_p_fn;
-  pdf_fsys_file_get_url_fn_t file_get_url_fn;
   pdf_fsys_build_path_fn_t build_path_fn;
+  pdf_fsys_get_url_from_path_fn_t get_url_from_path_fn;
 
-  /* File interface callbacks */
+  /* File interface methods */
   pdf_fsys_file_open_fn_t file_open_fn;
   pdf_fsys_file_open_tmp_fn_t file_open_tmp_fn;
+  pdf_fsys_file_reopen_fn_t file_reopen_fn;
+  pdf_fsys_file_close_fn_t file_close_fn;
   pdf_fsys_file_read_fn_t file_read_fn;
   pdf_fsys_file_write_fn_t file_write_fn;
   pdf_fsys_file_flush_fn_t file_flush_fn;
@@ -234,118 +248,142 @@ struct pdf_fsys_impl_s
   pdf_fsys_file_request_ria_fn_t file_request_ria_fn;
   pdf_fsys_file_has_ria_fn_t file_has_ria_fn;
   pdf_fsys_file_cancel_ria_fn_t file_cancel_ria_fn;
-  pdf_fsys_file_close_fn_t file_close_fn;
-  pdf_fsys_file_reopen_fn_t file_reopen_fn;
 };
 
-/*
- * Function Declarations
- */
+/* File implementation */
+struct pdf_fsys_file_s
+{
+  /* Filesystem used to open the file */
+  struct pdf_fsys_s *fsys;
+  /* Mode used when opening */
+  enum pdf_fsys_file_mode_e mode;
+  /* Path used to open the file */
+  pdf_text_t *unicode_path;
+};
 
-/* Filesystem Interface */
+/* Helper methods to be used by filesystem implementations */
+pdf_bool_t pdf_fsys_file_init_common (struct pdf_fsys_file_s     *common,
+                                      struct pdf_fsys_s          *fsys,
+                                      pdf_text_t                 *path,
+                                      enum pdf_fsys_file_mode_e   mode,
+                                      pdf_error_t               **error);
+void pdf_fsys_file_deinit_common (struct pdf_fsys_file_s *common);
 
-pdf_i64_t pdf_fsysget_free_space (pdf_fsys_t         filesystem,
-                                   const pdf_text_t  *path_name);
+/* ------------------------ Filesystem Management API ----------------------- */
 
-pdf_status_t pdf_fsys_create_folder (const pdf_fsys_t  filesystem,
-                                     const pdf_text_t *path_name);
+typedef void (*pdf_fsys_deinit_fn_t) (struct pdf_fsys_s *implementation);
 
-pdf_status_t pdf_fsys_get_folder_contents (const pdf_fsys_t  filesystem,
-                                           const pdf_text_t *path_name,
-                                           pdf_list_t       *item_list);
+pdf_bool_t pdf_fsys_add (const pdf_char_t           *id,
+                         const struct pdf_fsys_s    *fsys,
+                         pdf_fsys_impl_deinit_fn_t   fsys_deinit,
+                         pdf_error_t               **error);
 
-pdf_status_t pdf_fsys_get_parent (const pdf_fsys_t   filesystem,
-                                  const pdf_text_t  *path_name,
-                                  pdf_text_t       **parent_path);
+void pdf_fsys_remove (const pdf_char_t *id);
 
-pdf_status_t pdf_fsys_remove_folder (const pdf_fsys_t  filesystem,
-                                     const pdf_text_t *path_name);
+const pdf_fsys_t *pdf_fsys_get (const pdf_char_t *id);
 
-pdf_status_t pdf_fsys_get_item_props (pdf_fsys_t                    filesystem,
-                                      const pdf_text_t             *path_name,
-                                      struct pdf_fsys_item_props_s *item_props);
+/* -------------------------- Filesystem interface -------------------------- */
 
-pdf_status_t pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s  item_props,
-                                          pdf_hash_t                         *props_hash);
+#define pdf_fsys_get_free_space(fsys, path, error)  \
+  fsys->get_free_space_fn (fsys, path, error)
 
-pdf_bool_t pdf_fsys_item_p (pdf_fsys_t        filesystem,
-                            const pdf_text_t *path_name);
+#define pdf_fsys_create_folder(fsys, path, error)   \
+  fsys->create_folder_fn (fsys, path, error)
 
-pdf_bool_t pdf_fsys_item_readable_p (pdf_fsys_t        filesystem,
-                                     const pdf_text_t *path_name);
+#define pdf_fsys_get_folder_contents(fsys, path, error) \
+  fsys->get_folder_contents_fn (fsys, path, error)
 
-pdf_bool_t pdf_fsys_item_writable_p (pdf_fsys_t        filesystem,
-                                     const pdf_text_t *path_name);
+#define pdf_fsys_get_parent(fsys, path, error)  \
+  fsys->get_parent_fn (fsys, path, error)
 
-pdf_status_t pdf_fsys_build_path (pdf_fsys_t   filesystem,
-                                  pdf_text_t **output,
-                                  pdf_text_t  *first_element, ...);
+#define pdf_fsys_remove_folder(fsys, path, error)   \
+  fsys->remove_folder_fn (fsys, path, error)
 
-/* File Interface */
-pdf_status_t pdf_fsys_file_open (const pdf_fsys_t                 filesystem,
-                                 const pdf_text_t                *path_name,
-                                 const enum pdf_fsys_file_mode_e  mode,
-                                 pdf_fsys_file_t                 *p_file);
+#define pdf_fsys_get_item_props(fsys, path, props, error)   \
+  fsys->get_item_props_fn (fsys, path, props, error)
 
-pdf_status_t pdf_fsys_file_open_tmp (const pdf_fsys_t  filesystem,
-                                     pdf_fsys_file_t  *p_file);
+pdf_hash_t *pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s  *item_props,
+                                         pdf_error_t                        **error);
 
-pdf_fsys_t pdf_fsys_file_get_filesystem (pdf_fsys_file_t file);
+#define pdf_fsys_item_p(fsys, path)             \
+  fsys->item_p_fn (fsys, path)
 
-enum pdf_fsys_file_mode_e pdf_fsys_file_get_mode (pdf_fsys_file_t file);
+#define pdf_fsys_item_readable_p(fsys, path)    \
+  fsys->item_readable_p_fn (fsys, path)
 
-pdf_text_t *pdf_fsys_file_get_url (pdf_fsys_file_t file);
+#define pdf_fsys_item_writable_p(fsys, path)    \
+  fsys->item_writable_p_fn (fsys, path)
 
-pdf_status_t pdf_fsys_file_set_mode (pdf_fsys_file_t           file,
-                                     enum pdf_fsys_file_mode_e new_mode);
+#define pdf_fsys_build_path(fsys, error, first, ...)        \
+  fsys->build_path_fn (fsys, error, first, ##__VA_ARGS__)
 
-pdf_bool_t pdf_fsys_file_same_p (pdf_fsys_file_t   file,
-                                 const pdf_text_t *path);
+#define pdf_fsys_get_url_from_path(fsys,path,error) \
+  fsys->get_url_from_path(fsys,path,error)
 
-pdf_status_t pdf_fsys_file_get_pos (pdf_fsys_file_t  file,
-                                    pdf_off_t       *pos);
+/* ----------------------------- File interface ----------------------------- */
 
-pdf_status_t pdf_fsys_file_set_pos (pdf_fsys_file_t file,
-                                    pdf_off_t       new_pos);
+#define pdf_fsys_file_open(fsys, path, mode, error) \
+  fsys->file_open_fn (fsys, path, mode, error)
 
-pdf_bool_t pdf_fsys_file_can_set_size_p (pdf_fsys_file_t file,
-                                         pdf_off_t       size);
+#define pdf_fsys_file_open_tmp(fsys, error)     \
+  fsys->file_open_tmp_fn (fsys, error)
 
-pdf_off_t pdf_fsys_file_get_size (pdf_fsys_file_t file);
+#define pdf_fsys_file_reopen(file, mode, error) \
+  file->fsys->file_reopen (file, mode, error)
 
-pdf_status_t pdf_fsys_file_set_size (pdf_fsys_file_t file,
-                                     pdf_off_t       size);
+#define pdf_fsys_file_close(file,error)         \
+  file->fsys->file_close (file,error)
 
-pdf_status_t pdf_fsys_file_read (pdf_fsys_file_t  file,
-				 pdf_char_t      *buf,
-                                 pdf_size_t       bytes,
-				 pdf_size_t      *read_bytes);
+#define pdf_fsys_file_get_filesystem(file)      \
+  (const pdf_fsys_t *)file->fsys
 
-pdf_status_t pdf_fsys_file_write (pdf_fsys_file_t  file,
-				  pdf_char_t      *buf,
-                                  pdf_size_t       bytes,
-				  pdf_size_t      *written_bytes);
+#define pdf_fsys_file_get_mode(file)            \
+  file->mode
 
-pdf_status_t pdf_fsys_file_flush (pdf_fsys_file_t file);
+#define pdf_fsys_file_get_path(file)            \
+  (const pdf_text_t *)file->path
 
-pdf_status_t pdf_fsys_file_request_ria (pdf_fsys_file_t file,
-                                        pdf_off_t       offset,
-                                        pdf_size_t      count);
+#define pdf_fsys_file_get_url(file, error)                      \
+  pdf_fsys_get_url_from_path (file->fsys, file->path, error)
 
-pdf_bool_t pdf_fsys_file_has_ria (pdf_fsys_file_t file);
+#define pdf_fsys_file_set_mode(file, mode, error)   \
+  file->fsys->file_set_mode (file, mode, error)
 
-pdf_status_t pdf_fsys_file_cancel_ria (pdf_fsys_file_t file);
+#define pdf_fsys_file_same_p(file, path)        \
+  file->fsys->file_same_p (file, path)
 
-pdf_status_t pdf_fsys_file_close (pdf_fsys_file_t file);
+#define pdf_fsys_file_get_pos(file,error)       \
+  file->fsys->file_get_pos (file, error)
 
-pdf_status_t pdf_fsys_file_reopen (pdf_fsys_file_t           file,
-                                   enum pdf_fsys_file_mode_e mode);
+#define pdf_fsys_file_set_pos(file,pos,error)   \
+  file->fsys->file_set_pos (file, pos, error)
 
-/* Filesystem Definition Interface */
+#define pdf_fsys_file_can_set_size_p(file,size) \
+  file->fsys->file_can_set_size_p (file, size)
 
-pdf_fsys_t pdf_fsys_create (struct pdf_fsys_impl_s implementation);
+#define pdf_fsys_file_get_size(file,error)       \
+  file->fsys->file_get_size (file, error)
 
-pdf_status_t pdf_fsys_destroy (pdf_fsys_t filesystem);
+#define pdf_fsys_file_set_size(file,size,error)   \
+  file->fsys->file_set_size (file, size, error)
+
+#define pdf_fsys_file_read(file, buf, bytes, read_bytes, error) \
+  file->fsys->file_read (file, buf, bytes, read_bytes, error)
+
+#define pdf_fsys_file_write(file, buf, bytes, written_bytes, error) \
+  file->fsys->file_write (file, buf, bytes, written_bytes, error)
+
+#define pdf_fsys_file_flush(file, error)        \
+  file->fsys->file_flush (file, error)
+
+#define pdf_fsys_file_request_ria(file, offset, size, error)    \
+  file->fsys->file_request_ria (file, offset, size, error)
+
+#define pdf_fsys_file_has_ria(file)             \
+  file->fsys->file_has_ria (file)
+
+#define pdf_fsys_file_cancel_ria(file, error)   \
+  file->fsys->file_cancel_ria (file, error)
 
 /* END PUBLIC */
 
