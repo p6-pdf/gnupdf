@@ -72,24 +72,23 @@ static const struct option long_options[] =
 const char *pdf_filereader_version_msg = "pdf-filereader 0.1";
 
 const char *pdf_filereader_usage_msg = "\
+\n\
 Usage: pdf-filereader [ACTION] [OPTIONS]\n\
-  pdf_bool_t use_disk_fs;Perform an action on a file in a filesystem.\n\
 \n\
 actions:\n\
-  -p, --props-file\n                  Print input file properties\n\
-  -c, --copy-file\n                   Read an input file and copy its contents\n\
-                                      into an output file.\
-  -l, --list\n                        List supported filesystems\
+  -p, --props-file                    print input file properties\n\
+  -c, --copy-file                     read an input file and copy its contents\n\
+                                       into an output file.\n\
+  -l, --list                          list supported filesystems\n\
 \n\
 options:\n\
-\n\
-  -i FILE, --input-file=FILE          Use a given file as the input\n\
-                                      (applies to --copy-file and --props-file).\n\
-  -o FILE, --output-file=FILE         Use a given file as the output\n\
-                                      (applies to --copy-file).\n\
-  --fsys=FSYS                         Read using the specified filesystem backend,\n\
-                                      instead of the default Disk filesystem\n\
-                                      (applies to --copy-file).\n\
+  -i FILE, --input-file=FILE          use a given file as the input\n\
+                                       (applies to --copy-file and --props-file).\n\
+  -o FILE, --output-file=FILE         use a given file as the output\n\
+                                       (applies to --copy-file).\n\
+  --fsys=FSYS                         read using the specified filesystem backend,\n\
+                                       instead of the default Disk filesystem\n\
+                                       (applies to --copy-file).\n\
 \n\
   --help                              print a help message and exit\n\
   --version                           show pdf-filter version and exit\n\
