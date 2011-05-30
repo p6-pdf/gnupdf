@@ -1,13 +1,14 @@
 /* -*- mode: C -*-
  *
- *       File:         pdf-fsys-build-path.c
+ *       File:         pdf-fsys-disk-build-path.c
  *       Date:         Mon Apr  16 00:02:09 2010
  *
- *       GNU PDF Library - Unit tests for pdf_fsys_build_path
+ *       GNU PDF Library - Unit tests for pdf_fsys_build_path with the
+ *                         Disk filesystem.
  *
  */
 
-/* Copyright (C) 2010 Free Software Foundation, Inc. */
+/* Copyright (C) 2010-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,34 +34,47 @@
 #include <pdf-test-common.h>
 
 /*
- * Test: pdf_fsys_build_path_001
+ * Test: pdf_fsys_disk_build_path_001
  * Description:
  *   Build a path name from two text objects
  * Success condition:
  *   The call to pdf_fsys_build_path should return PDF_OK
  */
-START_TEST (pdf_fsys_build_path_001)
+START_TEST (pdf_fsys_disk_build_path_001)
 {
   pdf_error_t *error = NULL;
   pdf_text_t *text1, *text2, *text3;
   pdf_text_t *result = NULL;
-  const pdf_char_t *first = "want", *dir = "some", *dirr = "beer?";
+  const pdf_char_t *first = "want", *second = "some", *third = "beer?";
   pdf_char_t *output_data = NULL;
 
-  text1 = pdf_text_new_from_unicode (first, 4, PDF_TEXT_UTF8, &error);
+  text1 = pdf_text_new_from_unicode (first,
+                                     strlen (first),
+                                     PDF_TEXT_UTF8,
+                                     &error);
   fail_unless (text1 != NULL);
   fail_if (error != NULL);
 
-  text2 = pdf_text_new_from_unicode (dir, 4, PDF_TEXT_UTF8, &error);
+  text2 = pdf_text_new_from_unicode (second,
+                                     strlen (second),
+                                     PDF_TEXT_UTF8,
+                                     &error);
   fail_unless (text2 != NULL);
   fail_if (error != NULL);
 
-  text3 = pdf_text_new_from_unicode (dirr, 5, PDF_TEXT_UTF8, &error);
+  text3 = pdf_text_new_from_unicode (third,
+                                     strlen (third),
+                                     PDF_TEXT_UTF8,
+                                     &error);
   fail_unless (text3 != NULL);
   fail_if (error != NULL);
 
-  fail_if (pdf_fsys_build_path (NULL, &result, text1, text2, text3, NULL) != PDF_OK);
+  result = pdf_fsys_build_path (PDF_FSYS_DISK,
+                                &error,
+                                text1, text2, text3,
+                                NULL);
   fail_unless (result != NULL);
+  fail_if (error != NULL);
 
   output_data = pdf_text_get_unicode (result,
                                       PDF_TEXT_UTF8,
@@ -81,6 +95,7 @@ START_TEST (pdf_fsys_build_path_001)
   pdf_text_destroy (text1);
   pdf_text_destroy (text2);
   pdf_text_destroy (text3);
+  pdf_text_destroy (result);
   pdf_dealloc (output_data);
 }
 END_TEST
@@ -89,15 +104,15 @@ END_TEST
  * Test case creation function
  */
 TCase *
-test_pdf_fsys_build_path (void)
+test_pdf_fsys_disk_build_path (void)
 {
-  TCase *tc = tcase_create ("pdf_fsys_build_path");
+  TCase *tc = tcase_create ("pdf_fsys_disk_build_path");
 
-  tcase_add_test (tc, pdf_fsys_build_path_001);
+  tcase_add_test (tc, pdf_fsys_disk_build_path_001);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);
   return tc;
 }
 
-/* End of pdf-fsys-build-path.c */
+/* End of pdf-fsys-disk_build-path.c */

@@ -1,13 +1,14 @@
 /* -*- mode: C -*-
  *
- *       File:         pdf-fsys-file-open-tmp.c
+ *       File:         pdf-fsys-disk-file-open-tmp.c
  *       Date:         Wed Feb  3 21:09:22 2010
  *
- *       GNU PDF Library - Unit tests for pdf_fsys_file_open_tmp
+ *       GNU PDF Library - Unit tests for pdf_fsys_file_open_tmp with
+ *                         the Disk filesystem
  *
  */
 
-/* Copyright (C) 2010 Free Software Foundation, Inc.  */
+/* Copyright (C) 2010-2011 Free Software Foundation, Inc.  */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,21 +32,26 @@
 
 #include <pdf.h>
 #include <pdf-test-common.h>
+
 /*
- * Test: pdf_fsys_file_open_tmp_001
+ * Test: pdf_fsys_disk_file_open_tmp_001
  * Description:
  *   Open a temporary file for writing
  * Success condition:
  *   The call to pdf_fsys_file_open_tmp should return PDF_OK.
  */
 
-START_TEST (pdf_fsys_file_open_tmp_001)
+START_TEST (pdf_fsys_disk_file_open_tmp_001)
 {
-  pdf_fsys_file_t file;
+  pdf_fsys_file_t *file;
+  pdf_error_t *error = NULL;
 
-  fail_if( pdf_fsys_file_open_tmp (NULL, &file) != PDF_OK );
+  file = pdf_fsys_file_open_tmp (PDF_FSYS_DISK, &error);
+  fail_unless (file != NULL);
+  fail_if (error != NULL);
 
-  pdf_fsys_file_close(file);
+  fail_unless (pdf_fsys_file_close (file, &error) == PDF_TRUE);
+  fail_if (error != NULL);
 }
 END_TEST
 
@@ -54,15 +60,15 @@ END_TEST
  */
 
 TCase *
-test_pdf_fsys_file_open_tmp (void)
+test_pdf_fsys_disk_file_open_tmp (void)
 {
-  TCase *tc = tcase_create ("pdf_fsys_file_open_tmp");
+  TCase *tc = tcase_create ("pdf_fsys_disk_file_open_tmp");
 
-  tcase_add_test (tc, pdf_fsys_file_open_tmp_001);
+  tcase_add_test (tc, pdf_fsys_disk_file_open_tmp_001);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);
   return tc;
 }
 
-/* End of pdf-fsys-file-open-tmp.c */
+/* End of pdf-fsys-disk-file-open-tmp.c */

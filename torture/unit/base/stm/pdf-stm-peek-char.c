@@ -135,6 +135,15 @@ START_TEST (pdf_stm_peek_char_002)
   fail_unless (file != NULL);
   fail_if (error != NULL);
 
+  /* Create the stream */
+  stm = pdf_stm_file_new (file,
+                          0,
+                          0, /* Use the default cache size */
+                          PDF_STM_READ,
+                          &error);
+  fail_unless (stm != NULL);
+  fail_if (error != NULL);
+
   for (i = 0; i < strlen (file_contents); i++)
     {
       /* Peek */

@@ -27,6 +27,7 @@
 
 #include <check.h>
 #include <pdf-test-common.h>
+
 extern TCase *test_pdf_text_new_destroy (void);
 extern TCase *test_pdf_text_dup (void);
 extern TCase *test_pdf_text_new_from_host (void);

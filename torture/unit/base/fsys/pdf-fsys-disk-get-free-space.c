@@ -1,9 +1,10 @@
 /* -*- mode: C -*-
  *
- *       File:         pdf-fsys-get-free-space.c
+ *       File:         pdf-fsys-disk-get-free-space.c
  *       Date:         Fri May  1 20:20:11 2009
  *
- *       GNU PDF Library - Unit tests for pdf_fsys_get_free_space
+ *       GNU PDF Library - Unit tests for pdf_fsys_get_free_space() with the
+ *                         Disk filesystem
  *
  */
 
@@ -31,13 +32,13 @@
 #include <pdf-test-common.h>
 
 /*
- * Test: pdf_fsys_get_free_space_001
+ * Test: pdf_fsys_disk_get_free_space_001
  * Description:
  *   Get the free space left on the filesystem for an existing path.
  * Success condition:
  *   The call to pdf_fsys_get_free_space should not return an error
  */
-START_TEST (pdf_fsys_get_free_space_001)
+START_TEST (pdf_fsys_disk_get_free_space_001)
 {
   pdf_error_t *error = NULL;
   pdf_i64_t free_space;
@@ -51,22 +52,25 @@ START_TEST (pdf_fsys_get_free_space_001)
   fail_unless (path != NULL);
   fail_if (error != NULL);
 
-  free_space = pdf_fsys_get_free_space (NULL, path);
-  fail_if (free_space == -1);
+  free_space = pdf_fsys_get_free_space (PDF_FSYS_DISK,
+                                        path,
+                                        &error);
+  fail_unless (free_space != -1);
+  fail_if (error != NULL);
 
   pdf_text_destroy (path);
 }
 END_TEST
 
 /*
- * Test: pdf_fsys_get_free_space_002
+ * Test: pdf_fsys_disk_get_free_space_002
  * Description:
  *   Get the free space left on the filesystem for an non existing path.
  * Success condition:
  *   The call to pdf_fsys_get_free_space should return -1, which indicates an
  *   error.
  */
-START_TEST (pdf_fsys_get_free_space_002)
+START_TEST (pdf_fsys_disk_get_free_space_002)
 {
   pdf_error_t *error = NULL;
   pdf_i64_t free_space;
@@ -80,8 +84,11 @@ START_TEST (pdf_fsys_get_free_space_002)
   fail_unless (path != NULL);
   fail_if (error != NULL);
 
-  free_space = pdf_fsys_get_free_space (NULL, path);
+  free_space = pdf_fsys_get_free_space (PDF_FSYS_DISK,
+                                        path,
+                                        &error);
   fail_if (free_space != -1);
+  fail_unless (error != NULL);
 
   pdf_text_destroy (path);
 }
@@ -91,16 +98,16 @@ END_TEST
  * Test case creation function
  */
 TCase *
-test_pdf_fsys_get_free_space (void)
+test_pdf_fsys_disk_get_free_space (void)
 {
-  TCase *tc = tcase_create ("pdf_fsys_get_free_space");
+  TCase *tc = tcase_create ("pdf_fsys_disk_get_free_space");
 
-  tcase_add_test (tc, pdf_fsys_get_free_space_001);
-  tcase_add_test (tc, pdf_fsys_get_free_space_002);
+  tcase_add_test (tc, pdf_fsys_disk_get_free_space_001);
+  tcase_add_test (tc, pdf_fsys_disk_get_free_space_002);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);
   return tc;
 }
 
-/* End of pdf-fsys-get-free-space.c */
+/* End of pdf-fsys-disk-get-free-space.c */

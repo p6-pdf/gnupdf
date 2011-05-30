@@ -216,11 +216,10 @@ TEST_SUITE_ALLOC = base/alloc/pdf-alloc.c \
 TEST_SUITE_FP = base/fp/pdf-fp-func-eval.c \
                 base/fp/pdf-fp-func-4-new.c
 
-TEST_SUITE_FSYS = base/fsys/pdf-fsys-get-free-space.c \
-                  base/fsys/pdf-fsys-file-open.c \
-                  base/fsys/pdf-fsys-file-open-tmp.c \
-                  base/fsys/pdf-fsys-file-close.c \
-                  base/fsys/pdf-fsys-build-path.c
+TEST_SUITE_FSYS = base/fsys/pdf-fsys-disk-get-free-space.c \
+                  base/fsys/pdf-fsys-disk-file-open.c \
+                  base/fsys/pdf-fsys-disk-file-open-tmp.c \
+                  base/fsys/pdf-fsys-disk-build-path.c
 
 
 TEST_SUITE_TOKEN = base/token/pdf-token-read.c \

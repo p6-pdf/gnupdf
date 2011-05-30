@@ -52,6 +52,15 @@
 #include <pdf-error.h>
 #include <pdf-fsys-disk.h>
 
+struct pdf_fsys_disk_s
+{
+  /* The common parent struct */
+  struct pdf_fsys_s common;
+
+  /* Precomputed filename separator */
+  pdf_text_t *filename_separator;
+};
+
 /* Filesystem internal data associated with open files */
 struct pdf_fsys_disk_file_s
 {
@@ -251,7 +260,8 @@ file_close (pdf_fsys_file_t  *file,
 
   PDF_ASSERT_POINTER_RETURN_VAL (file, PDF_FALSE);
   PDF_ASSERT_RETURN_VAL (disk_file->file_descriptor > 0, PDF_FALSE);
-  PDF_ASSERT_POINTER_RETURN_VAL (disk_file->host_path, PDF_FALSE);
+
+  /* Host path is optional, not available in tmp files */
 
   /* Close the I/O stream only if still open */
   if (disk_file->file_descriptor &&
@@ -269,7 +279,7 @@ file_close (pdf_fsys_file_t  *file,
 
   deinit_base_file_data (disk_file);
   pdf_dealloc (disk_file);
-  return PDF_TRUE;
+  return ret;
 }
 
 /* Host-dependent mkdir() */
@@ -786,9 +796,9 @@ build_path (const pdf_fsys_t  *fsys,
             const pdf_text_t  *first_element,
             ...)
 {
+  const struct pdf_fsys_disk_s *disk_fsys = (const struct pdf_fsys_disk_s *)fsys;
   pdf_text_t *output;
-  pdf_text_t **next;
-  pdf_text_t *text_sep;
+  pdf_text_t *next;
   va_list args;
 
   PDF_ASSERT_POINTER_RETURN_VAL (first_element, NULL);
@@ -797,34 +807,27 @@ build_path (const pdf_fsys_t  *fsys,
   if (!output)
     return NULL;
 
-#if FILE_SYSTEM_BACKSLASH_IS_FILE_NAME_SEPARATOR
-  text_sep = pdf_text_new_from_unicode ((pdf_char_t*)"\\", 1, PDF_TEXT_UTF8, error);
-#else
-  text_sep = pdf_text_new_from_unicode ((pdf_char_t*)"/", 1, PDF_TEXT_UTF8, error);
-#endif /* FILE_SYSTEM_BACKSLASH_IS_FILE_NAME_SEPARATOR */
-  if (!text_sep)
-    {
-      pdf_text_destroy (output);
-      return NULL;
-    }
-
   va_start (args, first_element);
-  next = va_arg (args, pdf_text_t **);
+  next = va_arg (args, pdf_text_t *);
   while (next != NULL)
     {
-      if (!pdf_text_concat (output, text_sep, PDF_TRUE, error) ||
-          !pdf_text_concat (output, *next, PDF_TRUE, error))
+      if (!pdf_text_concat (output,
+                            disk_fsys->filename_separator,
+                            PDF_TRUE,
+                            error) ||
+          !pdf_text_concat (output,
+                            next,
+                            PDF_TRUE,
+                            error))
         {
           pdf_text_destroy (output);
-          pdf_text_destroy (text_sep);
           va_end (args);
           return NULL;
         }
-      next = va_arg (args, pdf_text_t **);
+      next = va_arg (args, pdf_text_t *);
     }
   va_end (args);
 
-  pdf_text_destroy (text_sep);
   return output;
 }
 
@@ -1399,45 +1402,73 @@ get_status_from_errno (int _errno)
 }
 
 /* Setup the disk filesystem implementation, using named initializers */
-static const struct pdf_fsys_s pdf_fsys_disk_implementation =
+static struct pdf_fsys_disk_s pdf_fsys_disk_implementation =
   {
-    .create_folder_fn       = create_folder,
-    .get_folder_contents_fn = get_folder_contents,
-    .get_parent_fn          = get_parent,
-    .remove_folder_fn       = remove_folder,
-    .get_item_props_fn      = get_item_props,
-    .get_free_space_fn      = get_free_space,
-    .item_p_fn              = item_p,
-    .item_readable_p_fn     = item_readable_p,
-    .item_writable_p_fn     = item_writable_p,
-    .build_path_fn          = build_path,
-    .get_url_from_path_fn   = get_url_from_path,
+    .common.create_folder_fn       = create_folder,
+    .common.get_folder_contents_fn = get_folder_contents,
+    .common.get_parent_fn          = get_parent,
+    .common.remove_folder_fn       = remove_folder,
+    .common.get_item_props_fn      = get_item_props,
+    .common.get_free_space_fn      = get_free_space,
+    .common.item_p_fn              = item_p,
+    .common.item_readable_p_fn     = item_readable_p,
+    .common.item_writable_p_fn     = item_writable_p,
+    .common.build_path_fn          = build_path,
+    .common.get_url_from_path_fn   = get_url_from_path,
 
-    .file_open_fn           = file_open,
-    .file_open_tmp_fn       = file_open_tmp,
-    .file_reopen_fn         = file_reopen,
-    .file_close_fn          = file_close,
-    .file_read_fn           = file_read,
-    .file_write_fn          = file_write,
-    .file_flush_fn          = file_flush,
-    .file_can_set_size_p_fn = file_can_set_size_p,
-    .file_get_size_fn       = file_get_size,
-    .file_set_size_fn       = file_set_size,
-    .file_get_pos_fn        = file_get_pos,
-    .file_set_pos_fn        = file_set_pos,
-    .file_set_mode_fn       = file_set_mode,
-    .file_same_p_fn         = file_same_p,
-    .file_request_ria_fn    = file_request_ria,
-    .file_has_ria_fn        = file_has_ria,
-    .file_cancel_ria_fn     = file_cancel_ria,
+    .common.file_open_fn           = file_open,
+    .common.file_open_tmp_fn       = file_open_tmp,
+    .common.file_reopen_fn         = file_reopen,
+    .common.file_close_fn          = file_close,
+    .common.file_read_fn           = file_read,
+    .common.file_write_fn          = file_write,
+    .common.file_flush_fn          = file_flush,
+    .common.file_can_set_size_p_fn = file_can_set_size_p,
+    .common.file_get_size_fn       = file_get_size,
+    .common.file_set_size_fn       = file_set_size,
+    .common.file_get_pos_fn        = file_get_pos,
+    .common.file_set_pos_fn        = file_set_pos,
+    .common.file_set_mode_fn       = file_set_mode,
+    .common.file_same_p_fn         = file_same_p,
+    .common.file_request_ria_fn    = file_request_ria,
+    .common.file_has_ria_fn        = file_has_ria,
+    .common.file_cancel_ria_fn     = file_cancel_ria,
   };
+
+static void
+pdf_fsys_disk_deinit_cb (struct pdf_fsys_s *impl)
+{
+  struct pdf_fsys_disk_s *disk_fsys = (struct pdf_fsys_disk_s *)impl;
+
+  if (disk_fsys->filename_separator)
+    {
+      pdf_text_destroy (disk_fsys->filename_separator);
+      disk_fsys->filename_separator = NULL;
+    }
+}
 
 pdf_bool_t
 pdf_fsys_disk_init (pdf_error_t **error)
 {
+  pdf_text_t *tmp;
+
+#if FILE_SYSTEM_BACKSLASH_IS_FILE_NAME_SEPARATOR
+  tmp = pdf_text_new_from_unicode ((pdf_char_t*)"\\", 1, PDF_TEXT_UTF8, error);
+#else
+  tmp = pdf_text_new_from_unicode ((pdf_char_t*)"/", 1, PDF_TEXT_UTF8, error);
+#endif /* FILE_SYSTEM_BACKSLASH_IS_FILE_NAME_SEPARATOR */
+  if (!tmp)
+    {
+      pdf_prefix_error (error, "couldn't initialize disk filesystem: ");
+      return PDF_FALSE;
+    }
+
+  /* Disk filesystem implementation specific stuff */
+  pdf_fsys_disk_implementation.filename_separator = tmp;
+
   return pdf_fsys_add (PDF_FSYS_DISK_ID,
-                       &pdf_fsys_disk_implementation,
-                       NULL,
+                       (struct pdf_fsys_s *)&pdf_fsys_disk_implementation,
+                       pdf_fsys_disk_deinit_cb,
                        error);
 }
 
