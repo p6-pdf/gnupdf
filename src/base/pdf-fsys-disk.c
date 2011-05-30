@@ -1014,7 +1014,7 @@ file_read (pdf_fsys_file_t  *file,
 
 static pdf_bool_t
 file_write (pdf_fsys_file_t  *file,
-            pdf_char_t       *buf,
+            const pdf_char_t *buf,
             pdf_size_t        bytes,
             pdf_size_t       *written_bytes,
             pdf_error_t     **error)

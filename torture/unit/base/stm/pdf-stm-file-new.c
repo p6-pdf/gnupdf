@@ -42,7 +42,7 @@ START_TEST (pdf_stm_file_new_001)
   pdf_error_t *error = NULL;
   pdf_status_t ret;
   pdf_stm_t *stm;
-  pdf_fsys_file_t file;
+  pdf_fsys_file_t *file;
   pdf_text_t *path;
 
   /* Create the file path */
@@ -53,11 +53,12 @@ START_TEST (pdf_stm_file_new_001)
   fail_if (error != NULL);
 
   /* Open new file */
-  ret = pdf_fsys_file_open (NULL,
-                            path,
-                            PDF_FSYS_OPEN_MODE_WRITE,
-                            &file);
-  fail_if (ret != PDF_OK);
+  file = pdf_fsys_file_open (PDF_FSYS_DISK,
+                             path,
+                             PDF_FSYS_OPEN_MODE_WRITE,
+                             &error);
+  fail_unless (file != NULL);
+  fail_if (error != NULL);
 
   /* Create the stream */
   stm = pdf_stm_file_new (file,
@@ -70,7 +71,7 @@ START_TEST (pdf_stm_file_new_001)
 
   /* Free all resources */
   pdf_stm_destroy (stm);
-  pdf_fsys_file_close (file);
+  pdf_fsys_file_close (file, NULL);
   pdf_text_destroy (path);
 }
 END_TEST

@@ -166,7 +166,7 @@ typedef pdf_bool_t (*pdf_fsys_file_read_fn_t) (pdf_fsys_file_t  *file,
                                                pdf_error_t     **error);
 
 typedef pdf_bool_t (*pdf_fsys_file_write_fn_t) (pdf_fsys_file_t  *file,
-                                                pdf_char_t       *buf,
+                                                const pdf_char_t *buf,
                                                 pdf_size_t        bytes,
                                                 pdf_size_t       *written_bytes,
                                                 pdf_error_t     **error);

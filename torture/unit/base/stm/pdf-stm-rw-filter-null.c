@@ -177,7 +177,7 @@ common_file_stream_read_test (pdf_bool_t install_null_filter)
   pdf_stm_t *stm;
   pdf_size_t written_bytes;
   pdf_size_t read_bytes;
-  pdf_fsys_file_t file;
+  pdf_fsys_file_t *file;
   pdf_char_t data[4] = { 0 };
   pdf_text_t *path;
 
@@ -189,23 +189,28 @@ common_file_stream_read_test (pdf_bool_t install_null_filter)
   fail_if (error != NULL);
 
   /* Open new file */
-  fail_unless (pdf_fsys_file_open (NULL,
-                                   path,
-                                   PDF_FSYS_OPEN_MODE_WRITE,
-                                   &file) == PDF_OK);
+  file = pdf_fsys_file_open (PDF_FSYS_DISK,
+                             path,
+                             PDF_FSYS_OPEN_MODE_WRITE,
+                             &error);
+  fail_unless (file != NULL);
+  fail_if (error != NULL);
 
   written_bytes = 0;
   fail_unless (pdf_fsys_file_write (file,
                                     file_contents,
                                     strlen (file_contents),
-                                    &written_bytes) == PDF_OK);
+                                    &written_bytes,
+                                    &error) == PDF_TRUE);
   fail_if (written_bytes != strlen (file_contents));
-  pdf_fsys_file_close (file);
+  pdf_fsys_file_close (file, NULL);
 
-  fail_unless (pdf_fsys_file_open (NULL,
-                                   path,
-                                   PDF_FSYS_OPEN_MODE_READ,
-                                   &file) == PDF_OK);
+  file = pdf_fsys_file_open (PDF_FSYS_DISK,
+                             path,
+                             PDF_FSYS_OPEN_MODE_READ,
+                             &error);
+  fail_unless (file != NULL);
+  fail_if (error != NULL);
 
   /* Create the stream */
   stm = pdf_stm_file_new (file,
@@ -226,7 +231,7 @@ common_file_stream_read_test (pdf_bool_t install_null_filter)
 
   /* Free resources */
   pdf_stm_destroy (stm);
-  pdf_fsys_file_close (file);
+  pdf_fsys_file_close (file, NULL);
   pdf_text_destroy (path);
 }
 
@@ -265,7 +270,7 @@ common_file_stream_write_test (pdf_bool_t install_null_filter)
   pdf_stm_t *stm;
   pdf_size_t written_bytes;
   pdf_size_t read_bytes;
-  pdf_fsys_file_t file;
+  pdf_fsys_file_t *file;
   pdf_char_t data[4] = { 0 };
   pdf_text_t *path;
 
@@ -277,10 +282,12 @@ common_file_stream_write_test (pdf_bool_t install_null_filter)
   fail_if (error != NULL);
 
   /* Open new file for writing */
-  fail_unless (pdf_fsys_file_open (NULL,
-                                   path,
-                                   PDF_FSYS_OPEN_MODE_WRITE,
-                                   &file) == PDF_OK);
+  file = pdf_fsys_file_open (PDF_FSYS_DISK,
+                             path,
+                             PDF_FSYS_OPEN_MODE_WRITE,
+                             &error);
+  fail_unless (file != NULL);
+  fail_if (error != NULL);
 
   /* Create the stream */
   stm = pdf_stm_file_new (file,
@@ -302,22 +309,27 @@ common_file_stream_write_test (pdf_bool_t install_null_filter)
 
   /* Destroy data */
   pdf_stm_destroy (stm);
-  pdf_fsys_file_close (file);
+  pdf_fsys_file_close (file, NULL);
 
   /* Read file data and compare */
-  fail_unless (pdf_fsys_file_open (NULL,
-                                   path,
-                                   PDF_FSYS_OPEN_MODE_READ,
-                                   &file) == PDF_OK);
+  file = pdf_fsys_file_open (PDF_FSYS_DISK,
+                             path,
+                             PDF_FSYS_OPEN_MODE_READ,
+                             &error);
+  fail_unless (file != NULL);
+  fail_if (error != NULL);
+
   fail_unless (pdf_fsys_file_read (file,
                                    data,
                                    3,
-                                   &read_bytes) == PDF_OK);
+                                   &read_bytes,
+                                   &error) == PDF_TRUE);
+  fail_if (error != NULL);
   fail_unless (read_bytes == 3);
   fail_unless (strcmp (data, file_contents) == 0);
 
   /* Free resources */
-  pdf_fsys_file_close (file);
+  pdf_fsys_file_close (file, NULL);
   pdf_text_destroy (path);
 }
 

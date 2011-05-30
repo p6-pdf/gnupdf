@@ -106,7 +106,7 @@ START_TEST (pdf_stm_btell_002)
   pdf_stm_t *stm;
   pdf_char_t ret_char = '\0';
   pdf_size_t written_bytes;
-  pdf_fsys_file_t file;
+  pdf_fsys_file_t *file;
   pdf_text_t *path;
   int i;
 
@@ -118,23 +118,28 @@ START_TEST (pdf_stm_btell_002)
   fail_if (error != NULL);
 
   /* Open new file */
-  fail_unless (pdf_fsys_file_open (NULL,
-                                   path,
-                                   PDF_FSYS_OPEN_MODE_WRITE,
-                                   &file) == PDF_OK);
+  file = pdf_fsys_file_open (PDF_FSYS_DISK,
+                             path,
+                             PDF_FSYS_OPEN_MODE_WRITE,
+                             &error);
+  fail_unless (file != NULL);
+  fail_if (error != NULL);
 
   written_bytes = 0;
   fail_unless (pdf_fsys_file_write (file,
                                     file_contents,
                                     strlen (file_contents),
-                                    &written_bytes) == PDF_OK);
-  fail_if (written_bytes != 3);
-  pdf_fsys_file_close (file);
+                                    &written_bytes,
+                                    &error) == PDF_TRUE);
+  fail_if (written_bytes != strlen (file_contents));
+  pdf_fsys_file_close (file, NULL);
 
-  fail_unless (pdf_fsys_file_open (NULL,
-                                   path,
-                                   PDF_FSYS_OPEN_MODE_READ,
-                                   &file) == PDF_OK);
+  file = pdf_fsys_file_open (PDF_FSYS_DISK,
+                             path,
+                             PDF_FSYS_OPEN_MODE_READ,
+                             &error);
+  fail_unless (file != NULL);
+  fail_if (error != NULL);
 
   /* Create the stream */
   stm = pdf_stm_file_new (file,
@@ -171,7 +176,7 @@ START_TEST (pdf_stm_btell_002)
 
   /* Destroy data */
   pdf_stm_destroy (stm);
-  pdf_fsys_file_close (file);
+  pdf_fsys_file_close (file, NULL);
   pdf_text_destroy (path);
 }
 END_TEST
