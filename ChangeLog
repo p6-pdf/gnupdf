@@ -1,3 +1,11 @@
+2011-05-30  Albert Meroño Peñuela <albert.merono@est.fib.upc.edu>
+	torture: Unit tests for the UUID module.
+	* torture/unit/Makefile.am: UUID tests inclusion
+	* torture/unit/base/types/tsuite-types.c: UUID test suite
+	* torture/unit/base/types/pdf-types-uuid-generate.c: UUID tests
+	* torture/unit/base/types/pdf-types-uuid-string.c: Likewise
+	* torture/unit/base/types/pdf-types-uuid-equal-p.c: Likewise
+
 2011-05-10  Jose E. Marchesi  <jemarch@gnu.org>
 
 	lib: avoid name clash with PDF_OBJ_IS_NULL and provide a quick
