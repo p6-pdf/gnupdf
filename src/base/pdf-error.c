@@ -86,9 +86,7 @@ pdf_error (const pdf_status_t  status,
   errnum = (int) status;
 
   if (fd == NULL)
-    {
-      fd = stderr;
-    }
+    fd = stderr;
 
   fprintf (fd, "%s", pdf_library_name);
 

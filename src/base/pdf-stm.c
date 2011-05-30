@@ -95,7 +95,7 @@ pdf_stm_cfile_new (FILE                 *file,
 }
 
 pdf_stm_t *
-pdf_stm_file_new (pdf_fsys_file_t       file,
+pdf_stm_file_new (pdf_fsys_file_t      *file,
                   pdf_off_t             offset,
                   pdf_size_t            cache_size,
                   enum pdf_stm_mode_e   mode,

@@ -32,6 +32,7 @@
 #include <pdf-crypt.h>
 #include <pdf-text.h>
 #include <pdf-time.h>
+#include <pdf-fsys.h>
 
 #if PDF_FSYS_HTTP
 #include <curl/curl.h>
@@ -87,6 +88,10 @@ pdf_init (void)
           /* Inner error already set here */
         }
       else if (!pdf_time_module_init (&inner_error))
+        {
+          /* Inner error already set here */
+        }
+      else if (!pdf_fsys_init (&inner_error))
         {
           /* Inner error already set here */
         }

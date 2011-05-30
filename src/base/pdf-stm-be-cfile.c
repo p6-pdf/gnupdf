@@ -242,7 +242,7 @@ stm_be_cfile_seek (pdf_stm_be_t *be,
   pdf_off_t max_pos;
 
   /* Get last position in the cfile */
-  fseek (cfile_be->file, 0, SEEK_END);
+  fseeko (cfile_be->file, 0, SEEK_END);
   max_pos = ftello (cfile_be->file);
 
   /* Check the requested position */

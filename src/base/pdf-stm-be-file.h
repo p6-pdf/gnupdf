@@ -31,7 +31,7 @@
 #include <pdf-fsys.h>
 #include <pdf-stm-be.h>
 
-pdf_stm_be_t *pdf_stm_be_new_file (pdf_fsys_file_t   file,
+pdf_stm_be_t *pdf_stm_be_new_file (pdf_fsys_file_t  *file,
                                    pdf_off_t         pos,
                                    pdf_error_t     **error);
 

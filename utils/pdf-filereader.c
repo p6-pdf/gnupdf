@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2011-03-10 20:40:15 aleksander"
+/* -*- mode: C -*-
  *
  *       File:         pdf-filereader.c
  *       Date:         Thu Dec 2 23:35:55 2010
@@ -8,7 +8,7 @@
  *
  */
 
-/* Copyright (C) 2010, 2011 Free Software Foundation, Inc. */
+/* Copyright (C) 2010-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,269 +41,119 @@
 
 enum
 {
+  /* Args with short options */
+  PROPS_FILE_ARG  = 'p',
+  COPY_FILE_ARG   = 'c',
+  LIST_ARG        = 'l',
+  INPUT_FILE_ARG  = 'i',
+  OUTPUT_FILE_ARG = 'o',
+  /* Args without short options */
+  FSYS_ARG        = 100,
   HELP_ARG,
-  USAGE_ARG,
   VERSION_ARG,
-  INFILE_ARG,
-  OUTFILE_ARG,
-  PROPS_ARG,
-  DISK_ARG,
 };
 
-static const struct option GNU_longOptions[] =
+static const char *short_options = "pcli:o:";
+static const struct option long_options[] =
   {
-    {"help", no_argument, NULL, HELP_ARG},
-    {"usage", no_argument, NULL, USAGE_ARG},
-    {"version", no_argument, NULL, VERSION_ARG},
-    {"input-file", required_argument, NULL, INFILE_ARG},
-    {"output-file", required_argument, NULL, OUTFILE_ARG},
-    {"print-props", no_argument, NULL, PROPS_ARG},
-    {"fsys-disk", no_argument, NULL, DISK_ARG},
-    {NULL, 0, NULL, 0}
+    { "help",        no_argument,       NULL, HELP_ARG        },
+    { "version",     no_argument,       NULL, VERSION_ARG     },
+    { "props-file",  no_argument,       NULL, PROPS_FILE_ARG  },
+    { "copy-file",   no_argument,       NULL, COPY_FILE_ARG   },
+    { "list",        no_argument,       NULL, LIST_ARG        },
+    { "input-file",  required_argument, NULL, INPUT_FILE_ARG  },
+    { "output-file", required_argument, NULL, OUTPUT_FILE_ARG },
+    { "fsys",        required_argument, NULL, FSYS_ARG        },
+    { NULL,          0,                 NULL,  0              }
   };
 
 /* Messages */
 
-char *pdf_filereader_version_msg = "pdf_filereader 0.1";
+const char *pdf_filereader_version_msg = "pdf-filereader 0.1";
 
-char *pdf_filereader_usage_msg = "\
-Usage: pdf_filereader [OPTIONS]\n\
-Read file given with input-file argument and write to file given by \n\
-output-file argument.\n\
+const char *pdf_filereader_usage_msg = "\
+Usage: pdf-filereader [ACTION] [OPTIONS]\n\
+  pdf_bool_t use_disk_fs;Perform an action on a file in a filesystem.\n\
 \n\
-mandatory options:\n\
+actions:\n\
+  -p, --props-file\n                  Print input file properties\n\
+  -c, --copy-file\n                   Read an input file and copy its contents\n\
+                                      into an output file.\
+  -l, --list\n                        List supported filesystems\
 \n\
-  -i FILE, --input-file=FILE          Use a given file as the input.\n\
-  -o FILE, --output-file=FILE         Use a given file as the output.\n\
+options:\n\
 \n\
-available options:\n\
-\n\
-  --print-props                       print file properties\n\
-  --fsys-disk                         read using fsys-disk instead of fsys-http\n\
-                                      (default=fsys-http if fsys-http present.\n\
-                                      default=fsys-disk fsys-http absent)\n\
+  -i FILE, --input-file=FILE          Use a given file as the input\n\
+                                      (applies to --copy-file and --props-file).\n\
+  -o FILE, --output-file=FILE         Use a given file as the output\n\
+                                      (applies to --copy-file).\n\
+  --fsys=FSYS                         Read using the specified filesystem backend,\n\
+                                      instead of the default Disk filesystem\n\
+                                      (applies to --copy-file).\n\
 \n\
   --help                              print a help message and exit\n\
-  --usage                             print a usage message and exit\n\
   --version                           show pdf-filter version and exit\n\
 ";
-
-char *pdf_filereader_help_msg = "try --usage";
 
 /*
  * Data types:
  */
 
 struct pdf_filereader_args_s {
-  char * program_name;
-  char * in_fname;
-  char * out_fname;
-  pdf_bool_t print_props;
-  pdf_bool_t use_disk_fs;
-};
+  const char *program_name;
 
-typedef struct pdf_filereader_args_s pdf_filereader_args_t;
+  pdf_bool_t action_copy_file;
+  pdf_bool_t action_props_file;
+  pdf_bool_t action_list;
+
+  pdf_text_t *input_file;
+  pdf_char_t *input_file_printable;
+  pdf_text_t *output_file;
+  pdf_char_t *output_file_printable;
+  pdf_bool_t print_props;
+  const pdf_fsys_t *fsys;
+  const char *fsys_id;
+};
 
 /*
  * Global variables
  */
 
-pdf_filereader_args_t reader_args;
+static struct pdf_filereader_args_s reader_args;
 
 /*
  * Function Prototypes:
  */
 
-void
-parse_args (int argc, char *argv[]);
+static void parse_args (int argc, char *argv[]);
 
-void
-printout_fsys_props (struct pdf_fsys_item_props_s *p_props);
-
-int
-main (int argc, char *argv[]);
+void printout_fsys_props (struct pdf_fsys_item_props_s *p_props);
 
 
 /*
  * Function Implementations
  */
 
-#define BUF_LEN 1024
-
-int
-main (int argc, char *argv[])
+static void
+parse_args (int argc, char *argv[])
 {
-  pdf_status_t ret_stat;
-  pdf_text_t *input_path = NULL;
-  int rv = 0;
-  struct pdf_fsys_item_props_s path_props;
-  pdf_fsys_t use_this_fsys = NULL;
-  pdf_fsys_file_t the_file = NULL;
-  pdf_size_t len;
-  pdf_char_t buff[BUF_LEN];
+  int c;
 
-  FILE *f = NULL;
+  reader_args.program_name = argv[0];
+  reader_args.fsys_id = PDF_FSYS_DISK_ID;
+  reader_args.fsys = pdf_fsys_get (PDF_FSYS_DISK_ID);
 
-  set_program_name (argv[0]);
-
-#if defined HAVE_SETLOCALE
-  /* Initialize locale in the program */
-  setlocale (LC_ALL, "");
-#endif /* HAVE_SETLOCALE */
-
-  pdf_init ();
-
-  /* Initialized global vars */
-  reader_args.program_name = strdup (argv[0]);
-  reader_args.in_fname = NULL;
-  reader_args.out_fname = NULL;
-  reader_args.print_props = PDF_FALSE;
-  reader_args.use_disk_fs = PDF_FALSE;
-
-  parse_args (argc, argv);
-
-  if (PDF_OK == ret_stat)
-    {
-#if PDF_FSYS_HTTP
-      if (reader_args.use_disk_fs)
-#endif
-        {
-          use_this_fsys = pdf_fsys_create (pdf_fsys_disk_implementation);
-        }
-#if PDF_FSYS_HTTP
-      else /* Use HTTP fs (default) */
-        {
-          use_this_fsys = pdf_fsys_create (pdf_fsys_http_implementation);
-        }
-#endif
-      if (NULL == use_this_fsys)
-        {
-          ret_stat = PDF_ERROR;
-          fprintf (stderr, "ERROR: Failed to create pdf-fsys.\n");
-        }
-    }
-
-  if ((PDF_OK == ret_stat)
-      && (NULL != reader_args.in_fname)
-      && (NULL != reader_args.out_fname))
+  while ((c = getopt_long (argc,
+                           argv,
+                           short_options,
+                           long_options,
+                           NULL)) != -1)
     {
       pdf_error_t *error = NULL;
 
-      /* Input and Output filename given. Proceed. */
-
-      /* Convert in_fname to pdf_text_t */
-      input_path = pdf_text_new_from_host (reader_args.in_fname,
-					   strlen (reader_args.in_fname),
-					   pdf_text_get_host_encoding (),
-					   &error);
-      if (!input_path)
-        {
-	  rv = pdf_error_get_status (error);
-          fprintf (stderr,
-		   "\nERROR: pdf_text_new_from_host: %s\n",
-		   pdf_error_get_message (error));
-	  pdf_clear_error (&error);
-	}
-      else
-	{
-	  memset (&path_props, 0, sizeof (struct pdf_fsys_item_props_s));
-
-	  ret_stat = pdf_fsys_get_item_props (use_this_fsys,
-					      input_path,
-					      &path_props);
-	  if (PDF_OK != ret_stat)
-	    {
-	      if (PDF_EBADNAME == ret_stat)
-		{
-		  fprintf (stderr, "\nERROR: invalid path name given.\n");
-		}
-	      else
-		{
-		  fprintf (stderr, "\nERROR: get_item_props returned %d\n",
-			   ret_stat);
-		}
-	    }
-	}
-
-      if ((PDF_OK == ret_stat) && (reader_args.print_props))
-        {
-          printout_fsys_props (&path_props);
-        }
-
-      /* get item props succeeded - now open file! */
-
-      ret_stat = pdf_fsys_file_open (use_this_fsys,
-				     input_path,
-                                     PDF_FSYS_OPEN_MODE_READ,
-				     &the_file);
-
-      if (PDF_OK == ret_stat)
-        {
-
-          f = fopen (reader_args.out_fname, "w");
-
-          do
-            {
-
-              len = 0;
-
-              ret_stat = pdf_fsys_file_read (the_file, buff, BUF_LEN, &len);
-
-              if ((PDF_OK == ret_stat)
-                  || ((PDF_EEOF == ret_stat) && (0 != len)))
-                {
-                  fwrite (buff, 1, len, f);
-                }
-              else
-                {
-                  fprintf (stderr, "\nERROR: file_read: %d/%d -- len:%d\n",
-                           ret_stat, PDF_EEOF, len);
-                  rv = ret_stat;
-                }
-
-            } while (PDF_OK == ret_stat);
-
-          fclose (f);
-          pdf_fsys_file_close (the_file);
-
-        }
-      else
-        {
-          fprintf (stderr, "\nERROR: pdf_fsys_file_open: %d\n", ret_stat);
-          rv = ret_stat;
-        }
-
-    }
-  else
-    { /* Print usage message */
-      fprintf (stdout, "%s\n", pdf_filereader_usage_msg);
-    }
-
-  return rv;
-}
-
-void
-parse_args (int argc, char *argv[])
-{
-  pdf_status_t ret;
-  pdf_bool_t finish;
-  char c;
-
-
-  finish = PDF_FALSE;
-
-
-  while (!finish &&
-	 (ret = getopt_long (argc,
-			     argv,
-			     "i:o:",
-			     GNU_longOptions,
-			     NULL)) != -1)
-    {
-      c = ret;
       switch (c)
         {
-	  /* COMMON ARGUMENTS */
+          /* Common */
         case HELP_ARG:
           {
             fprintf (stdout, "%s\n", pdf_filereader_usage_msg);
@@ -316,81 +166,320 @@ parse_args (int argc, char *argv[])
             exit (EXIT_SUCCESS);
             break;
           }
-        case USAGE_ARG:
+
+          /* Actions */
+        case PROPS_FILE_ARG:
           {
-            fprintf (stdout, "%s\n", pdf_filereader_usage_msg);
-            exit (EXIT_SUCCESS);
+            reader_args.action_props_file = PDF_TRUE;
             break;
           }
-        case INFILE_ARG:
-        case 'i':
+        case COPY_FILE_ARG:
           {
-            reader_args.in_fname = pdf_alloc (strlen (optarg) + 1 );
-            strcpy (reader_args.in_fname, optarg);
+            reader_args.action_copy_file = PDF_TRUE;
             break;
           }
-        case OUTFILE_ARG:
-        case 'o':
+        case LIST_ARG:
           {
-            reader_args.out_fname = pdf_alloc (strlen (optarg) + 1);
-            strcpy (reader_args.out_fname, optarg);
+            reader_args.action_list = PDF_TRUE;
             break;
           }
-        case PROPS_ARG:
+
+          /* Options */
+        case INPUT_FILE_ARG:
           {
-            reader_args.print_props = PDF_TRUE;
+            reader_args.input_file =
+              pdf_text_new_from_host (optarg,
+                                      strlen (optarg),
+                                      pdf_text_get_host_encoding (),
+                                      &error);
+            if (!reader_args.input_file)
+              {
+                pdf_error (pdf_error_get_status (error),
+                           stderr,
+                           "couldn't create host-encoded path: %s",
+                           pdf_error_get_message (error));
+                exit (EXIT_FAILURE);
+              }
+
+            reader_args.input_file_printable =
+              pdf_text_get_unicode (reader_args.input_file,
+                                    PDF_TEXT_UTF8,
+                                    PDF_TEXT_UNICODE_WITH_NUL_SUFFIX,
+                                    NULL,
+                                    &error);
+            if (!reader_args.input_file_printable)
+              {
+                pdf_error (pdf_error_get_status (error),
+                           stderr,
+                           "couldn't create printable path: %s",
+                           pdf_error_get_message (error));
+                exit (EXIT_FAILURE);
+              }
+
             break;
           }
-        case DISK_ARG:
+        case OUTPUT_FILE_ARG:
           {
-            reader_args.use_disk_fs = PDF_TRUE;
+            reader_args.output_file =
+              pdf_text_new_from_host (optarg,
+                                      strlen (optarg),
+                                      pdf_text_get_host_encoding (),
+                                      &error);
+            if (!reader_args.output_file)
+              {
+                pdf_error (pdf_error_get_status (error),
+                           stderr,
+                           "couldn't create host-encoded path: %s",
+                           pdf_error_get_message (error));
+                exit (EXIT_FAILURE);
+              }
+
+            reader_args.output_file_printable =
+              pdf_text_get_unicode (reader_args.output_file,
+                                    PDF_TEXT_UTF8,
+                                    PDF_TEXT_UNICODE_WITH_NUL_SUFFIX,
+                                    NULL,
+                                    &error);
+            if (!reader_args.output_file_printable)
+              {
+                pdf_error (pdf_error_get_status (error),
+                           stderr,
+                           "couldn't create printable path: %s",
+                           pdf_error_get_message (error));
+                exit (EXIT_FAILURE);
+              }
+
+            break;
+          }
+        case FSYS_ARG:
+          {
+            reader_args.fsys_id = optarg;
+            reader_args.fsys = pdf_fsys_get (reader_args.fsys_id);
+            if (!reader_args.fsys)
+              {
+                pdf_error (PDF_EBADDATA,
+                           stderr,
+                           "unsupported filesystem given: %s",
+                           reader_args.fsys_id);
+                exit (EXIT_FAILURE);
+              }
             break;
           }
         }
-
     } /* end of while getopt_long */
 
 }
 
-void
-printout_fsys_props (struct pdf_fsys_item_props_s *p_props)
+static void
+foreach_print_fsys_id (void                    *user_data,
+                       const pdf_char_t        *id,
+                       const struct pdf_fsys_s *implementation)
 {
-/* Filesystem item properties */
-/*
-struct pdf_fsys_item_props_s
+  printf ("\t%s\n", id);
+}
+
+static void
+action_list (void)
 {
-  pdf_bool_t is_hidden;
-  pdf_bool_t is_readable;
-  pdf_bool_t is_writable;
-  pdf_time_t creation_date;
-  pdf_time_t modification_date;
-  pdf_off_t file_size_high;
-  pdf_u32_t folder_size;
-};
-*/
-    if (NULL != p_props)
-      {
-        fprintf (stderr, "is_hidden: %s\n",
-                 p_props->is_hidden ? "TRUE" : "FALSE");
+  printf ("Available filesystems:\n");
+  pdf_fsys_foreach (foreach_print_fsys_id, NULL);
+  printf ("\n");
+}
 
-        fprintf (stderr, "is_readable: %s\n",
-                 p_props->is_readable ? "TRUE" : "FALSE");
+static void
+action_props_file (void)
+{
+  pdf_error_t *error = NULL;
+  struct pdf_fsys_item_props_s props;
+  pdf_char_t *aux;
 
-        fprintf (stderr, "is_writable: %s\n",
-                 p_props->is_writable ? "TRUE" : "FALSE");
+  /* Ensure required arguments are present */
+  if (!reader_args.input_file)
+    {
+      pdf_error (PDF_EBADDATA,
+                 stderr,
+                 "listing file properties action (with --props-file) needs an "
+                 "input file as argument (with --input-file)");
+      exit (EXIT_FAILURE);
+    }
 
-        fprintf (stderr, "creation_date: Not displayed\n");
+  if (!pdf_fsys_get_item_props (reader_args.fsys,
+                                reader_args.input_file,
+                                &props,
+                                &error))
+    {
+      pdf_error (pdf_error_get_status (error),
+                 stderr,
+                 "couldn't get item '%s' properties: %s",
+                 reader_args.input_file_printable,
+                 pdf_error_get_message (error));
+      exit (EXIT_FAILURE);
+    }
 
-        fprintf (stderr, "modification_date: Not displayed\n");
+  /* Print item properties */
+  printf ("Properties of item '%s' (%s filesystem):\n",
+          reader_args.input_file_printable,
+          reader_args.fsys_id);
 
-        fprintf (stderr, "file_size: %llu\n",
-		 (unsigned long long)p_props->file_size);
+  printf ("\thidden:       %s\n", props.is_hidden ? "TRUE" : "FALSE");
+  printf ("\treadable:     %s\n", props.is_readable ? "TRUE" : "FALSE");
+  printf ("\twritable:     %s\n", props.is_writable ? "TRUE" : "FALSE");
 
-        fprintf (stderr, "folder_size: %d\n", p_props->folder_size);
+  aux = pdf_time_to_string (&props.creation_date,
+                            PDF_TIME_STRING_FORMAT_PDF,
+                            PDF_TIME_STRING_TRAILING_APOSTROPHE,
+                            NULL);
+  printf ("\tcreation:     %s\n", aux ? aux : "???");
+  pdf_dealloc (aux);
 
-      }
+  aux = pdf_time_to_string (&props.modification_date,
+                            PDF_TIME_STRING_FORMAT_PDF,
+                            PDF_TIME_STRING_TRAILING_APOSTROPHE,
+                            NULL);
+  printf ("\tmodification: %s\n", aux ? aux : "???");
+  pdf_dealloc (aux);
 
-    return;
+  printf ("\tfile size:    %ld\n", (long)props.file_size);
+  printf ("\tfolder size:  %u\n", (unsigned)props.folder_size);
+
+  printf ("\n");
+}
+
+static void
+action_copy_file (void)
+{
+  pdf_error_t *error = NULL;
+  pdf_fsys_file_t *ifile;
+  pdf_fsys_file_t *ofile;
+  pdf_bool_t eof = PDF_FALSE;
+#define BUFFER_SIZE 1024
+  pdf_char_t buffer [BUFFER_SIZE];
+
+  /* Ensure required arguments are present */
+  if (!reader_args.input_file)
+    {
+      pdf_error (PDF_EBADDATA,
+                 stderr,
+                 "copying file action (with --copy-file) needs an "
+                 "input file as argument (with --input-file)");
+      exit (EXIT_FAILURE);
+    }
+  if (!reader_args.output_file)
+    {
+      pdf_error (PDF_EBADDATA,
+                 stderr,
+                 "copying file action (with --copy-file) needs an "
+                 "output file as argument (with --output-file)");
+      exit (EXIT_FAILURE);
+    }
+
+  /* Open the input file for reading */
+  ifile = pdf_fsys_file_open (reader_args.fsys,
+                              reader_args.input_file,
+                              PDF_FSYS_OPEN_MODE_READ,
+                              &error);
+  if (!ifile)
+    {
+      pdf_error (pdf_error_get_status (error),
+                 stderr,
+                 "couldn't open file '%s' for reading: %s",
+                 reader_args.input_file_printable,
+                 pdf_error_get_message (error));
+      exit (EXIT_FAILURE);
+    }
+
+  /* Open the output file for writing */
+  ofile = pdf_fsys_file_open (reader_args.fsys,
+                              reader_args.output_file,
+                              PDF_FSYS_OPEN_MODE_WRITE,
+                              &error);
+  if (!ofile)
+    {
+      pdf_error (pdf_error_get_status (error),
+                 stderr,
+                 "couldn't open file '%s' for writing: %s",
+                 reader_args.output_file_printable,
+                 pdf_error_get_message (error));
+      exit (EXIT_FAILURE);
+    }
+
+  printf ("Copying from '%s' to '%s'...\n",
+          reader_args.input_file_printable,
+          reader_args.output_file_printable);
+
+  while (!eof)
+    {
+      pdf_size_t read_bytes = 0;
+
+      if (!pdf_fsys_file_read (ifile,
+                               buffer,
+                               BUFFER_SIZE,
+                               &read_bytes,
+                               &error))
+        {
+          if (!error)
+            eof = PDF_TRUE;
+          else
+            {
+              pdf_error (pdf_error_get_status (error),
+                         stderr,
+                         "couldn't read from file '%s': %s",
+                         reader_args.input_file_printable,
+                         pdf_error_get_message (error));
+              exit (EXIT_FAILURE);
+            }
+        }
+
+      if (read_bytes > 0)
+        {
+          pdf_size_t written_bytes = 0;
+
+          if (!pdf_fsys_file_write (ofile,
+                                    buffer,
+                                    read_bytes,
+                                    &written_bytes,
+                                    &error) &&
+              error)
+            {
+              pdf_error (pdf_error_get_status (error),
+                         stderr,
+                         "couldn't write to file '%s': %s",
+                         reader_args.output_file_printable,
+                         pdf_error_get_message (error));
+              exit (EXIT_FAILURE);
+            }
+          printf ("\tcopied %lu bytes...\n",
+                  (unsigned long)read_bytes);
+        }
+    }
+
+  pdf_fsys_file_close (ifile, NULL);
+  pdf_fsys_file_close (ofile, NULL);
+}
+
+int
+main (int argc, char *argv[])
+{
+#if defined HAVE_SETLOCALE
+  /* Initialize locale in the program */
+  setlocale (LC_ALL, "");
+#endif /* HAVE_SETLOCALE */
+
+  pdf_init ();
+
+  /* Initialize context */
+  parse_args (argc, argv);
+
+  /* Go run actions. Multiple actions, even if independent are allowed */
+
+  if (reader_args.action_list)
+    action_list ();
+
+  if (reader_args.action_props_file)
+    action_props_file ();
+
+  if (reader_args.action_copy_file)
+    action_copy_file ();
 }
 
 /* End of pdf-filereader.c */

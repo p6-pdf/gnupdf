@@ -232,9 +232,8 @@ static void process_stream (pdf_stm_t  *stm,
                             pdf_bool_t  write_pdf_fsys,
                             pdf_stm_t  *fsys_stm);
 
-static void open_file (pdf_char_t                *name,
-                       pdf_fsys_file_t           *file,
-                       enum pdf_fsys_file_mode_e  mode);
+static pdf_fsys_file_t *open_file (pdf_char_t                *name,
+                                   enum pdf_fsys_file_mode_e  mode);
 
 int
 main (int argc, char *argv[])
@@ -382,8 +381,8 @@ create_stream (int          argc,
   pdf_char_t *infile_name = NULL;
   pdf_char_t *outfile_name = NULL;
   pdf_char_t *endptr = NULL; /* Used in strtol */
-  pdf_fsys_file_t infile;
-  pdf_fsys_file_t outfile;
+  pdf_fsys_file_t *infile;
+  pdf_fsys_file_t *outfile;
   pdf_error_t *error = NULL;
 
   finish = PDF_FALSE;
@@ -487,7 +486,7 @@ create_stream (int          argc,
 
       if (infile_name != NULL)
         {
-          open_file (infile_name, &infile, PDF_FSYS_OPEN_MODE_READ);
+          infile = open_file (infile_name, PDF_FSYS_OPEN_MODE_READ);
           *read_pdf_fsys = PDF_TRUE;
           tmp = pdf_stm_file_new (infile,
                                   0,
@@ -520,7 +519,7 @@ create_stream (int          argc,
 
       if (outfile_name != NULL)
         {
-          open_file (outfile_name, &outfile, PDF_FSYS_OPEN_MODE_WRITE);
+          outfile = open_file (outfile_name, PDF_FSYS_OPEN_MODE_WRITE);
           *write_pdf_fsys = PDF_TRUE;
           tmp = pdf_stm_file_new (outfile,
                                   0,
@@ -1105,34 +1104,42 @@ install_filters (int        argc,
 
 }
 
-static void
+static pdf_fsys_file_t *
 open_file (pdf_char_t                *name,
-           pdf_fsys_file_t           *file,
            enum pdf_fsys_file_mode_e  mode)
 {
-  pdf_status_t ret;
+  pdf_fsys_file_t *file;
   pdf_text_t *path;
   pdf_error_t *error = NULL;
 
   path = pdf_text_new_from_host (name,
-				 strlen (name),
-				 pdf_text_get_host_encoding (),
-				 &error);
+                                 strlen (name),
+                                 pdf_text_get_host_encoding (),
+                                 &error);
   if (!path)
     {
       pdf_error (pdf_error_get_status (error),
-		 stderr,
-		 "couldn't create new text path: %s",
-		 pdf_error_get_message (error));
+                 stderr,
+                 "couldn't create new text path: %s",
+                 pdf_error_get_message (error));
       exit (EXIT_FAILURE);
     }
 
-  ret = pdf_fsys_file_open (NULL, path, mode, file);
-  if (ret != PDF_OK)
+  file = pdf_fsys_file_open (PDF_FSYS_DISK,
+                             path,
+                             mode,
+                             &error);
+  if (!file)
     {
-      pdf_error (ret, stderr, "while opening file '%s'", name);
+      pdf_error (pdf_error_get_status (error),
+                 stderr,
+                 "while opening file: %s",
+                 pdf_error_get_message (error));
       exit (EXIT_FAILURE);
     }
+
+  pdf_dealloc (path);
+  return file;
 }
 
 /* End of pdf_filter.c */

@@ -59,7 +59,7 @@ struct pdf_stm_be_s
   const pdf_stm_be_vtable_t *vtable;
 };
 
-#define pdf_stm_be_read(be,buffer,bytes,error)   \
+#define pdf_stm_be_read(be,buffer,bytes,error)  \
   be->vtable->read (be, buffer, bytes, error)
 #define pdf_stm_be_write(be,buffer,bytes,error) \
   be->vtable->write (be, buffer, bytes, error)

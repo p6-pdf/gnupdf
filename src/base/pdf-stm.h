@@ -87,7 +87,7 @@ pdf_stm_t *pdf_stm_cfile_new (FILE                 *file,
                               pdf_error_t         **error);
 
 /* Create a new file stream from a file object */
-pdf_stm_t *pdf_stm_file_new (pdf_fsys_file_t       file,
+pdf_stm_t *pdf_stm_file_new (pdf_fsys_file_t      *file,
                              pdf_off_t             offset,
                              pdf_size_t            cache_size,
                              enum pdf_stm_mode_e   mode,

@@ -37,7 +37,7 @@ struct pdf_stm_be_file_s
   struct pdf_stm_be_s parent;
 
   /* File handler */
-  pdf_fsys_file_t file;
+  pdf_fsys_file_t *file;
 
   /* Current offset in the file. This offset is only valid within this stream
    * backend object, and may not be equal to the real file offset. */
@@ -69,7 +69,7 @@ static const pdf_stm_be_vtable_t stm_be_vtable = {
 };
 
 pdf_stm_be_t *
-pdf_stm_be_new_file (pdf_fsys_file_t   file,
+pdf_stm_be_new_file (pdf_fsys_file_t  *file,
                      pdf_off_t         pos,
                      pdf_error_t     **error)
 {
@@ -104,28 +104,23 @@ stm_be_file_destroy (pdf_stm_be_t *be)
 }
 
 static pdf_bool_t
-stm_be_ensure_correct_offset (pdf_stm_be_file_t *file_be)
+stm_be_ensure_correct_offset (pdf_stm_be_file_t  *file_be,
+                              pdf_error_t       **error)
 {
   pdf_off_t current_pos;
 
   /* Get current real file offset */
-  if (pdf_fsys_file_get_pos (file_be->file,
-                             &current_pos) != PDF_OK)
-    {
-      PDF_ASSERT_TRACE_NOT_REACHED ();
-      return PDF_FALSE;
-    }
+  current_pos = pdf_fsys_file_get_pos (file_be->file, error);
+  if (current_pos == (pdf_off_t)-1)
+    return PDF_FALSE;
 
   /* If needed, fix file offset */
   if (current_pos != file_be->pos)
     {
-      if (pdf_fsys_file_set_pos (file_be->file,
-                                 file_be->pos) != PDF_OK)
-        {
-          PDF_ASSERT_TRACE_NOT_REACHED ();
-          return PDF_FALSE;
-        }
+      if (!pdf_fsys_file_set_pos (file_be->file, file_be->pos, error))
+        return PDF_FALSE;
     }
+
   return PDF_TRUE;
 }
 
@@ -137,35 +132,29 @@ stm_be_file_read (pdf_stm_be_t  *be,
 {
   pdf_stm_be_file_t *file_be = (pdf_stm_be_file_t *)be;
   pdf_size_t read_bytes = 0;
-  pdf_status_t ret;
+  pdf_error_t *inner_error = NULL;
 
   /* Note: bytes is unsigned */
   if (bytes == 0)
     return (pdf_ssize_t)0;
 
   /* Ensure we read from the correct offset */
-  if (!stm_be_ensure_correct_offset (file_be))
+  if (!stm_be_ensure_correct_offset (file_be, error))
     {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_STM,
-                     PDF_EINVRANGE,
-                     "cannot read from file backend: "
-                     "unable to correct offset");
+      pdf_prefix_error (error, "cannot correct offset when reading from file backend: ");
       return -1;
     }
 
   /* Read the requested number of bytes */
-  ret = pdf_fsys_file_read (file_be->file,
-                            (pdf_char_t *)buffer,
-                            bytes,
-                            &read_bytes);
-  /* Make sure EEOF is not treated as an error */
-  if (ret != PDF_OK && ret != PDF_EEOF)
+  if (!pdf_fsys_file_read (file_be->file,
+                           (pdf_char_t *)buffer,
+                           bytes,
+                           &read_bytes,
+                           &inner_error) &&
+      inner_error)   /* Make sure EEOF is not treated as an error */
     {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_STM,
-                     PDF_ERROR,
-                     "cannot read from file backend");
+      pdf_propagate_error (error, inner_error);
+      pdf_prefix_error (error, "cannot read from file backend: ");
       return -2;
     }
 
@@ -195,26 +184,20 @@ stm_be_file_write (pdf_stm_be_t  *be,
     return (pdf_ssize_t)0;
 
   /* Ensure we write in the correct offset */
-  if (!stm_be_ensure_correct_offset (file_be))
+  if (!stm_be_ensure_correct_offset (file_be, error))
     {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_STM,
-                     PDF_EINVRANGE,
-                     "cannot write to file backend: "
-                     "unable to correct offset");
+      pdf_prefix_error (error, "cannot correct offset when writing to file backend: ");
       return -1;
     }
 
   /* Write the requested number of bytes */
-  if (pdf_fsys_file_write (file_be->file,
-                           (pdf_char_t *)buffer,
-                           bytes,
-                           &written_bytes) != PDF_OK)
+  if (!pdf_fsys_file_write (file_be->file,
+                            (pdf_char_t *)buffer,
+                            bytes,
+                            &written_bytes,
+                            error))
     {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_STM,
-                     PDF_ERROR,
-                     "cannot write to file backend");
+      pdf_prefix_error (error, "cannot write to file backend: ");
       return -2;
     }
 
@@ -237,9 +220,10 @@ stm_be_file_seek (pdf_stm_be_t *be,
   pdf_stm_be_file_t *file_be = (pdf_stm_be_file_t *)be;
   pdf_off_t file_size;
 
-  file_size = pdf_fsys_file_get_size (file_be->file);
+  /* Ignore errors, get_size() will report (pdf_off_t)-1. */
+  file_size = pdf_fsys_file_get_size (file_be->file, NULL);
 
-  /* Ensure we don't go off limits */
+  /* Ensure we don't go off limits. */
   if (pos < 0)
     pos = 0;
   if (pos >= file_size)
