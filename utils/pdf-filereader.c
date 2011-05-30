@@ -479,6 +479,8 @@ main (int argc, char *argv[])
 
   if (reader_args.action_copy_file)
     action_copy_file ();
+
+  pdf_finish ();
 }
 
 /* End of pdf-filereader.c */
