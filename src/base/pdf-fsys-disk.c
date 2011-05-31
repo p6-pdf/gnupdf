@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008, 2010, 2011 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,6 +52,7 @@
 #include <pdf-error.h>
 #include <pdf-fsys-disk.h>
 
+/* Filesystem-specific implementation */
 struct pdf_fsys_disk_s
 {
   /* The common parent struct */
@@ -61,7 +62,7 @@ struct pdf_fsys_disk_s
   pdf_text_t *filename_separator;
 };
 
-/* Filesystem internal data associated with open files */
+/* Filesystem-specific implementation of open files */
 struct pdf_fsys_disk_file_s
 {
   /* The common parent struct */
@@ -124,7 +125,7 @@ init_base_file_data (struct pdf_fsys_disk_file_s  *file,
                                   error))
     {
       deinit_base_file_data (file);
-      return NULL;
+      return PDF_FALSE;
     }
 
   /* Get the host encoded path */
@@ -134,11 +135,11 @@ init_base_file_data (struct pdf_fsys_disk_file_s  *file,
       if (!file->host_path)
         {
           deinit_base_file_data (file);
-          return NULL;
+          return PDF_FALSE;
         }
     }
 
-  return file;
+  return PDF_TRUE;
 }
 
 /* Host-dependent fopen() */
@@ -1086,10 +1087,10 @@ file_request_ria (pdf_fsys_file_t  *file,
                   pdf_size_t        count,
                   pdf_error_t     **error)
 {
-  /* This filesystem implementation do not provide Read-In-Advance
-   * capabilities, so this function is a no-op */
-  PDF_ASSERT_TRACE_NOT_REACHED ();
-
+  pdf_set_error (error,
+                 PDF_EDOMAIN_BASE_FSYS,
+                 PDF_EBADDATA,
+                 "can't request RIA: not provided by the disk filesystem");
   return PDF_FALSE;
 }
 
@@ -1097,10 +1098,8 @@ static pdf_bool_t
 file_has_ria (pdf_fsys_file_t  *file,
               pdf_error_t     **error)
 {
-  /* This filesystem implementation do not provide Read-In-Advance
-   * capabilities */
-  PDF_ASSERT_TRACE_NOT_REACHED ();
-
+  /* We can just safely return FALSE here, without error:
+   * the file has definitely not an ongoing RIA operation */
   return PDF_FALSE;
 }
 
@@ -1108,11 +1107,10 @@ static pdf_bool_t
 file_cancel_ria (pdf_fsys_file_t  *file,
                  pdf_error_t     **error)
 {
-  /* This filesystem implementation do not provide Read-In-Advance
-   * capabilities, so this function is a no-op */
-  PDF_ASSERT_TRACE_NOT_REACHED ();
-
-  return PDF_FALSE;
+  /* We can just safely return FALSE here, without error:
+   * the file has definitely not an ongoing RIA operation, so
+   * canceling RIA always succeeds. */
+  return PDF_TRUE;
 }
 
 

@@ -34,10 +34,6 @@
 #include <pdf-time.h>
 #include <pdf-fsys.h>
 
-#if PDF_FSYS_HTTP
-#include <curl/curl.h>
-#endif
-
 /* Global variables */
 
 const pdf_char_t *pdf_library_name = "libgnupdf";
@@ -83,50 +79,21 @@ pdf_init (void)
                                        PDF_ERROR,
                                        "couldn't initialize crypt module");
         }
-      else if (!pdf_text_init (&inner_error))
+      else if (!pdf_text_init (&inner_error) ||
+               !pdf_time_module_init (&inner_error) ||
+               !pdf_fsys_init (&inner_error))
         {
           /* Inner error already set here */
-        }
-      else if (!pdf_time_module_init (&inner_error))
-        {
-          /* Inner error already set here */
-        }
-      else if (!pdf_fsys_init (&inner_error))
-        {
-          /* Inner error already set here */
-        }
-      else
-        {
-#if PDF_FSYS_HTTP
-          /* The documentation for libcurl indicates that this initialization
-           * ( curl_global_init () ) is _not_ thread-safe, and that it should
-           * therefore be performed during application startup while the
-           * application as a whole is single-threaded. If this is not possible
-           * it must be ensured that no other threads are initializing any of
-           * the libraries that libcurl will be initializing.
-           */
-
-          /* From curl_global_init(3) (libcurl manpage):
-           * This function is not thread safe. You must not call it when any
-           * other thread in the program  (i.e.  a  thread  sharing  the same
-           * memory) is running.  This doesn't just mean no other thread that
-           * is using libcurl.  Because curl_global_init() calls functions of
-           * other libraries that are similarly thread unsafe, it could
-           * conflict with any other thread that uses these other libraries.
-           */
-          if (curl_global_init (CURL_GLOBAL_ALL) != 0)
-            {
-              inner_error = pdf_error_new (PDF_EDOMAIN_FS,
-                                           PDF_ERROR,
-                                           "couldn't initialize curl");
-            }
-#endif // PDF_FSYS_HTTP
         }
 
       if (!inner_error)
         {
           pdf_globals.initialized = PDF_TRUE;
           ret = PDF_OK;
+        }
+      else
+        {
+          /* TODO: Propagate error */
         }
     }
 
@@ -140,30 +107,7 @@ pdf_init (void)
 void
 pdf_finish (void)
 {
-#if PDF_FSYS_HTTP
-  if (pthread_mutex_lock (&(pdf_globals.init_mutex)) == 0)
-    {
-      /* The mutex is locked within this brace. NO "return" statements allowed
-       * from within this block as they will leave the mutex locked and set us
-       * up for a deadlock.
-       */
-
-      /* From curl_global_cleanup(3) (libcurl manpage):
-
-       * This function is not thread safe. You must not call it when any other
-       * thread in the program  (i.e.  a  thread  sharing  the same memory) is
-       * running.  This doesn't just mean no other thread that is using
-       * libcurl.  Because curl_global_cleanup(3) calls  functions  of
-       * other  libraries  that  are  similarly  thread  unsafe, it could
-       * conflict with any other thread that uses these other libraries.
-       */
-
-      curl_global_cleanup ();
-
-      pthread_mutex_unlock (&(pdf_globals.init_mutex));
-    }
-#endif // PDF_FSYS_HTTP
-
+  pdf_fsys_deinit ();
   pdf_text_deinit ();
 }
 

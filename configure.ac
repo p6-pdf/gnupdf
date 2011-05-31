@@ -298,7 +298,7 @@ if test "x$fsys_http" = "xyes"; then
    AC_LIB_HAVE_LINKFLAGS([curl])
    if test "x$HAVE_LIBCURL" = "xyes"; then
      http_implementation=yes
-     AC_DEFINE([PDF_FSYS_HTTP],[1],[Include the HTTP filesystem in the build.])
+     AC_DEFINE([PDF_HAVE_FSYS_HTTP],[1],[Include the HTTP filesystem in the build.])
   fi
 fi
 

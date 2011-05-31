@@ -32,6 +32,10 @@
 #include <pdf-fsys.h>
 #include <pdf-fsys-disk.h>
 
+#if PDF_HAVE_FSYS_HTTP
+# include <pdf-fsys-http.h>
+#endif /* PDF_HAVE_FSYS_HTTP */
+
 /* Hash of filesystem implementations */
 pdf_hash_t *fsys_implementations;
 pthread_mutex_t fsys_implementations_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -215,12 +219,23 @@ pdf_fsys_init (pdf_error_t **error)
   if (!pdf_fsys_disk_init (error))
     return PDF_FALSE;
 
+#if PDF_HAVE_FSYS_HTTP
+  /* Init HTTP read-only filesystem */
+  if (!pdf_fsys_http_init (error))
+    return PDF_FALSE;
+#endif /* PDF_HAVE_FSYS_HTTP */
+
   return PDF_TRUE;
 }
 
 void
 pdf_fsys_deinit (void)
 {
+#if PDF_HAVE_FSYS_HTTP
+  /* Deinit HTTP read-only filesystem */
+  pdf_fsys_http_deinit ();
+#endif /* PDF_HAVE_FSYS_HTTP */
+
   /* Deinit DISK filesystem */
   pdf_fsys_disk_deinit ();
 }
