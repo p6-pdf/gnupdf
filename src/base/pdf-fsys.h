@@ -139,7 +139,7 @@ typedef pdf_text_t *(*pdf_fsys_build_path_fn_t) (const pdf_fsys_t  *fsys,
                                                  ...);
 
 typedef pdf_char_t *(*pdf_fsys_get_url_from_path_fn_t) (const pdf_fsys_t  *fsys,
-                                                        pdf_char_t        *path,
+                                                        const pdf_text_t  *path,
                                                         pdf_error_t      **error);
 
 /* File interface methods */

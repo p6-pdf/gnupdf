@@ -834,7 +834,7 @@ build_path (const pdf_fsys_t  *fsys,
 
 static pdf_char_t *
 get_url_from_path (const pdf_fsys_t  *fsys,
-                   pdf_char_t        *path,
+                   const pdf_text_t  *path,
                    pdf_error_t      **error)
 {
   PDF_ASSERT_POINTER_RETURN_VAL (path, NULL);
@@ -918,6 +918,7 @@ file_set_pos (pdf_fsys_file_t  *file,
   struct pdf_fsys_disk_file_s *disk_file;
 
   PDF_ASSERT_POINTER_RETURN_VAL (file, PDF_FALSE);
+  PDF_ASSERT_RETURN_VAL (new_pos >= 0, PDF_FALSE);
 
   disk_file = (struct pdf_fsys_disk_file_s *)file;
   if (fseeko (disk_file->file_descriptor,

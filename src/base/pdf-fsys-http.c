@@ -39,6 +39,7 @@ struct pdf_fsys_http_s
   /* The common parent struct */
   struct pdf_fsys_s common;
 
+  /* Common handle in the filesystem for multi-functions */
   CURLM *curlm;
 };
 
@@ -48,40 +49,132 @@ struct pdf_fsys_http_file_s
   /* The common parent struct */
   struct pdf_fsys_file_s common;
 
+  /* The URL to pass to curl */
+  pdf_char_t *url;
+
+  /* The reported Content-Length, if any
+   * NOTE: (double)-1 if none reported */
+  double content_length;
+
+  /* Current position when reading */
+  pdf_off_t pos;
 };
 
 /*
  * Filesystem Interface Implementation
  */
 
-/* Private function to de-initialize and de-allocate base file data */
-static void
-deinit_base_file_data (struct pdf_fsys_http_file_s *file)
-{
-  pdf_fsys_file_deinit_common (&(file->common));
-}
-
-/* Private function to allocate and initialize base file data */
 static pdf_bool_t
-init_base_file_data (struct pdf_fsys_http_file_s  *file,
-                     const struct pdf_fsys_s      *fsys,
-                     const pdf_text_t             *path,
-                     enum pdf_fsys_file_mode_e     mode,
-                     pdf_error_t                 **error)
+request_http_head (const pdf_char_t  *url,
+                   double            *content_length,
+                   pdf_error_t      **error)
 {
-  memset (file, 0, sizeof (struct pdf_fsys_http_file_s));
+  CURL *curl;
+  CURLcode res;
+  long http_res;
+  double inner_content_length;
 
-  /* Initialize common data */
-  if (!pdf_fsys_file_init_common (&(file->common),
-                                  fsys,
-                                  path,
-                                  mode,
-                                  error))
+  curl = curl_easy_init ();
+
+  /* Setup URL to retrieve */
+  if ((res = curl_easy_setopt (curl,
+                               CURLOPT_URL,
+                               url)) != CURLE_OK)
     {
-      deinit_base_file_data (file);
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_FSYS,
+                     PDF_ERROR,
+                     "couldn't set url: '%s'",
+                     curl_easy_strerror (res));
+      curl_easy_cleanup (curl);
       return PDF_FALSE;
     }
 
+  /* Set that no-body is requested (HTTP-HEADER only) */
+  if ((res = curl_easy_setopt (curl,
+                               CURLOPT_NOBODY,
+                               1L)) != CURLE_OK)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_FSYS,
+                     PDF_ERROR,
+                     "couldn't set no-body request: '%s'",
+                     curl_easy_strerror (res));
+      curl_easy_cleanup (curl);
+      return PDF_FALSE;
+    }
+
+  /* Try to follow location and therefore avoid 302 errors */
+  if ((res = curl_easy_setopt (curl,
+                               CURLOPT_FOLLOWLOCATION,
+                               1L)) != CURLE_OK)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_FSYS,
+                     PDF_ERROR,
+                     "couldn't set to follow location: '%s'",
+                     curl_easy_strerror (res));
+      curl_easy_cleanup (curl);
+      return PDF_FALSE;
+    }
+
+  /* Perform request, BLOCKING */
+  if ((res = curl_easy_perform (curl)) != CURLE_OK)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_FSYS,
+                     PDF_ERROR,
+                     "couldn't perform request: '%s'",
+                     curl_easy_strerror (res));
+      curl_easy_cleanup (curl);
+      return PDF_FALSE;
+    }
+
+  /* Get response code */
+  if ((res = curl_easy_getinfo (curl,
+                                CURLINFO_RESPONSE_CODE,
+                                &http_res)) != CURLE_OK)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_FSYS,
+                     PDF_ERROR,
+                     "couldn't get request response code: '%s'",
+                     curl_easy_strerror (res));
+      curl_easy_cleanup (curl);
+      return PDF_FALSE;
+    }
+
+  /* If response code is NOT 200 OK, set an error here */
+  if (http_res != 200)
+    {
+      /* TODO: if no response was received, http_res will be 0 */
+
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_FSYS,
+                     PDF_ERROR,
+                     "error in HTTP request: %ld",
+                     http_res);
+      curl_easy_cleanup (curl);
+      return PDF_FALSE;
+    }
+
+  /* Get Content-Length. It is ok if we don't get one */
+  if (content_length)
+    {
+      if (curl_easy_getinfo (curl,
+                             CURLINFO_RESPONSE_CODE,
+                             &inner_content_length) == CURLE_OK &&
+          inner_content_length >= 0)
+        {
+          *content_length = inner_content_length;
+        }
+      else
+        {
+          *content_length = (double)-1;
+        }
+    }
+
+  curl_easy_cleanup (curl);
   return PDF_TRUE;
 }
 
@@ -91,11 +184,69 @@ file_open (const pdf_fsys_t           *fsys,
            enum pdf_fsys_file_mode_e   mode,
            pdf_error_t               **error)
 {
+  struct pdf_fsys_http_file_s *file;
+
   PDF_ASSERT_POINTER_RETURN_VAL (path_name, NULL);
 
-  /* TODO */
+  /* Allow only open for READ-ing */
+  if (mode != PDF_FSYS_OPEN_MODE_READ)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_FSYS,
+                     PDF_EBADDATA,
+                     "can't open: the http filesystem is read-only");
+      return PDF_FALSE;
+    }
 
-  return NULL;
+  /* Allocate private data storage for the file */
+  file = (struct pdf_fsys_http_file_s *) pdf_alloc (sizeof (struct pdf_fsys_http_file_s));
+  if (!file)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_FSYS,
+                     PDF_ENOMEM,
+                     "cannot create http file object: "
+                     "couldn't allocate %lu bytes",
+                     (unsigned long) sizeof (struct pdf_fsys_http_file_s));
+      return NULL;
+    }
+
+  memset (file, 0, sizeof (struct pdf_fsys_http_file_s));
+
+  /* Initialize common data */
+  if (!pdf_fsys_file_init_common (&(file->common),
+                                  fsys,
+                                  path_name,
+                                  mode,
+                                  error))
+    {
+      pdf_fsys_file_deinit_common (&(file->common));
+      pdf_dealloc (file);
+      return NULL;
+    }
+
+  /* Get URL */
+  file->url = pdf_fsys_get_url_from_path (fsys,
+                                          file->common.unicode_path,
+                                          error);
+  if (!file->url)
+    {
+      pdf_fsys_file_deinit_common (&(file->common));
+      pdf_dealloc (file);
+      return NULL;
+    }
+
+  /* Launch an HTTP-HEAD request to get basic info of the remote file */
+  if (!request_http_head (file->url,
+                          &(file->content_length),
+                          error))
+    {
+      pdf_fsys_file_deinit_common (&(file->common));
+      pdf_dealloc (file);
+      return NULL;
+    }
+
+  return (pdf_fsys_file_t *)file;
 }
 
 static pdf_fsys_file_t *
@@ -113,9 +264,16 @@ static pdf_bool_t
 file_close (pdf_fsys_file_t  *file,
             pdf_error_t     **error)
 {
+  struct pdf_fsys_http_file_s *http_file = (struct pdf_fsys_http_file_s *)file;
   PDF_ASSERT_POINTER_RETURN_VAL (file, PDF_FALSE);
-  /* TODO */
-  return PDF_FALSE;
+
+  if (http_file->url)
+    pdf_dealloc (http_file->url);
+
+  pdf_fsys_file_deinit_common (&(http_file->common));
+  pdf_dealloc (file);
+
+  return PDF_TRUE;
 }
 
 static pdf_bool_t
@@ -175,22 +333,69 @@ get_item_props (const pdf_fsys_t              *fsys,
                 struct pdf_fsys_item_props_s  *props,
                 pdf_error_t                  **error)
 {
+  pdf_char_t *url;
+  double content_length;
+
   PDF_ASSERT_POINTER_RETURN_VAL (path_name, PDF_FALSE);
   PDF_ASSERT_POINTER_RETURN_VAL (props, PDF_FALSE);
 
-  /* Initialize the output to all zeros */
-  memset (props, 0, sizeof (struct pdf_fsys_item_props_s));
+  /* Get URL */
+  url = pdf_fsys_get_url_from_path (fsys,
+                                    path_name,
+                                    error);
+  if (!url)
+    return PDF_FALSE;
 
-  /* TODO */
-  return PDF_FALSE;
+  /* Launch an HTTP-HEAD request to get basic info of the remote file */
+  if (!request_http_head (url,
+                          &content_length,
+                          error))
+    {
+      pdf_dealloc (url);
+      return PDF_FALSE;
+    }
+
+  props->is_hidden = PDF_FALSE;
+  props->is_readable = PDF_TRUE;
+  props->is_writable = PDF_FALSE;
+
+  pdf_time_init (&props->creation_date);
+  pdf_time_set_utc (&props->creation_date, 0);
+  pdf_time_init (&props->modification_date);
+  pdf_time_set_utc (&props->modification_date, 0);
+
+  props->file_size = (pdf_off_t)content_length;
+  props->folder_size = 0;
+
+  pdf_dealloc (url);
+  return PDF_TRUE;
 }
 
 static pdf_bool_t
 item_p (const pdf_fsys_t *fsys,
         const pdf_text_t *path_name)
 {
-  /* TODO */
-  return PDF_FALSE;
+  pdf_char_t *url;
+
+  PDF_ASSERT_POINTER_RETURN_VAL (path_name, PDF_FALSE);
+
+  /* Get URL */
+  url = pdf_fsys_get_url_from_path (fsys,
+                                    path_name,
+                                    NULL);
+  if (!url)
+    return PDF_FALSE;
+
+  /* Launch an HTTP-HEAD request to get basic info of the remote file */
+  if (!request_http_head (url, NULL, NULL))
+    {
+      pdf_dealloc (url);
+      return PDF_FALSE;
+    }
+
+  /* It does exist! (we got 200 OK) */
+  pdf_dealloc (url);
+  return PDF_TRUE;
 }
 
 static pdf_bool_t
@@ -232,14 +437,19 @@ build_path (const pdf_fsys_t  *fsys,
 
 static pdf_char_t *
 get_url_from_path (const pdf_fsys_t  *fsys,
-                   pdf_char_t        *path,
+                   const pdf_text_t  *path,
                    pdf_error_t      **error)
 {
+  PDF_ASSERT_POINTER_RETURN_VAL (fsys, NULL);
   PDF_ASSERT_POINTER_RETURN_VAL (path, NULL);
 
-  /* TODO */
-
-  return NULL;
+  /* TODO: Properly do this. We must make sure the string we get is a real valid
+   * URL, see FS#126 */
+  return pdf_text_get_unicode (path,
+                               PDF_TEXT_UTF8,
+                               PDF_TEXT_UNICODE_WITH_NUL_SUFFIX,
+                               NULL,
+                               error);
 }
 
 static pdf_bool_t
@@ -247,17 +457,32 @@ file_same_p (const pdf_fsys_file_t  *file,
              const pdf_text_t       *path,
              pdf_error_t           **error)
 {
-  /* TODO */
-  return PDF_FALSE;
+  const struct pdf_fsys_http_file_s *http_file = (const struct pdf_fsys_http_file_s *)file;
+  pdf_char_t *path_url;
+  pdf_bool_t same;
+
+  path_url = pdf_fsys_get_url_from_path (file->fsys,
+                                         path,
+                                         error);
+  if (!path_url)
+    return PDF_FALSE;
+
+  same = (strcmp (path_url, http_file->url) == 0 ?
+          PDF_TRUE : PDF_FALSE);
+
+  pdf_dealloc (path_url);
+  return same;
 }
 
 static pdf_off_t
 file_get_pos (const pdf_fsys_file_t  *file,
               pdf_error_t           **error)
 {
-  /* TODO */
+  const struct pdf_fsys_http_file_s *http_file = (const struct pdf_fsys_http_file_s *)file;
 
-  return -1;
+  PDF_ASSERT_POINTER_RETURN_VAL (file, (pdf_off_t)-1);
+
+  return http_file->pos;
 }
 
 static pdf_bool_t
@@ -265,9 +490,29 @@ file_set_pos (pdf_fsys_file_t  *file,
               pdf_off_t         new_pos,
               pdf_error_t     **error)
 {
-  /* TODO */
+  struct pdf_fsys_http_file_s *http_file = (struct pdf_fsys_http_file_s *)file;
 
-  return PDF_FALSE;
+  PDF_ASSERT_POINTER_RETURN_VAL (file, PDF_FALSE);
+  PDF_ASSERT_RETURN_VAL (new_pos >= 0, PDF_FALSE);
+
+  /* If we got reported a proper content-length, ensure we don't go off its limits */
+  if (http_file->content_length >= 0 &&
+      new_pos > http_file->content_length)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_FSYS,
+                     PDF_EINVRANGE,
+                     "cannot set new position (%lu) off limits (%lu)",
+                     (unsigned long)new_pos,
+                     (unsigned long)http_file->content_length);
+      return PDF_FALSE;
+    }
+
+  /* If we don't have a proper content-length value, or it is within limits,
+   * just accept the new pos */
+  http_file->pos = new_pos;
+
+  return PDF_TRUE;
 }
 
 static pdf_bool_t
@@ -282,11 +527,12 @@ static pdf_off_t
 file_get_size (const pdf_fsys_file_t  *file,
                pdf_error_t           **error)
 {
-  PDF_ASSERT_POINTER_RETURN_VAL (file, PDF_FALSE);
+  const struct pdf_fsys_http_file_s *http_file = (const struct pdf_fsys_http_file_s *)file;
 
-  /* TODO */
+  PDF_ASSERT_POINTER_RETURN_VAL (file, (pdf_off_t)-1);
 
-  return -1;
+  /* We got size during the HTTP-HEAD while opening the file */
+  return (pdf_off_t)http_file->content_length;
 }
 
 static pdf_bool_t
@@ -442,6 +688,13 @@ static struct pdf_fsys_http_s pdf_fsys_http_implementation =
 static void
 pdf_fsys_http_deinit_cb (struct pdf_fsys_s *impl)
 {
+  /* Cleanup the multi-function handle */
+  if (pdf_fsys_http_implementation.curlm)
+    {
+      curl_multi_cleanup (pdf_fsys_http_implementation.curlm);
+      pdf_fsys_http_implementation.curlm = NULL;
+    }
+
   /* From curl_global_cleanup(3) (libcurl manpage):
    * This function is not thread safe. You must not call it when any other
    * thread in the program  (i.e.  a  thread  sharing  the same memory) is
@@ -478,6 +731,17 @@ pdf_fsys_http_init (pdf_error_t **error)
                      PDF_EDOMAIN_BASE_FSYS,
                      PDF_ERROR,
                      "couldn't initialize curl");
+      return PDF_FALSE;
+    }
+
+  /* Initialize the multi-function handle */
+  pdf_fsys_http_implementation.curlm = curl_multi_init ();
+  if (!pdf_fsys_http_implementation.curlm)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_FSYS,
+                     PDF_ERROR,
+                     "couldn't initialize multi-function curl handle");
       return PDF_FALSE;
     }
 
