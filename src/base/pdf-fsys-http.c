@@ -209,6 +209,143 @@ request_http_head (const pdf_char_t  *url,
   return PDF_TRUE;
 }
 
+struct partial_get_context_s {
+  pdf_char_t *buffer;
+  pdf_size_t  available_size;
+  pdf_size_t  index;
+};
+
+static size_t
+request_http_partial_get_body_parse (void   *ptr,
+                                     size_t  size,
+                                     size_t  nmemb,
+                                     void   *user_data)
+{
+  pdf_size_t n_bytes = size * nmemb;
+  struct partial_get_context_s *context = user_data;
+
+  if (n_bytes == 0)
+    return 0;
+
+  if (n_bytes > context->available_size)
+    {
+      /* If we ask for 10 bytes, we should not get more than 10.
+       * We return 0 here so that we get an error afterwards. */
+      return 0;
+    }
+
+  printf ("Reading %u bytes\n", n_bytes);
+
+  memcpy (&context->buffer[context->index], ptr, n_bytes);
+  context->available_size -= n_bytes;
+  context->index += n_bytes;
+
+  return n_bytes;
+}
+
+static pdf_bool_t
+request_http_partial_get (const pdf_char_t  *url,
+                          pdf_char_t        *buffer,
+                          pdf_size_t         offset,
+                          pdf_size_t         bytes,
+                          pdf_size_t        *read_bytes,
+                          pdf_error_t      **error)
+{
+  CURL *curl;
+  CURLcode res;
+  long http_res;
+  pdf_char_t range [128] = { 0 };
+  struct partial_get_context_s context;
+
+  /* Setup context */
+  context.buffer = buffer;
+  context.available_size = bytes;
+  context.index = 0;
+
+  curl = curl_easy_init ();
+
+  /* Compute range string */
+  sprintf (range,
+           "%lu-%lu",
+           (unsigned long)offset,
+           (unsigned long) (offset + bytes));
+
+  /* Setup request options */
+  if ((res = curl_easy_setopt (curl,
+                               CURLOPT_URL,
+                               url)) != CURLE_OK ||
+      /* Try to follow location and therefore avoid 302 errors */
+      (res = curl_easy_setopt (curl,
+                               CURLOPT_FOLLOWLOCATION,
+                               1L)) != CURLE_OK ||
+      /* Set range of bytes to download */
+      (res = curl_easy_setopt (curl,
+                               CURLOPT_RANGE,
+                               range)) != CURLE_OK ||
+      /* Setup a content parsing function */
+      (res = curl_easy_setopt (curl,
+                               CURLOPT_WRITEFUNCTION,
+                               request_http_partial_get_body_parse)) != CURLE_OK ||
+      /* Setup context data for the context parsing function */
+      (res = curl_easy_setopt (curl,
+                               CURLOPT_WRITEDATA,
+                               &context)) != CURLE_OK)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_FSYS,
+                     PDF_ERROR,
+                     "couldn't set request options: '%s'",
+                     curl_easy_strerror (res));
+      curl_easy_cleanup (curl);
+      return PDF_FALSE;
+    }
+
+  /* Perform request, BLOCKING */
+  if ((res = curl_easy_perform (curl)) != CURLE_OK)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_FSYS,
+                     PDF_ERROR,
+                     "couldn't perform request: '%s'",
+                     curl_easy_strerror (res));
+      curl_easy_cleanup (curl);
+      return PDF_FALSE;
+    }
+
+  /* Get response code */
+  if ((res = curl_easy_getinfo (curl,
+                                CURLINFO_RESPONSE_CODE,
+                                &http_res)) != CURLE_OK)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_FSYS,
+                     PDF_ERROR,
+                     "couldn't get request response code: '%s'",
+                     curl_easy_strerror (res));
+      curl_easy_cleanup (curl);
+      return PDF_FALSE;
+    }
+
+  /* If response code is NOT 200 OK, set an error here */
+  if (http_res != 200)
+    {
+      /* TODO: if no response was received, http_res will be 0 */
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_FSYS,
+                     PDF_ERROR,
+                     "error in HTTP request: %ld",
+                     http_res);
+      curl_easy_cleanup (curl);
+      return PDF_FALSE;
+    }
+
+  /* Set number of read bytes */
+  *read_bytes = context.index;
+
+  curl_easy_cleanup (curl);
+  return PDF_TRUE;
+}
+
 static pdf_fsys_file_t *
 file_open (const pdf_fsys_t           *fsys,
            const pdf_text_t           *path_name,
@@ -585,10 +722,16 @@ file_read (pdf_fsys_file_t  *file,
            pdf_size_t       *read_bytes,
            pdf_error_t     **error)
 {
+  struct pdf_fsys_http_file_s *http_file = (struct pdf_fsys_http_file_s *)file;
+
   PDF_ASSERT_POINTER_RETURN_VAL (file, PDF_FALSE);
 
-  /* TODO */
-  return PDF_FALSE;
+  return request_http_partial_get (http_file->url,
+                                   buf,
+                                   (pdf_size_t)http_file->pos,
+                                   bytes,
+                                   read_bytes,
+                                   error);
 }
 
 static pdf_bool_t
