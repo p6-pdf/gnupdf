@@ -64,6 +64,38 @@ struct pdf_fsys_http_file_s
  * Filesystem Interface Implementation
  */
 
+static size_t
+request_http_head_header_parse (void   *ptr,
+                                size_t  size,
+                                size_t  nmemb,
+                                void   *user_data)
+{
+  /* NOTE:
+   * This callback gets called for ALL headers of all intermediate responses,
+   * not just for the final one.
+   *
+   * ALSO:
+   * Not to be assumed that the string we get is NUL-terminated.. :-/
+   */
+  pdf_size_t n_bytes = size * nmemb;
+  pdf_char_t *str = (pdf_char_t *)ptr;
+  pdf_bool_t *accept_ranges = (pdf_bool_t *)user_data;
+
+#define ACCEPT_RANGES "Accept-Ranges: bytes"
+
+  /* TODO: Use a regex to match the header we're looking for */
+  if (*accept_ranges == PDF_FALSE &&
+      n_bytes >= strlen (ACCEPT_RANGES) &&
+      strncmp (str, ACCEPT_RANGES, strlen (ACCEPT_RANGES)) == 0)
+    {
+      *accept_ranges =  PDF_TRUE;
+    }
+
+#undef ACCEPT_RANGES
+
+  return n_bytes;
+}
+
 static pdf_bool_t
 request_http_head (const pdf_char_t  *url,
                    double            *content_length,
@@ -73,46 +105,35 @@ request_http_head (const pdf_char_t  *url,
   CURLcode res;
   long http_res;
   double inner_content_length;
+  pdf_bool_t accept_ranges = PDF_FALSE;
 
   curl = curl_easy_init ();
 
-  /* Setup URL to retrieve */
+  /* Setup request options */
   if ((res = curl_easy_setopt (curl,
                                CURLOPT_URL,
-                               url)) != CURLE_OK)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_FSYS,
-                     PDF_ERROR,
-                     "couldn't set url: '%s'",
-                     curl_easy_strerror (res));
-      curl_easy_cleanup (curl);
-      return PDF_FALSE;
-    }
-
-  /* Set that no-body is requested (HTTP-HEADER only) */
-  if ((res = curl_easy_setopt (curl,
+                               url)) != CURLE_OK ||
+      /* Set that no-body is requested (HTTP-HEADER only) */
+      (res = curl_easy_setopt (curl,
                                CURLOPT_NOBODY,
-                               1L)) != CURLE_OK)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_FSYS,
-                     PDF_ERROR,
-                     "couldn't set no-body request: '%s'",
-                     curl_easy_strerror (res));
-      curl_easy_cleanup (curl);
-      return PDF_FALSE;
-    }
-
-  /* Try to follow location and therefore avoid 302 errors */
-  if ((res = curl_easy_setopt (curl,
+                               1L)) != CURLE_OK ||
+      /* Try to follow location and therefore avoid 302 errors */
+      (res = curl_easy_setopt (curl,
                                CURLOPT_FOLLOWLOCATION,
-                               1L)) != CURLE_OK)
+                               1L)) != CURLE_OK ||
+      /* Setup a header parsing function */
+      (res = curl_easy_setopt (curl,
+                               CURLOPT_HEADERFUNCTION,
+                               request_http_head_header_parse)) != CURLE_OK ||
+      /* Setup context data for the header parsing function */
+      (res = curl_easy_setopt (curl,
+                               CURLOPT_HEADERDATA,
+                               &accept_ranges)) != CURLE_OK)
     {
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_FSYS,
                      PDF_ERROR,
-                     "couldn't set to follow location: '%s'",
+                     "couldn't set request options: '%s'",
                      curl_easy_strerror (res));
       curl_easy_cleanup (curl);
       return PDF_FALSE;
@@ -148,7 +169,6 @@ request_http_head (const pdf_char_t  *url,
   if (http_res != 200)
     {
       /* TODO: if no response was received, http_res will be 0 */
-
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_FSYS,
                      PDF_ERROR,
@@ -158,11 +178,22 @@ request_http_head (const pdf_char_t  *url,
       return PDF_FALSE;
     }
 
+  /* We do not support files reported as not allowing Ranges */
+  if (!accept_ranges)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_FSYS,
+                     PDF_EIMPLLIMIT,
+                     "Accept-Ranges not supported by remote server");
+      curl_easy_cleanup (curl);
+      return PDF_FALSE;
+    }
+
   /* Get Content-Length. It is ok if we don't get one */
   if (content_length)
     {
       if (curl_easy_getinfo (curl,
-                             CURLINFO_RESPONSE_CODE,
+                             CURLINFO_CONTENT_LENGTH_DOWNLOAD,
                              &inner_content_length) == CURLE_OK &&
           inner_content_length >= 0)
         {
