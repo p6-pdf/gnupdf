@@ -231,10 +231,9 @@ request_http_partial_get_body_parse (void   *ptr,
     {
       /* If we ask for 10 bytes, we should not get more than 10.
        * We return 0 here so that we get an error afterwards. */
+      PDF_ASSERT_TRACE_NOT_REACHED ();
       return 0;
     }
-
-  printf ("Reading %u bytes\n", n_bytes);
 
   memcpy (&context->buffer[context->index], ptr, n_bytes);
   context->available_size -= n_bytes;
@@ -268,7 +267,7 @@ request_http_partial_get (const pdf_char_t  *url,
   sprintf (range,
            "%lu-%lu",
            (unsigned long)offset,
-           (unsigned long) (offset + bytes));
+           (unsigned long) (offset + bytes - 1));
 
   /* Setup request options */
   if ((res = curl_easy_setopt (curl,
@@ -326,15 +325,31 @@ request_http_partial_get (const pdf_char_t  *url,
       return PDF_FALSE;
     }
 
-  /* If response code is NOT 200 OK, set an error here */
-  if (http_res != 200)
+  /* Several responses should be treated as no-errors:
+   *  - 200 OK
+   *  - 206 Partial Content
+   */
+  if (http_res != 200 &&
+      http_res != 206)
     {
       /* TODO: if no response was received, http_res will be 0 */
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_FSYS,
-                     PDF_ERROR,
-                     "error in HTTP request: %ld",
-                     http_res);
+      /* Treat 416 Requested Range Not Satisfiable in a special way */
+      if (http_res == 416)
+        {
+          pdf_set_error (error,
+                         PDF_EDOMAIN_BASE_FSYS,
+                         PDF_EINVRANGE,
+                         "invalid range requested: %ld",
+                         http_res);
+        }
+      else
+        {
+          pdf_set_error (error,
+                         PDF_EDOMAIN_BASE_FSYS,
+                         PDF_ERROR,
+                         "error in HTTP request: %ld",
+                         http_res);
+        }
       curl_easy_cleanup (curl);
       return PDF_FALSE;
     }
@@ -723,15 +738,27 @@ file_read (pdf_fsys_file_t  *file,
            pdf_error_t     **error)
 {
   struct pdf_fsys_http_file_s *http_file = (struct pdf_fsys_http_file_s *)file;
+  pdf_size_t inner_read_bytes = 0;
 
   PDF_ASSERT_POINTER_RETURN_VAL (file, PDF_FALSE);
 
-  return request_http_partial_get (http_file->url,
-                                   buf,
-                                   (pdf_size_t)http_file->pos,
-                                   bytes,
-                                   read_bytes,
-                                   error);
+  if (request_http_partial_get (http_file->url,
+                                buf,
+                                (pdf_size_t)http_file->pos,
+                                bytes,
+                                &inner_read_bytes,
+                                error))
+    {
+      /* Advance the reading offset ourselves here */
+      http_file->pos += inner_read_bytes;
+      if (read_bytes)
+        *read_bytes = inner_read_bytes;
+
+      /* Return FALSE (eof) if read bytes are less than requested ones */
+      return (inner_read_bytes < bytes ?
+              PDF_FALSE: PDF_TRUE);
+    }
+  return PDF_FALSE;
 }
 
 static pdf_bool_t

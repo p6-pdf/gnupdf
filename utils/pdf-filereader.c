@@ -43,6 +43,7 @@ enum
 {
   /* Args with short options */
   PROPS_FILE_ARG  = 'p',
+  READ_FILE_ARG   = 'r',
   COPY_FILE_ARG   = 'c',
   LIST_ARG        = 'l',
   INPUT_FILE_ARG  = 'i',
@@ -53,12 +54,13 @@ enum
   VERSION_ARG,
 };
 
-static const char *short_options = "pcli:o:";
+static const char *short_options = "prcli:o:";
 static const struct option long_options[] =
   {
     { "help",        no_argument,       NULL, HELP_ARG        },
     { "version",     no_argument,       NULL, VERSION_ARG     },
     { "props-file",  no_argument,       NULL, PROPS_FILE_ARG  },
+    { "read-file",   no_argument,       NULL, READ_FILE_ARG   },
     { "copy-file",   no_argument,       NULL, COPY_FILE_ARG   },
     { "list",        no_argument,       NULL, LIST_ARG        },
     { "input-file",  required_argument, NULL, INPUT_FILE_ARG  },
@@ -77,6 +79,7 @@ Usage: pdf-filereader [ACTION] [OPTIONS]\n\
 \n\
 actions:\n\
   -p, --props-file                    print input file properties\n\
+  -r, --read-file                     read an input file\n\
   -c, --copy-file                     read an input file and copy its contents\n\
                                        into an output file.\n\
   -l, --list                          list supported filesystems\n\
@@ -101,6 +104,7 @@ options:\n\
 struct pdf_filereader_args_s {
   const char *program_name;
 
+  pdf_bool_t action_read_file;
   pdf_bool_t action_copy_file;
   pdf_bool_t action_props_file;
   pdf_bool_t action_list;
@@ -170,6 +174,11 @@ parse_args (int argc, char *argv[])
         case PROPS_FILE_ARG:
           {
             reader_args.action_props_file = PDF_TRUE;
+            break;
+          }
+        case READ_FILE_ARG:
+          {
+            reader_args.action_read_file = PDF_TRUE;
             break;
           }
         case COPY_FILE_ARG:
@@ -456,6 +465,78 @@ action_copy_file (void)
   pdf_fsys_file_close (ofile, NULL);
 }
 
+static void
+action_read_file (void)
+{
+  pdf_error_t *error = NULL;
+  pdf_fsys_file_t *ifile;
+  pdf_bool_t eof = PDF_FALSE;
+#define BUFFER_SIZE 1024
+  pdf_char_t buffer [BUFFER_SIZE];
+
+  /* Ensure required arguments are present */
+  if (!reader_args.input_file)
+    {
+      pdf_error (PDF_EBADDATA,
+                 stderr,
+                 "reading file action (with --read-file) needs an "
+                 "input file as argument (with --input-file)");
+      exit (EXIT_FAILURE);
+    }
+
+  /* Open the input file for reading */
+  ifile = pdf_fsys_file_open (reader_args.fsys,
+                              reader_args.input_file,
+                              PDF_FSYS_OPEN_MODE_READ,
+                              &error);
+  if (!ifile)
+    {
+      pdf_error (pdf_error_get_status (error),
+                 stderr,
+                 "couldn't open file '%s' for reading: %s",
+                 reader_args.input_file_printable,
+                 pdf_error_get_message (error));
+      exit (EXIT_FAILURE);
+    }
+
+  printf ("Reading from '%s'...\n",
+          reader_args.input_file_printable);
+
+  while (!eof)
+    {
+      pdf_size_t read_bytes = 0;
+      pdf_off_t offset;
+
+      /* Get initial offset to be used while reading */
+      offset = pdf_fsys_file_get_pos (ifile, NULL);
+
+      if (!pdf_fsys_file_read (ifile,
+                               buffer,
+                               BUFFER_SIZE,
+                               &read_bytes,
+                               &error))
+        {
+          if (!error)
+            eof = PDF_TRUE;
+          else
+            {
+              pdf_error (pdf_error_get_status (error),
+                         stderr,
+                         "couldn't read from file '%s': %s",
+                         reader_args.input_file_printable,
+                         pdf_error_get_message (error));
+              exit (EXIT_FAILURE);
+            }
+        }
+
+      printf ("\tread %lu bytes starting at offset %lu...\n",
+              (unsigned long)read_bytes,
+              (unsigned long)offset);
+    }
+
+  pdf_fsys_file_close (ifile, NULL);
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -477,10 +558,15 @@ main (int argc, char *argv[])
   if (reader_args.action_props_file)
     action_props_file ();
 
+  if (reader_args.action_read_file)
+    action_read_file ();
+
   if (reader_args.action_copy_file)
     action_copy_file ();
 
   pdf_finish ();
+
+  return 0;
 }
 
 /* End of pdf-filereader.c */
