@@ -52,6 +52,16 @@
 #include <pdf-error.h>
 #include <pdf-fsys-disk.h>
 
+#if FILE_SYSTEM_BACKSLASH_IS_FILE_NAME_SEPARATOR
+#   define DIR_SEPARATOR_C '\\'
+#   define DIR_SEPARATOR_S "\\"
+#   define IS_DIR_SEPARATOR(c) (((c) == '/') || ((c) == '\\'))
+#else
+#   define DIR_SEPARATOR_C '/'
+#   define DIR_SEPARATOR_S "/"
+#   define IS_DIR_SEPARATOR(c) ((c) == '/')
+#endif /* FILE_SYSTEM_BACKSLASH_IS_FILE_NAME_SEPARATOR */
+
 /* Filesystem-specific implementation */
 struct pdf_fsys_disk_s
 {
@@ -70,6 +80,7 @@ struct pdf_fsys_disk_file_s
 
   /* Host-encoded path */
   pdf_char_t *host_path;
+  pdf_size_t host_path_length;
 
   /* The descriptor of the open file */
   FILE *file_descriptor;
@@ -80,6 +91,7 @@ struct pdf_fsys_disk_file_s
 static pdf_status_t get_status_from_errno (int _errno);
 
 static pdf_char_t *get_host_path (const pdf_text_t  *path,
+                                  pdf_size_t        *host_path_size,
                                   pdf_error_t      **error);
 
 static pdf_text_t *set_host_path (const pdf_char_t  *host_path,
@@ -131,7 +143,9 @@ init_base_file_data (struct pdf_fsys_disk_file_s  *file,
   /* Get the host encoded path */
   if (file->common.unicode_path)
     {
-      file->host_path = get_host_path (file->common.unicode_path, error);
+      file->host_path = get_host_path (file->common.unicode_path,
+                                       &(file->host_path_length),
+                                       error);
       if (!file->host_path)
         {
           deinit_base_file_data (file);
@@ -140,6 +154,301 @@ init_base_file_data (struct pdf_fsys_disk_file_s  *file,
     }
 
   return PDF_TRUE;
+}
+
+/* Based on GLib's canonicalize_filename(), in glocalfile.c.  */
+static pdf_bool_t
+is_absolute_path (const pdf_text_t  *path,
+                  pdf_error_t      **error)
+{
+  pdf_char_t *utf8;
+  pdf_size_t utf8_size;
+
+  /* TODO:
+   * Try to avoid this memory allocation by extending the text module to
+   * check these things directly in the internally stored unicode string
+   */
+  utf8 = pdf_text_get_unicode (path,
+                               PDF_TEXT_UTF8,
+                               PDF_TEXT_UNICODE_WITH_NUL_SUFFIX,
+                               &utf8_size,
+                               error);
+  if (!utf8)
+    return PDF_FALSE;
+
+  if (utf8_size == 0)
+    {
+      pdf_dealloc (utf8);
+      return PDF_FALSE;
+    }
+
+  if (IS_DIR_SEPARATOR (utf8[0]))
+    {
+      pdf_dealloc (utf8);
+      return PDF_TRUE;
+    }
+
+#ifdef PDF_HOST_WIN32
+  /* Recognize drive letter in native windows */
+  if (utf8_size >= 3 &&
+      ((utf8[0] >= 'a' && utf8[0] <= 'z') ||
+       (utf8[0] >= 'A' && utf8[0] <= 'Z')) &&
+      utf8[1] == ':' &&
+      IS_DIR_SEPARATOR (utf8[2]))
+    {
+      pdf_dealloc (utf8);
+      return PDF_TRUE;
+    }
+#endif /* PDF_HOST_WIN32 */
+
+  pdf_dealloc (utf8);
+  return PDF_FALSE;
+}
+
+static pdf_text_t *
+get_current_path (pdf_error_t **error)
+{
+#ifdef PDF_HOST_WIN32
+  wchar_t dummy[2];
+  wchar_t *current;
+  pdf_size_t current_len;
+  pdf_text_t *current_text;
+
+  /* Get number of wchar_t items that may get written when getting current
+   * directory (includes last NIL wchar_t).
+   * Note len here is given in wchar_ts not in bytes */
+  current_len = GetCurrentDirectoryW (2, dummy);
+
+  /* Allocate buffer to store the current dir */
+  current = pdf_alloc (sizeof (wchar_t) * current_len);
+  if (!current)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_FSYS,
+                     PDF_ENOMEM,
+                     "cannot get current path: "
+                     "couldn't allocate %lu bytes",
+                     sizeof (wchar_t) * current_len);
+      return NULL;
+    }
+
+  /* Fill the buffer with the current directory */
+  if (GetCurrentDirectoryW (current, current_len) != (current_len - 1))
+    {
+      pdf_dealloc (current);
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_FSYS,
+                     PDF_ENOMEM,
+                     "cannot get current path: "
+                     "couldn't query current directory");
+      return NULL;
+    }
+
+  current_text = set_host_path ((const pdf_char_t *)current,
+                                (current_len - 1) * sizeof (wchar_t),
+                                error);
+
+  pdf_dealloc (current);
+  return current_text;
+
+#else
+  pdf_char_t *current;
+  pdf_text_t *current_text;
+
+  /* Rely on gnulib's getcwd module for portability issues */
+  current = getcwd (NULL, 0);
+  if (!current)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_FSYS,
+                     PDF_ENOMEM,
+                     "cannot build absolute path: "
+                     "couldn't get current directory");
+      return NULL;
+    }
+
+  current_text = set_host_path (current,
+                                strlen (current),
+                                error);
+
+  pdf_dealloc (current);
+  return current_text;
+
+#endif /* !PDF_HOST_WIN32 */
+}
+
+static pdf_char_t *
+skip_root_utf8 (const pdf_char_t *path_utf8)
+{
+  pdf_char_t *p = (pdf_char_t *)path_utf8;
+
+#ifdef PDF_HOST_WIN32
+  /* On windows, skip leading X:\ */
+  if (((p[0] >= 'a' && p[0] <= 'z') ||
+       (p[0] >= 'A' && p[0] <= 'Z')) &&
+      p[1] == ':' &&
+      IS_DIR_SEPARATOR (p[2]))
+    p = &p[3];
+#else
+  /* Skip initial slash */
+  if (IS_DIR_SEPARATOR (p[0]))
+    p++;
+#endif /* PDF_HOST_WIN32 */
+
+  return p;
+}
+
+static pdf_char_t *
+ensure_absolute_path (const pdf_fsys_t  *fsys,
+                      const pdf_text_t  *path,
+                      pdf_error_t      **error)
+{
+  pdf_error_t *inner_error = NULL;
+  pdf_char_t *path_utf8;
+  pdf_size_t path_utf8_size;
+
+  if (!is_absolute_path (path, &inner_error))
+    {
+      pdf_text_t *current;
+      pdf_text_t *absolute;
+
+      if (inner_error)
+        {
+          pdf_propagate_error (error, inner_error);
+          return NULL;
+        }
+
+      /* Get current path */
+      current = get_current_path (error);
+      if (!current)
+        return NULL;
+
+      /* Build path with current absolute plus relative */
+      absolute = pdf_fsys_build_path (fsys,
+                                      error,
+                                      current,
+                                      path,
+                                      NULL);
+      pdf_text_destroy (current);
+
+      if (!absolute)
+        return NULL;
+
+      /* Get UTF-8 of the resulting absolute path */
+      path_utf8 = pdf_text_get_unicode (absolute,
+                                        PDF_TEXT_UTF8,
+                                        PDF_TEXT_UNICODE_WITH_NUL_SUFFIX,
+                                        &path_utf8_size,
+                                        error);
+      pdf_text_destroy (absolute);
+    }
+  else
+    {
+      /* Get UTF-8 of the original absolute path */
+      path_utf8 = pdf_text_get_unicode (path,
+                                        PDF_TEXT_UTF8,
+                                        PDF_TEXT_UNICODE_WITH_NUL_SUFFIX,
+                                        &path_utf8_size,
+                                        error);
+    }
+
+  return path_utf8;
+}
+
+/* Based on GLib's canonicalize_filename(), in gio/glocalfile.c (LGPLv2+)
+ * Copyright (C) 2006-2007 Red Hat, Inc.
+ * Author: Alexander Larsson <alexl@redhat.com>
+ */
+static pdf_text_t *
+canonicalize_path (const pdf_fsys_t  *fsys,
+                   const pdf_text_t  *path,
+                   pdf_error_t      **error)
+{
+  pdf_text_t *canonicalized;
+  pdf_char_t *canon;
+  pdf_char_t *start;
+  pdf_char_t *p;
+  pdf_char_t *q;
+  int i;
+
+  /* Get UTF-8 encoded path */
+  canon = ensure_absolute_path (fsys, path, error);
+  if (!canon)
+    return NULL;
+
+  /* Skip root */
+  start = skip_root_utf8 (canon);
+
+  /* POSIX allows double slashes at the start to
+   * mean something special (as does windows too).
+   * So, "//" != "/", but more than two slashes
+   * is treated as "/".
+   */
+  i = 0;
+  for (p = start - 1;
+       (p >= canon) &&
+         IS_DIR_SEPARATOR (*p);
+       p--)
+    i++;
+  if (i > 2)
+    {
+      i -= 1;
+      start -= i;
+      memmove (start, start + i, strlen (start + i) + 1);
+    }
+
+  p = start;
+  while (*p != 0)
+    {
+      if (p[0] == '.' && (p[1] == 0 || IS_DIR_SEPARATOR (p[1])))
+        {
+          memmove (p, p + 1, strlen (p + 1) + 1);
+        }
+      else if (p[0] == '.' && p[1] == '.' && (p[2] == 0 || IS_DIR_SEPARATOR (p[2])))
+        {
+          q = p + 2;
+          /* Skip previous separator */
+          p = p - 2;
+          if (p < start)
+            p = start;
+          while (p > start && !IS_DIR_SEPARATOR (*p))
+            p--;
+          if (IS_DIR_SEPARATOR (*p))
+            *p++ = DIR_SEPARATOR_C;
+          memmove (p, q, strlen (q)+1);
+        }
+      else
+        {
+          /* Skip until next separator */
+          while (*p != 0 && !IS_DIR_SEPARATOR (*p))
+            p++;
+
+          if (*p != 0)
+            {
+              /* Canonicalize one separator */
+              *p++ = DIR_SEPARATOR_C;
+            }
+        }
+
+      /* Remove additional separators */
+      q = p;
+      while (*q && IS_DIR_SEPARATOR (*q))
+        q++;
+
+      if (p != q)
+        memmove (p, q, strlen (q)+1);
+    }
+
+  /* Remove trailing slashes */
+  if (p > start && IS_DIR_SEPARATOR (*(p-1)))
+    *(p-1) = 0;
+
+  canonicalized = pdf_text_new_from_unicode (canon,
+                                             strlen (canon),
+                                             PDF_TEXT_UTF8,
+                                             error);
+  pdf_dealloc (canon);
+  return canonicalized;
 }
 
 /* Host-dependent fopen() */
@@ -300,7 +609,7 @@ create_folder (const pdf_fsys_t  *fsys,
   PDF_ASSERT_POINTER_RETURN_VAL (path_name, PDF_FALSE);
 
   /* Get a host-encoded version of the path name */
-  host_path = get_host_path (path_name, error);
+  host_path = get_host_path (path_name, NULL, error);
   if (!host_path)
     return PDF_FALSE;
 
@@ -363,7 +672,7 @@ get_folder_contents (const pdf_fsys_t  *fsys,
   PDF_ASSERT_POINTER_RETURN_VAL (path_name, NULL);
 
   /* Get a host-encoded version of the path name */
-  host_path = get_host_path (path_name, error);
+  host_path = get_host_path (path_name, NULL, error);
   if (!host_path)
     return NULL;
 
@@ -443,11 +752,17 @@ get_parent (const pdf_fsys_t  *fsys,
             const pdf_text_t  *path_name,
             pdf_error_t      **error)
 {
+  pdf_text_t *canon;
+
   PDF_ASSERT_POINTER_RETURN_VAL (path_name, NULL);
 
-  /* TODO: This involves getting an absolute path from a relative path */
+  canon = canonicalize_path (fsys, path_name, error);
+  if (!canon)
+    return NULL;
 
-  return NULL;
+  /* TODO: Convert to UTF8, get parent and convert back to Unicode text */
+
+  return canon;
 }
 
 /* Host-dependent rmdir() */
@@ -467,7 +782,7 @@ remove_folder (const pdf_fsys_t  *fsys,
   PDF_ASSERT_POINTER_RETURN_VAL (path_name, PDF_FALSE);
 
   /* Get a host-encoded version of the path name */
-  host_path = get_host_path (path_name, error);
+  host_path = get_host_path (path_name, NULL, error);
   if (!host_path)
     return PDF_FALSE;
 
@@ -572,7 +887,7 @@ get_item_props (const pdf_fsys_t              *fsys,
   PDF_ASSERT_POINTER_RETURN_VAL (props, PDF_FALSE);
 
   /* Get a host-encoded version of the path name */
-  host_path = get_host_path (path_name, error);
+  host_path = get_host_path (path_name, NULL, error);
   if (!host_path)
     return PDF_FALSE;
 
@@ -651,7 +966,7 @@ item_readable_p (const pdf_fsys_t *fsys,
   PDF_ASSERT_POINTER_RETURN_VAL (path_name, PDF_FALSE);
 
   /* We get the string in HOST-encoding (with NUL-suffix) */
-  host_path = get_host_path (path_name, NULL);
+  host_path = get_host_path (path_name, NULL, NULL);
   if (!host_path)
     return PDF_FALSE;
 
@@ -678,7 +993,7 @@ item_writable_p (const pdf_fsys_t *fsys,
   PDF_ASSERT_POINTER_RETURN_VAL (path_name, PDF_FALSE);
 
   /* We get the string in HOST-encoding (with NUL-suffix) */
-  host_path = get_host_path (path_name, NULL);
+  host_path = get_host_path (path_name, NULL, NULL);
   if (!host_path)
     return PDF_FALSE;
 
@@ -765,7 +1080,7 @@ get_free_space (const pdf_fsys_t  *fsys,
   PDF_ASSERT_POINTER_RETURN_VAL (path_name, -1);
 
   /* We get the string in HOST-encoding (with NUL-suffix) */
-  host_path = get_host_path (path_name, error);
+  host_path = get_host_path (path_name, NULL, error);
   if (!host_path)
     return -1;
 
@@ -1175,17 +1490,16 @@ file_set_mode (pdf_fsys_file_t            *file,
 
 static pdf_char_t *
 get_host_path (const pdf_text_t  *path,
+               pdf_size_t        *host_path_size,
                pdf_error_t      **error)
 {
 #ifdef PDF_HOST_WIN32
-  pdf_size_t length;
-
   /* For W32, we will always use widechar functions, so Windows' wchar_t
    * implementation should be used (UTF-16LE) */
   return pdf_text_get_unicode (path,
                                PDF_TEXT_UTF16_LE,
                                PDF_TEXT_UNICODE_WITH_NUL_SUFFIX,
-                               &length,
+                               host_path_size,
                                error);
 #else
   /* Call the pdf_text module to get a host-encoded version of the
@@ -1216,6 +1530,10 @@ get_host_path (const pdf_text_t  *path,
       return NULL;
     }
   nul_suffixed[length - 1] = '\0';
+
+  if (host_path_size)
+    *host_path_size = length;
+
   return nul_suffixed;
 #endif
 }
@@ -1449,21 +1767,17 @@ pdf_fsys_disk_deinit_cb (struct pdf_fsys_s *impl)
 pdf_bool_t
 pdf_fsys_disk_init (pdf_error_t **error)
 {
-  pdf_text_t *tmp;
-
-#if FILE_SYSTEM_BACKSLASH_IS_FILE_NAME_SEPARATOR
-  tmp = pdf_text_new_from_unicode ((pdf_char_t*)"\\", 1, PDF_TEXT_UTF8, error);
-#else
-  tmp = pdf_text_new_from_unicode ((pdf_char_t*)"/", 1, PDF_TEXT_UTF8, error);
-#endif /* FILE_SYSTEM_BACKSLASH_IS_FILE_NAME_SEPARATOR */
-  if (!tmp)
+  /* Disk filesystem implementation specific stuff */
+  pdf_fsys_disk_implementation.filename_separator =
+    pdf_text_new_from_unicode ((pdf_char_t*)DIR_SEPARATOR_S,
+                               1,
+                               PDF_TEXT_UTF8,
+                               error);
+  if (!pdf_fsys_disk_implementation.filename_separator)
     {
       pdf_prefix_error (error, "couldn't initialize disk filesystem: ");
       return PDF_FALSE;
     }
-
-  /* Disk filesystem implementation specific stuff */
-  pdf_fsys_disk_implementation.filename_separator = tmp;
 
   return pdf_fsys_add (PDF_FSYS_DISK_ID,
                        (struct pdf_fsys_s *)&pdf_fsys_disk_implementation,
