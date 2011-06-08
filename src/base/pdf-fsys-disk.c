@@ -766,32 +766,20 @@ get_folder_contents (const pdf_fsys_t  *fsys,
   return list;
 }
 
-static pdf_text_t *
-get_basename (const pdf_fsys_t  *fsys,
-              const pdf_text_t  *path_name,
-              pdf_error_t      **error)
+static pdf_bool_t
+get_directory_and_filename (const pdf_fsys_t  *fsys,
+                            const pdf_text_t  *path_name,
+                            pdf_text_t       **directory,
+                            pdf_text_t       **filename,
+                            pdf_error_t      **error)
 {
-
-}
-
-static pdf_text_t *
-get_parent (const pdf_fsys_t  *fsys,
-            const pdf_text_t  *path_name,
-            pdf_error_t      **error)
-{
-  pdf_text_t *parent = NULL;
   pdf_size_t utf8_size;
   pdf_char_t *utf8;
   pdf_char_t *p;
 
-  PDF_ASSERT_POINTER_RETURN_VAL (path_name, NULL);
-
   /* Canonicalize path and get output in UTF-8 */
   if (!canonicalize_path (fsys, path_name, NULL, &utf8, error))
-    {
-      pdf_prefix_error (error, "couldn't get parent: ");
-      return NULL;
-    }
+    return PDF_FALSE;
 
   /* Move pointer to last character in the path */
   utf8_size = strlen (utf8);
@@ -807,20 +795,95 @@ get_parent (const pdf_fsys_t  *fsys,
     p--;
 
   /* Directory separator found? */
-  if (p >= utf8)
+  if (p < utf8)
     {
+      /* No parent */
+      pdf_dealloc (utf8);
+      return NULL;
+    }
+
+  /* Filename starts always after the dir separator */
+  if (filename)
+    {
+      *filename = pdf_text_new_from_unicode (&p[1],
+                                             strlen (&p[1]),
+                                             PDF_TEXT_UTF8,
+                                             error);
+      if (!*filename)
+        {
+          pdf_dealloc (utf8);
+          return PDF_FALSE;
+        }
+    }
+
+  if (directory)
+    {
+      /* Directory last (to be NUL-ed) depends on whether the directory is the root
+       * directory (we shouldn't remove the dir separator from the root directory)
+       */
       if (p == utf8)
         p[1] = '\0';
       else
         p[0] = '\0';
 
-      parent = pdf_text_new_from_unicode (utf8,
-                                          strlen (utf8),
-                                          PDF_TEXT_UTF8,
-                                          error);
+      *directory = pdf_text_new_from_unicode (utf8,
+                                              strlen (utf8),
+                                              PDF_TEXT_UTF8,
+                                              error);
+      if (!*directory)
+        {
+          if (filename)
+            pdf_text_destroy (*filename);
+          pdf_dealloc (utf8);
+          return PDF_FALSE;
+        }
     }
 
   pdf_dealloc (utf8);
+  return PDF_TRUE;
+}
+
+static pdf_text_t *
+get_basename (const pdf_fsys_t  *fsys,
+              const pdf_text_t  *path_name,
+              pdf_error_t      **error)
+{
+  pdf_text_t *basename;
+
+  PDF_ASSERT_POINTER_RETURN_VAL (path_name, NULL);
+
+  if (!get_directory_and_filename (fsys,
+                                   path_name,
+                                   NULL,
+                                   &basename,
+                                   error))
+    {
+      pdf_prefix_error (error, "couldn't get basename: ");
+      return NULL;
+    }
+
+  return basename;
+}
+
+static pdf_text_t *
+get_parent (const pdf_fsys_t  *fsys,
+            const pdf_text_t  *path_name,
+            pdf_error_t      **error)
+{
+  pdf_text_t *parent;
+
+  PDF_ASSERT_POINTER_RETURN_VAL (path_name, NULL);
+
+  if (!get_directory_and_filename (fsys,
+                                   path_name,
+                                   &parent,
+                                   NULL,
+                                   error))
+    {
+      pdf_prefix_error (error, "couldn't get parent: ");
+      return NULL;
+    }
+
   return parent;
 }
 
