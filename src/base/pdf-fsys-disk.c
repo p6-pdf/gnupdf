@@ -360,8 +360,8 @@ ensure_absolute_path (const pdf_fsys_t  *fsys,
 static pdf_bool_t
 canonicalize_path (const pdf_fsys_t  *fsys,
                    const pdf_text_t  *path,
-		   pdf_text_t       **canonicalized_path,
-		   pdf_char_t       **canonicalized_path_utf8,
+                   pdf_text_t       **canonicalized_path,
+                   pdf_char_t       **canonicalized_path_utf8,
                    pdf_error_t      **error)
 {
   pdf_char_t *canon;
@@ -447,9 +447,9 @@ canonicalize_path (const pdf_fsys_t  *fsys,
   if (canon [0] == '\0')
     {
       pdf_set_error (error,
-		     PDF_EDOMAIN_BASE_FSYS,
-		     PDF_ERROR,
-		     "empty canonicalized path built");
+                     PDF_EDOMAIN_BASE_FSYS,
+                     PDF_ERROR,
+                     "empty canonicalized path built");
       pdf_dealloc (canon);
       return PDF_FALSE;
     }
@@ -458,9 +458,9 @@ canonicalize_path (const pdf_fsys_t  *fsys,
 
   if (canonicalized_path)
     *canonicalized_path = pdf_text_new_from_unicode (canon,
-						     strlen (canon),
-						     PDF_TEXT_UTF8,
-						     error);
+                                                     strlen (canon),
+                                                     PDF_TEXT_UTF8,
+                                                     error);
 
   if (canonicalized_path_utf8)
     *canonicalized_path_utf8 = canon;
@@ -795,21 +795,21 @@ get_parent (const pdf_fsys_t  *fsys,
 
   /* Find previous directory separator */
   while (p >= utf8 &&
-	 !IS_DIR_SEPARATOR (*p))
+         !IS_DIR_SEPARATOR (*p))
     p--;
 
   /* Directory separator found? */
   if (p >= utf8)
     {
       if (p == utf8)
-	p[1] = '\0';
+        p[1] = '\0';
       else
-	p[0] = '\0';
+        p[0] = '\0';
 
       parent = pdf_text_new_from_unicode (utf8,
-					  strlen (utf8),
-					  PDF_TEXT_UTF8,
-					  error);
+                                          strlen (utf8),
+                                          PDF_TEXT_UTF8,
+                                          error);
     }
 
   pdf_dealloc (utf8);
@@ -1453,9 +1453,9 @@ file_flush (pdf_fsys_file_t  *file,
                      PDF_ERROR,
                      "cannot flush to file: 'unknown error'",
                      strerror (errno));
-                     PDF_ERROR,
+      PDF_ERROR,
 #endif
-      return PDF_FALSE;
+        return PDF_FALSE;
     }
 
   return PDF_TRUE;
@@ -1633,17 +1633,17 @@ static const pdf_char_t *open_mode_strings[PDF_FSYS_OPEN_MODE_MAX] = {
   /* PDF_FSYS_OPEN_MODE_RW      */ (pdf_char_t *)"r+",
 };
 #else
-  /* Windows portability note:
-   *
-   * Files are opened in "text mode" (with crlf translation) by
-   * default.
-   *
-   * Although the "b" fopen option is supported by POSIX some old Unix
-   * systems may not implement it, so we should use that option to
-   * open files only while running in Windows.
-   *
-   * Also, note that the open modes are in UTF-16 for w32
-   */
+/* Windows portability note:
+ *
+ * Files are opened in "text mode" (with crlf translation) by
+ * default.
+ *
+ * Although the "b" fopen option is supported by POSIX some old Unix
+ * systems may not implement it, so we should use that option to
+ * open files only while running in Windows.
+ *
+ * Also, note that the open modes are in UTF-16 for w32
+ */
 static const pdf_char_t *open_mode_strings[PDF_FSYS_OPEN_MODE_MAX] = {
   /* PDF_FSYS_OPEN_MODE_INVALID  */ (pdf_char_t *)"\x00\x00",
   /* PDF_FSYS_OPEN_MODE_READ     */ (pdf_char_t *)"\x72\x00\x62\x00\x00\x00",
@@ -1737,48 +1737,48 @@ get_status_from_errno (int _errno)
 {
   switch (_errno)
     {
-      case EINVAL:
-      case ESPIPE:
-      case EOVERFLOW:
-      case EBADF:
-      case EFAULT:
-      case EFBIG:
-        /* Bad data */
-        return PDF_EBADDATA;
-      case EACCES:
-      case EPERM:
-      case EROFS:
-      case ETXTBSY:
-        /* Not enough permissions */
-        return PDF_EBADPERMS;
-      case EISDIR:
-      case ENAMETOOLONG:
-      case ENOENT:
-      case ENOTDIR:
+    case EINVAL:
+    case ESPIPE:
+    case EOVERFLOW:
+    case EBADF:
+    case EFAULT:
+    case EFBIG:
+      /* Bad data */
+      return PDF_EBADDATA;
+    case EACCES:
+    case EPERM:
+    case EROFS:
+    case ETXTBSY:
+      /* Not enough permissions */
+      return PDF_EBADPERMS;
+    case EISDIR:
+    case ENAMETOOLONG:
+    case ENOENT:
+    case ENOTDIR:
 #ifdef ELOOP
-      case ELOOP:
+    case ELOOP:
 #endif
-        /* Invalid path name */
-        return PDF_EBADNAME;
-      case ENOMEM:
-        /* No memory */
-        return PDF_ENOMEM;
-      case EEXIST:
-        /* File Exists */
-        return PDF_EEXIST;
-      case ENOTEMPTY:
-        /* Not empty */
-        return PDF_ENOTEMPTY;
-      case EAGAIN:
-        /* non-blocking descriptor and blocking writing
-           requested */
-        return PDF_EAGAIN;
-      case ENOSPC:
-        /* Not enough room in disk */
-        return PDF_ENOSPC;
-      default:
-        /* Other error */
-        return PDF_ERROR;
+      /* Invalid path name */
+      return PDF_EBADNAME;
+    case ENOMEM:
+      /* No memory */
+      return PDF_ENOMEM;
+    case EEXIST:
+      /* File Exists */
+      return PDF_EEXIST;
+    case ENOTEMPTY:
+      /* Not empty */
+      return PDF_ENOTEMPTY;
+    case EAGAIN:
+      /* non-blocking descriptor and blocking writing
+         requested */
+      return PDF_EAGAIN;
+    case ENOSPC:
+      /* Not enough room in disk */
+      return PDF_ENOSPC;
+    default:
+      /* Other error */
+      return PDF_ERROR;
     }
 }
 
