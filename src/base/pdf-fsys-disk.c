@@ -1222,6 +1222,8 @@ file_same_p (const pdf_fsys_file_t  *file,
   pdf_error_t *inner_error = NULL;
   pdf_i32_t ret;
   pdf_bool_t case_sensitive;
+  pdf_text_t *canonicalized_file_path = NULL;
+  pdf_text_t *canonicalized_path = NULL;
 
   PDF_ASSERT_POINTER_RETURN_VAL (path, PDF_FALSE);
 
@@ -1235,17 +1237,39 @@ file_same_p (const pdf_fsys_file_t  *file,
   case_sensitive = PDF_FALSE;
 #endif
 
-  /* TODO : We should be able to get the whole ABSOLUTE path of the
-   *         files, before comparing the routes */
+  /* Canonicalize paths before comparing */
+  if (!canonicalize_path (file->fsys,
+                          file->unicode_path,
+                          &canonicalized_file_path,
+                          NULL,
+                          error) ||
+      !canonicalize_path (file->fsys,
+                          path,
+                          &canonicalized_path,
+                          NULL,
+                          error))
+    {
+      pdf_prefix_error (error, "couldn't check if same files: ");
 
-  /* Compare text strings */
-  ret = pdf_text_cmp (file->unicode_path,
-                      path,
+      if (canonicalized_file_path)
+        pdf_text_destroy (canonicalized_file_path);
+
+      return PDF_FALSE;
+    }
+
+  /* Compare canonicalized paths */
+  ret = pdf_text_cmp (canonicalized_file_path,
+                      canonicalized_path,
                       case_sensitive,
                       &inner_error);
+
+  pdf_text_destroy (canonicalized_path);
+  pdf_text_destroy (canonicalized_file_path);
+
   if (inner_error)
     {
       pdf_propagate_error (error, inner_error);
+      pdf_prefix_error (error, "couldn't check if same files: ");
       return PDF_FALSE;
     }
 
