@@ -1340,11 +1340,24 @@ file_set_size (pdf_fsys_file_t  *file,
                pdf_off_t         size,
                pdf_error_t     **error)
 {
+  struct pdf_fsys_disk_file_s *disk_file = (struct pdf_fsys_disk_file_s *)file;
+
   PDF_ASSERT_POINTER_RETURN_VAL (file, PDF_FALSE);
+  PDF_ASSERT_RETURN_VAL (disk_file->file_descriptor > 0, PDF_FALSE);
 
-  /* TODO */
+  /* Setting size of the file is just seeking to the given size offset and
+   * writing an EOF... isn't it? */
+  if (!file_set_pos (file, (size > 0 ? size - 1 : 0), error))
+    {
+      pdf_prefix_error (error, "cannot set size: ");
+      return PDF_FALSE;
+    }
 
-  return PDF_FALSE;
+  /* putc() returns exactly the same character written, or EOF on error,
+   * so if we try to write EOF we should indeed get EOF */
+  putc (EOF, disk_file->file_descriptor);
+
+  return PDF_TRUE;
 }
 
 static pdf_bool_t
