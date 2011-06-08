@@ -488,6 +488,17 @@ get_folder_contents (const pdf_fsys_t  *fsys,
 }
 
 static pdf_text_t *
+get_basename (const pdf_fsys_t  *fsys,
+              const pdf_text_t  *path_name,
+              pdf_error_t      **error)
+{
+  PDF_ASSERT_POINTER_RETURN_VAL (path_name, PDF_FALSE);
+
+  /* TODO */
+  return NULL;
+}
+
+static pdf_text_t *
 get_parent (const pdf_fsys_t  *fsys,
             const pdf_text_t  *path_name,
             pdf_error_t      **error)
@@ -858,6 +869,7 @@ static struct pdf_fsys_http_s pdf_fsys_http_implementation =
     .common.create_folder_fn       = create_folder,
     .common.get_folder_contents_fn = get_folder_contents,
     .common.get_parent_fn          = get_parent,
+    .common.get_basename_fn        = get_basename,
     .common.remove_folder_fn       = remove_folder,
     .common.get_item_props_fn      = get_item_props,
     .common.get_free_space_fn      = get_free_space,

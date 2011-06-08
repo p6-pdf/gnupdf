@@ -62,6 +62,7 @@ validate_implementation (const pdf_char_t         *id,
   VALIDATE_METHOD (create_folder_fn);
   VALIDATE_METHOD (get_folder_contents_fn);
   VALIDATE_METHOD (get_parent_fn);
+  VALIDATE_METHOD (get_basename_fn);
   VALIDATE_METHOD (remove_folder_fn);
   VALIDATE_METHOD (get_item_props_fn);
   VALIDATE_METHOD (get_free_space_fn);

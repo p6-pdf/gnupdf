@@ -111,6 +111,10 @@ typedef pdf_text_t * (*pdf_fsys_get_parent_fn_t) (const pdf_fsys_t  *fsys,
                                                   const pdf_text_t  *path_name,
                                                   pdf_error_t      **error);
 
+typedef pdf_text_t * (*pdf_fsys_get_basename_fn_t) (const pdf_fsys_t  *fsys,
+                                                    const pdf_text_t  *path_name,
+                                                    pdf_error_t      **error);
+
 typedef pdf_bool_t (*pdf_fsys_remove_folder_fn_t) (const pdf_fsys_t  *fsys,
                                                    const pdf_text_t  *path_name,
                                                    pdf_error_t      **error);
@@ -217,6 +221,7 @@ struct pdf_fsys_s
   pdf_fsys_create_folder_fn_t create_folder_fn;
   pdf_fsys_get_folder_contents_fn_t get_folder_contents_fn;
   pdf_fsys_get_parent_fn_t get_parent_fn;
+  pdf_fsys_get_basename_fn_t get_basename_fn;
   pdf_fsys_remove_folder_fn_t remove_folder_fn;
   pdf_fsys_get_item_props_fn_t get_item_props_fn;
   pdf_fsys_get_free_space_fn_t get_free_space_fn;
@@ -297,6 +302,9 @@ void pdf_fsys_foreach (pdf_fsys_foreach_fn_t  foreach_fn,
 
 #define pdf_fsys_get_parent(fsys, path, error)  \
   fsys->get_parent_fn (fsys, path, error)
+
+#define pdf_fsys_get_basename(fsys, path, error)  \
+  fsys->get_basename_fn (fsys, path, error)
 
 #define pdf_fsys_remove_folder(fsys, path, error)   \
   fsys->remove_folder_fn (fsys, path, error)
