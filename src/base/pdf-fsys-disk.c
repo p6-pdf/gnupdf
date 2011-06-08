@@ -156,7 +156,6 @@ init_base_file_data (struct pdf_fsys_disk_file_s  *file,
   return PDF_TRUE;
 }
 
-/* Based on GLib's canonicalize_filename(), in glocalfile.c.  */
 static pdf_bool_t
 is_absolute_path (const pdf_text_t  *path,
                   pdf_error_t      **error)
@@ -164,10 +163,6 @@ is_absolute_path (const pdf_text_t  *path,
   pdf_char_t *utf8;
   pdf_size_t utf8_size;
 
-  /* TODO:
-   * Try to avoid this memory allocation by extending the text module to
-   * check these things directly in the internally stored unicode string
-   */
   utf8 = pdf_text_get_unicode (path,
                                PDF_TEXT_UTF8,
                                PDF_TEXT_UNICODE_WITH_NUL_SUFFIX,
@@ -298,6 +293,7 @@ skip_root_utf8 (const pdf_char_t *path_utf8)
   return p;
 }
 
+/* Returns UTF-8 encoded path */
 static pdf_char_t *
 ensure_absolute_path (const pdf_fsys_t  *fsys,
                       const pdf_text_t  *path,
@@ -355,16 +351,19 @@ ensure_absolute_path (const pdf_fsys_t  *fsys,
   return path_utf8;
 }
 
-/* Based on GLib's canonicalize_filename(), in gio/glocalfile.c (LGPLv2+)
- * Copyright (C) 2006-2007 Red Hat, Inc.
- * Author: Alexander Larsson <alexl@redhat.com>
+/* Based on GLib's canonicalize_filename(), in gio/glocalfile.c
+ *  Copyright (C) 2006-2007 Red Hat, Inc.
+ *  Author: Alexander Larsson <alexl@redhat.com>
+ *
+ * Returns either UTF-8 encoded path or pdf_text_t, or both
  */
-static pdf_text_t *
+static pdf_bool_t
 canonicalize_path (const pdf_fsys_t  *fsys,
                    const pdf_text_t  *path,
+		   pdf_text_t       **canonicalized_path,
+		   pdf_char_t       **canonicalized_path_utf8,
                    pdf_error_t      **error)
 {
-  pdf_text_t *canonicalized;
   pdf_char_t *canon;
   pdf_char_t *start;
   pdf_char_t *p;
@@ -374,7 +373,7 @@ canonicalize_path (const pdf_fsys_t  *fsys,
   /* Get UTF-8 encoded path */
   canon = ensure_absolute_path (fsys, path, error);
   if (!canon)
-    return NULL;
+    return PDF_FALSE;
 
   /* Skip root */
   start = skip_root_utf8 (canon);
@@ -443,12 +442,32 @@ canonicalize_path (const pdf_fsys_t  *fsys,
   if (p > start && IS_DIR_SEPARATOR (*(p-1)))
     *(p-1) = 0;
 
-  canonicalized = pdf_text_new_from_unicode (canon,
-                                             strlen (canon),
-                                             PDF_TEXT_UTF8,
-                                             error);
-  pdf_dealloc (canon);
-  return canonicalized;
+
+  /* If length of the canonicalized path is zero, report error */
+  if (canon [0] == '\0')
+    {
+      pdf_set_error (error,
+		     PDF_EDOMAIN_BASE_FSYS,
+		     PDF_ERROR,
+		     "empty canonicalized path built");
+      pdf_dealloc (canon);
+      return PDF_FALSE;
+    }
+
+  /* Set output(s) */
+
+  if (canonicalized_path)
+    *canonicalized_path = pdf_text_new_from_unicode (canon,
+						     strlen (canon),
+						     PDF_TEXT_UTF8,
+						     error);
+
+  if (canonicalized_path_utf8)
+    *canonicalized_path_utf8 = canon;
+  else
+    pdf_dealloc (canon);
+
+  return PDF_TRUE;
 }
 
 /* Host-dependent fopen() */
@@ -752,17 +771,49 @@ get_parent (const pdf_fsys_t  *fsys,
             const pdf_text_t  *path_name,
             pdf_error_t      **error)
 {
-  pdf_text_t *canon;
+  pdf_text_t *parent = NULL;
+  pdf_size_t utf8_size;
+  pdf_char_t *utf8;
+  pdf_char_t *p;
 
   PDF_ASSERT_POINTER_RETURN_VAL (path_name, NULL);
 
-  canon = canonicalize_path (fsys, path_name, error);
-  if (!canon)
-    return NULL;
+  /* Canonicalize path and get output in UTF-8 */
+  if (!canonicalize_path (fsys, path_name, NULL, &utf8, error))
+    {
+      pdf_prefix_error (error, "couldn't get parent: ");
+      return NULL;
+    }
 
-  /* TODO: Convert to UTF8, get parent and convert back to Unicode text */
+  /* Move pointer to last character in the path */
+  utf8_size = strlen (utf8);
+  p = &utf8[utf8_size - 1];
 
-  return canon;
+  /* Skip possible separator at the end of the path */
+  if (IS_DIR_SEPARATOR (*p))
+    p--;
+
+  /* Find previous directory separator */
+  while (p >= utf8 &&
+	 !IS_DIR_SEPARATOR (*p))
+    p--;
+
+  /* Directory separator found? */
+  if (p >= utf8)
+    {
+      if (p == utf8)
+	p[1] = '\0';
+      else
+	p[0] = '\0';
+
+      parent = pdf_text_new_from_unicode (utf8,
+					  strlen (utf8),
+					  PDF_TEXT_UTF8,
+					  error);
+    }
+
+  pdf_dealloc (utf8);
+  return parent;
 }
 
 /* Host-dependent rmdir() */

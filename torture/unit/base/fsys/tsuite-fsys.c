@@ -32,6 +32,7 @@ extern TCase *test_pdf_fsys_disk_get_free_space (void);
 extern TCase *test_pdf_fsys_disk_file_open (void);
 extern TCase *test_pdf_fsys_disk_file_open_tmp (void);
 extern TCase *test_pdf_fsys_disk_build_path (void);
+extern TCase *test_pdf_fsys_disk_get_parent (void);
 
 Suite *
 tsuite_fsys ()
@@ -45,6 +46,7 @@ tsuite_fsys ()
   suite_add_tcase (s, test_pdf_fsys_disk_file_open ());
   suite_add_tcase (s, test_pdf_fsys_disk_file_open_tmp ());
   suite_add_tcase (s, test_pdf_fsys_disk_build_path ());
+  suite_add_tcase (s, test_pdf_fsys_disk_get_parent ());
 
   return s;
 }

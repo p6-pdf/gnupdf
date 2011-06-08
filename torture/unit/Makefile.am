@@ -219,7 +219,8 @@ TEST_SUITE_FP = base/fp/pdf-fp-func-eval.c \
 TEST_SUITE_FSYS = base/fsys/pdf-fsys-disk-get-free-space.c \
                   base/fsys/pdf-fsys-disk-file-open.c \
                   base/fsys/pdf-fsys-disk-file-open-tmp.c \
-                  base/fsys/pdf-fsys-disk-build-path.c
+                  base/fsys/pdf-fsys-disk-build-path.c \
+                  base/fsys/pdf-fsys-disk-get-parent.c
 
 
 TEST_SUITE_TOKEN = base/token/pdf-token-read.c \
