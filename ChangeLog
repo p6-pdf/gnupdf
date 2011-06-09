@@ -1,3 +1,8 @@
+2011-06-09  Aleksander Morgado  <aleksander@gnu.org>
+
+	build: do not require libcheck, it must be optional
+	* configure.ac
+
 2011-05-10  Jose E. Marchesi  <jemarch@gnu.org>
 
 	lib: avoid name clash with PDF_OBJ_IS_NULL and provide a quick

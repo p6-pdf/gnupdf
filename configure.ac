@@ -409,10 +409,6 @@ if test "x$HAVE_LIBGCRYPT" != "xyes"; then
    missing_libs="$missing_libs
    libgcrypt"
 fi
-if test "x$HAVE_LIBCHECK" != "xyes"; then
-   missing_libs="$missing_libs
-   libcheck"
-fi
 if test "x$fsys_http" = "xyes" && test "x$HAVE_LIBCURL" = "xno"; then
    missing_libs="$missing_libs
    libcurl"
