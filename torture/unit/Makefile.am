@@ -20,15 +20,7 @@
 # is requested...
 if COMPILE_UT
 
-
-# Check for Check and No-Check :-)
-if NOCHECK
-  NOCHECK_SRC = nocheck/check.h \
-                nocheck/check.c
-  NOCHECK_CPPFLAGS = -Inocheck/
-else
-  CHECK_LIBS = -lcheck
-endif #NOCHECK
+CHECK_LIBS = -lcheck
 
 # Check for external GNU libiconv library
 if ICONV
@@ -49,8 +41,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/lib \
               -I$(top_srcdir)/src/base \
               -I$(top_srcdir)/src/object \
               -I$(top_srcdir)/torture/tortutils \
-              -DTEST_DATA_PATH=\"$(top_srcdir)/torture/testdata\" \
-              $(NOCHECK_CPPFLAGS)
+              -DTEST_DATA_PATH=\"$(top_srcdir)/torture/testdata\"
 AM_CFLAGS = -g
 
 TESTS = runtests.sh
@@ -250,8 +241,7 @@ TSUITE_FILES = base/alloc/tsuite-alloc.c \
 TORTUTILS_FILES = $(top_srcdir)/torture/tortutils/tortutils.h \
                   $(top_srcdir)/torture/tortutils/tortutils.c
 
-runtests_SOURCES = $(NOCHECK_SRC) \
-                   $(TORTUTILS_FILES) \
+runtests_SOURCES = $(TORTUTILS_FILES) \
                    $(TSUITE_FILES) \
                    $(TEST_FILES) \
                    pdf-test-common.h \
