@@ -1,3 +1,20 @@
+2011-06-09  Aleksander Morgado  <aleksander@gnu.org>
+
+	build: remove `nocheck' support. nocheck was a simple replacement for
+	check, but not a full one. We now use setup and teardown fixtures and
+	such in the tests, which are not supported by nocheck, so it's
+	useless to keep it around. Fixes FS#108.
+	* torture/unit/nocheck/README: File removed.
+	* torture/unit/nocheck/check.c: Idem.
+	* torture/unit/nocheck/check.h: Idem.
+	* configure.ac: Remove --enable-nocheck option.
+	* torture/unit/Makefile.am: Disable nocheck usage.
+
+2011-06-09  Aleksander Morgado  <aleksander@gnu.org>
+
+	build: do not require libcheck, it must be optional
+	* configure.ac
+
 2011-05-10  Jose E. Marchesi  <jemarch@gnu.org>
 
 	lib: avoid name clash with PDF_OBJ_IS_NULL and provide a quick
