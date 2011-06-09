@@ -1,3 +1,20 @@
+2011-06-09  Aleksander Morgado  <aleksander@gnu.org>
+
+	build: remove `nocheck' support. nocheck was a simple replacement for
+	check, but not a full one. We now use setup and teardown fixtures and
+	such in the tests, which are not supported by nocheck, so it's
+	useless to keep it around. Fixes FS#108.
+	* torture/unit/nocheck/README: File removed.
+	* torture/unit/nocheck/check.c: Idem.
+	* torture/unit/nocheck/check.h: Idem.
+	* configure.ac: Remove --enable-nocheck option.
+	* torture/unit/Makefile.am: Disable nocheck usage.
+
+2011-06-09  Aleksander Morgado  <aleksander@gnu.org>
+
+	build: do not require libcheck, it must be optional
+	* configure.ac
+
 2011-05-19  Aleksander Morgado  <aleksander@gnu.org>
 
 	doc: Updated with new Stream module API.
@@ -272,6 +289,20 @@
 	* src/Makefile.am: Add/remove files from compilation.
 	* src/base/pdf-stm-filter.[h|c]: Use new stream backend API.
 	* src/base/pdf-stm.[h|c]: Idem.
+
+2011-05-10  Jose E. Marchesi  <jemarch@gnu.org>
+
+	lib: avoid name clash with PDF_OBJ_IS_NULL and provide a quick
+	macro to determine whether a given object is the null object.
+	Problem reported by Jin Chen-Xin.
+	* doc/gnupdf.texi (Generic Functions to Manipulate Objects):
+	Document the new PDF_OBJ_IS_NULL macro.
+	Use the PDF_OBJ_IS_NULL macro in usage examples instead of
+	directly compare the structures.
+
+	* src/object/pdf-obj.h (_pdf_obj_null): Constant PDF_OBJ_NULL
+	renamed to _pdf_obj_null.
+	(PDF_OBJ_IS_NULL): New macro.
 
 2011-04-26  Aleksander Morgado  <aleksander@gnu.org>
 

@@ -12257,6 +12257,30 @@ size = pdf_obj_size (obj);
 @end table
 @end deftypefun
 
+@defun PDF_OBJ_IS_NULL(@var{obj})
+
+Macro that determines whether the passed object is the null object.
+
+@table @strong
+@item Parameters
+@table @var
+@item obj
+A PDF object.
+@end table
+@item Returns
+The macro expands to a boolean value.
+@item Usage example
+@example
+pdf_obj_t obj;
+
+if (PDF_OBJ_IS_NULL(obj))
+@{
+    /* 'obj' is the null object.  */
+@}
+@end example
+@end table
+@end defun
+
 @node Object Strong References
 @subsection Object Strong References
 
@@ -12734,13 +12758,13 @@ pdf_obj_t real_obj_2;
 
 /* Create some real objects */
 real_obj_1 = pdf_obj_real_new (doc, PDF_FALSE, 3.14);
-if (real_obj_1 == PDF_OBJ_NULL)
+if (PDF_OBJ_IS_NULL (real_obj_1))
 @{
    /* Error creating real object */
 @}
 
 reak_obj_2 = pdf_obj_real_new (doc, PDF_FALSE, 2.7182);
-if (real_obj_2 == PDF_OBJ_NULL)
+if (PDF_OBJ_IS_NULL (real_obj_2))
 @{
    /* Error creating real object */
 @}
@@ -12768,7 +12792,7 @@ pdf_obj_t real_obj;
 pdf_real_t result;
 
 real_obj = pdf_obj_real_new (doc, PDF_FALSE, 3.14);
-if (real_obj != PDF_OBJ_NULL)
+if (!PDF_OBJ_IS_NULL (real_obj))
 @{
    result = pdf_obj_real_value (real_obj);
    /* result equals to 3.14 */
@@ -12808,13 +12832,13 @@ pdf_obj_t integer_obj_2;
 
 /* Create some integer objects */
 integer_obj_1 = pdf_obj_integer_new (doc, PDF_FALSE, 10);
-if (integer_obj_1 == PDF_OBJ_NULL)
+if (PDF_OBJ_IS_NULL (integer_obj_1))
 @{
    /* Error creating integer object */
 @}
 
 integer_obj_2 = pdf_obj_integer_new (doc, PDF_FALSE, -10);
-if (integer_obj_2 == PDF_OBJ_NULL)
+if (PDF_OBJ_IS_NULL (integer_obj_2))
 @{
    /* Error creating integer object */
 @}
@@ -12842,7 +12866,7 @@ pdf_obj_t integer_obj;
 pdf_i32_t result;
 
 integer_obj = pdf_obj_integer_new (doc, PDF_FALSE, 10);
-if (integer_obj != PDF_OBJ_NULL)
+if (!PDF_OBJ_IS_NULL (integer_obj))
 @{
    result = pdf_obj_integer_value (integer_obj);
    /* result equals to 10 */
@@ -12890,13 +12914,13 @@ pdf_obj_t boolean_obj_2;
 
 /* Create some Boolean objects */
 boolean_obj_1 = pdf_obj_boolean_new (doc, PDF_FALSE, PDF_TRUE);
-if (boolean_obj_1 == PDF_OBJ_NULL)
+if (PDF_OBJ_IS_NULL (boolean_obj_1))
 @{
    /* Error creating boolean object */
 @}
 
 boolean_obj_2 = pdf_obj_boolean_new (doc, PDF_FALSE, PDF_FALSE);
-if (boolean_obj_2 == PDF_OBJ_NULL)
+if (PDF_OBJ_IS_NULL (boolean_obj_2))
 @{
    /* Error creating boolean object */
 @}
@@ -12924,7 +12948,7 @@ pdf_obj_t boolean_obj;
 pdf_bool_t result;
 
 boolean_obj = pdf_obj_boolean_new (doc, PDF_FALSE, PDF_TRUE);
-if (boolean_obj != PDF_OBJ_NULL)
+if (!PDF_OBJ_IS_NULL (boolean_obj))
 @{
    result = pdf_obj_boolean_value (boolean_obj);
    /* result equals to PDF_TRUE */
@@ -12965,13 +12989,13 @@ pdf_obj_t name_obj_2;
 
 /* Create some Name objects */
 name_obj_1 = pdf_obj_name_new (doc, PDF_FALSE, "FooBar");
-if (name_obj_1 == PDF_OBJ_NULL)
+if (PDF_OBJ_IS_NULL (name_obj_1))
 @{
    /* Error creating name object */
 @}
 
 name_obj_2 = pdf_obj_name_new (doc, PDF_FALSE, "BazFoo");
-if (name_obj_2 == PDF_OBJ_NULL)
+if (PDF_OBJ_IS_NULL (name_obj_2))
 @{
    /* Error creating name object */
 @}
@@ -13004,7 +13028,7 @@ pdf_obj_t name_obj;
 const pdf_char_t *name;
 
 name_obj = pdf_obj_name_new (doc, PDF_FALSE, "FooBar");
-if (name_obj != PDF_OBJ_NULL)
+if (!PDF_OBJ_IS_NULL (name_obj))
 @{
    name = pdf_obj_name (name_obj);
    /* 'name' points to "FooBar" */
@@ -13048,7 +13072,7 @@ pdf_obj_t str;
 
 /* Create a new String PDF object */
 str = pdf-obj_string_new (doc, PDF_FALSE, "f\233o", 3);
-if (str == PDF_OBJ_NULL)
+if (PDF_OBJ_IS_NULL (str))
 @{
    /* Error creating the String object */
 @}
@@ -13082,7 +13106,7 @@ const pdf_char_t *str;
 pdf_size_t size;
 
 str_obj = pdf_obj_string_new (doc, PDF_FALSE, "foo bar baz", 11);
-if (str_obj != PDF_OBJ_NULL)
+if (!PDF_OBJ_IS_NULL (str_obj))
 @{
    str = pdf_obj_string_value (str_obj, &size);
    /* 'str' points to "foo bar baz" */
@@ -13196,7 +13220,7 @@ pdf_obj_t array;
 /* Create an indirect array object to initially
    held 10 elements */
 array = pdf_obj_array_new (doc, PDF_TRUE, 10);
-if (array == PDF_OBJ_NULL)
+if (PDF_OBJ_IS_NULL (array))
 @{
    /* Error creating the object.  */
 @}
@@ -13513,7 +13537,7 @@ pdf_obj_t dict;
 
 /* Create an empty dictionary object */
 dict = pdf_obj_dict_new (doc, PDF_TRUE);
-if (dict == PDF_OBJ_NULL)
+if (PDF_OBJ_IS_NULL (dict))
 @{
    /* Not enough memory to create the object */
 @}
@@ -13553,7 +13577,7 @@ pdf_obj_t value;
 key = pdf_obj_name_new (doc, PDF_FALSE, "Foo");
 value = pdf_obj_dict_get (dict, key);
 
-if (value != PDF_OBJ_NULL)
+if (!PDF_OBJ_IS_NULL (value))
 @{
    /* The object associated with "/Foo" in the dictionary is
       now in 'value'. */
@@ -13592,7 +13616,7 @@ pdf_obj_t value;
 
 /* Get the value associated with "/Foo" */
 value = pdf_obj_dict_get (dict, "Foo");
-if (value != PDF_OBJ_NULL)
+if (!PDF_OBJ_IS_NULL (value))
 @{
    /* The object associated with "/Foo" in the dictionary is
       now in 'value'. */
@@ -14114,7 +14138,7 @@ stream = pdf_obj_stream_new (doc,
                              stm,
                              0, /* Exhaust the stream */
                              dict);
-if (stream == PDF_OBJ_NULL)
+if (PDF_OBJ_IS_NULL (stream))
 @{
    /* Some error prevented the creation of the stream */
 @}
@@ -14227,7 +14251,7 @@ pdf_stm_t stm;
    of 'stream' */
 stm = pdf_obj_stream_opn (stream,
                           PDF_OBJ_STM_OPEN_MODE_FILTERED);
-if (stm == PDF_OBJ_NULL)
+if (PDF_OBJ_IS_NULL (stm))
 @{
    /* Error opening the stream */
 @}
@@ -14563,13 +14587,13 @@ pdf_obj_doc_get_id (doc,
                     &instance_id,
                     &permanent_id);
 
-if (instance_id != PDF_OBJ_NULL)
+if (!PDF_OBJ_IS_NULL (instance_id))
 @{
    /* 'instance_id' is a PDF string object containing the
       instance ID of the document */
 @}
 
-if (permanent_id != PDF_OBJ_NULL)
+if (!PDF_OBJ_IS_NULL (permanent_id))
 @{
    /* 'permanent_id' is a PDF string object containing the
       permanent ID of the document */
@@ -14718,7 +14742,7 @@ pdf_obj_t      info_dict;
    object document. */
 info_dict = pdf_obj_doc_info_dict (doc);
 
-if (info_dict == PDF_OBJ_NULL)
+if (PDF_OBJ_IS_NULL (info_dict))
 @{
    /* The object document does not feature an info
       dictionary. */

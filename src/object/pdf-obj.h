@@ -50,9 +50,14 @@ typedef struct pdf_obj_s pdf_obj_t;
 
 /* The PDF NULL object has a type and a value that are unequal to
    those of any other object. There is only one possible value for
-   this object type: PDF_OBJ_NULL. */
+   this object type: _pdf_obj_null. */
 
-const pdf_obj_t PDF_OBJ_NULL = {0, 0, NULL};
+const pdf_obj_t _pdf_obj_null = {0, 0, NULL};
+
+#define PDF_OBJ_IS_NULL(obj)                     \
+  (((obj).f == _pdf_obj_null.f) &&               \
+   ((obj).v == _pdf_obj_null.v) &&               \
+   ((obj).p == _pdf_obj_null.p))
 
 /* A pdf_obj_t variable can be of any of the following types.  */
 

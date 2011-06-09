@@ -305,29 +305,11 @@ fi
 AM_CONDITIONAL([FSYS_HTTP],
                [test "x$fsys_http" != "xno" && test "x$HAVE_LIBCURL" = "xyes"])
 
-dnl nocheck (simple replacement of Check framework when this is not available)
-AC_ARG_ENABLE([nocheck],
-              AS_HELP_STRING([--enable-nocheck],
-                             [Use built-in nocheck instead of Check (default is NO)]),
-              [use_nocheck=$enableval], [use_nocheck=no])
-if test "x$use_nocheck" = "xyes"; then
-  AC_DEFINE([HAVE_NOCHECK], [1], [Use No-Check instead of Check])
-fi
-AM_CONDITIONAL([NOCHECK], [test "x$use_nocheck" = "xyes"])
-
-
-
-dnl Check if Unit testing support is available with Check or No-Check
+dnl Check if Unit testing support is available
 ut_support=no
-AM_CONDITIONAL([COMPILE_UT], [test "x$use_nocheck" = "xyes" || test "x$ac_cv_lib_check_srunner_run" = "xyes"])
-if test "x$use_nocheck" = "xyes"; then
-  ut_framework="(builtin No-Check)"
+AM_CONDITIONAL([COMPILE_UT], [test "x$ac_cv_lib_check_srunner_run" = "xyes"])
+if test "x$ac_cv_lib_check_srunner_run" = "xyes"; then
   ut_support=yes
-else
-  if test "x$ac_cv_lib_check_srunner_run" = "xyes"; then
-    ut_framework="(Check)"
-    ut_support=yes
-  fi
 fi
 
 dnl Get system endianness information
@@ -409,10 +391,6 @@ if test "x$HAVE_LIBGCRYPT" != "xyes"; then
    missing_libs="$missing_libs
    libgcrypt"
 fi
-if test "x$HAVE_LIBCHECK" != "xyes"; then
-   missing_libs="$missing_libs
-   libcheck"
-fi
 if test "x$fsys_http" = "xyes" && test "x$HAVE_LIBCURL" = "xno"; then
    missing_libs="$missing_libs
    libcurl"
@@ -478,7 +456,7 @@ Configured for \`${canonical}'.
   Using JBIG2 decoder filter?               ${HAVE_LIBJBIG2DEC}
   Using DCT filter?                         ${HAVE_LIBJPEG}
   With http filesystem support?             ${http_implementation}
-  With unit tests support?                  ${ut_support} ${ut_framework}
+  With unit tests support?                  ${ut_support}
   Program to build html manuals             ${texihtmlprogram}
   Build project management resources?       ${prmgt_mode}
   Layers with debug mode enabled            ${PDFLIB_DEBUG_DESCR}
@@ -508,8 +486,7 @@ if test "x$ut_support" = "xno" ; then
 echo "
 WARNING: you are going to build the library without unit testing support.
          If you want to be able to perform the unit testing you should
-         either install the 'check' library or run the configure with
-         the --enable-nocheck option."
+         install the 'check' library."
 fi
 
 dnl End of configure.ac
