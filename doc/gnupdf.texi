@@ -94,8 +94,7 @@ Indices
 * Floating Point Maths::        Working with real numbers.
 * Encoded Text::                Manipulating encoded strings.
 * Time Management::             Times and calendars.
-* The Filesystem Module::       An abstract file system interface and
-                                 open files.
+* The Filesystem Module::       An abstract file system interface.
 * The Tokeniser::               Decomposing a PDF document in tokens.
 * Encryption::                  Basic encryption facilities.
 @end menu
@@ -217,7 +216,7 @@ The Floating Points module in the Base layer.
 The Text module in the Base layer.
 @end deftp
 
-@deftp {Constant} PDF_EDOMAIN_BASE_FS
+@deftp {Constant} PDF_EDOMAIN_BASE_FSYS
 The FileSystem module in the Base layer.
 @end deftp
 
@@ -8533,7 +8532,7 @@ pdf_time_deinit (&mytime);
 @node Filesystem Concepts
 @subsection Filesystem Concepts
 
-Filesystem objects provides access to file system services in an
+Filesystem objects provide access to file system services in an
 abstract way, letting the library client to define filesystems for
 other classes of devices. Open files are readable or writeable file
 items in a filesystem. Path names are named locations identifying
@@ -8548,14 +8547,16 @@ folders, rename files, manage file and folder permissions, etc.
 By implementing the functions defined in the Filesystem Implementation
 Interface the client can define and use its own filesystems. In this
 way a high level of abstraction is achieved in the library code that
-uses the filesystem services: the library is able to read the contents
+uses the filesystem services: the library could be able to read the contents
 of a PDF file from a file stored in the local filesystem, from a
 network webdav based filesystem, an http server or a compressed image.
 
 The GNU PDF Library provides the default @emph{disk} filesystem
-implementation for each supported plattform.
+implementation for each supported plattform, as well as a simple @emph{http}
+filesystem implementation for remote access of files in HTTP servers
+which provide byte serving capabilities.
 
-Conceptually speaking a filesystem contain a tree (or several
+Conceptually speaking a filesystem contains a tree (or several
 trees in some filesystem implementations supporting several
 volumes) of @emph{filesystem items}.
 
@@ -8563,7 +8564,7 @@ Each time has a type and several properties. The client can ask the
 filesystem for the properties of a given item identified by a path
 name.
 
-An open file object (of type @code{pdf_fsys_file_t}) represent a readable
+An open file object (of type @code{pdf_fsys_file_t}) represents a readable
 and/or writable file in a filesystem. Open files are associated with a
 given filesystem and any filesystem can maintain an arbitrary number
 of open files (this may depend on the specific filesystem
@@ -8571,11 +8572,10 @@ implementation).
 
 The client can read and write data from/to an open file using the
 @code{pdf_fsys_file_*} functions. The implementation of the open files
-then call to the appropriate functionality of the filesystem managing
+then calls to the appropriate functionality of the filesystem managing
 the file.
 
-The client should close any opened file calling the appropriate
-function on the underlying filesystem.
+The client should close every opened file when no longer used.
 
 There is not an explicit data type for an @emph{open folder} in the GNU
 PDF Library. Instead, folders are referred using @emph{path names}.
@@ -8591,9 +8591,8 @@ Both the encoding and the format of the contents of a path name
 depends on the specific filesystem implementation. The default disk
 filesystem provided by the GNU PDF Library uses the textual device
 idependent file specifications described in the PDF Reference (section
-3.10). The interpretation of those path names depend in the specific
-plattform where the library is running. See XXX for more information
-about the disk filesystem path names.
+3.10). The interpretation of those path names depends on the specific
+plattform where the library is running.
 
 @node Filesystem Interfaces
 @subsection Filesystem Interfaces
@@ -8607,7 +8606,7 @@ filesystem variable. There are also two interfaces implemented by the
 Filesystem module allowing clients to access the module functionality:
 the @emph{Filesystem Interface}, used to manage several filesystem
 aspects, and the @emph{File Interface}, that provides functionalities
-related to open files, such as reading and writing information.
+related to open files, such as reading and writing operations.
 
 @node The Filesystem Interface
 @subsection The Filesystem Interface
@@ -8642,6 +8641,7 @@ becomes a no-op.
 
 @menu
 * Filesystem Data Types::
+* Retrieving File System implementations::
 * Getting File System Properties::
 * Folder Management::
 * Getting File System Item Properties::
@@ -8657,34 +8657,117 @@ Filesystem Module.
 An opaque type representing a filesystem.
 @end deftp
 
+@deftp {Constant} PDF_FSYS_DISK_ID
+Unique ID string of the Disk Filesystem implementation.
+@end deftp
 
-@deftp {Data Type} struct pdf_fsys_item_props_s
+@deftp {Constant} PDF_FSYS_HTTP_ID
+Unique ID string of the HTTP Filesystem implementation.
+@end deftp
+
+@deftp {Data Type} {struct pdf_fsys_item_props_s}
 This structure holds information about a filesystem item (a file or a
 directory).
 
 @table @code
 @item pdf_bool_t is_hidden
+Whether the item is, or should be considered, hidden.
 @item pdf_bool_t is_readable
+Whether the item is readable.
 @item pdf_bool_t is_writable
+Whether the item is writable.
 @item pdf_time_t creation_date
+Creation date/time of the item.
 @item pdf_time_t modification_date
+Modification date/time of the item.
 @item pdf_off_t file_size
-@item pdf_u32_t folder_size
+File size, in bytes.
 @end table
 @end deftp
+
+
+@node Retrieving File System implementations
+@subsubsection Retrieving File System implementations
+
+@deftypefun {const pdf_fsys_t *}pdf_fsys_get (const pdf_char_t *@var{id})
+
+Get the filesystem implementation registered with the given @var{id}.
+
+@table @strong
+@item Parameters
+@table @var
+@item id
+A unique string ID, which should be the one used when registering the filesystem
+implementation.
+@end table
+@item Returns
+The registered filesystem implementation.
+@item Usage example
+@example
+
+const pdf_fsys_t *disk;
+
+disk = pdf_fsys_get (PDF_FSYS_DISK_ID);
+if (!disk)
+  @{
+    printf ("No Disk filesystem implementation was registered\n");
+  @}
+
+@end example
+@end table
+@end deftypefun
+
+@defun PDF_FSYS_DISK
+
+Macro that retrieves the filesystem implementation with ID PDF_FSYS_DISK_ID.
+
+@table @strong
+@item Returns
+The macro expands to a @code{pdf_fsys_t *}.
+@item Usage example
+@example
+
+if (!PDF_FSYS_DISK)
+  @{
+    printf ("No Disk filesystem implementation was registered\n");
+  @}
+
+@end example
+@end table
+@end defun
+
+@defun PDF_FSYS_HTTP
+
+Macro that retrieves the filesystem implementation with ID PDF_FSYS_HTTP_ID.
+
+@table @strong
+@item Returns
+The macro expands to a @code{pdf_fsys_t *}.
+@item Usage example
+@example
+
+if (!PDF_FSYS_HTTP)
+  @{
+    printf ("No HTTP filesystem implementation was registered\n");
+  @}
+
+@end example
+@end table
+@end defun
+
 
 @node Getting File System Properties
 @subsubsection Getting File System Properties
 
-@deftypefun pdf_i64_t pdf_fsys_get_free_space (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name})
+@deftypefun pdf_i64_t pdf_fsys_get_free_space (const pdf_fsys_t *@var{fsys}, pdf_text_t *@var{path_name}, pdf_error_t **@var{error})
 
 Get the free storage space in the volume containing @var{path_name}.
 
 @table @strong
 @item Parameters
 @table @var
-@item file_system
-A filesystem. If @code{NULL} then the default filesystem is used.
+@item fsys
+A valid filesystem.
 @item path_name
 A path name.
 @end table
@@ -8693,7 +8776,26 @@ A 64-bit value containing the remaining free space in the volume
 containing @var{path_name}.
 @item Usage example
 @example
-XXX
+
+static void
+print_root_free_space (void)
+@{
+  pdf_i64_t free_space;
+  pdf_text_t *path;
+
+  path = pdf_text_new_from_unicode ("/", 1, PDF_TEXT_UTF8, NULL);
+  if (!path)
+    return;
+
+  free_space = pdf_fsys_get_free_space (PDF_FSYS_DISK, path, NULL);
+  if (free_space < 0)
+    return;
+
+  printf ("Empty space in root: %ld\n", free_space);
+
+  pdf_text_destroy (path);
+@}
+
 @end example
 @end table
 @end deftypefun
