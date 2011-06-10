@@ -144,6 +144,10 @@ typedef pdf_char_t *(*pdf_fsys_get_url_from_path_fn_t) (const pdf_fsys_t  *fsys,
                                                         const pdf_text_t  *path,
                                                         pdf_error_t      **error);
 
+typedef pdf_char_t *(*pdf_fsys_get_path_from_url_fn_t) (const pdf_fsys_t  *fsys,
+                                                        const pdf_char_t  *url,
+                                                        pdf_error_t      **error);
+
 /* File interface methods */
 
 typedef pdf_fsys_file_t * (*pdf_fsys_file_open_fn_t) (const pdf_fsys_t           *fsys,
@@ -228,6 +232,7 @@ struct pdf_fsys_s
   pdf_fsys_item_writable_p_fn_t item_writable_p_fn;
   pdf_fsys_build_path_fn_t build_path_fn;
   pdf_fsys_get_url_from_path_fn_t get_url_from_path_fn;
+  pdf_fsys_get_path_from_url_fn_t get_path_from_url_fn;
 
   /* File interface methods */
   pdf_fsys_file_open_fn_t file_open_fn;
@@ -326,7 +331,10 @@ pdf_hash_t *pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s  *it
   fsys->build_path_fn (fsys, error, first, ##__VA_ARGS__)
 
 #define pdf_fsys_get_url_from_path(fsys,path,error) \
-  fsys->get_url_from_path_fn (fsys,path,error)
+  fsys->get_url_from_path_fn (fsys, path, error)
+
+#define pdf_fsys_get_path_from_url(fsys,url,error)  \
+  fsys->get_path_from_url_fn (fsys, url, error)
 
 /* ----------------------------- File interface ----------------------------- */
 

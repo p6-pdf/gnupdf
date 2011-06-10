@@ -83,7 +83,6 @@ request_http_head_header_parse (void   *ptr,
 
 #define ACCEPT_RANGES "Accept-Ranges: bytes"
 
-  /* TODO: Use a regex to match the header we're looking for */
   if (*accept_ranges == PDF_FALSE &&
       n_bytes >= strlen (ACCEPT_RANGES) &&
       strncmp (str, ACCEPT_RANGES, strlen (ACCEPT_RANGES)) == 0)
@@ -168,7 +167,6 @@ request_http_head (const pdf_char_t  *url,
   /* If response code is NOT 200 OK, set an error here */
   if (http_res != 200)
     {
-      /* TODO: if no response was received, http_res will be 0 */
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_FSYS,
                      PDF_ERROR,
@@ -332,7 +330,6 @@ request_http_partial_get (const pdf_char_t  *url,
   if (http_res != 200 &&
       http_res != 206)
     {
-      /* TODO: if no response was received, http_res will be 0 */
       /* Treat 416 Requested Range Not Satisfiable in a special way */
       if (http_res == 416)
         {
@@ -646,6 +643,18 @@ get_url_from_path (const pdf_fsys_t  *fsys,
                                error);
 }
 
+static pdf_text_t *
+get_path_from_url (const pdf_fsys_t  *fsys,
+                   const pdf_char_t  *url,
+                   pdf_error_t      **error)
+{
+  PDF_ASSERT_POINTER_RETURN_VAL (url, NULL);
+
+  /* TODO. See FS#126 */
+
+  return NULL;
+}
+
 static pdf_bool_t
 file_same_p (const pdf_fsys_file_t  *file,
              const pdf_text_t       *path,
@@ -878,6 +887,7 @@ static struct pdf_fsys_http_s pdf_fsys_http_implementation =
     .common.item_writable_p_fn     = item_writable_p,
     .common.build_path_fn          = build_path,
     .common.get_url_from_path_fn   = get_url_from_path,
+    .common.get_path_from_url_fn   = get_path_from_url,
 
     .common.file_open_fn           = file_open,
     .common.file_open_tmp_fn       = file_open_tmp,

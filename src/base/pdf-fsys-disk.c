@@ -1372,6 +1372,18 @@ get_url_from_path (const pdf_fsys_t  *fsys,
   return NULL;
 }
 
+static pdf_text_t *
+get_path_from_url (const pdf_fsys_t  *fsys,
+                   const pdf_char_t  *url,
+                   pdf_error_t      **error)
+{
+  PDF_ASSERT_POINTER_RETURN_VAL (url, NULL);
+
+  /* TODO. See FS#126 */
+
+  return NULL;
+}
+
 /*
  * File Interface Implementation
  */
@@ -1982,6 +1994,7 @@ static struct pdf_fsys_disk_s pdf_fsys_disk_implementation =
     .common.item_writable_p_fn     = item_writable_p,
     .common.build_path_fn          = build_path,
     .common.get_url_from_path_fn   = get_url_from_path,
+    .common.get_path_from_url_fn   = get_path_from_url,
 
     .common.file_open_fn           = file_open,
     .common.file_open_tmp_fn       = file_open_tmp,

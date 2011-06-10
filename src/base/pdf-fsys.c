@@ -71,6 +71,7 @@ validate_implementation (const pdf_char_t         *id,
   VALIDATE_METHOD (item_writable_p_fn);
   VALIDATE_METHOD (build_path_fn);
   VALIDATE_METHOD (get_url_from_path_fn);
+  VALIDATE_METHOD (get_path_from_url_fn);
 
   VALIDATE_METHOD (file_open_fn);
   VALIDATE_METHOD (file_open_tmp_fn);
