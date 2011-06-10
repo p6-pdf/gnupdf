@@ -144,7 +144,7 @@ typedef pdf_char_t *(*pdf_fsys_get_url_from_path_fn_t) (const pdf_fsys_t  *fsys,
                                                         const pdf_text_t  *path,
                                                         pdf_error_t      **error);
 
-typedef pdf_char_t *(*pdf_fsys_get_path_from_url_fn_t) (const pdf_fsys_t  *fsys,
+typedef pdf_text_t *(*pdf_fsys_get_path_from_url_fn_t) (const pdf_fsys_t  *fsys,
                                                         const pdf_char_t  *url,
                                                         pdf_error_t      **error);
 
@@ -258,7 +258,7 @@ struct pdf_fsys_s
 struct pdf_fsys_file_s
 {
   /* Filesystem used to open the file */
-  struct pdf_fsys_s *fsys;
+  const struct pdf_fsys_s *fsys;
   /* Mode used when opening */
   enum pdf_fsys_file_mode_e mode;
   /* Path used to open the file */

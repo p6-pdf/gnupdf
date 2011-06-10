@@ -60,6 +60,12 @@ struct pdf_fsys_http_file_s
   pdf_off_t pos;
 };
 
+static const pdf_char_t *http_schemes[] = {
+  "http://",
+  "https://",
+  NULL
+};
+
 /*
  * Filesystem Interface Implementation
  */
@@ -484,15 +490,144 @@ get_folder_contents (const pdf_fsys_t  *fsys,
   return PDF_FALSE;
 }
 
+static const pdf_char_t *
+skip_scheme_from_url (const pdf_char_t *url)
+{
+  pdf_u32_t i;
+  const pdf_char_t *start;
+
+  /* Skip scheme from the URL */
+  start = NULL;
+  i = 0;
+  while (!start && http_schemes[i])
+    {
+      if (strncmp (url,
+                   http_schemes[i],
+                   strlen (http_schemes[i])) == 0)
+        start = &url[strlen (http_schemes[i])];
+    }
+
+  return start;
+}
+
+static pdf_bool_t
+get_directory_and_filename (const pdf_fsys_t  *fsys,
+                            const pdf_text_t  *path_name,
+                            pdf_text_t       **directory,
+                            pdf_text_t       **filename,
+                            pdf_error_t      **error)
+{
+  pdf_size_t utf8_size;
+  pdf_char_t *utf8;
+  pdf_char_t *p;
+  const pdf_char_t *start;
+  pdf_size_t filename_size;
+
+  /* Get in UTF-8 */
+  utf8 = pdf_text_get_unicode (path_name,
+                               PDF_TEXT_UTF8,
+                               PDF_TEXT_UNICODE_WITH_NUL_SUFFIX,
+                               &utf8_size,
+                               error);
+  if (!utf8)
+    return PDF_FALSE;
+
+  start = skip_scheme_from_url (utf8);
+  if (!start)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_FSYS,
+                     PDF_ERROR,
+                     "invalid URL: '%s'",
+                     utf8);
+      pdf_dealloc (utf8);
+      return PDF_FALSE;
+    }
+
+  /* Move pointer to last character in the path
+   * We move 2 positions because utf8_size here counts last NUL byte */
+  p = &utf8[utf8_size - 2];
+
+  /* Skip possible separator at the end of the path */
+  if (*p == '/')
+    p--;
+
+  /* Find previous directory separator */
+  while (p >= start && *p != '/')
+    p--;
+
+  /* Directory separator found? */
+  if (p < start)
+    {
+      /* No parent */
+      pdf_dealloc (utf8);
+      return NULL;
+    }
+
+  /* Filename starts always after the dir separator */
+  filename_size = strlen (&p[1]);
+
+  /* Get filename if requested */
+  if (filename)
+    {
+      *filename = pdf_text_new_from_unicode (&p[1],
+                                             filename_size,
+                                             PDF_TEXT_UTF8,
+                                             error);
+      if (!*filename)
+        {
+          pdf_dealloc (utf8);
+          return PDF_FALSE;
+        }
+    }
+
+  if (directory)
+    {
+      /* Directory last (to be NUL-ed) depends on whether the directory is the root
+       * directory (we shouldn't remove the dir separator from the root directory)
+       */
+      if (p == start)
+        p[1] = '\0';
+      else
+        p[0] = '\0';
+
+      *directory = pdf_text_new_from_unicode (utf8,
+                                              strlen (utf8),
+                                              PDF_TEXT_UTF8,
+                                              error);
+      if (!*directory)
+        {
+          if (filename)
+            pdf_text_destroy (*filename);
+          pdf_dealloc (utf8);
+          return PDF_FALSE;
+        }
+    }
+
+  pdf_dealloc (utf8);
+  return PDF_TRUE;
+}
+
 static pdf_text_t *
 get_basename (const pdf_fsys_t  *fsys,
               const pdf_text_t  *path_name,
               pdf_error_t      **error)
 {
-  PDF_ASSERT_POINTER_RETURN_VAL (path_name, PDF_FALSE);
+  pdf_text_t *basename;
 
-  /* TODO */
-  return NULL;
+  PDF_ASSERT_POINTER_RETURN_VAL (path_name, NULL);
+
+  if (!get_directory_and_filename (fsys,
+                                   path_name,
+                                   NULL,
+                                   &basename,
+                                   error))
+    {
+      pdf_prefix_error (error, "couldn't get basename: ");
+      return NULL;
+    }
+
+  return basename;
 }
 
 static pdf_text_t *
@@ -500,10 +635,21 @@ get_parent (const pdf_fsys_t  *fsys,
             const pdf_text_t  *path_name,
             pdf_error_t      **error)
 {
-  PDF_ASSERT_POINTER_RETURN_VAL (path_name, PDF_FALSE);
+  pdf_text_t *parent;
 
-  /* TODO */
-  return NULL;
+  PDF_ASSERT_POINTER_RETURN_VAL (path_name, NULL);
+
+  if (!get_directory_and_filename (fsys,
+                                   path_name,
+                                   &parent,
+                                   NULL,
+                                   error))
+    {
+      pdf_prefix_error (error, "couldn't get parent: ");
+      return NULL;
+    }
+
+  return parent;
 }
 
 static pdf_bool_t
@@ -556,7 +702,6 @@ get_item_props (const pdf_fsys_t              *fsys,
   pdf_time_set_utc (&props->modification_date, 0);
 
   props->file_size = (pdf_off_t)content_length;
-  props->folder_size = 0;
 
   pdf_dealloc (url);
   return PDF_TRUE;
@@ -620,10 +765,110 @@ build_path (const pdf_fsys_t  *fsys,
             const pdf_text_t  *first_element,
             ...)
 {
+  pdf_text_t *output;
+  pdf_char_t *utf8;
+  pdf_size_t utf8_size;
+  pdf_text_t *next;
+  va_list args;
+
   PDF_ASSERT_POINTER_RETURN_VAL (first_element, NULL);
 
-  /* TODO */
-  return NULL;
+  /* Get first in UTF-8 */
+  utf8 = pdf_text_get_unicode (first_element,
+                               PDF_TEXT_UTF8,
+                               PDF_TEXT_UNICODE_WITH_NUL_SUFFIX,
+                               &utf8_size,
+                               error);
+  if (!utf8)
+    return NULL;
+
+  /* Ensure first item comes with scheme */
+  if (!skip_scheme_from_url (utf8))
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_FSYS,
+                     PDF_ERROR,
+                     "cannot build path: "
+                     "first element must have URL scheme");
+      pdf_dealloc (utf8);
+      return NULL;
+    }
+
+  /* Do not count last NUL as part of the size */
+  utf8_size--;
+
+  va_start (args, first_element);
+  next = va_arg (args, pdf_text_t *);
+  while (next != NULL)
+    {
+      pdf_char_t *next_utf8;
+      pdf_size_t next_utf8_size;
+      pdf_char_t *new_url;
+
+      /* Get next in UTF-8 */
+      next_utf8 = pdf_text_get_unicode (next,
+                                        PDF_TEXT_UTF8,
+                                        PDF_TEXT_UNICODE_WITH_NUL_SUFFIX,
+                                        &next_utf8_size,
+                                        error);
+      if (!next_utf8)
+        {
+          pdf_dealloc (utf8);
+          return NULL;
+        }
+
+      /* Do not count last NUL as part of the size */
+      next_utf8_size--;
+
+      /* Ensure next elements do NOT have scheme */
+      if (skip_scheme_from_url (next_utf8))
+        {
+          pdf_set_error (error,
+                         PDF_EDOMAIN_BASE_FSYS,
+                         PDF_ERROR,
+                         "cannot build path: "
+                         "next elements must not have URL scheme");
+          pdf_dealloc (utf8);
+          pdf_dealloc (next_utf8);
+          return NULL;
+        }
+
+      /* Reallocate for the expanded URL.
+       *  +1 for '/'
+       *  +1 for last NUL
+       */
+      new_url = pdf_realloc (utf8, utf8_size + next_utf8_size + 2);
+      if (!new_url)
+        {
+          pdf_set_error (error,
+                         PDF_EDOMAIN_BASE_FSYS,
+                         PDF_ENOMEM,
+                         "cannot build path: "
+                         "couldn't reallocate %lu bytes",
+                         utf8_size + next_utf8_size + 2);
+          pdf_dealloc (utf8);
+          pdf_dealloc (next_utf8);
+          return NULL;
+        }
+
+      /* Concat next part */
+      utf8 = new_url;
+      utf8[utf8_size] = '/';
+      memcpy (&utf8[utf8_size + 1], next_utf8, next_utf8_size);
+      utf8_size  += (next_utf8_size + 1);
+      utf8[utf8_size] = '\0';
+
+      next = va_arg (args, pdf_text_t *);
+    }
+  va_end (args);
+
+  /* Create pdf_text_t to return */
+  output = pdf_text_new_from_unicode (utf8,
+                                      utf8_size,
+                                      PDF_TEXT_UTF8,
+                                      error);
+  pdf_dealloc (utf8);
+  return output;
 }
 
 static pdf_char_t *
