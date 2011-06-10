@@ -771,11 +771,13 @@ get_directory_and_filename (const pdf_fsys_t  *fsys,
                             const pdf_text_t  *path_name,
                             pdf_text_t       **directory,
                             pdf_text_t       **filename,
+                            pdf_char_t       **filename_utf8,
                             pdf_error_t      **error)
 {
   pdf_size_t utf8_size;
   pdf_char_t *utf8;
   pdf_char_t *p;
+  pdf_size_t filename_size;
 
   /* Canonicalize path and get output in UTF-8 */
   if (!canonicalize_path (fsys, path_name, NULL, &utf8, error))
@@ -803,10 +805,13 @@ get_directory_and_filename (const pdf_fsys_t  *fsys,
     }
 
   /* Filename starts always after the dir separator */
+  filename_size = strlen (&p[1]);
+
+  /* Get filename if requested */
   if (filename)
     {
       *filename = pdf_text_new_from_unicode (&p[1],
-                                             strlen (&p[1]),
+                                             filename_size,
                                              PDF_TEXT_UTF8,
                                              error);
       if (!*filename)
@@ -814,6 +819,26 @@ get_directory_and_filename (const pdf_fsys_t  *fsys,
           pdf_dealloc (utf8);
           return PDF_FALSE;
         }
+    }
+
+  /* Get filename in UTF-8 if requested */
+  if (filename_utf8)
+    {
+      *filename_utf8 = pdf_alloc (filename_size + 1);
+      if (!*filename_utf8)
+        {
+          pdf_set_error (error,
+                         PDF_EDOMAIN_BASE_FSYS,
+                         PDF_ENOMEM,
+                         "cannot get filename: "
+                         "couldn't allocate %lu bytes",
+                         (unsigned long)(filename_size + 1));
+          if (filename)
+            pdf_text_destroy (*filename);
+          return PDF_FALSE;
+        }
+      memcpy (*filename_utf8, &p[1], filename_size);
+      (*filename_utf8)[filename_size] = '\0';
     }
 
   if (directory)
@@ -834,6 +859,8 @@ get_directory_and_filename (const pdf_fsys_t  *fsys,
         {
           if (filename)
             pdf_text_destroy (*filename);
+          if (filename_utf8)
+            pdf_dealloc (*filename_utf8);
           pdf_dealloc (utf8);
           return PDF_FALSE;
         }
@@ -856,6 +883,7 @@ get_basename (const pdf_fsys_t  *fsys,
                                    path_name,
                                    NULL,
                                    &basename,
+                                   NULL,
                                    error))
     {
       pdf_prefix_error (error, "couldn't get basename: ");
@@ -877,6 +905,7 @@ get_parent (const pdf_fsys_t  *fsys,
   if (!get_directory_and_filename (fsys,
                                    path_name,
                                    &parent,
+                                   NULL,
                                    NULL,
                                    error))
     {
@@ -972,28 +1001,47 @@ is_writable_from_host_path (const pdf_char_t  *host_path,
 #define PDF_STAT(f,s) _wstat((wchar_t *)f,s)
 typedef struct _stat pdf_stat_s;
 #else
-#define PDF_STAT(f,s) stat(f,s)
-typedef struct stat pdf_stat_s;
+#define PDF_STAT(f,s) stat64(f,s)
+typedef struct stat64 pdf_stat_s;
 #endif
 
-static pdf_off_t
-get_size_from_host_path (const pdf_char_t  *host_path,
-                         pdf_error_t      **error)
+static pdf_bool_t
+get_stat_info_from_host_path (const pdf_char_t  *host_path,
+                              pdf_off_t         *size,
+                              pdf_time_t        *ctime,
+                              pdf_time_t        *mtime,
+                              pdf_error_t      **error)
 {
   pdf_stat_s file_info;
-
-  /* TODO: If available, we should use the 64-bit versions of stat() */
 
   if (PDF_STAT (host_path, &file_info) < 0)
     {
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_FSYS,
                      get_status_from_errno (errno),
-                     "cannot get file size: '%s'",
+                     "cannot get stat info: '%s'",
                      strerror (errno));
-      return 0;
+      return PDF_FALSE;
     }
-  return file_info.st_size;
+
+  if (size)
+    {
+      *size = (pdf_off_t)file_info.st_size;
+    }
+
+  if (ctime)
+    {
+      pdf_time_init (ctime);
+      pdf_time_set_utc (ctime, file_info.st_ctime);
+    }
+
+  if (mtime)
+    {
+      pdf_time_init (mtime);
+      pdf_time_set_utc (mtime, file_info.st_mtime);
+    }
+
+  return PDF_TRUE;
 }
 
 static pdf_bool_t
@@ -1034,22 +1082,42 @@ get_item_props (const pdf_fsys_t              *fsys,
       return PDF_FALSE;
     }
 
-  /* Get file size */
-  props->file_size = get_size_from_host_path (host_path, &inner_error);
-  if (inner_error)
+  /* Get file size, ctime and mtime */
+  if (!get_stat_info_from_host_path (host_path,
+                                     &props->file_size,
+                                     &props->creation_date,
+                                     &props->modification_date,
+                                     error))
     {
       pdf_dealloc (host_path);
-      pdf_propagate_error (error, inner_error);
       return PDF_FALSE;
     }
 
-  /* TODO: is hidden ? */
+#ifdef PDF_HOST_WIN32
+  /* TODO: Check if file hidden in Windows */
+  props->is_hidden = PDF_FALSE;
+#else
+  {
+    pdf_char_t *filename_utf8;
 
-  /* TODO: Get creation date */
+    /* Get filename */
+    filename_utf8 = NULL;
+    if (!get_directory_and_filename (fsys,
+                                     path_name,
+                                     NULL,
+                                     NULL,
+                                     &filename_utf8,
+                                     error))
+      {
+        pdf_dealloc (host_path);
+        return PDF_FALSE;
+      }
 
-  /* TODO: Get modification date */
-
-  /* TODO: Get folder size */
+    /* Lets consider files starting with dot as hidden */
+    props->is_hidden = (filename_utf8[0] == '.' ? PDF_TRUE : PDF_FALSE);
+    pdf_dealloc (filename_utf8);
+  }
+#endif /* PDF_HOST_WIN32 */
 
   pdf_dealloc (host_path);
 
@@ -1415,19 +1483,18 @@ file_get_size (const pdf_fsys_file_t  *file,
                pdf_error_t           **error)
 {
   struct pdf_fsys_disk_file_s *disk_file;
-  pdf_error_t *inner_error = NULL;
   pdf_off_t size;
 
   PDF_ASSERT_POINTER_RETURN_VAL (file, (pdf_off_t)-1);
 
   disk_file = (struct pdf_fsys_disk_file_s *)file;
-  size = get_size_from_host_path (disk_file->host_path, &inner_error);
-  if (inner_error)
-    {
-      pdf_propagate_error (error, inner_error);
-      return (pdf_off_t)-1;
-    }
-  return size;
+  return (get_stat_info_from_host_path (disk_file->host_path,
+                                        &size,
+                                        NULL,
+                                        NULL,
+                                        error) ?
+          size :
+          (pdf_off_t)-1);
 }
 
 static pdf_bool_t

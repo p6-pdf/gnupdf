@@ -270,10 +270,6 @@ pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s  *item_props,
       (!pdf_hash_add_size (props_hash,
                            PDF_FSYS_ITEM_FILE_SIZE,
                            (pdf_size_t) item_props->file_size,
-                           error)) ||
-      (!pdf_hash_add_size (props_hash,
-                           PDF_FSYS_ITEM_FOLDER_SIZE,
-                           (pdf_size_t) item_props->folder_size,
                            error)))
     {
       pdf_hash_destroy (props_hash);

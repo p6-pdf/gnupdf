@@ -348,7 +348,6 @@ action_props_file (void)
   pdf_dealloc (aux);
 
   printf ("\tfile size:    %ld\n", (long)props.file_size);
-  printf ("\tfolder size:  %u\n", (unsigned)props.folder_size);
 
   printf ("\n");
 }

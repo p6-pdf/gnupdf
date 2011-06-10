@@ -57,7 +57,6 @@ struct pdf_fsys_item_props_s
   pdf_time_t creation_date;
   pdf_time_t modification_date;
   pdf_off_t file_size;
-  pdf_u32_t folder_size;
 };
 
 /* Key names of filesystem item properties when available in a hash table */
@@ -65,7 +64,6 @@ struct pdf_fsys_item_props_s
 #define PDF_FSYS_ITEM_IS_READABLE       "isReadable"
 #define PDF_FSYS_ITEM_IS_WRITABLE       "isWritable"
 #define PDF_FSYS_ITEM_FILE_SIZE         "fileSize"
-#define PDF_FSYS_ITEM_FOLDER_SIZE       "folderSize"
 #define PDF_FSYS_ITEM_CREATION_DATE     "creationDate"
 #define PDF_FSYS_ITEM_MODIFICATION_DATE "modificationDate"
 
