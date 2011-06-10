@@ -1094,8 +1094,22 @@ get_item_props (const pdf_fsys_t              *fsys,
     }
 
 #ifdef PDF_HOST_WIN32
-  /* TODO: Check if file hidden in Windows */
-  props->is_hidden = PDF_FALSE;
+  {
+    DWORD attrs;
+
+    attrs = GetFileAttributesW ((LPCWSTR) host_path);
+    if (attrs == INVALID_FILE_ATTRIBUTES)
+      {
+        pdf_set_error (error,
+                       PDF_EDOMAIN_BASE_FSYS,
+                       PDF_ERROR,
+                       "couldn't get item properties: got error code %u",
+                       (uint)GetLastError ());
+        pdf_dealloc (host_path);
+        return PDF_FALSE;
+      }
+
+    props->is_hidden = (attrs & FILE_ATTRIBUTE_HIDDEN ? PDF_TRUE : PDF_FALSE);
 #else
   {
     pdf_char_t *filename_utf8;
