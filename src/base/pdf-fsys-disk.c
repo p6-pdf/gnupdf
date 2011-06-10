@@ -1142,7 +1142,8 @@ static pdf_bool_t
 item_p (const pdf_fsys_t *fsys,
         const pdf_text_t *path_name)
 {
-  struct pdf_fsys_item_props_s item_props;
+  pdf_char_t *host_path;
+  pdf_bool_t exists;
 
   PDF_ASSERT_POINTER_RETURN_VAL (path_name, PDF_FALSE);
 
@@ -1151,12 +1152,20 @@ item_p (const pdf_fsys_t *fsys,
     return PDF_TRUE;
 #endif
 
-  /* TODO: Do we really need to get item properties just to know if it
-   * exists? */
-  return get_item_props (fsys,
-                         path_name,
-                         &item_props,
-                         NULL);
+  /* We get the string in HOST-encoding (with NUL-suffix) */
+  host_path = get_host_path (path_name, NULL, NULL);
+  if (!host_path)
+    return PDF_FALSE;
+
+  /* Get file size, ctime and mtime, but don't return any.
+   * We just want to know if file exists or not */
+  exists = get_stat_info_from_host_path (host_path,
+                                         NULL,
+                                         NULL,
+                                         NULL,
+                                         NULL);
+  pdf_dealloc (host_path);
+  return exists;
 }
 
 static pdf_bool_t
