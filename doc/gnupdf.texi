@@ -8770,10 +8770,16 @@ Get the free storage space in the volume containing @var{path_name}.
 A valid filesystem.
 @item path_name
 A path name.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ERROR
+Any other error.
+@end table
 @end table
 @item Returns
 A 64-bit value containing the remaining free space in the volume
-containing @var{path_name}.
+containing @var{path_name}, or -1 if error.
 @item Usage example
 @example
 
@@ -8803,23 +8809,20 @@ print_root_free_space (void)
 @node Folder Management
 @subsubsection Folder Management
 
-@deftypefun pdf_status_t pdf_fsys_create_folder (const pdf_fsys_t @var{filesystem}, const pdf_text_t @var{path_name})
+@deftypefun pdf_bool_t pdf_fsys_create_folder (const pdf_fsys_t *@var{fsys}, const pdf_text_t *@var{path_name}, pdf_error_t **@var{error})
 
 Create a folder named @var{path_name}.
 
 @table @strong
 @item Parameters
 @table @var
-@item filesystem
-A filesystem. If @code{NULL} the default filesystem is used.
+@item fsys
+A valid filesystem.
 @item path_name
 The path name of the folder to be created.
-@end table
-@item Returns
-A PDF status value:
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-The folder was successfully created.
 @item PDF_EBADNAME
 The specified @var{path_name} is incorrect.
 @item PDF_EBADPERMS
@@ -8827,99 +8830,54 @@ The client does not have permissions to create the folder.
 @item PDF_ERROR
 Any other error condition.
 @end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_fsys_get_folder_contents (const pdf_fsys_t @var{filesystem}, const pdf_text_t @var{path_name}, pdf_list_t @var{item_list})
-
-Get a list with the path names of the items contained in a given folder.
-
-@table @strong
-@item Parameters
-@table @var
-@item filesystem
-A filesystem. If @code{NULL} the default filesystem is used.
-@item path_name
-The path name of a folder.
-@item item_list
-An output list variable to hold the path names of the items contained
-in the folder.
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The operation was successfully performed.
-@item PDF_EBADNAME
-@var{path_name} does not name a folder in the filesystem.
-@item PDF_EBADPERMS
-The client does not have permissions to read the contents of the folder.
-@item PDF_ERROR
-Any other error condition.
-@end table
+@code{PDF_TRUE} if successful, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
-XXX
+
+pdf_error_t *error = NULL;
+const pdf_char_t *utf8_path = "/tmp/something";
+pdf_text_t *path;
+
+path = pdf_text_new_from_unicode (utf8_path,
+                                  strlen (utf8_path),
+                                  PDF_TEXT_UTF8,
+                                  &error);
+if (!path ||
+    !pdf_fsys_create_folder (PDF_FSYS_DISK,
+                             path,
+                             error))
+  @{
+    printf ("Couldn't create folder '%s': '%s'\n",
+            utf8_path,
+            (error ?
+             pdf_error_get_message (error) :
+             "unknown error"));
+    pdf_clear_error (&error);
+  @}
+
+if (path)
+  pdf_text_destroy (path);
+
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fsys_get_parent (const pdf_fsys_t @var{filesystem}, const pdf_text_t @var{path_name}, pdf_text_t @var{parent_path})
-
-Get the path name of the father of a given item in the filesystem.
-
-@table @strong
-@item Parameters
-@table @var
-@item filesystem
-A filesystem. If @code{NULL} the default filesystem is used.
-@item path_name
-The path name of an item in the filesystem.
-@item parent_path
-Output text variable to hold the path of the parent of the item
-identified by @var{path_name}. If @var{path_name} is the root
-directory then @code{NULL} is returned in @var{parent_path}.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The path name of the parent of the item was successfully stored in
-@var{parent_path}.
-@item PDF_EBADNAME
-@var{path_name} does not name a valid item in the filesystem.
-@item PDF_EBADPERMS
-The client does not have permissions to get the parent of the specified
-item.
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_fsys_remove_folder (const pdf_fsys_t @var{filesystem}, const pdf_text_t @var{path_name})
+@deftypefun pdf_bool_t pdf_fsys_remove_folder (const pdf_fsys_t *@var{fsys}, const pdf_text_t *@var{path_name}, pdf_error_t **@var{error})
 
 Remove an empty folder from the filesystem.
 
 @table @strong
 @item Parameters
 @table @var
-@item filesystem
-A filesystem. If @code{NULL} the default filesystem is used.
+@item fsys
+A valid filesystem.
 @item path_name
 A path name of an empty folder in the filesystem.
-@end table
-@item Returns
-A PDF status value:
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-The folder was successfully removed.
 @item PDF_EBADNAME
 @var{path_name} does not name a folder in the filesystem.
 @item PDF_EBADPERMS
@@ -8927,9 +8885,291 @@ The client does not have permissions to remove the folder.
 @item PDF_ERROR
 Any other error.
 @end table
+@end table
+@item Returns
+@code{PDF_TRUE} if successful, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
-XXX
+
+pdf_error_t *error = NULL;
+const pdf_char_t *utf8_path = "/tmp/something";
+pdf_text_t *path;
+
+path = pdf_text_new_from_unicode (utf8_path,
+                                  strlen (utf8_path),
+                                  PDF_TEXT_UTF8,
+                                  &error);
+if (!path ||
+    !pdf_fsys_remove_folder (PDF_FSYS_DISK,
+                             path,
+                             error))
+  @{
+    printf ("Couldn't remove folder '%s': '%s'\n",
+            utf8_path,
+            (error ?
+             pdf_error_get_message (error) :
+             "unknown error"));
+    pdf_clear_error (&error);
+  @}
+
+if (path)
+  pdf_text_destroy (path);
+
+@end example
+@end table
+@end deftypefun
+
+@deftypefun {pdf_list_t *}pdf_fsys_get_folder_contents (const pdf_fsys_t *@var{fsys}, const pdf_text_t *@var{path_name}, pdf_error_t **@var{error})
+
+Get a list with the path names of the items contained in a given folder.
+
+@table @strong
+@item Parameters
+@table @var
+@item fsys
+A valid filesystem.
+@item path_name
+The path name of a folder.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_EBADNAME
+@var{path_name} does not name a folder in the filesystem.
+@item PDF_EBADPERMS
+The client does not have permissions to read the contents of the folder.
+@item PDF_ERROR
+Any other error condition.
+@end table
+@end table
+@item Returns
+A newly allocated list of @code{pdf_text_t} items with the names of the files in
+the given folder.
+@item Usage example
+@example
+
+static void
+print_filenames_in_directory (const pdf_char_t *utf8_path)
+@{
+  pdf_text_t *path;
+  pdf_list_iterator_t iter;
+  pdf_error_t *error = NULL;
+  pdf_list_t *files;
+  void *elem;
+
+  path = pdf_text_new_from_unicode (utf8_path,
+                                    strlen (utf8_path),
+                                    PDF_TEXT_UTF8,
+                                    &error);
+  if (!path)
+    @{
+      printf ("couldn't create path object: %s\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_error_destroy (error);
+      return;
+    @}
+
+  files = pdf_fsys_get_folder_contents (PDF_FSYS_DISK,
+                                        path,
+                                        &error);
+  if (!files)
+    @{
+      printf ("couldn't list files in folder: %s\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_error_destroy (error);
+      return;
+    @}
+
+  pdf_list_iterator_init (&iter, files);
+  while (pdf_list_iterator_next (&iter, &elem, NULL))
+    @{
+      pdf_char_t *filename_utf8;
+
+      filename_utf8 = pdf_text_get_unicode ((const pdf_text_t *)elem,
+                                            PDF_TEXT_UTF8,
+                                            PDF_TEXT_UNICODE_WITH_NUL_SUFFIX,
+                                            NULL,
+                                            &error);
+      if (!filename_utf8)
+        @{
+          printf ("couldn't get UTF-8 filename: %s\n",
+                  error ? pdf_error_get_message (error) : "unknown error");
+          pdf_clear_error (&error);
+          pdf_list_iterator_deinit (&iter);
+          break;
+        @}
+
+      printf ("File '%s' found in directory\n",
+              filename_utf8);
+
+      pdf_dealloc (filename_utf8);
+    @}
+
+  pdf_list_iterator_deinit (&iter);
+  pdf_list_destroy (files);
+@}
+
+@end example
+@end table
+@end deftypefun
+
+@deftypefun {pdf_text_t *}pdf_fsys_get_parent (const pdf_fsys_t *@var{fsys}, const pdf_text_t *@var{path_name}, pdf_error_t **@var{error})
+
+Get the path name of the direct parent of a given item in the filesystem.
+
+@table @strong
+@item Parameters
+@table @var
+@item fsys
+A valid filesystem.
+@item path_name
+The path name of an item in the filesystem.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_EBADNAME
+@var{path_name} does not name a valid item in the filesystem.
+@item PDF_EBADPERMS
+The client does not have permissions to get the parent of the specified
+item.
+@end table
+@end table
+@item Returns
+A newly created @code{pdf_text_t}, or @code{NULL} if there is no parent.
+On error, @code{NULL} is also returned, and @var{error} is set accordingly.
+@item Usage example
+@example
+
+static void
+print_parent_directories (const pdf_char_t *utf8_path)
+@{
+  pdf_error_t *error = NULL;
+  pdf_text_t *path;
+  pdf_text_t *parent;
+
+  path = pdf_text_new_from_unicode (utf8_path,
+                                    strlen (utf8_path),
+                                    PDF_TEXT_UTF8,
+                                    &error);
+  if (!path)
+    @{
+      printf ("couldn't get path: %s\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_error_destroy (error);
+      return;
+    @}
+
+  while ((parent = pdf_fsys_get_parent (PDF_FSYS_DISK,
+                                        path,
+                                        &error)) != NULL)
+    @{
+      pdf_char_t *parent_utf8;
+
+      parent_utf8 = pdf_text_get_unicode ((const pdf_text_t *)elem,
+                                          PDF_TEXT_UTF8,
+                                          PDF_TEXT_UNICODE_WITH_NUL_SUFFIX,
+                                          NULL,
+                                          &error);
+      if (!parent_utf8)
+        @{
+          printf ("couldn't get UTF-8 parent path: %s\n",
+                  error ? pdf_error_get_message (error) : "unknown error");
+          pdf_clear_error (&error);
+          break;
+        @}
+
+      printf ("Parent path found: '%s'\n",
+              parent_utf8);
+
+      pdf_dealloc (parent_utf8);
+      pdf_text_destroy (path);
+      path = parent;
+    @}
+
+  if (error)
+    @{
+      printf ("couldn't list parents: %s\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_error_destroy (error);
+    @}
+
+  if (path)
+    pdf_text_destroy (path);
+  if (parent)
+    pdf_text_destroy (parent);
+@}
+
+@end example
+@end table
+@end deftypefun
+
+@deftypefun {pdf_text_t *}pdf_fsys_get_basename (const pdf_fsys_t *@var{fsys}, const pdf_text_t *@var{path_name}, pdf_error_t **@var{error})
+
+Get the filename from a given path in the filesystem.
+
+@table @strong
+@item Parameters
+@table @var
+@item fsys
+A valid filesystem.
+@item path_name
+The path name of an item in the filesystem.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_EBADNAME
+@var{path_name} does not name a valid item in the filesystem.
+@item PDF_EBADPERMS
+The client does not have permissions to get the parent of the specified
+item.
+@end table
+@end table
+@item Returns
+A newly created @code{pdf_text_t}.
+On error, @code{NULL} is returned, and @var{error} is set accordingly.
+@item Usage example
+@example
+
+pdf_bool_t
+file_is_hidden (pdf_text_t *path)
+@{
+  pdf_error_t *error = NULL;
+  pdf_text_t *basename;
+  pdf_char_t *basename_utf8;
+  pdf_bool_t hidden;
+
+  basename = pdf_fsys_get_basename (PDF_FSYS_DISK,
+                                    path,
+                                    &error);
+  if (!basename)
+    @{
+      printf ("couldn't get basename: %s\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+      return PDF_FALSE;
+    @}
+
+  basename_utf8 = pdf_text_get_unicode (basename,
+                                        PDF_TEXT_UTF8,
+                                        PDF_TEXT_UNICODE_WITH_NUL_SUFFIX,
+                                        NULL,
+                                        &error);
+  if (!basename_utf8)
+    @{
+      printf ("couldn't get UTF-8 filename: %s\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+      pdf_text_destroy (basename);
+      return PDF_FALSE;
+    @}
+
+  hidden = (basename_utf8[0] == '.' ? PDF_TRUE : PDF_FALSE);
+
+  pdf_dealloc (basename_utf8);
+  pdf_text_destroy (basename);
+
+  return hidden;
+@}
+
 @end example
 @end table
 @end deftypefun
