@@ -98,8 +98,8 @@ const void *pdf_hash_get_value (const pdf_hash_t *table,
 
 /* ----------------------- Hash Iterator Methods ---------------------------- */
 
-pdf_bool_t pdf_hash_iterator_init (pdf_hash_iterator_t *itr,
-                                   const pdf_hash_t    *table);
+void pdf_hash_iterator_init (pdf_hash_iterator_t *itr,
+                             const pdf_hash_t    *table);
 
 pdf_bool_t pdf_hash_iterator_next (pdf_hash_iterator_t  *itr,
                                    const pdf_char_t    **key,

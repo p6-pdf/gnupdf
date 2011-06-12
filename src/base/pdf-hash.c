@@ -280,16 +280,14 @@ pdf_hash_get_value (const pdf_hash_t *table,
   return (elt != NULL ? elt->value : NULL);
 }
 
-pdf_bool_t
+void
 pdf_hash_iterator_init (pdf_hash_iterator_t *itr,
                         const pdf_hash_t    *table)
 {
-  PDF_ASSERT_POINTER_RETURN_VAL (itr, PDF_FALSE);
-  PDF_ASSERT_POINTER_RETURN_VAL (table, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN (itr);
+  PDF_ASSERT_POINTER_RETURN (table);
 
   *((gl_list_iterator_t *)itr) = gl_list_iterator ((gl_list_t) table);
-
-  return PDF_TRUE;
 }
 
 pdf_bool_t

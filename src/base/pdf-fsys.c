@@ -199,16 +199,15 @@ pdf_fsys_foreach (pdf_fsys_foreach_fn_t  foreach_fn,
 
   if (fsys_implementations)
     {
-      if (pdf_hash_iterator_init (&it, fsys_implementations))
-        {
-          const pdf_char_t *id;
-          const void *impl;
+      const pdf_char_t *id;
+      const void *impl;
 
-          while (pdf_hash_iterator_next (&it, &id, &impl))
-            foreach_fn (user_data, id, impl);
+      pdf_hash_iterator_init (&it, fsys_implementations);
 
-          pdf_hash_iterator_deinit (&it);
-        }
+      while (pdf_hash_iterator_next (&it, &id, &impl))
+        foreach_fn (user_data, id, impl);
+
+      pdf_hash_iterator_deinit (&it);
     }
 
   pthread_mutex_unlock (&fsys_implementations_mutex);
