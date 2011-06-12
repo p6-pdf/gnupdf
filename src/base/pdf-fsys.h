@@ -98,42 +98,42 @@ typedef struct pdf_fsys_file_s pdf_fsys_file_t;
 /* Filesystem interface methods */
 
 typedef pdf_bool_t (*pdf_fsys_create_folder_fn_t) (const pdf_fsys_t  *fsys,
-                                                   const pdf_text_t  *path_name,
+                                                   const pdf_text_t  *path,
                                                    pdf_error_t      **error);
 
 typedef pdf_list_t * (*pdf_fsys_get_folder_contents_fn_t) (const pdf_fsys_t  *fsys,
-                                                           const pdf_text_t  *path_name,
+                                                           const pdf_text_t  *path,
                                                            pdf_error_t      **error);
 
 typedef pdf_text_t * (*pdf_fsys_get_parent_fn_t) (const pdf_fsys_t  *fsys,
-                                                  const pdf_text_t  *path_name,
+                                                  const pdf_text_t  *path,
                                                   pdf_error_t      **error);
 
 typedef pdf_text_t * (*pdf_fsys_get_basename_fn_t) (const pdf_fsys_t  *fsys,
-                                                    const pdf_text_t  *path_name,
+                                                    const pdf_text_t  *path,
                                                     pdf_error_t      **error);
 
 typedef pdf_bool_t (*pdf_fsys_remove_folder_fn_t) (const pdf_fsys_t  *fsys,
-                                                   const pdf_text_t  *path_name,
+                                                   const pdf_text_t  *path,
                                                    pdf_error_t      **error);
 
 typedef pdf_bool_t (*pdf_fsys_get_item_props_fn_t) (const pdf_fsys_t              *fsys,
-                                                    const pdf_text_t              *path_name,
+                                                    const pdf_text_t              *path,
                                                     struct pdf_fsys_item_props_s  *props,
                                                     pdf_error_t                  **error);
 
 typedef pdf_i64_t (*pdf_fsys_get_free_space_fn_t) (const pdf_fsys_t  *fsys,
-                                                   const pdf_text_t  *path_name,
+                                                   const pdf_text_t  *path,
                                                    pdf_error_t      **error);
 
 typedef pdf_bool_t (*pdf_fsys_item_p_fn_t) (const pdf_fsys_t *fsys,
-                                            const pdf_text_t *path_name);
+                                            const pdf_text_t *path);
 
 typedef pdf_bool_t (*pdf_fsys_item_readable_p_fn_t) (const pdf_fsys_t *fsys,
-                                                     const pdf_text_t *path_name);
+                                                     const pdf_text_t *path);
 
 typedef pdf_bool_t (*pdf_fsys_item_writable_p_fn_t) (const pdf_fsys_t *fsys,
-                                                     const pdf_text_t *path_name);
+                                                     const pdf_text_t *path);
 
 typedef pdf_text_t *(*pdf_fsys_build_path_fn_t) (const pdf_fsys_t  *fsys,
                                                  pdf_error_t      **error,
@@ -151,7 +151,7 @@ typedef pdf_text_t *(*pdf_fsys_get_path_from_url_fn_t) (const pdf_fsys_t  *fsys,
 /* File interface methods */
 
 typedef pdf_fsys_file_t * (*pdf_fsys_file_open_fn_t) (const pdf_fsys_t           *fsys,
-                                                      const pdf_text_t           *path_name,
+                                                      const pdf_text_t           *path,
                                                       enum pdf_fsys_file_mode_e   mode,
                                                       pdf_error_t               **error);
 
@@ -197,12 +197,12 @@ typedef pdf_bool_t (*pdf_fsys_file_set_pos_fn_t) (pdf_fsys_file_t  *file,
                                                   pdf_off_t         pos,
                                                   pdf_error_t     **error);
 
-typedef pdf_bool_t (*pdf_fsys_file_set_mode_fn_t) (pdf_fsys_file_t      *file,
+typedef pdf_bool_t (*pdf_fsys_file_set_mode_fn_t) (pdf_fsys_file_t             *file,
                                                    enum pdf_fsys_file_mode_e   new_mode,
                                                    pdf_error_t               **error);
 
 typedef pdf_bool_t (*pdf_fsys_file_same_p_fn_t) (const pdf_fsys_file_t  *file,
-                                                 const pdf_text_t       *path_name,
+                                                 const pdf_text_t       *path,
                                                  pdf_error_t           **error);
 
 typedef pdf_bool_t (*pdf_fsys_file_request_ria_fn_t) (pdf_fsys_file_t  *file,

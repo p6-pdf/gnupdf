@@ -688,7 +688,7 @@ Allocates heap memory.
 
 @table @var
 @item size
-The requested number of octects to allocate.  If this value is
+The requested number of octets to allocate.  If this value is
 @code{0} then no memory is allocated and @code{NULL} is returned.
 @end table
 
@@ -931,7 +931,7 @@ buffer.
 @item data
 Pointer to the buffer contents.
 @item size
-Number of octects allocated in @code{data}.
+Number of octets allocated in @code{data}.
 @item rp
 Current read pointer.
 @item wp
@@ -951,7 +951,7 @@ Create a new memory buffer.
 @item Parameters
 @table @var
 @item size
-The size of the new buffer, in bytes.
+The size of the new buffer, in octets.
 @item error
 A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
@@ -1076,7 +1076,7 @@ Resize a memory buffer.
 @item buffer
 A valid @code{pdf_buffer_t}.
 @item newsize
-The new size (in bytes) for the buffer.
+The new size (in octets) for the buffer.
 @item error
 A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
@@ -1323,8 +1323,8 @@ except between the VariantAndClockSeqHigh and ClockSeqLow:
 @item TimeMid (2 bytes => 4 hexadecimal digits)
 @item VersionAndTimeHigh (2 bytes => 4 hexadecimal digits)
 @item VariantAndClockSeqHigh (1 byte => 2 hexadecimal digits)
-@item ClockSeqLow (1 octect => 2 hexadecimal digits)
-@item Node (6 octects => 12 hexadecimal digits)
+@item ClockSeqLow (1 octet => 2 hexadecimal digits)
+@item Node (6 octets => 12 hexadecimal digits)
 @end itemize
 
 An example of an UUID would be:
@@ -1402,7 +1402,7 @@ Set and return an ASCII string with the printed representation of @var{uuid}.
 @item uuid
 A previously generated UUID.
 @item buffer
-A pointer to the output buffer. The given buffer should have at least PDF_UUID_SIZE (46) bytes.
+A pointer to the output buffer. The given buffer should have at least PDF_UUID_SIZE (46) octets.
 @item buffer_size
 Size of @var{buffer}.
 @end table
@@ -4383,7 +4383,7 @@ An open file. This file object must exist as long as the stream object exists.
 @item offset
 Position into the file.
 @item cache_size
-The desired size for the stream cache, measured in octects. If it is
+The desired size for the stream cache, measured in octets. If it is
 @code{0} then the default size (4kb) is used.
 @item mode
 The operation mode for the stream.
@@ -4449,7 +4449,7 @@ It must be kept open as long as the stream object exists.
 @item offset
 Position into the file.
 @item cache_size
-The desired size for the stream cache, measured in octects. If it is
+The desired size for the stream cache, measured in octets. If it is
 @code{0} then the default size (4kb) is used.
 @item mode
 The operation mode for the stream.
@@ -4493,9 +4493,9 @@ Create a new stream operating in a memory buffer.
 Memory buffer where the information will be written-to or readed-from.
 This buffer must exist as long as the stream object exists.
 @item size
-The desired size for the memory buffer, measured in octects.
+The desired size for the memory buffer, measured in octets.
 @item cache_size
-The desired size for the stream cache, measured in octects. If it is
+The desired size for the stream cache, measured in octets. If it is
 @code{0} then the default size (4kb) is used.
 @item mode
 The operation mode for the stream.
@@ -4745,9 +4745,9 @@ A stream.
 @item buf
 The buffer to hold the read data.
 @item bytes
-The number of octects to be read.
+The number of octets to be read.
 @item read_bytes
-The number of octects actually read after the operation. May be less than @var{bytes} if an error is detected or on EOF condition.
+The number of octets actually read after the operation. May be less than @var{bytes} if an error is detected or on EOF condition.
 @item error
 A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
@@ -4823,9 +4823,9 @@ A stream.
 @item buf
 The buffer containing the written information.
 @item bytes
-The number of bytes to be written into the stream.
+The number of octets to be written into the stream.
 @item written_bytes
-The number of octects actually written after the operation. May be less than @var{bytes} if an error is detected or on EOF condition.
+The number of octets actually written after the operation. May be less than @var{bytes} if an error is detected or on EOF condition.
 @item error
 A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
@@ -5014,7 +5014,7 @@ A stream.
 @item finish
 A boolean value indicating whether to finalize the filter chain.
 @item flushed_bytes
-The number of octects flushed after the operation.
+The number of octets flushed after the operation.
 @code{NULL} may also be passed if this number is not needed.
 @item error
 A @code{pdf_error_t} to report errors or @code{NULL}.
@@ -5028,7 +5028,7 @@ Generic error while writing into the backend.
 @end table
 @end table
 @item Returns
-@code{PDF_TRUE} if all pending bytes were flushed. @code{PDF_FALSE} is returned both on EOF and upon detecting an error, but the @var{error} variable will not be set on EOF.
+@code{PDF_TRUE} if all pending octets were flushed. @code{PDF_FALSE} is returned both on EOF and upon detecting an error, but the @var{error} variable will not be set on EOF.
 @item Usage example
 @example
 
@@ -5097,7 +5097,7 @@ Seek into the backend of a given stream.
 @item stm
 A stream.
 @item pos
-The position to seek, measured in octects from the beginning of the
+The position to seek, measured in octets from the beginning of the
 backend media.
 @end table
 @item Returns
@@ -5189,7 +5189,7 @@ backend media) of the read/write pointer.
 
 @deftypefun pdf_off_t pdf_stm_tell (pdf_stm_t *@var{stm})
 
-Get the number of octects read/written from/to the stream since either
+Get the number of octets read/written from/to the stream since either
 the last @code{pdf_stm_bseek} operation or the creation of the
 stream, if no bseek was made.
 
@@ -6360,7 +6360,7 @@ Create a new text object and initialize it with a given host encoded string.
 @item str
 A string in some host encoding.
 @item size
-The length of @var{str}, in bytes.
+The length of @var{str}, in octets.
 @item enc
 The host encoding with which @var{str} is encoded.
 @item error
@@ -6416,11 +6416,11 @@ UTF-16BE).
 @item str
 A valid `PDF string'
 @item size
-The length of @var{str} in bytes
+The length of @var{str} in octets
 @item remaining_str
 Returned pointer to the next chunk of data to process, if any.
 @item remaining_length
-Length of @var{remaining_str} in bytes
+Length of @var{remaining_str} in octets
 @item error
 A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
@@ -6482,7 +6482,7 @@ string (so BOM is optional and Language/Country code is not allowed).
 @item str
 A Unicode string.
 @item size
-The length of @var{str} in bytes.
+The length of @var{str} in octets.
 @item enc
 The Unicode encoding used in @var{str}.
 @item error
@@ -6688,7 +6688,7 @@ if (pdf_text_empty_p (text))
 Get the contents of a text variable encoded in a given host encoding.
 
 Note that the host encoding may be multibyte and thus the output string may
-contain NUL bytes.
+contain NUL octets.
 
 @table @strong
 @item Parameters
@@ -6698,7 +6698,7 @@ A text variable.
 @item enc
 A host encoding supported by the host.
 @item length
-Output length, in bytes, of the returned string.
+Output length, in octets, of the returned string.
 @item error
 A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
@@ -6778,7 +6778,7 @@ if (str)
 Get the contents of a text variable encoded in the specified
 Unicode encoding. Additional options can be set in the request.
 
-Note that the output string may contain NUL bytes if the requested encoding is
+Note that the output string may contain NUL octets if the requested encoding is
 not UTF-8.
 
 @table @strong
@@ -6792,7 +6792,7 @@ A given Unicode encoding, specifying requested endianness if applicable.
 Mask of additional option flags, set as: OPTION_1 | OPTION_2 | OPTION_3.
 (see @code{pdf_text_unicode_options_e} data type)
 @item length
-Output length, in bytes, of the returned string.
+Output length, in octets, of the returned string.
 @item error
 A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
@@ -6880,7 +6880,7 @@ A text variable.
 @item str
 A string encoded with some host encoding.
 @item enc
-The length of @var{str}, in bytes.
+The length of @var{str}, in octets.
 @item enc
 The host encoding used to encode @var{str}.
 @item error
@@ -6963,7 +6963,7 @@ A text variable.
 @item str
 A Unicode string without country/language data embedded.
 @item size
-The length of @var{str}, in bytes.
+The length of @var{str}, in octets.
 @item enc
 The Unicode encoding used in @var{str}.
 @item error
@@ -8673,7 +8673,7 @@ Creation date/time of the item.
 @item pdf_time_t modification_date
 Modification date/time of the item.
 @item pdf_off_t file_size
-File size, in bytes.
+File size, in octets.
 @end table
 @end deftp
 
@@ -9690,11 +9690,6 @@ The File Interface is implemented by the filesystem module and
 provides access to filesystem functionality related with open files,
 such as writing and reading data to/from a specific file.
 
-Note that open file variables (@code{pdf_fsys_file_t}) contain a
-reference to its underlying filesystem implementation, so the client
-should only provide a correctly initialized (opened) file variable to
-the @code{pdf_fsys_file_*} functions.
-
 The functionality covered by the File Interface includes:
 
 @itemize @bullet
@@ -9711,6 +9706,11 @@ File size management.
 @item
 File flags (status) management.
 @end itemize
+
+Note that open file variables (@code{pdf_fsys_file_t}) contain a
+reference to its underlying filesystem implementation, so the client
+should only provide a correctly initialized (opened) file variable to
+the @code{pdf_fsys_file_*} functions.
 
 @menu
 * File Data Types::
@@ -10024,7 +10024,7 @@ files.
 
 @deftypefun pdf_off_t pdf_fsys_file_get_size (const pdf_fsys_file_t *@var{file}, pdf_error_t **@var{error})
 
-Get the size (in bytes) of a given open file.
+Get the size (in octets) of a given open file.
 
 @table @strong
 @item Parameters
@@ -10039,7 +10039,7 @@ Generic error getting file size.
 @end table
 @end table
 @item Returns
-A @code{pdf_off_t} with The size of the file in bytes, or @code{(pdf_off_t)-1)} on error.
+A @code{pdf_off_t} with The size of the file in octets, or @code{(pdf_off_t)-1)} on error.
 @item Usage example
 @example
 
@@ -10150,9 +10150,9 @@ print_used_mode (const pdf_fsys_file_t *file)
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fsys_file_set_mode (pdf_fsys_file_t @var{file}, enum pdf_fsys_file_mode_e @var{new_mode})
+@deftypefun pdf_bool_t pdf_fsys_file_set_mode (pdf_fsys_file_t *@var{file}, enum pdf_fsys_file_mode_e @var{new_mode}, pdf_error_t **@var{error})
 
-Update the mode of a given open file.
+Update the mode of a given open file, reopening it if needed.
 
 @table @strong
 @item Parameters
@@ -10161,33 +10161,69 @@ Update the mode of a given open file.
 An open file.
 @item new_mode
 The new mode to set for the file.
-@end table
-@item Returns
-Returns PDF_OK if the mode is set to the new mode, otherwise returns
-an appropriate pdf_status_t error.
-A PDF status value:
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-The operation succeeded.
 @item PDF_EBADDATA
 The mode provided was invalid.
 @item PDF_ERROR
 General failure, most applicable to Win32.
 @end table
+@end table
+@item Returns
+@code{PDF_TRUE} if successful, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
-pdf_status_t ret;
-pdf_fsys_file_t file = pdf_alloc(sizeof(pdf_fsys_file_s));
-pdf_status_t status;
-pdf_text_t path;
 
-status = pdf_text_new_from_unicode ("/path/to/foo",
-                                    12, PDF_TEXT_UTF8,
-                                    &path);
-ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, file);
+void
+print_file_set_modes (pdf_text_t *path)
+@{
+  pdf_error_t *error = NULL;
+  pdf_fsys_file_t *f;
 
-enum pdf_fsys_file_mode_e mode = PDF_FSYS_OPEN_MODE_READ;
-ret = pdf_fsys_file_set_mode(file, mode);
+  f = pdf_fsys_file_open (PDF_FSYS_DISK,
+                          path,
+                          PDF_FSYS_OPEN_MODE_READ,
+                          &error);
+  if (!f)
+    @{
+      printf ("couldn't open the file for reading: '%s'\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+      return;
+    @}
+  printf ("correctly opened the file for reading\n");
+
+  if (!pdf_fsys_file_set_mode (f,
+                               PDF_FSYS_OPEN_MODE_WRITE,
+                               &error))
+    @{
+      printf ("couldn't set mode to writing: '%s'\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+      return;
+    @}
+  printf ("correctly set the mode to writing\n");
+
+  if (!pdf_fsys_file_set_mode (f,
+                               PDF_FSYS_OPEN_MODE_RW,
+                               &error))
+    @{
+      printf ("couldn't set the mode for reading and writing: '%s'\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+      return;
+    @}
+  printf ("correctly set the mode for reading and writing\n");
+
+  if (!pdf_fsys_file_close (f, &error))
+    @{
+      printf ("error closing the file: '%s'\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+    @}
+@}
+
 @end example
 @end table
 @end deftypefun
@@ -10197,7 +10233,7 @@ ret = pdf_fsys_file_set_mode(file, mode);
 
 The following functions allow to compare files.
 
-@deftypefun pdf_bool_t pdf_fsys_file_same_p (pdf_fsys_file_t @var{file}, pdf_text_t @var{path})
+@deftypefun pdf_bool_t pdf_fsys_file_same_p (const pdf_fsys_file_t *@var{file}, pdf_text_t *@var{path}, pdf_error_t **@var{error})
 
 Determine whether a given open file is the same file as a given file
 identified by a file path.
@@ -10209,27 +10245,45 @@ identified by a file path.
 An open file.
 @item path
 A file path.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_EBADDATA
+Invalid input path given.
+@item PDF_ERROR
+Generic error when comparing file paths.
+@end table
 @end table
 @item Returns
-A PDF boolean value:
-@table @code
-@item PDF_TRUE
-Both files are the same file.
-@item PDF_FALSE
-The files are not the same file, or the given pathname does not identify
-a file in the underlying filesystem.
-@end table
+@code{PDF_TRUE} if both @var{file} and @var{path} refer to the same file, @code{PDF_FALSE} otherwise. On error, @code{PDF_FALSE} is also returned and @var{error} is set accordingly.
 @item Usage example
 @example
-pdf_bool_t ret;
-pdf_fsys_file_t file; /* some pre-initialized file variable */
-pdf_status_t status;
-pdf_text_t other_path;
 
-status = pdf_text_new_from_unicode ("/path/to/baz",
-                                    12, PDF_TEXT_UTF8,
-                                    &other_path);
-ret = pdf_fsys_file_same_p (file, other_path);
+pdf_bool_t
+is_our_predefined_file (const pdf_fsys_file_t *file)
+@{
+  static const pdf_char_t *predefined_file_path_utf8 = "path/to/baz";
+  static pdf_text_t *predefined_file_path = NULL;
+
+  if (!predefined_file_path)
+    @{
+      pdf_error_t *error = NULL;
+
+      predefined_file_path =  pdf_text_new_from_unicode (predefined_file_path_utf8,
+                                                         strlen (predefined_file_path_utf8),
+                                                         PDF_TEXT_UTF8,
+                                                         &error);
+     if (!predefined_file_path)
+       @{
+         printf ("couldn't build predefined file path: '%s'\n",
+                 error ? pdf_error_get_message (error) : "unknown error");
+         pdf_clear_error (&error);
+         return PDF_FALSE;
+       @}
+    @}
+
+  return pdf_fsys_file_same_p (file, predefined_file_path, NULL);
+@}
 @end example
 @end table
 @end deftypefun
@@ -10240,47 +10294,56 @@ ret = pdf_fsys_file_same_p (file, other_path);
 The following functions allow to move the input/output pointer of a
 buffer file (its ``current position'').
 
-@deftypefun pdf_status_t pdf_fsys_file_get_pos (pdf_fsys_file_t @var{file}, pdf_off_t *@var{pos})
+@deftypefun pdf_off_t pdf_fsys_file_get_pos (const pdf_fsys_file_t *@var{file}, pdf_error_t **@var{error})
 
-Get the current position (in octects) in a given open file.
+Get the current position (in octets) in a given open file.
+Position is given always with respect to the beginning of the file.
 
 @table @strong
 @item Parameters
 @table @var
 @item file
 An open file.
-@item pos
-The address of a @code{pdf_off_t} variable.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ERROR
+Generic error.
+@end table
 @end table
 @item Returns
-A PDF status variable:
-@table @code
-@item PDF_OK
-The operation was successfully performed.
-@item PDF_ERROR
-The function call failed due to an error.
-@end table
+The current position, or @code{(pdf_off_t)-1)} on error.
 @item Usage example
 @example
-pdf_status_t ret;
-pdf_fsys_file_t file = pdf_alloc(sizeof(pdf_fsys_file_s));
-pdf_status_t status;
-pdf_text_t path;
 
-status = pdf_text_new_from_unicode ("/path/to/foo",
-                                    12, PDF_TEXT_UTF8,
-                                    &path);
-ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, file);
+void
+print_current_file_position (const pdf_fsys_file_t *file)
+@{
+  pdf_error_t *error = NULL;
+  pdf_off_t pos;
 
-pdf_off_t pos = 20;
-ret = pdf_fsys_file_get_pos(file, pos);
+  pos = pdf_fsys_file_get_pos (file, &error);
+  if (pos == (pdf_off_t)-1)
+    @{
+      printf ("couldn't get file position: '%s'\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+    @}
+  else
+    @{
+      printf ("current file position: '%lu'\n",
+              (unsigned long)pos);
+    @}
+@}
+
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fsys_file_set_pos (pdf_fsys_file_t @var{file}, pdf_off_t @var{new_pos})
+@deftypefun pdf_bool_t pdf_fsys_file_set_pos (pdf_fsys_file_t *@var{file}, pdf_off_t @var{new_pos}, pdf_error_t **@var{error})
 
 Set the current position in a given open file.
+Position is given always with respect to the beginning of the file.
 
 @table @strong
 @item Parameters
@@ -10289,32 +10352,38 @@ Set the current position in a given open file.
 An open file.
 @item new_pos
 The new position of the file.
-@end table
-@item Returns
-A PDF status value:
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-The operation succeeded.
 @item PDF_EBADDATA
 Invalid new position.
 @item PDF_EBADPERMS
-The client does not have enough permissions to change the current file
-position.
+The client does not have enough permissions to change the current file position.
+@item PDF_ERROR
+Generic error.
 @end table
+@end table
+@item Returns
+@code{PDF_TRUE} if successful, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
-pdf_status_t ret;
-pdf_fsys_file_t file = pdf_alloc(sizeof(pdf_fsys_file_s));
-pdf_status_t status;
-pdf_text_t path;
 
-status = pdf_text_new_from_unicode ("/path/to/foo",
-                                    12, PDF_TEXT_UTF8,
-                                    &path);
-ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, file);
+pdf_bool_t
+file_rewind (pdf_fsys_file_t *file)
+@{
+  pdf_error_t *error = NULL;
 
-pdf_off_t pos = 20;
-ret = pdf_fsys_file_set_pos(file, pos);
+  if (!pdf_fsys_file_set_pos (pos, 0, &error))
+    @{
+      printf ("couldn't rewind the file: '%s'\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+      return PDF_FALSE;
+    @}
+
+  return PDF_TRUE;
+@}
+
 @end example
 @end table
 @end deftypefun
@@ -10322,8 +10391,7 @@ ret = pdf_fsys_file_set_pos(file, pos);
 @node Changing the Size of a File
 @subsubsection Changing the Size of a File
 
-
-@deftypefun pdf_bool_t pdf_fsys_file_can_set_size_p (pdf_fsys_file_t @var{file}, pdf_off_t @var{size})
+@deftypefun pdf_bool_t pdf_fsys_file_can_set_size_p (const pdf_fsys_file_t *@var{file}, pdf_off_t @var{size})
 
 Determine if a given open file is resizeable to a given size.
 
@@ -10333,26 +10401,32 @@ Determine if a given open file is resizeable to a given size.
 @item file
 An open file.
 @item size
-The new size for the file in octects.
+The new size for the file in octets.
 @end table
 @item Returns
-A PDF boolean value:
-@table @code
-@item PDF_TRUE
-The file can be resized to the given size.
-@item PDF_FALSE
-The file cannot be resized to the given size.
-@end table
+@code{PDF_TRUE} if the file can be resized to the given size, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
-XXX
+
+pdf_bool_t
+file_can_truncate (const pdf_fsys_file_t *file)
+@{
+  if (!pdf_fsys_file_can_set_size (pos, 0))
+    @{
+      printf ("cannot truncate file\n");
+      return PDF_FALSE;
+    @}
+
+  return PDF_TRUE;
+@}
+
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fsys_file_set_size (pdf_fsys_file_t @var{file}, pdf_off_t @var{size})
+@deftypefun pdf_bool_t pdf_fsys_file_set_size (pdf_fsys_file_t *@var{file}, pdf_off_t @var{size}, pdf_error_t **@var{error})
 
-Resize a given file to a given new size measured in octects.
+Resize a file to a given new size measured in octets.
 
 @table @strong
 @item Parameters
@@ -10361,15 +10435,38 @@ Resize a given file to a given new size measured in octects.
 An open file.
 @item new_size
 The new size for the file. If it is bigger than the previous size then
-the file is augmented to that size. If it is shorter than the previous
+the file is extended to that size. If it is shorter than the previous
 size then the file gets truncated.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_EBADPERMS
+The client does not have enough permissions to change the current file size.
+@item PDF_ERROR
+Generic error.
+@end table
 @end table
 @item Returns
-A value indicating the new size of the file. It should match the
-requested new size, or is @code{0} if there is an error.
+@code{PDF_TRUE} if successful, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
-XXX
+
+pdf_bool_t
+file_truncate (pdf_fsys_file_t *file)
+@{
+  pdf_error_t *error = NULL;
+
+  if (!pdf_fsys_file_set_size (pos, 0, &error))
+    @{
+      printf ("couldn't truncate the file: '%s'\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+      return PDF_FALSE;
+    @}
+
+  return PDF_TRUE;
+@}
+
 @end example
 @end table
 @end deftypefun
@@ -10382,7 +10479,7 @@ The following functions provides synchronous input/output for open
 files.
 
 
-@deftypefun pdf_status_t pdf_fsys_file_read (pdf_fsys_file_t @var{file}, pdf_char_t *@var{buf}, pdf_size_t @var{bytes}, pdf_size_t *@var{read_bytes})
+@deftypefun pdf_bool_t pdf_fsys_file_read (pdf_fsys_file_t *@var{file}, pdf_char_t *@var{buf}, pdf_size_t @var{bytes}, pdf_size_t *@var{read_bytes}, pdf_error_t **@var{error})
 
 Synchronously read data from an open file item.
 
@@ -10394,31 +10491,70 @@ An open file.
 @item buf
 The buffer to hold the read data.
 @item bytes
-The number of octects to read.
+The number of octets to read.
 @item read_bytes
-The number of octects actually read.
-@end table
-@item Returns
-A PDF status value:
+The number of octets actually read in the operation.
+This may be less than @var{bytes} on EOF or error.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-All the requested bytes were successfully read into @var{buf}.
 @item PDF_EBADDATA
 The file element or a given pointer is invalid.
-@item PDF_EEOF
-An end of file condition occurred.
 @item PDF_ERROR
-An error prevented to read the bytes.
+An error prevented to read the requested octets.
 @end table
+@end table
+@item Returns
+@code{PDF_TRUE} if all @var{bytes} were successfully read.
+If end of file is reached, @code{PDF_FALSE} is returned.
+On error, @code{PDF_FALSE} is returned and @code{error} is set accordingly.
 @item Usage example
 @example
-XXX
+
+void
+print_text_file_contents (pdf_fsys_file_t *file)
+@{
+  pdf_error_t *error = NULL;
+  pdf_char_t buffer[1025];
+  pdf_bool_t eof = PDF_FALSE;
+
+  while (!eof)
+    @{
+      pdf_size_t read_bytes = 0;
+
+      if (!pdf_fsys_file_read (file,
+                               buffer,
+                               1024,
+                               &read_bytes,
+                               &error))
+        @{
+          if (!error)
+            eof = PDF_TRUE;
+          else
+            @{
+              printf ("error reading from file: %s",
+                      pdf_error_get_message (error));
+              pdf_error_destroy (error);
+              return;
+            @}
+        @}
+
+      if (read_bytes > 0)
+        @{
+          buffer[read_bytes] = '\0';
+          printf ("content: '%s'\n", buffer);
+        @}
+    @}
+
+  printf ("done.\n");
+@}
+
 @end example
 @end table
 @end deftypefun
 
 
-@deftypefun pdf_status_t pdf_fsys_file_write (pdf_fsys_file_t @var{file}, pdf_char_t *@var{buf}, pdf_size_t @var{bytes}, pdf_size_t *@var{written_bytes})
+@deftypefun pdf_bool_t pdf_fsys_file_write (pdf_fsys_file_t *@var{file}, const pdf_char_t *@var{buf}, pdf_size_t @var{bytes}, pdf_size_t *@var{written_bytes}, pdf_error_t **@var{error})
 
 Synchronously write data to an open file item.
 
@@ -10430,31 +10566,113 @@ An open file.
 @item buf
 A pointer to memory containing the data to write into the file.
 @item bytes
-The number of octects to write.
+The number of octets to write.
 @item written_bytes
-The number of octects actually written.
-@end table
-@item Returns
-A PDF status value:
+The number of octets actually written.
+This may be less than @var{bytes} on EOF or error.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-All the requested bytes were successfully written to @var{file}.
 @item PDF_EBADDATA
 The file element or a given pointer is invalid.
 @item PDF_ENOMEM
 A disk full condition ocurred.
 @item PDF_ERROR
-An error prevented to write the bytes.
+An error prevented to write the octets.
 @end table
+@end table
+@item Returns
+@code{PDF_TRUE} if all @var{bytes} were successfully written.
+On error, @code{PDF_FALSE} is returned and @code{error} is set accordingly.
 @item Usage example
 @example
-XXX
+
+pdf_bool_t
+copy_file (const pdf_text_t *ifile_path, const pdf_text_t *ofile_path)
+@{
+  pdf_error_t *error = NULL;
+  pdf_fsys_file_t *ifile;
+  pdf_fsys_file_t *ofile;
+  pdf_bool_t eof = PDF_FALSE;
+#define BUFFER_SIZE 1024
+  pdf_char_t buffer [BUFFER_SIZE];
+
+  /* Open the input file for reading */
+  ifile = pdf_fsys_file_open (PDF_FSYS_DISK,
+                              ifile_path,
+                              PDF_FSYS_OPEN_MODE_READ,
+                              &error);
+  if (!ifile)
+    @{
+      printf ("couldn't open file for reading: %s",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+      return PDF_FALSE;
+    @}
+
+  /* Open the output file for writing */
+  ofile = pdf_fsys_file_open (PDF_FSYS_DISK,
+                              ofile_path
+                              PDF_FSYS_OPEN_MODE_WRITE,
+                              &error);
+  if (!ofile)
+    @{
+      printf ("couldn't open file for writing: %s",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+      return PDF_FALSE;
+    @}
+
+  while (!eof)
+    @{
+      pdf_size_t read_bytes = 0;
+
+      if (!pdf_fsys_file_read (ifile,
+                               buffer,
+                               BUFFER_SIZE,
+                               &read_bytes,
+                               &error))
+        @{
+          if (!error)
+            eof = PDF_TRUE;
+          else
+            @{
+              printf ("error reading from file: %s",
+                      pdf_error_get_message (error));
+              pdf_error_destroy (error);
+              return PDF_FALSE;
+            @}
+        @}
+
+      if (read_bytes > 0)
+        @{
+          pdf_size_t written_bytes = 0;
+
+          if (!pdf_fsys_file_write (ofile,
+                                    buffer,
+                                    read_bytes,
+                                    &written_bytes,
+                                    &error) &&
+              error)
+            @{
+              printf ("error writing to file: %s",
+                      pdf_error_get_message (error));
+              pdf_error_destroy (error);
+              return;
+            @}
+        @}
+    @}
+
+  pdf_fsys_file_close (ifile, NULL);
+  pdf_fsys_file_close (ofile, NULL);
+@}
+
 @end example
 @end table
 @end deftypefun
 
 
-@deftypefun pdf_status_t pdf_fsys_file_flush (pdf_fsys_file_t @var{file})
+@deftypefun pdf_bool_t pdf_fsys_file_flush (pdf_fsys_file_t *@var{file}, pdf_error_t **@var{error})
 
 Flush all the written data for the specified file.
 
@@ -10463,12 +10681,9 @@ Flush all the written data for the specified file.
 @table @var
 @item file
 An open file variable.
-@end table
-@item Returns
-A PDF status value:
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-The open file was flushed successfully.
 @item PDF_EBADDATA
 Bad function parameters to underlying @code{write()}.
 @item PDF_EAGAIN
@@ -10476,9 +10691,84 @@ Try again.
 @item PDF_ERROR
 There was an error flushing the open file.
 @end table
+@end table
+@item Returns
+@code{PDF_TRUE} if successful, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
-XXX
+
+pdf_bool_t
+write_timestamp_file (const pdf_text_t *path)
+@{
+  pdf_error_t *error = NULL;
+  pdf_fsys_file_t *file;
+  pdf_size_t written_bytes = 0;
+  pdf_char_t *timestamp;
+  pdf_time_t now;
+
+  /* Get timestamp string */
+  pdf_time_set_to_current_utc_time (&now);
+  timestamp = pdf_time_to_string (&now,
+                                  PDF_TIME_STRING_FORMAT_ISO_8601,
+                                  PDF_TIME_STRING_NO_OPTION,
+                                  &error);
+  if (!timestamp)
+    @{
+      printf ("couldn't get timestamp: '%s'\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+      return PDF_FALSE;
+    @}
+
+  /* Open the output file for writing */
+  file = pdf_fsys_file_open (PDF_FSYS_DISK,
+                             path
+                             PDF_FSYS_OPEN_MODE_WRITE,
+                             &error);
+  if (!file)
+    @{
+      printf ("couldn't open file for writing: %s",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+      pdf_dealloc (timestamp);
+      return PDF_FALSE;
+    @}
+
+  if (!pdf_fsys_file_write (file,
+                            timestamp,
+                            strlen (timestamp),
+                            &written_bytes,
+                            &error) &&
+      error)
+    @{
+      printf ("error writing to file: %s",
+              pdf_error_get_message (error));
+      pdf_error_destroy (error);
+      pdf_dealloc (timestamp);
+      pdf_fsys_file_close (file, NULL);
+      return PDF_FALSE;
+    @}
+
+  /* Flush the bytes. This action just here is completely
+   * useless, as the flushing will anyway be done once the
+   * file gets closed. Useful only when we want to detect
+   * errors happening exactly on the flushing operation.
+   */
+  if (!pdf_fsys_file_flush (file, &error))
+    @{
+      printf ("couldn't flush the data: %s",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+      pdf_dealloc (timestamp);
+      pdf_fsys_file_close (file, NULL);
+      return PDF_FALSE;
+    @}
+
+  pdf_dealloc (timestamp);
+  pdf_fsys_file_close (file, NULL);
+  return PDF_TRUE;
+@}
+
 @end example
 @end table
 @end deftypefun
@@ -10505,7 +10795,7 @@ An open file.
 @item offset
 The beginning of the requested block.
 @item count
-The size (in octects) of the requested block.
+The size (in octets) of the requested block.
 @end table
 @item Returns
 A PDF status value:
@@ -10809,7 +11099,7 @@ possible to perform the operation.
 @deftp {Data Type} {pdf_status_t (*pdf_fsys_file_get_size_fn_t) (pdf_fsys_file_t @var{file}, pdf_off_t *@var{pos})}
 
 Filesystem callback used to get the logical size of a file (in
-octects).
+octets).
 
 The callback should return a PDF status value:
 @table @code
@@ -10825,7 +11115,7 @@ The client does not have enough permissions to get the logical size of
 @deftp {Data Type} {pdf_status_t (*pdf_fsys_file_set_size_fn_t) (pdf_fsys_file_t @var{file}, pdf_off_t @var{pos})}
 
 Filesystem callback used to set the logical size of a file (in
-octects).
+octets).
 
 The callback should return a PDF status value:
 @table @code
@@ -12029,7 +12319,7 @@ A pointer to a cipher created previously.
 @item key
 A pointer to memory where the key is stored.
 @item size
-The length of the key in bytes. Note that some algorithms could require
+The length of the key in octets. Note that some algorithms could require
 a fixed length of key.
 @end table
 @item Returns
@@ -12073,12 +12363,12 @@ A cipher.
 @item out
 A pointer to the output buffer.
 @item out_size
-Size reserved for the output buffer in bytes. The function will fail if
+Size reserved for the output buffer in octets. The function will fail if
 it is not too large to contain the output.
 @item in
 A pointer to input buffer.
 @item in_size
-The length of the input buffer in bytes. I must be greater than
+The length of the input buffer in octets. I must be greater than
 zero. Some algorithms requires than IN_SIZE to be multiple of a fixed
 integer.
 @item result_size
@@ -12128,12 +12418,12 @@ A cipher.
 @item out
 A pointer to the output buffer.
 @item out_size
-Size reserved for the output buffer in bytes. The function will fail if
+Size reserved for the output buffer in octets. The function will fail if
 it is not too large to contain the output.
 @item in
 A pointer to input buffer.
 @item in_size
-The length of the input buffer in bytes. It must be greater than zero.
+The length of the input buffer in octets. It must be greater than zero.
 @item result_size
 A pointer where it will put the real size of the output buffer. This size
 will be lesser or equal than out_size.
@@ -12236,7 +12526,7 @@ A message-digest descriptor.
 @item in
 A pointer to the input buffer.
 @item in_size
-Size of the input buffer in bytes.
+Size of the input buffer in octets.
 @end table
 @item Returns
 A PDF status value:
@@ -12352,7 +12642,7 @@ pdf_crypt_md_destroy (md);
 
 @deftypefun pdf_status_t pdf_crypt_nonce (pdf_char_t *@var{buffer}, pdf_size_t @var{size})
 
-Fill a buffer with random bytes.
+Fill a buffer with random values.
 
 @table @strong
 @item Parameters
@@ -12360,7 +12650,7 @@ Fill a buffer with random bytes.
 @item buffer
 Buffer which be filled.
 @item size
-Size of the buffer in bytes.
+Size of the buffer in octets.
 @end table
 @item Returns
 A PDF status value:
@@ -12405,7 +12695,7 @@ characters.  They are finished by a null octet.
 The characters of the string making up the name do not contribute to
 the meaning of the name, but only to make it unique.
 @item Strings
-Strings are sequences of octects.  Note that the octects contained in
+Strings are sequences of octets.  Note that the octets contained in
 a PDF string are not restricted to the printable ASCII subset.  In
 particular the null octet (@code{00H}) can be part of a string and it
 is not used to to finalize it like in some programming languages.
@@ -12521,7 +12811,7 @@ regular characters.  It does not have internal structure.
 
 @xref{Name Objects}.
 @item PDF_OBJ_STRING
-A PDF string is a sequence of bytes whose values are in the range
+A PDF string is a sequence of octets whose values are in the range
 @code{0-255}.
 
 @xref{String Objects}.
@@ -12976,7 +13266,7 @@ pdf_obj_indirect_p (obj_direct); /* Returns PDF_FALSE */
 Get the ``size'' of a given PDF object.  The semantics of the returned
 value depends on the type of the object.
 
-For names and strings, return the size of the name/string in bytes.
+For names and strings, return the size of the name/string in octets.
 
 For arrays and dictionaries, the number of entries is returned.
 
@@ -13786,7 +14076,7 @@ if (!PDF_OBJ_IS_NULL (name_obj))
 @node String Objects
 @subsection String Objects
 
-A PDF string object is a sequence of bytes in the range @code{0-255}.
+A PDF string object is a sequence of octets in the range @code{0-255}.
 They are not @code{NULL}-terminated.
 
 @deftypefun pdf_obj_t pdf_obj_string_new (pdf_obj_doc_t *@var{doc}, pdf_bool_t @var{indirect_p}, pdf_char_t *@var{str}, pdf_size_t @var{str_size})
@@ -13805,7 +14095,7 @@ The string value. Note that this is not a @code{NULL}-terminated
 string, since PDF strings can held arbitrary binary data. The data
 pointed by @var{str} is copied internally.
 @item str_size
-The size of @var{str}, in bytes.
+The size of @var{str}, in octets.
 @end table
 @item Returns
 A pointer to the newly created object, or @code{PDF_OBJ_NULL} if there
@@ -14798,7 +15088,7 @@ pdf_obj_dict_weak_set (dict, "Foo", PDF_TRUE);
 @node Stream Objects
 @subsection Stream Objects
 
-A PDF stream object is an arbitrary long sequence of bytes
+A PDF stream object is an arbitrary long sequence of octets
 characterized by a set of properties.  The properties of a stream
 object are specified by a dictionary that appears just before the
 stream in the PDF file.
@@ -14823,7 +15113,7 @@ A base layer stream that will be used to retrieve the data for the
 stream object. @xref{Filtered Streams}.  The contents of this stream
 will be copied to an internal storage by this call.
 @item size
-The number of octects to read from @var{stm}.  If this parameter is
+The number of octets to read from @var{stm}.  If this parameter is
 zero then read from the stream until it gets exhausted.
 @item attrs_dict
 Dictionary containing keys that will be copied to the dictionary
@@ -14931,7 +15221,7 @@ You can use this call only after saving the object in a PDF file.
 A Stream object.
 @end table
 @item Returns
-The offset (in octects) of the beginning of the stream data: the
+The offset (in octets) of the beginning of the stream data: the
 position just after the @code{stream} keyword.  If the returned number
 is @code{0} then an error occurred.
 @item Usage example
@@ -15697,7 +15987,7 @@ specifications.
 bytes.
 @item name
 @tab 32768
-@tab Maximum length of a name, in bytes.
+@tab Maximum length of a name, in octets.
 @item indirect object
 @tab ??
 @tab Maximum number of indirect objects in a PDF file.

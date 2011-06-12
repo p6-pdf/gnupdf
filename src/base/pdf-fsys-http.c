@@ -366,13 +366,13 @@ request_http_partial_get (const pdf_char_t  *url,
 
 static pdf_fsys_file_t *
 file_open (const pdf_fsys_t           *fsys,
-           const pdf_text_t           *path_name,
+           const pdf_text_t           *path,
            enum pdf_fsys_file_mode_e   mode,
            pdf_error_t               **error)
 {
   struct pdf_fsys_http_file_s *file;
 
-  PDF_ASSERT_POINTER_RETURN_VAL (path_name, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (path, NULL);
 
   /* Allow only open for READ-ing */
   if (mode != PDF_FSYS_OPEN_MODE_READ)
@@ -402,7 +402,7 @@ file_open (const pdf_fsys_t           *fsys,
   /* Initialize common data */
   if (!pdf_fsys_file_init_common (&(file->common),
                                   fsys,
-                                  path_name,
+                                  path,
                                   mode,
                                   error))
     {
@@ -464,7 +464,7 @@ file_close (pdf_fsys_file_t  *file,
 
 static pdf_bool_t
 create_folder (const pdf_fsys_t  *fsys,
-               const pdf_text_t  *path_name,
+               const pdf_text_t  *path,
                pdf_error_t      **error)
 {
   pdf_set_error (error,
@@ -476,7 +476,7 @@ create_folder (const pdf_fsys_t  *fsys,
 
 static pdf_list_t *
 get_folder_contents (const pdf_fsys_t  *fsys,
-                     const pdf_text_t  *path_name,
+                     const pdf_text_t  *path,
                      pdf_error_t      **error)
 {
   /* Sometimes it is possible to get the index of files available under a given
@@ -512,7 +512,7 @@ skip_scheme_from_url (const pdf_char_t *url)
 
 static pdf_bool_t
 get_directory_and_filename (const pdf_fsys_t  *fsys,
-                            const pdf_text_t  *path_name,
+                            const pdf_text_t  *path,
                             pdf_text_t       **directory,
                             pdf_text_t       **filename,
                             pdf_error_t      **error)
@@ -524,7 +524,7 @@ get_directory_and_filename (const pdf_fsys_t  *fsys,
   pdf_size_t filename_size;
 
   /* Get in UTF-8 */
-  utf8 = pdf_text_get_unicode (path_name,
+  utf8 = pdf_text_get_unicode (path,
                                PDF_TEXT_UTF8,
                                PDF_TEXT_UNICODE_WITH_NUL_SUFFIX,
                                &utf8_size,
@@ -610,15 +610,15 @@ get_directory_and_filename (const pdf_fsys_t  *fsys,
 
 static pdf_text_t *
 get_basename (const pdf_fsys_t  *fsys,
-              const pdf_text_t  *path_name,
+              const pdf_text_t  *path,
               pdf_error_t      **error)
 {
   pdf_text_t *basename;
 
-  PDF_ASSERT_POINTER_RETURN_VAL (path_name, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (path, NULL);
 
   if (!get_directory_and_filename (fsys,
-                                   path_name,
+                                   path,
                                    NULL,
                                    &basename,
                                    error))
@@ -632,15 +632,15 @@ get_basename (const pdf_fsys_t  *fsys,
 
 static pdf_text_t *
 get_parent (const pdf_fsys_t  *fsys,
-            const pdf_text_t  *path_name,
+            const pdf_text_t  *path,
             pdf_error_t      **error)
 {
   pdf_text_t *parent;
 
-  PDF_ASSERT_POINTER_RETURN_VAL (path_name, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (path, NULL);
 
   if (!get_directory_and_filename (fsys,
-                                   path_name,
+                                   path,
                                    &parent,
                                    NULL,
                                    error))
@@ -654,7 +654,7 @@ get_parent (const pdf_fsys_t  *fsys,
 
 static pdf_bool_t
 remove_folder (const pdf_fsys_t  *fsys,
-               const pdf_text_t  *path_name,
+               const pdf_text_t  *path,
                pdf_error_t      **error)
 {
   pdf_set_error (error,
@@ -666,19 +666,19 @@ remove_folder (const pdf_fsys_t  *fsys,
 
 static pdf_bool_t
 get_item_props (const pdf_fsys_t              *fsys,
-                const pdf_text_t              *path_name,
+                const pdf_text_t              *path,
                 struct pdf_fsys_item_props_s  *props,
                 pdf_error_t                  **error)
 {
   pdf_char_t *url;
   double content_length;
 
-  PDF_ASSERT_POINTER_RETURN_VAL (path_name, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (path, PDF_FALSE);
   PDF_ASSERT_POINTER_RETURN_VAL (props, PDF_FALSE);
 
   /* Get URL */
   url = pdf_fsys_get_url_from_path (fsys,
-                                    path_name,
+                                    path,
                                     error);
   if (!url)
     return PDF_FALSE;
@@ -709,15 +709,15 @@ get_item_props (const pdf_fsys_t              *fsys,
 
 static pdf_bool_t
 item_p (const pdf_fsys_t *fsys,
-        const pdf_text_t *path_name)
+        const pdf_text_t *path)
 {
   pdf_char_t *url;
 
-  PDF_ASSERT_POINTER_RETURN_VAL (path_name, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (path, PDF_FALSE);
 
   /* Get URL */
   url = pdf_fsys_get_url_from_path (fsys,
-                                    path_name,
+                                    path,
                                     NULL);
   if (!url)
     return PDF_FALSE;
@@ -736,15 +736,15 @@ item_p (const pdf_fsys_t *fsys,
 
 static pdf_bool_t
 item_readable_p (const pdf_fsys_t *fsys,
-                 const pdf_text_t *path_name)
+                 const pdf_text_t *path)
 {
   /* HTTP filesystem is read-only, so if the item exists, it is readable */
-  return item_p (fsys, path_name);
+  return item_p (fsys, path);
 }
 
 static pdf_bool_t
 item_writable_p (const pdf_fsys_t *fsys,
-                 const pdf_text_t *path_name)
+                 const pdf_text_t *path)
 {
   /* HTTP filesystem is read-only, so items NEVER writable */
   return PDF_FALSE;
@@ -752,7 +752,7 @@ item_writable_p (const pdf_fsys_t *fsys,
 
 static pdf_i64_t
 get_free_space (const pdf_fsys_t  *fsys,
-                const pdf_text_t  *path_name,
+                const pdf_text_t  *path,
                 pdf_error_t      **error)
 {
   /* HTTP filesystem is read-only, so NO free space always */

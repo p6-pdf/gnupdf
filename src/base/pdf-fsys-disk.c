@@ -448,7 +448,7 @@ canonicalize_path (const pdf_fsys_t  *fsys,
     {
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_FSYS,
-                     PDF_ERROR,
+                     PDF_EBADDATA,
                      "empty canonicalized path built");
       pdf_dealloc (canon);
       return PDF_FALSE;
@@ -479,13 +479,13 @@ canonicalize_path (const pdf_fsys_t  *fsys,
 
 static pdf_fsys_file_t *
 file_open (const pdf_fsys_t           *fsys,
-           const pdf_text_t           *path_name,
+           const pdf_text_t           *path,
            enum pdf_fsys_file_mode_e   mode,
            pdf_error_t               **error)
 {
   struct pdf_fsys_disk_file_s *file;
 
-  PDF_ASSERT_POINTER_RETURN_VAL (path_name, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (path, NULL);
   PDF_ASSERT_RETURN_VAL (mode >= PDF_FSYS_OPEN_MODE_FIRST, NULL);
   PDF_ASSERT_RETURN_VAL (mode <= PDF_FSYS_OPEN_MODE_LAST, NULL);
 
@@ -505,7 +505,7 @@ file_open (const pdf_fsys_t           *fsys,
   /* Init base data */
   if (!init_base_file_data (file,
                             fsys,
-                            path_name,
+                            path,
                             mode,
                             error))
     {
@@ -620,15 +620,15 @@ file_close (pdf_fsys_file_t  *file,
 
 static pdf_bool_t
 create_folder (const pdf_fsys_t  *fsys,
-               const pdf_text_t  *path_name,
+               const pdf_text_t  *path,
                pdf_error_t      **error)
 {
   pdf_char_t *host_path;
 
-  PDF_ASSERT_POINTER_RETURN_VAL (path_name, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (path, PDF_FALSE);
 
   /* Get a host-encoded version of the path name */
-  host_path = get_host_path (path_name, NULL, error);
+  host_path = get_host_path (path, NULL, error);
   if (!host_path)
     return PDF_FALSE;
 
@@ -680,7 +680,7 @@ create_folder (const pdf_fsys_t  *fsys,
 
 static pdf_list_t *
 get_folder_contents (const pdf_fsys_t  *fsys,
-                     const pdf_text_t  *path_name,
+                     const pdf_text_t  *path,
                      pdf_error_t      **error)
 {
   PDF_DIR *dir_stream;
@@ -688,10 +688,10 @@ get_folder_contents (const pdf_fsys_t  *fsys,
   struct pdf_dirent_s *dir_entry;
   pdf_list_t *list;
 
-  PDF_ASSERT_POINTER_RETURN_VAL (path_name, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (path, NULL);
 
   /* Get a host-encoded version of the path name */
-  host_path = get_host_path (path_name, NULL, error);
+  host_path = get_host_path (path, NULL, error);
   if (!host_path)
     return NULL;
 
@@ -768,7 +768,7 @@ get_folder_contents (const pdf_fsys_t  *fsys,
 
 static pdf_bool_t
 get_directory_and_filename (const pdf_fsys_t  *fsys,
-                            const pdf_text_t  *path_name,
+                            const pdf_text_t  *path,
                             pdf_text_t       **directory,
                             pdf_text_t       **filename,
                             pdf_char_t       **filename_utf8,
@@ -780,7 +780,7 @@ get_directory_and_filename (const pdf_fsys_t  *fsys,
   pdf_size_t filename_size;
 
   /* Canonicalize path and get output in UTF-8 */
-  if (!canonicalize_path (fsys, path_name, NULL, &utf8, error))
+  if (!canonicalize_path (fsys, path, NULL, &utf8, error))
     return PDF_FALSE;
 
   /* Move pointer to last character in the path */
@@ -872,15 +872,15 @@ get_directory_and_filename (const pdf_fsys_t  *fsys,
 
 static pdf_text_t *
 get_basename (const pdf_fsys_t  *fsys,
-              const pdf_text_t  *path_name,
+              const pdf_text_t  *path,
               pdf_error_t      **error)
 {
   pdf_text_t *basename;
 
-  PDF_ASSERT_POINTER_RETURN_VAL (path_name, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (path, NULL);
 
   if (!get_directory_and_filename (fsys,
-                                   path_name,
+                                   path,
                                    NULL,
                                    &basename,
                                    NULL,
@@ -895,15 +895,15 @@ get_basename (const pdf_fsys_t  *fsys,
 
 static pdf_text_t *
 get_parent (const pdf_fsys_t  *fsys,
-            const pdf_text_t  *path_name,
+            const pdf_text_t  *path,
             pdf_error_t      **error)
 {
   pdf_text_t *parent;
 
-  PDF_ASSERT_POINTER_RETURN_VAL (path_name, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (path, NULL);
 
   if (!get_directory_and_filename (fsys,
-                                   path_name,
+                                   path,
                                    &parent,
                                    NULL,
                                    NULL,
@@ -925,15 +925,15 @@ get_parent (const pdf_fsys_t  *fsys,
 
 static pdf_bool_t
 remove_folder (const pdf_fsys_t  *fsys,
-               const pdf_text_t  *path_name,
+               const pdf_text_t  *path,
                pdf_error_t      **error)
 {
   pdf_char_t *host_path;
 
-  PDF_ASSERT_POINTER_RETURN_VAL (path_name, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (path, PDF_FALSE);
 
   /* Get a host-encoded version of the path name */
-  host_path = get_host_path (path_name, NULL, error);
+  host_path = get_host_path (path, NULL, error);
   if (!host_path)
     return PDF_FALSE;
 
@@ -1046,18 +1046,18 @@ get_stat_info_from_host_path (const pdf_char_t  *host_path,
 
 static pdf_bool_t
 get_item_props (const pdf_fsys_t              *fsys,
-                const pdf_text_t              *path_name,
+                const pdf_text_t              *path,
                 struct pdf_fsys_item_props_s  *props,
                 pdf_error_t                  **error)
 {
   pdf_char_t* host_path;
   pdf_error_t *inner_error = NULL;
 
-  PDF_ASSERT_POINTER_RETURN_VAL (path_name, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (path, PDF_FALSE);
   PDF_ASSERT_POINTER_RETURN_VAL (props, PDF_FALSE);
 
   /* Get a host-encoded version of the path name */
-  host_path = get_host_path (path_name, NULL, error);
+  host_path = get_host_path (path, NULL, error);
   if (!host_path)
     return PDF_FALSE;
 
@@ -1117,7 +1117,7 @@ get_item_props (const pdf_fsys_t              *fsys,
     /* Get filename */
     filename_utf8 = NULL;
     if (!get_directory_and_filename (fsys,
-                                     path_name,
+                                     path,
                                      NULL,
                                      NULL,
                                      &filename_utf8,
@@ -1140,20 +1140,20 @@ get_item_props (const pdf_fsys_t              *fsys,
 
 static pdf_bool_t
 item_p (const pdf_fsys_t *fsys,
-        const pdf_text_t *path_name)
+        const pdf_text_t *path)
 {
   pdf_char_t *host_path;
   pdf_bool_t exists;
 
-  PDF_ASSERT_POINTER_RETURN_VAL (path_name, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (path, PDF_FALSE);
 
 #ifdef PDF_HOST_WIN32
-  if (win32_device_p (path_name))
+  if (win32_device_p (path))
     return PDF_TRUE;
 #endif
 
   /* We get the string in HOST-encoding (with NUL-suffix) */
-  host_path = get_host_path (path_name, NULL, NULL);
+  host_path = get_host_path (path, NULL, NULL);
   if (!host_path)
     return PDF_FALSE;
 
@@ -1170,16 +1170,16 @@ item_p (const pdf_fsys_t *fsys,
 
 static pdf_bool_t
 item_readable_p (const pdf_fsys_t *fsys,
-                 const pdf_text_t *path_name)
+                 const pdf_text_t *path)
 {
   pdf_error_t *inner_error = NULL;
   pdf_char_t* host_path;
   pdf_bool_t readable;
 
-  PDF_ASSERT_POINTER_RETURN_VAL (path_name, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (path, PDF_FALSE);
 
   /* We get the string in HOST-encoding (with NUL-suffix) */
-  host_path = get_host_path (path_name, NULL, NULL);
+  host_path = get_host_path (path, NULL, NULL);
   if (!host_path)
     return PDF_FALSE;
 
@@ -1197,16 +1197,16 @@ item_readable_p (const pdf_fsys_t *fsys,
 
 static pdf_bool_t
 item_writable_p (const pdf_fsys_t *fsys,
-                 const pdf_text_t *path_name)
+                 const pdf_text_t *path)
 {
   pdf_error_t *inner_error = NULL;
   pdf_char_t* host_path;
   pdf_bool_t writable;
 
-  PDF_ASSERT_POINTER_RETURN_VAL (path_name, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (path, PDF_FALSE);
 
   /* We get the string in HOST-encoding (with NUL-suffix) */
-  host_path = get_host_path (path_name, NULL, NULL);
+  host_path = get_host_path (path, NULL, NULL);
   if (!host_path)
     return PDF_FALSE;
 
@@ -1226,18 +1226,18 @@ item_writable_p (const pdf_fsys_t *fsys,
 
 static pdf_i64_t
 get_free_space (const pdf_fsys_t  *fsys,
-                const pdf_text_t  *path_name,
+                const pdf_text_t  *path,
                 pdf_error_t      **error)
 {
   pdf_char_t *utf16le_path;
   pdf_u32_t utf16le_path_size = 0;
   ULARGE_INTEGER free_bytes;
 
-  PDF_ASSERT_POINTER_RETURN_VAL (path_name, -1);
+  PDF_ASSERT_POINTER_RETURN_VAL (path, -1);
 
   /* Note that as we get the string as UTF-16LE with LAST NUL suffix,
    *  it's equivalent to a wchar_t in windows environments */
-  utf16le_path = pdf_text_get_unicode (path_name,
+  utf16le_path = pdf_text_get_unicode (path,
                                        PDF_TEXT_UTF16_LE,
                                        PDF_TEXT_UNICODE_WITH_NUL_SUFFIX,
                                        &utf16le_path_size,
@@ -1284,16 +1284,16 @@ get_free_space (const pdf_fsys_t  *fsys,
 
 static pdf_i64_t
 get_free_space (const pdf_fsys_t  *fsys,
-                const pdf_text_t  *path_name,
+                const pdf_text_t  *path,
                 pdf_error_t      **error)
 {
   struct statfs fs_stats;
   pdf_char_t *host_path;
 
-  PDF_ASSERT_POINTER_RETURN_VAL (path_name, -1);
+  PDF_ASSERT_POINTER_RETURN_VAL (path, -1);
 
   /* We get the string in HOST-encoding (with NUL-suffix) */
-  host_path = get_host_path (path_name, NULL, error);
+  host_path = get_host_path (path, NULL, error);
   if (!host_path)
     return -1;
 
@@ -1650,9 +1650,8 @@ file_flush (pdf_fsys_file_t  *file,
                      PDF_ERROR,
                      "cannot flush to file: 'unknown error'",
                      strerror (errno));
-      PDF_ERROR,
 #endif
-        return PDF_FALSE;
+      return PDF_FALSE;
     }
 
   return PDF_TRUE;
