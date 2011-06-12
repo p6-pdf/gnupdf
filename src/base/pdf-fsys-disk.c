@@ -601,7 +601,7 @@ file_close (pdf_fsys_file_t  *file,
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_FSYS,
                      get_status_from_errno (errno),
-                     "cannot open temporary file: '%s'",
+                     "cannot close temporary file: '%s'",
                      strerror (errno));
       ret = PDF_FALSE;
     }

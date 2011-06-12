@@ -18,7 +18,7 @@
 This is the @cite{GNU PDF Library Reference}, updated for
 @strong{libgnupdf} version @strong{@value{VERSION}}.
 
-Copyright @copyright{} 2007, 2008, 2009 Free Software Foundation, Inc.
+Copyright @copyright{} 2007-2011 Free Software Foundation, Inc.
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document
@@ -4406,7 +4406,7 @@ foo_get_write_stm_from_filepath (pdf_text_t       *path,
                                  pdf_error_t     **error)
 @{
   /* Open new file */
-  *file = pdf_fsys_file_open (NULL,
+  *file = pdf_fsys_file_open (PDF_FSYS_DISK,
                               path,
                               PDF_FSYS_OPEN_MODE_WRITE,
                               error);
@@ -8579,7 +8579,7 @@ then calls to the appropriate functionality of the filesystem managing
 the file.
 
 There is not an explicit data type for an @emph{open folder} in the GNU
-PDF Library. Instead, folders are referred using @emph{path names}.
+PDF Library. Instead, folders are referred using @emph{paths}.
 
 The Filesystem Interface provides functions to create, delete and
 rename folders.
@@ -8751,22 +8751,22 @@ if (!PDF_FSYS_HTTP)
 @subsubsection Managing paths and URLs
 
 
-@deftypefun {pdf_text_t *}pdf_fsys_get_parent (const pdf_fsys_t *@var{fsys}, const pdf_text_t *@var{path_name}, pdf_error_t **@var{error})
+@deftypefun {pdf_text_t *}pdf_fsys_get_parent (const pdf_fsys_t *@var{fsys}, const pdf_text_t *@var{path}, pdf_error_t **@var{error})
 
-Get the path name of the direct parent of a given item in the filesystem.
+Get the path of the direct parent of a given item in the filesystem.
 
 @table @strong
 @item Parameters
 @table @var
 @item fsys
 A valid filesystem.
-@item path_name
-The path name of an item in the filesystem.
+@item path
+The path of an item in the filesystem.
 @item error
 A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
 @item PDF_EBADNAME
-@var{path_name} does not name a valid item in the filesystem.
+@var{path} does not name a valid item in the filesystem.
 @item PDF_EBADPERMS
 The client does not have permissions to get the parent of the specified
 item.
@@ -8841,7 +8841,7 @@ print_parent_directories (const pdf_char_t *utf8_path)
 @end table
 @end deftypefun
 
-@deftypefun {pdf_text_t *}pdf_fsys_get_basename (const pdf_fsys_t *@var{fsys}, const pdf_text_t *@var{path_name}, pdf_error_t **@var{error})
+@deftypefun {pdf_text_t *}pdf_fsys_get_basename (const pdf_fsys_t *@var{fsys}, const pdf_text_t *@var{path}, pdf_error_t **@var{error})
 
 Get the filename from a given path in the filesystem.
 
@@ -8850,13 +8850,13 @@ Get the filename from a given path in the filesystem.
 @table @var
 @item fsys
 A valid filesystem.
-@item path_name
-The path name of an item in the filesystem.
+@item path
+The path of an item in the filesystem.
 @item error
 A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
 @item PDF_EBADNAME
-@var{path_name} does not name a valid item in the filesystem.
+@var{path} does not name a valid item in the filesystem.
 @item PDF_EBADPERMS
 The client does not have permissions to get the parent of the specified
 item.
@@ -9087,17 +9087,17 @@ print_file_path (const pdf_char_t *url)
 @node Getting File System Properties
 @subsubsection Getting File System Properties
 
-@deftypefun pdf_i64_t pdf_fsys_get_free_space (const pdf_fsys_t *@var{fsys}, pdf_text_t *@var{path_name}, pdf_error_t **@var{error})
+@deftypefun pdf_i64_t pdf_fsys_get_free_space (const pdf_fsys_t *@var{fsys}, pdf_text_t *@var{path}, pdf_error_t **@var{error})
 
-Get the free storage space in the volume containing @var{path_name}.
+Get the free storage space in the volume containing @var{path}.
 
 @table @strong
 @item Parameters
 @table @var
 @item fsys
 A valid filesystem.
-@item path_name
-A path name.
+@item path
+A path.
 @item error
 A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
@@ -9107,7 +9107,7 @@ Any other error.
 @end table
 @item Returns
 A 64-bit value containing the remaining free space in the volume
-containing @var{path_name}, or -1 if error.
+containing @var{path}, or -1 if error.
 @item Usage example
 @example
 
@@ -9137,22 +9137,22 @@ print_root_free_space (void)
 @node Folder Management
 @subsubsection Folder Management
 
-@deftypefun pdf_bool_t pdf_fsys_create_folder (const pdf_fsys_t *@var{fsys}, const pdf_text_t *@var{path_name}, pdf_error_t **@var{error})
+@deftypefun pdf_bool_t pdf_fsys_create_folder (const pdf_fsys_t *@var{fsys}, const pdf_text_t *@var{path}, pdf_error_t **@var{error})
 
-Create a folder named @var{path_name}.
+Create a folder named @var{path}.
 
 @table @strong
 @item Parameters
 @table @var
 @item fsys
 A valid filesystem.
-@item path_name
-The path name of the folder to be created.
+@item path
+The path of the folder to be created.
 @item error
 A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
 @item PDF_EBADNAME
-The specified @var{path_name} is incorrect.
+The specified @var{path} is incorrect.
 @item PDF_EBADPERMS
 The client does not have permissions to create the folder.
 @item PDF_ERROR
@@ -9192,7 +9192,7 @@ if (path)
 @end table
 @end deftypefun
 
-@deftypefun pdf_bool_t pdf_fsys_remove_folder (const pdf_fsys_t *@var{fsys}, const pdf_text_t *@var{path_name}, pdf_error_t **@var{error})
+@deftypefun pdf_bool_t pdf_fsys_remove_folder (const pdf_fsys_t *@var{fsys}, const pdf_text_t *@var{path}, pdf_error_t **@var{error})
 
 Remove an empty folder from the filesystem.
 
@@ -9201,13 +9201,13 @@ Remove an empty folder from the filesystem.
 @table @var
 @item fsys
 A valid filesystem.
-@item path_name
-A path name of an empty folder in the filesystem.
+@item path
+A path of an empty folder in the filesystem.
 @item error
 A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
 @item PDF_EBADNAME
-@var{path_name} does not name a folder in the filesystem.
+@var{path} does not name a folder in the filesystem.
 @item PDF_EBADPERMS
 The client does not have permissions to remove the folder.
 @item PDF_ERROR
@@ -9247,22 +9247,22 @@ if (path)
 @end table
 @end deftypefun
 
-@deftypefun {pdf_list_t *}pdf_fsys_get_folder_contents (const pdf_fsys_t *@var{fsys}, const pdf_text_t *@var{path_name}, pdf_error_t **@var{error})
+@deftypefun {pdf_list_t *}pdf_fsys_get_folder_contents (const pdf_fsys_t *@var{fsys}, const pdf_text_t *@var{path}, pdf_error_t **@var{error})
 
-Get a list with the path names of the items contained in a given folder.
+Get a list with the paths of the items contained in a given folder.
 
 @table @strong
 @item Parameters
 @table @var
 @item fsys
 A valid filesystem.
-@item path_name
-The path name of a folder.
+@item path
+The path of a folder.
 @item error
 A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
 @item PDF_EBADNAME
-@var{path_name} does not name a folder in the filesystem.
+@var{path} does not name a folder in the filesystem.
 @item PDF_EBADPERMS
 The client does not have permissions to read the contents of the folder.
 @item PDF_ERROR
@@ -9346,17 +9346,17 @@ print_filenames_in_directory (const pdf_char_t *utf8_path)
 The following functions provides access to generic properties of
 filesystem items (both files and directories).
 
-@deftypefun pdf_bool_t pdf_fsys_get_item_props (pdf_fsys_t *@var{fsys}, pdf_text_t *@var{path_name}, struct pdf_fsys_item_props_s *@var{props}, pdf_error_t **@var{error})
+@deftypefun pdf_bool_t pdf_fsys_get_item_props (pdf_fsys_t *@var{fsys}, pdf_text_t *@var{path}, struct pdf_fsys_item_props_s *@var{props}, pdf_error_t **@var{error})
 
-Get the properties of a filesystem item identified by a path name.
+Get the properties of a filesystem item identified by a path.
 
 @table @strong
 @item Parameters
 @table @var
 @item fsys
 A valid filesystem.
-@item path_name
-The path name of an item in the filesystem.
+@item path
+The path of an item in the filesystem.
 @item props
 The address of a structure to hold the properties of the filesystem
 item.
@@ -9364,7 +9364,7 @@ item.
 A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
 @item PDF_EBADDATA
-Invalid path name.
+Invalid path.
 @item PDF_EBADPERMS
 The client does not have enough permissions to read the requested item.
 @end table
@@ -9558,17 +9558,17 @@ print_file_properties (pdf_text_t *path)
 @end table
 @end deftypefun
 
-@deftypefun pdf_bool_t pdf_fsys_item_p (pdf_fsys_t *@var{fsys}, pdf_text_t *@var{path_name})
+@deftypefun pdf_bool_t pdf_fsys_item_p (pdf_fsys_t *@var{fsys}, pdf_text_t *@var{path})
 
-Determine if a given item, identified by a path name, exists in a given
+Determine if a given item, identified by a path, exists in a given
 filesystem.
 
 @table @strong
 @item Parameters
 @item fsys
 A valid filesystem.
-@item path_name
-The path name of an item in the filesystem.
+@item path
+The path of an item in the filesystem.
 @item Returns
 @code{PDF_TRUE} if the specified item exists in the filesystem.
 If th item doesn't exist, or if the program doesn't have enough permissions to check it, @code{PDF_FALSE} is returned.
@@ -9598,9 +9598,9 @@ print_file_exists (const pdf_char_t *path_utf8)
 @end table
 @end deftypefun
 
-@deftypefun pdf_bool_t pdf_fsys_item_readable_p (const pdf_fsys_t *@var{fsys}, pdf_text_t *@var{path_name})
+@deftypefun pdf_bool_t pdf_fsys_item_readable_p (const pdf_fsys_t *@var{fsys}, pdf_text_t *@var{path})
 
-Determine if a given filesystem item, identified by a path name, is
+Determine if a given filesystem item, identified by a path, is
 readable.
 
 @table @strong
@@ -9608,8 +9608,8 @@ readable.
 @table @var
 @item fsys
 A valid filesystem.
-@item path_name
-The path name of an item in the filesystem.
+@item path
+The path of an item in the filesystem.
 @end table
 @item Returns
 @code{PDF_TRUE} if the specified item is readable.
@@ -9640,9 +9640,9 @@ print_file_readable (const pdf_char_t *path_utf8)
 @end table
 @end deftypefun
 
-@deftypefun pdf_bool_t pdf_fsys_item_writable_p (const pdf_fsys_t *@var{fsys}, pdf_text_t *@var{path_name})
+@deftypefun pdf_bool_t pdf_fsys_item_writable_p (const pdf_fsys_t *@var{fsys}, pdf_text_t *@var{path})
 
-Determine if a given filesystem item, identified by a path name, is
+Determine if a given filesystem item, identified by a path, is
 writable.
 
 @table @strong
@@ -9650,8 +9650,8 @@ writable.
 @table @var
 @item fsys
 A valid filesystem.
-@item path_name
-The path name of an item in the filesystem.
+@item path
+The path of an item in the filesystem.
 @end table
 @item Returns
 @code{PDF_TRUE} if the specified item is writable.
@@ -9701,7 +9701,7 @@ The functionality covered by the File Interface includes:
 @item
 Synchronous Input/Output.
 @item
-Asynchronoous Input/Output (not to be confused with RIA. See above).
+Asynchronous Input/Output (not to be confused with RIA. See above).
 @item
 File-level flush operations.
 @item
@@ -9714,17 +9714,14 @@ File flags (status) management.
 
 @menu
 * File Data Types::
-* Opening Files::
+* Opening and closing Files::
 * File Properties Management::
 * Comparing Files::
 * Managing File Positions::
 * Changing the Size of a File::
 * Synchronous Input/Output::
 * Read in Advance::
-* Closing and Reopening Files::
 @end menu
-
-
 
 @node File Data Types
 @subsubsection File Data Types
@@ -9744,6 +9741,8 @@ The mode used when opening a file in a filesystem. The available modes
 are described in the following list.
 
 @table @code
+@item PDF_FSYS_OPEN_MODE_INVALID
+Invalid open mode.
 @item PDF_FSYS_OPEN_MODE_READ
 The file is opened in read-only mode. The file should exist in the
 filesystem.
@@ -9758,37 +9757,32 @@ filesystem.
 @end deftp
 
 
-@node Opening Files
-@subsubsection Opening Files
+@node Opening and closing Files
+@subsubsection Opening and closing Files
 
-@deftypefun pdf_status_t pdf_fsys_file_open (const pdf_fsys_t @var{filesystem}, const pdf_text_t @var{path_name}, const enum pdf_fsys_file_mode_e @var{mode}, pdf_fsys_file_t *@var{file})
+@deftypefun {pdf_fsys_file_t *}pdf_fsys_file_open (const pdf_fsys_t *@var{fsys}, const pdf_text_t *@var{path}, enum pdf_fsys_file_mode_e @var{mode}, pdf_error_t **@var{error})
 
-Open a file in @var{filesystem} identified by @var{path_name} using
-the specified @var{mode} and store a new open file variable in
-@var{file}.
+Open a file in @var{fsys} identified by @var{path} using
+the specified @var{mode} and return a new open file object.
 
 @table @strong
 @item Parameters
 @table @var
-@item filesystem
-A filesystem. If @code{NULL} the default filesystem is used.
-@item path_name
-A path name that identifies the file to be opened. The format and
+@item fsys
+A valid filesystem.
+@item path
+A path that identifies the file to be opened. The format and
 encoding of this text variable depends on the underlying filesystem
 implementation.
 @item mode
 The open mode to use to open the file.
 @item file
 The output file variable.
-@end table
-@item Returns
-A PDF status value:
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-The file was successfully opened and stored in the @var{file}
-variable.
 @item PDF_EBADNAME
-The path name specified in @var{path_name} does not identify an existing
+The path specified in @var{path} does not identify an existing
 file in the filesystem.
 @item PDF_EBADPERMS
 The client does not have permission to open the specified file using the
@@ -9796,19 +9790,43 @@ specified mode.
 @item PDF_ENOMEM
 Not enough memory.
 @end table
+@end table
+@item Returns
+A newly created @code{pdf_fsys_file_t} or @code{NULL} on error.
 @item Usage example
 @example
-XXX
+
+pdf_fsys_file_t *
+file_open_read (pdf_text_t *path)
+@{
+  pdf_error_t *error = NULL;
+  pdf_fsys_file_t *f;
+
+  f = pdf_fsys_file_open (PDF_FSYS_DISK,
+                          path,
+                          PDF_FSYS_OPEN_MODE_READ,
+                          &error);
+  if (!f)
+    @{
+      printf ("couldn't open the file for reading: '%s'\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      return NULL;
+    @}
+
+  printf ("correctly opened the file for reading\n");
+  return f;
+@}
+
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fsys_file_open_tmp (const pdf_fsys_t @var{filesystem}, pdf_fsys_file_t *@var{file})
+@deftypefun {pdf_fsys_file_t *}pdf_fsys_file_open_tmp (const pdf_fsys_t *@var{fsys}, pdf_error_t **@var{error})
 
-Create a temporary file in @var{filesystem} and open it.
+Create a temporary file in @var{fsys} and open it.
 
 The temporary file is opened with mode @code{PDF_FSYS_OPEN_MODE_RW}
-and stored in @var{file}.  The file will be automatically deleted
+and stored in @var{file}. The file will be automatically deleted
 after it gets closed.
 
 Note that while the filesystem implementation may also delete the file
@@ -9817,37 +9835,186 @@ when the client application exits, it is not guaranteed.
 @table @strong
 @item Parameters
 @table @var
-@item filesystem
-A filesystem. If @code{NULL} the default filesystem is used.
-@item file
-The output file variable.
-@end table
-@item Returns
-A PDF status value:
+@item fsys
+A valid filesystem.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-The file was successfully opened and stored in the @var{file}
-variable.  If the filesystem implementation does not support this
-functionality then @code{NULL} is stored in @var{file}.
+@item PDF_EBADNAME
+The path specified in @var{path} does not identify an existing
+file in the filesystem.
+@item PDF_EBADPERMS
+The client does not have permission to open the specified file using the
+specified mode.
 @item PDF_ENOMEM
 Not enough memory.
-@item PDF_ERROR
-It was not possible to create the temporary file.
 @end table
+@end table
+@item Returns
+A newly created @code{pdf_fsys_file_t} or @code{NULL} on error.
 @item Usage example
 @example
-pdf_fsys_file_t tmpfile;
+
+pdf_error_t *error = NULL;
+pdf_fsys_file_t *tmpfile;
 pdf_size_t written;
 
 /* Open a temporary file and write some contents to it.  */
-pdf_fsys_file_open_tmp (NULL, &tmpfile);
-pdf_fsys_file_write (tmpfile, "Temporary data", 14, &written);
+tmpfile = pdf_fsys_file_open_tmp (PDF_FSYS_DISK,
+                                  &error);
+if (!tmpfile)
+  @{
+    printf ("couldn't open temporary file: '%s'",
+            error ? pdf_error_get_message (error) : "unknown error");
+  @}
+else
+  @{
+    const pdf_char_t *data = "Temporary data";
 
-/* Close the file.  This deletes it from the filesystem.  */
-pdf_fsys_file_close (tmpfile);
+    pdf_fsys_file_write (tmpfile,
+                         data,
+                         strlen (data),
+                         &written,
+                         NULL);
+
+    /* Close the file. Also deletes it from the filesystem. */
+    pdf_fsys_file_close (tmpfile);
+  @}
+
 @end example
 @end table
 @end deftypefun
+
+@deftypefun pdf_bool_t pdf_fsys_file_close (pdf_fsys_file_t *@var{file}, pdf_error_t **@var{error})
+
+Close a given open file. Any pending output data is flushed before closing.
+
+@table @strong
+@item Parameters
+@table @var
+@item file
+An open file.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ERROR
+There was an error closing the file.
+@end table
+@end table
+@item Returns
+@code{PDF_TRUE} if file was successfully closed, @code{PDF_FALSE} otherwise. In both cases, @var{file} can no longer be used.
+@item Usage example
+@example
+
+void
+print_can_file_open_read (pdf_text_t *path)
+@{
+  pdf_error_t *error = NULL;
+  pdf_fsys_file_t *f;
+
+  f = pdf_fsys_file_open (PDF_FSYS_DISK,
+                          path,
+                          PDF_FSYS_OPEN_MODE_READ,
+                          &error);
+  if (!f)
+    @{
+      printf ("couldn't open the file for reading: '%s'\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+      return;
+    @}
+
+  printf ("correctly opened the file for reading\n");
+
+  if (!pdf_fsys_file_close (f, &error))
+    @{
+      printf ("error closing the file: '%s'\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+    @}
+@}
+
+@end example
+@end table
+@end deftypefun
+
+@deftypefun pdf_bool_t pdf_fsys_file_reopen (pdf_fsys_file_t *@var{file}, enum pdf_fsys_file_mode_e @var{mode}, pdf_error_t **@var{error})
+
+Reopen a given open file with a given mode.
+
+@table @strong
+@item Parameters
+@table @var
+@item file
+An open file.
+@item mode
+The new file mode to use.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_EBADPERMS
+The client does not have enough permissions to open the file using the
+specified mode. The open file is now closed.
+@end table
+@end table
+@item Returns
+@code{PDF_TRUE} if successfully reopened, @code{PDF_FALSE} otherwise.
+@item Usage example
+@example
+
+void
+print_file_open_modes (pdf_text_t *path)
+@{
+  pdf_error_t *error = NULL;
+  pdf_fsys_file_t *f;
+
+  f = pdf_fsys_file_open (PDF_FSYS_DISK,
+                          path,
+                          PDF_FSYS_OPEN_MODE_READ,
+                          &error);
+  if (!f)
+    @{
+      printf ("couldn't open the file for reading: '%s'\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+      return;
+    @}
+  printf ("correctly opened the file for reading\n");
+
+  if (!pdf_fsys_file_reopen (f,
+                             PDF_FSYS_OPEN_MODE_WRITE,
+                             &error))
+    @{
+      printf ("couldn't open the file for writing: '%s'\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+      return;
+    @}
+  printf ("correctly opened the file for writing\n");
+
+  if (!pdf_fsys_file_reopen (f,
+                             PDF_FSYS_OPEN_MODE_RW,
+                             &error))
+    @{
+      printf ("couldn't open the file for reading and writing: '%s'\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+      return;
+    @}
+  printf ("correctly opened the file for reading and writing\n");
+
+  if (!pdf_fsys_file_close (f, &error))
+    @{
+      printf ("error closing the file: '%s'\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+    @}
+@}
+
+@end example
+@end table
+@end deftypefun
+
 
 @node File Properties Management
 @subsubsection File Properties Management
@@ -9855,26 +10022,64 @@ pdf_fsys_file_close (tmpfile);
 The following functions provides access to several properties of open
 files.
 
-@deftypefun pdf_off_t pdf_fsys_file_get_size (pdf_fsys_file_t @var{file})
+@deftypefun pdf_off_t pdf_fsys_file_get_size (const pdf_fsys_file_t *@var{file}, pdf_error_t **@var{error})
 
-Get the size (in number of octects) of a given open file.
+Get the size (in bytes) of a given open file.
 
 @table @strong
 @item Parameters
 @table @var
 @item file
 An open file.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ERROR
+Generic error getting file size.
+@end table
 @end table
 @item Returns
-The size of the file in octects.
+A @code{pdf_off_t} with The size of the file in bytes, or @code{(pdf_off_t)-1)} on error.
 @item Usage example
 @example
-XXX
+
+pdf_off_t
+get_file_size (pdf_text_t *path)
+@{
+  pdf_error_t *error = NULL;
+  pdf_fsys_file_t *f;
+  pdf_off_t size;
+
+  f = pdf_fsys_file_open (PDF_FSYS_DISK,
+                          path,
+                          PDF_FSYS_OPEN_MODE_READ,
+                          &error);
+  if (!f)
+    @{
+      printf ("couldn't open the file for reading: '%s'\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+      return (pdf_off_t)-1;
+    @}
+
+  size = pdf_fsys_file_get_size (f, &error);
+  if (size == (pdf_off_t)-1)
+    @{
+      printf ("couldn't get file size: '%s'\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+    @}
+
+  pdf_fsys_file_close (path, NULL);
+
+  return size;
+@}
+
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_fsys_t pdf_fsys_file_get_filesystem (pdf_fsys_file_t @var{file})
+@deftypefun {const pdf_fsys_t *}pdf_fsys_file_get_filesystem (const pdf_fsys_file_t *@var{file})
 
 Get the filesystem associated with a given open file.
 
@@ -9888,12 +10093,25 @@ An open file.
 The filesystem associated with @var{file}.
 @item Usage example
 @example
-XXX
+
+pdf_fsys_file_t *f;
+
+f = pdf_fsys_file_open (PDF_FSYS_DISK,
+                        path,
+                        PDF_FSYS_OPEN_MODE_READ,
+                        NULL);
+
+if (f &&
+    pdf_fsys_file_get_filesystem (f) != PDF_FSYS_DISK)
+  @{
+    printf ("this should never happen...\n");
+  @}
+
 @end example
 @end table
 @end deftypefun
 
-@deftypefun {enum pdf_fsys_file_mode_e} pdf_fsys_file_get_mode (pdf_fsys_file_t @var{file})
+@deftypefun {enum pdf_fsys_file_mode_e} pdf_fsys_file_get_mode (const pdf_fsys_file_t *@var{file})
 
 Return the access mode used to open a given file.
 
@@ -9904,46 +10122,30 @@ Return the access mode used to open a given file.
 An open file.
 @end table
 @item Returns
-A mode value if successful, otherwise returns -1.
+A @code{enum pdf_fsys_file_mode_e} mode value.
 @item Usage example
 @example
-pdf_status_t ret;
-pdf_fsys_file_t file = pdf_alloc(sizeof(pdf_fsys_file_s));
-pdf_status_t status;
-pdf_text_t path;
 
-status = pdf_text_new_from_unicode ("/path/to/foo",
-                                    12, PDF_TEXT_UTF8,
-                                    &path);
-ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, file);
+void
+print_used_mode (const pdf_fsys_file_t *file)
+@{
+  switch (pdf_fsys_file_get_mode (file))
+    @{
+    case PDF_FSYS_OPEN_MODE_READ:
+      printf ("file was opened for reading\n");
+      break;
+    case PDF_FSYS_OPEN_MODE_WRITE:
+      printf ("file was opened for writing\n");
+      break;
+    case PDF_FSYS_OPEN_MODE_RW:
+      printf ("file was opened for reading and writing\n");
+      break;
+    default:
+      printf ("unknown file open mode\n");
+      break;
+    @}
+@}
 
-enum pdf_fsys_file_mode_e mode;
-mode = pdf_fsys_file_get_mode(file);
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_text_t pdf_fsys_file_get_url (pdf_fsys_file_t @var{file})
-
-Get a text variable containing a valid URL to refer to a given open
-file. Note that for some filesystems could be not possible to build a
-valid URL.
-
-@table @strong
-@item Parameters
-@table @var
-@item file
-An open file.
-@end table
-@item Returns
-A PDF text variable containing a valid URL that can be used to refer
-to the open file.
-
-If the filesystem does not support URLs then an empty string is
-returned.
-@item Usage example
-@example
-XXX
 @end example
 @end table
 @end deftypefun
@@ -10377,66 +10579,6 @@ XXX
 @end table
 @end deftypefun
 
-@node Closing and Reopening Files
-@subsubsection Closing and Reopening Files
-
-The following functions allow to close an open file or to reopen it
-using another file mode.
-
-@deftypefun pdf_status_t pdf_fsys_file_close (pdf_fsys_file_t @var{file})
-
-Close a given open file. Any pending output data is flushed before to
-close the file.
-
-@table @strong
-@item Parameters
-@table @var
-@item file
-An open file.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The file was successfully closed.
-@item PDF_ERROR
-There was an error closing the file.
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
-
-@deftypefun pdf_status_t pdf_fsys_file_reopen (pdf_fsys_file_t @var{file}, enum pdf_fsys_file_mode_e @var{mode})
-
-Reopen a given open file with a given mode.
-
-@table @strong
-@item Parameters
-@table @var
-@item file
-An open file.
-@item mode
-A file mode.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The file was successfully reopened using the new mode.
-@item PDF_EBADPERMS
-The client does not have enough permissions to open the file using the
-specified mode. The open file is now closed.
-@end table
-@item Usage example
-@example
-XXX
-@end example
-@end table
-@end deftypefun
-
 
 @node The Filesystem Implementation Interface
 @subsection The Filesystem Implementation Interface
@@ -10485,10 +10627,10 @@ if any.
 This callback is called by the @code{pdf_fsys_destroy} function.
 @end deftp
 
-@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_open_fn_t) (pdf_text_t @var{path_name}, enum pdf_fsys_file_mode_e @var{mode}, pdf_fsys_file_t *@var{file})}
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_file_open_fn_t) (pdf_text_t @var{path}, enum pdf_fsys_file_mode_e @var{mode}, pdf_fsys_file_t *@var{file})}
 
 Filesystem callback called to open a file identified by the path
-@var{path_name} in the mode specified by @var{mode}. A new
+@var{path} in the mode specified by @var{mode}. A new
 @code{pdf_fsys_file_t} is created and stored in @var{file}.
 
 This callback is called by the @code{pdf_file_fsys_open} filesystem
@@ -10518,38 +10660,38 @@ The following callbacks are defined to provide folder management:
 creation, deletion and modification of folders in the filesystem and
 retrieval of folder contents.
 
-@deftp {Data Type} {pdf_status_t (*pdf_fsys_create_folder_fn_t) (pdf_text_t @var{path_name})}
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_create_folder_fn_t) (pdf_text_t @var{path})}
 
 Filesystem callback used to create a folder identified by the
-@var{path_name} path name.
+@var{path} path.
 
 This callback is called by the @code{pdf_fsys_create_folder}
 filesystem interface function.
 @end deftp
 
-@deftp {Data Type} {pdf_status_t (*pdf_fsys_get_folder_contents_fn_t) (pdf_text_t @var{path_name}, pdf_list_t @var{item_list})}
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_get_folder_contents_fn_t) (pdf_text_t @var{path}, pdf_list_t @var{item_list})}
 
 Filesystem callback used to get the contents of a specified folder as
-a list of path names.
+a list of paths.
 
 This callback is called by the @code{pdf_fsys_get_folder_contents}
 filesystem interface function.
 @end deftp
 
-@deftp {Data Type} {pdf_status_t (*pdf_fsys_get_parent_fn_t) (pdf_text_t @var{path_name}, pdf_text_t @var{parent_path})}
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_get_parent_fn_t) (pdf_text_t @var{path}, pdf_text_t @var{parent_path})}
 
-Filesystem callback used to get the path name of the father of a given
-item in a filesystem. If @var{path_name} is the root directory then
+Filesystem callback used to get the path of the father of a given
+item in a filesystem. If @var{path} is the root directory then
 NULL is returned in @var{parent_path}.
 
 This callback is called by the @code{pdf_fsys_get_parent} filesystem
 interface function.
 @end deftp
 
-@deftp {Data Type} {pdf_status_t (*pdf_fsys_remove_folder_fn_t) (pdf_text_t @var{path_name})}
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_remove_folder_fn_t) (pdf_text_t @var{path})}
 
 Filesystem callback used to remove an empty folder identified by
-@var{path_name}.
+@var{path}.
 
 This callback is called by the @code{pdf_fsys_remove_folder}
 filesystem interface function.
@@ -10587,9 +10729,9 @@ interface function.
 
 The following callbacks are defined to provide access to several
 filesystem item properties. The file system items are addressed using
-path names.
+paths.
 
-@deftp {Data Type} {pdf_status_t (*pdf_fsys_get_item_props_fn_t) (pdf_text_t @var{path_name}, struct pdf_fsys_item_props_s *@var{props})}
+@deftp {Data Type} {pdf_status_t (*pdf_fsys_get_item_props_fn_t) (pdf_text_t @var{path}, struct pdf_fsys_item_props_s *@var{props})}
 
 Filesystem callback used to get the properties of a named filesystem
 item.
@@ -10598,37 +10740,37 @@ This callback is called by the @code{pdf_fsys_get_item_props}
 filesystem interface function.
 @end deftp
 
-@deftp {Data Type} {pdf_i64_t (*pdf_fsys_get_free_space_fn_t) (pdf_text_t @var{path_name})}
+@deftp {Data Type} {pdf_i64_t (*pdf_fsys_get_free_space_fn_t) (pdf_text_t @var{path})}
 
 Filesystem callback used to get the free storage space in the volume
-containing @var{path_name}.
+containing @var{path}.
 
 This callback is called by the @code{pdf_fsys_get_free_space} file
 system interface function.
 @end deftp
 
-@deftp {Data Type} {pdf_bool_t (*pdf_fsys_item_p_fn_t) (pdf_text_t @var{path_name})}
+@deftp {Data Type} {pdf_bool_t (*pdf_fsys_item_p_fn_t) (pdf_text_t @var{path})}
 
 Filesystem callback used to determine whether a given item,
-identified by a path name, exists in a given filesystem.
+identified by a path, exists in a given filesystem.
 
 This callback is called by the @code{pdf_fsys_item_p} file system
 interface function.
 @end deftp
 
-@deftp {Data Type} {pdf_bool_t (*pdf_fsys_item_readable_p_fn_t) (pdf_text_t @var{path_name})}
+@deftp {Data Type} {pdf_bool_t (*pdf_fsys_item_readable_p_fn_t) (pdf_text_t @var{path})}
 
 Filesystem callback used to determine whether a given filesystem
-item, identified by a path name, is readable.
+item, identified by a path, is readable.
 
 This callback is called by the @code{pdf_fsys_item_readable_p}
 file system interface function.
 @end deftp
 
-@deftp {Data Type} {pdf_bool_t (*pdf_fsys_item_writable_p_fn_t) (pdf_fsys_t @var{filename}, pdf_text_t @var{path_name})}
+@deftp {Data Type} {pdf_bool_t (*pdf_fsys_item_writable_p_fn_t) (pdf_fsys_t @var{filename}, pdf_text_t @var{path})}
 
 Filesystem callback used to determine whether a given filesystem
-item, identified by a path name, is writeable.
+item, identified by a path, is writeable.
 
 This callback is called by the @code{pdf_fsys_item_writeable_p} file
 system interface function.
@@ -10751,7 +10893,7 @@ This callback is called by the @code{pdf_fsys_file_get_url} file
 interface function.
 @end deftp
 
-@deftp {Data Type} {pdf_bool_t (*pdf_fsys_file_same_p_fn_t) (pdf_fsys_file_t @var{file}, pdf_text_t @var{path_name})}
+@deftp {Data Type} {pdf_bool_t (*pdf_fsys_file_same_p_fn_t) (pdf_fsys_file_t @var{file}, pdf_text_t @var{path})}
 
 Filesystem callback used to determine whether a given open file is the
 same file as a given file identified by a file path.
@@ -10854,7 +10996,7 @@ The members of the structure are the following:
 @item pdf_fsys_item_p_fn_t item_p_fn
 @item pdf_fsys_item_readable_p_fn_t item_readable_p_fn
 @item pdf_fsys_item_writable_p_fn_t item_writable_p_fn
-@item pdf_fsys_get_temp_path_name_fn_t get_temp_path_name_fn
+@item pdf_fsys_get_temp_path_fn_t get_temp_path_fn
 @item pdf_fsys_file_can_set_size_fn_t file_can_set_size_fn
 @item pdf_fsys_file_get_size_fn_t file_get_size_fn
 @item pdf_fsys_file_set_size_fn_t file_set_size_fn
@@ -15010,7 +15152,7 @@ in @var{ctx} if it was specified.
 @end table
 @end table
 @item Returns
-A pointer to the opened document, or @code{NULL} if an error arised
+A pointer to the open document, or @code{NULL} if an error arised
 opening the document.
 @item Usage example
 @example
