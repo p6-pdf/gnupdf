@@ -9696,8 +9696,6 @@ The functionality covered by the File Interface includes:
 @item
 Synchronous Input/Output.
 @item
-Asynchronous Input/Output (not to be confused with RIA. See above).
-@item
 File-level flush operations.
 @item
 File positioning management.
@@ -10779,13 +10777,13 @@ write_timestamp_file (const pdf_text_t *path)
 When working with slow filesystems (such as network filesystems) it is
 useful to be able to request parts of the file in advance.
 
-@deftypefun pdf_status_t pdf_fsys_file_request_ria (pdf_fsys_file_t @var{file}, pdf_off_t @var{offset}, pdf_size_t @var{count})
+@deftypefun pdf_u32_t pdf_fsys_file_request_ria (pdf_fsys_file_t *@var{file}, pdf_off_t @var{offset}, pdf_size_t @var{count}, pdf_error_t **@var{error})
 
 Request a Read-In-Advance operation in a given open file.
 
 Note that it is up to the underlying filesystem to honour the
-operation. If the filesystem does not implement RIA capabilities then
-this function is a no-op.
+operation. If the filesystem does not implement RIA capabilities, an error
+will be returned.
 
 @table @strong
 @item Parameters
@@ -10796,23 +10794,59 @@ An open file.
 The beginning of the requested block.
 @item count
 The size (in octets) of the requested block.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_EBADDATA
+The filesystem doesn't provide RIA capabilities.
+@item PDF_ERROR
+Generic error.
+@end table
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
-@item PDF_ERROR
-An error occurred.
-@end table
+A unique unsigned integer associated with the request, or @code{0} on error.
 @item Usage example
 @example
-XXX
+
+pdf_list_t *
+ria_kbyte_per_kbyte (pdf_fsys_file_t *file, pdf_size_t size)
+@{
+  pdf_off_t offset = 0;
+  pdf_error_t *error = NULL;
+  pdf_list_t *list = NULL;
+
+  while (offset < size)
+    @{
+      pdf_u32_t ria_id;
+
+      ria_id = pdf_fsys_file_request_ria (file,
+                                          offset,
+                                          1024,
+                                          NULL);
+      if (!ria_id)
+        break;
+
+      if (!list)
+        @{
+          list = pdf_list_new (NULL, NULL, PDF_TRUE, NULL);
+          if (!list)
+            break;
+        @}
+
+      if (!pdf_list_add_last (list, (void *)ria_id, NULL))
+        break;
+
+      offset += 1024;
+    @}
+
+  return list;
+@}
+
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_bool_t pdf_fsys_file_has_ria (pdf_fsys_file_t @var{file})
+@deftypefun pdf_bool_t pdf_fsys_file_has_ria (pdf_fsys_file_t *@var{file})
 
 Determine whether the filesystem is performing some RIA operation for
 the given open file.
@@ -10828,23 +10862,22 @@ this function always return @code{PDF_FALSE}.
 An open file.
 @end table
 @item Returns
-A PDF boolean value:
-@table @code
-@item PDF_TRUE
-The filesystem is performing some RIA operation in the given file.
-@item PDF_FALSE
-There is not an outstanding RIA operation in the given file.
-@end table
+@code{PDF_TRUE} if @var{file} has some RIA operation ongoing, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
-XXX
+
+if (pdf_fsys_file_has_ria (file))
+  @{
+    printf ("file has an ongoing RIA operation\n");
+  @}
+
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fsys_file_cancel_ria (pdf_fsys_file_t @var{file})
+@deftypefun pdf_bool_t pdf_fsys_file_cancel_ria (pdf_fsys_file_t *@var{file}, pdf_u32_t @var{ria_id}, pdf_error_t **@var{error})
 
-Cancel any pending RIA operation in a given open file.
+Cancel one RIA operation (or all) in a given open file.
 
 Note that it is up to the underlying filesystem to honour the
 operation. If the filesystem does not implement RIA capabilities then
@@ -10855,16 +10888,38 @@ this function is a no-op.
 @table @var
 @item file
 An open file.
+@item ria_id
+A unique RIA ID obtained when the RIA operation was requested.
+If @code{0} given, all pending RIA operations will be cancelled.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ERROR
+Generic error.
+@end table
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-Any pending RIA operation was cancelled.
-@end table
+@code{PDF_TRUE} if successful, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
-XXX
+
+pdf_bool_t
+file_cancel_all_ria (pdf_fsys_file_t *file)
+@{
+  pdf_error_t *error = NULL;
+
+  if (pdf_fsys_file_has_ria (file) &&
+      !pdf_fsys_file_cancel_ria (file, 0, &error))
+    @{
+      printf ("couldn't cancel all RIA operations: '%s'\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+      return PDF_FALSE;
+    @}
+
+  return PDF_TRUE;
+@}
+
 @end example
 @end table
 @end deftypefun

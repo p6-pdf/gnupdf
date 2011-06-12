@@ -205,15 +205,15 @@ typedef pdf_bool_t (*pdf_fsys_file_same_p_fn_t) (const pdf_fsys_file_t  *file,
                                                  const pdf_text_t       *path,
                                                  pdf_error_t           **error);
 
-typedef pdf_bool_t (*pdf_fsys_file_request_ria_fn_t) (pdf_fsys_file_t  *file,
-                                                      pdf_off_t         offset,
-                                                      pdf_size_t        count,
-                                                      pdf_error_t     **error);
+typedef pdf_u32_t (*pdf_fsys_file_request_ria_fn_t) (pdf_fsys_file_t  *file,
+                                                     pdf_off_t         offset,
+                                                     pdf_size_t        count,
+                                                     pdf_error_t     **error);
 
-typedef pdf_bool_t (*pdf_fsys_file_has_ria_fn_t) (pdf_fsys_file_t  *file,
-                                                  pdf_error_t     **error);
+typedef pdf_bool_t (*pdf_fsys_file_has_ria_fn_t) (pdf_fsys_file_t *file);
 
 typedef pdf_bool_t (*pdf_fsys_file_cancel_ria_fn_t) (pdf_fsys_file_t  *file,
+                                                     pdf_u32_t         ria_id,
                                                      pdf_error_t     **error);
 
 /* Filesystem implementation */
@@ -395,8 +395,8 @@ pdf_hash_t *pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s  *it
 #define pdf_fsys_file_has_ria(file)             \
   file->fsys->file_has_ria_fn (file)
 
-#define pdf_fsys_file_cancel_ria(file, error)   \
-  file->fsys->file_cancel_ria_fn (file, error)
+#define pdf_fsys_file_cancel_ria(file, ria_id, error)   \
+  file->fsys->file_cancel_ria_fn (file, ria_id, error)
 
 /* END PUBLIC */
 

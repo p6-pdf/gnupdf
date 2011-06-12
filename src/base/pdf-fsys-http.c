@@ -1051,35 +1051,42 @@ file_flush (pdf_fsys_file_t  *file,
   return PDF_FALSE;
 }
 
-static pdf_bool_t
+static pdf_u32_t
 file_request_ria (pdf_fsys_file_t  *file,
                   pdf_off_t         offset,
                   pdf_size_t        count,
                   pdf_error_t     **error)
 {
-  PDF_ASSERT_POINTER_RETURN_VAL (file, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (file, 0);
 
   /* TODO */
-  return PDF_FALSE;
+
+  pdf_set_error (error,
+                 PDF_EDOMAIN_BASE_FSYS,
+                 PDF_EBADDATA,
+                 "can't request RIA: not provided by the http filesystem");
+  return 0;
 }
 
 static pdf_bool_t
-file_has_ria (pdf_fsys_file_t  *file,
-              pdf_error_t     **error)
+file_has_ria (pdf_fsys_file_t *file)
 {
   PDF_ASSERT_POINTER_RETURN_VAL (file, PDF_FALSE);
 
   /* TODO */
+
   return PDF_FALSE;
 }
 
 static pdf_bool_t
 file_cancel_ria (pdf_fsys_file_t  *file,
+                 pdf_u32_t         ria_id,
                  pdf_error_t     **error)
 {
   PDF_ASSERT_POINTER_RETURN_VAL (file, PDF_FALSE);
 
   /* TODO */
+
   return PDF_FALSE;
 }
 

@@ -1657,7 +1657,7 @@ file_flush (pdf_fsys_file_t  *file,
   return PDF_TRUE;
 }
 
-static pdf_bool_t
+static pdf_u32_t
 file_request_ria (pdf_fsys_file_t  *file,
                   pdf_off_t         offset,
                   pdf_size_t        count,
@@ -1667,12 +1667,11 @@ file_request_ria (pdf_fsys_file_t  *file,
                  PDF_EDOMAIN_BASE_FSYS,
                  PDF_EBADDATA,
                  "can't request RIA: not provided by the disk filesystem");
-  return PDF_FALSE;
+  return 0;
 }
 
 static pdf_bool_t
-file_has_ria (pdf_fsys_file_t  *file,
-              pdf_error_t     **error)
+file_has_ria (pdf_fsys_file_t  *file)
 {
   /* We can just safely return FALSE here, without error:
    * the file has definitely not an ongoing RIA operation */
@@ -1681,6 +1680,7 @@ file_has_ria (pdf_fsys_file_t  *file,
 
 static pdf_bool_t
 file_cancel_ria (pdf_fsys_file_t  *file,
+                 pdf_u32_t         ria_id,
                  pdf_error_t     **error)
 {
   /* We can just safely return FALSE here, without error:
