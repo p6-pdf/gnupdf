@@ -36,7 +36,7 @@
  * Description:
  *   Try to create an iterator.
  * Success condition:
- *   Returns PDF_TRUE
+ *   Doesn't crash.
  */
 START_TEST (pdf_hash_iterator_init_001)
 {
@@ -46,7 +46,7 @@ START_TEST (pdf_hash_iterator_init_001)
 
   table = pdf_hash_new (NULL);
 
-  fail_if (pdf_hash_iterator_init (&itr, table) != PDF_TRUE);
+  pdf_hash_iterator_init (&itr, table);
 
   pdf_hash_iterator_deinit (&itr);
   pdf_hash_destroy (table);
