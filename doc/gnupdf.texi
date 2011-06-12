@@ -8138,7 +8138,7 @@ switch (pdf_time_cmp (time1, time2))
 @node Time Printing and Parsing
 @subsection Time Printing and Parsing
 
-@deftypefun pdf_char_t* pdf_time_to_string (const pdf_time_t *@var{time_var}, const enum pdf_time_format_e @var{time_format}, pdf_u32_t @var{options}, pdf_error_t **@var{error})
+@deftypefun pdf_char_t* pdf_time_to_string (const pdf_time_t *@var{time_var}, const enum pdf_time_string_format_e @var{time_format}, pdf_u32_t @var{options}, pdf_error_t **@var{error})
 Create a string representation of a given time.
 
 @table @strong
@@ -8187,7 +8187,7 @@ pdf_time_deinit (&mytime);
 @end table
 @end deftypefun
 
-@deftypefun pdf_bool_t pdf_time_set_from_string (pdf_time_t *@var{time_var}, const pdf_char_t *@var{time_str}, const enum pdf_time_format_e @var{time_format}, pdf_u32_t @var{options}, pdf_error_t **@var{error})
+@deftypefun pdf_bool_t pdf_time_set_from_string (pdf_time_t *@var{time_var}, const pdf_char_t *@var{time_str}, const enum pdf_time_string_format_e @var{time_format}, pdf_u32_t @var{options}, pdf_error_t **@var{error})
 Set the contents of a time variable from a string in specific time format.
 
 @table @strong
@@ -8522,7 +8522,6 @@ pdf_time_deinit (&mytime);
 
 @menu
 * Filesystem Concepts::
-* Filesystem Interfaces::
 * The Filesystem Interface::
 * The File Interface::
 * The Filesystem Implementation Interface::
@@ -8532,11 +8531,11 @@ pdf_time_deinit (&mytime);
 @node Filesystem Concepts
 @subsection Filesystem Concepts
 
+@strong{Filesystems}
+
 Filesystem objects provide access to file system services in an
 abstract way, letting the library client to define filesystems for
-other classes of devices. Open files are readable or writeable file
-items in a filesystem. Path names are named locations identifying
-files or folders.
+other classes of devices.
 
 In the GNU PDF Library a filesystem object (of type @code{pdf_fsys_t}) is
 an implementation of the file system services for a specific class of
@@ -8560,9 +8559,13 @@ Conceptually speaking a filesystem contains a tree (or several
 trees in some filesystem implementations supporting several
 volumes) of @emph{filesystem items}.
 
-Each time has a type and several properties. The client can ask the
+Each item has a type and several properties. The client can ask the
 filesystem for the properties of a given item identified by a path
 name.
+
+@strong{Open files}
+
+Open files are readable or writeable items in a filesystem.
 
 An open file object (of type @code{pdf_fsys_file_t}) represents a readable
 and/or writable file in a filesystem. Open files are associated with a
@@ -8575,38 +8578,26 @@ The client can read and write data from/to an open file using the
 then calls to the appropriate functionality of the filesystem managing
 the file.
 
-The client should close every opened file when no longer used.
-
 There is not an explicit data type for an @emph{open folder} in the GNU
 PDF Library. Instead, folders are referred using @emph{path names}.
 
 The Filesystem Interface provides functions to create, delete and
 rename folders.
 
+@strong{Paths}
+
 Both files and folders in a filesystem can be referred using a string
-locator: a @emph{path name}. Path names are implemented using PDF
-strings. Several path names can refer to the same file or folder.
+locator: a @emph{path}. Paths are implemented using PDF text objects, and
+several paths can refer to the same file or folder.
 
-Both the encoding and the format of the contents of a path name
-depends on the specific filesystem implementation. The default disk
-filesystem provided by the GNU PDF Library uses the textual device
-idependent file specifications described in the PDF Reference (section
-3.10). The interpretation of those path names depends on the specific
-plattform where the library is running.
+Both the encoding and the format of the contents of a path
+depends on the specific filesystem implementation.
 
-@node Filesystem Interfaces
-@subsection Filesystem Interfaces
+@strong{URLs}
 
-This section describes several interfaces that can be found in the
-Filesystem module. There is an internal interface filesystem
-implementors can implement to define a new filesystem. It is called
-the @emph{Filesystem Implementation Interface}. A @emph{Filesystem Definition
-Interface} allow users to register the implementation functions into a
-filesystem variable. There are also two interfaces implemented by the
-Filesystem module allowing clients to access the module functionality:
-the @emph{Filesystem Interface}, used to manage several filesystem
-aspects, and the @emph{File Interface}, that provides functionalities
-related to open files, such as reading and writing operations.
+@emph{URLs} are strings referring to files and folders in a filesystem, encoded
+and built as per RFC 1738. Each filesystem is able to handle one or more URL
+schemes, and implements conversion routines from paths to URLs and vice-versa.
 
 @node The Filesystem Interface
 @subsection The Filesystem Interface
@@ -8643,6 +8634,7 @@ becomes a no-op.
 * Filesystem Data Types::
 * Retrieving File System implementations::
 * Getting File System Properties::
+* Managing paths and URLs::
 * Folder Management::
 * Getting File System Item Properties::
 @end menu
@@ -8755,6 +8747,342 @@ if (!PDF_FSYS_HTTP)
 @end table
 @end defun
 
+@node Managing paths and URLs
+@subsubsection Managing paths and URLs
+
+
+@deftypefun {pdf_text_t *}pdf_fsys_get_parent (const pdf_fsys_t *@var{fsys}, const pdf_text_t *@var{path_name}, pdf_error_t **@var{error})
+
+Get the path name of the direct parent of a given item in the filesystem.
+
+@table @strong
+@item Parameters
+@table @var
+@item fsys
+A valid filesystem.
+@item path_name
+The path name of an item in the filesystem.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_EBADNAME
+@var{path_name} does not name a valid item in the filesystem.
+@item PDF_EBADPERMS
+The client does not have permissions to get the parent of the specified
+item.
+@end table
+@end table
+@item Returns
+A newly created @code{pdf_text_t}, or @code{NULL} if there is no parent.
+On error, @code{NULL} is also returned, and @var{error} is set accordingly.
+@item Usage example
+@example
+
+static void
+print_parent_directories (const pdf_char_t *utf8_path)
+@{
+  pdf_error_t *error = NULL;
+  pdf_text_t *path;
+  pdf_text_t *parent;
+
+  path = pdf_text_new_from_unicode (utf8_path,
+                                    strlen (utf8_path),
+                                    PDF_TEXT_UTF8,
+                                    &error);
+  if (!path)
+    @{
+      printf ("couldn't get path: %s\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_error_destroy (error);
+      return;
+    @}
+
+  while ((parent = pdf_fsys_get_parent (PDF_FSYS_DISK,
+                                        path,
+                                        &error)) != NULL)
+    @{
+      pdf_char_t *parent_utf8;
+
+      parent_utf8 = pdf_text_get_unicode ((const pdf_text_t *)elem,
+                                          PDF_TEXT_UTF8,
+                                          PDF_TEXT_UNICODE_WITH_NUL_SUFFIX,
+                                          NULL,
+                                          &error);
+      if (!parent_utf8)
+        @{
+          printf ("couldn't get UTF-8 parent path: %s\n",
+                  error ? pdf_error_get_message (error) : "unknown error");
+          pdf_clear_error (&error);
+          break;
+        @}
+
+      printf ("Parent path found: '%s'\n",
+              parent_utf8);
+
+      pdf_dealloc (parent_utf8);
+      pdf_text_destroy (path);
+      path = parent;
+    @}
+
+  if (error)
+    @{
+      printf ("couldn't list parents: %s\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_error_destroy (error);
+    @}
+
+  if (path)
+    pdf_text_destroy (path);
+  if (parent)
+    pdf_text_destroy (parent);
+@}
+
+@end example
+@end table
+@end deftypefun
+
+@deftypefun {pdf_text_t *}pdf_fsys_get_basename (const pdf_fsys_t *@var{fsys}, const pdf_text_t *@var{path_name}, pdf_error_t **@var{error})
+
+Get the filename from a given path in the filesystem.
+
+@table @strong
+@item Parameters
+@table @var
+@item fsys
+A valid filesystem.
+@item path_name
+The path name of an item in the filesystem.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_EBADNAME
+@var{path_name} does not name a valid item in the filesystem.
+@item PDF_EBADPERMS
+The client does not have permissions to get the parent of the specified
+item.
+@end table
+@end table
+@item Returns
+A newly created @code{pdf_text_t}.
+On error, @code{NULL} is returned, and @var{error} is set accordingly.
+@item Usage example
+@example
+
+pdf_bool_t
+file_is_hidden (pdf_text_t *path)
+@{
+  pdf_error_t *error = NULL;
+  pdf_text_t *basename;
+  pdf_char_t *basename_utf8;
+  pdf_bool_t hidden;
+
+  basename = pdf_fsys_get_basename (PDF_FSYS_DISK,
+                                    path,
+                                    &error);
+  if (!basename)
+    @{
+      printf ("couldn't get basename: %s\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+      return PDF_FALSE;
+    @}
+
+  basename_utf8 = pdf_text_get_unicode (basename,
+                                        PDF_TEXT_UTF8,
+                                        PDF_TEXT_UNICODE_WITH_NUL_SUFFIX,
+                                        NULL,
+                                        &error);
+  if (!basename_utf8)
+    @{
+      printf ("couldn't get UTF-8 filename: %s\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+      pdf_text_destroy (basename);
+      return PDF_FALSE;
+    @}
+
+  hidden = (basename_utf8[0] == '.' ? PDF_TRUE : PDF_FALSE);
+
+  pdf_dealloc (basename_utf8);
+  pdf_text_destroy (basename);
+
+  return hidden;
+@}
+
+@end example
+@end table
+@end deftypefun
+
+@deftypefun {pdf_text_t *}pdf_fsys_build_path (const pdf_fsys_t *@var{fsys}, pdf_error_t **@var{error}, const pdf_text_t *@var{first_element}, ...)
+
+Build a path by concatenating the given @code{pdf_text_t} path elements.
+
+@table @strong
+@item Parameters
+@table @var
+@item fsys
+A valid filesystem.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to perform the operation.
+@item PDF_ERROR
+Generic error building the path.
+@end table
+@item first_element
+First text path element.
+@item ...
+Variable-length list of @code{pdf_text_t} objects, last element must be @code{NULL}.
+@end table
+@item Returns
+A newly allocated @code{pdf_text_t} containing the built path, or @code{NULL} on error.
+@item Usage example
+@example
+
+pdf_text_t *
+get_full_path (const pdf_text_t *directory,
+               const pdf_text_t *filename)
+@{
+  pdf_text_t *full_path;
+  pdf_error_t *error = NULL;
+
+  full_path = pdf_fsys_build_path (PDF_FSYS_DISK,
+                                   &error,
+                                   directory,
+                                   filename,
+                                   NULL);
+  if (!full_path)
+    @{
+      printf ("couldn't build path: %s",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+      return NULL;
+    @}
+
+  return full_path;
+@}
+
+@end example
+@end table
+@end deftypefun
+
+@deftypefun {pdf_char_t *}pdf_fsys_get_url_from_path (const pdf_fsys_t *@var{fsys}, const pdf_text_t *@var{path}, pdf_error_t **@var{error})
+
+Get a URL corresponding to the given path.
+
+@table @strong
+@item Parameters
+@table @var
+@item fsys
+A valid filesystem.
+@item path
+The path of an item in the filesystem.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to perform the operation.
+@item PDF_ERROR
+Generic error building the URL.
+@end table
+@end table
+@item Returns
+A newly allocated string with the URL.
+@item Usage example
+@example
+
+void
+print_file_url (const pdf_text_t *path)
+@{
+  pdf_char_t *url;
+  pdf_error_t *error = NULL;
+
+  url = pdf_fsys_get_url_from_path (PDF_FSYS_DISK,
+                                    path,
+                                    &error);
+  if (!url)
+    @{
+      printf ("couldn't get URL from path: %s",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+      return;
+    @}
+
+  printf ("URL: '%s'\n", url);
+  pdf_dealloc (url);
+@}
+
+@end example
+@end table
+@end deftypefun
+
+@deftypefun {pdf_text_t *}pdf_fsys_get_path_from_url (const pdf_fsys_t *@var{fsys}, const pdf_char_t *@var{url}, pdf_error_t **@var{error})
+
+Get the path corresponding to the given URL.
+
+@table @strong
+@item Parameters
+@table @var
+@item fsys
+A valid filesystem.
+@item url
+A valid URL for an item in the filesystem.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to perform the operation.
+@item PDF_ERROR
+Generic error building the path.
+@end table
+@end table
+@item Returns
+A newly allocated @code{pdf_text_t} containing the path.
+@item Usage example
+@example
+
+void
+print_file_path (const pdf_char_t *url)
+@{
+  pdf_text_t *path;
+  pdf_char_t *path_utf8;
+  pdf_error_t *error = NULL;
+
+  path = pdf_fsys_get_path_from_url (PDF_FSYS_DISK,
+                                     url,
+                                     &error);
+  if (!path)
+    @{
+      printf ("couldn't get path from URL: %s",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+      return;
+    @}
+
+  path_utf8 = pdf_text_get_unicode (path,
+                                    PDF_TEXT_UTF8,
+                                    PDF_TEXT_UNICODE_WITH_NUL_SUFFIX,
+                                    NULL,
+                                    &error);
+  if (!path_utf8)
+    @{
+      printf ("couldn't get UTF-8 from path: %s\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+      pdf_text_destroy (path);
+      break;
+    @}
+
+  printf ("Path: '%s'\n", path_utf8);
+
+  pdf_dealloc (path_utf8);
+  pdf_text_destroy (path);
+@}
+
+@end example
+@end table
+@end deftypefun
 
 @node Getting File System Properties
 @subsubsection Getting File System Properties
@@ -9012,246 +9340,126 @@ print_filenames_in_directory (const pdf_char_t *utf8_path)
 @end table
 @end deftypefun
 
-@deftypefun {pdf_text_t *}pdf_fsys_get_parent (const pdf_fsys_t *@var{fsys}, const pdf_text_t *@var{path_name}, pdf_error_t **@var{error})
-
-Get the path name of the direct parent of a given item in the filesystem.
-
-@table @strong
-@item Parameters
-@table @var
-@item fsys
-A valid filesystem.
-@item path_name
-The path name of an item in the filesystem.
-@item error
-A @code{pdf_error_t} to report errors or @code{NULL}.
-@table @code
-@item PDF_EBADNAME
-@var{path_name} does not name a valid item in the filesystem.
-@item PDF_EBADPERMS
-The client does not have permissions to get the parent of the specified
-item.
-@end table
-@end table
-@item Returns
-A newly created @code{pdf_text_t}, or @code{NULL} if there is no parent.
-On error, @code{NULL} is also returned, and @var{error} is set accordingly.
-@item Usage example
-@example
-
-static void
-print_parent_directories (const pdf_char_t *utf8_path)
-@{
-  pdf_error_t *error = NULL;
-  pdf_text_t *path;
-  pdf_text_t *parent;
-
-  path = pdf_text_new_from_unicode (utf8_path,
-                                    strlen (utf8_path),
-                                    PDF_TEXT_UTF8,
-                                    &error);
-  if (!path)
-    @{
-      printf ("couldn't get path: %s\n",
-              error ? pdf_error_get_message (error) : "unknown error");
-      pdf_error_destroy (error);
-      return;
-    @}
-
-  while ((parent = pdf_fsys_get_parent (PDF_FSYS_DISK,
-                                        path,
-                                        &error)) != NULL)
-    @{
-      pdf_char_t *parent_utf8;
-
-      parent_utf8 = pdf_text_get_unicode ((const pdf_text_t *)elem,
-                                          PDF_TEXT_UTF8,
-                                          PDF_TEXT_UNICODE_WITH_NUL_SUFFIX,
-                                          NULL,
-                                          &error);
-      if (!parent_utf8)
-        @{
-          printf ("couldn't get UTF-8 parent path: %s\n",
-                  error ? pdf_error_get_message (error) : "unknown error");
-          pdf_clear_error (&error);
-          break;
-        @}
-
-      printf ("Parent path found: '%s'\n",
-              parent_utf8);
-
-      pdf_dealloc (parent_utf8);
-      pdf_text_destroy (path);
-      path = parent;
-    @}
-
-  if (error)
-    @{
-      printf ("couldn't list parents: %s\n",
-              error ? pdf_error_get_message (error) : "unknown error");
-      pdf_error_destroy (error);
-    @}
-
-  if (path)
-    pdf_text_destroy (path);
-  if (parent)
-    pdf_text_destroy (parent);
-@}
-
-@end example
-@end table
-@end deftypefun
-
-@deftypefun {pdf_text_t *}pdf_fsys_get_basename (const pdf_fsys_t *@var{fsys}, const pdf_text_t *@var{path_name}, pdf_error_t **@var{error})
-
-Get the filename from a given path in the filesystem.
-
-@table @strong
-@item Parameters
-@table @var
-@item fsys
-A valid filesystem.
-@item path_name
-The path name of an item in the filesystem.
-@item error
-A @code{pdf_error_t} to report errors or @code{NULL}.
-@table @code
-@item PDF_EBADNAME
-@var{path_name} does not name a valid item in the filesystem.
-@item PDF_EBADPERMS
-The client does not have permissions to get the parent of the specified
-item.
-@end table
-@end table
-@item Returns
-A newly created @code{pdf_text_t}.
-On error, @code{NULL} is returned, and @var{error} is set accordingly.
-@item Usage example
-@example
-
-pdf_bool_t
-file_is_hidden (pdf_text_t *path)
-@{
-  pdf_error_t *error = NULL;
-  pdf_text_t *basename;
-  pdf_char_t *basename_utf8;
-  pdf_bool_t hidden;
-
-  basename = pdf_fsys_get_basename (PDF_FSYS_DISK,
-                                    path,
-                                    &error);
-  if (!basename)
-    @{
-      printf ("couldn't get basename: %s\n",
-              error ? pdf_error_get_message (error) : "unknown error");
-      pdf_clear_error (&error);
-      return PDF_FALSE;
-    @}
-
-  basename_utf8 = pdf_text_get_unicode (basename,
-                                        PDF_TEXT_UTF8,
-                                        PDF_TEXT_UNICODE_WITH_NUL_SUFFIX,
-                                        NULL,
-                                        &error);
-  if (!basename_utf8)
-    @{
-      printf ("couldn't get UTF-8 filename: %s\n",
-              error ? pdf_error_get_message (error) : "unknown error");
-      pdf_clear_error (&error);
-      pdf_text_destroy (basename);
-      return PDF_FALSE;
-    @}
-
-  hidden = (basename_utf8[0] == '.' ? PDF_TRUE : PDF_FALSE);
-
-  pdf_dealloc (basename_utf8);
-  pdf_text_destroy (basename);
-
-  return hidden;
-@}
-
-@end example
-@end table
-@end deftypefun
-
 @node Getting File System Item Properties
 @subsubsection Getting File System Item Properties
 
 The following functions provides access to generic properties of
 filesystem items (both files and directories).
 
-@deftypefun pdf_status_t pdf_fsys_get_item_props (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name}, struct pdf_fsys_item_props_s *@var{item_props})
+@deftypefun pdf_bool_t pdf_fsys_get_item_props (pdf_fsys_t *@var{fsys}, pdf_text_t *@var{path_name}, struct pdf_fsys_item_props_s *@var{props}, pdf_error_t **@var{error})
 
 Get the properties of a filesystem item identified by a path name.
 
 @table @strong
 @item Parameters
 @table @var
-@item filesystem
-A filesystem. If @code{NULL} the default filesystem is used.
+@item fsys
+A valid filesystem.
 @item path_name
-A pdf string containing the path name of the filesystem item.
-@item item_props
+The path name of an item in the filesystem.
+@item props
 The address of a structure to hold the properties of the filesystem
 item.
-@end table
-@item Returns
-A PDF status value:
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-The operation succeeded.
 @item PDF_EBADDATA
 Invalid path name.
 @item PDF_EBADPERMS
 The client does not have enough permissions to read the requested item.
 @end table
+@end table
+@item Returns
+@code{PDF_TRUE} if successful, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
-struct pdf_fsys_item_props_s item_props;
-pdf_status_t ret;
-pdf_text_t path;
 
-ret =  pdf_text_new_from_unicode ("/path/to/foo",
-                                  12, PDF_TEXT_UTF8,
-                                  &path);
-/* Get the properties for the item */
-pdf_status_t ret = pdf_fsys_get_item_props (NULL, path, &item_props);
+void
+print_file_properties (pdf_text_t *path)
+@{
+  pdf_error_t *error = NULL;
+  struct pdf_fsys_item_props_s item_props = @{ 0 @};
+  pdf_char_t *utf8;
+  pdf_char_t *mtime_str;
+  pdf_char_t *ctime_str;
+
+  utf8 = pdf_text_get_unicode (path,
+                               PDF_TEXT_UTF8,
+                               PDF_TEXT_UNICODE_WITH_NUL_SUFFIX,
+                               NULL,
+                               &error);
+  if (!utf8)
+    @{
+      printf ("couldn't get UTF-8 path\n");
+      return;
+    @}
+
+  /* Get the properties for the item */
+  if (!pdf_fsys_get_item_props (PDF_FSYS_DISK,
+                                path,
+                                &item_props,
+                                &error))
+    @{
+      printf ("couldn't get item '%s' properties: %s\n",
+              utf8,
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+      pdf_dealloc (utf8);
+      return;
+    @}
+
+  ctime_str = pdf_time_to_string (&item_props.creation_date,
+                                  PDF_TIME_STRING_FORMAT_ISO_8601,
+                                  PDF_TIME_STRING_NO_OPTION,
+                                  NULL);
+  mtime_str = pdf_time_to_string (&item_props.modification_date,
+                                  PDF_TIME_STRING_FORMAT_ISO_8601,
+                                  PDF_TIME_STRING_NO_OPTION,
+                                  NULL);
+
+  printf ("item '%s' properties:\n"
+          "  hidden:   %s\n"
+          "  readable: %s\n"
+          "  writable: %s\n"
+          "  ctime:    %s\n"
+          "  mtime:    %s\n"
+          "  size:     %lu bytes\n",
+          utf8,
+          item_props.is_hidden ? "yes" : "no",
+          item_props.is_readable ? "yes" : "no",
+          item_props.is_writable ? "yes" : "no",
+          ctime_str ? ctime_str : "unknown",
+          mtime_str ? mtime_str : "unknown",
+          (unsigned long)item_props.file_size);
+
+  pdf_dealloc (ctime_str);
+  pdf_dealloc (mtime_str);
+  pdf_dealloc (utf8);
+@}
+
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s @var{item_props}, pdf_hash_t @var{props_hash})
+@deftypefun {pdf_hash_t *}pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s *@var{item_props}, pdf_error_t **@var{error})
 
-Get a PDF hash variable containing the properties of a filesystem
-item.
+Get a hash containing the properties of a filesystem item.
 
-The key-value pairs returned in the hash variable are the following:
+The values returned in the hash variable are represented by the following keys:
 
 @table @code
-@item isHidden
-Boolean value.
-@item isReadable
-Boolean value.
-@item isWritable
-Boolean value.
-@item creationDate
-Text value containing a PDF style date string.
-@item modificationDate
-Text value containing a PDF style date string.
-@item fileSize
-pdf_off_t signed integer value.
-@item folderSize
-32bit unsigned integer value.
-@comment @item creatorCode
-@comment 32bit unsigned integer value.
-@comment @item versionMajor
-@comment 32bit unsigned integer value.
-@comment @item versionMinor
-@comment 32bit unsigned integer value.
-@comment @item isCheckedOut
-@comment Boolean value.
-@comment @item isPublished
-@comment Boolean value.
+@item PDF_FSYS_ITEM_IS_HIDDEN
+Boolean value, with the value of the 'is_hidden' variable in @var{item_props}.
+@item PDF_FSYS_ITEM_IS_READABLE
+Boolean value, with the value of the 'is_readable' variable in @var{item_props}.
+@item PDF_FSYS_ITEM_IS_WRITABLE
+Boolean value, with the value of the 'is_writable variable in @var{item_props}.
+@item PDF_FSYS_ITEM_CREATION_DATE
+A PDF style date string representing the 'creation_date' variable in @var{item_props}.
+@item PDF_FSYS_ITEM_MODIFICATION_DATE
+A PDF style date string representing the 'modification_date' variable in @var{item_props}.
+@item PDF_FSYS_ITEM_FILE_SIZE
+A @code{pdf_size_t} value, with the value of the 'file_size' variable in @var{item_props}.
 @end table
 
 @table @strong
@@ -9259,60 +9467,138 @@ pdf_off_t signed integer value.
 @table @var
 @item item_props
 A filesystem item properties structure.
-@item props_hash
-A PDF hash variable. It will be filled with the properties of the
-item.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to perform the operation.
+@end table
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The operation succeeded and the properties were stored in the hash
-variable.
-@end table
+A newly allocated @code{pdf_hash_t} containing the properties of the filesystem item.
 @item Usage example
 @example
-XXX
+
+void
+print_file_properties (pdf_text_t *path)
+@{
+  pdf_error_t *error = NULL;
+  struct pdf_fsys_item_props_s item_props = @{ 0 @};
+  pdf_char_t *utf8;
+  const pdf_char_t *mtime_str;
+  const pdf_char_t *ctime_str;
+  pdf_hash_t *item_props_hash;
+
+  utf8 = pdf_text_get_unicode (path,
+                               PDF_TEXT_UTF8,
+                               PDF_TEXT_UNICODE_WITH_NUL_SUFFIX,
+                               NULL,
+                               &error);
+  if (!utf8)
+    @{
+      printf ("couldn't get UTF-8 path\n");
+      return;
+    @}
+
+  /* Get the properties for the item */
+  if (!pdf_fsys_get_item_props (PDF_FSYS_DISK,
+                                path,
+                                &item_props,
+                                &error))
+    @{
+      printf ("couldn't get item '%s' properties: %s\n",
+              utf8,
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+      pdf_dealloc (utf8);
+      return;
+    @}
+
+  /* Get hash with the properties */
+  item_props_hash = pdf_fsys_item_props_to_hash (&item_props,
+                                                 &error);
+  if (!item_props_hash)
+    @{
+      printf ("couldn't get props hash: %s\n",
+              error ? pdf_error_get_message (error) : "unknown error");
+      pdf_clear_error (&error);
+      pdf_dealloc (utf8);
+      return;
+    @}
+
+  ctime_str = pdf_hash_get_string (item_props_hash,
+                                   PDF_FSYS_ITEM_CREATION_DATE);
+  mtime_str = pdf_hash_get_string (item_props_hash,
+                                   PDF_FSYS_ITEM_MODIFICATION_DATE);
+
+  printf ("item '%s' properties:\n"
+          "  hidden:   %s\n"
+          "  readable: %s\n"
+          "  writable: %s\n"
+          "  ctime:    %s\n"
+          "  mtime:    %s\n"
+          "  size:     %lu bytes\n",
+          utf8,
+          pdf_hash_get_bool (item_props_hash,
+                             PDF_FSYS_ITEM_IS_HIDDEN) ? "yes" : "no",
+          pdf_hash_get_bool (item_props_hash,
+                             PDF_FSYS_ITEM_IS_READABLE) ? "yes" : "no",
+          pdf_hash_get_bool (item_props_hash,
+                             PDF_FSYS_ITEM_IS_WRITABLE) ? "yes" : "no",
+          ctime_str ? ctime_str : "unknown",
+          mtime_str ? mtime_str : "unknown",
+          (unsigned long)pdf_hash_get_size (item_props_hash,
+                                            PDF_FSYS_ITEM_FILE_SIZE));
+
+  pdf_hash_destroy (item_props_hash);
+  pdf_dealloc (utf8);
+@}
+
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_bool_t pdf_fsys_item_p (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name})
+@deftypefun pdf_bool_t pdf_fsys_item_p (pdf_fsys_t *@var{fsys}, pdf_text_t *@var{path_name})
 
 Determine if a given item, identified by a path name, exists in a given
 filesystem.
 
 @table @strong
 @item Parameters
-@item filesystem
-A filesystem. If @code{NULL} the default filesystem is used.
+@item fsys
+A valid filesystem.
 @item path_name
-A path name.
+The path name of an item in the filesystem.
 @item Returns
-A PDF boolean value:
-@table @code
-@item PDF_TRUE
-The specified item exists in the filesystem.
-@item PDF_FALSE
-The specified item does not exist in the filesystem or the client does not
-have enough permissions to be able to read it.
-@end table
+@code{PDF_TRUE} if the specified item exists in the filesystem.
+If th item doesn't exist, or if the program doesn't have enough permissions to check it, @code{PDF_FALSE} is returned.
 @item Usage example
 @example
-pdf_bool_t ret;
-pdf_status_t status;
-pdf_text_t path;
 
-status = pdf_text_new_from_unicode ("/path/to/foo",
-                                    12, PDF_TEXT_UTF8,
-                                    &path);
-/* Test whether the path to /path/to/foo is a valid path to foo */
-pdf_bool_t ret = pdf_fsys_item_p (NULL, path);
+void
+print_file_exists (const pdf_char_t *path_utf8)
+@{
+  pdf_text_t *path;
+
+  path = pdf_text_new_from_unicode (path_utf8,
+                                    strlen (path_utf8),
+                                    PDF_TEXT_UTF8,
+                                    NULL);
+
+  /* Test whether the path exists */
+  printf ("File '%s' %s\n",
+          path_utf8,
+          (pdf_fsys_item_p (PDF_FSYS_DISK, path) ?
+           "exists" : "doesn't exist"));
+
+  pdf_text_destroy (path);
+@}
+
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_bool_t pdf_fsys_item_readable_p (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name})
+@deftypefun pdf_bool_t pdf_fsys_item_readable_p (const pdf_fsys_t *@var{fsys}, pdf_text_t *@var{path_name})
 
 Determine if a given filesystem item, identified by a path name, is
 readable.
@@ -9320,34 +9606,41 @@ readable.
 @table @strong
 @item Parameters
 @table @var
-@item filesystem
-A filesystem. If @code{NULL} the default filesystem is used.
+@item fsys
+A valid filesystem.
 @item path_name
-A valid path name of an existing filesytem item.
+The path name of an item in the filesystem.
 @end table
 @item Returns
-A PDF boolean value:
-@table @code
-@item PDF_TRUE
-The filesystem item is readable.
-@item PDF_FALSE
-The filesystem item is not readable.
-@end table
+@code{PDF_TRUE} if the specified item is readable.
+If th item doesn't exist, or if the program doesn't have enough permissions to check if the item is readable, @code{PDF_FALSE} is returned.
 @item Usage example
 @example
-pdf_status_t status;
-pdf_text_t path;
 
-status = pdf_text_new_from_unicode ("/path/to/foo",
-                                    12, PDF_TEXT_UTF8,
-                                    &path);
-/* Determine if the item is readable */
-pdf_bool_t ret = pdf_fsys_item_readable_p (NULL, path);
+void
+print_file_readable (const pdf_char_t *path_utf8)
+@{
+  pdf_text_t *path;
+
+  path = pdf_text_new_from_unicode (path_utf8,
+                                    strlen (path_utf8),
+                                    PDF_TEXT_UTF8,
+                                    NULL);
+
+  /* Test whether the path exists */
+  printf ("File '%s' is %s\n",
+          path_utf8,
+          (pdf_fsys_item_readable_p (PDF_FSYS_DISK, path) ?
+           "readable" : "not readable"));
+
+  pdf_text_destroy (path);
+@}
+
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_bool_t pdf_fsys_item_writable_p (pdf_fsys_t @var{filesystem}, pdf_text_t @var{path_name})
+@deftypefun pdf_bool_t pdf_fsys_item_writable_p (const pdf_fsys_t *@var{fsys}, pdf_text_t *@var{path_name})
 
 Determine if a given filesystem item, identified by a path name, is
 writable.
@@ -9355,67 +9648,36 @@ writable.
 @table @strong
 @item Parameters
 @table @var
-@item filesystem
-A filesystem. If @code{NULL} the default filesystem is used.
+@item fsys
+A valid filesystem.
 @item path_name
-A valid path name of an existing filesystem item.
+The path name of an item in the filesystem.
 @end table
 @item Returns
-A PDF boolean value:
-@table @code
-@item PDF_TRUE
-The filesystem item is writable.
-@item PDF_FALSE
-The filesystem item is not writable.
-@end table
+@code{PDF_TRUE} if the specified item is writable.
+If th item doesn't exist, or if the program doesn't have enough permissions to check if the item is writable, @code{PDF_FALSE} is returned.
 @item Usage example
 @example
-pdf_status_t status;
-pdf_text_t path;
 
-status = pdf_text_new_from_unicode ("/path/to/foo",
-                                    12, PDF_TEXT_UTF8,
-                                    &path);
-/* Determine if the item is writable */
-pdf_bool_t ret = pdf_fsys_item_writable_p (NULL, path);
-@end example
-@end table
-@end deftypefun
-
-
-@deftypefun pdf_status_t pdf_fsys_build_path (pdf_fsys_t @var{filesystem}, pdf_text_t *@var{output}, pdf_text_t @var{first_name}, ...)
-
-Build a file path by concatenating first_name with the following
-variable-length list of @code{pdf_text_t} objects, store resulting path in @var{output}.
-
-@table @strong
-@item Parameters
-@table @var
-@item filesystem
-A filesystem. If @code{NULL} the default filesystem is used.
-@item output
-A pdf_text_t pointer where the resulting path name will be stored.
-@item first_name
-First text path component.
-@item ...
-Variable-length pdf_text_t object list, last element must be NULL.
-@end table
-@item Returns
-Returns PDF_OK if operation succeeded and @var{output} points to built path.
-@item Usage example
-@example
-pdf_status_t st;
-pdf_text_t full_path = NULL;
-pdf_text_t filename = NULL;
-pdf_text_t parent_path = get_current_dir_as_text (); /* example */
-
-pdf_text_new_from_from_unicode ("filename.txt", strlen ("filename.txt"),
-                                PDF_TEXT_UTF8, &filename);
-st = pdf_fsys_build_path (NULL, &full_path, parent_dir, filename);
-if (st != PDF_OK)
+void
+print_file_writable (const pdf_char_t *path_utf8)
 @{
-   /* ... */
+  pdf_text_t *path;
+
+  path = pdf_text_new_from_unicode (path_utf8,
+                                    strlen (path_utf8),
+                                    PDF_TEXT_UTF8,
+                                    NULL);
+
+  /* Test whether the path exists */
+  printf ("File '%s' is %s\n",
+          path_utf8,
+          (pdf_fsys_item_writable_p (PDF_FSYS_DISK, path) ?
+           "writable" : "not writable"));
+
+  pdf_text_destroy (path);
 @}
+
 @end example
 @end table
 @end deftypefun

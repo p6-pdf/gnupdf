@@ -359,9 +359,6 @@ pdf_hash_t *pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s  *it
 #define pdf_fsys_file_get_path(file)            \
   (const pdf_text_t *)file->path
 
-#define pdf_fsys_file_get_url(file, error)                      \
-  pdf_fsys_get_url_from_path (file->fsys, file->path, error)
-
 #define pdf_fsys_file_set_mode(file, mode, error)   \
   file->fsys->file_set_mode_fn (file, mode, error)
 
