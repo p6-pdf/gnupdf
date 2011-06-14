@@ -759,18 +759,71 @@ get_free_space (const pdf_fsys_t  *fsys,
   return 0;
 }
 
+static pdf_char_t *
+get_url_from_path (const pdf_fsys_t  *fsys,
+                   const pdf_text_t  *path,
+                   pdf_error_t      **error)
+{
+  PDF_ASSERT_POINTER_RETURN_VAL (fsys, NULL);
+  PDF_ASSERT_POINTER_RETURN_VAL (path, NULL);
+
+  /* TODO: Check/Normalize URL if needed */
+  return pdf_text_get_unicode (path,
+                               PDF_TEXT_UTF8,
+                               PDF_TEXT_UNICODE_WITH_NUL_SUFFIX,
+                               NULL,
+                               error);
+}
+
+static pdf_text_t *
+get_path_from_url (const pdf_fsys_t  *fsys,
+                   const pdf_char_t  *url,
+                   pdf_error_t      **error)
+{
+  PDF_ASSERT_POINTER_RETURN_VAL (url, NULL);
+
+  /* Building a path from a URL, in the case of the HTTP fsys,
+   * should be just converting from UTF-8.
+   * TODO: Check/Normalize URL if needed */
+  return pdf_text_new_from_unicode (url,
+                                    strlen (url),
+                                    PDF_TEXT_UTF8,
+                                    error);
+}
+
 static pdf_bool_t
 compare_path_p (const pdf_fsys_t  *fsys,
                 const pdf_text_t  *first,
                 const pdf_text_t  *second,
                 pdf_error_t      **error)
 {
-  /* TODO */
+  pdf_char_t *first_utf8;
+  pdf_char_t *second_utf8;
+  pdf_bool_t ret;
 
   PDF_ASSERT_POINTER_RETURN_VAL (first, PDF_FALSE);
   PDF_ASSERT_POINTER_RETURN_VAL (second, PDF_FALSE);
 
-  return PDF_FALSE;
+  /* Get URLs from paths and compare.
+   * TODO: Check/Normalize the URLs before comparing them. */
+
+  first_utf8 = get_url_from_path (fsys, first, error);
+  if (!first_utf8)
+    return PDF_FALSE;
+
+  second_utf8 = get_url_from_path (fsys, second, error);
+  if (!second_utf8)
+    {
+      pdf_dealloc (first_utf8);
+      return PDF_FALSE;
+    }
+
+  /* TODO: There probably is a proper way of comparing URLs... */
+  ret = (strcmp (first_utf8, second_utf8) ? PDF_TRUE : PDF_FALSE);
+
+  pdf_dealloc (first_utf8);
+  pdf_dealloc (second_utf8);
+  return ret;
 }
 
 static pdf_text_t *
@@ -883,35 +936,6 @@ build_path (const pdf_fsys_t  *fsys,
                                       error);
   pdf_dealloc (utf8);
   return output;
-}
-
-static pdf_char_t *
-get_url_from_path (const pdf_fsys_t  *fsys,
-                   const pdf_text_t  *path,
-                   pdf_error_t      **error)
-{
-  PDF_ASSERT_POINTER_RETURN_VAL (fsys, NULL);
-  PDF_ASSERT_POINTER_RETURN_VAL (path, NULL);
-
-  /* TODO: Properly do this. We must make sure the string we get is a real valid
-   * URL, see FS#126 */
-  return pdf_text_get_unicode (path,
-                               PDF_TEXT_UTF8,
-                               PDF_TEXT_UNICODE_WITH_NUL_SUFFIX,
-                               NULL,
-                               error);
-}
-
-static pdf_text_t *
-get_path_from_url (const pdf_fsys_t  *fsys,
-                   const pdf_char_t  *url,
-                   pdf_error_t      **error)
-{
-  PDF_ASSERT_POINTER_RETURN_VAL (url, NULL);
-
-  /* TODO. See FS#126 */
-
-  return NULL;
 }
 
 static pdf_off_t
