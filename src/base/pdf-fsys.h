@@ -266,12 +266,12 @@ struct pdf_fsys_file_s
 };
 
 /* Helper methods to be used by filesystem implementations */
-pdf_bool_t pdf_fsys_file_init_common (struct pdf_fsys_file_s     *common,
-                                      const struct pdf_fsys_s    *fsys,
-                                      const pdf_text_t           *path,
-                                      enum pdf_fsys_file_mode_e   mode,
-                                      pdf_error_t               **error);
-void pdf_fsys_file_deinit_common (struct pdf_fsys_file_s *common);
+pdf_bool_t pdf_fsys_impl_helper_file_init (struct pdf_fsys_file_s     *common,
+                                           const struct pdf_fsys_s    *fsys,
+                                           const pdf_text_t           *path,
+                                           enum pdf_fsys_file_mode_e   mode,
+                                           pdf_error_t               **error);
+void pdf_fsys_impl_helper_file_deinit (struct pdf_fsys_file_s *common);
 
 /* ------------------------ Filesystem Management API ----------------------- */
 

@@ -113,7 +113,7 @@ static pdf_bool_t win32_device_p (const pdf_text_t  *path,
 static void
 deinit_base_file_data (struct pdf_fsys_disk_file_s *file)
 {
-  pdf_fsys_file_deinit_common (&(file->common));
+  pdf_fsys_impl_helper_file_deinit (&(file->common));
 
   if (file->host_path)
     pdf_dealloc (file->host_path);
@@ -130,11 +130,11 @@ init_base_file_data (struct pdf_fsys_disk_file_s  *file,
   memset (file, 0, sizeof (struct pdf_fsys_disk_file_s));
 
   /* Initialize common data */
-  if (!pdf_fsys_file_init_common (&(file->common),
-                                  fsys,
-                                  path,
-                                  mode,
-                                  error))
+  if (!pdf_fsys_impl_helper_file_init (&(file->common),
+                                       fsys,
+                                       path,
+                                       mode,
+                                       error))
     {
       deinit_base_file_data (file);
       return PDF_FALSE;

@@ -323,11 +323,11 @@ pdf_fsys_item_props_to_hash (const struct pdf_fsys_item_props_s  *item_props,
 }
 
 pdf_bool_t
-pdf_fsys_file_init_common (struct pdf_fsys_file_s     *common,
-                           const struct pdf_fsys_s    *fsys,
-                           const pdf_text_t           *path,
-                           enum pdf_fsys_file_mode_e   mode,
-                           pdf_error_t               **error)
+pdf_fsys_impl_helper_file_init (struct pdf_fsys_file_s     *common,
+                                const struct pdf_fsys_s    *fsys,
+                                const pdf_text_t           *path,
+                                enum pdf_fsys_file_mode_e   mode,
+                                pdf_error_t               **error)
 {
   PDF_ASSERT_RETURN_VAL (common != NULL, PDF_FALSE);
 
@@ -347,7 +347,7 @@ pdf_fsys_file_init_common (struct pdf_fsys_file_s     *common,
 }
 
 void
-pdf_fsys_file_deinit_common (struct pdf_fsys_file_s *common)
+pdf_fsys_impl_helper_file_deinit (struct pdf_fsys_file_s *common)
 {
   PDF_ASSERT_RETURN (common != NULL);
 

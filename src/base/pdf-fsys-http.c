@@ -400,13 +400,13 @@ file_open (const pdf_fsys_t           *fsys,
   memset (file, 0, sizeof (struct pdf_fsys_http_file_s));
 
   /* Initialize common data */
-  if (!pdf_fsys_file_init_common (&(file->common),
-                                  fsys,
-                                  path,
-                                  mode,
-                                  error))
+  if (!pdf_fsys_impl_helper_file_init (&(file->common),
+                                       fsys,
+                                       path,
+                                       mode,
+                                       error))
     {
-      pdf_fsys_file_deinit_common (&(file->common));
+      pdf_fsys_impl_helper_file_deinit (&(file->common));
       pdf_dealloc (file);
       return NULL;
     }
@@ -417,7 +417,7 @@ file_open (const pdf_fsys_t           *fsys,
                                           error);
   if (!file->url)
     {
-      pdf_fsys_file_deinit_common (&(file->common));
+      pdf_fsys_impl_helper_file_deinit (&(file->common));
       pdf_dealloc (file);
       return NULL;
     }
@@ -427,7 +427,7 @@ file_open (const pdf_fsys_t           *fsys,
                           &(file->content_length),
                           error))
     {
-      pdf_fsys_file_deinit_common (&(file->common));
+      pdf_fsys_impl_helper_file_deinit (&(file->common));
       pdf_dealloc (file);
       return NULL;
     }
@@ -456,7 +456,7 @@ file_close (pdf_fsys_file_t  *file,
   if (http_file->url)
     pdf_dealloc (http_file->url);
 
-  pdf_fsys_file_deinit_common (&(http_file->common));
+  pdf_fsys_impl_helper_file_deinit (&(http_file->common));
   pdf_dealloc (file);
 
   return PDF_TRUE;
