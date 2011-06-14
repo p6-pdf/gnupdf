@@ -759,6 +759,20 @@ get_free_space (const pdf_fsys_t  *fsys,
   return 0;
 }
 
+static pdf_bool_t
+compare_path_p (const pdf_fsys_t  *fsys,
+                const pdf_text_t  *first,
+                const pdf_text_t  *second,
+                pdf_error_t      **error)
+{
+  /* TODO */
+
+  PDF_ASSERT_POINTER_RETURN_VAL (first, PDF_FALSE);
+  PDF_ASSERT_POINTER_RETURN_VAL (second, PDF_FALSE);
+
+  return PDF_FALSE;
+}
+
 static pdf_text_t *
 build_path (const pdf_fsys_t  *fsys,
             pdf_error_t      **error,
@@ -898,28 +912,6 @@ get_path_from_url (const pdf_fsys_t  *fsys,
   /* TODO. See FS#126 */
 
   return NULL;
-}
-
-static pdf_bool_t
-file_same_p (const pdf_fsys_file_t  *file,
-             const pdf_text_t       *path,
-             pdf_error_t           **error)
-{
-  const struct pdf_fsys_http_file_s *http_file = (const struct pdf_fsys_http_file_s *)file;
-  pdf_char_t *path_url;
-  pdf_bool_t same;
-
-  path_url = pdf_fsys_get_url_from_path (file->fsys,
-                                         path,
-                                         error);
-  if (!path_url)
-    return PDF_FALSE;
-
-  same = (strcmp (path_url, http_file->url) == 0 ?
-          PDF_TRUE : PDF_FALSE);
-
-  pdf_dealloc (path_url);
-  return same;
 }
 
 static pdf_off_t
@@ -1111,50 +1103,35 @@ file_reopen (pdf_fsys_file_t            *file,
   return PDF_TRUE;
 }
 
-static pdf_bool_t
-file_set_mode (pdf_fsys_file_t            *file,
-               enum pdf_fsys_file_mode_e   new_mode,
-               pdf_error_t               **error)
-{
-  PDF_ASSERT_POINTER_RETURN_VAL (file, PDF_FALSE);
-
-  /* If modes are different, call reopen */
-  return (file->mode != new_mode ?
-          file_reopen (file, new_mode, error) :
-          PDF_TRUE);
-}
-
 /* Setup the http filesystem implementation, using named initializers */
 static struct pdf_fsys_http_s pdf_fsys_http_implementation =
   {
+    .common.get_free_space_fn      = get_free_space,
     .common.create_folder_fn       = create_folder,
     .common.get_folder_contents_fn = get_folder_contents,
+    .common.remove_folder_fn       = remove_folder,
     .common.get_parent_fn          = get_parent,
     .common.get_basename_fn        = get_basename,
-    .common.remove_folder_fn       = remove_folder,
-    .common.get_item_props_fn      = get_item_props,
-    .common.get_free_space_fn      = get_free_space,
-    .common.item_p_fn              = item_p,
-    .common.item_readable_p_fn     = item_readable_p,
-    .common.item_writable_p_fn     = item_writable_p,
+    .common.compare_path_p_fn      = compare_path_p,
     .common.build_path_fn          = build_path,
     .common.get_url_from_path_fn   = get_url_from_path,
     .common.get_path_from_url_fn   = get_path_from_url,
-
+    .common.item_p_fn              = item_p,
+    .common.get_item_props_fn      = get_item_props,
+    .common.item_readable_p_fn     = item_readable_p,
+    .common.item_writable_p_fn     = item_writable_p,
     .common.file_open_fn           = file_open,
     .common.file_open_tmp_fn       = file_open_tmp,
     .common.file_reopen_fn         = file_reopen,
     .common.file_close_fn          = file_close,
-    .common.file_read_fn           = file_read,
-    .common.file_write_fn          = file_write,
-    .common.file_flush_fn          = file_flush,
-    .common.file_can_set_size_p_fn = file_can_set_size_p,
     .common.file_get_size_fn       = file_get_size,
+    .common.file_can_set_size_p_fn = file_can_set_size_p,
     .common.file_set_size_fn       = file_set_size,
     .common.file_get_pos_fn        = file_get_pos,
     .common.file_set_pos_fn        = file_set_pos,
-    .common.file_set_mode_fn       = file_set_mode,
-    .common.file_same_p_fn         = file_same_p,
+    .common.file_read_fn           = file_read,
+    .common.file_write_fn          = file_write,
+    .common.file_flush_fn          = file_flush,
     .common.file_request_ria_fn    = file_request_ria,
     .common.file_has_ria_fn        = file_has_ria,
     .common.file_cancel_ria_fn     = file_cancel_ria,

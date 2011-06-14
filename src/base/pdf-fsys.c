@@ -59,34 +59,40 @@ validate_implementation (const pdf_char_t         *id,
       }                                                                 \
   } while (0)
 
+  VALIDATE_METHOD (get_free_space_fn);
+
   VALIDATE_METHOD (create_folder_fn);
   VALIDATE_METHOD (get_folder_contents_fn);
+  VALIDATE_METHOD (remove_folder_fn);
+
   VALIDATE_METHOD (get_parent_fn);
   VALIDATE_METHOD (get_basename_fn);
-  VALIDATE_METHOD (remove_folder_fn);
-  VALIDATE_METHOD (get_item_props_fn);
-  VALIDATE_METHOD (get_free_space_fn);
-  VALIDATE_METHOD (item_p_fn);
-  VALIDATE_METHOD (item_readable_p_fn);
-  VALIDATE_METHOD (item_writable_p_fn);
+  VALIDATE_METHOD (compare_path_p_fn);
   VALIDATE_METHOD (build_path_fn);
   VALIDATE_METHOD (get_url_from_path_fn);
   VALIDATE_METHOD (get_path_from_url_fn);
+
+  VALIDATE_METHOD (item_p_fn);
+  VALIDATE_METHOD (get_item_props_fn);
+  VALIDATE_METHOD (item_readable_p_fn);
+  VALIDATE_METHOD (item_writable_p_fn);
 
   VALIDATE_METHOD (file_open_fn);
   VALIDATE_METHOD (file_open_tmp_fn);
   VALIDATE_METHOD (file_reopen_fn);
   VALIDATE_METHOD (file_close_fn);
+
+  VALIDATE_METHOD (file_get_size_fn);
+  VALIDATE_METHOD (file_can_set_size_p_fn);
+  VALIDATE_METHOD (file_set_size_fn);
+
+  VALIDATE_METHOD (file_get_pos_fn);
+  VALIDATE_METHOD (file_set_pos_fn);
+
   VALIDATE_METHOD (file_read_fn);
   VALIDATE_METHOD (file_write_fn);
   VALIDATE_METHOD (file_flush_fn);
-  VALIDATE_METHOD (file_can_set_size_p_fn);
-  VALIDATE_METHOD (file_get_size_fn);
-  VALIDATE_METHOD (file_set_size_fn);
-  VALIDATE_METHOD (file_get_pos_fn);
-  VALIDATE_METHOD (file_set_pos_fn);
-  VALIDATE_METHOD (file_set_mode_fn);
-  VALIDATE_METHOD (file_same_p_fn);
+
   VALIDATE_METHOD (file_request_ria_fn);
   VALIDATE_METHOD (file_has_ria_fn);
   VALIDATE_METHOD (file_cancel_ria_fn);
