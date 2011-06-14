@@ -1,3 +1,75 @@
+2011-06-14  Aleksander Morgado  <aleksander@gnu.org>
+
+	fsys: reviewed API and implementation of the Filesystem module.
+	* src/base/pdf-fsys.[h|c]: Also implemented filesystem implementation
+	registration/deregistration procedures.
+	* src/base/pdf-fsys-disk.[h|c]: Reworked Disk filesystem implementation,
+	implementing most basic bits, only from/to URL conversions are missing.
+	* src/base/pdf-fsys-http.[h|c]: New HTTP filesystem implementation,
+	only for HTTP servers providing byte-serving capabilities.
+	* src/base/pdf-fsys-def.h: File removed.
+	* src/base/pdf-error.h (PDF_ERROR_DOMAIN_LIST): Error domain for the
+	Filesystem interface renamed to `PDF_EDOMAIN_BASE_FSYS'.
+	* src/pdf-global.c: Move filesystem initialization requirements to the
+	specific filesystem initialization methods.
+	* doc/gnupdf.texi (The Filesystem Module): Reviewed and reworked the
+	Filesystem module documentation, including examples in all methods.
+
+	Port Filesystem module unit tests to the new API. Files were renamed
+	to specify that these unit tests cover only the Disk Filesystem
+	implementation.
+	* torture/unit/base/fsys/pdf-fsys-disk-get-free-space.c: Renamed from
+	`pdf-fsys-get-free-space.c'.
+	* torture/unit/base/fsys/pdf-fsys-disk-build-path.c: Renamed from
+	`pdf-fsys-build-path.c'.
+	* torture/unit/base/fsys/pdf-fsys-disk-file-open.c: Renamed from
+	`pdf-fsys-file-open.c'.
+	* torture/unit/base/fsys/pdf-fsys-disk-file-open-tmp.c: Renamed from
+	`pdf-fsys-file-open-tmp.c'.
+	* torture/unit/base/fsys/pdf-fsys-disk-get-parent.c: Renamed from
+	`pdf-fsys-file-get-parent.c'.
+	* torture/unit/base/fsys/pdf-fsys-disk-get-basename.c: New file.
+	* torture/unit/base/fsys/tsuite-fsys.c
+	* torture/unit/Makefile.am
+
+	Port stream API and backends to the new Filesystem module API.
+	* src/base/pdf-stm.[h|c]
+	* src/base/pdf-stm-be.h
+	* src/base/pdf-stm-be-file.[h|c]
+
+	Port stream module unit tests to the new Filesystem module API.
+	* torture/unit/base/stm/pdf-stm-bseek.c
+	* torture/unit/base/stm/pdf-stm-btell.c
+	* torture/unit/base/stm/pdf-stm-file-new.c
+	* torture/unit/base/stm/pdf-stm-peek-char.c
+	* torture/unit/base/stm/pdf-stm-read-char.c
+	* torture/unit/base/stm/pdf-stm-rw-filter-null.c
+	* torture/unit/base/stm/pdf-stm-tell.c
+
+	Port utilities to the new Filesystem module API
+	* utils/pdf-filereader.c: Use the new API and also modified so that
+	specific filesystems can be provided as input argument in order to test
+	the different implementations.
+	* utils/pdf-filter.c: Use new API.
+
+2011-06-14  Aleksander Morgado  <aleksander@gnu.org>
+
+	text: allow NULL length in pdf_text_get_unicode().
+	* src/base/pdf-text.c
+
+2011-06-14  Aleksander Morgado  <aleksander@gnu.org>
+
+	hash: iterator initialization always succeeds.
+	* src/base/pdf-hash.[h|c] (pdf_hash_iterator_init): No need to return
+	any result.
+	* torture/unit/base/hash/pdf-hash-iterator-init.c: Use new API.
+
+2011-06-14  Aleksander Morgado  <aleksander@gnu.org>
+
+	stm: use always offset-based file access functions
+	* src/base/pdf-stm-be-cfile.c (stm_be_cfile_seek): Use `fseeko' instead
+	of `fseek'.
+
 2011-06-09  Aleksander Morgado  <aleksander@gnu.org>
 
 	build: remove `nocheck' support. nocheck was a simple replacement for
