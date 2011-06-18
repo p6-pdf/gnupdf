@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2011-03-10 20:40:15 aleksander"
+/* -*- mode: C -*- Time-stamp: "2011-06-18 21:56:21 jemarch"
  *
  *       File:         pdf-filereader.c
  *       Date:         Thu Dec 2 23:35:55 2010
@@ -34,6 +34,13 @@
 #include <stdlib.h>
 
 #include <pdf.h>
+#include <pdf-utils.h>
+
+/*
+ * Global variables
+ */
+
+char *program_name; /* Initialized in main() */
 
 /*
  * Command line options management
@@ -64,7 +71,7 @@ static const struct option GNU_longOptions[] =
 
 /* Messages */
 
-char *pdf_filereader_version_msg = "pdf_filereader 0.1";
+PDF_UTILS_COPYRIGHT_DOC ("pdf-filereader");
 
 char *pdf_filereader_usage_msg = "\
 Usage: pdf_filereader [OPTIONS]\n\
@@ -312,7 +319,7 @@ parse_args (int argc, char *argv[])
           }
         case VERSION_ARG:
           {
-            fprintf (stdout, "%s\n", pdf_filereader_version_msg);
+            fprintf (stdout, "%s\n", pdf_utils_version_msg);
             exit (EXIT_SUCCESS);
             break;
           }

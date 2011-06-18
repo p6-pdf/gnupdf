@@ -1,3 +1,19 @@
+2011-06-18  Jose E. Marchesi  <jemarch@gnu.org>
+
+	utils: make pdf-filereader to use the common facilities in
+	pdf-utils.
+	* utils/pdf-utils.h (PDF_UTILS_COPYRIGHT_DOC): Update the
+	copyright years to cover 2011.
+
+	* utils/pdf-filereader.c: Include pdf-utils.h.
+	New global program_name.
+	Use the PDF_UTILS_COPYRIGHT_DOC macro.
+	(parse_args): Print pdf_utils_version_msg, instead of
+	pdf_filereader_version_msg.
+
+	* utils/README: Updated to match the current contents of the
+	directory.
+
 2011-06-09  Aleksander Morgado  <aleksander@gnu.org>
 
 	build: remove `nocheck' support. nocheck was a simple replacement for

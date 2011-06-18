@@ -8,7 +8,7 @@
  *
  */
 
-/* Copyright (C) 2010 Free Software Foundation, Inc. */
+/* Copyright (C) 2010,2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
 #define PDF_UTILS_COPYRIGHT_DOC(NAME)                        \
   char *pdf_utils_version_msg =                              \
     NAME " (GNU PDF) " PDF_UTILS_VERSION "\n\
-Copyright (C) 2010 Free Software Foundation.\n\
+Copyright (C) 2010, 2011 Free Software Foundation.\n\
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n\
 This is free software: you are free to change and redistribute it.\n\
 There is NO WARRANTY, to the extent permitted by law."
