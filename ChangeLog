@@ -1,5 +1,13 @@
 2011-06-19  Jose E. Marchesi  <jemarch@gnu.org>
 
+	torture: uuid-tests branch merged and minor fixes.
+	* utils/README: Remove empty lines at the end of the file.
+
+	* torture/unit/Makefile.am (TEST_SUITE_TYPES): Tab substitued with
+	blanks.
+
+2011-06-19  Jose E. Marchesi  <jemarch@gnu.org>
+
 	prmgt: embed css file in the generated html reports.
 	* prmgt/Makefile.am (cyclo.html): Include build-aux/pmccabe.css
 	verbatim.
@@ -55,6 +63,15 @@
 
 	build: do not require libcheck, it must be optional
 	* configure.ac
+
+2011-05-30  Albert Meroño Peñuela <albert.merono@est.fib.upc.edu>
+
+	torture: Unit tests for the UUID module.
+	* torture/unit/Makefile.am: UUID tests inclusion
+	* torture/unit/base/types/tsuite-types.c: UUID test suite
+	* torture/unit/base/types/pdf-types-uuid-generate.c: UUID tests
+	* torture/unit/base/types/pdf-types-uuid-string.c: Likewise
+	* torture/unit/base/types/pdf-types-uuid-equal-p.c: Likewise
 
 2011-05-10  Jose E. Marchesi  <jemarch@gnu.org>
 

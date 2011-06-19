@@ -27,12 +27,20 @@
 
 #include <check.h>
 #include <pdf-test-common.h>
+extern TCase *test_pdf_uuid_generate (void);
+extern TCase *test_pdf_uuid_string (void);
+extern TCase *test_pdf_uuid_equal_p (void);
+
 Suite *
 tsuite_types ()
 {
   Suite *s;
 
   s = suite_create("types");
+
+  suite_add_tcase (s, test_pdf_uuid_generate ());
+  suite_add_tcase (s, test_pdf_uuid_string ());
+  suite_add_tcase (s, test_pdf_uuid_equal_p ());
 
   return s;
 }
