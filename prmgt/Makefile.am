@@ -24,31 +24,32 @@ cyclo.html:
 	chmod +x ${top_srcdir}/build-aux/pmccabe2html
 	$(PMCCABE) ${top_srcdir}/src/base/*.[ch] \
                 | sort -nr \
-                | $(AWK) -f ${top_srcdir}/build-aux/pmccabe2html \
-                         -v lang=html -v name="GNU PDF" \
-                         -v vcurl="%FILENAME%" \
-                         -v url="http://www.gnupdf.org" \
+                | $(AWK) -f ${top_srcdir}/build-aux/pmccabe2html    \
+                         -v lang=html -v name="GNU PDF"             \
+                         -v vcurl="%FILENAME%"                      \
+                         -v css=${top_srcdir}/build-aux/pmccabe.css \
+                         -v url="http://www.gnupdf.org"             \
                   > cyclo.html
 
-apic.html:
+apic.html: apic2html
 	chmod +x ${builddir}/apic2html
 	chmod +x ${builddir}/check-api-doc-consistency.pl
-	${builddir}/check-api-doc-consistency.pl -p -t | \
-          $(AWK) -f ${builddir}/apic2html                \
-                 -v name="GNU PDF"                       \
-                 -v css="pmccabe.css"                    \
-                 -v url="http://www.gnupdf.org"          \
+	${builddir}/check-api-doc-consistency.pl -p -t |    \
+          $(AWK) -f ${builddir}/apic2html                   \
+                 -v name="GNU PDF"                          \
+                 -v css=${top_srcdir}/build-aux/pmccabe.css \
+                 -v url="http://www.gnupdf.org"             \
           > apic.html
 
-ut.html:
+ut.html: testlog2html
 	chmod +x ${builddir}/testlog2html
-	if test -f ${top_srcdir}/torture/unit/ut.log ; then \
-          cat ${top_srcdir}/torture/unit/ut.log |           \
-            $(AWK) -f ${builddir}/testlog2html              \
-                   -v name="GNU PDF"                        \
-                   -v css="pmccabe.css"                     \
-                   -v url="http://www.gnupdf.org"           \
-            > ut.html;                                      \
+	if test -f ${top_srcdir}/torture/unit/ut.log ; then   \
+          cat ${top_srcdir}/torture/unit/ut.log |             \
+            $(AWK) -f ${builddir}/testlog2html                \
+                   -v name="GNU PDF"                          \
+                   -v css=${top_srcdir}/build-aux/pmccabe.css \
+                   -v url="http://www.gnupdf.org"             \
+            > ut.html;                                        \
         fi
 
 all-local: ${TARGETS}

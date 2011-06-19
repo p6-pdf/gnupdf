@@ -42,6 +42,43 @@ Copyright (c) 2008, 2011 Free Software Foundation, Inc."
 
 # Functions
 
+function html_header ()
+{
+    print html_doctype
+    print "<html>"
+    print html_comment
+    print "<head>"
+    print "<title>" html_title "</title>"
+    print ""
+    print "<meta name=\"description\" content=\"" html_title "\">"
+    print "<meta name=\"keywords\" content=\"" html_title "\">"
+    print "<meta name=\"resource-type\" content=\"document\">"
+    print "<meta name=\"distribution\" content=\"global\">"
+    print "<meta name=\"Generator\" content=\"pmccabe2html\">"
+    print "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">"
+
+    if (css_url != "")
+    {
+        print "<link rel=\"stylesheet\" href=\"" css_url "\" type =\"text/css\" media=\"screen\"/>"
+    }
+    if (css != "")
+    {
+        print "<style type =\"text/css\" media=\"screen\">"
+	print "<!--"
+        while ((getline cssline < css) > 0)
+        {
+	    print cssline
+	}
+        print "-->"
+	print "</style />"
+	close(css)
+    }
+    print "</head>"
+    print "<body lang=\"en\" bgcolor=\"#FFFFFF\" text=\"#000000\" link=\"#0000FF\" \
+vlink=\"#800080\" alink=\"#FF0000\">"
+
+}
+
 function wiki_global_stats ()
 {
     print "<h2>Summary</h2>"
@@ -51,28 +88,28 @@ function wiki_global_stats ()
     print "<table class=\"resume_table\">"
     # Documented functions
     print "<tr>"
-    print "<td class=\"cyclo_resume_header_entry\">Documented functions</td>"
-    print "<td class=\"cyclo_resume_number_entry\">" nfuncs "</td>"
+    print "<td class=\"resume_header_entry\">Documented functions</td>"
+    print "<td class=\"resume_number_entry\">" nfuncs "</td>"
     print "</tr>"
     # Implemented functions
     print "<tr>"
-    print "<td class=\"cyclo_resume_header_entry\">Implemented functions</td>"
-    print "<td class=\"cyclo_resume_number_entry\">" nok "</td>"
+    print "<td class=\"resume_header_entry\">Implemented functions</td>"
+    print "<td class=\"resume_number_entry\">" nok "</td>"
     print "</tr>"
     # Not Implemented functions
     print "<tr>"
-    print "<td class=\"cyclo_resume_header_entry\">Not implemented functions</td>"
-    print "<td class=\"cyclo_resume_number_entry\">" nfail "</td>"
+    print "<td class=\"resume_header_entry\">Not implemented functions</td>"
+    print "<td class=\"resume_number_entry\">" nfail "</td>"
     print "</tr>"
     # Tested functions
     print "<tr>"
-    print "<td class=\"cyclo_resume_header_entry\">Tested functions</td>"
-    print "<td class=\"cyclo_resume_number_entry\">" ntested "</td>"
+    print "<td class=\"resume_header_entry\">Tested functions</td>"
+    print "<td class=\"resume_number_entry\">" ntested "</td>"
     print "</tr>"
     # Untested functions
     print "<tr>"
-    print "<td class=\"cyclo_resume_header_entry\">Untested functions</td>"
-    print "<td class=\"cyclo_resume_number_entry\">" nuntested "</td>"
+    print "<td class=\"resume_header_entry\">Untested functions</td>"
+    print "<td class=\"resume_number_entry\">" nuntested "</td>"
     print "</tr>"
     print "</table>"
 }
@@ -81,14 +118,14 @@ function wiki_function_data ()
 {
     print "<h2>Details for all functions</h2>"
 
-    print "<table width=\"90%\" class=\"cyclo_function_table\" cellpadding=\"0\" cellspacing=\"0\">"
+    print "<table width=\"90%\" class=\"function_table\" cellpadding=\"0\" cellspacing=\"0\">"
 
     # Table header
     print "<tr class=\"function_table_header\">"
-    print "<td class=\"cyclo_function_table_header_entry\">Function Name</td>"
-    print "<td class=\"cyclo_function_table_header_entry\">Documented</td>"
-    print "<td class=\"cyclo_function_table_header_entry\">Implemented</td>"
-    print "<td class=\"cyclo_function_table_header_entry\">Unit tests</td>"
+    print "<td class=\"function_table_header_entry\">Function Name</td>"
+    print "<td class=\"function_table_header_entry\">Documented</td>"
+    print "<td class=\"function_table_header_entry\">Implemented</td>"
+    print "<td class=\"function_table_header_entry\">Unit tests</td>"
     print "</tr>"
 
     # Table data
@@ -98,18 +135,18 @@ function wiki_function_data ()
     {
         if (fstatus[nfnc] == "failed")
         {
-            print "<tr class=\"cyclo_function_entry_high\">"
+            print "<tr class=\"function_entry_high\">"
 
             # Function name
-            print "<td class=\"cyclo_function_entry_name\">" fnames[nfnc] "</td>"
+            print "<td class=\"function_entry_name\">" fnames[nfnc] "</td>"
             # Documented
-            print "<td class=\"cyclo_function_entry_name\">yes</td>"
+            print "<td class=\"function_entry_name\">yes</td>"
             # Implemented
-            print "<td class=\"cyclo_function_entry_name\">"     \
+            print "<td class=\"function_entry_name\">"     \
                 ((fstatus[nfnc] == "ok") ? "yes" : "no")         \
                 "</td>"
             # Unit tests
-            print "<td class=\"cyclo_function_entry_number\">0</td>"
+            print "<td class=\"function_entry_number\">0</td>"
 
             print "</tr>"
         }
@@ -120,16 +157,16 @@ function wiki_function_data ()
     {
         if ((fstatus[nfnc] == "ok") && (fntests[nfnc] < 1))
         {
-            print "<tr class=\"cyclo_function_entry_moderate\">"
+            print "<tr class=\"function_entry_moderate\">"
 
             # Function name
-            print "<td class=\"cyclo_function_entry_name\">" fnames[nfnc] "</td>"
+            print "<td class=\"function_entry_name\">" fnames[nfnc] "</td>"
             # Documented
-            print "<td class=\"cyclo_function_entry_name\">yes</td>"
+            print "<td class=\"function_entry_name\">yes</td>"
             # Implemented
-            print "<td class=\"cyclo_function_entry_name\">yes</td>"
+            print "<td class=\"function_entry_name\">yes</td>"
             # Unit tests
-            print "<td class=\"cyclo_function_entry_number\">" fntests[nfnc] "</td>"
+            print "<td class=\"function_entry_number\">" fntests[nfnc] "</td>"
 
             print "</tr>"
         }
@@ -140,16 +177,16 @@ function wiki_function_data ()
     {
         if ((fstatus[nfnc] == "ok") && (fntests[nfnc] > 0))
         {
-            print "<tr class=\"cyclo_function_entry_simple\">"
+            print "<tr class=\"function_entry_simple\">"
 
             # Function name
-            print "<td class=\"cyclo_function_entry_name\">" fnames[nfnc] "</td>"
+            print "<td class=\"function_entry_name\">" fnames[nfnc] "</td>"
             # Documented
-            print "<td class=\"cyclo_function_entry_name\">yes</td>"
+            print "<td class=\"function_entry_name\">yes</td>"
             # Implemented
-            print "<td class=\"cyclo_function_entry_name\">yes</td>"
+            print "<td class=\"function_entry_name\">yes</td>"
             # Unit tests
-            print "<td class=\"cyclo_function_entry_number\">" fntests[nfnc] "</td>"
+            print "<td class=\"function_entry_number\">" fntests[nfnc] "</td>"
 
             print "</tr>"
         }
@@ -190,8 +227,10 @@ function wiki_function_data ()
 
 # Epilogue
 END {
+    html_header()
+
     # Print prolog
-    print wiki_prolog
+    print html_prolog
 
     # Print global stats
     wiki_global_stats()

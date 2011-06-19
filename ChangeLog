@@ -1,5 +1,13 @@
 2011-06-19  Jose E. Marchesi  <jemarch@gnu.org>
 
+	prmgt: embed css file in the generated html reports.
+	* prmgt/Makefile.am (cyclo.html): Include build-aux/pmccabe.css
+	verbatim.
+	(apic.html): Likewise.
+	(ut.html): Likewise.
+
+2011-06-19  Jose E. Marchesi  <jemarch@gnu.org>
+
 	prmgt: stop building mediawiki reports.  Build html reports
 	instead.
 	* configure.ac: Generate apic2html and testlog2html.
