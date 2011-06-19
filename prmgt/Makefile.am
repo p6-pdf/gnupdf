@@ -18,7 +18,7 @@
 
 if PRMGT
 
-TARGETS = cyclo.html cyclo.wiki apic.wiki ut.wiki
+TARGETS = cyclo.html apic.html ut.html
 
 cyclo.html:
 	chmod +x ${top_srcdir}/build-aux/pmccabe2html
@@ -30,22 +30,26 @@ cyclo.html:
                          -v url="http://www.gnupdf.org" \
                   > cyclo.html
 
-cyclo.wiki:
-	chmod +x ${top_srcdir}/build-aux/pmccabe2html
-	$(PMCCABE) ${top_srcdir}/src/base/*.[ch] \
-                | sort -nr \
-                | $(AWK) -f ${top_srcdir}/build-aux/pmccabe2html \
-                         -v lang=wiki -v name="GNU PDF" \
-                  > cyclo.wiki
-
-apic.wiki:
-	chmod +x ${builddir}/apic2wiki
+apic.html:
+	chmod +x ${builddir}/apic2html
 	chmod +x ${builddir}/check-api-doc-consistency.pl
-	${builddir}/check-api-doc-consistency.pl -p -t | ${builddir}/apic2wiki > apic.wiki
+	${builddir}/check-api-doc-consistency.pl -p -t | \
+          $(AWK) -f ${builddir}/apic2html                \
+                 -v name="GNU PDF"                       \
+                 -v css="pmccabe.css"                    \
+                 -v url="http://www.gnupdf.org"          \
+          > apic.html
 
-ut.wiki:
-	chmod +x ${builddir}/testlog2wiki
-	if test -f ${top_srcdir}/torture/unit/ut.log ; then cat ${top_srcdir}/torture/unit/ut.log | ${builddir}/testlog2wiki > ut.wiki; fi
+ut.html:
+	chmod +x ${builddir}/testlog2html
+	if test -f ${top_srcdir}/torture/unit/ut.log ; then \
+          cat ${top_srcdir}/torture/unit/ut.log |           \
+            $(AWK) -f ${builddir}/testlog2html              \
+                   -v name="GNU PDF"                        \
+                   -v css="pmccabe.css"                     \
+                   -v url="http://www.gnupdf.org"           \
+            > ut.html;                                      \
+        fi
 
 all-local: ${TARGETS}
 

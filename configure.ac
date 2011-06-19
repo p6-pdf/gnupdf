@@ -347,8 +347,8 @@ AC_CONFIG_FILES([Makefile
                  torture/unit/Makefile
                  utils/Makefile
                  prmgt/Makefile
-                 prmgt/apic2wiki
-                 prmgt/testlog2wiki
+                 prmgt/apic2html
+                 prmgt/testlog2html
                  prmgt/docfuncs
                  prmgt/tsdfuncs
                  prmgt/check-api-doc-consistency.pl

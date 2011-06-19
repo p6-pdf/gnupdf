@@ -1,3 +1,20 @@
+2011-06-19  Jose E. Marchesi  <jemarch@gnu.org>
+
+	prmgt: stop building mediawiki reports.  Build html reports
+	instead.
+	* configure.ac: Generate apic2html and testlog2html.
+
+	* prmgt/apic2html.in: Renamed from prmgt/apic2html.in.
+	Copyright years updated.
+	Reworked to generate html instead of mediawiki markup.
+
+	* prmgt/testlog2html.in: Renamed from prmgt/testlog2wiki.in.
+	Copyright years updated.
+	Reworked to generate html instead of mediawiki markup.
+
+	* prmgt/Makefile.am: cyclo.wiki rule removed.
+	(ut.html): New rule.
+
 2011-06-18  Jose E. Marchesi  <jemarch@gnu.org>
 
 	utils: make pdf-filereader to use the common facilities in
