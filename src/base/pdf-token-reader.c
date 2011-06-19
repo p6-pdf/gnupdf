@@ -37,21 +37,21 @@ static INLINE pdf_status_t store_char (pdf_token_reader_t reader,
 static INLINE pdf_status_t store_char_grow (pdf_token_reader_t reader,
                                             pdf_char_t ch);
 static pdf_status_t exit_state (pdf_token_reader_t reader, pdf_u32_t flags,
-                                pdf_token_t *token);
+                                pdf_token_t **token);
 static INLINE pdf_status_t enter_state (pdf_token_reader_t reader,
                                         enum pdf_token_reader_state_e state);
 static pdf_status_t flush_token (pdf_token_reader_t reader, pdf_u32_t flags,
-                                 pdf_token_t *token);
+                                 pdf_token_t **token);
 static pdf_status_t handle_char (pdf_token_reader_t reader, pdf_u32_t flags,
-                                 pdf_char_t ch, pdf_token_t *token);
+                                 pdf_char_t ch, pdf_token_t **token);
 static INLINE pdf_status_t handle_string_char (pdf_token_reader_t reader,
                                                pdf_u32_t flags,
                                                pdf_char_t ch,
-                                               pdf_token_t *token);
+                                               pdf_token_t **token);
 static INLINE pdf_status_t handle_hexstring_char (pdf_token_reader_t reader,
                                                   pdf_u32_t flags,
                                                   pdf_char_t ch,
-                                                  pdf_token_t *token);
+                                                  pdf_token_t **token);
 static int recognise_number (pdf_buffer_t *buffer, int *int_value);
 static INLINE int parse_integer (pdf_buffer_t *buffer, int *int_value,
                                  int *int_state);
@@ -179,7 +179,7 @@ hexval (pdf_char_t ch)
  */
 static pdf_status_t
 handle_char (pdf_token_reader_t reader, pdf_u32_t flags,
-             pdf_char_t ch, pdf_token_t *token)
+             pdf_char_t ch, pdf_token_t **token)
 {
   pdf_status_t rv;
 
@@ -414,12 +414,13 @@ enter_state (pdf_token_reader_t reader,
 }
 
 static pdf_status_t
-flush_token (pdf_token_reader_t reader, pdf_u32_t flags, pdf_token_t *token)
+flush_token (pdf_token_reader_t reader, pdf_u32_t flags, pdf_token_t **token)
 {
   pdf_status_t rv;
-  pdf_token_t new_tok;
+  pdf_token_t *new_tok;
   pdf_char_t *data = (pdf_char_t *)reader->buffer->data;
   int datasize = reader->buffer->wp;
+  pdf_error_t *inner_error = NULL;
 
   switch (reader->state)
     {
@@ -433,7 +434,15 @@ flush_token (pdf_token_reader_t reader, pdf_u32_t flags, pdf_token_t *token)
       if ((reader->substate == 1) || !(flags & PDF_TOKEN_RET_COMMENTS))
         goto finish;  /* don't return a token */
 
-      rv = pdf_token_comment_new (data, datasize, &new_tok);
+      new_tok = pdf_token_comment_new (data, datasize, &inner_error);
+      if (!new_tok)
+        {
+          /* TODO: Propagate error */
+          rv = pdf_error_get_status (inner_error);
+          pdf_clear_error (&inner_error);
+        }
+      else
+        rv = PDF_OK;
       break;
 
     case PDF_TOKR_STATE_KEYWORD:
@@ -441,19 +450,49 @@ flush_token (pdf_token_reader_t reader, pdf_u32_t flags, pdf_token_t *token)
         int value;
         int ntyp = recognise_number (reader->buffer, &value);
         if (ntyp == 1)
-          rv = pdf_token_integer_new (value, &new_tok);
+          {
+            new_tok = pdf_token_integer_new (value, &inner_error);
+            if (!new_tok)
+              {
+                /* TODO: Propagate error */
+                rv = pdf_error_get_status (inner_error);
+                pdf_clear_error (&inner_error);
+              }
+            else
+              rv = PDF_OK;
+          }
         else if (ntyp == 2)
           {
             double realvalue;
+
             rv = parse_real (reader->buffer,
                              reader->decimal_point,
                              &realvalue);
             if (rv != PDF_OK)
               return rv;
-            rv = pdf_token_real_new ((float)realvalue, &new_tok);
+
+            new_tok = pdf_token_real_new ((float)realvalue, &inner_error);
+            if (!new_tok)
+              {
+                /* TODO: Propagate error */
+                rv = pdf_error_get_status (inner_error);
+                pdf_clear_error (&inner_error);
+              }
+            else
+              rv = PDF_OK;
           }
         else
-          rv = pdf_token_keyword_new (data, datasize, &new_tok);
+          {
+            new_tok = pdf_token_keyword_new (data, datasize, &inner_error);
+            if (!new_tok)
+              {
+                /* TODO: Propagate error */
+                rv = pdf_error_get_status (inner_error);
+                pdf_clear_error (&inner_error);
+              }
+            else
+              rv = PDF_OK;
+          }
       }
       break;
 
@@ -461,52 +500,95 @@ flush_token (pdf_token_reader_t reader, pdf_u32_t flags, pdf_token_t *token)
       if (reader->substate != 0)  /* reading an escape sequence */
         return PDF_EBADFILE;
 
-      rv = pdf_token_name_new (data, datasize, &new_tok);
+      new_tok = pdf_token_name_new (data, datasize, &inner_error);
+      if (!new_tok)
+        {
+          /* TODO: Propagate error */
+          rv = pdf_error_get_status (inner_error);
+          pdf_clear_error (&inner_error);
+        }
+      else
+        rv = PDF_OK;
       break;
 
     case PDF_TOKR_STATE_STRING:
       if (reader->intparam >= 0)  /* didn't see the closing ')' */
         return PDF_EBADFILE;
 
-      rv = pdf_token_string_new (data, datasize, &new_tok);
+      new_tok = pdf_token_string_new (data, datasize, &inner_error);
+      if (!new_tok)
+        {
+          /* TODO: Propagate error */
+          rv = pdf_error_get_status (inner_error);
+          pdf_clear_error (&inner_error);
+        }
+      else
+        rv = PDF_OK;
       break;
 
     case PDF_TOKR_STATE_HEXSTRING:
       if (reader->substate != 3)  /* didn't see the closing '>' */
         return PDF_EBADFILE;
 
-      rv = pdf_token_string_new (data, datasize, &new_tok);
+      new_tok = pdf_token_string_new (data, datasize, &inner_error);
+      if (!new_tok)
+        {
+          /* TODO: Propagate error */
+          rv = pdf_error_get_status (inner_error);
+          pdf_clear_error (&inner_error);
+        }
+      else
+        rv = PDF_OK;
       break;
 
     case PDF_TOKR_STATE_DICTEND:
       if (reader->substate != 1)  /* didn't see a second '>' */
         return PDF_EBADFILE;
 
-      rv = pdf_token_valueless_new (PDF_TOKEN_DICT_END, &new_tok);
+      new_tok = pdf_token_valueless_new (PDF_TOKEN_DICT_END, &inner_error);
+      if (!new_tok)
+        {
+          /* TODO: Propagate error */
+          rv = pdf_error_get_status (inner_error);
+          pdf_clear_error (&inner_error);
+        }
+      else
+        rv = PDF_OK;
       break;
 
     case PDF_TOKR_STATE_PENDING:
-      switch (reader->charparam)
-        {
-        case 60:  /* '<' */
-          rv = pdf_token_valueless_new (PDF_TOKEN_DICT_START, &new_tok);
-          break;
-        case 91:  /* '[' */
-          rv = pdf_token_valueless_new (PDF_TOKEN_ARRAY_START, &new_tok);
-          break;
-        case 93:  /* ']' */
-          rv = pdf_token_valueless_new (PDF_TOKEN_ARRAY_END, &new_tok);
-          break;
-        case 123: /* '{' */
-          rv = pdf_token_valueless_new (PDF_TOKEN_PROC_START, &new_tok);
-          break;
-        case 125: /* '}' */
-          rv = pdf_token_valueless_new (PDF_TOKEN_PROC_END, &new_tok);
-          break;
-        default:
-          assert (0);
-          return PDF_ERROR;
-        }
+      {
+        switch (reader->charparam)
+          {
+          case 60:  /* '<' */
+            new_tok = pdf_token_valueless_new (PDF_TOKEN_DICT_START, &inner_error);
+            break;
+          case 91:  /* '[' */
+            new_tok = pdf_token_valueless_new (PDF_TOKEN_ARRAY_START, &inner_error);
+            break;
+          case 93:  /* ']' */
+            new_tok = pdf_token_valueless_new (PDF_TOKEN_ARRAY_END, &inner_error);
+            break;
+          case 123: /* '{' */
+            new_tok = pdf_token_valueless_new (PDF_TOKEN_PROC_START, &inner_error);
+            break;
+          case 125: /* '}' */
+            new_tok = pdf_token_valueless_new (PDF_TOKEN_PROC_END, &inner_error);
+            break;
+          default:
+            assert (0);
+            return PDF_ERROR;
+          }
+
+        if (!new_tok)
+          {
+            /* TODO: Propagate error */
+            rv = pdf_error_get_status (inner_error);
+            pdf_clear_error (&inner_error);
+          }
+        else
+          rv = PDF_OK;
+      }
       break;
 
     default:
@@ -529,7 +611,7 @@ finish:
 
 
 static pdf_status_t
-exit_state (pdf_token_reader_t reader, pdf_u32_t flags, pdf_token_t *token)
+exit_state (pdf_token_reader_t reader, pdf_u32_t flags, pdf_token_t **token)
 {
   pdf_status_t rv = flush_token (reader, flags, token);
   if (rv == PDF_OK)
@@ -545,7 +627,7 @@ static INLINE pdf_status_t
 handle_string_char (pdf_token_reader_t reader,
                     pdf_u32_t flags,
                     pdf_char_t ch,
-                    pdf_token_t *token)
+                    pdf_token_t **token)
 {
   pdf_status_t rv;
 start:
@@ -659,7 +741,7 @@ static INLINE pdf_status_t
 handle_hexstring_char (pdf_token_reader_t reader,
                        pdf_u32_t flags,
                        pdf_char_t ch,
-                       pdf_token_t *token)
+                       pdf_token_t **token)
 {
   pdf_status_t rv;
 
@@ -710,11 +792,11 @@ handle_hexstring_char (pdf_token_reader_t reader,
 }
 
 pdf_status_t
-pdf_token_read (pdf_token_reader_t reader, pdf_u32_t flags, pdf_token_t *token)
+pdf_token_read (pdf_token_reader_t reader, pdf_u32_t flags, pdf_token_t **token)
 {
   pdf_status_t rv;
   pdf_uchar_t ch;
-  pdf_token_t new_token = NULL;
+  pdf_token_t *new_token = NULL;
   pdf_error_t *inner_error = NULL;
 
   if (!reader || !reader->stream || !token)

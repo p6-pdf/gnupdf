@@ -1,3 +1,23 @@
+2011-06-19  Aleksander Morgado  <aleksander@gnu.org>
+
+	token: reviewed API of the pdf token object.
+	* src/base/pdf-token.[h|c]
+
+	Port token reader and writer to use the new token object API.
+	* src/base/pdf-token-reader.[h|c]
+	* src/base/pdf-token-writer.[h|c]
+
+	Port the FP functions module to use the new token object API.
+	* src/base/pdf-fp-func.c
+
+	Port the tokeniser utility to use the new token object API.
+	* utils/pdf-tokeniser.c
+
+	Port the token reader and writer unit tests to use the new token
+	object API.
+	* torture/unit/base/token/pdf-token-read.c
+	* torture/unit/base/token/pdf-token-write.c
+
 2011-06-14  Aleksander Morgado  <aleksander@gnu.org>
 
 	fsys: reviewed API and implementation of the Filesystem module.

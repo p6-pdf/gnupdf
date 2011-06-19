@@ -331,7 +331,7 @@ encode_buffer_number (pdf_token_writer_t writer, int len)
 }
 
 static INLINE pdf_status_t
-write_integer_token (pdf_token_writer_t writer, pdf_token_t token)
+write_integer_token (pdf_token_writer_t writer, pdf_token_t *token)
 {
   pdf_status_t rv;
   switch (writer->stage)
@@ -357,7 +357,7 @@ write_integer_token (pdf_token_writer_t writer, pdf_token_t token)
 }
 
 static INLINE pdf_status_t
-write_real_token (pdf_token_writer_t writer, pdf_token_t token)
+write_real_token (pdf_token_writer_t writer, pdf_token_t *token)
 {
   pdf_status_t rv;
   switch (writer->stage)
@@ -561,7 +561,7 @@ write_string_char (pdf_token_writer_t writer, pdf_u32_t flags,
 
 static INLINE pdf_status_t
 write_string_token (pdf_token_writer_t writer, pdf_u32_t flags,
-                    pdf_token_t token)
+                    pdf_token_t *token)
 {
   pdf_status_t rv;
   const pdf_char_t *data = pdf_token_get_string_data (token);
@@ -684,7 +684,7 @@ should_escape_namechar (pdf_u32_t flags, pdf_char_t ch, pdf_bool_t *escape)
 
 static INLINE pdf_status_t
 write_name_token (pdf_token_writer_t writer, pdf_u32_t flags,
-                  pdf_token_t token)
+                  pdf_token_t *token)
 {
   pdf_status_t rv;
   pdf_size_t size = pdf_token_get_name_size (token);
@@ -750,7 +750,7 @@ write_name_token (pdf_token_writer_t writer, pdf_u32_t flags,
 }
 
 static INLINE pdf_status_t
-write_keyword_token (pdf_token_writer_t writer, pdf_token_t token)
+write_keyword_token (pdf_token_writer_t writer, pdf_token_t *token)
 {
   const pdf_char_t *data = pdf_token_get_keyword_data (token);
   pdf_size_t size = pdf_token_get_keyword_size (token);
@@ -777,7 +777,7 @@ write_keyword_token (pdf_token_writer_t writer, pdf_token_t token)
 }
 
 static INLINE pdf_status_t
-write_comment_token (pdf_token_writer_t writer, pdf_token_t token)
+write_comment_token (pdf_token_writer_t writer, pdf_token_t *token)
 {
   const pdf_char_t *data = pdf_token_get_comment_data (token);
   pdf_size_t size = pdf_token_get_comment_size (token);
@@ -842,7 +842,7 @@ write_valueless_token (pdf_token_writer_t writer,
 /***** Token dispatching *****/
 
 pdf_status_t
-pdf_token_write (pdf_token_writer_t writer, pdf_u32_t flags, pdf_token_t token)
+pdf_token_write (pdf_token_writer_t writer, pdf_u32_t flags, pdf_token_t *token)
 {
   pdf_status_t rv;
   switch (pdf_token_get_type (token))

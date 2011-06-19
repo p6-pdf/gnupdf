@@ -2031,7 +2031,7 @@ static pdf_i32_t get_token (pdf_token_reader_t reader,
                             double *literal,
                             pdf_size_t *token_begin)
 {
-  pdf_token_t token;
+  pdf_token_t *token;
   pdf_i32_t ret = OPC_bad;
   pdf_status_t token_ret;
 

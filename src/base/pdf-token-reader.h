@@ -43,7 +43,7 @@ pdf_status_t pdf_token_reader_destroy (pdf_token_reader_t reader);
 pdf_status_t pdf_token_reader_reset (pdf_token_reader_t reader);
 pdf_size_t pdf_token_reader_begin_pos (pdf_token_reader_t reader);
 pdf_status_t pdf_token_read (pdf_token_reader_t reader, pdf_u32_t flags,
-                             pdf_token_t *token);
+                             pdf_token_t **token);
 
 enum pdf_token_rw_flags_e {
   /* these flags are used for token_read and token_write */

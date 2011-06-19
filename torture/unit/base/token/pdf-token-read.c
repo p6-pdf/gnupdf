@@ -49,26 +49,44 @@
 
 #define INIT_TOKR(_tokr, _stm) do {                                 \
     fail_unless (pdf_token_reader_new ((_stm),(_tokr)) == PDF_OK);  \
-  } while(0)
+} while (0)
 
-#define _EXPECT_TOK(tokr, flags, tokexpr) do{             \
-    pdf_token_t _exp_tok;                                 \
-    fail_unless(PDF_OK == (tokexpr));                     \
-    fail_unless(get_token( (tokr), (flags), _exp_tok ));  \
-    pdf_token_destroy(_exp_tok);                          \
-  }while(0)
-#define EXPECT_VALUELESS(tokr,flags,val) _EXPECT_TOK((tokr),  \
-  (flags), pdf_token_valueless_new(val, &_exp_tok) )
-#define EXPECT_KEYWORD(tokr,flags,val) _EXPECT_TOK((tokr),    \
-  (flags), pdf_token_keyword_new(STR_AND_LEN(val), &_exp_tok) )
-#define EXPECT_NAME(tokr,flags,val) _EXPECT_TOK((tokr),       \
-  (flags), pdf_token_name_new(STR_AND_LEN(val), &_exp_tok) )
-#define EXPECT_INTEGER(tokr,flags,val) _EXPECT_TOK((tokr),    \
-  (flags), pdf_token_integer_new(val, &_exp_tok) )
-#define EXPECT_REAL(tokr,flags,val) _EXPECT_TOK((tokr),       \
-  (flags), pdf_token_real_new(val, &_exp_tok) )
-#define EXPECT_STRING(tokr,flags,val) _EXPECT_TOK((tokr),     \
-  (flags), pdf_token_string_new(STR_AND_LEN(val), &_exp_tok) )
+#define _EXPECT_TOK(tokr, flags, exp_tok) do {             \
+    pdf_token_t *_exp_tok = exp_tok;                       \
+    fail_unless ((exp_tok) != NULL);                       \
+    fail_unless (get_token ((tokr), (flags), (exp_tok)));  \
+    pdf_token_destroy(_exp_tok);                           \
+} while (0)
+
+#define EXPECT_VALUELESS(tokr, flags, val)                  \
+    _EXPECT_TOK ((tokr),                                    \
+                 (flags),                                   \
+                 pdf_token_valueless_new (val, NULL))
+
+#define EXPECT_KEYWORD(tokr, flags, val)                            \
+    _EXPECT_TOK ((tokr),                                            \
+                 (flags),                                           \
+                 pdf_token_keyword_new (STR_AND_LEN (val), NULL))
+
+#define EXPECT_NAME(tokr, flags, val)                               \
+    _EXPECT_TOK ((tokr),                                            \
+                 (flags),                                           \
+                 pdf_token_name_new (STR_AND_LEN (val), NULL))
+
+#define EXPECT_INTEGER(tokr, flags, val)             \
+    _EXPECT_TOK ((tokr),                             \
+                 (flags),                            \
+                 pdf_token_integer_new (val, NULL))
+
+#define EXPECT_REAL(tokr, flags, val)            \
+    _EXPECT_TOK ((tokr),                         \
+                 (flags),                        \
+                 pdf_token_real_new (val, NULL))
+
+#define EXPECT_STRING(tokr, flags, val)                          \
+    _EXPECT_TOK ((tokr),                                         \
+                 (flags),                                        \
+                 pdf_token_string_new (STR_AND_LEN (val), NULL))
 
 static const pdf_char_t non_regular_chars[] = {
   /* whitespace chars */
@@ -77,20 +95,22 @@ static const pdf_char_t non_regular_chars[] = {
   '(', ')', '<', '>', '[', ']', '{', '}', '/', '%'
 };
 
-static void *nonnull(void *ptr)
+static void *nonnull (void *ptr)
 {
-  if (ptr) return ptr;
+  if (ptr)
+    return ptr;
 
-  fprintf(stderr, "error: got unexpected null pointer; aborting");
-  abort();
+  fprintf (stderr, "error: got unexpected null pointer; aborting");
+  fail ();
+  return NULL;
 }
 
 /* Read a token; return 1 if it's equal to 'expected', or 0 otherwise. */
 static int
-get_token(pdf_token_reader_t tokr, pdf_u32_t flags, pdf_token_t expected)
+get_token(pdf_token_reader_t tokr, pdf_u32_t flags, pdf_token_t *expected)
 {
   int ret = 0;
-  pdf_token_t token = NULL;
+  pdf_token_t *token = NULL;
   pdf_status_t rv = pdf_token_read(tokr, flags, &token);
 
   nonnull(expected);
@@ -103,7 +123,7 @@ get_token(pdf_token_reader_t tokr, pdf_u32_t flags, pdf_token_t expected)
 static int
 tokr_eof(pdf_token_reader_t tokr, pdf_i32_t flags)
 {
-  pdf_token_t token = NULL;
+  pdf_token_t *token = NULL;
   pdf_status_t rv = pdf_token_read(tokr, flags, &token);
   if (token) pdf_token_destroy(token);
   return (rv == PDF_EEOF);
@@ -199,7 +219,7 @@ fail_for_raw_char (pdf_char_t ch)
   pdf_stm_t         *stm;
   const pdf_char_t  *str = NULL;
   pdf_char_t         stream_buf[3];
-  pdf_token_t        token;
+  pdf_token_t        *token;
   pdf_token_reader_t tokr;
 
   stream_buf[0] = '/';
@@ -311,7 +331,7 @@ START_TEST (pdf_token_read_longstring)
   pdf_char_t *file;
   pdf_stm_t *stm;
   pdf_token_reader_t tokr;
-  pdf_token_t token = NULL;
+  pdf_token_t *token = NULL;
   pdf_status_t rv;
   pdf_size_t i, j;
   pdf_error_t *error = NULL;

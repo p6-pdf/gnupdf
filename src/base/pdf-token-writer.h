@@ -43,7 +43,7 @@ pdf_status_t pdf_token_writer_new (pdf_stm_t *stm, pdf_token_writer_t *writer);
 pdf_status_t pdf_token_writer_destroy (pdf_token_writer_t writer);
 pdf_status_t pdf_token_writer_reset (pdf_token_writer_t writer);
 pdf_status_t pdf_token_write (pdf_token_writer_t writer, pdf_u32_t flags,
-                              pdf_token_t token);
+                              pdf_token_t *token);
 
 /* END PUBLIC */
 

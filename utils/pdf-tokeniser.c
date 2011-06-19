@@ -120,7 +120,7 @@ fmtbin (const char *data, int size)
 }
 
 static void
-print_tok (pdf_token_t token)
+print_tok (pdf_token_t *token)
 {
   char tmpbuf[256];
   const char *typ;
@@ -208,7 +208,7 @@ print_file (FILE *file, pdf_bool_t use_tokw,
   pdf_status_t rv;
   pdf_token_reader_t reader = NULL;
   pdf_token_writer_t writer = NULL;
-  pdf_token_t token;
+  pdf_token_t *token;
   pdf_stm_t *stm_in = NULL;
   pdf_stm_t *stm_out = NULL;
   pdf_error_t *error = NULL;
