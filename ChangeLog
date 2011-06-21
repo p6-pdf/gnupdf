@@ -1,3 +1,9 @@
+2011-06-21  Aleksander Morgado  <aleksander@gnu.org>
+
+	utils: avoid false warning in clang report.
+	Reported by Gustavo Martin Domato.
+	* utils/pdf-filter.c (create_stream)
+
 2011-06-19  Jose E. Marchesi  <jemarch@gnu.org>
 
 	torture: uuid-tests branch merged and minor fixes.
