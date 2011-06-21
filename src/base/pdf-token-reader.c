@@ -25,11 +25,10 @@
 
 #include <config.h>
 
-#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
-#include <locale.h>
 
+#include <pdf-tokeniser.h>
 #include <pdf-token-reader.h>
 
 enum pdf_token_reader_state_e
@@ -89,7 +88,6 @@ enum pdf_token_reader_state_e
 /* Internal state */
 struct pdf_token_reader_s {
   pdf_stm_t *stream;  /* stream to read bytes from */
-  pdf_char_t *decimal_point;
 
   pdf_size_t state_pos;
   pdf_size_t beg_pos; /* Beginning position of the last read token in
@@ -111,45 +109,6 @@ struct pdf_token_reader_s {
    ((ch >= 'A' && ch <= 'F') ? ch - 'A' + 10 :  \
     ((ch >= 'a' && ch <= 'f') ? ch - 'a' + 10 : \
      255)))
-
-/* TODO: Make this part of the tokeniser module initialization */
-static pdf_char_t *
-guess_decimal_point (pdf_error_t **error)
-{
-  int len;
-  pdf_char_t decpt[16];
-  pdf_char_t *decimal_point;
-
-  len = snprintf (decpt, sizeof (decpt), "%#.0f", 1.0);
-  if (len <= 0 ||
-      (pdf_size_t)len >= sizeof (decpt))
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_TOKENISER,
-                     PDF_ERROR,
-                     "cannot guess decimal point: "
-                     "invalid length (%d)",
-                     len);
-      return NULL;
-    }
-
-  decimal_point = pdf_alloc (len);
-  if (!decimal_point)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_TOKENISER,
-                     PDF_ERROR,
-                     "cannot guess decimal point: "
-                     "couldn't allocate '%lu' bytes",
-                     len);
-      return NULL;
-    }
-
-  /* this copies the trailing '\0' due to the starting offset */
-  memcpy (decimal_point, &decpt[1], len);
-
-  return decimal_point;
-}
 
 static pdf_bool_t
 reset_buffer (pdf_token_reader_t  *reader,
@@ -183,15 +142,6 @@ pdf_token_reader_new (pdf_stm_t    *stm,
 
   tokr->beg_pos = 0;
   tokr->state_pos = 0;
-
-  /* determine the current locale's decimal point
-   * (avoid using localeconv since it may not be thread-safe) */
-  tokr->decimal_point = guess_decimal_point (error);
-  if (!tokr->decimal_point)
-    {
-      pdf_token_reader_destroy (tokr);
-      return NULL;
-    }
 
   /* buffer_size_min is the default buffer size, which is also the maximum
    * size for keywords, names, numbers, etc.; strings and comments will
@@ -240,8 +190,6 @@ pdf_token_reader_destroy (pdf_token_reader_t *reader)
 
   if (reader->buffer)
     pdf_buffer_destroy (reader->buffer);
-  if (reader->decimal_point)
-    pdf_dealloc (reader->decimal_point);
   pdf_dealloc (reader);
 }
 
@@ -567,7 +515,7 @@ flush_token (pdf_token_reader_t  *reader,
             double realvalue;
 
             if (!parse_real (reader->buffer,
-                             reader->decimal_point,
+                             pdf_tokeniser_get_decimal_point (),
                              &realvalue,
                              error))
               return PDF_FALSE;

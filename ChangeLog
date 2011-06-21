@@ -1,5 +1,15 @@
 2011-06-21  Aleksander Morgado  <aleksander@gnu.org>
 
+	token: new init and deinit methods for the tokeniser module.
+	* src/base/pdf-tokeniser.[h|c]: New files. Also implement the decimal
+	separator guessing.
+	* src/Makefile.am: Added new files in compilation.
+	* src/base/pdf-token-reader.c: Get decimal separator guessed at module
+	level.
+	* src/pdf-global.c: Init and deinit the tokeniser module.
+
+2011-06-21  Aleksander Morgado  <aleksander@gnu.org>
+
 	token: reviewed API of the pdf token reader.
 	* src/base/pdf-token-reader.[h|c]
 

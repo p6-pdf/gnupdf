@@ -50,7 +50,8 @@
 #include <pdf-types.h>
 
 /* BEGIN PUBLIC */
-/* pdf-token.h */
+
+/* --------------------- Token Object ------------------------- */
 
 enum pdf_token_type_e
 {
