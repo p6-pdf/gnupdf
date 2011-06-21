@@ -41,9 +41,9 @@ static pdf_real_t *
 read_type0_sample_table (pdf_char_t *buf, pdf_size_t buf_size,
                          pdf_u32_t bps, pdf_u32_t nsamples , pdf_u32_t n);
 
-static pdf_i32_t get_token (pdf_token_reader_t reader,
-                            double *literal,
-                            pdf_size_t *token_begin);
+static pdf_i32_t get_token (pdf_token_reader_t *reader,
+                            double             *literal,
+                            pdf_size_t         *token_begin);
 static inline void setmap (double map[2],
                            const pdf_real_t to[2],
                            const pdf_real_t from[2]);
@@ -410,7 +410,7 @@ pdf_fp_func_4_new (pdf_u32_t m,
 
   pdf_error_t *inner_error = NULL;
   pdf_stm_t *reader_stm;
-  pdf_token_reader_t reader;
+  pdf_token_reader_t *reader;
 
   /* Common data */
   f = pdf_alloc (sizeof(struct pdf_fp_func_s));
@@ -444,9 +444,11 @@ pdf_fp_func_4_new (pdf_u32_t m,
       goto fail;
     }
 
-  if (pdf_token_reader_new (reader_stm, &reader) != PDF_OK)
+  reader = pdf_token_reader_new (reader_stm, &inner_error);
+  if (!reader)
     {
-      /* FIXME: REFINE */
+      /* TODO: Propagate error */
+      pdf_error_destroy (inner_error);
       ret = PDF_ERROR;
       goto fail;
     }
@@ -2027,87 +2029,86 @@ in_word_set (register const char *str, register pdf_i32_t len)
   return 0;
 }
 
-static pdf_i32_t get_token (pdf_token_reader_t reader,
-                            double *literal,
-                            pdf_size_t *token_begin)
+static pdf_i32_t
+get_token (pdf_token_reader_t *reader,
+           double             *literal,
+           pdf_size_t         *token_begin)
 {
   pdf_token_t *token;
   pdf_i32_t ret = OPC_bad;
-  pdf_status_t token_ret;
+  pdf_error_t *inner_error = NULL;
 
   /* Invoke the tokeniser */
-  token_ret = pdf_token_read (reader,
-                              PDF_TOKEN_NO_NAME_ESCAPES,
-                              &token);
+  token = pdf_token_read (reader,
+                          PDF_TOKEN_NO_NAME_ESCAPES,
+                          &inner_error);
+
   *token_begin = pdf_token_reader_begin_pos (reader);
-  switch (token_ret)
+
+  if (token)
     {
-    case PDF_OK:
-      {
-        /* The token should be:
-         * - A real literal or
-         * - An identifier or
-         * - An open brace { (OPC_begin) or
-         * - A close brace } (OPC_end)
-         */
+      /* The token should be:
+       * - A real literal or
+       * - An identifier or
+       * - An open brace { (OPC_begin) or
+       * - A close brace } (OPC_end)
+       */
 
-        switch (pdf_token_get_type (token))
+      switch (pdf_token_get_type (token))
+        {
+        case PDF_TOKEN_INTEGER:
           {
-          case PDF_TOKEN_INTEGER:
-            {
-              *literal = pdf_token_get_integer_value (token);
-              ret = OPC_lit_i;
-              break;
-            }
-          case PDF_TOKEN_REAL:
-            {
-              *literal = pdf_token_get_real_value (token);
-              ret = OPC_lit_r;
-              break;
-            }
-          case PDF_TOKEN_KEYWORD:
-            {
-              struct toklut *tk;
-
-              tk = in_word_set (pdf_token_get_keyword_data (token),
-                                pdf_token_get_keyword_size (token));
-              ret = (tk) ? tk->ret : OPC_bad;
-              break;
-            }
-          case PDF_TOKEN_PROC_START:
-            {
-              ret = OPC_begin;
-              break;
-            }
-          case PDF_TOKEN_PROC_END:
-            {
-              ret = OPC_end;
-              break;
-            }
-          default:
-            {
-              /* Wrong token type */
-              ret = OPC_bad;
-              break;
-            }
+            *literal = pdf_token_get_integer_value (token);
+            ret = OPC_lit_i;
+            break;
           }
+        case PDF_TOKEN_REAL:
+          {
+            *literal = pdf_token_get_real_value (token);
+            ret = OPC_lit_r;
+            break;
+          }
+        case PDF_TOKEN_KEYWORD:
+          {
+            struct toklut *tk;
 
-        break;
-      }
-    case PDF_EEOF:
-      {
-        /* In EOF returns -1 */
-        return -1;
-      }
-    default:
-      {
-        /* Error */
-        ret = OPC_bad;
-      }
+            tk = in_word_set (pdf_token_get_keyword_data (token),
+                              pdf_token_get_keyword_size (token));
+            ret = (tk) ? tk->ret : OPC_bad;
+            break;
+          }
+        case PDF_TOKEN_PROC_START:
+          {
+            ret = OPC_begin;
+            break;
+          }
+        case PDF_TOKEN_PROC_END:
+          {
+            ret = OPC_end;
+            break;
+          }
+        default:
+          {
+            /* Wrong token type */
+            ret = OPC_bad;
+            break;
+          }
+        }
+
+      pdf_token_destroy (token);
+      return ret;
     }
 
-  pdf_token_destroy (token);
-  return ret;
+
+  if (inner_error)
+    {
+      /* TODO: Propagate error */
+      pdf_error_destroy (inner_error);
+      return OPC_bad;
+    }
+
+  /* In EOF, returns -1 */
+  return -1;
 }
 
 /* End of pdf-fp-func.c */

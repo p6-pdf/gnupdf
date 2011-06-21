@@ -1,3 +1,17 @@
+2011-06-21  Aleksander Morgado  <aleksander@gnu.org>
+
+	token: reviewed API of the pdf token reader.
+	* src/base/pdf-token-reader.[h|c]
+
+	Port the FP functions module to use the new token reader API.
+	* src/base/pdf-fp-func.c
+
+	Port the tokeniser utility to use the new token reader API.
+	* utils/pdf-tokeniser.c
+
+	Port the token reader unit tests to use the new token reader API.
+	* torture/unit/base/token/pdf-token-read.c
+
 2011-06-19  Aleksander Morgado  <aleksander@gnu.org>
 
 	token: reviewed API of the pdf token object.

@@ -123,47 +123,47 @@ static void
 print_tok (pdf_token_t *token)
 {
   char tmpbuf[256];
-  const char *typ;
+  const pdf_char_t *typ;
   char *str = NULL;
   int strsize = -1;
   pdf_size_t i;
 
-  switch(pdf_token_get_type(token))
+  switch(pdf_token_get_type (token))
     {
     case PDF_TOKEN_INTEGER:
       typ = "INTEGER";
-      snprintf(tmpbuf, sizeof(tmpbuf), "%d", pdf_token_get_integer_value(token));
+      snprintf (tmpbuf, sizeof (tmpbuf), "%d", pdf_token_get_integer_value (token));
       str = xstrdup (tmpbuf);
       break;
 
     case PDF_TOKEN_REAL:
       typ = "REAL";
-      snprintf(tmpbuf, sizeof(tmpbuf), "%f", pdf_token_get_real_value(token));
+      snprintf (tmpbuf, sizeof(tmpbuf), "%f", pdf_token_get_real_value (token));
       str = xstrdup (tmpbuf);
       break;
 
     case PDF_TOKEN_STRING:
       typ = "STRING";
-      str = xstrdup (pdf_token_get_string_data(token));
-      strsize = pdf_token_get_string_size(token);
+      str = xstrdup (pdf_token_get_string_data (token));
+      strsize = pdf_token_get_string_size (token);
       break;
 
     case PDF_TOKEN_NAME:
       typ = "NAME";
-      str = xstrdup (pdf_token_get_name_data(token));
-      strsize = pdf_token_get_name_size(token);
+      str = xstrdup (pdf_token_get_name_data (token));
+      strsize = pdf_token_get_name_size (token);
       break;
 
     case PDF_TOKEN_COMMENT:
       typ = "COMMENT";
-      str = xstrdup (pdf_token_get_comment_data(token));
-      strsize = pdf_token_get_comment_size(token);
+      str = xstrdup (pdf_token_get_comment_data (token));
+      strsize = pdf_token_get_comment_size (token);
       break;
 
     case PDF_TOKEN_KEYWORD:
       typ = "KEYWORD";
-      str = xstrdup (pdf_token_get_keyword_data(token));
-      strsize = pdf_token_get_keyword_size(token);
+      str = xstrdup (pdf_token_get_keyword_data (token));
+      strsize = pdf_token_get_keyword_size (token);
       break;
 
     case PDF_TOKEN_DICT_START:
@@ -187,7 +187,7 @@ print_tok (pdf_token_t *token)
 
     default:
       typ = "[unknown]";
-      sprintf(tmpbuf, "%d", pdf_token_get_type(token));
+      sprintf (tmpbuf, "%d", pdf_token_get_type (token));
       str = xstrdup (tmpbuf);
     }
 
@@ -196,9 +196,12 @@ print_tok (pdf_token_t *token)
       tmpbuf[0] = '\0';
       str = tmpbuf;
     }
-  if (str != tmpbuf) str = fmtbin(str, strsize);
-  printf("%s(%s)\n", typ, str);
-  free(str);
+
+  if (str != tmpbuf)
+    str = fmtbin (str, strsize);
+
+  printf ("%s(%s)\n", typ, str);
+  free (str);
 };
 
 void
@@ -206,7 +209,7 @@ print_file (FILE *file, pdf_bool_t use_tokw,
             pdf_u32_t reader_flags, pdf_u32_t writer_flags)
 {
   pdf_status_t rv;
-  pdf_token_reader_t reader = NULL;
+  pdf_token_reader_t *reader = NULL;
   pdf_token_writer_t writer = NULL;
   pdf_token_t *token;
   pdf_stm_t *stm_in = NULL;
@@ -221,15 +224,17 @@ print_file (FILE *file, pdf_bool_t use_tokw,
   if (!stm_in)
     {
       fprintf (stderr, "failed to create input stream: %s\n",
-               pdf_error_get_message (error));
+               error ? pdf_error_get_message (error) : "unknown error");
       pdf_error_destroy (error);
       goto out;
     }
 
-  rv = pdf_token_reader_new (stm_in, &reader);
-  if (rv != PDF_OK)
+  reader = pdf_token_reader_new (stm_in, &error);
+  if (!reader)
     {
-      fprintf(stderr, "failed to create reader\n");
+      fprintf (stderr, "failed to create reader: '%s'\n",
+               error ? pdf_error_get_message (error) : "unknown error");
+      pdf_error_destroy (error);
       goto out;
     }
 
@@ -250,12 +255,12 @@ print_file (FILE *file, pdf_bool_t use_tokw,
       rv = pdf_token_writer_new (stm_out, &writer);
       if (rv != PDF_OK)
         {
-          fprintf(stderr, "failed to create writer\n");
+          fprintf (stderr, "failed to create writer\n");
           goto out;
         }
     }
 
-  while (( rv = pdf_token_read(reader, reader_flags, &token) ) == PDF_OK)
+  while ((token = pdf_token_read (reader, reader_flags, &error)) != NULL)
     {
       if (use_tokw)
         {
@@ -269,21 +274,29 @@ print_file (FILE *file, pdf_bool_t use_tokw,
       else
         print_tok(token);
 
-      pdf_token_destroy(token);
+      pdf_token_destroy (token);
     }
 
-  if (rv != PDF_EEOF)
+  if (error)
     {
-      fprintf(stderr, "read_token error %d\n", rv);
+      fprintf (stderr,
+               "error reading token: '%s'\n",
+               error ? pdf_error_get_message (error) : "unknown error");
+      pdf_error_destroy (error);
       goto out;
     }
 
-  fprintf(stderr, "done\n");
+  fprintf (stderr, "done\n");
+
 out:
-  if (writer) pdf_token_writer_destroy(writer);
-  if (stm_out) pdf_stm_destroy(stm_out);
-  if (reader) pdf_token_reader_destroy(reader);
-  if (stm_in) pdf_stm_destroy(stm_in);
+  if (writer)
+    pdf_token_writer_destroy (writer);
+  if (stm_out)
+    pdf_stm_destroy (stm_out);
+  if (reader)
+    pdf_token_reader_destroy (reader);
+  if (stm_in)
+    pdf_stm_destroy (stm_in);
 }
 
 pdf_u32_t
