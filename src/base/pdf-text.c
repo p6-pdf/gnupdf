@@ -1748,9 +1748,9 @@ pdf_text_cmp_non_case_sensitive (const pdf_text_t  *text1,
                                  const pdf_text_t  *text2,
                                  pdf_error_t      **error)
 {
-  pdf_size_t size1;
-  pdf_size_t size2;
-  int n;
+  pdf_list_iterator_t it1;
+  pdf_list_iterator_t it2;
+  pdf_i32_t cmpret;
 
   /* Generate word boundaries list, if not already done */
   if ((!pdf_text_fill_word_boundaries_list (text1->word_boundaries,
@@ -1767,63 +1767,63 @@ pdf_text_cmp_non_case_sensitive (const pdf_text_t  *text1,
       return -1; /* An error happened computing word boundaries! */
     }
 
-  size1 = pdf_list_size (text1->word_boundaries);
-  size2 = pdf_list_size (text2->word_boundaries);
+  /* Perform a word-per-word lower case comparison */
+  pdf_list_iterator_init (&it1, text1->word_boundaries);
+  pdf_list_iterator_init (&it2, text2->word_boundaries);
 
-  /* First, compare number of words in each text */
-  if (size1 != size2)
+  while (PDF_TRUE)
     {
-      PDF_DEBUG_BASE ("Different sizes...");
-      return ((size1 > size2) ? 1 : -1);
-    }
+      const struct pdf_text_wb_s *p_word1 = NULL;
+      const struct pdf_text_wb_s *p_word2 = NULL;
 
-  /* Perform a word-per-word lower case comparison! */
-  n = 0;
-  while (n < size1)
-    {
-      struct pdf_text_wb_s *p_word1;
-      struct pdf_text_wb_s *p_word2;
-      pdf_i32_t ret_num;
-      pdf_error_t *inner_error = NULL;
+      pdf_list_iterator_next (&it1, (const void **)&p_word1, NULL);
+      pdf_list_iterator_next (&it2, (const void **)&p_word2, NULL);
 
-      /* TODO: pdf_list_get_at() is not optimal, we've got a list, not an array.
-       * Setup a list iterator here */
-
-      p_word1 = (struct pdf_text_wb_s *) pdf_list_get_at (text1->word_boundaries,
-                                                          n,
-                                                          &inner_error);
-      PDF_ASSERT (p_word1 != NULL);
-
-      p_word2 = (struct pdf_text_wb_s *) pdf_list_get_at (text2->word_boundaries,
-                                                          n,
-                                                          &inner_error);
-      PDF_ASSERT (p_word2 != NULL);
-
-      ret_num = pdf_text_compare_words (p_word1->word_start,
-                                        p_word1->word_size,
-                                        p_word2->word_start,
-                                        p_word2->word_size,
-                                        pdf_text_get_language(text1),
-                                        pdf_text_get_language(text2),
-                                        &inner_error);
-      if (inner_error)
+      if (p_word1)
         {
-          pdf_propagate_error (error, inner_error);
-          pdf_prefix_error (error,
-                            "cannot compare text non-case-sensitive: ");
-          return -1;
+          if (!p_word2)
+            {
+              cmpret = 1;
+              break;
+            }
+          else
+            {
+              pdf_error_t *inner_error = NULL;
+
+              /* We got 2 words to compare */
+              cmpret = pdf_text_compare_words (p_word1->word_start,
+                                               p_word1->word_size,
+                                               p_word2->word_start,
+                                               p_word2->word_size,
+                                               pdf_text_get_language (text1),
+                                               pdf_text_get_language (text2),
+                                               &inner_error);
+              if (inner_error)
+                {
+                  pdf_propagate_error (error, inner_error);
+                  pdf_prefix_error (error,
+                                    "cannot compare text non-case-sensitive: ");
+                  cmpret = -1;
+                  break;
+                }
+
+              /* If words are not equal, return the code */
+              if (cmpret != 0)
+                break;
+              /* else, continue looping... */
+            }
         }
-
-      /* If words are not equal, return the code */
-      if (ret_num != 0)
-        return ret_num;
-
-      /* Otherwise, keep on comparing */
-      ++n;
+      else
+        {
+          cmpret = p_word2 ? -1 : 0;
+          break;
+        }
     }
 
-  /* If arrived here, the strings are completely equal */
-  return 0;
+  pdf_list_iterator_deinit (&it1);
+  pdf_list_iterator_deinit (&it2);
+
+  return cmpret;
 }
 
 static pdf_i32_t

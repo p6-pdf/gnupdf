@@ -1,3 +1,10 @@
+2011-06-22  Aleksander Morgado  <aleksander@gnu.org>
+
+	text: iterate word lists with iterators
+	Also fixes some clang-reported warnings.
+	Reported by Gustavo Martin Domato.
+	* src/base/pdf-text.c (pdf_text_cmp_non_case_sensitive)
+
 2011-06-21  Aleksander Morgado  <aleksander@gnu.org>
 
 	utils: avoid false warning in clang report.
