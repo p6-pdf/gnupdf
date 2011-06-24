@@ -47,12 +47,6 @@ pdf_char_t *pdf_text_test_change_utf32_endianness (const pdf_char_t *str_in,
 pdf_char_t *pdf_text_test_change_utf16_endianness (const pdf_char_t *str_in,
                                                    pdf_size_t        size);
 
-/* Function quite similar to `pdf_text_get_hex', but using an array of bytes
- *  as input. */
-pdf_char_t *pdf_text_test_get_hex (const pdf_char_t *data,
-                                   const pdf_size_t  size,
-                                   const pdf_char_t  delimiter);
-
 /* Get BOM for a given unicode encoding */
 const pdf_char_t *pdf_text_test_get_bom (enum pdf_text_unicode_encoding_e  enc,
                                          int                              *bom_size);
@@ -76,11 +70,11 @@ const pdf_char_t *pdf_text_test_get_bom (enum pdf_text_unicode_encoding_e  enc,
       {                                                                 \
         pdf_char_t *actual_hex;                                         \
                                                                         \
-        actual_hex = pdf_text_test_get_hex (actual, actual_size, ':');  \
+        actual_hex = pdf_test_get_hex (actual, actual_size, ':');       \
         printf ("  Internal> '%s'\n", actual_hex);                      \
         pdf_dealloc (actual_hex);                                       \
       }                                                                 \
-    expected_hex = pdf_text_test_get_hex (expected, expected_size,':'); \
+    expected_hex = pdf_test_get_hex (expected, expected_size,':');      \
     printf ("  Expected> '%s'\n", expected_hex);                        \
     printf ("  Lang> '%s'\n", pdf_text_get_language (text));            \
     printf ("  Country> '%s'\n", pdf_text_get_country (text));          \

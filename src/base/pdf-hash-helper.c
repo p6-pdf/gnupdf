@@ -25,8 +25,9 @@
 
 #include <config.h>
 
-#include <pdf-hash-helper.h>
+#include <string.h>
 
+#include <pdf-hash-helper.h>
 
 /* Hash helpers to add/get texts */
 
@@ -68,7 +69,7 @@ pdf_hash_add_duplicated_text (pdf_hash_t        *table,
 }
 
 const pdf_text_t *
-pdf_hash_get_text (pdf_hash_t       *table,
+pdf_hash_get_text (const pdf_hash_t *table,
                    const pdf_char_t *key)
 {
   return (const pdf_text_t *) pdf_hash_get_value (table, key);
@@ -127,7 +128,7 @@ pdf_hash_add_static_time (pdf_hash_t        *table,
 }
 
 const pdf_time_t *
-pdf_hash_get_time (pdf_hash_t       *table,
+pdf_hash_get_time (const pdf_hash_t *table,
                    const pdf_char_t *key)
 {
   return (const pdf_time_t *) pdf_hash_get_value (table, key);
@@ -149,7 +150,7 @@ pdf_hash_add_list (pdf_hash_t        *table,
 }
 
 const pdf_list_t *
-pdf_hash_get_list (pdf_hash_t       *table,
+pdf_hash_get_list (const pdf_hash_t *table,
                    const pdf_char_t *key)
 {
   return (const pdf_list_t *) pdf_hash_get_value (table, key);
@@ -171,7 +172,7 @@ pdf_hash_add_hash (pdf_hash_t        *table,
 }
 
 const pdf_hash_t *
-pdf_hash_get_hash (pdf_hash_t       *table,
+pdf_hash_get_hash (const pdf_hash_t *table,
                    const pdf_char_t *key)
 {
   return (const pdf_hash_t *) pdf_hash_get_value (table, key);
@@ -179,33 +180,24 @@ pdf_hash_get_hash (pdf_hash_t       *table,
 
 /* Hash helpers to add/get stream */
 
-static void
-stm_dispose_fn (const pdf_stm_t elt)
-{
-  pdf_size_t flushed_bytes;
-
-  pdf_stm_flush (elt, PDF_TRUE, &flushed_bytes);
-  pdf_stm_destroy (elt);
-}
-
 pdf_bool_t
 pdf_hash_add_stm (pdf_hash_t        *table,
                   const pdf_char_t  *key,
-                  const pdf_stm_t    value,
+                  const pdf_stm_t   *value,
                   pdf_error_t      **error)
 {
   return pdf_hash_add (table,
                        key,
                        value,
-                       (pdf_hash_value_dispose_fn_t) stm_dispose_fn,
+                       (pdf_hash_value_dispose_fn_t) pdf_stm_destroy,
                        error);
 }
 
-const pdf_stm_t
-pdf_hash_get_stm (pdf_hash_t        *table,
+const pdf_stm_t *
+pdf_hash_get_stm (const pdf_hash_t *table,
                   const pdf_char_t  *key)
 {
-  return (const pdf_stm_t) pdf_hash_get_value (table, key);
+  return (const pdf_stm_t *) pdf_hash_get_value (table, key);
 }
 
 /* Hash helpers to add/get booleans */
@@ -224,7 +216,7 @@ pdf_hash_add_bool (pdf_hash_t        *table,
 }
 
 pdf_bool_t
-pdf_hash_get_bool (pdf_hash_t       *table,
+pdf_hash_get_bool (const pdf_hash_t *table,
                    const pdf_char_t *key)
 {
   return (pdf_bool_t) pdf_hash_get_value (table, key);
@@ -246,8 +238,8 @@ pdf_hash_add_size (pdf_hash_t        *table,
 }
 
 pdf_size_t
-pdf_hash_get_size (pdf_hash_t        *table,
-                   const pdf_char_t  *key)
+pdf_hash_get_size (const pdf_hash_t *table,
+                   const pdf_char_t *key)
 {
   return (pdf_size_t) pdf_hash_get_value (table, key);
 }
@@ -281,9 +273,9 @@ pdf_hash_add_duplicated_string (pdf_hash_t        *table,
   if (!dup)
     {
       pdf_set_error (error,
-		     PDF_EDOMAIN_BASE_HASH,
-		     PDF_ENOMEM,
-		     "not enough memory: couldn't duplicate string");
+                     PDF_EDOMAIN_BASE_HASH,
+                     PDF_ENOMEM,
+                     "not enough memory: couldn't duplicate string");
       return PDF_FALSE;
     }
   memcpy (dup, value, len);
@@ -309,7 +301,7 @@ pdf_hash_add_static_string (pdf_hash_t        *table,
 }
 
 const pdf_char_t *
-pdf_hash_get_string (pdf_hash_t       *table,
+pdf_hash_get_string (const pdf_hash_t *table,
                      const pdf_char_t *key)
 {
   return (pdf_char_t *) pdf_hash_get_value (table, key);

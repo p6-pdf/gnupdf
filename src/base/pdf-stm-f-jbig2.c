@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008, 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,29 +27,63 @@
 #include <config.h>
 
 #include <string.h>
+#include <stdint.h>
+
+#include <jbig2.h>
 
 #include <pdf-hash-helper.h>
 #include <pdf-stm-f-jbig2.h>
+#include <pdf-types.h>
+#include <pdf-types-buffer.h>
+#include <pdf-hash.h>
 
-static int jbig2dec_error_cb (void *data,
-                              const char *msg, Jbig2Severity severity,
-                              int32_t seg_idx);
+/* Define JBIG2 decoder */
+PDF_STM_FILTER_DEFINE (pdf_stm_f_jbig2dec_get,
+                       stm_f_jbig2dec_init,
+                       stm_f_jbig2dec_apply,
+                       stm_f_jbig2dec_deinit);
 
+#define JBIG2_PARAM_GLOBAL_STREAMS_BUFFER "GlobalStreamsBuffer"
+#define JBIG2_PARAM_GLOBAL_STREAMS_SIZE   "GlobalStreamsSize"
 
-pdf_status_t
-pdf_stm_f_jbig2dec_init (pdf_hash_t  *params,
-                         void       **state)
+/* Internal state */
+struct pdf_stm_f_jbig2dec_s
 {
-  pdf_stm_f_jbig2dec_t filter_state;
+  Jbig2Allocator *jbig2_allocator;
+  Jbig2Ctx *jbig2_context;
+  Jbig2GlobalCtx *jbig2_global_context;
+  Jbig2ErrorCallback jbig2_error_cb_fn;
+  Jbig2Image *jbig2_page;
+  pdf_size_t index;
+  pdf_bool_t error_p;
+  pdf_size_t data_size;
+};
+
+static int jbig2dec_error_cb (void          *data,
+                              const char    *msg,
+                              Jbig2Severity  severity,
+                              int32_t        seg_idx);
+
+static pdf_bool_t
+stm_f_jbig2dec_init (const pdf_hash_t  *params,
+                     void             **state,
+                     pdf_error_t      **error)
+{
+  struct pdf_stm_f_jbig2dec_s *filter_state;
   pdf_char_t *global_stream_buffer;
   pdf_size_t global_stream_size;
 
-
   /* Allocate the internal state structure */
   filter_state = pdf_alloc (sizeof (struct pdf_stm_f_jbig2dec_s));
-  if (filter_state == NULL)
+  if (!filter_state)
     {
-      return PDF_ERROR;
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_STM,
+                     PDF_ENOMEM,
+                     "cannot create LZW encoder internal state: "
+                     "couldn't allocate %lu bytes",
+                     (unsigned long)sizeof (struct pdf_stm_f_jbig2dec_s));
+      return PDF_FALSE;
     }
 
   /* Initialize fields */
@@ -60,12 +94,15 @@ pdf_stm_f_jbig2dec_init (pdf_hash_t  *params,
   filter_state->error_p = PDF_FALSE;
 
   /* Get the global stream contents, if any */
-  if ((pdf_hash_key_p (params, "GlobalStreamsBuffer") == PDF_TRUE) &&
-      (pdf_hash_key_p (params, "GlobalStreamsSize") == PDF_TRUE))
+  if (params &&
+      pdf_hash_key_p (params, JBIG2_PARAM_GLOBAL_STREAMS_BUFFER) == PDF_TRUE &&
+      pdf_hash_key_p (params, JBIG2_PARAM_GLOBAL_STREAMS_SIZE) == PDF_TRUE)
     {
       /* Get the parameters from the hash table */
-      global_stream_buffer = (pdf_char_t *) pdf_hash_get_string (params, "GlobalStreamsBuffer");
-      global_stream_size = pdf_hash_get_size (params, "GlobalStreamsSize");
+      global_stream_buffer = (pdf_char_t *) pdf_hash_get_string (params,
+                                                                 JBIG2_PARAM_GLOBAL_STREAMS_BUFFER);
+      global_stream_size = pdf_hash_get_size (params,
+                                              JBIG2_PARAM_GLOBAL_STREAMS_SIZE);
 
       /* Initialize the global context */
       filter_state->jbig2_context = jbig2_ctx_new (filter_state->jbig2_allocator,
@@ -74,6 +111,9 @@ pdf_stm_f_jbig2dec_init (pdf_hash_t  *params,
                                                    filter_state->jbig2_error_cb_fn,
                                                    (void *) filter_state);
 
+      /* Note. The data passed in this global stream buffer is consumed right
+       * away, there is no need to ensure that the global_stream_buffer is kept
+       * alive as long as the filter lives */
       jbig2_data_in (filter_state->jbig2_context,
                      (pdf_uchar_t *) global_stream_buffer,
                      global_stream_size);
@@ -93,24 +133,30 @@ pdf_stm_f_jbig2dec_init (pdf_hash_t  *params,
                                                (void *) filter_state);
 
   *state = (void *) filter_state;
-  return PDF_OK;
+  return PDF_TRUE;
 }
 
-pdf_status_t
-pdf_stm_f_jbig2dec_apply (pdf_hash_t   *params,
-                          void         *state,
-                          pdf_buffer_t *in,
-                          pdf_buffer_t *out,
-                          pdf_bool_t    finish_p)
+static void
+stm_f_jbig2dec_deinit (void *state)
 {
+  struct pdf_stm_f_jbig2dec_s *filter_state = state;
+
+  jbig2_ctx_free (filter_state->jbig2_context);
+  pdf_dealloc (filter_state);
+}
+
+static enum pdf_stm_filter_apply_status_e
+stm_f_jbig2dec_apply (void          *state,
+                      pdf_buffer_t  *in,
+                      pdf_buffer_t  *out,
+                      pdf_bool_t     finish,
+                      pdf_error_t  **error)
+{
+  struct pdf_stm_f_jbig2dec_s *filter_state = state;
   pdf_status_t ret;
-  pdf_stm_f_jbig2dec_t filter_state;
   pdf_size_t bytes_to_copy;
-  filter_state = (pdf_stm_f_jbig2dec_t) state;
 
-  ret = PDF_OK;
-
-  if (finish_p)
+  if (finish)
     {
       /* Get the page, if needed */
       if (filter_state->jbig2_page == NULL)
@@ -121,72 +167,60 @@ pdf_stm_f_jbig2dec_apply (pdf_hash_t   *params,
             jbig2_page_out (filter_state->jbig2_context);
         }
 
+      if (filter_state->jbig2_page == NULL)
+        return PDF_STM_FILTER_APPLY_STATUS_EOF;
+
       /* Write out the data in the jbig2 page, if any */
-      if (filter_state->jbig2_page != NULL)
+      bytes_to_copy = out->size - out->wp;
+      if ((filter_state->index + bytes_to_copy) >
+          (filter_state->jbig2_page->height *
+           filter_state->jbig2_page->stride))
         {
-          bytes_to_copy = out->size - out->wp;
-          if ((filter_state->index + bytes_to_copy)
-              > (filter_state->jbig2_page->height * filter_state->jbig2_page->stride))
-            {
-              bytes_to_copy = ((filter_state->jbig2_page->height * filter_state->jbig2_page->stride)
-                               - filter_state->index);
-            }
-
-          memcpy (out->data + out->wp,
-                  filter_state->jbig2_page->data + filter_state->index,
-                  bytes_to_copy);
-
-          out->wp += bytes_to_copy;
-          filter_state->index += bytes_to_copy;
-
-          /* Determine the output state */
-          if (filter_state->index ==
-              (filter_state->jbig2_page->height * filter_state->jbig2_page->stride))
-            {
-              jbig2_release_page(filter_state->jbig2_context,
-                                 filter_state->jbig2_page);
-              ret = PDF_EEOF;
-            }
-          else
-            {
-              ret = PDF_ENOUTPUT;
-            }
+          bytes_to_copy = ((filter_state->jbig2_page->height *
+                            filter_state->jbig2_page->stride)
+                           - filter_state->index);
         }
-      else
+
+      memcpy (out->data + out->wp,
+              filter_state->jbig2_page->data + filter_state->index,
+              bytes_to_copy);
+
+      out->wp += bytes_to_copy;
+      filter_state->index += bytes_to_copy;
+
+      /* Determine the output state */
+      if (filter_state->index ==
+          (filter_state->jbig2_page->height *
+           filter_state->jbig2_page->stride))
         {
-          ret = PDF_EEOF;
+          jbig2_release_page(filter_state->jbig2_context,
+                             filter_state->jbig2_page);
+          return PDF_STM_FILTER_APPLY_STATUS_EOF;
         }
+
+      return PDF_STM_FILTER_APPLY_STATUS_NO_OUTPUT;
     }
-  else
+
+  /* Write input into the decoder */
+  PDF_ASSERT (in->wp >= in->rp);
+  bytes_to_copy = (in->wp - in->rp);
+  jbig2_data_in (filter_state->jbig2_context,
+                 (pdf_uchar_t *) (in->data + in->rp),
+                 bytes_to_copy);
+
+  /* If any error, propagate it */
+  if (filter_state->error_p == PDF_TRUE)
     {
-      /* Write input into the decoder */
-      bytes_to_copy = (in->wp - in->rp);
-      jbig2_data_in (filter_state->jbig2_context,
-                     (pdf_uchar_t *) (in->data + in->rp),
-                     bytes_to_copy);
-      if (filter_state->error_p == PDF_TRUE)
-        {
-          return PDF_ERROR;
-        }
-
-      in->rp += bytes_to_copy;
-
-      ret = PDF_ENINPUT;
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_STM,
+                     PDF_ERROR,
+                     "jbig2dec error detected");
+      return PDF_STM_FILTER_APPLY_STATUS_ERROR;
     }
 
-  return ret;
-}
+  in->rp += bytes_to_copy;
 
-pdf_status_t
-pdf_stm_f_jbig2dec_dealloc_state (void *state)
-{
-  pdf_stm_f_jbig2dec_t filter_state;
-  filter_state = (pdf_stm_f_jbig2dec_t) state;
-
-  jbig2_ctx_free (filter_state->jbig2_context);
-  pdf_dealloc (filter_state);
-
-  return PDF_OK;
+  return PDF_STM_FILTER_APPLY_STATUS_NO_INPUT;
 }
 
 /*
@@ -194,19 +228,15 @@ pdf_stm_f_jbig2dec_dealloc_state (void *state)
  */
 
 static int
-jbig2dec_error_cb (void *data,
-                   const char *msg,
-                   Jbig2Severity severity,
-                   int32_t seg_idx)
+jbig2dec_error_cb (void          *data,
+                   const char    *msg,
+                   Jbig2Severity  severity,
+                   int32_t        seg_idx)
 {
-  pdf_stm_f_jbig2dec_t filter_state;
-
-  filter_state = (pdf_stm_f_jbig2dec_t) data;
+  struct pdf_stm_f_jbig2dec_s *filter_state = data;
 
   if (severity == JBIG2_SEVERITY_FATAL)
-    {
-      filter_state->error_p = PDF_TRUE;
-    }
+    filter_state->error_p = PDF_TRUE;
 
   return 0;
 }

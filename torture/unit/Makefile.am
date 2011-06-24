@@ -59,17 +59,24 @@ TEST_SUITE_ERROR = base/error/pdf-error.c \
                    base/error/pdf-prefix-error.c
 
 # Unit tests for the Stream Module test suite
-TEST_SUITE_STM = base/stm/pdf-stm-mem-new.c \
+TEST_SUITE_STM = base/stm/pdf-stm-test-common.h \
+                 base/stm/pdf-stm-test-common.c \
+                 base/stm/pdf-stm-mem-new.c \
                  base/stm/pdf-stm-file-new.c \
-                 base/stm/pdf-stm-read.c \
                  base/stm/pdf-stm-read-char.c \
                  base/stm/pdf-stm-peek-char.c \
-                 base/stm/pdf-stm-bseek.c \
-                 base/stm/pdf-stm-btell.c \
                  base/stm/pdf-stm-tell.c \
-                 base/stm/pdf-stm-write.c \
+                 base/stm/pdf-stm-btell.c \
+                 base/stm/pdf-stm-bseek.c \
+                 base/stm/pdf-stm-get-mode.c \
                  base/stm/pdf-stm-flush.c \
-                 base/stm/pdf-stm-get-mode.c
+                 base/stm/pdf-stm-rw-filter-null.c \
+                 base/stm/pdf-stm-rw-filter-rl.c \
+                 base/stm/pdf-stm-rw-filter-ahex.c \
+                 base/stm/pdf-stm-rw-filter-a85.c \
+                 base/stm/pdf-stm-rw-filter-flate.c \
+                 base/stm/pdf-stm-rw-filter-v2.c \
+                 base/stm/pdf-stm-rw-filter-aesv2.c
 
 TEST_SUITE_HASH = base/hash/pdf-hash-new.c \
                   base/hash/pdf-hash-add.c \
@@ -202,11 +209,12 @@ TEST_SUITE_ALLOC = base/alloc/pdf-alloc.c \
 TEST_SUITE_FP = base/fp/pdf-fp-func-eval.c \
                 base/fp/pdf-fp-func-4-new.c
 
-TEST_SUITE_FSYS = base/fsys/pdf-fsys-get-free-space.c \
-                  base/fsys/pdf-fsys-file-open.c \
-                  base/fsys/pdf-fsys-file-open-tmp.c \
-                  base/fsys/pdf-fsys-file-close.c \
-                  base/fsys/pdf-fsys-build-path.c
+TEST_SUITE_FSYS = base/fsys/pdf-fsys-disk-get-free-space.c \
+                  base/fsys/pdf-fsys-disk-file-open.c \
+                  base/fsys/pdf-fsys-disk-file-open-tmp.c \
+                  base/fsys/pdf-fsys-disk-build-path.c \
+                  base/fsys/pdf-fsys-disk-get-parent.c \
+                  base/fsys/pdf-fsys-disk-get-basename.c
 
 
 TEST_SUITE_TOKEN = base/token/pdf-token-read.c \

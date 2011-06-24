@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008, 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,56 +32,56 @@
 #include <pdf-types-buffer.h>
 #include <pdf-hash.h>
 #include <pdf-stm-be.h>
-#include <pdf-stm-f-null.h>
-#include <pdf-stm-f-ahex.h>
-#include <pdf-stm-f-rl.h>
-#include <pdf-stm-f-v2.h>
-#include <pdf-stm-f-aesv2.h>
-#include <pdf-stm-f-md5.h>
-#include <pdf-stm-f-lzw.h>
-#include <pdf-stm-f-a85.h>
-
-#if defined PDF_HAVE_LIBZ
-#  include <pdf-stm-f-flate.h>
-#endif /* PDF_HAVE_LIBZ */
-
-#if defined PDF_HAVE_LIBJBIG2DEC
-#  include <pdf-stm-f-jbig2.h>
-#endif /* PDF_HAVE_LIBJBIG2DEC */
-
-#if defined PDF_HAVE_LIBJPEG
-#  include <pdf-stm-f-dct.h>
-#endif
 
 /* BEGIN PUBLIC */
 
-/* Types of filters */
+/* --------------------- Stream Filters ------------------------- */
+
+/* Types of filters.
+ *
+ * Note that some filters are only available if some external libraries are
+ * present. Do NOT #ifdef the enumerations of those optional filters, as then
+ * API will change depending on the compilation options.
+*/
 enum pdf_stm_filter_type_e
 {
+  PDF_STM_FILTER_UNKNOWN = -1,
   PDF_STM_FILTER_NULL = 0,
-  PDF_STM_FILTER_RL_ENC,
-  PDF_STM_FILTER_RL_DEC,
-#if defined PDF_HAVE_LIBZ
-  PDF_STM_FILTER_FLATE_ENC,
-  PDF_STM_FILTER_FLATE_DEC,
-#endif /* PDF_HAVE_LIBZ */
-#if defined PDF_HAVE_LIBJBIG2DEC
-  PDF_STM_FILTER_JBIG2_DEC,
-#endif /* PDF_HAVE_LIBJBIG2DEC */
-#if defined PDF_HAVE_LIBJPEG
-  PDF_STM_FILTER_DCT_DEC,
-#endif /* PDF_HAVE_LIBJPEG */
+
+  /* Standard filters */
   PDF_STM_FILTER_AHEX_ENC,
   PDF_STM_FILTER_AHEX_DEC,
+  PDF_STM_FILTER_A85_ENC,
+  PDF_STM_FILTER_A85_DEC,
+  PDF_STM_FILTER_LZW_ENC,
+  PDF_STM_FILTER_LZW_DEC,
+  PDF_STM_FILTER_FLATE_ENC, /* Only if libz available */
+  PDF_STM_FILTER_FLATE_DEC, /* Only if libz available */
+  PDF_STM_FILTER_RL_ENC,
+  PDF_STM_FILTER_RL_DEC,
+  PDF_STM_FILTER_CCITTFAX_ENC, /* TODO */
+  PDF_STM_FILTER_CCITTFAX_DEC, /* TODO */
+  PDF_STM_FILTER_JBIG2_ENC, /* TODO, see FS#100 */
+  PDF_STM_FILTER_JBIG2_DEC, /* Only if libjbig2dec available */
+  PDF_STM_FILTER_DCT_ENC,   /* TODO, see FS#73 */
+  PDF_STM_FILTER_DCT_DEC,   /* Only if libjpeg available */
+  PDF_STM_FILTER_JPX_ENC,
+  PDF_STM_FILTER_JPX_DEC,
+
+  /* Predictors */
+  PDF_STM_FILTER_PRED_ENC, /* TODO, see FS#48 */
+  PDF_STM_FILTER_PRED_DEC, /* TODO, see FS#48 */
+
+  /* Crypt filters */
   PDF_STM_FILTER_AESV2_ENC,
   PDF_STM_FILTER_AESV2_DEC,
   PDF_STM_FILTER_V2_ENC,
   PDF_STM_FILTER_V2_DEC,
+
+  /* Hash filters */
   PDF_STM_FILTER_MD5_ENC,
-  PDF_STM_FILTER_LZW_DEC,
-  PDF_STM_FILTER_LZW_ENC,
-  PDF_STM_FILTER_A85_DEC,
-  PDF_STM_FILTER_A85_ENC
+
+  PDF_STM_FILTER_LAST
 };
 
 /* END PUBLIC */
@@ -92,72 +92,108 @@ enum pdf_stm_filter_mode_e
   PDF_STM_FILTER_MODE_WRITE
 };
 
-typedef struct pdf_stm_filter_s *pdf_stm_filter_t;
+enum pdf_stm_filter_apply_status_e
+{
+  PDF_STM_FILTER_APPLY_STATUS_OK = 0,   /* No error, internal use only! */
+  PDF_STM_FILTER_APPLY_STATUS_ERROR,    /* An error happened */
+  PDF_STM_FILTER_APPLY_STATUS_EOF,      /* Nothing else to do */
+  PDF_STM_FILTER_APPLY_STATUS_NO_INPUT, /* More input data wanted */
+  PDF_STM_FILTER_APPLY_STATUS_NO_OUTPUT /* More output space wanted */
+};
 
 /* Filter implementation */
-struct pdf_stm_filter_impl_s
-{
-  pdf_status_t (*init_fn) (pdf_hash_t  *params,
-                           void       **state);
+typedef struct {
+  /* Initialize filter. */
+  pdf_bool_t (* init_fn) (const pdf_hash_t  *params,
+                          void             **state,
+                          pdf_error_t      **error);
 
-  pdf_status_t (*apply_fn) (pdf_hash_t   *params,
-                            void         *state,
-                            pdf_buffer_t *in,
-                            pdf_buffer_t *out,
-                            pdf_bool_t    finish_p);
-  pdf_status_t (*dealloc_state_fn) (void *state);
-};
+  /* Apply filter. */
+  enum pdf_stm_filter_apply_status_e (* apply_fn) (void          *state,
+                                                   pdf_buffer_t  *in,
+                                                   pdf_buffer_t  *out,
+                                                   pdf_bool_t     finish,
+                                                   pdf_error_t  **error);
 
-/* Filter data type */
-struct pdf_stm_filter_s
-{
-  enum pdf_stm_filter_type_e type;
+  /* Deinitialize filter */
+  void (* deinit_fn) (void *state);
+} pdf_stm_filter_impl_t;
 
-  struct pdf_stm_filter_s *next; /* Next filter in the chain, or
-                                    NULL */
-  pdf_stm_be_t backend;          /* Backend, or NULL */
+typedef struct pdf_stm_filter_s pdf_stm_filter_t;
 
-  /* Input and output buffers */
-  pdf_buffer_t *in;
-  pdf_buffer_t *out;
+/* Helper macros to define filters */
+#define PDF_STM_FILTER_DEFINE(GET,INIT,APPLY,DEINIT)                    \
+  static pdf_bool_t INIT (const pdf_hash_t  *params,                    \
+                          void             **state,                     \
+                          pdf_error_t      **error);                    \
+  static void DEINIT (void *state);                                     \
+  static enum pdf_stm_filter_apply_status_e APPLY (void          *state, \
+                                                   pdf_buffer_t  *in,   \
+                                                   pdf_buffer_t  *out,  \
+                                                   pdf_bool_t     finish, \
+                                                   pdf_error_t  **error); \
+  static const pdf_stm_filter_impl_t GET##_impl = {                     \
+    .init_fn   = INIT,                                                  \
+    .apply_fn  = APPLY,                                                 \
+    .deinit_fn = DEINIT,                                                \
+  };                                                                    \
+                                                                        \
+  const pdf_stm_filter_impl_t * GET (void)                              \
+  {                                                                     \
+    return &GET##_impl;                                                 \
+  }
 
-  /* Filter-specific information */
-  pdf_hash_t *params;
-  void *state;
+#define PDF_STM_FILTER_DEFINE_STATELESS(GET,APPLY)                      \
+  static enum pdf_stm_filter_apply_status_e APPLY (void          *state, \
+                                                   pdf_buffer_t  *in,   \
+                                                   pdf_buffer_t  *out,  \
+                                                   pdf_bool_t     finish, \
+                                                   pdf_error_t  **error); \
+  static const pdf_stm_filter_impl_t GET##_impl = {                     \
+    .init_fn   = NULL,                                                  \
+    .apply_fn  = APPLY,                                                 \
+    .deinit_fn = NULL,                                                  \
+  };                                                                    \
+                                                                        \
+  const pdf_stm_filter_impl_t * GET (void)                              \
+  {                                                                     \
+    return &GET##_impl;                                                 \
+  }
 
-  /* Filter implementation */
-  struct pdf_stm_filter_impl_s impl;
 
-  /* Filter status */
-  pdf_status_t status;
-  pdf_bool_t really_finish_p;
+pdf_bool_t pdf_stm_filter_p (enum pdf_stm_filter_type_e type);
 
-  /* Operation mode */
-  enum pdf_stm_filter_mode_e mode;
-};
+pdf_stm_filter_t *pdf_stm_filter_new (enum pdf_stm_filter_type_e   type,
+                                      const pdf_hash_t            *params,
+                                      pdf_size_t                   buffer_size,
+                                      enum pdf_stm_filter_mode_e   mode,
+                                      pdf_error_t                **error);
 
-/*
- * Public API
- */
+void pdf_stm_filter_destroy (pdf_stm_filter_t *filter);
 
-pdf_status_t pdf_stm_filter_new (enum pdf_stm_filter_type_e  type,
-                                 pdf_hash_t                 *params,
-                                 pdf_size_t                  buffer_size,
-                                 enum pdf_stm_filter_mode_e  mode,
-                                 pdf_stm_filter_t           *filter);
-pdf_status_t pdf_stm_filter_destroy (pdf_stm_filter_t filter);
-inline pdf_status_t pdf_stm_filter_set_next (pdf_stm_filter_t filter,
-                                             pdf_stm_filter_t next_filter);
-inline pdf_status_t pdf_stm_filter_set_be (pdf_stm_filter_t filter,
-                                           pdf_stm_be_t     be);
-inline pdf_status_t pdf_stm_filter_set_out (pdf_stm_filter_t  filter,
-                                            pdf_buffer_t     *buffer);
-pdf_stm_filter_t pdf_stm_filter_get_tail (pdf_stm_filter_t filter);
-inline pdf_buffer_t *pdf_stm_filter_get_in (pdf_stm_filter_t filter);
+void pdf_stm_filter_set_next (pdf_stm_filter_t *filter,
+                              pdf_stm_filter_t *next_filter);
 
-pdf_status_t pdf_stm_filter_apply (pdf_stm_filter_t filter,
-                                   pdf_bool_t       finish_p);
-pdf_status_t pdf_stm_filter_reset (pdf_stm_filter_t filter);
+void pdf_stm_filter_set_be (pdf_stm_filter_t *filter,
+                            pdf_stm_be_t     *be);
+
+void pdf_stm_filter_set_out (pdf_stm_filter_t *filter,
+                             pdf_buffer_t     *buffer);
+
+pdf_buffer_t *pdf_stm_filter_get_in (pdf_stm_filter_t *filter);
+
+pdf_stm_filter_t *pdf_stm_filter_get_next (pdf_stm_filter_t *filter);
+
+pdf_stm_filter_t *pdf_stm_filter_get_tail (pdf_stm_filter_t *filter);
+
+pdf_bool_t pdf_stm_filter_apply (pdf_stm_filter_t  *filter,
+                                 pdf_bool_t         finish,
+                                 pdf_bool_t        *eof,
+                                 pdf_error_t      **error);
+
+pdf_bool_t pdf_stm_filter_reset (pdf_stm_filter_t  *filter,
+                                 const pdf_hash_t  *params,
+                                 pdf_error_t      **error);
 
 #endif /* ! PDF_STM_FILTER_H */
 

@@ -715,7 +715,9 @@ pdf_text_get_unicode (const pdf_text_t  *text,
     {
       ret = PDF_TRUE;
       out_data = NULL;
-      *length = 0;
+      /* Length is optional because you can ask for unicode output with NUL trailer */
+      if (length)
+	*length = 0;
     }
   else
     {

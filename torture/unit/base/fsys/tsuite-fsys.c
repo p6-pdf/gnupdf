@@ -27,24 +27,28 @@
 
 #include <check.h>
 #include <pdf-test-common.h>
-extern TCase *test_pdf_fsys_get_free_space (void);
-extern TCase *test_pdf_fsys_file_open (void);
-extern TCase *test_pdf_fsys_file_open_tmp (void);
-extern TCase *test_pdf_fsys_file_close (void);
-extern TCase *test_pdf_fsys_build_path (void);
+
+extern TCase *test_pdf_fsys_disk_get_free_space (void);
+extern TCase *test_pdf_fsys_disk_file_open (void);
+extern TCase *test_pdf_fsys_disk_file_open_tmp (void);
+extern TCase *test_pdf_fsys_disk_build_path (void);
+extern TCase *test_pdf_fsys_disk_get_parent (void);
+extern TCase *test_pdf_fsys_disk_get_basename (void);
 
 Suite *
 tsuite_fsys ()
 {
   Suite *s;
 
-  s = suite_create("fsys");
+  s = suite_create ("fsys");
 
-  suite_add_tcase (s, test_pdf_fsys_get_free_space ());
-  suite_add_tcase (s, test_pdf_fsys_file_open ());
-  suite_add_tcase (s, test_pdf_fsys_file_open_tmp ());
-  suite_add_tcase (s, test_pdf_fsys_file_close ());
-  suite_add_tcase (s, test_pdf_fsys_build_path ());
+  /* Disk filesystem tests */
+  suite_add_tcase (s, test_pdf_fsys_disk_get_free_space ());
+  suite_add_tcase (s, test_pdf_fsys_disk_file_open ());
+  suite_add_tcase (s, test_pdf_fsys_disk_file_open_tmp ());
+  suite_add_tcase (s, test_pdf_fsys_disk_build_path ());
+  suite_add_tcase (s, test_pdf_fsys_disk_get_parent ());
+  suite_add_tcase (s, test_pdf_fsys_disk_get_basename ());
 
   return s;
 }

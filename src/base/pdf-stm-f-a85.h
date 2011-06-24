@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,58 +28,12 @@
 #define PDF_STM_F_A85_H
 
 #include <config.h>
-#include <pdf-types.h>
-#include <pdf-types-buffer.h>
-#include <pdf-hash.h>
 
-/* If something goes wrong in writing out data, 5 bytes could be leftover */
-#define A85_SPARE_BYTES_LEN 5
-#define A85_OUTPUT_BUFF_LEN 8
+#include <pdf-stm-filter.h>
 
-/* defined as 79 so that the newline character completes the 80 char line */
-/* (of course that only happens when newline is a single character...)    */
-#define A85_ENC_LINE_LENGTH 79
+const pdf_stm_filter_impl_t *pdf_stm_f_a85enc_get (void);
 
-
-
-/* Internal state */
-struct pdf_stm_f_a85_s
-{
-  /* spare_bytes will store leftover bytes if finish_p is not set */
-  pdf_size_t line_length;
-  pdf_size_t spare_count; /* Number of input bytes in spare_bytes */
-  pdf_size_t output_count; /* Number of output bytes left in output_buff */
-  int        terminated;
-  pdf_char_t spare_bytes[A85_SPARE_BYTES_LEN];
-  pdf_char_t output_buff[A85_OUTPUT_BUFF_LEN];
-};
-
-typedef struct pdf_stm_f_a85_s *pdf_stm_f_a85_t;
-
-/* Filter implementation API */
-
-pdf_status_t pdf_stm_f_a85enc_init (pdf_hash_t  *params,
-                                    void       **state);
-
-pdf_status_t pdf_stm_f_a85enc_apply (pdf_hash_t   *params,
-                                     void         *state,
-                                     pdf_buffer_t *in,
-                                     pdf_buffer_t *out,
-                                     pdf_bool_t    finish_p);
-
-pdf_status_t pdf_stm_f_a85enc_dealloc_state (void *state);
-
-pdf_status_t pdf_stm_f_a85dec_init (pdf_hash_t  *params,
-                                    void       **state);
-
-pdf_status_t pdf_stm_f_a85dec_apply (pdf_hash_t   *params,
-                                     void         *state,
-                                     pdf_buffer_t *in,
-                                     pdf_buffer_t *out,
-                                     pdf_bool_t    finish_p);
-
-pdf_status_t pdf_stm_f_a85dec_dealloc_state (void *state);
-
+const pdf_stm_filter_impl_t *pdf_stm_f_a85dec_get (void);
 
 #endif /* !PDF_STM_F_A85_H */
 

@@ -209,17 +209,24 @@ print_file (FILE *file, pdf_bool_t use_tokw,
   pdf_token_reader_t reader = NULL;
   pdf_token_writer_t writer = NULL;
   pdf_token_t token;
-  pdf_stm_t stm_in = NULL;
-  pdf_stm_t stm_out = NULL;
+  pdf_stm_t *stm_in = NULL;
+  pdf_stm_t *stm_out = NULL;
+  pdf_error_t *error = NULL;
 
-  rv = pdf_stm_cfile_new (file, 0, 0 /*cache_size*/, PDF_STM_READ, &stm_in);
-  if (rv != PDF_OK)
+  stm_in = pdf_stm_cfile_new (file,
+                              0,
+                              0 /*cache_size*/,
+                              PDF_STM_READ,
+                              &error);
+  if (!stm_in)
     {
-      fprintf(stderr, "failed to create input stream\n");
+      fprintf (stderr, "failed to create input stream: %s\n",
+               pdf_error_get_message (error));
+      pdf_error_destroy (error);
       goto out;
     }
 
-  rv = pdf_token_reader_new(stm_in, &reader);
+  rv = pdf_token_reader_new (stm_in, &reader);
   if (rv != PDF_OK)
     {
       fprintf(stderr, "failed to create reader\n");
@@ -228,15 +235,19 @@ print_file (FILE *file, pdf_bool_t use_tokw,
 
   if (use_tokw)
     {
-      rv = pdf_stm_cfile_new (stdout, 0, 0 /*cache_size*/,
-                              PDF_STM_WRITE, &stm_out);
-      if (rv != PDF_OK)
+      stm_out = pdf_stm_cfile_new (stdout,
+                                   0,
+                                   0 /*cache_size*/,
+                                   PDF_STM_WRITE,
+                                   &error);
+      if (!stm_out)
         {
-          fprintf(stderr, "failed to create output stream\n");
+          fprintf (stderr, "failed to create output stream: %s\n",
+                   pdf_error_get_message (error));
           goto out;
         }
 
-      rv = pdf_token_writer_new(stm_out, &writer);
+      rv = pdf_token_writer_new (stm_out, &writer);
       if (rv != PDF_OK)
         {
           fprintf(stderr, "failed to create writer\n");

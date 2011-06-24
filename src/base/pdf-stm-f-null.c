@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2007, 2008, 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2007-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,69 +28,46 @@
 #include <string.h>
 
 #include <pdf-types.h>
+#include <pdf-types-buffer.h>
 #include <pdf-stm-f-null.h>
+#include <pdf-hash.h>
 
-/*
- * Public functions
- */
+/* Define NULL filter */
+PDF_STM_FILTER_DEFINE_STATELESS (pdf_stm_f_null_get,
+                                 stm_f_null_apply);
 
-pdf_status_t
-pdf_stm_f_null_init (pdf_hash_t  *params,
-                     void       **state)
-{
-  /* This filter does not use any parameters and does not hold any
-     internal state */
-
-  return PDF_OK;
-}
-
-pdf_status_t
-pdf_stm_f_null_apply (pdf_hash_t   *params,
-                      void         *state,
-                      pdf_buffer_t *in,
-                      pdf_buffer_t *out,
-                      pdf_bool_t    finish_p)
+static enum pdf_stm_filter_apply_status_e
+stm_f_null_apply (void          *state,
+                  pdf_buffer_t  *in,
+                  pdf_buffer_t  *out,
+                  pdf_bool_t     finish,
+                  pdf_error_t  **error)
 {
   pdf_size_t in_size;
   pdf_size_t out_size;
   pdf_size_t bytes_to_copy;
-  pdf_status_t ret;
 
   /* Fill the output buffer with the contents of the input buffer, but
-     note that the second may be bigger than the former */
+   * note that the second may be bigger than the former */
+  PDF_ASSERT (in->wp >= in->rp);
+  PDF_ASSERT (out->size >= out->wp);
   in_size = in->wp - in->rp;
   out_size = out->size - out->wp;
 
-  bytes_to_copy = PDF_MIN(out_size, in_size);
-
+  bytes_to_copy = PDF_MIN (out_size, in_size);
   if (bytes_to_copy != 0)
     {
       memcpy (out->data,
               in->data,
               bytes_to_copy);
 
-      in->rp = in->rp + bytes_to_copy;
-      out->wp = out->wp + bytes_to_copy;
+      in->rp += bytes_to_copy;
+      out->wp += bytes_to_copy;
     }
 
-  if (in_size > out_size)
-    {
-      /* We need more room in the output buffer */
-      ret = PDF_ENOUTPUT;
-    }
-  else
-    {
-      /* We can process more input */
-      ret = PDF_ENINPUT;
-    }
-
-  return ret;
-}
-
-pdf_status_t
-pdf_stm_f_null_dealloc_state (void *state)
-{
-  return PDF_OK;
+  return (in_size > out_size ?
+          PDF_STM_FILTER_APPLY_STATUS_NO_OUTPUT :
+          PDF_STM_FILTER_APPLY_STATUS_NO_INPUT);
 }
 
 /* End of pdf_stm_f_null.c */

@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,32 +25,13 @@
 
 #ifndef PDF_STM_F_DCT_H
 #define PDF_STM_F_DCT_H
+
 #include <config.h>
 
-#include <pdf-types.h>
-#include <pdf-types-buffer.h>
-#include <pdf-hash.h>
+#include <pdf-stm-filter.h>
 
-/* Filters implementation API */
+const pdf_stm_filter_impl_t *pdf_stm_f_dctdec_get (void);
 
-pdf_status_t pdf_stm_f_dctdec_init (pdf_hash_t  *params,
-                                    void       **state);
-pdf_status_t pdf_stm_f_dctdec_apply (pdf_hash_t    *params,
-                                      void         *state,
-                                      pdf_buffer_t *in,
-                                      pdf_buffer_t *out,
-                                      pdf_bool_t    finish_p);
-pdf_status_t pdf_stm_f_dctdec_dealloc_state (void *state);
-
-pdf_status_t pdf_stm_f_dctenc_init (pdf_hash_t  *params,
-                                     void      **state);
-pdf_status_t pdf_stm_f_dctenc_apply (pdf_hash_t   *params,
-                                     void         *state,
-                                     pdf_buffer_t *in,
-                                     pdf_buffer_t *out,
-                                     pdf_bool_t    finish_p);
-pdf_status_t pdf_stm_f_dctenc_dealloc_state (void *state);
-
-#endif /* pdf_stm_f_dct.h */
+#endif /* PDF_STM_F_DCT_H */
 
 /* End of pdf_stm_f_dct.h */

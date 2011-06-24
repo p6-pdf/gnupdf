@@ -38,7 +38,7 @@
 struct pdf_token_reader_s;  /* opaque type */
 typedef struct pdf_token_reader_s *pdf_token_reader_t;
 
-pdf_status_t pdf_token_reader_new (pdf_stm_t stm, pdf_token_reader_t *reader);
+pdf_status_t pdf_token_reader_new (pdf_stm_t *stm, pdf_token_reader_t *reader);
 pdf_status_t pdf_token_reader_destroy (pdf_token_reader_t reader);
 pdf_status_t pdf_token_reader_reset (pdf_token_reader_t reader);
 pdf_size_t pdf_token_reader_begin_pos (pdf_token_reader_t reader);
@@ -112,7 +112,7 @@ enum pdf_token_reader_state_e
 
 /* Internal state */
 struct pdf_token_reader_s {
-  pdf_stm_t stream;  /* stream to read bytes from */
+  pdf_stm_t *stream;  /* stream to read bytes from */
   char *decimal_point;
 
   pdf_size_t state_pos;

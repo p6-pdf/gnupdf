@@ -104,7 +104,7 @@ pdf_buffer_resize (pdf_buffer_t  *buffer,
                    pdf_size_t     newsize,
                    pdf_error_t  **error)
 {
-  pdf_char_t *newdata;
+  pdf_uchar_t *newdata;
 
   PDF_ASSERT_POINTER_RETURN_VAL (buffer, PDF_FALSE);
   PDF_ASSERT_RETURN_VAL (newsize > 0, PDF_FALSE);

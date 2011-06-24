@@ -28,6 +28,7 @@
 #include <check.h>
 #include <pdf.h>
 #include <pdf-test-common.h>
+
 /*
  * Test: pdf_stm_get_mode_001
  * Description:
@@ -38,31 +39,24 @@
  */
 START_TEST (pdf_stm_get_mode_001)
 {
-  pdf_status_t ret;
-  pdf_stm_t stm;
-  pdf_char_t *buf;
-  pdf_size_t buf_size;
-
-  /* Create a memory buffer */
-  buf_size = 100;
-
-  buf = pdf_alloc (buf_size);
-  fail_if(buf == NULL);
+  pdf_error_t *error = NULL;
+  pdf_stm_t *stm;
+  pdf_char_t buf[100];
 
   /* Create the stream */
-  ret = pdf_stm_mem_new (buf,
-                         buf_size,
+  stm = pdf_stm_mem_new (buf,
+                         100,
                          0, /* Use the default cache size */
                          PDF_STM_READ,
-                         &stm);
-  fail_if(ret != PDF_OK);
+                         &error);
+  fail_unless (stm != NULL);
+  fail_if (error != NULL);
 
   /* Get the mode of the stream */
   fail_if (pdf_stm_get_mode (stm) != PDF_STM_READ);
 
   /* Destroy the stream */
   pdf_stm_destroy (stm);
-  pdf_dealloc (buf);
 }
 END_TEST
 
@@ -77,31 +71,24 @@ END_TEST
 
 START_TEST (pdf_stm_get_mode_002)
 {
-  pdf_status_t ret;
-  pdf_stm_t stm;
-  pdf_char_t *buf;
-  pdf_size_t buf_size;
-
-  /* Create a memory buffer */
-  buf_size = 100;
-
-  buf = pdf_alloc (buf_size);
-  fail_if(buf == NULL);
+  pdf_error_t *error = NULL;
+  pdf_stm_t *stm;
+  pdf_char_t buf[100];
 
   /* Create the stream */
-  ret = pdf_stm_mem_new (buf,
-                         buf_size,
+  stm = pdf_stm_mem_new (buf,
+                         100,
                          0, /* Use the default cache size */
                          PDF_STM_WRITE,
-                         &stm);
-  fail_if(ret != PDF_OK);
+                         &error);
+  fail_unless (stm != NULL);
+  fail_if (error != NULL);
 
   /* Get the mode of the stream */
   fail_if (pdf_stm_get_mode (stm) != PDF_STM_WRITE);
 
   /* Destroy the stream */
   pdf_stm_destroy (stm);
-  pdf_dealloc (buf);
 }
 END_TEST
 
@@ -115,7 +102,6 @@ test_pdf_stm_get_mode (void)
 
   tcase_add_test (tc, pdf_stm_get_mode_001);
   tcase_add_test (tc, pdf_stm_get_mode_002);
-
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);

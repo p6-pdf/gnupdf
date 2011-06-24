@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009, 2010, 2011 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,77 +28,47 @@
 
 #include <config.h>
 
-#include <stdio.h>
-
 #include <pdf-types.h>
-#include <pdf-fsys.h>
+#include <pdf-error.h>
 
-/* Backend types */
-enum pdf_stm_be_type_e
-{
-  PDF_STM_BE_MEM = 0,
-  PDF_STM_BE_FILE,
-  PDF_STM_BE_CFILE
-};
+typedef struct pdf_stm_be_s pdf_stm_be_t;
 
-/* Backend data type */
-struct pdf_stm_be_file_s
-{
-  pdf_fsys_file_t file;
-  pdf_off_t pos; /* Current position */
-};
+typedef struct {
+  /* Read operation in the backend */
+  pdf_ssize_t (* read)    (pdf_stm_be_t  *be,
+                           pdf_uchar_t   *buffer,
+                           pdf_size_t     bytes,
+                           pdf_error_t  **error);
+  /* Write operation in the backend */
+  pdf_ssize_t (* write)   (pdf_stm_be_t  *be,
+                           pdf_uchar_t   *buffer,
+                           pdf_size_t     bytes,
+                           pdf_error_t  **error);
+  /* Seek operation in the backend */
+  pdf_off_t   (* seek)    (pdf_stm_be_t  *be,
+                           pdf_off_t      pos);
+  /* Tell operation in the backend */
+  pdf_off_t   (* tell)    (pdf_stm_be_t  *be);
+  /* Destroy the backend */
+  void        (* destroy) (pdf_stm_be_t  *be);
+} pdf_stm_be_vtable_t;
 
-struct pdf_stm_be_cfile_s
-{
-  FILE*      file;
-  pdf_off_t  pos;
-};
-
-struct pdf_stm_be_mem_s
-{
-  pdf_char_t *buffer;  /* Buffer contents */
-  pdf_size_t size;     /* Size of the buffer in octects */
-  pdf_size_t pos;      /* Current position into the buffer */
-};
-
+/* Generic struct for the backend, implementations will subclass this */
 struct pdf_stm_be_s
 {
-  enum pdf_stm_be_type_e type;
-
-  union
-  {
-    struct pdf_stm_be_mem_s mem;
-    struct pdf_stm_be_file_s file;
-    struct pdf_stm_be_cfile_s cfile;
-  } data;
+  const pdf_stm_be_vtable_t *vtable;
 };
 
-typedef struct pdf_stm_be_s *pdf_stm_be_t;
-
-/* 
- * Public API
- */
-
-pdf_stm_be_t pdf_stm_be_new_cfile (FILE* file,
-				   pdf_off_t pos);
-pdf_stm_be_t pdf_stm_be_new_file (pdf_fsys_file_t file,
-                                  pdf_off_t pos);
-pdf_stm_be_t pdf_stm_be_new_mem (pdf_char_t *buffer,
-                                 pdf_size_t size,
-                                 pdf_size_t pos);
-pdf_status_t pdf_stm_be_destroy (pdf_stm_be_t be);
-
-pdf_size_t pdf_stm_be_read (pdf_stm_be_t be,
-                            pdf_char_t *buffer,
-                            pdf_size_t bytes);
-pdf_size_t pdf_stm_be_write (pdf_stm_be_t be,
-                             pdf_char_t *buffer,
-                             pdf_size_t bytes);
-
-pdf_off_t pdf_stm_be_seek (pdf_stm_be_t be,
-                           pdf_off_t pos);
-
-pdf_off_t pdf_stm_be_tell (pdf_stm_be_t be);
+#define pdf_stm_be_read(be,buffer,bytes,error)  \
+  be->vtable->read (be, buffer, bytes, error)
+#define pdf_stm_be_write(be,buffer,bytes,error) \
+  be->vtable->write (be, buffer, bytes, error)
+#define pdf_stm_be_seek(be,pos)                 \
+  be->vtable->seek (be, pos)
+#define pdf_stm_be_tell(be)                     \
+  be->vtable->tell (be)
+#define pdf_stm_be_destroy(be)                  \
+  be->vtable->destroy (be)
 
 #endif /* !PDF_STM_BE_H */
 

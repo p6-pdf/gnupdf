@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2008, 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,11 +27,20 @@
 
 #include <string.h>
 
+#include <pdf-types.h>
+#include <pdf-types-buffer.h>
+#include <pdf-hash.h>
+#include <pdf-alloc.h>
+#include <pdf-crypt.h>
 #include <pdf-stm-f-md5.h>
 
+/* Define MD5 encoder */
+PDF_STM_FILTER_DEFINE (pdf_stm_f_md5enc_get,
+                       stm_f_md5enc_init,
+                       stm_f_md5enc_apply,
+                       stm_f_md5enc_deinit);
+
 #define MD5_OUTPUT_SIZE 16
-
-
 
 /* Internal state */
 struct pdf_stm_f_md5_s
@@ -39,121 +48,108 @@ struct pdf_stm_f_md5_s
   pdf_crypt_md_t md;
   pdf_buffer_t *cache;
 };
-typedef struct pdf_stm_f_md5_s * pdf_stm_f_md5_t;
 
-
-
-pdf_status_t
-pdf_stm_f_md5enc_init (pdf_hash_t  *params,
-                       void       **state)
+static pdf_bool_t
+stm_f_md5enc_init (const pdf_hash_t  *params,
+                   void             **state,
+                   pdf_error_t      **error)
 {
-  pdf_status_t ret;
-  pdf_stm_f_md5_t filter_state;
+  struct pdf_stm_f_md5_s *filter_state;
 
   filter_state = pdf_alloc (sizeof (struct pdf_stm_f_md5_s));
-
-  if (filter_state == NULL)
+  if (!filter_state)
     {
-      ret = PDF_ENOMEM;
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_STM,
+                     PDF_ENOMEM,
+                     "cannot create V2 encoder/decoder internal state: "
+                     "couldn't allocate %lu bytes",
+                     (unsigned long)sizeof (struct pdf_stm_f_md5_s));
+      return PDF_FALSE;
     }
-  else if (state == NULL)
-    {
-      pdf_dealloc (filter_state);
-      ret = PDF_EBADDATA;
-    }
-  else
-    {
-      pdf_crypt_md_t md;
 
-      if (pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md) == PDF_OK)
-        {
-          filter_state->md = md;
-          filter_state->cache = pdf_buffer_new (MD5_OUTPUT_SIZE, NULL);
-          /* TODO: get and propagate error */
-
-          if (filter_state->cache == NULL)
-            {
-              pdf_dealloc (filter_state);
-              ret = PDF_ERROR;
-            }
-          else
-            {
-              *state = filter_state;
-              ret = PDF_OK;
-            }
-        }
-      else
-        {
-          pdf_dealloc (filter_state);
-          ret = PDF_EBADDATA;
-        }
+  /* Initialize internal buffer */
+  filter_state->cache = pdf_buffer_new (MD5_OUTPUT_SIZE, error);
+  if (!(filter_state->cache))
+    {
+      stm_f_md5enc_deinit (filter_state);
+      return PDF_FALSE;
     }
-  return ret;
+
+  if (pdf_crypt_md_new (PDF_CRYPT_MD_MD5,
+                        &(filter_state->md)) != PDF_OK)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_STM,
+                     PDF_EBADDATA,
+                     "cannot initialize MD5 encoder: "
+                     "couldn't setup cipher");
+      stm_f_md5enc_deinit (filter_state);
+      return PDF_FALSE;
+    }
+
+  *state = filter_state;
+  return PDF_TRUE;
 }
 
-
-
-pdf_status_t
-pdf_stm_f_md5enc_apply (pdf_hash_t   *params,
-                        void         *state,
-                        pdf_buffer_t *in,
-                        pdf_buffer_t *out,
-                        pdf_bool_t    finish_p)
+static void
+stm_f_md5enc_deinit (void *state)
 {
-  pdf_stm_f_md5_t filter_state = state;
+  struct pdf_stm_f_md5_s *filter_state = state;
+
+  if (filter_state->md)
+    pdf_crypt_md_destroy (filter_state->md);
+  if (filter_state->cache)
+    pdf_buffer_destroy (filter_state->cache);
+  pdf_dealloc (state);
+}
+
+static enum pdf_stm_filter_apply_status_e
+stm_f_md5enc_apply (void          *state,
+                    pdf_buffer_t  *in,
+                    pdf_buffer_t  *out,
+                    pdf_bool_t     finish,
+                    pdf_error_t  **error)
+{
+  struct pdf_stm_f_md5_s *filter_state = state;
   pdf_buffer_t *cache = filter_state->cache;
   pdf_size_t in_size;
-  pdf_status_t ret;
+  pdf_size_t bytes_to_write;
+  pdf_size_t cache_size;
+  pdf_size_t out_size;
 
+  PDF_ASSERT (in->wp >= in->rp);
   in_size = in->wp - in->rp;
 
-  pdf_crypt_md_write (filter_state->md, in->data, in_size);
+  pdf_crypt_md_write (filter_state->md, (pdf_char_t *)in->data, in_size);
   in->rp += in_size;
-  ret = PDF_ENINPUT;
 
-  if (finish_p == PDF_TRUE)
+  if (!finish)
+    return PDF_STM_FILTER_APPLY_STATUS_NO_INPUT;
+
+  if (pdf_buffer_eob_p (cache))
     {
-      pdf_size_t bytes_to_write;
-      pdf_size_t cache_size;
-      pdf_size_t out_size;
-
-      if (pdf_buffer_eob_p (cache))
-        {
-          /* If we have reached the end, read the hash value in cache */
-          pdf_crypt_md_read (filter_state->md, cache->data, cache->size);
-          cache->wp = cache->size;
-        }
-
-      out_size = out->size - out->wp;
-      cache_size = cache->wp - cache->rp;
-      bytes_to_write = PDF_MIN (out_size, cache_size);
-
-      memcpy (out->data, cache->data + cache->rp, bytes_to_write);
-
-      cache->rp += bytes_to_write;
-      out->wp   += bytes_to_write;
-
-      if (out_size < cache_size)
-        ret = PDF_ENOUTPUT;
-      else
-        ret = PDF_EEOF;
+      /* If we have reached the end, read the hash value in cache */
+      pdf_crypt_md_read (filter_state->md, (pdf_char_t *)cache->data, cache->size);
+      cache->wp = cache->size;
     }
 
-  return ret;
+  PDF_ASSERT (out->size >= out->wp);
+  PDF_ASSERT (cache->wp >= cache->rp);
+
+  out_size = out->size - out->wp;
+  cache_size = cache->wp - cache->rp;
+  bytes_to_write = PDF_MIN (out_size, cache_size);
+
+  memcpy (out->data, cache->data + cache->rp, bytes_to_write);
+
+  cache->rp += bytes_to_write;
+  out->wp   += bytes_to_write;
+
+  if (out_size >= cache_size)
+    return PDF_STM_FILTER_APPLY_STATUS_EOF;
+
+  return PDF_STM_FILTER_APPLY_STATUS_NO_OUTPUT;
 }
-
-
-
-pdf_status_t
-pdf_stm_f_md5enc_dealloc_state (void *state)
-{
-  pdf_stm_f_md5_t filter_state = state;
-  pdf_crypt_md_destroy (filter_state->md);
-  pdf_buffer_destroy (filter_state->cache);
-  pdf_dealloc (state);
-  return PDF_OK;
-}
-
-
 
 /* End of pdf_stm_f_md5.c */

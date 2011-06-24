@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2007, 2008, 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2007-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,85 +30,121 @@
 
 #include <pdf-alloc.h>
 #include <pdf-stm-f-rl.h>
+#include <pdf-types.h>
+#include <pdf-types-buffer.h>
+#include <pdf-hash.h>
 
+/* Define RL encoder */
+PDF_STM_FILTER_DEFINE (pdf_stm_f_rlenc_get,
+                       stm_f_rl_init,
+                       stm_f_rlenc_apply,
+                       stm_f_rl_deinit);
 
-static int encode_rl_char (pdf_stm_f_rl_t st, pdf_buffer_t *out);
-static int decode_rl_char (pdf_stm_f_rl_t st, pdf_buffer_t *out);
-static int copy_next_bytes (pdf_stm_f_rl_t st, pdf_buffer_t *in,
-                            pdf_buffer_t *out);
+/* Define RL decoder */
+PDF_STM_FILTER_DEFINE (pdf_stm_f_rldec_get,
+                       stm_f_rl_init,
+                       stm_f_rldec_apply,
+                       stm_f_rl_deinit);
 
-
-pdf_status_t
-pdf_stm_f_rlenc_init (pdf_hash_t  *params,
-                      void       **state)
+typedef enum
 {
-  pdf_status_t ret;
-  pdf_stm_f_rl_t filter_state;
+  PDF_STM_F_RL_WRL,
+  PDF_STM_F_RL_NONE
+} pdf_stm_f_rl_enc_e;
+
+/* Internal state */
+struct pdf_stm_f_rl_s
+{
+  pdf_uchar_t curchar;
+  pdf_uchar_t rlchar;
+  pdf_uchar_t dec_count;
+  pdf_i32_t rl;
+  pdf_bool_t run_p;
+  pdf_bool_t dec_p;
+  pdf_stm_f_rl_enc_e enc_p;
+};
+
+static pdf_bool_t encode_rl_char (struct pdf_stm_f_rl_s *st,
+                                  pdf_buffer_t          *out);
+
+static pdf_bool_t decode_rl_char (struct pdf_stm_f_rl_s *st,
+                                  pdf_buffer_t          *out);
+
+static int copy_next_bytes (struct pdf_stm_f_rl_s *st,
+                            pdf_buffer_t          *in,
+                            pdf_buffer_t          *out);
+
+/* Common implementation */
+
+static pdf_bool_t
+stm_f_rl_init (const pdf_hash_t  *params,
+               void             **state,
+               pdf_error_t      **error)
+{
+  struct pdf_stm_f_rl_s *filter_state;
 
   filter_state = pdf_alloc (sizeof (struct pdf_stm_f_rl_s));
-
-  if (state == NULL)
+  if (!filter_state)
     {
-      ret = PDF_EBADDATA;
-    }
-  else if (filter_state == NULL)
-    {
-      ret = PDF_ENOMEM;
-    }
-  else
-    {
-      /* Initialize fields */
-      filter_state->curchar = 0;
-      filter_state->rlchar = 0;
-      filter_state->run_p = PDF_FALSE;
-      filter_state->rl = -1;
-      filter_state->dec_p = PDF_FALSE;;
-      filter_state->dec_count = 0;
-      filter_state->enc_p = PDF_STM_F_RL_NONE;
-
-      *state = (void *) filter_state;
-      ret = PDF_OK;
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_STM,
+                     PDF_ENOMEM,
+                     "cannot create RunLength encoder/decoder internal state: "
+                     "couldn't allocate %lu bytes",
+                     (unsigned long)sizeof (struct pdf_stm_f_rl_s));
+      return PDF_FALSE;
     }
 
-  return ret;
+  /* Initialize fields */
+  filter_state->curchar = 0;
+  filter_state->rlchar = 0;
+  filter_state->run_p = PDF_FALSE;
+  filter_state->rl = -1;
+  filter_state->dec_p = PDF_FALSE;;
+  filter_state->dec_count = 0;
+  filter_state->enc_p = PDF_STM_F_RL_NONE;
+
+  *state = (void *) filter_state;
+
+  return PDF_TRUE;
 }
 
-
-pdf_status_t
-pdf_stm_f_rldec_init (pdf_hash_t  *params,
-                      void       **state)
+static void
+stm_f_rl_deinit (void *state)
 {
-  return pdf_stm_f_rlenc_init (params, state);
+  pdf_dealloc (state);
 }
 
+/* Encoder implementation */
 
-pdf_status_t
-pdf_stm_f_rlenc_apply (pdf_hash_t   *params,
-                       void         *state,
-                       pdf_buffer_t *in,
-                       pdf_buffer_t *out,
-                       pdf_bool_t    finish_p)
+static enum pdf_stm_filter_apply_status_e
+stm_f_rlenc_apply (void          *state,
+                   pdf_buffer_t  *in,
+                   pdf_buffer_t  *out,
+                   pdf_bool_t     finish,
+                   pdf_error_t  **error)
 {
-  pdf_stm_f_rl_t st;
+  struct pdf_stm_f_rl_s *filter_state;
 
-  st = (pdf_stm_f_rl_t) state;
+  filter_state = (struct pdf_stm_f_rl_s *) state;
 
   while (!pdf_buffer_eob_p (in))
     {
-      st->curchar = in->data[in->rp];
+      filter_state->curchar = in->data[in->rp];
 
       /* we're not encoding any character yet */
-      if (!st->run_p)
+      if (!filter_state->run_p)
         {
-          st->rlchar = st->curchar;
-          st->run_p = PDF_TRUE;
-          st->rl++;
+          filter_state->rlchar = filter_state->curchar;
+          filter_state->run_p = PDF_TRUE;
+          filter_state->rl++;
           in->rp++;
         }
       /* we're encoding some character now */
-      else if (st->curchar == st->rlchar && st->rl < 127)
+      else if (filter_state->curchar == filter_state->rlchar &&
+               filter_state->rl < 127)
         {
-          st->rl++;
+          filter_state->rl++;
           in->rp++;
         }
       /*
@@ -117,12 +153,11 @@ pdf_stm_f_rlenc_apply (pdf_hash_t   *params,
        */
       else
         {
-          if (encode_rl_char (st, out) < 0)
-            {
-              return PDF_ENOUTPUT;
-            }
-          st->rl=-1;
-          st->run_p = PDF_FALSE;
+          if (!encode_rl_char (filter_state, out))
+            return PDF_STM_FILTER_APPLY_STATUS_NO_OUTPUT;
+
+          filter_state->rl = -1;
+          filter_state->run_p = PDF_FALSE;
         }
     }
 
@@ -130,135 +165,107 @@ pdf_stm_f_rlenc_apply (pdf_hash_t   *params,
    * we may have finished with some history, we save it if needed,
    * then we add the EOD.
    */
-  if (finish_p)
+  if (finish)
     {
-      if (st->run_p)
+      if (filter_state->run_p)
         {
-          if (encode_rl_char (st, out) < 0)
-            {
-              /* Should not be reached */
-              return PDF_ENOUTPUT;
-            }
-          st->rl=-1;
-          st->run_p = PDF_FALSE;
+          if (!encode_rl_char (filter_state, out))
+            return PDF_STM_FILTER_APPLY_STATUS_NO_OUTPUT;
+
+          filter_state->rl = -1;
+          filter_state->run_p = PDF_FALSE;
         }
-      if (pdf_buffer_full_p (out))
-        {
-          /* Should not be reached */
-          return PDF_ENOUTPUT;
-        }
+
       /* Insert EOD marker */
+      if (pdf_buffer_full_p (out))
+        return PDF_STM_FILTER_APPLY_STATUS_NO_OUTPUT;
       out->data[out->wp++] = 128;
-      return PDF_EEOF;
+      return PDF_STM_FILTER_APPLY_STATUS_EOF;
     }
 
-  return PDF_ENINPUT;
+  return PDF_STM_FILTER_APPLY_STATUS_NO_INPUT;
 }
 
-
-pdf_status_t
-pdf_stm_f_rlenc_dealloc_state (void *state)
+static enum pdf_stm_filter_apply_status_e
+stm_f_rldec_apply (void          *state,
+                   pdf_buffer_t  *in,
+                   pdf_buffer_t  *out,
+                   pdf_bool_t     finish,
+                   pdf_error_t  **error)
 {
-  pdf_dealloc (state);
-  return PDF_OK;
-}
+  struct pdf_stm_f_rl_s *filter_state;
 
-pdf_status_t
-pdf_stm_f_rldec_apply (pdf_hash_t   *params,
-                       void         *state,
-                       pdf_buffer_t *in,
-                       pdf_buffer_t *out,
-                       pdf_bool_t    finish_p)
-{
-  pdf_stm_f_rl_t st;
-  pdf_status_t copied;
-
-  st = (pdf_stm_f_rl_t) state;
+  filter_state = (struct pdf_stm_f_rl_s *) state;
 
   while (!pdf_buffer_eob_p (in))
     {
-      st->curchar = in->data[in->rp];
+      filter_state->curchar = in->data[in->rp];
 
       /* we're not decoding any character yet */
-      if (!st->run_p)
+      if (!filter_state->run_p)
         {
-          st->rlchar = st->curchar;
-          st->run_p = PDF_TRUE;
+          filter_state->rlchar = filter_state->curchar;
+          filter_state->run_p = PDF_TRUE;
           in->rp++;
         }
       /* copy the following 1 to 128 bytes literally */
-      else if (st->rlchar < 128)
+      else if (filter_state->rlchar < 128)
         {
-          copied = copy_next_bytes (st, in, out);
+          int copied;
+
+          copied = copy_next_bytes (filter_state, in, out);
           if (copied < 0)
-            {
-              return PDF_ENOUTPUT;
-            }
-          else if (copied > 0)
-            {
-              return PDF_ENINPUT;
-            }
-          st->run_p = PDF_FALSE;
+            return PDF_STM_FILTER_APPLY_STATUS_NO_OUTPUT;
+          if (copied > 0)
+            return PDF_STM_FILTER_APPLY_STATUS_NO_INPUT;
+          filter_state->run_p = PDF_FALSE;
         }
       /* copy the next char 257 - length (2 to 128) times */
-      else if (st->rlchar > 128)
+      else if (filter_state->rlchar > 128)
         {
-          if (decode_rl_char (st, out) < 0)
-            {
-              return PDF_ENOUTPUT;
-            }
-          st->run_p = PDF_FALSE;
+          if (!decode_rl_char (filter_state, out))
+            return PDF_STM_FILTER_APPLY_STATUS_NO_OUTPUT;
+          filter_state->run_p = PDF_FALSE;
           in->rp++;
         }
       /* EOD mark */
       else
         {
-          st->run_p = PDF_FALSE;
-          return PDF_EEOF;
+          filter_state->run_p = PDF_FALSE;
+          return PDF_STM_FILTER_APPLY_STATUS_EOF;
         }
     }
 
-  return PDF_ENINPUT;
+  return PDF_STM_FILTER_APPLY_STATUS_NO_INPUT;
 }
 
-pdf_status_t
-pdf_stm_f_rldec_dealloc_state (void *state)
-{
-  pdf_dealloc (state);
-  return PDF_OK;
-}
+/* Helper functions */
 
-/* Private functions */
-
-static int
-encode_rl_char (pdf_stm_f_rl_t st, pdf_buffer_t *out)
+static pdf_bool_t
+encode_rl_char (struct pdf_stm_f_rl_s *st,
+                pdf_buffer_t          *out)
 {
-  if (st->enc_p == PDF_STM_F_RL_NONE)
+  if (pdf_buffer_full_p (out))
+    return PDF_FALSE;
+
+  switch (st->enc_p)
     {
-      if (pdf_buffer_full_p (out))
-        {
-          return -1;
-        }
+    case PDF_STM_F_RL_NONE:
       out->data[out->wp++] = (st->rl == 0) ? 0 : 256 - st->rl;
       st->enc_p = PDF_STM_F_RL_WRL;
-    }
-
-  if (st->enc_p == PDF_STM_F_RL_WRL)
-    {
-      if (pdf_buffer_full_p (out))
-        {
-          return -1;
-        }
+      /* Continue to RL_WRL! */
+    case PDF_STM_F_RL_WRL:
       out->data[out->wp++] = st->rlchar;
       st->enc_p = PDF_STM_F_RL_NONE;
+      break;
     }
 
-  return 0;
+  return PDF_TRUE;
 }
 
-
-static int
-decode_rl_char (pdf_stm_f_rl_t st, pdf_buffer_t *out)
+static pdf_bool_t
+decode_rl_char (struct pdf_stm_f_rl_s *st,
+                pdf_buffer_t          *out)
 {
   if (!st->dec_p)
     {
@@ -269,27 +276,26 @@ decode_rl_char (pdf_stm_f_rl_t st, pdf_buffer_t *out)
   while (st->dec_count > 0)
     {
       if (pdf_buffer_full_p (out))
-        {
-          return -1;
-        }
+        return PDF_FALSE;
+
       out->data[out->wp++] = st->curchar;
       st->dec_count--;
     }
 
   st->dec_p = PDF_FALSE;
-  return 0;
+  return PDF_TRUE;
 }
 
-
 static int
-copy_next_bytes (pdf_stm_f_rl_t st, pdf_buffer_t *in, pdf_buffer_t *out)
+copy_next_bytes (struct pdf_stm_f_rl_s *st,
+                 pdf_buffer_t          *in,
+                 pdf_buffer_t          *out)
 {
   if (!st->dec_p)
     {
       if (pdf_buffer_full_p (out))
-        {
-          return -1;
-        }
+        return -1;
+
       st->dec_count = st->rlchar + 1;
       st->dec_p = PDF_TRUE;
       out->data[out->wp++] = st->curchar;
@@ -300,13 +306,11 @@ copy_next_bytes (pdf_stm_f_rl_t st, pdf_buffer_t *in, pdf_buffer_t *out)
   while (st->dec_count > 0)
     {
       if (pdf_buffer_eob_p (in))
-        {
-          return 1;
-        }
-      else if (pdf_buffer_full_p (out))
-        {
-          return -1;
-        }
+        return 1;
+
+      if (pdf_buffer_full_p (out))
+        return -1;
+
       out->data[out->wp] = in->data[in->rp];
       out->wp++;
       in->rp++;
@@ -316,6 +320,5 @@ copy_next_bytes (pdf_stm_f_rl_t st, pdf_buffer_t *in, pdf_buffer_t *out)
   st->dec_p = PDF_FALSE;
   return 0;
 }
-
 
 /* End of pdf_stm_f_rl.c */

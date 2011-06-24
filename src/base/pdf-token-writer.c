@@ -36,7 +36,7 @@
 #include <unistr.h>
 
 pdf_status_t
-pdf_token_writer_new (pdf_stm_t stm, pdf_token_writer_t *writer)
+pdf_token_writer_new (pdf_stm_t *stm, pdf_token_writer_t *writer)
 {
   pdf_status_t err;
   pdf_token_writer_t new_tokw;
@@ -122,19 +122,26 @@ pdf_token_writer_destroy (pdf_token_writer_t writer)
 
 /* Write data to the stream.  All output passes through this function. */
 static pdf_status_t
-write_data (pdf_token_writer_t writer, const pdf_char_t *data,
+write_data (pdf_token_writer_t writer, const pdf_uchar_t *data,
             pdf_size_t len, pdf_size_t *written)
 {
   pdf_size_t i;
   pdf_status_t rv;
+  pdf_error_t *inner_error = NULL;
 
-  rv = pdf_stm_write (writer->stream, data, len, written);
-  if (rv != PDF_OK)
-    return rv;
+  if (!pdf_stm_write (writer->stream, data, len, written, &inner_error) &&
+      inner_error)
+    {
+      /* TODO: Propagate error */
+      rv = pdf_error_get_status (inner_error);
+      pdf_error_destroy (inner_error);
+      return rv;
+    }
 
   for (i = 0; i < *written; ++i)
     {
-      pdf_char_t ch = data[i];
+      pdf_uchar_t ch = data[i];
+
       ++writer->line_length;
       if (pdf_is_eol_char (ch))
         writer->line_length = 0;
@@ -146,7 +153,7 @@ write_data (pdf_token_writer_t writer, const pdf_char_t *data,
 
 /* Write a single character. */
 static INLINE pdf_status_t
-write_char (pdf_token_writer_t writer, pdf_char_t ch)
+write_char (pdf_token_writer_t writer, pdf_uchar_t ch)
 {
   pdf_size_t written;
   return write_data (writer, &ch, 1, &written);
@@ -155,7 +162,7 @@ write_char (pdf_token_writer_t writer, pdf_char_t ch)
 /* Write data starting at writer->pos, incrementing writer->pos as needed. */
 static INLINE pdf_status_t
 write_data_using_pos (pdf_token_writer_t writer,
-                      const pdf_char_t *data, pdf_size_t len)
+                      const pdf_uchar_t *data, pdf_size_t len)
 {
   pdf_status_t rv;
   pdf_size_t written;
@@ -332,7 +339,7 @@ write_integer_token (pdf_token_writer_t writer, pdf_token_t token)
       case 0:
         {
           pdf_i32_t value = pdf_token_get_integer_value (token);
-          int len = snprintf (writer->buffer->data,
+          int len = snprintf ((pdf_char_t *)writer->buffer->data,
                               writer->buffer->size, "%"PRId32, value);
           if (!encode_buffer_number (writer, len)) return PDF_ERROR;
         }
@@ -363,7 +370,7 @@ write_real_token (pdf_token_writer_t writer, pdf_token_t token)
             return PDF_EBADDATA;
 
           /* The '#' flag forces snprintf to write a decimal point. */
-          int len = snprintf (buf->data,
+          int len = snprintf ((pdf_char_t *)buf->data,
                               buf->size, "%#f", (double)value);
           if (!encode_buffer_number (writer, len)) return PDF_ERROR;
 
@@ -762,7 +769,7 @@ write_keyword_token (pdf_token_writer_t writer, pdf_token_t token)
         ++writer->stage;  /* fall through */
       case 2:
         return write_data_using_pos (writer,
-                                     pdf_token_get_keyword_data (token),
+                                     (pdf_uchar_t *)pdf_token_get_keyword_data (token),
                                      size);
       default:
         return PDF_EBADDATA;
@@ -799,7 +806,7 @@ write_comment_token (pdf_token_writer_t writer, pdf_token_t token)
         writer->pos = 0;
         ++writer->stage;  /* fall through */
       case 3:
-        rv = write_data_using_pos (writer, data, size);
+        rv = write_data_using_pos (writer, (pdf_uchar_t *)data, size);
         if (rv != PDF_OK) return rv;
         ++writer->stage;  /* fall through */
       case 4:
@@ -826,13 +833,12 @@ write_valueless_token (pdf_token_writer_t writer,
         writer->pos = 0;
         ++writer->stage;  /* fall through */
       case 1:
-        return write_data_using_pos (writer, buf, len);
+        return write_data_using_pos (writer, (pdf_uchar_t *)buf, len);
       default:
         return PDF_EBADDATA;
     }
 }
 
-
 /***** Token dispatching *****/
 
 pdf_status_t

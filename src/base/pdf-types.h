@@ -70,7 +70,6 @@
    Please be careful manipulating `pdf_off_t' values. Its value is
    assured to be a signed scalable one, but its size may be wider than
    a long. */
-#define NO_POS -1
 typedef off_t pdf_off_t;
 
 /* Memory indexes */

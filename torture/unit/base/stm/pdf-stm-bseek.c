@@ -29,6 +29,7 @@
 #include <check.h>
 #include <pdf.h>
 #include <pdf-test-common.h>
+
 /*
  * Test: pdf_stm_bseek_001
  * Description:
@@ -38,45 +39,50 @@
  */
 START_TEST (pdf_stm_bseek_001)
 {
-  pdf_status_t ret;
-  pdf_stm_t stm;
+  pdf_error_t *error = NULL;
+  pdf_stm_t *stm;
   pdf_char_t *buf;
-  pdf_char_t ret_char;
-  pdf_size_t buf_size;
-  pdf_off_t pos;
+  pdf_char_t ret_char = '\0';
+  pdf_size_t buf_size = 11;
+  int i;
 
   /* Create a buffer with some contents */
-  buf_size = 11;
-
   buf = pdf_alloc (buf_size);
-  fail_if(buf == NULL);
+  fail_unless (buf != NULL);
   strcpy (buf, "0123456789");
 
   /* Create the stream */
-  ret = pdf_stm_mem_new (buf,
+  stm = pdf_stm_mem_new (buf,
                          buf_size,
                          0, /* Use the default cache size */
                          PDF_STM_READ,
-                         &stm);
-  fail_if(ret != PDF_OK);
+                         &error);
+  fail_unless (stm != NULL);
+  fail_if (error != NULL);
 
-  /* Bseek into the stream */
-  pos = pdf_stm_bseek (stm, 3);
-  fail_if(pos != 3);
+  /* Read all characters from the stream, one by one, in reverse other
+   * by seeking in each loop */
+  for (i = (buf_size - 1); i >= 0; i--)
+    {
+      /* Bseek into the stream */
+      fail_unless (pdf_stm_bseek (stm, i) == i);
 
-  /* Read a character */
-  ret = pdf_stm_read_char (stm, &ret_char);
-  fail_if(ret != PDF_OK);
-  fail_if(ret_char != '3');
+      /* Peek */
+      fail_unless (pdf_stm_peek_char (stm, &ret_char, &error) == PDF_TRUE);
+      fail_if (error != NULL);
+      fail_unless (ret_char == buf[i]);
 
-  /* Bseek into the stream */
-  pos = pdf_stm_bseek (stm, 8);
-  fail_if(pos != 8);
+      /* Btell should report the exact index */
+      fail_unless (pdf_stm_btell (stm) == (pdf_off_t)i);
 
-  /* Read a character */
-  ret = pdf_stm_read_char (stm, &ret_char);
-  fail_if(ret != PDF_OK);
-  fail_if(ret_char != '8');
+      /* And consume it */
+      fail_unless (pdf_stm_read_char (stm, &ret_char, &error) == PDF_TRUE);
+      fail_if (error != NULL);
+      fail_unless (ret_char == buf[i]);
+
+      /* After consuming, the index should advance */
+      fail_unless (pdf_stm_btell (stm) == (pdf_off_t)(i + 1));
+    }
 
   /* Destroy data */
   pdf_dealloc (buf);
@@ -96,43 +102,40 @@ END_TEST
  */
 START_TEST (pdf_stm_bseek_002)
 {
-  pdf_status_t ret;
-  pdf_stm_t stm;
+  pdf_error_t *error = NULL;
+  pdf_stm_t *stm;
   pdf_char_t *buf;
-  pdf_char_t ret_char;
-  pdf_size_t buf_size;
-  pdf_off_t pos;
+  pdf_char_t ret_char = '\0';
+  pdf_size_t buf_size = 11;
+  int i;
 
   /* Create a buffer with some contents */
-  buf_size = 10;
-
   buf = pdf_alloc (buf_size);
-  fail_if(buf == NULL);
+  fail_unless (buf != NULL);
   strcpy (buf, "0123456789");
 
   /* Create the stream */
-  ret = pdf_stm_mem_new (buf,
-                         buf_size,
+  stm = pdf_stm_mem_new (buf,
+                         buf_size - 1,
                          0, /* Use the default cache size */
                          PDF_STM_READ,
-                         &stm);
-  fail_if(ret != PDF_OK);
+                         &error);
+  fail_unless (stm != NULL);
+  fail_if (error != NULL);
 
   /* Bseek into the stream */
-  pos = pdf_stm_bseek (stm, 300);
-  fail_if(pos != 9);
+  fail_unless (pdf_stm_bseek (stm, 300) == (buf_size - 2));
 
-  /* Read a character */
-  ret = pdf_stm_read_char (stm, &ret_char);
-  fail_if(ret != PDF_OK);
-  fail_if(ret_char != '9');
+  /* Read last character */
+  fail_unless (pdf_stm_read_char (stm, &ret_char, &error) == PDF_TRUE);
+  fail_if (error != NULL);
+  fail_unless (ret_char == '9');
 
   /* Destroy data */
   pdf_dealloc (buf);
   pdf_stm_destroy (stm);
 }
 END_TEST
-
 
 /*
  * Test: pdf_stm_bseek_003
@@ -143,66 +146,89 @@ END_TEST
  */
 START_TEST (pdf_stm_bseek_003)
 {
+  const pdf_char_t *filename = "tmp.test";
+  const pdf_char_t *file_contents = "123456789";
   pdf_error_t *error = NULL;
-  pdf_status_t ret;
-  pdf_stm_t stm;
-  pdf_char_t ret_char;
-  pdf_off_t pos;
-
-  pdf_fsys_file_t file;
+  pdf_stm_t *stm;
+  pdf_char_t ret_char = '\0';
+  pdf_size_t written_bytes;
+  pdf_fsys_file_t *file;
   pdf_text_t *path;
-  pdf_char_t * remain;
-  pdf_size_t remain_length,written;
+  int i;
 
   /* Create the file path */
-  path = pdf_text_new_from_pdf_string ("tmp.test", 8, &remain, &remain_length, &error);
+  path = pdf_text_new_from_unicode (filename, strlen (filename),
+                                    PDF_TEXT_UTF8,
+                                    &error);
   fail_unless (path != NULL);
   fail_if (error != NULL);
 
   /* Open new file */
-  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, &file);
-  fail_if (ret != PDF_OK);
+  file = pdf_fsys_file_open (PDF_FSYS_DISK,
+                             path,
+                             PDF_FSYS_OPEN_MODE_WRITE,
+                             &error);
+  fail_unless (file != NULL);
+  fail_if (error != NULL);
 
-  ret = pdf_fsys_file_write (file, "0123456789", 10, &written);
-  fail_if (ret != PDF_OK);
-  fail_if (written != 10);
-  pdf_fsys_file_close (file);
+  written_bytes = 0;
+  fail_unless (pdf_fsys_file_write (file,
+                                    file_contents,
+                                    strlen (file_contents),
+                                    &written_bytes,
+                                    &error) == PDF_TRUE);
+  fail_if (written_bytes != strlen (file_contents));
+  pdf_fsys_file_close (file, NULL);
 
-  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, &file);
-  fail_if (ret != PDF_OK);
+  file = pdf_fsys_file_open (PDF_FSYS_DISK,
+                             path,
+                             PDF_FSYS_OPEN_MODE_READ,
+                             &error);
+  fail_unless (file != NULL);
+  fail_if (error != NULL);
+
   /* Create the stream */
-  ret = pdf_stm_file_new (file,
+  stm = pdf_stm_file_new (file,
                           0,
                           0, /* Use the default cache size */
                           PDF_STM_READ,
-                          &stm);
-  fail_if(ret != PDF_OK);
+                          &error);
+  fail_unless (stm != NULL);
+  fail_if (error != NULL);
 
-  /* Bseek into the stream */
-  pos = pdf_stm_bseek (stm, 3);
-  fail_if(pos != 3);
+  /* Read all characters from the stream, one by one, in reverse other
+   * by seeking in each loop */
+  for (i = (strlen (file_contents) - 1); i >= 0; i--)
+    {
+      /* Bseek into the stream */
+      fail_unless (pdf_stm_bseek (stm, i) == i);
 
-  /* Read a character */
-  ret = pdf_stm_read_char (stm, &ret_char);
-  fail_if(ret != PDF_OK);
-  fail_if(ret_char != '3');
+      /* Btell should report the exact index */
+      fail_unless (pdf_stm_btell (stm) == (pdf_off_t)i);
 
-  /* Bseek into the stream */
-  pos = pdf_stm_bseek (stm, 8);
-  fail_if(pos != 8);
+      /* Peek */
+      fail_unless (pdf_stm_peek_char (stm, &ret_char, &error) == PDF_TRUE);
+      fail_if (error != NULL);
+      fail_unless (ret_char == file_contents[i]);
 
-  /* Read a character */
-  ret = pdf_stm_read_char (stm, &ret_char);
-  fail_if(ret != PDF_OK);
-  fail_if(ret_char != '8');
+      /* Btell should report the exact index */
+      fail_unless (pdf_stm_btell (stm) == (pdf_off_t)i);
+
+      /* And consume it */
+      fail_unless (pdf_stm_read_char (stm, &ret_char, &error) == PDF_TRUE);
+      fail_if (error != NULL);
+      fail_unless (ret_char == file_contents[i]);
+
+      /* After consuming, the index should advance */
+      fail_unless (pdf_stm_btell (stm) == (pdf_off_t)(i + 1));
+    }
 
   /* Destroy data */
   pdf_stm_destroy (stm);
-  pdf_fsys_file_close (file);
+  pdf_fsys_file_close (file, NULL);
   pdf_text_destroy (path);
 }
 END_TEST
-
 
 /*
  * Test: pdf_stm_bseek_004
@@ -216,59 +242,70 @@ END_TEST
  */
 START_TEST (pdf_stm_bseek_004)
 {
+  const pdf_char_t *filename = "tmp.test";
+  const pdf_char_t *file_contents = "GNU";
   pdf_error_t *error = NULL;
-  pdf_status_t ret;
-  pdf_stm_t stm;
-  pdf_char_t ret_char;
-  pdf_off_t pos;
-
-  pdf_fsys_file_t file;
+  pdf_stm_t *stm;
+  pdf_char_t ret_char = '\0';
+  pdf_size_t written_bytes;
+  pdf_fsys_file_t *file;
   pdf_text_t *path;
-  pdf_char_t * remain;
-  pdf_size_t remain_length,written;
+  int i;
 
   /* Create the file path */
-  path = pdf_text_new_from_pdf_string ("tmp.test", 8, &remain, &remain_length, &error);
+  path = pdf_text_new_from_unicode (filename, strlen (filename),
+                                    PDF_TEXT_UTF8,
+                                    &error);
   fail_unless (path != NULL);
   fail_if (error != NULL);
 
   /* Open new file */
-  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_WRITE, &file);
-  fail_if (ret != PDF_OK);
+  file = pdf_fsys_file_open (PDF_FSYS_DISK,
+                             path,
+                             PDF_FSYS_OPEN_MODE_WRITE,
+                             &error);
+  fail_unless (file != NULL);
+  fail_if (error != NULL);
 
-  ret = pdf_fsys_file_write (file, "0123456789", 10, &written);
-  fail_if (ret != PDF_OK);
-  fail_if (written != 10);
-  pdf_fsys_file_close (file);
+  written_bytes = 0;
+  fail_unless (pdf_fsys_file_write (file,
+                                    file_contents,
+                                    strlen (file_contents),
+                                    &written_bytes,
+                                    &error) == PDF_TRUE);
+  fail_if (written_bytes != strlen (file_contents));
+  pdf_fsys_file_close (file, NULL);
 
+  file = pdf_fsys_file_open (PDF_FSYS_DISK,
+                             path,
+                             PDF_FSYS_OPEN_MODE_READ,
+                             &error);
+  fail_unless (file != NULL);
+  fail_if (error != NULL);
 
-  ret = pdf_fsys_file_open (NULL, path, PDF_FSYS_OPEN_MODE_READ, &file);
-  fail_if (ret != PDF_OK);
   /* Create the stream */
-  ret = pdf_stm_file_new (file,
+  stm = pdf_stm_file_new (file,
                           0,
                           0, /* Use the default cache size */
                           PDF_STM_READ,
-                          &stm);
-  fail_if(ret != PDF_OK);
+                          &error);
+  fail_unless (stm != NULL);
+  fail_if (error != NULL);
 
   /* Bseek into the stream */
-  pos = pdf_stm_bseek (stm, 300);
-  fail_if(pos != 9);
+  fail_unless (pdf_stm_bseek (stm, 300) == (strlen (file_contents) - 1));
 
-  /* Read a character */
-  ret = pdf_stm_read_char (stm, &ret_char);
-  fail_if(ret != PDF_OK);
-  fail_if(ret_char != '9');
+  /* Read last written character */
+  fail_unless (pdf_stm_read_char (stm, &ret_char, &error) == PDF_TRUE);
+  fail_if (error != NULL);
+  fail_unless (ret_char == file_contents[strlen (file_contents) - 1]);
 
   /* Destroy data */
   pdf_stm_destroy (stm);
-  pdf_fsys_file_close (file);
+  pdf_fsys_file_close (file, NULL);
   pdf_text_destroy (path);
 }
 END_TEST
-
-
 
 /*
  * Test case creation function
@@ -278,11 +315,10 @@ test_pdf_stm_bseek (void)
 {
   TCase *tc = tcase_create ("pdf_stm_bseek");
 
-  tcase_add_test(tc, pdf_stm_bseek_001);
-  tcase_add_test(tc, pdf_stm_bseek_002);
-  tcase_add_test(tc, pdf_stm_bseek_003);
-  tcase_add_test(tc, pdf_stm_bseek_004);
-
+  tcase_add_test (tc, pdf_stm_bseek_001);
+  tcase_add_test (tc, pdf_stm_bseek_002);
+  tcase_add_test (tc, pdf_stm_bseek_003);
+  tcase_add_test (tc, pdf_stm_bseek_004);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);

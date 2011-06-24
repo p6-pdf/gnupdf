@@ -1,4 +1,4 @@
-/* -*- mode: C -*- Time-stamp: "2011-02-17 19:52:19 aleksander"
+/* -*- mode: C -*-
  *
  *       File:         pdf-fp-func.c
  *       Date:         Sun Nov 30 18:46:06 2008
@@ -408,7 +408,8 @@ pdf_fp_func_4_new (pdf_u32_t m,
   size_t s_domain = sizeof(pdf_real_t)*m*2;
   size_t s_range = sizeof(pdf_real_t)*n*2;
 
-  pdf_stm_t reader_stm;
+  pdf_error_t *inner_error = NULL;
+  pdf_stm_t *reader_stm;
   pdf_token_reader_t reader;
 
   /* Common data */
@@ -430,13 +431,15 @@ pdf_fp_func_4_new (pdf_u32_t m,
   debug_off = pdf_alloc (sizeof(*debug_off) * debug_alloc);
 
   /* Initialize the token reader */
-  if (pdf_stm_mem_new (code,
-                       code_size,
-                       code_size, /* Use the default cache size */
-                       PDF_STM_READ,
-                       &reader_stm) != PDF_OK)
+  reader_stm = pdf_stm_mem_new ((pdf_uchar_t *)code,
+                                code_size,
+                                code_size, /* Use the default cache size */
+                                PDF_STM_READ,
+                                &inner_error);
+  if (!reader_stm)
     {
-      /* FIXME: REFINE */
+      /* TODO: Propagate error */
+      pdf_error_destroy (inner_error);
       ret = PDF_ERROR;
       goto fail;
     }

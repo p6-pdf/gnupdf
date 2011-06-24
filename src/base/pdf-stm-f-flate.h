@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2007, 2008, 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2007-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,50 +28,12 @@
 
 #include <config.h>
 
-#include <zlib.h>
+#include <pdf-stm-filter.h>
 
-#include <pdf-types.h>
-#include <pdf-types-buffer.h>
-#include <pdf-hash.h>
+const pdf_stm_filter_impl_t *pdf_stm_f_flateenc_get (void);
 
-#define PDF_STM_F_FLATE_CHUNK 16384
+const pdf_stm_filter_impl_t *pdf_stm_f_flatedec_get (void);
 
-struct pdf_stm_f_flate_s
-{
-  z_stream stream;
-  int zret;
-  pdf_size_t incnt, outcnt, to_write;
-  pdf_bool_t writing_p;
-  pdf_char_t inbuf[PDF_STM_F_FLATE_CHUNK], outbuf[PDF_STM_F_FLATE_CHUNK];
-};
-
-typedef struct pdf_stm_f_flate_s * pdf_stm_f_flate_t;
-
-
-/* Filter API implementation */
-
-pdf_status_t pdf_stm_f_flatedec_init (pdf_hash_t  *params,
-                                      void       **state);
-
-pdf_status_t pdf_stm_f_flatedec_apply (pdf_hash_t   *params,
-                                       void         *state,
-                                       pdf_buffer_t *in,
-                                       pdf_buffer_t *out,
-                                       pdf_bool_t    finish_p);
-
-pdf_status_t pdf_stm_f_flateenc_init (pdf_hash_t  *params,
-                                      void       **state);
-
-pdf_status_t pdf_stm_f_flateenc_apply (pdf_hash_t   *params,
-                                       void         *state,
-                                       pdf_buffer_t *in,
-                                       pdf_buffer_t *out,
-                                       pdf_bool_t    finish_p);
-
-pdf_status_t pdf_stm_f_flatedec_dealloc_state (void *state);
-pdf_status_t pdf_stm_f_flateenc_dealloc_state (void *state);
-
-
-#endif /* pdf_stm_f_flate.h */
+#endif /* PDF_STM_F_FLATE_H */
 
 /* End of pdf_stm_f_flate.h */
