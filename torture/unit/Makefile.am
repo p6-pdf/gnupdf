@@ -161,7 +161,9 @@ TEST_SUITE_TEXT = base/text/pdf-text-test-common.h \
 
 
 # Unit tests for the Types Module test suite
-TEST_SUITE_TYPES =
+TEST_SUITE_TYPES = base/types/pdf-types-uuid-generate.c \
+		   base/types/pdf-types-uuid-string.c \
+                   base/types/pdf-types-uuid-equal-p.c
 
 TEST_SUITE_TIME =  base/time/pdf-time-test-common.h \
                    base/time/pdf-time-testdata.c \

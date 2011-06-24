@@ -34,6 +34,13 @@
 #include <stdlib.h>
 
 #include <pdf.h>
+#include <pdf-utils.h>
+
+/*
+ * Global variables
+ */
+
+char *program_name; /* Initialized in main() */
 
 /*
  * Command line options management

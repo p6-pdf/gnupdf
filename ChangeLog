@@ -1,3 +1,65 @@
+2011-06-22  Aleksander Morgado  <aleksander@gnu.org>
+
+	text: iterate word lists with iterators
+	Also fixes some clang-reported warnings.
+	Reported by Gustavo Martin Domato.
+	* src/base/pdf-text.c (pdf_text_cmp_non_case_sensitive)
+
+2011-06-21  Aleksander Morgado  <aleksander@gnu.org>
+
+	utils: avoid false warning in clang report.
+	Reported by Gustavo Martin Domato.
+	* utils/pdf-filter.c (create_stream)
+
+2011-06-19  Jose E. Marchesi  <jemarch@gnu.org>
+
+	torture: uuid-tests branch merged and minor fixes.
+	* utils/README: Remove empty lines at the end of the file.
+
+	* torture/unit/Makefile.am (TEST_SUITE_TYPES): Tab substitued with
+	blanks.
+
+2011-06-19  Jose E. Marchesi  <jemarch@gnu.org>
+
+	prmgt: embed css file in the generated html reports.
+	* prmgt/Makefile.am (cyclo.html): Include build-aux/pmccabe.css
+	verbatim.
+	(apic.html): Likewise.
+	(ut.html): Likewise.
+
+2011-06-19  Jose E. Marchesi  <jemarch@gnu.org>
+
+	prmgt: stop building mediawiki reports.  Build html reports
+	instead.
+	* configure.ac: Generate apic2html and testlog2html.
+
+	* prmgt/apic2html.in: Renamed from prmgt/apic2html.in.
+	Copyright years updated.
+	Reworked to generate html instead of mediawiki markup.
+
+	* prmgt/testlog2html.in: Renamed from prmgt/testlog2wiki.in.
+	Copyright years updated.
+	Reworked to generate html instead of mediawiki markup.
+
+	* prmgt/Makefile.am: cyclo.wiki rule removed.
+	(ut.html): New rule.
+
+2011-06-18  Jose E. Marchesi  <jemarch@gnu.org>
+
+	utils: make pdf-filereader to use the common facilities in
+	pdf-utils.
+	* utils/pdf-utils.h (PDF_UTILS_COPYRIGHT_DOC): Update the
+	copyright years to cover 2011.
+
+	* utils/pdf-filereader.c: Include pdf-utils.h.
+	New global program_name.
+	Use the PDF_UTILS_COPYRIGHT_DOC macro.
+	(parse_args): Print pdf_utils_version_msg, instead of
+	pdf_filereader_version_msg.
+
+	* utils/README: Updated to match the current contents of the
+	directory.
+
 2011-06-14  Aleksander Morgado  <aleksander@gnu.org>
 
 	fsys: reviewed API and implementation of the Filesystem module.
@@ -86,6 +148,15 @@
 
 	build: do not require libcheck, it must be optional
 	* configure.ac
+
+2011-05-30  Albert Meroño Peñuela <albert.merono@est.fib.upc.edu>
+
+	torture: Unit tests for the UUID module.
+	* torture/unit/Makefile.am: UUID tests inclusion
+	* torture/unit/base/types/tsuite-types.c: UUID test suite
+	* torture/unit/base/types/pdf-types-uuid-generate.c: UUID tests
+	* torture/unit/base/types/pdf-types-uuid-string.c: Likewise
+	* torture/unit/base/types/pdf-types-uuid-equal-p.c: Likewise
 
 2011-05-19  Aleksander Morgado  <aleksander@gnu.org>
 
@@ -277,6 +348,20 @@
 	* src/base/pdf-fsys-disk.c (pdf_fsys_disk_file_get_pos)
 	(pdf_fsys_disk_file_set_pos)
 
+2011-05-10  Jose E. Marchesi  <jemarch@gnu.org>
+
+	lib: avoid name clash with PDF_OBJ_IS_NULL and provide a quick
+	macro to determine whether a given object is the null object.
+	Problem reported by Jin Chen-Xin.
+	* doc/gnupdf.texi (Generic Functions to Manipulate Objects):
+	Document the new PDF_OBJ_IS_NULL macro.
+	Use the PDF_OBJ_IS_NULL macro in usage examples instead of
+	directly compare the structures.
+
+	* src/object/pdf-obj.h (_pdf_obj_null): Constant PDF_OBJ_NULL
+	renamed to _pdf_obj_null.
+	(PDF_OBJ_IS_NULL): New macro.
+
 2011-04-27  Aleksander Morgado  <aleksander@gnu.org>
 
 	base,types: Make unsigned the data in the buffer. Fixes FS#125.
@@ -295,6 +380,11 @@
 	* src/base/pdf-token-writer.c: Idem
 	* src/base/pdf-types-buffer.[h|c]: Idem
 	* torture/unit/base/stm/pdf-stm-write.c: Idem
+
+2011-04-26  Aleksander Morgado  <aleksander@gnu.org>
+
+	build: fix warnings reporting during configure
+	* configure.ac
 
 2011-04-26  Aleksander Morgado  <aleksander@gnu.org>
 
@@ -346,41 +436,6 @@
 	* torture/unit/base/text/pdf-text-test-common.[h|c]
 	(pdf_text_test_get_hex): Removed method.
 
-2011-04-19  Aleksander Morgado  <aleksander@gnu.org>
-
-	base,stm: Refactored stream backends
-	* src/base/pdf-stm-be.c: File removed, backend implementations moved to
-	separate files.
-	* src/base/pdf-stm-be.h: New generic API for the stream backends.
-	* src/base/pdf-stm-be-cfile.[h|c]: New files with the implementation of
-	the C-File stream backend.
-	* src/base/pdf-stm-be-file.[h|c]: New files with the implementation of
-	the File stream backend.
-	* src/base/pdf-stm-be-mem.[h|c]: New files with the implementation of
-	the Memory stream backend.
-	* src/Makefile.am: Add/remove files from compilation.
-	* src/base/pdf-stm-filter.[h|c]: Use new stream backend API.
-	* src/base/pdf-stm.[h|c]: Idem.
-
-2011-05-10  Jose E. Marchesi  <jemarch@gnu.org>
-
-	lib: avoid name clash with PDF_OBJ_IS_NULL and provide a quick
-	macro to determine whether a given object is the null object.
-	Problem reported by Jin Chen-Xin.
-	* doc/gnupdf.texi (Generic Functions to Manipulate Objects):
-	Document the new PDF_OBJ_IS_NULL macro.
-	Use the PDF_OBJ_IS_NULL macro in usage examples instead of
-	directly compare the structures.
-
-	* src/object/pdf-obj.h (_pdf_obj_null): Constant PDF_OBJ_NULL
-	renamed to _pdf_obj_null.
-	(PDF_OBJ_IS_NULL): New macro.
-
-2011-04-26  Aleksander Morgado  <aleksander@gnu.org>
-
-	build: fix warnings reporting during configure
-	* configure.ac
-
 2011-04-22  Jose E. Marchesi  <jemarch@gnu.org>
 
 	torture: fixes in the test headers.
@@ -421,7 +476,22 @@
 	comply with the syntax understood by build-aux/generate-tsd.pl.
 
 	* torture/unit/base/time/pdf-time-add-cal-span.c: Likewise.
->>>>>>> MERGE-SOURCE
+
+2011-04-19  Aleksander Morgado  <aleksander@gnu.org>
+
+	base,stm: Refactored stream backends
+	* src/base/pdf-stm-be.c: File removed, backend implementations moved to
+	separate files.
+	* src/base/pdf-stm-be.h: New generic API for the stream backends.
+	* src/base/pdf-stm-be-cfile.[h|c]: New files with the implementation of
+	the C-File stream backend.
+	* src/base/pdf-stm-be-file.[h|c]: New files with the implementation of
+	the File stream backend.
+	* src/base/pdf-stm-be-mem.[h|c]: New files with the implementation of
+	the Memory stream backend.
+	* src/Makefile.am: Add/remove files from compilation.
+	* src/base/pdf-stm-filter.[h|c]: Use new stream backend API.
+	* src/base/pdf-stm.[h|c]: Idem.
 
 2011-04-18  Aleksander Morgado  <aleksander@gnu.org>
 
