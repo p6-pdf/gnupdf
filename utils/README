@@ -1,11 +1,14 @@
 This directory contains several utilities to manipulate PDF
 documents. These utilities make use of the GNU PDF Library.
 
-
   `pdf-filter'
 
       A front-end for the standard PDF filters.
 
-  `toktest'
+  `pdf-tokeniser'
 
       A test application for the PDF tokenizer.
+
+  `pdf-filereader'
+
+      A test application for the fsys module.
