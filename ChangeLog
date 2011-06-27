@@ -1,3 +1,8 @@
+2011-06-27  Aleksander Morgado  <aleksander@gnu.org>
+
+	utils: fix branch merge issues in pdf-filereader
+	* utils/pdf-filereader.c
+
 2011-06-22  Aleksander Morgado  <aleksander@gnu.org>
 
 	text: iterate word lists with iterators

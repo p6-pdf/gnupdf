@@ -78,7 +78,7 @@ static const struct option long_options[] =
 
 /* Messages */
 
-const char *pdf_filereader_version_msg = "pdf-filereader 0.1";
+PDF_UTILS_COPYRIGHT_DOC ("pdf-filereader");
 
 const char *pdf_filereader_usage_msg = "\
 \n\
@@ -102,7 +102,8 @@ options:\n\
 \n\
   --help                              print a help message and exit\n\
   --version                           show pdf-filter version and exit\n\
-";
+\n"
+  PDF_UTILS_HELP_FOOTER_DOC ("pdf-filereader");
 
 /*
  * Data types:
@@ -172,7 +173,7 @@ parse_args (int argc, char *argv[])
           }
         case VERSION_ARG:
           {
-            fprintf (stdout, "%s\n", pdf_filereader_version_msg);
+            fprintf (stdout, "%s\n", pdf_utils_version_msg);
             exit (EXIT_SUCCESS);
             break;
           }
@@ -546,6 +547,8 @@ action_read_file (void)
 int
 main (int argc, char *argv[])
 {
+  set_program_name (argv[0]);
+
 #if defined HAVE_SETLOCALE
   /* Initialize locale in the program */
   setlocale (LC_ALL, "");
