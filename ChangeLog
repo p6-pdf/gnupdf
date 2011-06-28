@@ -1,3 +1,8 @@
+2011-06-28  Aleksander Morgado  <aleksander@gnu.org>
+
+	error: update copyright years
+	* src/base/pdf-error.[h|c]
+
 2011-06-27  Aleksander Morgado  <aleksander@gnu.org>
 
 	utils: fix branch merge issues in pdf-filereader
