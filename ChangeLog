@@ -1,5 +1,12 @@
 2011-06-28  Aleksander Morgado  <aleksander@gnu.org>
 
+	token: minor fixes in the token reader
+	* src/base/pdf-token-reader.c (pdf_token_reader_new): ensure the input
+	stream is one for reading.
+	(parse_real): avoid compiler warning.
+
+2011-06-28  Aleksander Morgado  <aleksander@gnu.org>
+
 	error: update copyright years
 	* src/base/pdf-error.[h|c]
 

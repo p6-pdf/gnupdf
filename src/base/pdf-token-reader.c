@@ -129,12 +129,26 @@ pdf_token_reader_new (pdf_stm_t    *stm,
 {
   pdf_token_reader_t *tokr = NULL;
 
+  PDF_ASSERT_POINTER_RETURN_VAL (stm, NULL);
+
+  /* Allow only read streams */
+  if (pdf_stm_get_mode (stm) != PDF_STM_READ)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_TOKENISER,
+                     PDF_EBADDATA,
+                     "cannot create token reader: "
+                     "read stream needed");
+      return NULL;
+    }
+
   tokr = pdf_alloc (sizeof (struct pdf_token_reader_s));
   if (!tokr)
     {
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_TOKENISER,
                      PDF_ENOMEM,
+                     "cannot create token reader: "
                      "couldn't allocate '%lu' bytes",
                      (unsigned long)sizeof (struct pdf_token_reader_s));
       return NULL;
@@ -186,7 +200,8 @@ pdf_token_reader_reset (pdf_token_reader_t  *reader,
 void
 pdf_token_reader_destroy (pdf_token_reader_t *reader)
 {
-  PDF_ASSERT_POINTER_RETURN (reader);
+  if (!reader)
+    return;
 
   if (reader->buffer)
     pdf_buffer_destroy (reader->buffer);
@@ -339,10 +354,10 @@ validate_real (pdf_buffer_t *buffer,
  * double by translating it to the execution character set, replacing '.' with
  * the locale's decimal point, and calling strtod. */
 static pdf_bool_t
-parse_real (pdf_buffer_t  *buffer,
-            pdf_char_t    *locale_dec_pt,
-            double        *value,
-            pdf_error_t  **error)
+parse_real (pdf_buffer_t      *buffer,
+            const pdf_char_t  *locale_dec_pt,
+            double            *value,
+            pdf_error_t      **error)
 {
   pdf_size_t tmplen;
   pdf_size_t wpos;
