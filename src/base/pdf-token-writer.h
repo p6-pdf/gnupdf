@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,49 +31,25 @@
 #include <pdf-types.h>
 #include <pdf-stm.h>
 #include <pdf-token.h>
-#include <pdf-token-reader.h>
 
 /* BEGIN PUBLIC */
-/* pdf-token-writer.h */
 
-struct pdf_token_writer_s;  /* opaque type */
-typedef struct pdf_token_writer_s *pdf_token_writer_t;
+/* --------------------- Token Writer ------------------------- */
 
-pdf_status_t pdf_token_writer_new (pdf_stm_t *stm, pdf_token_writer_t *writer);
-pdf_status_t pdf_token_writer_destroy (pdf_token_writer_t writer);
-pdf_status_t pdf_token_writer_reset (pdf_token_writer_t writer);
-pdf_status_t pdf_token_write (pdf_token_writer_t writer, pdf_u32_t flags,
-                              pdf_token_t *token);
+/* opaque type */
+typedef struct pdf_token_writer_s pdf_token_writer_t;
+
+pdf_token_writer_t *pdf_token_writer_new (pdf_stm_t    *stm,
+                                          pdf_error_t **error);
+void pdf_token_writer_destroy (pdf_token_writer_t *writer);
+pdf_bool_t pdf_token_writer_reset (pdf_token_writer_t  *writer,
+                                   pdf_error_t        **error);
+pdf_bool_t pdf_token_write (pdf_token_writer_t  *writer,
+                            pdf_u32_t            flags,
+                            const pdf_token_t   *token,
+                            pdf_error_t        **error);
 
 /* END PUBLIC */
-
-/* Internal state */
-struct pdf_token_writer_s {
-  pdf_stm_t *stream;  /* stream to read bytes from */
-  char *decimal_point;
-
-  pdf_bool_t in_keyword;
-  pdf_size_t line_length, buffered_line_length, max_line_length;
-
-  int stage; /* This field is used by the writing routines to denote
-                several states in the writing of the tokens.  Thus its
-                concrete meaning depends on the specific writing
-                routine.  See the write_*_token functions in
-                pdf-token-writer.c for more information. */
-  pdf_size_t pos;
-  pdf_size_t paren_quoting_start, paren_quoting_end;
-  pdf_bool_t utf8;
-  pdf_buffer_t *buffer;
-};
-
-/* PDF32000 7.5.1: "lines that are not part of stream object data
- * are limited to no more than 255 characters"... */
-#define PDF_TOKW_MAX_LINE_LENGTH 255
-
-/* The buffer size is mostly arbitrary, but the buffer must be large
- * enough for snprintf to write any possible floating point value.
- * Any number over 50 should be fine. */
-#define PDF_TOKW_BUFFER_SIZE 32768
 
 #endif
 

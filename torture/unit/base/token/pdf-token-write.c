@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2010, 2011 Free Software Foundation, Inc. */
+/* Copyright (C) 2010-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,25 +41,26 @@
    dst_size characters are written to dst (including terminating
    '\0').  If dst_size is not enough to process src_len characters
    then trailing characters in src are ignored.  Returns dst. */
-static char*
-string_to_printable(char *dst,
-                    int dst_size,
-                    char *src,
-                    int src_len)
+static pdf_char_t *
+string_to_printable (pdf_char_t *dst,
+                     pdf_size_t  dst_size,
+                     pdf_char_t *src,
+                     pdf_size_t  src_len)
 {
-  int src_ind, dst_ind;
+  pdf_size_t src_ind;
+  pdf_size_t dst_ind;
 
   dst_size--; /* reserve one char in dst for '\0' */
 
-  for (src_ind = dst_ind = 0;
+  for (src_ind = 0, dst_ind = 0;
        dst_ind < dst_size && src_ind < src_len;
        src_ind++)
     {
       unsigned char ch = src[src_ind];
 
-      if ( ch == '\\' )
+      if (ch == '\\')
         {
-          if ( dst_size - dst_ind >= 2 )
+          if (dst_size - dst_ind >= 2)
             {
               dst[dst_ind++] = '\\';
               dst[dst_ind++] = '\\';
@@ -68,7 +69,7 @@ string_to_printable(char *dst,
               /* prevent processing the next character from src */
               dst_size = dst_ind;
         }
-      else if ( ch > 32 && ch < 127 ) /* if printable except for '\\' */
+      else if (ch > 32 && ch < 127) /* if printable except for '\\' */
         {
           dst[dst_ind++] = ch;
         }
@@ -76,17 +77,17 @@ string_to_printable(char *dst,
         {
           const int seq_len = 4;
 
-          if ( dst_size - dst_ind >= seq_len )
+          if (dst_size - dst_ind >= seq_len)
             {
               /* must write exactly seq_len characters (not counting
                  the '\0' character) */
-              sprintf( dst + dst_ind, "\\%03hho", ch );
+              sprintf (dst + dst_ind, "\\%03hho", ch);
 
               dst_ind += seq_len;
             }
           else
-              /* prevent processing the next character from src */
-              dst_size = dst_ind;
+            /* prevent processing the next character from src */
+            dst_size = dst_ind;
         }
     }
 
@@ -98,57 +99,68 @@ string_to_printable(char *dst,
 /* Write a token in an in-memory buffer and compare results.  */
 static void
 write_and_check (pdf_token_t *token,
-                 pdf_u32_t flags,
-                 pdf_char_t *expected,
-                 pdf_size_t expected_size,
-                 pdf_size_t max_size)
+                 pdf_u32_t    flags,
+                 pdf_char_t  *expected,
+                 pdf_size_t   expected_size,
+                 pdf_size_t   max_size)
 {
   pdf_stm_t *stm;
   pdf_char_t *buffer;
-  pdf_token_writer_t writer;
-  char *buffer_printable;
-  char *expected_printable;
+  pdf_token_writer_t *writer;
+  pdf_char_t *buffer_printable;
+  pdf_char_t *expected_printable;
   pdf_error_t *error = NULL;
 
   /* Allocate memory for printable strings.  */
-  fail_if ((buffer_printable = pdf_alloc (max_size)) == NULL);
-  fail_if ((expected_printable = pdf_alloc (max_size)) == NULL);
+  buffer_printable = pdf_alloc (max_size);
+  fail_unless (buffer_printable != NULL);
+  expected_printable = pdf_alloc (max_size);
+  fail_unless (expected_printable != NULL);
 
   /* Create the in-memory stream.  */
-  fail_if ((buffer = pdf_alloc (max_size)) == NULL);
+  buffer = pdf_alloc (max_size);
+  fail_unless (buffer != NULL);
   stm = pdf_stm_mem_new (buffer, max_size, 0, PDF_STM_WRITE, &error);
   fail_unless (stm != NULL);
   fail_if (error != NULL);
 
   /* Create the token writer.  */
-  fail_if (pdf_token_writer_new (stm, &writer) != PDF_OK);
+  writer = pdf_token_writer_new (stm, &error);
+  fail_unless (writer != NULL);
+  fail_if (error != NULL);
 
   /* Write the token.  */
-  fail_if (pdf_token_write (writer, flags, token) != PDF_OK);
+  fail_unless (pdf_token_write (writer, flags, token, &error) == PDF_TRUE);
+  fail_if (error != NULL);
 
   /* Destroy writer and stream.  */
-  fail_if (pdf_token_writer_destroy (writer));
+  pdf_token_writer_destroy (writer);
   pdf_stm_destroy (stm);
 
-  /* Compare results.  */
-  fail_unless (memcmp (buffer, expected, expected_size) == 0,
-               "Assertion 'memcmp"
-                 " (\"%s\" /*buffer*/, \"%s\" /*expected*/, %d)"
-                 " == 0' failed",
-               string_to_printable(buffer_printable,
-                                   max_size,
-                                   buffer,
-                                   expected_size),
-               string_to_printable(expected_printable,
-                                   max_size,
-                                   expected,
-                                   expected_size),
-               (int) expected_size);
-  /* Note that memcmp is used here instead of strncmp. It is necessary
+  /* Compare results.
+     Note that memcmp is used here instead of strncmp. It is necessary
      for tests of "nonreadable" PDF literal strings, when there is
      '\0' char inside pdf string.  Thus, pdf_token_write_string_null
      test may result in false-pass when using strncmp here. See also
-     7.3.4.2 Literal Strings in the PDF spec. */
+     7.3.4.2 Literal Strings in the PDF spec.
+  */
+  fail_unless (memcmp (buffer, expected, expected_size) == 0,
+               "Assertion 'memcmp"
+                 " (\"%s\" /*buffer*/, \"%s\" /*expected*/, %lu)"
+                 " == 0' failed",
+               string_to_printable (buffer_printable,
+                                    max_size,
+                                    buffer,
+                                    expected_size),
+               string_to_printable (expected_printable,
+                                    max_size,
+                                    expected,
+                                    expected_size),
+               (unsigned long) expected_size);
+
+  pdf_dealloc (buffer);
+  pdf_dealloc (buffer_printable);
+  pdf_dealloc (expected_printable);
 }
 
 /*

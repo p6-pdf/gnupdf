@@ -1,5 +1,16 @@
 2011-06-28  Aleksander Morgado  <aleksander@gnu.org>
 
+	token: reviewed API of the pdf token writer.
+	* src/base/pdf-token-writer.[h|c]
+
+	Port the tokeniser utility to use the new token reader API.
+	* utils/pdf-tokeniser.c
+
+	Port the token reader unit tests to use the new token reader API.
+	* torture/unit/base/token/pdf-token-write.c
+
+2011-06-28  Aleksander Morgado  <aleksander@gnu.org>
+
 	token: common enum type moved to token object header
 	* src/base/pdf-token.h
 	* src/base/pdf-token-reader.h
