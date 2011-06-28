@@ -49,16 +49,6 @@ pdf_token_t *pdf_token_read (pdf_token_reader_t  *reader,
                              pdf_u32_t            flags,
                              pdf_error_t        **error);
 
-enum pdf_token_rw_flags_e
-  {
-    /* these flags are used for token_read and token_write */
-    PDF_TOKEN_NO_NAME_ESCAPES  = 0x01, /* read/write */
-    PDF_TOKEN_RET_COMMENTS     = 0x02, /* read */
-    PDF_TOKEN_END_AT_STREAM    = 0x04, /* read */
-    PDF_TOKEN_HEX_STRINGS      = 0x08, /* write */
-    PDF_TOKEN_READABLE_STRINGS = 0x10, /* write */
-  };
-
 /* END PUBLIC */
 
 #endif

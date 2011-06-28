@@ -1,5 +1,11 @@
 2011-06-28  Aleksander Morgado  <aleksander@gnu.org>
 
+	token: common enum type moved to token object header
+	* src/base/pdf-token.h
+	* src/base/pdf-token-reader.h
+
+2011-06-28  Aleksander Morgado  <aleksander@gnu.org>
+
 	token: minor fixes in the token reader
 	* src/base/pdf-token-reader.c (pdf_token_reader_new): ensure the input
 	stream is one for reading.

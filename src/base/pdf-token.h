@@ -51,6 +51,18 @@
 
 /* BEGIN PUBLIC */
 
+/* --------------------- Common Tokeniser module ------------------------- */
+
+enum pdf_token_rw_flags_e
+  {
+    /* these flags are used for token_read and token_write */
+    PDF_TOKEN_NO_NAME_ESCAPES  = 0x01, /* read/write */
+    PDF_TOKEN_RET_COMMENTS     = 0x02, /* read */
+    PDF_TOKEN_END_AT_STREAM    = 0x04, /* read */
+    PDF_TOKEN_HEX_STRINGS      = 0x08, /* write */
+    PDF_TOKEN_READABLE_STRINGS = 0x10, /* write */
+  };
+
 /* --------------------- Token Object ------------------------- */
 
 enum pdf_token_type_e
