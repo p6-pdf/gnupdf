@@ -1,3 +1,18 @@
+2011-06-29  Aleksander Morgado  <aleksander@gnu.org>
+
+	token: renamed some API methods
+	* src/base/pdf-token-reader.[h|c]: Renamed pdf_token_read() to
+	pdf_token_reader_read().
+	* src/base/pdf-token-writer.[h|c]: Renamed pdf_token_write() to
+	pdf_token_writer_write().
+	* src/base/pdf-fp-func.c: Use updated token API.
+	* utils/pdf-tokeniser.c: Use updated token API.
+	* torture/unit/base/token/pdf-token-reader.c: Renamed file and use
+	updated token API.
+	* torture/unit/base/token/pdf-token-writer.c: Idem.
+	* torture/unit/Makefile.am: Use new filenames.
+	* torture/unit/base/token/tsuite-token.c
+
 2011-06-28  Aleksander Morgado  <aleksander@gnu.org>
 
 	token: reviewed API of the pdf token writer.

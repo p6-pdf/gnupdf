@@ -1098,10 +1098,10 @@ write_valueless_token (pdf_token_writer_t  *writer,
 /***** Token dispatching *****/
 
 pdf_bool_t
-pdf_token_write (pdf_token_writer_t  *writer,
-                 pdf_u32_t            flags,
-                 const pdf_token_t   *token,
-                 pdf_error_t        **error)
+pdf_token_writer_write (pdf_token_writer_t  *writer,
+                        pdf_u32_t            flags,
+                        const pdf_token_t   *token,
+                        pdf_error_t        **error)
 {
   pdf_bool_t rv;
 

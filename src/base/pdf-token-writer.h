@@ -44,10 +44,10 @@ pdf_token_writer_t *pdf_token_writer_new (pdf_stm_t    *stm,
 void pdf_token_writer_destroy (pdf_token_writer_t *writer);
 pdf_bool_t pdf_token_writer_reset (pdf_token_writer_t  *writer,
                                    pdf_error_t        **error);
-pdf_bool_t pdf_token_write (pdf_token_writer_t  *writer,
-                            pdf_u32_t            flags,
-                            const pdf_token_t   *token,
-                            pdf_error_t        **error);
+pdf_bool_t pdf_token_writer_write (pdf_token_writer_t  *writer,
+                                   pdf_u32_t            flags,
+                                   const pdf_token_t   *token,
+                                   pdf_error_t        **error);
 
 /* END PUBLIC */
 

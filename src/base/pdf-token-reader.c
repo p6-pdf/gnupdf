@@ -1219,9 +1219,9 @@ handle_char (pdf_token_reader_t  *reader,
 }
 
 pdf_token_t *
-pdf_token_read (pdf_token_reader_t  *reader,
-                pdf_u32_t            flags,
-                pdf_error_t        **error)
+pdf_token_reader_read (pdf_token_reader_t  *reader,
+                       pdf_u32_t            flags,
+                       pdf_error_t        **error)
 {
   pdf_token_t *new_token = NULL;
   pdf_bool_t eof;

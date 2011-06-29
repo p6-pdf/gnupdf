@@ -271,11 +271,11 @@ print_file (FILE       *file,
         }
     }
 
-  while ((token = pdf_token_read (reader, reader_flags, &error)) != NULL)
+  while ((token = pdf_token_reader_read (reader, reader_flags, &error)) != NULL)
     {
       if (writer)
         {
-          if (!pdf_token_write (writer, writer_flags, token, &error))
+          if (!pdf_token_writer_write (writer, writer_flags, token, &error))
             {
               fprintf (stderr,
                        "pdf_token_write error: %s\n",

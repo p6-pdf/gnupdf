@@ -1,9 +1,9 @@
 /* -*- mode: C -*-
  *
- *       File:         pdf-token-write.c
+ *       File:         pdf-token-writer.c
  *       Date:         Tue Sep 21 21:08:07 2010
  *
- *       GNU PDF Library - Unit tests for pdf_token_write
+ *       GNU PDF Library - Unit tests for pdf_token_writer
  *
  */
 
@@ -130,7 +130,7 @@ write_and_check (pdf_token_t *token,
   fail_if (error != NULL);
 
   /* Write the token.  */
-  fail_unless (pdf_token_write (writer, flags, token, &error) == PDF_TRUE);
+  fail_unless (pdf_token_writer_write (writer, flags, token, &error) == PDF_TRUE);
   fail_if (error != NULL);
 
   /* Destroy writer and stream.  */
@@ -1018,9 +1018,9 @@ END_TEST
  * Test case creation function
  */
 TCase *
-test_pdf_token_write (void)
+test_pdf_token_writer (void)
 {
-  TCase *tc = tcase_create ("pdf_token_write");
+  TCase *tc = tcase_create ("pdf_token_writer");
   tcase_add_test (tc, pdf_token_write_integer_positive);
   tcase_add_test (tc, pdf_token_write_integer_negative);
   tcase_add_test (tc, pdf_token_write_real_positive);
@@ -1060,4 +1060,4 @@ test_pdf_token_write (void)
   return tc;
 }
 
-/* End of pdf-token-write.c */
+/* End of pdf-token-writer.c */

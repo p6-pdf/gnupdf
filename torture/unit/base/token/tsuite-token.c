@@ -27,18 +27,19 @@
 
 #include <check.h>
 #include <pdf-test-common.h>
-extern TCase *test_pdf_token_read (void);
-extern TCase *test_pdf_token_write (void);
+
+extern TCase *test_pdf_token_reader (void);
+extern TCase *test_pdf_token_writer (void);
 
 Suite *
 tsuite_token ()
 {
   Suite *s;
 
-  s = suite_create("token");
+  s = suite_create ("token");
 
-  suite_add_tcase (s, test_pdf_token_read ());
-  suite_add_tcase (s, test_pdf_token_write ());
+  suite_add_tcase (s, test_pdf_token_reader ());
+  suite_add_tcase (s, test_pdf_token_writer ());
 
   return s;
 }

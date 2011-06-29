@@ -2039,9 +2039,9 @@ get_token (pdf_token_reader_t *reader,
   pdf_error_t *inner_error = NULL;
 
   /* Invoke the tokeniser */
-  token = pdf_token_read (reader,
-                          PDF_TOKEN_NO_NAME_ESCAPES,
-                          &inner_error);
+  token = pdf_token_reader_read (reader,
+                                 PDF_TOKEN_NO_NAME_ESCAPES,
+                                 &inner_error);
 
   *token_begin = pdf_token_reader_begin_pos (reader);
 

@@ -1,13 +1,13 @@
 /* -*- mode: C -*-
  *
- *       File:         pdf-token-read.c
+ *       File:         pdf-token-reader.c
  *       Date:         Wed Jan 14 05:44:48 2009
  *
- *       GNU PDF Library - Unit tests for pdf_token_read
+ *       GNU PDF Library - Unit tests for pdf_token_reader
  *
  */
 
-/* Copyright (C) 2010, 2011 Free Software Foundation, Inc. */
+/* Copyright (C) 2010-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -108,7 +108,7 @@ get_token (pdf_token_reader_t *tokr,
   pdf_token_t *token;
   pdf_error_t *error = NULL;
 
-  token = pdf_token_read (tokr, flags, &error);
+  token = pdf_token_reader_read (tokr, flags, &error);
   fail_unless (expected != NULL);
   fail_unless (token != NULL);
   fail_if (error != NULL);
@@ -128,7 +128,7 @@ tokr_eof (pdf_token_reader_t *tokr,
   pdf_error_t *error = NULL;
 
   /* EOF is reported as NULL returned without error */
-  token = pdf_token_read (tokr, flags, &error);
+  token = pdf_token_reader_read (tokr, flags, &error);
   if (token)
     {
       pdf_token_destroy (token);
@@ -243,7 +243,7 @@ fail_for_raw_char (pdf_char_t ch)
   INIT_STM_STR (stm, stream_buf);
   INIT_TOKR (tokr, stm);
 
-  token = pdf_token_read (tokr, 0, &error);
+  token = pdf_token_reader_read (tokr, 0, &error);
   if (token)
     {
       str = pdf_token_get_name_data (token);
@@ -370,7 +370,7 @@ START_TEST (pdf_token_read_longstring)
 
   INIT_TOKR (tokr, stm);
 
-  token = pdf_token_read (tokr, 0, &error);
+  token = pdf_token_reader_read (tokr, 0, &error);
   fail_unless (token != NULL);
   fail_if (error != NULL);
 
@@ -796,9 +796,9 @@ END_TEST
  * Test case creation function
  */
 TCase *
-test_pdf_token_read (void)
+test_pdf_token_reader (void)
 {
-  TCase *tc = tcase_create ("pdf_token_read");
+  TCase *tc = tcase_create ("pdf_token_reader");
 
   tcase_add_test (tc, pdf_token_read_toktypes);
   tcase_add_test (tc, pdf_token_read_eos);
@@ -823,4 +823,4 @@ test_pdf_token_read (void)
   return tc;
 }
 
-/* End of pdf-token-read.c */
+/* End of pdf-token-reader.c */

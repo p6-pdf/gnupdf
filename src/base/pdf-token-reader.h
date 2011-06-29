@@ -39,15 +39,15 @@
 /* opaque type */
 typedef struct pdf_token_reader_s pdf_token_reader_t;
 
-pdf_token_reader_t *pdf_token_reader_new (pdf_stm_t    *stm,
-                                          pdf_error_t **error);
-void pdf_token_reader_destroy (pdf_token_reader_t *reader);
-pdf_bool_t pdf_token_reader_reset (pdf_token_reader_t  *reader,
-                                   pdf_error_t        **error);
-pdf_size_t pdf_token_reader_begin_pos (pdf_token_reader_t *reader);
-pdf_token_t *pdf_token_read (pdf_token_reader_t  *reader,
-                             pdf_u32_t            flags,
-                             pdf_error_t        **error);
+pdf_token_reader_t *pdf_token_reader_new       (pdf_stm_t    *stm,
+                                                pdf_error_t **error);
+void                pdf_token_reader_destroy   (pdf_token_reader_t *reader);
+pdf_bool_t          pdf_token_reader_reset     (pdf_token_reader_t  *reader,
+                                                pdf_error_t        **error);
+pdf_size_t          pdf_token_reader_begin_pos (pdf_token_reader_t *reader);
+pdf_token_t        *pdf_token_reader_read      (pdf_token_reader_t  *reader,
+                                                pdf_u32_t            flags,
+                                                pdf_error_t        **error);
 
 /* END PUBLIC */
 
