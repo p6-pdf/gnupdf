@@ -1,5 +1,11 @@
 2011-06-30  Aleksander Morgado  <aleksander@gnu.org>
 
+	text: fix several code static analysis issues
+	* src/base/pdf-text.c (pdf_text_set_unicode): Avoid uninitialized
+	argument.
+
+2011-06-30  Aleksander Morgado  <aleksander@gnu.org>
+
 	stm: fix several code static analysis issues
 	* src/base/pdf-stm.c (pdf_stm_write): Avoid dead assignment.
 	* src/base/pdf-stm-f-ahex.c (stm_f_ahexdec_apply): Idem.

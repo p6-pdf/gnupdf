@@ -1038,7 +1038,7 @@ pdf_text_set_unicode (pdf_text_t        *text,
                       enum pdf_text_unicode_encoding_e enc,
                       pdf_error_t      **error)
 {
-  pdf_char_t *temp_data;
+  pdf_char_t *temp_data = NULL;
   pdf_size_t temp_size;
   pdf_bool_t ret;
 
