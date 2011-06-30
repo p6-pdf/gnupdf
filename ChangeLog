@@ -3,6 +3,7 @@
 	stm: fix several code static analysis issues
 	* src/base/pdf-stm.c (pdf_stm_write): Avoid dead assignment.
 	* src/base/pdf-stm-f-ahex.c (stm_f_ahexdec_apply): Idem.
+	* src/base/pdf-stm-f-a85.c: Idem.
 
 2011-06-27  Aleksander Morgado  <aleksander@gnu.org>
 
