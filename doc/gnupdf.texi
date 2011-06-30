@@ -6260,7 +6260,7 @@ This data type must be initialized before being used, and destroyed afterwards.
 @node Creating and Destroying Text
 @subsection Creating and Destroying Text
 
-@deftypefun pdf_text_t *pdf_text_new (pdf_error_t **@var{error})
+@deftypefun {pdf_text_t *}pdf_text_new (pdf_error_t **@var{error})
 
 Create a new empty text object.
 
@@ -6350,7 +6350,7 @@ if (text1)
 @end table
 @end deftypefun
 
-@deftypefun pdf_text_t *pdf_text_new_from_host (const pdf_char_t *@var{str}, const pdf_size_t @var{size}, const pdf_char_t *@var{enc}, pdf_error_t **@var{error})
+@deftypefun {pdf_text_t *}pdf_text_new_from_host (const pdf_char_t *@var{str}, const pdf_size_t @var{size}, const pdf_char_t *@var{enc}, pdf_error_t **@var{error})
 
 Create a new text object and initialize it with a given host encoded string.
 
@@ -6465,7 +6465,7 @@ while (!error && remaining_length > 0);
 @end table
 @end deftypefun
 
-@deftypefun pdf_text_t *pdf_text_new_from_unicode (const pdf_char_t *@var{str}, pdf_size_t @var{size}, enum pdf_text_unicode_encoding_e @var{enc}, pdf_text_t **@var{error})
+@deftypefun {pdf_text_t *}pdf_text_new_from_unicode (const pdf_char_t *@var{str}, pdf_size_t @var{size}, enum pdf_text_unicode_encoding_e @var{enc}, pdf_text_t **@var{error})
 
 Create a new text object from a string of Unicode characters in a
 given unicode encoding. The Unicode string can be given with or without BOM,
@@ -6517,7 +6517,7 @@ if (!error)
 @end table
 @end deftypefun
 
-@deftypefun pdf_text_t *pdf_text_new_from_u32 (const pdf_u32_t @var{number}, pdf_error_t **@var{error})
+@deftypefun {pdf_text_t *}pdf_text_new_from_u32 (const pdf_u32_t @var{number}, pdf_error_t **@var{error})
 
 Create a new text variable containing the textual representation of a
 given integer.
@@ -7491,7 +7491,7 @@ PDF-formatted time strings may (PDF reference 1.7) or may not (ISO 32000) includ
 @node Time Creation and Destruction
 @subsection Time Creation and Destruction
 
-@deftypefun pdf_time_t *pdf_time_new (pdf_error_t *@var{error})
+@deftypefun {pdf_time_t *}pdf_time_new (pdf_error_t *@var{error})
 Creates a heap-allocated time object and sets it to the Epoch: Jan 1 1970-01-01 00:00:00 UTC
 
 @table @strong
@@ -11764,6 +11764,8 @@ The type of a PDF token.
 Valid values are:
 
 @table @code
+@item PDF_TOKEN_UNKNOWN
+Unknown value.
 @item PDF_TOKEN_INTEGER
 A PDF integer value.
 @item PDF_TOKEN_REAL
@@ -11772,11 +11774,11 @@ A PDF real value (a floating-point number).
 A PDF string.
 @item PDF_TOKEN_NAME
 A PDF name.
-@item PDF_TOKEN_COMMENT
-A PDF comment.
 @item PDF_TOKEN_KEYWORD
 A keyword, i.e., any string of regular characters such as ``null''
 or ``R'' that is not matched as another type.
+@item PDF_TOKEN_COMMENT
+A PDF comment.
 @item PDF_TOKEN_DICT_START
 The ``<<'' operator, which marks the beginning of a dictionary.
 @item PDF_TOKEN_DICT_END
@@ -11805,7 +11807,7 @@ generating the textual representation of a PDF token.
 @node Creation and destruction of tokenisers
 @subsection Creation and destruction of tokenisers
 
-@deftypefun pdf_status_t pdf_token_reader_new (pdf_stm_t @var{stm}, pdf_token_reader_t *@var{reader})
+@deftypefun {pdf_token_reader_t *}pdf_token_reader_new (pdf_stm_t *@var{stm}, pdf_error_t **@var{error})
 
 Create a new token reader operating a given reading stream.
 
@@ -11814,14 +11816,9 @@ Create a new token reader operating a given reading stream.
 @table @var
 @item stm
 A reading stream.
-@item reader
-A pointer to a token reader.
-@end table
-@item Returns
-A PDF status value:
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-The reader was successfully created.
 @item PDF_EBADDATA
 @var{stm} is not a reading stream.
 @item PDF_ENOMEM
@@ -11829,44 +11826,56 @@ Not enough memory to create the reader.
 @item PDF_ERROR
 An error prevented to perform the operation.
 @end table
+@end table
+@item Returns
+A newly created token reader object, or @code{NULL} on error.
 @item Usage example
 @example
-pdf_stm_t stream;
-pdf_token_reader_t reader;
 
-/* Open a file stream */
-XXX
-
-/* Create the token reader */
-switch (pdf_token_reader_new (stream, &reader))
+pdf_bool_t
+foo_get_token_reader_for_file (const pdf_text_t    *path,
+                               pdf_fsys_file_t    **file,
+                               pdf_stm_t          **stream,
+                               pdf_token_reader_t **reader,
+                               pdf_error_t        **error)
 @{
-   case PDF_BADDATA:
-   @{
-      /* STREAM is not a valid reading stream */
-      break;
-   @}
-   case PDF_ENOMEM:
-   @{
-      /* Not enough memory to create the reader */
-      break;
-   @}
-   case PDF_ERROR:
-   @{
-      /* Some other error prevented the creation of
-         the reader */
-      break;
-   @}
-   default:
-   @{
-      /* Success */
-      break;
-   @}
+  /* Open new file */
+  *file = pdf_fsys_file_open (PDF_FSYS_DISK,
+                              path,
+                              PDF_FSYS_OPEN_MODE_READ,
+                              error);
+  if (*file == NULL)
+    return PDF_FALSE;
+
+  /* Open a file stream */
+  *stream = pdf_stm_file_new (file,
+                              0,
+                              0, /* Use the default cache size */
+                              PDF_STM_READ,
+                              error);
+  if (*stream == NULL)
+    @{
+      pdf_fsys_file_close (*file);
+      return PDF_FALSE;
+    @}
+
+  /* Create the token reader */
+  *reader = pdf_token_reader_new (stream, error);
+  if (*reader == NULL)
+    @{
+      pdf_stm_destroy (*stream);
+      pdf_fsys_file_close (*file);
+      return PDF_FALSE;
+    @}
+
+  return PDF_TRUE;
 @}
+
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_token_writer_new (pdf_stm_t @var{stm}, pdf_token_writer_t *@var{writer})
+@deftypefun {pdf_token_writer_t *}pdf_token_writer_new (pdf_stm_t *@var{stm}, pdf_error_t **@var{error})
 
 Create a new token writer operating a given reading stream.
 
@@ -11874,60 +11883,67 @@ Create a new token writer operating a given reading stream.
 @item Parameters
 @table @var
 @item stm
-A writing stream.
-@item writer
-A pointer to a token writer.
-@end table
-@item Returns
-A PDF status value:
+A reading stream.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-The writer was successfully created.
 @item PDF_EBADDATA
-@var{stm} is not a writing stream.
+@var{stm} is not a reading stream.
 @item PDF_ENOMEM
 Not enough memory to create the writer.
 @item PDF_ERROR
 An error prevented to perform the operation.
 @end table
+@end table
+@item Returns
+A newly created token writer object, or @code{NULL} on error.
 @item Usage example
 @example
-pdf_stm_t stream;
-pdf_token_writer_t writer;
 
-/* Open a file stream */
-XXX
-
-/* Create the token writer */
-switch (pdf_token_writer_new (stream, &writer))
+pdf_bool_t
+foo_get_token_writer_for_file (const pdf_text_t    *path,
+                               pdf_fsys_file_t    **file,
+                               pdf_stm_t          **stream,
+                               pdf_token_writer_t **writer,
+                               pdf_error_t        **error)
 @{
-   case PDF_BADDATA:
-   @{
-      /* STREAM is not a valid writing stream */
-      break;
-   @}
-   case PDF_ENOMEM:
-   @{
-      /* Not enough memory to create the writer */
-      break;
-   @}
-   case PDF_ERROR:
-   @{
-      /* Any other error prevented the creation of
-         the writer */
-      break;
-   @}
-   default:
-   @{
-      /* Success */
-      break;
-   @}
+  /* Open new file */
+  *file = pdf_fsys_file_open (PDF_FSYS_DISK,
+                              path,
+                              PDF_FSYS_OPEN_MODE_WRITE,
+                              error);
+  if (*file == NULL)
+    return PDF_FALSE;
+
+  /* Open a file stream */
+  *stream = pdf_stm_file_new (file,
+                              0,
+                              0, /* Use the default cache size */
+                              PDF_STM_READ,
+                              error);
+  if (*stream == NULL)
+    @{
+      pdf_fsys_file_close (*file);
+      return PDF_FALSE;
+    @}
+
+  /* Create the token writer */
+  *writer = pdf_token_writer_new (stream, error);
+  if (*writer == NULL)
+    @{
+      pdf_stm_destroy (*stream);
+      pdf_fsys_file_close (*file);
+      return PDF_FALSE;
+    @}
+
+  return PDF_TRUE;
 @}
+
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_token_reader_destroy (pdf_token_reader_t @var{reader})
+@deftypefun void pdf_token_reader_destroy (pdf_token_reader_t *@var{reader})
 
 Destroy a token reader freeing any used resources.
 
@@ -11937,29 +11953,48 @@ Destroy a token reader freeing any used resources.
 @item reader
 The reader to destroy.
 @end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The token reader was destroyed.
-@item PDF_EBADDATA
-@var{reader} was NULL.
-@end table
 @item Usage example
 @example
-pdf_token_reader_t reader;
 
-/* Create a reader */
-XXX
-/* Destroy the reader */
-pdf_token_reader_destroy (reader);
+void
+foo_dummy (void)
+@{
+  const pdf_char_t *utf8_path = "/tmp/something";
+  pdf_stm_t *stream;
+  pdf_fsys_file_t *file;
+  pdf_token_reader_t *reader;
+  pdf_text_t *path;
+
+  path = pdf_text_new_from_unicode (utf8_path,
+                                    strlen (utf8_path),
+                                    PDF_TEXT_UTF8,
+                                    NULL);
+  if (!path)
+    return;
+
+  /* Create a reader (see pdf_token_reader_new() example) */
+  if (foo_get_token_reader_for_file (path,
+                                     &file,
+                                     &stream,
+                                     &reader,
+                                     NULL))
+    @{
+      /* Destroy the reader */
+      pdf_token_reader_destroy (reader);
+      pdf_stm_destroy (stream);
+      pdf_fsys_file_close (file);
+    @}
+
+  pdf_text_destroy (path);
+@}
+
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_token_writer_destroy (pdf_token_writer_t @var{writer})
+@deftypefun void pdf_token_writer_destroy (pdf_token_writer_t *@var{writer})
 
-Destroy a token writer, freeing any used resources.
+Destroy a token writer freeing any used resources.
 
 @table @strong
 @item Parameters
@@ -11967,30 +12002,48 @@ Destroy a token writer, freeing any used resources.
 @item writer
 The writer to destroy.
 @end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The token writer was destroyed.
-@item PDF_EBADDATA
-@var{writer} was NULL.
-@end table
 @item Usage example
 @example
-pdf_token_writer_t writer;
 
-/* Create a writer */
-XXX
-/* Destroy the writer */
-pdf_token_writer_destroy (writer);
+void
+foo_dummy (void)
+@{
+  const pdf_char_t *utf8_path = "/tmp/something";
+  pdf_stm_t *stream;
+  pdf_fsys_file_t *file;
+  pdf_token_writer_t *writer;
+  pdf_text_t *path;
+
+  path = pdf_text_new_from_unicode (utf8_path,
+                                    strlen (utf8_path),
+                                    PDF_TEXT_UTF8,
+                                    NULL);
+  if (!path)
+    return;
+
+  /* Create a writer (see pdf_token_writer_new() example) */
+  if (foo_get_token_writer_for_file (path,
+                                     &file,
+                                     &stream,
+                                     &writer,
+                                     NULL))
+    @{
+      /* Destroy the writer */
+      pdf_token_writer_destroy (writer);
+      pdf_stm_destroy (stream);
+      pdf_fsys_file_close (file);
+    @}
+
+  pdf_text_destroy (path);
+@}
+
 @end example
 @end table
 @end deftypefun
-
 @node Reading tokens
 @subsection Reading tokens
 
-@deftypefun pdf_status_t pdf_token_read (pdf_token_reader_t @var{reader}, pdf_u32_t @var{flags}, pdf_token_t *@var{token})
+@deftypefun {pdf_token_t *}pdf_token_reader_read (pdf_token_reader_t *@var{reader}, pdf_u32_t @var{flags}, pdf_error_t **@var{error})
 
 Read a token from a token reader.
 
@@ -12012,14 +12065,11 @@ Assume that a ``stream'' keyword token was just read, find the beginning
 of the corresponding stream, and return PDF_EEOF when successful
 (i.e., when the input stream is positioned after the first line feed).
 @end table
-@item token
-A pointer to a pdf_token_t that will hold the read token.
-@end table
-@item Returns
-A PDF status value:
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-The operation succeeded.
+@item PDF_ENOMEM
+Not enough memory.
 @item PDF_EAGAIN
 It's not possible to read a full token now.
 Since one may have been partially read, the operation should be repeated
@@ -12032,16 +12082,61 @@ The stream violates the PDF specifications.
 It's not possible to read the next token without exceeding an
 implementation limit (e.g., the token is too long).
 @item PDF_ERROR
-An unspecified error occurred.
+An error prevented to perform the operation.
 @end table
+@end table
+@item Returns
+A newly created token object if any valid found, or @code{NULL} if no more
+tokens available. On error, @code{NULL} is also returned, but @var{error} is
+set.
 @item Usage example
 @example
-XXX
+
+void
+foo_dummy (void)
+@{
+  const pdf_char_t *utf8_path = "/tmp/something";
+  pdf_stm_t *stream;
+  pdf_fsys_file_t *file;
+  pdf_token_reader_t *reader;
+  pdf_text_t *path;
+
+  path = pdf_text_new_from_unicode (utf8_path,
+                                    strlen (utf8_path),
+                                    PDF_TEXT_UTF8,
+                                    NULL);
+  if (!path)
+    return;
+
+  /* Create a reader (see pdf_token_reader_new() example) */
+  if (foo_get_token_reader_for_file (path,
+                                     &file,
+                                     &stream,
+                                     &reader,
+                                     NULL))
+    @{
+      pdf_token_t *token;
+
+      while ((token = pdf_token_reader_read (reader, 0, NULL)) != NULL)
+        @{
+          printf ("A token was successfully read!");
+          pdf_token_destroy (token);
+        @}
+
+      /* Destroy the reader */
+      pdf_token_reader_destroy (reader);
+      pdf_stm_destroy (stream);
+      pdf_fsys_file_close (file);
+    @}
+
+  pdf_text_destroy (path);
+@}
+
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_token_reader_reset (pdf_token_reader_t @var{reader})
+@deftypefun pdf_bool_t pdf_token_reader_reset (pdf_token_reader_t *@var{reader}, pdf_error_t **@var{error})
 
 Reset the state of the token reader.
 
@@ -12050,20 +12145,43 @@ Reset the state of the token reader.
 @table @var
 @item reader
 A token reader.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ERROR
+An error prevented to perform the operation.
+@end table
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
-@end table
+@code{PDF_TRUE} if successful, @code{PDF_FALSE} otherwise.
+@item Usage example
+@example
+
+pdf_token_t *token;
+
+while ((token = pdf_token_reader_read (reader, 0, NULL)) != NULL)
+  @{
+    printf ("A token was successfully read!");
+    pdf_token_destroy (token);
+  @}
+
+/* Reset the token reader, and restart the read process */
+pdf_token_reader_reset (reader, NULL);
+
+while ((token = pdf_token_reader_read (reader, 0, NULL)) != NULL)
+  @{
+    printf ("A token was successfully read!");
+    pdf_token_destroy (token);
+  @}
+
+@end example
 @end table
 @end deftypefun
 
 @node Writing tokens
 @subsection Writing tokens
 
-@deftypefun pdf_status_t pdf_token_write (pdf_token_writer_t @var{writer}, pdf_u32_t @var{flags}, pdf_token_t @var{token})
+@deftypefun pdf_bool_t pdf_token_writer_write (pdf_token_writer_t *@var{writer}, pdf_u32_t @var{flags}, const pdf_token_t *@var{token}, pdf_error_t **@var{error})
 
 Write a given token using a given token writer.
 
@@ -12085,13 +12203,10 @@ Encode strings in a human-readable way
 (i.e., in hexadecimal or with special characters escaped).
 @end table
 @item token
-A PDF token.
-@end table
-@item Returns
-A PDF status value:
+A PDF token to write.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-The operation succeeded.
 @item PDF_EAGAIN
 It's not possible to write a full token now.
 Since it may have been partially written, the operation must be repeated
@@ -12102,36 +12217,104 @@ One of the arguments is invalid. This may be caused by an invalid token
 @item PDF_ERROR
 An unspecified error occurred.
 @end table
+@end table
+@item Returns
+@code{PDF_TRUE} if successful, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
-XXX
+
+void
+foo_dummy (const pdf_token_t **tokens,
+           pdf_u32_t          n_tokens)
+@{
+  const pdf_char_t *utf8_path = "/tmp/something";
+  pdf_stm_t *stream;
+  pdf_fsys_file_t *file;
+  pdf_token_writer_t *writer;
+  pdf_text_t *path;
+
+  path = pdf_text_new_from_unicode (utf8_path,
+                                    strlen (utf8_path),
+                                    PDF_TEXT_UTF8,
+                                    NULL);
+  if (!path)
+    return;
+
+  /* Create a writer (see pdf_token_writer_new() example) */
+  if (foo_get_token_writer_for_file (path,
+                                     &file,
+                                     &stream,
+                                     &writer,
+                                     NULL))
+    @{
+      pdf_u32_t i;
+
+      for (i = 0; i < n_tokens; i++)
+        @{
+          if (pdf_token_writer_write (writer,
+                                      0,
+                                      tokens[i],
+                                      NULL))
+            @{
+              printf ("A token was successfully written!");
+            @}
+        @}
+
+      /* Destroy the writer */
+      pdf_token_writer_destroy (writer);
+      pdf_stm_destroy (stream);
+      pdf_fsys_file_close (file);
+    @}
+
+  pdf_text_destroy (path);
+@}
+
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_token_writer_reset (pdf_token_writer_t @var{writer})
+@deftypefun pdf_bool_t pdf_token_writer_reset (pdf_token_writer_t *@var{writer}, pdf_error_t **@var{error})
 
 Reset the state of the token writer.
 
 @table @strong
 @item Parameters
 @table @var
-@item reader
+@item writer
 A token writer.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ERROR
+An error prevented to perform the operation.
+@end table
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
-@end table
+@code{PDF_TRUE} if successful, @code{PDF_FALSE} otherwise.
+@item Usage example
+@example
+
+if (pdf_token_writer_write (writer, 0, NULL))
+  @{
+    printf ("A token was successfully written!");
+  @}
+
+/* Reset the token writer, and restart the write process */
+pdf_token_writer_reset (writer, NULL);
+
+if (pdf_token_writer_write (writer, 0, NULL))
+  @{
+    printf ("A token was successfully written!");
+  @}
+
+@end example
 @end table
 @end deftypefun
 
 @node Creating and destroying tokens
 @subsection Creating and destroying tokens
 
-@deftypefun pdf_status_t pdf_token_integer_new (pdf_i32_t @var{value}, pdf_token_t *@var{token})
+@deftypefun {pdf_token_t *}pdf_token_integer_new (pdf_i32_t @var{value}, pdf_error_t **@var{error})
 
 Create an integer token.
 
@@ -12140,22 +12323,22 @@ Create an integer token.
 @table @var
 @item value
 The numeric value for the token.
-@item token
-A pointer to the newly created token.
-@end table
-@item Returns
-A PDF status value:
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-The operation succeeded.
 @item PDF_ENOMEM
 Not enough memory.
+@item PDF_ERROR
+An error prevented to perform the operation.
 @end table
 @end table
-
+@item Returns
+A newly created token object, or @code{NULL} on error.
+@end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_token_real_new (pdf_real_t @var{value}, pdf_token_t *@var{token})
+
+@deftypefun {pdf_token_t *}pdf_token_real_new (pdf_real_t @var{value}, pdf_error_t **@var{error})
 
 Create a real (floating-point number) token.
 
@@ -12164,24 +12347,24 @@ Create a real (floating-point number) token.
 @table @var
 @item value
 The numeric value for the token.
-@item token
-A pointer to the newly created token.
-@end table
-@item Returns
-A PDF status value:
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-The operation succeeded.
-@item PDF_EBADDATA
-The given value is invalid.
 @item PDF_ENOMEM
 Not enough memory.
+@item PDF_EBADDATA
+The given value is invalid.
+@item PDF_ERROR
+An error prevented to perform the operation.
 @end table
 @end table
-
+@item Returns
+A newly created token object, or @code{NULL} on error.
+@end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_token_string_new (const pdf_char_t *@var{value}, pdf_size_t @var{size}, pdf_token_t *@var{token})
+
+@deftypefun {pdf_token_t *}pdf_token_string_new (const pdf_char_t *@var{value}, pdf_size_t @var{size}, pdf_error_t **@var{error})
 
 Create a string token containing a copy of the given data.
 
@@ -12191,23 +12374,23 @@ Create a string token containing a copy of the given data.
 @item value
 A pointer to the binary data that will make up the string.
 @item size
-The amount of data to copy, in octets.
-@item token
-A pointer to the newly created token.
-@end table
-@item Returns
-A PDF status value:
+The amount of data to copy, in bytes.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-The operation succeeded.
 @item PDF_ENOMEM
 Not enough memory.
+@item PDF_ERROR
+An error prevented to perform the operation.
 @end table
 @end table
-
+@item Returns
+A newly created token object, or @code{NULL} on error.
+@end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_token_name_new (const pdf_char_t *@var{value}, pdf_size_t @var{size}, pdf_token_t *@var{token})
+
+@deftypefun {pdf_token_t *}pdf_token_name_new (const pdf_char_t *@var{value}, pdf_size_t @var{size}, pdf_error_t **@var{error})
 
 Create a name token containing a copy of the given data.
 
@@ -12218,24 +12401,24 @@ Create a name token containing a copy of the given data.
 A pointer to the binary data that will make up the name.
 @item size
 The amount of data to copy, in octets.
-@item token
-A pointer to the newly created token.
-@end table
-@item Returns
-A PDF status value:
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-The operation succeeded.
-@item PDF_EBADDATA
-The given value is invalid.
 @item PDF_ENOMEM
 Not enough memory.
+@item PDF_EBADDATA
+The given value is invalid.
+@item PDF_ERROR
+An error prevented to perform the operation.
 @end table
 @end table
-
+@item Returns
+A newly created token object, or @code{NULL} on error.
+@end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_token_keyword_new (const pdf_char_t *@var{value}, pdf_size_t @var{size}, pdf_token_t *@var{token})
+
+@deftypefun {pdf_token_t *}pdf_token_keyword_new (const pdf_char_t *@var{value}, pdf_size_t @var{size}, pdf_error_t **@var{error})
 
 Create a keyword token containing a copy of the given data.
 
@@ -12246,24 +12429,24 @@ Create a keyword token containing a copy of the given data.
 A pointer to the binary data that will make up the keyword.
 @item size
 The amount of data to copy, in octets.
-@item token
-A pointer to the newly created token.
-@end table
-@item Returns
-A PDF status value:
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-The operation succeeded.
-@item PDF_EBADDATA
-The given value is invalid.
 @item PDF_ENOMEM
 Not enough memory.
+@item PDF_EBADDATA
+The given value is invalid.
+@item PDF_ERROR
+An error prevented to perform the operation.
 @end table
 @end table
-
+@item Returns
+A newly created token object, or @code{NULL} on error.
+@end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_token_comment_new (const pdf_char_t *@var{value}, pdf_size_t @var{size}, pdf_token_t *@var{token})
+
+@deftypefun {pdf_token_t *}pdf_token_comment_new (const pdf_char_t *@var{value}, pdf_size_t @var{size}, pdf_error_t **@var{error})
 
 Create a comment token containing a copy of the given data.
 
@@ -12271,104 +12454,96 @@ Create a comment token containing a copy of the given data.
 @item Parameters
 @table @var
 @item value
-A pointer to the binary data that will make up the keyword.
+A pointer to the binary data that will make up the comment.
 @item size
 The amount of data to copy, in octets.
-@item token
-A pointer to the newly created token.
-@end table
-@item Returns
-A PDF status value:
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-The operation succeeded.
-@item PDF_EBADDATA
-The given value is invalid.
 @item PDF_ENOMEM
 Not enough memory.
+@item PDF_EBADDATA
+The given value is invalid.
+@item PDF_ERROR
+An error prevented to perform the operation.
 @end table
 @end table
-
+@item Returns
+A newly created token object, or @code{NULL} on error.
+@end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_token_valueless_new (enum pdf_token_type_e @var{type}, pdf_token_t *@var{token})
 
-Create a token of one of the valueless types (PDF_TOKEN_DICT_START,
-PDF_TOKEN_DICT_END, PDF_TOKEN_ARRAY_START, PDF_TOKEN_ARRAY_END,
-PDF_TOKEN_PROC_START, or PDF_TOKEN_PROC_END).
+@deftypefun {pdf_token_t *}pdf_token_valueless_new (enum pdf_token_type_e @var{type}, pdf_error_t **@var{error})
+
+Create a token of one of the valueless types (@code{PDF_TOKEN_DICT_START},
+@code{PDF_TOKEN_DICT_END}, @code{PDF_TOKEN_ARRAY_START}, @code{PDF_TOKEN_ARRAY_END},
+@code{PDF_TOKEN_PROC_START}, or @code{PDF_TOKEN_PROC_END}).
 
 @table @strong
 @item Parameters
 @table @var
 @item type
 The type of token to create.
-@item token
-A pointer to the newly created token.
-@end table
-@item Returns
-A PDF status value:
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-The operation succeeded.
 @item PDF_ENOMEM
 Not enough memory.
 @item PDF_EBADDATA
 The given type is not valid for this constructor.
+@item PDF_ERROR
+An error prevented to perform the operation.
 @end table
 @end table
-
+@item Returns
+A newly created token object, or @code{NULL} on error.
+@end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_token_dup (const pdf_token_t @var{token}, pdf_token_t *@var{new})
+
+@deftypefun {pdf_token_t **}pdf_token_dup (const pdf_token_t *@var{token}, pdf_error_t **@var{error})
 
 Create a copy of the given token.
 
 @table @strong
 @item Parameters
 @table @var
-@item old
-The token to copy.
-@item new
-A pointer to the newly created token.
-@end table
-@item Returns
-A PDF status value:
+@item token
+The source token to copy.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-The operation succeeded.
 @item PDF_ENOMEM
 Not enough memory.
+@item PDF_ERROR
+An error prevented to perform the operation.
 @end table
 @end table
-
+@item Returns
+A newly created token object, or @code{NULL} on error.
+@end table
 @end deftypefun
 
-@deftypefun pdf_status_t pdf_token_destroy (pdf_token_t @var{token})
 
-Destroy the given token, freeing any memory it used.
+@deftypefun void pdf_token_destroy (pdf_token_t *@var{token})
+
+Destroy the given token, freeing any memory it uses.
 
 @table @strong
 @item Parameters
 @table @var
-@item old
-The token to copy.
-@item new
-A pointer to the newly created token.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-The operation succeeded.
+@item token
+The token to destroy.
 @end table
 @end table
-
 @end deftypefun
+
 
 @node Accessing token attributes
 @subsection Accessing token attributes
 
-@deftypefun {enum pdf_token_type_e} pdf_token_get_type (const pdf_token_t @var{token})
+@deftypefun {enum pdf_token_type_e} pdf_token_get_type (const pdf_token_t *@var{token})
 
 Get the type of a given token.
 
@@ -12382,25 +12557,48 @@ A token.
 The type of the given token.
 @item Usage example
 @example
-pdf_token_t token;
-pdf_token_reader_t reader;
 
-/* ... */
+void
+foo_read_all_tokens (pdf_token_reader_t *reader)
+@{
+  pdf_token_t *token;
 
-/* Read a name */
-if (pdf_token_read (reader, &token) != PDF_OK)
-@{
-   /* Error */
+  while ((token = pdf_token_reader_read (reader,
+                                         0,
+                                         NULL)) != NULL)
+    @{
+      switch (pdf_token_get_type (token))
+        @{
+        case PDF_TOKEN_INTEGER:
+        case PDF_TOKEN_REAL:
+        case PDF_TOKEN_STRING:
+        case PDF_TOKEN_NAME:
+        case PDF_TOKEN_KEYWORD:
+        case PDF_TOKEN_COMMENT:
+          printf ("A value token was read\n");
+          break;
+        case PDF_TOKEN_DICT_START:
+        case PDF_TOKEN_DICT_END:
+        case PDF_TOKEN_ARRAY_START:
+        case PDF_TOKEN_ARRAY_END:
+        case PDF_TOKEN_PROC_START:
+        case PDF_TOKEN_PROC_END:
+          printf ("A delimiter token was read\n");
+          break;
+        default:
+          printf ("Unknown token type read\n");
+          break;
+        @}
+
+      pdf_token_destroy (token);
+    @}
 @}
-if (pdf_token_get_type (token) != PDF_TOKEN_NAME)
-@{
-   /* We were expecting a name */
-@}
+
 @end example
 @end table
 @end deftypefun
 
-@deftypefun pdf_bool_t pdf_token_equal_p (const pdf_token_t @var{token1}, const pdf_token_t @var{token2})
+@deftypefun pdf_bool_t pdf_token_equal_p (const pdf_token_t *@var{token1}, const pdf_token_t *@var{token2})
 
 Determines whether the given tokens are equivalent.
 
@@ -12413,18 +12611,52 @@ A token.
 Another token.
 @end table
 @item Returns
-A boolean value:
-@table @code
-@item PDF_TRUE
-The given tokens are equal.
-@item PDF_FALSE
-The tokens are not equal.
-@end table
-@end table
+@code{PDF_TRUE} if @var{token1} is equal to @var{token2}.
+@item Usage example
+@example
 
+pdf_bool_t
+foo_compare (pdf_token_reader_t *reader1,
+             pdf_token_reader_t *reader2)
+@{
+  pdf_token_t *token1;
+  pdf_token_t *token2;
+  pdf_error_t *error = NULL;
+
+  while (((token1 = pdf_token_reader_read (reader1,
+                                           0,
+                                           &error)) != NULL) &&
+         ((token2 = pdf_token_reader_read (reader2,
+                                           0,
+                                           &error)) != NULL))
+    @{
+      pdf_bool_t equal;
+
+      equal = pdf_token_equal_p (token1, token2);
+      pdf_token_destroy (token1);
+      pdf_token_destroy (token2);
+
+      if (!equal)
+        return PDF_FALSE;
+
+      /* if tokens equal, keep reading */
+    @}
+
+  if (error)
+    @{
+      pdf_error_destroy (error);
+      return PDF_FALSE;
+    @}
+
+  /* All tokens read are equal */
+  return PDF_TRUE;
+@}
+
+@end example
+@end table
 @end deftypefun
 
-@deftypefun pdf_i32_t pdf_token_get_integer_value (const pdf_token_t @var{token})
+@deftypefun pdf_i32_t pdf_token_get_integer_value (const pdf_token_t *@var{token})
 
 Returns the value associated with a given integer token.
 
@@ -12436,11 +12668,32 @@ A token of type PDF_TOKEN_INTEGER.
 @end table
 @item Returns
 The token's value.
-@end table
+@item Usage example
+@example
 
+pdf_i32_t
+read_integer (pdf_token_reader_t  *reader,
+              pdf_error_t        **error)
+@{
+  pdf_i32_t ret = 0;
+  pdf_token_t *token;
+
+  token = pdf_token_reader_read (reader, 0, error);
+  if (token)
+    @{
+      if (pdf_token_get_type (token) == PDF_TOKEN_INTEGER)
+        ret = pdf_token_get_integer_value (token);
+      pdf_token_destroy (token);
+    @}
+
+  return ret;
+@}
+
+@end example
+@end table
 @end deftypefun
 
-@deftypefun pdf_real_t pdf_token_get_real_value (const pdf_token_t @var{token})
+@deftypefun pdf_real_t pdf_token_get_real_value (const pdf_token_t *@var{token})
 
 Returns the value associated with a given real token.
 
@@ -12452,11 +12705,32 @@ A token of type PDF_TOKEN_REAL.
 @end table
 @item Returns
 The token's value.
-@end table
+@item Usage example
+@example
 
+pdf_i32_t
+read_real (pdf_token_reader_t  *reader,
+           pdf_error_t        **error)
+@{
+  pdf_real_t ret = 0.0;
+  pdf_token_t *token;
+
+  token = pdf_token_reader_read (reader, 0, error);
+  if (token)
+    @{
+      if (pdf_token_get_type (token) == PDF_TOKEN_REAL)
+        ret = pdf_token_get_real_value (token);
+      pdf_token_destroy (token);
+    @}
+
+  return ret;
+@}
+
+@end example
+@end table
 @end deftypefun
 
-@deftypefun const pdf_char_t *pdf_token_get_string_data (const pdf_token_t @var{token})
+@deftypefun {const pdf_char_t *}pdf_token_get_string_data (const pdf_token_t *@var{token})
 
 Returns a pointer to the data associated with a given string token.
 
@@ -12469,11 +12743,38 @@ A token of type PDF_TOKEN_STRING.
 @item Returns
 A pointer to the data, which will be valid until the token is destroyed.
 The data is @strong{not} null-terminated.
-@end table
+@item Usage example
+@example
 
+pdf_bool_t
+read_string (pdf_token_reader_t  *reader,
+             pdf_char_t         **data,
+             pdf_size_t          *size,
+             pdf_error_t        **error)
+@{
+  pdf_bool_t ret = PDF_FALSE;
+  pdf_token_t *token;
+
+  token = pdf_token_reader_read (reader, 0, error);
+  if (token)
+    @{
+      if (pdf_token_get_type (token) == PDF_TOKEN_STRING)
+        @{
+          *data = pdf_token_get_string_data (token);
+          *size = pdf_token_get_string_size (token);
+          ret = PDF_TRUE;
+        @}
+      pdf_token_destroy (token);
+    @}
+
+  return ret;
+@}
+
+@end example
+@end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_token_get_string_size (const pdf_token_t @var{token})
+@deftypefun pdf_size_t pdf_token_get_string_size (const pdf_token_t *@var{token})
 
 Returns the amount of data associated with a given string token.
 
@@ -12484,12 +12785,12 @@ Returns the amount of data associated with a given string token.
 A token of type PDF_TOKEN_STRING.
 @end table
 @item Returns
-The string's size, in octets.
+The string's size, in bytes.
 @end table
 
 @end deftypefun
 
-@deftypefun const pdf_char_t *pdf_token_get_name_data (const pdf_token_t @var{token})
+@deftypefun {const pdf_char_t *}pdf_token_get_name_data (const pdf_token_t *@var{token})
 
 Returns a pointer to the data associated with a given name token.
 
@@ -12502,11 +12803,38 @@ A token of type PDF_TOKEN_NAME.
 @item Returns
 A pointer to the name data, which will be valid until the token is destroyed.
 The data is null-terminated.
-@end table
+@item Usage example
+@example
 
+pdf_bool_t
+read_name (pdf_token_reader_t  *reader,
+           pdf_char_t         **data,
+           pdf_size_t          *size,
+           pdf_error_t        **error)
+@{
+  pdf_bool_t ret = PDF_FALSE;
+  pdf_token_t *token;
+
+  token = pdf_token_reader_read (reader, 0, error);
+  if (token)
+    @{
+      if (pdf_token_get_type (token) == PDF_TOKEN_NAME)
+        @{
+          *data = pdf_token_get_name_data (token);
+          *size = pdf_token_get_name_size (token);
+          ret = PDF_TRUE;
+        @}
+      pdf_token_destroy (token);
+    @}
+
+  return ret;
+@}
+
+@end example
+@end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_token_get_name_size (const pdf_token_t @var{token})
+@deftypefun pdf_size_t pdf_token_get_name_size (const pdf_token_t *@var{token})
 
 Returns the amount of data associated with a given name token.
 
@@ -12517,12 +12845,11 @@ Returns the amount of data associated with a given name token.
 A token of type PDF_TOKEN_NAME.
 @end table
 @item Returns
-The name's size, in octets (excluding the terminating null byte).
+The name's size, in bytes (excluding the terminating null byte).
 @end table
-
 @end deftypefun
 
-@deftypefun const pdf_char_t *pdf_token_get_keyword_data (const pdf_token_t @var{token})
+@deftypefun {const pdf_char_t *}pdf_token_get_keyword_data (const pdf_token_t *@var{token})
 
 Returns a pointer to the data associated with a given keyword token.
 
@@ -12535,11 +12862,38 @@ A token of type PDF_TOKEN_KEYWORD.
 @item Returns
 A pointer to the data, which will be valid until the token is destroyed.
 The data is null-terminated.
-@end table
+@item Usage example
+@example
 
+pdf_bool_t
+read_keyword (pdf_token_reader_t  *reader,
+              pdf_char_t         **data,
+              pdf_size_t          *size,
+              pdf_error_t        **error)
+@{
+  pdf_bool_t ret = PDF_FALSE;
+  pdf_token_t *token;
+
+  token = pdf_token_reader_read (reader, 0, error);
+  if (token)
+    @{
+      if (pdf_token_get_type (token) == PDF_TOKEN_KEYWORD)
+        @{
+          *data = pdf_token_get_keyword_data (token);
+          *size = pdf_token_get_keyword_size (token);
+          ret = PDF_TRUE;
+        @}
+      pdf_token_destroy (token);
+    @}
+
+  return ret;
+@}
+
+@end example
+@end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_token_get_keyword_size (const pdf_token_t @var{token})
+@deftypefun pdf_size_t pdf_token_get_keyword_size (const pdf_token_t *@var{token})
 
 Returns the amount of data associated with a given keyword token.
 
@@ -12550,12 +12904,11 @@ Returns the amount of data associated with a given keyword token.
 A token of type PDF_TOKEN_KEYWORD.
 @end table
 @item Returns
-The keyword's size, in octets (excluding the terminating null byte).
+The keyword's size, in bytes (excluding the terminating null byte).
 @end table
-
 @end deftypefun
 
-@deftypefun const pdf_char_t *pdf_token_get_comment_data (const pdf_token_t @var{token})
+@deftypefun {const pdf_char_t *}pdf_token_get_comment_data (const pdf_token_t *@var{token})
 
 Returns a pointer to the data associated with a given comment token.
 
@@ -12568,11 +12921,38 @@ A token of type PDF_TOKEN_COMMENT.
 @item Returns
 A pointer to the data, which will be valid until the token is destroyed.
 The data is @strong{not} null-terminated.
-@end table
+@item Usage example
+@example
 
+pdf_bool_t
+read_comment (pdf_token_reader_t  *reader,
+              pdf_char_t         **data,
+              pdf_size_t          *size,
+              pdf_error_t        **error)
+@{
+  pdf_bool_t ret = PDF_FALSE;
+  pdf_token_t *token;
+
+  token = pdf_token_reader_read (reader, 0, error);
+  if (token)
+    @{
+      if (pdf_token_get_type (token) == PDF_TOKEN_COMMENT)
+        @{
+          *data = pdf_token_get_comment_data (token);
+          *size = pdf_token_get_comment_size (token);
+          ret = PDF_TRUE;
+        @}
+      pdf_token_destroy (token);
+    @}
+
+  return ret;
+@}
+
+@end example
+@end table
 @end deftypefun
 
-@deftypefun pdf_size_t pdf_token_get_comment_size (const pdf_token_t @var{token})
+@deftypefun pdf_size_t pdf_token_get_comment_size (const pdf_token_t *@var{token})
 
 Returns the amount of data associated with a given comment token.
 
@@ -12583,9 +12963,8 @@ Returns the amount of data associated with a given comment token.
 A token of type PDF_TOKEN_COMMENT.
 @end table
 @item Returns
-The comment's size, in octets.
+The comment's size, in bytes.
 @end table
-
 @end deftypefun
 
 @node Encryption

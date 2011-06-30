@@ -1,3 +1,8 @@
+2011-06-30  Aleksander Morgado  <aleksander@gnu.org>
+
+	doc: updated tokeniser API documentation and examples.
+	* doc/gnupdf.texi (The Tokeniser)
+
 2011-06-29  Aleksander Morgado  <aleksander@gnu.org>
 
 	token: renamed some API methods
