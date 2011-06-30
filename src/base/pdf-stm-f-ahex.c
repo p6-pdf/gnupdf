@@ -204,11 +204,7 @@ stm_f_ahexdec_apply (void          *state,
                      pdf_error_t  **error)
 {
   struct pdf_stm_f_ahex_s *filter_state;
-  pdf_u32_t first_nibble;
-  pdf_u32_t second_nibble;
 
-  first_nibble = -1;
-  second_nibble = -1;
   filter_state = (struct pdf_stm_f_ahex_s *) state;
 
   while (!pdf_buffer_full_p (out))
@@ -263,6 +259,8 @@ stm_f_ahexdec_apply (void          *state,
          of a mibble. */
       if (filter_state->last_nibble == -1)
         {
+          pdf_u32_t first_nibble;
+
           /* Get the first nibble */
           first_nibble = (pdf_u32_t) in->data[in->rp];
           in->rp++;
@@ -271,6 +269,9 @@ stm_f_ahexdec_apply (void          *state,
         }
       else
         {
+          pdf_u32_t first_nibble;
+          pdf_u32_t second_nibble;
+
           /* Get the second nibble */
           second_nibble = (pdf_u32_t) in->data[in->rp];
           in->rp++;

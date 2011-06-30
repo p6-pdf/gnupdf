@@ -1,3 +1,9 @@
+2011-06-30  Aleksander Morgado  <aleksander@gnu.org>
+
+	stm: fix several code static analysis issues
+	* src/base/pdf-stm.c (pdf_stm_write): Avoid dead assignment.
+	* src/base/pdf-stm-f-ahex.c (stm_f_ahexdec_apply): Idem.
+
 2011-06-27  Aleksander Morgado  <aleksander@gnu.org>
 
 	utils: fix branch merge issues in pdf-filereader
