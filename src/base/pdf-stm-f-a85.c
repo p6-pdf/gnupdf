@@ -124,32 +124,25 @@ stm_f_a85_deinit (void *state)
  *
  */
 
-static pdf_status_t
+static pdf_bool_t
 stm_f_a85_write_out (pdf_char_t              c,
                      pdf_buffer_t           *out,
                      struct pdf_stm_f_a85_s *filter_state)
 {
-  pdf_status_t retval = PDF_OK;
-
-  if (!pdf_buffer_full_p (out) && (0 == filter_state->output_count))
+  if (!pdf_buffer_full_p (out) &&
+      filter_state->output_count == 0)
     {
       out->data[out->wp++] = c;
-      retval = PDF_OK;
-    }
-  else
-    {
-      if (filter_state->output_count < A85_OUTPUT_BUFF_LEN)
-        {
-          filter_state->output_buff[filter_state->output_count++] = c;
-          retval = PDF_OK;
-        }
-      else
-        {
-          retval = PDF_ERROR;
-        }
+      return PDF_TRUE;
     }
 
-  return retval;
+  if (filter_state->output_count < A85_OUTPUT_BUFF_LEN)
+    {
+      filter_state->output_buff[filter_state->output_count++] = c;
+      return PDF_TRUE;
+    }
+
+  return PDF_FALSE;
 }
 
 /* pdf_stm_f_a85_flush_outbuff helps deal with the possibility of extremely
@@ -225,52 +218,58 @@ stm_f_a85enc_wr_tuple (pdf_u32_t     tuple,
   filter_state = (struct pdf_stm_f_a85_s *) state;
 
   /* partial tuple doesn't get z handling */
-  if ((0 == tuple) && (4 == tuple_bytes))
+  if (tuple == 0 &&
+      tuple_bytes == 4)
     {
       /* Four 0s in row */
 
-      retval = stm_f_a85_write_out ('z', out, filter_state);
       /*
-       * PDF_ERROR from pdf_stm_f_a85_write_out means full buffer
+       * PDF_FALSE from pdf_stm_f_a85_write_out means full buffer
        * This should never happen because buffer should have been
        * flushed before starting this set of output data. All
-       * subsequent calls to _write_out will fail with PDF_ERROR
+       * subsequent calls to _write_out will fail with PDF_FALSE
        * also, so it is reasonable to ignore the pass or fail
        * status of these invocations within this function. The
        * error will be reported back to the caller of this function.
        */
-      filter_state->line_length++;
+      if (!stm_f_a85_write_out ('z', out, filter_state))
+        return PDF_ERROR;
 
+      filter_state->line_length++;
       if (filter_state->line_length >= A85_ENC_LINE_LENGTH)
         {
-          retval = stm_f_a85_write_out ('\n', out, filter_state);
+          if (!stm_f_a85_write_out ('\n', out, filter_state))
+            return PDF_ERROR;
+
+          filter_state->line_length = 0;
+        }
+      return PDF_OK;
+    }
+
+  /* Encode this tuple in base-85 */
+  for (i = 0; i < 5; i++)
+    {
+      buf[i] = (pdf_char_t) (tuple % 85);
+      tuple = tuple / 85;
+    }
+
+  for (i = tuple_bytes; i >= 0; i--)
+    {
+      if (!stm_f_a85_write_out (buf[i] + (pdf_char_t) '!',
+                                out, filter_state))
+        return PDF_ERROR;
+
+      filter_state->line_length++;
+      if (filter_state->line_length >= A85_ENC_LINE_LENGTH)
+        {
+          if (!stm_f_a85_write_out ('\n', out, filter_state))
+            return PDF_ERROR;
+
           filter_state->line_length = 0;
         }
     }
-  else
-    {
-      /* Encode this tuple in base-85 */
-      for (i = 0; i < 5; i++)
-        {
-          buf[i] = (pdf_char_t) (tuple % 85);
-          tuple = tuple / 85;
-        }
 
-      for (i = tuple_bytes; i >= 0; i--)
-        {
-          retval = stm_f_a85_write_out (buf[i] + (pdf_char_t) '!',
-                                            out, filter_state);
-          filter_state->line_length++;
-          if (filter_state->line_length >= A85_ENC_LINE_LENGTH)
-            {
-              retval = stm_f_a85_write_out ('\n', out, filter_state);
-
-              filter_state->line_length = 0;
-            }
-        }
-    }
-
-  return retval;
+  return PDF_OK;
 }
 
 static pdf_status_t
@@ -356,7 +355,6 @@ a85enc_apply (void         *state,
           tuple = tuple | in->data[in->rp++];
 
           retval = stm_f_a85enc_wr_tuple (tuple, 4, filter_state, out);
-
         } /* End of if there is a full tuple available */
       else
         {
@@ -364,8 +362,10 @@ a85enc_apply (void         *state,
              If finish is set, then a partial tuple will be written later */
           retval = PDF_ENINPUT;
         }
-
     } /* end of if spare_count */
+
+  if (retval == PDF_ERROR)
+    return retval;
 
   retval = stm_f_a85_flush_outbuff (out, filter_state);
 
@@ -373,7 +373,6 @@ a85enc_apply (void         *state,
     { /* Probably this is PDF_ENOUTPUT - meaning output_buff still has data */
       return retval;
     }
-
 
   /* Now do all normal tuples */
 
@@ -398,6 +397,8 @@ a85enc_apply (void         *state,
               in->rp += 4;
 
               retval = stm_f_a85enc_wr_tuple (tuple, 4, filter_state, out);
+              if (retval != PDF_OK)
+                return retval;
 
               retval = stm_f_a85_flush_outbuff (out, filter_state);
 
@@ -483,8 +484,9 @@ a85enc_apply (void         *state,
       if (!filter_state->terminated)
         {
           /* Insert the EOD marker */
-          retval = stm_f_a85_write_out ('~', out, filter_state);
-          retval = stm_f_a85_write_out ('>', out, filter_state);
+          if (!stm_f_a85_write_out ('~', out, filter_state) ||
+              !stm_f_a85_write_out ('>', out, filter_state))
+            return PDF_ERROR;
 
           filter_state->terminated = PDF_TRUE;
         }
@@ -592,7 +594,8 @@ stm_f_a85dec_wr_quad (const pdf_char_t       *quint,
 
       for (i = (4 - outcount); i < 4; i++)
         {
-          retval = stm_f_a85_write_out (outbytes[i], out, filter_state);
+          if (!stm_f_a85_write_out (outbytes[i], out, filter_state))
+            return PDF_ERROR;
         }
     }
 
@@ -717,12 +720,11 @@ a85dec_apply (void         *state,
             {
               if ((1 == q_idx) && ('z' == quint[0]) && (PDF_OK == retval))
                 { /* special case 'z' encodes value 0x00000000 */
-                  retval = stm_f_a85_write_out (0, out, filter_state);
-                  retval = stm_f_a85_write_out (0, out, filter_state);
-                  retval = stm_f_a85_write_out (0, out, filter_state);
-                  retval = stm_f_a85_write_out (0, out, filter_state);
-
-                  q_idx = 0;
+                  if (!stm_f_a85_write_out (0, out, filter_state) ||
+                      !stm_f_a85_write_out (0, out, filter_state) ||
+                      !stm_f_a85_write_out (0, out, filter_state) ||
+                      !stm_f_a85_write_out (0, out, filter_state))
+                    return PDF_FALSE;
                 }
               else if (PDF_ENINPUT == retval)
                 { /* Not full dataset.  Save this data for later */
@@ -731,7 +733,6 @@ a85dec_apply (void         *state,
                       filter_state->spare_bytes[i] = quint[i];
                     }
                   filter_state->spare_count = q_idx;
-                  q_idx = 0; /* Clear this so that the output loop is skipped.*/
                   oldone = PDF_TRUE;
                 }
               else if (finish)
