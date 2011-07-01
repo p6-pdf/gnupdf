@@ -174,7 +174,6 @@ pdf_text_utf32he_to_host_win32 (const pdf_char_t  *input_data,
                                 pdf_size_t        *p_output_length,
                                 pdf_error_t      **error)
 {
-  pdf_status_t ret_code;
   pdf_char_t *temp_data;
   pdf_size_t  temp_size;
   UINT CodePage;
@@ -183,18 +182,12 @@ pdf_text_utf32he_to_host_win32 (const pdf_char_t  *input_data,
   BOOL default_used = 0;
 
   /* Firstly, convert from UTF-32HE to UTF-16LE */
-  if (pdf_text_utf32he_to_utf16le (input_data,
-                                   input_length,
-                                   &temp_data,
-                                   &temp_size) != PDF_OK)
-    {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_TEXT,
-                     PDF_ETEXTENC,
-                     "cannot convert to host encoding: "
-                     "initial conversion to UTF16-LE failed");
-      return PDF_FALSE;
-    }
+  if (!pdf_text_utf32he_to_utf16le (input_data,
+                                    input_length,
+                                    &temp_data,
+                                    &temp_size,
+                                    error))
+    return PDF_FALSE;
 
   /* So check windows host encoding */
   if (!pdf_text_convert_encoding_name_to_CP (enc,
@@ -403,16 +396,12 @@ pdf_text_host_to_utf32he_win32 (const pdf_char_t  *input_data,
     }
 
   /* Finally, convert to UTF-32HE */
-  if (pdf_text_utf16le_to_utf32he (temp_data,
-                                   temp_size,
-                                   p_output_data,
-                                   p_output_length) != PDF_OK)
+  if (!pdf_text_utf16le_to_utf32he (temp_data,
+                                    temp_size,
+                                    p_output_data,
+                                    p_output_length,
+                                    error))
     {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_TEXT,
-                     PDF_ETEXTENC,
-                     "cannot convert to host encoding: "
-                     "final conversion from UTF16-LE failed");
       pdf_dealloc (temp_data);
       return PDF_FALSE;
     }
