@@ -30,6 +30,9 @@
 #include <stdarg.h>
 #include <string.h>
 
+/* From gnulib */
+#include "vasnprintf.h"
+
 #include <pdf-alloc.h>
 #include <pdf-global.h>
 #include <pdf-error.h>

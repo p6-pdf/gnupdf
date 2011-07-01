@@ -27,6 +27,7 @@ AC_DEFUN([gl_EARLY],
   m4_pattern_allow([^gl_LTLIBOBJS$])dnl a variable
   AC_REQUIRE([AC_PROG_RANLIB])
   AC_REQUIRE([AM_PROG_CC_C_O])
+  # Code from module alloca-opt:
   # Code from module arg-nonnull:
   # Code from module autobuild:
   AB_INIT
@@ -49,10 +50,15 @@ AC_DEFUN([gl_EARLY],
   # Code from module float:
   # Code from module fopen:
   # Code from module fopen-safer:
+  # Code from module fpieee:
+  AC_REQUIRE([gl_FP_IEEE])
+  # Code from module fpucw:
   # Code from module fpurge:
   # Code from module freading:
   # Code from module freopen:
   # Code from module freopen-safer:
+  # Code from module frexp-nolibm:
+  # Code from module frexpl-nolibm:
   # Code from module fseek:
   # Code from module fseeko:
   AC_REQUIRE([AC_FUNC_FSEEKO])
@@ -72,6 +78,9 @@ AC_DEFUN([gl_EARLY],
   # Code from module include_next:
   # Code from module inline:
   # Code from module intprops:
+  # Code from module isnand-nolibm:
+  # Code from module isnanf-nolibm:
+  # Code from module isnanl-nolibm:
   # Code from module linked-list:
   # Code from module list:
   # Code from module localcharset:
@@ -83,12 +92,17 @@ AC_DEFUN([gl_EARLY],
   # Code from module malloc-gnu:
   # Code from module malloc-posix:
   # Code from module math:
+  # Code from module memchr:
   # Code from module mkdir:
   # Code from module multiarch:
+  # Code from module nocrash:
   # Code from module open:
   # Code from module oset:
   # Code from module pathmax:
   # Code from module pmccabe2html:
+  # Code from module printf-frexp:
+  # Code from module printf-frexpl:
+  # Code from module printf-safe:
   # Code from module progname:
   # Code from module pthread:
   # Code from module rbtree-oset:
@@ -96,6 +110,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module realloc-posix:
   # Code from module rmdir:
   # Code from module sched:
+  # Code from module signbit:
   # Code from module size_max:
   # Code from module stat:
   # Code from module stdbool:
@@ -123,9 +138,13 @@ AC_DEFUN([gl_EARLY],
   # Code from module unitypes:
   # Code from module unused-parameter:
   # Code from module useless-if-before-free:
+  # Code from module vasnprintf:
+  # Code from module vasprintf:
+  # Code from module vasprintf-posix:
   # Code from module vc-list-files:
   # Code from module verify:
   # Code from module warn-on-use:
+  # Code from module wchar:
   # Code from module xalloc:
   # Code from module xalloc-die:
   # Code from module xalloc-oversized:
@@ -146,6 +165,7 @@ AC_DEFUN([gl_INIT],
   m4_pushdef([gl_LIBSOURCES_DIR], [])
   gl_COMMON
   gl_source_base='lib'
+gl_FUNC_ALLOCA
 gl_CONFIGMAKE_PREP
 gl_DIRNAME_LGPL
 gl_DOUBLE_SLASH_ROOT
@@ -194,6 +214,16 @@ if test $REPLACE_FREOPEN = 1; then
 fi
 gl_STDIO_MODULE_INDICATOR([freopen])
 gl_MODULE_INDICATOR([freopen-safer])
+gl_FUNC_FREXP_NO_LIBM
+if test $gl_func_frexp_no_libm != yes; then
+  AC_LIBOBJ([frexp])
+fi
+gl_MATH_MODULE_INDICATOR([frexp])
+gl_FUNC_FREXPL_NO_LIBM
+if test $HAVE_DECL_FREXPL = 0 || test $gl_func_frexpl_no_libm = no; then
+  AC_LIBOBJ([frexpl])
+fi
+gl_MATH_MODULE_INDICATOR([frexpl])
 gl_FUNC_FSEEK
 if test $REPLACE_FSEEK = 1; then
   AC_LIBOBJ([fseek])
@@ -263,6 +293,21 @@ m4_if(m4_version_compare([2.61a.100],
       [AC_CONFIG_LINKS([$GNUmakefile:$GNUmakefile], [],
         [GNUmakefile=$GNUmakefile])])
 gl_INLINE
+gl_FUNC_ISNAND_NO_LIBM
+if test $gl_func_isnand_no_libm != yes; then
+  AC_LIBOBJ([isnand])
+  gl_PREREQ_ISNAND
+fi
+gl_FUNC_ISNANF_NO_LIBM
+if test $gl_func_isnanf_no_libm != yes; then
+  AC_LIBOBJ([isnanf])
+  gl_PREREQ_ISNANF
+fi
+gl_FUNC_ISNANL_NO_LIBM
+if test $gl_func_isnanl_no_libm != yes; then
+  AC_LIBOBJ([isnanl])
+  gl_PREREQ_ISNANL
+fi
 gl_LIST
 gl_LOCALCHARSET
 LOCALCHARSET_TESTS_ENVIRONMENT="CHARSETALIASDIR=\"\$(top_builddir)/$gl_source_base\""
@@ -293,6 +338,12 @@ if test $REPLACE_MALLOC = 1; then
 fi
 gl_STDLIB_MODULE_INDICATOR([malloc-posix])
 gl_MATH_H
+gl_FUNC_MEMCHR
+if test $HAVE_MEMCHR = 0 || test $REPLACE_MEMCHR = 1; then
+  AC_LIBOBJ([memchr])
+  gl_PREREQ_MEMCHR
+fi
+gl_STRING_MODULE_INDICATOR([memchr])
 gl_FUNC_MKDIR
 if test $REPLACE_MKDIR = 1; then
   AC_LIBOBJ([mkdir])
@@ -303,6 +354,9 @@ gl_FCNTL_MODULE_INDICATOR([open])
 gl_LIST
 gl_PATHMAX
 AC_PATH_PROG([PMCCABE], [pmccabe], [false])
+gl_FUNC_PRINTF_FREXP
+gl_FUNC_PRINTF_FREXPL
+m4_divert_text([INIT_PREPARE], [gl_printf_safe=yes])
 AC_CHECK_DECLS([program_invocation_name], [], [], [#include <errno.h>])
 AC_CHECK_DECLS([program_invocation_short_name], [], [], [#include <errno.h>])
 gl_PTHREAD_CHECK
@@ -317,6 +371,13 @@ if test $REPLACE_RMDIR = 1; then
 fi
 gl_UNISTD_MODULE_INDICATOR([rmdir])
 gl_SCHED_H
+gl_SIGNBIT
+if test $REPLACE_SIGNBIT = 1; then
+  AC_LIBOBJ([signbitf])
+  AC_LIBOBJ([signbitd])
+  AC_LIBOBJ([signbitl])
+fi
+gl_MATH_MODULE_INDICATOR([signbit])
 gl_SIZE_MAX
 gl_FUNC_STAT
 if test $REPLACE_STAT = 1; then
@@ -362,6 +423,14 @@ gl_UNISTD_SAFER
 gl_LIBUNISTRING_LIBHEADER([0.9.2], [unistr.h])
 gl_LIBUNISTRING_MODULE([0.9], [unistr/u8-check])
 gl_LIBUNISTRING_LIBHEADER([0.9], [unitypes.h])
+gl_FUNC_VASNPRINTF
+gl_FUNC_VASPRINTF
+gl_STDIO_MODULE_INDICATOR([vasprintf])
+m4_ifdef([AM_XGETTEXT_OPTION],
+  [AM_][XGETTEXT_OPTION([--flag=asprintf:2:c-format])
+   AM_][XGETTEXT_OPTION([--flag=vasprintf:2:c-format])])
+gl_FUNC_VASPRINTF_POSIX
+gl_WCHAR_H
 gl_XALLOC
 gl_XSIZE
   # End of code from modules
@@ -511,6 +580,9 @@ AC_DEFUN([gl_FILE_LIST], [
   build-aux/vc-list-files
   build-aux/warn-on-use.h
   doc/gendocs_template
+  lib/alloca.in.h
+  lib/asnprintf.c
+  lib/asprintf.c
   lib/basename-lgpl.c
   lib/binary-io.h
   lib/config.charset
@@ -528,15 +600,19 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/fcntl.in.h
   lib/fd-safer.c
   lib/fflush.c
+  lib/float+.h
   lib/float.c
   lib/float.in.h
   lib/fopen-safer.c
   lib/fopen.c
+  lib/fpucw.h
   lib/fpurge.c
   lib/freading.c
   lib/freading.h
   lib/freopen-safer.c
   lib/freopen.c
+  lib/frexp.c
+  lib/frexpl.c
   lib/fseek.c
   lib/fseeko.c
   lib/ftell.c
@@ -575,6 +651,13 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/glthread/lock.h
   lib/glthread/threadlib.c
   lib/intprops.h
+  lib/isnan.c
+  lib/isnand-nolibm.h
+  lib/isnand.c
+  lib/isnanf-nolibm.h
+  lib/isnanf.c
+  lib/isnanl-nolibm.h
+  lib/isnanl.c
   lib/localcharset.c
   lib/localcharset.h
   lib/localename.c
@@ -583,10 +666,20 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/lstat.c
   lib/malloc.c
   lib/math.in.h
+  lib/memchr.c
+  lib/memchr.valgrind
   lib/mkdir.c
   lib/open.c
   lib/pathmax.h
   lib/pipe-safer.c
+  lib/printf-args.c
+  lib/printf-args.h
+  lib/printf-frexp.c
+  lib/printf-frexp.h
+  lib/printf-frexpl.c
+  lib/printf-frexpl.h
+  lib/printf-parse.c
+  lib/printf-parse.h
   lib/progname.c
   lib/progname.h
   lib/pthread.in.h
@@ -595,6 +688,9 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/ref-del.sin
   lib/rmdir.c
   lib/sched.in.h
+  lib/signbitd.c
+  lib/signbitf.c
+  lib/signbitl.c
   lib/size_max.h
   lib/stat.c
   lib/stdbool.in.h
@@ -626,13 +722,18 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/unistr.in.h
   lib/unistr/u8-check.c
   lib/unitypes.in.h
+  lib/vasnprintf.c
+  lib/vasnprintf.h
+  lib/vasprintf.c
   lib/verify.h
+  lib/wchar.in.h
   lib/xalloc-die.c
   lib/xalloc-oversized.h
   lib/xalloc.h
   lib/xmalloc.c
   lib/xsize.h
   m4/00gnulib.m4
+  m4/alloca.m4
   m4/autobuild.m4
   m4/codeset.m4
   m4/configmake.m4
@@ -641,6 +742,9 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/dup2.m4
   m4/errno_h.m4
   m4/error.m4
+  m4/exponentd.m4
+  m4/exponentf.m4
+  m4/exponentl.m4
   m4/extensions.m4
   m4/fcntl-o.m4
   m4/fcntl.m4
@@ -648,9 +752,12 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/fflush.m4
   m4/float_h.m4
   m4/fopen.m4
+  m4/fpieee.m4
   m4/fpurge.m4
   m4/freading.m4
   m4/freopen.m4
+  m4/frexp.m4
+  m4/frexpl.m4
   m4/fseek.m4
   m4/fseeko.m4
   m4/ftell.m4
@@ -666,7 +773,13 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/include_next.m4
   m4/inline.m4
   m4/intlmacosx.m4
+  m4/intmax_t.m4
+  m4/inttypes_h.m4
+  m4/isnand.m4
+  m4/isnanf.m4
+  m4/isnanl.m4
   m4/lcmessage.m4
+  m4/ldexpl.m4
   m4/lib-ld.m4
   m4/lib-link.m4
   m4/lib-prefix.m4
@@ -679,21 +792,29 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/lstat.m4
   m4/malloc.m4
   m4/math_h.m4
+  m4/memchr.m4
   m4/mkdir.m4
+  m4/mmap-anon.m4
   m4/mode_t.m4
   m4/multiarch.m4
+  m4/nocrash.m4
   m4/onceonly.m4
   m4/open.m4
   m4/pathmax.m4
+  m4/printf-frexp.m4
+  m4/printf-frexpl.m4
+  m4/printf.m4
   m4/pthread.m4
   m4/realloc.m4
   m4/rmdir.m4
   m4/sched_h.m4
+  m4/signbit.m4
   m4/size_max.m4
   m4/stat.m4
   m4/stdbool.m4
   m4/stddef_h.m4
   m4/stdint.m4
+  m4/stdint_h.m4
   m4/stdio_h.m4
   m4/stdlib_h.m4
   m4/strerror.m4
@@ -708,8 +829,13 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/tmpfile.m4
   m4/unistd-safer.m4
   m4/unistd_h.m4
+  m4/vasnprintf.m4
+  m4/vasprintf-posix.m4
+  m4/vasprintf.m4
   m4/warn-on-use.m4
+  m4/wchar_h.m4
   m4/wchar_t.m4
+  m4/wint_t.m4
   m4/xalloc.m4
   m4/xsize.m4
   top/GNUmakefile

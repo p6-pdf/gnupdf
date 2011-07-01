@@ -1,5 +1,9 @@
 2011-07-01  Aleksander Morgado  <aleksander@gnu.org>
 
+	gnulib: import 'vasprintf-posix' module.
+
+2011-07-01  Aleksander Morgado  <aleksander@gnu.org>
+
 	fsys,disk: fix compilation issues under mingw32
 	* src/base/pdf-fsys-disk.c
 
