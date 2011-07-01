@@ -1,5 +1,10 @@
 2011-07-01  Aleksander Morgado  <aleksander@gnu.org>
 
+	time: fix compilation issues under mingw32
+	* src/base/pdf-time.c (pdf_time_w32_set_from_filetime)
+
+2011-07-01  Aleksander Morgado  <aleksander@gnu.org>
+
 	text: fix compilation issues under mingw32
 	* src/base/pdf-text-host-encoding.c (pdf_text_host_to_utf32he_win32)
 	(pdf_text_utf32he_to_host_win32)
