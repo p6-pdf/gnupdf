@@ -1,5 +1,9 @@
 2011-06-30  Aleksander Morgado  <aleksander@gnu.org>
 
+	gnulib: import 'pthread' module and update.
+
+2011-06-30  Aleksander Morgado  <aleksander@gnu.org>
+
 	fp: fix several code static analysis issues
 	* src/base/pdf-fp-func.c (read_type0_sample_table): Avoid dead
 	increment.

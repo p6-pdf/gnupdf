@@ -34,6 +34,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module c++defs:
   # Code from module configmake:
   # Code from module dirname-lgpl:
+  # Code from module dosname:
   # Code from module double-slash-root:
   # Code from module dup2:
   # Code from module errno:
@@ -52,8 +53,10 @@ AC_DEFUN([gl_EARLY],
   # Code from module freading:
   # Code from module freopen:
   # Code from module freopen-safer:
+  # Code from module fseek:
   # Code from module fseeko:
   AC_REQUIRE([AC_FUNC_FSEEKO])
+  # Code from module ftell:
   # Code from module ftello:
   AC_REQUIRE([AC_FUNC_FSEEKO])
   # Code from module gendocs:
@@ -87,10 +90,12 @@ AC_DEFUN([gl_EARLY],
   # Code from module pathmax:
   # Code from module pmccabe2html:
   # Code from module progname:
+  # Code from module pthread:
   # Code from module rbtree-oset:
   # Code from module rbtreehash-list:
   # Code from module realloc-posix:
   # Code from module rmdir:
+  # Code from module sched:
   # Code from module size_max:
   # Code from module stat:
   # Code from module stdbool:
@@ -100,6 +105,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module stdlib:
   # Code from module streq:
   # Code from module strerror:
+  # Code from module strerror-override:
   # Code from module string:
   # Code from module sys_stat:
   # Code from module sys_time:
@@ -118,9 +124,11 @@ AC_DEFUN([gl_EARLY],
   # Code from module unused-parameter:
   # Code from module useless-if-before-free:
   # Code from module vc-list-files:
+  # Code from module verify:
   # Code from module warn-on-use:
   # Code from module xalloc:
   # Code from module xalloc-die:
+  # Code from module xalloc-oversized:
   # Code from module xsize:
 ])
 
@@ -138,210 +146,224 @@ AC_DEFUN([gl_INIT],
   m4_pushdef([gl_LIBSOURCES_DIR], [])
   gl_COMMON
   gl_source_base='lib'
-  # Code from module arg-nonnull:
-  # Code from module autobuild:
-  # Code from module binary-io:
-  # Code from module c++defs:
-  # Code from module configmake:
-  gl_CONFIGMAKE_PREP
-  # Code from module dirname-lgpl:
-  gl_DIRNAME_LGPL
-  # Code from module double-slash-root:
-  gl_DOUBLE_SLASH_ROOT
-  # Code from module dup2:
-  gl_FUNC_DUP2
-  gl_UNISTD_MODULE_INDICATOR([dup2])
-  # Code from module errno:
-  gl_HEADER_ERRNO_H
-  # Code from module error:
-  gl_ERROR
-  m4_ifdef([AM_XGETTEXT_OPTION],
-    [AM_][XGETTEXT_OPTION([--flag=error:3:c-format])
-     AM_][XGETTEXT_OPTION([--flag=error_at_line:5:c-format])])
-  # Code from module exitfail:
-  # Code from module extensions:
-  # Code from module fcntl:
-  gl_FUNC_FCNTL
-  gl_FCNTL_MODULE_INDICATOR([fcntl])
-  # Code from module fcntl-h:
-  gl_FCNTL_H
-  # Code from module fflush:
-  gl_FUNC_FFLUSH
-  gl_STDIO_MODULE_INDICATOR([fflush])
-  # Code from module float:
-  gl_FLOAT_H
-  # Code from module fopen:
-  gl_FUNC_FOPEN
-  gl_STDIO_MODULE_INDICATOR([fopen])
-  # Code from module fopen-safer:
-  gl_FOPEN_SAFER
-  gl_MODULE_INDICATOR([fopen-safer])
-  # Code from module fpurge:
-  gl_FUNC_FPURGE
-  gl_STDIO_MODULE_INDICATOR([fpurge])
-  # Code from module freading:
-  gl_FUNC_FREADING
-  # Code from module freopen:
-  gl_FUNC_FREOPEN
-  gl_STDIO_MODULE_INDICATOR([freopen])
-  # Code from module freopen-safer:
-  gl_FREOPEN_SAFER
-  gl_MODULE_INDICATOR([freopen-safer])
-  # Code from module fseeko:
-  gl_FUNC_FSEEKO
-  gl_STDIO_MODULE_INDICATOR([fseeko])
-  # Code from module ftello:
-  gl_FUNC_FTELLO
-  gl_STDIO_MODULE_INDICATOR([ftello])
-  # Code from module gendocs:
-  # Code from module getdelim:
-  gl_FUNC_GETDELIM
-  gl_STDIO_MODULE_INDICATOR([getdelim])
-  # Code from module getdtablesize:
-  gl_FUNC_GETDTABLESIZE
-  gl_UNISTD_MODULE_INDICATOR([getdtablesize])
-  # Code from module getline:
-  gl_FUNC_GETLINE
-  gl_STDIO_MODULE_INDICATOR([getline])
-  # Code from module getopt-gnu:
-  gl_FUNC_GETOPT_GNU
-  gl_MODULE_INDICATOR_FOR_TESTS([getopt-gnu])
-  # Code from module getopt-posix:
-  gl_FUNC_GETOPT_POSIX
-  # Code from module gettext-h:
-  AC_SUBST([LIBINTL])
-  AC_SUBST([LTLIBINTL])
-  # Code from module gettimeofday:
-  gl_FUNC_GETTIMEOFDAY
-  gl_SYS_TIME_MODULE_INDICATOR([gettimeofday])
-  # Code from module gnumakefile:
-  # Autoconf 2.61a.99 and earlier don't support linking a file only
-  # in VPATH builds.  But since GNUmakefile is for maintainer use
-  # only, it does not matter if we skip the link with older autoconf.
-  # Automake 1.10.1 and earlier try to remove GNUmakefile in non-VPATH
-  # builds, so use a shell variable to bypass this.
-  GNUmakefile=GNUmakefile
-  m4_if(m4_version_compare([2.61a.100],
-  	m4_defn([m4_PACKAGE_VERSION])), [1], [],
-        [AC_CONFIG_LINKS([$GNUmakefile:$GNUmakefile], [],
-  	[GNUmakefile=$GNUmakefile])])
-  # Code from module havelib:
-  # Code from module include_next:
-  # Code from module inline:
-  gl_INLINE
-  # Code from module intprops:
-  # Code from module linked-list:
-  # Code from module list:
-  gl_LIST
-  # Code from module localcharset:
-  gl_LOCALCHARSET
-  LOCALCHARSET_TESTS_ENVIRONMENT="CHARSETALIASDIR=\"\$(top_builddir)/$gl_source_base\""
-  AC_SUBST([LOCALCHARSET_TESTS_ENVIRONMENT])
-  # Code from module localename:
-  gl_LOCALENAME
-  # Code from module lock:
-  gl_LOCK
-  # Code from module lseek:
-  gl_FUNC_LSEEK
-  gl_UNISTD_MODULE_INDICATOR([lseek])
-  # Code from module lstat:
-  gl_FUNC_LSTAT
-  gl_SYS_STAT_MODULE_INDICATOR([lstat])
-  # Code from module maintainer-makefile:
-  AC_CONFIG_COMMANDS_PRE([m4_ifdef([AH_HEADER],
-    [AC_SUBST([CONFIG_INCLUDE], m4_defn([AH_HEADER]))])])
-  # Code from module malloc-gnu:
-  gl_FUNC_MALLOC_GNU
-  gl_MODULE_INDICATOR([malloc-gnu])
-  # Code from module malloc-posix:
-  gl_FUNC_MALLOC_POSIX
-  gl_STDLIB_MODULE_INDICATOR([malloc-posix])
-  # Code from module math:
-  gl_MATH_H
-  # Code from module mkdir:
-  gl_FUNC_MKDIR
-  # Code from module multiarch:
-  gl_MULTIARCH
-  # Code from module open:
-  gl_FUNC_OPEN
-  gl_FCNTL_MODULE_INDICATOR([open])
-  # Code from module oset:
-  gl_LIST
-  # Code from module pathmax:
-  gl_PATHMAX
-  # Code from module pmccabe2html:
-  AC_PATH_PROG([PMCCABE], [pmccabe], [false])
-  # Code from module progname:
-  AC_CHECK_DECLS([program_invocation_name], [], [], [#include <errno.h>])
-  AC_CHECK_DECLS([program_invocation_short_name], [], [], [#include <errno.h>])
-  # Code from module rbtree-oset:
-  # Code from module rbtreehash-list:
-  # Code from module realloc-posix:
-  gl_FUNC_REALLOC_POSIX
-  gl_STDLIB_MODULE_INDICATOR([realloc-posix])
-  # Code from module rmdir:
-  gl_FUNC_RMDIR
-  gl_UNISTD_MODULE_INDICATOR([rmdir])
-  # Code from module size_max:
-  gl_SIZE_MAX
-  # Code from module stat:
-  gl_FUNC_STAT
-  gl_SYS_STAT_MODULE_INDICATOR([stat])
-  # Code from module stdbool:
-  AM_STDBOOL_H
-  # Code from module stddef:
-  gl_STDDEF_H
-  # Code from module stdint:
-  gl_STDINT_H
-  # Code from module stdio:
-  gl_STDIO_H
-  # Code from module stdlib:
-  gl_STDLIB_H
-  # Code from module streq:
-  # Code from module strerror:
-  gl_FUNC_STRERROR
-  gl_STRING_MODULE_INDICATOR([strerror])
-  # Code from module string:
-  gl_HEADER_STRING_H
-  # Code from module sys_stat:
-  gl_HEADER_SYS_STAT_H
-  AC_PROG_MKDIR_P
-  # Code from module sys_time:
-  gl_HEADER_SYS_TIME_H
-  AC_PROG_MKDIR_P
-  # Code from module tempname:
-  gl_FUNC_GEN_TEMPNAME
-  # Code from module threadlib:
-  gl_THREADLIB
-  # Code from module time:
-  gl_HEADER_TIME_H
-  # Code from module tmpdir:
-  gt_TMPDIR
-  # Code from module tmpfile:
-  gl_FUNC_TMPFILE
-  gl_STDIO_MODULE_INDICATOR([tmpfile])
-  # Code from module tmpfile-safer:
-  gl_TMPFILE_SAFER
-  gl_MODULE_INDICATOR([tmpfile-safer])
-  # Code from module unistd:
-  gl_UNISTD_H
-  # Code from module unistd-safer:
-  gl_UNISTD_SAFER
-  # Code from module unistr/base:
-  gl_LIBUNISTRING_LIBHEADER([0.9.2], [unistr.h])
-  # Code from module unistr/u8-check:
-  gl_LIBUNISTRING_MODULE([0.9], [unistr/u8-check])
-  # Code from module unitypes:
-  gl_LIBUNISTRING_LIBHEADER([0.9], [unitypes.h])
-  # Code from module unused-parameter:
-  # Code from module useless-if-before-free:
-  # Code from module vc-list-files:
-  # Code from module warn-on-use:
-  # Code from module xalloc:
-  gl_XALLOC
-  # Code from module xalloc-die:
-  # Code from module xsize:
-  gl_XSIZE
+gl_CONFIGMAKE_PREP
+gl_DIRNAME_LGPL
+gl_DOUBLE_SLASH_ROOT
+gl_FUNC_DUP2
+gl_UNISTD_MODULE_INDICATOR([dup2])
+gl_HEADER_ERRNO_H
+gl_ERROR
+if test $ac_cv_lib_error_at_line = no; then
+  AC_LIBOBJ([error])
+  gl_PREREQ_ERROR
+fi
+m4_ifdef([AM_XGETTEXT_OPTION],
+  [AM_][XGETTEXT_OPTION([--flag=error:3:c-format])
+   AM_][XGETTEXT_OPTION([--flag=error_at_line:5:c-format])])
+gl_FUNC_FCNTL
+gl_FCNTL_MODULE_INDICATOR([fcntl])
+gl_FCNTL_H
+gl_FUNC_FFLUSH
+if test $REPLACE_FFLUSH = 1; then
+  AC_LIBOBJ([fflush])
+  gl_PREREQ_FFLUSH
+fi
+gl_MODULE_INDICATOR([fflush])
+gl_STDIO_MODULE_INDICATOR([fflush])
+gl_FLOAT_H
+if test $REPLACE_FLOAT_LDBL = 1; then
+  AC_LIBOBJ([float])
+fi
+gl_FUNC_FOPEN
+if test $REPLACE_FOPEN = 1; then
+  AC_LIBOBJ([fopen])
+  gl_PREREQ_FOPEN
+fi
+gl_STDIO_MODULE_INDICATOR([fopen])
+gl_MODULE_INDICATOR([fopen-safer])
+gl_FUNC_FPURGE
+if test $HAVE_FPURGE = 0 || test $REPLACE_FPURGE = 1; then
+  AC_LIBOBJ([fpurge])
+fi
+gl_STDIO_MODULE_INDICATOR([fpurge])
+gl_FUNC_FREADING
+gl_FUNC_FREOPEN
+if test $REPLACE_FREOPEN = 1; then
+  AC_LIBOBJ([freopen])
+  gl_PREREQ_FREOPEN
+fi
+gl_STDIO_MODULE_INDICATOR([freopen])
+gl_MODULE_INDICATOR([freopen-safer])
+gl_FUNC_FSEEK
+if test $REPLACE_FSEEK = 1; then
+  AC_LIBOBJ([fseek])
+fi
+gl_STDIO_MODULE_INDICATOR([fseek])
+gl_FUNC_FSEEKO
+if test $HAVE_FSEEKO = 0 || test $REPLACE_FSEEKO = 1; then
+  AC_LIBOBJ([fseeko])
+fi
+gl_STDIO_MODULE_INDICATOR([fseeko])
+gl_FUNC_FTELL
+if test $REPLACE_FTELL = 1; then
+  AC_LIBOBJ([ftell])
+fi
+gl_STDIO_MODULE_INDICATOR([ftell])
+gl_FUNC_FTELLO
+if test $HAVE_FTELLO = 0 || test $REPLACE_FTELLO = 1; then
+  AC_LIBOBJ([ftello])
+fi
+gl_STDIO_MODULE_INDICATOR([ftello])
+gl_FUNC_GETDELIM
+if test $HAVE_GETDELIM = 0 || test $REPLACE_GETDELIM = 1; then
+  AC_LIBOBJ([getdelim])
+  gl_PREREQ_GETDELIM
+fi
+gl_STDIO_MODULE_INDICATOR([getdelim])
+gl_FUNC_GETDTABLESIZE
+if test $HAVE_GETDTABLESIZE = 0; then
+  AC_LIBOBJ([getdtablesize])
+fi
+gl_UNISTD_MODULE_INDICATOR([getdtablesize])
+gl_FUNC_GETLINE
+if test $REPLACE_GETLINE = 1; then
+  AC_LIBOBJ([getline])
+  gl_PREREQ_GETLINE
+fi
+gl_STDIO_MODULE_INDICATOR([getline])
+gl_FUNC_GETOPT_GNU
+if test $REPLACE_GETOPT = 1; then
+  AC_LIBOBJ([getopt])
+  AC_LIBOBJ([getopt1])
+  gl_PREREQ_GETOPT
+fi
+gl_MODULE_INDICATOR_FOR_TESTS([getopt-gnu])
+gl_FUNC_GETOPT_POSIX
+if test $REPLACE_GETOPT = 1; then
+  AC_LIBOBJ([getopt])
+  AC_LIBOBJ([getopt1])
+  gl_PREREQ_GETOPT
+fi
+AC_SUBST([LIBINTL])
+AC_SUBST([LTLIBINTL])
+gl_FUNC_GETTIMEOFDAY
+if test $HAVE_GETTIMEOFDAY = 0 || test $REPLACE_GETTIMEOFDAY = 1; then
+  AC_LIBOBJ([gettimeofday])
+  gl_PREREQ_GETTIMEOFDAY
+fi
+gl_SYS_TIME_MODULE_INDICATOR([gettimeofday])
+# Autoconf 2.61a.99 and earlier don't support linking a file only
+# in VPATH builds.  But since GNUmakefile is for maintainer use
+# only, it does not matter if we skip the link with older autoconf.
+# Automake 1.10.1 and earlier try to remove GNUmakefile in non-VPATH
+# builds, so use a shell variable to bypass this.
+GNUmakefile=GNUmakefile
+m4_if(m4_version_compare([2.61a.100],
+        m4_defn([m4_PACKAGE_VERSION])), [1], [],
+      [AC_CONFIG_LINKS([$GNUmakefile:$GNUmakefile], [],
+        [GNUmakefile=$GNUmakefile])])
+gl_INLINE
+gl_LIST
+gl_LOCALCHARSET
+LOCALCHARSET_TESTS_ENVIRONMENT="CHARSETALIASDIR=\"\$(top_builddir)/$gl_source_base\""
+AC_SUBST([LOCALCHARSET_TESTS_ENVIRONMENT])
+gl_LOCALENAME
+gl_LOCK
+gl_FUNC_LSEEK
+if test $REPLACE_LSEEK = 1; then
+  AC_LIBOBJ([lseek])
+fi
+gl_UNISTD_MODULE_INDICATOR([lseek])
+gl_FUNC_LSTAT
+if test $REPLACE_LSTAT = 1; then
+  AC_LIBOBJ([lstat])
+  gl_PREREQ_LSTAT
+fi
+gl_SYS_STAT_MODULE_INDICATOR([lstat])
+AC_CONFIG_COMMANDS_PRE([m4_ifdef([AH_HEADER],
+  [AC_SUBST([CONFIG_INCLUDE], m4_defn([AH_HEADER]))])])
+gl_FUNC_MALLOC_GNU
+if test $REPLACE_MALLOC = 1; then
+  AC_LIBOBJ([malloc])
+fi
+gl_MODULE_INDICATOR([malloc-gnu])
+gl_FUNC_MALLOC_POSIX
+if test $REPLACE_MALLOC = 1; then
+  AC_LIBOBJ([malloc])
+fi
+gl_STDLIB_MODULE_INDICATOR([malloc-posix])
+gl_MATH_H
+gl_FUNC_MKDIR
+if test $REPLACE_MKDIR = 1; then
+  AC_LIBOBJ([mkdir])
+fi
+gl_MULTIARCH
+gl_FUNC_OPEN
+gl_FCNTL_MODULE_INDICATOR([open])
+gl_LIST
+gl_PATHMAX
+AC_PATH_PROG([PMCCABE], [pmccabe], [false])
+AC_CHECK_DECLS([program_invocation_name], [], [], [#include <errno.h>])
+AC_CHECK_DECLS([program_invocation_short_name], [], [], [#include <errno.h>])
+gl_PTHREAD_CHECK
+gl_FUNC_REALLOC_POSIX
+if test $REPLACE_REALLOC = 1; then
+  AC_LIBOBJ([realloc])
+fi
+gl_STDLIB_MODULE_INDICATOR([realloc-posix])
+gl_FUNC_RMDIR
+if test $REPLACE_RMDIR = 1; then
+  AC_LIBOBJ([rmdir])
+fi
+gl_UNISTD_MODULE_INDICATOR([rmdir])
+gl_SCHED_H
+gl_SIZE_MAX
+gl_FUNC_STAT
+if test $REPLACE_STAT = 1; then
+  AC_LIBOBJ([stat])
+  gl_PREREQ_STAT
+fi
+gl_SYS_STAT_MODULE_INDICATOR([stat])
+AM_STDBOOL_H
+gl_STDDEF_H
+gl_STDINT_H
+gl_STDIO_H
+gl_STDLIB_H
+gl_FUNC_STRERROR
+if test $REPLACE_STRERROR = 1; then
+  AC_LIBOBJ([strerror])
+fi
+gl_MODULE_INDICATOR([strerror])
+gl_STRING_MODULE_INDICATOR([strerror])
+AC_REQUIRE([gl_HEADER_ERRNO_H])
+AC_REQUIRE([gl_FUNC_STRERROR_0])
+if test -n "$ERRNO_H" || test $REPLACE_STRERROR_0 = 1; then
+  AC_LIBOBJ([strerror-override])
+  gl_PREREQ_SYS_H_WINSOCK2
+fi
+gl_HEADER_STRING_H
+gl_HEADER_SYS_STAT_H
+AC_PROG_MKDIR_P
+gl_HEADER_SYS_TIME_H
+AC_PROG_MKDIR_P
+gl_FUNC_GEN_TEMPNAME
+gl_THREADLIB
+gl_HEADER_TIME_H
+gt_TMPDIR
+gl_FUNC_TMPFILE
+if test $REPLACE_TMPFILE = 1; then
+  AC_LIBOBJ([tmpfile])
+  gl_PREREQ_TMPFILE
+fi
+gl_STDIO_MODULE_INDICATOR([tmpfile])
+gl_MODULE_INDICATOR([tmpfile-safer])
+gl_UNISTD_H
+gl_UNISTD_SAFER
+gl_LIBUNISTRING_LIBHEADER([0.9.2], [unistr.h])
+gl_LIBUNISTRING_MODULE([0.9], [unistr/u8-check])
+gl_LIBUNISTRING_LIBHEADER([0.9], [unitypes.h])
+gl_XALLOC
+gl_XSIZE
   # End of code from modules
   m4_ifval(gl_LIBSOURCES_LIST, [
     m4_syscmd([test ! -d ]m4_defn([gl_LIBSOURCES_DIR])[ ||
@@ -494,6 +516,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/config.charset
   lib/dirname-lgpl.c
   lib/dirname.h
+  lib/dosname.h
   lib/dup-safer.c
   lib/dup2.c
   lib/errno.in.h
@@ -505,6 +528,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/fcntl.in.h
   lib/fd-safer.c
   lib/fflush.c
+  lib/float.c
   lib/float.in.h
   lib/fopen-safer.c
   lib/fopen.c
@@ -513,7 +537,9 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/freading.h
   lib/freopen-safer.c
   lib/freopen.c
+  lib/fseek.c
   lib/fseeko.c
+  lib/ftell.c
   lib/ftello.c
   lib/getdelim.c
   lib/getdtablesize.c
@@ -563,10 +589,12 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/pipe-safer.c
   lib/progname.c
   lib/progname.h
+  lib/pthread.in.h
   lib/realloc.c
   lib/ref-add.sin
   lib/ref-del.sin
   lib/rmdir.c
+  lib/sched.in.h
   lib/size_max.h
   lib/stat.c
   lib/stdbool.in.h
@@ -575,10 +603,11 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/stdio--.h
   lib/stdio-impl.h
   lib/stdio-safer.h
-  lib/stdio-write.c
   lib/stdio.in.h
   lib/stdlib.in.h
   lib/streq.h
+  lib/strerror-override.c
+  lib/strerror-override.h
   lib/strerror.c
   lib/string.in.h
   lib/stripslash.c
@@ -597,17 +626,17 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/unistr.in.h
   lib/unistr/u8-check.c
   lib/unitypes.in.h
+  lib/verify.h
   lib/xalloc-die.c
+  lib/xalloc-oversized.h
   lib/xalloc.h
   lib/xmalloc.c
   lib/xsize.h
   m4/00gnulib.m4
-  m4/asm-underscore.m4
   m4/autobuild.m4
   m4/codeset.m4
   m4/configmake.m4
   m4/dirname.m4
-  m4/dos.m4
   m4/double-slash-root.m4
   m4/dup2.m4
   m4/errno_h.m4
@@ -622,7 +651,9 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/fpurge.m4
   m4/freading.m4
   m4/freopen.m4
+  m4/fseek.m4
   m4/fseeko.m4
+  m4/ftell.m4
   m4/ftello.m4
   m4/getdelim.m4
   m4/getdtablesize.m4
@@ -654,18 +685,20 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/onceonly.m4
   m4/open.m4
   m4/pathmax.m4
+  m4/pthread.m4
   m4/realloc.m4
   m4/rmdir.m4
+  m4/sched_h.m4
   m4/size_max.m4
   m4/stat.m4
   m4/stdbool.m4
   m4/stddef_h.m4
   m4/stdint.m4
-  m4/stdio-safer.m4
   m4/stdio_h.m4
   m4/stdlib_h.m4
   m4/strerror.m4
   m4/string_h.m4
+  m4/sys_socket_h.m4
   m4/sys_stat_h.m4
   m4/sys_time_h.m4
   m4/tempname.m4
