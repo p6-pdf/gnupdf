@@ -1,5 +1,12 @@
 2011-07-01  Aleksander Morgado  <aleksander@gnu.org>
 
+	types,uuid: avoid exposing libuuid-specific type.
+	* src/base/pdf-types-uuid.[h|c]: Gives issues during mingw32
+	compilation, due to redefined symbols. uuid_t is definitely not
+	likely to change.
+
+2011-07-01  Aleksander Morgado  <aleksander@gnu.org>
+
 	gnulib: import 'vasprintf-posix' module.
 
 2011-07-01  Aleksander Morgado  <aleksander@gnu.org>

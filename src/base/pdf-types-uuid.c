@@ -25,6 +25,8 @@
 
 #include <config.h>
 
+#include <uuid/uuid.h>
+
 #include <pdf-types-uuid.h>
 
 pdf_uuid_t
@@ -43,16 +45,16 @@ pdf_uuid_generate (enum pdf_uuid_type_e type)
     default:
       uuid_generate (new_uuid.uuid);
     }
-  
+
   return new_uuid;
 }
 
 pdf_char_t *
 pdf_uuid_string (pdf_uuid_t uuid,
-                 pdf_char_t * buffer,
+                 pdf_char_t *buffer,
                  pdf_size_t buffer_size)
 {
-  if (buffer_size < PDF_UUID_SIZE) 
+  if (buffer_size < PDF_UUID_SIZE)
     return NULL;
 
   uuid_unparse (uuid.uuid, buffer);
