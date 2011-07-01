@@ -28,17 +28,11 @@
 
 #include <config.h>
 
-/* BEGIN PUBLIC */
-
-#include <uuid/uuid.h>
-
-/* END PUBLIC */
-
 #include <pdf-types.h>
 
-#define PDF_UUID_SIZE 46
-
 /* BEGIN PUBLIC */
+
+#define PDF_UUID_SIZE 46
 
 /* Types of UUIDs */
 /* Currently only time-based and random-based UUIDs are supported */
@@ -52,7 +46,7 @@ enum pdf_uuid_type_e
 
 struct pdf_uuid_s
 {
-  uuid_t uuid;
+  pdf_uchar_t uuid[16];
 };
 
 typedef struct pdf_uuid_s pdf_uuid_t;
@@ -61,9 +55,9 @@ typedef struct pdf_uuid_s pdf_uuid_t;
 pdf_uuid_t pdf_uuid_generate (enum pdf_uuid_type_e type);
 
 /* Printed ASCII representation of an UUID */
-pdf_char_t * pdf_uuid_string (pdf_uuid_t uuid,
-                              pdf_char_t * buffer,
-                              pdf_size_t buffer_size);
+pdf_char_t *pdf_uuid_string (pdf_uuid_t  uuid,
+                             pdf_char_t *buffer,
+                             pdf_size_t  buffer_size);
 
 /* Determine if two UUIDs are equal */
 pdf_bool_t pdf_uuid_equal_p (pdf_uuid_t uuid1,

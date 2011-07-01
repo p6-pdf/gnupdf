@@ -122,10 +122,19 @@ if COMPILE_BASE_LAYER
 endif
 
 libgnupdf_la_LDFLAGS = $(top_builddir)/lib/libgnu.la \
-                       $(LTLIBUUID) $(LTLIBPTHREAD) $(LTLIBM) \
-                       $(LTLIBJBIG2DEC) $(LTLIBJPEG) $(LTLIBCURL) \
-                       $(LIBGCRYPT_LIBS) $(LTLIBGPG_ERROR) $(LTLIBGCRYPT) \
-                       $(LTLIBCHECK) $(LTLIBICONV)
+                       $(LTLIBUUID) \
+                       $(LIB_PTHREAD) \
+                       $(LTLIBPTHREAD) \
+                       $(LTLIBM) \
+                       $(LTLIBJBIG2DEC) \
+                       $(LTLIBJPEG) \
+                       $(LTLIBCURL) \
+                       $(LIBGCRYPT_LIBS) \
+                       $(LTLIBGPG_ERROR) \
+                       $(LTLIBGCRYPT) \
+                       $(LTLIBCHECK) \
+                       $(LTLIBICONV) \
+                       @INTL_MACOSX_LIBS@
 
 # We want a DLL if compiling for Windows
 if COMPILE_W32_SYSTEM

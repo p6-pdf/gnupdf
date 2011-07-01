@@ -651,14 +651,14 @@ pdf_time_w32_set_from_filetime (pdf_time_t      *time_var,
    */
 
   /* Convert filetime to systemtime calendar */
-  if (FileTimeToSystemTime (p_filetime, &systemtime) == 0)
+  if (FileTimeToSystemTime (filetime, &systemtime) == 0)
     {
       /* TODO: Use FormatMessage() to include a string with the exact error
        * in the pdf_error_t */
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_TIME,
                      PDF_ERROR,
-                     "couldn't get system time from FILETIME: %d"
+                     "couldn't get system time from FILETIME: %d",
                      (pdf_i32_t)GetLastError ());
       return PDF_FALSE;
     }
@@ -680,7 +680,9 @@ pdf_time_w32_set_from_filetime (pdf_time_t      *time_var,
   /* For us, sunday is 7 */
   calendar.dow = (systemtime.wDayOfWeek == 0) ? 7 : systemtime.wDayOfWeek;
 
-  return pdf_time_set_from_cal (time_var, &calendar, error);
+  pdf_time_set_from_cal (time_var, &calendar);
+
+  return PDF_TRUE;
 }
 #endif
 

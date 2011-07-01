@@ -1,3 +1,39 @@
+2011-07-01  Aleksander Morgado  <aleksander@gnu.org>
+
+	torture: fix compilation issues under mingw32
+	* torture/unit/base/time/pdf-time-w32-set-from-filetime.c
+
+2011-07-01  Aleksander Morgado  <aleksander@gnu.org>
+
+	types,uuid: avoid exposing libuuid-specific type.
+	* src/base/pdf-types-uuid.[h|c]: Gives issues during mingw32
+	compilation, due to redefined symbols. uuid_t is definitely not
+	likely to change.
+
+2011-07-01  Aleksander Morgado  <aleksander@gnu.org>
+
+	gnulib: import 'vasprintf-posix' module.
+
+2011-07-01  Aleksander Morgado  <aleksander@gnu.org>
+
+	fsys,disk: fix compilation issues under mingw32
+	* src/base/pdf-fsys-disk.c
+
+2011-07-01  Aleksander Morgado  <aleksander@gnu.org>
+
+	time: fix compilation issues under mingw32
+	* src/base/pdf-time.c (pdf_time_w32_set_from_filetime)
+
+2011-07-01  Aleksander Morgado  <aleksander@gnu.org>
+
+	text: fix compilation issues under mingw32
+	* src/base/pdf-text-host-encoding.c (pdf_text_host_to_utf32he_win32)
+	(pdf_text_utf32he_to_host_win32)
+
+2011-06-30  Aleksander Morgado  <aleksander@gnu.org>
+
+	gnulib: import 'pthread' module and update.
+
 2011-06-30  Aleksander Morgado  <aleksander@gnu.org>
 
 	fp: fix several code static analysis issues
