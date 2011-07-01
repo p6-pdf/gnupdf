@@ -228,7 +228,7 @@ get_current_path (pdf_error_t **error)
     }
 
   /* Fill the buffer with the current directory */
-  if (GetCurrentDirectoryW (current, current_len) != (current_len - 1))
+  if (GetCurrentDirectoryW (current_len, current) != (current_len - 1))
     {
       pdf_dealloc (current);
       pdf_set_error (error,
@@ -737,7 +737,7 @@ get_folder_contents (const pdf_fsys_t  *fsys,
       name_length = PDF_NAMELEN (dir_entry);
 
       /* Create the text object containing the entry name */
-      entry_text = set_host_path (dir_entry->d_name,
+      entry_text = set_host_path ((const pdf_char_t *)dir_entry->d_name,
                                   name_length,
                                   error);
       if (!entry_text)
@@ -1103,13 +1103,14 @@ get_item_props (const pdf_fsys_t              *fsys,
         pdf_set_error (error,
                        PDF_EDOMAIN_BASE_FSYS,
                        PDF_ERROR,
-                       "couldn't get item properties: got error code %u",
-                       (uint)GetLastError ());
+                       "couldn't get item properties: got error code %d",
+                       (pdf_i32_t)GetLastError ());
         pdf_dealloc (host_path);
         return PDF_FALSE;
       }
 
     props->is_hidden = (attrs & FILE_ATTRIBUTE_HIDDEN ? PDF_TRUE : PDF_FALSE);
+  }
 #else
   {
     pdf_char_t *filename_utf8;
@@ -1148,7 +1149,7 @@ item_p (const pdf_fsys_t *fsys,
   PDF_ASSERT_POINTER_RETURN_VAL (path, PDF_FALSE);
 
 #ifdef PDF_HOST_WIN32
-  if (win32_device_p (path))
+  if (win32_device_p (path, NULL))
     return PDF_TRUE;
 #endif
 
@@ -1268,16 +1269,16 @@ get_free_space (const pdf_fsys_t  *fsys,
       /* Propagate error */
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_FSYS,
-                     __pdf_fsys_disk_get_status_from_errno (errno),
-                     "cannot get free disk space: got error code %u",
-                     (uint)GetLastError ());
+                     get_status_from_errno (errno),
+                     "cannot get free disk space: got error code %d",
+                     (pdf_i32_t)GetLastError ());
       pdf_dealloc (utf16le_path);
       return -1;
     }
 
   pdf_dealloc (utf16le_path);
 
-  return ((pdf_i64_t)free_bytes << 32) + free_bytes.LowPart;
+  return (pdf_i64_t)free_bytes.QuadPart;
 }
 
 #else
@@ -1885,7 +1886,6 @@ win32_device_p (const pdf_text_t  *path,
   int i;
   pdf_text_t *device_name;
 
-  device_p = PDF_FALSE;
   for (i = 0; i < PDF_MAX_W32_DEVICE_NAMES; ++i)
     {
       pdf_error_t *inner_error = NULL;

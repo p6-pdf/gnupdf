@@ -1,5 +1,10 @@
 2011-07-01  Aleksander Morgado  <aleksander@gnu.org>
 
+	fsys,disk: fix compilation issues under mingw32
+	* src/base/pdf-fsys-disk.c
+
+2011-07-01  Aleksander Morgado  <aleksander@gnu.org>
+
 	time: fix compilation issues under mingw32
 	* src/base/pdf-time.c (pdf_time_w32_set_from_filetime)
 
