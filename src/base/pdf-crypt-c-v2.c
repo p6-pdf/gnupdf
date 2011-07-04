@@ -34,112 +34,152 @@
 #include <pdf-error.h>
 #include <pdf-crypt-c-v2.h>
 
+struct pdf_crypt_cipher_v2_s {
+  /* Implementation */
+  const struct pdf_crypt_cipher_s *parent;
+  /* Implementation-specific private data */
+  gcry_cipher_hd_t hd;
+};
 
-/* Creation and destruction of a v2 cipher */
-
-pdf_status_t
-pdf_crypt_cipher_v2_new (void ** cipher)
+static pdf_bool_t
+v2_set_key (pdf_crypt_cipher_t  *cipher,
+            const pdf_char_t    *key,
+            pdf_size_t           size,
+            pdf_error_t        **error)
 {
-  gcry_cipher_hd_t * hd;
+  struct pdf_crypt_cipher_v2_s *v2 = (struct pdf_crypt_cipher_v2_s *)cipher;
+  gcry_error_t gcry_error;
 
-  hd = pdf_alloc (sizeof (gcry_cipher_hd_t));
-
-  if (hd != NULL)
+  gcry_error = gcry_cipher_setkey (v2->hd, key, size);
+  if (gcry_error != GPG_ERR_NO_ERROR)
     {
-      gcry_error_t err;
-
-      err = gcry_cipher_open (hd, GCRY_CIPHER_ARCFOUR, GCRY_CIPHER_MODE_STREAM, 0);
-
-      if (err == GPG_ERR_NO_ERROR)
-	{
-	  *cipher = hd;
-	  return PDF_OK;
-	}
-      else
-	{
-	  pdf_dealloc (hd);
-	  return PDF_ERROR;
-	}
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_ENCRYPTION,
+                     PDF_ENOMEM,
+                     "cannot set key in V2 cipher: '%s/%s'",
+                     gcry_strsource (gcry_error),
+                     gcry_strerror (gcry_error));
+      return PDF_FALSE;
     }
-  else
-    {
-      pdf_dealloc (hd);
-      return PDF_ENOMEM;
-    }
-
-  return PDF_OK;
+  return PDF_TRUE;
 }
 
-
-pdf_status_t
-pdf_crypt_cipher_v2_destroy (void * cipher)
+static pdf_bool_t
+v2_encrypt (pdf_crypt_cipher_t  *cipher,
+            pdf_char_t          *out,
+            pdf_size_t           out_size,
+            const pdf_char_t    *in,
+            pdf_size_t           in_size,
+            pdf_size_t          *result_size,
+            pdf_error_t        **error)
 {
-  gcry_cipher_hd_t * hd = cipher;
-  gcry_cipher_close (*hd);
-  pdf_dealloc (cipher);
-  return PDF_OK;
+  struct pdf_crypt_cipher_v2_s *v2 = (struct pdf_crypt_cipher_v2_s *)cipher;
+  gcry_error_t gcry_error;
+
+  gcry_error = gcry_cipher_encrypt (v2->hd, out, out_size, in, in_size);
+  if (gcry_error != GPG_ERR_NO_ERROR)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_ENCRYPTION,
+                     PDF_ENOMEM,
+                     "cannot set key in V2 cipher: '%s/%s'",
+                     gcry_strsource (gcry_error),
+                     gcry_strerror (gcry_error));
+      return PDF_FALSE;
+    }
+
+  if (result_size)
+    *result_size = in_size;
+
+  return PDF_TRUE;
 }
 
-
-
-/* Encryption and decryption functions */
-
-pdf_status_t
-pdf_crypt_cipher_v2_setkey (void * cipher,
-			    pdf_char_t *key, pdf_size_t size)
+static pdf_bool_t
+v2_decrypt (pdf_crypt_cipher_t  *cipher,
+            pdf_char_t          *out,
+            pdf_size_t           out_size,
+            const pdf_char_t    *in,
+            pdf_size_t           in_size,
+            pdf_size_t          *result_size,
+            pdf_error_t        **error)
 {
-  gcry_cipher_hd_t * hd = cipher;
-  if (gcry_cipher_setkey (*hd, key, size) != GPG_ERR_NO_ERROR)
+  struct pdf_crypt_cipher_v2_s *v2 = (struct pdf_crypt_cipher_v2_s *)cipher;
+  gcry_error_t gcry_error;
+
+  gcry_error = gcry_cipher_decrypt (v2->hd, out, out_size, in, in_size);
+  if (gcry_error != GPG_ERR_NO_ERROR)
     {
-      return PDF_EBADV2KEY;
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_ENCRYPTION,
+                     PDF_ENOMEM,
+                     "cannot set key in V2 cipher: '%s/%s'",
+                     gcry_strsource (gcry_error),
+                     gcry_strerror (gcry_error));
+      return PDF_FALSE;
     }
-  else
-    {
-      return PDF_OK;
-    }
-  
+
+  if (result_size)
+    *result_size = in_size;
+
+  return PDF_TRUE;
 }
 
-pdf_status_t
-pdf_crypt_cipher_v2_encrypt (void * cipher,
-			     pdf_char_t *out, pdf_size_t out_size,
-			     pdf_char_t *in,  pdf_size_t in_size,
-			     pdf_size_t *result_size)
+static void
+v2_destroy (pdf_crypt_cipher_t *cipher)
 {
-  gcry_cipher_hd_t * hd = cipher;
+  struct pdf_crypt_cipher_v2_s *v2 = (struct pdf_crypt_cipher_v2_s *)cipher;
 
-  if (gcry_cipher_encrypt (*hd, out, out_size, in, in_size) == GPG_ERR_NO_ERROR)
-    {
-      if (result_size != NULL)
-        *result_size = in_size;
-      return PDF_OK;
-    }
-  else
-    {
-      return PDF_ERROR;
-    }
+  gcry_cipher_close (v2->hd);
+  pdf_dealloc (v2);
 }
 
+/* Implementation of the cipher module */
+static const struct pdf_crypt_cipher_s implementation = {
+  .set_key = v2_set_key,
+  .encrypt = v2_encrypt,
+  .decrypt = v2_decrypt,
+  .destroy = v2_destroy
+};
 
-
-pdf_status_t
-pdf_crypt_cipher_v2_decrypt (void * cipher,
-			     pdf_char_t *out, pdf_size_t out_size,
-			     pdf_char_t *in,  pdf_size_t in_size,
-			     pdf_size_t *result_size)
+pdf_crypt_cipher_t *
+pdf_crypt_cipher_v2_new (pdf_error_t **error)
 {
-  gcry_cipher_hd_t * hd = cipher;
+  gcry_error_t gcry_error;
+  struct pdf_crypt_cipher_v2_s *cipher;
 
-  if (gcry_cipher_decrypt (*hd, out, out_size, in, in_size) == GPG_ERR_NO_ERROR)
+  cipher = pdf_alloc (sizeof (struct pdf_crypt_cipher_v2_s));
+  if (!cipher)
     {
-      if (result_size != NULL)
-        *result_size = in_size;
-      return PDF_OK;
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_ENCRYPTION,
+                     PDF_ENOMEM,
+                     "cannot create new V2 cipher object: "
+                     "couldn't allocate %lu bytes",
+                     (unsigned long)sizeof (struct pdf_crypt_cipher_v2_s));
+      return NULL;
     }
-  else
+
+  /* Set implementation API */
+  cipher->parent = &implementation;
+
+  /* Initialize cipher object */
+  gcry_error = gcry_cipher_open (&(cipher->hd),
+                                 GCRY_CIPHER_ARCFOUR,
+                                 GCRY_CIPHER_MODE_STREAM,
+                                 0);
+  if (gcry_error != GPG_ERR_NO_ERROR)
     {
-      return PDF_ERROR;
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_ENCRYPTION,
+                     PDF_ENOMEM,
+                     "cannot initialize V2 cipher: '%s/%s'",
+                     gcry_strsource (gcry_error),
+                     gcry_strerror (gcry_error));
+      pdf_dealloc (cipher);
+      return NULL;
     }
+
+  return (pdf_crypt_cipher_t *)cipher;
 }
 
 /* End of pdf-crypt-c-v2.c */

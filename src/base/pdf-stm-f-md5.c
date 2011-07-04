@@ -45,7 +45,7 @@ PDF_STM_FILTER_DEFINE (pdf_stm_f_md5enc_get,
 /* Internal state */
 struct pdf_stm_f_md5_s
 {
-  pdf_crypt_md_t md;
+  pdf_crypt_md_t *md;
   pdf_buffer_t *cache;
 };
 
@@ -76,8 +76,8 @@ stm_f_md5enc_init (const pdf_hash_t  *params,
       return PDF_FALSE;
     }
 
-  if (pdf_crypt_md_new (PDF_CRYPT_MD_MD5,
-                        &(filter_state->md)) != PDF_OK)
+  filter_state->md = pdf_crypt_md_new (PDF_CRYPT_MD_MD5, error);
+  if (!filter_state->md)
     {
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_STM,
@@ -121,7 +121,12 @@ stm_f_md5enc_apply (void          *state,
   PDF_ASSERT (in->wp >= in->rp);
   in_size = in->wp - in->rp;
 
-  pdf_crypt_md_write (filter_state->md, (pdf_char_t *)in->data, in_size);
+  if (!pdf_crypt_md_write (filter_state->md,
+                           (pdf_char_t *)in->data,
+                           in_size,
+                           error))
+    return PDF_STM_FILTER_APPLY_STATUS_ERROR;
+
   in->rp += in_size;
 
   if (!finish)
@@ -130,7 +135,11 @@ stm_f_md5enc_apply (void          *state,
   if (pdf_buffer_eob_p (cache))
     {
       /* If we have reached the end, read the hash value in cache */
-      pdf_crypt_md_read (filter_state->md, (pdf_char_t *)cache->data, cache->size);
+      if (!pdf_crypt_md_read (filter_state->md,
+                              (pdf_char_t *)cache->data,
+                              cache->size,
+                              error))
+        return PDF_STM_FILTER_APPLY_STATUS_ERROR;
       cache->wp = cache->size;
     }
 

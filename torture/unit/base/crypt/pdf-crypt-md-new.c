@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <pdf.h>
 #include <check.h>
+
 #include <pdf-test-common.h>
 
 /*
@@ -40,8 +41,13 @@
  */
 START_TEST (pdf_crypt_md_new_001)
 {
-  pdf_crypt_md_t md;
-    fail_if ( pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md) != PDF_OK);
+  pdf_crypt_md_t *md;
+  pdf_error_t *error = NULL;
+
+  md = pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &error);
+  fail_unless (md != NULL);
+  fail_if (error != NULL);
+
   pdf_crypt_md_destroy (md);
 }
 END_TEST
@@ -56,7 +62,8 @@ END_TEST
 START_TEST (pdf_crypt_md_new_002)
 {
   pdf_char_t buffer[16];
-    fail_if (pdf_crypt_nonce (buffer, sizeof(buffer)) != PDF_OK);
+
+  fail_unless (pdf_crypt_nonce (buffer, sizeof(buffer)) != NULL);
 }
 END_TEST
 
@@ -66,14 +73,14 @@ END_TEST
 TCase *
 test_pdf_crypt_md_new (void)
 {
-  TCase *tc = tcase_create("pdf_crypt_md_new");
-  tcase_add_test(tc, pdf_crypt_md_new_001);
-  tcase_add_test(tc, pdf_crypt_md_new_002);
+  TCase *tc = tcase_create ("pdf_crypt_md_new");
+
+  tcase_add_test (tc, pdf_crypt_md_new_001);
+  tcase_add_test (tc, pdf_crypt_md_new_002);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);
   return tc;
 }
-
 
 /* End of pdf-crypt-md-new.c */

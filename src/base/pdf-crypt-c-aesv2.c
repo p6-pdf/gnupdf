@@ -33,112 +33,88 @@
 #include <pdf-types.h>
 #include <pdf-error.h>
 #include <pdf-crypt-c-aesv2.h>
-#include <pdf-hash-helper.h>
 
 #define AESV2_BLKSIZE 16	/* Size of a block in AES128 */
 
-
-struct aesv2_state_s
-{
-  gcry_cipher_hd_t cipher;
+struct pdf_crypt_cipher_aesv2_s {
+  /* Implementation */
+  const struct pdf_crypt_cipher_s *parent;
+  /* Implementation-specific private data */
+  gcry_cipher_hd_t hd;
   pdf_bool_t first_block;
 };
 
-typedef struct aesv2_state_s * aesv2_state_t;
-  
-
-/* Creation and destruction of aesv2 ciphers */
-
-pdf_status_t
-pdf_crypt_cipher_aesv2_new (void ** out)
+static pdf_bool_t
+aesv2_set_key (pdf_crypt_cipher_t  *cipher,
+               const pdf_char_t    *key,
+               pdf_size_t           size,
+               pdf_error_t        **error)
 {
-  aesv2_state_t state;
+  struct pdf_crypt_cipher_aesv2_s *aesv2 = (struct pdf_crypt_cipher_aesv2_s *)cipher;
+  gcry_error_t gcry_error;
 
-  state = pdf_alloc (sizeof(struct aesv2_state_s));
-
-  if (state != NULL)
+  gcry_error = gcry_cipher_setkey (aesv2->hd, key, size);
+  if (gcry_error != GPG_ERR_NO_ERROR)
     {
-      gcry_error_t err;
-
-      err = gcry_cipher_open (&state->cipher, GCRY_CIPHER_AES128, GCRY_CIPHER_MODE_CBC, 0);
-      state->first_block = PDF_TRUE;
-      
-      if (err == GPG_ERR_NO_ERROR)
-	{
-	  *out = state;
-	  return PDF_OK;
-	}
-      else
-	{
-	  pdf_dealloc (state);
-	  return PDF_ERROR;
-	}
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_ENCRYPTION,
+                     PDF_ENOMEM,
+                     "cannot set key in AESv2 cipher: '%s/%s'",
+                     gcry_strsource (gcry_error),
+                     gcry_strerror (gcry_error));
+      return PDF_FALSE;
     }
-  else
-    {
-      pdf_dealloc (state);
-      return PDF_ENOMEM;
-    }
-
-  return PDF_OK;
+  return PDF_TRUE;
 }
 
-
-
-pdf_status_t
-pdf_crypt_cipher_aesv2_destroy (void * _state)
+static pdf_bool_t
+aesv2_encrypt (pdf_crypt_cipher_t  *cipher,
+               pdf_char_t          *out,
+               pdf_size_t           out_size,
+               const pdf_char_t    *in,
+               pdf_size_t           in_size,
+               pdf_size_t          *result_size,
+               pdf_error_t        **error)
 {
-  aesv2_state_t state = _state;
-  gcry_cipher_close (state->cipher);
-  pdf_dealloc (state);
-  return PDF_OK;
-}
-
-
-
-/* Encryption and decryption functions */
-
-pdf_status_t
-pdf_crypt_cipher_aesv2_setkey (void * _state,
-			       pdf_char_t *key, pdf_size_t size)
-{
-  aesv2_state_t state = _state;
-  
-  if (gcry_cipher_setkey (state->cipher, key, size) == GPG_ERR_NO_ERROR)
-    {
-      return PDF_OK;
-    }
-  else
-    {
-      return PDF_EBADAESKEY;
-    }
-}
-
-
-
-pdf_status_t
-pdf_crypt_cipher_aesv2_encrypt (void * _state,
-				pdf_char_t *out, pdf_size_t out_size,
-				pdf_char_t *in,  pdf_size_t in_size,
-				pdf_size_t *result_size)
-{
-  aesv2_state_t state = _state;
-  pdf_char_t * output;
+  struct pdf_crypt_cipher_aesv2_s *aesv2 = (struct pdf_crypt_cipher_aesv2_s *)cipher;
+  gcry_error_t gcry_error;
+  pdf_char_t *output;
   pdf_size_t output_size;
-  pdf_char_t * input;
+  const pdf_char_t *input;
   pdf_size_t input_size;
-  
-  if (in_size < AESV2_BLKSIZE || in_size % AESV2_BLKSIZE != 0)
-    return PDF_EBADDATA;
+
+  if (in_size < AESV2_BLKSIZE ||
+      in_size % AESV2_BLKSIZE != 0)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_ENCRYPTION,
+                     PDF_EBADDATA,
+                     "cannot encrypt in AESv2 cipher: "
+                     "invalid input size (%lu), "
+                     "must be multiple of block size (%lu)",
+                     (unsigned long)in_size,
+                     (unsigned long)AESV2_BLKSIZE);
+      return PDF_FALSE;
+    }
 
   if (out_size < in_size)
-    return PDF_EBADDATA;
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_ENCRYPTION,
+                     PDF_EBADDATA,
+                     "cannot encrypt in AESv2 cipher: "
+                     "output size (%lu) cannot be smaller than input size (%lu)",
+                     (unsigned long)output_size,
+                     (unsigned long)in_size);
+      return PDF_FALSE;
+    }
 
   /* If we are at first block, then we have found the IV vector */
-  if (state->first_block == PDF_TRUE)
+  if (aesv2->first_block == PDF_TRUE)
     {
-      pdf_char_t * iv = in;
-      gcry_cipher_setiv (state->cipher, iv, AESV2_BLKSIZE);
+      const pdf_char_t *iv = in;
+
+      gcry_cipher_setiv (aesv2->hd, iv, AESV2_BLKSIZE);
       input = in + AESV2_BLKSIZE;
       input_size = in_size - AESV2_BLKSIZE;
 
@@ -147,7 +123,7 @@ pdf_crypt_cipher_aesv2_encrypt (void * _state,
       output = out + AESV2_BLKSIZE;
       output_size = out_size - AESV2_BLKSIZE;
 
-      state->first_block = PDF_FALSE;
+      aesv2->first_block = PDF_FALSE;
     }
   else
     {
@@ -157,43 +133,72 @@ pdf_crypt_cipher_aesv2_encrypt (void * _state,
       input_size = in_size;
     }
 
-  if (gcry_cipher_encrypt (state->cipher, output, output_size, input, input_size) != GPG_ERR_NO_ERROR)
+  gcry_error = gcry_cipher_encrypt (aesv2->hd, out, out_size, in, in_size);
+  if (gcry_error != GPG_ERR_NO_ERROR)
     {
-      return PDF_ERROR;
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_ENCRYPTION,
+                     PDF_ENOMEM,
+                     "cannot encrypt with AESv2 cipher: '%s/%s'",
+                     gcry_strsource (gcry_error),
+                     gcry_strerror (gcry_error));
+      return PDF_FALSE;
     }
 
-  if (result_size != NULL)
+  if (result_size)
     *result_size = in_size;
 
-  return PDF_OK;
+  return PDF_TRUE;
 }
 
-
-
-
-pdf_status_t
-pdf_crypt_cipher_aesv2_decrypt (void * _state,
-				pdf_char_t *out, pdf_size_t out_size,
-				pdf_char_t *in,  pdf_size_t in_size,
-				pdf_size_t *result_size)
+static pdf_bool_t
+aesv2_decrypt (pdf_crypt_cipher_t  *cipher,
+               pdf_char_t          *out,
+               pdf_size_t           out_size,
+               const pdf_char_t    *in,
+               pdf_size_t           in_size,
+               pdf_size_t          *result_size,
+               pdf_error_t        **error)
 {
-  aesv2_state_t state = _state;
-  pdf_char_t * output;
+  struct pdf_crypt_cipher_aesv2_s *aesv2 = (struct pdf_crypt_cipher_aesv2_s *)cipher;
+  gcry_error_t gcry_error;
+  pdf_char_t *output;
   pdf_size_t output_size;
-  pdf_char_t * input;
+  const pdf_char_t *input;
   pdf_size_t input_size;
-  
-  if (in_size < AESV2_BLKSIZE || in_size % AESV2_BLKSIZE != 0)
-    return PDF_EBADDATA;
+
+  if (in_size < AESV2_BLKSIZE ||
+      in_size % AESV2_BLKSIZE != 0)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_ENCRYPTION,
+                     PDF_EBADDATA,
+                     "cannot decrypt in AESv2 cipher: "
+                     "invalid input size (%lu), "
+                     "must be multiple of block size (%lu)",
+                     (unsigned long)in_size,
+                     (unsigned long)AESV2_BLKSIZE);
+      return PDF_FALSE;
+    }
 
   if (out_size < in_size)
-    return PDF_EBADDATA;
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_ENCRYPTION,
+                     PDF_EBADDATA,
+                     "cannot decrypt in AESv2 cipher: "
+                     "output size (%lu) cannot be smaller than input size (%lu)",
+                     (unsigned long)out_size,
+                     (unsigned long)in_size);
+      return PDF_FALSE;
+    }
 
   /* If we are at first block, then we have found the IV vector */
-  if (state->first_block == PDF_TRUE)
+  if (aesv2->first_block == PDF_TRUE)
     {
-      pdf_char_t * iv = in;
-      gcry_cipher_setiv (state->cipher, iv, AESV2_BLKSIZE);
+      const pdf_char_t *iv = in;
+
+      gcry_cipher_setiv (aesv2->hd, iv, AESV2_BLKSIZE);
       input = in + AESV2_BLKSIZE;
       input_size = in_size - AESV2_BLKSIZE;
 
@@ -202,7 +207,7 @@ pdf_crypt_cipher_aesv2_decrypt (void * _state,
       output = out + AESV2_BLKSIZE;
       output_size = out_size - AESV2_BLKSIZE;
 
-      state->first_block = PDF_FALSE;
+      aesv2->first_block = PDF_FALSE;
     }
   else
     {
@@ -212,19 +217,81 @@ pdf_crypt_cipher_aesv2_decrypt (void * _state,
       input_size = in_size;
     }
 
-  if (gcry_cipher_decrypt (state->cipher, output, output_size, input, input_size) != GPG_ERR_NO_ERROR)
+  gcry_error = gcry_cipher_decrypt (aesv2->hd, out, out_size, in, in_size);
+  if (gcry_error != GPG_ERR_NO_ERROR)
     {
-      return PDF_ERROR;
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_ENCRYPTION,
+                     PDF_ENOMEM,
+                     "cannot decrypt with AESv2 cipher: '%s/%s'",
+                     gcry_strsource (gcry_error),
+                     gcry_strerror (gcry_error));
+      return PDF_FALSE;
     }
 
-  if (result_size != NULL)
+  if (result_size)
     *result_size = in_size;
 
-  return PDF_OK;
+  return PDF_TRUE;
 }
 
+static void
+aesv2_destroy (pdf_crypt_cipher_t *cipher)
+{
+  struct pdf_crypt_cipher_aesv2_s *aesv2 = (struct pdf_crypt_cipher_aesv2_s *)cipher;
 
+  gcry_cipher_close (aesv2->hd);
+  pdf_dealloc (aesv2);
+}
 
+/* Implementation of the cipher module */
+static const struct pdf_crypt_cipher_s implementation = {
+  .set_key = aesv2_set_key,
+  .encrypt = aesv2_encrypt,
+  .decrypt = aesv2_decrypt,
+  .destroy = aesv2_destroy
+};
 
+pdf_crypt_cipher_t *
+pdf_crypt_cipher_aesv2_new (pdf_error_t **error)
+{
+  gcry_error_t gcry_error;
+  struct pdf_crypt_cipher_aesv2_s *cipher;
+
+  cipher = pdf_alloc (sizeof (struct pdf_crypt_cipher_aesv2_s));
+  if (!cipher)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_ENCRYPTION,
+                     PDF_ENOMEM,
+                     "cannot create new AESv2 cipher object: "
+                     "couldn't allocate %lu bytes",
+                     (unsigned long)sizeof (struct pdf_crypt_cipher_aesv2_s));
+      return NULL;
+    }
+
+  /* Set implementation API */
+  cipher->parent = &implementation;
+
+  /* Initialize cipher object */
+  cipher->first_block = PDF_TRUE;
+  gcry_error = gcry_cipher_open (&(cipher->hd),
+                                 GCRY_CIPHER_AES128,
+                                 GCRY_CIPHER_MODE_CBC,
+                                 0);
+  if (gcry_error != GPG_ERR_NO_ERROR)
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_ENCRYPTION,
+                     PDF_ENOMEM,
+                     "cannot initialize AESv2 cipher: '%s/%s'",
+                     gcry_strsource (gcry_error),
+                     gcry_strerror (gcry_error));
+      pdf_dealloc (cipher);
+      return NULL;
+    }
+
+  return (pdf_crypt_cipher_t *)cipher;
+}
 
 /* End of pdf-crypt-c-aesv2.c */

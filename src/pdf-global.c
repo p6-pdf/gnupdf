@@ -73,27 +73,17 @@ pdf_init (void)
     ret = PDF_OK;
   else
     {
-      if (pdf_crypt_init () != PDF_OK)
+      if (!pdf_crypt_init (&inner_error) ||
+          !pdf_text_init (&inner_error) ||
+          !pdf_time_module_init (&inner_error) ||
+          !pdf_fsys_init (&inner_error))
         {
-          inner_error = pdf_error_new (PDF_EDOMAIN_BASE_ENCRYPTION,
-                                       PDF_ERROR,
-                                       "couldn't initialize crypt module");
-        }
-      else if (!pdf_text_init (&inner_error) ||
-               !pdf_time_module_init (&inner_error) ||
-               !pdf_fsys_init (&inner_error))
-        {
-          /* Inner error already set here */
-        }
-
-      if (!inner_error)
-        {
-          pdf_globals.initialized = PDF_TRUE;
-          ret = PDF_OK;
+          /* TODO: Propagate error */
         }
       else
         {
-          /* TODO: Propagate error */
+          pdf_globals.initialized = PDF_TRUE;
+          ret = PDF_OK;
         }
     }
 

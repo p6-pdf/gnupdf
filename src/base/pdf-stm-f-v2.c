@@ -57,7 +57,7 @@ typedef enum {
 /* Internal state */
 struct pdf_stm_f_v2_s
 {
-  pdf_crypt_cipher_t cipher;
+  pdf_crypt_cipher_t *cipher;
 
   pdf_char_t *key;
   pdf_size_t keysize;
@@ -125,17 +125,28 @@ stm_f_v2_init (const pdf_hash_t  *params,
   filter_state->keysize = keysize;
   memcpy (filter_state->key, key, keysize);
 
-  if (pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2,
-                            &(filter_state->cipher)) != PDF_OK ||
-      pdf_crypt_cipher_setkey (filter_state->cipher,
-                               filter_state->key,
-                               filter_state->keysize) != PDF_OK)
+  filter_state->cipher = pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, error);
+  if (!filter_state->cipher)
     {
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_STM,
                      PDF_EBADDATA,
                      "cannot initialize V2 encoder/decoder: "
                      "couldn't setup cipher");
+      stm_f_v2_deinit (filter_state);
+      return PDF_FALSE;
+    }
+
+  if (!pdf_crypt_cipher_set_key (filter_state->cipher,
+                                 filter_state->key,
+                                 filter_state->keysize,
+                                 error))
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_BASE_STM,
+                     PDF_EBADDATA,
+                     "cannot initialize V2 encoder/decoder: "
+                     "couldn't set cipher key");
       stm_f_v2_deinit (filter_state);
       return PDF_FALSE;
     }
@@ -173,9 +184,6 @@ stm_f_v2_apply (pdf_stm_f_v2_mode_e   mode,
   PDF_ASSERT (in->wp >= in->rp);
   PDF_ASSERT (out->size >= out->wp);
 
-  /* TODO: Shouldn't this be like this?
-   *   in_size = in->size - in->rp;
-   */
   in_size = in->wp - in->rp;
   out_size = out->size - out->wp;
 
@@ -187,22 +195,26 @@ stm_f_v2_apply (pdf_stm_f_v2_mode_e   mode,
         {
         case PDF_STM_F_V2_MODE_ENCODE:
           {
-            pdf_crypt_cipher_encrypt (filter_state->cipher,
-                                      (pdf_char_t *)out->data,
-                                      out_size,
-                                      (pdf_char_t *)in->data,
-                                      in_size,
-                                      &written);
+            if (!pdf_crypt_cipher_encrypt (filter_state->cipher,
+                                           (pdf_char_t *)out->data,
+                                           out_size,
+                                           (const pdf_char_t *)in->data,
+                                           in_size,
+                                           &written,
+                                           error))
+              return PDF_STM_FILTER_APPLY_STATUS_ERROR;
             break;
           }
         case PDF_STM_F_V2_MODE_DECODE:
           {
-            pdf_crypt_cipher_decrypt (filter_state->cipher,
-                                      (pdf_char_t *)out->data,
-                                      out_size,
-                                      (pdf_char_t *)in->data,
-                                      in_size,
-                                      &written);
+            if (!pdf_crypt_cipher_decrypt (filter_state->cipher,
+                                           (pdf_char_t *)out->data,
+                                           out_size,
+                                           (const pdf_char_t *)in->data,
+                                           in_size,
+                                           &written,
+                                           error))
+              return PDF_STM_FILTER_APPLY_STATUS_ERROR;
             break;
           }
         }

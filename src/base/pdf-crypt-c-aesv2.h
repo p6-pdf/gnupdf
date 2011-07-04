@@ -1,13 +1,13 @@
 /* -*- mode: C -*-
  *
- *       File:         pdf-crypt.c
+ *       File:         pdf-crypt-c-aesv2.h
  *       Date:         Fri Feb 22 21:05:05 2008
  *
  *       GNU PDF Library - Header file for AESV2 backend encryption module
  *
  */
 
-/* Copyright (C) 2008, 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,27 +27,9 @@
 #ifndef PDF_CRYPT_C_AESV2_H
 #define PDF_CRYPT_C_AESV2_H
 
-#include <config.h>
+#include <pdf-crypt.h>
 
-pdf_status_t pdf_crypt_cipher_aesv2_new (void ** cipher);
-pdf_status_t pdf_crypt_cipher_aesv2_destroy (void * cipher);
-pdf_status_t pdf_crypt_cipher_aesv2_setkey (void * cipher,
-                                            pdf_char_t *key,
-                                            pdf_size_t size);
-pdf_size_t pdf_crypt_cipher_aesv2_encrypt_size (void * cipher,
-                                                pdf_char_t *in,
-                                                pdf_size_t in_size);
-pdf_size_t pdf_crypt_cipher_aesv2_decrypt_size (void * cipher,
-                                                pdf_char_t *in,
-                                                pdf_size_t in_size);
-pdf_status_t pdf_crypt_cipher_aesv2_encrypt (void * cipher,
-                                             pdf_char_t *out, pdf_size_t out_size,
-                                             pdf_char_t *in,  pdf_size_t in_size,
-                                             pdf_size_t *result_size);
-pdf_status_t pdf_crypt_cipher_aesv2_decrypt (void * cipher,
-                                             pdf_char_t *out, pdf_size_t out_size,
-                                             pdf_char_t *in,  pdf_size_t in_size,
-                                             pdf_size_t *result_size);
+pdf_crypt_cipher_t *pdf_crypt_cipher_aesv2_new (pdf_error_t **error);
 
 #endif	/* PDF_CRYPT_C_AESV2_H */
 
