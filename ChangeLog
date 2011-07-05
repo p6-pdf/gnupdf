@@ -1,5 +1,10 @@
 2011-07-05  Aleksander Morgado  <aleksander@gnu.org>
 
+	crypt: including paddings in public structures
+	* src/base/pdf-crypt.h
+
+2011-07-05  Aleksander Morgado  <aleksander@gnu.org>
+
 	torture: fix crypt module related unit tests.
 	* torture/unit/base/crypt/pdf-crypt-cipher-decrypt.c
 	* torture/unit/base/crypt/pdf-crypt-cipher-encrypt.c

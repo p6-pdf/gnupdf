@@ -70,6 +70,8 @@ struct pdf_crypt_cipher_s
                          pdf_error_t        **error);
 
   void (*destroy) (pdf_crypt_cipher_t *cipher);
+
+  void *padding[4];
 };
 
 pdf_crypt_cipher_t *pdf_crypt_cipher_new (enum pdf_crypt_cipher_algo_e   algorithm,
@@ -121,6 +123,8 @@ struct pdf_crypt_md_s
                       pdf_error_t    **error);
 
   void (*destroy) (pdf_crypt_md_t *md);
+
+  void *padding[2];
 };
 
 pdf_crypt_md_t *pdf_crypt_md_new (enum pdf_crypt_md_algo_e   algorithm,
