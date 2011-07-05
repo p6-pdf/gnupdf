@@ -1,5 +1,12 @@
 2011-07-05  Aleksander Morgado  <aleksander@gnu.org>
 
+	stm: avoid setting errors when already set by the underlying layer.
+	* src/base/pdf-stm-f-aesv2.c
+	* src/base/pdf-stm-f-md5.c
+	* src/base/pdf-stm-f-v2.c
+
+2011-07-05  Aleksander Morgado  <aleksander@gnu.org>
+
 	crypt: fix cipher and md object implementation handling.
 	* src/base/pdf-crypt-c-aesv2.c
 	* src/base/pdf-crypt-c-v2.c

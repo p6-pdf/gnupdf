@@ -128,11 +128,6 @@ stm_f_v2_init (const pdf_hash_t  *params,
   filter_state->cipher = pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, error);
   if (!filter_state->cipher)
     {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_STM,
-                     PDF_EBADDATA,
-                     "cannot initialize V2 encoder/decoder: "
-                     "couldn't setup cipher");
       stm_f_v2_deinit (filter_state);
       return PDF_FALSE;
     }
@@ -142,11 +137,6 @@ stm_f_v2_init (const pdf_hash_t  *params,
                                  filter_state->keysize,
                                  error))
     {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_STM,
-                     PDF_EBADDATA,
-                     "cannot initialize V2 encoder/decoder: "
-                     "couldn't set cipher key");
       stm_f_v2_deinit (filter_state);
       return PDF_FALSE;
     }

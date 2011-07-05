@@ -79,11 +79,6 @@ stm_f_md5enc_init (const pdf_hash_t  *params,
   filter_state->md = pdf_crypt_md_new (PDF_CRYPT_MD_MD5, error);
   if (!filter_state->md)
     {
-      pdf_set_error (error,
-                     PDF_EDOMAIN_BASE_STM,
-                     PDF_EBADDATA,
-                     "cannot initialize MD5 encoder: "
-                     "couldn't setup cipher");
       stm_f_md5enc_deinit (filter_state);
       return PDF_FALSE;
     }
