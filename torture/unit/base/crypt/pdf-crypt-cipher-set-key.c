@@ -101,12 +101,11 @@ START_TEST (pdf_crypt_cipher_set_key_003)
   fail_unless (cipher != NULL);
   fail_if (error != NULL);
 
-  fail_if (pdf_crypt_cipher_set_key (cipher,
-                                     "GNUGNU", 6,
-                                     &error) == PDF_TRUE);
-  fail_unless (error != NULL);
+  fail_unless (pdf_crypt_cipher_set_key (cipher,
+                                         "GNUGNU", 6,
+                                         &error) == PDF_TRUE);
+  fail_if (error != NULL);
 
-  pdf_error_destroy (error);
   pdf_crypt_cipher_destroy (cipher);
 }
 END_TEST

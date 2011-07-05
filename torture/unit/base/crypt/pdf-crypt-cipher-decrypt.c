@@ -114,9 +114,10 @@ START_TEST (pdf_crypt_cipher_decrypt_002)
 {
   pdf_crypt_cipher_t *cipher;
   pdf_error_t *error = NULL;
+  pdf_char_t key[6] = "Secret"; /* not trailing '\0' */
   pdf_char_t plain[16];
   pdf_size_t plain_size;
-  pdf_char_t *ciphered;
+  pdf_char_t *ciphered = NULL;
   pdf_size_t  ciphered_size;
 
   ciphered_size = 0;
@@ -126,8 +127,8 @@ START_TEST (pdf_crypt_cipher_decrypt_002)
   fail_if (error != NULL);
 
   fail_unless (pdf_crypt_cipher_set_key (cipher,
-                                         NULL,
-                                         0,
+                                         key,
+                                         sizeof (key),
                                          &error) == PDF_TRUE);
   fail_if (error != NULL);
 
@@ -224,7 +225,7 @@ END_TEST
 /*
  * Test: pdf_crypt_cipher_decrypt_004
  * Description:
- *   Decrypt an ciphered buffer incrementally (AEV2).
+ *   Decrypt an ciphered buffer incrementally (AESV2).
  * Success condition:
  *   The ouput data should be correct.
  */

@@ -161,10 +161,10 @@ START_TEST (pdf_crypt_md_read_004)
 
   fail_unless (pdf_crypt_md_write (md, in, 0, &error) == PDF_TRUE);
   fail_if (error != NULL);
-  fail_unless (pdf_crypt_md_read (md, out, sizeof (out), &error) == PDF_TRUE);
-  fail_if (error != NULL);
-  fail_if (memcmp (real_out, out, sizeof (out)));
+  fail_unless (pdf_crypt_md_read (md, out, sizeof (out), &error) != PDF_TRUE);
+  fail_if (error == NULL);
 
+  pdf_error_destroy (error);
   pdf_crypt_md_destroy (md);
 }
 END_TEST

@@ -153,6 +153,25 @@ START_TEST (pdf_crypt_cipher_encrypt_002)
                                          NULL,
                                          &error) == PDF_TRUE);
   fail_if (error != NULL);
+
+#if 0
+  {
+    pdf_char_t *out_hex;
+    pdf_char_t *ciphered_hex;
+
+    out_hex = pdf_test_get_hex (out, sizeof (out), ':');
+    ciphered_hex = pdf_test_get_hex (ciphered, sizeof (out), ':');
+
+    printf ("pdf_crypt_cipher_encrypt_002;\n"
+            "\tout:  '%s'\n"
+            "\tciph: '%s'\n",
+            out_hex,
+            ciphered_hex);
+    pdf_dealloc (out_hex);
+    pdf_dealloc (ciphered_hex);
+  }
+#endif
+
   fail_unless (memcmp (out, ciphered, sizeof (out)) == 0);
 
   pdf_crypt_cipher_destroy (cipher);
@@ -235,7 +254,7 @@ START_TEST (pdf_crypt_cipher_encrypt_003)
       fail_if (error != NULL);
     }
 
-  fail_if (memcmp (out, ciphered, sizeof (out)) != 0);
+  fail_unless (memcmp (out, ciphered, sizeof (out)) == 0);
 
   pdf_crypt_cipher_destroy (cipher);
 }

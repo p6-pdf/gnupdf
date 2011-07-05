@@ -1,5 +1,14 @@
 2011-07-05  Aleksander Morgado  <aleksander@gnu.org>
 
+	torture: fix crypt module related unit tests.
+	* torture/unit/base/crypt/pdf-crypt-cipher-decrypt.c
+	* torture/unit/base/crypt/pdf-crypt-cipher-encrypt.c
+	* torture/unit/base/crypt/pdf-crypt-cipher-set-key.c
+	* torture/unit/base/crypt/pdf-crypt-md-read.c
+	* torture/unit/base/stm/pdf-stm-test-common.c
+
+2011-07-05  Aleksander Morgado  <aleksander@gnu.org>
+
 	stm: avoid setting errors when already set by the underlying layer.
 	* src/base/pdf-stm-f-aesv2.c
 	* src/base/pdf-stm-f-md5.c
