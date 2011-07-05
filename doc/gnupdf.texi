@@ -12650,11 +12650,11 @@ foo_create_ciphers (pdf_crypt_cipher_t **aesv2_cipher,
                     pdf_error_t        **error)
 @{
   *aesv2_cipher = pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALG_AESV2,
-                                        &error);
+                                        error);
   if (*aesv2_cipher)
     @{
       *v2_cipher = pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALG_V2,
-                                         &error);
+                                         error);
       if (*v2_cipher)
         return PDF_TRUE;
       else
@@ -12906,52 +12906,49 @@ A message-digest descriptor.
 @end deftp
 
 
-
-@deftypefun pdf_status_t pdf_crypt_md_new (enum pdf_crypt_md_algo_e @var{algo}, pdf_crypt_md_t  *@var{md}, pdf_error_t **@var{error})
+@deftypefun {pdf_crypt_md_t *}pdf_crypt_md_new (enum pdf_crypt_md_algo_e @var{algo}, pdf_error_t **@var{error})
 
 Create a message-digest descriptor for an algorithm.
 
 @table @strong
 @item Parameters
 @table @var
-@item md
-A pointer to the pdf_crypt_md_t.
 @item algo
-Algorithm which be used to hashing.
+Algorithm to be used to perform the hashing.
 @item error
 A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
 @item PDF_ENOMEM
-Not enough memory to create the cipher.
+Not enough memory to create the descriptor.
 @item PDF_ERROR
-A error ocurred when trying to create the cipher.
+A error ocurred when trying to create the descriptor.
 @end table
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-Operation successful
-@item PDF_ERROR
-An error ocurred.
-@end table
+A newly created @code{pdf_crypt_md_t}, or @code{NULL} on error.
 @item Usage example
 @example
-pdf_status_t st;
-pdf_crypt_md_t md;
 
-st = pdf_crypt_md_new (&md, PDF_CRYPT_MD_MD5);
-
-if (st != PDF_OK)
+pdf_bool_t
+foo_create_hashers (pdf_crypt_md_t **md5_hasher,
+                    pdf_error_t    **error)
 @{
-   /* Error /*
+  *md5_hasher = pdf_crypt_md_new (PDF_CRYPT_MD_MD5, error);
+  if (*md5_cipher)
+    return PDF_TRUE;
+
+  pdf_crypt_md_destroy (*md5_hasher);
+
+  pdf_prefix_error (error, "couldn't create hasher: ");
+  return PDF_FALSE;
 @}
+
 @end example
 @end table
 @end deftypefun
 
 
-@deftypefun pdf_status_t pdf_crypt_md_destroy (pdf_crypt_md_t  @var{md})
+@deftypefun void pdf_crypt_md_destroy (pdf_crypt_md_t *@var{md})
 
 Destroy a message-digest descriptor.
 
@@ -12961,30 +12958,23 @@ Destroy a message-digest descriptor.
 @item md
 An message-digest descriptor.
 @end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-Operation successful
-@item PDF_ERROR
-An error ocurred.
-@end table
 @item Usage example
 @example
-pdf_status_t st;
-pdf_crypt_md_t md;
 
-st = pdf_crypt_md_new (&md, PDF_CRYPT_MD_MD5);
+pdf_crypt_md_t *md;
 
-/* ... /*
+md = pdf_crypt_md_new (PDF_CRYPT_MD_MD5, NULL);
+if (md)
+  @{
+    pdf_crypt_md_destroy (md);
+  @}
 
-pdf_crypt_md_destroy (md);
 @end example
 @end table
 @end deftypefun
 
 
-@deftypefun pdf_status_t pdf_crypt_md_write (pdf_crypt_md_t @var{md}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size}, pdf_error_t **@var{error})
+@deftypefun pdf_bool_t pdf_crypt_md_write (pdf_crypt_md_t *@var{md}, const pdf_char_t *@var{in}, pdf_size_t  @var{in_size}, pdf_error_t **@var{error})
 
 Pass a buffer to the message-digest handler in order to compute its digest.
 
@@ -12996,49 +12986,32 @@ A message-digest descriptor.
 @item in
 A pointer to the input buffer.
 @item in_size
-Size of the input buffer in octets.
+Size of the input buffer in bytes.
 @item error
 A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_ENOMEM
-Not enough memory to create the cipher.
 @item PDF_ERROR
-A error ocurred when trying to create the cipher.
+A error ocurred.
 @end table
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-Operation successful
-@item PDF_EBADDATA
-Bad parameter. The size of the output buffer is wrong.
-@end table
+@code{PDF_TRUE} if successful, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
-pdf_crypt_md_t md;
-pdf_char_t *in;
-pdf_size_t in_size;
-pdf_status_t st;
 
-/* ...Prepare IN and IN_SIZE variables */
-
-pdf_crypt_md_new (&md, PDF_CRYPT_MD_MD5);
-
-st = pdf_crypt_md_hash (md, in, in_size);
-
-if (st != PDF_OK)
+pdf_bool_t
+foo_add_string_to_hash_computation (pdf_crypt_md_t   *md,
+                                    const pdf_char_t *str)
 @{
-   /* Error */
+  return pdf_crypt_md_write (md, str, strlen (str), NULL);
 @}
 
-pdf_crypt_md_destroy (md);
 @end example
 @end table
 @end deftypefun
 
 
-@deftypefun pdf_status_t pdf_crypt_md_read (pdf_crypt_md_t @var{md}, pdf_char_t  *@var{out}, pdf_size_t  @var{out_size}, pdf_error_t **@var{error})
+@deftypefun pdf_bool_t pdf_crypt_md_read (pdf_crypt_md_t @var{md}, pdf_char_t *@var{out}, pdf_size_t @var{out_size}, pdf_error_t **@var{error})
 
 Read the computed digest value from a message-digest descriptor.
 
@@ -13047,42 +13020,45 @@ Read the computed digest value from a message-digest descriptor.
 @table @var
 @item md
 A message-digest descriptor.
+@item out
+Output buffer where to store the digest.
+@item out_size
+Size of the output buffer. Note that some algorithms may require a minimum
+output buffer size.
 @item error
 A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_ENOMEM
-Not enough memory to create the cipher.
 @item PDF_ERROR
-A error ocurred when trying to create the cipher.
+A error ocurred.
 @end table
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-Operation successful
-@item PDF_EBADDATA
-Bad parameter. The size of the output buffer is wrong.
-@end table
+@code{PDF_TRUE} if successful, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
-pdf_crypt_md_t md;
-pdf_char_t *out;
-pdf_size_t out_size;
-pdf_status_t st;
 
-pdf_crypt_md_new (&md, PDF_CRYPT_MD_MD5);
-
-/* ...Write the buffer into descriptor here... */
-
-st = pdf_crypt_md_read (md, out, out_size);
-
-if (st != PDF_OK)
+pdf_bool_t
+foo_get_md5_hash_from_string (const pdf_char_t *str,
+                              pdf_char_t        hash[16])
 @{
-   /* Error */
+  pdf_crypt_md_t *md;
+  pdf_bool_t success;
+
+  md = pdf_crypt_md_new (PDF_CRYPT_MD_MD5, NULL);
+  if (!md)
+    return PDF_FALSE;
+
+  success = (pdf_crypt_md_write (md,
+                                 str, strlen (str),
+                                 NULL) &&
+             pdf_crypt_md_read (md,
+                               hash, 16,
+                               NULL));
+
+  pdf_crypt_md_destroy (md);
+  return success;
 @}
 
-pdf_crypt_md_destroy (md);
 @end example
 @end table
 @end deftypefun
@@ -13090,7 +13066,7 @@ pdf_crypt_md_destroy (md);
 @node Utilities
 @subsection Utilities
 
-@deftypefun pdf_status_t pdf_crypt_nonce (pdf_char_t *@var{buffer}, pdf_size_t @var{size})
+@deftypefun {pdf_char_t *}pdf_crypt_nonce (pdf_char_t *@var{buffer}, pdf_size_t @var{size})
 
 Fill a buffer with random values.
 
@@ -13103,20 +13079,17 @@ Buffer which be filled.
 Size of the buffer in octets.
 @end table
 @item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-Operation successful
-@end table
+The same buffer passed as input.
 @item Usage example
 @example
+
 pdf_char_t buffer[16];
 
-pdf_crypt_nonce (buffer, sizeof(buffer));
+pdf_crypt_nonce (buffer, sizeof (buffer));
+
 @end example
 @end table
 @end deftypefun
-
 
 
 @node Object Layer

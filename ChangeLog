@@ -1,6 +1,13 @@
 2011-07-05  Aleksander Morgado  <aleksander@gnu.org>
 
 	doc: rewrite Crypt module documentation according to the new API.
+	* doc/gnupdf.texi
+	(Message digest (hashing))
+	(Utilities)
+
+2011-07-05  Aleksander Morgado  <aleksander@gnu.org>
+
+	doc: rewrite Crypt module documentation according to the new API.
 	* doc/gnupdf.texi (Encryption and decryption)
 
 2011-07-05  Aleksander Morgado  <aleksander@gnu.org>
