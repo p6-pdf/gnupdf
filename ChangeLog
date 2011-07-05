@@ -1,6 +1,11 @@
 2011-07-05  Aleksander Morgado  <aleksander@gnu.org>
 
-	crypt: including paddings in public structures
+	doc: rewrite Crypt module documentation according to the new API.
+	* doc/gnupdf.texi (Encryption and decryption)
+
+2011-07-05  Aleksander Morgado  <aleksander@gnu.org>
+
+	crypt: including paddings in public structures.
 	* src/base/pdf-crypt.h
 
 2011-07-05  Aleksander Morgado  <aleksander@gnu.org>

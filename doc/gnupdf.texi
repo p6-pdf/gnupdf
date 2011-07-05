@@ -96,7 +96,7 @@ Indices
 * Time Management::             Times and calendars.
 * The Filesystem Module::       An abstract file system interface.
 * The Tokeniser::               Decomposing a PDF document in tokens.
-* Encryption::                  Basic encryption facilities.
+* Encryption and Hashing::      Basic encryption and hashing facilities.
 @end menu
 
 @node Base Layer Overview
@@ -12588,21 +12588,19 @@ The comment's size, in octets.
 
 @end deftypefun
 
-@node Encryption
-@section Encryption
+@node Encryption and Hashing
+@section Encryption and Hashing
 
-This section describes related to encryption functions.
+This section describes the interface related to encryption and hashing.
 
 @menu
-* Creating and destroying Ciphers::
 * Encryption and decryption::
-* Message digest functions::
+* Message digest (hashing)::
 * Utilities::
 @end menu
 
-
-@node Creating and destroying Ciphers
-@subsection Creating and destroying Ciphers
+@node Encryption and decryption
+@subsection Encryption and decryption
 
 @deftp {Data Type} {enum pdf_crypt_cipher_algo_e}
 An algorithm provided. It contains low level functions of the algorithm
@@ -12621,7 +12619,7 @@ A cipher. It contains data which is required between several calls to
 functions.
 @end deftp
 
-@deftypefun pdf_status_t pdf_crypt_cipher_new (enum pdf_crypt_cipher_algo_e @var{algorithm}, pdf_crypt_cipher_t *@var{cipher})
+@deftypefun {pdf_crypt_cipher_t *}pdf_crypt_cipher_new (enum pdf_crypt_cipher_algo_e @var{algorithm}, pdf_error_t **@var{error})
 
 Create a new cipher.
 
@@ -12631,33 +12629,47 @@ Create a new cipher.
 @item algorithm
 The algorithm the cipher will use in order to encrypt or decrypt data.
 @item cipher
-A pointer to @code{pdf_crypt_cipher_t} variable where it will put the cipher.
-@end table
-@item Returns
-A PDF status value:
+A pointer to  variable where it will put the cipher.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-Operation successful
+@item PDF_ENOMEM
+Not enough memory to create the cipher.
 @item PDF_ERROR
 A error ocurred when trying to create the cipher.
 @end table
+@end table
+@item Returns
+A newly created @code{pdf_crypt_cipher_t} or @code{NULL} on error.
 @item Usage example
 @example
-pdf_status_t st;
-pdf_crypt_cipher_t cipher;
 
-st = pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALG_AESV2, &cipher);
-
-if (st != PDF_OK)
+pdf_bool_t
+foo_create_ciphers (pdf_crypt_cipher_t **aesv2_cipher,
+                    pdf_crypt_cipher_t **v2_cipher,
+                    pdf_error_t        **error)
 @{
-   /* Error */
+  *aesv2_cipher = pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALG_AESV2,
+                                        &error);
+  if (*aesv2_cipher)
+    @{
+      *v2_cipher = pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALG_V2,
+                                         &error);
+      if (*v2_cipher)
+        return PDF_TRUE;
+      else
+        pdf_crypt_cipher_destroy (*aesv2_cipher);
+    @}
+
+  pdf_prefix_error (error, "couldn't create ciphers: ");
+  return PDF_FALSE;
 @}
+
 @end example
 @end table
 @end deftypefun
 
-
-@deftypefun pdf_status_t pdf_crypt_cipher_destroy (pdf_crypt_cipher_t @var{cipher})
+@deftypefun void pdf_crypt_cipher_destroy (pdf_crypt_cipher_t *@var{cipher})
 
 Destroy a cipher.
 
@@ -12665,31 +12677,24 @@ Destroy a cipher.
 @item Parameters
 @table @var
 @item cipher
-The cipher you want destroy. It must have been created with
-@code{pdf_crypt_cipher_new} functions previously.
-@end table
-@item Returns
-@table @code
-A PDF status value:
-@item PDF_OK
-Operation successful
-@item PDF_ERROR
-A error ocurred when trying to destroy the cipher.
+The cipher you want destroy.
 @end table
 @item Usage example
 @example
-pdf_crypt_cipher_t cipher;
-pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALG_AESV2, &cipher);
-pdf_crypt_cipher_destroy (cipher);
+
+pdf_crypt_cipher_t *cipher;
+
+cipher = pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALG_AESV2, NULL);
+if (cipher)
+  @{
+    pdf_crypt_cipher_destroy (cipher);
+  @}
+
 @end example
 @end table
 @end deftypefun
 
-
-@node Encryption and decryption
-@subsection Encryption and decryption
-
-@deftypefun pdf_status_t pdf_crypt_cipher_setkey (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{key}, pdf_size_t @var{size})
+@deftypefun pdf_bool_t pdf_crypt_cipher_set_key (pdf_crypt_cipher_t *@var{cipher}, const pdf_char_t *@var{key}, pdf_size_t @var{size}, pdf_error_t **@var{error})
 
 Set the key which will be used to encrypt and decrypt data.
 
@@ -12701,41 +12706,48 @@ A pointer to a cipher created previously.
 @item key
 A pointer to memory where the key is stored.
 @item size
-The length of the key in octets. Note that some algorithms could require
+The length of the key in bytes. Note that some algorithms could require
 a fixed length of key.
-@end table
-@item Returns
-A PDF status value:
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @table @code
-@item PDF_OK
-Operation successful
 @item PDF_EBADDATA
 Invalid argument. The @var{size} parameter is not supported by the
 cipher.
 @item PDF_ERROR
-A error ocurred while trying to set the key.
+A error ocurred when trying to set the key.
 @end table
+@end table
+@item Returns
+@code{PDF_TRUE} if successful, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
-pdf_status_t st;
-pdf_crypt_cipher_t cipher;
-pdf_char_t key[16];
 
-/* ... */
-st = pdf_crypt_cipher_setkey (&cipher, key, sizeof(key));
-
-if (st != PDF_OK)
+pdf_crypt_cipher_t *
+foo_new_v2_cipher_with_key (void)
 @{
-   /* Error */
+  pdf_crypt_cipher_t *cipher;
+
+  cipher = pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, NULL);
+  if (cipher)
+    @{
+      if (pdf_crypt_cipher_set_key (cipher, "GNU", 3))
+        return cipher;
+
+      pdf_crypt_cipher_destroy (cipher);
+    @}
+  return NULL;
 @}
+
 @end example
 @end table
 @end deftypefun
 
 
-@deftypefun pdf_status_t pdf_crypt_cipher_encrypt (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{out}, pdf_size_t  @var{out_size}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size}, pdf_size_t *@var{result_size})
+@deftypefun pdf_bool_t pdf_crypt_cipher_encrypt (pdf_crypt_cipher_t *@var{cipher}, pdf_char_t *@var{out}, pdf_size_t @var{out_size}, const pdf_char_t *@var{in}, pdf_size_t @var{in_size}, pdf_size_t *@var{result_size}, pdf_error_t **@var{error})
 
-Encrypt a buffer. The ciphered text will be put in @var{out}.
+Encrypt contents within the @var{in} buffer and place the encrypted result
+in @var{out}.
 
 @table @strong
 @item Parameters
@@ -12745,52 +12757,69 @@ A cipher.
 @item out
 A pointer to the output buffer.
 @item out_size
-Size reserved for the output buffer in octets. The function will fail if
-it is not too large to contain the output.
+Size reserved for the output buffer in bytes. The function will fail if
+it is not big enough to hold the output.
 @item in
-A pointer to input buffer.
+A pointer to the input buffer.
 @item in_size
-The length of the input buffer in octets. I must be greater than
-zero. Some algorithms requires than IN_SIZE to be multiple of a fixed
+The length of the input buffer in bytes. I must be greater than
+zero. Some algorithms require this value to be a multiple of a fixed
 integer.
 @item result_size
-A pointer where it will put the real size of the output buffer. This
-size will be lesser or equal than out_size.
+Number of bytes actually written, less or equal tan @var{out_size}.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ERROR
+A error ocurred.
+@end table
 @end table
 @item Returns
-@table @code
-@item PDF_OK
-Operation successful
-@item PDF_ERROR
-An error ocurred.
-@end table
+@code{PDF_TRUE} if successful, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
-pdf_crypt_cipher_t cipher;
-pdf_status_t st;
-pdf_char_t *out;
-pdf_char_t *in;
-pdf_size_t out_size;
-pdf_size_t in_size;
 
-/* ... */
-out_size = pdf_crypt_cipher_encrypt_size (cipher, in, in_size);
-out = pdf_alloc (out_size);
-
-st = pdf_crypt_cipher_encrypt (cipher, out, out_size, in, in_size, &out_size);
-
-if (st != PDF_OK)
+pdf_bool_t
+foo_encrypt_input (const pdf_char_t *in,
+                   pdf_size_t        in_size,
+                   pdf_char_t       *out,
+                   pdf_size_t        out_size)
 @{
-  /* Error*/
+  pdf_crypt_cipher_t *cipher;
+  const pdf_char_t key[6] = "Secret"; /* not trailing '\0' */
+
+  cipher = pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, NULL);
+  if (!cipher)
+    return PDF_FALSE;
+
+  if (!pdf_crypt_cipher_set_key (cipher,
+                                 key,
+                                 sizeof (key),
+                                 NULL) ||
+      !pdf_crypt_cipher_encrypt (cipher,
+                                 out,
+                                 out_size,
+                                 in,
+                                 in_size,
+                                 &out_size,
+                                 NULL))
+    @{
+      pdf_crypt_cipher_destroy (cipher);
+      return PDF_FALSE;
+    @}
+
+  return PDF_TRUE;
 @}
+
 @end example
 @end table
 @end deftypefun
 
 
-@deftypefun pdf_status_t pdf_crypt_cipher_decrypt (pdf_crypt_cipher_t @var{cipher}, pdf_char_t  *@var{out}, pdf_size_t  @var{out_size}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size}, pdf_size_t *@var{result_size})
+@deftypefun pdf_bool_t pdf_crypt_cipher_decrypt (pdf_crypt_cipher_t *@var{cipher}, pdf_char_t *@var{out}, pdf_size_t @var{out_size}, const pdf_char_t *@var{in}, pdf_size_t @var{in_size}, pdf_size_t *@var{result_size}, pdf_error_t **@var{error})
 
-Decrypt a buffer. The plain text will be put in @var{out}.
+Decrypt contents within the @var{in} buffer and place the decrypted result
+in @var{out}.
 
 @table @strong
 @item Parameters
@@ -12800,48 +12829,67 @@ A cipher.
 @item out
 A pointer to the output buffer.
 @item out_size
-Size reserved for the output buffer in octets. The function will fail if
-it is not too large to contain the output.
+Size reserved for the output buffer in bytes. The function will fail if
+it is not big enough to hold the output.
 @item in
-A pointer to input buffer.
+A pointer to the input buffer.
 @item in_size
-The length of the input buffer in octets. It must be greater than zero.
+The length of the input buffer in bytes. I must be greater than
+zero. Some algorithms require this value to be a multiple of a fixed
+integer.
 @item result_size
-A pointer where it will put the real size of the output buffer. This size
-will be lesser or equal than out_size.
+Number of bytes actually written, less or equal tan @var{out_size}.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ERROR
+A error ocurred.
+@end table
 @end table
 @item Returns
-@table @code
-@item PDF_OK
-Operation successful
-@item PDF_ERROR
-An error ocurred.
-@end table
+@code{PDF_TRUE} if successful, @code{PDF_FALSE} otherwise.
 @item Usage example
 @example
-pdf_crypt_cipher_t cipher;
-pdf_status_t st;
-pdf_char_t *out;
-pdf_char_t *in;
-pdf_size_t out_size;
-pdf_size_t in_size;
 
-/* ... */
-out_size = pdf_crypt_cipher_decrypt_size (cipher, in, in_size);
-out = pdf_alloc (out_size);
-
-st = pdf_crypt_crypt_decrypt (cipher, out, out_size, in, in_size, &out_size);
-
-if (st != PDF_OK)
+pdf_bool_t
+foo_decrypt_input (const pdf_char_t *in,
+                   pdf_size_t        in_size,
+                   pdf_char_t       *out,
+                   pdf_size_t        out_size)
 @{
-  /* Error*/
+  pdf_crypt_cipher_t *cipher;
+  const pdf_char_t key[6] = "Secret"; /* not trailing '\0' */
+
+  cipher = pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, NULL);
+  if (!cipher)
+    return PDF_FALSE;
+
+  if (!pdf_crypt_cipher_set_key (cipher,
+                                 key,
+                                 sizeof (key),
+                                 NULL) ||
+      !pdf_crypt_cipher_decrypt (cipher,
+                                 out,
+                                 out_size,
+                                 in,
+                                 in_size,
+                                 &out_size,
+                                 NULL))
+    @{
+      pdf_crypt_cipher_destroy (cipher);
+      return PDF_FALSE;
+    @}
+
+  return PDF_TRUE;
 @}
+
 @end example
 @end table
 @end deftypefun
 
-@node Message digest functions
-@subsection Message digest functions
+
+@node Message digest (hashing)
+@subsection Message digest (hashing)
 
 @deftp {Data Type} {enum pdf_crypt_md_algo_e}
 An algorithm provided. It contains low level functions of the algorithm
@@ -12859,7 +12907,7 @@ A message-digest descriptor.
 
 
 
-@deftypefun pdf_status_t pdf_crypt_md_new (enum pdf_crypt_md_algo_e @var{algo}, pdf_crypt_md_t  *@var{md})
+@deftypefun pdf_status_t pdf_crypt_md_new (enum pdf_crypt_md_algo_e @var{algo}, pdf_crypt_md_t  *@var{md}, pdf_error_t **@var{error})
 
 Create a message-digest descriptor for an algorithm.
 
@@ -12870,6 +12918,14 @@ Create a message-digest descriptor for an algorithm.
 A pointer to the pdf_crypt_md_t.
 @item algo
 Algorithm which be used to hashing.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to create the cipher.
+@item PDF_ERROR
+A error ocurred when trying to create the cipher.
+@end table
 @end table
 @item Returns
 A PDF status value:
@@ -12893,97 +12949,6 @@ if (st != PDF_OK)
 @end example
 @end table
 @end deftypefun
-
-
-
-@deftypefun pdf_status_t pdf_crypt_md_write (pdf_crypt_md_t @var{md}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size})
-
-Pass a buffer to the message-digest handler in order to compute its digest.
-
-@table @strong
-@item Parameters
-@table @var
-@item md
-A message-digest descriptor.
-@item in
-A pointer to the input buffer.
-@item in_size
-Size of the input buffer in octets.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-Operation successful
-@item PDF_EBADDATA
-Bad parameter. The size of the output buffer is wrong.
-@end table
-@item Usage example
-@example
-pdf_crypt_md_t md;
-pdf_char_t *in;
-pdf_size_t in_size;
-pdf_status_t st;
-
-/* ...Prepare IN and IN_SIZE variables */
-
-pdf_crypt_md_new (&md, PDF_CRYPT_MD_MD5);
-
-st = pdf_crypt_md_hash (md, in, in_size);
-
-if (st != PDF_OK)
-@{
-   /* Error */
-@}
-
-pdf_crypt_md_destroy (md);
-@end example
-@end table
-@end deftypefun
-
-
-
-@deftypefun pdf_status_t pdf_crypt_md_read (pdf_crypt_md_t @var{md}, pdf_char_t  *@var{out}, pdf_size_t  @var{out_size})
-
-Read the computed digest value from a message-digest descriptor.
-
-@table @strong
-@item Parameters
-@table @var
-@item md
-A message-digest descriptor.
-@end table
-@item Returns
-A PDF status value:
-@table @code
-@item PDF_OK
-Operation successful
-@item PDF_EBADDATA
-Bad parameter. The size of the output buffer is wrong.
-@end table
-@item Usage example
-@example
-pdf_crypt_md_t md;
-pdf_char_t *out;
-pdf_size_t out_size;
-pdf_status_t st;
-
-pdf_crypt_md_new (&md, PDF_CRYPT_MD_MD5);
-
-/* ...Write the buffer into descriptor here... */
-
-st = pdf_crypt_md_read (md, out, out_size);
-
-if (st != PDF_OK)
-@{
-   /* Error */
-@}
-
-pdf_crypt_md_destroy (md);
-@end example
-@end table
-@end deftypefun
-
 
 
 @deftypefun pdf_status_t pdf_crypt_md_destroy (pdf_crypt_md_t  @var{md})
@@ -13018,6 +12983,109 @@ pdf_crypt_md_destroy (md);
 @end table
 @end deftypefun
 
+
+@deftypefun pdf_status_t pdf_crypt_md_write (pdf_crypt_md_t @var{md}, pdf_char_t  *@var{in}, pdf_size_t  @var{in_size}, pdf_error_t **@var{error})
+
+Pass a buffer to the message-digest handler in order to compute its digest.
+
+@table @strong
+@item Parameters
+@table @var
+@item md
+A message-digest descriptor.
+@item in
+A pointer to the input buffer.
+@item in_size
+Size of the input buffer in octets.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to create the cipher.
+@item PDF_ERROR
+A error ocurred when trying to create the cipher.
+@end table
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+Operation successful
+@item PDF_EBADDATA
+Bad parameter. The size of the output buffer is wrong.
+@end table
+@item Usage example
+@example
+pdf_crypt_md_t md;
+pdf_char_t *in;
+pdf_size_t in_size;
+pdf_status_t st;
+
+/* ...Prepare IN and IN_SIZE variables */
+
+pdf_crypt_md_new (&md, PDF_CRYPT_MD_MD5);
+
+st = pdf_crypt_md_hash (md, in, in_size);
+
+if (st != PDF_OK)
+@{
+   /* Error */
+@}
+
+pdf_crypt_md_destroy (md);
+@end example
+@end table
+@end deftypefun
+
+
+@deftypefun pdf_status_t pdf_crypt_md_read (pdf_crypt_md_t @var{md}, pdf_char_t  *@var{out}, pdf_size_t  @var{out_size}, pdf_error_t **@var{error})
+
+Read the computed digest value from a message-digest descriptor.
+
+@table @strong
+@item Parameters
+@table @var
+@item md
+A message-digest descriptor.
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ENOMEM
+Not enough memory to create the cipher.
+@item PDF_ERROR
+A error ocurred when trying to create the cipher.
+@end table
+@end table
+@item Returns
+A PDF status value:
+@table @code
+@item PDF_OK
+Operation successful
+@item PDF_EBADDATA
+Bad parameter. The size of the output buffer is wrong.
+@end table
+@item Usage example
+@example
+pdf_crypt_md_t md;
+pdf_char_t *out;
+pdf_size_t out_size;
+pdf_status_t st;
+
+pdf_crypt_md_new (&md, PDF_CRYPT_MD_MD5);
+
+/* ...Write the buffer into descriptor here... */
+
+st = pdf_crypt_md_read (md, out, out_size);
+
+if (st != PDF_OK)
+@{
+   /* Error */
+@}
+
+pdf_crypt_md_destroy (md);
+@end example
+@end table
+@end deftypefun
 
 @node Utilities
 @subsection Utilities
