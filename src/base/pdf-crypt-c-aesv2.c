@@ -38,7 +38,7 @@
 
 struct pdf_crypt_cipher_aesv2_s {
   /* Implementation */
-  const struct pdf_crypt_cipher_s *parent;
+  struct pdf_crypt_cipher_s parent;
   /* Implementation-specific private data */
   gcry_cipher_hd_t hd;
   pdf_bool_t first_block;
@@ -58,7 +58,7 @@ aesv2_set_key (pdf_crypt_cipher_t  *cipher,
     {
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_ENCRYPTION,
-                     PDF_ENOMEM,
+                     PDF_EBADAESKEY,
                      "cannot set key in AESv2 cipher: '%s/%s'",
                      gcry_strsource (gcry_error),
                      gcry_strerror (gcry_error));
@@ -104,13 +104,13 @@ aesv2_encrypt (pdf_crypt_cipher_t  *cipher,
                      PDF_EBADDATA,
                      "cannot encrypt in AESv2 cipher: "
                      "output size (%lu) cannot be smaller than input size (%lu)",
-                     (unsigned long)output_size,
+                     (unsigned long)out_size,
                      (unsigned long)in_size);
       return PDF_FALSE;
     }
 
   /* If we are at first block, then we have found the IV vector */
-  if (aesv2->first_block == PDF_TRUE)
+  if (aesv2->first_block)
     {
       const pdf_char_t *iv = in;
 
@@ -133,7 +133,7 @@ aesv2_encrypt (pdf_crypt_cipher_t  *cipher,
       input_size = in_size;
     }
 
-  gcry_error = gcry_cipher_encrypt (aesv2->hd, out, out_size, in, in_size);
+  gcry_error = gcry_cipher_encrypt (aesv2->hd, output, output_size, input, input_size);
   if (gcry_error != GPG_ERR_NO_ERROR)
     {
       pdf_set_error (error,
@@ -194,7 +194,7 @@ aesv2_decrypt (pdf_crypt_cipher_t  *cipher,
     }
 
   /* If we are at first block, then we have found the IV vector */
-  if (aesv2->first_block == PDF_TRUE)
+  if (aesv2->first_block)
     {
       const pdf_char_t *iv = in;
 
@@ -217,7 +217,7 @@ aesv2_decrypt (pdf_crypt_cipher_t  *cipher,
       input_size = in_size;
     }
 
-  gcry_error = gcry_cipher_decrypt (aesv2->hd, out, out_size, in, in_size);
+  gcry_error = gcry_cipher_decrypt (aesv2->hd, output, output_size, input, input_size);
   if (gcry_error != GPG_ERR_NO_ERROR)
     {
       pdf_set_error (error,
@@ -271,7 +271,7 @@ pdf_crypt_cipher_aesv2_new (pdf_error_t **error)
     }
 
   /* Set implementation API */
-  cipher->parent = &implementation;
+  cipher->parent = implementation;
 
   /* Initialize cipher object */
   cipher->first_block = PDF_TRUE;

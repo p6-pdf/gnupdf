@@ -36,7 +36,7 @@
 
 struct pdf_crypt_cipher_v2_s {
   /* Implementation */
-  const struct pdf_crypt_cipher_s *parent;
+  struct pdf_crypt_cipher_s parent;
   /* Implementation-specific private data */
   gcry_cipher_hd_t hd;
 };
@@ -55,7 +55,7 @@ v2_set_key (pdf_crypt_cipher_t  *cipher,
     {
       pdf_set_error (error,
                      PDF_EDOMAIN_BASE_ENCRYPTION,
-                     PDF_ENOMEM,
+                     PDF_EBADV2KEY,
                      "cannot set key in V2 cipher: '%s/%s'",
                      gcry_strsource (gcry_error),
                      gcry_strerror (gcry_error));
@@ -160,7 +160,7 @@ pdf_crypt_cipher_v2_new (pdf_error_t **error)
     }
 
   /* Set implementation API */
-  cipher->parent = &implementation;
+  cipher->parent = implementation;
 
   /* Initialize cipher object */
   gcry_error = gcry_cipher_open (&(cipher->hd),

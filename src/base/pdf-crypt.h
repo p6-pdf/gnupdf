@@ -96,7 +96,7 @@ pdf_crypt_cipher_t *pdf_crypt_cipher_new (enum pdf_crypt_cipher_algo_e   algorit
                                              result_size,               \
                                              error)
 
-#define pdf_crypt_cipher_destroy(cipher)                \
+#define pdf_crypt_cipher_destroy(cipher)        \
   ((pdf_crypt_cipher_t *)(cipher))->destroy (cipher)
 
 /* ------------------ Crypt Module Message Digest API ---------------------- */

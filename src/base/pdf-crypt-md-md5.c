@@ -36,7 +36,7 @@
 
 struct pdf_crypt_md_md5_s {
   /* Implementation */
-  const struct pdf_crypt_md_s *parent;
+  struct pdf_crypt_md_s parent;
   /* Implementation-specific private data */
   gcry_md_hd_t hd;
 };
@@ -144,7 +144,7 @@ pdf_crypt_md_md5_new (pdf_error_t **error)
     }
 
   /* Set implementation API */
-  md->parent = &implementation;
+  md->parent = implementation;
 
   /* Initialize message digest object */
   gcry_error = gcry_md_open (&(md->hd), GCRY_MD_MD5, 0);

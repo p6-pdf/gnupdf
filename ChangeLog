@@ -1,5 +1,13 @@
 2011-07-05  Aleksander Morgado  <aleksander@gnu.org>
 
+	crypt: fix cipher and md object implementation handling.
+	* src/base/pdf-crypt-c-aesv2.c
+	* src/base/pdf-crypt-c-v2.c
+	* src/base/pdf-crypt-md-md5.c
+	* src/base/pdf-crypt.h
+
+2011-07-05  Aleksander Morgado  <aleksander@gnu.org>
+
 	crypt: reviewed API and implementation of the Crypt module.
 	* src/base/pdf-crypt.[h|c]
 	* src/base/pdf-crypt-c-v2.[h|c]
