@@ -1,3 +1,8 @@
+2011-07-06  Franck Lesage  <franck.pdf.devel@free.fr>
+
+	gnupdf-hg: documenting the mingw32 compilation steps
+	* doc/gnupdf-hg.texi
+	
 2011-07-01  Aleksander Morgado  <aleksander@gnu.org>
 
 	torture: fix compilation issues under mingw32
