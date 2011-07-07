@@ -1,3 +1,7 @@
+2011-07-07  Aleksander Morgado  <aleksander@gnu.org>
+
+	* gnulib update
+
 2011-07-01  Aleksander Morgado  <aleksander@gnu.org>
 
 	torture: fix compilation issues under mingw32
