@@ -1,3 +1,8 @@
+2011-07-07  Georg Gottleuber  <georg.gottleuber@uni-ulm.de>
+
+	utils: small fix for stdin bug in pdf-filter
+	* utils/pdf-filter.c
+
 2011-07-07  Aleksander Morgado  <aleksander@gnu.org>
 
 	build: fix syntax-check issues

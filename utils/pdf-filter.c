@@ -346,14 +346,17 @@ static void process_stream (pdf_stm_t  *stm,
             }
 
           written_bytes = 0;
-          if (!pdf_stm_write (stm, buf, read_bytes, &written_bytes, &error) &&
-              error)
+          if (read_bytes)
             {
-              pdf_error (pdf_error_get_status (error),
-                         stderr,
-                         "writing to stream: %s",
-                         pdf_error_get_message (error));
-              exit (EXIT_FAILURE);
+              if (!pdf_stm_write (stm, buf, read_bytes, &written_bytes, &error) &&
+                  error)
+                {
+                  pdf_error (pdf_error_get_status (error),
+                             stderr,
+                             "writing to stream: %s",
+                             pdf_error_get_message (error));
+                  exit (EXIT_FAILURE);
+                }
             }
         }
       while (read_bytes == BUF_SIZE);
