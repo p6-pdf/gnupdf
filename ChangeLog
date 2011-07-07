@@ -1,4 +1,10 @@
-2011-05-20 Franck Lesage  <francksys@free.fr>
+2011-07-07  Aleksander Morgado  <aleksander@gnu.org>
+
+	base,hash: cast to long all 32bit integers before packing them in a ptr.
+	* src/base/pdf-hash-helper.c (pdf_hash_get_u32)
+	(pdf_hash_add_u32, pdf_hash_get_i32, pdf_hash_add_i32)
+
+2011-07-07 Franck Lesage  <francksys@free.fr>
 
 	base,hash: Add hash helpers methods.
 	* src/base/pdf-hash-helper.c: Add hash helpers for integer value.
