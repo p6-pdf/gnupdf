@@ -1,3 +1,8 @@
+2011-07-07  Georg Gottleuber  <georg.gottleuber@uni-ulm.de>
+
+	utils: fix arg evaluation of pdf-filter
+	* utils/pdf-filter.c
+
 2011-07-07  Franck Lesage  <franck.pdf.devel@free.fr>
 
 	gnupdf-hg: documenting the mingw32 compilation steps

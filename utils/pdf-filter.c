@@ -60,6 +60,7 @@ pdf_size_t jbig2dec_global_segments_size = 0;
 
 enum
 {
+  FILTER_INSTALL_NONE,
   HELP_ARG,
   VERSION_ARG,
   READ_ARG,
@@ -90,17 +91,32 @@ enum
   JBIG2DEC_FILTER_ARG,
   JBIG2DEC_GLOBAL_SEGMENTS_ARG,
   JBIG2DEC_PAGE_SIZE,
+  JBIG2DEC_FILTER_INSTALL,
 #endif /* HAVE_LIBJBIG2DEC */
   LZWENC_FILTER_ARG,
   LZWDEC_FILTER_ARG,
   LZW_EARLYCHANGE_ARG,
+  LZWENC_FILTER_INSTALL,
+  LZWDEC_FILTER_INSTALL,
   MD5ENC_FILTER_ARG,
   KEY_ARG,
   AESENC_FILTER_ARG,
   AESDEC_FILTER_ARG,
+  AESENC_FILTER_INSTALL,
+  AESDEC_FILTER_INSTALL,
   V2ENC_FILTER_ARG,
-  V2DEC_FILTER_ARG
+  V2DEC_FILTER_ARG,
+  V2ENC_FILTER_INSTALL,
+  V2DEC_FILTER_INSTALL
 };
+
+/* name filter args here */
+#define IS_FILTER_ARG(arg)                  \
+  ((arg) == JBIG2DEC_GLOBAL_SEGMENTS_ARG || \
+   (arg) == JBIG2DEC_PAGE_SIZE           || \
+   (arg) == LZW_EARLYCHANGE_ARG          || \
+   (arg) == KEY_ARG)
+
 
 static const struct option GNU_longOptions[] =
   {
@@ -324,7 +340,7 @@ static void process_stream (pdf_stm_t  *stm,
   else
     {
       /* Write stdin into the write stream,
-	 which will be transparently writting the output to stdout. */
+         which will be transparently writting the output to stdout. */
       do
         {
           if (read_pdf_fsys)
@@ -392,11 +408,11 @@ create_stream (int          argc,
   *read_mode = PDF_FALSE;
 
   while (!finish &&
-	 (ci = getopt_long (argc,
-			     argv,
-			     "i:o:",
-			     GNU_longOptions,
-			     NULL)) != -1)
+        (ci = getopt_long (argc,
+                    argv,
+                    "i:o:",
+                    GNU_longOptions,
+                    NULL)) != -1)
     {
       c = ci;
       switch (c)
@@ -562,7 +578,6 @@ install_filters (int        argc,
                  pdf_stm_t *stm,
                  int        ci)
 {
-  char c;
   pdf_status_t ret;
   pdf_hash_t *filter_params = NULL;
   FILE *file;
@@ -570,6 +585,8 @@ install_filters (int        argc,
   pdf_status_t status;
   pdf_bool_t lzw_earlychange = PDF_FALSE;
   pdf_error_t *error = NULL;
+  char filter_to_install = FILTER_INSTALL_NONE;
+  char next_ci = getopt_long (argc, argv, "", GNU_longOptions, NULL);
 
   /* Initialize the crypt module */
   if (pdf_crypt_init () != PDF_OK)
@@ -581,8 +598,7 @@ install_filters (int        argc,
   /* Install filters */
   do
     {
-      c = ci;
-      switch (c)
+      switch (ci)
         {
           /* FILTER INSTALLERS */
         case NULL_FILTER_ARG:
@@ -727,8 +743,24 @@ install_filters (int        argc,
             break;
           }
 
-        case LZWENC_FILTER_ARG: /* Note that both ENC and DEC go here */
+        case LZWENC_FILTER_ARG:
+          {
+            filter_to_install = LZWENC_FILTER_INSTALL;
+
+            /* set default value */
+            lzw_earlychange = PDF_FALSE;
+            break;
+          }
         case LZWDEC_FILTER_ARG:
+          {
+            filter_to_install = LZWDEC_FILTER_INSTALL;
+
+            /* set default value */
+            lzw_earlychange = PDF_FALSE;
+            break;
+          }
+        case LZWENC_FILTER_INSTALL: /* Note that both ENC and DEC go here */
+        case LZWDEC_FILTER_INSTALL:
           {
             filter_params = pdf_hash_new (&error);
             if (!filter_params)
@@ -753,7 +785,7 @@ install_filters (int        argc,
               }
 
             if (!pdf_stm_install_filter (stm,
-                                         (c == LZWENC_FILTER_ARG ?
+                                         (ci == LZWENC_FILTER_ARG ?
                                           PDF_STM_FILTER_LZW_ENC :
                                           PDF_STM_FILTER_LZW_DEC),
                                          filter_params,
@@ -873,6 +905,11 @@ install_filters (int        argc,
 
         case JBIG2DEC_FILTER_ARG:
           {
+            filter_to_install = JBIG2DEC_FILTER_INSTALL;
+            break;
+          }
+        case JBIG2DEC_FILTER_INSTALL:
+          {
             if (jbig2dec_global_segments != NULL)
               {
                 filter_params = pdf_hash_new (&error);
@@ -963,8 +1000,18 @@ install_filters (int        argc,
             break;
           }
 
-        case AESENC_FILTER_ARG: /* Note that both ENC and DEC go here */
+        case AESENC_FILTER_ARG:
+          {
+            filter_to_install = AESENC_FILTER_INSTALL;
+            break;
+          }
         case AESDEC_FILTER_ARG:
+          {
+            filter_to_install = AESDEC_FILTER_INSTALL;
+            break;
+          }
+        case AESENC_FILTER_INSTALL: /* Note that both ENC and DEC go here */
+        case AESDEC_FILTER_INSTALL:
           {
             if (key == NULL)
               {
@@ -1007,7 +1054,7 @@ install_filters (int        argc,
               }
 
             if (!pdf_stm_install_filter (stm,
-                                         (c == AESENC_FILTER_ARG ?
+                                         (ci == AESENC_FILTER_ARG ?
                                           PDF_STM_FILTER_AESV2_ENC :
                                           PDF_STM_FILTER_AESV2_DEC),
                                          filter_params,
@@ -1025,8 +1072,18 @@ install_filters (int        argc,
             break;
           }
 
-        case V2ENC_FILTER_ARG: /* Note that both ENC and DEC go here */
+        case V2ENC_FILTER_ARG:
+          {
+            filter_to_install = V2ENC_FILTER_INSTALL;
+            break;
+          }
         case V2DEC_FILTER_ARG:
+          {
+            filter_to_install = V2DEC_FILTER_INSTALL;
+            break;
+          }
+        case V2ENC_FILTER_INSTALL: /* Note that both ENC and DEC go here */
+        case V2DEC_FILTER_INSTALL:
           {
             if (key == NULL)
               {
@@ -1069,7 +1126,7 @@ install_filters (int        argc,
               }
 
             if (!pdf_stm_install_filter (stm,
-                                         (c == V2ENC_FILTER_ARG ?
+                                         (ci == V2ENC_FILTER_ARG ?
                                           PDF_STM_FILTER_V2_ENC :
                                           PDF_STM_FILTER_V2_DEC),
                                          filter_params,
@@ -1097,13 +1154,33 @@ install_filters (int        argc,
             break;
           }
         }
-    }
-  while ((ci = getopt_long (argc,
-                            argv,
-                            "",
-                            GNU_longOptions,
-                            NULL)) != -1);
 
+      /* have we installed a delayed filter in this loop? */
+      if (filter_to_install == ci)
+        {
+          /* no filter delayed anymore */
+          filter_to_install = FILTER_INSTALL_NONE;
+        }
+
+      /* next arg is a new filter and current filter is with args */
+      if (!IS_FILTER_ARG(next_ci) && filter_to_install != FILTER_INSTALL_NONE)
+        {
+          /* do extra loop installing current filter */
+          ci = filter_to_install;
+        }
+      else
+        {
+          ci = next_ci;
+          next_ci = getopt_long (argc, argv, "", GNU_longOptions, NULL);
+        }
+
+      if (ci == -1 && filter_to_install != FILTER_INSTALL_NONE)
+        {
+          /* end of args and one filter still to install */
+          ci = filter_to_install;
+        }
+    }
+  while (ci != -1);
 }
 
 static pdf_fsys_file_t *
