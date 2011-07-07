@@ -32,7 +32,6 @@
 #ifdef HAVE_MALLOC_H
 #include <malloc.h>
 #endif /* HAVE_MALLOC_H */
-#include <xalloc.h>
 #include <math.h>
 
 #include <pdf-text.h>

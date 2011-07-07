@@ -41,7 +41,6 @@
 
 #include <sys/stat.h>
 
-#include <xalloc.h>
 #include <pdf.h>
 
 #include <pdf-utils.h>
