@@ -27,7 +27,6 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include <xalloc.h>
 
 #include <pdf_obj.h>
 

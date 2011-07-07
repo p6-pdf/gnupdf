@@ -13080,7 +13080,7 @@ the meaning of the name, but only to make it unique.
 Strings are sequences of octets.  Note that the octets contained in
 a PDF string are not restricted to the printable ASCII subset.  In
 particular the null octet (@code{00H}) can be part of a string and it
-is not used to to finalize it like in some programming languages.
+is not used to finalize it like in some programming languages.
 
 The interpretation of the contents of a string depends of the selected
 encoding and other factors.   Usually the UTF-8 encoding of ISO-16000
@@ -13319,7 +13319,7 @@ rule: a string directly contained in a dictionary that is in turn
 directly contained in an array will be destroyed if the top-level
 array is destroyed.
 
-The root dictionary of an object document can not be destroyed.
+The root dictionary of an object document can't be destroyed.
 
 This operation sets the dirty flag of the document containing the
 object.

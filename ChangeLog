@@ -1,3 +1,28 @@
+2011-07-07  Aleksander Morgado  <aleksander@gnu.org>
+
+	build: fix syntax-check issues
+	* .x-sc_prohibit_path_max_allocation: New file
+	* .x-sc_prohibit_undesirable_word_seq: New file
+	* .x-sc_require_config_h: New file
+	* .x-sc_makefile_at_at_check: Add files to ignore.
+	* .x-sc_prohibit_empty_lines_at_EOF: Idem.
+	* .x-sc_prohibit_magic_number_exit: Idem.
+	* .x-sc_prohibit_stddef_without_use: Idem.
+	* doc/gnupdf.texi: Fix undesirable word sequences.
+	* src/base/pdf-text.c: No need to include xallox.h.
+	* src/document/pdf-function.c: Idem.
+	* src/object/pdf-obj.c: Idem.
+	* utils/pdf-filter.c: Idem
+
+2011-07-07  Aleksander Morgado  <aleksander@gnu.org>
+
+	build: avoid using @..@
+	* src/Makefile.am (libgnupdf_la_LDFLAGS)
+
+2011-07-07  Aleksander Morgado  <aleksander@gnu.org>
+
+	* gnulib update
+
 2011-07-01  Aleksander Morgado  <aleksander@gnu.org>
 
 	torture: fix compilation issues under mingw32
