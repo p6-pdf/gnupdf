@@ -1,5 +1,10 @@
 2011-07-07  Aleksander Morgado  <aleksander@gnu.org>
 
+	build: avoid using @..@
+	* src/Makefile.am (libgnupdf_la_LDFLAGS)
+
+2011-07-07  Aleksander Morgado  <aleksander@gnu.org>
+
 	* gnulib update
 
 2011-07-01  Aleksander Morgado  <aleksander@gnu.org>
