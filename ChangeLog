@@ -1,3 +1,11 @@
+2011-05-20 Franck Lesage  <francksys@free.fr>
+
+	base,hash: Add hash helpers methods.
+	* src/base/pdf-hash-helper.c: Add hash helpers for integer value.
+	* src/base/pdf-hash-helper.h: Likewise
+
+	* doc/gnupdf.texi (Helper functions): API Documentation updated
+
 2011-07-07  Aleksander Morgado  <aleksander@gnu.org>
 
 	gnupdf-hg: minor wording fixes
