@@ -1,3 +1,8 @@
+2011-07-30  Georg Gottleuber  <georg.gottleuber@uni-ulm.de>
+
+	utils: fix arg evaluation of pdf-filter
+	* utils/pdf-filter.c
+
 2011-07-07  Aleksander Morgado  <aleksander@gnu.org>
 
 	base,hash: cast to long all 32bit integers before packing them in a ptr.
