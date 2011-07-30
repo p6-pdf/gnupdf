@@ -1,5 +1,12 @@
 2011-07-30  Georg Gottleuber  <georg.gottleuber@uni-ulm.de>
 
+	base,stm: adapted predictor filter to new stm api 
+	* src/base/pdf-stm-f-pred.h: adapted to new stm api
+	* src/base/pdf-stm-f-pred.h: adapted to new stm api
+	* utils/pdf-filter.c: added support for predictor filter
+
+2011-07-30  Georg Gottleuber  <georg.gottleuber@uni-ulm.de>
+
 	utils: fix arg evaluation of pdf-filter
 	* utils/pdf-filter.c
 

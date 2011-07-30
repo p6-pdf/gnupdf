@@ -75,9 +75,15 @@ enum
 #if 0
   CCITTFAXDEC_FILTER_ARG,
   JXPDEC_FILTER_ARG,
+#endif /* 0 */
+  PRED_COLORS_ARG,
+  PRED_BITSPERCOMPONENT_ARG,
+  PRED_COLUMNS_ARG,
+  PRED_PREDICTOR_ARG,
   PREDENC_FILTER_ARG,
   PREDDEC_FILTER_ARG,
-#endif /* 0 */
+  PREDENC_FILTER_INSTALL,
+  PREDDEC_FILTER_INSTALL,
 #ifdef HAVE_LIBJPEG
   DCTDEC_FILTER_ARG,
 #endif /* HAVE_LIBJPEG */
@@ -112,7 +118,11 @@ enum
 
 /* name filter args here */
 #define IS_FILTER_ARG(arg)                  \
-  ((arg) == JBIG2DEC_GLOBAL_SEGMENTS_ARG || \
+  ((arg) == PRED_COLORS_ARG              || \
+   (arg) == PRED_BITSPERCOMPONENT_ARG    || \
+   (arg) == PRED_COLUMNS_ARG             || \
+   (arg) == PRED_PREDICTOR_ARG           || \
+   (arg) == JBIG2DEC_GLOBAL_SEGMENTS_ARG || \
    (arg) == JBIG2DEC_PAGE_SIZE           || \
    (arg) == LZW_EARLYCHANGE_ARG          || \
    (arg) == KEY_ARG)
@@ -134,11 +144,15 @@ static const struct option GNU_longOptions[] =
     {"lzw-earlychange", no_argument, NULL, LZW_EARLYCHANGE_ARG},
     {"a85dec", no_argument, NULL, ASCII85DEC_FILTER_ARG},
     {"a85enc", no_argument, NULL, ASCII85ENC_FILTER_ARG},
+    {"predenc", no_argument, NULL, PREDENC_FILTER_ARG},
+    {"preddec", no_argument, NULL, PREDDEC_FILTER_ARG},
+    {"pred-type", required_argument, NULL, PRED_PREDICTOR_ARG},
+    {"pred-colors", required_argument, NULL, PRED_COLORS_ARG},
+    {"pred-bpc", required_argument, NULL, PRED_BITSPERCOMPONENT_ARG},
+    {"pred-columns", required_argument, NULL, PRED_COLUMNS_ARG},
 #if 0
     {"cfaxdec", no_argument, NULL, CCITTFAXDEC_FILTER_ARG},
     {"jxpdec", no_argument, NULL, JXPDEC_FILTER_ARG},
-    {"predenc", no_argument, NULL, PREDENC_FILTER_ARG},
-    {"preddec", no_argument, NULL, PREDDEC_FILTER_ARG},
 #endif /* 0 */
 #ifdef PDF_HAVE_LIBJPEG
     {"dctdec", no_argument, NULL, DCTDEC_FILTER_ARG},
@@ -184,12 +198,12 @@ filters\n\
   --lzwenc                            use the LZW encoder filter\n\
   --lzwdec                            use the LZW decoder filter\n\
   --a85dec                            use the ASCII 85 decoder filter\n\
-  --a85enc                            use the ASCII 85 encoder filter\n"
-#if 0
-"\
-  --jxpdec                            use the JXP decoder filter\n\
+  --a85enc                            use the ASCII 85 encoder filter\n\
   --predenc                           use the predictor encoder filter\n\
   --preddec                           use the predictor decoder filter\n"
+#if 0
+  --jxpdec                            use the JXP decoder filter\n\
+
 #endif /* 0 */
 #ifdef PDF_HAVE_LIBJPEG
 "\
@@ -213,16 +227,11 @@ filters\n\
   --help                              print a help message and exit\n\
   --version                           print a version message and exit\n\
 \n\
-Filter properties\n"
-#if 0
-"\
-  --preddec-type=NUM                  code for next preddec filters type\n\
-  --predenc-type=NUM                  code for next predenc filters type\n\
+Filter properties\n\
+  --pred-type=NUM                     code for next pred filters type\n\
   --pred-colors=NUM                   next predictors colors per sample\n\
   --pred-bpc=NUM                      next predictors bits per color component\n\
-  --pred-columns=NUM                  next predictors number of samples per row\n"
-#endif /* 0 */
-"\
+  --pred-columns=NUM                  next predictors number of samples per row\n\
   --lzw-earlychange                   toggles earlychange for next lzw filters\n\
   --jbig2dec-globals=FILE             file containing global segments\n\
 \n"
@@ -578,12 +587,21 @@ install_filters (int        argc,
                  pdf_stm_t *stm,
                  int        ci)
 {
-  pdf_status_t ret;
   pdf_hash_t *filter_params = NULL;
   FILE *file;
   char *key = NULL;
-  pdf_status_t status;
+  pdf_char_t *endptr = NULL; /* Used in strtol */
   pdf_bool_t lzw_earlychange = PDF_FALSE;
+  /* parameters for predictior filter */
+  int pred_predictor;
+  int pred_colors;
+  int pred_bpc;
+  int pred_columns;
+  pdf_bool_t pred_predictor_is_set = PDF_FALSE; 
+  pdf_bool_t pred_colors_is_set = PDF_FALSE; 
+  pdf_bool_t pred_bpc_is_set = PDF_FALSE; 
+  pdf_bool_t pred_columns_set = PDF_FALSE; 
+
   pdf_error_t *error = NULL;
   char filter_to_install = FILTER_INSTALL_NONE;
   char *old_optarg = optarg;
@@ -716,34 +734,167 @@ install_filters (int        argc,
           {
             break;
           }
-        case PREDENC_FILTER_ARG:
+#endif /* 0 */
+        case PRED_COLORS_ARG:
           {
-            /* pdf_stm_install_predenc_filter (input,
-               PDF_STM_FILTER_READ,
-               args.pred_enc_type,
-               args.pred_colors,
-               args.pred_bpc,
-               args.pred_columns); */
+            pred_colors = strtol (old_optarg, (char **) &endptr, 10);
+            if ((*endptr != '\0'))
+              {
+                /* Error parsing the number */
+                fprintf (stdout, "%s\n", pdf_filter_help_msg);
+                exit (EXIT_FAILURE);
+              }
+            pred_colors_is_set = PDF_TRUE; 
+            break;
+          }
+        case PRED_BITSPERCOMPONENT_ARG:
+          {
+            pred_bpc = strtol (old_optarg, (char **) &endptr, 10);
+            if ((*endptr != '\0'))
+              {
+                /* Error parsing the number */
+                fprintf (stdout, "%s\n", pdf_filter_help_msg);
+                exit (EXIT_FAILURE);
+              }
+            pred_bpc_is_set = PDF_TRUE;
+              break;
+          }
+        case PRED_COLUMNS_ARG:
+          {
+            pred_columns = strtol (old_optarg, (char **) &endptr, 10);
+            if ((*endptr != '\0'))
+              {
+                /* Error parsing the number */
+                fprintf (stdout, "%s\n", pdf_filter_help_msg);
+                exit (EXIT_FAILURE);
+              }
+            pred_columns_set = PDF_TRUE;
+              break;
+          }
+        case PRED_PREDICTOR_ARG:
+          {
+            pred_predictor = strtol (old_optarg, (char **) &endptr, 10);
+            if ((*endptr != '\0'))
+              {
+                /* Error parsing the number */
+                fprintf (stdout, "%s\n", pdf_filter_help_msg);
+                exit (EXIT_FAILURE);
+              }
+            pred_predictor_is_set = PDF_TRUE;
+              break;
+          }
+        case PREDENC_FILTER_ARG: /* Note that both ENC and DEC go here */
+          {
+            filter_to_install = PREDENC_FILTER_INSTALL;
+
+            /* set parameters as not set */ 
+            pred_predictor_is_set = PDF_FALSE; 
+            pred_colors_is_set = PDF_FALSE; 
+            pred_bpc_is_set = PDF_FALSE; 
+            pred_columns_set = PDF_FALSE; 
             break;
           }
         case PREDDEC_FILTER_ARG:
           {
-            /* pdf_stm_install_preddec_filter (input,
-               PDF_STM_FILTER_READ,
-               args.pred_dec_type,
-               args.pred_colors,
-               args.pred_bpc,
-               args.pred_columns); */
+            filter_to_install = PREDDEC_FILTER_INSTALL;
+
+            /* set parameters as not set */ 
+            pred_predictor_is_set = PDF_FALSE; 
+            pred_colors_is_set = PDF_FALSE; 
+            pred_bpc_is_set = PDF_FALSE; 
+            pred_columns_set = PDF_FALSE; 
             break;
           }
-#endif /* 0 */
+        case PREDENC_FILTER_INSTALL:
+        case PREDDEC_FILTER_INSTALL:
+          {
+            filter_params = pdf_hash_new (&error);
+            if (!filter_params)
+              {
+                pdf_error (pdf_error_get_status (error),
+                           stderr,
+                           "couldn't create hash table: '%s'",
+                           pdf_error_get_message (error));
+                exit (EXIT_FAILURE);
+              }
 
+            if (pred_colors_is_set)
+              {
+                if (!pdf_hash_add_size (filter_params,
+                                        "Colors",
+                                        pred_colors,
+                                        &error))
+                  {
+                    pdf_error (pdf_error_get_status (error),
+                               stderr,
+                               "while creating the predictor filter: '%s'",
+                               pdf_error_get_message (error));
+                    exit (EXIT_FAILURE);
+                  }
+              }
+            if (pred_bpc_is_set)
+              {
+                if (!pdf_hash_add_size (filter_params,
+                                        "BitsPerComponent",
+                                        pred_bpc,
+                                        &error))
+                  {
+                    pdf_error (pdf_error_get_status (error),
+                               stderr,
+                               "while creating the predictor filter: '%s'",
+                               pdf_error_get_message (error));
+                    exit (EXIT_FAILURE);
+                  }
+              }
+            if (pred_columns_set)
+              {
+                if (!pdf_hash_add_size (filter_params,
+                                        "Columns",
+                                        pred_columns,
+                                        &error))
+                  {
+                    pdf_error (pdf_error_get_status (error),
+                               stderr,
+                               "while creating the predictor filter: '%s'",
+                               pdf_error_get_message (error));
+                    exit (EXIT_FAILURE);
+                  }
+              }
+            if (pred_predictor_is_set)
+              {
+                if (!pdf_hash_add_size (filter_params,
+                                        "Predictor",
+                                        pred_predictor,
+                                        &error))
+                  {
+                    pdf_error (pdf_error_get_status (error),
+                               stderr,
+                               "while creating the predictor filter: '%s'",
+                               pdf_error_get_message (error));
+                    exit (EXIT_FAILURE);
+                  }
+              }
+            if (!pdf_stm_install_filter (stm,
+                                         (ci == PREDENC_FILTER_INSTALL ?
+                                          PDF_STM_FILTER_PRED_ENC :
+                                          PDF_STM_FILTER_PRED_DEC),
+                                         filter_params,
+                                         &error))
+              {
+                pdf_error (pdf_error_get_status (error),
+                           stderr,
+                           "while installing the predictor encoder or decoder filter: '%s'",
+                           pdf_error_get_message (error));
+                exit (EXIT_FAILURE);
+              }
+            pdf_hash_destroy (filter_params);
+            break;
+          }
         case LZW_EARLYCHANGE_ARG:
           {
             lzw_earlychange = PDF_TRUE;
             break;
           }
-
         case LZWENC_FILTER_ARG:
           {
             filter_to_install = LZWENC_FILTER_INSTALL;
