@@ -442,6 +442,10 @@ stm_f_lzwenc_apply (void          *state,
       lzw_buffer_put_code (&st->buffer, LZW_EOD_CODE);
       lzw_buffer_put_code (&st->buffer, 0); /* flush */
 
+      /* Delete 0 byte if buffer was already aligned before flush.  */
+      if (out->data[out->wp - 1] == 0x0)
+        out->wp--;
+
       st->really_finish = PDF_TRUE;
 
       return (pdf_buffer_full_p (out) ?
