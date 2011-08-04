@@ -153,7 +153,6 @@ stm_f_jbig2dec_apply (void          *state,
                       pdf_error_t  **error)
 {
   struct pdf_stm_f_jbig2dec_s *filter_state = state;
-  pdf_status_t ret;
   pdf_size_t bytes_to_copy;
 
   if (finish)

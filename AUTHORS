@@ -33,7 +33,7 @@ David Vazquez: changed gnupdf.texi pdf-crypt.h gnupdf-tsd.texi
 
 Franck Lesage: changed pdf-hash-helper.c pdf-hash-helper.h gnupdf.texi
 
-Georg Gottleuber: changed pdf-filter.c
+Georg Gottleuber: changed pdf-filter.c pdf-stm-f-pred.c pdf-stm-f-pred.h
 
 Gerardo E. Gidoni: changed gnupdf.texi pdf-stm-read.c gnupdf-tsd.texi
   pdf-stm-write.c configure.ac pdf-filter.c pdf-stm-f-flate.h

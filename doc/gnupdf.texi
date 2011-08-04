@@ -13879,7 +13879,7 @@ size = pdf_obj_size (obj);
 @end table
 @end deftypefun
 
-@defun PDF_OBJ_IS_NULL(@var{obj})
+@defun PDF_OBJ_IS_NULL (@var{obj})
 
 Macro that determines whether the passed object is the null object.
 
