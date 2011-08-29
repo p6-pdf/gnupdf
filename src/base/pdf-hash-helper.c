@@ -222,6 +222,48 @@ pdf_hash_get_bool (const pdf_hash_t *table,
   return (pdf_bool_t) pdf_hash_get_value (table, key);
 }
 
+/* Hash helpers to add/get integer */
+
+pdf_bool_t
+pdf_hash_add_i32 (pdf_hash_t        *table,
+                  const pdf_char_t  *key,
+                  const pdf_i32_t    value,
+                  pdf_error_t      **error)
+{
+  return pdf_hash_add (table,
+                       key,
+                       (void *)((long)value),
+                       NULL,
+                       error);
+}
+
+pdf_i32_t
+pdf_hash_get_i32 (pdf_hash_t       *table,
+                  const pdf_char_t *key)
+{
+  return (pdf_i32_t) ((long) pdf_hash_get_value (table, key));
+}
+
+pdf_bool_t
+pdf_hash_add_u32 (pdf_hash_t        *table,
+                  const pdf_char_t  *key,
+                  const pdf_u32_t    value,
+                  pdf_error_t      **error)
+{
+  return pdf_hash_add (table,
+                       key,
+                       (void *) ((unsigned long)value),
+                       NULL,
+                       error);
+}
+
+pdf_u32_t
+pdf_hash_get_u32 (pdf_hash_t       *table,
+                  const pdf_char_t *key)
+{
+  return (pdf_u32_t) ((unsigned long)pdf_hash_get_value (table, key));
+}
+
 /* Hash helpers to add/get sizes */
 
 pdf_bool_t

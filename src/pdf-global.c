@@ -33,6 +33,7 @@
 #include <pdf-text.h>
 #include <pdf-time.h>
 #include <pdf-fsys.h>
+#include <pdf-tokeniser.h>
 
 /* Global variables */
 
@@ -59,7 +60,6 @@ struct pdf_globals_s pdf_globals = {
 int
 pdf_init (void)
 {
-  pdf_error_t *inner_error = NULL;
   int ret = PDF_ERROR;
 
   if (pthread_mutex_lock (&(pdf_globals.init_mutex)) != 0)
@@ -73,12 +73,16 @@ pdf_init (void)
     ret = PDF_OK;
   else
     {
+      pdf_error_t *inner_error = NULL;
+
       if (!pdf_crypt_init (&inner_error) ||
           !pdf_text_init (&inner_error) ||
           !pdf_time_module_init (&inner_error) ||
-          !pdf_fsys_init (&inner_error))
+          !pdf_fsys_init (&inner_error) ||
+          !pdf_tokeniser_init (&inner_error))
         {
           /* TODO: Propagate error */
+          pdf_error_destroy (inner_error);
         }
       else
         {
@@ -92,13 +96,13 @@ pdf_init (void)
   return ret;
 }
 
-
 /* Library finalization routine */
 void
 pdf_finish (void)
 {
+  pdf_tokeniser_deinit ();
   pdf_fsys_deinit ();
   pdf_text_deinit ();
 }
 
-/* End of pdf.c */
+/* End of pdf-global.c */

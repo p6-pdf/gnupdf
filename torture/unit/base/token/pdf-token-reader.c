@@ -1,13 +1,13 @@
 /* -*- mode: C -*-
  *
- *       File:         pdf-token-read.c
+ *       File:         pdf-token-reader.c
  *       Date:         Wed Jan 14 05:44:48 2009
  *
- *       GNU PDF Library - Unit tests for pdf_token_read
+ *       GNU PDF Library - Unit tests for pdf_token_reader
  *
  */
 
-/* Copyright (C) 2010, 2011 Free Software Foundation, Inc. */
+/* Copyright (C) 2010-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,28 +47,49 @@
     fail_if (_inner != NULL);                               \
   } while (0)
 
-#define INIT_TOKR(_tokr, _stm) do {                                 \
-    fail_unless (pdf_token_reader_new ((_stm),(_tokr)) == PDF_OK);  \
-  } while(0)
+#define INIT_TOKR(_tokr, _stm) do {                  \
+    pdf_error_t *_inner = NULL;                      \
+    (tokr) = pdf_token_reader_new ((_stm), &_inner); \
+    fail_unless ((tokr) != NULL);                    \
+    fail_if (_inner != NULL);                        \
+  } while (0)
 
-#define _EXPECT_TOK(tokr, flags, tokexpr) do{             \
-    pdf_token_t _exp_tok;                                 \
-    fail_unless(PDF_OK == (tokexpr));                     \
-    fail_unless(get_token( (tokr), (flags), _exp_tok ));  \
-    pdf_token_destroy(_exp_tok);                          \
-  }while(0)
-#define EXPECT_VALUELESS(tokr,flags,val) _EXPECT_TOK((tokr),  \
-  (flags), pdf_token_valueless_new(val, &_exp_tok) )
-#define EXPECT_KEYWORD(tokr,flags,val) _EXPECT_TOK((tokr),    \
-  (flags), pdf_token_keyword_new(STR_AND_LEN(val), &_exp_tok) )
-#define EXPECT_NAME(tokr,flags,val) _EXPECT_TOK((tokr),       \
-  (flags), pdf_token_name_new(STR_AND_LEN(val), &_exp_tok) )
-#define EXPECT_INTEGER(tokr,flags,val) _EXPECT_TOK((tokr),    \
-  (flags), pdf_token_integer_new(val, &_exp_tok) )
-#define EXPECT_REAL(tokr,flags,val) _EXPECT_TOK((tokr),       \
-  (flags), pdf_token_real_new(val, &_exp_tok) )
-#define EXPECT_STRING(tokr,flags,val) _EXPECT_TOK((tokr),     \
-  (flags), pdf_token_string_new(STR_AND_LEN(val), &_exp_tok) )
+#define _EXPECT_TOK(tokr, flags, exp_tok) do {             \
+    pdf_token_t *_exp_tok = exp_tok;                       \
+    fail_unless ((exp_tok) != NULL);                       \
+    fail_unless (get_token ((tokr), (flags), (exp_tok)));  \
+    pdf_token_destroy (_exp_tok);                           \
+  } while (0)
+
+#define EXPECT_VALUELESS(tokr, flags, val)                  \
+  _EXPECT_TOK ((tokr),                                      \
+               (flags),                                     \
+               pdf_token_valueless_new (val, NULL))
+
+#define EXPECT_KEYWORD(tokr, flags, val)                            \
+  _EXPECT_TOK ((tokr),                                              \
+               (flags),                                             \
+               pdf_token_keyword_new (STR_AND_LEN (val), NULL))
+
+#define EXPECT_NAME(tokr, flags, val)                               \
+  _EXPECT_TOK ((tokr),                                              \
+               (flags),                                             \
+               pdf_token_name_new (STR_AND_LEN (val), NULL))
+
+#define EXPECT_INTEGER(tokr, flags, val)             \
+  _EXPECT_TOK ((tokr),                               \
+               (flags),                              \
+               pdf_token_integer_new (val, NULL))
+
+#define EXPECT_REAL(tokr, flags, val)            \
+  _EXPECT_TOK ((tokr),                           \
+               (flags),                          \
+               pdf_token_real_new (val, NULL))
+
+#define EXPECT_STRING(tokr, flags, val)                          \
+  _EXPECT_TOK ((tokr),                                           \
+               (flags),                                          \
+               pdf_token_string_new (STR_AND_LEN (val), NULL))
 
 static const pdf_char_t non_regular_chars[] = {
   /* whitespace chars */
@@ -77,36 +98,51 @@ static const pdf_char_t non_regular_chars[] = {
   '(', ')', '<', '>', '[', ']', '{', '}', '/', '%'
 };
 
-static void *nonnull(void *ptr)
-{
-  if (ptr) return ptr;
-
-  fprintf(stderr, "error: got unexpected null pointer; aborting");
-  abort();
-}
-
 /* Read a token; return 1 if it's equal to 'expected', or 0 otherwise. */
-static int
-get_token(pdf_token_reader_t tokr, pdf_u32_t flags, pdf_token_t expected)
+static pdf_bool_t
+get_token (pdf_token_reader_t *tokr,
+           pdf_u32_t           flags,
+           const pdf_token_t  *expected)
 {
-  int ret = 0;
-  pdf_token_t token = NULL;
-  pdf_status_t rv = pdf_token_read(tokr, flags, &token);
+  pdf_bool_t cmp;
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
-  nonnull(expected);
-  ret = (rv == PDF_OK) && pdf_token_equal_p(token, expected);
+  token = pdf_token_reader_read (tokr, flags, &error);
+  fail_unless (expected != NULL);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
-  if (token) pdf_token_destroy(token);
-  return ret;
+  cmp = pdf_token_equal_p (token, expected);
+
+  if (token)
+    pdf_token_destroy (token);
+  return cmp;
 }
 
-static int
-tokr_eof(pdf_token_reader_t tokr, pdf_i32_t flags)
+static pdf_bool_t
+tokr_eof (pdf_token_reader_t *tokr,
+          pdf_i32_t           flags)
 {
-  pdf_token_t token = NULL;
-  pdf_status_t rv = pdf_token_read(tokr, flags, &token);
-  if (token) pdf_token_destroy(token);
-  return (rv == PDF_EEOF);
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
+
+  /* EOF is reported as NULL returned without error */
+  token = pdf_token_reader_read (tokr, flags, &error);
+  if (token)
+    {
+      pdf_token_destroy (token);
+      return PDF_FALSE;
+    }
+
+  if (error)
+    {
+      pdf_error_destroy (error);
+      return PDF_FALSE;
+    }
+
+  /* EOF */
+  return PDF_TRUE;
 }
 
 /* Initializes the array of regular chars. */
@@ -142,9 +178,9 @@ init_regular_chars_array (pdf_char_t *regular_chars)
 
 /* Applies a test function to each char in an array. */
 static void
-test_char_array (void (*test_fn) (pdf_char_t),
-                 const pdf_char_t *array,
-                 size_t size)
+test_char_array (void             (*test_fn) (pdf_char_t),
+                 const pdf_char_t  *array,
+                 size_t             size)
 {
   pdf_char_t ch = '\0';
   pdf_u32_t  idx = 0;
@@ -160,24 +196,24 @@ test_char_array (void (*test_fn) (pdf_char_t),
  * Checks if the reader creates a name token
  * from a stream containing the given char escaped.
  */
-void
+static void
 ok_for_escaped_char (pdf_char_t ch)
 {
   pdf_char_t          name_buf[2];
   pdf_stm_t          *stm;
   pdf_char_t          stream_buf[8];
-  pdf_token_reader_t  tokr;
+  pdf_token_reader_t *tokr;
 
   /* Nulls are not allowed inside names.
      PDF spec, section 7.3.5, page 16 */
-  if ('\0' == ch)
+  if (ch == '\0')
     return;
 
   sprintf (stream_buf,
            "/#%02hhx", /* assuming 'char' is always one byte in size */
            (unsigned char) ch);
   INIT_STM_STR (stm, stream_buf);
-  INIT_TOKR (&tokr, stm);
+  INIT_TOKR (tokr, stm);
 
   name_buf[0] = ch;
   name_buf[1] = '\0';
@@ -191,36 +227,29 @@ ok_for_escaped_char (pdf_char_t ch)
  * Checks if the reader fails to create a name token
  * for a non-escaped char.
  */
-void
+static void
 fail_for_raw_char (pdf_char_t ch)
 {
-  pdf_bool_t         ok = PDF_FALSE;
-  pdf_status_t       rv;
-  pdf_stm_t         *stm;
-  const pdf_char_t  *str = NULL;
-  pdf_char_t         stream_buf[3];
-  pdf_token_t        token;
-  pdf_token_reader_t tokr;
+  pdf_stm_t          *stm;
+  const pdf_char_t   *str = NULL;
+  pdf_char_t          stream_buf[3];
+  pdf_token_t        *token;
+  pdf_token_reader_t *tokr;
+  pdf_error_t        *error = NULL;
 
   stream_buf[0] = '/';
   stream_buf[1] = ch;
   stream_buf[2] = '\0';
   INIT_STM_STR (stm, stream_buf);
-  INIT_TOKR (&tokr, stm);
+  INIT_TOKR (tokr, stm);
 
-  rv = pdf_token_read (tokr, 0, &token);
-  if (PDF_OK == rv)
+  token = pdf_token_reader_read (tokr, 0, &error);
+  if (token)
     {
       str = pdf_token_get_name_data (token);
+      fail_unless (strlen (str) == 0);
       pdf_token_destroy (token);
-      ok = (strlen (str) == 0);
     }
-  else
-    {
-      ok = PDF_TRUE;
-    }
-
-  fail_unless (ok);
 
   pdf_token_reader_destroy (tokr);
   pdf_stm_destroy (stm);
@@ -238,34 +267,37 @@ fail_for_raw_char (pdf_char_t ch)
 START_TEST (pdf_token_read_toktypes)
 {
   pdf_stm_t *stm;
-  pdf_token_reader_t tokr;
+  pdf_token_reader_t *tokr;
 
+  INIT_STM_STR (stm,
+                "abc}{/kw/k#20w%com\n"
+                "]1 2.0[>><4142434a4F4>"
+                "(str(\\551ng(\0\r)\\60x\\\r\n)>>)"
+                "<<1208925819614629174706176"          /* 2^80 */
+                "\0\n \r\t\f"                          /* whitespace */
+                "(\\n\\r\\t\\b\\f\\)\\(\\\\\\X\08)");  /* string escapes */
+  INIT_TOKR (tokr, stm);
 
-  INIT_STM_STR(stm, "abc}{/kw/k#20w%com\n"
-      "]1 2.0[>><4142434a4F4>"
-      "(str(\\551ng(\0\r)\\60x\\\r\n)>>)"
-      "<<1208925819614629174706176"          /* 2^80 */
-      "\0\n \r\t\f"                          /* whitespace */
-      "(\\n\\r\\t\\b\\f\\)\\(\\\\\\X\08)");  /* string escapes */
-  INIT_TOKR(&tokr, stm);
+  EXPECT_KEYWORD (tokr, 0, "abc");
+  EXPECT_VALUELESS (tokr, 0, PDF_TOKEN_PROC_END);
+  EXPECT_VALUELESS (tokr, 0, PDF_TOKEN_PROC_START);
+  EXPECT_NAME (tokr, 0, "kw");
+  EXPECT_NAME (tokr, 0, "k w");
+  EXPECT_VALUELESS (tokr, 0, PDF_TOKEN_ARRAY_END);
+  EXPECT_INTEGER (tokr, 0, 1);
+  EXPECT_REAL (tokr, 0, 2);
+  EXPECT_VALUELESS (tokr, 0, PDF_TOKEN_ARRAY_START);
+  EXPECT_VALUELESS (tokr, 0, PDF_TOKEN_DICT_END);
+  EXPECT_STRING (tokr, 0, "ABCJO@");
+  EXPECT_STRING (tokr, 0, "str(ing(\0\n)0x)>>");
+  EXPECT_VALUELESS (tokr, 0, PDF_TOKEN_DICT_START);
+  EXPECT_REAL (tokr, 0, 1208925819614629174706176.0);  /* 2^80 */
+  EXPECT_STRING (tokr, 0, "\n\r\t\b\f)(\\X\0\070");
 
-  EXPECT_KEYWORD( tokr, 0, "abc" );
-  EXPECT_VALUELESS( tokr, 0, PDF_TOKEN_PROC_END );
-  EXPECT_VALUELESS( tokr, 0, PDF_TOKEN_PROC_START );
-  EXPECT_NAME( tokr, 0, "kw" );
-  EXPECT_NAME( tokr, 0, "k w" );
-  EXPECT_VALUELESS( tokr, 0, PDF_TOKEN_ARRAY_END );
-  EXPECT_INTEGER( tokr, 0, 1 );
-  EXPECT_REAL( tokr, 0, 2 );
-  EXPECT_VALUELESS( tokr, 0, PDF_TOKEN_ARRAY_START );
-  EXPECT_VALUELESS( tokr, 0, PDF_TOKEN_DICT_END );
-  EXPECT_STRING( tokr, 0, "ABCJO@" );
-  EXPECT_STRING( tokr, 0, "str(ing(\0\n)0x)>>" );
-  EXPECT_VALUELESS( tokr, 0, PDF_TOKEN_DICT_START );
-  EXPECT_REAL( tokr, 0, 1208925819614629174706176.0 );  /* 2^80 */
-  EXPECT_STRING( tokr, 0, "\n\r\t\b\f)(\\X\0\070" );
+  fail_unless (tokr_eof (tokr, 0));
 
-  fail_unless( tokr_eof(tokr, 0) );
+  pdf_token_reader_destroy (tokr);
+  pdf_stm_destroy (stm);
 }
 END_TEST
 
@@ -280,21 +312,26 @@ END_TEST
 START_TEST (pdf_token_read_eos)
 {
   pdf_stm_t *stm;
-  pdf_token_reader_t tokr;
+  pdf_token_reader_t *tokr;
   pdf_char_t ch;
   pdf_error_t *error = NULL;
 
-  INIT_STM_STR(stm, "stream    \r\t  %com  \n"
-      ">UNPARSABLE DATA IN STREAM\n\n\n\n\n\nx");
-  INIT_TOKR(&tokr, stm);
+  INIT_STM_STR (stm,
+                "stream    \r\t  %com  \n"
+                ">UNPARSABLE DATA IN STREAM\n\n\n\n\n\nx");
+  INIT_TOKR (tokr, stm);
 
-  EXPECT_KEYWORD( tokr, 0, "stream" );
-  fail_unless( tokr_eof(tokr, PDF_TOKEN_END_AT_STREAM) );
+  EXPECT_KEYWORD (tokr, 0, "stream");
+  fail_unless (tokr_eof (tokr, PDF_TOKEN_END_AT_STREAM));
 
-  fail_unless (pdf_stm_peek_char(stm, &ch, &error) == PDF_TRUE);
+  fail_unless (pdf_stm_peek_char (stm, &ch, &error) == PDF_TRUE);
   fail_if (error != NULL);
-  fail_unless( ch == '>' );
-  /*TODO: verify stream position */
+  fail_unless (ch == '>');
+
+  /* TODO: verify stream position */
+
+  pdf_token_reader_destroy (tokr);
+  pdf_stm_destroy (stm);
 }
 END_TEST
 
@@ -310,15 +347,16 @@ START_TEST (pdf_token_read_longstring)
   const pdf_size_t filesize = 42000;
   pdf_char_t *file;
   pdf_stm_t *stm;
-  pdf_token_reader_t tokr;
-  pdf_token_t token = NULL;
-  pdf_status_t rv;
+  pdf_token_reader_t *tokr;
+  pdf_token_t *token = NULL;
   pdf_size_t i, j;
   pdf_error_t *error = NULL;
 
   /* make long string '(XX'...'XX)' */
-  file = nonnull(pdf_alloc(filesize));
-  memset(file, 'X', filesize);
+  file = pdf_alloc (filesize);
+  fail_unless (file != NULL);
+
+  memset (file, 'X', filesize);
   file[0] = '(';
   file[filesize-1] = ')';
 
@@ -330,19 +368,21 @@ START_TEST (pdf_token_read_longstring)
   fail_unless (stm != NULL);
   fail_if (error != NULL);
 
-  INIT_TOKR(&tokr, stm);
+  INIT_TOKR (tokr, stm);
 
-  rv = pdf_token_read(tokr, 0, &token);
-  fail_unless(rv == PDF_OK);
-  if (token)
-    {
-      fail_unless(pdf_token_get_type(token) == PDF_TOKEN_STRING);
-      fail_unless(pdf_token_get_string_size(token) == filesize-2);
-      pdf_token_destroy(token);
-    }
+  token = pdf_token_reader_read (tokr, 0, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
-  fail_unless( tokr_eof(tokr, 0) );
-  pdf_dealloc(file);
+  fail_unless (pdf_token_get_type (token) == PDF_TOKEN_STRING);
+  fail_unless (pdf_token_get_string_size (token) == filesize - 2);
+  pdf_token_destroy (token);
+
+  fail_unless (tokr_eof (tokr, 0));
+  pdf_dealloc (file);
+
+  pdf_token_reader_destroy (tokr);
+  pdf_stm_destroy (stm);
 }
 
 END_TEST
@@ -359,18 +399,18 @@ END_TEST
 START_TEST (pdf_token_comments)
 {
   pdf_stm_t *stm;
-  pdf_token_reader_t tokr;
+  pdf_token_reader_t *tokr;
 
-  INIT_STM_STR (stm, "12% foo\n"
+  INIT_STM_STR (stm,
+                "12% foo\n"
                 "34");
-  INIT_TOKR (&tokr, stm);
+  INIT_TOKR (tokr, stm);
 
   EXPECT_INTEGER (tokr, 0, 12);
   EXPECT_INTEGER (tokr, 0, 34);
 
   pdf_token_reader_destroy (tokr);
   pdf_stm_destroy (stm);
-  pdf_finish ();
 }
 END_TEST
 
@@ -378,7 +418,7 @@ END_TEST
  * Test: pdf_token_reverse_solidus
  * Description:
  *   Checks if the reader ignores reverse solidus chars which are not
- *   followed by n, r, t, b, f,  (, ), \ or numbers for octal values,
+ *   followed by n, r, t, b, f,  (,), \ or numbers for octal values,
  *   while extracting a string.
  *   See the PDF specification, page 15, section 7.3.4.2, 2nd paragraph.
  *   The test gives the reader a string in which some chars that do not
@@ -390,16 +430,15 @@ END_TEST
 START_TEST (pdf_token_reverse_solidus)
 {
   pdf_stm_t *stm;
-  pdf_token_reader_t tokr;
+  pdf_token_reader_t *tokr;
 
   INIT_STM_STR (stm, "(1 \\x 2 \\9 3 \\% 4)");
-  INIT_TOKR (&tokr, stm);
+  INIT_TOKR (tokr, stm);
 
   EXPECT_STRING (tokr, 0, "1 x 2 9 3 % 4");
 
   pdf_token_reader_destroy (tokr);
   pdf_stm_destroy (stm);
-  pdf_finish ();
 }
 END_TEST
 
@@ -417,20 +456,19 @@ END_TEST
 START_TEST (pdf_token_solidus_eol)
 {
   pdf_stm_t *stm;
-  pdf_token_reader_t tokr;
+  pdf_token_reader_t *tokr;
 
   INIT_STM_STR (stm,
                 "(simple \\\n"
                 "multi-\\\r"
                 "line \\\r\n"
                 "string)");
-  INIT_TOKR (&tokr, stm);
+  INIT_TOKR (tokr, stm);
 
   EXPECT_STRING (tokr, 0, "simple multi-line string");
 
   pdf_token_reader_destroy (tokr);
   pdf_stm_destroy (stm);
-  pdf_finish ();
 }
 END_TEST
 
@@ -449,16 +487,15 @@ END_TEST
 START_TEST (pdf_token_eol)
 {
   pdf_stm_t *stm;
-  pdf_token_reader_t tokr;
+  pdf_token_reader_t *tokr;
 
   INIT_STM_STR (stm, "(this \n is \r a \r\n string)");
-  INIT_TOKR (&tokr, stm);
+  INIT_TOKR (tokr, stm);
 
   EXPECT_STRING (tokr, 0, "this \n is \n a \n string");
 
   pdf_token_reader_destroy (tokr);
   pdf_stm_destroy (stm);
-  pdf_finish ();
 }
 END_TEST
 
@@ -478,20 +515,19 @@ END_TEST
 START_TEST (pdf_token_octal_overflow)
 {
   pdf_stm_t *stm;
-  pdf_token_reader_t tokr;
+  pdf_token_reader_t *tokr;
 
   /* simple string: hello
      octal codes of chars: 150, 145, 154, 154, 157
      codes with added bits: 350, 545, 754, 554, 357
   */
   INIT_STM_STR (stm, "(\\350\\545\\754\\554\\357)");
-  INIT_TOKR (&tokr, stm);
+  INIT_TOKR (tokr, stm);
 
   EXPECT_STRING (tokr, 0, "hello");
 
   pdf_token_reader_destroy (tokr);
   pdf_stm_destroy (stm);
-  pdf_finish ();
 }
 END_TEST
 
@@ -509,16 +545,15 @@ END_TEST
 START_TEST (pdf_token_octals)
 {
   pdf_stm_t *stm;
-  pdf_token_reader_t tokr;
+  pdf_token_reader_t *tokr;
 
   INIT_STM_STR (stm, "(1\0623\64 \06567\70)");
-  INIT_TOKR (&tokr, stm);
+  INIT_TOKR (tokr, stm);
 
   EXPECT_STRING (tokr, 0, "1234 5678");
 
   pdf_token_reader_destroy (tokr);
   pdf_stm_destroy (stm);
-  pdf_finish ();
 }
 END_TEST
 
@@ -536,17 +571,16 @@ END_TEST
 START_TEST (pdf_token_hex_string)
 {
   pdf_stm_t *stm;
-  pdf_token_reader_t tokr;
+  pdf_token_reader_t *tokr;
 
   /* h e l l o -> 68 65 6c 6c 6f */
   INIT_STM_STR (stm, "<68 \t 65 \r 6c \n 6c \f 6f>");
-  INIT_TOKR (&tokr, stm);
+  INIT_TOKR (tokr, stm);
 
   EXPECT_STRING (tokr, 0, "hello");
 
   pdf_token_reader_destroy (tokr);
   pdf_stm_destroy (stm);
-  pdf_finish ();
 }
 END_TEST
 
@@ -566,17 +600,16 @@ END_TEST
 START_TEST (pdf_token_odd_hex_string)
 {
   pdf_stm_t *stm;
-  pdf_token_reader_t tokr;
+  pdf_token_reader_t *tokr;
 
   /* 4 3 2 1 0 -> 34 33 32 31 30 -> 343332313 */
   INIT_STM_STR (stm, "<343332313>");
-  INIT_TOKR (&tokr, stm);
+  INIT_TOKR (tokr, stm);
 
   EXPECT_STRING (tokr, 0, "43210");
 
   pdf_token_reader_destroy (tokr);
   pdf_stm_destroy (stm);
-  pdf_finish ();
 }
 END_TEST
 
@@ -593,16 +626,15 @@ END_TEST
 START_TEST (pdf_token_number_sign)
 {
   pdf_stm_t *stm;
-  pdf_token_reader_t tokr;
+  pdf_token_reader_t *tokr;
 
   INIT_STM_STR (stm, "/The_Key_of_F#23_Minor");
-  INIT_TOKR (&tokr, stm);
+  INIT_TOKR (tokr, stm);
 
   EXPECT_NAME (tokr, 0, "The_Key_of_F#_Minor");
 
   pdf_token_reader_destroy (tokr);
   pdf_stm_destroy (stm);
-  pdf_finish ();
 }
 END_TEST
 
@@ -621,9 +653,9 @@ START_TEST (pdf_token_regular_char_as_number)
 
 
   init_regular_chars_array (regular_chars);
-  test_char_array (&ok_for_escaped_char, regular_chars,
+  test_char_array (&ok_for_escaped_char,
+                   regular_chars,
                    sizeof (regular_chars));
-  pdf_finish ();
 }
 END_TEST
 
@@ -637,7 +669,8 @@ END_TEST
  * Success condition:
  *   The name tokens should be returned.
  */
-void test_ok_inside_range (pdf_char_t ch)
+static void
+test_ok_inside_range (pdf_char_t ch)
 {
   const pdf_char_t first_range = 0x21;
   const pdf_char_t last_range = 0x7E;
@@ -648,14 +681,14 @@ void test_ok_inside_range (pdf_char_t ch)
 
   if (first_range <= ch && ch <= last_range)
     {
-      pdf_char_t         name_buf[2];
+      pdf_char_t          name_buf[2];
       pdf_stm_t          *stm;
-      pdf_char_t         stream_buf[8];
-      pdf_token_reader_t tokr;
+      pdf_char_t          stream_buf[8];
+      pdf_token_reader_t *tokr;
 
       sprintf (stream_buf, "/%c", ch);
       INIT_STM_STR (stm, stream_buf);
-      INIT_TOKR (&tokr, stm);
+      INIT_TOKR (tokr, stm);
 
       name_buf[0] = ch;
       name_buf[1] = '\0';
@@ -670,11 +703,10 @@ START_TEST (pdf_token_regular_chars_inside_range)
 {
   pdf_char_t regular_chars[256 - sizeof (non_regular_chars)];
 
-
   init_regular_chars_array (regular_chars);
-  test_char_array (&test_ok_inside_range, regular_chars,
+  test_char_array (&test_ok_inside_range,
+                   regular_chars,
                    sizeof (regular_chars));
-  pdf_finish ();
 }
 END_TEST
 
@@ -691,18 +723,17 @@ END_TEST
  */
 START_TEST (pdf_token_non_regular_chars)
 {
-
   /* verify that tokens that contain non-regular chars written
      as numbers are valid */
-  test_char_array (&ok_for_escaped_char, non_regular_chars,
+  test_char_array (&ok_for_escaped_char,
+                   non_regular_chars,
                    sizeof (non_regular_chars));
 
   /* verify that tokens that contain non-regular chars written
      directly are invalid */
-  test_char_array (&fail_for_raw_char, non_regular_chars,
+  test_char_array (&fail_for_raw_char,
+                   non_regular_chars,
                    sizeof (non_regular_chars));
-
-  pdf_finish ();
 }
 END_TEST
 
@@ -716,7 +747,8 @@ END_TEST
  * Success condition:
  *   The names should be rejected.
  */
-void test_fail_outside_range (pdf_char_t ch)
+static void
+test_fail_outside_range (pdf_char_t ch)
 {
   const pdf_char_t first_range = 0x21;
   const pdf_char_t last_range = 0x7E;
@@ -729,12 +761,10 @@ START_TEST (pdf_token_regular_chars_outside_range)
 {
   pdf_char_t regular_chars[256 - sizeof (non_regular_chars)];
 
-
   init_regular_chars_array (regular_chars);
-  test_char_array (&test_fail_outside_range, regular_chars,
+  test_char_array (&test_fail_outside_range,
+                   regular_chars,
                    sizeof (regular_chars));
-
-  pdf_finish ();
 }
 END_TEST
 
@@ -750,16 +780,15 @@ END_TEST
 START_TEST (pdf_token_empty_name)
 {
   pdf_stm_t *stm;
-  pdf_token_reader_t tokr;
+  pdf_token_reader_t *tokr;
 
   INIT_STM_STR (stm, "/");
-  INIT_TOKR (&tokr, stm);
+  INIT_TOKR (tokr, stm);
 
   EXPECT_NAME (tokr, 0, "");
 
   pdf_token_reader_destroy (tokr);
   pdf_stm_destroy (stm);
-  pdf_finish ();
 }
 END_TEST
 
@@ -767,13 +796,13 @@ END_TEST
  * Test case creation function
  */
 TCase *
-test_pdf_token_read (void)
+test_pdf_token_reader (void)
 {
-  TCase *tc = tcase_create("pdf_token_read");
-  tcase_add_test(tc, pdf_token_read_toktypes);
-  tcase_add_test(tc, pdf_token_read_eos);
-  tcase_add_test(tc, pdf_token_read_longstring);
+  TCase *tc = tcase_create ("pdf_token_reader");
 
+  tcase_add_test (tc, pdf_token_read_toktypes);
+  tcase_add_test (tc, pdf_token_read_eos);
+  tcase_add_test (tc, pdf_token_read_longstring);
   tcase_add_test (tc, pdf_token_comments);
   tcase_add_test (tc, pdf_token_reverse_solidus);
   tcase_add_test (tc, pdf_token_solidus_eol);
@@ -794,4 +823,4 @@ test_pdf_token_read (void)
   return tc;
 }
 
-/* End of pdf-token-read.c */
+/* End of pdf-token-reader.c */

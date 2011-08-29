@@ -136,4 +136,9 @@ doc/gnupdf.tps
 doc/gnupdf.vr
 doc/gnupdf-utils.html
 doc/gnupdf.html
+doc/gnupdf-arch-manual
+doc/gnupdf-hg-manual
+doc/gnupdf-manual
+doc/gnupdf-tsd-manual
+doc/gnupdf-utils-manual
 build-debug

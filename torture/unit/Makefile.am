@@ -215,8 +215,8 @@ TEST_SUITE_FSYS = base/fsys/pdf-fsys-disk-get-free-space.c \
                   base/fsys/pdf-fsys-disk-get-basename.c
 
 
-TEST_SUITE_TOKEN = base/token/pdf-token-read.c \
-                   base/token/pdf-token-write.c
+TEST_SUITE_TOKEN = base/token/pdf-token-reader.c \
+                   base/token/pdf-token-writer.c
 
 TEST_ENVIRONMENT = CHARSETALIASDIR=$(top_srcdir)/lib
 

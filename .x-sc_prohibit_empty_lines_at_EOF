@@ -6,3 +6,17 @@ src/header-autogen
 src/base/pdf-text-ucd-proplist.c
 src/base/pdf-text-ucd-wordbreak.h
 src/base/pdf-text-ucd.h
+.prev-version
+.x-sc_bindtextdomain
+build-aux/README.regenerateUCD
+doc/A85_Calculation_Spreadsheet.ods
+doc/gnupdf-arch-figures/*
+doc/gnupdf-figures/*
+doc/gnupdf-hg-figures/*
+doc/manuals.css
+src/extract-public-hdr.in
+torture/testdata/TD00001
+torture/testdata/TD00002
+torture/testdata/TD00003
+torture/testdata/TD00004.desc
+torture/testdata/TD00005.desc

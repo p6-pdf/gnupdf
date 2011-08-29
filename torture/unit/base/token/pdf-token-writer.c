@@ -1,13 +1,13 @@
 /* -*- mode: C -*-
  *
- *       File:         pdf-token-write.c
+ *       File:         pdf-token-writer.c
  *       Date:         Tue Sep 21 21:08:07 2010
  *
- *       GNU PDF Library - Unit tests for pdf_token_write
+ *       GNU PDF Library - Unit tests for pdf_token_writer
  *
  */
 
-/* Copyright (C) 2010, 2011 Free Software Foundation, Inc. */
+/* Copyright (C) 2010-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,25 +41,26 @@
    dst_size characters are written to dst (including terminating
    '\0').  If dst_size is not enough to process src_len characters
    then trailing characters in src are ignored.  Returns dst. */
-static char*
-string_to_printable(char *dst,
-                    int dst_size,
-                    char *src,
-                    int src_len)
+static pdf_char_t *
+string_to_printable (pdf_char_t *dst,
+                     pdf_size_t  dst_size,
+                     pdf_char_t *src,
+                     pdf_size_t  src_len)
 {
-  int src_ind, dst_ind;
+  pdf_size_t src_ind;
+  pdf_size_t dst_ind;
 
   dst_size--; /* reserve one char in dst for '\0' */
 
-  for (src_ind = dst_ind = 0;
+  for (src_ind = 0, dst_ind = 0;
        dst_ind < dst_size && src_ind < src_len;
        src_ind++)
     {
       unsigned char ch = src[src_ind];
 
-      if ( ch == '\\' )
+      if (ch == '\\')
         {
-          if ( dst_size - dst_ind >= 2 )
+          if (dst_size - dst_ind >= 2)
             {
               dst[dst_ind++] = '\\';
               dst[dst_ind++] = '\\';
@@ -68,7 +69,7 @@ string_to_printable(char *dst,
               /* prevent processing the next character from src */
               dst_size = dst_ind;
         }
-      else if ( ch > 32 && ch < 127 ) /* if printable except for '\\' */
+      else if (ch > 32 && ch < 127) /* if printable except for '\\' */
         {
           dst[dst_ind++] = ch;
         }
@@ -76,17 +77,17 @@ string_to_printable(char *dst,
         {
           const int seq_len = 4;
 
-          if ( dst_size - dst_ind >= seq_len )
+          if (dst_size - dst_ind >= seq_len)
             {
               /* must write exactly seq_len characters (not counting
                  the '\0' character) */
-              sprintf( dst + dst_ind, "\\%03hho", ch );
+              sprintf (dst + dst_ind, "\\%03hho", ch);
 
               dst_ind += seq_len;
             }
           else
-              /* prevent processing the next character from src */
-              dst_size = dst_ind;
+            /* prevent processing the next character from src */
+            dst_size = dst_ind;
         }
     }
 
@@ -97,58 +98,69 @@ string_to_printable(char *dst,
 
 /* Write a token in an in-memory buffer and compare results.  */
 static void
-write_and_check (pdf_token_t token,
-                 pdf_u32_t flags,
-                 pdf_char_t *expected,
-                 pdf_size_t expected_size,
-                 pdf_size_t max_size)
+write_and_check (pdf_token_t *token,
+                 pdf_u32_t    flags,
+                 pdf_char_t  *expected,
+                 pdf_size_t   expected_size,
+                 pdf_size_t   max_size)
 {
   pdf_stm_t *stm;
   pdf_char_t *buffer;
-  pdf_token_writer_t writer;
-  char *buffer_printable;
-  char *expected_printable;
+  pdf_token_writer_t *writer;
+  pdf_char_t *buffer_printable;
+  pdf_char_t *expected_printable;
   pdf_error_t *error = NULL;
 
   /* Allocate memory for printable strings.  */
-  fail_if ((buffer_printable = pdf_alloc (max_size)) == NULL);
-  fail_if ((expected_printable = pdf_alloc (max_size)) == NULL);
+  buffer_printable = pdf_alloc (max_size);
+  fail_unless (buffer_printable != NULL);
+  expected_printable = pdf_alloc (max_size);
+  fail_unless (expected_printable != NULL);
 
   /* Create the in-memory stream.  */
-  fail_if ((buffer = pdf_alloc (max_size)) == NULL);
+  buffer = pdf_alloc (max_size);
+  fail_unless (buffer != NULL);
   stm = pdf_stm_mem_new (buffer, max_size, 0, PDF_STM_WRITE, &error);
   fail_unless (stm != NULL);
   fail_if (error != NULL);
 
   /* Create the token writer.  */
-  fail_if (pdf_token_writer_new (stm, &writer) != PDF_OK);
+  writer = pdf_token_writer_new (stm, &error);
+  fail_unless (writer != NULL);
+  fail_if (error != NULL);
 
   /* Write the token.  */
-  fail_if (pdf_token_write (writer, flags, token) != PDF_OK);
+  fail_unless (pdf_token_writer_write (writer, flags, token, &error) == PDF_TRUE);
+  fail_if (error != NULL);
 
   /* Destroy writer and stream.  */
-  fail_if (pdf_token_writer_destroy (writer));
+  pdf_token_writer_destroy (writer);
   pdf_stm_destroy (stm);
 
-  /* Compare results.  */
-  fail_unless (memcmp (buffer, expected, expected_size) == 0,
-               "Assertion 'memcmp"
-                 " (\"%s\" /*buffer*/, \"%s\" /*expected*/, %d)"
-                 " == 0' failed",
-               string_to_printable(buffer_printable,
-                                   max_size,
-                                   buffer,
-                                   expected_size),
-               string_to_printable(expected_printable,
-                                   max_size,
-                                   expected,
-                                   expected_size),
-               (int) expected_size);
-  /* Note that memcmp is used here instead of strncmp. It is necessary
+  /* Compare results.
+     Note that memcmp is used here instead of strncmp. It is necessary
      for tests of "nonreadable" PDF literal strings, when there is
      '\0' char inside pdf string.  Thus, pdf_token_write_string_null
      test may result in false-pass when using strncmp here. See also
-     7.3.4.2 Literal Strings in the PDF spec. */
+     7.3.4.2 Literal Strings in the PDF spec.
+  */
+  fail_unless (memcmp (buffer, expected, expected_size) == 0,
+               "Assertion 'memcmp"
+                 " (\"%s\" /*buffer*/, \"%s\" /*expected*/, %lu)"
+                 " == 0' failed",
+               string_to_printable (buffer_printable,
+                                    max_size,
+                                    buffer,
+                                    expected_size),
+               string_to_printable (expected_printable,
+                                    max_size,
+                                    expected,
+                                    expected_size),
+               (unsigned long) expected_size);
+
+  pdf_dealloc (buffer);
+  pdf_dealloc (buffer_printable);
+  pdf_dealloc (expected_printable);
 }
 
 /*
@@ -162,17 +174,19 @@ write_and_check (pdf_token_t token,
  */
 START_TEST (pdf_token_write_integer_positive)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_integer_new (10, &token)
-           != PDF_OK);
+  token = pdf_token_integer_new (10, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
                    "10", 2, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -187,17 +201,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_integer_negative)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_integer_new (-10, &token)
-           != PDF_OK);
+  token = pdf_token_integer_new (-10, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
                    "-10", 3, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -211,17 +227,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_real_positive)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_real_new (10.2, &token)
-           != PDF_OK);
+  token = pdf_token_real_new (10.2, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
                    "10.2", 4, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -235,17 +253,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_real_round)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_real_new (10.0, &token)
-           != PDF_OK);
+  token = pdf_token_real_new (10.0, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
                    "10.", 3, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -259,17 +279,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_real_negative)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_real_new (-10.0, &token)
-           != PDF_OK);
+  token = pdf_token_real_new (-10.0, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
                    "-10.0", 4, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -284,17 +306,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_string_nonempty)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("abc", 3, &token)
-           != PDF_OK);
+  token = pdf_token_string_new ("abc", 3, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
                    "(abc)", 5, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -309,17 +333,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_string_empty)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("", 0, &token)
-           != PDF_OK);
+  token = pdf_token_string_new ("", 0, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
                    "()", 2, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -334,17 +360,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_string_nonempty_hex)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("abc", 3, &token)
-           != PDF_OK);
+  token = pdf_token_string_new ("abc", 3, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    PDF_TOKEN_HEX_STRINGS,  /* Flags.  */
                    "<616263>", 8, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -359,17 +387,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_string_empty_hex)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("", 0, &token)
-           != PDF_OK);
+  token = pdf_token_string_new ("", 0, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    PDF_TOKEN_HEX_STRINGS,  /* Flags.  */
                    "<>", 2, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -384,17 +414,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_string_lf)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("a\nb\nc", 5, &token)
-           != PDF_OK);
+  token = pdf_token_string_new ("a\nb\nc", 5, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
                    "(a\nb\nc)", 7, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -409,17 +441,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_string_cr)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("a\rb\rc", 5, &token)
-           != PDF_OK);
+  token = pdf_token_string_new ("a\rb\rc", 5, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
                    "(a\\rb\\rc)", 9, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -434,17 +468,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_string_ht)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("a\tb\tc", 5, &token)
-           != PDF_OK);
+  token = pdf_token_string_new ("a\tb\tc", 5, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
                    "(a\tb\tc)", 7, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -459,17 +495,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_string_ht_readable)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("a\tb\tc", 5, &token)
-           != PDF_OK);
+  token = pdf_token_string_new ("a\tb\tc", 5, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    PDF_TOKEN_READABLE_STRINGS,  /* Flags.  */
                    "(a\\tb\\tc)", 9, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -484,17 +522,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_string_ff)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("a\fb\fc", 5, &token)
-           != PDF_OK);
+  token = pdf_token_string_new ("a\fb\fc", 5, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
                    "(a\fb\fc)", 7, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -510,17 +550,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_string_ff_readable)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("a\fb\fc", 5, &token)
-           != PDF_OK);
+  token = pdf_token_string_new ("a\fb\fc", 5, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    PDF_TOKEN_READABLE_STRINGS,  /* Flags.  */
                    "(a\\fb\\fc)", 9, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -535,17 +577,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_string_leftp)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("a(b(c", 5, &token)
-           != PDF_OK);
+  token = pdf_token_string_new ("a(b(c", 5, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
                    "(a\\(b\\(c)", 9, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -560,17 +604,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_string_rightp)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("a)b)c", 5, &token)
-           != PDF_OK);
+  token = pdf_token_string_new ("a)b)c", 5, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
                    "(a\\)b\\)c)", 9, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -585,17 +631,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_string_rs)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("a\\b\\c", 5, &token)
-           != PDF_OK);
+  token = pdf_token_string_new ("a\\b\\c", 5, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
                    "(a\\\\b\\\\c)", 9, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -610,17 +658,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_string_octal)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("a\007c", 3, &token)
-           != PDF_OK);
+  token = pdf_token_string_new ("a\007c", 3, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
                    "(a\007c)", 5, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -635,17 +685,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_string_octal_readable)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("a\007c", 3, &token)
-           != PDF_OK);
+  token = pdf_token_string_new ("a\007c", 3, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    PDF_TOKEN_READABLE_STRINGS,  /* Flags.  */
                    "(a\\7c)", 6, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -659,17 +711,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_string_null)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_string_new ("a\000c", 3, &token)
-           != PDF_OK);
+  token = pdf_token_string_new ("a\000c", 3, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
                    "(a\000c)", 5, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -683,17 +737,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_name_nonempty)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_name_new ("abc", 3, &token)
-           != PDF_OK);
+  token = pdf_token_name_new ("abc", 3, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
                    "/abc", 4, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -707,17 +763,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_name_empty)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_name_new ("", 0, &token)
-           != PDF_OK);
+  token = pdf_token_name_new ("", 0, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
                    "/", 1, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -731,17 +789,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_name_nonregular)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_name_new ("a\nb", 3, &token)
-           != PDF_OK);
+  token = pdf_token_name_new ("a\nb", 3, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
                    "/a#0Ab", 6, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -755,17 +815,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_name_alphanum)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_name_new ("Name1", 5, &token)
-           != PDF_OK);
+  token = pdf_token_name_new ("Name1", 5, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
                    "/Name1", 6, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -779,17 +841,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_name_long)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_name_new ("ASomewhatLongerName", 19, &token)
-           != PDF_OK);
+  token = pdf_token_name_new ("ASomewhatLongerName", 19, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
                    "/ASomewhatLongerName", 20, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -803,17 +867,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_name_various)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_name_new ("A;Name_With-Various***Characters?", 33, &token)
-           != PDF_OK);
+  token = pdf_token_name_new ("A;Name_With-Various***Characters?", 33, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
                    "/A;Name_With-Various***Characters?", 34, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -827,17 +893,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_name_real)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_name_new ("1.2", 3, &token)
-           != PDF_OK);
+  token = pdf_token_name_new ("1.2", 3, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
                    "/1.2", 4, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -851,17 +919,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_name_dollars)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_name_new ("$$", 2, &token)
-           != PDF_OK);
+  token = pdf_token_name_new ("$$", 2, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
                    "/$$", 3, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -875,17 +945,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_name_at)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_name_new ("@pattern", 8, &token)
-           != PDF_OK);
+  token = pdf_token_name_new ("@pattern", 8, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
                    "/@pattern", 9, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -899,17 +971,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_name_dot)
 {
-  pdf_token_t token;
-
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_name_new (".notdef", 7, &token)
-           != PDF_OK);
+  token = pdf_token_name_new (".notdef", 7, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
                    "/.notdef", 8, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -924,16 +998,19 @@ END_TEST
  */
 START_TEST (pdf_token_write_name_ns)
 {
-  pdf_token_t token;
+  pdf_token_t *token;
+  pdf_error_t *error = NULL;
 
   /* Create the token.  */
-  fail_if (pdf_token_name_new ("The_Key_of_F#_Minor", 19, &token)
-           != PDF_OK);
+  token = pdf_token_name_new ("The_Key_of_F#_Minor", 19, &error);
+  fail_unless (token != NULL);
+  fail_if (error != NULL);
 
   /* Check.  */
   write_and_check (token,
                    0,  /* Flags.  */
                    "/The_Key_of_F#23_Minor", 22, 100);
+  pdf_token_destroy (token);
 }
 END_TEST
 
@@ -941,9 +1018,9 @@ END_TEST
  * Test case creation function
  */
 TCase *
-test_pdf_token_write (void)
+test_pdf_token_writer (void)
 {
-  TCase *tc = tcase_create ("pdf_token_write");
+  TCase *tc = tcase_create ("pdf_token_writer");
   tcase_add_test (tc, pdf_token_write_integer_positive);
   tcase_add_test (tc, pdf_token_write_integer_negative);
   tcase_add_test (tc, pdf_token_write_real_positive);
@@ -983,4 +1060,4 @@ test_pdf_token_write (void)
   return tc;
 }
 
-/* End of pdf-token-write.c */
+/* End of pdf-token-writer.c */

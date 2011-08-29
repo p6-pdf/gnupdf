@@ -554,7 +554,7 @@ cut_field_in_chunks_SpecialCasing(const char *field,
           while((*walker != ' ') && (*walker != '\0'))
             walker++;
 
-          if((*walker == ' '))
+          if(*walker == ' ')
             {
               *_chunk_3 = '\0'; /* End _chunk_3 string */
             }

@@ -7,7 +7,7 @@
  *
  */
 
-/* Copyright (C) 2007, 2008, 2009 Free Software Foundation, Inc. */
+/* Copyright (C) 2007-2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,10 +50,24 @@
 #include <pdf-types.h>
 
 /* BEGIN PUBLIC */
-/* pdf-token.h */
+
+/* --------------------- Common Tokeniser module ------------------------- */
+
+enum pdf_token_rw_flags_e
+  {
+    /* these flags are used for token_read and token_write */
+    PDF_TOKEN_NO_NAME_ESCAPES  = 0x01, /* read/write */
+    PDF_TOKEN_RET_COMMENTS     = 0x02, /* read */
+    PDF_TOKEN_END_AT_STREAM    = 0x04, /* read */
+    PDF_TOKEN_HEX_STRINGS      = 0x08, /* write */
+    PDF_TOKEN_READABLE_STRINGS = 0x10, /* write */
+  };
+
+/* --------------------- Token Object ------------------------- */
 
 enum pdf_token_type_e
 {
+  PDF_TOKEN_UNKNOWN = 0,
   PDF_TOKEN_INTEGER = 1,
   PDF_TOKEN_REAL = 2,
   PDF_TOKEN_STRING = 3,
@@ -68,131 +82,79 @@ enum pdf_token_type_e
   PDF_TOKEN_PROC_END = 12,
 };
 
-struct pdf_token_s;  /* opaque type */
-typedef struct pdf_token_s *pdf_token_t;
+/* opaque type */
+typedef struct pdf_token_s pdf_token_t;
 
 /* Token creation */
-pdf_status_t pdf_token_integer_new (pdf_i32_t value, pdf_token_t *token);
-pdf_status_t pdf_token_real_new (pdf_real_t value, pdf_token_t *token);
-pdf_status_t pdf_token_string_new (const pdf_char_t *value, pdf_size_t size,
-                                   pdf_token_t *token);
-pdf_status_t pdf_token_name_new (const pdf_char_t *value, pdf_size_t size,
-                                 pdf_token_t *token);
-pdf_status_t pdf_token_keyword_new (const pdf_char_t *value, pdf_size_t size,
-                                    pdf_token_t *token);
-pdf_status_t pdf_token_comment_new (const pdf_char_t *value, pdf_size_t size,
-                                    pdf_token_t *token);
-pdf_status_t pdf_token_valueless_new (enum pdf_token_type_e type,
-                                      pdf_token_t *token);
-pdf_status_t pdf_token_dup (const pdf_token_t token, pdf_token_t *new);
+pdf_token_t *pdf_token_integer_new (pdf_i32_t     value,
+                                    pdf_error_t **error);
+pdf_token_t *pdf_token_real_new (pdf_real_t    value,
+                                 pdf_error_t **error);
+pdf_token_t *pdf_token_string_new (const pdf_char_t  *value,
+                                   pdf_size_t         size,
+                                   pdf_error_t      **error);
+pdf_token_t *pdf_token_name_new (const pdf_char_t  *value,
+                                 pdf_size_t        size,
+                                 pdf_error_t     **error);
+pdf_token_t *pdf_token_keyword_new (const pdf_char_t  *value,
+                                    pdf_size_t         size,
+                                    pdf_error_t      **error);
+pdf_token_t *pdf_token_comment_new (const pdf_char_t  *value,
+                                    pdf_size_t         size,
+                                    pdf_error_t      **error);
+pdf_token_t *pdf_token_valueless_new (enum pdf_token_type_e   type,
+                                      pdf_error_t           **error);
+pdf_token_t *pdf_token_dup (const pdf_token_t  *token,
+                            pdf_error_t       **error);
 
 /* Token destruction */
-pdf_status_t pdf_token_destroy (pdf_token_t token);
+void pdf_token_destroy (pdf_token_t *token);
 
 /* Common functions */
-enum pdf_token_type_e pdf_token_get_type (const pdf_token_t token);
-pdf_bool_t pdf_token_equal_p (const pdf_token_t token1,
-                              const pdf_token_t token2);
+enum pdf_token_type_e pdf_token_get_type (const pdf_token_t *token);
+pdf_bool_t pdf_token_equal_p (const pdf_token_t *token1,
+                              const pdf_token_t *token2);
 
 /* Managing tokens of numeric types */
-pdf_i32_t pdf_token_get_integer_value (const pdf_token_t token);
-pdf_real_t pdf_token_get_real_value (const pdf_token_t token);
+pdf_i32_t pdf_token_get_integer_value (const pdf_token_t *token);
+pdf_real_t pdf_token_get_real_value (const pdf_token_t *token);
 
 /* Managing strings */
-pdf_size_t pdf_token_get_string_size (const pdf_token_t token);
-const pdf_char_t *pdf_token_get_string_data (const pdf_token_t token);
+pdf_size_t pdf_token_get_string_size (const pdf_token_t *token);
+const pdf_char_t *pdf_token_get_string_data (const pdf_token_t *token);
 
 /* Managing names */
-pdf_size_t pdf_token_get_name_size (const pdf_token_t token);
-const pdf_char_t *pdf_token_get_name_data (const pdf_token_t token);
+pdf_size_t pdf_token_get_name_size (const pdf_token_t *token);
+const pdf_char_t *pdf_token_get_name_data (const pdf_token_t *token);
 
 /* Managing keywords */
-pdf_size_t pdf_token_get_keyword_size (const pdf_token_t token);
-const pdf_char_t *pdf_token_get_keyword_data (const pdf_token_t token);
+pdf_size_t pdf_token_get_keyword_size (const pdf_token_t *token);
+const pdf_char_t *pdf_token_get_keyword_data (const pdf_token_t *token);
 
 /* Managing comments */
-pdf_size_t pdf_token_get_comment_size (const pdf_token_t token);
-const pdf_char_t *pdf_token_get_comment_data (const pdf_token_t token);
+pdf_size_t pdf_token_get_comment_size (const pdf_token_t *token);
+const pdf_char_t *pdf_token_get_comment_data (const pdf_token_t *token);
 
 /* END PUBLIC */
 
+/* ASCII codes for NUL, HT, LF, FF, CR, SP */
+#define pdf_is_wspace_char(ch)                  \
+  (ch == 0 || ch == 9 || ch == 10 ||            \
+   ch == 12 || ch == 13 || ch == 32)
 
-static INLINE int
-pdf_is_wspace_char (pdf_char_t ch)
-{
-  /* ASCII codes for NUL, HT, LF, FF, CR, SP */
-  return (ch == 0 || ch == 9 || ch == 10 || ch == 12 || ch == 13 || ch == 32);
-}
+/* ASCII codes for '%', '(', ')', '/'; '<', '>', '[', ']'; '{', '}' */
+#define pdf_is_delim_char(ch)                   \
+  (ch == 37 || ch == 40 || ch == 41 ||          \
+   ch == 47 || ch == 60 || ch == 62 ||          \
+   ch == 91 || ch == 93 || ch == 123 ||         \
+   ch == 125)
 
-static INLINE int
-pdf_is_delim_char (pdf_char_t ch)
-{
-  /* ASCII codes for '%', '(', ')', '/'; '<', '>', '[', ']'; '{', '}' */
-  return (ch == 37 || ch == 40 || ch == 41 || ch == 47
-       || ch == 60 || ch == 62 || ch == 91 || ch == 93
-       || ch == 123 || ch == 125);
-}
+#define pdf_is_eol_char(ch)                     \
+  (ch == 10 || ch == 13)
 
-static INLINE int
-pdf_is_eol_char (pdf_char_t ch)
-{
-  return ch == 10 || ch == 13;
-}
-
-static INLINE int
-pdf_is_regular_char (pdf_char_t ch)
-{
-  return !pdf_is_wspace_char (ch) && !pdf_is_delim_char (ch);
-}
-
-/* According to the PDF reference, a PDF name object is an atomic
-   symbol uniquely defined by a sequence of non-null characters. It has
-   no internal structure.
-
-   In the practice, PDF uses name objects in order to store
-   information (such as font names). In that situation, it is
-   recommended to code such information in UTF-8. Due to this
-   stupidity we should store the entire byte sequence that conform the
-   name.
-
-   A pdf_token_buffer_s structure is used to store a name's value. */
-
-
-/* A PDF string is a sequence of bytes, in the range of 0-255. In
-   particular it may contain NULL characters (code 0 in the ASCII
-   CCS).
-
-   Corollary: NEVER NEVER NEVER EVER use a PDF string as an input
-   expecting null-terminated strings. You have been warned.
-
-   A pdf_token_buffer_s structure is used to store a string's value. */
-
-
-/* pdf_token_buffer_s is an internal structure used for tokens with an
- * associated byte array. 'data' may or may not be null-terminated,
- * but size never includes the trailing null. */
-struct pdf_token_buffer_s
-{
-  pdf_char_t *data;
-  pdf_size_t size;
-};
-
-
-/* A `pdf_token_s' structure stores a PDF object. The object may be of
-   any type (including NULL). */
-
-struct pdf_token_s
-{
-  enum pdf_token_type_e type;
-
-  union
-  {
-    struct pdf_token_buffer_s buffer;
-    pdf_i32_t integer;
-    pdf_real_t real;
-
-  } value;
-};
+#define pdf_is_regular_char(ch)                 \
+  (!pdf_is_wspace_char (ch) &&                  \
+   !pdf_is_delim_char (ch))
 
 #endif /* PDF_TOKEN_OBJ_H */
 
