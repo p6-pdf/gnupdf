@@ -1,5 +1,10 @@
 2011-08-29  Aleksander Morgado  <aleksander@gnu.org>
 
+	base,error: new `PDF_EDOMAIN_GLOBAL' error domain
+	* src/base/pdf-error.h (PDF_ERROR_DOMAIN_LIST).
+
+2011-08-29  Aleksander Morgado  <aleksander@gnu.org>
+
 	base,stm: avoid compile warning by including pdf-hash-helper.h
 	* src/base/pdf-stm-f-dct.c
 
