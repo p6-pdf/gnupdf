@@ -1,3 +1,8 @@
+2011-08-29  Georg Gottleuber <georg.gottleuber@uni-ulm.de>
+
+	utils: avoid strlen on binary chunk.
+	* utils/pdf-filter.c (install_filters)
+
 2011-08-29  Aleksander Morgado  <aleksander@gnu.org>
 
 	build-aux/generate-ucd: avoid extra parenthesis

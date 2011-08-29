@@ -1091,7 +1091,7 @@ install_filters (int        argc,
 
                 if (!pdf_hash_add_size (filter_params,
                                         "GlobalStreamsSize",
-                                        strlen (jbig2dec_global_segments) + 1,
+                                        jbig2dec_global_segments_size,
                                         &error))
                   {
                     pdf_error (pdf_error_get_status (error),
