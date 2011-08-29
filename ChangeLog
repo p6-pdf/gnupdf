@@ -1,6 +1,11 @@
 2011-08-29  Aleksander Morgado  <aleksander@gnu.org>
 
-	base,stm: Avoid if() with empty body.
+	base,stm: remove unused variable
+	* src/base/pdf-stm-f-a85.c (stm_f_a85enc_wr_tuple)
+
+2011-08-29  Aleksander Morgado  <aleksander@gnu.org>
+
+	base,stm: avoid if() with empty body.
 	* src/base/pdf-stm-f-lzw.c (stm_f_lzwdec_apply)
 
 2011-08-29  Georg Gottleuber <georg.gottleuber@uni-ulm.de>

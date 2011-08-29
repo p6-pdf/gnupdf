@@ -210,7 +210,6 @@ stm_f_a85enc_wr_tuple (pdf_u32_t     tuple,
                        void         *state,
                        pdf_buffer_t *out)
 {
-  pdf_status_t retval = PDF_OK;
   struct pdf_stm_f_a85_s *filter_state;
   pdf_char_t buf[5];
   int i;
