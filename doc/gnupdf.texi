@@ -78,6 +78,94 @@ Indices
 @node Overview
 @chapter Overview
 
+@menu
+* Initialization::              Library initialization.
+* Clean exit::                  Handling a clean exit.
+@end menu
+
+@node Initialization
+@section Initialization
+
+@deftypefun {pdf_bool_t} pdf_init (pdf_error_t **@var{error})
+
+Initializes the GNU PDF library.
+
+This method is thread-safe, and must be called at program startup, before any
+other method in the GNU PDF library.
+
+@table @strong
+@item Parameters
+@table @var
+@item error
+A @code{pdf_error_t} to report errors or @code{NULL}.
+@table @code
+@item PDF_ERROR
+An error prevented to perform the operation.
+@end table
+@end table
+@item Returns
+@code{PDF_TRUE} if the library was successfully initialized, @code{PDF_FALSE}
+otherwise.
+@item Usage example
+@example
+
+int main (int argc, char **argv)
+@{
+  pdf_error_t *error = NULL;
+
+  if (!pdf_init (&error))
+    @{
+      fprintf (stderr,
+               "error: '%s'",
+               pdf_error_get_message (error));
+      exit (EXIT_FAILURE);
+    @}
+
+  return 0;
+@}
+
+@end example
+@end table
+@end deftypefun
+
+@node Clean exit
+@section Clean exit
+
+@deftypefun {void} pdf_finish (void)
+
+Cleanly disposes all the internal memory allocated by the GNU PDF library in
+its global context.
+
+This method should be called before the program exists, or when the library
+methods will no longer be used. Therefore it is only useful for debugging
+(in order to have a clean report of memory leaks, for example) or before
+unloading the library if it was dynamically opened and loaded into the program.
+
+@table @strong
+@item Usage example
+@example
+
+int main (int argc, char **argv)
+@{
+  pdf_error_t *error = NULL;
+
+  if (!pdf_init (&error))
+    @{
+      fprintf (stderr,
+               "error: '%s'",
+               pdf_error_get_message (error));
+      exit (EXIT_FAILURE);
+    @}
+
+  pdf_finish ();
+
+  return 0;
+@}
+
+@end example
+@end table
+@end deftypefun
+
 @node Base Layer
 @chapter Base Layer
 
@@ -4267,7 +4355,7 @@ A valid @code{NUL}-terminated string key.
 @item value
 A valid @code{pdf_bool_t}.
 @item error
-A pdf_error_t to report errors or NULL.
+A @code{pdf_error_t} to report errors or @code{NULL}.
 @end table
 @item Returns
 PDF_TRUE if correctly added, PDF_FALSE otherwise.
@@ -4315,7 +4403,7 @@ pdf_bool_t bool;
 
 /* ... insert a boolean value into the hash ... */
 
-bool = pdf_hash_get_bool (table, "a-key"); 
+bool = pdf_hash_get_bool (table, "a-key");
 @end example
 @end table
 @end deftypefun
@@ -4323,7 +4411,7 @@ bool = pdf_hash_get_bool (table, "a-key");
 
 @deftypefun {pdf_bool_t} pdf_hash_add_i32 (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_i32_t @var{value}, pdf_error_t **@var{error});
 
-Adds the signed 32 bits integer @var{value} with the associated @var{key} to @var{table}. If @var{key} already exists nothing is done. The value is directly stored in the hash table and disposed when the hash table is destroyed. 
+Adds the signed 32 bits integer @var{value} with the associated @var{key} to @var{table}. If @var{key} already exists nothing is done. The value is directly stored in the hash table and disposed when the hash table is destroyed.
 
 @table @strong
 @item Parameters
@@ -4343,7 +4431,7 @@ PDF_TRUE if correctly added, PDF_FALSE otherwise.
 @example
 pdf_hash_t *hash;
 pdf_error_t *error = NULL;
- 
+
 /* Create a new hash */
 hash = pdf_hash_new (NULL);
 if (hash != NULL)
@@ -4410,7 +4498,7 @@ PDF_TRUE if correctly added, PDF_FALSE otherwise.
 @example
 pdf_hash_t *hash;
 pdf_error_t *error = NULL;
- 
+
 /* Create a new hash */
 hash = pdf_hash_new (NULL);
 if (hash != NULL)
