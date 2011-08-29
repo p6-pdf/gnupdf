@@ -145,6 +145,55 @@
 	* src/base/pdf-stm-f-ahex.c (stm_f_ahexdec_apply): Idem.
 	* src/base/pdf-stm-f-a85.c: Idem.
 
+2011-06-30  Aleksander Morgado  <aleksander@gnu.org>
+
+	doc: updated tokeniser API documentation and examples.
+	* doc/gnupdf.texi (The Tokeniser)
+
+2011-06-29  Aleksander Morgado  <aleksander@gnu.org>
+
+	token: renamed some API methods
+	* src/base/pdf-token-reader.[h|c]: Renamed pdf_token_read() to
+	pdf_token_reader_read().
+	* src/base/pdf-token-writer.[h|c]: Renamed pdf_token_write() to
+	pdf_token_writer_write().
+	* src/base/pdf-fp-func.c: Use updated token API.
+	* utils/pdf-tokeniser.c: Use updated token API.
+	* torture/unit/base/token/pdf-token-reader.c: Renamed file and use
+	updated token API.
+	* torture/unit/base/token/pdf-token-writer.c: Idem.
+	* torture/unit/Makefile.am: Use new filenames.
+	* torture/unit/base/token/tsuite-token.c
+
+2011-06-28  Aleksander Morgado  <aleksander@gnu.org>
+
+	token: reviewed API of the pdf token writer.
+	* src/base/pdf-token-writer.[h|c]
+
+	Port the tokeniser utility to use the new token reader API.
+	* utils/pdf-tokeniser.c
+
+	Port the token reader unit tests to use the new token reader API.
+	* torture/unit/base/token/pdf-token-write.c
+
+2011-06-28  Aleksander Morgado  <aleksander@gnu.org>
+
+	token: common enum type moved to token object header
+	* src/base/pdf-token.h
+	* src/base/pdf-token-reader.h
+
+2011-06-28  Aleksander Morgado  <aleksander@gnu.org>
+
+	token: minor fixes in the token reader
+	* src/base/pdf-token-reader.c (pdf_token_reader_new): ensure the input
+	stream is one for reading.
+	(parse_real): avoid compiler warning.
+
+2011-06-28  Aleksander Morgado  <aleksander@gnu.org>
+
+	error: update copyright years
+	* src/base/pdf-error.[h|c]
+
 2011-06-27  Aleksander Morgado  <aleksander@gnu.org>
 
 	utils: fix branch merge issues in pdf-filereader
@@ -162,6 +211,50 @@
 	utils: avoid false warning in clang report.
 	Reported by Gustavo Martin Domato.
 	* utils/pdf-filter.c (create_stream)
+
+2011-06-21  Aleksander Morgado  <aleksander@gnu.org>
+
+	token: new init and deinit methods for the tokeniser module.
+	* src/base/pdf-tokeniser.[h|c]: New files. Also implement the decimal
+	separator guessing.
+	* src/Makefile.am: Added new files in compilation.
+	* src/base/pdf-token-reader.c: Get decimal separator guessed at module
+	level.
+	* src/pdf-global.c: Init and deinit the tokeniser module.
+
+2011-06-21  Aleksander Morgado  <aleksander@gnu.org>
+
+	token: reviewed API of the pdf token reader.
+	* src/base/pdf-token-reader.[h|c]
+
+	Port the FP functions module to use the new token reader API.
+	* src/base/pdf-fp-func.c
+
+	Port the tokeniser utility to use the new token reader API.
+	* utils/pdf-tokeniser.c
+
+	Port the token reader unit tests to use the new token reader API.
+	* torture/unit/base/token/pdf-token-read.c
+
+2011-06-19  Aleksander Morgado  <aleksander@gnu.org>
+
+	token: reviewed API of the pdf token object.
+	* src/base/pdf-token.[h|c]
+
+	Port token reader and writer to use the new token object API.
+	* src/base/pdf-token-reader.[h|c]
+	* src/base/pdf-token-writer.[h|c]
+
+	Port the FP functions module to use the new token object API.
+	* src/base/pdf-fp-func.c
+
+	Port the tokeniser utility to use the new token object API.
+	* utils/pdf-tokeniser.c
+
+	Port the token reader and writer unit tests to use the new token
+	object API.
+	* torture/unit/base/token/pdf-token-read.c
+	* torture/unit/base/token/pdf-token-write.c
 
 2011-06-19  Jose E. Marchesi  <jemarch@gnu.org>
 

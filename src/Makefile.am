@@ -95,9 +95,10 @@ CRYPT_MODULE_SOURCES = base/pdf-crypt.c base/pdf-crypt.h \
 FP_MODULE_SOURCES = base/pdf-fp.h base/pdf-fp.c \
                     base/pdf-fp-func.h base/pdf-fp-func.c
 
-TOKEN_MODULE_SOURCES = base/pdf-token.c base/pdf-token.h \
-                       base/pdf-token-reader.c base/pdf-token-reader.h \
-                       base/pdf-token-writer.c base/pdf-token-writer.h
+TOKEN_MODULE_SOURCES = base/pdf-tokeniser.h base/pdf-tokeniser.c \
+                       base/pdf-token.h base/pdf-token.c \
+                       base/pdf-token-reader.h base/pdf-token-reader.c \
+                       base/pdf-token-writer.h base/pdf-token-writer.c
 
 BASE_LAYER_SOURCES = base/pdf-base.c base/pdf-base.h \
                      $(ALLOC_MODULE_SOURCES) \

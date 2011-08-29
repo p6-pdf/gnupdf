@@ -1,13 +1,13 @@
 /* -*- mode: C -*-
  *
- *       File:         tsuite-token.c
- *       Date:         Wed Jan 14 05:43:09 2009
+ *       File:         pdf-tokeniser.h
+ *       Date:         Tue Jun 21 22:13:55 2011
  *
- *       GNU PDF Library - Testcase definition for the reader module
+ *       GNU PDF Library - PDF tokeninser module
  *
  */
 
-/* Copyright (C) 2009-2011 Free Software Foundation, Inc. */
+/* Copyright (C) 2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,26 +23,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef PDF_TOKENISER_H
+#define PDF_TOKENISER_H
+
 #include <config.h>
 
-#include <check.h>
-#include <pdf-test-common.h>
+#include <pdf-error.h>
+#include <pdf-types.h>
 
-extern TCase *test_pdf_token_reader (void);
-extern TCase *test_pdf_token_writer (void);
+/* Initialize Tokeniser module. Warning! Not thread-safe, must be used only once
+ *  when the program starts. */
+pdf_bool_t pdf_tokeniser_init (pdf_error_t **error);
 
-Suite *
-tsuite_token ()
-{
-  Suite *s;
+/* Deinitialize Tokeniser module */
+void pdf_tokeniser_deinit (void);
 
-  s = suite_create ("token");
+/* Get guessed decimal point */
+const pdf_char_t *pdf_tokeniser_get_decimal_point (void);
 
-  suite_add_tcase (s, test_pdf_token_reader ());
-  suite_add_tcase (s, test_pdf_token_writer ());
+#endif /* PDF_TOKENISER_H */
 
-  return s;
-}
-
-
-/* End of tsuite-token.c */
+/* End of pdf-tokeniser.h */
