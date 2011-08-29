@@ -1,13 +1,13 @@
 /* -*- mode: C -*-
  *
- *       File:         pdf-crypt-c-v2.h
- *       Date:         Fri Feb 22 21:05:05 2008
+ *       File:         pdf-crypt-md-md5.h
+ *       Date:         Mon Jul 04 20:43:35 2011
  *
- *       GNU PDF Library - Header file for V2 backend encryption module
+ *       GNU PDF Library - Encryption module, MD5 message digest
  *
  */
 
-/* Copyright (C) 2008-2011 Free Software Foundation, Inc. */
+/* Copyright (C) 2011 Free Software Foundation, Inc. */
 
 /* This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,14 +23,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-#ifndef PDF_CRYPT_C_V2_H
-#define PDF_CRYPT_C_V2_H
+#ifndef PDF_CRYPT_MD_MD5_H
+#define PDF_CRYPT_MD_MD5_H
 
 #include <pdf-crypt.h>
 
-pdf_crypt_cipher_t *pdf_crypt_cipher_v2_new (pdf_error_t **error);
+pdf_crypt_md_t *pdf_crypt_md_md5_new (pdf_error_t **error);
 
-#endif	/* PDF_CRYPT_C_V2_H */
+#endif /* PDF_CRYPT_MD_MD5_H */
 
-/* End of pdf-crypt-c-v2.h */
+/* End of pdf-crypt-md-md5.h */

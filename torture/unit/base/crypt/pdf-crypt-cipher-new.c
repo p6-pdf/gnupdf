@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <pdf.h>
 #include <check.h>
+
 #include <pdf-test-common.h>
 
 /*
@@ -40,12 +41,16 @@
  */
 START_TEST (pdf_crypt_cipher_new_001)
 {
-  pdf_crypt_cipher_t cipher;
-    fail_if (pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher) != PDF_OK);
+  pdf_error_t *error = NULL;
+  pdf_crypt_cipher_t *cipher;
+
+  cipher = pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &error);
+  fail_unless (cipher != NULL);
+  fail_if (error != NULL);
+
   pdf_crypt_cipher_destroy (cipher);
 }
 END_TEST
-
 
 /*
  * Test: pdf_crypt_cipher_new_002
@@ -56,13 +61,16 @@ END_TEST
  */
 START_TEST (pdf_crypt_cipher_new_002)
 {
-  pdf_crypt_cipher_t cipher;
-    fail_if (pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &cipher) != PDF_OK);
+  pdf_error_t *error = NULL;
+  pdf_crypt_cipher_t *cipher;
+
+  cipher = pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &error);
+  fail_unless (cipher != NULL);
+  fail_if (error != NULL);
+
   pdf_crypt_cipher_destroy (cipher);
 }
 END_TEST
-
-
 
 /*
  * Test case creation function
@@ -70,14 +78,14 @@ END_TEST
 TCase *
 test_pdf_crypt_cipher_new (void)
 {
-  TCase *tc = tcase_create("pdf_crypt_cipher_new");
-  tcase_add_test(tc, pdf_crypt_cipher_new_001);
-  tcase_add_test(tc, pdf_crypt_cipher_new_002);
+  TCase *tc = tcase_create ("pdf_crypt_cipher_new");
+
+  tcase_add_test (tc, pdf_crypt_cipher_new_001);
+  tcase_add_test (tc, pdf_crypt_cipher_new_002);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);
   return tc;
 }
-
 
 /* End of pdf-crypt-cipher-new.c */

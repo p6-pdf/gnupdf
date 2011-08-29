@@ -24,11 +24,13 @@
  */
 
 #include <config.h>
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
 #include <pdf.h>
 #include <check.h>
+
 #include <pdf-test-common.h>
 
 /*
@@ -40,9 +42,10 @@
  */
 START_TEST (pdf_crypt_md_read_001)
 {
+  pdf_error_t *error = NULL;
   pdf_char_t *in;
   pdf_char_t out[16];
-  pdf_crypt_md_t md;
+  pdf_crypt_md_t *md;
   pdf_char_t real_out[] = {
     0xd4, 0x1d, 0x8c, 0xd9,
     0x8f, 0x00, 0xb2, 0x04,
@@ -50,19 +53,19 @@ START_TEST (pdf_crypt_md_read_001)
     0xec, 0xf8, 0x42, 0x7e
   };
 
+  md = pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &error);
+  fail_unless (md != NULL);
+  fail_if (error != NULL);
 
-  pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md);
-
-  pdf_crypt_md_write (md, in, 0);
-
-  fail_if (pdf_crypt_md_read (md, out, sizeof(out)) != PDF_OK);
-  fail_if (memcmp (real_out, out, sizeof(out)));
+  fail_unless (pdf_crypt_md_write (md, in, 0, &error) == PDF_TRUE);
+  fail_if (error != NULL);
+  fail_unless (pdf_crypt_md_read (md, out, sizeof (out), &error) == PDF_TRUE);
+  fail_if (error != NULL);
+  fail_if (memcmp (real_out, out, sizeof (out)));
 
   pdf_crypt_md_destroy (md);
 }
 END_TEST
-
-
 
 /*
  * Test: pdf_crypt_md_read_002
@@ -73,9 +76,10 @@ END_TEST
  */
 START_TEST (pdf_crypt_md_read_002)
 {
+  pdf_error_t *error = NULL;
   pdf_char_t in[1] = "a";
   pdf_char_t out[16];
-  pdf_crypt_md_t md;
+  pdf_crypt_md_t *md;
   pdf_char_t real_out[] = {
     0x0C, 0xC1, 0x75, 0xB9,
     0xC0, 0xF1, 0xB6, 0xA8,
@@ -83,19 +87,19 @@ START_TEST (pdf_crypt_md_read_002)
     0x69, 0x77, 0x26, 0x61
   };
 
+  md = pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &error);
+  fail_unless (md != NULL);
+  fail_if (error != NULL);
 
-  pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md);
-
-  pdf_crypt_md_write (md, in, sizeof(in));
-
-  fail_if (pdf_crypt_md_read (md, out, sizeof(out)) != PDF_OK);
+  fail_unless (pdf_crypt_md_write (md, in, sizeof (in), &error) == PDF_TRUE);
+  fail_if (error != NULL);
+  fail_unless (pdf_crypt_md_read (md, out, sizeof(out), &error) == PDF_TRUE);
+  fail_if (error != NULL);
   fail_if (memcmp (real_out, out, sizeof(out)));
 
   pdf_crypt_md_destroy (md);
 }
 END_TEST
-
-
 
 /*
  * Test: pdf_crypt_md_read_003
@@ -106,9 +110,10 @@ END_TEST
  */
 START_TEST (pdf_crypt_md_read_003)
 {
+  pdf_error_t *error = NULL;
   pdf_char_t in[26] = "abcdefghijklmnopqrstuvwxyz";
   pdf_char_t out[16];
-  pdf_crypt_md_t md;
+  pdf_crypt_md_t *md;
   pdf_char_t real_out[] = {
     0xC3, 0xFC, 0xD3, 0xD7,
     0x61, 0x92, 0xE4, 0x00,
@@ -116,18 +121,19 @@ START_TEST (pdf_crypt_md_read_003)
     0xCA, 0x67, 0xE1, 0x3B
   };
 
+  md = pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &error);
+  fail_unless (md != NULL);
+  fail_if (error != NULL);
 
-  pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md);
-
-  pdf_crypt_md_write (md, in, sizeof(in));
-
-  fail_if (pdf_crypt_md_read (md, out, sizeof(out)) != PDF_OK);
+  fail_unless (pdf_crypt_md_write (md, in, sizeof (in), &error) == PDF_TRUE);
+  fail_if (error != NULL);
+  fail_unless (pdf_crypt_md_read (md, out, sizeof(out), &error) == PDF_TRUE);
+  fail_if (error != NULL);
   fail_if (memcmp (real_out, out, sizeof(out)));
 
   pdf_crypt_md_destroy (md);
 }
 END_TEST
-
 
 /*
  * Test: pdf_crypt_md_read_004
@@ -138,9 +144,10 @@ END_TEST
  */
 START_TEST (pdf_crypt_md_read_004)
 {
+  pdf_error_t *error = NULL;
   pdf_char_t *in;
   pdf_char_t out[6];
-  pdf_crypt_md_t md;
+  pdf_crypt_md_t *md;
   pdf_char_t real_out[] = {
     0xd4, 0x1d, 0x8c, 0xd9,
     0x8f, 0x00, 0xb2, 0x04,
@@ -148,37 +155,19 @@ START_TEST (pdf_crypt_md_read_004)
     0xec, 0xf8, 0x42, 0x7e
   };
 
+  md = pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &error);
+  fail_unless (md != NULL);
+  fail_if (error != NULL);
 
-  pdf_crypt_md_new (PDF_CRYPT_MD_MD5, &md);
+  fail_unless (pdf_crypt_md_write (md, in, 0, &error) == PDF_TRUE);
+  fail_if (error != NULL);
+  fail_unless (pdf_crypt_md_read (md, out, sizeof (out), &error) != PDF_TRUE);
+  fail_if (error == NULL);
 
-  pdf_crypt_md_write (md, in, 0);
-
-  fail_unless (pdf_crypt_md_read (md, out, sizeof(out)) == PDF_EBADDATA);
-
+  pdf_error_destroy (error);
   pdf_crypt_md_destroy (md);
 }
 END_TEST
-
-/*
- * Test: pdf_crypt_md_read_005
- * Description:
- *   Confirm that we handle passing an unsupported message digest
- *   algorithm to pdf_crypt_md_new().
- * Success condition:
- *   Returns PDF_EBADDATA.
- */
-START_TEST (pdf_crypt_md_read_005)
-{
-  pdf_char_t *in;
-  pdf_char_t out[20];
-  pdf_crypt_md_t md;
-
-
-  fail_unless (pdf_crypt_md_new (PDF_CRYPT_MD_MD5 + 1, &md) == PDF_EBADDATA);
-}
-END_TEST
-
-
 
 /*
  * Test case creation function
@@ -186,17 +175,16 @@ END_TEST
 TCase *
 test_pdf_crypt_md_read (void)
 {
-  TCase *tc = tcase_create("pdf_crypt_md_read");
-  tcase_add_test(tc, pdf_crypt_md_read_001);
-  tcase_add_test(tc, pdf_crypt_md_read_002);
-  tcase_add_test(tc, pdf_crypt_md_read_003);
-  tcase_add_test(tc, pdf_crypt_md_read_004);
-  tcase_add_test(tc, pdf_crypt_md_read_005);
+  TCase *tc = tcase_create ("pdf_crypt_md_read");
+
+  tcase_add_test (tc, pdf_crypt_md_read_001);
+  tcase_add_test (tc, pdf_crypt_md_read_002);
+  tcase_add_test (tc, pdf_crypt_md_read_003);
+  tcase_add_test (tc, pdf_crypt_md_read_004);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);
   return tc;
 }
-
 
 /* End of pdf-crypt-md-read.c */

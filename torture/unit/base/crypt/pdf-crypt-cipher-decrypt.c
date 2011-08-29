@@ -30,7 +30,7 @@
 #include <check.h>
 
 #include <pdf-test-common.h>
-#include <pdf-test-common.h>
+
 /*
  * Test: pdf_crypt_cipher_decrypt_001
  * Description:
@@ -38,11 +38,10 @@
  * Success condition:
  *   The ouput data should be correct.
  */
-
 START_TEST (pdf_crypt_cipher_decrypt_001)
 {
-  pdf_crypt_cipher_t cipher;
-
+  pdf_crypt_cipher_t *cipher;
+  pdf_error_t *error = NULL;
   pdf_char_t out[32];
 
   pdf_char_t key[16] =
@@ -79,19 +78,29 @@ START_TEST (pdf_crypt_cipher_decrypt_001)
       0xbe, 0x77, 0x18, 0x1a
     };
 
+  cipher = pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &error);
+  fail_unless (cipher != NULL);
+  fail_if (error != NULL);
 
-  pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
-  pdf_crypt_cipher_setkey (cipher, key, sizeof(key));
+  fail_unless (pdf_crypt_cipher_set_key (cipher,
+                                         key,
+                                         sizeof (key),
+                                         &error) == PDF_TRUE);
+  fail_if (error != NULL);
 
-  fail_if (pdf_crypt_cipher_decrypt (cipher, out, sizeof(out), ciphered, sizeof(ciphered), NULL) != PDF_OK);
+  fail_unless (pdf_crypt_cipher_decrypt (cipher,
+                                         out,
+                                         sizeof (out),
+                                         ciphered,
+                                         sizeof (ciphered),
+                                         NULL,
+                                         &error) == PDF_TRUE);
+  fail_if (error != NULL);
   fail_if (memcmp (out, plain, sizeof(out)) != 0);
 
   pdf_crypt_cipher_destroy (cipher);
 }
 END_TEST
-
-
-
 
 /*
  * Test: pdf_crypt_cipher_decrypt_002
@@ -103,30 +112,39 @@ END_TEST
 
 START_TEST (pdf_crypt_cipher_decrypt_002)
 {
-  pdf_crypt_cipher_t cipher;
+  pdf_crypt_cipher_t *cipher;
+  pdf_error_t *error = NULL;
+  pdf_char_t key[6] = "Secret"; /* not trailing '\0' */
   pdf_char_t plain[16];
   pdf_size_t plain_size;
-
-  pdf_char_t * ciphered;
-  pdf_size_t   ciphered_size;
+  pdf_char_t *ciphered = NULL;
+  pdf_size_t  ciphered_size;
 
   ciphered_size = 0;
 
+  cipher = pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &error);
+  fail_unless (cipher != NULL);
+  fail_if (error != NULL);
 
-  pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &cipher);
-  pdf_crypt_cipher_setkey (cipher, NULL, 0);
+  fail_unless (pdf_crypt_cipher_set_key (cipher,
+                                         key,
+                                         sizeof (key),
+                                         &error) == PDF_TRUE);
+  fail_if (error != NULL);
 
-  fail_if (pdf_crypt_cipher_decrypt (cipher,
-				     plain, sizeof(plain),
-				     ciphered, ciphered_size,
-				     &plain_size) != PDF_OK);
+  fail_unless (pdf_crypt_cipher_decrypt (cipher,
+                                         plain,
+                                         sizeof (plain),
+                                         ciphered,
+                                         ciphered_size,
+                                         &plain_size,
+                                         &error) == PDF_TRUE);
   fail_if (plain_size != 0);
+  fail_if (error != NULL);
+
   pdf_crypt_cipher_destroy (cipher);
 }
 END_TEST
-
-
-
 
 /*
  * Test: pdf_crypt_cipher_decrypt_003
@@ -138,8 +156,8 @@ END_TEST
 
 START_TEST (pdf_crypt_cipher_decrypt_003)
 {
-  pdf_crypt_cipher_t cipher;
-
+  pdf_crypt_cipher_t *cipher;
+  pdf_error_t *error = NULL;
   pdf_char_t out[80];
 
   pdf_char_t key[16] =
@@ -180,32 +198,43 @@ START_TEST (pdf_crypt_cipher_decrypt_003)
       0x49, 0xa5, 0x3e, 0x87, 0xf4, 0xc3, 0xda, 0x55,
     };
 
+  cipher = pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &error);
+  fail_unless (cipher != NULL);
+  fail_if (error != NULL);
 
-  pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
-  pdf_crypt_cipher_setkey (cipher, key, sizeof(key));
+  fail_unless (pdf_crypt_cipher_set_key (cipher,
+                                         key,
+                                         sizeof (key),
+                                         &error) == PDF_TRUE);
+  fail_if (error != NULL);
 
-  fail_if (pdf_crypt_cipher_decrypt (cipher, out, sizeof(out), ciphered, sizeof(ciphered), NULL) != PDF_OK);
+  fail_unless (pdf_crypt_cipher_decrypt (cipher,
+                                         out,
+                                         sizeof (out),
+                                         ciphered,
+                                         sizeof (ciphered),
+                                         NULL,
+                                         &error) == PDF_TRUE);
+  fail_if (error != NULL);
   fail_if (memcmp (out, plain, sizeof(out)) != 0);
 
   pdf_crypt_cipher_destroy (cipher);
 }
 END_TEST
-
-
 
 /*
  * Test: pdf_crypt_cipher_decrypt_004
  * Description:
- *   Decrypt an ciphered buffer incrementally (AEV2).
+ *   Decrypt an ciphered buffer incrementally (AESV2).
  * Success condition:
  *   The ouput data should be correct.
  */
-
 START_TEST (pdf_crypt_cipher_decrypt_004)
 {
-  pdf_crypt_cipher_t cipher;
-
+  pdf_crypt_cipher_t *cipher;
+  pdf_error_t *error = NULL;
   pdf_char_t out[80];
+  pdf_u32_t i;
 
   pdf_char_t key[16] =
     {
@@ -245,23 +274,33 @@ START_TEST (pdf_crypt_cipher_decrypt_004)
       0x49, 0xa5, 0x3e, 0x87, 0xf4, 0xc3, 0xda, 0x55,
     };
 
+  cipher = pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &error);
+  fail_unless (cipher != NULL);
+  fail_if (error != NULL);
 
-  pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
-  pdf_crypt_cipher_setkey (cipher, key, sizeof(key));
-  fail_if (pdf_crypt_cipher_decrypt (cipher, out + 00, 16, ciphered + 00, 16, NULL) != PDF_OK);
-  fail_if (pdf_crypt_cipher_decrypt (cipher, out + 16, 16, ciphered + 16, 16, NULL) != PDF_OK);
-  fail_if (pdf_crypt_cipher_decrypt (cipher, out + 32, 16, ciphered + 32, 16, NULL) != PDF_OK);
-  fail_if (pdf_crypt_cipher_decrypt (cipher, out + 48, 16, ciphered + 48, 16, NULL) != PDF_OK);
-  fail_if (pdf_crypt_cipher_decrypt (cipher, out + 64, 16, ciphered + 64, 16, NULL) != PDF_OK);
+  fail_unless (pdf_crypt_cipher_set_key (cipher,
+                                         key,
+                                         sizeof (key),
+                                         &error) == PDF_TRUE);
+  fail_if (error != NULL);
 
-  fail_if (memcmp (out, plain, sizeof(out)) != 0);
+  for (i = 0; i < 80; i += 16)
+    {
+      fail_unless (pdf_crypt_cipher_decrypt (cipher,
+                                             out + i,
+                                             16,
+                                             ciphered + i,
+                                             16,
+                                             NULL,
+                                             &error) == PDF_TRUE);
+      fail_if (error != NULL);
+    }
+
+  fail_if (memcmp (out, plain, sizeof (out)) != 0);
 
   pdf_crypt_cipher_destroy (cipher);
 }
 END_TEST
-
-
-
 
 /*
  * Test case creation function
@@ -269,16 +308,16 @@ END_TEST
 TCase *
 test_pdf_crypt_cipher_decrypt (void)
 {
-  TCase *tc = tcase_create("pdf_crypt_cipher_decrypt");
-  tcase_add_test(tc, pdf_crypt_cipher_decrypt_001);
-  tcase_add_test(tc, pdf_crypt_cipher_decrypt_002);
-  tcase_add_test(tc, pdf_crypt_cipher_decrypt_003);
-  tcase_add_test(tc, pdf_crypt_cipher_decrypt_004);
+  TCase *tc = tcase_create ("pdf_crypt_cipher_decrypt");
+
+  tcase_add_test (tc, pdf_crypt_cipher_decrypt_001);
+  tcase_add_test (tc, pdf_crypt_cipher_decrypt_002);
+  tcase_add_test (tc, pdf_crypt_cipher_decrypt_003);
+  tcase_add_test (tc, pdf_crypt_cipher_decrypt_004);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);
   return tc;
 }
-
 
 /* End of pdf-crypt-cipher-decrypt.c */

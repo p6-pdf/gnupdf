@@ -474,5 +474,4 @@ pdf_stm_test_common (const pdf_char_t           *test_name,
                     expected_size);
 }
 
-
 /* End of pdf-stm-test-common.c */

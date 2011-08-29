@@ -89,6 +89,7 @@ TIME_MODULE_SOURCES = base/pdf-time-context.c base/pdf-time-context.h \
                       base/pdf-time.c base/pdf-time.h
 
 CRYPT_MODULE_SOURCES = base/pdf-crypt.c base/pdf-crypt.h \
+                       base/pdf-crypt-md-md5.c base/pdf-crypt-md-md5.h \
                        base/pdf-crypt-c-aesv2.c base/pdf-crypt-c-aesv2.h \
                        base/pdf-crypt-c-v2.c base/pdf-crypt-c-v2.h
 

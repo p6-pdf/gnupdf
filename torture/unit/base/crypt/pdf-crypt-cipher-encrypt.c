@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <pdf.h>
 #include <check.h>
+
 #include <pdf-test-common.h>
 
 /*
@@ -40,12 +41,13 @@
  */
 START_TEST (pdf_crypt_cipher_encrypt_001)
 {
-  pdf_crypt_cipher_t cipher;
+  pdf_crypt_cipher_t *cipher;
   pdf_char_t out[14];
   pdf_size_t out_size;
   pdf_char_t in[14] = "Attack at dawn"; /* not trailing '\0' */
   pdf_size_t in_size;
   pdf_char_t key[6] = "Secret"; /* not trailing '\0' */
+  pdf_error_t *error = NULL;
 
   pdf_char_t ciphered[] =
     {
@@ -53,15 +55,28 @@ START_TEST (pdf_crypt_cipher_encrypt_001)
       0x38, 0x35, 0x52, 0x54, 0x4B, 0x9B, 0xF5
     };
 
-
-  in_size  = sizeof(in);
+  in_size  = sizeof (in);
   out_size = in_size;
 
-  pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &cipher);
-  pdf_crypt_cipher_setkey (cipher, key, sizeof(key));
+  cipher = pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_V2, &error);
+  fail_unless (cipher != NULL);
+  fail_if (error != NULL);
 
-  fail_if (pdf_crypt_cipher_encrypt (cipher, out, out_size, in, in_size, &out_size) != PDF_OK);
-  fail_if (memcmp (out, ciphered, out_size) != 0);
+  fail_unless (pdf_crypt_cipher_set_key (cipher,
+                                         key,
+                                         sizeof (key),
+                                         &error) == PDF_TRUE);
+  fail_if (error != NULL);
+
+  fail_unless (pdf_crypt_cipher_encrypt (cipher,
+                                         out,
+                                         out_size,
+                                         in,
+                                         in_size,
+                                         &out_size,
+                                         &error) == PDF_TRUE);
+  fail_if (error != NULL);
+  fail_unless (memcmp (out, ciphered, out_size) == 0);
 
   pdf_crypt_cipher_destroy (cipher);
 }
@@ -78,8 +93,8 @@ END_TEST
 
 START_TEST (pdf_crypt_cipher_encrypt_002)
 {
-  pdf_crypt_cipher_t cipher;
-
+  pdf_crypt_cipher_t *cipher;
+  pdf_error_t *error = NULL;
   pdf_char_t out[80];
 
   pdf_char_t key[16] =
@@ -120,18 +135,48 @@ START_TEST (pdf_crypt_cipher_encrypt_002)
       0x49, 0xa5, 0x3e, 0x87, 0xf4, 0xc3, 0xda, 0x55,
     };
 
+  cipher = pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &error);
+  fail_unless (cipher != NULL);
+  fail_if (error != NULL);
 
-  pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
-  pdf_crypt_cipher_setkey (cipher, key, sizeof(key));
+  fail_unless (pdf_crypt_cipher_set_key (cipher,
+                                         key,
+                                         sizeof (key),
+                                         &error) == PDF_TRUE);
+  fail_if (error != NULL);
 
-  fail_if (pdf_crypt_cipher_encrypt (cipher, out, sizeof(out), plain, sizeof(plain), NULL) != PDF_OK);
-  fail_if (memcmp (out, ciphered, sizeof(out)) != 0);
+  fail_unless (pdf_crypt_cipher_encrypt (cipher,
+                                         out,
+                                         sizeof (out),
+                                         plain,
+                                         sizeof (plain),
+                                         NULL,
+                                         &error) == PDF_TRUE);
+  fail_if (error != NULL);
+
+#if 0
+  {
+    pdf_char_t *out_hex;
+    pdf_char_t *ciphered_hex;
+
+    out_hex = pdf_test_get_hex (out, sizeof (out), ':');
+    ciphered_hex = pdf_test_get_hex (ciphered, sizeof (out), ':');
+
+    printf ("pdf_crypt_cipher_encrypt_002;\n"
+            "\tout:  '%s'\n"
+            "\tciph: '%s'\n",
+            out_hex,
+            ciphered_hex);
+    pdf_dealloc (out_hex);
+    pdf_dealloc (ciphered_hex);
+  }
+#endif
+
+  fail_unless (memcmp (out, ciphered, sizeof (out)) == 0);
 
   pdf_crypt_cipher_destroy (cipher);
 }
 END_TEST
-
-
 
 /*
  * Test: pdf_crypt_cipher_encrypt_003
@@ -143,9 +188,10 @@ END_TEST
 
 START_TEST (pdf_crypt_cipher_encrypt_003)
 {
-  pdf_crypt_cipher_t cipher;
-
+  pdf_crypt_cipher_t *cipher;
+  pdf_error_t *error = NULL;
   pdf_char_t out[80];
+  pdf_u32_t i;
 
   pdf_char_t key[16] =
     {
@@ -185,24 +231,34 @@ START_TEST (pdf_crypt_cipher_encrypt_003)
       0x49, 0xa5, 0x3e, 0x87, 0xf4, 0xc3, 0xda, 0x55,
     };
 
+  cipher = pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &error);
+  fail_unless (cipher != NULL);
+  fail_if (error != NULL);
 
-  pdf_crypt_cipher_new (PDF_CRYPT_CIPHER_ALGO_AESV2, &cipher);
-  pdf_crypt_cipher_setkey (cipher, key, sizeof(key));
-  fail_if (pdf_crypt_cipher_encrypt (cipher, out + 00, 16, plain + 00, 16, NULL) != PDF_OK);
-  fail_if (pdf_crypt_cipher_encrypt (cipher, out + 16, 16, plain + 16, 16, NULL) != PDF_OK);
-  fail_if (pdf_crypt_cipher_encrypt (cipher, out + 32, 16, plain + 32, 16, NULL) != PDF_OK);
-  fail_if (pdf_crypt_cipher_encrypt (cipher, out + 48, 16, plain + 48, 16, NULL) != PDF_OK);
-  fail_if (pdf_crypt_cipher_encrypt (cipher, out + 64, 16, plain + 64, 16, NULL) != PDF_OK);
+  fail_unless (pdf_crypt_cipher_set_key (cipher,
+                                         key,
+                                         sizeof (key),
+                                         &error) == PDF_TRUE);
+  fail_if (error != NULL);
 
-  fail_if (memcmp (out, ciphered, sizeof(out)) != 0);
+
+  for (i = 0; i < 80; i += 16)
+    {
+      fail_unless (pdf_crypt_cipher_encrypt (cipher,
+                                             out + i,
+                                             16,
+                                             plain + i,
+                                             16,
+                                             NULL,
+                                             &error) == PDF_TRUE);
+      fail_if (error != NULL);
+    }
+
+  fail_unless (memcmp (out, ciphered, sizeof (out)) == 0);
 
   pdf_crypt_cipher_destroy (cipher);
 }
 END_TEST
-
-
-
-
 
 /*
  * Test case creation function
@@ -210,15 +266,15 @@ END_TEST
 TCase *
 test_pdf_crypt_cipher_encrypt (void)
 {
-  TCase *tc = tcase_create("pdf_crypt_cipher_encrypt");
-  tcase_add_test(tc, pdf_crypt_cipher_encrypt_001);
-  tcase_add_test(tc, pdf_crypt_cipher_encrypt_002);
-  tcase_add_test(tc, pdf_crypt_cipher_encrypt_003);
+  TCase *tc = tcase_create ("pdf_crypt_cipher_encrypt");
+
+  tcase_add_test (tc, pdf_crypt_cipher_encrypt_001);
+  tcase_add_test (tc, pdf_crypt_cipher_encrypt_002);
+  tcase_add_test (tc, pdf_crypt_cipher_encrypt_003);
   tcase_add_checked_fixture (tc,
                              pdf_test_setup,
                              pdf_test_teardown);
   return tc;
 }
-
 
 /* End of pdf-crypt-cipher-encrypt.c */
