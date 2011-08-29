@@ -99,7 +99,7 @@ pdf_stm_be_new_cfile (FILE         *file,
 static void
 stm_be_cfile_destroy (pdf_stm_be_t *be)
 {
-#warning We should take ownership of the cfile and close it here
+  /* NOTE: We do NOT own the cfile... :-/ */
   pdf_dealloc (be);
 }
 

@@ -98,7 +98,7 @@ pdf_stm_be_new_mem (pdf_uchar_t  *buffer,
 static void
 stm_be_mem_destroy (pdf_stm_be_t *be)
 {
-#warning We should take ownership of the buffer and deallocate it here
+  /* NOTE: We do NOT own the buffer */
   pdf_dealloc (be);
 }
 

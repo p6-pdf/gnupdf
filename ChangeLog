@@ -1,5 +1,14 @@
 2011-08-29  Aleksander Morgado  <aleksander@gnu.org>
 
+	base,stm: avoid compiler warnings
+	The backends do NOT own the input objects (file or buffer), so the
+	backends must be kept alive as long as the input objects exist.
+	* src/base/pdf-stm-be-cfile.c (stm_be_cfile_destroy)
+	* src/base/pdf-stm-be-file.c (stm_be_file_destroy)
+	* src/base/pdf-stm-be-mem.c (stm_be_mem_destroy)
+
+2011-08-29  Aleksander Morgado  <aleksander@gnu.org>
+
 	base,stm: remove unused variable
 	* src/base/pdf-stm-f-a85.c (stm_f_a85enc_wr_tuple)
 

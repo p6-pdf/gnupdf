@@ -99,7 +99,7 @@ pdf_stm_be_new_file (pdf_fsys_file_t  *file,
 static void
 stm_be_file_destroy (pdf_stm_be_t *be)
 {
-#warning We should take ownership of the file and close it here
+  /* NOTE: We do NOT own the file */
   pdf_dealloc (be);
 }
 
