@@ -4253,6 +4253,210 @@ size = pdf_hash_get_size (table, "a-key");
 @end table
 @end deftypefun
 
+@deftypefun {pdf_bool_t} pdf_hash_add_bool (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_bool_t @var{value}, pdf_error_t **@var{error});
+
+Adds the boolean @var{value} with the associated @var{key} to @var{table}. If @var{key} already exists nothing is done. The value is directly stored in the hash table and disposed when the hash table is destroyed.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@item value
+A valid @code{pdf_bool_t}.
+@item error
+A pdf_error_t to report errors or NULL.
+@end table
+@item Returns
+PDF_TRUE if correctly added, PDF_FALSE otherwise.
+@item Usage example
+@example
+pdf_hash_t *hash;
+pdf_error_t *error = NULL;
+
+/* Create a new hash */
+hash = pdf_hash_new (NULL);
+if (hash != NULL)
+   @{
+      if (pdf_hash_add_bool (hash,
+                             "a-key",
+                             PDF_TRUE,
+                             &error))
+         @{
+             pdf_error_destroy (error);
+         @}
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+   @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun {pdf_bool_t} pdf_hash_get_bool (pdf_hash_t *@var{table}, const pdf_char_t *@var{key});
+
+Get a boolean value from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@end table
+@item Returns
+The @code{pdf_bool_t} associated with @var{key}.
+@item Usage example
+@example
+pdf_bool_t bool;
+
+/* ... insert a boolean value into the hash ... */
+
+bool = pdf_hash_get_bool (table, "a-key"); 
+@end example
+@end table
+@end deftypefun
+
+
+@deftypefun {pdf_bool_t} pdf_hash_add_i32 (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_i32_t @var{value}, pdf_error_t **@var{error});
+
+Adds the signed 32 bits integer @var{value} with the associated @var{key} to @var{table}. If @var{key} already exists nothing is done. The value is directly stored in the hash table and disposed when the hash table is destroyed. 
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@item value
+A valid @code{pdf_i32_t}.
+@item error
+A @code{pdf_error_t} to report errors or NULL.
+@end table
+@item Returns
+PDF_TRUE if correctly added, PDF_FALSE otherwise.
+@item Usage example
+@example
+pdf_hash_t *hash;
+pdf_error_t *error = NULL;
+ 
+/* Create a new hash */
+hash = pdf_hash_new (NULL);
+if (hash != NULL)
+   @{
+      if (pdf_hash_add_i32 (hash,
+                            "a-key",
+                            (pdf_i32_t)-3,
+                            &error))
+         @{
+             pdf_error_destroy (error);
+         @}
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+    @}
+@end example
+@end table
+@end deftypefun
+
+@deftypefun {pdf_i32_t} pdf_hash_get_i32 (pdf_hash_t *@var{table}, const pdf_char_t *@var{key});
+
+Get a signed 32 bits integer from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@end table
+@item Returns
+The @code{pdf_i32_t} associated with @var{key}.
+@item Usage example
+@example
+pdf_i32_t i32;
+
+/* ... insert a signed 32 bits integer value into the hash ... */
+
+i32 = pdf_hash_get_i32 (table, "a-key");
+@end example
+@end table
+@end deftypefun
+
+@deftypefun {pdf_bool_t} pdf_hash_add_u32 (pdf_hash_t *@var{table}, const pdf_char_t *@var{key}, const pdf_u35_t @var{value}, pdf_error_t **@var{error});
+
+Adds the unsigned 32 bits integer @var{value} with the associated @var{key} to @var{table}. If @var{key} already exists nothing is done. The value is directly stored in the hash table and disposed when the hash table is destroyed.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@item value
+A valid @code{pdf_u32_t}.
+@item error
+A @code{pdf_error_t} to report errors or NULL.
+@end table
+@item Returns
+PDF_TRUE if correctly added, PDF_FALSE otherwise.
+@item Usage example
+@example
+pdf_hash_t *hash;
+pdf_error_t *error = NULL;
+ 
+/* Create a new hash */
+hash = pdf_hash_new (NULL);
+if (hash != NULL)
+   @{
+      if (pdf_hash_add_u32 (hash,
+                            "a-key",
+                            (pdf_u32_t)3,
+                            &error))
+         @{
+             pdf_error_destroy (error);
+         @}
+
+      /* Destroy the hash */
+      pdf_hash_destroy (hash);
+   @}
+
+@end example
+@end table
+@end deftypefun
+
+@deftypefun {pdf_u32_t} pdf_hash_get_u32 (pdf_hash_t *@var{table}, const pdf_char_t *@var{key});
+
+Get an unsigned 32 bits integer from a hash table.
+
+@table @strong
+@item Parameters
+@table @var
+@item table
+A hash table.
+@item key
+A valid @code{NUL}-terminated string key.
+@end table
+@item Returns
+The @code{pdf_u32_t} associated with @var{key}.
+@item Usage example
+@example
+pdf_u32_t u32;
+
+/* ... insert an unsigned 32 bits value into the hash ... */
+
+u32 = pdf_hash_get_u32 (table, "a-key");
+
+@end example
+@end table
+@end deftypefun
+
 @node Filtered Streams
 @section Filtered Streams
 
@@ -13459,7 +13663,7 @@ the meaning of the name, but only to make it unique.
 Strings are sequences of octets.  Note that the octets contained in
 a PDF string are not restricted to the printable ASCII subset.  In
 particular the null octet (@code{00H}) can be part of a string and it
-is not used to to finalize it like in some programming languages.
+is not used to finalize it like in some programming languages.
 
 The interpretation of the contents of a string depends of the selected
 encoding and other factors.   Usually the UTF-8 encoding of ISO-16000
@@ -13698,7 +13902,7 @@ rule: a string directly contained in a dictionary that is in turn
 directly contained in an array will be destroyed if the top-level
 array is destroyed.
 
-The root dictionary of an object document can not be destroyed.
+The root dictionary of an object document can't be destroyed.
 
 This operation sets the dirty flag of the document containing the
 object.
@@ -14054,7 +14258,7 @@ size = pdf_obj_size (obj);
 @end table
 @end deftypefun
 
-@defun PDF_OBJ_IS_NULL(@var{obj})
+@defun PDF_OBJ_IS_NULL (@var{obj})
 
 Macro that determines whether the passed object is the null object.
 

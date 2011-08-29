@@ -31,7 +31,6 @@
  #include <stdlib.h>
 #endif /* HAVE_MALLOC_H */
 
-#include <xalloc.h>
 #include <pdf_function.h>
 
 pdf_func_t 

@@ -72,7 +72,7 @@ START_TEST (pdf_time_w32_set_from_filetime_001)
   calendar.gmt_offset = 0;
   pdf_time_set_from_cal (&time2, &calendar);
 
-  fail_unless (pdf_time_cmp (&time, &time2) == 0);
+  fail_unless (pdf_time_cmp (&time1, &time2) == 0);
 
   pdf_time_deinit (&time1);
   pdf_time_deinit (&time2);

@@ -337,7 +337,6 @@ pdf_stm_write (pdf_stm_t         *stm,
           pdf_error_t *inner_error = NULL;
 
           /* Flush the cache */
-          tail_buffer_size = tail_buffer->wp - tail_buffer->rp;
           if (!pdf_stm_flush (stm,
                               PDF_FALSE,
                               &flushed_bytes,

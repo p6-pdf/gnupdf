@@ -1381,7 +1381,7 @@ read_type0_sample_table (pdf_char_t *buf,
     }
 
   buf_index = 0;
-  n = n * nsamples;
+  /* n = n * nsamples; */
 
   /* single precision pdf_float_t loses precision with bps 32 */
   /* this should never be visible with pdf_float_t in[] and out[] */

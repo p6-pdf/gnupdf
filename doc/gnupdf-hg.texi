@@ -62,6 +62,7 @@ GNU PDF Library Hackers Guide
 * Writing Documentation::
 * Sending Patches::
 * Testing the library::
+* Cross-compiling libgnupdf for Windows under GNU/Linux::
 * Updating the AUTHORS file::
 @end menu
 
@@ -69,7 +70,7 @@ GNU PDF Library Hackers Guide
 @chapter Information for Newcomers
 
 First of all, many thanks for your interest in collaborate in the development!
-Here you will find some useful information to get started. 
+Here you will find some useful information to get started.
 
 @table @strong
 @item Getting a copy of the sources
@@ -151,7 +152,7 @@ use when writing source code.
 
 @item Taking a task to work on
 
-Please read the documentation on tasks management in 
+Please read the documentation on tasks management in
 @ref{Tasks management}.
 
 If you want to work in a NEXT task, please be sure to state your
@@ -361,7 +362,7 @@ developer.
 @item STARTED
 The task has been started by a developer but it is not finished.
 @item DONE
-The task is archived and succesfully performed. 
+The task is archived and succesfully performed.
 @item DISCARDED
 The task is archived but it has been discarded.
 @end table
@@ -402,7 +403,7 @@ he context of the task. It may be the name of a library layer (such as
 base layer), the name of a library module or a more general context
 (such as build system).
 @item Priority
-The priority of the task. 
+The priority of the task.
 @item Status
 The status of the task:
 @itemize @minus
@@ -420,7 +421,7 @@ A summary of the task.
 @chapter Coding Conventions
 
 Like in any other GNU package, the code in the GNU PDF Library follows
-the coding conventions documented in the GNU Coding Standards. 
+the coding conventions documented in the GNU Coding Standards.
 
 In this section we complement the guidelines of the GHM with some
 specific conventions that we follow in the development of the
@@ -539,7 +540,7 @@ source code: the interpretation of the actual width of a tab is up to
 the viewer program.
 
 Please use blank characters when writing code to be included in GNU
-PDF software. 
+PDF software.
 
 If you use Emacs you can tell it to insert spaces instead of tabs
 including:
@@ -625,7 +626,7 @@ For Macos X systems.
 
 The GNU PDF Library codebase is written using the C programming
 language. C does not support the notion of @emph{object} as used in
-object-oriented programming. 
+object-oriented programming.
 
 Instead of objects we are using a kind of data-control abstraction
 called @emph{abstract data types}. This abstraction provides high
@@ -765,7 +766,7 @@ header file, like:
 
 /* BEGIN PUBLIC */
 
-struct pdf_foo_s 
+struct pdf_foo_s
 @{
    int a;
    int b;
@@ -805,7 +806,7 @@ typedef struct pdf_foo_s *pdf_foo_t;
 
 /* END PUBLIC */
 
-struct pdf_foo_s 
+struct pdf_foo_s
 @{
    int a;
    int b;
@@ -954,7 +955,7 @@ of the headers were not properly processed by the
 @file{generate-tsd.pl} script.
 
 @menu
-* Skipping syntax tests::       Avoid passing tests in some files       
+* Skipping syntax tests::       Avoid passing tests in some files
 @end menu
 
 @node Skipping syntax tests
@@ -1058,10 +1059,10 @@ library is performed in the following steps:
 @enumerate
 @item @strong{Unit testing} is performed in order to verify the low-level modules of the library.
 @item @strong{Subsystem testing} is performed in order to verify the combination of several subsystems. i.e. to test each library layer.
-@item @strong{System testing} is performed in order to verify the whole system. i.e. the GNU PDF Library. 
+@item @strong{System testing} is performed in order to verify the whole system. i.e. the GNU PDF Library.
 @end enumerate
 
-We use check @footnote{A testing framework for C. See http://check.sf.net} 
+We use check @footnote{A testing framework for C. See http://check.sf.net}
 to implement our testing infrastructure. Please
 read the check manual in order to become familiar with its concepts
 such as test suite, test case, etc.
@@ -1133,7 +1134,7 @@ For any given function we would like to define @strong{positive},
 @itemize @minus
 @item @strong{Positive tests} are used to test the function with valid input data. The return value (or any documented side effect) of the function should be checked with the expected effect.
 @item @strong{Negative tests} are used to test the function with invalid input data.
-@item @strong{Stressing tests} are used to test the function with strategic or "interesting" valid input data (such as @code{MAXINT} or @code{MININT} in a function accepting an integer value). 
+@item @strong{Stressing tests} are used to test the function with strategic or "interesting" valid input data (such as @code{MAXINT} or @code{MININT} in a function accepting an integer value).
 @end itemize
 
 Many functions are simple enough to only require a single positive
@@ -1159,12 +1160,12 @@ function would be called @file{stm-new.c}.
 A minimal test file looks like this:
 
 @example
-/* 
+/*
  * Include the check library.
  */
 #include <check.h>
 
-/* 
+/*
  * Test: FUNCTION_NAME_NNN
  * Description:
  *   Description of the test.  Can be of several lines long,
@@ -1176,7 +1177,7 @@ A minimal test file looks like this:
  */
 START_TEST(FUNCTION_NAME_NNN)
 @{
-  /* Check a condition.  One of several types of check 
+  /* Check a condition.  One of several types of check
      available in the check library.
    */
   fail_if(0 == 1);
@@ -1184,7 +1185,7 @@ START_TEST(FUNCTION_NAME_NNN)
 END_TEST
 
 
-/* 
+/*
  * Provide this function to gather all the tests together.
  */
 TCase* test_FUNCTION_NAME (void)
@@ -1281,12 +1282,12 @@ execution.
 
 The runtests program will (by default) output a list of which test
 suites were run, then a summary line followed by a list of failing
-lists. You can get a full list of tests (passing and failing) by 
+lists. You can get a full list of tests (passing and failing) by
 setting the @code{CK_VERBOSITY} environment variable to 'verbose'.
 You can get just the summary line and failing lists by setting the
 @code{CK_VERBOSITY} environment variable to 'minimal', and you can
 produce no output by setting it to 'silent'. Note that tests (in
-particular, the error reporting tests) may output additional 
+particular, the error reporting tests) may output additional
 information as part of their normal operation - that isn't really
 part of the check testing framework, and won't be affected by the
 @code{CK_VERBOSITY} environment variable.
@@ -1426,6 +1427,163 @@ can be used while writing tests.
 
 See @file{torture/tortutils/tortutils.h} for documentation on the
 functions provided by the library.
+
+@node Cross-compiling libgnupdf for Windows under GNU/Linux
+@chapter Cross-compiling libgnupdf for Windows under GNU/Linux
+
+This chapter documents all the needed steps to setup a mingw build of the GNU PDF library.
+MinGW provides a complete programming tool set which is suitable for the development of native MS-Windows applications.
+
+@table @strong
+@item Getting and installing MinGW
+If you are under debian, you can install mingw32 with the following command:
+
+@example
+$ apt-get install mingw32
+@end example
+
+If you are not on an usual disto, download mingw32 at @url{http://sourceforge.net/projects/mingw/files/Cross-Hosted MinGW Build Tool}. You follow the README in order to install the package. You can go to @url{http://mingw.org} for more details:
+
+@example
+...
+$ sh x86-mingw32-build.sh i686-mingw32
+...
+@end example
+
+@item The dependencies
+After having downloaded the sources of the GNU PDF Library, you need to install the required libraries. Below is a list of the required libraries:
+
+@itemize @minus
+@item zlib
+@item libpthread
+@item libuuid
+@item libgpg-error
+@item libgcrypt
+@item libcheck
+@item libjbig2dec
+@item libjpeg
+@end itemize
+
+You need to create some directories in order to stock the mingw32 dependencies.
+@example
+$ mkdir $HOME/w32root
+$ mkdir $HOME/w32root/lib
+$ mkdir $HOME/w32root/include
+@end example
+
+@item zlib
+Download zlib either the source or the binaries. In order to compile the source you have to follow to read the page available at @url{http://www.crosscompile.org/static/pages/ZLib.html}. The binaries are available at @url{http://zlib.net/zlib125-dll.zip}
+@example
+$ unzip path/to/zlib125-dll.zip
+$ mv include/* $HOME/w32root/include
+$ mv zlib1.dll $HOME/w32root/lib/libz.dll
+@end example
+
+@item libpthreads
+There is a bug in @emph{mingw32-pthreads} (Bug 599227). This bug affects the compilation of libcheck. You need to download the source of the fixed version. You have to log in the pthreads-win32 cvs. The password is @emph{anoncvs}. Then, you download, compile and install.
+@example
+$ cvs -d :pserver:anoncvs@@sourceware.org:/cvs/pthreads-win32 login # anoncvs is the password
+$ cvs -d :pserver:anoncvs@@sourceware.org:/cvs/pthreads-win32 checkout -D 2011-05-11 -d pthreads-w32-20110511 pthreads
+$ cd pthreads-w32-20110511
+$ make CROSS=i586-mingw32msvc- clean GC
+$ cp pthread.h sched.h semaphore.h $HOME/mingw32/include/
+$ cp pthreadGC2.dll $HOME/mingw32/lib/libpthread.dll
+@end example
+
+@item libuuid
+You can use precompiled @emph{libuuid} binaries available in the following URL: @url{http://mirror.vcu.edu/pub/windows/cygwin/release/util-linux/libuuid-devel/}. So, steps for @emph{libuuid} are:
+@example
+$ tar -jxf libuuid-devel-2.17.2-1.tar.bz2
+$ cp -r usr/include/uuid $HOME/w32root/include
+$ cp -r usr/lib/libuuid.dll.a $HOME/w32root/lib
+@end example
+
+
+
+@item libgpg-error and libgcrypt
+
+Go to @url{http://gnupg.org/download/index.en.html}. You have to download:
+
+@itemize @minus
+@item @file{libgpg-error-1.10.tar.bz2}
+@item @file{libgcrypt-1.4.6.tar.gz}
+@end itemize
+
+ For @emph{libgpg-error-1.10} and @emph{libgcrypt-1.4.6}, you have to note that the @file{autogen.sh} script recognizes @emph{---build-w32} and set the prefix installation to @file{$HOME/w32root}. You can't modify this prefix. A typical compilation and installation would be:
+@example
+$ tar zxf path/to/libgpg-error-1.10.tar.gz
+$ cd libgpg-error-1.10
+$ ./autogen.sh --build-w32
+$ make
+$ make install
+@end example
+
+@example
+$ tar zxf path/to/libgcrypt-1.4.6.tar.gz
+$ cd libgcrypt-1.4.6
+$ ./autogen.sh --build-w32
+$ make
+$ make install
+@end example
+
+The libraries are installed in @file{$HOME/w32root}.
+
+
+
+@item libcheck
+You need the svn version of @emph{libcheck}:
+@example
+$ svn co https://check.svn.sourceforge.net/svnroot/check/trunk check
+@end example
+In order to compile, you need to type:
+@example
+$ cd check
+$ autoreconf --install
+$ ./configure --host=i586-mingw32msvc --prefix=$HOME/w32root
+$ make
+$ make install
+@end example
+
+
+
+@item libjbig2dec
+Download @url{http://ghostscript.com/~giles/jbig2/jbig2dec/jbig2dec-0.11.tar.gz}. Compile and install the library with the following commands.
+Note that due to @url{http://bugs.ghostscript.com/show_bug.cgi?id=691784}, you'll need to generate the DLL manually.
+@example
+$ ./configure --host=i586-mingw32msvc --prefix=$HOME/w32root
+$ make
+$ make install
+$ i586-mingw32msvc-gcc -shared -o .libs/libjbig2dec.dll  jbig2.o jbig2_arith.o jbig2_arith_int.o jbig2_arith_iaid.o jbig2_huffman.o
+ jbig2_segment.o jbig2_page.o jbig2_symbol_dict.o jbig2_text.o jbig2_generic.o jbig2_refinement.o jbig2_mmr.o jbig2_halftone.o
+ jbig2_image.o jbig2_image_pbm.o jbig2_metadata.o
+$ cp .libs/libjbig2dec.dll $HOME/w32root/lib
+@end example
+
+@item libjpeg
+Download @emph{libjpeg} at @url{http://www.ijg.org/files/jpegsrc.v8c.tar.gz}.  Compile and install the library with the following commands.
+@example
+$ cd jpeg-8c
+$ ./configure --host=i586-mingw32msvc --prefix=$HOME/w32root
+$ make
+$ make install
+@end example
+
+@item Compiling
+Now you can run in the GNU PDF trunk:
+@example
+$ sh autogen.sh
+$ ./configure --host=i586-mingw32msvc --with-zlib=$HOME/w32root --with-libcheck-prefix=$HOME/w32root --with-libjbig2dec-prefix=$HOME/w32root
+ --with-libjpeg-prefix=$HOME/w32root --with-libuuid-prefix=$HOME/w32root
+$ make
+$ make install
+@end example
+At the time of writing this documentation, there are some errors during @code{make}.
+@end table
+
+
+
+
+
 
 @node Updating the AUTHORS file
 @chapter Updating the AUTHORS file

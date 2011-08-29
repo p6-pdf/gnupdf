@@ -34,6 +34,7 @@
 #include <pdf-stm-f-md5.h>
 #include <pdf-stm-f-lzw.h>
 #include <pdf-stm-f-a85.h>
+#include <pdf-stm-f-pred.h>
 
 /* Build-dependent filters */
 
@@ -92,8 +93,8 @@ static const struct stm_filter_s filters[PDF_STM_FILTER_LAST] = {
   { "JPX encoder",       NULL                   },
   { "JPX decoder",       NULL                   },
   /* Predictors */
-  { "Predictor encoder", NULL                   },
-  { "Predictor decoder", NULL                   },
+  { "Predictor encoder", pdf_stm_f_predenc_get  },
+  { "Predictor decoder", pdf_stm_f_preddec_get  },
   /* Crypt filters */
   { "AESv2 encoder",     pdf_stm_f_aesv2enc_get },
   { "AESv2 decoder",     pdf_stm_f_aesv2dec_get },

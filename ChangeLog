@@ -1,3 +1,150 @@
+2011-08-29  Georg Gottleuber <georg.gottleuber@uni-ulm.de>
+
+	utils: avoid strlen on binary chunk.
+	* utils/pdf-filter.c (install_filters)
+
+2011-08-29  Aleksander Morgado  <aleksander@gnu.org>
+
+	build-aux/generate-ucd: avoid extra parenthesis
+	* build-aux/pdf-text-generate-ucd.c (cut_field_in_chunks_SpecialCasing)
+
+2011-08-04  Georg Gottleuber <georg.gottleuber@uni-ulm.de>
+
+	base,stm: fix bug in lzw filter.
+	* src/base/pdf-stm-f-lzw.c (stm_f_lzwenc_apply): Avoid an invalid
+	output buffer.
+
+2011-08-04  Jose E. Marchesi  <jemarch@gnu.org>
+
+	Misc tiny changes.
+	* src/base/pdf-stm-f-jbig2.c (stm_f_jbig2dec_apply): Unused
+	variable 'ret' removed.
+
+	* doc/gnupdf.texi (Generic Functions to Manipulate Objects): Typo
+	fixed.
+
+2011-07-30  Georg Gottleuber  <georg.gottleuber@uni-ulm.de>
+
+	base,stm: adapted predictor filter to new stm api.
+	* src/base/pdf-stm-f-pred.h: adapted to new stm api
+	* src/base/pdf-stm-f-pred.h: adapted to new stm api
+	* utils/pdf-filter.c: added support for predictor filter
+
+2011-07-30  Georg Gottleuber  <georg.gottleuber@uni-ulm.de>
+
+	utils: fix arg evaluation of pdf-filter
+	* utils/pdf-filter.c
+
+2011-07-07  Aleksander Morgado  <aleksander@gnu.org>
+
+	base,hash: cast to long all 32bit integers before packing them in a ptr.
+	* src/base/pdf-hash-helper.c (pdf_hash_get_u32)
+	(pdf_hash_add_u32, pdf_hash_get_i32, pdf_hash_add_i32)
+
+2011-07-07 Franck Lesage  <francksys@free.fr>
+
+	base,hash: Add hash helpers methods.
+	* src/base/pdf-hash-helper.c: Add hash helpers for integer value.
+	* src/base/pdf-hash-helper.h: Likewise
+
+	* doc/gnupdf.texi (Helper functions): API Documentation updated
+
+2011-07-07  Aleksander Morgado  <aleksander@gnu.org>
+
+	gnupdf-hg: minor wording fixes
+	* doc/gnupdf-hg.texi
+	(Cross-compiling libgnupdf for Windows under GNU/Linux)
+
+2011-07-07  Franck Lesage  <franck.pdf.devel@free.fr>
+
+	gnupdf-hg: documenting the mingw32 compilation steps
+	* doc/gnupdf-hg.texi
+
+2011-07-07  Georg Gottleuber  <georg.gottleuber@uni-ulm.de>
+
+	utils: small fix for stdin bug in pdf-filter
+	* utils/pdf-filter.c
+
+2011-07-07  Aleksander Morgado  <aleksander@gnu.org>
+
+	build: fix syntax-check issues
+	* .x-sc_prohibit_path_max_allocation: New file
+	* .x-sc_prohibit_undesirable_word_seq: New file
+	* .x-sc_require_config_h: New file
+	* .x-sc_makefile_at_at_check: Add files to ignore.
+	* .x-sc_prohibit_empty_lines_at_EOF: Idem.
+	* .x-sc_prohibit_magic_number_exit: Idem.
+	* .x-sc_prohibit_stddef_without_use: Idem.
+	* doc/gnupdf.texi: Fix undesirable word sequences.
+	* src/base/pdf-text.c: No need to include xallox.h.
+	* src/document/pdf-function.c: Idem.
+	* src/object/pdf-obj.c: Idem.
+	* utils/pdf-filter.c: Idem
+
+2011-07-07  Aleksander Morgado  <aleksander@gnu.org>
+
+	build: avoid using @..@
+	* src/Makefile.am (libgnupdf_la_LDFLAGS)
+
+2011-07-07  Aleksander Morgado  <aleksander@gnu.org>
+
+	* gnulib update
+
+2011-07-01  Aleksander Morgado  <aleksander@gnu.org>
+
+	torture: fix compilation issues under mingw32
+	* torture/unit/base/time/pdf-time-w32-set-from-filetime.c
+
+2011-07-01  Aleksander Morgado  <aleksander@gnu.org>
+
+	types,uuid: avoid exposing libuuid-specific type.
+	* src/base/pdf-types-uuid.[h|c]: Gives issues during mingw32
+	compilation, due to redefined symbols. uuid_t is definitely not
+	likely to change.
+
+2011-07-01  Aleksander Morgado  <aleksander@gnu.org>
+
+	gnulib: import 'vasprintf-posix' module.
+
+2011-07-01  Aleksander Morgado  <aleksander@gnu.org>
+
+	fsys,disk: fix compilation issues under mingw32
+	* src/base/pdf-fsys-disk.c
+
+2011-07-01  Aleksander Morgado  <aleksander@gnu.org>
+
+	time: fix compilation issues under mingw32
+	* src/base/pdf-time.c (pdf_time_w32_set_from_filetime)
+
+2011-07-01  Aleksander Morgado  <aleksander@gnu.org>
+
+	text: fix compilation issues under mingw32
+	* src/base/pdf-text-host-encoding.c (pdf_text_host_to_utf32he_win32)
+	(pdf_text_utf32he_to_host_win32)
+
+2011-06-30  Aleksander Morgado  <aleksander@gnu.org>
+
+	gnulib: import 'pthread' module and update.
+
+2011-06-30  Aleksander Morgado  <aleksander@gnu.org>
+
+	fp: fix several code static analysis issues
+	* src/base/pdf-fp-func.c (read_type0_sample_table): Avoid dead
+	increment.
+
+2011-06-30  Aleksander Morgado  <aleksander@gnu.org>
+
+	text: fix several code static analysis issues
+	* src/base/pdf-text.c (pdf_text_set_unicode): Avoid uninitialized
+	argument.
+
+2011-06-30  Aleksander Morgado  <aleksander@gnu.org>
+
+	stm: fix several code static analysis issues
+	* src/base/pdf-stm.c (pdf_stm_write): Avoid dead assignment.
+	* src/base/pdf-stm-f-ahex.c (stm_f_ahexdec_apply): Idem.
+	* src/base/pdf-stm-f-a85.c: Idem.
+
 2011-06-30  Aleksander Morgado  <aleksander@gnu.org>
 
 	doc: updated tokeniser API documentation and examples.
@@ -157,7 +304,6 @@
 
 	* utils/README: Updated to match the current contents of the
 	directory.
->>>>>>> MERGE-SOURCE
 
 2011-06-14  Aleksander Morgado  <aleksander@gnu.org>
 
