@@ -487,8 +487,6 @@ create_stream (int          argc,
   */
   *last_ci = ci;
 
-  pdf_init ();
-
   *read_pdf_fsys = PDF_FALSE;
   *write_pdf_fsys = PDF_FALSE;
   if (infile_name == NULL && outfile_name == NULL)
@@ -606,13 +604,6 @@ install_filters (int        argc,
   char filter_to_install = FILTER_INSTALL_NONE;
   char *old_optarg = optarg;
   char next_ci = getopt_long (argc, argv, "", GNU_longOptions, NULL);
-
-  /* Initialize the crypt module */
-  if (pdf_crypt_init () != PDF_OK)
-    {
-      fprintf(stderr, "Error calling pdf_crypt_init().\n");
-      exit (EXIT_FAILURE);
-    }
 
   /* Install filters */
   do

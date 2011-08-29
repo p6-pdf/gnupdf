@@ -1,5 +1,10 @@
 2011-08-29  Aleksander Morgado  <aleksander@gnu.org>
 
+	utils,pdf-filter: avoid calling pdf_crypt_init()
+	* utils/pdf-filter.c (install_filters)
+
+2011-08-29  Aleksander Morgado  <aleksander@gnu.org>
+
 	base,stm: avoid compile warning by including pdf-hash-helper.h
 	* src/base/pdf-stm-f-dct.c
 
