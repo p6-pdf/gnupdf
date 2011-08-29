@@ -547,6 +547,8 @@ action_read_file (void)
 int
 main (int argc, char *argv[])
 {
+  pdf_error_t *error = NULL;
+
   set_program_name (argv[0]);
 
 #if defined HAVE_SETLOCALE
@@ -554,7 +556,14 @@ main (int argc, char *argv[])
   setlocale (LC_ALL, "");
 #endif /* HAVE_SETLOCALE */
 
-  pdf_init ();
+  /* Initialize the library */
+  if (!pdf_init (&error))
+    {
+      fprintf (stderr,
+               "error: couldn't initialize the PDF library: %s",
+               pdf_error_get_message (error));
+      return -1;
+    }
 
   /* Initialize context */
   parse_args (argc, argv);

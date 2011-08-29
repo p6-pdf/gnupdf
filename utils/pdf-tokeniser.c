@@ -336,6 +336,7 @@ parse_u32_arg (const char *argvalue,
 int
 main (int argc, char **argv)
 {
+  pdf_error_t *error = NULL;
   char c;
   pdf_bool_t use_tokw = PDF_FALSE;
   pdf_u32_t reader_flags = 0, writer_flags = 0;
@@ -347,7 +348,14 @@ main (int argc, char **argv)
   setlocale (LC_ALL, "");
 #endif /* HAVE_SETLOCALE */
 
-  pdf_init ();
+  /* Initialize the library */
+  if (!pdf_init (&error))
+    {
+      fprintf (stderr,
+               "error: couldn't initialize the PDF library: %s",
+               pdf_error_get_message (error));
+      exit (EXIT_FAILURE);
+    }
 
   while ((c = getopt_long (argc,
                            argv,

@@ -1,5 +1,12 @@
 2011-08-29  Aleksander Morgado  <aleksander@gnu.org>
 
+	utils: port to new library initialization API
+	* utils/pdf-filereader.c (main)
+	* utils/pdf-tokeniser.c (main)
+	* utils/pdf-filter.c (main)
+
+2011-08-29  Aleksander Morgado  <aleksander@gnu.org>
+
 	core: use error reporting in library initialization
 	* src/pdf-global.[h|c] (pdf_init)
 	* src/Makefile.am (PUBLIC_HDRS): ensure `pdf-error.h' is added before

@@ -262,6 +262,7 @@ static pdf_fsys_file_t *open_file (pdf_char_t                *name,
 int
 main (int argc, char *argv[])
 {
+  pdf_error_t *error = NULL;
   pdf_stm_t *stm, *fsys_stm;
   pdf_bool_t read_mode, read_pdf_fsys, write_pdf_fsys;
   int last_ci;
@@ -273,7 +274,14 @@ main (int argc, char *argv[])
   setlocale (LC_ALL, "");
 #endif /* HAVE_SETLOCALE */
 
-  pdf_init ();
+  /* Initialize the library */
+  if (!pdf_init (&error))
+    {
+      fprintf (stderr,
+               "error: couldn't initialize the PDF library: %s",
+               pdf_error_get_message (error));
+      return -1;
+    }
 
   stm = create_stream (argc, argv, &read_mode, &last_ci, &read_pdf_fsys,
                        &write_pdf_fsys, &fsys_stm);
@@ -487,8 +495,6 @@ create_stream (int          argc,
   */
   *last_ci = ci;
 
-  pdf_init ();
-
   *read_pdf_fsys = PDF_FALSE;
   *write_pdf_fsys = PDF_FALSE;
   if (infile_name == NULL && outfile_name == NULL)
@@ -597,10 +603,10 @@ install_filters (int        argc,
   int pred_colors;
   int pred_bpc;
   int pred_columns;
-  pdf_bool_t pred_predictor_is_set = PDF_FALSE; 
-  pdf_bool_t pred_colors_is_set = PDF_FALSE; 
-  pdf_bool_t pred_bpc_is_set = PDF_FALSE; 
-  pdf_bool_t pred_columns_set = PDF_FALSE; 
+  pdf_bool_t pred_predictor_is_set = PDF_FALSE;
+  pdf_bool_t pred_colors_is_set = PDF_FALSE;
+  pdf_bool_t pred_bpc_is_set = PDF_FALSE;
+  pdf_bool_t pred_columns_set = PDF_FALSE;
 
   pdf_error_t *error = NULL;
   char filter_to_install = FILTER_INSTALL_NONE;
@@ -744,7 +750,7 @@ install_filters (int        argc,
                 fprintf (stdout, "%s\n", pdf_filter_help_msg);
                 exit (EXIT_FAILURE);
               }
-            pred_colors_is_set = PDF_TRUE; 
+            pred_colors_is_set = PDF_TRUE;
             break;
           }
         case PRED_BITSPERCOMPONENT_ARG:
@@ -787,22 +793,22 @@ install_filters (int        argc,
           {
             filter_to_install = PREDENC_FILTER_INSTALL;
 
-            /* set parameters as not set */ 
-            pred_predictor_is_set = PDF_FALSE; 
-            pred_colors_is_set = PDF_FALSE; 
-            pred_bpc_is_set = PDF_FALSE; 
-            pred_columns_set = PDF_FALSE; 
+            /* set parameters as not set */
+            pred_predictor_is_set = PDF_FALSE;
+            pred_colors_is_set = PDF_FALSE;
+            pred_bpc_is_set = PDF_FALSE;
+            pred_columns_set = PDF_FALSE;
             break;
           }
         case PREDDEC_FILTER_ARG:
           {
             filter_to_install = PREDDEC_FILTER_INSTALL;
 
-            /* set parameters as not set */ 
-            pred_predictor_is_set = PDF_FALSE; 
-            pred_colors_is_set = PDF_FALSE; 
-            pred_bpc_is_set = PDF_FALSE; 
-            pred_columns_set = PDF_FALSE; 
+            /* set parameters as not set */
+            pred_predictor_is_set = PDF_FALSE;
+            pred_colors_is_set = PDF_FALSE;
+            pred_bpc_is_set = PDF_FALSE;
+            pred_columns_set = PDF_FALSE;
             break;
           }
         case PREDENC_FILTER_INSTALL:
