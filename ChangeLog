@@ -1,3 +1,8 @@
+2011-08-29  Aleksander Morgado  <aleksander@gnu.org>
+
+	build-aux/generate-ucd: avoid extra parenthesis
+	* build-aux/pdf-text-generate-ucd.c (cut_field_in_chunks_SpecialCasing)
+
 2011-08-04  Georg Gottleuber <georg.gottleuber@uni-ulm.de>
 
 	base,stm: fix bug in lzw filter.
