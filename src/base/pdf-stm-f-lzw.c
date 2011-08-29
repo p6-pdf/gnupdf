@@ -689,7 +689,7 @@ stm_f_lzwdec_apply (void          *state,
 
           if (st->dict.size == st->buffer.maxval - 1 - st->early_change)
             {
-              if (!lzw_buffer_inc_bitsize (&st->buffer));
+              lzw_buffer_inc_bitsize (&st->buffer);
               /* break; We must wait for the reset code, don't reset yet. */
             }
 
