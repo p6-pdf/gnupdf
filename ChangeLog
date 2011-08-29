@@ -1,5 +1,12 @@
 2011-08-29  Aleksander Morgado  <aleksander@gnu.org>
 
+	core: use error reporting in library initialization
+	* src/pdf-global.[h|c] (pdf_init)
+	* src/Makefile.am (PUBLIC_HDRS): ensure `pdf-error.h' is added before
+	`pdf-global.h' when generating `pdf.h'.
+
+2011-08-29  Aleksander Morgado  <aleksander@gnu.org>
+
 	base,error: new `PDF_EDOMAIN_GLOBAL' error domain
 	* src/base/pdf-error.h (PDF_ERROR_DOMAIN_LIST).
 

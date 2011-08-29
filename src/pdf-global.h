@@ -28,12 +28,23 @@
 
 #include <config.h>
 #include <pdf-types.h>
+#include <pdf-error.h>
 
 /* BEGIN PUBLIC */
 
+/* -------------------- General Library Initialization ---------------------- */
 /* API of the library */
 
-int  pdf_init   (void);
+/* Initialize the library.
+ * Must be called before any other method.
+ */
+pdf_bool_t pdf_init (pdf_error_t **error);
+
+/* Clean exit handling.
+ * Only to be called when you really want to spend some time cleaning up the
+ * context allocated by the library, or when you want to get a clean memory
+ * leak report. Otherwise, it's safe to skip this and just exit the program.
+ */
 void pdf_finish (void);
 
 /* END PUBLIC */
