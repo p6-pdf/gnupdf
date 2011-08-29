@@ -28,6 +28,8 @@
 #include <locale.h>
 #include <string.h>
 
+#include <check.h>
+
 #include <pdf-test-common.h>
 
 void
@@ -41,7 +43,7 @@ pdf_test_setup (void)
 #endif /* HAVE_SETLOCALE */
 
   /* Initialize the PDF library */
-  pdf_init ();
+  fail_unless (pdf_init (NULL));
 }
 
 void

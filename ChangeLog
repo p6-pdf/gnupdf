@@ -1,5 +1,10 @@
 2011-08-29  Aleksander Morgado  <aleksander@gnu.org>
 
+	torture: port to new library initialization API
+	* torture/unit/pdf-test-common.c (pdf_test_setup)
+
+2011-08-29  Aleksander Morgado  <aleksander@gnu.org>
+
 	utils: port to new library initialization API
 	* utils/pdf-filereader.c (main)
 	* utils/pdf-tokeniser.c (main)
