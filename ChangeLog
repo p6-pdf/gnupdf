@@ -1,5 +1,10 @@
 2011-08-29  Aleksander Morgado  <aleksander@gnu.org>
 
+	base,stm: avoid compile warning by including pdf-hash-helper.h
+	* src/base/pdf-stm-f-dct.c
+
+2011-08-29  Aleksander Morgado  <aleksander@gnu.org>
+
 	base,stm: avoid compiler warnings
 	The backends do NOT own the input objects (file or buffer), so the
 	backends must be kept alive as long as the input objects exist.

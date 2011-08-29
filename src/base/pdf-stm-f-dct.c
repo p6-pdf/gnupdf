@@ -32,6 +32,7 @@
 #include <pdf-types.h>
 #include <pdf-types-buffer.h>
 #include <pdf-hash.h>
+#include <pdf-hash-helper.h>
 #include <pdf-stm-f-dct.h>
 
 /* Define DCT decoder */
