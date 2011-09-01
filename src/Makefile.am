@@ -160,9 +160,9 @@ AM_CPPFLAGS = -I$(top_srcdir)/lib \
 # Public header generation
 
 PUBLIC_HDRS = pdf-config.h \
-              pdf-global.h \
               base/pdf-types.h \
               base/pdf-error.h \
+              pdf-global.h \
               base/pdf-types-buffer.h \
               base/pdf-types-pmon.h \
               base/pdf-types-uuid.h \

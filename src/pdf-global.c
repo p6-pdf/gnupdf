@@ -46,31 +46,38 @@ const pdf_char_t *pdf_version = "0.1";
    function. */
 struct pdf_globals_s
 {
-  int initialized;
+  pdf_bool_t initialized;
   pthread_mutex_t init_mutex;
 };
 
-struct pdf_globals_s pdf_globals = {
+/* General library context */
+static struct pdf_globals_s pdf_globals = {
   PDF_FALSE,
   PTHREAD_MUTEX_INITIALIZER
 };
 
-/* Library initialization routine
- * TODO: Return pdf_error_t and such */
-int
-pdf_init (void)
+/* Library initialization routine */
+pdf_bool_t
+pdf_init (pdf_error_t **error)
 {
-  int ret = PDF_ERROR;
+  pdf_bool_t initialized;
 
   if (pthread_mutex_lock (&(pdf_globals.init_mutex)) != 0)
-    return ret;
+    {
+      pdf_set_error (error,
+                     PDF_EDOMAIN_GLOBAL,
+                     PDF_ERROR,
+                     "cannot ensure library initialization: "
+                     "unable to lock mutex");
+      return PDF_FALSE;
+    }
 
   /* The mutex is locked within this brace. NO "return" statements allowed
    * from within this block as they will leave the mutex locked and set us
    * up for a deadlock.
    */
   if (pdf_globals.initialized)
-    ret = PDF_OK;
+    initialized = PDF_TRUE;
   else
     {
       pdf_error_t *inner_error = NULL;
@@ -81,19 +88,21 @@ pdf_init (void)
           !pdf_fsys_init (&inner_error) ||
           !pdf_tokeniser_init (&inner_error))
         {
-          /* TODO: Propagate error */
-          pdf_error_destroy (inner_error);
+          pdf_propagate_error (error, inner_error);
+          pdf_prefix_error (error,
+                            "cannot ensure library initialization: ");
+          initialized = PDF_FALSE;
         }
       else
         {
+          initialized = PDF_TRUE;
           pdf_globals.initialized = PDF_TRUE;
-          ret = PDF_OK;
         }
     }
 
-  pthread_mutex_unlock ( &(pdf_globals.init_mutex) );
+  pthread_mutex_unlock (&(pdf_globals.init_mutex));
 
-  return ret;
+  return initialized;
 }
 
 /* Library finalization routine */

@@ -1,5 +1,34 @@
 2011-08-29  Aleksander Morgado  <aleksander@gnu.org>
 
+	doc: documented the new initialization API
+	* doc/gnupdf.texi (Overview)
+
+2011-08-29  Aleksander Morgado  <aleksander@gnu.org>
+
+	torture: port to new library initialization API
+	* torture/unit/pdf-test-common.c (pdf_test_setup)
+
+2011-08-29  Aleksander Morgado  <aleksander@gnu.org>
+
+	utils: port to new library initialization API
+	* utils/pdf-filereader.c (main)
+	* utils/pdf-tokeniser.c (main)
+	* utils/pdf-filter.c (main)
+
+2011-08-29  Aleksander Morgado  <aleksander@gnu.org>
+
+	core: use error reporting in library initialization
+	* src/pdf-global.[h|c] (pdf_init)
+	* src/Makefile.am (PUBLIC_HDRS): ensure `pdf-error.h' is added before
+	`pdf-global.h' when generating `pdf.h'.
+
+2011-08-29  Aleksander Morgado  <aleksander@gnu.org>
+
+	base,error: new `PDF_EDOMAIN_GLOBAL' error domain
+	* src/base/pdf-error.h (PDF_ERROR_DOMAIN_LIST).
+
+2011-08-29  Aleksander Morgado  <aleksander@gnu.org>
+
 	utils,pdf-filter: avoid calling pdf_crypt_init()
 	* utils/pdf-filter.c (install_filters)
 
