@@ -1,3 +1,9 @@
+2011-09-18  Jose E. Marchesi  <jemarch@gnu.org>
+
+	utils: fix for some segfaults in pdf-tokeniser.
+	* utils/pdf-tokeniser.c (print_token): Avoid freeing memory in the
+	stack.  Patch from Stefano Facchini.
+
 2011-08-29  Aleksander Morgado  <aleksander@gnu.org>
 
 	doc: documented the new initialization API

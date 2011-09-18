@@ -208,7 +208,9 @@ print_token (pdf_token_t *token)
     str = fmtbin (str, strsize);
 
   printf ("%s(%s)\n", typ, str);
-  free (str);
+
+  if (str != tmpbuf)
+    free (str);
 };
 
 void
@@ -217,11 +219,11 @@ print_file (FILE       *file,
             pdf_u32_t   reader_flags,
             pdf_u32_t   writer_flags)
 {
-  pdf_token_reader_t *reader;
-  pdf_token_writer_t *writer;
+  pdf_token_reader_t *reader = NULL;
+  pdf_token_writer_t *writer = NULL;
   pdf_token_t *token;
-  pdf_stm_t *stm_in;
-  pdf_stm_t *stm_out;
+  pdf_stm_t *stm_in = NULL;
+  pdf_stm_t *stm_out = NULL;
   pdf_error_t *error = NULL;
 
   stm_in = pdf_stm_cfile_new (file,
