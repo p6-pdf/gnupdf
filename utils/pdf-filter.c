@@ -58,7 +58,7 @@ pdf_size_t jbig2dec_global_segments_size = 0;
  * Command line options management
  */
 
-enum
+enum filter_arg
 {
   FILTER_INSTALL_NONE,
   HELP_ARG,
@@ -116,16 +116,20 @@ enum
   V2DEC_FILTER_INSTALL
 };
 
-/* name filter args here */
-#define IS_FILTER_ARG(arg)                  \
-  ((arg) == PRED_COLORS_ARG              || \
-   (arg) == PRED_BITSPERCOMPONENT_ARG    || \
-   (arg) == PRED_COLUMNS_ARG             || \
-   (arg) == PRED_PREDICTOR_ARG           || \
-   (arg) == JBIG2DEC_GLOBAL_SEGMENTS_ARG || \
-   (arg) == JBIG2DEC_PAGE_SIZE           || \
-   (arg) == LZW_EARLYCHANGE_ARG          || \
-   (arg) == KEY_ARG)
+static pdf_bool_t
+is_filter_arg (enum filter_arg arg)
+{
+  return (arg == PRED_COLORS_ARG
+          || arg == PRED_BITSPERCOMPONENT_ARG
+          || arg == PRED_COLUMNS_ARG
+          || arg == PRED_PREDICTOR_ARG
+#ifdef HAVE_LIBJBIG2DEC
+          || arg == JBIG2DEC_GLOBAL_SEGMENTS_ARG
+          || arg == JBIG2DEC_PAGE_SIZE
+#endif /* HAVE_LIBJBIG2DEC */
+          || arg == LZW_EARLYCHANGE_ARG
+          || arg == KEY_ARG);
+}
 
 
 static const struct option GNU_longOptions[] =
@@ -1314,7 +1318,7 @@ install_filters (int        argc,
         }
 
       /* next arg is a new filter and current filter is with args */
-      if (!IS_FILTER_ARG(next_ci) && filter_to_install != FILTER_INSTALL_NONE)
+      if (!is_filter_arg (next_ci) && filter_to_install != FILTER_INSTALL_NONE)
         {
           /* do extra loop installing current filter */
           ci = filter_to_install;
