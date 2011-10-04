@@ -102,6 +102,7 @@ enum filter_arg
   LZWENC_FILTER_ARG,
   LZWDEC_FILTER_ARG,
   LZW_EARLYCHANGE_ARG,
+  LZW_NO_EARLYCHANGE_ARG,
   LZWENC_FILTER_INSTALL,
   LZWDEC_FILTER_INSTALL,
   MD5ENC_FILTER_ARG,
@@ -128,6 +129,7 @@ is_filter_arg (enum filter_arg arg)
           || arg == JBIG2DEC_PAGE_SIZE
 #endif /* HAVE_LIBJBIG2DEC */
           || arg == LZW_EARLYCHANGE_ARG
+          || arg == LZW_NO_EARLYCHANGE_ARG
           || arg == KEY_ARG);
 }
 
@@ -146,6 +148,7 @@ static const struct option GNU_longOptions[] =
     {"lzwenc", no_argument, NULL, LZWENC_FILTER_ARG},
     {"lzwdec", no_argument, NULL, LZWDEC_FILTER_ARG},
     {"lzw-earlychange", no_argument, NULL, LZW_EARLYCHANGE_ARG},
+    {"lzw-no-earlychange", no_argument, NULL, LZW_NO_EARLYCHANGE_ARG},
     {"a85dec", no_argument, NULL, ASCII85DEC_FILTER_ARG},
     {"a85enc", no_argument, NULL, ASCII85ENC_FILTER_ARG},
     {"predenc", no_argument, NULL, PREDENC_FILTER_ARG},
@@ -236,7 +239,8 @@ Filter properties\n\
   --pred-colors=NUM                   next predictors colors per sample\n\
   --pred-bpc=NUM                      next predictors bits per color component\n\
   --pred-columns=NUM                  next predictors number of samples per row\n\
-  --lzw-earlychange                   toggles earlychange for next lzw filters\n\
+  --lzw-earlychange                   enables earlychange for next lzw filters\n\
+  --lzw-no-earlychange                disables earlychange for next lzw filters (default)\n\
   --jbig2dec-globals=FILE             file containing global segments\n\
 \n"
   PDF_UTILS_HELP_FOOTER_DOC ("pdf-filter");
@@ -898,20 +902,19 @@ install_filters (int        argc,
             lzw_earlychange = PDF_TRUE;
             break;
           }
+        case LZW_NO_EARLYCHANGE_ARG:
+          {
+            lzw_earlychange = PDF_FALSE;
+            break;
+          }
         case LZWENC_FILTER_ARG:
           {
             filter_to_install = LZWENC_FILTER_INSTALL;
-
-            /* set default value */
-            lzw_earlychange = PDF_FALSE;
             break;
           }
         case LZWDEC_FILTER_ARG:
           {
             filter_to_install = LZWDEC_FILTER_INSTALL;
-
-            /* set default value */
-            lzw_earlychange = PDF_FALSE;
             break;
           }
         case LZWENC_FILTER_INSTALL: /* Note that both ENC and DEC go here */

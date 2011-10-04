@@ -1,5 +1,12 @@
 2011-10-04  Aleksander Morgado  <aleksander@gnu.org>
 
+	utils,pdf-filter: New `--lzw-no-earlychange' parameter.
+	* utils/pdf-filter.c: the EarlyChange parameter applies to all filters
+	defined after the use of `--lzw-earlychange'; so if we afterwards want
+	to disable EarlyChange, we can use the new `--lzw-no-earlychange'.
+
+2011-10-04  Aleksander Morgado  <aleksander@gnu.org>
+
 	base,stm: fix use of uninitialised value
 	* src/base/pdf-stm.c (pdf_stm_init): `stm->mode' not yet set when
 	creating the NULL filter, so use input `mode' argument instead.
