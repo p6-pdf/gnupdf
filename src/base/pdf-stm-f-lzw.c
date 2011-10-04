@@ -419,8 +419,13 @@ stm_f_lzwenc_apply (void          *state,
           lzw_buffer_put_code (&st->buffer, st->string.prefix);
           st->string.prefix = st->string.suffix;
 
-          if (st->buffer.maxval - st->early_change == st->dict.size)
+          if (st->dict.size == st->buffer.maxval - st->early_change)
             {
+              PDF_DEBUG_BASE ("[LZW encoder] Increasing bitsize... "
+                              "(dictsize[%d] == maxval[%d] - earlychange[%d])",
+                              st->dict.size,
+                              st->buffer.maxval,
+                              st->early_change);
               if (!lzw_buffer_inc_bitsize (&st->buffer))
                 {
                   lzw_buffer_put_code (&st->buffer, LZW_RESET_CODE);
@@ -434,8 +439,13 @@ stm_f_lzwenc_apply (void          *state,
   if (finish)
     {
       lzw_buffer_put_code (&st->buffer, st->string.prefix);
-      if ((st->buffer.maxval - st->early_change) == st->dict.size)
+      if (st->dict.size == st->buffer.maxval - st->early_change)
         {
+          PDF_DEBUG_BASE ("[LZW encoder] Increasing bitsize (FINISHING)... "
+                          "(dictsize[%d] == maxval[%d] - earlychange[%d])",
+                          st->dict.size,
+                          st->buffer.maxval,
+                          st->early_change);
           lzw_buffer_inc_bitsize (&st->buffer);
         }
 

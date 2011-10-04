@@ -1,4 +1,9 @@
-2011-10-03  Aleksander Morgado  <aleksander@gnu.org>
+2011-10-04  Aleksander Morgado  <aleksander@gnu.org>
+
+	base,stm: include debug traces when increasing bitsize in LZW
+	* src/base/pdf-stm-f-lzw.c (stm_f_lzwenc_apply)
+
+2011-10-04  Aleksander Morgado  <aleksander@gnu.org>
 
 	base,stm: use constant symbol as default EarlyChange configuration.
 	* src/base/pdf-stm-f-lzw.c (stm_f_lzwenc_init)
