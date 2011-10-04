@@ -1,3 +1,9 @@
+2011-10-03  Aleksander Morgado  <aleksander@gnu.org>
+
+	base,stm: use constant symbol as default EarlyChange configuration.
+	* src/base/pdf-stm-f-lzw.c (stm_f_lzwenc_init)
+	(stm_f_lzwdec_init)
+
 2011-10-04  Aleksander Morgado  <aleksander@gnu.org>
 
 	utils,pdf-filter: New `--lzw-no-earlychange' parameter.

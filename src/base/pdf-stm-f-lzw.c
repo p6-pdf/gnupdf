@@ -366,7 +366,7 @@ stm_f_lzwenc_init (const pdf_hash_t  *params,
       return PDF_FALSE;
     }
 
-  filter_state->early_change = 1; /* set default */
+  filter_state->early_change = LZW_DEFAULT_EARLY_CHANGE; /* set default */
 
   /* EarlyChange is optional! */
   if (params &&
@@ -518,7 +518,7 @@ stm_f_lzwdec_init (const pdf_hash_t  *params,
       return PDF_FALSE;
     }
 
-  filter_state->early_change = 1; /* set default */
+  filter_state->early_change = LZW_DEFAULT_EARLY_CHANGE; /* set default */
 
   /* EarlyChange is optional! */
   if (params &&
