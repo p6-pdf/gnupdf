@@ -647,7 +647,7 @@ pdf_stm_init (pdf_stm_t            *stm,
   stm->filter = pdf_stm_filter_new (PDF_STM_FILTER_NULL,
                                     NULL, /* No filter params needed */
                                     cache_size,
-                                    (stm->mode == PDF_STM_READ ?
+                                    (mode == PDF_STM_READ ?
                                      PDF_STM_FILTER_MODE_READ :
                                      PDF_STM_FILTER_MODE_WRITE),
                                     error);

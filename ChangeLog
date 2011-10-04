@@ -1,3 +1,9 @@
+2011-10-04  Aleksander Morgado  <aleksander@gnu.org>
+
+	base,stm: fix use of uninitialised value
+	* src/base/pdf-stm.c (pdf_stm_init): `stm->mode' not yet set when
+	creating the NULL filter, so use input `mode' argument instead.
+
 2011-10-01  Aleksander Morgado  <aleksander@gnu.org>
 
 	utils: fix compilation when not using jbig2dec
