@@ -1,5 +1,14 @@
 2011-10-11  Jose E. Marchesi  <jemarch@gnu.org>
 
+	torture: JBIG2 test files corrected.  Patch by Georg Gottleuber.
+	* torture/testdata/TD00003: Updated.
+
+	* torture/testdata/TD00002.desc: Description updated.
+	* torture/testdata/TD00001.desc: Likewise.
+	* torture/testdata/TD00003.desc: Likewise.
+
+2011-10-11  Jose E. Marchesi  <jemarch@gnu.org>
+
 	doc: describe dependencies better.
 	* doc/gnupdf-hg.texi (Information for Newcomers): Mention
 	README-dev.
