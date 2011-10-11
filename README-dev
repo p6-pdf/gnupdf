@@ -1,0 +1,38 @@
+This README-dev file describes the development environment.
+
+  Copyright (C) 2002, 2003, 2005, 2006, 2008, 2010, 2011
+  Free Software Foundation, Inc.
+
+  Copying and distribution of this file, with or without modification,
+  are permitted in any medium without royalty provided the copyright
+  notice and this notice are preserved.
+
+The development sources are available through anonymous Bazaar at
+Savannah:
+  http://savannah.gnu.org/bzr/?group=pdf
+
+
+Autotools
+---------
+This distribution uses whatever versions of Automake, Autoconf, and
+Gettext are listed in NEWS; usually the latest ones released.  If you
+are getting the sources from bzr (or change configure.ac), you'll need
+to have these tools installed to (re)build.  You'll also need help2man.
+All of these programs are available from ftp://ftp.gnu.org/gnu.
+
+Dependencies
+------------
+There are some third party dependencies needed to build some of the
+utilities shipped in this distribution.  The configure script checks
+for the needed packages and drives the conditional compilation of the
+impacted utitilities.  The dependencies are:
+- mdb2rec depends on glib 2.0 and libmdb, available at
+  http://mdbtools.sf.net.
+- The encryption support depends on libgcrypt, available at
+  http://www.gnu.org/s/libgcrypt.
+
+Building
+--------
+After getting the bzr sources, and installing the tools above, you can run
+  sh ./autogen.sh
+to do a fresh build.  After that first time, running make should suffice.

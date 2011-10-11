@@ -132,6 +132,10 @@ documents to look at are the ``GNU PDF Library Reference Guide''
 (available in doc/gnupdf.texi) and the ``GNU PDF Library Architecture
 Manual'' (available in doc/gnupdf-arch.texi).
 
+There is useful information in the @file{README-dev} file located at
+the root of the source distribution.  In particular the dependencies
+that you need to have installed in your system are detailed there.
+
 If you have doubts about any aspect of the library or the
 implementation, just ask in pdf-devel.
 

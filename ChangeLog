@@ -1,3 +1,15 @@
+2011-10-11  Jose E. Marchesi  <jemarch@gnu.org>
+
+	doc: describe dependencies better.
+	* doc/gnupdf-hg.texi (Information for Newcomers): Mention
+	README-dev.
+
+	* README-dev: New file.
+
+	* DEPENDENCIES: Removed.
+	* README.cvs: Likewise.
+	* README.bzr: Likewise.
+
 2011-10-04  Aleksander Morgado  <aleksander@gnu.org>
 
 	base,stm: include debug traces when increasing bitsize in LZW
