@@ -1,5 +1,11 @@
 2011-10-11  Jose E. Marchesi  <jemarch@gnu.org>
 
+	prmgt: converters to html reverted to a previous revision.
+	* prmgt/testlog2html.in: Reverted to revision 932.
+	* prmgt/apic2html.in: Reverted to revision 933.
+
+2011-10-11  Jose E. Marchesi  <jemarch@gnu.org>
+
 	torture: JBIG2 test files corrected.  Patch by Georg Gottleuber.
 	* torture/testdata/TD00003: Updated.
 
