@@ -15,8 +15,4 @@ pdf-text-generate-ucd
 useless-if-before-free
 vc-list-files
 gendocs.sh
-arg-nonnull.h
 config.rpath
-unused-parameter.h
-warn-on-use.h
-c++defs.h

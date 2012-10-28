@@ -132,8 +132,8 @@ pdf_text_detect_host_language_and_country (pdf_error_t **error)
       return PDF_FALSE;
     }
 
-  if (!STREQ (locale_name, "C", 'C', 0, 0, 0, 0, 0, 0, 0, 0) &&
-      !STREQ (locale_name, "POSIX", 'P', 'O', 'S', 'I', 'X', 0, 0, 0, 0))
+  if (!STREQ_OPT (locale_name, "C", 'C', 0, 0, 0, 0, 0, 0, 0, 0) &&
+      !STREQ_OPT (locale_name, "POSIX", 'P', 'O', 'S', 'I', 'X', 0, 0, 0, 0))
     {
       /* Store language ID */
       strncpy (&(text_context.host_language_id[0]),

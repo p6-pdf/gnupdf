@@ -1,5 +1,5 @@
 /* fflush.c -- allow flushing input streams
-   Copyright (C) 2007-2011 Free Software Foundation, Inc.
+   Copyright (C) 2007-2012 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -28,6 +28,8 @@
 
 #include "stdio-impl.h"
 
+#include "unused-parameter.h"
+
 #undef fflush
 
 
@@ -48,7 +50,7 @@ clear_ungetc_buffer_preserving_position (FILE *fp)
 static inline void
 clear_ungetc_buffer (FILE *fp)
 {
-# if defined __sferror || defined __DragonFly__ /* FreeBSD, NetBSD, OpenBSD, DragonFly, MacOS X, Cygwin */
+# if defined __sferror || defined __DragonFly__ /* FreeBSD, NetBSD, OpenBSD, DragonFly, Mac OS X, Cygwin */
   if (HASUB (fp))
     {
       fp_->_p += fp_->_r;
@@ -60,7 +62,7 @@ clear_ungetc_buffer (FILE *fp)
       fp->_ungetc_count = 0;
       fp->_rcount = - fp->_rcount;
     }
-# elif defined _IOERR               /* AIX, HP-UX, IRIX, OSF/1, Solaris, OpenServer, mingw, NonStop Kernel */
+# elif defined _IOERR               /* Minix, AIX, HP-UX, IRIX, OSF/1, Solaris, OpenServer, mingw, NonStop Kernel */
   /* Nothing to do.  */
 # else                              /* other implementations */
   fseeko (fp, 0, SEEK_CUR);
@@ -69,7 +71,7 @@ clear_ungetc_buffer (FILE *fp)
 
 #endif
 
-#if (defined __sferror || defined __DragonFly__) && defined __SNPT /* FreeBSD, NetBSD, OpenBSD, DragonFly, MacOS X, Cygwin */
+#if (defined __sferror || defined __DragonFly__) && defined __SNPT /* FreeBSD, NetBSD, OpenBSD, DragonFly, Mac OS X, Cygwin */
 
 static inline int
 disable_seek_optimization (FILE *fp)
@@ -88,9 +90,10 @@ restore_seek_optimization (FILE *fp, int saved_flags)
 #endif
 
 static inline void
-update_fpos_cache (FILE *fp, off_t pos)
+update_fpos_cache (FILE *fp _GL_UNUSED_PARAMETER,
+                   off_t pos _GL_UNUSED_PARAMETER)
 {
-#if defined __sferror || defined __DragonFly__ /* FreeBSD, NetBSD, OpenBSD, DragonFly, MacOS X, Cygwin */
+#if defined __sferror || defined __DragonFly__ /* FreeBSD, NetBSD, OpenBSD, DragonFly, Mac OS X, Cygwin */
 # if defined __CYGWIN__
   /* fp_->_offset is typed as an integer.  */
   fp_->_offset = pos;
@@ -188,7 +191,7 @@ rpl_fflush (FILE *stream)
         return result;
     }
 
-# if (defined __sferror || defined __DragonFly__) && defined __SNPT /* FreeBSD, NetBSD, OpenBSD, DragonFly, MacOS X, Cygwin */
+# if (defined __sferror || defined __DragonFly__) && defined __SNPT /* FreeBSD, NetBSD, OpenBSD, DragonFly, Mac OS X, Cygwin */
 
     {
       /* Disable seek optimization for the next fseeko call.  This tells the

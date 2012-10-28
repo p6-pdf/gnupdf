@@ -1,3 +1,10 @@
+2012-10-28  Jose E. Marchesi  <jemarch@gnu.org>
+
+	gnulib update.
+	* src/base/pdf-text-context.c
+	(pdf_text_detect_host_language_and_country): Use STREQ_OPT instead
+	of STREQ.
+
 2011-10-11  Jose E. Marchesi  <jemarch@gnu.org>
 
 	prmgt: converters to html reverted to a previous revision.
