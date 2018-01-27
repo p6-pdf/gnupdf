@@ -38,7 +38,7 @@ Documentation License''.
 @end direntry
 
 @titlepage
-@sp
+@sp 1
 @center @titlefont{GNU PDF Utilities}
 @sp 4
 @center Updated for version @value{VERSION}.
