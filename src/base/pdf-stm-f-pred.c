@@ -53,14 +53,14 @@ PDF_STM_FILTER_DEFINE (pdf_stm_f_preddec_get,
 /* prediction modes */
 typedef enum
 {
-  PDF_STM_F_PREDENC_NO_PREDICTION = 1,
-  PDF_STM_F_PREDENC_TIFF_PREDICTOR_2 = 2,
-  PDF_STM_F_PREDENC_PNG_NONE_ALL_ROWS = 10,
-  PDF_STM_F_PREDENC_PNG_SUB_ALL_ROWS = 11,
-  PDF_STM_F_PREDENC_PNG_UP_ALL_ROWS = 12,
-  PDF_STM_F_PREDENC_PNG_AVERAGE_ALL_ROWS = 13,
-  PDF_STM_F_PREDENC_PNG_PAETH_ALL_ROWS = 14,
-  PDF_STM_F_PREDENC_PNG_OPTIMUM = 15
+  PDF_STM_F_PREDDICT_NO_PREDICTION = 1,
+  PDF_STM_F_PREDDICT_TIFF_PREDICTOR_2 = 2,
+  PDF_STM_F_PREDDICT_PNG_NONE_ALL_ROWS = 10,
+  PDF_STM_F_PREDDICT_PNG_SUB_ALL_ROWS = 11,
+  PDF_STM_F_PREDDICT_PNG_UP_ALL_ROWS = 12,
+  PDF_STM_F_PREDDICT_PNG_AVERAGE_ALL_ROWS = 13,
+  PDF_STM_F_PREDDICT_PNG_PAETH_ALL_ROWS = 14,
+  PDF_STM_F_PREDDICT_PNG_OPTIMUM = 15
 } pdf_stm_f_predenc_method_t;
 
 typedef enum
@@ -72,11 +72,11 @@ typedef enum
 
 typedef enum
 {
-  PDF_STM_F_PREDDEC_PNG_NONE = 10,
-  PDF_STM_F_PREDDEC_PNG_SUB = 11,
-  PDF_STM_F_PREDDEC_PNG_UP = 12,
-  PDF_STM_F_PREDDEC_PNG_AVERAGE = 13,
-  PDF_STM_F_PREDDEC_PNG_PAETH = 14
+  PDF_STM_F_PREDDEC_PNG_NONE = 0,
+  PDF_STM_F_PREDDEC_PNG_SUB = 1,
+  PDF_STM_F_PREDDEC_PNG_UP = 2,
+  PDF_STM_F_PREDDEC_PNG_AVERAGE = 3,
+  PDF_STM_F_PREDDEC_PNG_PAETH = 4
 } pdf_stm_f_predec_png_type_t;
 
 
@@ -88,6 +88,7 @@ typedef enum
 
 typedef struct pdf_stm_f_pred_s
 {
+  pdf_stm_f_preddec_type_t type; /* the overall type of predictor */
   int predictor; /* A code that selects the predictor algorithm. If
                     the value of this entry is 1, the filter assumes
                     that the normal algorithm was used to encode the
@@ -148,7 +149,7 @@ typedef struct pdf_stm_f_pred_s
  */
 typedef struct pred_bit_ptr_s 
 {
-  pdf_char_t* ptr;
+  pdf_uchar_t* ptr;
   int offset;
   int mask;
   int block_size;
@@ -156,7 +157,7 @@ typedef struct pred_bit_ptr_s
 
 static void
 pred_bit_ptr_init (pred_bit_ptr_t* bp, 
-              pdf_char_t* ptr, 
+              pdf_uchar_t* ptr, 
               int block_size)
 {
   bp->ptr = ptr;
@@ -191,8 +192,7 @@ stm_f_pred_init (const pdf_hash_t  *params,
 {
   pdf_size_t actual_len;
   pdf_stm_f_pred_t* filter_state;
-
-  /* Predictor decides if we need more paramters; so check it first */
+  /* Predictor decides if we need more parameters; so check it first */
   if (!params || !pdf_hash_key_p (params, PRED_PARAM_PREDICTOR))
     {
       pdf_set_error (error,
@@ -239,15 +239,17 @@ stm_f_pred_init (const pdf_hash_t  *params,
       return PDF_FALSE;
     }
 
-  filter_state->predictor = pdf_hash_get_size (params, PRED_PARAM_PREDICTOR);
+   pdf_stm_f_predenc_method_t method = pdf_hash_get_size (params, PRED_PARAM_PREDICTOR);
+
   filter_state->colors = pdf_hash_get_size (params, PRED_PARAM_COLORS);
   filter_state->bits_per_component = pdf_hash_get_size (params, PRED_PARAM_BPC);
   filter_state->columns = pdf_hash_get_size (params, PRED_PARAM_COLUMNS);
 
   /* as no parameters for predictor 1 (NO_PREDICTION) is needed */
-  if (filter_state->predictor == PDF_STM_F_PREDENC_NO_PREDICTION)
+  if (method == PDF_STM_F_PREDDICT_NO_PREDICTION)
     {
       /* set default values */
+      filter_state->type = PDF_STM_F_PREDDEC_NO_PREDICTION;
       filter_state->colors = 1;
       filter_state->bits_per_component = 1;
       filter_state->columns = 1;
@@ -273,7 +275,28 @@ stm_f_pred_init (const pdf_hash_t  *params,
                           "bad" : "ok"));
           return PDF_FALSE;
         }
-    }
+
+      if ((method >= PDF_STM_F_PREDDICT_PNG_NONE_ALL_ROWS)
+	  && (method <= PDF_STM_F_PREDDICT_PNG_OPTIMUM)) {
+	filter_state->type = PDF_STM_F_PREDDEC_PNG;
+	filter_state->predictor = method == PDF_STM_F_PREDDICT_PNG_OPTIMUM
+	  ? PDF_STM_F_PREDDICT_PNG_PAETH_ALL_ROWS
+	  : method - 10;
+      }
+      else {
+	if (method == PDF_STM_F_PREDDICT_TIFF_PREDICTOR_2) {
+	  filter_state->type = PDF_STM_F_PREDDEC_TIFF_PREDICTOR_2;
+	}
+	else {
+	  pdf_set_error (error,
+			 PDF_EDOMAIN_BASE_STM,
+			 PDF_EBADDATA,
+			 "cannot initialize predictor encoder/decoder: "
+			 "bad parameter values ('"PRED_PARAM_PREDICTOR"')");
+	  return PDF_FALSE;
+	}
+      }
+  }
 
   /* We need the number of full bytes that each row has. As defined in the
    * PNG standard we can assume that if greater than 8 the bits per component
@@ -330,18 +353,18 @@ stm_f_pred_init (const pdf_hash_t  *params,
 
 
 static void
-encode_row_none(pdf_char_t* cur, 
-                pdf_char_t* prev, 
-                pdf_char_t* out,
+encode_row_none(pdf_uchar_t* cur, 
+                pdf_uchar_t* prev, 
+                pdf_uchar_t* out,
                 pdf_stm_f_pred_t* state) 
 {
   memcpy(out, cur, state->scanline_len);
 }
 
 static void
-encode_row_sub(pdf_char_t* cur, 
-               pdf_char_t* prev, 
-               pdf_char_t* out,
+encode_row_sub(pdf_uchar_t* cur, 
+               pdf_uchar_t* prev, 
+               pdf_uchar_t* out,
                pdf_stm_f_pred_t* state)
 {
   pdf_size_t i;
@@ -354,9 +377,9 @@ encode_row_sub(pdf_char_t* cur,
 }
 
 static void
-encode_row_up(pdf_char_t* cur, 
-              pdf_char_t* prev, 
-              pdf_char_t* out,
+encode_row_up(pdf_uchar_t* cur, 
+              pdf_uchar_t* prev, 
+              pdf_uchar_t* out,
               pdf_stm_f_pred_t* state)
 {
   pdf_size_t i;
@@ -374,9 +397,9 @@ encode_row_up(pdf_char_t* cur,
 }
 
 static void
-encode_row_average(pdf_char_t* cur,
-                   pdf_char_t* prev,
-                   pdf_char_t* out,
+encode_row_average(pdf_uchar_t* cur,
+                   pdf_uchar_t* prev,
+                   pdf_uchar_t* out,
                    pdf_stm_f_pred_t* state)
 {
   pdf_size_t i;
@@ -386,7 +409,7 @@ encode_row_average(pdf_char_t* cur,
 
       for (i = 1; i < state->scanline_len; i++) 
         {
-          *out++ = *cur - (pdf_char_t)(((int)*(cur-1) + (int)*prev) >> 1);
+          *out++ = *cur - (pdf_uchar_t)(((int)*(cur-1) + (int)*prev) >> 1);
           cur++;
           prev++;
         }
@@ -404,9 +427,9 @@ encode_row_average(pdf_char_t* cur,
 }
 
 static void
-encode_row_paeth (pdf_char_t* cur, 
-                  pdf_char_t* prev, 
-                  pdf_char_t* out,
+encode_row_paeth (pdf_uchar_t* cur, 
+                  pdf_uchar_t* prev, 
+                  pdf_uchar_t* out,
                   pdf_stm_f_pred_t* state)
 {
   pdf_size_t i;
@@ -459,9 +482,9 @@ encode_row_paeth (pdf_char_t* cur,
 }
 
 static void
-encode_row_sub_color16 (pdf_char_t* cur, 
-                        pdf_char_t* prev, 
-                        pdf_char_t* out,
+encode_row_sub_color16 (pdf_uchar_t* cur, 
+                        pdf_uchar_t* prev, 
+                        pdf_uchar_t* out,
                         pdf_stm_f_pred_t* state)
 {  
   pdf_size_t i;
@@ -490,16 +513,16 @@ encode_row_sub_color16 (pdf_char_t* cur,
 }
 
 static void
-encode_row_sub_color8 (pdf_char_t* cur, 
-                       pdf_char_t* prev, 
-                       pdf_char_t* out,
+encode_row_sub_color8 (pdf_uchar_t* cur, 
+                       pdf_uchar_t* prev, 
+                       pdf_uchar_t* out,
                        pdf_stm_f_pred_t* state)
 {
   pdf_size_t i;
   pdf_size_t j;
-  pdf_char_t *this;
-  pdf_char_t *next;
-  pdf_char_t *sout;
+  pdf_uchar_t *this;
+  pdf_uchar_t *next;
+  pdf_uchar_t *sout;
 
   this = cur; 
   next = cur;
@@ -519,9 +542,9 @@ encode_row_sub_color8 (pdf_char_t* cur,
 }
 
 static void
-encode_row_sub_colorl8 (pdf_char_t *cur, 
-                        pdf_char_t *prev, 
-                        pdf_char_t *out,
+encode_row_sub_colorl8 (pdf_uchar_t *cur, 
+                        pdf_uchar_t *prev, 
+                        pdf_uchar_t *out,
                         pdf_stm_f_pred_t* state)
 {
   pdf_size_t i;
@@ -554,21 +577,20 @@ encode_row_sub_colorl8 (pdf_char_t *cur,
 }
 
 static int
-encode_row (pdf_char_t *cur,
-            pdf_char_t *prev,
-            pdf_char_t *out,
+encode_row (pdf_uchar_t *cur,
+            pdf_uchar_t *prev,
+            pdf_uchar_t *out,
             pdf_stm_f_pred_t* state,
             pdf_error_t **error)
 {
-  switch (state->predictor)
+  switch (state->type)
     {
-    case PDF_STM_F_PREDENC_NO_PREDICTION:
-    case PDF_STM_F_PREDENC_PNG_NONE_ALL_ROWS:
+    case PDF_STM_F_PREDDEC_NO_PREDICTION:
       {
         encode_row_none(cur, prev, out, state);
         break;
       }
-    case PDF_STM_F_PREDENC_TIFF_PREDICTOR_2:
+    case PDF_STM_F_PREDDEC_TIFF_PREDICTOR_2:
       {
         switch (state->bits_per_component) 
           {
@@ -602,55 +624,63 @@ encode_row (pdf_char_t *cur,
 
         break;
       }
-    case PDF_STM_F_PREDENC_PNG_SUB_ALL_ROWS:
-      {
-        encode_row_sub (cur, prev, out, state);
-        break;
+    case PDF_STM_F_PREDDEC_PNG: {
+      switch (state->predictor) {
+      case PDF_STM_F_PREDDEC_PNG_NONE:
+	{
+	  encode_row_none (cur, prev, out, state);
+	  break;
       }
-    case PDF_STM_F_PREDENC_PNG_UP_ALL_ROWS:
-      {
-        encode_row_up(cur, prev, out, state);
-        break;
+      case PDF_STM_F_PREDDEC_PNG_SUB:
+	{
+	  encode_row_sub (cur, prev, out, state);
+	  break;
       }
-    case PDF_STM_F_PREDENC_PNG_AVERAGE_ALL_ROWS:
-      {
-        encode_row_average(cur, prev, out, state);
-        break;
-      }
-    case PDF_STM_F_PREDENC_PNG_PAETH_ALL_ROWS:
-      {
-        encode_row_paeth(cur, prev, out, state);
-        break;
-      }
-    default:
-      {
-        pdf_set_error (error,
-               PDF_EDOMAIN_BASE_STM,
-               PDF_EBADDATA,
-               "bad predictor value in input data: "
-               "expected 1, 2, 10, 11, 12, 13, 14 got %d",
-               (state->predictor));
-        return PDF_ERROR;
-        break;
+      case PDF_STM_F_PREDDEC_PNG_UP:
+	{
+	  encode_row_up(cur, prev, out, state);
+	  break;
+	}
+      case PDF_STM_F_PREDDEC_PNG_AVERAGE:
+	{
+	  encode_row_average(cur, prev, out, state);
+	  break;
+	}
+      case PDF_STM_F_PREDDEC_PNG_PAETH:
+	{
+	  encode_row_paeth(cur, prev, out, state);
+	  break;
+	}
+      default:
+	{
+	  pdf_set_error (error,
+			 PDF_EDOMAIN_BASE_STM,
+			 PDF_EBADDATA,
+			 "bad png predictor value in input data: "
+			 "expected 0, 1, 2, 3, 4 got %d",
+			 (state->predictor));
+	  return PDF_ERROR;
+	  break;
+	}
       }
     }
-
+    }
   return PDF_OK;
 }
 
 static void
-decode_row_none (pdf_char_t* in, 
-                 pdf_char_t* cur, 
-                 pdf_char_t* prev,
+decode_row_none (pdf_uchar_t* in, 
+                 pdf_uchar_t* cur, 
+                 pdf_uchar_t* prev,
                  pdf_stm_f_pred_t* state)
 {
   memcpy (cur, in, state->scanline_len);
 }
 
 static void
-decode_row_sub (pdf_char_t* in, 
-                pdf_char_t* cur, 
-                pdf_char_t* prev,
+decode_row_sub (pdf_uchar_t* in, 
+                pdf_uchar_t* cur, 
+                pdf_uchar_t* prev,
                 pdf_stm_f_pred_t* state)
 {
   pdf_size_t i;
@@ -665,9 +695,9 @@ decode_row_sub (pdf_char_t* in,
 }
 
 static void
-decode_row_up (pdf_char_t* in, 
-               pdf_char_t* cur, 
-               pdf_char_t* prev,
+decode_row_up (pdf_uchar_t* in, 
+               pdf_uchar_t* cur, 
+               pdf_uchar_t* prev,
                pdf_stm_f_pred_t* state)
 {
   pdf_size_t i;
@@ -687,9 +717,9 @@ decode_row_up (pdf_char_t* in,
 }
 
 static void
-decode_row_average (pdf_char_t* in, 
-                    pdf_char_t* cur, 
-                    pdf_char_t* prev,
+decode_row_average (pdf_uchar_t* in, 
+                    pdf_uchar_t* cur, 
+                    pdf_uchar_t* prev,
                     pdf_stm_f_pred_t* state)
 {
   pdf_size_t i;
@@ -700,7 +730,7 @@ decode_row_average (pdf_char_t* in,
 
       for (i = 1; i < state->scanline_len; i++) 
         {
-          *cur = *in++ + (pdf_char_t)(((int)*(cur-1) + (int)*prev) >> 1);
+          *cur = *in++ + (pdf_uchar_t)(((int)*(cur-1) + (int)*prev) >> 1);
           cur++;
           prev++;
         }
@@ -718,9 +748,9 @@ decode_row_average (pdf_char_t* in,
 }
 
 static void
-decode_row_paeth (pdf_char_t* in, 
-                  pdf_char_t* cur, 
-                  pdf_char_t* prev,
+decode_row_paeth (pdf_uchar_t* in, 
+                  pdf_uchar_t* cur, 
+                  pdf_uchar_t* prev,
                   pdf_stm_f_pred_t* state)
 {
   int p;
@@ -774,7 +804,7 @@ decode_row_paeth (pdf_char_t* in,
 }
 
 static void
-decode_row_sub_color16 (pdf_char_t* in, pdf_char_t* cur, pdf_char_t* prev,
+decode_row_sub_color16 (pdf_uchar_t* in, pdf_uchar_t* cur, pdf_uchar_t* prev,
                         pdf_stm_f_pred_t* state)
 {
   pdf_size_t i;
@@ -801,16 +831,16 @@ decode_row_sub_color16 (pdf_char_t* in, pdf_char_t* cur, pdf_char_t* prev,
 }
 
 static void
-decode_row_sub_color8  (pdf_char_t* in, 
-                        pdf_char_t* cur, 
-                        pdf_char_t* prev,
+decode_row_sub_color8  (pdf_uchar_t* in, 
+                        pdf_uchar_t* cur, 
+                        pdf_uchar_t* prev,
                         pdf_stm_f_pred_t* state)
 {
   pdf_size_t i;
   pdf_size_t j;
-  pdf_char_t *this;
-  pdf_char_t *next;
-  pdf_char_t *sin;
+  pdf_uchar_t *this;
+  pdf_uchar_t *next;
+  pdf_uchar_t *sin;
 
   this = cur;
   next = cur;
@@ -832,9 +862,9 @@ decode_row_sub_color8  (pdf_char_t* in,
 
 
 static void
-decode_row_sub_colorl8 (pdf_char_t* in, 
-                        pdf_char_t* cur, 
-                        pdf_char_t* prev,
+decode_row_sub_colorl8 (pdf_uchar_t* in, 
+                        pdf_uchar_t* cur, 
+                        pdf_uchar_t* prev,
                         pdf_stm_f_pred_t* state)
 {
   pdf_size_t i;
@@ -867,13 +897,13 @@ decode_row_sub_colorl8 (pdf_char_t* in,
 }
 
 static int
-decode_row (pdf_char_t* in,
-            pdf_char_t* cur,
-            pdf_char_t* prev,
+decode_row (pdf_uchar_t* in,
+            pdf_uchar_t* cur,
+            pdf_uchar_t* prev,
             pdf_stm_f_pred_t* state,
             pdf_error_t **error)
 {
-  switch (state->predictor)
+  switch (state->type)
     {
     case PDF_STM_F_PREDDEC_TIFF_PREDICTOR_2:
       {
@@ -911,41 +941,49 @@ decode_row (pdf_char_t* in,
         break;
       }
     case PDF_STM_F_PREDDEC_NO_PREDICTION:
-    case PDF_STM_F_PREDDEC_PNG_NONE:
       {
         decode_row_none (in, cur, prev, state);
         break;
       }
-    case PDF_STM_F_PREDDEC_PNG_SUB:
-      {
-        decode_row_sub (in, cur, prev, state);
-        break;
-      }
-    case PDF_STM_F_PREDDEC_PNG_UP:
-      {
-        decode_row_up (in, cur, prev, state);
-        break;
-      }
-    case PDF_STM_F_PREDDEC_PNG_AVERAGE:
-      {
-        decode_row_average (in, cur, prev, state);
-        break;
-      }
-    case PDF_STM_F_PREDDEC_PNG_PAETH:
-      {
-        decode_row_paeth (in, cur, prev, state);
-        break;
-      }
-    default:
-      {
-        pdf_set_error (error,
-               PDF_EDOMAIN_BASE_STM,
-               PDF_EBADDATA,
-               "bad predictor value for decode: "
-               "expected 1, 2, 10, 11, 12, 13, 14 got %d",
+    case PDF_STM_F_PREDDEC_PNG: {
+	switch (state->predictor) {
+	case PDF_STM_F_PREDDEC_PNG_NONE:
+	  {
+	    decode_row_none (in, cur, prev, state);
+	    break;
+	  }
+	case PDF_STM_F_PREDDEC_PNG_SUB:
+	  {
+	    decode_row_sub (in, cur, prev, state);
+	    break;
+	  }
+	case PDF_STM_F_PREDDEC_PNG_UP:
+	  {
+	    decode_row_up (in, cur, prev, state);
+	    break;
+	  }
+	case PDF_STM_F_PREDDEC_PNG_AVERAGE:
+	  {
+	    decode_row_average (in, cur, prev, state);
+	    break;
+	  }
+	case PDF_STM_F_PREDDEC_PNG_PAETH:
+	  {
+	    decode_row_paeth (in, cur, prev, state);
+	    break;
+	  }
+	default:
+	  {
+	    pdf_set_error (error,
+			   PDF_EDOMAIN_BASE_STM,
+			   PDF_EBADDATA,
+			   "bad png predictor value for decode: "
+               "expected 0, 1, 2, 3, 4 got %d",
                (state->predictor));
-        return PDF_ERROR;
-        break;
+	    return PDF_ERROR;
+	    break;
+	  }
+	}
       }
     }
 
@@ -962,11 +1000,11 @@ stm_f_predenc_apply (void          *state,
   pdf_stm_f_pred_t *fs = state; /* filter state */
 
   pdf_bool_t is_png_predictor;
-  is_png_predictor = PNG_ENC_PREDICTOR_P(fs->predictor);
+  is_png_predictor = fs->type == PDF_STM_F_PREDDEC_PNG;
 
-  pdf_char_t *curr_row;
-  pdf_char_t *prev_row = NULL;
-  pdf_char_t *out_buf;
+  pdf_uchar_t *curr_row;
+  pdf_uchar_t *prev_row = NULL;
+  pdf_uchar_t *out_buf;
 
   pdf_size_t in_size;
   PDF_ASSERT (in->wp >= in->rp);
@@ -976,7 +1014,7 @@ stm_f_predenc_apply (void          *state,
   /* copy all at once instead of copying each scanline for predictor 1; 
      this is needed because we may not know real scanline_len and therefor use 
      scanline_len = 1 which would be very slow */
-  if (fs->predictor == PDF_STM_F_PREDENC_NO_PREDICTION)
+  if (fs->type == PDF_STM_F_PREDDEC_NO_PREDICTION)
     {
       tocpy = PDF_MIN (out->size - out->wp, in->wp - in->rp);
       memcpy(out->data + out->wp, in->data + in->rp, tocpy);
@@ -1010,15 +1048,15 @@ stm_f_predenc_apply (void          *state,
               if (is_png_predictor)
                 fs->out_row_buf->data[fs->out_row_buf->wp++] = fs->predictor;
 
-              curr_row = (pdf_char_t*) fs->curr_row_buf->data;
-              out_buf  = (pdf_char_t*) fs->out_row_buf->data 
+              curr_row = (pdf_uchar_t*) fs->curr_row_buf->data;
+              out_buf  = (pdf_uchar_t*) fs->out_row_buf->data 
                                        + fs->out_row_buf->wp;
 
               /* at first row encode_row expects prev_row to be NULL */
               if (fs->prev_row_buf->wp == 0)
                 prev_row = NULL;
               else
-                prev_row = (pdf_char_t*) fs->prev_row_buf->data;
+                prev_row = (pdf_uchar_t*) fs->prev_row_buf->data;
 
               if (encode_row (curr_row, prev_row, out_buf, fs, error) 
                   == PDF_ERROR)
@@ -1094,11 +1132,11 @@ stm_f_preddec_apply (void          *state,
   pdf_stm_f_pred_t *fs = state; /* filter state */
 
   pdf_bool_t is_png_predictor;
-  is_png_predictor = PNG_DEC_PREDICTOR_P(fs->predictor);
+  is_png_predictor = fs->type == PDF_STM_F_PREDDEC_PNG;
 
-  pdf_char_t *curr_row;
-  pdf_char_t *prev_row = NULL;
-  pdf_char_t *out_buf;
+  pdf_uchar_t *curr_row;
+  pdf_uchar_t *prev_row = NULL;
+  pdf_uchar_t *out_buf;
 
   pdf_size_t in_size;
   PDF_ASSERT (in->wp >= in->rp);
@@ -1145,16 +1183,16 @@ stm_f_preddec_apply (void          *state,
               if (is_png_predictor)
                 fs->predictor = fs->curr_row_buf->data[fs->curr_row_buf->rp++];
 
-              curr_row = (pdf_char_t*) fs->curr_row_buf->data 
+              curr_row = (pdf_uchar_t*) fs->curr_row_buf->data 
                                        + fs->curr_row_buf->rp;
-              out_buf  = (pdf_char_t*) fs->out_row_buf->data 
+              out_buf  = (pdf_uchar_t*) fs->out_row_buf->data 
                                        + fs->out_row_buf->wp;
 
               /* at first row decode_row expects prev_row to be NULL */
               if (fs->prev_row_buf->wp == 0)
                 prev_row = NULL;
               else
-                prev_row = (pdf_char_t*) fs->prev_row_buf->data;
+                prev_row = (pdf_uchar_t*) fs->prev_row_buf->data;
 
               if (decode_row (curr_row, out_buf, prev_row, fs, error)
                   == PDF_ERROR)
